@@ -1,26 +1,224 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
+/*
+ * Ontwerpsysteem Thuisles.
+ *
+ * Eén plek voor kleur, ronding en schaduw. Kinderomgeving: warm, speels,
+ * rustig genoeg om lang naar te kijken. De ouderomgeving krijgt later
+ * dezelfde tokens, maar soberder toegepast.
+ */
+@theme {
+  --font-sans: var(--font-nunito), ui-rounded, "Segoe UI", system-ui, sans-serif;
+  /* Beheeromgeving: strakker en zakelijker dan de ronde kinderkant. */
+  --font-zakelijk: var(--font-inter), "Segoe UI", system-ui, sans-serif;
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
+  /* Basis */
+  --color-room: #fbf6ee;
+  --color-kaart: #ffffff;
+  --color-rand: #ece4d8;
+  --color-inkt: #2c2545;
+  --color-inkt-zacht: #6e6685;
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+  /* Donkere zijbalk: marineblauw. Paars blijft uitsluitend accentkleur. */
+  --color-nacht: #10203f;
+  --color-nacht-diep: #0a1730;
+  --color-nacht-op: #1d3563;
+
+  /* Primair — hoofdaccent van de hele app */
+  --color-viool: #5b3fd6;
+  --color-viool-diep: #46299f;
+  --color-viool-zacht: #eee9ff;
+
+  /* Succes / "Voor jou" / voltooid */
+  --color-groen: #1f9d63;
+  --color-groen-diep: #17784c;
+  --color-groen-zacht: #dcf4e8;
+  --color-mint: #0f9c8c;
+  --color-mint-zacht: #dcf3ef;
+
+  /* Accenten en de wereldlaag */
+  --color-oranje: #e4832a;
+  --color-oranje-diep: #c26b18;
+  --color-oranje-zacht: #fdeada;
+  --color-geel: #f2bb2e;
+  --color-geel-zacht: #fdf3d4;
+
+  /* Beloningen en aandacht */
+  --color-amber: #e2932c;
+  --color-amber-zacht: #fdf0da;
+  --color-roze: #e4607f;
+  --color-roze-zacht: #fde6ec;
+  --color-lucht: #3577cc;
+  /* Donkerder blauw voor de hover van de schoolroute. */
+  --color-lucht-diep: #27599b;
+  --color-lucht-zacht: #e2edfb;
+
+  /* Beheeromgeving: wit en lichtgrijs, paars uitsluitend als accent. */
+  --color-beheer-vlak: #f5f6f8;
+  --color-beheer-kaart: #ffffff;
+  --color-beheer-rand: #e2e5ea;
+  --color-beheer-rand-zacht: #eef0f3;
+  --color-beheer-inkt: #1e2430;
+  --color-beheer-zacht: #6a7280;
+  --color-beheer-balk: #212936;
+  --color-beheer-balk-op: #2e3849;
+
+  --radius-kaart: 1.5rem;
+  --radius-groot: 2rem;
+
+  --shadow-zacht: 0 1px 2px rgb(44 37 69 / 0.05), 0 8px 20px -8px rgb(44 37 69 / 0.12);
+  --shadow-op: 0 2px 4px rgb(44 37 69 / 0.06), 0 16px 32px -12px rgb(44 37 69 / 0.22);
+  /* Gele gloed rond het actieve gebied op het wereldpad. */
+  --animate-vos-zwaai: vos-zwaai 2s ease-in-out infinite;
+
+  /* Alleen het handje van het vosje zwaait; het draaipunt ligt in de pols. */
+  @keyframes vos-zwaai {
+    0%,
+    100% {
+      transform: rotate(-5deg);
+    }
+    50% {
+      transform: rotate(11deg);
+    }
   }
+
+  /*
+    De sleutelteller telt op: één klein zetje, geen stuiter.
+
+    De sleutel landt op de teller en het getal springt even op. Kort en met
+    een lichte overshoot, zodat het opvalt zonder dat de header gaat dansen.
+  */
+  --animate-teller-pop: teller-pop 0.42s cubic-bezier(0.24, 1.4, 0.4, 1);
+
+  @keyframes teller-pop {
+    0% {
+      transform: scale(1);
+    }
+    40% {
+      transform: scale(1.5);
+      color: var(--color-groen, #1f9d63);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  /* Vos beweegt zachtjes mee met de uitleg. */
+  --animate-vos-wiebel: vos-wiebel 1.6s ease-in-out infinite;
+  --animate-vos-sprong: vos-sprong 0.7s ease-out 2;
+  --animate-vos-buigen: vos-buigen 1.8s ease-in-out infinite;
+  /* Blokjes die aangetikt mogen worden, en het wijzende handje. */
+  --animate-blok-klaar: blok-klaar 1.4s ease-in-out infinite;
+  --animate-hand-wijs: hand-wijs 1s ease-in-out 4;
+
+  @keyframes vos-wiebel {
+    0%, 100% { transform: rotate(-2deg); }
+    50% { transform: rotate(2deg); }
+  }
+
+  @keyframes vos-sprong {
+    0%, 100% { transform: translateY(0) rotate(0deg); }
+    40% { transform: translateY(-14px) rotate(-6deg); }
+  }
+
+  @keyframes vos-buigen {
+    0%, 100% { transform: rotate(0deg) translateY(0); }
+    50% { transform: rotate(9deg) translateY(4px); }
+  }
+
+  @keyframes blok-klaar {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.09); }
+  }
+
+  @keyframes hand-wijs {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-7px); }
+  }
+
+  /*
+    Beweging bij de uitleg-animatie. Bewust een paar gerichte momenten en geen
+    scherm dat overal tegelijk beweegt: één kraal die opveert, één groepje dat
+    oplicht, en een pijl die zachtjes wipt.
+  */
+  --animate-kraal-stuiter: kraal-stuiter 0.5s ease-out 1;
+  --animate-kraal-pulse: kraal-pulse 0.75s ease-in-out 1;
+  --animate-pijl-wip: pijl-wip 1.9s ease-in-out infinite;
+  --animate-vos-knik: vos-knik 0.55s ease-out 1;
+
+  /* Een aangetikte kraal wipt één keer op en komt terug. */
+  @keyframes kraal-stuiter {
+    0%   { transform: translateY(0) scale(1); }
+    35%  { transform: translateY(-7px) scale(1.14); }
+    65%  { transform: translateY(0) scale(0.97); }
+    100% { transform: translateY(0) scale(1); }
+  }
+
+  /* Een groepje van vijf licht samen even op zodra het geteld is. */
+  @keyframes kraal-pulse {
+    0%, 100% { transform: scale(1); }
+    45%      { transform: scale(1.13); }
+  }
+
+  /* De pijl blijft zachtjes wippen, zodat het oog erheen blijft gaan. */
+  @keyframes pijl-wip {
+    0%, 100% { transform: translateY(0); }
+    50%      { transform: translateY(-4px); }
+  }
+
+  /* Vos knikt kort bij elke nieuwe stap. */
+  @keyframes vos-knik {
+    0%   { transform: translateY(0) rotate(0deg); }
+    30%  { transform: translateY(-6px) rotate(-5deg); }
+    60%  { transform: translateY(1px) rotate(3deg); }
+    100% { transform: translateY(0) rotate(0deg); }
+  }
+
+  --shadow-gloed: 0 0 0 6px rgb(242 187 46 / 0.28), 0 0 34px 6px rgb(242 187 46 / 0.45);
 }
 
+html {
+  background-color: var(--color-room);
+  /* Voorkomt dat tikken op tablet ongewenst inzoomt tijdens het oefenen. */
+  -webkit-text-size-adjust: 100%;
+}
+
+/*
+ * De pagina zelf is niet wit maar een zacht kleurverloop: lila bovenin, warm
+ * perzik in het midden, mintgroen onderin, met drie brede kleurvlekken
+ * eroverheen. Zo blijft het beeld ook tussen de kaarten door leven, terwijl de
+ * witte kaarten er rustig op blijven staan.
+ */
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background-color: var(--color-room);
+  background-image:
+    radial-gradient(58rem 38rem at 6% 40%, rgba(160, 205, 255, 0.3), transparent 62%),
+    radial-gradient(50rem 34rem at 98% 56%, rgba(255, 196, 138, 0.34), transparent 62%),
+    radial-gradient(46rem 30rem at 46% 96%, rgba(150, 226, 190, 0.34), transparent 65%),
+    linear-gradient(
+      180deg,
+      #f2ebff 0%,
+      #fdf2e6 34%,
+      #fdf6ec 60%,
+      #eef7f0 100%
+    );
+  background-attachment: fixed;
+  background-repeat: no-repeat;
+  color: var(--color-inkt);
+}
+
+/* Zichtbare focus voor toetsenbord- en schakelaarbediening. */
+:focus-visible {
+  outline: 3px solid var(--color-viool);
+  outline-offset: 3px;
+  border-radius: 0.75rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
