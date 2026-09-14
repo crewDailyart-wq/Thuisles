@@ -10,6 +10,7 @@
 
 import { useMemo } from "react";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
+import { Telrij } from "@/components/oefenen/Telfiguren";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -95,6 +96,12 @@ export function SjabloonVoorbeeld({
                 {som.figuur?.soort === "bus" && (
                   <div className="mt-1 w-full">
                     <Bus figuur={som.figuur} />
+                  </div>
+                )}
+
+                {som.figuur?.soort === "telrij" && (
+                  <div className="mt-1">
+                    <Telrij figuur={som.figuur} />
                   </div>
                 )}
 

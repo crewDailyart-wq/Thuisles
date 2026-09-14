@@ -10,6 +10,7 @@ import { busGenerator } from "@/lib/generatoren/bus";
 import { kralenGenerator } from "@/lib/generatoren/kralen";
 import { optellenGenerator } from "@/lib/generatoren/optellen";
 import { splitsenGenerator } from "@/lib/generatoren/splitsen";
+import { tellenslepenGenerator } from "@/lib/generatoren/tellenslepen";
 import { tafelsGenerator } from "@/lib/generatoren/tafels";
 import type { Generator } from "@/lib/generatoren/soort";
 
@@ -20,6 +21,7 @@ export const alleGeneratoren: Generator[] = [
   splitsenGenerator,
   kralenGenerator,
   busGenerator,
+  tellenslepenGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {

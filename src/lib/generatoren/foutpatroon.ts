@@ -109,8 +109,22 @@ export function herkenFout(
   gegevenTekst: string,
 ): Foutpatroon | null {
   const gegeven = Number(String(gegevenTekst).replace(",", "."));
-  if (!Number.isFinite(gegeven)) return null;
-  if (gegeven === som.goed) return null;
+
+  /*
+    Bestaat het antwoord uit meerdere getallen — zoals bij "Tellen en slepen",
+    waar er één getal per afbeelding is — dan staan die in `extra`. Eén getal
+    valt er dan niet van te maken, dus de controles hieronder slaan we over; de
+    patronen van zo'n type lezen `extra` zelf.
+
+    Voor alle andere types verandert er niets: één getal, en bij een onleesbaar
+    of goed antwoord is er geen denkfout te herkennen.
+  */
+  const meerdereGetallen = som.extra?.gegeven0 !== undefined;
+
+  if (!meerdereGetallen) {
+    if (!Number.isFinite(gegeven)) return null;
+    if (gegeven === som.goed) return null;
+  }
 
   return patronen.find((p) => p.herkent(som, gegeven)) ?? null;
 }

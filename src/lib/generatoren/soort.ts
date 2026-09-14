@@ -50,6 +50,16 @@ export type Figuur =
       palet: string;
     }
   | {
+      soort: "telrij";
+      /**
+       * De figuren naast elkaar, elk met zijn eigen aantal telbare onderdelen.
+       * Het antwoord is die aantallen, in deze volgorde.
+       */
+      items: { soort: string; aantal: number }[];
+      /** Welk kleurenpaar. De namen staan in `Figuurtekening`. */
+      palet: string;
+    }
+  | {
       soort: "bus";
       /** Hoeveel kinderen er in de bus zitten. Dit is ook het antwoord. */
       totaal: number;

@@ -161,6 +161,7 @@ export default async function OefeningPagina({
       aandachtVooraf={aandachtVooraf}
       herhaalHref={`${terugHref}/oefening`}
       beginsaldo={sleutels.saldo}
+      kindId={kind.id}
     />
   );
 }

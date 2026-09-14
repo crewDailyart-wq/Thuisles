@@ -30,6 +30,21 @@ export function PijlVooruit({ className = "" }: { className?: string }) {
   );
 }
 
+/** Dikke pijl naar links: terug. */
+export function PijlTerug({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
+      <path
+        d="M20 12H7M12 5.5 5.5 12 12 18.5"
+        stroke="currentColor"
+        strokeWidth={3.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 /** Driehoekje: afspelen. */
 export function Driehoek({ className = "" }: { className?: string }) {
   return (

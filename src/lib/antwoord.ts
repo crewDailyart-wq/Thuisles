@@ -37,6 +37,15 @@ export function isGoed(vraag: OefenVraag, gegeven: string): boolean {
     return gegeven === vraag.antwoord;
   }
 
+  /*
+    Getallen slepen: één getal per afbeelding, met komma's ertussen en in de
+    volgorde van de afbeeldingen. Alles moet kloppen — twee verwisselde getallen
+    is dus fout, ook al staan de goede getallen er wel.
+  */
+  if (vraag.vorm === "sleepgetallen") {
+    return gegeven.split(",").join(",") === vraag.antwoord.split(",").join(",");
+  }
+
   // Open vraag: elk van de opgegeven schrijfwijzen mag.
   const toegestaan = vraag.antwoord.split("|").map(normaliseer).filter(Boolean);
   return toegestaan.includes(normaliseer(gegeven));
@@ -50,6 +59,9 @@ export function goedeAntwoordInTekst(vraag: OefenVraag): string {
   }
   if (vraag.vorm === "waar_niet_waar") {
     return vraag.antwoord === "waar" ? "Waar" : "Niet waar";
+  }
+  if (vraag.vorm === "sleepgetallen") {
+    return vraag.antwoord.split(",").join(" · ");
   }
   return vraag.antwoord.split("|")[0] ?? "";
 }

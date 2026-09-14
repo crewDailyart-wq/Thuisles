@@ -30,6 +30,7 @@
  */
 
 import { Sleutelteller } from "@/components/kind/Sleutelteller";
+import { PijlTerug } from "@/components/oefenen/Symbolen";
 
 export type Bolstand = "goed" | "fout" | "nu" | "open";
 
@@ -84,11 +85,11 @@ export function Oefenbalk({
         */}
         <a
           href={terugHref}
-          className="flex shrink-0 items-center gap-1.5 rounded-full bg-white/15 px-3 py-2 text-sm font-extrabold text-white transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
+          aria-label="Terug"
+          title="Terug"
+          className="grid size-11 shrink-0 place-items-center rounded-full bg-white/15 text-white transition hover:bg-white/25 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/70"
         >
-          <span aria-hidden="true">←</span>
-          <span className="hidden sm:inline">Terug</span>
-          <span className="sr-only sm:hidden">Terug naar de oefeningen</span>
+          <PijlTerug className="size-6" />
         </a>
 
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">

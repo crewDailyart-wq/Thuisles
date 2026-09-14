@@ -18,10 +18,11 @@
  */
 
 import Link from "next/link";
-import { useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { beloonGoedAntwoord, bewaarRonde, meldLastig } from "@/app/oefenacties";
 import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
+import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import { Figuurtekening, beschrijfFiguur } from "@/components/oefenen/Figuurtekening";
 import { InvulFiguur } from "@/components/oefenen/InvulFiguur";
@@ -30,6 +31,12 @@ import { leesGroepsvorm, vormBijGroep } from "@/lib/generatoren/uitlegscript";
 import { goedeAntwoordInTekst, isGoed, kortGetalLengte } from "@/lib/antwoord";
 import { feestje as feestgeluid, geluidStaatAan } from "@/lib/geluid";
 import { nuInMs } from "@/lib/klok";
+import {
+  bewaarSessie,
+  leesSessie,
+  sessieSleutel,
+  wisSessie,
+} from "@/lib/oefensessie";
 import { zetSaldo } from "@/lib/sleutelwinkel";
 import { zoekGenerator } from "@/lib/generatoren";
 import {
@@ -38,10 +45,30 @@ import {
   herkenFout,
   leeftijdsgroepVan,
   type Foutpatroon,
+  type Somgegevens,
   type Uitlegstap,
 } from "@/lib/generatoren/foutpatroon";
 import type { RondeAntwoord } from "@/app/oefenacties";
 import { type AntwoordOptie, type OefenVraag } from "@/lib/vraagtypes";
+
+/**
+ * De som met daarbij wat het kind heeft ingevuld, als dat meer dan één getal is.
+ *
+ * Alleen bij vraagvormen waar één antwoord uit meerdere getallen bestaat. De
+ * foutpatronen van zo'n type kunnen daarmee zien wát er misging — of er twee
+ * verwisseld zijn bijvoorbeeld, en dat is aan één getal niet te merken.
+ */
+function metGegevenGetallen(vraag: OefenVraag, gegeven: string): Somgegevens | null {
+  if (vraag.vorm !== "sleepgetallen" || !vraag.somgegevens) return vraag.somgegevens;
+
+  const extra: Record<string, number> = { ...(vraag.somgegevens.extra ?? {}) };
+  gegeven.split(",").forEach((deel, i) => {
+    const w = Number(deel);
+    if (Number.isFinite(w) && deel !== "") extra[`gegeven${i}`] = w;
+  });
+
+  return { ...vraag.somgegevens, extra };
+}
 
 type Fase = "bezig" | "goed" | "fout";
 
@@ -70,6 +97,7 @@ export function OefenSpeler({
   aandachtVooraf,
   herhaalHref,
   beginsaldo,
+  kindId,
 }: {
   vragen: OefenVraag[];
   terugHref: string;
@@ -81,6 +109,8 @@ export function OefenSpeler({
   herhaalHref: string;
   /** Het sleutelsaldo bij het openen; de teller in de balk telt vanaf hier. */
   beginsaldo: number;
+  /** Van wie deze sessie is; meerdere kinderen kunnen hetzelfde apparaat delen. */
+  kindId: string;
 }) {
   const leeftijd = leeftijdsgroepVan(groep);
   /*
@@ -93,6 +123,14 @@ export function OefenSpeler({
   */
   const kortFeedback = leeftijd === "34";
 
+  /*
+    De serie waar dit kind mee bezig is.
+
+    Normaal is dat gewoon wat de server aanlevert. Is er een halve sessie
+    bewaard, dan wordt die serie overgenomen — inclusief de volgorde, zodat
+    "vraag 4 van 15" ook echt vraag 4 uit dezelfde serie is.
+  */
+  const [serie, setSerie] = useState<OefenVraag[]>(vragen);
   const [index, setIndex] = useState(0);
   const [antwoord, setAntwoord] = useState("");
   const [fase, setFase] = useState<Fase>("bezig");
@@ -142,7 +180,48 @@ export function OefenSpeler({
   const [snelFout, setSnelFout] = useState(0);
   const [rustBericht, setRustBericht] = useState("");
 
-  const vraag = vragen[index];
+  /*
+    Waar deze sessie onder bewaard wordt. Pas in de browser bekend, want het pad
+    met de zoekreeks hoort erbij (`?leerdoel=`, `?herhaal=1`).
+  */
+  const sleutel = useRef("");
+
+  /*
+    Halve sessie oppakken.
+
+    Dit gebeurt ná de eerste tekening en niet ervoor: de server kent de opslag
+    van de browser niet, dus zou de pagina anders iets anders opleveren dan wat
+    er daarna in beeld komt. Het kind ziet daardoor heel even vraag 1 voordat
+    het bij vraag 4 staat — één beeldje, niet merkbaar.
+  */
+  useEffect(() => {
+    sleutel.current = sessieSleutel(kindId, window.location.pathname + window.location.search);
+    const bewaard = leesSessie(sleutel.current);
+    if (!bewaard) return;
+
+    rondeId.current = bewaard.rondeId;
+    setSerie(bewaard.vragen);
+    setGelogd(bewaard.gelogd);
+    setIndex(Math.min(bewaard.index, bewaard.vragen.length - 1));
+    setStart(nuInMs());
+  }, [kindId]);
+
+  /*
+    Bewaren zodra er iets beantwoord is, niet pas aan het eind. Gaat het kind
+    halverwege weg, dan staat de stand er al.
+  */
+  useEffect(() => {
+    if (!sleutel.current || gelogd.length === 0 || klaar) return;
+    bewaarSessie(sleutel.current, {
+      rondeId: rondeId.current,
+      vragen: serie,
+      gelogd,
+      index,
+    });
+  }, [gelogd, index, serie, klaar]);
+
+
+  const vraag = serie[index];
   const generator = vraag?.somgegevens ? zoekGenerator(vraag.somgegevens.soort) : null;
 
   const invulbaar =
@@ -177,7 +256,7 @@ export function OefenSpeler({
     // Fout: kijken welke denkfout hier waarschijnlijk achter zit.
     const gevonden =
       generator && vraag.somgegevens
-        ? herkenFout(generator.foutpatronen, vraag.somgegevens, antwoord)
+        ? herkenFout(generator.foutpatronen, metGegevenGetallen(vraag, antwoord) ?? vraag.somgegevens, antwoord)
         : null;
 
     const gegokt = seconden < GOKGRENS_SECONDEN;
@@ -257,8 +336,13 @@ export function OefenSpeler({
       setRustBericht("Goed gewerkt! Je hebt al veel gedaan. Morgen verder?");
     }
 
-    if (index + 1 >= vragen.length) {
+    if (index + 1 >= serie.length) {
       void bewaarRonde(gelogd);
+      /*
+        De serie is af: de bewaarde sessie mag weg, zodat een volgende keer een
+        nieuwe serie begint in plaats van deze afgelopen serie te herhalen.
+      */
+      if (sleutel.current) wisSessie(sleutel.current);
       setKlaar(true);
       return;
     }
@@ -284,7 +368,7 @@ export function OefenSpeler({
   if (klaar) {
     return (
       <Uitslag
-        vragen={vragen}
+        vragen={serie}
         antwoorden={gelogd}
         aandachtVooraf={new Set(aandachtVooraf)}
         terugHref={terugHref}
@@ -303,7 +387,7 @@ export function OefenSpeler({
     precies één antwoord bijgeschreven en er wordt nooit teruggesprongen — dus
     de index in die lijst is ook de index van de vraag.
   */
-  const bolstanden: Bolstand[] = vragen.map((_, i) => {
+  const bolstanden: Bolstand[] = serie.map((_, i) => {
     const gedaan = gelogd[i];
     if (gedaan) return gedaan.goed ? "goed" : "fout";
     return i === index ? "nu" : "open";
@@ -636,7 +720,7 @@ export function OefenSpeler({
                 onClick={volgende}
                 className="inline-flex items-center gap-2 rounded-full bg-groen px-6 py-3 text-base font-extrabold text-white transition hover:bg-groen-diep"
               >
-                {index + 1 >= vragen.length ? "Bekijk je uitslag" : "Volgende vraag"}
+                {index + 1 >= serie.length ? "Bekijk je uitslag" : "Volgende vraag"}
                 <Icoon naam="pijl" className="size-5" />
               </button>
             )}
@@ -723,6 +807,33 @@ function Antwoordvelden({
         goedeWaarde={toonKleur ? vraag.antwoord : null}
         gekozenGoed={goedGemarkeerd}
         onKies={onKies}
+      />
+    );
+  }
+
+  /*
+    Getallen slepen: de figuren met hun vakjes, plus de losse getallen. Het
+    antwoord is één getal per figuur, met komma's ertussen — zo gaat het ook de
+    database in, en zo kijkt `isGoed` het na.
+  */
+  if (vraag.vorm === "sleepgetallen" && vraag.figuur?.soort === "telrij") {
+    const keuzes = (vraag.opties ?? []).map((o) => Number(o.tekst)).filter(Number.isFinite);
+    const goede = vraag.antwoord.split(",").map(Number);
+    const ingevuld = vraag.figuur.items.map((_, i) => {
+      const deel = antwoord.split(",")[i];
+      return deel === undefined || deel === "" ? null : Number(deel);
+    });
+
+    return (
+      <SleepGetallen
+        figuur={vraag.figuur}
+        keuzes={keuzes}
+        ingevuld={ingevuld}
+        fase={fase}
+        goedeWaarden={fase === "fout" ? goede : null}
+        onWijzig={(nieuw: (number | null)[]) =>
+          onKies(nieuw.every((w) => w === null) ? "" : nieuw.map((w) => w ?? "").join(","))
+        }
       />
     );
   }

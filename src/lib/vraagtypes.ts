@@ -6,20 +6,31 @@
  * niet uit elkaar kunnen lopen.
  */
 
-export type Vraagvorm = "meerkeuze" | "open" | "waar_niet_waar";
+export type Vraagvorm = "meerkeuze" | "open" | "waar_niet_waar" | "sleepgetallen";
 
 export const VRAAGVORMEN: Vraagvorm[] = ["meerkeuze", "open", "waar_niet_waar"];
 
+/**
+ * Vormen die je met de hand kunt invoeren, staan in `VRAAGVORMEN` hierboven.
+ *
+ * "sleepgetallen" staat daar bewust NIET bij: zo'n vraag bestaat uit meerdere
+ * getekende figuren met elk een eigen antwoord, en die maak je met een
+ * generator, niet in een formulier. Hij hoort wel gewoon bij `Vraagvorm`, want
+ * opslaan, nakijken en tonen gaan verder precies hetzelfde.
+ */
 export const VORM_LABEL: Record<Vraagvorm, string> = {
   meerkeuze: "Meerkeuze",
   open: "Open vraag",
   waar_niet_waar: "Waar / niet waar",
+  sleepgetallen: "Getallen slepen",
 };
 
 export const VORM_UITLEG: Record<Vraagvorm, string> = {
   meerkeuze: "Het kind kiest uit twee tot zes antwoorden. Eén is goed.",
   open: "Het kind typt het antwoord. Meerdere schrijfwijzen mogen goed zijn.",
   waar_niet_waar: "Een stelling die waar of niet waar is.",
+  sleepgetallen:
+    "Het kind sleept bij elke afbeelding het getal dat erbij hoort. Alleen via een sjabloon.",
 };
 
 export type Vraagstatus = "concept" | "gepubliceerd";
