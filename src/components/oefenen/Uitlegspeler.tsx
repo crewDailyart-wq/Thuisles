@@ -33,6 +33,7 @@ import {
   zetGeluid,
 } from "@/lib/geluid";
 import { stopPraten, zeg } from "@/lib/stem";
+import { STANDAARD_TIKZIN } from "@/lib/generatoren/uitlegscript";
 import type { Bloktoestand, Model, Uitlegscript } from "@/lib/generatoren/uitlegscript";
 
 export function Uitlegspeler({
@@ -67,13 +68,28 @@ export function Uitlegspeler({
   const stap = script.stappen[stapNr];
   const laatste = stapNr === script.stappen.length - 1;
 
+  /*
+    Waarop er getikt moet worden. Het generator-type geeft dat mee, want alleen
+    dat weet of het kralen, kinderen of blokjes zijn. Zegt een type er niets
+    over, dan de algemene zin.
+  */
+  const tikzin = stap?.meetellen ? (stap.meetellen.aansporing ?? STANDAARD_TIKZIN) : "";
+
   const voorGroep3 = script.vorm === "3";
 
-  // Vos leest de zin voor zodra een stap in beeld komt.
+  /*
+    Vos leest de zin voor zodra een stap in beeld komt.
+
+    Moet het kind tikken, dan zegt hij er meteen bij waarop — in dezelfde adem,
+    want twee losse aanroepen zouden elkaar afbreken. Voorheen kwam die
+    aansporing pas na zes seconden, en zat een kind dus te wachten op iets wat
+    het nog niet wist.
+  */
   useEffect(() => {
-    if (geluidAan && stap) zeg(stap.zin);
+    if (!geluidAan || !stap) return;
+    zeg(tikzin ? `${stap.zin} ${tikzin}` : stap.zin);
     return () => stopPraten();
-  }, [stapNr, geluidAan, stap]);
+  }, [stapNr, geluidAan, stap, tikzin]);
 
   /*
     Doet het kind niets bij een teltap, dan wijst het handje opnieuw en
@@ -83,10 +99,10 @@ export function Uitlegspeler({
     if (!stap?.meetellen || getikt.length > 0) return;
     const klok = setInterval(() => {
       setWijsSleutel((n) => n + 1);
-      if (geluidAan) zeg(stap.meetellen?.aansporing ?? "Tik maar mee!");
+      if (geluidAan) zeg(tikzin);
     }, 6000);
     return () => clearInterval(klok);
-  }, [stapNr, stap, getikt.length, geluidAan]);
+  }, [stapNr, stap, getikt.length, geluidAan, tikzin]);
 
   // Het feestje bij het antwoord.
   useEffect(() => {
@@ -259,13 +275,12 @@ export function Uitlegspeler({
       {stap.meetellen && (
         <p className="mt-3 rounded-2xl bg-white/80 px-4 py-2.5 text-center text-sm font-extrabold text-viool-diep">
           {nogTeTikken > 0
-            ? `${
-                stap.model.soort === "kralen"
-                  ? "Tik de kralen aan"
-                  : stap.model.soort === "bus"
-                    ? "Tik de kinderen aan"
-                    : "Tik de blokjes aan"
-              } — nog ${nogTeTikken} te gaan`
+            ? /*
+                 Dezelfde zin als Vos zegt, maar zonder het uitroepteken: er komt
+                 hier nog een telling achteraan. Voorheen stond hier een eigen
+                 lijstje per model, dat los kon lopen van wat het type meegaf.
+               */
+              `${tikzin.replace(/!+$/, "")} — nog ${nogTeTikken} te gaan`
             : `Je hebt er ${getikt.length} geteld!`}
         </p>
       )}

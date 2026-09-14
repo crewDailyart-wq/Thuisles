@@ -155,6 +155,15 @@ export type Model =
 // Het script
 // ---------------------------------------------------------------------------
 
+/**
+ * Wat Vos zegt als een type zelf niets opgeeft bij een tikstap.
+ *
+ * Bewust zonder het woord waarop getikt wordt: dat weet alleen het type. "Tik
+ * ze maar aan" klopt daardoor altijd, ook bij een model dat hier nog niet
+ * bestaat.
+ */
+export const STANDAARD_TIKZIN = "Tik ze maar aan!";
+
 /** Houdingen van Vos. De plaatjes heten hetzelfde. */
 export type Voshouding = "blij" | "wijzend" | "denkend" | "juichend" | "verrast";
 
@@ -167,9 +176,16 @@ export type Uitlegstap = {
   /** Eén korte zin van Vos. Groep 3-4: hoogstens zes woorden. */
   zin: string;
   /**
-   * Het kind tikt zelf om mee te tellen. `aantal` is hoe vaak er getikt moet
-   * worden voordat de stap af is. `aansporing` is wat Vos herhaalt als het
-   * kind nog niets doet.
+   * Het kind tikt zelf om mee te tellen.
+   *
+   * `aantal` is hoe vaak er getikt moet worden voordat de stap af is.
+   *
+   * `aansporing` zegt WAAROP getikt moet worden, en hoort dus bij het type:
+   * "Tik de kralen aan!", "Tik de kinderen aan!", "Tik de blokjes aan!". Vos
+   * zegt hem meteen als de stap begint, en herhaalt hem als het kind wacht.
+   *
+   * Geeft een type niets op, dan geldt `STANDAARD_TIKZIN`. Een nieuw type hoeft
+   * er dus niets voor te doen, maar een eigen zin is bijna altijd duidelijker.
    */
   meetellen?: { aantal: number; aansporing?: string };
   /** Klein feestje bij deze stap: hier komt het antwoord. */

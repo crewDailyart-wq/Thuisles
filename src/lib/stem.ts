@@ -106,6 +106,56 @@ export function kiesStem(): Stemkeuze {
 }
 
 // ---------------------------------------------------------------------------
+// Wachten tot de browser zijn stemmen heeft geladen
+// ---------------------------------------------------------------------------
+
+/**
+ * `getVoices()` is in elke browser ASYNCHROON.
+ *
+ * Bij de eerste aanroep geeft hij vaak een lege lijst terug; pas even later
+ * staan de stemmen erin en vuurt de browser `voiceschanged`. Dat is precies wat
+ * er misging: de eerste zin werd uitgesproken vóórdat er een stem gekozen kón
+ * worden, dus zonder `voice`. De browser koos dan zelf — op macOS meestal
+ * Xander, een mannenstem. Zodra de lijst geladen was, pakte de volgende zin wél
+ * de vrouwenstem, en dus wisselde de stem middenin de uitleg.
+ *
+ * Hieronder wordt daarom op de lijst gewacht voordat er iets gezegd wordt. Eén
+ * keer per sessie; daarna staat de keuze vast in `gekozen`.
+ */
+
+/** Wachtenden die nog aan het praten toe moeten komen. */
+let wachtOpStemmen: Promise<void> | null = null;
+
+function stemmenGereed(): Promise<void> {
+  if (gekozen) return Promise.resolve();
+  if (kiesStem().stem) return Promise.resolve();
+  if (wachtOpStemmen) return wachtOpStemmen;
+
+  wachtOpStemmen = new Promise<void>((klaar) => {
+    let afgerond = false;
+    const rond = () => {
+      if (afgerond) return;
+      afgerond = true;
+      window.speechSynthesis.removeEventListener("voiceschanged", opGeladen);
+      clearTimeout(afkap);
+      kiesStem();
+      klaar();
+    };
+    const opGeladen = () => rond();
+
+    window.speechSynthesis.addEventListener("voiceschanged", opGeladen);
+    /*
+      Vangnet: op sommige apparaten komt `voiceschanged` nooit. Na een seconde
+      gaan we gewoon praten met wat er dan is — liever een stem die niet de
+      mooiste is dan een kind dat op stilte zit te wachten.
+    */
+    const afkap = setTimeout(rond, 1000);
+  });
+
+  return wachtOpStemmen;
+}
+
+// ---------------------------------------------------------------------------
 // Praten
 // ---------------------------------------------------------------------------
 
@@ -118,6 +168,8 @@ const TOONHOOGTE = 1.2;
 
 const luisteraars = new Set<() => void>();
 let praatNu = false;
+/** Volgnummer van de laatste `zeg`-aanroep; zie de uitleg daar. */
+let beurt = 0;
 
 function meld(bezig: boolean) {
   praatNu = bezig;
@@ -158,19 +210,34 @@ export function zeg(zin: string): void {
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
 
-  if (!gekozen) kiesStem();
+  /*
+    Elke aanroep krijgt een nummer. Komt er tijdens het wachten op de
+    stemmenlijst alweer een nieuwe zin binnen, dan laat de oude zichzelf vallen
+    — anders zouden er twee tegelijk gaan praten.
+  */
+  beurt += 1;
+  const mijnBeurt = beurt;
 
-  const uiting = new SpeechSynthesisUtterance(zin);
-  uiting.lang = "nl-NL";
-  uiting.rate = TEMPO;
-  uiting.pitch = TOONHOOGTE;
-  if (gekozen) uiting.voice = gekozen;
+  void stemmenGereed().then(() => {
+    if (mijnBeurt !== beurt) return;
 
-  uiting.onstart = () => meld(true);
-  uiting.onend = () => meld(false);
-  uiting.onerror = () => meld(false);
+    const uiting = new SpeechSynthesisUtterance(zin);
+    /*
+      De taal van de gekozen stem zelf overnemen. Zet je hier "nl-NL" terwijl de
+      stem "nl-BE" is, dan gaan sommige browsers alsnog zelf een passende stem
+      zoeken — en ben je de gekozen stem weer kwijt.
+    */
+    uiting.lang = gekozen?.lang ?? "nl-NL";
+    uiting.rate = TEMPO;
+    uiting.pitch = TOONHOOGTE;
+    if (gekozen) uiting.voice = gekozen;
 
-  window.speechSynthesis.speak(uiting);
+    uiting.onstart = () => meld(true);
+    uiting.onend = () => meld(false);
+    uiting.onerror = () => meld(false);
+
+    window.speechSynthesis.speak(uiting);
+  });
 }
 
 export function stopPraten(): void {
