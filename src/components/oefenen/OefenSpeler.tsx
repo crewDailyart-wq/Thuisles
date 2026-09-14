@@ -796,10 +796,18 @@ function Antwoordvelden({
   if (cijfers !== null) {
     const maat = vakmaat(cijfers);
     return (
-      <label className="flex flex-col items-center gap-2">
-        <span className="text-sm font-bold text-inkt-zacht">Typ je antwoord</span>
+      /*
+        Geen labeltje boven het vak: een leeg invoervak onder een vraag spreekt
+        voor zich, en op deze leeftijd wordt "Typ je antwoord" toch niet gelezen.
+
+        De naam verdwijnt daarmee niet — hij staat als `aria-label`, zodat een
+        voorleesprogramma blijft zeggen wat er van je gevraagd wordt. Zonder dat
+        zou het vak daar als naamloos veld binnenkomen.
+      */
+      <div className="flex flex-col items-center">
         <input
           type="text"
+          aria-label="Typ je antwoord"
           value={antwoord}
           disabled={uit}
           autoComplete="off"
@@ -818,15 +826,15 @@ function Antwoordvelden({
           }}
           className={`${maat.doos} ${maat.tekst} rounded-2xl border-2 text-center font-extrabold outline-none transition focus:border-viool disabled:cursor-not-allowed ${kleur}`}
         />
-      </label>
+      </div>
     );
   }
 
   return (
-    <label className="block">
-      <span className="mb-1.5 block text-sm font-bold text-inkt-zacht">Typ je antwoord</span>
+    <div className="block">
       <input
         type="text"
+        aria-label="Typ je antwoord"
         value={antwoord}
         disabled={uit}
         autoComplete="off"
@@ -839,7 +847,7 @@ function Antwoordvelden({
         }}
         className={`w-full rounded-2xl border-2 px-4 py-3.5 text-xl font-extrabold outline-none transition focus:border-viool disabled:cursor-not-allowed ${kleur}`}
       />
-    </label>
+    </div>
   );
 }
 

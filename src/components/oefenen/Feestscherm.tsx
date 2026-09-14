@@ -120,6 +120,16 @@ export function Feestscherm({
     }
 
     const doel = document.getElementById(SLEUTEL_DOEL_ID)?.getBoundingClientRect();
+
+    /*
+      De sleutel eindigt op exact de hoogte van de teller.
+
+      Zonder dit bleef hij op zijn eigen 44 pixels staan, terwijl de teller in de
+      oefenbalk er 28 tot 32 is: hij landde dan zichtbaar te groot bovenop het
+      getal in plaats van erin te verdwijnen.
+    */
+    if (doel && doel.height > 0) beeld.style.height = `${doel.height}px`;
+
     const eindX = doel ? doel.left + doel.width / 2 : window.innerWidth - 60;
     const eindY = doel ? doel.top + doel.height / 2 : 60;
     const beginX = window.innerWidth / 2;
@@ -196,9 +206,30 @@ export function Feestscherm({
 
     handvat = requestAnimationFrame(stap);
 
+    /*
+      Vangnet als er geen frames komen.
+
+      De vlucht loopt op `requestAnimationFrame`. Raakt het tabblad op de
+      achtergrond — een kind dat even naar een andere app gaat, of een tablet
+      die het druk heeft — dan levert de browser geen frames en komt de sleutel
+      nooit aan. En omdat dit scherm geen knop meer heeft, zou de oefening daar
+      dan blijven staan.
+
+      Deze klok maakt het feest daarom sowieso af, ook als er nooit een frame
+      getekend is.
+    */
+    const nood = setTimeout(() => {
+      if (!bezig) return;
+      bezig = false;
+      beeld.style.opacity = "0";
+      meldEens();
+      meldAfgelopen.current();
+    }, FEEST_MS + 600);
+
     return () => {
       bezig = false;
       cancelAnimationFrame(handvat);
+      clearTimeout(nood);
       stopConfetti();
       /*
         Hier bewust NIET `meldEens()`. Dit opruimen gebeurt namelijk ook als
@@ -213,46 +244,62 @@ export function Feestscherm({
   }, []);
 
   return (
-    <div
-      /*
-        Dekkend, niet doorschijnend: de vraag en het landschap mogen er niet
-        doorheen schemeren, anders blijft het een laagje over de opgave in
-        plaats van een eigen scherm.
-      */
-      className="fixed inset-0 z-40 bg-room"
-      role="dialog"
-      aria-label="Goed gedaan"
-    >
-      {/* De confetti ligt over het hele scherm en vangt geen klikken af. */}
-      <canvas
-        ref={doek}
-        aria-hidden="true"
-        className="pointer-events-none absolute inset-0 h-full w-full"
-      />
+    <>
+      <div
+        /*
+          Dekkend, niet doorschijnend: de vraag en het landschap mogen er niet
+          doorheen schemeren, anders blijft het een laagje over de opgave in
+          plaats van een eigen scherm.
+        */
+        className="fixed inset-0 z-40 bg-room"
+        role="dialog"
+        aria-label="Goed gedaan"
+      >
+        {/* De confetti ligt over het hele scherm en vangt geen klikken af. */}
+        <canvas
+          ref={doek}
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 h-full w-full"
+        />
+      </div>
 
       {/*
-        De sleutel. Dezelfde afbeelding als in de teller (`/sleutel.png`), met
-        de hoogte van de teller als basismaat; het vergroten gebeurt met
-        `scale`, zodat begin- en eindformaat gegarandeerd op elkaar aansluiten.
+        De sleutel ligt in een EIGEN laag, boven de balk bovenaan.
 
-        Een gewone `img` en geen `next/image`: dit staat los in beeld op een
-        gemeten plek en heeft de omhulling van `next/image` juist in de weg.
+        Hij zat eerst in de laag hierboven. Die staat op z-40 en maakt daarmee
+        een eigen stapelcontext: alles erin blijft onder de balk (z-50), hoe
+        hoog je het kind ook zet. De sleutel verdween daardoor halverwege zijn
+        vlucht achter de balk, precies waar hij naartoe moest.
+
+        Als losse broer met z-60 ligt hij boven de balk en blijft hij zichtbaar
+        tot hij bij de teller is. `pointer-events-none`, dus hij vangt onderweg
+        geen klikken af.
       */}
-      {/* eslint-disable-next-line @next/next/no-img-element */}
-      <img
-        ref={sleutel}
-        src="/sleutel.png"
-        alt=""
-        aria-hidden="true"
-        width={300}
-        height={332}
-        className="pointer-events-none absolute left-0 top-0 h-11 w-auto will-change-transform"
-        style={{
-          transform: "translate3d(50vw, 50vh, 0) translate(-50%, -50%) scale(3.6)",
-          filter: "drop-shadow(0 10px 22px rgba(0,0,0,0.25))",
-        }}
-      />
+      <div className="pointer-events-none fixed inset-0 z-[60]">
+        {/*
+          Dezelfde afbeelding als in de teller (`/sleutel.png`). De hoogte wordt
+          in het effect gelijkgezet aan die van de teller, zodat het eindformaat
+          na `scale(1)` precies klopt — de teller is in de oefenbalk kleiner dan
+          op het startscherm.
 
-    </div>
+          Een gewone `img` en geen `next/image`: dit staat los in beeld op een
+          gemeten plek en heeft de omhulling van `next/image` juist in de weg.
+        */}
+        {/* eslint-disable-next-line @next/next/no-img-element */}
+        <img
+          ref={sleutel}
+          src="/sleutel.png"
+          alt=""
+          aria-hidden="true"
+          width={300}
+          height={332}
+          className="absolute left-0 top-0 h-11 w-auto will-change-transform"
+          style={{
+            transform: "translate3d(50vw, 50vh, 0) translate(-50%, -50%) scale(3.6)",
+            filter: "drop-shadow(0 10px 22px rgba(0,0,0,0.25))",
+          }}
+        />
+      </div>
+    </>
   );
 }
