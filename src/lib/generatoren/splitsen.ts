@@ -16,7 +16,6 @@ import {
   type Gegenereerd,
   bepaalVraagtekst,
   vraagtekstVelden,
-  leeftijdsgroepVanGroep,
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { splitsenPatronen } from "@/lib/generatoren/patronen/splitsen";
@@ -66,7 +65,7 @@ export const splitsenGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze (vier antwoorden)" },
       ],
     },
-    /* Overal dezelfde vier velden om de vraagzin aan te passen. */
+    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: {
@@ -98,7 +97,6 @@ export const splitsenGenerator: Generator = {
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
-    const leeftijd = leeftijdsgroepVanGroep(groep);
     const kans = kansGenerator(zaad);
     const van = Math.max(3, Number(inst.van) || 5);
     const tot = Math.max(van, Number(inst.tot) || 20);
@@ -144,11 +142,11 @@ export const splitsenGenerator: Generator = {
       */
       const vraagtekst =
         weergave === "boom"
-          ? bepaalVraagtekst(splitsenGenerator, inst, leeftijd, gegevens)
+          ? bepaalVraagtekst(splitsenGenerator, inst, groep, gegevens)
           : bepaalVraagtekst(
               { vraagteksten: { ...splitsenGenerator.vraagteksten, standaard: { "34": "{som}", "56": "{som}", "78": "{som}" } } },
               inst,
-              leeftijd,
+              groep,
               gegevens,
             );
 

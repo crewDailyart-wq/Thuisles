@@ -12,7 +12,6 @@ import {
   type Gegenereerd,
   bepaalVraagtekst,
   vraagtekstVelden,
-  leeftijdsgroepVanGroep,
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { BEREIKEN } from "@/lib/generatoren/optellen";
@@ -66,7 +65,7 @@ export const aftrekkenGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze (vier antwoorden)" },
       ],
     },
-    /* Overal dezelfde vier velden om de vraagzin aan te passen. */
+    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: {
@@ -87,7 +86,6 @@ export const aftrekkenGenerator: Generator = {
   maximum: () => null,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
-    const leeftijd = leeftijdsgroepVanGroep(groep);
     const kans = kansGenerator(zaad);
     const grens = Number(tekst(inst, "bereik", "20"));
     const eis = tekst(inst, "tiental", "beide");
@@ -122,7 +120,7 @@ export const aftrekkenGenerator: Generator = {
 
       uit.push({
         handtekening,
-        vraagtekst: bepaalVraagtekst(aftrekkenGenerator, inst, leeftijd, {
+        vraagtekst: bepaalVraagtekst(aftrekkenGenerator, inst, groep, {
           soort: "aftrekken",
           getallen: [van, ...af],
           goed: rest,

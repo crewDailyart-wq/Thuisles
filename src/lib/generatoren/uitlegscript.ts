@@ -75,6 +75,16 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      soort: "bus";
+      totaal: number;
+      /** Hoeveel kinderen er per raam zitten. */
+      perGroep: number;
+      /** Hoeveel kinderen er al geteld zijn; die lichten op. */
+      opgelicht: number;
+      palet: string;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

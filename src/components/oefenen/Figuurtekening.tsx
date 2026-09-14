@@ -483,6 +483,444 @@ export function Kralenrij({
  * Waar ligt het invulvak van deze tekening? Nieuwe soorten tekeningen
  * (invulschema, getallenlijn) melden zich hier ook aan.
  */
+// --- Bus ------------------------------------------------------------------
+
+/**
+ * Maatvoering van de bus. Op één plek, zodat alles meeschaalt.
+ *
+ * Net als bij het rekenrek: verander je hier de stoelafstand, dan schuiven de
+ * ramen, de carrosserie en de wielen vanzelf mee. De tekening hoeft dus nooit
+ * met de hand nagerekend te worden.
+ */
+const BUS = {
+  /** Straal van het hoofd van een poppetje. */
+  hoofd: 7,
+  /**
+   * Hart-op-hart tussen twee zitplaatsen.
+   *
+   * De schouders zijn 18 breed, dus hiermee blijft er een paar pixels lucht
+   * tussen twee poppetjes. Zonder die lucht lopen ze in elkaar over en is een
+   * groepje niet meer te tellen.
+   */
+  stoel: 22,
+  /** Ruimte tussen de raamrand en de buitenste zitplaats. */
+  raamPad: 9,
+  /** Ruimte tussen twee ramen — de stijl van de bus. */
+  raamGat: 13,
+  raamHoogte: 54,
+  /** Dak boven de ramen. */
+  dak: 19,
+  /**
+   * Carrosserie onder de ramen, waar de wielen aan hangen.
+   *
+   * Ruim genomen: met een smalle strook eronder lijkt het een tram of een
+   * container. Een bus heeft een zichtbare onderkant waar de wielen in zitten.
+   */
+  onder: 44,
+  /** De neus: voorruit, chauffeur en koplamp. */
+  neus: 82,
+  /** Stukje carrosserie achter het laatste raam. */
+  achter: 18,
+  wiel: 20,
+  marge: 8,
+  /** Ruimte bovenin voor het meegetelde getal. */
+  bijschrift: 30,
+};
+
+/** Kleuren van de bus zelf. De poppetjes volgen het gekozen palet. */
+const BUSKLEUR = {
+  romp: "#e4832a",
+  rompDonker: "#c26b18",
+  rompLicht: "#f0a25c",
+  dak: "#fdeada",
+  raam: "#e2edfb",
+  raamRand: "#bcd4f0",
+  /** Een raam waarin al geteld is. */
+  raamGeteld: "#fdf3d4",
+  raamGeteldRand: "#f2bb2e",
+  band: "#2c2545",
+  velg: "#ece4d8",
+  koplamp: "#f2bb2e",
+  leegStoel: "#c9d7ea",
+};
+
+/**
+ * Een schoolbus van opzij, met kinderen in de ramen.
+ *
+ * Waarom een bus: het is dezelfde vijfstructuur als bij het rekenrek, maar in
+ * een plaatje waar een kind iets bij kan voelen. Per raam zit een vast groepje
+ * — standaard vijf — en de kleur wisselt per raam. Daardoor tel je met
+ * sprongen mee (5, 10, 15) in plaats van poppetje voor poppetje.
+ *
+ * Het laatste raam is het restje: daar zitten er 1 tot en met 4, en de
+ * overgebleven plekken blijven zichtbaar leeg als een lichte stippelcirkel. Zo
+ * is te zien dát het een onvolledig groepje is, in plaats van dat het raam
+ * gewoon kleiner is.
+ *
+ * `opgelicht` is hoeveel kinderen er al geteld zijn; die krijgen een gouden
+ * ring en hun raam kleurt mee. Daarmee kan de uitleg-animatie de groepjes één
+ * voor één laten oplichten.
+ */
+export function Bus({
+  figuur,
+  /** Hoeveel kinderen er al geteld zijn. Gebruikt door de uitleg-animatie. */
+  opgelicht = 0,
+  /** Mag het kind poppetjes aantikken om mee te tellen? */
+  telbaar = false,
+  /** Hoeveel poppetjes er ná `opgelicht` aangetikt mogen worden. */
+  telbaarAantal = 0,
+  /** Welke poppetjes het kind zelf al heeft aangetikt. */
+  getikt = [],
+  /** Groot getal boven de bus: de tussenstand tijdens het tellen. */
+  bijschrift,
+  /** Toon het wijzende handje bij het poppetje dat aan de beurt is. */
+  wijsAan = false,
+  /** Verandert bij elke herhaling, zodat het handje opnieuw beweegt. */
+  wijsSleutel = 0,
+  onTik,
+}: {
+  figuur: Extract<Figuur, { soort: "bus" }>;
+  opgelicht?: number;
+  telbaar?: boolean;
+  telbaarAantal?: number;
+  getikt?: number[];
+  bijschrift?: string;
+  wijsAan?: boolean;
+  wijsSleutel?: number;
+  onTik?: (index: number) => void;
+}) {
+  const [kleurA, kleurB] = KRALENPALETTEN[figuur.palet] ?? KRALENPALETTEN["viool-oranje"];
+  const perGroep = Math.max(1, figuur.perGroep);
+  const totaal = Math.max(1, Math.floor(figuur.totaal));
+
+  /*
+    Hoeveel ramen er nodig zijn. Het laatste raam is het restje; de plekken die
+    daar overblijven blijven leeg in beeld staan.
+  */
+  const ramen = Math.ceil(totaal / perGroep);
+
+  const raamBreedte = BUS.raamPad * 2 + perGroep * BUS.stoel;
+  const rompBreedte =
+    BUS.achter + ramen * raamBreedte + (ramen - 1) * BUS.raamGat + BUS.neus;
+  const rompHoogte = BUS.dak + BUS.raamHoogte + BUS.onder;
+
+  const rompX = BUS.marge;
+  const rompY = BUS.marge + BUS.bijschrift;
+  const breedte = rompBreedte + BUS.marge * 2;
+  const hoogte = rompY + rompHoogte + BUS.wiel * 0.7 + BUS.marge;
+
+  /** Waar zitplaats `index` (doorlopend genummerd vanaf 0) terechtkomt. */
+  const plek = (index: number) => {
+    const raam = Math.floor(index / perGroep);
+    const stoel = index % perGroep;
+    return {
+      x:
+        rompX +
+        BUS.achter +
+        raam * (raamBreedte + BUS.raamGat) +
+        BUS.raamPad +
+        BUS.stoel / 2 +
+        stoel * BUS.stoel,
+      y: rompY + BUS.dak + BUS.raamHoogte * 0.56,
+      raam,
+    };
+  };
+
+  const isGeteld = (index: number) => index < opgelicht || getikt.includes(index);
+
+  /* Het eerste poppetje dat nog geteld moet worden; daar wijst het handje. */
+  const eerstvolgende = opgelicht + getikt.length;
+
+  /*
+    De wielen zitten net ín de carrosserie, zodat ze er halverwege onderuit
+    steken. Achter onder het eerste raam, voor onder de neus — zoals bij een
+    echte bus.
+  */
+  const wielY = rompY + rompHoogte - 4;
+  const wiel1 = rompX + BUS.achter + raamBreedte * 0.42;
+  const wiel2 = rompX + rompBreedte - BUS.neus * 0.5;
+
+  const heleRamen = Math.floor(totaal / perGroep);
+  const rest = totaal % perGroep;
+
+  return (
+    <svg
+      viewBox={`0 0 ${breedte} ${hoogte}`}
+      className="h-auto w-full"
+      role="img"
+      aria-label={
+        `Een bus met ${totaal} kinderen. Er zitten ${perGroep} kinderen per raam, ` +
+        `om en om van kleur: ${heleRamen} volle ramen` +
+        (rest > 0 ? ` en nog een raam met ${rest}.` : ".")
+      }
+    >
+      <defs>
+        {/* Bolling van de carrosserie: licht bovenaan, donkerder onderaan. */}
+        <linearGradient id={`bus-romp-${figuur.palet}`} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0%" stopColor={BUSKLEUR.rompLicht} />
+          <stop offset="55%" stopColor={BUSKLEUR.romp} />
+          <stop offset="100%" stopColor={BUSKLEUR.rompDonker} />
+        </linearGradient>
+
+        {/* Dezelfde glans op de poppetjes als op de kralen. */}
+        {[kleurA, kleurB].map((kleur, i) => (
+          <radialGradient key={kleur} id={`bus-kind-${i}-${figuur.palet}`} cx="35%" cy="28%" r="78%">
+            <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+            <stop offset="45%" stopColor={kleur} />
+            <stop offset="100%" stopColor={donkerder(kleur, 0.72)} />
+          </radialGradient>
+        ))}
+      </defs>
+
+      {/* Schaduw onder de bus, zodat hij op de grond staat en niet zweeft. */}
+      <ellipse
+        cx={rompX + rompBreedte / 2}
+        cy={wielY + BUS.wiel * 0.72}
+        rx={rompBreedte * 0.46}
+        ry={5}
+        fill="#2c2545"
+        opacity={0.13}
+      />
+
+      {/* De carrosserie. */}
+      <rect
+        x={rompX}
+        y={rompY}
+        width={rompBreedte}
+        height={rompHoogte}
+        rx={18}
+        fill={`url(#bus-romp-${figuur.palet})`}
+        stroke={BUSKLEUR.rompDonker}
+        strokeWidth={2}
+      />
+
+      {/* Lichte streep over het dak: geeft de bus een ronde bovenkant. */}
+      <rect
+        x={rompX + 10}
+        y={rompY + 5}
+        width={rompBreedte - 20}
+        height={5}
+        rx={2.5}
+        fill={BUSKLEUR.dak}
+        opacity={0.65}
+      />
+
+      {/* Sierstreep onder de ramen. */}
+      <rect
+        x={rompX + 6}
+        y={rompY + BUS.dak + BUS.raamHoogte + 9}
+        width={rompBreedte - 12}
+        height={5}
+        rx={2.5}
+        fill={BUSKLEUR.dak}
+        opacity={0.5}
+      />
+
+      {/* Voorruit met de chauffeur, helemaal rechts. */}
+      <rect
+        x={rompX + rompBreedte - BUS.neus + 8}
+        y={rompY + BUS.dak}
+        width={BUS.neus - 20}
+        height={BUS.raamHoogte}
+        rx={9}
+        fill={BUSKLEUR.raam}
+        stroke={BUSKLEUR.raamRand}
+        strokeWidth={2}
+      />
+      {/*
+        In de voorruit zit BEWUST geen chauffeur.
+
+        Hier stond eerst een grijs poppetje. Dat was om twee redenen fout: het
+        leek op een lege plek terwijl het een mens was, én het telde niet mee in
+        het antwoord. Een kind dat de mensen in de bus telt, kwam daardoor één
+        te hoog uit — precies de fout die dit vraagtype juist wil voorkomen.
+
+        Alles wat op een poppetje lijkt, telt dus mee. Wat er niet bij hoort,
+        krijgt geen menselijke vorm: het stuur hieronder maakt duidelijk dat
+        dit de voorkant is, zonder dat er iets te tellen valt.
+      */}
+      <g>
+        <circle
+          cx={rompX + rompBreedte - BUS.neus / 2 + 6}
+          cy={rompY + BUS.dak + BUS.raamHoogte * 0.62}
+          r={BUS.hoofd + 1}
+          fill="none"
+          stroke={BUSKLEUR.rompDonker}
+          strokeWidth={3}
+          opacity={0.55}
+        />
+        <line
+          x1={rompX + rompBreedte - BUS.neus / 2 + 6 - BUS.hoofd - 1}
+          y1={rompY + BUS.dak + BUS.raamHoogte * 0.62}
+          x2={rompX + rompBreedte - BUS.neus / 2 + 6 + BUS.hoofd + 1}
+          y2={rompY + BUS.dak + BUS.raamHoogte * 0.62}
+          stroke={BUSKLEUR.rompDonker}
+          strokeWidth={3}
+          opacity={0.55}
+        />
+      </g>
+
+      {/* Koplamp. */}
+      <circle
+        cx={rompX + rompBreedte - 11}
+        cy={rompY + rompHoogte - 16}
+        r={6}
+        fill={BUSKLEUR.koplamp}
+        stroke={BUSKLEUR.rompDonker}
+        strokeWidth={1.5}
+      />
+
+      {/* De ramen met de kinderen. */}
+      {Array.from({ length: ramen }, (_, raam) => {
+        const x = rompX + BUS.achter + raam * (raamBreedte + BUS.raamGat);
+        const y = rompY + BUS.dak;
+        /* Dit raam is helemaal geteld als de laatste stoel erin geteld is. */
+        const laatsteInRaam = Math.min((raam + 1) * perGroep, totaal) - 1;
+        const raamGeteld = opgelicht > 0 && isGeteld(laatsteInRaam);
+
+        return (
+          <g key={raam}>
+            <rect
+              x={x}
+              y={y}
+              width={raamBreedte}
+              height={BUS.raamHoogte}
+              rx={9}
+              fill={raamGeteld ? BUSKLEUR.raamGeteld : BUSKLEUR.raam}
+              stroke={raamGeteld ? BUSKLEUR.raamGeteldRand : BUSKLEUR.raamRand}
+              strokeWidth={raamGeteld ? 3 : 2}
+            />
+          </g>
+        );
+      })}
+
+      {/*
+        De zitplaatsen. Er worden er net zoveel getekend als er ramen zijn maal
+        de groepsgrootte: de plekken voorbij het totaal zijn de lege plekken in
+        het laatste raam, en die blijven bewust zichtbaar.
+      */}
+      {Array.from({ length: ramen * perGroep }, (_, i) => {
+        const { x, y, raam } = plek(i);
+
+        if (i >= totaal) {
+          // Lege plek: een lichte stippelcirkel, zodat je ziet dát hij leeg is.
+          return (
+            <circle
+              key={`leeg-${i}`}
+              cx={x}
+              cy={y - 3}
+              r={BUS.hoofd}
+              fill="none"
+              stroke={BUSKLEUR.leegStoel}
+              strokeWidth={2}
+              strokeDasharray="3 3"
+            />
+          );
+        }
+
+        const geteld = isGeteld(i);
+        const kleurIndex = raam % 2;
+        const basis = kleurIndex === 0 ? kleurA : kleurB;
+
+        return (
+          <g
+            key={`kind-${i}`}
+            className={geteld ? "motion-safe:animate-kraal-stuiter" : undefined}
+            style={{ transformOrigin: `${x}px ${y}px` }}
+          >
+            {/* Schouders, zodat het een poppetje is en geen losse bal. */}
+            <path
+              d={`M ${x - BUS.hoofd - 2} ${y + 13} a ${BUS.hoofd + 2} ${BUS.hoofd + 2} 0 0 1 ${
+                (BUS.hoofd + 2) * 2
+              } 0 z`}
+              fill={donkerder(basis, 0.82)}
+            />
+            {/* Hoofd. */}
+            <circle
+              cx={x}
+              cy={y - 3}
+              r={BUS.hoofd}
+              fill={`url(#bus-kind-${kleurIndex}-${figuur.palet})`}
+            />
+            {/* Gouden ring zodra dit kind geteld is. */}
+            {geteld && (
+              <circle
+                cx={x}
+                cy={y - 3}
+                r={BUS.hoofd + 3}
+                fill="none"
+                stroke={BUSKLEUR.raamGeteldRand}
+                strokeWidth={2.5}
+              />
+            )}
+          </g>
+        );
+      })}
+
+      {/* Wielen. */}
+      {[wiel1, wiel2].map((cx, i) => (
+        <g key={i}>
+          <circle cx={cx} cy={wielY} r={BUS.wiel} fill={BUSKLEUR.band} />
+          <circle cx={cx} cy={wielY} r={BUS.wiel * 0.55} fill={BUSKLEUR.velg} />
+          <circle cx={cx} cy={wielY} r={BUS.wiel * 0.2} fill={BUSKLEUR.band} opacity={0.35} />
+        </g>
+      ))}
+
+      {/* Tikvlakken: alleen op de poppetjes die nu aan de beurt zijn. */}
+      {telbaar &&
+        Array.from({ length: Math.min(telbaarAantal, totaal - opgelicht) }, (_, k) => {
+          const i = opgelicht + k;
+          const { x, y } = plek(i);
+          return (
+            <circle
+              key={`tik-${i}`}
+              cx={x}
+              cy={y - 3}
+              r={BUS.hoofd + 6}
+              fill="transparent"
+              className="cursor-pointer"
+              onClick={() => onTik?.(i)}
+            />
+          );
+        })}
+
+      {/* Het wijzende handje bij het poppetje dat nu aan de beurt is. */}
+      {wijsAan && telbaar && eerstvolgende < totaal && (
+        <g
+          key={`wijs-${wijsSleutel}`}
+          className="motion-safe:animate-hand-wijs"
+          style={{
+            transformOrigin: `${plek(eerstvolgende).x}px ${plek(eerstvolgende).y}px`,
+          }}
+        >
+          <text
+            x={plek(eerstvolgende).x}
+            y={plek(eerstvolgende).y + 34}
+            textAnchor="middle"
+            fontSize={20}
+          >
+            👆
+          </text>
+        </g>
+      )}
+
+      {/* De tussenstand tijdens het tellen, groot boven de bus. */}
+      {bijschrift && (
+        <text
+          x={rompX + rompBreedte / 2}
+          y={BUS.marge + 22}
+          textAnchor="middle"
+          fontSize={26}
+          fontWeight={800}
+          fill="#5b3fd6"
+        >
+          {bijschrift}
+        </text>
+      )}
+    </svg>
+  );
+}
+
 export function beschrijfFiguur(figuur: Figuur): FiguurBeschrijving {
   if (figuur.soort === "splitsboom") {
     return {
@@ -492,8 +930,9 @@ export function beschrijfFiguur(figuur: Figuur): FiguurBeschrijving {
     };
   }
   /*
-    De kralenrij heeft geen invulvak: het antwoord ("de hoeveelste plek") past
-    niet in de tekening zelf en wordt onder de vraag ingetypt.
+    De kralenrij en de bus hebben geen invulvak: het antwoord ("de hoeveelste
+    plek", "hoeveel kinderen") past niet in de tekening zelf en wordt onder de
+    vraag ingetypt.
   */
   return { breedte: 100, hoogte: 100, invulvak: null };
 }
@@ -511,6 +950,9 @@ export function Figuurtekening({
   }
   if (figuur.soort === "kralenrij") {
     return <Kralenrij figuur={figuur} />;
+  }
+  if (figuur.soort === "bus") {
+    return <Bus figuur={figuur} />;
   }
   return null;
 }

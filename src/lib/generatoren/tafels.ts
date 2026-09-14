@@ -13,7 +13,6 @@ import {
   type Instellingen,
   bepaalVraagtekst,
   vraagtekstVelden,
-  leeftijdsgroepVanGroep,
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { tafelsPatronen } from "@/lib/generatoren/patronen/tafels";
@@ -78,7 +77,7 @@ export const tafelsGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze (vier antwoorden)" },
       ],
     },
-    /* Overal dezelfde vier velden om de vraagzin aan te passen. */
+    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: {
@@ -100,7 +99,6 @@ export const tafelsGenerator: Generator = {
   maximum: (inst) => gekozenTafels(inst).length * 10 * vormen(inst).length,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
-    const leeftijd = leeftijdsgroepVanGroep(groep);
     const kans = kansGenerator(zaad);
     const tafels = gekozenTafels(inst);
     const soorten = vormen(inst);
@@ -141,7 +139,7 @@ export const tafelsGenerator: Generator = {
         goed: antwoordGetal,
         extra: { tafel: som.tafel, mee: som.mee, product },
       };
-      const vraagtekst = bepaalVraagtekst(tafelsGenerator, inst, leeftijd, gegevens);
+      const vraagtekst = bepaalVraagtekst(tafelsGenerator, inst, groep, gegevens);
 
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);

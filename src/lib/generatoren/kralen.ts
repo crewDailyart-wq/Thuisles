@@ -22,7 +22,6 @@ import {
   type Instellingen,
   bepaalVraagtekst,
   vraagtekstVelden,
-  leeftijdsgroepVanGroep,
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { kralenPatronen } from "@/lib/generatoren/patronen/kralen";
@@ -99,7 +98,7 @@ export const kralenGenerator: Generator = {
         { waarde: "roze-geel", label: "Roze en geel" },
       ],
     },
-    /* Overal dezelfde vier velden om de vraagzin aan te passen. */
+    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: {
@@ -122,7 +121,6 @@ export const kralenGenerator: Generator = {
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
-    const leeftijd = leeftijdsgroepVanGroep(groep);
     const kans = kansGenerator(zaad);
     const { lengtes, perGroep } = mogelijkeLengtes(inst);
     const alleenRond = vinkje(inst, "alleenRond");
@@ -159,7 +157,7 @@ export const kralenGenerator: Generator = {
       uit.push({
         handtekening,
         vorm: "open",
-        vraagtekst: bepaalVraagtekst(kralenGenerator, inst, leeftijd, gegevens),
+        vraagtekst: bepaalVraagtekst(kralenGenerator, inst, groep, gegevens),
         antwoord: String(pijlOp),
         figuur: { soort: "kralenrij", totaal, perGroep, pijlOp, palet },
         somgegevens: gegevens,

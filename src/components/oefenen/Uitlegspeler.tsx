@@ -14,7 +14,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Icoon } from "@/components/kind/Icoon";
-import { Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
+import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
@@ -190,7 +190,13 @@ export function Uitlegspeler({
       {stap.meetellen && (
         <p className="mt-3 rounded-2xl bg-white/80 px-4 py-2.5 text-center text-sm font-extrabold text-viool-diep">
           {nogTeTikken > 0
-            ? `${stap.model.soort === "kralen" ? "Tik de kralen aan" : "Tik de blokjes aan"} — nog ${nogTeTikken} te gaan`
+            ? `${
+                stap.model.soort === "kralen"
+                  ? "Tik de kralen aan"
+                  : stap.model.soort === "bus"
+                    ? "Tik de kinderen aan"
+                    : "Tik de blokjes aan"
+              } — nog ${nogTeTikken} te gaan`
             : `Je hebt er ${getikt.length} geteld!`}
         </p>
       )}
@@ -302,6 +308,27 @@ function Modelbeeld({
         }}
         opgelicht={model.opgelicht}
         toonPijl={model.pijlOp > 0}
+        telbaar={telbaar}
+        telbaarAantal={telbaarAantal}
+        getikt={getikt}
+        wijsAan={wijsAan}
+        wijsSleutel={wijsSleutel}
+        onTik={onTik}
+      />
+    );
+  }
+
+  if (model.soort === "bus") {
+    return (
+      <Bus
+        figuur={{
+          soort: "bus",
+          totaal: model.totaal,
+          perGroep: model.perGroep,
+          palet: model.palet,
+        }}
+        opgelicht={model.opgelicht}
+        bijschrift={model.bijschrift}
         telbaar={telbaar}
         telbaarAantal={telbaarAantal}
         getikt={getikt}

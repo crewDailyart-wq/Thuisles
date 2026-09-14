@@ -48,6 +48,21 @@ export type Figuur =
       pijlOp: number;
       /** Welk kleurenpaar. De namen staan in `Figuurtekening`. */
       palet: string;
+    }
+  | {
+      soort: "bus";
+      /** Hoeveel kinderen er in de bus zitten. Dit is ook het antwoord. */
+      totaal: number;
+      /**
+       * Hoeveel kinderen er in één raam passen. Vijf geeft de vijfstructuur:
+       * het kind telt met sprongen mee in plaats van poppetje voor poppetje.
+       */
+      perGroep: number;
+      /**
+       * Welk kleurenpaar voor de poppetjes; de kleur wisselt per raam. De
+       * namen staan in `Figuurtekening`.
+       */
+      palet: string;
     };
 
 // ---------------------------------------------------------------------------
@@ -266,9 +281,27 @@ export function meerkeuze(
 // De vraagtekst: standaard van het type, of wat de beheerder ervan maakte
 // ---------------------------------------------------------------------------
 
-/** De sleutels waaronder een aangepaste vraagtekst in de instellingen staat. */
+/** De sleutel van de gezamenlijke vraagtekst. */
 export const VRAAGTEKST_SLEUTEL = "vraagtekst";
-export const VRAAGTEKST_SLEUTELS: Record<Leeftijdsgroep, string> = {
+
+/** De groepen waarvoor een eigen vraagtekst ingesteld kan worden. */
+export const VRAAGTEKST_GROEPEN = [3, 4, 5, 6, 7, 8] as const;
+
+/** De sleutel van de vraagtekst voor één losse groep: 3 wordt "vraagtekst3". */
+export function vraagtekstSleutel(groep: number): string {
+  return `vraagtekst${groep}`;
+}
+
+/**
+ * De oude sleutels, per groepsblok.
+ *
+ * Hier stonden ooit maar drie velden in: 3-4, 5-6 en 7-8. Sjablonen die sinds
+ * die tijd niet opnieuw zijn opgeslagen, dragen die sleutels nog. Ze worden
+ * daarom nog steeds GELEZEN — als terugval, onder de losse groep — zodat een
+ * zin die je ooit hebt ingevuld niet stilletjes verdwijnt. Geschreven worden
+ * ze niet meer.
+ */
+export const VRAAGTEKST_BLOK_SLEUTELS: Record<Leeftijdsgroep, string> = {
   "34": "vraagtekst34",
   "56": "vraagtekst56",
   "78": "vraagtekst78",
@@ -277,10 +310,13 @@ export const VRAAGTEKST_SLEUTELS: Record<Leeftijdsgroep, string> = {
 /**
  * De velden waarmee een beheerder de vraagtekst aanpast.
  *
- * Elk type krijgt precies dezelfde vier velden, zodat het overal hetzelfde
- * werkt: één gezamenlijke zin, en daaronder drie optionele zinnen per
- * groepsvorm voor wie onderscheid wil maken. Leeg laten betekent: neem de zin
- * van het niveau erboven.
+ * Elk type krijgt precies dezelfde zeven velden, zodat het overal hetzelfde
+ * werkt: één gezamenlijke zin, en daaronder een optionele zin per losse groep.
+ * Leeg laten betekent: neem de zin van het niveau erboven.
+ *
+ * Per losse groep en niet per blok, omdat het verschil tussen groep 3 en groep
+ * 4 in taal groter is dan het verschil tussen groep 5 en 6 — een zin die voor
+ * groep 4 goed werkt, is voor een net begonnen groep 3 vaak al te lang.
  */
 export function vraagtekstVelden(standaard: Record<Leeftijdsgroep, string>): Veld[] {
   return [
@@ -291,43 +327,66 @@ export function vraagtekstVelden(standaard: Record<Leeftijdsgroep, string>): Vel
       plaatshouder: standaard["56"],
       hulp: "Leeg laten = de standaardzin van dit type. {som} wordt vervangen door de som zelf.",
     },
-    {
+    ...VRAAGTEKST_GROEPEN.map((groep, i): Veld => ({
       soort: "tekst",
-      sleutel: VRAAGTEKST_SLEUTELS["34"],
-      label: "Vraagtekst groep 3-4",
-      plaatshouder: standaard["34"],
-      hulp: "Alleen invullen als groep 3-4 een andere zin moet krijgen.",
-    },
-    {
-      soort: "tekst",
-      sleutel: VRAAGTEKST_SLEUTELS["56"],
-      label: "Vraagtekst groep 5-6",
-      plaatshouder: standaard["56"],
-    },
-    {
-      soort: "tekst",
-      sleutel: VRAAGTEKST_SLEUTELS["78"],
-      label: "Vraagtekst groep 7-8",
-      plaatshouder: standaard["78"],
-    },
+      sleutel: vraagtekstSleutel(groep),
+      label: `Vraagtekst groep ${groep}`,
+      plaatshouder: standaard[leeftijdsgroepVanGroep(groep)],
+      /* De uitleg hoort maar één keer boven de rij te staan. */
+      hulp: i === 0 ? "Alleen invullen als deze groep een andere zin moet krijgen." : undefined,
+    })),
   ];
 }
 
 /**
- * Welke zin hoort bij deze som, voor een kind van deze leeftijdsgroep?
+ * Vult de losse groepsvelden aan vanuit de oude blokvelden.
  *
- * Volgorde: de zin voor déze groepsvorm, anders de gezamenlijke zin, anders de
- * standaardzin van het type. Daarna wordt `{som}` ingevuld.
+ * Bedoeld voor het beheerscherm: open je een sjabloon dat nog met 3-4/5-6/7-8
+ * is opgeslagen, dan staan de zinnen meteen op de juiste losse groepen (wat bij
+ * 3-4 stond, komt bij groep 3 én groep 4). Sla je daarna op, dan zijn ze
+ * overgezet.
+ *
+ * Bewust hier en niet als migratie op de database: er wordt niets aan opgeslagen
+ * gegevens veranderd zonder dat jij zelf op opslaan drukt.
+ */
+export function neemVraagtekstenOver(inst: Instellingen): Instellingen {
+  const uit: Instellingen = { ...inst };
+
+  for (const groep of VRAAGTEKST_GROEPEN) {
+    const sleutel = vraagtekstSleutel(groep);
+    if (tekst(uit, sleutel, "").trim() !== "") continue;
+
+    const oud = tekst(uit, VRAAGTEKST_BLOK_SLEUTELS[leeftijdsgroepVanGroep(groep)], "").trim();
+    if (oud !== "") uit[sleutel] = oud;
+  }
+
+  return uit;
+}
+
+/**
+ * Welke zin hoort bij deze som, voor een kind uit déze groep?
+ *
+ * Volgorde, van meest naar minst specifiek:
+ *   1. de zin voor deze losse groep ("vraagtekst4");
+ *   2. de oude zin voor het groepsblok ("vraagtekst34"), voor sjablonen die
+ *      nog niet opnieuw zijn opgeslagen;
+ *   3. de gezamenlijke zin ("vraagtekst");
+ *   4. de standaardzin van het type.
+ *
+ * Daarna wordt `{som}` ingevuld.
  */
 export function bepaalVraagtekst(
   generator: Pick<Generator, "vraagteksten">,
   inst: Instellingen,
-  leeftijd: Leeftijdsgroep,
+  groep: number,
   som: Somgegevens,
 ): string {
-  const eigen = tekst(inst, VRAAGTEKST_SLEUTELS[leeftijd], "").trim();
+  const blok = leeftijdsgroepVanGroep(groep);
+
+  const eigen = tekst(inst, vraagtekstSleutel(groep), "").trim();
+  const oudBlok = tekst(inst, VRAAGTEKST_BLOK_SLEUTELS[blok], "").trim();
   const gedeeld = tekst(inst, VRAAGTEKST_SLEUTEL, "").trim();
-  const zin = eigen || gedeeld || generator.vraagteksten.standaard[leeftijd];
+  const zin = eigen || oudBlok || gedeeld || generator.vraagteksten.standaard[blok];
 
   const somtekst = generator.vraagteksten.som?.(som) ?? "";
   return zin.replaceAll("{som}", somtekst).trim();

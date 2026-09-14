@@ -15,7 +15,6 @@ import { zoekGenerator } from "@/lib/generatoren";
 import { begrensAantal } from "@/lib/data/instellingen";
 import {
   bepaalVraagtekst,
-  leeftijdsgroepVanGroep,
   type Gegenereerd,
   type Instellingen,
 } from "@/lib/generatoren/soort";
@@ -335,7 +334,6 @@ export function werkVraagtekstenBij(sjabloonId: string): Uitslag<number> {
     .prepare("select id, vraagtekst, somgegevens from vragen where sjabloon_id = ?")
     .all(sjabloonId) as { id: string; vraagtekst: string; somgegevens: string | null }[];
 
-  const leeftijd = leeftijdsgroepVanGroep(sjabloon.groep);
   const zetten = db.prepare("update vragen set vraagtekst = ? where id = ?");
 
   let veranderd = 0;
@@ -349,7 +347,7 @@ export function werkVraagtekstenBij(sjabloonId: string): Uitslag<number> {
       continue;
     }
 
-    const nieuw = bepaalVraagtekst(generator, sjabloon.instellingen, leeftijd, som);
+    const nieuw = bepaalVraagtekst(generator, sjabloon.instellingen, sjabloon.groep, som);
     if (!nieuw || nieuw === rij.vraagtekst) continue;
 
     zetten.run(nieuw, rij.id);

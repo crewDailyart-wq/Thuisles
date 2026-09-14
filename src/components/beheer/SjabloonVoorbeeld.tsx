@@ -9,7 +9,7 @@
  */
 
 import { useMemo } from "react";
-import { Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
+import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -17,8 +17,15 @@ export function SjabloonVoorbeeld({
   soort,
   instellingen,
   aantal = 10,
-  /* Voor welke groep het voorbeeld is; bepaalt welke vraagzin je ziet. */
-  groep = 5,
+  /*
+    Voor welke groep het voorbeeld is; bepaalt welke vraagzin je ziet.
+
+    Zonder groep valt het terug op 0. Dat is met opzet geen bestaande groep:
+    er is dan geen groepszin die past, dus zie je de gezamenlijke zin — precies
+    wat er ook gebeurt zolang je in het formulier nog geen groep hebt gekozen.
+    Een standaard van 5 zou stilletjes de zin van groep 5 laten zien.
+  */
+  groep = 0,
 }: {
   soort: string;
   instellingen: Instellingen;
@@ -77,6 +84,17 @@ export function SjabloonVoorbeeld({
                 {som.figuur?.soort === "kralenrij" && (
                   <div className="mt-1 w-full max-w-sm">
                     <Kralenrij figuur={som.figuur} pijlBeweegt={false} />
+                  </div>
+                )}
+
+                {/*
+                  De bus is nog breder dan de ketting: hij groeit met elk raam
+                  mee. Daarom de volle kolombreedte, anders worden de poppetjes
+                  in het voorbeeld te klein om te tellen.
+                */}
+                {som.figuur?.soort === "bus" && (
+                  <div className="mt-1 w-full">
+                    <Bus figuur={som.figuur} />
                   </div>
                 )}
 

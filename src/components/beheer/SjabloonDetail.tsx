@@ -19,6 +19,7 @@ import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bou
 import { SjabloonInstellingen } from "@/components/beheer/SjabloonInstellingen";
 import { SjabloonVoorbeeld } from "@/components/beheer/SjabloonVoorbeeld";
 import { UitlegVoorbeeld } from "@/components/beheer/UitlegVoorbeeld";
+import { neemVraagtekstenOver } from "@/lib/generatoren/soort";
 import { Figuurtekening } from "@/components/oefenen/Figuurtekening";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
@@ -52,7 +53,18 @@ export function SjabloonDetail({
 
   const [naam, setNaam] = useState(sjabloon.naam);
   const [hint, setHint] = useState(sjabloon.hint);
-  const [instellingen, setInstellingen] = useState<Instellingen>(sjabloon.instellingen);
+  /*
+    De vraagtekst kon vroeger alleen per groepsblok (3-4, 5-6, 7-8); nu per
+    losse groep. `neemVraagtekstenOver` zet een zin die nog onder een blok
+    staat alvast op de bijbehorende groepen, zodat je hem hier meteen ziet
+    staan en hij bij het opslaan mee overgaat.
+
+    Bewust hier en niet als migratie op de database: er verandert pas iets aan
+    wat er is opgeslagen als jij zelf op opslaan drukt.
+  */
+  const [instellingen, setInstellingen] = useState<Instellingen>(() =>
+    neemVraagtekstenOver(sjabloon.instellingen),
+  );
   const [aantal, setAantal] = useState(30);
 
   const generator = zoekGenerator(sjabloon.soort);
