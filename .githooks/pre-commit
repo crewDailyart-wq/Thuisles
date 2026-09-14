@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# Draait de bewaking vóór elke commit.
+#
+# "Vragen per oefensessie" is drie keer als verdwenen ervaren. De afspraak om
+# handmatig te controleren werkte niet, omdat er niets faalde als je het
+# oversloeg. Dit faalt wél: een commit komt er niet door als een veld van een
+# scherm is verdwenen of als een opgeslagen instelling wordt overschreven.
+#
+# Aangezet met `git config core.hooksPath .githooks`. Draait `npm run bewaak`:
+# de schermcontrole (zonder dev-server valt die terug op de bronbestanden) en
+# de waardebewaking op een wegwerpkopie van de database.
+#
+# Moet je er in een noodgeval langs: `git commit --no-verify`. Doe dat alleen
+# als je wéét wat er ontbreekt, en herstel het daarna.
+
+echo "Bewaking vóór de commit…"
+
+if ! npm run --silent bewaak; then
+  echo ""
+  echo "De commit is tegengehouden. Herstel wat er ontbreekt, of vraag het eerst."
+  echo "Echt doorgaan? git commit --no-verify"
+  exit 1
+fi

@@ -3,6 +3,7 @@ import { Kop } from "@/components/beheer/Bouwstenen";
 import { SjabloonFormulier } from "@/components/beheer/SjabloonFormulier";
 import { haalDomeinen, haalSubdomeinen, haalVak } from "@/lib/data/structuur";
 import { haalLeerdoelen } from "@/lib/data/vragen";
+import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 
 export default async function NieuwSjabloonPagina({
   params,
@@ -50,6 +51,7 @@ export default async function NieuwSjabloonPagina({
         leerdoelen={leerdoelen}
         onderwerpen={onderwerpen}
         startLeerdoelId={start ?? ""}
+        algemeenAantal={haalAlgemeenAantalVragen()}
       />
     </div>
   );

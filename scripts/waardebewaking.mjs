@@ -1,0 +1,180 @@
+/**
+ * Bewaakt dat een opgeslagen instelling niet stilletjes wordt overschreven.
+ *
+ * ---------------------------------------------------------------------------
+ * Waarom dit los staat van de schermcontrole
+ * ---------------------------------------------------------------------------
+ * `npm run schermen` kijkt of een veld nog op het scherm staat. Dat vangt de
+ * ene helft. De andere helft is erger en onzichtbaar: het veld staat er nog,
+ * maar de waarde erachter wordt bij een volgende opslag op `null` gezet.
+ *
+ * Zo verdween "Vragen per oefensessie" de tweede keer. Het veld was verhuisd
+ * naar het sjabloonscherm, maar `bewerkLeerdoel` stuurde `vragenPerSessie` nog
+ * steeds mee. Dat veld stond niet meer in dát formulier, dus kwam het leeg
+ * binnen en werd het als `null` over de opgeslagen 15 geschreven. Wie daarna
+ * een leerdoeltitel aanpaste, raakte de instelling kwijt zonder dat er iets
+ * misging op het scherm.
+ *
+ * Dit script speelt dat scenario echt na: het slaat een titel op en kijkt of
+ * het aantal er daarna nog staat.
+ *
+ * ---------------------------------------------------------------------------
+ * Nooit op de echte database
+ * ---------------------------------------------------------------------------
+ * Er wordt een kopie van `data/thuisles.db` in een tijdelijke map gezet, en
+ * `THUISLES_DB` wijst daarheen. Alles wat dit script aanmaakt of wijzigt, komt
+ * in die kopie terecht en gaat aan het eind mee de prullenbak in. Jouw eigen
+ * database wordt alleen gelezen, nooit geopend om in te schrijven.
+ */
+
+import { copyFileSync, existsSync, mkdtempSync, rmSync } from "node:fs";
+import { tmpdir } from "node:os";
+import path from "node:path";
+
+const WORTEL = path.resolve(import.meta.dirname, "..");
+const ECHT = path.join(WORTEL, "data", "thuisles.db");
+
+const fouten = [];
+const gedaan = [];
+
+function zouMoeten(wat, klopt, uitleg) {
+  if (klopt) gedaan.push(wat);
+  else fouten.push(`${wat}\n      ${uitleg}`);
+}
+
+const werkmap = mkdtempSync(path.join(tmpdir(), "thuisles-bewaking-"));
+const kopie = path.join(werkmap, "thuisles.db");
+
+try {
+  if (existsSync(ECHT)) {
+    copyFileSync(ECHT, kopie);
+  }
+  /* Bestaat de echte database nog niet, dan maakt de app hier een lege aan. */
+  process.env.THUISLES_DB = kopie;
+
+  const { maakVak, maakDomein, maakSubdomein, maakLeerdoel, wijzigLeerdoel, zoekLeerdoel } =
+    await import("@/lib/data/structuur");
+
+  /*
+    Een eigen vak in de kopie, zodat de proef niets aanraakt wat er al stond en
+    de uitkomst niet afhangt van wat er toevallig in de database zit.
+  */
+  const merk = `bewaking-${Date.now()}`;
+  const vak = maakVak({
+    naam: `Bewaking ${merk}`,
+    omschrijving: "",
+    icoon: "rekenen",
+    actief: false,
+  });
+  if (!vak.ok) throw new Error(`Kon geen proefvak maken: ${vak.fout}`);
+
+  const domein = maakDomein({
+    vakId: vak.waarde.id,
+    naam: `Domein ${merk}`,
+    omschrijving: "",
+    icoon: "rekenen",
+    actief: false,
+  });
+  if (!domein.ok) throw new Error(`Kon geen proefdomein maken: ${domein.fout}`);
+
+  const sub = maakSubdomein({
+    domeinId: domein.waarde.id,
+    naam: `Onderwerp ${merk}`,
+    omschrijving: "",
+    icoon: "rekenen",
+  });
+  if (!sub.ok) throw new Error(`Kon geen proefonderwerp maken: ${sub.fout}`);
+
+  const leerdoel = maakLeerdoel({
+    subdomeinId: sub.waarde.id,
+    titel: `Leerdoel ${merk}`,
+    groepVan: 4,
+    groepTot: 4,
+  });
+  if (!leerdoel.ok) throw new Error(`Kon geen proefleerdoel maken: ${leerdoel.fout}`);
+  const id = leerdoel.waarde.id;
+
+  /*
+    `wijzigLeerdoel` verlangt altijd titel en groep — precies zoals het
+    leerdoelformulier ze meestuurt. Het gaat hier om wat er NIET bij staat.
+  */
+  const basis = { titel: `Leerdoel ${merk}`, groepVan: 4, groepTot: 4 };
+  const aantal = () => zoekLeerdoel(id)?.vragenPerSessie;
+
+  // 1. Een eigen aantal instellen.
+  wijzigLeerdoel(id, { ...basis, vragenPerSessie: 15 });
+  zouMoeten(
+    "Een eigen aantal vragen per oefensessie wordt bewaard",
+    aantal() === 15,
+    `Verwacht 15, kreeg ${aantal()}.`,
+  );
+
+  // 2. Het scenario van incident 2: opslaan zónder dat het veld meekomt.
+  wijzigLeerdoel(id, { ...basis, titel: `Leerdoel ${merk} anders` });
+  zouMoeten(
+    "Een titel opslaan zonder het veld laat het aantal met rust",
+    aantal() === 15,
+    `Na het opslaan van alleen de titel staat het aantal op ${aantal()} in plaats van 15. ` +
+      `Kijk of een formulier vragenPerSessie meestuurt terwijl dat veld er niet in zit.`,
+  );
+
+  // 3. De groep aanpassen mag het net zo min raken.
+  wijzigLeerdoel(id, { ...basis, titel: `Leerdoel ${merk} anders`, groepVan: 5, groepTot: 5 });
+  zouMoeten(
+    "De groep aanpassen laat het aantal met rust",
+    aantal() === 15,
+    `Na het aanpassen van de groep staat het aantal op ${aantal()}.`,
+  );
+
+  // 4. Expliciet leegmaken moet wél werken: dat betekent "volg de standaard".
+  wijzigLeerdoel(id, {
+    ...basis,
+    titel: `Leerdoel ${merk} anders`,
+    groepVan: 5,
+    groepTot: 5,
+    vragenPerSessie: null,
+  });
+  zouMoeten(
+    "Bewust leegmaken zet het terug op de algemene standaard",
+    aantal() === null,
+    `Verwacht null, kreeg ${aantal()}.`,
+  );
+
+  // 5. Een sjabloon aanmaken onder een leerdoel dat al een aantal heeft, mag
+  //    dat aantal niet wissen — de derde manier waarop het kon verdwijnen.
+  wijzigLeerdoel(id, {
+    ...basis,
+    titel: `Leerdoel ${merk} anders`,
+    groepVan: 5,
+    groepTot: 5,
+    vragenPerSessie: 15,
+  });
+  const { bewaarSjabloon } = await import("@/lib/data/sjablonen");
+  const sjabloon = bewaarSjabloon({
+    leerdoelId: id,
+    naam: `Sjabloon ${merk}`,
+    soort: "kralen",
+    instellingen: {},
+    hint: "",
+    groep: 5,
+  });
+  zouMoeten(
+    "Een sjabloon aanmaken zonder aantal laat het bestaande aantal staan",
+    sjabloon.ok && aantal() === 15,
+    sjabloon.ok
+      ? `Na het aanmaken staat het aantal op ${aantal()} in plaats van 15.`
+      : `Kon geen proefsjabloon maken: ${sjabloon.fout}`,
+  );
+} finally {
+  /* De kopie en alles wat erin is gezet, gaat weg. */
+  rmSync(werkmap, { recursive: true, force: true });
+}
+
+console.log(`Waardebewaking: ${gedaan.length + fouten.length} controles op een wegwerpkopie.`);
+for (const g of gedaan) console.log("  ✓ " + g);
+
+if (fouten.length > 0) {
+  console.error(`\nEEN INSTELLING WORDT OVERSCHREVEN (${fouten.length}):`);
+  for (const f of fouten) console.error("  ✗ " + f);
+  process.exit(1);
+}

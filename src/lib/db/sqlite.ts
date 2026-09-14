@@ -22,8 +22,16 @@ import { DatabaseSync } from "node:sqlite";
 import fs from "node:fs";
 import path from "node:path";
 
-const MAP = path.join(process.cwd(), "data");
-const BESTAND = path.join(MAP, "thuisles.db");
+/*
+  De database staat in `data/thuisles.db`.
+
+  `THUISLES_DB` kan daar een ander bestand van maken. Dat is er voor de
+  controlescripts, die op een wegwerpkopie werken en jouw echte database dus
+  nooit aanraken. Staat de omgevingsvariabele niet, en dat is overal behalve in
+  die scripts, dan verandert er niets.
+*/
+const BESTAND = process.env.THUISLES_DB ?? path.join(process.cwd(), "data", "thuisles.db");
+const MAP = path.dirname(BESTAND);
 
 let db: DatabaseSync | null = null;
 

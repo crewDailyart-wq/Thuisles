@@ -32,6 +32,13 @@ function leesInstellingen(data: FormData): Instellingen {
 }
 
 export async function nieuwSjabloon(data: FormData): Promise<Antwoord<string>> {
+  /*
+    Leeg = niet aanraken, anders dan bij `bewerkSjabloon` waar leeg "volg de
+    algemene standaard" betekent. Zie `bewaarSjabloon` voor waarom: bij een
+    bestaand leerdoel zou leeg anders een al ingestelde waarde wissen.
+  */
+  const perSessie = String(data.get("vragenPerSessie") ?? "").trim();
+
   const uitslag = bewaarSjabloon({
     leerdoelId: String(data.get("leerdoelId") ?? ""),
     naam: String(data.get("naam") ?? ""),
@@ -39,6 +46,7 @@ export async function nieuwSjabloon(data: FormData): Promise<Antwoord<string>> {
     instellingen: leesInstellingen(data),
     hint: String(data.get("hint") ?? ""),
     groep: Number(data.get("groep") ?? NaN),
+    vragenPerSessie: perSessie === "" ? undefined : Number(perSessie),
   });
   if (uitslag.ok) ververs();
   return uitslag;

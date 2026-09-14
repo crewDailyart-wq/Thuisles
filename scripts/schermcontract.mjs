@@ -1,0 +1,141 @@
+/**
+ * Het schermcontract: wat er op elk scherm hoort te staan.
+ *
+ * ---------------------------------------------------------------------------
+ * Waarom dit bestand bestaat
+ * ---------------------------------------------------------------------------
+ * "Vragen per oefensessie" is drie keer als verdwenen ervaren. De afspraak in
+ * CLAUDE.md — vóór en ná een wijziging de labels vergelijken — heeft dat drie
+ * keer niet gevangen, om drie redenen:
+ *
+ *   1. Er faalt niets. Het is handwerk dat degene die de wijziging maakt zelf
+ *      rapporteert; wordt het overgeslagen, dan merkt niemand het.
+ *   2. Het kijkt alleen naar het scherm dat je aan het bewerken bent. De keer
+ *      dat `bewerkLeerdoel` de waarde overschreef, verdween er visueel niets.
+ *   3. Het voorgeschreven `querySelectorAll('label')` vindt niets wat achter
+ *      een knop als "Bewerken" zit. Dat geeft vals alarm én valse rust.
+ *
+ * Dit bestand vervangt dat handwerk door iets dat kápot gaat. `npm run
+ * schermen` loopt de lijst hieronder af en stopt met een foutmelding zodra een
+ * veld of knop niet meer te vinden is.
+ *
+ * ---------------------------------------------------------------------------
+ * Een scherm of veld erbij
+ * ---------------------------------------------------------------------------
+ * Zet het in `SCHERMCONTRACT`. Twee soorten regels:
+ *
+ *   `zichtbaar`  — tekst die meteen in de pagina staat. Wordt opgehaald en in
+ *                  de echte HTML gezocht. Draait de dev-server niet — en dat is
+ *                  zo bij een commit — dan wordt in `bron` gekeken. Zwakker,
+ *                  maar het vangt wél waar het drie keer op misging: een veld
+ *                  dat bij een herschrijving uit de code valt.
+ *   `naKlik`     — tekst die pas verschijnt na een handeling (een tab openen,
+ *                  op "Bewerken" drukken). Die staat niet in de HTML, dus wordt
+ *                  gecontroleerd in het bronbestand dat erbij staat. Minder
+ *                  sterk, maar het vangt wél waar het drie keer op misging:
+ *                  een veld dat bij een herschrijving uit de code valt.
+ *
+ * Plaatshouders tussen accolades worden gevuld met echte gegevens uit de
+ * database. Is er niets om in te vullen — nog geen sjabloon bijvoorbeeld — dan
+ * wordt dat scherm overgeslagen en aan het eind gemeld. Het script maakt nooit
+ * zelf gegevens aan; zie HARDE REGEL 2 in CLAUDE.md.
+ */
+
+/**
+ * Een regel in het contract:
+ *
+ *   naam       zoals jij het scherm noemt; komt terug in de foutmelding.
+ *   pad        het pad in de browser, met {vak}, {sjabloon}, {domein},
+ *              {subdomein} of {leerdoel} als plaatshouder.
+ *   zichtbaar  teksten die meteen op het scherm staan.
+ *   bron       de bestanden waarin `zichtbaar` gezocht wordt als de pagina
+ *              niet op te halen is.
+ *   naKlik     teksten die pas na een handeling verschijnen, elk met het
+ *              bronbestand waarin ze horen te staan en wat je moet doen om ze
+ *              te zien.
+ */
+
+const SJABLOONDETAIL = "src/components/beheer/SjabloonDetail.tsx";
+const SJABLOONFORMULIER = "src/components/beheer/SjabloonFormulier.tsx";
+const LEERDOELDETAIL = "src/components/beheer/LeerdoelDetail.tsx";
+
+export const SCHERMCONTRACT = [
+  {
+    naam: "Vakken (algemene instellingen)",
+    pad: "/admin/vakken",
+    bron: ["src/components/beheer/VakkenBeheer.tsx", "src/components/beheer/OefensessieInstelling.tsx"],
+    zichtbaar: [
+      "Alle vakken",
+      "Nieuw vak",
+      /*
+        De algemene standaard voor het aantal vragen per oefensessie. Hier
+        begint de keten: leerdoelen zonder eigen aantal volgen dit getal.
+      */
+      "Oefensessies",
+      "Standaard aantal vragen",
+    ],
+  },
+  {
+    naam: "Nieuw sjabloon",
+    pad: "/admin/{vak}/sjablonen/nieuw",
+    bron: [SJABLOONFORMULIER],
+    zichtbaar: ["Naam van deze oefening", "Onderwerp", "Wat voor sommen?"],
+    naKlik: [
+      /*
+        Stap 3 tot en met 5 verschijnen pas als er een soort som gekozen is,
+        dus die staan niet in de opgehaalde HTML.
+      */
+      {
+        tekst: "Vragen per oefensessie",
+        bron: SJABLOONFORMULIER,
+        na: "een soort som kiezen",
+      },
+      { tekst: "Hint bij een fout antwoord", bron: SJABLOONFORMULIER, na: "een soort som kiezen" },
+      { tekst: "Hoeveel sommen", bron: SJABLOONFORMULIER, na: "een soort som kiezen" },
+    ],
+  },
+  {
+    naam: "Sjabloon (oefening) bekijken en aanpassen",
+    pad: "/admin/{vak}/sjablonen/{sjabloon}",
+    /* "Bekijk uitleg" komt uit het ingeladen knopje. */
+    bron: [SJABLOONDETAIL, "src/components/beheer/UitlegVoorbeeld.tsx"],
+    zichtbaar: [
+      "Gegevens",
+      "Bewerken",
+      /*
+        Het veld waar het drie keer om ging. Staat sinds deze maatregel óók in
+        het leesblok, zodat je het ziet zonder eerst op Bewerken te drukken.
+      */
+      "Vragen per oefensessie",
+      "Meer sommen maken",
+      "Hoeveel erbij",
+      "Genereren",
+      "Uitleg bij een fout antwoord",
+      "Gemaakte sommen",
+    ],
+    naKlik: [
+      { tekst: "Vragen per oefensessie", bron: SJABLOONDETAIL, na: "op Bewerken drukken" },
+      { tekst: "Hint bij een fout antwoord", bron: SJABLOONDETAIL, na: "op Bewerken drukken" },
+      { tekst: "Instellingen", bron: SJABLOONDETAIL, na: "op Bewerken drukken" },
+    ],
+  },
+  {
+    naam: "Leerdoel",
+    pad: "/admin/{vak}/structuur/{domein}/{subdomein}/{leerdoel}",
+    /* "Bekijk uitleg" staat in het knopje dat dit scherm inlaadt. */
+    bron: [LEERDOELDETAIL, "src/components/beheer/UitlegVoorbeeld.tsx"],
+    zichtbaar: [
+      "Vragen per oefensessie",
+      "Vorm van de uitleg",
+      "Bekijk uitleg",
+      "Nieuwe vraag",
+    ],
+    naKlik: [{ tekst: "Titel", bron: LEERDOELDETAIL, na: "op Bewerken drukken" }],
+  },
+  {
+    naam: "Foutpatronen",
+    pad: "/admin/foutpatronen",
+    bron: ["src/app/admin/foutpatronen/page.tsx"],
+    zichtbaar: ["Foutpatronen", "zo los je het op"],
+  },
+];

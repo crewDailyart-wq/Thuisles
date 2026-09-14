@@ -117,13 +117,33 @@ export function SjabloonDetail({
             ["Groep", `Groep ${sjabloon.groep}`],
             ["Hint", sjabloon.hint || <span className="text-beheer-zacht">geen</span>],
             [
+              /*
+                Ook in het leesblok, niet alleen achter Bewerken. Een instelling
+                die je pas ziet na een klik, lijkt er niet te zijn.
+              */
+              "Vragen per oefensessie",
+              sjabloon.vragenPerSessie === null ? (
+                <span key="p" className="text-beheer-zacht">
+                  Volgt de algemene standaard ({algemeenAantal})
+                </span>
+              ) : (
+                sjabloon.vragenPerSessie
+              ),
+            ],
+            [
               "Sommen",
               `${sjabloon.aantalVragen} (${sjabloon.aantalVragen - sjabloon.aantalConcept} gepubliceerd)`,
             ],
           ]}
         />
 
-        {bewerken && generator && (
+        {/*
+          Bewust niet afhankelijk van `generator`. Kent de code het soort sommen
+          niet (meer), dan moeten naam, hint en vragen per oefensessie nog
+          steeds aan te passen zijn; alleen de instellingen en het voorbeeld
+          kunnen dan niet getoond worden.
+        */}
+        {bewerken && (
           <div className="mt-4 border-t border-beheer-rand pt-4">
             <div className="grid gap-3 sm:grid-cols-2">
               <label className="block">
@@ -156,16 +176,18 @@ export function SjabloonDetail({
                   value={perSessie}
                   placeholder={String(algemeenAantal)}
                   onChange={(e) => setPerSessie(e.target.value)}
-                  className={`${stijl.veld} w-40`}
+                  className={`${stijl.veld} max-w-40`}
                 />
                 <span className="mt-1 block text-xs text-beheer-zacht">
                   Leeg laten = de algemene standaard ({algemeenAantal}). Geldt voor het
                   leerdoel {sjabloon.leerdoelCode}. Zijn er minder gepubliceerde vragen,
-                  dan komen ze gewoon allemaal langs.
+                  dan komen ze gewoon allemaal langs. Je kunt dit altijd aanpassen,
+                  ook als de vragen al gepubliceerd zijn.
                 </span>
               </label>
             </div>
 
+            {generator && (
             <div className="mt-4 grid gap-4 lg:grid-cols-2 lg:items-start">
               <div>
                 <p className="mb-2 text-xs font-semibold uppercase tracking-wide text-beheer-zacht">
@@ -188,6 +210,7 @@ export function SjabloonDetail({
                 />
               </div>
             </div>
+            )}
 
             <div className="mt-3 flex flex-wrap gap-2">
               <button

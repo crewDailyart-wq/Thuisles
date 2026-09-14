@@ -51,6 +51,7 @@ export function SjabloonFormulier({
   leerdoelen,
   onderwerpen,
   startLeerdoelId = "",
+  algemeenAantal,
 }: {
   vakSlug: string;
   /** Bestaande leerdoelen, om er een passend bij te zoeken. */
@@ -58,6 +59,8 @@ export function SjabloonFormulier({
   /** Alle onderwerpen van dit vak, ook die zonder leerdoel. */
   onderwerpen: OnderwerpRegel[];
   startLeerdoelId?: string;
+  /** De algemene standaard, om te tonen wat 'leeg laten' oplevert. */
+  algemeenAantal: number;
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -74,6 +77,14 @@ export function SjabloonFormulier({
   const [naam, setNaam] = useState("");
   const [hint, setHint] = useState("");
   const [aantal, setAantal] = useState(30);
+
+  /*
+    Vragen per oefensessie. Hoort bij het leerdoel, maar je stelt het hier in
+    omdat je hier toch al de oefening maakt. Leeg laten verandert niets: bij een
+    nieuw leerdoel geldt dan de algemene standaard, bij een bestaand leerdoel
+    blijft staan wat daar al was.
+  */
+  const [perSessie, setPerSessie] = useState("");
   const [instellingen, setInstellingen] = useState<Instellingen>({});
 
   const generator = soort ? zoekGenerator(soort) : null;
@@ -164,6 +175,7 @@ export function SjabloonFormulier({
       data.set("instellingen", JSON.stringify(instellingen));
       data.set("hint", hint);
       data.set("groep", String(groep));
+      data.set("vragenPerSessie", perSessie);
 
       const gemaakt = await nieuwSjabloon(data);
       if (!gemaakt.ok) return setFout(gemaakt.fout);
@@ -231,7 +243,7 @@ export function SjabloonFormulier({
             <select
               value={groep}
               onChange={(e) => setGroep(Number(e.target.value))}
-              className={`${stijl.veld} w-40`}
+              className={`${stijl.veld} max-w-40`}
             >
               <option value="">Kies…</option>
               {groepen.map((g) => (
@@ -382,6 +394,29 @@ export function SjabloonFormulier({
                   placeholder="Bijvoorbeeld: Maak eerst het tiental vol"
                   className={stijl.veld}
                 />
+              </label>
+
+              <label className="block">
+                <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+                  Vragen per oefensessie
+                </span>
+                <input
+                  type="number"
+                  min={1}
+                  max={50}
+                  value={perSessie}
+                  placeholder={String(algemeenAantal)}
+                  onChange={(e) => setPerSessie(e.target.value)}
+                  className={`${stijl.veld} max-w-40`}
+                />
+                <span className="mt-1 block text-xs text-beheer-zacht">
+                  Hoeveel vragen een kind per keer krijgt. Leeg laten ={" "}
+                  {koppeling === "bestaand"
+                    ? "houden wat er bij dit leerdoel al staat"
+                    : `de algemene standaard (${algemeenAantal})`}
+                  . Je kunt dit later altijd aanpassen bij de oefening, ook als
+                  de vragen al gepubliceerd zijn.
+                </span>
               </label>
             </div>
 

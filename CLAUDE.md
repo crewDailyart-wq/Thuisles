@@ -13,34 +13,59 @@ Dit gaat niet alleen over wat je ziet. Een instelling kan ook verdwijnen doordat
 een opgeslagen waarde stilletjes wordt overschreven — zie de oorzaak hieronder.
 Zowel het veld als de waarde erachter moet blijven.
 
-## Verplichte controle na elke wijziging aan een bestaand scherm
+## De bewaking
 
-1. Maak vóór de wijziging een lijst van wat er op dat scherm staat: alle
-   invoervelden met hun labels, alle knoppen, alle keuzelijsten.
-2. Doe hetzelfde ná de wijziging.
-3. Vergelijk die twee lijsten en **meld elk verschil expliciet** — ook als het
-   klein lijkt, ook als het logisch voortvloeit uit de opdracht.
-
-In de browser kan dat zo:
-
-```js
-[...document.querySelectorAll('label')].map(l => l.textContent.trim().split('\n')[0])
-[...document.querySelectorAll('button')].map(b => b.textContent.trim())
 ```
+npm run bewaak
+```
+
+Twee controles, die allebei stoppen met een foutmelding:
+
+- **`npm run schermen`** loopt langs elk scherm uit `scripts/schermcontract.mjs`
+  en faalt zodra een veld of knop er niet meer staat. Draait de dev-server
+  ernaast, dan wordt het echte scherm opgehaald; zo niet, dan wordt er in de
+  bronbestanden gekeken.
+- **`npm run bewaking`** speelt na of een opgeslagen instelling overleeft wat
+  er daarna gebeurt: een titel aanpassen, een groep aanpassen, een sjabloon
+  erbij. Dat gebeurt op een **wegwerpkopie** van de database in een tijdelijke
+  map — de echte database wordt alleen gelezen.
+
+**Dit draait automatisch vóór elke commit** (`.githooks/pre-commit`, aangezet
+door `npm install`). Een commit komt er niet door als er iets ontbreekt.
+
+Bouw je een veld of knop bij, zet die dan meteen in het contract. Haal er nooit
+een regel uit om een foutmelding weg te krijgen, en gebruik `--no-verify` niet
+om er langs te komen: herstel het scherm, of vraag het eerst. Meld elk verschil
+expliciet — ook als het klein lijkt, ook als het logisch voortvloeit uit de
+opdracht.
+
+**Het handmatige lijstje van hiervoor is met opzet vervallen.** Dat werkte niet,
+om drie redenen: er faalde niets, het keek alleen naar het scherm dat je toch al
+aan het bewerken was, en het voorgeschreven `querySelectorAll('label')` vindt
+niets wat achter een knop als "Bewerken" zit — dat gaf zowel vals alarm als
+valse rust.
 
 Verplaats je iets bewust naar een ander scherm, controleer dan ook of de
 serveractie van het ÓUDE scherm het veld niet meer meestuurt. Een formulier dat
 een veld kwijt is maar de waarde nog wel leeg meestuurt, wist de instelling bij
-elke volgende opslag.
+elke volgende opslag. Let daarbij op het verschil tussen "leeg = zet terug op de
+standaard" en "leeg = niet aanraken"; zie `bewaarSjabloon` in
+`src/lib/data/sjablonen.ts`.
 
 ## Waarom deze regel er is
 
-"Vragen per oefensessie" moest twee keer worden gebouwd. Het veld verhuisde op
+"Vragen per oefensessie" moest drie keer worden nagelopen. Het veld verhuisde op
 verzoek van het leerdoelscherm naar het sjabloonscherm, maar `bewerkLeerdoel`
 bleef `vragenPerSessie` meesturen. Dat veld stond niet meer in dat formulier,
 dus kwam het als lege waarde binnen en werd het als `null` over het opgeslagen
 getal geschreven. Wie daarna de titel van een leerdoel aanpaste, raakte de
 instelling kwijt zonder dat er iets misging op het scherm.
+
+De derde keer was het veld er nog wél, maar alleen achter de knop "Bewerken"
+en helemaal niet op het scherm Nieuw sjabloon. Een instelling die je pas ziet na
+een klik, is voor wie hem zoekt hetzelfde als een instelling die weg is. Daarom
+staat hij nu ook in het leesblok en bij het aanmaken, en bewaakt het
+schermcontract alle drie de plekken.
 
 Het gevolg: je kunt er niet meer op vertrouwen dat wat je hebt ingesteld,
 ingesteld blijft. Daarom geldt de regel voor het hele platform en hoort de

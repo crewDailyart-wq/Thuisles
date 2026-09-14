@@ -130,6 +130,16 @@ export function bewaarSjabloon(invoer: {
   instellingen: Instellingen;
   hint: string;
   groep: number;
+  /**
+   * Vragen per oefensessie, meteen bij het aanmaken.
+   *
+   * Staat op het LEERDOEL, net als bij `wijzigSjabloon`. `undefined` betekent
+   * hier nadrukkelijk NIET AANRAKEN, en dat is geen detail: hang je een tweede
+   * oefening onder een leerdoel dat al op 15 staat en laat je dit leeg, dan zou
+   * `null` die 15 wissen. Precies zo is de instelling eerder al een keer
+   * verdwenen. Leeg laten verandert hier dus niets.
+   */
+  vragenPerSessie?: number | null;
 }): Uitslag<string> {
   if (!zoekGenerator(invoer.soort)) {
     return { ok: false, fout: "Onbekend soort sjabloon." };
@@ -165,6 +175,15 @@ export function bewaarSjabloon(invoer: {
     invoer.groep,
     new Date().toISOString(),
   );
+
+  if (invoer.vragenPerSessie !== undefined) {
+    const waarde =
+      invoer.vragenPerSessie === null ? null : begrensAantal(invoer.vragenPerSessie);
+    db.prepare("update leerdoelen set vragen_per_sessie = ? where id = ?").run(
+      waarde,
+      invoer.leerdoelId,
+    );
+  }
 
   return { ok: true, waarde: id };
 }
