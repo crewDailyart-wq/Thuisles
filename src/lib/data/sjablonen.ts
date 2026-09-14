@@ -17,6 +17,7 @@ import {
   bepaalVraagtekst,
   type Gegenereerd,
   type Instellingen,
+  MAX_SOMMEN_PER_KEER,
 } from "@/lib/generatoren/soort";
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 
@@ -255,7 +256,12 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
   const generator = zoekGenerator(sjabloon.soort);
   if (!generator) return { ok: false, fout: "Dit soort sjabloon bestaat niet meer." };
 
-  const gevraagd = Math.max(1, Math.min(500, Math.floor(aantal)));
+  /*
+    De enige grens is die van het generator-systeem zelf. Hoeveel sommen er
+    werkelijk uitkomen, bepaalt de generator: die stopt vanzelf zodra alle
+    verschillende sommen bij deze instellingen op zijn.
+  */
+  const gevraagd = Math.max(1, Math.min(MAX_SOMMEN_PER_KEER, Math.floor(aantal)));
   const bezet = bestaandeHandtekeningen(sjabloon.leerdoelId);
   const sommen = generator.maak(sjabloon.instellingen, gevraagd, bezet, Date.now() % 1000000, sjabloon.groep);
 

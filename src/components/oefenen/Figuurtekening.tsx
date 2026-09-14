@@ -517,7 +517,7 @@ const BUS = {
    * container. Een bus heeft een zichtbare onderkant waar de wielen in zitten.
    */
   onder: 44,
-  /** De neus: voorruit, chauffeur en koplamp. */
+  /** De neus: voorruit en koplamp. */
   neus: 82,
   /** Stukje carrosserie achter het laatste raam. */
   achter: 18,
@@ -541,7 +541,6 @@ const BUSKLEUR = {
   band: "#2c2545",
   velg: "#ece4d8",
   koplamp: "#f2bb2e",
-  leegStoel: "#c9d7ea",
 };
 
 /**
@@ -728,37 +727,13 @@ export function Bus({
         strokeWidth={2}
       />
       {/*
-        In de voorruit zit BEWUST geen chauffeur.
+        In de voorruit zit BEWUST niets.
 
-        Hier stond eerst een grijs poppetje. Dat was om twee redenen fout: het
-        leek op een lege plek terwijl het een mens was, én het telde niet mee in
-        het antwoord. Een kind dat de mensen in de bus telt, kwam daardoor één
-        te hoog uit — precies de fout die dit vraagtype juist wil voorkomen.
-
-        Alles wat op een poppetje lijkt, telt dus mee. Wat er niet bij hoort,
-        krijgt geen menselijke vorm: het stuur hieronder maakt duidelijk dat
-        dit de voorkant is, zonder dat er iets te tellen valt.
+        Hier stond eerst een chauffeur en daarna een stuur. Allebei weg: een
+        menselijke figuur telde ten onrechte mee bij een telvraag, en het stuur
+        las als een teken in een leeg raam. Wat leeg is, is leeg — dat is wat je
+        moet kunnen zien.
       */}
-      <g>
-        <circle
-          cx={rompX + rompBreedte - BUS.neus / 2 + 6}
-          cy={rompY + BUS.dak + BUS.raamHoogte * 0.62}
-          r={BUS.hoofd + 1}
-          fill="none"
-          stroke={BUSKLEUR.rompDonker}
-          strokeWidth={3}
-          opacity={0.55}
-        />
-        <line
-          x1={rompX + rompBreedte - BUS.neus / 2 + 6 - BUS.hoofd - 1}
-          y1={rompY + BUS.dak + BUS.raamHoogte * 0.62}
-          x2={rompX + rompBreedte - BUS.neus / 2 + 6 + BUS.hoofd + 1}
-          y2={rompY + BUS.dak + BUS.raamHoogte * 0.62}
-          stroke={BUSKLEUR.rompDonker}
-          strokeWidth={3}
-          opacity={0.55}
-        />
-      </g>
 
       {/* Koplamp. */}
       <circle
@@ -802,21 +777,13 @@ export function Bus({
       {Array.from({ length: ramen * perGroep }, (_, i) => {
         const { x, y, raam } = plek(i);
 
-        if (i >= totaal) {
-          // Lege plek: een lichte stippelcirkel, zodat je ziet dát hij leeg is.
-          return (
-            <circle
-              key={`leeg-${i}`}
-              cx={x}
-              cy={y - 3}
-              r={BUS.hoofd}
-              fill="none"
-              stroke={BUSKLEUR.leegStoel}
-              strokeWidth={2}
-              strokeDasharray="3 3"
-            />
-          );
-        }
+        /*
+          Een lege plek blijft écht leeg: geen stippelcirkel, geen omtrek, geen
+          enkel teken — alleen de lichte achtergrond van het raam. Elk teken op
+          een lege plek is iets wat een kind kan gaan meetellen, en dat is
+          precies wat hier fout zou gaan.
+        */
+        if (i >= totaal) return null;
 
         const geteld = isGeteld(i);
         const kleurIndex = raam % 2;

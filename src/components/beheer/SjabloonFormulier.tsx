@@ -29,6 +29,7 @@ import { Paneel, stijl } from "@/components/beheer/Bouwstenen";
 import { SjabloonInstellingen } from "@/components/beheer/SjabloonInstellingen";
 import { SjabloonVoorbeeld } from "@/components/beheer/SjabloonVoorbeeld";
 import { alleGeneratoren, zoekGenerator } from "@/lib/generatoren";
+import { MAX_SOMMEN_PER_KEER } from "@/lib/generatoren/soort";
 import type { Instellingen } from "@/lib/generatoren/soort";
 import type { LeerdoelRegel } from "@/lib/data/vragen";
 
@@ -392,7 +393,7 @@ export function SjabloonFormulier({
                 <input
                   type="number"
                   min={1}
-                  max={500}
+                  max={MAX_SOMMEN_PER_KEER}
                   value={aantal}
                   onChange={(e) => setAantal(Number(e.target.value))}
                   className={`${stijl.veld} w-28`}

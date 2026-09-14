@@ -19,7 +19,7 @@ import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bou
 import { SjabloonInstellingen } from "@/components/beheer/SjabloonInstellingen";
 import { SjabloonVoorbeeld } from "@/components/beheer/SjabloonVoorbeeld";
 import { UitlegVoorbeeld } from "@/components/beheer/UitlegVoorbeeld";
-import { neemVraagtekstenOver } from "@/lib/generatoren/soort";
+import { MAX_SOMMEN_PER_KEER, neemVraagtekstenOver } from "@/lib/generatoren/soort";
 import { Figuurtekening } from "@/components/oefenen/Figuurtekening";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
@@ -302,7 +302,7 @@ export function SjabloonDetail({
             <input
               type="number"
               min={1}
-              max={500}
+              max={MAX_SOMMEN_PER_KEER}
               value={aantal}
               onChange={(e) => setAantal(Number(e.target.value))}
               className={`${stijl.veld} w-28`}

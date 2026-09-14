@@ -175,6 +175,21 @@ export type Generator = {
   ) => Gegenereerd[];
 };
 
+/**
+ * Hoeveel sommen er hoogstens in één keer gemaakt worden.
+ *
+ * Eén grens voor het hele generator-systeem, niet per type: een nieuw type
+ * krijgt hem dus vanzelf mee, zonder er iets voor te hoeven opgeven.
+ *
+ * De grens staat bewust hoog. Hij is er niet om te bepalen hoeveel sommen
+ * zinnig zijn — dat bepaal jij — maar alleen om een vertypt getal (50000 in
+ * plaats van 500) niet te laten uitlopen op een browser die minutenlang staat
+ * te rekenen. Wat je in de praktijk tegenhoudt is het NATUURLIJKE maximum: het
+ * aantal verschillende sommen dat bij de gekozen instellingen bestaat. Dat
+ * getal staat in het beheer onder het voorbeeld.
+ */
+export const MAX_SOMMEN_PER_KEER = 5000;
+
 // ---------------------------------------------------------------------------
 // Hulpjes die de generatoren delen
 // ---------------------------------------------------------------------------
