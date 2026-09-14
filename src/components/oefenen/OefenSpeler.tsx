@@ -26,7 +26,7 @@ import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import { Figuurtekening, beschrijfFiguur } from "@/components/oefenen/Figuurtekening";
 import { InvulFiguur } from "@/components/oefenen/InvulFiguur";
 import { Uitlegweergave } from "@/components/oefenen/Uitlegweergave";
-import { vormBijGroep } from "@/lib/generatoren/uitlegscript";
+import { leesGroepsvorm, vormBijGroep } from "@/lib/generatoren/uitlegscript";
 import { goedeAntwoordInTekst, isGoed, kortGetalLengte } from "@/lib/antwoord";
 import { feestje as feestgeluid, geluidStaatAan } from "@/lib/geluid";
 import { nuInMs } from "@/lib/klok";
@@ -328,7 +328,15 @@ export function OefenSpeler({
     De uitleg-animatie, als die er voor deze groepsvorm al is. Zo niet, dan
     valt hij terug op de stappenlijst — het kind ziet dus altijd iets.
   */
-  const groepsvorm = vraag.uitlegvorm ?? vormBijGroep(groep);
+  /*
+    De vorm die dit kind krijgt. Heeft het leerdoel een eigen vorm ingesteld,
+    dan die; anders die van de groep zelf.
+
+    `leesGroepsvorm` vangt de oude blokwaarden op ("34", "56", "78") van
+    leerdoelen die sinds de overgang naar losse groepen niet opnieuw zijn
+    opgeslagen. Die leveren dezelfde uitleg als voorheen.
+  */
+  const groepsvorm = leesGroepsvorm(vraag.uitlegvorm) ?? vormBijGroep(groep);
   const animatie =
     generator && som
       ? generator.uitleganimatie.script(

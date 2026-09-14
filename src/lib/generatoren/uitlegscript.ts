@@ -16,21 +16,80 @@
 
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 
-/** Welke vorm van uitleg: de vorm volgt de groep van het kind. */
-export type Groepsvorm = "34" | "56" | "78";
+/**
+ * Welke vorm van uitleg. Eén per losse groep, niet per blok.
+ *
+ * Hier stonden eerder drie gekoppelde vormen ("34", "56", "78"). Elke groep is
+ * nu apart in te stellen, zodat groep 3 een andere uitleg kan krijgen dan groep
+ * 4 zonder dat je ze allebei moet omgooien.
+ */
+export type Groepsvorm = "3" | "4" | "5" | "6" | "7" | "8";
 
-export const GROEPSVORMEN: Groepsvorm[] = ["34", "56", "78"];
+export const GROEPSVORMEN: Groepsvorm[] = ["3", "4", "5", "6", "7", "8"];
 
-export const VORM_OMSCHRIJVING: Record<Groepsvorm, string> = {
-  "34": "Groep 3-4 — animatie met blokjes",
-  "56": "Groep 5-6 — animatie met getallen en schema's",
-  "78": "Groep 7-8 — compacte stappenlijst",
+/**
+ * De drie manieren waarop uitleg wordt opgebouwd.
+ *
+ * Dit is iets anders dan de groep: het zegt HOE de uitleg eruitziet, niet voor
+ * wie. Meerdere groepen mogen dezelfde manier gebruiken — en dat doen ze nu ook,
+ * want de bestaande animaties zijn per blok gemaakt.
+ */
+export type Uitlegmanier = "34" | "56" | "78";
+
+/**
+ * Welke manier hoort bij welke groep.
+ *
+ * Dit is de brug tussen de zes losse groepen en de animaties die er al zijn.
+ * Groep 3 en 4 krijgen dus exact dezelfde uitleg als voorheen; alleen kun je ze
+ * nu los aanspreken. Wil je later groep 3 een eigen animatie geven, dan verander
+ * je hier één regel en schrijf je in het script een tak voor "3".
+ */
+export const MANIER_VAN_VORM: Record<Groepsvorm, Uitlegmanier> = {
+  "3": "34",
+  "4": "34",
+  "5": "56",
+  "6": "56",
+  "7": "78",
+  "8": "78",
 };
 
+const MANIER_OMSCHRIJVING: Record<Uitlegmanier, string> = {
+  "34": "animatie met blokjes",
+  "56": "animatie met getallen en schema's",
+  "78": "compacte stappenlijst",
+};
+
+export const VORM_OMSCHRIJVING: Record<Groepsvorm, string> = Object.fromEntries(
+  GROEPSVORMEN.map((v) => [v, `Groep ${v} — ${MANIER_OMSCHRIJVING[MANIER_VAN_VORM[v]]}`]),
+) as Record<Groepsvorm, string>;
+
+/**
+ * De vorm die bij een groep hoort.
+ *
+ * Buiten 3 tot en met 8 wordt er afgekapt: een kind uit groep 2 krijgt de uitleg
+ * van groep 3, een kind uit groep 9 die van groep 8. Zo komt er nooit een lege
+ * vorm uit.
+ */
 export function vormBijGroep(groep: number): Groepsvorm {
-  if (groep <= 4) return "34";
-  if (groep <= 6) return "56";
-  return "78";
+  const begrensd = Math.min(8, Math.max(3, Math.round(groep)));
+  return String(begrensd) as Groepsvorm;
+}
+
+/**
+ * Een opgeslagen uitlegvorm omzetten naar een losse groep.
+ *
+ * Sjablonen en leerdoelen van vóór deze wijziging dragen nog een blokwaarde
+ * ("34", "56", "78"). Die wordt gelezen als de eerste groep van dat blok. Dat
+ * levert exact dezelfde uitleg op als voorheen, want beide groepen van een blok
+ * gebruiken dezelfde manier — er gaat dus niets verloren.
+ */
+export function leesGroepsvorm(waarde: string | null | undefined): Groepsvorm | null {
+  if (!waarde) return null;
+  if (GROEPSVORMEN.includes(waarde as Groepsvorm)) return waarde as Groepsvorm;
+  if (waarde === "34") return "3";
+  if (waarde === "56") return "5";
+  if (waarde === "78") return "7";
+  return null;
 }
 
 // ---------------------------------------------------------------------------
@@ -173,22 +232,23 @@ export function controleerUitleg(
 
   const gebreken: Scriptgebrek[] = [];
   for (const vorm of GROEPSVORMEN) {
+    const manier = MANIER_VAN_VORM[vorm];
     try {
       const script = bron.script(proef, vorm, bron.standaardStrategie(vorm));
       if (!script) {
         gebreken.push({ vorm, wat: "Deze vorm is nog niet gemaakt." });
       } else if (script.stappen.length === 0) {
         gebreken.push({ vorm, wat: "Het script heeft geen stappen." });
-      } else if (vorm === "34" && script.stappen.some((s) => s.zin.split(/\s+/).length > 6)) {
+      } else if (manier === "34" && script.stappen.some((s) => s.zin.split(/\s+/).length > 6)) {
         gebreken.push({ vorm, wat: "Een zin is langer dan zes woorden." });
-      } else if (vorm === "78" && script.stappen.some((s) => s.meetellen)) {
+      } else if (manier === "78" && script.stappen.some((s) => s.meetellen)) {
         /*
           Groep 7-8 krijgt een lijst die je in één keer leest, geen animatie
           waarin je tikt. Een tik-stap hoort daar dus niet in. Deze controle
           houdt dat vast wanneer er nieuwe types bij komen.
         */
         gebreken.push({ vorm, wat: "Groep 7-8 is een leeslijst; hier hoort geen tik-stap in." });
-      } else if (vorm === "78" && script.stappen.some((s) => s.model.soort !== "som")) {
+      } else if (manier === "78" && script.stappen.some((s) => s.model.soort !== "som")) {
         gebreken.push({
           vorm,
           wat: "Groep 7-8 toont sommen op één regel; gebruik hier het model 'som'.",

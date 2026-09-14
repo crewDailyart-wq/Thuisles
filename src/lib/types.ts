@@ -122,7 +122,7 @@ export type Leerdoel = {
    * de groep van het kind. Zo kan een kind in groep 5 dat blokjes nodig heeft
    * die toch krijgen.
    */
-  uitlegvorm?: "34" | "56" | "78" | null;
+  uitlegvorm?: string | null;
   volgorde: number;
 };
 

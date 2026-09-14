@@ -13,7 +13,6 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { Icoon } from "@/components/kind/Icoon";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
@@ -27,6 +26,64 @@ import {
 } from "@/lib/geluid";
 import { stopPraten, zeg } from "@/lib/stem";
 import type { Bloktoestand, Model, Uitlegscript } from "@/lib/generatoren/uitlegscript";
+
+/*
+  De symbolen op de bedieningsknoppen.
+
+  Met code getekend en niet als lettertekens of emoji: zo hebben ze overal
+  precies dezelfde vorm en dikte, en schalen ze mee met de knop. `currentColor`
+  laat ze de tekstkleur van de knop volgen, zodat er nooit een los kleurtje
+  naast komt te staan.
+
+  De vormen zijn bewust de bekendste die er zijn — een pijl vooruit, een
+  driehoekje, een ronde terugpijl — want een kind van zes leest de tekst nog
+  niet vloeiend maar herkent deze vormen van elke afstandsbediening.
+*/
+
+/** Dikke pijl naar rechts: verder. */
+function PijlVooruit({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
+      <path
+        d="M4 12h13M12 5.5 18.5 12 12 18.5"
+        stroke="currentColor"
+        strokeWidth={3.2}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
+/** Driehoekje: afspelen. */
+function Driehoek({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
+      <path d="M7.5 5.2 19 12 7.5 18.8Z" fill="currentColor" stroke="currentColor" strokeWidth={2.4} strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+/** Ronde terugpijl: nog een keer. */
+function RondeTerugpijl({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
+      <path
+        d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+      />
+      <path
+        d="M4 3.5v4.2h4.2"
+        stroke="currentColor"
+        strokeWidth={3}
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
 
 export function Uitlegspeler({
   script,
@@ -42,11 +99,25 @@ export function Uitlegspeler({
   const [getikt, setGetikt] = useState<number[]>([]);
   const [automatisch, setAutomatisch] = useState(false);
   const [wijsSleutel, setWijsSleutel] = useState(0);
+
+  /*
+    Een rustig duwtje naar "Verder", alleen voor groep 3.
+
+    Doet het kind een paar seconden niets, dan wijst Vos naar de knop en zegt
+    wat die doet. Eén keer per stap, en meteen weg zodra er iets gebeurt — het
+    is een aanbod, geen aansporing die blijft doorgaan.
+
+    Alleen groep 3: vanaf groep 4 weet een kind wel wat een knop met een pijl
+    doet, en dan wordt zo'n duwtje betuttelend.
+  */
+  const [duwtjeVoor, setDuwtjeVoor] = useState<string | null>(null);
   const geluidAan = useSyncExternalStore(abonneerGeluid, geluidStaatAan, geluidOpServer);
   const tijdklok = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stap = script.stappen[stapNr];
   const laatste = stapNr === script.stappen.length - 1;
+
+  const voorGroep3 = script.vorm === "3";
 
   // Vos leest de zin voor zodra een stap in beeld komt.
   useEffect(() => {
@@ -84,7 +155,38 @@ export function Uitlegspeler({
   const nogTeTikken = stap?.meetellen ? stap.meetellen.aantal - getikt.length : 0;
   const magVerder = !stap?.meetellen || nogTeTikken <= 0;
 
+  /*
+    Het duwtje van hierboven. De klok begint bij elke nieuwe stap opnieuw en
+    wordt afgebroken zodra het kind doorklikt of de stap verandert, zodat er
+    nooit twee tegelijk lopen.
+
+    Zes seconden: lang genoeg om rustig naar het plaatje te kijken, kort genoeg
+    om niet vast te lopen.
+  */
+  useEffect(() => {
+    if (!voorGroep3 || laatste || automatisch || !magVerder) return;
+
+    const klok = setTimeout(() => {
+      setDuwtjeVoor(`${script.vorm}:${stapNr}`);
+      if (geluidAan) zeg("Klik hier om verder te gaan");
+    }, 6000);
+
+    return () => clearTimeout(klok);
+  }, [voorGroep3, laatste, automatisch, magVerder, stapNr, geluidAan, script.vorm]);
+
+  /*
+    Of het duwtje nú in beeld hoort.
+
+    Bewust afgeleid en niet onthouden als losse vlag: die bleef aan staan bij de
+    volgende stap en zelfs bij een andere groep. Door de vorm én het stapnummer
+    in de waarde te zetten, hoort het duwtje altijd bij precies dat ene moment.
+  */
+  const wijsNaarVerder =
+    voorGroep3 && !laatste && duwtjeVoor === `${script.vorm}:${stapNr}`;
+
+
   function verder() {
+    setDuwtjeVoor(null);
     if (laatste) return;
     setStapNr(stapNr + 1);
     setGetikt([]);
@@ -92,12 +194,14 @@ export function Uitlegspeler({
   }
 
   function opnieuw() {
+    setDuwtjeVoor(null);
     setStapNr(0);
     setGetikt([]);
     setAutomatisch(false);
   }
 
   function tik(index: number) {
+    setDuwtjeVoor(null);
     if (getikt.includes(index)) return;
     const nieuw = [...getikt, index];
     setGetikt(nieuw);
@@ -166,8 +270,8 @@ export function Uitlegspeler({
           className="animate-vos-knik grid size-16 shrink-0 place-items-center rounded-full bg-white shadow-zacht"
         >
           <VosFiguur
-            houding={stap.houding ?? "blij"}
-            beweging={stap.beweging ?? "praten"}
+            houding={wijsNaarVerder ? "wijzend" : (stap.houding ?? "blij")}
+            beweging={wijsNaarVerder ? "wijzen" : (stap.beweging ?? "praten")}
             className="size-14"
           />
         </span>
@@ -201,17 +305,54 @@ export function Uitlegspeler({
         </p>
       )}
 
-      {/* Bediening */}
+      {/*
+        Bediening.
+
+        "Verder" is de knop waar het om draait en is daarom duidelijk zwaarder
+        gemaakt dan de andere twee: groter, gevuld, met schaduw en een groot
+        symbool. De andere twee zijn er wel, maar vragen geen aandacht. Zo is in
+        één oogopslag te zien waar je moet klikken, zonder dat er iets verdwijnt.
+      */}
+      {/*
+        Het duwtje in beeld, alleen voor groep 3. Bewust hier en niet in de
+        tekstballon van Vos: die blijft de zin van de stap houden, zodat er
+        niets verdwijnt waar het kind net naar zat te kijken.
+      */}
+      {wijsNaarVerder && !laatste && (
+        <p className="mt-3 flex items-center gap-1.5 text-sm font-extrabold text-viool">
+          <span aria-hidden="true" className="motion-safe:animate-hand-wijs text-lg">
+            👇
+          </span>
+          Klik hier om verder te gaan
+        </p>
+      )}
+
       <div className="mt-4 flex flex-wrap items-center gap-2.5">
+        {/*
+          Alleen symbolen, geen woorden.
+
+          De naam van de knop verdwijnt daarmee niet: hij staat als `aria-label`
+          (voor een voorleesprogramma) en als `title` (het tekstwolkje bij
+          aanwijzen met de muis). Een knop zonder toegankelijke naam is voor wie
+          het scherm niet ziet een knop zonder functie, en dat zou wél iets
+          weghalen.
+
+          De vlakken zijn rond en ruim: "Verder" is 64 pixels, de andere twee 48.
+          Allebei ruim boven de 44 pixels die een vingertop nodig heeft, en
+          "Verder" blijft duidelijk de grootste.
+        */}
         {!laatste && (
           <button
             type="button"
             onClick={verder}
             disabled={!magVerder}
-            className="inline-flex items-center gap-2 rounded-full bg-viool px-6 py-3 text-base font-extrabold text-white transition hover:bg-viool-diep disabled:opacity-45"
+            aria-label="Verder"
+            title="Verder"
+            className={`grid size-16 place-items-center rounded-full bg-viool text-white shadow-op transition hover:bg-viool-diep disabled:opacity-45 ${
+              wijsNaarVerder ? "motion-safe:animate-blok-klaar ring-4 ring-viool/30" : ""
+            }`}
           >
-            Verder
-            <Icoon naam="pijl" className="size-5" />
+            <PijlVooruit className="size-9" />
           </button>
         )}
 
@@ -219,18 +360,22 @@ export function Uitlegspeler({
           <button
             type="button"
             onClick={() => setAutomatisch(true)}
-            className="rounded-full border-2 border-viool px-4 py-2.5 text-sm font-extrabold text-viool transition hover:bg-viool-zacht"
+            aria-label="Afspelen"
+            title="Afspelen"
+            className="grid size-12 place-items-center rounded-full border-2 border-viool text-viool transition hover:bg-viool-zacht"
           >
-            ▶ Afspelen
+            <Driehoek className="size-6" />
           </button>
         )}
 
         <button
           type="button"
           onClick={opnieuw}
-          className="rounded-full border-2 border-rand px-4 py-2.5 text-sm font-extrabold text-inkt-zacht transition hover:border-viool hover:text-viool"
+          aria-label="Nog een keer"
+          title="Nog een keer"
+          className="grid size-12 place-items-center rounded-full border-2 border-rand text-inkt-zacht transition hover:border-viool hover:text-viool"
         >
-          Nog een keer
+          <RondeTerugpijl className="size-6" />
         </button>
 
         {laatste && onNogEen && (

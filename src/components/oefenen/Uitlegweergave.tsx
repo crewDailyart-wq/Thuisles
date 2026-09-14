@@ -19,6 +19,7 @@
 
 import { Stappenuitleg, type Lijstregel } from "@/components/oefenen/Stappenuitleg";
 import { Uitlegspeler } from "@/components/oefenen/Uitlegspeler";
+import { MANIER_VAN_VORM } from "@/lib/generatoren/uitlegscript";
 import type { Groepsvorm, Uitlegscript } from "@/lib/generatoren/uitlegscript";
 
 /** Zet een script om naar regels voor de compacte lijst. */
@@ -44,8 +45,12 @@ export function Uitlegweergave({
   onSluit: () => void;
   onNogEen?: () => void;
 }) {
-  // Groep 7-8 leest, en kijkt niet naar een animatie.
-  if (vorm === "78") {
+  /*
+    De hoogste groepen lezen en kijken niet naar een animatie. Dat hangt aan de
+    MANIER van uitleggen, niet aan de losse groep: groep 7 en 8 delen dezelfde
+    manier, maar zijn apart in te stellen.
+  */
+  if (MANIER_VAN_VORM[vorm] === "78") {
     const regels = script ? naarLijst(script) : (terugval ?? []);
     if (regels.length === 0) return null;
     return (

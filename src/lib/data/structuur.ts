@@ -1,4 +1,5 @@
 import "server-only";
+import { GROEPSVORMEN } from "@/lib/generatoren/uitlegscript";
 
 /**
  * Beheer van de leerdoelstructuur: vak -> domein -> subdomein -> leerdoel.
@@ -226,7 +227,7 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
     titel: String(r.titel),
     groepVan: Number(r.groep_van) as Groep,
     groepTot: Number(r.groep_tot) as Groep,
-    uitlegvorm: r.uitlegvorm ? (String(r.uitlegvorm) as "34" | "56" | "78") : null,
+    uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,
     vragenPerSessie:
       r.vragen_per_sessie === null || r.vragen_per_sessie === undefined
         ? null
@@ -508,9 +509,15 @@ export function maakLeerdoelenUitLijst(
   });
 }
 
-/** De uitlegvorm van een leerdoel: leeg betekent "volg de groep van het kind". */
+/**
+ * De uitlegvorm van een leerdoel: leeg betekent "volg de groep van het kind".
+ *
+ * De oude blokwaarden ("34", "56", "78") worden nog geaccepteerd. Ze staan niet
+ * meer in de keuzelijst, maar een leerdoel dat er nog één draagt mag gewoon
+ * opnieuw worden opgeslagen zonder dat de instelling sneuvelt.
+ */
 export function zetUitlegvorm(id: string, vorm: string): Uitslag<true> {
-  const toegestaan = ["", "34", "56", "78"];
+  const toegestaan = ["", ...GROEPSVORMEN, "34", "56", "78"];
   if (!toegestaan.includes(vorm)) return { ok: false, fout: "Onbekende uitlegvorm." };
   verbinding().prepare("update leerdoelen set uitlegvorm = ? where id = ?").run(vorm || null, id);
   return { ok: true, waarde: true };

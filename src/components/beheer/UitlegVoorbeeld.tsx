@@ -7,9 +7,9 @@
  * hetzelfde onderdeel gebruikt als op de kinderkant (`Uitlegweergave`), niet
  * een eigen versie — zo kunnen de twee niet uit elkaar lopen.
  *
- * Groep 3-4 en 5-6 krijgen dus de animatie met Vos, groep 7-8 de compacte
- * stappenlijst. Bestaat een animatie nog niet, dan zie je hier de terugval die
- * het kind ook krijgt.
+ * Elke groep is apart te bekijken. Groep 3 tot en met 6 krijgt de animatie met
+ * Vos, groep 7 en 8 de compacte stappenlijst. Bestaat een animatie nog niet, dan
+ * zie je hier de terugval die het kind ook krijgt.
  */
 
 import { useState } from "react";
@@ -19,6 +19,7 @@ import { zoekGenerator } from "@/lib/generatoren";
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 import {
   GROEPSVORMEN,
+  MANIER_VAN_VORM,
   VORM_OMSCHRIJVING,
   type Groepsvorm,
 } from "@/lib/generatoren/uitlegscript";
@@ -35,8 +36,8 @@ export function UitlegVoorbeeld({
   const bron = generator?.uitleganimatie ?? null;
 
   const [open, setOpen] = useState(false);
-  const [vorm, setVorm] = useState<Groepsvorm>("34");
-  const [strategie, setStrategie] = useState(bron?.standaardStrategie("34") ?? "standaard");
+  const [vorm, setVorm] = useState<Groepsvorm>("3");
+  const [strategie, setStrategie] = useState(bron?.standaardStrategie("3") ?? "standaard");
 
   if (!bron) return null;
 
@@ -107,7 +108,7 @@ export function UitlegVoorbeeld({
         {bron.modellen.join(", ")}.
       </p>
 
-      {!script && vorm !== "78" && (
+      {!script && MANIER_VAN_VORM[vorm] !== "78" && (
         <p className="mt-3 rounded-md border border-oranje/40 bg-oranje-zacht px-3 py-2 text-sm text-oranje-diep">
           Voor {VORM_OMSCHRIJVING[vorm].toLowerCase()} is er nog geen animatie. Hieronder staat
           wat een kind dan wél ziet.

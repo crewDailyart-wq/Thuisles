@@ -13,6 +13,7 @@
  */
 
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
+import { MANIER_VAN_VORM } from "@/lib/generatoren/uitlegscript";
 import type { Groepsvorm, Uitlegbron, Uitlegscript } from "@/lib/generatoren/uitlegscript";
 
 type Bussom = {
@@ -53,7 +54,7 @@ function beeld(s: Bussom, opgelicht: number, bijschrift?: string) {
 
 // --- Groep 3-4 -------------------------------------------------------------
 
-function metRamen34(s: Bussom): Uitlegscript {
+function metRamen34(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const { volleRamen, rest } = delen(s);
 
   /*
@@ -108,17 +109,17 @@ function metRamen34(s: Bussom): Uitlegscript {
     kant: "rechts",
   });
 
-  return { vorm: "34", strategie: "vijfstructuur", strategieNaam: "tellen met vijven", stappen };
+  return { vorm, strategie: "vijfstructuur", strategieNaam: "tellen met vijven", stappen };
 }
 
 // --- Groep 5-6 -------------------------------------------------------------
 
-function metRamen56(s: Bussom): Uitlegscript {
+function metRamen56(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const { volleRamen, rest } = delen(s);
   const sprongen = Array.from({ length: volleRamen }, (_, i) => (i + 1) * s.perGroep).join(", ");
 
   return {
-    vorm: "56",
+    vorm,
     strategie: "vijfstructuur",
     strategieNaam: "tellen met vijven",
     stappen: [
@@ -152,7 +153,7 @@ function metRamen56(s: Bussom): Uitlegscript {
 
 // --- Groep 7-8 -------------------------------------------------------------
 
-function metRamen78(s: Bussom): Uitlegscript {
+function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const { volleRamen, rest } = delen(s);
 
   const stappen: Uitlegscript["stappen"] = [
@@ -182,7 +183,7 @@ function metRamen78(s: Bussom): Uitlegscript {
   }
 
   return {
-    vorm: "78",
+    vorm,
     strategie: "vijfstructuur",
     strategieNaam: "tellen met vijven",
     stappen,
@@ -204,9 +205,11 @@ export const busUitleg: Uitlegbron = {
   script: (som, vorm: Groepsvorm) => {
     const s = lees(som);
     if (s.totaal < 1 || s.perGroep < 1) return null;
-    if (vorm === "34") return metRamen34(s);
-    if (vorm === "56") return metRamen56(s);
-    return metRamen78(s);
+    /* De losse groep bepaalt welke manier van uitleggen erbij hoort. */
+    const manier = MANIER_VAN_VORM[vorm];
+    if (manier === "34") return metRamen34(s, vorm);
+    if (manier === "56") return metRamen56(s, vorm);
+    return metRamen78(s, vorm);
   },
 
   vergelijkbaar: (som) => {

@@ -103,7 +103,7 @@ export type Vraag = {
 /** Vraag plus de plek in de leerdoelstructuur, voor de overzichtstabel. */
 export type VraagInContext = Vraag & {
   /** Overschreven uitlegvorm van het leerdoel, of null. */
-  uitlegvorm: "34" | "56" | "78" | null;
+  uitlegvorm: string | null;
   leerdoelCode: string;
   leerdoelTitel: string;
   subdomeinNaam: string;
@@ -141,7 +141,7 @@ export type OefenVraag = {
    * per leerdoel kan er in het beheer een andere vorm worden gekozen — voor
    * een kind in groep 5 dat toch blokjes nodig heeft.
    */
-  uitlegvorm: "34" | "56" | "78" | null;
+  uitlegvorm: string | null;
   leerdoelId: string;
   leerdoelTitel: string;
 };

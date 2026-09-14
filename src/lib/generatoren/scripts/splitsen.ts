@@ -9,6 +9,7 @@
  */
 
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
+import { MANIER_VAN_VORM } from "@/lib/generatoren/uitlegscript";
 import type {
   Bloktoestand,
   Groepsvorm,
@@ -29,11 +30,11 @@ function rij(geheel: number, maak: (i: number) => Bloktoestand): Bloktoestand[] 
  * Strategie "eraf halen": je begint bij het hele getal en haalt het gegeven
  * deel eraf. Wat overblijft is het antwoord.
  */
-function erafHalenMetBlokjes(geheel: number, deel: number, antwoord: number): Uitlegscript {
+function erafHalenMetBlokjes(geheel: number, deel: number, antwoord: number, vorm: Groepsvorm): Uitlegscript {
   const kolommen = perRij(geheel);
 
   return {
-    vorm: "34",
+    vorm,
     strategie: "eraf-halen",
     strategieNaam: "eerst eraf halen",
     stappen: [
@@ -102,11 +103,11 @@ function erafHalenMetBlokjes(geheel: number, deel: number, antwoord: number): Ui
  * Strategie "aanvullen": je begint bij het gegeven deel en telt door tot het
  * hele getal. Wat je erbij doet is het antwoord.
  */
-function aanvullenMetBlokjes(geheel: number, deel: number, antwoord: number): Uitlegscript {
+function aanvullenMetBlokjes(geheel: number, deel: number, antwoord: number, vorm: Groepsvorm): Uitlegscript {
   const kolommen = perRij(geheel);
 
   return {
-    vorm: "34",
+    vorm,
     strategie: "aanvullen",
     strategieNaam: "aanvullen tot het geheel",
     stappen: [
@@ -158,11 +159,11 @@ function aanvullenMetBlokjes(geheel: number, deel: number, antwoord: number): Ui
 }
 
 /** Groep 7-8: dezelfde weg, maar kort en zakelijk op één regel per stap. */
-function compacteLijst(geheel: number, deel: number, antwoord: number, strategie: string): Uitlegscript {
+function compacteLijst(geheel: number, deel: number, antwoord: number, strategie: string, vorm: Groepsvorm): Uitlegscript {
   const erafHalen = strategie === "eraf-halen";
 
   return {
-    vorm: "78",
+    vorm,
     strategie,
     strategieNaam: erafHalen ? "eerst eraf halen" : "aanvullen tot het geheel",
     stappen: erafHalen
@@ -193,22 +194,25 @@ export const splitsenUitleg: Uitlegbron = {
       uitleg: "Begin bij het bekende deel en tel door tot het hele getal.",
     },
   ],
-  standaardStrategie: (vorm) => (vorm === "34" ? "eraf-halen" : "eraf-halen"),
+  standaardStrategie: () => "eraf-halen",
 
   script(som: Somgegevens, vorm: Groepsvorm, strategie: string) {
     const [geheel, deel] = som.getallen;
     const antwoord = som.goed;
     if (!Number.isFinite(geheel) || !Number.isFinite(deel)) return null;
 
-    if (vorm === "34") {
+    /* De losse groep bepaalt welke manier van uitleggen erbij hoort. */
+    const manier = MANIER_VAN_VORM[vorm];
+
+    if (manier === "34") {
       // Bij hele grote getallen zijn losse blokjes niet meer te overzien.
       if (geheel > 30) return null;
       return strategie === "aanvullen"
-        ? aanvullenMetBlokjes(geheel, deel, antwoord)
-        : erafHalenMetBlokjes(geheel, deel, antwoord);
+        ? aanvullenMetBlokjes(geheel, deel, antwoord, vorm)
+        : erafHalenMetBlokjes(geheel, deel, antwoord, vorm);
     }
 
-    if (vorm === "78") return compacteLijst(geheel, deel, antwoord, strategie);
+    if (manier === "78") return compacteLijst(geheel, deel, antwoord, strategie, vorm);
 
     // Groep 5-6 volgt hierna.
     return null;

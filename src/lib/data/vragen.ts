@@ -122,7 +122,7 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     sjabloonId: r.sjabloon_id ? String(r.sjabloon_id) : null,
     status: String(r.status) as Vraagstatus,
     aangemaaktOp: String(r.aangemaakt_op),
-    uitlegvorm: r.uitlegvorm ? (String(r.uitlegvorm) as "34" | "56" | "78") : null,
+    uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,
     leerdoelCode: String(r.code),
     leerdoelTitel: String(r.titel),
     subdomeinNaam: String(r.subdomein_naam),
