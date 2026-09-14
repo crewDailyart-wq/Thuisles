@@ -11,7 +11,7 @@
  * een som nog niet bestaat.
  */
 
-import { Icoon } from "@/components/kind/Icoon";
+import { Kruisje, Luidspreker } from "@/components/oefenen/Symbolen";
 import { Figuurtekening } from "@/components/oefenen/Figuurtekening";
 import type { Figuur } from "@/lib/generatoren/soort";
 import { zeg } from "@/lib/stem";
@@ -25,40 +25,42 @@ export type Lijstregel = {
 
 export function Stappenuitleg({
   stappen,
-  titel,
   onSluit,
 }: {
   stappen: Lijstregel[];
-  /** Bijvoorbeeld de naam van de strategie. */
-  titel?: string;
   onSluit: () => void;
 }) {
   return (
     <div className="mt-5 rounded-2xl border-2 border-lucht/40 bg-lucht-zacht/60 p-4">
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="flex items-center gap-2 text-sm font-extrabold text-lucht">
-          <Icoon naam="gloeilamp" className="size-5" />
-          Zo doe je het{titel ? ` — ${titel}` : ""}
-        </p>
+      {/*
+        Kop met alleen knopjes, net als bij de animatie. De titel is weg; de
+        stappen eronder zeggen zelf al wat er staat.
 
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() =>
-              zeg(stappen.map((s) => `${s.tekst} ${s.som ?? ""}`).join(". "))
-            }
-            className="rounded-full bg-white/80 px-3 py-1 text-xs font-bold text-inkt-zacht transition hover:text-viool"
-          >
-            🔊 Voorlezen
-          </button>
-          <button
-            type="button"
-            onClick={onSluit}
-            className="rounded-full px-3 py-1 text-xs font-bold text-inkt-zacht transition hover:bg-white/70"
-          >
-            Sluiten
-          </button>
-        </div>
+        Voorlezen is hier een handeling en geen schakelaar — hij start het
+        voorlezen — dus er is geen doorgestreepte stand. Het blijft dezelfde
+        luidspreker, zodat het teken door de hele uitleg hetzelfde betekent.
+      */}
+      <div className="mb-3 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          onClick={() =>
+            zeg(stappen.map((s) => `${s.tekst} ${s.som ?? ""}`).join(". "))
+          }
+          aria-label="Voorlezen"
+          title="Voorlezen"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+        >
+          <Luidspreker className="size-6" />
+        </button>
+        <button
+          type="button"
+          onClick={onSluit}
+          aria-label="Sluiten"
+          title="Sluiten"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+        >
+          <Kruisje className="size-6" />
+        </button>
       </div>
 
       <ol className="flex flex-col gap-1.5">

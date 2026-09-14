@@ -14,6 +14,14 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
+import {
+  Driehoek,
+  Kruisje,
+  Luidspreker,
+  LuidsprekerUit,
+  PijlVooruit,
+  RondeTerugpijl,
+} from "@/components/oefenen/Symbolen";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
@@ -26,64 +34,6 @@ import {
 } from "@/lib/geluid";
 import { stopPraten, zeg } from "@/lib/stem";
 import type { Bloktoestand, Model, Uitlegscript } from "@/lib/generatoren/uitlegscript";
-
-/*
-  De symbolen op de bedieningsknoppen.
-
-  Met code getekend en niet als lettertekens of emoji: zo hebben ze overal
-  precies dezelfde vorm en dikte, en schalen ze mee met de knop. `currentColor`
-  laat ze de tekstkleur van de knop volgen, zodat er nooit een los kleurtje
-  naast komt te staan.
-
-  De vormen zijn bewust de bekendste die er zijn — een pijl vooruit, een
-  driehoekje, een ronde terugpijl — want een kind van zes leest de tekst nog
-  niet vloeiend maar herkent deze vormen van elke afstandsbediening.
-*/
-
-/** Dikke pijl naar rechts: verder. */
-function PijlVooruit({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
-      <path
-        d="M4 12h13M12 5.5 18.5 12 12 18.5"
-        stroke="currentColor"
-        strokeWidth={3.2}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
-
-/** Driehoekje: afspelen. */
-function Driehoek({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className}>
-      <path d="M7.5 5.2 19 12 7.5 18.8Z" fill="currentColor" stroke="currentColor" strokeWidth={2.4} strokeLinejoin="round" />
-    </svg>
-  );
-}
-
-/** Ronde terugpijl: nog een keer. */
-function RondeTerugpijl({ className = "" }: { className?: string }) {
-  return (
-    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
-      <path
-        d="M4.5 12a7.5 7.5 0 1 0 2.4-5.5"
-        stroke="currentColor"
-        strokeWidth={3}
-        strokeLinecap="round"
-      />
-      <path
-        d="M4 3.5v4.2h4.2"
-        stroke="currentColor"
-        strokeWidth={3}
-        strokeLinecap="round"
-        strokeLinejoin="round"
-      />
-    </svg>
-  );
-}
 
 export function Uitlegspeler({
   script,
@@ -215,28 +165,43 @@ export function Uitlegspeler({
 
   return (
     <div className="mt-5 rounded-groot border-2 border-viool/25 bg-viool-zacht/40 p-4 sm:p-5">
-      {/* Kop met strategie en knopjes */}
-      <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-        <p className="text-sm font-extrabold text-viool-diep">
-          Zo doe je het — {script.strategieNaam}
-        </p>
-        <div className="flex items-center gap-1.5">
-          <button
-            type="button"
-            onClick={() => zetGeluid(!geluidAan)}
-            aria-pressed={geluidAan}
-            className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-inkt-zacht transition hover:text-viool"
-          >
-            {geluidAan ? "🔊 Geluid aan" : "🔇 Geluid uit"}
-          </button>
-          <button
-            type="button"
-            onClick={onSluit}
-            className="rounded-full bg-white/80 px-3 py-1.5 text-xs font-bold text-inkt-zacht transition hover:text-viool"
-          >
-            Sluiten
-          </button>
-        </div>
+      {/*
+        Kop met alleen knopjes.
+
+        De titel ("Zo doe je het — tellen met vijven") is weg: het paneel spreekt
+        voor zich, en die zin was voor de jongste kinderen toch niet te lezen.
+        De strategienaam is daarmee niet verdwenen uit de app — hij staat nog in
+        het beheer bij "Bekijk uitleg", waar hij wél gelezen wordt.
+
+        De twee knoppen zijn symbolen zonder tekst. Hun naam hangt als
+        `aria-label` en `title` aan de knop, zodat een voorleesprogramma blijft
+        zeggen wat ze doen. `aria-pressed` blijft staan: dat vertelt of het
+        geluid aan of uit staat.
+      */}
+      <div className="mb-3 flex items-center justify-end gap-2">
+        <button
+          type="button"
+          onClick={() => zetGeluid(!geluidAan)}
+          aria-pressed={geluidAan}
+          aria-label={geluidAan ? "Geluid aan" : "Geluid uit"}
+          title={geluidAan ? "Geluid aan" : "Geluid uit"}
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+        >
+          {geluidAan ? (
+            <Luidspreker className="size-6" />
+          ) : (
+            <LuidsprekerUit className="size-6" />
+          )}
+        </button>
+        <button
+          type="button"
+          onClick={onSluit}
+          aria-label="Sluiten"
+          title="Sluiten"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+        >
+          <Kruisje className="size-6" />
+        </button>
       </div>
 
       {/* Het model: één ding tegelijk, groot */}

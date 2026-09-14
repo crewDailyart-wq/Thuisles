@@ -54,7 +54,7 @@ export function Uitlegweergave({
     const regels = script ? naarLijst(script) : (terugval ?? []);
     if (regels.length === 0) return null;
     return (
-      <Stappenuitleg stappen={regels} titel={script?.strategieNaam} onSluit={onSluit} />
+      <Stappenuitleg stappen={regels} onSluit={onSluit} />
     );
   }
 
