@@ -1,4 +1,54 @@
-# ⛔ HARDE REGEL — CLAUDE MAAKT NOOIT ZELF CONTENT AAN
+# ⛔ HARDE REGEL 1 — NIETS WAT AL BESTAAT MAG VERDWIJNEN
+
+Geldt voor de HELE website: kinderkant, ouderomgeving, beheeromgeving, alles.
+
+**Bij elke wijziging aan een bestaand scherm, formulier of functie blijft alles
+wat er al stond gewoon werken en zichtbaar.**
+
+Je verwijdert nooit een veld, knop, instelling of functie zonder dat de eigenaar
+daar expliciet om vraagt. Twijfel je of iets nog nodig is: vraag het, verwijder
+het niet.
+
+Dit gaat niet alleen over wat je ziet. Een instelling kan ook verdwijnen doordat
+een opgeslagen waarde stilletjes wordt overschreven — zie de oorzaak hieronder.
+Zowel het veld als de waarde erachter moet blijven.
+
+## Verplichte controle na elke wijziging aan een bestaand scherm
+
+1. Maak vóór de wijziging een lijst van wat er op dat scherm staat: alle
+   invoervelden met hun labels, alle knoppen, alle keuzelijsten.
+2. Doe hetzelfde ná de wijziging.
+3. Vergelijk die twee lijsten en **meld elk verschil expliciet** — ook als het
+   klein lijkt, ook als het logisch voortvloeit uit de opdracht.
+
+In de browser kan dat zo:
+
+```js
+[...document.querySelectorAll('label')].map(l => l.textContent.trim().split('\n')[0])
+[...document.querySelectorAll('button')].map(b => b.textContent.trim())
+```
+
+Verplaats je iets bewust naar een ander scherm, controleer dan ook of de
+serveractie van het ÓUDE scherm het veld niet meer meestuurt. Een formulier dat
+een veld kwijt is maar de waarde nog wel leeg meestuurt, wist de instelling bij
+elke volgende opslag.
+
+## Waarom deze regel er is
+
+"Vragen per oefensessie" moest twee keer worden gebouwd. Het veld verhuisde op
+verzoek van het leerdoelscherm naar het sjabloonscherm, maar `bewerkLeerdoel`
+bleef `vragenPerSessie` meesturen. Dat veld stond niet meer in dat formulier,
+dus kwam het als lege waarde binnen en werd het als `null` over het opgeslagen
+getal geschreven. Wie daarna de titel van een leerdoel aanpaste, raakte de
+instelling kwijt zonder dat er iets misging op het scherm.
+
+Het gevolg: je kunt er niet meer op vertrouwen dat wat je hebt ingesteld,
+ingesteld blijft. Daarom geldt de regel voor het hele platform en hoort de
+controle hierboven bij elke wijziging.
+
+---
+
+# ⛔ HARDE REGEL 2 — CLAUDE MAAKT NOOIT ZELF CONTENT AAN
 
 **Claude maakt nooit zelf content aan in de database.**
 
