@@ -190,6 +190,57 @@ try {
       ? `Na het aanmaken staat het aantal op ${aantal()} in plaats van 15.`
       : `Kon geen proefsjabloon maken: ${sjabloon.fout}`,
   );
+
+  /*
+    7. Elke oefening houdt zijn eigen halve sessie.
+
+    Twee dingen moeten tegelijk waar zijn, en ze zijn allebei een keer misgegaan:
+
+      a. Hetzelfde leerdoel via een andere knop = dezelfde sessie. Anders begint
+         een kind dat via "Oefen wat nog lastig was" terugkomt weer bij vraag 1,
+         met lege bolletjes, terwijl zijn halve serie er nog gewoon staat.
+
+      b. Een ander leerdoel = een eigen sessie. Onder een onderwerp hangen
+         meerdere leerdoelen op hetzelfde pad. Telde het leerdoel niet mee, dan
+         kwamen ze in hetzelfde potje: wie op "Bus tellen" klikte, kreeg de
+         halve serie van "Telrij stapstenen" te zien.
+
+    Hier staan ze allebei vast, want een oplossing voor de een brak de ander.
+  */
+  const { sessieSleutel } = await import("@/lib/oefensessie");
+  const pad = "/oefenen/rekenen/getallen/tellen/oefening";
+  const tegel = `${pad}?leerdoel=doel-a`;
+  const herhaal = `${pad}?leerdoel=doel-a&herhaal=1`;
+
+  zouMoeten(
+    "Hetzelfde leerdoel hervat dezelfde sessie, via welke knop dan ook",
+    sessieSleutel("kind-1", tegel) === sessieSleutel("kind-1", herhaal),
+    `De tegel en "Oefen wat nog lastig was" leveren verschillende sleutels op:\n      ${sessieSleutel(
+      "kind-1",
+      tegel,
+    )}\n      ${sessieSleutel("kind-1", herhaal)}`,
+  );
+
+  zouMoeten(
+    "Twee leerdoelen onder hetzelfde onderwerp houden elk hun eigen sessie",
+    sessieSleutel("kind-1", tegel) !== sessieSleutel("kind-1", `${pad}?leerdoel=doel-b`),
+    "Beide leerdoelen krijgen dezelfde sleutel; het kind zou bij het ene leerdoel de vragen van het andere zien.",
+  );
+
+  /* Twee kinderen op één apparaat blijven wel uit elkaars sessie. */
+  zouMoeten(
+    "Twee kinderen op hetzelfde apparaat houden hun eigen sessie",
+    sessieSleutel("kind-1", tegel) !== sessieSleutel("kind-2", tegel),
+    "Beide kinderen krijgen dezelfde sleutel en zouden elkaars serie overnemen.",
+  );
+
+  /* Een ander onderwerp is een andere oefening en hoort los te staan. */
+  zouMoeten(
+    "Een ander onderwerp krijgt een eigen sessie",
+    sessieSleutel("kind-1", tegel) !==
+      sessieSleutel("kind-1", "/oefenen/rekenen/getallen/optellen/oefening?leerdoel=doel-a"),
+    "Twee onderwerpen delen dezelfde sleutel en lopen door elkaar heen.",
+  );
 } finally {
   /* De kopie en alles wat erin is gezet, gaat weg. */
   rmSync(werkmap, { recursive: true, force: true });

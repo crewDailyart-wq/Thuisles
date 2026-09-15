@@ -24,14 +24,14 @@ export default async function Pagina() {
       <p className="mt-2 text-sm font-semibold text-inkt-zacht">
         Hier pas je straks je avatar en instellingen aan.
       </p>
-      <p className="mt-6 inline-block rounded-full bg-viool-zacht px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-viool-diep">
+      <p className="mt-6 inline-block rounded-full bg-huisstijl-zacht px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-huisstijl-diep">
         Dit scherm bouwen we hierna
       </p>
 
       <form action={verlaatProfiel} className="mt-8 border-t border-rand pt-6">
         <button
           type="submit"
-          className="inline-flex min-h-11 items-center justify-center rounded-full border border-rand bg-white px-5 text-sm font-bold text-inkt-zacht transition hover:border-viool hover:text-viool"
+          className="inline-flex min-h-11 items-center justify-center rounded-full border border-rand bg-white px-5 text-sm font-bold text-inkt-zacht transition hover:border-huisstijl hover:text-huisstijl"
         >
           Klaar met oefenen — terug naar papa of mama
         </button>

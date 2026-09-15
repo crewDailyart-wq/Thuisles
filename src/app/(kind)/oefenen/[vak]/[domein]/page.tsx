@@ -132,7 +132,6 @@ export default async function DomeinPagina({
   const leerdoelIds = detail.leerdoelen.map((l) => l.leerdoel.id);
   const vragenPer = telGepubliceerdPerLeerdoel(leerdoelIds);
   const nieuwPer = nieuwPerLeerdoel(leerdoelIds);
-  const totaalVragen = Object.values(vragenPer).reduce((a, b) => a + b, 0);
   const oefenHref = `${basis}/${gekozen.subdomein.slug}/oefening`;
 
   return (
@@ -163,7 +162,7 @@ export default async function DomeinPagina({
                     aria-current={actief ? "true" : undefined}
                     className={`flex items-center gap-3 rounded-2xl border-2 p-2.5 transition ${
                       actief
-                        ? "border-viool bg-viool-zacht"
+                        ? "border-huisstijl bg-huisstijl-zacht"
                         : "border-transparent hover:border-rand hover:bg-room/60"
                     }`}
                   >
@@ -178,7 +177,7 @@ export default async function DomeinPagina({
                     <span className="min-w-0 flex-1">
                       <span
                         className={`block text-sm font-extrabold leading-tight ${
-                          actief ? "text-viool-diep" : ""
+                          actief ? "text-huisstijl-diep" : ""
                         }`}
                       >
                         {subdomein.naam}
@@ -213,16 +212,6 @@ export default async function DomeinPagina({
               </p>
             </div>
 
-            {/* Alles achter elkaar oefenen, in plaats van één leerdoel. */}
-            {totaalVragen > 0 && (
-              <Link
-                href={oefenHref}
-                className="inline-flex shrink-0 items-center gap-2 rounded-full bg-groen px-4 py-2.5 text-sm font-extrabold text-white transition hover:bg-groen-diep"
-              >
-                Start met oefenen
-                <Icoon naam="pijl" className="size-4" />
-              </Link>
-            )}
           </div>
 
           <ol className="mt-5 flex flex-col gap-2.5">
@@ -242,7 +231,7 @@ export default async function DomeinPagina({
                         {leerdoel.titel}
                       </span>
                       {nieuwPer[leerdoel.id] && (
-                        <span className="rounded-full bg-viool px-2 py-0.5 text-[0.6rem] font-extrabold uppercase tracking-wide text-white">
+                        <span className="rounded-full bg-huisstijl-diep px-2 py-0.5 text-[0.6rem] font-extrabold uppercase tracking-wide text-white">
                           Nieuw
                         </span>
                       )}
@@ -276,7 +265,7 @@ export default async function DomeinPagina({
                   {heeftVragen ? (
                     <Link
                       href={`${oefenHref}?leerdoel=${leerdoel.id}`}
-                      className="group flex w-full items-start gap-3 rounded-2xl border border-rand bg-room/50 p-3.5 transition hover:border-viool hover:bg-viool-zacht"
+                      className="group flex w-full items-start gap-3 rounded-2xl border border-rand bg-room/50 p-3.5 transition hover:border-huisstijl hover:bg-huisstijl-zacht"
                     >
                       {binnenkant}
                     </Link>

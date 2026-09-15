@@ -17,10 +17,10 @@ import type { MethodeHerkomst, MethodeKoppeling } from "@/lib/types";
 /** Eigen beeldmerk voor een rekenmethode: kompasnaald met telkralen. */
 function MethodeMerkje() {
   return (
-    <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-viool-zacht">
+    <span className="grid size-12 shrink-0 place-items-center rounded-2xl bg-huisstijl-zacht">
       <svg viewBox="0 0 32 32" className="size-7" aria-hidden="true">
-        <circle cx={16} cy={16} r={12} fill="none" stroke="#5b3fd6" strokeWidth={2.4} />
-        <path d="M21 11 L18 18 L11 21 L14 14 Z" fill="#5b3fd6" />
+        <circle cx={16} cy={16} r={12} fill="none" stroke="#e8690f" strokeWidth={2.4} />
+        <path d="M21 11 L18 18 L11 21 L14 14 Z" fill="#e8690f" />
         <circle cx={16} cy={4.6} r={2.2} fill="#f2bb2e" />
         <circle cx={27.4} cy={16} r={2.2} fill="#1f9d63" />
       </svg>
@@ -65,7 +65,7 @@ export function SchoolMethodeKaart({
     <section className="rounded-groot border border-rand bg-kaart p-5 shadow-zacht">
       <div className="flex items-start justify-between gap-3">
         <h2 className="flex items-center gap-2 text-base font-extrabold">
-          <Icoon naam="school" className="size-5 text-viool" />
+          <Icoon naam="school" className="size-5 text-huisstijl" />
           School &amp; methode
         </h2>
         <span

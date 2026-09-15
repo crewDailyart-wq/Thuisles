@@ -8,18 +8,30 @@
  * aan te veranderen.
  */
 
+import { useState } from "react";
 import { stijl } from "@/components/beheer/Bouwstenen";
+import { AfbeeldingKiezer } from "@/components/beheer/AfbeeldingKiezer";
 import type { Instellingen, Veld } from "@/lib/generatoren/soort";
 
 export function SjabloonInstellingen({
   velden,
   waarden,
   onWijzig,
+  afbeeldingen = [],
 }: {
   velden: Veld[];
   waarden: Instellingen;
   onWijzig: (sleutel: string, waarde: Instellingen[string]) => void;
+  /**
+   * De afbeeldingen die er al zijn, voor een veld van het soort "afbeelding".
+   * Leeg meegeven kan gewoon: dan kun je er nog wel een uploaden.
+   */
+  afbeeldingen?: string[];
 }) {
+  /* Een zojuist geüploade afbeelding staat nog niet in de lijst van de server. */
+  const [erbij, setErbij] = useState<string[]>([]);
+  const beschikbaar = [...afbeeldingen, ...erbij.filter((n) => !afbeeldingen.includes(n))];
+
   return (
     <div className="flex flex-col gap-3">
       {velden.map((veld) => {
@@ -100,6 +112,30 @@ export function SjabloonInstellingen({
                 <span className="mt-1 block text-xs text-beheer-zacht">{veld.hulp}</span>
               )}
             </label>
+          );
+        }
+
+        if (veld.soort === "afbeelding") {
+          return (
+            <div key={veld.sleutel}>
+              <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+                {veld.label}
+              </span>
+              <AfbeeldingKiezer
+                naam={`instelling-${veld.sleutel}`}
+                waarde={String(waarden[veld.sleutel] ?? "")}
+                beschikbaar={beschikbaar}
+                onWijzig={(w) => onWijzig(veld.sleutel, w)}
+                onNieuw={(bestandsnaam) => {
+                  setErbij((lijst) => [...lijst, bestandsnaam]);
+                  onWijzig(veld.sleutel, bestandsnaam);
+                }}
+                compact
+              />
+              {veld.hulp && (
+                <span className="mt-1 block text-xs text-beheer-zacht">{veld.hulp}</span>
+              )}
+            </div>
           );
         }
 

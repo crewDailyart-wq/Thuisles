@@ -455,6 +455,54 @@ function maakTabellen(d: DatabaseSync) {
     );
 
     /*
+      Waar een kind midden in een oefening was gebleven.
+
+      Stond eerder alleen in localStorage, en dus per browser. Een kind dat
+      op de laptop begon en op de tablet verderging, begon daar weer bij vraag
+      1 met lege bolletjes. Nu hangt het aan het kind, dus is het op elk
+      apparaat hetzelfde.
+
+      vraag_ids   json-lijst met alleen de id's, in de volgorde van de serie.
+                  Bewust niet de vraagtekst: dat is onnodig veel van het kind
+                  bewaren, en de vraag zelf staat toch al in vragen.
+      antwoorden  json-lijst met wat er tot nu toe is beantwoord. Daar komen de
+                  groene en rode bolletjes bovenin vandaan. Dezelfde regels gaan
+                  ook naar antwoorden; dit is de stand van déze ronde, en die
+                  verdwijnt zodra de serie af is.
+      pad         het onderwerp, zonder zoekreeks. Elke ingang naar dezelfde
+                  oefening deelt daardoor één halve sessie.
+
+      Eén regel per kind per onderwerp, en die gaat weg zodra de serie af is.
+    */
+    create table if not exists oefensessies (
+      kind_id       text not null references kinderen (id) on delete cascade,
+      pad           text not null,
+      ronde_id      text not null,
+      vraag_ids     text not null,
+      antwoorden    text not null default '[]',
+      bijgewerkt_op text not null,
+      primary key (kind_id, pad)
+    );
+
+    /*
+      Voorkeuren van het kind zelf, als sleutel en waarde.
+
+      Nu: staat het geluid in het uitlegfilmpje aan, en staat het geluid in de
+      opgave aan. Bewust sleutel-waarde en geen kolommen: een voorkeur erbij is
+      dan een regel, geen migratie.
+
+      Alleen voorkeuren — nooit iets over het apparaat, de browser of waar het
+      kind is. Wat hier niet staat, hoeft ook niet bewaard te worden.
+    */
+    create table if not exists kind_instellingen (
+      kind_id       text not null references kinderen (id) on delete cascade,
+      sleutel       text not null,
+      waarde        text not null,
+      bijgewerkt_op text not null,
+      primary key (kind_id, sleutel)
+    );
+
+    /*
       Welke eenmalige stappen al gedaan zijn.
 
       Nodig omdat sommige stappen bij een uitbreiding precies één keer moeten

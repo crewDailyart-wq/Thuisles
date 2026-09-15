@@ -3,7 +3,7 @@
  *
  * Elke kaart heeft een rond icoon in een gekleurde cirkel, een titel, een
  * korte tekst en een opvallende knop onderaan in de eigen kleur van die kaart:
- * paars voor zelf kiezen, groen voor het aanbevolen "Voor jou", oranje voor de
+ * de huisstijlkleur voor zelf kiezen, groen voor het aanbevolen "Voor jou", en
  * wereld. "Voor jou" staat in het midden en is iets opgetild, zodat het oog
  * daar het eerst landt.
  */
@@ -12,16 +12,16 @@ import Link from "next/link";
 import { Icoon, type IcoonNaam } from "@/components/kind/Icoon";
 import type { Aanbeveling } from "@/lib/types";
 
-type Kleur = "viool" | "groen" | "oranje";
+type Kleur = "huisstijl" | "groen" | "oranje";
 
 const CIRKEL: Record<Kleur, string> = {
-  viool: "bg-viool-zacht text-viool",
+  huisstijl: "bg-huisstijl-zacht text-huisstijl-diep",
   groen: "bg-groen-zacht text-groen",
   oranje: "bg-oranje-zacht text-oranje",
 };
 
 const KNOP: Record<Kleur, string> = {
-  viool: "bg-viool hover:bg-viool-diep",
+  huisstijl: "bg-huisstijl-diep hover:bg-huisstijl-donker",
   groen: "bg-groen hover:bg-groen-diep",
   oranje: "bg-oranje hover:bg-oranje-diep",
 };
@@ -99,7 +99,7 @@ export function Hoofdkeuzes({ aanbeveling }: { aanbeveling: Aanbeveling | null }
           <Kaart
             href="/oefenen"
             icoon="oefenen"
-            kleur="viool"
+            kleur="huisstijl"
             titel="Oefenen"
             tekst="Kies zelf een onderwerp waar je mee aan de slag gaat."
             knop="Kies zelf"

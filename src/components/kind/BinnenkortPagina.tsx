@@ -19,7 +19,7 @@ export function BinnenkortPagina({
       </p>
       <h1 className="mt-4 text-2xl font-extrabold">{titel}</h1>
       <p className="mt-2 text-sm font-semibold text-inkt-zacht">{tekst}</p>
-      <p className="mt-6 inline-block rounded-full bg-viool-zacht px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-viool-diep">
+      <p className="mt-6 inline-block rounded-full bg-huisstijl-zacht px-4 py-2 text-xs font-extrabold uppercase tracking-wide text-huisstijl-diep">
         Dit scherm bouwen we hierna
       </p>
     </div>

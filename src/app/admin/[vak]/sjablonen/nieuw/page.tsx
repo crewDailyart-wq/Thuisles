@@ -4,6 +4,7 @@ import { SjabloonFormulier } from "@/components/beheer/SjabloonFormulier";
 import { haalDomeinen, haalSubdomeinen, haalVak } from "@/lib/data/structuur";
 import { haalLeerdoelen } from "@/lib/data/vragen";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
+import { lijstAfbeeldingen } from "@/lib/data/afbeeldingen";
 
 export default async function NieuwSjabloonPagina({
   params,
@@ -52,6 +53,7 @@ export default async function NieuwSjabloonPagina({
         onderwerpen={onderwerpen}
         startLeerdoelId={start ?? ""}
         algemeenAantal={haalAlgemeenAantalVragen()}
+        afbeeldingen={lijstAfbeeldingen()}
       />
     </div>
   );

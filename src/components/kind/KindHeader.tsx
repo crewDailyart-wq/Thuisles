@@ -46,7 +46,7 @@ export function KindHeader({
 
         {/* Profielbolletje met naam en groep. */}
         <div className="flex items-center gap-2.5 rounded-full border border-white/70 bg-kaart py-1.5 pl-1.5 pr-4 shadow-zacht">
-          <span className="grid size-10 place-items-center overflow-hidden rounded-full bg-viool-zacht">
+          <span className="grid size-10 place-items-center overflow-hidden rounded-full bg-huisstijl-zacht">
             <Pictogram naam={kind.avatar} className="size-8" />
           </span>
           <span className="leading-tight">

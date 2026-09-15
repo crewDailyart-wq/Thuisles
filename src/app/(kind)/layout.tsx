@@ -11,7 +11,9 @@
  * alleen de gegevens op.
  */
 
+import { Geluidsvoorkeur } from "@/components/kind/Geluidsvoorkeur";
 import { Kindschil } from "@/components/kind/Kindschil";
+import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
 import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
 
 /**
@@ -28,9 +30,12 @@ export default async function KindLayout({
 }) {
   const kind = await haalHuidigKind();
   const sleutels = await haalSleutelstand(kind.id);
+  /* Staat het geluid aan? Dat hoort bij het kind, niet bij dit apparaat. */
+  const geluid = haalGeluidsvoorkeuren(kind.id);
 
   return (
     <Kindschil kind={kind} sleutels={sleutels}>
+      <Geluidsvoorkeur uitleg={geluid.uitleg} opgave={geluid.opgave} />
       {children}
     </Kindschil>
   );

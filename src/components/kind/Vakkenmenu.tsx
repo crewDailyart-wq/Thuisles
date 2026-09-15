@@ -43,7 +43,7 @@ export function Vakkenmenu({ vakken }: { vakken: Vak[] }) {
                 aria-current="true"
                 className="group block"
               >
-                <span className="mx-auto grid size-[4.5rem] place-items-center rounded-full bg-kaart shadow-op ring-4 ring-viool transition group-hover:-translate-y-0.5 sm:size-26">
+                <span className="mx-auto grid size-[4.5rem] place-items-center rounded-full bg-kaart shadow-op ring-4 ring-huisstijl transition group-hover:-translate-y-0.5 sm:size-26">
                   <Pictogram naam={vak.icoon} className="size-10 sm:size-14" />
                 </span>
                 <span className="mt-2 block text-sm font-bold leading-tight text-inkt sm:text-base">

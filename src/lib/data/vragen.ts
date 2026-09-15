@@ -415,6 +415,41 @@ export function haalGepubliceerdeVragen(leerdoelIds: string[]): VraagInContext[]
   return rijen.map(naarVraag);
 }
 
+/**
+ * Gepubliceerde vragen opzoeken op id, in de volgorde die je meegeeft.
+ *
+ * Nodig om een halve oefensessie te hervatten: daarvan zijn alleen de id's
+ * bewaard, niet de vragen zelf. De volgorde is die van de bewaarde serie, want
+ * "vraag 4 van 15" moet ook echt dezelfde vierde vraag zijn als gisteren.
+ *
+ * Een id dat er niet meer is, of dat intussen terug op concept staat, valt er
+ * gewoon uit. De serie wordt dan korter; dat is beter dan een kind een vraag
+ * voorschotelen die niet meer bestaat.
+ */
+export function haalGepubliceerdeVragenOpIds(ids: string[]): VraagInContext[] {
+  if (ids.length === 0) return [];
+
+  const db = verbinding();
+  const plaatshouders = ids.map(() => "?").join(",");
+
+  const rijen = db
+    .prepare(
+      `select q.*, ld.code, ld.titel, ld.uitlegvorm,
+              s.naam as subdomein_naam, d.naam as domein_naam, d.slug as domein_slug,
+              v.naam as vak_naam, v.slug as vak_slug
+       from vragen q
+       join leerdoelen  ld on ld.id = q.leerdoel_id
+       join subdomeinen s  on s.id = ld.subdomein_id
+       join domeinen    d  on d.id = s.domein_id
+       join vakken      v  on v.id = d.vak_id
+       where q.status = 'gepubliceerd' and q.id in (${plaatshouders})`,
+    )
+    .all(...ids) as Record<string, string | number | null>[];
+
+  const opId = new Map(rijen.map((r) => [String(r.id), naarVraag(r)]));
+  return ids.map((id) => opId.get(id)).filter((v): v is VraagInContext => v !== undefined);
+}
+
 /** Hoeveel gepubliceerde vragen er per leerdoel klaarstaan. */
 export function telGepubliceerdPerLeerdoel(
   leerdoelIds: string[],

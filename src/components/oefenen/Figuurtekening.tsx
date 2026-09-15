@@ -55,17 +55,17 @@ export function Splitsboom({
       } en ${figuur.rechts ?? "een onbekend getal"}`}
     >
       {/* hoofdgetal */}
-      <rect x={72} y={4} width={56} height={34} rx={8} fill="#eee9ff" stroke="#5b3fd6" strokeWidth={2.5} />
+      <rect x={72} y={4} width={56} height={34} rx={8} fill="#fdecdd" stroke="#e8690f" strokeWidth={2.5} />
       <text x={100} y={27} textAnchor="middle" className="fill-[#2c2545] text-[20px] font-extrabold">
         {figuur.geheel}
       </text>
 
       {/* pijlen naar beneden */}
-      <g stroke="#5b3fd6" strokeWidth={2.5} strokeLinecap="round" fill="none">
+      <g stroke="#e8690f" strokeWidth={2.5} strokeLinecap="round" fill="none">
         <path d="M88 40 L46 74" />
         <path d="M112 40 L154 74" />
       </g>
-      <g fill="#5b3fd6">
+      <g fill="#e8690f">
         <path d="M40 78 L52 72 L47 82 Z" />
         <path d="M160 78 L148 72 L153 82 Z" />
       </g>
@@ -879,7 +879,7 @@ export function Bus({
           textAnchor="middle"
           fontSize={26}
           fontWeight={800}
-          fill="#5b3fd6"
+          fill="#e8690f"
         >
           {bijschrift}
         </text>

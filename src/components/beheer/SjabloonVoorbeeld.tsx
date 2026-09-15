@@ -11,6 +11,7 @@
 import { useMemo } from "react";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { Telrij } from "@/components/oefenen/Telfiguren";
+import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -96,6 +97,16 @@ export function SjabloonVoorbeeld({
                 {som.figuur?.soort === "bus" && (
                   <div className="mt-1 w-full">
                     <Bus figuur={som.figuur} />
+                  </div>
+                )}
+
+                {/*
+                  De stenenrij op volle breedte: bij een grote sprong liggen de
+                  stenen ver uit elkaar en wordt de rij breed.
+                */}
+                {som.figuur?.soort === "stapstenen" && (
+                  <div className="mt-1 w-full">
+                    <Steenrij figuur={som.figuur} />
                   </div>
                 )}
 

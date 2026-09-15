@@ -119,4 +119,51 @@ er ook geen nieuwe aan toe.
 
 ---
 
+# ⛔ HARDE REGEL 3 — DE EIGENAAR BESLIST WAT ER WEGGAAT
+
+**Claude verwijdert, wijzigt of laat nooit iets weg zonder uitdrukkelijke
+toestemming van de eigenaar.**
+
+Dat geldt voor alles: knoppen, velden, instellingen, functies, teksten,
+kleuren en opgeslagen gegevens. Ook als iets overbodig lijkt. Ook als het in
+de weg zit. Ook als het aantoonbaar de oorzaak van een probleem is.
+
+Kom je zoiets tegen, dan doe je dit:
+
+1. je stopt met wijzigen;
+2. je legt uit wát je wilt weghalen of veranderen, en waarom;
+3. je wacht op antwoord.
+
+De eigenaar beslist dat, Claude niet.
+
+## Dit gaat verder dan HARDE REGEL 1
+
+Regel 1 gaat over wat er per ongeluk verdwijnt bij een wijziging. Deze regel
+gaat over wat Claude bewust zou willen weghalen omdat het een goed idee lijkt.
+Dat oordeel is niet aan Claude.
+
+"Ik heb het weggehaald want het was toch kapot" is geen geldige reden. "Ik heb
+het vervangen door iets beters" ook niet. Een oorzaak melden mag altijd; hem
+zelf opruimen niet.
+
+## Hoe een voorstel eruitziet
+
+Kort en concreet, zodat er met ja of nee op te antwoorden valt:
+
+> Ik wil X weghalen/veranderen omdat Y. Gevolg: Z. Mag dat?
+
+Twijfel je of iets onder deze regel valt, dan valt het eronder. Vraag het.
+
+## Waarom deze regel er is
+
+Bij het oplossen van het hervatten werd het leerdoel uit de opslagsleutel
+gehaald. Dat leek een verbetering en loste het gemelde probleem op, maar het
+was niet gevraagd — en het gevolg was dat alle leerdoelen onder één onderwerp
+elkaars vragen kregen. Wie op "Bus tellen" klikte, kreeg de vos op de stenen.
+
+Het patroon is elke keer hetzelfde: iets wat in de weg leek te staan, was er
+met een reden. Alleen de eigenaar weet welke.
+
+---
+
 @AGENTS.md

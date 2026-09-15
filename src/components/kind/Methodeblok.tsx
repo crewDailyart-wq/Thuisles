@@ -7,7 +7,7 @@
  * één keer.
  *
  *   groen vinkje            = voltooid
- *   paarse cirkel met nummer = waar het kind nu is
+ *   oranje cirkel met nummer = waar het kind nu is
  *   hangslotje              = nog op slot
  */
 
@@ -16,7 +16,7 @@ import type { MethodeBlok, MethodeBlokStatus } from "@/lib/types";
 
 export const BLOK_RAND: Record<MethodeBlokStatus, string> = {
   voltooid: "border-groen/25 bg-groen-zacht/60",
-  bezig: "border-viool bg-viool-zacht",
+  bezig: "border-huisstijl bg-huisstijl-zacht",
   gesloten: "border-rand bg-room/40 opacity-70",
 };
 
@@ -36,7 +36,7 @@ export function BlokMerk({ blok }: { blok: MethodeBlok }) {
   }
   if (blok.status === "bezig") {
     return (
-      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-viool text-base font-extrabold text-white ring-4 ring-viool-zacht">
+      <span className="grid size-10 shrink-0 place-items-center rounded-full bg-huisstijl-diep text-base font-extrabold text-white ring-4 ring-huisstijl-zacht">
         {blok.nummer}
       </span>
     );

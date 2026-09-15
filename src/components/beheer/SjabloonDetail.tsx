@@ -32,12 +32,15 @@ export function SjabloonDetail({
   vragen,
   vakSlug,
   algemeenAantal,
+  afbeeldingen = [],
 }: {
   sjabloon: SjabloonInContext;
   vragen: VraagInContext[];
   vakSlug: string;
   /** De algemene standaard, om te tonen wat 'leeg' betekent. */
   algemeenAantal: number;
+  /** Bestaande afbeeldingen, voor een instelling van het soort "afbeelding". */
+  afbeeldingen?: string[];
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -194,6 +197,7 @@ export function SjabloonDetail({
                   Instellingen
                 </p>
                 <SjabloonInstellingen
+                  afbeeldingen={afbeeldingen}
                   velden={generator.velden}
                   waarden={instellingen}
                   onWijzig={(s, w) => setInstellingen((h) => ({ ...h, [s]: w }))}

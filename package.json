@@ -9,8 +9,9 @@
     "lint": "eslint",
     "schermen": "node scripts/schermcontrole.mjs",
     "bewaking": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/waardebewaking.mjs",
-    "bewaak": "npm run schermen && npm run bewaking",
-    "prepare": "git config core.hooksPath .githooks || true"
+    "bewaak": "npm run schermen && npm run bewaking && npm run oefentypes",
+    "prepare": "git config core.hooksPath .githooks || true",
+    "oefentypes": "node scripts/oefentypes.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.3",

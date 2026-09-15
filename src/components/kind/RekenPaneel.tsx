@@ -3,7 +3,7 @@
  *
  * Links "Vrij oefenen" als raster van tegels met pictogram, naam en een dunne
  * voortgangsbalk. Rechts "Oefenen volgens je methode" als verticale lijst:
- * groen vinkje = voltooid, paarse cirkel met nummer = waar het kind nu is,
+ * groen vinkje = voltooid, oranje cirkel met nummer = waar het kind nu is,
  * hangslotje = nog op slot.
  *
  * HARDE PROJECTREGEL, hier afgedwongen: is de rekenmethode van de school niet
@@ -74,7 +74,7 @@ function VrijOefenen({ items }: { items: SubdomeinMetVoortgang[] }) {
           <li key={subdomein.id}>
             <Link
               href={`/oefenen/rekenen/${domein.slug}/${subdomein.slug}`}
-              className="flex h-full w-full flex-col gap-3 rounded-2xl border border-rand bg-room/50 p-3.5 text-left transition hover:-translate-y-0.5 hover:border-viool hover:bg-viool-zacht"
+              className="flex h-full w-full flex-col gap-3 rounded-2xl border border-rand bg-room/50 p-3.5 text-left transition hover:-translate-y-0.5 hover:border-huisstijl hover:bg-huisstijl-zacht"
             >
               <span className="flex items-center gap-2.5">
                 <span className="grid size-11 shrink-0 place-items-center rounded-2xl bg-kaart shadow-zacht">

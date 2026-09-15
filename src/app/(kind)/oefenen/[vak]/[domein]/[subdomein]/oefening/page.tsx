@@ -19,7 +19,8 @@ import { Icoon } from "@/components/kind/Icoon";
 import { OefenSpeler } from "@/components/oefenen/OefenSpeler";
 import { haalHuidigKind, haalOefenStart, haalSleutelstand } from "@/lib/data/queries";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
-import { haalGepubliceerdeVragen } from "@/lib/data/vragen";
+import { haalGepubliceerdeVragen, haalGepubliceerdeVragenOpIds } from "@/lib/data/vragen";
+import { haalOefensessie } from "@/lib/data/oefensessies";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 import { haalAandachtLeerdoelen, haalEerderGemaakt } from "@/lib/data/voortgang";
 import type { OefenVraag } from "@/lib/vraagtypes";
@@ -75,6 +76,45 @@ export default async function OefeningPagina({
     ? data.leerdoelen.filter((l) => l.leerdoel.id === gekozenLeerdoel)
     : data.leerdoelen;
 
+  /*
+    Was dit kind hier al mee bezig?
+
+    De halve sessie staat in de database, bij het kind — niet in de browser.
+    Daardoor pakt elk apparaat dezelfde draad op: dezelfde serie, dezelfde
+    vraag, dezelfde gekleurde bolletjes.
+
+    Het leerdoel hoort in het pad. Onder één onderwerp hangen meerdere
+    leerdoelen die allemaal op deze pagina uitkomen; zonder het leerdoel deelden
+    ze één halve sessie en kreeg een kind dat op "Bus tellen" klikte de serie
+    van "Telrij stapstenen" voorgeschoteld. `herhaal=1` telt niet mee: dat is
+    dezelfde oefening, alleen met andere vragen eruit gekozen.
+
+    Dit gebeurt hier op de server en niet pas in de browser. Zou de browser het
+    doen, dan ziet het kind eerst vraag 1 in beeld springen voordat het bij
+    vraag 8 staat — en op een langzame telefoon is dat goed te zien.
+  */
+  const oefenpad = `${terugHref}/oefening${
+    gekozenLeerdoel ? `?leerdoel=${gekozenLeerdoel}` : ""
+  }`;
+  const bewaard = haalOefensessie(kind.id, oefenpad);
+
+  /*
+    Van een bewaarde sessie zijn alleen de vraag-id's onthouden. Vragen die
+    intussen zijn weggehaald of teruggezet naar concept, vallen eruit; de
+    antwoorden die erbij hoorden gaan met dezelfde zeef mee, zodat de bolletjes
+    bij de juiste vragen blijven horen.
+  */
+  const hervatRijen = bewaard ? haalGepubliceerdeVragenOpIds(bewaard.vraagIds) : [];
+  const hervat =
+    bewaard && hervatRijen.length > 0
+      ? {
+          rondeId: bewaard.rondeId,
+          antwoorden: bewaard.antwoorden.filter((a) =>
+            hervatRijen.some((v) => v.id === a.vraagId),
+          ),
+        }
+      : null;
+
   const alleVragen = haalGepubliceerdeVragen(leerdoelen.map((l) => l.leerdoel.id));
   const perSessie = aantalVragenVoor(leerdoelen, haalAlgemeenAantalVragen());
 
@@ -89,10 +129,13 @@ export default async function OefeningPagina({
 
   const nieuw = alleVragen.filter((v) => !alGehad.has(v.id));
   const rest = alleVragen.filter((v) => alGehad.has(v.id));
-  const rijen = [
+  const verseGreep = [
     ...greepUit(nieuw, perSessie),
     ...greepUit(rest, Math.max(0, perSessie - nieuw.length)),
   ].slice(0, perSessie);
+
+  /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
+  const rijen = hervat ? hervatRijen : verseGreep;
 
   const vragen: OefenVraag[] = rijen.map((v) => ({
     id: v.id,
@@ -137,7 +180,7 @@ export default async function OefeningPagina({
 
         <Link
           href={terugHref}
-          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-viool px-6 py-3 text-base font-extrabold text-white transition hover:bg-viool-diep"
+          className="mt-6 inline-flex items-center justify-center gap-2 rounded-full bg-huisstijl-diep px-6 py-3 text-base font-extrabold text-white transition hover:bg-huisstijl-donker"
         >
           Terug naar {data.subdomein.naam}
         </Link>
@@ -159,9 +202,11 @@ export default async function OefeningPagina({
       terugLabel={data.subdomein.naam}
       groep={kind.groep}
       aandachtVooraf={aandachtVooraf}
-      herhaalHref={`${terugHref}/oefening`}
+      herhaalHref={oefenpad}
       beginsaldo={sleutels.saldo}
       kindId={kind.id}
+      oefenpad={oefenpad}
+      hervat={hervat}
     />
   );
 }

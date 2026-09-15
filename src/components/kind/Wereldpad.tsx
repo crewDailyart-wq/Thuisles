@@ -73,7 +73,7 @@ export function Wereldpad({ gebieden }: { gebieden: WereldGebied[] }) {
           {/* De stippellijn die de gebieden met elkaar verbindt. */}
           <span
             aria-hidden="true"
-            className="absolute left-10 right-10 top-10 border-t-[3px] border-dashed border-viool/25"
+            className="absolute left-10 right-10 top-10 border-t-[3px] border-dashed border-huisstijl/25"
           />
 
           {gebieden.map((gebied) => {

@@ -51,11 +51,15 @@ export function Kindschil({
       Focusstand: geen zijbalk, geen header, geen landschap, geen balk
       onderaan. Alleen de oefening, over het hele venster.
     */
-    return <main className="min-h-[100lvh]">{children}</main>;
+    return (
+      <main data-omgeving="kind" className="min-h-[100lvh]">
+        {children}
+      </main>
+    );
   }
 
   return (
-    <div className="relative min-h-full">
+    <div data-omgeving="kind" className="relative min-h-full">
       <Achtergrond />
       <Zijbalk />
 

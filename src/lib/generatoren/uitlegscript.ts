@@ -161,6 +161,24 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      soort: "stapstenen";
+      /** De rij zoals hij nu in beeld staat; `null` is een steen die nog leeg is. */
+      stenen: (number | null)[];
+      sprong: number;
+      richting: "vooruit" | "terug";
+      /**
+       * De mascotte. Blijft hier `null`: de bestandsnaam staat bij de vraag en
+       * niet in de somgegevens, waar alleen getallen in passen. De speler vult
+       * hem aan met het plaatje van de vraag die het kind net zag, zodat het
+       * dezelfde vos is.
+       */
+      mascotte: string | null;
+      /** Op welke steen de mascotte staat. */
+      vosOp: number;
+      /** Boogje van deze steen naar de volgende; `null` = geen boog. */
+      boogVan: number | null;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

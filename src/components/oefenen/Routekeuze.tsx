@@ -75,7 +75,7 @@ function KeuzeKaart({
   return (
     <Link
       href={href}
-      className="group block rounded-groot transition duration-200 ease-out hover:-translate-y-1 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-viool motion-reduce:transform-none"
+      className="group block rounded-groot transition duration-200 ease-out hover:-translate-y-1 hover:scale-[1.03] focus-visible:outline-none focus-visible:ring-4 focus-visible:ring-huisstijl motion-reduce:transform-none"
     >
       <Image
         src={afbeelding}

@@ -31,8 +31,8 @@ export function Onderbalk() {
                 aria-current={actief ? "page" : undefined}
                 className={`flex min-h-[3.25rem] flex-col items-center justify-center gap-0.5 rounded-[1.35rem] px-1 py-1.5 text-[0.68rem] font-bold transition-colors ${
                   actief
-                    ? "bg-viool text-white"
-                    : "text-inkt-zacht hover:bg-viool-zacht hover:text-viool-diep"
+                    ? "bg-huisstijl-diep text-white"
+                    : "text-inkt-zacht hover:bg-huisstijl-zacht hover:text-huisstijl-diep"
                 }`}
               >
                 <Icoon naam={item.icoon} className="size-[1.35rem]" />

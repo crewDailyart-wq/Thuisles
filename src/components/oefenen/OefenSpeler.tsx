@@ -18,11 +18,12 @@
  */
 
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { beloonGoedAntwoord, bewaarRonde, meldLastig } from "@/app/oefenacties";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { beloonGoedAntwoord, bewaarAntwoord, meldLastig, rondAf } from "@/app/oefenacties";
 import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
 import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
+import { Stapstenen } from "@/components/oefenen/Stapstenen";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
   Figuurtekening,
@@ -33,7 +34,15 @@ import { InvulFiguur } from "@/components/oefenen/InvulFiguur";
 import { Uitlegweergave } from "@/components/oefenen/Uitlegweergave";
 import { leesGroepsvorm, vormBijGroep } from "@/lib/generatoren/uitlegscript";
 import { goedeAntwoordInTekst, isGoed, kortGetalLengte } from "@/lib/antwoord";
-import { feestje as feestgeluid, geluidStaatAan } from "@/lib/geluid";
+import {
+  abonneerOpgavegeluid,
+  feestje as feestgeluid,
+  geluidStaatAan,
+  opgavegeluidOpServer,
+  opgavegeluidStaatAan,
+  zetOpgavegeluid,
+} from "@/lib/geluid";
+import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -102,6 +111,8 @@ export function OefenSpeler({
   herhaalHref,
   beginsaldo,
   kindId,
+  oefenpad,
+  hervat,
 }: {
   vragen: OefenVraag[];
   terugHref: string;
@@ -109,12 +120,22 @@ export function OefenSpeler({
   groep: number;
   /** Leerdoelen die vóór deze ronde al aandacht vroegen. */
   aandachtVooraf: string[];
-  /** Waar de knop "Oefen wat nog lastig was" naartoe gaat. */
+  /** Waar de knop "Oefen wat nog lastig was" naartoe gaat; inclusief leerdoel. */
   herhaalHref: string;
   /** Het sleutelsaldo bij het openen; de teller in de balk telt vanaf hier. */
   beginsaldo: number;
   /** Van wie deze sessie is; meerdere kinderen kunnen hetzelfde apparaat delen. */
   kindId: string;
+  /** Het onderwerp, zonder zoekreeks. Daaronder bewaart de server de stand. */
+  oefenpad: string;
+  /*
+    Was dit kind hier al mee bezig?
+
+    Komt van de SERVER, uit de database — niet uit de browser. Daardoor staat
+    de juiste vraag met de juiste bolletjes er al bij het eerste beeldje, op elk
+    apparaat. `vragen` is dan de bewaarde serie en niet een nieuwe greep.
+  */
+  hervat: { rondeId: string; antwoorden: RondeAntwoord[] } | null;
 }) {
   const leeftijd = leeftijdsgroepVan(groep);
   /*
@@ -130,12 +151,23 @@ export function OefenSpeler({
   /*
     De serie waar dit kind mee bezig is.
 
-    Normaal is dat gewoon wat de server aanlevert. Is er een halve sessie
-    bewaard, dan wordt die serie overgenomen — inclusief de volgorde, zodat
-    "vraag 4 van 15" ook echt vraag 4 uit dezelfde serie is.
+    Die komt kant-en-klaar van de server: was het kind hier al mee bezig, dan
+    is dit de bewaarde serie in dezelfde volgorde, zodat "vraag 4 van 15" ook
+    echt vraag 4 uit dezelfde serie is.
   */
-  const [serie, setSerie] = useState<OefenVraag[]>(vragen);
-  const [index, setIndex] = useState(0);
+  const serie = vragen;
+  /*
+    Waar het kind gebleven is: de eerste vraag die nog niet beantwoord is.
+
+    Bewust afgeleid uit het aantal antwoorden en niet apart bewaard. Stopte het
+    kind ná het nakijken maar vóór "Volgende", dan zou een apart bewaarde
+    positie die vraag opnieuw voorschotelen — en stond er aan het eind één
+    antwoord te veel bij één vraag te weinig.
+  */
+  const [gelogd, setGelogd] = useState<RondeAntwoord[]>(hervat?.antwoorden ?? []);
+  const [index, setIndex] = useState(() =>
+    Math.min(hervat?.antwoorden.length ?? 0, Math.max(0, vragen.length - 1)),
+  );
   const [antwoord, setAntwoord] = useState("");
   const [fase, setFase] = useState<Fase>("bezig");
   const [start, setStart] = useState(() => nuInMs());
@@ -178,7 +210,26 @@ export function OefenSpeler({
     scherm: dan draait `randomUUID` alleen in de browser en kan de server geen
     ander id verzinnen dan de browser.
   */
-  const rondeId = useRef("");
+  const rondeId = useRef(hervat?.rondeId ?? "");
+
+  /*
+    Welke antwoorden al veilig in de database staan.
+
+    Gevuld zodra de server "ok" heeft gezegd. Wat er aan het eind van de ronde
+    niet in staat, ging onderweg verloren — geen verbinding, tabblad dicht — en
+    wordt dan alsnog in één keer opgestuurd.
+
+    Begint NIET leeg bij een hervatte ronde. De antwoorden die de server net
+    heeft aangeleverd, staan daar per definitie al in; zou dat hier niet bekend
+    zijn, dan stuurde het vangnet ze aan het eind van de ronde nog een keer op.
+    Dat gebeurde ook echt: een ronde van vijftien vragen leverde zeventien
+    antwoorden op, met de twee vragen van vóór het hervatten dubbel — en de
+    ouder zag daardoor meer gemaakte sommen dan het kind had gedaan.
+  */
+  const bewaard = useRef<Set<string> | null>(null);
+  if (bewaard.current === null) {
+    bewaard.current = new Set((hervat?.antwoorden ?? []).map((a) => a.beloningsbron));
+  }
   /*
     Bij welke vraag er al is nagekeken en doorgeklikt.
 
@@ -190,53 +241,72 @@ export function OefenSpeler({
   */
   const nagekeken = useRef(-1);
   const doorgeklikt = useRef(-1);
+  /*
+    Wacht het feestscherm nog op de mascotte?
+
+    Bij de stapstenen springt de vos na een goed antwoord eerst naar de overkant
+    en pakt daar de sleutel op. Zou het feestscherm meteen komen, dan ligt dat er
+    overheen en ziet een kind van die sprong niets. Voor alle andere vraagvormen
+    blijft het precies zoals het was: het feest begint direct.
+  */
+  const [wachtOpVos, setWachtOpVos] = useState(false);
+  /* De aan/uit-stand van de geluidjes in de opgave; los van het uitlegfilmpje. */
+  const opgavegeluid = useSyncExternalStore(
+    abonneerOpgavegeluid,
+    opgavegeluidStaatAan,
+    opgavegeluidOpServer,
+  );
   const [klaar, setKlaar] = useState(false);
-  const [gelogd, setGelogd] = useState<RondeAntwoord[]>([]);
   const [snelFout, setSnelFout] = useState(0);
   const [rustBericht, setRustBericht] = useState("");
 
   /*
     Waar deze sessie onder bewaard wordt. Pas in de browser bekend, want het pad
-    met de zoekreeks hoort erbij (`?leerdoel=`, `?herhaal=1`).
+    hoort erbij — en dat kent alleen de browser.
   */
   const sleutel = useRef("");
 
   /*
-    Halve sessie oppakken.
+    Het vangnet in de browser.
 
-    Dit gebeurt ná de eerste tekening en niet ervoor: de server kent de opslag
-    van de browser niet, dus zou de pagina anders iets anders opleveren dan wat
-    er daarna in beeld komt. Het kind ziet daardoor heel even vraag 1 voordat
-    het bij vraag 4 staat — één beeldje, niet merkbaar.
+    De stand staat in de database, bij het kind, en die is de baas. Maar een
+    antwoord kan onderweg blijven steken: even geen verbinding, of het tabblad
+    gaat dicht op het verkeerde moment. Daarom houdt de browser er een kopie
+    van bij.
+
+    Bij verschil wint de database. Alleen als hier antwoorden van DEZELFDE ronde
+    staan die de server nog niet kende, worden die overgenomen — dan is er
+    onderweg iets misgegaan en zou het kind die vragen anders opnieuw krijgen.
   */
   useEffect(() => {
-    sleutel.current = sessieSleutel(kindId, window.location.pathname + window.location.search);
-    const bewaard = leesSessie(sleutel.current);
-    if (!bewaard) return;
+    sleutel.current = sessieSleutel(kindId, oefenpad);
+    const lokaal = leesSessie(sleutel.current);
+    if (!lokaal) return;
 
-    rondeId.current = bewaard.rondeId;
-    setSerie(bewaard.vragen);
-    setGelogd(bewaard.gelogd);
-    setIndex(Math.min(bewaard.index, bewaard.vragen.length - 1));
-    /* Terug bij een halve sessie: die vraag is nog niet nagekeken. */
+    /* Een andere ronde: die hoort bij een serie die allang is afgesloten. */
+    if (lokaal.rondeId === "" || lokaal.rondeId !== rondeId.current) return;
+    if (lokaal.gelogd.length <= (hervat?.antwoorden.length ?? 0)) return;
+
+    setGelogd(lokaal.gelogd);
+    setIndex(Math.min(lokaal.gelogd.length, Math.max(0, vragen.length - 1)));
     nagekeken.current = -1;
     doorgeklikt.current = -1;
     setStart(nuInMs());
-  }, [kindId]);
+  }, [kindId, oefenpad, hervat, vragen.length]);
 
   /*
     Bewaren zodra er iets beantwoord is, niet pas aan het eind. Gaat het kind
-    halverwege weg, dan staat de stand er al.
+    halverwege weg, dan staat de stand er al — ook als de server op dat moment
+    niet bereikbaar was.
   */
   useEffect(() => {
     if (!sleutel.current || gelogd.length === 0 || klaar) return;
     bewaarSessie(sleutel.current, {
       rondeId: rondeId.current,
-      vragen: serie,
+      vraagIds: serie.map((v) => v.id),
       gelogd,
-      index,
     });
-  }, [gelogd, index, serie, klaar]);
+  }, [gelogd, serie, klaar]);
 
 
   const vraag = serie[index];
@@ -261,6 +331,7 @@ export function OefenSpeler({
 
     if (goed) {
       setFase("goed");
+      if (vraag.vorm === "stapstenen") setWachtOpVos(true);
       setFeestje((n) => n + 1);
       setSnelFout(0);
       vierGoedAntwoord();
@@ -314,8 +385,7 @@ export function OefenSpeler({
   function vierGoedAntwoord() {
     if (geluidStaatAan()) feestgeluid();
 
-    if (rondeId.current === "") rondeId.current = crypto.randomUUID();
-    const bron = `${rondeId.current}:${vraag.id}`;
+    const bron = `${zorgVoorRondeId()}:${vraag.id}`;
 
     landing.current = { geland: false, saldo: null };
 
@@ -325,28 +395,72 @@ export function OefenSpeler({
     });
   }
 
+  /**
+   * Het id van deze oefenronde, en het wordt er één zodra dat nodig is.
+   *
+   * Pas bij het eerste antwoord aangemaakt en niet bij het opbouwen van het
+   * scherm: dan draait `randomUUID` alleen in de browser en kan de server geen
+   * ander id verzinnen dan de browser. Hervat het kind een ronde, dan staat het
+   * er al in vanaf de server.
+   */
+  function zorgVoorRondeId(): string {
+    if (rondeId.current === "") rondeId.current = crypto.randomUUID();
+    return rondeId.current;
+  }
+
+  /**
+   * Eén antwoord vastleggen.
+   *
+   * Het gaat meteen naar de database — niet pas aan het eind van de ronde.
+   * Stopt een kind bij vraag 7, dan staan die zeven antwoorden er gewoon, ziet
+   * de ouder ze, en gaat het kind op elk ander apparaat verder bij vraag 8 met
+   * dezelfde gekleurde bolletjes.
+   *
+   * De lijst wordt hier zonder updaterfunctie opgebouwd, omdat diezelfde lijst
+   * in dezelfde stap naar de server moet. Dat mag: `nagekeken` zorgt ervoor dat
+   * dit per vraag precies één keer gebeurt.
+   */
   function leg(
     deel: Omit<
       RondeAntwoord,
       "leerdoelId" | "vraagId" | "hintGebruikt" | "uitlegGebruikt" | "beloningsbron"
     >,
   ) {
-    setGelogd((lijst) => [
-      ...lijst,
+    const regel: RondeAntwoord = {
+      leerdoelId: vraag.leerdoelId,
+      vraagId: vraag.id,
+      hintGebruikt: hintOpen,
+      uitlegGebruikt: uitlegOpen,
+      /*
+        Dezelfde bron als bij de directe uitbetaling hierboven. Aan het eind
+        van de ronde wordt hiermee nog één keer geprobeerd uit te betalen;
+        dat is alleen raak als de live-aanroep toen niet is aangekomen.
+      */
+      ...deel,
+      beloningsbron: `${zorgVoorRondeId()}:${vraag.id}`,
+    };
+
+    const lijst = [...gelogd, regel];
+    setGelogd(lijst);
+
+    void bewaarAntwoord(
+      oefenpad,
       {
-        leerdoelId: vraag.leerdoelId,
-        vraagId: vraag.id,
-        hintGebruikt: hintOpen,
-        uitlegGebruikt: uitlegOpen,
-        /*
-          Dezelfde bron als bij de directe uitbetaling hierboven. Aan het eind
-          van de ronde wordt hiermee nog één keer geprobeerd uit te betalen;
-          dat is alleen raak als de live-aanroep toen niet is aangekomen.
-        */
-        ...deel,
-        beloningsbron: `${rondeId.current}:${vraag.id}`,
+        rondeId: rondeId.current,
+        vraagIds: serie.map((v) => v.id),
+        antwoorden: lijst,
       },
-    ]);
+      regel,
+    )
+      .then(() => {
+        bewaard.current?.add(regel.beloningsbron);
+      })
+      .catch(() => {
+        /*
+          Niet aangekomen. Geen ramp en geen melding: het staat in het vangnet
+          in de browser, en aan het eind van de ronde gaat het alsnog mee.
+        */
+      });
   }
 
   function volgende() {
@@ -365,10 +479,20 @@ export function OefenSpeler({
     }
 
     if (index + 1 >= serie.length) {
-      void bewaarRonde(gelogd);
       /*
-        De serie is af: de bewaarde sessie mag weg, zodat een volgende keer een
-        nieuwe serie begint in plaats van deze afgelopen serie te herhalen.
+        Alles staat al in de database; per antwoord weggeschreven. Wat er niet
+        in staat, is onderweg blijven steken en gaat hier alsnog mee.
+      */
+      const nietBewaard = gelogd.filter((a) => !bewaard.current?.has(a.beloningsbron));
+      void rondAf(
+        oefenpad,
+        gelogd.map((a) => a.leerdoelId),
+        nietBewaard,
+      );
+      /*
+        De serie is af: het vangnet in de browser mag weg, zodat een volgende
+        keer een nieuwe serie begint in plaats van deze te herhalen. De regel in
+        de database ruimt `rondAf` hierboven op.
       */
       if (sleutel.current) wisSessie(sleutel.current);
       setKlaar(true);
@@ -378,6 +502,7 @@ export function OefenSpeler({
     setIndex(index + 1);
     setAntwoord("");
     setFase("bezig");
+    setWachtOpVos(false);
     /*
       Klikt het kind door terwijl de sleutel nog onderweg is, dan telt hij hier
       alsnog mee. De sleutel stond op dat moment allang in de database; dit
@@ -503,7 +628,7 @@ export function OefenSpeler({
         `key` per feestje, zodat elk goed antwoord een eigen, opnieuw beginnende
         animatie krijgt in plaats van dat de tweede de eerste overneemt.
       */}
-      {fase === "goed" && (
+      {fase === "goed" && !wachtOpVos && (
         <Feestscherm
           key={`feest-${feestje}`}
           onAfgelopen={volgende}
@@ -528,7 +653,29 @@ export function OefenSpeler({
         oefenen zelf.
       */}
       <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
-        <div className="rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10">
+        <div className="relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10">
+          {/*
+            De geluidsknop van de opgave zelf, rechtsboven in de hoek.
+
+            Precies hetzelfde knopje als in het uitlegfilmpje, zodat een kind
+            hem herkent. Hij regelt alleen de geluidjes tijdens het maken; de
+            knop in het filmpje blijft over de stem daar gaan. De keuze wordt
+            op dit apparaat onthouden, ook voor de volgende keer.
+          */}
+          <button
+            type="button"
+            onClick={() => zetOpgavegeluid(!opgavegeluid)}
+            aria-pressed={opgavegeluid}
+            aria-label={opgavegeluid ? "Geluid aan" : "Geluid uit"}
+            title={opgavegeluid ? "Geluid aan" : "Geluid uit"}
+            className="absolute right-3 top-3 z-10 grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl sm:right-4 sm:top-4"
+          >
+            {opgavegeluid ? (
+              <Luidspreker className="size-6" />
+            ) : (
+              <LuidsprekerUit className="size-6" />
+            )}
+          </button>
 
           {/*
             Vaste opbouw bij elke vraag met een tekening: eerst het beeld, groot
@@ -562,6 +709,7 @@ export function OefenSpeler({
                     onBevestig={() => {
                       if (magControleren) controleer();
                     }}
+                    onSprongKlaar={() => setWachtOpVos(false)}
                   />
                 ) : vraag.afbeelding ? (
                   /* eslint-disable-next-line @next/next/no-img-element */
@@ -604,6 +752,7 @@ export function OefenSpeler({
                 onBevestig={() => {
                   if (magControleren) controleer();
                 }}
+                onSprongKlaar={() => setWachtOpVos(false)}
               />
             )}
           </div>
@@ -620,7 +769,7 @@ export function OefenSpeler({
                 <button
                   type="button"
                   onClick={() => setHintOpen(true)}
-                  className="inline-flex items-center gap-1.5 text-sm font-bold text-inkt-zacht underline-offset-2 transition hover:text-viool hover:underline"
+                  className="inline-flex items-center gap-1.5 text-sm font-bold text-inkt-zacht underline-offset-2 transition hover:text-huisstijl hover:underline"
                 >
                   <Icoon naam="gloeilamp" className="size-4" />
                   Ik wil een tip
@@ -662,6 +811,10 @@ export function OefenSpeler({
                   script={animatie}
                   terugval={uitlegStappen ?? undefined}
                   onSluit={() => setUitlegWeggeklikt(true)}
+                  /* Dezelfde mascotte als in de vraag; zie `Uitlegspeler`. */
+                  mascotte={
+                    vraag.figuur?.soort === "stapstenen" ? vraag.figuur.mascotte : null
+                  }
                 />
               )}
             </>
@@ -738,7 +891,7 @@ export function OefenSpeler({
                 type="button"
                 onClick={controleer}
                 disabled={!magControleren}
-                className="inline-flex items-center gap-2 rounded-full bg-viool px-6 py-3 text-base font-extrabold text-white transition hover:bg-viool-diep disabled:cursor-not-allowed disabled:opacity-45"
+                className="inline-flex items-center gap-2 rounded-full bg-huisstijl-diep px-6 py-3 text-base font-extrabold text-white transition hover:bg-huisstijl-donker disabled:cursor-not-allowed disabled:opacity-45"
               >
                 Controleer
               </button>
@@ -815,6 +968,7 @@ function Antwoordvelden({
   invulbaar,
   onKies,
   onBevestig,
+  onSprongKlaar,
 }: {
   vraag: OefenVraag;
   antwoord: string;
@@ -824,6 +978,8 @@ function Antwoordvelden({
   invulbaar: boolean;
   onKies: (v: string) => void;
   onBevestig: () => void;
+  /** Alleen bij de stapstenen: de mascotte is aan de overkant. */
+  onSprongKlaar?: () => void;
 }) {
   const uit = fase !== "bezig";
   const toonKleur = markeer && fase === "fout";
@@ -843,6 +999,31 @@ function Antwoordvelden({
         goedeWaarde={toonKleur ? vraag.antwoord : null}
         gekozenGoed={goedGemarkeerd}
         onKies={onKies}
+      />
+    );
+  }
+
+  /*
+    Stapstenen: het antwoord wordt op de stenen zelf ingevuld, dus is de
+    tekening tegelijk het antwoordveld. Eén getal per lege steen, met komma's
+    ertussen — net als bij het slepen, en zo kijkt `isGoed` het ook na.
+  */
+  if (vraag.vorm === "stapstenen" && vraag.figuur?.soort === "stapstenen") {
+    const aantalLeeg = vraag.figuur.stenen.filter((w) => w === null).length;
+    const delen = antwoord.split(",");
+    const ingevuld = Array.from({ length: aantalLeeg }, (_, i) => delen[i] ?? "");
+    const goede = vraag.antwoord.split(",").map(Number);
+
+    return (
+      <Stapstenen
+        figuur={vraag.figuur}
+        ingevuld={ingevuld}
+        fase={fase}
+        goedeWaarden={fase === "fout" ? goede : null}
+        onSprongKlaar={onSprongKlaar}
+        onWijzig={(nieuw: string[]) =>
+          onKies(nieuw.every((w) => w === "") ? "" : nieuw.map((w) => w.trim()).join(","))
+        }
       />
     );
   }
@@ -894,8 +1075,8 @@ function Antwoordvelden({
                   : toonKleur && antwoord === o.waarde
                     ? "border-roze bg-roze-zacht text-roze"
                     : antwoord === o.waarde
-                      ? "border-viool bg-viool-zacht text-viool-diep"
-                      : "border-rand bg-room/50 hover:border-viool hover:bg-viool-zacht/50"
+                      ? "border-huisstijl bg-huisstijl-zacht text-huisstijl-diep"
+                      : "border-rand bg-room/50 hover:border-huisstijl hover:bg-huisstijl-zacht/50"
             }`}
           >
             {o.label}
@@ -971,7 +1152,7 @@ function Antwoordvelden({
               onBevestig();
             }
           }}
-          className={`${maat.doos} ${maat.tekst} rounded-2xl border-2 text-center font-extrabold outline-none transition focus:border-viool disabled:cursor-not-allowed ${kleur}`}
+          className={`${maat.doos} ${maat.tekst} rounded-2xl border-2 text-center font-extrabold outline-none transition focus:border-huisstijl disabled:cursor-not-allowed ${kleur}`}
         />
       </div>
     );
@@ -992,7 +1173,7 @@ function Antwoordvelden({
             onBevestig();
           }
         }}
-        className={`w-full rounded-2xl border-2 px-4 py-3.5 text-xl font-extrabold outline-none transition focus:border-viool disabled:cursor-not-allowed ${kleur}`}
+        className={`w-full rounded-2xl border-2 px-4 py-3.5 text-xl font-extrabold outline-none transition focus:border-huisstijl disabled:cursor-not-allowed ${kleur}`}
       />
     </div>
   );
@@ -1038,8 +1219,8 @@ function MeerkeuzeAntwoorden({
       return "border-rand bg-room/50 opacity-60";
     }
     return waarde === gekozen
-      ? "border-viool bg-viool-zacht text-viool-diep"
-      : "border-rand bg-room/50 hover:border-viool hover:bg-viool-zacht/50";
+      ? "border-huisstijl bg-huisstijl-zacht text-huisstijl-diep"
+      : "border-rand bg-room/50 hover:border-huisstijl hover:bg-huisstijl-zacht/50";
   };
 
   if (!metPlaatjes) {
@@ -1202,7 +1383,7 @@ function Uitslag({
                     setLastigGemeld((l) => [...l, r.id]);
                     void meldLastig(r.id);
                   }}
-                  className="shrink-0 rounded-full bg-white/70 px-2.5 py-1 text-[0.68rem] font-bold text-inkt-zacht transition hover:text-viool"
+                  className="shrink-0 rounded-full bg-white/70 px-2.5 py-1 text-[0.68rem] font-bold text-inkt-zacht transition hover:text-huisstijl"
                 >
                   Dit snapte ik niet
                 </button>
@@ -1230,8 +1411,14 @@ function Uitslag({
         {lastig.length > 0 && (
           <>
             <Link
-              href={`${herhaalHref}?herhaal=1`}
-              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-viool px-6 py-3.5 text-base font-extrabold text-white transition hover:bg-viool-diep"
+              /*
+                Het leerdoel zit al in `herhaalHref`, dus `herhaal=1` komt er met
+                een & achter. Zonder die controle werd het een tweede vraagteken
+                en raakte het leerdoel kwijt — dan kreeg het kind bij "Oefen wat
+                nog lastig was" ineens sommen van een ander leerdoel.
+              */
+              href={`${herhaalHref}${herhaalHref.includes("?") ? "&" : "?"}herhaal=1`}
+              className="mt-5 inline-flex w-full items-center justify-center gap-2 rounded-full bg-huisstijl-diep px-6 py-3.5 text-base font-extrabold text-white transition hover:bg-huisstijl-donker"
             >
               🔄 Oefen wat nog lastig was
             </Link>
@@ -1244,7 +1431,7 @@ function Uitslag({
 
         <Link
           href={terugHref}
-          className="mt-4 inline-flex items-center justify-center gap-2 rounded-full border-2 border-rand px-6 py-2.5 text-sm font-extrabold transition hover:border-viool hover:text-viool"
+          className="mt-4 inline-flex items-center justify-center gap-2 rounded-full border-2 border-rand px-6 py-2.5 text-sm font-extrabold transition hover:border-huisstijl hover:text-huisstijl"
         >
           Terug naar {terugLabel}
         </Link>

@@ -36,6 +36,7 @@ export function Uitlegweergave({
   terugval,
   onSluit,
   onNogEen,
+  mascotte = null,
 }: {
   vorm: Groepsvorm;
   /** Het script van het generator-type, of null als het er nog niet is. */
@@ -44,6 +45,8 @@ export function Uitlegweergave({
   terugval?: Lijstregel[];
   onSluit: () => void;
   onNogEen?: () => void;
+  /** De mascotte van de vraag; gaat door naar de uitlegspeler. */
+  mascotte?: string | null;
 }) {
   /*
     De hoogste groepen lezen en kijken niet naar een animatie. Dat hangt aan de
@@ -60,7 +63,9 @@ export function Uitlegweergave({
 
   // Groep 3-4 en 5-6: de animatie, zodra die er voor deze som is.
   if (script) {
-    return <Uitlegspeler script={script} onSluit={onSluit} onNogEen={onNogEen} />;
+    return (
+      <Uitlegspeler script={script} onSluit={onSluit} onNogEen={onNogEen} mascotte={mascotte} />
+    );
   }
 
   if (!terugval?.length) return null;

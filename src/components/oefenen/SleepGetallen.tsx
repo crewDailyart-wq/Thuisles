@@ -232,7 +232,7 @@ export function SleepGetallen({
               }}
               className={`grid h-14 w-20 cursor-pointer place-items-center rounded-2xl border-2 border-dashed text-2xl font-extrabold transition [touch-action:none] ${vakKleur(
                 i,
-              )} ${bezig && fase === "bezig" ? "ring-2 ring-viool/40" : ""}`}
+              )} ${bezig && fase === "bezig" ? "ring-2 ring-huisstijl/40" : ""}`}
             >
               {ingevuld[i] ?? ""}
             </div>
@@ -256,8 +256,8 @@ export function SleepGetallen({
               aria-label={`Getal ${waarde}`}
               className={`grid h-14 w-14 select-none place-items-center rounded-2xl border-2 text-2xl font-extrabold transition [touch-action:none] ${
                 bezig?.waarde === waarde && bezig.vanaf.soort === "voorraad"
-                  ? "border-viool bg-viool text-white"
-                  : "border-viool/50 bg-white text-viool-diep hover:bg-viool-zacht"
+                  ? "border-huisstijl bg-huisstijl-diep text-white"
+                  : "border-huisstijl/50 bg-white text-huisstijl-diep hover:bg-huisstijl-zacht"
               }`}
             >
               {waarde}
@@ -270,7 +270,7 @@ export function SleepGetallen({
       {bezig && zweef && (
         <span
           aria-hidden="true"
-          className="pointer-events-none fixed z-[70] grid h-14 w-14 place-items-center rounded-2xl border-2 border-viool bg-viool text-2xl font-extrabold text-white shadow-op"
+          className="pointer-events-none fixed z-[70] grid h-14 w-14 place-items-center rounded-2xl border-2 border-huisstijl bg-huisstijl-diep text-2xl font-extrabold text-white shadow-op"
           style={{ left: zweef.x - 28, top: zweef.y - 28 }}
         >
           {bezig.waarde}

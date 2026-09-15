@@ -68,7 +68,7 @@ export function Groepwisselaar({ groep }: { groep: number }) {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Groep ${groep}. Klik om een andere groep te kiezen.`}
-        className="flex items-center gap-1 rounded text-xs font-bold text-inkt-zacht transition hover:text-viool disabled:opacity-60"
+        className="flex items-center gap-1 rounded text-xs font-bold text-inkt-zacht transition hover:text-huisstijl disabled:opacity-60"
       >
         {bezig ? "Bezig…" : `Groep ${groep}`}
         <svg
@@ -100,7 +100,7 @@ export function Groepwisselaar({ groep }: { groep: number }) {
                 onClick={() => kies(g)}
                 className={`flex w-full items-center justify-between px-3 py-2 text-left text-sm font-bold transition ${
                   g === groep
-                    ? "bg-viool-zacht text-viool-diep"
+                    ? "bg-huisstijl-zacht text-huisstijl-diep"
                     : "text-inkt hover:bg-room"
                 }`}
               >

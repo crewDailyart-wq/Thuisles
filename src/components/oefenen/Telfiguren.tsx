@@ -67,7 +67,9 @@ const KLEUR = {
   rozeDonker: "#c14664",
   geel: "#f7c53f",
   oranje: "#e4832a",
-  viool: "#6b4ae0",
+  /* De huisstijlkleur; zie --color-huisstijl in globals.css. */
+  mandarijn: "#e8690f",
+  /* Niet in gebruik; stond hier nog uit de tijd dat het accent paars was. */
   violetLicht: "#8f73ff",
   lucht: "#3f8ad8",
   luchtLicht: "#5fa8ec",
@@ -536,7 +538,7 @@ const KNOOP = { x: 50, y: 90 };
 function ballon(aantal: number, geteld: (i: number) => boolean, id: string) {
   const n = Math.max(1, aantal);
   const { punten, straal } = roosterplekken("ballon", n);
-  const kleuren = [KLEUR.lucht, KLEUR.viool, KLEUR.roze, KLEUR.geel];
+  const kleuren = [KLEUR.lucht, KLEUR.mandarijn, KLEUR.roze, KLEUR.geel];
 
   return (
     <g>

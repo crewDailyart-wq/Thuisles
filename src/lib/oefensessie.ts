@@ -28,7 +28,6 @@
  */
 
 import type { RondeAntwoord } from "@/app/oefenacties";
-import type { OefenVraag } from "@/lib/vraagtypes";
 
 const VOORVOEGSEL = "thuisles-oefensessie";
 
@@ -43,12 +42,10 @@ const HOUDBAAR_MS = 7 * 24 * 60 * 60 * 1000;
 export type BewaardeSessie = {
   /** Hoort bij de sleutels die per goed antwoord zijn uitbetaald. */
   rondeId: string;
-  /** De vragen van deze sessie, in volgorde. */
-  vragen: OefenVraag[];
+  /** De vragen van deze sessie, in volgorde. Alleen de id's; zie hierboven. */
+  vraagIds: string[];
   /** De antwoorden die al gegeven zijn, in dezelfde volgorde. */
   gelogd: RondeAntwoord[];
-  /** Bij welke vraag het kind was. */
-  index: number;
   bewaardOp: number;
 };
 
@@ -57,11 +54,26 @@ export type BewaardeSessie = {
  *
  * Het kind-id zit erin omdat er meerdere kinderen op hetzelfde apparaat kunnen
  * oefenen; zonder dat zou het ene kind in de halve sessie van het andere
- * terechtkomen. Het pad met de zoekreeks onderscheidt de oefeningen onderling,
- * inclusief `?leerdoel=` en `?herhaal=1`.
+ * terechtkomen. Het pad en het leerdoel onderscheiden de oefeningen.
  */
 export function sessieSleutel(kindId: string, padMetZoek: string): string {
-  return `${VOORVOEGSEL}:${kindId}:${padMetZoek}`;
+  /*
+    Het pad én het leerdoel, en verder niets.
+
+    Het leerdoel MOET erin. Onder één onderwerp hangen meerdere leerdoelen, en
+    die delen allemaal hetzelfde pad. Viel het leerdoel weg, dan kwamen ze in
+    hetzelfde potje terecht: wie op "Bus tellen" klikte, kreeg de halve serie
+    van "Telrij stapstenen" te zien — de vos op de stenen, bij een leerdoel dat
+    over een bus gaat. Precies dat ging er mis toen hier alleen het pad stond.
+
+    De rest van de zoekreeks telt níet mee. "Oefen wat nog lastig was" zet er
+    `herhaal=1` achter bij hetzelfde leerdoel; dat is dezelfde oefening en hoort
+    dus bij dezelfde halve sessie. Zo maakt het niet uit via welke knop of tegel
+    een kind binnenkomt, zolang het maar om hetzelfde leerdoel gaat.
+  */
+  const [pad, zoek = ""] = padMetZoek.split("?");
+  const leerdoel = new URLSearchParams(zoek).get("leerdoel") ?? "";
+  return `${VOORVOEGSEL}:${kindId}:${pad}${leerdoel ? `?leerdoel=${leerdoel}` : ""}`;
 }
 
 /**
@@ -78,12 +90,11 @@ export function leesSessie(sleutel: string): BewaardeSessie | null {
     if (!rauw) return null;
 
     const sessie = JSON.parse(rauw) as BewaardeSessie;
-    if (!Array.isArray(sessie.vragen) || sessie.vragen.length === 0) return null;
+    if (!Array.isArray(sessie.vraagIds) || sessie.vraagIds.length === 0) return null;
     if (!Array.isArray(sessie.gelogd)) return null;
-    if (typeof sessie.index !== "number") return null;
 
     // Af: dan hoort er een nieuwe serie te komen.
-    if (sessie.gelogd.length >= sessie.vragen.length) {
+    if (sessie.gelogd.length >= sessie.vraagIds.length) {
       wisSessie(sleutel);
       return null;
     }

@@ -46,6 +46,17 @@ export function isGoed(vraag: OefenVraag, gegeven: string): boolean {
     return gegeven.split(",").join(",") === vraag.antwoord.split(",").join(",");
   }
 
+  /*
+    Stapstenen: één getal per lege steen, van links naar rechts. Alles moet
+    kloppen, ook de volgorde — twee goede getallen op de verkeerde steen is een
+    fout die dit type juist zichtbaar maakt.
+  */
+  if (vraag.vorm === "stapstenen") {
+    const ingevuld = gegeven.split(",").map((w) => w.trim());
+    const juist = vraag.antwoord.split(",").map((w) => w.trim());
+    return ingevuld.length === juist.length && ingevuld.every((w, i) => w === juist[i]);
+  }
+
   // Open vraag: elk van de opgegeven schrijfwijzen mag.
   const toegestaan = vraag.antwoord.split("|").map(normaliseer).filter(Boolean);
   return toegestaan.includes(normaliseer(gegeven));
@@ -60,7 +71,7 @@ export function goedeAntwoordInTekst(vraag: OefenVraag): string {
   if (vraag.vorm === "waar_niet_waar") {
     return vraag.antwoord === "waar" ? "Waar" : "Niet waar";
   }
-  if (vraag.vorm === "sleepgetallen") {
+  if (vraag.vorm === "sleepgetallen" || vraag.vorm === "stapstenen") {
     return vraag.antwoord.split(",").join(" · ");
   }
   return vraag.antwoord.split("|")[0] ?? "";

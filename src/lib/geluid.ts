@@ -5,7 +5,46 @@
  * werkt overal. Zacht en kort; het kan altijd uit.
  */
 
+import { zetGeluidsvoorkeur } from "@/app/oefenacties";
+
 let context: AudioContext | null = null;
+
+/*
+  De geluidsmotor aanzetten bij de eerste aanraking.
+
+  Browsers spelen geen geluid af voordat de gebruiker iets heeft aangeraakt. Op
+  een telefoon is dat strenger dan op een laptop: daar moet de motor ook echt
+  BINNEN die aanraking worden gestart. Gebeurt dat een fractie later — bij het
+  eerste geluidje — dan blijft hij slapen en hoor je de rest van het bezoek
+  helemaal niets. Precies dat ging er mis: op de laptop klonk alles, op de
+  telefoon niets.
+
+  Daarom wordt hier bij de eerste tik de motor gemaakt, wakker gemaakt en één
+  stil hapje afgespeeld. Dat laatste is wat iPhones en iPads echt overtuigt.
+*/
+let getikt = false;
+
+function zetMotorAan() {
+  getikt = true;
+  const ctx = krijgContext();
+  if (!ctx) return;
+  ctx.resume().catch(() => {});
+  try {
+    /* Een stil geluidje van één trilling: genoeg om de motor te openen. */
+    const bron = ctx.createBufferSource();
+    bron.buffer = ctx.createBuffer(1, 1, ctx.sampleRate);
+    bron.connect(ctx.destination);
+    bron.start(0);
+  } catch {
+    // Lukt dit niet, dan werkt het geluid gewoon vanaf de volgende aanraking.
+  }
+}
+
+if (typeof window !== "undefined") {
+  window.addEventListener("pointerdown", zetMotorAan, { once: true, capture: true });
+  window.addEventListener("touchstart", zetMotorAan, { once: true, capture: true });
+  window.addEventListener("keydown", zetMotorAan, { once: true, capture: true });
+}
 
 function krijgContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
@@ -20,7 +59,13 @@ function krijgContext(): AudioContext | null {
 function toon(frequentie: number, duur: number, volume: number) {
   const ctx = krijgContext();
   if (!ctx) return;
-  if (ctx.state === "suspended") void ctx.resume();
+  /*
+    Een browser houdt geluid tegen tot de gebruiker iets heeft aangeraakt. Dan
+    ketst `resume()` af. Zonder `catch` komt die afwijzing als foutmelding in de
+    console terecht, terwijl er niets aan de hand is: het geluid komt vanzelf
+    zodra er een keer getikt is.
+  */
+  if (ctx.state === "suspended") ctx.resume().catch(() => {});
 
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
@@ -37,6 +82,22 @@ function toon(frequentie: number, duur: number, volume: number) {
 /** Zacht tikje bij elk geteld blokje. */
 export function tel(): void {
   toon(660, 0.08, 0.06);
+}
+
+/**
+ * Zachte plop als de vos op een steen landt.
+ *
+ * Een korte lage toon die meteen wegzakt — het klinkt als neerkomen, niet als
+ * een piepje. Zacht gehouden: hij komt bij elke sprong terug en moet ook bij de
+ * tiende keer niet gaan irriteren.
+ *
+ * Speelt niets zolang er nog nergens is getikt. Een browser laat geluid dan
+ * toch niet toe, en zo komt er ook geen waarschuwing in de console.
+ */
+export function plop(): void {
+  if (!getikt) return;
+  toon(300, 0.1, 0.05);
+  setTimeout(() => toon(190, 0.09, 0.035), 22);
 }
 
 /** Klein belletje bij het antwoord. */
@@ -123,5 +184,99 @@ export function zetGeluid(aan: boolean): void {
   } catch {
     // De voorkeur geldt dan alleen deze keer.
   }
+  /*
+    En naar de database, bij het kind. Zet een kind het geluid uit op de tablet,
+    dan staat het ook uit op de laptop. Lukt het versturen niet, dan geldt de
+    keuze gewoon op dit apparaat — de opslag hierboven is het vangnet.
+  */
+  void zetGeluidsvoorkeur("uitleggeluid", aan).catch(() => {});
   for (const f of luisteraars) f();
+}
+
+// ---------------------------------------------------------------------------
+// Het geluid in de opgave zelf
+// ---------------------------------------------------------------------------
+
+/**
+ * Los van het geluid in het uitlegfilmpje.
+ *
+ * De knop in het filmpje regelt de stem die uitlegt; de knop in de opgave
+ * regelt de geluidjes tijdens het maken. Een kind dat de ploppen te druk vindt
+ * maar de uitleg wél wil horen, kan die twee zo apart zetten.
+ */
+const SLEUTEL_OPGAVE = "thuisles-opgave-geluid";
+const opgaveLuisteraars = new Set<() => void>();
+let opgaveStand: boolean | null = null;
+
+export function opgavegeluidStaatAan(): boolean {
+  if (opgaveStand === null) {
+    try {
+      opgaveStand = window.localStorage.getItem(SLEUTEL_OPGAVE) !== "uit";
+    } catch {
+      // Privéstand of geblokkeerde opslag: dan gewoon geluid aan.
+      opgaveStand = true;
+    }
+  }
+  return opgaveStand;
+}
+
+/** Op de server is er geen opslag; daar staat het geluid gewoon aan. */
+export function opgavegeluidOpServer(): boolean {
+  return true;
+}
+
+export function abonneerOpgavegeluid(herteken: () => void): () => void {
+  opgaveLuisteraars.add(herteken);
+  return () => {
+    opgaveLuisteraars.delete(herteken);
+  };
+}
+
+export function zetOpgavegeluid(aan: boolean): void {
+  opgaveStand = aan;
+  try {
+    window.localStorage.setItem(SLEUTEL_OPGAVE, aan ? "aan" : "uit");
+  } catch {
+    // De voorkeur geldt dan alleen deze keer.
+  }
+  /* Zie `zetGeluid` hierboven: de voorkeur hoort bij het kind, niet bij dit apparaat. */
+  void zetGeluidsvoorkeur("opgavegeluid", aan).catch(() => {});
+  for (const f of opgaveLuisteraars) f();
+}
+
+// ---------------------------------------------------------------------------
+// De stand van de server overnemen
+// ---------------------------------------------------------------------------
+
+/**
+ * De voorkeuren zoals ze bij het kind in de database staan.
+ *
+ * De database is de baas. Wat hier binnenkomt overschrijft dus wat dit apparaat
+ * zelf had onthouden — anders zou een tablet waar het geluid ooit uit is gezet
+ * dat blijven volhouden nadat het kind het op de laptop weer aan zette.
+ *
+ * Wordt één keer aangeroepen door `Geluidsvoorkeur` in de schil van de
+ * kindomgeving, met de waarden die de server heeft opgehaald.
+ */
+export function neemGeluidsvoorkeurOver(uitleg: boolean, opgave: boolean): void {
+  if (stand !== uitleg) {
+    stand = uitleg;
+    if (!uitleg) stopLezen();
+    try {
+      window.localStorage.setItem(SLEUTEL, uitleg ? "aan" : "uit");
+    } catch {
+      /* Niet kunnen onthouden mag het geluid niet breken. */
+    }
+    for (const f of luisteraars) f();
+  }
+
+  if (opgaveStand !== opgave) {
+    opgaveStand = opgave;
+    try {
+      window.localStorage.setItem(SLEUTEL_OPGAVE, opgave ? "aan" : "uit");
+    } catch {
+      /* Zie boven. */
+    }
+    for (const f of opgaveLuisteraars) f();
+  }
 }

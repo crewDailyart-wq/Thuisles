@@ -57,7 +57,7 @@ export function Tegel({
           </span>
         </span>
         {href ? (
-          <Icoon naam="pijl" className="mt-1 size-4 shrink-0 text-viool" />
+          <Icoon naam="pijl" className="mt-1 size-4 shrink-0 text-huisstijl" />
         ) : (
           <Icoon naam="slot" className="mt-1 size-4 shrink-0 text-inkt-zacht" />
         )}
@@ -89,7 +89,7 @@ export function Tegel({
   return (
     <Link
       href={href}
-      className={`${basis} border-rand transition hover:-translate-y-0.5 hover:border-viool hover:shadow-op`}
+      className={`${basis} border-rand transition hover:-translate-y-0.5 hover:border-huisstijl hover:shadow-op`}
     >
       {inhoud}
     </Link>

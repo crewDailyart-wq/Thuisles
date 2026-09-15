@@ -5,6 +5,7 @@ import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 import { haalSjabloon } from "@/lib/data/sjablonen";
 import { haalVak } from "@/lib/data/structuur";
 import { haalVragenVanSjabloon } from "@/lib/data/vragen";
+import { lijstAfbeeldingen } from "@/lib/data/afbeeldingen";
 
 export default async function SjabloonPagina({
   params,
@@ -32,6 +33,7 @@ export default async function SjabloonPagina({
         vragen={haalVragenVanSjabloon(sjabloon.id)}
         vakSlug={vak.slug}
         algemeenAantal={haalAlgemeenAantalVragen()}
+        afbeeldingen={lijstAfbeeldingen()}
       />
     </div>
   );

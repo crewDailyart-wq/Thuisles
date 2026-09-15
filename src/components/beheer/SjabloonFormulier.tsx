@@ -52,6 +52,7 @@ export function SjabloonFormulier({
   onderwerpen,
   startLeerdoelId = "",
   algemeenAantal,
+  afbeeldingen = [],
 }: {
   vakSlug: string;
   /** Bestaande leerdoelen, om er een passend bij te zoeken. */
@@ -61,6 +62,8 @@ export function SjabloonFormulier({
   startLeerdoelId?: string;
   /** De algemene standaard, om te tonen wat 'leeg laten' oplevert. */
   algemeenAantal: number;
+  /** Bestaande afbeeldingen, voor een instelling van het soort "afbeelding". */
+  afbeeldingen?: string[];
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -356,6 +359,7 @@ export function SjabloonFormulier({
           <div className="grid gap-4 lg:grid-cols-2 lg:items-start">
             <Paneel titel="3. Instellingen" bijschrift={generator.suggestie}>
               <SjabloonInstellingen
+                afbeeldingen={afbeeldingen}
                 velden={generator.velden}
                 waarden={instellingen}
                 onWijzig={(sleutel, waarde) =>

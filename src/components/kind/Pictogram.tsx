@@ -11,7 +11,8 @@
 
 import type { PictogramNaam } from "@/lib/types";
 
-const VIOOL = "#5b3fd6";
+/* De huisstijlkleur; zie --color-huisstijl in globals.css. */
+const HUISSTIJL = "#e8690f";
 const GROEN = "#1f9d63";
 const ORANJE = "#e4832a";
 const GEEL = "#f2bb2e";
@@ -33,14 +34,14 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
   // --- Vakken ------------------------------------------------------------
   "vak-rekenen": (
     <>
-      <rect x="5" y="7" width="30" height="26" rx="6" fill="#eee9ff" stroke={VIOOL} strokeWidth="2.2" />
-      <path d="M8 14h24M8 20h24M8 26h24" stroke={VIOOL} strokeWidth="1.5" opacity="0.4" {...lijn} />
+      <rect x="5" y="7" width="30" height="26" rx="6" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2.2" />
+      <path d="M8 14h24M8 20h24M8 26h24" stroke={HUISSTIJL} strokeWidth="1.5" opacity="0.4" {...lijn} />
       <circle cx="14" cy="14" r="3" fill={GEEL} />
       <circle cx="23" cy="14" r="3" fill={ORANJE} />
       <circle cx="18" cy="20" r="3" fill={GROEN} />
       <circle cx="27" cy="20" r="3" fill={LUCHT} />
       <circle cx="12" cy="26" r="3" fill={ROZE} />
-      <circle cx="21" cy="26" r="3" fill={VIOOL} />
+      <circle cx="21" cy="26" r="3" fill={HUISSTIJL} />
     </>
   ),
   "vak-taal": (
@@ -82,24 +83,24 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
     <>
       <rect x="4" y="23" width="9.5" height="12" rx="3" fill="#dcf4e8" stroke={GROEN} strokeWidth="2" />
       <rect x="15.2" y="16" width="9.5" height="19" rx="3" fill="#fdeada" stroke={ORANJE} strokeWidth="2" />
-      <rect x="26.4" y="8" width="9.5" height="27" rx="3" fill="#eee9ff" stroke={VIOOL} strokeWidth="2" />
+      <rect x="26.4" y="8" width="9.5" height="27" rx="3" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2" />
       <circle cx="8.8" cy="29" r="1.9" fill={GROEN} />
       <circle cx="20" cy="25.5" r="1.9" fill={ORANJE} />
-      <circle cx="31.2" cy="21.5" r="1.9" fill={VIOOL} />
+      <circle cx="31.2" cy="21.5" r="1.9" fill={HUISSTIJL} />
     </>
   ),
   getalbegrip: (
     <>
-      <path d="M4 29h32" stroke={VIOOL} strokeWidth="2.6" {...lijn} />
-      <path d="M9 29v-4.5M17 29v-3.5M25 29v-3.5M33 29v-4.5" stroke={VIOOL} strokeWidth="2" opacity="0.45" {...lijn} />
+      <path d="M4 29h32" stroke={HUISSTIJL} strokeWidth="2.6" {...lijn} />
+      <path d="M9 29v-4.5M17 29v-3.5M25 29v-3.5M33 29v-4.5" stroke={HUISSTIJL} strokeWidth="2" opacity="0.45" {...lijn} />
       <path d="M21 4.5a6.8 6.8 0 0 1 6.8 6.8c0 4.6-6.8 10.4-6.8 10.4s-6.8-5.8-6.8-10.4A6.8 6.8 0 0 1 21 4.5Z" fill={GEEL} stroke={ORANJE} strokeWidth="2" {...vlak} />
       <circle cx="21" cy="11.3" r="2.4" fill="#ffffff" />
     </>
   ),
   "grote-getallen": (
     <>
-      <rect x="4" y="6" width="32" height="8.5" rx="3" fill="#eee9ff" stroke={VIOOL} strokeWidth="2" />
-      <path d="M12 6v8.5M20 6v8.5M28 6v8.5" stroke={VIOOL} strokeWidth="1.4" opacity="0.45" />
+      <rect x="4" y="6" width="32" height="8.5" rx="3" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2" />
+      <path d="M12 6v8.5M20 6v8.5M28 6v8.5" stroke={HUISSTIJL} strokeWidth="1.4" opacity="0.45" />
       <rect x="8" y="16.5" width="24" height="8.5" rx="3" fill="#e2edfb" stroke={LUCHT} strokeWidth="2" />
       <path d="M16 16.5V25M24 16.5V25" stroke={LUCHT} strokeWidth="1.4" opacity="0.45" />
       <rect x="13" y="27" width="14" height="8.5" rx="3" fill="#dcf4e8" stroke={GROEN} strokeWidth="2" />
@@ -124,9 +125,9 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
   /* Getallen lezen en schrijven: een cijfer op een schrijfregel. */
   schrijven: (
     <>
-      <rect x="4" y="6" width="32" height="28" rx="5" fill="#eee9ff" stroke={VIOOL} strokeWidth="2.2" />
-      <path d="M9 26h22" stroke={VIOOL} strokeWidth="1.6" opacity="0.5" />
-      <path d="M15 13v13M15 13h4a4 4 0 0 1 0 8h-4" stroke={VIOOL} strokeWidth="2.6" {...lijn} />
+      <rect x="4" y="6" width="32" height="28" rx="5" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2.2" />
+      <path d="M9 26h22" stroke={HUISSTIJL} strokeWidth="1.6" opacity="0.5" />
+      <path d="M15 13v13M15 13h4a4 4 0 0 1 0 8h-4" stroke={HUISSTIJL} strokeWidth="2.6" {...lijn} />
       <path d="M26.5 13v13" stroke={ORANJE} strokeWidth="2.6" {...lijn} />
     </>
   ),
@@ -170,10 +171,10 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
   ),
   tafels: (
     <>
-      <rect x="4" y="4" width="32" height="32" rx="8" fill="#eee9ff" stroke={VIOOL} strokeWidth="2.2" />
+      <rect x="4" y="4" width="32" height="32" rx="8" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2.2" />
       {[12.5, 20, 27.5].map((y) =>
         [12.5, 20, 27.5].map((x, i) => (
-          <circle key={`${x}-${y}`} cx={x} cy={y} r="2.7" fill={i === 1 ? GEEL : VIOOL} />
+          <circle key={`${x}-${y}`} cx={x} cy={y} r="2.7" fill={i === 1 ? GEEL : HUISSTIJL} />
         )),
       )}
     </>
@@ -181,11 +182,11 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
   vermenigvuldigen: (
     <>
       <path d="M5 11.5 13.5 20M13.5 11.5 5 20" stroke={ORANJE} strokeWidth="3.2" {...lijn} />
-      <rect x="18.5" y="6" width="17.5" height="28" rx="5" fill="#eee9ff" stroke={VIOOL} strokeWidth="2.2" />
+      <rect x="18.5" y="6" width="17.5" height="28" rx="5" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2.2" />
       {[12.5, 20, 27.5].map((y) => (
         <g key={y}>
-          <circle cx="23.5" cy={y} r="2.5" fill={VIOOL} />
-          <circle cx="31" cy={y} r="2.5" fill={VIOOL} />
+          <circle cx="23.5" cy={y} r="2.5" fill={HUISSTIJL} />
+          <circle cx="31" cy={y} r="2.5" fill={HUISSTIJL} />
         </g>
       ))}
     </>
@@ -281,7 +282,7 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
     <>
       <path d="M12 3.5 22 20H2L12 3.5Z" fill="#fde6ec" stroke={ROZE} strokeWidth="2.2" {...vlak} />
       <circle cx="28.5" cy="12" r="8.5" fill="#e2edfb" stroke={LUCHT} strokeWidth="2.2" />
-      <rect x="9" y="23.5" width="22" height="13.5" rx="3.5" fill="#eee9ff" stroke={VIOOL} strokeWidth="2.2" />
+      <rect x="9" y="23.5" width="22" height="13.5" rx="3.5" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2.2" />
     </>
   ),
 
@@ -292,7 +293,7 @@ const TEKENINGEN: Record<PictogramNaam, React.ReactNode> = {
       <path d="M6 5v29h28" stroke={INKT} strokeWidth="2.4" {...lijn} />
       <rect x="11" y="20" width="5.5" height="10" rx="1.8" fill="#dcf4e8" stroke={GROEN} strokeWidth="2" />
       <rect x="19.5" y="13" width="5.5" height="17" rx="1.8" fill="#e2edfb" stroke={LUCHT} strokeWidth="2" />
-      <rect x="28" y="8.5" width="5.5" height="21.5" rx="1.8" fill="#eee9ff" stroke={VIOOL} strokeWidth="2" />
+      <rect x="28" y="8.5" width="5.5" height="21.5" rx="1.8" fill="#fdecdd" stroke={HUISSTIJL} strokeWidth="2" />
     </>
   ),
   vos: (

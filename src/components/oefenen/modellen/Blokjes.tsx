@@ -19,8 +19,8 @@
 import type { Bloktoestand } from "@/lib/generatoren/uitlegscript";
 
 const KLEUR: Record<Bloktoestand, { vul: string; rand: string; dik: number }> = {
-  normaal: { vul: "#eee9ff", rand: "#5b3fd6", dik: 2 },
-  deel: { vul: "#c9bcf5", rand: "#46299f", dik: 2.5 },
+  normaal: { vul: "#fdecdd", rand: "#e8690f", dik: 2 },
+  deel: { vul: "#f8c08a", rand: "#b8480a", dik: 2.5 },
   weg: { vul: "#ffffff", rand: "#b9b2c9", dik: 2 },
   rest: { vul: "#dcf4e8", rand: "#1f9d63", dik: 2.5 },
   geteld: { vul: "#1f9d63", rand: "#17784c", dik: 3 },
@@ -110,7 +110,7 @@ export function Blokjes({
 
             {/* Vormverschil, zodat kleur niet het enige onderscheid is. */}
             {toestand === "deel" && (
-              <circle cx={x + MAAT / 2} cy={y + MAAT / 2} r={4} fill="#46299f" />
+              <circle cx={x + MAAT / 2} cy={y + MAAT / 2} r={4} fill="#b8480a" />
             )}
             {toestand === "geteld" && (
               <path

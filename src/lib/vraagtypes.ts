@@ -6,7 +6,12 @@
  * niet uit elkaar kunnen lopen.
  */
 
-export type Vraagvorm = "meerkeuze" | "open" | "waar_niet_waar" | "sleepgetallen";
+export type Vraagvorm =
+  | "meerkeuze"
+  | "open"
+  | "waar_niet_waar"
+  | "sleepgetallen"
+  | "stapstenen";
 
 /**
  * Alle vormen die opgeslagen mogen worden.
@@ -24,6 +29,7 @@ export const ALLE_VRAAGVORMEN: Vraagvorm[] = [
   "open",
   "waar_niet_waar",
   "sleepgetallen",
+  "stapstenen",
 ];
 
 export const VRAAGVORMEN: Vraagvorm[] = ["meerkeuze", "open", "waar_niet_waar"];
@@ -41,6 +47,7 @@ export const VORM_LABEL: Record<Vraagvorm, string> = {
   open: "Open vraag",
   waar_niet_waar: "Waar / niet waar",
   sleepgetallen: "Getallen slepen",
+  stapstenen: "Telrij stapstenen",
 };
 
 export const VORM_UITLEG: Record<Vraagvorm, string> = {
@@ -49,6 +56,8 @@ export const VORM_UITLEG: Record<Vraagvorm, string> = {
   waar_niet_waar: "Een stelling die waar of niet waar is.",
   sleepgetallen:
     "Het kind sleept bij elke afbeelding het getal dat erbij hoort. Alleen via een sjabloon.",
+  stapstenen:
+    "Het kind vult de lege stenen van een telrij in, op de steen zelf. Alleen via een sjabloon.",
 };
 
 export type Vraagstatus = "concept" | "gepubliceerd";

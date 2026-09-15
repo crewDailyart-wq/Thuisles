@@ -35,7 +35,7 @@ export function Paginakop({
               {kruimel.href ? (
                 <Link
                   href={kruimel.href}
-                  className="rounded px-0.5 underline-offset-2 hover:text-viool hover:underline"
+                  className="rounded px-0.5 underline-offset-2 hover:text-huisstijl hover:underline"
                 >
                   {kruimel.label}
                 </Link>

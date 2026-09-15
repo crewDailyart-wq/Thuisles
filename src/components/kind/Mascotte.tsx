@@ -17,9 +17,9 @@ function Vosje({ className = "" }: { className?: string }) {
       />
       <path d="M20 84 C 12 90 10 100 13 108 C 20 104 24 96 24 90 Z" fill="#fdf2e2" />
 
-      {/* rugzak achter het lijf */}
-      <rect x={22} y={100} width={22} height={34} rx={9} fill="#46299f" />
-      <rect x={96} y={100} width={22} height={34} rx={9} fill="#46299f" />
+      {/* rugzak achter het lijf; groen, net als op de plaatjes van Vos */}
+      <rect x={22} y={100} width={22} height={34} rx={9} fill="#17784c" />
+      <rect x={96} y={100} width={22} height={34} rx={9} fill="#17784c" />
 
       {/* lijf */}
       <path
@@ -32,8 +32,8 @@ function Vosje({ className = "" }: { className?: string }) {
         fill="#fdf2e2"
       />
       {/* schouderbanden van de rugzak */}
-      <path d="M55 100 C 52 114 52 126 54 138 L62 138 C 60 124 60 112 63 100 Z" fill="#5b3fd6" />
-      <path d="M85 100 C 88 114 88 126 86 138 L78 138 C 80 124 80 112 77 100 Z" fill="#5b3fd6" />
+      <path d="M55 100 C 52 114 52 126 54 138 L62 138 C 60 124 60 112 63 100 Z" fill="#1f9d63" />
+      <path d="M85 100 C 88 114 88 126 86 138 L78 138 C 80 124 80 112 77 100 Z" fill="#1f9d63" />
 
       {/* oren */}
       <path d="M41 48 L33 16 L61 33 Z" fill="#e8843c" />

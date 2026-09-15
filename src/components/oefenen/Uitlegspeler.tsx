@@ -24,6 +24,7 @@ import {
 } from "@/components/oefenen/Symbolen";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
+import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
   abonneerGeluid,
@@ -41,11 +42,19 @@ export function Uitlegspeler({
   script,
   onSluit,
   onNogEen,
+  mascotte = null,
 }: {
   script: Uitlegscript;
   onSluit: () => void;
   /** Aangeboden na afloop: nog een vergelijkbare som proberen. */
   onNogEen?: () => void;
+  /**
+   * De mascotte van de vraag waar deze uitleg bij hoort.
+   *
+   * Die staat bij de vraag en niet in de somgegevens — daar passen alleen
+   * getallen in. Zo ziet het kind in de uitleg dezelfde vos als in de vraag.
+   */
+  mascotte?: string | null;
 }) {
   const [stapNr, setStapNr] = useState(0);
   const [getikt, setGetikt] = useState<number[]>([]);
@@ -189,7 +198,7 @@ export function Uitlegspeler({
   if (!stap) return null;
 
   return (
-    <div className="mt-5 rounded-groot border-2 border-viool/25 bg-viool-zacht/40 p-4 sm:p-5">
+    <div className="mt-5 rounded-groot border-2 border-huisstijl/25 bg-huisstijl-zacht/40 p-4 sm:p-5">
       {/*
         Kop met alleen knopjes.
 
@@ -210,7 +219,7 @@ export function Uitlegspeler({
           aria-pressed={geluidAan}
           aria-label={geluidAan ? "Geluid aan" : "Geluid uit"}
           title={geluidAan ? "Geluid aan" : "Geluid uit"}
-          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
         >
           {geluidAan ? (
             <Luidspreker className="size-6" />
@@ -223,7 +232,7 @@ export function Uitlegspeler({
           onClick={onSluit}
           aria-label="Sluiten"
           title="Sluiten"
-          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
         >
           <Kruisje className="size-6" />
         </button>
@@ -235,6 +244,7 @@ export function Uitlegspeler({
           <Modelbeeld
             model={stap.model}
             getikt={getikt}
+            mascotte={mascotte}
             telbaar={Boolean(stap.meetellen)}
             telbaarAantal={stap.meetellen?.aantal ?? 0}
             wijsAan={Boolean(stap.meetellen) && getikt.length === 0}
@@ -282,7 +292,7 @@ export function Uitlegspeler({
 
       {/* Meetellen */}
       {stap.meetellen && (
-        <p className="mt-3 rounded-2xl bg-white/80 px-4 py-2.5 text-center text-sm font-extrabold text-viool-diep">
+        <p className="mt-3 rounded-2xl bg-white/80 px-4 py-2.5 text-center text-sm font-extrabold text-huisstijl-diep">
           {nogTeTikken > 0
             ? /*
                  Dezelfde zin als Vos zegt, maar zonder het uitroepteken: er komt
@@ -312,7 +322,7 @@ export function Uitlegspeler({
         niets verdwijnt waar het kind net naar zat te kijken.
       */}
       {wijsNaarVerder && !laatste && (
-        <p className="mt-3 flex items-center gap-1.5 text-sm font-extrabold text-viool">
+        <p className="mt-3 flex items-center gap-1.5 text-sm font-extrabold text-huisstijl">
           <span aria-hidden="true" className="motion-safe:animate-hand-wijs text-lg">
             👇
           </span>
@@ -341,8 +351,8 @@ export function Uitlegspeler({
             disabled={!magVerder}
             aria-label="Verder"
             title="Verder"
-            className={`grid size-16 place-items-center rounded-full bg-viool text-white shadow-op transition hover:bg-viool-diep disabled:opacity-45 ${
-              wijsNaarVerder ? "motion-safe:animate-blok-klaar ring-4 ring-viool/30" : ""
+            className={`grid size-16 place-items-center rounded-full bg-huisstijl-diep text-white shadow-op transition hover:bg-huisstijl-donker disabled:opacity-45 ${
+              wijsNaarVerder ? "motion-safe:animate-blok-klaar ring-4 ring-huisstijl/30" : ""
             }`}
           >
             <PijlVooruit className="size-9" />
@@ -355,7 +365,7 @@ export function Uitlegspeler({
             onClick={() => setAutomatisch(true)}
             aria-label="Afspelen"
             title="Afspelen"
-            className="grid size-12 place-items-center rounded-full border-2 border-viool text-viool transition hover:bg-viool-zacht"
+            className="grid size-12 place-items-center rounded-full border-2 border-huisstijl text-huisstijl transition hover:bg-huisstijl-zacht"
           >
             <Driehoek className="size-6" />
           </button>
@@ -366,7 +376,7 @@ export function Uitlegspeler({
           onClick={opnieuw}
           aria-label="Nog een keer"
           title="Nog een keer"
-          className="grid size-12 place-items-center rounded-full border-2 border-rand text-inkt-zacht transition hover:border-viool hover:text-viool"
+          className="grid size-12 place-items-center rounded-full border-2 border-rand text-inkt-zacht transition hover:border-huisstijl hover:text-huisstijl"
         >
           <RondeTerugpijl className="size-6" />
         </button>
@@ -388,7 +398,7 @@ export function Uitlegspeler({
           <span
             key={i}
             className={`h-1.5 flex-1 rounded-full ${
-              i < stapNr ? "bg-viool" : i === stapNr ? "bg-viool-diep" : "bg-white/70"
+              i < stapNr ? "bg-huisstijl" : i === stapNr ? "bg-huisstijl-diep" : "bg-white/70"
             }`}
           />
         ))}
@@ -402,6 +412,7 @@ export function Uitlegspeler({
 function Modelbeeld({
   model,
   getikt,
+  mascotte,
   telbaar,
   telbaarAantal,
   wijsAan,
@@ -410,6 +421,8 @@ function Modelbeeld({
 }: {
   model: Model;
   getikt: number[];
+  /** De mascotte van de vraag; zie `Uitlegspeler`. */
+  mascotte: string | null;
   telbaar: boolean;
   /** Hoeveel er bij deze stap geteld moeten worden. */
   telbaarAantal: number;
@@ -493,10 +506,28 @@ function Modelbeeld({
           onTik={onTik}
         />
         {model.bijschrift && (
-          <p className="text-3xl font-extrabold tabular-nums text-viool-diep">
+          <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">
             {model.bijschrift}
           </p>
         )}
+      </div>
+    );
+  }
+
+  if (model.soort === "stapstenen") {
+    return (
+      <div className="w-full">
+        <Steenrij
+          figuur={{
+            soort: "stapstenen",
+            stenen: model.stenen,
+            sprong: model.sprong,
+            richting: model.richting,
+            mascotte: model.mascotte ?? mascotte,
+          }}
+          vosOp={model.vosOp}
+          boogVan={model.boogVan}
+        />
       </div>
     );
   }

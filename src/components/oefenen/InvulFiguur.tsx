@@ -24,7 +24,7 @@ export type Invulfase = "bezig" | "goed" | "bijna" | "fout";
 
 const STIJL: Record<Invulfase, string> = {
   bezig:
-    "border-dashed border-oranje bg-white text-oranje-diep focus:border-solid focus:border-viool focus:text-inkt",
+    "border-dashed border-oranje bg-white text-oranje-diep focus:border-solid focus:border-huisstijl focus:text-inkt",
   goed: "border-solid border-groen bg-groen-zacht text-groen-diep",
   bijna: "border-solid border-oranje bg-amber-zacht text-oranje-diep",
   /* Groep 3-4: het eigen antwoord duidelijk rood, zonder tekst eromheen. */

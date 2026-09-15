@@ -11,7 +11,7 @@
  *      doorheen komt, met onderaan het vosje en zijn tekstballon.
  *
  * Zo blijft er geen grote lege donkere kolom onder de navigatie staan.
- * Marineblauw is de basiskleur; paars wordt alleen nog als accent gebruikt,
+ * Marineblauw is de basiskleur; de huisstijlkleur wordt alleen als accent gebruikt,
  * bij het actieve menu-item en het beeldmerk.
  */
 
@@ -38,7 +38,7 @@ export const NAV_ITEMS: NavItem[] = [
 /** Eigen beeldmerk: een telraam-achtige vorm in een afgerond vierkant. */
 function Beeldmerk() {
   return (
-    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-viool">
+    <span className="grid size-9 shrink-0 place-items-center rounded-xl bg-huisstijl">
       <svg viewBox="0 0 24 24" className="size-5" aria-hidden="true">
         <g stroke="white" strokeWidth={2} strokeLinecap="round">
           <path d="M5 7.5h14M5 12h14M5 16.5h14" />
@@ -83,7 +83,7 @@ export function Zijbalk() {
                     aria-current={actief ? "page" : undefined}
                     className={`flex items-center gap-2.5 rounded-xl px-2.5 py-2 text-sm font-bold transition-colors ${
                       actief
-                        ? "bg-viool text-white"
+                        ? "bg-huisstijl-diep text-white"
                         : "text-white/70 hover:bg-nacht-op hover:text-white"
                     }`}
                   >

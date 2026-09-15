@@ -24,7 +24,59 @@
   --color-nacht-diep: #0a1730;
   --color-nacht-op: #1d3563;
 
-  /* Primair — hoofdaccent van de hele app */
+  /*
+    ---------------------------------------------------------------------------
+    HUISSTIJL THUISLES — MANDARIJNORANJE
+    ---------------------------------------------------------------------------
+    Dit is de plek. Wil je de huisstijlkleur veranderen, pas dan deze drie
+    regels aan; de hele kinderomgeving kleurt mee. Er staan nergens anders nog
+    losse kleurcodes voor het accent.
+
+    Waarom drie en niet één: op oranje moet tekst leesbaar blijven, en dat lukt
+    niet met één tint. De verhouding tussen tekst en achtergrond moet minstens
+    4,5 zijn om vlot te lezen; bij iconen en vlakken is 3 genoeg.
+
+      huisstijl        de mandarijn zelf. Voor vlakken met iconen en vormen
+                       (de bovenbalk) en voor randen. Wit erop haalt 3,25 — ruim
+                       genoeg voor de pijl en de voortgangsbalk, die er als
+                       enige op staan.
+      huisstijl-diep   overal waar écht tekst bij komt kijken: witte tekst op
+                       een gekleurde knop (Controleer) en gekleurde tekst op wit
+                       (de cijfers van het toetsenbord). Haalt 5,29 — dat leest
+                       een kind van zes ook nog.
+      huisstijl-zacht  zachte achtergrond, bijvoorbeeld achter een gekozen
+                       tegel.
+      huisstijl-donker alleen voor het aanwijzen van een knop die al -diep is;
+                       anders zou hij bij het aanwijzen niets doen. Haalt 7,37.
+
+    Een fellere mandarijn, zoals #f07316, haalt met witte tekst maar 2,93. Dat
+    is te licht om op te lezen, dus daar is bewust niet voor gekozen.
+  */
+  --color-huisstijl: #e8690f;
+  --color-huisstijl-diep: #b8480a;
+  --color-huisstijl-zacht: #fdecdd;
+  --color-huisstijl-donker: #94390a;
+
+  /*
+    Groen en rood zoals ze op de gekleurde bovenbalk staan.
+
+    De bolletjes bovenin betekenen goed en fout, dus die blijven groen en rood —
+    daar valt niet aan te tornen. Maar het gewone groen (#1f9d63) is precies even
+    licht als de mandarijn eronder: de verhouding is 1,07, en dat is in de praktijk
+    onzichtbaar. Op het oude paars viel het nog mee omdat paars veel donkerder is.
+
+    Daarom staan hier diepere tinten van dezelfde twee kleuren, alleen voor op de
+    balk. Het blijft onmiskenbaar groen en rood, maar nu ook te zien in fel licht
+    en voor een kind dat kleuren minder goed onderscheidt.
+  */
+  --color-goed-op-balk: #0d4f2d;
+  --color-fout-op-balk: #820c06;
+
+  /*
+    Het oude paarse accent. Blijft staan voor de ouderomgeving en de
+    beheeromgeving, die hun eigen kleur houden; de kinderkant gebruikt het niet
+    meer.
+  */
   --color-viool: #5b3fd6;
   --color-viool-diep: #46299f;
   --color-viool-zacht: #eee9ff;
@@ -48,6 +100,15 @@
   --color-amber-zacht: #fdf0da;
   --color-roze: #e4607f;
   --color-roze-zacht: #fde6ec;
+  /*
+    Een duidelijk rood, alleen voor de bolletjes in de oefenbalk.
+
+    Daar staat het naast groen op de gekleurde balk, en dan is roze te dicht bij
+    groen om in één oogopslag te zien wat er goed en fout ging. De rest van de
+    oefenomgeving houdt het zachtere roze: bij een fout antwoord in de vraag
+    zelf hoort geen alarmkleur.
+  */
+  --color-fout: #d92d20;
   --color-lucht: #3577cc;
   /* Donkerder blauw voor de hover van de schoolroute. */
   --color-lucht-diep: #27599b;
@@ -141,10 +202,21 @@
     scherm dat overal tegelijk beweegt: één kraal die opveert, één groepje dat
     oplicht, en een pijl die zachtjes wipt.
   */
+  --animate-vos-trappel: vos-trappel 1.5s ease-in-out infinite;
   --animate-kraal-stuiter: kraal-stuiter 0.5s ease-out 1;
   --animate-kraal-pulse: kraal-pulse 0.75s ease-in-out 1;
   --animate-pijl-wip: pijl-wip 1.9s ease-in-out infinite;
   --animate-vos-knik: vos-knik 0.55s ease-out 1;
+
+  /*
+    De vos wacht op de laatste steen vóór de lege plek en wipt daar zachtjes op
+    en neer. Klein en langzaam gehouden: het moet laten zien dat hij staat te
+    wachten, niet de aandacht wegtrekken van het invullen.
+  */
+  @keyframes vos-trappel {
+    0%, 100% { transform: translateY(0); }
+    45%      { transform: translateY(-4px); }
+  }
 
   /* Een aangetikte kraal wipt één keer op en komt terug. */
   @keyframes kraal-stuiter {
@@ -184,8 +256,8 @@ html {
 }
 
 /*
- * De pagina zelf is niet wit maar een zacht kleurverloop: lila bovenin, warm
- * perzik in het midden, mintgroen onderin, met drie brede kleurvlekken
+ * De pagina zelf is niet wit maar een zacht kleurverloop: warm mandarijn
+ * bovenin, perzik in het midden, mintgroen onderin, met drie brede kleurvlekken
  * eroverheen. Zo blijft het beeld ook tussen de kaarten door leven, terwijl de
  * witte kaarten er rustig op blijven staan.
  */
@@ -197,7 +269,7 @@ body {
     radial-gradient(46rem 30rem at 46% 96%, rgba(150, 226, 190, 0.34), transparent 65%),
     linear-gradient(
       180deg,
-      #f2ebff 0%,
+      #fdeee2 0%,
       #fdf2e6 34%,
       #fdf6ec 60%,
       #eef7f0 100%
@@ -212,6 +284,17 @@ body {
   outline: 3px solid var(--color-viool);
   outline-offset: 3px;
   border-radius: 0.75rem;
+}
+
+/*
+  In de kinderomgeving hoort die rand bij de huisstijl.
+
+  Bewust op `data-omgeving="kind"` en niet overal: de ouderomgeving en de
+  beheeromgeving houden hun eigen kleur. Het kenmerk staat op de schil in
+  `components/kind/Kindschil.tsx`.
+*/
+[data-omgeving="kind"] :focus-visible {
+  outline-color: var(--color-huisstijl);
 }
 
 @media (prefers-reduced-motion: reduce) {

@@ -48,7 +48,7 @@ export function Stappenuitleg({
           }
           aria-label="Voorlezen"
           title="Voorlezen"
-          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
         >
           <Luidspreker className="size-6" />
         </button>
@@ -57,7 +57,7 @@ export function Stappenuitleg({
           onClick={onSluit}
           aria-label="Sluiten"
           title="Sluiten"
-          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-viool"
+          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
         >
           <Kruisje className="size-6" />
         </button>

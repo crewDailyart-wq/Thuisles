@@ -127,3 +127,31 @@ export function Kruisje({ className = "" }: { className?: string }) {
   );
 }
 
+/**
+ * Wissen: de backspace-pijl van een gewoon toetsenbord.
+ *
+ * Een pijl naar links met een kruisje erin. Bewust hetzelfde beeld als op een
+ * echt toetsenbord — dat heeft een kind al eens gezien, en het woord "Wissen"
+ * leest niet iedereen in groep 4 vlot genoeg om er tijdens het rekenen op te
+ * durven drukken.
+ */
+export function Wisser({ className = "" }: { className?: string }) {
+  return (
+    <svg viewBox="0 0 24 24" aria-hidden="true" className={className} fill="none">
+      {/* De omtrek: een punt links, een blok rechts. */}
+      <path
+        d="M9 4.5h10a1.5 1.5 0 0 1 1.5 1.5v12a1.5 1.5 0 0 1-1.5 1.5H9L2.8 12.8a1.2 1.2 0 0 1 0-1.6L9 4.5Z"
+        stroke="currentColor"
+        strokeWidth={2}
+        strokeLinejoin="round"
+      />
+      {/* Het kruisje erin. */}
+      <path
+        d="M11.8 9.4l5.4 5.2M17.2 9.4l-5.4 5.2"
+        stroke="currentColor"
+        strokeWidth={2.2}
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}

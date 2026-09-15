@@ -58,6 +58,7 @@
 const SJABLOONDETAIL = "src/components/beheer/SjabloonDetail.tsx";
 const SJABLOONFORMULIER = "src/components/beheer/SjabloonFormulier.tsx";
 const LEERDOELDETAIL = "src/components/beheer/LeerdoelDetail.tsx";
+const STAPSTENEN = "src/lib/generatoren/stapstenen.ts";
 
 export const SCHERMCONTRACT = [
   {
@@ -92,6 +93,24 @@ export const SCHERMCONTRACT = [
       },
       { tekst: "Hint bij een fout antwoord", bron: SJABLOONFORMULIER, na: "een soort som kiezen" },
       { tekst: "Hoeveel sommen", bron: SJABLOONFORMULIER, na: "een soort som kiezen" },
+      /*
+        De instellingen van "Telrij stapstenen". Die komen uit de generator en
+        staan dus in dat bestand; het formulier bouwt zichzelf eruit op.
+      */
+      { tekst: "Sprong", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Richting", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Bereik", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Aantal stenen in de rij", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Aantal lege stenen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Waar de lege stenen liggen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      /*
+        Eén mascotteveld werd er drie, één per houding. De oude regel heette
+        "Mascotte op de eerste steen"; die staat er dus niet meer, maar het veld
+        is niet verdwenen — het is gesplitst.
+      */
+      { tekst: "Mascotte — staand", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Mascotte — springend", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Mascotte — juichend", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
     ],
   },
   {

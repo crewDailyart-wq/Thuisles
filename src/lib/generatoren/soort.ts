@@ -50,6 +50,37 @@ export type Figuur =
       palet: string;
     }
   | {
+      soort: "stapstenen";
+      /**
+       * Per steen het getal, of `null` als de steen leeg is.
+       *
+       * De lege stenen zijn tegelijk de invulvakken: het kind tikt op een steen
+       * en vult hem ter plekke in. Er is daarom geen apart antwoordveld.
+       */
+      stenen: (number | null)[];
+      /** Het verschil tussen twee stenen. Bepaalt de afstand en het boogje. */
+      sprong: number;
+      richting: "vooruit" | "terug";
+      /**
+       * Bestandsnaam van de mascotte op de eerste steen, of `null`.
+       *
+       * Bewust een afbeelding uit het afbeeldingenbeheer en geen tekening in
+       * code: zo is de vos zelf te uploaden en later te vervangen zonder dat er
+       * iets aan de code hoeft te veranderen. Staat er niets, dan staat er ook
+       * geen mascotte — liever leeg dan een verkeerd poppetje.
+       */
+      mascotte: string | null;
+      /**
+       * Houdingen van de mascotte, elk een eigen afbeelding uit het beheer.
+       *
+       * Ontbreekt er een, dan wordt `mascotte` gebruikt. Zo werkt het meteen
+       * met één plaatje, en kan er later per houding een betere bij zonder dat
+       * er iets aan de code hoeft te veranderen.
+       */
+      mascotteSpringend?: string | null;
+      mascotteJuichend?: string | null;
+    }
+  | {
       soort: "telrij";
       /**
        * De figuren naast elkaar, elk met zijn eigen aantal telbare onderdelen.
@@ -102,6 +133,19 @@ export type Veld =
       sleutel: string;
       label: string;
       opties: { waarde: string; label: string }[];
+      hulp?: string;
+    }
+  | {
+      /**
+       * Een afbeelding uit het afbeeldingenbeheer.
+       *
+       * Levert de bestandsnaam op, net als bij een vraag. Zo kan een sjabloon
+       * een plaatje meegeven — de mascotte op de stapstenen bijvoorbeeld —
+       * zonder dat dat plaatje in de code hoeft te staan.
+       */
+      soort: "afbeelding";
+      sleutel: string;
+      label: string;
       hulp?: string;
     };
 
