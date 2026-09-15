@@ -17,8 +17,6 @@ import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening"
 import {
   Driehoek,
   Kruisje,
-  Luidspreker,
-  LuidsprekerUit,
   PijlVooruit,
   RondeTerugpijl,
 } from "@/components/oefenen/Symbolen";
@@ -27,12 +25,11 @@ import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
-  abonneerGeluid,
+  abonneerOpgavegeluid,
   belletje,
-  geluidOpServer,
-  geluidStaatAan,
+  opgavegeluidOpServer,
+  opgavegeluidStaatAan,
   tel,
-  zetGeluid,
 } from "@/lib/geluid";
 import { stopPraten, zeg } from "@/lib/stem";
 import { STANDAARD_TIKZIN } from "@/lib/generatoren/uitlegscript";
@@ -72,7 +69,25 @@ export function Uitlegspeler({
     doet, en dan wordt zo'n duwtje betuttelend.
   */
   const [duwtjeVoor, setDuwtjeVoor] = useState<string | null>(null);
-  const geluidAan = useSyncExternalStore(abonneerGeluid, geluidStaatAan, geluidOpServer);
+  /*
+    Eén geluidsknop, en die staat in de opgave — rechtsboven de kaart. Er zat
+    hier vroeger een tweede; die is eruit, omdat een kind van zes niet hoort te
+    moeten uitzoeken welke van twee luidsprekers wát het zwijgen oplegt.
+
+    Wat die knop hier uitzet, is alleen de versiering: het tiktoontje bij het
+    meetellen en het belletje bij het antwoord.
+
+    Wat Vos zégt, blijft altijd klinken. De gesproken uitleg is waar dit
+    filmpje voor bestaat; die wegdrukken met dezelfde knop die een plopje
+    dempt, zou betekenen dat een kind de les kwijtraakt omdat het de
+    geluidjes te druk vond. Het hardop meetellen hoort daar ook bij: tellen is
+    horen wélk getal erbij komt.
+  */
+  const geluidAan = useSyncExternalStore(
+    abonneerOpgavegeluid,
+    opgavegeluidStaatAan,
+    opgavegeluidOpServer,
+  );
   const tijdklok = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const stap = script.stappen[stapNr];
@@ -96,10 +111,10 @@ export function Uitlegspeler({
     het nog niet wist.
   */
   useEffect(() => {
-    if (!geluidAan || !stap) return;
+    if (!stap) return;
     zeg(tikzin ? `${stap.zin} ${tikzin}` : stap.zin);
     return () => stopPraten();
-  }, [stapNr, geluidAan, stap, tikzin]);
+  }, [stapNr, stap, tikzin]);
 
   /*
     Doet het kind niets bij een teltap, dan wijst het handje opnieuw en
@@ -109,10 +124,10 @@ export function Uitlegspeler({
     if (!stap?.meetellen || getikt.length > 0) return;
     const klok = setInterval(() => {
       setWijsSleutel((n) => n + 1);
-      if (geluidAan) zeg(tikzin);
+      zeg(tikzin);
     }, 6000);
     return () => clearInterval(klok);
-  }, [stapNr, stap, getikt.length, geluidAan, tikzin]);
+  }, [stapNr, stap, getikt.length, tikzin]);
 
   // Het feestje bij het antwoord.
   useEffect(() => {
@@ -144,11 +159,11 @@ export function Uitlegspeler({
 
     const klok = setTimeout(() => {
       setDuwtjeVoor(`${script.vorm}:${stapNr}`);
-      if (geluidAan) zeg("Klik hier om verder te gaan");
+      zeg("Klik hier om verder te gaan");
     }, 6000);
 
     return () => clearTimeout(klok);
-  }, [voorGroep3, laatste, automatisch, magVerder, stapNr, geluidAan, script.vorm]);
+  }, [voorGroep3, laatste, automatisch, magVerder, stapNr, script.vorm]);
 
   /*
     Of het duwtje nú in beeld hoort.
@@ -181,15 +196,17 @@ export function Uitlegspeler({
     if (getikt.includes(index)) return;
     const nieuw = [...getikt, index];
     setGetikt(nieuw);
-    if (geluidAan) {
-      tel();
-      /*
-        Hardop meetellen. Het getal zelf uitspreken werkt beter dan alleen een
-        toontje: tellen is horen wélk getal erbij komt, niet dát er iets bij
-        komt. De stem leest "3" in het Nederlands als "drie".
-      */
-      zeg(String(nieuw.length));
-    }
+    /* Het tiktoontje is versiering en volgt de geluidsknop. */
+    if (geluidAan) tel();
+    /*
+      Hardop meetellen. Het getal zelf uitspreken werkt beter dan alleen een
+      toontje: tellen is horen wélk getal erbij komt, niet dát er iets bij
+      komt. De stem leest "3" in het Nederlands als "drie".
+
+      Dit is uitleg, geen versiering, dus het klinkt ook als het geluid uit
+      staat — net als de zinnen die Vos voorleest.
+    */
+    zeg(String(nieuw.length));
     if (stap?.meetellen && nieuw.length >= stap.meetellen.aantal && geluidAan) {
       belletje();
     }
@@ -207,26 +224,15 @@ export function Uitlegspeler({
         De strategienaam is daarmee niet verdwenen uit de app — hij staat nog in
         het beheer bij "Bekijk uitleg", waar hij wél gelezen wordt.
 
-        De twee knoppen zijn symbolen zonder tekst. Hun naam hangt als
+        De sluitknop is een symbool zonder tekst. De naam hangt als
         `aria-label` en `title` aan de knop, zodat een voorleesprogramma blijft
-        zeggen wat ze doen. `aria-pressed` blijft staan: dat vertelt of het
-        geluid aan of uit staat.
+        zeggen wat hij doet.
+
+        Hier stond ook een luidsprekerknop. Die is eruit: het geluid van het
+        filmpje hangt nu aan de ene knop in de opgave, samen met de plop en het
+        sleutelgeluid.
       */}
       <div className="mb-3 flex items-center justify-end gap-2">
-        <button
-          type="button"
-          onClick={() => zetGeluid(!geluidAan)}
-          aria-pressed={geluidAan}
-          aria-label={geluidAan ? "Geluid aan" : "Geluid uit"}
-          title={geluidAan ? "Geluid aan" : "Geluid uit"}
-          className="grid size-11 place-items-center rounded-full bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
-        >
-          {geluidAan ? (
-            <Luidspreker className="size-6" />
-          ) : (
-            <LuidsprekerUit className="size-6" />
-          )}
-        </button>
         <button
           type="button"
           onClick={onSluit}

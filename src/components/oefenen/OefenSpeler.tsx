@@ -37,7 +37,6 @@ import { goedeAntwoordInTekst, isGoed, kortGetalLengte } from "@/lib/antwoord";
 import {
   abonneerOpgavegeluid,
   feestje as feestgeluid,
-  geluidStaatAan,
   opgavegeluidOpServer,
   opgavegeluidStaatAan,
   zetOpgavegeluid,
@@ -383,7 +382,14 @@ export function OefenSpeler({
    * de ronde. Wat het kind ziet gebeuren, staat op dat moment ook echt vast.
    */
   function vierGoedAntwoord() {
-    if (geluidStaatAan()) feestgeluid();
+    /*
+      Het sleutelgeluid hangt aan de knop in de opgave, niet aan het
+      uitlegfilmpje. Het klinkt tijdens het maken van een vraag, dus het hoort
+      bij dezelfde knop als de plop van de vos en de toetsklikjes. Stond het
+      eerder aan `geluidStaatAan()`, en dan verloor je je sleutelgeluid zodra je
+      het uitlegfilmpje stil zette — wat niemand verwacht.
+    */
+    if (opgavegeluidStaatAan()) feestgeluid();
 
     const bron = `${zorgVoorRondeId()}:${vraag.id}`;
 
@@ -1019,7 +1025,16 @@ function Antwoordvelden({
         figuur={vraag.figuur}
         ingevuld={ingevuld}
         fase={fase}
-        goedeWaarden={fase === "fout" ? goede : null}
+        /*
+          Ook bij een goed antwoord meegeven, niet alleen bij een fout.
+
+          De tekening leidt hieruit af of het klopt, en kleurt groen of rood.
+          Kreeg hij bij een goed antwoord `null`, dan las hij "geen gegevens" als
+          "fout" en kleurde de steen rood terwijl het kind het juist goed had.
+          Tijdens het invullen blijft het null: dan valt er nog niets te kleuren,
+          en zou het goede antwoord af te lezen zijn uit de tekening.
+        */
+        goedeWaarden={fase === "bezig" ? null : goede}
         onSprongKlaar={onSprongKlaar}
         onWijzig={(nieuw: string[]) =>
           onKies(nieuw.every((w) => w === "") ? "" : nieuw.map((w) => w.trim()).join(","))
@@ -1047,7 +1062,8 @@ function Antwoordvelden({
         keuzes={keuzes}
         ingevuld={ingevuld}
         fase={fase}
-        goedeWaarden={fase === "fout" ? goede : null}
+        /* Ook bij goed meegeven; zie de toelichting bij Stapstenen hierboven. */
+        goedeWaarden={fase === "bezig" ? null : goede}
         onWijzig={(nieuw: (number | null)[]) =>
           onKies(nieuw.every((w) => w === null) ? "" : nieuw.map((w) => w ?? "").join(","))
         }
