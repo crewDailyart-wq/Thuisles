@@ -179,6 +179,17 @@ export function OefenSpeler({
     ander id verzinnen dan de browser.
   */
   const rondeId = useRef("");
+  /*
+    Bij welke vraag er al is nagekeken en doorgeklikt.
+
+    De knoppen kijken naar `fase`, maar dat is een toestand: bij twee klikken
+    binnen hetzelfde beeldje staat die nog op "bezig" en wordt er twee keer
+    nagekeken. Dat gebeurde ook echt — in een bewaarde sessie stonden zestien
+    antwoorden bij vijftien vragen, met vraag 7 en 8 dubbel. Een ref verandert
+    meteen, dus die houdt de tweede klik wél tegen.
+  */
+  const nagekeken = useRef(-1);
+  const doorgeklikt = useRef(-1);
   const [klaar, setKlaar] = useState(false);
   const [gelogd, setGelogd] = useState<RondeAntwoord[]>([]);
   const [snelFout, setSnelFout] = useState(0);
@@ -207,6 +218,9 @@ export function OefenSpeler({
     setSerie(bewaard.vragen);
     setGelogd(bewaard.gelogd);
     setIndex(Math.min(bewaard.index, bewaard.vragen.length - 1));
+    /* Terug bij een halve sessie: die vraag is nog niet nagekeken. */
+    nagekeken.current = -1;
+    doorgeklikt.current = -1;
     setStart(nuInMs());
   }, [kindId]);
 
@@ -238,6 +252,9 @@ export function OefenSpeler({
 
   function controleer() {
     if (antwoord.trim() === "") return;
+    /* Deze vraag is al nagekeken; een tweede klik telt niet nog eens mee. */
+    if (nagekeken.current === index) return;
+    nagekeken.current = index;
 
     const seconden = (nuInMs() - start) / 1000;
     const goed = isGoed(vraag, antwoord);
@@ -333,6 +350,13 @@ export function OefenSpeler({
   }
 
   function volgende() {
+    /*
+      Eén keer doorgaan per vraag. Zonder dit zou een dubbele klik een vraag
+      overslaan, en op de laatste vraag de ronde twee keer opslaan.
+    */
+    if (doorgeklikt.current === index) return;
+    doorgeklikt.current = index;
+
     // Vermoeidheid: veel fouten tegen het eind van de ronde.
     const laatste = [...gelogd].slice(-4);
     const veelFout = laatste.length === 4 && laatste.filter((a) => !a.goed).length >= 3;
