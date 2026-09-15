@@ -23,6 +23,7 @@ import {
   RondeTerugpijl,
 } from "@/components/oefenen/Symbolen";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
+import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
   abonneerGeluid,
@@ -171,7 +172,15 @@ export function Uitlegspeler({
     if (getikt.includes(index)) return;
     const nieuw = [...getikt, index];
     setGetikt(nieuw);
-    if (geluidAan) tel();
+    if (geluidAan) {
+      tel();
+      /*
+        Hardop meetellen. Het getal zelf uitspreken werkt beter dan alleen een
+        toontje: tellen is horen wélk getal erbij komt, niet dát er iets bij
+        komt. De stem leest "3" in het Nederlands als "drie".
+      */
+      zeg(String(nieuw.length));
+    }
     if (stap?.meetellen && nieuw.length >= stap.meetellen.aantal && geluidAan) {
       belletje();
     }
@@ -280,7 +289,11 @@ export function Uitlegspeler({
                  hier nog een telling achteraan. Voorheen stond hier een eigen
                  lijstje per model, dat los kon lopen van wat het type meegaf.
                */
-              `${tikzin.replace(/!+$/, "")} — nog ${nogTeTikken} te gaan`
+              `${tikzin.replace(/!+$/, "")} — ${
+                getikt.length === 0
+                  ? `${stap.meetellen.aantal} te tellen`
+                  : `${getikt.length} geteld, nog ${nogTeTikken} te gaan`
+              }`
             : `Je hebt er ${getikt.length} geteld!`}
         </p>
       )}
@@ -461,6 +474,30 @@ function Modelbeeld({
         wijsSleutel={wijsSleutel}
         onTik={onTik}
       />
+    );
+  }
+
+  if (model.soort === "telfiguur") {
+    return (
+      <div className="flex flex-col items-center gap-2">
+        <Telfiguur
+          soort={model.telsoort}
+          aantal={model.aantal}
+          opgelicht={model.opgelicht}
+          className="h-48 w-48 drop-shadow-sm sm:h-56 sm:w-56"
+          telbaar={telbaar}
+          telbaarAantal={telbaarAantal}
+          getikt={getikt}
+          wijsAan={wijsAan}
+          wijsSleutel={wijsSleutel}
+          onTik={onTik}
+        />
+        {model.bijschrift && (
+          <p className="text-3xl font-extrabold tabular-nums text-viool-diep">
+            {model.bijschrift}
+          </p>
+        )}
+      </div>
     );
   }
 

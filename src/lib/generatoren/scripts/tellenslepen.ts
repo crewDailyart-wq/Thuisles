@@ -5,42 +5,56 @@
  * afbeelding. Het koppelen is hier net zo goed de les als het tellen.
  *
  *   groep 3-4  De onderdelen lichten één voor één op terwijl Vos meetelt, eerst
- *              bij de linkerafbeelding, dan bij de volgende.
+ *              bij de linkerafbeelding, dan bij de volgende. Het kind mag ze
+ *              zelf aantikken.
  *   groep 5-6  Per afbeelding in één keer, met het getal erbij.
  *   groep 7-8  Geen animatie maar een leeslijst met de aantallen op een rij.
+ *
+ * ---------------------------------------------------------------------------
+ * Waarom het echte figuur en geen blokjes
+ * ---------------------------------------------------------------------------
+ * Deze uitleg liet eerst rijen blokjes zien. Dat klopte niet: een kind dat de
+ * stippen op een lieveheersbeestje moet tellen, ziet dan ineens paarse vlakken
+ * en moet zelf bedenken dat die de stippen voorstellen. Juist dat verband is
+ * wat hier geoefend wordt, dus toont de uitleg hetzelfde figuur als de vraag —
+ * met de onderdelen die één voor één oplichten.
  */
 
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 import { MANIER_VAN_VORM } from "@/lib/generatoren/uitlegscript";
-import type { Groepsvorm, Uitlegbron, Uitlegscript } from "@/lib/generatoren/uitlegscript";
+import type { Groepsvorm, Model, Uitlegbron, Uitlegscript } from "@/lib/generatoren/uitlegscript";
+import { telsoortWoorden } from "@/lib/telsoorten";
 
-/**
- * De figuursoorten staan niet in `somgegevens` — daar passen alleen getallen in.
- * Voor de animatie is dat geen bezwaar: die laat blokjes zien, net als bij de
- * andere types die met losse onderdelen werken.
- */
+/** De aantallen van de afbeeldingen in deze vraag. */
 function aantallen(som: Somgegevens): number[] {
   return som.getallen.filter((n) => Number.isFinite(n) && n > 0);
 }
 
-/** Blokjes voor één afbeelding: `geteld` ervan zijn al aangeraakt. */
-function blokjes(totaal: number, geteld: number, bijschrift?: string) {
-  return {
-    soort: "blokjes" as const,
-    blokjes: Array.from({ length: totaal }, (_, i) =>
-      i < geteld ? ("geteld" as const) : ("normaal" as const),
-    ),
-    perRij: Math.min(5, Math.max(2, Math.ceil(Math.sqrt(totaal)))),
-    bijschrift,
-  };
+/**
+ * Welk figuur erbij hoort.
+ *
+ * Binnen één vraag is dat er altijd één; de generator zet hem in `variant`.
+ * Ontbreekt hij — bij het voorbeeld in het beheer bijvoorbeeld — dan is de
+ * bloem de terugval, net als bij de tekening zelf.
+ */
+function figuurvan(som: Somgegevens): string {
+  return som.variant ?? "bloem";
+}
+
+function beeld(soort: string, aantal: number, opgelicht: number, bijschrift?: string): Model {
+  return { soort: "telfiguur", telsoort: soort, aantal, opgelicht, bijschrift };
 }
 
 // --- Groep 3-4 -------------------------------------------------------------
 
-function stapVoorStap34(reeks: number[], vorm: Groepsvorm): Uitlegscript {
+function stapVoorStap34(reeks: number[], soort: string, vorm: Groepsvorm): Uitlegscript {
+  const woorden = telsoortWoorden(soort);
+  /* De aansporing noemt waarop je tikt; dat scheelt een kind het raden. */
+  const tikzin = `Tik de ${woorden.meervoud} maar aan!`;
+
   const stappen: Uitlegscript["stappen"] = [
     {
-      model: blokjes(reeks[0], 0),
+      model: beeld(soort, reeks[0], 0),
       zin: "Kijk, we gaan tellen.",
       houding: "blij",
       kant: "links",
@@ -49,22 +63,32 @@ function stapVoorStap34(reeks: number[], vorm: Groepsvorm): Uitlegscript {
 
   reeks.forEach((n, i) => {
     stappen.push({
-      model: blokjes(n, 0),
+      model: beeld(soort, n, 0),
       zin: i === 0 ? "Begin bij de eerste." : "Nu de volgende.",
-      meetellen: { aantal: n, aansporing: "Tik ze maar aan!" },
+      meetellen: { aantal: n, aansporing: tikzin },
       houding: "wijzend",
       kant: i % 2 === 0 ? "links" : "rechts",
     });
     stappen.push({
-      model: blokjes(n, n, String(n)),
+      model: beeld(soort, n, n, String(n)),
       zin: `Dat zijn er ${n}.`,
       houding: "blij",
       kant: i % 2 === 0 ? "links" : "rechts",
     });
   });
 
+  /*
+    De slotstap toont het laatst getelde figuur, zonder bijschrift.
+
+    Hier stond eerst het rijtje van álle antwoorden ("4 · 5"). Dat sloeg nergens
+    op: in beeld staat één figuur met vijf ballonnen, en er stond "4 · 5" onder.
+    Dit is geen splitsing maar een telling, dus hoort er onder een afbeelding
+    hoogstens één getal te staan — en op deze stap is dat al te zien aan de
+    opgelichte onderdelen zelf.
+  */
+  const laatste = reeks[reeks.length - 1];
   stappen.push({
-    model: blokjes(reeks[reeks.length - 1], reeks[reeks.length - 1], reeks.join(" · ")),
+    model: beeld(soort, laatste, laatste),
     zin: "Klaar! Goed geteld.",
     feest: true,
     houding: "juichend",
@@ -77,17 +101,19 @@ function stapVoorStap34(reeks: number[], vorm: Groepsvorm): Uitlegscript {
 
 // --- Groep 5-6 -------------------------------------------------------------
 
-function stapVoorStap56(reeks: number[], vorm: Groepsvorm): Uitlegscript {
+function stapVoorStap56(reeks: number[], soort: string, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = reeks.map((n, i) => ({
-    model: blokjes(n, n, String(n)),
+    model: beeld(soort, n, n, String(n)),
     zin: `Afbeelding ${i + 1}: dat zijn er ${n}.`,
-    houding: "wijzend",
-    beweging: "wijzen",
+    houding: "wijzend" as const,
+    beweging: "wijzen" as const,
     kant: i % 2 === 0 ? ("links" as const) : ("rechts" as const),
   }));
 
+  /* Zonder bijschrift; de zin noemt de getallen al. Zie groep 3-4 hierboven. */
+  const laatste = reeks[reeks.length - 1];
   stappen.push({
-    model: blokjes(reeks[reeks.length - 1], reeks[reeks.length - 1], reeks.join(" · ")),
+    model: beeld(soort, laatste, laatste),
     zin: `Elk getal hoort onder de afbeelding waar je het geteld hebt: ${reeks.join(", ")}.`,
     feest: true,
     houding: "juichend",
@@ -100,7 +126,8 @@ function stapVoorStap56(reeks: number[], vorm: Groepsvorm): Uitlegscript {
 
 // --- Groep 7-8 -------------------------------------------------------------
 
-function lijst78(reeks: number[], vorm: Groepsvorm): Uitlegscript {
+function lijst78(reeks: number[], soort: string, vorm: Groepsvorm): Uitlegscript {
+  const woorden = telsoortWoorden(soort);
   return {
     vorm,
     strategie: "tel-en-koppel",
@@ -108,7 +135,7 @@ function lijst78(reeks: number[], vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: { soort: "som", tekst: `${reeks.length} afbeeldingen` },
-        zin: "Tel per afbeelding, van links naar rechts.",
+        zin: `Tel de ${woorden.meervoud} per afbeelding, van links naar rechts.`,
       },
       {
         model: { soort: "som", tekst: reeks.join(" · "), nadruk: reeks.join(" · ") },
@@ -123,7 +150,7 @@ function lijst78(reeks: number[], vorm: Groepsvorm): Uitlegscript {
 }
 
 export const tellenslepenUitleg: Uitlegbron = {
-  modellen: ["blokjes", "som"],
+  modellen: ["telfiguur", "som"],
   strategieen: [
     {
       waarde: "tel-en-koppel",
@@ -137,11 +164,12 @@ export const tellenslepenUitleg: Uitlegbron = {
   script: (som, vorm: Groepsvorm) => {
     const reeks = aantallen(som);
     if (reeks.length === 0) return null;
+    const soort = figuurvan(som);
 
     const manier = MANIER_VAN_VORM[vorm];
-    if (manier === "34") return stapVoorStap34(reeks, vorm);
-    if (manier === "56") return stapVoorStap56(reeks, vorm);
-    return lijst78(reeks, vorm);
+    if (manier === "34") return stapVoorStap34(reeks, soort, vorm);
+    if (manier === "56") return stapVoorStap56(reeks, soort, vorm);
+    return lijst78(reeks, soort, vorm);
   },
 
   vergelijkbaar: (som) => {

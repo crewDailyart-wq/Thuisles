@@ -8,6 +8,24 @@
 
 export type Vraagvorm = "meerkeuze" | "open" | "waar_niet_waar" | "sleepgetallen";
 
+/**
+ * Alle vormen die opgeslagen mogen worden.
+ *
+ * De database bouwt zijn controle hierop; zie `sqlite.ts`. Dat moet wel, want
+ * daar stond de lijst eerder overgeschreven in SQL, en toen "sleepgetallen"
+ * erbij kwam liep die uit de pas: de generator maakte netjes sommen, maar
+ * elke poging ze op te slaan viel stuk op de controle in de tabel. Er kwam
+ * geen enkele som binnen.
+ *
+ * Komt er een vorm bij, zet hem dan hier; de database volgt vanzelf.
+ */
+export const ALLE_VRAAGVORMEN: Vraagvorm[] = [
+  "meerkeuze",
+  "open",
+  "waar_niet_waar",
+  "sleepgetallen",
+];
+
 export const VRAAGVORMEN: Vraagvorm[] = ["meerkeuze", "open", "waar_niet_waar"];
 
 /**

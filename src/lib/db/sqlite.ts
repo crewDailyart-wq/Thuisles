@@ -21,6 +21,10 @@ import "server-only";
 import { DatabaseSync } from "node:sqlite";
 import fs from "node:fs";
 import path from "node:path";
+import { ALLE_VRAAGVORMEN } from "@/lib/vraagtypes";
+
+/** De toegestane vraagvormen, als SQL-lijst. Eén bron; zie `vraagtypes.ts`. */
+const VORMEN_SQL = ALLE_VRAAGVORMEN.map((v) => `'${v}'`).join(",");
 
 /*
   De database staat in `data/thuisles.db`.
@@ -352,7 +356,7 @@ function maakTabellen(d: DatabaseSync) {
       id            text primary key,
       leerdoel_id   text not null references leerdoelen (id) on delete cascade,
       groep         integer not null check (groep between 3 and 8),
-      vorm          text not null check (vorm in ('meerkeuze','open','waar_niet_waar')),
+      vorm          text not null check (vorm in (${VORMEN_SQL})),
       vraagtekst    text not null,
       opties        text,
       antwoord      text not null,
@@ -540,6 +544,56 @@ function werkOudersBij(d: DatabaseSync) {
   `);
 }
 
+/**
+ * De toegestane vraagvormen in een bestaande database bijwerken.
+ *
+ * `create table if not exists` laat een tabel die er al staat met rust, dus een
+ * database die eerder is aangemaakt houdt de oude lijst. Kwam er een vorm bij,
+ * dan viel elke vraag van die vorm stuk op de controle in de tabel — precies
+ * wat er met "sleepgetallen" gebeurde.
+ *
+ * SQLite kan zo'n controle niet aanpassen, dus wordt de tabel opnieuw opgebouwd.
+ * De nieuwe definitie is de oude met alleen die ene lijst vervangen: zo blijven
+ * alle kolommen exact zoals ze waren, ook de kolommen die er later bij zijn
+ * gekomen. Draait alleen als er echt iets ontbreekt.
+ */
+function werkVraagvormenBij(d: DatabaseSync) {
+  const rij = d.prepare("select sql from sqlite_master where type='table' and name='vragen'").get() as
+    | { sql?: string }
+    | undefined;
+  const oud = rij?.sql;
+  if (!oud) return;
+
+  const patroon = /check \(vorm in \(([^)]*)\)\)/;
+  const gevonden = oud.match(patroon);
+  if (!gevonden) return;
+
+  const nu = gevonden[1].split(",").map((v) => v.trim().replace(/'/g, ""));
+  if (ALLE_VRAAGVORMEN.every((v) => nu.includes(v))) return;
+
+  const nieuw = oud
+    .replace(/create table\s+"?vragen"?/i, "create table vragen_nieuw")
+    .replace(patroon, `check (vorm in (${VORMEN_SQL}))`);
+
+  /* In één keer, zodat er geen half omgebouwde tabel kan blijven staan. */
+  d.exec("begin");
+  try {
+    d.exec(nieuw);
+    d.exec("insert into vragen_nieuw select * from vragen");
+    d.exec("drop table vragen");
+    d.exec("alter table vragen_nieuw rename to vragen");
+    /* De indexen gingen mee met de oude tabel. */
+    d.exec("create index if not exists vragen_op_leerdoel on vragen (leerdoel_id)");
+    d.exec(
+      "create index if not exists vragen_op_handtekening on vragen (leerdoel_id, handtekening)",
+    );
+    d.exec("commit");
+  } catch (e) {
+    d.exec("rollback");
+    throw e;
+  }
+}
+
 function werkTabellenBij(d: DatabaseSync) {
   werkOudersBij(d);
   // De sessietabel is niet meer in gebruik nu er geen inlog is.
@@ -603,6 +657,9 @@ function werkTabellenBij(d: DatabaseSync) {
     erin hebt gezet. De tabel `migraties` blijft bestaan als verslag van wat er
     ooit eenmalig gedraaid heeft.
   */
+
+  /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
+  werkVraagvormenBij(d);
 }
 
 /*

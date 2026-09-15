@@ -904,6 +904,19 @@ export function beschrijfFiguur(figuur: Figuur): FiguurBeschrijving {
   return { breedte: 100, hoogte: 100, invulvak: null };
 }
 
+/**
+ * Kan `Figuurtekening` dit figuur tekenen?
+ *
+ * Nodig omdat het oefenscherm een omlijst vak om de tekening zet. Kent
+ * `Figuurtekening` de soort niet, dan levert die `null` en bleef er een leeg
+ * afgerond balkje boven de vraag staan. Dat gebeurde bij "Tellen en slepen":
+ * die figuren worden namelijk niet hier getekend maar door `SleepGetallen`,
+ * omdat elk figuur zijn eigen antwoordvakje eronder heeft.
+ */
+export function figuurIsTekenbaar(figuur: Figuur): boolean {
+  return figuur.soort === "splitsboom" || figuur.soort === "kralenrij" || figuur.soort === "bus";
+}
+
 /** Kiest de juiste tekening bij een figuur. Nieuwe soorten komen hier bij. */
 export function Figuurtekening({
   figuur,

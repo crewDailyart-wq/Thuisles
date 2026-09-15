@@ -24,7 +24,11 @@ import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
 import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
-import { Figuurtekening, beschrijfFiguur } from "@/components/oefenen/Figuurtekening";
+import {
+  Figuurtekening,
+  beschrijfFiguur,
+  figuurIsTekenbaar,
+} from "@/components/oefenen/Figuurtekening";
 import { InvulFiguur } from "@/components/oefenen/InvulFiguur";
 import { Uitlegweergave } from "@/components/oefenen/Uitlegweergave";
 import { leesGroepsvorm, vormBijGroep } from "@/lib/generatoren/uitlegscript";
@@ -448,7 +452,15 @@ export function OefenSpeler({
     een getekende figuur. Bij een figuur waar je in typt telt hij ook mee: die
     is dan het beeld én het invoerveld.
   */
-  const heeftBeeld = Boolean(vraag.afbeelding || vraag.figuur);
+  /*
+    Alleen een vak om het beeld als er ook echt iets in komt. Een figuur dat
+    hier niet getekend wordt — bij "Tellen en slepen" staan de figuren bij hun
+    eigen antwoordvakje — gaf anders een leeg afgerond balkje boven de vraag.
+  */
+  const heeftBeeld = Boolean(
+    vraag.afbeelding ||
+      (vraag.figuur && (invulbaar || figuurIsTekenbaar(vraag.figuur))),
+  );
 
   /*
     De opgeslagen vraagtekst is leidend. Hij wordt bij het genereren bepaald uit

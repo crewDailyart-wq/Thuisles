@@ -140,7 +140,32 @@ try {
     `Verwacht null, kreeg ${aantal()}.`,
   );
 
-  // 5. Een sjabloon aanmaken onder een leerdoel dat al een aantal heeft, mag
+  /*
+    De database mag geen vraagvorm weigeren die de code kent.
+
+    Hier ging het mis bij "Tellen en slepen": de generator maakte netjes
+    sommen, maar de tabel `vragen` had een controle met alleen de drie oude
+    vormen. Elke poging om op te slaan viel stuk en er kwam geen enkele som
+    binnen — zonder dat er iets op het scherm misging. Deze controle slaat
+    daarop aan zodra er een vorm bij komt die de database niet kent.
+  */
+  const { ALLE_VRAAGVORMEN } = await import("@/lib/vraagtypes");
+  const { verbinding } = await import("@/lib/db/sqlite");
+  const tabel =
+    verbinding().prepare("select sql from sqlite_master where name='vragen'").get()?.sql ?? "";
+  const toegestaan = (tabel.match(/check \(vorm in \(([^)]*)\)\)/)?.[1] ?? "")
+    .split(",")
+    .map((v) => v.trim().replace(/'/g, ""));
+  const ontbreekt = ALLE_VRAAGVORMEN.filter((v) => !toegestaan.includes(v));
+  zouMoeten(
+    "De database accepteert elke vraagvorm die de code kent",
+    ontbreekt.length === 0,
+    `De tabel 'vragen' weigert ${ontbreekt.join(", ")}. Sommen van die vorm worden ` +
+      `gemaakt maar niet opgeslagen. De lijst staat in ALLE_VRAAGVORMEN; sqlite.ts ` +
+      `hoort hem daaruit over te nemen.`,
+  );
+
+  // 6. Een sjabloon aanmaken onder een leerdoel dat al een aantal heeft, mag
   //    dat aantal niet wissen — de derde manier waarop het kon verdwijnen.
   wijzigLeerdoel(id, {
     ...basis,

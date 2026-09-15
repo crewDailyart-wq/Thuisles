@@ -144,6 +144,23 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      soort: "telfiguur";
+      /**
+       * Welk figuur: "bloem", "boom", "lieveheersbeestje" ...
+       *
+       * Bewust hetzelfde figuur als in de vraag stond. Zou de uitleg losse
+       * blokjes laten zien, dan moet een kind zelf bedenken dat die blokjes de
+       * stippen op het lieveheersbeestje voorstellen — en juist dat verband is
+       * wat hier geoefend wordt.
+       */
+      telsoort: string;
+      /** Hoeveel onderdelen het figuur heeft. */
+      aantal: number;
+      /** Hoeveel er al geteld zijn; die lichten op. */
+      opgelicht: number;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

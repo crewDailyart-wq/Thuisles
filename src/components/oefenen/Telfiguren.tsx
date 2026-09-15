@@ -17,17 +17,24 @@
  *
  *   1. Elk onderdeel valt binnen het figuur — een appel hoort in de kruin, een
  *      stip op het schild, een ster aan de slinger.
- *   2. Er blijft altijd ruimte tussen de onderdelen, ook bij het hoogste
- *      aantal. Nooit tegen elkaar aan en nooit overlappend.
+ *   2. De onderdelen blijven los te tellen, ook bij het hoogste aantal.
  *
- * Daarom zegt elk figuur alleen wat zijn vórm is (`inSchijf`, `inEllips`), en
- * rekent `roosterIn` daar de plekken bij uit: een driehoeksrooster waarvan de
- * maaswijdte net zo lang wordt opgerekt tot er precies genoeg plekken binnen de
- * vorm overblijven. De onderdelen worden dus vanzelf kleiner naarmate het er
- * meer zijn, en de tussenruimte is een vast deel van de maaswijdte.
+ * Hoe die tweede eis wordt gehaald, verschilt per figuur, omdat het er ook in
+ * het echt anders uitziet:
  *
- * De bloem en de slinger hebben een eigen berekening, omdat hun onderdelen niet
- * in een vlak liggen maar op een ring en op een koord.
+ *   boom, lieveheersbeestje, ballonnen — mét tussenruimte. Appels, stippen en
+ *   ballonnen die elkaar raken zien er niet uit, en een kind telt ze dan
+ *   makkelijk dubbel. `roosterIn` legt een driehoeksrooster in de vorm en rekt
+ *   de maaswijdte op tot er precies genoeg plekken binnen die vorm overblijven.
+ *   De onderdelen worden dus vanzelf kleiner naarmate het er meer zijn, en de
+ *   tussenruimte is een vast deel van de maaswijdte.
+ *
+ *   bloem, slinger — tegen elkaar aan. Bloemblaadjes horen rondom het hart aan
+ *   elkaar te sluiten en sterren hangen dicht op de slinger; ruimte ertussen
+ *   maakt het juist onnatuurlijk. Hier zorgen een lichte rand en een hoogtepunt
+ *   op elk onderdeel dat je ze toch los ziet. Die twee hebben ook een eigen
+ *   berekening, want hun onderdelen liggen niet in een vlak maar op een ring en
+ *   op een koord.
  *
  * ---------------------------------------------------------------------------
  * Een soort erbij
@@ -241,6 +248,24 @@ function plekken(sleutel: string, maakVorm: () => Vorm, aantal: number, maxStraa
   return uitkomst;
 }
 
+/**
+ * Welke figuren hun onderdelen in een vlak verdelen, en binnen welke vorm.
+ *
+ * Eén register, zodat de tekening en het tikvlak van de uitleg gegarandeerd
+ * dezelfde plekken gebruiken. Zouden die twee elk hun eigen berekening doen,
+ * dan kan het kind naast een stip tikken zonder dat iemand dat merkt.
+ */
+const ROOSTERFIGUREN: Record<string, { vorm: () => Vorm; maxStraal: number }> = {
+  boom: { vorm: () => BOOMKRUIN(), maxStraal: 8 },
+  ballon: { vorm: () => BALLONTROS(), maxStraal: 10 },
+  lieveheersbeestje: { vorm: () => SCHILD(), maxStraal: 6.5 },
+};
+
+function roosterplekken(soort: string, aantal: number) {
+  const r = ROOSTERFIGUREN[soort];
+  return plekken(soort, r.vorm, aantal, r.maxStraal);
+}
+
 // ---------------------------------------------------------------------------
 // Glans: dezelfde opbouw als de kralen en de bus
 // ---------------------------------------------------------------------------
@@ -320,8 +345,20 @@ function Grondschaduw({ cy = 93, rx = 30 }: { cy?: number; rx?: number }) {
   return <ellipse cx={50} cy={cy} rx={rx} ry={4.5} fill={KLEUR.inkt} opacity={0.13} />;
 }
 
-/** Tekent de onderdelen. `opgelicht` is er tot en met dit onderdeel geteld. */
-export type Tekening = (aantal: number, opgelicht: number, id: string) => React.ReactNode;
+/**
+ * Tekent de onderdelen.
+ *
+ * `geteld(i)` zegt of onderdeel `i` al geteld is. Bewust een vraag per
+ * onderdeel en niet een aantal: bij het meetellen in de uitleg mag een kind
+ * elk onderdeel aantikken dat het wil, en dan moet de ring op dát onderdeel
+ * komen. Met een aantal lichtten altijd de eerste zoveel op, dus kwam de ring
+ * op de verkeerde stip terecht.
+ */
+export type Tekening = (
+  aantal: number,
+  geteld: (index: number) => boolean,
+  id: string,
+) => React.ReactNode;
 
 // ---------------------------------------------------------------------------
 // De figuren
@@ -336,26 +373,32 @@ export type Tekening = (aantal: number, opgelicht: number, id: string) => React.
  * daar gaat een vaste tussenruimte af. Bij veel blaadjes worden ze dus vanzelf
  * smaller, maar ze raken elkaar nooit.
  */
-function bloem(aantal: number, opgelicht: number, id: string) {
+/** De maten en plekken van één bloem. Gedeeld met het tikvlak van de uitleg. */
+function bloemMaten(aantal: number) {
   const n = Math.max(1, aantal);
   const sin = n === 1 ? 1 : sinus(Math.PI / n);
-  const TUSSEN = 2.6;
-  const VERHOUDING = 1.3;
 
-  /* Grootst mogelijke ring die met blaadje en al binnen het vak blijft. */
-  const ringMax = 42 / (1 + VERHOUDING * sin);
-  let rx = Math.min(13, ringMax * sin - TUSSEN / 2);
-  rx = rond(Math.max(2.6, rx));
-  const ry = rond(rx * VERHOUDING);
-  /* Bij die blaadjesmaat hoort deze ring: krap genoeg om compact te blijven. */
-  const ring = rond(Math.min(ringMax, n === 1 ? 0 : (rx + TUSSEN / 2) / sin));
   /*
-    Het hart groeit mee met de ring. Blijft het hart klein terwijl de ring wijd
-    wordt, dan lijkt de bloem bij veel blaadjes op een krans met een gat erin.
-    Eén ring blijven het wél: rondom tellen gaat in één rondje, en dat is voor
-    groep 3 een stuk makkelijker dan twee rijen blaadjes uit elkaar houden.
+    Blaadjes mogen elkaar raken; zo zit een bloem in het echt ook in elkaar. Ze
+    lopen daarom van net onder het hart tot aan de buitenrand, en zijn aan de
+    basis iets breder dan de ruimte die ze krijgen — vandaar de overlap van 15%.
+    Het losse tellen zit in de rand en het hoogtepunt op elk blaadje, niet in
+    een gat ertussen.
   */
-  const hart = rond(Math.max(6, Math.min(15, ring * 0.42 + 2.5)));
+  const OVERLAP = 1.15;
+  const BUITEN = 43;
+
+  const hart = rond(Math.max(6, Math.min(14, 4 + n * 0.45)));
+  /* De blaadjes steken met hun voet onder het hart, zodat er geen gat valt. */
+  const binnen = hart * 0.6;
+  const ry = rond((BUITEN - binnen) / 2);
+  const ring = rond((BUITEN + binnen) / 2);
+  /*
+    De breedte volgt uit de ruimte tussen twee buren op die ring. Bij weinig
+    blaadjes zou dat een bal worden in plaats van een blaadje, dus is de
+    breedte begrensd op driekwart van de lengte.
+  */
+  const rx = rond(Math.max(2.6, Math.min(ry * 0.75, ring * sin * OVERLAP)));
 
   const blaadjes = Array.from({ length: n }, (_, i) => {
     const hoek = (i / n) * Math.PI * 2 - Math.PI / 2;
@@ -366,6 +409,12 @@ function bloem(aantal: number, opgelicht: number, id: string) {
       graden: rond((hoek * 180) / Math.PI + 90),
     };
   });
+
+  return { rx, ry, hart, blaadjes };
+}
+
+function bloem(aantal: number, geteld: (i: number) => boolean, id: string) {
+  const { rx, ry, hart, blaadjes } = bloemMaten(aantal);
 
   return (
     <g>
@@ -392,7 +441,11 @@ function bloem(aantal: number, opgelicht: number, id: string) {
 
       {blaadjes.map(({ i, x, y, graden }) => (
         <g key={i} transform={`rotate(${graden} ${x} ${y})`}>
-          <ellipse cx={x} cy={y + ry * 0.12} rx={rx} ry={ry} fill={KLEUR.inkt} opacity={0.12} />
+          {/*
+            Een lichte rand onder de gekleurde: waar twee blaadjes elkaar raken,
+            blijft daardoor zichtbaar waar het ene ophoudt en het andere begint.
+          */}
+          <ellipse cx={x} cy={y} rx={rx} ry={ry} fill="none" stroke="#fff6f8" strokeWidth={2.6} />
           <ellipse
             cx={x}
             cy={y}
@@ -400,14 +453,17 @@ function bloem(aantal: number, opgelicht: number, id: string) {
             ry={ry}
             fill={`url(#${id}-blad)`}
             stroke={KLEUR.rozeDonker}
-            strokeWidth={Math.max(0.7, rx * 0.13)}
+            strokeWidth={Math.max(0.8, rx * 0.12)}
           />
-          <ellipse cx={x - rx * 0.25} cy={y - ry * 0.35} rx={rx * 0.3} ry={ry * 0.22} fill="#ffffff" opacity={0.7} />
+          <ellipse cx={x - rx * 0.25} cy={y - ry * 0.3} rx={rx * 0.3} ry={ry * 0.16} fill="#ffffff" opacity={0.7} />
         </g>
       ))}
 
       {/* De ring pas ná de blaadjes, anders valt hij onder de buurman. */}
-      {blaadjes.map(({ i, x, y }) => (i < opgelicht ? <Telring key={i} x={x} y={y} r={Math.max(rx, ry) * 1.25} /> : null))}
+      {blaadjes.map(({ i, x, y }) =>
+        /* Krap om het blaadje: ruimer valt de ring buiten het vak. */
+        geteld(i) ? <Telring key={i} x={x} y={y} r={Math.max(rx, ry) * 1.05} /> : null,
+      )}
 
       <circle cx={50} cy={46} r={hart} fill={`url(#${id}-hart)`} stroke={KLEUR.oranje} strokeWidth={1.8} />
       <ellipse cx={50 - hart * 0.3} cy={46 - hart * 0.32} rx={hart * 0.28} ry={hart * 0.2} fill="#ffffff" opacity={0.6} />
@@ -418,8 +474,8 @@ function bloem(aantal: number, opgelicht: number, id: string) {
 /** De kruin waarbinnen de appels moeten vallen. */
 const BOOMKRUIN = () => inSchijf(50, 40, 30);
 
-function boom(aantal: number, opgelicht: number, id: string) {
-  const { punten, straal } = plekken("boom", BOOMKRUIN, Math.max(1, aantal), 8);
+function boom(aantal: number, geteld: (i: number) => boolean, id: string) {
+  const { punten, straal } = roosterplekken("boom", Math.max(1, aantal));
 
   return (
     <g>
@@ -466,7 +522,7 @@ function boom(aantal: number, opgelicht: number, id: string) {
           r={straal}
           verloop={`${id}-appel`}
           rand={KLEUR.roodDonker}
-          opgelicht={i < opgelicht}
+          opgelicht={geteld(i)}
         />
       ))}
     </g>
@@ -477,9 +533,9 @@ function boom(aantal: number, opgelicht: number, id: string) {
 const BALLONTROS = () => inEllips(50, 36, 40, 28);
 const KNOOP = { x: 50, y: 90 };
 
-function ballon(aantal: number, opgelicht: number, id: string) {
+function ballon(aantal: number, geteld: (i: number) => boolean, id: string) {
   const n = Math.max(1, aantal);
-  const { punten, straal } = plekken("ballon", BALLONTROS, n, 10);
+  const { punten, straal } = roosterplekken("ballon", n);
   const kleuren = [KLEUR.lucht, KLEUR.viool, KLEUR.roze, KLEUR.geel];
 
   return (
@@ -535,7 +591,7 @@ function ballon(aantal: number, opgelicht: number, id: string) {
               opacity={0.75}
               transform={`rotate(-25 ${p.x - straal * 0.28} ${p.y - straal * 0.36})`}
             />
-            {i < opgelicht && <Telring x={p.x} y={p.y} r={straal * 1.42} />}
+            {geteld(i) && <Telring x={p.x} y={p.y} r={straal * 1.42} />}
           </g>
         );
       })}
@@ -552,14 +608,24 @@ function ballon(aantal: number, opgelicht: number, id: string) {
  * sterren anders te dicht op elkaar zouden hangen. Per koord staan de sterren op
  * gelijke afstand; die afstand bepaalt meteen hoe groot ze mogen zijn.
  */
-function slinger(aantal: number, opgelicht: number, id: string) {
+/** De maten en plekken van één slinger. Gedeeld met het tikvlak van de uitleg. */
+function slingerMaten(aantal: number) {
   const n = Math.max(1, aantal);
-  const koorden = n <= 6 ? 1 : n <= 12 ? 2 : 3;
+  /*
+    Sterren mogen dicht op elkaar; zo hangt een slinger in het echt ook. Er
+    passen er daardoor meer op één koord, en komt er pas later een koord bij.
+  */
+  const koorden = n <= 8 ? 1 : n <= 16 ? 2 : 3;
   const perKoord = Math.ceil(n / koorden);
 
   const breedte = 88;
   const tussen = breedte / (perKoord + 1);
-  const straal = rond(Math.max(2.4, Math.min(9, tussen * 0.42)));
+  /*
+    Ruim de helft van de tussenruimte als straal: de punten van twee buren
+    schuiven dan licht over elkaar heen, zoals bij een echte slinger. Los te
+    tellen blijven ze door de lichte rand en het hoogtepunt op elke ster.
+  */
+  const straal = rond(Math.max(2.4, Math.min(9, tussen * 0.58)));
 
   /*
     De koorden samen midden in het vak, niet vanaf de bovenkant opgestapeld.
@@ -581,6 +647,12 @@ function slinger(aantal: number, opgelicht: number, id: string) {
     }
     geteld += opDitKoord;
   }
+
+  return { koorden, vak, eersteTop, straal, sterren };
+}
+
+function slinger(aantal: number, geteld: (i: number) => boolean, id: string) {
+  const { koorden, vak, eersteTop, straal, sterren } = slingerMaten(aantal);
 
   const punt = (cx: number, cy: number, r: number) =>
     Array.from({ length: 5 }, (_, k) => {
@@ -619,7 +691,17 @@ function slinger(aantal: number, opgelicht: number, id: string) {
       {sterren.map(({ x, y, top, i }) => (
         <g key={i}>
           <line x1={x} y1={top} x2={x} y2={y - straal * 0.8} stroke={KLEUR.bruinDonker} strokeWidth={1} opacity={0.7} />
-          <polygon points={punt(x, y + straal * 0.12, straal)} fill={KLEUR.inkt} opacity={0.13} />
+          {/*
+            Een lichte rand onder de oranje: waar twee sterren over elkaar heen
+            schuiven, blijft daardoor te zien waar de ene ophoudt.
+          */}
+          <polygon
+            points={punt(x, y, straal)}
+            fill="none"
+            stroke="#fffaf0"
+            strokeWidth={2.8}
+            strokeLinejoin="round"
+          />
           <polygon
             points={punt(x, y, straal)}
             fill={`url(#${id}-ster)`}
@@ -635,7 +717,7 @@ function slinger(aantal: number, opgelicht: number, id: string) {
             fill="#ffffff"
             opacity={0.7}
           />
-          {i < opgelicht && <Telring x={x} y={y} r={straal * 1.35} />}
+          {geteld(i) && <Telring x={x} y={y} r={straal * 1.35} />}
         </g>
       ))}
     </g>
@@ -655,8 +737,8 @@ const SCHILD = () =>
     (x, y, m) => Math.abs(x - 50) < 3 + m || lengte(x - 50, y - 26) < 15 + m,
   );
 
-function lieveheersbeestje(aantal: number, opgelicht: number, id: string) {
-  const { punten, straal } = plekken("lieveheersbeestje", SCHILD, Math.max(1, aantal), 6.5);
+function lieveheersbeestje(aantal: number, geteld: (i: number) => boolean, id: string) {
+  const { punten, straal } = roosterplekken("lieveheersbeestje", Math.max(1, aantal));
 
   return (
     <g>
@@ -707,11 +789,41 @@ function lieveheersbeestje(aantal: number, opgelicht: number, id: string) {
           r={straal}
           verloop={`${id}-stip`}
           rand="#15112a"
-          opgelicht={i < opgelicht}
+          opgelicht={geteld(i)}
         />
       ))}
     </g>
   );
+}
+
+/**
+ * Waar de telbare onderdelen van een figuur zitten.
+ *
+ * De uitleg-animatie legt hier doorzichtige tikvlakken op, zodat een kind de
+ * stippen of appels zelf kan aantikken terwijl er meegeteld wordt. Het komt uit
+ * dezelfde berekening als de tekening, dus het tikvlak ligt altijd precies op
+ * het onderdeel.
+ */
+export function onderdeelPlekken(soort: string, aantal: number): { x: number; y: number; r: number }[] {
+  const n = Math.max(0, aantal);
+  if (n === 0) return [];
+
+  if (soort === "bloem") {
+    const { rx, ry, blaadjes } = bloemMaten(n);
+    return blaadjes.map((b) => ({ x: b.x, y: b.y, r: Math.max(rx, ry) * 0.8 }));
+  }
+
+  if (soort === "slinger") {
+    const { straal, sterren } = slingerMaten(n);
+    return sterren.map((st) => ({ x: st.x, y: st.y, r: straal }));
+  }
+
+  if (ROOSTERFIGUREN[soort]) {
+    const { punten, straal } = roosterplekken(soort, n);
+    return punten.map((p) => ({ x: p.x, y: p.y, r: straal }));
+  }
+
+  return [];
 }
 
 export const TEKENINGEN: Record<string, Tekening> = {
@@ -738,14 +850,51 @@ export function Telfiguur({
   aantal,
   opgelicht = 0,
   className = "",
+  telbaar = false,
+  telbaarAantal = 0,
+  getikt = [],
+  wijsAan = false,
+  wijsSleutel = 0,
+  onTik,
 }: {
   soort: string;
   aantal: number;
   opgelicht?: number;
   className?: string;
+  /** Mag het kind onderdelen aantikken om mee te tellen? */
+  telbaar?: boolean;
+  /** Hoeveel onderdelen er ná `opgelicht` aangetikt mogen worden. */
+  telbaarAantal?: number;
+  /** Welke onderdelen het kind zelf al heeft aangetikt. */
+  getikt?: number[];
+  /** Het wijzende handje bij het onderdeel dat aan de beurt is. */
+  wijsAan?: boolean;
+  /** Verandert per stap, zodat het handje opnieuw begint met wijzen. */
+  wijsSleutel?: number;
+  onTik?: (index: number) => void;
 }) {
   const woorden = telsoortWoorden(soort);
   const teken = tekening(soort);
+  /*
+    Welk onderdeel al geteld is. De eerste `opgelicht` horen bij de animatie,
+    daarnaast lichten precies de onderdelen op die het kind zélf heeft
+    aangetikt — niet de eerstvolgende in de tekenvolgorde.
+  */
+  const geteld = (i: number) => i < opgelicht || getikt.includes(i);
+  const plekkenNu = telbaar || wijsAan ? onderdeelPlekken(soort, Math.max(0, aantal)) : [];
+  /* Waar het handje wijst: het eerste onderdeel dat nog niet geteld is. */
+  const eerstvolgende = plekkenNu.findIndex((_, i) => !geteld(i));
+
+  /*
+    Het telnummer van een onderdeel: de hoeveelste het was.
+    
+    Dat is de volgorde waarin het kind ze heeft aangetikt, niet de volgorde
+    waarin ze getekend zijn. Zo blijft "één, twee, drie" kloppen bij hoe het
+    kind zelf telt, en kan het terugzien wat het al gehad heeft — precies wat
+    je met je vinger op papier zou doen.
+  */
+  const telnummer = (i: number) =>
+    i < opgelicht ? i + 1 : opgelicht + getikt.indexOf(i) + 1;
   /*
     Verloop-namen gelden voor de hele pagina. In het beheervoorbeeld staan
     dertig sommen onder elkaar, dus krijgt elk figuur zijn eigen naam; anders
@@ -767,7 +916,77 @@ export function Telfiguur({
         </linearGradient>
       </defs>
       <rect x={1} y={1} width={VLAK - 2} height={VLAK - 2} rx={16} fill={`url(#${id}-vlak)`} />
-      {teken(Math.max(0, aantal), opgelicht, id)}
+      {teken(Math.max(0, aantal), geteld, id)}
+
+      {/*
+        Tikvlakken op élk onderdeel dat nog niet geteld is. Een kind telt niet
+        netjes van linksboven naar rechtsonder, en het zou raar zijn als een tik
+        op de stip die het aanwijst niets doet.
+      */}
+      {telbaar &&
+        plekkenNu.map((p, i) =>
+          geteld(i) || i >= opgelicht + telbaarAantal ? null : (
+            <circle
+              key={`tik-${i}`}
+              cx={p.x}
+              cy={p.y}
+              r={Math.max(p.r * 1.3, 6)}
+              fill="transparent"
+              className="cursor-pointer"
+              onClick={() => onTik?.(i)}
+            />
+          ),
+        )}
+
+      {/* Het telnummer op elk onderdeel dat al geteld is. */}
+      {telbaar &&
+        plekkenNu.map((p, i) => {
+          if (!geteld(i)) return null;
+          const straal = Math.max(4.4, p.r * 0.6);
+          return (
+            <g key={`nr-${i}`} aria-hidden="true">
+              <circle
+                cx={p.x + p.r * 0.7}
+                cy={p.y - p.r * 0.7}
+                r={straal}
+                fill={KLEUR.geel}
+                stroke="#ffffff"
+                strokeWidth={1.4}
+              />
+              <text
+                x={p.x + p.r * 0.7}
+                y={p.y - p.r * 0.7 + straal * 0.36}
+                textAnchor="middle"
+                fontSize={straal * 1.15}
+                fontWeight="800"
+                fill={KLEUR.inkt}
+              >
+                {telnummer(i)}
+              </text>
+            </g>
+          );
+        })}
+
+      {/* Het wijzende handje bij het eerste onderdeel dat nog niet geteld is. */}
+      {wijsAan && telbaar && eerstvolgende >= 0 && plekkenNu[eerstvolgende] && (
+        <g
+          key={`wijs-${wijsSleutel}`}
+          className="motion-safe:animate-hand-wijs"
+          style={{
+            transformOrigin: `${plekkenNu[eerstvolgende].x}px ${plekkenNu[eerstvolgende].y}px`,
+          }}
+          aria-hidden="true"
+        >
+          <text
+            x={plekkenNu[eerstvolgende].x}
+            y={plekkenNu[eerstvolgende].y + plekkenNu[eerstvolgende].r + 16}
+            textAnchor="middle"
+            fontSize={16}
+          >
+            👆
+          </text>
+        </g>
+      )}
     </svg>
   );
 }
