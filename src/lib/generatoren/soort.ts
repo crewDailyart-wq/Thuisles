@@ -81,6 +81,46 @@ export type Figuur =
       mascotteJuichend?: string | null;
     }
   | {
+      /**
+       * Een aantal dezelfde plaatjes om te tellen.
+       *
+       * Het plaatje komt uit het afbeeldingenbeheer en staat niet in code: zo
+       * is er een vrolijk plaatje bij te kiezen dat bij jonge kinderen past,
+       * zonder dat er iets aan de code hoeft te veranderen.
+       */
+      soort: "plaatjesraster";
+      /** Hoeveel plaatjes er staan. Dit is ook het antwoord. */
+      aantal: number;
+      /**
+       * Welk getekend plaatje: "eend", "bal", "appel". Leeg = geen tekening.
+       *
+       * De namen staan in `components/oefenen/Telplaatjes.tsx`. Staat hier iets,
+       * dan wint de tekening; `afbeelding` blijft daarnaast gewoon bestaan voor
+       * wie liever een eigen plaatje uploadt.
+       */
+      plaatje: string | null;
+      /** Bestandsnaam uit het afbeeldingenbeheer, of `null`. */
+      afbeelding: string | null;
+      /**
+       * De mascotte, per houding een eigen afbeelding uit het beheer.
+       *
+       * Vangend als de plaatjes binnendwarrelen, wachtend zolang het kind
+       * nadenkt, blij na een goed antwoord. Ontbreekt er een, dan wordt de
+       * vangende genomen — liever dezelfde vos dan geen vos.
+       */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+      /**
+       * Hoeveel plaatjes op een rij. 0 betekent verspreid, zonder rijen.
+       *
+       * Dit bepaalt wat er geoefend wordt: vijf per rij geeft de vijfstructuur,
+       * tien per rij de tienstructuur, en verspreid is het moeilijkst omdat het
+       * kind zelf structuur moet aanbrengen.
+       */
+      perRij: number;
+      /** Kleine extra ruimte na elk groepje van vijf binnen een rij. */
+      groepsruimte: boolean;
+    }
+  | {
       soort: "telrij";
       /**
        * De figuren naast elkaar, elk met zijn eigen aantal telbare onderdelen.

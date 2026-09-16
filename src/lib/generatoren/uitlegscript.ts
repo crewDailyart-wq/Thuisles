@@ -179,6 +179,31 @@ export type Model =
       boogVan: number | null;
     }
   | {
+      /**
+       * Dezelfde plaatjes in dezelfde opstelling als in de vraag.
+       *
+       * Geen blokjes en geen andere weergave: het kind moet de plaatjes
+       * herkennen die het net zelf heeft zitten tellen.
+       */
+      soort: "plaatjesraster";
+      aantal: number;
+      /** Welk getekend plaatje; de namen staan in `Telplaatjes.tsx`. */
+      plaatje: string | null;
+      /**
+       * Blijft hier `null`. De bestandsnaam staat bij de vraag en niet in de
+       * somgegevens, waar alleen getallen in passen; de speler vult hem aan met
+       * het plaatje van de vraag die het kind net zag.
+       */
+      afbeelding: string | null;
+      perRij: number;
+      groepsruimte: boolean;
+      /** Hoeveel plaatjes er al geteld zijn; die krijgen een vinkje. */
+      opgelicht: number;
+      /** Welke rij in zijn geheel oplicht; `null` = geen rij apart. */
+      rijNadruk: number | null;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

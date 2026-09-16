@@ -46,6 +46,23 @@ if (typeof window !== "undefined") {
   window.addEventListener("keydown", zetMotorAan, { once: true, capture: true });
 }
 
+/**
+ * De motor nog even wakker maken, binnen een aanraking.
+ *
+ * Voor geluid dat pas ná de aanraking klinkt. Het sleutelgeluid is daar het
+ * voorbeeld van: dat hoort bij het moment dat de sleutel in beeld komt, en dat
+ * kan seconden later zijn dan de tik waarmee het kind antwoordde. Een browser
+ * — en een telefoon in het bijzonder — laat een motor die intussen in slaap is
+ * gevallen niet zomaar buiten een aanraking om weer aanslaan; dan hoor je niets.
+ *
+ * Hiermee wordt hij nog binnen de tik aangezet, zodat het geluid even later
+ * gewoon klinkt. Hij doet niets als hij al draait, en hij maakt zelf geen
+ * hoorbaar geluid.
+ */
+export function wekGeluid(): void {
+  zetMotorAan();
+}
+
 function krijgContext(): AudioContext | null {
   if (typeof window === "undefined") return null;
   if (!context) {
@@ -64,9 +81,25 @@ function toon(frequentie: number, duur: number, volume: number) {
     ketst `resume()` af. Zonder `catch` komt die afwijzing als foutmelding in de
     console terecht, terwijl er niets aan de hand is: het geluid komt vanzelf
     zodra er een keer getikt is.
-  */
-  if (ctx.state === "suspended") ctx.resume().catch(() => {});
 
+    Slaapt de motor, dan wordt het toontje pas ingepland zodra hij draait. Dat
+    is geen overbodige voorzichtigheid: de klok van de motor staat stil zolang
+    hij slaapt, en een toontje dat op die stilstaande klok wordt gezet, is zijn
+    moment voorbij tegen de tijd dat hij weer loopt. Je hoort dan niets.
+  */
+  if (ctx.state !== "running") {
+    ctx
+      .resume()
+      .then(() => speel(ctx, frequentie, duur, volume))
+      .catch(() => {});
+    return;
+  }
+
+  speel(ctx, frequentie, duur, volume);
+}
+
+/** Het toontje zelf, op een motor die draait. */
+function speel(ctx: AudioContext, frequentie: number, duur: number, volume: number) {
   const osc = ctx.createOscillator();
   const gain = ctx.createGain();
   osc.type = "sine";

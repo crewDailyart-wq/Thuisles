@@ -102,6 +102,71 @@ export type VraagFilters = {
   vorm?: string;
 };
 
+/** De drie houdingen, rechtstreeks uit de vorm van het figuur zelf. */
+type Voshoudingen = Extract<
+  NonNullable<Vraag["figuur"]>,
+  { soort: "plaatjesraster" }
+>["vos"];
+
+/**
+ * De vos-afbeeldingen van een sjabloon, zoals ze er nú in staan.
+ *
+ * Bewust een aparte vraag aan de database en geen waarde die blijft hangen:
+ * verandert de beheerder de upload, dan moet het kind bij de eerstvolgende
+ * vraag de nieuwe vos zien. Een cache zou precies dat weer in de weg zitten.
+ *
+ * `null` betekent: dit sjabloon bestaat niet meer, of het is er een zonder
+ * vos-velden. De aanroeper houdt dan wat er in de vraag zelf staat.
+ */
+function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
+  const rij = verbinding()
+    .prepare("select instellingen from sjablonen where id = ?")
+    .get(sjabloonId) as { instellingen: string | null } | undefined;
+  if (!rij) return null;
+
+  let inst: Record<string, unknown>;
+  try {
+    inst = JSON.parse(rij.instellingen ?? "{}") as Record<string, unknown>;
+  } catch {
+    return null;
+  }
+
+  const heeftVelden =
+    "vosVangend" in inst || "vosWachtend" in inst || "vosBlij" in inst;
+  if (!heeftVelden) return null;
+
+  const naam = (sleutel: string): string | null => {
+    const waarde = inst[sleutel];
+    return typeof waarde === "string" && waarde !== "" ? waarde : null;
+  };
+
+  return { vangend: naam("vosVangend"), wachtend: naam("vosWachtend"), blij: naam("vosBlij") };
+}
+
+/**
+ * De vos in een telplaatjes-figuur bijwerken vanuit zijn sjabloon.
+ *
+ * Waarom dit hier gebeurt en niet bij het genereren: bij het genereren wordt
+ * alles wat een vraag nodig heeft in de vraag zelf gezet, en daar blijft het
+ * staan — ook als de beheerder daarna een andere vos uploadt. Het kind kreeg
+ * dan de vos van toen. Voor de vos is dat niet de bedoeling: die hoort bij het
+ * sjabloon en niet bij de som, en moet dus meebewegen.
+ *
+ * Wat in de vraag staat, blijft er gewoon staan en is de terugval: is het
+ * sjabloon verwijderd, dan houdt de vraag de vos die er al in zat.
+ */
+function metVosVanSjabloon(
+  figuur: Vraag["figuur"],
+  sjabloonId: string | null,
+): Vraag["figuur"] {
+  if (!figuur || figuur.soort !== "plaatjesraster" || !sjabloonId) return figuur;
+
+  const vos = vosVanSjabloon(sjabloonId);
+  if (!vos) return figuur;
+
+  return { ...figuur, vos };
+}
+
 function naarVraag(r: Record<string, string | number | null>): VraagInContext {
   return {
     id: String(r.id),
@@ -113,7 +178,10 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     antwoord: String(r.antwoord),
     hint: r.hint ? String(r.hint) : null,
     afbeelding: r.afbeelding ? String(r.afbeelding) : null,
-    figuur: r.figuur ? (JSON.parse(String(r.figuur)) as Vraag["figuur"]) : null,
+    figuur: metVosVanSjabloon(
+      r.figuur ? (JSON.parse(String(r.figuur)) as Vraag["figuur"]) : null,
+      r.sjabloon_id ? String(r.sjabloon_id) : null,
+    ),
     somgegevens: r.somgegevens
       ? (JSON.parse(String(r.somgegevens)) as Vraag["somgegevens"])
       : null,

@@ -12,6 +12,7 @@ import { useMemo } from "react";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { Telrij } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
+import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -107,6 +108,26 @@ export function SjabloonVoorbeeld({
                 {som.figuur?.soort === "stapstenen" && (
                   <div className="mt-1 w-full">
                     <Steenrij figuur={som.figuur} />
+                  </div>
+                )}
+
+                {/*
+                  Het plaatjesraster op halve breedte: genoeg om te zien of de
+                  opstelling klopt — rijen van vijf, van tien of verspreid —
+                  zonder dat het voorbeeld de hele lijst uit elkaar duwt. Niet
+                  aantikbaar: in het voorbeeld valt er niets te tellen.
+                */}
+                {som.figuur?.soort === "plaatjesraster" && (
+                  <div className="mt-1 w-full max-w-xs">
+                    <Plaatjesraster
+                      aantal={som.figuur.aantal}
+                      plaatje={som.figuur.plaatje}
+                      afbeelding={som.figuur.afbeelding}
+                      perRij={som.figuur.perRij}
+                      groepsruimte={som.figuur.groepsruimte}
+                      aantikbaar={false}
+                      beweegt={false}
+                    />
                   </div>
                 )}
 

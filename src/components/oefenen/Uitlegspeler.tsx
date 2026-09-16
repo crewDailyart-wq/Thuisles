@@ -23,6 +23,7 @@ import {
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
+import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
   abonneerOpgavegeluid,
@@ -40,6 +41,7 @@ export function Uitlegspeler({
   onSluit,
   onNogEen,
   mascotte = null,
+  telplaatje = null,
 }: {
   script: Uitlegscript;
   onSluit: () => void;
@@ -52,6 +54,14 @@ export function Uitlegspeler({
    * getallen in. Zo ziet het kind in de uitleg dezelfde vos als in de vraag.
    */
   mascotte?: string | null;
+  /**
+   * Welk getekend telplaatje er in de vraag stond.
+   *
+   * Zelfde reden als bij `mascotte`: in de somgegevens passen alleen getallen,
+   * dus de naam van het plaatje kan alleen langs deze weg mee. Zo telt het kind
+   * in de uitleg dezelfde eendjes als in de vraag.
+   */
+  telplaatje?: string | null;
 }) {
   const [stapNr, setStapNr] = useState(0);
   const [getikt, setGetikt] = useState<number[]>([]);
@@ -251,6 +261,7 @@ export function Uitlegspeler({
             model={stap.model}
             getikt={getikt}
             mascotte={mascotte}
+            telplaatje={telplaatje}
             telbaar={Boolean(stap.meetellen)}
             telbaarAantal={stap.meetellen?.aantal ?? 0}
             wijsAan={Boolean(stap.meetellen) && getikt.length === 0}
@@ -419,6 +430,7 @@ function Modelbeeld({
   model,
   getikt,
   mascotte,
+  telplaatje,
   telbaar,
   telbaarAantal,
   wijsAan,
@@ -429,6 +441,8 @@ function Modelbeeld({
   getikt: number[];
   /** De mascotte van de vraag; zie `Uitlegspeler`. */
   mascotte: string | null;
+  /** Het getekende telplaatje van de vraag; zie `Uitlegspeler`. */
+  telplaatje: string | null;
   telbaar: boolean;
   /** Hoeveel er bij deze stap geteld moeten worden. */
   telbaarAantal: number;
@@ -534,6 +548,32 @@ function Modelbeeld({
           vosOp={model.vosOp}
           boogVan={model.boogVan}
         />
+      </div>
+    );
+  }
+
+  if (model.soort === "plaatjesraster") {
+    return (
+      <div className="flex w-full flex-col items-center gap-2">
+        <Uitlegraster
+          aantal={model.aantal}
+          /* Hetzelfde getekende plaatje als in de vraag; zie `telplaatje`. */
+          plaatje={model.plaatje ?? telplaatje}
+          /* Het plaatje staat bij de vraag; zie de toelichting bij `mascotte`. */
+          afbeelding={model.afbeelding ?? mascotte}
+          perRij={model.perRij}
+          groepsruimte={model.groepsruimte}
+          opgelicht={model.opgelicht}
+          rijNadruk={model.rijNadruk}
+          telbaar={telbaar}
+          getikt={getikt}
+          onTik={onTik}
+        />
+        {model.bijschrift && (
+          <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">
+            {model.bijschrift}
+          </p>
+        )}
       </div>
     );
   }

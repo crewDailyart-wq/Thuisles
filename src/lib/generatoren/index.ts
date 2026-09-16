@@ -9,6 +9,7 @@ import { aftrekkenGenerator } from "@/lib/generatoren/aftrekken";
 import { busGenerator } from "@/lib/generatoren/bus";
 import { kralenGenerator } from "@/lib/generatoren/kralen";
 import { optellenGenerator } from "@/lib/generatoren/optellen";
+import { plaatjestellenGenerator } from "@/lib/generatoren/plaatjestellen";
 import { splitsenGenerator } from "@/lib/generatoren/splitsen";
 import { stapstenenGenerator } from "@/lib/generatoren/stapstenen";
 import { tellenslepenGenerator } from "@/lib/generatoren/tellenslepen";
@@ -24,6 +25,7 @@ export const alleGeneratoren: Generator[] = [
   busGenerator,
   tellenslepenGenerator,
   stapstenenGenerator,
+  plaatjestellenGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {

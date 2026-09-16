@@ -24,6 +24,7 @@ import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
 import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
 import { Stapstenen } from "@/components/oefenen/Stapstenen";
+import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
   Figuurtekening,
@@ -36,9 +37,9 @@ import { leesGroepsvorm, vormBijGroep } from "@/lib/generatoren/uitlegscript";
 import { goedeAntwoordInTekst, isGoed, kortGetalLengte } from "@/lib/antwoord";
 import {
   abonneerOpgavegeluid,
-  feestje as feestgeluid,
   opgavegeluidOpServer,
   opgavegeluidStaatAan,
+  wekGeluid,
   zetOpgavegeluid,
 } from "@/lib/geluid";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
@@ -98,6 +99,15 @@ function vakmaat(cijfers: number): { doos: string; tekst: string } {
 
 /** Onder deze tijd én fout: waarschijnlijk gegokt. */
 const GOKGRENS_SECONDEN = 3;
+
+/**
+ * Hoe lang een gekozen vak oplicht voordat het wordt nagekeken.
+ *
+ * Kort genoeg om niet als wachten te voelen, lang genoeg om een misser te
+ * herstellen: op een tablet tikt een kind zo net naast het vak dat het bedoelde.
+ * Tikt het binnen deze tijd een ander vak aan, dan telt dat laatste.
+ */
+const KIESPAUZE_MS = 500;
 
 // ---------------------------------------------------------------------------
 
@@ -311,6 +321,41 @@ export function OefenSpeler({
   const vraag = serie[index];
   const generator = vraag?.somgegevens ? zoekGenerator(vraag.somgegevens.soort) : null;
 
+  /*
+    Kiezen uit vakken: de tik ís het antwoord.
+
+    Bij deze vraagtypes staat er geen knop Controleer meer. Het kind tikt een
+    vak aan, dat licht op, en een halve tel later wordt het nagekeken. Die
+    pauze is er met opzet: op een tablet is een vak zo mis getikt, en in die
+    tijd kan het kind nog een ander vak kiezen — dan telt dat laatste.
+
+    Bij de types waar zelf iets ingevuld of gesleept wordt, blijft de knop
+    gewoon staan: daar moet een kind eerst klaar zijn.
+  */
+  const kiestUitVakken = vraag?.vorm === "meerkeuze" || vraag?.vorm === "waar_niet_waar";
+  const kiesklok = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  function stopKiesklok() {
+    if (kiesklok.current) {
+      clearTimeout(kiesklok.current);
+      kiesklok.current = null;
+    }
+  }
+
+  function kies(waarde: string) {
+    setAntwoord(waarde);
+    if (!kiestUitVakken || fase !== "bezig") return;
+    /* Nog een vak aangetikt binnen de pauze: het vorige klokje vervalt. */
+    stopKiesklok();
+    kiesklok.current = setTimeout(() => {
+      kiesklok.current = null;
+      controleer(waarde);
+    }, KIESPAUZE_MS);
+  }
+
+  /* Weggaan of doorklikken terwijl er nog een klokje loopt: dat stopt hier. */
+  useEffect(() => stopKiesklok, []);
+
   const invulbaar =
     vraag?.vorm === "open" &&
     vraag.figuur !== null &&
@@ -319,18 +364,36 @@ export function OefenSpeler({
   // De hint van de vraag zelf, of anders die van het herkende patroon.
   const hinttekst = vraag?.hint ?? patroon?.hint ?? null;
 
-  function controleer() {
-    if (antwoord.trim() === "") return;
+  /**
+   * Nakijken.
+   *
+   * Het antwoord komt als waarde binnen en niet uit de toestand. Reden: bij de
+   * vraagtypes waar je uit vakken kiest, kijkt een klokje even later na wat er
+   * is aangetikt. Dat klokje wordt gezet in dezelfde stap waarin de keuze wordt
+   * doorgegeven, en op dat moment staat de nieuwe keuze nog niet in de
+   * toestand — die komt pas bij het volgende beeld. Zonder de waarde erbij zou
+   * het dus het vórige antwoord nakijken.
+   */
+  function controleer(gekozen: string = antwoord) {
+    if (gekozen.trim() === "") return;
     /* Deze vraag is al nagekeken; een tweede klik telt niet nog eens mee. */
     if (nagekeken.current === index) return;
     nagekeken.current = index;
 
     const seconden = (nuInMs() - start) / 1000;
-    const goed = isGoed(vraag, antwoord);
+    const goed = isGoed(vraag, gekozen);
 
     if (goed) {
       setFase("goed");
-      if (vraag.vorm === "stapstenen") setWachtOpVos(true);
+      /*
+        Even wachten met het feestscherm zolang Vos nog bezig is: bij de
+        stapstenen springt hij naar de overkant, bij het plaatjesraster vliegen
+        de plaatjes eerst terug in zijn mand. Zou het feest er meteen overheen
+        komen, dan ziet een kind daar niets van.
+      */
+      if (vraag.vorm === "stapstenen" || vraag.figuur?.soort === "plaatjesraster") {
+        setWachtOpVos(true);
+      }
       setFeestje((n) => n + 1);
       setSnelFout(0);
       vierGoedAntwoord();
@@ -347,7 +410,7 @@ export function OefenSpeler({
     // Fout: kijken welke denkfout hier waarschijnlijk achter zit.
     const gevonden =
       generator && vraag.somgegevens
-        ? herkenFout(generator.foutpatronen, metGegevenGetallen(vraag, antwoord) ?? vraag.somgegevens, antwoord)
+        ? herkenFout(generator.foutpatronen, metGegevenGetallen(vraag, gekozen) ?? vraag.somgegevens, gekozen)
         : null;
 
     const gegokt = seconden < GOKGRENS_SECONDEN;
@@ -370,26 +433,32 @@ export function OefenSpeler({
   }
 
   /**
-   * Het feestje bij een goed antwoord: geluid, sleutel, teller.
+   * Het feestje bij een goed antwoord: sleutel en teller.
    *
    * De confetti zit hier niet bij: die hangt aan `feestje` en start vanzelf.
    *
-   * Volgorde is bewust. Eerst het geluidje, want dat hoort bij het moment van
-   * "goed". Dan de sleutel op weg, gemeten vanaf het antwoord dat het kind net
-   * heeft ingevuld. En pas als die aankomt, gaat de teller omhoog.
+   * Het geluid ook niet meer. Dat klinkt nu in het feestscherm zelf, op het
+   * moment dat de sleutel in beeld komt. Hier stond het aan het nakijken vast,
+   * en dat is niet hetzelfde moment: bij het plaatjesraster vliegen eerst alle
+   * plaatjes terug in de mand en bij de stapstenen springt Vos eerst naar de
+   * overkant, dus klonk de plop een paar tellen te vroeg. Zie `Feestscherm`.
+   *
+   * De sleutel gaat hier wél meteen op weg, gemeten vanaf het antwoord dat het
+   * kind net heeft gegeven. En pas als die aankomt, gaat de teller omhoog.
    *
    * Het bijschrijven in de database gaat meteen mee — niet pas aan het eind van
    * de ronde. Wat het kind ziet gebeuren, staat op dat moment ook echt vast.
    */
   function vierGoedAntwoord() {
     /*
-      Het sleutelgeluid hangt aan de knop in de opgave, niet aan het
-      uitlegfilmpje. Het klinkt tijdens het maken van een vraag, dus het hoort
-      bij dezelfde knop als de plop van de vos en de toetsklikjes. Stond het
-      eerder aan `geluidStaatAan()`, en dan verloor je je sleutelgeluid zodra je
-      het uitlegfilmpje stil zette — wat niemand verwacht.
+      De geluidsmotor wakker maken, nog binnen de tik van het kind.
+
+      Het sleutelgeluid zelf klinkt pas in het feestscherm, en dat kan bij
+      sommige types seconden later zijn. Een telefoon laat geluid dat buiten een
+      aanraking om begint niet zomaar toe; door hem hier alvast aan te zetten,
+      klinkt de plop straks gewoon. Dit maakt zelf geen geluid.
     */
-    if (opgavegeluidStaatAan()) feestgeluid();
+    wekGeluid();
 
     const bron = `${zorgVoorRondeId()}:${vraag.id}`;
 
@@ -505,6 +574,7 @@ export function OefenSpeler({
       return;
     }
 
+    stopKiesklok();
     setIndex(index + 1);
     setAntwoord("");
     setFase("bezig");
@@ -659,7 +729,26 @@ export function OefenSpeler({
         oefenen zelf.
       */}
       <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
-        <div className="relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10">
+        {/*
+          Onderaan blijft een strook vrij zodra er een mascotte bij hoort.
+
+          Vos hoort binnen dit witte vlak te blijven — daarbuiten valt hij weg
+          achter de balk van het besturingssysteem — maar hij mag ook geen knop
+          bedekken. Een strook die alleen voor hem is, lost allebei op: hij
+          staat erin, en de antwoordknoppen houden hun eigen ruimte.
+
+          De maat staat er bij elke breedte apart bij (`sm:` en `lg:`), want
+          `sm:p-8` en `lg:p-10` zetten ook de onderkant. Zonder die twee valt de
+          strook op een grotere breedte weg en staat Vos alsnog over de knop
+          Controleer heen.
+        */}
+        <div
+          className={`relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10 ${
+            vraag?.figuur?.soort === "plaatjesraster" && vraag.figuur.vos.vangend
+              ? "pb-32 sm:pb-32 lg:pb-32"
+              : ""
+          }`}
+        >
           {/*
             De geluidsknop van de opgave zelf, rechtsboven in de hoek.
 
@@ -703,7 +792,19 @@ export function OefenSpeler({
           */}
           <div className="mt-4 flex flex-col gap-5">
             {heeftBeeld && (
-              <div className="mx-auto w-full max-w-[30rem] rounded-groot border border-rand bg-room/50 p-4 sm:p-5">
+              /*
+                Het plaatjesraster krijgt géén kader eromheen: dat heeft zijn
+                eigen telvak, met een eigen rand. Twee kaders om elkaar heen
+                maakt onduidelijk wat er nu bij elkaar hoort — en juist dat moet
+                bij dit type glashelder zijn, want alles binnen het vak telt mee.
+              */
+              <div
+                className={
+                  vraag.figuur?.soort === "plaatjesraster"
+                    ? "mx-auto w-full max-w-[30rem]"
+                    : "mx-auto w-full max-w-[30rem] rounded-groot border border-rand bg-room/50 p-4 sm:p-5"
+                }
+              >
                 {invulbaar && vraag.figuur ? (
                   <Antwoordvelden
                     vraag={vraag}
@@ -711,7 +812,7 @@ export function OefenSpeler({
                     fase={fase}
                     markeer={kortFeedback}
                     invulbaar={invulbaar}
-                    onKies={setAntwoord}
+                    onKies={kies}
                     onBevestig={() => {
                       if (magControleren) controleer();
                     }}
@@ -723,6 +824,31 @@ export function OefenSpeler({
                     src={`/vragen/${vraag.afbeelding}`}
                     alt=""
                     className="mx-auto h-auto w-full rounded-xl object-contain"
+                  />
+                ) : vraag.figuur?.soort === "plaatjesraster" ? (
+                  /*
+                    Niet via `Figuurtekening` maar hier, want dit raster moet de
+                    fase weten: Vos vangt de plaatjes op, wacht, en wipt op als
+                    het antwoord goed is. Die fase kent alleen de speler.
+                  */
+                  <Plaatjesraster
+                    /*
+                      Een eigen sleutel per vraag, zodat het raster bij elke
+                      nieuwe vraag opnieuw begint. Zonder dit bleef de stand van
+                      de vórige vraag hangen: die was net "ophalen", dus vlogen
+                      de plaatjes van de nieuwe vraag meteen weer weg en bleef
+                      het vak leeg.
+                    */
+                    key={vraag.id}
+                    aantal={vraag.figuur.aantal}
+                    plaatje={vraag.figuur.plaatje}
+                    afbeelding={vraag.figuur.afbeelding}
+                    perRij={vraag.figuur.perRij}
+                    groepsruimte={vraag.figuur.groepsruimte}
+                    vos={vraag.figuur.vos}
+                    fase={fase}
+                    antwoordGekozen={antwoord !== ""}
+                    onKlaar={() => setWachtOpVos(false)}
                   />
                 ) : (
                   vraag.figuur && <Figuurtekening figuur={vraag.figuur} />
@@ -754,7 +880,7 @@ export function OefenSpeler({
                 fase={fase}
                 markeer={kortFeedback}
                 invulbaar={invulbaar}
-                onKies={setAntwoord}
+                onKies={kies}
                 onBevestig={() => {
                   if (magControleren) controleer();
                 }}
@@ -817,9 +943,22 @@ export function OefenSpeler({
                   script={animatie}
                   terugval={uitlegStappen ?? undefined}
                   onSluit={() => setUitlegWeggeklikt(true)}
-                  /* Dezelfde mascotte als in de vraag; zie `Uitlegspeler`. */
+                  /*
+                    De afbeelding van de vraag gaat mee naar de uitleg, zodat
+                    het kind daar hetzelfde plaatje terugziet: de vos op de
+                    stenen, of de plaatjes die het net heeft zitten tellen. In
+                    de somgegevens passen alleen getallen, dus de bestandsnaam
+                    kan alleen langs deze weg.
+                  */
                   mascotte={
-                    vraag.figuur?.soort === "stapstenen" ? vraag.figuur.mascotte : null
+                    vraag.figuur?.soort === "stapstenen"
+                      ? vraag.figuur.mascotte
+                      : vraag.figuur?.soort === "plaatjesraster"
+                        ? vraag.figuur.afbeelding
+                        : null
+                  }
+                  telplaatje={
+                    vraag.figuur?.soort === "plaatjesraster" ? vraag.figuur.plaatje : null
                   }
                 />
               )}
@@ -892,10 +1031,14 @@ export function OefenSpeler({
             erboven. In de focusstand loopt alles over één middellijn.
           */}
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
-            {fase === "bezig" && (
+            {/*
+              Geen knop bij de vraagtypes waar je uit vakken kiest: daar wordt
+              de tik zelf nagekeken, een halve tel later.
+            */}
+            {fase === "bezig" && !kiestUitVakken && (
               <button
                 type="button"
-                onClick={controleer}
+                onClick={() => controleer()}
                 disabled={!magControleren}
                 className="inline-flex items-center gap-2 rounded-full bg-huisstijl-diep px-6 py-3 text-base font-extrabold text-white transition hover:bg-huisstijl-donker disabled:cursor-not-allowed disabled:opacity-45"
               >

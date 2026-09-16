@@ -13,6 +13,7 @@
  */
 
 import type { Figuur } from "@/lib/generatoren/soort";
+import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 
 /** Plek van een vak, in de maten van de tekening zelf. */
 export type Vakpositie = { x: number; y: number; breedte: number; hoogte: number };
@@ -914,7 +915,12 @@ export function beschrijfFiguur(figuur: Figuur): FiguurBeschrijving {
  * omdat elk figuur zijn eigen antwoordvakje eronder heeft.
  */
 export function figuurIsTekenbaar(figuur: Figuur): boolean {
-  return figuur.soort === "splitsboom" || figuur.soort === "kralenrij" || figuur.soort === "bus";
+  return (
+    figuur.soort === "splitsboom" ||
+    figuur.soort === "kralenrij" ||
+    figuur.soort === "bus" ||
+    figuur.soort === "plaatjesraster"
+  );
 }
 
 /** Kiest de juiste tekening bij een figuur. Nieuwe soorten komen hier bij. */
@@ -927,6 +933,23 @@ export function Figuurtekening({
 }) {
   if (figuur.soort === "splitsboom") {
     return <Splitsboom figuur={figuur} interactief={interactief} />;
+  }
+  /*
+    Het plaatjesraster tekent zichzelf niet: het zijn echte afbeeldingen uit
+    het beheer, en het kind mag ze aantikken om mee te tellen. Dat aantikken
+    leeft in het raster zelf, want het is hulp bij het tellen en geen antwoord.
+  */
+  if (figuur.soort === "plaatjesraster") {
+    return (
+      <Plaatjesraster
+        aantal={figuur.aantal}
+        plaatje={figuur.plaatje}
+        afbeelding={figuur.afbeelding}
+        perRij={figuur.perRij}
+        groepsruimte={figuur.groepsruimte}
+        beweegt={false}
+      />
+    );
   }
   if (figuur.soort === "kralenrij") {
     return <Kralenrij figuur={figuur} />;

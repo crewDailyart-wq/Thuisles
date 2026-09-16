@@ -36,6 +36,7 @@
 
 import { useEffect, useRef } from "react";
 import { startConfetti } from "@/lib/confetti";
+import { feestje, opgavegeluidStaatAan } from "@/lib/geluid";
 import { SLEUTEL_DOEL_ID } from "@/lib/sleutelwinkel";
 
 /** Hoe lang het feest duurt. De sleutel doet hier ongeveer over. */
@@ -70,6 +71,16 @@ export function Feestscherm({
     `onGeland` in een ref, zodat de animatie niet opnieuw begint wanneer de
     ouder hertekent en een nieuwe functie doorgeeft.
   */
+  /*
+    Eén plop per feestscherm.
+
+    React roept een effect in ontwikkelmodus met opzet twee keer aan om
+    bijwerkingen op te sporen. Zonder deze vlag klinkt het geluid dan dubbel.
+    De vlag hoort bij dit ene feestscherm: elk goed antwoord krijgt een eigen
+    `key` en dus een eigen, verse vlag.
+  */
+  const geplopt = useRef(false);
+
   const meldGeland = useRef(onGeland);
   const meldAfgelopen = useRef(onAfgelopen);
   useEffect(() => {
@@ -78,6 +89,26 @@ export function Feestscherm({
   });
 
   useEffect(() => {
+    /*
+      De plop van de sleutel, hier en nergens anders.
+
+      Dit scherm is het enige dat weet wanneer de sleutel in beeld komt, dus
+      hoort het geluid hier. Eerder klonk het bij het nakijken van het antwoord,
+      en dat is niet hetzelfde moment: bij oefeningen waar eerst nog iets
+      afloopt — de plaatjes die terug in de mand vliegen, Vos die naar de
+      overkant springt — kwam de plop seconden vóór de sleutel. Zo klopt het
+      vanzelf voor elk type, ook voor types die er later bij komen, zonder dat
+      daar ergens een vertraging voor ingesteld hoeft te worden.
+
+      Het volgt de geluidsknop in de opgave, net als de plop van Vos en de
+      toetsklikjes; die knop staat in het oefenscherm. Ook bij "minder
+      beweging" klinkt hij, want de sleutel wordt dan ook gewoon getoond.
+    */
+    if (!geplopt.current) {
+      geplopt.current = true;
+      if (opgavegeluidStaatAan()) feestje();
+    }
+
     const stil = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
     let gemeld = false;

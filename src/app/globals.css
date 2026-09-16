@@ -209,6 +209,17 @@
   --animate-vos-knik: vos-knik 0.55s ease-out 1;
 
   /*
+    Plaatjes tellen: Vos haalt de plaatjes één voor één uit zijn mand omhoog
+    naar het telvak, en na een goed antwoord gaan ze dezelfde weg terug. De
+    vertraging per plaatje wordt ter plekke gezet, want die verschilt per
+    plaatje.
+  */
+  --animate-plaatje-uit-mand: plaatje-uit-mand 0.7s cubic-bezier(0.34, 1.2, 0.5, 1) both;
+  --animate-plaatje-terug: plaatje-terug 0.5s ease-in both;
+  --animate-vos-springt: vos-springt 0.9s ease-out 1;
+  --animate-vos-wijst: vos-wijst 3.2s ease-in-out infinite;
+
+  /*
     De vos wacht op de laatste steen vóór de lege plek en wipt daar zachtjes op
     en neer. Klein en langzaam gehouden: het moet laten zien dat hij staat te
     wachten, niet de aandacht wegtrekken van het invullen.
@@ -217,6 +228,7 @@
     0%, 100% { transform: translateY(0); }
     45%      { transform: translateY(-4px); }
   }
+
 
   /* Een aangetikte kraal wipt één keer op en komt terug. */
   @keyframes kraal-stuiter {
@@ -247,6 +259,87 @@
   }
 
   --shadow-gloed: 0 0 0 6px rgb(242 187 46 / 0.28), 0 0 34px 6px rgb(242 187 46 / 0.45);
+}
+
+
+/*
+  ---------------------------------------------------------------------------
+  Bewegingen die met eigen variabelen werken
+  ---------------------------------------------------------------------------
+  Deze staan BUITEN het themablok, en dat is geen kwestie van smaak. Binnen
+  `@theme` probeert Tailwind elke `var(...)` als thema-instelling op te lossen;
+  bij `var(--dx)` — die pas in de browser wordt gezet, per plaatje — liep dat
+  vast en at de ontwikkelserver drie gigabyte op voordat hij omviel.
+
+  De namen eronder staan wél in het themablok, want daar komen de klassen
+  `animate-...` vandaan.
+*/
+
+/*
+  De plaatjes komen uit Vos' mand.
+
+  Vos zit onder het telvak met zijn volle mand en haalt er één voor één een
+  plaatje uit; dat vliegt van de mand omhoog naar zijn eigen plek in het vak.
+  Ze vallen dus niet van boven het scherm naar beneden — ze komen uit hém.
+
+  `--dx` en `--dy` zijn de afstand van die plek tot de mand, gerekend in de
+  breedte van het plaatje zelf. Zo klopt de baan bij elk plaatje, waar het ook
+  hoort te landen.
+
+  Het kind hoeft hier niet op te wachten: de antwoordknoppen werken meteen, en
+  één tik zet alles ineens op zijn plek.
+*/
+@keyframes plaatje-uit-mand {
+  0% {
+    transform: translate(var(--dx), var(--dy)) scale(0.4) rotate(-10deg);
+    opacity: 0;
+  }
+  /*
+    Meteen zichtbaar, en niet pas onderweg.
+
+    Stond dit eerder op 18%, dan was een plaatje het eerste stuk van zijn baan
+    doorzichtig — precies het stuk vlak boven de mand. Je zág ze dus niet uit de
+    mand komen; ze verschenen halverwege uit het niets. Nu is het plaatje er al
+    terwijl het nog klein op de mand ligt, en groeit het onderweg.
+  */
+  6% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0);
+  }
+}
+
+/*
+  En terug de mand in, na een goed antwoord.
+
+  Hij blijft tot vlak bij de mand goed zichtbaar en verdwijnt pas op het laatst,
+  als hij er echt in ligt. Zou hij onderweg al vervagen, dan lijkt het of hij
+  ergens halverwege oplost in plaats van in de mand te belanden.
+*/
+@keyframes plaatje-terug {
+  0%   { transform: translate(0, 0) scale(1); opacity: 1; }
+  88%  { opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
+}
+
+/* Vos wipt even op van blijdschap. */
+@keyframes vos-springt {
+  0%, 100% { transform: translateY(0) scale(1); }
+  30%      { transform: translateY(-16%) scale(1.06); }
+  55%      { transform: translateY(0) scale(0.98); }
+  75%      { transform: translateY(-7%) scale(1.03); }
+}
+
+/*
+  Het zachte duwtje als het kind lang stilzit: Vos leunt naar de plaatjes toe
+  en komt weer terug. Geen tekst, want deze kinderen lezen nog nauwelijks —
+  de beweging zegt "kijk daar eens".
+*/
+@keyframes vos-wijst {
+  0%, 70%, 100% { transform: rotate(0) translateX(0); }
+  80%           { transform: rotate(7deg) translateX(6%); }
+  90%           { transform: rotate(4deg) translateX(3%); }
 }
 
 html {
