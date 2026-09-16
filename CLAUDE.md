@@ -166,4 +166,47 @@ met een reden. Alleen de eigenaar weet welke.
 
 ---
 
+# ⛔ HARDE REGEL 4 — WAT GECOMMIT WORDT, GAAT METEEN NAAR GITHUB
+
+**Elke commit wordt in dezelfde stap gepusht naar `origin main`.**
+
+De repo op GitHub staat op privé en is tegelijk de back-up van dit project. De
+eigenaar hoeft daar niet aan te denken; dat is de afspraak. Committen blijft
+iets wat de eigenaar vraagt — maar zodra er gecommit is, hoort de push erbij,
+zonder dat daar apart om gevraagd hoeft te worden.
+
+Lukt de push niet — geen verbinding, of GitHub vraagt om in te loggen — dan
+meld je dat meteen, in gewone taal, met wat de eigenaar precies moet doen. Een
+commit die alleen op de laptop staat, is geen back-up.
+
+## Wat er wél in gaat
+
+Alles wat bij het project hoort: de code, de vragen, de afbeeldingen uit het
+beheer, en `data/thuisles.db` — de database met de voortgang. Dat is met opzet:
+één plek waar alles staat.
+
+## Wat er NOOIT in gaat
+
+Bestanden met wachtwoorden of sleutels: alles wat op `.env` lijkt. Die staan in
+`.gitignore` en dat blijft zo. Controleer het vóór elke push; `.env.example`
+zonder ingevulde waarden mag ook gewoon buiten de repo blijven.
+
+## Wanneer dit moet veranderen
+
+**Zodra er echte kinderen op het platform komen, moet de database hier weer
+uit.** Gegevens van andere kinderen horen niet in een coderepo, ook niet in een
+privérepo: iedereen die later toegang tot de code krijgt, heeft dan ook hun
+voortgang in handen, en een repo is niet gebouwd om gegevens weer echt weg te
+krijgen — oude versies blijven in de geschiedenis staan.
+
+Op dat moment hoort er dus twee dingen te gebeuren:
+
+1. `/data` gaat terug in `.gitignore` en de database wordt uit de repo gehaald;
+2. er komt een echte back-upoplossing voor de database, los van GitHub.
+
+Kom je daar als Claude aan toe voordat de eigenaar het zelf aankaart: meld het,
+en wacht op antwoord.
+
+---
+
 @AGENTS.md

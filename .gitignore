@@ -40,5 +40,13 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# lokale database
-/data
+# De lokale database gaat MET OPZET wel mee naar GitHub.
+#
+# De eigenaar wil één plek waar alles staat: de vragen, de afbeeldingen en de
+# database met de voortgang, zodat de privérepo tegelijk de back-up is. Daarom
+# staat `/data` hier niet meer uitgesloten.
+#
+# Dit kan zolang het om het eigen kind gaat. Zodra er echte kinderen op het
+# platform komen, moet de database hier weer buiten en hoort er een echte
+# back-upoplossing te komen: gegevens van andere kinderen horen niet in een
+# coderepo. Zie HARDE REGEL 4 in CLAUDE.md.
