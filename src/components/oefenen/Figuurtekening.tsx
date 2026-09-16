@@ -14,6 +14,7 @@
 
 import type { Figuur } from "@/lib/generatoren/soort";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
+import { Blokkenvak } from "@/components/oefenen/Mabblokken";
 
 /** Plek van een vak, in de maten van de tekening zelf. */
 export type Vakpositie = { x: number; y: number; breedte: number; hoogte: number };
@@ -919,7 +920,8 @@ export function figuurIsTekenbaar(figuur: Figuur): boolean {
     figuur.soort === "splitsboom" ||
     figuur.soort === "kralenrij" ||
     figuur.soort === "bus" ||
-    figuur.soort === "plaatjesraster"
+    figuur.soort === "plaatjesraster" ||
+    figuur.soort === "mabblokken"
   );
 }
 
@@ -947,6 +949,20 @@ export function Figuurtekening({
         afbeelding={figuur.afbeelding}
         perRij={figuur.perRij}
         groepsruimte={figuur.groepsruimte}
+        beweegt={false}
+      />
+    );
+  }
+  /*
+    De blokken tekenen zichzelf, maar het bouwen hoort bij de vraag: daar weet
+    alleen de speler van. Hier staat het vak dus stil, met alles klaar.
+  */
+  if (figuur.soort === "mabblokken") {
+    return (
+      <Blokkenvak
+        tientallen={figuur.tientallen}
+        eenheden={figuur.eenheden}
+        stand="tellen"
         beweegt={false}
       />
     );

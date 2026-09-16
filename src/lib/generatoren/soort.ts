@@ -121,6 +121,38 @@ export type Figuur =
       groepsruimte: boolean;
     }
   | {
+      /**
+       * MAB-blokken: staven van tien en losse blokjes.
+       *
+       * Hetzelfde materiaal dat op school in de kast staat. De staven staan
+       * links, de losse blokjes rechts, met een stippellijn ertussen, zodat een
+       * kind ziet dat het twee soorten zijn.
+       */
+      soort: "mabblokken";
+      /** Hoeveel staven van tien. */
+      tientallen: number;
+      /** Hoeveel losse blokjes. Samen met de staven is dat het antwoord. */
+      eenheden: number;
+      /**
+       * Wat er met de blokken gebeurt als de vraag opent.
+       *
+       *   tellen    alles ligt klaar; het kind telt
+       *   vosbouwt  alles ligt eerst los; Vos schuift er staven van tien van
+       *   slepen    (nog niet gebouwd) het kind legt zelf het getal neer
+       *
+       * Een naam en geen vinkje, zodat er een stand bij kan zonder dat de
+       * bestaande twee verbouwd hoeven te worden.
+       */
+      stand: string;
+      /**
+       * De mascotte, per houding een eigen afbeelding uit het beheer.
+       *
+       * Alleen nodig bij de stand waarin Vos de staven bouwt. Ontbreekt er een,
+       * dan wordt de vangende genomen.
+       */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
       soort: "telrij";
       /**
        * De figuren naast elkaar, elk met zijn eigen aantal telbare onderdelen.

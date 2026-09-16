@@ -216,6 +216,8 @@
   */
   --animate-plaatje-uit-mand: plaatje-uit-mand 0.7s cubic-bezier(0.34, 1.2, 0.5, 1) both;
   --animate-plaatje-terug: plaatje-terug 0.5s ease-in both;
+  --animate-blok-van-vos: blok-van-vos 0.3s cubic-bezier(0.34, 1.15, 0.5, 1) both;
+  --animate-staaf-klikt: staaf-klikt 0.34s ease-out 1;
   --animate-vos-springt: vos-springt 0.9s ease-out 1;
   --animate-vos-wijst: vos-wijst 3.2s ease-in-out infinite;
 
@@ -321,6 +323,42 @@
   0%   { transform: translate(0, 0) scale(1); opacity: 1; }
   88%  { opacity: 1; }
   100% { transform: translate(var(--dx), var(--dy)) scale(0.4); opacity: 0; }
+}
+
+/*
+  Een blokje dat Vos in het vak legt.
+
+  Het komt uit zijn handen aanvliegen en groeit onderweg naar zijn eigen maat.
+  `--dx` en `--dy` zijn de afstand van zijn handen tot de plek waar het blokje
+  hoort te landen, gerekend in de breedte van het blokje zelf. Zo klopt de baan
+  bij elk blokje, waar het ook heen moet.
+
+  Meteen zichtbaar en niet pas onderweg: je moet kunnen zien dat het uit hém
+  komt, en niet dat het ergens halverwege uit het niets verschijnt.
+*/
+@keyframes blok-van-vos {
+  0% {
+    transform: translate(var(--dx), var(--dy)) scale(0.45) rotate(-8deg);
+    opacity: 0;
+  }
+  8% {
+    opacity: 1;
+  }
+  100% {
+    transform: translate(0, 0) scale(1) rotate(0);
+  }
+}
+
+/*
+  De klik: tien losse blokjes zijn één staaf geworden.
+
+  Een kort veertje in de lengte. Klein gehouden — het moet het moment markeren,
+  niet de aandacht wegtrekken van wat er net gebeurd is.
+*/
+@keyframes staaf-klikt {
+  0% { transform: scaleX(1.05) scaleY(0.88); }
+  55% { transform: scaleX(0.985) scaleY(1.07); }
+  100% { transform: scale(1); }
 }
 
 /* Vos wipt even op van blijdschap. */

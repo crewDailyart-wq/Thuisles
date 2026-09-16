@@ -204,6 +204,24 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      /**
+       * Dezelfde MAB-blokken in hetzelfde vak als in de vraag.
+       *
+       * Geen getallenlijn en geen ander materiaal: het kind moet de staven
+       * terugzien die het net zelf zat te tellen.
+       */
+      soort: "mabblokken";
+      tientallen: number;
+      eenheden: number;
+      /** Hoeveel staven er al meegeteld zijn; de rest staat gedimd. */
+      stavenOp: number;
+      /** En hoeveel losse blokjes. */
+      losseOp: number;
+      /** Welke staaf nu aan de beurt is en oplicht; `null` = geen. */
+      nadruk: number | null;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

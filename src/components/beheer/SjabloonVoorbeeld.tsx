@@ -13,6 +13,7 @@ import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening"
 import { Telrij } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
+import { Blokkenvak } from "@/components/oefenen/Mabblokken";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -126,6 +127,22 @@ export function SjabloonVoorbeeld({
                       perRij={som.figuur.perRij}
                       groepsruimte={som.figuur.groepsruimte}
                       aantikbaar={false}
+                      beweegt={false}
+                    />
+                  </div>
+                )}
+
+                {/*
+                  De blokken op halve breedte: genoeg om te zien of het getal
+                  klopt — zoveel staven links, zoveel losse rechts. Stilstaand,
+                  want in het voorbeeld hoeft Vos niets te bouwen.
+                */}
+                {som.figuur?.soort === "mabblokken" && (
+                  <div className="mt-1 w-full max-w-xs">
+                    <Blokkenvak
+                      tientallen={som.figuur.tientallen}
+                      eenheden={som.figuur.eenheden}
+                      stand="tellen"
                       beweegt={false}
                     />
                   </div>

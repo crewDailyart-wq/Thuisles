@@ -24,6 +24,7 @@ import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
+import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
   abonneerOpgavegeluid,
@@ -575,6 +576,19 @@ function Modelbeeld({
           </p>
         )}
       </div>
+    );
+  }
+
+  if (model.soort === "mabblokken") {
+    return (
+      <Uitlegblokken
+        tientallen={model.tientallen}
+        eenheden={model.eenheden}
+        stavenOp={model.stavenOp}
+        losseOp={model.losseOp}
+        nadruk={model.nadruk}
+        bijschrift={model.bijschrift}
+      />
     );
   }
 

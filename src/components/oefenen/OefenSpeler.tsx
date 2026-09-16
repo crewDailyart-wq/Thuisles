@@ -25,6 +25,8 @@ import { Feestscherm } from "@/components/oefenen/Feestscherm";
 import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
 import { Stapstenen } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
+import { Blokkenvak, type Blokkenstand } from "@/components/oefenen/Mabblokken";
+import { Cijferinvoer } from "@/components/oefenen/Cijferinvoer";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
   Figuurtekening,
@@ -355,6 +357,17 @@ export function OefenSpeler({
 
   /* Weggaan of doorklikken terwijl er nog een klokje loopt: dat stopt hier. */
   useEffect(() => stopKiesklok, []);
+
+  /*
+    Hoort er een mascotte bij deze vraag?
+    
+    Zo ja, dan blijft er onderaan in het kaartje een strook voor hem vrij. Elk
+    type dat Vos in zijn eigen vak zet, hoort hier bij te staan: zonder die
+    strook komt hij over de knoppen te staan of valt hij buiten het kaartje.
+  */
+  const metMascotte =
+    (vraag?.figuur?.soort === "plaatjesraster" || vraag?.figuur?.soort === "mabblokken") &&
+    Boolean(vraag.figuur.vos.vangend);
 
   const invulbaar =
     vraag?.vorm === "open" &&
@@ -744,9 +757,7 @@ export function OefenSpeler({
         */}
         <div
           className={`relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10 ${
-            vraag?.figuur?.soort === "plaatjesraster" && vraag.figuur.vos.vangend
-              ? "pb-32 sm:pb-32 lg:pb-32"
-              : ""
+            metMascotte ? "pb-32 sm:pb-32 lg:pb-32" : ""
           }`}
         >
           {/*
@@ -793,14 +804,15 @@ export function OefenSpeler({
           <div className="mt-4 flex flex-col gap-5">
             {heeftBeeld && (
               /*
-                Het plaatjesraster krijgt géén kader eromheen: dat heeft zijn
-                eigen telvak, met een eigen rand. Twee kaders om elkaar heen
+                Het plaatjesraster en de blokken krijgen géén kader eromheen:
+                die hebben hun eigen vak, met een eigen rand. Twee kaders om elkaar heen
                 maakt onduidelijk wat er nu bij elkaar hoort — en juist dat moet
                 bij dit type glashelder zijn, want alles binnen het vak telt mee.
               */
               <div
                 className={
-                  vraag.figuur?.soort === "plaatjesraster"
+                  vraag.figuur?.soort === "plaatjesraster" ||
+                  vraag.figuur?.soort === "mabblokken"
                     ? "mx-auto w-full max-w-[30rem]"
                     : "mx-auto w-full max-w-[30rem] rounded-groot border border-rand bg-room/50 p-4 sm:p-5"
                 }
@@ -849,6 +861,24 @@ export function OefenSpeler({
                     fase={fase}
                     antwoordGekozen={antwoord !== ""}
                     onKlaar={() => setWachtOpVos(false)}
+                  />
+                ) : vraag.figuur?.soort === "mabblokken" ? (
+                  /*
+                    Ook dit vak hoort niet in `Figuurtekening` thuis: bij de
+                    stand waarin Vos de staven bouwt, moet het weten wanneer het
+                    kind aan de beurt is — en dat weet alleen de speler.
+                  */
+                  <Blokkenvak
+                    /*
+                      Een eigen sleutel per vraag, zodat het vak bij elke nieuwe
+                      vraag opnieuw begint in plaats van de stand van de vorige
+                      vast te houden.
+                    */
+                    key={vraag.id}
+                    tientallen={vraag.figuur.tientallen}
+                    eenheden={vraag.figuur.eenheden}
+                    stand={vraag.figuur.stand as Blokkenstand}
+                    vos={vraag.figuur.vos}
                   />
                 ) : (
                   vraag.figuur && <Figuurtekening figuur={vraag.figuur} />
@@ -1148,6 +1178,27 @@ function Antwoordvelden({
         goedeWaarde={toonKleur ? vraag.antwoord : null}
         gekozenGoed={goedGemarkeerd}
         onKies={onKies}
+      />
+    );
+  }
+
+  /*
+    De blokken als open vraag: het kind vult het getal zelf in, met het
+    cijfertoetsenbord op het scherm.
+
+    Hetzelfde toetsenbord als bij de stapstenen, om dezelfde reden: op een
+    tablet zou het toetsenbord van het apparaat over de blokken heen schuiven,
+    precies over wat het kind moet tellen. De knop Controleer blijft hier wél
+    staan — het kind moet eerst klaar zijn met invullen.
+  */
+  if (vraag.vorm === "open" && vraag.figuur?.soort === "mabblokken") {
+    return (
+      <Cijferinvoer
+        waarde={antwoord}
+        fase={fase}
+        markeer={markeer}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
       />
     );
   }
