@@ -14,6 +14,7 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
+import { haalStandaardvos } from "@/lib/data/instellingen";
 import { verbinding } from "@/lib/db/sqlite";
 import { filterLeerdoelen, LEEG, type Beheerfilter } from "@/lib/beheerfilter";
 import {
@@ -131,16 +132,22 @@ function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
     return null;
   }
 
-  const heeftVelden =
-    "vosVangend" in inst || "vosWachtend" in inst || "vosBlij" in inst;
-  if (!heeftVelden) return null;
-
   const naam = (sleutel: string): string | null => {
     const waarde = inst[sleutel];
     return typeof waarde === "string" && waarde !== "" ? waarde : null;
   };
 
-  return { vangend: naam("vosVangend"), wachtend: naam("vosWachtend"), blij: naam("vosBlij") };
+  /*
+    Wat het sjabloon zelf invult gaat voor; wat leeg blijft, komt van de
+    standaardvos. Zo hoeft een beheerder niet bij elk type opnieuw dezelfde
+    drie afbeeldingen te kiezen, en kan het per sjabloon toch anders.
+  */
+  const standaard = haalStandaardvos();
+  return {
+    vangend: naam("vosVangend") ?? standaard.vangend,
+    wachtend: naam("vosWachtend") ?? standaard.wachtend,
+    blij: naam("vosBlij") ?? standaard.blij,
+  };
 }
 
 /**
@@ -159,7 +166,11 @@ function metVosVanSjabloon(
   figuur: Vraag["figuur"],
   sjabloonId: string | null,
 ): Vraag["figuur"] {
-  if (!figuur || figuur.soort !== "plaatjesraster" || !sjabloonId) return figuur;
+  /*
+    Elk figuur met een mascotte doet mee. Komt er een type bij, dan hoeft hier
+    niets veranderd te worden: het herkent zichzelf aan het veld `vos`.
+  */
+  if (!figuur || !("vos" in figuur) || !sjabloonId) return figuur;
 
   const vos = vosVanSjabloon(sjabloonId);
   if (!vos) return figuur;

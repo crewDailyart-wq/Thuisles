@@ -7,6 +7,7 @@
  */
 
 export type Vraagvorm =
+  | "bosspel"
   | "meerkeuze"
   | "open"
   | "waar_niet_waar"
@@ -25,6 +26,7 @@ export type Vraagvorm =
  * Komt er een vorm bij, zet hem dan hier; de database volgt vanzelf.
  */
 export const ALLE_VRAAGVORMEN: Vraagvorm[] = [
+  "bosspel",
   "meerkeuze",
   "open",
   "waar_niet_waar",
@@ -43,6 +45,7 @@ export const VRAAGVORMEN: Vraagvorm[] = ["meerkeuze", "open", "waar_niet_waar"];
  * opslaan, nakijken en tonen gaan verder precies hetzelfde.
  */
 export const VORM_LABEL: Record<Vraagvorm, string> = {
+  bosspel: "Interactief bosspel",
   meerkeuze: "Meerkeuze",
   open: "Open vraag",
   waar_niet_waar: "Waar / niet waar",
@@ -51,6 +54,7 @@ export const VORM_LABEL: Record<Vraagvorm, string> = {
 };
 
 export const VORM_UITLEG: Record<Vraagvorm, string> = {
+  bosspel: "Een Thuisles-spel voor tellen, buurgetallen, hoeveelheden of ordenen. Via een sjabloon.",
   meerkeuze: "Het kind kiest uit twee tot zes antwoorden. Eén is goed.",
   open: "Het kind typt het antwoord. Meerdere schrijfwijzen mogen goed zijn.",
   waar_niet_waar: "Een stelling die waar of niet waar is.",

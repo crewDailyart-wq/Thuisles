@@ -13,6 +13,7 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { BosBeeld } from "@/components/oefenen/BosSpel";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import {
   Driehoek,
@@ -25,6 +26,7 @@ import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
 import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
+import { Uitlegstraat } from "@/components/oefenen/Huizenrij";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
   abonneerOpgavegeluid,
@@ -451,6 +453,9 @@ function Modelbeeld({
   wijsSleutel: number;
   onTik: (i: number) => void;
 }) {
+  if (model.soort === "bosspel") {
+    return <BosBeeld figuur={model.figuur} opgelicht={model.opgelicht} opgelost={model.opgelost} />;
+  }
   if (model.soort === "blokjes") {
     const blokjes: Bloktoestand[] = model.blokjes.map((t, i) =>
       getikt.includes(i) ? "geteld" : t,
@@ -586,6 +591,18 @@ function Modelbeeld({
         eenheden={model.eenheden}
         stavenOp={model.stavenOp}
         losseOp={model.losseOp}
+        nadruk={model.nadruk}
+        bijschrift={model.bijschrift}
+      />
+    );
+  }
+
+  if (model.soort === "huizenrij") {
+    return (
+      <Uitlegstraat
+        huizen={model.huizen}
+        vosBij={model.vosBij}
+        zichtbaar={model.zichtbaar}
         nadruk={model.nadruk}
         bijschrift={model.bijschrift}
       />

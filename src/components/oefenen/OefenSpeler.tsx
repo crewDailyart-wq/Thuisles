@@ -18,6 +18,7 @@
  */
 
 import Link from "next/link";
+import { BosSpel } from "@/components/oefenen/BosSpel";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { beloonGoedAntwoord, bewaarAntwoord, meldLastig, rondAf } from "@/app/oefenacties";
 import { Icoon } from "@/components/kind/Icoon";
@@ -27,6 +28,7 @@ import { Stapstenen } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak, type Blokkenstand } from "@/components/oefenen/Mabblokken";
 import { Cijferinvoer } from "@/components/oefenen/Cijferinvoer";
+import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
   Figuurtekening,
@@ -74,7 +76,7 @@ import { type AntwoordOptie, type OefenVraag } from "@/lib/vraagtypes";
  * verwisseld zijn bijvoorbeeld, en dat is aan één getal niet te merken.
  */
 function metGegevenGetallen(vraag: OefenVraag, gegeven: string): Somgegevens | null {
-  if (vraag.vorm !== "sleepgetallen" || !vraag.somgegevens) return vraag.somgegevens;
+  if ((vraag.vorm !== "sleepgetallen" && vraag.vorm !== "bosspel") || !vraag.somgegevens) return vraag.somgegevens;
 
   const extra: Record<string, number> = { ...(vraag.somgegevens.extra ?? {}) };
   gegeven.split(",").forEach((deel, i) => {
@@ -369,10 +371,10 @@ export function OefenSpeler({
     (vraag?.figuur?.soort === "plaatjesraster" || vraag?.figuur?.soort === "mabblokken") &&
     Boolean(vraag.figuur.vos.vangend);
 
-  const invulbaar =
+  const invulbaar = vraag?.vorm === "bosspel" || (
     vraag?.vorm === "open" &&
     vraag.figuur !== null &&
-    beschrijfFiguur(vraag.figuur).invulvak !== null;
+    beschrijfFiguur(vraag.figuur).invulvak !== null);
 
   // De hint van de vraag zelf, of anders die van het herkende patroon.
   const hinttekst = vraag?.hint ?? patroon?.hint ?? null;
@@ -404,7 +406,7 @@ export function OefenSpeler({
         de plaatjes eerst terug in zijn mand. Zou het feest er meteen overheen
         komen, dan ziet een kind daar niets van.
       */
-      if (vraag.vorm === "stapstenen" || vraag.figuur?.soort === "plaatjesraster") {
+      if (vraag.vorm === "stapstenen" || vraag.vorm === "bosspel" || vraag.figuur?.soort === "plaatjesraster") {
         setWachtOpVos(true);
       }
       setFeestje((n) => n + 1);
@@ -812,7 +814,8 @@ export function OefenSpeler({
               <div
                 className={
                   vraag.figuur?.soort === "plaatjesraster" ||
-                  vraag.figuur?.soort === "mabblokken"
+                  vraag.figuur?.soort === "mabblokken" ||
+                  vraag.figuur?.soort === "huizenrij"
                     ? "mx-auto w-full max-w-[30rem]"
                     : "mx-auto w-full max-w-[30rem] rounded-groot border border-rand bg-room/50 p-4 sm:p-5"
                 }
@@ -861,6 +864,20 @@ export function OefenSpeler({
                     fase={fase}
                     antwoordGekozen={antwoord !== ""}
                     onKlaar={() => setWachtOpVos(false)}
+                  />
+                ) : vraag.figuur?.soort === "huizenrij" ? (
+                  /*
+                    De straat hoort niet in `Figuurtekening` thuis: hij moet
+                    weten of het antwoord goed was, want dan loopt Vos naar het
+                    buurhuis en gaat de deur open.
+                  */
+                  <Huizenrij
+                    key={vraag.id}
+                    huizen={vraag.figuur.huizen}
+                    vosBij={vraag.figuur.vosBij}
+                    gevraagd={vraag.figuur.gevraagd}
+                    vos={vraag.figuur.vos}
+                    fase={fase}
                   />
                 ) : vraag.figuur?.soort === "mabblokken" ? (
                   /*
@@ -1169,6 +1186,10 @@ function Antwoordvelden({
   */
   const goedGemarkeerd = fase === "goed";
 
+  if (vraag.vorm === "bosspel" && vraag.figuur?.soort === "bosspel") {
+    return <BosSpel key={vraag.id} figuur={vraag.figuur} fase={fase} onWijzig={onKies} onBevestig={onBevestig} onKlaar={onSprongKlaar} />;
+  }
+
   if (vraag.vorm === "meerkeuze") {
     return (
       <MeerkeuzeAntwoorden
@@ -1191,7 +1212,10 @@ function Antwoordvelden({
     precies over wat het kind moet tellen. De knop Controleer blijft hier wél
     staan — het kind moet eerst klaar zijn met invullen.
   */
-  if (vraag.vorm === "open" && vraag.figuur?.soort === "mabblokken") {
+  if (
+    vraag.vorm === "open" &&
+    (vraag.figuur?.soort === "mabblokken" || vraag.figuur?.soort === "huizenrij")
+  ) {
     return (
       <Cijferinvoer
         waarde={antwoord}

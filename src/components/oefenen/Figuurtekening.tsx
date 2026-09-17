@@ -13,8 +13,10 @@
  */
 
 import type { Figuur } from "@/lib/generatoren/soort";
+import { BosBeeld } from "@/components/oefenen/BosSpel";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak } from "@/components/oefenen/Mabblokken";
+import { Huizenrij } from "@/components/oefenen/Huizenrij";
 
 /** Plek van een vak, in de maten van de tekening zelf. */
 export type Vakpositie = { x: number; y: number; breedte: number; hoogte: number };
@@ -917,11 +919,13 @@ export function beschrijfFiguur(figuur: Figuur): FiguurBeschrijving {
  */
 export function figuurIsTekenbaar(figuur: Figuur): boolean {
   return (
+    figuur.soort === "bosspel" ||
     figuur.soort === "splitsboom" ||
     figuur.soort === "kralenrij" ||
     figuur.soort === "bus" ||
     figuur.soort === "plaatjesraster" ||
-    figuur.soort === "mabblokken"
+    figuur.soort === "mabblokken" ||
+    figuur.soort === "huizenrij"
   );
 }
 
@@ -933,6 +937,7 @@ export function Figuurtekening({
   figuur: Figuur;
   interactief?: boolean;
 }) {
+  if (figuur.soort === "bosspel") return <BosBeeld figuur={figuur} />;
   if (figuur.soort === "splitsboom") {
     return <Splitsboom figuur={figuur} interactief={interactief} />;
   }
@@ -963,6 +968,20 @@ export function Figuurtekening({
         tientallen={figuur.tientallen}
         eenheden={figuur.eenheden}
         stand="tellen"
+        beweegt={false}
+      />
+    );
+  }
+  /*
+    De straat tekent zichzelf, maar het lopen hoort bij de vraag: daar weet
+    alleen de speler van. Hier staat hij dus stil.
+  */
+  if (figuur.soort === "huizenrij") {
+    return (
+      <Huizenrij
+        huizen={figuur.huizen}
+        vosBij={figuur.vosBij}
+        gevraagd={figuur.gevraagd}
         beweegt={false}
       />
     );

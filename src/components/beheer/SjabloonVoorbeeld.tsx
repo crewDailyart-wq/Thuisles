@@ -9,11 +9,13 @@
  */
 
 import { useMemo } from "react";
+import { BosBeeld } from "@/components/oefenen/BosSpel";
 import { Bus, Kralenrij, Splitsboom } from "@/components/oefenen/Figuurtekening";
 import { Telrij } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak } from "@/components/oefenen/Mabblokken";
+import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -30,11 +32,14 @@ export function SjabloonVoorbeeld({
     Een standaard van 5 zou stilletjes de zin van groep 5 laten zien.
   */
   groep = 0,
+  standaardvos,
 }: {
   soort: string;
   instellingen: Instellingen;
   aantal?: number;
   groep?: number;
+  /** De vos die geldt als het sjabloon zelf niets invult; alleen om te tonen. */
+  standaardvos?: { vangend: string | null; wachtend: string | null; blij: string | null };
 }) {
   const generator = zoekGenerator(soort);
 
@@ -74,6 +79,7 @@ export function SjabloonVoorbeeld({
 
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-medium">{som.vraagtekst}</p>
+                {som.figuur?.soort === "bosspel" && <div className="mt-2 max-w-md"><BosBeeld figuur={som.figuur}/></div>}
 
                 {som.figuur?.soort === "splitsboom" && (
                   <div className="mt-1 w-32">
@@ -137,6 +143,19 @@ export function SjabloonVoorbeeld({
                   klopt — zoveel staven links, zoveel losse rechts. Stilstaand,
                   want in het voorbeeld hoeft Vos niets te bouwen.
                 */}
+                {/* De straat op halve breedte: genoeg om de nummers te zien kloppen. */}
+                {som.figuur?.soort === "huizenrij" && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Huizenrij
+                      huizen={som.figuur.huizen}
+                      vosBij={som.figuur.vosBij}
+                      gevraagd={som.figuur.gevraagd}
+                      vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                      beweegt={false}
+                    />
+                  </div>
+                )}
+
                 {som.figuur?.soort === "mabblokken" && (
                   <div className="mt-1 w-full max-w-xs">
                     <Blokkenvak

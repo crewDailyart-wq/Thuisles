@@ -32,6 +32,7 @@ export type { Somgegevens };
  * blijft en netjes meeschaalt.
  */
 export type Figuur =
+  | import("./bosspellen-catalogus").Bosfiguur
   | {
       soort: "splitsboom";
       geheel: number;
@@ -150,6 +151,23 @@ export type Figuur =
        * Alleen nodig bij de stand waarin Vos de staven bouwt. Ontbreekt er een,
        * dan wordt de vangende genomen.
        */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Een rij huisjes met huisnummers: Vos' straat.
+       *
+       * Het huis waar Vos voor staat laat zijn nummer zien; de buren hebben een
+       * leeg bordje. Bij even en oneven staan de huizen in twee rijen met de
+       * straat ertussen, net als in het echt.
+       */
+      soort: "huizenrij";
+      huizen: { nummer: number; kant: "boven" | "onder" }[];
+      /** Bij welk huis Vos staat; dat nummer is zichtbaar. */
+      vosBij: number;
+      /** Welk huis gevraagd wordt; dat nummer komt pas bij een goed antwoord. */
+      gevraagd: number;
+      /** De mascotte, per houding een eigen afbeelding uit het beheer. */
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
     }
   | {

@@ -104,6 +104,7 @@ export function leesGroepsvorm(waarde: string | null | undefined): Groepsvorm | 
 export type Bloktoestand = "normaal" | "deel" | "weg" | "rest" | "geteld";
 
 export type Model =
+  | { soort: "bosspel"; figuur: import("./bosspellen-catalogus").Bosfiguur; opgelicht: number; opgelost: boolean }
   | {
       soort: "blokjes";
       /** Toestand per blokje, in volgorde. */
@@ -218,6 +219,23 @@ export type Model =
       /** En hoeveel losse blokjes. */
       losseOp: number;
       /** Welke staaf nu aan de beurt is en oplicht; `null` = geen. */
+      nadruk: number | null;
+      bijschrift?: string;
+    }
+  | {
+      /**
+       * Dezelfde straat als in de vraag, met Vos ervoor.
+       *
+       * Geen getallenlijn en geen ander beeld: het kind moet de huisjes
+       * terugzien waar het net naar keek.
+       */
+      soort: "huizenrij";
+      huizen: { nummer: number; kant: "boven" | "onder" }[];
+      /** Bij welk huis Vos staat. */
+      vosBij: number;
+      /** Welke huizen hun nummer laten zien. */
+      zichtbaar: number[];
+      /** Welk huis nu oplicht; `null` = geen. */
       nadruk: number | null;
       bijschrift?: string;
     }

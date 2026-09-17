@@ -53,6 +53,7 @@ export function SjabloonFormulier({
   startLeerdoelId = "",
   algemeenAantal,
   afbeeldingen = [],
+  standaardvos,
 }: {
   vakSlug: string;
   /** Bestaande leerdoelen, om er een passend bij te zoeken. */
@@ -64,6 +65,14 @@ export function SjabloonFormulier({
   algemeenAantal: number;
   /** Bestaande afbeeldingen, voor een instelling van het soort "afbeelding". */
   afbeeldingen?: string[];
+  /**
+   * De vos die geldt als een sjabloon zelf niets invult.
+   *
+   * Alleen voor het voorbeeld: dat wordt in de browser opgebouwd en kan de
+   * instelling dus niet zelf ophalen. Zonder dit staat er in het voorbeeld
+   * geen vos, terwijl het kind hem straks wél ziet.
+   */
+  standaardvos?: { vangend: string | null; wachtend: string | null; blij: string | null };
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -381,6 +390,7 @@ export function SjabloonFormulier({
                 soort={soort}
                 instellingen={instellingen}
                 groep={groep === "" ? undefined : groep}
+                standaardvos={standaardvos}
               />
             </Paneel>
           </div>

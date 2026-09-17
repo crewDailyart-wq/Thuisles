@@ -332,7 +332,7 @@ export function Steenrij({
       viewBox={`0 0 ${breedte} ${HOOGTE}`}
       className={className || "h-auto w-full"}
       style={stijl}
-      role="img"
+      role={onKiesSteen ? "group" : "img"}
       aria-label={`Een rij van ${figuur.stenen.length} stapstenen met sprongen van ${figuur.sprong}`}
     >
       <defs>
@@ -395,7 +395,7 @@ export function Steenrij({
         const draaiing = `translate(${p.x} ${kop}) rotate(${draai} ${STEEN.breedte / 2} ${
           STEEN.hoogte / 2
         })${spiegel ? ` translate(${STEEN.breedte} 0) scale(-1 1)` : ""}`;
-        const aanklikbaar = leeg && fase === "bezig";
+        const aanklikbaar = leeg && fase === "bezig" && Boolean(onKiesSteen);
 
         return (
           <g key={i}>
@@ -443,6 +443,11 @@ export function Steenrij({
 
             {/* Het platte bovenvlak; hier staat het getal op. */}
             <path
+              data-sleep-steen={leeg ? legeIndex : undefined}
+              role={aanklikbaar ? "button" : undefined}
+              tabIndex={aanklikbaar ? 0 : undefined}
+              aria-label={aanklikbaar ? `Steen ${legeIndex + 1}: ${getypt || "leeg"}` : undefined}
+              onKeyDown={aanklikbaar ? (event) => { if (event.key === "Enter" || event.key === " ") { event.preventDefault(); onKiesSteen?.(legeIndex); } } : undefined}
               d={pad}
               transform={draaiing}
               fill={bovenkleur}
@@ -704,8 +709,12 @@ export function Stapstenen({
   goedeWaarden = null,
   onWijzig,
   onSprongKlaar,
+  sleepbediening,
+  onKiesSleepSteen,
 }: {
   figuur: Stapfiguur;
+  sleepbediening?: React.ReactNode;
+  onKiesSleepSteen?: (index: number) => void;
   ingevuld: string[];
   fase: Steenfase;
   goedeWaarden?: number[] | null;
@@ -991,18 +1000,19 @@ export function Stapstenen({
           vosHouding={houding}
           sleutelOpOever={sleutelOpOever}
           vosTrappelt={fase === "bezig" && houding === "staand"}
-          onKiesSteen={setActief}
+          onKiesSteen={(index) => { setActief(index); onKiesSleepSteen?.(index); }}
         />
       </div>
 
       {/* Welke steen er aan de beurt is, ook voor wie het niet ziet. */}
-      {aantalLeeg > 1 && fase === "bezig" && (
+      {sleepbediening === undefined && aantalLeeg > 1 && fase === "bezig" && (
         <p className="text-sm font-bold text-inkt-zacht">
           Steen {actief + 1} van {aantalLeeg}. Tik een andere lege steen aan om te wisselen.
         </p>
       )}
 
-      {fase === "bezig" && (
+      {sleepbediening}
+      {sleepbediening === undefined && fase === "bezig" && (
         <div
           role="group"
           aria-label="Cijfers"

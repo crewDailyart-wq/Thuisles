@@ -51,7 +51,7 @@ export function isGoed(vraag: OefenVraag, gegeven: string): boolean {
     kloppen, ook de volgorde — twee goede getallen op de verkeerde steen is een
     fout die dit type juist zichtbaar maakt.
   */
-  if (vraag.vorm === "stapstenen") {
+  if (vraag.vorm === "stapstenen" || vraag.vorm === "bosspel") {
     const ingevuld = gegeven.split(",").map((w) => w.trim());
     const juist = vraag.antwoord.split(",").map((w) => w.trim());
     return ingevuld.length === juist.length && ingevuld.every((w, i) => w === juist[i]);
@@ -71,7 +71,7 @@ export function goedeAntwoordInTekst(vraag: OefenVraag): string {
   if (vraag.vorm === "waar_niet_waar") {
     return vraag.antwoord === "waar" ? "Waar" : "Niet waar";
   }
-  if (vraag.vorm === "sleepgetallen" || vraag.vorm === "stapstenen") {
+  if (vraag.vorm === "sleepgetallen" || vraag.vorm === "stapstenen" || vraag.vorm === "bosspel") {
     return vraag.antwoord.split(",").join(" · ");
   }
   return vraag.antwoord.split("|")[0] ?? "";

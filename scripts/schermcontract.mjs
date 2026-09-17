@@ -62,6 +62,27 @@ const STAPSTENEN = "src/lib/generatoren/stapstenen.ts";
 
 export const SCHERMCONTRACT = [
   {
+    naam: "Bosspellen overzicht",
+    pad: "/voorbeeld/tellen",
+    bron: ["src/components/oefenen/BosOverzicht.tsx"],
+    zichtbaar: ["Tellen tot en met 20", "22 spellen", "Spelen"],
+    naKlik: [
+      { tekst: "Controleer", bron: "src/components/oefenen/BosOverzicht.tsx", na: "een spel openen" },
+      { tekst: "Bekijk uitleg", bron: "src/components/oefenen/BosOverzicht.tsx", na: "een fout antwoord" },
+      { tekst: "Laatste terug", bron: "src/components/oefenen/VosSleepSpel.tsx", na: "een ordeningsspel openen" },
+    ],
+  },
+  {
+    naam: "Huisjespost speelvoorbeeld",
+    pad: "/voorbeeld/huisjes",
+    bron: ["src/components/oefenen/HuisjesVoorbeeld.tsx"],
+    zichtbaar: ["Speelvoorbeeld", "DE HUISJESPOST", "Hulp", "Bezorgen"],
+    naKlik: [
+      { tekst: "Volgend pakketje", bron: "src/components/oefenen/HuisjesVoorbeeld.tsx", na: "Vul het juiste huisnummer in en bezorg het pakketje" },
+      { tekst: "Nog een rondje", bron: "src/components/oefenen/HuisjesVoorbeeld.tsx", na: "Bezorg vijf pakketjes" },
+    ],
+  },
+  {
     naam: "Vakken (algemene instellingen)",
     pad: "/admin/vakken",
     bron: ["src/components/beheer/VakkenBeheer.tsx", "src/components/beheer/OefensessieInstelling.tsx"],

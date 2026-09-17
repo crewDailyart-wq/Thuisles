@@ -3,7 +3,7 @@ import { Kop } from "@/components/beheer/Bouwstenen";
 import { SjabloonFormulier } from "@/components/beheer/SjabloonFormulier";
 import { haalDomeinen, haalSubdomeinen, haalVak } from "@/lib/data/structuur";
 import { haalLeerdoelen } from "@/lib/data/vragen";
-import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
+import { haalAlgemeenAantalVragen, haalStandaardvos } from "@/lib/data/instellingen";
 import { lijstAfbeeldingen } from "@/lib/data/afbeeldingen";
 
 export default async function NieuwSjabloonPagina({
@@ -54,6 +54,7 @@ export default async function NieuwSjabloonPagina({
         startLeerdoelId={start ?? ""}
         algemeenAantal={haalAlgemeenAantalVragen()}
         afbeeldingen={lijstAfbeeldingen()}
+        standaardvos={haalStandaardvos()}
       />
     </div>
   );

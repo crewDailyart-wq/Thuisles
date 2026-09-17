@@ -61,3 +61,99 @@ export function zetAlgemeenAantalVragen(aantal: number): number {
   schrijf("vragen_per_sessie", String(veilig));
   return veilig;
 }
+
+// ---------------------------------------------------------------------------
+// De standaardvos
+// ---------------------------------------------------------------------------
+
+/** De drie houdingen van de mascotte, elk een bestandsnaam of leeg. */
+export type Voshoudingen = {
+  vangend: string | null;
+  wachtend: string | null;
+  blij: string | null;
+};
+
+const VOS_SLEUTELS: Record<keyof Voshoudingen, string> = {
+  vangend: "vos_vangend",
+  wachtend: "vos_wachtend",
+  blij: "vos_blij",
+};
+
+const LEEG: Voshoudingen = { vangend: null, wachtend: null, blij: null };
+
+/**
+ * De vos die elk oefeningstype gebruikt zolang een sjabloon niets eigens heeft.
+ *
+ * Eén plek voor alle types samen. Zonder dit zou elk nieuw type opnieuw om
+ * dezelfde drie uploads vragen, en zou een andere vos overal apart aangepast
+ * moeten worden.
+ *
+ * Staat er hier nog niets, dan worden de afbeeldingen overgenomen van het
+ * laatste sjabloon waar ze wél in staan. Zo werken de vosjes die al eerder zijn
+ * geüpload meteen in elk nieuw type, zonder dat er iets ingevuld hoeft te
+ * worden. Wordt de standaard hieronder wél gezet, dan gaat die voor.
+ */
+export function haalStandaardvos(): Voshoudingen {
+  const gezet: Voshoudingen = {
+    vangend: lees(VOS_SLEUTELS.vangend),
+    wachtend: lees(VOS_SLEUTELS.wachtend),
+    blij: lees(VOS_SLEUTELS.blij),
+  };
+  if (gezet.vangend) return gezet;
+
+  return uitSjablonen();
+}
+
+/**
+ * Wat er in de sjablonen zelf al aan vos-afbeeldingen staat.
+ *
+ * Het laatst aangemaakte sjabloon met een vos wint: dat is de vos waar de
+ * eigenaar het recentst mee gewerkt heeft.
+ */
+function uitSjablonen(): Voshoudingen {
+  const rijen = verbinding()
+    .prepare(
+      `select instellingen from sjablonen
+       where instellingen like '%vosVangend%'
+       order by aangemaakt_op desc`,
+    )
+    .all() as { instellingen: string | null }[];
+
+  for (const rij of rijen) {
+    let inst: Record<string, unknown>;
+    try {
+      inst = JSON.parse(rij.instellingen ?? "{}") as Record<string, unknown>;
+    } catch {
+      continue;
+    }
+    const naam = (sleutel: string): string | null => {
+      const waarde = inst[sleutel];
+      return typeof waarde === "string" && waarde !== "" ? waarde : null;
+    };
+    const vangend = naam("vosVangend");
+    if (vangend) {
+      return { vangend, wachtend: naam("vosWachtend"), blij: naam("vosBlij") };
+    }
+  }
+
+  return LEEG;
+}
+
+/** Staat de standaardvos hier echt vast, of komt hij nog uit een sjabloon? */
+export function vosIsVastgezet(): boolean {
+  return lees(VOS_SLEUTELS.vangend) !== null && lees(VOS_SLEUTELS.vangend) !== "";
+}
+
+/**
+ * De standaardvos vastzetten.
+ *
+ * Een lege waarde wist de instelling; dan geldt weer wat er in de sjablonen
+ * staat. Er wordt niets gecontroleerd op bestaan: dezelfde afspraak als bij een
+ * afbeelding bij een vraag, waar een verwijderd bestand ook gewoon leeg blijft.
+ */
+export function zetStandaardvos(houdingen: Voshoudingen): void {
+  for (const [houding, sleutel] of Object.entries(VOS_SLEUTELS)) {
+    const waarde = houdingen[houding as keyof Voshoudingen] ?? "";
+    schrijf(sleutel, waarde);
+  }
+}
