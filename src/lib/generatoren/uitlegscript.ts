@@ -240,6 +240,62 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      /**
+       * Dezelfde vissen als in de vraag, maar dan op een rij van klein naar
+       * groot. Vergelijken is ordenen: zodra ze op volgorde liggen, zíe je het.
+       */
+      soort: "visvijver";
+      vissen: { getal: number }[];
+      /** Welke vis oplicht, geteld in de gesorteerde rij; `null` = geen. */
+      nadruk: number | null;
+      bijschrift?: string;
+    }
+  | {
+      /**
+       * Dezelfde trein als in de vraag, met de wagons die één voor één op hun
+       * plek springen. Ordenen is een handeling; die moet je zien gebeuren.
+       */
+      soort: "trein";
+      /** De wagons in de goede volgorde. */
+      volgorde: number[];
+      /** Hoeveel er al gekoppeld zijn. */
+      klaar: number;
+      /** Welke wagon nu oplicht; `null` = geen. */
+      nadruk: number | null;
+      bijschrift?: string;
+    }
+  | {
+      /**
+       * Dezelfde mand als in de vraag, met de inhoud die wordt meegeteld.
+       *
+       * Welk materiaal en welk plaatje erin zit, staat bij de vraag en niet in
+       * de somgegevens — daar passen alleen getallen in. De speler vult het aan
+       * met wat het kind net zag.
+       */
+      soort: "mand";
+      aantal: number;
+      materiaal: string | null;
+      plaatje: string | null;
+      /** Hoeveel er al geteld zijn; die staan vol in beeld. */
+      geteld: number;
+      bijschrift?: string;
+    }
+  | {
+      /**
+       * Dezelfde zaal als in de vraag, met de stoelen die één voor één hun
+       * nummer laten zien vanaf een bekend nummer.
+       */
+      soort: "bioscoop";
+      aantal: number;
+      perRij: number;
+      zichtbaar: number[];
+      /** Het bekende nummer waar de uitleg begint. */
+      vanaf: number;
+      /** Tot welke stoel er al is doorgeteld. */
+      tot: number;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

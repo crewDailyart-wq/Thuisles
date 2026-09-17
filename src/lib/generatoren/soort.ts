@@ -171,6 +171,74 @@ export type Figuur =
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
     }
   | {
+      /**
+       * Vissen met getallen in een vijver: welk getal is het grootst?
+       *
+       * De vissen zijn tegelijk de antwoordknoppen — het kind tikt de vis aan
+       * die het bedoelt. Er staan dus geen losse keuzeknoppen onder de vraag.
+       */
+      soort: "visvijver";
+      vissen: { getal: number }[];
+      /** Zoekt het kind de grootste of de kleinste? */
+      zoek: string;
+      /** De mascotte, per houding een eigen afbeelding uit het beheer. */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Vos' trein: wagons met getallen die op volgorde gesleept worden.
+       *
+       * De wagons staan door elkaar op het rangeerspoor; het kind koppelt ze
+       * achter de locomotief. Het antwoord is één getal per plek, met komma's
+       * ertussen — dezelfde afspraak als bij "Tellen en slepen".
+       */
+      soort: "trein";
+      /** De getallen zoals ze op het rangeerspoor klaarstaan. */
+      wagons: number[];
+      /** Van laag naar hoog, of andersom. */
+      aflopend: boolean;
+      /** De mascotte, per houding een eigen afbeelding uit het beheer. */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Welke mand? — drie of vier manden met spulletjes erin.
+       *
+       * Boven staat het gevraagde getal; de manden zijn tegelijk de knoppen.
+       * Het materiaal komt uit het sjabloon: telplaatjes, kralen of blokken.
+       */
+      soort: "manden";
+      /** Hoeveel er in elke mand zit. */
+      manden: number[];
+      /** Welk materiaal: "telplaatjes", "kralen" of "blokken". */
+      materiaal: string;
+      /** Welk getekend telplaatje, als het materiaal telplaatjes zijn. */
+      plaatje: string;
+      /** Het getal dat groot boven de manden staat. */
+      kaart: number;
+      /** De mascotte, per houding een eigen afbeelding uit het beheer. */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Vos in de bioscoop: een plek vinden in het twintigveld.
+       *
+       * Twee rijen van tien stoelen, waarvan er maar een paar een nummer
+       * hebben. De stoelen zijn tegelijk de knoppen; het antwoord is het
+       * stoelnummer zelf.
+       */
+      soort: "bioscoop";
+      /** Hoeveel stoelen er staan. */
+      aantal: number;
+      perRij: number;
+      /** Bij welke stoelen het nummer zichtbaar is. */
+      zichtbaar: number[];
+      /** Het getal op het kaartje van Vos. */
+      gezocht: number;
+      /** De mascotte, per houding een eigen afbeelding uit het beheer. */
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
       soort: "telrij";
       /**
        * De figuren naast elkaar, elk met zijn eigen aantal telbare onderdelen.

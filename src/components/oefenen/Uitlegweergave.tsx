@@ -38,6 +38,7 @@ export function Uitlegweergave({
   onNogEen,
   mascotte = null,
   telplaatje = null,
+  mandmateriaal = null,
 }: {
   vorm: Groepsvorm;
   /** Het script van het generator-type, of null als het er nog niet is. */
@@ -50,6 +51,8 @@ export function Uitlegweergave({
   mascotte?: string | null;
   /** Het getekende telplaatje van de vraag; gaat door naar de uitlegspeler. */
   telplaatje?: string | null;
+  /** Het materiaal in de manden van de vraag; gaat door naar de uitlegspeler. */
+  mandmateriaal?: string | null;
 }) {
   /*
     De hoogste groepen lezen en kijken niet naar een animatie. Dat hangt aan de
@@ -73,6 +76,7 @@ export function Uitlegweergave({
         onNogEen={onNogEen}
         mascotte={mascotte}
         telplaatje={telplaatje}
+        mandmateriaal={mandmateriaal}
       />
     );
   }

@@ -16,6 +16,10 @@ import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak } from "@/components/oefenen/Mabblokken";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
+import { Visvijver } from "@/components/oefenen/Visvijver";
+import { Trein } from "@/components/oefenen/Trein";
+import { Manden } from "@/components/oefenen/Manden";
+import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
@@ -152,6 +156,56 @@ export function SjabloonVoorbeeld({
                       gevraagd={som.figuur.gevraagd}
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                       beweegt={false}
+                    />
+                  </div>
+                )}
+
+                {/* De vijver op halve breedte: genoeg om de getallen te zien. */}
+                {som.figuur?.soort === "visvijver" && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Visvijver
+                      vissen={som.figuur.vissen}
+                      gekozen=""
+                      vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                    />
+                  </div>
+                )}
+
+                {/* De trein op volle breedte: de wagons moeten leesbaar blijven. */}
+                {som.figuur?.soort === "trein" && (
+                  <div className="mt-1 w-full">
+                    <Trein
+                      wagons={som.figuur.wagons}
+                      ingevuld={som.figuur.wagons.map(() => null)}
+                      vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                    />
+                  </div>
+                )}
+
+                {/* De manden op volle breedte: de inhoud moet te tellen zijn. */}
+                {som.figuur?.soort === "manden" && (
+                  <div className="mt-1 w-full">
+                    <Manden
+                      manden={som.figuur.manden}
+                      soort={som.figuur.materiaal as "telplaatjes" | "kralen" | "blokken"}
+                      plaatje={som.figuur.plaatje}
+                      gevraagd={som.figuur.kaart}
+                      gekozen=""
+                      vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                    />
+                  </div>
+                )}
+
+                {/* De zaal op volle breedte: de stoelen moeten aan te wijzen zijn. */}
+                {som.figuur?.soort === "bioscoop" && (
+                  <div className="mt-1 w-full">
+                    <Bioscoop
+                      aantal={som.figuur.aantal}
+                      perRij={som.figuur.perRij}
+                      zichtbaar={som.figuur.zichtbaar}
+                      gezocht={som.figuur.gezocht}
+                      gekozen=""
+                      vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                     />
                   </div>
                 )}

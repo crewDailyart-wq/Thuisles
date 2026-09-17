@@ -29,6 +29,10 @@ import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak, type Blokkenstand } from "@/components/oefenen/Mabblokken";
 import { Cijferinvoer } from "@/components/oefenen/Cijferinvoer";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
+import { Visvijver } from "@/components/oefenen/Visvijver";
+import { Trein } from "@/components/oefenen/Trein";
+import { Manden } from "@/components/oefenen/Manden";
+import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
   Figuurtekening,
@@ -85,6 +89,23 @@ function metGegevenGetallen(vraag: OefenVraag, gegeven: string): Somgegevens | n
   });
 
   return { ...vraag.somgegevens, extra };
+}
+
+/**
+ * Het antwoord zoals de foutpatronen het verwachten: als getal.
+ *
+ * Bij meerkeuze is het antwoord de plék in de rij knoppen — "2" betekent de
+ * derde knop, niet het getal twee. De foutpatronen rekenen met het getal zelf:
+ * "is dit precies één staaf te weinig?". Zonder deze omzetting vergeleken ze
+ * een plek met een getal, en ging er dus zo goed als nooit een patroon af —
+ * dan kreeg een kind bij een fout antwoord alleen de algemene aanpak te zien
+ * in plaats van wat er misging.
+ */
+function gegevenWaarde(vraag: OefenVraag, gekozen: string): string {
+  if (vraag.vorm !== "meerkeuze") return gekozen;
+  const plek = Number(gekozen);
+  const optie = vraag.opties?.[plek];
+  return optie ? optie.tekst : gekozen;
 }
 
 type Fase = "bezig" | "goed" | "fout";
@@ -425,7 +446,11 @@ export function OefenSpeler({
     // Fout: kijken welke denkfout hier waarschijnlijk achter zit.
     const gevonden =
       generator && vraag.somgegevens
-        ? herkenFout(generator.foutpatronen, metGegevenGetallen(vraag, gekozen) ?? vraag.somgegevens, gekozen)
+        ? herkenFout(
+            generator.foutpatronen,
+            metGegevenGetallen(vraag, gekozen) ?? vraag.somgegevens,
+            gegevenWaarde(vraag, gekozen),
+          )
         : null;
 
     const gegokt = seconden < GOKGRENS_SECONDEN;
@@ -1005,7 +1030,14 @@ export function OefenSpeler({
                         : null
                   }
                   telplaatje={
-                    vraag.figuur?.soort === "plaatjesraster" ? vraag.figuur.plaatje : null
+                    vraag.figuur?.soort === "plaatjesraster"
+                      ? vraag.figuur.plaatje
+                      : vraag.figuur?.soort === "manden"
+                        ? vraag.figuur.plaatje
+                        : null
+                  }
+                  mandmateriaal={
+                    vraag.figuur?.soort === "manden" ? vraag.figuur.materiaal : null
                   }
                 />
               )}
@@ -1190,6 +1222,65 @@ function Antwoordvelden({
     return <BosSpel key={vraag.id} figuur={vraag.figuur} fase={fase} onWijzig={onKies} onBevestig={onBevestig} onKlaar={onSprongKlaar} />;
   }
 
+  /*
+    De vijver is zelf het antwoordveld: het kind tikt de vis aan die het
+    bedoelt. Er komt dus geen rijtje knoppen onder de vraag — dat zou een
+    tweede keer hetzelfde vragen.
+  */
+  /*
+    De manden zijn zelf het antwoordveld: het kind tikt de mand aan die het
+    bedoelt. Er komt dus geen rijtje knoppen onder de vraag.
+  */
+  /*
+    De zaal is zelf het antwoordveld: het kind tikt de stoel aan. Twintig losse
+    knoppen onder de vraag zou onleesbaar zijn, en het gaat er juist om dat het
+    kind de plek in het veld vindt.
+  */
+  if (vraag.figuur?.soort === "bioscoop") {
+    return (
+      <Bioscoop
+        aantal={vraag.figuur.aantal}
+        perRij={vraag.figuur.perRij}
+        zichtbaar={vraag.figuur.zichtbaar}
+        gezocht={vraag.figuur.gezocht}
+        gekozen={antwoord}
+        fase={fase}
+        markeer={markeer}
+        vos={vraag.figuur.vos}
+        onKies={onKies}
+      />
+    );
+  }
+
+  if (vraag.figuur?.soort === "manden") {
+    return (
+      <Manden
+        manden={vraag.figuur.manden}
+        soort={vraag.figuur.materiaal as "telplaatjes" | "kralen" | "blokken"}
+        plaatje={vraag.figuur.plaatje}
+        gevraagd={vraag.figuur.kaart}
+        gekozen={antwoord}
+        fase={fase}
+        markeer={markeer}
+        vos={vraag.figuur.vos}
+        onKies={onKies}
+      />
+    );
+  }
+
+  if (vraag.figuur?.soort === "visvijver") {
+    return (
+      <Visvijver
+        vissen={vraag.figuur.vissen}
+        gekozen={antwoord}
+        fase={fase}
+        markeer={markeer}
+        vos={vraag.figuur.vos}
+        onKies={onKies}
+      />
+    );
+  }
+
   if (vraag.vorm === "meerkeuze") {
     return (
       <MeerkeuzeAntwoorden
@@ -1266,6 +1357,34 @@ function Antwoordvelden({
     antwoord is één getal per figuur, met komma's ertussen — zo gaat het ook de
     database in, en zo kijkt `isGoed` het na.
   */
+  /*
+    De trein: dezelfde bediening als bij "Tellen en slepen", maar met wagons in
+    plaats van losse vakjes. Het antwoord heeft dezelfde vorm — één getal per
+    plek, met komma's ertussen — dus het nakijken en opslaan gaat hier
+    hetzelfde als daar.
+  */
+  if (vraag.vorm === "sleepgetallen" && vraag.figuur?.soort === "trein") {
+    const goede = vraag.antwoord.split(",").map(Number);
+    const ingevuld = goede.map((_, i) => {
+      const deel = antwoord.split(",")[i];
+      return deel === undefined || deel === "" ? null : Number(deel);
+    });
+
+    return (
+      <Trein
+        wagons={vraag.figuur.wagons}
+        ingevuld={ingevuld}
+        fase={fase}
+        /* Ook bij goed meegeven; zie de toelichting bij Stapstenen hieronder. */
+        goedeWaarden={fase === "bezig" ? null : goede}
+        vos={vraag.figuur.vos}
+        onWijzig={(nieuw: (number | null)[]) =>
+          onKies(nieuw.every((w) => w === null) ? "" : nieuw.map((w) => w ?? "").join(","))
+        }
+      />
+    );
+  }
+
   if (vraag.vorm === "sleepgetallen" && vraag.figuur?.soort === "telrij") {
     const keuzes = (vraag.opties ?? []).map((o) => Number(o.tekst)).filter(Number.isFinite);
     const goede = vraag.antwoord.split(",").map(Number);

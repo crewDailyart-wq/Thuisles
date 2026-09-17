@@ -13,6 +13,10 @@ import { optellenGenerator } from "@/lib/generatoren/optellen";
 import { plaatjestellenGenerator } from "@/lib/generatoren/plaatjestellen";
 import { splitsenGenerator } from "@/lib/generatoren/splitsen";
 import { straatGenerator } from "@/lib/generatoren/straat";
+import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
+import { mandenGenerator } from "@/lib/generatoren/manden";
+import { treinGenerator } from "@/lib/generatoren/trein";
+import { vissenGenerator } from "@/lib/generatoren/vissen";
 import { stapstenenGenerator } from "@/lib/generatoren/stapstenen";
 import { tellenslepenGenerator } from "@/lib/generatoren/tellenslepen";
 import { tafelsGenerator } from "@/lib/generatoren/tafels";
@@ -31,6 +35,10 @@ export const alleGeneratoren: Generator[] = [
   plaatjestellenGenerator,
   blokkenGenerator,
   straatGenerator,
+  vissenGenerator,
+  treinGenerator,
+  mandenGenerator,
+  bioscoopGenerator,
   ...bosGeneratoren,
 ];
 

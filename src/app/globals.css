@@ -217,6 +217,8 @@
   --animate-plaatje-uit-mand: plaatje-uit-mand 0.7s cubic-bezier(0.34, 1.2, 0.5, 1) both;
   --animate-plaatje-terug: plaatje-terug 0.5s ease-in both;
   --animate-blok-van-vos: blok-van-vos 0.3s cubic-bezier(0.34, 1.15, 0.5, 1) both;
+  --animate-vis-deint: vis-deint 3.4s ease-in-out infinite;
+  --animate-stoom: stoom 2.6s ease-out infinite;
   --animate-staaf-klikt: staaf-klikt 0.34s ease-out 1;
   --animate-vos-springt: vos-springt 0.9s ease-out 1;
   --animate-vos-wijst: vos-wijst 3.2s ease-in-out infinite;
@@ -347,6 +349,30 @@
   100% {
     transform: translate(0, 0) scale(1) rotate(0);
   }
+}
+
+/*
+  Een vis die rustig heen en weer deint.
+
+  Klein en langzaam: het moet leven in het water brengen, niet de aandacht
+  wegtrekken van het getal dat op de vis staat. Daarom ook geen draaiing — dan
+  zou het cijfer scheef komen te staan.
+*/
+@keyframes vis-deint {
+  0%, 100% { transform: translate(0, 0); }
+  35%      { transform: translate(3%, -7%); }
+  70%      { transform: translate(-2%, 4%); }
+}
+
+/*
+  Het wolkje stoom uit de schoorsteen van de locomotief.
+
+  Het stijgt op, wordt groter en lost op. Klein gehouden: het is een detail dat
+  de trein levend maakt, niet iets om naar te kijken.
+*/
+@keyframes stoom {
+  0%   { transform: translate(0, 0) scale(0.8); opacity: 0.9; }
+  100% { transform: translate(10%, -60%) scale(1.5); opacity: 0; }
 }
 
 /*
