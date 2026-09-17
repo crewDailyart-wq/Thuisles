@@ -55,10 +55,19 @@ const MARGE = 3;
 const GAT = 2.2;
 /** Hoe hoog een huisje is ten opzichte van zijn breedte. */
 const VERHOUDING = 1.32;
-/** Ruimte onder de huizen voor de stoep waar Vos loopt. */
+/** Ruimte onder de huizen voor de stoep. */
 const STOEP = 11;
 /** Breedte van de straat tussen de twee rijen bij even en oneven. */
 const STRAAT = 13;
+/** Lucht boven de daken, voor de wolkjes en de vogel. */
+const LUCHT = 13;
+/**
+ * Ruimte links en rechts van de rij, voor de boom en de lantaarnpaal.
+ *
+ * Die staan dus naast de huizen en nooit ervoor: over een deur mag niets
+ * heen vallen, want daar staat het nummer waar het kind naar kijkt.
+ */
+const ZIJKANT = 9;
 
 /**
  * Waar de huisjes komen te staan.
@@ -73,14 +82,17 @@ export function huizenPlan(huizen: Huis[]): Huizenplan {
   const tweeRijen = boven.length > 0 && onder.length > 0;
 
   const perRij = tweeRijen ? Math.max(boven.length, onder.length) : huizen.length;
-  const breedte = (100 - 2 * MARGE - (perRij - 1) * GAT) / Math.max(1, perRij);
+  const bruikbaar = 100 - 2 * MARGE - 2 * ZIJKANT;
+  const breedte = (bruikbaar - (perRij - 1) * GAT) / Math.max(1, perRij);
   const huishoogte = breedte * VERHOUDING;
 
   const hoogte = tweeRijen
-    ? huishoogte * 2 + STOEP * 2 + STRAAT
-    : huishoogte + STOEP + MARGE;
+    ? LUCHT + huishoogte * 2 + STOEP * 2 + STRAAT
+    : LUCHT + huishoogte + STOEP + MARGE;
 
-  const rijY = tweeRijen ? [MARGE, MARGE + huishoogte + STOEP + STRAAT] : [MARGE];
+  const rijY = tweeRijen
+    ? [LUCHT, LUCHT + huishoogte + STOEP + STRAAT]
+    : [LUCHT];
 
   /* Een halve rij hoort gecentreerd te staan, niet links te plakken. */
   const startX = (aantal: number) =>
@@ -94,7 +106,7 @@ export function huizenPlan(huizen: Huis[]): Huizenplan {
   });
 
   const straat = tweeRijen
-    ? { y: MARGE + huishoogte + STOEP, hoogte: STRAAT }
+    ? { y: LUCHT + huishoogte + STOEP, hoogte: STRAAT }
     : null;
 
   return { breedte, hoogte, plekken, huishoogte, straat };
@@ -132,6 +144,8 @@ function Huisje({
   open = false,
   bloem = false,
   licht = false,
+  gevraagd = false,
+  raamAan = false,
 }: {
   nummer: number | null;
   kleur: number;
@@ -141,6 +155,16 @@ function Huisje({
   bloem?: boolean;
   /** Dit huis is aan de beurt in de uitleg. */
   licht?: boolean;
+  /**
+   * Dit is het huis waar de vraag over gaat.
+   *
+   * De deur krijgt een oranje rand en een vraagteken. Zonder dat ziet een kind
+   * niet wélk huis er bedoeld wordt — het zou dan vijf huizen zien en moeten
+   * raden waar de vraag over gaat.
+   */
+  gevraagd?: boolean;
+  /** Bij één huis brandt het licht. Een detail dat de straat bewoond maakt. */
+  raamAan?: boolean;
 }) {
   const k = KLEUREN[kleur % KLEUREN.length];
 
@@ -187,14 +211,14 @@ function Huisje({
       />
       <path d="M12 44 L50 12 L57 18 L22 44 Z" fill="#ffffff" opacity="0.22" />
 
-      {/* Raampje */}
+      {/* Raampje; bij één huis brandt het licht. */}
       <rect
         x="17"
         y="56"
         width="20"
         height="18"
         rx="3"
-        fill="#eaf6ff"
+        fill={raamAan ? "#ffdf85" : "#eaf6ff"}
         stroke={RAND}
         strokeWidth={RANDDIKTE * 0.75}
       />
@@ -216,14 +240,37 @@ function Huisje({
         goed antwoord. `transform-box: fill-box` laat de draaiing om de deur
         zelf gaan en niet om de hoek van de tekening.
       */}
-      <g
-        style={{
-          transformBox: "fill-box",
-          transformOrigin: "left center",
-          transform: open ? "rotateY(-72deg)" : "rotateY(0deg)",
-          transition: "transform 0.5s ease-out",
-        }}
-      >
+      {/*
+        Zodra de deur openzwaait, verhuist het nummer naar een bordje boven de
+        deurpost. Anders zou het net gevonden getal met de deur mee wegdraaien
+        — en juist dát getal moet het kind zien staan.
+      */}
+      {open && nummer !== null && (
+        <g>
+          <rect x="42" y="49" width="42" height="24" rx="6" fill="#fdf6e8" stroke={RAND} strokeWidth={RANDDIKTE * 0.9} />
+          <text x="63" y="68" textAnchor="middle" fontSize="21" fontWeight="800" fill={RAND}>
+            {nummer}
+          </text>
+        </g>
+      )}
+
+      {/*
+        Wat er achter de deur zit, en pas te zien is als hij openzwaait: een
+        warme gloed en een slinger. Staat vóór de deur getekend, zodat de deur
+        er overheen valt zolang hij dicht is.
+      */}
+      {open && (
+        <g>
+          <rect x="44" y="74" width="38" height="50" rx="4" fill="#ffd98a" />
+          <circle cx="63" cy="94" r="13" fill="#fff3cf" />
+          <path d="M48 82 q7 6 14 0 q7 -6 14 0" fill="none" stroke="#e2622f" strokeWidth="3" strokeLinecap="round" />
+          <circle cx="52" cy="86" r="3" fill="#ef6f6c" />
+          <circle cx="63" cy="82" r="3" fill="#2f9e6b" />
+          <circle cx="74" cy="86" r="3" fill="#6aa9de" />
+        </g>
+      )}
+
+      <g className={`deur ${open ? "deur-open" : ""}`}>
         <rect
           x="44"
           y="74"
@@ -231,8 +278,8 @@ function Huisje({
           height="50"
           rx="4"
           fill={nummer === null ? "#fdf6e8" : k.deur}
-          stroke={RAND}
-          strokeWidth={RANDDIKTE}
+          stroke={gevraagd ? "var(--color-huisstijl)" : RAND}
+          strokeWidth={gevraagd ? RANDDIKTE * 1.7 : RANDDIKTE}
           strokeLinejoin="round"
         />
         {nummer !== null && (
@@ -250,11 +297,95 @@ function Huisje({
             {nummer}
           </text>
         )}
-        {nummer === null && <circle cx="76" cy="100" r="3.5" fill={RAND} opacity="0.5" />}
+        {/*
+          Het vraagteken op de lege deur. Eén teken, geen woord: dit is het
+          enige leesteken dat ook een kind van zes al kent uit prentenboeken.
+        */}
+        {nummer === null && gevraagd && (
+          <text
+            x="63"
+            y="107"
+            textAnchor="middle"
+            fontSize="34"
+            fontWeight="800"
+            fill="var(--color-huisstijl-diep)"
+          >
+            ?
+          </text>
+        )}
+        {nummer === null && !gevraagd && (
+          <circle cx="76" cy="100" r="3.5" fill={RAND} opacity="0.5" />
+        )}
       </g>
+    </svg>
+  );
+}
 
-      {/* Het gat waar de deur was, zodat je ziet dat hij écht openstaat. */}
-      {open && <rect x="44" y="74" width="38" height="50" rx="4" fill="#2a2119" opacity="0.55" />}
+/**
+ * Het decor: lucht, wolkjes, een boom, een lantaarnpaal, een kat en een vogel.
+ *
+ * Alles staat náást of bóven de huizen, nooit ervoor. Over een deur mag niets
+ * heen vallen: daar staat het nummer, en dat is het enige waar het kind naar
+ * moet kijken. De wolkjes drijven langzaam; verder beweegt er niets, want dat
+ * zou de aandacht juist wegtrekken.
+ */
+function Boom() {
+  return (
+    <svg viewBox="0 0 60 120" className="h-full w-full" aria-hidden="true">
+      <rect x="24" y="66" width="12" height="46" rx="4" fill="#8c5a33" stroke={RAND} strokeWidth={RANDDIKTE * 0.8} />
+      <circle cx="30" cy="44" r="26" fill="#4fb07a" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <circle cx="16" cy="58" r="15" fill="#5cc189" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <circle cx="44" cy="58" r="14" fill="#3f9d69" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <path d="M18 34 q10 -8 20 -2" fill="none" stroke="#ffffff" strokeWidth="4" opacity="0.4" strokeLinecap="round" />
+      <circle cx="40" cy="36" r="4" fill="#ef6f6c" stroke={RAND} strokeWidth="2.5" />
+      <circle cx="20" cy="50" r="4" fill="#ef6f6c" stroke={RAND} strokeWidth="2.5" />
+    </svg>
+  );
+}
+
+function Lantaarnpaal() {
+  return (
+    <svg viewBox="0 0 40 120" className="h-full w-full" aria-hidden="true">
+      <rect x="16" y="26" width="8" height="86" rx="3" fill="#5b6672" stroke={RAND} strokeWidth={RANDDIKTE * 0.8} />
+      <rect x="6" y="108" width="28" height="8" rx="4" fill="#5b6672" stroke={RAND} strokeWidth={RANDDIKTE * 0.8} />
+      <path d="M8 26 h24 l-5 -12 h-14 z" fill="#ffd98a" stroke={RAND} strokeWidth={RANDDIKTE} strokeLinejoin="round" />
+      <circle cx="20" cy="20" r="5" fill="#fff3cf" />
+    </svg>
+  );
+}
+
+function Kat() {
+  return (
+    <svg viewBox="0 0 60 44" className="h-full w-full" aria-hidden="true">
+      <ellipse cx="30" cy="30" rx="20" ry="12" fill="#f2a03d" stroke={RAND} strokeWidth={RANDDIKTE * 0.8} />
+      <circle cx="44" cy="20" r="10" fill="#f2a03d" stroke={RAND} strokeWidth={RANDDIKTE * 0.8} />
+      <path d="M38 12 l2 -8 l6 5 z M50 12 l2 -7 l4 7 z" fill="#f2a03d" stroke={RAND} strokeWidth="2.5" strokeLinejoin="round" />
+      <circle cx="41" cy="20" r="1.8" fill={RAND} />
+      <circle cx="48" cy="20" r="1.8" fill={RAND} />
+      <path d="M12 28 q-8 -6 -2 -14" fill="none" stroke={RAND} strokeWidth="4" strokeLinecap="round" />
+    </svg>
+  );
+}
+
+function Vogel() {
+  return (
+    <svg viewBox="0 0 44 32" className="h-full w-full" aria-hidden="true">
+      <ellipse cx="20" cy="20" rx="13" ry="9" fill="#6aa9de" stroke={RAND} strokeWidth="3" />
+      <circle cx="31" cy="14" r="7" fill="#6aa9de" stroke={RAND} strokeWidth="3" />
+      <path d="M36 14 l7 3 l-7 3 z" fill="#f2b134" stroke={RAND} strokeWidth="2" strokeLinejoin="round" />
+      <circle cx="32" cy="12" r="1.6" fill={RAND} />
+      <path d="M12 16 q8 -7 14 2 q-8 4 -14 -2 z" fill="#8fc4ea" stroke={RAND} strokeWidth="2.5" />
+    </svg>
+  );
+}
+
+/** Een wolkje dat langzaam voorbij drijft. */
+function Wolk() {
+  return (
+    <svg viewBox="0 0 90 40" className="h-full w-full" aria-hidden="true">
+      <g fill="#ffffff" stroke={RAND} strokeWidth="3" strokeLinejoin="round" opacity="0.95">
+        <path d="M14 32 a12 12 0 0 1 4 -22 a14 14 0 0 1 26 -2 a12 12 0 0 1 20 8 a10 10 0 0 1 -2 16 z" />
+      </g>
     </svg>
   );
 }
@@ -292,29 +423,26 @@ function Stoep({ y, hoogte }: { y: number; hoogte: number }) {
  */
 export function Huizenrij({
   huizen,
-  vosBij,
   gevraagd,
   vos = { vangend: null, wachtend: null, blij: null },
   fase = "bezig",
   beweegt = true,
 }: {
   huizen: Huis[];
-  /** Bij welk huis Vos staat; dat nummer is zichtbaar. */
-  vosBij: number;
-  /** Welk huis gevraagd wordt; dat nummer komt pas bij een goed antwoord. */
+  /** Welk huis de vraag is: dat is de lege deur met het vraagteken. */
   gevraagd: number;
   vos?: Voshoudingen;
   fase?: "bezig" | "goed" | "fout";
-  /** Uit in het beheer: daar loopt Vos niet. */
+  /** Uit in het beheer: daar hoeft er niets te bewegen. */
   beweegt?: boolean;
 }) {
   const plan = huizenPlan(huizen);
   const goed = fase === "goed";
 
   /*
-    Vos loopt pas ná een tel. Zonder die pauze staat hij er al voordat het kind
-    doorheeft dat zijn antwoord goed was, en mist het precies het stukje waar
-    het om gaat: dat het buurhuis het gezochte nummer heeft.
+    De deur zwaait pas ná een tel open. Zonder die pauze staat hij al open
+    voordat het kind doorheeft dat zijn antwoord goed was, en mist het precies
+    het moment waar het om gaat: het nummer dat op de deur verschijnt.
   */
   const [aangekomen, setAangekomen] = useState(false);
   useEffect(() => {
@@ -326,28 +454,44 @@ export function Huizenrij({
     };
   }, [goed, beweegt]);
 
-  const bijHuis = aangekomen ? gevraagd : vosBij;
-  const doel = plan.plekken[bijHuis] ?? plan.plekken[0];
-
   const vakRef = useRef<HTMLDivElement>(null);
   const buitenRef = useRef<HTMLDivElement>(null);
   const vosRef = useRef<HTMLDivElement>(null);
   const vlakRef = useRef<HTMLDivElement>(null);
   useVosplek(vakRef, buitenRef, vosRef, vlakRef, false);
 
+  /* De stoep loopt onder elke rij door; hier de y van de bovenste rij. */
+  const stoepY = LUCHT + plan.huishoogte - STOEP * 0.1;
+
   return (
     <div ref={buitenRef} className="mx-auto w-full max-w-xl">
       <div
         ref={vakRef}
-        className="relative w-full rounded-groot border-2 border-rand bg-lucht-zacht/40 p-3 shadow-op sm:p-4"
+        className="relative w-full overflow-hidden rounded-groot border-2 border-rand bg-gradient-to-b from-[#bfe4fb] to-[#eaf7ff] p-3 shadow-op sm:p-4"
       >
         <div
           ref={vlakRef}
           className="relative w-full"
           style={{ aspectRatio: `100 / ${plan.hoogte}` }}
         >
+          {/* Wolkjes in de lucht, langzaam drijvend. */}
+          <span
+            aria-hidden="true"
+            className="absolute w-[18%] motion-safe:animate-wolk"
+            style={{ left: "8%", top: "1%" }}
+          >
+            <Wolk />
+          </span>
+          <span
+            aria-hidden="true"
+            className="absolute w-[14%] motion-safe:animate-wolk"
+            style={{ left: "62%", top: "3%", animationDelay: "-9s" }}
+          >
+            <Wolk />
+          </span>
+
           {/* De stoep waar de huizen op staan, onder elke rij. */}
-          <Stoep y={MARGE + plan.huishoogte - STOEP * 0.1} hoogte={plan.hoogte} />
+          <Stoep y={stoepY} hoogte={plan.hoogte} />
           {plan.straat && (
             <Stoep
               y={plan.straat.y + plan.straat.hoogte + plan.huishoogte - STOEP * 0.1}
@@ -369,9 +513,38 @@ export function Huizenrij({
             </span>
           )}
 
+          {/* De boom links en de lantaarnpaal rechts, naast de rij huizen. */}
+          <span
+            aria-hidden="true"
+            className="absolute w-[8%]"
+            style={{
+              left: "1%",
+              top: `${((LUCHT + plan.huishoogte * 0.12) / plan.hoogte) * 100}%`,
+              height: `${((plan.huishoogte * 0.95) / plan.hoogte) * 100}%`,
+            }}
+          >
+            <Boom />
+          </span>
+          <span
+            aria-hidden="true"
+            className="absolute w-[5%]"
+            style={{
+              right: "1.5%",
+              top: `${((LUCHT + plan.huishoogte * 0.2) / plan.hoogte) * 100}%`,
+              height: `${((plan.huishoogte * 0.88) / plan.hoogte) * 100}%`,
+            }}
+          >
+            <Lantaarnpaal />
+          </span>
+
           {huizen.map((huis, i) => {
             const plek = plan.plekken[i];
-            const zichtbaar = i === vosBij || (goed && i === gevraagd);
+            /*
+              Alle nummers staan er, behalve dat ene: dát is de vraag. De
+              zichtbare nummers zijn de aanwijzing waarmee het kind het
+              ontbrekende getal kan vinden — net als bij de stapstenen.
+            */
+            const zichtbaar = i !== gevraagd || goed;
             return (
               <span
                 key={i}
@@ -387,54 +560,62 @@ export function Huizenrij({
                   nummer={zichtbaar ? huis.nummer : null}
                   kleur={i}
                   open={goed && i === gevraagd && aangekomen}
+                  gevraagd={i === gevraagd}
                   bloem={i === huizen.length - 1}
+                  raamAan={i === 0}
                 />
               </span>
             );
           })}
 
-          {/*
-            Vos op de stoep, vóór het huis waar hij hoort.
-
-            Hij staat binnen het straatje omdat hij hier deel van het verhaal
-            is: hij wóónt er. Tellen valt er niets — het kind kiest een getal —
-            dus hij kan ook niet worden meegeteld. Hij staat wel onder de
-            nummers, zodat hij er nooit eentje bedekt.
-          */}
-          {vos.vangend && (
-            <div
-              ref={vosRef}
+          {/* Een vogeltje op het dak van het tweede huis. */}
+          {plan.plekken[1] && (
+            <span
               aria-hidden="true"
-              /*
-                Op de stoep, met zijn voeten op de grond en nét links van het
-                huis. Daardoor staat hij nooit voor de deur, en dus nooit voor
-                het nummer — en dat nummer is het enige waar het kind naar moet
-                kijken. Met `bottom` en niet met `top`, zodat zijn eigen hoogte
-                er niet toe doet.
-              */
-              className="pointer-events-none absolute z-10 transition-[left,bottom] duration-700 ease-in-out motion-reduce:transition-none"
+              className="absolute w-[6%]"
               style={{
-                left: `${doel.x - plan.breedte * 0.34}%`,
-                bottom: `${
-                  ((plan.hoogte - (plek0(plan, bijHuis) + plan.huishoogte + STOEP * 0.45)) /
-                    plan.hoogte) *
-                  100
-                }%`,
-                width: `${plan.breedte * 0.72}%`,
+                left: `${plan.plekken[1].x + plan.breedte * 0.62}%`,
+                top: `${((plan.plekken[1].y - plan.huishoogte * 0.07) / plan.hoogte) * 100}%`,
               }}
             >
-              <Vosbeeld houdingen={vos} stand={goed ? "blij" : "wachtend"} />
-            </div>
+              <Vogel />
+            </span>
+          )}
+
+          {/* En een kat op de stoep, voor het eerste huis. */}
+          {plan.plekken[0] && (
+            <span
+              aria-hidden="true"
+              className="absolute w-[7%]"
+              style={{
+                left: `${plan.plekken[0].x - plan.breedte * 0.12}%`,
+                top: `${((stoepY - STOEP * 0.28) / plan.hoogte) * 100}%`,
+              }}
+            >
+              <Kat />
+            </span>
           )}
         </div>
       </div>
+
+      {/*
+        Vos staat buiten de straat, en pas ná een goed antwoord.
+
+        Tijdens de vraag is hij er niet: hij hoorde tussen de huizen te staan en
+        maakte het daar alleen maar druk — een kind moet naar de deuren kijken,
+        niet naar hem. Zodra het antwoord goed is, duikt hij onder het straatje
+        op om blij te zijn. Dat is het rustigst: alle drukte valt in het moment
+        waarop er niets meer te denken valt.
+      */}
+      {vos.vangend && goed && (
+        <div ref={vosRef} aria-hidden="true" className="mt-2 flex justify-center">
+          <span className="block w-20 sm:w-24">
+            <Vosbeeld houdingen={vos} stand="blij" />
+          </span>
+        </div>
+      )}
     </div>
   );
-}
-
-/** De y van het huis waar Vos bij staat; buiten bereik valt terug op de eerste. */
-function plek0(plan: Huizenplan, index: number): number {
-  return (plan.plekken[index] ?? plan.plekken[0]).y;
 }
 
 // ---------------------------------------------------------------------------

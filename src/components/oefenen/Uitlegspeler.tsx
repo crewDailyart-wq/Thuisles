@@ -29,7 +29,7 @@ import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
 import { Uitlegstraat } from "@/components/oefenen/Huizenrij";
 import { Uitlegvissen } from "@/components/oefenen/Visvijver";
 import { Uitlegtrein } from "@/components/oefenen/Trein";
-import { Uitlegmand } from "@/components/oefenen/Manden";
+import { Uitlegvak } from "@/components/oefenen/Vakken";
 import { Uitlegzaal } from "@/components/oefenen/Bioscoop";
 import { Blokjes } from "@/components/oefenen/modellen/Blokjes";
 import {
@@ -49,7 +49,8 @@ export function Uitlegspeler({
   onNogEen,
   mascotte = null,
   telplaatje = null,
-  mandmateriaal = null,
+  vakmateriaal = null,
+  vakperRij = null,
 }: {
   script: Uitlegscript;
   onSluit: () => void;
@@ -71,12 +72,14 @@ export function Uitlegspeler({
    */
   telplaatje?: string | null;
   /**
-   * Welk materiaal er in de manden zat: telplaatjes, kralen of blokken.
+   * Welk materiaal er in de vakken zat: telplaatjes, kralen of blokken, en
+   * hoe het lag.
    *
    * Zelfde reden als bij `telplaatje`: in de somgegevens passen alleen
    * getallen, dus dit kan alleen langs deze weg mee.
    */
-  mandmateriaal?: string | null;
+  vakmateriaal?: string | null;
+  vakperRij?: number | null;
 }) {
   const [stapNr, setStapNr] = useState(0);
   const [getikt, setGetikt] = useState<number[]>([]);
@@ -277,7 +280,8 @@ export function Uitlegspeler({
             getikt={getikt}
             mascotte={mascotte}
             telplaatje={telplaatje}
-            mandmateriaal={mandmateriaal}
+            vakmateriaal={vakmateriaal}
+            vakperRij={vakperRij}
             telbaar={Boolean(stap.meetellen)}
             telbaarAantal={stap.meetellen?.aantal ?? 0}
             wijsAan={Boolean(stap.meetellen) && getikt.length === 0}
@@ -447,7 +451,8 @@ function Modelbeeld({
   getikt,
   mascotte,
   telplaatje,
-  mandmateriaal,
+  vakmateriaal,
+  vakperRij,
   telbaar,
   telbaarAantal,
   wijsAan,
@@ -460,8 +465,10 @@ function Modelbeeld({
   mascotte: string | null;
   /** Het getekende telplaatje van de vraag; zie `Uitlegspeler`. */
   telplaatje: string | null;
-  /** Het materiaal in de manden van de vraag; zie `Uitlegspeler`. */
-  mandmateriaal: string | null;
+  /** Het materiaal in de vakken van de vraag; zie `Uitlegspeler`. */
+  vakmateriaal: string | null;
+  /** De opstelling in die vakken; zie `Uitlegspeler`. */
+  vakperRij: number | null;
   telbaar: boolean;
   /** Hoeveel er bij deze stap geteld moeten worden. */
   telbaarAantal: number;
@@ -642,13 +649,14 @@ function Modelbeeld({
     );
   }
 
-  if (model.soort === "mand") {
+  if (model.soort === "vak") {
     return (
-      <Uitlegmand
+      <Uitlegvak
         aantal={model.aantal}
-        /* Materiaal en plaatje komen van de vraag; zie `telplaatje`. */
-        soort={(model.materiaal ?? mandmateriaal ?? "telplaatjes") as "telplaatjes" | "kralen" | "blokken"}
+        /* Materiaal, plaatje en opstelling komen van de vraag; zie `telplaatje`. */
+        soort={(model.materiaal ?? vakmateriaal ?? "telplaatjes") as "telplaatjes" | "kralen" | "blokken"}
         plaatje={model.plaatje ?? telplaatje ?? "eend"}
+        perRij={vakperRij ?? 5}
         geteld={model.geteld}
         bijschrift={model.bijschrift}
       />

@@ -64,9 +64,22 @@ export function SjabloonDetail({
 
     Bewust hier en niet als migratie op de database: er verandert pas iets aan
     wat er is opgeslagen als jij zelf op opslaan drukt.
+
+    Wat er nog niet is opgeslagen, komt van de standaard van het type.
+
+    Dat is nodig zodra er een instelling bij een type bij komt: die staat dan
+    nog niet in dit sjabloon, en het formulier liet hem tot nu toe leeg zien —
+    een getalveld zelfs op zijn laagste waarde. Wie daarna op opslaan drukte,
+    schreef die lege waarde eroverheen en raakte een instelling kwijt die hij
+    nooit had aangeraakt. Wat hier ingevuld raakt is precies wat de oefening
+    tóch al gebruikt zolang er niets staat, dus voor het kind verandert er
+    niets; alleen is nu te zien wat er geldt.
   */
   const [instellingen, setInstellingen] = useState<Instellingen>(() =>
-    neemVraagtekstenOver(sjabloon.instellingen),
+    neemVraagtekstenOver({
+      ...(zoekGenerator(sjabloon.soort)?.standaard ?? {}),
+      ...sjabloon.instellingen,
+    }),
   );
   const [aantal, setAantal] = useState(30);
 

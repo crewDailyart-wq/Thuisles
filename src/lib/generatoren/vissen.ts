@@ -51,6 +51,29 @@ const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
 const MIN_GETAL = 1;
 const MAX_GETAL = 100;
 
+/**
+ * De vissende vos, en waar zijn hengelpuntje op dat plaatje zit.
+ *
+ * Dit is de ene plek in de code waar het staat. Het touw wordt in code
+ * getekend en moet precies aan het ringetje bovenaan de hengel vastzitten;
+ * daarom is dat punt geen getal in de tekening maar een gegeven van de
+ * afbeelding: `x` procent van de breedte, `y` procent van de hoogte, gerekend
+ * vanaf linksboven. Omdat het percentages zijn, blijft het touw eraan vast op
+ * elk schermformaat.
+ *
+ * Opgemeten in de pixels van `vissen.png` (1254 bij 1254): het hart van het
+ * ringetje ligt op x 1195, y 51. Dat is 95,3 % en 4,1 %.
+ *
+ * Alle drie zijn ze hieronder ook een instelling bij het sjabloon, zodat een
+ * andere vos met de hengel op een andere plek erin kan zonder dat hier iets
+ * hoeft te veranderen.
+ */
+export const HENGELVOS = {
+  afbeelding: "vissen.png",
+  x: 95.3,
+  y: 4.1,
+};
+
 export function grenzen(inst: Instellingen) {
   const van = Math.max(MIN_GETAL, Math.min(MAX_GETAL, getal(inst, "van", 1)));
   const tot = Math.max(van, Math.min(MAX_GETAL, getal(inst, "tot", 20)));
@@ -59,6 +82,23 @@ export function grenzen(inst: Instellingen) {
     tot,
     zoek: tekst(inst, "zoek", "grootste"),
     aantal: Math.max(2, Math.min(4, getal(inst, "aantalVissen", 3))),
+    hengel: hengelVan(inst),
+  };
+}
+
+/**
+ * De hengelvos zoals het sjabloon hem heeft staan.
+ *
+ * Staat er niets, dan geldt `HENGELVOS` hierboven. Zo werkt een sjabloon dat
+ * van vóór deze afbeelding is gewoon mee, en kan een nieuwe afbeelding met de
+ * hengel op een andere plek er los in.
+ */
+export function hengelVan(inst: Instellingen) {
+  const afbeelding = tekst(inst, "vosHengel", HENGELVOS.afbeelding).trim();
+  return {
+    afbeelding: afbeelding === "" ? null : afbeelding,
+    x: Math.max(0, Math.min(100, getal(inst, "hengelX", HENGELVOS.x))),
+    y: Math.max(0, Math.min(100, getal(inst, "hengelY", HENGELVOS.y))),
   };
 }
 
@@ -112,6 +152,30 @@ export const vissenGenerator: Generator = {
       max: MAX_GETAL,
       hulp: "Alle getallen op de vissen blijven hierbinnen. Een bereik dat over de tien heen gaat — bijvoorbeeld 1 tot 20 — is juist nuttig: dan komt de vergissing „9 is groter dan 12” vanzelf langs.",
     },
+    {
+      soort: "afbeelding",
+      sleutel: "vosHengel",
+      label: "Vos met hengel",
+      hulp: "De vos die op de steiger staat, met zijn hengel in zijn poten. Hij hoort rechtop te staan met de hengel schuin omhoog naar rechtsboven. Het touw wordt in code getekend en zit vast aan het puntje dat je hieronder opgeeft. Leeg = terug naar de gewone vos van het afbeeldingenbeheer, met een hengel die in code getekend wordt.",
+    },
+    {
+      soort: "getal",
+      sleutel: "hengelX",
+      label: "Hengelpuntje — van links",
+      min: 0,
+      max: 100,
+      stap: 0.1,
+      hulp: "Hoe ver het puntje van de hengel vanaf de linkerkant van de afbeelding staat, in procenten van de breedte. Bij de meegeleverde vos is dat 95,3: het ringetje zit bijna helemaal rechts. Klopt het touw niet met een andere afbeelding, dan is dit het getal dat je bijstelt.",
+    },
+    {
+      soort: "getal",
+      sleutel: "hengelY",
+      label: "Hengelpuntje — van boven",
+      min: 0,
+      max: 100,
+      stap: 0.1,
+      hulp: "Hoe ver het puntje van de hengel vanaf de bovenkant van de afbeelding staat, in procenten van de hoogte. Bij de meegeleverde vos is dat 4,1: het ringetje zit vlak onder de bovenrand.",
+    },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
@@ -129,6 +193,9 @@ export const vissenGenerator: Generator = {
     tot: 20,
     zoek: "grootste",
     aantalVissen: 3,
+    vosHengel: HENGELVOS.afbeelding,
+    hengelX: HENGELVOS.x,
+    hengelY: HENGELVOS.y,
   },
   foutpatronen: vissenPatronen,
   aanpak: vissenAanpak,
@@ -147,7 +214,7 @@ export const vissenGenerator: Generator = {
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
-    const { van, tot, zoek, aantal: hoeveelVissen } = grenzen(inst);
+    const { van, tot, zoek, aantal: hoeveelVissen, hengel } = grenzen(inst);
 
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 300 && uit.length < aantal; poging++) {
@@ -206,6 +273,13 @@ export const vissenGenerator: Generator = {
           zoek: grootste ? "grootste" : "kleinste",
           /* De vos komt van de standaardvos; zie `haalStandaardvos`. */
           vos: { vangend: null, wachtend: null, blij: null },
+          /*
+            De vissende vos hoort bij dit type en niet bij de som, dus hij
+            wordt bij het tonen opnieuw uit het sjabloon gehaald — net als de
+            gewone vos. Wat hier staat is de terugval voor als het sjabloon
+            weg is.
+          */
+          hengel,
         },
         somgegevens: gegevens,
       });

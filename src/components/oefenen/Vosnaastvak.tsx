@@ -163,9 +163,18 @@ export function useVosplek(
 export function Vosbeeld({
   houdingen,
   stand,
+  stil = false,
 }: {
   houdingen: Voshoudingen;
   stand: "vangend" | "wachtend" | "blij";
+  /**
+   * Helemaal stil blijven staan.
+   *
+   * Voor de plekken waar hij naast de opgave staat terwijl het kind nadenkt.
+   * Een wippende vos trekt daar de aandacht weg van de som; hij hoort er dan
+   * gewoon te staan.
+   */
+  stil?: boolean;
 }) {
   const bestand =
     (stand === "blij" ? houdingen.blij : stand === "wachtend" ? houdingen.wachtend : null) ??
@@ -173,8 +182,11 @@ export function Vosbeeld({
 
   if (!bestand) return null;
 
-  const beweging =
-    stand === "blij" ? "motion-safe:animate-vos-springt" : "motion-safe:animate-vos-trappel";
+  const beweging = stil
+    ? ""
+    : stand === "blij"
+      ? "motion-safe:animate-vos-springt"
+      : "motion-safe:animate-vos-trappel";
 
   return (
     /* eslint-disable-next-line @next/next/no-img-element */

@@ -1,7 +1,7 @@
 /**
  * De denkfouten bij het herkennen van een aantal.
  *
- * Vier stuks, en ze staan alle vier ook echt als mand op het scherm: elke mand
+ * Vier stuks, en ze staan alle vier ook echt als vak op het scherm: elke vak
  * is een knop, dus elk patroon is aan te tikken.
  *
  * De eerste twee zijn telfouten aan het eind van de telling — er eentje te veel
@@ -12,18 +12,18 @@
 import type { Foutpatroon, Somgegevens } from "@/lib/generatoren/foutpatroon";
 
 const gezocht = (som: Somgegevens) => som.goed;
-/** Welk getal er groot boven de manden staat. */
+/** Welk getal er op het kaartje van Vos staat. */
 const opKaart = (som: Somgegevens) => som.extra?.kaart ?? som.goed;
 
-export const mandenPatronen: Foutpatroon[] = [
+export const vakkenPatronen: Foutpatroon[] = [
   {
     id: "een-te-veel",
-    naam: "De mand met eentje te veel",
+    naam: "Het vak met eentje te veel",
     herkent: (som, gegeven) => gegeven === gezocht(som) + 1,
     kindtekst: {
       "34": "Eentje te veel.",
-      "56": "In die mand zit er eentje te veel. Tel nog eens rustig na.",
-      "78": "Die mand bevat er één meer dan gevraagd. Tel opnieuw en raak elk voorwerp één keer aan.",
+      "56": "In dat vak zit er eentje te veel. Tel nog eens rustig na.",
+      "78": "Dat vak bevat er één meer dan gevraagd. Tel opnieuw en raak elk voorwerp één keer aan.",
     },
     hint: "Tel ze één voor één aan, en raak elk ding maar één keer aan.",
     uitleg: (som) => [
@@ -43,12 +43,12 @@ export const mandenPatronen: Foutpatroon[] = [
   },
   {
     id: "een-te-weinig",
-    naam: "De mand met eentje te weinig",
+    naam: "Het vak met eentje te weinig",
     herkent: (som, gegeven) => gegeven === gezocht(som) - 1,
     kindtekst: {
       "34": "Eentje te weinig.",
-      "56": "In die mand zit er eentje te weinig. Kijk of je er geen hebt overgeslagen.",
-      "78": "Die mand bevat er één minder dan gevraagd. Meestal is het laatste voorwerp niet meegeteld.",
+      "56": "In dat vak zit er eentje te weinig. Kijk of je er geen hebt overgeslagen.",
+      "78": "Dat vak bevat er één minder dan gevraagd. Meestal is het laatste voorwerp niet meegeteld.",
     },
     hint: "Tel nog eens, en vergeet het laatste ding niet.",
     uitleg: (som) => [
@@ -82,7 +82,7 @@ export const mandenPatronen: Foutpatroon[] = [
         tekst: gezocht(som) > opKaart(som) ? "Er moet eentje bij." : "Er moet eentje af.",
         som: `${gezocht(som)}`,
       },
-      { tekst: "Zoek die mand.", som: `${gezocht(som)}` },
+      { tekst: "Zoek dat vak.", som: `${gezocht(som)}` },
     ],
     ouder: {
       uitleg:
@@ -112,7 +112,7 @@ export const mandenPatronen: Foutpatroon[] = [
     uitleg: (som) => [
       { tekst: "Lees het getal hardop.", som: `${gezocht(som)}` },
       { tekst: "Tel dan pas.", som: "" },
-      { tekst: "Zoek die mand.", som: `${gezocht(som)}` },
+      { tekst: "Zoek dat vak.", som: `${gezocht(som)}` },
     ],
     ouder: {
       uitleg:

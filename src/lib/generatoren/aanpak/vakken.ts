@@ -1,23 +1,23 @@
 /**
- * Zo vind je de goede mand.
+ * Zo vind je het goede vak.
  *
  * Eerst weten wat je zoekt, dan pas kijken. Dat is bij dit type de hele kunst:
  * kinderen beginnen te tellen voordat ze weten welk getal ze zoeken, en komen
- * dan uit bij de mand die ze toevallig het eerst hebben geteld.
+ * dan uit bij het vak dat ze toevallig het eerst hebben geteld.
  */
 
 import type { Aanpak, Somgegevens } from "@/lib/generatoren/foutpatroon";
 
 const opKaart = (som: Somgegevens) => som.extra?.kaart ?? som.goed;
 
-export const mandenAanpak: Aanpak = {
+export const vakkenAanpak: Aanpak = {
   zin: (som) => {
     const kaart = opKaart(som);
     if (kaart === som.goed) {
       return {
-        "34": "Tel elke mand na.",
-        "56": "Zoek de mand waar er precies zoveel in zitten.",
-        "78": "Tel per mand en vergelijk met het gevraagde getal.",
+        "34": "Tel elke vak na.",
+        "56": "Zoek het vak waar er precies zoveel in zitten.",
+        "78": "Tel per vak en vergelijk met het gevraagde getal.",
       };
     }
     const meer = som.goed > kaart;
@@ -27,8 +27,8 @@ export const mandenAanpak: Aanpak = {
         ? `Je zoekt er eentje meer dan ${kaart}, dus ${som.goed}.`
         : `Je zoekt er eentje minder dan ${kaart}, dus ${som.goed}.`,
       "78": meer
-        ? `Bepaal eerst het gezochte aantal: ${kaart} + 1 = ${som.goed}. Tel daarna de manden.`
-        : `Bepaal eerst het gezochte aantal: ${kaart} − 1 = ${som.goed}. Tel daarna de manden.`,
+        ? `Bepaal eerst het gezochte aantal: ${kaart} + 1 = ${som.goed}. Tel daarna de vakken.`
+        : `Bepaal eerst het gezochte aantal: ${kaart} − 1 = ${som.goed}. Tel daarna de vakken.`,
     };
   },
 
@@ -41,10 +41,10 @@ export const mandenAanpak: Aanpak = {
         som: `${som.goed}`,
       });
     }
-    stappen.push({ tekst: "Tel de manden tot je er zoveel vindt.", som: `${som.goed}` });
+    stappen.push({ tekst: "Tel de vakken tot je er zoveel vindt.", som: `${som.goed}` });
     return stappen;
   },
 
   controle: (som) =>
-    `Het goede antwoord is de mand met ${som.goed} erin.`,
+    `Het goede antwoord is het vak met ${som.goed} erin.`,
 };

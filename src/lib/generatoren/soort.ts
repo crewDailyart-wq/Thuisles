@@ -183,6 +183,20 @@ export type Figuur =
       zoek: string;
       /** De mascotte, per houding een eigen afbeelding uit het beheer. */
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+      /**
+       * De vissende vos, met de plek van zijn hengelpuntje.
+       *
+       * Een eigen afbeelding voor dit type: een vos die rechtop staat met een
+       * hengel in zijn poten. Het touw wordt in code getekend en moet precies
+       * aan dat hengeltje vastzitten, dus staat erbij wáár dat puntje op het
+       * plaatje zit: `x` en `y` in procenten van de breedte en de hoogte van
+       * de afbeelding zelf. Zo blijft het touw eraan vast, ook als het plaatje
+       * op een telefoon kleiner wordt.
+       *
+       * `null` of zonder afbeelding = geen hengelvos; dan geldt de gewone vos
+       * en de hengel die in code getekend wordt.
+       */
+      hengel: { afbeelding: string | null; x: number; y: number } | null;
     }
   | {
       /**
@@ -202,20 +216,23 @@ export type Figuur =
     }
   | {
       /**
-       * Welke mand? — drie of vier manden met spulletjes erin.
+       * Welk vak? — drie of vier vakken met spulletjes erin.
        *
-       * Boven staat het gevraagde getal; de manden zijn tegelijk de knoppen.
-       * Het materiaal komt uit het sjabloon: telplaatjes, kralen of blokken.
+       * Vos houdt een kaartje vast met het gevraagde getal; de vakken zijn
+       * tegelijk de knoppen. Het materiaal komt uit het sjabloon: telplaatjes,
+       * kralen of blokken.
        */
-      soort: "manden";
-      /** Hoeveel er in elke mand zit. */
-      manden: number[];
+      soort: "vakken";
+      /** Hoeveel er in elk vak zit. */
+      vakken: number[];
       /** Welk materiaal: "telplaatjes", "kralen" of "blokken". */
       materiaal: string;
       /** Welk getekend telplaatje, als het materiaal telplaatjes zijn. */
       plaatje: string;
-      /** Het getal dat groot boven de manden staat. */
+      /** Het getal op het kaartje van Vos. */
       kaart: number;
+      /** 5 = rijen van vijf, 0 = verspreid door elkaar. */
+      perRij: number;
       /** De mascotte, per houding een eigen afbeelding uit het beheer. */
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
     }
@@ -269,7 +286,22 @@ export type Figuur =
 // ---------------------------------------------------------------------------
 
 export type Veld =
-  | { soort: "getal"; sleutel: string; label: string; min: number; max: number; hulp?: string }
+  | {
+      soort: "getal";
+      sleutel: string;
+      label: string;
+      min: number;
+      max: number;
+      hulp?: string;
+      /**
+       * Hoe fijn er versteld mag worden. Weggelaten = per heel getal.
+       *
+       * Nodig voor waardes die geen aantal zijn maar een plek: het puntje van
+       * een hengel op een plaatje bijvoorbeeld, waar een tiende procent al
+       * scheelt of het touw er wel of niet aan vastzit.
+       */
+      stap?: number;
+    }
   | {
       soort: "tekst";
       sleutel: string;

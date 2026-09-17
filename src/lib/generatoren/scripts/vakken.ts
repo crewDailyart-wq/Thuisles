@@ -1,8 +1,8 @@
 /**
- * De uitleg-animatie bij "Welke mand?".
+ * De uitleg-animatie bij "Welk vak?".
  *
- * De goede mand komt in beeld en de inhoud wordt één voor één meegeteld — met
- * dezelfde spulletjes als in de vraag. Zo ziet het kind niet alleen wélke mand
+ * Het goede vak komt in beeld en de inhoud wordt één voor één meegeteld — met
+ * dezelfde spulletjes als in de vraag. Zo ziet het kind niet alleen wélke vak
  * het was, maar ook waaróm: het telt mee.
  */
 
@@ -15,7 +15,7 @@ const opKaart = (som: Somgegevens) => som.extra?.kaart ?? som.goed;
 
 function beeld(som: Somgegevens, geteld: number, bijschrift?: string): Model {
   return {
-    soort: "mand",
+    soort: "vak",
     aantal: som.goed,
     /* Welk materiaal en welk plaatje komt van de vraag; zie de speler. */
     materiaal: null,
@@ -80,20 +80,20 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
       },
       {
         model: { soort: "som", tekst: `${som.goed}` },
-        zin: "Tel daarna de manden tot je dat aantal vindt.",
+        zin: "Tel daarna de vakken tot je dat aantal vindt.",
       },
     ],
   };
 }
 
-export const mandenUitleg: Uitlegbron = {
-  modellen: ["mand", "som"],
+export const vakkenUitleg: Uitlegbron = {
+  modellen: ["vak", "som"],
   strategieen: [
     {
       waarde: "meetellen",
       label: "Eerst het getal, dan tellen",
       uitleg:
-        "Bepaal eerst welk aantal je zoekt — dat is niet altijd het getal dat er staat — en tel daarna pas de manden. Wie eerst telt en dan kijkt, komt uit bij de mand die toevallig het eerst geteld is.",
+        "Bepaal eerst welk aantal je zoekt — dat is niet altijd het getal dat er staat — en tel daarna pas de vakken. Wie eerst telt en dan kijkt, komt uit bij het vak dat toevallig het eerst geteld is.",
     },
   ],
   standaardStrategie: () => "meetellen",

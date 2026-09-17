@@ -86,6 +86,8 @@ export function SjabloonInstellingen({
                 type="number"
                 min={veld.min}
                 max={veld.max}
+                /* Zonder stap gaat het per heel getal; sommige velden zijn fijner. */
+                step={veld.stap ?? 1}
                 value={Number(waarden[veld.sleutel] ?? veld.min)}
                 onChange={(e) => onWijzig(veld.sleutel, Number(e.target.value))}
                 className={`${stijl.veld} w-32`}

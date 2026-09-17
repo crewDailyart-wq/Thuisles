@@ -39,7 +39,7 @@ import { bioscoopUitleg } from "@/lib/generatoren/scripts/bioscoop";
 
 /** De standaardzinnen. Kort: het kaartje zegt al welk getal het is. */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Waar zit Vos?",
+  "34": "Waar hoort Vos te zitten?",
   "56": "Welke stoel hoort bij het kaartje?",
   "78": "Op welke stoel hoort dit nummer?",
 };

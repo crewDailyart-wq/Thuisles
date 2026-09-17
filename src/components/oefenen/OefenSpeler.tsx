@@ -31,7 +31,7 @@ import { Cijferinvoer } from "@/components/oefenen/Cijferinvoer";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
-import { Manden } from "@/components/oefenen/Manden";
+import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
@@ -344,6 +344,17 @@ export function OefenSpeler({
 
 
   const vraag = serie[index];
+
+  /*
+    Hoeveel er in deze ronde al goed zijn bij ditzelfde leerdoel.
+
+    Voor de emmer bij "Vos gaat vissen": elke vis die het kind vangt, ligt er
+    zichtbaar in. Het telt uit `gelogd`, wat er toch al bijgehouden wordt, dus
+    er komt geen tweede boekhouding naast de voortgang te staan.
+  */
+  const gevangen = vraag
+    ? gelogd.filter((r) => r.goed && r.leerdoelId === vraag.leerdoelId).length
+    : 0;
   const generator = vraag?.somgegevens ? zoekGenerator(vraag.somgegevens.soort) : null;
 
   /*
@@ -427,7 +438,13 @@ export function OefenSpeler({
         de plaatjes eerst terug in zijn mand. Zou het feest er meteen overheen
         komen, dan ziet een kind daar niets van.
       */
-      if (vraag.vorm === "stapstenen" || vraag.vorm === "bosspel" || vraag.figuur?.soort === "plaatjesraster") {
+      if (
+        vraag.vorm === "stapstenen" ||
+        vraag.vorm === "bosspel" ||
+        vraag.figuur?.soort === "plaatjesraster" ||
+        /* En bij het vissen: eerst komt de vis boven, daarna pas het feest. */
+        vraag.figuur?.soort === "visvijver"
+      ) {
         setWachtOpVos(true);
       }
       setFeestje((n) => n + 1);
@@ -851,6 +868,7 @@ export function OefenSpeler({
                     antwoord={antwoord}
                     fase={fase}
                     markeer={kortFeedback}
+                    gevangen={gevangen}
                     invulbaar={invulbaar}
                     onKies={kies}
                     onBevestig={() => {
@@ -899,7 +917,6 @@ export function OefenSpeler({
                   <Huizenrij
                     key={vraag.id}
                     huizen={vraag.figuur.huizen}
-                    vosBij={vraag.figuur.vosBij}
                     gevraagd={vraag.figuur.gevraagd}
                     vos={vraag.figuur.vos}
                     fase={fase}
@@ -951,6 +968,7 @@ export function OefenSpeler({
                 antwoord={antwoord}
                 fase={fase}
                 markeer={kortFeedback}
+                gevangen={gevangen}
                 invulbaar={invulbaar}
                 onKies={kies}
                 onBevestig={() => {
@@ -1032,13 +1050,14 @@ export function OefenSpeler({
                   telplaatje={
                     vraag.figuur?.soort === "plaatjesraster"
                       ? vraag.figuur.plaatje
-                      : vraag.figuur?.soort === "manden"
+                      : vraag.figuur?.soort === "vakken"
                         ? vraag.figuur.plaatje
                         : null
                   }
-                  mandmateriaal={
-                    vraag.figuur?.soort === "manden" ? vraag.figuur.materiaal : null
+                  vakmateriaal={
+                    vraag.figuur?.soort === "vakken" ? vraag.figuur.materiaal : null
                   }
+                  vakperRij={vraag.figuur?.soort === "vakken" ? vraag.figuur.perRij : null}
                 />
               )}
             </>
@@ -1193,6 +1212,7 @@ function Antwoordvelden({
   antwoord,
   fase,
   markeer,
+  gevangen = 0,
   invulbaar,
   onKies,
   onBevestig,
@@ -1203,6 +1223,8 @@ function Antwoordvelden({
   fase: Fase;
   /** Groep 3-4: fout rood, goed groen, zonder tekst eromheen. */
   markeer: boolean;
+  /** Hoeveel er in deze ronde al goed zijn; de emmer bij het vissen vult zich ermee. */
+  gevangen?: number;
   invulbaar: boolean;
   onKies: (v: string) => void;
   onBevestig: () => void;
@@ -1252,12 +1274,18 @@ function Antwoordvelden({
     );
   }
 
-  if (vraag.figuur?.soort === "manden") {
+
+  /*
+    De vakken zijn zelf het antwoordveld: het kind tikt het vak aan dat het
+    bedoelt. Er komt dus geen rijtje knoppen onder de vraag.
+  */
+  if (vraag.figuur?.soort === "vakken") {
     return (
-      <Manden
-        manden={vraag.figuur.manden}
+      <Vakken
+        vakken={vraag.figuur.vakken}
         soort={vraag.figuur.materiaal as "telplaatjes" | "kralen" | "blokken"}
         plaatje={vraag.figuur.plaatje}
+        perRij={vraag.figuur.perRij}
         gevraagd={vraag.figuur.kaart}
         gekozen={antwoord}
         fase={fase}
@@ -1276,6 +1304,16 @@ function Antwoordvelden({
         fase={fase}
         markeer={markeer}
         vos={vraag.figuur.vos}
+        hengel={vraag.figuur.hengel}
+        /*
+          Welke vis het wél was, onder dezelfde voorwaarde als de kleuren bij de
+          keuzeknoppen: alleen als er bij een fout antwoord getoond mag worden
+          wat goed was. Het antwoord is de plek in de rij vissen.
+        */
+        goedeVis={toonKleur ? Number(vraag.antwoord) : null}
+        gevangen={gevangen}
+        /* Pas als de vis boven water hangt, mag het feestscherm eroverheen. */
+        onKlaar={onSprongKlaar}
         onKies={onKies}
       />
     );

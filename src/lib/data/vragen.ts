@@ -15,6 +15,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
 import { haalStandaardvos } from "@/lib/data/instellingen";
+import { hengelVan } from "@/lib/generatoren/vissen";
 import { verbinding } from "@/lib/db/sqlite";
 import { filterLeerdoelen, LEEG, type Beheerfilter } from "@/lib/beheerfilter";
 import {
@@ -151,6 +152,33 @@ function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
 }
 
 /**
+ * De vissende vos zoals zijn sjabloon hem heeft staan.
+ *
+ * Hetzelfde verhaal als bij de gewone vos hierboven: welk plaatje het is en
+ * waar het hengelpuntje zit, hoort bij het sjabloon en niet bij de som. Zet de
+ * beheerder er een andere vos in, of schuift die het puntje een tiende op, dan
+ * hoort dat meteen te gelden — ook voor vragen die er al stonden.
+ *
+ * Wat er niet staat, valt terug op wat de generator als standaard kent.
+ */
+function hengelVanSjabloon(sjabloonId: string): {
+  afbeelding: string | null;
+  x: number;
+  y: number;
+} | null {
+  const rij = verbinding()
+    .prepare("select instellingen from sjablonen where id = ?")
+    .get(sjabloonId) as { instellingen: string | null } | undefined;
+  if (!rij) return null;
+
+  try {
+    return hengelVan(JSON.parse(rij.instellingen ?? "{}"));
+  } catch {
+    return null;
+  }
+}
+
+/**
  * De vos in een telplaatjes-figuur bijwerken vanuit zijn sjabloon.
  *
  * Waarom dit hier gebeurt en niet bij het genereren: bij het genereren wordt
@@ -174,6 +202,19 @@ function metVosVanSjabloon(
 
   const vos = vosVanSjabloon(sjabloonId);
   if (!vos) return figuur;
+
+  /*
+    De vijver heeft ook een hengelvos; die gaat op dezelfde manier mee.
+
+    Herkend aan de soort en niet aan het veld zelf. Vragen die gemaakt zijn
+    voordat dit veld bestond hebben het namelijk helemaal niet staan, en juist
+    die horen de hengelvos alsnog te krijgen — anders blijft een kind bij een
+    bestaand sjabloon de oude vos zien tot alle vragen opnieuw gemaakt zijn.
+  */
+  if (figuur.soort === "visvijver") {
+    const hengel = hengelVanSjabloon(sjabloonId);
+    if (hengel) return { ...figuur, vos, hengel };
+  }
 
   return { ...figuur, vos };
 }

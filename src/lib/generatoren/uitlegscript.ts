@@ -266,13 +266,13 @@ export type Model =
     }
   | {
       /**
-       * Dezelfde mand als in de vraag, met de inhoud die wordt meegeteld.
+       * Hetzelfde vak als in de vraag, met de inhoud die wordt meegeteld.
        *
        * Welk materiaal en welk plaatje erin zit, staat bij de vraag en niet in
        * de somgegevens — daar passen alleen getallen in. De speler vult het aan
        * met wat het kind net zag.
        */
-      soort: "mand";
+      soort: "vak";
       aantal: number;
       materiaal: string | null;
       plaatje: string | null;

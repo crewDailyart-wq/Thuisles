@@ -18,7 +18,7 @@ import { Blokkenvak } from "@/components/oefenen/Mabblokken";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
-import { Manden } from "@/components/oefenen/Manden";
+import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
@@ -152,7 +152,6 @@ export function SjabloonVoorbeeld({
                   <div className="mt-1 w-full max-w-sm">
                     <Huizenrij
                       huizen={som.figuur.huizen}
-                      vosBij={som.figuur.vosBij}
                       gevraagd={som.figuur.gevraagd}
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                       beweegt={false}
@@ -167,6 +166,7 @@ export function SjabloonVoorbeeld({
                       vissen={som.figuur.vissen}
                       gekozen=""
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                      hengel={som.figuur.hengel}
                     />
                   </div>
                 )}
@@ -182,13 +182,14 @@ export function SjabloonVoorbeeld({
                   </div>
                 )}
 
-                {/* De manden op volle breedte: de inhoud moet te tellen zijn. */}
-                {som.figuur?.soort === "manden" && (
+                {/* De vakken op volle breedte: de inhoud moet te tellen zijn. */}
+                {som.figuur?.soort === "vakken" && (
                   <div className="mt-1 w-full">
-                    <Manden
-                      manden={som.figuur.manden}
+                    <Vakken
+                      vakken={som.figuur.vakken}
                       soort={som.figuur.materiaal as "telplaatjes" | "kralen" | "blokken"}
                       plaatje={som.figuur.plaatje}
+                      perRij={som.figuur.perRij}
                       gevraagd={som.figuur.kaart}
                       gekozen=""
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}

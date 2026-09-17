@@ -218,7 +218,9 @@
   --animate-plaatje-terug: plaatje-terug 0.5s ease-in both;
   --animate-blok-van-vos: blok-van-vos 0.3s cubic-bezier(0.34, 1.15, 0.5, 1) both;
   --animate-vis-deint: vis-deint 3.4s ease-in-out infinite;
+  --animate-vis-wipt: vis-wipt 0.75s cubic-bezier(0.34, 1.2, 0.5, 1) 1;
   --animate-stoom: stoom 2.6s ease-out infinite;
+  --animate-wolk: wolk 22s linear infinite;
   --animate-staaf-klikt: staaf-klikt 0.34s ease-out 1;
   --animate-vos-springt: vos-springt 0.9s ease-out 1;
   --animate-vos-wijst: vos-wijst 3.2s ease-in-out infinite;
@@ -365,6 +367,75 @@
 }
 
 /*
+  De goede vis wipt één keer op, nadat de verkeerde van de haak is geglipt.
+
+  Kort en met een boogje terug, zoals een vis die even boven water springt. Het
+  is het antwoord op de vraag die een kind van zes dan stelt: welke was het dan
+  wel? Eén sprongetje zegt dat sneller dan een zin.
+*/
+@keyframes vis-wipt {
+  0%        { transform: translateY(0) rotate(0deg); }
+  35%       { transform: translateY(-16%) rotate(-5deg); }
+  70%       { transform: translateY(-4%) rotate(3deg); }
+  100%      { transform: translateY(0) rotate(0deg); }
+}
+
+/*
+  Vos wipt één keer op als hij een vis boven water heeft.
+
+  Alles wat aan elkaar vastzit doet mee — Vos, zijn touw en de vis die eraan
+  hangt — met precies dezelfde tijden, anders laat het touw zichtbaar los van
+  zijn hengel of van de vis. Hoe hoog er gewipt wordt komt van buiten, via
+  `--wip`: het vlak van de tekening rekent in eigen eenheden en de rest in
+  schermpixels, en alleen zo komen die twee op dezelfde hoogte uit.
+
+  Hij begint pas als de vis boven is; daarvóór is er nog niets om blij over te
+  zijn.
+*/
+.vangst-wipt {
+  transform-box: view-box;
+  animation: vangst-wipt 0.9s ease-out 0.5s 1;
+}
+
+@keyframes vangst-wipt {
+  0%, 100% { transform: translateY(0); }
+  30%      { transform: translateY(calc(var(--wip) * -1)); }
+  62%      { transform: translateY(calc(var(--wip) * -0.3)); }
+  82%      { transform: translateY(calc(var(--wip) * -0.08)); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vangst-wipt { animation: none; }
+}
+
+/*
+  Het touw wiegt zachtjes zolang het kind nog niets heeft aangetikt.
+
+  Het draait om het puntje van de hengel, dus dat puntje blijft precies staan
+  waar het staat en het touw laat nooit los. De hoek is met opzet klein en de
+  beweging langzaam: het zegt "ik wacht op jou" zonder de aandacht weg te
+  trekken van de getallen op de vissen. Zodra er een vis is aangetikt stopt het.
+
+  `transform-box: view-box` zorgt dat het draaipunt in dezelfde eenheid staat
+  als de tekening zelf; zonder dat rekent de browser vanaf het omhullende
+  rechthoekje van het pad en klopt het draaipunt niet meer.
+*/
+.touw-wiegt {
+  transform-box: view-box;
+  transform-origin: var(--touw-x) var(--touw-y);
+  animation: touw-wiegt 3.6s ease-in-out infinite;
+}
+
+@keyframes touw-wiegt {
+  0%, 100% { transform: rotate(-1.7deg); }
+  50%      { transform: rotate(1.7deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .touw-wiegt { animation: none; }
+}
+
+/*
   Het wolkje stoom uit de schoorsteen van de locomotief.
 
   Het stijgt op, wordt groter en lost op. Klein gehouden: het is een detail dat
@@ -373,6 +444,41 @@
 @keyframes stoom {
   0%   { transform: translate(0, 0) scale(0.8); opacity: 0.9; }
   100% { transform: translate(10%, -60%) scale(1.5); opacity: 0; }
+}
+
+/*
+  De deur van een huisje in Vos' straat.
+
+  Als gewone klasse en niet als `style` op het element: React schrijft
+  `transform-box` en `transform-origin` op de server anders weg dan in de
+  browser, en dan klaagt hij bij het aankoppelen dat de twee niet gelijk zijn.
+  Met een klasse staat het in de stylesheet en is er niets om te vergelijken.
+*/
+.deur {
+  transform-box: fill-box;
+  transform-origin: left center;
+  transition: transform 0.5s ease-out;
+}
+
+.deur-open {
+  transform: rotateY(-72deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .deur {
+    transition: none;
+  }
+}
+
+/*
+  Een wolkje dat langzaam over de straat drijft.
+
+  Heel langzaam en met een kleine uitslag: het moet de lucht laten leven,
+  zonder dat een kind ernaar gaat kijken in plaats van naar de huisnummers.
+*/
+@keyframes wolk {
+  0%, 100% { transform: translateX(0); }
+  50%      { transform: translateX(26%); }
 }
 
 /*

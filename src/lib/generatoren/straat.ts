@@ -1,9 +1,12 @@
 /**
  * Vos' straat: welk nummer heeft het buurhuis?
  *
- * Een rij vrolijke huisjes. Op de deur van het huis waar Vos voor staat, staat
- * het nummer; de buren hebben een leeg bordje. Het kind zegt welk nummer bij
- * het buurhuis hoort.
+ * Een rij vrolijke huisjes met de huisnummers op de deuren. Bij één huis is de
+ * deur leeg en oranje omrand, met een vraagteken erop: dat is de vraag. Het
+ * kind zegt welk nummer daar hoort.
+ *
+ * De zichtbare nummers zijn de aanwijzing — precies zoals bij "Telrij
+ * stapstenen", waar de ingevulde stenen laten zien hoe de rij loopt.
  *
  * ---------------------------------------------------------------------------
  * Waarom huisjes en geen getallenlijn
@@ -49,13 +52,13 @@ import { straatUitleg } from "@/lib/generatoren/scripts/straat";
 /**
  * De standaardzinnen van dit type.
  *
- * Kort gehouden: deze kinderen lezen nog nauwelijks. Wat er gevraagd wordt,
- * zien ze aan de straat — het lege bordje naast Vos.
+ * Kort gehouden: deze kinderen lezen nog nauwelijks. Wát er gevraagd wordt,
+ * zien ze aan de straat: die ene deur die oplicht en een vraagteken draagt.
  */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
   "34": "Welk nummer hoort hier?",
-  "56": "Welk huisnummer hoort bij het lege bordje?",
-  "78": "Welk huisnummer hoort bij het buurhuis?",
+  "56": "Welk huisnummer hoort bij de lege deur?",
+  "78": "Welk huisnummer hoort op de lege deur?",
 };
 
 const MIN_GETAL = 1;
@@ -110,55 +113,69 @@ export function bouwStraat(
 }
 
 /**
- * De vier keuzes: het buurhuis en drie echte denkfouten.
+ * De vier keuzes: het ontbrekende nummer en drie andere getallen.
  *
- * In volgorde van herkenbaarheid:
+ * ---------------------------------------------------------------------------
+ * Nooit een nummer dat al op een deur staat
+ * ---------------------------------------------------------------------------
+ * De hele straat staat er met nummers op, op één deur na. Zou een van die
+ * zichtbare nummers tussen de keuzes staan, dan kan een kind zien dat het niet
+ * klopt zonder te denken — en erger: het zou niet meer duidelijk zijn wat er
+ * gevraagd wordt. De foute keuzes komen dus altijd van búiten de straat.
  *
- *   het nummer van Vos zelf     bij 12 → 12
- *   de verkeerde kant op        bij 12, één verder → 11
- *   een huis overgeslagen       bij 12, één verder → 14
- *   het huis aan de overkant    alleen bij even en oneven
+ * In volgorde van leerwaarde:
  *
- * Wat buiten het ingestelde bereik valt, doet niet mee; er wordt dan aangevuld
- * met buurgetallen die er wél in passen. Alle vier de keuzes blijven zo
- * getallen die het kind kent.
+ *   de cijfers omgedraaid        bij 13 → 31
+ *   een tiental ernaast          bij 13 → 23 of 3
+ *   net buiten de rij            bij 11-15 → 16 of 10
+ *
+ * Wat niet binnen het ingestelde bereik past, doet niet mee; er wordt dan
+ * aangevuld met andere getallen uit het bereik die niet op een deur staan.
  */
 export function keuzes(
   goed: number,
-  basis: number,
-  stap: number,
-  vooruit: boolean,
-  even: boolean,
+  straat: number[],
   van: number,
   tot: number,
   kans: () => number,
 ): { opties: AntwoordOptie[]; antwoord: string } {
-  const kant = vooruit ? 1 : -1;
+  const zichtbaar = new Set(straat.filter((n) => n !== goed));
+  const laagste = Math.min(...straat);
+  const hoogste = Math.max(...straat);
 
-  const denkfouten = [
-    basis,
-    basis - kant * stap,
-    basis + kant * stap * 2,
-    ...(even ? [basis + kant] : []),
+  const omgedraaid = goed >= 10 ? (goed % 10) * 10 + Math.floor(goed / 10) : goed * 10;
+
+  const kandidaten = [
+    omgedraaid,
+    goed + 10,
+    goed - 10,
+    hoogste + 1,
+    laagste - 1,
+    hoogste + 2,
+    laagste - 2,
+    goed + 5,
+    goed - 5,
   ];
 
-  const buren: number[] = [];
-  for (let d = 1; d <= 10; d++) buren.push(goed - d, goed + d);
+  /* Als laatste alles wat er verder nog in het bereik past. */
+  const rest: number[] = [];
+  for (let n = van; n <= tot; n++) rest.push(n);
 
   const fout: number[] = [];
   function pak(lijst: number[], binnenBereik: boolean) {
     for (const n of lijst) {
       if (fout.length === 3) return;
-      if (n === goed || n < MIN_GETAL || n > MAX_GETAL || fout.includes(n)) continue;
+      if (n === goed || n < MIN_GETAL || n > MAX_GETAL) continue;
+      if (zichtbaar.has(n) || fout.includes(n)) continue;
       if (binnenBereik && (n < van || n > tot)) continue;
       fout.push(n);
     }
   }
 
-  pak(denkfouten, true);
-  pak(buren, true);
-  /* Laatste redmiddel bij een heel smal bereik; zie `keuzes` in blokken.ts. */
-  pak(buren, false);
+  pak(kandidaten, true);
+  pak(rest, true);
+  /* Laatste redmiddel bij een heel smal bereik: dan mag het er net buiten. */
+  pak(kandidaten, false);
 
   const alles = husselen(kans, [goed, ...fout]);
   return {
@@ -171,7 +188,7 @@ export const straatGenerator: Generator = {
   id: "straat",
   naam: "Vos' straat (buurgetallen)",
   uitleg:
-    "Een rij vrolijke huisjes met huisnummers. Vos staat voor één huis; het kind zegt welk nummer het buurhuis heeft. Oefent doortellen en terugtellen — en met even en oneven ook de sprong van twee aan dezelfde kant van de straat.",
+    "Een rij vrolijke huisjes met de nummers op de deuren; bij één huis is de deur leeg en die licht op. Het kind zegt welk nummer daar hoort. Oefent doortellen en terugtellen — en met even en oneven ook de sprong van twee aan dezelfde kant van de straat.",
   suggestie:
     "Groep 3: 1 tot 20, het huis erna · groep 4: 1 tot 20, door elkaar · groep 4 gevorderd: 10 tot 40, even en oneven",
   velden: [
@@ -328,10 +345,7 @@ export const straatGenerator: Generator = {
 
       const { opties, antwoord } = keuzes(
         doelNummer,
-        basis,
-        stap,
-        vooruit,
-        even,
+        straat.map((h) => h.nummer),
         van,
         tot,
         kans,

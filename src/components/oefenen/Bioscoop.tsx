@@ -205,16 +205,29 @@ export function Bioscoop({
           ))}
         </div>
 
-        {/* Vos met zijn kaartje, naast de rijen. */}
-        <div className="mt-2 flex items-end justify-center gap-2">
-          {vos.vangend && (
-            <span ref={vosRef} aria-hidden="true" className="block w-16 shrink-0 sm:w-20">
-              <Vosbeeld houdingen={vos} stand={goed ? "blij" : "wachtend"} />
+        {/*
+          Vos met zijn kaartje, onder het veld.
+
+          Ze staan samen in één vakje met wat lucht eromheen, zodat meteen
+          duidelijk is dat het kaartje van hém is: dit is Vos, dit is zijn
+          kaartje, waar hoort hij te zitten? Vos is met opzet kleiner dan het
+          kaartje — het getal is waar het om gaat, hij is het verhaal eromheen.
+
+          Hij staat stil zolang het kind nadenkt. Een wippende vos naast de
+          vraag trekt de aandacht weg van het veld, en juist daar moet het kind
+          kijken.
+        */}
+        <div className="mt-5 flex justify-center">
+          <div className="flex items-center gap-3 rounded-2xl border-2 border-rand/30 bg-white/70 px-4 py-2">
+            {vos.vangend && (
+              <span ref={vosRef} aria-hidden="true" className="block w-12 shrink-0 sm:w-14">
+                <Vosbeeld houdingen={vos} stand={goed ? "blij" : "wachtend"} stil={!goed} />
+              </span>
+            )}
+            <span className="block w-24 shrink-0 sm:w-28">
+              <Kaartje getal={gezocht} />
             </span>
-          )}
-          <span className="block w-24 shrink-0 sm:w-28">
-            <Kaartje getal={gezocht} />
-          </span>
+          </div>
         </div>
       </div>
     </div>

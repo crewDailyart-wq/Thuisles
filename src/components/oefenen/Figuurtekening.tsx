@@ -980,7 +980,6 @@ export function Figuurtekening({
     return (
       <Huizenrij
         huizen={figuur.huizen}
-        vosBij={figuur.vosBij}
         gevraagd={figuur.gevraagd}
         beweegt={false}
       />
