@@ -29,6 +29,7 @@
  */
 
 import Link from "next/link";
+import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
 import { Pictogram } from "@/components/kind/Pictogram";
@@ -243,6 +244,14 @@ export default async function DomeinPagina({
                       >
                         {STATUS_TEKST[status]}
                       </span>
+                      {/*
+                        Hoe moeilijk deze oefening is, als bolletjes naast de
+                        statuspil. Op dezelfde regel en klein gehouden: een
+                        eigen regel zou elke tegel hoger maken, en er passen er
+                        dan minder op een scherm. Is er niets ingevuld, dan komt
+                        er ook niets — zie `Moeilijkheid`.
+                      */}
+                      <Moeilijkheid waarde={leerdoel.moeilijkheid} />
                       {!heeftVragen && (
                         <span className="text-[0.66rem] font-bold text-inkt-zacht">
                           Nog geen vragen

@@ -18,6 +18,7 @@ import {
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
 import { UitlegVoorbeeld } from "@/components/beheer/UitlegVoorbeeld";
+import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { GROEPSVORMEN, VORM_OMSCHRIJVING } from "@/lib/generatoren/uitlegscript";
 import type { VraagInContext } from "@/lib/vraagtypes";
 import { STATUS_LABEL, VORM_LABEL, antwoordInTekst } from "@/lib/vraagtypes";
@@ -49,6 +50,9 @@ export function LeerdoelDetail({
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
   const [naarOnderwerp, setNaarOnderwerp] = useState("");
+  const [moeilijk, setMoeilijk] = useState<string>(
+    leerdoel.moeilijkheid === null ? "" : String(leerdoel.moeilijkheid),
+  );
   const [van, setVan] = useState<number>(leerdoel.groepVan);
   const [tot, setTot] = useState<number>(leerdoel.groepTot);
 
@@ -65,7 +69,25 @@ export function LeerdoelDetail({
         <Gegevens
           rijen={[
             ["Code", <code key="c" className="font-mono text-xs">{leerdoel.code}</code>],
-            ["Titel", leerdoel.titel],
+            [
+              "Naam in beheer",
+              leerdoel.beheernaam ?? (
+                <span key="b" className="text-beheer-zacht">
+                  Leeg — dan geldt de titel hieronder
+                </span>
+              ),
+            ],
+            ["Titel voor het kind", leerdoel.titel],
+            [
+              "Moeilijkheid",
+              leerdoel.moeilijkheid === null ? (
+                <span key="m" className="text-beheer-zacht">
+                  Niet ingevuld — het kind ziet dan geen bolletjes
+                </span>
+              ) : (
+                <Moeilijkheid key="m" waarde={leerdoel.moeilijkheid} maat="ruim" />
+              ),
+            ],
             [
               "Groep",
               leerdoel.groepVan === leerdoel.groepTot
@@ -101,6 +123,32 @@ export function LeerdoelDetail({
             className="mt-4 border-t border-beheer-rand pt-4"
           >
             <input type="hidden" name="id" value={leerdoel.id} />
+
+            {/*
+              Twee namen onder elkaar. De bovenste is van jou, de onderste is
+              wat een kind leest. Ze staan met opzet in deze volgorde: in het
+              beheer kijk je naar de eerste.
+            */}
+            <label className="mb-2 block">
+              <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+                Naam in beheer
+              </span>
+              <input
+                name="beheernaam"
+                defaultValue={leerdoel.beheernaam ?? ""}
+                placeholder="Leeg laten = de titel hieronder"
+                onKeyDown={opSneltoets}
+                className={`${stijl.veld} w-full`}
+              />
+              <span className="mt-1 block text-xs text-beheer-zacht">
+                Alleen jij ziet deze naam. Hij moet uniek zijn binnen dit onderwerp;
+                daardoor mogen twee leerdoelen voor een kind wél hetzelfde heten.
+              </span>
+            </label>
+
+            <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+              Titel voor het kind
+            </span>
             <div className="flex flex-wrap items-center gap-2">
               <input
                 name="titel"
@@ -117,6 +165,38 @@ export function LeerdoelDetail({
                 {[3, 4, 5, 6, 7, 8].map((g) => <option key={g} value={g}>{g}</option>)}
               </select>
             </div>
+
+            {/*
+              De moeilijkheidsgraad hoort bij het leerdoel en niet bij het
+              sjabloon: het gaat om hoe moeilijk de vaardigheid is, niet om hoe
+              de sommen gemaakt worden.
+            */}
+            <label className="mt-3 block">
+              <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+                Moeilijkheid
+              </span>
+              <div className="flex flex-wrap items-center gap-2">
+                <select
+                  name="moeilijkheid"
+                  value={moeilijk}
+                  onChange={(e) => setMoeilijk(e.target.value)}
+                  className={stijl.veld}
+                >
+                  <option value="">Niet ingevuld</option>
+                  {[1, 2, 3, 4, 5].map((n) => (
+                    <option key={n} value={n}>
+                      {n} van 5
+                    </option>
+                  ))}
+                </select>
+                <Moeilijkheid waarde={moeilijk === "" ? null : Number(moeilijk)} maat="ruim" />
+              </div>
+              <span className="mt-1 block text-xs text-beheer-zacht">
+                Het kind ziet dit als bolletjes op de tegel. Leeg = geen bolletjes.
+                Onderwerpen worden op moeilijkheid gesorteerd; leerdoelen zonder
+                moeilijkheid staan achteraan.
+              </span>
+            </label>
 
             <Fout tekst={fout} />
             <div className="mt-3 flex gap-2">

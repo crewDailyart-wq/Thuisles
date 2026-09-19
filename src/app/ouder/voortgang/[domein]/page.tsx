@@ -64,6 +64,7 @@ export default async function DomeinPagina({
             <Vaardigheid
               key={plek.leerdoel.id}
               titel={plek.leerdoel.titel}
+              moeilijkheid={plek.leerdoel.moeilijkheid}
               stand={v?.status ?? "nog_niet_gestart"}
               bijschrift={
                 v?.aandacht || v?.zelfLastig ? "vraagt aandacht" : plek.subdomein.naam

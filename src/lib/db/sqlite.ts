@@ -666,6 +666,15 @@ function werkTabellenBij(d: DatabaseSync) {
     eigen getal te hebben als het écht afwijkt.
   */
   voegKolomToe(d, "leerdoelen", "vragen_per_sessie", "integer");
+  /*
+    Twee namen: `titel` is wat het kind en de ouder zien, `beheernaam` is wat de
+    beheerder ziet. Zo kunnen twee leerdoelen binnen één onderwerp voor een kind
+    hetzelfde heten — "Tel verder met sprongen van 1" — terwijl ze in het beheer
+    uit elkaar te houden zijn. Leeg betekent: gebruik de titel, zoals het was.
+  */
+  voegKolomToe(d, "leerdoelen", "beheernaam", "text");
+  /* Hoe moeilijk de vaardigheid is: 1 tot 5, of leeg als het niet is ingevuld. */
+  voegKolomToe(d, "leerdoelen", "moeilijkheid", "integer");
 
   // Uit welk sjabloon een vraag komt (leeg bij handgemaakte vragen).
   voegKolomToe(d, "vragen", "sjabloon_id", "text references sjablonen (id) on delete cascade");

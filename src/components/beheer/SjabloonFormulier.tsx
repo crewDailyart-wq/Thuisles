@@ -32,6 +32,7 @@ import { alleGeneratoren, zoekGenerator } from "@/lib/generatoren";
 import { MAX_SOMMEN_PER_KEER } from "@/lib/generatoren/soort";
 import type { Instellingen } from "@/lib/generatoren/soort";
 import type { LeerdoelRegel } from "@/lib/data/vragen";
+import { beheerlabel } from "@/lib/leerdoelnaam";
 
 /**
  * De leerdoelen binnen dit onderwerp waar een kind van deze groep aan werkt.
@@ -335,9 +336,10 @@ export function SjabloonFormulier({
                 className={`${stijl.veld} mt-2`}
               >
                 <option value="">Kies een leerdoel…</option>
+                {/* Jouw eigen naam, want dit is een beheerscherm. */}
                 {kandidaten.map((l) => (
                   <option key={l.id} value={l.id}>
-                    {l.titel}
+                    {beheerlabel(l)}
                   </option>
                 ))}
               </select>

@@ -15,6 +15,7 @@
  */
 
 import Link from "next/link";
+import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { Icoon } from "@/components/ouder/Icoon";
 import type { MasteryStatus } from "@/lib/types";
 
@@ -296,19 +297,30 @@ export function Vaardigheid({
   titel,
   stand,
   bijschrift,
+  moeilijkheid = null,
   href,
 }: {
   titel: React.ReactNode;
   stand: MasteryStatus;
   /** Bijvoorbeeld het methodeblok waar dit leerdoel bij hoort. */
   bijschrift?: React.ReactNode;
+  /**
+   * Hoe moeilijk deze vaardigheid is, 1 tot 5, of `null`.
+   *
+   * Voor een ouder is dat het verschil tussen "hij loopt vast op iets moeilijks"
+   * en "hij loopt vast op iets makkelijks" — en dat vraagt een andere reactie.
+   */
+  moeilijkheid?: number | null;
   href?: string;
 }) {
   const inhoud = (
     <>
       <Standmerk stand={stand} className="mt-0.5 size-5 shrink-0" />
       <span className="min-w-0 flex-1">
-        <span className="block text-sm font-medium">{titel}</span>
+        <span className="flex flex-wrap items-center gap-2">
+          <span className="text-sm font-medium">{titel}</span>
+          <Moeilijkheid waarde={moeilijkheid} />
+        </span>
         <span className="block text-xs text-beheer-zacht">
           {STAND[stand].woord}
           {bijschrift ? <> · {bijschrift}</> : null}

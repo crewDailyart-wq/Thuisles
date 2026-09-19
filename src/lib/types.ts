@@ -105,7 +105,24 @@ export type Leerdoel = {
   subdomeinId: string;
   /** Stabiele, leesbare code voor intern gebruik, bijv. "REK-BEW-TAFELS-01". */
   code: string;
+  /** De naam die het kind en de ouder zien. */
   titel: string;
+  /**
+   * De naam die alleen in het beheer te zien is, of `null`.
+   *
+   * Waar dit voor is: binnen één onderwerp mogen twee leerdoelen voor een kind
+   * hetzelfde heten — "Tel verder met sprongen van 1" — terwijl ze voor de
+   * beheerder verschillen in moeilijkheid. De titel mag dan dubbel voorkomen;
+   * déze naam moet uniek zijn, anders zijn ze in het beheer niet uit elkaar te
+   * houden. Leeg betekent: gebruik de titel, precies zoals het altijd was.
+   */
+  beheernaam: string | null;
+  /**
+   * Hoe moeilijk deze vaardigheid is, 1 tot 5, of `null` als het niet is
+   * ingevuld. Bij het kind komen er dan bolletjes op de tegel; is het leeg,
+   * dan staat er niets.
+   */
+  moeilijkheid: number | null;
   /**
    * Een leerdoel hoort bij een groepsrange, niet bij één vaste groep.
    * Dat maakt differentiatie binnen dezelfde groep mogelijk.

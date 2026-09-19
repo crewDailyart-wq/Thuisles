@@ -17,6 +17,8 @@ import {
   wegSubdomein,
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
+import { Moeilijkheid } from "@/components/Moeilijkheid";
+import { beheerlabel } from "@/lib/leerdoelnaam";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
 import type { RegelUitslag } from "@/lib/data/structuur";
 import type { Domein, Leerdoel, Subdomein, Vak } from "@/lib/types";
@@ -123,12 +125,12 @@ export function SubdomeinDetail({
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full min-w-[46rem] border-collapse text-sm">
-              <Tabelkop kolommen={["Code", "Leerdoel", "Groep", "Vragen", ""]} />
+              <Tabelkop kolommen={["Code", "Leerdoel", "Moeilijk", "Groep", "Vragen", ""]} />
               <tbody>
                 {leerdoelen.map((doel) => (
                   <tr key={doel.id} className="border-b border-beheer-rand-zacht last:border-0">
                     {bewerktDoel === doel.id ? (
-                      <td colSpan={5} className="bg-beheer-vlak/60 p-3">
+                      <td colSpan={6} className="bg-beheer-vlak/60 p-3">
                         <form action={(data) => doe(() => bewerkLeerdoel(data), () => setBewerktDoel(null))}>
                           <input type="hidden" name="id" value={doel.id} />
                           <div className="flex flex-wrap items-center gap-2">
@@ -156,9 +158,26 @@ export function SubdomeinDetail({
                           {doel.code}
                         </td>
                         <td className="px-3 py-2">
+                          {/*
+                            Jouw eigen naam bovenaan, de titel die het kind ziet
+                            eronder. Heb je geen eigen naam ingevuld, dan staat
+                            er alleen de titel — precies zoals het was.
+                          */}
                           <Link href={`${basis}/${doel.id}`} className="font-medium transition hover:text-viool">
-                            {doel.titel}
+                            {beheerlabel(doel)}
                           </Link>
+                          {doel.beheernaam && (
+                            <span className="mt-0.5 block text-xs text-beheer-zacht">
+                              Kind ziet: {doel.titel}
+                            </span>
+                          )}
+                        </td>
+                        <td className="px-3 py-2">
+                          {doel.moeilijkheid === null ? (
+                            <span className="text-xs text-beheer-zacht">—</span>
+                          ) : (
+                            <Moeilijkheid waarde={doel.moeilijkheid} maat="ruim" />
+                          )}
                         </td>
                         <td className="whitespace-nowrap px-3 py-2 tabular-nums">
                           {doel.groepVan === doel.groepTot ? doel.groepVan : `${doel.groepVan}–${doel.groepTot}`}

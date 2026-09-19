@@ -1,5 +1,6 @@
 import "server-only";
 import { GROEPSVORMEN } from "@/lib/generatoren/uitlegscript";
+import { beheerlabel, begrensMoeilijkheid } from "@/lib/leerdoelnaam";
 
 /**
  * Beheer van de leerdoelstructuur: vak -> domein -> subdomein -> leerdoel.
@@ -212,12 +213,26 @@ export function haalSubdomeinen(domeinId?: string): Subdomein[] {
   }));
 }
 
+/**
+ * De volgorde waarin leerdoelen binnen een onderwerp staan.
+ *
+ * Eerst op moeilijkheid, van makkelijk naar moeilijk — dat is de opbouw die een
+ * kind door een onderwerp heen volgt. Leerdoelen zonder moeilijkheidsgraad
+ * kunnen maar op één plek staan, en dat is achteraan: `moeilijkheid is null`
+ * levert 0 of 1 op en sorteert de lege dus als laatste.
+ *
+ * Daarbinnen blijft de handmatige volgorde gelden, precies zoals het was. Zijn
+ * er nergens moeilijkheidsgraden ingevuld — de stand bij het invoeren hiervan —
+ * dan verandert er dus helemaal niets aan de volgorde.
+ */
+const LEERDOELVOLGORDE = "order by moeilijkheid is null, moeilijkheid, volgorde, titel";
+
 export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
   const db = verbinding();
   const rijen = (
     subdomeinId
-      ? db.prepare("select * from leerdoelen where subdomein_id = ? order by volgorde, titel").all(subdomeinId)
-      : db.prepare("select * from leerdoelen order by volgorde, titel").all()
+      ? db.prepare(`select * from leerdoelen where subdomein_id = ? ${LEERDOELVOLGORDE}`).all(subdomeinId)
+      : db.prepare(`select * from leerdoelen ${LEERDOELVOLGORDE}`).all()
   ) as Rij[];
 
   return rijen.map((r) => ({
@@ -225,6 +240,14 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
     subdomeinId: String(r.subdomein_id),
     code: String(r.code),
     titel: String(r.titel),
+    beheernaam:
+      r.beheernaam === null || r.beheernaam === undefined || String(r.beheernaam).trim() === ""
+        ? null
+        : String(r.beheernaam),
+    moeilijkheid:
+      r.moeilijkheid === null || r.moeilijkheid === undefined
+        ? null
+        : Number(r.moeilijkheid),
     groepVan: Number(r.groep_van) as Groep,
     groepTot: Number(r.groep_tot) as Groep,
     uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,
@@ -420,6 +443,10 @@ export type NieuwLeerdoel = {
   titel: string;
   groepVan: number;
   groepTot: number;
+  /** De naam die alleen in beheer te zien is; leeg = gebruik de titel. */
+  beheernaam?: string | null;
+  /** 1 tot 5, of leeg. */
+  moeilijkheid?: number | null;
 };
 
 function controleerLeerdoel(invoer: NieuwLeerdoel, negeerId?: string): string | null {
@@ -436,9 +463,15 @@ function controleerLeerdoel(invoer: NieuwLeerdoel, negeerId?: string): string | 
     return "De laagste groep mag niet hoger zijn dan de hoogste.";
   }
 
+  /*
+    De dubbelcontrole werkt op de naam die de beheerder ziet, niet op de titel.
+    Zo kunnen twee leerdoelen voor een kind hetzelfde heten zolang ze in het
+    beheer verschillende namen dragen — precies waar het splitsen voor is.
+  */
+  const label = beheerlabel(invoer);
   const broers = haalLeerdoelen(invoer.subdomeinId).filter((l) => l.id !== negeerId);
-  if (broers.some((l) => sleutel(l.titel) === sleutel(titel))) {
-    return `Er bestaat al een leerdoel "${titel}" binnen dit onderwerp.`;
+  if (broers.some((l) => sleutel(beheerlabel(l)) === sleutel(label))) {
+    return `Er bestaat al een leerdoel "${label}" binnen dit onderwerp. Geef er een eigen naam in beheer aan om ze uit elkaar te houden.`;
   }
   return null;
 }
@@ -448,13 +481,17 @@ export function maakLeerdoel(invoer: NieuwLeerdoel): Uitslag<Leerdoel> {
   if (fout) return { ok: false, fout };
 
   const id = randomUUID();
+  const eigen = (invoer.beheernaam ?? "").trim();
   verbinding()
     .prepare(
-      `insert into leerdoelen (id, subdomein_id, code, titel, groep_van, groep_tot, volgorde)
-       values (?, ?, ?, ?, ?, ?, ?)`,
+      `insert into leerdoelen
+         (id, subdomein_id, code, titel, beheernaam, moeilijkheid, groep_van, groep_tot, volgorde)
+       values (?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     )
     .run(
       id, invoer.subdomeinId, maakCode(invoer.subdomeinId), invoer.titel.trim(),
+      eigen === "" ? null : eigen,
+      begrensMoeilijkheid(invoer.moeilijkheid),
       invoer.groepVan, invoer.groepTot,
       volgendeVolgorde("leerdoelen", "subdomein_id", invoer.subdomeinId),
     );
@@ -554,8 +591,10 @@ export function verplaatsLeerdoel(id: string, naarSubdomeinId: string): Uitslag<
   const db = verbinding();
 
   const leerdoel = db
-    .prepare("select id, subdomein_id, titel from leerdoelen where id = ?")
-    .get(id) as { id: string; subdomein_id: string; titel: string } | undefined;
+    .prepare("select id, subdomein_id, titel, beheernaam from leerdoelen where id = ?")
+    .get(id) as
+    | { id: string; subdomein_id: string; titel: string; beheernaam: string | null }
+    | undefined;
   if (!leerdoel) return { ok: false, fout: "Dit leerdoel bestaat niet meer." };
 
   const doel = db
@@ -567,12 +606,16 @@ export function verplaatsLeerdoel(id: string, naarSubdomeinId: string): Uitslag<
     return { ok: false, fout: "Dit leerdoel staat daar al." };
   }
 
-  /* Twee leerdoelen met dezelfde titel binnen één onderwerp gaat niet. */
+  /*
+    Twee leerdoelen met dezelfde beheernaam binnen één onderwerp gaat niet;
+    dezelfde regel als bij het aanmaken. Zie `beheerlabel`.
+  */
+  const label = beheerlabel(leerdoel);
   const broers = haalLeerdoelen(naarSubdomeinId);
-  if (broers.some((l) => sleutel(l.titel) === sleutel(leerdoel.titel))) {
+  if (broers.some((l) => sleutel(beheerlabel(l)) === sleutel(label))) {
     return {
       ok: false,
-      fout: `In dat onderwerp staat al een leerdoel "${leerdoel.titel}".`,
+      fout: `In dat onderwerp staat al een leerdoel "${label}".`,
     };
   }
 
@@ -593,16 +636,29 @@ export function wijzigLeerdoel(
     groepTot: number;
     /** Leeg of null betekent: volg de algemene standaard. */
     vragenPerSessie?: number | null;
+    /** Leeg betekent: gebruik de titel. Niet meegestuurd = niet aanraken. */
+    beheernaam?: string | null;
+    /** 1 tot 5, leeg = niet ingevuld. Niet meegestuurd = niet aanraken. */
+    moeilijkheid?: number | null;
   },
 ): Uitslag<true> {
   const db = verbinding();
-  const huidig = db.prepare("select subdomein_id from leerdoelen where id = ?").get(id) as
-    | { subdomein_id: string }
-    | undefined;
+  const huidig = db
+    .prepare("select subdomein_id, beheernaam from leerdoelen where id = ?")
+    .get(id) as { subdomein_id: string; beheernaam: string | null } | undefined;
   if (!huidig) return { ok: false, fout: "Dit leerdoel bestaat niet meer." };
 
+  /*
+    Wordt de beheernaam niet meegestuurd, dan telt de dubbelcontrole met de naam
+    die er al staat. Zonder dat zou een scherm dat het veld niet kent per
+    ongeluk op de titel gaan controleren en een geldig leerdoel weigeren.
+  */
   const fout = controleerLeerdoel(
-    { subdomeinId: String(huidig.subdomein_id), ...invoer },
+    {
+      subdomeinId: String(huidig.subdomein_id),
+      beheernaam: invoer.beheernaam === undefined ? huidig.beheernaam : invoer.beheernaam,
+      ...invoer,
+    },
     id,
   );
   if (fout) return { ok: false, fout };
@@ -619,6 +675,21 @@ export function wijzigLeerdoel(
     const waarde =
       invoer.vragenPerSessie === null ? null : begrensAantal(invoer.vragenPerSessie);
     db.prepare("update leerdoelen set vragen_per_sessie = ? where id = ?").run(waarde, id);
+  }
+
+  /* Zelfde afspraak voor de twee nieuwe velden: niet meegestuurd is niet aanraken. */
+  if (invoer.beheernaam !== undefined) {
+    const eigen = (invoer.beheernaam ?? "").trim();
+    db.prepare("update leerdoelen set beheernaam = ? where id = ?").run(
+      eigen === "" ? null : eigen,
+      id,
+    );
+  }
+  if (invoer.moeilijkheid !== undefined) {
+    db.prepare("update leerdoelen set moeilijkheid = ? where id = ?").run(
+      begrensMoeilijkheid(invoer.moeilijkheid),
+      id,
+    );
   }
 
   return { ok: true, waarde: true };
@@ -645,12 +716,18 @@ export function dupliceerLeerdoel(id: string): Uitslag<Leerdoel> {
   const bron = haalLeerdoelen().find((l) => l.id === id);
   if (!bron) return { ok: false, fout: "Dit leerdoel bestaat niet meer." };
 
-  // Een oplopend achtervoegsel, zodat de kopie geen dubbele naam krijgt.
+  /*
+    De kopie houdt dezelfde titel als het origineel: dat is wat het kind ziet,
+    en "(2)" achter een oefening zegt een kind niets. Het oplopende nummer gaat
+    naar de beheernaam, want dáár moet het verschil zitten. Precies waarvoor de
+    twee namen uit elkaar zijn gehaald.
+  */
   for (let n = 2; n < 50; n++) {
-    const titel = `${bron.titel} (${n})`;
     const uitslag = maakLeerdoel({
       subdomeinId: bron.subdomeinId,
-      titel,
+      titel: bron.titel,
+      beheernaam: `${beheerlabel(bron)} (kopie ${n})`,
+      moeilijkheid: bron.moeilijkheid,
       groepVan: bron.groepVan,
       groepTot: bron.groepTot,
     });

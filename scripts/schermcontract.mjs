@@ -179,6 +179,17 @@ export const SCHERMCONTRACT = [
       het stilletjes kunnen verdwijnen, en dan is er geen andere plek waar je
       een leerdoel kunt verplaatsen.
     */
+    naam: "Leerdoel: naam in beheer en moeilijkheid",
+    pad: "/admin/rekenen/structuur",
+    bron: ["src/components/beheer/LeerdoelDetail.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "Naam in beheer", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
+      { tekst: "Titel voor het kind", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
+      { tekst: "Moeilijkheid", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
+    ],
+  },
+  {
     naam: "Leerdoel verplaatsen",
     pad: "/admin/rekenen/structuur",
     bron: ["src/components/beheer/LeerdoelDetail.tsx"],

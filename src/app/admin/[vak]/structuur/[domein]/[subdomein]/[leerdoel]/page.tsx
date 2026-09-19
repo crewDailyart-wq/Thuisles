@@ -10,6 +10,7 @@ import {
   zoekSubdomein,
 } from "@/lib/data/structuur";
 import { haalVragen } from "@/lib/data/vragen";
+import { beheerlabel } from "@/lib/leerdoelnaam";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 
 export default async function LeerdoelPagina({
@@ -49,8 +50,17 @@ export default async function LeerdoelPagina({
           { label: subdomein.naam, href: `/admin/${vak.slug}/structuur/${domein.slug}/${subdomein.slug}` },
           { label: leerdoel.code },
         ]}
-        titel={leerdoel.titel}
-        bijschrift={`Leerdoel ${leerdoel.code}`}
+        /*
+          In het beheer staat jouw eigen naam vooraan; de titel die het kind
+          ziet komt eronder. Heb je geen eigen naam, dan staat er alleen de
+          titel — zoals het was.
+        */
+        titel={beheerlabel(leerdoel)}
+        bijschrift={
+          leerdoel.beheernaam
+            ? `Leerdoel ${leerdoel.code} — kind ziet: ${leerdoel.titel}`
+            : `Leerdoel ${leerdoel.code}`
+        }
       />
       <LeerdoelDetail
         vak={vak}

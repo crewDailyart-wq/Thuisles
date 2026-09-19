@@ -169,10 +169,23 @@ export async function bewerkLeerdoel(data: FormData): Promise<Antwoord<true>> {
     meegestuurd, dan zou het wijzigen van een titel de instelling wissen — het
     veld is hier immers leeg.
   */
+  /*
+    De twee nieuwe velden gaan alleen mee als ze ook echt zijn meegestuurd.
+
+    Niet uit voorzichtigheid maar uit ervaring: het lijstje met leerdoelen heeft
+    een klein formuliertje waarmee je alleen de titel aanpast. Zou de
+    beheernaam hier altijd worden meegestuurd, dan kwam hij daar als lege waarde
+    binnen en werd hij bij elke titelwijziging gewist. Dat is woord voor woord
+    het verhaal achter HARDE REGEL 1 in CLAUDE.md.
+  */
   const uitslag = wijzigLeerdoel(tekst(data, "id"), {
     titel: tekst(data, "titel"),
     groepVan: getal(data, "groepVan"),
     groepTot: getal(data, "groepTot"),
+    ...(data.has("beheernaam") ? { beheernaam: tekst(data, "beheernaam") } : {}),
+    ...(data.has("moeilijkheid")
+      ? { moeilijkheid: tekst(data, "moeilijkheid") === "" ? null : getal(data, "moeilijkheid") }
+      : {}),
   });
   if (uitslag.ok) ververs();
   return uitslag;
