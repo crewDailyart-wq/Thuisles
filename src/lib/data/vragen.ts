@@ -280,6 +280,7 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     uitleg: r.uitleg ? String(r.uitleg) : null,
     uitlegAfbeelding: r.uitleg_afbeelding ? String(r.uitleg_afbeelding) : null,
     sjabloonId: r.sjabloon_id ? String(r.sjabloon_id) : null,
+    handtekening: r.handtekening ? String(r.handtekening) : null,
     status: String(r.status) as Vraagstatus,
     aangemaaktOp: String(r.aangemaakt_op),
     uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,

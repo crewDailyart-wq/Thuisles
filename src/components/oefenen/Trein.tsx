@@ -55,6 +55,20 @@ const LOCO = { breedte: 120, hoogte: 155 };
  */
 const LOCO_BREEDTE = "28%";
 
+/**
+ * Bij een lange trein krimpt de locomotief mee.
+ *
+ * De wagons verdelen wat de locomotief overlaat. Bij tien wagons zou 28 procent
+ * voor de loco betekenen dat elke wagon nog maar zeven procent van de rij
+ * krijgt, en dan past het getal er niet meer leesbaar in. Tot en met vijf
+ * wagons verandert er niets, zodat bestaande sjablonen er precies zo uitzien
+ * als altijd.
+ */
+function locoBreedte(wagons: number): string {
+  if (wagons <= 5) return LOCO_BREEDTE;
+  return `${Math.max(14, 28 - (wagons - 5) * 2.8).toFixed(1)}%`;
+}
+
 /* Waar het raampje zit; zie `MACHINIST` in de generator. Eén plek, dit is hem. */
 const RAAMPJE = MACHINIST.raampje;
 
@@ -566,7 +580,7 @@ export function Trein({
             vertrek === "rijdt" ? "-translate-x-[125%]" : ""
           } ${vertrek === "koppelt" ? "motion-safe:animate-trein-koppelt" : ""}`}
         >
-          <span className="block shrink-0" style={{ width: LOCO_BREEDTE }}>
+          <span className="block shrink-0" style={{ width: locoBreedte(ingevuld.length) }}>
             <LocomotiefMetVos
               machinist={machinistBeeld}
               stoomt={vertrek !== "nee"}
@@ -750,7 +764,7 @@ export function Uitlegtrein({
     <div className="flex w-full flex-col items-center gap-2">
       <div className="w-full max-w-sm rounded-groot border-2 border-rand bg-[#eaf6ff] p-3 shadow-op">
         <div className="flex items-end gap-1">
-          <span className="block shrink-0" style={{ width: LOCO_BREEDTE }}>
+          <span className="block shrink-0" style={{ width: locoBreedte(volgorde.length) }}>
             <Locomotief />
           </span>
           {volgorde.map((waarde, i) => (

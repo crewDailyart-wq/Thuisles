@@ -21,6 +21,7 @@ import { Trein } from "@/components/oefenen/Trein";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
+import { vulAanMetDubbele } from "@/lib/generatoren/soort";
 import type { Instellingen } from "@/lib/generatoren/soort";
 
 export function SjabloonVoorbeeld({
@@ -68,11 +69,21 @@ export function SjabloonVoorbeeld({
       if (typeof eigen === "string" && eigen.trim() !== "") continue;
       metVos[sleutel] = waarde;
     }
-    // Vast zaad: het voorbeeld springt dan niet rond bij elke toetsaanslag.
-    return generator.maak(metVos, aantal, new Set(), 20260101, groep);
+    /*
+      Vast zaad: het voorbeeld springt dan niet rond bij elke toetsaanslag.
+
+      Zijn er minder verschillende sommen mogelijk dan er gevraagd zijn, dan
+      wordt er aangevuld met dubbele — precies zoals bij Genereren. Zo laat het
+      voorbeeld zien wat je straks ook echt krijgt, in plaats van een kortere
+      lijst waarvan je moet raden wat er gebeurt.
+    */
+    const gemaakt = generator.maak(metVos, aantal, new Set(), 20260101, groep);
+    return vulAanMetDubbele(gemaakt, gemaakt, aantal);
   }, [generator, instellingen, aantal, groep, terugval]);
 
   const maximum = generator?.maximum(instellingen) ?? null;
+  /* Hoeveel er in deze lijst dubbel staan; zie de regel onder het lijstje. */
+  const dubbel = sommen.length - new Set(sommen.map((s) => s.handtekening)).size;
 
   if (!generator) return null;
 
@@ -95,7 +106,8 @@ export function SjabloonVoorbeeld({
               : som.antwoord;
 
           return (
-            <li key={som.handtekening} className="flex items-start gap-3 px-3 py-2">
+            /* De handtekening kan nu twee keer voorkomen; de plek erbij houdt de sleutel uniek. */
+            <li key={`${som.handtekening}:${i}`} className="flex items-start gap-3 px-3 py-2">
               <span className="w-5 shrink-0 pt-0.5 text-xs tabular-nums text-beheer-zacht">
                 {i + 1}
               </span>
@@ -268,6 +280,14 @@ export function SjabloonVoorbeeld({
         {maximum === null
           ? "Er zijn heel veel verschillende sommen mogelijk met deze instellingen."
           : `Met deze instellingen zijn er in totaal ${maximum} verschillende sommen mogelijk.`}
+        {/*
+          Staan er dubbele in de lijst, dan hoort erbij waaróm. Anders lijkt het
+          alsof het voorbeeld zich vergist.
+        */}
+        {dubbel > 0 &&
+          (dubbel === 1
+            ? " Er zit er daarom 1 dubbel in dit voorbeeld."
+            : ` Er zitten er daarom ${dubbel} dubbel in dit voorbeeld.`)}
       </p>
     </div>
   );

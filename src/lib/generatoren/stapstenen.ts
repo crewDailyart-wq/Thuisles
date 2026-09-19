@@ -19,6 +19,7 @@ import {
   heelGetal,
   kansGenerator,
   tekst,
+  vinkje,
   type Generator,
   type Gegenereerd,
   type Instellingen,
@@ -31,16 +32,25 @@ import { stapstenenAanpak } from "@/lib/generatoren/aanpak/stapstenen";
 import { stapstenenUitleg } from "@/lib/generatoren/scripts/stapstenen";
 
 /**
- * De standaardzinnen van dit type. Per sjabloon aan te passen in het beheer.
+ * De standaardzin van dit type. Per sjabloon aan te passen in het beheer.
  *
- * Met `{som}` erin, want het aantal lege stenen verschilt per sjabloon én per
- * som. Een vaste zin zou bij drie lege stenen "de lege steen" zeggen. De vorm
- * "Vul ... in" werkt bij één en bij meer, zodat de zin altijd loopt.
+ * Eén zin voor alle groepen, en met opzet dezelfde overal: onder één leerdoel
+ * hangen meerdere oefeningen, en wisselende zinnen lopen dan door elkaar.
+ *
+ * De zin noemt de sprong niet. Hoe groot die is, hoort het kind zelf uit de
+ * rij af te lezen — dat is juist wat hier geoefend wordt, en zo staat het ook
+ * in de schoolmethodes.
+ *
+ * `{som}` zit er niet meer in, maar blijft wel werken: zet je hem zelf in een
+ * eigen zin, dan wordt hij nog steeds vervangen door "de lege steen" of "de
+ * lege stenen", afhankelijk van hoeveel er leeg zijn.
  */
+const VASTE_ZIN = "Vul de ontbrekende getallen in.";
+
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Vul {som} in.",
-  "56": "Vul {som} van de telrij in.",
-  "78": "Vul {som} van de telrij in. Let op hoe groot de sprong is.",
+  "34": VASTE_ZIN,
+  "56": VASTE_ZIN,
+  "78": VASTE_ZIN,
 };
 
 /** "de lege steen" of "de lege stenen", afhankelijk van hoeveel er leeg zijn. */
@@ -66,6 +76,8 @@ function grenzen(inst: Instellingen) {
     stenen,
     leeg,
     plek,
+    /* Uit = zoals het altijd was: de eerste steen houdt zijn getal. */
+    eersteMagLeeg: vinkje(inst, "eersteLeeg"),
     mascotte: tekst(inst, "mascotte", ""),
     mascotteSpringend: tekst(inst, "mascotteSpringend", ""),
     mascotteJuichend: tekst(inst, "mascotteJuichend", ""),
@@ -75,29 +87,95 @@ function grenzen(inst: Instellingen) {
 /**
  * Het om-en-om-patroon: getal, leeg, getal, leeg, ...
  *
- * De eerste steen heeft altijd een getal, dus de lege stenen zijn de oneven
- * plekken: 1, 3, 5. Het aantal volgt daarmee uit de lengte van de rij — bij
- * zes stenen drie lege, bij vijf stenen twee. De instelling "aantal lege
- * stenen" doet hier dus niets; zie de hulptekst bij dat veld.
+ * Begint normaal bij steen 1, want de eerste steen heeft dan een getal: de
+ * lege stenen zijn de oneven plekken 1, 3, 5. Het aantal volgt daarmee uit de
+ * lengte van de rij — bij zes stenen drie lege, bij vijf stenen twee. De
+ * instelling "aantal lege stenen" doet hier dus niets; zie de hulptekst bij
+ * dat veld.
+ *
+ * Mag de eerste steen ook leeg zijn, dan begint hetzelfde patroon bij steen 0
+ * en draait het om: leeg, getal, leeg, getal.
  */
-export function omEnOmPlekken(stenen: number): number[] {
+export function omEnOmPlekken(stenen: number, vanaf = 1): number[] {
   const uit: number[] = [];
-  for (let i = 1; i < stenen; i += 2) uit.push(i);
+  for (let i = vanaf; i < stenen; i += 2) uit.push(i);
   return uit;
 }
 
 /**
+ * Hoeveel stenen er minstens een getal moeten houden.
+ *
+ * Twee. Uit twee ingevulde stenen is de sprong af te lezen — het verschil
+ * gedeeld door het aantal stappen ertussen — en daarmee ligt de hele rij vast,
+ * ook de stenen vóór de eerste die er staat. Met één getal kan dat niet: dan
+ * is er geen sprong uit te halen en valt er niets te berekenen, alleen te
+ * raden.
+ */
+const MINSTE_GETALLEN = 2;
+
+/**
  * Welke stenen leeg worden.
  *
- * De eerste steen blijft altijd staan: daar begint de telrij en daar staat de
- * mascotte. Zonder beginpunt valt er niets door te tellen.
+ * De eerste steen blijft standaard staan: daar begint de telrij en daar staat
+ * de mascotte. Zonder beginpunt valt er niets door te tellen.
+ *
+ * Staat het vinkje "Eerste steen mag ook leeg zijn" aan, dan doet die eerste
+ * steen mee — niet altijd, maar ongeveer bij de helft van de vragen. De andere
+ * helft blijft precies zoals hierboven, zodat een kind allebei tegenkomt.
  */
 function legePlekken(
   kans: () => number,
   stenen: number,
   leeg: number,
   plek: Steenplek,
+  eersteMagLeeg: boolean,
 ): number[] {
+  /*
+    De volgorde in deze voorwaarde doet ertoe: `kans()` wordt alleen getrokken
+    als het vinkje aanstaat. Zou hij altijd getrokken worden, dan verschoof de
+    hele reeks toevalsgetallen en kwamen er bij elk bestaand sjabloon andere
+    rijen uit dan gisteren.
+
+    `MINSTE_GETALLEN` is de rem: bij drie stenen met twee lege zou er één getal
+    overblijven, en dan valt de rij niet meer uit te rekenen. In dat geval
+    blijft de eerste steen gewoon staan.
+  */
+  if (eersteMagLeeg && plek === "omenom") {
+    /* Om en om vanaf steen 0 laat er `stenen / 2` naar beneden afgerond staan. */
+    if (Math.floor(stenen / 2) >= MINSTE_GETALLEN && kans() < 0.5) {
+      return omEnOmPlekken(stenen, 0);
+    }
+  } else if (eersteMagLeeg && stenen - leeg >= MINSTE_GETALLEN && kans() < 0.5) {
+    /*
+      De eerste steen erbij, en de rest volgens de gekozen plek. Dus achteraan
+      wordt "leeg ... vol vol ... leeg", en vooraan wordt "leeg leeg vol ...".
+      Zo blijft de keuze bij "Waar de lege stenen liggen" doen wat er staat.
+    */
+    return [0, ...legeUitRest(kans, stenen, leeg - 1, plek, false)];
+  }
+
+  return legeUitRest(kans, stenen, leeg, plek, true);
+}
+
+/**
+ * De lege stenen vanaf steen 1; de eerste steen blijft hier altijd staan.
+ *
+ * `metOmEnOm` staat alleen aan als deze functie de hele rij verdeelt. Is steen
+ * 0 hierboven al leeg gemaakt, dan mag het om-en-om-patroon er hier niet meer
+ * uit komen: dat patroon bepaalt zijn eigen aantal lege stenen, en samen met
+ * die eerste bleven er dan te weinig getallen over — bij vier stenen precies
+ * één.
+ */
+function legeUitRest(
+  kans: () => number,
+  stenen: number,
+  leeg: number,
+  plek: Steenplek,
+  metOmEnOm: boolean,
+): number[] {
+  /* Niets meer te verdelen: alle overgebleven stenen houden hun getal. */
+  if (leeg <= 0) return [];
+
   const mogelijk = Array.from({ length: stenen - 1 }, (_, i) => i + 1);
 
   if (plek === "achteraan") return mogelijk.slice(-leeg);
@@ -121,7 +199,7 @@ function legePlekken(
     ongeveer één op de vier rijen ligt om en om, de rest wordt geloot zoals
     altijd.
   */
-  if (stenen >= 4 && kans() < 0.25) return omEnOmPlekken(stenen);
+  if (metOmEnOm && stenen >= 4 && kans() < 0.25) return omEnOmPlekken(stenen);
 
   /* Trekken zonder herhaling, en daarna op volgorde zetten. */
   const pot = [...mogelijk];
@@ -136,7 +214,7 @@ export const stapstenenGenerator: Generator = {
   id: "stapstenen",
   naam: "Telrij stapstenen",
   uitleg:
-    "Een rij stapstenen over een beekje met op elke steen het volgende getal. Het kind tikt een lege steen aan en vult hem ter plekke in, met een cijfertoetsenbord op het scherm.",
+    "Een rij stapstenen over een beekje met op elke steen het volgende getal. Het kind tikt een lege steen aan en typt het getal op de steen zelf, met het toetsenbord van de laptop of van de tablet.",
   suggestie:
     "Groep 3: sprong 1, t/m 20, 5 stenen, 1 leeg · groep 4: sprong 2 of 10, t/m 50, 6 stenen",
   velden: [
@@ -201,7 +279,13 @@ export const stapstenenGenerator: Generator = {
         { waarde: "omenom", label: "Om en om" },
         { waarde: "willekeurig", label: "Willekeurig" },
       ],
-      hulp: "De eerste steen blijft altijd staan; daar begint de telrij. Om en om (getal, leeg, getal, leeg) dwingt het kind om steeds \u00e9\u00e9n stap te maken en dan te controleren, en is daardoor lastiger dan alles achteraan: doortellen in \u00e9\u00e9n adem kan niet meer. Bij willekeurig kan het om-en-om-patroon er ook uit komen.",
+      hulp: "De eerste steen blijft altijd staan; daar begint de telrij. Om en om (getal, leeg, getal, leeg) dwingt het kind om steeds \u00e9\u00e9n stap te maken en dan te controleren, en is daardoor lastiger dan alles achteraan: doortellen in \u00e9\u00e9n adem kan niet meer. Bij willekeurig kan het om-en-om-patroon er ook uit komen. Zet je het vinkje hieronder aan, dan kan de eerste steen ook leeg zijn.",
+    },
+    {
+      soort: "vinkje",
+      sleutel: "eersteLeeg",
+      label: "Eerste steen mag ook leeg zijn",
+      hulp: "Uit: de eerste steen heeft altijd een getal en het kind begint verderop in de rij \u2014 zoals het tot nu toe ging. Aan: bij ongeveer de helft van de vragen is de eerste steen leeg en moet het kind daar beginnen. Dat oefent iets anders: het kind kan niet doortellen vanaf een getal dat er al staat, maar moet vanaf de eerste steen die w\u00e9l een getal heeft terugrekenen naar het begin van de rij. Werkt bij elke keuze hierboven: achteraan wordt dan \u201eleeg \u2026 vol \u2026 leeg\u201d, vooraan wordt \u201eleeg leeg vol \u2026\u201d en om en om draait om naar leeg, getal, leeg, getal. Er blijven altijd minstens twee getallen staan, anders valt de sprong niet af te lezen. Vos gaat nooit op een lege steen staan; hij begint op de eerste steen met een getal.",
     },
     {
       soort: "afbeelding",
@@ -232,6 +316,7 @@ export const stapstenenGenerator: Generator = {
     stenen: 6,
     leeg: "1",
     plek: "achteraan",
+    eersteLeeg: false,
     mascotte: "",
     mascotteSpringend: "",
     mascotteJuichend: "",
@@ -254,8 +339,18 @@ export const stapstenenGenerator: Generator = {
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
-    const { sprong, richting, tot, stenen, leeg, plek, mascotte, mascotteSpringend, mascotteJuichend } =
-      grenzen(inst);
+    const {
+      sprong,
+      richting,
+      tot,
+      stenen,
+      leeg,
+      plek,
+      eersteMagLeeg,
+      mascotte,
+      mascotteSpringend,
+      mascotteJuichend,
+    } = grenzen(inst);
 
     const spanne = sprong * (stenen - 1);
     /* Past de hele rij niet binnen het bereik, dan valt er niets te maken. */
@@ -271,7 +366,7 @@ export const stapstenenGenerator: Generator = {
       const oplopend = Array.from({ length: stenen }, (_, i) => laagste + i * sprong);
       const rij = richting === "terug" ? [...oplopend].reverse() : oplopend;
 
-      const lege = legePlekken(kans, stenen, leeg, plek);
+      const lege = legePlekken(kans, stenen, leeg, plek, eersteMagLeeg);
       const zichtbaar = rij.map((n, i) => (lege.includes(i) ? null : n));
       const antwoorden = lege.map((i) => rij[i]);
 

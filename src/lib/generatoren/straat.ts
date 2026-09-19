@@ -338,7 +338,7 @@ export const straatGenerator: Generator = {
         { waarde: "beide", label: "Door elkaar" },
         { waarde: "allebei", label: "Allebei de buren — het getal ervoor én erna" },
       ],
-      hulp: "Doortellen gaat bij de meeste kinderen vanzelf; terugtellen is een aparte vaardigheid en veel lastiger. Door elkaar dwingt het kind om eerst te kijken welke kant het op moet, en dat is precies wat het vaakst misgaat. Allebei de buren is de bekende buurgetallen-oefening: er staan dan drie huizen, het middelste heeft een nummer en de deuren ernaast zijn allebei leeg. Het kind vult er twee in, dus die stand is altijd een open vraag met het cijfertoetsenbord.",
+      hulp: "Doortellen gaat bij de meeste kinderen vanzelf; terugtellen is een aparte vaardigheid en veel lastiger. Door elkaar dwingt het kind om eerst te kijken welke kant het op moet, en dat is precies wat het vaakst misgaat. Allebei de buren is de bekende buurgetallen-oefening: er staan dan drie huizen, het middelste heeft een nummer en de deuren ernaast zijn allebei leeg. Het kind vult er twee in, dus die stand is altijd een open vraag waarbij het de nummers op de deuren zelf typt.",
     },
     {
       soort: "keuze",
@@ -360,7 +360,7 @@ export const straatGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze — vier knoppen met getallen" },
         { waarde: "open", label: "Open vraag — zelf het nummer invullen" },
       ],
-      hulp: "Meerkeuze is makkelijker: het juiste nummer staat ertussen. Het kind tikt erop en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: het kind moet het nummer zelf bedenken en intikken op het cijfertoetsenbord. Daar blijft de knop Controleer wel staan.",
+      hulp: "Meerkeuze is makkelijker: het juiste nummer staat ertussen. Het kind tikt erop en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: het kind moet het nummer zelf bedenken en op de deur zelf typen, met het toetsenbord van de laptop of van de tablet; daar komt alleen het cijferblok op. Daar blijft de knop Controleer wel staan.",
     },
     {
       soort: "getal",

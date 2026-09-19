@@ -182,7 +182,7 @@ export const blokkenGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze — vier knoppen met getallen" },
         { waarde: "open", label: "Open vraag — zelf het getal invullen" },
       ],
-      hulp: "Meerkeuze is makkelijker: het juiste antwoord staat ertussen, dus het kind hoeft het te herkennen. Het tikt op een getal en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: er staan geen getallen voor, het kind moet het zelf bedenken en intikken op het cijfertoetsenbord op het scherm. Daar blijft de knop Controleer wel staan, want het moet eerst klaar zijn met invullen.",
+      hulp: "Meerkeuze is makkelijker: het juiste antwoord staat ertussen, dus het kind hoeft het te herkennen. Het tikt op een getal en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: er staan geen getallen voor, het kind moet het zelf bedenken en intypen in het vak onder de blokken, met het toetsenbord van de laptop of van de tablet; daar komt alleen het cijferblok op. Daar blijft de knop Controleer wel staan, want het moet eerst klaar zijn met invullen.",
     },
     {
       soort: "getal",

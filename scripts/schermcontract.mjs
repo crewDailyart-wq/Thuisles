@@ -125,6 +125,7 @@ export const SCHERMCONTRACT = [
       { tekst: "Aantal stenen in de rij", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Aantal lege stenen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Waar de lege stenen liggen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Eerste steen mag ook leeg zijn", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       /*
         Eén mascotteveld werd er drie, één per houding. De oude regel heette
         "Mascotte op de eerste steen"; die staat er dus niet meer, maar het veld
@@ -136,7 +137,7 @@ export const SCHERMCONTRACT = [
       /*
         De instellingen van "Plaatjes tellen". Datzelfde verhaal: ze komen uit
         de generator. "Hoe het kind antwoordt" staat hier apart in, want dat is
-        de keuze tussen vier knoppen en het cijfertoetsenbord; valt die weg,
+        de keuze tussen vier knoppen en zelf intypen; valt die weg,
         dan staat elk sjabloon weer vast op meerkeuze zonder dat het opvalt.
       */
       { tekst: "Minste plaatjes", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },

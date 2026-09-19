@@ -18,6 +18,7 @@ import {
   type Gegenereerd,
   type Instellingen,
   MAX_SOMMEN_PER_KEER,
+  vulAanMetDubbele,
 } from "@/lib/generatoren/soort";
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 
@@ -272,7 +273,12 @@ export type GenereerUitslag = {
   gemaakt: number;
   gevraagd: number;
   overgeslagen: number;
+  /** Hoeveel verschillende sommen er in deze reeks zitten. */
+  verschillend: number;
+  /** Hoeveel er dubbel in zitten, omdat er niet meer verschillende bestaan. */
+  dubbel: number;
 };
+
 
 export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag<GenereerUitslag> {
   const sjabloon = haalSjabloon(sjabloonId);
@@ -282,9 +288,10 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
   if (!generator) return { ok: false, fout: "Dit soort sjabloon bestaat niet meer." };
 
   /*
-    De enige grens is die van het generator-systeem zelf. Hoeveel sommen er
-    werkelijk uitkomen, bepaalt de generator: die stopt vanzelf zodra alle
-    verschillende sommen bij deze instellingen op zijn.
+    De enige grens is die van het generator-systeem zelf. Er komen er altijd
+    zoveel als er gevraagd zijn: de generator stopt vanzelf zodra alle
+    verschillende sommen bij deze instellingen op zijn, en wat er dan nog
+    ontbreekt wordt aangevuld met dubbele — zie `vulAanMetDubbele`.
   */
   const gevraagd = Math.max(1, Math.min(MAX_SOMMEN_PER_KEER, Math.floor(aantal)));
   const bezet = bestaandeHandtekeningen(sjabloon.leerdoelId);
@@ -296,13 +303,26 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
     sjabloon niets ingevuld te worden, en verandert er niets aan sjablonen waar
     al iets in staat.
   */
-  const sommen = generator.maak(
-    metStandaardmascottes(sjabloon.soort, sjabloon.instellingen),
-    gevraagd,
-    bezet,
-    Date.now() % 1000000,
-    sjabloon.groep,
-  );
+  const instellingen = metStandaardmascottes(sjabloon.soort, sjabloon.instellingen);
+  const zaad = Date.now() % 1000000;
+  const nieuwe = generator.maak(instellingen, gevraagd, bezet, zaad, sjabloon.groep);
+
+  /*
+    Kwamen er minder uit dan gevraagd, dan zijn de verschillende sommen op.
+    Dezelfde generator wordt dan nog een keer aan het werk gezet, nu zonder de
+    bestaande eruit te filteren: dat is de hele voorraad om uit aan te vullen.
+  */
+  const voorraad =
+    nieuwe.length < gevraagd
+      ? generator.maak(instellingen, gevraagd, new Set<string>(), zaad, sjabloon.groep)
+      : nieuwe;
+  /*
+    De voorraad is met opzet de hele verzameling en niet alleen wat er nieuw uit
+    kwam: staat een deel al in de database, dan mogen die sommen hier gewoon
+    weer meedoen. Anders zou een sjabloon waarvan alles al gemaakt is helemaal
+    niets meer kunnen opleveren.
+  */
+  const sommen = vulAanMetDubbele(nieuwe, voorraad, gevraagd);
 
   const db = verbinding();
   const invoegen = db.prepare(
@@ -332,12 +352,15 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
     );
   }
 
+  const verschillend = new Set(sommen.map((s) => s.handtekening)).size;
   return {
     ok: true,
     waarde: {
       gemaakt: sommen.length,
       gevraagd,
       overgeslagen: gevraagd - sommen.length,
+      verschillend,
+      dubbel: sommen.length - verschillend,
     },
   };
 }

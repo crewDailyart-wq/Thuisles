@@ -577,6 +577,15 @@ export function Bus({
   figuur,
   instappen = false,
   onIngestapt,
+  /**
+   * Meteen klaar met instappen.
+   *
+   * Het kind mag antwoorden terwijl de vosjes nog instappen. Drukt het op
+   * Controleer voordat ze zitten, dan springen de vosjes die nog onderweg zijn
+   * ineens op hun plek — anders zou de bus wegrijden met lege stoelen, of zou
+   * het kind moeten wachten om te zien of het goed had geteld.
+   */
+  meteenKlaar = false,
   vertrek = false,
   onVertrokken,
   /** Hoeveel kinderen er al geteld zijn. Gebruikt door de uitleg-animatie. */
@@ -597,6 +606,7 @@ export function Bus({
 }: {
   figuur: Extract<Figuur, { soort: "bus" }>;
   instappen?: boolean;
+  meteenKlaar?: boolean;
   vertrek?: boolean;
   onVertrokken?: () => void;
   onIngestapt?: () => void;
@@ -633,6 +643,18 @@ export function Bus({
     return () => { clearTimeout(klok); animatie?.cancel(); stopMotor(); };
   }, [vertrek]);
   useEffect(() => { klaar.current = onIngestapt; }, [onIngestapt]);
+  /*
+    Nagekeken terwijl er nog werd ingestapt: de rest springt op zijn plek.
+
+    De stand wordt hieronder meteen bij het tekenen op "iedereen zit" gezet, en
+    niet met een nieuwe toestand. De lus die de vosjes instapt kijkt daarnaast
+    naar dezelfde verwijzing en stopt ermee — anders zou die in het volgende
+    beeldje gewoon weer verder tellen.
+  */
+  const meteen = useRef(meteenKlaar);
+  useEffect(() => {
+    meteen.current = meteenKlaar;
+  }, [meteenKlaar]);
   useEffect(() => {
     if (!instappen) return;
     let raf = 0, gestopt = false;
@@ -642,6 +664,7 @@ export function Bus({
     const afronden = () => { if (gestopt) return; gestopt = true; cancelAnimationFrame(raf); setVoortgang(instapGroepen); klaar.current?.(); };
     const stap = () => {
       if (gestopt) return;
+      if (meteen.current) { afronden(); return; }
       const n = Math.max(0, (performance.now() - begin) / stapMs);
       if (n >= instapGroepen) { afronden(); return; }
       setVoortgang(n); raf = requestAnimationFrame(stap);
@@ -650,7 +673,9 @@ export function Bus({
     const vangnet = setTimeout(afronden, instapGroepen * stapMs + 1000);
     return () => { gestopt = true; cancelAnimationFrame(raf); clearTimeout(vangnet); };
   }, [instappen, instapGroepen]);
-  const aanBoord = !instappen || voortgang >= instapGroepen;
+  /* Hoever het instappen is; bij `meteenKlaar` in één keer helemaal. */
+  const gevorderd = meteenKlaar ? instapGroepen : voortgang;
+  const aanBoord = !instappen || gevorderd >= instapGroepen;
 
 
   const raamBreedte = BUS.raamPad * 2 + perGroep * BUS.stoel;
@@ -847,7 +872,7 @@ export function Bus({
         // Eén raam tegelijk; een kleine vertraging houdt de vosjes uit elkaar.
         const volgnummer = i % perGroep;
         const spreiding = perGroep > 1 ? volgnummer / (perGroep - 1) * .28 : 0;
-        const t = Math.max(0, Math.min(1, (voortgang - raam - spreiding) / .72));
+        const t = Math.max(0, Math.min(1, (gevorderd - raam - spreiding) / .72));
         const zit = !instappen || t >= 1;
         let fx = x, fy = y - 4;
         if (!zit) {

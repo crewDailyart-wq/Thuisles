@@ -34,6 +34,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Vosbeeld, useVosplek, type Voshoudingen } from "@/components/oefenen/Vosnaastvak";
+import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 
 export type Huis = {
   nummer: number;
@@ -617,6 +618,7 @@ export function Huizenrij({
 
   /* De invulvelden op de deuren, om met de pijltjes van de ene naar de andere te springen. */
   const velden = useRef<(HTMLInputElement | null)[]>([]);
+  const { bijAandacht, bijWeggaan } = useInBeeld();
 
   const vakRef = useRef<HTMLDivElement>(null);
   const buitenRef = useRef<HTMLDivElement>(null);
@@ -804,6 +806,15 @@ export function Huizenrij({
                     onFocus={(e) => {
                       onKiesDeur?.(legePlek);
                       /*
+                        Het systeemtoetsenbord bedekt op een tablet de onderste
+                        helft. Dit houdt de deur én de knop Controleer daarboven,
+                        op dezelfde manier als bij elk ander type; zie HARDE
+                        REGEL 5 in CLAUDE.md. Het schuiven hieronder blijft
+                        staan: dat brengt de deur al vast omhoog voordat het
+                        toetsenbord er is.
+                      */
+                      bijAandacht(e.currentTarget);
+                      /*
                         De deur waarop getypt wordt, in de bovenste helft van
                         het scherm houden.
 
@@ -833,6 +844,7 @@ export function Huizenrij({
                         behavior: "smooth",
                       });
                     }}
+                    onBlur={bijWeggaan}
                     onKeyDown={(e) => {
                       if (e.key === "Enter") {
                         e.preventDefault();

@@ -3,7 +3,7 @@
 import { useEffect, useState, type CSSProperties } from "react";
 import { BOSONTWERPEN, type Bosfiguur, type Bosthema } from "@/lib/generatoren/bosspellen-catalogus";
 import { Plaatjesraster } from "./Plaatjesraster";
-import { Cijferinvoer } from "./Cijferinvoer";
+import { Telinvoer } from "@/components/oefenen/Telinvoer";
 import { VosSleepSpel, vosStenen } from "./VosSleepSpel";
 import { Steenrij } from "./Stapstenen";
 import { BosVos, Kikker } from "./BosDecor";
@@ -120,6 +120,6 @@ export function BosSpel({ figuur: f, fase, onWijzig, onBevestig, onKlaar }: {
       <span className={stijl.plukHint}>{f.thema === "appels" ? "Tik om te plukken" : "Tik en tel mee"}</span>
     </Speelveld> : <Speelveld thema="huisjes" goed={fase === "goed"}><div className="mx-auto h-28 w-48" aria-hidden="true"><span className="block text-center text-7xl">🏰</span></div><div className="text-center text-sm font-extrabold text-huisstijl-diep">Open de schatpoort</div></Speelveld>}
     {f.keuzes.length ? <div className="flex flex-wrap justify-center gap-3">{f.keuzes.map((n) => <button type="button" key={n} disabled={uit} aria-pressed={waarde === String(n)} className={`${knop} ${waarde === String(n) ? gekozenKleur : ""}`} onClick={() => kies(n)}>{n}</button>)}</div>
-      : <Cijferinvoer waarde={waarde} fase={fase} markeer maxCijfers={2} onBevestig={onBevestig} onWijzig={(v) => { setWaarde(v); onWijzig(v === "" ? "" : String(Number(v))); }}/>}
+      : <Telinvoer waarde={waarde} fase={fase} markeer maxCijfers={2} label="Typ hoeveel het er zijn" onBevestig={onBevestig} onWijzig={(v) => { setWaarde(v); onWijzig(v === "" ? "" : String(Number(v))); }}/>}
   </div>;
 }

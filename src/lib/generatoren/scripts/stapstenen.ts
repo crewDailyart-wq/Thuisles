@@ -79,6 +79,61 @@ function beeld(som: Somgegevens, tot: number, vosOp: number, boogVan: number | n
   };
 }
 
+/**
+ * Is de eerste steen leeg, en welke steen heeft dan het eerste getal?
+ *
+ * Levert `null` zolang de eerste steen gewoon een getal heeft; dan verandert er
+ * hieronder niets en blijft de uitleg precies zoals hij was.
+ */
+function beginLeeg(som: Somgegevens): { eersteGevuld: number; stap: number } | null {
+  const lege = legePlekken(som);
+  if (!lege.includes(0)) return null;
+  const eersteGevuld = som.getallen.findIndex((_, i) => i > 0 && !lege.includes(i));
+  if (eersteGevuld < 1) return null;
+  return { eersteGevuld, stap: eersteGevuld * sprongVan(som) };
+}
+
+/**
+ * De twee stappen waarmee de uitleg begint als de eerste steen leeg is.
+ *
+ * Zonder deze stappen zou de uitleg bij de tweede steen beginnen en het eerste
+ * antwoord overslaan: de lus hieronder loopt van links naar rechts en heeft
+ * geen stap voor de steen waar hij vandaan komt. Hier staat Vos dus eerst op de
+ * eerste steen mét een getal — nooit op een lege — en rekent van daar terug
+ * naar het begin van de rij.
+ *
+ * Naar links toe draait de richting om: in een oplopende rij ga je terug, in
+ * een aflopende rij juist omhoog.
+ */
+function terugNaarHetBegin(som: Somgegevens, kort: boolean): Uitlegscript["stappen"] {
+  const begin = beginLeeg(som);
+  if (!begin) return [];
+
+  const r = som.getallen;
+  const omhoog = r[0] > r[begin.eersteGevuld];
+
+  return [
+    {
+      /* `tot` op -1: elke lege steen blijft leeg, dus precies wat het kind zag. */
+      model: beeld(som, -1, begin.eersteGevuld, null),
+      zin: kort
+        ? "De eerste steen is leeg."
+        : "De eerste steen is nog leeg. Vos begint bij de eerste steen met een getal.",
+      houding: "wijzend",
+      beweging: "wijzen",
+      kant: "links",
+    },
+    {
+      model: beeld(som, 0, 0, null),
+      zin: omhoog
+        ? `${r[begin.eersteGevuld]} en ${begin.stap} erbij is ${r[0]}.`
+        : `${r[begin.eersteGevuld]} en ${begin.stap} terug is ${r[0]}.`,
+      houding: "wijzend",
+      kant: "links",
+    },
+  ];
+}
+
 // --- Groep 3-4 -------------------------------------------------------------
 
 /**
@@ -98,14 +153,18 @@ function sprongen34(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const sprong = sprongVan(som);
   const terug = som.variant === "terug";
   const teken = terug ? "eraf" : "erbij";
+  /* Vos staat nooit op een lege steen, ook niet in de allereerste stap. */
+  const vosStart = beginLeeg(som)?.eersteGevuld ?? 0;
 
   const stappen: Uitlegscript["stappen"] = [
     {
-      model: beeld(som, 0, 0, null),
+      model: beeld(som, -1, vosStart, null),
       zin: "Kijk, we gaan springen.",
       houding: "blij",
       kant: "links",
     },
+    /* Is de eerste steen leeg, dan eerst terugrekenen naar het begin. */
+    ...terugNaarHetBegin(som, true),
     {
       model: beeld(som, 0, 0, 0),
       /* Hoogstens zes woorden; `controleerUitleg` bewaakt dat voor groep 3-4. */
@@ -148,6 +207,7 @@ function sprongen56(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const verschil = Math.abs(r[b] - r[a]);
 
   const stappen: Uitlegscript["stappen"] = [
+    ...terugNaarHetBegin(som, false),
     {
       model: beeld(som, 0, 0, 0),
       zin:
@@ -189,6 +249,7 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const terug = som.variant === "terug";
   const { a, b } = ingevuldPaar(som);
   const naastElkaar = b - a === 1;
+  const begin = beginLeeg(som);
   return {
     vorm,
     strategie: "sprong-doortellen",
@@ -206,6 +267,25 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
           ? "Lees de sprong af uit twee stenen die al ingevuld zijn."
           : `Tussen twee ingevulde stenen ligt hier nog een lege steen: verdeel het verschil van ${Math.abs(r[b] - r[a])} over ${b - a} sprongen.`,
       },
+      /*
+        Staat de eerste steen niet ingevuld, dan is er niets om vanaf door te
+        tellen; dan hoort de rij eerst naar links te worden afgemaakt. Die stap
+        valt weg zodra de eerste steen wél een getal heeft.
+      */
+      ...(begin
+        ? [
+            {
+              model: {
+                soort: "som" as const,
+                tekst: `${r[begin.eersteGevuld]} ${r[0] > r[begin.eersteGevuld] ? "+" : "−"} ${
+                  begin.stap
+                } = ${r[0]}`,
+                nadruk: String(r[0]),
+              },
+              zin: "De eerste steen staat er niet bij: reken vanaf de eerste ingevulde steen terug naar het begin van de rij.",
+            },
+          ]
+        : []),
       {
         model: { soort: "som", tekst: `${terug ? "−" : "+"} ${sprong} per steen` },
         zin: terug

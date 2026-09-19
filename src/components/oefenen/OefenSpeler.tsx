@@ -28,7 +28,8 @@ import { SleepGetallen } from "@/components/oefenen/SleepGetallen";
 import { Stapstenen } from "@/components/oefenen/Stapstenen";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
 import { Blokkenvak, type Blokkenstand } from "@/components/oefenen/Mabblokken";
-import { Cijferinvoer } from "@/components/oefenen/Cijferinvoer";
+import { Telinvoer } from "@/components/oefenen/Telinvoer";
+import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
@@ -300,9 +301,9 @@ export function OefenSpeler({
   /*
     Welke lege deur aan de beurt is bij "allebei de buren".
 
-    Hij staat hier en niet in de straat zelf, omdat twee dingen hem tegelijk
-    moeten weten: de straat tekent de cursor op die deur, en het
-    cijfertoetsenbord eronder schrijft er zijn cijfers naartoe.
+    Hij staat hier en niet in de straat zelf, omdat het antwoord van de hele
+    vraag hier wordt bijgehouden: de straat tekent de cursor op die deur en
+    schrijft wat er getypt wordt hiernaartoe.
   */
   const [actieveDeur, setActieveDeur] = useState(0);
   const [ingestapteBus, setIngestapteBus] = useState<string | null>(null);
@@ -367,6 +368,18 @@ export function OefenSpeler({
 
 
   const vraag = serie[index];
+  /*
+    Stappen de vosjes nog in?
+
+    Het kind hoeft daar niet op te wachten: de vraag, het invulvak en de knop
+    Controleer staan er meteen, zodat het alvast kan meetellen en antwoorden.
+    Drukt het op Controleer voordat iedereen zit, dan springen de laatste
+    vosjes op hun plek en wordt het antwoord gewoon nagekeken — zie `meteenKlaar`
+    bij de bus hieronder.
+
+    Wat hier nog wél aan hangt, is het tipje van Vos: dat is een hulpzin over
+    het antwoord, en die hoort pas als er iets te tellen valt.
+  */
   const busWacht = vraag?.figuur?.soort === "bus" && vraag.figuur.animatie !== "wegrijden" && !vraag.afbeelding && ingestapteBus !== vraag.id;
 
   /*
@@ -446,7 +459,7 @@ export function OefenSpeler({
    * het dus het vórige antwoord nakijken.
    */
   function controleer(gekozen: string = antwoord) {
-    if (busWacht || gekozen.trim() === "") return;
+    if (gekozen.trim() === "") return;
     /* Deze vraag is al nagekeken; een tweede klik telt niet nog eens mee. */
     if (nagekeken.current === index) return;
     nagekeken.current = index;
@@ -694,7 +707,8 @@ export function OefenSpeler({
     );
   }
 
-  const magControleren = !busWacht && antwoord.trim() !== "" && fase === "bezig";
+  /* Ook tijdens het instappen van de bus; zie de toelichting bij `busWacht`. */
+  const magControleren = antwoord.trim() !== "" && fase === "bezig";
 
   /*
     De bolletjes in de balk: één per vraag van deze sessie.
@@ -915,7 +929,7 @@ export function OefenSpeler({
                     className="mx-auto h-auto w-full rounded-xl object-contain"
                   />
                 ) : vraag.figuur?.soort === "bus" ? (
-                  <Bus key={`${vraag.id}:${index}`} figuur={vraag.figuur} instappen={vraag.figuur.animatie !== "wegrijden"} onIngestapt={() => setIngestapteBus(vraag.id)} vertrek={fase === "goed"} onVertrokken={() => setWachtOpVos(false)} />
+                  <Bus key={`${vraag.id}:${index}`} figuur={vraag.figuur} instappen={vraag.figuur.animatie !== "wegrijden"} onIngestapt={() => setIngestapteBus(vraag.id)} meteenKlaar={fase !== "bezig"} vertrek={fase === "goed"} onVertrokken={() => setWachtOpVos(false)} />
                 ) : vraag.figuur?.soort === "kralenrij" ? (
                   <KralenAvontuur key={vraag.id} figuur={vraag.figuur} fase={fase} onKlaar={() => setWachtOpVos(false)} />
                 ) : vraag.figuur?.soort === "plaatjesraster" ? (
@@ -1030,7 +1044,7 @@ export function OefenSpeler({
               {vraagtekst}
             </h1>
 
-            {!invulbaar && !busWacht && (
+            {!invulbaar && (
               <Antwoordvelden
                 vraag={vraag}
                 antwoord={antwoord}
@@ -1202,9 +1216,15 @@ export function OefenSpeler({
               Geen knop bij de vraagtypes waar je uit vakken kiest: daar wordt
               de tik zelf nagekeken, een halve tel later.
             */}
-            {fase === "bezig" && !busWacht && !kiestUitVakken && (
+            {fase === "bezig" && !kiestUitVakken && (
               <button
                 type="button"
+                /*
+                  Het merkteken waaraan `useInBeeld` deze knop terugvindt. Die
+                  moet weten waar de onderkant van de oefening zit, om er bij
+                  een open toetsenbord net genoeg bovenuit te schuiven.
+                */
+                data-controleer=""
                 onClick={() => controleer()}
                 disabled={!magControleren}
                 className="inline-flex items-center gap-2 rounded-full bg-huisstijl-diep px-6 py-3 text-base font-extrabold text-white transition hover:bg-huisstijl-donker disabled:cursor-not-allowed disabled:opacity-45"
@@ -1303,6 +1323,11 @@ function Antwoordvelden({
   /** Alleen bij de stapstenen: de mascotte is aan de overkant. */
   onSprongKlaar?: () => void;
 }) {
+  /*
+    Helemaal bovenaan, want hieronder staan de takken per vraagvorm en die
+    stoppen met een `return`. Een haak hoort op elke ronde langs te komen.
+  */
+  const { bijAandacht, bijWeggaan } = useInBeeld();
   const uit = fase !== "bezig";
   const toonKleur = markeer && fase === "fout";
   /*
@@ -1405,25 +1430,22 @@ function Antwoordvelden({
   }
 
   /*
-    De blokken en de plaatjes als open vraag: het kind vult het getal zelf in,
-    met het cijfertoetsenbord op het scherm.
+    De blokken en de plaatjes als open vraag: één invulvak onder de tekening,
+    en typen met het toetsenbord van het apparaat zelf.
 
-    Hetzelfde toetsenbord als bij de stapstenen, om dezelfde reden: op een
-    tablet zou het toetsenbord van het apparaat over de blokken heen schuiven,
-    precies over wat het kind moet tellen. Bij het plaatjesraster geldt dat net
-    zo goed — dat systeemtoetsenbord schuift over de plaatjes die het kind aan
-    het tellen is, en dan is de telling weg. De knop Controleer blijft hier wél
-    staan — het kind moet eerst klaar zijn met invullen.
+    Hier stond bij de blokken een nagebouwd cijfertoetsenbord. Dat is er overal
+    uit; zie HARDE REGEL 5 in CLAUDE.md. De knop Controleer blijft wél staan —
+    het kind moet eerst klaar zijn met invullen — en de oefening schuift mee
+    omhoog zodra het toetsenbord van een tablet opengaat, zodat het vak en die
+    knop zichtbaar blijven.
   */
   /*
     De straat heeft geen antwoordvak onder de tekening.
 
     Het kind typt het huisnummer op de deur zelf, net als op de steen bij de
     telrij — zie `Huizenrij`. Een los vak eronder zou hetzelfde antwoord een
-    tweede keer vragen, en het cijfertoetsenbord dat erbij hoorde nam de halve
-    bladzijde in beslag terwijl de huisjes juist in beeld moeten blijven. Op
-    een tablet komt in plaats daarvan het systeemtoetsenbord op, met alleen
-    cijfers.
+    tweede keer vragen terwijl de huisjes juist in beeld moeten blijven. Op een
+    tablet komt op die deur het systeemtoetsenbord op, met alleen cijfers.
   */
   if (vraag.vorm === "open" && vraag.figuur?.soort === "huizenrij") return null;
 
@@ -1432,10 +1454,15 @@ function Antwoordvelden({
     (vraag.figuur?.soort === "mabblokken" || vraag.figuur?.soort === "plaatjesraster")
   ) {
     return (
-      <Cijferinvoer
+      <Telinvoer
         waarde={antwoord}
         fase={fase}
         markeer={markeer}
+        label={
+          vraag.figuur.soort === "plaatjesraster"
+            ? "Typ hoeveel je er ziet"
+            : "Typ welk getal hier ligt"
+        }
         onWijzig={onKies}
         onBevestig={onBevestig}
       />
@@ -1469,6 +1496,7 @@ function Antwoordvelden({
         */
         goedeWaarden={fase === "bezig" ? null : goede}
         onSprongKlaar={onSprongKlaar}
+        onBevestig={onBevestig}
         onWijzig={(nieuw: string[]) =>
           onKies(nieuw.every((w) => w === "") ? "" : nieuw.map((w) => w.trim()).join(","))
         }
@@ -1621,10 +1649,20 @@ function Antwoordvelden({
           autoComplete="off"
           inputMode="numeric"
           /*
+            `pattern` erbij naast `inputMode`: die twee samen laten een tablet
+            en een telefoon het cijferblok tonen in plaats van het letterbord.
+            Alleen `inputMode` is niet genoeg — oudere iPads kijken naar het
+            patroon. Zie HARDE REGEL 5 in CLAUDE.md.
+          */
+          pattern="[0-9]*"
+          enterKeyHint="done"
+          /*
             Eén cijfer meer dan nodig. Zo kan een kind een tikfout maken en die
             zien staan, in plaats van dat het toetsenbord stil lijkt te vallen.
           */
           maxLength={cijfers + 1}
+          onFocus={(e) => bijAandacht(e.currentTarget)}
+          onBlur={bijWeggaan}
           onChange={(e) => onKies(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
@@ -1646,6 +1684,12 @@ function Antwoordvelden({
         value={antwoord}
         disabled={uit}
         autoComplete="off"
+        /*
+          Hier geen cijferstand: in dit vak past ook een woord. Het meeschuiven
+          hoort er wel bij, want ook dit vak kan onder het toetsenbord vallen.
+        */
+        onFocus={(e) => bijAandacht(e.currentTarget)}
+        onBlur={bijWeggaan}
         onChange={(e) => onKies(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

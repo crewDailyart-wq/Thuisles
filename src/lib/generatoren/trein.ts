@@ -53,15 +53,38 @@ import { treinUitleg } from "@/lib/generatoren/scripts/trein";
  * het klopte ook niet helemaal, want het gaat om de wagons en niet om de hele
  * trein. Deze kinderen lezen bovendien nog nauwelijks, dus het handje dat het
  * voordoet is minstens zo belangrijk als de zin.
+ *
+ * Eén zin voor alle groepen, en met opzet dezelfde overal: onder één leerdoel
+ * hangen meerdere oefeningen, en wisselende zinnen lopen dan door elkaar.
+ *
+ * `{som}` wordt "van klein naar groot" of "van groot naar klein", naar de
+ * volgorde die in díé vraag zit. Zo klinkt het zoals op school; "laag" en
+ * "hoog" gaan bij kinderen van deze leeftijd eerder over hoogte dan over
+ * hoeveelheid. Staat de instelling op door elkaar, dan kiest elke vraag
+ * vanzelf de zin die erbij hoort.
  */
+const VASTE_ZIN = "Sleep de wagons {som}.";
+
+/** Dezelfde zin met `{som}` ingevuld, als grijs voorbeeld in het beheer. */
+const VOORBEELDZIN = "Sleep de wagons van klein naar groot.";
+
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Sleep de wagons {som}.",
-  "56": "Sleep de wagons {som} achter de locomotief.",
-  "78": "Zet de wagons in de goede volgorde: {som}.",
+  "34": VASTE_ZIN,
+  "56": VASTE_ZIN,
+  "78": VASTE_ZIN,
 };
 
 const MIN_GETAL = 1;
 const MAX_GETAL = 100;
+
+/**
+ * Het meeste aantal wagons.
+ *
+ * Tien past nog: de wagons delen de ruimte die de locomotief overlaat, en die
+ * locomotief krimpt mee zodra de trein langer wordt — zie `Trein`. Meer dan
+ * tien maakt de getallen onleesbaar op een telefoon.
+ */
+const MAX_WAGONS = 10;
 
 /**
  * Vos als machinist, en waar hij in de locomotief komt te zitten.
@@ -88,7 +111,7 @@ export function grenzen(inst: Instellingen) {
     van,
     tot,
     richting: tekst(inst, "richting", "oplopend"),
-    aantal: Math.max(3, Math.min(5, getal(inst, "aantalWagons", 4))),
+    aantal: Math.max(3, Math.min(MAX_WAGONS, getal(inst, "aantalWagons", 4))),
     machinist: machinistVan(inst),
   };
 }
@@ -110,26 +133,26 @@ export const treinGenerator: Generator = {
   uitleg:
     "Vier of vijf wagons met getallen staan door elkaar; het kind sleept ze op volgorde achter de locomotief. Klopt het, dan rijdt de trein toeterend weg. Oefent ordenen, niet alleen vergelijken.",
   suggestie:
-    "Groep 3: 1 tot 10, vier wagons, van laag naar hoog · groep 4: 1 tot 20, vijf wagons, door elkaar",
+    "Groep 3: 1 tot 10, vier wagons, van klein naar groot · groep 4: 1 tot 20, vijf wagons, door elkaar",
   velden: [
     {
       soort: "keuze",
       sleutel: "richting",
       label: "Welke volgorde",
       opties: [
-        { waarde: "oplopend", label: "Van laag naar hoog" },
-        { waarde: "aflopend", label: "Van hoog naar laag" },
+        { waarde: "oplopend", label: "Van klein naar groot" },
+        { waarde: "aflopend", label: "Van groot naar klein" },
         { waarde: "beide", label: "Door elkaar" },
       ],
-      hulp: "Van laag naar hoog is de gewone volgorde en gaat het makkelijkst. Van hoog naar laag is lastiger: kinderen vallen tijdens het werk terug op oplopend zonder het te merken. Door elkaar dwingt ze om eerst de vraag te lezen.",
+      hulp: "Van klein naar groot is de gewone volgorde en gaat het makkelijkst. Van groot naar klein is lastiger: kinderen vallen tijdens het werk terug op oplopend zonder het te merken. Door elkaar dwingt ze om eerst de vraag te lezen. Dezelfde woorden als in de vraagzin die het kind krijgt.",
     },
     {
       soort: "getal",
       sleutel: "aantalWagons",
       label: "Hoeveel wagons",
       min: 3,
-      max: 5,
-      hulp: "Vier wagons past ruim op een telefoon. Vijf maakt het moeilijker: het kind moet dan meer getallen tegelijk overzien.",
+      max: MAX_WAGONS,
+      hulp: "Vier wagons past ruim op een telefoon. Vijf maakt het moeilijker: het kind moet dan meer getallen tegelijk overzien. Meer dan zes wordt een lange trein: de wagons worden smaller en de locomotief krimpt mee om ruimte te maken. Op een telefoon is acht het meeste dat nog prettig sleept; tien past, maar de getallen worden dan klein.",
     },
     {
       soort: "getal",
@@ -152,13 +175,24 @@ export const treinGenerator: Generator = {
       label: "Vos als machinist",
       hulp: "De vos die in het raampje van de locomotief komt te staan: kop, pet en zwaaiende poot, afgesneden op borsthoogte. Hij wordt passend in het raampje gezet, dus hij valt er nooit buiten. Leeg = geen machinist; dan kijkt de gewone vos mee vanaf de kant.",
     },
-    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
-    ...vraagtekstVelden(STANDAARDZINNEN),
+    /*
+      Overal dezelfde velden om de vraagzin aan te passen, per groep.
+
+      Het grijze voorbeeld toont de zin mét `{som}` al ingevuld, anders leest een
+      beheerder "Sleep de wagons {som}." en ziet hij niet wat het kind krijgt.
+    */
+    ...vraagtekstVelden(STANDAARDZINNEN, {
+      voorbeeldzinnen: {
+        "34": VOORBEELDZIN,
+        "56": VOORBEELDZIN,
+        "78": VOORBEELDZIN,
+      },
+    }),
   ],
   vraagteksten: {
     standaard: STANDAARDZINNEN,
     som: (som) =>
-      (som.extra?.aflopend ?? 0) === 1 ? "van hoog naar laag" : "van laag naar hoog",
+      (som.extra?.aflopend ?? 0) === 1 ? "van groot naar klein" : "van klein naar groot",
   },
   standaard: {
     van: 1,

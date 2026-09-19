@@ -12,8 +12,9 @@
  * "Vos' straat":
  *
  *   meerkeuze   vier getallen onder de plaatjes; het kind tikt het goede aan
- *   open vraag  geen getallen te zien; het kind telt en tikt het aantal zelf
- *               in op het cijfertoetsenbord op het scherm
+ *   open vraag  geen getallen te zien; het kind telt en typt het aantal zelf
+ *               in het vak onder de plaatjes, met het toetsenbord van de
+ *               laptop of van de tablet
  *
  * Meerkeuze blijft de standaard, zodat bestaande sjablonen niet veranderen.
  * Open is moeilijker: er valt niets te herkennen en niets weg te strepen, dus
@@ -62,7 +63,7 @@ import {
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import type { AntwoordOptie } from "@/lib/vraagtypes";
-import { TELPLAATJE_NAMEN, TELPLAATJE_OPTIES } from "@/lib/telplaatjes";
+import { TELPLAATJE_NAMEN, TELPLAATJE_OPTIES, meervoudVanTelplaatje } from "@/lib/telplaatjes";
 import { plaatjestellenPatronen } from "@/lib/generatoren/patronen/plaatjestellen";
 import { plaatjestellenAanpak } from "@/lib/generatoren/aanpak/plaatjestellen";
 import { plaatjestellenUitleg } from "@/lib/generatoren/scripts/plaatjestellen";
@@ -70,10 +71,28 @@ import { plaatjestellenUitleg } from "@/lib/generatoren/scripts/plaatjestellen";
 /**
  * De standaardzinnen van dit type. Per sjabloon aan te passen in het beheer.
  *
- * Zo kort mogelijk gehouden: deze kinderen kunnen nog nauwelijks lezen. Twee
- * woorden en een vraagteken is genoeg — wát er te tellen valt, zien ze.
+ * Zo kort mogelijk gehouden: deze kinderen kunnen nog nauwelijks lezen.
+ *
+ * `{plaatjes}` wordt vervangen door het meervoud van het plaatje dat in die
+ * vraag staat: eendjes, ballen, sterren. Dat leest prettiger dan "plaatjes" en
+ * het zegt meteen wát er geteld moet worden. Staat er een eigen geüploade
+ * afbeelding in de vraag, dan is er geen naam en valt het woord weg — zie
+ * `ZONDER_NAAM` hieronder.
  */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
+  "34": "Hoeveel {plaatjes} tel je?",
+  "56": "Hoeveel {plaatjes} tel je?",
+  "78": "Hoeveel {plaatjes} tel je er in totaal?",
+};
+
+/**
+ * De zin als het plaatje geen naam heeft.
+ *
+ * Bij een eigen geüploade afbeelding weten we niet hoe het heet. "Hoeveel tel
+ * je?" zou dan overblijven en dat loopt niet, dus daar blijft de zin staan zoals
+ * hij altijd was.
+ */
+const ZONDER_NAAM: Record<Leeftijdsgroep, string> = {
   "34": "Hoeveel zie je?",
   "56": "Hoeveel plaatjes zie je?",
   "78": "Hoeveel plaatjes staan er in totaal?",
@@ -171,7 +190,7 @@ export const plaatjestellenGenerator: Generator = {
   id: "plaatjestellen",
   naam: "Plaatjes tellen",
   uitleg:
-    "Een aantal dezelfde plaatjes op het scherm. Het kind kiest uit vier getallen of tikt het aantal zelf in op het cijfertoetsenbord; dat stel je per sjabloon in. Het mag de plaatjes aantikken terwijl het telt; dat aftikken is hulp en telt niet mee als antwoord. De opstelling bepaalt wat er geoefend wordt.",
+    "Een aantal dezelfde plaatjes op het scherm. Het kind kiest uit vier getallen of typt het aantal zelf in; dat stel je per sjabloon in. Het mag de plaatjes aantikken terwijl het telt; dat aftikken is hulp en telt niet mee als antwoord. De opstelling bepaalt wat er geoefend wordt.",
   suggestie:
     "Groep 3: 4 tot 10 plaatjes, rijen van 5, meerkeuze · groep 4: 10 tot 20, rijen van 10 · groep 5 en hoger: 15 tot 30, verspreid, open vraag",
   velden: [
@@ -198,7 +217,7 @@ export const plaatjestellenGenerator: Generator = {
         { waarde: "meerkeuze", label: "Meerkeuze \u2014 vier knoppen met getallen" },
         { waarde: "open", label: "Open vraag \u2014 zelf het aantal invullen" },
       ],
-      hulp: "Meerkeuze is makkelijker: het goede aantal staat ertussen, samen met drie echte telfouten. Het kind tikt op een getal en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: er staan geen getallen voor, dus er valt niets te herkennen of weg te strepen \u2014 het kind moet echt tellen en tikt het aantal in op het cijfertoetsenbord op het scherm. Daar blijft de knop Controleer wel staan, want het moet eerst klaar zijn met invullen. Dat toetsenbord staat in de pagina en niet over de plaatjes heen, zodat het kind blijft zien wat het aan het tellen is.",
+      hulp: "Meerkeuze is makkelijker: het goede aantal staat ertussen, samen met drie echte telfouten. Het kind tikt op een getal en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: er staan geen getallen voor, dus er valt niets te herkennen of weg te strepen \u2014 het kind moet echt tellen. Het typt het aantal in het vak onder de plaatjes, met het toetsenbord van de laptop of van de tablet; op een tablet en een telefoon komt daar alleen het cijferblok op. De knop Controleer blijft dan staan, want het kind moet eerst klaar zijn met invullen. Komt het toetsenbord van het apparaat omhoog, dan schuift de oefening mee zodat het invulvak en die knop zichtbaar blijven.",
     },
     {
       soort: "vinkjes",
@@ -258,8 +277,25 @@ export const plaatjestellenGenerator: Generator = {
       label: "Vos \u2014 blij",
       hulp: "Te zien na een goed antwoord, als de plaatjes terugvliegen. Leeg = de standaardvos van dit soort oefening.",
     },
-    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
-    ...vraagtekstVelden(STANDAARDZINNEN),
+    /*
+      Overal dezelfde velden om de vraagzin aan te passen, per groep — met er
+      één uitleg bij die alleen voor dit type geldt: de plaatshouder
+      `{plaatjes}`.
+    */
+    ...vraagtekstVelden(STANDAARDZINNEN, {
+      /*
+        Het grijze voorbeeld toont de zin met een plaatje ingevuld, anders leest
+        een beheerder "Hoeveel {plaatjes} tel je?" en ziet hij niet wat het kind
+        krijgt.
+      */
+      voorbeeldzinnen: {
+        "34": "Hoeveel eendjes tel je?",
+        "56": "Hoeveel eendjes tel je?",
+        "78": "Hoeveel eendjes tel je er in totaal?",
+      },
+      extraHulp:
+        "{plaatjes} wordt vervangen door de naam van het plaatje in die vraag, in het meervoud: eendjes, ballen, appels, schildpadden, autootjes, sterren, bloemen of visjes. Bij een eigen geüploade afbeelding is er geen naam; dan wordt de zin „Hoeveel zie je?” gebruikt.",
+    }),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
   standaard: {
@@ -348,7 +384,20 @@ export const plaatjestellenGenerator: Generator = {
         },
       };
 
-      const vraagtekst = bepaalVraagtekst(plaatjestellenGenerator, inst, groep, gegevens);
+      /*
+        De naam van het plaatje gaat mee de zin in. Is het een eigen afbeelding,
+        dan is er geen meervoud en wordt de zin zonder naam gebruikt.
+      */
+      const meervoud = gekozen === "eigen" ? "" : meervoudVanTelplaatje(gekozen);
+      const vraagtekst = bepaalVraagtekst(
+        meervoud === ""
+          ? { ...plaatjestellenGenerator, vraagteksten: { standaard: ZONDER_NAAM } }
+          : plaatjestellenGenerator,
+        inst,
+        groep,
+        gegevens,
+        { plaatjes: meervoud },
+      );
       const figuur = {
         soort: "plaatjesraster" as const,
         aantal: hoeveel,

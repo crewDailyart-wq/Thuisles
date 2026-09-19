@@ -18,6 +18,7 @@
 
 import { useEffect, useRef } from "react";
 import { Figuurtekening, beschrijfFiguur } from "@/components/oefenen/Figuurtekening";
+import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 export type Invulfase = "bezig" | "goed" | "bijna" | "fout";
@@ -51,6 +52,7 @@ export function InvulFiguur({
   onBevestig: () => void;
 }) {
   const invoer = useRef<HTMLInputElement>(null);
+  const { bijAandacht, bijWeggaan } = useInBeeld();
   const beschrijving = beschrijfFiguur(figuur);
   const vak = beschrijving.invulvak;
 
@@ -71,10 +73,19 @@ export function InvulFiguur({
         ref={invoer}
         type="text"
         inputMode="numeric"
+        /*
+          `pattern` naast `inputMode`: die twee samen laten een tablet het
+          cijferblok tonen in plaats van het letterbord. Zie HARDE REGEL 5 in
+          CLAUDE.md.
+        */
+        pattern="[0-9]*"
+        enterKeyHint="done"
         autoComplete="off"
         value={waarde}
         disabled={fase !== "bezig"}
         aria-label={label}
+        onFocus={(e) => bijAandacht(e.currentTarget)}
+        onBlur={bijWeggaan}
         onChange={(e) => onWijzig(e.target.value)}
         onKeyDown={(e) => {
           if (e.key === "Enter") {

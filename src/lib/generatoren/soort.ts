@@ -594,20 +594,50 @@ export const VRAAGTEKST_BLOK_SLEUTELS: Record<Leeftijdsgroep, string> = {
  * 4 in taal groter is dan het verschil tussen groep 5 en 6 — een zin die voor
  * groep 4 goed werkt, is voor een net begonnen groep 3 vaak al te lang.
  */
-export function vraagtekstVelden(standaard: Record<Leeftijdsgroep, string>): Veld[] {
+export function vraagtekstVelden(
+  standaard: Record<Leeftijdsgroep, string>,
+  opties: {
+    /**
+     * Uitleg die alleen bij dit type hoort.
+     *
+     * Sommige types kennen een eigen plaatshouder naast `{som}`. Die uitleg komt
+     * achter de gezamenlijke tekst te staan, zodat elk type verder precies
+     * dezelfde velden en dezelfde uitleg houdt.
+     */
+    extraHulp?: string;
+    /**
+     * De zin zoals het kind hem krijgt, om als grijs voorbeeld te tonen.
+     *
+     * Zonder dit staat de standaardzin uit de code in het grijs, en die kan een
+     * plaatshouder bevatten: "Sleep de wagons {som}." Wie dat leest, ziet niet
+     * wat er straks op het scherm van het kind staat. Geeft een type deze zin
+     * mee, dan staat daar een echte zin — met een voorbeeldwoord op de plek van
+     * de plaatshouder.
+     */
+    voorbeeldzinnen?: Record<Leeftijdsgroep, string>;
+  } = {},
+): Veld[] {
+  const grijs = (blok: Leeftijdsgroep) =>
+    opties.voorbeeldzinnen?.[blok] ?? standaard[blok];
+
   return [
     {
       soort: "tekst",
       sleutel: VRAAGTEKST_SLEUTEL,
       label: "Vraagtekst",
-      plaatshouder: standaard["56"],
-      hulp: "Leeg laten = de standaardzin van dit type. {som} wordt vervangen door de som zelf.",
+      plaatshouder: grijs("56"),
+      hulp:
+        "Leeg laten = de standaardzin van dit type. {som} wordt vervangen door de som zelf." +
+        (opties.voorbeeldzinnen
+          ? " Het grijze voorbeeld hiernaast laat zien hoe de zin er bij een vraag uitkomt te zien."
+          : "") +
+        (opties.extraHulp ? ` ${opties.extraHulp}` : ""),
     },
     ...VRAAGTEKST_GROEPEN.map((groep, i): Veld => ({
       soort: "tekst",
       sleutel: vraagtekstSleutel(groep),
       label: `Vraagtekst groep ${groep}`,
-      plaatshouder: standaard[leeftijdsgroepVanGroep(groep)],
+      plaatshouder: grijs(leeftijdsgroepVanGroep(groep)),
       /* De uitleg hoort maar één keer boven de rij te staan. */
       hulp: i === 0 ? "Alleen invullen als deze groep een andere zin moet krijgen." : undefined,
     })),
@@ -651,11 +681,45 @@ export function neemVraagtekstenOver(inst: Instellingen): Instellingen {
  *
  * Daarna wordt `{som}` ingevuld.
  */
+/**
+ * Een reeks aanvullen met dubbele sommen tot het gevraagde aantal.
+ *
+ * Er komen er altijd zoveel als er gevraagd zijn. Zijn er minder verschillende
+ * mogelijk, dan worden eerst alle verschillende gebruikt en daarna wordt er
+ * aangevuld — om de beurt, zodat de ene som er niet drie keer in zit terwijl
+ * een andere er maar één keer in staat.
+ *
+ * Staat hier en niet bij de opslag, omdat het beheervoorbeeld in de browser
+ * dezelfde reeks moet laten zien als er straks wordt weggeschreven. Twee keer
+ * dezelfde rekenregel zou vroeg of laat uit elkaar lopen.
+ */
+export function vulAanMetDubbele<T>(nieuwe: T[], voorraad: T[], gevraagd: number): T[] {
+  const reeks = [...nieuwe];
+  if (reeks.length >= gevraagd || voorraad.length === 0) return reeks;
+
+  for (let i = 0; reeks.length < gevraagd; i++) {
+    reeks.push(voorraad[i % voorraad.length]);
+  }
+  return reeks;
+}
+
 export function bepaalVraagtekst(
   generator: Pick<Generator, "vraagteksten">,
   inst: Instellingen,
   groep: number,
   som: Somgegevens,
+  /**
+   * Extra woorden die in de zin mogen worden ingevuld, per plaatshouder.
+   *
+   * `{som}` kent elk type; dit is voor woorden die alleen bij één type bestaan
+   * en niet in de somgegevens passen, want daar staan alleen getallen in. Zo
+   * vult "Plaatjes tellen" hier `{plaatjes}` mee met het meervoud van het
+   * plaatje dat in die vraag staat.
+   *
+   * Is een woord leeg, dan verdwijnt de plaatshouder én de spatie ervoor, zodat
+   * er geen dubbele spatie of een zin met een gat overblijft.
+   */
+  woorden: Record<string, string> = {},
 ): string {
   const blok = leeftijdsgroepVanGroep(groep);
 
@@ -665,7 +729,13 @@ export function bepaalVraagtekst(
   const zin = eigen || oudBlok || gedeeld || generator.vraagteksten.standaard[blok];
 
   const somtekst = generator.vraagteksten.som?.(som) ?? "";
-  return zin.replaceAll("{som}", somtekst).trim();
+  let uit = zin.replaceAll("{som}", somtekst);
+  for (const [naam, woord] of Object.entries(woorden)) {
+    uit = woord === ""
+      ? uit.replaceAll(` {${naam}}`, "").replaceAll(`{${naam}}`, "")
+      : uit.replaceAll(`{${naam}}`, woord);
+  }
+  return uit.trim();
 }
 
 /** Groep 3 t/m 8 naar de drie groepsvormen. Zelfde indeling als de uitleg. */

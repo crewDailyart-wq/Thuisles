@@ -19,6 +19,31 @@ function legePlekken(som: Somgegevens): number[] {
   );
 }
 
+/**
+ * Twee stenen die het kind ook echt ingevuld ziet staan, zo dicht mogelijk bij
+ * elkaar.
+ *
+ * De stappen hieronder zeggen "kijk naar twee stenen die al ingevuld zijn" en
+ * wijzen daar twee getallen bij aan. Dat waren altijd de eerste twee van de
+ * rij, maar die staan er niet altijd: bij "om en om" is de tweede steen juist
+ * leeg, en met het vinkje "Eerste steen mag ook leeg zijn" kan zelfs de eerste
+ * weg zijn. Hetzelfde staat in de foutpatronen en in de uitleg-animatie.
+ */
+function ingevuldPaar(som: Somgegevens): { a: number; b: number } {
+  const lege = legePlekken(som);
+  const staan = som.getallen.map((_, i) => i).filter((i) => !lege.includes(i));
+  let beste = { a: 0, b: Math.min(1, som.getallen.length - 1) };
+  let afstand = Infinity;
+  for (let k = 1; k < staan.length; k++) {
+    const d = staan[k] - staan[k - 1];
+    if (d < afstand) {
+      afstand = d;
+      beste = { a: staan[k - 1], b: staan[k] };
+    }
+  }
+  return beste;
+}
+
 /** Het woord dat bij de richting hoort, zodat de zinnen vanzelf kloppen. */
 function woorden(som: Somgegevens) {
   const terug = som.variant === "terug";
@@ -45,15 +70,22 @@ export const stapstenenAanpak: Aanpak = {
     const r = som.getallen;
     const sprong = sprongVan(som);
     const w = woorden(som);
+    const { a, b } = ingevuldPaar(som);
+    const stappenTussen = b - a;
     return [
       {
         tekst: "Kijk naar twee stenen die al ingevuld zijn.",
-        som: `${r[0]} en ${r[1]}`,
+        som: `${r[a]} en ${r[b]}`,
       },
-      { tekst: "Het verschil daartussen is de sprong.", som: `${sprong}` },
+      stappenTussen === 1
+        ? { tekst: "Het verschil daartussen is de sprong.", som: `${sprong}` }
+        : {
+            tekst: `Daar liggen ${stappenTussen} sprongen tussen, dus deel het verschil.`,
+            som: `${Math.abs(r[b] - r[a])} : ${stappenTussen} = ${sprong}`,
+          },
       {
         tekst: `Doe die sprong er bij elke volgende steen ${w.erbij}.`,
-        som: `${r[0]} ${w.teken} ${sprong} = ${r[1]}`,
+        som: `${r[a]} ${w.teken} ${sprong} = ${r[a + 1]}`,
       },
       { tekst: "Zo loopt de hele rij af, van links naar rechts.", som: r.join(" → ") },
     ];
@@ -68,6 +100,21 @@ export const stapstenenAanpak: Aanpak = {
 
     if (antwoorden.length === 1) {
       const p = lege[0];
+      /*
+        Is de eerste steen de lege, dan is er geen steen ervóór om vanaf te
+        tellen. Dan gaat het andersom: vanaf de eerste steen die wél een getal
+        heeft terugrekenen naar het begin van de rij. Het teken draait daarbij
+        om, want naar links toe gaat een oplopende rij juist omlaag.
+      */
+      if (p === 0) {
+        const na = r.findIndex((_, i) => i > 0 && !lege.includes(i));
+        if (na > 0) {
+          const stap = na * sprong;
+          return `Het goede antwoord is ${antwoorden[0]}, want ${r[na]} ${
+            w.terug ? "+" : "−"
+          } ${stap} = ${antwoorden[0]}.`;
+        }
+      }
       const vorige = p > 0 ? r[p - 1] : r[0];
       return `Het goede antwoord is ${antwoorden[0]}, want ${vorige} ${w.teken} ${sprong} = ${antwoorden[0]}.`;
     }

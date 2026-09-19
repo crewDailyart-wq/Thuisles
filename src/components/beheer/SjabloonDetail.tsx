@@ -23,9 +23,21 @@ import { MAX_SOMMEN_PER_KEER, neemVraagtekstenOver } from "@/lib/generatoren/soo
 import { Figuurtekening } from "@/components/oefenen/Figuurtekening";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
-import type { SjabloonInContext } from "@/lib/data/sjablonen";
+import type { GenereerUitslag, SjabloonInContext } from "@/lib/data/sjablonen";
 import type { VraagInContext } from "@/lib/vraagtypes";
 import { STATUS_LABEL, VORM_LABEL, antwoordInTekst } from "@/lib/vraagtypes";
+
+/**
+ * Wat er na het genereren in beeld komt.
+ *
+ * Zijn er minder verschillende sommen mogelijk dan er gevraagd zijn, dan komen
+ * er dubbele in de reeks. Dat staat er met zoveel woorden bij: zo zie je dat de
+ * instellingen weinig variatie geven en kun je ze ruimer zetten.
+ */
+function berichtNaGenereren(u: GenereerUitslag): string {
+  if (u.dubbel === 0) return "Sommen toegevoegd. Ze staan als concept klaar.";
+  return `${u.gemaakt} sommen toegevoegd, waarvan ${u.dubbel} dubbel: er zijn maar ${u.verschillend} verschillende sommen mogelijk met deze instellingen. Ze staan als concept klaar.`;
+}
 
 export function SjabloonDetail({
   sjabloon,
@@ -370,7 +382,7 @@ export function SjabloonDetail({
                   d.set("aantal", String(aantal));
                   return genereer(d);
                 },
-                () => setBericht("Sommen toegevoegd. Ze staan als concept klaar."),
+                (u) => setBericht(u.ok ? berichtNaGenereren(u.waarde) : ""),
               )
             }
             className={stijl.knopGroot}
@@ -403,6 +415,15 @@ export function SjabloonDetail({
           <p className="mt-2 text-xs text-beheer-zacht">
             Met deze instellingen bestaan er {maximum} verschillende sommen; er
             staan er al {sjabloon.aantalVragen}.
+            {/*
+              Wat er gebeurt als je er meer vraagt dan er bestaan. Vroeger
+              kwamen er dan minder uit; nu krijg je het aantal dat je vraagt,
+              met een paar dubbele erbij. Het getal hierboven blijft staan,
+              zodat je nog steeds ziet dat de instellingen weinig variatie
+              geven en je ze ruimer kunt zetten.
+            */}{" "}
+            Vraag je er meer dan {maximum}, dan komen er een paar dubbel in te
+            zitten.
           </p>
         )}
       </Paneel>

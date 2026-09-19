@@ -8,9 +8,13 @@
  * Conceptvragen komen hier nooit terecht: die zijn nog niet af.
  *
  * Uit de beschikbare vragen wordt een willekeurige greep gedaan van hoogstens
- * tien stuks. Binnen één oefening komt niets dubbel voor, en een volgende keer
- * krijgt het kind andere sommen uit dezelfde verzameling. Dat is nodig zodra
- * een leerdoel honderden gegenereerde sommen heeft.
+ * tien stuks, en een volgende keer krijgt het kind andere sommen uit dezelfde
+ * verzameling. Dat is nodig zodra een leerdoel honderden gegenereerde sommen
+ * heeft.
+ *
+ * Dezelfde som komt binnen één oefening alleen terug als er niet genoeg
+ * verschillende zijn, en dan nooit twee keer achter elkaar; zie
+ * `greepMetVariatie` en `uitElkaar` hieronder.
  */
 
 import Link from "next/link";
@@ -23,7 +27,7 @@ import { haalGepubliceerdeVragen, haalGepubliceerdeVragenOpIds } from "@/lib/dat
 import { haalOefensessie } from "@/lib/data/oefensessies";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 import { haalAandachtLeerdoelen, haalEerderGemaakt } from "@/lib/data/voortgang";
-import type { OefenVraag } from "@/lib/vraagtypes";
+import type { OefenVraag, VraagInContext } from "@/lib/vraagtypes";
 
 /**
  * Hoeveel vragen deze oefensessie telt.
@@ -51,6 +55,77 @@ function greepUit<T>(lijst: T[], hoeveel: number): T[] {
   const uit: T[] = [];
   while (uit.length < hoeveel && kopie.length > 0) {
     uit.push(kopie.splice(Math.floor(Math.random() * kopie.length), 1)[0]);
+  }
+  return uit;
+}
+
+/** Twee vragen met dezelfde handtekening zijn dezelfde som. */
+function somsleutel(v: VraagInContext): string {
+  return v.handtekening ?? v.id;
+}
+
+/**
+ * Een greep waarin zo weinig mogelijk dezelfde som zit.
+ *
+ * Sinds een sjabloon altijd het gevraagde aantal sommen maakt, kunnen er van
+ * dezelfde som meerdere exemplaren in de database staan. Zonder dit zou een
+ * kind er zomaar twee of drie van dezelfde achter elkaar kunnen krijgen.
+ *
+ * Daarom worden de vragen eerst op som gegroepeerd en wordt er per ronde één
+ * uit elke groep gepakt: pas als elke som één keer aan de beurt is geweest,
+ * komt er een tweede exemplaar bij. Zijn er meer verschillende sommen dan er
+ * nodig zijn, dan komt er niets dubbel in de oefening.
+ */
+function greepMetVariatie(lijst: VraagInContext[], hoeveel: number): VraagInContext[] {
+  if (hoeveel <= 0 || lijst.length === 0) return [];
+
+  const groepen = new Map<string, VraagInContext[]>();
+  for (const v of lijst) {
+    const sleutel = somsleutel(v);
+    const groep = groepen.get(sleutel);
+    if (groep) groep.push(v);
+    else groepen.set(sleutel, [v]);
+  }
+
+  /* Binnen een som telt de volgorde niet, en de sommen zelf ook door elkaar. */
+  const rijtjes = greepUit(
+    [...groepen.values()].map((g) => greepUit(g, g.length)),
+    groepen.size,
+  );
+
+  const uit: VraagInContext[] = [];
+  for (let ronde = 0; uit.length < hoeveel; ronde++) {
+    const dezeRonde = rijtjes.filter((g) => g.length > ronde);
+    if (dezeRonde.length === 0) break;
+    for (const g of greepUit(dezeRonde, dezeRonde.length)) {
+      if (uit.length >= hoeveel) break;
+      uit.push(g[ronde]);
+    }
+  }
+  return uit;
+}
+
+/**
+ * Dezelfde som nooit twee keer achter elkaar.
+ *
+ * Komt een som toch twee keer in de reeks voor, dan wordt het tweede exemplaar
+ * verderop tussengeschoven. Lukt dat niet — bijvoorbeeld als er maar één som
+ * bestaat — dan blijft de volgorde zoals hij is; doorgaan is beter dan een
+ * lege oefening.
+ */
+function uitElkaar(reeks: VraagInContext[]): VraagInContext[] {
+  const uit = [...reeks];
+  for (let i = 1; i < uit.length; i++) {
+    if (somsleutel(uit[i]) !== somsleutel(uit[i - 1])) continue;
+    const ruil = uit.findIndex(
+      (v, j) =>
+        j > i &&
+        somsleutel(v) !== somsleutel(uit[i - 1]) &&
+        somsleutel(v) !== somsleutel(uit[j - 1]) &&
+        (j + 1 >= uit.length || somsleutel(uit[i]) !== somsleutel(uit[j + 1])),
+    );
+    if (ruil === -1) continue;
+    [uit[i], uit[ruil]] = [uit[ruil], uit[i]];
   }
   return uit;
 }
@@ -129,10 +204,12 @@ export default async function OefeningPagina({
 
   const nieuw = alleVragen.filter((v) => !alGehad.has(v.id));
   const rest = alleVragen.filter((v) => alGehad.has(v.id));
-  const verseGreep = [
-    ...greepUit(nieuw, perSessie),
-    ...greepUit(rest, Math.max(0, perSessie - nieuw.length)),
-  ].slice(0, perSessie);
+  const verseGreep = uitElkaar(
+    [
+      ...greepMetVariatie(nieuw, perSessie),
+      ...greepMetVariatie(rest, Math.max(0, perSessie - nieuw.length)),
+    ].slice(0, perSessie),
+  );
 
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
   const rijen = hervat ? hervatRijen : verseGreep;

@@ -209,4 +209,46 @@ en wacht op antwoord.
 
 ---
 
+# ⛔ HARDE REGEL 5 — GEEN CIJFERTOETSENBORD OP HET SCHERM
+
+Bij oefeningen komt er nooit een nagebouwd cijfertoetsenbord in beeld. Het kind
+typt met het toetsenbord van de laptop, of met het systeemtoetsenbord van de
+tablet of telefoon. Elk nieuw type dat een getal vraagt, krijgt een echt
+invoerveld — desnoods onzichtbaar over de tekening heen, zoals op de deur bij
+Vos' straat. Dat veld toont alleen cijfers, en zodra het toetsenbord opengaat
+schuift de oefening mee omhoog zodat het veld én de knop Controleer zichtbaar
+blijven.
+
+## Hoe je dat in de code doet
+
+Drie dingen, en ze horen bij elkaar:
+
+1. **Een echt `<input>`.** Getekende tekst in een SVG is geen invoerveld: daar
+   komt op een tablet geen toetsenbord bij op en een kind kan dan niets
+   invullen. Moet er op iets getypt worden dat getekend is — een steen, een
+   deur — leg er dan een invoerveld overheen zonder eigen rand of achtergrond,
+   in procenten van de tekening. Zie `Huizenrij` en `Stapstenen`.
+2. **Alleen cijfers**: `inputMode="numeric"` én `pattern="[0-9]*"`. Alleen
+   `inputMode` is niet genoeg; oudere iPads kijken naar het patroon. Filter wat
+   er toch aan letters binnenkomt er bij het typen uit.
+3. **Meeschuiven**: gebruik `useInBeeld` uit
+   `src/components/oefenen/toetsenbordruimte.ts`, met `onFocus` en `onBlur`.
+   Die zet zolang het veld de aandacht heeft lucht onder de pagina en schuift
+   precies genoeg, zodat het veld en de knop eronder vrij blijven.
+
+## Waarom deze regel er is
+
+Een nagebouwd toetsenbord leek veiliger: het schuift niets weg en de toetsen
+zijn groot. Maar het is een tweede toetsenbord naast het echte, en daardoor
+gaat er van alles mis wat je bij een gewoon invoerveld gratis krijgt — geen
+cursor die knippert waar je typt, geen Tab tussen de vakken, geen backspace,
+niets wat een voorleesprogramma herkent. Bij de stapstenen was het zelfs de
+enige manier om iets in te vullen: het getal op de steen was getekende tekst,
+dus zonder dat toetsenbord kon een kind op een tablet niets.
+
+`Cijferinvoer.tsx` blijft in de map staan op verzoek van de eigenaar, voor het
+geval het ooit nog nodig is. Gebruik het niet.
+
+---
+
 @AGENTS.md

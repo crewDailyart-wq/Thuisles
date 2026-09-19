@@ -18,12 +18,15 @@
  * Tikken op een andere lege steen wisselt; wat er al ingevuld was blijft staan.
  *
  * ---------------------------------------------------------------------------
- * Een eigen cijfertoetsenbord
+ * De steen is een echt invoerveld
  * ---------------------------------------------------------------------------
- * Bewust geen `<input>` met het toetsenbord van het apparaat. Dat schuift op
- * een tablet over de oefening heen, precies over de rij waar het kind naar moet
- * kijken. Dit toetsenbord staat gewoon in de pagina: het duwt niets weg en de
- * toetsen zijn groot genoeg voor een kindervinger.
+ * Over elke lege steen ligt een gewoon `<input>`, zonder eigen rand of
+ * achtergrond: wat het kind ziet is de steen. Er staat geen nagebouwd
+ * cijfertoetsenbord meer in de pagina; zie HARDE REGEL 5 in CLAUDE.md. Op een
+ * tablet komt daardoor het systeemtoetsenbord op met alleen cijfers, en schuift
+ * de oefening mee omhoog zodat de steen en de knop Controleer zichtbaar
+ * blijven. Op een laptop typ je gewoon, loopt Tab langs de lege stenen en doet
+ * Enter hetzelfde als Controleer.
  *
  * ---------------------------------------------------------------------------
  * De afstand zegt iets
@@ -34,9 +37,9 @@
  */
 
 import { useEffect, useId, useRef, useState } from "react";
+import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { opgavegeluidStaatAan, plop } from "@/lib/geluid";
 import { nuInMs } from "@/lib/klok";
-import { Wisser } from "@/components/oefenen/Symbolen";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 export type Steenfase = "bezig" | "goed" | "fout";
@@ -115,7 +118,7 @@ export function oeverX(aantal: number, sprong: number, compact = false): number 
   return (plekken[aantal - 1]?.x ?? 0) + STEEN.breedte + gatBijSprong(sprong, compact) * 0.6;
 }
 
-function breedteVoor(aantal: number, sprong: number, compact = false) {
+export function breedteVoor(aantal: number, sprong: number, compact = false) {
   return oeverX(aantal, sprong, compact) + oeverVan(compact);
 }
 
@@ -274,8 +277,12 @@ export function Steenrij({
    *
    * Een gebroken getal mag: 2.5 is halverwege de sprong van steen 2 naar 3.
    * Is het gelijk aan het aantal stenen, dan staat hij op de oever.
+   *
+   * Niets meegegeven betekent: op de eerste steen die een getal heeft. Dat is
+   * bijna altijd steen 0, maar niet als de eerste steen leeg mag zijn — en op
+   * een lege steen hoort hij niet te staan.
    */
-  vosOp = 0,
+  vosOp,
   /** Hoe hoog de vos van de stenen af is tijdens een sprong, van 0 tot 1. */
   vosLift = 0,
   /** Welke houding: staand, springend of juichend. */
@@ -284,6 +291,7 @@ export function Steenrij({
   sleutelOpOever = true,
   /** Staat de vos te wachten? Dan wipt hij zachtjes op zijn plek. */
   vosTrappelt = false,
+  invoerErboven = false,
   /** Smal scherm: alles wat lucht is gaat krapper zitten. Zie `gatBijSprong`. */
   compact = false,
   /** Boogje van deze steen naar de volgende; null = geen boog. */
@@ -308,6 +316,14 @@ export function Steenrij({
   className?: string;
   /** Extra stijl op de tekening zelf; gebruikt voor een minimumbreedte. */
   stijl?: React.CSSProperties;
+  /**
+   * Ligt er een echt invulveld over de lege stenen heen?
+   *
+   * Zo ja, dan tekent de steen zelf niet meer wat er getypt is: dat getal komt
+   * dan uit het veld, en anders zou het er dubbel staan. Alleen de vraag doet
+   * dat; de uitleg en het voorbeeld tekenen hun getallen gewoon.
+   */
+  invoerErboven?: boolean;
 }) {
   /*
     Eigen namen voor de knipvlakken. Die gelden voor de hele pagina, en in het
@@ -315,6 +331,8 @@ export function Steenrij({
     ene rij zijn stenen op de vorm van de andere.
   */
   const id = useId().replace(/:/g, "");
+  /* Zie hierboven: zonder opgegeven plek staat Vos op de eerste steen mét getal. */
+  const vosPlek = vosOp ?? Math.max(0, figuur.stenen.findIndex((w) => w !== null));
   const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact);
   const breedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact);
   const oeverBreed = oeverVan(compact);
@@ -515,7 +533,7 @@ export function Steenrij({
               className={aanklikbaar ? "cursor-pointer" : undefined}
               onClick={aanklikbaar ? () => onKiesSteen?.(legeIndex) : undefined}
             >
-              {leeg ? getypt : waarde}
+              {leeg ? (invoerErboven ? "" : getypt) : waarde}
             </text>
 
             {/* Na een fout: wat er had moeten staan, onder de steen. */}
@@ -649,8 +667,8 @@ export function Steenrij({
           const ox = oeverX(figuur.stenen.length, figuur.sprong, compact);
           return { x: ox + oeverBreed * 0.2, y: (plekken[laatste]?.y ?? STEEN.midden) - 12 };
         };
-        const heel = Math.floor(vosOp);
-        const deel = vosOp - heel;
+        const heel = Math.floor(vosPlek);
+        const deel = vosPlek - heel;
         const a = plekVan(heel);
         const b = plekVan(heel + 1);
         if (!a || !b) return null;
@@ -691,11 +709,8 @@ export function Steenrij({
 
 // ---------------------------------------------------------------------------
 
-/** De toetsen. Nul onderaan in het midden, zoals op een rekenmachine. */
-const TOETSEN = ["7", "8", "9", "4", "5", "6", "1", "2", "3", "0"];
-
 /**
- * De hele vraag: de rij stenen plus het cijfertoetsenbord.
+ * De hele vraag: de rij stenen, met een invulveld op elke lege steen.
  *
  * `ingevuld` bevat wat er in de lege stenen staat, van links naar rechts.
  */
@@ -708,6 +723,7 @@ export function Stapstenen({
   fase,
   goedeWaarden = null,
   onWijzig,
+  onBevestig,
   onSprongKlaar,
   sleepbediening,
   onKiesSleepSteen,
@@ -719,6 +735,8 @@ export function Stapstenen({
   fase: Steenfase;
   goedeWaarden?: number[] | null;
   onWijzig: (nieuw: string[]) => void;
+  /** Enter in een steen doet hetzelfde als de knop Controleer. */
+  onBevestig?: () => void;
   /**
    * De vos is aan de overkant en heeft de sleutel.
    *
@@ -746,13 +764,17 @@ export function Stapstenen({
   /* De eerste lege steen staat meteen klaar; anders moet een kind eerst zoeken. */
   const [actief, setActief] = useState(0);
   const vorigeVraag = useRef(figuur);
+  /** De invulvelden die over de lege stenen liggen, van links naar rechts. */
+  const invulvelden = useRef<(HTMLInputElement | null)[]>([]);
 
   /*
     De vos springt op twee momenten, en daartussen staat hij stil.
 
       1. Bij het openen van de vraag loopt hij de stenen af die al een getal
          hebben, en blijft staan op de laatste vóór de eerste lege steen. Dat
-         laat zien waar de telrij begint en hoe hij loopt.
+         laat zien waar de telrij begint en hoe hij loopt. Mag de eerste steen
+         leeg zijn, dan begint hij niet op steen 0 maar op de eerste steen mét
+         een getal: op een lege steen hoort hij niet te staan.
       2. Ná een goed antwoord springt hij verder over de zojuist ingevulde
          stenen naar de oever, en pakt daar de sleutel op.
 
@@ -761,10 +783,19 @@ export function Stapstenen({
     telrij al weg. Hardop tellen hoort in het uitlegfilmpje, waar het bedoeld is
     om iets uit te leggen.
   */
-  const eersteLeeg = figuur.stenen.findIndex((w) => w === null);
-  const laatsteGevuld = eersteLeeg <= 0 ? 0 : eersteLeeg - 1;
+  /*
+    Waar hij begint en waar hij stopt.
 
-  const [vos, setVos] = useState({ op: 0, lift: 0 });
+    `vosStart` is de eerste steen met een getal — meestal steen 0, en alleen
+    anders als de eerste steen leeg is. Vanaf daar springt hij door tot vlak
+    vóór de eerstvolgende lege steen. Is er verderop geen lege steen meer, dan
+    blijft hij staan waar hij staat.
+  */
+  const vosStart = Math.max(0, figuur.stenen.findIndex((w) => w !== null));
+  const volgendeLeeg = figuur.stenen.findIndex((w, i) => i > vosStart && w === null);
+  const laatsteGevuld = volgendeLeeg <= vosStart ? vosStart : volgendeLeeg - 1;
+
+  const [vos, setVos] = useState({ op: vosStart, lift: 0 });
   const [houding, setHouding] = useState<"staand" | "springend" | "juichend">("staand");
   /*
     Trappelen als hij stilstaat en de vraag nog open staat: hij wacht tot hij
@@ -862,10 +893,10 @@ export function Stapstenen({
   */
   useEffect(() => {
     const start = setTimeout(() => {
-      setVos({ op: 0, lift: 0 });
+      setVos({ op: vosStart, lift: 0 });
       setHouding("staand");
       setSleutelOpOever(true);
-      laatSpringen(0, laatsteGevuld);
+      laatSpringen(vosStart, laatsteGevuld);
     }, 0);
     return () => {
       clearTimeout(start);
@@ -898,6 +929,27 @@ export function Stapstenen({
       vorigeVraag.current = figuur;
       setActief(0);
     }
+  }, [figuur]);
+
+  /*
+    De cursor staat meteen in de eerste lege steen.
+
+    Anders moet een kind eerst zoeken waar het moet beginnen, en op een laptop
+    zou het zelfs eerst moeten klikken voordat er iets gebeurt als het gaat
+    typen. Net als bij de deuren in Vos' straat.
+
+    Met `preventScroll`, anders springt de bladzijde bij elke nieuwe vraag naar
+    de rij toe. Komt het toetsenbord van een tablet erdoor omhoog, dan regelt
+    `bijAandacht` in het veld zelf het meeschuiven — dat hangt aan `onFocus` en
+    gaat dus ook bij deze automatische sprong langs.
+  */
+  useEffect(() => {
+    if (sleepbediening !== undefined) return;
+    /* Nul milliseconden: eerst tekenen, dan pas de aandacht verzetten. */
+    const klok = setTimeout(() => invulvelden.current[0]?.focus({ preventScroll: true }), 0);
+    return () => clearTimeout(klok);
+    /* Alleen bij een andere vraag; niet bij elke toetsaanslag. */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [figuur]);
 
   /*
@@ -952,20 +1004,37 @@ export function Stapstenen({
 
   const uit = fase !== "bezig";
 
-  function typ(cijfer: string) {
-    if (uit) return;
-    const nieuw = [...ingevuld];
-    const nu = nieuw[actief] ?? "";
-    /* Hoogstens drie cijfers; verder komt een telrij tot honderd niet. */
-    if (nu.length >= 3) return;
-    nieuw[actief] = nu + cijfer;
-    onWijzig(nieuw);
-  }
+  /*
+    De lege stenen zijn de invulvelden.
 
-  function wis() {
+    Er ligt een echt invoerveld over elke lege steen — onzichtbaar, want de
+    steen in de tekening ís het vak. Zo komt op een tablet het systeemtoetsenbord
+    op met alleen cijfers, knippert de cursor waar getypt wordt, loopt Tab langs
+    de stenen en is Enter hetzelfde als Controleer. Zie HARDE REGEL 5 in
+    CLAUDE.md: er komt geen nagebouwd toetsenbord op het scherm.
+
+    Niet bij de bosspellen die deze rij lenen: daar wordt gesleept, en daar
+    staat de bediening in `sleepbediening`.
+  */
+  const velden = sleepbediening === undefined && fase === "bezig";
+  const legeStenen = figuur.stenen
+    .map((waarde, i) => (waarde === null ? i : -1))
+    .filter((i) => i >= 0);
+  const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact);
+  const tekenbreedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact);
+  const { bijAandacht, bijWeggaan } = useInBeeld();
+
+  /*
+    Wat er op een steen getypt wordt.
+
+    Alles wat geen cijfer is gaat eruit — plakken en de spraakknop kunnen er
+    letters in krijgen — en hoogstens drie cijfers; verder komt een telrij tot
+    honderd niet.
+  */
+  function typ(legeIndex: number, ruw: string) {
     if (uit) return;
     const nieuw = [...ingevuld];
-    nieuw[actief] = "";
+    nieuw[legeIndex] = ruw.replace(/\D/g, "").slice(0, 3);
     onWijzig(nieuw);
   }
 
@@ -988,20 +1057,91 @@ export function Stapstenen({
         */
         className="-mx-5 w-[calc(100%+2.5rem)] max-w-none overflow-x-auto overscroll-x-contain sm:mx-0 sm:w-full sm:max-w-[42rem]"
       >
-        <Steenrij
-          compact={compact}
-          figuur={figuur}
-          ingevuld={ingevuld}
-          actief={actief}
-          goedeWaarden={goedeWaarden}
-          fase={fase}
-          vosOp={vos.op}
-          vosLift={vos.lift}
-          vosHouding={houding}
-          sleutelOpOever={sleutelOpOever}
-          vosTrappelt={fase === "bezig" && houding === "staand"}
-          onKiesSteen={(index) => { setActief(index); onKiesSleepSteen?.(index); }}
-        />
+        {/* De tekening met, bij een gewone vraag, de invulvelden er precies op. */}
+        <div className="relative">
+          <Steenrij
+            compact={compact}
+            figuur={figuur}
+            ingevuld={ingevuld}
+            actief={actief}
+            goedeWaarden={goedeWaarden}
+            fase={fase}
+            vosOp={vos.op}
+            vosLift={vos.lift}
+            vosHouding={houding}
+            sleutelOpOever={sleutelOpOever}
+            vosTrappelt={fase === "bezig" && houding === "staand"}
+            invoerErboven={velden}
+            onKiesSteen={(index) => { setActief(index); onKiesSleepSteen?.(index); }}
+          />
+
+          {velden &&
+            legeStenen.map((steen, legeIndex) => {
+              const plek = plekken[steen];
+              if (!plek) return null;
+              return (
+                <span
+                  key={steen}
+                  className="absolute [container-type:size]"
+                  style={{
+                    left: `${(plek.x / tekenbreedte) * 100}%`,
+                    top: `${((plek.y - STEEN.hoogte / 2) / HOOGTE) * 100}%`,
+                    width: `${(STEEN.breedte / tekenbreedte) * 100}%`,
+                    height: `${(STEEN.hoogte / HOOGTE) * 100}%`,
+                  }}
+                >
+                  <input
+                    ref={(el) => {
+                      invulvelden.current[legeIndex] = el;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    enterKeyHint="done"
+                    autoComplete="off"
+                    value={ingevuld[legeIndex] ?? ""}
+                    aria-label={`Getal op steen ${legeIndex + 1} van ${aantalLeeg}`}
+                    /*
+                      Geen eigen rand en geen eigen achtergrond: de steen in de
+                      tekening ís het vak. Zonder `border-0` zet de browser er
+                      zijn eigen randje omheen en staat er een kader binnen een
+                      kader. Het cijfer staat in `cqw`, dus in procenten van de
+                      steen: zo schaalt het mee met de rij zonder rekenwerk.
+                    */
+                    className="absolute inset-0 h-full w-full border-0 bg-transparent p-0 text-center font-extrabold text-inkt caret-huisstijl outline-none"
+                    style={{ fontSize: "39cqw", lineHeight: 1 }}
+                    onFocus={(e) => {
+                      setActief(legeIndex);
+                      onKiesSleepSteen?.(legeIndex);
+                      bijAandacht(e.currentTarget);
+                    }}
+                    onBlur={bijWeggaan}
+                    onChange={(e) => typ(legeIndex, e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        e.currentTarget.blur();
+                        onBevestig?.();
+                        return;
+                      }
+                      /* Met de pijltjes naar de volgende of vorige lege steen. */
+                      const naar =
+                        e.key === "ArrowRight" || e.key === "ArrowDown"
+                          ? legeIndex + 1
+                          : e.key === "ArrowLeft" || e.key === "ArrowUp"
+                            ? legeIndex - 1
+                            : null;
+                      if (naar === null) return;
+                      const doel = invulvelden.current[naar];
+                      if (!doel) return;
+                      e.preventDefault();
+                      doel.focus();
+                    }}
+                  />
+                </span>
+              );
+            })}
+        </div>
       </div>
 
       {/* Welke steen er aan de beurt is, ook voor wie het niet ziet. */}
@@ -1012,40 +1152,6 @@ export function Stapstenen({
       )}
 
       {sleepbediening}
-      {sleepbediening === undefined && fase === "bezig" && (
-        <div
-          role="group"
-          aria-label="Cijfers"
-          className="grid w-full max-w-[17rem] grid-cols-3 gap-2"
-        >
-          {TOETSEN.map((t) => (
-            <button
-              key={t}
-              type="button"
-              onClick={() => typ(t)}
-              className={`h-14 rounded-2xl border-2 border-huisstijl bg-white text-2xl font-extrabold text-huisstijl-diep transition hover:bg-huisstijl-zacht ${
-                t === "0" ? "col-start-2" : ""
-              }`}
-            >
-              {t}
-            </button>
-          ))}
-          {/*
-            Wissen als beeld en niet als woord: dezelfde backspace-pijl als op
-            een gewoon toetsenbord. De naam hangt er onzichtbaar aan, voor wie
-            het scherm laat voorlezen.
-          */}
-          <button
-            type="button"
-            onClick={wis}
-            aria-label="Wissen"
-            title="Wissen"
-            className="col-start-3 row-start-4 grid h-14 place-items-center rounded-2xl border-2 border-roze/50 bg-white text-roze transition hover:bg-roze-zacht"
-          >
-            <Wisser className="size-7" />
-          </button>
-        </div>
-      )}
     </div>
   );
 }

@@ -65,7 +65,7 @@ export function BosOverzicht({ spel }: { spel?: string }) {
         <h1 className="mb-5 text-center text-3xl font-extrabold sm:text-4xl">{som.vraagtekst}</h1>
         <BosSpel key={`${gekozen}:${beurt}`} figuur={som.figuur} fase={fase} onWijzig={setAntwoord} onBevestig={controleer} onKlaar={() => setSpelKlaar(true)}/>
         <div className="mt-6 flex justify-center gap-3">
-          {fase === "bezig" && <button type="button" disabled={!antwoord} onClick={controleer} className="min-h-14 rounded-2xl bg-huisstijl px-8 py-3 text-xl font-extrabold text-white disabled:opacity-40">Controleer</button>}
+          {fase === "bezig" && <button type="button" data-controleer="" disabled={!antwoord} onClick={controleer} className="min-h-14 rounded-2xl bg-huisstijl px-8 py-3 text-xl font-extrabold text-white disabled:opacity-40">Controleer</button>}
           {fase === "fout" && <><button type="button" onClick={() => setUitlegOpen(true)} className="min-h-12 rounded-xl bg-huisstijl-zacht px-4 font-extrabold text-huisstijl-diep">Bekijk uitleg</button><button type="button" onClick={volgende} className="min-h-12 rounded-xl bg-huisstijl px-4 font-extrabold text-white">Volgende →</button></>}
         </div>
       </div>

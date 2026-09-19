@@ -138,6 +138,14 @@ export type Vraag = {
   uitlegAfbeelding: string | null;
   /** Uit welk sjabloon deze vraag komt, of null bij een handgemaakte vraag. */
   sjabloonId: string | null;
+  /**
+   * De vingerafdruk van de som, of null bij een handgemaakte vraag.
+   *
+   * Twee vragen met dezelfde handtekening zijn dezelfde som. Dat gebeurt als er
+   * meer sommen gevraagd zijn dan er verschillende bestaan; de oefensessie
+   * gebruikt dit om dezelfde som niet twee keer achter elkaar te geven.
+   */
+  handtekening: string | null;
   status: Vraagstatus;
   aangemaaktOp: string;
 };
