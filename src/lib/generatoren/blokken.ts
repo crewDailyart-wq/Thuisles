@@ -210,19 +210,19 @@ export const blokkenGenerator: Generator = {
       soort: "afbeelding",
       sleutel: "vosVangend",
       label: "Vos — bouwend",
-      hulp: "Te zien terwijl Vos de staven in elkaar schuift. Leeg = geen vos. Alleen nodig bij de stand „Vos bouwt de staven”.",
+      hulp: "Te zien terwijl Vos de staven in elkaar schuift. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond. Alleen nodig bij de stand „Vos bouwt de staven”.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosWachtend",
       label: "Vos — wachtend",
-      hulp: "Te zien zodra alles klaarligt en het kind aan de beurt is. Leeg = dezelfde als bouwend.",
+      hulp: "Te zien zodra alles klaarligt en het kind aan de beurt is. Leeg = de standaardvos van dit soort oefening.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
       label: "Vos — blij",
-      hulp: "Te zien na een goed antwoord. Leeg = dezelfde als bouwend.",
+      hulp: "Te zien na een goed antwoord. Leeg = de standaardvos van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),

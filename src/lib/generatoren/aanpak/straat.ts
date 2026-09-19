@@ -15,9 +15,21 @@ const basisVan = (som: Somgegevens) => som.extra?.basis ?? som.goed;
 const stapVan = (som: Somgegevens) => som.extra?.stap ?? 1;
 const vooruit = (som: Somgegevens) => (som.extra?.vooruit ?? 1) === 1;
 const isEven = (som: Somgegevens) => (som.extra?.even ?? 0) === 1;
+/* Bij "allebei de buren" worden er twee gevraagd: eentje terug en eentje verder. */
+const allebei = (som: Somgegevens) => (som.extra?.allebei ?? 0) === 1;
+const linksVan = (som: Somgegevens) => som.extra?.links ?? 0;
+const rechtsVan = (som: Somgegevens) => som.extra?.rechts ?? 0;
 
 export const straatAanpak: Aanpak = {
   zin: (som) => {
+    if (allebei(som)) {
+      const stap = stapVan(som);
+      return {
+        "34": `Links eraf, rechts erbij.`,
+        "56": `Ga vanaf het middelste nummer één keer ${stap} terug en één keer ${stap} verder.`,
+        "78": `De buurgetallen liggen aan weerskanten: trek ${stap} af voor links en tel ${stap} op voor rechts.`,
+      };
+    }
     const richting = vooruit(som) ? "verder" : "terug";
     if (isEven(som)) {
       return {
@@ -36,6 +48,13 @@ export const straatAanpak: Aanpak = {
   stappen: (som) => {
     const basis = basisVan(som);
     const stap = stapVan(som);
+    if (allebei(som)) {
+      return [
+        { tekst: "Kijk naar het middelste huis.", som: `${basis}` },
+        { tekst: "Ga naar links: eraf.", som: `${basis} − ${stap} = ${linksVan(som)}` },
+        { tekst: "Ga naar rechts: erbij.", som: `${basis} + ${stap} = ${rechtsVan(som)}` },
+      ];
+    }
     const teken = vooruit(som) ? "+" : "−";
     return [
       { tekst: "Kijk waar Vos staat.", som: `${basis}` },
@@ -50,6 +69,9 @@ export const straatAanpak: Aanpak = {
   controle: (som) => {
     const basis = basisVan(som);
     const stap = stapVan(som);
+    if (allebei(som)) {
+      return `De goede antwoorden zijn ${linksVan(som)} en ${rechtsVan(som)}: vanaf ${basis} is dat ${stap} eraf en ${stap} erbij.`;
+    }
     const woord = vooruit(som) ? "erbij" : "eraf";
     return isEven(som)
       ? `Het goede antwoord is ${som.goed}: aan dezelfde kant van de straat gaat er twee ${woord} bij ${basis}.`

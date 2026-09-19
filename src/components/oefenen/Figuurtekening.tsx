@@ -12,6 +12,8 @@
  * beheer wordt datzelfde vak gewoon getekend, met een vraagteken erin.
  */
 
+import { useEffect, useRef, useState } from "react";
+import { busmotor } from "@/lib/geluid";
 import type { Figuur } from "@/lib/generatoren/soort";
 import { BosBeeld } from "@/components/oefenen/BosSpel";
 import { Plaatjesraster } from "@/components/oefenen/Plaatjesraster";
@@ -206,6 +208,7 @@ export function Kralenrij({
    */
   pijlBeweegt = true,
   /** Toon het wijzende handje bij de eerste kraal die aan de beurt is. */
+  opnieuwTikbaar = false,
   wijsAan = false,
   /** Verandert bij elke herhaling, zodat het handje opnieuw beweegt. */
   wijsSleutel = 0,
@@ -218,11 +221,15 @@ export function Kralenrij({
   telbaarAantal?: number;
   pijlBeweegt?: boolean;
   getikt?: number[];
+  opnieuwTikbaar?: boolean;
   wijsAan?: boolean;
   wijsSleutel?: number;
   onTik?: (index: number) => void;
 }) {
-  const [kleurA, kleurB] = KRALENPALETTEN[figuur.palet] ?? KRALENPALETTEN["viool-oranje"];
+  // De vijfstructuur gebruikt het rood-witte schoolrekenrek, ook in de uitleg.
+  const [kleurA, kleurB] = figuur.perGroep === 5
+    ? ["#dc3038", "#ffffff"]
+    : KRALENPALETTEN[figuur.palet] ?? KRALENPALETTEN["viool-oranje"];
   const perGroep = Math.max(1, figuur.perGroep);
 
   // Nooit een half groepje tonen, wat er ook in de vraag staat opgeslagen.
@@ -252,7 +259,7 @@ export function Kralenrij({
     <svg
       viewBox={`0 0 ${breedte} ${hoogte}`}
       className="h-auto w-full"
-      role="img"
+      role={telbaar ? "group" : "img"}
       aria-label={`Een rekenrek met ${totaal} kralen: ${groepjes} groepjes van ${perGroep}, om en om van kleur. De pijl wijst naar kraal nummer ${figuur.pijlOp}, geteld vanaf het begin.`}
     >
       <defs>
@@ -341,7 +348,7 @@ export function Kralenrij({
         const kleur = kleurIndex === 0 ? kleurA : kleurB;
         const zelfGetikt = getikt.includes(i);
         const geteld = i < opgelicht || zelfGetikt;
-        const magTikken = telbaar && i >= opgelicht && i < opgelicht + telbaarAantal && !zelfGetikt;
+        const magTikken = telbaar && i >= opgelicht && i < opgelicht + telbaarAantal && (opnieuwTikbaar || !zelfGetikt);
 
         /*
           Drie soorten beweging, en nooit twee tegelijk op dezelfde kraal:
@@ -362,6 +369,11 @@ export function Kralenrij({
         return (
           <g
             key={i}
+            role={telbaar ? "button" : undefined}
+            tabIndex={magTikken ? 0 : undefined}
+            aria-label={telbaar ? `Kraal ${i + 1}` : undefined}
+            aria-pressed={telbaar ? zelfGetikt : undefined}
+            onKeyDown={magTikken ? e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); onTik?.(i); } } : undefined}
             onClick={magTikken ? () => onTik?.(i) : undefined}
             className={[beweging, magTikken ? "cursor-pointer" : ""]
               .filter(Boolean)
@@ -426,16 +438,13 @@ export function Kralenrij({
       {wijsAan && telbaar && telbaarAantal > 0 && opgelicht < totaal && (() => {
         const { x, y } = plek(opgelicht);
         return (
-          <g key={wijsSleutel} transform={`translate(${x - 7} ${y + KRAAL.straal + 2})`} aria-hidden="true">
+          <g key={wijsSleutel} transform={`translate(${x - 10.5} ${y + KRAAL.straal - 2})`} aria-hidden="true">
             <g className="animate-hand-wijs pointer-events-none">
               <path
-                d="M7 2 C8.6 2 9.6 3.2 9.6 4.8 L9.6 10 L11.4 10 C13.2 10 14.2 11.2 14.2 12.8
-                   L14.2 17 C14.2 20.4 11.8 22.6 8.6 22.6 L6.4 22.6 C3.4 22.6 1.2 20.6 1.2 17.6
-                   L1.2 12.4 C1.2 11 2 10.2 3.2 10.2 C3.9 10.2 4.4 10.5 4.4 10.5 L4.4 4.8
-                   C4.4 3.2 5.4 2 7 2 Z"
-                fill="#f7d774"
-                stroke="#2c2545"
-                strokeWidth={1.4}
+                d="M8 13V3a2.5 2.5 0 0 1 5 0v8-1a2.3 2.3 0 0 1 4.6 0v1a2.2 2.2 0 0 1 4.4 0v2a2.2 2.2 0 0 1 4.4 0v7c0 6-3.5 10-9 10h-2c-3.5 0-5.5-2-7.5-5l-5-7a2.5 2.5 0 0 1 3.8-3.2L8 17Z"
+                fill="#ffffff"
+                stroke="#24364b"
+                strokeWidth={1.8}
                 strokeLinejoin="round"
               />
             </g>
@@ -566,6 +575,10 @@ const BUSKLEUR = {
  */
 export function Bus({
   figuur,
+  instappen = false,
+  onIngestapt,
+  vertrek = false,
+  onVertrokken,
   /** Hoeveel kinderen er al geteld zijn. Gebruikt door de uitleg-animatie. */
   opgelicht = 0,
   /** Mag het kind poppetjes aantikken om mee te tellen? */
@@ -583,6 +596,10 @@ export function Bus({
   onTik,
 }: {
   figuur: Extract<Figuur, { soort: "bus" }>;
+  instappen?: boolean;
+  vertrek?: boolean;
+  onVertrokken?: () => void;
+  onIngestapt?: () => void;
   opgelicht?: number;
   telbaar?: boolean;
   telbaarAantal?: number;
@@ -600,7 +617,41 @@ export function Bus({
     Hoeveel ramen er nodig zijn. Het laatste raam is het restje; de plekken die
     daar overblijven blijven leeg in beeld staan.
   */
-  const ramen = Math.ceil(totaal / perGroep);
+  const ramen = Math.ceil(Math.max(totaal, figuur.plaatsen ?? 40) / perGroep);
+  const instapGroepen = Math.ceil(totaal / perGroep);
+  const [voortgang, setVoortgang] = useState(instappen ? 0 : instapGroepen);
+  const klaar = useRef(onIngestapt);
+  const voertuig = useRef<SVGSVGElement>(null);
+  const vertrokken = useRef(onVertrokken);
+  useEffect(() => { vertrokken.current = onVertrokken; }, [onVertrokken]);
+  useEffect(() => {
+    if (!vertrek) return;
+    const minder = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const stopMotor = busmotor(minder ? .15 : 1.8);
+    const animatie = voertuig.current?.animate?.([{ transform: "translateX(0)" }, { transform: "translateX(110%)" }], { duration: minder ? 150 : 1800, easing: "ease-in", fill: "forwards" });
+    const klok = setTimeout(() => vertrokken.current?.(), minder ? 180 : 1900);
+    return () => { clearTimeout(klok); animatie?.cancel(); stopMotor(); };
+  }, [vertrek]);
+  useEffect(() => { klaar.current = onIngestapt; }, [onIngestapt]);
+  useEffect(() => {
+    if (!instappen) return;
+    let raf = 0, gestopt = false;
+    const minder = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const stapMs = minder ? 80 : 1100;
+    const begin = performance.now() + 450;
+    const afronden = () => { if (gestopt) return; gestopt = true; cancelAnimationFrame(raf); setVoortgang(instapGroepen); klaar.current?.(); };
+    const stap = () => {
+      if (gestopt) return;
+      const n = Math.max(0, (performance.now() - begin) / stapMs);
+      if (n >= instapGroepen) { afronden(); return; }
+      setVoortgang(n); raf = requestAnimationFrame(stap);
+    };
+    raf = requestAnimationFrame(stap);
+    const vangnet = setTimeout(afronden, instapGroepen * stapMs + 1000);
+    return () => { gestopt = true; cancelAnimationFrame(raf); clearTimeout(vangnet); };
+  }, [instappen, instapGroepen]);
+  const aanBoord = !instappen || voortgang >= instapGroepen;
+
 
   const raamBreedte = BUS.raamPad * 2 + perGroep * BUS.stoel;
   const rompBreedte =
@@ -647,12 +698,13 @@ export function Bus({
   const rest = totaal % perGroep;
 
   return (
-    <svg
-      viewBox={`0 0 ${breedte} ${hoogte}`}
+    <div className="w-full overflow-hidden">
+    <svg ref={voertuig}
+      viewBox={`0 0 ${breedte} ${hoogte + 88}`}
       className="h-auto w-full"
       role="img"
       aria-label={
-        `Een bus met ${totaal} kinderen. Er zitten ${perGroep} kinderen per raam, ` +
+        `Een bus met ${totaal} vosjes. Er zitten ${perGroep} vosjes per raam, ` +
         `om en om van kleur: ${heleRamen} volle ramen` +
         (rest > 0 ? ` en nog een raam met ${rest}.` : ".")
       }
@@ -755,7 +807,7 @@ export function Bus({
         const y = rompY + BUS.dak;
         /* Dit raam is helemaal geteld als de laatste stoel erin geteld is. */
         const laatsteInRaam = Math.min((raam + 1) * perGroep, totaal) - 1;
-        const raamGeteld = opgelicht > 0 && isGeteld(laatsteInRaam);
+        const raamGeteld = raam * perGroep < totaal && opgelicht > 0 && isGeteld(laatsteInRaam);
 
         return (
           <g key={raam}>
@@ -772,6 +824,8 @@ export function Bus({
           </g>
         );
       })}
+
+      {instappen && !aanBoord && <rect x={rompX + rompBreedte - BUS.neus + 10} y={rompY + BUS.dak} width={BUS.neus - 24} height={rompHoogte - BUS.dak} rx={6} fill="#526379" stroke={BUSKLEUR.rompDonker} strokeWidth={2}/>}
 
       {/*
         De zitplaatsen. Er worden er net zoveel getekend als er ramen zijn maal
@@ -790,42 +844,29 @@ export function Bus({
         if (i >= totaal) return null;
 
         const geteld = isGeteld(i);
-        const kleurIndex = raam % 2;
-        const basis = kleurIndex === 0 ? kleurA : kleurB;
-
-        return (
-          <g
-            key={`kind-${i}`}
-            className={geteld ? "motion-safe:animate-kraal-stuiter" : undefined}
-            style={{ transformOrigin: `${x}px ${y}px` }}
-          >
-            {/* Schouders, zodat het een poppetje is en geen losse bal. */}
-            <path
-              d={`M ${x - BUS.hoofd - 2} ${y + 13} a ${BUS.hoofd + 2} ${BUS.hoofd + 2} 0 0 1 ${
-                (BUS.hoofd + 2) * 2
-              } 0 z`}
-              fill={donkerder(basis, 0.82)}
-            />
-            {/* Hoofd. */}
-            <circle
-              cx={x}
-              cy={y - 3}
-              r={BUS.hoofd}
-              fill={`url(#bus-kind-${kleurIndex}-${figuur.palet})`}
-            />
-            {/* Gouden ring zodra dit kind geteld is. */}
-            {geteld && (
-              <circle
-                cx={x}
-                cy={y - 3}
-                r={BUS.hoofd + 3}
-                fill="none"
-                stroke={BUSKLEUR.raamGeteldRand}
-                strokeWidth={2.5}
-              />
-            )}
-          </g>
-        );
+        // Eén raam tegelijk; een kleine vertraging houdt de vosjes uit elkaar.
+        const volgnummer = i % perGroep;
+        const spreiding = perGroep > 1 ? volgnummer / (perGroep - 1) * .28 : 0;
+        const t = Math.max(0, Math.min(1, (voortgang - raam - spreiding) / .72));
+        const zit = !instappen || t >= 1;
+        let fx = x, fy = y - 4;
+        if (!zit) {
+          const wachtX = 24 + (9 - i % 10) * Math.min(25, (breedte - 70) / 10);
+          const wachtY = hoogte + 24 + Math.floor(i / 10) * 33;
+          fx = wachtX; fy = wachtY;
+          if (t > 0) {
+            const deurX = rompX + rompBreedte - BUS.neus / 2;
+            if (t < .4) { fx = wachtX + (deurX - wachtX) * t / .4; }
+            else if (t < .65) { fx = deurX; fy = wachtY + (y - 4 - wachtY) * (t - .4) / .25; }
+            else { fx = deurX + (x - deurX) * (t - .65) / .35; fy = y - 4; }
+          }
+        }
+        return <g key={`vos-${i}`} transform={`translate(${fx} ${fy})`} data-bus-vos={i} data-shirt={raam % 2 === 0 ? "rood" : "wit"}>
+          <svg x={-11} y={-21} width={22} height={30} viewBox={`${raam % 2 * 768} 0 768 1024`} overflow="hidden">
+            <image href="/vragen/bus-vosjes-rood-wit.png" width={1536} height={1024}/>
+          </svg>
+          {geteld && <ellipse cx={0} cy={-6} rx={12} ry={17} fill="none" stroke={BUSKLEUR.raamGeteldRand} strokeWidth={2}/>}
+        </g>;
       })}
 
       {/* Wielen. */}
@@ -838,7 +879,7 @@ export function Bus({
       ))}
 
       {/* Tikvlakken: alleen op de poppetjes die nu aan de beurt zijn. */}
-      {telbaar &&
+      {telbaar && aanBoord &&
         Array.from({ length: Math.min(telbaarAantal, totaal - opgelicht) }, (_, k) => {
           const i = opgelicht + k;
           const { x, y } = plek(i);
@@ -889,6 +930,7 @@ export function Bus({
         </text>
       )}
     </svg>
+    </div>
   );
 }
 

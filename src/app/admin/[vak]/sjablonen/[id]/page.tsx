@@ -1,7 +1,7 @@
 import { notFound } from "next/navigation";
 import { Kop } from "@/components/beheer/Bouwstenen";
 import { SjabloonDetail } from "@/components/beheer/SjabloonDetail";
-import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
+import { haalAlgemeenAantalVragen, haalTerugvalmascottes } from "@/lib/data/instellingen";
 import { haalSjabloon } from "@/lib/data/sjablonen";
 import { haalVak } from "@/lib/data/structuur";
 import { haalVragenVanSjabloon } from "@/lib/data/vragen";
@@ -34,6 +34,8 @@ export default async function SjabloonPagina({
         vakSlug={vak.slug}
         algemeenAantal={haalAlgemeenAantalVragen()}
         afbeeldingen={lijstAfbeeldingen()}
+        /* Wat er geldt als een mascotteveld leeg blijft; zie het afbeeldingenbeheer. */
+        terugval={haalTerugvalmascottes(sjabloon.soort)}
       />
     </div>
   );

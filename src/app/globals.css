@@ -219,6 +219,7 @@
   --animate-blok-van-vos: blok-van-vos 0.3s cubic-bezier(0.34, 1.15, 0.5, 1) both;
   --animate-vis-deint: vis-deint 3.4s ease-in-out infinite;
   --animate-vis-wipt: vis-wipt 0.75s cubic-bezier(0.34, 1.2, 0.5, 1) 1;
+  --animate-trein-koppelt: trein-koppelt 0.42s ease-out 1;
   --animate-stoom: stoom 2.6s ease-out infinite;
   --animate-wolk: wolk 22s linear infinite;
   --animate-staaf-klikt: staaf-klikt 0.34s ease-out 1;
@@ -378,6 +379,81 @@
   35%       { transform: translateY(-16%) rotate(-5deg); }
   70%       { transform: translateY(-4%) rotate(3deg); }
   100%      { transform: translateY(0) rotate(0deg); }
+}
+
+/*
+  De knipperende cursor op de deur die aan de beurt is.
+
+  Hetzelfde ritme als de cursor in een invulveld, want dat is precies wat het
+  is: hier komt wat je nu intikt. Bij twee lege deuren is dat het enige wat
+  laat zien welke van de twee je op dit moment invult.
+*/
+.cursor-knippert {
+  animation: cursor-knippert 1.1s step-end infinite;
+}
+
+@keyframes cursor-knippert {
+  0%, 55%   { opacity: 1; }
+  56%, 100% { opacity: 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor-knippert { animation: none; }
+}
+
+/*
+  Het eerste lege vak pulseert zolang er nog geen wagon staat.
+
+  Een kind dat niet leest, ziet zo waar het eerste stuk heen moet. Zodra er één
+  wagon staat is het duidelijk en houdt het op — dan wordt het een knipperlicht
+  bij iets wat je al weet.
+*/
+.vak-pulseert {
+  animation: vak-pulseert 1.8s ease-in-out infinite;
+}
+
+@keyframes vak-pulseert {
+  0%, 100% { transform: scale(1); filter: brightness(1); }
+  50%      { transform: scale(1.05); filter: brightness(1.08); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .vak-pulseert { animation: none; }
+}
+
+/*
+  De wagons koppelen vast.
+
+  Een korte klap: de trein veert even terug en komt dan met een kleine bons tot
+  stilstand. Dat is het geluid van koppelen in beeld gebracht — een kind ziet
+  dat de wagons nu één geheel zijn, en pas daarna gaat hij rijden.
+*/
+@keyframes trein-koppelt {
+  0%   { transform: translateX(0); }
+  30%  { transform: translateX(-1.6%); }
+  62%  { transform: translateX(0.6%); }
+  100% { transform: translateX(0); }
+}
+
+/*
+  Vos zwaait uit het raampje terwijl de trein wegrijdt.
+
+  Het zwaaien zit in de afbeelding zelf — zijn poot staat al omhoog. Dit is de
+  beweging eromheen: hij wiebelt vrolijk mee met de trein. Klein gehouden,
+  anders gaat hij scheef hangen in plaats van blij te zijn.
+*/
+.machinist-zwaait {
+  animation: machinist-zwaait 0.55s ease-in-out infinite;
+  transform-origin: 50% 90%;
+}
+
+@keyframes machinist-zwaait {
+  0%, 100% { transform: rotate(-3.5deg); }
+  50%      { transform: rotate(3.5deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .machinist-zwaait { animation: none; }
 }
 
 /*

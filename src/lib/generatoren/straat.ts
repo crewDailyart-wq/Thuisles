@@ -61,6 +61,18 @@ const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
   "78": "Welk huisnummer hoort op de lege deur?",
 };
 
+/**
+ * De zinnen bij de stand "allebei de buren".
+ *
+ * Meervoud, want er worden twee nummers gevraagd. Ze gelden alleen als er bij
+ * het sjabloon geen eigen vraagzin is ingevuld; die gaat altijd voor.
+ */
+const ALLEBEIZINNEN: Record<Leeftijdsgroep, string> = {
+  "34": "Welke nummers horen hier?",
+  "56": "Welke huisnummers horen bij de twee lege deuren?",
+  "78": "Vul de buurgetallen in: het getal ervoor en het getal erna.",
+};
+
 const MIN_GETAL = 1;
 const MAX_GETAL = 100;
 
@@ -78,8 +90,12 @@ export function grenzen(inst: Instellingen) {
     richting: tekst(inst, "richting", "beide"),
     vraagvorm: tekst(inst, "vraagvorm", "meerkeuze"),
     straatsoort: tekst(inst, "straatsoort", "gewoon"),
+    sprong: Math.max(1, getal(inst, "sprong", 1)),
   };
 }
+
+/** Hoeveel huizen er bij "allebei de buren" staan: links, midden, rechts. */
+const HUIZEN_ALLEBEI = 3;
 
 /**
  * De straat opbouwen rond het huis van Vos.
@@ -184,6 +200,116 @@ export function keuzes(
   };
 }
 
+/**
+ * Allebei de buren: drie huizen, het middelste vol, de twee ernaast leeg.
+ *
+ * ---------------------------------------------------------------------------
+ * Waarom dit een eigen stand is
+ * ---------------------------------------------------------------------------
+ * Eén buurgetal vinden is één richting kiezen. Twee tegelijk is iets anders:
+ * het kind moet van hetzelfde getal de ene kant óp en de andere kant áf, en
+ * precies daar gaat het mis — dan staat er twee keer hetzelfde, of staan de
+ * twee antwoorden verwisseld. Dat is de klassieke buurgetallen-oefening, en
+ * die vraagt om twee invulvakken in plaats van vier keuzeknoppen.
+ *
+ * Daarom altijd een open vraag: met vier knoppen valt er geen paar antwoorden
+ * te geven. De instelling "hoe het kind antwoordt" doet hier dus niets, en dat
+ * staat ook in de hulptekst bij die instelling.
+ *
+ * ---------------------------------------------------------------------------
+ * De sprong
+ * ---------------------------------------------------------------------------
+ * Bij een gewone straat komt die uit de instelling: 1, 2, 5 of 10, dezelfde
+ * vier als bij Telrij stapstenen. Bij even en oneven is hij altijd 2, want dat
+ * hoort bij de huisnummers zelf — daar staat de overkant tussen.
+ */
+function maakAllebei(
+  inst: Instellingen,
+  aantal: number,
+  alGebruikt: Set<string>,
+  kans: () => number,
+  groep: number,
+  grens: { van: number; tot: number; even: boolean; sprong: number },
+): Gegenereerd[] {
+  const { van, tot, even, sprong } = grens;
+  const stap = even ? 2 : sprong;
+
+  const uit: Gegenereerd[] = [];
+  for (let poging = 0; poging < aantal * 300 && uit.length < aantal; poging++) {
+    /* Allebei de buren moeten binnen het bereik vallen; anders is het geen vraag. */
+    const laagste = van + stap;
+    const hoogste = tot - stap;
+    if (hoogste < laagste) break;
+
+    const midden = heelGetal(kans, laagste, hoogste);
+    const links = midden - stap;
+    const rechts = midden + stap;
+
+    const handtekening = `straat:allebei:${even ? "eo" : "gw"}:${stap}:${midden}`;
+    if (alGebruikt.has(handtekening)) continue;
+    alGebruikt.add(handtekening);
+
+    /*
+      Drie huizen op een rij, allemaal aan dezelfde kant van de straat. Ook bij
+      even en oneven: daar gaat het juist om de buren aan díé kant, en die
+      staan er twee verder. De overkant zou hier alleen maar afleiden.
+    */
+    const straat = [links, midden, rechts].map((nummer) => ({
+      nummer,
+      kant: "boven" as const,
+    }));
+
+    const gegevens = {
+      soort: "straat",
+      variant: even ? "allebei-evenoneven" : "allebei",
+      getallen: [links, midden, rechts],
+      /* `goed` is één getal; de twee samen staan in `extra`. */
+      goed: links,
+      extra: {
+        basis: midden,
+        stap,
+        allebei: 1,
+        even: even ? 1 : 0,
+        links,
+        rechts,
+        aantal: HUIZEN_ALLEBEI,
+        eerste: links,
+        vosIndex: 1,
+        vooruit: 1,
+      },
+    };
+
+    uit.push({
+      handtekening,
+      /*
+        Eén open vraag met twee getallen erin, gescheiden door een komma —
+        dezelfde afspraak als bij "Tellen en slepen" en de stapstenen. Links
+        eerst, dan rechts, in de volgorde waarin ze in de straat staan.
+      */
+      vorm: "open",
+      vraagtekst: bepaalVraagtekst(
+        { vraagteksten: { standaard: ALLEBEIZINNEN } },
+        inst,
+        groep,
+        gegevens,
+      ),
+      antwoord: `${links},${rechts}`,
+      figuur: {
+        soort: "huizenrij" as const,
+        huizen: straat,
+        vosBij: 1,
+        gevraagd: 0,
+        gevraagden: [0, 2],
+        /* De vos komt van de standaardvos; zie `haalStandaardvos`. */
+        vos: { vangend: null, wachtend: null, blij: null },
+      },
+      somgegevens: gegevens,
+    });
+  }
+
+  return uit;
+}
+
 export const straatGenerator: Generator = {
   id: "straat",
   naam: "Vos' straat (buurgetallen)",
@@ -210,8 +336,21 @@ export const straatGenerator: Generator = {
         { waarde: "erna", label: "Het huis erna — doortellen" },
         { waarde: "ervoor", label: "Het huis ervoor — terugtellen" },
         { waarde: "beide", label: "Door elkaar" },
+        { waarde: "allebei", label: "Allebei de buren — het getal ervoor én erna" },
       ],
-      hulp: "Doortellen gaat bij de meeste kinderen vanzelf; terugtellen is een aparte vaardigheid en veel lastiger. Door elkaar dwingt het kind om eerst te kijken welke kant het op moet, en dat is precies wat het vaakst misgaat.",
+      hulp: "Doortellen gaat bij de meeste kinderen vanzelf; terugtellen is een aparte vaardigheid en veel lastiger. Door elkaar dwingt het kind om eerst te kijken welke kant het op moet, en dat is precies wat het vaakst misgaat. Allebei de buren is de bekende buurgetallen-oefening: er staan dan drie huizen, het middelste heeft een nummer en de deuren ernaast zijn allebei leeg. Het kind vult er twee in, dus die stand is altijd een open vraag met het cijfertoetsenbord.",
+    },
+    {
+      soort: "keuze",
+      sleutel: "sprong",
+      label: "Hoe groot de sprong",
+      opties: [
+        { waarde: "1", label: "1 — de buren ernaast" },
+        { waarde: "2", label: "2 — om en om" },
+        { waarde: "5", label: "5" },
+        { waarde: "10", label: "10" },
+      ],
+      hulp: "Alleen voor de stand „Allebei de buren”. Bij 1 zijn het de gewone buurgetallen: bij 15 dus 14 en 16. Bij 2 wordt dat 13 en 17, bij 5 tien en twintig. Dezelfde sprongen als bij Telrij stapstenen, zodat een kind hetzelfde herkent. Staat de straat op even en oneven, dan is de sprong altijd 2 — dat hoort bij de huisnummers — en doet dit veld niets.",
     },
     {
       soort: "keuze",
@@ -248,6 +387,7 @@ export const straatGenerator: Generator = {
     richting: "erna",
     vraagvorm: "meerkeuze",
     straatsoort: "gewoon",
+    sprong: "1",
   },
   foutpatronen: straatPatronen,
   aanpak: straatAanpak,
@@ -258,14 +398,31 @@ export const straatGenerator: Generator = {
     eentje naar rechts. Meer zou dezelfde vraag nog een keer zijn.
   */
   maximum: (inst) => {
-    const { van, tot, richting } = grenzen(inst);
+    const { van, tot, richting, straatsoort, sprong } = grenzen(inst);
+    /*
+      Bij allebei de buren telt elk middelste huis één keer, en er moet aan
+      beide kanten nog een buur binnen het bereik passen.
+    */
+    if (richting === "allebei") {
+      const stap = straatsoort === "evenoneven" ? 2 : sprong;
+      return Math.max(0, tot - van + 1 - 2 * stap);
+    }
     const ruimte = Math.max(0, tot - van + 1 - 1);
     return richting === "beide" ? ruimte * 2 : ruimte;
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
-    const { van, tot, richting, vraagvorm, straatsoort } = grenzen(inst);
+    const { van, tot, richting, vraagvorm, straatsoort, sprong } = grenzen(inst);
+
+    if (richting === "allebei") {
+      return maakAllebei(inst, aantal, alGebruikt, kans, groep, {
+        van,
+        tot,
+        even: straatsoort === "evenoneven",
+        sprong,
+      });
+    }
 
     const even = straatsoort === "evenoneven";
     const stap = even ? 2 : 1;

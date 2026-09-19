@@ -9,7 +9,7 @@
  */
 
 import { revalidatePath } from "next/cache";
-import { zetStandaardvos } from "@/lib/data/instellingen";
+import { zetStandaardvos, zetTypemascottes } from "@/lib/data/instellingen";
 
 export async function bewaarStandaardvos(houdingen: {
   vangend: string;
@@ -27,6 +27,26 @@ export async function bewaarStandaardvos(houdingen: {
     een sjabloon. Allebei opnieuw laten ophalen, anders blijft de oude vos in
     beeld tot er toevallig iets anders verandert.
   */
+  revalidatePath("/admin", "layout");
+  revalidatePath("/oefenen", "layout");
+
+  return { ok: true };
+}
+
+/**
+ * De standaardmascotte van één oefeningstype opslaan.
+ *
+ * Per type apart, zodat het opslaan van de stapstenen niets doet met de trein.
+ * Wat hier staat geldt voor elk sjabloon van dat type dat zijn eigen veld leeg
+ * laat — ook voor sjablonen die er nog niet zijn.
+ */
+export async function bewaarTypemascotte(
+  type: string,
+  waarden: Record<string, string>,
+): Promise<{ ok: true }> {
+  zetTypemascottes(type, waarden);
+
+  /* Dezelfde reden als hierboven: de vos zit in de vragen en in het voorbeeld. */
   revalidatePath("/admin", "layout");
   revalidatePath("/oefenen", "layout");
 

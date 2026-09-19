@@ -523,6 +523,7 @@ function Modelbeeld({
       <Bus
         figuur={{
           soort: "bus",
+          plaatsen: model.plaatsen,
           totaal: model.totaal,
           perGroep: model.perGroep,
           palet: model.palet,

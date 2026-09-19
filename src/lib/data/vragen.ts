@@ -14,8 +14,13 @@ import "server-only";
 
 import { randomUUID } from "node:crypto";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
-import { haalStandaardvos } from "@/lib/data/instellingen";
+import {
+  haalStandaardvos,
+  haalTypemascottes,
+  metStandaardmascottes,
+} from "@/lib/data/instellingen";
 import { hengelVan } from "@/lib/generatoren/vissen";
+import { machinistVan } from "@/lib/generatoren/trein";
 import { verbinding } from "@/lib/db/sqlite";
 import { filterLeerdoelen, LEEG, type Beheerfilter } from "@/lib/beheerfilter";
 import {
@@ -121,27 +126,22 @@ type Voshoudingen = Extract<
  * vos-velden. De aanroeper houdt dan wat er in de vraag zelf staat.
  */
 function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
-  const rij = verbinding()
-    .prepare("select instellingen from sjablonen where id = ?")
-    .get(sjabloonId) as { instellingen: string | null } | undefined;
+  const rij = sjabloonrij(sjabloonId);
   if (!rij) return null;
 
-  let inst: Record<string, unknown>;
-  try {
-    inst = JSON.parse(rij.instellingen ?? "{}") as Record<string, unknown>;
-  } catch {
-    return null;
-  }
-
   const naam = (sleutel: string): string | null => {
-    const waarde = inst[sleutel];
-    return typeof waarde === "string" && waarde !== "" ? waarde : null;
+    const eigen = rij.inst[sleutel];
+    if (typeof eigen === "string" && eigen !== "") return eigen;
+    /* Daarna de standaard van dít type; die staat in het afbeeldingenbeheer. */
+    const vanType = haalTypemascottes(rij.soort)[sleutel];
+    return vanType && vanType !== "" ? vanType : null;
   };
 
   /*
-    Wat het sjabloon zelf invult gaat voor; wat leeg blijft, komt van de
-    standaardvos. Zo hoeft een beheerder niet bij elk type opnieuw dezelfde
-    drie afbeeldingen te kiezen, en kan het per sjabloon toch anders.
+    Wat het sjabloon zelf invult gaat voor; dan de standaard van dit type; en
+    wat dán nog leeg is, komt van de centrale vos. Zo hoeft een beheerder niet
+    bij elk sjabloon opnieuw dezelfde afbeeldingen te kiezen, en kan het per
+    sjabloon toch anders.
   */
   const standaard = haalStandaardvos();
   return {
@@ -149,6 +149,25 @@ function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
     wachtend: naam("vosWachtend") ?? standaard.wachtend,
     blij: naam("vosBlij") ?? standaard.blij,
   };
+}
+
+/** Het soort en de instellingen van een sjabloon, of `null`. */
+function sjabloonrij(
+  sjabloonId: string,
+): { soort: string; inst: Record<string, unknown> } | null {
+  const rij = verbinding()
+    .prepare("select soort, instellingen from sjablonen where id = ?")
+    .get(sjabloonId) as { soort: string; instellingen: string | null } | undefined;
+  if (!rij) return null;
+
+  try {
+    return {
+      soort: rij.soort,
+      inst: JSON.parse(rij.instellingen ?? "{}") as Record<string, unknown>,
+    };
+  } catch {
+    return null;
+  }
 }
 
 /**
@@ -161,21 +180,30 @@ function vosVanSjabloon(sjabloonId: string): Voshoudingen | null {
  *
  * Wat er niet staat, valt terug op wat de generator als standaard kent.
  */
-function hengelVanSjabloon(sjabloonId: string): {
-  afbeelding: string | null;
-  x: number;
-  y: number;
-} | null {
-  const rij = verbinding()
-    .prepare("select instellingen from sjablonen where id = ?")
-    .get(sjabloonId) as { instellingen: string | null } | undefined;
+function hengelVanSjabloon(sjabloonId: string) {
+  return uitSjabloon(sjabloonId, hengelVan);
+}
+
+/**
+ * Een stukje sjablooninstelling ophalen en door de generator laten uitlezen.
+ *
+ * De generator weet zelf wat er standaard geldt en wat er binnen de grenzen
+ * valt; hier wordt alleen opgezocht wat er is opgeslagen.
+ */
+function uitSjabloon<T>(
+  sjabloonId: string,
+  lees: (inst: Record<string, never>) => T,
+): T | null {
+  const rij = sjabloonrij(sjabloonId);
   if (!rij) return null;
 
-  try {
-    return hengelVan(JSON.parse(rij.instellingen ?? "{}"));
-  } catch {
-    return null;
-  }
+  /*
+    Eerst de standaard van dit type erbij. Wat het sjabloon zelf heeft staan
+    blijft daarbij staan; alleen wat leeg is wordt aangevuld.
+  */
+  return lees(
+    metStandaardmascottes(rij.soort, rij.inst as never) as unknown as Record<string, never>,
+  );
 }
 
 /**
@@ -198,6 +226,14 @@ function metVosVanSjabloon(
     Elk figuur met een mascotte doet mee. Komt er een type bij, dan hoeft hier
     niets veranderd te worden: het herkent zichzelf aan het veld `vos`.
   */
+  if (figuur?.soort === "bus" && sjabloonId) {
+    const rij = verbinding().prepare("select instellingen from sjablonen where id = ?").get(sjabloonId) as { instellingen: string | null } | undefined;
+    try {
+      const inst = JSON.parse(rij?.instellingen ?? "{}");
+      const maximum = Math.max(20, Number(inst.tot) || 30, Number(inst.van) || 1, figuur.totaal);
+      return { ...figuur, animatie: inst.animatie === "wegrijden" ? "wegrijden" : "instappen", plaatsen: Math.ceil(maximum / figuur.perGroep) * figuur.perGroep };
+    } catch { return figuur; }
+  }
   if (!figuur || !("vos" in figuur) || !sjabloonId) return figuur;
 
   const vos = vosVanSjabloon(sjabloonId);
@@ -216,10 +252,19 @@ function metVosVanSjabloon(
     if (hengel) return { ...figuur, vos, hengel };
   }
 
+  /* En de trein heeft een machinist; om dezelfde reden. */
+  if (figuur.soort === "trein") {
+    const machinist = uitSjabloon(sjabloonId, machinistVan);
+    if (machinist) return { ...figuur, vos, machinist };
+  }
+
   return { ...figuur, vos };
 }
 
 function naarVraag(r: Record<string, string | number | null>): VraagInContext {
+  const figuur = metVosVanSjabloon(r.figuur ? JSON.parse(String(r.figuur)) as Vraag["figuur"] : null, r.sjabloon_id ? String(r.sjabloon_id) : null);
+  const som = r.somgegevens ? JSON.parse(String(r.somgegevens)) as Vraag["somgegevens"] : null;
+  if (som && figuur?.soort === "bus") som.extra = { ...som.extra, busPlaatsen: figuur.plaatsen ?? 40 };
   return {
     id: String(r.id),
     leerdoelId: String(r.leerdoel_id),
@@ -230,13 +275,8 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     antwoord: String(r.antwoord),
     hint: r.hint ? String(r.hint) : null,
     afbeelding: r.afbeelding ? String(r.afbeelding) : null,
-    figuur: metVosVanSjabloon(
-      r.figuur ? (JSON.parse(String(r.figuur)) as Vraag["figuur"]) : null,
-      r.sjabloon_id ? String(r.sjabloon_id) : null,
-    ),
-    somgegevens: r.somgegevens
-      ? (JSON.parse(String(r.somgegevens)) as Vraag["somgegevens"])
-      : null,
+    figuur,
+    somgegevens: som,
     uitleg: r.uitleg ? String(r.uitleg) : null,
     uitlegAfbeelding: r.uitleg_afbeelding ? String(r.uitleg_afbeelding) : null,
     sjabloonId: r.sjabloon_id ? String(r.sjabloon_id) : null,

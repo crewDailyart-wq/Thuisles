@@ -167,6 +167,15 @@ export type Figuur =
       vosBij: number;
       /** Welk huis gevraagd wordt; dat nummer komt pas bij een goed antwoord. */
       gevraagd: number;
+      /**
+       * Alle lege deuren, als het er meer dan één zijn.
+       *
+       * Bij de stand "allebei de buren" staat het middelste huis vol en zijn de
+       * deuren links en rechts allebei leeg; dan staan hier hun twee plekken in.
+       * Blijft dit leeg, dan is er precies één lege deur en geldt `gevraagd` —
+       * zoals het altijd al was.
+       */
+      gevraagden?: number[];
       /** De mascotte, per houding een eigen afbeelding uit het beheer. */
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
     }
@@ -211,6 +220,12 @@ export type Figuur =
       wagons: number[];
       /** Van laag naar hoog, of andersom. */
       aflopend: boolean;
+      /**
+       * Vos als machinist: de afbeelding die in het raampje van de locomotief
+       * komt te staan. Leeg of `null` = geen machinist; dan kijkt de gewone vos
+       * mee vanaf de kant, zoals het hiervoor was.
+       */
+      machinist: { afbeelding: string | null } | null;
       /** De mascotte, per houding een eigen afbeelding uit het beheer. */
       vos: { vangend: string | null; wachtend: string | null; blij: string | null };
     }
@@ -267,6 +282,8 @@ export type Figuur =
     }
   | {
       soort: "bus";
+      animatie?: "instappen" | "wegrijden";
+      plaatsen?: number;
       /** Hoeveel kinderen er in de bus zitten. Dit is ook het antwoord. */
       totaal: number;
       /**

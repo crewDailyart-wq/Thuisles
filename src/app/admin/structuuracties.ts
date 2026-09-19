@@ -21,6 +21,7 @@ import {
   maakSubdomein,
   verwijderDomein,
   verwijderLeerdoel,
+  verplaatsLeerdoel,
   verwijderSubdomein,
   wijzigDomein,
   wijzigLeerdoel,
@@ -185,6 +186,21 @@ export async function bewerkUitlegvorm(data: FormData): Promise<Antwoord<true>> 
 
 export async function wegLeerdoel(data: FormData): Promise<Antwoord<true>> {
   const uitslag = verwijderLeerdoel(tekst(data, "id"));
+  if (uitslag.ok) ververs();
+  return uitslag;
+}
+
+/**
+ * Een leerdoel naar een ander onderwerp verhuizen.
+ *
+ * Met opzet een eigen actie en niet een veld erbij in `bewerkLeerdoel`. Dat
+ * formulier stuurt titel en groep mee; een onderwerp dat daar half in zou
+ * hangen, zou bij elke titelwijziging meeverhuizen of juist leeg binnenkomen.
+ * Zie HARDE REGEL 1 in CLAUDE.md — dat is precies de fout die daar beschreven
+ * staat.
+ */
+export async function verhuisLeerdoel(data: FormData): Promise<Antwoord<true>> {
+  const uitslag = verplaatsLeerdoel(tekst(data, "id"), tekst(data, "subdomeinId"));
   if (uitslag.ok) ververs();
   return uitslag;
 }

@@ -1,7 +1,14 @@
 import { notFound } from "next/navigation";
 import { Kop } from "@/components/beheer/Bouwstenen";
 import { LeerdoelDetail } from "@/components/beheer/LeerdoelDetail";
-import { haalVak, zoekDomein, zoekLeerdoel, zoekSubdomein } from "@/lib/data/structuur";
+import {
+  haalDomeinen,
+  haalSubdomeinen,
+  haalVak,
+  zoekDomein,
+  zoekLeerdoel,
+  zoekSubdomein,
+} from "@/lib/data/structuur";
 import { haalVragen } from "@/lib/data/vragen";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 
@@ -18,6 +25,19 @@ export default async function LeerdoelPagina({
   if (!vak || !domein || !subdomein || !leerdoel) notFound();
 
   const vragen = haalVragen({ leerdoel: leerdoel.id });
+
+  /*
+    Alle onderwerpen van dit vak, om het leerdoel naartoe te kunnen verhuizen.
+    Met de naam van het domein erbij, want "Tellen & sprongen" zegt weinig als
+    je niet ziet onder welk domein het hangt.
+  */
+  const onderwerpen = haalDomeinen(vak.id).flatMap((d) =>
+    haalSubdomeinen(d.id).map((s) => ({
+      id: s.id,
+      naam: s.naam,
+      domeinNaam: d.naam,
+    })),
+  );
 
   return (
     <div className="flex flex-col gap-4">
@@ -38,6 +58,7 @@ export default async function LeerdoelPagina({
         subdomein={subdomein}
         leerdoel={leerdoel}
         vragen={vragen}
+        onderwerpen={onderwerpen}
       algemeenAantal={haalAlgemeenAantalVragen()}
       />
     </div>

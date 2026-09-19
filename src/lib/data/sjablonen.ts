@@ -12,7 +12,7 @@ import "server-only";
 import { randomUUID } from "node:crypto";
 import { verbinding } from "@/lib/db/sqlite";
 import { zoekGenerator } from "@/lib/generatoren";
-import { begrensAantal } from "@/lib/data/instellingen";
+import { begrensAantal, metStandaardmascottes } from "@/lib/data/instellingen";
 import {
   bepaalVraagtekst,
   type Gegenereerd,
@@ -259,7 +259,13 @@ export function proefdraaien(
   const generator = zoekGenerator(soort);
   if (!generator) return [];
   const bezet = leerdoelId ? bestaandeHandtekeningen(leerdoelId) : new Set<string>();
-  return generator.maak(instellingen, aantal, bezet, Date.now() % 100000, groep);
+  return generator.maak(
+    metStandaardmascottes(soort, instellingen),
+    aantal,
+    bezet,
+    Date.now() % 100000,
+    groep,
+  );
 }
 
 export type GenereerUitslag = {
@@ -282,7 +288,21 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
   */
   const gevraagd = Math.max(1, Math.min(MAX_SOMMEN_PER_KEER, Math.floor(aantal)));
   const bezet = bestaandeHandtekeningen(sjabloon.leerdoelId);
-  const sommen = generator.maak(sjabloon.instellingen, gevraagd, bezet, Date.now() % 1000000, sjabloon.groep);
+  /*
+    De standaard van dit type erbij, vlak voordat de generator begint.
+
+    Wat het sjabloon zelf heeft ingevuld blijft staan; alleen wat leeg is wordt
+    aangevuld met de standaardmascotte van dit type. Zo hoeft er bij een nieuw
+    sjabloon niets ingevuld te worden, en verandert er niets aan sjablonen waar
+    al iets in staat.
+  */
+  const sommen = generator.maak(
+    metStandaardmascottes(sjabloon.soort, sjabloon.instellingen),
+    gevraagd,
+    bezet,
+    Date.now() % 1000000,
+    sjabloon.groep,
+  );
 
   const db = verbinding();
   const invoegen = db.prepare(

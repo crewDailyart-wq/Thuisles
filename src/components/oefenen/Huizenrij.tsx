@@ -117,6 +117,16 @@ export function huizenPlan(huizen: Huis[]): Huizenplan {
 // ---------------------------------------------------------------------------
 
 const RAND = "#3d3226";
+
+/**
+ * Het invulvlak op een lege deur, in de eenheden van het huisje (100 bij 132).
+ *
+ * Ruimer dan een gewone deur. Er moeten twee cijfers goed leesbaar in passen,
+ * ook op een telefoon, en het moet er meteen uitzien als iets waar je in mag
+ * schrijven. Het invoerveld dat eroverheen ligt gebruikt dezelfde vier maten,
+ * dus het vak in de tekening en het vak waarin getypt wordt zijn hetzelfde vak.
+ */
+const INVULVAK = { x: 32, y: 66, breedte: 56, hoogte: 58 };
 const RANDDIKTE = 4;
 
 /** Vijf vrolijke huiskleuren, in vaste volgorde zodat een huis zijn kleur houdt. */
@@ -146,6 +156,9 @@ function Huisje({
   licht = false,
   gevraagd = false,
   raamAan = false,
+  invoer = null,
+  actief = false,
+  uitslag = null,
 }: {
   nummer: number | null;
   kleur: number;
@@ -165,8 +178,42 @@ function Huisje({
   gevraagd?: boolean;
   /** Bij één huis brandt het licht. Een detail dat de straat bewoond maakt. */
   raamAan?: boolean;
+  /**
+   * Wat het kind op deze deur heeft ingetikt.
+   *
+   * Alleen bij de stand waarin er twee deuren tegelijk ingevuld worden. Leeg
+   * betekent: nog niets ingetikt; dan staat er het vraagteken zoals altijd.
+   */
+  invoer?: string | null;
+  /** Deze deur is aan de beurt: dikke oranje rand en een knipperende cursor. */
+  actief?: boolean;
+  /**
+   * Na het nakijken: klopte wat er op deze deur staat?
+   *
+   * Per deur, want bij twee antwoorden moet een kind kunnen zien wélke van de
+   * twee misging. Groen is goed, roze is fout — dezelfde kleuren als overal.
+   */
+  uitslag?: "goed" | "fout" | null;
 }) {
   const k = KLEUREN[kleur % KLEUREN.length];
+  /* De randkleur van de deur: uitslag gaat voor, dan de vraag, dan gewoon. */
+  const deurrand =
+    uitslag === "goed"
+      ? "var(--color-groen)"
+      : uitslag === "fout"
+        ? "var(--color-roze)"
+        : gevraagd
+          ? "var(--color-huisstijl)"
+          : RAND;
+  const deurvlak =
+    uitslag === "goed"
+      ? "var(--color-groen-zacht)"
+      : uitslag === "fout"
+        ? "var(--color-roze-zacht)"
+        : nummer === null
+          ? /* Een leeg vlak waar iets in moet: wit, zodat het als invulvak leest. */
+            "#ffffff"
+          : k.deur;
 
   return (
     <svg viewBox="0 0 100 132" className="h-full w-full overflow-visible" aria-hidden="true">
@@ -272,14 +319,15 @@ function Huisje({
 
       <g className={`deur ${open ? "deur-open" : ""}`}>
         <rect
-          x="44"
-          y="74"
-          width="38"
-          height="50"
+          /* Een lege deur is een invulvak en dus ruimer; een volle deur blijft een deur. */
+          x={nummer === null && gevraagd ? INVULVAK.x : 44}
+          y={nummer === null && gevraagd ? INVULVAK.y : 74}
+          width={nummer === null && gevraagd ? INVULVAK.breedte : 38}
+          height={nummer === null && gevraagd ? INVULVAK.hoogte : 50}
           rx="4"
-          fill={nummer === null ? "#fdf6e8" : k.deur}
-          stroke={gevraagd ? "var(--color-huisstijl)" : RAND}
-          strokeWidth={gevraagd ? RANDDIKTE * 1.7 : RANDDIKTE}
+          fill={deurvlak}
+          stroke={deurrand}
+          strokeWidth={gevraagd || uitslag ? RANDDIKTE * (actief ? 2.2 : 1.7) : RANDDIKTE}
           strokeLinejoin="round"
         />
         {nummer !== null && (
@@ -298,19 +346,58 @@ function Huisje({
           </text>
         )}
         {/*
-          Het vraagteken op de lege deur. Eén teken, geen woord: dit is het
-          enige leesteken dat ook een kind van zes al kent uit prentenboeken.
+          Wat het kind op deze deur heeft ingetikt.
+
+          Staat er iets, dan staat dát er — in dezelfde stijl als een echt
+          huisnummer, want dat is wat het moet worden. Het vraagteken maakt
+          daarvoor plaats: het heeft zijn werk gedaan zodra er een getal staat.
         */}
-        {nummer === null && gevraagd && (
+        {/*
+          Het vraagteken op een lege deur. Eén teken, geen woord: dit is het
+          enige leesteken dat ook een kind van zes al kent uit prentenboeken.
+
+          Op ÉLKE lege deur, ook op de deur die op dit moment aan de beurt is.
+          Anders lijkt die ene deur al af terwijl er nog niets in staat, en ziet
+          een kind niet dat er twee ingevuld moeten worden. Zodra het begint te
+          typen maakt het vraagteken plaats voor het getal.
+        */}
+        {nummer === null && gevraagd && !invoer && (
           <text
-            x="63"
-            y="107"
+            x={INVULVAK.x + INVULVAK.breedte / 2}
+            y={INVULVAK.y + INVULVAK.hoogte * 0.72}
             textAnchor="middle"
-            fontSize="34"
+            fontSize="38"
             fontWeight="800"
             fill="var(--color-huisstijl-diep)"
           >
             ?
+          </text>
+        )}
+
+        {/*
+          Wat het kind heeft ingetikt, als het hier alleen maar getoond wordt.
+
+          In de oefening zelf staat er een echt invulveld overheen — zie
+          `Huizenrij` — en dan komt dit niet in beeld. Dit is voor de plekken
+          waar de straat alleen getekend wordt: het beheervoorbeeld en na het
+          nakijken.
+        */}
+        {nummer === null && invoer && (
+          <text
+            x={INVULVAK.x + INVULVAK.breedte / 2}
+            y={INVULVAK.y + INVULVAK.hoogte * 0.7}
+            textAnchor="middle"
+            fontSize="34"
+            fontWeight="800"
+            fill={
+              uitslag === "fout"
+                ? "var(--color-roze)"
+                : uitslag === "goed"
+                  ? "var(--color-groen-diep)"
+                  : "var(--color-huisstijl-diep)"
+            }
+          >
+            {invoer}
           </text>
         )}
         {nummer === null && !gevraagd && (
@@ -424,20 +511,94 @@ function Stoep({ y, hoogte }: { y: number; hoogte: number }) {
 export function Huizenrij({
   huizen,
   gevraagd,
+  gevraagden,
+  ingevuld = [],
+  actief = 0,
+  goedeWaarden = null,
+  markeer = true,
   vos = { vangend: null, wachtend: null, blij: null },
   fase = "bezig",
   beweegt = true,
+  onKiesDeur,
+  onWijzig,
+  onBevestig,
 }: {
   huizen: Huis[];
   /** Welk huis de vraag is: dat is de lege deur met het vraagteken. */
   gevraagd: number;
+  /**
+   * Alle lege deuren, als het er meer dan één zijn.
+   *
+   * Bij "allebei de buren" zijn dat er twee. Blijft dit leeg, dan is er precies
+   * één lege deur en geldt `gevraagd` — zoals het altijd al was.
+   */
+  gevraagden?: number[];
+  /** Wat het kind per lege deur heeft ingetikt, in dezelfde volgorde. */
+  ingevuld?: string[];
+  /** Welke lege deur aan de beurt is; de plek in `gevraagden`. */
+  actief?: number;
+  /** Na het nakijken: wat er per lege deur had moeten staan. */
+  goedeWaarden?: number[] | null;
+  /** Groep 3-4: een foute deur kleurt roze. */
+  markeer?: boolean;
   vos?: Voshoudingen;
   fase?: "bezig" | "goed" | "fout";
   /** Uit in het beheer: daar hoeft er niets te bewegen. */
   beweegt?: boolean;
+  /** Het kind tikt een lege deur aan om die in te vullen. */
+  onKiesDeur?: (plek: number) => void;
+  /**
+   * Wat er op de deuren is ingetikt, in de volgorde van de lege deuren.
+   *
+   * Is dit er, dan zijn de lege deuren echte invulvelden: het kind typt het
+   * huisnummer op de deur zelf. Zonder dit wordt de straat alleen getekend —
+   * zoals in het beheervoorbeeld en in het uitlegfilmpje.
+   */
+  onWijzig?: (delen: string[]) => void;
+  /** Enter op een deur: hetzelfde als op Controleer drukken. */
+  onBevestig?: () => void;
 }) {
   const plan = huizenPlan(huizen);
   const goed = fase === "goed";
+
+  /*
+    De lege deuren, altijd als lijst. Eén deur is gewoon een lijst van één, zo
+    hoeft er verderop geen onderscheid gemaakt te worden tussen de twee standen.
+  */
+  const lege = gevraagden ?? [gevraagd];
+  /* Invullen kan alleen als er iemand is die de invoer opvangt. */
+  const invulbaar = Boolean(onWijzig) && fase === "bezig";
+
+  /*
+    De eerste lege deur staat meteen klaar om in te typen.
+
+    Op een laptop kan het kind daardoor gewoon beginnen zonder eerst ergens op
+    te klikken. Op een telefoon laat de browser dit meestal niet toe buiten een
+    aanraking om, en dan gebeurt er simpelweg niets — het toetsenbord komt daar
+    op zodra het kind een deur aantikt.
+
+    `preventScroll` hoort erbij: zonder dat springt de bladzijde bij het openen
+    van elke vraag naar de straat toe.
+  */
+  const eersteKeer = useRef(true);
+  useEffect(() => {
+    if (!invulbaar) return;
+    const veld = velden.current[0];
+    if (!veld) return;
+    veld.focus({ preventScroll: true });
+    const klok = setTimeout(() => {
+      eersteKeer.current = false;
+    }, 300);
+    return () => clearTimeout(klok);
+  }, [invulbaar]);
+
+  /** Eén deur bijwerken en het geheel teruggeven. */
+  function typ(plek: number, ruw: string) {
+    /* Alleen cijfers, en hoogstens drie: verder komt een huisnummer hier niet. */
+    const schoon = ruw.replace(/\D/g, "").slice(0, 3);
+    const delen = lege.map((_, i) => (i === plek ? schoon : (ingevuld[i] ?? "")));
+    onWijzig?.(delen);
+  }
 
   /*
     De deur zwaait pas ná een tel open. Zonder die pauze staat hij al open
@@ -453,6 +614,9 @@ export function Huizenrij({
       setAangekomen(false);
     };
   }, [goed, beweegt]);
+
+  /* De invulvelden op de deuren, om met de pijltjes van de ene naar de andere te springen. */
+  const velden = useRef<(HTMLInputElement | null)[]>([]);
 
   const vakRef = useRef<HTMLDivElement>(null);
   const buitenRef = useRef<HTMLDivElement>(null);
@@ -539,31 +703,163 @@ export function Huizenrij({
 
           {huizen.map((huis, i) => {
             const plek = plan.plekken[i];
+            /* De hoeveelste lege deur dit is; -1 als het huis gewoon vol staat. */
+            const legePlek = lege.indexOf(i);
+            const isLeeg = legePlek >= 0;
             /*
-              Alle nummers staan er, behalve dat ene: dát is de vraag. De
-              zichtbare nummers zijn de aanwijzing waarmee het kind het
-              ontbrekende getal kan vinden — net als bij de stapstenen.
+              Alle nummers staan er, behalve die ene of die twee: dát is de
+              vraag. De zichtbare nummers zijn de aanwijzing waarmee het kind de
+              ontbrekende kan vinden — net als bij de stapstenen.
             */
-            const zichtbaar = i !== gevraagd || goed;
+            const zichtbaar = !isLeeg || goed;
+            const getikt = isLeeg ? (ingevuld[legePlek] ?? "") : "";
+            /*
+              De uitslag per deur. Bij een fout antwoord kleurt alleen de deur
+              die misging roze en de andere groen; zo ziet het kind wélke van de
+              twee het was in plaats van alleen dát er iets fout was.
+            */
+            const uitslag =
+              !isLeeg || fase === "bezig" || !goedeWaarden
+                ? null
+                : Number(getikt) === goedeWaarden[legePlek]
+                  ? ("goed" as const)
+                  : markeer
+                    ? ("fout" as const)
+                    : null;
+
+            const huisje = (
+              <Huisje
+                nummer={zichtbaar ? huis.nummer : null}
+                kleur={i}
+                /* Bij twee lege deuren zwaaien ze allebei open; het is één antwoord. */
+                open={goed && isLeeg && aangekomen}
+                gevraagd={isLeeg}
+                invoer={getikt || null}
+                actief={invulbaar && legePlek === actief}
+                uitslag={uitslag}
+                bloem={i === huizen.length - 1}
+                raamAan={i === 0}
+              />
+            );
+
+            const stijl = {
+              left: `${plek.x}%`,
+              top: `${(plek.y / plan.hoogte) * 100}%`,
+              width: `${plan.breedte}%`,
+              height: `${(plan.huishoogte / plan.hoogte) * 100}%`,
+            };
+
+            /*
+              Een lege deur die ingevuld moet worden, krijgt een echt invulveld
+              over de deur heen.
+
+              Dus geen los vak onder de tekening: het kind typt het huisnummer
+              op de deur waar het hoort, net als op de steen bij de telrij. Dat
+              het een gewoon invoerveld is, doet meteen drie dingen goed die
+              anders allemaal apart nagebouwd zouden moeten worden — Tab komt
+              erlangs, de cursor knippert waar getypt wordt, en op een tablet
+              komt het systeemtoetsenbord op. Met `inputMode` staat dat meteen
+              op cijfers, zonder letters.
+
+              Het veld ligt precies op de deur: die staat in de tekening op
+              x 44-82 en y 74-124 van een vlak van 100 bij 132. `cqw` rekent in
+              procenten van dit huisje, dus het cijfer schaalt mee met de straat
+              zonder dat er iets gemeten hoeft te worden.
+            */
+            if (isLeeg && invulbaar) {
+              return (
+                <span
+                  key={i}
+                  className="absolute [container-type:size]"
+                  style={stijl}
+                >
+                  {huisje}
+                  <input
+                    ref={(el) => {
+                      velden.current[legePlek] = el;
+                    }}
+                    type="text"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    enterKeyHint="done"
+                    autoComplete="off"
+                    value={getikt}
+                    aria-label={`Huisnummer van deur ${legePlek + 1} van ${lege.length}`}
+                    /*
+                      Geen eigen rand en geen eigen achtergrond: de deur in de
+                      tekening ís het vak. Zonder `border-0` zet de browser er
+                      zijn eigen randje omheen en staat er een kader binnen een
+                      kader.
+                    */
+                    className="absolute border-0 bg-transparent p-0 text-center font-extrabold text-huisstijl-diep caret-huisstijl outline-none"
+                    style={{
+                      left: `${INVULVAK.x}%`,
+                      top: `${(INVULVAK.y / 132) * 100}%`,
+                      width: `${INVULVAK.breedte}%`,
+                      height: `${(INVULVAK.hoogte / 132) * 100}%`,
+                      fontSize: "34cqw",
+                      lineHeight: 1,
+                    }}
+                    onChange={(e) => typ(legePlek, e.target.value)}
+                    onFocus={(e) => {
+                      onKiesDeur?.(legePlek);
+                      /*
+                        De deur waarop getypt wordt, in de bovenste helft van
+                        het scherm houden.
+
+                        Op een telefoon schuift het systeemtoetsenbord over de
+                        onderste helft; staat de deur daar, dan typt het kind
+                        blind. Daarom: alleen bijschuiven als hij niet al hoog
+                        genoeg staat, en dan zover dat hij ruim boven de plek
+                        komt waar dat toetsenbord opkomt. Op een laptop is die
+                        voorwaarde meestal al waar en beweegt er dus niets.
+
+                        Met de hand uitgerekend en niet met `scrollIntoView`:
+                        de straat heeft `overflow-hidden`, en dan schuift die
+                        de tekening in zichzelf op in plaats van de bladzijde.
+
+                        Niet bij het openen van de vraag zelf; dan zou elke
+                        vraag beginnen met een sprongetje.
+                      */
+                      if (eersteKeer.current) return;
+                      const vak = e.currentTarget.getBoundingClientRect();
+                      const veilig = window.innerHeight * 0.55;
+                      if (vak.top > 24 && vak.bottom < veilig) return;
+                      window.scrollTo({
+                        top: Math.max(
+                          0,
+                          window.scrollY + vak.top + vak.height / 2 - window.innerHeight * 0.3,
+                        ),
+                        behavior: "smooth",
+                      });
+                    }}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        e.preventDefault();
+                        onBevestig?.();
+                        return;
+                      }
+                      /* Met de pijltjes naar de volgende of vorige lege deur. */
+                      const naar =
+                        e.key === "ArrowRight" || e.key === "ArrowDown"
+                          ? legePlek + 1
+                          : e.key === "ArrowLeft" || e.key === "ArrowUp"
+                            ? legePlek - 1
+                            : null;
+                      if (naar === null) return;
+                      const doel = velden.current[naar];
+                      if (!doel) return;
+                      e.preventDefault();
+                      doel.focus();
+                    }}
+                  />
+                </span>
+              );
+            }
+
             return (
-              <span
-                key={i}
-                className="absolute"
-                style={{
-                  left: `${plek.x}%`,
-                  top: `${(plek.y / plan.hoogte) * 100}%`,
-                  width: `${plan.breedte}%`,
-                  height: `${(plan.huishoogte / plan.hoogte) * 100}%`,
-                }}
-              >
-                <Huisje
-                  nummer={zichtbaar ? huis.nummer : null}
-                  kleur={i}
-                  open={goed && i === gevraagd && aangekomen}
-                  gevraagd={i === gevraagd}
-                  bloem={i === huizen.length - 1}
-                  raamAan={i === 0}
-                />
+              <span key={i} className="absolute" style={stijl}>
+                {huisje}
               </span>
             );
           })}

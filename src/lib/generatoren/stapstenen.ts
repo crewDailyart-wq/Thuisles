@@ -10,7 +10,8 @@
  * liggen de stenen verder uit elkaar.
  *
  * De mascotte op de eerste steen is een afbeelding uit het afbeeldingenbeheer,
- * in te stellen per sjabloon. Staat er niets, dan staat er ook geen mascotte.
+ * in te stellen per sjabloon. Staat er niets, dan geldt de standaardvos van dit
+ * soort oefening; zie het blok bij Afbeeldingen in het beheer.
  */
 
 import {
@@ -177,19 +178,19 @@ export const stapstenenGenerator: Generator = {
       soort: "afbeelding",
       sleutel: "mascotte",
       label: "Mascotte — staand",
-      hulp: "Kies of upload een afbeelding, bijvoorbeeld de vos. Niets gekozen = geen mascotte.",
+      hulp: "Kies of upload een afbeelding, bijvoorbeeld de vos. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond.",
     },
     {
       soort: "afbeelding",
       sleutel: "mascotteSpringend",
       label: "Mascotte — springend",
-      hulp: "Alleen nodig als je een aparte spronghouding wilt. Leeg = dezelfde als staand.",
+      hulp: "Alleen nodig als je hier iets anders wilt dan de standaardvos van dit soort oefening; die wordt hieronder getoond.",
     },
     {
       soort: "afbeelding",
       sleutel: "mascotteJuichend",
       label: "Mascotte — juichend",
-      hulp: "Te zien als de vos aan de overkant de sleutel oppakt. Leeg = dezelfde als staand.",
+      hulp: "Te zien als de vos aan de overkant de sleutel oppakt. Leeg = de standaardvos van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),

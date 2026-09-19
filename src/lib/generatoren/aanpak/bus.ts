@@ -3,13 +3,13 @@
 import type { Aanpak } from "@/lib/generatoren/foutpatroon";
 
 /**
- * "zit er nog 1 kind" of "zitten er nog 3 kinderen".
+ * "zit er nog 1 vosje" of "zitten er nog 3 vosjes".
  *
- * Het werkwoord moet meebuigen, anders staat er "zitten nog 1 kind". Vandaar
+ * Het werkwoord moet meebuigen, anders staat er "zitten nog 1 vosje". Vandaar
  * dat hier de hele zinsnede wordt opgebouwd en niet alleen het telwoord.
  */
 function zittenNog(n: number): string {
-  return n === 1 ? "zit er nog 1 kind" : `zitten er nog ${n} kinderen`;
+  return n === 1 ? "zit er nog 1 vosje" : `zitten er nog ${n} vosjes`;
 }
 
 function delen(totaal: number, perGroep: number) {
@@ -34,8 +34,8 @@ export const busAanpak: Aanpak = {
           : `Tel per raam van ${perGroep}: ${sprongen || perGroep}. Alle ramen zitten vol, dus dat zijn er ${som.goed}.`,
       "78":
         rest > 0
-          ? `De kinderen zitten per ${perGroep} in een raam, dus je hoeft niet één voor één te tellen. Er zijn ${volleRamen} volle ramen: ${volleRamen} × ${perGroep} = ${volleRamen * perGroep}. In het laatste raam ${zittenNog(rest)}, dus ${volleRamen * perGroep} + ${rest} = ${som.goed}.`
-          : `De kinderen zitten per ${perGroep} in een raam. Alle ${volleRamen} ramen zitten vol, dus ${volleRamen} × ${perGroep} = ${som.goed}.`,
+          ? `De vosjes zitten per ${perGroep} in een raam, dus je hoeft niet één voor één te tellen. Er zijn ${volleRamen} volle ramen: ${volleRamen} × ${perGroep} = ${volleRamen * perGroep}. In het laatste raam ${zittenNog(rest)}, dus ${volleRamen * perGroep} + ${rest} = ${som.goed}.`
+          : `De vosjes zitten per ${perGroep} in een raam. Alle ${volleRamen} ramen zitten vol, dus ${volleRamen} × ${perGroep} = ${som.goed}.`,
     };
   },
 
@@ -45,7 +45,7 @@ export const busAanpak: Aanpak = {
     const sprongen = Array.from({ length: volleRamen }, (_, i) => (i + 1) * perGroep).join(", ");
 
     const stappen = [
-      { tekst: `In elk raam zitten ${perGroep} kinderen.` },
+      { tekst: `In elk raam zitten ${perGroep} vosjes.` },
       { tekst: "Tel per raam mee.", som: sprongen || "nog geen vol raam" },
     ];
 

@@ -18,7 +18,149 @@ const stapVan = (som: Somgegevens) => som.extra?.stap ?? 1;
 const kantVan = (som: Somgegevens) => (som.extra?.vooruit === 0 ? -1 : 1);
 const isEven = (som: Somgegevens) => (som.extra?.even ?? 0) === 1;
 
+/* Bij "allebei de buren": wat het kind links en rechts heeft ingevuld. */
+const allebei = (som: Somgegevens) => (som.extra?.allebei ?? 0) === 1;
+const linksVan = (som: Somgegevens) => som.extra?.links ?? 0;
+const rechtsVan = (som: Somgegevens) => som.extra?.rechts ?? 0;
+const gegevenLinks = (som: Somgegevens) => som.extra?.gegeven0;
+const gegevenRechts = (som: Somgegevens) => som.extra?.gegeven1;
+
+/**
+ * De denkfouten bij "allebei de buren".
+ *
+ * Ze staan vooraan, want ze zijn scherper dan de patronen daaronder: die
+ * kijken naar één getal, en hier zijn er twee. De volgorde onderling is niet
+ * willekeurig — twee keer hetzelfde en omgedraaid zijn bijzondere gevallen van
+ * "aan één kant de verkeerde kant op", dus die moeten er eerder uit.
+ */
+const allebeiPatronen: Foutpatroon[] = [
+  {
+    id: "allebei-zelfde",
+    naam: "Twee keer hetzelfde getal",
+    herkent: (som) =>
+      allebei(som) &&
+      gegevenLinks(som) !== undefined &&
+      gegevenLinks(som) === gegevenRechts(som),
+    kindtekst: {
+      "34": "Links en rechts staat hetzelfde. Ze zijn allebei anders.",
+      "56": "Je hebt twee keer hetzelfde nummer ingevuld. Het huis links en het huis rechts hebben elk een eigen nummer.",
+      "78": "Beide buurgetallen zijn gelijk ingevuld. Het getal ervóór en het getal erná liggen aan weerskanten van het middelste getal en zijn dus nooit hetzelfde.",
+    },
+    hint: "Links wordt kleiner, rechts wordt groter.",
+    uitleg: (som) => [
+      { tekst: "In het midden staat dit.", som: `${som.extra?.basis ?? ""}` },
+      { tekst: "Links ga je terug.", som: `${som.extra?.basis} − ${stapVan(som)} = ${linksVan(som)}` },
+      { tekst: "Rechts ga je verder.", som: `${som.extra?.basis} + ${stapVan(som)} = ${rechtsVan(som)}` },
+    ],
+    ouder: {
+      uitleg:
+        "Het kind vult aan beide kanten hetzelfde in. Meestal is maar één kant echt uitgerekend en is de andere overgeschreven — het weet nog niet dat de twee buren aan weerskanten liggen.",
+      zinnen: [
+        "Leg drie vingers naast elkaar en noem het middelste getal.",
+        "Vraag: welke komt daarvóór? En welke daarná?",
+      ],
+      schoolwoord: "buurgetallen",
+    },
+  },
+  {
+    id: "allebei-omgedraaid",
+    naam: "De twee antwoorden omgedraaid",
+    herkent: (som) =>
+      allebei(som) &&
+      gegevenLinks(som) === rechtsVan(som) &&
+      gegevenRechts(som) === linksVan(som),
+    kindtekst: {
+      "34": "Je hebt ze omgedraaid. Het kleinste hoort links.",
+      "56": "De twee nummers staan verwisseld. Links van het middelste huis staat het kleinere nummer.",
+      "78": "Je hebt de goede getallen gevonden maar ze omgewisseld. Links ligt het kleinere buurgetal, rechts het grotere.",
+    },
+    hint: "Links is kleiner dan het middelste getal, rechts is groter.",
+    uitleg: (som) => [
+      { tekst: "Deze twee kloppen.", som: `${linksVan(som)} en ${rechtsVan(som)}` },
+      { tekst: "Maar links hoort de kleinste.", som: `${linksVan(som)}` },
+      { tekst: "En rechts de grootste.", som: `${rechtsVan(som)}` },
+    ],
+    ouder: {
+      uitleg:
+        "Het rekenen klopt; alleen de plek niet. Het kind weet welke twee getallen erbij horen, maar niet welke kant van de rij welke is.",
+      zinnen: [
+        "Loop samen de getallen op van klein naar groot.",
+        "Vraag: welke kant gaat omhoog, links of rechts?",
+      ],
+      schoolwoord: "volgorde",
+    },
+  },
+  {
+    id: "allebei-eenkant",
+    naam: "Aan één kant de verkeerde kant op",
+    herkent: (som) => {
+      if (!allebei(som)) return false;
+      const l = gegevenLinks(som);
+      const r = gegevenRechts(som);
+      const basis = som.extra?.basis ?? 0;
+      if (l === undefined || r === undefined) return false;
+      /* De ene kant klopt, de andere ligt aan de verkeerde kant van het midden. */
+      if (l === linksVan(som) && r < basis) return true;
+      if (r === rechtsVan(som) && l > basis) return true;
+      return false;
+    },
+    kindtekst: {
+      "34": "Eén kant ging de verkeerde kant op.",
+      "56": "Aan één kant ben je de verkeerde richting op gegaan. Links wordt kleiner, rechts wordt groter.",
+      "78": "Eén van de twee ligt aan de verkeerde kant van het middelste getal. Controleer per kant of je moet optellen of aftrekken.",
+    },
+    hint: "Naar links tel je terug, naar rechts tel je verder.",
+    uitleg: (som) => [
+      { tekst: "In het midden staat dit.", som: `${som.extra?.basis ?? ""}` },
+      { tekst: "Naar links: eraf.", som: `${som.extra?.basis} − ${stapVan(som)} = ${linksVan(som)}` },
+      { tekst: "Naar rechts: erbij.", som: `${som.extra?.basis} + ${stapVan(som)} = ${rechtsVan(som)}` },
+    ],
+    ouder: {
+      uitleg:
+        "Eén kant gaat goed, de andere niet. Het kind past dezelfde bewerking twee keer toe in plaats van één keer aftrekken en één keer optellen.",
+      zinnen: [
+        "Wijs het middelste huis aan en loop met je vinger naar links.",
+        "Vraag: worden de nummers dan groter of kleiner?",
+      ],
+      schoolwoord: "terugtellen",
+    },
+  },
+  {
+    id: "allebei-ernaast",
+    naam: "Eentje te veel of te weinig",
+    herkent: (som) => {
+      if (!allebei(som)) return false;
+      const l = gegevenLinks(som);
+      const r = gegevenRechts(som);
+      const mis = (gegeven: number | undefined, hoort: number) =>
+        gegeven !== undefined && gegeven !== hoort && Math.abs(gegeven - hoort) <= 1;
+      return mis(l, linksVan(som)) || mis(r, rechtsVan(som));
+    },
+    kindtekst: {
+      "34": "Eentje zit er net naast.",
+      "56": "Je zit er bij één van de twee eentje naast. Tel nog eens rustig vanaf het middelste nummer.",
+      "78": "Eén van de buurgetallen ligt er precies één naast. Tel de sprong nog eens na vanaf het middelste getal.",
+    },
+    hint: "Tel vanaf het middelste huis, en let op hoe groot de sprong is.",
+    uitleg: (som) => [
+      { tekst: "Begin in het midden.", som: `${som.extra?.basis ?? ""}` },
+      { tekst: "De sprong is zo groot.", som: `${stapVan(som)}` },
+      { tekst: "Dus dit hoort er.", som: `${linksVan(som)} en ${rechtsVan(som)}` },
+    ],
+    ouder: {
+      uitleg:
+        "Het kind telt wel de goede kant op, maar één te ver of één te kort. Vaak wordt het middelste huis zelf meegeteld als eerste stap.",
+      zinnen: [
+        "Tel samen hardop: het middelste getal is nul stappen.",
+        "Zet daarna één stap en kijk waar je uitkomt.",
+      ],
+      schoolwoord: "sprong",
+    },
+  },
+];
+
 export const straatPatronen: Foutpatroon[] = [
+  ...allebeiPatronen,
   {
     id: "zelfde-getal",
     naam: "Het nummer van Vos zelf teruggegeven",

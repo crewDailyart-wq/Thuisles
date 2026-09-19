@@ -20,6 +20,7 @@ type Bussom = {
   totaal: number;
   perGroep: number;
   palet: string;
+  plaatsen: number;
 };
 
 function lees(som: Somgegevens): Bussom {
@@ -27,12 +28,13 @@ function lees(som: Somgegevens): Bussom {
     totaal: som.getallen[0] || som.goed,
     perGroep: som.getallen[1] || 5,
     palet: "viool-oranje",
+    plaatsen: som.extra?.busPlaatsen ?? 40,
   };
 }
 
-/** "zit er nog 1 kind" of "zitten er nog 3 kinderen": het werkwoord buigt mee. */
+/** "zit er nog 1 vosje" of "zitten er nog 3 vosjes": het werkwoord buigt mee. */
 function zittenNog(n: number): string {
-  return n === 1 ? "zit er nog 1 kind" : `zitten er nog ${n} kinderen`;
+  return n === 1 ? "zit er nog 1 vosje" : `zitten er nog ${n} vosjes`;
 }
 
 function delen({ totaal, perGroep }: Bussom) {
@@ -40,11 +42,12 @@ function delen({ totaal, perGroep }: Bussom) {
   return { volleRamen, rest: totaal - volleRamen * perGroep };
 }
 
-/** Het beeld: de bus met de eerste `opgelicht` kinderen al geteld. */
+/** Het beeld: de bus met de eerste `opgelicht` vosjes al geteld. */
 function beeld(s: Bussom, opgelicht: number, bijschrift?: string) {
   return {
     soort: "bus" as const,
     totaal: s.totaal,
+    plaatsen: s.plaatsen,
     perGroep: s.perGroep,
     opgelicht,
     palet: s.palet,
@@ -64,7 +67,7 @@ function metRamen34(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = [
     {
       model: beeld(s, 0),
-      zin: "Kijk, een bus vol kinderen.",
+      zin: "Kijk, een bus vol vosjes.",
       houding: "blij",
       kant: "links",
     },
@@ -94,7 +97,7 @@ function metRamen34(s: Bussom, vorm: Groepsvorm): Uitlegscript {
     stappen.push({
       model: beeld(s, volleRamen * s.perGroep, String(volleRamen * s.perGroep)),
       zin: `En dan nog ${rest} erbij.`,
-      meetellen: { aantal: rest, aansporing: "Tik de kinderen aan!" },
+      meetellen: { aantal: rest, aansporing: "Tik de vosjes aan!" },
       houding: "denkend",
       kant: "rechts",
     });
@@ -125,7 +128,7 @@ function metRamen56(s: Bussom, vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: beeld(s, 0),
-        zin: `In elk raam zitten ${s.perGroep} kinderen.`,
+        zin: `In elk raam zitten ${s.perGroep} vosjes.`,
         houding: "blij",
         kant: "links",
       },
@@ -159,7 +162,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = [
     {
       model: { soort: "som", tekst: `${volleRamen} volle ramen van ${s.perGroep}` },
-      zin: "De kinderen zitten per raam gegroepeerd, dus tellen met sprongen kan.",
+      zin: "De vosjes zitten per raam gegroepeerd, dus tellen met sprongen kan.",
     },
     {
       model: {
@@ -167,7 +170,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
         tekst: `${volleRamen} × ${s.perGroep} = ${volleRamen * s.perGroep}`,
         nadruk: String(volleRamen * s.perGroep),
       },
-      zin: "Zoveel kinderen zitten er in de volle ramen.",
+      zin: "Zoveel vosjes zitten er in de volle ramen.",
     },
   ];
 
@@ -178,7 +181,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
         tekst: `${volleRamen * s.perGroep} + ${rest} = ${s.totaal}`,
         nadruk: String(s.totaal),
       },
-      zin: "Het laatste raam is niet vol; die kinderen tellen gewoon mee.",
+      zin: "Het laatste raam is niet vol; die vosjes tellen gewoon mee.",
     });
   }
 

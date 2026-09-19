@@ -54,6 +54,7 @@ export function SjabloonFormulier({
   algemeenAantal,
   afbeeldingen = [],
   standaardvos,
+  terugval = {},
 }: {
   vakSlug: string;
   /** Bestaande leerdoelen, om er een passend bij te zoeken. */
@@ -73,6 +74,12 @@ export function SjabloonFormulier({
    * geen vos, terwijl het kind hem straks wél ziet.
    */
   standaardvos?: { vangend: string | null; wachtend: string | null; blij: string | null };
+  /**
+   * Per soort oefening wat er geldt als een mascotteveld leeg blijft.
+   *
+   * Alle soorten tegelijk, want de keuze van de soort valt op dit scherm zelf.
+   */
+  terugval?: Record<string, Record<string, string>>;
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -371,6 +378,8 @@ export function SjabloonFormulier({
                 afbeeldingen={afbeeldingen}
                 velden={generator.velden}
                 waarden={instellingen}
+                /* Per soort oefening een eigen standaard; hier de set van de gekozen soort. */
+                terugval={terugval[soort] ?? {}}
                 onWijzig={(sleutel, waarde) =>
                   setInstellingen((h) => ({ ...h, [sleutel]: waarde }))
                 }
@@ -391,6 +400,7 @@ export function SjabloonFormulier({
                 instellingen={instellingen}
                 groep={groep === "" ? undefined : groep}
                 standaardvos={standaardvos}
+                terugval={terugval[soort] ?? {}}
               />
             </Paneel>
           </div>

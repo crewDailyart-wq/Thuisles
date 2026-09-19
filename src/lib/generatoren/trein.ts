@@ -47,15 +47,39 @@ import { treinUitleg } from "@/lib/generatoren/scripts/trein";
  *
  * `{som}` wordt "van klein naar groot" of andersom: dat wisselt per vraag, dus
  * het moet in de zin staan. Zonder dat zou het kind moeten raden welke kant op.
+ *
+ * Bij groep 3-4 staat er letterlijk wat er moet gebeuren: slepen. "Zet de
+ * trein" zei wel wat het resultaat moest zijn, maar niet hoe je daar komt — en
+ * het klopte ook niet helemaal, want het gaat om de wagons en niet om de hele
+ * trein. Deze kinderen lezen bovendien nog nauwelijks, dus het handje dat het
+ * voordoet is minstens zo belangrijk als de zin.
  */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Zet de trein {som}.",
+  "34": "Sleep de wagons {som}.",
   "56": "Sleep de wagons {som} achter de locomotief.",
   "78": "Zet de wagons in de goede volgorde: {som}.",
 };
 
 const MIN_GETAL = 1;
 const MAX_GETAL = 100;
+
+/**
+ * Vos als machinist, en waar hij in de locomotief komt te zitten.
+ *
+ * Dit is de ene plek waar het raampje vastligt. `raampje` staat in de eenheden
+ * waarin de locomotief getekend wordt (120 breed, 150 hoog), precies hetzelfde
+ * rechthoekje als dat in de tekening: verschuif of vergroot het hier, en het
+ * glas én de afbeelding erin gaan samen mee. Staan ze los van elkaar, dan valt
+ * Vos vroeg of laat half over de rand.
+ *
+ * De afbeelding is ook een instelling bij het sjabloon, zodat er een andere
+ * machinist in kan zonder dat hier iets hoeft te veranderen. Past die anders in
+ * het raampje, zeg het dan: het raampje zelf staat hier.
+ */
+export const MACHINIST = {
+  afbeelding: "trein.png",
+  raampje: { x: 40, y: 28, breedte: 72, hoogte: 72 },
+};
 
 export function grenzen(inst: Instellingen) {
   const van = Math.max(MIN_GETAL, Math.min(MAX_GETAL, getal(inst, "van", 1)));
@@ -65,7 +89,19 @@ export function grenzen(inst: Instellingen) {
     tot,
     richting: tekst(inst, "richting", "oplopend"),
     aantal: Math.max(3, Math.min(5, getal(inst, "aantalWagons", 4))),
+    machinist: machinistVan(inst),
   };
+}
+
+/**
+ * De machinist zoals het sjabloon hem heeft staan.
+ *
+ * Staat er niets, dan geldt `MACHINIST` hierboven. Zo werkt een sjabloon van
+ * vóór deze afbeelding gewoon mee.
+ */
+export function machinistVan(inst: Instellingen) {
+  const afbeelding = tekst(inst, "vosMachinist", MACHINIST.afbeelding).trim();
+  return { afbeelding: afbeelding === "" ? null : afbeelding };
 }
 
 export const treinGenerator: Generator = {
@@ -110,6 +146,12 @@ export const treinGenerator: Generator = {
       max: MAX_GETAL,
       hulp: "Alle getallen op de wagons blijven hierbinnen. Een bereik dat over de tien heen gaat, is juist nuttig: dan komt de vergissing „9 hoort na 12” vanzelf langs.",
     },
+    {
+      soort: "afbeelding",
+      sleutel: "vosMachinist",
+      label: "Vos als machinist",
+      hulp: "De vos die in het raampje van de locomotief komt te staan: kop, pet en zwaaiende poot, afgesneden op borsthoogte. Hij wordt passend in het raampje gezet, dus hij valt er nooit buiten. Leeg = geen machinist; dan kijkt de gewone vos mee vanaf de kant.",
+    },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
@@ -123,6 +165,7 @@ export const treinGenerator: Generator = {
     tot: 20,
     richting: "oplopend",
     aantalWagons: 4,
+    vosMachinist: MACHINIST.afbeelding,
   },
   foutpatronen: treinPatronen,
   aanpak: treinAanpak,
@@ -136,7 +179,7 @@ export const treinGenerator: Generator = {
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
-    const { van, tot, richting, aantal: hoeveelWagons } = grenzen(inst);
+    const { van, tot, richting, aantal: hoeveelWagons, machinist } = grenzen(inst);
 
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 300 && uit.length < aantal; poging++) {
@@ -191,6 +234,11 @@ export const treinGenerator: Generator = {
           soort: "trein",
           wagons: opSpoor,
           aflopend,
+          /*
+            De machinist hoort bij het type en niet bij de som, dus hij wordt
+            bij het tonen opnieuw uit het sjabloon gehaald — net als de vos.
+          */
+          machinist,
           /* De vos komt van de standaardvos; zie `haalStandaardvos`. */
           vos: { vangend: null, wachtend: null, blij: null },
         },

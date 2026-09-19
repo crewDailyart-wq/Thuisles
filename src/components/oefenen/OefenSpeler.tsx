@@ -18,6 +18,7 @@
  */
 
 import Link from "next/link";
+import { KralenAvontuur } from "./KralenAvontuur";
 import { BosSpel } from "@/components/oefenen/BosSpel";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { beloonGoedAntwoord, bewaarAntwoord, meldLastig, rondAf } from "@/app/oefenacties";
@@ -35,6 +36,7 @@ import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
 import {
+  Bus,
   Figuurtekening,
   beschrijfFiguur,
   figuurIsTekenbaar,
@@ -80,7 +82,18 @@ import { type AntwoordOptie, type OefenVraag } from "@/lib/vraagtypes";
  * verwisseld zijn bijvoorbeeld, en dat is aan één getal niet te merken.
  */
 function metGegevenGetallen(vraag: OefenVraag, gegeven: string): Somgegevens | null {
-  if ((vraag.vorm !== "sleepgetallen" && vraag.vorm !== "bosspel") || !vraag.somgegevens) return vraag.somgegevens;
+  /*
+    Ook een open vraag kan meer dan één getal vragen: bij "allebei de buren"
+    staan er twee nummers in het antwoord, gescheiden door een komma. Dat is
+    aan het antwoord zelf te zien, dus hoeft er geen nieuwe vraagvorm voor bij.
+  */
+  const meerdereOpen = vraag.vorm === "open" && vraag.antwoord.includes(",");
+  if (
+    (vraag.vorm !== "sleepgetallen" && vraag.vorm !== "bosspel" && !meerdereOpen) ||
+    !vraag.somgegevens
+  ) {
+    return vraag.somgegevens;
+  }
 
   const extra: Record<string, number> = { ...(vraag.somgegevens.extra ?? {}) };
   gegeven.split(",").forEach((deel, i) => {
@@ -284,6 +297,16 @@ export function OefenSpeler({
     blijft het precies zoals het was: het feest begint direct.
   */
   const [wachtOpVos, setWachtOpVos] = useState(false);
+  /*
+    Welke lege deur aan de beurt is bij "allebei de buren".
+
+    Hij staat hier en niet in de straat zelf, omdat twee dingen hem tegelijk
+    moeten weten: de straat tekent de cursor op die deur, en het
+    cijfertoetsenbord eronder schrijft er zijn cijfers naartoe.
+  */
+  const [actieveDeur, setActieveDeur] = useState(0);
+  const [ingestapteBus, setIngestapteBus] = useState<string | null>(null);
+
   /* De aan/uit-stand van de geluidjes in de opgave; los van het uitlegfilmpje. */
   const opgavegeluid = useSyncExternalStore(
     abonneerOpgavegeluid,
@@ -344,6 +367,7 @@ export function OefenSpeler({
 
 
   const vraag = serie[index];
+  const busWacht = vraag?.figuur?.soort === "bus" && vraag.figuur.animatie !== "wegrijden" && !vraag.afbeelding && ingestapteBus !== vraag.id;
 
   /*
     Hoeveel er in deze ronde al goed zijn bij ditzelfde leerdoel.
@@ -422,7 +446,7 @@ export function OefenSpeler({
    * het dus het vórige antwoord nakijken.
    */
   function controleer(gekozen: string = antwoord) {
-    if (gekozen.trim() === "") return;
+    if (busWacht || gekozen.trim() === "") return;
     /* Deze vraag is al nagekeken; een tweede klik telt niet nog eens mee. */
     if (nagekeken.current === index) return;
     nagekeken.current = index;
@@ -442,8 +466,12 @@ export function OefenSpeler({
         vraag.vorm === "stapstenen" ||
         vraag.vorm === "bosspel" ||
         vraag.figuur?.soort === "plaatjesraster" ||
+        (vraag.figuur?.soort === "bus" && !vraag.afbeelding) ||
+        (vraag.figuur?.soort === "kralenrij" && !vraag.afbeelding) ||
         /* En bij het vissen: eerst komt de vis boven, daarna pas het feest. */
-        vraag.figuur?.soort === "visvijver"
+        vraag.figuur?.soort === "visvijver" ||
+        /* En bij de trein: die rijdt eerst weg. */
+        vraag.figuur?.soort === "trein"
       ) {
         setWachtOpVos(true);
       }
@@ -636,6 +664,8 @@ export function OefenSpeler({
     setAntwoord("");
     setFase("bezig");
     setWachtOpVos(false);
+    setActieveDeur(0);
+    setIngestapteBus(null);
     /*
       Klikt het kind door terwijl de sleutel nog onderweg is, dan telt hij hier
       alsnog mee. De sleutel stond op dat moment allang in de database; dit
@@ -664,7 +694,7 @@ export function OefenSpeler({
     );
   }
 
-  const magControleren = antwoord.trim() !== "" && fase === "bezig";
+  const magControleren = !busWacht && antwoord.trim() !== "" && fase === "bezig";
 
   /*
     De bolletjes in de balk: één per vraag van deze sessie.
@@ -752,7 +782,7 @@ export function OefenSpeler({
     Bewust niet hier nog eens overschrijven: dan zou een beheerder een zin
     kunnen invullen die het kind vervolgens niet te zien krijgt.
   */
-  const vraagtekst = vraag.vraagtekst;
+  const vraagtekst = vraag.figuur?.soort === "bus" ? vraag.vraagtekst.replace(/kinderen/g, "vosjes").replace(/kindje/g, "vosje") : vraag.vraagtekst;
 
   return (
     <>
@@ -869,6 +899,7 @@ export function OefenSpeler({
                     fase={fase}
                     markeer={kortFeedback}
                     gevangen={gevangen}
+                    actieveDeur={actieveDeur}
                     invulbaar={invulbaar}
                     onKies={kies}
                     onBevestig={() => {
@@ -883,6 +914,10 @@ export function OefenSpeler({
                     alt=""
                     className="mx-auto h-auto w-full rounded-xl object-contain"
                   />
+                ) : vraag.figuur?.soort === "bus" ? (
+                  <Bus key={`${vraag.id}:${index}`} figuur={vraag.figuur} instappen={vraag.figuur.animatie !== "wegrijden"} onIngestapt={() => setIngestapteBus(vraag.id)} vertrek={fase === "goed"} onVertrokken={() => setWachtOpVos(false)} />
+                ) : vraag.figuur?.soort === "kralenrij" ? (
+                  <KralenAvontuur key={vraag.id} figuur={vraag.figuur} fase={fase} onKlaar={() => setWachtOpVos(false)} />
                 ) : vraag.figuur?.soort === "plaatjesraster" ? (
                   /*
                     Niet via `Figuurtekening` maar hier, want dit raster moet de
@@ -918,6 +953,39 @@ export function OefenSpeler({
                     key={vraag.id}
                     huizen={vraag.figuur.huizen}
                     gevraagd={vraag.figuur.gevraagd}
+                    gevraagden={vraag.figuur.gevraagden}
+                    /*
+                      Bij twee lege deuren wordt er op de deuren zelf ingevuld.
+                      Het antwoord is één tekst met een komma ertussen; hier
+                      gaat hij uit elkaar, en bij het typen weer aan elkaar.
+                    */
+                    ingevuld={antwoord.split(",")}
+                    actief={actieveDeur}
+                    goedeWaarden={
+                      fase === "bezig" ? null : vraag.antwoord.split(",").map(Number)
+                    }
+                    markeer={kortFeedback}
+                    onKiesDeur={setActieveDeur}
+                    /*
+                      Alleen bij een open vraag zijn de deuren invulvelden. Bij
+                      meerkeuze blijft de straat een tekening en staan de
+                      keuzeknoppen eronder, zoals het was.
+                    */
+                    onWijzig={
+                      vraag.vorm === "open"
+                        ? (delen) =>
+                            kies(
+                              delen.length > 1
+                                ? delen.every((d) => d === "")
+                                  ? ""
+                                  : delen.join(",")
+                                : (delen[0] ?? ""),
+                            )
+                        : undefined
+                    }
+                    onBevestig={() => {
+                      if (magControleren) controleer();
+                    }}
                     vos={vraag.figuur.vos}
                     fase={fase}
                   />
@@ -962,13 +1030,14 @@ export function OefenSpeler({
               {vraagtekst}
             </h1>
 
-            {!invulbaar && (
+            {!invulbaar && !busWacht && (
               <Antwoordvelden
                 vraag={vraag}
                 antwoord={antwoord}
                 fase={fase}
                 markeer={kortFeedback}
                 gevangen={gevangen}
+                actieveDeur={actieveDeur}
                 invulbaar={invulbaar}
                 onKies={kies}
                 onBevestig={() => {
@@ -980,7 +1049,7 @@ export function OefenSpeler({
           </div>
 
           {/* Hint vragen mag altijd, ook vooraf. */}
-          {fase === "bezig" && hinttekst && (
+          {fase === "bezig" && !busWacht && hinttekst && (
             <div className="mt-4">
               {hintOpen ? (
                 <p className="rounded-2xl bg-amber-zacht px-4 py-3 text-sm font-semibold text-inkt-zacht">
@@ -1133,7 +1202,7 @@ export function OefenSpeler({
               Geen knop bij de vraagtypes waar je uit vakken kiest: daar wordt
               de tik zelf nagekeken, een halve tel later.
             */}
-            {fase === "bezig" && !kiestUitVakken && (
+            {fase === "bezig" && !busWacht && !kiestUitVakken && (
               <button
                 type="button"
                 onClick={() => controleer()}
@@ -1213,6 +1282,7 @@ function Antwoordvelden({
   fase,
   markeer,
   gevangen = 0,
+  actieveDeur = 0,
   invulbaar,
   onKies,
   onBevestig,
@@ -1225,6 +1295,8 @@ function Antwoordvelden({
   markeer: boolean;
   /** Hoeveel er in deze ronde al goed zijn; de emmer bij het vissen vult zich ermee. */
   gevangen?: number;
+  /** Welke lege deur aan de beurt is bij "allebei de buren". */
+  actieveDeur?: number;
   invulbaar: boolean;
   onKies: (v: string) => void;
   onBevestig: () => void;
@@ -1341,10 +1413,19 @@ function Antwoordvelden({
     precies over wat het kind moet tellen. De knop Controleer blijft hier wél
     staan — het kind moet eerst klaar zijn met invullen.
   */
-  if (
-    vraag.vorm === "open" &&
-    (vraag.figuur?.soort === "mabblokken" || vraag.figuur?.soort === "huizenrij")
-  ) {
+  /*
+    De straat heeft geen antwoordvak onder de tekening.
+
+    Het kind typt het huisnummer op de deur zelf, net als op de steen bij de
+    telrij — zie `Huizenrij`. Een los vak eronder zou hetzelfde antwoord een
+    tweede keer vragen, en het cijfertoetsenbord dat erbij hoorde nam de halve
+    bladzijde in beslag terwijl de huisjes juist in beeld moeten blijven. Op
+    een tablet komt in plaats daarvan het systeemtoetsenbord op, met alleen
+    cijfers.
+  */
+  if (vraag.vorm === "open" && vraag.figuur?.soort === "huizenrij") return null;
+
+  if (vraag.vorm === "open" && vraag.figuur?.soort === "mabblokken") {
     return (
       <Cijferinvoer
         waarde={antwoord}
@@ -1416,6 +1497,9 @@ function Antwoordvelden({
         /* Ook bij goed meegeven; zie de toelichting bij Stapstenen hieronder. */
         goedeWaarden={fase === "bezig" ? null : goede}
         vos={vraag.figuur.vos}
+        machinist={vraag.figuur.machinist}
+        /* Pas als de trein weg is, mag het feestscherm eroverheen. */
+        onKlaar={onSprongKlaar}
         onWijzig={(nieuw: (number | null)[]) =>
           onKies(nieuw.every((w) => w === null) ? "" : nieuw.map((w) => w ?? "").join(","))
         }

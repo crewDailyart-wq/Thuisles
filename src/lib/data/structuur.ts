@@ -523,6 +523,68 @@ export function zetUitlegvorm(id: string, vorm: string): Uitslag<true> {
   return { ok: true, waarde: true };
 }
 
+/**
+ * Een leerdoel naar een ander onderwerp verhuizen.
+ *
+ * ---------------------------------------------------------------------------
+ * Wat er níet meeverhuist, en waarom dat goed is
+ * ---------------------------------------------------------------------------
+ * Vragen, sjablonen, antwoorden, voortgang en wat een ouder heeft klaargezet
+ * hangen allemaal aan het leerdoel-id, niet aan het onderwerp. Dat id blijft
+ * hetzelfde, dus die gaan vanzelf mee en er hoeft niets te worden bijgewerkt.
+ *
+ * ---------------------------------------------------------------------------
+ * Twee dingen die wél veranderen
+ * ---------------------------------------------------------------------------
+ * De plek in de rij: het leerdoel komt achteraan in het nieuwe onderwerp. Zonder
+ * dat zou het de volgorde van een ander leerdoel overnemen en zouden er twee met
+ * hetzelfde nummer staan.
+ *
+ * En het webadres van de oefening, want daar zit de naam van het onderwerp in.
+ * Een half afgemaakte oefensessie wordt onder dat adres bewaard; die is na een
+ * verhuizing dus niet meer te hervatten en begint opnieuw. Er gaat geen
+ * voortgang verloren — alleen de vragen van dát ene rondje worden opnieuw
+ * gekozen.
+ *
+ * De code blijft met opzet staan zoals hij is. Hij staat in het overzicht, in
+ * de vragen en misschien in aantekeningen; hem stilletjes hernummeren zou meer
+ * kwijtmaken dan het oplost.
+ */
+export function verplaatsLeerdoel(id: string, naarSubdomeinId: string): Uitslag<true> {
+  const db = verbinding();
+
+  const leerdoel = db
+    .prepare("select id, subdomein_id, titel from leerdoelen where id = ?")
+    .get(id) as { id: string; subdomein_id: string; titel: string } | undefined;
+  if (!leerdoel) return { ok: false, fout: "Dit leerdoel bestaat niet meer." };
+
+  const doel = db
+    .prepare("select id from subdomeinen where id = ?")
+    .get(naarSubdomeinId) as { id: string } | undefined;
+  if (!doel) return { ok: false, fout: "Dat onderwerp bestaat niet meer." };
+
+  if (String(leerdoel.subdomein_id) === naarSubdomeinId) {
+    return { ok: false, fout: "Dit leerdoel staat daar al." };
+  }
+
+  /* Twee leerdoelen met dezelfde titel binnen één onderwerp gaat niet. */
+  const broers = haalLeerdoelen(naarSubdomeinId);
+  if (broers.some((l) => sleutel(l.titel) === sleutel(leerdoel.titel))) {
+    return {
+      ok: false,
+      fout: `In dat onderwerp staat al een leerdoel "${leerdoel.titel}".`,
+    };
+  }
+
+  db.prepare("update leerdoelen set subdomein_id = ?, volgorde = ? where id = ?").run(
+    naarSubdomeinId,
+    volgendeVolgorde("leerdoelen", "subdomein_id", naarSubdomeinId),
+    id,
+  );
+
+  return { ok: true, waarde: true };
+}
+
 export function wijzigLeerdoel(
   id: string,
   invoer: {

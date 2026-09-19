@@ -219,19 +219,19 @@ export const plaatjestellenGenerator: Generator = {
       soort: "afbeelding",
       sleutel: "vosVangend",
       label: "Vos \u2014 vangend",
-      hulp: "Te zien terwijl de plaatjes komen aandwarrelen en Vos ze opvangt. Leeg = geen vos.",
+      hulp: "Te zien terwijl de plaatjes komen aandwarrelen en Vos ze opvangt. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosWachtend",
       label: "Vos \u2014 wachtend",
-      hulp: "Te zien zolang het kind nadenkt. Leeg = dezelfde als vangend.",
+      hulp: "Te zien zolang het kind nadenkt. Leeg = de standaardvos van dit soort oefening.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
       label: "Vos \u2014 blij",
-      hulp: "Te zien na een goed antwoord, als de plaatjes terugvliegen. Leeg = dezelfde als vangend.",
+      hulp: "Te zien na een goed antwoord, als de plaatjes terugvliegen. Leeg = de standaardvos van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),

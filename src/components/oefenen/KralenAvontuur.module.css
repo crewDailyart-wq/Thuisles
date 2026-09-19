@@ -1,0 +1,13 @@
+.pad { position:relative; height:125px; margin:0 auto 6px; max-width:560px; border-bottom:7px solid #a9c884; border-radius:0 0 45% 25%; background:linear-gradient(transparent 65%,#eef6df); }
+.reiziger { position:absolute; left:4%; bottom:-3px; width:92px; height:112px; }
+.vos { width:100%; height:100%; object-fit:contain; }
+.ballon { position:absolute; left:32%; top:20px; border:2px solid #f4d4b3; border-radius:20px 20px 20px 3px; padding:9px 14px; background:#fffaf1; font-weight:800; color:#854117; }
+.sleutel { position:absolute; right:5%; bottom:12px; width:42px; height:42px; object-fit:contain; }
+.hup { animation:hup .45s ease-out; }
+.naarSleutel { animation:reis 1.35s ease-in-out both; }
+.gepakt { animation:pak .25s 1.15s both; }
+@keyframes hup { 50% { transform:translateY(-15px) rotate(-5deg); } }
+@keyframes reis { 0% { left:4%; } 25% { transform:translateY(-20px); } 50% { transform:translateY(0); } 75% { transform:translateY(-20px); } 100% { left:calc(95% - 85px); transform:translateY(0); } }
+@keyframes pak { to { opacity:0; transform:translateY(-20px) scale(.6); } }
+@media(prefers-reduced-motion:reduce) { .hup { animation:none; } .naarSleutel { animation:none; left:calc(95% - 85px); } .gepakt { animation:none; opacity:0; } }
+@media(max-width:400px) { .ballon { font-size:14px; padding:8px; } }

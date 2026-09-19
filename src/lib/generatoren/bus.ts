@@ -62,9 +62,9 @@ function mogelijkeTotalen(inst: Instellingen): { totalen: number[]; perGroep: nu
 
 /** De standaardzinnen van dit type. Per sjabloon aan te passen in het beheer. */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Hoeveel kinderen zitten er in de bus?",
-  "56": "Hoeveel kinderen zitten er in de bus?",
-  "78": "Hoeveel kinderen zitten er in totaal in de bus?",
+  "34": "Hoeveel vosjes zitten er in de bus?",
+  "56": "Hoeveel vosjes zitten er in de bus?",
+  "78": "Hoeveel vosjes zitten er in totaal in de bus?",
 };
 
 export const busGenerator: Generator = {
@@ -74,6 +74,10 @@ export const busGenerator: Generator = {
     "Een bus met in elk raam een groepje kinderen, om en om van kleur. Het kind telt met sprongen van vijf mee en typt hoeveel kinderen er in de bus zitten. Het laatste raam mag een restje bevatten.",
   suggestie: "Groep 3: 5 tot 20 kinderen · groep 4: 10 tot 30 kinderen",
   velden: [
+    { soort: "keuze", sleutel: "animatie", label: "Busanimatie", opties: [
+      { waarde: "instappen", label: "Vosjes stappen in vóór het tellen" },
+      { waarde: "wegrijden", label: "Vosjes zitten klaar; bus rijdt weg bij goed antwoord" },
+    ], hulp: "Bij beide varianten rijdt de bus weg na een goed antwoord. Daarna volgt de bestaande sleutelbeloning. De bus houdt binnen dit sjabloon steeds evenveel ramen." },
     {
       soort: "getal",
       sleutel: "van",
@@ -119,7 +123,7 @@ export const busGenerator: Generator = {
   vraagteksten: {
     standaard: STANDAARDZINNEN,
   },
-  standaard: { van: 5, tot: 30, perGroep: 5, alleenVol: false, palet: "viool-oranje" },
+  standaard: { animatie: "instappen", van: 5, tot: 30, perGroep: 5, alleenVol: false, palet: "viool-oranje" },
   foutpatronen: busPatronen,
   aanpak: busAanpak,
   uitleganimatie: busUitleg,
@@ -138,6 +142,8 @@ export const busGenerator: Generator = {
     const alleenVol = vinkje(inst, "alleenVol");
     const palet = tekst(inst, "palet", "viool-oranje");
 
+    const animatie = tekst(inst, "animatie", "instappen") === "wegrijden" ? "wegrijden" as const : "instappen" as const;
+    const plaatsen = Math.ceil(Math.max(20, ...totalen) / perGroep) * perGroep;
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 200 && uit.length < aantal; poging++) {
       const totaal = kiesUit(kans, totalen);
@@ -147,6 +153,7 @@ export const busGenerator: Generator = {
         variant: alleenVol ? "vol" : "rest",
         getallen: [totaal, perGroep],
         goed: totaal,
+        extra: { busPlaatsen: plaatsen },
       };
 
       const handtekening = `bus:${perGroep}:${totaal}`;
@@ -158,7 +165,7 @@ export const busGenerator: Generator = {
         vorm: "open",
         vraagtekst: bepaalVraagtekst(busGenerator, inst, groep, gegevens),
         antwoord: String(totaal),
-        figuur: { soort: "bus", totaal, perGroep, palet },
+        figuur: { soort: "bus", totaal, perGroep, palet, animatie, plaatsen },
         somgegevens: gegevens,
       });
     }

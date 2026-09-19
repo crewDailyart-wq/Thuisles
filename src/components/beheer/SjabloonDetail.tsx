@@ -33,6 +33,7 @@ export function SjabloonDetail({
   vakSlug,
   algemeenAantal,
   afbeeldingen = [],
+  terugval = {},
 }: {
   sjabloon: SjabloonInContext;
   vragen: VraagInContext[];
@@ -41,6 +42,13 @@ export function SjabloonDetail({
   algemeenAantal: number;
   /** Bestaande afbeeldingen, voor een instelling van het soort "afbeelding". */
   afbeeldingen?: string[];
+  /**
+   * Wat er geldt als een mascotteveld leeg blijft, per veldsleutel.
+   *
+   * Zo is te zien dát er een vos staat zonder dat er iets ingevuld hoeft te
+   * worden; zie `SjabloonInstellingen`.
+   */
+  terugval?: Record<string, string>;
 }) {
   const router = useRouter();
   const [bezig, start] = useTransition();
@@ -213,6 +221,7 @@ export function SjabloonDetail({
                   afbeeldingen={afbeeldingen}
                   velden={generator.velden}
                   waarden={instellingen}
+                  terugval={terugval}
                   onWijzig={(s, w) => setInstellingen((h) => ({ ...h, [s]: w }))}
                 />
               </div>
@@ -224,6 +233,7 @@ export function SjabloonDetail({
                   soort={sjabloon.soort}
                   instellingen={instellingen}
                   groep={sjabloon.groep}
+                  terugval={terugval}
                 />
               </div>
             </div>

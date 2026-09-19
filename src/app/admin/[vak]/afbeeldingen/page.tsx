@@ -12,7 +12,12 @@ import { Afbeeldingbeheer } from "@/components/beheer/Afbeeldingbeheer";
 import { Standaardvos } from "@/components/beheer/Standaardvos";
 import { haalVak } from "@/lib/data/structuur";
 import { lijstMetDetails } from "@/lib/data/afbeeldingen";
-import { haalStandaardvos, vosIsVastgezet } from "@/lib/data/instellingen";
+import {
+  haalAlleTypemascottes,
+  haalStandaardvos,
+  vosIsVastgezet,
+} from "@/lib/data/instellingen";
+import { Typemascottes } from "@/components/beheer/Typemascottes";
 import { telAfbeeldingGebruik } from "@/lib/data/vragen";
 
 export default async function AfbeeldingenPagina({
@@ -34,6 +39,8 @@ export default async function AfbeeldingenPagina({
   */
   const vos = haalStandaardvos();
   const vastgezet = vosIsVastgezet();
+  /* En per soort oefening de eigen standaard; zie `Typemascottes`. */
+  const perType = haalAlleTypemascottes();
 
   return (
     <div className="flex flex-col gap-4">
@@ -55,6 +62,8 @@ export default async function AfbeeldingenPagina({
         beschikbaar={afbeeldingen.map((a) => a.naam)}
         afgeleid={!vastgezet && vos.vangend !== null}
       />
+
+      <Typemascottes begin={perType} beschikbaar={afbeeldingen.map((a) => a.naam)} />
 
       <Afbeeldingbeheer afbeeldingen={afbeeldingen} gebruik={gebruik} />
     </div>

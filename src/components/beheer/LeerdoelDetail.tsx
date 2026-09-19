@@ -12,6 +12,7 @@ import {
   bewerkLeerdoel,
   bewerkUitlegvorm,
   kopieerLeerdoel,
+  verhuisLeerdoel,
   wegLeerdoel,
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
@@ -32,6 +33,7 @@ export function LeerdoelDetail({
   subdomein,
   leerdoel,
   vragen,
+  onderwerpen = [],
   algemeenAantal,
 }: {
   vak: Vak;
@@ -39,11 +41,14 @@ export function LeerdoelDetail({
   subdomein: Subdomein;
   leerdoel: Leerdoel;
   vragen: VraagInContext[];
+  /** Alle onderwerpen van dit vak, om het leerdoel naartoe te verhuizen. */
+  onderwerpen?: { id: string; naam: string; domeinNaam: string }[];
   /** De algemene standaard, om te tonen wat 'leeg' betekent. */
   algemeenAantal: number;
 }) {
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
+  const [naarOnderwerp, setNaarOnderwerp] = useState("");
   const [van, setVan] = useState<number>(leerdoel.groepVan);
   const [tot, setTot] = useState<number>(leerdoel.groepTot);
 
@@ -147,6 +152,61 @@ export function LeerdoelDetail({
               </button>
             </div>
           </form>
+        )}
+
+        {/*
+          Verhuizen naar een ander onderwerp.
+
+          Bewust een eigen blok met een eigen knop, en niet een keuzelijst in het
+          formulier hierboven. Dat formulier stuurt titel en groep mee; een
+          onderwerp dat daar half in hangt, zou bij elke titelwijziging
+          meeverhuizen of juist leeg binnenkomen. Zie HARDE REGEL 1.
+        */}
+        {bewerken && onderwerpen.length > 1 && (
+          <div className="mt-4 border-t border-beheer-rand pt-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-beheer-zacht">
+              Verplaatsen naar een ander onderwerp
+            </p>
+            <div className="mt-2 flex flex-wrap items-center gap-2">
+              <select
+                value={naarOnderwerp}
+                onChange={(e) => setNaarOnderwerp(e.target.value)}
+                className={`${stijl.veld} min-w-[18rem] flex-1`}
+              >
+                <option value="">Kies een onderwerp…</option>
+                {onderwerpen
+                  .filter((o) => o.id !== subdomein.id)
+                  .map((o) => (
+                    <option key={o.id} value={o.id}>
+                      {o.domeinNaam} › {o.naam}
+                    </option>
+                  ))}
+              </select>
+              <button
+                type="button"
+                disabled={bezig || naarOnderwerp === ""}
+                onClick={() =>
+                  doe(() => {
+                    const d = new FormData();
+                    d.set("id", leerdoel.id);
+                    d.set("subdomeinId", naarOnderwerp);
+                    return verhuisLeerdoel(d);
+                  }, () => router.push(`/admin/${vak.slug}/structuur`))
+                }
+                className={stijl.knop}
+              >
+                Verplaatsen
+              </button>
+            </div>
+            <p className="mt-2 text-xs text-beheer-zacht">
+              De vragen, het sjabloon en de voortgang blijven aan dit leerdoel
+              hangen en gaan gewoon mee. De code <code className="font-mono">{leerdoel.code}</code>{" "}
+              blijft staan zoals hij is. Het leerdoel komt achteraan in het nieuwe
+              onderwerp. Let op: het webadres van de oefening verandert, dus een
+              oefensessie die een kind halverwege heeft laten staan, begint
+              opnieuw — de behaalde voortgang blijft wel gewoon staan.
+            </p>
+          </div>
         )}
       </Paneel>
 

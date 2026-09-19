@@ -3,7 +3,7 @@ import { Kop } from "@/components/beheer/Bouwstenen";
 import { SjabloonFormulier } from "@/components/beheer/SjabloonFormulier";
 import { haalDomeinen, haalSubdomeinen, haalVak } from "@/lib/data/structuur";
 import { haalLeerdoelen } from "@/lib/data/vragen";
-import { haalAlgemeenAantalVragen, haalStandaardvos } from "@/lib/data/instellingen";
+import { haalAlgemeenAantalVragen, haalStandaardvos, haalAlleTerugvalmascottes } from "@/lib/data/instellingen";
 import { lijstAfbeeldingen } from "@/lib/data/afbeeldingen";
 
 export default async function NieuwSjabloonPagina({
@@ -55,6 +55,8 @@ export default async function NieuwSjabloonPagina({
         algemeenAantal={haalAlgemeenAantalVragen()}
         afbeeldingen={lijstAfbeeldingen()}
         standaardvos={haalStandaardvos()}
+        /* Per soort oefening wat er geldt als een mascotteveld leeg blijft. */
+        terugval={haalAlleTerugvalmascottes()}
       />
     </div>
   );

@@ -37,6 +37,7 @@ export function SjabloonVoorbeeld({
   */
   groep = 0,
   standaardvos,
+  terugval = {},
 }: {
   soort: string;
   instellingen: Instellingen;
@@ -44,14 +45,32 @@ export function SjabloonVoorbeeld({
   groep?: number;
   /** De vos die geldt als het sjabloon zelf niets invult; alleen om te tonen. */
   standaardvos?: { vangend: string | null; wachtend: string | null; blij: string | null };
+  /**
+   * Wat er geldt als een mascotteveld leeg blijft, per veldsleutel.
+   *
+   * Zonder dit staat er in het voorbeeld geen vos terwijl het kind hem straks
+   * wél ziet: bij het echte maken van de sommen wordt dezelfde aanvulling
+   * gedaan, maar dan op de server. Zie `metStandaardmascottes`.
+   */
+  terugval?: Record<string, string>;
 }) {
   const generator = zoekGenerator(soort);
 
   const sommen = useMemo(() => {
     if (!generator) return [];
+    /*
+      Eerst de standaardmascotte van dit type erbij, precies zoals de server
+      dat straks doet. Wat het sjabloon zelf invult blijft staan.
+    */
+    const metVos: Instellingen = { ...instellingen };
+    for (const [sleutel, waarde] of Object.entries(terugval)) {
+      const eigen = metVos[sleutel];
+      if (typeof eigen === "string" && eigen.trim() !== "") continue;
+      metVos[sleutel] = waarde;
+    }
     // Vast zaad: het voorbeeld springt dan niet rond bij elke toetsaanslag.
-    return generator.maak(instellingen, aantal, new Set(), 20260101, groep);
-  }, [generator, instellingen, aantal, groep]);
+    return generator.maak(metVos, aantal, new Set(), 20260101, groep);
+  }, [generator, instellingen, aantal, groep, terugval]);
 
   const maximum = generator?.maximum(instellingen) ?? null;
 
@@ -153,6 +172,7 @@ export function SjabloonVoorbeeld({
                     <Huizenrij
                       huizen={som.figuur.huizen}
                       gevraagd={som.figuur.gevraagd}
+                      gevraagden={som.figuur.gevraagden}
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                       beweegt={false}
                     />
@@ -178,6 +198,7 @@ export function SjabloonVoorbeeld({
                       wagons={som.figuur.wagons}
                       ingevuld={som.figuur.wagons.map(() => null)}
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
+                      machinist={som.figuur.machinist}
                     />
                   </div>
                 )}

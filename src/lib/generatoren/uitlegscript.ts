@@ -136,6 +136,7 @@ export type Model =
     }
   | {
       soort: "bus";
+      plaatsen?: number;
       totaal: number;
       /** Hoeveel kinderen er per raam zitten. */
       perGroep: number;

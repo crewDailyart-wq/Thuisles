@@ -154,6 +154,99 @@ export function feestje(): void {
   });
 }
 
+/**
+ * Het tuut-tuut van de locomotief als hij wegrijdt.
+ *
+ * Twee korte stoten achter elkaar — zo klinkt een stoomfluit, en zo doet een
+ * kind hem ook na. Eén lange toon zou een scheepshoorn zijn.
+ *
+ * Elke stoot is een akkoordje van drie tonen tegelijk: de grondtoon, de kwint
+ * erboven en het octaaf. Dat is waarom een echte fluit vol klinkt en niet als
+ * een piepje; één toon alleen klinkt als een alarm. De tweede stoot ligt iets
+ * lager en duurt langer, zoals een fluit die van je weg rijdt.
+ *
+ * Wordt alleen aangeroepen als het opgavegeluid aanstaat; zie waar hij vandaan
+ * komt. Speelt niets zolang er nog nergens is getikt: een browser laat geluid
+ * dan toch niet toe.
+ */
+export function treinfluit(): () => void {
+  if (!getikt || !opgavegeluidStaatAan()) return () => {};
+  const ctx = krijgContext();
+  if (!ctx) return () => {};
+  const bronnen: OscillatorNode[] = [];
+  const volumes: GainNode[] = [];
+  let gestopt = false;
+  let klok: ReturnType<typeof setTimeout> | undefined;
+  let afmelden: () => void = () => {};
+  const stop = () => {
+    if (gestopt) return;
+    gestopt = true; clearTimeout(klok); afmelden();
+    bronnen.forEach(bron => { try { bron.stop(); } catch { /* Al gestopt. */ } bron.disconnect(); });
+    volumes.forEach(volume => volume.disconnect());
+  };
+  afmelden = abonneerOpgavegeluid(() => { if (!opgavegeluidStaatAan()) stop(); });
+  const speel = () => {
+    if (gestopt || !opgavegeluidStaatAan()) { stop(); return; }
+    // Twee warme meerstemmige fluitstoten; de tweede zakt licht bij het wegrijden.
+    for (const [vertraging, duur, hz] of [[0, .32, 392], [.43, .58, 349]]) {
+      for (const [verhouding, sterkte] of [[1, .055], [1.5, .025], [2, .012]]) {
+        const bron = ctx.createOscillator(), volume = ctx.createGain();
+        const start = ctx.currentTime + vertraging;
+        bron.type = verhouding === 1 ? "triangle" : "sine";
+        bron.frequency.setValueAtTime(hz * verhouding, start);
+        bron.frequency.linearRampToValueAtTime(hz * verhouding * .94, start + duur);
+        volume.gain.setValueAtTime(0, start);
+        volume.gain.linearRampToValueAtTime(sterkte, start + .045);
+        volume.gain.setValueAtTime(sterkte, start + duur - .09);
+        volume.gain.linearRampToValueAtTime(0, start + duur);
+        bron.connect(volume); volume.connect(ctx.destination);
+        bronnen.push(bron); volumes.push(volume);
+        bron.start(start); bron.stop(start + duur);
+      }
+    }
+    klok = setTimeout(stop, 1100);
+  };
+  if (ctx.state === "running") speel(); else void ctx.resume().then(speel).catch(stop);
+  return stop;
+}
+
+/** Zachte optrekkende busmotor; stopt bij dempen, vertrek of verlaten van de vraag. */
+export function busmotor(duur = 1.8): () => void {
+  if (!getikt || !opgavegeluidStaatAan()) return () => {};
+  const ctx = krijgContext();
+  if (!ctx) return () => {};
+  let gestopt = false;
+  let bron: OscillatorNode | null = null;
+  let filter: BiquadFilterNode | null = null;
+  let volume: GainNode | null = null;
+  let afmelden: () => void = () => {};
+  const stop = () => {
+    if (gestopt) return;
+    gestopt = true;
+    if (bron) { try { bron.stop(); } catch { /* Al afgelopen. */ } bron.disconnect(); }
+    filter?.disconnect(); volume?.disconnect(); afmelden();
+  };
+  afmelden = abonneerOpgavegeluid(() => { if (!opgavegeluidStaatAan()) stop(); });
+  const speel = () => {
+    if (gestopt || !opgavegeluidStaatAan()) { stop(); return; }
+    const nu = ctx.currentTime;
+    bron = ctx.createOscillator(); filter = ctx.createBiquadFilter(); volume = ctx.createGain();
+    bron.type = "sawtooth";
+    bron.frequency.setValueAtTime(48, nu);
+    bron.frequency.exponentialRampToValueAtTime(105, nu + duur * .7);
+    bron.frequency.linearRampToValueAtTime(80, nu + duur);
+    filter.type = "lowpass"; filter.frequency.value = 280; filter.Q.value = .7;
+    volume.gain.setValueAtTime(0, nu);
+    volume.gain.linearRampToValueAtTime(.065, nu + Math.min(.12, duur / 3));
+    volume.gain.linearRampToValueAtTime(.04, nu + duur * .65);
+    volume.gain.linearRampToValueAtTime(0, nu + duur);
+    bron.connect(filter); filter.connect(volume); volume.connect(ctx.destination);
+    bron.onended = stop; bron.start(nu); bron.stop(nu + duur);
+  };
+  if (ctx.state === "running") speel(); else void ctx.resume().then(speel).catch(stop);
+  return stop;
+}
+
 /** Vos leest de zin voor, in het Nederlands. */
 export function lees(zin: string): void {
   if (typeof window === "undefined" || !window.speechSynthesis) return;

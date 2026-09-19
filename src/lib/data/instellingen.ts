@@ -13,6 +13,14 @@ import "server-only";
  */
 
 import { verbinding } from "@/lib/db/sqlite";
+import {
+  MASCOTTESETS,
+  mascotteSleutel,
+  mascottesetVan,
+} from "@/lib/mascottesets";
+import type { Instellingen } from "@/lib/generatoren/soort";
+import { HENGELVOS } from "@/lib/generatoren/vissen";
+import { MACHINIST } from "@/lib/generatoren/trein";
 
 /** Wat een oefensessie telt als er niets is ingesteld. */
 export const STANDAARD_VRAGEN_PER_SESSIE = 10;
@@ -142,6 +150,117 @@ function uitSjablonen(): Voshoudingen {
 /** Staat de standaardvos hier echt vast, of komt hij nog uit een sjabloon? */
 export function vosIsVastgezet(): boolean {
   return lees(VOS_SLEUTELS.vangend) !== null && lees(VOS_SLEUTELS.vangend) !== "";
+}
+
+// ---------------------------------------------------------------------------
+// De standaardmascotte per oefeningstype
+// ---------------------------------------------------------------------------
+
+/**
+ * De mascotte die een type gebruikt als een sjabloon zelf niets invult.
+ *
+ * Waarom dit er bovenop de centrale vos is: die centrale vos kent maar drie
+ * houdingen, en niet elk type gebruikt dezelfde. De stapstenen willen een
+ * springende vos, de trein een machinist met een pet, het vissen een vos met
+ * een hengel. Eén trio voor alles betekende dus dat je bij elk nieuw sjabloon
+ * tóch weer ging invullen — precies wat dit moet oplossen.
+ *
+ * De sleutels zijn dezelfde als de velden bij het sjabloon; zie
+ * `src/lib/mascottesets.ts`. Daardoor is de terugval één regel: wat het
+ * sjabloon leeg laat, komt hiervandaan.
+ *
+ * De volgorde is: sjabloon → standaard van dit type → de centrale vos.
+ */
+export function haalTypemascottes(type: string): Record<string, string> {
+  const set = mascottesetVan(type);
+  if (!set) return {};
+
+  const uit: Record<string, string> = {};
+  for (const veld of set.velden) {
+    const waarde = lees(mascotteSleutel(type, veld.sleutel));
+    if (waarde) uit[veld.sleutel] = waarde;
+  }
+  return uit;
+}
+
+/** Alles in één keer, voor het beheerscherm. */
+export function haalAlleTypemascottes(): Record<string, Record<string, string>> {
+  const uit: Record<string, Record<string, string>> = {};
+  for (const set of MASCOTTESETS) uit[set.type] = haalTypemascottes(set.type);
+  return uit;
+}
+
+/**
+ * De standaardmascotte van één type vastzetten.
+ *
+ * Een lege waarde wist die plek; dan geldt weer wat er centraal staat. Er wordt
+ * niet gecontroleerd of het bestand er is — dezelfde afspraak als bij een
+ * afbeelding bij een vraag, waar een verwijderd bestand ook gewoon leeg blijft.
+ */
+export function zetTypemascottes(type: string, waarden: Record<string, string>): void {
+  const set = mascottesetVan(type);
+  if (!set) return;
+  for (const veld of set.velden) {
+    schrijf(mascotteSleutel(type, veld.sleutel), (waarden[veld.sleutel] ?? "").trim());
+  }
+}
+
+/**
+ * Wat er geldt als een mascotteveld bij een sjabloon leeg blijft.
+ *
+ * Voor het sjabloonscherm: daar staat het erbij met een voorbeeldje, zodat een
+ * beheerder ziet dát er iemand staat en het niet voor de zekerheid nog een keer
+ * invult. Dezelfde volgorde als bij het tonen: de standaard van dit type, en
+ * anders de centrale vos.
+ */
+export function haalTerugvalmascottes(type: string): Record<string, string> {
+  const set = mascottesetVan(type);
+  if (!set) return {};
+
+  const eigen = haalTypemascottes(type);
+  const centraal = haalStandaardvos();
+  const centraalPer: Record<string, string | null> = {
+    vosVangend: centraal.vangend,
+    vosWachtend: centraal.wachtend,
+    vosBlij: centraal.blij,
+    /* Deze twee hebben geen centrale tegenhanger; zie de generatoren. */
+    vosHengel: HENGELVOS.afbeelding,
+    vosMachinist: MACHINIST.afbeelding,
+  };
+
+  const uit: Record<string, string> = {};
+  for (const veld of set.velden) {
+    const waarde = eigen[veld.sleutel] ?? centraalPer[veld.sleutel] ?? null;
+    if (waarde) uit[veld.sleutel] = waarde;
+  }
+  return uit;
+}
+
+/** Voor het scherm Nieuw sjabloon: alle types tegelijk, want de keuze valt daar. */
+export function haalAlleTerugvalmascottes(): Record<string, Record<string, string>> {
+  const uit: Record<string, Record<string, string>> = {};
+  for (const set of MASCOTTESETS) uit[set.type] = haalTerugvalmascottes(set.type);
+  return uit;
+}
+
+/**
+ * De instellingen van een sjabloon aangevuld met de standaard van zijn type.
+ *
+ * Wordt toegepast vlak voordat een generator aan het werk gaat. Wat het
+ * sjabloon zelf heeft ingevuld blijft staan — daar wordt nooit overheen
+ * geschreven, ook niet als de standaard iets anders zegt.
+ */
+export function metStandaardmascottes(type: string, inst: Instellingen): Instellingen {
+  const standaard = haalTypemascottes(type);
+  if (Object.keys(standaard).length === 0) return inst;
+
+  const uit: Instellingen = { ...inst };
+  for (const [sleutel, waarde] of Object.entries(standaard)) {
+    const eigen = uit[sleutel];
+    if (typeof eigen === "string" && eigen.trim() !== "") continue;
+    uit[sleutel] = waarde;
+  }
+  return uit;
 }
 
 /**

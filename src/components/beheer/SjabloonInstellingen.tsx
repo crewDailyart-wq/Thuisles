@@ -18,6 +18,7 @@ export function SjabloonInstellingen({
   waarden,
   onWijzig,
   afbeeldingen = [],
+  terugval = {},
 }: {
   velden: Veld[];
   waarden: Instellingen;
@@ -27,6 +28,15 @@ export function SjabloonInstellingen({
    * Leeg meegeven kan gewoon: dan kun je er nog wel een uploaden.
    */
   afbeeldingen?: string[];
+  /**
+   * Wat er geldt als een afbeeldingsveld leeg blijft, per veldsleutel.
+   *
+   * Zonder dit ziet een leeg mascotteveld eruit alsof er niets is ingesteld,
+   * en gaat de beheerder het bij elk nieuw sjabloon opnieuw invullen — terwijl
+   * er allang een standaard voor dat soort oefening klaarstaat. Daarom staat
+   * er nu bij wélke afbeelding er dan gebruikt wordt, met een voorbeeldje.
+   */
+  terugval?: Record<string, string>;
 }) {
   /* Een zojuist geüploade afbeelding staat nog niet in de lijst van de server. */
   const [erbij, setErbij] = useState<string[]>([]);
@@ -134,6 +144,26 @@ export function SjabloonInstellingen({
                 }}
                 compact
               />
+              {/*
+                Wat er gebeurt als je dit veld leeg laat.
+
+                Met het plaatje erbij, want de bestandsnaam alleen zegt niets:
+                "chatgpt-image-sep-16..." is geen vos. Zo zie je in één oogopslag
+                dat er wél iemand staat en hoef je niets in te vullen.
+              */}
+              {!String(waarden[veld.sleutel] ?? "").trim() && terugval[veld.sleutel] && (
+                <span className="mt-1.5 flex items-center gap-2 rounded-md bg-beheer-vlak px-2 py-1.5">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img
+                    src={`/vragen/${terugval[veld.sleutel]}`}
+                    alt=""
+                    className="size-8 shrink-0 rounded object-contain"
+                  />
+                  <span className="text-xs text-beheer-zacht">
+                    Leeg = deze wordt gebruikt. Zo ingesteld bij Afbeeldingen.
+                  </span>
+                </span>
+              )}
               {veld.hulp && (
                 <span className="mt-1 block text-xs text-beheer-zacht">{veld.hulp}</span>
               )}

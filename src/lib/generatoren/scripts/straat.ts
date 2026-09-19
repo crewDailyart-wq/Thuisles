@@ -119,6 +119,65 @@ function stapVoorStap(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   return { vorm, strategie: "stap", strategieNaam: "één huis verder", stappen };
 }
 
+/**
+ * Allebei de buren: Vos loopt eerst naar links en daarna naar rechts.
+ *
+ * De volgorde is geen toeval. Links eerst, want dat is de kant die het vaakst
+ * misgaat: terugtellen. En de nummers komen één voor één in beeld, zodat het
+ * kind ziet dat het twee losse stappen zijn vanaf hetzelfde huis — niet één
+ * som met twee uitkomsten.
+ */
+function allebeiStappen(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
+  const basis = basisVan(som);
+  const stap = stapVan(som);
+  const links = som.extra?.links ?? basis - stap;
+  const rechts = som.extra?.rechts ?? basis + stap;
+  /* De straat is hier drie huizen breed: links, midden, rechts. */
+  const midden = 1;
+
+  return {
+    vorm,
+    strategie: "stap",
+    strategieNaam: "eerst links, dan rechts",
+    stappen: [
+      {
+        model: beeld(som, [midden], midden, String(basis)),
+        zin: "Hier woont Vos, in het middelste huis.",
+        houding: "wijzend",
+        kant: "links",
+      },
+      {
+        model: beeld(som, [midden], 0),
+        zin: "Eerst loopt hij naar links.",
+        houding: "wijzend",
+        beweging: "wijzen",
+        kant: "links",
+      },
+      {
+        model: beeld(som, [midden, 0], 0, String(links)),
+        zin: `Daar woont nummer ${links}.`,
+        houding: "wijzend",
+        kant: "links",
+      },
+      {
+        model: beeld(som, [midden, 0], 2),
+        zin: "Dan loopt hij terug en naar rechts.",
+        houding: "wijzend",
+        beweging: "wijzen",
+        kant: "rechts",
+      },
+      {
+        model: beeld(som, [midden, 0, 2], 2, String(rechts)),
+        zin: `En daar woont nummer ${rechts}.`,
+        feest: true,
+        houding: "juichend",
+        beweging: "juichen",
+        kant: "rechts",
+      },
+    ],
+  };
+}
+
 /** Groep 7-8: kort en zakelijk, sommen op één regel. */
 function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const basis = basisVan(som);
@@ -158,11 +217,34 @@ export const straatUitleg: Uitlegbron = {
 
   script: (som, vorm: Groepsvorm) => {
     if (!Number.isFinite(som.goed)) return null;
+    /*
+      Bij allebei de buren loopt Vos twee kanten op; dat is een ander verhaal
+      dan één stap zetten, ook voor groep 7-8 — daar valt niet één som van te
+      maken.
+    */
+    if ((som.extra?.allebei ?? 0) === 1) return allebeiStappen(som, vorm);
     return MANIER_VAN_VORM[vorm] === "78" ? lijst78(som, vorm) : stapVoorStap(som, vorm);
   },
 
   vergelijkbaar: (som) => {
     if (!Number.isFinite(som.goed)) return null;
+    /* Allebei de buren: dezelfde oefening, één huis verderop in de straat. */
+    if ((som.extra?.allebei ?? 0) === 1) {
+      const stap = stapVan(som);
+      const nieuwMidden = basisVan(som) + stap;
+      return {
+        ...som,
+        getallen: [nieuwMidden - stap, nieuwMidden, nieuwMidden + stap],
+        goed: nieuwMidden - stap,
+        extra: {
+          ...(som.extra ?? {}),
+          basis: nieuwMidden,
+          links: nieuwMidden - stap,
+          rechts: nieuwMidden + stap,
+          eerste: nieuwMidden - stap,
+        },
+      };
+    }
     /* Dezelfde straat, het huis aan de andere kant van Vos. */
     const basis = basisVan(som);
     const stap = stapVan(som);

@@ -173,9 +173,50 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Titel", bron: LEERDOELDETAIL, na: "op Bewerken drukken" }],
   },
   {
+    /*
+      Een leerdoel kan naar een ander onderwerp verhuizen. Die keuzelijst en de
+      knop zitten achter "Bewerken" op het leerdoelscherm; zonder bewaking zou
+      het stilletjes kunnen verdwijnen, en dan is er geen andere plek waar je
+      een leerdoel kunt verplaatsen.
+    */
+    naam: "Leerdoel verplaatsen",
+    pad: "/admin/rekenen/structuur",
+    bron: ["src/components/beheer/LeerdoelDetail.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "Verplaatsen naar een ander onderwerp", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
+      { tekst: "Verplaatsen", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
+    ],
+  },
+  {
     naam: "Foutpatronen",
     pad: "/admin/foutpatronen",
     bron: ["src/app/admin/foutpatronen/page.tsx"],
     zichtbaar: ["Foutpatronen", "zo los je het op"],
   },
+  {
+    /*
+      Bij "de hoeveelste kraal is dit?" zijn de kralen met opzet niet aan te
+      tikken; zie de toelichting boven `KralenAvontuur`. De knop "Opnieuw
+      tellen" en de regel "Tik de kralen om mee te tellen." hoorden bij dat
+      aantikken en zijn op verzoek van de eigenaar weggehaald, dus ze worden
+      hier ook niet meer bewaakt. Het rekenrek zelf en de pijl blijven staan.
+    */
+    naam: "Kralenavontuur",
+    pad: "/oefenen/rekenen/getallen/tellen-sprongen/oefening?leerdoel={leerdoel}",
+    bron: ["src/components/oefenen/KralenAvontuur.tsx"],
+    zichtbaar: [],
+    naKlik: [{ tekst: "Kralenrij", bron: "src/components/oefenen/KralenAvontuur.tsx", na: "een kralenopdracht openen" }],
+  },
+  /*
+    Het adres heeft het vak nodig: elk beheerscherm hangt onder /admin/{vak}/.
+    Zonder die plaatshouder kwam hier een 404 uit, en dan hield de bewaking elke
+    commit tegen — terwijl er aan de instelling zelf niets mankeerde. Zie de
+    regel hierboven, die naar hetzelfde scherm wijst.
+  */
+  { naam: "Busanimatie in beheer", pad: "/admin/{vak}/sjablonen/nieuw", bron: ["src/lib/generatoren/bus.ts"], zichtbaar: [], naKlik: [
+    { tekst: "Busanimatie", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
+    { tekst: "Vosjes stappen in vóór het tellen", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
+    { tekst: "Vosjes zitten klaar; bus rijdt weg bij goed antwoord", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
+  ] },
 ];
