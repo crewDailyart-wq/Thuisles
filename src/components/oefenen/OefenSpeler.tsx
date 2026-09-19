@@ -1405,12 +1405,14 @@ function Antwoordvelden({
   }
 
   /*
-    De blokken als open vraag: het kind vult het getal zelf in, met het
-    cijfertoetsenbord op het scherm.
+    De blokken en de plaatjes als open vraag: het kind vult het getal zelf in,
+    met het cijfertoetsenbord op het scherm.
 
     Hetzelfde toetsenbord als bij de stapstenen, om dezelfde reden: op een
     tablet zou het toetsenbord van het apparaat over de blokken heen schuiven,
-    precies over wat het kind moet tellen. De knop Controleer blijft hier wél
+    precies over wat het kind moet tellen. Bij het plaatjesraster geldt dat net
+    zo goed — dat systeemtoetsenbord schuift over de plaatjes die het kind aan
+    het tellen is, en dan is de telling weg. De knop Controleer blijft hier wél
     staan — het kind moet eerst klaar zijn met invullen.
   */
   /*
@@ -1425,7 +1427,10 @@ function Antwoordvelden({
   */
   if (vraag.vorm === "open" && vraag.figuur?.soort === "huizenrij") return null;
 
-  if (vraag.vorm === "open" && vraag.figuur?.soort === "mabblokken") {
+  if (
+    vraag.vorm === "open" &&
+    (vraag.figuur?.soort === "mabblokken" || vraag.figuur?.soort === "plaatjesraster")
+  ) {
     return (
       <Cijferinvoer
         waarde={antwoord}

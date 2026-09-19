@@ -42,6 +42,34 @@ function juist(som: Somgegevens): number[] {
 
 const sprongVan = (som: Somgegevens) => som.extra?.sprong ?? 1;
 
+/**
+ * Twee stenen die het kind ook echt ingevuld ziet staan, zo dicht mogelijk bij
+ * elkaar.
+ *
+ * De uitleg hieronder zegt "kijk naar twee stenen die wél ingevuld zijn", en
+ * wijst daar dan twee getallen bij aan. Dat waren altijd de eerste twee van de
+ * rij — maar die staan er niet altijd: bij "om en om" is de tweede steen juist
+ * leeg, en bij "vooraan" en "willekeurig" kan dat ook. Dan wijst de uitleg naar
+ * een steen die het kind zelf nog moet invullen.
+ *
+ * Zijn er geen twee stenen die ingevuld zijn, dan blijft het bij de eerste twee
+ * van de rij; iets beters is er dan niet.
+ */
+function ingevuldPaar(som: Somgegevens): { a: number; b: number } {
+  const lege = legePlekken(som);
+  const staan = som.getallen.map((_, i) => i).filter((i) => !lege.includes(i));
+  let beste = { a: 0, b: Math.min(1, som.getallen.length - 1) };
+  let afstand = Infinity;
+  for (let k = 1; k < staan.length; k++) {
+    const d = staan[k] - staan[k - 1];
+    if (d < afstand) {
+      afstand = d;
+      beste = { a: staan[k - 1], b: staan[k] };
+    }
+  }
+  return beste;
+}
+
 /** Twee rijtjes vergelijken, zonder gedoe met NaN. */
 function zelfde(a: number[], b: number[]): boolean {
   return a.length === b.length && a.every((n, i) => n === b[i]);
@@ -82,9 +110,21 @@ export const stapstenenPatronen: Foutpatroon[] = [
     uitleg: (som) => {
       const sprong = sprongVan(som);
       const r = rij(som);
+      const { a, b } = ingevuldPaar(som);
+      /*
+        Liggen de twee ingevulde stenen niet naast elkaar — bij "om en om" ligt
+        er altijd een lege tussen — dan is het verschil niet de sprong maar een
+        veelvoud ervan. Dat moet er dan ook staan.
+      */
+      const tussen = b - a;
       return [
-        { tekst: "Kijk naar twee stenen die wél ingevuld zijn.", som: `${r[0]} en ${r[1]}` },
-        { tekst: "Het verschil is de sprong.", som: `${sprong}` },
+        { tekst: "Kijk naar twee stenen die wél ingevuld zijn.", som: `${r[a]} en ${r[b]}` },
+        tussen === 1
+          ? { tekst: "Het verschil is de sprong.", som: `${sprong}` }
+          : {
+              tekst: `Daar zitten ${tussen} sprongen tussen.`,
+              som: `${r[b]} − ${r[a]} = ${Math.abs(r[b] - r[a])}`,
+            },
         { tekst: "Doe die sprong er elke keer bij.", som: `${r[0]} → ${r[1]} → ${r[2]}` },
       ];
     },
@@ -117,11 +157,12 @@ export const stapstenenPatronen: Foutpatroon[] = [
     uitleg: (som) => {
       const r = rij(som);
       const terug = som.variant === "terug";
+      const { a, b } = ingevuldPaar(som);
       return [
-        { tekst: "Kijk eerst naar de stenen die al ingevuld zijn.", som: `${r[0]} → ${r[1]}` },
+        { tekst: "Kijk eerst naar de stenen die al ingevuld zijn.", som: `${r[a]} → ${r[b]}` },
         {
           tekst: terug ? "De getallen worden kleiner." : "De getallen worden groter.",
-          som: terug ? `${r[0]} > ${r[1]}` : `${r[0]} < ${r[1]}`,
+          som: terug ? `${r[a]} > ${r[b]}` : `${r[a]} < ${r[b]}`,
         },
         {
           tekst: terug ? "Haal de sprong er dus elke keer af." : "Doe de sprong er dus elke keer bij.",

@@ -34,6 +34,32 @@ function legePlekken(som: Somgegevens): number[] {
 }
 
 /**
+ * Twee stenen die het kind ook echt ingevuld ziet staan, zo dicht mogelijk bij
+ * elkaar.
+ *
+ * De uitleg voor groep 5-6 en 7-8 begint met "lees de sprong af uit twee stenen
+ * die al ingevuld zijn". Dat waren altijd de eerste twee van de rij, maar die
+ * staan er niet altijd: bij "om en om" is de tweede steen juist leeg, en bij
+ * "vooraan" en "willekeurig" kan dat ook. Liggen de twee gevonden stenen niet
+ * naast elkaar, dan zit er een lege tussen en is het verschil een veelvoud van
+ * de sprong; de zin zegt dat er dan bij.
+ */
+function ingevuldPaar(som: Somgegevens): { a: number; b: number } {
+  const lege = legePlekken(som);
+  const staan = som.getallen.map((_, i) => i).filter((i) => !lege.includes(i));
+  let beste = { a: 0, b: Math.min(1, som.getallen.length - 1) };
+  let afstand = Infinity;
+  for (let k = 1; k < staan.length; k++) {
+    const d = staan[k] - staan[k - 1];
+    if (d < afstand) {
+      afstand = d;
+      beste = { a: staan[k - 1], b: staan[k] };
+    }
+  }
+  return beste;
+}
+
+/**
  * De stenen zoals ze in de uitleg staan.
  *
  * `tot` zegt tot en met welke steen de getallen al zichtbaar zijn; daarachter
@@ -118,10 +144,16 @@ function sprongen56(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const sprong = sprongVan(som);
   const terug = som.variant === "terug";
 
+  const { a, b } = ingevuldPaar(som);
+  const verschil = Math.abs(r[b] - r[a]);
+
   const stappen: Uitlegscript["stappen"] = [
     {
       model: beeld(som, 0, 0, 0),
-      zin: `Twee stenen die al ingevuld zijn, staan ${sprong} uit elkaar. Dat is de sprong.`,
+      zin:
+        b - a === 1
+          ? `Twee stenen die al ingevuld zijn, staan ${sprong} uit elkaar. Dat is de sprong.`
+          : `${r[a]} en ${r[b]} staan ${verschil} uit elkaar, met ${b - a - 1 === 1 ? "een lege steen" : `${b - a - 1} lege stenen`} ertussen. Elke sprong is dus ${sprong}.`,
       houding: "wijzend",
       beweging: "wijzen",
       kant: "links",
@@ -155,14 +187,24 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const r = som.getallen;
   const sprong = sprongVan(som);
   const terug = som.variant === "terug";
+  const { a, b } = ingevuldPaar(som);
+  const naastElkaar = b - a === 1;
   return {
     vorm,
     strategie: "sprong-doortellen",
     strategieNaam: "doortellen met sprongen",
     stappen: [
       {
-        model: { soort: "som", tekst: `${r[0]} → ${r[1]}`, nadruk: String(sprong) },
-        zin: "Lees de sprong af uit twee stenen die al ingevuld zijn.",
+        model: {
+          soort: "som",
+          tekst: naastElkaar
+            ? `${r[a]} → ${r[b]}`
+            : `${r[a]} → ${Array.from({ length: b - a - 1 }, () => "?").join(" → ")} → ${r[b]}`,
+          nadruk: String(sprong),
+        },
+        zin: naastElkaar
+          ? "Lees de sprong af uit twee stenen die al ingevuld zijn."
+          : `Tussen twee ingevulde stenen ligt hier nog een lege steen: verdeel het verschil van ${Math.abs(r[b] - r[a])} over ${b - a} sprongen.`,
       },
       {
         model: { soort: "som", tekst: `${terug ? "−" : "+"} ${sprong} per steen` },

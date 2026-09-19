@@ -21,7 +21,7 @@
  * kostten ruimte, de spullen pasten er slecht in, en een mand is zelf ook een
  * ding — een kind kan hem gaan meetellen. Wat het kind doet is simpelweg de
  * groep zoeken met het gevraagde aantal, en daar hoort een leeg vak bij, net
- * als het telvak bij "Plaatjes tellen meerkeuze".
+ * als het telvak bij "Plaatjes tellen".
  *
  * ---------------------------------------------------------------------------
  * Rijen van vijf

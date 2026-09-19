@@ -1,10 +1,23 @@
 /**
- * Plaatjes tellen meerkeuze: hoeveel plaatjes staan er?
+ * Plaatjes tellen: hoeveel plaatjes staan er?
  *
- * Een aantal dezelfde plaatjes op het scherm, met vier getallen eronder. Het
- * kind tikt op het getal dat het denkt dat goed is. Het mag de plaatjes
- * aantikken terwijl het telt — die gaan dan lichter staan en krijgen een
- * vinkje — maar dat aftikken is hulp en geen antwoord.
+ * Een aantal dezelfde plaatjes op het scherm. Het kind mag ze aantikken
+ * terwijl het telt — die gaan dan lichter staan en krijgen een vinkje — maar
+ * dat aftikken is hulp en geen antwoord.
+ *
+ * ---------------------------------------------------------------------------
+ * Twee manieren om te antwoorden
+ * ---------------------------------------------------------------------------
+ * Per sjabloon in te stellen, net als bij "Blokken tientallen en eenheden" en
+ * "Vos' straat":
+ *
+ *   meerkeuze   vier getallen onder de plaatjes; het kind tikt het goede aan
+ *   open vraag  geen getallen te zien; het kind telt en tikt het aantal zelf
+ *               in op het cijfertoetsenbord op het scherm
+ *
+ * Meerkeuze blijft de standaard, zodat bestaande sjablonen niet veranderen.
+ * Open is moeilijker: er valt niets te herkennen en niets weg te strepen, dus
+ * het kind moet echt tellen.
  *
  * ---------------------------------------------------------------------------
  * De opstelling is de les
@@ -79,6 +92,8 @@ export function grenzen(inst: Instellingen) {
     tot,
     perRij,
     verspreid,
+    /* Leeg of onbekend = meerkeuze, precies zoals het altijd was. */
+    open: tekst(inst, "vraagvorm", "meerkeuze") === "open",
     groepsruimte: vinkje(inst, "groepsruimte"),
     /*
       Welke plaatjes de generator mag gebruiken. Per vraag wordt er één uit
@@ -154,11 +169,11 @@ export function bruikbarePlaatjes(gekozen: string[], afbeelding: string): string
 
 export const plaatjestellenGenerator: Generator = {
   id: "plaatjestellen",
-  naam: "Plaatjes tellen meerkeuze",
+  naam: "Plaatjes tellen",
   uitleg:
-    "Een aantal dezelfde plaatjes op het scherm, met vier getallen eronder om uit te kiezen. Het kind mag de plaatjes aantikken terwijl het telt; dat aftikken is hulp en telt niet mee als antwoord. De opstelling bepaalt wat er geoefend wordt.",
+    "Een aantal dezelfde plaatjes op het scherm. Het kind kiest uit vier getallen of tikt het aantal zelf in op het cijfertoetsenbord; dat stel je per sjabloon in. Het mag de plaatjes aantikken terwijl het telt; dat aftikken is hulp en telt niet mee als antwoord. De opstelling bepaalt wat er geoefend wordt.",
   suggestie:
-    "Groep 3: 4 tot 10 plaatjes, rijen van 5 · groep 4: 10 tot 20, rijen van 10 · groep 5 en hoger: 15 tot 30, verspreid",
+    "Groep 3: 4 tot 10 plaatjes, rijen van 5, meerkeuze · groep 4: 10 tot 20, rijen van 10 · groep 5 en hoger: 15 tot 30, verspreid, open vraag",
   velden: [
     {
       soort: "getal",
@@ -174,6 +189,16 @@ export const plaatjestellenGenerator: Generator = {
       min: 1,
       max: MAX_AANTAL,
       hulp: "Boven de veertig is er niets meer te tellen: dan worden de plaatjes te klein.",
+    },
+    {
+      soort: "keuze",
+      sleutel: "vraagvorm",
+      label: "Hoe het kind antwoordt",
+      opties: [
+        { waarde: "meerkeuze", label: "Meerkeuze \u2014 vier knoppen met getallen" },
+        { waarde: "open", label: "Open vraag \u2014 zelf het aantal invullen" },
+      ],
+      hulp: "Meerkeuze is makkelijker: het goede aantal staat ertussen, samen met drie echte telfouten. Het kind tikt op een getal en ziet meteen of het goed is; er is geen knop Controleer. Open vraag is moeilijker: er staan geen getallen voor, dus er valt niets te herkennen of weg te strepen \u2014 het kind moet echt tellen en tikt het aantal in op het cijfertoetsenbord op het scherm. Daar blijft de knop Controleer wel staan, want het moet eerst klaar zijn met invullen. Dat toetsenbord staat in de pagina en niet over de plaatjes heen, zodat het kind blijft zien wat het aan het tellen is.",
     },
     {
       soort: "vinkjes",
@@ -241,6 +266,8 @@ export const plaatjestellenGenerator: Generator = {
     van: 4,
     tot: 10,
     afbeelding: "",
+    /* Meerkeuze blijft de standaard; zo blijft elk bestaand sjabloon zoals het was. */
+    vraagvorm: "meerkeuze",
     opstelling: "rijen",
     perRij: 5,
     groepsruimte: false,
@@ -270,6 +297,7 @@ export const plaatjestellenGenerator: Generator = {
       tot,
       perRij,
       verspreid,
+      open,
       groepsruimte,
       plaatjes,
       afbeelding,
@@ -320,28 +348,56 @@ export const plaatjestellenGenerator: Generator = {
         },
       };
 
-      uit.push({
-        handtekening,
-        vorm: "meerkeuze",
-        vraagtekst: bepaalVraagtekst(plaatjestellenGenerator, inst, groep, gegevens),
-        opties,
-        antwoord,
-        figuur: {
-          soort: "plaatjesraster",
-          aantal: hoeveel,
-          /* "eigen" betekent: niets tekenen, de geüploade afbeelding gebruiken. */
-          plaatje: gekozen === "eigen" ? null : gekozen,
-          afbeelding: afbeelding || null,
-          vos: {
-            vangend: vosVangend || null,
-            wachtend: vosWachtend || null,
-            blij: vosBlij || null,
-          },
-          perRij,
-          groepsruimte,
+      const vraagtekst = bepaalVraagtekst(plaatjestellenGenerator, inst, groep, gegevens);
+      const figuur = {
+        soort: "plaatjesraster" as const,
+        aantal: hoeveel,
+        /* "eigen" betekent: niets tekenen, de geüploade afbeelding gebruiken. */
+        plaatje: gekozen === "eigen" ? null : gekozen,
+        afbeelding: afbeelding || null,
+        vos: {
+          vangend: vosVangend || null,
+          wachtend: vosWachtend || null,
+          blij: vosBlij || null,
         },
-        somgegevens: gegevens,
-      });
+        perRij,
+        groepsruimte,
+      };
+
+      /*
+        De twee vormen staan hier met zoveel woorden uit elkaar geschreven, en
+        niet als één regel met een keuze erin. Zo is in de code te zien wélke
+        vraagvormen dit type kan opleveren — en dat is precies waar de bewaking
+        in `scripts/oefentypes.mjs` naar kijkt. Zo staat het ook bij de blokken.
+
+        Bij een open vraag is het antwoord het aantal zelf; bij meerkeuze is het
+        de plek van het goede getal tussen de vier keuzes.
+
+        De vier keuzes worden ook bij een open vraag berekend. Niet om ze te
+        tonen — dat gebeurt niet — maar omdat ze uit dezelfde reeks toevalsgetallen
+        komen: zo levert hetzelfde sjabloon in allebei de standen dezelfde
+        plaatjes en dezelfde aantallen op, en verschilt alleen het antwoorden.
+      */
+      uit.push(
+        open
+          ? {
+              handtekening,
+              vorm: "open",
+              vraagtekst,
+              antwoord: String(hoeveel),
+              figuur,
+              somgegevens: gegevens,
+            }
+          : {
+              handtekening,
+              vorm: "meerkeuze",
+              vraagtekst,
+              opties,
+              antwoord,
+              figuur,
+              somgegevens: gegevens,
+            },
+      );
     }
 
     return uit;

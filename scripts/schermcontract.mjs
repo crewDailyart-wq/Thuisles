@@ -59,6 +59,7 @@ const SJABLOONDETAIL = "src/components/beheer/SjabloonDetail.tsx";
 const SJABLOONFORMULIER = "src/components/beheer/SjabloonFormulier.tsx";
 const LEERDOELDETAIL = "src/components/beheer/LeerdoelDetail.tsx";
 const STAPSTENEN = "src/lib/generatoren/stapstenen.ts";
+const PLAATJESTELLEN = "src/lib/generatoren/plaatjestellen.ts";
 
 export const SCHERMCONTRACT = [
   {
@@ -132,6 +133,18 @@ export const SCHERMCONTRACT = [
       { tekst: "Mascotte — staand", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Mascotte — springend", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Mascotte — juichend", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      /*
+        De instellingen van "Plaatjes tellen". Datzelfde verhaal: ze komen uit
+        de generator. "Hoe het kind antwoordt" staat hier apart in, want dat is
+        de keuze tussen vier knoppen en het cijfertoetsenbord; valt die weg,
+        dan staat elk sjabloon weer vast op meerkeuze zonder dat het opvalt.
+      */
+      { tekst: "Minste plaatjes", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
+      { tekst: "Meeste plaatjes", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
+      { tekst: "Hoe het kind antwoordt", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
+      { tekst: "Welke plaatjes mogen voorkomen", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
+      { tekst: "Opstelling", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
+      { tekst: "Plaatjes per rij", bron: PLAATJESTELLEN, na: "Plaatjes tellen kiezen" },
     ],
   },
   {

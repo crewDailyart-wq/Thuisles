@@ -88,7 +88,7 @@ export const MASCOTTESETS: Mascotteset[] = [
   },
   {
     type: "plaatjestellen",
-    naam: "Plaatjes tellen meerkeuze",
+    naam: "Plaatjes tellen",
     velden: DRIELUIK,
   },
   {

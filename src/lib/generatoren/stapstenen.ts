@@ -48,7 +48,7 @@ function legeStenenWoorden(som: { extra?: Record<string, number> }): string {
   return (som.extra?.aantalLeeg ?? 1) === 1 ? "de lege steen" : "de lege stenen";
 }
 
-export type Steenplek = "achteraan" | "tussenin" | "vooraan" | "willekeurig";
+export type Steenplek = "achteraan" | "tussenin" | "vooraan" | "omenom" | "willekeurig";
 
 function grenzen(inst: Instellingen) {
   const sprong = Math.max(1, getal(inst, "sprong", 1));
@@ -73,6 +73,20 @@ function grenzen(inst: Instellingen) {
 }
 
 /**
+ * Het om-en-om-patroon: getal, leeg, getal, leeg, ...
+ *
+ * De eerste steen heeft altijd een getal, dus de lege stenen zijn de oneven
+ * plekken: 1, 3, 5. Het aantal volgt daarmee uit de lengte van de rij — bij
+ * zes stenen drie lege, bij vijf stenen twee. De instelling "aantal lege
+ * stenen" doet hier dus niets; zie de hulptekst bij dat veld.
+ */
+export function omEnOmPlekken(stenen: number): number[] {
+  const uit: number[] = [];
+  for (let i = 1; i < stenen; i += 2) uit.push(i);
+  return uit;
+}
+
+/**
  * Welke stenen leeg worden.
  *
  * De eerste steen blijft altijd staan: daar begint de telrij en daar staat de
@@ -88,6 +102,7 @@ function legePlekken(
 
   if (plek === "achteraan") return mogelijk.slice(-leeg);
   if (plek === "vooraan") return mogelijk.slice(0, leeg);
+  if (plek === "omenom") return omEnOmPlekken(stenen);
   if (plek === "tussenin") {
     /* Uit het midden, met de buitenste stenen als houvast. */
     const midden = mogelijk.slice(0, -1);
@@ -96,7 +111,19 @@ function legePlekken(
     return uit.length === leeg ? uit : mogelijk.slice(0, leeg);
   }
 
-  /* Willekeurig: trekken zonder herhaling, en daarna op volgorde zetten. */
+  /*
+    Willekeurig: alle patronen mogen eruit komen, ook het om-en-om-patroon.
+
+    Dat laatste kwam er vroeger nooit uit. Met drie lege stenen op zes plekken
+    is de kans dat je toevallig precies 1, 3 en 5 trekt één op twintig, en bij
+    acht stenen zijn er vier lege nodig terwijl er hoogstens drie worden
+    getrokken. Daarom staat het patroon hier als eigen keuze naast de loting:
+    ongeveer één op de vier rijen ligt om en om, de rest wordt geloot zoals
+    altijd.
+  */
+  if (stenen >= 4 && kans() < 0.25) return omEnOmPlekken(stenen);
+
+  /* Trekken zonder herhaling, en daarna op volgorde zetten. */
   const pot = [...mogelijk];
   const uit: number[] = [];
   while (uit.length < leeg && pot.length > 0) {
@@ -161,6 +188,7 @@ export const stapstenenGenerator: Generator = {
         { waarde: "2", label: "2" },
         { waarde: "3", label: "3" },
       ],
+      hulp: "Geldt bij achteraan, tussenin, vooraan en willekeurig. Bij \u2018om en om\u2019 volgt het aantal uit de rij zelf: bij 6 stenen 3 lege, bij 5 stenen 2. Je keuze hier blijft bewaard en telt weer mee zodra je een andere plek kiest.",
     },
     {
       soort: "keuze",
@@ -170,9 +198,10 @@ export const stapstenenGenerator: Generator = {
         { waarde: "achteraan", label: "Achteraan" },
         { waarde: "tussenin", label: "Tussenin" },
         { waarde: "vooraan", label: "Vooraan" },
+        { waarde: "omenom", label: "Om en om" },
         { waarde: "willekeurig", label: "Willekeurig" },
       ],
-      hulp: "De eerste steen blijft altijd staan; daar begint de telrij.",
+      hulp: "De eerste steen blijft altijd staan; daar begint de telrij. Om en om (getal, leeg, getal, leeg) dwingt het kind om steeds \u00e9\u00e9n stap te maken en dan te controleren, en is daardoor lastiger dan alles achteraan: doortellen in \u00e9\u00e9n adem kan niet meer. Bij willekeurig kan het om-en-om-patroon er ook uit komen.",
     },
     {
       soort: "afbeelding",

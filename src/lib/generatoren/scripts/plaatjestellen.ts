@@ -1,5 +1,5 @@
 /**
- * De uitleg-animaties bij "Plaatjes tellen meerkeuze".
+ * De uitleg-animaties bij "Plaatjes tellen".
  *
  * Dezelfde plaatjes in dezelfde opstelling als in de vraag. Geen blokjes en
  * geen andere weergave: een kind dat net eendjes zat te tellen, moet in de
