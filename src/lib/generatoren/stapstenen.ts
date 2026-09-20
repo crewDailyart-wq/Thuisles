@@ -60,11 +60,37 @@ function legeStenenWoorden(som: { extra?: Record<string, number> }): string {
 
 export type Steenplek = "achteraan" | "tussenin" | "vooraan" | "omenom" | "willekeurig";
 
+/** Waar de getallen van de telrij tussen mogen liggen. */
+const MIN_GETAL = 0;
+const MAX_GETAL = 1000;
+
+/**
+ * Hoe breed het bereik minstens moet zijn.
+ *
+ * De hele rij moet erin passen: bij zes stenen en sprongen van tien staat er
+ * tussen de eerste en de laatste steen vijftig, dus is een bereik van vijftig
+ * het minimum. Past het niet, dan valt er geen enkele vraag te maken; zie de
+ * waarschuwing die dan in het sjabloonscherm komt te staan.
+ */
+export function benodigdBereik(sprong: number, stenen: number): number {
+  return sprong * (stenen - 1);
+}
+
 function grenzen(inst: Instellingen) {
   const sprong = Math.max(1, getal(inst, "sprong", 1));
   const richting: "vooruit" | "terug" =
     tekst(inst, "richting", "vooruit") === "terug" ? "terug" : "vooruit";
-  const tot = Math.max(10, getal(inst, "tot", 20));
+  /*
+    De onder- en bovengrens van de telrij.
+
+    `van` bestond hier nog niet: dit type had een keuzelijst met vaste bereiken
+    (tot 20, 50, 100) en begon altijd bij 0. Een sjabloon dat van vroeger is,
+    heeft die sleutel dus niet — en valt hier terug op 1, precies wat er bij een
+    keuze "tot en met 20" hoort: 1 tot 20. Wat er als bovengrens was gekozen
+    stond al als getal opgeslagen en wordt gewoon gelezen.
+  */
+  const van = Math.max(MIN_GETAL, Math.min(MAX_GETAL, getal(inst, "van", 1)));
+  const tot = Math.max(van, Math.min(MAX_GETAL, getal(inst, "tot", 20)));
   const stenen = Math.min(8, Math.max(3, getal(inst, "stenen", 6)));
   /* Nooit meer lege stenen dan er stenen zijn, en er moet er één blijven staan. */
   const leeg = Math.min(stenen - 1, Math.max(1, getal(inst, "leeg", 1)));
@@ -72,6 +98,7 @@ function grenzen(inst: Instellingen) {
   return {
     sprong,
     richting,
+    van,
     tot,
     stenen,
     leeg,
@@ -216,7 +243,7 @@ export const stapstenenGenerator: Generator = {
   uitleg:
     "Een rij stapstenen over een beekje met op elke steen het volgende getal. Het kind tikt een lege steen aan en typt het getal op de steen zelf, met het toetsenbord van de laptop of van de tablet.",
   suggestie:
-    "Groep 3: sprong 1, t/m 20, 5 stenen, 1 leeg · groep 4: sprong 2 of 10, t/m 50, 6 stenen",
+    "Groep 3: sprong 1, 1 tot 20, 5 stenen, 1 leeg \u00b7 groep 4: sprong 2 of 10, 1 tot 50, 6 stenen \u00b7 groep 5: 50 tot 100",
   velden: [
     {
       soort: "keuze",
@@ -240,14 +267,19 @@ export const stapstenenGenerator: Generator = {
       ],
     },
     {
-      soort: "keuze",
+      soort: "getal",
+      sleutel: "van",
+      label: "Kleinste getal",
+      min: MIN_GETAL,
+      max: MAX_GETAL,
+    },
+    {
+      soort: "getal",
       sleutel: "tot",
-      label: "Bereik",
-      opties: [
-        { waarde: "20", label: "Tot en met 20" },
-        { waarde: "50", label: "Tot en met 50" },
-        { waarde: "100", label: "Tot en met 100" },
-      ],
+      label: "Grootste getal",
+      min: MIN_GETAL,
+      max: MAX_GETAL,
+      hulp: "Alle getallen van de telrij blijven hiertussen. De hele rij moet erin passen: bij zes stenen en sprongen van tien is dat vijftig, dus dan heb je minstens een bereik van 50 nodig \u2014 bijvoorbeeld 50 tot 100. Past het niet, dan staat dat meteen in het voorbeeld hiernaast.",
     },
     {
       soort: "getal",
@@ -312,7 +344,8 @@ export const stapstenenGenerator: Generator = {
   standaard: {
     sprong: "1",
     richting: "vooruit",
-    tot: "20",
+    van: 1,
+    tot: 20,
     stenen: 6,
     leeg: "1",
     plek: "achteraan",
@@ -331,10 +364,20 @@ export const stapstenenGenerator: Generator = {
     kiezen. Bij "willekeurig" zijn dat er meer; hier wordt de ondergrens
     genomen, zodat er nooit meer beloofd wordt dan er te maken valt.
   */
+  /*
+    Past de rij niet in het bereik, dan komt hier te staan wat eraan schort en
+    met welke getallen het wél kan. Zie `waarschuwing` in `soort.ts`.
+  */
+  waarschuwing: (inst) => {
+    const { sprong, stenen, van, tot } = grenzen(inst);
+    const nodig = benodigdBereik(sprong, stenen);
+    if (tot - van >= nodig) return null;
+    return `De telrij past niet tussen ${van} en ${tot}. Bij ${stenen} stenen en sprongen van ${sprong} ligt er ${nodig} tussen de eerste en de laatste steen, dus het bereik moet minstens ${nodig} breed zijn — bijvoorbeeld ${van} tot ${van + nodig}. Minder stenen of een kleinere sprong kan ook.`;
+  },
+
   maximum: (inst) => {
-    const { sprong, stenen, tot } = grenzen(inst);
-    const spanne = sprong * (stenen - 1);
-    return Math.max(0, tot - spanne + 1);
+    const { sprong, stenen, van, tot } = grenzen(inst);
+    return Math.max(0, tot - van - benodigdBereik(sprong, stenen) + 1);
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
@@ -342,6 +385,7 @@ export const stapstenenGenerator: Generator = {
     const {
       sprong,
       richting,
+      van,
       tot,
       stenen,
       leeg,
@@ -352,9 +396,9 @@ export const stapstenenGenerator: Generator = {
       mascotteJuichend,
     } = grenzen(inst);
 
-    const spanne = sprong * (stenen - 1);
+    const spanne = benodigdBereik(sprong, stenen);
     /* Past de hele rij niet binnen het bereik, dan valt er niets te maken. */
-    if (spanne > tot) return [];
+    if (spanne > tot - van) return [];
 
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 200 && uit.length < aantal; poging++) {
@@ -362,7 +406,7 @@ export const stapstenenGenerator: Generator = {
         Het laagste getal van de rij. Bij terugtellen is dat het eindpunt en bij
         vooruittellen het beginpunt; de rij zelf wordt daarna omgedraaid.
       */
-      const laagste = heelGetal(kans, 0, tot - spanne);
+      const laagste = heelGetal(kans, van, tot - spanne);
       const oplopend = Array.from({ length: stenen }, (_, i) => laagste + i * sprong);
       const rij = richting === "terug" ? [...oplopend].reverse() : oplopend;
 

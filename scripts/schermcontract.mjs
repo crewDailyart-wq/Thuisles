@@ -121,7 +121,13 @@ export const SCHERMCONTRACT = [
       */
       { tekst: "Sprong", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Richting", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
-      { tekst: "Bereik", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      /*
+        De keuzelijst "Bereik" (t/m 20, 50, 100) is op verzoek vervangen door
+        twee invulvelden. Beide staan hier, zodat ze niet stilletjes kunnen
+        verdwijnen — dat is precies waar dit contract voor is.
+      */
+      { tekst: "Kleinste getal", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
+      { tekst: "Grootste getal", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Aantal stenen in de rij", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Aantal lege stenen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },
       { tekst: "Waar de lege stenen liggen", bron: STAPSTENEN, na: "Telrij stapstenen kiezen" },

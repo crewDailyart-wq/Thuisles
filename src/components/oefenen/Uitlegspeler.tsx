@@ -575,6 +575,9 @@ function Modelbeeld({
             richting: model.richting,
             mascotte: model.mascotte ?? mascotte,
           }}
+          /* Zelfde beeld als in de vraag: oever links, en gespiegeld bij terugtellen. */
+          startoever
+          spiegelen
           vosOp={model.vosOp}
           boogVan={model.boogVan}
         />

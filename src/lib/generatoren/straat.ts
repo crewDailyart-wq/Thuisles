@@ -50,27 +50,30 @@ import { straatAanpak } from "@/lib/generatoren/aanpak/straat";
 import { straatUitleg } from "@/lib/generatoren/scripts/straat";
 
 /**
- * De standaardzinnen van dit type.
+ * De standaardzin van dit type.
  *
- * Kort gehouden: deze kinderen lezen nog nauwelijks. Wát er gevraagd wordt,
- * zien ze aan de straat: die ene deur die oplicht en een vraagteken draagt.
+ * Eén zin voor alle groepen, en met opzet dezelfde overal: onder één leerdoel
+ * hangen meerdere oefeningen, en wisselende zinnen lopen dan door elkaar.
+ *
+ * De zin past zich wel aan het aantal lege deuren aan. Is er één deur leeg,
+ * dan staat er enkelvoud; bij de stand "allebei de buren" zijn er twee en
+ * staat er meervoud. Dat gaat vanzelf: de stand bepaalt welke van de twee
+ * zinnen wordt gebruikt, er hoeft niets voor ingevuld te worden.
  */
+const EEN_LEEG = "Welk huisnummer ontbreekt?";
+const TWEE_LEEG = "Welke huisnummers ontbreken?";
+
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Welk nummer hoort hier?",
-  "56": "Welk huisnummer hoort bij de lege deur?",
-  "78": "Welk huisnummer hoort op de lege deur?",
+  "34": EEN_LEEG,
+  "56": EEN_LEEG,
+  "78": EEN_LEEG,
 };
 
-/**
- * De zinnen bij de stand "allebei de buren".
- *
- * Meervoud, want er worden twee nummers gevraagd. Ze gelden alleen als er bij
- * het sjabloon geen eigen vraagzin is ingevuld; die gaat altijd voor.
- */
+/** Dezelfde zin in het meervoud, voor de stand "allebei de buren". */
 const ALLEBEIZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Welke nummers horen hier?",
-  "56": "Welke huisnummers horen bij de twee lege deuren?",
-  "78": "Vul de buurgetallen in: het getal ervoor en het getal erna.",
+  "34": TWEE_LEEG,
+  "56": TWEE_LEEG,
+  "78": TWEE_LEEG,
 };
 
 const MIN_GETAL = 1;
@@ -377,8 +380,17 @@ export const straatGenerator: Generator = {
       max: MAX_GETAL,
       hulp: "De hele straat past binnen dit bereik, en de antwoordkeuzes ook. Neem het niet te smal: er moeten wel vijf huizen naast elkaar in passen.",
     },
-    /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
-    ...vraagtekstVelden(STANDAARDZINNEN),
+    /*
+      Overal dezelfde velden om de vraagzin aan te passen, per groep.
+
+      Het grijze voorbeeld toont de zin die het kind het vaakst krijgt: het
+      meervoud van de stand "allebei de buren". Bij één lege deur wordt het
+      vanzelf enkelvoud.
+    */
+    ...vraagtekstVelden(STANDAARDZINNEN, {
+      voorbeeldzinnen: { "34": TWEE_LEEG, "56": TWEE_LEEG, "78": TWEE_LEEG },
+      extraHulp: `Leeg laten geeft \u201e${TWEE_LEEG}\u201d bij twee lege deuren en \u201e${EEN_LEEG}\u201d bij \u00e9\u00e9n lege deur; dat past zich vanzelf aan.`,
+    }),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
   standaard: {

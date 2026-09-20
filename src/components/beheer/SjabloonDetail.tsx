@@ -356,6 +356,21 @@ export function SjabloonDetail({
       </Paneel>
 
       <Paneel titel="Meer sommen maken" bijschrift="Nieuwe sommen zijn altijd anders dan wat er al staat.">
+        {/*
+          Vraag je er meer dan er verschillende bestaan, dan staat dat hier
+          groot en met de getallen van dit moment erbij — niet als kleine grijze
+          regel die je pas achteraf leest. Je krijgt er wél zoveel als je vraagt;
+          wat er tekortkomt wordt aangevuld met dubbele.
+        */}
+        {maximum !== null && Number(aantal) > maximum && (
+          <p className="mb-3 rounded-md border border-oranje/50 bg-oranje-zacht px-3 py-2 text-sm font-medium text-oranje-diep">
+            Je vraagt er {aantal}, maar met deze instellingen zijn er maar{" "}
+            <strong className="font-extrabold">{maximum} verschillende</strong> sommen mogelijk.
+            Je krijgt er {aantal}: eerst alle {maximum} verschillende, en dan nog{" "}
+            {Number(aantal) - maximum} die dubbel {Number(aantal) - maximum === 1 ? "is" : "zijn"}.
+            Wil je meer variatie, zet het bereik dan ruimer of kies andere instellingen.
+          </p>
+        )}
         <div className="flex flex-wrap items-end gap-3">
           <label className="block">
             <span className="mb-1 block text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">

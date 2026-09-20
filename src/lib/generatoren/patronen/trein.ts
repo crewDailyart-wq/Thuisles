@@ -37,7 +37,7 @@ export const treinPatronen: Foutpatroon[] = [
     herkent: (som) => gelijk(gegevenRij(som), [...goedeRij(som)].reverse()),
     kindtekst: {
       "34": "Je zette ze andersom.",
-      "56": "Je volgorde klopt, maar hij staat omgekeerd. Kijk of het van laag naar hoog moet of andersom.",
+      "56": "Je volgorde klopt, maar hij staat omgekeerd. Kijk of het van klein naar groot moet of andersom.",
       "78": "De rij is precies omgekeerd. Je hebt goed geordend, alleen de gevraagde richting gemist.",
     },
     hint: "Kijk of de trein van klein naar groot moet, of van groot naar klein.",

@@ -91,9 +91,29 @@ export function gatBijSprong(sprong: number, compact = false): number {
   return grond + Math.round(Math.sqrt(Math.max(1, sprong)) * groei);
 }
 
-/** De marge links; op een smal scherm net genoeg voor de mascotte. */
-function margeVan(compact: boolean) {
+/**
+ * Waar de eerste steen begint: achter de oever waar Vos vandaan komt.
+ *
+ * Links ligt nu een stuk oever met gras, net als aan de overkant. Daar staat
+ * Vos bij het openen van de vraag, en van daaruit springt hij het water in.
+ * Dat klopt met het verhaal — hij steekt over — en het lost meteen op dat hij
+ * op een lege steen zou staan als de eerste steen leeg is.
+ *
+ * De oever links is smaller dan die aan de overkant: daar hoeft geen sleutel
+ * op te liggen, en elke pixel die hij inneemt gaat van de stenen af.
+ */
+function startoeverVan(compact: boolean) {
+  return compact ? 40 : 58;
+}
+
+/** De marge links zonder oever: net genoeg voor de mascotte, zoals het was. */
+function oudeMargeVan(compact: boolean) {
   return compact ? 16 : STEEN.marge;
+}
+
+/** De marge links mét de oever erbij. */
+function margeVan(compact: boolean) {
+  return startoeverVan(compact) + (compact ? 8 : 14);
 }
 
 /** De breedte van de oever. Op een smal scherm smaller, maar nog herkenbaar. */
@@ -102,24 +122,25 @@ function oeverVan(compact: boolean) {
 }
 
 /** Waar elke steen ligt. Gedeeld door de tekening en het boogje. */
-export function steenPlekken(aantal: number, sprong: number, compact = false) {
+export function steenPlekken(aantal: number, sprong: number, compact = false, startoever = false) {
   const gat = gatBijSprong(sprong, compact);
   const stap = STEEN.breedte + gat;
+  const links = startoever ? margeVan(compact) : oudeMargeVan(compact);
   return Array.from({ length: aantal }, (_, i) => ({
-    x: margeVan(compact) + i * stap,
+    x: links + i * stap,
     /* Om en om iets hoger en lager, zodat het op echte stapstenen lijkt. */
     y: STEEN.midden + (i % 2 === 0 ? 0 : STEEN.golf),
   }));
 }
 
 /** Waar de oever begint: net na de laatste steen. */
-export function oeverX(aantal: number, sprong: number, compact = false): number {
-  const plekken = steenPlekken(aantal, sprong, compact);
+export function oeverX(aantal: number, sprong: number, compact = false, startoever = false): number {
+  const plekken = steenPlekken(aantal, sprong, compact, startoever);
   return (plekken[aantal - 1]?.x ?? 0) + STEEN.breedte + gatBijSprong(sprong, compact) * 0.6;
 }
 
-export function breedteVoor(aantal: number, sprong: number, compact = false) {
-  return oeverX(aantal, sprong, compact) + oeverVan(compact);
+export function breedteVoor(aantal: number, sprong: number, compact = false, startoever = false) {
+  return oeverX(aantal, sprong, compact, startoever) + oeverVan(compact);
 }
 
 /*
@@ -278,9 +299,9 @@ export function Steenrij({
    * Een gebroken getal mag: 2.5 is halverwege de sprong van steen 2 naar 3.
    * Is het gelijk aan het aantal stenen, dan staat hij op de oever.
    *
-   * Niets meegegeven betekent: op de eerste steen die een getal heeft. Dat is
-   * bijna altijd steen 0, maar niet als de eerste steen leeg mag zijn — en op
-   * een lege steen hoort hij niet te staan.
+   * Niets meegegeven betekent: op de oever waar hij vandaan komt, precies zoals
+   * bij het openen van een vraag. Op een steen — en zeker op een lege steen —
+   * hoort hij daar nog niet te staan.
    */
   vosOp,
   /** Hoe hoog de vos van de stenen af is tijdens een sprong, van 0 tot 1. */
@@ -291,6 +312,8 @@ export function Steenrij({
   sleutelOpOever = true,
   /** Staat de vos te wachten? Dan wipt hij zachtjes op zijn plek. */
   vosTrappelt = false,
+  startoever = false,
+  spiegelen = false,
   invoerErboven = false,
   /** Smal scherm: alles wat lucht is gaat krapper zitten. Zie `gatBijSprong`. */
   compact = false,
@@ -317,6 +340,22 @@ export function Steenrij({
   /** Extra stijl op de tekening zelf; gebruikt voor een minimumbreedte. */
   stijl?: React.CSSProperties;
   /**
+   * Hoort er links een oever met gras bij, waar Vos vandaan komt?
+   *
+   * Alleen bij "Telrij stapstenen". De bosspellen lenen deze tekening voor hun
+   * eigen spellen; daar blijft alles zoals het was, want daar is niet om
+   * gevraagd.
+   */
+  startoever?: boolean;
+  /**
+   * Bij terugtellen het hele beeld spiegelen.
+   *
+   * Staat los van `figuur.richting`, om dezelfde reden als hierboven: de
+   * bosspellen zetten die richting ook, en hun spellen horen niet ineens om te
+   * klappen.
+   */
+  spiegelen?: boolean;
+  /**
    * Ligt er een echt invulveld over de lege stenen heen?
    *
    * Zo ja, dan tekent de steen zelf niet meer wat er getypt is: dat getal komt
@@ -331,10 +370,10 @@ export function Steenrij({
     ene rij zijn stenen op de vorm van de andere.
   */
   const id = useId().replace(/:/g, "");
-  /* Zie hierboven: zonder opgegeven plek staat Vos op de eerste steen mét getal. */
-  const vosPlek = vosOp ?? Math.max(0, figuur.stenen.findIndex((w) => w !== null));
-  const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact);
-  const breedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact);
+  /* Zie hierboven: zonder opgegeven plek staat Vos op de oever, vóór steen 0. */
+  const vosPlek = vosOp ?? -1;
+  const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact, startoever);
+  const breedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact, startoever);
   const oeverBreed = oeverVan(compact);
 
   /* Van steennummer naar "de hoeveelste lege steen", want zo komt het antwoord. */
@@ -344,6 +383,22 @@ export function Steenrij({
   });
 
   const teken = figuur.richting === "terug" ? "−" : "+";
+
+  /*
+    Bij terugtellen loopt de telrij van rechts naar links.
+
+    Dan hoort het hele beeld om: de oever waar Vos vandaan komt staat rechts,
+    de oever met de sleutel links, en hij springt van rechts naar links. Dat
+    gebeurt met één spiegeling om de hele tekening heen, zodat alle plekken
+    hieronder gewoon van links naar rechts gerekend blijven worden — er is maar
+    één plek waar de richting in zit.
+
+    De getallen worden daarna teruggedraaid om hun eigen hart; die moeten
+    leesbaar blijven. De vos en de sleutel blijven wél gespiegeld: zo kijkt hij
+    de kant op waar hij heen springt.
+  */
+  const spiegel = spiegelen && figuur.richting === "terug";
+  const terugdraai = (x: number) => (spiegel ? `translate(${2 * x} 0) scale(-1 1)` : undefined);
 
   return (
     <svg
@@ -360,8 +415,36 @@ export function Steenrij({
         </linearGradient>
       </defs>
 
+      <g transform={spiegel ? `translate(${breedte} 0) scale(-1 1)` : undefined}>
+
       {/* Het beekje waar de stenen in liggen. */}
       <rect x={0} y={152} width={breedte} height={HOOGTE - 152} fill="url(#beek)" />
+
+      {/*
+        De oever waar Vos vandaan komt, met gras erop.
+
+        Zelfde opbouw als de oever aan de overkant, alleen gespiegeld: het gras
+        loopt hier van de rand áf naar het water toe.
+      */}
+      {startoever && (() => {
+        const b = startoeverVan(compact);
+        const grond = plekken[0]?.y ?? STEEN.midden;
+        return (
+          <g pointerEvents="none">
+            <path
+              d={`M0 ${HOOGTE}L0 ${grond - 4}Q${b - 52} ${grond - 16} ${b - 24} ${grond - 14}Q${b - 8} ${grond - 12} ${b} ${grond + 6}L${b} ${HOOGTE}Z`}
+              fill="#c8a86b"
+            />
+            <path
+              d={`M0 ${grond - 4}Q${b - 52} ${grond - 16} ${b - 24} ${grond - 14}Q${b - 8} ${grond - 12} ${b} ${grond + 6}`}
+              stroke="#6fbf5e"
+              strokeWidth={9}
+              fill="none"
+              strokeLinecap="round"
+            />
+          </g>
+        );
+      })()}
       {[0, 1, 2].map((r) => (
         <path
           key={r}
@@ -523,6 +606,8 @@ export function Steenrij({
             <text
               x={p.x + STEEN.breedte / 2}
               y={p.y + 9}
+              /* Bij terugtellen staat de tekening gespiegeld; het getal niet. */
+              transform={terugdraai(p.x + STEEN.breedte / 2)}
               textAnchor="middle"
               fontSize={26}
               fontWeight="800"
@@ -541,6 +626,7 @@ export function Steenrij({
               <text
                 x={p.x + STEEN.breedte / 2}
                 y={p.y + STEEN.hoogte / 2 + 20}
+                transform={terugdraai(p.x + STEEN.breedte / 2)}
                 textAnchor="middle"
                 fontSize={17}
                 fontWeight="800"
@@ -561,7 +647,7 @@ export function Steenrij({
         rechtsboven, zodat een kind ziet waar zijn sleutels vandaan komen.
       */}
       {(() => {
-        const ox = oeverX(figuur.stenen.length, figuur.sprong, compact);
+        const ox = oeverX(figuur.stenen.length, figuur.sprong, compact, startoever);
         const grond = plekken[figuur.stenen.length - 1]?.y ?? STEEN.midden;
         return (
           <g pointerEvents="none">
@@ -635,6 +721,7 @@ export function Steenrij({
             <text
               x={(x1 + x2) / 2}
               y={top + 2}
+              transform={terugdraai((x1 + x2) / 2)}
               textAnchor="middle"
               fontSize={21}
               fontWeight="800"
@@ -662,9 +749,17 @@ export function Steenrij({
         */
         const laatste = figuur.stenen.length - 1;
         const plekVan = (n: number) => {
+          /* Min één: de oever waar hij vandaan komt, vóór de eerste steen. */
+          if (n < 0) {
+            const b = startoeverVan(compact);
+            return {
+              x: Math.max(2, b * 0.5 - STEEN.breedte / 2),
+              y: (plekken[0]?.y ?? STEEN.midden) - 12,
+            };
+          }
           if (n <= laatste) return plekken[Math.max(0, n)];
           /* Voorbij de laatste steen: de oever. */
-          const ox = oeverX(figuur.stenen.length, figuur.sprong, compact);
+          const ox = oeverX(figuur.stenen.length, figuur.sprong, compact, startoever);
           return { x: ox + oeverBreed * 0.2, y: (plekken[laatste]?.y ?? STEEN.midden) - 12 };
         };
         const heel = Math.floor(vosPlek);
@@ -703,6 +798,7 @@ export function Steenrij({
           />
         );
       })()}
+      </g>
     </svg>
   );
 }
@@ -786,16 +882,23 @@ export function Stapstenen({
   /*
     Waar hij begint en waar hij stopt.
 
-    `vosStart` is de eerste steen met een getal — meestal steen 0, en alleen
-    anders als de eerste steen leeg is. Vanaf daar springt hij door tot vlak
-    vóór de eerstvolgende lege steen. Is er verderop geen lege steen meer, dan
-    blijft hij staan waar hij staat.
+    Hij begint op de oever, vóór de eerste steen: dat is plek −1. Van daaruit
+    springt hij in één boog naar de eerste steen mét een getal — ook als de
+    eerste steen leeg is, want daar hoort hij niet op te landen — en daarna
+    steen voor steen door tot vlak vóór de eerstvolgende lege steen. Is er
+    verderop geen lege steen meer, dan blijft hij daar staan.
   */
-  const vosStart = Math.max(0, figuur.stenen.findIndex((w) => w !== null));
-  const volgendeLeeg = figuur.stenen.findIndex((w, i) => i > vosStart && w === null);
-  const laatsteGevuld = volgendeLeeg <= vosStart ? vosStart : volgendeLeeg - 1;
+  const eersteGevuld = Math.max(0, figuur.stenen.findIndex((w) => w !== null));
+  /*
+    Waar hij vandaan komt: de oever (−1) bij de telrij, en gewoon de eerste
+    steen met een getal als een bosspel deze tekening leent — daar is geen
+    oever en daar verandert niets.
+  */
+  const OEVER = sleepbediening === undefined ? -1 : eersteGevuld;
+  const volgendeLeeg = figuur.stenen.findIndex((w, i) => i > eersteGevuld && w === null);
+  const laatsteGevuld = volgendeLeeg <= eersteGevuld ? eersteGevuld : volgendeLeeg - 1;
 
-  const [vos, setVos] = useState({ op: vosStart, lift: 0 });
+  const [vos, setVos] = useState({ op: OEVER, lift: 0 });
   const [houding, setHouding] = useState<"staand" | "springend" | "juichend">("staand");
   /*
     Trappelen als hij stilstaat en de vraag nog open staat: hij wacht tot hij
@@ -822,11 +925,25 @@ export function Stapstenen({
    * hangen. `nood` maakt het bovendien sowieso af, zodat het oefenscherm nooit
    * op een sprong blijft wachten.
    */
-  const laatSpringen = (vanaf: number, tot: number, klaar?: () => void) => {
+  const laatSpringen = (
+    vanaf: number,
+    tot: number,
+    klaar?: () => void,
+    /**
+     * Hoeveel boogjes er over die afstand gemaakt worden.
+     *
+     * Standaard één per steen, zoals altijd. Vanaf de oever springt hij in
+     * één boog naar de eerste steen mét een getal, ook als hij daarbij een
+     * lege steen overslaat — hij hoort immers nergens op een lege steen te
+     * landen.
+     */
+    bogen?: number,
+  ) => {
     stopLopen();
-    const sprongen = Math.max(0, tot - vanaf);
-    if (sprongen === 0) {
-      setVos({ op: vanaf, lift: 0 });
+    const afstand = Math.max(0, tot - vanaf);
+    const sprongen = Math.max(0, bogen ?? afstand);
+    if (afstand === 0 || sprongen === 0) {
+      setVos({ op: tot, lift: 0 });
       klaar?.();
       return;
     }
@@ -838,28 +955,29 @@ export function Stapstenen({
       en niet bij het afzetten, dus hij gaat af op het beeldje waarin de vos een
       volgende steen bereikt. Daarmee loopt het geluid gelijk met wat je ziet.
     */
-    let geplopt = vanaf;
+    let geplopt = 0;
 
     const stap = () => {
       const t = Math.min(1, (nuInMs() - begin) / duur);
-      const plek = vanaf + t * sprongen;
-      const heel = Math.floor(plek);
-      const deel = plek - heel;
+      const plek = vanaf + t * afstand;
+      /* Hoeveel boogjes er af zijn, en hoe ver hij in het huidige boogje is. */
+      const gedaan = Math.floor(t * sprongen);
+      const deel = t * sprongen - gedaan;
       /* Een boogje per sprong: omhoog en weer omlaag. */
       setVos({ op: plek, lift: deel === 0 ? 0 : Math.sin(deel * Math.PI) });
       setHouding(t < 1 ? "springend" : "staand");
 
       /* Net geland op een volgende steen: precies één plop. */
-      if (heel > geplopt) {
-        geplopt = heel;
+      if (gedaan > geplopt) {
+        geplopt = gedaan;
         if (opgavegeluidStaatAan()) plop();
       }
 
       if (t >= 1) {
         stopLopen();
         setVos({ op: tot, lift: 0 });
-        if (geplopt < tot) {
-          geplopt = tot;
+        if (geplopt < sprongen) {
+          geplopt = sprongen;
           if (opgavegeluidStaatAan()) plop();
         }
         klaar?.();
@@ -893,10 +1011,16 @@ export function Stapstenen({
   */
   useEffect(() => {
     const start = setTimeout(() => {
-      setVos({ op: vosStart, lift: 0 });
+      setVos({ op: OEVER, lift: 0 });
       setHouding("staand");
       setSleutelOpOever(true);
-      laatSpringen(vosStart, laatsteGevuld);
+      /* Eerst in één boog van de oever naar de eerste steen met een getal. */
+      laatSpringen(
+        OEVER,
+        eersteGevuld,
+        () => laatSpringen(eersteGevuld, laatsteGevuld),
+        1,
+      );
     }, 0);
     return () => {
       clearTimeout(start);
@@ -981,9 +1105,14 @@ export function Stapstenen({
         .map((w, i) => (w === null ? i : -1))
         .filter((i) => i >= 0);
       const steen = lege[actief] ?? 0;
-      const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact);
+      const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact, sleepbediening === undefined);
+      const breed = breedteVoor(figuur.stenen.length, figuur.sprong, compact, sleepbediening === undefined);
+      /* Gespiegeld bij terugtellen; zie `linkerkant` hieronder. */
+      const x = plekken[steen]?.x ?? 0;
       const deel =
-        (plekken[steen]?.x ?? 0) / breedteVoor(figuur.stenen.length, figuur.sprong, compact);
+        (sleepbediening === undefined && figuur.richting === "terug"
+          ? breed - x - STEEN.breedte
+          : x) / breed;
       const doel = deel * vak.scrollWidth - vak.clientWidth / 2 + 40;
       vak.scrollTo({ left: Math.max(0, doel), behavior: gedrag });
     };
@@ -1000,7 +1129,7 @@ export function Stapstenen({
       clearTimeout(klok);
       window.removeEventListener("resize", bijDraaien);
     };
-  }, [actief, fase, figuur, compact]);
+  }, [actief, fase, figuur, compact, sleepbediening]);
 
   const uit = fase !== "bezig";
 
@@ -1016,12 +1145,27 @@ export function Stapstenen({
     Niet bij de bosspellen die deze rij lenen: daar wordt gesleept, en daar
     staat de bediening in `sleepbediening`.
   */
-  const velden = sleepbediening === undefined && fase === "bezig";
+  /*
+    Is dit de echte telrij-oefening, of leent een bosspel deze tekening?
+
+    De bosspellen geven hun eigen bediening mee. Daar blijft alles zoals het
+    was: geen oever links, geen spiegeling, en Vos begint gewoon op een steen.
+    Er is voor die spellen niets gevraagd, dus daar verandert niets.
+  */
+  const telrij = sleepbediening === undefined;
+  const velden = telrij && fase === "bezig";
   const legeStenen = figuur.stenen
     .map((waarde, i) => (waarde === null ? i : -1))
     .filter((i) => i >= 0);
-  const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact);
-  const tekenbreedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact);
+  const plekken = steenPlekken(figuur.stenen.length, figuur.sprong, compact, telrij);
+  const tekenbreedte = breedteVoor(figuur.stenen.length, figuur.sprong, compact, telrij);
+  /*
+    Bij terugtellen staat de tekening gespiegeld; de invulvelden liggen er als
+    gewone HTML overheen en weten daar niets van. Deze omrekening zet ze op
+    dezelfde plek als de steen waar ze bij horen.
+  */
+  const linkerkant = (x: number) =>
+    telrij && figuur.richting === "terug" ? tekenbreedte - x - STEEN.breedte : x;
   const { bijAandacht, bijWeggaan } = useInBeeld();
 
   /*
@@ -1071,6 +1215,8 @@ export function Stapstenen({
             vosHouding={houding}
             sleutelOpOever={sleutelOpOever}
             vosTrappelt={fase === "bezig" && houding === "staand"}
+            startoever={telrij}
+            spiegelen={telrij}
             invoerErboven={velden}
             onKiesSteen={(index) => { setActief(index); onKiesSleepSteen?.(index); }}
           />
@@ -1084,7 +1230,7 @@ export function Stapstenen({
                   key={steen}
                   className="absolute [container-type:size]"
                   style={{
-                    left: `${(plek.x / tekenbreedte) * 100}%`,
+                    left: `${(linkerkant(plek.x) / tekenbreedte) * 100}%`,
                     top: `${((plek.y - STEEN.hoogte / 2) / HOOGTE) * 100}%`,
                     width: `${(STEEN.breedte / tekenbreedte) * 100}%`,
                     height: `${(STEEN.hoogte / HOOGTE) * 100}%`,

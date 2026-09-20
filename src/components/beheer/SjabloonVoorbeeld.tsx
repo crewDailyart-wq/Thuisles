@@ -88,10 +88,14 @@ export function SjabloonVoorbeeld({
   if (!generator) return null;
 
   if (sommen.length === 0) {
+    /*
+      Zegt het type zelf wat er mis is, dan staat dát er. Anders blijft de
+      algemene zin staan die er altijd stond; zie `waarschuwing` in `soort.ts`.
+    */
     return (
       <p className="rounded-md border border-oranje/40 bg-oranje-zacht px-3 py-2 text-sm text-oranje-diep">
-        Met deze instellingen komen er geen sommen uit. Vink bijvoorbeeld een
-        tafel aan, of maak het bereik ruimer.
+        {generator.waarschuwing?.(instellingen) ??
+          "Met deze instellingen komen er geen sommen uit. Vink bijvoorbeeld een tafel aan, of maak het bereik ruimer."}
       </p>
     );
   }
@@ -149,7 +153,8 @@ export function SjabloonVoorbeeld({
                 */}
                 {som.figuur?.soort === "stapstenen" && (
                   <div className="mt-1 w-full">
-                    <Steenrij figuur={som.figuur} />
+                    {/* Zelfde beeld als in de oefening: oever links, gespiegeld bij terugtellen. */}
+                    <Steenrij figuur={som.figuur} startoever spiegelen />
                   </div>
                 )}
 

@@ -422,6 +422,17 @@ export type Generator = {
   /** Hoeveel verschillende sommen er hoogstens mogelijk zijn, of null. */
   maximum: (inst: Instellingen) => number | null;
   /**
+   * Wat er mis is met deze instellingen, in gewone taal — of `null` als er
+   * niets aan de hand is.
+   *
+   * Bedoeld voor het beheervoorbeeld: komen er geen sommen uit, dan hoort er te
+   * staan wáárom, en wat je eraan kunt doen. "Er komen geen sommen uit" laat
+   * een beheerder zelf puzzelen; "de rij past niet in dit bereik" zegt precies
+   * welke knop hij moet omzetten. Laat een type dit weg, dan blijft de
+   * algemene zin staan die er altijd stond.
+   */
+  waarschuwing?: (inst: Instellingen) => string | null;
+  /**
    * Maakt sommen. `alGebruikt` bevat handtekeningen die al bestaan; die worden
    * overgeslagen. Levert er hoogstens `aantal` op — soms minder, als alles op
    * is.
