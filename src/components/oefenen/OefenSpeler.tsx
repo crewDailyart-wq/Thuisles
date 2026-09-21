@@ -33,6 +33,7 @@ import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
+import { Getallenlijn } from "@/components/oefenen/Getallenlijn";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { Oefenbalk, type Bolstand } from "@/components/oefenen/Oefenbalk";
@@ -1535,6 +1536,30 @@ function Antwoordvelden({
         onKlaar={onSprongKlaar}
         onWijzig={(nieuw: (number | null)[]) =>
           onKies(nieuw.every((w) => w === null) ? "" : nieuw.map((w) => w ?? "").join(","))
+        }
+      />
+    );
+  }
+
+  /*
+    De getallenlijn: de lijn ís tegelijk het antwoordveld. Het kind sleept een
+    getal naar zijn streepje, of tikt het kaartje en daarna de plek; het
+    antwoord is één getal per kaartje, met komma's ertussen — dezelfde afspraak
+    als bij de trein en de stapstenen.
+  */
+  if (vraag.vorm === "sleepgetallen" && vraag.figuur?.soort === "getallenlijn") {
+    /* Eén getal: het streepje waar Vos staat. Leeg zolang hij niet verschoven is. */
+    const ingevuld = [antwoord === "" ? null : Number(antwoord)];
+
+    return (
+      <Getallenlijn
+        figuur={vraag.figuur}
+        ingevuld={ingevuld}
+        fase={fase}
+        /* Pas als Vos zijn vlag heeft geplant, mag het feestscherm eroverheen. */
+        onKlaar={onSprongKlaar}
+        onWijzig={(nieuw: (number | null)[]) =>
+          onKies(nieuw[0] === null || nieuw[0] === undefined ? "" : String(nieuw[0]))
         }
       />
     );

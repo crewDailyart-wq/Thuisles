@@ -265,6 +265,38 @@
     100% { transform: translateY(0) rotate(0deg); }
   }
 
+  /*
+    Vos kijkt verbaasd om zich heen: hij draait zijn kop naar links en naar
+    rechts en zakt even door zijn poten. Voor het moment na een fout antwoord
+    op de getallenlijn, vlak voordat de uitleg begint. Let op: dit draait op
+    hetzelfde element dat ook met `translateX` op zijn streepje wordt gezet,
+    dus die verschuiving staat in elke stap opnieuw in de transform.
+  */
+  /*
+    Het vlaggetje wil de grond in, maar het lukt niet: het duikt twee keer naar
+    beneden en veert terug. Voor het moment na een fout antwoord op de
+    getallenlijn, samen met `vos-verbaasd` hieronder.
+  */
+  --animate-vlag-mislukt: vlag-mislukt 0.85s ease-in-out 1;
+  @keyframes vlag-mislukt {
+    0%   { translate: 0 0; rotate: 0deg; }
+    18%  { translate: 0 7px; rotate: 2deg; }
+    32%  { translate: 0 -2px; rotate: -3deg; }
+    50%  { translate: 0 7px; rotate: 2deg; }
+    66%  { translate: 0 -1px; rotate: -2deg; }
+    100% { translate: 0 0; rotate: 0deg; }
+  }
+
+  --animate-vos-verbaasd: vos-verbaasd 1.1s ease-in-out 2;
+  @keyframes vos-verbaasd {
+    0%   { rotate: 0deg; translate: 0 0; }
+    20%  { rotate: -9deg; translate: -3px 0; }
+    45%  { rotate: 8deg; translate: 3px 0; }
+    65%  { rotate: -5deg; translate: -2px 1px; }
+    85%  { rotate: 3deg; translate: 1px 0; }
+    100% { rotate: 0deg; translate: 0 0; }
+  }
+
   --shadow-gloed: 0 0 0 6px rgb(242 187 46 / 0.28), 0 0 34px 6px rgb(242 187 46 / 0.45);
 }
 

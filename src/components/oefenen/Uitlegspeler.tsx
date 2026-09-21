@@ -24,6 +24,7 @@ import {
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
+import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
 import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
 import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
 import { Uitlegstraat } from "@/components/oefenen/Huizenrij";
@@ -690,6 +691,28 @@ function Modelbeeld({
           rechts: model.rechts,
         }}
       />
+    );
+  }
+
+  if (model.soort === "getallenlijn") {
+    /*
+      Dezelfde lijn als in de vraag. `telTot` is het streepje waar Vos in deze
+      stap staat, `nadruk` het getal dat oplicht, en `vlag` zet het vlaggetje
+      neer zodra hij er is. De mascotte zelf zit in de speler eromheen.
+    */
+    return (
+      <div className="w-full">
+        <Getallenlijnbeeld
+          start={model.start}
+          eind={model.eind}
+          stap={model.stap}
+          zichtbaar={model.zichtbaar}
+          vosBij={model.telTot}
+          vlag={model.doel}
+          geplant={model.vlag}
+          nadruk={model.nadruk}
+        />
+      </div>
     );
   }
 

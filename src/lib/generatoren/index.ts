@@ -17,6 +17,7 @@ import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
 import { vakkenGenerator } from "@/lib/generatoren/vakken";
 import { treinGenerator } from "@/lib/generatoren/trein";
 import { vissenGenerator } from "@/lib/generatoren/vissen";
+import { getallenlijnGenerator } from "@/lib/generatoren/getallenlijn";
 import { stapstenenGenerator } from "@/lib/generatoren/stapstenen";
 import { tellenslepenGenerator } from "@/lib/generatoren/tellenslepen";
 import { tafelsGenerator } from "@/lib/generatoren/tafels";
@@ -39,6 +40,7 @@ export const alleGeneratoren: Generator[] = [
   treinGenerator,
   vakkenGenerator,
   bioscoopGenerator,
+  getallenlijnGenerator,
   ...bosGeneratoren,
 ];
 

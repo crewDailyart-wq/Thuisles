@@ -163,6 +163,23 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      /** De getallenlijn, met Vos die vanaf een zichtbaar getal doortelt. */
+      soort: "getallenlijn";
+      start: number;
+      eind: number;
+      /** Hoeveel één streepje verder is: 1, 5 of 10. */
+      stap: number;
+      zichtbaar: number[];
+      /** Het getal dat gezocht wordt; staat groot boven de lijn. */
+      doel: number;
+      /** Bij welk streepje Vos nu staat. */
+      telTot: number;
+      /** Staat het vlaggetje er al? Dan is hij er. */
+      vlag: boolean;
+      /** Welk getal oplicht, of `null`. */
+      nadruk: number | null;
+    }
+  | {
       soort: "stapstenen";
       /** De rij zoals hij nu in beeld staat; `null` is een steen die nog leeg is. */
       stenen: (number | null)[];

@@ -18,6 +18,7 @@ import { Blokkenvak } from "@/components/oefenen/Mabblokken";
 import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
+import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
@@ -204,6 +205,33 @@ export function SjabloonVoorbeeld({
                       gekozen=""
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                       hengel={som.figuur.hengel}
+                    />
+                  </div>
+                )}
+
+                {/*
+                  De getallenlijn op volle breedte: de getallen moeten leesbaar
+                  blijven. Vos staat waar het kind hem straks aantreft — aan het
+                  begin van de lijn — met het gezochte getal op zijn vlaggetje.
+                */}
+                {som.figuur?.soort === "getallenlijn" && (
+                  <div className="mt-1 w-full">
+                    <Getallenlijnbeeld
+                      start={som.figuur.start}
+                      eind={som.figuur.eind}
+                      stap={som.figuur.stap}
+                      zichtbaar={som.figuur.zichtbaar}
+                      vosBij={som.figuur.start}
+                      vlag={som.figuur.doel}
+                      vos={
+                        som.figuur.vos.wachtend || som.figuur.vos.blij
+                          ? {
+                              vangend: som.figuur.vos.wachtend ?? som.figuur.vos.blij,
+                              wachtend: som.figuur.vos.wachtend,
+                              blij: som.figuur.vos.blij,
+                            }
+                          : (standaardvos ?? null)
+                      }
                     />
                   </div>
                 )}

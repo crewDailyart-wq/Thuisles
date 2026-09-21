@@ -209,12 +209,25 @@ export type Figuur =
     }
   | {
       /**
-       * Vos' trein: wagons met getallen die op volgorde gesleept worden.
+       * De getallenlijn: een rechte lijn met streepjes, zoals op school.
        *
-       * De wagons staan door elkaar op het rangeerspoor; het kind koppelt ze
-       * achter de locomotief. Het antwoord is één getal per plek, met komma's
-       * ertussen — dezelfde afspraak als bij "Tellen en slepen".
+       * `start` en `eind` zijn het stuk van de lijn dat te zien is; bij een
+       * groot bereik is dat een venster, zodat de streepjes uit elkaar blijven
+       * staan. `stap` is hoeveel één streepje verder is: 1, 5 of 10. Onder de
+       * getallen in `zichtbaar` staat het getal, onder de rest niet. `doel` is
+       * het getal dat groot boven de lijn staat; daar schuift het kind Vos
+       * naartoe, en daar staat het getal dus niet onder de lijn.
        */
+      soort: "getallenlijn";
+      start: number;
+      eind: number;
+      stap: number;
+      zichtbaar: number[];
+      doel: number;
+      /** De mascotte die over de lijn schuift, per houding een afbeelding uit het beheer. */
+      vos: { wachtend: string | null; blij: string | null };
+    }
+  | {
       soort: "trein";
       /** De getallen zoals ze op het rangeerspoor klaarstaan. */
       wagons: number[];

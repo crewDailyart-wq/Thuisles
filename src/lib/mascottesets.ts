@@ -97,6 +97,22 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: DRIELUIK,
   },
   {
+    type: "getallenlijn",
+    naam: "Getallenlijn",
+    velden: [
+      {
+        sleutel: "vosWachtend",
+        label: "Vos — wachtend",
+        hulp: "Dit is de vos die het kind over de getallenlijn schuift.",
+      },
+      {
+        sleutel: "vosBlij",
+        label: "Vos — blij",
+        hulp: "Als hij op het goede streepje staat; dan plant hij zijn vlaggetje en springt hij op.",
+      },
+    ],
+  },
+  {
     type: "straat",
     naam: "Vos' straat (buurgetallen)",
     velden: [
