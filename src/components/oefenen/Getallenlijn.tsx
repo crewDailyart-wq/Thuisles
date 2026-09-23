@@ -249,6 +249,7 @@ export function Getallenlijnbeeld({
   goedBij = null,
   vrij = false,
   hulplijnen = [],
+  wijstAan = true,
   stripRef,
   onVosPak,
   onVosToets,
@@ -315,6 +316,15 @@ export function Getallenlijnbeeld({
   vrij?: boolean;
   /** Welke getallen een hulpstreepje krijgen op een vrije lijn. */
   hulplijnen?: number[];
+  /**
+   * Mogen de lijntjes van de streepjes naar de vakjes al te zien zijn?
+   *
+   * In de tussenstand verklappen die het antwoord: ze wijzen precies de twee
+   * tientallen aan waar het getal tussen ligt. Zolang het kind nog bezig is
+   * staat het paar vakjes daarom zonder lijntjes midden onder de lijn; pas na
+   * Controleer schuift het naar zijn plek en komen de lijntjes erbij.
+   */
+  wijstAan?: boolean;
   stripRef?: React.RefObject<HTMLDivElement | null>;
   /** Vos vastpakken om te schuiven; alleen in de vraag. */
   onVosPak?: (e: React.PointerEvent) => void;
@@ -749,21 +759,34 @@ export function Getallenlijnbeeld({
 
         if (paarLayout && strookBreed !== null) {
           const anderePlek = waarden.indexOf(vakjes[i === 0 ? 1 : 0]);
-          const middenPct = (tickPct + plekPct(anderePlek, aantal)) / 2;
+          const anderPct = plekPct(anderePlek, aantal);
+          /*
+            Waar het paar onder komt te hangen.
+
+            Wijzen de lijntjes al aan, dan onder het midden tussen de twee
+            juiste streepjes. Zo niet, dan precies midden onder de lijn: dan
+            zegt de plek van de vakjes nog niets over het antwoord.
+          */
+          const middenPct = wijstAan
+            ? (tickPct + anderPct) / 2
+            : (LINKS + (100 - RECHTS)) / 2;
           /* Het midden van het paar, zo nodig naar binnen geschoven. */
           const halveBreedte = zijde + HALVE_KIER;
           const middenX = Math.min(
             Math.max((middenPct / 100) * strookBreed, halveBreedte + KANTLIJN),
             strookBreed - halveBreedte - KANTLIJN,
           );
-          const naarLinks = tickPct < middenPct;
+          /* Links of rechts in het paar: het kleinste getal staat links. */
+          const naarLinks = tickPct < anderPct;
           const midX = middenX + (naarLinks ? -1 : 1) * (zijde / 2 + HALVE_KIER);
           plaatsing = { left: midX, transform: "translateX(-50%)", top: vakTop };
-          haakje = {
-            tickX: (tickPct / 100) * strookBreed,
-            tickY: lijnY + streeplengte(n),
-            vakX: midX,
-          };
+          if (wijstAan) {
+            haakje = {
+              tickX: (tickPct / 100) * strookBreed,
+              tickY: lijnY + streeplengte(n),
+              vakX: midX,
+            };
+          }
         }
 
         if (!opDeLijn) plaatsing = { left: `${tickPct}%`, transform: "translateX(-50%)", bottom: hoogte - lijnY + 2 };
@@ -1143,6 +1166,8 @@ export function Getallenlijn({
             wijzer={opLijn ? { getal: figuur.wijzer ?? figuur.doel } : null}
             onTyp={uit ? undefined : typ}
             onBevestig={onBevestig}
+            /* De lijntjes wijzen het antwoord aan; die komen pas bij het nakijken. */
+            wijstAan={uit}
             stripRef={strip}
           />
         </div>

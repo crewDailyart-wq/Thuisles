@@ -139,14 +139,19 @@ const SCHATZINNEN: Record<Leeftijdsgroep, string> = {
  * Die hangen af van de sprong: tientallen en honderdtallen noem je bij naam,
  * maar bij vijftallen zegt niemand "tussen welke vijftallen", dus daar staat
  * "tussen welke getallen".
+ *
+ * Het gevraagde getal staat in de zin zelf, op de plek van `{som}`: "Tussen
+ * welke tientallen ligt 13?" Dat is duidelijker dan "dit getal" — een kind
+ * hoeft dan niet eerst te zoeken welk getal bedoeld wordt, en wie de vraag
+ * laat voorlezen hoort hem er ook bij.
  */
 function tussenzinnen(sprong: number): Record<Leeftijdsgroep, string> {
   const zin =
     sprong === 100
-      ? "Tussen welke honderdtallen ligt dit getal?"
+      ? "Tussen welke honderdtallen ligt {som}?"
       : sprong === 5
-        ? "Tussen welke getallen ligt dit getal?"
-        : "Tussen welke tientallen ligt dit getal?";
+        ? "Tussen welke getallen ligt {som}?"
+        : "Tussen welke tientallen ligt {som}?";
   return { "34": zin, "56": zin, "78": zin };
 }
 
@@ -463,7 +468,7 @@ export const getallenlijnGenerator: Generator = {
         { waarde: "5", label: "Vijftallen" },
         { waarde: "100", label: "Honderdtallen" },
       ],
-      hulp: "Alleen van belang bij de tussenstand: hoe groot de sprong is van het ene streepje naar het volgende. Tientallen is de gewone schoolopdracht, vijftallen maakt de sprong kleiner en de stap voor het kind makkelijker, honderdtallen is voor grote getallen en groep 5 en hoger. De vraagzin past zich aan: bij vijftallen staat er \"Tussen welke getallen ligt dit getal?\"",
+      hulp: "Alleen van belang bij de tussenstand: hoe groot de sprong is van het ene streepje naar het volgende. Tientallen is de gewone schoolopdracht, vijftallen maakt de sprong kleiner en de stap voor het kind makkelijker, honderdtallen is voor grote getallen en groep 5 en hoger. De vraagzin past zich aan: bij vijftallen staat er \"Tussen welke getallen ligt 13?\" in plaats van \"Tussen welke tientallen ligt 13?\"",
     },
     {
       soort: "vinkje",
@@ -809,7 +814,13 @@ export const getallenlijnGenerator: Generator = {
           handtekening,
           vorm: "sleepgetallen",
           vraagtekst: bepaalVraagtekst(
-            { vraagteksten: { standaard: tussenzinnen(sprong) } },
+            {
+              vraagteksten: {
+                standaard: tussenzinnen(sprong),
+                /* Hier gaat {som} over het getal op het wijzertje. */
+                som: (s) => String(s.extra?.wijzer ?? s.goed),
+              },
+            },
             inst,
             groep,
             gegevens,

@@ -258,6 +258,11 @@ export function SjabloonVoorbeeld({
                         vakjes={som.figuur.gevraagd ?? [som.figuur.doel]}
                         getypt={(som.figuur.gevraagd ?? [som.figuur.doel]).map(() => "")}
                         opDeLijn
+                        /*
+                          Zonder de lijntjes, net als bij het kind: die wijzen de
+                          twee tientallen aan en komen daar pas na Controleer.
+                        */
+                        wijstAan={false}
                       />
                     </div>
                   ) : som.figuur.stand === "invullen" ? (
