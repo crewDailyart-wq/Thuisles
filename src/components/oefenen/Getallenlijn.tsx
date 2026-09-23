@@ -44,6 +44,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Vosbeeld, type Voshoudingen } from "@/components/oefenen/Vosnaastvak";
+import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { opgavegeluidStaatAan, plop } from "@/lib/geluid";
 import type { Figuur } from "@/lib/generatoren/soort";
 
@@ -74,6 +75,18 @@ const MAAT = {
 export function plekPct(i: number, aantal: number): number {
   if (aantal <= 1) return LINKS;
   return LINKS + (i * (100 - LINKS - RECHTS)) / (aantal - 1);
+}
+
+/**
+ * Waar een getal op de lijn ligt, in procenten van de breedte.
+ *
+ * Anders dan `plekPct` hoeft dit getal niet op een streepje te liggen: het
+ * wijzertje van de tussenstand staat juist ertússen.
+ */
+export function plekVoorWaarde(waarde: number, start: number, eind: number): number {
+  if (eind <= start) return LINKS;
+  const deel = (waarde - start) / (eind - start);
+  return LINKS + Math.min(1, Math.max(0, deel)) * (100 - LINKS - RECHTS);
 }
 
 /** Alle getallen waar een streepje voor staat. */
@@ -158,8 +171,40 @@ function Vlaggetje({ getal, geplant = false }: { getal: number; geplant?: boolea
   );
 }
 
+/**
+ * Het wijzertje van de tussenstand.
+ *
+ * Een klein vlak met het gezochte getal erin en een puntje naar beneden, op de
+ * plek waar dat getal op de lijn ligt. In de huisstijlkleur, want het is het
+ * enige waar de vraag over gaat.
+ */
+function Wijzertje({ getal, licht = false }: { getal: number; licht?: boolean }) {
+  return (
+    <span className="relative block">
+      <span
+        className={`block rounded-lg px-2 py-1 text-base font-bold leading-none tabular-nums text-white ${
+          licht ? "bg-huisstijl-donker" : "bg-huisstijl"
+        } shadow-op`}
+      >
+        {getal}
+      </span>
+      <span
+        aria-hidden="true"
+        className="absolute left-1/2 top-full -translate-x-1/2"
+        style={{
+          width: 0,
+          height: 0,
+          borderLeft: "5px solid transparent",
+          borderRight: "5px solid transparent",
+          borderTop: `6px solid var(${licht ? "--color-huisstijl-donker" : "--color-huisstijl"})`,
+        }}
+      />
+    </span>
+  );
+}
+
 /** Hoe een getal onder de lijn getoond wordt. */
-type Onderschrift = { tekst: string; kleur: string };
+type Onderschrift = { tekst: string; kleur: string; nadruk?: boolean };
 
 /**
  * De lijn zelf: streepjes, getallen eronder en Vos die erboven staat.
@@ -178,9 +223,20 @@ export function Getallenlijnbeeld({
   vlag = null,
   geplant = false,
   mislukt = false,
+  vakjes = [],
+  getypt = [],
+  vakuitslagen = [],
+  opDeLijn = false,
+  wijzer = null,
+  onTyp,
+  onBevestig,
   juist = null,
   nadruk = null,
   aangeraakt = false,
+  foutBij = null,
+  goedBij = null,
+  vrij = false,
+  hulplijnen = [],
   stripRef,
   onVosPak,
   onVosToets,
@@ -201,12 +257,52 @@ export function Getallenlijnbeeld({
   geplant?: boolean;
   /** Het planten lukte niet: het vaantje stuitert even terug. */
   mislukt?: boolean;
+  /** De streepjes waar een leeg vakje boven staat, van links naar rechts. */
+  vakjes?: number[];
+  /** Wat er in die vakjes staat. Even lang als `vakjes`. */
+  getypt?: string[];
+  /** Per vakje of het klopt; pas na Controleer. */
+  vakuitslagen?: ("goed" | "fout" | null)[];
+  /**
+   * Staan de vakjes óp de lijn, op de plek van het getal zelf?
+   *
+   * Zo werkt de tussenstand: het vakje staat op de hoogte van de getallen
+   * onder de andere streepjes, zodat de rij netjes doorloopt. Anders staan ze
+   * erboven met een pijltje ernaartoe.
+   */
+  opDeLijn?: boolean;
+  /** Het getal op het wijzertje boven de lijn, en of het oplicht. */
+  wijzer?: { getal: number; licht?: boolean } | null;
+  /** Typen in vakje nummer zoveel. Ontbreekt = de vakjes zijn alleen om te laten zien. */
+  onTyp?: (nummer: number, tekst: string) => void;
+  /** Enter in een vakje: hetzelfde als op Controleer drukken. */
+  onBevestig?: () => void;
   /** Na een fout antwoord: waar het getal wél hoorde. */
   juist?: number | null;
   /** Een getal dat oplicht in de uitleg. */
   nadruk?: number | null;
   /** Het kind heeft Vos vast: dan licht het streepje onder hem op. */
   aangeraakt?: boolean;
+  /**
+   * Het streepje waar het fout ging.
+   *
+   * Na een fout antwoord blijft de streep staan waar Vos stond, maar dan in
+   * het rood, met het getal eronder. Zo ziet het kind waar het naartoe is
+   * geschoven en welk getal daar hoort.
+   */
+  foutBij?: number | null;
+  /** Het streepje waar het getal écht ligt; groen, bij het nakijken. */
+  goedBij?: number | null;
+  /**
+   * Een vrije lijn: geen raster van streepjes maar alles op zijn eigen plek.
+   *
+   * Voor de schatstand. Alleen het begin, het eind en de `hulplijnen` krijgen
+   * een streepje; Vos en de markeringen staan op de plek die bij hun getal
+   * hoort, ook als dat tussen twee hele getallen in valt.
+   */
+  vrij?: boolean;
+  /** Welke getallen een hulpstreepje krijgen op een vrije lijn. */
+  hulplijnen?: number[];
   stripRef?: React.RefObject<HTMLDivElement | null>;
   /** Vos vastpakken om te schuiven; alleen in de vraag. */
   onVosPak?: (e: React.PointerEvent) => void;
@@ -215,8 +311,21 @@ export function Getallenlijnbeeld({
   /** Tikken op een streepje; alleen in de vraag. */
   onTik?: (getal: number) => void;
 }) {
-  const waarden = streepwaarden(start, eind, stap);
+  /*
+    Waar er streepjes staan.
+
+    Normaal het hele raster van de stapgrootte. Op een vrije lijn alleen het
+    begin, het eind en de hulpstreepjes; alles daartussen staat op zijn eigen
+    plek in plaats van op een streepje.
+  */
+  const waarden = vrij
+    ? [...new Set([start, ...hulplijnen, eind])].sort((a, b) => a - b)
+    : streepwaarden(start, eind, stap);
   const aantal = waarden.length;
+
+  /** Waar een getal staat, in procenten: op zijn streepje of op zijn eigen plek. */
+  const plek = (waarde: number, index: number) =>
+    vrij ? plekVoorWaarde(waarde, start, eind) : plekPct(index, aantal);
 
   /*
     Hoeveel ruimte er per streepje is, in echte pixels.
@@ -260,13 +369,51 @@ export function Getallenlijnbeeld({
       : Math.max(11, Math.min(15, (perStreepje - 4) / (0.62 * cijfers)));
 
   /*
+    Hoe groot een invulvakje mag zijn.
+
+    Twee vakjes naast elkaar mogen elkaar nooit raken, dus de breedte volgt de
+    ruimte tussen de twee dichtstbijzijnde vakjes. Op een breed scherm is dat
+    de gewone maat, op een telefoon met vier vakjes wordt hij smaller. Onder de
+    38 pixels gaat hij niet: dan past een getal van twee cijfers er niet meer
+    leesbaar in.
+  */
+  const kleinsteGat = vakjes.reduce(
+    (kleinst, n, i) =>
+      i === 0 ? kleinst : Math.min(kleinst, Math.abs(n - vakjes[i - 1]) / Math.max(1, stap)),
+    Number.POSITIVE_INFINITY,
+  );
+  const vakBreedte =
+    perStreepje === null || !Number.isFinite(kleinsteGat)
+      ? opDeLijn
+        ? 48
+        : 60
+      : opDeLijn
+        ? Math.max(28, Math.min(58, kleinsteGat * perStreepje - 5))
+        : Math.max(38, Math.min(64, kleinsteGat * perStreepje - 8));
+  const vakHoogte = opDeLijn
+    ? Math.max(24, Math.min(34, vakBreedte * 0.6))
+    : Math.max(32, Math.min(46, vakBreedte * 0.76));
+  const vakLetter = opDeLijn
+    ? Math.max(11, Math.min(19, vakBreedte * 0.36))
+    : Math.max(14, Math.min(22, vakBreedte * 0.36));
+
+  /*
     Hoeveel ruimte er boven de lijn nodig is.
 
-    Staat Vos er met zijn vlaggetje, dan het meeste; staat alleen het vaantje
-    er — in de uitleg is dat zo — dan genoeg voor het stokje; en staat er
-    niets, dan alleen wat lucht.
+    Met invulvakjes zoveel als het vakje en zijn pijltje vragen; staat Vos er
+    met zijn vlaggetje, dan het meeste; staat alleen het vaantje er — in de
+    uitleg is dat zo — dan genoeg voor het stokje; en staat er niets, dan
+    alleen wat lucht.
   */
-  const lijnY = vos ? MAAT.vos : vlag !== null ? 58 : 14;
+  const lijnY = wijzer
+    ? (vos ? MAAT.vos + 26 : 46)
+    : vakjes.length > 0 && !opDeLijn
+      ? vakHoogte + 36
+      : vos
+        ? MAAT.vos
+        : vlag !== null
+          ? 58
+          : 14;
   const getalY = lijnY + MAAT.streep.tien + MAAT.onderLijn;
   const hoogte = getalY + MAAT.regel;
 
@@ -280,9 +427,71 @@ export function Getallenlijnbeeld({
   }
   /* Na een fout antwoord staat het gezochte getal in het groen op zijn eigen plek. */
   if (juist !== null) onderschrift.set(juist, { tekst: String(juist), kleur: "text-groen-diep" });
+  /*
+    En waar Vos stond staat zijn getal in het rood, groter dan de rest. Ook als
+    daar al een getal stond: dan krijgt dat de rode kleur, zodat de rode streep
+    en het getal bij elkaar horen.
+  */
+  if (foutBij !== null) {
+    onderschrift.set(foutBij, { tekst: String(foutBij), kleur: "text-roze", nadruk: true });
+  }
+  /* En waar het getal écht ligt, in het groen. */
+  if (goedBij !== null) {
+    onderschrift.set(goedBij, { tekst: String(goedBij), kleur: "text-groen-diep", nadruk: true });
+  }
+
+  /*
+    Welke getallen er een plek onder de lijn krijgen.
+
+    Op een vrije lijn hoeft een getal niet op een streepje te staan — de rode
+    en groene markering van het nakijken staan juist tussen de streepjes in.
+  */
+  const labelwaarden = vrij
+    ? [...new Set([...waarden, ...onderschrift.keys()])].sort((a, b) => a - b)
+    : waarden;
+
+  /*
+    Het toetsenbord van de tablet schuift over de pagina heen. `useInBeeld`
+    zorgt dat het vakje waar het kind in typt én de knop Controleer zichtbaar
+    blijven; dat werkt overal in de app hetzelfde.
+  */
+  const { bijAandacht, bijWeggaan } = useInBeeld();
+  const vakvelden = useRef<(HTMLInputElement | null)[]>([]);
+
+  /**
+   * Toetsen in een invulvakje.
+   *
+   * Enter is hetzelfde als op Controleer drukken, met het toetsenbord eerst
+   * dicht zodat de uitslag niet achter het toetsenbord verdwijnt. De
+   * pijltjestoetsen springen naar het vakje ernaast, maar alleen als de cursor
+   * al aan het begin of het eind van het getal staat — anders loopt het kind
+   * binnen zijn eigen getal, zoals het hoort.
+   */
+  function toetsInVak(e: React.KeyboardEvent<HTMLInputElement>, i: number) {
+    if (e.key === "Enter") {
+      e.preventDefault();
+      e.currentTarget.blur();
+      onBevestig?.();
+      return;
+    }
+    const veld = e.currentTarget;
+    const aanBegin = (veld.selectionStart ?? 0) === 0 && (veld.selectionEnd ?? 0) === 0;
+    const aanEind =
+      (veld.selectionStart ?? 0) === veld.value.length &&
+      (veld.selectionEnd ?? 0) === veld.value.length;
+    const richting =
+      e.key === "ArrowLeft" && aanBegin ? -1 : e.key === "ArrowRight" && aanEind ? 1 : 0;
+    if (richting === 0) return;
+    const volgende = vakvelden.current[i + richting];
+    if (!volgende) return;
+    e.preventDefault();
+    volgende.focus();
+    volgende.select();
+  }
 
   const vosIndex = vosBij === null ? 0 : Math.max(0, waarden.indexOf(vosBij));
-  const vosWaarde = waarden[vosIndex] ?? start;
+  const vosWaarde = vrij ? (vosBij ?? start) : (waarden[vosIndex] ?? start);
+  const vosPct = plek(vosWaarde, vosIndex);
 
   return (
     <div
@@ -312,27 +521,44 @@ export function Getallenlijnbeeld({
       />
 
       {/* De streepjes: allemaal even dun, alleen de lengte verschilt. */}
-      {waarden.map((n, i) => {
+      {labelwaarden.map((n, i) => {
         const lengte = streeplengte(n);
-        /* Het streepje waar Vos op staat licht op zolang het kind hem vasthoudt. */
+        /*
+          Het streepje waar Vos op staat licht op zolang het kind hem
+          vasthoudt, en blijft daarna staan als het antwoord fout was — dan in
+          het rood, zodat meteen te zien is waar het misging. Bij het nakijken
+          komt daar het groene streepje bij van de plek waar het getal écht
+          ligt.
+        */
         const licht = aangeraakt && n === vosWaarde;
+        const fout = foutBij === n;
+        const goed = goedBij === n;
+        const uitgelicht = licht || fout || goed;
+        /* Op een vrije lijn staat er alleen een streepje waar er ook een hoort. */
+        if (vrij && !uitgelicht && !waarden.includes(n)) return null;
         return (
           <div
             key={`streep-${n}`}
             className="absolute -translate-x-1/2"
             style={{
-              left: `${plekPct(i, aantal)}%`,
+              left: `${plek(n, vrij ? i : waarden.indexOf(n))}%`,
               top: lijnY,
-              width: licht ? 2.5 : STREEPDIKTE,
-              height: licht ? Math.max(lengte, MAAT.streep.tien) + 3 : lengte,
-              background: licht ? "var(--color-huisstijl)" : LIJNKLEUR,
+              width: uitgelicht ? 2.5 : STREEPDIKTE,
+              height: uitgelicht ? Math.max(lengte, MAAT.streep.tien) + 3 : lengte,
+              background: fout
+                ? "var(--color-roze)"
+                : goed
+                  ? "var(--color-groen)"
+                  : licht
+                    ? "var(--color-huisstijl)"
+                    : LIJNKLEUR,
             }}
           />
         );
       })}
 
       {/* De getallen eronder: gewone letter, op één rij, netjes onder hun streepje. */}
-      {waarden.map((n, i) => {
+      {labelwaarden.map((n, i) => {
         const tekst = onderschrift.get(n);
         if (!tekst) return null;
         return (
@@ -340,9 +566,11 @@ export function Getallenlijnbeeld({
             key={`getal-${n}`}
             className={`absolute -translate-x-1/2 text-center tabular-nums leading-none ${tekst.kleur}`}
             style={{
-              left: `${plekPct(i, aantal)}%`,
+              left: `${plek(n, vrij ? i : waarden.indexOf(n))}%`,
               top: getalY,
-              fontSize: `${letter.toFixed(1)}px`,
+              /* Het foute getal iets groter en vet, zodat het opvalt. */
+              fontSize: `${(tekst.nadruk ? Math.min(22, letter + 4) : letter).toFixed(1)}px`,
+              fontWeight: tekst.nadruk ? 800 : undefined,
             }}
           >
             {tekst.tekst}
@@ -361,7 +589,7 @@ export function Getallenlijnbeeld({
       {(vos || vlag !== null) && (
         <span
           className="absolute z-10 transition-[left] duration-150 ease-out"
-          style={{ left: `${plekPct(vosIndex, aantal)}%`, bottom: hoogte - lijnY, width: 0, height: 0 }}
+          style={{ left: `${vosPct}%`, bottom: hoogte - lijnY, width: 0, height: 0 }}
         >
           {/* Het stokje: in zijn poot, of in de grond op het streepje. */}
           {vlag !== null && (
@@ -434,6 +662,98 @@ export function Getallenlijnbeeld({
         </span>
       )}
 
+      {/* Het wijzertje met het gezochte getal, op zijn plek op de lijn. */}
+      {wijzer && (
+        <span
+          className="absolute z-10 -translate-x-1/2"
+          style={{
+            left: `${plekVoorWaarde(wijzer.getal, start, eind)}%`,
+            /* Loopt Vos eronder mee, dan gaat het wijzertje boven hem uit. */
+            bottom: hoogte - lijnY + (vos ? MAAT.vos + 2 : 8),
+          }}
+        >
+          <Wijzertje getal={wijzer.getal} licht={wijzer.licht} />
+        </span>
+      )}
+
+      {/*
+        De lege vakjes met hun pijltje.
+
+        Elk vakje staat boven het streepje waar het bij hoort, met een stokje en
+        een pijlpunt ernaartoe — net als op een werkblad. Het is een echt
+        invoerveld: het kind typt er met het toetsenbord van het apparaat zelf
+        in, en er komt geen nagebouwd cijfertoetsenbord op het scherm. Zie
+        HARDE REGEL 5 in CLAUDE.md.
+      */}
+      {vakjes.map((n, i) => {
+        const vakplek = waarden.indexOf(n);
+        if (vakplek < 0) return null;
+        const uitslag = vakuitslagen[i] ?? null;
+        const kleur =
+          uitslag === "goed"
+            ? "border-groen bg-groen-zacht text-groen-diep"
+            : uitslag === "fout"
+              ? "border-roze bg-roze-zacht text-roze"
+              : "border-rand bg-kaart text-inkt focus:border-huisstijl";
+        /*
+          Op de lijn staat het vakje op de hoogte van de andere getallen, zodat
+          de rij eronder netjes doorloopt; erboven hangt het aan een pijltje.
+        */
+        const opDeRij = opDeLijn
+          ? { top: getalY + vakLetter / 2 - vakHoogte / 2 }
+          : { bottom: hoogte - lijnY + 2 };
+        return (
+          <span
+            key={`vak-${n}`}
+            className="absolute z-10 flex -translate-x-1/2 flex-col items-center"
+            style={{ left: `${plekPct(vakplek, aantal)}%`, ...opDeRij }}
+          >
+            <input
+              ref={(el) => {
+                vakvelden.current[i] = el;
+              }}
+              type="text"
+              aria-label={
+                vakjes.length === 1
+                  ? "Welk getal hoort hier?"
+                  : `Welk getal hoort bij vakje ${i + 1} van de ${vakjes.length}?`
+              }
+              value={getypt[i] ?? ""}
+              placeholder={opDeLijn ? "?" : undefined}
+              readOnly={!onTyp}
+              disabled={!onTyp}
+              autoComplete="off"
+              inputMode="numeric"
+              pattern="[0-9]*"
+              enterKeyHint="done"
+              maxLength={3}
+              onFocus={(e) => bijAandacht(e.currentTarget)}
+              onBlur={bijWeggaan}
+              onChange={(e) => onTyp?.(i, e.target.value.replace(/\D/g, "").slice(0, 3))}
+              onKeyDown={(e) => toetsInVak(e, i)}
+              style={{ width: vakBreedte, height: vakHoogte, fontSize: vakLetter }}
+              className={`rounded-xl border-[3px] text-center font-extrabold tabular-nums outline-none transition disabled:cursor-default ${kleur}`}
+            />
+            {/* Het pijltje naar het streepje; op de lijn is dat niet nodig. */}
+            {!opDeLijn && (
+              <>
+                <span aria-hidden="true" style={{ width: 2, height: 9, background: LIJNKLEUR }} />
+                <span
+                  aria-hidden="true"
+                  style={{
+                    width: 0,
+                    height: 0,
+                    borderLeft: "5px solid transparent",
+                    borderRight: "5px solid transparent",
+                    borderTop: `7px solid ${LIJNKLEUR}`,
+                  }}
+                />
+              </>
+            )}
+          </span>
+        );
+      })}
+
       {/*
         Onzichtbare knoppen op elk streepje.
 
@@ -442,6 +762,7 @@ export function Getallenlijnbeeld({
         gemikt en schuift hij naar het dichtstbijzijnde streepje.
       */}
       {onTik &&
+        !vrij &&
         waarden.map((n, i) => (
           <div
             key={`knop-${n}`}
@@ -467,28 +788,40 @@ export function Getallenlijnbeeld({
   );
 }
 
+/** Wat het kind in de vakjes heeft staan, uit het opgeslagen antwoord. */
+function uitAntwoord(antwoord: string, hoeveel: number): string[] {
+  const delen = antwoord === "" ? [] : antwoord.split(",");
+  return Array.from({ length: hoeveel }, (_, i) => (delen[i] ?? "").trim());
+}
+
 /**
- * De hele vraag: het gezochte getal groot in beeld en Vos op de lijn.
+ * De hele vraag, in allebei de standen.
  *
- * `ingevuld` is één getal: het streepje waar Vos staat, of `null` zolang het
- * kind hem nog niet verschoven heeft. Dat is precies wat het antwoordscherm
- * doorgeeft en teruglevert.
+ * `antwoord` is wat er is vastgelegd: bij het schuiven het streepje waar Vos
+ * staat, bij het invullen de getallen uit de vakjes met komma's ertussen. Leeg
+ * betekent dat het kind nog niets heeft gedaan; dan staat de knop Controleer
+ * ook nog uit.
  */
 export function Getallenlijn({
   figuur,
-  ingevuld,
+  antwoord,
   fase,
   onWijzig,
+  onBevestig,
   onKlaar,
 }: {
   figuur: Getallenlijnfiguur;
-  ingevuld: (number | null)[];
+  antwoord: string;
   fase: "bezig" | "goed" | "fout";
-  onWijzig: (nieuw: (number | null)[]) => void;
+  onWijzig: (nieuw: string) => void;
+  /** Enter in een vakje: hetzelfde als op Controleer drukken. */
+  onBevestig?: () => void;
   /** Vos heeft zijn vlag geplant; het feestscherm mag eroverheen. */
   onKlaar?: () => void;
 }) {
   const uit = fase !== "bezig";
+  const stand = figuur.stand ?? "schuiven";
+  const gevraagd = figuur.gevraagd ?? [figuur.doel];
   const waarden = streepwaarden(figuur.start, figuur.eind, figuur.stap);
   const strip = useRef<HTMLDivElement | null>(null);
 
@@ -512,7 +845,40 @@ export function Getallenlijn({
   const sleept = useRef(false);
   const nuBij = useRef<number | null>(null);
 
-  const vosBij = sleepBij ?? ingevuld[0] ?? figuur.start;
+  /*
+    Wat er in de vakjes staat.
+
+    Hier en niet buiten dit scherm, want een half getal is nog geen antwoord:
+    zolang niet elk vakje gevuld is, gaat er een leeg antwoord naar buiten en
+    blijft Controleer uit. Komt er een nieuwe vraag, of wordt het antwoord van
+    buitenaf gewist, dan staan de vakjes weer leeg.
+  */
+  const [getypt, setGetypt] = useState<string[]>(() => uitAntwoord(antwoord, gevraagd.length));
+  const vraagsleutel = `${figuur.start}-${figuur.eind}:${gevraagd.join(",")}`;
+  const vorigeVraag = useRef(vraagsleutel);
+  const vorigeFase = useRef(fase);
+  useEffect(() => {
+    /* Een nieuwe vraag: de vakjes weer leeg, of gevuld met wat er al lag. */
+    if (vorigeVraag.current !== vraagsleutel) {
+      vorigeVraag.current = vraagsleutel;
+      vorigeFase.current = fase;
+      setGetypt(uitAntwoord(antwoord, gevraagd.length));
+      return;
+    }
+    /*
+      Dezelfde vraag, maar het antwoord is van buitenaf gewist en we mogen
+      weer: dan is er opnieuw begonnen en horen de vakjes ook leeg te zijn.
+      Tijdens het typen gebeurt dit niet — dan staat de fase al op "bezig" en
+      verandert er niets aan die fase.
+    */
+    const wasKlaar = vorigeFase.current !== "bezig";
+    vorigeFase.current = fase;
+    if (wasKlaar && fase === "bezig" && antwoord === "") {
+      setGetypt(uitAntwoord("", gevraagd.length));
+    }
+  }, [vraagsleutel, antwoord, fase, gevraagd.length]);
+
+  const vosBij = sleepBij ?? (antwoord === "" ? figuur.start : Number(antwoord.split(",")[0]));
 
   /* Bij een goed antwoord plant Vos zijn vlag; daarna pas het feest. */
   const klaar = useRef(onKlaar);
@@ -544,6 +910,23 @@ export function Getallenlijn({
     return beste;
   }
 
+  /**
+   * Welk getal er bij deze x hoort, zonder vast te klikken.
+   *
+   * Voor de schatstand: het kind bepaalt zelf de plek, dus er wordt alleen
+   * afgerond op een heel getal. Buiten de lijn houdt het op bij het begin of
+   * het eind.
+   */
+  function waardeBij(x: number): number {
+    const el = strip.current;
+    if (!el) return figuur.start;
+    const r = el.getBoundingClientRect();
+    const pct = ((x - r.left) / r.width) * 100;
+    const deel = (pct - LINKS) / (100 - LINKS - RECHTS);
+    const ruw = figuur.start + deel * (figuur.eind - figuur.start);
+    return Math.round(Math.min(figuur.eind, Math.max(figuur.start, ruw)));
+  }
+
   function pak(e: React.PointerEvent) {
     if (uit) return;
     try {
@@ -558,12 +941,16 @@ export function Getallenlijn({
 
   function beweeg(e: React.PointerEvent) {
     if (!sleept.current || uit) return;
-    const nu = streepjeBij(e.clientX);
+    /* Schatten gaat vrij over de lijn; de andere standen klikken vast. */
+    const nu = stand === "schatten" ? waardeBij(e.clientX) : streepjeBij(e.clientX);
     if (nu !== nuBij.current) {
       nuBij.current = nu;
       setSleepBij(nu);
-      /* Elk streepje geeft een tikje: zo hoor je dat hij echt vastklikt. */
-      if (opgavegeluidStaatAan()) plop();
+      /*
+        Elk streepje geeft een tikje: zo hoor je dat hij echt vastklikt. Bij
+        het schatten niet — daar zou het bij elke pixel ratelen.
+      */
+      if (stand !== "schatten" && opgavegeluidStaatAan()) plop();
     }
   }
 
@@ -573,25 +960,41 @@ export function Getallenlijn({
     sleept.current = false;
     nuBij.current = null;
     setSleepBij(null);
-    onWijzig([plek]);
+    onWijzig(String(plek));
+    /* Bij het schatten het tikje pas hier: hij staat nu ergens. */
+    if (stand === "schatten" && opgavegeluidStaatAan()) plop();
   }
 
   /** Tikken op een streepje: Vos loopt er in één keer naartoe. */
   function tikStreepje(n: number) {
     if (uit) return;
-    onWijzig([n]);
+    onWijzig(String(n));
     if (opgavegeluidStaatAan()) plop();
   }
 
-  /** Met de pijltjestoetsen: één streepje tegelijk. */
+  /** Met de pijltjestoetsen: één streepje tegelijk, of bij het schatten één getal. */
   function toets(e: React.KeyboardEvent) {
     if (uit) return;
     const richting = e.key === "ArrowLeft" ? -1 : e.key === "ArrowRight" ? 1 : 0;
     if (richting === 0) return;
     e.preventDefault();
+    if (stand === "schatten") {
+      const volgende = Math.min(figuur.eind, Math.max(figuur.start, vosBij + richting));
+      onWijzig(String(volgende));
+      return;
+    }
     const nu = waarden.indexOf(vosBij);
     const volgende = waarden[Math.min(waarden.length - 1, Math.max(0, nu + richting))];
-    if (volgende !== undefined) onWijzig([volgende]);
+    if (volgende !== undefined) onWijzig(String(volgende));
+  }
+
+  /** Typen in een vakje. Pas als alle vakjes gevuld zijn, is er een antwoord. */
+  function typ(nummer: number, tekst: string) {
+    if (uit) return;
+    const nieuw = [...getypt];
+    nieuw[nummer] = tekst;
+    setGetypt(nieuw);
+    onWijzig(nieuw.every((w) => w !== "") ? nieuw.join(",") : "");
   }
 
   const houdingen: Voshoudingen | null =
@@ -603,6 +1006,115 @@ export function Getallenlijn({
         }
       : null;
 
+  /* ------------------------------------------------------------------ */
+  /* De invulstand en de tussenstand: typen, zonder Vos.                 */
+  /* ------------------------------------------------------------------ */
+  if (stand === "invullen" || stand === "tussen") {
+    const opLijn = stand === "tussen";
+    const uitslagen: ("goed" | "fout" | null)[] = uit
+      ? gevraagd.map((juist, i) => (Number(getypt[i]) === juist ? "goed" : "fout"))
+      : [];
+
+    /*
+      Klopt het bij de tussenstand, dan verdwijnen de vakjes en staan de twee
+      getallen gewoon onder de lijn — de rij is dan compleet, precies zoals hij
+      hoort te zijn.
+    */
+    const compleet = opLijn && fase === "goed";
+    const onderDeLijn = compleet
+      ? [...figuur.zichtbaar, ...gevraagd].sort((a, b) => a - b)
+      : figuur.zichtbaar;
+
+    return (
+      <div className="flex w-full flex-col items-center gap-4">
+        {/*
+          Geen Vos hier.
+
+          In deze twee standen typt het kind; Vos heeft er geen rol in. Hij
+          stond er alleen maar bij te kijken, en dat haalde de aandacht weg van
+          de lijn en de vakjes. In de schuif- en de schatstand is hij juist wél
+          het ding dat het kind vastpakt, en in de uitleg van de tussenstand
+          loopt hij de twee streepjes voor; daar staat hij dus gewoon.
+        */}
+        <div className="w-full px-1">
+          <Getallenlijnbeeld
+            start={figuur.start}
+            eind={figuur.eind}
+            stap={figuur.stap}
+            zichtbaar={onderDeLijn}
+            vakjes={compleet ? [] : gevraagd}
+            getypt={getypt}
+            vakuitslagen={uitslagen}
+            opDeLijn={opLijn}
+            wijzer={opLijn ? { getal: figuur.wijzer ?? figuur.doel } : null}
+            onTyp={uit ? undefined : typ}
+            onBevestig={onBevestig}
+            stripRef={strip}
+          />
+        </div>
+
+        {fase === "bezig" && (
+          <p className="text-center text-sm font-bold text-inkt-zacht">
+            {opLijn
+              ? "Typ in de twee vakjes tussen welke getallen het ligt."
+              : gevraagd.length === 1
+                ? "Tik in het vakje en typ het getal."
+                : "Tik in een vakje en typ het getal. Met Tab ga je naar het volgende."}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* De schatstand: een kale lijn, Vos schuift er vrij overheen.         */
+  /* ------------------------------------------------------------------ */
+  if (stand === "schatten") {
+    return (
+      <div
+        className="flex w-full flex-col items-center gap-4"
+        onPointerMove={beweeg}
+        onPointerUp={losLaten}
+        onPointerCancel={losLaten}
+      >
+        <div className="w-full px-1">
+          <Getallenlijnbeeld
+            start={figuur.start}
+            eind={figuur.eind}
+            stap={figuur.stap}
+            zichtbaar={figuur.zichtbaar}
+            vrij
+            hulplijnen={figuur.hulplijnen ?? []}
+            vosBij={vosBij}
+            vos={houdingen}
+            vosStand={fase === "goed" ? "blij" : fase === "fout" ? "verbaasd" : "wachtend"}
+            vlag={figuur.doel}
+            geplant={fase === "goed"}
+            mislukt={fase === "fout"}
+            /* Bij het nakijken: rood waar Vos stond, groen waar het getal ligt. */
+            foutBij={fase === "fout" ? vosBij : null}
+            goedBij={uit ? figuur.doel : null}
+            aangeraakt={sleepBij !== null}
+            stripRef={strip}
+            onVosPak={uit ? undefined : pak}
+            onVosToets={uit ? undefined : toets}
+          />
+        </div>
+
+        {fase === "bezig" && (
+          <p className="text-center text-sm font-bold text-inkt-zacht">
+            {antwoord === "" && sleepBij === null
+              ? "Schuif Vos naar de plek waar dit getal ongeveer ligt."
+              : "Precies hoeft niet. Schuif hem gerust nog een stukje."}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  /* ------------------------------------------------------------------ */
+  /* De schuifstand: Vos met zijn vlaggetje over de lijn.                */
+  /* ------------------------------------------------------------------ */
   return (
     <div
       className="flex w-full flex-col items-center gap-4"
@@ -623,6 +1135,8 @@ export function Getallenlijn({
           geplant={fase === "goed"}
           mislukt={fase === "fout"}
           juist={fase === "fout" ? figuur.doel : null}
+          /* Bij een fout antwoord blijft de streep staan waar Vos stond. */
+          foutBij={fase === "fout" ? vosBij : null}
           aangeraakt={sleepBij !== null}
           stripRef={strip}
           onVosPak={uit ? undefined : pak}
@@ -633,7 +1147,7 @@ export function Getallenlijn({
 
       {fase === "bezig" && (
         <p className="text-center text-sm font-bold text-inkt-zacht">
-          {ingevuld[0] === null && sleepBij === null
+          {antwoord === "" && sleepBij === null
             ? "Pak Vos vast en schuif hem naar het goede getal."
             : "Klopt het niet? Schuif Vos gerust nog een streepje op."}
         </p>

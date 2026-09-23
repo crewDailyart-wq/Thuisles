@@ -146,6 +146,18 @@ export type Vraag = {
    * gebruikt dit om dezelfde som niet twee keer achter elkaar te geven.
    */
   handtekening: string | null;
+  /**
+   * De instellingen waarmee deze som gemaakt is, als vingerafdruk.
+   *
+   * Een som bewaart zijn eigen plaatje en zijn eigen tekst. Verandert een
+   * beheerder daarna een instelling van het sjabloon, dan verandert er aan
+   * bestaande sommen niets — en dat is met opzet, want er kunnen sommen
+   * tussen zitten die een kind al gezien heeft. Hiermee kan het beheerscherm
+   * wél zien dát ze niet meer bij de instellingen passen, en dat zeggen.
+   *
+   * `null` bij sommen van vóór deze controle en bij handgemaakte vragen.
+   */
+  instellingenVingerafdruk: string | null;
   status: Vraagstatus;
   aangemaaktOp: string;
 };

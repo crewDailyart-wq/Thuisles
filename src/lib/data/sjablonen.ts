@@ -18,6 +18,7 @@ import {
   type Gegenereerd,
   type Instellingen,
   MAX_SOMMEN_PER_KEER,
+  vingerafdrukVan,
   vulAanMetDubbele,
 } from "@/lib/generatoren/soort";
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
@@ -328,9 +329,12 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
   const invoegen = db.prepare(
     `insert into vragen
        (id, leerdoel_id, groep, vorm, vraagtekst, opties, antwoord, hint, afbeelding,
-        status, aangemaakt_op, sjabloon_id, figuur, handtekening, somgegevens)
-     values (?, ?, ?, ?, ?, ?, ?, ?, ?, 'concept', ?, ?, ?, ?, ?)`,
+        status, aangemaakt_op, sjabloon_id, figuur, handtekening, somgegevens,
+        instellingen_vingerafdruk)
+     values (?, ?, ?, ?, ?, ?, ?, ?, ?, 'concept', ?, ?, ?, ?, ?, ?)`,
   );
+  /* Waarmee deze sommen gemaakt zijn; zie `vingerafdrukVan`. */
+  const vingerafdruk = vingerafdrukVan(sjabloon.instellingen);
 
   const nu = new Date().toISOString();
   for (const som of sommen) {
@@ -349,6 +353,7 @@ export function genereerUitSjabloon(sjabloonId: string, aantal: number): Uitslag
       som.figuur ? JSON.stringify(som.figuur) : null,
       som.handtekening,
       JSON.stringify(som.somgegevens),
+      vingerafdruk,
     );
   }
 

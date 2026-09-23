@@ -702,16 +702,46 @@ function Modelbeeld({
     */
     return (
       <div className="w-full">
-        <Getallenlijnbeeld
-          start={model.start}
-          eind={model.eind}
-          stap={model.stap}
-          zichtbaar={model.zichtbaar}
-          vosBij={model.telTot}
-          vlag={model.doel}
-          geplant={model.vlag}
-          nadruk={model.nadruk}
-        />
+        {model.wijzer !== undefined ? (
+          /* De tussenstand: het wijzertje met de twee vakjes eronder op de lijn. */
+          <Getallenlijnbeeld
+            start={model.start}
+            eind={model.eind}
+            stap={model.stap}
+            zichtbaar={model.zichtbaar}
+            wijzer={{ getal: model.wijzer, licht: model.nadruk !== null }}
+            vakjes={model.vakjes ?? []}
+            getypt={model.getypt ?? []}
+            opDeLijn
+            nadruk={model.nadruk}
+            /*
+              Vos loopt in de uitleg over de lijn mee: eerst naar het streepje
+              links van het wijzertje, dan naar dat rechts ervan. Zijn plaatje
+              komt uit de vraag; zie `mascotte` hierboven.
+            */
+            vos={mascotte ? { vangend: mascotte, wachtend: mascotte, blij: mascotte } : null}
+            vosBij={model.telTot}
+          />
+        ) : (
+          <Getallenlijnbeeld
+            start={model.start}
+            eind={model.eind}
+            stap={model.stap}
+            zichtbaar={model.zichtbaar}
+            vosBij={model.telTot}
+            vlag={model.doel}
+            geplant={model.vlag}
+            nadruk={model.nadruk}
+            /* De schatstand: een vrije lijn met hulpstreepjes; zie het model. */
+            vrij={model.vrij}
+            hulplijnen={model.hulplijnen ?? []}
+            vos={
+              model.vrij && mascotte
+                ? { vangend: mascotte, wachtend: mascotte, blij: mascotte }
+                : null
+            }
+          />
+        )}
       </div>
     );
   }

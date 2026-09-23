@@ -71,7 +71,418 @@ function voorbeeld(som: Somgegevens, kies?: (p: { g: number; j: number }) => boo
   return { g: j, j };
 }
 
+/** Gaat het om schatten op een lege lijn? */
+function isSchatten(som: Somgegevens): boolean {
+  return som.extra?.schatten === 1;
+}
+
+/** Begin, eind en breedte van de lijn. */
+function lijn(som: Somgegevens): { start: number; eind: number; breed: number } {
+  const start = som.extra?.start ?? 0;
+  const eind = som.extra?.eind ?? 100;
+  return { start, eind, breed: Math.max(1, eind - start) };
+}
+
+/** Waar het kind Vos heeft neergezet, en waar hij hoorde. */
+function schatting(som: Somgegevens): { gezet: number; juist: number } | null {
+  const gezet = som.extra?.gegeven0;
+  if (!Number.isFinite(gezet)) return null;
+  return { gezet: gezet as number, juist: som.getallen[0] };
+}
+
+/** Hoeveel procent van de lijn het ernaast zit. */
+function afwijking(som: Somgegevens): number | null {
+  const p = schatting(som);
+  if (!p) return null;
+  return (Math.abs(p.gezet - p.juist) / lijn(som).breed) * 100;
+}
+
+/** Het getal op het wijzertje; alleen de tussenstand heeft er een. */
+function wijzerVan(som: Somgegevens): number | null {
+  const w = som.extra?.wijzer;
+  return typeof w === "number" ? w : null;
+}
+
+/** De twee streepjes waar het getal tussen ligt, zoals ze horen. */
+function tussenpaar(som: Somgegevens): { onder: number; boven: number } {
+  return { onder: som.getallen[0], boven: som.getallen[1] };
+}
+
+/** Wat het kind in de twee vakjes heeft gezet. */
+function gegevenPaar(som: Somgegevens): { links: number; rechts: number } | null {
+  const links = som.extra?.gegeven0;
+  const rechts = som.extra?.gegeven1;
+  if (!Number.isFinite(links) || !Number.isFinite(rechts)) return null;
+  return { links: links as number, rechts: rechts as number };
+}
+
 export const getallenlijnPatronen: Foutpatroon[] = [
+  /*
+    Eerst de vier van de schatstand.
+
+    Die kijken naar afstanden op de lijn in plaats van naar getallen, en horen
+    daarom vóór de rest: een schatting die er tien naast zit is geen telfout.
+  */
+  {
+    id: "schat-omgekeerd",
+    naam: "Precies aan de andere kant",
+    herkent: (som) => {
+      if (!isSchatten(som)) return false;
+      const p = schatting(som);
+      if (!p) return false;
+      const { start, eind, breed } = lijn(som);
+      const gespiegeld = start + eind - p.juist;
+      /* Bij de spiegelplek, en niet gewoon toevallig goed. */
+      return (
+        Math.abs(p.gezet - gespiegeld) <= breed * 0.08 &&
+        Math.abs(p.gezet - p.juist) > breed * 0.15
+      );
+    },
+    kindtekst: {
+      "34": "Je zat aan de verkeerde kant.",
+      "56": "Je zette Vos precies aan de andere kant van het midden.",
+      "78": "Je schatting ligt gespiegeld om het midden: even ver van het midden, maar de andere kant op. Kijk eerst of het getal vóór of ná de helft komt.",
+    },
+    hint: "Komt dit getal vóór of na de helft van de lijn?",
+    uitleg: (som) => {
+      const { start, eind } = lijn(som);
+      const midden = Math.round((start + eind) / 2);
+      const doel = som.getallen[0];
+      return [
+        { tekst: "In het midden ligt dit getal.", som: `${midden}` },
+        {
+          tekst: doel > midden ? "Jouw getal is groter." : "Jouw getal is kleiner.",
+          som: `${doel}`,
+        },
+        {
+          tekst: doel > midden ? "Dus rechts van het midden." : "Dus links van het midden.",
+          som: `${midden} → ${doel}`,
+        },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De schatting ligt gespiegeld om het midden: bij 80 wordt het 20. Het kind voelt de afstand tot een uiteinde wel goed aan, maar telt vanaf de verkeerde kant. Vaak gebeurt dat als het van rechts naar links leest.",
+      zinnen: [
+        "Vraag eerst: is dit getal meer of minder dan de helft?",
+        "Laat je kind met een vinger vanaf het begin van de lijn meelopen.",
+      ],
+      schoolwoord: "getalbegrip",
+    },
+  },
+  {
+    id: "schat-midden",
+    naam: "Altijd rond het midden",
+    herkent: (som) => {
+      if (!isSchatten(som)) return false;
+      const p = schatting(som);
+      if (!p) return false;
+      const { start, eind, breed } = lijn(som);
+      const midden = (start + eind) / 2;
+      /* Vlak bij het midden gezet, terwijl het getal daar juist ver vandaan ligt. */
+      return (
+        Math.abs(p.gezet - midden) <= breed * 0.08 &&
+        Math.abs(p.juist - midden) > breed * 0.2 &&
+        Math.abs(p.gezet - p.juist) > breed * 0.1
+      );
+    },
+    kindtekst: {
+      "34": "Niet elk getal ligt in het midden.",
+      "56": "Je zette Vos in het midden. Kijk eerst of je getal veel kleiner of veel groter is dan de helft.",
+      "78": "Je zet Vos rond het midden terwijl dit getal daar ver vandaan ligt. Gebruik het midden als ankerpunt, niet als antwoord: is je getal de helft, een kwart, of bijna het eind?",
+    },
+    hint: "Het midden is een hulpje, geen antwoord. Waar ligt jouw getal ten opzichte daarvan?",
+    uitleg: (som) => {
+      const { start, eind } = lijn(som);
+      const midden = Math.round((start + eind) / 2);
+      const doel = som.getallen[0];
+      const deel = (doel - start) / Math.max(1, eind - start);
+      return [
+        { tekst: "Het midden van de lijn.", som: `${midden}` },
+        {
+          tekst:
+            deel < 0.4 ? "Jouw getal ligt in het eerste deel." : deel > 0.6 ? "Jouw getal ligt in het laatste deel." : "Jouw getal ligt rond de helft.",
+          som: `${doel}`,
+        },
+        { tekst: "Daar hoort Vos te staan.", som: `${start} … ${doel} … ${eind}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "Het kind zet de schatting steeds in het midden, ongeacht het getal. Dat is de veiligste gok als je nog geen gevoel hebt voor de verdeling van de lijn: je zit nooit héél ver mis. Het midden is wel het goede ankerpunt om vanaf te redeneren.",
+      zinnen: [
+        "Vraag eerst: is dit getal groter of kleiner dan de helft?",
+        "Verdeel de lijn samen hardop: hier de helft, hier een kwart.",
+      ],
+      schoolwoord: "schatten met ankerpunten",
+    },
+  },
+  {
+    id: "schat-tiental",
+    naam: "Net in het verkeerde tiental",
+    herkent: (som) => {
+      if (!isSchatten(som)) return false;
+      const p = schatting(som);
+      const mis = afwijking(som);
+      if (!p || mis === null) return false;
+      const marge = ((som.extra?.marge ?? 0) / lijn(som).breed) * 100;
+      /* Ernaast, maar niet ver: het zit in een buurtiental. */
+      return (
+        mis > marge &&
+        mis <= 15 &&
+        Math.abs(Math.floor(p.gezet / 10) - Math.floor(p.juist / 10)) >= 1
+      );
+    },
+    kindtekst: {
+      "34": "Bijna! Net het verkeerde tiental.",
+      "56": "Je zit dichtbij, maar net in het verkeerde tiental.",
+      "78": "Je schatting zit er maar een klein stukje naast, maar valt net in een ander tiental. Deel de lijn in tienen en kijk in welk vak je getal hoort.",
+    },
+    hint: "Verdeel de lijn in tien stukjes. In het hoeveelste stukje hoort je getal?",
+    uitleg: (som) => {
+      const doel = som.getallen[0];
+      const tien = Math.floor(doel / 10) * 10;
+      return [
+        { tekst: "Zoek eerst het tiental.", som: `${tien}` },
+        { tekst: "Jouw getal ligt net daarna.", som: `${tien} → ${doel}` },
+        { tekst: "Daar hoort Vos te staan.", som: `${doel}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De schatting is bijna goed en valt net over de grens van een tiental. Het gevoel voor de lijn zit er dus al in; wat nog scheelt is het fijner verdelen — eerst in tienen, dan binnen dat stukje.",
+      zinnen: [
+        "Wijs samen aan waar het tiental ligt en tel van daaraf verder.",
+        "Vraag: ligt 74 vóór of na de 70?",
+      ],
+      schoolwoord: "verfijnen",
+    },
+  },
+  {
+    id: "schat-te-links",
+    naam: "Te ver naar links",
+    herkent: (som) => {
+      if (!isSchatten(som)) return false;
+      const p = schatting(som);
+      const mis = afwijking(som);
+      if (!p || mis === null) return false;
+      const marge = ((som.extra?.marge ?? 0) / lijn(som).breed) * 100;
+      return mis > marge && p.gezet < p.juist;
+    },
+    kindtekst: {
+      "34": "Nog een stukje naar rechts.",
+      "56": "Je zette Vos te ver naar links: het getal ligt verder op de lijn.",
+      "78": "Je schatting ligt links van de goede plek. Neem het midden als ankerpunt en kijk hoeveel verder je getal daarna nog komt.",
+    },
+    hint: "Kijk waar de helft ligt; jouw getal ligt verder naar rechts dan je dacht.",
+    uitleg: (som) => {
+      const { start, eind } = lijn(som);
+      const midden = Math.round((start + eind) / 2);
+      const doel = som.getallen[0];
+      return [
+        { tekst: "Het midden van de lijn.", som: `${midden}` },
+        { tekst: "Jouw getal.", som: `${doel}` },
+        { tekst: "Dat ligt verder naar rechts.", som: `${doel}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De schattingen blijven links van de goede plek hangen. Dat komt vaak doordat een kind vanaf het begin van de lijn stapjes telt en te vroeg stopt; het schat de afstand tot het begin wel, maar onderschat hoe lang de lijn is.",
+      zinnen: [
+        "Laat je kind eerst het midden aanwijzen, en dan pas het getal.",
+        "Vraag: is je getal meer of minder dan de helft? Hoeveel meer?",
+      ],
+      schoolwoord: "schatten met ankerpunten",
+    },
+  },
+  {
+    id: "schat-te-rechts",
+    naam: "Te ver naar rechts",
+    herkent: (som) => {
+      if (!isSchatten(som)) return false;
+      const p = schatting(som);
+      const mis = afwijking(som);
+      if (!p || mis === null) return false;
+      const marge = ((som.extra?.marge ?? 0) / lijn(som).breed) * 100;
+      return mis > marge && p.gezet > p.juist;
+    },
+    kindtekst: {
+      "34": "Nog een stukje naar links.",
+      "56": "Je zette Vos te ver naar rechts: het getal ligt dichter bij het begin.",
+      "78": "Je schatting ligt rechts van de goede plek. Neem het midden als ankerpunt en kijk hoe ver je getal daarvóór al komt.",
+    },
+    hint: "Kijk waar de helft ligt; jouw getal ligt dichter bij het begin dan je dacht.",
+    uitleg: (som) => {
+      const { start, eind } = lijn(som);
+      const midden = Math.round((start + eind) / 2);
+      const doel = som.getallen[0];
+      return [
+        { tekst: "Het midden van de lijn.", som: `${midden}` },
+        { tekst: "Jouw getal.", som: `${doel}` },
+        { tekst: "Dat ligt meer naar links.", som: `${doel}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De schattingen komen steeds rechts van de goede plek uit. Meestal wordt de lijn dan te kort ingeschat: het kind verdeelt de eerste helft te ruim, waardoor alles opschuift.",
+      zinnen: [
+        "Laat je kind eerst het midden aanwijzen, en dan pas het getal.",
+        "Vraag: past jouw getal echt voorbij de helft?",
+      ],
+      schoolwoord: "schatten met ankerpunten",
+    },
+  },
+  /*
+    Eerst de vier van de tussenstand.
+
+    Ze staan vooraan omdat de patronen daaronder over het tellen op de lijn
+    gaan: "vanaf het verkeerde getal geteld" zou bij een paar tientallen dat
+    allebei even ver mis staat ook aanslaan, maar dat is hier een ander soort
+    fout en hoort een andere uitleg te krijgen.
+  */
+  {
+    id: "getal-zelf-teruggegeven",
+    naam: "Het getal zelf ingevuld",
+    herkent: (som) => {
+      const w = wijzerVan(som);
+      const p = gegevenPaar(som);
+      if (w === null || !p) return false;
+      const { onder, boven } = tussenpaar(som);
+      if (p.links === onder && p.rechts === boven) return false;
+      return p.links === w || p.rechts === w;
+    },
+    kindtekst: {
+      "34": "Dat getal zoeken we juist.",
+      "56": "Je hebt het getal zelf ingevuld. In de vakjes horen de twee getallen waar het tussen ligt.",
+      "78": "Je vult het gevraagde getal zelf in. De vakjes staan op de streepjes ernaast: daar horen de twee getallen waar dit getal tussenin valt.",
+    },
+    hint: "In de vakjes horen de getallen van de streepjes links en rechts.",
+    uitleg: (som) => {
+      const { onder, boven } = tussenpaar(som);
+      const w = wijzerVan(som) ?? onder;
+      return [
+        { tekst: "Dit getal staat op het wijzertje.", som: `${w}` },
+        { tekst: "Links ervan staat dit streepje.", som: `${onder}` },
+        { tekst: "En rechts ervan dit.", som: `${boven}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "Het kind schrijft het gevraagde getal over in plaats van de twee getallen eromheen. De vraag is nog niet binnengekomen: het gaat niet om dít getal, maar om de twee ronde getallen waar het tussenin ligt.",
+      zinnen: [
+        "Wijs het wijzertje aan en zeg: dit getal weten we al.",
+        "Wijs daarna de twee streepjes links en rechts aan: welke getallen horen daar?",
+      ],
+      schoolwoord: "positioneren",
+    },
+  },
+  {
+    id: "paar-omgedraaid",
+    naam: "De twee getallen omgedraaid",
+    herkent: (som) => {
+      const p = gegevenPaar(som);
+      if (!p || wijzerVan(som) === null) return false;
+      const { onder, boven } = tussenpaar(som);
+      return p.links === boven && p.rechts === onder;
+    },
+    kindtekst: {
+      "34": "Ze staan omgewisseld.",
+      "56": "De twee getallen staan omgewisseld: het kleinste hoort links.",
+      "78": "Je hebt het paar omgedraaid. Op een getallenlijn loopt het van klein naar groot, dus links staat altijd het kleinste getal.",
+    },
+    hint: "Links staat het kleinste getal, rechts het grootste.",
+    uitleg: (som) => {
+      const { onder, boven } = tussenpaar(som);
+      return [
+        { tekst: "Een getallenlijn loopt van klein naar groot.", som: `${onder} → ${boven}` },
+        { tekst: "Links hoort het kleinste.", som: `${onder}` },
+        { tekst: "Rechts het grootste.", som: `${boven}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De twee getallen kloppen, maar staan omgewisseld. Het rekenwerk is dus goed; wat nog niet vastzit is dat een getallenlijn altijd van links naar rechts oploopt.",
+      zinnen: [
+        "Laat je kind de lijn hardop aflezen van links naar rechts.",
+        "Vraag: welk getal kom je het eerst tegen, de 20 of de 30?",
+      ],
+      schoolwoord: "ordenen",
+    },
+  },
+  {
+    id: "eerst-afgerond",
+    naam: "Eerst afgerond en toen gekeken",
+    herkent: (som) => {
+      const w = wijzerVan(som);
+      const p = gegevenPaar(som);
+      if (w === null || !p) return false;
+      const { onder, boven } = tussenpaar(som);
+      const sprong = boven - onder;
+      /* Het getal ligt in de bovenste helft, en het kind is bij het afgeronde getal begonnen. */
+      return w - onder > sprong / 2 && p.links === boven && p.rechts === boven + sprong;
+    },
+    kindtekst: {
+      "34": "Niet afronden. Kijk waar het staat.",
+      "56": "Je hebt het getal eerst afgerond en toen gekeken. Kijk op de lijn zelf waar het ligt.",
+      "78": "Je rondt het getal eerst af naar boven en neemt dat als het getal links. Maar het ligt nog vóór dat ronde getal, dus het hoort aan de andere kant ervan.",
+    },
+    hint: "Ligt het getal vóór of ná dat ronde getal? Kijk op de lijn.",
+    uitleg: (som) => {
+      const { onder, boven } = tussenpaar(som);
+      const w = wijzerVan(som) ?? onder;
+      return [
+        { tekst: "Zoek het wijzertje op de lijn.", som: `${w}` },
+        { tekst: `Het staat nog vóór ${boven}.`, som: `${onder} → ${w} → ${boven}` },
+        { tekst: "Dus daar ligt het tussenin.", som: `${onder} en ${boven}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "Het kind rondt het getal eerst af en gaat daarna pas kijken. Bij 28 wordt dat 30, en dan lijkt 30 tot 40 het goede vak. Afronden is een andere vaardigheid dan positioneren; die twee lopen hier door elkaar.",
+      zinnen: [
+        "Laat het getal eerst aanwijzen op de lijn, vóórdat er iets wordt opgeschreven.",
+        "Vraag: staat het streepje van 28 vóór of na de 30?",
+      ],
+      schoolwoord: "positioneren",
+    },
+  },
+  {
+    id: "tiental-ernaast",
+    naam: "Het paar ernaast",
+    herkent: (som) => {
+      const p = gegevenPaar(som);
+      if (!p || wijzerVan(som) === null) return false;
+      const { onder, boven } = tussenpaar(som);
+      const sprong = boven - onder;
+      const verschuiving = p.links - onder;
+      if (verschuiving === 0) return false;
+      return Math.abs(verschuiving) === sprong && p.rechts - boven === verschuiving;
+    },
+    kindtekst: {
+      "34": "Eentje opschuiven.",
+      "56": "Je zit één vak ernaast. Kijk nog eens waar het wijzertje staat.",
+      "78": "Het paar klopt van vorm, maar ligt één sprong ernaast. Zoek eerst het streepje links van het wijzertje.",
+    },
+    hint: "Kijk welk streepje er vlak links van het wijzertje staat.",
+    uitleg: (som) => {
+      const { onder, boven } = tussenpaar(som);
+      const w = wijzerVan(som) ?? onder;
+      return [
+        { tekst: "Zet je vinger op het wijzertje.", som: `${w}` },
+        { tekst: "Het eerste streepje links.", som: `${onder}` },
+        { tekst: "Het eerste streepje rechts.", som: `${boven}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "De twee getallen liggen precies één sprong naast het goede paar. Het idee klopt — het kind zoekt twee ronde getallen om het getal heen — maar het telt één vak te ver of te weinig.",
+      zinnen: [
+        "Laat je kind het getal eerst aanwijzen en dan pas de twee streepjes ernaast.",
+        "Vraag bij het antwoord: ligt 21 echt tussen die twee?",
+      ],
+      schoolwoord: "positioneren",
+    },
+  },
   {
     id: "cijfers-omgedraaid",
     naam: "De cijfers omgedraaid",
@@ -193,6 +604,44 @@ export const getallenlijnPatronen: Foutpatroon[] = [
         "Vraag na afloop: welk getal zei je het laatst? Daar hoort Vos te staan.",
       ],
       schoolwoord: "één-op-één-koppeling",
+    },
+  },
+  {
+    id: "ankerpunt-overgenomen",
+    naam: "Het getal van het ankerpunt overgenomen",
+    herkent: (som) => {
+      const p = paren(som);
+      if (p.length === 0) return false;
+      const vast = vasteGetallen(som);
+      /* Het gegeven getal staat zelf onder de lijn, maar is niet het gevraagde. */
+      return p.some((x) => x.g !== x.j && vast.includes(x.g));
+    },
+    kindtekst: {
+      "34": "Dat getal staat er al. Tel verder.",
+      "56": "Je hebt het getal overgenomen dat er al stond. Van daaraf moet je nog verder tellen.",
+      "78": "Je noemt het dichtstbijzijnde getal dat onder de lijn staat, maar het gevraagde streepje ligt verderop. Tel vanaf dat getal door tot je bij het streepje bent.",
+    },
+    hint: "Dat getal staat er al onder. Tel van daaraf verder tot je bij het streepje bent.",
+    uitleg: (som) => {
+      const fout = voorbeeld(som, (x) => x.g !== x.j && vasteGetallen(som).includes(x.g));
+      const stappen = Math.abs(fout.j - fout.g) / stapVan(som);
+      return [
+        { tekst: "Dit getal staat er al onder.", som: `${fout.g}` },
+        {
+          tekst: `Tel van daaraf ${stappen} ${stappen === 1 ? "streepje" : "streepjes"} verder.`,
+          som: `${fout.g} → ${fout.j}`,
+        },
+        { tekst: "Dat hoort in het vakje.", som: `${fout.j}` },
+      ];
+    },
+    ouder: {
+      uitleg:
+        "Het kind leest het dichtstbijzijnde getal dat onder de lijn staat en schrijft dat op. De oriëntatie klopt dus — het zoekt het goede houvast — maar de laatste stap, doortellen tot het gevraagde streepje, wordt overgeslagen.",
+      zinnen: [
+        "Wijs samen het getal aan dat er staat en vraag: staat het vakje daar, of verderop?",
+        "Tel daarna hardop de streepjes tot het vakje: elf, twaalf, dertien.",
+      ],
+      schoolwoord: "doortellen vanaf een ankerpunt",
     },
   },
   {

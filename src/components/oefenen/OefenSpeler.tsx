@@ -1548,19 +1548,21 @@ function Antwoordvelden({
     als bij de trein en de stapstenen.
   */
   if (vraag.vorm === "sleepgetallen" && vraag.figuur?.soort === "getallenlijn") {
-    /* Eén getal: het streepje waar Vos staat. Leeg zolang hij niet verschoven is. */
-    const ingevuld = [antwoord === "" ? null : Number(antwoord)];
-
+    /*
+      Het antwoord gaat hier als tekst heen en weer: bij het schuiven één getal,
+      bij het invullen één per vakje met komma's ertussen. Het scherm zelf weet
+      welke stand het is; hier hoeft daar niets voor te veranderen.
+    */
     return (
       <Getallenlijn
         figuur={vraag.figuur}
-        ingevuld={ingevuld}
+        antwoord={antwoord}
         fase={fase}
+        /* Enter in een invulvakje doet hetzelfde als de knop Controleer. */
+        onBevestig={onBevestig}
         /* Pas als Vos zijn vlag heeft geplant, mag het feestscherm eroverheen. */
         onKlaar={onSprongKlaar}
-        onWijzig={(nieuw: (number | null)[]) =>
-          onKies(nieuw[0] === null || nieuw[0] === undefined ? "" : String(nieuw[0]))
-        }
+        onWijzig={onKies}
       />
     );
   }

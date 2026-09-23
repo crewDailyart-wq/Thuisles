@@ -281,6 +281,9 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     uitlegAfbeelding: r.uitleg_afbeelding ? String(r.uitleg_afbeelding) : null,
     sjabloonId: r.sjabloon_id ? String(r.sjabloon_id) : null,
     handtekening: r.handtekening ? String(r.handtekening) : null,
+    instellingenVingerafdruk: r.instellingen_vingerafdruk
+      ? String(r.instellingen_vingerafdruk)
+      : null,
     status: String(r.status) as Vraagstatus,
     aangemaaktOp: String(r.aangemaakt_op),
     uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,

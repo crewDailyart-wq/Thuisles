@@ -691,6 +691,14 @@ function werkTabellenBij(d: DatabaseSync) {
   */
   voegKolomToe(d, "vragen", "somgegevens", "text");
   /* Optionele uitleg bij een handgemaakte vraag. */
+  /*
+    De instellingen waarmee een som gemaakt is, als vingerafdruk.
+
+    Daarmee ziet het beheerscherm of de sommen die er staan nog bij de huidige
+    instellingen horen. Leeg bij alles van vóór deze kolom; die sommen worden
+    als "van vóór deze controle" gemeld en verder met rust gelaten.
+  */
+  voegKolomToe(d, "vragen", "instellingen_vingerafdruk", "text");
   voegKolomToe(d, "vragen", "uitleg", "text");
   voegKolomToe(d, "vragen", "uitleg_afbeelding", "text");
 

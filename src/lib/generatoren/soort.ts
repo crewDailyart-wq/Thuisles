@@ -214,17 +214,60 @@ export type Figuur =
        * `start` en `eind` zijn het stuk van de lijn dat te zien is; bij een
        * groot bereik is dat een venster, zodat de streepjes uit elkaar blijven
        * staan. `stap` is hoeveel één streepje verder is: 1, 5 of 10. Onder de
-       * getallen in `zichtbaar` staat het getal, onder de rest niet. `doel` is
-       * het getal dat groot boven de lijn staat; daar schuift het kind Vos
-       * naartoe, en daar staat het getal dus niet onder de lijn.
+       * getallen in `zichtbaar` staat het getal, onder de rest niet.
        */
       soort: "getallenlijn";
       start: number;
       eind: number;
       stap: number;
       zichtbaar: number[];
+      /**
+       * Wat het kind doet.
+       *
+       * "schuiven": Vos draagt een vlaggetje met het gezochte getal en het kind
+       * schuift hem naar de goede plek. "invullen": boven de lijn staan lege
+       * vakjes met een pijltje naar een streepje en typt het kind het getal.
+       * "tussen": een wijzertje boven de lijn draagt een getal en het kind typt
+       * in twee vakjes óp de lijn tussen welke twee streepjes dat getal ligt.
+       * "schatten": een lege lijn met alleen het begin en het eind, waarop het
+       * kind Vos vrij naar de geschatte plek schuift.
+       *
+       * Ontbreekt het veld, dan is het schuiven: zo zijn de vragen van vóór de
+       * invulstand opgeslagen, en die moeten blijven werken.
+       */
+      stand?: "schuiven" | "invullen" | "tussen" | "schatten";
+      /**
+       * Het eerste gevraagde getal.
+       *
+       * Bij het schuiven is dat het enige; het staat op het vlaggetje. Dit veld
+       * bestond al voordat de invulstand er was en blijft daarom staan.
+       */
       doel: number;
-      /** De mascotte die over de lijn schuift, per houding een afbeelding uit het beheer. */
+      /** Alle gevraagde streepjes, van links naar rechts. Leeg = alleen `doel`. */
+      gevraagd?: number[];
+      /**
+       * Het getal op het wijzertje boven de lijn, bij de tussenstand.
+       *
+       * Dat hoeft niet op een streepje te liggen — juist niet: het ligt ertussen,
+       * en daar gaat de vraag over.
+       */
+      wijzer?: number;
+      /**
+       * Alleen bij het schatten: hoeveel het antwoord ernaast mag zitten.
+       *
+       * In echte getallen, niet in procenten — zo kan het nakijken het van de
+       * vraag zelf aflezen zonder de instellingen erbij te halen. Zie `isGoed`
+       * in `src/lib/antwoord.ts`.
+       */
+      marge?: number;
+      /**
+       * Alleen bij het schatten: de getallen die een hulpstreepje krijgen.
+       *
+       * Leeg is een kale lijn. De generator rekent ze uit, zodat de vraag en de
+       * uitleg gegarandeerd dezelfde streepjes tonen.
+       */
+      hulplijnen?: number[];
+      /** De mascotte bij de lijn, per houding een afbeelding uit het beheer. */
       vos: { wachtend: string | null; blij: string | null };
     }
   | {
@@ -446,6 +489,16 @@ export type Generator = {
    */
   waarschuwing?: (inst: Instellingen) => string | null;
   /**
+   * Iets om op te letten, terwijl er wél gewoon sommen uitkomen.
+   *
+   * `waarschuwing` hierboven verschijnt alleen als er niets uit de
+   * instellingen komt. Dit is voor het geval dat er wel sommen zijn, maar er
+   * iets aan te merken valt — bijvoorbeeld zoveel streepjes op een getallenlijn
+   * dat de getallen niet meer te lezen zijn. Het voorbeeld laat hem boven de
+   * lijst zien; hij houdt niets tegen.
+   */
+  letOp?: (inst: Instellingen) => string | null;
+  /**
    * Maakt sommen. `alGebruikt` bevat handtekeningen die al bestaan; die worden
    * overgeslagen. Levert er hoogstens `aantal` op — soms minder, als alles op
    * is.
@@ -510,6 +563,23 @@ export function husselen<T>(kans: () => number, lijst: T[]): T[] {
 export function getal(inst: Instellingen, sleutel: string, terugval: number): number {
   const w = Number(inst[sleutel]);
   return Number.isFinite(w) ? w : terugval;
+}
+
+/**
+ * De vingerafdruk van een stel instellingen.
+ *
+ * Eén tekst die verandert zodra er iets aan de instellingen verandert, met de
+ * sleutels op alfabet zodat de volgorde niet meetelt. Elke som krijgt hem mee
+ * bij het maken; het beheerscherm vergelijkt hem later met de instellingen die
+ * er dan staan, en kan zo zeggen dat de sommen die er liggen niet meer bij de
+ * instellingen passen.
+ *
+ * Werkt voor elk generator-type: er wordt niet gekeken wát er is ingesteld,
+ * alleen of het nog hetzelfde is.
+ */
+export function vingerafdrukVan(inst: Instellingen): string {
+  const sleutels = Object.keys(inst).sort();
+  return JSON.stringify(sleutels.map((s) => [s, inst[s]]));
 }
 
 export function vinkje(inst: Instellingen, sleutel: string, terugval = false): boolean {

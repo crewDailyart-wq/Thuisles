@@ -9,6 +9,18 @@
 
 import type { Aanpak, Somgegevens } from "@/lib/generatoren/foutpatroon";
 
+/** Gaat het om schatten op een lege lijn? */
+export function isSchatten(som: Somgegevens): boolean {
+  return som.extra?.schatten === 1;
+}
+
+/** Het midden van de lijn, als rond getal. */
+export function middenVan(som: Somgegevens): number {
+  const start = som.extra?.start ?? 0;
+  const eind = som.extra?.eind ?? 100;
+  return Math.round((start + eind) / 2);
+}
+
 /** Hoeveel één streepje verder is: 1, 5 of 10. */
 export function stapVan(som: Somgegevens): number {
   const stap = som.extra?.stap;
@@ -46,14 +58,42 @@ export function ankerVoor(som: Somgegevens, doel: number): number {
 }
 
 export const getallenlijnAanpak: Aanpak = {
-  zin: () => ({
+  zin: (som) =>
+    isSchatten(som)
+      ? {
+          "34": "Waar is het midden? Kijk vanaf daar.",
+          "56": "Zoek eerst het midden van de lijn en kijk of je getal daarvoor of daarna ligt.",
+          "78": "Gebruik ankerpunten: eerst de helft, dan een kwart of driekwart, en schat van daaruit hoe ver je getal nog komt.",
+        }
+      : {
     "34": "Zoek een getal dat er staat. Tel verder.",
     "56": "Zoek het dichtstbijzijnde getal dat er wél staat en tel van daaraf streepje voor streepje verder.",
     "78": "Bepaal eerst het dichtstbijzijnde zichtbare getal en tel van daaraf door; zo hoef je de lijn niet in één keer te overzien.",
-  }),
+  },
 
   stappen: (som) => {
     const doel = som.getallen[0];
+    if (isSchatten(som)) {
+      const start = som.extra?.start ?? 0;
+      const eind = som.extra?.eind ?? 100;
+      const midden = middenVan(som);
+      const deel = (doel - start) / Math.max(1, eind - start);
+      const kwart =
+        deel < 0.375
+          ? Math.round(start + (eind - start) / 4)
+          : deel > 0.625
+            ? Math.round(start + ((eind - start) * 3) / 4)
+            : midden;
+      return [
+        { tekst: "Zoek het midden van de lijn.", som: `${midden}` },
+        {
+          tekst: deel > 0.5 ? "Jouw getal ligt daarna." : "Jouw getal ligt daarvoor.",
+          som: `${doel}`,
+        },
+        { tekst: "Kijk naar het dichtstbijzijnde hulpgetal.", som: `${kwart}` },
+        { tekst: "Daar vlakbij zet je Vos neer.", som: `${doel}` },
+      ];
+    }
     const anker = ankerVoor(som, doel);
     /* Eén streepje verder is vijf verder als er een streepje per vijf staat. */
     const stappen = Math.abs(doel - anker) / stapVan(som);
@@ -73,6 +113,11 @@ export const getallenlijnAanpak: Aanpak = {
   },
 
   controle: (som) => {
+    if (isSchatten(som)) {
+      const midden = middenVan(som);
+      const doel = som.getallen[0];
+      return `${doel} ligt ${doel > midden ? "na" : "voor"} het midden (${midden}). Zet Vos daar ongeveer neer; precies hoeft niet.`;
+    }
     const doelen = som.getallen;
     if (doelen.length === 1) {
       const anker = ankerVoor(som, doelen[0]);

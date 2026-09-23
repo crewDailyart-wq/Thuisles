@@ -178,6 +178,19 @@ export type Model =
       vlag: boolean;
       /** Welk getal oplicht, of `null`. */
       nadruk: number | null;
+      /** Het getal op het wijzertje boven de lijn; alleen bij de tussenstand. */
+      wijzer?: number;
+      /** De streepjes met een vakje erop, en wat daarin staat. */
+      vakjes?: number[];
+      getypt?: string[];
+      /**
+       * Vrije lijn: geen raster van streepjes, alles op zijn eigen plek.
+       *
+       * Voor de schatstand. `hulplijnen` zijn de getallen die een streepje
+       * krijgen; `telTot` is dan de plek van Vos in echte getallen.
+       */
+      vrij?: boolean;
+      hulplijnen?: number[];
     }
   | {
       soort: "stapstenen";

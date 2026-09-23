@@ -38,6 +38,26 @@ export function isGoed(vraag: OefenVraag, gegeven: string): boolean {
   }
 
   /*
+    Schatten op de getallenlijn: dicht genoeg is goed.
+
+    De enige vraagvorm waar niet op de letter wordt nagekeken, en met opzet:
+    het kind schuift Vos vrij over een lege lijn, dus precies raken kan niet.
+    Hoeveel het ernaast mag zitten staat als echt getal in de vraag zelf — de
+    beheerder stelt dat in als percentage van de lijn; zie `marge` in de
+    figuur.
+  */
+  if (
+    vraag.vorm === "sleepgetallen" &&
+    vraag.figuur?.soort === "getallenlijn" &&
+    vraag.figuur.stand === "schatten"
+  ) {
+    const gezet = Number(gegeven);
+    const juist = Number(vraag.antwoord);
+    if (!Number.isFinite(gezet) || !Number.isFinite(juist)) return false;
+    return Math.abs(gezet - juist) <= (vraag.figuur.marge ?? 0);
+  }
+
+  /*
     Getallen slepen: één getal per afbeelding, met komma's ertussen en in de
     volgorde van de afbeeldingen. Alles moet kloppen — twee verwisselde getallen
     is dus fout, ook al staan de goede getallen er wel.

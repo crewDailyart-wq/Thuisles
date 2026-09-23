@@ -83,6 +83,8 @@ export function SjabloonVoorbeeld({
   }, [generator, instellingen, aantal, groep, terugval]);
 
   const maximum = generator?.maximum(instellingen) ?? null;
+  /* Iets om op te letten terwijl er wél sommen uitkomen; zie `letOp` in `soort.ts`. */
+  const letOp = generator?.letOp?.(instellingen) ?? null;
   /* Hoeveel er in deze lijst dubbel staan; zie de regel onder het lijstje. */
   const dubbel = sommen.length - new Set(sommen.map((s) => s.handtekening)).size;
 
@@ -103,6 +105,12 @@ export function SjabloonVoorbeeld({
 
   return (
     <div>
+      {/* Er komen sommen uit, maar er valt iets op; zie `letOp` in `soort.ts`. */}
+      {letOp && (
+        <p className="mb-3 rounded-md border border-oranje/50 bg-oranje-zacht px-3 py-2 text-sm text-oranje-diep">
+          {letOp}
+        </p>
+      )}
       <ol className="divide-y divide-beheer-rand-zacht rounded-md border border-beheer-rand">
         {sommen.map((som, i) => {
           const antwoord =
@@ -214,27 +222,77 @@ export function SjabloonVoorbeeld({
                   blijven. Vos staat waar het kind hem straks aantreft — aan het
                   begin van de lijn — met het gezochte getal op zijn vlaggetje.
                 */}
-                {som.figuur?.soort === "getallenlijn" && (
-                  <div className="mt-1 w-full">
-                    <Getallenlijnbeeld
-                      start={som.figuur.start}
-                      eind={som.figuur.eind}
-                      stap={som.figuur.stap}
-                      zichtbaar={som.figuur.zichtbaar}
-                      vosBij={som.figuur.start}
-                      vlag={som.figuur.doel}
-                      vos={
-                        som.figuur.vos.wachtend || som.figuur.vos.blij
-                          ? {
-                              vangend: som.figuur.vos.wachtend ?? som.figuur.vos.blij,
-                              wachtend: som.figuur.vos.wachtend,
-                              blij: som.figuur.vos.blij,
-                            }
-                          : (standaardvos ?? null)
-                      }
-                    />
-                  </div>
-                )}
+                {som.figuur?.soort === "getallenlijn" &&
+                  (som.figuur.stand === "schatten" ? (
+                    /* De schatstand: een kale lijn met Vos en zijn vlaggetje aan het begin. */
+                    <div className="mt-1 w-full">
+                      <Getallenlijnbeeld
+                        start={som.figuur.start}
+                        eind={som.figuur.eind}
+                        stap={som.figuur.stap}
+                        zichtbaar={som.figuur.zichtbaar}
+                        vrij
+                        hulplijnen={som.figuur.hulplijnen ?? []}
+                        vosBij={som.figuur.start}
+                        vlag={som.figuur.doel}
+                        vos={
+                          som.figuur.vos.wachtend || som.figuur.vos.blij
+                            ? {
+                                vangend: som.figuur.vos.wachtend ?? som.figuur.vos.blij,
+                                wachtend: som.figuur.vos.wachtend,
+                                blij: som.figuur.vos.blij,
+                              }
+                            : (standaardvos ?? null)
+                        }
+                      />
+                    </div>
+                  ) : som.figuur.stand === "tussen" ? (
+                    /* De tussenstand: het wijzertje met twee lege vakjes op de lijn. */
+                    <div className="mt-1 w-full">
+                      <Getallenlijnbeeld
+                        start={som.figuur.start}
+                        eind={som.figuur.eind}
+                        stap={som.figuur.stap}
+                        zichtbaar={som.figuur.zichtbaar}
+                        wijzer={{ getal: som.figuur.wijzer ?? som.figuur.doel }}
+                        vakjes={som.figuur.gevraagd ?? [som.figuur.doel]}
+                        getypt={(som.figuur.gevraagd ?? [som.figuur.doel]).map(() => "")}
+                        opDeLijn
+                      />
+                    </div>
+                  ) : som.figuur.stand === "invullen" ? (
+                    /* De invulstand: lege vakjes met een pijltje, zoals het kind ze krijgt. */
+                    <div className="mt-1 w-full">
+                      <Getallenlijnbeeld
+                        start={som.figuur.start}
+                        eind={som.figuur.eind}
+                        stap={som.figuur.stap}
+                        zichtbaar={som.figuur.zichtbaar}
+                        vakjes={som.figuur.gevraagd ?? [som.figuur.doel]}
+                        getypt={(som.figuur.gevraagd ?? [som.figuur.doel]).map(() => "")}
+                      />
+                    </div>
+                  ) : (
+                    <div className="mt-1 w-full">
+                      <Getallenlijnbeeld
+                        start={som.figuur.start}
+                        eind={som.figuur.eind}
+                        stap={som.figuur.stap}
+                        zichtbaar={som.figuur.zichtbaar}
+                        vosBij={som.figuur.start}
+                        vlag={som.figuur.doel}
+                        vos={
+                          som.figuur.vos.wachtend || som.figuur.vos.blij
+                            ? {
+                                vangend: som.figuur.vos.wachtend ?? som.figuur.vos.blij,
+                                wachtend: som.figuur.vos.wachtend,
+                                blij: som.figuur.vos.blij,
+                              }
+                            : (standaardvos ?? null)
+                        }
+                      />
+                    </div>
+                  ))}
 
                 {/* De trein op volle breedte: de wagons moeten leesbaar blijven. */}
                 {som.figuur?.soort === "trein" && (

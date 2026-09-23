@@ -19,7 +19,11 @@ import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bou
 import { SjabloonInstellingen } from "@/components/beheer/SjabloonInstellingen";
 import { SjabloonVoorbeeld } from "@/components/beheer/SjabloonVoorbeeld";
 import { UitlegVoorbeeld } from "@/components/beheer/UitlegVoorbeeld";
-import { MAX_SOMMEN_PER_KEER, neemVraagtekstenOver } from "@/lib/generatoren/soort";
+import {
+  MAX_SOMMEN_PER_KEER,
+  neemVraagtekstenOver,
+  vingerafdrukVan,
+} from "@/lib/generatoren/soort";
 import { Figuurtekening } from "@/components/oefenen/Figuurtekening";
 import { zoekGenerator } from "@/lib/generatoren";
 import type { Instellingen } from "@/lib/generatoren/soort";
@@ -102,6 +106,25 @@ export function SjabloonDetail({
     }),
   );
   const [aantal, setAantal] = useState(30);
+
+  /*
+    Passen de sommen die er liggen nog bij de instellingen?
+
+    Een som bewaart zijn eigen plaatje en zijn eigen tekst; een instelling die
+    je daarna verandert, verandert daar niets aan. Dat is met opzet — er kunnen
+    sommen tussen zitten die een kind al gezien heeft — maar het is ook precies
+    waar je op vastloopt als je niet weet dat het zo werkt. Daarom hier een
+    vergelijking van de vingerafdruk die elke som bij het maken meekreeg met de
+    instellingen zoals ze nu zijn opgeslagen.
+
+    Dit werkt bij elk generator-type: er wordt niet gekeken wát er is
+    ingesteld, alleen of het nog hetzelfde is.
+  */
+  const nuVingerafdruk = vingerafdrukVan(sjabloon.instellingen);
+  const anders = vragen.filter(
+    (v) => v.instellingenVingerafdruk !== null && v.instellingenVingerafdruk !== nuVingerafdruk,
+  ).length;
+  const onbekend = vragen.filter((v) => v.instellingenVingerafdruk === null).length;
 
   const generator = zoekGenerator(sjabloon.soort);
   // Een echte som uit dit sjabloon, zodat het voorbeeld klopt met wat je maakt.
@@ -453,6 +476,30 @@ export function SjabloonDetail({
         }
         geenVulling
       >
+        {/*
+          Alleen melden als het zéker is.
+
+          Sommen van vóór deze kolom hebben geen vingerafdruk; daarvan weten we
+          het niet, en dan zou een melding bij élk bestaand sjabloon staan. Die
+          worden dus stil overgeslagen, en alleen genoemd als er daarnaast wél
+          sommen zijn die aantoonbaar niet meer kloppen.
+        */}
+        {anders > 0 && (
+          <p className="border-b border-oranje/40 bg-oranje-zacht px-3 py-2 text-sm text-oranje-diep">
+            <strong>
+              {anders} van de {vragen.length} sommen {anders === 1 ? "is" : "zijn"} met andere
+              instellingen gemaakt.
+            </strong>{" "}
+            {onbekend > 0 ? `Van ${onbekend} andere is niet bekend waarmee ze gemaakt zijn. ` : ""}
+            Een som bewaart het plaatje en de tekst waarmee hij is gemaakt, dus een
+            instelling die je hierboven verandert geldt alleen voor sommen die je
+            daarna maakt. Wil je dat alles klopt: verwijder deze sommen in het
+            vragenoverzicht en klik daarna op Genereren. Gaat het alleen om de
+            vraagzin, dan kun je die bij de instellingen bijwerken met de knop
+            &quot;Ook bestaande sommen bijwerken&quot;.
+          </p>
+        )}
+
         {vragen.length === 0 ? (
           <Leeg tekst="Nog geen sommen gemaakt." hint="Klik hierboven op Genereren." />
         ) : (
