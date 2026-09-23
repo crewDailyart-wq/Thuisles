@@ -42,7 +42,7 @@
  * kindervinger is breder dan dat.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { Vosbeeld, type Voshoudingen } from "@/components/oefenen/Vosnaastvak";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { opgavegeluidStaatAan, plop } from "@/lib/geluid";
@@ -63,8 +63,14 @@ const MAAT = {
   vos: 78,
   /** Dikte van de lijn zelf: één haarlijn, zoals op een werkblad. */
   lijn: 1.5,
-  /** Lengte van een streepje: gewoon, vijftal, tiental. Allemaal even dun. */
-  streep: { gewoon: 7, vijf: 10, tien: 15 },
+  /**
+   * Lengte van een streepje: gewoon, vijftal, tiental. Allemaal even dun.
+   *
+   * Twee keer zo lang als eerst, in alle standen en dus ook in het voorbeeld
+   * in beheer en in de uitleganimatie: op een dunne lijn waren ze te klein om
+   * te zien waar een getal precies hoort.
+   */
+  streep: { gewoon: 14, vijf: 20, tien: 30 },
   /** Ruimte tussen het langste streepje en de bovenkant van de getallen. */
   onderLijn: 5,
   /** Hoogte van de ene regel met getallen. */
@@ -111,6 +117,10 @@ function streeplengte(n: number): number {
 
 /** Elk streepje even dun; het wijzertje is het enige dat dikker mag zijn. */
 const STREEPDIKTE = 1.5;
+
+/** Halve kier tussen de twee vakjes in de tussenstand, en de lucht tot de rand. */
+const HALVE_KIER = 3;
+const KANTLIJN = 2;
 
 
 /**
@@ -179,24 +189,26 @@ function Vlaggetje({ getal, geplant = false }: { getal: number; geplant?: boolea
  * enige waar de vraag over gaat.
  */
 function Wijzertje({ getal, licht = false }: { getal: number; licht?: boolean }) {
+  /* Oplichten in de uitleg mag opvallen; in de vraag blijft het rustig. */
+  const kleur = licht ? "var(--color-huisstijl-diep)" : "var(--color-inkt)";
   return (
-    <span className="relative block">
+    <span className="flex flex-col items-center">
       <span
-        className={`block rounded-lg px-2 py-1 text-base font-bold leading-none tabular-nums text-white ${
-          licht ? "bg-huisstijl-donker" : "bg-huisstijl"
-        } shadow-op`}
+        className="block text-2xl font-extrabold leading-none tabular-nums sm:text-3xl"
+        style={{ color: kleur }}
       >
         {getal}
       </span>
+      {/* Een dun pijltje dat naar de plek op de lijn wijst. */}
+      <span aria-hidden="true" style={{ width: 1.5, height: 9, background: kleur, marginTop: 3 }} />
       <span
         aria-hidden="true"
-        className="absolute left-1/2 top-full -translate-x-1/2"
         style={{
           width: 0,
           height: 0,
-          borderLeft: "5px solid transparent",
-          borderRight: "5px solid transparent",
-          borderTop: `6px solid var(${licht ? "--color-huisstijl-donker" : "--color-huisstijl"})`,
+          borderLeft: "4px solid transparent",
+          borderRight: "4px solid transparent",
+          borderTop: `6px solid ${kleur}`,
         }}
       />
     </span>
@@ -338,6 +350,8 @@ export function Getallenlijnbeeld({
   const eigenRef = useRef<HTMLDivElement | null>(null);
   const strook = stripRef ?? eigenRef;
   const [perStreepje, setPerStreepje] = useState<number | null>(null);
+  /* De hele breedte van de strook; nodig om in pixels te kunnen plaatsen. */
+  const [strookBreed, setStrookBreed] = useState<number | null>(null);
   useEffect(() => {
     const el = strook.current;
     if (!el) return;
@@ -347,6 +361,7 @@ export function Getallenlijnbeeld({
       const nuttig = (breed * (100 - LINKS - RECHTS)) / 100;
       const per = aantal > 1 ? nuttig / (aantal - 1) : nuttig;
       setPerStreepje((vorig) => (vorig !== null && Math.abs(vorig - per) < 0.5 ? vorig : per));
+      setStrookBreed((vorig) => (vorig !== null && Math.abs(vorig - breed) < 0.5 ? vorig : breed));
     }
     meet();
     const kijker = new ResizeObserver(meet);
@@ -382,19 +397,29 @@ export function Getallenlijnbeeld({
       i === 0 ? kleinst : Math.min(kleinst, Math.abs(n - vakjes[i - 1]) / Math.max(1, stap)),
     Number.POSITIVE_INFINITY,
   );
-  const vakBreedte =
-    perStreepje === null || !Number.isFinite(kleinsteGat)
-      ? opDeLijn
-        ? 48
-        : 60
-      : opDeLijn
-        ? Math.max(28, Math.min(58, kleinsteGat * perStreepje - 5))
-        : Math.max(38, Math.min(64, kleinsteGat * perStreepje - 8));
-  const vakHoogte = opDeLijn
-    ? Math.max(24, Math.min(34, vakBreedte * 0.6))
-    : Math.max(32, Math.min(46, vakBreedte * 0.76));
+  /*
+    Hoe groot een invulvakje wordt.
+
+    Op de lijn is het altijd een vierkant van 116 pixels — zo'n drie bij drie
+    centimeter, net als het invulvak bij de andere oefeningen. Ook op een
+    drukke lijn blijft die maat staan: de twee vakjes gaan dan niet op hun
+    streepje staan maar naast elkaar rond het midden ertussen, met een schuin
+    lijntje naar hun eigen streepje. Naast de lijn — in de invulstand — volgt
+    de breedte wel de ruimte tussen de vakjes.
+  */
+  const VAK_MAX = 116;
+  const zijde = VAK_MAX;
+  /* Zolang de strook nog niet gemeten is, valt er niets in pixels te plaatsen. */
+  const paarLayout = opDeLijn && strookBreed !== null && vakjes.length === 2;
+
+  const vakBreedte = opDeLijn
+    ? zijde
+    : perStreepje === null || !Number.isFinite(kleinsteGat)
+      ? 60
+      : Math.max(38, Math.min(64, kleinsteGat * perStreepje - 8));
+  const vakHoogte = opDeLijn ? zijde : Math.max(32, Math.min(46, vakBreedte * 0.76));
   const vakLetter = opDeLijn
-    ? Math.max(11, Math.min(19, vakBreedte * 0.36))
+    ? Math.max(16, Math.min(44, zijde * 0.42))
     : Math.max(14, Math.min(22, vakBreedte * 0.36));
 
   /*
@@ -406,7 +431,7 @@ export function Getallenlijnbeeld({
     alleen wat lucht.
   */
   const lijnY = wijzer
-    ? (vos ? MAAT.vos + 26 : 46)
+    ? (vos ? MAAT.vos + 30 : 54)
     : vakjes.length > 0 && !opDeLijn
       ? vakHoogte + 36
       : vos
@@ -415,7 +440,17 @@ export function Getallenlijnbeeld({
           ? 58
           : 14;
   const getalY = lijnY + MAAT.streep.tien + MAAT.onderLijn;
-  const hoogte = getalY + MAAT.regel;
+  /*
+    Waar een vakje óp de lijn begint, en hoe hoog de strook dan moet zijn.
+
+    Onder de rij getallen, met acht pixels lucht ertussen: zo raakt een breed
+    vakje nooit een getal dat onder de lijn staat.
+  */
+  const vakTop = getalY + MAAT.regel + 8;
+  const hoogte =
+    vakjes.length > 0 && opDeLijn
+      ? Math.max(getalY + MAAT.regel, vakTop + vakHoogte + 4)
+      : getalY + MAAT.regel;
 
   /* Wat er onder elk streepje komt te staan, en in welke kleur. */
   const onderschrift = new Map<number, Onderschrift>();
@@ -669,7 +704,7 @@ export function Getallenlijnbeeld({
           style={{
             left: `${plekVoorWaarde(wijzer.getal, start, eind)}%`,
             /* Loopt Vos eronder mee, dan gaat het wijzertje boven hem uit. */
-            bottom: hoogte - lijnY + (vos ? MAAT.vos + 2 : 8),
+            bottom: hoogte - lijnY + (vos ? MAAT.vos + 2 : 2),
           }}
         >
           <Wijzertje getal={wijzer.getal} licht={wijzer.licht} />
@@ -696,17 +731,75 @@ export function Getallenlijnbeeld({
               ? "border-roze bg-roze-zacht text-roze"
               : "border-rand bg-kaart text-inkt focus:border-huisstijl";
         /*
-          Op de lijn staat het vakje op de hoogte van de andere getallen, zodat
-          de rij eronder netjes doorloopt; erboven hangt het aan een pijltje.
+          Waar het vakje komt te staan.
+
+          De twee vakjes blijven even groot en staan naast elkaar, samen
+          gecentreerd onder het midden tussen de twee juiste streepjes. Valt het
+          paar zo buiten de kaart — bij een tiental helemaal aan het begin of
+          het eind van de lijn — dan schuift het paar als geheel naar binnen.
+          Het lijntje loopt daarna gewoon mee naar zijn eigen vakje.
         */
-        const opDeRij = opDeLijn
-          ? { top: getalY + vakLetter / 2 - vakHoogte / 2 }
-          : { bottom: hoogte - lijnY + 2 };
+        const tickPct = plekPct(vakplek, aantal);
+        let plaatsing: React.CSSProperties = {
+          left: `${tickPct}%`,
+          transform: "translateX(-50%)",
+          top: vakTop,
+        };
+        let haakje: { tickX: number; tickY: number; vakX: number } | null = null;
+
+        if (paarLayout && strookBreed !== null) {
+          const anderePlek = waarden.indexOf(vakjes[i === 0 ? 1 : 0]);
+          const middenPct = (tickPct + plekPct(anderePlek, aantal)) / 2;
+          /* Het midden van het paar, zo nodig naar binnen geschoven. */
+          const halveBreedte = zijde + HALVE_KIER;
+          const middenX = Math.min(
+            Math.max((middenPct / 100) * strookBreed, halveBreedte + KANTLIJN),
+            strookBreed - halveBreedte - KANTLIJN,
+          );
+          const naarLinks = tickPct < middenPct;
+          const midX = middenX + (naarLinks ? -1 : 1) * (zijde / 2 + HALVE_KIER);
+          plaatsing = { left: midX, transform: "translateX(-50%)", top: vakTop };
+          haakje = {
+            tickX: (tickPct / 100) * strookBreed,
+            tickY: lijnY + streeplengte(n),
+            vakX: midX,
+          };
+        }
+
+        if (!opDeLijn) plaatsing = { left: `${tickPct}%`, transform: "translateX(-50%)", bottom: hoogte - lijnY + 2 };
+
         return (
+          <Fragment key={`vak-${n}`}>
+            {/*
+              Het lijntje van het streepje naar het vakje.
+
+              Schuin: vanaf de punt van het streepje naar het midden van de
+              bovenkant van zijn eigen vakje. Zo is bij elk vakje te zien bij
+              welk streepje het hoort, ook als het paar naar binnen is
+              geschoven. Dun en in de kleur van de lijn, zodat het aanwijst
+              zonder de aandacht te trekken.
+            */}
+            {haakje && (
+              <span
+                aria-hidden="true"
+                className="absolute"
+                style={{
+                  left: haakje.tickX,
+                  top: haakje.tickY,
+                  width: Math.hypot(haakje.vakX - haakje.tickX, vakTop - haakje.tickY),
+                  height: 1.5,
+                  background: LIJNKLEUR,
+                  transformOrigin: "0 50%",
+                  transform: `rotate(${
+                    (Math.atan2(vakTop - haakje.tickY, haakje.vakX - haakje.tickX) * 180) / Math.PI
+                  }deg)`,
+                }}
+              />
+            )}
+
           <span
-            key={`vak-${n}`}
-            className="absolute z-10 flex -translate-x-1/2 flex-col items-center"
-            style={{ left: `${plekPct(vakplek, aantal)}%`, ...opDeRij }}
+            className="absolute z-10 flex flex-col items-center"
+            style={plaatsing}
           >
             <input
               ref={(el) => {
@@ -751,6 +844,7 @@ export function Getallenlijnbeeld({
               </>
             )}
           </span>
+          </Fragment>
         );
       })}
 
@@ -1053,15 +1147,14 @@ export function Getallenlijn({
           />
         </div>
 
-        {fase === "bezig" && (
-          <p className="text-center text-sm font-bold text-inkt-zacht">
-            {opLijn
-              ? "Typ in de twee vakjes tussen welke getallen het ligt."
-              : gevraagd.length === 1
-                ? "Tik in het vakje en typ het getal."
-                : "Tik in een vakje en typ het getal. Met Tab ga je naar het volgende."}
-          </p>
-        )}
+        {/*
+          Geen regel onder de lijn.
+
+          In geen van de vier standen staat er nog een hulpzin onder de lijn.
+          Die zei hetzelfde als de vraagzin erboven, en deze kinderen lezen nog
+          nauwelijks: het was een tweede regel tekst om doorheen te komen voor
+          iets wat ze al aan het doen waren. Wat er staat, staat boven de lijn.
+        */}
       </div>
     );
   }
@@ -1100,14 +1193,6 @@ export function Getallenlijn({
             onVosToets={uit ? undefined : toets}
           />
         </div>
-
-        {fase === "bezig" && (
-          <p className="text-center text-sm font-bold text-inkt-zacht">
-            {antwoord === "" && sleepBij === null
-              ? "Schuif Vos naar de plek waar dit getal ongeveer ligt."
-              : "Precies hoeft niet. Schuif hem gerust nog een stukje."}
-          </p>
-        )}
       </div>
     );
   }
@@ -1144,14 +1229,6 @@ export function Getallenlijn({
           onTik={uit ? undefined : tikStreepje}
         />
       </div>
-
-      {fase === "bezig" && (
-        <p className="text-center text-sm font-bold text-inkt-zacht">
-          {antwoord === "" && sleepBij === null
-            ? "Pak Vos vast en schuif hem naar het goede getal."
-            : "Klopt het niet? Schuif Vos gerust nog een streepje op."}
-        </p>
-      )}
     </div>
   );
 }

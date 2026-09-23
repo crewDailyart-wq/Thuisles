@@ -759,6 +759,17 @@ export const getallenlijnGenerator: Generator = {
         const boven = onder + sprong;
         const wijzer = onder + heelGetal(kans, 1, sprong - 1);
 
+        /*
+          Nooit een getal dat zelf op een streepje staat.
+
+          Bij 30 is het antwoord niet te geven: dat ligt zowel tussen 20 en 30
+          als tussen 30 en 40. Dat is geen denkfout van het kind maar een
+          slechte vraag. Het getal komt door de sprong hierboven al altijd
+          tússen twee streepjes uit; deze regel houdt dat zo, ook als er ooit
+          een andere sprong bij komt.
+        */
+        if (wijzer % sprong === 0) continue;
+
         const handtekening = `getallenlijn:${start}-${eind}/${sprong}:tussen:${wijzer}`;
         if (alGebruikt.has(handtekening)) continue;
         alGebruikt.add(handtekening);
