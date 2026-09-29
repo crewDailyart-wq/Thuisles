@@ -307,9 +307,16 @@ export async function haalOefenStart(
   );
   if (!subdomein) return null;
 
-  const leerdoelen: LeerdoelMetStatus[] = leerdoelenVoor(subdomein.id, kind)
-    .sort((a, b) => a.volgorde - b.volgorde)
-    .map((leerdoel) => ({ leerdoel, status: statusVan(kind.id, leerdoel.id) }));
+  /*
+    De volgorde komt uit de structuur en is dezelfde als in beheer: per
+    generator-type bij elkaar, binnen een groep van makkelijk naar moeilijk.
+    Hier dus niet opnieuw sorteren — dat zette de tegels terug op de volgorde
+    waarin ze ooit zijn aangemaakt.
+  */
+  const leerdoelen: LeerdoelMetStatus[] = leerdoelenVoor(subdomein.id, kind).map((leerdoel) => ({
+    leerdoel,
+    status: statusVan(kind.id, leerdoel.id),
+  }));
 
   return {
     vak,

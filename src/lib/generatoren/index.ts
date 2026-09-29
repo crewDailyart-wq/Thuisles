@@ -12,6 +12,11 @@ import { kralenGenerator } from "@/lib/generatoren/kralen";
 import { optellenGenerator } from "@/lib/generatoren/optellen";
 import { plaatjestellenGenerator } from "@/lib/generatoren/plaatjestellen";
 import { splitsenGenerator } from "@/lib/generatoren/splitsen";
+import { splitstabelGenerator } from "@/lib/generatoren/splitstabel";
+import { aanvullenGenerator } from "@/lib/generatoren/aanvullen";
+import { splitsschemaGenerator } from "@/lib/generatoren/splitsschema";
+import { verdelenGenerator } from "@/lib/generatoren/verdelen";
+import { splitsdriehoekGenerator } from "@/lib/generatoren/splitsdriehoek";
 import { straatGenerator } from "@/lib/generatoren/straat";
 import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
 import { vakkenGenerator } from "@/lib/generatoren/vakken";
@@ -29,6 +34,11 @@ export const alleGeneratoren: Generator[] = [
   optellenGenerator,
   aftrekkenGenerator,
   splitsenGenerator,
+  splitstabelGenerator,
+  aanvullenGenerator,
+  splitsschemaGenerator,
+  verdelenGenerator,
+  splitsdriehoekGenerator,
   kralenGenerator,
   busGenerator,
   tellenslepenGenerator,

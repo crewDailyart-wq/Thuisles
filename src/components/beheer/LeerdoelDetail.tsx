@@ -50,8 +50,9 @@ export function LeerdoelDetail({
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
   const [naarOnderwerp, setNaarOnderwerp] = useState("");
+  /* Leeg = automatisch. Alleen een eigen, met de hand gekozen getal staat hier. */
   const [moeilijk, setMoeilijk] = useState<string>(
-    leerdoel.moeilijkheid === null ? "" : String(leerdoel.moeilijkheid),
+    leerdoel.moeilijkheidEigen === null ? "" : String(leerdoel.moeilijkheidEigen),
   );
   const [van, setVan] = useState<number>(leerdoel.groepVan);
   const [tot, setTot] = useState<number>(leerdoel.groepTot);
@@ -82,10 +83,28 @@ export function LeerdoelDetail({
               "Moeilijkheid",
               leerdoel.moeilijkheid === null ? (
                 <span key="m" className="text-beheer-zacht">
-                  Niet ingevuld — het kind ziet dan geen bolletjes
+                  Nog niets te berekenen — dit leerdoel heeft geen sjabloon
                 </span>
               ) : (
-                <Moeilijkheid key="m" waarde={leerdoel.moeilijkheid} maat="ruim" />
+                <span key="m" className="flex flex-col gap-1">
+                  <span className="flex items-center gap-2">
+                    <Moeilijkheid waarde={leerdoel.moeilijkheid} maat="ruim" />
+                    <span className="text-xs text-beheer-zacht">
+                      {leerdoel.moeilijkheidEigen === null
+                        ? "automatisch, uit de instellingen van het sjabloon"
+                        : "met de hand ingesteld"}
+                    </span>
+                  </span>
+                  {/*
+                    Wat hier vóór de overstap op automatisch met de hand stond.
+                    Alleen om te kunnen vergelijken; er wordt niets mee gedaan.
+                  */}
+                  {leerdoel.moeilijkheidEerder !== null && (
+                    <span className="text-xs text-beheer-zacht">
+                      Eerder met de hand: {leerdoel.moeilijkheidEerder} van 5
+                    </span>
+                  )}
+                </span>
               ),
             ],
             [
@@ -182,7 +201,11 @@ export function LeerdoelDetail({
                   onChange={(e) => setMoeilijk(e.target.value)}
                   className={stijl.veld}
                 >
-                  <option value="">Niet ingevuld</option>
+                  <option value="">
+                    {leerdoel.moeilijkheidBerekend === null
+                      ? "Automatisch"
+                      : `Automatisch (nu ${leerdoel.moeilijkheidBerekend} van 5)`}
+                  </option>
                   {[1, 2, 3, 4, 5].map((n) => (
                     <option key={n} value={n}>
                       {n} van 5
@@ -192,9 +215,16 @@ export function LeerdoelDetail({
                 <Moeilijkheid waarde={moeilijk === "" ? null : Number(moeilijk)} maat="ruim" />
               </div>
               <span className="mt-1 block text-xs text-beheer-zacht">
-                Het kind ziet dit als bolletjes op de tegel. Leeg = geen bolletjes.
-                Onderwerpen worden op moeilijkheid gesorteerd; leerdoelen zonder
-                moeilijkheid staan achteraan.
+                Het kind ziet dit als bolletjes op de tegel. Op automatisch volgt
+                de moeilijkheid uit de instellingen van het sjabloon — bereik,
+                sprong, stand, hoeveel er ingevuld moet worden — en verandert hij
+                mee zodra je daar iets aanpast. Kies je zelf een getal, dan blijft
+                dat staan tot je hem weer op automatisch zet. De lijsten worden
+                erop gesorteerd: per generator-type bij elkaar, binnen een type
+                van makkelijk naar moeilijk.
+                {leerdoel.moeilijkheidEerder !== null && (
+                  <> Eerder stond hier met de hand {leerdoel.moeilijkheidEerder} van 5.</>
+                )}
               </span>
             </label>
 

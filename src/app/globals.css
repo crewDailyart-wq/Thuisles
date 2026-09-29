@@ -205,6 +205,11 @@
   --animate-vos-trappel: vos-trappel 1.5s ease-in-out infinite;
   --animate-kraal-stuiter: kraal-stuiter 0.5s ease-out 1;
   --animate-kraal-pulse: kraal-pulse 0.75s ease-in-out 1;
+  --animate-kraal-wiebel: kraal-wiebel 3.6s ease-in-out infinite;
+  --animate-vos-ademt: vos-ademt 3s ease-in-out infinite;
+  --animate-vos-schudt: vos-schudt 0.8s ease-in-out 1;
+  --animate-vos-uit-raam: vos-uit-raam 0.9s cubic-bezier(0.22, 1.1, 0.4, 1) 1 forwards;
+  --animate-sterretje: sterretje 0.9s ease-out 1 forwards;
   --animate-pijl-wip: pijl-wip 1.9s ease-in-out infinite;
   --animate-vos-knik: vos-knik 0.55s ease-out 1;
 
@@ -243,6 +248,63 @@
     35%  { transform: translateY(-7px) scale(1.14); }
     65%  { transform: translateY(0) scale(0.97); }
     100% { transform: translateY(0) scale(1); }
+  }
+
+  /*
+    De kralen die nog verdeeld moeten worden, wiebelen om de paar seconden.
+
+    Het wiebelen zit aan het eind van de keyframes, zodat er een lange stilte
+    tussen twee keer zit: het is een seintje, geen dansje. Zodra het kind de
+    eerste kraal verplaatst heeft, stopt het.
+  */
+  @keyframes kraal-wiebel {
+    0%, 80%, 100% { transform: rotate(0deg); }
+    84%           { transform: rotate(-10deg); }
+    88%           { transform: rotate(9deg); }
+    92%           { transform: rotate(-6deg); }
+    96%           { transform: rotate(4deg); }
+  }
+
+  /*
+    Vos in het raam van het splitshuis.
+
+    `vos-ademt` is een doorlopende, nauwelijks zichtbare beweging: hij staat
+    niet stil, maar hij trekt ook geen aandacht. De drie reacties duren
+    allemaal minder dan een seconde — een knik als er iets is ingevuld, een
+    sprongetje als alles klopt, een hoofdschudden als er iets fout is.
+  */
+  @keyframes vos-ademt {
+    0%, 100% { transform: translateY(0) scale(1); }
+    50%      { transform: translateY(-1px) scale(1.02); }
+  }
+
+  @keyframes vos-schudt {
+    0%, 100% { transform: rotate(0deg); }
+    20%      { transform: rotate(-7deg); }
+    45%      { transform: rotate(6deg); }
+    70%      { transform: rotate(-4deg); }
+  }
+
+  /*
+    Vos springt het raam uit.
+
+    Hij begint onder de vensterbank — daar is hij weggeknipt — en komt er in
+    één zwaai bovenuit. Daarna blijft hij half uit het raam hangen, want de
+    som is af en hij mag blijven kijken. Duurt minder dan een seconde.
+  */
+  @keyframes vos-uit-raam {
+    0%   { transform: translateY(70%) scale(0.92); }
+    35%  { transform: translateY(-42%) scale(1.06); }
+    60%  { transform: translateY(-10%) scale(1); }
+    80%  { transform: translateY(-26%); }
+    100% { transform: translateY(-20%); }
+  }
+
+  /* Een sterretje dat opstijgt en oplost; alleen als alles goed is. */
+  @keyframes sterretje {
+    0%   { opacity: 0; transform: translateY(6px) scale(0.6); }
+    35%  { opacity: 1; }
+    100% { opacity: 0; transform: translateY(-18px) scale(1.1); }
   }
 
   /* Een groepje van vijf licht samen even op zodra het geteld is. */

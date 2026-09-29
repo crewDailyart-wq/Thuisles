@@ -673,8 +673,21 @@ function werkTabellenBij(d: DatabaseSync) {
     uit elkaar te houden zijn. Leeg betekent: gebruik de titel, zoals het was.
   */
   voegKolomToe(d, "leerdoelen", "beheernaam", "text");
-  /* Hoe moeilijk de vaardigheid is: 1 tot 5, of leeg als het niet is ingevuld. */
+  /*
+    Hoe moeilijk de vaardigheid is: 1 tot 5, of leeg.
+
+    Leeg betekent sinds de overstap op automatische moeilijkheid niet meer
+    "geen bolletjes" maar "volg de instellingen van het sjabloon". Staat er wel
+    een getal, dan is dat met de hand ingesteld en gaat dat voor.
+  */
   voegKolomToe(d, "leerdoelen", "moeilijkheid", "integer");
+  /*
+    Wat hier met de hand stond vóór die overstap.
+
+    Alleen om terug te kunnen kijken en te vergelijken met wat de regel nu
+    uitrekent; er wordt nergens mee gerekend en niets op gesorteerd.
+  */
+  voegKolomToe(d, "leerdoelen", "moeilijkheid_handmatig", "integer");
 
   // Uit welk sjabloon een vraag komt (leeg bij handgemaakte vragen).
   voegKolomToe(d, "vragen", "sjabloon_id", "text references sjablonen (id) on delete cascade");

@@ -40,6 +40,78 @@ export type Figuur =
       rechts: number | null;
     }
   | {
+      /**
+       * Splitsen in de tabel, of als splitshuis.
+       *
+       * `doel` staat bovenaan (op het dak bij het huis) en is bij elke rij
+       * hetzelfde. Per rij staat er één gegeven getal in een geel vakje; het
+       * kind vult ernaast in wat er nog bij moet. `uiterlijk` is "eenvoudig"
+       * of "speels" en verandert alleen het beeld, niet de som.
+       */
+      soort: "splitstabel";
+      doel: number;
+      gegeven: number[];
+      /**
+       * Per rij: staat het lege vakje rechts?
+       *
+       * Ontbreekt dit, dan is het overal rechts — zo blijven de sommen die
+       * gemaakt zijn voordat deze instelling bestond precies staan zoals ze
+       * toen op het scherm kwamen.
+       */
+      leegRechts?: boolean[];
+      uiterlijk: string;
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Aanvullen tot een vast getal: één gegeven vakje en één leeg vakje,
+       * met klein erboven waar het samen op uit moet komen.
+       */
+      soort: "aanvullen";
+      doel: number;
+      gegeven: number;
+    }
+  | {
+      /**
+       * Het splitsschema, of de kersen.
+       *
+       * Het hele getal bovenaan met twee pijltjes naar twee vakjes. Het vakje
+       * dat `null` is, is het lege. `uiterlijk` is "eenvoudig" of "speels".
+       */
+      soort: "splitsschema";
+      geheel: number;
+      links: number | null;
+      rechts: number | null;
+      uiterlijk: string;
+      vos: { vangend: string | null; wachtend: string | null; blij: string | null };
+    }
+  | {
+      /**
+       * Verdelen in twee groepen: een groepje kralen en twee lege vakken.
+       *
+       * `verschil` is hoeveel er links meer moeten liggen dan rechts: 0, 1 of
+       * 2. Dat staat ook in de opdrachtzin, zodat het kind het kan nalezen.
+       */
+      soort: "verdelen";
+      aantal: number;
+      verschil: number;
+    }
+  | {
+      /**
+       * De splitsdriehoek: drie vakken binnen de driehoek, drie sommen erbuiten.
+       *
+       * Wat `null` is, vult het kind in. De volgorde van het antwoord is
+       * linksonder, links, rechts.
+       */
+      soort: "splitsdriehoek";
+      boven: number | null;
+      linksonder: number | null;
+      rechtsonder: number | null;
+      links: number | null;
+      rechts: number | null;
+      onder: number | null;
+    }
+  | {
       soort: "kralenrij";
       /** Hoeveel kralen er in de rij hangen. */
       totaal: number;

@@ -19,6 +19,7 @@ import { Huizenrij } from "@/components/oefenen/Huizenrij";
 import { Visvijver } from "@/components/oefenen/Visvijver";
 import { Trein } from "@/components/oefenen/Trein";
 import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
+import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
@@ -201,6 +202,30 @@ export function SjabloonVoorbeeld({
                       gevraagden={som.figuur.gevraagden}
                       vos={som.figuur.vos.vangend ? som.figuur.vos : standaardvos}
                       beweegt={false}
+                    />
+                  </div>
+                )}
+
+                {/*
+                  De opdrachten van het domein Splitsen, precies zoals het kind
+                  ze krijgt: gele vakjes voor wat gegeven is, witte om in te
+                  vullen. Nog niets ingevuld, want dit is het beginbeeld.
+                */}
+                {isSplitsfiguur(som.figuur) && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Splitsopdracht
+                      figuur={
+                        /* Bij de speelse uiterlijken staat Vos erbij; in het
+                           voorbeeld komt hij van de standaardvos, net als bij de
+                           andere types hierboven. */
+                        "vos" in som.figuur && !som.figuur.vos.blij && standaardvos
+                          ? { ...som.figuur, vos: standaardvos }
+                          : som.figuur
+                      }
+                      antwoord=""
+                      fase="bezig"
+                      onWijzig={() => {}}
+                      onBevestig={() => {}}
                     />
                   </div>
                 )}

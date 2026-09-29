@@ -118,11 +118,28 @@ export type Leerdoel = {
    */
   beheernaam: string | null;
   /**
-   * Hoe moeilijk deze vaardigheid is, 1 tot 5, of `null` als het niet is
-   * ingevuld. Bij het kind komen er dan bolletjes op de tegel; is het leeg,
-   * dan staat er niets.
+   * Hoe moeilijk deze oefening is: 1 tot 5 bolletjes.
+   *
+   * Dit is de moeilijkheid die overal getoond wordt en waarop gesorteerd
+   * wordt. Staat er bij het leerdoel een eigen getal, dan is dat het; anders
+   * volgt hij uit de instellingen van het sjabloon. Alleen een leerdoel zonder
+   * sjabloon heeft niets te berekenen; dan is dit `null` en komen er geen
+   * bolletjes.
    */
   moeilijkheid: number | null;
+  /** Het met de hand ingestelde getal, of `null` als het automatisch gaat. */
+  moeilijkheidEigen: number | null;
+  /** Wat de instellingen opleveren, ook als er met de hand iets anders staat. */
+  moeilijkheidBerekend: number | null;
+  /**
+   * Wat hier met de hand stond vóór de overstap op automatisch.
+   *
+   * Alleen om terug te kunnen kijken en te vergelijken; er wordt nergens mee
+   * gerekend. Leeg bij elk leerdoel dat toen geen eigen getal had.
+   */
+  moeilijkheidEerder: number | null;
+  /** Het generator-type van het sjabloon, waarop de lijst groepeert. */
+  generatorSoort: string | null;
   /**
    * Een leerdoel hoort bij een groepsrange, niet bij één vaste groep.
    * Dat maakt differentiatie binnen dezelfde groep mogelijk.

@@ -55,6 +55,7 @@ import {
   zetOpgavegeluid,
 } from "@/lib/geluid";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
+import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -485,7 +486,13 @@ export function OefenSpeler({
         /* En bij het vissen: eerst komt de vis boven, daarna pas het feest. */
         vraag.figuur?.soort === "visvijver" ||
         /* En bij de trein: die rijdt eerst weg. */
-        vraag.figuur?.soort === "trein"
+        vraag.figuur?.soort === "trein" ||
+        /*
+          En bij de speelse splitsopdrachten: eerst springt Vos het raam uit,
+          of bloeit de bloem open. De rustige tabel heeft niets te vieren en
+          gaat dus gewoon meteen door naar het feest.
+        */
+        (vraag.figuur?.soort === "splitstabel" && vraag.figuur.uiterlijk !== "eenvoudig")
       ) {
         setWachtOpVos(true);
       }
@@ -1618,6 +1625,31 @@ function Antwoordvelden({
           </button>
         ))}
       </div>
+    );
+  }
+
+  /*
+    De opdrachten van het domein Splitsen: de tekening ís het antwoordveld.
+
+    Eén getal per leeg vakje, met komma's ertussen en in de volgorde waarin ze
+    op het scherm staan — dezelfde afspraak als bij de stapstenen en de
+    getallenlijn. Bij "Verdelen in twee groepen" typt het kind niets maar sleept
+    het kralen; dat scherm geeft het aantal per vak op dezelfde manier door.
+  */
+  if (vraag.vorm === "open" && isSplitsfiguur(vraag.figuur)) {
+    return (
+      <Splitsopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        /* Bij het kind staat de cursor meteen in het eerste lege vakje. */
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        /* Pas als Vos of de bloem klaar is, mag het feestscherm eroverheen. */
+        onKlaar={onSprongKlaar}
+      />
     );
   }
 

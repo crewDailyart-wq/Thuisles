@@ -1,6 +1,8 @@
 import "server-only";
 import { GROEPSVORMEN } from "@/lib/generatoren/uitlegscript";
 import { beheerlabel, begrensMoeilijkheid } from "@/lib/leerdoelnaam";
+import { bolletjesVan, puntenVan, typeVolgorde } from "@/lib/moeilijkheid";
+import type { Instellingen } from "@/lib/generatoren/soort";
 
 /**
  * Beheer van de leerdoelstructuur: vak -> domein -> subdomein -> leerdoel.
@@ -216,16 +218,62 @@ export function haalSubdomeinen(domeinId?: string): Subdomein[] {
 /**
  * De volgorde waarin leerdoelen binnen een onderwerp staan.
  *
- * Eerst op moeilijkheid, van makkelijk naar moeilijk — dat is de opbouw die een
- * kind door een onderwerp heen volgt. Leerdoelen zonder moeilijkheidsgraad
- * kunnen maar op één plek staan, en dat is achteraan: `moeilijkheid is null`
- * levert 0 of 1 op en sorteert de lege dus als laatste.
+ * Oefeningen van hetzelfde generator-type bij elkaar, en binnen zo'n groep van
+ * makkelijk naar moeilijk. Dat is de opbouw die een kind door een onderwerp
+ * heen volgt, en het zet twee oefeningen die voor het kind hetzelfde heten —
+ * "Tel verder met sprongen van 1" — direct onder elkaar, zodat de bolletjes
+ * het verschil laten zien.
  *
- * Daarbinnen blijft de handmatige volgorde gelden, precies zoals het was. Zijn
- * er nergens moeilijkheidsgraden ingevuld — de stand bij het invoeren hiervan —
- * dan verandert er dus helemaal niets aan de volgorde.
+ * Welke groep vooraan komt ligt vast in `TYPEVOLGORDE`: die volgt de leerlijn
+ * van school — eerst tellen, dan tellen met sprongen, dan buurgetallen, dan
+ * vergelijken en ordenen, en als laatste de getallenlijn. Een vaste volgorde
+ * en geen berekende, zodat een nieuwe oefening nooit een hele groep laat
+ * verspringen. Een type dat daar niet in staat komt erachter, op naam.
+ *
+ * Binnen een groep telt eerst het aantal bolletjes en daarna de punten
+ * erachter, zodat twee oefeningen met evenveel bolletjes nog steeds in de
+ * goede volgorde staan. De handmatige volgorde en de titel zijn de laatste
+ * scheidsrechters, zodat de lijst nooit van zichzelf gaat wisselen.
+ *
+ * Leerdoelen zonder sjabloon kunnen niets te berekenen hebben; die staan
+ * achteraan, net als vroeger de leerdoelen zonder ingevulde moeilijkheid.
  */
-const LEERDOELVOLGORDE = "order by moeilijkheid is null, moeilijkheid, volgorde, titel";
+const LEERDOELVOLGORDE = "order by volgorde, titel";
+
+/** Wat er van een sjabloon nodig is om de moeilijkheid te kunnen uitrekenen. */
+type Sjabloonregel = { soort: string; punten: number; bolletjes: number };
+
+/** Per leerdoel het sjabloon dat de moeilijkheid en de groep bepaalt. */
+function sjablonenPerLeerdoel(): Map<string, Sjabloonregel> {
+  const rijen = verbinding()
+    .prepare("select leerdoel_id, soort, instellingen from sjablonen order by aangemaakt_op, rowid")
+    .all() as Rij[];
+
+  const uit = new Map<string, Sjabloonregel>();
+  for (const r of rijen) {
+    const leerdoelId = String(r.leerdoel_id);
+    const soort = String(r.soort);
+    let inst: Instellingen = {};
+    try {
+      inst = JSON.parse(String(r.instellingen ?? "{}")) as Instellingen;
+    } catch {
+      inst = {};
+    }
+    const punten = puntenVan(soort, inst);
+    const bestaand = uit.get(leerdoelId);
+    /*
+      Hangen er meer sjablonen aan één leerdoel, dan telt de zwaarste: het kind
+      krijgt die sommen ook. Het type van het eerste sjabloon bepaalt wel in
+      welke groep de oefening komt te staan.
+    */
+    if (bestaand === undefined) {
+      uit.set(leerdoelId, { soort, punten, bolletjes: bolletjesVan(punten) });
+    } else if (punten > bestaand.punten) {
+      uit.set(leerdoelId, { ...bestaand, punten, bolletjes: bolletjesVan(punten) });
+    }
+  }
+  return uit;
+}
 
 export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
   const db = verbinding();
@@ -235,7 +283,15 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
       : db.prepare(`select * from leerdoelen ${LEERDOELVOLGORDE}`).all()
   ) as Rij[];
 
-  return rijen.map((r) => ({
+  const sjablonen = sjablonenPerLeerdoel();
+
+  const doelen = rijen.map((r) => {
+    const sjabloon = sjablonen.get(String(r.id)) ?? null;
+    const eigen =
+      r.moeilijkheid === null || r.moeilijkheid === undefined ? null : Number(r.moeilijkheid);
+    const berekend = sjabloon === null ? null : sjabloon.bolletjes;
+
+    return {
     id: String(r.id),
     subdomeinId: String(r.subdomein_id),
     code: String(r.code),
@@ -244,10 +300,15 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
       r.beheernaam === null || r.beheernaam === undefined || String(r.beheernaam).trim() === ""
         ? null
         : String(r.beheernaam),
-    moeilijkheid:
-      r.moeilijkheid === null || r.moeilijkheid === undefined
+    /* Met de hand ingesteld gaat voor; anders wat de instellingen opleveren. */
+    moeilijkheid: eigen ?? berekend,
+    moeilijkheidEigen: eigen,
+    moeilijkheidBerekend: berekend,
+    moeilijkheidEerder:
+      r.moeilijkheid_handmatig === null || r.moeilijkheid_handmatig === undefined
         ? null
-        : Number(r.moeilijkheid),
+        : Number(r.moeilijkheid_handmatig),
+    generatorSoort: sjabloon === null ? null : sjabloon.soort,
     groepVan: Number(r.groep_van) as Groep,
     groepTot: Number(r.groep_tot) as Groep,
     uitlegvorm: r.uitlegvorm ? String(r.uitlegvorm) : null,
@@ -256,7 +317,55 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
         ? null
         : Number(r.vragen_per_sessie),
     volgorde: Number(r.volgorde),
-  }));
+    };
+  });
+
+  /*
+    De punten achter de bolletjes, om mee te sorteren. Ze staan bewust naast
+    het leerdoel en niet erin: het zijn rekenpunten en geen eigenschap van de
+    oefening, en de schermen hebben er niets aan.
+  */
+  const punten = new Map(
+    doelen.map((l) => [
+      l.id,
+      sjablonen.get(l.id)?.punten ?? Number.POSITIVE_INFINITY,
+    ]),
+  );
+
+  return sorteerLeerdoelen(doelen, punten);
+}
+
+/**
+ * De lijst op volgorde zetten: per generator-type, binnen een type oplopend.
+ *
+ * De groepen worden per onderwerp bekeken, want dat is de lijst die iemand
+ * voor zich ziet — in beheer en bij het kind. Een aanroep zonder onderwerp
+ * levert alles op; dan staan de onderwerpen achter elkaar en is de volgorde
+ * daarbinnen dezelfde.
+ */
+function sorteerLeerdoelen(doelen: Leerdoel[], punten: Map<string, number>): Leerdoel[] {
+  return [...doelen].sort((a, b) => {
+    if (a.subdomeinId !== b.subdomeinId) return a.subdomeinId.localeCompare(b.subdomeinId);
+
+    /* Een leerdoel zonder sjabloon heeft geen groep en staat achteraan. */
+    if ((a.generatorSoort === null) !== (b.generatorSoort === null)) {
+      return a.generatorSoort === null ? 1 : -1;
+    }
+
+    if (a.generatorSoort !== b.generatorSoort) {
+      return (
+        typeVolgorde(a.generatorSoort ?? "") - typeVolgorde(b.generatorSoort ?? "") ||
+        (a.generatorSoort ?? "").localeCompare(b.generatorSoort ?? "")
+      );
+    }
+
+    return (
+      (a.moeilijkheid ?? 99) - (b.moeilijkheid ?? 99) ||
+      (punten.get(a.id) ?? 0) - (punten.get(b.id) ?? 0) ||
+      a.volgorde - b.volgorde ||
+      a.titel.localeCompare(b.titel)
+    );
+  });
 }
 
 // ---------------------------------------------------------------------------
@@ -727,7 +836,12 @@ export function dupliceerLeerdoel(id: string): Uitslag<Leerdoel> {
       subdomeinId: bron.subdomeinId,
       titel: bron.titel,
       beheernaam: `${beheerlabel(bron)} (kopie ${n})`,
-      moeilijkheid: bron.moeilijkheid,
+      /*
+        Alleen een met de hand ingesteld getal gaat mee. Stond de moeilijkheid
+        op automatisch, dan blijft de kopie ook automatisch: die rekent zijn
+        eigen sjabloon door zodra dat er is.
+      */
+      moeilijkheid: bron.moeilijkheidEigen,
       groepVan: bron.groepVan,
       groepTot: bron.groepTot,
     });

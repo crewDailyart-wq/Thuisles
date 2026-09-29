@@ -246,12 +246,14 @@ export default async function DomeinPagina({
                       </span>
                       {/*
                         Hoe moeilijk deze oefening is, als bolletjes naast de
-                        statuspil. Op dezelfde regel en klein gehouden: een
-                        eigen regel zou elke tegel hoger maken, en er passen er
-                        dan minder op een scherm. Is er niets ingevuld, dan komt
-                        er ook niets — zie `Moeilijkheid`.
+                        statuspil. Op dezelfde regel, zodat de tegel niet hoger
+                        wordt en er evenveel op een scherm passen, maar wel op
+                        de ruime maat — dezelfde als in beheer. Twee tegels
+                        kunnen voor het kind hetzelfde heten, en dan zijn deze
+                        bolletjes het enige verschil; op de kleine maat kijk je
+                        daar zo overheen.
                       */}
-                      <Moeilijkheid waarde={leerdoel.moeilijkheid} />
+                      <Moeilijkheid waarde={leerdoel.moeilijkheid} maat="ruim" />
                       {!heeftVragen && (
                         <span className="text-[0.66rem] font-bold text-inkt-zacht">
                           Nog geen vragen

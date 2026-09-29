@@ -113,6 +113,28 @@ export const MASCOTTESETS: Mascotteset[] = [
     ],
   },
   {
+    type: "splitstabel",
+    naam: "Splitsen in de tabel",
+    velden: [
+      {
+        sleutel: "vosBlij",
+        label: "Vos — blij",
+        hulp: "Alleen bij het splitshuis: hij kijkt uit het raam en zwaait als alle rijen kloppen.",
+      },
+    ],
+  },
+  {
+    type: "splitsschema",
+    naam: "Splitsen met het splitsschema",
+    velden: [
+      {
+        sleutel: "vosBlij",
+        label: "Vos — blij",
+        hulp: "Alleen bij de kersen: hij plukt ze zodra het antwoord goed is.",
+      },
+    ],
+  },
+  {
     type: "straat",
     naam: "Vos' straat (buurgetallen)",
     velden: [

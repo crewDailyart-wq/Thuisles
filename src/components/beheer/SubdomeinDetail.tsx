@@ -6,7 +6,7 @@
  */
 
 import Link from "next/link";
-import { useRef, useState, useTransition } from "react";
+import { Fragment, useRef, useState, useTransition } from "react";
 import {
   bewerkLeerdoel,
   bewerkSubdomein,
@@ -18,6 +18,7 @@ import {
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Moeilijkheid } from "@/components/Moeilijkheid";
+import { zoekGenerator } from "@/lib/generatoren";
 import { beheerlabel } from "@/lib/leerdoelnaam";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
 import type { RegelUitslag } from "@/lib/data/structuur";
@@ -127,8 +128,26 @@ export function SubdomeinDetail({
             <table className="w-full min-w-[46rem] border-collapse text-sm">
               <Tabelkop kolommen={["Code", "Leerdoel", "Moeilijk", "Groep", "Vragen", ""]} />
               <tbody>
-                {leerdoelen.map((doel) => (
-                  <tr key={doel.id} className="border-b border-beheer-rand-zacht last:border-0">
+                {leerdoelen.map((doel, i) => (
+                  <Fragment key={doel.id}>
+                  {/*
+                    Een kopregel zodra er een ander generator-type begint.
+
+                    De lijst staat op volgorde van type, en binnen een type van
+                    makkelijk naar moeilijk. Zonder kopregel is dat te raden;
+                    met kopregel zie je meteen welke oefeningen dezelfde vorm
+                    hebben en waar de opbouw opnieuw begint.
+                  */}
+                  {doel.generatorSoort !== (leerdoelen[i - 1]?.generatorSoort ?? null) && (
+                    <tr className="border-b border-beheer-rand-zacht bg-beheer-vlak/40">
+                      <td colSpan={6} className="px-3 py-1.5 text-[0.68rem] font-semibold uppercase tracking-wide text-beheer-zacht">
+                        {doel.generatorSoort === null
+                          ? "Zonder sjabloon"
+                          : (zoekGenerator(doel.generatorSoort)?.naam ?? doel.generatorSoort)}
+                      </td>
+                    </tr>
+                  )}
+                  <tr className="border-b border-beheer-rand-zacht last:border-0">
                     {bewerktDoel === doel.id ? (
                       <td colSpan={6} className="bg-beheer-vlak/60 p-3">
                         <form action={(data) => doe(() => bewerkLeerdoel(data), () => setBewerktDoel(null))}>
@@ -237,6 +256,7 @@ export function SubdomeinDetail({
                       </>
                     )}
                   </tr>
+                  </Fragment>
                 ))}
               </tbody>
             </table>
