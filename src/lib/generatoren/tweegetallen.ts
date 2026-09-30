@@ -1,8 +1,8 @@
 /**
  * Kies twee getallen die samen het doelgetal maken.
  *
- * Zes gele kaartjes, en daaronder ▢ + ▢ = 19. Het kind tikt twee kaartjes aan
- * of typt de getallen zelf in.
+ * Zes gele kaartjes, en daaronder ▢ + ▢ = 19. Het kind sleept twee kaartjes
+ * naar de lege vakjes; één tik doet hetzelfde.
  *
  * Er is altijd precies één paar dat samen het doelgetal maakt. Dat wordt hier
  * echt nagerekend: van alle vijftien paren die je uit zes getallen kunt maken
@@ -53,7 +53,7 @@ export const tweegetallenGenerator: Generator = {
   id: "tweegetallen",
   naam: "Kies twee getallen",
   uitleg:
-    "Zes getallen op kaartjes en een som eronder met twee lege vakjes. Precies één paar maakt samen het doelgetal; het kind tikt twee kaartjes aan of typt ze in.",
+    "Zes getallen op kaartjes en een som eronder met twee lege vakjes. Precies één paar maakt samen het doelgetal; het kind sleept twee kaartjes naar de vakjes, of tikt ze aan.",
   suggestie: "Groep 4: doelgetal 11 tot en met 20",
   velden: [
     { soort: "getal", sleutel: "van", label: "Kleinste doelgetal", min: 3, max: 20 },

@@ -251,4 +251,8 @@ geval het ooit nog nodig is. Gebruik het niet.
 
 ---
 
+**Lees en volg `ONTWERPREGELS.md` voordat je een oefentype, opdracht of vraag bouwt of aanpast.**
+
+---
+
 @AGENTS.md

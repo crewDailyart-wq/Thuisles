@@ -31,7 +31,7 @@
  */
 
 import { Fragment, useEffect, useRef, useState } from "react";
-import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
+import { Gegeven, Handje, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Telplaatje } from "@/components/oefenen/Telplaatjes";
 import { isTelplaatje } from "@/lib/telplaatjes";
 import type { Figuur } from "@/lib/generatoren/soort";
@@ -571,30 +571,23 @@ export function Optelopdracht({
     return (
       <Tweegetallen
         figuur={figuur}
-        getypt={getypt}
+        fase={fase}
         uit={uit}
-        vak={vak}
-        onKaartje={(n) => {
+        metCursor={metCursor}
+        uitslagen={uitslagen}
+        onKiezen={(paar) => {
           if (uit) return;
-          const nieuw = [...getypt];
-          const plek = nieuw.findIndex((w) => w === "");
-          if (plek < 0) return;
-          nieuw[plek] = String(n);
-          /* Altijd van klein naar groot doorgeven; de volgorde telt niet mee. */
-          const gevuld = nieuw.every((w) => w !== "");
+          const nieuw = paar.map((n) => (n === null ? "" : String(n)));
           setGetypt(nieuw);
+          /* Altijd van klein naar groot doorgeven; de volgorde telt niet mee. */
           onWijzig(
-            gevuld
+            nieuw.every((w) => w !== "")
               ? nieuw
                   .map(Number)
                   .sort((a, b) => a - b)
                   .join(",")
               : "",
           );
-        }}
-        onLeeg={() => {
-          if (uit) return;
-          meld(Array.from({ length: aantal }, () => ""));
         }}
       />
     );
@@ -616,66 +609,371 @@ export function Optelopdracht({
 // Kies twee getallen
 // ---------------------------------------------------------------------------
 
+/** Waar een kaartje ligt: in de rij bovenaan, of in een van de twee vakjes. */
+type Kaartplek = "rij" | 0 | 1;
+
+/**
+ * Of het handje bij dit type al is voorgedaan.
+ *
+ * Bewust naast de component, net als bij Verdelen: elke vraag krijgt een eigen
+ * exemplaar van dit scherm, en het handje hoort maar één keer per oefening te
+ * komen.
+ */
+let handjeGetoondTweegetallen = false;
+
+/**
+ * De maat van een getalkaartje.
+ *
+ * Even groot en even vierkant als de vakjes in de som eronder, zodat te zien
+ * is dat het kaartje precies in zo'n vakje hoort. `KAART` is de maat in
+ * pixels, voor het kaartje dat los onder de vinger meereist.
+ */
+const KAARTMAAT = "size-16 text-2xl sm:size-[4.25rem] sm:text-3xl";
+const KAART = 64;
+
 /**
  * Zes kaartjes en een som met twee lege vakjes.
  *
- * Tikken op een kaartje vult het eerstvolgende lege vakje; typen mag ook. Met
- * de knop eronder maakt het kind de twee vakjes in één keer weer leeg, zodat
- * een misklik niet betekent dat er per vakje gewist moet worden.
+ * ---------------------------------------------------------------------------
+ * Slepen, net als bij Verdelen in twee groepen
+ * ---------------------------------------------------------------------------
+ * Het kind sleept een getalkaartje naar een van de twee vakjes in de som. Het
+ * kaartje hangt onder de vinger, het hele vakje telt als doel en licht op
+ * zodra je erboven hangt, en loslaten naast een vakje brengt het kaartje terug.
+ * Eén tik op een kaartje legt het in het eerste lege vakje; een tik op een
+ * gevuld vakje haalt het kaartje er weer uit. Dat gaat met pointer-events,
+ * want die gelden voor muis, vinger én pen.
+ *
+ * Een kaartje dat in een vakje ligt, is uit de rij verdwenen — op zijn plek
+ * blijft een leeg hokje staan, zodat de rij niet verspringt en het kaartje
+ * straks weer op zijn eigen plek terugkomt. Zo kan hetzelfde getal nooit twee
+ * keer gebruikt worden. Sleep je een kaartje naar een vakje waar al iets in
+ * ligt, dan gaat dat oude getal terug naar de rij.
+ *
+ * De volgorde telt niet mee bij het nakijken: 14 + 1 is hetzelfde paar als
+ * 1 + 14. Daarom is het paar als geheel goed of fout.
  */
 function Tweegetallen({
   figuur,
-  getypt,
+  fase,
   uit,
-  vak,
-  onKaartje,
-  onLeeg,
+  metCursor,
+  uitslagen,
+  onKiezen,
 }: {
   figuur: Extract<Optelfiguur, { soort: "tweegetallen" }>;
-  getypt: string[];
+  fase: Fase;
   uit: boolean;
-  vak: (nummer: number, label: string, maat?: "gewoon" | "groot" | "klein") => React.ReactNode;
-  onKaartje: (n: number) => void;
-  onLeeg: () => void;
+  /** Bij het kind: dan wordt het handje één keer voorgedaan. Uit in beheer. */
+  metCursor: boolean;
+  uitslagen: ("goed" | "fout" | null)[];
+  onKiezen: (paar: (number | null)[]) => void;
 }) {
-  const gekozen = getypt.filter((w) => w !== "").map(Number);
+  /** Welk kaartje (de plek in de rij) er in vakje 0 en vakje 1 ligt. */
+  const [inVak, setInVak] = useState<(number | null)[]>([null, null]);
+  /** Welk kaartje er nu in de hand is, en waar het vandaan komt. */
+  const [bezig, setBezig] = useState<{ kaart: number; vanaf: Kaartplek } | null>(null);
+  /** Waar de vinger is, zodat het kaartje eronder mee kan reizen. */
+  const [zweef, setZweef] = useState<{ x: number; y: number } | null>(null);
+  /** Boven welk vakje de vinger hangt; dat vakje licht op. */
+  const [boven, setBoven] = useState<Kaartplek | null>(null);
+
+  const vakken = useRef<{ rij: HTMLDivElement | null; vak: (HTMLDivElement | null)[] }>({
+    rij: null,
+    vak: [null, null],
+  });
+
+  /*
+    Tik of sleep? Aan het begin van het gebaar is dat niet te zien. Daarom
+    wordt bijgehouden of de vinger echt een stuk verplaatst is; een paar pixels
+    tellen niet mee, want een kindervinger staat nooit helemaal stil.
+  */
+  const verplaatst = useRef(false);
+  const beginpunt = useRef<{ x: number; y: number } | null>(null);
+  const SLEEPGRENS = 8;
+
+  /* Opnieuw beginnen: alleen bij de overgang van nagekeken terug naar bezig. */
+  const vorigeFase = useRef(fase);
+  useEffect(() => {
+    const wasKlaar = vorigeFase.current !== "bezig";
+    vorigeFase.current = fase;
+    if (wasKlaar && fase === "bezig") setInVak([null, null]);
+  }, [fase]);
+
+  /*
+    Het handje dat één keer voordoet hoe het werkt: het pakt het eerste kaartje
+    op, brengt het naar het eerste vakje en zet het weer terug — zonder dat er
+    iets verandert aan wat er ligt. Daarna komt het deze oefening niet meer
+    terug. De vlag gaat pas in het laatste klokje om; zie Verdelen.
+  */
+  const [handje, setHandje] = useState<{ x: number; y: number } | null>(null);
+  const strook = useRef<HTMLDivElement | null>(null);
+  const eersteKaart = useRef<HTMLButtonElement | null>(null);
+
+  useEffect(() => {
+    if (!metCursor || uit || handjeGetoondTweegetallen) return;
+
+    const klokjes: number[] = [];
+    const meet = () => {
+      const buiten = strook.current?.getBoundingClientRect();
+      const start = eersteKaart.current?.getBoundingClientRect();
+      const doel = vakken.current.vak[0]?.getBoundingClientRect();
+      if (!buiten || !start || !doel) return null;
+      return {
+        van: {
+          x: start.left - buiten.left + start.width / 2,
+          y: start.top - buiten.top + start.height / 2,
+        },
+        naar: {
+          x: doel.left - buiten.left + doel.width / 2,
+          y: doel.top - buiten.top + doel.height / 2,
+        },
+      };
+    };
+
+    klokjes.push(
+      window.setTimeout(() => {
+        const plekken = meet();
+        if (!plekken) return;
+        setHandje(plekken.van);
+        klokjes.push(window.setTimeout(() => setHandje(plekken.naar), 700));
+        klokjes.push(window.setTimeout(() => setHandje(plekken.van), 1900));
+        klokjes.push(
+          window.setTimeout(() => {
+            setHandje(null);
+            handjeGetoondTweegetallen = true;
+          }, 3100),
+        );
+      }, 600),
+    );
+
+    return () => klokjes.forEach((k) => window.clearTimeout(k));
+  }, [metCursor, uit]);
+
+  /** Een kaartje ergens neerleggen; wat er lag, gaat terug naar de rij. */
+  function leg(kaart: number, naar: Kaartplek) {
+    if (uit) return;
+    const nieuw = [...inVak];
+    for (let i = 0; i < nieuw.length; i++) if (nieuw[i] === kaart) nieuw[i] = null;
+    if (naar !== "rij") nieuw[naar] = kaart;
+    setInVak(nieuw);
+    onKiezen(nieuw.map((k) => (k === null ? null : figuur.getallen[k])));
+  }
+
+  /** Boven welk vakje hangt de vinger? `null` = ernaast. */
+  function plekOnder(x: number, y: number): Kaartplek | null {
+    for (const nummer of [0, 1] as const) {
+      const r = vakken.current.vak[nummer]?.getBoundingClientRect();
+      if (r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return nummer;
+    }
+    const r = vakken.current.rij?.getBoundingClientRect();
+    if (r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom) return "rij";
+    return null;
+  }
+
+  function pak(e: React.PointerEvent, kaart: number, vanaf: Kaartplek) {
+    if (uit) return;
+    try {
+      (e.target as HTMLElement).setPointerCapture?.(e.pointerId);
+    } catch {
+      /* Lukt het vasthouden niet, dan werkt het slepen nog wel — minder vergevend. */
+    }
+    setBezig({ kaart, vanaf });
+    setZweef({ x: e.clientX, y: e.clientY });
+    setBoven(plekOnder(e.clientX, e.clientY));
+  }
+
+  function beweeg(e: React.PointerEvent) {
+    if (!bezig) return;
+    const begin = beginpunt.current;
+    if (begin && Math.hypot(e.clientX - begin.x, e.clientY - begin.y) > SLEEPGRENS) {
+      verplaatst.current = true;
+    }
+    setZweef({ x: e.clientX, y: e.clientY });
+    setBoven(plekOnder(e.clientX, e.clientY));
+  }
+
+  function losLaten(e: React.PointerEvent) {
+    if (!bezig) return;
+    const doel = plekOnder(e.clientX, e.clientY);
+    const { kaart, vanaf } = bezig;
+    setBezig(null);
+    setZweef(null);
+    setBoven(null);
+
+    /*
+      Nauwelijks bewogen? Dan was het een tik: vanuit de rij naar het eerste
+      lege vakje, en vanuit een vakje weer terug naar de rij.
+    */
+    if (!verplaatst.current) {
+      if (vanaf !== "rij") {
+        leg(kaart, "rij");
+        return;
+      }
+      const leeg = inVak.findIndex((k) => k === null);
+      if (leeg >= 0) leg(kaart, leeg as 0 | 1);
+      return;
+    }
+
+    /* Naast alles losgelaten: het kaartje blijft waar het lag. */
+    if (doel === null) return;
+    leg(kaart, doel);
+  }
+
+  /** Eén getalkaartje: geel, met het getal erop. */
+  const kaartje = (kaart: number, vanaf: Kaartplek, eerste = false) => (
+    <button
+      ref={eerste ? eersteKaart : undefined}
+      type="button"
+      disabled={uit}
+      aria-label={`Kaartje ${figuur.getallen[kaart]}`}
+      onPointerDown={(e) => pak(e, kaart, vanaf)}
+      className={`grid ${KAARTMAAT} shrink-0 cursor-grab select-none place-items-center rounded-2xl border-2 border-geel bg-geel-zacht font-extrabold tabular-nums text-inkt transition [touch-action:none] active:cursor-grabbing disabled:cursor-not-allowed ${
+        bezig?.kaart === kaart ? "opacity-30" : ""
+      }`}
+    >
+      {figuur.getallen[kaart]}
+    </button>
+  );
+
+  /** De rand van een vakje: groen of rood na het nakijken, anders licht. */
+  const vakStijl = (nummer: 0 | 1) => {
+    if (uitslagen[nummer] === "goed") return "border-groen bg-groen-zacht text-groen-diep";
+    if (uitslagen[nummer] === "fout") return "border-roze bg-roze-zacht text-roze";
+    /* Boven het vakje waar de vinger hangt: vol aan. Met een kaartje in de
+       hand: allebei zacht, zodat een kind ziet waar het naartoe kan. */
+    if (boven === nummer) return "border-huisstijl bg-huisstijl-zacht text-inkt";
+    if (bezig !== null) return "border-huisstijl/50 bg-huisstijl-zacht/50 text-inkt";
+    return "border-rand bg-kaart text-inkt";
+  };
+
+  const gebruikt = (kaart: number) => inVak.includes(kaart);
 
   return (
-    <div className="flex w-full flex-col items-center gap-5">
-      <div className="grid w-full max-w-md grid-cols-3 gap-2.5">
-        {figuur.getallen.map((n, i) => (
-          <button
-            key={i}
-            type="button"
-            disabled={uit}
-            onClick={() => onKaartje(n)}
-            className={`grid h-14 place-items-center rounded-2xl border-2 text-xl font-extrabold tabular-nums transition disabled:cursor-not-allowed ${
-              gekozen.includes(n)
-                ? "border-huisstijl bg-huisstijl-zacht text-inkt"
-                : "border-geel bg-geel-zacht text-inkt"
-            }`}
-          >
-            {n}
-          </button>
-        ))}
+    <div
+      ref={strook}
+      className={`relative flex w-full flex-col items-center gap-5 ${
+        bezig !== null ? "cursor-grabbing" : ""
+      }`}
+      onPointerDown={(e) => {
+        /* Elk nieuw gebaar begint als een tik, tot de vinger echt beweegt. */
+        verplaatst.current = false;
+        beginpunt.current = { x: e.clientX, y: e.clientY };
+      }}
+      onPointerMove={beweeg}
+      onPointerUp={losLaten}
+      onPointerCancel={losLaten}
+    >
+      {/*
+        De rij kaartjes. Wat in een vakje ligt, laat hier een leeg hokje achter.
+
+        Zes naast elkaar als dat past, anders twee rijen van drie. Dat hangt af
+        van de ruimte die de kaart zelf overhoudt en niet van de breedte van
+        het scherm — vandaar een container-query en geen `sm:`. Zes kaartjes
+        van hooguit 68 px met lucht ertussen hebben net geen 30rem nodig.
+      */}
+      <div className="@container w-full">
+        <div
+          ref={(el) => {
+            vakken.current.rij = el;
+          }}
+          className="mx-auto grid w-fit grid-cols-3 justify-items-center gap-2.5 [touch-action:none] @[30rem]:grid-cols-6"
+        >
+          {figuur.getallen.map((n, i) =>
+            gebruikt(i) ? (
+              <span
+                key={i}
+                aria-hidden="true"
+                className={`${KAARTMAAT} block rounded-2xl border-2 border-dashed border-rand`}
+              />
+            ) : (
+              <Fragment key={i}>{kaartje(i, "rij", i === 0)}</Fragment>
+            ),
+          )}
+        </div>
       </div>
 
+      {/* De som: twee vakjes om een kaartje in te leggen, en het doelgetal. */}
       <div className="flex items-center gap-2.5">
-        {vak(0, "Het eerste getal")}
-        <span className="text-2xl font-extrabold text-inkt-zacht">+</span>
-        {vak(1, "Het tweede getal")}
+        {([0, 1] as const).map((nummer) => (
+          <Fragment key={nummer}>
+            {nummer === 1 && <span className="text-2xl font-extrabold text-inkt-zacht">+</span>}
+            <div
+              ref={(el) => {
+                vakken.current.vak[nummer] = el;
+              }}
+              aria-label={nummer === 0 ? "Het eerste getal" : "Het tweede getal"}
+              onPointerDown={(e) => {
+                const kaart = inVak[nummer];
+                if (kaart !== null) pak(e, kaart, nummer);
+              }}
+              className={`grid ${KAARTMAAT} place-items-center rounded-2xl border-2 font-extrabold tabular-nums transition [touch-action:none] ${
+                inVak[nummer] !== null && !uit ? "cursor-grab active:cursor-grabbing" : ""
+              } ${vakStijl(nummer)}`}
+            >
+              {inVak[nummer] === null ? (
+                <span className="text-inkt-zacht/60">?</span>
+              ) : (
+                figuur.getallen[inVak[nummer] as number]
+              )}
+            </div>
+          </Fragment>
+        ))}
         <span className="text-2xl font-extrabold text-inkt-zacht">=</span>
         <Gegeven waarde={figuur.doel} />
       </div>
 
-      {!uit && gekozen.length > 0 && (
+      {!uit && inVak.some((k) => k !== null) && (
         <button
           type="button"
-          onClick={onLeeg}
+          onClick={() => {
+            setInVak([null, null]);
+            onKiezen([null, null]);
+          }}
           className="text-sm font-bold text-inkt-zacht underline underline-offset-4"
         >
           Opnieuw kiezen
         </button>
+      )}
+
+      {/*
+        Het handje dat één keer voordoet wat de bedoeling is. Het reageert
+        nergens op; het kind kan er gewoon doorheen tikken.
+      */}
+      {handje && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute z-20 transition-all duration-700 ease-in-out"
+          style={{ left: handje.x - KAART / 2, top: handje.y - KAART / 2 }}
+        >
+          <span className="relative block">
+            <span
+              className="grid place-items-center rounded-2xl border-2 border-geel bg-geel-zacht text-2xl font-extrabold tabular-nums text-inkt shadow-op"
+              style={{ width: KAART, height: KAART }}
+            >
+              {figuur.getallen[0]}
+            </span>
+            <span className="absolute left-8 top-9">
+              <Handje />
+            </span>
+          </span>
+        </span>
+      )}
+
+      {/* Het kaartje dat met de vinger meereist. */}
+      {bezig && zweef && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none fixed z-[70] grid place-items-center rounded-2xl border-2 border-geel bg-geel-zacht text-2xl font-extrabold tabular-nums text-inkt shadow-op"
+          style={{
+            left: zweef.x - KAART / 2,
+            top: zweef.y - KAART / 2,
+            width: KAART,
+            height: KAART,
+          }}
+        >
+          {figuur.getallen[bezig.kaart]}
+        </span>
       )}
     </div>
   );

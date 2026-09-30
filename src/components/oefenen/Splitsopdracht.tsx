@@ -1286,8 +1286,13 @@ const KRAAL = 28;
  */
 let handjeGetoond = false;
 
-/** Het witte handje, hetzelfde als bij de kralenrij. */
-function Handje() {
+/**
+ * Het witte handje, hetzelfde als bij de kralenrij.
+ *
+ * Wordt ook bij Optellen gebruikt, zodat het voordoen overal hetzelfde handje
+ * is; daarom staat het hier als export.
+ */
+export function Handje() {
   return (
     <svg viewBox="0 0 30 32" className="h-8 w-8 drop-shadow-sm" aria-hidden="true">
       <path
