@@ -360,6 +360,245 @@ function Vis() {
   );
 }
 
+
+/**
+ * Muisje.
+ *
+ * Twee grote ronde oren, een bol lijfje en een krulstaartje: aan dat silhouet
+ * is hij meteen te herkennen, ook als hij klein staat.
+ */
+function Muis() {
+  return (
+    <g>
+      <Schaduw cy={88} rx={26} />
+      {/* staart */}
+      <path
+        d="M76 74 C90 74 92 60 84 56"
+        fill="none"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinecap="round"
+      />
+      {/* oren */}
+      <circle cx={30} cy={34} r={14} fill="#c9c2d8" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <circle cx={30} cy={34} r={6.5} fill="#f4b8c8" />
+      <circle cx={62} cy={30} r={12} fill="#c9c2d8" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <circle cx={62} cy={30} r={5.5} fill="#f4b8c8" />
+      {/* lijf */}
+      <path
+        d="M22 60 C22 42 38 34 54 36 C74 38 84 52 84 64 C84 74 72 80 54 80 C34 80 22 72 22 60 Z"
+        fill="#b8b0cc"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <circle cx={68} cy={56} r={4} fill={RAND} />
+      <circle cx={69.2} cy={54.8} r={1.3} fill="#ffffff" />
+      <circle cx={82} cy={62} r={4} fill="#f4b8c8" stroke={RAND} strokeWidth={3} />
+      <Glans cx={42} cy={50} rx={10} ry={5} dekking={0.4} />
+    </g>
+  );
+}
+
+/**
+ * Vogeltje.
+ *
+ * Een bol lijfje met een vleugel, een puntige snavel en een staartje. Geen
+ * pootjes: die worden op klein formaat toch een vlekje.
+ */
+function Vogel() {
+  return (
+    <g>
+      <Schaduw cy={88} rx={25} />
+      {/* staart */}
+      <path
+        d="M24 48 L2 32 L6 60 Z"
+        fill="#3f92d2"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      {/* lijf */}
+      <ellipse cx={54} cy={52} rx={31} ry={27} fill="#5aa9e6" stroke={RAND} strokeWidth={RANDDIKTE} />
+      {/* buik */}
+      <path
+        d="M40 62 C48 74 68 74 78 62 C74 74 62 80 54 79 C46 78 42 70 40 62 Z"
+        fill="#bfe0f7"
+      />
+      {/* vleugel */}
+      <path
+        d="M44 54 C52 48 64 50 68 57 C62 65 50 65 44 60 Z"
+        fill="#3f92d2"
+        stroke={RAND}
+        strokeWidth={3.4}
+        strokeLinejoin="round"
+      />
+      {/* snavel */}
+      <path
+        d="M82 40 L99 47 L82 54 Z"
+        fill="#f7a93b"
+        stroke={RAND}
+        strokeWidth={3.4}
+        strokeLinejoin="round"
+      />
+      <circle cx={70} cy={36} r={5.5} fill={RAND} />
+      <circle cx={71.8} cy={34.2} r={1.9} fill="#ffffff" />
+      <Glans cx={44} cy={34} rx={10} ry={5} dekking={0.4} />
+    </g>
+  );
+}
+
+/** Bijtje: een geel lijfje met twee zwarte strepen en twee witte vleugeltjes. */
+function Bij({ id }: { id: string }) {
+  const knip = `${id}-bij-knip`;
+  return (
+    <g>
+      <Schaduw cy={88} rx={24} />
+      {/* vleugels */}
+      <ellipse cx={40} cy={34} rx={14} ry={9} transform="rotate(-24 40 34)" fill="#ffffff" opacity={0.92} stroke={RAND} strokeWidth={3.4} />
+      <ellipse cx={62} cy={32} rx={13} ry={8.5} transform="rotate(16 62 32)" fill="#ffffff" opacity={0.92} stroke={RAND} strokeWidth={3.4} />
+      <clipPath id={knip}>
+        <ellipse cx={52} cy={60} rx={30} ry={20} />
+      </clipPath>
+      {/* lijf */}
+      <ellipse cx={52} cy={60} rx={30} ry={20} fill="#f7c948" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <g clipPath={`url(#${knip})`}>
+        <rect x={44} y={38} width={9} height={46} fill={RAND} />
+        <rect x={62} y={38} width={9} height={46} fill={RAND} />
+      </g>
+      <ellipse cx={52} cy={60} rx={30} ry={20} fill="none" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <circle cx={30} cy={55} r={3.8} fill={RAND} />
+      <circle cx={31.2} cy={53.8} r={1.3} fill="#ffffff" />
+      <Glans cx={46} cy={50} rx={9} ry={4.5} dekking={0.35} />
+    </g>
+  );
+}
+
+/** Vlinder: vier vleugels, een dun lijfje en twee voelsprieten. */
+function Vlinder() {
+  return (
+    <g>
+      <Schaduw cy={90} rx={22} />
+      {/* voelsprieten */}
+      <path d="M48 32 C44 20 38 16 34 15" fill="none" stroke={RAND} strokeWidth={3.4} strokeLinecap="round" />
+      <path d="M54 32 C58 20 64 16 68 15" fill="none" stroke={RAND} strokeWidth={3.4} strokeLinecap="round" />
+      {/* vleugels */}
+      <path
+        d="M48 44 C36 26 14 26 12 42 C10 56 28 60 48 54 Z"
+        fill="#e86fa6"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <path
+        d="M54 44 C66 26 88 26 90 42 C92 56 74 60 54 54 Z"
+        fill="#e86fa6"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <path
+        d="M48 56 C38 60 22 64 24 76 C26 86 42 82 49 70 Z"
+        fill="#b86ad9"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <path
+        d="M54 56 C64 60 80 64 78 76 C76 86 60 82 53 70 Z"
+        fill="#b86ad9"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      {/* lijfje */}
+      <rect x={47} y={32} width={8} height={46} rx={4} fill={RAND} />
+      <Glans cx={30} cy={40} rx={8} ry={4} dekking={0.35} />
+    </g>
+  );
+}
+
+/** Lieveheersbeestje: een rood bolletje met stippen en een zwart kopje. */
+function Lieveheersbeestje({ id }: { id: string }) {
+  const knip = `${id}-lhb-knip`;
+  return (
+    <g>
+      <Schaduw cy={88} rx={26} />
+      {/* kopje */}
+      <circle cx={50} cy={30} r={13} fill={RAND} />
+      <circle cx={44} cy={27} r={2.6} fill="#ffffff" />
+      <circle cx={56} cy={27} r={2.6} fill="#ffffff" />
+      <clipPath id={knip}>
+        <ellipse cx={50} cy={58} rx={31} ry={26} />
+      </clipPath>
+      {/* schild */}
+      <ellipse cx={50} cy={58} rx={31} ry={26} fill="#e4483c" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <g clipPath={`url(#${knip})`}>
+        <rect x={47} y={30} width={6} height={58} fill={RAND} />
+        <circle cx={32} cy={50} r={5.5} fill={RAND} />
+        <circle cx={68} cy={50} r={5.5} fill={RAND} />
+        <circle cx={36} cy={70} r={5} fill={RAND} />
+        <circle cx={64} cy={70} r={5} fill={RAND} />
+      </g>
+      <ellipse cx={50} cy={58} rx={31} ry={26} fill="none" stroke={RAND} strokeWidth={RANDDIKTE} />
+      <Glans cx={36} cy={44} rx={9} ry={5} />
+    </g>
+  );
+}
+
+/** Peer: een smalle bovenkant en een bolle onderkant, met steeltje en blad. */
+function Peer() {
+  return (
+    <g>
+      <Schaduw cy={91} rx={23} />
+      <path
+        d="M50 26 C44 26 40 32 41 40 C42 48 34 52 30 62 C25 74 33 84 50 84 C67 84 75 74 70 62 C66 52 58 48 59 40 C60 32 56 26 50 26 Z"
+        fill="#c3d84a"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <path d="M50 26 C50 19 50 15 49 11" fill="none" stroke="#7a5230" strokeWidth={5.5} strokeLinecap="round" />
+      <path
+        d="M51 17 C58 9 70 9 74 14 C70 23 58 25 51 17 Z"
+        fill="#4cba7d"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <Glans cx={40} cy={62} rx={8} ry={6} />
+    </g>
+  );
+}
+
+/** Eikel: een nootje met een gestreept hoedje en een klein steeltje. */
+function Eikel() {
+  return (
+    <g>
+      <Schaduw cy={90} rx={22} />
+      {/* nootje */}
+      <path
+        d="M26 46 C26 68 36 84 50 84 C64 84 74 68 74 46 Z"
+        fill="#e0a45e"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      {/* hoedje */}
+      <path
+        d="M22 46 C22 34 34 26 50 26 C66 26 78 34 78 46 Z"
+        fill="#9a6433"
+        stroke={RAND}
+        strokeWidth={RANDDIKTE}
+        strokeLinejoin="round"
+      />
+      <path d="M34 30 L30 44 M50 27 L50 44 M66 30 L70 44" stroke={RAND} strokeWidth={3} strokeLinecap="round" />
+      <path d="M50 26 C50 19 50 15 49 12" fill="none" stroke="#7a5230" strokeWidth={5.5} strokeLinecap="round" />
+      <Glans cx={38} cy={58} rx={7} ry={6} dekking={0.35} />
+    </g>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // Het register
 // ---------------------------------------------------------------------------
@@ -373,6 +612,13 @@ export const TELPLAATJES: Record<string, (id: string) => ReactNode> = {
   ster: () => <Ster />,
   bloem: () => <Bloem />,
   vis: () => <Vis />,
+  muis: () => <Muis />,
+  vogel: () => <Vogel />,
+  bij: (id) => <Bij id={id} />,
+  vlinder: () => <Vlinder />,
+  lieveheersbeestje: (id) => <Lieveheersbeestje id={id} />,
+  peer: () => <Peer />,
+  eikel: () => <Eikel />,
 };
 
 /**

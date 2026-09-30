@@ -17,6 +17,15 @@ import { aanvullenGenerator } from "@/lib/generatoren/aanvullen";
 import { splitsschemaGenerator } from "@/lib/generatoren/splitsschema";
 import { verdelenGenerator } from "@/lib/generatoren/verdelen";
 import { splitsdriehoekGenerator } from "@/lib/generatoren/splitsdriehoek";
+import { plaatjessomGenerator } from "@/lib/generatoren/plaatjessom";
+import { plussomGenerator } from "@/lib/generatoren/plussom";
+import { somkeuzeGenerator } from "@/lib/generatoren/somkeuze";
+import { aanvultabelGenerator } from "@/lib/generatoren/aanvultabel";
+import { evenveelsomGenerator } from "@/lib/generatoren/evenveelsom";
+import { koppelsommenGenerator } from "@/lib/generatoren/koppelsommen";
+import { viatienGenerator } from "@/lib/generatoren/viatien";
+import { tweegetallenGenerator } from "@/lib/generatoren/tweegetallen";
+import { balansGenerator } from "@/lib/generatoren/balans";
 import { straatGenerator } from "@/lib/generatoren/straat";
 import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
 import { vakkenGenerator } from "@/lib/generatoren/vakken";
@@ -39,6 +48,15 @@ export const alleGeneratoren: Generator[] = [
   splitsschemaGenerator,
   verdelenGenerator,
   splitsdriehoekGenerator,
+  plaatjessomGenerator,
+  plussomGenerator,
+  somkeuzeGenerator,
+  aanvultabelGenerator,
+  evenveelsomGenerator,
+  koppelsommenGenerator,
+  viatienGenerator,
+  tweegetallenGenerator,
+  balansGenerator,
   kralenGenerator,
   busGenerator,
   tellenslepenGenerator,

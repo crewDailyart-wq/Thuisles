@@ -36,6 +36,13 @@ export const TELPLAATJE_OPTIES: { waarde: string; label: string; meervoud: strin
   { waarde: "ster", label: "Ster", meervoud: "sterren" },
   { waarde: "bloem", label: "Bloem", meervoud: "bloemen" },
   { waarde: "vis", label: "Visje", meervoud: "visjes" },
+  { waarde: "muis", label: "Muisje", meervoud: "muisjes" },
+  { waarde: "vogel", label: "Vogeltje", meervoud: "vogeltjes" },
+  { waarde: "bij", label: "Bijtje", meervoud: "bijtjes" },
+  { waarde: "vlinder", label: "Vlinder", meervoud: "vlinders" },
+  { waarde: "lieveheersbeestje", label: "Lieveheersbeestje", meervoud: "lieveheersbeestjes" },
+  { waarde: "peer", label: "Peer", meervoud: "peren" },
+  { waarde: "eikel", label: "Eikel", meervoud: "eikels" },
 ];
 
 export const TELPLAATJE_NAMEN = TELPLAATJE_OPTIES.map((o) => o.waarde);

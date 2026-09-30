@@ -140,7 +140,7 @@ const VAK =
  * Het lege vakje krijgt dezelfde vorm als het gevulde, zodat ook de rand van
  * het actieve vakje de vorm van een blaadje heeft en niet die van een hokje.
  */
-type Vakvorm = "vierkant" | "rond" | "bladLinks" | "bladRechts";
+export type Vakvorm = "vierkant" | "rond" | "bladLinks" | "bladRechts";
 
 const VORM: Record<Vakvorm, string> = {
   vierkant: "",
@@ -150,7 +150,7 @@ const VORM: Record<Vakvorm, string> = {
 };
 
 /** Een gegeven getal: geel met donkere cijfers. */
-function Gegeven({
+export function Gegeven({
   waarde,
   maat = "gewoon",
   vorm = "vierkant",
@@ -173,7 +173,7 @@ function Gegeven({
 }
 
 /** Een leeg vakje: wit met een lichte rand, en een echt invoerveld erin. */
-function Invulvak({
+export function Invulvak({
   waarde,
   uitslag,
   maat = "gewoon",

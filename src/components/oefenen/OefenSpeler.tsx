@@ -56,6 +56,7 @@ import {
 } from "@/lib/geluid";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
+import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1649,6 +1650,28 @@ function Antwoordvelden({
         onBevestig={onBevestig}
         /* Pas als Vos of de bloem klaar is, mag het feestscherm eroverheen. */
         onKlaar={onSprongKlaar}
+      />
+    );
+  }
+
+  /*
+    De opdrachten van het domein Optellen: de tekening ís het antwoordveld.
+
+    Net als bij Splitsen: één getal per leeg vakje met komma's ertussen, in de
+    volgorde waarin ze op het scherm staan. Bij de kaartjesopdrachten is het
+    antwoord het nummer van het gekozen kaartje, en bij het koppelen de
+    uitkomst per rij.
+  */
+  if (vraag.vorm === "open" && isOptelfiguur(vraag.figuur)) {
+    return (
+      <Optelopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
       />
     );
   }

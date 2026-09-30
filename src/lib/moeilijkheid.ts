@@ -239,6 +239,39 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p += 5;
       break;
 
+    /*
+      De opdrachten van het domein Optellen.
+
+      Ook hier typt of sleept het kind altijd zelf, dus er tellen geen punten
+      voor "zelf typen". Wat de opdrachtvorm vraagt verschilt sterk: plaatjes
+      tellen en optellen is de eerste stap, terwijl beide kanten gelijk maken
+      vraagt dat een kind twee sommen tegelijk overziet.
+    */
+    case "plaatjessom":
+      break;
+
+    case "plussom":
+      p += 2;
+      break;
+
+    case "somkeuze":
+    case "aanvultabel":
+    case "evenveelsom":
+    case "koppelsommen":
+      p += 3;
+      break;
+
+    case "viatien":
+    case "tweegetallen":
+      p += 5;
+      break;
+
+    case "balans":
+      p += 6;
+      /* Wisselt het lege vakje van kant, dan moet het kind eerst kijken waar. */
+      if (tekst(inst, "leeg", "links") === "wissel") p += 1;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;
@@ -280,6 +313,16 @@ export const TYPEVOLGORDE = [
   "splitsschema",
   "verdelen",
   "splitsdriehoek",
+  /* Het domein Optellen, in de volgorde waarin een kind ze leert. */
+  "plaatjessom",
+  "plussom",
+  "somkeuze",
+  "aanvultabel",
+  "evenveelsom",
+  "koppelsommen",
+  "viatien",
+  "tweegetallen",
+  "balans",
 ] as const;
 
 /** Het plaatsnummer van een type; types zonder eigen plek komen erachter. */

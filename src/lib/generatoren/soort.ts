@@ -98,6 +98,87 @@ export type Figuur =
     }
   | {
       /**
+       * Optellen met plaatjes: twee groepjes voorwerpjes.
+       *
+       * `stand` is "som" (drie lege vakjes) of "uitkomst" (de twee getallen
+       * staan er al). `voorwerp` zegt wat er getekend wordt; per vraag één
+       * soort, en het tweede groepje krijgt een andere kleur.
+       */
+      soort: "plaatjessom";
+      eerste: number;
+      tweede: number;
+      stand: string;
+      voorwerp: string;
+    }
+  | {
+      /** De kale plussom: twee getallen en een leeg vakje. */
+      soort: "plussom";
+      eerste: number;
+      tweede: number;
+    }
+  | {
+      /**
+       * Vier kaartjes met een som; het kind kiest er één.
+       *
+       * Bij de stand "nietbij" staat op elk kaartje alleen `a + b` en is er
+       * één die niet op `doel` uitkomt. Bij "klopt" staat de uitkomst er ook
+       * bij en klopt er precies één.
+       */
+      soort: "somkeuze";
+      stand: string;
+      doel: number;
+      kaarten: { eerste: number; tweede: number; uitkomst: number }[];
+    }
+  | {
+      /**
+       * Aanvullen in de tabel: vier getallen op een rij, eronder lege vakjes.
+       */
+      soort: "aanvultabel";
+      doel: number;
+      getallen: number[];
+    }
+  | {
+      /** Eén som bovenaan en vier kaartjes; welke is evenveel? */
+      soort: "evenveelsom";
+      eerste: number;
+      tweede: number;
+      kaarten: { eerste: number; tweede: number }[];
+    }
+  | {
+      /**
+       * Vijf sommen links, vijf losse uitkomsten rechts.
+       *
+       * `keuzes` staat door elkaar; het kind sleept ze naar de som waar ze bij
+       * horen. Het antwoord is per rij de uitkomst, van boven naar beneden.
+       */
+      soort: "koppelsommen";
+      sommen: { eerste: number; tweede: number }[];
+      keuzes: number[];
+    }
+  | {
+      /** Optellen via tien: 7 + 7 = 10 + ▢ = ▢. */
+      soort: "viatien";
+      eerste: number;
+      tweede: number;
+    }
+  | {
+      /** Zes getallen; welke twee maken samen het doelgetal? */
+      soort: "tweegetallen";
+      doel: number;
+      getallen: number[];
+    }
+  | {
+      /**
+       * Beide kanten gelijk: 5 + ▢ = 1 + 7.
+       *
+       * Wat `null` is, vult het kind in. Er is er altijd precies één leeg.
+       */
+      soort: "balans";
+      links: (number | null)[];
+      rechts: (number | null)[];
+    }
+  | {
+      /**
        * De splitsdriehoek: drie vakken binnen de driehoek, drie sommen erbuiten.
        *
        * Wat `null` is, vult het kind in. De volgorde van het antwoord is
