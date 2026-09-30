@@ -517,20 +517,41 @@ export function Optelopdracht({
   }
 
   if (figuur.soort === "aanvultabel") {
+    /*
+      Een echte tabel, zoals op school: lijnen om én tussen alle vakken, even
+      dik aan de buitenkant als binnenin. Daarom een `<table>` met
+      `border-collapse` en geen rijtjes losse vakjes — dan valt er geen enkele
+      lijn dubbel of weg, en hoeft er geen aparte streep tussen de twee rijen.
+
+      Boven staat wat gegeven is: het hele vak is zachtgeel, niet een geel
+      kaartje in een vak. Onder staat in elk vak een wit invulvakje, een maatje
+      kleiner dan het vak zelf.
+    */
+    const HOKJE = "size-16 border-2 border-tabellijn p-0 sm:size-[4.25rem]";
     return (
-      <div className="mx-auto w-fit">
-        <div className="flex gap-2.5">
-          {figuur.getallen.map((n, i) => (
-            <Gegeven key={i} waarde={n} maat="klein" />
-          ))}
-        </div>
-        <div aria-hidden="true" className="my-2 h-0.5 w-full rounded-full bg-inkt/70" />
-        <div className="flex gap-2.5">
-          {figuur.getallen.map((n, i) => (
-            <Fragment key={i}>{vak(i, `Wat hoort er bij ${n}?`, "klein")}</Fragment>
-          ))}
-        </div>
-      </div>
+      <table className="mx-auto border-collapse">
+        <tbody>
+          <tr>
+            {figuur.getallen.map((n, i) => (
+              <td
+                key={i}
+                className={`${HOKJE} bg-geel-zacht text-center text-2xl font-extrabold tabular-nums text-inkt sm:text-3xl`}
+              >
+                {n}
+              </td>
+            ))}
+          </tr>
+          <tr>
+            {figuur.getallen.map((n, i) => (
+              <td key={i} className={HOKJE}>
+                <span className="grid place-items-center">
+                  {vak(i, `Wat hoort er bij ${n}?`, "klein")}
+                </span>
+              </td>
+            ))}
+          </tr>
+        </tbody>
+      </table>
     );
   }
 

@@ -110,6 +110,14 @@
   */
   --color-fout: #d92d20;
   --color-lucht: #3577cc;
+  /*
+    De lijnen van een tabel: lichtgrijs-blauw.
+
+    Duidelijk genoeg om de vakken echt van elkaar te scheiden, en licht genoeg
+    om niet met de cijfers te concurreren. Bewust niet `rand`: dat is warm
+    beige en verdwijnt tegen de gele vakken van een tabel.
+  */
+  --color-tabellijn: #c3cedd;
   /* Donkerder blauw voor de hover van de schoolroute. */
   --color-lucht-diep: #27599b;
   --color-lucht-zacht: #e2edfb;

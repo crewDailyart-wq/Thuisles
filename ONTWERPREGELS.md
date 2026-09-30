@@ -14,6 +14,11 @@ hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
   volle pijlpunt. Strepen zijn niet langer dan nodig.
 - De rand van een actief vakje heeft dezelfde vorm als het vakje: rond bij
   rond, blaadje bij blaadje.
+- Een tabel is een echte tabel met lijnen om en tussen alle vakken, zoals een
+  schooltabel. Alle vakken zijn even groot. Gegeven vakken hebben een
+  zachtgele achtergrond met een groot, donker getal; in te vullen vakken
+  hebben een wit invulvakje in het midden. Geen losse strepen in plaats van
+  tabellijnen.
 - Eigen Thuisles-stijl: geen titels, teksten of plaatjes letterlijk overnemen
   van andere sites.
 
@@ -76,7 +81,7 @@ vierkant als de vakjes waar ze in moeten.
 ## Werkwijze
 
 - Nieuwe opdrachtsoorten worden nieuw gebouwd volgens de beschrijving, niet op
-  basis van bestaande opgaven, tenzij de eigenaar daarom vraagt.
+  basis van bestaande opgaven, tenzij ik dat zelf vraag.
 - Altijd eerst een kopie van de database voordat er iets in de database
   verandert.
 - Niets verwijderen: oude vragen worden uit de oefening gehaald, niet gewist.
