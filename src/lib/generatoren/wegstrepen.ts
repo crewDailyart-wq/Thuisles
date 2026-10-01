@@ -1,12 +1,12 @@
 /**
- * Wegstrepen: een groep plaatjes waarvan er al een paar zijn doorgestreept.
+ * Wegstrepen: een groep plaatjes waar het kind er zelf een paar wegstreept.
  *
- * Het kind ziet bijvoorbeeld dertien appels in rijtjes van vijf, waarvan er
- * vijf een rood kruis hebben, en typt hoeveel er overblijven. Het streept zelf
- * niets weg; het kruis staat er al.
+ * Het kind ziet bijvoorbeeld dertien appels en op het bordje staat "5 eraf".
+ * Het tikt er zelf vijf weg — die krijgen een rood kruis — en typt daarna
+ * hoeveel er overblijven.
  *
- * Eraf is hier nog te zien in plaats van alleen uit te rekenen, en dat maakt
- * het de eerste stap van het domein.
+ * Dit is de eerste stap van het domein: eraf is hier nog iets wat je dóét en
+ * ziet, niet iets wat je uitrekent. Elke som van dit type is daarom visueel.
  */
 
 import {
@@ -27,7 +27,7 @@ import { erafPatronen } from "@/lib/generatoren/patronen/erafsommen";
 import { wegstrepenAanpak } from "@/lib/generatoren/aanpak/erafsommen";
 import { wegstrepenUitleg } from "@/lib/generatoren/scripts/erafsommen";
 
-const ZIN = "Hoeveel blijven er over?";
+const ZIN = "Streep er {som} weg. Hoeveel blijven er over?";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 
@@ -54,7 +54,7 @@ export const wegstrepenGenerator: Generator = {
   id: "wegstrepen",
   naam: "Wegstrepen",
   uitleg:
-    "Een groep voorwerpen in rijtjes van vijf, waarvan er al een paar zijn doorgestreept met een rood kruis. Het kind telt wat er overblijft en typt dat in.",
+    "Een groep voorwerpen en een bordje met hoeveel er af moeten. Het kind streept er zelf zoveel weg en typt hoeveel er overblijven. Elke som is visueel; dit is de eerste stap van eraf.",
   suggestie: "Groep 4: 6 tot en met 15 voorwerpen, hoogstens 5 eraf",
   velden: [
     { soort: "getal", sleutel: "van", label: "Minste voorwerpen", min: 2, max: MAX_TOTAAL },
@@ -69,11 +69,18 @@ export const wegstrepenGenerator: Generator = {
     },
     plaatjesVeld,
     ...vraagtekstVelden(STANDAARDZINNEN, {
-      voorbeeldzinnen: { "34": ZIN, "56": ZIN, "78": ZIN },
-      extraHulp: "Hoeveel er doorgestreept zijn staat in het plaatje; de zin hoeft dat niet te herhalen.",
+      voorbeeldzinnen: {
+        "34": "Streep er 5 weg. Hoeveel blijven er over?",
+        "56": "Streep er 5 weg. Hoeveel blijven er over?",
+        "78": "Streep er 5 weg. Hoeveel blijven er over?",
+      },
+      extraHulp: "Op de plek van {som} komt het aantal dat eraf moet.",
     }),
   ],
-  vraagteksten: { standaard: STANDAARDZINNEN },
+  vraagteksten: {
+    standaard: STANDAARDZINNEN,
+    som: (s) => String(s.getallen[1] ?? 0),
+  },
   standaard: { van: 6, tot: 15, afTot: 5, plaatjes: [] },
   foutpatronen: erafPatronen,
   aanpak: wegstrepenAanpak,

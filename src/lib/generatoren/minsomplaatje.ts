@@ -1,12 +1,13 @@
 /**
- * Een minsom bij plaatjes.
+ * Een minsom bij een plaatje: er schuiven er vanzelf een paar weg.
  *
- * Twee groepjes van dezelfde voorwerpen naast elkaar: links hoeveel het er in
- * totaal waren, rechts hoeveel er vanaf gaan. Daaronder schrijft het kind de
- * hele som op: ▢ − ▢ = ▢.
+ * Het kind ziet bijvoorbeeld negen vogels, en daarna vliegen er drie weg. Het
+ * kijkt alleen — de computer doet het voor — en schrijft daarna op wat het
+ * zag: ▢ − ▢ = ▢.
  *
- * Dat opschrijven is de stap van zien naar rekenen: het kind leert dat wat het
- * ziet precies die ene som is.
+ * Dat opschrijven is de stap van zien naar rekenen: het kind leert dat wat er
+ * op het scherm gebeurt precies die ene som is. Elke som van dit type is
+ * daarom visueel.
  */
 
 import {
@@ -39,9 +40,9 @@ export function grenzen(inst: Instellingen) {
 
 export const minsomplaatjeGenerator: Generator = {
   id: "minsomplaatje",
-  naam: "Een minsom bij plaatjes",
+  naam: "Een minsom bij een plaatje",
   uitleg:
-    "Twee groepjes van dezelfde voorwerpen naast elkaar: het totaal en wat eraf gaat. Het kind vult de hele som in: ▢ − ▢ = ▢.",
+    "Een groep voorwerpen waar er een paar vanzelf wegschuiven. Het kind kijkt en vult daarna de hele som in: ▢ − ▢ = ▢. Elke som is visueel.",
   suggestie: "Groep 4: 6 tot en met 15 voorwerpen, hoogstens 5 eraf",
   velden: [
     { soort: "getal", sleutel: "van", label: "Minste voorwerpen", min: 2, max: MAX_TOTAAL },
