@@ -115,6 +115,20 @@ function Isgelijk({ maat = "gewoon" }: { maat?: "gewoon" | "groot" }) {
   );
 }
 
+/**
+ * Het kleine grijze label naast de plaatjes die eraf gaan: "− 4".
+ *
+ * Dezelfde kleuren als het grijze getallabel uit de beeldtaal, maar kleiner:
+ * het hoort bij de plaatjes en mag de som eronder niet overstemmen.
+ */
+function Eraflabel({ aantal }: { aantal: number }) {
+  return (
+    <span className="rounded-xl border-2 border-eraf bg-eraf-zacht px-2 py-0.5 text-base font-extrabold tabular-nums text-eraf">
+      − {aantal}
+    </span>
+  );
+}
+
 /** Welke plaatjes eraf gaan: altijd de laatste, zodat wat blijft vooraan staat. */
 function eraflijst(totaal: number, eraf: number): number[] {
   return Array.from({ length: eraf }, (_, i) => totaal - 1 - i);
@@ -282,7 +296,7 @@ export function Erafopdracht({
     nummer: number,
     label: string,
     maat: "gewoon" | "groot" | "klein" = "gewoon",
-    rand: "gewoon" | "oranje" | "grijs" = "gewoon",
+    rand: "gewoon" | "oranje" | "grijs" | "neutraal" = "gewoon",
   ) {
     return (
       <Invulvak
@@ -357,9 +371,11 @@ export function Erafopdracht({
 
   if (figuur.soort === "minsomplaatje") {
     /*
-      Eén groep, waarvan het eraf-deel grijs is en een stukje opzij staat met
-      een pijl ervoor. Zo zie je in één beeld wat er was, wat weggaat en wat
-      er overblijft — en daaronder schrijft het kind precies dat op.
+      Eén groep in rijtjes van vijf, waarvan de laatste plaatjes grijs zijn:
+      geen pijl en geen teken ertussen, want het blijft één groep. Het kleine
+      grijze label erachter zegt hoeveel er vanaf gaan. Bij het begin zakken
+      de grijze plaatjes even weg en komen terug; daarna staat alles stil,
+      zodat een kind rustig kan tellen.
     */
     return (
       <div className="flex w-full flex-col items-center gap-5">
@@ -368,7 +384,8 @@ export function Erafopdracht({
           voorwerp={figuur.voorwerp}
           weg={[]}
           grijs={eraflijst(figuur.totaal, figuur.eraf)}
-          verschoven
+          beweegGrijs
+          achteraan={<Eraflabel aantal={figuur.eraf} />}
           maat="gewoon"
         />
         <div className="flex items-center justify-center gap-3">
@@ -376,7 +393,7 @@ export function Erafopdracht({
           <Minteken />
           {vak(1, "Hoeveel gaan eraf?", "gewoon", "grijs")}
           <Isgelijk />
-          {vak(2, "Hoeveel blijven er over?")}
+          {vak(2, "Hoeveel blijven er over?", "gewoon", "neutraal")}
         </div>
       </div>
     );

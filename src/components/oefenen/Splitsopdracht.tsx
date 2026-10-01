@@ -217,7 +217,7 @@ export function Invulvak({
    * de huisstijlkleur, het vakje van wat eraf gaat het grijs van "telt niet
    * meer mee". Na Controleer gaat groen of roze er altijd overheen.
    */
-  rand?: "gewoon" | "oranje" | "grijs";
+  rand?: "gewoon" | "oranje" | "grijs" | "neutraal";
   uit: boolean;
   veldRef?: (el: HTMLInputElement | null) => void;
   onTyp: (tekst: string) => void;
@@ -240,9 +240,16 @@ export function Invulvak({
       ? "border-huisstijl"
       : rand === "grijs"
         ? "border-eraf"
-        : randDonker
-          ? "border-inkt/25"
-          : "border-rand";
+        : /*
+            Even goed te zien als een gekleurde rand, maar zonder kleur: staat
+            een vakje naast een oranje en een grijs vakje, dan lijkt de lichte
+            rand uitgeschakeld.
+          */
+          rand === "neutraal"
+          ? "border-inkt-zacht"
+          : randDonker
+            ? "border-inkt/25"
+            : "border-rand";
 
   const kleur =
     uitslag === "goed"

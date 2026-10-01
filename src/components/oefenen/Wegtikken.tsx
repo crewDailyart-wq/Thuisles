@@ -28,7 +28,7 @@
  * beeldtaal kan gebruiken.
  */
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, type ReactNode } from "react";
 import { Telplaatje } from "@/components/oefenen/Telplaatjes";
 
 /** Nooit meer dan vijf naast elkaar; zie de vijfstructuur hierboven. */
@@ -86,6 +86,8 @@ export function Wegtikken({
   weg,
   grijs = [],
   verschoven = false,
+  beweegGrijs = false,
+  achteraan,
   tikbaar = false,
   vanzelf = 0,
   wijsAan = false,
@@ -101,6 +103,15 @@ export function Wegtikken({
   grijs?: number[];
   /** Schuiven de grijze plaatjes een stukje opzij, met een pijl ertussen? */
   verschoven?: boolean;
+  /**
+   * Zakken de grijze plaatjes bij het begin even weg en komen ze terug?
+   *
+   * Eén keer en kort: zo zie je wélke eraf gaan, en daarna staat het beeld
+   * stil om te tellen. Staat "minder beweging" aan, dan gebeurt er niets.
+   */
+  beweegGrijs?: boolean;
+  /** Komt er nog iets achter het laatste plaatje, zoals een label "− 4"? */
+  achteraan?: ReactNode;
   /** Mag het kind zelf aantikken? Dan ziet elk plaatje eruit als een knop. */
   tikbaar?: boolean;
   /** Hoeveel plaatjes er vanzelf wegschuiven; 0 = geen. */
@@ -162,6 +173,8 @@ export function Wegtikken({
               <span
                 className={`relative block ${MATEN[maat]} transition-all duration-500 ${
                   gedimd ? ERAFSTIJL : ""
+                } ${
+                  beweegGrijs && grijs.includes(i) ? "motion-safe:animate-eraf-zakt" : ""
                 } ${weggeschoven ? "-translate-y-6 scale-50 opacity-0" : ""}`}
               >
                 <Telplaatje naam={voorwerp} />
@@ -208,6 +221,8 @@ export function Wegtikken({
               </span>
             );
           })}
+          {/* Het label hoort bij de laatste plaatjes, dus achter de laatste rij. */}
+          {achteraan && r === rijen.length - 1 && <span className="ml-2">{achteraan}</span>}
         </span>
       ))}
     </span>
