@@ -19,12 +19,9 @@ standaard 3.
 | 5 | Aftrekken tot en met 15 | ●●● | De kale som: 13 − 5 = ▢. Bij de eerste sommen staat het rekenrek erbij en schuift het kind zelf de kralen weg. |
 | 6 | Sommen en uitkomsten koppelen | ●●●● | Sleept elke uitkomst naar de som waar hij bij hoort; tikken werkt ook. |
 
-### Nog te doen
-
-De database-inhoud van dit onderwerp — het domein Erafsommen, het onderwerp
-"Aftrekken tot en met 15", de zes leerdoelen met hun sjablonen en de vragen —
-is er nog niet. Claude maakt geen content aan in de database (HARDE REGEL 2);
-dat doet de eigenaar, of Claude na uitdrukkelijke toestemming.
+Staat klaar in de database: het domein Erafsommen, het onderwerp "Aftrekken
+tot en met 15", de zes leerdoelen met hun sjablonen en per titel vijftien
+gepubliceerde vragen — evenveel als bij Optellen tot en met 20.
 
 ### Daarna
 

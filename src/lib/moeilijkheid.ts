@@ -292,10 +292,14 @@ export function puntenVan(soort: string, inst: Instellingen): number {
     case "minsomplaatje":
       break;
 
+    /*
+      Met of zonder de getallen erbij telt even zwaar: zonder getallen moet een
+      kind zelf tellen, met getallen moet het de stap van plaatje naar getal
+      maken. Dat houdt ze in de lijst op hun eigen volgorde staan, eerst het
+      tellen en daarna de getallen.
+    */
     case "plaatjesminsom":
       p += 1;
-      /* Zonder de getallen erbij moet het kind eerst zelf tellen. */
-      if (tekst(inst, "getallen", "nee") === "nee") p += 1;
       break;
 
     case "minsom":

@@ -614,13 +614,22 @@ export function Optelopdracht({
     );
   }
 
+  /*
+    Het koppelen houdt zijn eigen sleepstand bij en meldt per rij de uitkomst.
+    Die melding wordt hier ook in `getypt` gezet, want daar leest het nakijken
+    uit welke rij goed of fout is. Zonder dat werd elke rij rood, ook de rijen
+    die wél klopten.
+  */
   return (
     <Koppelsommen
       figuur={figuur}
       fase={fase}
       uit={uit}
       uitslagen={uitslagen}
-      onWijzig={onWijzig}
+      onWijzig={(waarde) => {
+        setGetypt(uitAntwoord(waarde, aantal));
+        onWijzig(waarde);
+      }}
     />
   );
 }
