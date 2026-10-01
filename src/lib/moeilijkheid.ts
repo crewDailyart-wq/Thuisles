@@ -310,6 +310,23 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p += 5;
       break;
 
+    /*
+      De opdrachten met het rekenrek. Het flitsen is kijken en tellen; daarna
+      loopt het op met wat een som vraagt: vanaf tien is één stap, binnen het
+      tiental reken je met de eenheden, over de tien gaat in twee stappen, en
+      zonder rek erbij moet dat allemaal uit het hoofd.
+    */
+    case "rekenrekflits":
+      break;
+
+    case "rekenrekaf":
+      p += bij(tekst(inst, "stand", "via10"), { vanaf10: 0, klein: 1, via10: 3 });
+      break;
+
+    case "rekenrekhoofd":
+      p += 5;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;
@@ -367,6 +384,10 @@ export const TYPEVOLGORDE = [
   "plaatjesminsom",
   "minsom",
   "minkoppelen",
+  /* Het onderwerp met het rekenrek, in de volgorde waarin een kind ze leert. */
+  "rekenrekflits",
+  "rekenrekaf",
+  "rekenrekhoofd",
 ] as const;
 
 /** Het plaatsnummer van een type; types zonder eigen plek komen erachter. */

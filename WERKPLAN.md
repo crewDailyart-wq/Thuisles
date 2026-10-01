@@ -23,6 +23,19 @@ Staat klaar in de database: het domein Erafsommen, het onderwerp "Aftrekken
 tot en met 15", de zes leerdoelen met hun sjablonen en per titel vijftien
 gepubliceerde vragen — evenveel als bij Optellen tot en met 20.
 
+## Groep 4 – Erafsommen – Aftrekken met het rekenrek
+
+Hetzelfde rekenrek als op school: twee rijen van tien, vijf rode en vijf witte
+per rij. Eerst kijken, dan zelf schuiven, en aan het eind uit het hoofd.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Flitsen met het rekenrek | ● | Ziet het rek een paar tellen (standaard 2), daarna gaat er een kaart overheen. Typt hoeveel kralen het zag. Getallen 6 tot en met 20. |
+| 2 | Aftrekken vanaf 10 | ● | Leest de som 10 − 3 = ▢, schuift zelf drie kralen weg en vult het antwoord in. Negen vragen: meer verschillende sommen bestaan er niet. |
+| 3 | De kleine som | ●● | Sommen binnen het tiental, zoals 17 − 4. Na een goed antwoord verschijnt eronder: 7 − 4 = 3, dus 17 − 4 = 13. |
+| 4 | Aftrekken via de 10 | ●●● | Sommen over de tien, zoals 15 − 7. De rondjes onder het bordje staan in twee groepjes en de bovenste rij licht op zodra er tien over zijn. Na een goed antwoord staan de twee stappen eronder: 15 − 5 = 10 en 10 − 2 = 8. |
+| 5 | Denk aan het rekenrek | ●●●● | De kale som over de tien, zonder rek erbij. Gaat het mis, dan speelt het rek de som alsnog voor met de twee stappen. |
+
 ### Daarna
 
 De andere onderwerpen van Erafsommen volgen nog:

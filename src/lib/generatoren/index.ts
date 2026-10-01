@@ -31,6 +31,9 @@ import { minsomplaatjeGenerator } from "@/lib/generatoren/minsomplaatje";
 import { plaatjesminsomGenerator } from "@/lib/generatoren/plaatjesminsom";
 import { minsomGenerator } from "@/lib/generatoren/minsom";
 import { minkoppelenGenerator } from "@/lib/generatoren/minkoppelen";
+import { rekenrekflitsGenerator } from "@/lib/generatoren/rekenrekflits";
+import { rekenrekafGenerator } from "@/lib/generatoren/rekenrekaf";
+import { rekenrekhoofdGenerator } from "@/lib/generatoren/rekenrekhoofd";
 import { straatGenerator } from "@/lib/generatoren/straat";
 import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
 import { vakkenGenerator } from "@/lib/generatoren/vakken";
@@ -67,6 +70,9 @@ export const alleGeneratoren: Generator[] = [
   plaatjesminsomGenerator,
   minsomGenerator,
   minkoppelenGenerator,
+  rekenrekflitsGenerator,
+  rekenrekafGenerator,
+  rekenrekhoofdGenerator,
   kralenGenerator,
   busGenerator,
   tellenslepenGenerator,

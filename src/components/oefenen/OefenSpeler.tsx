@@ -471,6 +471,14 @@ export function OefenSpeler({
     const seconden = (nuInMs() - start) / 1000;
     const goed = isGoed(vraag, gekozen);
 
+    /*
+      Bij het rekenrek komt na een goed antwoord de redenering onder de som te
+      staan: de splitsing, of de twee stappen via de tien. Het feestscherm
+      wacht daar even op, anders leest een kind die regels nooit.
+    */
+    const eerstDeRedenering =
+      vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10";
+
     if (goed) {
       setFase("goed");
       /*
@@ -494,7 +502,7 @@ export function OefenSpeler({
           of bloeit de bloem open. De rustige tabel heeft niets te vieren en
           gaat dus gewoon meteen door naar het feest.
         */
-        (vraag.figuur?.soort === "splitstabel" && vraag.figuur.uiterlijk !== "eenvoudig")
+        (vraag.figuur?.soort === "splitstabel" && vraag.figuur.uiterlijk !== "eenvoudig") || eerstDeRedenering
       ) {
         setWachtOpVos(true);
       }
@@ -1692,6 +1700,7 @@ function Antwoordvelden({
         metCursor
         onWijzig={onKies}
         onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
       />
     );
   }

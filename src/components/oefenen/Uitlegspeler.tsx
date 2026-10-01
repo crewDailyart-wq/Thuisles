@@ -26,6 +26,7 @@ import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
+import { Rekenrek } from "@/components/oefenen/Rekenrek";
 import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
 import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
 import { Uitlegstraat } from "@/components/oefenen/Huizenrij";
@@ -604,6 +605,21 @@ function Modelbeeld({
           getikt={getikt}
           onTik={onTik}
         />
+        {model.bijschrift && (
+          <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">
+            {model.bijschrift}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (model.soort === "rekenrek") {
+    return (
+      <div className="flex w-full flex-col items-center gap-2">
+        <div className="w-full max-w-md">
+          <Rekenrek aantal={model.aantal} vast={model.weg} toonBordje={false} />
+        </div>
         {model.bijschrift && (
           <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">
             {model.bijschrift}

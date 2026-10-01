@@ -12,6 +12,9 @@
  *   minsom          de kale som, met een oranje minteken
  *   plaatjesminsom  één groep plaatjes met het eraf-deel grijs
  *   minkoppelen     minsommen aan hun uitkomst slepen
+ *   rekenrekflits   even kijken naar het rek, dan gaat er een kaart overheen
+ *   rekenrekaf      de som bovenaan, het rekenrek eronder om weg te schuiven
+ *   rekenrekhoofd   dezelfde som, maar zonder rek erbij
  *
  * ---------------------------------------------------------------------------
  * Eén beeldtaal
@@ -38,6 +41,7 @@ import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
 import { Erafbordje } from "@/components/oefenen/Erafbordje";
+import { Rekenrek } from "@/components/oefenen/Rekenrek";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 /** Dezelfde drie standen als in het oefenscherm. */
@@ -47,7 +51,15 @@ type Fase = "bezig" | "goed" | "fout";
 export type Eraffiguur = Extract<
   Figuur,
   {
-    soort: "wegstrepen" | "minsomplaatje" | "plaatjesminsom" | "minsom" | "minkoppelen";
+    soort:
+      | "wegstrepen"
+      | "minsomplaatje"
+      | "plaatjesminsom"
+      | "minsom"
+      | "minkoppelen"
+      | "rekenrekflits"
+      | "rekenrekaf"
+      | "rekenrekhoofd";
   }
 >;
 
@@ -57,6 +69,9 @@ const SOORTEN = [
   "plaatjesminsom",
   "minsom",
   "minkoppelen",
+  "rekenrekflits",
+  "rekenrekaf",
+  "rekenrekhoofd",
 ];
 
 export function isEraffiguur(figuur: Figuur | null | undefined): figuur is Eraffiguur {
@@ -78,7 +93,11 @@ export function juisteAntwoorden(figuur: Eraffiguur): number[] {
     case "plaatjesminsom":
       return [figuur.totaal - figuur.eraf];
     case "minsom":
+    case "rekenrekaf":
+    case "rekenrekhoofd":
       return [figuur.van - figuur.af];
+    case "rekenrekflits":
+      return [figuur.aantal];
     default:
       return figuur.sommen.map((s) => s.eerste - s.tweede);
   }
@@ -143,6 +162,25 @@ function Getal({ waarde }: { waarde: number }) {
   );
 }
 
+/**
+ * Wat er na een goed antwoord onder de som verschijnt.
+ *
+ * De redenering in cijfers, zodat een kind ziet waaróm het klopt: de
+ * splitsing bij een som binnen het tiental, of de twee stappen bij een som
+ * over de tien. Het hoeft er niets mee te doen; het is alleen om te zien.
+ */
+function Nabeschouwing({ regels }: { regels: string[] }) {
+  return (
+    <div className="flex flex-col items-center gap-1 rounded-2xl bg-groen-zacht px-5 py-3">
+      {regels.map((regel) => (
+        <p key={regel} className="text-xl font-extrabold tabular-nums text-groen-diep">
+          {regel}
+        </p>
+      ))}
+    </div>
+  );
+}
+
 /** Welke plaatjes eraf gaan: altijd de laatste, zodat wat blijft vooraan staat. */
 function eraflijst(totaal: number, eraf: number): number[] {
   return Array.from({ length: eraf }, (_, i) => totaal - 1 - i);
@@ -163,6 +201,7 @@ export function Erafopdracht({
   metCursor = false,
   onWijzig,
   onBevestig,
+  onKlaar,
 }: {
   figuur: Eraffiguur;
   antwoord: string;
@@ -171,6 +210,8 @@ export function Erafopdracht({
   metCursor?: boolean;
   onWijzig: (waarde: string) => void;
   onBevestig: () => void;
+  /** Klaar met wat er na een goed antwoord nog te zien is; dan mag het feest. */
+  onKlaar?: () => void;
 }) {
   const uit = fase !== "bezig";
   const juist = juisteAntwoorden(figuur);
@@ -230,6 +271,18 @@ export function Erafopdracht({
     ];
     return () => klokjes.forEach((k) => window.clearTimeout(k));
   }, [metCursor, uit, figuur.soort]);
+
+  /*
+    Na een goed antwoord blijft de redenering onder de som even staan: de
+    splitsing of de twee stappen via de tien. Het feestscherm wacht daarop,
+    anders zou een kind die regels nooit lezen.
+  */
+  useEffect(() => {
+    if (fase !== "goed") return;
+    if (figuur.soort !== "rekenrekaf" || figuur.stand === "vanaf10") return;
+    const klokje = window.setTimeout(() => onKlaar?.(), 2400);
+    return () => window.clearTimeout(klokje);
+  }, [fase, figuur, onKlaar]);
 
   const uitslagen: ("goed" | "fout" | null)[] = !uit
     ? juist.map(() => null)
@@ -411,6 +464,77 @@ export function Erafopdracht({
         <Gegeven waarde={figuur.af} maat="groot" kleur="grijs" />
         <Isgelijk maat="groot" />
         {vak(0, "De uitkomst", "groot")}
+      </div>
+    );
+  }
+
+  if (figuur.soort === "rekenrekflits") {
+    return (
+      <div className="flex w-full flex-col items-center gap-5">
+        <div className="w-full max-w-md">
+          <Rekenrek
+            aantal={figuur.aantal}
+            modus="flitsen"
+            seconden={figuur.seconden}
+            toonBordje={false}
+          />
+        </div>
+        {vak(0, "Hoeveel kralen zag je?", "groot", "neutraal")}
+      </div>
+    );
+  }
+
+  if (figuur.soort === "rekenrekaf") {
+    /*
+      De som staat bovenaan met het lege vakje erin, het rek eronder. Zo ziet
+      een kind dat wat het wegschuift precies is wat er in de som vanaf gaat.
+      Na een goed antwoord komt de redenering erbij: bij een som binnen het
+      tiental de splitsing, bij een som over de tien de twee stappen.
+    */
+    const eenheden = figuur.van % 10;
+    const naarTien = figuur.van - eenheden;
+    const rest = figuur.af - eenheden;
+    return (
+      <div className="flex w-full flex-col items-center gap-5">
+        <div className="flex items-center justify-center gap-3">
+          <Gegeven waarde={figuur.van} kleur="oranje" />
+          <Minteken />
+          <Gegeven waarde={figuur.af} kleur="grijs" />
+          <Isgelijk />
+          {vak(0, "Hoeveel blijft er over?", "gewoon", "neutraal")}
+        </div>
+
+        <div className="w-full max-w-md">
+          <Rekenrek aantal={figuur.van} eraf={figuur.af} modus="wegschuiven" />
+        </div>
+
+        {fase === "goed" && figuur.stand === "klein" && (
+          <Nabeschouwing
+            regels={[
+              `${eenheden} − ${figuur.af} = ${eenheden - figuur.af}, dus ${figuur.van} − ${figuur.af} = ${figuur.van - figuur.af}`,
+            ]}
+          />
+        )}
+        {fase === "goed" && figuur.stand === "via10" && (
+          <Nabeschouwing
+            regels={[
+              `${figuur.van} − ${eenheden} = ${naarTien}`,
+              `${naarTien} − ${rest} = ${figuur.van - figuur.af}`,
+            ]}
+          />
+        )}
+      </div>
+    );
+  }
+
+  if (figuur.soort === "rekenrekhoofd") {
+    return (
+      <div className="flex w-full items-center justify-center gap-3">
+        <Gegeven waarde={figuur.van} maat="groot" kleur="oranje" />
+        <Minteken maat="groot" />
+        <Gegeven waarde={figuur.af} maat="groot" kleur="grijs" />
+        <Isgelijk maat="groot" />
+        {vak(0, "De uitkomst", "groot", "neutraal")}
       </div>
     );
   }

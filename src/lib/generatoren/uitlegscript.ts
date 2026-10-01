@@ -344,6 +344,20 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      /**
+       * Het rekenrek, in de stand die bij deze stap hoort.
+       *
+       * De stappen van het verhaal laten de kralen groepje voor groepje
+       * weggaan, dus het rek speelt de som voor terwijl Vos vertelt. Hetzelfde
+       * rek als in de opdracht zelf, met dezelfde vijfstructuur.
+       */
+      soort: "rekenrek";
+      aantal: number;
+      /** Hoeveel kralen er bij deze stap al weggeschoven zijn. */
+      weg: number;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

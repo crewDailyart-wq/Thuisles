@@ -179,6 +179,43 @@ export type Figuur =
     }
   | {
       /**
+       * Flitsen met het rekenrek: even kijken, dan gaat er een kaart overheen.
+       *
+       * Het kind ziet een aantal kralen en typt daarna hoeveel het er zag. De
+       * vijfstructuur van het rek maakt dat je het in één oogopslag kunt zien
+       * zonder te tellen.
+       */
+      soort: "rekenrekflits";
+      aantal: number;
+      /** Na hoeveel tellen de kaart komt; komt uit de instellingen. */
+      seconden: number;
+    }
+  | {
+      /**
+       * Aftrekken met het rekenrek: de som bovenaan, het rek eronder.
+       *
+       * Het kind schuift zelf de kralen weg en vult het antwoord in de som in.
+       * De stand bepaalt wat voor som het is en wat er na een goed antwoord
+       * onder verschijnt: niets, de splitsing, of de weg via de tien.
+       */
+      soort: "rekenrekaf";
+      van: number;
+      af: number;
+      stand: string;
+    }
+  | {
+      /**
+       * De kale som over de tien, zonder rek erbij: 14 − 8 = ▢.
+       *
+       * Het kind denkt aan het rekenrek. Gaat het mis, dan speelt het rek de
+       * som alsnog voor in de uitleg.
+       */
+      soort: "rekenrekhoofd";
+      van: number;
+      af: number;
+    }
+  | {
+      /**
        * Erafsommen: een groep plaatjes waar het kind er zelf wegstreept.
        *
        * Het kind ziet `totaal` plaatjes, streept er `eraf` weg en typt hoeveel

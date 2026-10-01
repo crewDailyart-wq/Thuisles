@@ -98,6 +98,7 @@ export function Rekenrek({
   aantal,
   eraf = 0,
   modus = "stil",
+  vast,
   seconden = FLITS_SECONDEN,
   toonBordje = true,
   onWeg,
@@ -108,6 +109,14 @@ export function Rekenrek({
   /** Hoeveel er weg moeten. Voor het bordje en voor de stand "kijken". */
   eraf?: number;
   modus?: Rekenrekmodus;
+  /**
+   * Hoeveel kralen er weg zijn, van buitenaf gezet.
+   *
+   * Voor de uitleg: daar bepaalt de stap van het verhaal hoe het rek erbij
+   * staat, en niet het rek zelf. Zonder deze waarde houdt het rek zijn eigen
+   * stand bij, zoals bij het wegschuiven.
+   */
+  vast?: number;
   /** Na hoeveel tellen de kaart komt bij het flitsen; komt uit de database. */
   seconden?: number;
   /** Hoort er een bordje met rondjes bij? Uit als alleen het rek nodig is. */
@@ -121,7 +130,8 @@ export function Rekenrek({
   const inSpel = Math.max(0, Math.min(REKENREK_KRALEN, Math.round(aantal)));
 
   /** Hoeveel kralen er weg zijn. Altijd de laatste, dus één getal is genoeg. */
-  const [weg, setWeg] = useState(0);
+  const [eigenWeg, setWeg] = useState(0);
+  const weg = vast === undefined ? eigenWeg : Math.max(0, Math.min(inSpel, vast));
   /** De rondjes lichten even oranje op als er eentje te veel weg is. */
   const [knipper, setKnipper] = useState(false);
   /** Het moment bij de tien: de bovenste rij licht één seconde op. */
