@@ -187,6 +187,14 @@ export function Beheerbalk({ vakken }: { vakken: Vak[] }) {
       </Link>
 
       <Link
+        href="/admin/rekenrek"
+        className="mx-2 rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"
+      >
+        <span className="hidden sm:inline">Rekenrek</span>
+        <span className="sm:hidden">⦿</span>
+      </Link>
+
+      <Link
         href="/admin/foutpatronen"
         className="mx-2 rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"
       >

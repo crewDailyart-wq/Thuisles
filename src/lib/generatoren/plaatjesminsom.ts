@@ -38,16 +38,31 @@ import { paren } from "@/lib/generatoren/wegstrepen";
 import { VISUEEL_VELD, visueleSommen } from "@/lib/generatoren/visueel";
 import { meervoudVanTelplaatje } from "@/lib/telplaatjes";
 
-const ZIN = "Hoeveel {plaatjes} blijven er over?";
+/*
+  Twee zinnen, want de twee standen laten iets anders zien.
+
+  Zonder getallen staat de som eronder in gewone cijfers en is "Hoeveel
+  blijven er over?" genoeg: korter kan niet en het beeld zegt de rest. Met de
+  getallen erbij noemt de zin het voorwerp, zodat duidelijk is waar de labels
+  over gaan.
+*/
+const ZIN_KAAL = "Hoeveel blijven er over?";
+const ZIN_MET_NAAM = "Hoeveel {plaatjes} blijven er over?";
 
 /** De zin als het voorwerp geen naam heeft; dan blijft het bij "hoeveel". */
 const ZONDER_NAAM: Record<Leeftijdsgroep, string> = {
-  "34": "Hoeveel blijven er over?",
-  "56": "Hoeveel blijven er over?",
-  "78": "Hoeveel blijven er over?",
+  "34": ZIN_KAAL,
+  "56": ZIN_KAAL,
+  "78": ZIN_KAAL,
 };
 
-const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
+/** Welke standaardzin bij deze stand hoort. */
+function zinnen(metGetallen: boolean): Record<Leeftijdsgroep, string> {
+  const zin = metGetallen ? ZIN_MET_NAAM : ZIN_KAAL;
+  return { "34": zin, "56": zin, "78": zin };
+}
+
+const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = zinnen(false);
 
 const MAX_TOTAAL = 20;
 
@@ -95,13 +110,9 @@ export const plaatjesminsomGenerator: Generator = {
     VISUEEL_VELD,
     plaatjesVeld,
     ...vraagtekstVelden(STANDAARDZINNEN, {
-      voorbeeldzinnen: {
-        "34": "Hoeveel appels blijven er over?",
-        "56": "Hoeveel appels blijven er over?",
-        "78": "Hoeveel appels blijven er over?",
-      },
+      voorbeeldzinnen: { "34": ZIN_KAAL, "56": ZIN_KAAL, "78": ZIN_KAAL },
       extraHulp:
-        "{plaatjes} wordt vervangen door de naam van het voorwerp in die vraag, in het meervoud: appels, muisjes, vlinders.",
+        "Zonder getallen is de zin kort, want de som staat eronder. Met de getallen erbij noemt hij het voorwerp. {plaatjes} wordt vervangen door de naam van het voorwerp in die vraag, in het meervoud: appels, muisjes, vlinders.",
     }),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
@@ -147,9 +158,11 @@ export const plaatjesminsomGenerator: Generator = {
         vorm: "open",
         /* Zonder naam valt de zin terug op "Hoeveel blijven er over?". */
         vraagtekst: bepaalVraagtekst(
-          meervoud === ""
-            ? { ...plaatjesminsomGenerator, vraagteksten: { standaard: ZONDER_NAAM } }
-            : plaatjesminsomGenerator,
+          {
+            vraagteksten: {
+              standaard: meervoud === "" ? ZONDER_NAAM : zinnen(metGetallen),
+            },
+          },
           inst,
           groep,
           gegevens,

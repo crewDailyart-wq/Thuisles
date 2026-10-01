@@ -43,6 +43,11 @@ Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
   kruis; nog een keer tikken haalt het kruis eraf. In de stand "vanzelf"
   schuiven de plaatjes één voor één weg en kijkt het kind alleen.
 - **Rekenrek** (`src/components/oefenen/Rekenrek.tsx`) — twee staafjes met
-  tien kralen, vijf rode en vijf witte. De kralen die meedoen staan links, de
-  rest lichter aan de rechterkant. Het kind schuift zelf kralen weg. De kralen
-  zelf komen uit dezelfde tekening als Kralen tellen.
+  tien kralen, vijf rode en vijf witte. De bovenste rij wordt eerst gevuld tot
+  tien, de rest komt op de onderste rij. Drie standen: *wegschuiven* (het kind
+  tikt of sleept; er gaat altijd de laatste kraal weg), *flitsen* (na een paar
+  tellen gaat er een kaart overheen) en *kijken* (het rek speelt de som zelf
+  af). Met het bordje van Wegstrepen erbij, en het moment bij de tien: blijven
+  er precies tien over, dan licht de bovenste rij even op. Uit te proberen in
+  het beheer onder "Rekenrek". De kralen komen uit dezelfde tekening als
+  Kralen tellen; daar is niets aan veranderd. Er hangt nog geen oefening aan.

@@ -37,6 +37,7 @@ import { useEffect, useRef, useState } from "react";
 import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
+import { Erafbordje } from "@/components/oefenen/Erafbordje";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 /** Dezelfde drie standen als in het oefenscherm. */
@@ -129,6 +130,19 @@ function Eraflabel({ aantal }: { aantal: number }) {
   );
 }
 
+/**
+ * Een getal in de som, zonder vakje eromheen.
+ *
+ * Voor de stand zonder getallen onder de groepjes: daar hoort de som bij het
+ * beeld en niet als tweede rij labels. Grote donkere cijfers, zodat ze even
+ * goed te lezen zijn als een label.
+ */
+function Getal({ waarde }: { waarde: number }) {
+  return (
+    <span className="text-3xl font-extrabold tabular-nums text-inkt sm:text-4xl">{waarde}</span>
+  );
+}
+
 /** Welke plaatjes eraf gaan: altijd de laatste, zodat wat blijft vooraan staat. */
 function eraflijst(totaal: number, eraf: number): number[] {
   return Array.from({ length: eraf }, (_, i) => totaal - 1 - i);
@@ -141,58 +155,6 @@ function eraflijst(totaal: number, eraf: number): number[] {
  * scherm, en het handje hoort maar bij de eerste som van een oefening.
  */
 let handjeGetoondWegstrepen = false;
-
-/**
- * Het bordje met de opdracht erop: "5 eraf", met een teller eronder.
- *
- * Onder het bordje staan evenveel lege rondjes als er weg moeten. Elk plaatje
- * dat het kind wegstreept vult er één; zijn ze allemaal vol, dan komt er een
- * groen vinkje op het bordje. Streept het kind er te veel weg, dan kleuren de
- * rondjes even oranje — geen foutmelding, alleen een seintje dat er eentje
- * te veel weg is.
- */
-function Erafbordje({
-  aantal,
-  gevuld,
-  teveel,
-}: {
-  aantal: number;
-  gevuld: number;
-  teveel: boolean;
-}) {
-  const compleet = gevuld === aantal;
-  return (
-    <span className="flex flex-col items-center gap-2">
-      <span
-        className={`flex items-center gap-2 rounded-2xl px-4 py-1.5 text-xl font-extrabold transition ${
-          compleet ? "bg-groen text-white" : "bg-inkt text-white"
-        }`}
-      >
-        {aantal} eraf
-        {compleet && (
-          <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" aria-hidden="true">
-            <path d="M5 13l4 4L19 7" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
-          </svg>
-        )}
-      </span>
-      <span className="flex items-center gap-1.5">
-        {Array.from({ length: aantal }, (_, i) => (
-          <span
-            key={i}
-            aria-hidden="true"
-            className={`size-3.5 rounded-full border-2 transition ${
-              teveel
-                ? "border-huisstijl bg-huisstijl"
-                : i < gevuld
-                  ? "border-groen bg-groen"
-                  : "border-rand bg-kaart"
-            }`}
-          />
-        ))}
-      </span>
-    </span>
-  );
-}
 
 export function Erafopdracht({
   figuur,
@@ -414,17 +376,28 @@ export function Erafopdracht({
           grijs={eraflijst(figuur.totaal, figuur.eraf)}
           maat="gewoon"
         />
-        {figuur.metGetallen ? (
-          <div className="flex items-center justify-center gap-3">
+        {/*
+          De som staat er altijd bij, met het invulvak erin: eerst zie je in
+          het beeld wat er weggaat, daarna lees je dezelfde som in cijfers.
+          Met de getallen erbij staan ze in de gekleurde labels van de
+          beeldtaal; zonder getallen gewoon als cijfers, rustig en zonder
+          nadruk.
+        */}
+        <div className="flex items-center justify-center gap-3">
+          {figuur.metGetallen ? (
             <Gegeven waarde={figuur.totaal} kleur="oranje" />
-            <Minteken />
+          ) : (
+            <Getal waarde={figuur.totaal} />
+          )}
+          <Minteken />
+          {figuur.metGetallen ? (
             <Gegeven waarde={figuur.eraf} kleur="grijs" />
-            <Isgelijk />
-            {vak(0, "Hoeveel blijven er over?")}
-          </div>
-        ) : (
-          vak(0, "Hoeveel blijven er over?")
-        )}
+          ) : (
+            <Getal waarde={figuur.eraf} />
+          )}
+          <Isgelijk />
+          {vak(0, "Hoeveel blijven er over?", "gewoon", "neutraal")}
+        </div>
       </div>
     );
   }

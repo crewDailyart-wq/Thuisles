@@ -235,6 +235,11 @@
     wélke eraf gaan, en daarna staat alles stil zodat een kind rustig telt.
   */
   --animate-eraf-zakt: eraf-zakt 0.5s ease-out 1;
+  /*
+    Het moment bij de tien op het rekenrek: de bovenste rij licht één seconde
+    zacht op en dooft weer uit. Eén keer, geen knipperlicht.
+  */
+  --animate-tien-moment: tien-moment 1s ease-in-out 1;
 
   /*
     Plaatjes tellen: Vos haalt de plaatjes één voor één uit zijn mand omhoog
@@ -280,6 +285,11 @@
     tussen twee keer zit: het is een seintje, geen dansje. Zodra het kind de
     eerste kraal verplaatst heeft, stopt het.
   */
+  @keyframes tien-moment {
+    0%, 100% { opacity: 0; }
+    25%, 70% { opacity: 0.22; }
+  }
+
   @keyframes eraf-zakt {
     0%   { transform: translateY(10px); }
     100% { transform: translateY(0); }
