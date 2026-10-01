@@ -70,8 +70,29 @@ const PER_RIJ = 10;
 const PER_KLEUR = 5;
 const RIJEN = 2;
 
+/*
+  Twee plekken extra op elk staafje.
+
+  Een echt rekenrek is breder dan de tien kralen samen: daardoor is er een gat
+  tussen de kralen die meedoen en de kralen die aan de kant staan, en kún je
+  een kraal zichtbaar wegschuiven. Zonder die ruimte staat de rij vol en is er
+  geen beweging te zien.
+*/
+const GAT = 2;
+const PLEKKEN = PER_RIJ + GAT;
+
 /** Hoeveel kralen er op het hele rek zitten: altijd twintig. */
 export const REKENREK_KRALEN = PER_RIJ * RIJEN;
+
+/**
+ * De kleur van een kraal die niet meetelt.
+ *
+ * Eén vaag grijs voor alles wat aan de kant staat: zowel de kralen die het
+ * kind net heeft weggeschoven als de kralen die nooit meededen. Geen tweede
+ * tint en geen doorzichtige rode kraal — dat werd roze en dat leest als een
+ * derde soort.
+ */
+const VAAG = "#dfe3ea";
 
 /** Hoelang de kaart bij het flitsen op zich laat wachten, als niets is ingesteld. */
 export const FLITS_SECONDEN = 2;
@@ -215,7 +236,7 @@ export function Rekenrek({
     });
   }
 
-  const binnenBreedte = MAAT.binnen * 2 + (PER_RIJ - 1) * MAAT.afstand + MAAT.straal * 2;
+  const binnenBreedte = MAAT.binnen * 2 + (PLEKKEN - 1) * MAAT.afstand + MAAT.straal * 2;
   const breedte = MAAT.post * 2 + binnenBreedte;
   const hoogte = MAAT.balk * 2 + RIJEN * MAAT.rijhoogte;
 
@@ -230,16 +251,19 @@ export function Rekenrek({
    * volgorde, dus de vijf rode en vijf witte blijven herkenbaar.
    */
   const rest = inSpel - weg;
-  const plekken: { x: number; y: number; staat: "blijft" | "weg" | "buiten" }[] = [];
+  const plekken: { x: number; y: number; telt: boolean }[] = [];
   for (let rij = 0; rij < RIJEN; rij++) {
     const y = MAAT.balk + rij * MAAT.rijhoogte + MAAT.rijhoogte / 2;
-    let linksGeteld = 0;
-    let rechtsGeteld = 0;
     for (let kolom = 0; kolom < PER_RIJ; kolom++) {
       const nummer = rij * PER_RIJ + kolom;
-      const staat = nummer < rest ? "blijft" : nummer < inSpel ? "weg" : "buiten";
-      const x = staat === "blijft" ? xVan(linksGeteld++) : xVan(PER_RIJ - 1 - rechtsGeteld++);
-      plekken.push({ x, y, staat });
+      const telt = nummer < rest;
+      /*
+        Meedoen: op de eigen plek, tegen de linkerkant aan. Niet meedoen: twee
+        plekken naar rechts, tegen de rechterkant. Omdat elke kraal dezelfde
+        twee plekken opschuift, blijft de groep rechts staan waar hij staat en
+        schuift alleen de kraal die net weggaat — precies als op een echt rek.
+      */
+      plekken.push({ x: xVan(telt ? kolom : kolom + GAT), y, telt });
     }
   }
 
@@ -265,6 +289,7 @@ export function Rekenrek({
       <defs>
         <Kraalverloop id="rekenrek-rood" kleur={rood} />
         <Kraalverloop id="rekenrek-wit" kleur={wit} />
+        <Kraalverloop id="rekenrek-vaag" kleur={VAAG} />
       </defs>
 
       {/* Het houten frame, net als bij Kralen tellen. */}
@@ -313,8 +338,13 @@ export function Rekenrek({
           height={MAAT.rijhoogte}
           rx={8}
           fill="var(--color-huisstijl)"
-          opacity={0}
-          className="motion-safe:animate-tien-moment"
+          /*
+            Eén seconde zacht licht, en daarna weg. Bewust zonder animatie: het
+            vlak staat er gewoon zolang de stand klopt. Dat werkt ook als
+            "minder beweging" aanstaat, en er valt niets te missen doordat een
+            overgang nog bezig is.
+          */
+          opacity={0.22}
         />
       )}
 
@@ -336,21 +366,36 @@ export function Rekenrek({
       })}
 
       {plekken.map((plek, nummer) => {
-        const kleur = nummer % PER_RIJ < PER_KLEUR ? rood : wit;
-        const verloopId = kleur === rood ? "rekenrek-rood" : "rekenrek-wit";
-        const magTikken = modus === "wegschuiven" && plek.staat !== "buiten";
+        /*
+          Twee soorten kralen en niet meer dan dat: fel (rood of wit) als hij
+          meetelt, en anders vaag. Geen tussenkleuren, zodat een kind in één
+          oogopslag ziet wat er nog staat.
+        */
+        const fel = nummer % PER_RIJ < PER_KLEUR ? rood : wit;
+        const kleur = plek.telt ? fel : VAAG;
+        const verloopId = plek.telt
+          ? kleur === rood
+            ? "rekenrek-rood"
+            : "rekenrek-wit"
+          : "rekenrek-vaag";
+        const magTikken = modus === "wegschuiven" && nummer < inSpel;
         return (
           <g
             key={nummer}
             transform={`translate(${plek.x} ${plek.y})`}
-            /* Weggeschoven: grijs en half doorzichtig, zoals overal bij eraf. */
-            className={`[transition:transform_350ms_ease-in-out] ${
-              plek.staat === "weg" ? "opacity-45 grayscale" : ""
+            /*
+              De korte beweging van links naar de groep aan de rechterkant, en
+              de kralen die niet meetellen staan er vager bij: één en dezelfde
+              vage kraal, of het kind hem nu net heeft weggeschoven of dat hij
+              nooit meedeed.
+            */
+            className={`[transition:transform_400ms_ease-in-out] ${
+              plek.telt ? "" : "opacity-55"
             } ${magTikken ? "cursor-pointer" : ""}`}
             role={magTikken ? "button" : undefined}
             tabIndex={magTikken ? 0 : undefined}
             aria-label={magTikken ? `Kraal ${nummer + 1}` : undefined}
-            aria-pressed={magTikken ? plek.staat === "weg" : undefined}
+            aria-pressed={magTikken ? !plek.telt : undefined}
             onPointerDown={magTikken ? () => verzet(nummer) : undefined}
             onPointerEnter={
               magTikken
@@ -371,12 +416,7 @@ export function Rekenrek({
                 : undefined
             }
           >
-            <Kraaltje
-              straal={MAAT.straal}
-              kleur={kleur}
-              verloopId={verloopId}
-              dof={plek.staat === "buiten"}
-            />
+            <Kraaltje straal={MAAT.straal} kleur={kleur} verloopId={verloopId} />
             {/* Ruim tikvlak, ook op een tablet met dikke vingers. */}
             {magTikken && <circle cx={0} cy={0} r={MAAT.straal + 6} fill="transparent" />}
           </g>
