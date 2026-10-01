@@ -396,7 +396,25 @@ export function Rekenrek({
             tabIndex={magTikken ? 0 : undefined}
             aria-label={magTikken ? `Kraal ${nummer + 1}` : undefined}
             aria-pressed={magTikken ? !plek.telt : undefined}
-            onPointerDown={magTikken ? () => verzet(nummer) : undefined}
+            onPointerDown={
+              magTikken
+                ? (e) => {
+                    /*
+                      Geen focusrand bij tikken of klikken.
+
+                      Een kraal is een knopje met `tabIndex`, zodat het rek ook
+                      met het toetsenbord te bedienen is. Daardoor zette de
+                      browser er bij een muisklik zijn eigen blauwe kader
+                      omheen. Door het standaardgedrag van pointerdown tegen te
+                      houden krijgt de kraal bij tikken geen focus meer; met
+                      Tab en Enter werkt alles gewoon en komt de eigen oranje
+                      focusrand wél in beeld.
+                    */
+                    e.preventDefault();
+                    verzet(nummer);
+                  }
+                : undefined
+            }
             onPointerEnter={
               magTikken
                 ? () => {
