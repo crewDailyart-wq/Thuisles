@@ -38,7 +38,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
-import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
+import { Groepje, Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
 import { Erafbordje } from "@/components/oefenen/Erafbordje";
 import { Rekenrek } from "@/components/oefenen/Rekenrek";
@@ -135,12 +135,20 @@ function Isgelijk({ maat = "gewoon" }: { maat?: "gewoon" | "groot" }) {
   );
 }
 
+/*
+  Hieronder staan drie onderdelen die nu nergens meer gebruikt worden: het
+  grijze label "− 4", het losse getal in een som en het lijstje met de laatste
+  plaatjes. Ze horen bij de oudere opbouw van de plaatjessommen — één groep
+  met grijze plaatjes erin. Op verzoek van de eigenaar blijven ze staan voor
+  het geval die opbouw ooit weer nodig is.
+*/
 /**
  * Het kleine grijze label naast de plaatjes die eraf gaan: "− 4".
  *
  * Dezelfde kleuren als het grijze getallabel uit de beeldtaal, maar kleiner:
  * het hoort bij de plaatjes en mag de som eronder niet overstemmen.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Eraflabel({ aantal }: { aantal: number }) {
   return (
     <span className="rounded-xl border-2 border-eraf bg-eraf-zacht px-2 py-0.5 text-base font-extrabold tabular-nums text-eraf">
@@ -156,6 +164,7 @@ function Eraflabel({ aantal }: { aantal: number }) {
  * beeld en niet als tweede rij labels. Grote donkere cijfers, zodat ze even
  * goed te lezen zijn als een label.
  */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function Getal({ waarde }: { waarde: number }) {
   return (
     <span className="text-3xl font-extrabold tabular-nums text-inkt sm:text-4xl">{waarde}</span>
@@ -182,6 +191,7 @@ function Nabeschouwing({ regels }: { regels: string[] }) {
 }
 
 /** Welke plaatjes eraf gaan: altijd de laatste, zodat wat blijft vooraan staat. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function eraflijst(totaal: number, eraf: number): number[] {
   return Array.from({ length: eraf }, (_, i) => totaal - 1 - i);
 }
@@ -389,71 +399,67 @@ export function Erafopdracht({
 
   if (figuur.soort === "minsomplaatje") {
     /*
-      Eén groep in rijtjes van vijf, waarvan de laatste plaatjes grijs zijn:
-      geen pijl en geen teken ertussen, want het blijft één groep. Het kleine
-      grijze label erachter zegt hoeveel er vanaf gaan. Bij het begin zakken
-      de grijze plaatjes even weg en komen terug; daarna staat alles stil,
-      zodat een kind rustig kan tellen.
+      Dezelfde opbouw als "Maak de plussom bij het plaatje" bij Optellen: twee
+      groepjes naast elkaar in rijtjes van vijf, en daaronder de hele som op
+      dezelfde plek. Alleen het teken is anders, het tweede groepje staat er
+      vaag bij omdat het eraf gaat, en de twee vakjes krijgen de kleuren van
+      de beeldtaal: oranje voor het totaal, grijs voor wat eraf gaat.
     */
     return (
-      <div className="flex w-full flex-col items-center gap-5">
-        <Wegtikken
-          aantal={figuur.totaal}
-          voorwerp={figuur.voorwerp}
-          weg={[]}
-          grijs={eraflijst(figuur.totaal, figuur.eraf)}
-          beweegGrijs
-          achteraan={<Eraflabel aantal={figuur.eraf} />}
-          maat="gewoon"
-        />
-        <div className="flex items-center justify-center gap-3">
-          {vak(0, "Hoeveel waren er eerst?", "gewoon", "oranje")}
-          <Minteken />
-          {vak(1, "Hoeveel gaan eraf?", "gewoon", "grijs")}
+      <div className="grid grid-cols-[auto_auto_auto_auto] items-center justify-center justify-items-center gap-x-4 gap-y-3 sm:gap-x-7">
+        <Groepje aantal={figuur.totaal} soort={figuur.voorwerp} kleur={0} />
+        <span />
+        <Groepje aantal={figuur.eraf} soort={figuur.voorwerp} kleur={1} grijs />
+        <span />
+
+        {vak(0, "Hoeveel waren er eerst?", "gewoon", "oranje")}
+        <Minteken />
+        {vak(1, "Hoeveel gaan eraf?", "gewoon", "grijs")}
+        <span className="flex items-center gap-3">
           <Isgelijk />
           {vak(2, "Hoeveel blijven er over?", "gewoon", "neutraal")}
-        </div>
+        </span>
       </div>
     );
   }
 
   if (figuur.soort === "plaatjesminsom") {
     /*
-      Eén groep met het eraf-deel grijs. Met de getallen erbij staat eronder
-      de hele som: het totaal in een oranje label, wat eraf gaat in een grijs
-      label, en het lege vakje voor de uitkomst.
+      Dezelfde opbouw als "Optellen met plaatjes" bij Optellen: twee groepjes
+      naast elkaar en daaronder de som. Met de getallen erbij staan ze in de
+      labels van de beeldtaal — oranje voor het totaal, grijs voor wat eraf
+      gaat. Zonder getallen blijft die rij leeg: dan telt het kind zelf.
     */
     return (
-      <div className="flex w-full flex-col items-center gap-5">
-        <Wegtikken
-          aantal={figuur.totaal}
-          voorwerp={figuur.voorwerp}
-          weg={[]}
-          grijs={eraflijst(figuur.totaal, figuur.eraf)}
-          maat="gewoon"
-        />
+      <div className="grid grid-cols-[auto_auto_auto_auto] items-center justify-center justify-items-center gap-x-4 gap-y-3 sm:gap-x-7">
+        <Groepje aantal={figuur.totaal} soort={figuur.voorwerp} kleur={0} />
         {/*
-          De som staat er altijd bij, met het invulvak erin: eerst zie je in
-          het beeld wat er weggaat, daarna lees je dezelfde som in cijfers.
-          Met de getallen erbij staan ze in de gekleurde labels van de
-          beeldtaal; zonder getallen gewoon als cijfers, rustig en zonder
-          nadruk.
+          Zonder getallen is er geen som onder de groepjes, en dan horen het
+          minteken en het antwoord bij de plaatjes zelf. Met de getallen erbij
+          staan ze een rij lager, precies zoals bij de plussommen.
         */}
-        <div className="flex items-center justify-center gap-3">
-          {figuur.metGetallen ? (
+        {figuur.metGetallen ? <span /> : <Minteken />}
+        <Groepje aantal={figuur.eraf} soort={figuur.voorwerp} kleur={1} grijs />
+        {figuur.metGetallen ? (
+          <span />
+        ) : (
+          <span className="flex items-center gap-3">
+            <Isgelijk />
+            {vak(0, "Hoeveel blijven er over?", "gewoon", "neutraal")}
+          </span>
+        )}
+
+        {figuur.metGetallen && (
+          <>
             <Gegeven waarde={figuur.totaal} kleur="oranje" />
-          ) : (
-            <Getal waarde={figuur.totaal} />
-          )}
-          <Minteken />
-          {figuur.metGetallen ? (
+            <Minteken />
             <Gegeven waarde={figuur.eraf} kleur="grijs" />
-          ) : (
-            <Getal waarde={figuur.eraf} />
-          )}
-          <Isgelijk />
-          {vak(0, "Hoeveel blijven er over?", "gewoon", "neutraal")}
-        </div>
+            <span className="flex items-center gap-3">
+              <Isgelijk />
+              {vak(0, "Hoeveel blijven er over?", "gewoon", "neutraal")}
+            </span>
+          </>
+        )}
       </div>
     );
   }

@@ -33,6 +33,7 @@
 import { Fragment, useEffect, useRef, useState } from "react";
 import { Gegeven, Handje, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Telplaatje } from "@/components/oefenen/Telplaatjes";
+import { ERAFSTIJL } from "@/components/oefenen/Wegtikken";
 import { isTelplaatje } from "@/lib/telplaatjes";
 import type { Figuur } from "@/lib/generatoren/soort";
 
@@ -260,12 +261,28 @@ function Voorwerpje({ soort, kleur }: { soort: string; kleur: 0 | 1 }) {
  * stuk voor stuk tellen. Dat het twee groepjes zijn, doet de ruimte ertussen:
  * de groepjes staan gewoon op de witte kaart, zonder vlak eronder.
  */
-function Groepje({ aantal, soort, kleur }: { aantal: number; soort: string; kleur: 0 | 1 }) {
+export function Groepje({
+  aantal,
+  soort,
+  kleur,
+  grijs = false,
+}: {
+  aantal: number;
+  soort: string;
+  kleur: 0 | 1;
+  /**
+   * Staat dit groepje er vaag bij?
+   *
+   * Uit bij de plussommen — daar telt alles mee. Aan bij de erafsommen, voor
+   * het groepje dat eraf gaat; zie de beeldtaal in ONTWERPREGELS.md.
+   */
+  grijs?: boolean;
+}) {
   const rijen: number[] = [];
   for (let rest = aantal; rest > 0; rest -= PER_RIJ) rijen.push(Math.min(PER_RIJ, rest));
 
   return (
-    <span className="flex flex-col items-start gap-1.5">
+    <span className={`flex flex-col items-start gap-1.5 ${grijs ? ERAFSTIJL : ""}`}>
       {rijen.map((inRij, r) => (
         <span key={r} className="flex items-center gap-1.5">
           {Array.from({ length: inRij }, (_, i) => (
