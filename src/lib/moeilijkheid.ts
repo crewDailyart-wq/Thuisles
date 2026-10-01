@@ -292,18 +292,17 @@ export function puntenVan(soort: string, inst: Instellingen): number {
     case "minsomplaatje":
       break;
 
-    /*
-      Met of zonder de getallen erbij telt even zwaar: zonder getallen moet een
-      kind zelf tellen, met getallen moet het de stap van plaatje naar getal
-      maken. Dat houdt ze in de lijst op hun eigen volgorde staan, eerst het
-      tellen en daarna de getallen.
-    */
     case "plaatjesminsom":
       p += 1;
+      /*
+        Met de getallen erbij komt er een stap bij: het kind telt niet alleen
+        de plaatjes, het leest ook de som die eronder staat en rekent daarmee.
+      */
+      if (tekst(inst, "getallen", "nee") === "ja") p += 2;
       break;
 
     case "minsom":
-      p += 3;
+      p += 2;
       break;
 
     case "minkoppelen":
@@ -362,10 +361,10 @@ export const TYPEVOLGORDE = [
   "tweegetallen",
   "balans",
   /* Het domein Erafsommen, in de volgorde waarin een kind ze leert. */
-  "wegstrepen",
   "minsomplaatje",
-  "plaatjesminsom",
+  "wegstrepen",
   "minsom",
+  "plaatjesminsom",
   "minkoppelen",
 ] as const;
 

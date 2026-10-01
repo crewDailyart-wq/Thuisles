@@ -56,6 +56,7 @@ vierkant als de vakjes waar ze in moeten.
   doet: plaatjes wegtikken, kralen wegschuiven. Zo ziet het waaróm het klopt.
   Daarna volgt gewoon oefenen. Het aantal visuele sommen aan het begin is een
   instelling in de database, standaard 3, per titel aan te passen in de admin.
+  **Nog niet in gebruik. Sara geeft later voorbeelden.**
 
 ## Plaatjes
 

@@ -7,19 +7,14 @@
  * wat gegeven is, witte vakjes waar het kind zelf iets invult, en zo min
  * mogelijk op het scherm. Wat verschilt is alleen hoe het op de kaart staat.
  *
- *   wegstrepen      een groep plaatjes; het kind streept er zelf een paar weg
- *   minsomplaatje   er schuiven er vanzelf weg; het kind vult de hele som in
+ *   minsomplaatje   twee groepjes plaatjes; het kind vult de hele som in
+ *   wegstrepen      een groep plaatjes waarvan er al een paar doorgestreept zijn
+ *   minsom          de kale som: 13 − 5 = ▢
  *   plaatjesminsom  plaatjes − plaatjes = ▢, met of zonder getallen erbij
- *   minsom          de kale som, bij de eerste sommen met het rekenrek erbij
  *   minkoppelen     minsommen aan hun uitkomst slepen
  *
- * ---------------------------------------------------------------------------
- * Eerst zien, dan rekenen
- * ---------------------------------------------------------------------------
- * De eerste sommen van een oefening zijn visueel: het kind streept zelf weg of
- * schuift zelf kralen. Daarna volgt gewoon oefenen. Hoeveel sommen dat zijn
- * staat per sjabloon in de database; in de vraag staat alleen nog of déze som
- * visueel is (`visueel` in de figuur).
+ * Het kind tikt of sleept hier niets weg: het telt, rekent en typt. De
+ * plaatjes staan in rijtjes van vijf, zodat het met sprongen mee kan tellen.
  *
  * ---------------------------------------------------------------------------
  * Dezelfde afspraken als bij Splitsen en Optellen
@@ -36,7 +31,6 @@ import { useEffect, useRef, useState } from "react";
 import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
-import { Rekenrek } from "@/components/oefenen/Rekenrek";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 /** Dezelfde drie standen als in het oefenscherm. */
@@ -103,20 +97,6 @@ function Isgelijk() {
   return <span className="text-2xl font-extrabold text-inkt-zacht">=</span>;
 }
 
-/**
- * Het bordje met de opdracht erop: "5 eraf".
- *
- * Donker en groot, niet als klein grijs tekstje: dit is de informatie waar de
- * som om draait, dus die moet een kind in één oogopslag zien.
- */
-function Erafbordje({ aantal }: { aantal: number }) {
-  return (
-    <span className="rounded-2xl bg-inkt px-4 py-1.5 text-xl font-extrabold text-white">
-      {aantal} eraf
-    </span>
-  );
-}
-
 export function Erafopdracht({
   figuur,
   antwoord,
@@ -141,18 +121,12 @@ export function Erafopdracht({
   const [getypt, setGetypt] = useState<string[]>(() => uitAntwoord(antwoord, aantal));
   const velden = useRef<(HTMLInputElement | null)[]>([]);
 
-  /** Welke plaatjes of kralen het kind heeft weggestreept. */
-  const [weg, setWeg] = useState<number[]>([]);
-
   /* Opnieuw beginnen: alleen bij de overgang van nagekeken terug naar bezig. */
   const vorigeFase = useRef(fase);
   useEffect(() => {
     const wasKlaar = vorigeFase.current !== "bezig";
     vorigeFase.current = fase;
-    if (wasKlaar && fase === "bezig") {
-      setGetypt(Array.from({ length: aantal }, () => ""));
-      setWeg([]);
-    }
+    if (wasKlaar && fase === "bezig") setGetypt(Array.from({ length: aantal }, () => ""));
   }, [fase, aantal]);
 
   /* Bij een nieuwe vraag staat de cursor meteen in het eerste lege vakje. */
@@ -203,46 +177,42 @@ export function Erafopdracht({
     );
   }
 
-  /** Een plaatje of kraal aan- of uitzetten. */
-  function tik(nummer: number) {
-    if (uit) return;
-    setWeg((eerder) =>
-      eerder.includes(nummer) ? eerder.filter((n) => n !== nummer) : [...eerder, nummer],
-    );
-  }
-
   if (figuur.soort === "wegstrepen") {
+    /*
+      De laatste plaatjes hebben het kruis. Dan staat wat er overblijft netjes
+      vooraan bij elkaar en kan een kind het in rijtjes van vijf tellen in
+      plaats van langs de kruisjes heen te moeten zoeken.
+    */
+    const doorgestreept = Array.from({ length: figuur.eraf }, (_, i) => figuur.totaal - 1 - i);
     return (
       <div className="flex w-full flex-col items-center gap-4">
-        <Erafbordje aantal={figuur.eraf} />
         <Wegtikken
           aantal={figuur.totaal}
           voorwerp={figuur.voorwerp}
-          weg={weg}
-          tikbaar={!uit}
+          weg={doorgestreept}
           maat="gewoon"
-          onTik={tik}
         />
-        {/* Geen isgelijkteken: er staat geen som, alleen de vraag hoeveel er over zijn. */}
         {vak(0, "Hoeveel blijven er over?")}
       </div>
     );
   }
 
   if (figuur.soort === "minsomplaatje") {
+    /*
+      Twee groepjes naast elkaar: links hoeveel het er waren, rechts hoeveel
+      er vanaf gaan. Ruimte ertussen in plaats van een teken, want de som zelf
+      schrijft het kind eronder.
+    */
     return (
       <div className="flex w-full flex-col items-center gap-4">
-        <Wegtikken
-          aantal={figuur.totaal}
-          voorwerp={figuur.voorwerp}
-          weg={[]}
-          vanzelf={figuur.eraf}
-          maat="gewoon"
-        />
+        <div className="flex flex-wrap items-start justify-center gap-x-10 gap-y-3">
+          <Wegtikken aantal={figuur.totaal} voorwerp={figuur.voorwerp} weg={[]} maat="klein" />
+          <Wegtikken aantal={figuur.eraf} voorwerp={figuur.voorwerp} weg={[]} maat="klein" />
+        </div>
         <div className="flex items-center justify-center gap-3">
           {vak(0, "Hoeveel waren er eerst?")}
           <Minteken />
-          {vak(1, "Hoeveel gingen er weg?")}
+          {vak(1, "Hoeveel gaan eraf?")}
           <Isgelijk />
           {vak(2, "Hoeveel blijven er over?")}
         </div>
@@ -263,10 +233,8 @@ export function Erafopdracht({
           <Wegtikken
             aantal={figuur.totaal}
             voorwerp={figuur.voorwerp}
-            weg={weg}
-            tikbaar={figuur.visueel && !uit}
+            weg={[]}
             maat="klein"
-            onTik={tik}
           />
           <Minteken />
           <Wegtikken
@@ -295,19 +263,12 @@ export function Erafopdracht({
 
   if (figuur.soort === "minsom") {
     return (
-      <div className="flex w-full flex-col items-center gap-5">
-        {figuur.visueel && (
-          <div className="w-full max-w-md">
-            <Rekenrek aantal={figuur.van} weg={weg} tikbaar={!uit} onTik={tik} />
-          </div>
-        )}
-        <div className="flex items-center justify-center gap-3">
-          <Gegeven waarde={figuur.van} maat="groot" />
-          <Minteken />
-          <Gegeven waarde={figuur.af} maat="groot" />
-          <Isgelijk />
-          {vak(0, "De uitkomst", "groot")}
-        </div>
+      <div className="flex w-full items-center justify-center gap-3">
+        <Gegeven waarde={figuur.van} maat="groot" />
+        <Minteken />
+        <Gegeven waarde={figuur.af} maat="groot" />
+        <Isgelijk />
+        {vak(0, "De uitkomst", "groot")}
       </div>
     );
   }

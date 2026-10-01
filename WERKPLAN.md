@@ -5,18 +5,17 @@ kind ze ziet, met de bolletjes en wat het kind er doet.
 
 ## Groep 4 – Erafsommen – Aftrekken tot en met 15
 
-Alle getallen 0 tot en met 15; de uitkomst komt nooit onder 0. De eerste
-sommen van een oefening zijn visueel — het kind doet het zelf — en daarna
-volgt gewoon oefenen. Hoeveel sommen dat zijn is een instelling per titel,
-standaard 3.
+Alle getallen 0 tot en met 15; de uitkomst komt nooit onder 0. Gewone vragen,
+zoals bij Optellen tot en met 20: het kind telt, rekent en typt. Er wordt niets
+weggetikt en er staat geen rekenrek bij.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Wegstrepen tot en met 15 | ● | Ziet bijvoorbeeld 13 appels en op het bordje "5 eraf". Tikt er zelf vijf weg — die krijgen een rood kruis — en typt hoeveel er overblijven. Elke som is visueel. |
-| 2 | Een minsom bij een plaatje | ● | Ziet bijvoorbeeld 9 vogels; er schuiven er 3 vanzelf weg. Vult daarna de hele som in: ▢ − ▢ = ▢. Elke som is visueel. |
-| 3 | Aftrekken met plaatjes tot en met 15 | ●● | Een som met alleen plaatjes, zonder getallen: groep − groep = ▢. Bij de eerste sommen streept het kind zelf weg, daarna rekent het zelf. |
-| 4 | Aftrekken met plaatjes en getallen tot en met 15 | ●● | Hetzelfde, maar met het getal onder elk groepje. Bij de eerste sommen streept het kind zelf weg. |
-| 5 | Aftrekken tot en met 15 | ●●● | De kale som: 13 − 5 = ▢. Bij de eerste sommen staat het rekenrek erbij en schuift het kind zelf de kralen weg. |
+| 1 | Een minsom bij plaatjes | ● | Ziet twee groepjes van dezelfde voorwerpen naast elkaar: links hoeveel het er waren, rechts hoeveel er vanaf gaan. Vult daaronder de hele som in: ▢ − ▢ = ▢. |
+| 2 | Wegstrepen tot en met 15 | ● | Ziet een groep voorwerpen in rijtjes van vijf waarvan er al een paar een rood kruis hebben. Telt wat er overblijft en typt dat in. Het tikt zelf niets weg. |
+| 3 | Aftrekken tot en met 15 | ●● | De kale som: 13 − 5 = ▢. |
+| 4 | Aftrekken met plaatjes tot en met 15 | ●● | "Hoeveel appels blijven er over?" Daaronder groep plaatjes − groep plaatjes = ▢, zonder getallen. |
+| 5 | Aftrekken met plaatjes en getallen tot en met 15 | ●●● | Hetzelfde, met het getal onder elke groep plaatjes. |
 | 6 | Sommen en uitkomsten koppelen | ●●●● | Sleept elke uitkomst naar de som waar hij bij hoort; tikken werkt ook. |
 
 Staat klaar in de database: het domein Erafsommen, het onderwerp "Aftrekken
@@ -36,13 +35,14 @@ De andere onderwerpen van Erafsommen volgen nog:
 
 ## Bouwstenen
 
-Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
+Onderdelen die één keer gebouwd zijn. Het zelf wegtikken en het rekenrek
+worden op dit moment nergens gebruikt; ze blijven staan voor later.
 
 - **Wegtikken** (`src/components/oefenen/Wegtikken.tsx`) — een groep plaatjes
-  in rijtjes van vijf. Het kind tikt plaatjes aan en die krijgen een rood
-  kruis; nog een keer tikken haalt het kruis eraf. In de stand "vanzelf"
-  schuiven de plaatjes één voor één weg en kijkt het kind alleen.
+  in rijtjes van vijf, met een rood kruis op de plaatjes die eraf zijn. Bij
+  Erafsommen tekent dit alleen; het aantikken door het kind en de stand
+  "vanzelf" staan uit en worden nergens gebruikt.
 - **Rekenrek** (`src/components/oefenen/Rekenrek.tsx`) — twee staafjes met
   tien kralen, vijf rode en vijf witte. De kralen die meedoen staan links, de
-  rest lichter aan de rechterkant. Het kind schuift zelf kralen weg. De kralen
-  zelf komen uit dezelfde tekening als Kralen tellen.
+  rest lichter aan de rechterkant. De kralen zelf komen uit dezelfde tekening
+  als Kralen tellen. Wordt op dit moment nergens gebruikt.
