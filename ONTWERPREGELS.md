@@ -19,6 +19,15 @@ hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
   zachtgele achtergrond met een groot, donker getal; in te vullen vakken
   hebben een wit invulvakje in het midden. Geen losse strepen in plaats van
   tabellijnen.
+- Elke opdracht moet visueel sterk zijn: je ziet in één oogopslag waar de som
+  over gaat.
+- Voor aftreksommen geldt deze vaste beeldtaal:
+  - plaatjes staan altijd in rijtjes van 5;
+  - wat eraf gaat is grijs en half doorzichtig, wat overblijft is fel;
+  - het totaal krijgt een oranje label, wat eraf gaat een grijs label, en een
+    goed antwoord wordt groen;
+  - grote getallen, één soort plaatje per som, geen drukte en geen extra tekst;
+  - de kleuren komen uit de centrale variabelen.
 - Eigen Thuisles-stijl: geen titels, teksten of plaatjes letterlijk overnemen
   van andere sites.
 

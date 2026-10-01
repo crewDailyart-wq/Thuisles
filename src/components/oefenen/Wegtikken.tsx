@@ -1,28 +1,31 @@
 "use client";
 
 /**
- * Wegtikken: een groep plaatjes waar er een paar vanaf gaan.
+ * Een groep plaatjes waar er een paar vanaf gaan.
  *
  * ---------------------------------------------------------------------------
- * Waarom dit onderdeel er is
+ * De beeldtaal van de erafsommen
  * ---------------------------------------------------------------------------
- * Een erafsom begint bij zien. Een kind dat dertien appels voor zich heeft en
- * er zelf vijf wegstreept, ziet waaróm er acht overblijven; daarna pas heeft
- * kaal rekenen zin. Dit onderdeel is die eerste stap, en is met opzet los van
- * het domein Erafsommen gebouwd: elk volgend domein kan hem gebruiken.
+ * Overal in het domein ziet "eraf" er hetzelfde uit, zodat een kind het beeld
+ * maar één keer hoeft te leren (zie ONTWERPREGELS.md):
+ *
+ *   - plaatjes staan altijd in rijtjes van vijf;
+ *   - wat eraf gaat is grijs en half doorzichtig, wat overblijft is fel;
+ *   - een plaatje dat het kind zelf wegstreept krijgt daar een rood kruis bij;
+ *   - één soort plaatje per som, en verder niets eromheen.
  *
  * ---------------------------------------------------------------------------
- * Twee manieren
+ * Drie manieren
  * ---------------------------------------------------------------------------
- *   tikbaar    het kind tikt zelf plaatjes aan; die krijgen een rood kruis.
- *              Nog een keer tikken haalt het kruis er weer af, zodat een
- *              misklik geen ramp is.
- *   vanzelf    de computer schuift er een paar weg en het kind kijkt. Dat is
- *              het voordoen: eerst zie je wat er gebeurt, daarna doe je het na.
+ *   grijs      de plaatjes die eraf gaan staan er al grijs bij; het kind kijkt
+ *              en rekent. Met `verschoven` schuiven ze een stukje opzij, met
+ *              een pijl ertussen, zodat je ziet dát ze weggaan.
+ *   tikbaar    het kind streept zelf weg. Elk plaatje is dan een knop: licht
+ *              kader, zachte schaduw, en hij veert in bij het indrukken.
+ *   vanzelf    de computer schuift er een paar weg en het kind kijkt.
  *
- * De plaatjes staan in rijtjes van vijf, links uitgelijnd, met de volgende rij
- * eronder — de vijfstructuur van school, zodat een kind met sprongen van vijf
- * kan meetellen in plaats van stuk voor stuk.
+ * Het onderdeel staat los van één domein, zodat elk volgend domein dezelfde
+ * beeldtaal kan gebruiken.
  */
 
 import { useEffect, useState } from "react";
@@ -39,6 +42,9 @@ const MATEN = {
 } as const;
 
 export type Wegtikmaat = keyof typeof MATEN;
+
+/** Hoe een plaatje eruitziet dat niet meer meetelt: grijs en half doorzichtig. */
+export const ERAFSTIJL = "opacity-40 grayscale";
 
 /** Het rode kruis over een weggestreept plaatje. */
 function Kruis() {
@@ -59,24 +65,48 @@ function Kruis() {
   );
 }
 
+/** Het handje dat één keer voordoet dat je op een plaatje kunt tikken. */
+function Handje() {
+  return (
+    <svg viewBox="0 0 30 32" className="h-8 w-8 drop-shadow-sm" aria-hidden="true">
+      <path
+        d="M8 13V3a2.5 2.5 0 0 1 5 0v8-1a2.3 2.3 0 0 1 4.6 0v1a2.2 2.2 0 0 1 4.4 0v2a2.2 2.2 0 0 1 4.4 0v7c0 6-3.5 10-9 10h-2c-3.5 0-5.5-2-7.5-5l-5-7a2.5 2.5 0 0 1 3.8-3.2L8 17Z"
+        fill="#ffffff"
+        stroke="#24364b"
+        strokeWidth={1.8}
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+}
+
 export function Wegtikken({
   aantal,
   voorwerp,
   weg,
+  grijs = [],
+  verschoven = false,
   tikbaar = false,
   vanzelf = 0,
+  wijsAan = false,
   maat = "gewoon",
   onTik,
 }: {
   aantal: number;
   /** De naam van het telplaatje; dezelfde als bij Plaatjes tellen. */
   voorwerp: string;
-  /** Welke plaatjes een kruis hebben. De ouder houdt dit bij. */
+  /** Welke plaatjes het kind heeft weggestreept: grijs mét een rood kruis. */
   weg: number[];
-  /** Mag het kind zelf aantikken? */
+  /** Welke plaatjes er al grijs bij staan, zonder kruis: die gaan eraf. */
+  grijs?: number[];
+  /** Schuiven de grijze plaatjes een stukje opzij, met een pijl ertussen? */
+  verschoven?: boolean;
+  /** Mag het kind zelf aantikken? Dan ziet elk plaatje eruit als een knop. */
   tikbaar?: boolean;
   /** Hoeveel plaatjes er vanzelf wegschuiven; 0 = geen. */
   vanzelf?: number;
+  /** Doet een handje één keer voor dat je kunt tikken? */
+  wijsAan?: boolean;
   maat?: Wegtikmaat;
   onTik?: (nummer: number) => void;
 }) {
@@ -114,43 +144,68 @@ export function Wegtikken({
     rijen.push(Array.from({ length: Math.min(PER_RIJ, aantal - i) }, (_, k) => i + k));
   }
 
+  /* Het eerste plaatje dat nog niet weg is; daar wijst het handje naar. */
+  const eersteVrij = Array.from({ length: aantal }, (_, i) => i).find((i) => !weg.includes(i)) ?? 0;
+
   return (
     <span className="flex flex-col items-start gap-1.5">
       {rijen.map((rij, r) => (
         <span key={r} className="flex items-center gap-1.5">
           {rij.map((i) => {
             const gekruist = weg.includes(i);
+            const gedimd = gekruist || grijs.includes(i);
             const weggeschoven = vertrokken.includes(i);
-            const inhoud = (
+            /* Een pijltje op de plek waar het felle deel ophoudt. */
+            const pijlHier = verschoven && grijs.includes(i) && !grijs.includes(i - 1);
+
+            const plaatje = (
               <span
                 className={`relative block ${MATEN[maat]} transition-all duration-500 ${
-                  weggeschoven ? "-translate-y-6 scale-50 opacity-0" : ""
-                }`}
+                  gedimd ? ERAFSTIJL : ""
+                } ${weggeschoven ? "-translate-y-6 scale-50 opacity-0" : ""}`}
               >
                 <Telplaatje naam={voorwerp} />
                 {gekruist && <Kruis />}
               </span>
             );
 
+            const pijl = pijlHier ? (
+              <span aria-hidden="true" className="px-0.5 text-lg font-extrabold text-eraf">
+                →
+              </span>
+            ) : null;
+
             if (!tikbaar) {
               return (
-                <span key={i} aria-hidden="true">
-                  {inhoud}
+                <span key={i} className="flex items-center" aria-hidden="true">
+                  {pijl}
+                  <span className={verschoven && gedimd ? "ml-1.5" : ""}>{plaatje}</span>
                 </span>
               );
             }
 
             return (
-              <button
-                key={i}
-                type="button"
-                aria-label={`Plaatje ${i + 1}`}
-                aria-pressed={gekruist}
-                onClick={() => onTik?.(i)}
-                className="cursor-pointer rounded-xl transition focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-huisstijl"
-              >
-                {inhoud}
-              </button>
+              <span key={i} className="relative flex items-center">
+                {pijl}
+                <button
+                  type="button"
+                  aria-label={`Plaatje ${i + 1}`}
+                  aria-pressed={gekruist}
+                  onClick={() => onTik?.(i)}
+                  className="cursor-pointer rounded-xl border border-rand bg-kaart p-1 shadow-zacht transition active:scale-90 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-huisstijl"
+                >
+                  {plaatje}
+                </button>
+                {/* Het handje doet één keer voor dat je kunt tikken. */}
+                {wijsAan && i === eersteVrij && (
+                  <span
+                    aria-hidden="true"
+                    className="pointer-events-none absolute left-1/2 top-1/2 z-20 motion-safe:animate-hand-wijs"
+                  >
+                    <Handje />
+                  </span>
+                )}
+              </span>
             );
           })}
         </span>

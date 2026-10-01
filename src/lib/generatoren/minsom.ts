@@ -1,9 +1,10 @@
 /**
  * De kale minsom: 13 − 5 = ▢.
  *
- * Bij de eerste sommen van de oefening staat het rekenrek erbij en schuift het
- * kind daar zelf de kralen weg; daarna staat alleen de som er nog. Hoeveel
- * sommen dat zijn staat in de instelling "Hoeveel sommen met het rekenrek".
+ * Grote cijfers, het minteken in de huisstijlkleur en een duidelijk invulvak;
+ * verder niets op het scherm. Gaat het mis, dan laat de uitleg de som alsnog
+ * met plaatjes zien, in dezelfde beeldtaal als de rest van het domein: grijs
+ * is wat eraf gaat.
  *
  * Nooit een uitkomst onder nul: er gaat er altijd minstens één af en nooit
  * meer dan er staan.
@@ -26,20 +27,16 @@ import { minsomAanpak } from "@/lib/generatoren/aanpak/erafsommen";
 import { minsomUitleg } from "@/lib/generatoren/scripts/erafsommen";
 import { VISUEEL_VELD, visueleSommen } from "@/lib/generatoren/visueel";
 
-/*
-  Hoeveel kralen er op het rekenrek zitten. Staat hier als getal en niet als
-  import uit het tekenwerk: generatoren draaien ook in de controlescripts, en
-  die laden geen schermonderdelen.
-*/
-const REKENREK_KRALEN = 20;
+/* Boven de twintig wordt een minsom in groep 4 een ander soort som. */
+const MAX_GETAL = 20;
 
 const ZIN = "Hoeveel is {som}?";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 
 export function grenzen(inst: Instellingen) {
-  const van = Math.max(2, Math.min(REKENREK_KRALEN, getal(inst, "van", 6)));
-  const tot = Math.max(van, Math.min(REKENREK_KRALEN, getal(inst, "tot", 15)));
+  const van = Math.max(2, Math.min(MAX_GETAL, getal(inst, "van", 6)));
+  const tot = Math.max(van, Math.min(MAX_GETAL, getal(inst, "tot", 15)));
   const afTot = Math.max(1, Math.min(10, getal(inst, "afTot", 9)));
   return { van, tot, afTot, visueel: visueleSommen(inst) };
 }
@@ -57,23 +54,23 @@ export const minsomGenerator: Generator = {
   id: "minsom",
   naam: "Aftrekken (kale som)",
   uitleg:
-    "De som staat er kaal: 13 − 5 = ▢. Bij de eerste sommen staat het rekenrek erbij en schuift het kind zelf de kralen weg; daarna rekent het uit het hoofd.",
-  suggestie: "Groep 4: 6 tot en met 15, hoogstens 9 eraf, drie sommen met het rekenrek",
+    "De som staat er kaal: 13 − 5 = ▢, met grote cijfers en een oranje minteken. Bij een fout antwoord laat de uitleg dezelfde som met plaatjes zien.",
+  suggestie: "Groep 4: 6 tot en met 15, hoogstens 9 eraf",
   velden: [
     {
       soort: "getal",
       sleutel: "van",
       label: "Kleinste getal om vanaf te tellen",
       min: 2,
-      max: REKENREK_KRALEN,
+      max: MAX_GETAL,
     },
     {
       soort: "getal",
       sleutel: "tot",
       label: "Grootste getal om vanaf te tellen",
       min: 2,
-      max: REKENREK_KRALEN,
-      hulp: "Niet hoger dan twintig: meer kralen passen er niet op het rekenrek.",
+      max: MAX_GETAL,
+      hulp: "Niet hoger dan twintig; daarboven hoort de som bij een ander onderwerp.",
     },
     {
       soort: "getal",
@@ -83,7 +80,7 @@ export const minsomGenerator: Generator = {
       max: 10,
       hulp: "Er gaat er altijd minstens één af, en nooit meer dan er staan: de uitkomst komt dus nooit onder nul.",
     },
-    { ...VISUEEL_VELD, label: "Hoeveel sommen met het rekenrek erbij" },
+    VISUEEL_VELD,
     ...vraagtekstVelden(STANDAARDZINNEN, {
       voorbeeldzinnen: {
         "34": "Hoeveel is 13 − 5?",

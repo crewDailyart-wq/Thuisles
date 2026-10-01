@@ -327,6 +327,23 @@ export type Model =
       bijschrift?: string;
     }
   | {
+      /**
+       * Een erafsom in plaatjes, in de beeldtaal van het domein Erafsommen.
+       *
+       * Eén groep in rijtjes van vijf; de plaatjes die eraf gaan staan grijs
+       * en half doorzichtig. Zo ziet een kind dat net de som fout had alsnog
+       * wát er weggaat, met hetzelfde beeld als bij de andere opdrachten van
+       * het onderwerp.
+       */
+      soort: "erafplaatjes";
+      totaal: number;
+      /** Hoeveel er grijs staan; 0 toont de hele groep nog fel. */
+      eraf: number;
+      /** Welk getekend plaatje; de namen staan in `Telplaatjes.tsx`. */
+      plaatje: string;
+      bijschrift?: string;
+    }
+  | {
       soort: "som";
       /** Grote som in cijfers, bijvoorbeeld "19 − 3 = 16". */
       tekst: string;

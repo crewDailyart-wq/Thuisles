@@ -118,6 +118,15 @@
     beige en verdwijnt tegen de gele vakken van een tabel.
   */
   --color-tabellijn: #c3cedd;
+  /*
+    De beeldtaal van de erafsommen: wat eraf gaat is grijs, wat blijft fel.
+
+    Eén grijs voor het hele platform, zodat "dit telt niet meer mee" overal
+    hetzelfde oogt: de rand en de cijfers van een eraf-label, en het vlak
+    eronder. Het totaal krijgt de huisstijlkleur, een goed antwoord groen.
+  */
+  --color-eraf: #7c8699;
+  --color-eraf-zacht: #eef0f4;
   /* Donkerder blauw voor de hover van de schoolroute. */
   --color-lucht-diep: #27599b;
   --color-lucht-zacht: #e2edfb;

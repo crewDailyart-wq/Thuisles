@@ -25,6 +25,7 @@ import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
+import { Wegtikken } from "@/components/oefenen/Wegtikken";
 import { Uitlegraster } from "@/components/oefenen/Plaatjesraster";
 import { Uitlegblokken } from "@/components/oefenen/Mabblokken";
 import { Uitlegstraat } from "@/components/oefenen/Huizenrij";
@@ -602,6 +603,25 @@ function Modelbeeld({
           telbaar={telbaar}
           getikt={getikt}
           onTik={onTik}
+        />
+        {model.bijschrift && (
+          <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">
+            {model.bijschrift}
+          </p>
+        )}
+      </div>
+    );
+  }
+
+  if (model.soort === "erafplaatjes") {
+    return (
+      <div className="flex w-full flex-col items-center gap-2">
+        <Wegtikken
+          aantal={model.totaal}
+          voorwerp={model.plaatje}
+          weg={[]}
+          grijs={Array.from({ length: model.eraf }, (_, i) => model.totaal - 1 - i)}
+          maat="gewoon"
         />
         {model.bijschrift && (
           <p className="text-3xl font-extrabold tabular-nums text-huisstijl-diep">

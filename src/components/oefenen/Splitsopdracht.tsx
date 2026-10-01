@@ -149,15 +149,32 @@ const VORM: Record<Vakvorm, string> = {
   bladRechts: "!rounded-[15%_85%_15%_85%]",
 };
 
-/** Een gegeven getal: geel met donkere cijfers. */
+/**
+ * De kleuren die een gegeven getal kan hebben.
+ *
+ * Geel is het gewone "dit is gegeven". Oranje en grijs horen bij de beeldtaal
+ * van de erafsommen: het totaal in de huisstijlkleur, wat eraf gaat in het
+ * grijs van "telt niet meer mee". Zie ONTWERPREGELS.md.
+ */
+const LABELKLEUREN = {
+  geel: "border-geel bg-geel-zacht text-inkt",
+  oranje: "border-huisstijl bg-huisstijl-zacht text-huisstijl-donker",
+  grijs: "border-eraf bg-eraf-zacht text-eraf",
+} as const;
+
+export type Labelkleur = keyof typeof LABELKLEUREN;
+
+/** Een gegeven getal: geel met donkere cijfers, of een eigen kleur. */
 export function Gegeven({
   waarde,
   maat = "gewoon",
   vorm = "vierkant",
+  kleur = "geel",
 }: {
   waarde: number;
   maat?: "gewoon" | "groot" | "klein";
   vorm?: Vakvorm;
+  kleur?: Labelkleur;
 }) {
   const grootte =
     maat === "groot"
@@ -166,9 +183,7 @@ export function Gegeven({
         ? "size-12 text-xl"
         : "size-16 text-2xl sm:size-[4.25rem] sm:text-3xl";
   return (
-    <span className={`${VAK} ${grootte} border-geel bg-geel-zacht text-inkt ${VORM[vorm]}`}>
-      {waarde}
-    </span>
+    <span className={`${VAK} ${grootte} ${LABELKLEUREN[kleur]} ${VORM[vorm]}`}>{waarde}</span>
   );
 }
 
@@ -181,6 +196,7 @@ export function Invulvak({
   uit,
   vorm = "vierkant",
   randDonker = false,
+  rand = "gewoon",
   veldRef,
   onTyp,
   onBevestig,
@@ -194,6 +210,14 @@ export function Invulvak({
   vorm?: Vakvorm;
   /** Een iets donkerder rand, voor op een gekleurde ondergrond. */
   randDonker?: boolean;
+  /**
+   * Een gekleurde rand, zolang er nog niet is nagekeken.
+   *
+   * Hoort bij de beeldtaal van de erafsommen: het vakje van het totaal krijgt
+   * de huisstijlkleur, het vakje van wat eraf gaat het grijs van "telt niet
+   * meer mee". Na Controleer gaat groen of roze er altijd overheen.
+   */
+  rand?: "gewoon" | "oranje" | "grijs";
   uit: boolean;
   veldRef?: (el: HTMLInputElement | null) => void;
   onTyp: (tekst: string) => void;
@@ -211,12 +235,21 @@ export function Invulvak({
         ? "size-12 text-xl"
         : "size-16 text-2xl sm:size-[4.25rem] sm:text-3xl";
 
+  const rustigeRand =
+    rand === "oranje"
+      ? "border-huisstijl"
+      : rand === "grijs"
+        ? "border-eraf"
+        : randDonker
+          ? "border-inkt/25"
+          : "border-rand";
+
   const kleur =
     uitslag === "goed"
       ? "border-groen bg-groen-zacht text-groen-diep motion-safe:animate-kraal-stuiter"
       : uitslag === "fout"
         ? "border-roze bg-roze-zacht text-roze"
-        : `bg-kaart text-inkt focus-within:border-huisstijl ${randDonker ? "border-inkt/25" : "border-rand"}`;
+        : `bg-kaart text-inkt focus-within:border-huisstijl ${rustigeRand}`;
 
   return (
     <span className={`${VAK} ${grootte} ${kleur} ${VORM[vorm]}`}>

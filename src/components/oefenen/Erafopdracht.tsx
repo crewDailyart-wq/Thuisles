@@ -7,19 +7,20 @@
  * wat gegeven is, witte vakjes waar het kind zelf iets invult, en zo min
  * mogelijk op het scherm. Wat verschilt is alleen hoe het op de kaart staat.
  *
- *   wegstrepen      een groep plaatjes; het kind streept er zelf een paar weg
- *   minsomplaatje   er schuiven er vanzelf weg; het kind vult de hele som in
- *   plaatjesminsom  plaatjes − plaatjes = ▢, met of zonder getallen erbij
- *   minsom          de kale som, bij de eerste sommen met het rekenrek erbij
+ *   minsomplaatje   één groep plaatjes; het eraf-deel schuift grijs opzij
+ *   wegstrepen      het kind streept zelf weg, met een teller onder het bordje
+ *   minsom          de kale som, met een oranje minteken
+ *   plaatjesminsom  één groep plaatjes met het eraf-deel grijs
  *   minkoppelen     minsommen aan hun uitkomst slepen
  *
  * ---------------------------------------------------------------------------
- * Eerst zien, dan rekenen
+ * Eén beeldtaal
  * ---------------------------------------------------------------------------
- * De eerste sommen van een oefening zijn visueel: het kind streept zelf weg of
- * schuift zelf kralen. Daarna volgt gewoon oefenen. Hoeveel sommen dat zijn
- * staat per sjabloon in de database; in de vraag staat alleen nog of déze som
- * visueel is (`visueel` in de figuur).
+ * Overal hetzelfde beeld, zodat een kind het maar één keer hoeft te leren:
+ * plaatjes in rijtjes van vijf, wat eraf gaat grijs en half doorzichtig, wat
+ * overblijft fel, het totaal met een oranje label en wat eraf gaat met een
+ * grijs label. Zie ONTWERPREGELS.md; de kleuren komen uit de centrale
+ * variabelen in `globals.css`.
  *
  * ---------------------------------------------------------------------------
  * Dezelfde afspraken als bij Splitsen en Optellen
@@ -36,7 +37,6 @@ import { useEffect, useRef, useState } from "react";
 import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Wegtikken } from "@/components/oefenen/Wegtikken";
-import { Rekenrek } from "@/components/oefenen/Rekenrek";
 import type { Figuur } from "@/lib/generatoren/soort";
 
 /** Dezelfde drie standen als in het oefenscherm. */
@@ -94,25 +94,88 @@ function uitAntwoord(antwoord: string, hoeveel: number): string[] {
   return Array.from({ length: hoeveel }, (_, i) => delen[i] ?? "");
 }
 
-/** Het minteken, overal hetzelfde. */
-function Minteken() {
-  return <span className="text-2xl font-extrabold text-inkt-zacht">−</span>;
+/** Het minteken: in de huisstijlkleur, zodat je meteen ziet dat er iets afgaat. */
+function Minteken({ maat = "gewoon" }: { maat?: "gewoon" | "groot" }) {
+  return (
+    <span
+      className={`font-extrabold text-huisstijl ${maat === "groot" ? "text-4xl sm:text-5xl" : "text-2xl"}`}
+    >
+      −
+    </span>
+  );
 }
 
-function Isgelijk() {
-  return <span className="text-2xl font-extrabold text-inkt-zacht">=</span>;
+function Isgelijk({ maat = "gewoon" }: { maat?: "gewoon" | "groot" }) {
+  return (
+    <span
+      className={`font-extrabold text-inkt-zacht ${maat === "groot" ? "text-4xl sm:text-5xl" : "text-2xl"}`}
+    >
+      =
+    </span>
+  );
+}
+
+/** Welke plaatjes eraf gaan: altijd de laatste, zodat wat blijft vooraan staat. */
+function eraflijst(totaal: number, eraf: number): number[] {
+  return Array.from({ length: eraf }, (_, i) => totaal - 1 - i);
 }
 
 /**
- * Het bordje met de opdracht erop: "5 eraf".
+ * Of het handje bij Wegstrepen al is voorgedaan.
  *
- * Donker en groot, niet als klein grijs tekstje: dit is de informatie waar de
- * som om draait, dus die moet een kind in één oogopslag zien.
+ * Bewust naast de component: elke vraag krijgt een eigen exemplaar van dit
+ * scherm, en het handje hoort maar bij de eerste som van een oefening.
  */
-function Erafbordje({ aantal }: { aantal: number }) {
+let handjeGetoondWegstrepen = false;
+
+/**
+ * Het bordje met de opdracht erop: "5 eraf", met een teller eronder.
+ *
+ * Onder het bordje staan evenveel lege rondjes als er weg moeten. Elk plaatje
+ * dat het kind wegstreept vult er één; zijn ze allemaal vol, dan komt er een
+ * groen vinkje op het bordje. Streept het kind er te veel weg, dan kleuren de
+ * rondjes even oranje — geen foutmelding, alleen een seintje dat er eentje
+ * te veel weg is.
+ */
+function Erafbordje({
+  aantal,
+  gevuld,
+  teveel,
+}: {
+  aantal: number;
+  gevuld: number;
+  teveel: boolean;
+}) {
+  const compleet = gevuld === aantal;
   return (
-    <span className="rounded-2xl bg-inkt px-4 py-1.5 text-xl font-extrabold text-white">
-      {aantal} eraf
+    <span className="flex flex-col items-center gap-2">
+      <span
+        className={`flex items-center gap-2 rounded-2xl px-4 py-1.5 text-xl font-extrabold transition ${
+          compleet ? "bg-groen text-white" : "bg-inkt text-white"
+        }`}
+      >
+        {aantal} eraf
+        {compleet && (
+          <svg viewBox="0 0 24 24" className="size-5" fill="none" stroke="currentColor" aria-hidden="true">
+            <path d="M5 13l4 4L19 7" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+        )}
+      </span>
+      <span className="flex items-center gap-1.5">
+        {Array.from({ length: aantal }, (_, i) => (
+          <span
+            key={i}
+            aria-hidden="true"
+            className={`size-3.5 rounded-full border-2 transition ${
+              teveel
+                ? "border-huisstijl bg-huisstijl"
+                : i < gevuld
+                  ? "border-groen bg-groen"
+                  : "border-rand bg-kaart"
+            }`}
+          />
+        ))}
+      </span>
     </span>
   );
 }
@@ -141,8 +204,16 @@ export function Erafopdracht({
   const [getypt, setGetypt] = useState<string[]>(() => uitAntwoord(antwoord, aantal));
   const velden = useRef<(HTMLInputElement | null)[]>([]);
 
-  /** Welke plaatjes of kralen het kind heeft weggestreept. */
+  /** Welke plaatjes het kind heeft weggestreept. */
   const [weg, setWeg] = useState<number[]>([]);
+  /** Knippert de teller even oranje? Dat gebeurt bij eentje te veel. */
+  const [knipper, setKnipper] = useState(false);
+  /*
+    Het handje doet bij de eerste som van een oefening één keer voor dat je op
+    een plaatje kunt tikken. Daarna komt het niet meer terug, en zodra het kind
+    zelf tikt is het meteen weg.
+  */
+  const [handje, setHandje] = useState(false);
 
   /* Opnieuw beginnen: alleen bij de overgang van nagekeken terug naar bezig. */
   const vorigeFase = useRef(fase);
@@ -152,6 +223,7 @@ export function Erafopdracht({
     if (wasKlaar && fase === "bezig") {
       setGetypt(Array.from({ length: aantal }, () => ""));
       setWeg([]);
+      setKnipper(false);
     }
   }, [fase, aantal]);
 
@@ -161,6 +233,27 @@ export function Erafopdracht({
     velden.current[0]?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metCursor]);
+
+  /*
+    Het handje bij de eerste som waar het kind zelf wegstreept. Het verdwijnt
+    na vier wenken vanzelf, en eerder zodra het kind zelf tikt. De vlag gaat
+    pas aan het eind om; in ontwikkeling draait een effect twee keer, en met
+    een vlag vooraf zou het handje nooit te zien zijn.
+  */
+  useEffect(() => {
+    if (!metCursor || uit || handjeGetoondWegstrepen) return;
+    if (figuur.soort !== "wegstrepen") return;
+
+    /* Even wachten tot de vraag staat; dan pas wenkt het handje. */
+    const klokjes = [
+      window.setTimeout(() => setHandje(true), 600),
+      window.setTimeout(() => {
+        setHandje(false);
+        handjeGetoondWegstrepen = true;
+      }, 4800),
+    ];
+    return () => klokjes.forEach((k) => window.clearTimeout(k));
+  }, [metCursor, uit, figuur.soort]);
 
   const uitslagen: ("goed" | "fout" | null)[] = !uit
     ? juist.map(() => null)
@@ -185,12 +278,18 @@ export function Erafopdracht({
   }
 
   /** Eén invulvak, met alles eromheen al ingevuld. */
-  function vak(nummer: number, label: string, maat: "gewoon" | "groot" | "klein" = "gewoon") {
+  function vak(
+    nummer: number,
+    label: string,
+    maat: "gewoon" | "groot" | "klein" = "gewoon",
+    rand: "gewoon" | "oranje" | "grijs" = "gewoon",
+  ) {
     return (
       <Invulvak
         waarde={getypt[nummer] ?? ""}
         uitslag={uitslagen[nummer] ?? null}
         maat={maat}
+        rand={rand}
         label={label}
         uit={uit}
         veldRef={(el) => {
@@ -203,46 +302,68 @@ export function Erafopdracht({
     );
   }
 
-  /** Een plaatje of kraal aan- of uitzetten. */
+  /** Een plaatje aan- of uitzetten. */
   function tik(nummer: number) {
     if (uit) return;
-    setWeg((eerder) =>
-      eerder.includes(nummer) ? eerder.filter((n) => n !== nummer) : [...eerder, nummer],
-    );
+    setHandje(false);
+    handjeGetoondWegstrepen = true;
+    const nieuw = weg.includes(nummer) ? weg.filter((n) => n !== nummer) : [...weg, nummer];
+    setWeg(nieuw);
+
+    /* Eentje te veel: de teller licht even op en gaat daarna vanzelf uit. */
+    if (figuur.soort === "wegstrepen" && nieuw.length > figuur.eraf) {
+      setKnipper(true);
+      window.setTimeout(() => setKnipper(false), 600);
+    }
   }
 
   if (figuur.soort === "wegstrepen") {
+    const teveel = weg.length > figuur.eraf;
     return (
       <div className="flex w-full flex-col items-center gap-4">
-        <Erafbordje aantal={figuur.eraf} />
+        <Erafbordje
+          aantal={figuur.eraf}
+          gevuld={Math.min(weg.length, figuur.eraf)}
+          teveel={teveel && knipper}
+        />
         <Wegtikken
           aantal={figuur.totaal}
           voorwerp={figuur.voorwerp}
           weg={weg}
           tikbaar={!uit}
+          wijsAan={handje}
           maat="gewoon"
           onTik={tik}
         />
-        {/* Geen isgelijkteken: er staat geen som, alleen de vraag hoeveel er over zijn. */}
+        {/*
+          Het kind mag altijd zelf het antwoord typen, ook zonder weg te
+          strepen: het wegstrepen is hulp, het getal is het antwoord.
+        */}
         {vak(0, "Hoeveel blijven er over?")}
       </div>
     );
   }
 
   if (figuur.soort === "minsomplaatje") {
+    /*
+      Eén groep, waarvan het eraf-deel grijs is en een stukje opzij staat met
+      een pijl ervoor. Zo zie je in één beeld wat er was, wat weggaat en wat
+      er overblijft — en daaronder schrijft het kind precies dat op.
+    */
     return (
-      <div className="flex w-full flex-col items-center gap-4">
+      <div className="flex w-full flex-col items-center gap-5">
         <Wegtikken
           aantal={figuur.totaal}
           voorwerp={figuur.voorwerp}
           weg={[]}
-          vanzelf={figuur.eraf}
+          grijs={eraflijst(figuur.totaal, figuur.eraf)}
+          verschoven
           maat="gewoon"
         />
         <div className="flex items-center justify-center gap-3">
-          {vak(0, "Hoeveel waren er eerst?")}
+          {vak(0, "Hoeveel waren er eerst?", "gewoon", "oranje")}
           <Minteken />
-          {vak(1, "Hoeveel gingen er weg?")}
+          {vak(1, "Hoeveel gaan eraf?", "gewoon", "grijs")}
           <Isgelijk />
           {vak(2, "Hoeveel blijven er over?")}
         </div>
@@ -252,62 +373,43 @@ export function Erafopdracht({
 
   if (figuur.soort === "plaatjesminsom") {
     /*
-      De twee groepjes staan naast elkaar met het minteken ertussen, en het
-      getal — als dat erbij hoort — recht onder zijn eigen groepje. Bij een
-      visuele som streept het kind in het linkergroepje zelf weg; dan zie je
-      in één beeld waarom er overblijft wat er overblijft.
+      Eén groep met het eraf-deel grijs. Met de getallen erbij staat eronder
+      de hele som: het totaal in een oranje label, wat eraf gaat in een grijs
+      label, en het lege vakje voor de uitkomst.
     */
     return (
-      <div className="flex w-full flex-col items-center gap-4">
-        <div className="grid grid-cols-[auto_auto_auto_auto] items-center justify-center justify-items-center gap-x-4 gap-y-3 sm:gap-x-6">
-          <Wegtikken
-            aantal={figuur.totaal}
-            voorwerp={figuur.voorwerp}
-            weg={weg}
-            tikbaar={figuur.visueel && !uit}
-            maat="klein"
-            onTik={tik}
-          />
-          <Minteken />
-          <Wegtikken
-            aantal={figuur.eraf}
-            voorwerp={figuur.voorwerp}
-            weg={[]}
-            maat="klein"
-          />
-          <span className="flex items-center gap-3">
+      <div className="flex w-full flex-col items-center gap-5">
+        <Wegtikken
+          aantal={figuur.totaal}
+          voorwerp={figuur.voorwerp}
+          weg={[]}
+          grijs={eraflijst(figuur.totaal, figuur.eraf)}
+          maat="gewoon"
+        />
+        {figuur.metGetallen ? (
+          <div className="flex items-center justify-center gap-3">
+            <Gegeven waarde={figuur.totaal} kleur="oranje" />
+            <Minteken />
+            <Gegeven waarde={figuur.eraf} kleur="grijs" />
             <Isgelijk />
             {vak(0, "Hoeveel blijven er over?")}
-          </span>
-
-          {figuur.metGetallen && (
-            <>
-              <Gegeven waarde={figuur.totaal} maat="klein" />
-              <span />
-              <Gegeven waarde={figuur.eraf} maat="klein" />
-              <span />
-            </>
-          )}
-        </div>
+          </div>
+        ) : (
+          vak(0, "Hoeveel blijven er over?")
+        )}
       </div>
     );
   }
 
   if (figuur.soort === "minsom") {
+    /* Geen plaatjes: alleen grote cijfers, met het minteken in de huisstijl. */
     return (
-      <div className="flex w-full flex-col items-center gap-5">
-        {figuur.visueel && (
-          <div className="w-full max-w-md">
-            <Rekenrek aantal={figuur.van} weg={weg} tikbaar={!uit} onTik={tik} />
-          </div>
-        )}
-        <div className="flex items-center justify-center gap-3">
-          <Gegeven waarde={figuur.van} maat="groot" />
-          <Minteken />
-          <Gegeven waarde={figuur.af} maat="groot" />
-          <Isgelijk />
-          {vak(0, "De uitkomst", "groot")}
-        </div>
+      <div className="flex w-full items-center justify-center gap-3">
+        <Gegeven waarde={figuur.van} maat="groot" kleur="oranje" />
+        <Minteken maat="groot" />
+        <Gegeven waarde={figuur.af} maat="groot" kleur="grijs" />
+        <Isgelijk maat="groot" />
+        {vak(0, "De uitkomst", "groot")}
       </div>
     );
   }
@@ -324,6 +426,7 @@ export function Erafopdracht({
       uit={uit}
       uitslagen={uitslagen}
       teken="−"
+      vinkjeBijGoed
       onWijzig={(waarde) => {
         setGetypt(uitAntwoord(waarde, aantal));
         onWijzig(waarde);

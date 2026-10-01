@@ -21,13 +21,39 @@ function stap(tekst: string, zin: string, feest = false): Uitlegscript["stappen"
   };
 }
 
+/**
+ * Het plaatje waarmee de kale minsom wordt voorgedaan.
+ *
+ * Eén soort voor alle sommen van dit type: de appel kent elk kind, en een
+ * vaste keuze houdt de uitleg rustig. De kale som zelf heeft geen voorwerp,
+ * dus die moet hier gekozen worden.
+ */
+const UITLEGPLAATJE = "appel";
+
+/** Eén stap met de som in plaatjes: grijs is wat eraf gaat. */
+function beeldstap(
+  totaal: number,
+  eraf: number,
+  zin: string,
+  bijschrift?: string,
+  feest = false,
+): Uitlegscript["stappen"][number] {
+  return {
+    model: { soort: "erafplaatjes", totaal, eraf, plaatje: UITLEGPLAATJE, bijschrift },
+    zin,
+    houding: feest ? "juichend" : "wijzend",
+    ...(feest ? { feest: true, beweging: "juichen" as const } : {}),
+  };
+}
+
 /** Een uitlegbron met één strategie en één script voor alle groepen. */
 function bron(
   strategie: { waarde: string; label: string; uitleg: string },
   regels: (som: Somgegevens, kort: boolean) => Uitlegscript["stappen"],
+  modellen: string[] = ["som"],
 ): Uitlegbron {
   return {
-    modellen: ["som"],
+    modellen,
     strategieen: [strategie],
     standaardStrategie: () => strategie.waarde,
     script(som, vorm: Groepsvorm) {
@@ -51,16 +77,24 @@ function bron(
   };
 }
 
-/** Terugtellen vanaf het grootste getal: de gewone weg bij een minsom. */
+/**
+ * De kale som alsnog in plaatjes.
+ *
+ * Ging het mis, dan helpt het beeld meer dan nog eens dezelfde cijfers. Eerst
+ * staat de hele groep er fel, dan worden de plaatjes die eraf gaan grijs, en
+ * daarna telt Vos wat er overblijft — dezelfde beeldtaal als bij de andere
+ * opdrachten van het onderwerp.
+ */
 function terugtellen(som: Somgegevens, kort: boolean): Uitlegscript["stappen"] {
   const [van, af] = som.getallen;
   return [
-    stap(`${van} − ${af}`, kort ? "Dit is de som." : `De som is ${van} min ${af}.`),
-    stap(String(van), kort ? "Begin hier." : `Begin bij ${van}.`),
-    stap(`${van} − ${af}`, kort ? "Tel zoveel terug." : `Tel er ${af} vanaf.`),
-    stap(
+    beeldstap(van, 0, kort ? "Zoveel had je." : `Je begint met ${van}.`, String(van)),
+    beeldstap(van, af, kort ? "Deze gaan eraf." : `Er gaan er ${af} af.`, `${van} − ${af}`),
+    beeldstap(
+      van,
+      af,
+      kort ? "Tel wat er fel blijft!" : `Er blijft ${van - af} over.`,
       `${van} − ${af} = ${van - af}`,
-      kort ? "Zoveel blijft er over!" : `Er blijft ${van - af} over.`,
       true,
     ),
   ];
@@ -133,6 +167,7 @@ export const minsomUitleg: Uitlegbron = bron(
     uitleg: "Begin bij het grootste getal en tel het andere eraf.",
   },
   terugtellen,
+  ["erafplaatjes"],
 );
 
 export const minkoppelenUitleg: Uitlegbron = bron(

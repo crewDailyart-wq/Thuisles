@@ -1028,6 +1028,7 @@ export function Koppelsommen({
   uit,
   uitslagen,
   teken = "+",
+  vinkjeBijGoed = false,
   onWijzig,
 }: {
   figuur: { sommen: { eerste: number; tweede: number }[]; keuzes: number[] };
@@ -1036,6 +1037,14 @@ export function Koppelsommen({
   uitslagen: ("goed" | "fout" | null)[];
   /** Het teken tussen de twee getallen; "−" bij de erafsommen. */
   teken?: string;
+  /**
+   * Krijgt een goed paar na het nakijken een groen vinkje?
+   *
+   * Uit bij Optellen, zodat daar niets verandert; aan bij de erafsommen.
+   * Het vinkje komt pas ná Controleer: goed of fout laat het scherm nooit
+   * eerder zien (ONTWERPREGELS.md).
+   */
+  vinkjeBijGoed?: boolean;
   onWijzig: (waarde: string) => void;
 }) {
   /* Waar elke losse uitkomst ligt: beneden, of bij som nummer zoveel. */
@@ -1203,6 +1212,17 @@ export function Koppelsommen({
               </div>
               {uit && uitslag === "fout" && (
                 <span className="text-sm font-extrabold text-groen-diep">{hoortBij(s)}</span>
+              )}
+              {uit && uitslag === "goed" && vinkjeBijGoed && (
+                <svg
+                  viewBox="0 0 24 24"
+                  className="size-5 text-groen-diep"
+                  fill="none"
+                  stroke="currentColor"
+                  aria-hidden="true"
+                >
+                  <path d="M5 13l4 4L19 7" strokeWidth={3.5} strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
               )}
             </div>
           );

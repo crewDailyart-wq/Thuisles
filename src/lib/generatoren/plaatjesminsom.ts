@@ -36,8 +36,16 @@ import { plaatjesminsomAanpak } from "@/lib/generatoren/aanpak/erafsommen";
 import { plaatjesminsomUitleg } from "@/lib/generatoren/scripts/erafsommen";
 import { paren } from "@/lib/generatoren/wegstrepen";
 import { VISUEEL_VELD, visueleSommen } from "@/lib/generatoren/visueel";
+import { meervoudVanTelplaatje } from "@/lib/telplaatjes";
 
-const ZIN = "Hoeveel blijven er over?";
+const ZIN = "Hoeveel {plaatjes} blijven er over?";
+
+/** De zin als het voorwerp geen naam heeft; dan blijft het bij "hoeveel". */
+const ZONDER_NAAM: Record<Leeftijdsgroep, string> = {
+  "34": "Hoeveel blijven er over?",
+  "56": "Hoeveel blijven er over?",
+  "78": "Hoeveel blijven er over?",
+};
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 
@@ -87,7 +95,13 @@ export const plaatjesminsomGenerator: Generator = {
     VISUEEL_VELD,
     plaatjesVeld,
     ...vraagtekstVelden(STANDAARDZINNEN, {
-      voorbeeldzinnen: { "34": ZIN, "56": ZIN, "78": ZIN },
+      voorbeeldzinnen: {
+        "34": "Hoeveel appels blijven er over?",
+        "56": "Hoeveel appels blijven er over?",
+        "78": "Hoeveel appels blijven er over?",
+      },
+      extraHulp:
+        "{plaatjes} wordt vervangen door de naam van het voorwerp in die vraag, in het meervoud: appels, muisjes, vlinders.",
     }),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
@@ -125,16 +139,28 @@ export const plaatjesminsomGenerator: Generator = {
         goed: totaal - eraf,
       };
 
+      const voorwerp = reeks[uit.length % reeks.length];
+      const meervoud = meervoudVanTelplaatje(voorwerp);
+
       uit.push({
         handtekening,
         vorm: "open",
-        vraagtekst: bepaalVraagtekst(plaatjesminsomGenerator, inst, groep, gegevens),
+        /* Zonder naam valt de zin terug op "Hoeveel blijven er over?". */
+        vraagtekst: bepaalVraagtekst(
+          meervoud === ""
+            ? { ...plaatjesminsomGenerator, vraagteksten: { standaard: ZONDER_NAAM } }
+            : plaatjesminsomGenerator,
+          inst,
+          groep,
+          gegevens,
+          { plaatjes: meervoud },
+        ),
         antwoord: String(totaal - eraf),
         figuur: {
           soort: "plaatjesminsom",
           totaal,
           eraf,
-          voorwerp: reeks[uit.length % reeks.length],
+          voorwerp,
           metGetallen,
           /* De eerste sommen van de oefening zijn die met wegstrepen. */
           visueel: uit.length < visueel,
