@@ -336,10 +336,21 @@ export function Erafopdracht({
           onTik={tik}
         />
         {/*
+          De som staat onder de plaatjes, met het invulvak erin: wat het kind
+          wegstreept en wat het opschrijft horen bij elkaar. Het totaal in een
+          oranje label, wat eraf gaat in een grijs — dezelfde beeldtaal als bij
+          de andere opdrachten van het onderwerp.
+
           Het kind mag altijd zelf het antwoord typen, ook zonder weg te
           strepen: het wegstrepen is hulp, het getal is het antwoord.
         */}
-        {vak(0, "Hoeveel blijven er over?")}
+        <div className="flex items-center justify-center gap-3">
+          <Gegeven waarde={figuur.totaal} kleur="oranje" />
+          <Minteken />
+          <Gegeven waarde={figuur.eraf} kleur="grijs" />
+          <Isgelijk />
+          {vak(0, "Hoeveel blijven er over?")}
+        </div>
       </div>
     );
   }

@@ -27,6 +27,8 @@ hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
   - het totaal krijgt een oranje label, wat eraf gaat een grijs label, en een
     goed antwoord wordt groen;
   - grote getallen, één soort plaatje per som, geen drukte en geen extra tekst;
+  - bij opdrachten met plaatjes staat de som er altijd bij, met het invulvak
+    in de som;
   - de kleuren komen uit de centrale variabelen.
 - Eigen Thuisles-stijl: geen titels, teksten of plaatjes letterlijk overnemen
   van andere sites.

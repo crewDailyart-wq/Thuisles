@@ -27,7 +27,7 @@ import { erafPatronen } from "@/lib/generatoren/patronen/erafsommen";
 import { wegstrepenAanpak } from "@/lib/generatoren/aanpak/erafsommen";
 import { wegstrepenUitleg } from "@/lib/generatoren/scripts/erafsommen";
 
-const ZIN = "Streep er {som} weg. Hoeveel blijven er over?";
+const ZIN = "Streep weg en reken uit.";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 
@@ -69,12 +69,9 @@ export const wegstrepenGenerator: Generator = {
     },
     plaatjesVeld,
     ...vraagtekstVelden(STANDAARDZINNEN, {
-      voorbeeldzinnen: {
-        "34": "Streep er 5 weg. Hoeveel blijven er over?",
-        "56": "Streep er 5 weg. Hoeveel blijven er over?",
-        "78": "Streep er 5 weg. Hoeveel blijven er over?",
-      },
-      extraHulp: "Op de plek van {som} komt het aantal dat eraf moet.",
+      voorbeeldzinnen: { "34": ZIN, "56": ZIN, "78": ZIN },
+      extraHulp:
+        "Hoeveel er weg moeten staat op het bordje en de som staat onder de plaatjes; de zin hoeft dat niet te herhalen. Met {som} krijg je het aantal dat eraf moet.",
     }),
   ],
   vraagteksten: {
