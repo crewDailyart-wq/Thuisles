@@ -36,16 +36,52 @@ per rij. Eerst kijken, dan zelf schuiven, en aan het eind uit het hoofd.
 | 4 | Aftrekken via de 10 | ●●● | Sommen over de tien, zoals 15 − 7. De rondjes onder het bordje staan in twee groepjes en de bovenste rij licht op zodra er tien over zijn. Na een goed antwoord staan de twee stappen eronder: 15 − 5 = 10 en 10 − 2 = 8. |
 | 5 | Denk aan het rekenrek | ●●●● | De kale som over de tien, zonder rek erbij. Gaat het mis, dan speelt het rek de som alsnog voor met de twee stappen. |
 
-### Daarna
+### Nog te doen
 
-De andere onderwerpen van Erafsommen volgen nog:
+De andere onderwerpen van Erafsommen:
 
 - Basisvaardigheden
-- Aftrekken tot en met 20
-- Aftrekken tot en met 50
-- Aftrekken tot en met 100
+- Eraf tot en met 20
+- Eraf tot en met 50
+- Eraf tot en met 100
 - Meerkeuzevragen
 - Vleksommen
+
+Erafsommen staat even stil. Wat al gebouwd is (Aftrekken tot en met 15 en
+Aftrekken met het rekenrek) blijft zoals het is.
+
+## Groep 4 – Delen
+
+Nog te bouwen. De basisversie zijn gewone sommen; beeld komt later. De notatie
+is overal met een dubbele punt: 8 : 2.
+
+### Onderwerp 1 — Deeltafels oefenen
+
+Elke titel geeft kale deelsommen uit die ene deeltafel, bijvoorbeeld 8 : 2 =
+▢. De uitkomsten lopen van 1 tot en met 10.
+
+| # | Titel | Bolletjes |
+|---|-------|-----------|
+| 1 | Delen door 1 | ● |
+| 2 | Delen door 2 | ● |
+| 3 | Delen door 10 | ● |
+| 4 | Delen door 5 | ●● |
+| 5 | Delen door 3 | ●●● |
+| 6 | Delen door 4 | ●●● |
+| 7 | Delen door 6 | ●●●● |
+| 8 | Delen door 8 | ●●●● |
+| 9 | Delen door 7 | ●●●●● |
+| 10 | Delen door 9 | ●●●●● |
+
+### Onderwerp 2 — Deelsommen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Deelsommen tot en met 5 | ●● | Kale deelsommen door elkaar uit de deeltafels 1 tot en met 5. |
+| 2 | Deelsommen tot en met 10 | ●●● | Hetzelfde, nu door elkaar uit de deeltafels 1 tot en met 10. |
+| 3 | Deelsommen koppelen: tafels van 1, 2, 5 en 10 | ●●●● | Vijf deelsommen met een leeg vak ernaast; het kind sleept bij elke som het goede antwoord naar dat vak. Hergebruikt het koppel-onderdeel dat er al is. |
+| 4 | Deelsommen koppelen: tafels van 1 tot en met 10 | ●●●● | Hetzelfde, met alle deeltafels. |
+| 5 | Zelf een deelsom maken | ●●●●● | Het kind ziet zes getallen en een uitkomst, bijvoorbeeld ▢ : ▢ = 5, en kiest twee getallen die samen kloppen. Elke goede combinatie telt goed. |
 
 ## Bouwstenen
 
