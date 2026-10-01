@@ -161,12 +161,88 @@ export function groepjesPerRij(perGroep: number): number {
   return Math.max(1, Math.floor(KRAAL.streefPerRij / Math.max(1, perGroep)));
 }
 
-function donkerder(kleur: string, factor: number): string {
+/** Dezelfde kleur, maar donkerder. Voor de rand en de onderkant van een kraal. */
+export function donkerder(kleur: string, factor: number): string {
   const n = parseInt(kleur.slice(1), 16);
   const r = Math.round(((n >> 16) & 255) * factor);
   const g = Math.round(((n >> 8) & 255) * factor);
   const b = Math.round((n & 255) * factor);
   return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+}
+
+/**
+ * De twee kleuren van het schoolrekenrek: vijf rode en vijf witte per rij.
+ *
+ * Staat hier omdat de kralenrij ze ook gebruikt zodra de groepjes van vijf
+ * zijn. Eén plek, zodat een rekenrek er overal in de app hetzelfde uitziet.
+ */
+export const REKENREK_KLEUREN: [string, string] = ["#dc3038", "#ffffff"];
+
+/**
+ * Het kleurverloop van één kraal. Hoort in de `<defs>` van je eigen svg.
+ *
+ * Een kraal is niet zomaar een cirkel: licht aan de bovenkant, donkerder naar
+ * onderen. Dat verloop staat hier, zodat elke tekening die kralen gebruikt er
+ * precies hetzelfde uitziet als Kralen tellen.
+ */
+export function Kraalverloop({ id, kleur }: { id: string; kleur: string }) {
+  return (
+    <radialGradient id={id} cx="35%" cy="30%" r="75%">
+      <stop offset="0%" stopColor="#ffffff" stopOpacity="0.55" />
+      <stop offset="45%" stopColor={kleur} />
+      <stop offset="100%" stopColor={donkerder(kleur, 0.72)} />
+    </radialGradient>
+  );
+}
+
+/**
+ * Eén kraal, met schaduwtje en glansplekje — dezelfde als bij Kralen tellen.
+ *
+ * Bewust geen platte cirkel: een schaduw op het staafje en een lichtplekje
+ * linksboven maken er een echte kraal van. Hergebruikt door het rekenrek bij
+ * de erafsommen; Kralen tellen zelf tekent zijn eigen rij nog net als eerst.
+ */
+export function Kraaltje({
+  straal,
+  kleur,
+  verloopId,
+  dof = false,
+}: {
+  straal: number;
+  kleur: string;
+  verloopId: string;
+  /** Een kraal die niet meedoet: zichtbaar, maar op de achtergrond. */
+  dof?: boolean;
+}) {
+  return (
+    <g opacity={dof ? 0.3 : 1}>
+      <ellipse
+        cx={0}
+        cy={straal + 3}
+        rx={straal * 0.72}
+        ry={2.6}
+        fill="#2c2545"
+        opacity={0.15}
+      />
+      <circle
+        cx={0}
+        cy={0}
+        r={straal}
+        fill={`url(#${verloopId})`}
+        stroke={donkerder(kleur, 0.62)}
+        strokeWidth={1.4}
+      />
+      <ellipse
+        cx={-straal * 0.34}
+        cy={-straal * 0.4}
+        rx={straal * 0.3}
+        ry={straal * 0.21}
+        fill="#ffffff"
+        opacity={0.75}
+        transform={`rotate(-28 ${-straal * 0.34} ${-straal * 0.4})`}
+      />
+    </g>
+  );
 }
 
 /**

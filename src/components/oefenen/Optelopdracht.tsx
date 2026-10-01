@@ -620,7 +620,6 @@ export function Optelopdracht({
       fase={fase}
       uit={uit}
       uitslagen={uitslagen}
-      juist={juist}
       onWijzig={onWijzig}
     />
   );
@@ -1014,19 +1013,20 @@ type Uitkomstplek = "voorraad" | number;
  * naast een vak legt hem terug. Eén tik verplaatst hem ook — naar het eerste
  * lege vak, en vanuit een vak weer terug naar beneden.
  */
-function Koppelsommen({
+export function Koppelsommen({
   figuur,
   fase,
   uit,
   uitslagen,
-  juist,
+  teken = "+",
   onWijzig,
 }: {
-  figuur: Extract<Optelfiguur, { soort: "koppelsommen" }>;
+  figuur: { sommen: { eerste: number; tweede: number }[]; keuzes: number[] };
   fase: Fase;
   uit: boolean;
   uitslagen: ("goed" | "fout" | null)[];
-  juist: number[];
+  /** Het teken tussen de twee getallen; "−" bij de erafsommen. */
+  teken?: string;
   onWijzig: (waarde: string) => void;
 }) {
   /* Waar elke losse uitkomst ligt: beneden, of bij som nummer zoveel. */
@@ -1141,6 +1141,10 @@ function Koppelsommen({
 
   const inVak = (rij: number) => plek.findIndex((p) => p === rij);
 
+  /** Wat er bij een rij hoort; het teken bepaalt of er bij of af gaat. */
+  const hoortBij = (s: { eerste: number; tweede: number }) =>
+    teken === "+" ? s.eerste + s.tweede : s.eerste - s.tweede;
+
   return (
     <div
       className="relative flex w-full flex-col items-center gap-4"
@@ -1167,7 +1171,7 @@ function Koppelsommen({
           return (
             <div key={rij} className="flex items-center gap-3">
               <span className="w-24 text-right text-xl font-extrabold tabular-nums text-inkt">
-                {s.eerste} + {s.tweede}
+                {s.eerste} {teken} {s.tweede}
               </span>
               <span className="text-xl font-extrabold text-inkt-zacht">=</span>
               <div
@@ -1180,7 +1184,7 @@ function Koppelsommen({
                   <button
                     type="button"
                     disabled={uit}
-                    aria-label={`Uitkomst ${figuur.keuzes[welke]} bij ${s.eerste} plus ${s.tweede}`}
+                    aria-label={`Uitkomst ${figuur.keuzes[welke]} bij ${s.eerste} ${teken === "+" ? "plus" : "min"} ${s.tweede}`}
                     onPointerDown={(e) => pak(e, welke)}
                     className={`size-full rounded-xl [touch-action:none] ${bezig?.nummer === welke ? "opacity-30" : ""}`}
                   >
@@ -1189,7 +1193,7 @@ function Koppelsommen({
                 ) : null}
               </div>
               {uit && uitslag === "fout" && (
-                <span className="text-sm font-extrabold text-groen-diep">{juist[rij]}</span>
+                <span className="text-sm font-extrabold text-groen-diep">{hoortBij(s)}</span>
               )}
             </div>
           );

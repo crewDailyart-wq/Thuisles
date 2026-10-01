@@ -57,6 +57,7 @@ import {
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
+import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1665,6 +1666,25 @@ function Antwoordvelden({
   if (vraag.vorm === "open" && isOptelfiguur(vraag.figuur)) {
     return (
       <Optelopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+      />
+    );
+  }
+
+  /*
+    De opdrachten van het domein Erafsommen. Net als bij Splitsen en Optellen:
+    één getal per leeg vakje met komma's ertussen, in de volgorde waarin ze op
+    het scherm staan. Bij het koppelen is dat de uitkomst per rij.
+  */
+  if (vraag.vorm === "open" && isEraffiguur(vraag.figuur)) {
+    return (
+      <Erafopdracht
         key={vraag.id}
         figuur={vraag.figuur}
         antwoord={antwoord}

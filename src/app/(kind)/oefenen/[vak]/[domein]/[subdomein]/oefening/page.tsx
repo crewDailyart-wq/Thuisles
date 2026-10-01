@@ -23,6 +23,7 @@ import { Icoon } from "@/components/kind/Icoon";
 import { OefenSpeler } from "@/components/oefenen/OefenSpeler";
 import { haalHuidigKind, haalOefenStart, haalSleutelstand } from "@/lib/data/queries";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
+import { isVisueleSom } from "@/lib/generatoren/soort";
 import { haalGepubliceerdeVragen, haalGepubliceerdeVragenOpIds } from "@/lib/data/vragen";
 import { haalOefensessie } from "@/lib/data/oefensessies";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
@@ -211,8 +212,21 @@ export default async function OefeningPagina({
     ].slice(0, perSessie),
   );
 
+  /*
+    De sommen waarin het kind het eerst zelf doet, komen vooraan.
+
+    Zo begint een oefening met zien — plaatjes wegstrepen, kralen wegschuiven —
+    en gaat het daarna over in gewoon oefenen; zie ONTWERPREGELS.md. Alleen
+    vragen die dat zelf in hun figuur hebben staan schuiven naar voren, dus
+    voor alles wat er al was verandert er niets aan de volgorde.
+  */
+  const opVolgorde = [
+    ...verseGreep.filter((v) => isVisueleSom(v.figuur)),
+    ...verseGreep.filter((v) => !isVisueleSom(v.figuur)),
+  ];
+
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
-  const rijen = hervat ? hervatRijen : verseGreep;
+  const rijen = hervat ? hervatRijen : opVolgorde;
 
   const vragen: OefenVraag[] = rijen.map((v) => ({
     id: v.id,

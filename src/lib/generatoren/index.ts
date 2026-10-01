@@ -26,6 +26,11 @@ import { koppelsommenGenerator } from "@/lib/generatoren/koppelsommen";
 import { viatienGenerator } from "@/lib/generatoren/viatien";
 import { tweegetallenGenerator } from "@/lib/generatoren/tweegetallen";
 import { balansGenerator } from "@/lib/generatoren/balans";
+import { wegstrepenGenerator } from "@/lib/generatoren/wegstrepen";
+import { minsomplaatjeGenerator } from "@/lib/generatoren/minsomplaatje";
+import { plaatjesminsomGenerator } from "@/lib/generatoren/plaatjesminsom";
+import { minsomGenerator } from "@/lib/generatoren/minsom";
+import { minkoppelenGenerator } from "@/lib/generatoren/minkoppelen";
 import { straatGenerator } from "@/lib/generatoren/straat";
 import { bioscoopGenerator } from "@/lib/generatoren/bioscoop";
 import { vakkenGenerator } from "@/lib/generatoren/vakken";
@@ -57,6 +62,11 @@ export const alleGeneratoren: Generator[] = [
   viatienGenerator,
   tweegetallenGenerator,
   balansGenerator,
+  wegstrepenGenerator,
+  minsomplaatjeGenerator,
+  plaatjesminsomGenerator,
+  minsomGenerator,
+  minkoppelenGenerator,
   kralenGenerator,
   busGenerator,
   tellenslepenGenerator,

@@ -50,6 +50,13 @@ vierkant als de vakjes waar ze in moeten.
 - Als de volgorde er rekenkundig niet toe doet, zoals bij twee getallen die
   samen een doelgetal maken, kijkt het nakijken niet naar de volgorde.
 
+## Opbouw van een opdracht
+
+- De meeste opdrachten beginnen met een visueel stuk waarin het kind het zelf
+  doet: plaatjes wegtikken, kralen wegschuiven. Zo ziet het waaróm het klopt.
+  Daarna volgt gewoon oefenen. Het aantal visuele sommen aan het begin is een
+  instelling in de database, standaard 3, per titel aan te passen in de admin.
+
 ## Plaatjes
 
 - Gebruik de voorwerpen van Plaatjes tellen en de nieuwe voorwerpen (muisje,

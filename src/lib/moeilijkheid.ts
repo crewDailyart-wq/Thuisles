@@ -75,8 +75,17 @@ const ZELF_TYPEN = 2;
  * alleen een bereik hebben — dan blijft het bij die basis.
  */
 export function puntenVan(soort: string, inst: Instellingen): number {
-  /* De bioscoop heeft geen bereik maar stoelen; de rest rekent met `tot`. */
-  const tot = soort === "bioscoop" ? getal(inst, "stoelen", 20) : getal(inst, "tot", 20);
+  /*
+    De bioscoop heeft geen bereik maar stoelen, en bij het koppelen van
+    minsommen is `tot` de grootste uitkomst terwijl de sommen zelf verder
+    gaan; daar telt het grootste getal in een som. De rest rekent met `tot`.
+  */
+  const tot =
+    soort === "bioscoop"
+      ? getal(inst, "stoelen", 20)
+      : soort === "minkoppelen"
+        ? getal(inst, "grootste", 15)
+        : getal(inst, "tot", 20);
   let p = bereikpunten(tot);
 
   switch (soort) {
@@ -272,6 +281,31 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       if (tekst(inst, "leeg", "links") === "wissel") p += 1;
       break;
 
+    /*
+      De opdrachten van het domein Erafsommen.
+
+      Dezelfde opbouw als bij Optellen: eerst zien en doen, dan rekenen. Het
+      wegstrepen is de eerste stap en krijgt er niets bij; de kale som en het
+      koppelen vragen dat een kind het zonder beeld af kan.
+    */
+    case "wegstrepen":
+    case "minsomplaatje":
+      break;
+
+    case "plaatjesminsom":
+      p += 1;
+      /* Zonder de getallen erbij moet het kind eerst zelf tellen. */
+      if (tekst(inst, "getallen", "nee") === "nee") p += 1;
+      break;
+
+    case "minsom":
+      p += 3;
+      break;
+
+    case "minkoppelen":
+      p += 5;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;
@@ -323,6 +357,12 @@ export const TYPEVOLGORDE = [
   "viatien",
   "tweegetallen",
   "balans",
+  /* Het domein Erafsommen, in de volgorde waarin een kind ze leert. */
+  "wegstrepen",
+  "minsomplaatje",
+  "plaatjesminsom",
+  "minsom",
+  "minkoppelen",
 ] as const;
 
 /** Het plaatsnummer van een type; types zonder eigen plek komen erachter. */

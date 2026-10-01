@@ -179,6 +179,64 @@ export type Figuur =
     }
   | {
       /**
+       * Erafsommen: een groep plaatjes waar het kind er zelf wegstreept.
+       *
+       * Het kind ziet `totaal` plaatjes, streept er `eraf` weg en typt hoeveel
+       * er overblijven. Altijd visueel; dat is bij dit type de hele opdracht.
+       */
+      soort: "wegstrepen";
+      totaal: number;
+      eraf: number;
+      voorwerp: string;
+    }
+  | {
+      /**
+       * Een minsom bij een plaatje: er schuiven er vanzelf een paar weg.
+       *
+       * De computer doet het voordoen, het kind kijkt en vult daarna de hele
+       * som in: ▢ − ▢ = ▢.
+       */
+      soort: "minsomplaatje";
+      totaal: number;
+      eraf: number;
+      voorwerp: string;
+    }
+  | {
+      /**
+       * Aftrekken met plaatjes: groep plaatjes − groep plaatjes = ▢.
+       *
+       * Met `metGetallen` staat het getal onder elk groepje. Bij een visuele
+       * som streept het kind eerst zelf weg; daarna rekent het zelf.
+       */
+      soort: "plaatjesminsom";
+      totaal: number;
+      eraf: number;
+      voorwerp: string;
+      metGetallen: boolean;
+      visueel: boolean;
+    }
+  | {
+      /**
+       * De kale minsom: 13 − 5 = ▢.
+       *
+       * Bij een visuele som staat het rekenrek erbij en schuift het kind daar
+       * zelf de kralen weg.
+       */
+      soort: "minsom";
+      van: number;
+      af: number;
+      visueel: boolean;
+    }
+  | {
+      /**
+       * Minsommen aan hun uitkomst koppelen; hetzelfde slepen als bij plus.
+       */
+      soort: "minkoppelen";
+      sommen: { eerste: number; tweede: number }[];
+      keuzes: number[];
+    }
+  | {
+      /**
        * De splitsdriehoek: drie vakken binnen de driehoek, drie sommen erbuiten.
        *
        * Wat `null` is, vult het kind in. De volgorde van het antwoord is
@@ -510,6 +568,19 @@ export type Figuur =
 // ---------------------------------------------------------------------------
 // Instellingen: het beheerscherm bouwt hier het formulier uit op
 // ---------------------------------------------------------------------------
+
+/**
+ * Begint deze som met een beeld waarin het kind het zelf doet?
+ *
+ * Staat in de figuur van de vraag, gezet door de generator uit de instelling
+ * "hoeveel sommen beginnen met het beeld erbij". Het oefenscherm zet zulke
+ * sommen vooraan in de serie, zodat een kind eerst ziet waaróm het klopt en
+ * daarna pas kaal oefent. Figuren zonder dit veld — alles wat er al was —
+ * leveren `false` en houden dus precies de volgorde die ze hadden.
+ */
+export function isVisueleSom(figuur: Figuur | null | undefined): boolean {
+  return !!figuur && "visueel" in figuur && figuur.visueel === true;
+}
 
 export type Veld =
   | {
