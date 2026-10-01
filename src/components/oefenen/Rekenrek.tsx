@@ -122,6 +122,7 @@ export function Rekenrek({
   vast,
   seconden = FLITS_SECONDEN,
   toonBordje = true,
+  splitsbeen = false,
   onWeg,
   onKlaar,
 }: {
@@ -142,6 +143,13 @@ export function Rekenrek({
   seconden?: number;
   /** Hoort er een bordje met rondjes bij? Uit als alleen het rek nodig is. */
   toonBordje?: boolean;
+  /**
+   * Laat het bordje zien dat het getal dat eraf gaat gesplitst wordt.
+   *
+   * Twee lijntjes naar de twee groepjes rondjes, met het getal eronder — zoals
+   * een splitsbeen op school. Alleen zinvol bij een som over de tien.
+   */
+  splitsbeen?: boolean;
   /** Elke keer dat er een kraal bij of af gaat: hoeveel er nu weg zijn. */
   onWeg?: (weg: number) => void;
   /** Bij "kijken": de som is afgespeeld. */
@@ -451,6 +459,7 @@ export function Rekenrek({
           gevuld={Math.min(weg, eraf)}
           teveel={weg > eraf && knipper}
           groepen={rondjesgroepen(inSpel, eraf)}
+          splitsbeen={splitsbeen}
         />
       )}
 

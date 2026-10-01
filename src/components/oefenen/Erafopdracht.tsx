@@ -223,6 +223,8 @@ export function Erafopdracht({
 
   /** Welke plaatjes het kind heeft weggestreept. */
   const [weg, setWeg] = useState<number[]>([]);
+  /** Hoeveel kralen er van het rekenrek zijn weggeschoven. */
+  const [kralenWeg, setKralenWeg] = useState(0);
   /** Knippert de teller even oranje? Dat gebeurt bij eentje te veel. */
   const [knipper, setKnipper] = useState(false);
   /*
@@ -240,6 +242,7 @@ export function Erafopdracht({
     if (wasKlaar && fase === "bezig") {
       setGetypt(Array.from({ length: aantal }, () => ""));
       setWeg([]);
+      setKralenWeg(0);
       setKnipper(false);
     }
   }, [fase, aantal]);
@@ -505,7 +508,13 @@ export function Erafopdracht({
         </div>
 
         <div className="w-full max-w-md">
-          <Rekenrek aantal={figuur.van} eraf={figuur.af} modus="wegschuiven" />
+          <Rekenrek
+            aantal={figuur.van}
+            eraf={figuur.af}
+            modus="wegschuiven"
+            splitsbeen={figuur.stand === "via10"}
+            onWeg={setKralenWeg}
+          />
         </div>
 
         {fase === "goed" && figuur.stand === "klein" && (
@@ -515,11 +524,21 @@ export function Erafopdracht({
             ]}
           />
         )}
-        {fase === "goed" && figuur.stand === "via10" && (
+
+        {/*
+          Bij een som over de tien komen de twee stappen mee terwijl het kind
+          schuift: de eerste zodra de onderste rij leeg is en de bovenste rij
+          oplicht, de tweede zodra alle rondjes vol zijn. De uitkomst van die
+          tweede blijft een vraagteken tot het antwoord goed is — anders staat
+          het antwoord er al voordat het kind heeft nagedacht.
+        */}
+        {figuur.stand === "via10" && kralenWeg >= eenheden && (
           <Nabeschouwing
             regels={[
               `${figuur.van} − ${eenheden} = ${naarTien}`,
-              `${naarTien} − ${rest} = ${figuur.van - figuur.af}`,
+              ...(kralenWeg >= figuur.af
+                ? [`${naarTien} − ${rest} = ${fase === "goed" ? figuur.van - figuur.af : "?"}`]
+                : []),
             ]}
           />
         )}
