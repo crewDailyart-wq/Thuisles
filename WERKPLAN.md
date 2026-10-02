@@ -3,7 +3,10 @@
 Wat er gebouwd wordt en in welke volgorde. Per onderwerp de titels zoals het
 kind ze ziet, met de bolletjes en wat het kind er doet.
 
-## Groep 4 – Erafsommen – Aftrekken tot en met 15
+De kopjes volgen de bestaande Thuisles-domeinen. Nieuwe onderwerpen komen in
+die domeinen; er wordt geen nieuw domein aangemaakt.
+
+## Groep 4 – Aftrekken – Aftrekken tot en met 15
 
 Alle getallen 0 tot en met 15; de uitkomst komt nooit onder 0. De eerste
 sommen van een oefening zijn visueel — het kind doet het zelf — en daarna
@@ -19,11 +22,11 @@ standaard 3.
 | 5 | Aftrekken tot en met 15 | ●●● | De kale som: 13 − 5 = ▢. Bij de eerste sommen staat het rekenrek erbij en schuift het kind zelf de kralen weg. |
 | 6 | Sommen en uitkomsten koppelen | ●●●● | Sleept elke uitkomst naar de som waar hij bij hoort; tikken werkt ook. |
 
-Staat klaar in de database: het domein Erafsommen, het onderwerp "Aftrekken
+Staat klaar in de database: het domein Aftrekken, het onderwerp "Aftrekken
 tot en met 15", de zes leerdoelen met hun sjablonen en per titel vijftien
 gepubliceerde vragen — evenveel als bij Optellen tot en met 20.
 
-## Groep 4 – Erafsommen – Aftrekken met het rekenrek
+## Groep 4 – Aftrekken – Aftrekken met het rekenrek
 
 Hetzelfde rekenrek als op school: twee rijen van tien, vijf rode en vijf witte
 per rij. Eerst kijken, dan zelf schuiven, en aan het eind uit het hoofd.
@@ -38,7 +41,7 @@ per rij. Eerst kijken, dan zelf schuiven, en aan het eind uit het hoofd.
 
 ### Nog te doen
 
-De andere onderwerpen van Erafsommen:
+De andere onderwerpen van Aftrekken:
 
 - Basisvaardigheden
 - Eraf tot en met 20
@@ -47,7 +50,7 @@ De andere onderwerpen van Erafsommen:
 - Meerkeuzevragen
 - Vleksommen
 
-Erafsommen staat even stil. Wat al gebouwd is (Aftrekken tot en met 15 en
+Aftrekken staat even stil. Wat al gebouwd is (Aftrekken tot en met 15 en
 Aftrekken met het rekenrek) blijft zoals het is.
 
 ## Groep 4 – Delen
@@ -83,7 +86,7 @@ Elke titel geeft kale deelsommen uit die ene deeltafel, bijvoorbeeld 8 : 2 =
 | 4 | Deelsommen koppelen: tafels van 1 tot en met 10 | ●●●● | Hetzelfde, met alle deeltafels. |
 | 5 | Welke deelsommen passen? | ●●●●● | Het kind ziet een uitkomst, bijvoorbeeld 5, en typt zelf een deelsom die klopt: ▢ : ▢ = 5. Elke goede deelsom uit de deeltafels van 1 tot en met 10 telt goed, dus 10 : 2 en 45 : 9 zijn allebei goed. |
 
-## Groep 4 – Vermenigvuldigen
+## Groep 4 – Tafels
 
 Nog te bouwen. De basisversie zijn gewone sommen; beeld komt later. De notatie
 is overal met een maalteken: 3 × 5.

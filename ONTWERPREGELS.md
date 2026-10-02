@@ -98,6 +98,10 @@ vierkant als de vakjes waar ze in moeten.
 
 ## Werkwijze
 
+- Gebruik altijd de bestaande Thuisles-domeinen (Getallen, Splitsen, Optellen,
+  Aftrekken, Tafels, Delen, Verhoudingen, Meten, Tijd, Geld, Meetkunde,
+  Tabellen & grafieken). Maak nooit zelf een nieuw domein aan zonder
+  toestemming.
 - Nieuwe opdrachtsoorten worden nieuw gebouwd volgens de beschrijving, niet op
   basis van bestaande opgaven, tenzij ik dat zelf vraag.
 - Altijd eerst een kopie van de database voordat er iets in de database
