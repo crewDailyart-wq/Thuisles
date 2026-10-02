@@ -338,6 +338,45 @@ Algemene regels voor dit onderwerp:
 | 6 | Maanden ervoor en erna | ●●●●○ | "Welke maand komt 2 maanden voor maart?" Eén tot en met drie maanden, binnen hetzelfde jaar. Kiest uit drie. |
 | 7 | Maanden ervoor en erna over de jaargrens | ●●●●● | Bijvoorbeeld "3 maanden na november" of "2 maanden voor januari". Kiest uit drie. |
 
+### Onderwerp 6 — Kalender
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Het kind ziet een maandkalender als een simpel rooster: de maandnaam
+  bovenaan, de week begint op maandag, met de kolommen ma di wo do vr za zo.
+- De kalenders kloppen echt: de data vallen op de juiste weekdag. Gebruik het
+  huidige of het volgende jaar.
+- Bij kiesvragen kiest het kind uit vier antwoorden. In de antwoorden staan
+  geen jaartallen.
+- Bij typvragen typt het kind een getal en drukt op Controleren. Gewoon typen,
+  geen getallenpad op het scherm.
+
+#### Kalender lezen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Op welke dag valt het? | ●○○○○ | "Op welke dag valt 1 maart?" Kiest de weekdag uit vier. |
+| 2 | Zoek de datum | ●●○○○ | "Tik op de eerste zaterdag van de maand", of op de laatste woensdag of de tweede maandag. Tikt op de juiste dag in de kalender. |
+| 3 | Dagen in een maand | ●●○○○ | "Hoeveel dagen heeft deze maand?" of "Hoeveel zondagen zitten in deze maand?" Typt het getal. |
+
+#### Gisteren en morgen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Gisteren en morgen | ●●○○○ | "Vandaag is het 18 november. Welke datum is het morgen?" — of gisteren. Vandaag is gemarkeerd in de kalender. Kiest uit vier. |
+| 2 | Eergisteren en overmorgen | ●●●○○ | Hetzelfde, nu twee dagen terug of verder. |
+| 3 | Een week later of eerder | ●●●○○ | "Vandaag is het 5 mei. Welke datum is het over een week?" — of een week geleden. Kiest uit vier. |
+
+#### Rekenen met de kalender
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Dagen verder en terug | ●●●●○ | "Op welke dag valt 5 dagen voor 10 oktober?" Twee tot en met zes dagen, voor of na, binnen dezelfde maand. Kiest de weekdag uit vier. |
+| 2 | Hoe lang nog? | ●●●●○ | "Vandaag is het 3 mei. Op 10 mei is het feest. Hoeveel nachtjes nog slapen?" Typt het getal, van 2 tot en met 14. |
+| 3 | Over de maandgrens | ●●●●● | "Vandaag is het 29 april. Welke datum is het over 3 dagen?" Twee kalenders naast elkaar: deze maand en de volgende. Kiest uit vier. |
+
 Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
