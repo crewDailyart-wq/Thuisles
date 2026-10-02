@@ -27,6 +27,8 @@
 import {
   getal,
   husselen,
+  metTweedeVariant,
+  doorgeschoven,
   kansGenerator,
   kiesUit,
   lijst,
@@ -91,17 +93,34 @@ function groepen(inst: Instellingen, terugval: string[]): string[] {
   return gekozen.length ? gekozen : terugval;
 }
 
-/** Alle tijden van een etmaal die bij deze instellingen horen. */
-function alleTijden(inst: Instellingen, terugval: string[]): Tijd[] {
+/**
+ * Alle tijden die bij deze instellingen horen.
+ *
+ * Standaard in 12-uursnotatie: 01:00 tot en met 12:59. Dat is de leerlijn van
+ * school — 24-uurstijden komen pas met het dagdeel erbij (niveau 4) of zonder
+ * hulp (niveau 5). Met `uren24` alle uren van het etmaal, 00 tot en met 23.
+ */
+function alleTijden(inst: Instellingen, terugval: string[], uren24 = vinkje(inst, "uren24")): Tijd[] {
   const minuten = new Set<number>();
   for (const g of groepen(inst, terugval)) for (const m of GROEPEN[g]) minuten.add(m);
 
+  const uren = uren24
+    ? Array.from({ length: 24 }, (_, i) => i)
+    : Array.from({ length: 12 }, (_, i) => i + 1);
   const uit: Tijd[] = [];
-  for (let u = 0; u < 24; u++) {
+  for (const u of uren) {
     for (const m of [...minuten].sort((a, b) => a - b)) uit.push({ uur: u, minuut: m });
   }
   return uit;
 }
+
+/** De instelling voor 24-uurstijden, voor de types van de digitale klok. */
+const URENVELD: Veld = {
+  soort: "vinkje",
+  sleutel: "uren24",
+  label: "Ook tijden van 13:00 en later",
+  hulp: "Uit = alleen 12-uursnotatie, 01:00 tot en met 12:59. Aan = alle uren, zonder dagdeel erbij (het hoogste niveau).",
+};
 
 /** De somgegevens zoals alle tijd-types ze opbouwen. */
 function gegevensVan(
@@ -147,7 +166,7 @@ export const digitaaldelenGenerator: Generator = {
     "Een digitale klok; het kind tikt op het urendeel of het minutendeel. Met de uitleg erbij staat er eerst kort wat waar staat: vóór de dubbele punt de uren, erachter de minuten.",
   suggestie: "Groep 4: hele en halve uren, met de uitleg erbij",
   velden: [
-    TIJDENVELD,
+    TIJDENVELD, URENVELD,
     {
       soort: "vinkje",
       sleutel: "metUitleg",
@@ -269,7 +288,8 @@ export const digitaaldagdeelGenerator: Generator = {
       ? "Er staat geen enkel moment. Schrijf er een paar neer, gescheiden door komma's."
       : null,
 
-  maximum: (inst) => alleTijden(inst, ["heel"]).length,
+  /* Hier altijd het hele etmaal: het dagdeel staat erbij, daar gaat het om. */
+  maximum: (inst) => alleTijden(inst, ["heel"], true).length,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
@@ -277,7 +297,7 @@ export const digitaaldagdeelGenerator: Generator = {
     if (waar.length === 0) return [];
     const uit: Gegenereerd[] = [];
 
-    for (const t of husselen(kans, alleTijden(inst, ["heel"]))) {
+    for (const t of husselen(kans, alleTijden(inst, ["heel"], true))) {
       if (uit.length >= aantal) break;
       const handtekening = `digitaaldagdeel:${digitaal(t)}`;
       if (alGebruikt.has(handtekening)) continue;
@@ -329,22 +349,23 @@ export const digitaalaflezenGenerator: Generator = {
   uitleg:
     "Een digitale tijd, bijvoorbeeld 05:30, en het kind kiest de tijd in woorden uit vier antwoorden. De foute keuzes zijn echte valkuilen: bij 05:30 staan er ook \"half vijf\" en \"vijf uur\" tussen.",
   suggestie: "Groep 4: hele uren, dan hele en halve · groep 5: kwartieren · groep 6: op de minuut",
-  velden: [TIJDENVELD, ...vraagtekstVelden(AFZINNEN)],
+  velden: [TIJDENVELD, URENVELD, ...vraagtekstVelden(AFZINNEN)],
   vraagteksten: { standaard: AFZINNEN },
   standaard: { tijden: ["heel"] },
   foutpatronen: tijdPatronen,
   aanpak: digitaalAanpak,
   uitleganimatie: digitaalUitleg,
 
-  maximum: (inst) => alleTijden(inst, ["heel"]).length,
+  /* Elke tijd twee keer: de tweede keer met andere foute keuzes. */
+  maximum: (inst) => alleTijden(inst, ["heel"]).length * 2,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const uit: Gegenereerd[] = [];
 
-    for (const t of husselen(kans, alleTijden(inst, ["heel"]))) {
+    for (const { item: t, variant } of metTweedeVariant(kans, alleTijden(inst, ["heel"]))) {
       if (uit.length >= aantal) break;
-      const handtekening = `digitaalaflezen:${digitaal(t)}`;
+      const handtekening = `digitaalaflezen:${digitaal(t)}${variant ? ":2" : ""}`;
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
 
@@ -358,14 +379,32 @@ export const digitaalaflezenGenerator: Generator = {
           over en voor om       "half zes" wordt "half zeven"-achtig;
           een kwartier ernaast.
       */
+      /*
+        Alleen valkuilen van hetzelfde niveau als de oefening: bij hele uren
+        nooit "kwart over" als foute keuze. Daarna het uur er twee naast, zodat
+        er altijd genoeg keuzes zijn.
+      */
+      const toegestaan = new Set(alleTijden(inst, ["heel"]).map((x) => x.minuut));
       const valkuilen = [
-        inWoorden({ uur: t.uur - 1, minuut: t.minuut }),
-        inWoorden({ uur: t.uur, minuut: 0 }),
-        inWoorden({ uur: t.uur, minuut: (60 - t.minuut) % 60 }),
-        inWoorden({ uur: t.uur + 1, minuut: t.minuut }),
-        inWoorden({ uur: t.uur, minuut: (t.minuut + 15) % 60 }),
-      ];
-      const { keuzes, goed } = keuzelijst(kans, inWoorden(t), valkuilen);
+        { uur: t.uur - 1, minuut: t.minuut },
+        { uur: t.uur, minuut: 0 },
+        { uur: t.uur, minuut: (60 - t.minuut) % 60 },
+        { uur: t.uur + 1, minuut: t.minuut },
+        { uur: t.uur, minuut: (t.minuut + 15) % 60 },
+        { uur: t.uur + 2, minuut: t.minuut },
+        { uur: t.uur - 2, minuut: t.minuut },
+      ]
+        .filter((x) => toegestaan.has(x.minuut))
+        .map(inWoorden);
+      const goedeTekst = inWoorden(t);
+      const { keuzes, goed } = keuzelijst(
+        kans,
+        goedeTekst,
+        doorgeschoven(
+          valkuilen.filter((v, i) => v !== goedeTekst && valkuilen.indexOf(v) === i),
+          variant,
+        ),
+      );
 
       const gegevens = gegevensVan("digitaalaflezen", "kiezen", t, goed, { keuze: 1 });
       uit.push({
@@ -405,13 +444,18 @@ const STANDEN = ["heleUren", "andereMinuten", "halveUren", "overHeelUur", "kwart
 
 /** Welke beginminuten en welke verschillen er bij een stand horen. */
 function standregels(stand: string): { beginMinuten: number[]; extra: number[] } {
+  /*
+    Elke stand blijft binnen zijn niveau (de leerlijn van school): hele uren
+    alleen op het hele uur, halve uren alleen op :00 en :30, kwartieren op de
+    kwartieren. Pas "over het hele uur heen" gebruikt tijden per vijf minuten.
+  */
   switch (stand) {
     case "andereMinuten":
-      /* Dezelfde minuten op beide klokken, dus een heel aantal uren ertussen. */
-      return { beginMinuten: [5, 10, 15, 20, 25, 35, 40, 45, 50, 55], extra: [0] };
+      /* Dezelfde minuten op beide klokken (kwart over of kwart voor), hele uren ertussen. */
+      return { beginMinuten: [15, 45], extra: [0] };
     case "halveUren":
-      /* Een half uur erbij; het begin staat niet op een heel uur. */
-      return { beginMinuten: [5, 10, 20, 25, 40, 50], extra: [30] };
+      /* Een half uur erbij, op hele en halve uren: 05:00 en 07:30. */
+      return { beginMinuten: [0, 30], extra: [30] };
     case "overHeelUur":
       /*
         Het verschil gaat over het hele uur heen: begin laat in het uur, en een
@@ -419,7 +463,7 @@ function standregels(stand: string): { beginMinuten: number[]; extra: number[] }
       */
       return { beginMinuten: [50, 55, 45], extra: [30, 25, 35] };
     case "kwartieren":
-      return { beginMinuten: [0, 15, 30, 45], extra: [15, 30, 45] };
+      return { beginMinuten: [0, 15, 30, 45], extra: [15, 45] };
     default:
       return { beginMinuten: [0], extra: [0] };
   }
@@ -448,7 +492,7 @@ export const digitaalverschilGenerator: Generator = {
       opties: [
         { waarde: "heleUren", label: "Hele uren — 18:00 en 21:00" },
         { waarde: "andereMinuten", label: "Hele uren, andere minuten — 06:45 en 08:45" },
-        { waarde: "halveUren", label: "Halve uren — 05:10 en 07:40" },
+        { waarde: "halveUren", label: "Halve uren — 05:00 en 07:30" },
         { waarde: "overHeelUur", label: "Over het hele uur heen — 05:50 en 08:20" },
         { waarde: "kwartieren", label: "Kwartieren — 04:15 en 07:45" },
       ],
@@ -460,6 +504,7 @@ export const digitaalverschilGenerator: Generator = {
       min: 1,
       max: 6,
     },
+    URENVELD,
     ...vraagtekstVelden(VERSCHILZINNEN),
   ],
   vraagteksten: { standaard: VERSCHILZINNEN },
@@ -472,8 +517,8 @@ export const digitaalverschilGenerator: Generator = {
     const stand = tekst(inst, "stand", "heleUren");
     const regels = standregels(STANDEN.includes(stand) ? stand : "heleUren");
     const uren = Math.max(1, Math.min(6, getal(inst, "maxUren", 4)));
-    /* Elke begintijd binnen een etmaal, maal de verschillen die passen. */
-    return 24 * regels.beginMinuten.length * uren * regels.extra.length;
+    /* Elke begintijd, maal de verschillen die passen. */
+    return (vinkje(inst, "uren24") ? 24 : 12) * regels.beginMinuten.length * uren * regels.extra.length;
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
@@ -485,9 +530,11 @@ export const digitaalverschilGenerator: Generator = {
     const regels = standregels(stand);
     const maxUren = Math.max(1, Math.min(6, getal(inst, "maxUren", 4)));
 
+    const uren24 = vinkje(inst, "uren24");
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 400 && uit.length < aantal; poging++) {
-      const beginUur = Math.floor(kans() * 24);
+      /* Zonder 24-uurstijden alles tussen 01:00 en 12:59. */
+      const beginUur = uren24 ? Math.floor(kans() * 24) : 1 + Math.floor(kans() * 12);
       const beginMinuut = kiesUit(kans, regels.beginMinuten);
       const uren = 1 + Math.floor(kans() * maxUren);
       const erbij = kiesUit(kans, regels.extra);
@@ -498,6 +545,8 @@ export const digitaalverschilGenerator: Generator = {
       const laat = plusMinuten(vroeg, stap);
       /* Niet over middernacht: dan zou "later" ineens de volgende dag zijn. */
       if (laat.uur * 60 + laat.minuut <= vroeg.uur * 60 + vroeg.minuut) continue;
+      /* En zonder 24-uurstijden niet voorbij 12:59. */
+      if (!uren24 && laat.uur > 12) continue;
 
       /* Bij "terug" staat de latere tijd vooraan. */
       const eerste = richting === "eerder" ? laat : vroeg;

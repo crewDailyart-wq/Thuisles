@@ -242,18 +242,36 @@ function keuzelijst(
   return { keuzes, goed: keuzes.indexOf(goedeTekst) };
 }
 
-/** De gebruikelijke valkuilen bij het aflezen van een tijd in woorden. */
-function tijdvalkuilen(t: Tijd): string[] {
-  return [
+/**
+ * De valkuilen bij het aflezen van een tijd in woorden.
+ *
+ * Echte valkuilen — het uur ernaast, over en voor verwisseld, een kwartier
+ * ernaast — maar alleen tijden van hetzelfde niveau als de oefening (de
+ * minuten in `toegestaan`). Bij hele uren staat er dus nooit "kwart over" als
+ * foute keuze; dat hoort bij een later niveau. Daarna nog het uur er twee
+ * naast, zodat er altijd genoeg verschillende keuzes zijn.
+ */
+function tijdvalkuilen(t: Tijd, toegestaan: number[]): string[] {
+  const kandidaten: Tijd[] = [
     /* Het uur ernaast: de klassieke fout bij "half". */
-    inWoorden({ uur: t.uur + 1, minuut: t.minuut }),
-    inWoorden({ uur: t.uur + 11, minuut: t.minuut }),
+    { uur: t.uur + 1, minuut: t.minuut },
+    { uur: t.uur + 11, minuut: t.minuut },
     /* Over en voor verwisseld. */
-    inWoorden({ uur: t.uur, minuut: (60 - t.minuut) % 60 }),
+    { uur: t.uur, minuut: (60 - t.minuut) % 60 },
     /* Een kwartier ernaast. */
-    inWoorden({ uur: t.uur, minuut: (t.minuut + 15) % 60 }),
-    inWoorden({ uur: t.uur, minuut: (t.minuut + 45) % 60 }),
+    { uur: t.uur, minuut: (t.minuut + 15) % 60 },
+    { uur: t.uur, minuut: (t.minuut + 45) % 60 },
+    { uur: t.uur + 2, minuut: t.minuut },
+    { uur: t.uur + 10, minuut: t.minuut },
   ];
+  const goed = inWoorden(t);
+  const uit: string[] = [];
+  for (const k of kandidaten) {
+    if (!toegestaan.includes(k.minuut)) continue;
+    const w = inWoorden(k);
+    if (w !== goed && !uit.includes(w)) uit.push(w);
+  }
+  return uit;
 }
 
 // ---------------------------------------------------------------------------
@@ -471,7 +489,8 @@ export const klokaflezenGenerator: Generator = {
       alGebruikt.add(handtekening);
 
       const alsTekst = (x: Tijd) => (soort === "digitaal" ? digitaal(x) : inWoorden(x));
-      const valkuilen = soort === "digitaal" ? digitaleValkuilen(t, metDeel) : tijdvalkuilen(t);
+      const valkuilen =
+        soort === "digitaal" ? digitaleValkuilen(t, metDeel) : tijdvalkuilen(t, minuten(inst, ["heel"]));
 
       const { keuzes, goed } = keuzelijst(
         kans,
@@ -684,11 +703,23 @@ export const klokkiezenGenerator: Generator = {
         ernaast, een half uur ernaast en de minuten verwisseld — precies de
         fouten die een kind maakt. Dubbele vallen weg.
       */
+      /*
+        Bij alleen hele uren blijven ook de foute klokken op het hele uur (twee
+        uur ernaast in plaats van een half uur): een halve-uurklok hoort bij een
+        later niveau.
+      */
+      const fijn = minuten(inst, ["heel", "half"]).every((m) => m === 0)
+        ? 120
+        : stap === 30
+          ? 30
+          : stap === 15
+            ? 15
+            : 5;
       const kandidaten = [
         plusMinuten(doel, 60),
         plusMinuten(doel, -60),
-        plusMinuten(doel, stap === 30 ? 30 : stap === 15 ? 15 : 5),
-        plusMinuten(doel, -(stap === 30 ? 30 : stap === 15 ? 15 : 5)),
+        plusMinuten(doel, fijn),
+        plusMinuten(doel, -fijn),
       ];
       const keuzes: Tijd[] = [doel];
       for (const k of kandidaten) {
@@ -697,8 +728,9 @@ export const klokkiezenGenerator: Generator = {
           keuzes.push(k);
         }
       }
-      const gehusseld = husselen(kans, keuzes);
-      const goed = gehusseld.findIndex((k) => k.uur === doel.uur && k.minuut === doel.minuut);
+      /* Op een wijzerklok bestaat geen 13 uur: de klokken in 12-uursnotatie, 1 tot en met 12. */
+      const gehusseld = husselen(kans, keuzes).map((k) => ({ uur: k.uur % 12 === 0 ? 12 : k.uur % 12, minuut: k.minuut }));
+      const goed = gehusseld.findIndex((k) => k.uur % 12 === doel.uur % 12 && k.minuut === doel.minuut);
 
       const zin =
         vraag === "verschuiving"
@@ -1379,7 +1411,11 @@ export const klokduurGenerator: Generator = {
         de middag, zodat een kind niet over de twaalf hoeft te rekenen.
       */
       const beginUur = over12 ? 8 + Math.floor(kans() * 8) : 1 + Math.floor(kans() * 8);
-      const beginMinuut = kans() < 0.5 ? 0 : 30;
+      /*
+        Bij hele uren beginnen de opgaven ook op het hele uur: een begin op half
+        hoort bij het niveau van de halve uren (de leerlijn van school).
+      */
+      const beginMinuut = tekst(inst, "stap", "heel") === "heel" ? 0 : kans() < 0.5 ? 0 : 30;
       const stap = kiesUit(kans, stappen);
       const start: Tijd = { uur: beginUur, minuut: beginMinuut };
       const eind = plusMinuten(start, stap);
@@ -1491,7 +1527,7 @@ export const klokvlekGenerator: Generator = {
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
 
-      const { keuzes, goed } = keuzelijst(kans, inWoorden(t), tijdvalkuilen(t));
+      const { keuzes, goed } = keuzelijst(kans, inWoorden(t), tijdvalkuilen(t, minuten(inst, ["heel"])));
 
       /*
         Waar de vlek komt te liggen.

@@ -333,8 +333,27 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
     ]),
   );
 
-  return sorteerLeerdoelen(doelen, punten);
+  /*
+    Bij Tijd volgt de lijst de volgorde uit de database, en dus die van
+    WERKPLAN.md: van makkelijk naar moeilijk volgens de leerlijn van de klok,
+    zoals de eigenaar die heeft vastgelegd. Niet per soort oefening.
+  */
+  const opVolgorde = new Set(
+    (
+      db
+        .prepare(
+          `select s.id from subdomeinen s join domeinen d on d.id = s.domein_id
+           where d.slug in (${DOMEINEN_OP_VOLGORDE.map(() => "?").join(", ")})`,
+        )
+        .all(...DOMEINEN_OP_VOLGORDE) as Rij[]
+    ).map((r) => String(r.id)),
+  );
+
+  return sorteerLeerdoelen(doelen, punten, opVolgorde);
 }
+
+/** Domeinen waar de volgorde van de database geldt in plaats van per soort oefening. */
+const DOMEINEN_OP_VOLGORDE = ["tijd"];
 
 /**
  * De lijst op volgorde zetten: per generator-type, binnen een type oplopend.
@@ -344,9 +363,18 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
  * levert alles op; dan staan de onderwerpen achter elkaar en is de volgorde
  * daarbinnen dezelfde.
  */
-function sorteerLeerdoelen(doelen: Leerdoel[], punten: Map<string, number>): Leerdoel[] {
+function sorteerLeerdoelen(
+  doelen: Leerdoel[],
+  punten: Map<string, number>,
+  opVolgorde: Set<string> = new Set(),
+): Leerdoel[] {
   return [...doelen].sort((a, b) => {
     if (a.subdomeinId !== b.subdomeinId) return a.subdomeinId.localeCompare(b.subdomeinId);
+
+    /* Onderwerpen die de volgorde van de database volgen (zie DOMEINEN_OP_VOLGORDE). */
+    if (opVolgorde.has(a.subdomeinId)) {
+      return a.volgorde - b.volgorde || a.titel.localeCompare(b.titel);
+    }
 
     /* Een leerdoel zonder sjabloon heeft geen groep en staat achteraan. */
     if ((a.generatorSoort === null) !== (b.generatorSoort === null)) {

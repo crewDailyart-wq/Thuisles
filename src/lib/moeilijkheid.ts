@@ -86,19 +86,16 @@ function deeltafelpunten(inst: Instellingen): number {
   return Math.round(som / gekozen.length);
 }
 
-/**
- * Hoe zwaar de minutengroepen van een klok-oefening wegen.
- *
- * De leerlijn van de klok: eerst het hele uur, dan het halve, dan de
- * kwartieren, dan vijf over en voor, en als laatste elke minuut. De zwaarste
- * groep die meedoet bepaalt de moeilijkheid — "hele en halve uren door elkaar"
- * is net zo moeilijk als alleen halve uren, want het halve uur is de stap die
- * een kind moet zetten.
- */
-function tijdpunten(inst: Instellingen, tabel: Record<string, number>, terugval: string[]): number {
-  const gekozen = lijst(inst, "tijden", terugval).filter((g) => g in tabel);
-  const groepen = gekozen.length ? gekozen : terugval;
-  return Math.max(...groepen.map((g) => tabel[g] ?? 0));
+/** Punten per klokniveau: 1 bolletje = 0, 2 = 2, 3 = 4, 4 = 6, 5 = 8 punten. */
+const NIVEAUPUNTEN = [0, 0, 2, 4, 6, 8];
+
+/** Het niveau van elke minutengroep op de klok. */
+const KLOKNIVEAU: Record<string, number> = { heel: 1, half: 2, kwartier: 3, vijf: 4, minuut: 5 };
+
+/** Het zwaarste klokniveau van de aangevinkte minutengroepen. */
+function klokniveau(inst: Instellingen, terugval: string[]): number {
+  const gekozen = lijst(inst, "tijden", terugval).filter((g) => g in KLOKNIVEAU);
+  return Math.max(...(gekozen.length ? gekozen : terugval).map((g) => KLOKNIVEAU[g] ?? 1));
 }
 
 /**
@@ -472,100 +469,100 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       Bij de klok bepaalt de zwaarste minutengroep bijna alles: hele uren
       aflezen is een andere oefening dan vijf voor en tien over.
     */
+    /*
+      De klok volgt de leerlijn van school, één niveau per bolletje:
+
+        1  hele uren; digitaal alleen 01:00 tot en met 12:00
+        2  halve uren (en hele uren); digitaal tot en met 12:59
+        3  kwartier over en kwartier voor
+        4  per vijf minuten; dagdelen; 24-uurstijden met het dagdeel erbij
+        5  op de minuut; 24-uurstijden zonder hulp
+
+      Het niveau is het zwaarste dat in de oefening voorkomt. Zie `klokniveau`.
+    */
     case "urenminuten":
-      p = 1;
+      p = NIVEAUPUNTEN[
+        Math.max(...lijst(inst, "soorten", ["uren", "half", "helft"]).map((s) => (s === "uren" ? 1 : 2)))
+      ];
       break;
 
     case "dagdeel":
-      p = 1;
+    case "digitaaldagdeel":
+      p = NIVEAUPUNTEN[4];
       break;
 
     case "wijzeraanwijzen":
-      p = 1;
+    case "klokklopt":
+    case "klokkoppelen":
+    case "klokkenvolgorde":
+      p = NIVEAUPUNTEN[klokniveau(inst, ["heel", "half"])];
       break;
 
     case "klokaflezen":
-      /*
-        Een digitaal antwoord in 24-uursnotatie is een eigen stap: het kind moet
-        er twaalf bij optellen én het dagdeel meewegen. Dat weegt zwaarder dan
-        welke minutengroep er ook in zit, dus gaat het daar vóór.
-      */
-      p = vinkje(inst, "metDagdeel") || tekst(inst, "antwoordsoort", "woorden") === "digitaal"
-        ? 4
-        : tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]);
-      break;
-
-    case "klokklopt":
-      p = 2;
+      p = NIVEAUPUNTEN[
+        Math.max(
+          klokniveau(inst, ["heel"]),
+          tekst(inst, "antwoordsoort", "woorden") === "digitaal" && vinkje(inst, "metDagdeel") ? 4 : 0,
+        )
+      ];
       break;
 
     case "klokkiezen":
-      p =
-        tekst(inst, "vraag", "woorden") === "verschuiving"
-          ? 2
-          : tekst(inst, "vraag", "woorden") === "digitaal"
-            ? 6
-            : tijdpunten(inst, { heel: 2, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, [
-                "heel",
-                "half",
-              ]);
+      p = NIVEAUPUNTEN[
+        Math.max(
+          klokniveau(inst, ["heel", "half"]),
+          tekst(inst, "vraag", "woorden") === "verschuiving" && vinkje(inst, "halveUren") ? 2 : 0,
+        )
+      ];
       break;
 
     case "klokzetten":
-      p =
-        tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]) +
-        (tekst(inst, "opdracht", "tijd") === "verschuiving" &&
-        tekst(inst, "richting", "vooruit") === "terug"
-          ? 2
-          : 0);
-      break;
-
-    case "klokkoppelen":
-    case "klokkenvolgorde":
-      p = 6;
+      p = NIVEAUPUNTEN[
+        Math.max(
+          klokniveau(inst, ["heel"]),
+          tekst(inst, "opdracht", "tijd") === "verschuiving" && vinkje(inst, "halveUren") ? 2 : 0,
+        )
+      ];
       break;
 
     case "kloktypen":
-      p = 8;
+      p = NIVEAUPUNTEN[Math.max(klokniveau(inst, ["heel", "half"]), vinkje(inst, "metDagdeel", true) ? 4 : 0)];
       break;
 
     case "klokduur":
-      p =
-        bij(tekst(inst, "stap", "heel"), { heel: 0, half: 2, kwartier: 6, gemengd: 8 }) +
-        (vinkje(inst, "over12") ? 4 : 0) +
-        (tekst(inst, "richting", "duur") === "beide" ? 2 : 0);
+      /* Over 12 uur heen gaat met 's ochtends en 's middags: dagdelen, niveau 4. */
+      p = NIVEAUPUNTEN[
+        Math.max(
+          bij(tekst(inst, "stap", "heel"), { heel: 1, half: 2, kwartier: 3, gemengd: 3 }) || 1,
+          vinkje(inst, "over12") ? 4 : 0,
+        )
+      ];
       break;
 
     case "klokvlek":
-      p =
-        tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]) +
-        /* Een vlek over de wijzer is zwaarder dan een vlek over de cijfers. */
-        bij(tekst(inst, "vlek", "cijfers"), { cijfers: 0, wijzer: 2, groot: 4 }) +
-        /* Drie minutengroepen door elkaar is "gemengd"; dat telt extra. */
-        (lijst(inst, "tijden", ["heel"]).length >= 3 ? 2 : 0);
+      p = NIVEAUPUNTEN[klokniveau(inst, ["heel"])];
       break;
 
-    /* De digitale klok: aflezen loopt op met de minuten, verschil met de stand. */
     case "digitaaldelen":
-      p = 2;
-      break;
-
-    case "digitaaldagdeel":
-      p = 2;
+      p = NIVEAUPUNTEN[vinkje(inst, "uren24") ? 5 : klokniveau(inst, ["heel", "half"])];
       break;
 
     case "digitaalaflezen":
-      p = tijdpunten(inst, { heel: 2, half: 4, kwartier: 5, vijf: 6, minuut: 8 }, ["heel"]);
+      p = NIVEAUPUNTEN[vinkje(inst, "uren24") ? 5 : klokniveau(inst, ["heel"])];
       break;
 
     case "digitaalverschil":
-      p = bij(tekst(inst, "stand", "heleUren"), {
-        heleUren: 0,
-        andereMinuten: 2,
-        halveUren: 4,
-        overHeelUur: 6,
-        kwartieren: 8,
-      });
+      p = NIVEAUPUNTEN[
+        vinkje(inst, "uren24")
+          ? 5
+          : bij(tekst(inst, "stand", "heleUren"), {
+              heleUren: 1,
+              halveUren: 2,
+              andereMinuten: 3,
+              kwartieren: 3,
+              overHeelUur: 4,
+            }) || 1
+      ];
       break;
 
     /* De dagen, de maanden en de kalender. */

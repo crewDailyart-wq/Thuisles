@@ -189,6 +189,22 @@ in `scripts/opgaven.mjs`.
 
 ## Groep 4 – Tijd — KLAAR
 
+**De leerlijn van de klok** (sinds 2 oktober 2026; geldt voor alle klokoefeningen:
+wijzerklok, digitale klok, vlekken, later en eerder — niet voor Maanden en dagen
+en Kalender). Binnen elk onderwerp en groepje staan de oefeningen van makkelijk
+naar moeilijk, en het kinderscherm volgt precies deze volgorde.
+
+| Bolletjes | Niveau |
+|-----------|--------|
+| ●○○○○ | Hele uren; digitaal alleen 01:00 tot en met 12:00 |
+| ●●○○○ | Halve uren (en hele uren); digitaal tot en met 12:59 |
+| ●●●○○ | Kwartier over en kwartier voor |
+| ●●●●○ | Per vijf minuten; dagdelen; 24-uurstijden alleen met het dagdeel erbij ("Het is 's avonds") |
+| ●●●●● | Op de minuut; 24-uurstijden zonder hulp; tijd vooruit of terug met 24-uurstijden |
+
+Ook de foute keuzes blijven binnen het niveau: bij hele uren staat er nooit
+"kwart over" als keuze.
+
 De code staat er, voor alle zes onderwerpen: 78 titels. De basisversie zijn
 gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
 ronde zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
@@ -209,15 +225,15 @@ vragen — maakt de eigenaar aan (HARDE REGEL 2).
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Uren en minuten | ● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
-| 2 | Dagdelen | ● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
-| 3 | Hoe laat is het straks? | ●● | Ziet een wijzerklok op een heel uur en een korte zin, bijvoorbeeld "Over 2 uur ga je naar huis", en kiest de goede wijzerklok uit vier. Wisselende situaties: het zwembad, school, opa en oma, de speeltuin. |
-| 4 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
-| 5 | Van wijzerklok naar digitale tijd: hele uren | ●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
-| 6 | Van wijzerklok naar digitale tijd: halve uren | ●●● | Hetzelfde, met halve uren. |
-| 7 | Klokken koppelen | ●●●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
-| 8 | Van digitale tijd naar wijzerklok | ●●●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
-| 9 | Schrijf de tijd digitaal | ●●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+| 1 | Hoe laat is het straks? | ● | Ziet een wijzerklok op een heel uur en een korte zin, bijvoorbeeld "Over 2 uur ga je naar huis", en kiest de goede wijzerklok uit vier. Wisselende situaties: het zwembad, school, opa en oma, de speeltuin. |
+| 2 | Uren en minuten | ●● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
+| 3 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
+| 4 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
+| 5 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
+| 6 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
+| 7 | Van wijzerklok naar digitale tijd: hele uren | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
+| 8 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
+| 9 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
 
 ### Onderwerp 2 — De wijzerklok
 
@@ -228,16 +244,16 @@ daarna uitrekenen hoe lang iets duurt.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | De grote en de kleine wijzer | ● | Ziet een wijzerklok en tikt de wijzer aan die gevraagd wordt, bijvoorbeeld "Tik op de wijzer van de uren". |
+| 1 | De grote en de kleine wijzer | ● | Ziet een wijzerklok op een heel uur en tikt de wijzer aan die gevraagd wordt, bijvoorbeeld "Tik op de wijzer van de uren". |
 | 2 | Hele uren aflezen | ● | Ziet een wijzerklok en kiest de tijd in woorden uit vier, bijvoorbeeld "zes uur". |
 | 3 | Halve uren aflezen | ●● | Hetzelfde, met halve uren: bijvoorbeeld "half drie". |
 | 4 | Hele en halve uren door elkaar | ●● | Hetzelfde, hele en halve uren door elkaar. |
 | 5 | Klopt de klok? | ●● | Ziet een wijzerklok met een zin erbij, bijvoorbeeld "Het is half drie", en kiest Ja of Nee. Hele en halve uren. |
-| 6 | Kwartieren aflezen | ●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "kwart over één" of "kwart voor vier". |
-| 7 | Welke klok hoort erbij? Hele en halve uren | ●● | Ziet een tijd in woorden, bijvoorbeeld "Het is half één", en kiest de goede wijzerklok uit vier. |
+| 6 | Welke klok hoort erbij? Hele en halve uren | ●● | Ziet een tijd in woorden, bijvoorbeeld "Het is half één", en kiest de goede wijzerklok uit vier. |
+| 7 | Kwartieren aflezen | ●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "kwart over één" of "kwart voor vier". |
 | 8 | Welke klok hoort erbij? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
-| 9 | Vijf voor en tien over aflezen | ●●●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "tien over twee" of "vijf voor elf". Als uitdaging. |
-| 10 | Welke klok hoort erbij? Vijf voor en tien over | ●●●●● | Hetzelfde andersom: van de woorden naar de goede klok. Als uitdaging. |
+| 9 | Vijf voor en tien over aflezen | ●●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "tien over twee" of "vijf voor elf". |
+| 10 | Welke klok hoort erbij? Vijf voor en tien over | ●●●● | Hetzelfde andersom: van de woorden naar de goede klok. |
 
 #### Klok zetten
 
@@ -248,11 +264,11 @@ Het kind sleept zelf de grote en de kleine wijzer. Dezelfde bouwsteen als bij
 |---|-------|-----------|-------------------|
 | 1 | Zet de klok: hele uren | ● | Leest bijvoorbeeld "Zet de klok op zes uur" en sleept de wijzers op hun plek. |
 | 2 | Zet de klok: halve uren | ●● | Hetzelfde, bijvoorbeeld "half negen". |
-| 3 | Zet de klok: kwartieren | ●●● | Hetzelfde, bijvoorbeeld "kwart voor drie". |
-| 4 | Hoe laat is het straks? | ●● | Ziet een klok en een zin zoals "2 uur later" of "een half uur later", en zet de wijzers op de nieuwe tijd. Hele en halve uren. |
-| 5 | Hoe laat was het eerder? | ●●● | Hetzelfde, maar terug in de tijd: bijvoorbeeld "een half uur eerder". |
-| 6 | Hoe laat is het straks? Vijf voor en tien over | ●●●●● | Bijvoorbeeld: "Het is kwart voor vijf. Zet de klok 3 uur en 30 minuten later." Als uitdaging. |
-| 7 | Klokken op volgorde | ●●●● | Sleept vier wijzerklokken van vroeg naar laat. |
+| 3 | Hoe laat is het straks? | ●● | Ziet een klok en een zin zoals "2 uur later" of "een half uur later", en zet de wijzers op de nieuwe tijd. Hele en halve uren. |
+| 4 | Hoe laat was het eerder? | ●● | Hetzelfde, maar terug in de tijd: bijvoorbeeld "een half uur eerder". |
+| 5 | Klokken op volgorde | ●● | Sleept vier wijzerklokken van vroeg naar laat. |
+| 6 | Zet de klok: kwartieren | ●●● | Hetzelfde, bijvoorbeeld "kwart voor drie". |
+| 7 | Hoe laat is het straks? Vijf voor en tien over | ●●●● | Bijvoorbeeld: "Het is kwart voor vijf. Zet de klok 3 uur en 30 minuten later." Als uitdaging. |
 
 #### Hoe lang duurt het?
 
@@ -263,13 +279,13 @@ antwoord in twee vakjes: ▢ uur ▢ minuten.
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
 | 1 | Hoe lang duurt het? Hele uren | ● | Bijvoorbeeld: "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar. Hoe lang ben je weg?" |
-| 2 | Hoe lang duurt het? Halve uren | ●● | Hetzelfde, met halve uren. |
-| 3 | Hoe lang duurt het? Over 12 uur heen | ●●● | Bijvoorbeeld van 11 uur 's ochtends tot 2 uur 's middags. |
-| 4 | Hoe lang duurt het? Kwartieren | ●●●● | Hetzelfde, met kwartieren. |
-| 5 | Hoe lang geleden? Hele uren | ● | Andersom: "Het is nu 5 uur. Om 3 uur ging je zwemmen. Hoe lang geleden is dat?" |
-| 6 | Hoe lang geleden? Halve uren | ●● | Hetzelfde, met halve uren. |
-| 7 | Hoe lang geleden? Kwartieren | ●●●● | Hetzelfde, met kwartieren. |
-| 8 | Hoe lang? Alles door elkaar | ●●●●● | Duur en geleden door elkaar: hele en halve uren en kwartieren, ook over 12 uur heen. |
+| 2 | Hoe lang geleden? Hele uren | ● | Andersom: "Het is nu 5 uur. Om 3 uur ging je zwemmen. Hoe lang geleden is dat?" |
+| 3 | Hoe lang duurt het? Halve uren | ●● | Hetzelfde, met halve uren. |
+| 4 | Hoe lang geleden? Halve uren | ●● | Hetzelfde, met halve uren. |
+| 5 | Hoe lang duurt het? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
+| 6 | Hoe lang geleden? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
+| 7 | Hoe lang duurt het? Over 12 uur heen | ●●●● | Bijvoorbeeld van 11 uur 's ochtends tot 2 uur 's middags. |
+| 8 | Hoe lang? Alles door elkaar | ●●●● | Duur en geleden door elkaar: hele en halve uren en kwartieren, ook over 12 uur heen. |
 
 Notitie voor later: visuele versie — een tijdbalk waarop het kind met sprongen
 van een uur of een half uur van de begintijd naar de eindtijd gaat.
@@ -289,29 +305,31 @@ Algemene regels voor dit onderwerp:
   vakjes: ▢ uur ▢ minuten, met een knop Controleren. Gewoon typen, geen
   getallenpad op het scherm. Is het verschil hele uren, dan typt het kind 0
   bij de minuten; een leeg minutenvakje telt ook als 0 en is goed.
-- Bij Later en Eerder mogen 24-uurstijden voorkomen, bijvoorbeeld 18:30.
+- Bij Later en Eerder komen 24-uurstijden (bijvoorbeeld 18:30) alleen voor op
+  het hoogste niveau, bij "over het hele uur heen". De andere blijven tussen
+  01:00 en 12:59 (de leerlijn van de klok, zie boven).
 
 #### Aflezen
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Uren en minuten (met uitleg) | ●●○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. |
-| 2 | Hele uren in de dag | ●●○○○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |
-| 3 | Hele uren aflezen | ●●○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". |
-| 4 | Hele en halve uren aflezen | ●●●○○ | Bijvoorbeeld 05:30 = half zes. |
-| 5 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
+| 1 | Uren en minuten (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. Hele uren, 01:00 tot en met 12:00. |
+| 2 | Hele uren aflezen | ●○○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". Alleen 01:00 tot en met 12:00. |
+| 3 | Hele en halve uren aflezen | ●●○○○ | Bijvoorbeeld 05:30 = half zes. Tot en met 12:59. |
+| 4 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
+| 5 | Hele uren in de dag | ●●●●○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |
 | 6 | Vijf en tien over en voor | ●●●●○ | Bijvoorbeeld 07:10 = tien over zeven, 08:55 = vijf voor negen. |
-| 7 | Op de minuut | ●●●●● | Bijvoorbeeld 05:43 = dertien minuten over half zes. |
+| 7 | Op de minuut | ●●●●● | Bijvoorbeeld 05:43 = dertien minuten over half zes. Ook 24-uurstijden, zonder dagdeel erbij. |
 
 #### Later
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Tijd vooruit: hele uren | ●○○○○ | Bijvoorbeeld 18:00 en 21:00. |
-| 2 | Tijd vooruit: hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 06:45 en 08:45. |
-| 3 | Tijd vooruit: halve uren | ●●●○○ | Bijvoorbeeld 05:10 en 07:40. |
-| 4 | Tijd vooruit: over het hele uur heen | ●●●●○ | Bijvoorbeeld 05:50 en 08:20. |
-| 5 | Tijd vooruit: kwartieren | ●●●●● | Bijvoorbeeld 04:20 en 07:50. |
+| 1 | Tijd vooruit: hele uren | ●○○○○ | Bijvoorbeeld 06:00 en 09:00. Alleen 01:00 tot en met 12:00. |
+| 2 | Tijd vooruit: halve uren | ●●○○○ | Bijvoorbeeld 05:00 en 07:30. Hele en halve uren, tot en met 12:59. |
+| 3 | Tijd vooruit: hele uren, andere minuten | ●●●○○ | Bijvoorbeeld 06:45 en 08:45: kwart over of kwart voor, met hele uren ertussen. |
+| 4 | Tijd vooruit: kwartieren | ●●●○○ | Bijvoorbeeld 04:15 en 06:00. |
+| 5 | Tijd vooruit: over het hele uur heen | ●●●●● | Bijvoorbeeld 17:50 en 20:20: per vijf minuten, met 24-uurstijden. |
 
 #### Eerder
 
@@ -320,11 +338,11 @@ de latere tijd.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Tijd terug: hele uren | ●○○○○ | Bijvoorbeeld 21:00 en 19:00. |
-| 2 | Tijd terug: hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 18:30 en 16:30. |
-| 3 | Tijd terug: halve uren | ●●●○○ | Bijvoorbeeld 07:40 en 05:10. |
-| 4 | Tijd terug: over het hele uur heen | ●●●●○ | Bijvoorbeeld 07:45 en 05:15. |
-| 5 | Tijd terug: kwartieren | ●●●●● | Bijvoorbeeld 07:50 en 04:20. |
+| 1 | Tijd terug: hele uren | ●○○○○ | Bijvoorbeeld 09:00 en 07:00. Alleen 01:00 tot en met 12:00. |
+| 2 | Tijd terug: halve uren | ●●○○○ | Bijvoorbeeld 07:30 en 05:00. Hele en halve uren, tot en met 12:59. |
+| 3 | Tijd terug: hele uren, andere minuten | ●●●○○ | Bijvoorbeeld 08:45 en 06:45. |
+| 4 | Tijd terug: kwartieren | ●●●○○ | Bijvoorbeeld 06:00 en 04:15. |
+| 5 | Tijd terug: over het hele uur heen | ●●●●● | Bijvoorbeeld 20:15 en 17:45: per vijf minuten, met 24-uurstijden. |
 
 ### Onderwerp 4 — Wijzerklok met vlekken
 
@@ -346,13 +364,13 @@ Algemene regels voor dit onderwerp:
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
 | 1 | Hele uren: cijfers onder een vlek (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg. De wijzers zijn helemaal zichtbaar, een paar cijfers zijn bedekt. |
-| 2 | Hele uren: wijzer onder een vlek | ●●○○○ | Een stukje van de kleine wijzer is bedekt. |
+| 2 | Hele uren: wijzer onder een vlek | ●○○○○ | Een stukje van de kleine wijzer is bedekt. |
 | 3 | Halve uren: cijfers onder een vlek | ●●○○○ | Hetzelfde als 1, met halve uren. |
-| 4 | Halve uren: wijzer onder een vlek | ●●●○○ | Hetzelfde als 2, met halve uren. |
+| 4 | Halve uren: wijzer onder een vlek | ●●○○○ | Hetzelfde als 2, met halve uren. |
 | 5 | Kwart over en kwart voor: cijfers onder een vlek | ●●●○○ | Hetzelfde, met kwartieren. |
-| 6 | Kwart over en kwart voor: wijzer onder een vlek | ●●●●○ | Hetzelfde, met een stukje wijzer bedekt. |
-| 7 | Gemengd: cijfers onder een vlek | ●●●●○ | Hele uren, halve uren en kwartieren door elkaar. |
-| 8 | Gemengd: grote vlek | ●●●●● | Het midden van de klok is bedekt; alleen de puntjes van de wijzers zijn zichtbaar. |
+| 6 | Kwart over en kwart voor: wijzer onder een vlek | ●●●○○ | Hetzelfde, met een stukje wijzer bedekt. |
+| 7 | Gemengd: cijfers onder een vlek | ●●●○○ | Hele uren, halve uren en kwartieren door elkaar. |
+| 8 | Gemengd: grote vlek | ●●●○○ | Het midden van de klok is bedekt; alleen de puntjes van de wijzers zijn zichtbaar. |
 
 ### Onderwerp 5 — Maanden en dagen
 

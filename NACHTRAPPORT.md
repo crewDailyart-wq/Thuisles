@@ -274,3 +274,108 @@ Getest door de tonen te tellen:
 **Klokken:** alle klokken bij Tijd zien er nu hetzelfde uit, bij aflezen, zelf zetten en de kleine NU-klok. De grote wijzer loopt tot de streepjes, met dezelfde dikte en kleur en één klein rondje in het midden. Alleen het uiterlijk is veranderd, niet de opgaven. Bekeken in het voorbeeld in de admin: "Wijzerklok aflezen", "Wijzerklok met een vlek" en "Klokken koppelen" (kleine klokken). Alles is goed leesbaar.
 
 **Let op, twee antwoorden tijdens de test.** Tijdens de eerste geluidstest in de kindomgeving ("Zet de klok: halve uren") zijn er twee antwoorden opgeslagen: om 10:17:55 en 10:18:25 (UTC), allebei direct goed, met 63 en 26 seconden bedenktijd. Ik heb niet op Controleer geklikt en die bedenktijden passen bij een kind dat zelf oefent. Maar het browservenster veranderde tijdens de test van formaat, dus ik kan niet uitsluiten dat het in mijn tabblad gebeurde. Ik heb ze laten staan. Waren ze niet van je kind, dan kun je ze in de admin weghalen. Daarna heb ik alleen nog in het voorbeeld in de admin getest.
+
+---
+
+# Klokoefeningen in de volgorde van school — 2 oktober 2026
+
+Back-up vooraf met `npm run backup` (iCloud) en in `backups/`. Er is niets verwijderd. Aan de voortgang, de antwoorden en de sessies van je kind is niets veranderd: voor en na zijn het 183 antwoorden, 63 regels voortgang en 68 sessies.
+
+**De leerlijn** staat nu als vaste regel in de code (`klokniveau` in `src/lib/moeilijkheid.ts`) en bovenaan Tijd in WERKPLAN.md. De bolletjes volgen er vanzelf uit:
+
+| Bolletjes | Niveau |
+|-----------|--------|
+| ● | Hele uren; digitaal alleen 01:00 tot en met 12:00 |
+| ●● | Halve uren (en hele uren); digitaal tot en met 12:59 |
+| ●●● | Kwartier over en kwartier voor |
+| ●●●● | Per vijf minuten; dagdelen; 24-uurstijden met het dagdeel erbij |
+| ●●●●● | Op de minuut; 24-uurstijden zonder hulp |
+
+**Wat er in de opgaven is veranderd:**
+- De digitale klok gebruikt standaard alleen 01:00 tot en met 12:59. Er is een nieuwe instelling "Ook tijden van 13:00 en later" voor het hoogste niveau.
+- Tijd vooruit en tijd terug blijven binnen hun niveau:
+  - halve uren alleen op :00 en :30;
+  - "andere minuten" op kwart over of kwart voor;
+  - 24-uurstijden alleen bij "over het hele uur heen".
+- Ook de foute keuzes blijven binnen het niveau, bijvoorbeeld geen "kwart over" bij hele uren.
+- "Hoe lang duurt het? Hele uren" begint op het hele uur.
+- De klokken bij "Welke klok hoort erbij?" staan in 12-uursnotatie.
+
+**Database:**
+- 33 leerdoelen staan op een nieuwe plek.
+- 5 sjablonen kregen nieuwe instellingen.
+- 50 sjablonen kregen 15 nieuwe, gepubliceerde opgaven. De 750 oude opgaven staan op concept: ze zijn niet weg, alleen het kind krijgt ze niet meer.
+- Alle 885 gepubliceerde klokopgaven zijn nagekeken op hun niveau, ook de foute keuzes in woorden: 0 fouten.
+- `npm run opgaven` bewaakt dit voortaan bij elke commit.
+
+**Kinderscherm:** bij Tijd volgt de lijst nu precies de volgorde uit de database (en WERKPLAN.md), niet meer per soort oefening. De andere domeinen sorteren nog per soort, zoals ze deden; zeg het als die ook de volgorde van de database moeten volgen.
+
+**Getest als kind**, zonder iets in te vullen:
+- In alle vier klokonderwerpen komt de volgorde op het kinderscherm precies overeen met de database.
+- De eerste en de laatste oefening van elk onderwerp leveren 15 opgaven.
+
+Maanden en dagen en Kalender zijn niet aangeraakt.
+
+## Alle klokoefeningen in de nieuwe volgorde
+
+| # | Onderwerp · groepje | Titel | Bolletjes | Was | Wat er veranderd is |
+|---|---|---|---|---|---|
+| 1 | Wijzerklok en digitale klok | Hoe laat is het straks? | ●○○○○ | ●●○○○ | bolletjes 2 → 1; plek 3 → 1; foute klokken binnen het niveau; klokken in 12-uursnotatie; nieuwe opgaven |
+| 2 | Wijzerklok en digitale klok | Uren en minuten | ●●○○○ | ●○○○○ | bolletjes 1 → 2; plek 1 → 2 |
+| 3 | Wijzerklok en digitale klok | Zet de wijzers goed | ●●○○○ | ●●○○○ | plek 4 → 3 |
+| 4 | Wijzerklok en digitale klok | Klokken koppelen | ●●○○○ | ●●●●○ | bolletjes 4 → 2; plek 7 → 4 |
+| 5 | Wijzerklok en digitale klok | Van digitale tijd naar wijzerklok | ●●○○○ | ●●●●○ | bolletjes 4 → 2; plek 8 → 5; foute klokken binnen het niveau; klokken in 12-uursnotatie; nieuwe opgaven |
+| 6 | Wijzerklok en digitale klok | Dagdelen | ●●●●○ | ●○○○○ | bolletjes 1 → 4; plek 2 → 6 |
+| 7 | Wijzerklok en digitale klok | Van wijzerklok naar digitale tijd: hele uren | ●●●●○ | ●●●○○ | bolletjes 3 → 4 (24-uurstijden met dagdeel); plek 5 → 7; nieuwe opgaven |
+| 8 | Wijzerklok en digitale klok | Van wijzerklok naar digitale tijd: halve uren | ●●●●○ | ●●●○○ | bolletjes 3 → 4 (24-uurstijden met dagdeel); plek 6 → 8; nieuwe opgaven |
+| 9 | Wijzerklok en digitale klok | Schrijf de tijd digitaal | ●●●●○ | ●●●●● | bolletjes 5 → 4 |
+| 10 | De wijzerklok · Aflezen | De grote en de kleine wijzer | ●○○○○ | ●○○○○ | alleen nog hele uren; nieuwe opgaven |
+| 11 | De wijzerklok · Aflezen | Hele uren aflezen | ●○○○○ | ●○○○○ | foute keuzes binnen het niveau (bij hele uren geen "kwart over" meer); nieuwe opgaven |
+| 12 | De wijzerklok · Aflezen | Halve uren aflezen | ●●○○○ | ●●○○○ | foute keuzes binnen het niveau (bij hele uren geen "kwart over" meer); nieuwe opgaven |
+| 13 | De wijzerklok · Aflezen | Hele en halve uren door elkaar | ●●○○○ | ●●○○○ | foute keuzes binnen het niveau (bij hele uren geen "kwart over" meer); nieuwe opgaven |
+| 14 | De wijzerklok · Aflezen | Klopt de klok? | ●●○○○ | ●●○○○ | — |
+| 15 | De wijzerklok · Aflezen | Welke klok hoort erbij? Hele en halve uren | ●●○○○ | ●●○○○ | plek 7 → 6; foute klokken binnen het niveau; klokken in 12-uursnotatie; nieuwe opgaven |
+| 16 | De wijzerklok · Aflezen | Kwartieren aflezen | ●●●○○ | ●●●○○ | plek 6 → 7; foute keuzes binnen het niveau (bij hele uren geen "kwart over" meer); nieuwe opgaven |
+| 17 | De wijzerklok · Aflezen | Welke klok hoort erbij? Kwartieren | ●●●○○ | ●●●○○ | foute klokken binnen het niveau; klokken in 12-uursnotatie; nieuwe opgaven |
+| 18 | De wijzerklok · Aflezen | Vijf voor en tien over aflezen | ●●●●○ | ●●●●● | bolletjes 5 → 4; foute keuzes binnen het niveau (bij hele uren geen "kwart over" meer); nieuwe opgaven |
+| 19 | De wijzerklok · Aflezen | Welke klok hoort erbij? Vijf voor en tien over | ●●●●○ | ●●●●● | bolletjes 5 → 4; foute klokken binnen het niveau; klokken in 12-uursnotatie; nieuwe opgaven |
+| 20 | De wijzerklok · Klok zetten | Zet de klok: hele uren | ●○○○○ | ●○○○○ | — |
+| 21 | De wijzerklok · Klok zetten | Zet de klok: halve uren | ●●○○○ | ●●○○○ | — |
+| 22 | De wijzerklok · Klok zetten | Hoe laat is het straks? | ●●○○○ | ●●○○○ | plek 14 → 13 |
+| 23 | De wijzerklok · Klok zetten | Hoe laat was het eerder? | ●●○○○ | ●●●○○ | bolletjes 3 → 2; plek 15 → 14 |
+| 24 | De wijzerklok · Klok zetten | Klokken op volgorde | ●●○○○ | ●●●●○ | bolletjes 4 → 2; plek 17 → 15 |
+| 25 | De wijzerklok · Klok zetten | Zet de klok: kwartieren | ●●●○○ | ●●●○○ | plek 13 → 16 |
+| 26 | De wijzerklok · Klok zetten | Hoe laat is het straks? Vijf voor en tien over | ●●●●○ | ●●●●● | bolletjes 5 → 4; plek 16 → 17 |
+| 27 | De wijzerklok · Hoe lang duurt het? | Hoe lang duurt het? Hele uren | ●○○○○ | ●○○○○ | bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 28 | De wijzerklok · Hoe lang duurt het? | Hoe lang geleden? Hele uren | ●○○○○ | ●○○○○ | plek 22 → 19; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 29 | De wijzerklok · Hoe lang duurt het? | Hoe lang duurt het? Halve uren | ●●○○○ | ●●○○○ | plek 19 → 20; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 30 | De wijzerklok · Hoe lang duurt het? | Hoe lang geleden? Halve uren | ●●○○○ | ●●○○○ | plek 23 → 21; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 31 | De wijzerklok · Hoe lang duurt het? | Hoe lang duurt het? Kwartieren | ●●●○○ | ●●●●○ | bolletjes 4 → 3; plek 21 → 22; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 32 | De wijzerklok · Hoe lang duurt het? | Hoe lang geleden? Kwartieren | ●●●○○ | ●●●●○ | bolletjes 4 → 3; plek 24 → 23; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 33 | De wijzerklok · Hoe lang duurt het? | Hoe lang duurt het? Over 12 uur heen | ●●●●○ | ●●●○○ | bolletjes 3 → 4; plek 20 → 24; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 34 | De wijzerklok · Hoe lang duurt het? | Hoe lang? Alles door elkaar | ●●●●○ | ●●●●● | bolletjes 5 → 4; bij hele uren begint de opgave op het hele uur; nieuwe opgaven |
+| 35 | Digitale klok · Aflezen | Uren en minuten (met uitleg) | ●○○○○ | ●●○○○ | bolletjes 2 → 1; alleen nog hele uren, 01:00 tot en met 12:00; digitale tijden alleen 01:00–12:59; nieuwe opgaven |
+| 36 | Digitale klok · Aflezen | Hele uren aflezen | ●○○○○ | ●●○○○ | bolletjes 2 → 1; plek 3 → 2; digitale tijden alleen 01:00–12:59 (was 00:00–23:59); foute keuzes binnen het niveau; nieuwe opgaven |
+| 37 | Digitale klok · Aflezen | Hele en halve uren aflezen | ●●○○○ | ●●●○○ | bolletjes 3 → 2; plek 4 → 3; digitale tijden alleen 01:00–12:59 (was 00:00–23:59); foute keuzes binnen het niveau; nieuwe opgaven |
+| 38 | Digitale klok · Aflezen | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | ●●●○○ | plek 5 → 4; digitale tijden alleen 01:00–12:59 (was 00:00–23:59); foute keuzes binnen het niveau; nieuwe opgaven |
+| 39 | Digitale klok · Aflezen | Hele uren in de dag | ●●●●○ | ●●○○○ | bolletjes 2 → 4; plek 2 → 5 |
+| 40 | Digitale klok · Aflezen | Vijf en tien over en voor | ●●●●○ | ●●●●○ | digitale tijden alleen 01:00–12:59 (was 00:00–23:59); foute keuzes binnen het niveau; nieuwe opgaven |
+| 41 | Digitale klok · Aflezen | Op de minuut | ●●●●● | ●●●●● | ook 24-uurstijden (zonder dagdeel); digitale tijden alleen 01:00–12:59 (was 00:00–23:59); foute keuzes binnen het niveau; nieuwe opgaven |
+| 42 | Digitale klok · Later | Tijd vooruit: hele uren | ●○○○○ | ●○○○○ | tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 43 | Digitale klok · Later | Tijd vooruit: halve uren | ●●○○○ | ●●●○○ | bolletjes 3 → 2; plek 10 → 9; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 44 | Digitale klok · Later | Tijd vooruit: hele uren, andere minuten | ●●●○○ | ●●○○○ | bolletjes 2 → 3; plek 9 → 10; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 45 | Digitale klok · Later | Tijd vooruit: kwartieren | ●●●○○ | ●●●●● | bolletjes 5 → 3; plek 12 → 11; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 46 | Digitale klok · Later | Tijd vooruit: over het hele uur heen | ●●●●● | ●●●●○ | bolletjes 4 → 5; plek 11 → 12; met 24-uurstijden; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 47 | Digitale klok · Eerder | Tijd terug: hele uren | ●○○○○ | ●○○○○ | tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 48 | Digitale klok · Eerder | Tijd terug: halve uren | ●●○○○ | ●●●○○ | bolletjes 3 → 2; plek 15 → 14; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 49 | Digitale klok · Eerder | Tijd terug: hele uren, andere minuten | ●●●○○ | ●●○○○ | bolletjes 2 → 3; plek 14 → 15; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 50 | Digitale klok · Eerder | Tijd terug: kwartieren | ●●●○○ | ●●●●● | bolletjes 5 → 3; plek 17 → 16; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 51 | Digitale klok · Eerder | Tijd terug: over het hele uur heen | ●●●●● | ●●●●○ | bolletjes 4 → 5; plek 16 → 17; met 24-uurstijden; tijden binnen 01:00–12:59 behalve bij 24-uurstijden; halve uren op :00/:30, andere minuten op kwart over/voor; nieuwe opgaven |
+| 52 | Wijzerklok met vlekken | Hele uren: cijfers onder een vlek (met uitleg) | ●○○○○ | ●○○○○ | foute keuzes binnen het niveau; nieuwe opgaven |
+| 53 | Wijzerklok met vlekken | Hele uren: wijzer onder een vlek | ●○○○○ | ●●○○○ | bolletjes 2 → 1; foute keuzes binnen het niveau; nieuwe opgaven |
+| 54 | Wijzerklok met vlekken | Halve uren: cijfers onder een vlek | ●●○○○ | ●●○○○ | foute keuzes binnen het niveau; nieuwe opgaven |
+| 55 | Wijzerklok met vlekken | Halve uren: wijzer onder een vlek | ●●○○○ | ●●●○○ | bolletjes 3 → 2; foute keuzes binnen het niveau; nieuwe opgaven |
+| 56 | Wijzerklok met vlekken | Kwart over en kwart voor: cijfers onder een vlek | ●●●○○ | ●●●○○ | foute keuzes binnen het niveau; nieuwe opgaven |
+| 57 | Wijzerklok met vlekken | Kwart over en kwart voor: wijzer onder een vlek | ●●●○○ | ●●●●○ | bolletjes 4 → 3; foute keuzes binnen het niveau; nieuwe opgaven |
+| 58 | Wijzerklok met vlekken | Gemengd: cijfers onder een vlek | ●●●○○ | ●●●●○ | bolletjes 4 → 3; foute keuzes binnen het niveau; nieuwe opgaven |
+| 59 | Wijzerklok met vlekken | Gemengd: grote vlek | ●●●○○ | ●●●●● | bolletjes 5 → 3; foute keuzes binnen het niveau; nieuwe opgaven |

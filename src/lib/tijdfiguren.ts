@@ -119,8 +119,9 @@ export function juistAntwoord(figuur: Tijdfiguur): string {
 
     case "klokkiezen": {
       const doel = doeltijd(figuur);
+      /* Op de wijzerklok telt de stand: 13 uur en 1 uur zijn dezelfde klok. */
       const welke = figuur.keuzes.findIndex(
-        (k) => k.uur === doel.uur && k.minuut === doel.minuut,
+        (k) => k.uur % 12 === doel.uur % 12 && k.minuut === doel.minuut,
       );
       return String(welke);
     }
