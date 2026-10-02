@@ -414,6 +414,46 @@ Algemene regels voor dit onderwerp:
 | 5 | Waar is het meeste geld? | ●●●●○ | Ziet drie vakjes met munten en briefjes en tikt op het vakje met het hoogste bedrag. |
 | 6 | Evenveel waard | ●●●●● | Bijvoorbeeld 3 × 20 cent = ▢ × 10 cent, of 3 × 1 euro = ▢ × 50 cent. Typt het getal. |
 
+### Onderwerp 2 — Betalen
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Het geld ziet eruit zoals bij "Munten en briefjes": simpele eigen
+  tekeningen, geen foto's.
+- Bedragen tot 100 euro; centen alleen in tientallen, bijvoorbeeld € 4,90.
+- Prijzen staan op een prijskaartje bij een simpel getekend voorwerp:
+  speelgoed, een boek, fruit.
+- Bij leggen tikt het kind op een munt of briefje om het in een vakje te
+  leggen; nog een keer tikken haalt het weer weg, met een knop Controleren.
+  Elke goede manier telt.
+- Bij typvragen gewoon typen, geen getallenpad op het scherm.
+
+#### Bedrag leggen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Leg het bedrag met 2 euro | ●○○○○ | "Leg 16 euro." Legt alleen munten van 2 euro in de vakjes; de bedragen zijn altijd even. |
+| 2 | Leg het bedrag met centen | ●●○○○ | "Leg 2 euro." Kiest zelf uit munten van 10, 20 en 50 cent. |
+
+#### Gepast betalen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Gepast betalen met munten | ●●○○○ | Ziet een voorwerp met een prijskaartje, bijvoorbeeld € 4,90, en drie groepjes munten: A, B en C. Tikt op het groepje dat precies goed is. |
+| 2 | Gepast betalen met briefjes | ●●○○○ | Hetzelfde, met briefjes, bijvoorbeeld € 60,-. |
+| 3 | Gepast betalen met briefjes en munten | ●●●○○ | Hetzelfde, briefjes en munten door elkaar, bijvoorbeeld € 21,-. |
+| 4 | Welke groepjes zijn goed? | ●●●○○ | Ziet vier groepjes munten; er zijn er precies twee goed. Tikt ze allebei aan en drukt op Controleren. |
+| 5 | Betaal zelf gepast | ●●●●○ | Ziet een voorwerp met een prijskaartje en legt zelf briefjes en munten tot het precies klopt. |
+
+#### Wat moet erbij?
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Welke munt moet erbij? | ●●●○○ | Ziet een prijskaartje, bijvoorbeeld € 26,-, en het geld dat er al ligt, bijvoorbeeld € 20 + € 5. Tikt op de munt die erbij moet; keuze uit drie. |
+| 2 | Hoeveel moet er nog bij? | ●●●●○ | Hetzelfde, maar nu typt het kind het bedrag dat nog ontbreekt. |
+
 ## Bouwstenen
 
 Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
