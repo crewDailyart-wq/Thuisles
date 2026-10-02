@@ -40,16 +40,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# De lokale database gaat MET OPZET wel mee naar GitHub.
+# De databases staan NIET meer in Git (besluit van de eigenaar, 2 oktober 2026).
 #
-# De eigenaar wil één plek waar alles staat: de vragen, de afbeeldingen en de
-# database met de voortgang, zodat de privérepo tegelijk de back-up is. Daarom
-# staat `/data` hier niet meer uitgesloten.
-#
-# Dit kan zolang het om het eigen kind gaat. Zodra er echte kinderen op het
-# platform komen, moet de database hier weer buiten en hoort er een echte
-# back-upoplossing te komen: gegevens van andere kinderen horen niet in een
-# coderepo. Zie HARDE REGEL 4 in CLAUDE.md.
+# Ze bevatten de gegevens van een kind: het profiel en de voortgang. Dat hoort
+# niet in een coderepo, ook niet in een privérepo. De bestanden blijven gewoon
+# op de laptop staan; ze worden alleen niet meer meegenomen. Let op: oudere
+# versies staan nog wel in de Git-geschiedenis.
+/data/*.db
+/data/*.db-journal
+/data/*.db-wal
+/data/*.db-shm
 
 # Back-ups die Claude maakt vóór een wijziging in de database. Niet committen:
 # de volledige kopie bevat ook de kinderen en hun voortgang.
