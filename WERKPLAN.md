@@ -6,6 +6,11 @@ kind ze ziet, met de bolletjes en wat het kind er doet.
 De kopjes volgen de bestaande Thuisles-domeinen. Nieuwe onderwerpen komen in
 die domeinen; er wordt geen nieuw domein aangemaakt.
 
+## Algemene regel: vijftien opgaven per ronde
+
+Elke oefening geeft minimaal 15 opgaven per ronde, zonder dubbele opgaven
+binnen een ronde. `npm run opgaven` controleert dat vóór elke commit.
+
 ## Bij het bouwen altijd meenemen: SEO-basis — KLAAR
 
 De zes punten hieronder staan er. Geldt vanaf nu voor elk nieuw scherm en elk
@@ -422,9 +427,13 @@ Algemene regels voor dit onderwerp:
 
 Er volgen nog meer onderwerpen bij Tijd.
 
-## Groep 4 – Geld — KLAAR
+## Groep 4 – Geld
 
-De code staat er, voor de drie onderwerpen met een uitgewerkte lijst: 47
+Alle onderdelen van Geld staan nu in het werkplan. Munten en briefjes, Betalen
+en Rekenen met geld zijn KLAAR. Geld wisselen (bij Rekenen met geld) en
+Geldnotatie moeten nog gebouwd worden.
+
+De code staat er voor de drie gebouwde onderwerpen: 47
 titels. De basisversie zijn gewone opdrachten met simpele getekende munten en
 briefjes; mooier beeld komt later. Elke titel geeft vijftien opgaven per ronde
 zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij. De
@@ -473,7 +482,40 @@ Algemene regels voor dit onderwerp:
 | 5 | Het grootste bedrag | ●●●●○ | Ziet drie vakjes met munten en briefjes en tikt op het vakje met het hoogste bedrag. |
 | 6 | Evenveel waard | ●●●●● | Bijvoorbeeld 3 × 20 cent = ▢ × 10 cent, of 3 × 1 euro = ▢ × 50 cent. Typt het getal. |
 
-### Onderwerp 2 — Betalen
+### Onderwerp 2 — Geldnotatie
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Typt het kind een punt in plaats van een komma (6.45), dan wordt dat niet
+  fout gerekend: het kind krijgt de hint "Gebruik een komma" en mag opnieuw
+  proberen.
+- 7,5 en 7,50 zijn allebei goed.
+- Een gewoon invoerveld, geen getallenpad op het scherm.
+
+#### Het prijskaartje
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Bedragen goed schrijven (kiezen) | ●○○○○ | Ziet bijvoorbeeld "€ 52" en kiest de juiste schrijfwijze uit drie: € 52,-. |
+| 2 | Bedragen goed schrijven | ●●○○○ | Kiest uit vier, ook met centen. De foute keuzes lijken erop: bij € 7,05 staan er ook € 7,5, € 75,0 en € 0,75. |
+
+#### Geld tellen en opschrijven
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 3 | Bedrag opschrijven tot 10 euro | ●●○○○ | Ziet getekende munten en briefjes en typt het bedrag met komma, bijvoorbeeld 6,45. |
+| 4 | Bedrag opschrijven tot 100 euro | ●●●○○ | Alleen hele euro's. Achter het vakje staat al ",-"; het kind typt alleen het getal. |
+
+#### Bedragen in woorden
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 5 | Van woorden naar cijfers tot 10 euro | ●●●○○ | Bijvoorbeeld "zeven euro en vijftig cent" wordt 7,50. |
+| 6 | Van woorden naar cijfers tot 100 euro | ●●●●○ | Bijvoorbeeld "achtenveertig euro" wordt 48. |
+
+### Onderwerp 3 — Betalen
 
 Alleen de basis: gewone opdrachten, visueel werk komt later.
 
@@ -513,7 +555,7 @@ Algemene regels voor dit onderwerp:
 | 1 | Welke munt ontbreekt? | ●●●○○ | Ziet een prijskaartje, bijvoorbeeld € 26,-, en het geld dat er al ligt, bijvoorbeeld € 20 + € 5. Tikt op de munt die erbij moet; keuze uit drie. |
 | 2 | Hoeveel ontbreekt er? | ●●●●○ | Hetzelfde, maar nu typt het kind het bedrag dat nog ontbreekt. |
 
-### Onderwerp 3 — Rekenen met geld
+### Onderwerp 4 — Rekenen met geld
 
 Alleen de basis: gewone opdrachten, visueel werk komt later.
 
@@ -591,8 +633,18 @@ Alleen hele euro's, tot 100 euro.
 | 3 | Prijs na korting (kiezen) | ●●●○○ | Ziet een prijs met een sticker "€ 25,- korting" erbij en kiest uit vier knoppen wat je betaalt. |
 | 4 | Prijs na korting | ●●●○○ | Dezelfde situatie; typt wat je betaalt. |
 
-Nog open bij Geld: Inwisselen — dat hoort bij Rekenen met geld — en
-Geldnotatie. Daar is nog geen lijst voor; die zijn niet gebouwd.
+#### Geld wisselen
+
+Nog te bouwen. Het kind kiest steeds uit drie kaartjes met eigen simpele
+geldtekeningen en tikt op het kaartje zelf, zonder A/B/C-knoppen. De foute
+kaartjes zijn net te veel of net te weinig waard.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Een briefje wisselen | ●○○○○ | Ziet één briefje van € 10 tot en met € 100 en tikt op het kaartje met kleinere briefjes dat evenveel waard is. |
+| 2 | Een euromunt wisselen | ●●○○○ | Ziet een munt van € 1 of € 2 en tikt op het kaartje met centen dat evenveel waard is. |
+| 3 | Centen wisselen | ●●○○○ | Ziet een munt van 10, 20 of 50 cent en tikt op het kaartje met kleinere centen dat evenveel waard is. |
+| 4 | Wisselen in briefjes en munten | ●●●○○ | Ziet een briefje van € 5, € 10 of € 20; de kaartjes hebben een mix van briefjes en euromunten, soms meer dan vier stuks. |
 
 ## Bouwstenen
 
