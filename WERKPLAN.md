@@ -278,6 +278,34 @@ de latere tijd.
 | 4 | Hoeveel tijd eerder? Over het hele uur heen | ●●●●○ | Bijvoorbeeld 07:45 en 05:15. |
 | 5 | Hoeveel tijd eerder? Kwartieren | ●●●●● | Bijvoorbeeld 07:50 en 04:20. |
 
+### Onderwerp 4 — Wijzerklok met vlekken
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Het kind ziet een wijzerklok met een vlek erop en de vraag "Hoe laat is
+  het?", en kiest uit vier antwoorden in woorden, bijvoorbeeld "kwart voor
+  acht", "half vijf" of "zeven uur".
+- De vlek bedekt cijfers en soms een stukje van een wijzer. De tijd moet altijd
+  nog te bepalen zijn: van de kleine wijzer blijft altijd minstens het puntje
+  zichtbaar.
+- De foute keuzes zijn echte valkuilen: kwart over 7 tegenover kwart voor 8,
+  half 4 tegenover half 5, of het uur ervoor of erna.
+- De vlek hoort al bij de basis: een simpele vlekvorm, op verschillende plekken
+  en in verschillende kleuren. Mooie vormgeving komt later.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hele uren: cijfers onder een vlek (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg. De wijzers zijn helemaal zichtbaar, een paar cijfers zijn bedekt. |
+| 2 | Hele uren: wijzer onder een vlek | ●●○○○ | Een stukje van de kleine wijzer is bedekt. |
+| 3 | Halve uren: cijfers onder een vlek | ●●○○○ | Hetzelfde als 1, met halve uren. |
+| 4 | Halve uren: wijzer onder een vlek | ●●●○○ | Hetzelfde als 2, met halve uren. |
+| 5 | Kwart over en kwart voor: cijfers onder een vlek | ●●●○○ | Hetzelfde, met kwartieren. |
+| 6 | Kwart over en kwart voor: wijzer onder een vlek | ●●●●○ | Hetzelfde, met een stukje wijzer bedekt. |
+| 7 | Gemengd: cijfers onder een vlek | ●●●●○ | Hele uren, halve uren en kwartieren door elkaar. |
+| 8 | Gemengd: grote vlek | ●●●●● | Het midden van de klok is bedekt; alleen de puntjes van de wijzers zijn zichtbaar. |
+
 Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
