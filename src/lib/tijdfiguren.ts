@@ -135,7 +135,14 @@ export function juistAntwoord(figuur: Tijdfiguur): string {
     }
 
     case "kloktypen":
-      return `${figuur.uur},${figuur.minuut}`;
+      /*
+        Zonder dagdeel is de tijd met twaalf uur verschil ook goed: een
+        wijzerklok op zes uur is net zo goed 18:00. De schrijfwijzen staan
+        dan met een liggend streepje ertussen, net als bij "maak zelf een som".
+      */
+      return figuur.metDagdeel
+        ? `${figuur.uur},${figuur.minuut}`
+        : `${figuur.uur},${figuur.minuut}|${(figuur.uur + 12) % 24},${figuur.minuut}`;
 
     case "wijzeraanwijzen":
       return figuur.gevraagd === "uur" ? "0" : "1";

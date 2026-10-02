@@ -169,3 +169,30 @@ Deze 32 kopieën staan nog op de laptop. Ze staan niet meer in Git, maar alle 32
 ## In drie zinnen
 
 De opdrachten sprongen omdat de oefenpagina bij elke keer opbouwen met toeval een nieuwe serie koos, en de ontwikkelserver door een interne fout de pagina elke seconde opnieuw opbouwde; nu kiest de pagina met een vast zaad en staat de opgave in Getallen, Tafels, Tijd en Geld stil, ook in de productiebuild en na herladen. De back-ups staan in iCloud Drive in de map Thuisles-backups (`~/Library/Mobile Documents/com~apple~CloudDocs/Thuisles-backups/`), de laatste 14 blijven bewaard, en `npm run backup` maakt er altijd met de hand een. De dagelijkse back-up van 22:00 zet je uit met `launchctl bootout gui/$(id -u)/nl.thuisles.backup` en daarna `rm ~/Library/LaunchAgents/nl.thuisles.backup.plist`; let op dat macOS die taak eerst toegang tot je map Bureaublad moet geven (zie hierboven).
+
+---
+
+# Wijzerklok: geen ochtend of avond op de klok — 2 oktober 2026
+
+**Fout:** bij "Van wijzerklok naar digitale tijd" stonden 06:00 én 18:00 als keuzes. Er kwamen zelfs ongeldige tijden voor, zoals 27:00. Het zinnetje met het dagdeel kwam niet in beeld, omdat de standaardvraag er geen plek voor had.
+
+**Aangepast in de code:**
+- Een wijzerklok zonder dagdeel gebruikt alleen 01:00 tot en met 12:59, nooit 00:xx. 24-uurstijden komen alleen voor als het dagdeel erbij staat; dat staat nu altijd onder de klok ("Het is 's avonds.").
+- Foute keuzes zijn nooit de goede tijd plus of min twaalf uur, en altijd geldige tijden.
+- "Van digitale tijd naar wijzerklok" toont de digitale tijd in 12-uursnotatie.
+- Bij "Schrijf de tijd digitaal" zonder dagdeel telt de tijd met twaalf uur verschil ook goed.
+- Een getal met een nul ervoor ("06") telt overal bij Tijd als hetzelfde getal.
+- `npm run opgaven` controleert deze regels voortaan bij elke commit.
+
+**In de database** (back-up eerst in `backups/`): van drie oefeningen stonden de oude opgaven verkeerd.
+- "Van wijzerklok naar digitale tijd: hele uren"
+- "Van wijzerklok naar digitale tijd: halve uren"
+- "Van digitale tijd naar wijzerklok"
+
+Hun 45 oude opgaven staan nu op concept: ze zijn niet weg, maar een kind krijgt ze niet meer. Er staan 45 nieuwe, gepubliceerde opgaven voor in de plaats. Aan antwoorden, voortgang en sessies is niets veranderd.
+
+Er was één halve sessie met één gegeven antwoord die naar die oude opgaven verwees. Die rijen zijn niet aangeraakt; bij die oefening begint je kind de volgende keer een nieuwe ronde.
+
+**Gecontroleerd:**
+- Alle 630 gepubliceerde opgaven in de 41 wijzerklok-oefeningen voldoen aan de regels, met minstens 15 per oefening.
+- Als kind bekeken, zonder iets in te vullen: "Van wijzerklok naar digitale tijd", "Van digitale tijd naar wijzerklok" en "Schrijf de tijd digitaal".

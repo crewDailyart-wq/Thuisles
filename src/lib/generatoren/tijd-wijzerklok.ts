@@ -53,6 +53,7 @@ import {
 } from "@/lib/generatoren/soort";
 import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import {
+  DAGDEEL_ACHTER,
   DAGDEEL_LABEL,
   dagdeelVan,
   digitaal,
@@ -152,6 +153,59 @@ function alleTijden(inst: Instellingen, terugval: string[], urenVan24: boolean):
   const uren = urenVan24 ? 24 : 12;
   for (let u = 0; u < uren; u++) {
     for (const m of minuten(inst, terugval)) uit.push({ uur: urenVan24 ? u : u === 0 ? 12 : u, minuut: m });
+  }
+  return uit;
+}
+
+/**
+ * De tijden waar een wijzerklok het antwoord op kan zijn.
+ *
+ * Een wijzerklok laat geen ochtend of avond zien: zes uur 's ochtends en zes
+ * uur 's avonds zien er precies hetzelfde uit. Daarom alleen 12-uursnotatie,
+ * 01:00 tot en met 12:59, tenzij er een zinnetje met het dagdeel bij staat
+ * ("Het is 's avonds"). Alleen dan mogen het ook tijden van 13:00 en later
+ * zijn. Nooit 00:xx: middernacht is op de klok twaalf uur.
+ */
+function wijzertijden(inst: Instellingen, terugval: string[], metDagdeel: boolean): Tijd[] {
+  return metDagdeel
+    ? alleTijden(inst, terugval, true).filter((t) => t.uur !== 0)
+    : alleTijden(inst, terugval, false);
+}
+
+/** Het zinnetje met het dagdeel: "Het is 's avonds." */
+export function dagdeelZin(t: Tijd): string {
+  return `Het is ${DAGDEEL_ACHTER[dagdeelVan(t)]}.`;
+}
+
+/** Een tijd in minuten binnen een etmaal. */
+function inMin(t: Tijd): number {
+  return (((t.uur * 60 + t.minuut) % 1440) + 1440) % 1440;
+}
+
+/**
+ * Foute digitale tijden bij een wijzerklok: een uur ernaast, een half uur
+ * ernaast, een kwartier ernaast.
+ *
+ * Nooit de goede tijd plus of min twaalf uur: op een wijzerklok is dat
+ * dezelfde stand, dus zou die keuze ook goed zijn. Zonder dagdeel blijven ook
+ * de foute keuzes in 12-uursnotatie (01:00 tot en met 12:59), met dagdeel in
+ * 24-uursnotatie maar nooit 00:xx. Altijd geldige tijden: nooit 27:00.
+ */
+function digitaleValkuilen(t: Tijd, metDagdeel: boolean): string[] {
+  const goed = inMin(t);
+  const uit: string[] = [];
+  for (const schuif of [60, -60, 30, -30, 15, -15, 120, -120]) {
+    const m = (goed + schuif + 1440) % 1440;
+    if ((m - goed + 1440) % 720 === 0) continue;
+    let uur = Math.floor(m / 60);
+    const minuut = m % 60;
+    if (metDagdeel) {
+      if (uur === 0) continue;
+    } else {
+      uur = uur % 12 === 0 ? 12 : uur % 12;
+    }
+    const tekst = digitaal({ uur, minuut });
+    if (tekst !== digitaal(t) && !uit.includes(tekst)) uit.push(tekst);
   }
   return uit;
 }
@@ -394,7 +448,11 @@ export const klokaflezenGenerator: Generator = {
 
   /* Elke tijd twee keer: de tweede keer met andere foute keuzes. */
   maximum: (inst) =>
-    alleTijden(inst, ["heel"], tekst(inst, "antwoordsoort", "woorden") === "digitaal").length * 2,
+    wijzertijden(
+      inst,
+      ["heel"],
+      tekst(inst, "antwoordsoort", "woorden") === "digitaal" && vinkje(inst, "metDagdeel"),
+    ).length * 2,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
@@ -402,9 +460,10 @@ export const klokaflezenGenerator: Generator = {
     const metDeel = vinkje(inst, "metDagdeel");
     const uit: Gegenereerd[] = [];
 
+    /* 24-uurstijden alleen als het dagdeel erbij staat; zie `wijzertijden`. */
     for (const { item: t, variant } of metTweedeVariant(
       kans,
-      alleTijden(inst, ["heel"], soort === "digitaal"),
+      wijzertijden(inst, ["heel"], soort === "digitaal" && metDeel),
     )) {
       if (uit.length >= aantal) break;
       const handtekening = `klokaflezen:${soort}:${digitaal(t)}${variant ? ":2" : ""}`;
@@ -412,16 +471,7 @@ export const klokaflezenGenerator: Generator = {
       alGebruikt.add(handtekening);
 
       const alsTekst = (x: Tijd) => (soort === "digitaal" ? digitaal(x) : inWoorden(x));
-      const valkuilen =
-        soort === "digitaal"
-          ? [
-              /* Twaalf uur ernaast: de klassieke fout bij 24-uursnotatie. */
-              digitaal({ uur: t.uur + 12, minuut: t.minuut }),
-              digitaal({ uur: t.uur + 1, minuut: t.minuut }),
-              digitaal({ uur: t.uur, minuut: (t.minuut + 30) % 60 }),
-              digitaal({ uur: t.uur + 11, minuut: t.minuut }),
-            ]
-          : tijdvalkuilen(t);
+      const valkuilen = soort === "digitaal" ? digitaleValkuilen(t, metDeel) : tijdvalkuilen(t);
 
       const { keuzes, goed } = keuzelijst(
         kans,
@@ -437,7 +487,7 @@ export const klokaflezenGenerator: Generator = {
         handtekening,
         vorm: "open",
         vraagtekst: bepaalVraagtekst(klokaflezenGenerator, inst, groep, gegevens, {
-          zin: metDeel ? `Het is ${DAGDEEL_LABEL[dagdeelVan(t)]}.` : "",
+          zin: metDeel ? dagdeelZin(t) : "",
         }),
         antwoord: String(goed),
         figuur: {
@@ -606,7 +656,7 @@ export const klokkiezenGenerator: Generator = {
 
   maximum: (inst) => {
     const vraag = tekst(inst, "vraag", "woorden");
-    const tijden = alleTijden(inst, ["heel", "half"], vraag === "digitaal").length;
+    const tijden = alleTijden(inst, ["heel", "half"], false).length;
     return vraag === "verschuiving" ? tijden * sprongen(inst).length : tijden;
   },
 
@@ -618,7 +668,8 @@ export const klokkiezenGenerator: Generator = {
     const stap = wijzerstap(inst, ["heel", "half"]);
     const uit: Gegenereerd[] = [];
 
-    const tijden = alleTijden(inst, ["heel", "half"], vraag === "digitaal");
+    /* Ook de digitale tijd in de vraag in 12-uursnotatie: er staat geen dagdeel bij. */
+    const tijden = alleTijden(inst, ["heel", "half"], false);
     const reeks = tijdenMetSprong(kans, tijden, vraag === "verschuiving" ? stappen : [0]);
 
     for (const { t, sprong: schuif } of reeks) {
@@ -1014,14 +1065,14 @@ export const kloktypenGenerator: Generator = {
   aanpak: wijzerklokAanpak,
   uitleganimatie: wijzerklokUitleg,
 
-  maximum: (inst) => alleTijden(inst, ["heel", "half"], true).length,
+  maximum: (inst) => wijzertijden(inst, ["heel", "half"], vinkje(inst, "metDagdeel", true)).length,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const metDeel = vinkje(inst, "metDagdeel", true);
     const uit: Gegenereerd[] = [];
 
-    for (const t of husselen(kans, alleTijden(inst, ["heel", "half"], true))) {
+    for (const t of husselen(kans, wijzertijden(inst, ["heel", "half"], metDeel))) {
       if (uit.length >= aantal) break;
       const handtekening = `kloktypen:${digitaal(t)}`;
       if (alGebruikt.has(handtekening)) continue;
@@ -1035,9 +1086,16 @@ export const kloktypenGenerator: Generator = {
         handtekening,
         vorm: "open",
         vraagtekst: bepaalVraagtekst(kloktypenGenerator, inst, groep, gegevens, {
-          zin: metDeel ? `Het is ${DAGDEEL_LABEL[dagdeelVan(t)]}.` : "",
+          zin: metDeel ? dagdeelZin(t) : "",
         }),
-        antwoord: `${t.uur},${t.minuut}`,
+        /*
+          Zonder dagdeel is de tijd met twaalf uur verschil ook goed: op de
+          wijzerklok is zes uur net zo goed 18:00. Met dagdeel hoort het in
+          24-uursnotatie, want daar gaat de opdracht dan juist over.
+        */
+        antwoord: metDeel
+          ? `${t.uur},${t.minuut}`
+          : `${t.uur},${t.minuut}|${(t.uur + 12) % 24},${t.minuut}`,
         figuur: { soort: "kloktypen", uur: t.uur, minuut: t.minuut, metDagdeel: metDeel },
         somgegevens: gegevens,
       });

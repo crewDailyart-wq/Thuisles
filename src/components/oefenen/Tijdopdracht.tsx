@@ -72,7 +72,7 @@ import { Digitaleklok, Klok } from "@/components/oefenen/Klok";
 import { Jaarcirkel, Kalender } from "@/components/oefenen/Kalender";
 import { Sleepkaartjes } from "@/components/oefenen/Sleepkaartjes";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
-import { MAANDEN, plusDagen } from "@/lib/tijd";
+import { DAGDEEL_ACHTER, MAANDEN, dagdeelVan, plusDagen } from "@/lib/tijd";
 import {
   aantalVakjes,
   doeltijd,
@@ -310,19 +310,27 @@ export function Tijdopdracht({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metCursor]);
 
-  const juisteDelen = juist.split(",");
+  /*
+    Soms zijn er meer goede schrijfwijzen, met een liggend streepje ertussen:
+    bij een wijzerklok zonder dagdeel is zes uur ook 18:00. Het eerste is wat
+    het scherm na een fout als goed antwoord laat zien; goed is elk van de
+    schrijfwijzen die helemaal klopt.
+  */
+  const schrijfwijzen = juist.split("|").map((w) => w.split(","));
+  const juisteDelen = schrijfwijzen[0];
   const magLeeg = minutenMagLeeg(figuur);
 
   /** Wat er per vakje ingevuld staat, met een leeg minutenvakje als 0. */
   function gelezen(i: number): string {
     const w = getypt[i] ?? "";
     if (w === "" && magLeeg && i === 1) return "0";
-    return w;
+    return /^\d+$/.test(w) ? String(Number(w)) : w;
   }
 
   const uitslagen: ("goed" | "fout" | null)[] = !uit
     ? juisteDelen.map(() => null)
-    : juisteDelen.map((n, i) =>
+    : (schrijfwijzen.find((w) => w.every((n, i) => gelezen(i).toLowerCase() === n.toLowerCase())) ??
+        juisteDelen).map((n, i) =>
         gelezen(i).toLowerCase() === n.toLowerCase() ? "goed" : "fout",
       );
 
@@ -338,7 +346,10 @@ export function Tijdopdracht({
     const klaar = magLeeg
       ? nieuw[0] !== ""
       : nieuw.length === hoeveel && nieuw.every((w) => w !== "");
-    const waarden = nieuw.map((w, i) => (w === "" && magLeeg && i === 1 ? "0" : w));
+    /* "06" is gewoon 6: een getal met een nul ervoor telt net zo goed. */
+    const waarden = nieuw.map((w, i) =>
+      w === "" && magLeeg && i === 1 ? "0" : /^\d+$/.test(w) ? String(Number(w)) : w,
+    );
     onWijzig(klaar ? waarden.join(",") : "");
   }
 
@@ -747,13 +758,27 @@ export function Tijdopdracht({
 
   const keuzeKop = () => {
     if (figuur.soort === "klokaflezen" || figuur.soort === "klokvlek") {
-      return (
+      const klok = (
         <Klok
           tijd={{ uur: figuur.uur, minuut: figuur.minuut }}
           maat="groot"
           vlek={figuur.soort === "klokvlek" ? figuur.vlek : null}
         />
       );
+      /*
+        Een wijzerklok laat geen ochtend of avond zien. Moet het antwoord in
+        24-uursnotatie, dan staat het dagdeel er altijd bij, onder de klok —
+        niet alleen in de vraagzin, want die kan de beheerder aanpassen.
+      */
+      if (figuur.soort === "klokaflezen" && figuur.metDagdeel) {
+        return (
+          <div className="flex flex-col items-center gap-3">
+            {klok}
+            <Zin tekst={`Het is ${DAGDEEL_ACHTER[dagdeelVan({ uur: figuur.uur, minuut: figuur.minuut })]}.`} />
+          </div>
+        );
+      }
+      return klok;
     }
     if (
       figuur.soort === "dagdeel" ||

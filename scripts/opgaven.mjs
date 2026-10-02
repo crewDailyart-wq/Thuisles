@@ -405,6 +405,36 @@ for (const oefening of OEFENINGEN) {
       }
     }
 
+    /*
+      Bij een wijzerklok: geldige tijden, nooit de goede tijd plus of min twaalf
+      uur als foute keuze (op de klok is dat dezelfde stand), en zonder dagdeel
+      alleen 12-uursnotatie, 01:00 tot en met 12:59. Nooit 00:xx.
+    */
+    const f = vraag.figuur;
+    if (f && (f.soort === "klokaflezen" || f.soort === "kloktypen" || f.soort === "klokkiezen")) {
+      const metDeel = f.soort !== "klokkiezen" && f.metDagdeel === true;
+      const tijdOk = (u, m) => Number.isInteger(u) && u >= 1 && u <= (metDeel ? 23 : 12) && m >= 0 && m < 60;
+      if (f.soort === "klokkiezen" && f.vraag === "digitaal" && !tijdOk(f.uur, f.minuut)) {
+        fouten.push(`${waar}: de digitale tijd ${f.uur}:${f.minuut} hoort zonder dagdeel tussen 01:00 en 12:59.`);
+      }
+      if (f.soort !== "klokkiezen" && !tijdOk(f.uur, f.minuut)) {
+        fouten.push(`${waar}: de tijd ${f.uur}:${f.minuut} past niet bij een wijzerklok ${metDeel ? "met" : "zonder"} dagdeel.`);
+      }
+      if (f.soort === "klokaflezen" && f.antwoordsoort === "digitaal") {
+        const goedMin = f.uur * 60 + f.minuut;
+        for (const k of f.keuzes) {
+          const [u, m] = k.split(":").map(Number);
+          if (!tijdOk(u, m)) fouten.push(`${waar}: de keuze ${k} is geen geldige tijd ${metDeel ? "met" : "zonder"} dagdeel.`);
+          if (k !== f.keuzes[f.goed] && ((u * 60 + m - goedMin + 1440) % 720 === 0)) {
+            fouten.push(`${waar}: de keuze ${k} is op de wijzerklok dezelfde stand als het goede antwoord.`);
+          }
+        }
+      }
+      if (f.soort === "kloktypen" && !metDeel && !isGoed(vraag, `${(f.uur + 12) % 24},${f.minuut}`)) {
+        fouten.push(`${waar}: zonder dagdeel hoort ook de tijd met twaalf uur verschil goed te zijn.`);
+      }
+    }
+
     /* Bij Geld net zo: het scherm rekent het antwoord zelf uit de tekening. */
     if (isGeldfiguur(vraag.figuur)) {
       const vanHetScherm = geldAntwoord(vraag.figuur);
