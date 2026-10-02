@@ -40,16 +40,35 @@ type Plek = "voorraad" | number;
 export function Sleepkaartjes({
   regels,
   keuzes,
+  keuzeLabels,
+  grootVak = false,
   fase,
   uit,
   uitslagen,
   goedeKeuzes,
   onWijzig,
 }: {
-  /** Wat er links staat, van boven naar beneden. */
-  regels: string[];
+  /**
+   * Wat er links staat, van boven naar beneden.
+   *
+   * Een som als tekst bij Tafels en Delen, een getekende klok bij Tijd. Daarom
+   * geen tekst maar wat er maar getekend kan worden.
+   */
+  regels: React.ReactNode[];
   /** De kaartjes, in de volgorde waarin ze klaarliggen. */
-  keuzes: string[];
+  keuzes: React.ReactNode[];
+  /**
+   * Hoe elk kaartje heet, voor wie het scherm laat voorlezen.
+   *
+   * Staat een som als tekst op het kaartje, dan is dat genoeg en mag dit weg;
+   * bij een getekende klok valt er niets voor te lezen en hoort hier de tijd.
+   */
+  keuzeLabels?: string[];
+  /**
+   * Vakjes die meteen hoog genoeg zijn voor een kaartje met een getekende
+   * klok. Anders springt het vakje groter zodra het kaartje erin valt.
+   */
+  grootVak?: boolean;
   fase: Fase;
   uit: boolean;
   uitslagen: ("goed" | "fout" | null)[];
@@ -158,10 +177,11 @@ export function Sleepkaartjes({
       key={nummer}
       type="button"
       disabled={uit}
-      aria-label={`Kaartje ${keuzes[nummer]}`}
+      aria-label={`Kaartje ${keuzeLabels?.[nummer] ?? String(keuzes[nummer])}`}
       onPointerDown={(e) => pak(e, nummer)}
-      className={`rounded-2xl border-2 border-geel bg-geel-zacht px-3 py-2 text-lg font-extrabold tabular-nums text-inkt transition [touch-action:none] disabled:cursor-not-allowed ${
-        inVak ? "size-full" : ""
+      className={`grid place-items-center rounded-2xl border-2 border-geel bg-geel-zacht text-lg font-extrabold tabular-nums text-inkt transition [touch-action:none] disabled:cursor-not-allowed ${
+        /* In het vakje minder rand, zodat ook een getekende klok erin past. */
+        inVak ? "size-full px-1 py-1" : "px-3 py-2"
       } ${bezig?.nummer === nummer ? "opacity-30" : ""}`}
     >
       {keuzes[nummer]}
@@ -197,7 +217,7 @@ export function Sleepkaartjes({
                   : "border-rand bg-kaart";
           return (
             <div key={rij} className="col-span-2 grid grid-cols-subgrid items-center">
-              <span className="text-right text-xl font-extrabold tabular-nums text-inkt">
+              <span className="flex items-center justify-end text-right text-xl font-extrabold tabular-nums text-inkt">
                 {regel}
               </span>
               <span className="flex items-center gap-2">
@@ -205,14 +225,14 @@ export function Sleepkaartjes({
                   ref={(el) => {
                     vakken.current[rij] = el;
                   }}
-                  className={`grid h-12 min-w-24 place-items-center rounded-2xl border-2 transition [touch-action:none] ${rand}`}
+                  className={`grid ${grootVak ? "min-h-30" : "min-h-14"} min-w-32 place-items-center rounded-2xl border-2 p-1 transition [touch-action:none] ${rand}`}
                 >
                   {welke >= 0 ? kaart(welke, true) : null}
                 </div>
                 {/* Pas na Controleer: welk kaartje het had moeten zijn. */}
                 {uit && uitslag === "fout" && (
                   <span className="text-sm font-extrabold text-groen-diep">
-                    {keuzes[goedeKeuzes[rij]]}
+                    {keuzeLabels?.[goedeKeuzes[rij]] ?? keuzes[goedeKeuzes[rij]]}
                   </span>
                 )}
                 {uit && uitslag === "goed" && (
@@ -251,8 +271,8 @@ export function Sleepkaartjes({
       {bezig && zweef && (
         <span
           aria-hidden="true"
-          className="pointer-events-none fixed z-[70] rounded-2xl border-2 border-geel bg-geel-zacht px-3 py-2 text-lg font-extrabold tabular-nums text-inkt shadow-op"
-          style={{ left: zweef.x - 40, top: zweef.y - 24 }}
+          className="pointer-events-none fixed z-[70] grid place-items-center rounded-2xl border-2 border-geel bg-geel-zacht px-3 py-2 text-lg font-extrabold tabular-nums text-inkt shadow-op"
+          style={{ left: zweef.x - 40, top: zweef.y - 28 }}
         >
           {keuzes[bezig.nummer]}
         </span>

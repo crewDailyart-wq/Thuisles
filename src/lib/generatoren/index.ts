@@ -61,6 +61,38 @@ import {
   marktkraamGenerator,
   welkekeersomGenerator,
 } from "@/lib/generatoren/tafelsommen";
+/* Het domein Tijd: de wijzerklok, de digitale klok, dagen, maanden en de kalender. */
+import {
+  dagdeelGenerator,
+  klokaflezenGenerator,
+  klokduurGenerator,
+  klokkiezenGenerator,
+  klokkloptGenerator,
+  klokkoppelenGenerator,
+  klokkenvolgordeGenerator,
+  kloktypenGenerator,
+  klokvlekGenerator,
+  klokzettenGenerator,
+  urenminutenGenerator,
+  wijzeraanwijzenGenerator,
+} from "@/lib/generatoren/tijd-wijzerklok";
+import {
+  digitaalaflezenGenerator,
+  digitaaldagdeelGenerator,
+  digitaaldelenGenerator,
+  digitaalverschilGenerator,
+} from "@/lib/generatoren/tijd-digitaal";
+import {
+  dagenaanvullenGenerator,
+  dagvraagGenerator,
+  kalenderaantalGenerator,
+  kalenderdagGenerator,
+  kalenderdatumGenerator,
+  kalendernachtjesGenerator,
+  kalenderzoekGenerator,
+  maandenaanvullenGenerator,
+  maandvraagGenerator,
+} from "@/lib/generatoren/tijd-kalender";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -81,6 +113,33 @@ export const alleGeneratoren: Generator[] = [
   deelsomGenerator,
   deelkoppelenGenerator,
   welkedeelsomGenerator,
+  /* Tijd: eerst de uren en de dagdelen, dan de wijzerklok, dan de digitale. */
+  urenminutenGenerator,
+  dagdeelGenerator,
+  wijzeraanwijzenGenerator,
+  klokaflezenGenerator,
+  klokkloptGenerator,
+  klokkiezenGenerator,
+  klokzettenGenerator,
+  klokkoppelenGenerator,
+  klokkenvolgordeGenerator,
+  kloktypenGenerator,
+  klokduurGenerator,
+  klokvlekGenerator,
+  digitaaldelenGenerator,
+  digitaaldagdeelGenerator,
+  digitaalaflezenGenerator,
+  digitaalverschilGenerator,
+  /* Tijd: de dagen, de maanden en de kalender. */
+  dagvraagGenerator,
+  dagenaanvullenGenerator,
+  maandvraagGenerator,
+  maandenaanvullenGenerator,
+  kalenderdagGenerator,
+  kalenderzoekGenerator,
+  kalenderaantalGenerator,
+  kalenderdatumGenerator,
+  kalendernachtjesGenerator,
   optellenGenerator,
   aftrekkenGenerator,
   splitsenGenerator,

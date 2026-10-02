@@ -67,6 +67,25 @@ tabel, een klok, een kalender of geld erin.
 - **Elk antwoord moet te typen zijn.** Een invulvakje neemt hoogstens drie
   cijfers, dus een opdracht mag geen antwoord boven de 999 opleveren. Laat de
   generator zulke combinaties weg in plaats van het vakje te verruimen.
+- **Een pijl tussen twee dingen staat nooit in een `flex-wrap`.** Breekt de
+  rij af, dan valt het tweede ding naar de volgende regel en blijft de pijl
+  naast het eerste hangen, wijzend naar niets. Kies zelf: naast elkaar met →
+  als alles op één regel past, anders onder elkaar met ↓. Meet dat aan het vak
+  (`@container`), niet aan het scherm: het voorbeeld in de admin is smal op een
+  breed scherm. Zie "Tijd vooruit en tijd terug" in `Tijdopdracht.tsx`.
+- **Een rij die je in volgorde leest, breekt ook niet af.** Vier vakjes die
+  over twee regels verspringen, worden een blokje van twee bij twee, en dan is
+  niet meer te zien wat eerst komt. Eén rij als het past, anders onder elkaar.
+- **Een wijzer loopt niet door de cijfers van de klok.** De grote wijzer houdt
+  op vóór de binnenkant van de cijfers, de kleine is duidelijk korter. Een vlek
+  die cijfers of een wijzer bedekt, ligt op het cijfer zelf en houdt afstand
+  van de wijzers die zichtbaar moeten blijven.
+- **Wat op een sleepkaartje staat, past in het vakje waar het heen moet.** Een
+  getekende klok of een digitale tijd op een kaartje krijgt een kleine maat, en
+  het vakje is meteen groot genoeg: het springt niet groter als het kaartje
+  erin valt.
+- **Twee kalenders staan in de volgorde van de tijd.** Gaat de vraag terug over
+  de maandgrens, dan staat de vorige maand erbij, niet de volgende.
 - **Nakijken op een smal scherm hoort erbij.** Loop een nieuwe opdracht na op
   ongeveer 375 px breed: past de hele opdracht, van vraagzin tot en met
   Controleer, zonder dat er iets over elkaar valt of buiten de kaart hangt?

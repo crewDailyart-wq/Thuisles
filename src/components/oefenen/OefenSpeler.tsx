@@ -59,6 +59,7 @@ import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdra
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
+import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1715,6 +1716,26 @@ function Antwoordvelden({
   if (vraag.vorm === "open" && isKeerfiguur(vraag.figuur)) {
     return (
       <Keeropdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+      />
+    );
+  }
+
+  /*
+    De opdrachten van het domein Tijd. Eén waarde per vakje met komma's
+    ertussen, net als bij de andere domeinen: bij "hoe lang duurt het" de uren
+    en de minuten, bij een keuze het nummer van de knop, bij het koppelen per
+    klok het nummer van de tijd, en bij het aanvullen het ontbrekende woord.
+  */
+  if (vraag.vorm === "open" && isTijdfiguur(vraag.figuur)) {
+    return (
+      <Tijdopdracht
         key={vraag.id}
         figuur={vraag.figuur}
         antwoord={antwoord}

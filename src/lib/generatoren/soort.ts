@@ -746,6 +746,274 @@ export type Figuur =
       waren: { naam: string; prijs: number; aantal: number }[];
       /** Waarmee er betaald wordt, of null: dan is de vraag het totaal. */
       betaald: number | null;
+    }
+  // -------------------------------------------------------------------------
+  // Het domein Tijd
+  // -------------------------------------------------------------------------
+  | {
+      /**
+       * Hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten.
+       *
+       * De zin staat in de figuur en niet in de vraagtekst, want hij hoort bij
+       * deze ene opgave: "een half uur", "de helft van 20 minuten". `eenheid`
+       * is het woord achter het invulvakje.
+       */
+      soort: "urenminuten";
+      zin: string;
+      uitkomst: number;
+      eenheid: string;
+    }
+  | {
+      /** Een digitale tijd, en het kind kiest het dagdeel uit vier. */
+      soort: "dagdeel";
+      uur: number;
+      minuut: number;
+      keuzes: string[];
+      /** Het nummer van de knop die goed is; de keuzes staan door elkaar. */
+      goed: number;
+    }
+  | {
+      /**
+       * Een wijzerklok aflezen; het kind kiest uit vier antwoorden.
+       *
+       * `antwoordsoort` is "woorden" ("half drie") of "digitaal" ("14:30"). Bij
+       * de digitale stand staat het dagdeel erbij, want zonder dat valt 8 uur
+       * 's ochtends niet van 8 uur 's avonds te onderscheiden.
+       */
+      soort: "klokaflezen";
+      uur: number;
+      minuut: number;
+      antwoordsoort: string;
+      metDagdeel: boolean;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /**
+       * Welke klok hoort erbij? Vier klokken om uit te kiezen.
+       *
+       * `vraag` zegt wat er boven staat: "woorden" (de tijd in woorden),
+       * "digitaal" (een digitale tijd) of "verschuiving" (een klok met een zin
+       * als "Over 2 uur ga je naar huis").
+       */
+      soort: "klokkiezen";
+      vraag: string;
+      /** De tijd waar het om gaat; bij "verschuiving" is dit de begintijd. */
+      uur: number;
+      minuut: number;
+      /** Hoeveel minuten later, alleen bij "verschuiving". */
+      stap: number;
+      zin: string;
+      keuzes: { uur: number; minuut: number }[];
+    }
+  | {
+      /**
+       * Het kind zet zelf de wijzers.
+       *
+       * `opdracht` is "tijd" (zet de klok op zes uur) of "verschuiving" (een
+       * klok staat er al, zet hem zoveel later of eerder). `stap` zegt hoe fijn
+       * de grote wijzer mag staan: 30 voor halve uren, 15 voor kwartieren.
+       */
+      soort: "klokzetten";
+      opdracht: string;
+      uur: number;
+      minuut: number;
+      /** Hoeveel minuten vooruit of terug; 0 bij de stand "tijd". */
+      schuif: number;
+      zin: string;
+      stap: number;
+      /** Waar de wijzers staan voordat het kind ze verzet. Ontbreekt: twaalf uur. */
+      begin?: { uur: number; minuut: number };
+    }
+  | {
+      /** Drie wijzerklokken met de digitale tijden eronder te slepen. */
+      soort: "klokkoppelen";
+      klokken: { uur: number; minuut: number }[];
+      keuzes: { uur: number; minuut: number }[];
+    }
+  | {
+      /** Vier klokken van vroeg naar laat slepen. */
+      soort: "klokkenvolgorde";
+      klokken: { uur: number; minuut: number }[];
+    }
+  | {
+      /** Een klok en het dagdeel; het kind typt de tijd in twee vakjes. */
+      soort: "kloktypen";
+      uur: number;
+      minuut: number;
+      metDagdeel: boolean;
+    }
+  | {
+      /** Tik op de wijzer die gevraagd wordt: die van de uren of die van de minuten. */
+      soort: "wijzeraanwijzen";
+      uur: number;
+      minuut: number;
+      gevraagd: string;
+    }
+  | {
+      /** Een klok met een zin erbij; klopt het? Ja of nee. */
+      soort: "klokklopt";
+      uur: number;
+      minuut: number;
+      bewering: string;
+      klopt: boolean;
+    }
+  | {
+      /**
+       * Hoe lang duurt het? Een klok met de begintijd en een zin met de eindtijd.
+       *
+       * Het kind typt het antwoord in twee vakjes: ▢ uur ▢ minuten. `richting`
+       * is "duur" (vooruit) of "geleden" (terug); bij "geleden" staat de latere
+       * tijd op de klok.
+       */
+      soort: "klokduur";
+      uur: number;
+      minuut: number;
+      /** De andere tijd, uit de zin. */
+      andereUur: number;
+      andereMinuut: number;
+      richting: string;
+      zin: string;
+    }
+  | {
+      /** Een digitale klok; tik op het urendeel of het minutendeel. */
+      soort: "digitaaldelen";
+      uur: number;
+      minuut: number;
+      gevraagd: string;
+      /** Staat er eerst een korte uitleg bij? */
+      metUitleg: boolean;
+    }
+  | {
+      /** Een korte situatie met een digitale klok; kies de tijd met het dagdeel. */
+      soort: "digitaaldagdeel";
+      uur: number;
+      minuut: number;
+      zin: string;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /** Een digitale tijd aflezen; het kind kiest uit vier antwoorden in woorden. */
+      soort: "digitaalaflezen";
+      uur: number;
+      minuut: number;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /**
+       * Twee digitale klokken; hoeveel tijd zit ertussen?
+       *
+       * Het kind typt ▢ uur ▢ minuten. Is het verschil hele uren, dan mag het
+       * minutenvakje leeg blijven; leeg telt als 0 en is goed.
+       */
+      soort: "digitaalverschil";
+      eersteUur: number;
+      eersteMinuut: number;
+      tweedeUur: number;
+      tweedeMinuut: number;
+      richting: string;
+    }
+  | {
+      /** Een wijzerklok met een vlek erop; kies de tijd uit vier antwoorden. */
+      soort: "klokvlek";
+      uur: number;
+      minuut: number;
+      keuzes: string[];
+      goed: number;
+      vlek: { hoek: number; afstand: number; grootte: number; kleur: string };
+    }
+  | {
+      /** Een vraag over de dagen van de week; het kind kiest uit drie. */
+      soort: "dagvraag";
+      zin: string;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /**
+       * Een rij dagen met gaten; het kind typt de ontbrekende dagen.
+       *
+       * `rij` bevat de dagen op hun plek; `null` is een gat. Het antwoord is wat
+       * er in de gaten hoort, van links naar rechts.
+       */
+      soort: "dagenaanvullen";
+      rij: (string | null)[];
+      /** Wat er in de gaten hoort, van links naar rechts. */
+      ontbreekt: string[];
+    }
+  | {
+      /** Een vraag over de maanden van het jaar; het kind kiest uit drie. */
+      soort: "maandvraag";
+      zin: string;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /** Een rij maanden met één gat; met of zonder de jaarcirkel als hulp. */
+      soort: "maandenaanvullen";
+      rij: (string | null)[];
+      ontbreekt: string[];
+      jaarcirkel: boolean;
+    }
+  | {
+      /**
+       * Een maandkalender met een vraag over een weekdag.
+       *
+       * `dag` is de datum waar het om gaat, `schuif` hoeveel dagen vooruit of
+       * terug. Het kind kiest de weekdag uit vier.
+       */
+      soort: "kalenderdag";
+      jaar: number;
+      maand: number;
+      dag: number;
+      schuif: number;
+      zin: string;
+      keuzes: string[];
+      goed: number;
+    }
+  | {
+      /** Tik de gevraagde dag aan in de kalender; het antwoord is de datum. */
+      soort: "kalenderzoek";
+      jaar: number;
+      maand: number;
+      zin: string;
+      juisteDag: number;
+    }
+  | {
+      /** Hoeveel dagen of hoeveel zondagen heeft deze maand? Het kind typt het getal. */
+      soort: "kalenderaantal";
+      jaar: number;
+      maand: number;
+      zin: string;
+      uitkomst: number;
+    }
+  | {
+      /**
+       * Welke datum is het dan? Het kind kiest uit vier datums.
+       *
+       * Bij een verschuiving over de maandgrens staan er twee kalenders naast
+       * elkaar: deze maand en de volgende.
+       */
+      soort: "kalenderdatum";
+      jaar: number;
+      maand: number;
+      dag: number;
+      schuif: number;
+      zin: string;
+      keuzes: string[];
+      goed: number;
+      tweedeMaand: boolean;
+    }
+  | {
+      /** Hoeveel nachtjes nog slapen? Het kind typt het getal. */
+      soort: "kalendernachtjes";
+      jaar: number;
+      maand: number;
+      dag: number;
+      doel: number;
+      zin: string;
     };
 
 // ---------------------------------------------------------------------------
@@ -965,6 +1233,33 @@ export function husselen<T>(kans: () => number, lijst: T[]): T[] {
     [uit[i], uit[j]] = [uit[j], uit[i]];
   }
   return uit;
+}
+
+/**
+ * Elke opgave één keer, en daarna nog eens in een tweede variant.
+ *
+ * Voor oefeningen waar maar twaalf vragen bestaan — de hele uren, de maanden —
+ * terwijl een ronde er vijftien telt, zonder dubbele. Eerst komt elke vraag in
+ * variant 0, in willekeurige volgorde; pas als die op zijn, volgen dezelfde
+ * vragen in variant 1: andere foute keuzes, een andere plek voor de vlek, een
+ * andere beginstand van de wijzers. Wat een variant precies is, bepaalt de
+ * generator zelf.
+ */
+export function metTweedeVariant<T>(
+  kans: () => number,
+  lijst: T[],
+): { item: T; variant: 0 | 1 }[] {
+  return [
+    ...husselen(kans, lijst).map((item) => ({ item, variant: 0 as const })),
+    ...husselen(kans, lijst).map((item) => ({ item, variant: 1 as const })),
+  ];
+}
+
+/** Een lijst een plek doorgeschoven: [a, b, c] wordt [b, c, a]. */
+export function doorgeschoven<T>(lijst: T[], stappen: number): T[] {
+  if (lijst.length === 0) return lijst;
+  const n = stappen % lijst.length;
+  return [...lijst.slice(n), ...lijst.slice(0, n)];
 }
 
 export function getal(inst: Instellingen, sleutel: string, terugval: number): number {

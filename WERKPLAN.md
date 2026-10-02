@@ -182,9 +182,23 @@ in `scripts/opgaven.mjs`.
 | 1 | Boodschappen op de markt | ● | Ziet een kraampje met twee of drie producten en prijzen in hele euro's — een zak appels € 3, een brood € 2 — en rekent uit wat bijvoorbeeld 4 zakken appels en 2 broden samen kosten: € ▢. |
 | 2 | Wisselgeld op de markt | ●● | Hetzelfde kraampje, met erbij: "Je betaalt met € 20. Hoeveel krijg je terug?" € ▢. |
 
-## Groep 4 – Tijd
+## Groep 4 – Tijd — KLAAR
 
-Nog te bouwen. De basisversie zijn gewone opdrachten; beeld komt later.
+De code staat er, voor alle zes onderwerpen: 78 titels. De basisversie zijn
+gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
+ronde zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
+De instellingen per titel staan in `scripts/opgaven.mjs`.
+
+Waar er maar twaalf vragen bestaan — twaalf hele uren, twaalf maanden — komt
+elke vraag een tweede keer terug in een andere vorm, zodat een ronde toch op
+vijftien verschillende opgaven uitkomt: met andere foute keuzes, met de vlek
+op een andere plek, of met de wijzers die ergens anders beginnen.
+
+Bij "hoeveel tijd ertussen" mag het minutenvakje leeg blijven als het verschil
+hele uren is; leeg telt als 0 en is goed.
+
+De inhoud van de database — de leerdoelen met deze titels, hun sjablonen en hun
+vragen — maakt de eigenaar aan (HARDE REGEL 2).
 
 ### Onderwerp 1 — Wijzerklok en digitale klok
 
@@ -257,7 +271,7 @@ van een uur of een half uur van de begintijd naar de eindtijd gaat.
 
 ### Onderwerp 3 — Digitale klok
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
@@ -268,7 +282,8 @@ Algemene regels voor dit onderwerp:
   tussen.
 - Bij Later en Eerder ziet het kind twee klokken en typt het antwoord in twee
   vakjes: ▢ uur ▢ minuten, met een knop Controleren. Gewoon typen, geen
-  getallenpad op het scherm.
+  getallenpad op het scherm. Is het verschil hele uren, dan typt het kind 0
+  bij de minuten; een leeg minutenvakje telt ook als 0 en is goed.
 - Bij Later en Eerder mogen 24-uurstijden voorkomen, bijvoorbeeld 18:30.
 
 #### Aflezen
@@ -287,11 +302,11 @@ Algemene regels voor dit onderwerp:
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Hoeveel tijd later? Hele uren | ●○○○○ | Bijvoorbeeld 18:00 en 21:00. |
-| 2 | Hoeveel tijd later? Hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 06:45 en 08:45. |
-| 3 | Hoeveel tijd later? Halve uren | ●●●○○ | Bijvoorbeeld 05:10 en 07:40. |
-| 4 | Hoeveel tijd later? Over het hele uur heen | ●●●●○ | Bijvoorbeeld 05:50 en 08:20. |
-| 5 | Hoeveel tijd later? Kwartieren | ●●●●● | Bijvoorbeeld 04:20 en 07:50. |
+| 1 | Tijd vooruit: hele uren | ●○○○○ | Bijvoorbeeld 18:00 en 21:00. |
+| 2 | Tijd vooruit: hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 06:45 en 08:45. |
+| 3 | Tijd vooruit: halve uren | ●●●○○ | Bijvoorbeeld 05:10 en 07:40. |
+| 4 | Tijd vooruit: over het hele uur heen | ●●●●○ | Bijvoorbeeld 05:50 en 08:20. |
+| 5 | Tijd vooruit: kwartieren | ●●●●● | Bijvoorbeeld 04:20 en 07:50. |
 
 #### Eerder
 
@@ -300,15 +315,15 @@ de latere tijd.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Hoeveel tijd eerder? Hele uren | ●○○○○ | Bijvoorbeeld 21:00 en 19:00. |
-| 2 | Hoeveel tijd eerder? Hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 18:30 en 16:30. |
-| 3 | Hoeveel tijd eerder? Halve uren | ●●●○○ | Bijvoorbeeld 07:40 en 05:10. |
-| 4 | Hoeveel tijd eerder? Over het hele uur heen | ●●●●○ | Bijvoorbeeld 07:45 en 05:15. |
-| 5 | Hoeveel tijd eerder? Kwartieren | ●●●●● | Bijvoorbeeld 07:50 en 04:20. |
+| 1 | Tijd terug: hele uren | ●○○○○ | Bijvoorbeeld 21:00 en 19:00. |
+| 2 | Tijd terug: hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 18:30 en 16:30. |
+| 3 | Tijd terug: halve uren | ●●●○○ | Bijvoorbeeld 07:40 en 05:10. |
+| 4 | Tijd terug: over het hele uur heen | ●●●●○ | Bijvoorbeeld 07:45 en 05:15. |
+| 5 | Tijd terug: kwartieren | ●●●●● | Bijvoorbeeld 07:50 en 04:20. |
 
 ### Onderwerp 4 — Wijzerklok met vlekken
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
@@ -336,7 +351,7 @@ Algemene regels voor dit onderwerp:
 
 ### Onderwerp 5 — Maanden en dagen
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
@@ -368,7 +383,7 @@ Algemene regels voor dit onderwerp:
 
 ### Onderwerp 6 — Kalender
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 

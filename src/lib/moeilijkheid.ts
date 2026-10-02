@@ -87,6 +87,21 @@ function deeltafelpunten(inst: Instellingen): number {
 }
 
 /**
+ * Hoe zwaar de minutengroepen van een klok-oefening wegen.
+ *
+ * De leerlijn van de klok: eerst het hele uur, dan het halve, dan de
+ * kwartieren, dan vijf over en voor, en als laatste elke minuut. De zwaarste
+ * groep die meedoet bepaalt de moeilijkheid — "hele en halve uren door elkaar"
+ * is net zo moeilijk als alleen halve uren, want het halve uur is de stap die
+ * een kind moet zetten.
+ */
+function tijdpunten(inst: Instellingen, tabel: Record<string, number>, terugval: string[]): number {
+  const gekozen = lijst(inst, "tijden", terugval).filter((g) => g in tabel);
+  const groepen = gekozen.length ? gekozen : terugval;
+  return Math.max(...groepen.map((g) => tabel[g] ?? 0));
+}
+
+/**
  * Hoe zwaar een stel tafels weegt bij de keersommen.
  *
  * Twee dingen tellen mee, en dat moet ook: "Tafels van 1 tot en met 5" is iets
@@ -448,6 +463,156 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = vinkje(inst, "wisselgeld") ? 2 : 0;
       break;
 
+    /*
+      ---------------------------------------------------------------------------
+      Het domein Tijd
+      ---------------------------------------------------------------------------
+      Deze types rekenen niet met een bereik maar met de klok, de dagen of de
+      kalender, dus wordt de basis hier overschreven in plaats van opgeteld.
+      Bij de klok bepaalt de zwaarste minutengroep bijna alles: hele uren
+      aflezen is een andere oefening dan vijf voor en tien over.
+    */
+    case "urenminuten":
+      p = 1;
+      break;
+
+    case "dagdeel":
+      p = 1;
+      break;
+
+    case "wijzeraanwijzen":
+      p = 1;
+      break;
+
+    case "klokaflezen":
+      /*
+        Een digitaal antwoord in 24-uursnotatie is een eigen stap: het kind moet
+        er twaalf bij optellen én het dagdeel meewegen. Dat weegt zwaarder dan
+        welke minutengroep er ook in zit, dus gaat het daar vóór.
+      */
+      p = vinkje(inst, "metDagdeel") || tekst(inst, "antwoordsoort", "woorden") === "digitaal"
+        ? 4
+        : tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]);
+      break;
+
+    case "klokklopt":
+      p = 2;
+      break;
+
+    case "klokkiezen":
+      p =
+        tekst(inst, "vraag", "woorden") === "verschuiving"
+          ? 2
+          : tekst(inst, "vraag", "woorden") === "digitaal"
+            ? 6
+            : tijdpunten(inst, { heel: 2, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, [
+                "heel",
+                "half",
+              ]);
+      break;
+
+    case "klokzetten":
+      p =
+        tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]) +
+        (tekst(inst, "opdracht", "tijd") === "verschuiving" &&
+        tekst(inst, "richting", "vooruit") === "terug"
+          ? 2
+          : 0);
+      break;
+
+    case "klokkoppelen":
+    case "klokkenvolgorde":
+      p = 6;
+      break;
+
+    case "kloktypen":
+      p = 8;
+      break;
+
+    case "klokduur":
+      p =
+        bij(tekst(inst, "stap", "heel"), { heel: 0, half: 2, kwartier: 6, gemengd: 8 }) +
+        (vinkje(inst, "over12") ? 4 : 0) +
+        (tekst(inst, "richting", "duur") === "beide" ? 2 : 0);
+      break;
+
+    case "klokvlek":
+      p =
+        tijdpunten(inst, { heel: 0, half: 2, kwartier: 4, vijf: 8, minuut: 8 }, ["heel"]) +
+        /* Een vlek over de wijzer is zwaarder dan een vlek over de cijfers. */
+        bij(tekst(inst, "vlek", "cijfers"), { cijfers: 0, wijzer: 2, groot: 4 }) +
+        /* Drie minutengroepen door elkaar is "gemengd"; dat telt extra. */
+        (lijst(inst, "tijden", ["heel"]).length >= 3 ? 2 : 0);
+      break;
+
+    /* De digitale klok: aflezen loopt op met de minuten, verschil met de stand. */
+    case "digitaaldelen":
+      p = 2;
+      break;
+
+    case "digitaaldagdeel":
+      p = 2;
+      break;
+
+    case "digitaalaflezen":
+      p = tijdpunten(inst, { heel: 2, half: 4, kwartier: 5, vijf: 6, minuut: 8 }, ["heel"]);
+      break;
+
+    case "digitaalverschil":
+      p = bij(tekst(inst, "stand", "heleUren"), {
+        heleUren: 0,
+        andereMinuten: 2,
+        halveUren: 4,
+        overHeelUur: 6,
+        kwartieren: 8,
+      });
+      break;
+
+    /* De dagen, de maanden en de kalender. */
+    case "dagvraag":
+      p = tekst(inst, "stand", "volgorde") === "ervoorerna" ? 4 : 1;
+      break;
+
+    case "dagenaanvullen":
+      p = 1;
+      break;
+
+    case "maandvraag":
+      p = bij(tekst(inst, "stand", "erna"), {
+        erna: 0,
+        volgorde: 2,
+        nummer: 2,
+        ervoorerna: 6,
+        jaargrens: 8,
+      });
+      break;
+
+    case "maandenaanvullen":
+      p = 4;
+      break;
+
+    case "kalenderdag":
+      p = getal(inst, "maxSchuif", 0) >= 2 ? 6 : 1;
+      break;
+
+    case "kalenderzoek":
+    case "kalenderaantal":
+      p = 2;
+      break;
+
+    case "kalenderdatum":
+      p = bij(tekst(inst, "stand", "dag"), {
+        dag: 2,
+        tweedagen: 4,
+        week: 4,
+        maandgrens: 8,
+      });
+      break;
+
+    case "kalendernachtjes":
+      p = 6;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;
@@ -524,6 +689,33 @@ export const TYPEVOLGORDE = [
   "deelsom",
   "deelkoppelen",
   "welkedeelsom",
+  /* Het domein Tijd: eerst de uren en de dagdelen, dan de klok. */
+  "urenminuten",
+  "dagdeel",
+  "wijzeraanwijzen",
+  "klokaflezen",
+  "klokklopt",
+  "klokkiezen",
+  "klokzetten",
+  "klokkoppelen",
+  "klokkenvolgorde",
+  "kloktypen",
+  "klokduur",
+  "klokvlek",
+  "digitaaldelen",
+  "digitaaldagdeel",
+  "digitaalaflezen",
+  "digitaalverschil",
+  /* En de dagen, de maanden en de kalender. */
+  "dagvraag",
+  "dagenaanvullen",
+  "maandvraag",
+  "maandenaanvullen",
+  "kalenderdag",
+  "kalenderzoek",
+  "kalenderaantal",
+  "kalenderdatum",
+  "kalendernachtjes",
 ] as const;
 
 /** Het plaatsnummer van een type; types zonder eigen plek komen erachter. */
