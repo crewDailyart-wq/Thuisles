@@ -10,6 +10,7 @@ import { useRef, useState } from "react";
 import { bewerkDomein, nieuwSubdomein, wegDomein } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
+import { SeoPaneel } from "@/components/beheer/SeoPaneel";
 import type { Domein, Subdomein, Vak } from "@/lib/types";
 
 export function DomeinDetail({
@@ -17,11 +18,17 @@ export function DomeinDetail({
   domein,
   subdomeinen,
   cijfers,
+  seo,
+  seoAdres,
 }: {
   vak: Vak;
   domein: Domein;
   subdomeinen: Subdomein[];
   cijfers: Record<string, { leerdoelen: number; vragen: number; leeg: number }>;
+  /** De paginatitel en beschrijving van de openbare pagina; leeg = standaard. */
+  seo: { titel: string; omschrijving: string };
+  /** Het openbare adres van dit domein, zoals het nu is. */
+  seoAdres: string;
 }) {
   const { doe, bezig, fout } = useActie();
   const [bewerken, setBewerken] = useState(false);
@@ -199,6 +206,17 @@ export function DomeinDetail({
           </form>
         )}
       </Paneel>
+
+      {/* De openbare pagina van dit domein: titel en beschrijving voor Google. */}
+      <SeoPaneel
+        soort="domein"
+        id={domein.id}
+        naam={domein.naam}
+        groep={null}
+        openbaarAdres={seoAdres}
+        titel={seo.titel}
+        omschrijving={seo.omschrijving}
+      />
     </div>
   );
 }

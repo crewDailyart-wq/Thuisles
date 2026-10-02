@@ -8,6 +8,8 @@ import {
   zoekSubdomein,
 } from "@/lib/data/structuur";
 import { haalLeerdoelen as haalMetTelling } from "@/lib/data/vragen";
+import { haalSeoteksten } from "@/lib/data/openbaar";
+import { naarAdresdeel, openbaarAdres } from "@/lib/seo";
 
 export default async function SubdomeinPagina({
   params,
@@ -43,6 +45,13 @@ export default async function SubdomeinPagina({
         subdomein={subdomein}
         leerdoelen={leerdoelen}
         vragenPerLeerdoel={vragenPerLeerdoel}
+        seo={haalSeoteksten("subdomein", subdomein.id)}
+        seoAdres={openbaarAdres(
+          "nl",
+          4,
+          naarAdresdeel(domein.naam),
+          naarAdresdeel(subdomein.naam),
+        )}
       />
     </div>
   );

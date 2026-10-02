@@ -29,6 +29,7 @@ import {
   zetUitlegvorm,
   type RegelUitslag,
 } from "@/lib/data/structuur";
+import { zetSeoteksten, type Adressoort } from "@/lib/data/openbaar";
 import type { Domein, Leerdoel, Subdomein, Vak } from "@/lib/types";
 
 export type Antwoord<T> = { ok: true; waarde: T } | { ok: false; fout: string };
@@ -222,4 +223,32 @@ export async function kopieerLeerdoel(data: FormData): Promise<Antwoord<Leerdoel
   const uitslag = dupliceerLeerdoel(tekst(data, "id"));
   if (uitslag.ok) ververs();
   return uitslag;
+}
+
+// --- De openbare pagina ---------------------------------------------------
+
+/**
+ * De paginatitel en de korte beschrijving van een openbare pagina opslaan.
+ *
+ * Bewust een eigen actie, net als `bewerkUitlegvorm` en `verhuisLeerdoel`. Deze
+ * twee velden staan niet in het formulier waarmee je een naam aanpast; zouden
+ * ze dat wel doen, dan kwamen ze als lege waarde binnen zodra een ander scherm
+ * alleen de naam bijwerkt, en dan wiste een naamswijziging de titel. Zie HARDE
+ * REGEL 1 in CLAUDE.md.
+ *
+ * Hier is leeg dus wél "zet terug op de standaard", en dat kan ook: dit
+ * formulier gaat over niets anders.
+ */
+export async function bewerkSeoteksten(data: FormData): Promise<Antwoord<true>> {
+  const soort = tekst(data, "soort");
+  if (soort !== "domein" && soort !== "subdomein" && soort !== "leerdoel") {
+    return { ok: false, fout: "Onbekend soort pagina." };
+  }
+
+  zetSeoteksten(soort as Adressoort, tekst(data, "id"), {
+    titel: tekst(data, "seoTitel"),
+    omschrijving: tekst(data, "seoOmschrijving"),
+  });
+  ververs();
+  return { ok: true, waarde: true };
 }

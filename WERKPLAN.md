@@ -6,9 +6,17 @@ kind ze ziet, met de bolletjes en wat het kind er doet.
 De kopjes volgen de bestaande Thuisles-domeinen. Nieuwe onderwerpen komen in
 die domeinen; er wordt geen nieuw domein aangemaakt.
 
-## Bij het bouwen altijd meenemen: SEO-basis
+## Bij het bouwen altijd meenemen: SEO-basis — KLAAR
 
-Geldt voor elk nieuw scherm en elk nieuw onderwerp, niet pas achteraf.
+De zes punten hieronder staan er. Geldt vanaf nu voor elk nieuw scherm en elk
+nieuw onderwerp, niet pas achteraf.
+
+Wat er staat: de openbare pagina's voor ouders onder `/groep-4/tafels/...`, in
+vier talen, volledig op de server opgebouwd; een eigen paginatitel en korte
+beschrijving per domein, onderwerp en oefening, aan te passen in de admin onder
+"Openbare pagina"; oude adressen die blijven doorsturen als een naam verandert;
+`robots.txt` plus `noindex` op de admin, de oefenpagina's en alles achter de
+login; en een sitemap die uit de database volgt.
 
 1. **Nette webadressen in gewone woorden**, bijvoorbeeld
    `/groep-4/tafels/tafel-van-3`. Het adres wordt gemaakt uit de namen in de

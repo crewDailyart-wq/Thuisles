@@ -22,9 +22,15 @@ import { Kindwisselaar } from "@/components/ouder/Kindwisselaar";
 import { Navigatiebalk, Zijnavigatie } from "@/components/ouder/Oudernavigatie";
 import { bekekenKind, vereisOuder } from "@/lib/auth/sessie";
 import { haalKinderen } from "@/lib/data/kinderen";
+import { NIET_INDEXEREN } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Thuisles voor ouders",
+  /*
+    Alles achter de login gaat over één kind en hoort niet in een zoekresultaat.
+    De openbare pagina's voor ouders staan los hiervan; zie `(openbaar)`.
+  */
+  robots: NIET_INDEXEREN,
 };
 
 /** Deze schermen gaan over één kind en mogen niet worden voorgebakken. */

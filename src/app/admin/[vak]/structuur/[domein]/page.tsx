@@ -8,6 +8,8 @@ import {
   zoekDomein,
 } from "@/lib/data/structuur";
 import { haalLeerdoelen as haalMetTelling } from "@/lib/data/vragen";
+import { haalSeoteksten } from "@/lib/data/openbaar";
+import { naarAdresdeel, openbaarAdres } from "@/lib/seo";
 
 export default async function DomeinPagina({
   params,
@@ -42,7 +44,15 @@ export default async function DomeinPagina({
         titel={domein.naam}
         bijschrift={domein.omschrijving || undefined}
       />
-      <DomeinDetail vak={vak} domein={domein} subdomeinen={subdomeinen} cijfers={cijfers} />
+      <DomeinDetail
+        vak={vak}
+        domein={domein}
+        subdomeinen={subdomeinen}
+        cijfers={cijfers}
+        seo={haalSeoteksten("domein", domein.id)}
+        /* Het openbare adres staat per groep; groep 4 is de groep waarmee we beginnen. */
+        seoAdres={openbaarAdres("nl", 4, naarAdresdeel(domein.naam))}
+      />
     </div>
   );
 }

@@ -21,6 +21,7 @@ import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { zoekGenerator } from "@/lib/generatoren";
 import { beheerlabel } from "@/lib/leerdoelnaam";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
+import { SeoPaneel } from "@/components/beheer/SeoPaneel";
 import type { RegelUitslag } from "@/lib/data/structuur";
 import type { Domein, Leerdoel, Subdomein, Vak } from "@/lib/types";
 
@@ -45,12 +46,18 @@ export function SubdomeinDetail({
   subdomein,
   leerdoelen,
   vragenPerLeerdoel,
+  seo,
+  seoAdres,
 }: {
   vak: Vak;
   domein: Domein;
   subdomein: Subdomein;
   leerdoelen: Leerdoel[];
   vragenPerLeerdoel: Record<string, number>;
+  /** De paginatitel en beschrijving van de openbare pagina; leeg = standaard. */
+  seo: { titel: string; omschrijving: string };
+  /** Het openbare adres van dit onderwerp, zoals het nu is. */
+  seoAdres: string;
 }) {
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
@@ -383,6 +390,17 @@ export function SubdomeinDetail({
           )}
         </div>
       </div>
+
+      {/* De openbare pagina van dit onderwerp: titel en beschrijving voor Google. */}
+      <SeoPaneel
+        soort="subdomein"
+        id={subdomein.id}
+        naam={subdomein.naam}
+        groep={leerdoelen[0]?.groepVan ?? null}
+        openbaarAdres={seoAdres}
+        titel={seo.titel}
+        omschrijving={seo.omschrijving}
+      />
     </div>
   );
 }

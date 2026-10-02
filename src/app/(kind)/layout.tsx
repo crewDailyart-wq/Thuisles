@@ -11,10 +11,24 @@
  * alleen de gegevens op.
  */
 
+import type { Metadata } from "next";
 import { Geluidsvoorkeur } from "@/components/kind/Geluidsvoorkeur";
 import { Kindschil } from "@/components/kind/Kindschil";
 import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
 import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
+import { NIET_INDEXEREN } from "@/lib/seo";
+
+/**
+ * De kinderkant hoort niet in een zoekresultaat.
+ *
+ * Deze schermen zijn van één kind: zijn voortgang, zijn sleutels, de oefening
+ * waar het gebleven was. Ze staan achter de login en ze gaan ook met `noindex`
+ * dicht, want een adres dat ergens gelinkt staat kan anders alsnog in Google
+ * belanden. De openbare pagina's voor ouders staan hier helemaal los van.
+ */
+export const metadata: Metadata = {
+  robots: NIET_INDEXEREN,
+};
 
 /**
  * Deze schermen zijn per kind verschillend en mogen dus niet vooraf als

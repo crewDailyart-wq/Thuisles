@@ -58,6 +58,7 @@
 const SJABLOONDETAIL = "src/components/beheer/SjabloonDetail.tsx";
 const SJABLOONFORMULIER = "src/components/beheer/SjabloonFormulier.tsx";
 const LEERDOELDETAIL = "src/components/beheer/LeerdoelDetail.tsx";
+const SEOPANEEL = "src/components/beheer/SeoPaneel.tsx";
 const STAPSTENEN = "src/lib/generatoren/stapstenen.ts";
 const PLAATJESTELLEN = "src/lib/generatoren/plaatjestellen.ts";
 
@@ -218,6 +219,28 @@ export const SCHERMCONTRACT = [
       { tekst: "Verplaatsen naar een ander onderwerp", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
       { tekst: "Verplaatsen", bron: "src/components/beheer/LeerdoelDetail.tsx", na: "een leerdoel openen en op Bewerken klikken" },
     ],
+  },
+  {
+    /*
+      De openbare pagina van een domein, onderwerp en oefening: het webadres,
+      de paginatitel en de korte beschrijving. Die drie zijn de SEO-basis uit
+      WERKPLAN.md; zonder bewaking zouden ze bij een herschrijving van zo'n
+      scherm stilletjes kunnen verdwijnen, en dan heeft geen enkele pagina nog
+      een eigen titel in Google zonder dat er iets zichtbaar misgaat.
+    */
+    naam: "Openbare pagina (SEO) bij domein, onderwerp en oefening",
+    pad: "/admin/{vak}/structuur/{domein}",
+    bron: [SEOPANEEL, "src/components/beheer/DomeinDetail.tsx"],
+    zichtbaar: ["Openbare pagina", "Webadres", "Paginatitel", "Korte beschrijving"],
+    naKlik: [
+      { tekst: "Leeg laten mag", bron: SEOPANEEL, na: "bij Openbare pagina op Bewerken drukken" },
+    ],
+  },
+  {
+    naam: "Openbare pagina (SEO) bij een oefening",
+    pad: "/admin/{vak}/structuur/{domein}/{subdomein}/{leerdoel}",
+    bron: [SEOPANEEL, LEERDOELDETAIL],
+    zichtbaar: ["Openbare pagina", "Paginatitel", "Korte beschrijving"],
   },
   {
     naam: "Foutpatronen",

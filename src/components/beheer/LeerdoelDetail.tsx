@@ -17,6 +17,7 @@ import {
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
+import { SeoPaneel } from "@/components/beheer/SeoPaneel";
 import { UitlegVoorbeeld } from "@/components/beheer/UitlegVoorbeeld";
 import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { GROEPSVORMEN, VORM_OMSCHRIJVING } from "@/lib/generatoren/uitlegscript";
@@ -36,6 +37,8 @@ export function LeerdoelDetail({
   vragen,
   onderwerpen = [],
   algemeenAantal,
+  seo,
+  seoAdres,
 }: {
   vak: Vak;
   domein: Domein;
@@ -46,6 +49,10 @@ export function LeerdoelDetail({
   onderwerpen?: { id: string; naam: string; domeinNaam: string }[];
   /** De algemene standaard, om te tonen wat 'leeg' betekent. */
   algemeenAantal: number;
+  /** De paginatitel en beschrijving van de openbare pagina; leeg = standaard. */
+  seo: { titel: string; omschrijving: string };
+  /** Het openbare adres van deze oefening, zoals het nu is. */
+  seoAdres: string;
 }) {
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
@@ -426,6 +433,17 @@ export function LeerdoelDetail({
           </div>
         )}
       </Paneel>
+
+      {/* De openbare pagina van deze oefening: titel en beschrijving voor Google. */}
+      <SeoPaneel
+        soort="leerdoel"
+        id={leerdoel.id}
+        naam={leerdoel.titel}
+        groep={leerdoel.groepVan}
+        openbaarAdres={seoAdres}
+        titel={seo.titel}
+        omschrijving={seo.omschrijving}
+      />
     </div>
   );
 }

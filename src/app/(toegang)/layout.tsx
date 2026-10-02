@@ -7,9 +7,12 @@
  */
 
 import type { Metadata } from "next";
+import { NIET_INDEXEREN } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Thuisles",
+  /* Het kiezen van een profiel hoort niet in een zoekresultaat. */
+  robots: NIET_INDEXEREN,
 };
 
 export const dynamic = "force-dynamic";

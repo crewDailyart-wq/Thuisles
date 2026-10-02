@@ -736,6 +736,44 @@ function werkTabellenBij(d: DatabaseSync) {
     ooit eenmalig gedraaid heeft.
   */
 
+  /*
+    ---------------------------------------------------------------------------
+    De SEO-basis
+    ---------------------------------------------------------------------------
+    Twee velden per onderdeel: een eigen paginatitel en een korte beschrijving,
+    allebei aan te passen in de admin. Leeg is de normale stand; dan maakt het
+    systeem er zelf een nette van (zie `paginatitel` in `src/lib/seo.ts`). Ze
+    staan op alle vier de niveaus, zodat elke openbare pagina — van vak tot
+    oefening — zijn eigen titel kan krijgen.
+  */
+  for (const tabel of ["vakken", "domeinen", "subdomeinen", "leerdoelen"]) {
+    voegKolomToe(d, tabel, "seo_titel", "text");
+    voegKolomToe(d, tabel, "seo_omschrijving", "text");
+  }
+
+  /*
+    Oude webadressen, zodat een link van gisteren blijft werken.
+
+    Het openbare adres wordt gemaakt uit de naam in de database. Verandert die
+    naam, dan verandert het adres mee — en dan is er ergens een link, een
+    bladwijzer of een zoekresultaat dat naar het oude adres wijst. Dat oude
+    adres wordt hier bewaard en stuurt door naar het nieuwe.
+
+    Geen koppeling naar de tabellen eronder: wordt een onderwerp verwijderd,
+    dan hoort het oude adres niet ineens een fout op te leveren maar gewoon
+    niets te vinden. De openbare kant kijkt zelf of het doel er nog is.
+  */
+  d.exec(`
+    create table if not exists oude_adressen (
+      soort          text not null check (soort in ('domein','subdomein','leerdoel')),
+      adresdeel      text not null,
+      doel_id        text not null,
+      aangemaakt_op  text not null,
+      primary key (soort, adresdeel)
+    );
+  `);
+  d.exec("create index if not exists oude_adressen_op_doel on oude_adressen (doel_id)");
+
   /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
   werkVraagvormenBij(d);
 }

@@ -23,6 +23,7 @@ import type { Instellingen } from "@/lib/generatoren/soort";
 import { randomUUID } from "node:crypto";
 import { verbinding } from "@/lib/db/sqlite";
 import { begrensAantal } from "@/lib/data/instellingen";
+import { bewaarOudAdres } from "@/lib/data/openbaar";
 import type { Domein, Groep, Leerdoel, PictogramNaam, Subdomein, Vak } from "@/lib/types";
 
 // ---------------------------------------------------------------------------
@@ -433,6 +434,18 @@ export function wijzigDomein(
     return { ok: false, fout: `Er bestaat al een domein "${naam}" binnen dit vak.` };
   }
 
+  /*
+    Het openbare adres volgt de naam, dus verandert het adres mee. Het adres
+    van nu wordt eerst bewaard, zodat een link van gisteren doorstuurt naar de
+    nieuwe naam in plaats van op een foutpagina uit te komen; zie
+    `bewaarOudAdres` in `openbaar.ts`. De slug hieronder blijft onaangeroerd:
+    daar hangen de oefenadressen aan, en die veranderen nooit.
+  */
+  const oudeNaam = db.prepare("select naam from domeinen where id = ?").get(id) as
+    | { naam: string }
+    | undefined;
+  if (oudeNaam) bewaarOudAdres("domein", String(oudeNaam.naam), naam, id);
+
   db.prepare(
     "update domeinen set naam = ?, omschrijving = ?, icoon = ?, actief = ? where id = ?",
   ).run(naam, invoer.omschrijving.trim(), invoer.icoon, invoer.actief ? 1 : 0, id);
@@ -501,6 +514,12 @@ export function wijzigSubdomein(
   if (broers.some((s) => sleutel(s.naam) === sleutel(naam))) {
     return { ok: false, fout: `Er bestaat al een onderwerp "${naam}" binnen dit domein.` };
   }
+
+  /* Zelfde afspraak als bij het domein: het oude adres blijft doorsturen. */
+  const oudeNaam = db.prepare("select naam from subdomeinen where id = ?").get(id) as
+    | { naam: string }
+    | undefined;
+  if (oudeNaam) bewaarOudAdres("subdomein", String(oudeNaam.naam), naam, id);
 
   db.prepare("update subdomeinen set naam = ?, omschrijving = ?, icoon = ? where id = ?").run(
     naam, invoer.omschrijving.trim(), invoer.icoon, id,
@@ -771,6 +790,12 @@ export function wijzigLeerdoel(
     id,
   );
   if (fout) return { ok: false, fout };
+
+  /* Zelfde afspraak als bij domein en onderwerp: het oude adres blijft werken. */
+  const oudeTitel = db.prepare("select titel from leerdoelen where id = ?").get(id) as
+    | { titel: string }
+    | undefined;
+  if (oudeTitel) bewaarOudAdres("leerdoel", String(oudeTitel.titel), invoer.titel.trim(), id);
 
   db.prepare("update leerdoelen set titel = ?, groep_van = ?, groep_tot = ? where id = ?").run(
     invoer.titel.trim(), invoer.groepVan, invoer.groepTot, id,

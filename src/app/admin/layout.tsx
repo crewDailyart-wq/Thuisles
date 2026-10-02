@@ -13,9 +13,12 @@
 import type { Metadata } from "next";
 import { Beheerbalk } from "@/components/beheer/Beheerbalk";
 import { haalVakken } from "@/lib/data/structuur";
+import { NIET_INDEXEREN } from "@/lib/seo";
 
 export const metadata: Metadata = {
   title: "Thuisles beheer",
+  /* De beheeromgeving hoort niet in een zoekresultaat; zie `NIET_INDEXEREN`. */
+  robots: NIET_INDEXEREN,
 };
 
 /** De beheerschermen tonen live gegevens en mogen niet worden voorgebakken. */
