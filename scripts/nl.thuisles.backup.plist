@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  Elke dag om 22:00 een back-up van de Thuisles-database naar iCloud Drive.
+  Staat geïnstalleerd in ~/Library/LaunchAgents/nl.thuisles.backup.plist;
+  dit is de kopie in de repo. Uitzetten: zie NACHTRAPPORT.md.
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>nl.thuisles.backup</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/usr/local/bin/node</string>
+    <string>--disable-warning=ExperimentalWarning</string>
+    <string>/Users/sararifi/Desktop/thuisles/scripts/backup-db.mjs</string>
+  </array>
+  <key>WorkingDirectory</key>
+  <string>/Users/sararifi/Desktop/thuisles</string>
+  <key>StartCalendarInterval</key>
+  <dict>
+    <key>Hour</key>
+    <integer>22</integer>
+    <key>Minute</key>
+    <integer>0</integer>
+  </dict>
+  <key>StandardOutPath</key>
+  <string>/Users/sararifi/Library/Logs/thuisles-backup.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/sararifi/Library/Logs/thuisles-backup.log</string>
+</dict>
+</plist>

@@ -170,7 +170,8 @@ met een reden. Alleen de eigenaar weet welke.
 
 **Elke commit wordt in dezelfde stap gepusht naar `origin main`.**
 
-De repo op GitHub staat op privé en is tegelijk de back-up van dit project. De
+De repo op GitHub staat op privé en is tegelijk de back-up van de code. De
+database niet: die gaat via het back-upscript, zie hieronder. De
 eigenaar hoeft daar niet aan te denken; dat is de afspraak. Committen blijft
 iets wat de eigenaar vraagt — maar zodra er gecommit is, hoort de push erbij,
 zonder dat daar apart om gevraagd hoeft te worden.
@@ -181,31 +182,44 @@ commit die alleen op de laptop staat, is geen back-up.
 
 ## Wat er wél in gaat
 
-Alles wat bij het project hoort: de code, de vragen, de afbeeldingen uit het
-beheer, en `data/thuisles.db` — de database met de voortgang. Dat is met opzet:
-één plek waar alles staat.
+Alles wat bij het project hoort: de code, de vragen en de afbeeldingen uit het
+beheer.
 
 ## Wat er NOOIT in gaat
 
-Bestanden met wachtwoorden of sleutels: alles wat op `.env` lijkt. Die staan in
-`.gitignore` en dat blijft zo. Controleer het vóór elke push; `.env.example`
-zonder ingevulde waarden mag ook gewoon buiten de repo blijven.
+- **De database: `data/*.db`.** Daar staan gegevens van een kind in — het
+  profiel en de voortgang. Die horen niet in een coderepo, ook niet in een
+  privérepo: iedereen die later toegang tot de code krijgt, heeft ze dan in
+  handen, en uit een repo krijg je gegevens nooit meer echt weg. `data/*.db`
+  staat in `.gitignore` en dat blijft zo. Sinds 2 oktober 2026 staat de
+  database niet meer in Git (oudere versies staan nog wel in de geschiedenis).
+- **Bestanden met wachtwoorden of sleutels**: alles wat op `.env` lijkt. Die
+  staan in `.gitignore` en dat blijft zo. `.env.example` zonder ingevulde
+  waarden mag ook gewoon buiten de repo blijven.
+- **De map `backups/`**: kopieën van de database die vóór een wijziging worden
+  gemaakt.
 
-## Wanneer dit moet veranderen
+Controleer dit vóór elke push.
 
-**Zodra er echte kinderen op het platform komen, moet de database hier weer
-uit.** Gegevens van andere kinderen horen niet in een coderepo, ook niet in een
-privérepo: iedereen die later toegang tot de code krijgt, heeft dan ook hun
-voortgang in handen, en een repo is niet gebouwd om gegevens weer echt weg te
-krijgen — oude versies blijven in de geschiedenis staan.
+## Hoe de database wél bewaard wordt
 
-Op dat moment hoort er dus twee dingen te gebeuren:
+Via het back-upscript, niet via GitHub:
 
-1. `/data` gaat terug in `.gitignore` en de database wordt uit de repo gehaald;
-2. er komt een echte back-upoplossing voor de database, los van GitHub.
+```
+npm run backup
+```
 
-Kom je daar als Claude aan toe voordat de eigenaar het zelf aankaart: meld het,
-en wacht op antwoord.
+`scripts/backup-db.mjs` maakt met de backupfunctie van SQLite een veilige kopie
+van `data/thuisles.db` naar
+`~/Library/Mobile Documents/com~apple~CloudDocs/Thuisles-backups/` (iCloud
+Drive), met datum en tijd in de naam, en bewaart de laatste 14. Elke dag om
+22:00 draait het vanzelf via de LaunchAgent `nl.thuisles.backup`
+(`~/Library/LaunchAgents/nl.thuisles.backup.plist`; een kopie staat in
+`scripts/`).
+
+Ga je als Claude iets in de database veranderen, maak dan eerst een kopie in
+`backups/` (die niet wordt gecommit), en draai daarna eventueel
+`npm run backup`.
 
 ---
 

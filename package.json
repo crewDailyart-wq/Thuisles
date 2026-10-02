@@ -13,7 +13,8 @@
     "bosspellen": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/bosspellen.mjs",
     "prepare": "git config core.hooksPath .githooks || true",
     "oefentypes": "node scripts/oefentypes.mjs",
-    "opgaven": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/opgaven.mjs"
+    "opgaven": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/opgaven.mjs",
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.3",
