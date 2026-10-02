@@ -50,3 +50,7 @@ next-env.d.ts
 # platform komen, moet de database hier weer buiten en hoort er een echte
 # back-upoplossing te komen: gegevens van andere kinderen horen niet in een
 # coderepo. Zie HARDE REGEL 4 in CLAUDE.md.
+
+# Back-ups die Claude maakt vóór een wijziging in de database. Niet committen:
+# de volledige kopie bevat ook de kinderen en hun voortgang.
+/backups

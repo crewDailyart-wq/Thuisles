@@ -45,23 +45,30 @@ const RAND = 92;
 const MINUUTWIJZER = 54;
 const UURWIJZER = 38;
 
+/*
+  Afgerond op twee decimalen. De server en de browser rekenen cos en sin net
+  iets anders uit in de laatste decimaal; zonder afronden klaagt React dat de
+  tekening van de server niet overeenkomt met die in de browser.
+*/
+const rond = (n: number) => Math.round(n * 100) / 100;
+
 /** De punten van een streepje op de rand, in graden vanaf twaalf uur. */
 function streepje(graden: number, lengte: number) {
   const hoek = ((graden - 90) * Math.PI) / 180;
   const buiten = RAND - 4;
   const binnen = buiten - lengte;
   return {
-    x1: MIDDEN + Math.cos(hoek) * buiten,
-    y1: MIDDEN + Math.sin(hoek) * buiten,
-    x2: MIDDEN + Math.cos(hoek) * binnen,
-    y2: MIDDEN + Math.sin(hoek) * binnen,
+    x1: rond(MIDDEN + Math.cos(hoek) * buiten),
+    y1: rond(MIDDEN + Math.sin(hoek) * buiten),
+    x2: rond(MIDDEN + Math.cos(hoek) * binnen),
+    y2: rond(MIDDEN + Math.sin(hoek) * binnen),
   };
 }
 
 /** Waar een cijfer staat: op een vaste straal, gecentreerd op zijn eigen punt. */
 function cijferplek(uur: number) {
   const hoek = ((uur * 30 - 90) * Math.PI) / 180;
-  return { x: MIDDEN + Math.cos(hoek) * 66, y: MIDDEN + Math.sin(hoek) * 66 };
+  return { x: rond(MIDDEN + Math.cos(hoek) * 66), y: rond(MIDDEN + Math.sin(hoek) * 66) };
 }
 
 /** Een vlek op de klok: waar hij ligt, hoe groot en welke kleur. */
@@ -92,7 +99,7 @@ function Vlekvorm({ vlek }: { vlek: Vlek }) {
   const punten = Array.from({ length: 8 }, (_, i) => {
     const a = (i / 8) * Math.PI * 2;
     const straal = r * (i % 2 === 0 ? 1 : 0.82);
-    return `${x + Math.cos(a) * straal},${y + Math.sin(a) * straal}`;
+    return `${rond(x + Math.cos(a) * straal)},${rond(y + Math.sin(a) * straal)}`;
   });
 
   return <polygon points={punten.join(" ")} fill={vlek.kleur} />;

@@ -159,10 +159,12 @@ export function Jaarcirkel({ nadruk = null }: { nadruk?: number | null }) {
       />
       {MAANDEN.map((naam, i) => {
         const hoek = ((i * 30 - 90) * Math.PI) / 180;
-        const x = MIDDEN + Math.cos(hoek) * 62;
-        const y = MIDDEN + Math.sin(hoek) * 62;
-        const buitenX = MIDDEN + Math.cos(hoek) * 89;
-        const buitenY = MIDDEN + Math.sin(hoek) * 89;
+        /* Afgerond, zodat server en browser precies hetzelfde tekenen. */
+        const rond = (n: number) => Math.round(n * 100) / 100;
+        const x = rond(MIDDEN + Math.cos(hoek) * 62);
+        const y = rond(MIDDEN + Math.sin(hoek) * 62);
+        const buitenX = rond(MIDDEN + Math.cos(hoek) * 89);
+        const buitenY = rond(MIDDEN + Math.sin(hoek) * 89);
         const op = nadruk === i + 1;
         return (
           <g key={naam}>

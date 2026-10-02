@@ -395,7 +395,7 @@ export function Tijdopdracht({
   if (figuur.soort === "urenminuten") {
     return (
       <div className="flex w-full flex-col items-center gap-5">
-        <Zin tekst={figuur.zin} />
+        {/* De zin zelf staat al bovenaan als vraag; hier alleen het vakje. */}
         <div className="flex flex-wrap items-center justify-center gap-3">
           {vak(0, figuur.zin, "groot")}
           <span className="text-xl font-extrabold text-inkt-zacht">{figuur.eenheid}</span>
