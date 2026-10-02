@@ -613,6 +613,103 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = 6;
       break;
 
+    /*
+      ---------------------------------------------------------------------------
+      Het domein Geld
+      ---------------------------------------------------------------------------
+      Ook hier geen bereik als basis: wat het moeilijk maakt is wát er gevraagd
+      wordt. Herkennen en tellen eerst, dan betalen, dan rekenen met wisselgeld,
+      en schatten als laatste. De punten volgen de bolletjes uit WERKPLAN.md.
+    */
+    case "geldwaarde":
+      /* Munten en briefjes door elkaar, met de valkuil van de grote munt. */
+      p = tekst(inst, "geld", "munten") === "gemengd" ? 2 : 0;
+      break;
+
+    case "geldvolgorde":
+      p = 6;
+      break;
+
+    case "geldtellen":
+      p = 2;
+      break;
+
+    case "geldleggen": {
+      /*
+        Zelf precies betalen met alles door elkaar is het zwaarst. Daarna
+        bepaalt de voorraad het: alleen munten van 2 euro is tellen in sprongen
+        van twee, centen zijn een eigen stap, en kiezen tussen 1 en 2 euro
+        vraagt meer dan alleen munten van 1 euro neerleggen.
+      */
+      const voorraad = lijst(inst, "voorraad", ["100"]);
+      if (vinkje(inst, "metPrijs")) p = 6;
+      else if (voorraad.length === 1 && voorraad[0] === "200") p = 0;
+      else if (voorraad.every((v) => Number(v) < 100)) p = 2;
+      else if (voorraad.length === 1 && voorraad[0] === "100") p = 4;
+      else p = 6;
+      break;
+    }
+
+    case "muntenofeuros":
+      p = 4;
+      break;
+
+    case "geldgroepen": {
+      const stand = tekst(inst, "stand", "grootste");
+      p =
+        stand === "grootste"
+          ? 6
+          : stand === "wisselgeld"
+            ? 2
+            : tekst(inst, "geld", "briefjes") === "gemengd"
+              ? 4
+              : 2;
+      break;
+    }
+
+    case "welkegroepjes":
+      p = 4;
+      break;
+
+    case "evenveel":
+      p = 8;
+      break;
+
+    case "geldontbreekt":
+      p = tekst(inst, "antwoord", "kiezen") === "typen" ? 6 : 4;
+      break;
+
+    case "geldsom":
+      p = bij(tekst(inst, "stand", "tweemunten"), { tweegroepjes: 2, komma: 6 });
+      break;
+
+    case "geldverhaal":
+      p = bij(tekst(inst, "stand", "wisselgeld"), { wisselgeld: 2, over: 4, prijs: 6 });
+      break;
+
+    case "kunjebetalen":
+      p = 8;
+      break;
+
+    case "bonnetje":
+      p = 4;
+      break;
+
+    case "geldafronden":
+      p = tekst(inst, "antwoord", "kiezen") === "typen" ? 2 : 0;
+      break;
+
+    case "geldschatten":
+      p =
+        tekst(inst, "stand", "samenstap") === "over" && tekst(inst, "antwoord", "typen") === "typen"
+          ? 8
+          : 6;
+      break;
+
+    case "geldkorting":
+      p = tekst(inst, "stand", "korting") === "prijsna" ? 4 : 2;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;

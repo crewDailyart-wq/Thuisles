@@ -93,6 +93,27 @@ import {
   maandenaanvullenGenerator,
   maandvraagGenerator,
 } from "@/lib/generatoren/tijd-kalender";
+/* Het domein Geld: munten en briefjes, betalen, en rekenen met geld. */
+import {
+  evenveelGenerator,
+  geldgroepenGenerator,
+  geldleggenGenerator,
+  geldontbreektGenerator,
+  geldtellenGenerator,
+  geldvolgordeGenerator,
+  geldwaardeGenerator,
+  muntenofeurosGenerator,
+  welkegroepjesGenerator,
+} from "@/lib/generatoren/geld-munten";
+import {
+  bonnetjeGenerator,
+  geldafrondenGenerator,
+  geldkortingGenerator,
+  geldschattenGenerator,
+  geldsomGenerator,
+  geldverhaalGenerator,
+  kunjebetalenGenerator,
+} from "@/lib/generatoren/geld-rekenen";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -140,6 +161,23 @@ export const alleGeneratoren: Generator[] = [
   kalenderaantalGenerator,
   kalenderdatumGenerator,
   kalendernachtjesGenerator,
+  /* Geld: eerst munten en briefjes, dan betalen, dan rekenen met geld. */
+  geldwaardeGenerator,
+  geldvolgordeGenerator,
+  geldtellenGenerator,
+  geldleggenGenerator,
+  muntenofeurosGenerator,
+  geldgroepenGenerator,
+  evenveelGenerator,
+  welkegroepjesGenerator,
+  geldontbreektGenerator,
+  geldsomGenerator,
+  geldverhaalGenerator,
+  kunjebetalenGenerator,
+  bonnetjeGenerator,
+  geldafrondenGenerator,
+  geldschattenGenerator,
+  geldkortingGenerator,
   optellenGenerator,
   aftrekkenGenerator,
   splitsenGenerator,

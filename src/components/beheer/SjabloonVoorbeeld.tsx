@@ -24,6 +24,7 @@ import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
+import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
@@ -251,6 +252,19 @@ export function SjabloonVoorbeeld({
                 {isTijdfiguur(som.figuur) && (
                   <div className="mt-1 w-full max-w-sm">
                     <Tijdopdracht
+                      figuur={som.figuur}
+                      antwoord=""
+                      fase="bezig"
+                      onWijzig={() => {}}
+                      onBevestig={() => {}}
+                    />
+                  </div>
+                )}
+
+                {/* De opdrachten van het domein Geld. */}
+                {isGeldfiguur(som.figuur) && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Geldopdracht
                       figuur={som.figuur}
                       antwoord=""
                       fase="bezig"

@@ -422,9 +422,21 @@ Algemene regels voor dit onderwerp:
 
 Er volgen nog meer onderwerpen bij Tijd.
 
-## Groep 4 – Geld
+## Groep 4 – Geld — KLAAR
 
-Nog te bouwen. De basisversie zijn gewone opdrachten; visueel werk komt later.
+De code staat er, voor de drie onderwerpen met een uitgewerkte lijst: 47
+titels. De basisversie zijn gewone opdrachten met simpele getekende munten en
+briefjes; mooier beeld komt later. Elke titel geeft vijftien opgaven per ronde
+zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij. De
+instellingen per titel staan in `scripts/opgaven.mjs`.
+
+Een bedrag typt het kind in twee vakjes: € ▢ , ▢. Allebei alleen cijfers, met
+het toetsenbord van het apparaat. Een komma of punt in het eerste vakje springt
+door naar het tweede, dus 41,50 en 41.50 typen gewoon. Een leeg tweede vakje is
+nul centen, dus 26, 26,00 en 26,- zijn alle drie goed, en 25,5 telt als 25,50.
+
+De inhoud van de database — de leerdoelen met deze titels, hun sjablonen en hun
+vragen — maakt de eigenaar aan (HARDE REGEL 2).
 
 Typen geldt in heel Geld hetzelfde: een gewoon invoerveld met € ervoor, geen
 getallenpad op het scherm. Goed gerekend worden 26, 26,00 en 26,- als hetzelfde
@@ -446,24 +458,24 @@ Algemene regels voor dit onderwerp:
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Welke munt is het meest waard? | ●○○○○ | Ziet drie munten en tikt op de munt die het meest — of het minst — waard is. Eerst alleen euromunten, daarna alleen centmunten. |
+| 1 | De meeste waarde | ●○○○○ | Ziet drie munten en tikt op de munt die het meest — of het minst — waard is. Eerst alleen euromunten, daarna alleen centmunten. |
 | 2 | Munten en briefjes vergelijken | ●●○○○ | Hetzelfde, nu munten en briefjes door elkaar. Met een valkuil erin: een grote munt zoals 50 cent tegenover een klein briefje van 5 euro. |
-| 3 | Van laag naar hoog | ●●●●○ | Sleept vier munten of briefjes op volgorde van weinig naar veel waard, met een knop Controleren. |
+| 3 | Op volgorde van waarde | ●●●●○ | Sleept vier munten of briefjes op volgorde van weinig naar veel waard, met een knop Controleren. |
 
 #### Geld tellen
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Tel de euro's | ●●○○○ | Ziet een groepje munten van 1 euro, tot 20, en typt hoeveel euro het is. |
+| 1 | Euro's tellen | ●●○○○ | Ziet een groepje munten van 1 euro, tot 20, en typt hoeveel euro het is. |
 | 2 | Leg het bedrag | ●●●○○ | "Leg 6 euro." Tikt op een munt van 1 euro om hem in een vakje te leggen; nog een keer tikken haalt hem weer weg. Met een knop Controleren. |
 | 3 | Munten of euro's? | ●●●○○ | Ziet bijvoorbeeld twee munten van 2 euro en typt ▢ munten en ▢ euro. |
 | 4 | Leg het bedrag met 1 en 2 euro | ●●●●○ | Hetzelfde als Leg het bedrag, maar het kind kiest zelf munten van 1 en 2 euro. Elk goed bedrag telt, ook als het op een andere manier is gelegd. |
-| 5 | Waar is het meeste geld? | ●●●●○ | Ziet drie vakjes met munten en briefjes en tikt op het vakje met het hoogste bedrag. |
+| 5 | Het grootste bedrag | ●●●●○ | Ziet drie vakjes met munten en briefjes en tikt op het vakje met het hoogste bedrag. |
 | 6 | Evenveel waard | ●●●●● | Bijvoorbeeld 3 × 20 cent = ▢ × 10 cent, of 3 × 1 euro = ▢ × 50 cent. Typt het getal. |
 
 ### Onderwerp 2 — Betalen
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
@@ -503,7 +515,7 @@ Algemene regels voor dit onderwerp:
 
 ### Onderwerp 3 — Rekenen met geld
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
@@ -580,7 +592,7 @@ Alleen hele euro's, tot 100 euro.
 | 4 | Prijs na korting | ●●●○○ | Dezelfde situatie; typt wat je betaalt. |
 
 Nog open bij Geld: Inwisselen — dat hoort bij Rekenen met geld — en
-Geldnotatie.
+Geldnotatie. Daar is nog geen lijst voor; die zijn niet gebouwd.
 
 ## Bouwstenen
 
@@ -599,3 +611,17 @@ Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
   er precies tien over, dan licht de bovenste rij even op. Uit te proberen in
   het beheer onder "Rekenrek". De kralen komen uit dezelfde tekening als
   Kralen tellen; daar is niets aan veranderd. Er hangt nog geen oefening aan.
+- **Klok** (`src/components/oefenen/Klok.tsx`) — een wijzerklok en een
+  digitale klok. De wijzerklok kan een vlek dragen en kan zetbaar zijn: dan
+  sleept het kind zelf de grote en de kleine wijzer. De wijzers blijven binnen
+  de cijfers. Gebruikt bij Tijd.
+- **Kalender** (`src/components/oefenen/Kalender.tsx`) — een maandkalender die
+  op maandag begint, met de echte weekdagen, en de jaarcirkel met de twaalf
+  maanden. Gebruikt bij Tijd.
+- **Geld** (`src/components/oefenen/Geld.tsx`) — munten, briefjes, een groepje
+  geld en een voorwerp met prijskaartje, als simpele eigen tekeningen. Het
+  rekenen met bedragen staat in `src/lib/geld.ts`, altijd in centen. Gebruikt
+  bij Geld.
+- **Sleepkaartjes** (`src/components/oefenen/Sleepkaartjes.tsx`) — kaartjes
+  naar vakjes slepen; op een kaartje mag ook een tekening staan, zoals een klok
+  of een munt. Gebruikt bij Tafels, Delen, Tijd en Geld.

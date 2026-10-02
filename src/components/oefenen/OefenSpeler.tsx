@@ -60,6 +60,7 @@ import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
+import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1736,6 +1737,25 @@ function Antwoordvelden({
   if (vraag.vorm === "open" && isTijdfiguur(vraag.figuur)) {
     return (
       <Tijdopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+      />
+    );
+  }
+
+  /*
+    De opdrachten van het domein Geld. Een bedrag komt als "euro's,centen"
+    binnen, met altijd twee cijfers centen; een keuze als het nummer van de
+    knop, en bij meer antwoorden de nummers met komma's ertussen.
+  */
+  if (vraag.vorm === "open" && isGeldfiguur(vraag.figuur)) {
+    return (
+      <Geldopdracht
         key={vraag.id}
         figuur={vraag.figuur}
         antwoord={antwoord}

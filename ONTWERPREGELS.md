@@ -86,6 +86,15 @@ tabel, een klok, een kalender of geld erin.
   erin valt.
 - **Twee kalenders staan in de volgorde van de tijd.** Gaat de vraag terug over
   de maandgrens, dan staat de vorige maand erbij, niet de volgende.
+- **Bedragen onder elkaar hebben allemaal twee cijfers centen.** Op een
+  bonnetje staat "€ 8,00" onder "€ 2,90", niet "€ 8,-": anders staan de komma's
+  niet onder elkaar. Zie `bedragKassa` in `lib/geld.ts`.
+- **Tussen € en het bedrag staat een vaste spatie**, zodat een zin nooit
+  afbreekt met "€" aan het eind van de regel en het getal op de volgende.
+- **Knoppen bij een rij zinnen staan in een eigen kolom.** Bij "Kun je het
+  betalen?" mag de zin over twee regels lopen, maar Ja en Nee staan bij elke
+  zin op dezelfde plek. Met `flex-wrap` sprongen ze bij de ene zin naar een
+  nieuwe regel en bij de andere niet.
 - **Nakijken op een smal scherm hoort erbij.** Loop een nieuwe opdracht na op
   ongeveer 375 px breed: past de hele opdracht, van vraagzin tot en met
   Controleer, zonder dat er iets over elkaar valt of buiten de kaart hangt?

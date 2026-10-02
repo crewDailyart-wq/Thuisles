@@ -1014,6 +1014,165 @@ export type Figuur =
       dag: number;
       doel: number;
       zin: string;
+    }
+  /*
+    ---------------------------------------------------------------------------
+    Het domein Geld
+    ---------------------------------------------------------------------------
+    Alle bedragen in centen, als heel getal; zie `lib/geld.ts`. Een groepje
+    geld is een lijst munten en briefjes, ook in centen: [2000, 500, 50] is een
+    briefje van 20, een van 5 en een munt van 50 cent.
+
+    Bij een getypt bedrag is het antwoord altijd "euro's,centen" met twee
+    cijfers centen: "26,00". Bij een keuze het nummer van de knop.
+  */
+  | {
+      /** Tik op het geldstuk dat het meest of het minst waard is. */
+      soort: "geldkiezen";
+      stukken: number[];
+      vraag: "meest" | "minst";
+      goed: number;
+    }
+  | {
+      /** Sleep de munten en briefjes van weinig naar veel waard. */
+      soort: "geldvolgorde";
+      stukken: number[];
+    }
+  | {
+      /**
+       * Tel het geld en typ het bedrag. `invoer` zegt hoe: "bedrag" is € ▢,▢,
+       * "eurocent" is ▢ euro ▢ cent.
+       */
+      soort: "geldtellen";
+      stukken: number[];
+      invoer: "bedrag" | "eurocent";
+    }
+  | {
+      /**
+       * Leg zelf een bedrag door op munten en briefjes te tikken. Elke goede
+       * manier telt: het antwoord is het bedrag, niet welke munten.
+       */
+      soort: "geldleggen";
+      doel: number;
+      /** De munten en briefjes waaruit het kind mag kiezen. */
+      voorraad: number[];
+      /** Een voorwerp met een prijskaartje erbij, of null. */
+      voorwerp: string | null;
+    }
+  | {
+      /** Zoveel munten van zoveel: hoeveel munten en hoeveel euro? */
+      soort: "muntenofeuros";
+      munt: number;
+      aantal: number;
+    }
+  | {
+      /**
+       * Drie of vier vakjes met geld; tik op het goede vakje.
+       *
+       * `stand` zegt welk vakje dat is: het grootste bedrag, precies de prijs,
+       * of precies het wisselgeld.
+       */
+      soort: "geldgroepen";
+      stand: "grootste" | "precies" | "wisselgeld";
+      groepen: number[][];
+      goed: number;
+      prijs: number | null;
+      betaald: number | null;
+      voorwerp: string | null;
+      zin: string;
+    }
+  | {
+      /** Vier groepjes geld, precies twee kloppen met de prijs. */
+      soort: "welkegroepjes";
+      groepen: number[][];
+      prijs: number;
+      voorwerp: string;
+    }
+  | {
+      /** 3 × 20 cent = ▢ × 10 cent. */
+      soort: "evenveel";
+      aantal: number;
+      van: number;
+      naar: number;
+    }
+  | {
+      /**
+       * Een prijs en het geld dat er al ligt. Kies de munt die ontbreekt, of
+       * typ het bedrag dat nog ontbreekt (`keuzes` is dan null).
+       */
+      soort: "geldontbreekt";
+      prijs: number;
+      liggend: number[];
+      voorwerp: string;
+      keuzes: number[] | null;
+      goed: number;
+    }
+  | {
+      /**
+       * Een som met geld: links een groepje, dan + of −, dan nog een groepje.
+       * `invoer` zegt hoe het antwoord getypt wordt.
+       */
+      soort: "geldsom";
+      links: number[];
+      rechts: number[];
+      teken: "+" | "-";
+      invoer: "bedrag" | "eurocent" | "euro";
+    }
+  | {
+      /**
+       * Een verhaaltje over betalen: hoeveel krijg je terug, hoeveel blijft er
+       * over, wat kostte het? Kiezen uit vier bedragen of zelf typen.
+       */
+      soort: "geldverhaal";
+      stand: "wisselgeld" | "over" | "prijs";
+      zin: string;
+      uitkomst: number;
+      keuzes: number[] | null;
+      goed: number;
+    }
+  | {
+      /** Een budget en vijf zinnen; bij elke zin Ja of Nee. */
+      soort: "kunjebetalen";
+      budget: number;
+      naam: string;
+      regels: { aantal: number; prijs: number; ding: string }[];
+    }
+  | {
+      /** Een bonnetje met drie regels: het totaal, of één prijs die kwijt is. */
+      soort: "bonnetje";
+      plek: string;
+      regels: { ding: string; prijs: number }[];
+      /** Welke regel onleesbaar is, of null als het totaal gevraagd wordt. */
+      kwijt: number | null;
+    }
+  | {
+      /** Een prijs afronden op hele en halve euro's. */
+      soort: "geldafronden";
+      prijs: number;
+      keuzes: number[] | null;
+      goed: number;
+    }
+  | {
+      /**
+       * Schatten met afgeronde bedragen. Bij "samenstap" drie vakjes: eerst de
+       * twee prijzen afgerond, dan het totaal.
+       */
+      soort: "geldschatten";
+      stand: "samenstap" | "samen" | "over";
+      zin: string;
+      prijzen: number[];
+      portemonnee: number | null;
+      keuzes: number[] | null;
+      goed: number;
+    }
+  | {
+      /** Een aanbieding: hoeveel korting, of wat je na de korting betaalt. */
+      soort: "geldkorting";
+      stand: "korting" | "prijsna";
+      was: number;
+      korting: number;
+      keuzes: number[] | null;
+      goed: number;
     };
 
 // ---------------------------------------------------------------------------

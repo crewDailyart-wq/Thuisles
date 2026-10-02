@@ -225,7 +225,7 @@ export function Sleepkaartjes({
                   ref={(el) => {
                     vakken.current[rij] = el;
                   }}
-                  className={`grid ${grootVak ? "min-h-30" : "min-h-14"} min-w-32 place-items-center rounded-2xl border-2 p-1 transition [touch-action:none] ${rand}`}
+                  className={`grid ${grootVak ? "min-h-30" : "min-h-15"} min-w-32 place-items-center rounded-2xl border-2 p-1 transition [touch-action:none] ${rand}`}
                 >
                   {welke >= 0 ? kaart(welke, true) : null}
                 </div>

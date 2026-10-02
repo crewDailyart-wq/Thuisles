@@ -47,6 +47,7 @@ import { controleerPatronen, herkenFout } from "../src/lib/generatoren/foutpatro
 import { bolletjesVan, puntenVan } from "../src/lib/moeilijkheid.ts";
 import { isKeerfiguur, juisteAntwoorden as keerAntwoorden } from "../src/lib/keerfiguren.ts";
 import { isTijdfiguur, juistAntwoord as tijdAntwoord } from "../src/lib/tijdfiguren.ts";
+import { isGeldfiguur, juistAntwoord as geldAntwoord } from "../src/lib/geldfiguren.ts";
 
 /* Hoeveel opgaven een ronde minstens moet opleveren. Nooit minder. */
 const PER_RONDE = 15;
@@ -232,6 +233,65 @@ const OEFENINGEN = [
   { groep: "Tijd · Kalender · Rekenen met de kalender", titel: "Dagen verder en terug", soort: "kalenderdag", bolletjes: 4, inst: { maxSchuif: 6 } },
   { groep: "Tijd · Kalender · Rekenen met de kalender", titel: "Hoe lang nog?", soort: "kalendernachtjes", bolletjes: 4, inst: { minNachten: 2, maxNachten: 14 } },
   { groep: "Tijd · Kalender · Rekenen met de kalender", titel: "Over de maandgrens", soort: "kalenderdatum", bolletjes: 5, inst: { stand: "maandgrens" } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Geld – Onderwerp 1: Munten en briefjes
+  // -------------------------------------------------------------------------
+  { groep: "Geld · Munten en briefjes · Kennen", titel: "De meeste waarde", soort: "geldwaarde", bolletjes: 1, inst: { geld: "munten", vraag: "beide" } },
+  { groep: "Geld · Munten en briefjes · Kennen", titel: "Munten en briefjes vergelijken", soort: "geldwaarde", bolletjes: 2, inst: { geld: "gemengd", vraag: "beide" } },
+  { groep: "Geld · Munten en briefjes · Kennen", titel: "Op volgorde van waarde", soort: "geldvolgorde", bolletjes: 4, inst: { geld: "gemengd" } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Euro's tellen", soort: "geldtellen", bolletjes: 2, inst: { stand: "euros", min: 2, max: 20 } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Leg het bedrag", soort: "geldleggen", bolletjes: 3, inst: { voorraad: ["100"], van: 2, tot: 20 } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Munten of euro's?", soort: "muntenofeuros", bolletjes: 3, inst: { munten: ["100", "200"], max: 10 } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Leg het bedrag met 1 en 2 euro", soort: "geldleggen", bolletjes: 4, inst: { voorraad: ["100", "200"], van: 3, tot: 20 } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Het grootste bedrag", soort: "geldgroepen", bolletjes: 4, inst: { stand: "grootste" } },
+  { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Evenveel waard", soort: "evenveel", bolletjes: 5, inst: { max: 5 } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Geld – Onderwerp 2: Betalen
+  // -------------------------------------------------------------------------
+  { groep: "Geld · Betalen · Precies betalen", titel: "Precies betalen: briefjes", soort: "geldgroepen", bolletjes: 2, inst: { stand: "precies", geld: "briefjes" } },
+  { groep: "Geld · Betalen · Precies betalen", titel: "Precies betalen: munten", soort: "geldgroepen", bolletjes: 2, inst: { stand: "precies", geld: "munten" } },
+  { groep: "Geld · Betalen · Precies betalen", titel: "Precies betalen: alles door elkaar", soort: "geldgroepen", bolletjes: 3, inst: { stand: "precies", geld: "gemengd" } },
+  { groep: "Geld · Betalen · Precies betalen", titel: "Welke groepjes kloppen?", soort: "welkegroepjes", bolletjes: 3, inst: {} },
+  { groep: "Geld · Betalen · Zelf leggen", titel: "Bedrag leggen: 2 euro", soort: "geldleggen", bolletjes: 1, inst: { voorraad: ["200"], van: 2, tot: 30 } },
+  { groep: "Geld · Betalen · Zelf leggen", titel: "Bedrag leggen: centen", soort: "geldleggen", bolletjes: 2, inst: { voorraad: ["10", "20", "50"], van: 0.5, tot: 3 } },
+  { groep: "Geld · Betalen · Zelf leggen", titel: "Zelf precies betalen", soort: "geldleggen", bolletjes: 4, inst: { voorraad: ["10", "20", "50", "100", "200", "500", "1000", "2000", "5000"], van: 1, tot: 60, metPrijs: true } },
+  { groep: "Geld · Betalen · Wat ontbreekt er?", titel: "Welke munt ontbreekt?", soort: "geldontbreekt", bolletjes: 3, inst: { antwoord: "kiezen" } },
+  { groep: "Geld · Betalen · Wat ontbreekt er?", titel: "Hoeveel ontbreekt er?", soort: "geldontbreekt", bolletjes: 4, inst: { antwoord: "typen" } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Geld – Onderwerp 3: Rekenen met geld
+  // -------------------------------------------------------------------------
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Twee munten optellen", soort: "geldsom", bolletjes: 1, inst: { stand: "tweemunten" } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Munten eraf: 1 euro", soort: "geldsom", bolletjes: 1, inst: { stand: "eraf", munt: 100 } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Briefje plus munt", soort: "geldsom", bolletjes: 1, inst: { stand: "briefjemunt" } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Twee briefjes optellen", soort: "geldsom", bolletjes: 1, inst: { stand: "tweebriefjes" } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Munten eraf: 2 euro", soort: "geldsom", bolletjes: 1, inst: { stand: "eraf", munt: 200 } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Twee groepjes bij elkaar", soort: "geldsom", bolletjes: 2, inst: { stand: "tweegroepjes" } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Geld tellen: 4 stuks", soort: "geldtellen", bolletjes: 2, inst: { stand: "stuks", min: 4, max: 4 } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Geld tellen: 6 tot 8 stuks", soort: "geldtellen", bolletjes: 2, inst: { stand: "stuks", min: 6, max: 8 } },
+  { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Bedragen met komma optellen", soort: "geldsom", bolletjes: 4, inst: { stand: "komma" } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Het juiste wisselgeld", soort: "geldgroepen", bolletjes: 2, inst: { stand: "wisselgeld" } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Wisselgeld kiezen", soort: "geldverhaal", bolletjes: 2, inst: { stand: "wisselgeld", antwoord: "kiezen", centen: true } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Wisselgeld uitrekenen", soort: "geldverhaal", bolletjes: 2, inst: { stand: "wisselgeld", antwoord: "typen", centen: false } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Wat blijft er over? (kiezen)", soort: "geldverhaal", bolletjes: 3, inst: { stand: "over", antwoord: "kiezen", centen: true } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Wat blijft er over? (typen)", soort: "geldverhaal", bolletjes: 3, inst: { stand: "over", antwoord: "typen", centen: false } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "De prijs terugrekenen", soort: "geldverhaal", bolletjes: 4, inst: { stand: "prijs", antwoord: "typen", centen: false } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "De prijs terugrekenen met centen", soort: "geldverhaal", bolletjes: 4, inst: { stand: "prijs", antwoord: "typen", centen: true } },
+  { groep: "Geld · Rekenen met geld · In de winkel", titel: "Kun je het betalen?", soort: "kunjebetalen", bolletjes: 5, inst: {} },
+  { groep: "Geld · Rekenen met geld · Het bonnetje", titel: "Het bonnetje", soort: "bonnetje", bolletjes: 3, inst: { stand: "totaal" } },
+  { groep: "Geld · Rekenen met geld · Het bonnetje", titel: "Prijs kwijt op het bonnetje", soort: "bonnetje", bolletjes: 3, inst: { stand: "kwijt" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Afronden op hele en halve euro's (kiezen)", soort: "geldafronden", bolletjes: 1, inst: { antwoord: "kiezen" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Afronden op hele en halve euro's (typen)", soort: "geldafronden", bolletjes: 2, inst: { antwoord: "typen" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Schatten: samen ongeveer (stap voor stap)", soort: "geldschatten", bolletjes: 4, inst: { stand: "samenstap" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Schatten: wat houd je over? (kiezen)", soort: "geldschatten", bolletjes: 4, inst: { stand: "over", antwoord: "kiezen" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Schatten: samen ongeveer", soort: "geldschatten", bolletjes: 4, inst: { stand: "samen" } },
+  { groep: "Geld · Rekenen met geld · Afronden en schatten", titel: "Schatten: wat houd je over?", soort: "geldschatten", bolletjes: 5, inst: { stand: "over", antwoord: "typen" } },
+  { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Hoeveel korting? (kiezen)", soort: "geldkorting", bolletjes: 2, inst: { stand: "korting", antwoord: "kiezen" } },
+  { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Hoeveel korting?", soort: "geldkorting", bolletjes: 2, inst: { stand: "korting", antwoord: "typen" } },
+  { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Prijs na korting (kiezen)", soort: "geldkorting", bolletjes: 3, inst: { stand: "prijsna", antwoord: "kiezen" } },
+  { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Prijs na korting", soort: "geldkorting", bolletjes: 3, inst: { stand: "prijsna", antwoord: "typen" } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -338,6 +398,16 @@ for (const oefening of OEFENINGEN) {
     */
     if (isTijdfiguur(vraag.figuur)) {
       const vanHetScherm = tijdAntwoord(vraag.figuur);
+      if (vanHetScherm !== vraag.antwoord) {
+        fouten.push(
+          `${waar}: de generator zegt "${vraag.antwoord}" en het scherm zegt "${vanHetScherm}".`,
+        );
+      }
+    }
+
+    /* Bij Geld net zo: het scherm rekent het antwoord zelf uit de tekening. */
+    if (isGeldfiguur(vraag.figuur)) {
+      const vanHetScherm = geldAntwoord(vraag.figuur);
       if (vanHetScherm !== vraag.antwoord) {
         fouten.push(
           `${waar}: de generator zegt "${vraag.antwoord}" en het scherm zegt "${vanHetScherm}".`,

@@ -100,7 +100,7 @@ type Fase = "bezig" | "goed" | "fout";
  * komt pas na Controleer; daarvoor laat alleen de gekozen knop zien dat hij
  * gekozen is.
  */
-function Keuzeknoppen({
+export function Keuzeknoppen({
   keuzes,
   gekozen,
   juist,
