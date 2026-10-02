@@ -30,7 +30,7 @@
  */
 
 import { useRef, useState } from "react";
-import { uurBijHoek, wijzerhoeken, type Tijd } from "@/lib/tijd";
+import { minuutBijHoek, uurBijHoek, wijzerhoeken, type Tijd } from "@/lib/tijd";
 
 const MIDDEN = 100;
 const RAND = 92;
@@ -105,6 +105,31 @@ function Vlekvorm({ vlek }: { vlek: Vlek }) {
   return <polygon points={punten.join(" ")} fill={vlek.kleur} />;
 }
 
+/**
+ * De ronde knop aan het uiteinde van een wijzer, om hem aan te pakken.
+ *
+ * Zichtbaar is een dikke stip, net binnen het uiteinde, zodat hij de cijfers
+ * niet raakt (die beginnen op straal 57). Het grijpgebied eromheen is onzichtbaar maar
+ * groot: een straal van 20 in de tekening, op een klok van 224 pixels breed
+ * ruim 44 bij 44 pixels — groot genoeg voor een kindervinger.
+ */
+function Greep({
+  y,
+  kleur,
+  onPak,
+}: {
+  y: number;
+  kleur: string;
+  onPak: (e: React.PointerEvent) => void;
+}) {
+  return (
+    <g onPointerDown={onPak} className="cursor-grab">
+      <circle cx={MIDDEN} cy={y} r={20} fill="transparent" />
+      <circle cx={MIDDEN} cy={y} r={8} fill={kleur} stroke="var(--color-kaart)" strokeWidth={2.5} />
+    </g>
+  );
+}
+
 export function Klok({
   tijd,
   maat = "gewoon",
@@ -142,40 +167,91 @@ export function Klok({
     return (Math.atan2(dx, -dy) * 180) / Math.PI;
   }
 
+  /*
+    De stand tijdens het slepen. Een ref en geen state, zodat elke beweging de
+    vorige stand meteen kent — ook als er twee bewegingen komen voordat React
+    opnieuw getekend heeft.
+  */
+  const stand = useRef<Tijd>(tijd);
+
   function verplaats(e: React.PointerEvent, welke: "uur" | "minuut") {
     if (!zetbaar || !onZet) return;
     const hoek = hoekVanPunt(e.clientX, e.clientY);
     if (hoek === null) return;
+    const nu = stand.current;
 
     if (welke === "minuut") {
-      const op360 = ((hoek % 360) + 360) % 360;
-      const minuut = (Math.round(op360 / 6 / stap) * stap) % 60;
-      onZet({ uur: tijd.uur, minuut });
-    } else {
+      const minuut = minuutBijHoek(hoek, stap);
       /*
-        De kleine wijzer springt naar het hele uur waar hij het dichtst bij
-        staat. Hij wordt daarna getekend op `uur × 30 + minuut ÷ 2`, dus zodra
-        het kind de minuten op dertig zet schuift hij vanzelf naar het midden
-        tussen twee uren. Zo klopt het beeld zonder dat een kind hem op een
-        halve streep moet zien te krijgen.
+        Zoals bij een echte klok draait de kleine wijzer mee: gaat de grote
+        wijzer over de twaalf heen, dan schuift het uur een stap op (of terug).
+        Bij half zeven staat de kleine wijzer daardoor vanzelf tussen 6 en 7.
       */
-      onZet({ uur: uurBijHoek(hoek), minuut: tijd.minuut });
+      let uur = nu.uur;
+      if (nu.minuut >= 45 && minuut < 15) uur += 1;
+      else if (nu.minuut < 15 && minuut >= 45) uur -= 1;
+      const nieuw = { uur: ((uur % 12) + 12) % 12, minuut };
+      if (nieuw.uur === nu.uur && nieuw.minuut === nu.minuut) return;
+      stand.current = nieuw;
+      onZet(nieuw);
+    } else {
+      /* De kleine wijzer springt per heel uur; de minuten blijven staan. */
+      const nieuw = { uur: uurBijHoek(hoek), minuut: nu.minuut };
+      if (nieuw.uur === nu.uur % 12) return;
+      stand.current = nieuw;
+      onZet(nieuw);
     }
   }
 
+  /*
+    Beginnen met slepen. `preventDefault` houdt de browser tegen die anders de
+    hele klok als plaatje meesleept of de cijfers als tekst selecteert, en met
+    pointer capture blijft de wijzer de vinger volgen, ook buiten de klok.
+  */
+  function pak(e: React.PointerEvent, welke: "uur" | "minuut") {
+    if (!zetbaar) return;
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      vak.current?.setPointerCapture(e.pointerId);
+    } catch {
+      /* Zonder capture werkt slepen binnen de klok gewoon nog. */
+    }
+    stand.current = tijd;
+    setSleept(welke);
+  }
+
+  function los(e: React.PointerEvent) {
+    try {
+      if (vak.current?.hasPointerCapture(e.pointerId)) vak.current.releasePointerCapture(e.pointerId);
+    } catch {
+      /* Niets vast, niets los te laten. */
+    }
+    setSleept(null);
+  }
+
   const kleurUur = nadruk === "uur" ? "var(--color-huisstijl)" : "var(--color-inkt)";
-  const kleurMinuut = nadruk === "minuut" ? "var(--color-huisstijl)" : "var(--color-inkt)";
+  /*
+    Bij een klok die het kind zelf zet heeft de grote wijzer een eigen kleur,
+    zodat de twee wijzers niet te verwarren zijn.
+  */
+  const kleurMinuut =
+    nadruk === "minuut" || zetbaar ? "var(--color-huisstijl)" : "var(--color-inkt)";
 
   return (
     <svg
       ref={vak}
       viewBox="0 0 200 200"
-      className={`${grootte} shrink-0 ${zetbaar ? "[touch-action:none]" : ""}`}
+      className={`${grootte} shrink-0 select-none ${zetbaar ? "[touch-action:none]" : ""}`}
+      style={{ WebkitUserSelect: "none", userSelect: "none", WebkitTouchCallout: "none" }}
+      /* draggable staat niet in de SVG-typen van React, maar de browser kent het wel. */
+      {...({ draggable: "false" } as Record<string, string>)}
+      onDragStart={(e) => e.preventDefault()}
       role="img"
       aria-label={`Klok die ${String(tijd.uur).padStart(2, "0")}:${String(tijd.minuut).padStart(2, "0")} aanwijst`}
       onPointerMove={(e) => sleept && verplaats(e, sleept)}
-      onPointerUp={() => setSleept(null)}
-      onPointerCancel={() => setSleept(null)}
+      onPointerUp={los}
+      onPointerCancel={los}
     >
       {/* De wijzerplaat. */}
       <circle
@@ -219,39 +295,48 @@ export function Klok({
             fontSize={18}
             fontWeight={800}
             fill="var(--color-inkt)"
+            pointerEvents="none"
           >
             {uur}
           </text>
         );
       })}
 
-      {/* De kleine wijzer: kort en dik. */}
-      <line
-        x1={MIDDEN}
-        y1={MIDDEN}
-        x2={MIDDEN}
-        y2={MIDDEN - UURWIJZER}
-        stroke={kleurUur}
-        strokeWidth={8}
-        strokeLinecap="round"
-        transform={`rotate(${hoeken.uur} ${MIDDEN} ${MIDDEN})`}
-        onPointerDown={zetbaar ? () => setSleept("uur") : undefined}
-        className={zetbaar ? "cursor-grab [touch-action:none]" : ""}
-      />
+      {/* De kleine wijzer: kort en dik. Draait om het middelpunt. */}
+      <g transform={`rotate(${hoeken.uur} ${MIDDEN} ${MIDDEN})`}>
+        <line
+          x1={MIDDEN}
+          y1={MIDDEN}
+          x2={MIDDEN}
+          y2={MIDDEN - UURWIJZER}
+          stroke={kleurUur}
+          strokeWidth={8}
+          strokeLinecap="round"
+          onPointerDown={zetbaar ? (e) => pak(e, "uur") : undefined}
+          className={zetbaar ? "cursor-grab" : ""}
+        />
+        {zetbaar && (
+          <Greep y={MIDDEN - UURWIJZER + 3} kleur={kleurUur} onPak={(e) => pak(e, "uur")} />
+        )}
+      </g>
 
       {/* De grote wijzer: lang en dun, dus altijd uit elkaar te houden. */}
-      <line
-        x1={MIDDEN}
-        y1={MIDDEN}
-        x2={MIDDEN}
-        y2={MIDDEN - MINUUTWIJZER}
-        stroke={kleurMinuut}
-        strokeWidth={5}
-        strokeLinecap="round"
-        transform={`rotate(${hoeken.minuut} ${MIDDEN} ${MIDDEN})`}
-        onPointerDown={zetbaar ? () => setSleept("minuut") : undefined}
-        className={zetbaar ? "cursor-grab [touch-action:none]" : ""}
-      />
+      <g transform={`rotate(${hoeken.minuut} ${MIDDEN} ${MIDDEN})`}>
+        <line
+          x1={MIDDEN}
+          y1={MIDDEN}
+          x2={MIDDEN}
+          y2={MIDDEN - MINUUTWIJZER}
+          stroke={kleurMinuut}
+          strokeWidth={5}
+          strokeLinecap="round"
+          onPointerDown={zetbaar ? (e) => pak(e, "minuut") : undefined}
+          className={zetbaar ? "cursor-grab" : ""}
+        />
+        {zetbaar && (
+          <Greep y={MIDDEN - MINUUTWIJZER + 6} kleur={kleurMinuut} onPak={(e) => pak(e, "minuut")} />
+        )}
+      </g>
 
       <circle cx={MIDDEN} cy={MIDDEN} r={7} fill="var(--color-inkt)" />
 

@@ -196,3 +196,33 @@ Er was één halve sessie met één gegeven antwoord die naar die oude opgaven v
 **Gecontroleerd:**
 - Alle 630 gepubliceerde opgaven in de 41 wijzerklok-oefeningen voldoen aan de regels, met minstens 15 per oefening.
 - Als kind bekeken, zonder iets in te vullen: "Van wijzerklok naar digitale tijd", "Van digitale tijd naar wijzerklok" en "Schrijf de tijd digitaal".
+
+---
+
+# Wijzers zetten — 2 oktober 2026
+
+Geldt voor elke oefening waarin het kind zelf de wijzers zet ("Zet de wijzers goed", "Zet de klok: …", "Hoe laat is het straks?", "Hoe laat was het eerder?").
+
+**Slepen:**
+- De klok sleept niet meer mee als plaatje en de cijfers worden niet meer geselecteerd: `user-select: none`, `-webkit-touch-callout: none`, `draggable="false"` en `touch-action: none`.
+- Bij het vastpakken roept de klok `preventDefault()` aan en vangt hij de pointer, zodat de wijzer de vinger ook buiten de klok blijft volgen.
+- Alleen de aangepakte wijzer draait, om het middelpunt.
+- Gaat de grote wijzer over de 12, dan schuift de kleine mee. De kleine wijzer springt per uur.
+- De grote wijzer klikt vast op 5 minuten, of per minuut bij oefeningen op de minuut.
+
+**Voor het kind:**
+- Aan beide wijzers zit een ronde knop met een grijpgebied van ruim 44 bij 44 pixels. De grote wijzer is oranje en langer.
+- Onder de vraag staat "Sleep de wijzers naar de goede tijd."
+- De knopjes uur –, uur +, minuten – en minuten + doen hetzelfde als slepen.
+- De beginstand is een heel uur, nooit 12:00 en nooit het antwoord.
+- Controleer blijft grijs tot er iets bewogen is.
+
+**Nakijken:** zoals al zo was, telt alleen de stand. Half zeven is goed bij 06:30 én 18:30.
+
+**Getest**, zonder iets in te vullen of na te kijken:
+- Met de muis in "Zet de klok: hele uren": grote wijzer van 06:55 over de 12 naar 07:05, met de kleine wijzer mee.
+- Met touch-events in "Zet de wijzers goed": een hele cirkel van 03:00 naar 04:05.
+- In "Hoe laat is het straks?": beginstand en knopjes.
+- Overal: geen selectie, één klok, de wijzerplaat staat stil, en Controleer gaat pas aan na bewegen.
+
+Het tabletformaat kon ik niet echt instellen: het browservenster liet zich niet smaller maken. Probeer het daarom zelf even op de tablet.
