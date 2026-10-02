@@ -306,6 +306,38 @@ Algemene regels voor dit onderwerp:
 | 7 | Gemengd: cijfers onder een vlek | ●●●●○ | Hele uren, halve uren en kwartieren door elkaar. |
 | 8 | Gemengd: grote vlek | ●●●●● | Het midden van de klok is bedekt; alleen de puntjes van de wijzers zijn zichtbaar. |
 
+### Onderwerp 5 — Maanden en dagen
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- De week begint op maandag.
+- Bij kiesvragen kiest het kind uit drie antwoorden.
+- Bij typvragen maken hoofdletters en spaties niet uit; bij een fout ziet het
+  kind de goede spelling.
+- Rangtelwoorden lopen van eerste tot en met twaalfde.
+
+#### Dagen van de week
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | De dagen op volgorde | ●○○○○ | "De tweede dag van de week is…?" Kiest uit drie. |
+| 2 | Dagen aanvullen | ●○○○○ | Een rij met gaten, bijvoorbeeld dinsdag – ▢ – donderdag – ▢. Typt de ontbrekende dagen, met een knop Controleren. |
+| 3 | De dag ervoor en de dag erna | ●●●○○ | "Welke dag komt 1 dag voor dinsdag?" of "2 dagen na zaterdag?" Kiest uit drie. Mag over het weekend heen: zondag → maandag. |
+
+#### Maanden van het jaar
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | De maand erna | ●○○○○ | "Welke maand komt na mei?" Kiest uit drie. |
+| 2 | De maanden op volgorde | ●●○○○ | "Wat is de achtste maand van het jaar?" Kiest uit drie. |
+| 3 | Het nummer van de maand | ●●○○○ | "Maart is de hoeveelste maand van het jaar?" Kiest uit drie, bijvoorbeeld derde. |
+| 4 | Maanden aanvullen met jaarcirkel | ●●●○○ | Een rij met een gat, bijvoorbeeld juni – ▢ – augustus – september. Typt de ontbrekende maand. Er staat een jaarcirkel bij als hulp: een simpele cirkel met twaalf genummerde vakjes, januari bovenaan. |
+| 5 | Maanden aanvullen zonder hulp | ●●●○○ | Hetzelfde, zonder jaarcirkel. |
+| 6 | Maanden ervoor en erna | ●●●●○ | "Welke maand komt 2 maanden voor maart?" Eén tot en met drie maanden, binnen hetzelfde jaar. Kiest uit drie. |
+| 7 | Maanden ervoor en erna over de jaargrens | ●●●●● | Bijvoorbeeld "3 maanden na november" of "2 maanden voor januari". Kiest uit drie. |
+
 Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
