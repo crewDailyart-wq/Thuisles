@@ -430,29 +430,82 @@ Algemene regels voor dit onderwerp:
   Elke goede manier telt.
 - Bij typvragen gewoon typen, geen getallenpad op het scherm.
 
-#### Bedrag leggen
+#### Precies betalen
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Leg het bedrag met 2 euro | ●○○○○ | "Leg 16 euro." Legt alleen munten van 2 euro in de vakjes; de bedragen zijn altijd even. |
-| 2 | Leg het bedrag met centen | ●●○○○ | "Leg 2 euro." Kiest zelf uit munten van 10, 20 en 50 cent. |
+| 1 | Precies betalen: briefjes | ●●○○○ | Ziet een voorwerp met een prijskaartje, bijvoorbeeld € 60,-, en drie groepjes briefjes: A, B en C. Tikt op het groepje dat precies goed is. |
+| 2 | Precies betalen: munten | ●●○○○ | Hetzelfde, met munten, bijvoorbeeld € 4,90. |
+| 3 | Precies betalen: alles door elkaar | ●●●○○ | Hetzelfde, met briefjes en munten door elkaar, bijvoorbeeld € 21,-. |
+| 4 | Welke groepjes kloppen? | ●●●○○ | Ziet vier groepjes munten; er zijn er precies twee goed. Tikt ze allebei aan en drukt op Controleren. |
 
-#### Gepast betalen
-
-| # | Titel | Bolletjes | Wat het kind doet |
-|---|-------|-----------|-------------------|
-| 1 | Gepast betalen met munten | ●●○○○ | Ziet een voorwerp met een prijskaartje, bijvoorbeeld € 4,90, en drie groepjes munten: A, B en C. Tikt op het groepje dat precies goed is. |
-| 2 | Gepast betalen met briefjes | ●●○○○ | Hetzelfde, met briefjes, bijvoorbeeld € 60,-. |
-| 3 | Gepast betalen met briefjes en munten | ●●●○○ | Hetzelfde, briefjes en munten door elkaar, bijvoorbeeld € 21,-. |
-| 4 | Welke groepjes zijn goed? | ●●●○○ | Ziet vier groepjes munten; er zijn er precies twee goed. Tikt ze allebei aan en drukt op Controleren. |
-| 5 | Betaal zelf gepast | ●●●●○ | Ziet een voorwerp met een prijskaartje en legt zelf briefjes en munten tot het precies klopt. |
-
-#### Wat moet erbij?
+#### Zelf leggen
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Welke munt moet erbij? | ●●●○○ | Ziet een prijskaartje, bijvoorbeeld € 26,-, en het geld dat er al ligt, bijvoorbeeld € 20 + € 5. Tikt op de munt die erbij moet; keuze uit drie. |
-| 2 | Hoeveel moet er nog bij? | ●●●●○ | Hetzelfde, maar nu typt het kind het bedrag dat nog ontbreekt. |
+| 1 | Bedrag leggen: 2 euro | ●○○○○ | "Leg 16 euro." Legt alleen munten van 2 euro in de vakjes; de bedragen zijn altijd even. |
+| 2 | Bedrag leggen: centen | ●●○○○ | "Leg 2 euro." Kiest zelf uit munten van 10, 20 en 50 cent; elke goede manier telt. |
+| 3 | Zelf precies betalen | ●●●●○ | Ziet een voorwerp met een prijskaartje en legt zelf briefjes en munten tot het precies klopt. |
+
+#### Wat ontbreekt er?
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Welke munt ontbreekt? | ●●●○○ | Ziet een prijskaartje, bijvoorbeeld € 26,-, en het geld dat er al ligt, bijvoorbeeld € 20 + € 5. Tikt op de munt die erbij moet; keuze uit drie. |
+| 2 | Hoeveel ontbreekt er? | ●●●●○ | Hetzelfde, maar nu typt het kind het bedrag dat nog ontbreekt. |
+
+### Onderwerp 3 — Rekenen met geld
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Het geld ziet eruit zoals bij "Munten en briefjes": simpele eigen
+  tekeningen, geen foto's.
+- Bedragen tot 100 euro; centen in tientallen of vijftallen.
+- Korte verhaaltjes met eigen situaties: de markt, de kermis, het
+  schoolreisje, de speelgoedwinkel, ijsjes.
+- Gewoon typen, geen getallenpad op het scherm. Bedragen met een komma typt
+  het kind als 41,50; 41.50 wordt ook goed gerekend.
+- De foute keuzes zijn echte valkuilen: een euro te veel of te weinig, of tien
+  cent ernaast.
+- Gaat de uitleg over veel geld tellen, dan begint die bij het grootste.
+
+#### Rekenen met munten en briefjes
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Twee munten optellen | ●○○○○ | Bijvoorbeeld 2 × 50 cent. Typt ▢ euro ▢ cent. |
+| 2 | Munten eraf: 1 euro | ●○○○○ | Vijf munten van 1 euro min twee munten = ▢. Typt het getal. |
+| 3 | Briefje plus munt | ●○○○○ | Bijvoorbeeld € 20 + 5 cent. Typt ▢ euro ▢ cent. |
+| 4 | Twee briefjes optellen | ●○○○○ | Bijvoorbeeld € 10 + € 20. Typt ▢ euro. |
+| 5 | Munten eraf: 2 euro | ●○○○○ | Hetzelfde als Munten eraf: 1 euro, met munten van 2 euro. |
+| 6 | Twee groepjes bij elkaar | ●●○○○ | Een groepje munten plus een groepje munten = ▢. |
+| 7 | Geld tellen: 4 stuks | ●●○○○ | Vier munten en briefjes door elkaar. Typt ▢ euro ▢ cent. |
+| 8 | Geld tellen: 6 tot 8 stuks | ●●○○○ | Hetzelfde, met zes tot acht stuks. |
+| 9 | Bedragen met komma optellen | ●●●●○ | Twee groepjes briefjes en munten met een plus ertussen. Typt het totaal met komma, bijvoorbeeld 41,50. |
+
+#### In de winkel
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Het juiste wisselgeld | ●●○○○ | "Je betaalt € 7, de knuffel kost € 2." Vier vakjes met geld; tikt op het vakje met precies het goede geld terug. |
+| 2 | Wisselgeld kiezen | ●●○○○ | Een kort verhaaltje, bijvoorbeeld een ijsje van € 1,50 betaald met € 5. Kiest uit vier bedragen. |
+| 3 | Wisselgeld uitrekenen | ●●○○○ | Een kort verhaaltje, bijvoorbeeld een bal van € 17 betaald met € 50. Typt het bedrag, in hele euro's. |
+| 4 | Wat blijft er over? (kiezen) | ●●●○○ | Bijvoorbeeld: je hebt € 10, de kaartjes kosten € 6,40. Kiest uit vier bedragen. |
+| 5 | Wat blijft er over? (typen) | ●●●○○ | Bijvoorbeeld: je hebt € 100, de skeelers kosten € 64. Typt het bedrag. |
+| 6 | De prijs terugrekenen | ●●●●○ | Bijvoorbeeld: je betaalde € 50 en kreeg € 8 terug. Typt de prijs, in hele euro's. |
+| 7 | De prijs terugrekenen met centen | ●●●●○ | Bijvoorbeeld: je betaalde € 10 en kreeg € 3,50 terug. Typt de prijs met komma. |
+| 8 | Kun je het betalen? | ●●●●● | "Sam heeft € 20 voor het schoolreisje." Daaronder vijf korte zinnen, bijvoorbeeld "3 ijsjes van € 4". Tikt per zin Ja of Nee en drukt op Controleren. |
+
+#### Het bonnetje
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Het bonnetje | ●●●○○ | Een simpel getekend bonnetje met drie regels, bijvoorbeeld van de markt of de kermis. Rekent het totaal uit en typt het met komma. |
+| 2 | Prijs kwijt op het bonnetje | ●●●○○ | Het totaal staat erop, maar één prijs is onleesbaar. Typt die prijs. |
+
+Nog toe te voegen bij Geld, volgt later: Inwisselen, Geld afronden, Korting.
 
 ## Bouwstenen
 
