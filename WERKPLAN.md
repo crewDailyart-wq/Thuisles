@@ -23,6 +23,15 @@ Geldt voor elk nieuw scherm en elk nieuw onderwerp, niet pas achteraf.
    kind de tafels in groep 4?". Die staan los van de oefeningen achter een
    login, zodat Google ze kan lezen. Nu alleen de opzet; de teksten komen
    later.
+4. **Openbare pagina's worden op de server opgebouwd**, zodat zoekmachines de
+   volledige tekst zien zonder eerst JavaScript uit te voeren.
+5. **De admin, de oefenpagina's en alles achter de login worden niet
+   geïndexeerd** door zoekmachines: `noindex` op die pagina's en een regel in
+   `robots.txt`.
+6. **Ruimte voor meerdere talen bij de ouderpagina's**: Nederlands, Turks,
+   Arabisch en Pools. Elke taal krijgt een eigen webadres, bijvoorbeeld
+   `/tr/...`, met de juiste taalaanduiding voor zoekmachines. Nederlands is de
+   standaard. Arabisch leest van rechts naar links.
 
 ## Groep 4 – Aftrekken – Aftrekken tot en met 15
 
