@@ -587,20 +587,13 @@ export function Tijdopdracht({
   // -------------------------------------------------------------------------
 
   if (figuur.soort === "klokzetten") {
-    /* De grote wijzer klikt vast op vijf minuten, of per minuut bij "op de minuut". */
-    const klikstap = figuur.stap === 1 ? 1 : 5;
+    /* De grote wijzer stopt bij elk streepje: elke minuut, zoals op een echte klok. */
+    const klikstap = 1;
     const zet = (t: { uur: number; minuut: number }) => {
       const nieuw = { uur: ((t.uur % 12) + 12) % 12, minuut: t.minuut };
       setGezet(nieuw);
       meld([String(nieuw.uur), String(nieuw.minuut)]);
     };
-    /* Minuten erbij of eraf: over de twaalf heen schuift het uur mee, net als bij slepen. */
-    const minutenErbij = (stap: number) => {
-      const totaal = gezet.uur * 60 + gezet.minuut + stap;
-      zet({ uur: Math.floor(((totaal % 720) + 720) % 720 / 60), minuut: ((totaal % 60) + 60) % 60 });
-    };
-    const knop =
-      "min-h-11 min-w-11 rounded-xl border-2 border-rand bg-kaart px-3 text-sm font-extrabold text-inkt transition hover:border-huisstijl/50 disabled:cursor-not-allowed disabled:opacity-50";
     const start =
       figuur.opdracht === "verschuiving"
         ? { uur: figuur.uur, minuut: figuur.minuut }
@@ -623,30 +616,6 @@ export function Tijdopdracht({
           <p className="text-sm font-semibold text-inkt-zacht">Sleep de wijzers naar de goede tijd.</p>
         )}
         <Klok tijd={nu} maat="groot" zetbaar={!uit} stap={klikstap} onZet={zet} />
-        {/*
-          Voor wie slepen lastig vindt: knopjes. Geen getallenpad (HARDE
-          REGEL 5) — het kind zet nog steeds de wijzers, alleen met tikken.
-        */}
-        {!uit && (
-          <div className="grid grid-cols-2 gap-x-4 gap-y-2">
-            <div className="flex items-center justify-center gap-2" role="group" aria-label="De kleine wijzer">
-              <button type="button" className={knop} onClick={() => zet({ uur: gezet.uur - 1, minuut: gezet.minuut })}>
-                uur –
-              </button>
-              <button type="button" className={knop} onClick={() => zet({ uur: gezet.uur + 1, minuut: gezet.minuut })}>
-                uur +
-              </button>
-            </div>
-            <div className="flex items-center justify-center gap-2" role="group" aria-label="De grote wijzer">
-              <button type="button" className={knop} onClick={() => minutenErbij(-klikstap)}>
-                minuten –
-              </button>
-              <button type="button" className={knop} onClick={() => minutenErbij(klikstap)}>
-                minuten +
-              </button>
-            </div>
-          </div>
-        )}
         {uit && (
           <p
             className={`text-base font-extrabold ${

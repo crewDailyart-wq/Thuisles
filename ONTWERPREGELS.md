@@ -77,7 +77,12 @@ tabel, een klok, een kalender of geld erin.
   over twee regels verspringen, worden een blokje van twee bij twee, en dan is
   niet meer te zien wat eerst komt. Eén rij als het past, anders onder elkaar.
 - **Een wijzer loopt niet door de cijfers van de klok.** De grote wijzer houdt
-  op vóór de binnenkant van de cijfers, de kleine is duidelijk korter. Een vlek
+  op vóór de binnenkant van de cijfers, de kleine is duidelijk korter.
+  Uitzondering, op verzoek van de eigenaar: bij een klok die het kind zelf zet
+  komt de grote wijzer tot bij de streepjes, zodat je ziet bij welk streepje
+  hij staat. Die klok is verder zo gewoon mogelijk: donkere wijzers, één klein
+  rondje in het midden, geen knopjes of bolletjes; het grijpgebied is
+  onzichtbaar groter dan de wijzer. Een vlek
   die cijfers of een wijzer bedekt, ligt op het cijfer zelf en houdt afstand
   van de wijzers die zichtbaar moeten blijven.
 - **Wat op een sleepkaartje staat, past in het vakje waar het heen moet.** Een

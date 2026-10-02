@@ -44,6 +44,12 @@ const RAND = 92;
 */
 const MINUUTWIJZER = 54;
 const UURWIJZER = 38;
+/*
+  Bij een klok die het kind zelf zet komt de grote wijzer tot bij de streepjes
+  (die beginnen op straal 76), op verzoek van de eigenaar: zo zie je bij welk
+  streepje hij staat. Hij loopt daarbij over de cijfers; dat is hier bewust.
+*/
+const ZETWIJZER = 74;
 
 /*
   Afgerond op twee decimalen. De server en de browser rekenen cos en sin net
@@ -106,27 +112,34 @@ function Vlekvorm({ vlek }: { vlek: Vlek }) {
 }
 
 /**
- * De ronde knop aan het uiteinde van een wijzer, om hem aan te pakken.
- *
- * Zichtbaar is een dikke stip, net binnen het uiteinde, zodat hij de cijfers
- * niet raakt (die beginnen op straal 57). Het grijpgebied eromheen is onzichtbaar maar
- * groot: een straal van 20 in de tekening, op een klok van 224 pixels breed
- * ruim 44 bij 44 pixels — groot genoeg voor een kindervinger.
+ * Het grijpgebied van een wijzer: onzichtbaar, maar veel breder dan de wijzer
+ * zelf (22 in de tekening, op een klok van 224 pixels ruim een vingertop
+ * breed) en tot net voorbij het uiteinde. Zo pakt een kindervinger de wijzer
+ * makkelijk, terwijl de klok eruitziet als een gewone klok.
  */
-function Greep({
-  y,
-  kleur,
+function Grijpgebied({
+  van,
+  tot,
+  sleept,
   onPak,
 }: {
-  y: number;
-  kleur: string;
+  van: number;
+  tot: number;
+  sleept: boolean;
   onPak: (e: React.PointerEvent) => void;
 }) {
   return (
-    <g onPointerDown={onPak} className="cursor-grab">
-      <circle cx={MIDDEN} cy={y} r={20} fill="transparent" />
-      <circle cx={MIDDEN} cy={y} r={8} fill={kleur} stroke="var(--color-kaart)" strokeWidth={2.5} />
-    </g>
+    <line
+      x1={MIDDEN}
+      y1={MIDDEN - van}
+      x2={MIDDEN}
+      y2={MIDDEN - tot}
+      stroke="transparent"
+      strokeWidth={22}
+      strokeLinecap="round"
+      onPointerDown={onPak}
+      style={{ cursor: sleept ? "grabbing" : "grab" }}
+    />
   );
 }
 
@@ -231,19 +244,25 @@ export function Klok({
   }
 
   const kleurUur = nadruk === "uur" ? "var(--color-huisstijl)" : "var(--color-inkt)";
+  const kleurMinuut = nadruk === "minuut" ? "var(--color-huisstijl)" : "var(--color-inkt)";
   /*
-    Bij een klok die het kind zelf zet heeft de grote wijzer een eigen kleur,
-    zodat de twee wijzers niet te verwarren zijn.
+    Bij een klok die het kind zelf zet komt de grote wijzer tot bij de
+    streepjes, zoals op een echte klok: dan zie je precies bij welk streepje
+    hij staat. Hij stopt bij elk streepje (elke minuut).
   */
-  const kleurMinuut =
-    nadruk === "minuut" || zetbaar ? "var(--color-huisstijl)" : "var(--color-inkt)";
+  const minuutlengte = zetbaar ? ZETWIJZER : MINUUTWIJZER;
 
   return (
     <svg
       ref={vak}
       viewBox="0 0 200 200"
       className={`${grootte} shrink-0 select-none ${zetbaar ? "[touch-action:none]" : ""}`}
-      style={{ WebkitUserSelect: "none", userSelect: "none", WebkitTouchCallout: "none" }}
+      style={{
+        WebkitUserSelect: "none",
+        userSelect: "none",
+        WebkitTouchCallout: "none",
+        cursor: sleept ? "grabbing" : undefined,
+      }}
       /* draggable staat niet in de SVG-typen van React, maar de browser kent het wel. */
       {...({ draggable: "false" } as Record<string, string>)}
       onDragStart={(e) => e.preventDefault()}
@@ -312,11 +331,9 @@ export function Klok({
           stroke={kleurUur}
           strokeWidth={8}
           strokeLinecap="round"
-          onPointerDown={zetbaar ? (e) => pak(e, "uur") : undefined}
-          className={zetbaar ? "cursor-grab" : ""}
         />
         {zetbaar && (
-          <Greep y={MIDDEN - UURWIJZER + 3} kleur={kleurUur} onPak={(e) => pak(e, "uur")} />
+          <Grijpgebied van={8} tot={UURWIJZER + 6} sleept={sleept === "uur"} onPak={(e) => pak(e, "uur")} />
         )}
       </g>
 
@@ -326,19 +343,23 @@ export function Klok({
           x1={MIDDEN}
           y1={MIDDEN}
           x2={MIDDEN}
-          y2={MIDDEN - MINUUTWIJZER}
+          y2={MIDDEN - minuutlengte}
           stroke={kleurMinuut}
           strokeWidth={5}
           strokeLinecap="round"
-          onPointerDown={zetbaar ? (e) => pak(e, "minuut") : undefined}
-          className={zetbaar ? "cursor-grab" : ""}
         />
         {zetbaar && (
-          <Greep y={MIDDEN - MINUUTWIJZER + 6} kleur={kleurMinuut} onPak={(e) => pak(e, "minuut")} />
+          <Grijpgebied
+            van={UURWIJZER - 4}
+            tot={minuutlengte + 6}
+            sleept={sleept === "minuut"}
+            onPak={(e) => pak(e, "minuut")}
+          />
         )}
       </g>
 
-      <circle cx={MIDDEN} cy={MIDDEN} r={7} fill="var(--color-inkt)" />
+      {/* Eén klein rondje in het midden. */}
+      <circle cx={MIDDEN} cy={MIDDEN} r={zetbaar ? 5 : 7} fill="var(--color-inkt)" />
 
       {/* De vlek komt er als laatste overheen; die hoort iets af te dekken. */}
       {vlek && <Vlekvorm vlek={vlek} />}

@@ -226,3 +226,29 @@ Geldt voor elke oefening waarin het kind zelf de wijzers zet ("Zet de wijzers go
 - Overal: geen selectie, één klok, de wijzerplaat staat stil, en Controleer gaat pas aan na bewegen.
 
 Het tabletformaat kon ik niet echt instellen: het browservenster liet zich niet smaller maken. Probeer het daarom zelf even op de tablet.
+
+---
+
+# Wijzers zetten: een gewone klok — 2 oktober 2026
+
+Op verzoek van de eigenaar zijn verwijderd:
+- de knopjes uur –, uur +, minuten – en minuten +;
+- de ronde bolletjes aan de wijzers;
+- de oranje kleur.
+
+De zetbare klok ziet er nu uit als een gewone klok:
+- donkere wijzers, de grote wijzer tot bij de streepjes, de kleine korter en dikker;
+- één klein rondje in het midden;
+- de grote wijzer stopt bij elk streepje (elke minuut), en de kleine schuift mee zoals op een echte klok;
+- een onzichtbaar, ruim grijpgebied langs elke wijzer, met de cursor "grab" en "grabbing".
+
+Ongewijzigd: slepen zonder selectie en zonder meeslepende klok, de beginstand, de zin "Sleep de wijzers naar de goede tijd.", Controleer pas na bewegen, en de kleine NU-klok.
+
+De klokken waarop het kind de tijd afleest houden hun kortere grote wijzer, die vóór de cijfers stopt. Die zijn niet aangepast. Wil je ze ook met de grote wijzer tot de streepjes, zeg het dan.
+
+Getest met de muis, zonder iets na te kijken:
+- In "Zet de klok: halve uren": 10:00 → 10:30 met de kleine wijzer ertussen, daarna 10:33 (per minuut), en de kleine wijzer los naar 1 uur.
+- In "Zet de wijzers goed": 05:00 → 05:15.
+- In "Hoe laat is het straks?": 07:00 → 07:30.
+
+Overal geen selectie, één klok, geen knopjes, en Controleer pas actief na bewegen.
