@@ -34,6 +34,7 @@ import {
   bedragkeuzes,
   geldVraag,
   geldzinVelden,
+  prijslijst,
   tussen,
   woordenlijst,
 } from "@/lib/generatoren/geld-gedeeld";
@@ -211,8 +212,14 @@ export const geldsomGenerator: Generator = {
 // In de winkel: wisselgeld, wat blijft er over, de prijs terugrekenen
 // ---------------------------------------------------------------------------
 
+/*
+  Wat er gekocht wordt, met per ding een prijsbereik in hele euro's dat erbij
+  past. Een instelling, zodat de eigenaar dingen en prijzen kan aanpassen.
+*/
 const STANDAARD_DINGEN =
-  "een ijsje, een knuffel, een bal, een boek, een puzzel, een zak snoep, een speelgoedauto, een kaartje voor de kermis";
+  "een ijsje 1-4, een zak snoep 1-3, een kaartje voor de kermis 2-5, een strip 3-8, " +
+  "een speelgoedauto 3-15, een bal 5-20, een boek 6-20, een puzzel 5-18, een knuffel 8-25, " +
+  "een spelletje 10-35, skeelers 30-70, een fiets 60-99";
 
 /** De valkuilen bij een bedrag: een euro ernaast, of tien cent ernaast. */
 function bedragvalkuilen(goed: number, metCenten: boolean): number[] {
@@ -258,7 +265,7 @@ export const geldverhaalGenerator: Generator = {
       sleutel: "dingen",
       label: "Wat er gekocht wordt",
       plaatshouder: STANDAARD_DINGEN,
-      hulp: "Gescheiden door komma's, met een lidwoord ervoor: \"een ijsje\".",
+      hulp: "Per ding de naam met een lidwoord en daarachter van-tot in hele euro's, gescheiden door komma's: \"een ijsje 1-4, een fiets 60-99\". Zonder bereik geldt 1-20 euro.",
     },
     ...geldzinVelden("Je koopt een ijsje van € 1,50. Je betaalt met € 5,-. Hoeveel krijg je terug?"),
   ],
@@ -268,7 +275,7 @@ export const geldverhaalGenerator: Generator = {
   maximum: () => null,
 
   waarschuwing: (inst) =>
-    woordenlijst(tekst(inst, "dingen", STANDAARD_DINGEN)).length === 0
+    prijslijst(tekst(inst, "dingen", STANDAARD_DINGEN)).length === 0
       ? "Er staat niets bij \"Wat er gekocht wordt\". Schrijf er een paar dingen neer, gescheiden door komma's."
       : null,
 
@@ -277,17 +284,28 @@ export const geldverhaalGenerator: Generator = {
     const stand = tekst(inst, "stand", "wisselgeld") as "wisselgeld" | "over" | "prijs";
     const kiezen = tekst(inst, "antwoord", "kiezen") === "kiezen";
     const metCenten = inst.centen === undefined ? true : inst.centen === true;
-    const dingen = woordenlijst(tekst(inst, "dingen", STANDAARD_DINGEN));
+    const lijst = prijslijst(tekst(inst, "dingen", STANDAARD_DINGEN));
+    const dingen = lijst.length ? lijst : prijslijst(STANDAARD_DINGEN);
     const uit: Gegenereerd[] = [];
 
     for (let poging = 0; uit.length < aantal && poging < aantal * 400; poging++) {
-      const betaald = kiesUit(kans, stand === "over" ? [1000, 2000, 5000, 10000] : [500, 1000, 2000, 5000, 10000]);
-      const prijs = tussen(kans, 1, betaald / 100 - 1) * 100 + (metCenten ? tientallen(kans) : 0);
-      if (prijs >= betaald || (metCenten && prijs % 100 === 0)) continue;
+      /* De prijs past bij het ding; met centen blijft hij onder de bovengrens. */
+      const gekozen = kiesUit(kans, dingen);
+      const ding = gekozen.ding;
+      const euro = tussen(kans, gekozen.van, metCenten ? Math.max(gekozen.van, gekozen.tot - 1) : gekozen.tot);
+      const prijs = euro * 100 + (metCenten ? tussen(kans, 1, 9) * 10 : 0);
+      /*
+        Je betaalt met een van de twee kleinste briefjes die genoeg zijn, zoals
+        in het echt: een ijsje betaal je met 5 of 10 euro, niet met 100.
+      */
+      const genoeg = (stand === "over" ? [1000, 2000, 5000, 10000] : [500, 1000, 2000, 5000, 10000]).filter(
+        (b) => b > prijs,
+      );
+      if (genoeg.length === 0) continue;
+      const betaald = kiesUit(kans, genoeg.slice(0, 2));
       const terug = betaald - prijs;
-      const ding = kiesUit(kans, dingen.length ? dingen : ["iets"]);
 
-      const handtekening = `geldverhaal:${stand}:${prijs}:${betaald}`;
+      const handtekening = `geldverhaal:${stand}:${ding}:${prijs}:${betaald}`;
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
 
@@ -337,16 +355,13 @@ export const geldverhaalGenerator: Generator = {
 // ---------------------------------------------------------------------------
 
 const STANDAARD_NAMEN = "Sam, Noor, Daan, Lina, Finn, Mila";
-const DINGEN_MEERVOUD: [string, string][] = [
-  ["ijsje", "ijsjes"],
-  ["kaartje", "kaartjes"],
-  ["zakje chips", "zakjes chips"],
-  ["ballon", "ballonnen"],
-  ["sticker", "stickers"],
-  ["broodje", "broodjes"],
-  ["pakje drinken", "pakjes drinken"],
-  ["ansichtkaart", "ansichtkaarten"],
-];
+/*
+  Wat er op het schoolreisje te koop is, in het meervoud, met per ding een
+  prijsbereik in hele euro's. Een instelling, net als bij "In de winkel".
+*/
+const STANDAARD_REISDINGEN =
+  "ijsjes 1-4, zakjes chips 1-3, ballonnen 1-3, kaartjes voor de draaimolen 2-4, " +
+  "pannenkoeken 4-9, souvenirs 3-9, petjes 5-12, kaartjes voor de dierentuin 6-15";
 
 export const kunjebetalenGenerator: Generator = {
   id: "kunjebetalen",
@@ -362,25 +377,39 @@ export const kunjebetalenGenerator: Generator = {
       plaatshouder: STANDAARD_NAMEN,
       hulp: "Wie het geld heeft. Gescheiden door komma's.",
     },
+    {
+      soort: "tekst",
+      sleutel: "dingen",
+      label: "Wat er te koop is",
+      plaatshouder: STANDAARD_REISDINGEN,
+      hulp: "In het meervoud, met daarachter van-tot in hele euro's per stuk, gescheiden door komma's: \"ijsjes 1-4\". Zonder bereik geldt 1-20 euro. Minstens vijf dingen.",
+    },
     ...geldzinVelden("Sam heeft € 20,- voor het schoolreisje. Kan Sam dit betalen?"),
   ],
-  standaard: { namen: STANDAARD_NAMEN },
+  standaard: { namen: STANDAARD_NAMEN, dingen: STANDAARD_REISDINGEN },
   ...GELDBASIS,
 
   maximum: () => null,
 
+  waarschuwing: (inst) =>
+    prijslijst(tekst(inst, "dingen", STANDAARD_REISDINGEN)).length < 5
+      ? "Bij \"Wat er te koop is\" horen minstens vijf dingen; anders worden de standaarddingen gebruikt."
+      : null,
+
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const namen = woordenlijst(tekst(inst, "namen", STANDAARD_NAMEN));
+    const eigen = prijslijst(tekst(inst, "dingen", STANDAARD_REISDINGEN));
+    const voorraad = eigen.length >= 5 ? eigen : prijslijst(STANDAARD_REISDINGEN);
     const uit: Gegenereerd[] = [];
 
     for (let poging = 0; uit.length < aantal && poging < aantal * 400; poging++) {
       const budget = kiesUit(kans, [1000, 1500, 2000, 2500, 3000]);
-      const dingen = husselen(kans, DINGEN_MEERVOUD).slice(0, 5);
-      const regels = dingen.map(([, meervoud]) => ({
+      const dingen = husselen(kans, voorraad).slice(0, 5);
+      const regels = dingen.map((d) => ({
         aantal: tussen(kans, 2, 5),
-        prijs: tussen(kans, 1, 9) * 100,
-        ding: meervoud,
+        prijs: tussen(kans, d.van, d.tot) * 100,
+        ding: d.ding,
       }));
       /* Minstens twee keer Ja en twee keer Nee, anders valt er weinig te kiezen. */
       const ja = regels.filter((r) => r.aantal * r.prijs <= budget).length;

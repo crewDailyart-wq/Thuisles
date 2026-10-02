@@ -88,3 +88,26 @@ export function woordenlijst(waarde: string): string[] {
     .map((w) => w.trim())
     .filter(Boolean);
 }
+
+/** Eén ding met een prijsbereik in hele euro's: "een ijsje 1-4". */
+export type Prijsding = { ding: string; van: number; tot: number };
+
+/**
+ * Een lijst dingen met een prijsbereik, uit een tekstveld in de admin.
+ *
+ * Per ding de naam en daarachter van-tot in hele euro's, gescheiden door
+ * komma's: "een ijsje 1-4, een bal 5-20, een fiets 60-99". Zo past de prijs
+ * bij het ding: een ijsje kost nooit € 87. Alles blijft onder de 100 euro.
+ *
+ * Staat er bij een ding geen bereik, dan geldt 1 tot en met 20 euro; dat is de
+ * veiligste stand en dan valt er tenminste nog iets te oefenen.
+ */
+export function prijslijst(waarde: string): Prijsding[] {
+  return woordenlijst(waarde).map((regel) => {
+    const m = regel.match(/^(.*?)\s*€?\s*(\d+)\s*[-–]\s*€?\s*(\d+)\s*$/);
+    if (!m || m[1].trim() === "") return { ding: regel, van: 1, tot: 20 };
+    const a = Math.max(1, Math.min(99, Number(m[2])));
+    const b = Math.max(1, Math.min(99, Number(m[3])));
+    return { ding: m[1].trim(), van: Math.min(a, b), tot: Math.max(a, b) };
+  });
+}
