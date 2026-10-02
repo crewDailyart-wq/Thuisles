@@ -23,11 +23,15 @@ import { Icoon } from "@/components/kind/Icoon";
 import { OefenSpeler } from "@/components/oefenen/OefenSpeler";
 import { haalHuidigKind, haalOefenStart, haalSleutelstand } from "@/lib/data/queries";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
-import { isVisueleSom } from "@/lib/generatoren/soort";
+import { isVisueleSom, kansGenerator } from "@/lib/generatoren/soort";
 import { haalGepubliceerdeVragen, haalGepubliceerdeVragenOpIds } from "@/lib/data/vragen";
 import { haalOefensessie } from "@/lib/data/oefensessies";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
-import { haalAandachtLeerdoelen, haalEerderGemaakt } from "@/lib/data/voortgang";
+import {
+  haalAandachtLeerdoelen,
+  haalEerderGemaakt,
+  telAntwoordenVanKind,
+} from "@/lib/data/voortgang";
 import type { OefenVraag, VraagInContext } from "@/lib/vraagtypes";
 
 /**
@@ -49,15 +53,41 @@ function aantalVragenVoor(
   return aantallen.length === 0 ? algemeen : Math.max(...aantallen);
 }
 
-/** Willekeurige greep zonder herhaling. */
-function greepUit<T>(lijst: T[], hoeveel: number): T[] {
-  if (lijst.length <= hoeveel) return [...lijst].sort(() => Math.random() - 0.5);
+/**
+ * Willekeurige greep zonder herhaling, met een vast zaad.
+ *
+ * Niet met `Math.random()`: deze pagina wordt vaker opgebouwd dan je denkt —
+ * na een serveractie, bij het terugkomen in een tabblad, en tijdens het
+ * ontwikkelen bij elke verversing. Met echt toeval kreeg het kind dan bij elke
+ * keer opbouwen een andere serie, en sprong de opdracht op het scherm steeds
+ * naar een andere som. Met een vast zaad (zie `rondezaad`) is de greep bij
+ * dezelfde stand altijd dezelfde.
+ */
+function greepUit<T>(lijst: T[], hoeveel: number, kans: () => number): T[] {
   const kopie = [...lijst];
   const uit: T[] = [];
-  while (uit.length < hoeveel && kopie.length > 0) {
-    uit.push(kopie.splice(Math.floor(Math.random() * kopie.length), 1)[0]);
+  while (uit.length < Math.min(hoeveel, lijst.length) && kopie.length > 0) {
+    uit.push(kopie.splice(Math.floor(kans() * kopie.length), 1)[0]);
   }
   return uit;
+}
+
+/**
+ * Het zaad voor deze ronde: het kind, de oefening, en hoeveel antwoorden het
+ * kind al heeft gegeven.
+ *
+ * Zolang er niets beantwoord is, blijft het zaad gelijk en dus de ronde ook.
+ * Na het eerste antwoord staat de ronde als halve sessie in de database en
+ * neemt die het over (zie `hervat`). Is de ronde af, dan is het aantal
+ * antwoorden veranderd en volgt er vanzelf een nieuwe greep.
+ */
+function rondezaad(...delen: (string | number)[]): number {
+  let h = 2166136261;
+  for (const teken of delen.join("|")) {
+    h ^= teken.charCodeAt(0);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
 }
 
 /** Twee vragen met dezelfde handtekening zijn dezelfde som. */
@@ -77,7 +107,11 @@ function somsleutel(v: VraagInContext): string {
  * komt er een tweede exemplaar bij. Zijn er meer verschillende sommen dan er
  * nodig zijn, dan komt er niets dubbel in de oefening.
  */
-function greepMetVariatie(lijst: VraagInContext[], hoeveel: number): VraagInContext[] {
+function greepMetVariatie(
+  lijst: VraagInContext[],
+  hoeveel: number,
+  kans: () => number,
+): VraagInContext[] {
   if (hoeveel <= 0 || lijst.length === 0) return [];
 
   const groepen = new Map<string, VraagInContext[]>();
@@ -90,15 +124,16 @@ function greepMetVariatie(lijst: VraagInContext[], hoeveel: number): VraagInCont
 
   /* Binnen een som telt de volgorde niet, en de sommen zelf ook door elkaar. */
   const rijtjes = greepUit(
-    [...groepen.values()].map((g) => greepUit(g, g.length)),
+    [...groepen.values()].map((g) => greepUit(g, g.length, kans)),
     groepen.size,
+    kans,
   );
 
   const uit: VraagInContext[] = [];
   for (let ronde = 0; uit.length < hoeveel; ronde++) {
     const dezeRonde = rijtjes.filter((g) => g.length > ronde);
     if (dezeRonde.length === 0) break;
-    for (const g of greepUit(dezeRonde, dezeRonde.length)) {
+    for (const g of greepUit(dezeRonde, dezeRonde.length, kans)) {
       if (uit.length >= hoeveel) break;
       uit.push(g[ronde]);
     }
@@ -205,10 +240,14 @@ export default async function OefeningPagina({
 
   const nieuw = alleVragen.filter((v) => !alGehad.has(v.id));
   const rest = alleVragen.filter((v) => alGehad.has(v.id));
+  /* Een vast zaad: dezelfde stand geeft dezelfde ronde; zie `rondezaad`. */
+  const kans = kansGenerator(
+    rondezaad(kind.id, oefenpad, isHerhaling ? "herhaal" : "", telAntwoordenVanKind(kind.id)),
+  );
   const verseGreep = uitElkaar(
     [
-      ...greepMetVariatie(nieuw, perSessie),
-      ...greepMetVariatie(rest, Math.max(0, perSessie - nieuw.length)),
+      ...greepMetVariatie(nieuw, perSessie, kans),
+      ...greepMetVariatie(rest, Math.max(0, perSessie - nieuw.length), kans),
     ].slice(0, perSessie),
   );
 

@@ -299,6 +299,20 @@ export function haalEerderGemaakt(kindId: string): Set<string> {
   return new Set(rijen.map((r) => String(r.vraag_id)));
 }
 
+/**
+ * Hoeveel antwoorden dit kind in totaal heeft gegeven. Alleen lezen.
+ *
+ * Gebruikt als deel van het zaad waarmee een oefenronde zijn vragen kiest: het
+ * getal verandert pas als het kind iets beantwoordt, dus tot dat moment krijgt
+ * het bij elke keer opbouwen van de pagina precies dezelfde ronde.
+ */
+export function telAntwoordenVanKind(kindId: string): number {
+  const rij = verbinding()
+    .prepare("select count(*) as n from antwoorden where kind_id = ?")
+    .get(kindId) as { n: number } | undefined;
+  return Number(rij?.n ?? 0);
+}
+
 /** Stond dit leerdoel vóór deze ronde op "aandacht"? Voor het comeback-moment. */
 export function haalAandachtLeerdoelen(kindId: string): Set<string> {
   const rijen = verbinding()
