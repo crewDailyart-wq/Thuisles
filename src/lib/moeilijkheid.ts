@@ -58,6 +58,55 @@ function bij(waarde: string, tabel: Record<string, number>): number {
 }
 
 /**
+ * Hoe moeilijk één deeltafel is.
+ *
+ * Niet het getal zelf maar hoe makkelijk de tafel te onthouden is. Delen door 1
+ * en 10 is bijna geen rekenen, door 2 nauwelijks, door 5 gaat op het ritme van
+ * de vijfsprong, en 7 en 9 zijn de twee waar kinderen het langst over doen.
+ * Deze volgorde is dezelfde als die in WERKPLAN.md: 1, 2, 10, 5, 3, 4, 6, 8, 7,
+ * 9.
+ */
+const DEELTAFELPUNTEN: Record<number, number> = {
+  1: 0, 2: 0, 10: 0, 5: 1, 3: 3, 4: 3, 6: 5, 8: 5, 7: 7, 9: 7,
+};
+
+/**
+ * Het gemiddelde van de aangevinkte deeltafels, afgerond.
+ *
+ * Het gemiddelde en niet de zwaarste: "Delen door 9" is iets anders dan
+ * "deelsommen door elkaar waar ook een negen tussen zit". Bij één aangevinkte
+ * tafel komt er gewoon de waarde van die tafel uit.
+ */
+function deeltafelpunten(inst: Instellingen): number {
+  const gekozen = lijst(inst, "delers", ["1", "2", "5", "10"])
+    .map(Number)
+    .filter((n) => n in DEELTAFELPUNTEN);
+  if (gekozen.length === 0) return 0;
+  const som = gekozen.reduce((n, t) => n + DEELTAFELPUNTEN[t], 0);
+  return Math.round(som / gekozen.length);
+}
+
+/**
+ * Hoe zwaar een stel tafels weegt bij de keersommen.
+ *
+ * Twee dingen tellen mee, en dat moet ook: "Tafels van 1 tot en met 5" is iets
+ * anders dan "Tafels van 6 tot en met 10", en die twee zijn allebei iets anders
+ * dan alle tien door elkaar. Het hoogste getal zegt hoe moeilijk de zwaarste
+ * tafel is; het aantal zegt hoeveel een kind tegelijk moet kunnen omschakelen.
+ */
+function keertafelpunten(inst: Instellingen, terugval: string[]): number {
+  const gekozen = lijst(inst, "tafels", terugval)
+    .map(Number)
+    .filter((n) => n >= 1 && n <= 20);
+  if (gekozen.length === 0) return 0;
+
+  const hoogste = Math.max(...gekozen);
+  const zwaarte = hoogste <= 5 ? 0 : hoogste <= 10 ? 2 : hoogste <= 15 ? 6 : 8;
+  /* Meer dan vijf tafels door elkaar vraagt het omschakelen erbij. */
+  return zwaarte + (gekozen.length > 5 ? 2 : 0);
+}
+
+/**
  * Zelf het getal typen in plaats van kiezen uit vier antwoorden.
  *
  * Dat is het grootste verschil dat een instelling kan maken: bij meerkeuze
@@ -327,6 +376,78 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p += 5;
       break;
 
+    /*
+      ---------------------------------------------------------------------------
+      Het domein Delen
+      ---------------------------------------------------------------------------
+      Bij de kale deelsom bepaalt de deeltafel zelf bijna alles: delen door 1 is
+      een ander soort oefening dan delen door 9. Bij het koppelen en bij zelf een
+      deelsom bedenken telt die tafel juist niet mee — daar is de handeling de
+      moeilijkheid, en die is bij elke tafel hetzelfde.
+    */
+    case "deelsom":
+      p += deeltafelpunten(inst);
+      break;
+
+    case "deelkoppelen":
+      p += 5;
+      break;
+
+    case "welkedeelsom":
+      p += 7;
+      break;
+
+    /*
+      ---------------------------------------------------------------------------
+      Het domein Tafels
+      ---------------------------------------------------------------------------
+      Deze types rekenen niet met een bereik maar met tafels, dus wordt de basis
+      hier overschreven in plaats van opgeteld. Zou het bereik meetellen, dan
+      zouden "Tafels van 1 tot en met 5" en "Tafels van 6 tot en met 10" op
+      hetzelfde getal uitkomen, want hun getallen zitten in hetzelfde bereik —
+      terwijl het juist de tafels zijn die het verschil maken.
+    */
+    case "keersom":
+      p = keertafelpunten(inst, ["1", "2", "3", "4", "5"]);
+      break;
+
+    case "keerkoppelen":
+      /* Vijf sommen door elkaar; meer tafels is meer omschakelen. */
+      p = lijst(inst, "tafels", ["1", "2", "5", "10"]).length > 5 ? 4 : 2;
+      break;
+
+    case "welkekeersom":
+      p = 4;
+      break;
+
+    /* Eerst begrijpen: zien, dan de som opschrijven, dan handig rekenen. */
+    case "keerraster":
+      p = 1;
+      break;
+
+    case "keerplaatjes":
+      p = 2;
+      break;
+
+    case "handigkeer":
+      p = 4;
+      break;
+
+    case "keernullen":
+      p = 6;
+      break;
+
+    /* De twee kanten van dezelfde som; allebei een stap na de tafels zelf. */
+    case "keerdeelkoppelen":
+    case "keerdeelsamen":
+      p = 4;
+      break;
+
+    /* Op de markt: eerst wat het samen kost, daarna ook het wisselgeld. */
+    case "marktkraam":
+      p = vinkje(inst, "wisselgeld") ? 2 : 0;
+      break;
+
     case "vakken":
       p += bij(tekst(inst, "zoek", "precies"), { precies: 0, meer: 1, minder: 1, beide: 2 });
       break;
@@ -388,6 +509,21 @@ export const TYPEVOLGORDE = [
   "rekenrekflits",
   "rekenrekaf",
   "rekenrekhoofd",
+  /* Het domein Tafels: eerst begrijpen, dan oefenen, dan de link met delen. */
+  "keerraster",
+  "keerplaatjes",
+  "handigkeer",
+  "keernullen",
+  "keersom",
+  "keerkoppelen",
+  "welkekeersom",
+  "keerdeelkoppelen",
+  "keerdeelsamen",
+  "marktkraam",
+  /* Het domein Delen, in de volgorde waarin een kind ze leert. */
+  "deelsom",
+  "deelkoppelen",
+  "welkedeelsom",
 ] as const;
 
 /** Het plaatsnummer van een type; types zonder eigen plek komen erachter. */

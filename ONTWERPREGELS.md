@@ -33,6 +33,43 @@ hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
 - Eigen Thuisles-stijl: geen titels, teksten of plaatjes letterlijk overnemen
   van andere sites.
 
+## Uitlijnen: pijlen, lijnen, tabellen en sommen onder elkaar
+
+Hier is het eerder misgegaan — een pijl die naast zijn vakje wees, een tabel van
+losse streepjes, twee sommen die niet onder elkaar stonden. Deze regels houden
+dat tegen. Ze gelden bij elke nieuwe opdracht met een pijl, een lijn, een
+tabel, een klok, een kalender of geld erin.
+
+- **Meer sommen onder elkaar staan in een raster met vaste kolommen**, niet als
+  losse regels. Eén kolom per onderdeel van de som: getal, teken, getal, =,
+  getal. Dan staat elk teken recht onder het teken erboven en elk vakje recht
+  onder het vakje erboven, ook als het ene getal één cijfer heeft en het andere
+  vier. Met losse regels verschuift alles zodra een getal breder wordt.
+- **Een tabel is een echte `<table>` met `border-collapse`.** Nooit losse
+  streepjes of randen per vakje: dan valt er een lijn dubbel of weg. De
+  lijnkleur is `--color-tabellijn`.
+- **Een pijl of lijn begint en eindigt op een echt punt**, niet ongeveer: van
+  het streepje naar het midden van de bovenkant van zijn eigen vakje. Hij is
+  niet langer dan nodig en heeft een volle pijlpunt.
+- **Niets raakt iets anders.** Tussen een getal en een vakje zit lucht (8 px is
+  genoeg); een label valt nooit over een lijn en twee vakjes overlappen nooit.
+- **Een groepje vakjes staat als geheel gecentreerd**, niet per rij. Anders komt
+  een laatste rij die niet vol is in het midden te staan in plaats van onder de
+  rij erboven, en zijn de kolommen niet meer te volgen. Staat een groepje aan de
+  rand, dan schuift het als geheel naar binnen zodat het binnen de kaart blijft.
+- **Een getal dat breder is dan zijn vakje krijgt een breder vakje**, niet
+  cijfers die buiten de rand uitsteken. Het vakje blijft even hoog en even
+  breed als de andere zolang het getal past; zie de stand `breed` bij
+  `Gegeven`.
+- **Wat breder kan worden dan het scherm schuift in zijn eigen vakje**, met
+  `overflow-x-auto`. De kaart eronder schuift nooit mee: de vraagzin en de knop
+  Controleer blijven op hun plek.
+- **Elk antwoord moet te typen zijn.** Een invulvakje neemt hoogstens drie
+  cijfers, dus een opdracht mag geen antwoord boven de 999 opleveren. Laat de
+  generator zulke combinaties weg in plaats van het vakje te verruimen.
+- **Nakijken op een smal scherm hoort erbij.** Loop een nieuwe opdracht na op
+  ongeveer 375 px breed: past de hele opdracht, van vraagzin tot en met
+  Controleer, zonder dat er iets over elkaar valt of buiten de kaart hangt?
 ## Tekst
 
 - Zo min mogelijk tekst. De vraagzin is kort en groot, standaard "Vul in."

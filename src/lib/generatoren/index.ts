@@ -43,11 +43,44 @@ import { getallenlijnGenerator } from "@/lib/generatoren/getallenlijn";
 import { stapstenenGenerator } from "@/lib/generatoren/stapstenen";
 import { tellenslepenGenerator } from "@/lib/generatoren/tellenslepen";
 import { tafelsGenerator } from "@/lib/generatoren/tafels";
+/* De domeinen Tafels en Delen: de kale sommen, het koppelen en het kraampje. */
+import {
+  deelkoppelenGenerator,
+  deelsomGenerator,
+  welkedeelsomGenerator,
+} from "@/lib/generatoren/delen";
+import {
+  handigkeerGenerator,
+  keerdeelkoppelenGenerator,
+  keerdeelsamenGenerator,
+  keerkoppelenGenerator,
+  keernullenGenerator,
+  keerplaatjesGenerator,
+  keerrasterGenerator,
+  keersomGenerator,
+  marktkraamGenerator,
+  welkekeersomGenerator,
+} from "@/lib/generatoren/tafelsommen";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
 export const alleGeneratoren: Generator[] = [
   tafelsGenerator,
+  /* Tafels: eerst begrijpen, dan oefenen, dan de link met delen, dan het echt. */
+  keerrasterGenerator,
+  keerplaatjesGenerator,
+  handigkeerGenerator,
+  keernullenGenerator,
+  keersomGenerator,
+  keerkoppelenGenerator,
+  welkekeersomGenerator,
+  keerdeelkoppelenGenerator,
+  keerdeelsamenGenerator,
+  marktkraamGenerator,
+  /* Delen: de kale deelsom, het koppelen en zelf een deelsom maken. */
+  deelsomGenerator,
+  deelkoppelenGenerator,
+  welkedeelsomGenerator,
   optellenGenerator,
   aftrekkenGenerator,
   splitsenGenerator,

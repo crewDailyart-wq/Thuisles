@@ -22,6 +22,7 @@ import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
+import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
@@ -236,6 +237,19 @@ export function SjabloonVoorbeeld({
                 {isOptelfiguur(som.figuur) && (
                   <div className="mt-1 w-full max-w-sm">
                     <Optelopdracht
+                      figuur={som.figuur}
+                      antwoord=""
+                      fase="bezig"
+                      onWijzig={() => {}}
+                      onBevestig={() => {}}
+                    />
+                  </div>
+                )}
+
+                {/* De opdrachten van de domeinen Tafels en Delen. */}
+                {isKeerfiguur(som.figuur) && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Keeropdracht
                       figuur={som.figuur}
                       antwoord=""
                       fase="bezig"

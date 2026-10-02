@@ -58,6 +58,7 @@ import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
+import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1701,6 +1702,26 @@ function Antwoordvelden({
         onWijzig={onKies}
         onBevestig={onBevestig}
         onKlaar={onSprongKlaar}
+      />
+    );
+  }
+
+  /*
+    De opdrachten van de domeinen Tafels en Delen. Net als bij Splitsen,
+    Optellen en Aftrekken: één getal per leeg vakje met komma's ertussen, in de
+    volgorde waarin ze op het scherm staan. Bij het koppelen is dat per rij de
+    uitkomst, en bij "Keersom en deelsom koppelen" het nummer van het kaartje.
+  */
+  if (vraag.vorm === "open" && isKeerfiguur(vraag.figuur)) {
+    return (
+      <Keeropdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
       />
     );
   }

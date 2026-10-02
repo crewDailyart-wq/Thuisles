@@ -1052,7 +1052,13 @@ export function Koppelsommen({
   fase: Fase;
   uit: boolean;
   uitslagen: ("goed" | "fout" | null)[];
-  /** Het teken tussen de twee getallen; "−" bij de erafsommen. */
+  /**
+   * Het teken tussen de twee getallen.
+   *
+   * "+" bij Optellen, "−" bij Aftrekken, "×" bij Tafels en ":" bij Delen. Het
+   * bepaalt niet alleen wat er staat maar ook hoe de uitkomst van een rij wordt
+   * uitgerekend; zie `hoortBij`.
+   */
   teken?: string;
   /**
    * Krijgt een goed paar na het nakijken een groen vinkje?
@@ -1176,9 +1182,23 @@ export function Koppelsommen({
 
   const inVak = (rij: number) => plek.findIndex((p) => p === rij);
 
-  /** Wat er bij een rij hoort; het teken bepaalt of er bij of af gaat. */
-  const hoortBij = (s: { eerste: number; tweede: number }) =>
-    teken === "+" ? s.eerste + s.tweede : s.eerste - s.tweede;
+  /**
+   * Wat er bij een rij hoort; het teken bepaalt welke som het is.
+   *
+   * De eerste twee stonden er al en zijn niet veranderd. Keer en delen zijn
+   * erbij gekomen voor de domeinen Tafels en Delen, die hetzelfde koppelen
+   * gebruiken — zo hoeft dat niet een tweede keer gebouwd te worden.
+   */
+  const hoortBij = (s: { eerste: number; tweede: number }) => {
+    if (teken === "+") return s.eerste + s.tweede;
+    if (teken === "−") return s.eerste - s.tweede;
+    if (teken === "×") return s.eerste * s.tweede;
+    return s.eerste / s.tweede;
+  };
+
+  /** Hoe het teken heet, voor wie het scherm laat voorlezen. */
+  const tekenwoord =
+    teken === "+" ? "plus" : teken === "−" ? "min" : teken === "×" ? "keer" : "gedeeld door";
 
   return (
     <div
@@ -1219,7 +1239,7 @@ export function Koppelsommen({
                   <button
                     type="button"
                     disabled={uit}
-                    aria-label={`Uitkomst ${figuur.keuzes[welke]} bij ${s.eerste} ${teken === "+" ? "plus" : "min"} ${s.tweede}`}
+                    aria-label={`Uitkomst ${figuur.keuzes[welke]} bij ${s.eerste} ${tekenwoord} ${s.tweede}`}
                     onPointerDown={(e) => pak(e, welke)}
                     className={`size-full rounded-xl [touch-action:none] ${bezig?.nummer === welke ? "opacity-30" : ""}`}
                   >

@@ -88,10 +88,20 @@ De andere onderwerpen van Aftrekken:
 Aftrekken staat even stil. Wat al gebouwd is (Aftrekken tot en met 15 en
 Aftrekken met het rekenrek) blijft zoals het is.
 
-## Groep 4 – Delen
+## Groep 4 – Delen — KLAAR
 
-Nog te bouwen. De basisversie zijn gewone sommen; beeld komt later. De notatie
-is overal met een dubbele punt: 8 : 2.
+De code staat er. De basisversie zijn gewone sommen; beeld komt later. De
+notatie is overal met een dubbele punt: 8 : 2.
+
+Drie oefentypes dekken de vijftien titels: **Delen (kale som)** voor de tien
+deeltafels én voor "Deelsommen tot en met 5 / 10" (alleen andere vinkjes),
+**Koppel de deelsom aan de uitkomst** voor de twee koppel-titels, en **Welke
+deelsom past erbij?** Alle vijftien geven vijftien opgaven per ronde zonder
+dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
+
+De inhoud van de database — de leerdoelen met deze titels, hun sjablonen en hun
+vragen — maakt de eigenaar aan (HARDE REGEL 2). De instellingen per titel staan
+in `scripts/opgaven.mjs`.
 
 ### Onderwerp 1 — Deeltafels oefenen
 
@@ -121,10 +131,20 @@ Elke titel geeft kale deelsommen uit die ene deeltafel, bijvoorbeeld 8 : 2 =
 | 4 | Deelsommen koppelen: tafels van 1 tot en met 10 | ●●●● | Hetzelfde, met alle deeltafels. |
 | 5 | Welke deelsommen passen? | ●●●●● | Het kind ziet een uitkomst, bijvoorbeeld 5, en typt zelf een deelsom die klopt: ▢ : ▢ = 5. Elke goede deelsom uit de deeltafels van 1 tot en met 10 telt goed, dus 10 : 2 en 45 : 9 zijn allebei goed. |
 
-## Groep 4 – Tafels
+## Groep 4 – Tafels — KLAAR
 
-Nog te bouwen. De basisversie zijn gewone sommen; beeld komt later. De notatie
-is overal met een maalteken: 3 × 5.
+De code staat er. De basisversie zijn gewone sommen; beeld komt later. De
+notatie is overal met een maalteken: 3 × 5.
+
+Tien oefentypes dekken de zestien titels. **Keersom (kale som)** doet in één
+type "Tafels van 1 tot en met 5", "6 tot en met 10", "door elkaar", "11 tot en
+met 15" en "16 tot en met 20" — alleen de vinkjes verschillen. Alle zestien
+geven vijftien opgaven per ronde zonder dubbele; `npm run opgaven` rekent dat
+na, met de bolletjes erbij.
+
+De inhoud van de database — de leerdoelen met deze titels, hun sjablonen en hun
+vragen — maakt de eigenaar aan (HARDE REGEL 2). De instellingen per titel staan
+in `scripts/opgaven.mjs`.
 
 ### Onderwerp 1 — Keersommen begrijpen
 

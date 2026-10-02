@@ -170,11 +170,23 @@ export function Gegeven({
   maat = "gewoon",
   vorm = "vierkant",
   kleur = "geel",
+  breed = false,
 }: {
   waarde: number;
   maat?: "gewoon" | "groot" | "klein";
   vorm?: Vakvorm;
   kleur?: Labelkleur;
+  /**
+   * Mag het vakje meegroeien met een lang getal?
+   *
+   * Standaard is een vakje vierkant, en dat blijft zo: alle vakjes even groot
+   * is de afspraak uit ONTWERPREGELS.md. Maar bij een getal van vier cijfers —
+   * "3000" bij Rekenen met nullen — steken de cijfers dan aan weerszijden
+   * buiten de rand uit. Met deze stand blijft het vakje even hoog en even
+   * breed als de rest zolang het getal past, en wordt het alleen breder als het
+   * anders niet past. Uit bij alles wat er al was, dus daar verandert niets.
+   */
+  breed?: boolean;
 }) {
   const grootte =
     maat === "groot"
@@ -182,8 +194,19 @@ export function Gegeven({
       : maat === "klein"
         ? "size-12 text-xl"
         : "size-16 text-2xl sm:size-[4.25rem] sm:text-3xl";
+  /* Even hoog en minstens even breed als een vierkant vakje, maar het mag mee. */
+  const meegroeien =
+    maat === "groot"
+      ? "!w-auto min-w-[4.25rem] px-2 sm:min-w-20"
+      : maat === "klein"
+        ? "!w-auto min-w-12 px-1.5"
+        : "!w-auto min-w-16 px-2 sm:min-w-[4.25rem]";
   return (
-    <span className={`${VAK} ${grootte} ${LABELKLEUREN[kleur]} ${VORM[vorm]}`}>{waarde}</span>
+    <span
+      className={`${VAK} ${grootte} ${breed ? meegroeien : ""} ${LABELKLEUREN[kleur]} ${VORM[vorm]}`}
+    >
+      {waarde}
+    </span>
   );
 }
 

@@ -600,6 +600,152 @@ export type Figuur =
        * namen staan in `Figuurtekening`.
        */
       palet: string;
+    }
+  | {
+      /**
+       * De kale deelsom: 8 : 2 = ▢.
+       *
+       * Met een dubbele punt, zoals op school en zoals in WERKPLAN.md staat —
+       * nooit een breukstreep of een deelteken. Gele vakjes voor wat gegeven
+       * is, één wit vakje voor de uitkomst.
+       */
+      soort: "deelsom";
+      geheel: number;
+      deler: number;
+    }
+  | {
+      /**
+       * Vijf deelsommen links, vijf losse uitkomsten rechts.
+       *
+       * Hergebruikt het koppel-onderdeel dat er al is; alleen het teken ertussen
+       * verschilt. Het antwoord is per rij de uitkomst, van boven naar beneden.
+       */
+      soort: "deelkoppelen";
+      sommen: { eerste: number; tweede: number }[];
+      keuzes: number[];
+    }
+  | {
+      /**
+       * Een uitkomst staat er; welke deelsom past daarbij? ▢ : ▢ = 5
+       *
+       * Elke deelsom die klopt is goed: 10 : 2 en 45 : 9 allebei. Daarom staat
+       * hier niet één antwoord maar de grens waarbinnen een deelsom mag vallen:
+       * `max` is het grootste getal waardoor gedeeld mag worden. Het nakijken
+       * rekent zelf uit of het paar klopt.
+       */
+      soort: "welkedeelsom";
+      uitkomst: number;
+      max: number;
+    }
+  | {
+      /** De kale keersom: 3 × 5 = ▢, met een echt maalteken. */
+      soort: "keersom";
+      eerste: number;
+      tweede: number;
+    }
+  | {
+      /** Vijf keersommen links, vijf losse uitkomsten rechts. */
+      soort: "keerkoppelen";
+      sommen: { eerste: number; tweede: number }[];
+      keuzes: number[];
+    }
+  | {
+      /**
+       * Een uitkomst staat er; welke keersom past daarbij? ▢ × ▢ = 24
+       *
+       * Net als bij `welkedeelsom`: elke keersom die klopt is goed, dus 3 × 8 en
+       * 4 × 6 allebei. `max` is het grootste getal dat een van de twee mag zijn.
+       */
+      soort: "welkekeersom";
+      uitkomst: number;
+      max: number;
+    }
+  | {
+      /**
+       * Blokjes in rijen en kolommen; hoeveel zijn het er samen?
+       *
+       * De eerste stap naar een keersom: je ziet dat vijf rijen van drie
+       * hetzelfde is als vijftien. Een echt raster met even grote vakjes en
+       * even veel ruimte ertussen, zodat de rijen en de kolommen allebei te
+       * volgen zijn.
+       */
+      soort: "keerraster";
+      rijen: number;
+      kolommen: number;
+    }
+  | {
+      /**
+       * Dezelfde opstelling, maar met plaatjes, en het kind vult de hele som in:
+       * ▢ × ▢ = ▢.
+       *
+       * Hoogstens vijf op een rij (ONTWERPREGELS.md), dus `kolommen` gaat niet
+       * boven de vijf.
+       */
+      soort: "keerplaatjes";
+      rijen: number;
+      kolommen: number;
+      voorwerp: string;
+    }
+  | {
+      /**
+       * Handig rekenen: een som die je al kent, en daarmee een nieuwe maken.
+       *
+       * Boven staat de bekende som helemaal uitgerekend (1 × 5 = 5), eronder de
+       * nieuwe met een leeg vakje (1 × 10 = ▢). `stap` zegt hoe de tweede uit
+       * de eerste volgt: "dubbel" of "tienkeer".
+       */
+      soort: "handigkeer";
+      tafel: number;
+      mee: number;
+      stap: string;
+    }
+  | {
+      /**
+       * Rekenen met nullen: drie sommen onder elkaar.
+       *
+       * 2 × ▢ = 6, 2 × ▢ = 60, 2 × ▢ = 600. Hetzelfde eerste getal, en de
+       * uitkomst krijgt er elke regel een nul bij; het antwoord dus ook.
+       */
+      soort: "keernullen";
+      tafel: number;
+      mee: number;
+    }
+  | {
+      /**
+       * Bij elke deelsom de keersom die erbij hoort slepen.
+       *
+       * Links de deelsommen (20 : 5), rechts de keersommen als kaartje
+       * (5 × 4). Het antwoord is per rij het nummer van de keersom die erbij
+       * hoort, van boven naar beneden.
+       */
+      soort: "keerdeelkoppelen";
+      sommen: { geheel: number; deler: number }[];
+      keuzes: { eerste: number; tweede: number }[];
+    }
+  | {
+      /**
+       * Twee sommen onder elkaar die over hetzelfde gaan: 20 : 2 = ▢ en
+       * ▢ × 2 = 20.
+       *
+       * Zo ziet een kind dat een deelsom en een keersom twee kanten van
+       * dezelfde som zijn. Beide vakjes krijgen hetzelfde antwoord.
+       */
+      soort: "keerdeelsamen";
+      geheel: number;
+      deler: number;
+    }
+  | {
+      /**
+       * Een kraampje met twee of drie producten en een prijs in hele euro's.
+       *
+       * Het kind rekent uit wat een aantal daarvan samen kost, en bij `betaald`
+       * ook hoeveel het terugkrijgt. Prijzen en aantallen in hele euro's, zodat
+       * het een keersom blijft en geen kommagetal wordt.
+       */
+      soort: "marktkraam";
+      waren: { naam: string; prijs: number; aantal: number }[];
+      /** Waarmee er betaald wordt, of null: dan is de vraag het totaal. */
+      betaald: number | null;
     };
 
 // ---------------------------------------------------------------------------
