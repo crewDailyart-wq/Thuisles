@@ -383,6 +383,10 @@ Er volgen nog meer onderwerpen bij Tijd.
 
 Nog te bouwen. De basisversie zijn gewone opdrachten; visueel werk komt later.
 
+Typen geldt in heel Geld hetzelfde: een gewoon invoerveld met € ervoor, geen
+getallenpad op het scherm. Goed gerekend worden 26, 26,00 en 26,- als hetzelfde
+bedrag, en 25,5 telt net zo goed als 25,50.
+
 ### Onderwerp 1 — Munten en briefjes
 
 Algemene regels voor dit onderwerp:
@@ -505,7 +509,35 @@ Algemene regels voor dit onderwerp:
 | 1 | Het bonnetje | ●●●○○ | Een simpel getekend bonnetje met drie regels, bijvoorbeeld van de markt of de kermis. Rekent het totaal uit en typt het met komma. |
 | 2 | Prijs kwijt op het bonnetje | ●●●○○ | Het totaal staat erop, maar één prijs is onleesbaar. Typt die prijs. |
 
-Nog toe te voegen bij Geld, volgt later: Inwisselen, Geld afronden, Korting.
+#### Afronden en schatten
+
+Afronden gaat naar de dichtstbijzijnde hele of halve euro: 25,20 wordt 25,-,
+25,40 wordt 25,50 en 25,80 wordt 26,-. Er komen geen bedragen voor die eindigen
+op ,25 of ,75. Het geld in de portemonnee is in hele euro's of briefjes. Alles
+tot 100 euro.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Afronden op hele en halve euro's (kiezen) | ●○○○○ | Ziet één prijs en kiest het afgeronde bedrag uit drie knoppen. |
+| 2 | Afronden op hele en halve euro's (typen) | ●●○○○ | Ziet één prijs en typt het afgeronde bedrag. |
+| 3 | Schatten: samen ongeveer (stap voor stap) | ●●●●○ | Een verhaaltje met twee prijzen, bijvoorbeeld bij de bakker of op de markt. Rondt eerst beide prijzen af en typt daarna het totaal. |
+| 4 | Schatten: wat houd je over? (kiezen) | ●●●●○ | Ziet een prijs en het geld in de portemonnee, en kiest uit vier knoppen ongeveer hoeveel er overblijft. |
+| 5 | Schatten: samen ongeveer | ●●●●○ | Een verhaaltje met twee prijzen; typt meteen het geschatte totaal. |
+| 6 | Schatten: wat houd je over? | ●●●●● | Ziet een prijs en het geld in de portemonnee, en typt ongeveer hoeveel er overblijft. |
+
+#### Aanbiedingen
+
+Alleen hele euro's, tot 100 euro.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hoeveel korting? (kiezen) | ●●○○○ | Ziet "Was € 46,- / Nu € 36,-" en kiest het kortingsbedrag uit vier knoppen. |
+| 2 | Hoeveel korting? | ●●○○○ | Dezelfde situatie; typt het kortingsbedrag. |
+| 3 | Prijs na korting (kiezen) | ●●●○○ | Ziet een prijs met een sticker "€ 25,- korting" erbij en kiest uit vier knoppen wat je betaalt. |
+| 4 | Prijs na korting | ●●●○○ | Dezelfde situatie; typt wat je betaalt. |
+
+Nog open bij Geld: Inwisselen — dat hoort bij Rekenen met geld — en
+Geldnotatie.
 
 ## Bouwstenen
 
