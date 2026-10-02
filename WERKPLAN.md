@@ -172,6 +172,61 @@ Nog te bouwen. De basisversie zijn gewone opdrachten; beeld komt later.
 | 8 | Van digitale tijd naar wijzerklok | ●●●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
 | 9 | Schrijf de tijd digitaal | ●●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
 
+### Onderwerp 2 — De wijzerklok
+
+Drie groepjes: eerst de klok leren aflezen, dan zelf de wijzers zetten, en
+daarna uitrekenen hoe lang iets duurt.
+
+#### Aflezen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | De grote en de kleine wijzer | ● | Ziet een wijzerklok en tikt de wijzer aan die gevraagd wordt, bijvoorbeeld "Tik op de wijzer van de uren". |
+| 2 | Hele uren aflezen | ● | Ziet een wijzerklok en kiest de tijd in woorden uit vier, bijvoorbeeld "zes uur". |
+| 3 | Halve uren aflezen | ●● | Hetzelfde, met halve uren: bijvoorbeeld "half drie". |
+| 4 | Hele en halve uren door elkaar | ●● | Hetzelfde, hele en halve uren door elkaar. |
+| 5 | Klopt de klok? | ●● | Ziet een wijzerklok met een zin erbij, bijvoorbeeld "Het is half drie", en kiest Ja of Nee. Hele en halve uren. |
+| 6 | Kwartieren aflezen | ●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "kwart over één" of "kwart voor vier". |
+| 7 | Welke klok hoort erbij? Hele en halve uren | ●● | Ziet een tijd in woorden, bijvoorbeeld "Het is half één", en kiest de goede wijzerklok uit vier. |
+| 8 | Welke klok hoort erbij? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
+| 9 | Vijf voor en tien over aflezen | ●●●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "tien over twee" of "vijf voor elf". Als uitdaging. |
+| 10 | Welke klok hoort erbij? Vijf voor en tien over | ●●●●● | Hetzelfde andersom: van de woorden naar de goede klok. Als uitdaging. |
+
+#### Klok zetten
+
+Het kind sleept zelf de grote en de kleine wijzer. Dezelfde bouwsteen als bij
+"Zet de wijzers goed" in onderwerp 1.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Zet de klok: hele uren | ● | Leest bijvoorbeeld "Zet de klok op zes uur" en sleept de wijzers op hun plek. |
+| 2 | Zet de klok: halve uren | ●● | Hetzelfde, bijvoorbeeld "half negen". |
+| 3 | Zet de klok: kwartieren | ●●● | Hetzelfde, bijvoorbeeld "kwart voor drie". |
+| 4 | Hoe laat is het straks? | ●● | Ziet een klok en een zin zoals "2 uur later" of "een half uur later", en zet de wijzers op de nieuwe tijd. Hele en halve uren. |
+| 5 | Hoe laat was het eerder? | ●●● | Hetzelfde, maar terug in de tijd: bijvoorbeeld "een half uur eerder". |
+| 6 | Hoe laat is het straks? Vijf voor en tien over | ●●●●● | Bijvoorbeeld: "Het is kwart voor vijf. Zet de klok 3 uur en 30 minuten later." Als uitdaging. |
+| 7 | Klokken op volgorde | ●●●● | Sleept vier wijzerklokken van vroeg naar laat. |
+
+#### Hoe lang duurt het?
+
+Eén wijzerklok met de begintijd; de eindtijd staat in woorden in een korte zin
+met een situatie: het zwembad, school, de film, opa en oma. Het kind typt het
+antwoord in twee vakjes: ▢ uur ▢ minuten.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hoe lang duurt het? Hele uren | ● | Bijvoorbeeld: "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar. Hoe lang ben je weg?" |
+| 2 | Hoe lang duurt het? Halve uren | ●● | Hetzelfde, met halve uren. |
+| 3 | Hoe lang duurt het? Over 12 uur heen | ●●● | Bijvoorbeeld van 11 uur 's ochtends tot 2 uur 's middags. |
+| 4 | Hoe lang duurt het? Kwartieren | ●●●● | Hetzelfde, met kwartieren. |
+| 5 | Hoe lang geleden? Hele uren | ● | Andersom: "Het is nu 5 uur. Om 3 uur ging je zwemmen. Hoe lang geleden is dat?" |
+| 6 | Hoe lang geleden? Halve uren | ●● | Hetzelfde, met halve uren. |
+| 7 | Hoe lang geleden? Kwartieren | ●●●● | Hetzelfde, met kwartieren. |
+| 8 | Hoe lang? Alles door elkaar | ●●●●● | Duur en geleden door elkaar: hele en halve uren en kwartieren, ook over 12 uur heen. |
+
+Notitie voor later: visuele versie — een tijdbalk waarop het kind met sprongen
+van een uur of een half uur van de begintijd naar de eindtijd gaat.
+
 Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
