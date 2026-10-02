@@ -120,12 +120,32 @@ is overal met een maalteken: 3 × 5.
 | 1 | Keersom en deelsom koppelen | ●●● | Sleept bij elke deelsom, bijvoorbeeld 20 : 5, de keersom die erbij hoort, bijvoorbeeld 5 × 4. |
 | 2 | Keersom en deelsom samen | ●●● | Twee sommen onder elkaar: 20 : 2 = ▢ en ▢ × 2 = 20. |
 
-### Onderwerp 4 — Rekenen met geld
+### Onderwerp 4 — Keersommen in het echt
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
 | 1 | Boodschappen op de markt | ● | Ziet een kraampje met twee of drie producten en prijzen in hele euro's — een zak appels € 3, een brood € 2 — en rekent uit wat bijvoorbeeld 4 zakken appels en 2 broden samen kosten: € ▢. |
 | 2 | Wisselgeld op de markt | ●● | Hetzelfde kraampje, met erbij: "Je betaalt met € 20. Hoeveel krijg je terug?" € ▢. |
+
+## Groep 4 – Tijd
+
+Nog te bouwen. De basisversie zijn gewone opdrachten; beeld komt later.
+
+### Onderwerp 1 — Wijzerklok en digitale klok
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Uren en minuten | ● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
+| 2 | Dagdelen | ● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
+| 3 | Hoe laat is het straks? | ●● | Ziet een wijzerklok op een heel uur en een korte zin, bijvoorbeeld "Over 2 uur ga je naar huis", en kiest de goede wijzerklok uit vier. Wisselende situaties: het zwembad, school, opa en oma, de speeltuin. |
+| 4 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
+| 5 | Van wijzerklok naar digitale tijd: hele uren | ●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
+| 6 | Van wijzerklok naar digitale tijd: halve uren | ●●● | Hetzelfde, met halve uren. |
+| 7 | Klokken koppelen | ●●●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
+| 8 | Van digitale tijd naar wijzerklok | ●●●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
+| 9 | Schrijf de tijd digitaal | ●●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+
+Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
 
