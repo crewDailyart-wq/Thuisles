@@ -379,6 +379,41 @@ Algemene regels voor dit onderwerp:
 
 Er volgen nog meer onderwerpen bij Tijd.
 
+## Groep 4 – Geld
+
+Nog te bouwen. De basisversie zijn gewone opdrachten; visueel werk komt later.
+
+### Onderwerp 1 — Munten en briefjes
+
+Algemene regels voor dit onderwerp:
+
+- Geen foto's van echt geld, maar simpele eigen tekeningen met de waarde erop.
+  De kleuren lijken op echt geld: koper voor 1, 2 en 5 cent; goud voor 10, 20
+  en 50 cent; zilver met goud voor 1 en 2 euro; en de briefjes van 5, 10, 20,
+  50, 100, 200 en 500 euro elk in hun eigen kleur.
+- Bedragen tot 100 euro. We zeggen "briefjes".
+- Bij typvragen typt het kind een getal en drukt op Controleren. Gewoon typen,
+  geen getallenpad op het scherm.
+
+#### Munten en briefjes kennen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Welke munt is het meest waard? | ●○○○○ | Ziet drie munten en tikt op de munt die het meest — of het minst — waard is. Eerst alleen euromunten, daarna alleen centmunten. |
+| 2 | Munten en briefjes vergelijken | ●●○○○ | Hetzelfde, nu munten en briefjes door elkaar. Met een valkuil erin: een grote munt zoals 50 cent tegenover een klein briefje van 5 euro. |
+| 3 | Van laag naar hoog | ●●●●○ | Sleept vier munten of briefjes op volgorde van weinig naar veel waard, met een knop Controleren. |
+
+#### Geld tellen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Tel de euro's | ●●○○○ | Ziet een groepje munten van 1 euro, tot 20, en typt hoeveel euro het is. |
+| 2 | Leg het bedrag | ●●●○○ | "Leg 6 euro." Tikt op een munt van 1 euro om hem in een vakje te leggen; nog een keer tikken haalt hem weer weg. Met een knop Controleren. |
+| 3 | Munten of euro's? | ●●●○○ | Ziet bijvoorbeeld twee munten van 2 euro en typt ▢ munten en ▢ euro. |
+| 4 | Leg het bedrag met 1 en 2 euro | ●●●●○ | Hetzelfde als Leg het bedrag, maar het kind kiest zelf munten van 1 en 2 euro. Elk goed bedrag telt, ook als het op een andere manier is gelegd. |
+| 5 | Waar is het meeste geld? | ●●●●○ | Ziet drie vakjes met munten en briefjes en tikt op het vakje met het hoogste bedrag. |
+| 6 | Evenveel waard | ●●●●● | Bijvoorbeeld 3 × 20 cent = ▢ × 10 cent, of 3 × 1 euro = ▢ × 50 cent. Typt het getal. |
+
 ## Bouwstenen
 
 Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
