@@ -6,6 +6,24 @@ kind ze ziet, met de bolletjes en wat het kind er doet.
 De kopjes volgen de bestaande Thuisles-domeinen. Nieuwe onderwerpen komen in
 die domeinen; er wordt geen nieuw domein aangemaakt.
 
+## Bij het bouwen altijd meenemen: SEO-basis
+
+Geldt voor elk nieuw scherm en elk nieuw onderwerp, niet pas achteraf.
+
+1. **Nette webadressen in gewone woorden**, bijvoorbeeld
+   `/groep-4/tafels/tafel-van-3`. Het adres wordt gemaakt uit de namen in de
+   database: kleine letters, streepjes tussen de woorden, geen id-nummers.
+   Verandert een naam later, dan blijft het oude adres werken: dat stuurt
+   automatisch door naar het nieuwe.
+2. **Een eigen paginatitel en korte beschrijving per pagina**, uit de
+   database, bijvoorbeeld "Tafel van 3 oefenen – groep 4 | Thuisles". Allebei
+   aan te passen in de admin. Is het veld leeg, dan maakt het systeem zelf een
+   nette standaardtitel.
+3. **Ruimte voor openbare pagina's voor ouders**, bijvoorbeeld "Hoe leert mijn
+   kind de tafels in groep 4?". Die staan los van de oefeningen achter een
+   login, zodat Google ze kan lezen. Nu alleen de opzet; de teksten komen
+   later.
+
 ## Groep 4 – Aftrekken – Aftrekken tot en met 15
 
 Alle getallen 0 tot en met 15; de uitkomst komt nooit onder 0. De eerste
