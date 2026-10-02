@@ -31,25 +31,19 @@
 
 import { useRef, useState } from "react";
 import { minuutBijHoek, uurBijHoek, wijzerhoeken, type Tijd } from "@/lib/tijd";
+import { opgavegeluidStaatAan, plop } from "@/lib/geluid";
 
 const MIDDEN = 100;
 const RAND = 92;
 
 /*
-  De wijzers blijven binnen de cijfers. De cijfers staan op straal 66 en zijn
-  ongeveer 18 hoog, dus hun binnenkant ligt rond 57: een grote wijzer van 54
-  wijst wel naar het cijfer maar loopt er nooit doorheen. Een langere wijzer
-  schoof eerder dwars door de 12 en de 6, en dan is het cijfer niet meer te
-  lezen. De kleine wijzer is duidelijk korter, zodat ze niet te verwarren zijn.
+  Alle klokken zien er hetzelfde uit, op verzoek van de eigenaar: de grote
+  wijzer komt tot bij de streepjes (die beginnen op straal 76), zodat je ziet
+  bij welk streepje hij staat, en de kleine wijzer is duidelijk korter en
+  dikker. De grote wijzer loopt daarbij over de cijfers; dat is bewust.
 */
-const MINUUTWIJZER = 54;
+const MINUUTWIJZER = 74;
 const UURWIJZER = 38;
-/*
-  Bij een klok die het kind zelf zet komt de grote wijzer tot bij de streepjes
-  (die beginnen op straal 76), op verzoek van de eigenaar: zo zie je bij welk
-  streepje hij staat. Hij loopt daarbij over de cijfers; dat is hier bewust.
-*/
-const ZETWIJZER = 74;
 
 /*
   Afgerond op twee decimalen. De server en de browser rekenen cos en sin net
@@ -186,6 +180,20 @@ export function Klok({
     opnieuw getekend heeft.
   */
   const stand = useRef<Tijd>(tijd);
+  /** Wanneer de laatste plop klonk. */
+  const laatstePlop = useRef(0);
+
+  /*
+    Een plop bij elk streepje en elk uur: hetzelfde geluid als bij de vos op de
+    getallenlijn. Bij heel snel slepen hoogstens één per 40 milliseconden,
+    anders gaat het kraken. Staat het geluid uit, dan geen plop.
+  */
+  function plopBijStap() {
+    const nu = performance.now();
+    if (nu - laatstePlop.current < 40) return;
+    laatstePlop.current = nu;
+    if (opgavegeluidStaatAan()) plop();
+  }
 
   function verplaats(e: React.PointerEvent, welke: "uur" | "minuut") {
     if (!zetbaar || !onZet) return;
@@ -206,12 +214,14 @@ export function Klok({
       const nieuw = { uur: ((uur % 12) + 12) % 12, minuut };
       if (nieuw.uur === nu.uur && nieuw.minuut === nu.minuut) return;
       stand.current = nieuw;
+      plopBijStap();
       onZet(nieuw);
     } else {
       /* De kleine wijzer springt per heel uur; de minuten blijven staan. */
       const nieuw = { uur: uurBijHoek(hoek), minuut: nu.minuut };
       if (nieuw.uur === nu.uur % 12) return;
       stand.current = nieuw;
+      plopBijStap();
       onZet(nieuw);
     }
   }
@@ -245,12 +255,7 @@ export function Klok({
 
   const kleurUur = nadruk === "uur" ? "var(--color-huisstijl)" : "var(--color-inkt)";
   const kleurMinuut = nadruk === "minuut" ? "var(--color-huisstijl)" : "var(--color-inkt)";
-  /*
-    Bij een klok die het kind zelf zet komt de grote wijzer tot bij de
-    streepjes, zoals op een echte klok: dan zie je precies bij welk streepje
-    hij staat. Hij stopt bij elk streepje (elke minuut).
-  */
-  const minuutlengte = zetbaar ? ZETWIJZER : MINUUTWIJZER;
+  const minuutlengte = MINUUTWIJZER;
 
   return (
     <svg
@@ -359,7 +364,7 @@ export function Klok({
       </g>
 
       {/* Eén klein rondje in het midden. */}
-      <circle cx={MIDDEN} cy={MIDDEN} r={zetbaar ? 5 : 7} fill="var(--color-inkt)" />
+      <circle cx={MIDDEN} cy={MIDDEN} r={5} fill="var(--color-inkt)" />
 
       {/* De vlek komt er als laatste overheen; die hoort iets af te dekken. */}
       {vlek && <Vlekvorm vlek={vlek} />}

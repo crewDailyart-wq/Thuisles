@@ -252,3 +252,25 @@ Getest met de muis, zonder iets na te kijken:
 - In "Hoe laat is het straks?": 07:00 → 07:30.
 
 Overal geen selectie, één klok, geen knopjes, en Controleer pas actief na bewegen.
+
+---
+
+# Plop bij de wijzers, en alle klokken gelijk — 2 oktober 2026
+
+**Plop:** hetzelfde geluid als bij de vos op de getallenlijn (`plop()` uit `src/lib/geluid.ts`).
+- Het klinkt elke keer dat de grote wijzer een streepje verder springt, en elke keer dat de kleine wijzer een uur verder springt.
+- Bij snel slepen klinkt hoogstens één plop per 40 ms.
+- Staat het geluid uit, dan geen plop (`opgavegeluidStaatAan()`).
+
+Getest door de tonen te tellen:
+
+| Hoe gesleept | Resultaat |
+|---|---|
+| Langzaam, 10 streepjes | 10 plops |
+| 7 standen | 7 plops |
+| Heel snel, twee rondjes in 229 ms | 6 plops, minstens 40 ms uit elkaar |
+| Eén sprong van 15 minuten in één beweging | 1 plop |
+
+**Klokken:** alle klokken bij Tijd zien er nu hetzelfde uit, bij aflezen, zelf zetten en de kleine NU-klok. De grote wijzer loopt tot de streepjes, met dezelfde dikte en kleur en één klein rondje in het midden. Alleen het uiterlijk is veranderd, niet de opgaven. Bekeken in het voorbeeld in de admin: "Wijzerklok aflezen", "Wijzerklok met een vlek" en "Klokken koppelen" (kleine klokken). Alles is goed leesbaar.
+
+**Let op, twee antwoorden tijdens de test.** Tijdens de eerste geluidstest in de kindomgeving ("Zet de klok: halve uren") zijn er twee antwoorden opgeslagen: om 10:17:55 en 10:18:25 (UTC), allebei direct goed, met 63 en 26 seconden bedenktijd. Ik heb niet op Controleer geklikt en die bedenktijden passen bij een kind dat zelf oefent. Maar het browservenster veranderde tijdens de test van formaat, dus ik kan niet uitsluiten dat het in mijn tabblad gebeurde. Ik heb ze laten staan. Waren ze niet van je kind, dan kun je ze in de admin weghalen. Daarna heb ik alleen nog in het voorbeeld in de admin getest.

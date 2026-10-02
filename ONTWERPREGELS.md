@@ -76,15 +76,12 @@ tabel, een klok, een kalender of geld erin.
 - **Een rij die je in volgorde leest, breekt ook niet af.** Vier vakjes die
   over twee regels verspringen, worden een blokje van twee bij twee, en dan is
   niet meer te zien wat eerst komt. Eén rij als het past, anders onder elkaar.
-- **Een wijzer loopt niet door de cijfers van de klok.** De grote wijzer houdt
-  op vóór de binnenkant van de cijfers, de kleine is duidelijk korter.
-  Uitzondering, op verzoek van de eigenaar: bij een klok die het kind zelf zet
-  komt de grote wijzer tot bij de streepjes, zodat je ziet bij welk streepje
-  hij staat. Die klok is verder zo gewoon mogelijk: donkere wijzers, één klein
-  rondje in het midden, geen knopjes of bolletjes; het grijpgebied is
-  onzichtbaar groter dan de wijzer. Een vlek
-  die cijfers of een wijzer bedekt, ligt op het cijfer zelf en houdt afstand
-  van de wijzers die zichtbaar moeten blijven.
+- **Alle klokken zien er hetzelfde uit** (keuze van de eigenaar): donkere
+  wijzers, de grote tot bij de streepjes en de kleine korter en dikker, één
+  klein rondje in het midden — bij aflezen, bij zelf zetten en bij de kleine
+  NU-klok. De grote wijzer loopt daarbij over de cijfers. Een vlek die cijfers
+  of een wijzer bedekt, houdt afstand van de wijzers die zichtbaar moeten
+  blijven.
 - **Wat op een sleepkaartje staat, past in het vakje waar het heen moet.** Een
   getekende klok of een digitale tijd op een kaartje krijgt een kleine maat, en
   het vakje is meteen groot genoeg: het springt niet groter als het kaartje
