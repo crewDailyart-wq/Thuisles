@@ -205,6 +205,12 @@ naar moeilijk, en het kinderscherm volgt precies deze volgorde.
 Ook de foute keuzes blijven binnen het niveau: bij hele uren staat er nooit
 "kwart over" als keuze.
 
+De groepjes (zoals "Aflezen" en "Klok zetten") staan op het kinderscherm als
+kopje boven de oefeningen, en per kopje loopt de lijst op van makkelijk naar
+moeilijk. Elke titel binnen Tijd is uniek. "De grote en de kleine wijzer" staat
+hier niet meer: dat leerdoel bestaat nog, maar is op groep 3 gezet en dus niet
+zichtbaar voor groep 4.
+
 De code staat er, voor alle zes onderwerpen: 78 titels. De basisversie zijn
 gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
 ronde zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
@@ -225,15 +231,20 @@ vragen — maakt de eigenaar aan (HARDE REGEL 2).
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Hoe laat is het straks? | ● | Ziet een wijzerklok op een heel uur en een korte zin, bijvoorbeeld "Over 2 uur ga je naar huis", en kiest de goede wijzerklok uit vier. Wisselende situaties: het zwembad, school, opa en oma, de speeltuin. |
-| 2 | Uren en minuten | ●● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
-| 3 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
-| 4 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
-| 5 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
-| 6 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
-| 7 | Van wijzerklok naar digitale tijd: hele uren | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
-| 8 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
-| 9 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+| 1 | Hoeveel minuten in een uur? | ●● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
+| 2 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
+| 3 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
+| 4 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
+| 5 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
+| 6 | Van wijzerklok naar digitale tijd: hele uren in de dag | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
+| 7 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
+| 8 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+
+#### Rekenen met de klok
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hoe laat is het straks? Kies de klok | ● | Ziet een wijzerklok op een heel uur en een korte zin, bijvoorbeeld "Over 2 uur ga je naar huis", en kiest de goede wijzerklok uit vier. Wisselende situaties: het zwembad, school, opa en oma, de speeltuin. |
 
 ### Onderwerp 2 — De wijzerklok
 
@@ -244,16 +255,15 @@ daarna uitrekenen hoe lang iets duurt.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | De grote en de kleine wijzer | ● | Ziet een wijzerklok op een heel uur en tikt de wijzer aan die gevraagd wordt, bijvoorbeeld "Tik op de wijzer van de uren". |
-| 2 | Hele uren aflezen | ● | Ziet een wijzerklok en kiest de tijd in woorden uit vier, bijvoorbeeld "zes uur". |
-| 3 | Halve uren aflezen | ●● | Hetzelfde, met halve uren: bijvoorbeeld "half drie". |
-| 4 | Hele en halve uren door elkaar | ●● | Hetzelfde, hele en halve uren door elkaar. |
-| 5 | Klopt de klok? | ●● | Ziet een wijzerklok met een zin erbij, bijvoorbeeld "Het is half drie", en kiest Ja of Nee. Hele en halve uren. |
-| 6 | Welke klok hoort erbij? Hele en halve uren | ●● | Ziet een tijd in woorden, bijvoorbeeld "Het is half één", en kiest de goede wijzerklok uit vier. |
-| 7 | Kwartieren aflezen | ●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "kwart over één" of "kwart voor vier". |
-| 8 | Welke klok hoort erbij? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
-| 9 | Vijf voor en tien over aflezen | ●●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "tien over twee" of "vijf voor elf". |
-| 10 | Welke klok hoort erbij? Vijf voor en tien over | ●●●● | Hetzelfde andersom: van de woorden naar de goede klok. |
+| 1 | Hele uren aflezen op de wijzerklok | ● | Ziet een wijzerklok en kiest de tijd in woorden uit vier, bijvoorbeeld "zes uur". |
+| 2 | Halve uren aflezen | ●● | Hetzelfde, met halve uren: bijvoorbeeld "half drie". |
+| 3 | Hele en halve uren door elkaar | ●● | Hetzelfde, hele en halve uren door elkaar. |
+| 4 | Klopt de klok? | ●● | Ziet een wijzerklok met een zin erbij, bijvoorbeeld "Het is half drie", en kiest Ja of Nee. Hele en halve uren. |
+| 5 | Welke klok hoort erbij? Hele en halve uren | ●● | Ziet een tijd in woorden, bijvoorbeeld "Het is half één", en kiest de goede wijzerklok uit vier. |
+| 6 | Kwartieren aflezen | ●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "kwart over één" of "kwart voor vier". |
+| 7 | Welke klok hoort erbij? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
+| 8 | Vijf voor en tien over aflezen | ●●●● | Kiest de tijd in woorden uit vier, bijvoorbeeld "tien over twee" of "vijf voor elf". |
+| 9 | Welke klok hoort erbij? Vijf voor en tien over | ●●●● | Hetzelfde andersom: van de woorden naar de goede klok. |
 
 #### Klok zetten
 
@@ -264,7 +274,7 @@ Het kind sleept zelf de grote en de kleine wijzer. Dezelfde bouwsteen als bij
 |---|-------|-----------|-------------------|
 | 1 | Zet de klok: hele uren | ● | Leest bijvoorbeeld "Zet de klok op zes uur" en sleept de wijzers op hun plek. |
 | 2 | Zet de klok: halve uren | ●● | Hetzelfde, bijvoorbeeld "half negen". |
-| 3 | Hoe laat is het straks? | ●● | Ziet een klok en een zin zoals "2 uur later" of "een half uur later", en zet de wijzers op de nieuwe tijd. Hele en halve uren. |
+| 3 | Hoe laat is het straks? Zet de klok | ●● | Ziet een klok en een zin zoals "2 uur later" of "een half uur later", en zet de wijzers op de nieuwe tijd. Hele en halve uren. |
 | 4 | Hoe laat was het eerder? | ●● | Hetzelfde, maar terug in de tijd: bijvoorbeeld "een half uur eerder". |
 | 5 | Klokken op volgorde | ●● | Sleept vier wijzerklokken van vroeg naar laat. |
 | 6 | Zet de klok: kwartieren | ●●● | Hetzelfde, bijvoorbeeld "kwart voor drie". |
@@ -313,8 +323,8 @@ Algemene regels voor dit onderwerp:
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Uren en minuten (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. Hele uren, 01:00 tot en met 12:00. |
-| 2 | Hele uren aflezen | ●○○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". Alleen 01:00 tot en met 12:00. |
+| 1 | Uren en minuten op de digitale klok (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. Hele uren, 01:00 tot en met 12:00. |
+| 2 | Hele uren aflezen op de digitale klok | ●○○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". Alleen 01:00 tot en met 12:00. |
 | 3 | Hele en halve uren aflezen | ●●○○○ | Bijvoorbeeld 05:30 = half zes. Tot en met 12:59. |
 | 4 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
 | 5 | Hele uren in de dag | ●●●●○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |

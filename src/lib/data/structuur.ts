@@ -1,4 +1,5 @@
 import "server-only";
+import { groepjeVan } from "@/lib/groepje";
 import { GROEPSVORMEN } from "@/lib/generatoren/uitlegscript";
 import { beheerlabel, begrensMoeilijkheid } from "@/lib/leerdoelnaam";
 import { bolletjesVan, puntenVan, typeVolgorde } from "@/lib/moeilijkheid";
@@ -349,7 +350,24 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
     ).map((r) => String(r.id)),
   );
 
-  return sorteerLeerdoelen(doelen, punten, opVolgorde);
+  /*
+    Onderwerpen met groepjes: per groepje bij elkaar, in de volgorde waarin de
+    groepjes in de database staan, en binnen een groepje van makkelijk naar
+    moeilijk. Zo ziet een kind nooit een lijst die zonder kopje terugspringt
+    naar één bolletje. Het groepje staat vooraan in de naam in beheer; zie
+    `groepjeVan`.
+  */
+  const groepjesrang = new Map<string, number>();
+  for (const l of doelen) {
+    const g = groepjeVan(l);
+    const sleutelG = `${l.subdomeinId}|${g ?? `los:${l.id}`}`;
+    groepjesrang.set(sleutelG, Math.min(groepjesrang.get(sleutelG) ?? Infinity, l.volgorde));
+  }
+  const metGroepjes = new Set(doelen.filter((l) => groepjeVan(l) !== null).map((l) => l.subdomeinId));
+  const rangVan = (l: Leerdoel) =>
+    groepjesrang.get(`${l.subdomeinId}|${groepjeVan(l) ?? `los:${l.id}`}`) ?? l.volgorde;
+
+  return sorteerLeerdoelen(doelen, punten, opVolgorde, metGroepjes, rangVan);
 }
 
 /** Domeinen waar de volgorde van de database geldt in plaats van per soort oefening. */
@@ -367,9 +385,21 @@ function sorteerLeerdoelen(
   doelen: Leerdoel[],
   punten: Map<string, number>,
   opVolgorde: Set<string> = new Set(),
+  metGroepjes: Set<string> = new Set(),
+  rangVan: (l: Leerdoel) => number = (l) => l.volgorde,
 ): Leerdoel[] {
   return [...doelen].sort((a, b) => {
     if (a.subdomeinId !== b.subdomeinId) return a.subdomeinId.localeCompare(b.subdomeinId);
+
+    /* Onderwerpen met groepjes: per groepje, en daarbinnen oplopend. */
+    if (metGroepjes.has(a.subdomeinId)) {
+      return (
+        rangVan(a) - rangVan(b) ||
+        (a.moeilijkheid ?? 99) - (b.moeilijkheid ?? 99) ||
+        a.volgorde - b.volgorde ||
+        a.titel.localeCompare(b.titel)
+      );
+    }
 
     /* Onderwerpen die de volgorde van de database volgen (zie DOMEINEN_OP_VOLGORDE). */
     if (opVolgorde.has(a.subdomeinId)) {

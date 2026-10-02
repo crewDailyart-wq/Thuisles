@@ -28,7 +28,9 @@
  * `haalOefenStart` — allebei bestond al.
  */
 
+import { Fragment } from "react";
 import Link from "next/link";
+import { groepjeVan } from "@/lib/groepje";
 import { Moeilijkheid } from "@/components/Moeilijkheid";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
@@ -216,8 +218,15 @@ export default async function DomeinPagina({
           </div>
 
           <ol className="mt-5 flex flex-col gap-2.5">
-            {detail.leerdoelen.map(({ leerdoel, status }) => {
+            {detail.leerdoelen.map(({ leerdoel, status }, i, rij) => {
               const heeftVragen = (vragenPer[leerdoel.id] ?? 0) > 0;
+              /*
+                Het groepje als kopje, zodra er een nieuw groepje begint. De
+                lijst loopt per groepje op van makkelijk naar moeilijk; zonder
+                kopje zou het lijken alsof hij halverwege terugspringt.
+              */
+              const kop = groepjeVan(leerdoel);
+              const nieuwKop = kop !== null && (i === 0 || groepjeVan(rij[i - 1].leerdoel) !== kop);
 
               const binnenkant = (
                 <>
@@ -272,7 +281,15 @@ export default async function DomeinPagina({
               );
 
               return (
-                <li key={leerdoel.id}>
+                <Fragment key={leerdoel.id}>
+                {nieuwKop && (
+                  <li className={i === 0 ? "" : "mt-3"}>
+                    <h3 className="px-1 text-xs font-extrabold uppercase tracking-wide text-inkt-zacht">
+                      {kop}
+                    </h3>
+                  </li>
+                )}
+                <li>
                   {heeftVragen ? (
                     <Link
                       href={`${oefenHref}?leerdoel=${leerdoel.id}`}
@@ -287,6 +304,7 @@ export default async function DomeinPagina({
                     </div>
                   )}
                 </li>
+                </Fragment>
               );
             })}
           </ol>

@@ -121,21 +121,21 @@ const OEFENINGEN = [
   // Van makkelijk naar moeilijk, volgens de leerlijn van de klok (zie
   // klokniveau in src/lib/moeilijkheid.ts).
   // -------------------------------------------------------------------------
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Hoe laat is het straks?", soort: "klokkiezen", bolletjes: 1, inst: { vraag: "verschuiving", tijden: ["heel"], maxUren: 5, halveUren: false } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Uren en minuten", soort: "urenminuten", bolletjes: 2, inst: {} },
+  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Hoeveel minuten in een uur?", soort: "urenminuten", bolletjes: 2, inst: {} },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Zet de wijzers goed", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "tijd", tijden: ["heel", "half"] } },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Klokken koppelen", soort: "klokkoppelen", bolletjes: 2, inst: { tijden: ["heel", "half"], hoeveel: 3 } },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van digitale tijd naar wijzerklok", soort: "klokkiezen", bolletjes: 2, inst: { vraag: "digitaal", tijden: ["heel", "half"] } },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Dagdelen", soort: "dagdeel", bolletjes: 4, inst: { tijden: ["heel"] } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van wijzerklok naar digitale tijd: hele uren", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["heel"], antwoordsoort: "digitaal", metDagdeel: true } },
+  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van wijzerklok naar digitale tijd: hele uren in de dag", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["heel"], antwoordsoort: "digitaal", metDagdeel: true } },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van wijzerklok naar digitale tijd: halve uren", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["half"], antwoordsoort: "digitaal", metDagdeel: true } },
   { groep: "Tijd · Wijzerklok en digitale klok", titel: "Schrijf de tijd digitaal", soort: "kloktypen", bolletjes: 4, inst: { tijden: ["heel", "half"], metDagdeel: true } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Rekenen met de klok", titel: "Hoe laat is het straks? Kies de klok", soort: "klokkiezen", bolletjes: 1, inst: { vraag: "verschuiving", tijden: ["heel"], maxUren: 5, halveUren: false } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tijd – Onderwerp 2: De wijzerklok — Aflezen
   // -------------------------------------------------------------------------
-  { groep: "Tijd · De wijzerklok · Aflezen", titel: "De grote en de kleine wijzer", soort: "wijzeraanwijzen", bolletjes: 1, inst: { tijden: ["heel"] } },
-  { groep: "Tijd · De wijzerklok · Aflezen", titel: "Hele uren aflezen", soort: "klokaflezen", bolletjes: 1, inst: { tijden: ["heel"], antwoordsoort: "woorden" } },
+  /* "De grote en de kleine wijzer" staat niet meer in WERKPLAN.md; het leerdoel is op groep 3 gezet, niet verwijderd. */
+  { groep: "Tijd · De wijzerklok · Aflezen", titel: "Hele uren aflezen op de wijzerklok", soort: "klokaflezen", bolletjes: 1, inst: { tijden: ["heel"], antwoordsoort: "woorden" } },
   { groep: "Tijd · De wijzerklok · Aflezen", titel: "Halve uren aflezen", soort: "klokaflezen", bolletjes: 2, inst: { tijden: ["half"], antwoordsoort: "woorden" } },
   { groep: "Tijd · De wijzerklok · Aflezen", titel: "Hele en halve uren door elkaar", soort: "klokaflezen", bolletjes: 2, inst: { tijden: ["heel", "half"], antwoordsoort: "woorden" } },
   { groep: "Tijd · De wijzerklok · Aflezen", titel: "Klopt de klok?", soort: "klokklopt", bolletjes: 2, inst: { tijden: ["heel", "half"] } },
@@ -150,7 +150,7 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Zet de klok: hele uren", soort: "klokzetten", bolletjes: 1, inst: { opdracht: "tijd", tijden: ["heel"] } },
   { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Zet de klok: halve uren", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "tijd", tijden: ["half"] } },
-  { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Hoe laat is het straks?", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "verschuiving", tijden: ["heel", "half"], richting: "vooruit", halveUren: true } },
+  { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Hoe laat is het straks? Zet de klok", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "verschuiving", tijden: ["heel", "half"], richting: "vooruit", halveUren: true } },
   { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Hoe laat was het eerder?", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "verschuiving", tijden: ["heel", "half"], richting: "terug", halveUren: true } },
   { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Klokken op volgorde", soort: "klokkenvolgorde", bolletjes: 2, inst: { tijden: ["heel", "half"], hoeveel: 4 } },
   { groep: "Tijd · De wijzerklok · Klok zetten", titel: "Zet de klok: kwartieren", soort: "klokzetten", bolletjes: 3, inst: { opdracht: "tijd", tijden: ["kwartier"] } },
@@ -171,8 +171,8 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Tijd – Onderwerp 3: Digitale klok — Aflezen
   // -------------------------------------------------------------------------
-  { groep: "Tijd · Digitale klok · Aflezen", titel: "Uren en minuten (met uitleg)", soort: "digitaaldelen", bolletjes: 1, inst: { tijden: ["heel"], metUitleg: true } },
-  { groep: "Tijd · Digitale klok · Aflezen", titel: "Hele uren aflezen", soort: "digitaalaflezen", bolletjes: 1, inst: { tijden: ["heel"] } },
+  { groep: "Tijd · Digitale klok · Aflezen", titel: "Uren en minuten op de digitale klok (met uitleg)", soort: "digitaaldelen", bolletjes: 1, inst: { tijden: ["heel"], metUitleg: true } },
+  { groep: "Tijd · Digitale klok · Aflezen", titel: "Hele uren aflezen op de digitale klok", soort: "digitaalaflezen", bolletjes: 1, inst: { tijden: ["heel"] } },
   { groep: "Tijd · Digitale klok · Aflezen", titel: "Hele en halve uren aflezen", soort: "digitaalaflezen", bolletjes: 2, inst: { tijden: ["heel", "half"] } },
   { groep: "Tijd · Digitale klok · Aflezen", titel: "Hele uren, halve uren en kwartieren aflezen", soort: "digitaalaflezen", bolletjes: 3, inst: { tijden: ["heel", "half", "kwartier"] } },
   { groep: "Tijd · Digitale klok · Aflezen", titel: "Hele uren in de dag", soort: "digitaaldagdeel", bolletjes: 4, inst: { tijden: ["heel"] } },

@@ -379,3 +379,28 @@ Maanden en dagen en Kalender zijn niet aangeraakt.
 | 57 | Wijzerklok met vlekken | Kwart over en kwart voor: wijzer onder een vlek | ●●●○○ | ●●●●○ | bolletjes 4 → 3; foute keuzes binnen het niveau; nieuwe opgaven |
 | 58 | Wijzerklok met vlekken | Gemengd: cijfers onder een vlek | ●●●○○ | ●●●●○ | bolletjes 4 → 3; foute keuzes binnen het niveau; nieuwe opgaven |
 | 59 | Wijzerklok met vlekken | Gemengd: grote vlek | ●●●○○ | ●●●●● | bolletjes 5 → 3; foute keuzes binnen het niveau; nieuwe opgaven |
+
+---
+
+# Kopjes, unieke titels en één oefening verborgen — 2 oktober 2026
+
+Back-up vooraf met `npm run backup` en in `backups/`. Er is niets verwijderd. Aan antwoorden, voortgang, sessies, sjablonen en opgaven is niets veranderd.
+
+- **Kopjes:** op het kinderscherm staan de groepjes nu als kopje boven de oefeningen. Dat geldt bij Tijd en Geld; andere domeinen hebben geen groepjes. Per kopje loopt de lijst op van makkelijk naar moeilijk. Nagekeken in alle onderwerpen van Tijd en Geld: nergens een terugsprong.
+- **Verborgen:** "De grote en de kleine wijzer" staat op groep 3, dus niet zichtbaar voor groep 4. Een apart vinkje "verborgen" bestaat niet, daarom deze oplossing. Het leerdoel staat niet meer in WERKPLAN.md, maar bestaat nog wel.
+- **Wijzerklok en digitale klok:**
+  - "Hoe laat is het straks? Kies de klok" staat achteraan. Hij houdt ●○○○○, want zijn opgaven zijn hele uren. Zodat de lijst niet zonder kopje terugspringt, staat hij onder het kopje "Rekenen met de klok".
+  - "Van wijzerklok naar digitale tijd: hele uren" heeft wel 24-uurstijden (10 van de 15 opgaven, met dagdeel). Hij blijft ●●●●○ en heet nu "… hele uren in de dag".
+- **Unieke titels** (oude webadressen sturen door):
+
+  | Was | Wordt |
+  |---|---|
+  | Uren en minuten | Hoeveel minuten in een uur? |
+  | Hoe laat is het straks? (onderwerp 1) | Hoe laat is het straks? Kies de klok |
+  | Hoe laat is het straks? (Klok zetten) | Hoe laat is het straks? Zet de klok |
+  | Hele uren aflezen (wijzerklok) | Hele uren aflezen op de wijzerklok |
+  | Hele uren aflezen (digitale klok) | Hele uren aflezen op de digitale klok |
+  | Uren en minuten (met uitleg) | Uren en minuten op de digitale klok (met uitleg) |
+
+  Daarnaast is "Van wijzerklok naar digitale tijd: hele uren" hernoemd, zie hierboven.
+- **Niet aangepast, maar misschien wil je het:** "Van wijzerklok naar digitale tijd: halve uren" heeft ook 24-uurstijden met dagdeel. Die titel kan ook "… halve uren in de dag" worden.
