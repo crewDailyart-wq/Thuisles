@@ -227,6 +227,57 @@ antwoord in twee vakjes: ▢ uur ▢ minuten.
 Notitie voor later: visuele versie — een tijdbalk waarop het kind met sprongen
 van een uur of een half uur van de begintijd naar de eindtijd gaat.
 
+### Onderwerp 3 — Digitale klok
+
+Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+
+Algemene regels voor dit onderwerp:
+
+- Tijden staan als digitale klok, uren:minuten, altijd twee cijfers:
+  bijvoorbeeld 07:00.
+- Bij aflezen kiest het kind uit vier antwoorden in woorden. De foute keuzes
+  zijn echte valkuilen: bij 05:30 staan er ook "half vijf" en "vijf uur"
+  tussen.
+- Bij Later en Eerder ziet het kind twee klokken en typt het antwoord in twee
+  vakjes: ▢ uur ▢ minuten, met een knop Controleren. Gewoon typen, geen
+  getallenpad op het scherm.
+- Bij Later en Eerder mogen 24-uurstijden voorkomen, bijvoorbeeld 18:30.
+
+#### Aflezen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Uren en minuten (met uitleg) | ●●○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. |
+| 2 | Hele uren in de dag | ●●○○○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |
+| 3 | Hele uren aflezen | ●●○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". |
+| 4 | Hele en halve uren aflezen | ●●●○○ | Bijvoorbeeld 05:30 = half zes. |
+| 5 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
+| 6 | Vijf en tien over en voor | ●●●●○ | Bijvoorbeeld 07:10 = tien over zeven, 08:55 = vijf voor negen. |
+| 7 | Op de minuut | ●●●●● | Bijvoorbeeld 05:43 = dertien minuten over half zes. |
+
+#### Later
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hoeveel tijd later? Hele uren | ●○○○○ | Bijvoorbeeld 18:00 en 21:00. |
+| 2 | Hoeveel tijd later? Hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 06:45 en 08:45. |
+| 3 | Hoeveel tijd later? Halve uren | ●●●○○ | Bijvoorbeeld 05:10 en 07:40. |
+| 4 | Hoeveel tijd later? Over het hele uur heen | ●●●●○ | Bijvoorbeeld 05:50 en 08:20. |
+| 5 | Hoeveel tijd later? Kwartieren | ●●●●● | Bijvoorbeeld 04:20 en 07:50. |
+
+#### Eerder
+
+Dezelfde vijf stappen als bij Later, maar terug in de tijd: de eerste klok is
+de latere tijd.
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Hoeveel tijd eerder? Hele uren | ●○○○○ | Bijvoorbeeld 21:00 en 19:00. |
+| 2 | Hoeveel tijd eerder? Hele uren, andere minuten | ●●○○○ | Bijvoorbeeld 18:30 en 16:30. |
+| 3 | Hoeveel tijd eerder? Halve uren | ●●●○○ | Bijvoorbeeld 07:40 en 05:10. |
+| 4 | Hoeveel tijd eerder? Over het hele uur heen | ●●●●○ | Bijvoorbeeld 07:45 en 05:15. |
+| 5 | Hoeveel tijd eerder? Kwartieren | ●●●●● | Bijvoorbeeld 07:50 en 04:20. |
+
 Er volgen nog meer onderwerpen bij Tijd.
 
 ## Bouwstenen
