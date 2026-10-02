@@ -81,7 +81,48 @@ Elke titel geeft kale deelsommen uit die ene deeltafel, bijvoorbeeld 8 : 2 =
 | 2 | Deelsommen tot en met 10 | ●●● | Hetzelfde, nu door elkaar uit de deeltafels 1 tot en met 10. |
 | 3 | Deelsommen koppelen: tafels van 1, 2, 5 en 10 | ●●●● | Vijf deelsommen met een leeg vak ernaast; het kind sleept bij elke som het goede antwoord naar dat vak. Hergebruikt het koppel-onderdeel dat er al is. |
 | 4 | Deelsommen koppelen: tafels van 1 tot en met 10 | ●●●● | Hetzelfde, met alle deeltafels. |
-| 5 | Zelf een deelsom maken | ●●●●● | Het kind ziet zes getallen en een uitkomst, bijvoorbeeld ▢ : ▢ = 5, en kiest twee getallen die samen kloppen. Elke goede combinatie telt goed. |
+| 5 | Welke deelsommen passen? | ●●●●● | Het kind ziet een uitkomst, bijvoorbeeld 5, en typt zelf een deelsom die klopt: ▢ : ▢ = 5. Elke goede deelsom uit de deeltafels van 1 tot en met 10 telt goed, dus 10 : 2 en 45 : 9 zijn allebei goed. |
+
+## Groep 4 – Vermenigvuldigen
+
+Nog te bouwen. De basisversie zijn gewone sommen; beeld komt later. De notatie
+is overal met een maalteken: 3 × 5.
+
+### Onderwerp 1 — Keersommen begrijpen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Rijen en kolommen tellen | ● | Ziet blokjes in rijen, bijvoorbeeld 5 rijen van 3, en typt hoeveel het er zijn. |
+| 2 | Een keersom bij een plaatje | ●● | Plaatjes in rijen; het kind vult de hele som in: ▢ × ▢ = ▢. |
+| 3 | Handig rekenen met keersommen | ●●● | Ziet een som die het al kent, bijvoorbeeld 1 × 5 = 5, en maakt daarmee een nieuwe: 1 × 10 = ▢. |
+| 4 | Rekenen met nullen | ●●●● | Een rijtje van drie: 2 × ▢ = 6, 2 × ▢ = 60, 2 × ▢ = 600. Niveau groep 5, als uitdaging. |
+
+### Onderwerp 2 — Tafels oefenen
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Tafels van 1 tot en met 5 | ● | Kale keersom, bijvoorbeeld 2 × 2 = ▢. |
+| 2 | Tafels van 6 tot en met 10 | ●● | Hetzelfde, met de hogere tafels. |
+| 3 | Tafels koppelen: 1, 2, 5 en 10 | ●● | Vijf keersommen met een leeg vak ernaast; het kind sleept bij elke som het goede antwoord naar dat vak. Hergebruikt het koppel-onderdeel dat er al is. |
+| 4 | Tafels koppelen: 1 tot en met 10 | ●●● | Hetzelfde, met alle tafels. |
+| 5 | Tafels van 1 tot en met 10 door elkaar | ●●● | Kale keersommen uit alle tafels door elkaar. |
+| 6 | Welke keersommen passen? | ●●● | Ziet een uitkomst, bijvoorbeeld 24, en typt zelf een keersom die klopt: ▢ × ▢ = 24. Elke goede keersom telt goed, dus 3 × 8 en 4 × 6 zijn allebei goed. Alleen uitkomsten die minstens één keersom uit de tafels van 1 tot en met 10 hebben. |
+| 7 | Tafels van 11 tot en met 15 | ●●●● | Niveau groep 5, als uitdaging. |
+| 8 | Tafels van 16 tot en met 20 | ●●●●● | Niveau groep 5, als uitdaging. |
+
+### Onderwerp 3 — Keersom en deelsom
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Keersom en deelsom koppelen | ●●● | Sleept bij elke deelsom, bijvoorbeeld 20 : 5, de keersom die erbij hoort, bijvoorbeeld 5 × 4. |
+| 2 | Keersom en deelsom samen | ●●● | Twee sommen onder elkaar: 20 : 2 = ▢ en ▢ × 2 = 20. |
+
+### Onderwerp 4 — Rekenen met geld
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Boodschappen op de markt | ● | Ziet een kraampje met twee of drie producten en prijzen in hele euro's — een zak appels € 3, een brood € 2 — en rekent uit wat bijvoorbeeld 4 zakken appels en 2 broden samen kosten: € ▢. |
+| 2 | Wisselgeld op de markt | ●● | Hetzelfde kraampje, met erbij: "Je betaalt met € 20. Hoeveel krijg je terug?" € ▢. |
 
 ## Bouwstenen
 
