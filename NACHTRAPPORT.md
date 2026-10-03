@@ -459,3 +459,8 @@ Nagelopen met een script langs alle 583 openbare pagina's uit de sitemap, en een
 1. De vraag is nu "Sleep elke tijd naar de goede klok.", ook in de 15 bestaande opgaven (alleen de tekst). De vakjes staan namelijk náást de klokken, niet eronder. De andere sleepoefeningen ("Sleep de uitkomst naar de som.", "Sleep de keersom naar de deelsom.", "Sleep het geld van weinig naar veel waard.", "Sleep de klokken van vroeg naar laat.") kloppen met waar de vakjes staan; daar is niets aan veranderd.
 2. Een lange vraag loopt altijd over meerdere regels. Een heel lang woord wordt zo nodig afgebroken in plaats van van het scherm te vallen. Afgeknipte teksten (`truncate` en dergelijke) komen in de oefenschermen nergens voor.
 3. De klokken bij Klokken koppelen zijn groter: 128 px op een smal scherm en 144 px vanaf tabletbreedte (was 96 px). De cijfers op elke wijzerklok staan nu boven de wijzers, met een smalle witte rand eromheen. Daardoor valt de 12 nooit meer weg achter de grote wijzer, op alle klokken in de app. Nagemeten op 360 en 768 px breed: niets valt buiten het scherm.
+
+## 05 — Dagdelen
+
+1. De vraag is nu "Welk deel van de dag is het?", in de generator én in de 30 opgaven in de database (15 gepubliceerd en 15 op concept; alleen de vraagtekst). Er wordt bij deze oefening geen vraag voorgelezen: de stem leest alleen de uitleg na een fout antwoord voor, en daar stond de oude zin niet in.
+2. De vier knoppen staan altijd in dezelfde volgorde, twee bij twee, ook op een smal scherm: boven ochtend en middag, onder avond en nacht. Dat geldt ook voor de opgaven die al in de database stonden, want het scherm zet ze zelf op volgorde. Aan de antwoorden verandert niets. Getest met Testkind: 01:00 → "nacht" → goed.

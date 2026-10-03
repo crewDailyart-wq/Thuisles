@@ -381,7 +381,7 @@ export const urenminutenGenerator: Generator = {
 // Dagdelen
 // ---------------------------------------------------------------------------
 
-const DDZIN = "In welk deel van de dag is dit?";
+const DDZIN = "Welk deel van de dag is het?";
 const DDZINNEN: Record<Leeftijdsgroep, string> = { "34": DDZIN, "56": DDZIN, "78": DDZIN };
 
 /** De tijden voor "Dagdelen": het hele etmaal, maar nooit precies op een grens. */
@@ -414,8 +414,12 @@ export const dagdeelGenerator: Generator = {
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
 
-      /* De vier dagdelen staan er altijd alle vier; precies één is goed. */
-      const keuzes = husselen(kans, ["ochtend", "middag", "avond", "nacht"]);
+      /*
+        De vier dagdelen staan er altijd alle vier, in vaste volgorde zoals de
+        dag loopt; precies één is goed. Niet schudden: een kind vindt de knop
+        dan blind terug.
+      */
+      const keuzes = ["ochtend", "middag", "avond", "nacht"];
       const goed = keuzes.indexOf(DAGDEEL_LABEL[dagdeelVan(t)]);
 
       const gegevens = gegevensVan("dagdeel", "kiezen", t, goed, { keuze: 1 });

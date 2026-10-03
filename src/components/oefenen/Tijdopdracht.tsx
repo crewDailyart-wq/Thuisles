@@ -106,18 +106,35 @@ export function Keuzeknoppen({
   juist,
   uit,
   onKies,
+  volgorde,
+  tweeKolommen = false,
 }: {
   keuzes: string[];
   gekozen: number | null;
   juist: number;
   uit: boolean;
   onKies: (nummer: number) => void;
+  /**
+   * In welke volgorde de knoppen op het scherm staan, als nummers van
+   * `keuzes`. Het antwoord blijft het nummer in `keuzes`; alleen de plek op
+   * het scherm verandert. Leeg = zoals ze in `keuzes` staan.
+   */
+  volgorde?: number[];
+  /** Altijd twee naast elkaar, ook op een smal scherm. */
+  tweeKolommen?: boolean;
 }) {
+  const plekken =
+    volgorde && volgorde.length === keuzes.length && volgorde.every((i) => i >= 0)
+      ? volgorde
+      : keuzes.map((_, i) => i);
   return (
     <div
-      className={`grid w-full max-w-md gap-2 ${keuzes.length >= 4 ? "sm:grid-cols-2" : ""}`}
+      className={`grid w-full max-w-md gap-2 ${
+        tweeKolommen ? "grid-cols-2" : keuzes.length >= 4 ? "sm:grid-cols-2" : ""
+      }`}
     >
-      {keuzes.map((keuze, i) => {
+      {plekken.map((i) => {
+        const keuze = keuzes[i];
         const isGekozen = gekozen === i;
         const kleur = !uit
           ? isGekozen
@@ -853,10 +870,32 @@ export function Tijdopdracht({
     );
   }
 
+  if (figuur.soort === "dagdeel") {
+    /*
+      Altijd in dezelfde volgorde, zoals de dag loopt: boven ochtend en
+      middag, onder avond en nacht. Nooit geschud, zodat een kind de knop
+      blind terugvindt. Ook oudere opgaven, waarin de keuzes nog door elkaar
+      stonden, komen zo in deze volgorde op het scherm.
+    */
+    return (
+      <div className="flex w-full flex-col items-center gap-5">
+        {keuzeKop()}
+        <Keuzeknoppen
+          keuzes={figuur.keuzes}
+          gekozen={gekozen}
+          juist={Number(juist)}
+          uit={uit}
+          onKies={kies}
+          volgorde={DAGDELEN_OP_VOLGORDE.map((d) => figuur.keuzes.indexOf(d))}
+          tweeKolommen
+        />
+      </div>
+    );
+  }
+
   if (
     figuur.soort === "dagvraag" ||
     figuur.soort === "maandvraag" ||
-    figuur.soort === "dagdeel" ||
     figuur.soort === "klokaflezen" ||
     figuur.soort === "klokvlek" ||
     figuur.soort === "digitaalaflezen" ||
@@ -881,6 +920,9 @@ export function Tijdopdracht({
   /* Hier komt niets meer; elk soort hierboven is afgehandeld. */
   return null;
 }
+
+/** De vaste volgorde van de knoppen bij "Dagdelen". */
+const DAGDELEN_OP_VOLGORDE = ["ochtend", "middag", "avond", "nacht"];
 
 /** De maandnaam, voor schermen die hem erbij willen zetten. */
 export function maandnaam(maand: number): string {
