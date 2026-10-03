@@ -27,6 +27,15 @@ import type { Foutpatroon, Somgegevens } from "@/lib/generatoren/foutpatroon";
 /** De types waarbij het antwoord uit uren én minuten bestaat. */
 const DUURTYPES = ["klokduur", "digitaalverschil"];
 
+/**
+ * Een duur die het kind zelf typte. Bij een keuze uit vier knoppen ("een half
+ * uur", "anderhalf uur") is het antwoord het nummer van een knop, en daar valt
+ * geen denkfout uit af te lezen.
+ */
+function isDuur(som: Somgegevens): boolean {
+  return DUURTYPES.includes(som.soort) && som.extra?.keuze !== 1;
+}
+
 function ingevuld(som: Somgegevens): { uren?: number; minuten?: number } {
   return { uren: som.extra?.gegeven0, minuten: som.extra?.gegeven1 };
 }
@@ -40,7 +49,7 @@ export const tijdPatronen: Foutpatroon[] = [
     id: "minuten-vergeten",
     naam: "Alleen de hele uren geteld",
     herkent: (som) => {
-      if (!DUURTYPES.includes(som.soort)) return false;
+      if (!isDuur(som)) return false;
       const gaf = ingevuld(som);
       const moet = hoort(som);
       return gaf.uren === moet.uren && moet.minuten !== 0 && (gaf.minuten ?? 0) === 0;
@@ -73,7 +82,7 @@ export const tijdPatronen: Foutpatroon[] = [
     id: "verkeerde-kant",
     naam: "De verkeerde kant op gerekend",
     herkent: (som) => {
-      if (!DUURTYPES.includes(som.soort)) return false;
+      if (!isDuur(som)) return false;
       const gaf = ingevuld(som);
       const moet = hoort(som);
       /* Vooruit en terug tellen samen altijd op tot een hele dag. */
@@ -107,7 +116,7 @@ export const tijdPatronen: Foutpatroon[] = [
     id: "uur-ernaast",
     naam: "Eén uur ernaast",
     herkent: (som) => {
-      if (!DUURTYPES.includes(som.soort)) return false;
+      if (!isDuur(som)) return false;
       const gaf = ingevuld(som);
       const moet = hoort(som);
       return (

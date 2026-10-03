@@ -494,10 +494,27 @@ export function Tijdopdracht({
   }
 
   if (figuur.soort === "klokduur") {
+    /*
+      De klok laat zien hoe laat het nu is; de andere tijd staat in de vraag.
+      Bij de lagere niveaus kiest het kind uit vier knoppen in schooltaal, altijd
+      van kort naar lang. Anders typt het in de vakjes ▢ uur ▢ minuten, die bij
+      de start allebei leeg zijn.
+    */
     return (
       <div className="flex w-full flex-col items-center gap-5">
         <Klok tijd={{ uur: figuur.uur, minuut: figuur.minuut }} maat="groot" />
-        {urenEnMinuten()}
+        {figuur.keuzes ? (
+          <Keuzeknoppen
+            keuzes={figuur.keuzes}
+            gekozen={gekozen}
+            juist={Number(juist)}
+            uit={uit}
+            onKies={kies}
+            tweeKolommen
+          />
+        ) : (
+          urenEnMinuten()
+        )}
       </div>
     );
   }

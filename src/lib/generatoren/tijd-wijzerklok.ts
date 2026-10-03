@@ -1357,11 +1357,41 @@ function duurstappen(inst: Instellingen): number[] {
   return [...new Set(uit)].filter((n) => n > 0).sort((a, b) => a - b);
 }
 
+/**
+ * De vier knoppen bij kiezen, in schooltaal en van kort naar lang. Ze staan
+ * altijd in deze volgorde; alleen welke goed is verschilt.
+ */
+const DUURKNOPPEN: Record<string, { minuten: number; tekst: string }[]> = {
+  heel: [
+    { minuten: 60, tekst: "een uur" },
+    { minuten: 120, tekst: "twee uur" },
+    { minuten: 180, tekst: "drie uur" },
+    { minuten: 240, tekst: "vier uur" },
+  ],
+  half: [
+    { minuten: 30, tekst: "een half uur" },
+    { minuten: 60, tekst: "een uur" },
+    { minuten: 90, tekst: "anderhalf uur" },
+    { minuten: 120, tekst: "twee uur" },
+  ],
+  kwartier: [
+    { minuten: 15, tekst: "een kwartier" },
+    { minuten: 30, tekst: "een half uur" },
+    { minuten: 45, tekst: "drie kwartier" },
+    { minuten: 60, tekst: "een uur" },
+  ],
+};
+
+/** Kiezen uit vier knoppen? Alleen bij hele uren, halve uren of kwartieren apart. */
+function duurKiezen(inst: Instellingen): boolean {
+  return tekst(inst, "antwoord", "typen") === "kiezen" && !!DUURKNOPPEN[tekst(inst, "stap", "heel")];
+}
+
 export const klokduurGenerator: Generator = {
   id: "klokduur",
   naam: "Hoe lang duurt het?",
   uitleg:
-    "Een wijzerklok met de begintijd en een korte zin met de eindtijd. Het kind typt het antwoord in twee vakjes: ▢ uur ▢ minuten. Bij een heel aantal uren mag het minutenvakje leeg blijven.",
+    "Een wijzerklok die laat zien hoe laat het nu is, en een korte zin met de andere tijd. Dezelfde tijd staat nooit in de zin én op de klok. Het kind kiest het antwoord uit vier knoppen in schooltaal (\"een half uur\", \"anderhalf uur\"), of typt het in twee vakjes: ▢ uur ▢ minuten.",
   suggestie: "Groep 4: hele uren · groep 5: halve uren · groep 6: kwartieren en alles door elkaar",
   velden: [
     {
@@ -1393,6 +1423,15 @@ export const klokduurGenerator: Generator = {
       max: 6,
     },
     {
+      soort: "keuze",
+      sleutel: "antwoord",
+      label: "Hoe het kind antwoordt",
+      opties: [
+        { waarde: "kiezen", label: "Kiezen uit vier knoppen — \"een uur\", \"anderhalf uur\" (alleen bij hele uren, halve uren of kwartieren)" },
+        { waarde: "typen", label: "Typen in twee vakjes — ▢ uur ▢ minuten" },
+      ],
+    },
+    {
       soort: "vinkje",
       sleutel: "over12",
       label: "Ook over twaalf uur heen",
@@ -1407,9 +1446,9 @@ export const klokduurGenerator: Generator = {
     },
     ...vraagtekstVelden(DUURZINNEN, {
       voorbeeldzinnen: {
-        "34": "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar.",
-        "56": "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar.",
-        "78": "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar.",
+        "34": "Je gaat om 3 uur naar het zwembad. Kijk op de klok hoe laat je klaar bent. Hoe lang duurde het?",
+        "56": "Je gaat om 3 uur naar het zwembad. Kijk op de klok hoe laat je klaar bent. Hoe lang duurde het?",
+        "78": "Je gaat om 3 uur naar het zwembad. Kijk op de klok hoe laat je klaar bent. Hoe lang duurde het?",
       },
       extraHulp: "Op de plek van {zin} komt het verhaaltje van deze opgave te staan.",
     }),
@@ -1418,6 +1457,7 @@ export const klokduurGenerator: Generator = {
   standaard: {
     richting: "duur",
     stap: "heel",
+    antwoord: "typen",
     maxUren: 4,
     over12: false,
     situaties: STANDAARD_SITUATIES,
@@ -1440,13 +1480,16 @@ export const klokduurGenerator: Generator = {
     const kanten = tekst(inst, "richting", "duur") === "beide" ? 2 : 1;
     /* Begintijden op het hele en halve uur binnen de dag, maal de stappen. */
     const begin = vinkje(inst, "over12") ? 24 * 2 : 12 * 2;
-    return begin * duurstappen(inst).length * kanten;
+    const stappen = duurKiezen(inst) ? 4 : duurstappen(inst).length;
+    return begin * stappen * kanten;
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const richting = tekst(inst, "richting", "duur");
-    const stappen = duurstappen(inst);
+    const kiezen = duurKiezen(inst);
+    const knoppen = kiezen ? DUURKNOPPEN[tekst(inst, "stap", "heel")] : null;
+    const stappen = knoppen ? knoppen.map((k) => k.minuten) : duurstappen(inst);
     const waar = situaties(inst);
     const over12 = vinkje(inst, "over12");
     if (stappen.length === 0 || waar.length === 0) return [];
@@ -1472,8 +1515,13 @@ export const klokduurGenerator: Generator = {
       if (over12 && eind.uur >= 20) continue;
 
       const terug = richting === "geleden" || (richting === "beide" && kans() < 0.5);
-      const opDeKlok = terug ? eind : start;
-      const inDeZin = terug ? start : eind;
+      /*
+        De klok laat altijd "nu" zien: de tijd dat je klaar bent, of de tijd
+        van nu. De zin noemt alleen de andere tijd, zodat dezelfde tijd nooit
+        twee keer in beeld staat en het kind echt op de klok moet kijken.
+      */
+      const opDeKlok = eind;
+      const inDeZin = start;
 
       const handtekening = `klokduur:${terug ? "geleden" : "duur"}:${digitaal(start)}-${stap}`;
       if (alGebruikt.has(handtekening)) continue;
@@ -1481,23 +1529,26 @@ export const klokduurGenerator: Generator = {
 
       const plek = kiesUit(kans, waar);
       const zin = terug
-        ? `Het is nu ${inWoorden(opDeKlok)}. Om ${inWoorden(inDeZin)} ging je naar ${plek}. Hoe lang geleden is dat?`
-        : `Je gaat om ${inWoorden(opDeKlok)} naar ${plek}. Om ${inWoorden(inDeZin)} ben je klaar. Hoe lang ben je weg?`;
+        ? `Om ${inWoorden(inDeZin)} ging je naar ${plek}. Kijk hoe laat het nu is. Hoe lang geleden is dat?`
+        : `Je gaat om ${inWoorden(inDeZin)} naar ${plek}. Kijk op de klok hoe laat je klaar bent. Hoe lang duurde het?`;
 
       const d = verschil(start, eind);
+      const goedeKnop = knoppen ? knoppen.findIndex((k) => k.minuten === stap) : -1;
       const gegevens = gegevensVan(
         "klokduur",
         terug ? "geleden" : "duur",
         opDeKlok,
         d.uren,
-        { antwoordUur: d.uren, antwoordMinuut: d.minuten },
+        knoppen
+          ? { antwoordUur: d.uren, antwoordMinuut: d.minuten, keuze: 1 }
+          : { antwoordUur: d.uren, antwoordMinuut: d.minuten },
       );
 
       uit.push({
         handtekening,
         vorm: "open",
         vraagtekst: bepaalVraagtekst(klokduurGenerator, inst, groep, gegevens, { zin }),
-        antwoord: `${d.uren},${d.minuten}`,
+        antwoord: knoppen ? String(goedeKnop) : `${d.uren},${d.minuten}`,
         figuur: {
           soort: "klokduur",
           uur: opDeKlok.uur,
@@ -1506,6 +1557,9 @@ export const klokduurGenerator: Generator = {
           andereMinuut: inDeZin.minuut,
           richting: terug ? "geleden" : "duur",
           zin,
+          klokIsNu: true,
+          keuzes: knoppen ? knoppen.map((k) => k.tekst) : null,
+          goed: knoppen ? goedeKnop : undefined,
         },
         somgegevens: gegevens,
       });

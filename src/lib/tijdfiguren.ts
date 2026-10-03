@@ -174,8 +174,9 @@ export function juistAntwoord(figuur: Tijdfiguur): string {
         .join(",");
 
     case "klokduur": {
+      if (figuur.keuzes) return String(figuur.goed ?? 0);
       const stap =
-        figuur.richting === "geleden"
+        figuur.richting === "geleden" || figuur.klokIsNu
           ? verschil(
               { uur: figuur.andereUur, minuut: figuur.andereMinuut },
               { uur: figuur.uur, minuut: figuur.minuut },
@@ -224,9 +225,10 @@ export function doeltijd(figuur: Tijdfiguur): { uur: number; minuut: number } {
  */
 export function aantalVakjes(figuur: Tijdfiguur): number {
   switch (figuur.soort) {
+    case "klokduur":
+      return figuur.keuzes ? 1 : 2;
     case "kloktypen":
     case "klokzetten":
-    case "klokduur":
     case "digitaalverschil":
       return 2;
     case "klokkoppelen":

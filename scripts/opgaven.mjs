@@ -165,12 +165,12 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Tijd – Onderwerp 2: De wijzerklok — Hoe lang duurt het?
   // -------------------------------------------------------------------------
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Hele uren", soort: "klokduur", bolletjes: 1, inst: { richting: "duur", stap: "heel" } },
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Hele uren", soort: "klokduur", bolletjes: 1, inst: { richting: "geleden", stap: "heel" } },
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Halve uren", soort: "klokduur", bolletjes: 2, inst: { richting: "duur", stap: "half" } },
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Halve uren", soort: "klokduur", bolletjes: 2, inst: { richting: "geleden", stap: "half" } },
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Kwartieren", soort: "klokduur", bolletjes: 3, inst: { richting: "duur", stap: "kwartier" } },
-  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Kwartieren", soort: "klokduur", bolletjes: 3, inst: { richting: "geleden", stap: "kwartier" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Hele uren", soort: "klokduur", bolletjes: 1, inst: { richting: "duur", stap: "heel", antwoord: "kiezen" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Hele uren", soort: "klokduur", bolletjes: 1, inst: { richting: "geleden", stap: "heel", antwoord: "kiezen" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Halve uren", soort: "klokduur", bolletjes: 2, inst: { richting: "duur", stap: "half", antwoord: "kiezen" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Halve uren", soort: "klokduur", bolletjes: 2, inst: { richting: "geleden", stap: "half", antwoord: "kiezen" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Kwartieren", soort: "klokduur", bolletjes: 3, inst: { richting: "duur", stap: "kwartier", antwoord: "kiezen" } },
+  { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang geleden? Kwartieren", soort: "klokduur", bolletjes: 3, inst: { richting: "geleden", stap: "kwartier", antwoord: "kiezen" } },
   { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang duurt het? Over 12 uur heen", soort: "klokduur", bolletjes: 4, inst: { richting: "duur", stap: "heel", over12: true } },
   { groep: "Tijd · De wijzerklok · Hoe lang duurt het?", titel: "Hoe lang? Alles door elkaar", soort: "klokduur", bolletjes: 4, inst: { richting: "beide", stap: "gemengd", over12: true } },
 

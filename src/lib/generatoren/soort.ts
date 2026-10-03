@@ -874,6 +874,20 @@ export type Figuur =
       andereMinuut: number;
       richting: string;
       zin: string;
+      /**
+       * De klok laat altijd "nu" zien: bij "duur" de tijd dat je klaar bent,
+       * bij "geleden" de tijd van nu. De zin noemt alleen de andere tijd.
+       * Oudere opgaven (zonder dit veld) hadden bij "duur" de begintijd op de
+       * klok.
+       */
+      klokIsNu?: boolean;
+      /**
+       * Kiezen uit vier knoppen in schooltaal, van kort naar lang ("een half
+       * uur", "een uur", "anderhalf uur", "twee uur"); `goed` is de goede knop.
+       * Leeg = typen in de vakjes ▢ uur ▢ minuten.
+       */
+      keuzes?: string[] | null;
+      goed?: number;
     }
   | {
       /** Een digitale klok; tik op het urendeel of het minutendeel. */

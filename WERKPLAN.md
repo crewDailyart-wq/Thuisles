@@ -310,14 +310,25 @@ Het kind sleept zelf de grote en de kleine wijzer. Dezelfde bouwsteen als bij
 
 #### Hoe lang duurt het?
 
-Eén wijzerklok met de begintijd; de eindtijd staat in woorden in een korte zin
-met een situatie: het zwembad, school, de film, opa en oma. Het kind typt het
-antwoord in twee vakjes: ▢ uur ▢ minuten.
+Eén wijzerklok die laat zien hoe laat het nu is; de andere tijd staat in
+woorden in een korte zin met een situatie: het zwembad, school, de film, opa
+en oma. Dezelfde tijd staat nooit in de zin én op de klok.
+
+- Hoe lang duurt het: "Je gaat om half twee naar het zwembad. Kijk op de klok
+  hoe laat je klaar bent. Hoe lang duurde het?"
+- Hoe lang geleden: "Om half twee ging je naar de speeltuin. Kijk hoe laat
+  het nu is. Hoe lang geleden is dat?"
+
+Bij ● tot en met ●●● kiest het kind uit vier knoppen in schooltaal, altijd van
+kort naar lang. Hele uren: een uur, twee uur, drie uur, vier uur. Halve uren:
+een half uur, een uur, anderhalf uur, twee uur. Kwartieren: een kwartier, een
+half uur, drie kwartier, een uur. Bij ●●●● typt het kind het antwoord in twee
+vakjes: ▢ uur ▢ minuten, die bij de start allebei leeg zijn.
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Hoe lang duurt het? Hele uren | ● | Bijvoorbeeld: "Je gaat om 3 uur naar het zwembad. Om 5 uur ben je klaar. Hoe lang ben je weg?" |
-| 2 | Hoe lang geleden? Hele uren | ● | Andersom: "Het is nu 5 uur. Om 3 uur ging je zwemmen. Hoe lang geleden is dat?" |
+| 1 | Hoe lang duurt het? Hele uren | ● | Bijvoorbeeld: "Je gaat om drie uur naar het zwembad. Kijk op de klok hoe laat je klaar bent. Hoe lang duurde het?" De klok staat op vijf uur. |
+| 2 | Hoe lang geleden? Hele uren | ● | Andersom: "Om drie uur ging je naar de speeltuin. Kijk hoe laat het nu is. Hoe lang geleden is dat?" |
 | 3 | Hoe lang duurt het? Halve uren | ●● | Hetzelfde, met halve uren. |
 | 4 | Hoe lang geleden? Halve uren | ●● | Hetzelfde, met halve uren. |
 | 5 | Hoe lang duurt het? Kwartieren | ●●● | Hetzelfde, met kwartieren. |
