@@ -567,3 +567,25 @@ Eén voorbeeld per oefening (de eerste gepubliceerde opgave):
 | Kwart over en kwart voor: wijzer onder een vlek | 11:45 | het puntje van de kleine wijzer, vlak voor de 12 |
 | Gemengd: cijfers onder een vlek | 04:00 | de 4 (kleine wijzer) |
 | Gemengd: grote vlek | 03:45 | de 3, 4 en 5 (kleine wijzer bij de 4) |
+
+## 14 — Taalcontrole Tijd
+
+Alle vraagzinnen van de klokoefeningen en de kalender nagelopen: de zinnen in de code én de gepubliceerde opgaven. In de database zijn 139 opgaven aangepast, alleen de tekst. Antwoorden en voortgang zijn niet veranderd.
+
+| Soort zin | Was | Wordt |
+|---|---|---|
+| Verleden tijd bij gisteren/geleden | Vandaag is het 11 april. Welke datum is het gisteren? | Vandaag is het 11 april. Welke datum **was** het gisteren? (ook eergisteren, een week geleden, 3 dagen geleden) |
+| Dag voor of na een datum | Op welke dag valt 4 dagen na 10 maart? | Welke dag is het 4 dagen na 10 maart? |
+| Hoeveelste dag | Maandag is de hoeveelste dag van de week? | De hoeveelste dag van de week is maandag? |
+| Hoeveelste maand | Februari is de hoeveelste maand van het jaar? | De hoeveelste maand van het jaar is februari? |
+| De zoveelste dag | De derde dag van de week is…? | Wat is de derde dag van de week? (net als bij de maanden) |
+| Eén dag of maand verder | Welke dag komt 1 dag na maandag? | Welke dag komt na maandag? (net als "Welke maand komt na oktober?") |
+| Meer dagen of maanden verder | Welke maand komt 2 maanden na april? | Welke maand is het 2 maanden na april? |
+| Anderhalf uur | Zet de klok 1 en een half uur later. | Zet de klok anderhalf uur later. |
+| Hoofdletter | de helft van 10 minuten = ▢ | De helft van 10 minuten = ▢ |
+| Uitleg bij Dagdelen (wordt voorgelezen) | "16 uur valt dus in het juiste deel." / "Dus het is vier uur." | "Om 16:00 is het middag." |
+| Uitleg bij Hele uren in de dag | "Dus het is zeven uur." | "Dus 19:00 is zeven uur 's avonds." |
+
+- Niet veranderd, omdat het al klopte: "Op welke dag valt 9 mei?", de klokvragen ("Hoe laat is het?", "Het is half vier. Zet de klok 2 uur later."), de nachtjes-vragen en "Hoe lang geleden is dat?". "Je gaat om drie uur naar het zwembad. … Hoe lang duurde het?" is jouw eigen zin uit bestand 08; die heb ik laten staan.
+- In CLAUDE.md staat nu: elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor kinderen, en bij twijfel kies je de eenvoudigste zin.
+- **Twee maanden:** bij "Over de maandgrens" staan de twee kalenders nu altijd naast elkaar, op een smal scherm kleiner, met de vier antwoordknoppen twee bij twee. Op een tablet en een laptop past alles op één scherm. Op een kleine telefoon (360 bij 740) moet je nog een klein stukje scrollen tot de knop Controleer, omdat de vraag daar over vier regels loopt.

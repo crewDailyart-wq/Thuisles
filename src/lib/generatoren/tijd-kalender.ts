@@ -129,13 +129,13 @@ function dagvragen(stand: string): { zin: string; goed: string; valkuilen: strin
   if (stand === "volgorde") {
     DAGEN.forEach((dag, i) => {
       uit.push({
-        zin: `De ${RANGTELWOORDEN[i]} dag van de week is…?`,
+        zin: `Wat is de ${RANGTELWOORDEN[i]} dag van de week?`,
         goed: dag,
         /* De buren in de week: precies de dagen waar een kind in verdwaalt. */
         valkuilen: [DAGEN[(i + 1) % 7], DAGEN[(i + 6) % 7], DAGEN[(i + 2) % 7]],
       });
       uit.push({
-        zin: `${dag.charAt(0).toUpperCase()}${dag.slice(1)} is de hoeveelste dag van de week?`,
+        zin: `De hoeveelste dag van de week is ${dag}?`,
         goed: RANGTELWOORDEN[i],
         valkuilen: [
           RANGTELWOORDEN[(i + 1) % 7],
@@ -153,7 +153,10 @@ function dagvragen(stand: string): { zin: string; goed: string; valkuilen: strin
       for (const kant of ["voor", "na"] as const) {
         const doel = (i + (kant === "na" ? stap : -stap) + 14) % 7;
         uit.push({
-          zin: `Welke dag komt ${stap} ${stap === 1 ? "dag" : "dagen"} ${kant} ${DAGEN[i]}?`,
+          zin:
+            stap === 1
+              ? `Welke dag komt ${kant} ${DAGEN[i]}?`
+              : `Welke dag is het ${stap} dagen ${kant} ${DAGEN[i]}?`,
           goed: DAGEN[doel],
           valkuilen: [
             /* De andere kant op, en eentje ernaast. */
@@ -180,15 +183,15 @@ export const dagvraagGenerator: Generator = {
       sleutel: "stand",
       label: "Wat er gevraagd wordt",
       opties: [
-        { waarde: "volgorde", label: "Op volgorde — \"De tweede dag van de week is…?\"" },
+        { waarde: "volgorde", label: "Op volgorde — \"Wat is de tweede dag van de week?\"" },
         { waarde: "ervoorerna", label: "Ervoor en erna — \"1 dag voor dinsdag?\"" },
       ],
     },
     ...vraagtekstVelden(DAGZINNEN, {
       voorbeeldzinnen: {
-        "34": "De tweede dag van de week is…?",
-        "56": "De tweede dag van de week is…?",
-        "78": "De tweede dag van de week is…?",
+        "34": "Wat is de tweede dag van de week?",
+        "56": "Wat is de tweede dag van de week?",
+        "78": "Wat is de tweede dag van de week?",
       },
       extraHulp: "Op de plek van {zin} komt de vraag van deze opgave te staan.",
     }),
@@ -384,7 +387,7 @@ function maandvragen(stand: string): { zin: string; goed: string; valkuilen: str
   if (stand === "nummer") {
     for (let i = 0; i < 12; i++) {
       uit.push({
-        zin: `${maandMetHoofdletter(i)} is de hoeveelste maand van het jaar?`,
+        zin: `De hoeveelste maand van het jaar is ${MAANDEN[i]}?`,
         goed: RANGTELWOORDEN[i],
         valkuilen: [
           RANGTELWOORDEN[(i + 1) % 12],
@@ -412,7 +415,10 @@ function maandvragen(stand: string): { zin: string; goed: string; valkuilen: str
         if (gaatOver !== overGrens) continue;
         const doel = (rauw + 12) % 12;
         uit.push({
-          zin: `Welke maand komt ${stap} ${stap === 1 ? "maand" : "maanden"} ${kant} ${MAANDEN[i]}?`,
+          zin:
+            stap === 1
+              ? `Welke maand komt ${kant} ${MAANDEN[i]}?`
+              : `Welke maand is het ${stap} maanden ${kant} ${MAANDEN[i]}?`,
           goed: MAANDEN[doel],
           valkuilen: [
             /* De andere kant op, en eentje ernaast. */
@@ -441,7 +447,7 @@ export const maandvraagGenerator: Generator = {
       opties: [
         { waarde: "erna", label: "De maand erna — \"Welke maand komt na mei?\"" },
         { waarde: "volgorde", label: "Op volgorde — \"Wat is de achtste maand?\"" },
-        { waarde: "nummer", label: "Het nummer — \"Maart is de hoeveelste maand?\"" },
+        { waarde: "nummer", label: "Het nummer — \"De hoeveelste maand is maart?\"" },
         { waarde: "ervoorerna", label: "Ervoor en erna, binnen het jaar" },
         { waarde: "jaargrens", label: "Ervoor en erna, over de jaargrens" },
       ],
@@ -605,7 +611,7 @@ export const kalenderdagGenerator: Generator = {
   id: "kalenderdag",
   naam: "Op welke dag valt het?",
   uitleg:
-    "Een maandkalender, en het kind kiest de weekdag uit vier. Met een verschuiving erbij wordt het \"Op welke dag valt 5 dagen voor 10 oktober?\" — twee tot en met zes dagen, voor of na, binnen dezelfde maand.",
+    "Een maandkalender, en het kind kiest de weekdag uit vier. Met een verschuiving erbij wordt het \"Welke dag is het 5 dagen voor 10 oktober?\" — twee tot en met zes dagen, voor of na, binnen dezelfde maand.",
   suggestie: "Groep 4: zonder verschuiving · groep 6: twee tot zes dagen voor of na",
   velden: [
     JAARVELD,
@@ -672,7 +678,7 @@ export const kalenderdagGenerator: Generator = {
       const zin =
         stap === 0
           ? `Op welke dag valt ${datumInWoorden({ jaar, maand, dag })}?`
-          : `Op welke dag valt ${stap} dagen ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
+          : `Welke dag is het ${stap} dagen ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
 
       const gegevens = {
         soort: "kalenderdag",
@@ -982,7 +988,8 @@ export const kalenderdatumGenerator: Generator = {
         4,
       );
 
-      const zin = `Vandaag is het ${datumInWoorden({ jaar, maand, dag })}. Welke datum is het ${woordVan(stand, vooruit)}?`;
+      /* Terug in de tijd in de verleden tijd: "Welke datum was het gisteren?" */
+      const zin = `Vandaag is het ${datumInWoorden({ jaar, maand, dag })}. Welke datum ${vooruit ? "is" : "was"} het ${woordVan(stand, vooruit)}?`;
 
       const gegevens = {
         soort: "kalenderdatum",

@@ -265,6 +265,12 @@ geval het ooit nog nodig is. Gebruik het niet.
 
 ---
 
+**Elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor
+kinderen.** Bij twijfel kies je de eenvoudigste zin. Dezelfde soort vraag
+formuleer je overal op dezelfde manier.
+
+---
+
 **Testen als kind mag alleen met het profiel "Testkind"** (groep 4). Nooit met
 het profiel van een echt kind: elk antwoord dat je daar geeft, komt in de
 voortgang van dat kind terecht.

@@ -15,7 +15,7 @@
 import type { Somgegevens } from "@/lib/generatoren/foutpatroon";
 import { MANIER_VAN_VORM } from "@/lib/generatoren/uitlegscript";
 import type { Groepsvorm, Uitlegbron, Uitlegscript } from "@/lib/generatoren/uitlegscript";
-import { digitaal, inWoorden, type Tijd } from "@/lib/tijd";
+import { DAGDEEL_LABEL, dagdeelVan, digitaal, inWoorden, metDagdeel, type Tijd } from "@/lib/tijd";
 
 /** Eén stap: de som op een regel, met een zin van Vos erbij. */
 function stap(tekst: string, zin: string, feest = false): Uitlegscript["stappen"][number] {
@@ -150,7 +150,9 @@ export const dagdeelUitleg: Uitlegbron = bron(
     return [
       stap(digitaal(t), kort ? "Kijk naar het uur." : `Het is ${digitaal(t)}.`),
       stap("0 · 6 · 12 · 18", kort ? "De dag heeft vier delen." : "Een dag heeft vier delen."),
-      stap(inWoorden(t), kort ? "Dit hoort erbij!" : `Dus het is ${inWoorden(t)}.`, true),
+      som.soort === "digitaaldagdeel"
+        ? stap(metDagdeel(t), kort ? "Dit hoort erbij!" : `Dus ${digitaal(t)} is ${metDagdeel(t)}.`, true)
+        : stap(DAGDEEL_LABEL[dagdeelVan(t)], kort ? "Dit hoort erbij!" : `Dus om ${digitaal(t)} is het ${DAGDEEL_LABEL[dagdeelVan(t)]}.`, true),
     ];
   },
 );

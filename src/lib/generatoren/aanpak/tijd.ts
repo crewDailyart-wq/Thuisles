@@ -16,7 +16,7 @@
  */
 
 import type { Aanpak, Somgegevens } from "@/lib/generatoren/foutpatroon";
-import { inWoorden, type Tijd } from "@/lib/tijd";
+import { DAGDEEL_LABEL, dagdeelVan, digitaal, inWoorden, metDagdeel, type Tijd } from "@/lib/tijd";
 
 /** De tijd waar de opgave over gaat. */
 function tijdVan(som: Somgegevens): Tijd {
@@ -129,12 +129,23 @@ export const digitaalAanpak: Aanpak = {
   controle: (som) => `Het is ${inWoorden(tijdVan(som))}.`,
 };
 
+/**
+ * De zin met het antwoord bij de dagdelen. Bij "Dagdelen" is dat het dagdeel
+ * zelf ("Om 16:00 is het middag."), bij "Hele uren in de dag" de tijd in
+ * kloktaal ("19:00 is zeven uur 's avonds.").
+ */
+function dagdeelAntwoord(som: Somgegevens): string {
+  const t = tijdVan(som);
+  return som.soort === "digitaaldagdeel"
+    ? `${digitaal(t)} is ${metDagdeel(t)}.`
+    : `Om ${digitaal(t)} is het ${DAGDEEL_LABEL[dagdeelVan(t)]}.`;
+}
+
 export const dagdeelAanpak: Aanpak = {
   zin: (som) => {
-    const t = tijdVan(som);
     return {
       "34": "Kijk naar het uur. Is het al over twaalf?",
-      "56": `Een dag heeft vier delen: nacht tot zes uur, ochtend tot twaalf, middag tot zes, en daarna avond. ${t.uur} uur valt dus in het ${som.extra?.dagdeelNaam === 1 ? "eerste" : "juiste"} deel.`,
+      "56": `Een dag heeft vier delen: nacht tot zes uur, ochtend tot twaalf uur, middag tot zes uur en daarna avond. ${dagdeelAntwoord(som)}`,
       "78": "Nacht loopt tot zes uur, ochtend tot twaalf, middag tot zes en avond tot middernacht. Bij een digitale tijd van boven de twaalf haal je er twaalf af om te horen hoe je hem zegt.",
     };
   },
@@ -143,10 +154,13 @@ export const dagdeelAanpak: Aanpak = {
     return [
       { tekst: "Kijk naar het uur.", som: String(t.uur) },
       { tekst: "Nacht, ochtend, middag of avond?", som: "0 · 6 · 12 · 18" },
-      { tekst: "Dit hoort erbij:", som: inWoorden(t) },
+      {
+        tekst: "Dit hoort erbij:",
+        som: som.soort === "digitaaldagdeel" ? metDagdeel(t) : DAGDEEL_LABEL[dagdeelVan(t)],
+      },
     ];
   },
-  controle: (som) => `Het is ${inWoorden(tijdVan(som))}.`,
+  controle: (som) => dagdeelAntwoord(som),
 };
 
 // ---------------------------------------------------------------------------

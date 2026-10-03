@@ -868,16 +868,17 @@ export function Tijdopdracht({
       */
       const volgende = plusDagen({ jaar: figuur.jaar, maand: figuur.maand, dag: 1 }, 32);
       const vorige = plusDagen({ jaar: figuur.jaar, maand: figuur.maand, dag: 1 }, -1);
-      const deze = <Kalender jaar={figuur.jaar} maand={figuur.maand} vandaag={figuur.dag} />;
+      /*
+        Twee maanden staan altijd naast elkaar, op een smal scherm kleiner,
+        zodat alles op één scherm past zonder scrollen.
+      */
+      const twee = figuur.tweedeMaand;
+      const deze = <Kalender jaar={figuur.jaar} maand={figuur.maand} vandaag={figuur.dag} compact={twee} />;
       return (
-        <div className="flex w-full flex-wrap items-start justify-center gap-4">
-          {figuur.tweedeMaand && figuur.schuif < 0 && (
-            <Kalender jaar={vorige.jaar} maand={vorige.maand} />
-          )}
+        <div className={twee ? "grid w-full grid-cols-2 items-start gap-2 sm:gap-4" : "flex w-full justify-center"}>
+          {twee && figuur.schuif < 0 && <Kalender jaar={vorige.jaar} maand={vorige.maand} compact />}
           {deze}
-          {figuur.tweedeMaand && figuur.schuif > 0 && (
-            <Kalender jaar={volgende.jaar} maand={volgende.maand} />
-          )}
+          {twee && figuur.schuif > 0 && <Kalender jaar={volgende.jaar} maand={volgende.maand} compact />}
         </div>
       );
     }
@@ -942,6 +943,8 @@ export function Tijdopdracht({
           juist={Number(juist)}
           uit={uit}
           onKies={kies}
+          /* Bij twee kalenders naast elkaar ook de knoppen twee naast elkaar: dan past het op één scherm. */
+          tweeKolommen={figuur.soort === "kalenderdatum" && figuur.tweedeMaand}
         />
       </div>
     );

@@ -320,7 +320,7 @@ function urenminutenVragen(groepen: string[]): { zin: string; uitkomst: number; 
     uit.push({ zin: "drie kwartier = ▢ minuten", uitkomst: 45, eenheid: "minuten" });
     for (let u = 1; u <= 3; u++) {
       uit.push({
-        zin: `${u} en een half uur = ▢ minuten`,
+        zin: u === 1 ? "anderhalf uur = ▢ minuten" : `${u} en een half uur = ▢ minuten`,
         uitkomst: u * 60 + 30,
         eenheid: "minuten",
       });
@@ -328,7 +328,7 @@ function urenminutenVragen(groepen: string[]): { zin: string; uitkomst: number; 
   }
   if (groepen.includes("helft")) {
     for (const m of [10, 20, 30, 40, 50, 60]) {
-      uit.push({ zin: `de helft van ${m} minuten = ▢`, uitkomst: m / 2, eenheid: "minuten" });
+      uit.push({ zin: `De helft van ${m} minuten = ▢`, uitkomst: m / 2, eenheid: "minuten" });
     }
   }
   return uit;
@@ -611,7 +611,7 @@ export function schuifInWoorden(minuten: number): string {
   const rest = m % 60;
   if (uren === 0) return rest === 30 ? "een half uur" : `${rest} minuten`;
   if (rest === 0) return uren === 1 ? "1 uur" : `${uren} uur`;
-  if (rest === 30) return `${uren} en een half uur`;
+  if (rest === 30) return uren === 1 ? "anderhalf uur" : `${uren} en een half uur`;
   return `${uren} uur en ${rest} minuten`;
 }
 

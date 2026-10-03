@@ -33,9 +33,15 @@ export function Kalender({
   juist = null,
   uit = false,
   onTik,
+  compact = false,
 }: {
   jaar: number;
   maand: number;
+  /**
+   * Kleinere vakjes, voor twee kalenders naast elkaar: dan passen ze samen op
+   * één scherm, ook op een telefoon, zonder te scrollen.
+   */
+  compact?: boolean;
   vandaag?: number | null;
   gekozen?: number | null;
   juist?: number | null;
@@ -45,7 +51,10 @@ export function Kalender({
   const rijen = kalenderrijen(jaar, maand);
 
   /* Even grote vakjes; het hele rooster staat gecentreerd in zijn vakje. */
-  const HOKJE = "size-10 border-2 border-tabellijn p-0 text-center sm:size-11";
+  const HOKJE = compact
+    ? "size-[1.35rem] border border-tabellijn p-0 text-center sm:size-8"
+    : "size-10 border-2 border-tabellijn p-0 text-center sm:size-11";
+  const cijfer = compact ? "text-[0.65rem] sm:text-xs" : "text-sm";
 
   return (
     <div className="w-full overflow-x-auto">
@@ -61,7 +70,7 @@ export function Kalender({
                   key={kort}
                   scope="col"
                   abbr={DAGEN[i]}
-                  className={`${HOKJE} bg-room text-xs font-semibold text-inkt-zacht`}
+                  className={`${HOKJE} bg-room ${compact ? "text-[0.6rem] sm:text-xs" : "text-xs"} font-semibold text-inkt-zacht`}
                 >
                   {kort}
                 </th>
@@ -92,7 +101,7 @@ export function Kalender({
                           : "bg-kaart text-inkt";
 
                   const inhoud = (
-                    <span className="grid size-full place-items-center text-sm font-extrabold tabular-nums">
+                    <span className={`grid size-full place-items-center ${cijfer} font-extrabold tabular-nums`}>
                       {dag}
                     </span>
                   );
