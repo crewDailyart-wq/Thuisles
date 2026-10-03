@@ -1023,18 +1023,31 @@ export const klokkoppelenGenerator: Generator = {
 // Klokken op volgorde
 // ---------------------------------------------------------------------------
 
-const VOLGORDEZIN = "Sleep de klokken van vroeg naar laat.";
+const VOLGORDEZIN = "Het is ochtend. Zet de klokken op volgorde van vroeg naar laat.";
 const VOLGORDEZINNEN: Record<Leeftijdsgroep, string> = {
   "34": VOLGORDEZIN,
   "56": VOLGORDEZIN,
   "78": VOLGORDEZIN,
 };
 
+/**
+ * De tijden voor "Klokken op volgorde": alleen de ochtend, 06:00 tot en met
+ * 11:59, en nooit over de 12 heen.
+ *
+ * Op een wijzerklok is acht uur 's ochtends hetzelfde als acht uur 's avonds,
+ * en 12:00 komt ná 11:00 maar staat op de klok vooraan. Met alleen
+ * ochtendtijden en "Het is ochtend" in de vraag is er precies één goede
+ * volgorde.
+ */
+function ochtendtijden(inst: Instellingen): Tijd[] {
+  return alleTijden(inst, ["heel", "half"], false).filter((t) => t.uur >= 6 && t.uur <= 11);
+}
+
 export const klokkenvolgordeGenerator: Generator = {
   id: "klokkenvolgorde",
   naam: "Klokken op volgorde",
   uitleg:
-    "Vier wijzerklokken die het kind van vroeg naar laat sleept. Alle tijden zijn verschillend, dus er is precies één goede volgorde.",
+    "Vier wijzerklokken die het kind van vroeg naar laat sleept. Een wijzerklok laat geen ochtend of avond zien; daarom zijn het altijd ochtendtijden, van 06:00 tot en met 11:30, en zegt de vraag \"Het is ochtend\". Alle tijden zijn verschillend, dus er is precies één goede volgorde.",
   suggestie: "Groep 4: hele en halve uren, vier klokken",
   velden: [
     TIJDENVELD,
@@ -1054,7 +1067,7 @@ export const klokkenvolgordeGenerator: Generator = {
   uitleganimatie: wijzerklokUitleg,
 
   maximum: (inst) => {
-    const n = alleTijden(inst, ["heel", "half"], false).length;
+    const n = ochtendtijden(inst).length;
     const hoeveel = Math.max(3, Math.min(5, getal(inst, "hoeveel", 4)));
     return n < hoeveel ? 0 : n * 20;
   },
@@ -1062,7 +1075,7 @@ export const klokkenvolgordeGenerator: Generator = {
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const hoeveel = Math.max(3, Math.min(5, getal(inst, "hoeveel", 4)));
-    const voorraad = alleTijden(inst, ["heel", "half"], false);
+    const voorraad = ochtendtijden(inst);
     if (voorraad.length < hoeveel) return [];
     const uit: Gegenereerd[] = [];
 

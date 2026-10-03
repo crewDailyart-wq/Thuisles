@@ -684,7 +684,7 @@ export function Tijdopdracht({
         keuzes={figuur.klokken.map((k, i) => (
           <Klok key={i} tijd={k} maat="klein" />
         ))}
-        grootVak
+        opEenRij
         keuzeLabels={figuur.klokken.map(
           (k) => `Klok die ${String(k.uur).padStart(2, "0")}:${String(k.minuut).padStart(2, "0")} aanwijst`,
         )}

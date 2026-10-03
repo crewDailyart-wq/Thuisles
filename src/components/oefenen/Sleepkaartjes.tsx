@@ -42,6 +42,7 @@ export function Sleepkaartjes({
   keuzes,
   keuzeLabels,
   grootVak = false,
+  opEenRij = false,
   fase,
   uit,
   uitslagen,
@@ -69,6 +70,12 @@ export function Sleepkaartjes({
    * klok. Anders springt het vakje groter zodra het kaartje erin valt.
    */
   grootVak?: boolean;
+  /**
+   * De vakjes naast elkaar in één rij, met het label erboven (op een smal
+   * scherm twee bij twee). Voor een volgorde: 1e, 2e, 3e, 4e. Zo past alles op
+   * één scherm zonder scrollen.
+   */
+  opEenRij?: boolean;
   fase: Fase;
   uit: boolean;
   uitslagen: ("goed" | "fout" | null)[];
@@ -203,6 +210,41 @@ export function Sleepkaartjes({
         Twee vaste kolommen: links de som, rechts het vak. Zo staan alle vakken
         recht onder elkaar, los van hoe breed de som ervoor is.
       */}
+      {opEenRij ? (
+        <div className="grid w-full max-w-xl grid-cols-2 justify-items-center gap-3 sm:grid-cols-4">
+          {regels.map((regel, rij) => {
+            const welke = plek.findIndex((p) => p === rij);
+            const uitslag = uitslagen[rij] ?? null;
+            const rand =
+              uitslag === "goed"
+                ? "border-groen bg-groen-zacht"
+                : uitslag === "fout"
+                  ? "border-roze bg-roze-zacht"
+                  : boven === rij
+                    ? "border-huisstijl bg-huisstijl-zacht"
+                    : "border-rand bg-kaart";
+            return (
+              <div key={rij} className="flex flex-col items-center gap-1">
+                <span className="text-base font-extrabold text-inkt">{regel}</span>
+                <div
+                  ref={(el) => {
+                    vakken.current[rij] = el;
+                  }}
+                  className={`grid size-28 place-items-center rounded-2xl border-2 p-1 transition [touch-action:none] ${rand}`}
+                >
+                  {welke >= 0 ? kaart(welke, true) : null}
+                </div>
+                {/* Pas na Controleer: welk kaartje het had moeten zijn. */}
+                {uit && uitslag === "fout" && (
+                  <span className="text-sm font-extrabold text-groen-diep">
+                    {keuzeLabels?.[goedeKeuzes[rij]] ?? keuzes[goedeKeuzes[rij]]}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+        </div>
+      ) : (
       <div className="grid grid-cols-[auto_auto] items-center gap-x-3 gap-y-2">
         {regels.map((regel, rij) => {
           const welke = plek.findIndex((p) => p === rij);
@@ -256,11 +298,12 @@ export function Sleepkaartjes({
           );
         })}
       </div>
+      )}
 
       {/* De kaartjes die nog klaarliggen. */}
       <div
         ref={voorraadRef}
-        className={`flex min-h-16 w-full max-w-md flex-wrap items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-3 py-2 transition [touch-action:none] ${
+        className={`flex min-h-16 w-full ${opEenRij ? "max-w-xl" : "max-w-md"} flex-wrap items-center justify-center gap-2 rounded-2xl border-2 border-dashed px-3 py-2 transition [touch-action:none] ${
           boven === "voorraad" ? "border-huisstijl bg-huisstijl-zacht" : "border-rand"
         }`}
       >

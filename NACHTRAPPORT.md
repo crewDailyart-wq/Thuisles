@@ -420,6 +420,7 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 - **02 — dubbele titels in oudere domeinen.** Bij Getallen, Splitsen, Optellen en Aftrekken (van vóór de SEO-basis, dus buiten deze opdracht) hebben 19 openbare pagina's voor groep 4 dezelfde titel en hetzelfde webadres als een andere pagina. Een voorbeeld: "Plaatjes tellen" staat vier keer bij Getallen, onder verschillende onderwerpen. Alleen de eerste is dan via dat adres bereikbaar. Bij Optellen heten een onderwerp en een oefening allebei "Optellen tot en met 20", net als "Aftrekken tot en met 15" bij Aftrekken. Ik heb niets veranderd. Wil je dat ze een eigen SEO-titel en eigen adres krijgen, bijvoorbeeld met de naam van het onderwerp erbij?
 - **02 — sitemap met korte adressen.** In de sitemap staan de adressen zonder domeinnaam (`/groep-4/geld`), terwijl zoekmachines het volledige adres verwachten (`https://…/groep-4/geld`). Dat gaat pas tellen als de site online staat, maar dan is de domeinnaam nodig. Welke wordt het?
 - **06 — halve uren "tot 12:00".** Bij de halve uren noemde je 01:30 tot en met 12:30 voor de eerste stap en 13:30 tot en met 23:30 voor de tweede. 12:30 is al middag, en dat past niet bij een titel "tot 12:00" met 's nachts of 's ochtends. Daarom heb ik gekozen voor 01:30 tot en met 11:30 en 12:30 tot en met 23:30. Moet 12:30 toch bij de eerste?
+- **07 — "0,3,2,1" na een fout antwoord.** Bij Klokken op volgorde, en bij andere sleepoefeningen, staat na een fout antwoord in het groene vakje het antwoord zoals de computer het opslaat: "0,3,2,1". Voor een kind zegt dat niets. Onder de vakjes staat al wel welke klok erin hoorde. Dat groene vakje bestond al; ik heb het niet veranderd. Zal ik het bij sleepoefeningen weglaten, of er de tijden in zetten?
 
 ## 00 — Losse verbeteringen
 
@@ -485,3 +486,10 @@ Bij Wijzerklok en digitale klok staan nu drie nieuwe kopjes, elk met drie stapje
 - Nooit 00:00 en nooit precies 06:00, 12:00 of 18:00. Daarvoor is er een nieuwe instelling "Welke tijden van de dag" (tot 12:00, na 12:00, de hele dag). De drie bestaande leerdoelen kregen daarom 15 nieuwe opgaven; de oude staan op concept.
 - Oude webadressen sturen door naar de nieuwe (nagekeken: 308 naar het nieuwe adres).
 - Getest met Testkind: de vier kopjes staan in deze volgorde op het kinderscherm, en "Schrijf de tijd digitaal: na 12:00" (13:00, 's middags) → 13 : 00 → goed.
+
+## 07 — Klokken op volgorde
+
+1. De vraag is "Het is ochtend. Zet de klokken op volgorde van vroeg naar laat." Er komen alleen tijden van 06:00 tot en met 11:30 voor, dus nooit over de 12 heen en altijd één goed antwoord. Er zijn 15 nieuwe opgaven; de oude staan op concept. (Bij de eerste poging kwam de nieuwe regel per ongeluk bij "Klokken koppelen" terecht. Dat heb ik teruggezet voordat er iets gecommit was, en de 15 opgaven die toen gemaakt waren, staan op concept.)
+2. De vier vakjes staan naast elkaar in één rij, met "1e" tot en met "4e" erboven, en zijn kleiner dan eerst (112 px). Op een smal scherm staan ze twee bij twee. De klokken om te slepen liggen eronder, vier op een rij als het past. Alles past op één scherm zonder scrollen.
+3. Andere oefeningen met "eerder" of "later" op een wijzerklok ("Hoe laat was het eerder?", "Hoe laat is het straks?") rekenen vanaf een tijd die al op de klok staat. Daar is altijd maar één antwoord mogelijk, dus daar hoefde niets te veranderen.
+- Getest met Testkind: tikken legt een klok in het eerste lege vakje; een verkeerde volgorde wordt fout gerekend, met per vakje welke klok erin hoorde.
