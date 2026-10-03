@@ -89,6 +89,15 @@ function deeltafelpunten(inst: Instellingen): number {
 /** Punten per klokniveau: 1 bolletje = 0, 2 = 2, 3 = 4, 4 = 6, 5 = 8 punten. */
 const NIVEAUPUNTEN = [0, 0, 2, 4, 6, 8];
 
+/**
+ * Het niveau van een klok met het dagdeel erbij: alleen tijden tot 12:00 is
+ * een stap lichter (●●●○○) dan na 12:00 of de hele dag (●●●●○), want daar
+ * komt de 24-uursnotatie pas echt bij.
+ */
+function dagdeelniveau(inst: Instellingen): number {
+  return tekst(inst, "dagbereik", "heledag") === "voor12" ? 3 : 4;
+}
+
 /** Het niveau van elke minutengroep op de klok. */
 const KLOKNIVEAU: Record<string, number> = { heel: 1, half: 2, kwartier: 3, vijf: 4, minuut: 5 };
 
@@ -502,7 +511,7 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = NIVEAUPUNTEN[
         Math.max(
           klokniveau(inst, ["heel"]),
-          tekst(inst, "antwoordsoort", "woorden") === "digitaal" && vinkje(inst, "metDagdeel") ? 4 : 0,
+          tekst(inst, "antwoordsoort", "woorden") === "digitaal" && vinkje(inst, "metDagdeel") ? dagdeelniveau(inst) : 0,
         )
       ];
       break;
@@ -526,7 +535,7 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       break;
 
     case "kloktypen":
-      p = NIVEAUPUNTEN[Math.max(klokniveau(inst, ["heel", "half"]), vinkje(inst, "metDagdeel", true) ? 4 : 0)];
+      p = NIVEAUPUNTEN[Math.max(klokniveau(inst, ["heel", "half"]), vinkje(inst, "metDagdeel", true) ? dagdeelniveau(inst) : 0)];
       break;
 
     case "klokduur":

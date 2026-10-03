@@ -212,7 +212,7 @@ moeilijk. Elke titel binnen Tijd is uniek. "De grote en de kleine wijzer" en
 (groep 4), maar staan in het beheer op "verborgen" en zijn dus voor geen enkel
 kind zichtbaar. Hun vragen, antwoorden en voortgang blijven bewaard.
 
-De code staat er, voor alle zes onderwerpen: 78 titels. De basisversie zijn
+De code staat er, voor alle zes onderwerpen: 83 titels (waarvan 2 verborgen). De basisversie zijn
 gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
 ronde zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
 De instellingen per titel staan in `scripts/opgaven.mjs`.
@@ -237,12 +237,36 @@ De oefeningen bovenaan dit onderwerp staan onder het kopje "Klokken koppelen".
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
 | 1 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
-| 2 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
+| 2 | Klokken koppelen | ●● | Sleept drie digitale tijden naar de goede wijzerklokken. Hele en halve uren door elkaar. |
 | 3 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
-| 4 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
-| 5 | Van wijzerklok naar digitale tijd: hele uren in de dag | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
-| 6 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
-| 7 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+| 4 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. De knoppen staan altijd in die volgorde. Nooit 00:00, 06:00, 12:00 of 18:00. |
+
+#### Hele uren in de dag
+
+Altijd met het dagdeel erbij. Nooit 00:00, en nooit een tijd precies op de
+grens van twee dagdelen (06:00, 12:00, 18:00).
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Van wijzerklok naar digitale tijd: hele uren tot 12:00 | ●●● | Ziet een wijzerklok en het dagdeel ('s nachts of 's ochtends) en kiest de goede digitale tijd uit vier. Alleen 01:00 tot en met 11:00. |
+| 2 | Van wijzerklok naar digitale tijd: hele uren na 12:00 | ●●●● | Hetzelfde, alleen 13:00 tot en met 23:00, met 's middags of 's avonds erbij. |
+| 3 | Van wijzerklok naar digitale tijd: hele uren, hele dag | ●●●● | Hetzelfde, alles door elkaar, in 24-uursnotatie zoals 20:00. |
+
+#### Halve uren in de dag
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Van wijzerklok naar digitale tijd: halve uren tot 12:00 | ●●● | Hetzelfde als bij de hele uren, met halve uren van 01:30 tot en met 11:30. |
+| 2 | Van wijzerklok naar digitale tijd: halve uren na 12:00 | ●●●● | Halve uren van 12:30 tot en met 23:30. |
+| 3 | Van wijzerklok naar digitale tijd: halve uren, hele dag | ●●●● | Halve uren door elkaar. |
+
+#### Tijd digitaal schrijven
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 1 | Schrijf de tijd digitaal: tot 12:00 | ●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren tot 12:00. |
+| 2 | Schrijf de tijd digitaal: na 12:00 | ●●●● | Hetzelfde, na 12:00. |
+| 3 | Schrijf de tijd digitaal: hele dag | ●●●● | Hetzelfde, de hele dag door elkaar. |
 
 #### Rekenen met de klok
 

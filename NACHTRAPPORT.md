@@ -419,6 +419,7 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 - **01 — toetsenbord bij Geldnotatie.** Bij "Bedrag opschrijven tot 10 euro" en "Van woorden naar cijfers tot 10 euro" moet het kind zelf een komma typen. Daarom krijgt dat veld het toetsenbord met cijfers én een komma (`decimal`), niet het kale cijfertoetsenbord uit HARDE REGEL 5; daar kan geen komma op. Bij hele euro's is het wel het gewone cijfertoetsenbord. Graag even op een iPad proberen of de komma verschijnt.
 - **02 — dubbele titels in oudere domeinen.** Bij Getallen, Splitsen, Optellen en Aftrekken (van vóór de SEO-basis, dus buiten deze opdracht) hebben 19 openbare pagina's voor groep 4 dezelfde titel en hetzelfde webadres als een andere pagina. Een voorbeeld: "Plaatjes tellen" staat vier keer bij Getallen, onder verschillende onderwerpen. Alleen de eerste is dan via dat adres bereikbaar. Bij Optellen heten een onderwerp en een oefening allebei "Optellen tot en met 20", net als "Aftrekken tot en met 15" bij Aftrekken. Ik heb niets veranderd. Wil je dat ze een eigen SEO-titel en eigen adres krijgen, bijvoorbeeld met de naam van het onderwerp erbij?
 - **02 — sitemap met korte adressen.** In de sitemap staan de adressen zonder domeinnaam (`/groep-4/geld`), terwijl zoekmachines het volledige adres verwachten (`https://…/groep-4/geld`). Dat gaat pas tellen als de site online staat, maar dan is de domeinnaam nodig. Welke wordt het?
+- **06 — halve uren "tot 12:00".** Bij de halve uren noemde je 01:30 tot en met 12:30 voor de eerste stap en 13:30 tot en met 23:30 voor de tweede. 12:30 is al middag, en dat past niet bij een titel "tot 12:00" met 's nachts of 's ochtends. Daarom heb ik gekozen voor 01:30 tot en met 11:30 en 12:30 tot en met 23:30. Moet 12:30 toch bij de eerste?
 
 ## 00 — Losse verbeteringen
 
@@ -464,3 +465,23 @@ Nagelopen met een script langs alle 583 openbare pagina's uit de sitemap, en een
 
 1. De vraag is nu "Welk deel van de dag is het?", in de generator én in de 30 opgaven in de database (15 gepubliceerd en 15 op concept; alleen de vraagtekst). Er wordt bij deze oefening geen vraag voorgelezen: de stem leest alleen de uitleg na een fout antwoord voor, en daar stond de oude zin niet in.
 2. De vier knoppen staan altijd in dezelfde volgorde, twee bij twee, ook op een smal scherm: boven ochtend en middag, onder avond en nacht. Dat geldt ook voor de opgaven die al in de database stonden, want het scherm zet ze zelf op volgorde. Aan de antwoorden verandert niets. Getest met Testkind: 01:00 → "nacht" → goed.
+
+## 06 — Tijd in de dag in stapjes
+
+Bij Wijzerklok en digitale klok staan nu drie nieuwe kopjes, elk met drie stapjes. De bestaande leerdoelen zijn de "hele dag"-versie geworden, zodat hun voortgang bewaard blijft. De andere zes zijn nieuw, met elk 15 opgaven en "vragen per oefensessie" 15.
+
+| Kopje | Titel | Bolletjes | |
+|---|---|---|---|
+| Hele uren in de dag | Van wijzerklok naar digitale tijd: hele uren tot 12:00 | ●●●○○ | nieuw |
+| | … hele uren na 12:00 | ●●●●○ | nieuw |
+| | … hele uren, hele dag | ●●●●○ | was "… hele uren in de dag" |
+| Halve uren in de dag | Van wijzerklok naar digitale tijd: halve uren tot 12:00 | ●●●○○ | nieuw |
+| | … halve uren na 12:00 | ●●●●○ | nieuw |
+| | … halve uren, hele dag | ●●●●○ | was "… halve uren" |
+| Tijd digitaal schrijven | Schrijf de tijd digitaal: tot 12:00 | ●●●○○ | nieuw |
+| | … na 12:00 | ●●●●○ | nieuw |
+| | … hele dag | ●●●●○ | was "Schrijf de tijd digitaal" |
+
+- Nooit 00:00 en nooit precies 06:00, 12:00 of 18:00. Daarvoor is er een nieuwe instelling "Welke tijden van de dag" (tot 12:00, na 12:00, de hele dag). De drie bestaande leerdoelen kregen daarom 15 nieuwe opgaven; de oude staan op concept.
+- Oude webadressen sturen door naar de nieuwe (nagekeken: 308 naar het nieuwe adres).
+- Getest met Testkind: de vier kopjes staan in deze volgorde op het kinderscherm, en "Schrijf de tijd digitaal: na 12:00" (13:00, 's middags) → 13 : 00 → goed.

@@ -168,10 +168,33 @@ function alleTijden(inst: Instellingen, terugval: string[], urenVan24: boolean):
  * zijn. Nooit 00:xx: middernacht is op de klok twaalf uur.
  */
 function wijzertijden(inst: Instellingen, terugval: string[], metDagdeel: boolean): Tijd[] {
-  return metDagdeel
-    ? alleTijden(inst, terugval, true).filter((t) => t.uur !== 0)
-    : alleTijden(inst, terugval, false);
+  if (!metDagdeel) return alleTijden(inst, terugval, false);
+  /*
+    Met het dagdeel erbij nooit een tijd precies op de grens van twee
+    dagdelen (06:00, 12:00, 18:00): is 18:00 nog middag of al avond? En
+    eventueel alleen de tijden vóór of na twaalf uur; zie DAGBEREIKVELD.
+  */
+  const bereik = tekst(inst, "dagbereik", "heledag");
+  return alleTijden(inst, terugval, true).filter(
+    (t) =>
+      t.uur !== 0 &&
+      !opDagdeelgrens(t) &&
+      (bereik === "voor12" ? t.uur < 12 : bereik === "na12" ? t.uur >= 12 : true),
+  );
 }
+
+/** Welke tijden van de dag, als het dagdeel erbij staat. */
+const DAGBEREIKVELD: Veld = {
+  soort: "keuze",
+  sleutel: "dagbereik",
+  label: "Welke tijden van de dag (met het dagdeel erbij)",
+  opties: [
+    { waarde: "voor12", label: "Tot 12:00 — 's nachts en 's ochtends" },
+    { waarde: "na12", label: "Na 12:00 — 's middags en 's avonds" },
+    { waarde: "heledag", label: "De hele dag door elkaar" },
+  ],
+  hulp: "Nooit 00:00 en nooit precies op de grens van twee dagdelen (06:00, 12:00, 18:00).",
+};
 
 /** Het zinnetje met het dagdeel: "Het is 's avonds." */
 export function dagdeelZin(t: Tijd): string {
@@ -466,6 +489,7 @@ export const klokaflezenGenerator: Generator = {
       label: "Zet het dagdeel erbij",
       hulp: "\"Het is avond.\" Nodig bij een digitaal antwoord in 24-uursnotatie; anders is 20:00 niet van 08:00 te onderscheiden.",
     },
+    DAGBEREIKVELD,
     ...vraagtekstVelden(AFZINNEN),
   ],
   vraagteksten: { standaard: AFZINNEN },
@@ -1092,6 +1116,7 @@ export const kloktypenGenerator: Generator = {
       label: "Zet het dagdeel erbij",
       hulp: "Nodig voor 24-uursnotatie: zonder \"Het is avond\" is 20:00 niet van 08:00 te onderscheiden.",
     },
+    DAGBEREIKVELD,
     ...vraagtekstVelden(TYPZINNEN, {
       voorbeeldzinnen: {
         "34": "Het is avond. Schrijf de tijd digitaal.",
