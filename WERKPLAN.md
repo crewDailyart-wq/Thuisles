@@ -210,9 +210,10 @@ kopje boven de oefeningen, en per kopje loopt de lijst op van makkelijk naar
 moeilijk. Elke titel binnen Tijd is uniek. "De grote en de kleine wijzer" en
 "Hoeveel minuten in een uur?" staan hier niet meer: die leerdoelen bestaan nog
 (groep 4), maar staan in het beheer op "verborgen" en zijn dus voor geen enkel
-kind zichtbaar. Hun vragen, antwoorden en voortgang blijven bewaard.
+kind zichtbaar. Hetzelfde geldt voor "Uren en minuten op de digitale klok (met
+uitleg)" bij Digitale klok. Hun vragen, antwoorden en voortgang blijven bewaard.
 
-De code staat er, voor alle zes onderwerpen: 83 titels (waarvan 2 verborgen). De basisversie zijn
+De code staat er, voor alle zes onderwerpen: 83 titels (waarvan 3 verborgen). De basisversie zijn
 gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
 ronde zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij.
 De instellingen per titel staan in `scripts/opgaven.mjs`.
@@ -362,13 +363,12 @@ Algemene regels voor dit onderwerp:
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Uren en minuten op de digitale klok (met uitleg) | ●○○○○ | Krijgt eerst een korte uitleg: voor de dubbele punt staan de uren, erachter de minuten. Tikt daarna op het urendeel of het minutendeel van de klok. Hele uren, 01:00 tot en met 12:00. |
-| 2 | Hele uren aflezen op de digitale klok | ●○○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". Alleen 01:00 tot en met 12:00. |
-| 3 | Hele en halve uren aflezen | ●●○○○ | Bijvoorbeeld 05:30 = half zes. Tot en met 12:59. |
-| 4 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
-| 5 | Hele uren in de dag | ●●●●○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |
-| 6 | Vijf en tien over en voor | ●●●●○ | Bijvoorbeeld 07:10 = tien over zeven, 08:55 = vijf voor negen. |
-| 7 | Op de minuut | ●●●●● | Bijvoorbeeld 05:43 = dertien minuten over half zes. Ook 24-uurstijden, zonder dagdeel erbij. |
+| 1 | Hele uren aflezen op de digitale klok | ●○○○○ | Ziet bijvoorbeeld 08:00 en kiest "acht uur". Alleen 01:00 tot en met 12:00. |
+| 2 | Hele en halve uren aflezen | ●●○○○ | Bijvoorbeeld 05:30 = half zes. Tot en met 12:59. |
+| 3 | Hele uren, halve uren en kwartieren aflezen | ●●●○○ | Bijvoorbeeld 03:15 = kwart over drie, 03:45 = kwart voor vier. |
+| 4 | Hele uren in de dag | ●●●●○ | Ziet een korte situatie met een klok, bijvoorbeeld "Sam staat op om…", en kiest bijvoorbeeld "zeven uur 's ochtends". De keuzes hebben 's ochtends en 's avonds door elkaar. |
+| 5 | Vijf en tien over en voor | ●●●●○ | Bijvoorbeeld 07:10 = tien over zeven, 08:55 = vijf voor negen. |
+| 6 | Op de minuut | ●●●●● | Bijvoorbeeld 05:43 = dertien minuten over half zes. Ook 24-uurstijden, zonder dagdeel erbij. |
 
 #### Later
 

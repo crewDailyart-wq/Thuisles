@@ -501,3 +501,7 @@ Bij Wijzerklok en digitale klok staan nu drie nieuwe kopjes, elk met drie stapje
 3. "Over 12 uur heen" en "Alles door elkaar": typen in de vakjes uur en minuten, die bij de start allebei leeg zijn. De regel over lege vakjes is verder aangepast in bestand 12.
 4. Alle 8 oefeningen hebben 15 nieuwe opgaven; de oude staan op concept. Oude opgaven die een kind nog in een half afgemaakte ronde heeft, kloppen nog steeds.
 - Getest met Testkind: "Hoe lang duurt het? Halve uren" (3 uur → klok half vier): "een uur" → fout, met "een half uur" groen erbij.
+
+## 09 — Digitale uitleg verbergen
+
+"Uren en minuten op de digitale klok (met uitleg)" staat op verborgen, met het vinkje uit bestand 03. Hij is niet verwijderd en aan antwoorden of voortgang is niets veranderd. Hij is uit WERKPLAN.md gehaald, en "Hele uren aflezen op de digitale klok" is nu de eerste oefening onder Aflezen. In de database stond hij al op plek 2, direct na de verborgen oefening, dus de volgorde hoefde niet te veranderen.
