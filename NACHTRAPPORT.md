@@ -505,3 +505,26 @@ Bij Wijzerklok en digitale klok staan nu drie nieuwe kopjes, elk met drie stapje
 ## 09 — Digitale uitleg verbergen
 
 "Uren en minuten op de digitale klok (met uitleg)" staat op verborgen, met het vinkje uit bestand 03. Hij is niet verwijderd en aan antwoorden of voortgang is niets veranderd. Hij is uit WERKPLAN.md gehaald, en "Hele uren aflezen op de digitale klok" is nu de eerste oefening onder Aflezen. In de database stond hij al op plek 2, direct na de verborgen oefening, dus de volgorde hoefde niet te veranderen.
+
+## 10 — Logische situaties bij dagdelen
+
+- Bij Digitale klok → "Hele uren in de dag" hoort bij elke situatie nu een vak van uren waarop hij logisch is, volgens jouw richtlijn: opstaan 7–8 uur, onweer of een enge droom 's nachts 1–5 uur, buiten spelen 15–16 uur, in bad 19 uur, enzovoort. Nooit 00:00, 06:00, 12:00 of 18:00. De namen wisselen af: Sam, Noor, Daan, Aya, Milan, Lina, Finn, Yara, Bilal, Mila, Ravi en Zoë.
+- De oefenvorm en de antwoordlogica zijn hetzelfde gebleven: korte situatie, digitale klok, vier keuzes in kloktaal. De foute keuzes zijn hetzelfde uur in een ander dagdeel en het uur ervoor of erna.
+- In het beheer staan de situaties in hetzelfde tekstveld, nu met de uren erachter: "{naam} staat op om 7-8". Je eigen lijst stond er zonder uren; die zou niet meer werken en is vervangen door de nieuwe lijst. Wat er stond: "Sam staat op om, Sam gaat naar school om, Sam eet om, Sam gaat voetballen om, Sam gaat naar bed om".
+- Er zijn 15 nieuwe opgaven; de oude staan op concept. Andere oefeningen met een situatie, een digitale tijd en kloktaal zijn er niet.
+- Getest met Testkind: "Yara gaat in bad om…" bij 19:00, met de keuzes zes uur 's avonds, zeven uur 's ochtends, zeven uur 's avonds en acht uur 's avonds.
+
+Tien voorbeeldvragen uit de gepubliceerde opgaven:
+
+| Vraag | Tijd | Goed antwoord |
+|---|---|---|
+| Sam heeft gym om… | 11:00 | elf uur 's ochtends |
+| Noor heeft gym om… | 09:00 | negen uur 's ochtends |
+| Daan gaat naar voetbal om… | 17:00 | vijf uur 's middags |
+| Aya wordt wakker van een enge droom om… | 01:00 | één uur 's nachts |
+| Milan wordt wakker van het onweer om… | 05:00 | vijf uur 's nachts |
+| Lina gaat buiten spelen om… | 15:00 | drie uur 's middags |
+| Finn wordt wakker van het onweer om… | 04:00 | vier uur 's nachts |
+| Yara gaat in bad om… | 19:00 | zeven uur 's avonds |
+| Bilal speelt na het eten op het schoolplein om… | 13:00 | één uur 's middags |
+| Mila staat op om… | 07:00 | zeven uur 's ochtends |

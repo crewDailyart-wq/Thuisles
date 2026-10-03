@@ -243,21 +243,73 @@ const DAGZINNEN: Record<Leeftijdsgroep, string> = { "34": DAGZIN, "56": DAGZIN, 
  * komt, en de waarde staat per sjabloon in de database. De tekst hieronder is
  * alleen de stand waarmee een nieuw sjabloon begint.
  */
-const STANDAARD_MOMENTEN =
-  "Sam staat op om, Sam gaat naar school om, Sam eet om, Sam gaat voetballen om, Sam gaat naar bed om";
+const STANDAARD_MOMENTEN = [
+  "{naam} wordt wakker van het onweer om 1-5",
+  "{naam} wordt wakker van een enge droom om 1-5",
+  "{naam} staat op om 7-8",
+  "{naam} eet een boterham met kaas om 7-8",
+  "{naam} fietst naar school om 8-8",
+  "{naam} eet een appel in de kleine pauze om 10-10",
+  "{naam} heeft gym om 9-11",
+  "{naam} speelt na het eten op het schoolplein om 13-13",
+  "{naam} heeft tekenles om 14-14",
+  "{naam} komt thuis van school om 15-15",
+  "{naam} gaat buiten spelen om 15-16",
+  "{naam} gaat naar voetbal om 16-17",
+  "{naam} eet aardappels met groente om 17-17",
+  "{naam} gaat in bad om 19-19",
+  "{naam} leest een boekje in bed om 19-20",
+  "{naam} gaat naar bed om 19-21",
+].join(", ");
 
-function momenten(inst: Instellingen): string[] {
-  return tekst(inst, "momenten", STANDAARD_MOMENTEN)
-    .split(/[,\n;]+/)
-    .map((m) => m.trim())
-    .filter(Boolean);
+/** Namen die om de beurt terugkomen, uit verschillende culturen. */
+const NAMEN = ["Sam", "Noor", "Daan", "Aya", "Milan", "Lina", "Finn", "Yara", "Bilal", "Mila", "Ravi", "Zoë"];
+
+/** Eén situatie met de uren waarop hij logisch is, beide meegeteld. */
+type Moment = { tekst: string; van: number; tot: number };
+
+/**
+ * De situaties uit het tekstveld, elk met de uren waarop ze passen.
+ *
+ * Per situatie de tekst en daarachter van-tot in hele uren: "{naam} staat op
+ * om 7-8". Zo staat er nooit "Sam gaat naar bed om 13:00". `{naam}` wordt per
+ * opgave een andere naam. Een situatie zonder uren wordt overgeslagen, want
+ * dan valt niet te zeggen of hij past; staat er geen enkele mét uren, dan
+ * gelden de standaardsituaties.
+ */
+function momenten(inst: Instellingen): Moment[] {
+  const lees = (waarde: string) =>
+    waarde
+      .split(/[,\n;]+/)
+      .map((m) => m.trim())
+      .filter(Boolean)
+      .map((regel) => {
+        const m = regel.match(/^(.*?)\s*(\d{1,2})\s*[-–]\s*(\d{1,2})\s*$/);
+        if (!m || m[1].trim() === "") return null;
+        const a = Math.max(0, Math.min(23, Number(m[2])));
+        const b = Math.max(0, Math.min(23, Number(m[3])));
+        return { tekst: m[1].trim(), van: Math.min(a, b), tot: Math.max(a, b) };
+      })
+      .filter((m): m is Moment => m !== null);
+  const eigen = lees(tekst(inst, "momenten", STANDAARD_MOMENTEN));
+  return eigen.length > 0 ? eigen : lees(STANDAARD_MOMENTEN);
+}
+
+/**
+ * De hele uren waar een situatie bij past. Nooit 00:00 en nooit precies op
+ * de grens van twee dagdelen (06:00, 12:00, 18:00).
+ */
+function urenMetMoment(waar: Moment[]): number[] {
+  const uren = new Set<number>();
+  for (const m of waar) for (let u = m.van; u <= m.tot; u++) uren.add(u);
+  return [...uren].filter((u) => u !== 0 && u % 6 !== 0).sort((a, b) => a - b);
 }
 
 export const digitaaldagdeelGenerator: Generator = {
   id: "digitaaldagdeel",
   naam: "Hele uren in de dag",
   uitleg:
-    "Een korte situatie met een digitale klok, bijvoorbeeld \"Sam staat op om…\", en het kind kiest bijvoorbeeld \"zeven uur 's ochtends\". De keuzes hebben 's ochtends en 's avonds door elkaar, dus het dagdeel telt mee.",
+    "Een korte situatie met een digitale klok, bijvoorbeeld \"Noor staat op om…\" bij 07:00, en het kind kiest \"zeven uur 's ochtends\". De situatie past altijd bij de tijd. De foute keuzes zijn hetzelfde uur in een ander dagdeel en het uur ervoor of erna.",
   suggestie: "Groep 4: hele uren",
   velden: [
     TIJDENVELD,
@@ -266,13 +318,13 @@ export const digitaaldagdeelGenerator: Generator = {
       sleutel: "momenten",
       label: "De momenten van de dag",
       plaatshouder: STANDAARD_MOMENTEN,
-      hulp: "Per situatie een stukje tekst waar een tijd achter past, gescheiden door komma's.",
+      hulp: "Per situatie een stukje tekst waar een tijd achter past, met daarachter de hele uren waarop hij logisch is: \"{naam} staat op om 7-8\". Gescheiden door komma's. {naam} wordt elke keer een andere naam.",
     },
     ...vraagtekstVelden(DAGZINNEN, {
       voorbeeldzinnen: {
-        "34": "Sam staat op om…",
-        "56": "Sam staat op om…",
-        "78": "Sam staat op om…",
+        "34": "Noor staat op om…",
+        "56": "Noor staat op om…",
+        "78": "Noor staat op om…",
       },
       extraHulp: "Op de plek van {zin} komt de situatie van deze opgave te staan.",
     }),
@@ -288,8 +340,8 @@ export const digitaaldagdeelGenerator: Generator = {
       ? "Er staat geen enkel moment. Schrijf er een paar neer, gescheiden door komma's."
       : null,
 
-  /* Hier altijd het hele etmaal: het dagdeel staat erbij, daar gaat het om. */
-  maximum: (inst) => alleTijden(inst, ["heel"], true).length,
+  /* Alleen de uren waar een situatie bij past; het dagdeel staat erbij. */
+  maximum: (inst) => urenMetMoment(momenten(inst)).length,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
@@ -297,8 +349,10 @@ export const digitaaldagdeelGenerator: Generator = {
     if (waar.length === 0) return [];
     const uit: Gegenereerd[] = [];
 
-    for (const t of husselen(kans, alleTijden(inst, ["heel"], true))) {
+    const uren = urenMetMoment(waar);
+    for (const uur of husselen(kans, uren)) {
       if (uit.length >= aantal) break;
+      const t: Tijd = { uur, minuut: 0 };
       const handtekening = `digitaaldagdeel:${digitaal(t)}`;
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
@@ -313,7 +367,10 @@ export const digitaaldagdeelGenerator: Generator = {
         metDagdeel({ uur: (t.uur + 23) % 24, minuut: t.minuut }),
       ];
       const { keuzes, goed } = keuzelijst(kans, metDagdeel(t), valkuilen);
-      const zin = `${kiesUit(kans, waar)}…`;
+      /* Een situatie die bij dit uur past, met een naam die afwisselt. */
+      const passend = waar.filter((m) => m.van <= uur && uur <= m.tot);
+      const naam = NAMEN[uit.length % NAMEN.length];
+      const zin = `${kiesUit(kans, passend).tekst.replace(/\{naam\}/g, naam)}…`;
 
       const gegevens = gegevensVan("digitaaldagdeel", "kiezen", t, goed, { keuze: 1 });
       uit.push({
