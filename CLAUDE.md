@@ -265,6 +265,13 @@ geval het ooit nog nodig is. Gebruik het niet.
 
 ---
 
+**Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
+gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
+grootte.** De bestanden staan in `public/geld/`, met de bron in
+`public/geld/BRON.md`. Niet bewerken en niet vergroten.
+
+---
+
 **Elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor
 kinderen.** Bij twijfel kies je de eenvoudigste zin. Dezelfde soort vraag
 formuleer je overal op dezelfde manier.

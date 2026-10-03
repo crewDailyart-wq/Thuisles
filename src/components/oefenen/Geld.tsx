@@ -3,10 +3,15 @@
 /**
  * Munten, briefjes en prijskaartjes.
  *
- * Geen foto's van echt geld maar simpele eigen tekeningen met de waarde erop
- * (WERKPLAN.md). De kleuren lijken op echt geld: koper voor 1, 2 en 5 cent,
- * goud voor 10, 20 en 50 cent, zilver met goud voor 1 en 2 euro, en elk briefje
- * zijn eigen kleur.
+ * Officiële afbeeldingen (WERKPLAN.md, oktober 2026): voor de briefjes van 5
+ * tot en met 100 euro het ECB-specimen in 72 dpi, voor de munten de
+ * gemeenschappelijke zijde met de kaart van Europa — nooit een nationale zijde,
+ * en nooit op ware grootte. De bestanden staan in `public/geld/`, met in
+ * `BRON.md` waar elk vandaan komt. Ze worden niet bewerkt; alleen de maat op
+ * het scherm wordt hier gekozen.
+ *
+ * De eigen tekeningen blijven bestaan voor wat er geen afbeelding van is (de
+ * briefjes van 200 en 500 euro). De kleuren daarvan lijken op echt geld.
  *
  * Alles is een SVG met een vaste verhouding en een vaste maat per soort, zodat
  * een munt nooit uitrekt en een rijtje geld altijd even hoog is. Het getal
@@ -45,8 +50,66 @@ const MUNTMAAT: Record<number, number> = {
   200: 50,
 };
 
+/** De officiële afbeelding bij een munt of briefje, of null als er geen is. */
+const AFBEELDING: Record<number, string> = {
+  1: "/geld/munt-1-cent.jpg",
+  2: "/geld/munt-2-cent.jpg",
+  5: "/geld/munt-5-cent.jpg",
+  10: "/geld/munt-10-cent.png",
+  20: "/geld/munt-20-cent.jpg",
+  50: "/geld/munt-50-cent.jpg",
+  100: "/geld/munt-1-euro.jpg",
+  200: "/geld/munt-2-euro.jpg",
+  500: "/geld/briefje-5-euro.jpg",
+  1000: "/geld/briefje-10-euro.jpg",
+  2000: "/geld/briefje-20-euro.jpg",
+  5000: "/geld/briefje-50-euro.jpg",
+  10000: "/geld/briefje-100-euro.jpg",
+};
+
+/** Breedte gedeeld door hoogte van elk briefje in de ECB-afbeelding (800 pixels breed). */
+const BRIEFVERHOUDING: Record<number, number> = {
+  500: 800 / 407,
+  1000: 800 / 421,
+  2000: 800 / 429,
+  5000: 800 / 435,
+  10000: 800 / 417,
+};
+
 export function Geldstuk({ cent, maat = "gewoon" }: { cent: number; maat?: "klein" | "gewoon" }) {
   const schaal = maat === "klein" ? 0.8 : 1;
+  const afbeelding = AFBEELDING[cent];
+
+  /*
+    De officiële afbeelding, op dezelfde plek en in dezelfde maat als de
+    tekening ervoor: een munt even breed als de getekende munt, een briefje
+    even hoog als het getekende briefje. Een munt wordt rond afgesneden, zodat
+    het witte vlak om de foto heen niet als vierkant op een gekleurde tegel
+    staat. Nooit op ware grootte: een briefje van 5 euro is echt 12 centimeter
+    breed, hier ongeveer 2.
+  */
+  if (afbeelding) {
+    const briefje = isBriefje(cent);
+    /*
+      Een munt een kwart groter dan de getekende: op een foto staat de waarde
+      fijner dan in de tekening, en zo blijft hij ook op een tablet leesbaar.
+      Nog altijd veel kleiner dan een echte munt.
+    */
+    const hoog = briefje ? Math.round(44 * schaal) : Math.round((MUNTMAAT[cent] ?? 44) * schaal * 1.25);
+    const breed = briefje ? Math.round(hoog * (BRIEFVERHOUDING[cent] ?? 1.9)) : hoog;
+    return (
+      /* eslint-disable-next-line @next/next/no-img-element */
+      <img
+        src={afbeelding}
+        alt={naamVan(cent)}
+        width={breed}
+        height={hoog}
+        draggable={false}
+        className={`shrink-0 select-none ${briefje ? "rounded-[3px] shadow-sm" : "rounded-full"}`}
+        style={{ width: breed, height: hoog, objectFit: briefje ? "contain" : "cover" }}
+      />
+    );
+  }
 
   if (isBriefje(cent)) {
     const breed = Math.round(78 * schaal);

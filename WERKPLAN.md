@@ -507,8 +507,11 @@ Alle onderdelen van Geld staan nu in het werkplan en zijn KLAAR: Munten en
 briefjes, Geldnotatie, Betalen en Rekenen met geld, met daarin ook Geld
 wisselen (oktober 2026).
 
-De code staat er voor alle vier de onderwerpen: 57 titels. De basisversie zijn gewone opdrachten met simpele getekende munten en
-briefjes; mooier beeld komt later. Elke titel geeft vijftien opgaven per ronde
+De code staat er voor alle vier de onderwerpen: 57 titels. De basisversie zijn gewone opdrachten.
+
+**Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes, gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware grootte.** De bestanden staan in `public/geld/`, met in `BRON.md` waar
+elk vandaan komt. Alleen de briefjes van 200 en 500 euro (die in de
+oefeningen niet voorkomen) zijn nog een eigen tekening. Elke titel geeft vijftien opgaven per ronde
 zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij. De
 instellingen per titel staan in `scripts/opgaven.mjs`.
 
@@ -528,10 +531,9 @@ bedrag, en 25,5 telt net zo goed als 25,50.
 
 Algemene regels voor dit onderwerp:
 
-- Geen foto's van echt geld, maar simpele eigen tekeningen met de waarde erop.
-  De kleuren lijken op echt geld: koper voor 1, 2 en 5 cent; goud voor 10, 20
-  en 50 cent; zilver met goud voor 1 en 2 euro; en de briefjes van 5, 10, 20,
-  50, 100, 200 en 500 euro elk in hun eigen kleur.
+- Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes, gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware grootte.
+  (Dit vervangt sinds oktober 2026 de eerdere regel "simpele eigen tekeningen,
+  geen foto's".)
 - Bedragen tot 100 euro. We zeggen "briefjes".
 - Bij typvragen typt het kind een getal en drukt op Controleren. Gewoon typen,
   geen getallenpad op het scherm.
@@ -596,8 +598,7 @@ Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
-- Het geld ziet eruit zoals bij "Munten en briefjes": simpele eigen
-  tekeningen, geen foto's.
+- Het geld ziet eruit zoals bij "Munten en briefjes": officiële afbeeldingen.
 - Bedragen tot 100 euro; centen alleen in tientallen, bijvoorbeeld € 4,90.
 - Prijzen staan op een prijskaartje bij een simpel getekend voorwerp:
   speelgoed, een boek, fruit.
@@ -636,8 +637,7 @@ Alleen de basis: gewone opdrachten, visueel werk komt later.
 
 Algemene regels voor dit onderwerp:
 
-- Het geld ziet eruit zoals bij "Munten en briefjes": simpele eigen
-  tekeningen, geen foto's.
+- Het geld ziet eruit zoals bij "Munten en briefjes": officiële afbeeldingen.
 - Bedragen tot 100 euro; centen in tientallen of vijftallen.
 - Korte verhaaltjes met eigen situaties: de markt, de kermis, het
   schoolreisje, de speelgoedwinkel, ijsjes.
@@ -710,8 +710,8 @@ Alleen hele euro's, tot 100 euro.
 
 #### Geld wisselen
 
-KLAAR (oktober 2026), als stand "wisselen" van het type `geldgroepen`. Het kind kiest steeds uit drie kaartjes met eigen simpele
-geldtekeningen en tikt op het kaartje zelf, zonder A/B/C-knoppen. De foute
+KLAAR (oktober 2026), als stand "wisselen" van het type `geldgroepen`. Het kind kiest steeds uit drie kaartjes met
+munten en briefjes en tikt op het kaartje zelf, zonder A/B/C-knoppen. De foute
 kaartjes zijn net te veel of net te weinig waard.
 
 | # | Titel | Bolletjes | Wat het kind doet |
@@ -746,7 +746,8 @@ Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
   op maandag begint, met de echte weekdagen, en de jaarcirkel met de twaalf
   maanden. Gebruikt bij Tijd.
 - **Geld** (`src/components/oefenen/Geld.tsx`) — munten, briefjes, een groepje
-  geld en een voorwerp met prijskaartje, als simpele eigen tekeningen. Het
+  geld en een voorwerp met prijskaartje. Munten en briefjes zijn de officiële
+  afbeeldingen uit `public/geld/` (zie `BRON.md`). Het
   rekenen met bedragen staat in `src/lib/geld.ts`, altijd in centen. Gebruikt
   bij Geld.
 - **Sleepkaartjes** (`src/components/oefenen/Sleepkaartjes.tsx`) — kaartjes

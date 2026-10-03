@@ -421,6 +421,7 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 - **02 — sitemap met korte adressen.** In de sitemap staan de adressen zonder domeinnaam (`/groep-4/geld`), terwijl zoekmachines het volledige adres verwachten (`https://…/groep-4/geld`). Dat gaat pas tellen als de site online staat, maar dan is de domeinnaam nodig. Welke wordt het?
 - **06 — halve uren "tot 12:00".** Bij de halve uren noemde je 01:30 tot en met 12:30 voor de eerste stap en 13:30 tot en met 23:30 voor de tweede. 12:30 is al middag, en dat past niet bij een titel "tot 12:00" met 's nachts of 's ochtends. Daarom heb ik gekozen voor 01:30 tot en met 11:30 en 12:30 tot en met 23:30. Moet 12:30 toch bij de eerste?
 - **07 — "0,3,2,1" na een fout antwoord.** Bij Klokken op volgorde, en bij andere sleepoefeningen, staat na een fout antwoord in het groene vakje het antwoord zoals de computer het opslaat: "0,3,2,1". Voor een kind zegt dat niets. Onder de vakjes staat al wel welke klok erin hoorde. Hetzelfde gebeurt bij keuze-oefeningen in Tijd, bijvoorbeeld "0" bij Hoe lang duurt het? (de goede knop is daar wel groen gekleurd). Dat groene vakje bestond al; ik heb het niet veranderd. Zal ik het bij sleep- en keuze-oefeningen weglaten, of er de tijden en woorden in zetten?
+- **16 — munten iets groter.** Je vroeg om formaat en indeling gelijk te houden. Op de oude maat waren de waardes op de echte munten (vooral 10, 20 en 50 cent en de 1 euro) te klein om te lezen. Daarom zijn alleen de munten een kwart groter dan de getekende munten; ze blijven veel kleiner dan een echte munt. Briefjes zijn even hoog als eerst. De indeling van de oefeningen is niet veranderd. Is dat goed zo?
 
 ## 00 — Losse verbeteringen
 
@@ -596,3 +597,11 @@ Alle vraagzinnen van de klokoefeningen en de kalender nagelopen: de zinnen in de
 2. Tikt het kind een datum aan, dan verschijnt een gevuld oranje rondje met witte cijfers. Tikken op een andere datum verplaatst het rondje. Het gevulde rondje is het donkerdere Thuisles-oranje (huisstijl-diep): daarop is witte tekst goed te lezen, net als op de knop Controleer.
 - Dit geldt voor alle kalenders in de app; die komen alleen bij Tijd voor. Na het nakijken blijven goed (groen) en fout (roze) zoals ze waren.
 - Getest met Testkind: bij "Zoek de datum" verscheen bij tikken op 13 mei het gevulde rondje, en dat verplaatste naar 10 mei. "Hoe lang nog?" toont 19 en 27 februari met een oranje rand, en "Over de maandgrens" op laptop- en tabletbreedte (768 px) 30 augustus met een oranje rand.
+
+## 16 — Echt geld
+
+- **Downloaden is gelukt.** De briefjes van €5, €10, €20, €50 en €100 komen uit het officiële zipbestand van de ECB-pagina "Images and reproduction rules": de huidige Europa-serie, voorkant, 72 dpi, met "SPECIMEN" erop. De munten (1, 2, 5, 10, 20 en 50 cent, €1 en €2) zijn de gemeenschappelijke zijde met de kaart van Europa, van de ECB-pagina over de munten. Geen nationale zijde.
+- Alles staat in `public/geld/`, met `BRON.md` erbij: per afbeelding de herkomst en het oorspronkelijke bestand. De bestanden zijn niet bewerkt en niet vergroot; alleen de naam is veranderd.
+- In alle Geld-oefeningen staan nu deze afbeeldingen in plaats van de tekeningen, op dezelfde plek in de oefening. Munten worden rond afgesneden, zodat het witte vlak om de foto niet als vierkant te zien is. Nooit op ware grootte: een briefje is op het scherm ongeveer 2 centimeter breed. Alleen de briefjes van €200 en €500 (komen in de oefeningen niet voor) zijn nog een tekening.
+- De regel staat in WERKPLAN.md en in CLAUDE.md: "Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes, gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware grootte."
+- Getest met Testkind: alle 57 Geld-oefeningen geopend. Ze laden allemaal, en de 34 met munten of briefjes tonen de nieuwe afbeeldingen (de andere 23 zijn tekst, zoals verhaaltjes en bonnetjes). Bij "Zelf precies betalen" het briefje van €5 neergelegd → goed.
