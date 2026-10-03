@@ -13,14 +13,16 @@
  *
  * De notatie is overal met een dubbele punt: 8 : 2, zoals op school.
  *
- * De basisversie is kaal rekenen; beeld komt later (WERKPLAN.md). Daarom staat
- * er bij deze types nog geen instelling voor hoeveel sommen visueel beginnen:
- * er is nog geen beeld om te laten zien, en een knop die niets doet is erger
- * dan geen knop.
+ * De basisversie was kaal rekenen. Sinds oktober 2026 doet het kind bij de
+ * kale deelsom eerst zelf wat delen is: groepjes maken of eerlijk verdelen, en
+ * pas daarna komt de som. Dat staat per sjabloon in de instelling "Werking";
+ * met "Alleen typen" is het weer de kale som van vroeger, ook voor opgaven die
+ * er al liggen.
  */
 
 import {
   getal,
+  tekst,
   husselen,
   kansGenerator,
   kiesUit,
@@ -44,6 +46,7 @@ import {
   deelsomUitleg,
   welkedeelsomUitleg,
 } from "@/lib/generatoren/scripts/keerdelen";
+import { ALLE_DEELTHEMAS, GROEPJESTHEMAS, VERDEELTHEMAS, bouwOpdracht } from "@/lib/deelthema";
 
 /**
  * Waardoor er gedeeld kan worden: 1 tot en met 10.
@@ -109,15 +112,54 @@ const DEELZINNEN: Record<Leeftijdsgroep, string> = {
   "78": "Reken uit: {som}",
 };
 
+/** Hoe het kind de deelsom maakt; zie `Werking` hieronder. */
+export type Deelwerking = "groepjes" | "verdelen" | "typen";
+
+export function deelwerking(inst: Instellingen): Deelwerking {
+  const w = tekst(inst, "werking", "groepjes");
+  return w === "verdelen" || w === "typen" ? w : "groepjes";
+}
+
+/** Standaard vijf opgaven waarin het kind eerst zelf bouwt. */
+const BOUW_STANDAARD = 5;
+
+function bouwsommen(inst: Instellingen): number {
+  return Math.max(0, Math.min(15, getal(inst, "visueel", BOUW_STANDAARD)));
+}
+
+const WERKINGVELD = {
+  soort: "keuze" as const,
+  sleutel: "werking",
+  label: "Werking",
+  opties: [
+    { waarde: "groepjes", label: "Groepjes maken, daarna de som" },
+    { waarde: "verdelen", label: "Eerlijk verdelen, daarna de som" },
+    { waarde: "typen", label: "Alleen typen (de oude werking)" },
+  ],
+  hulp:
+    "Bij groepjes maken of eerlijk verdelen tikt het kind eerst zelf, en verschijnt het antwoordvakje pas als alles in groepjes zit of verdeeld is. De andere opgaven zijn de kale som met een knop Hulp. Alleen typen geldt meteen, ook voor de opgaven die er al liggen.",
+};
+
+const BOUWVELD = {
+  soort: "getal" as const,
+  sleutel: "visueel",
+  label: "Hoeveel opgaven beginnen met zelf bouwen",
+  min: 0,
+  max: 15,
+  hulp: "De eerste opgaven van de oefening maakt het kind eerst zelf de groepjes of de verdeling. Daarna volgt de kale som met een knop Hulp. Telt niet bij Alleen typen.",
+};
+
 export const deelsomGenerator: Generator = {
   id: "deelsom",
   naam: "Delen (kale som)",
   uitleg:
-    "De deelsom staat er kaal: 8 : 2 = ▢, met grote cijfers en een dubbele punt. Vink één deeltafel aan voor een oefening als \"Delen door 3\", of meer voor deelsommen door elkaar.",
+    "De deelsom staat er kaal: 8 : 2 = ▢, met grote cijfers en een dubbele punt. Vink één deeltafel aan voor een oefening als \"Delen door 3\", of meer voor deelsommen door elkaar. Bij Werking kies je of het kind eerst zelf groepjes maakt of eerlijk verdeelt.",
   suggestie: "Groep 4: delen door 1, 2, 5 en 10 · groep 5: ook 3, 4, 6 · groep 6: alle tien",
   velden: [
     DELERVELD,
     UITKOMSTVELD,
+    WERKINGVELD,
+    BOUWVELD,
     ...vraagtekstVelden(DEELZINNEN, {
       voorbeeldzinnen: { "34": "Hoeveel is 8 : 2?", "56": "Hoeveel is 8 : 2?", "78": "Reken uit: 8 : 2" },
       extraHulp: "Op de plek van {som} komt de deelsom zelf te staan.",
@@ -127,7 +169,7 @@ export const deelsomGenerator: Generator = {
     standaard: DEELZINNEN,
     som: (s) => `${s.getallen[0]} : ${s.getallen[1]}`,
   },
-  standaard: { delers: ["1", "2", "5", "10"], tot: 10 },
+  standaard: { delers: ["1", "2", "5", "10"], tot: 10, werking: "groepjes", visueel: BOUW_STANDAARD },
   foutpatronen: deelPatronen,
   aanpak: deelsomAanpak,
   uitleganimatie: deelsomUitleg,
@@ -135,10 +177,14 @@ export const deelsomGenerator: Generator = {
   maximum: (inst) => {
     const { delers, tot } = grenzen(inst);
     /* Dezelfde som kan bij twee delers horen (8 : 2 en 8 : 4 zijn er twee). */
-    return delers.length * tot;
+    if (deelwerking(inst) === "typen") return delers.length * tot;
+    /* Een opgave om zelf te bouwen is een andere opgave dan dezelfde kale som. */
+    return delers.length * tot + Math.min(bouwsommen(inst), bouwkandidaten(delers, tot, deelwerking(inst)).length);
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
+    if (deelwerking(inst) !== "typen") return maakMetBouwen(inst, aantal, alGebruikt, zaad, groep);
+
     const kans = kansGenerator(zaad);
     const { delers, tot } = grenzen(inst);
 
@@ -188,6 +234,110 @@ export const deelsomGenerator: Generator = {
     return uit;
   },
 };
+
+/**
+ * De sommen die geschikt zijn om zelf te bouwen: uitkomst 2 tot en met 6, en
+ * bij verdelen minstens twee houders en hoogstens 40 voorwerpen (anders past
+ * het niet meer op het scherm). Zo blijft het tikken te overzien; met meer dan
+ * dertig voorwerpen helpt het scherm met één tik per groepje of met de knop
+ * "Iedereen één".
+ */
+function bouwkandidaten(delers: number[], tot: number, werking: Deelwerking): [number, number][] {
+  const verdelen = werking === "verdelen" && delers.some((d) => d >= 2);
+  return deelsommen(delers, Math.min(tot, 6))
+    .filter(([geheel, deler]) => geheel / deler >= 2 && (!verdelen || (deler >= 2 && geheel <= 40)))
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+}
+
+/**
+ * Delen om zelf te doen: eerst een paar opgaven waarin het kind bouwt, dan de
+ * kale sommen met een knop Hulp. Alles in een vaste volgorde van makkelijk
+ * naar moeilijk (`volgnummer`): bij het bouwen oplopend in aantal voorwerpen,
+ * bij de kale sommen oplopend in het getal dat gedeeld wordt.
+ */
+function maakMetBouwen(
+  inst: Instellingen,
+  aantal: number,
+  alGebruikt: Set<string>,
+  zaad: number,
+  groep: number,
+): Gegenereerd[] {
+  const kans = kansGenerator(zaad);
+  const { delers, tot } = grenzen(inst);
+  const werking = deelwerking(inst);
+  const bouw: "groepjes" | "verdelen" = werking === "verdelen" ? "verdelen" : "groepjes";
+  const themas = bouw === "groepjes" ? GROEPJESTHEMAS : VERDEELTHEMAS;
+
+  /* Eerst de bouwopgaven: gelijkmatig verspreid over wat geschikt is. */
+  const kandidaten = bouwkandidaten(delers, tot, werking);
+  const hoeveelBouw = Math.min(bouwsommen(inst), aantal, kandidaten.length);
+  const bouwen: [number, number][] = [];
+  for (let i = 0; i < hoeveelBouw; i++) {
+    const plek =
+      hoeveelBouw === 1 ? 0 : Math.round((i * (kandidaten.length - 1)) / (hoeveelBouw - 1));
+    bouwen.push(kandidaten[plek]);
+  }
+
+  /* Dan de kale sommen: zoveel verschillende als er passen, met elke deler erin. */
+  const rest = Math.max(0, aantal - hoeveelBouw);
+  const voorraad = husselen(kans, deelsommen(delers, tot));
+  const kaal: [number, number][] = [];
+  for (const deler of husselen(kans, delers)) {
+    const eerste = voorraad.find(([, d]) => d === deler);
+    if (eerste && kaal.length < rest) kaal.push(eerste);
+  }
+  for (const som of voorraad) {
+    if (kaal.length >= rest) break;
+    if (!kaal.some(([g, d]) => g === som[0] && d === som[1])) kaal.push(som);
+  }
+  kaal.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+
+  const uit: Gegenereerd[] = [];
+  const voegToe = (geheel: number, deler: number, stap: "bouwen" | "hulp", nummer: number) => {
+    const handtekening = stap === "bouwen" ? `deelsom:bouw:${geheel}:${deler}` : `deelsom:${geheel}:${deler}`;
+    if (alGebruikt.has(handtekening)) return;
+    alGebruikt.add(handtekening);
+
+    const thema = themas[nummer % themas.length];
+    const mee = geheel / deler;
+    const gegevens = {
+      soort: "deelsom",
+      variant: bouw,
+      getallen: [geheel, deler],
+      goed: mee,
+      extra: {
+        tafel: deler,
+        mee,
+        product: geheel,
+        stap: stap === "bouwen" ? 1 : 2,
+        thema: ALLE_DEELTHEMAS.indexOf(thema),
+      },
+    };
+    const kaleVraag = bepaalVraagtekst(deelsomGenerator, inst, groep, gegevens);
+    uit.push({
+      handtekening,
+      vorm: "open",
+      vraagtekst: stap === "bouwen" ? bouwOpdracht(bouw, deler, thema) : kaleVraag,
+      antwoord: String(mee),
+      figuur: {
+        soort: "deelsom",
+        geheel,
+        deler,
+        bouw,
+        stap,
+        thema,
+        kaleVraag,
+        volgnummer: uit.length + 1,
+      },
+      somgegevens: gegevens,
+    });
+  };
+
+  bouwen.forEach(([geheel, deler], i) => voegToe(geheel, deler, "bouwen", i));
+  kaal.forEach(([geheel, deler], i) => voegToe(geheel, deler, "hulp", i));
+  return uit;
+}
+
 
 // ---------------------------------------------------------------------------
 // Deelsommen koppelen
@@ -286,6 +436,18 @@ export const deelkoppelenGenerator: Generator = {
       });
     }
 
+    /*
+      Van makkelijk naar moeilijk: oplopend in de getallen die gedeeld worden.
+      De vaste plek gaat mee in de figuur, zodat het oefenscherm ze in die
+      volgorde zet.
+    */
+    const zwaarte = (v: Gegenereerd) =>
+      v.figuur?.soort === "deelkoppelen" ? v.figuur.sommen.reduce((n, x) => n + x.eerste, 0) : 0;
+    uit.sort((a, b) => zwaarte(a) - zwaarte(b));
+    uit.forEach((v, i) => {
+      if (v.figuur?.soort === "deelkoppelen") v.figuur.volgnummer = i + 1;
+    });
+
     return uit;
   },
 };
@@ -324,6 +486,14 @@ export const welkedeelsomGenerator: Generator = {
       max: 10,
       hulp: "Elke deelsom met een deler tot en met dit getal is goed gerekend.",
     },
+    {
+      soort: "getal",
+      sleutel: "geheelTot",
+      label: "Grootste getal in de deelsom",
+      min: 0,
+      max: 1000,
+      hulp: "Staat hier een getal, dan telt elke goede deelsom waarin geen getal groter is dan dit, ook als je door meer dan het getal hierboven deelt (bij 100: 100 : 20 = 5 is goed). 0 = niet gebruiken.",
+    },
     ...vraagtekstVelden(WELKEZINNEN, {
       voorbeeldzinnen: {
         "34": "Maak een deelsom die uitkomt op 5.",
@@ -347,7 +517,13 @@ export const welkedeelsomGenerator: Generator = {
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const { tot } = grenzen(inst);
-    const max = Math.max(2, Math.min(10, getal(inst, "max", 10)));
+    const vasteMax = Math.max(2, Math.min(10, getal(inst, "max", 10)));
+    /*
+      Met een grens op het hele getal mag er door alles gedeeld worden zolang
+      het getal dat je deelt er niet boven komt: bij 100 en uitkomst 5 is dat
+      tot en met 100 : 20.
+    */
+    const geheelTot = Math.max(0, getal(inst, "geheelTot", 0));
 
     const uit: Gegenereerd[] = [];
     /*
@@ -362,6 +538,7 @@ export const welkedeelsomGenerator: Generator = {
 
     for (const uitkomst of uitkomsten) {
       if (uit.length >= aantal) break;
+      const max = geheelTot > 0 ? Math.max(1, Math.floor(geheelTot / uitkomst)) : vasteMax;
 
       const handtekening = `welkedeelsom:${uitkomst}-${max}`;
       if (alGebruikt.has(handtekening)) continue;

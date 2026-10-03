@@ -13,6 +13,7 @@
  */
 
 import type { Aanpak, Somgegevens } from "@/lib/generatoren/foutpatroon";
+import { deelsomZin } from "@/lib/deelthema";
 
 function stukken(som: Somgegevens) {
   const tafel = som.extra?.tafel ?? som.getallen[0] ?? 0;
@@ -54,6 +55,9 @@ export const deelsomAanpak: Aanpak = {
     ];
   },
   controle: (som) => {
+    /* Bij groepjes maken en eerlijk verdelen: in de woorden van de opgave. */
+    const zin = deelsomZin(som);
+    if (zin) return zin;
     const { tafel, mee, product } = stukken(som);
     return `Het goede antwoord is ${mee}, want ${tafel} × ${mee} = ${product}.`;
   },

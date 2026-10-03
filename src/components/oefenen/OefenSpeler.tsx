@@ -483,7 +483,9 @@ export function OefenSpeler({
       wacht daar even op, anders leest een kind die regels nooit.
     */
     const eerstDeRedenering =
-      vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10";
+      (vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10") ||
+      /* Bij delen na het bouwen: eerst de deelsom laten zien, dan het feest. */
+      (vraag.figuur?.soort === "deelsom" && vraag.figuur.stap === "bouwen");
 
     if (goed) {
       setFase("goed");
@@ -1738,6 +1740,7 @@ function Antwoordvelden({
         metCursor
         onWijzig={onKies}
         onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
       />
     );
   }

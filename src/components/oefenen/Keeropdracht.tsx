@@ -58,6 +58,7 @@ import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Telplaatje } from "@/components/oefenen/Telplaatjes";
 import { Sleepkaartjes } from "@/components/oefenen/Sleepkaartjes";
+import { Deelbouwer } from "@/components/oefenen/Deelbouwer";
 import { isTelplaatje } from "@/lib/telplaatjes";
 import {
   grootsteAntwoord,
@@ -245,6 +246,7 @@ export function Keeropdracht({
   metCursor = false,
   onWijzig,
   onBevestig,
+  onKlaar,
 }: {
   figuur: Keerfiguur;
   antwoord: string;
@@ -253,6 +255,8 @@ export function Keeropdracht({
   metCursor?: boolean;
   onWijzig: (waarde: string) => void;
   onBevestig: () => void;
+  /** Na een goed antwoord bij delen om zelf te doen: de deelsom is gezien. */
+  onKlaar?: () => void;
 }) {
   const uit = fase !== "bezig";
   const juist = juisteAntwoorden(figuur);
@@ -326,6 +330,25 @@ export function Keeropdracht({
   // -------------------------------------------------------------------------
   // De kale sommen
   // -------------------------------------------------------------------------
+
+  /*
+    Delen om zelf te doen: eerst groepjes maken of eerlijk verdelen, en pas
+    daarna de som. Het vakje is hetzelfde als hieronder.
+  */
+  if (figuur.soort === "deelsom" && figuur.stap) {
+    return (
+      <Deelbouwer
+        figuur={figuur}
+        fase={fase}
+        vakje={vak(0, figuur.stap === "hulp" ? "De uitkomst" : "Je antwoord", "groot")}
+        onOpnieuw={() => meld([""])}
+        onGezien={onKlaar}
+        onKlaar={() => {
+          if (metCursor) velden.current[0]?.focus();
+        }}
+      />
+    );
+  }
 
   if (figuur.soort === "deelsom" || figuur.soort === "keersom") {
     const deel = figuur.soort === "deelsom";

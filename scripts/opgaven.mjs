@@ -65,26 +65,30 @@ const PER_RONDE = 15;
 const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Delen – Onderwerp 1: Deeltafels oefenen
+  // Sinds de uitkomsten tot en met 10 gaan (oktober 2026) staan de bolletjes
+  // met de hand op het leerdoel, zodat ze hetzelfde blijven als in WERKPLAN.md.
   // -------------------------------------------------------------------------
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 1", soort: "deelsom", bolletjes: 1, inst: { delers: ["1"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 2", soort: "deelsom", bolletjes: 1, inst: { delers: ["2"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 10", soort: "deelsom", bolletjes: 1, inst: { delers: ["10"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 5", soort: "deelsom", bolletjes: 2, inst: { delers: ["5"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 3", soort: "deelsom", bolletjes: 3, inst: { delers: ["3"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 4", soort: "deelsom", bolletjes: 3, inst: { delers: ["4"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 6", soort: "deelsom", bolletjes: 4, inst: { delers: ["6"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 8", soort: "deelsom", bolletjes: 4, inst: { delers: ["8"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 7", soort: "deelsom", bolletjes: 5, inst: { delers: ["7"], tot: 15 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 9", soort: "deelsom", bolletjes: 5, inst: { delers: ["9"], tot: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 1", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["1"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 2", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["2"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 10", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["10"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 5", soort: "deelsom", bolletjes: 2, handmatig: true, inst: { delers: ["5"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 3", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["3"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 4", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["4"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 6", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["6"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 8", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["8"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 7", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["7"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 9", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["9"], tot: 10, werking: "groepjes", visueel: 5 } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Delen – Onderwerp 2: Deelsommen
   // -------------------------------------------------------------------------
-  { groep: "Delen · Deelsommen", titel: "Deelsommen tot en met 5", soort: "deelsom", bolletjes: 2, inst: { delers: ["1", "2", "3", "4", "5"], tot: 15 } },
-  { groep: "Delen · Deelsommen", titel: "Deelsommen tot en met 10", soort: "deelsom", bolletjes: 3, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 15 } },
-  { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1, 2, 5 en 10", soort: "deelkoppelen", bolletjes: 4, inst: { delers: ["1", "2", "5", "10"], tot: 15, rijen: 5 } },
-  { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1 tot en met 10", soort: "deelkoppelen", bolletjes: 4, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 15, rijen: 5 } },
-  { groep: "Delen · Deelsommen", titel: "Welke deelsommen passen?", soort: "welkedeelsom", bolletjes: 5, inst: { tot: 15, max: 10 } },
+  { groep: "Delen · Deelsommen", titel: "Deelsommen tot en met 5", soort: "deelsom", bolletjes: 2, handmatig: true, inst: { delers: ["1", "2", "3", "4", "5"], tot: 10, werking: "verdelen", visueel: 5 } },
+  { groep: "Delen · Deelsommen", titel: "Deelsommen tot en met 10", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 10, werking: "verdelen", visueel: 5 } },
+  { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1, 2, 5 en 10", soort: "deelkoppelen", bolletjes: 4, handmatig: true, inst: { delers: ["1", "2", "5", "10"], tot: 10, rijen: 5 } },
+  { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1 tot en met 10", soort: "deelkoppelen", bolletjes: 4, handmatig: true, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 10, rijen: 5 } },
+  { groep: "Delen · Deelsommen", titel: "Welke deelsommen passen?", soort: "welkedeelsom", bolletjes: 5, handmatig: true, inst: { tot: 10, max: 10, geheelTot: 100 },
+    /* Uitkomsten 1 tot en met 10 (eigenaar, oktober 2026): dan bestaan er precies tien verschillende vragen. */
+    verschillend: 10 },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 1: Keersommen begrijpen
@@ -605,7 +609,14 @@ for (const oefening of OEFENINGEN) {
   */
   if (ronde.length < PER_RONDE) {
     weinig.push(`${waar}: ${ronde.length} verschillende opgaven, aangevuld tot ${PER_RONDE}.`);
-    fouten.push(`${waar}: maar ${ronde.length} verschillende opgaven; dat moeten er ${PER_RONDE} zijn.`);
+    /*
+      "verschillend": de eigenaar heeft het bereik zelf zo klein gemaakt dat er
+      niet meer bestaan. Dan moet er precies dat aantal uitkomen, en staat het
+      hierboven bij de dubbele in de uitvoer.
+    */
+    if (oefening.verschillend !== ronde.length) {
+      fouten.push(`${waar}: maar ${ronde.length} verschillende opgaven; dat moeten er ${PER_RONDE} zijn.`);
+    }
   }
 
   /* 2. Hetzelfde zaad geeft dezelfde ronde. */
@@ -769,6 +780,30 @@ for (const oefening of OEFENINGEN) {
         fouten.push(`${waar}: de kaartjes kloppen niet: ${f.kaarten.join(" / ")}.`);
       }
       if (/^\d+(,\d+)*$/.test(f.antwoordTekst) && f.weergave === "kaarten") fouten.push(`${waar}: het goede antwoord staat als code.`);
+    }
+
+    /*
+      Delen voor groep 4 (oktober 2026): uitkomsten 1 tot en met 10, geen getal
+      boven de 100, altijd met ":". Bij zelf bouwen: een vraagzin zonder
+      cijfercode, en de uitleg na een fout antwoord in gewone woorden.
+    */
+    if (oefening.groep.startsWith("Delen ·") && vraag.figuur) {
+      const f = vraag.figuur;
+      const sommen =
+        f.soort === "deelsom" ? [[f.geheel, f.deler]] : f.soort === "deelkoppelen" ? f.sommen.map((x) => [x.eerste, x.tweede]) : [];
+      for (const [g, d] of sommen) {
+        if (g > 100 || g % d !== 0 || g / d < 1 || g / d > 10) fouten.push(`${waar}: ${g} : ${d} past niet (uitkomst 1–10, tot en met 100).`);
+      }
+      if (f.soort === "welkedeelsom") {
+        if (f.uitkomst < 1 || f.uitkomst > 10) fouten.push(`${waar}: uitkomst ${f.uitkomst} hoort tussen 1 en 10.`);
+        if (f.uitkomst * f.max > 100) fouten.push(`${waar}: een goede deelsom kan boven de 100 komen.`);
+      }
+      if (/÷/.test(vraag.vraagtekst)) fouten.push(`${waar}: een ÷ in de vraag; het deelteken is ":".`);
+      if (f.soort === "deelsom" && oefening.inst.werking !== "typen") {
+        if (!f.stap || typeof f.volgnummer !== "number") fouten.push(`${waar}: zelf bouwen ontbreekt.`);
+        const zin = generator.aanpak.controle(vraag.somgegevens);
+        if (!/want \d+ : \d+ = \d+\.$/.test(zin)) fouten.push(`${waar}: de uitleg na een fout antwoord is "${zin}".`);
+      }
     }
 
     if (isKeerfiguur(vraag.figuur)) {

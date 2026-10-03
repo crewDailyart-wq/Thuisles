@@ -261,8 +261,36 @@ function metVosVanSjabloon(
   return { ...figuur, vos };
 }
 
+/**
+ * Delen om zelf te doen terugzetten naar de kale som, als het sjabloon op
+ * "Alleen typen" staat.
+ *
+ * Net als bij de vos hierboven hoort dit bij het sjabloon en niet bij de som:
+ * zet de beheerder een oefening terug naar de oude werking, dan geldt dat
+ * meteen, ook voor de opgaven die er al liggen. Er wordt niets opgeslagen; de
+ * opgave zelf blijft zoals hij is, dus terugzetten naar bouwen kan net zo goed.
+ */
+function metWerkingVanSjabloon(
+  figuur: Vraag["figuur"],
+  vraagtekst: string,
+  sjabloonId: string | null,
+): { figuur: Vraag["figuur"]; vraagtekst: string } {
+  if (figuur?.soort !== "deelsom" || !figuur.stap || !sjabloonId) return { figuur, vraagtekst };
+  const rij = sjabloonrij(sjabloonId);
+  if (rij?.inst.werking !== "typen") return { figuur, vraagtekst };
+  /* Alleen de velden van het bouwen eruit; de som en de volgorde blijven. */
+  const kaal: Vraag["figuur"] = {
+    soort: "deelsom",
+    geheel: figuur.geheel,
+    deler: figuur.deler,
+    volgnummer: figuur.volgnummer,
+  };
+  return { figuur: kaal, vraagtekst: figuur.kaleVraag ?? vraagtekst };
+}
+
 function naarVraag(r: Record<string, string | number | null>): VraagInContext {
-  const figuur = metVosVanSjabloon(r.figuur ? JSON.parse(String(r.figuur)) as Vraag["figuur"] : null, r.sjabloon_id ? String(r.sjabloon_id) : null);
+  const metVos = metVosVanSjabloon(r.figuur ? JSON.parse(String(r.figuur)) as Vraag["figuur"] : null, r.sjabloon_id ? String(r.sjabloon_id) : null);
+  const { figuur, vraagtekst } = metWerkingVanSjabloon(metVos, String(r.vraagtekst), r.sjabloon_id ? String(r.sjabloon_id) : null);
   const som = r.somgegevens ? JSON.parse(String(r.somgegevens)) as Vraag["somgegevens"] : null;
   if (som && figuur?.soort === "bus") som.extra = { ...som.extra, busPlaatsen: figuur.plaatsen ?? 40 };
   return {
@@ -270,7 +298,7 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     leerdoelId: String(r.leerdoel_id),
     groep: Number(r.groep),
     vorm: String(r.vorm) as Vraagvorm,
-    vraagtekst: String(r.vraagtekst),
+    vraagtekst,
     opties: leesOpties(r.opties === null ? null : String(r.opties)),
     antwoord: String(r.antwoord),
     hint: r.hint ? String(r.hint) : null,

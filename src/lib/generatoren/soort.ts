@@ -27,6 +27,12 @@ export type { Somgegevens };
 // ---------------------------------------------------------------------------
 
 /**
+ * De voorwerpen en houders bij delen om zelf te doen. De eerste drie horen bij
+ * groepjes maken, de laatste drie bij eerlijk verdelen.
+ */
+export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes" | "visjes";
+
+/**
  * Een tekening bij een vraag, opgeslagen als gegevens in plaats van als
  * plaatje. De kinderkant tekent hem met code, zodat hij op elk scherm scherp
  * blijft en netjes meeschaalt.
@@ -612,6 +618,26 @@ export type Figuur =
       soort: "deelsom";
       geheel: number;
       deler: number;
+      /**
+       * Delen om zelf te doen (oktober 2026). Weggelaten = de kale som van
+       * vroeger, en dan verandert er niets.
+       *
+       *   bouw   groepjes: groepjes maken van `deler` (hoeveel groepjes?)
+       *          verdelen: eerlijk verdelen over `deler` houders (hoeveel elk?)
+       *   stap   bouwen: eerst zelf bouwen, dan pas de vraag en het vakje
+       *          hulp:   de kale som, met een knop Hulp om alsnog te bouwen
+       *   thema  welke voorwerpen en houders er getekend worden
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen deze velden
+       * weg en zet het `kaleVraag` terug als vraagzin; zie `metWerkingVanSjabloon`
+       * in `lib/data/vragen.ts`.
+       */
+      bouw?: "groepjes" | "verdelen";
+      stap?: "bouwen" | "hulp";
+      thema?: Deelthema;
+      kaleVraag?: string;
+      /** Vaste plek in de oefening, van makkelijk naar moeilijk. */
+      volgnummer?: number;
     }
   | {
       /**
@@ -623,6 +649,8 @@ export type Figuur =
       soort: "deelkoppelen";
       sommen: { eerste: number; tweede: number }[];
       keuzes: number[];
+      /** Vaste plek in de oefening, van makkelijk naar moeilijk. */
+      volgnummer?: number;
     }
   | {
       /**
