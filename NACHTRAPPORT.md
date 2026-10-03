@@ -417,6 +417,8 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 
 - **00 — nieuwe mix per ronde.** Bijna elke oefening heeft precies 15 gepubliceerde opgaven en 15 vragen per ronde. Elke nieuwe ronde geeft dus dezelfde 15 opgaven in een andere volgorde, geen nieuwe opgaven. Wil je dat elke ronde echt andere opgaven heeft, dan moet er per oefening een grotere voorraad gepubliceerd worden (bijvoorbeeld 45). Dat heb ik niet gedaan: dat is veel nieuwe content in alle domeinen, en latere wachtrij-bestanden vragen juist om 15 per oefening. Zal ik dat doen?
 - **01 — toetsenbord bij Geldnotatie.** Bij "Bedrag opschrijven tot 10 euro" en "Van woorden naar cijfers tot 10 euro" moet het kind zelf een komma typen. Daarom krijgt dat veld het toetsenbord met cijfers én een komma (`decimal`), niet het kale cijfertoetsenbord uit HARDE REGEL 5; daar kan geen komma op. Bij hele euro's is het wel het gewone cijfertoetsenbord. Graag even op een iPad proberen of de komma verschijnt.
+- **02 — dubbele titels in oudere domeinen.** Bij Getallen, Splitsen, Optellen en Aftrekken (van vóór de SEO-basis, dus buiten deze opdracht) hebben 19 openbare pagina's voor groep 4 dezelfde titel en hetzelfde webadres als een andere pagina. Een voorbeeld: "Plaatjes tellen" staat vier keer bij Getallen, onder verschillende onderwerpen. Alleen de eerste is dan via dat adres bereikbaar. Bij Optellen heten een onderwerp en een oefening allebei "Optellen tot en met 20", net als "Aftrekken tot en met 15" bij Aftrekken. Ik heb niets veranderd. Wil je dat ze een eigen SEO-titel en eigen adres krijgen, bijvoorbeeld met de naam van het onderwerp erbij?
+- **02 — sitemap met korte adressen.** In de sitemap staan de adressen zonder domeinnaam (`/groep-4/geld`), terwijl zoekmachines het volledige adres verwachten (`https://…/groep-4/geld`). Dat gaat pas tellen als de site online staat, maar dan is de domeinnaam nodig. Welke wordt het?
 
 ## 00 — Losse verbeteringen
 
@@ -435,3 +437,11 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 - Typen gaat in één gewoon invoerveld. Een punt geeft de hint "Gebruik een komma"; Controleer blijft dan uit, dus het telt niet als fout. 7,5 en 7,50 zijn allebei goed, net als 26, 26,- en 26,00.
 - In de database staan 10 nieuwe leerdoelen bij groep 4, elk met een sjabloon, "vragen per oefensessie" 15 en 15 verschillende gepubliceerde opgaven.
 - Getest met Testkind: "Bedrag opschrijven tot 10 euro" (eerst 8.80 → hint, daarna 8,8 → goed; 4,51 → fout met het goede antwoord erbij), "Wisselen in briefjes en munten" (goed kaartje → goed) en "Van woorden naar cijfers tot 100 euro" (10 → goed).
+
+## 02 — SEO controleren
+
+Nagelopen met een script langs alle 583 openbare pagina's uit de sitemap, en een paar pagina's echt opgehaald.
+
+- **Delen, Tafels, Tijd en Geld** (ook de nieuwe Geldnotatie en Geld wisselen): elke pagina heeft een eigen Nederlandse titel en omschrijving, staat in de sitemap, en heeft geen dubbele titel. Die komen automatisch uit de naam, net als bij de SEO-basis. Een voorbeeld: "Een briefje wisselen oefenen – groep 4 | Thuisles".
+- Pagina's achter de inlog (oefenen, ouder, admin, kies, start enzovoort) staan niet in de sitemap. Ze staan wel dicht in `robots.txt` en hebben `noindex`.
+- **Aangevuld: 0 pagina's.** Er ontbrak niets bij de domeinen uit deze opdracht. Wat ik in oudere domeinen tegenkwam, staat bij "Vragen voor Sara".
