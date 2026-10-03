@@ -210,7 +210,7 @@ function bijna(k: Kans, r: number, teken: string, max: number): number[] {
   const opties = teken === "+" ? [1, -1, 10, -10] : [1, -1, 2, -2];
   return husselen(k, opties)
     .map((d) => r + d)
-    .filter((x) => x >= 0 && x <= Math.min(100, Math.max(max, r + 10)) && x !== r);
+    .filter((x) => x >= 1 && x <= Math.min(100, Math.max(max, r + 10)) && x !== r);
 }
 
 function maakOpgave(k: Kans, inst: Record<string, unknown>): Opgave | null {

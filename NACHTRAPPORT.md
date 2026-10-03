@@ -726,6 +726,11 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 
 (Bij twijfel heb ik steeds de veiligste keuze gemaakt; hier staat wat je nog kunt beslissen.)
 
+- **01 — webadres met vier delen.** Je gaf als voorbeeld `/groep-4/aftrekken/aftrekken-tot-en-met-30/sommen-met-dezelfde-uitkomst`. De openbare pagina's hebben maar drie delen (groep, domein, oefening), dus het is `/groep-4/aftrekken/aftrekken-tot-en-met-30-sommen-met-dezelfde-uitkomst` geworden: ook gewone woorden en uniek. Wil je echt een extra laag met het onderwerp, dan moet de opbouw van alle openbare pagina's veranderen.
+- **01 — "geen plaatjes" bij Optellen tot en met 30 en 40.** Er moesten precies dezelfde oefeningen in als bij Optellen tot en met 50, en daar hoort "Som bij de plaatjes" (stippen) bij. Ik heb die oefening met de simpele stippen laten staan. Moet hij er bij 30 en 40 uit?
+- **01 — overlap bij Optellen tot en met 50.** Die oefeningen gaan over uitkomsten van 21 tot en met 50 (zoals bestand 00 vroeg), en tot en met 30 en 40 over 21–30 en 31–40. Zo overlapt "tot en met 50" een beetje met de twee nieuwe. Wil je dat "tot en met 50" alleen nog 41–50 doet? Dan maak ik daar nieuwe opgaven voor.
+- **01 — bolletjes bij "De erafsom bij het plaatje".** Het bestaande type rekent hier zelf 1 bolletje uit. Ik heb de gevraagde 3 met de hand op het leerdoel gezet (in beheer: Moeilijkheid).
+
 ## 00 — Optellen uitbreiden
 
 - **Gebouwd:** 4 nieuwe onderwerpen met samen 28 oefeningen (Optellen tot en met 50: 8, Rekenen met tientallen: 7, Optellen tot en met 100: 8, Wat zit er onder de vlek?: 5), elk met 15 vaste opgaven van makkelijk naar moeilijk en "vragen per oefensessie" 15. Optellen tot en met 20 is niet aangepast. Volgorde, kopjes, titels en bolletjes zoals gevraagd; zie WERKPLAN.md.
@@ -758,3 +763,26 @@ Twee voorbeelden van SEO-titel en omschrijving:
 |---|---|---|
 | /groep-4/optellen/optellen-tot-en-met-50 | Optellen tot en met 50 oefenen – groep 4 \| Thuisles | Oefen erbijsommen tot en met 50 voor groep 4: uitrekenen, kiezen en puzzelen. Direct nakijken. |
 | /groep-4/optellen/rekenen-met-tientallen-tiental-plus-eenheden | Tiental plus eenheden – rekenen met tientallen (optellen) – groep 4 \| Thuisles | Oefen erbijsommen bij rekenen met tientallen (optellen): tiental plus eenheden. Voor groep 4, direct nakijken. |
+
+## 01 — Aftrekken uitbreiden en Optellen tot en met 30 en 40
+
+Uitgevoerd na bestand 00, zoals gevraagd. "Aftrekken tot en met 15" en "Aftrekken met het rekenrek" zijn niet aangepast. Alles bij groep 4, met 15 vaste opgaven per oefening van makkelijk naar moeilijk, "vragen per oefensessie" 15, en de kopjes zichtbaar op het kinderscherm.
+
+| Onderwerp | Oefeningen gemaakt | Getest met Testkind |
+|---|---|---|
+| Aftrekken tot en met 20 | 10 | "Aftrekken met plaatjes" (vraag "Hoeveel sterren houd je over?") en "Erafsommen tot en met 20" geopend |
+| Aftrekken tot en met 30 | 6 | "Aftrekken met tientaloverschrijding tot 30" en "Sommen en uitkomsten koppelen" geopend |
+| Aftrekken tot en met 40 | 6 | idem, tot 40 |
+| Aftrekken tot en met 50 | 6 | idem, tot 50 |
+| Aftrekken met tientallen | 7 | "Eenheden aftrekken binnen het tiental" en "Aftrekken met gelijke eenheden" geopend |
+| Aftrekken tot en met 100 | 6 | "Aftrekken met tientaloverschrijding tot 100" en "Sommen en uitkomsten koppelen" geopend |
+| Wat zit er onder de vlek? (Aftrekken) | 7 | "Vleksommen tot en met 30" geopend; "Vleksommen met de vlek vooraan" fout beantwoord (2 in plaats van 22): fout gerekend, met "22" groen en "22 − 12" erbij |
+| Optellen tot en met 30 | 8 | "Optellen tot en met 30" en "Welke som past er niet bij?" geopend |
+| Optellen tot en met 40 | 8 | "Optellen tot en met 40" en "Welke som past er niet bij?" geopend |
+| Wat zit er onder de vlek? (Optellen) | 2 erbij (nu 7) | "Vleksommen tot en met 30" geopend; staat tussen "tot en met 20" en "tot en met 50" |
+
+Samen 66 nieuwe oefeningen en 990 opgaven. "Geopend" betekent: de pagina laadde als Testkind, met de goede vraag en de goede vakjes of knoppen.
+
+- De volgorde van de onderwerpen bij Aftrekken en Optellen is zoals gevraagd. Bij de plaatjes-oefeningen zegt de vraag "Hoeveel … houd je over?".
+- Bij het nalezen verbeterd: bij "Sommen met dezelfde uitkomst" kwamen foute kaartjes met uitkomst 0 voor ("20 − 20"); foute keuzes zijn nu minstens 1.
+- SEO: elke nieuwe pagina heeft een eigen titel en omschrijving met het onderwerp, "erafsommen" of "erbijsommen" en "groep 4". Een voorbeeld: "Sommen met dezelfde uitkomst – aftrekken tot en met 30 – groep 4 | Thuisles". Er zijn geen nieuwe dubbele titels, en de openbare pagina's staan in de sitemap.

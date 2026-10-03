@@ -721,11 +721,81 @@ kaartjes zijn net te veel of net te weinig waard.
 | 3 | Centen wisselen | ●●○○○ | Ziet een munt van 10, 20 of 50 cent en tikt op het kaartje met kleinere centen dat evenveel waard is. |
 | 4 | Wisselen in briefjes en munten | ●●●○○ | Ziet een briefje van € 5, € 10 of € 20; de kaartjes hebben een mix van briefjes en euromunten, soms meer dan vier stuks. |
 
+## Groep 4 – Aftrekken — uitbreiding tot en met 100 — KLAAR
+
+KLAAR (oktober 2026). Volgorde van de onderwerpen: Aftrekken tot en met 15
+(bestond al), Aftrekken met het rekenrek (bestond al), Aftrekken tot en met
+20, 30, 40 en 50, Aftrekken met tientallen, Aftrekken tot en met 100, Wat zit
+er onder de vlek? De twee bestaande onderwerpen zijn niet aangepast.
+
+Regels: geen getal of uitkomst boven 100 of onder 0; 15 vaste opgaven per
+oefening van makkelijk naar moeilijk; "vragen per oefensessie" 15; foute
+keuzes zitten 1 of 2 naast het goede antwoord; na een fout antwoord "Het
+goede antwoord is 8, want 15 − 7 = 8." Tientaloverschrijding: de eenheid van
+het tweede getal is groter dan die van het eerste (41 − 19). De plaatjes-
+oefeningen gebruiken de bestaande types (wegstrepen, plaatjesminsom,
+minsomplaatje) met eigen plaatjes in rijen van 5; de rest is type
+`rekensom`. Elke oefening heeft een eigen naam in beheer en een eigen
+webadres (`aftrekken-tot-en-met-30-sommen-met-dezelfde-uitkomst`).
+
+### Aftrekken tot en met 20 (10 oefeningen)
+
+| Kopje | Titel | Bolletjes |
+|---|---|---|
+| Met plaatjes | Wegstrepen en tellen | ● |
+| Met plaatjes | Aftrekken met plaatjes ("Hoeveel … houd je over?") | ●● |
+| Met plaatjes | Aftrekken met plaatjes en getallen | ●● |
+| Met plaatjes | De erafsom bij het plaatje (drie vakjes) | ●●● |
+| Uitrekenen | Erafsommen tot en met 20 (zonder tientaloverschrijding) | ●● |
+| Uitrekenen | Aftrekken met tientaloverschrijding tot 20 | ●●●● |
+| Kiezen en controleren | Sommen met dezelfde uitkomst | ●●● |
+| Kiezen en controleren | De som met een andere uitkomst | ●●● |
+| Kiezen en controleren | Sommen en uitkomsten koppelen | ●●●● |
+| Puzzelen | Vergelijkingen kloppend maken | ●●●●● |
+
+### Aftrekken tot en met 30, 40, 50 en 100 (elk 6 oefeningen)
+
+| Kopje | Titel | Bolletjes |
+|---|---|---|
+| Uitrekenen | Erafsommen tot en met 30/40/50/100 (zonder tientaloverschrijding) | ●● |
+| Uitrekenen | Aftrekken met tientaloverschrijding tot 30/40/50/100 | ●●● |
+| Kiezen en controleren | Sommen met dezelfde uitkomst | ●●● |
+| Kiezen en controleren | De som met een andere uitkomst | ●●● |
+| Kiezen en controleren | Sommen en uitkomsten koppelen | ●●●● |
+| Puzzelen | Vergelijkingen kloppend maken | ●●●●● |
+
+### Aftrekken met tientallen (7 oefeningen)
+
+| Kopje | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|
+| Zonder over het tiental | Hele tientallen aftrekken | ● | 80 − 30, 70 − 70 |
+| Zonder over het tiental | Eenheden aftrekken binnen het tiental | ● | 47 − 3 |
+| Zonder over het tiental | Aftrekken tot een heel tiental | ●● | 36 − 6 |
+| Zonder over het tiental | Tientallen aftrekken van getallen tot 100 | ●● | 58 − 20 |
+| Zonder over het tiental | Aftrekken met gelijke eenheden | ●●● | 61 − 31 |
+| Over het tiental | Eenheden aftrekken van een heel tiental | ●●● | 90 − 5 |
+| Over het tiental | Aftrekken over het tiental | ●●●● | 94 − 8 |
+
+### Wat zit er onder de vlek? (7 oefeningen)
+
+| Titel | Bolletjes | Voorbeeld |
+|---|---|---|
+| Vleksommen tot en met 10 | ● | 7 − ☐ = 3 |
+| Vleksommen tot en met 20 | ●● | 16 − ☐ = 9 |
+| Vleksommen tot en met 30 | ●● | 28 − ☐ = 13 |
+| Vleksommen tot en met 40 | ●●● | 37 − ☐ = 19 |
+| Vleksommen tot en met 50 | ●●● | 40 − ☐ = 26 |
+| Vleksommen tot en met 100 | ●●●● | 83 − ☐ = 47 |
+| Vleksommen met de vlek vooraan | ●●●●● | ☐ − 8 = 35, tot en met 100 |
+
 ## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR
 
 KLAAR (oktober 2026). Volgorde van de onderwerpen: Optellen tot en met 20
-(bestond al, niet aangepast), Optellen tot en met 50, Rekenen met tientallen,
-Optellen tot en met 100, Wat zit er onder de vlek? Gewone opgaven; de enige
+(bestond al, niet aangepast), Optellen tot en met 30, Optellen tot en met 40,
+Optellen tot en met 50, Rekenen met tientallen, Optellen tot en met 100, Wat
+zit er onder de vlek? Optellen tot en met 30 en 40 hebben precies dezelfde
+kopjes, oefeningen en bolletjes als Optellen tot en met 50, met uitkomsten van
+21 tot en met 30 en van 31 tot en met 40. Gewone opgaven; de enige
 plaatjes zijn simpele eigen stippen in rijen van vijf.
 
 Type `rekensom` (`src/lib/generatoren/rekensom.ts`), scherm
@@ -786,9 +856,11 @@ kind tikt op de vlek en typt het getal.
 |---|---|---|---|
 | 1 | Onder de vlek tot en met 10 | ● | 4 + vlek = 5 |
 | 2 | Onder de vlek tot en met 20 | ●● | |
-| 3 | Onder de vlek tot en met 50 | ●●● | |
-| 4 | Onder de vlek tot en met 100 | ●●●● | |
-| 5 | De vlek kan overal zitten | ●●●●● | Vlek op het eerste getal, het tweede getal of de uitkomst, tot en met 100. |
+| 3 | Vleksommen tot en met 30 | ●● | |
+| 4 | Vleksommen tot en met 40 | ●●● | |
+| 5 | Onder de vlek tot en met 50 | ●●● | |
+| 6 | Onder de vlek tot en met 100 | ●●●● | |
+| 7 | De vlek kan overal zitten | ●●●●● | Vlek op het eerste getal, het tweede getal of de uitkomst, tot en met 100. |
 
 ## Groep 4 – Verhaaltjessommen — KLAAR
 

@@ -59,6 +59,7 @@ const PER_RONDE = 15;
  *   titel      zoals het kind hem ziet
  *   soort      welk generator-type
  *   bolletjes  wat WERKPLAN.md erbij zet
+ *   handmatig  (zelden) de bolletjes staan met de hand op het leerdoel
  *   inst       de instellingen die bij die titel horen
  */
 const OEFENINGEN = [
@@ -481,6 +482,76 @@ const OEFENINGEN = [
   { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 50", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"vlek","plek":"tweede","niveau":3} },
   { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 100", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"vlek","plek":"tweede","niveau":4} },
   { groep: "Optellen · Wat zit er onder de vlek?", titel: "De vlek kan overal zitten", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"plus","van":21,"tot":100,"stand":"vlek","plek":"overal","niveau":5} },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Aftrekken uitgebreid (tot en met 20, 30, 40, 50, tientallen, 100, vlek) en Optellen tot en met 30 en 40
+  // -------------------------------------------------------------------------
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met plaatjes", titel: "Wegstrepen en tellen", soort: "wegstrepen", bolletjes: 1, inst: {"plaatjes":[],"afTot":10,"van":11,"tot":20} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met plaatjes", titel: "Aftrekken met plaatjes", soort: "plaatjesminsom", bolletjes: 2, inst: {"plaatjes":[],"afTot":10,"van":11,"tot":20,"getallen":"nee","visueel":0,"vraagtekst":"Hoeveel {plaatjes} houd je over?"} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met plaatjes", titel: "Aftrekken met plaatjes en getallen", soort: "plaatjesminsom", bolletjes: 2, inst: {"plaatjes":[],"afTot":10,"van":11,"tot":20,"getallen":"ja","visueel":0,"vraagtekst":"Hoeveel {plaatjes} houd je over?"} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met plaatjes", titel: "De erafsom bij het plaatje", soort: "minsomplaatje", bolletjes: 3, handmatig: true, inst: {"plaatjes":[],"afTot":10,"van":11,"tot":20} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Uitrekenen", titel: "Erafsommen tot en met 20", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":11,"tot":20,"stand":"som","brug":"nee","niveau":2} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 20", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":11,"tot":20,"stand":"som","brug":"ja","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":11,"tot":20,"stand":"evenveel","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":11,"tot":20,"stand":"nietbij","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":11,"tot":20,"stand":"koppelen","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":11,"tot":20,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Erafsommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"nee","niveau":2} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 30", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"ja","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"evenveel","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"nietbij","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":21,"tot":30,"stand":"koppelen","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 30 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":21,"tot":30,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Uitrekenen", titel: "Erafsommen tot en met 40", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":31,"tot":40,"stand":"som","brug":"nee","niveau":2} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 40", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":31,"tot":40,"stand":"som","brug":"ja","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":31,"tot":40,"stand":"evenveel","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":31,"tot":40,"stand":"nietbij","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":31,"tot":40,"stand":"koppelen","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 40 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":31,"tot":40,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Uitrekenen", titel: "Erafsommen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":41,"tot":50,"stand":"som","brug":"nee","niveau":2} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 50", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":41,"tot":50,"stand":"som","brug":"ja","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":41,"tot":50,"stand":"evenveel","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":41,"tot":50,"stand":"nietbij","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":41,"tot":50,"stand":"koppelen","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 50 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":41,"tot":50,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Zonder over het tiental", titel: "Hele tientallen aftrekken", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"min","stand":"tientallen","tiental":"heletientallen","van":1,"tot":100,"niveau":1} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Zonder over het tiental", titel: "Eenheden aftrekken binnen het tiental", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"min","stand":"tientallen","tiental":"eenhedenaf","van":1,"tot":100,"niveau":1} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Zonder over het tiental", titel: "Aftrekken tot een heel tiental", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","stand":"tientallen","tiental":"totheeltiental","van":1,"tot":100,"niveau":2} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Zonder over het tiental", titel: "Tientallen aftrekken van getallen tot 100", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","stand":"tientallen","tiental":"tientallenaf","van":1,"tot":100,"niveau":2} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Zonder over het tiental", titel: "Aftrekken met gelijke eenheden", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","stand":"tientallen","tiental":"gelijkeeenheden","van":1,"tot":100,"niveau":3} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Over het tiental", titel: "Eenheden aftrekken van een heel tiental", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","stand":"tientallen","tiental":"vantiental","van":1,"tot":100,"niveau":3} },
+  { groep: "Aftrekken · Aftrekken met tientallen · Over het tiental", titel: "Aftrekken over het tiental", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","stand":"tientallen","tiental":"overtientalaf","van":1,"tot":100,"niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Uitrekenen", titel: "Erafsommen tot en met 100", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":51,"tot":100,"stand":"som","brug":"nee","niveau":2} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 100", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":51,"tot":100,"stand":"som","brug":"ja","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":51,"tot":100,"stand":"evenveel","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":51,"tot":100,"stand":"nietbij","niveau":3} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":51,"tot":100,"stand":"koppelen","niveau":4} },
+  { groep: "Aftrekken · Aftrekken tot en met 100 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":51,"tot":100,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 10", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"min","van":3,"tot":10,"stand":"vlek","plek":"tweede","niveau":1} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 20", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":11,"tot":20,"stand":"vlek","plek":"tweede","niveau":2} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":21,"tot":30,"stand":"vlek","plek":"tweede","niveau":2} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 40", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":31,"tot":40,"stand":"vlek","plek":"tweede","niveau":3} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 50", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":41,"tot":50,"stand":"vlek","plek":"tweede","niveau":3} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 100", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":51,"tot":100,"stand":"vlek","plek":"tweede","niveau":4} },
+  { groep: "Aftrekken · Wat zit er onder de vlek?", titel: "Vleksommen met de vlek vooraan", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":21,"tot":100,"stand":"vlek","plek":"eerste","niveau":5} },
+  { groep: "Optellen · Optellen tot en met 30 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"stippen","niveau":1} },
+  { groep: "Optellen · Optellen tot en met 30 · Uitrekenen", titel: "Optellen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"som","niveau":2} },
+  { groep: "Optellen · Optellen tot en met 30 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"koppelen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 30 · Kiezen en controleren", titel: "Welke som klopt?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"klopt","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 30 · Kiezen en controleren", titel: "Welke som past er niet bij?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"nietbij","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 30 · Puzzelen", titel: "Aanvullen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"aanvullen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 30 · Puzzelen", titel: "Twee getallen die samen … zijn", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"tweegetallen","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 30 · Puzzelen", titel: "Beide kanten gelijk", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"balans","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 40 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"stippen","niveau":1} },
+  { groep: "Optellen · Optellen tot en met 40 · Uitrekenen", titel: "Optellen tot en met 40", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"som","niveau":2} },
+  { groep: "Optellen · Optellen tot en met 40 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"koppelen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 40 · Kiezen en controleren", titel: "Welke som klopt?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"klopt","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 40 · Kiezen en controleren", titel: "Welke som past er niet bij?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"nietbij","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 40 · Puzzelen", titel: "Aanvullen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"aanvullen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 40 · Puzzelen", titel: "Twee getallen die samen … zijn", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"tweegetallen","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 40 · Puzzelen", titel: "Beide kanten gelijk", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"balans","niveau":4} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"vlek","plek":"tweede","niveau":2} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 40", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"vlek","plek":"tweede","niveau":3} },
 ];
 
 // ---------------------------------------------------------------------------
@@ -547,7 +618,12 @@ for (const oefening of OEFENINGEN) {
 
   /* 5. De bolletjes zoals WERKPLAN.md ze opgeeft. */
   const bolletjes = bolletjesVan(puntenVan(oefening.soort, inst));
-  if (bolletjes !== oefening.bolletjes) {
+  /*
+    "handmatig": de bolletjes staan met de hand op het leerdoel (de eigen
+    moeilijkheid in beheer), omdat het type ze anders uitrekent dan WERKPLAN.md
+    vraagt. Dan wordt hier niet op de berekening gecontroleerd.
+  */
+  if (!oefening.handmatig && bolletjes !== oefening.bolletjes) {
     fouten.push(
       `${waar}: ${bolletjes} bolletjes in plaats van ${oefening.bolletjes} uit WERKPLAN.md.`,
     );
