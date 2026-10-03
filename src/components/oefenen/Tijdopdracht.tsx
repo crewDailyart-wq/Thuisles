@@ -523,9 +523,8 @@ export function Tijdopdracht({
     return (
       <div className="flex w-full flex-col items-center gap-5">
         {/*
-          De twee klokken met een pijl ertussen. De pijl wijst altijd van de
-          eerste klok naar de tweede, want zo lees je de vraag; of dat vooruit
-          of terug in de tijd is, staat er als woord bij.
+          De twee klokken met een pijl ertussen, NU en LATER of EERDER en NU
+          erboven. De pijl wijst altijd van nu naar de andere tijd.
 
           Naast elkaar alleen als er echt plek is voor allebei plus de pijl —
           gemeten aan het vak zelf (@container), niet aan het scherm, want in
@@ -534,22 +533,35 @@ export function Tijdopdracht({
           viel de tweede klok naar de volgende regel en bleef de pijl naast de
           eerste hangen, wijzend naar niets.
         */}
-        <div className="@container w-full">
-          <div className="flex flex-col items-center justify-center gap-2 @md:flex-row @md:gap-3">
-            <Digitaleklok tijd={{ uur: figuur.eersteUur, minuut: figuur.eersteMinuut }} />
-            <span
-              aria-hidden="true"
-              className="flex flex-col items-center text-huisstijl @md:px-1"
-            >
-              <span className="text-3xl leading-none font-extrabold @md:hidden">↓</span>
-              <span className="hidden text-3xl leading-none font-extrabold @md:inline">→</span>
-              <span className="text-xs font-extrabold uppercase tracking-wide">
-                {figuur.richting === "eerder" ? "terug" : "vooruit"}
-              </span>
-            </span>
-            <Digitaleklok tijd={{ uur: figuur.tweedeUur, minuut: figuur.tweedeMinuut }} />
-          </div>
-        </div>
+        {(() => {
+          /*
+            NU staat er altijd bij, en de andere klok heet LATER of EERDER. De
+            klokken staan in de volgorde van de tijd: bij later NU links en de
+            pijl naar rechts, bij eerder de eerdere klok links en de pijl naar
+            links, terug naar de vroegere tijd.
+          */
+          const eerder = figuur.richting === "eerder";
+          const nu = { uur: figuur.eersteUur, minuut: figuur.eersteMinuut };
+          const ander = { uur: figuur.tweedeUur, minuut: figuur.tweedeMinuut };
+          const metLabel = (label: string, tijd: { uur: number; minuut: number }) => (
+            <div className="flex flex-col items-center gap-1">
+              <span className="text-xs font-extrabold uppercase tracking-wide text-inkt-zacht">{label}</span>
+              <Digitaleklok tijd={tijd} />
+            </div>
+          );
+          return (
+            <div className="@container w-full">
+              <div className="flex flex-col items-center justify-center gap-2 @md:flex-row @md:items-end @md:gap-3">
+                {eerder ? metLabel("Eerder", ander) : metLabel("Nu", nu)}
+                <span aria-hidden="true" className="flex flex-col items-center text-huisstijl @md:px-1 @md:pb-3">
+                  <span className="text-3xl leading-none font-extrabold @md:hidden">{eerder ? "↑" : "↓"}</span>
+                  <span className="hidden text-3xl leading-none font-extrabold @md:inline">{eerder ? "←" : "→"}</span>
+                </span>
+                {eerder ? metLabel("Nu", nu) : metLabel("Later", ander)}
+              </div>
+            </div>
+          );
+        })()}
         {urenEnMinuten()}
         <p className="text-sm text-inkt-zacht">
           Is het een heel aantal uren? Dan mag je het minutenvakje leeg laten.

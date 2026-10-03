@@ -481,7 +481,20 @@ export const digitaalaflezenGenerator: Generator = {
 // Tijd vooruit en tijd terug
 // ---------------------------------------------------------------------------
 
-const VERSCHILZIN = "Hoeveel tijd zit ertussen?";
+/**
+ * De vraag zegt altijd welke kant op: "Het is 14:00. Hoeveel later is het om
+ * 17:00?" of "Het is 14:00. Hoeveel eerder was het om 11:00?". Nooit alleen
+ * "Hoeveel tijd zit ertussen?": dan weet een kind niet of het vooruit of terug
+ * moet tellen.
+ */
+const VERSCHILZIN = "{zin}";
+
+/** De zin bij een opgave: vanaf nu, de andere tijd later of eerder. */
+export function verschilzin(richting: string, nu: Tijd, ander: Tijd): string {
+  return richting === "eerder"
+    ? `Het is ${digitaal(nu)}. Hoeveel eerder was het om ${digitaal(ander)}?`
+    : `Het is ${digitaal(nu)}. Hoeveel later is het om ${digitaal(ander)}?`;
+}
 const VERSCHILZINNEN: Record<Leeftijdsgroep, string> = {
   "34": VERSCHILZIN,
   "56": VERSCHILZIN,
@@ -530,7 +543,7 @@ export const digitaalverschilGenerator: Generator = {
   id: "digitaalverschil",
   naam: "Tijd vooruit en tijd terug",
   uitleg:
-    "Twee digitale klokken met een pijl ertussen; het kind typt hoeveel tijd ertussen zit: ▢ uur ▢ minuten. Bij een heel aantal uren mag het minutenvakje leeg blijven — leeg telt als 0 en is goed.",
+    "Twee digitale klokken, NU en LATER of EERDER en NU, met een pijl die de goede kant op wijst. De vraag zegt welke kant op: \"Het is 14:00. Hoeveel later is het om 17:00?\" Het kind typt het antwoord: ▢ uur ▢ minuten.",
   suggestie: "Groep 4: hele uren · groep 5: halve uren · groep 6: over het hele uur en kwartieren",
   velden: [
     {
@@ -562,7 +575,14 @@ export const digitaalverschilGenerator: Generator = {
       max: 6,
     },
     URENVELD,
-    ...vraagtekstVelden(VERSCHILZINNEN),
+    ...vraagtekstVelden(VERSCHILZINNEN, {
+      voorbeeldzinnen: {
+        "34": "Het is 14:00. Hoeveel later is het om 17:00?",
+        "56": "Het is 14:00. Hoeveel later is het om 17:00?",
+        "78": "Het is 14:00. Hoeveel later is het om 17:00?",
+      },
+      extraHulp: "Op de plek van {zin} komt de vraag van deze opgave te staan, met de twee tijden erin.",
+    }),
   ],
   vraagteksten: { standaard: VERSCHILZINNEN },
   standaard: { richting: "later", stand: "heleUren", maxUren: 4 },
@@ -622,7 +642,9 @@ export const digitaalverschilGenerator: Generator = {
       uit.push({
         handtekening,
         vorm: "open",
-        vraagtekst: bepaalVraagtekst(digitaalverschilGenerator, inst, groep, gegevens),
+        vraagtekst: bepaalVraagtekst(digitaalverschilGenerator, inst, groep, gegevens, {
+          zin: verschilzin(richting, eerste, tweede),
+        }),
         antwoord: `${d.uren},${d.minuten}`,
         figuur: {
           soort: "digitaalverschil",

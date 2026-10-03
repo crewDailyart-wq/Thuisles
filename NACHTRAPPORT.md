@@ -528,3 +528,11 @@ Tien voorbeeldvragen uit de gepubliceerde opgaven:
 | Yara gaat in bad om… | 19:00 | zeven uur 's avonds |
 | Bilal speelt na het eten op het schoolplein om… | 13:00 | één uur 's middags |
 | Mila staat op om… | 07:00 | zeven uur 's ochtends |
+
+## 11 — Tijd vooruit en Tijd terug
+
+1. De vraag zegt altijd welke kant op. Bij Later: "Het is 03:30. Hoeveel later is het om 05:45?" Bij Eerder: "Het is 08:00. Hoeveel eerder was het om 05:00?" Aangepast in de generator en in alle 300 opgaven in de database (alleen de vraagtekst). "Hoeveel tijd zit ertussen?" komt nergens anders voor.
+2. Boven de klokken staat NU en LATER, of EERDER en NU.
+3. Bij Later staat NU links met een pijl naar rechts. Bij Eerder staat de eerdere klok links met een pijl naar links (op een smal scherm onder elkaar, met een pijl omhoog). Het woord "TERUG" onder de pijl is weg, en "VOORUIT" ook: de labels erboven zeggen het nu. Dat laatste vroeg je niet letterlijk, maar met maar één woord bij één van de twee zou het ongelijk worden. Wil je VOORUIT terug, zeg het dan.
+4. De stem leest hier geen vraag voor, dus daar hoefde niets aan te veranderen. De antwoorden zijn hetzelfde gebleven.
+- Getest met Testkind in beide groepjes: Later (03:30 → 05:45) en Eerder (08:00 ← 05:00, 3 uur → goed).

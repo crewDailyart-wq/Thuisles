@@ -372,6 +372,9 @@ Algemene regels voor dit onderwerp:
 
 #### Later
 
+Twee digitale klokken: NU links en LATER rechts, met een pijl naar rechts. De
+vraag zegt welke kant op: "Het is 06:00. Hoeveel later is het om 09:00?"
+
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
 | 1 | Tijd vooruit: hele uren | ●○○○○ | Bijvoorbeeld 06:00 en 09:00. Alleen 01:00 tot en met 12:00. |
@@ -382,8 +385,9 @@ Algemene regels voor dit onderwerp:
 
 #### Eerder
 
-Dezelfde vijf stappen als bij Later, maar terug in de tijd: de eerste klok is
-de latere tijd.
+Dezelfde vijf stappen als bij Later, maar terug in de tijd. De eerdere klok
+staat links (EERDER), NU rechts, met een pijl naar links. De vraag: "Het is
+09:00. Hoeveel eerder was het om 06:00?"
 
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
