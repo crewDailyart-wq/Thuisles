@@ -453,3 +453,9 @@ Nagelopen met een script langs alle 583 openbare pagina's uit de sitemap, en een
 - "Hoeveel minuten in een uur?" en "De grote en de kleine wijzer" staan op verborgen. "De grote en de kleine wijzer" staat weer op groep 4. Beide zijn uit WERKPLAN.md gehaald; het kopje "Klokken koppelen" staat nu boven de overige oefeningen bovenaan dat onderwerp.
 - In `scripts/opgaven.mjs` staan ze nog wel: daar wordt nog steeds nagekeken dat hun opgaven kloppen, voor het geval je ze weer zichtbaar maakt.
 - Getest met Testkind: beide zijn weg uit Tijd, en de teller bij Wijzerklok en digitale klok staat op 8.
+
+## 04 — Klokken koppelen en vraagteksten
+
+1. De vraag is nu "Sleep elke tijd naar de goede klok.", ook in de 15 bestaande opgaven (alleen de tekst). De vakjes staan namelijk náást de klokken, niet eronder. De andere sleepoefeningen ("Sleep de uitkomst naar de som.", "Sleep de keersom naar de deelsom.", "Sleep het geld van weinig naar veel waard.", "Sleep de klokken van vroeg naar laat.") kloppen met waar de vakjes staan; daar is niets aan veranderd.
+2. Een lange vraag loopt altijd over meerdere regels. Een heel lang woord wordt zo nodig afgebroken in plaats van van het scherm te vallen. Afgeknipte teksten (`truncate` en dergelijke) komen in de oefenschermen nergens voor.
+3. De klokken bij Klokken koppelen zijn groter: 128 px op een smal scherm en 144 px vanaf tabletbreedte (was 96 px). De cijfers op elke wijzerklok staan nu boven de wijzers, met een smalle witte rand eromheen. Daardoor valt de 12 nooit meer weg achter de grote wijzer, op alle klokken in de app. Nagemeten op 360 en 768 px breed: niets valt buiten het scherm.

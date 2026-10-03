@@ -13,7 +13,7 @@
  *     klokaflezen        een klok; kies de tijd in woorden of digitaal
  *     klokkiezen         kies de goede klok uit vier
  *     klokzetten         zet zelf de wijzers
- *     klokkoppelen       sleep de digitale tijden onder de klokken
+ *     klokkoppelen       sleep elke digitale tijd naar de goede klok
  *     klokkenvolgorde    sleep vier klokken van vroeg naar laat
  *     kloktypen          typ de tijd in twee vakjes
  *     wijzeraanwijzen    tik op de wijzer van de uren of van de minuten
@@ -636,7 +636,8 @@ export function Tijdopdracht({
   if (figuur.soort === "klokkoppelen") {
     return (
       <Sleepkaartjes
-        regels={figuur.klokken.map((k, i) => <Klok key={i} tijd={k} maat="klein" />)}
+        /* Groter dan "klein": de cijfers moeten ook op een tablet goed te lezen zijn. */
+        regels={figuur.klokken.map((k, i) => <Klok key={i} tijd={k} maat="middel" />)}
         keuzes={figuur.keuzes.map((k, i) => (
           <Digitaleklok key={i} tijd={k} maat="klein" />
         ))}

@@ -150,7 +150,7 @@ export function Klok({
   onZet,
 }: {
   tijd: Tijd;
-  maat?: "klein" | "gewoon" | "groot";
+  maat?: "klein" | "middel" | "gewoon" | "groot";
   vlek?: Vlek | null;
   nadruk?: "uur" | "minuut" | null;
   zetbaar?: boolean;
@@ -162,7 +162,13 @@ export function Klok({
   const [sleept, setSleept] = useState<"uur" | "minuut" | null>(null);
 
   const grootte =
-    maat === "klein" ? "size-24" : maat === "groot" ? "size-56 sm:size-64" : "size-40 sm:size-48";
+    maat === "klein"
+      ? "size-24"
+      : maat === "middel"
+        ? "size-32 sm:size-36"
+        : maat === "groot"
+          ? "size-56 sm:size-64"
+          : "size-40 sm:size-48";
 
   /** De hoek van de muis of vinger ten opzichte van het midden van de klok. */
   function hoekVanPunt(x: number, y: number): number | null {
@@ -305,27 +311,6 @@ export function Klok({
         );
       })}
 
-      {/* De twaalf cijfers, elk gecentreerd op zijn eigen punt. */}
-      {Array.from({ length: 12 }, (_, i) => {
-        const uur = i + 1;
-        const plek = cijferplek(uur);
-        return (
-          <text
-            key={uur}
-            x={plek.x}
-            y={plek.y}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={18}
-            fontWeight={800}
-            fill="var(--color-inkt)"
-            pointerEvents="none"
-          >
-            {uur}
-          </text>
-        );
-      })}
-
       {/* De kleine wijzer: kort en dik. Draait om het middelpunt. */}
       <g transform={`rotate(${hoeken.uur} ${MIDDEN} ${MIDDEN})`}>
         <line
@@ -362,6 +347,37 @@ export function Klok({
           />
         )}
       </g>
+
+      {/*
+        De twaalf cijfers, elk gecentreerd op zijn eigen punt.
+
+        Na de wijzers getekend, met een witte rand eromheen: zo valt een cijfer
+        nooit weg achter de grote wijzer. Op elk heel uur staat die precies op
+        de 12, en juist dat cijfer moet een kind kunnen lezen.
+      */}
+      {Array.from({ length: 12 }, (_, i) => {
+        const uur = i + 1;
+        const plek = cijferplek(uur);
+        return (
+          <text
+            key={uur}
+            x={plek.x}
+            y={plek.y}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={18}
+            fontWeight={800}
+            fill="var(--color-inkt)"
+            stroke="white"
+            strokeWidth={5}
+            strokeLinejoin="round"
+            paintOrder="stroke"
+            pointerEvents="none"
+          >
+            {uur}
+          </text>
+        );
+      })}
 
       {/* Eén klein rondje in het midden. */}
       <circle cx={MIDDEN} cy={MIDDEN} r={5} fill="var(--color-inkt)" />

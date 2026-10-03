@@ -1064,7 +1064,7 @@ export function OefenSpeler({
               een woord, ook niet bij een lange vraag op een smal scherm.
             */}
             <h1
-              className={`text-center font-extrabold leading-snug ${
+              className={`text-center font-extrabold leading-snug break-words ${
                 leeftijd === "34" ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
               } ${heeftBeeld ? "" : "px-11 sm:px-10 lg:px-8"}`}
             >

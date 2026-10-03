@@ -6,7 +6,7 @@
  *   klokaflezen        een klok; kies de tijd in woorden of digitaal
  *   klokkiezen         kies de goede klok uit vier
  *   klokzetten         zet zelf de wijzers
- *   klokkoppelen       sleep de digitale tijden onder de klokken
+ *   klokkoppelen       sleep elke digitale tijd naar de goede klok
  *   klokkenvolgorde    sleep vier klokken van vroeg naar laat
  *   kloktypen          typ de tijd in twee vakjes
  *   wijzeraanwijzen    tik op de wijzer van de uren of van de minuten
@@ -918,7 +918,7 @@ export const klokzettenGenerator: Generator = {
 // Klokken koppelen
 // ---------------------------------------------------------------------------
 
-const KOPPELZIN = "Sleep de tijd onder de goede klok.";
+const KOPPELZIN = "Sleep elke tijd naar de goede klok.";
 const KOPPELZINNEN: Record<Leeftijdsgroep, string> = {
   "34": KOPPELZIN,
   "56": KOPPELZIN,
@@ -929,7 +929,7 @@ export const klokkoppelenGenerator: Generator = {
   id: "klokkoppelen",
   naam: "Klokken koppelen",
   uitleg:
-    "Drie wijzerklokken met de digitale tijden eronder. Het kind sleept elke tijd naar de klok waar hij bij hoort; tikken werkt ook.",
+    "Drie wijzerklokken met naast elke klok een leeg vakje; de digitale tijden liggen eronder klaar. Het kind sleept elke tijd naar de klok waar hij bij hoort; tikken werkt ook.",
   suggestie: "Groep 4: hele en halve uren door elkaar, drie klokken",
   velden: [
     TIJDENVELD,
