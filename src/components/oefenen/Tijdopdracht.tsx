@@ -466,7 +466,7 @@ export function Tijdopdracht({
           jaar={figuur.jaar}
           maand={figuur.maand}
           vandaag={figuur.dag}
-          gekozen={figuur.doel}
+          doel={figuur.doel}
         />
         <div className="flex flex-wrap items-center justify-center gap-3">
           {vak(0, figuur.zin, "groot")}

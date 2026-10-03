@@ -29,6 +29,8 @@ export function Kalender({
   vandaag = null,
   /** Welke dag het kind heeft aangetikt. */
   gekozen = null,
+  /** Een tweede gegeven datum, zoals de dag van het feest bij de nachtjes. */
+  doel = null,
   /** Welke dag na het nakijken groen hoort te zijn. */
   juist = null,
   uit = false,
@@ -44,6 +46,7 @@ export function Kalender({
   compact?: boolean;
   vandaag?: number | null;
   gekozen?: number | null;
+  doel?: number | null;
   juist?: number | null;
   uit?: boolean;
   onTik?: (dag: number) => void;
@@ -85,7 +88,7 @@ export function Kalender({
                     return <td key={k} className={`${HOKJE} bg-room/40`} aria-hidden="true" />;
                   }
 
-                  const isVandaag = dag === vandaag;
+                  const isGegeven = dag === vandaag || dag === doel;
                   const isGekozen = dag === gekozen;
                   const isJuist = uit && dag === juist;
                   const isFout = uit && isGekozen && dag !== juist;
@@ -94,15 +97,28 @@ export function Kalender({
                     ? "bg-groen-zacht text-groen-diep"
                     : isFout
                       ? "bg-roze-zacht text-roze"
-                      : isGekozen
-                        ? "bg-huisstijl-zacht text-huisstijl-donker"
-                        : isVandaag
-                          ? "bg-geel-zacht text-inkt"
-                          : "bg-kaart text-inkt";
+                      : "bg-kaart text-inkt";
+
+                  /*
+                    Een gegeven datum (vandaag) krijgt een oranje rondje erom; een
+                    datum die het kind aantikt een gevuld oranje rondje met witte
+                    cijfers. Zo zijn ze nooit met elkaar te verwarren. Het gevulde
+                    rondje is huisstijl-diep: daar is wit op goed te lezen.
+                  */
+                  const rondje =
+                    isGekozen && !uit
+                      ? "bg-huisstijl-diep text-white"
+                      : isGegeven
+                        ? `${compact ? "border-2" : "border-[3px]"} border-huisstijl`
+                        : "";
 
                   const inhoud = (
-                    <span className={`grid size-full place-items-center ${cijfer} font-extrabold tabular-nums`}>
-                      {dag}
+                    <span className="grid size-full place-items-center">
+                      <span
+                        className={`grid aspect-square h-[88%] place-items-center rounded-full ${cijfer} font-extrabold tabular-nums ${rondje}`}
+                      >
+                        {dag}
+                      </span>
                     </span>
                   );
 

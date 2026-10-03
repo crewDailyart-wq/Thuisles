@@ -589,3 +589,10 @@ Alle vraagzinnen van de klokoefeningen en de kalender nagelopen: de zinnen in de
 - Niet veranderd, omdat het al klopte: "Op welke dag valt 9 mei?", de klokvragen ("Hoe laat is het?", "Het is half vier. Zet de klok 2 uur later."), de nachtjes-vragen en "Hoe lang geleden is dat?". "Je gaat om drie uur naar het zwembad. … Hoe lang duurde het?" is jouw eigen zin uit bestand 08; die heb ik laten staan.
 - In CLAUDE.md staat nu: elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor kinderen, en bij twijfel kies je de eenvoudigste zin.
 - **Twee maanden:** bij "Over de maandgrens" staan de twee kalenders nu altijd naast elkaar, op een smal scherm kleiner, met de vier antwoordknoppen twee bij twee. Op een tablet en een laptop past alles op één scherm. Op een kleine telefoon (360 bij 740) moet je nog een klein stukje scrollen tot de knop Controleer, omdat de vraag daar over vier regels loopt.
+
+## 15 — Markering op de kalender
+
+1. Een gegeven datum ("vandaag", en bij de nachtjes ook de dag van het feest of de schoolreis) heeft geen lichtgeel vakje meer, maar een duidelijk oranje rondje om de datum. De datum blijft goed leesbaar.
+2. Tikt het kind een datum aan, dan verschijnt een gevuld oranje rondje met witte cijfers. Tikken op een andere datum verplaatst het rondje. Het gevulde rondje is het donkerdere Thuisles-oranje (huisstijl-diep): daarop is witte tekst goed te lezen, net als op de knop Controleer.
+- Dit geldt voor alle kalenders in de app; die komen alleen bij Tijd voor. Na het nakijken blijven goed (groen) en fout (roze) zoals ze waren.
+- Getest met Testkind: bij "Zoek de datum" verscheen bij tikken op 13 mei het gevulde rondje, en dat verplaatste naar 10 mei. "Hoe lang nog?" toont 19 en 27 februari met een oranje rand, en "Over de maandgrens" op laptop- en tabletbreedte (768 px) 30 augustus met een oranje rand.
