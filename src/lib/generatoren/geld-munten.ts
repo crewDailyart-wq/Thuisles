@@ -554,6 +554,49 @@ function bijnaBedragen(prijs: number, geld: string): number[] {
   return stap.flatMap((s) => [prijs + s, prijs - s]);
 }
 
+/**
+ * Geld wisselen: wat er gewisseld wordt, en waarin.
+ *
+ *   briefje    een briefje van 10 tot en met 100 euro, in kleinere briefjes
+ *   euromunt   een munt van 1 of 2 euro, in centen
+ *   centen     een munt van 10, 20 of 50 cent, in kleinere centen
+ *   gemengd    een briefje van 5, 10 of 20 euro, in briefjes én euromunten
+ *
+ * `stap` is hoeveel een fout kaartje ernaast zit: net te veel of net te
+ * weinig, zodat het kind echt moet tellen (WERKPLAN.md).
+ */
+const WISSELEN: Record<
+  string,
+  { van: number[]; in: number[]; min: number; max: number; stap: (waarde: number) => number[] }
+> = {
+  briefje: { van: [1000, 2000, 5000, 10000], in: [500, 1000, 2000, 5000], min: 2, max: 5, stap: (w) => (w >= 5000 ? [1000, 500] : [500]) },
+  euromunt: { van: [100, 200], in: [5, 10, 20, 50], min: 2, max: 6, stap: () => [10, 20] },
+  centen: { van: [10, 20, 50], in: [1, 2, 5, 10, 20], min: 2, max: 6, stap: (w) => (w === 10 ? [1, 2] : w === 20 ? [1, 2, 5] : [5, 10]) },
+  gemengd: { van: [500, 1000, 2000], in: [100, 200, 500, 1000], min: 3, max: 7, stap: () => [100, 200] },
+};
+
+/** Een bedrag in losse stukken uit `in`, allemaal kleiner dan wat gewisseld wordt. */
+function wisselIn(kans: () => number, waarde: number, groot: number, soort: string): number[] | null {
+  const w = WISSELEN[soort];
+  const stukken = w.in.filter((s) => s < groot);
+  for (let poging = 0; poging < 60; poging++) {
+    const uit: number[] = [];
+    let rest = waarde;
+    while (rest > 0 && uit.length <= w.max) {
+      const past = stukken.filter((s) => s <= rest);
+      if (past.length === 0) break;
+      const s = kiesUit(kans, past);
+      uit.push(s);
+      rest -= s;
+    }
+    if (rest !== 0 || uit.length < w.min || uit.length > w.max) continue;
+    /* Briefjes én euromunten door elkaar; bij € 5 bestaat er geen kleiner briefje. */
+    if (soort === "gemengd" && (!uit.some((s) => s < 500) || (groot > 500 && !uit.some(isBriefje)))) continue;
+    return groterEerst(uit);
+  }
+  return null;
+}
+
 export const geldgroepenGenerator: Generator = {
   id: "geldgroepen",
   naam: "Vakjes met geld",
@@ -569,6 +612,18 @@ export const geldgroepenGenerator: Generator = {
         { waarde: "grootste", label: "Het grootste bedrag — drie vakjes" },
         { waarde: "precies", label: "Precies de prijs — drie vakjes A, B en C" },
         { waarde: "wisselgeld", label: "Precies het wisselgeld — vier vakjes" },
+        { waarde: "wisselen", label: "Geld wisselen — drie kaartjes zonder letter" },
+      ],
+    },
+    {
+      soort: "keuze",
+      sleutel: "wissel",
+      label: "Wat er gewisseld wordt (bij geld wisselen)",
+      opties: [
+        { waarde: "briefje", label: "Een briefje van € 10 tot en met € 100, in kleinere briefjes" },
+        { waarde: "euromunt", label: "Een munt van € 1 of € 2, in centen" },
+        { waarde: "centen", label: "Een munt van 10, 20 of 50 cent, in kleinere centen" },
+        { waarde: "gemengd", label: "Een briefje van € 5, € 10 of € 20, in briefjes en euromunten" },
       ],
     },
     {
@@ -583,15 +638,16 @@ export const geldgroepenGenerator: Generator = {
     },
     ...geldzinVelden("Welk groepje is precies € 60,-?"),
   ],
-  standaard: { stand: "grootste", geld: "briefjes" },
+  standaard: { stand: "grootste", geld: "briefjes", wissel: "briefje" },
   ...GELDBASIS,
 
   maximum: () => null,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
-    const stand = tekst(inst, "stand", "grootste") as "grootste" | "precies" | "wisselgeld";
+    const stand = tekst(inst, "stand", "grootste") as "grootste" | "precies" | "wisselgeld" | "wisselen";
     const geld = tekst(inst, "geld", "briefjes");
+    const wisselsoort = WISSELEN[tekst(inst, "wissel", "briefje")] ? tekst(inst, "wissel", "briefje") : "briefje";
     const uit: Gegenereerd[] = [];
 
     for (let poging = 0; uit.length < aantal && poging < aantal * 400; poging++) {
@@ -600,9 +656,29 @@ export const geldgroepenGenerator: Generator = {
       let prijs: number | null = null;
       let betaald: number | null = null;
       let voorwerp: string | null = null;
+      let wissel: number | null = null;
       let zin = "";
 
-      if (stand === "grootste") {
+      if (stand === "wisselen") {
+        /*
+          Eén kaartje is precies evenveel waard; de andere twee zitten er net
+          naast, één erboven en één eronder. Alle kaartjes in hetzelfde soort
+          geld, zodat je het niet aan de munten ziet maar moet tellen.
+        */
+        const w = WISSELEN[wisselsoort];
+        wissel = kiesUit(kans, w.van);
+        const juist = wisselIn(kans, wissel, wissel, wisselsoort);
+        const stap = kiesUit(kans, w.stap(wissel));
+        const stap2 = kiesUit(kans, w.stap(wissel));
+        /* Alles blijft tot en met 100 euro: bij € 100 zitten beide foute kaartjes eronder. */
+        const boven = wissel + stap <= 10000 ? wissel + stap : wissel - (stap2 === 500 ? 1000 : 500);
+        const teVeel = wisselIn(kans, boven, wissel, wisselsoort);
+        const teWeinig = wissel - stap2 > 0 ? wisselIn(kans, wissel - stap2, wissel, wisselsoort) : null;
+        if (!juist || !teVeel || !teWeinig) continue;
+        groepen = husselen(kans, [juist, teVeel, teWeinig]);
+        goed = groepen.indexOf(juist);
+        zin = `Welk kaartje is evenveel waard als ${isBriefje(wissel) ? "dit briefje" : "deze munt"}?`;
+      } else if (stand === "grootste") {
         /* Drie groepjes van twee tot vier stuks, met drie verschillende totalen. */
         groepen = Array.from({ length: 3 }, () =>
           Array.from({ length: tussen(kans, 2, 4) }, () => kiesUit(kans, TELGELD)),
@@ -651,7 +727,7 @@ export const geldgroepenGenerator: Generator = {
         zin = `Je betaalt ${bedrag(betaald)}. ${naam.charAt(0).toUpperCase()}${naam.slice(1)} kost ${bedrag(prijs)}. Welk geld krijg je terug?`;
       }
 
-      const handtekening = `geldgroepen:${stand}:${prijs ?? ""}:${betaald ?? ""}:${groepen.map(sleutel).join("/")}`;
+      const handtekening = `geldgroepen:${stand}:${prijs ?? ""}:${betaald ?? ""}:${wissel ?? ""}:${groepen.map(sleutel).join("/")}`;
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
 
@@ -663,9 +739,10 @@ export const geldgroepenGenerator: Generator = {
         goed: totaal(gesorteerd[goed]),
         extra: {
           keuze: 1,
-          stand: stand === "grootste" ? 0 : stand === "precies" ? 1 : 2,
+          stand: stand === "grootste" ? 0 : stand === "precies" ? 1 : stand === "wisselgeld" ? 2 : 3,
           ...(prijs !== null ? { prijs } : {}),
           ...(betaald !== null ? { betaald } : {}),
+          ...(wissel !== null ? { wissel } : {}),
         },
       };
       uit.push({
@@ -673,7 +750,7 @@ export const geldgroepenGenerator: Generator = {
         vorm: "open",
         vraagtekst: geldVraag(geldgroepenGenerator, inst, groep, som, zin),
         antwoord: String(goed),
-        figuur: { soort: "geldgroepen", stand, groepen: gesorteerd, goed, prijs, betaald, voorwerp, zin },
+        figuur: { soort: "geldgroepen", stand, groepen: gesorteerd, goed, prijs, betaald, voorwerp, zin, wissel },
         somgegevens: som,
       });
     }

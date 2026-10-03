@@ -114,6 +114,7 @@ import {
   geldverhaalGenerator,
   kunjebetalenGenerator,
 } from "@/lib/generatoren/geld-rekenen";
+import { geldnotatieGenerator } from "@/lib/generatoren/geld-notatie";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -167,6 +168,7 @@ export const alleGeneratoren: Generator[] = [
   geldtellenGenerator,
   geldleggenGenerator,
   muntenofeurosGenerator,
+  geldnotatieGenerator,
   geldgroepenGenerator,
   evenveelGenerator,
   welkegroepjesGenerator,

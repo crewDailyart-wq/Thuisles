@@ -21,6 +21,7 @@
  *   geldafronden     afronden op hele en halve euro's
  *   geldschatten     samen ongeveer, of wat houd je over
  *   geldkorting      hoeveel korting, of de prijs na korting
+ *   geldnotatie      een bedrag goed opschrijven, in één invoerveld
  *
  * ---------------------------------------------------------------------------
  * Een bedrag typen
@@ -49,7 +50,7 @@ import {
   naamVan,
   totaal,
 } from "@/lib/geld";
-import { isGeldfiguur, juistAntwoord, type Geldfiguur } from "@/lib/geldfiguren";
+import { isGeldfiguur, juistAntwoord, leesGeldnotatie, type Geldfiguur } from "@/lib/geldfiguren";
 
 export type { Geldfiguur };
 export { isGeldfiguur, juistAntwoord };
@@ -256,12 +257,15 @@ function Groepkeuze({
   juist,
   uit,
   onTik,
+  letters = true,
 }: {
   groepen: number[][];
   gekozen: number[];
   juist: number[];
   uit: boolean;
   onTik: (nummer: number) => void;
+  /** Zonder letters (Geld wisselen): het kind tikt op het kaartje zelf. */
+  letters?: boolean;
 }) {
   return (
     <div className="@container w-full">
@@ -284,13 +288,15 @@ function Groepkeuze({
               type="button"
               disabled={uit}
               aria-pressed={isGekozen}
-              aria-label={`Vakje ${letter}`}
+              aria-label={letters ? `Vakje ${letter}` : `Kaartje ${i + 1}`}
               onClick={() => onTik(i)}
               className={`flex min-h-20 items-center gap-3 rounded-2xl border-2 p-3 text-left transition disabled:cursor-not-allowed ${kleur}`}
             >
-              <span className="grid size-8 shrink-0 place-items-center rounded-full bg-inkt/10 text-base font-extrabold text-inkt">
-                {letter}
-              </span>
+              {letters && (
+                <span className="grid size-8 shrink-0 place-items-center rounded-full bg-inkt/10 text-base font-extrabold text-inkt">
+                  {letter}
+                </span>
+              )}
               <span className="min-w-0 flex-1">
                 <Geldgroep stukken={g} maat="klein" />
               </span>
@@ -298,6 +304,114 @@ function Groepkeuze({
           );
         })}
       </div>
+    </div>
+  );
+}
+
+/**
+ * Het ene invoerveld van Geldnotatie: € ▢▢▢▢ — het kind typt zelf de komma.
+ *
+ * Bij hele euro's staat ",-" er al achter en komen er alleen cijfers in. Met
+ * centen mag er een komma in; een punt is niet fout maar geeft de hint
+ * "Gebruik een komma", en zolang die er staat blijft Controleer uit. Zo telt
+ * het niet als fout en probeert het kind het gewoon opnieuw (WERKPLAN.md).
+ *
+ * Met centen is het toetsenbord `decimal`: cijfers plus het decimaalteken
+ * (een komma op een Nederlands apparaat). Bij hele euro's `numeric` met het
+ * patroon voor oudere iPads, zoals HARDE REGEL 5 voorschrijft.
+ */
+function Notatieveld({
+  heel,
+  juist,
+  fase,
+  metCursor,
+  onWijzig,
+  onBevestig,
+}: {
+  heel: boolean;
+  juist: number;
+  fase: Fase;
+  metCursor: boolean;
+  onWijzig: (waarde: string) => void;
+  onBevestig: () => void;
+}) {
+  const uit = fase !== "bezig";
+  const [waarde, setWaarde] = useState("");
+  const veld = useRef<HTMLInputElement | null>(null);
+  const { bijAandacht, bijWeggaan } = useInBeeld();
+
+  const vorigeFase = useRef(fase);
+  useEffect(() => {
+    const wasKlaar = vorigeFase.current !== "bezig";
+    vorigeFase.current = fase;
+    if (wasKlaar && fase === "bezig") setWaarde("");
+  }, [fase]);
+
+  useEffect(() => {
+    if (metCursor && fase === "bezig") veld.current?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [metCursor]);
+
+  const gelezen = heel ? (waarde === "" ? null : Number(waarde) * 100) : leesGeldnotatie(waarde);
+  const punt = gelezen === "punt";
+  const uitslag: Uitslag = !uit ? null : gelezen === juist ? "goed" : "fout";
+  const kleur =
+    uitslag === "goed"
+      ? "border-groen bg-groen-zacht text-groen-diep"
+      : uitslag === "fout"
+        ? "border-roze bg-roze-zacht text-roze"
+        : "border-rand bg-kaart text-inkt focus-within:border-huisstijl";
+
+  function typ(ruw: string) {
+    if (uit) return;
+    const schoon = heel ? ruw.replace(/\D/g, "").slice(0, 3) : ruw.replace(/[^\d,.\-]/g, "").slice(0, 6);
+    setWaarde(schoon);
+    const g = heel ? (schoon === "" ? null : Number(schoon) * 100) : leesGeldnotatie(schoon);
+    onWijzig(typeof g === "number" ? antwoordVan(g) : "");
+  }
+
+  const tekst = "text-2xl font-extrabold text-inkt-zacht";
+  return (
+    <div className="flex flex-col items-center gap-2">
+      <div className="flex items-center justify-center gap-1.5" role="group" aria-label="Het bedrag">
+        <span className={tekst}>€</span>
+        <span className={`grid h-16 place-items-center rounded-2xl border-2 text-2xl font-extrabold tabular-nums ${heel ? "w-24" : "w-32"} ${kleur}`}>
+          <input
+            ref={veld}
+            type="text"
+            aria-label={heel ? "Het bedrag: hoeveel euro" : "Het bedrag, met een komma"}
+            aria-describedby={punt ? "geldnotatie-hint" : undefined}
+            value={waarde}
+            placeholder={uitslag === null ? "?" : undefined}
+            readOnly={uit}
+            disabled={uit}
+            autoComplete="off"
+            inputMode={heel ? "numeric" : "decimal"}
+            pattern={heel ? "[0-9]*" : undefined}
+            enterKeyHint="done"
+            maxLength={heel ? 3 : 6}
+            onFocus={(e) => bijAandacht(e.currentTarget)}
+            onBlur={bijWeggaan}
+            onChange={(e) => typ(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                onBevestig();
+              }
+            }}
+            className="size-full rounded-[inherit] bg-transparent text-center outline-none placeholder:text-rand"
+          />
+        </span>
+        {heel && <span className={tekst}>,-</span>}
+      </div>
+      {punt && !uit && (
+        <p id="geldnotatie-hint" role="status" className="text-base font-extrabold text-huisstijl">
+          Gebruik een komma.
+        </p>
+      )}
+      {uit && fase !== "goed" && (
+        <p className="text-base font-extrabold text-groen-diep">Het goede antwoord is {bedrag(juist)}.</p>
+      )}
     </div>
   );
 }
@@ -633,7 +747,44 @@ export function Geldopdracht({
               </div>
             </div>
           )}
-          <Groepkeuze groepen={figuur.groepen} gekozen={gekozen} juist={[figuur.goed]} uit={uit} onTik={kies} />
+          {figuur.stand === "wisselen" && figuur.wissel != null && (
+            <div className="flex flex-col items-center gap-2 rounded-2xl bg-inkt/5 px-6 py-3">
+              <span className="text-xs font-semibold uppercase tracking-wide text-inkt-zacht">Dit wissel je</span>
+              <Geldstuk cent={figuur.wissel} />
+            </div>
+          )}
+          <Groepkeuze
+            groepen={figuur.groepen}
+            gekozen={gekozen}
+            juist={[figuur.goed]}
+            uit={uit}
+            onTik={kies}
+            letters={figuur.stand !== "wisselen"}
+          />
+        </div>
+      );
+
+    case "geldnotatie":
+      return (
+        <div className={kolom}>
+          {figuur.stukken && <Geldgroep stukken={figuur.stukken} />}
+          {figuur.stand === "woorden" && figuur.woorden && (
+            <p className="rounded-2xl bg-inkt/5 px-5 py-3 text-center text-2xl font-extrabold text-inkt">
+              {figuur.woorden}
+            </p>
+          )}
+          {figuur.keuzes ? (
+            <Keuzeknoppen keuzes={figuur.keuzes} gekozen={eenKeuze} juist={figuur.goed} uit={uit} onKies={kies} />
+          ) : (
+            <Notatieveld
+              heel={figuur.heel}
+              juist={figuur.bedrag}
+              fase={fase}
+              metCursor={metCursor}
+              onWijzig={onWijzig}
+              onBevestig={onBevestig}
+            />
+          )}
         </div>
       );
 

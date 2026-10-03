@@ -654,7 +654,9 @@ export function puntenVan(soort: string, inst: Instellingen): number {
     case "geldgroepen": {
       const stand = tekst(inst, "stand", "grootste");
       p =
-        stand === "grootste"
+        stand === "wisselen"
+          ? bij(tekst(inst, "wissel", "briefje"), { briefje: 0, euromunt: 2, centen: 2, gemengd: 4 })
+          : stand === "grootste"
           ? 6
           : stand === "wisselgeld"
             ? 2
@@ -667,6 +669,19 @@ export function puntenVan(soort: string, inst: Instellingen): number {
     case "welkegroepjes":
       p = 4;
       break;
+
+    case "geldnotatie": {
+      /* Kiezen, dan tellen en opschrijven, dan van woorden naar cijfers; hele euro's tot 100 is een stap verder. */
+      const stand = tekst(inst, "stand", "schrijfwijze");
+      const heel = vinkje(inst, "heel", true);
+      p =
+        stand === "schrijfwijze"
+          ? heel ? 0 : 2
+          : stand === "tellen"
+            ? heel ? 4 : 2
+            : heel ? 6 : 4;
+      break;
+    }
 
     case "evenveel":
       p = 8;

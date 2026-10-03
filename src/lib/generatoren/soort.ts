@@ -1073,13 +1073,39 @@ export type Figuur =
        * of precies het wisselgeld.
        */
       soort: "geldgroepen";
-      stand: "grootste" | "precies" | "wisselgeld";
+      stand: "grootste" | "precies" | "wisselgeld" | "wisselen";
       groepen: number[][];
+      /**
+       * Bij "wisselen": het ene briefje of de ene munt dat gewisseld wordt. De
+       * vakjes zijn dan kaartjes zonder letter; het kind tikt op het kaartje.
+       * Bij de andere standen leeg (en bij oudere opgaven afwezig).
+       */
+      wissel?: number | null;
       goed: number;
       prijs: number | null;
       betaald: number | null;
       voorwerp: string | null;
       zin: string;
+    }
+  | {
+      /**
+       * Geldnotatie: een bedrag goed opschrijven.
+       *
+       *   schrijfwijze  "52 euro" — kies de goede schrijfwijze uit `keuzes`
+       *   tellen        getekend geld — typ het bedrag met komma
+       *   woorden       "zeven euro en vijftig cent" — typ het bedrag
+       *
+       * Getypt wordt in één gewoon invoerveld. Bij `heel` staat ",-" er al
+       * achter en typt het kind alleen de euro's.
+       */
+      soort: "geldnotatie";
+      stand: "schrijfwijze" | "tellen" | "woorden";
+      bedrag: number;
+      stukken: number[] | null;
+      woorden: string | null;
+      keuzes: string[] | null;
+      goed: number;
+      heel: boolean;
     }
   | {
       /** Vier groepjes geld, precies twee kloppen met de prijs. */

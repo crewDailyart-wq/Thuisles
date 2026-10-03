@@ -9,6 +9,25 @@
 import type { Figuur } from "@/lib/generatoren/soort";
 import { afgerond, antwoordVan, totaal } from "@/lib/geld";
 
+/**
+ * Wat er in het ene invoerveld van Geldnotatie staat, als bedrag in centen.
+ *
+ * Goed zijn "6,45", "7,5" (= 7,50), "26", "26,-" en "26,00". Een punt in
+ * plaats van een komma geeft `"punt"`: dat is niet fout, het kind krijgt de
+ * hint "Gebruik een komma" (WERKPLAN.md). Iets onleesbaars of leegs: null.
+ */
+export function leesGeldnotatie(tekst: string): number | "punt" | null {
+  const t = tekst.trim().replace(/\s+/g, "");
+  if (t === "") return null;
+  if (t.includes(".")) return "punt";
+  const m = t.match(/^(\d{1,3})(?:,(-|\d{1,2}))?$/);
+  if (!m) return null;
+  const euro = Number(m[1]);
+  const na = m[2];
+  if (na === undefined || na === "-") return euro * 100;
+  return euro * 100 + (na.length === 1 ? Number(na) * 10 : Number(na));
+}
+
 export const GELDSOORTEN = [
   "geldkiezen",
   "geldvolgorde",
@@ -26,6 +45,7 @@ export const GELDSOORTEN = [
   "geldafronden",
   "geldschatten",
   "geldkorting",
+  "geldnotatie",
 ] as const;
 
 /** De figuren van het domein Geld. */
@@ -121,6 +141,9 @@ export function juistAntwoord(figuur: Geldfiguur): string {
       if (figuur.stand === "samen") return antwoordVan(a + b);
       return antwoordVan((figuur.portemonnee ?? 0) - a);
     }
+
+    case "geldnotatie":
+      return figuur.keuzes ? String(figuur.goed) : antwoordVan(figuur.bedrag);
 
     case "geldkorting":
       if (figuur.keuzes) return String(figuur.goed);

@@ -416,6 +416,7 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 (Bij twijfel is steeds de veiligste keuze gemaakt; hier staat wat je nog moet beslissen.)
 
 - **00 — nieuwe mix per ronde.** Bijna elke oefening heeft precies 15 gepubliceerde opgaven en 15 vragen per ronde. Elke nieuwe ronde geeft dus dezelfde 15 opgaven in een andere volgorde, geen nieuwe opgaven. Wil je dat elke ronde echt andere opgaven heeft, dan moet er per oefening een grotere voorraad gepubliceerd worden (bijvoorbeeld 45). Dat heb ik niet gedaan: dat is veel nieuwe content in alle domeinen, en latere wachtrij-bestanden vragen juist om 15 per oefening. Zal ik dat doen?
+- **01 — toetsenbord bij Geldnotatie.** Bij "Bedrag opschrijven tot 10 euro" en "Van woorden naar cijfers tot 10 euro" moet het kind zelf een komma typen. Daarom krijgt dat veld het toetsenbord met cijfers én een komma (`decimal`), niet het kale cijfertoetsenbord uit HARDE REGEL 5; daar kan geen komma op. Bij hele euro's is het wel het gewone cijfertoetsenbord. Graag even op een iPad proberen of de komma verschijnt.
 
 ## 00 — Losse verbeteringen
 
@@ -426,3 +427,11 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 5. De vraag houdt aan beide kanten ruimte vrij voor de luidspreker. Nagemeten op 360 px en 820 px breed: de knop raakt de tekst niet meer.
 6. Geld heeft de omschrijving "Munten en briefjes herkennen, bedragen schrijven, betalen en rekenen met geld."
 7. De domeinen zelf stonden al op de volgorde uit de database, de oefeningen daarbinnen alleen bij Tijd. Nu volgen de oefeningen bij álle domeinen de volgorde uit de database. Vooraf is de volgorde die kinderen zagen in de database gezet (65 van de 285 leerdoelen kregen een ander volgnummer). Voor een kind verschuift er dus niets. Wat je in beheer omhoog of omlaag zet, staat vanaf nu ook zo bij het kind. Een nieuw leerdoel komt achteraan zijn onderwerp te staan.
+
+## 01 — Geld wisselen en Geldnotatie
+
+- **Geldnotatie** is een nieuw onderwerp tussen Munten en briefjes en Betalen, met drie kopjes: Het prijskaartje (2), Geld tellen en opschrijven (2) en Bedragen in woorden (2). Titels en bolletjes zoals in WERKPLAN.md.
+- **Geld wisselen** staat als kopje achteraan bij Rekenen met geld (4 oefeningen). Het kind tikt op een van drie kaartjes, zonder letters. Eén kaartje is precies evenveel waard; de andere twee zitten er net boven en net onder. Bij het briefje van € 100 zitten ze er allebei onder, zodat alles tot 100 euro blijft.
+- Typen gaat in één gewoon invoerveld. Een punt geeft de hint "Gebruik een komma"; Controleer blijft dan uit, dus het telt niet als fout. 7,5 en 7,50 zijn allebei goed, net als 26, 26,- en 26,00.
+- In de database staan 10 nieuwe leerdoelen bij groep 4, elk met een sjabloon, "vragen per oefensessie" 15 en 15 verschillende gepubliceerde opgaven.
+- Getest met Testkind: "Bedrag opschrijven tot 10 euro" (eerst 8.80 → hint, daarna 8,8 → goed; 4,51 → fout met het goede antwoord erbij), "Wisselen in briefjes en munten" (goed kaartje → goed) en "Van woorden naar cijfers tot 100 euro" (10 → goed).

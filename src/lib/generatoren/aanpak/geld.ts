@@ -29,6 +29,10 @@
  *   geldafronden    [de prijs]
  *   geldschatten    [prijs 1, prijs 2, geld in de portemonnee]
  *   geldkorting     [de oude prijs, de korting]
+ *   geldnotatie     [het bedrag]
+ *
+ * Bij geldgroepen is `extra.stand` 0 grootste, 1 precies, 2 wisselgeld en
+ * 3 geld wisselen; bij 3 staat het gewisselde geldstuk in `extra.wissel`.
  *
  * `goed` is het antwoord als getal (in centen bij een bedrag), ook bij een
  * keuze — dan staat er `extra.keuze = 1` bij.
@@ -156,6 +160,20 @@ export function geldStappen(som: Somgegevens): Geldstap[] {
     case "geldgroepen": {
       const stand = som.extra?.stand ?? 0;
       const totalen = som.getallen;
+      if (stand === 3) {
+        /* Geld wisselen: kaartjes zonder letter, dus het eerste, tweede en derde. */
+        const wissel = som.extra?.wissel ?? goed;
+        const rang = ["eerste", "tweede", "derde", "vierde"];
+        return [
+          { som: bedrag(wissel), zin: `Je wisselt ${naamVan(wissel)}. Dat is ${bedrag(wissel)}.`, kort: `Dat is ${bedrag(wissel)}.` },
+          ...totalen.map((t, i) => ({
+            som: bedrag(t),
+            zin: `Tel het ${rang[i]} kaartje, vanaf het grootste: ${bedrag(t)}.`,
+            kort: "Tel elk kaartje.",
+          })),
+          { som: bedrag(goed), zin: `Het kaartje van precies ${bedrag(goed)} is evenveel waard.`, kort: "Welk kaartje is evenveel?" },
+        ];
+      }
       const lijst: Geldstap[] = totalen.map((t, i) => ({
         som: `${String.fromCharCode(65 + i)}: ${bedrag(t)}`,
         zin: `Tel vakje ${String.fromCharCode(65 + i)}: dat is ${bedrag(t)}.`,
@@ -180,6 +198,29 @@ export function geldStappen(som: Somgegevens): Geldstap[] {
       return [
         ...lijst,
         { som: bedrag(goed), zin: `Het grootste bedrag is ${bedrag(goed)}.`, kort: "Dit is het meest." },
+      ];
+    }
+
+    case "geldnotatie": {
+      const euro = Math.floor(goed / 100);
+      const cent = goed % 100;
+      if (cent === 0) {
+        return [
+          { som: `${euro} euro`, zin: `Het zijn ${euro} hele euro's.`, kort: "Hele euro's." },
+          { som: bedrag(goed), zin: `Hele euro's schrijf je met een komma en een streepje: ${bedrag(goed)}.`, kort: "Komma, streepje." },
+        ];
+      }
+      return [
+        { som: `${euro} euro`, zin: `Schrijf eerst de hele euro's: ${euro}.`, kort: "Eerst de euro's." },
+        { som: ",", zin: "Dan een komma.", kort: "Dan een komma." },
+        {
+          som: bedrag(goed),
+          zin:
+            cent < 10
+              ? `Dan de centen, altijd met twee cijfers: ${cent} cent schrijf je als 0${cent}. Samen ${bedrag(goed)}.`
+              : `Dan de centen: ${cent}. Samen ${bedrag(goed)}.`,
+          kort: "Dan de centen.",
+        },
       ];
     }
 
@@ -376,6 +417,7 @@ function controleVan(som: Somgegevens): string {
     case "geldgroepen":
       if (som.extra?.stand === 1) return `Het goede vakje is precies ${bedrag(goed)}.`;
       if (som.extra?.stand === 2) return `Je krijgt ${bedrag(goed)} terug.`;
+      if (som.extra?.stand === 3) return `Het goede kaartje is samen ook ${bedrag(goed)}.`;
       return `Het grootste bedrag is ${bedrag(goed)}.`;
     case "geldafronden":
       return `${bedrag(n(som, 0))} wordt afgerond ${bedrag(goed)}.`;

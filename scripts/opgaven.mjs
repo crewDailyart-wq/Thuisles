@@ -250,7 +250,17 @@ const OEFENINGEN = [
   { groep: "Geld · Munten en briefjes · Geld tellen", titel: "Evenveel waard", soort: "evenveel", bolletjes: 5, inst: { max: 5 } },
 
   // -------------------------------------------------------------------------
-  // Groep 4 – Geld – Onderwerp 2: Betalen
+  // Groep 4 – Geld – Onderwerp 2: Geldnotatie
+  // -------------------------------------------------------------------------
+  { groep: "Geld · Geldnotatie · Het prijskaartje", titel: "Bedragen goed schrijven (kiezen)", soort: "geldnotatie", bolletjes: 1, inst: { stand: "schrijfwijze", heel: true } },
+  { groep: "Geld · Geldnotatie · Het prijskaartje", titel: "Bedragen goed schrijven", soort: "geldnotatie", bolletjes: 2, inst: { stand: "schrijfwijze", heel: false } },
+  { groep: "Geld · Geldnotatie · Geld tellen en opschrijven", titel: "Bedrag opschrijven tot 10 euro", soort: "geldnotatie", bolletjes: 2, inst: { stand: "tellen", heel: false } },
+  { groep: "Geld · Geldnotatie · Geld tellen en opschrijven", titel: "Bedrag opschrijven tot 100 euro", soort: "geldnotatie", bolletjes: 3, inst: { stand: "tellen", heel: true } },
+  { groep: "Geld · Geldnotatie · Bedragen in woorden", titel: "Van woorden naar cijfers tot 10 euro", soort: "geldnotatie", bolletjes: 3, inst: { stand: "woorden", heel: false } },
+  { groep: "Geld · Geldnotatie · Bedragen in woorden", titel: "Van woorden naar cijfers tot 100 euro", soort: "geldnotatie", bolletjes: 4, inst: { stand: "woorden", heel: true } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Geld – Onderwerp 3: Betalen
   // -------------------------------------------------------------------------
   { groep: "Geld · Betalen · Precies betalen", titel: "Precies betalen: briefjes", soort: "geldgroepen", bolletjes: 2, inst: { stand: "precies", geld: "briefjes" } },
   { groep: "Geld · Betalen · Precies betalen", titel: "Precies betalen: munten", soort: "geldgroepen", bolletjes: 2, inst: { stand: "precies", geld: "munten" } },
@@ -263,7 +273,7 @@ const OEFENINGEN = [
   { groep: "Geld · Betalen · Wat ontbreekt er?", titel: "Hoeveel ontbreekt er?", soort: "geldontbreekt", bolletjes: 4, inst: { antwoord: "typen" } },
 
   // -------------------------------------------------------------------------
-  // Groep 4 – Geld – Onderwerp 3: Rekenen met geld
+  // Groep 4 – Geld – Onderwerp 4: Rekenen met geld
   // -------------------------------------------------------------------------
   { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Twee munten optellen", soort: "geldsom", bolletjes: 1, inst: { stand: "tweemunten" } },
   { groep: "Geld · Rekenen met geld · Munten en briefjes", titel: "Munten eraf: 1 euro", soort: "geldsom", bolletjes: 1, inst: { stand: "eraf", munt: 100 } },
@@ -294,6 +304,10 @@ const OEFENINGEN = [
   { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Hoeveel korting?", soort: "geldkorting", bolletjes: 2, inst: { stand: "korting", antwoord: "typen" } },
   { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Prijs na korting (kiezen)", soort: "geldkorting", bolletjes: 3, inst: { stand: "prijsna", antwoord: "kiezen" } },
   { groep: "Geld · Rekenen met geld · Aanbiedingen", titel: "Prijs na korting", soort: "geldkorting", bolletjes: 3, inst: { stand: "prijsna", antwoord: "typen" } },
+  { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Een briefje wisselen", soort: "geldgroepen", bolletjes: 1, inst: { stand: "wisselen", wissel: "briefje" } },
+  { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Een euromunt wisselen", soort: "geldgroepen", bolletjes: 2, inst: { stand: "wisselen", wissel: "euromunt" } },
+  { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Centen wisselen", soort: "geldgroepen", bolletjes: 2, inst: { stand: "wisselen", wissel: "centen" } },
+  { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Wisselen in briefjes en munten", soort: "geldgroepen", bolletjes: 3, inst: { stand: "wisselen", wissel: "gemengd" } },
 ];
 
 // ---------------------------------------------------------------------------

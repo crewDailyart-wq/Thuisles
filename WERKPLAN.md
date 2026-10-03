@@ -457,12 +457,11 @@ Er volgen nog meer onderwerpen bij Tijd.
 
 ## Groep 4 – Geld
 
-Alle onderdelen van Geld staan nu in het werkplan. Munten en briefjes, Betalen
-en Rekenen met geld zijn KLAAR. Geld wisselen (bij Rekenen met geld) en
-Geldnotatie moeten nog gebouwd worden.
+Alle onderdelen van Geld staan nu in het werkplan en zijn KLAAR: Munten en
+briefjes, Geldnotatie, Betalen en Rekenen met geld, met daarin ook Geld
+wisselen (oktober 2026).
 
-De code staat er voor de drie gebouwde onderwerpen: 47
-titels. De basisversie zijn gewone opdrachten met simpele getekende munten en
+De code staat er voor alle vier de onderwerpen: 57 titels. De basisversie zijn gewone opdrachten met simpele getekende munten en
 briefjes; mooier beeld komt later. Elke titel geeft vijftien opgaven per ronde
 zonder dubbele; `npm run opgaven` rekent dat na, met de bolletjes erbij. De
 instellingen per titel staan in `scripts/opgaven.mjs`.
@@ -512,7 +511,9 @@ Algemene regels voor dit onderwerp:
 
 ### Onderwerp 2 — Geldnotatie
 
-Nog te bouwen, alleen de basis: gewone opdrachten, visueel werk komt later.
+KLAAR (oktober 2026). Alleen de basis: gewone opdrachten, visueel werk komt
+later. Type `geldnotatie`; getypt wordt in één gewoon invoerveld waarin het
+kind zelf de komma typt.
 
 Algemene regels voor dit onderwerp:
 
@@ -663,7 +664,7 @@ Alleen hele euro's, tot 100 euro.
 
 #### Geld wisselen
 
-Nog te bouwen. Het kind kiest steeds uit drie kaartjes met eigen simpele
+KLAAR (oktober 2026), als stand "wisselen" van het type `geldgroepen`. Het kind kiest steeds uit drie kaartjes met eigen simpele
 geldtekeningen en tikt op het kaartje zelf, zonder A/B/C-knoppen. De foute
 kaartjes zijn net te veel of net te weinig waard.
 
