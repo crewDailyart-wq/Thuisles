@@ -1575,19 +1575,24 @@ export const klokduurGenerator: Generator = {
 const VLEKZIN = "Hoe laat is het?";
 const VLEKZINNEN: Record<Leeftijdsgroep, string> = { "34": VLEKZIN, "56": VLEKZIN, "78": VLEKZIN };
 
-/** De kleuren die een vlek kan hebben; rustig, en nooit de kleur van een wijzer. */
-const VLEKKLEUREN = [
-  "var(--color-lucht-zacht)",
-  "var(--color-mint-zacht)",
-  "var(--color-viool-zacht)",
-  "var(--color-amber-zacht)",
-];
+/**
+ * De kleur van een vlek: het oranje van Thuisles, helemaal ondoorzichtig.
+ * Een echte inktvlek, geen lichtgekleurd vlakje.
+ */
+const VLEKKLEUR = "var(--color-huisstijl)";
 
+/**
+ * De maten van de vlek, in delen van de straal van de klok (92).
+ *
+ * De cijfers staan op 66 van het midden, de kleine wijzer is 38 lang en de
+ * grote 74. Een cijfer is hooguit 20 breed en 13 hoog.
+ */
+const CIJFERRING = 66 / 92;
 export const klokvlekGenerator: Generator = {
   id: "klokvlek",
   naam: "Wijzerklok met een vlek",
   uitleg:
-    "Een wijzerklok met een vlek erop; het kind kiest de tijd uit vier antwoorden in woorden. De vlek bedekt cijfers of een stukje wijzer, maar de tijd blijft altijd te bepalen: van de kleine wijzer blijft minstens het puntje zichtbaar.",
+    "Een wijzerklok met een oranje inktvlek erop; het kind kiest de tijd uit vier antwoorden in woorden. De vlek bedekt het cijfer waar de kleine wijzer naar wijst (of bij halve uren en kwartieren dat van de grote wijzer), het puntje van een wijzer, of bij een grote vlek ook de cijfers ernaast. De tijd blijft altijd af te leiden.",
   suggestie: "Groep 4: hele uren met de cijfers bedekt · groep 6: gemengd met een grote vlek",
   velden: [
     TIJDENVELD,
@@ -1596,9 +1601,9 @@ export const klokvlekGenerator: Generator = {
       sleutel: "vlek",
       label: "Waar de vlek ligt",
       opties: [
-        { waarde: "cijfers", label: "Over een paar cijfers — de wijzers blijven heel" },
-        { waarde: "wijzer", label: "Over een stukje van de kleine wijzer" },
-        { waarde: "groot", label: "Over het midden — alleen de puntjes zichtbaar" },
+        { waarde: "cijfers", label: "Over het cijfer van de kleine (of grote) wijzer — de wijzers blijven heel" },
+        { waarde: "wijzer", label: "Over het puntje van één wijzer — de cijfers blijven zichtbaar" },
+        { waarde: "groot", label: "Grote vlek over het cijfer van de kleine wijzer en de cijfers ernaast" },
       ],
     },
     {
@@ -1632,56 +1637,62 @@ export const klokvlekGenerator: Generator = {
       const { keuzes, goed } = keuzelijst(kans, inWoorden(t), tijdvalkuilen(t, minuten(inst, ["heel"])));
 
       /*
-        Waar de vlek komt te liggen.
+        Waar de vlek komt te liggen. De vlek verbergt altijd iets wat nodig is
+        voor het antwoord, maar het antwoord blijft af te leiden:
 
-        De tijd moet altijd nog te bepalen zijn (WERKPLAN.md), en dat regelt
-        de plek: bij "cijfers" ligt de vlek aan de rand, aan de kant waar géén
-        wijzer staat; bij "wijzer" ligt hij halverwege de kleine wijzer, zodat
-        het puntje vrij blijft; bij "groot" ligt hij op het midden, en dan zijn
-        alleen de puntjes van de wijzers nog te zien.
+          - "cijfers": precies het cijfer waar de kleine wijzer naar wijst. Bij
+            halve uren en kwartieren in de eerste variant juist het cijfer van
+            de grote wijzer (6, 3 of 9). De wijzers blijven helemaal zichtbaar.
+          - "wijzer": het puntje van één wijzer, nooit het midden. Om en om de
+            kleine en de grote wijzer. De cijfers blijven zichtbaar.
+          - "groot": een brede vlek over het cijfer van de kleine wijzer en de
+            cijfers ernaast; de wijzers blijven zichtbaar.
       */
       const uurhoek = (t.uur % 12) * 30 + t.minuut * 0.5;
       const minuuthoek = t.minuut * 6;
-      /*
-        De tweede variant: bij "cijfers" schuift de vlek een stuk langs de rand,
-        maar alleen naar een plek waar hij minstens 45 graden van beide wijzers
-        af blijft; bij "wijzer" ligt hij dichter bij het midden, zodat het
-        puntje van de kleine wijzer nog verder vrij is; bij "groot" is hij iets
-        kleiner, met de puntjes nog altijd zichtbaar.
-      */
-      const verschil = (a: number, b: number) => {
-        const d = Math.abs((((a - b) % 360) + 360) % 360);
-        return Math.min(d, 360 - d);
-      };
-      const tegenover = (uurhoek + minuuthoek) / 2 + 180;
-      const randhoek =
-        variant === 0
-          ? tegenover
-          : ([60, -60, 90, -90, 120, -120]
-              .map((d) => tegenover + d)
-              .find((h) => verschil(h, uurhoek) >= 45 && verschil(h, minuuthoek) >= 45) ??
-            tegenover + 180);
+      /* Het cijfer waar de kleine wijzer het dichtst bij staat: bij half drie de 3. */
+      const uurcijfer = Math.round(uurhoek / 30) % 12;
+      const vorm = { zaad: 1 + Math.floor(kans() * 1_000_000), draai: Math.round((kans() - 0.5) * 30) };
       const vlek =
         waar === "groot"
           ? {
-              hoek: 0,
-              afstand: 0,
-              grootte: variant === 0 ? 0.32 : 0.28,
-              kleur: kiesUit(kans, VLEKKLEUREN),
+              /* Breed langs de rand, net binnen het cijfer: zo bedekt hij drie cijfers en blijft het midden vrij. */
+              hoek: uurcijfer * 30,
+              afstand: 60 / 92,
+              grootte: 0.62,
+              diepte: 0.28,
+              kleur: VLEKKLEUR,
+              ...vorm,
+              draai: Math.round((kans() - 0.5) * 8),
+              laag: "onder-wijzers" as const,
             }
           : waar === "wijzer"
-            ? {
-                hoek: uurhoek,
-                afstand: variant === 0 ? 0.2 : 0.16,
-                grootte: 0.12,
-                kleur: kiesUit(kans, VLEKKLEUREN),
-              }
+            ? variant === 0
+              ? {
+                  /* Het puntje van de kleine wijzer: ongeveer 23 tot 45 van het midden. */
+                  hoek: uurhoek,
+                  afstand: 34 / 92,
+                  grootte: 0.1,
+                  kleur: VLEKKLEUR,
+                  ...vorm,
+                  laag: "boven-wijzers" as const,
+                }
+              : {
+                  /* Het puntje van de grote wijzer: ongeveer 52 tot 77 van het midden. */
+                  hoek: minuuthoek,
+                  afstand: 64 / 92,
+                  grootte: 0.12,
+                  kleur: VLEKKLEUR,
+                  ...vorm,
+                  laag: "boven-wijzers" as const,
+                }
             : {
-                /* Aan de rand, uit de buurt van de twee wijzers. */
-                hoek: randhoek,
-                afstand: 0.72,
+                hoek: (t.minuut !== 0 && variant === 0 ? minuuthoek / 30 : uurcijfer) * 30,
+                afstand: CIJFERRING,
                 grootte: 0.2,
-                kleur: kiesUit(kans, VLEKKLEUREN),
+                kleur: VLEKKLEUR,
+                ...vorm,
+                laag: "onder-wijzers" as const,
               };
 
       const gegevens = gegevensVan("klokvlek", waar, t, goed, { keuze: 1 });

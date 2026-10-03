@@ -936,7 +936,16 @@ export type Figuur =
       minuut: number;
       keuzes: string[];
       goed: number;
-      vlek: { hoek: number; afstand: number; grootte: number; kleur: string };
+      vlek: {
+        hoek: number;
+        afstand: number;
+        grootte: number;
+        kleur: string;
+        diepte?: number;
+        zaad?: number;
+        draai?: number;
+        laag?: "onder-wijzers" | "boven-wijzers";
+      };
     }
   | {
       /** Een vraag over de dagen van de week; het kind kiest uit drie. */

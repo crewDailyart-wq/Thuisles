@@ -544,3 +544,26 @@ Tien voorbeeldvragen uit de gepubliceerde opgaven:
 - Onder de vakjes staat nu: "Vul beide vakjes in. Geen minuten? Typ dan een 0." Bij Tijd vooruit en terug in plaats van de oude zin, bij Hoe lang duurt het? (typen) is hij erbij gekomen.
 - De regel staat bijgewerkt in WERKPLAN.md. Aan antwoorden en voortgang is niets veranderd.
 - Getest met Testkind bij "Tijd vooruit: hele uren" (03:00 → 06:00): alleen 3 bij de uren → Controleer blijft grijs; 0 bij de minuten erbij → Controleer gaat aan; minuten weer leeg → weer grijs.
+
+## 13 — Vlekken repareren
+
+Bij alle 8 oefeningen van Wijzerklok met vlekken ligt de vlek nu op de plek waar hij iets verbergt wat je nodig hebt. Het antwoord blijft wel altijd af te leiden. De vlek is een echte oranje inktvlek in de kleur van Thuisles: onregelmatig, met een paar spetters, helemaal ondoorzichtig, en per opgave een beetje anders van vorm en draaiing.
+
+- **Cijfers onder een vlek:** de vlek bedekt precies het cijfer waar de kleine wijzer naar wijst. Bij halve uren en kwartieren bedekt hij om en om het cijfer van de grote wijzer (6, 3 of 9) en dat van de kleine wijzer. De wijzers liggen óver de vlek en blijven helemaal zichtbaar.
+- **Wijzer onder een vlek:** de vlek bedekt alleen het puntje van één wijzer, om en om de kleine en de grote. Het midden en het begin van de wijzer blijven zichtbaar, en de cijfers liggen óver de vlek.
+- **Grote vlek:** een brede vlek over het cijfer van de kleine wijzer en de twee cijfers ernaast. Het midden blijft vrij, en de wijzers blijven zichtbaar.
+- Elke oefening heeft 15 nieuwe opgaven; de oude staan op concept. Oude opgaven tekent het scherm nog op de oude manier, voor het geval een kind er nog een in een half afgemaakte ronde heeft.
+- Getest met Testkind: alle 8 oefeningen geopend, met de nieuwe oranje vlek. Daarnaast heb ik per oefening de eerste 3 opgaven naast elkaar getekend met dezelfde klokcomponent, om de plek te controleren. Bij de eerste versie was de vlek over een wijzer te groot en stak de grote vlek buiten de klok; beide zijn kleiner gemaakt.
+
+Eén voorbeeld per oefening (de eerste gepubliceerde opgave):
+
+| Oefening | Tijd | Wat de vlek bedekt |
+|---|---|---|
+| Hele uren: cijfers onder een vlek (met uitleg) | 06:00 | de 6 (kleine wijzer) |
+| Hele uren: wijzer onder een vlek | 12:00 | het puntje van de kleine wijzer, bij de 12 |
+| Halve uren: cijfers onder een vlek | 12:30 | de 6 (grote wijzer) |
+| Halve uren: wijzer onder een vlek | 03:30 | het puntje van de kleine wijzer, tussen 3 en 4 |
+| Kwart over en kwart voor: cijfers onder een vlek | 10:15 | de 3 (grote wijzer) |
+| Kwart over en kwart voor: wijzer onder een vlek | 11:45 | het puntje van de kleine wijzer, vlak voor de 12 |
+| Gemengd: cijfers onder een vlek | 04:00 | de 4 (kleine wijzer) |
+| Gemengd: grote vlek | 03:45 | de 3, 4 en 5 (kleine wijzer bij de 4) |

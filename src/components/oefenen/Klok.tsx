@@ -77,17 +77,43 @@ export type Vlek = {
   hoek: number;
   /** Hoe ver van het midden van de klok, 0 is het middelpunt en 1 de rand. */
   afstand: number;
-  /** Hoe groot, als deel van de straal. */
+  /** Hoe groot, als deel van de straal (dwars op de straal). */
   grootte: number;
   kleur: string;
+  /**
+   * Hoe diep de vlek is, langs de straal, als deel van de straal. Leeg =
+   * gelijk aan `grootte`: dan is hij ongeveer rond. Een grote vlek over drie
+   * cijfers is breder dan diep, zodat hij het midden vrijlaat.
+   */
+  diepte?: number;
+  /** Voor de vorm: elke opgave een net iets andere inktvlek. */
+  zaad?: number;
+  /** Een kleine extra draaiing, in graden. */
+  draai?: number;
+  /** Onder of boven de wijzers; zie de tekenvolgorde in `Klok`. */
+  laag?: "onder-wijzers" | "boven-wijzers";
 };
 
+/** Een klein, vast toevalsgetal uit een zaad: dezelfde vlek ziet er altijd hetzelfde uit. */
+function vlekkans(zaad: number): () => number {
+  let a = (zaad >>> 0) || 1;
+  return () => {
+    a = (a + 0x6d2b79f5) >>> 0;
+    let t = a;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+
 /**
- * De vlekvorm.
+ * De vlekvorm: een echte inktvlek.
  *
- * Een simpele vlek, zoals WERKPLAN.md hem beschrijft: een rondje met een paar
- * deuken erin, zodat het geen perfecte cirkel is. Mooie vormgeving komt later.
- * Hij wordt met een eigen vulling getekend en dekt dus echt af wat eronder zit.
+ * Een onregelmatige vorm met ronde uitstulpingen en een paar losse spetters
+ * ernaast, helemaal ondoorzichtig. De binnenkant komt nooit dichter bij het
+ * midden van de vlek dan 88 procent van zijn maat, zodat hij altijd afdekt wat
+ * hij moet afdekken. Vorm en draaiing volgen uit het zaad; een oude vlek zonder
+ * zaad wordt het oude, simpele rondje met deuken.
  */
 function Vlekvorm({ vlek }: { vlek: Vlek }) {
   const hoek = ((vlek.hoek - 90) * Math.PI) / 180;
@@ -95,14 +121,62 @@ function Vlekvorm({ vlek }: { vlek: Vlek }) {
   const y = MIDDEN + Math.sin(hoek) * RAND * vlek.afstand;
   const r = RAND * vlek.grootte;
 
-  /* Zes punten op een rondje, om en om iets dichterbij: dat geeft een vlek. */
-  const punten = Array.from({ length: 8 }, (_, i) => {
-    const a = (i / 8) * Math.PI * 2;
-    const straal = r * (i % 2 === 0 ? 1 : 0.82);
-    return `${rond(x + Math.cos(a) * straal)},${rond(y + Math.sin(a) * straal)}`;
+  if (vlek.zaad === undefined) {
+    /* Zes punten op een rondje, om en om iets dichterbij: dat geeft een vlek. */
+    const punten = Array.from({ length: 8 }, (_, i) => {
+      const a = (i / 8) * Math.PI * 2;
+      const straal = r * (i % 2 === 0 ? 1 : 0.82);
+      return `${rond(x + Math.cos(a) * straal)},${rond(y + Math.sin(a) * straal)}`;
+    });
+    return <polygon points={punten.join(" ")} fill={vlek.kleur} />;
+  }
+
+  const kans = vlekkans(vlek.zaad);
+  const rx = r;
+  const ry = RAND * (vlek.diepte ?? vlek.grootte);
+  /* De vorm ligt plat langs de rand: breed dwars op de straal, diep langs de straal. */
+  const stand = vlek.hoek + (vlek.draai ?? 0);
+
+  /* Elf punten rondom, elk op een iets andere afstand; daartussen ronde bochten. */
+  const n = 11;
+  const punten = Array.from({ length: n }, (_, i) => {
+    const a = (i / n) * Math.PI * 2 + kans() * 0.25;
+    const f = 0.88 + kans() * 0.28;
+    return { px: Math.cos(a) * rx * f, py: Math.sin(a) * ry * f };
+  });
+  const midden = (p: { px: number; py: number }, q: { px: number; py: number }) => ({
+    px: (p.px + q.px) / 2,
+    py: (p.py + q.py) / 2,
+  });
+  const start = midden(punten[n - 1], punten[0]);
+  let pad = `M ${rond(start.px)} ${rond(start.py)}`;
+  for (let i = 0; i < n; i++) {
+    const p = punten[i];
+    const m = midden(p, punten[(i + 1) % n]);
+    /* Een beetje naar buiten getrokken: dat geeft de ronde bobbels van een inktvlek. */
+    pad += ` Q ${rond(p.px * 1.12)} ${rond(p.py * 1.12)} ${rond(m.px)} ${rond(m.py)}`;
+  }
+  pad += " Z";
+
+  /* Drie kleine spetters er net naast. */
+  const spetters = Array.from({ length: 3 }, () => {
+    const a = kans() * Math.PI * 2;
+    const af = 1.12 + kans() * 0.16;
+    return {
+      cx: rond(Math.cos(a) * rx * af),
+      cy: rond(Math.sin(a) * ry * af),
+      r: rond(Math.max(1.6, Math.min(rx, ry) * (0.08 + kans() * 0.08))),
+    };
   });
 
-  return <polygon points={punten.join(" ")} fill={vlek.kleur} />;
+  return (
+    <g transform={`translate(${rond(x)} ${rond(y)}) rotate(${rond(stand)})`} fill={vlek.kleur}>
+      <path d={pad} />
+      {spetters.map((sp, i) => (
+        <circle key={i} cx={sp.cx} cy={sp.cy} r={sp.r} />
+      ))}
+    </g>
+  );
 }
 
 /**
@@ -263,10 +337,94 @@ export function Klok({
   const kleurMinuut = nadruk === "minuut" ? "var(--color-huisstijl)" : "var(--color-inkt)";
   const minuutlengte = MINUUTWIJZER;
 
+  const wijzersEl = (
+    <>
+      {/* De kleine wijzer: kort en dik. Draait om het middelpunt. */}
+      <g transform={`rotate(${hoeken.uur} ${MIDDEN} ${MIDDEN})`}>
+        <line
+          x1={MIDDEN}
+          y1={MIDDEN}
+          x2={MIDDEN}
+          y2={MIDDEN - UURWIJZER}
+          stroke={kleurUur}
+          strokeWidth={8}
+          strokeLinecap="round"
+        />
+        {zetbaar && (
+          <Grijpgebied van={8} tot={UURWIJZER + 6} sleept={sleept === "uur"} onPak={(e) => pak(e, "uur")} />
+        )}
+      </g>
+
+      {/* De grote wijzer: lang en dun, dus altijd uit elkaar te houden. */}
+      <g transform={`rotate(${hoeken.minuut} ${MIDDEN} ${MIDDEN})`}>
+        <line
+          x1={MIDDEN}
+          y1={MIDDEN}
+          x2={MIDDEN}
+          y2={MIDDEN - minuutlengte}
+          stroke={kleurMinuut}
+          strokeWidth={5}
+          strokeLinecap="round"
+        />
+        {zetbaar && (
+          <Grijpgebied
+            van={UURWIJZER - 4}
+            tot={minuutlengte + 6}
+            sleept={sleept === "minuut"}
+            onPak={(e) => pak(e, "minuut")}
+          />
+        )}
+      </g>
+    </>
+  );
+
+  const cijfersEl = (
+    <>
+      {/*
+        De twaalf cijfers, elk gecentreerd op zijn eigen punt.
+
+        Na de wijzers getekend, met een witte rand eromheen: zo valt een cijfer
+        nooit weg achter de grote wijzer. Op elk heel uur staat die precies op
+        de 12, en juist dat cijfer moet een kind kunnen lezen.
+      */}
+      {Array.from({ length: 12 }, (_, i) => {
+        const uur = i + 1;
+        const plek = cijferplek(uur);
+        return (
+          <text
+            key={uur}
+            x={plek.x}
+            y={plek.y}
+            textAnchor="middle"
+            dominantBaseline="central"
+            fontSize={18}
+            fontWeight={800}
+            fill="var(--color-inkt)"
+            stroke="white"
+            strokeWidth={5}
+            strokeLinejoin="round"
+            paintOrder="stroke"
+            pointerEvents="none"
+          >
+            {uur}
+          </text>
+        );
+      })}
+    </>
+  );
+
+  const middenEl = (
+    <>
+      {/* Eén klein rondje in het midden. */}
+      <circle cx={MIDDEN} cy={MIDDEN} r={5} fill="var(--color-inkt)" />
+    </>
+  );
+
   return (
     <svg
       ref={vak}
       viewBox="0 0 200 200"
+      overflow="visible"
       className={`${grootte} shrink-0 select-none ${zetbaar ? "[touch-action:none]" : ""}`}
       style={{
         WebkitUserSelect: "none",
@@ -311,79 +469,40 @@ export function Klok({
         );
       })}
 
-      {/* De kleine wijzer: kort en dik. Draait om het middelpunt. */}
-      <g transform={`rotate(${hoeken.uur} ${MIDDEN} ${MIDDEN})`}>
-        <line
-          x1={MIDDEN}
-          y1={MIDDEN}
-          x2={MIDDEN}
-          y2={MIDDEN - UURWIJZER}
-          stroke={kleurUur}
-          strokeWidth={8}
-          strokeLinecap="round"
-        />
-        {zetbaar && (
-          <Grijpgebied van={8} tot={UURWIJZER + 6} sleept={sleept === "uur"} onPak={(e) => pak(e, "uur")} />
-        )}
-      </g>
-
-      {/* De grote wijzer: lang en dun, dus altijd uit elkaar te houden. */}
-      <g transform={`rotate(${hoeken.minuut} ${MIDDEN} ${MIDDEN})`}>
-        <line
-          x1={MIDDEN}
-          y1={MIDDEN}
-          x2={MIDDEN}
-          y2={MIDDEN - minuutlengte}
-          stroke={kleurMinuut}
-          strokeWidth={5}
-          strokeLinecap="round"
-        />
-        {zetbaar && (
-          <Grijpgebied
-            van={UURWIJZER - 4}
-            tot={minuutlengte + 6}
-            sleept={sleept === "minuut"}
-            onPak={(e) => pak(e, "minuut")}
-          />
-        )}
-      </g>
-
       {/*
-        De twaalf cijfers, elk gecentreerd op zijn eigen punt.
+        De volgorde van tekenen hangt af van de vlek (wachtrij, oktober 2026):
 
-        Na de wijzers getekend, met een witte rand eromheen: zo valt een cijfer
-        nooit weg achter de grote wijzer. Op elk heel uur staat die precies op
-        de 12, en juist dat cijfer moet een kind kunnen lezen.
+          - een vlek over cijfers ("cijfers", "groot"): eerst de cijfers, dan
+            de vlek, dan de wijzers. De vlek verbergt het cijfer, de wijzers
+            blijven helemaal te zien;
+          - een vlek over een wijzer: eerst de wijzers, dan de vlek, dan de
+            cijfers. De vlek verbergt het puntje van de wijzer, de cijfers
+            blijven te zien;
+          - geen vlek (of een oude vlek zonder laag): de wijzers, de cijfers
+            erboven, en een oude vlek als laatste, zoals het altijd was.
       */}
-      {Array.from({ length: 12 }, (_, i) => {
-        const uur = i + 1;
-        const plek = cijferplek(uur);
-        return (
-          <text
-            key={uur}
-            x={plek.x}
-            y={plek.y}
-            textAnchor="middle"
-            dominantBaseline="central"
-            fontSize={18}
-            fontWeight={800}
-            fill="var(--color-inkt)"
-            stroke="white"
-            strokeWidth={5}
-            strokeLinejoin="round"
-            paintOrder="stroke"
-            pointerEvents="none"
-          >
-            {uur}
-          </text>
-        );
-      })}
-
-      {/* Eén klein rondje in het midden. */}
-      <circle cx={MIDDEN} cy={MIDDEN} r={5} fill="var(--color-inkt)" />
-
-      {/* De vlek komt er als laatste overheen; die hoort iets af te dekken. */}
-      {vlek && <Vlekvorm vlek={vlek} />}
+      {vlek?.laag === "onder-wijzers" ? (
+        <>
+          {cijfersEl}
+          <Vlekvorm vlek={vlek} />
+          {wijzersEl}
+          {middenEl}
+        </>
+      ) : vlek?.laag === "boven-wijzers" ? (
+        <>
+          {wijzersEl}
+          <Vlekvorm vlek={vlek} />
+          {cijfersEl}
+          {middenEl}
+        </>
+      ) : (
+        <>
+          {wijzersEl}
+          {cijfersEl}
+          {middenEl}
+          {vlek && <Vlekvorm vlek={vlek} />}
+        </>
+      )}
     </svg>
   );
 }
