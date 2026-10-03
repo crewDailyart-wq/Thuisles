@@ -56,6 +56,7 @@ import {
   DAGDEEL_ACHTER,
   DAGDEEL_LABEL,
   dagdeelVan,
+  opDagdeelgrens,
   digitaal,
   inWoorden,
   plusMinuten,
@@ -383,6 +384,11 @@ export const urenminutenGenerator: Generator = {
 const DDZIN = "In welk deel van de dag is dit?";
 const DDZINNEN: Record<Leeftijdsgroep, string> = { "34": DDZIN, "56": DDZIN, "78": DDZIN };
 
+/** De tijden voor "Dagdelen": het hele etmaal, maar nooit precies op een grens. */
+function dagdeeltijden(inst: Instellingen): Tijd[] {
+  return alleTijden(inst, ["heel"], true).filter((t) => !opDagdeelgrens(t));
+}
+
 export const dagdeelGenerator: Generator = {
   id: "dagdeel",
   naam: "Dagdelen",
@@ -396,13 +402,13 @@ export const dagdeelGenerator: Generator = {
   aanpak: dagdeelAanpak,
   uitleganimatie: dagdeelUitleg,
 
-  maximum: (inst) => alleTijden(inst, ["heel"], true).length,
+  maximum: (inst) => dagdeeltijden(inst).length,
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const uit: Gegenereerd[] = [];
 
-    for (const t of husselen(kans, alleTijden(inst, ["heel"], true))) {
+    for (const t of husselen(kans, dagdeeltijden(inst))) {
       if (uit.length >= aantal) break;
       const handtekening = `dagdeel:${digitaal(t)}`;
       if (alGebruikt.has(handtekening)) continue;

@@ -370,7 +370,11 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
   return sorteerLeerdoelen(doelen, punten, opVolgorde, metGroepjes, rangVan);
 }
 
-/** Domeinen waar de volgorde van de database geldt in plaats van per soort oefening. */
+/**
+ * Domeinen die al vóór oktober 2026 de volgorde van de database volgden. Nu
+ * volgen ze dat allemaal (zie `sorteerLeerdoelen`); de lijst blijft staan omdat
+ * hij hierboven nog wordt meegegeven.
+ */
 const DOMEINEN_OP_VOLGORDE = ["tijd"];
 
 /**
@@ -383,47 +387,25 @@ const DOMEINEN_OP_VOLGORDE = ["tijd"];
  */
 function sorteerLeerdoelen(
   doelen: Leerdoel[],
-  punten: Map<string, number>,
-  opVolgorde: Set<string> = new Set(),
-  metGroepjes: Set<string> = new Set(),
+  _punten: Map<string, number>,
+  _opVolgorde: Set<string> = new Set(),
+  _metGroepjes: Set<string> = new Set(),
   rangVan: (l: Leerdoel) => number = (l) => l.volgorde,
 ): Leerdoel[] {
+  /*
+    Bij elk domein volgt de lijst de volgorde uit de database (wachtrij,
+    oktober 2026). Tot dan gold dat alleen voor Tijd; de andere domeinen
+    sorteerden per soort oefening en daarbinnen op bolletjes. Op het moment van
+    omzetten is precies die volgorde in de database vastgelegd, zodat er voor
+    een kind niets verschoof. Wat in beheer omhoog of omlaag wordt gezet, staat
+    nu ook zo bij het kind.
+
+    Een groepje blijft bij elkaar: het staat op de plek van zijn eerste
+    oefening (`rangVan`), en daarbinnen geldt weer de volgorde.
+  */
   return [...doelen].sort((a, b) => {
     if (a.subdomeinId !== b.subdomeinId) return a.subdomeinId.localeCompare(b.subdomeinId);
-
-    /* Onderwerpen met groepjes: per groepje, en daarbinnen oplopend. */
-    if (metGroepjes.has(a.subdomeinId)) {
-      return (
-        rangVan(a) - rangVan(b) ||
-        (a.moeilijkheid ?? 99) - (b.moeilijkheid ?? 99) ||
-        a.volgorde - b.volgorde ||
-        a.titel.localeCompare(b.titel)
-      );
-    }
-
-    /* Onderwerpen die de volgorde van de database volgen (zie DOMEINEN_OP_VOLGORDE). */
-    if (opVolgorde.has(a.subdomeinId)) {
-      return a.volgorde - b.volgorde || a.titel.localeCompare(b.titel);
-    }
-
-    /* Een leerdoel zonder sjabloon heeft geen groep en staat achteraan. */
-    if ((a.generatorSoort === null) !== (b.generatorSoort === null)) {
-      return a.generatorSoort === null ? 1 : -1;
-    }
-
-    if (a.generatorSoort !== b.generatorSoort) {
-      return (
-        typeVolgorde(a.generatorSoort ?? "") - typeVolgorde(b.generatorSoort ?? "") ||
-        (a.generatorSoort ?? "").localeCompare(b.generatorSoort ?? "")
-      );
-    }
-
-    return (
-      (a.moeilijkheid ?? 99) - (b.moeilijkheid ?? 99) ||
-      (punten.get(a.id) ?? 0) - (punten.get(b.id) ?? 0) ||
-      a.volgorde - b.volgorde ||
-      a.titel.localeCompare(b.titel)
-    );
+    return rangVan(a) - rangVan(b) || a.volgorde - b.volgorde || a.titel.localeCompare(b.titel);
   });
 }
 

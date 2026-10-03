@@ -404,3 +404,25 @@ Back-up vooraf met `npm run backup` en in `backups/`. Er is niets verwijderd. Aa
 
   Daarnaast is "Van wijzerklok naar digitale tijd: hele uren" hernoemd, zie hierboven.
 - **Niet aangepast, maar misschien wil je het:** "Van wijzerklok naar digitale tijd: halve uren" heeft ook 24-uurstijden met dagdeel. Die titel kan ook "… halve uren in de dag" worden.
+
+---
+
+# Wachtrij — 3 oktober 2026
+
+Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database verwijderd en aan antwoorden of voortgang van kinderen is niets veranderd. Getest is alleen met het profiel Testkind. Oude opgaven die vervangen zijn, staan op concept (niet weg).
+
+## Vragen voor Sara
+
+(Bij twijfel is steeds de veiligste keuze gemaakt; hier staat wat je nog moet beslissen.)
+
+- **00 — nieuwe mix per ronde.** Bijna elke oefening heeft precies 15 gepubliceerde opgaven en 15 vragen per ronde. Elke nieuwe ronde geeft dus dezelfde 15 opgaven in een andere volgorde, geen nieuwe opgaven. Wil je dat elke ronde echt andere opgaven heeft, dan moet er per oefening een grotere voorraad gepubliceerd worden (bijvoorbeeld 45). Dat heb ik niet gedaan: dat is veel nieuwe content in alle domeinen, en latere wachtrij-bestanden vragen juist om 15 per oefening. Zal ik dat doen?
+
+## 00 — Losse verbeteringen
+
+1. Het kopje "Klokken koppelen" staat boven de eerste 8 oefeningen van Wijzerklok en digitale klok. De hernoeming naar "… halve uren in de dag" heb ik overgeslagen, omdat bestand 06 die vervangt.
+2. Kindprofiel **Testkind** (groep 4, avatar Berg) aangemaakt onder je eigen ouderaccount. In CLAUDE.md staat nu dat testen als kind alleen met Testkind mag.
+3. Nagekeken: herladen binnen een ronde geeft dezelfde opgaven; een nieuwe ronde geeft een nieuwe greep en volgorde. Dezelfde som komt nooit direct na elkaar; dat werd nog niet goed bewaakt na het naar voren halen van "zelf doen"-sommen, en dat is opgelost. Zie de vraag hierboven.
+4. Dagdelen: de tijden 00:00, 06:00, 12:00 en 18:00 komen niet meer voor. Er zijn 15 nieuwe opgaven gemaakt; de oude staan op concept.
+5. De vraag houdt aan beide kanten ruimte vrij voor de luidspreker. Nagemeten op 360 px en 820 px breed: de knop raakt de tekst niet meer.
+6. Geld heeft de omschrijving "Munten en briefjes herkennen, bedragen schrijven, betalen en rekenen met geld."
+7. De domeinen zelf stonden al op de volgorde uit de database, de oefeningen daarbinnen alleen bij Tijd. Nu volgen de oefeningen bij álle domeinen de volgorde uit de database. Vooraf is de volgorde die kinderen zagen in de database gezet (65 van de 285 leerdoelen kregen een ander volgnummer). Voor een kind verschuift er dus niets. Wat je in beheer omhoog of omlaag zet, staat vanaf nu ook zo bij het kind. Een nieuw leerdoel komt achteraan zijn onderwerp te staan.

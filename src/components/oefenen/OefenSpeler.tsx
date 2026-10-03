@@ -1057,10 +1057,16 @@ export function OefenSpeler({
               tekening, het antwoordvak en de knop al op één middellijn. Een
               vraag die daar links van begint, staat scheef in het vlak.
             */}
+            {/*
+              Staat de vraag bovenaan, dan houdt hij aan beide kanten ruimte vrij
+              voor de geluidsknop rechtsboven. Aan beide kanten even veel, zodat
+              de vraag in het midden blijft staan; de knop valt zo nooit over
+              een woord, ook niet bij een lange vraag op een smal scherm.
+            */}
             <h1
               className={`text-center font-extrabold leading-snug ${
                 leeftijd === "34" ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
-              }`}
+              } ${heeftBeeld ? "" : "px-11 sm:px-10 lg:px-8"}`}
             >
               {vraagtekst}
             </h1>

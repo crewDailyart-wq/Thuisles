@@ -121,14 +121,14 @@ const OEFENINGEN = [
   // Van makkelijk naar moeilijk, volgens de leerlijn van de klok (zie
   // klokniveau in src/lib/moeilijkheid.ts).
   // -------------------------------------------------------------------------
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Hoeveel minuten in een uur?", soort: "urenminuten", bolletjes: 2, inst: {} },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Zet de wijzers goed", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "tijd", tijden: ["heel", "half"] } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Klokken koppelen", soort: "klokkoppelen", bolletjes: 2, inst: { tijden: ["heel", "half"], hoeveel: 3 } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van digitale tijd naar wijzerklok", soort: "klokkiezen", bolletjes: 2, inst: { vraag: "digitaal", tijden: ["heel", "half"] } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Dagdelen", soort: "dagdeel", bolletjes: 4, inst: { tijden: ["heel"] } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van wijzerklok naar digitale tijd: hele uren in de dag", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["heel"], antwoordsoort: "digitaal", metDagdeel: true } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Van wijzerklok naar digitale tijd: halve uren", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["half"], antwoordsoort: "digitaal", metDagdeel: true } },
-  { groep: "Tijd · Wijzerklok en digitale klok", titel: "Schrijf de tijd digitaal", soort: "kloktypen", bolletjes: 4, inst: { tijden: ["heel", "half"], metDagdeel: true } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Hoeveel minuten in een uur?", soort: "urenminuten", bolletjes: 2, inst: {} },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Zet de wijzers goed", soort: "klokzetten", bolletjes: 2, inst: { opdracht: "tijd", tijden: ["heel", "half"] } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Klokken koppelen", soort: "klokkoppelen", bolletjes: 2, inst: { tijden: ["heel", "half"], hoeveel: 3 } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Van digitale tijd naar wijzerklok", soort: "klokkiezen", bolletjes: 2, inst: { vraag: "digitaal", tijden: ["heel", "half"] } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Dagdelen", soort: "dagdeel", bolletjes: 4, inst: { tijden: ["heel"] } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Van wijzerklok naar digitale tijd: hele uren in de dag", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["heel"], antwoordsoort: "digitaal", metDagdeel: true } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Van wijzerklok naar digitale tijd: halve uren", soort: "klokaflezen", bolletjes: 4, inst: { tijden: ["half"], antwoordsoort: "digitaal", metDagdeel: true } },
+  { groep: "Tijd · Wijzerklok en digitale klok · Klokken koppelen", titel: "Schrijf de tijd digitaal", soort: "kloktypen", bolletjes: 4, inst: { tijden: ["heel", "half"], metDagdeel: true } },
   { groep: "Tijd · Wijzerklok en digitale klok · Rekenen met de klok", titel: "Hoe laat is het straks? Kies de klok", soort: "klokkiezen", bolletjes: 1, inst: { vraag: "verschuiving", tijden: ["heel"], maxUren: 5, halveUren: false } },
 
   // -------------------------------------------------------------------------

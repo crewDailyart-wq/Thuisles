@@ -231,6 +231,16 @@ export function dagdeelVan(t: Tijd): Dagdeel {
   return "avond";
 }
 
+/**
+ * Ligt deze tijd precies op de grens van twee dagdelen: 00:00, 06:00, 12:00 of
+ * 18:00? Zulke tijden komen niet in een vraag over het dagdeel. Is 18:00 nog
+ * middag of al avond? Dat weet een kind niet zeker, en dan is er geen eerlijk
+ * goed antwoord.
+ */
+export function opDagdeelgrens(t: Tijd): boolean {
+  return t.minuut === 0 && t.uur % 6 === 0;
+}
+
 /** "zeven uur 's ochtends" — de tijd in woorden met het dagdeel erachter. */
 export function metDagdeel(t: Tijd): string {
   return `${inWoorden(t)} ${DAGDEEL_ACHTER[dagdeelVan(t)]}`;

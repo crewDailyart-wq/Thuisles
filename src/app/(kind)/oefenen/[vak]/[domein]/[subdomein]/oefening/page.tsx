@@ -259,9 +259,10 @@ export default async function OefeningPagina({
     vragen die dat zelf in hun figuur hebben staan schuiven naar voren, dus
     voor alles wat er al was verandert er niets aan de volgorde.
   */
+  /* Na het splitsen nog een keer uit elkaar: dezelfde som nooit direct achter elkaar. */
   const opVolgorde = [
-    ...verseGreep.filter((v) => isVisueleSom(v.figuur)),
-    ...verseGreep.filter((v) => !isVisueleSom(v.figuur)),
+    ...uitElkaar(verseGreep.filter((v) => isVisueleSom(v.figuur))),
+    ...uitElkaar(verseGreep.filter((v) => !isVisueleSom(v.figuur))),
   ];
 
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */

@@ -265,6 +265,12 @@ geval het ooit nog nodig is. Gebruik het niet.
 
 ---
 
+**Testen als kind mag alleen met het profiel "Testkind"** (groep 4). Nooit met
+het profiel van een echt kind: elk antwoord dat je daar geeft, komt in de
+voortgang van dat kind terecht.
+
+---
+
 **Lees en volg `ONTWERPREGELS.md` voordat je een oefentype, opdracht of vraag bouwt of aanpast.**
 
 ---
