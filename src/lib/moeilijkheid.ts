@@ -679,6 +679,11 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = 4;
       break;
 
+    case "verhaaltje":
+      /* De bolletjes staan per oefening in WERKPLAN.md en gaan als niveau mee. */
+      p = NIVEAUPUNTEN[Math.max(1, Math.min(5, getal(inst, "niveau", 1)))];
+      break;
+
     case "geldnotatie": {
       /* Kiezen, dan tellen en opschrijven, dan van woorden naar cijfers; hele euro's tot 100 is een stap verder. */
       const stand = tekst(inst, "stand", "schrijfwijze");

@@ -77,7 +77,7 @@ export default async function LeerdoelPagina({
           "nl",
           leerdoel.groepVan,
           naarAdresdeel(domein.naam),
-          naarAdresdeel(leerdoel.titel),
+          leerdoel.adres ?? naarAdresdeel(leerdoel.titel),
         )}
       />
     </div>

@@ -422,6 +422,7 @@ Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database 
 - **06 — halve uren "tot 12:00".** Bij de halve uren noemde je 01:30 tot en met 12:30 voor de eerste stap en 13:30 tot en met 23:30 voor de tweede. 12:30 is al middag, en dat past niet bij een titel "tot 12:00" met 's nachts of 's ochtends. Daarom heb ik gekozen voor 01:30 tot en met 11:30 en 12:30 tot en met 23:30. Moet 12:30 toch bij de eerste?
 - **07 — "0,3,2,1" na een fout antwoord.** Bij Klokken op volgorde, en bij andere sleepoefeningen, staat na een fout antwoord in het groene vakje het antwoord zoals de computer het opslaat: "0,3,2,1". Voor een kind zegt dat niets. Onder de vakjes staat al wel welke klok erin hoorde. Hetzelfde gebeurt bij keuze-oefeningen in Tijd, bijvoorbeeld "0" bij Hoe lang duurt het? (de goede knop is daar wel groen gekleurd). Dat groene vakje bestond al; ik heb het niet veranderd. Zal ik het bij sleep- en keuze-oefeningen weglaten, of er de tijden en woorden in zetten?
 - **16 — munten iets groter.** Je vroeg om formaat en indeling gelijk te houden. Op de oude maat waren de waardes op de echte munten (vooral 10, 20 en 50 cent en de 1 euro) te klein om te lezen. Daarom zijn alleen de munten een kwart groter dan de getekende munten; ze blijven veel kleiner dan een echte munt. Briefjes zijn even hoog als eerst. De indeling van de oefeningen is niet veranderd. Is dat goed zo?
+- **17 — plek van het domein.** Verhaaltjessommen staat achteraan in de lijst met domeinen, na Tabellen & grafieken. Daarvoor hoefde ik niets aan de andere domeinen te veranderen. Wil je het liever direct na Geld? Dat kan in beheer, of ik zet het voor je om.
 
 ## 00 — Losse verbeteringen
 
@@ -605,3 +606,91 @@ Alle vraagzinnen van de klokoefeningen en de kalender nagelopen: de zinnen in de
 - In alle Geld-oefeningen staan nu deze afbeeldingen in plaats van de tekeningen, op dezelfde plek in de oefening. Munten worden rond afgesneden, zodat het witte vlak om de foto niet als vierkant te zien is. Nooit op ware grootte: een briefje is op het scherm ongeveer 2 centimeter breed. Alleen de briefjes van €200 en €500 (komen in de oefeningen niet voor) zijn nog een tekening.
 - De regel staat in WERKPLAN.md en in CLAUDE.md: "Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes, gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware grootte."
 - Getest met Testkind: alle 57 Geld-oefeningen geopend. Ze laden allemaal, en de 34 met munten of briefjes tonen de nieuwe afbeeldingen (de andere 23 zijn tekst, zoals verhaaltjes en bonnetjes). Bij "Zelf precies betalen" het briefje van €5 neergelegd → goed.
+
+## 17 — Verhaaltjessommen
+
+- **Gebouwd:** een nieuw domein "Verhaaltjessommen" voor groep 4, met 7 onderwerpen in de gevraagde volgorde en 130 oefeningen: 3 × 30 met de kopjes Tot en met 20, 50 en 100, en 4 × 10 zonder kopjes. Elke oefening heeft precies 15 vaste, gepubliceerde verhaaltjes en "vragen per oefensessie" 15; samen 1950 verhaaltjes. Titels, situaties en bolletjes staan in WERKPLAN.md. Aan de domeinen Tafels en Delen is niets veranderd.
+- **Hoe de verhaaltjes ontstaan:** uit zinsjablonen die ik met de hand heb geschreven, met per situatie een grens die logisch is (een klas heeft hooguit 32 kinderen, een eierdoos 4, 6 of 10 eieren, een ketting minstens 5 kralen) en altijd minstens 2 van iets. Zo kloppen enkelvoud, meervoud en werkwoord altijd. Elk verhaaltje wordt automatisch nagekeken: elke zin hoogstens 12 woorden en met een hoofdletter, de vraag als laatste zin met Hoeveel, Hoe of Op welke, het antwoord binnen het kopje en nooit negatief, vier verschillende knoppen. Daarna heb ik alle soorten zinnen zelf nagelezen.
+- **Tweede controle:** bij het achter elkaar nalezen heb ik nog **155 verhaaltjes verbeterd**, in 11 soorten verbeteringen:
+  - "Hoeveel snoepjes heeft Jesse samen?" werd "… in totaal?" (samen bij één persoon);
+  - een zonnebloem groeit hooguit 15 cm per week (was tot 59);
+  - een kind leest hooguit 30 bladzijden per dag;
+  - een fiets van 9 euro werd een bal (bij kleine bedragen een bal en een knuffel);
+  - een kaars brandt hooguit 10 cm per avond;
+  - "Ze verdeelt ze eerlijk" werd "Ze verdeelt de koekjes/stickers eerlijk";
+  - "samen" stond twee keer in één verhaaltje;
+  - een ketting heeft minstens 5 kralen;
+  - een klas heeft minstens 10 stoelen;
+  - een puzzel heeft minstens 12 stukjes;
+  - een boekenkast van een groep heeft minstens 5 boeken.
+
+  Voor de oefeningen waar dat al in de database stond, zijn nieuwe opgaven gemaakt; de oude staan op concept.
+- **Antwoorden:** bij kiezen vier knoppen met de eenheid erbij, van klein naar groot. Ze bevatten het goede antwoord, een getal uit het verhaal, 1 ernaast, boven de 20 ook 10 ernaast, en waar plek is de verkeerde bewerking. Bij typen een gewoon cijferveld met de eenheid erachter. Bij een fout getypt antwoord dat de verkeerde som is ("erbij in plaats van eraf"), krijgt het kind uitleg daarover.
+- **Webadressen en SEO:** elke oefening heeft een eigen adres in gewone woorden en een eigen SEO-titel en -omschrijving. Het domein en de onderwerpen hebben een titel die per groepspagina het goede groepnummer invult. Er zijn geen nieuwe dubbele titels, en alle openbare pagina's staan in de sitemap; de oefenpagina's achter de inlog niet. Daarvoor zijn twee kleine uitbreidingen gemaakt: een eigen webadres per leerdoel (een nieuwe kolom, leeg = zoals altijd uit de titel), en `{groep}` in een eigen SEO-tekst, waar dan het nummer van de groep komt.
+- **Getest met Testkind:** in alle 7 onderwerpen twee oefeningen geopend, met het goede verhaal en de goede knoppen of het invoerveld. "Erbij krijgen (kiezen)" heb ik goed beantwoord en "Verschil (typen)" fout (31 in plaats van 19): fout gerekend, met het goede antwoord en de uitleg erbij.
+
+Drie voorbeelden van SEO-titel en omschrijving:
+
+| Pagina | Titel | Omschrijving |
+|---|---|---|
+| /groep-4/verhaaltjessommen | Verhaaltjessommen en redactiesommen – groep 4 \| Thuisles | Oefen redactiesommen (verhaaltjessommen) voor groep 4: optellen, aftrekken, tafels en delen in korte verhaaltjes. Direct nakijken. |
+| /groep-4/verhaaltjessommen/optellen-tot-en-met-20-erbij-krijgen-kiezen | Verhaaltjessommen optellen tot en met 20: erbij krijgen (kiezen) – groep 4 \| Thuisles | Oefen redactiesommen (verhaaltjessommen) optellen tot en met 20 voor groep 4: erbij krijgen, kiezen uit vier antwoorden. Korte verhaaltjes, direct nakijken. |
+| /groep-4/verhaaltjessommen/tafels-en-delen-keer-of-delen-typen | Verhaaltjessommen tafels en delen met de tafels van 1 tot en met 10: keer of delen (typen) – groep 4 \| Thuisles | Oefen redactiesommen (verhaaltjessommen) tafels en delen met de tafels van 1 tot en met 10 voor groep 4: keer of delen, zelf het antwoord typen. Korte verhaaltjes, direct nakijken. |
+
+Vijf voorbeeldverhaaltjes per onderwerp, met het goede antwoord (uit de gepubliceerde opgaven):
+
+**Optellen**
+
+- Lina heeft 10 punten bij een spelletje. In de laatste ronde krijgt Lina er 3 bij. Hoeveel punten heeft Lina nu? → **13 punten**
+- In de schaal liggen 5 appels en 4 peren. Hoeveel stuks fruit liggen er in de schaal? → **9 stuks fruit**
+- Elif bouwt een toren van 14 centimeter. Daarna maakt Elif hem 9 centimeter hoger. Hoe hoog is de toren nu? → **23 centimeter**
+- Lina, Fatima en Kofi plukken appels. Lina plukt er 9, Fatima 3 en Kofi 9. Hoeveel appels plukken ze samen? → **21 appels**
+- Bij de supermarkt staan 87 rode auto's. Er staan ook 9 blauwe en 2 witte auto's. Hoeveel auto's staan er bij de supermarkt? → **98 auto's**
+
+**Aftrekken**
+
+- In de koektrommel zitten 5 koekjes. De kinderen eten er 3 op. Hoeveel koekjes zitten er nog in de trommel? → **2 koekjes**
+- Sem springt 13 keer touw. Thijs springt 4 keer touw. Hoeveel keer springt Sem meer dan Thijs? → **9 keer**
+- Een touw is 44 meter lang. Thijs knipt er 35 meter af. Hoe lang is het touw nu? → **9 meter**
+- Sem heeft 38 euro. Sem koopt een spel van 29 euro. Daarna koopt Sem een boek van 6 euro. Hoeveel euro heeft Sem nog? → **3 euro**
+- Een touw is 98 meter lang. Julia knipt er 40 meter af. Hoe lang is het touw nu? → **58 meter**
+
+**Optellen en aftrekken**
+
+- In de schoolbus zitten 19 kinderen. Bij de halte stappen er 17 uit. Hoeveel kinderen zitten er nu in de bus? → **2 kinderen**
+- Aya wil een spel van 14 euro kopen. Aya heeft 8 euro. Hoeveel euro heeft Aya nog nodig? → **6 euro**
+- Omar heeft 32 euro. Omar betaalt 7 euro voor een boek. Daarna krijgt Omar 6 euro van opa. Hoeveel euro heeft Omar nu? → **31 euro**
+- Een rij blokjes is 42 centimeter lang. Kofi legt er 7 centimeter bij. Hoe lang is de rij nu? → **49 centimeter**
+- Amira heeft 76 knikkers. Bij een spelletje wint Amira er 12. Hoeveel knikkers heeft Amira nu? → **88 knikkers**
+
+**Tafels**
+
+- In een zakje zitten 5 snoepjes. Mehmet heeft 4 zakjes. Hoeveel snoepjes heeft Mehmet in totaal? → **20 snoepjes**
+- Nina oefent elke dag 5 minuten op de piano. Hoeveel minuten oefent Nina in 8 dagen? → **40 minuten**
+- In een bakje liggen 5 kleurpotloden. Op de tafel staan 9 bakjes. Hoeveel kleurpotloden zijn dat samen? → **45 kleurpotloden**
+- In de klas staan 5 rijen tafels. In elke rij staan 4 tafels. Hoeveel tafels staan er in de klas? → **20 tafels**
+- Een ijsje kost 2 euro. Milan koopt 8 ijsjes. Hoeveel euro moet Milan betalen? → **16 euro**
+
+**Delen**
+
+- De juf heeft 32 stickers. Ze verdeelt de stickers eerlijk over 8 kinderen. Hoeveel stickers krijgt elk kind? → **4 stickers**
+- Samen krijgen 6 kinderen 36 euro. Ze verdelen het geld eerlijk. Hoeveel euro krijgt elk kind? → **6 euro**
+- Sem heeft 6 snoepjes. Sem verdeelt ze eerlijk over 3 kinderen. Hoeveel snoepjes krijgt elk kind? → **2 snoepjes**
+- Noor heeft 40 kralen. Noor maakt kettingen van 5 kralen. Hoeveel kettingen maakt Noor? → **8 kettingen**
+- Er doen 14 kinderen mee met voetbal. In elk team zitten 7 kinderen. Hoeveel teams zijn er? → **2 teams**
+
+**Tafels en delen**
+
+- In de klas staan 9 rijen tafels. In elke rij staan 3 tafels. Hoeveel tafels staan er in de klas? → **27 tafels**
+- Mama bakt 10 koekjes. Ze verdeelt de koekjes eerlijk over 2 bordjes. Hoeveel koekjes liggen er op elk bordje? → **5 koekjes**
+- Milan verdeelt snoepjes over 4 kinderen. Elk kind krijgt 10 snoepjes. Hoeveel snoepjes verdeelt Milan? → **40 snoepjes**
+- In de gymzaal zijn 16 kinderen. De juf maakt groepjes van 8. Hoeveel groepjes zijn er? → **2 groepjes**
+- Een kaartje voor de film kost 7 euro. Sanne koopt 4 kaartjes. Hoeveel euro betaalt Sanne? → **28 euro**
+
+**Alles door elkaar**
+
+- Thijs bouwt een toren van 14 centimeter. Daarna maakt Thijs hem 26 centimeter hoger. Hoe hoog is de toren nu? → **40 centimeter**
+- Daan en Aya hebben samen 16 knikkers. Ze verdelen de knikkers eerlijk. Hoeveel knikkers krijgt elk kind? → **8 knikkers**
+- In de schoolbus zitten 4 kinderen. Bij de halte stappen er 26 in. Hoeveel kinderen zitten er nu in de bus? → **30 kinderen**
+- Thijs heeft 30 knikkers. In de winkel koopt Thijs er nog 11. Hoeveel knikkers heeft Thijs nu? → **41 knikkers**
+- Op maandag leest Sem 18 bladzijden. Op dinsdag leest Sem er 5. Op woensdag leest Sem er 7. Hoeveel bladzijden leest Sem in drie dagen? → **30 bladzijden**

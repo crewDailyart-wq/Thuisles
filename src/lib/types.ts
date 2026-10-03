@@ -146,6 +146,8 @@ export type Leerdoel = {
    * voortgang gewoon in de database staan. Aan te zetten in het beheer.
    */
   verborgen: boolean;
+  /** Een eigen openbaar webadres, of null: dan komt het adres uit de titel. */
+  adres: string | null;
   /**
    * Een leerdoel hoort bij een groepsrange, niet bij één vaste groep.
    * Dat maakt differentiatie binnen dezelfde groep mogelijk.

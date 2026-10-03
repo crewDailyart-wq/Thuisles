@@ -1131,6 +1131,18 @@ export type Figuur =
       heel: boolean;
     }
   | {
+      /**
+       * Een verhaaltjessom. Het verhaal zelf is de vraagtekst. Kiezen uit vier
+       * knoppen met de eenheid erbij (`keuzes`, `goed`), of typen in een
+       * invoerveld met de eenheid erachter (`keuzes` is dan null).
+       */
+      soort: "verhaaltje";
+      keuzes: string[] | null;
+      goed: number;
+      eenheid: string;
+      sjabloon: string;
+    }
+  | {
       /** Vier groepjes geld, precies twee kloppen met de prijs. */
       soort: "welkegroepjes";
       groepen: number[][];

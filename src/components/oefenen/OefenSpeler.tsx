@@ -61,6 +61,8 @@ import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
+import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
+import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
   bewaarSessie,
@@ -1065,7 +1067,12 @@ export function OefenSpeler({
             */}
             <h1
               className={`text-center font-extrabold leading-snug break-words ${
-                leeftijd === "34" ? "text-3xl sm:text-4xl" : "text-2xl sm:text-3xl"
+                /* Een verhaaltje is een paar zinnen: iets kleiner, zodat het rustig leest. */
+                vraag.figuur?.soort === "verhaaltje"
+                  ? "text-2xl leading-relaxed sm:text-3xl"
+                  : leeftijd === "34"
+                    ? "text-3xl sm:text-4xl"
+                    : "text-2xl sm:text-3xl"
               } ${heeftBeeld ? "" : "px-11 sm:px-10 lg:px-8"}`}
             >
               {vraagtekst}
@@ -1759,6 +1766,25 @@ function Antwoordvelden({
     binnen, met altijd twee cijfers centen; een keuze als het nummer van de
     knop, en bij meer antwoorden de nummers met komma's ertussen.
   */
+  /*
+    Verhaaltjessommen: het verhaal staat als vraag bovenaan; hier alleen de
+    vier knoppen of het invoerveld met de eenheid erachter.
+  */
+  if (vraag.vorm === "open" && isVerhaalfiguur(vraag.figuur)) {
+    return (
+      <Verhaalopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        juist={vraag.antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+      />
+    );
+  }
+
   if (vraag.vorm === "open" && isGeldfiguur(vraag.figuur)) {
     return (
       <Geldopdracht

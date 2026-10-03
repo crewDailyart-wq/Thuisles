@@ -138,6 +138,19 @@ export function openbaarAdres(
 export const MERKNAAM = "Thuisles";
 
 /**
+ * Een eigen tekst met `{groep}` erin: daar komt het nummer van de groep van
+ * de pagina. Zo kan één titel voor een domein op de pagina van elke groep
+ * kloppen ("… – groep {groep}"). Zonder groep valt " – groep {groep}" weg.
+ */
+function metGroep(eigen: string | null | undefined, groep: number | null): string {
+  const schoon = (eigen ?? "").trim();
+  if (!schoon.includes("{groep}")) return schoon;
+  return groep === null
+    ? schoon.replace(/\s*[–-]?\s*groep \{groep\}/g, "").replace(/\{groep\}/g, "").trim()
+    : schoon.replace(/\{groep\}/g, String(groep));
+}
+
+/**
  * De paginatitel, met de merknaam erachter.
  *
  * `eigen` is wat er in de admin is ingevuld. Is dat leeg — en dat is het
@@ -154,11 +167,11 @@ export function paginatitel(
   onderdeel: string,
   groep: number | null,
 ): string {
-  const schoon = (eigen ?? "").trim();
+  const schoon = metGroep(eigen, groep);
   if (schoon) return schoon.includes(MERKNAAM) ? schoon : `${schoon} | ${MERKNAAM}`;
 
-  const metGroep = groep === null ? onderdeel : `${onderdeel} oefenen – groep ${groep}`;
-  return `${metGroep} | ${MERKNAAM}`;
+  const standaard = groep === null ? onderdeel : `${onderdeel} oefenen – groep ${groep}`;
+  return `${standaard} | ${MERKNAAM}`;
 }
 
 /**
@@ -173,7 +186,7 @@ export function paginabeschrijving(
   onderdeel: string,
   groep: number | null,
 ): string {
-  const schoon = (eigen ?? "").trim();
+  const schoon = metGroep(eigen, groep);
   if (schoon) return schoon;
 
   const bij = groep === null ? "op de basisschool" : `in groep ${groep}`;

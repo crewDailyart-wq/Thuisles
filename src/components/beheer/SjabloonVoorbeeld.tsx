@@ -25,6 +25,8 @@ import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
+import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
+import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
 import { zoekGenerator } from "@/lib/generatoren";
@@ -254,6 +256,20 @@ export function SjabloonVoorbeeld({
                     <Tijdopdracht
                       figuur={som.figuur}
                       antwoord=""
+                      fase="bezig"
+                      onWijzig={() => {}}
+                      onBevestig={() => {}}
+                    />
+                  </div>
+                )}
+
+                {/* Verhaaltjessommen: de knoppen of het invoerveld onder het verhaal. */}
+                {isVerhaalfiguur(som.figuur) && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Verhaalopdracht
+                      figuur={som.figuur}
+                      antwoord=""
+                      juist={som.antwoord}
                       fase="bezig"
                       onWijzig={() => {}}
                       onBevestig={() => {}}

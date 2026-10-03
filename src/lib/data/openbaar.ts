@@ -170,7 +170,7 @@ export function haalOpenbareOefeningen(domeinId: string, groep: number): Openbar
     verbinding()
       .prepare(
         `select l.id, l.titel as naam, l.groep_van, l.groep_tot, l.moeilijkheid,
-                l.seo_titel, l.seo_omschrijving, s.naam as onderwerp
+                l.seo_titel, l.seo_omschrijving, l.adres, s.naam as onderwerp
            from leerdoelen l
            join subdomeinen s on s.id = l.subdomein_id
           where s.domein_id = ? and l.groep_van <= ? and l.groep_tot >= ?
@@ -184,6 +184,8 @@ export function haalOpenbareOefeningen(domeinId: string, groep: number): Openbar
       .all(domeinId, groep, groep) as Rij[]
   ).map((r) => ({
     ...alsOnderdeel({ ...r, omschrijving: r.onderwerp }),
+    /* Een eigen adres gaat voor; anders het adres uit de titel. */
+    ...(r.adres ? { adresdeel: String(r.adres) } : {}),
     groepVan: Number(r.groep_van),
     groepTot: Number(r.groep_tot),
     bolletjes:

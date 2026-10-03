@@ -48,6 +48,7 @@ import { bolletjesVan, puntenVan } from "../src/lib/moeilijkheid.ts";
 import { isKeerfiguur, juisteAntwoorden as keerAntwoorden } from "../src/lib/keerfiguren.ts";
 import { isTijdfiguur, juistAntwoord as tijdAntwoord } from "../src/lib/tijdfiguren.ts";
 import { isGeldfiguur, juistAntwoord as geldAntwoord } from "../src/lib/geldfiguren.ts";
+import { isVerhaalfiguur, juistKeuzeAntwoord } from "../src/lib/verhaalfiguren.ts";
 
 /* Hoeveel opgaven een ronde minstens moet opleveren. Nooit minder. */
 const PER_RONDE = 15;
@@ -314,6 +315,140 @@ const OEFENINGEN = [
   { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Een euromunt wisselen", soort: "geldgroepen", bolletjes: 2, inst: { stand: "wisselen", wissel: "euromunt" } },
   { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Centen wisselen", soort: "geldgroepen", bolletjes: 2, inst: { stand: "wisselen", wissel: "centen" } },
   { groep: "Geld · Rekenen met geld · Geld wisselen", titel: "Wisselen in briefjes en munten", soort: "geldgroepen", bolletjes: 3, inst: { stand: "wisselen", wissel: "gemengd" } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Verhaaltjessommen (zeven onderwerpen, 130 oefeningen)
+  // -------------------------------------------------------------------------
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Erbij krijgen (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "optellen", situatie: "erbij", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Samen (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "optellen", situatie: "samen", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Langer, hoger, later (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "meten", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Drie getallen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "drie", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "mix", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Erbij krijgen (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "erbij", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Samen (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "samen", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Langer, hoger, later (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "meten", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Drie getallen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "drie", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 20", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "mix", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Erbij krijgen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "erbij", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Samen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "optellen", situatie: "samen", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Langer, hoger, later (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "meten", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Drie getallen (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "drie", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "mix", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Erbij krijgen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "erbij", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Samen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "samen", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Langer, hoger, later (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "meten", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Drie getallen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "drie", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 50", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "mix", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Erbij krijgen (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "erbij", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Samen (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "optellen", situatie: "samen", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Langer, hoger, later (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "meten", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Drie getallen (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "drie", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Erbij krijgen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "erbij", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Samen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "optellen", situatie: "samen", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Langer, hoger, later (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "optellen", situatie: "meten", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Drie getallen (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "optellen", situatie: "drie", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Optellen · Tot en met 100", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "optellen", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Weggeven en opmaken (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Verschil (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Korter, lager, eerder (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Twee keer eraf (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Weggeven en opmaken (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Verschil (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Korter, lager, eerder (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Twee keer eraf (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Weggeven en opmaken (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Verschil (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Korter, lager, eerder (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Twee keer eraf (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Weggeven en opmaken (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Verschil (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Korter, lager, eerder (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Twee keer eraf (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 50", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Weggeven en opmaken (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Verschil (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Korter, lager, eerder (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Twee keer eraf (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Weggeven en opmaken (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "weg", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Verschil (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "aftrekken", situatie: "verschil", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Korter, lager, eerder (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "aftrekken", situatie: "meten", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Twee keer eraf (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "aftrekken", situatie: "tweekeer", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Aftrekken · Tot en met 100", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "aftrekken", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Erbij of eraf? (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Hoeveel meer nodig? (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "20", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Twee stappen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Meten en datums (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "meten", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "mix", tot: "20", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Erbij of eraf? (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Hoeveel meer nodig? (typen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "20", antwoord: "typen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Twee stappen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Meten en datums (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "meten", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 20", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "mix", tot: "20", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Erbij of eraf? (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Hoeveel meer nodig? (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "50", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Twee stappen (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Meten en datums (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "meten", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "mix", tot: "50", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Erbij of eraf? (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Hoeveel meer nodig? (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "50", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Twee stappen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Meten en datums (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "meten", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 50", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "mix", tot: "50", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Erbij of eraf? (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Hoeveel meer nodig? (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Twee stappen (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Meten en datums (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "meten", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Erbij of eraf? (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "erbijeraf", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Hoeveel meer nodig? (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "plusmin", situatie: "aanvullen", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Twee stappen (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "plusmin", situatie: "tweestappen", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Meten en datums (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "plusmin", situatie: "meten", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Optellen en aftrekken · Tot en met 100", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "plusmin", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Groepjes (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "tafels", situatie: "groepjes", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Rijen (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "tafels", situatie: "rijen", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Elke dag (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "tafels", situatie: "elkedag", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Geld (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "tafels", situatie: "geld", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "tafels", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Groepjes (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "tafels", situatie: "groepjes", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Rijen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "tafels", situatie: "rijen", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Elke dag (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "tafels", situatie: "elkedag", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Geld (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "tafels", situatie: "geld", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Tafels", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "tafels", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Eerlijk verdelen (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "delen", situatie: "verdelen", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Groepjes maken (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "delen", situatie: "groepjes", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Geld verdelen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "delen", situatie: "geld", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Teams en rijen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "delen", situatie: "teams", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "delen", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Eerlijk verdelen (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "delen", situatie: "verdelen", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Groepjes maken (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "delen", situatie: "groepjes", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Geld verdelen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "delen", situatie: "geld", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Teams en rijen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "delen", situatie: "teams", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Delen", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "delen", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Keer of delen? (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "keerdeel", situatie: "keerofdeel", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Groepjes (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "keerdeel", situatie: "groepjes", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Verdelen (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "keerdeel", situatie: "verdelen", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Geld (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "keerdeel", situatie: "geld", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "keerdeel", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Keer of delen? (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "keerdeel", situatie: "keerofdeel", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Groepjes (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "keerdeel", situatie: "groepjes", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Verdelen (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "keerdeel", situatie: "verdelen", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Geld (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "keerdeel", situatie: "geld", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Tafels en delen", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "keerdeel", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Op school (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "alles", situatie: "school", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "In de winkel (kiezen)", soort: "verhaaltje", bolletjes: 1, inst: { onderwerp: "alles", situatie: "winkel", tot: "100", antwoord: "kiezen", niveau: 1 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Sport en spel (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "alles", situatie: "spel", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Thuis (kiezen)", soort: "verhaaltje", bolletjes: 2, inst: { onderwerp: "alles", situatie: "thuis", tot: "100", antwoord: "kiezen", niveau: 2 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Alles door elkaar (kiezen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "alles", situatie: "mix", tot: "100", antwoord: "kiezen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Op school (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "alles", situatie: "school", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "In de winkel (typen)", soort: "verhaaltje", bolletjes: 3, inst: { onderwerp: "alles", situatie: "winkel", tot: "100", antwoord: "typen", niveau: 3 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Sport en spel (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "alles", situatie: "spel", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Thuis (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "alles", situatie: "thuis", tot: "100", antwoord: "typen", niveau: 4 } },
+  { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "alles", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -492,6 +627,21 @@ for (const oefening of OEFENINGEN) {
         fouten.push(
           `${waar}: de generator zegt "${vraag.antwoord}" en het scherm zegt "${vanHetScherm}".`,
         );
+      }
+    }
+
+    /*
+      Verhaaltjessommen: bij kiezen moet het antwoord de goede knop zijn, met
+      vier verschillende knoppen; bij typen een getal in het getallengebied.
+    */
+    if (isVerhaalfiguur(vraag.figuur)) {
+      const f = vraag.figuur;
+      const knop = juistKeuzeAntwoord(f);
+      if (knop !== null) {
+        if (knop !== vraag.antwoord) fouten.push(`${waar}: de goede knop is ${knop}, de generator zegt ${vraag.antwoord}.`);
+        if (f.keuzes.length !== 4 || new Set(f.keuzes).size !== 4) fouten.push(`${waar}: niet vier verschillende knoppen: ${f.keuzes.join(" / ")}.`);
+      } else if (!/^\d+$/.test(vraag.antwoord) || Number(vraag.antwoord) > Number(oefening.inst.tot ?? 100)) {
+        fouten.push(`${waar}: het antwoord ${vraag.antwoord} past niet in het getallengebied.`);
       }
     }
 

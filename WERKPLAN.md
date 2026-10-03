@@ -721,6 +721,78 @@ kaartjes zijn net te veel of net te weinig waard.
 | 3 | Centen wisselen | ●●○○○ | Ziet een munt van 10, 20 of 50 cent en tikt op het kaartje met kleinere centen dat evenveel waard is. |
 | 4 | Wisselen in briefjes en munten | ●●●○○ | Ziet een briefje van € 5, € 10 of € 20; de kaartjes hebben een mix van briefjes en euromunten, soms meer dan vier stuks. |
 
+## Groep 4 – Verhaaltjessommen — KLAAR
+
+KLAAR (oktober 2026). Een eigen domein met zeven onderwerpen, allemaal
+verhaaltjessommen (redactiesommen), in deze volgorde op het kinderscherm:
+Optellen, Aftrekken, Optellen en aftrekken, Tafels, Delen, Tafels en delen,
+Alles door elkaar. Nu alleen gewone opgaven, zonder plaatjes; die komen later.
+De domeinen Tafels en Delen zijn niet veranderd.
+
+Type `verhaaltje` (`src/lib/generatoren/verhaaltje.ts`); de zinsjablonen staan
+in `src/lib/verhaaltjes.ts`. De instellingen per oefening staan in
+`scripts/opgaven.mjs`.
+
+Regels:
+
+- Elke oefening heeft precies 15 vaste opgaven en "vragen per oefensessie" 15:
+  het kind krijgt elke ronde dezelfde 15 verhaaltjes.
+- Elke zin hoogstens 12 woorden, het hele verhaal in de tegenwoordige tijd, de
+  vraag als laatste zin met "Hoeveel", "Hoe" of "Op welke". Er is altijd
+  minstens 2 van iets, zodat enkelvoud, meervoud en werkwoord kloppen. Elk
+  sjabloon heeft een grens die bij de situatie past (een klas heeft hooguit 32
+  kinderen, een eierdoos 4, 6 of 10 eieren). Namen wisselen af, uit
+  verschillende culturen. Dit wordt bij elk verhaaltje nagekeken.
+- Kiezen: vier knoppen met de eenheid erbij ("12 stickers"), van klein naar
+  groot: het goede antwoord, een getal uit het verhaal, 1 ernaast, boven de 20
+  ook 10 ernaast, en waar dan nog plek is de uitkomst van de verkeerde
+  bewerking. Nooit twee dezelfde knoppen.
+- Typen: een gewoon invoerveld met de eenheid erachter. Geen getallenpad.
+- De uitkomst is nooit hoger dan het getal van het kopje en nooit negatief.
+  Bij "Tot en met 100" gaat typen ook over het tiental, kiezen niet. Datums
+  alleen tot en met 31.
+- Tafels: alleen de tafels van groep 4 (1 tot en met 10). Delen altijd zonder
+  rest.
+- Titels mogen per kopje hetzelfde zijn; elke oefening heeft een eigen naam in
+  beheer ("Tot en met 20 · Samen (kiezen)") en een eigen webadres
+  (`optellen-tot-en-met-20-samen-kiezen`), en een eigen SEO-titel en
+  -omschrijving met "verhaaltjessommen", "redactiesommen", het onderwerp, het
+  getallengebied en "groep 4".
+
+### Onderwerpen 1 tot en met 3 — Optellen, Aftrekken, Optellen en aftrekken
+
+Elk met drie kopjes: "Tot en met 20", "Tot en met 50" en "Tot en met 100". Per
+kopje vijf situaties, eerst alle vijf als "(kiezen)", dan dezelfde vijf als
+"(typen)".
+
+| Onderwerp | De vijf situaties |
+|---|---|
+| Optellen | Erbij krijgen · Samen · Langer, hoger, later · Drie getallen · Alles door elkaar |
+| Aftrekken | Weggeven en opmaken · Verschil · Korter, lager, eerder · Twee keer eraf · Alles door elkaar |
+| Optellen en aftrekken | Erbij of eraf? · Hoeveel meer nodig? · Twee stappen · Meten en datums · Alles door elkaar |
+
+| Kopje | Bolletjes kiezen (vijf situaties) | Bolletjes typen |
+|---|---|---|
+| Tot en met 20 | ● ● ●● ●● ●● | ●● ●● ●●● ●●● ●●● |
+| Tot en met 50 | ●● ●● ●●● ●●● ●●● | ●●● ●●● ●●●● ●●●● ●●●● |
+| Tot en met 100 | ●●● ●●● ●●●● ●●●● ●●●● | ●●●● ●●●● ●●●●● ●●●●● ●●●●● |
+
+### Onderwerpen 4 tot en met 7 — Tafels, Delen, Tafels en delen, Alles door elkaar
+
+Zonder kopjes, tien oefeningen per onderwerp: eerst de vijf situaties als
+"(kiezen)", dan als "(typen)". Bolletjes kiezen ● ● ●● ●● ●●●, typen ●●● ●●●
+●●●● ●●●● ●●●●●.
+
+| Onderwerp | De vijf situaties |
+|---|---|
+| Tafels | Groepjes · Rijen · Elke dag · Geld · Alles door elkaar |
+| Delen | Eerlijk verdelen · Groepjes maken · Geld verdelen · Teams en rijen · Alles door elkaar |
+| Tafels en delen | Keer of delen? · Groepjes · Verdelen · Geld · Alles door elkaar |
+| Alles door elkaar | Op school · In de winkel · Sport en spel · Thuis · Alles door elkaar |
+
+Alles door elkaar: optellen en aftrekken tot en met 100, tafels en delen, per
+thema.
+
 ## Bouwstenen
 
 Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:

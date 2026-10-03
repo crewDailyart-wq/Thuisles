@@ -760,6 +760,14 @@ function werkTabellenBij(d: DatabaseSync) {
   voegKolomToe(d, "leerdoelen", "verborgen", "integer not null default 0");
 
   /*
+    Een eigen openbaar webadres voor een leerdoel (oktober 2026). Leeg is de
+    normale stand: dan komt het adres uit de titel, zoals altijd. Nodig waar
+    titels bewust hetzelfde zijn, zoals "Samen (kiezen)" onder drie kopjes bij
+    Verhaaltjessommen; dan krijgt elk zijn eigen adres.
+  */
+  voegKolomToe(d, "leerdoelen", "adres", "text");
+
+  /*
     Oude webadressen, zodat een link van gisteren blijft werken.
 
     Het openbare adres wordt gemaakt uit de naam in de database. Verandert die
