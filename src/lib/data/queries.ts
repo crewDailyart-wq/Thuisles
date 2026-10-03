@@ -63,8 +63,9 @@ const structuur = {
   get subdomeinen() {
     return haalSubdomeinenUitDb();
   },
+  /* Een verborgen leerdoel bestaat voor een kind niet; zie `zetVerborgen`. */
   get leerdoelen() {
-    return haalLeerdoelenUitDb();
+    return haalLeerdoelenUitDb().filter((l) => !l.verborgen);
   },
 };
 

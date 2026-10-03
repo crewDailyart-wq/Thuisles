@@ -21,6 +21,7 @@ import {
   maakSubdomein,
   verwijderDomein,
   verwijderLeerdoel,
+  zetVerborgen,
   verplaatsLeerdoel,
   verwijderSubdomein,
   wijzigDomein,
@@ -194,6 +195,13 @@ export async function bewerkLeerdoel(data: FormData): Promise<Antwoord<true>> {
 
 export async function bewerkUitlegvorm(data: FormData): Promise<Antwoord<true>> {
   const uitslag = zetUitlegvorm(tekst(data, "id"), tekst(data, "uitlegvorm"));
+  if (uitslag.ok) ververs();
+  return uitslag;
+}
+
+/** Verbergen voor kinderen, of weer laten zien. Een eigen actie; zie `zetVerborgen`. */
+export async function wisselVerborgen(data: FormData): Promise<Antwoord<true>> {
+  const uitslag = zetVerborgen(tekst(data, "id"), tekst(data, "verborgen") === "1");
   if (uitslag.ok) ververs();
   return uitslag;
 }

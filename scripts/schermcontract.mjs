@@ -190,6 +190,9 @@ export const SCHERMCONTRACT = [
       "Vorm van de uitleg",
       "Bekijk uitleg",
       "Nieuwe vraag",
+      /* Het vinkje "verborgen" (wachtrij, oktober 2026): altijd in beeld. */
+      "Zichtbaar voor kinderen",
+      "Verborgen",
     ],
     naKlik: [{ tekst: "Titel", bron: LEERDOELDETAIL, na: "op Bewerken drukken" }],
   },

@@ -445,3 +445,11 @@ Nagelopen met een script langs alle 583 openbare pagina's uit de sitemap, en een
 - **Delen, Tafels, Tijd en Geld** (ook de nieuwe Geldnotatie en Geld wisselen): elke pagina heeft een eigen Nederlandse titel en omschrijving, staat in de sitemap, en heeft geen dubbele titel. Die komen automatisch uit de naam, net als bij de SEO-basis. Een voorbeeld: "Een briefje wisselen oefenen – groep 4 | Thuisles".
 - Pagina's achter de inlog (oefenen, ouder, admin, kies, start enzovoort) staan niet in de sitemap. Ze staan wel dicht in `robots.txt` en hebben `noindex`.
 - **Aangevuld: 0 pagina's.** Er ontbrak niets bij de domeinen uit deze opdracht. Wat ik in oudere domeinen tegenkwam, staat bij "Vragen voor Sara".
+
+## 03 — Oefeningen verbergen
+
+- In het beheer staat op elk leerdoelscherm, bij Gegevens, de regel "Zichtbaar voor kinderen" met een vinkje **Verborgen**. Je hoeft daarvoor niet op Bewerken te klikken; het vinkje werkt meteen. In de lijst met leerdoelen staat "Verborgen voor kinderen" onder een verborgen leerdoel. Het vinkje staat ook in het schermcontract, zodat het niet ongemerkt kan verdwijnen.
+- Een verborgen leerdoel staat nergens bij een kind: niet in de lijsten, niet in de tellers ("0 van 8 beheerst"), niet in vrij oefenen of bij de methode, en ook niet op de openbare pagina's. Via een oud webadres krijgt een kind "Nog geen oefeningen beschikbaar". In de database blijft alles staan.
+- "Hoeveel minuten in een uur?" en "De grote en de kleine wijzer" staan op verborgen. "De grote en de kleine wijzer" staat weer op groep 4. Beide zijn uit WERKPLAN.md gehaald; het kopje "Klokken koppelen" staat nu boven de overige oefeningen bovenaan dat onderwerp.
+- In `scripts/opgaven.mjs` staan ze nog wel: daar wordt nog steeds nagekeken dat hun opgaven kloppen, voor het geval je ze weer zichtbaar maakt.
+- Getest met Testkind: beide zijn weg uit Tijd, en de teller bij Wijzerklok en digitale klok staat op 8.

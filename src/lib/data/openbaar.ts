@@ -174,6 +174,7 @@ export function haalOpenbareOefeningen(domeinId: string, groep: number): Openbar
            from leerdoelen l
            join subdomeinen s on s.id = l.subdomein_id
           where s.domein_id = ? and l.groep_van <= ? and l.groep_tot >= ?
+            and coalesce(l.verborgen, 0) = 0
             and exists (
               select 1 from vragen q
                where q.leerdoel_id = l.id and q.status = 'gepubliceerd'

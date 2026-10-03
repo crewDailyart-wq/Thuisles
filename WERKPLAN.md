@@ -207,9 +207,10 @@ Ook de foute keuzes blijven binnen het niveau: bij hele uren staat er nooit
 
 De groepjes (zoals "Aflezen" en "Klok zetten") staan op het kinderscherm als
 kopje boven de oefeningen, en per kopje loopt de lijst op van makkelijk naar
-moeilijk. Elke titel binnen Tijd is uniek. "De grote en de kleine wijzer" staat
-hier niet meer: dat leerdoel bestaat nog, maar is op groep 3 gezet en dus niet
-zichtbaar voor groep 4.
+moeilijk. Elke titel binnen Tijd is uniek. "De grote en de kleine wijzer" en
+"Hoeveel minuten in een uur?" staan hier niet meer: die leerdoelen bestaan nog
+(groep 4), maar staan in het beheer op "verborgen" en zijn dus voor geen enkel
+kind zichtbaar. Hun vragen, antwoorden en voortgang blijven bewaard.
 
 De code staat er, voor alle zes onderwerpen: 78 titels. De basisversie zijn
 gewone opdrachten; beeld komt later. Elke titel geeft vijftien opgaven per
@@ -229,16 +230,19 @@ vragen — maakt de eigenaar aan (HARDE REGEL 2).
 
 ### Onderwerp 1 — Wijzerklok en digitale klok
 
+#### Klokken koppelen
+
+De oefeningen bovenaan dit onderwerp staan onder het kopje "Klokken koppelen".
+
 | # | Titel | Bolletjes | Wat het kind doet |
 |---|-------|-----------|-------------------|
-| 1 | Hoeveel minuten in een uur? | ●● | Vult in hoeveel minuten er in een tijd gaan: 1 uur = ▢ minuten, een half uur = ▢ minuten, de helft van 20 minuten = ▢. |
-| 2 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
-| 3 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
-| 4 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
-| 5 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
-| 6 | Van wijzerklok naar digitale tijd: hele uren in de dag | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
-| 7 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
-| 8 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
+| 1 | Zet de wijzers goed | ●● | Ziet een tijd, bijvoorbeeld 3:30, en sleept zelf de grote en de kleine wijzer op de goede plek. Hele en halve uren. |
+| 2 | Klokken koppelen | ●● | Sleept drie digitale tijden onder de goede wijzerklokken. Hele en halve uren door elkaar. |
+| 3 | Van digitale tijd naar wijzerklok | ●● | Ziet een digitale tijd, bijvoorbeeld 6:30, en kiest de goede wijzerklok uit vier. |
+| 4 | Dagdelen | ●●●● | Ziet een digitale tijd, bijvoorbeeld 14:00, en kiest ochtend, middag, avond of nacht. |
+| 5 | Van wijzerklok naar digitale tijd: hele uren in de dag | ●●●● | Ziet een wijzerklok en het dagdeel, bijvoorbeeld "Het is avond", en kiest de goede digitale tijd uit vier, in 24-uursnotatie zoals 20:00. |
+| 6 | Van wijzerklok naar digitale tijd: halve uren | ●●●● | Hetzelfde, met halve uren. |
+| 7 | Schrijf de tijd digitaal | ●●●● | Ziet een wijzerklok en het dagdeel en typt de tijd in twee vakjes: ▢ : ▢. Hele en halve uren. |
 
 #### Rekenen met de klok
 

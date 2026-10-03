@@ -197,6 +197,11 @@ export function SubdomeinDetail({
                               Kind ziet: {doel.titel}
                             </span>
                           )}
+                          {doel.verborgen && (
+                            <span className="mt-0.5 block text-xs font-semibold text-beheer-zacht">
+                              Verborgen voor kinderen
+                            </span>
+                          )}
                         </td>
                         <td className="px-3 py-2">
                           {doel.moeilijkheid === null ? (

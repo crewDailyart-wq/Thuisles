@@ -752,6 +752,14 @@ function werkTabellenBij(d: DatabaseSync) {
   }
 
   /*
+    Verborgen voor kinderen (oktober 2026). Een leerdoel met 1 staat bij geen
+    enkel kind en niet op de openbare pagina's, maar blijft met al zijn vragen,
+    antwoorden en voortgang staan. Standaard 0: alles wat er al was, blijft
+    gewoon zichtbaar.
+  */
+  voegKolomToe(d, "leerdoelen", "verborgen", "integer not null default 0");
+
+  /*
     Oude webadressen, zodat een link van gisteren blijft werken.
 
     Het openbare adres wordt gemaakt uit de naam in de database. Verandert die

@@ -141,6 +141,12 @@ export type Leerdoel = {
   /** Het generator-type van het sjabloon, waarop de lijst groepeert. */
   generatorSoort: string | null;
   /**
+   * Verborgen voor kinderen: het leerdoel staat nergens bij een kind (en niet
+   * op de openbare pagina's), maar blijft met al zijn vragen, antwoorden en
+   * voortgang gewoon in de database staan. Aan te zetten in het beheer.
+   */
+  verborgen: boolean;
+  /**
    * Een leerdoel hoort bij een groepsrange, niet bij één vaste groep.
    * Dat maakt differentiatie binnen dezelfde groep mogelijk.
    */

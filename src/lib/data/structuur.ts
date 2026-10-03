@@ -319,6 +319,7 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
         ? null
         : Number(r.vragen_per_sessie),
     volgorde: Number(r.volgorde),
+    verborgen: Number(r.verborgen ?? 0) === 1,
     };
   });
 
@@ -866,6 +867,21 @@ export function wijzigLeerdoel(
     );
   }
 
+  return { ok: true, waarde: true };
+}
+
+/**
+ * Een leerdoel verbergen voor kinderen, of weer laten zien.
+ *
+ * Een eigen handeling, net als verhuizen: het formulier met titel en groep
+ * weet hier niets van, dus kan het de stand ook nooit per ongeluk wissen.
+ * Verbergen verwijdert niets — de vragen, antwoorden en voortgang blijven.
+ */
+export function zetVerborgen(id: string, verborgen: boolean): Uitslag<true> {
+  const r = verbinding()
+    .prepare("update leerdoelen set verborgen = ? where id = ?")
+    .run(verborgen ? 1 : 0, id);
+  if (Number(r.changes) === 0) return { ok: false, fout: "Dit leerdoel bestaat niet meer." };
   return { ok: true, waarde: true };
 }
 

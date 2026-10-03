@@ -14,6 +14,7 @@ import {
   kopieerLeerdoel,
   verhuisLeerdoel,
   wegLeerdoel,
+  wisselVerborgen,
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Bewerkknop, Fout, opSneltoets, useActie } from "@/components/beheer/RegelFormulier";
@@ -137,6 +138,36 @@ export function LeerdoelDetail({
                   <span className="text-beheer-zacht">— aan te passen bij het sjabloon</span>
                 </span>
               ),
+            ],
+            [
+              "Zichtbaar voor kinderen",
+              /*
+                Altijd in beeld en meteen aan te passen, niet pas achter
+                "Bewerken": een instelling die je moet zoeken, is voor wie hem
+                zoekt hetzelfde als een instelling die er niet is (HARDE REGEL 1).
+              */
+              <label key="v" className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="verborgen"
+                  checked={leerdoel.verborgen}
+                  disabled={bezig}
+                  onChange={(e) =>
+                    doe(() => {
+                      const d = new FormData();
+                      d.set("id", leerdoel.id);
+                      d.set("verborgen", e.target.checked ? "1" : "0");
+                      return wisselVerborgen(d);
+                    })
+                  }
+                />
+                <span>Verborgen</span>
+                <span className="text-xs text-beheer-zacht">
+                  {leerdoel.verborgen
+                    ? "— geen enkel kind ziet dit leerdoel; vragen, antwoorden en voortgang blijven bewaard"
+                    : "— aanvinken om het voor alle kinderen te verbergen"}
+                </span>
+              </label>,
             ],
             ["Plek", `${vak.naam} › ${domein.naam} › ${subdomein.naam}`],
             ["Vragen", `${vragen.length} (${gepubliceerd} gepubliceerd)`],
