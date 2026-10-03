@@ -247,12 +247,13 @@ export function aantalVakjes(figuur: Tijdfiguur): number {
 /**
  * Mag het tweede vakje leeg blijven?
  *
- * Bij "hoeveel tijd later" en "hoe lang duurt het" typt het kind uren én
- * minuten. Is het verschil hele uren, dan hoort er 0 bij de minuten — en een
- * leeg minutenvakje telt dan net zo goed. Dat is een afspraak met de eigenaar:
- * een kind dat "3" bij de uren typt en het tweede vakje overslaat, heeft het
- * goed.
+ * Nee, nergens meer (wachtrij, oktober 2026). Bij "hoeveel tijd later" en "hoe
+ * lang duurt het" vult het kind uren én minuten in; bij hele uren typt het 0
+ * bij de minuten. Controleer gaat pas aan als beide vakjes gevuld zijn. Tot
+ * dan telde een leeg minutenvakje als 0; dat is op verzoek van de eigenaar
+ * vervallen. De functie blijft, zodat het scherm op één plek vraagt wat er
+ * mag.
  */
-export function minutenMagLeeg(figuur: Tijdfiguur): boolean {
-  return figuur.soort === "digitaalverschil" || figuur.soort === "klokduur";
+export function minutenMagLeeg(_figuur: Tijdfiguur): boolean {
+  return false;
 }

@@ -19,9 +19,9 @@
  *     antwoord in twee vakjes: ▢ uur ▢ minuten. Gewoon typen, geen getallenpad
  *     op het scherm (HARDE REGEL 5);
  *   - daar mogen 24-uurstijden voorkomen, bijvoorbeeld 18:30;
- *   - en, op verzoek van de eigenaar: is het verschil hele uren, dan typt het
- *     kind 0 bij de minuten — maar een leeg minutenvakje telt ook als 0 en is
- *     goed. Zie `minutenMagLeeg` in `tijdfiguren.ts`.
+ *   - en, op verzoek van de eigenaar: het kind vult beide vakjes in; is het
+ *     verschil hele uren, dan typt het 0 bij de minuten. Een leeg vakje telt
+ *     niet als 0. Zie `minutenMagLeeg` in `tijdfiguren.ts`.
  */
 
 import {

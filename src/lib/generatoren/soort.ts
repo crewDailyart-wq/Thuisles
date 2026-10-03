@@ -919,8 +919,8 @@ export type Figuur =
       /**
        * Twee digitale klokken; hoeveel tijd zit ertussen?
        *
-       * Het kind typt ▢ uur ▢ minuten. Is het verschil hele uren, dan mag het
-       * minutenvakje leeg blijven; leeg telt als 0 en is goed.
+       * Het kind typt ▢ uur ▢ minuten, allebei verplicht; bij hele uren een 0
+       * bij de minuten.
        */
       soort: "digitaalverschil";
       eersteUur: number;

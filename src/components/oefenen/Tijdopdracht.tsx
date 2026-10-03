@@ -61,9 +61,9 @@
  * keuze tikt het kind eerst, kan het nog wijzigen, en drukt dan pas op
  * Controleer.
  *
- * Eén afspraak is nieuw, op verzoek van de eigenaar: bij "hoeveel tijd later"
- * en "hoe lang duurt het" mag het minutenvakje leeg blijven als het verschil
- * hele uren is. Leeg telt dan als 0 en is goed; zie `minutenMagLeeg`.
+ * Bij "hoeveel tijd later" en "hoe lang duurt het" vult het kind beide vakjes
+ * in; bij hele uren typt het 0 bij de minuten. Een leeg vakje telt niet als 0
+ * (op verzoek van de eigenaar, oktober 2026); zie `minutenMagLeeg`.
  */
 
 import { useEffect, useRef, useState } from "react";
@@ -513,7 +513,10 @@ export function Tijdopdracht({
             tweeKolommen
           />
         ) : (
-          urenEnMinuten()
+          <>
+            {urenEnMinuten()}
+            <p className="text-sm text-inkt-zacht">Vul beide vakjes in. Geen minuten? Typ dan een 0.</p>
+          </>
         )}
       </div>
     );
@@ -563,9 +566,7 @@ export function Tijdopdracht({
           );
         })()}
         {urenEnMinuten()}
-        <p className="text-sm text-inkt-zacht">
-          Is het een heel aantal uren? Dan mag je het minutenvakje leeg laten.
-        </p>
+        <p className="text-sm text-inkt-zacht">Vul beide vakjes in. Geen minuten? Typ dan een 0.</p>
       </div>
     );
   }

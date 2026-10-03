@@ -536,3 +536,11 @@ Tien voorbeeldvragen uit de gepubliceerde opgaven:
 3. Bij Later staat NU links met een pijl naar rechts. Bij Eerder staat de eerdere klok links met een pijl naar links (op een smal scherm onder elkaar, met een pijl omhoog). Het woord "TERUG" onder de pijl is weg, en "VOORUIT" ook: de labels erboven zeggen het nu. Dat laatste vroeg je niet letterlijk, maar met maar één woord bij één van de twee zou het ongelijk worden. Wil je VOORUIT terug, zeg het dan.
 4. De stem leest hier geen vraag voor, dus daar hoefde niets aan te veranderen. De antwoorden zijn hetzelfde gebleven.
 - Getest met Testkind in beide groepjes: Later (03:30 → 05:45) en Eerder (08:00 ← 05:00, 3 uur → goed).
+
+## 12 — Lege vakjes tellen niet als 0
+
+- Bij alle Tijd-oefeningen met de vakjes "uur" en "minuten" (Tijd vooruit, Tijd terug, Hoe lang duurt het?, Hoe lang geleden?) moet het kind beide vakjes invullen. Bij hele uren typt het een 0 bij de minuten. Dit vervangt de regel uit bestand 08 dat een leeg vakje als 0 telt.
+- Controleer gaat pas aan als beide vakjes gevuld zijn.
+- Onder de vakjes staat nu: "Vul beide vakjes in. Geen minuten? Typ dan een 0." Bij Tijd vooruit en terug in plaats van de oude zin, bij Hoe lang duurt het? (typen) is hij erbij gekomen.
+- De regel staat bijgewerkt in WERKPLAN.md. Aan antwoorden en voortgang is niets veranderd.
+- Getest met Testkind bij "Tijd vooruit: hele uren" (03:00 → 06:00): alleen 3 bij de uren → Controleer blijft grijs; 0 bij de minuten erbij → Controleer gaat aan; minuten weer leeg → weer grijs.

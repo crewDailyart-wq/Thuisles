@@ -223,8 +223,11 @@ elke vraag een tweede keer terug in een andere vorm, zodat een ronde toch op
 vijftien verschillende opgaven uitkomt: met andere foute keuzes, met de vlek
 op een andere plek, of met de wijzers die ergens anders beginnen.
 
-Bij "hoeveel tijd ertussen" mag het minutenvakje leeg blijven als het verschil
-hele uren is; leeg telt als 0 en is goed.
+Bij oefeningen met de vakjes "uur" en "minuten" (Tijd vooruit, Tijd terug,
+Hoe lang duurt het?, Hoe lang geleden?) vult het kind beide vakjes in. Bij hele
+uren typt het 0 bij de minuten; een leeg vakje telt niet als 0. Controleer gaat
+pas aan als beide vakjes zijn ingevuld. Onder de vakjes staat: "Vul beide
+vakjes in. Geen minuten? Typ dan een 0."
 
 De inhoud van de database — de leerdoelen met deze titels, hun sjablonen en hun
 vragen — maakt de eigenaar aan (HARDE REGEL 2).
@@ -353,8 +356,8 @@ Algemene regels voor dit onderwerp:
   tussen.
 - Bij Later en Eerder ziet het kind twee klokken en typt het antwoord in twee
   vakjes: ▢ uur ▢ minuten, met een knop Controleren. Gewoon typen, geen
-  getallenpad op het scherm. Is het verschil hele uren, dan typt het kind 0
-  bij de minuten; een leeg minutenvakje telt ook als 0 en is goed.
+  getallenpad op het scherm. Het kind vult beide vakjes in; is het verschil
+  hele uren, dan typt het 0 bij de minuten. Een leeg vakje telt niet als 0.
 - Bij Later en Eerder komen 24-uurstijden (bijvoorbeeld 18:30) alleen voor op
   het hoogste niveau, bij "over het hele uur heen". De andere blijven tussen
   01:00 en 12:59 (de leerlijn van de klok, zie boven).
