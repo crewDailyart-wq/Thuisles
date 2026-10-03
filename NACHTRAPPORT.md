@@ -694,3 +694,24 @@ Vijf voorbeeldverhaaltjes per onderwerp, met het goede antwoord (uit de gepublic
 - In de schoolbus zitten 4 kinderen. Bij de halte stappen er 26 in. Hoeveel kinderen zitten er nu in de bus? → **30 kinderen**
 - Thijs heeft 30 knikkers. In de winkel koopt Thijs er nog 11. Hoeveel knikkers heeft Thijs nu? → **41 knikkers**
 - Op maandag leest Sem 18 bladzijden. Op dinsdag leest Sem er 5. Op woensdag leest Sem er 7. Hoeveel bladzijden leest Sem in drie dagen? → **30 bladzijden**
+
+## Samenvatting per bestand
+
+- **00 Losse verbeteringen** — gedaan (Testkind, kopje Klokken koppelen, dagdeelgrenzen, luidspreker, omschrijving Geld, volgorde uit de database). Zelf testen: een paar rondes van dezelfde oefening achter elkaar, en kijken of de volgorde in beheer en bij het kind gelijk is.
+- **01 Geld wisselen en Geldnotatie** — gedaan (10 nieuwe oefeningen). Zelf testen: op een iPad of de komma op het toetsenbord verschijnt bij "Bedrag opschrijven tot 10 euro".
+- **02 SEO controleren** — gedaan, 0 pagina's aangevuld. Zelf beslissen: de dubbele titels in de oudere domeinen en de domeinnaam voor de sitemap (zie Vragen voor Sara).
+- **03 Oefeningen verbergen** — gedaan (vinkje in beheer, twee klokoefeningen verborgen). Zelf testen: het vinkje aan- en uitzetten bij een leerdoel en kijken of het bij het kind verdwijnt en terugkomt.
+- **04 Klokken koppelen en vraagteksten** — gedaan. Zelf testen: Klokken koppelen op een tablet (grootte van de klokken, de 12 goed leesbaar).
+- **05 Dagdelen** — gedaan (nieuwe vraag, vaste knopvolgorde). Zelf testen: een ronde Dagdelen op een telefoon.
+- **06 Tijd in de dag in stapjes** — gedaan (drie kopjes met elk drie stapjes, 6 nieuwe oefeningen). Zelf beslissen: of 12:30 bij "halve uren tot 12:00" hoort.
+- **07 Klokken op volgorde** — gedaan (alleen ochtend, vakjes op een rij). Zelf testen: slepen op een tablet.
+- **08 Hoe lang duurt het?** — gedaan (klok toont nu, kiezen in schooltaal). Zelf testen: een paar opgaven per niveau.
+- **09 Digitale uitleg verbergen** — gedaan.
+- **10 Logische situaties dagdelen** — gedaan. Zelf controleren: de tien voorbeeldvragen in dit rapport.
+- **11 Tijd vooruit en terug** — gedaan. Zelf beslissen: of het woord VOORUIT terug moet bij Later.
+- **12 Lege vakjes niet als 0** — gedaan.
+- **13 Vlekken repareren** — gedaan (oranje inktvlek op de goede plek). Zelf controleren: de acht voorbeelden in dit rapport, en de grote vlek op een tablet.
+- **14 Taalcontrole Tijd** — gedaan (139 opgaven aangepast, twee kalenders naast elkaar). Zelf controleren: de tabel "was → wordt".
+- **15 Markering kalender** — gedaan. Zelf testen: tikken op een datum op een tablet.
+- **16 Echt geld** — gedaan, downloaden gelukt. Zelf controleren: of de munten op deze maat goed leesbaar zijn (ze zijn een kwart groter dan de tekeningen).
+- **17 Verhaaltjessommen** — gedaan (130 oefeningen, 1950 verhaaltjes). Zelf controleren: de voorbeeldverhaaltjes hierboven, en een paar oefeningen per onderwerp doorspelen.

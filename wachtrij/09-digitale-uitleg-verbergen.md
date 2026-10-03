@@ -1,1 +1,0 @@
-Zet "Uren en minuten op de digitale klok (met uitleg)" (Tijd → Digitale klok → Aflezen) op verborgen, met het vinkje "verborgen" uit de eerdere wachtrij-opdracht. Niet verwijderen, geen antwoorden of voortgang aanpassen. Haal hem uit WERKPLAN.md. "Hele uren aflezen op de digitale klok" wordt de eerste oefening onder Aflezen.
