@@ -26,6 +26,7 @@ import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
+import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { Vakken } from "@/components/oefenen/Vakken";
 import { Bioscoop } from "@/components/oefenen/Bioscoop";
@@ -256,6 +257,20 @@ export function SjabloonVoorbeeld({
                     <Tijdopdracht
                       figuur={som.figuur}
                       antwoord=""
+                      fase="bezig"
+                      onWijzig={() => {}}
+                      onBevestig={() => {}}
+                    />
+                  </div>
+                )}
+
+                {/* Erbij- en erafsommen tot en met 100. */}
+                {isRekenfiguur(som.figuur) && (
+                  <div className="mt-1 w-full max-w-sm">
+                    <Rekenopdracht
+                      figuur={som.figuur}
+                      antwoord=""
+                      juist={som.antwoord}
                       fase="bezig"
                       onWijzig={() => {}}
                       onBevestig={() => {}}

@@ -1132,6 +1132,35 @@ export type Figuur =
     }
   | {
       /**
+       * Erbij- en erafsommen tot en met 100 (type `rekensom`).
+       *
+       *   som          a ± b = r, met één leeg vakje of een vlek (`leeg`)
+       *   stippen      twee groepjes stippen; het kind typt a, b en r
+       *   kaarten      vier sommen om uit te kiezen (`kaarten`, `goed`)
+       *   handig       zes getallen in een vak; het kind typt het totaal
+       *   tweegetallen zes getallen; het kind typt de twee die samen r zijn
+       *   balans       a ± b = c ± d met één leeg vakje (`leeg` 0 tot en met 3)
+       *
+       * `volgnummer` is de plek van makkelijk naar moeilijk; `antwoordTekst` is het
+       * goede antwoord zoals het kind het na een fout te zien krijgt.
+       */
+      soort: "rekensom";
+      weergave: "som" | "stippen" | "kaarten" | "handig" | "tweegetallen" | "balans";
+      teken: string;
+      getallen: number[];
+      leeg: number | null;
+      vlek: boolean;
+      volgnummer: number;
+      kaarten?: string[];
+      goed?: number;
+      boven?: string | null;
+      lijst?: number[];
+      linksTeken?: string;
+      rechtsTeken?: string;
+      antwoordTekst: string;
+    }
+  | {
+      /**
        * Een verhaaltjessom. Het verhaal zelf is de vraagtekst. Kiezen uit vier
        * knoppen met de eenheid erbij (`keuzes`, `goed`), of typen in een
        * invoerveld met de eenheid erachter (`keuzes` is dan null).

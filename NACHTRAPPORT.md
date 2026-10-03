@@ -715,3 +715,46 @@ Vijf voorbeeldverhaaltjes per onderwerp, met het goede antwoord (uit de gepublic
 - **15 Markering kalender** — gedaan. Zelf testen: tikken op een datum op een tablet.
 - **16 Echt geld** — gedaan, downloaden gelukt. Zelf controleren: of de munten op deze maat goed leesbaar zijn (ze zijn een kwart groter dan de tekeningen).
 - **17 Verhaaltjessommen** — gedaan (130 oefeningen, 1950 verhaaltjes). Zelf controleren: de voorbeeldverhaaltjes hierboven, en een paar oefeningen per onderwerp doorspelen.
+
+---
+
+# Wachtrij — 3 oktober 2026, middag
+
+Vooraf `npm run backup` en een kopie in `backups/`. Er is niets uit de database verwijderd en aan antwoorden of voortgang van kinderen is niets veranderd. Getest is alleen met Testkind. Waar opgaven zijn vervangen, staan de oude op concept.
+
+## Vragen voor Sara
+
+(Bij twijfel heb ik steeds de veiligste keuze gemaakt; hier staat wat je nog kunt beslissen.)
+
+## 00 — Optellen uitbreiden
+
+- **Gebouwd:** 4 nieuwe onderwerpen met samen 28 oefeningen (Optellen tot en met 50: 8, Rekenen met tientallen: 7, Optellen tot en met 100: 8, Wat zit er onder de vlek?: 5), elk met 15 vaste opgaven van makkelijk naar moeilijk en "vragen per oefensessie" 15. Optellen tot en met 20 is niet aangepast. Volgorde, kopjes, titels en bolletjes zoals gevraagd; zie WERKPLAN.md.
+- **Hoe:** één nieuw type, `rekensom`. De bestaande types zijn intern begrensd op 20 en zijn met opzet niet aangepast; zo blijft Optellen tot en met 20 precies zoals het was. Bij "Aanvullen" en "Sommen en uitkomsten koppelen" krijgt het kind dezelfde schermen als tot en met 20.
+- **Na een fout antwoord** staat het goede antwoord er in gewone taal: in het groene vak "15 + 10 = 25" of "28 + 23", en in de zin "Het goede antwoord is …, want …". Nooit een knopnummer. Daarvoor kan een figuur nu zelf zeggen hoe zijn goede antwoord heet; bij de bestaande oefeningen verandert er niets.
+- **Van makkelijk naar moeilijk:** de vaste opgaven komen bij deze oefeningen in vaste volgorde, niet door elkaar. Bij alle andere oefeningen verandert er niets.
+- Bij het nalezen verbeterd: een fout kaartje met een uitkomst boven de 100, sommen die over twee regels braken ("17 + / 34?"), en verwisselde sommen ("15 + 51" en "51 + 15") die allebei een keuze waren.
+- **Getest met Testkind:** per onderwerp twee oefeningen geopend. "Som bij de plaatjes" fout beantwoord (24 in plaats van 25): fout gerekend, met "15 + 10 = 25" erbij. Bij "De vlek kan overal zitten" op de vlek getikt en 4 getypt. Bij "Zelfde uitkomst" een fout kaartje gekozen: het goede kaartje "28 + 23" stond groen.
+
+Drie voorbeeldopgaven per onderwerp:
+
+| Onderwerp | Opgave | Goed antwoord |
+|---|---|---|
+| Optellen tot en met 50 | Stippen: 11 en 26 | 11 + 26 = 37 |
+| Optellen tot en met 50 | Welke som klopt? 18 + 23 = 40 / 28 + 10 = 38 / 12 + 18 = 20 / 17 + 25 = 32 | 28 + 10 = 38 |
+| Optellen tot en met 50 | Maak beide kanten gelijk: 19 + ☐ = 25 + 8 | 14 |
+| Rekenen met tientallen | 50 + 9 | 59 |
+| Rekenen met tientallen | 49 + 3 | 52 |
+| Rekenen met tientallen | 34 + 46 | 80 |
+| Optellen tot en met 100 | 18 + 48 | 66 |
+| Optellen tot en met 100 | Handig optellen: 19, 9, 1, 14, 11, 6 | 60 |
+| Optellen tot en met 100 | 27 + ☐ = 100 | 73 |
+| Wat zit er onder de vlek? | 6 + vlek = 9 | 3 |
+| Wat zit er onder de vlek? | 41 + vlek = 77 | 36 |
+| Wat zit er onder de vlek? | 12 + 48 = vlek | 60 |
+
+Twee voorbeelden van SEO-titel en omschrijving:
+
+| Pagina | Titel | Omschrijving |
+|---|---|---|
+| /groep-4/optellen/optellen-tot-en-met-50 | Optellen tot en met 50 oefenen – groep 4 \| Thuisles | Oefen erbijsommen tot en met 50 voor groep 4: uitrekenen, kiezen en puzzelen. Direct nakijken. |
+| /groep-4/optellen/rekenen-met-tientallen-tiental-plus-eenheden | Tiental plus eenheden – rekenen met tientallen (optellen) – groep 4 \| Thuisles | Oefen erbijsommen bij rekenen met tientallen (optellen): tiental plus eenheden. Voor groep 4, direct nakijken. |

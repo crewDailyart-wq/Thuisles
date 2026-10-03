@@ -721,6 +721,75 @@ kaartjes zijn net te veel of net te weinig waard.
 | 3 | Centen wisselen | ●●○○○ | Ziet een munt van 10, 20 of 50 cent en tikt op het kaartje met kleinere centen dat evenveel waard is. |
 | 4 | Wisselen in briefjes en munten | ●●●○○ | Ziet een briefje van € 5, € 10 of € 20; de kaartjes hebben een mix van briefjes en euromunten, soms meer dan vier stuks. |
 
+## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR
+
+KLAAR (oktober 2026). Volgorde van de onderwerpen: Optellen tot en met 20
+(bestond al, niet aangepast), Optellen tot en met 50, Rekenen met tientallen,
+Optellen tot en met 100, Wat zit er onder de vlek? Gewone opgaven; de enige
+plaatjes zijn simpele eigen stippen in rijen van vijf.
+
+Type `rekensom` (`src/lib/generatoren/rekensom.ts`), scherm
+`Rekenopdracht`. Voor "Aanvullen" en "Sommen en uitkomsten koppelen" maakt
+het de figuren van de bestaande types, zodat het kind dezelfde schermen
+krijgt als tot en met 20. Elke oefening heeft 15 vaste opgaven, van makkelijk
+naar moeilijk, en "vragen per oefensessie" 15. Bij kiezen lijken de foute
+keuzes erop (1 of 10 ernaast). Na een fout antwoord staat het goede antwoord
+er in gewone taal ("Het goede antwoord is 25, want 15 + 10 = 25"), nooit als
+code. Titels mogen in verschillende onderwerpen hetzelfde zijn; elke oefening
+heeft een eigen naam in beheer en een eigen webadres
+(`optellen-tot-en-met-50-welke-som-klopt`).
+
+### Optellen tot en met 50 (uitkomst nooit hoger dan 50)
+
+| Kopje | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|
+| Uitrekenen | Som bij de plaatjes | ● | Twee groepjes stippen (rijen van 5); typt beide getallen en de uitkomst. |
+| Uitrekenen | Optellen tot en met 50 | ●● | Gewone som typen, bijvoorbeeld 14 + 7. |
+| Kiezen en controleren | Sommen en uitkomsten koppelen | ●●● | 5 sommen; sleept de uitkomsten erbij. |
+| Kiezen en controleren | Welke som klopt? | ●●● | 4 sommen met uitkomst, 1 goed. |
+| Kiezen en controleren | Welke som past er niet bij? | ●●● | "Welke som is niet 11?", 4 knoppen. |
+| Puzzelen | Aanvullen | ●●● | "Hoeveel moet erbij tot 26?" bij een rij van 4 getallen. |
+| Puzzelen | Twee getallen die samen … zijn | ●●●● | 6 getallen; typt de 2 die samen de uitkomst maken (beide volgordes goed). |
+| Puzzelen | Beide kanten gelijk | ●●●● | Bijvoorbeeld ☐ + 17 = 11 + 26. |
+
+### Rekenen met tientallen (uitkomst nooit hoger dan 100)
+
+| # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|
+| 1 | Tiental plus eenheden | ● | 20 + 5 |
+| 2 | Eenheden erbij | ● | 93 + 4, niet over het tiental |
+| 3 | Tientallen optellen | ●● | 70 + 20 |
+| 4 | Precies op het tiental | ●● | 14 + 6, 37 + 3 |
+| 5 | Over het tiental heen | ●●● | 66 + 5 |
+| 6 | Een getal plus tientallen | ●●●● | 14 + 80 |
+| 7 | Samen precies een tiental | ●●●●● | 27 + 53 = 80 |
+
+### Optellen tot en met 100 (uitkomst nooit hoger dan 100)
+
+| Kopje | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|
+| Uitrekenen | Optellen tot en met 100 | ●● | Bijvoorbeeld 39 + 28. |
+| Uitrekenen | Handig optellen | ●●●● | 6 getallen in een vak; typt het totaal. De getallen maken per twee een tiental (6 + 4, 1 + 9, 13 + 7). |
+| Kiezen en controleren | Welke som klopt? | ●●● | 4 sommen met uitkomst, 1 goed. |
+| Kiezen en controleren | Welke som past er niet bij? | ●●● | 4 knoppen. |
+| Kiezen en controleren | Zelfde uitkomst | ●●● | "Welke som is evenveel als 42 + 20?", 4 knoppen, 1 goed. |
+| Puzzelen | Aanvullen tot 100 | ●●●● | 63 + ☐ = 100. |
+| Puzzelen | Twee getallen die samen … zijn | ●●●● | Zoals tot en met 50. |
+| Puzzelen | Beide kanten gelijk | ●●●● | Zoals tot en met 50. |
+
+### Wat zit er onder de vlek?
+
+Het ontbrekende getal staat onder dezelfde oranje inktvlek als bij Tijd. Het
+kind tikt op de vlek en typt het getal.
+
+| # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|
+| 1 | Onder de vlek tot en met 10 | ● | 4 + vlek = 5 |
+| 2 | Onder de vlek tot en met 20 | ●● | |
+| 3 | Onder de vlek tot en met 50 | ●●● | |
+| 4 | Onder de vlek tot en met 100 | ●●●● | |
+| 5 | De vlek kan overal zitten | ●●●●● | Vlek op het eerste getal, het tweede getal of de uitkomst, tot en met 100. |
+
 ## Groep 4 – Verhaaltjessommen — KLAAR
 
 KLAAR (oktober 2026). Een eigen domein met zeven onderwerpen, allemaal

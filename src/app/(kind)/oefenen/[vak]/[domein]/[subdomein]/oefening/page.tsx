@@ -260,10 +260,21 @@ export default async function OefeningPagina({
     voor alles wat er al was verandert er niets aan de volgorde.
   */
   /* Na het splitsen nog een keer uit elkaar: dezelfde som nooit direct achter elkaar. */
-  const opVolgorde = [
+  const gesplitst = [
     ...uitElkaar(verseGreep.filter((v) => isVisueleSom(v.figuur))),
     ...uitElkaar(verseGreep.filter((v) => !isVisueleSom(v.figuur))),
   ];
+  /*
+    Vaste opgaven van makkelijk naar moeilijk (wachtrij, oktober 2026): heeft
+    elke vraag een `volgnummer` in de figuur, dan komen ze in die volgorde.
+    Alleen de nieuwe erbij- en erafsommen hebben dat; voor de rest verandert er
+    niets.
+  */
+  const stapVan = (v: (typeof gesplitst)[number]) => (v.figuur as { volgnummer?: unknown } | null)?.volgnummer;
+  const opVolgorde =
+    gesplitst.length > 0 && gesplitst.every((v) => typeof stapVan(v) === "number")
+      ? [...gesplitst].sort((a, b) => (stapVan(a) as number) - (stapVan(b) as number))
+      : gesplitst;
 
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
   const rijen = hervat ? hervatRijen : opVolgorde;

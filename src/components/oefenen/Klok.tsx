@@ -180,6 +180,21 @@ function Vlekvorm({ vlek }: { vlek: Vlek }) {
 }
 
 /**
+ * Dezelfde oranje inktvlek, los van de klok: voor "Wat zit er onder de vlek?"
+ * bij Optellen en Aftrekken. Vorm en draaiing volgen uit het zaad, zodat de
+ * vlek per opgave een beetje anders is maar bij opnieuw tekenen gelijk blijft.
+ */
+export function Inktvlek({ zaad, className = "" }: { zaad: number; className?: string }) {
+  return (
+    <svg viewBox="0 0 200 200" overflow="visible" aria-hidden="true" className={className}>
+      <Vlekvorm
+        vlek={{ hoek: 0, afstand: 0, grootte: 0.78, diepte: 0.62, kleur: "var(--color-huisstijl)", zaad, draai: (zaad % 21) - 10 }}
+      />
+    </svg>
+  );
+}
+
+/**
  * Het grijpgebied van een wijzer: onzichtbaar, maar veel breder dan de wijzer
  * zelf (22 in de tekening, op een klok van 224 pixels ruim een vingertop
  * breed) en tot net voorbij het uiteinde. Zo pakt een kindervinger de wijzer

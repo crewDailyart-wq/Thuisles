@@ -62,6 +62,7 @@ import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
+import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
@@ -1770,6 +1771,22 @@ function Antwoordvelden({
     Verhaaltjessommen: het verhaal staat als vraag bovenaan; hier alleen de
     vier knoppen of het invoerveld met de eenheid erachter.
   */
+  /* Erbij- en erafsommen tot en met 100: de som, de vlek, stippen, kaartjes. */
+  if (vraag.vorm === "open" && isRekenfiguur(vraag.figuur)) {
+    return (
+      <Rekenopdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        juist={vraag.antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+      />
+    );
+  }
+
   if (vraag.vorm === "open" && isVerhaalfiguur(vraag.figuur)) {
     return (
       <Verhaalopdracht

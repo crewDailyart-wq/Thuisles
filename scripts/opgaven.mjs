@@ -449,6 +449,38 @@ const OEFENINGEN = [
   { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Sport en spel (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "alles", situatie: "spel", tot: "100", antwoord: "typen", niveau: 4 } },
   { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Thuis (typen)", soort: "verhaaltje", bolletjes: 4, inst: { onderwerp: "alles", situatie: "thuis", tot: "100", antwoord: "typen", niveau: 4 } },
   { groep: "Verhaaltjessommen · Alles door elkaar", titel: "Alles door elkaar (typen)", soort: "verhaaltje", bolletjes: 5, inst: { onderwerp: "alles", situatie: "mix", tot: "100", antwoord: "typen", niveau: 5 } },
+
+  // -------------------------------------------------------------------------
+  // Groep 4 – Optellen uitgebreid (tot en met 50, tientallen, tot en met 100, vlek)
+  // -------------------------------------------------------------------------
+  { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
+  { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
+  { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Welke som klopt?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"klopt","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Welke som past er niet bij?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"nietbij","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 50 · Puzzelen", titel: "Aanvullen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"aanvullen","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 50 · Puzzelen", titel: "Twee getallen die samen … zijn", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"tweegetallen","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 50 · Puzzelen", titel: "Beide kanten gelijk", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"balans","niveau":4} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Tiental plus eenheden", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","stand":"tientallen","tiental":"tientalplus","van":1,"tot":100,"niveau":1} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Eenheden erbij", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","stand":"tientallen","tiental":"eenhedenerbij","van":1,"tot":100,"niveau":1} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Tientallen optellen", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","stand":"tientallen","tiental":"tientallen","van":1,"tot":100,"niveau":2} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Precies op het tiental", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","stand":"tientallen","tiental":"optiental","van":1,"tot":100,"niveau":2} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Over het tiental heen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","stand":"tientallen","tiental":"overtiental","van":1,"tot":100,"niveau":3} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Een getal plus tientallen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","stand":"tientallen","tiental":"getalplustientallen","van":1,"tot":100,"niveau":4} },
+  { groep: "Optellen · Rekenen met tientallen", titel: "Samen precies een tiental", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"plus","stand":"tientallen","tiental":"samentiental","van":1,"tot":100,"niveau":5} },
+  { groep: "Optellen · Optellen tot en met 100 · Uitrekenen", titel: "Optellen tot en met 100", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"som","niveau":2} },
+  { groep: "Optellen · Optellen tot en met 100 · Uitrekenen", titel: "Handig optellen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"handig","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 100 · Kiezen en controleren", titel: "Welke som klopt?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"klopt","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 100 · Kiezen en controleren", titel: "Welke som past er niet bij?", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"nietbij","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 100 · Kiezen en controleren", titel: "Zelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"evenveel","niveau":3} },
+  { groep: "Optellen · Optellen tot en met 100 · Puzzelen", titel: "Aanvullen tot 100", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":1,"tot":99,"stand":"aanvullentot","doel":100,"niveau":4} },
+  { groep: "Optellen · Optellen tot en met 100 · Puzzelen", titel: "Twee getallen die samen … zijn", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"tweegetallen","niveau":4} },
+  { groep: "Optellen · Optellen tot en met 100 · Puzzelen", titel: "Beide kanten gelijk", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"balans","niveau":4} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 10", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":3,"tot":10,"stand":"vlek","plek":"tweede","niveau":1} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 20", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":11,"tot":20,"stand":"vlek","plek":"tweede","niveau":2} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 50", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"vlek","plek":"tweede","niveau":3} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "Onder de vlek tot en met 100", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":51,"tot":100,"stand":"vlek","plek":"tweede","niveau":4} },
+  { groep: "Optellen · Wat zit er onder de vlek?", titel: "De vlek kan overal zitten", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"plus","van":21,"tot":100,"stand":"vlek","plek":"overal","niveau":5} },
 ];
 
 // ---------------------------------------------------------------------------
@@ -643,6 +675,24 @@ for (const oefening of OEFENINGEN) {
       } else if (!/^\d+$/.test(vraag.antwoord) || Number(vraag.antwoord) > Number(oefening.inst.tot ?? 100)) {
         fouten.push(`${waar}: het antwoord ${vraag.antwoord} past niet in het getallengebied.`);
       }
+    }
+
+    /*
+      Erbij- en erafsommen tot en met 100: geen getal boven de 100 of onder 0,
+      en het antwoord klopt met de som in de figuur.
+    */
+    if (vraag.figuur?.soort === "rekensom") {
+      const f = vraag.figuur;
+      if (f.getallen.some((g) => g < 0 || g > 100)) fouten.push(`${waar}: een getal buiten 0 tot en met 100: ${f.getallen.join(", ")}.`);
+      if (f.weergave === "som") {
+        const [a, b, r] = f.getallen;
+        if ((f.teken === "+" ? a + b : a - b) !== r) fouten.push(`${waar}: de som klopt niet: ${a} ${f.teken} ${b} = ${r}.`);
+        if (String(f.getallen[f.leeg]) !== vraag.antwoord) fouten.push(`${waar}: het antwoord hoort ${f.getallen[f.leeg]} te zijn.`);
+      }
+      if (f.weergave === "kaarten" && (f.kaarten.length !== 4 || new Set(f.kaarten).size !== 4 || String(f.goed) !== vraag.antwoord)) {
+        fouten.push(`${waar}: de kaartjes kloppen niet: ${f.kaarten.join(" / ")}.`);
+      }
+      if (/^\d+(,\d+)*$/.test(f.antwoordTekst) && f.weergave === "kaarten") fouten.push(`${waar}: het goede antwoord staat als code.`);
     }
 
     if (isKeerfiguur(vraag.figuur)) {

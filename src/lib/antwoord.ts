@@ -84,6 +84,12 @@ export function isGoed(vraag: OefenVraag, gegeven: string): boolean {
 
 /** Het goede antwoord in gewone taal, om te tonen na twee mislukte pogingen. */
 export function goedeAntwoordInTekst(vraag: OefenVraag): string {
+  /*
+    Heeft de figuur het goede antwoord zelf in gewone taal ("15 − 5", "13 en
+    7"), dan is dat wat het kind ziet; nooit het nummer van een knop.
+  */
+  const eigen = (vraag.figuur as { antwoordTekst?: unknown } | null | undefined)?.antwoordTekst;
+  if (typeof eigen === "string" && eigen !== "") return eigen;
   if (vraag.vorm === "meerkeuze") {
     const optie = vraag.opties?.[Number(vraag.antwoord)];
     return optie ? optie.tekst || optie.afbeelding || "" : "";

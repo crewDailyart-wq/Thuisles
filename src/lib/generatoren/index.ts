@@ -116,6 +116,7 @@ import {
 } from "@/lib/generatoren/geld-rekenen";
 import { geldnotatieGenerator } from "@/lib/generatoren/geld-notatie";
 import { verhaaltjeGenerator } from "@/lib/generatoren/verhaaltje";
+import { rekensomGenerator } from "@/lib/generatoren/rekensom";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -221,6 +222,8 @@ export const alleGeneratoren: Generator[] = [
   ...bosGeneratoren,
   /* Verhaaltjessommen: optellen, aftrekken, tafels en delen in korte verhaaltjes. */
   verhaaltjeGenerator,
+  /* Erbij- en erafsommen tot en met 100. */
+  rekensomGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {
