@@ -786,3 +786,8 @@ Samen 66 nieuwe oefeningen en 990 opgaven. "Geopend" betekent: de pagina laadde 
 - De volgorde van de onderwerpen bij Aftrekken en Optellen is zoals gevraagd. Bij de plaatjes-oefeningen zegt de vraag "Hoeveel … houd je over?".
 - Bij het nalezen verbeterd: bij "Sommen met dezelfde uitkomst" kwamen foute kaartjes met uitkomst 0 voor ("20 − 20"); foute keuzes zijn nu minstens 1.
 - SEO: elke nieuwe pagina heeft een eigen titel en omschrijving met het onderwerp, "erafsommen" of "erbijsommen" en "groep 4". Een voorbeeld: "Sommen met dezelfde uitkomst – aftrekken tot en met 30 – groep 4 | Thuisles". Er zijn geen nieuwe dubbele titels, en de openbare pagina's staan in de sitemap.
+
+## Samenvatting per bestand
+
+- **00 — Optellen uitbreiden:** klaar; 28 nieuwe oefeningen (Optellen tot en met 50, Rekenen met tientallen, Optellen tot en met 100 en meer vleksommen). Test zelf: open als kind een paar oefeningen bij Optellen tot en met 100 en geef één keer bewust een fout antwoord.
+- **01 — Aftrekken uitbreiden en Optellen tot en met 30 en 40:** klaar; 66 nieuwe oefeningen in 9 onderwerpen (zie de tabel hierboven). Test zelf: "Aftrekken met plaatjes" bij Aftrekken tot en met 20 op een tablet, en een vlekoefening waarbij het toetsenbord opengaat.
