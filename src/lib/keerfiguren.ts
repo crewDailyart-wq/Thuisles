@@ -79,6 +79,9 @@ export function juisteAntwoorden(figuur: Keerfiguur): number[] {
     case "keerkoppelen":
       return figuur.sommen.map((s) => s.eerste * s.tweede);
     case "welkedeelsom":
+      /* Eén leeg vakje: het getal dat je deelt, of het getal waardoor je deelt. */
+      if (figuur.deler !== undefined) return [figuur.deler * figuur.uitkomst];
+      if (figuur.geheel !== undefined) return [figuur.geheel / figuur.uitkomst];
       /* Eén voorbeeld: delen door 1 kan altijd. */
       return [figuur.uitkomst, 1];
     case "welkekeersom":
@@ -113,7 +116,8 @@ export function juisteAntwoorden(figuur: Keerfiguur): number[] {
 
 /** Mag het kind bij dit type zelf een som bedenken? Dan telt het paar als geheel. */
 export function isZelfBedacht(figuur: Keerfiguur): boolean {
-  return figuur.soort === "welkedeelsom" || figuur.soort === "welkekeersom";
+  if (figuur.soort === "welkedeelsom") return figuur.deler === undefined && figuur.geheel === undefined;
+  return figuur.soort === "welkekeersom";
 }
 
 /**
@@ -139,7 +143,7 @@ export function paarKlopt(figuur: Keerfiguur, getypt: string[]): boolean {
 
 /** Het grootste getal dat in een vakje kan komen; daarmee weet het scherm wanneer het vol is. */
 export function grootsteAntwoord(figuur: Keerfiguur): number {
-  if (figuur.soort === "welkedeelsom") return figuur.uitkomst * figuur.max;
+  if (figuur.soort === "welkedeelsom") return Math.max(...juisteAntwoorden(figuur), figuur.uitkomst * figuur.max);
   if (figuur.soort === "welkekeersom") return figuur.uitkomst;
   return Math.max(20, ...juisteAntwoorden(figuur));
 }

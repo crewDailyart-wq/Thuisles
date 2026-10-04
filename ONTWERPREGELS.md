@@ -134,6 +134,10 @@ vierkant als de vakjes waar ze in moeten.
   doet: plaatjes wegtikken, kralen wegschuiven. Zo ziet het waaróm het klopt.
   Daarna volgt gewoon oefenen. Het aantal visuele sommen aan het begin is een
   instelling in de database, standaard 3, per titel aan te passen in de admin.
+- Interactieve oefeningen: het kind doet eerst zelf (tikken of slepen), daarna
+  pas de som. Toon nooit vooraf hoeveel houders er komen, toon geen teller die
+  het antwoord verklapt, en laat het antwoordvakje pas verschijnen na het
+  bouwen.
 
 ## Plaatjes
 

@@ -309,14 +309,20 @@ export function Keeropdracht({
   }
 
   /** Eén invulvak, met alles eromheen al ingevuld. */
-  function vak(nummer: number, label: string, maat: "gewoon" | "groot" | "klein" = "gewoon") {
+  function vak(
+    nummer: number,
+    label: string,
+    maat: "gewoon" | "groot" | "klein" = "gewoon",
+    /** Zichtbaar maar nog dicht: bij delen om zelf te doen, zolang er gebouwd wordt. */
+    geblokkeerd = false,
+  ) {
     return (
       <Invulvak
         waarde={getypt[nummer] ?? ""}
         uitslag={uitslagen[nummer] ?? null}
         maat={maat}
         label={label}
-        uit={uit}
+        uit={uit || geblokkeerd}
         veldRef={(el) => {
           velden.current[nummer] = el;
         }}
@@ -340,7 +346,7 @@ export function Keeropdracht({
       <Deelbouwer
         figuur={figuur}
         fase={fase}
-        vakje={vak(0, figuur.stap === "hulp" ? "De uitkomst" : "Je antwoord", "groot")}
+        vakje={(geblokkeerd) => vak(0, "De uitkomst", "groot", geblokkeerd)}
         onOpnieuw={() => meld([""])}
         onGezien={onKlaar}
         onKlaar={() => {
@@ -361,6 +367,23 @@ export function Keeropdracht({
         <Gegeven waarde={tweede} maat="groot" />
         <Teken wat="isgelijk" maat="groot" />
         {vak(0, "De uitkomst", "groot")}
+      </div>
+    );
+  }
+
+  /* Eén leeg vakje: ▢ : 3 = 6 of 18 : ▢ = 6. */
+  if (figuur.soort === "welkedeelsom" && (figuur.deler !== undefined || figuur.geheel !== undefined)) {
+    return (
+      <div className="flex w-full flex-wrap items-center justify-center gap-3">
+        {figuur.geheel !== undefined ? (
+          <Gegeven waarde={figuur.geheel} maat="groot" breed />
+        ) : (
+          vak(0, "Welk getal deel je?", "groot")
+        )}
+        <Teken wat="deel" maat="groot" />
+        {figuur.deler !== undefined ? <Gegeven waarde={figuur.deler} maat="groot" /> : vak(0, "Waardoor deel je?", "groot")}
+        <Teken wat="isgelijk" maat="groot" />
+        <Gegeven waarde={figuur.uitkomst} maat="groot" />
       </div>
     );
   }

@@ -484,8 +484,8 @@ export function OefenSpeler({
     */
     const eerstDeRedenering =
       (vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10") ||
-      /* Bij delen na het bouwen: eerst de deelsom laten zien, dan het feest. */
-      (vraag.figuur?.soort === "deelsom" && vraag.figuur.stap === "bouwen");
+      /* Bij delen om zelf te doen: eerst "Goed zo!" met de deelsom, dan het feest. */
+      (vraag.figuur?.soort === "deelsom" && vraag.figuur.stap !== undefined);
 
     if (goed) {
       setFase("goed");

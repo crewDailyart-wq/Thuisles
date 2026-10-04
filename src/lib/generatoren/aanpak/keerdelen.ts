@@ -105,6 +105,10 @@ export const welkedeelsomAanpak: Aanpak = {
   },
   controle: (som) => {
     const { tafel, mee, product } = stukken(som);
+    /* Eén leeg vakje: er is maar één goed antwoord. */
+    if (som.variant === "geheelvraag" || som.variant === "delervraag") {
+      return `Het goede antwoord is ${som.goed}, want ${product} : ${tafel} = ${mee}.`;
+    }
     return `${product} : ${tafel} = ${mee} is bijvoorbeeld goed. Elke deelsom die op ${mee} uitkomt mag.`;
   },
 };

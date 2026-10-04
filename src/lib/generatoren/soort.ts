@@ -27,10 +27,12 @@ export type { Somgegevens };
 // ---------------------------------------------------------------------------
 
 /**
- * De voorwerpen en houders bij delen om zelf te doen. De eerste drie horen bij
- * groepjes maken, de laatste drie bij eerlijk verdelen.
+ * De voorwerpen en houders bij delen om zelf te doen. Sinds oktober 2026
+ * altijd appels: "appels" (in zakjes) bij groepjes maken en "mandjes" (appels
+ * in mandjes) bij eerlijk verdelen. De andere vijf staan nog in opgaven van de
+ * eerste versie, die als concept bewaard zijn.
  */
-export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes" | "visjes";
+export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes" | "visjes" | "mandjes";
 
 /**
  * Een tekening bij een vraag, opgeslagen als gegevens in plaats van als
@@ -664,6 +666,15 @@ export type Figuur =
       soort: "welkedeelsom";
       uitkomst: number;
       max: number;
+      /**
+       * Afwisselende vorm (oktober 2026). Staat er een van deze twee, dan is
+       * dat getal gegeven en is er maar één leeg vakje: ☐ : 3 = 6 of 18 : ☐ = 6.
+       * Geen van beide: twee lege vakjes, en elke goede deelsom telt.
+       */
+      geheel?: number;
+      deler?: number;
+      /** Vaste plek in de oefening, van makkelijk naar moeilijk. */
+      volgnummer?: number;
     }
   | {
       /** De kale keersom: 3 × 5 = ▢, met een echt maalteken. */

@@ -86,9 +86,7 @@ const OEFENINGEN = [
   { groep: "Delen · Deelsommen", titel: "Deelsommen tot en met 10", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 10, werking: "verdelen", visueel: 5 } },
   { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1, 2, 5 en 10", soort: "deelkoppelen", bolletjes: 4, handmatig: true, inst: { delers: ["1", "2", "5", "10"], tot: 10, rijen: 5 } },
   { groep: "Delen · Deelsommen", titel: "Deelsommen koppelen: tafels van 1 tot en met 10", soort: "deelkoppelen", bolletjes: 4, handmatig: true, inst: { delers: ["1", "2", "3", "4", "5", "6", "7", "8", "9", "10"], tot: 10, rijen: 5 } },
-  { groep: "Delen · Deelsommen", titel: "Welke deelsommen passen?", soort: "welkedeelsom", bolletjes: 5, handmatig: true, inst: { tot: 10, max: 10, geheelTot: 100 },
-    /* Uitkomsten 1 tot en met 10 (eigenaar, oktober 2026): dan bestaan er precies tien verschillende vragen. */
-    verschillend: 10 },
+  { groep: "Delen · Deelsommen", titel: "Welke deelsommen passen?", soort: "welkedeelsom", bolletjes: 5, handmatig: true, inst: { tot: 10, max: 10, geheelTot: 100, vormen: "afwisselen" } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 1: Keersommen begrijpen
@@ -609,14 +607,7 @@ for (const oefening of OEFENINGEN) {
   */
   if (ronde.length < PER_RONDE) {
     weinig.push(`${waar}: ${ronde.length} verschillende opgaven, aangevuld tot ${PER_RONDE}.`);
-    /*
-      "verschillend": de eigenaar heeft het bereik zelf zo klein gemaakt dat er
-      niet meer bestaan. Dan moet er precies dat aantal uitkomen, en staat het
-      hierboven bij de dubbele in de uitvoer.
-    */
-    if (oefening.verschillend !== ronde.length) {
-      fouten.push(`${waar}: maar ${ronde.length} verschillende opgaven; dat moeten er ${PER_RONDE} zijn.`);
-    }
+    fouten.push(`${waar}: maar ${ronde.length} verschillende opgaven; dat moeten er ${PER_RONDE} zijn.`);
   }
 
   /* 2. Hetzelfde zaad geeft dezelfde ronde. */

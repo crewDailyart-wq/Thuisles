@@ -4,16 +4,16 @@
  * Los van het scherm, zodat de generator (de vraagzin), de uitleg na een fout
  * antwoord en het scherm zelf precies dezelfde woorden gebruiken. Hier staat
  * geen React in.
+ *
+ * Sinds oktober 2026 altijd appels (keuze van de eigenaar): in zakjes bij
+ * groepjes maken, in mandjes bij eerlijk verdelen. De andere thema's staan er
+ * nog voor opgaven uit de eerste versie, die als concept bewaard zijn.
  */
 
 import type { Deelthema } from "@/lib/generatoren/soort";
 
-/** Om de beurt per opgave: appels in zakjes, knikkers in potjes, eieren in doosjes. */
-export const GROEPJESTHEMAS: Deelthema[] = ["appels", "knikkers", "eieren"];
-/** Om de beurt per opgave: koekjes op bordjes, snoepjes voor kinderen, visjes in kommen. */
-export const VERDEELTHEMAS: Deelthema[] = ["koekjes", "snoepjes", "visjes"];
-/** Alle zes, in een vaste volgorde: het nummer gaat mee in de somgegevens. */
-export const ALLE_DEELTHEMAS: Deelthema[] = [...GROEPJESTHEMAS, ...VERDEELTHEMAS];
+/** Alle thema's, in een vaste volgorde: het nummer gaat mee in de somgegevens. */
+export const ALLE_DEELTHEMAS: Deelthema[] = ["appels", "knikkers", "eieren", "koekjes", "snoepjes", "visjes", "mandjes"];
 
 export const DEELWOORDEN: Record<
   Deelthema,
@@ -25,61 +25,49 @@ export const DEELWOORDEN: Record<
   koekjes: { voorwerp: "koekje", voorwerpen: "koekjes", houder: "bordje", houders: "bordjes" },
   snoepjes: { voorwerp: "snoepje", voorwerpen: "snoepjes", houder: "kind", houders: "kinderen" },
   visjes: { voorwerp: "visje", voorwerpen: "visjes", houder: "kom", houders: "kommen" },
+  mandjes: { voorwerp: "appel", voorwerpen: "appels", houder: "mandje", houders: "mandjes" },
 };
 
-/** De opdracht bovenaan: "Maak groepjes van 5." of "Verdeel eerlijk over de 4 bordjes." */
-export function bouwOpdracht(bouw: "groepjes" | "verdelen", deler: number, thema: Deelthema): string {
-  if (bouw === "groepjes") return `Maak groepjes van ${deler}.`;
-  const w = DEELWOORDEN[thema];
-  return deler === 1 ? `Leg alles bij 1 ${w.houder}.` : `Verdeel eerlijk over de ${deler} ${w.houders}.`;
+/** Het thema bij een manier van delen. */
+export function themaVoor(bouw: "groepjes" | "verdelen"): Deelthema {
+  return bouw === "groepjes" ? "appels" : "mandjes";
 }
 
-/** De vraag die verschijnt zodra alles in groepjes zit of verdeeld is. */
-export function bouwVraag(thema: Deelthema): string {
-  switch (thema) {
-    case "koekjes":
-      return "Hoeveel koekjes krijgt ieder bordje?";
-    case "snoepjes":
-      return "Hoeveel snoepjes krijgt ieder kind?";
-    case "visjes":
-      return "Hoeveel visjes komen er in elke kom?";
-    default:
-      return `Hoeveel ${DEELWOORDEN[thema].houders} zijn het?`;
-  }
+/** De opdracht bovenaan: "Maak groepjes van 3." of "Verdeel de appels eerlijk over de 4 mandjes." */
+export function bouwOpdracht(bouw: "groepjes" | "verdelen", deler: number): string {
+  if (bouw === "groepjes") return `Maak groepjes van ${deler}.`;
+  return deler === 1 ? "Leg de appels in het mandje." : `Verdeel de appels eerlijk over de ${deler} mandjes.`;
+}
+
+const appels = (n: number) => (n === 1 ? "1 appel" : `${n} appels`);
+
+/** De kern van de zin: "4 zakjes met 3 appels" of "elk mandje krijgt 5 appels". */
+function kern(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {
+  const r = geheel / deler;
+  if (bouw === "groepjes") return `${r === 1 ? "1 zakje" : `${r} zakjes`} met ${appels(deler)}`;
+  return deler === 1 ? `het mandje krijgt ${appels(r)}` : `elk mandje krijgt ${appels(r)}`;
 }
 
 /**
- * Het goede antwoord in gewone taal, na een fout antwoord.
- *
- *   Het zijn 7 zakjes van 5, want 35 : 5 = 7.
- *   Het zijn 7 groepjes van 5, want 35 : 5 = 7.
- *   Ieder bordje krijgt 5, want 20 : 4 = 5.
+ * Na een goed antwoord: "Goed zo! 4 zakjes met 3 appels. 12 : 3 = 4."
  */
-export function deelZin(
-  geheel: number,
-  deler: number,
-  bouw: "groepjes" | "verdelen",
-  thema: Deelthema | null,
-  metThema: boolean,
-): string {
-  const r = geheel / deler;
-  const som = `${geheel} : ${deler} = ${r}`;
+export function deelGoedZin(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {
+  const k = kern(geheel, deler, bouw);
+  return `Goed zo! ${k.charAt(0).toUpperCase()}${k.slice(1)}. ${geheel} : ${deler} = ${geheel / deler}.`;
+}
 
+/**
+ * Na een fout antwoord: "Het zijn 4 zakjes met 3 appels, want 12 : 3 = 4." of
+ * "Elk mandje krijgt 5 appels, want 20 : 4 = 5."
+ */
+export function deelZin(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {
+  const som = `${geheel} : ${deler} = ${geheel / deler}`;
   if (bouw === "groepjes") {
-    const w = metThema && thema ? DEELWOORDEN[thema] : { houder: "groepje", houders: "groepjes" };
-    return r === 1
-      ? `Het is 1 ${w.houder} van ${deler}, want ${som}.`
-      : `Het zijn ${r} ${w.houders} van ${deler}, want ${som}.`;
+    const r = geheel / deler;
+    return `Het ${r === 1 ? "is" : "zijn"} ${kern(geheel, deler, bouw)}, want ${som}.`;
   }
-
-  if (metThema && thema === "koekjes") return `Ieder bordje krijgt ${r}, want ${som}.`;
-  if (metThema && thema === "snoepjes") return `Ieder kind krijgt ${r}, want ${som}.`;
-  if (metThema && thema === "visjes") {
-    return r === 1
-      ? `In elke kom komt 1 visje, want ${som}.`
-      : `In elke kom komen ${r} visjes, want ${som}.`;
-  }
-  return `Het goede antwoord is ${r}, want ${som}.`;
+  const k = kern(geheel, deler, bouw);
+  return `${k.charAt(0).toUpperCase()}${k.slice(1)}, want ${som}.`;
 }
 
 /**
@@ -93,6 +81,5 @@ export function deelsomZin(som: {
 }): string | null {
   if (som.variant !== "groepjes" && som.variant !== "verdelen") return null;
   const [geheel, deler] = som.getallen;
-  const thema = ALLE_DEELTHEMAS[som.extra?.thema ?? -1] ?? null;
-  return deelZin(geheel, deler, som.variant, thema, som.extra?.stap === 1);
+  return deelZin(geheel, deler, som.variant);
 }

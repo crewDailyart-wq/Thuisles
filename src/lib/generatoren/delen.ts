@@ -46,7 +46,7 @@ import {
   deelsomUitleg,
   welkedeelsomUitleg,
 } from "@/lib/generatoren/scripts/keerdelen";
-import { ALLE_DEELTHEMAS, GROEPJESTHEMAS, VERDEELTHEMAS, bouwOpdracht } from "@/lib/deelthema";
+import { ALLE_DEELTHEMAS, bouwOpdracht, themaVoor } from "@/lib/deelthema";
 
 /**
  * Waardoor er gedeeld kan worden: 1 tot en met 10.
@@ -266,7 +266,8 @@ function maakMetBouwen(
   const { delers, tot } = grenzen(inst);
   const werking = deelwerking(inst);
   const bouw: "groepjes" | "verdelen" = werking === "verdelen" ? "verdelen" : "groepjes";
-  const themas = bouw === "groepjes" ? GROEPJESTHEMAS : VERDEELTHEMAS;
+  /* Altijd appels: in zakjes bij groepjes maken, in mandjes bij verdelen. */
+  const thema = themaVoor(bouw);
 
   /* Eerst de bouwopgaven: gelijkmatig verspreid over wat geschikt is. */
   const kandidaten = bouwkandidaten(delers, tot, werking);
@@ -293,12 +294,11 @@ function maakMetBouwen(
   kaal.sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 
   const uit: Gegenereerd[] = [];
-  const voegToe = (geheel: number, deler: number, stap: "bouwen" | "hulp", nummer: number) => {
+  const voegToe = (geheel: number, deler: number, stap: "bouwen" | "hulp") => {
     const handtekening = stap === "bouwen" ? `deelsom:bouw:${geheel}:${deler}` : `deelsom:${geheel}:${deler}`;
     if (alGebruikt.has(handtekening)) return;
     alGebruikt.add(handtekening);
 
-    const thema = themas[nummer % themas.length];
     const mee = geheel / deler;
     const gegevens = {
       soort: "deelsom",
@@ -317,7 +317,7 @@ function maakMetBouwen(
     uit.push({
       handtekening,
       vorm: "open",
-      vraagtekst: stap === "bouwen" ? bouwOpdracht(bouw, deler, thema) : kaleVraag,
+      vraagtekst: stap === "bouwen" ? bouwOpdracht(bouw, deler) : kaleVraag,
       antwoord: String(mee),
       figuur: {
         soort: "deelsom",
@@ -333,8 +333,8 @@ function maakMetBouwen(
     });
   };
 
-  bouwen.forEach(([geheel, deler], i) => voegToe(geheel, deler, "bouwen", i));
-  kaal.forEach(([geheel, deler], i) => voegToe(geheel, deler, "hulp", i));
+  bouwen.forEach(([geheel, deler]) => voegToe(geheel, deler, "bouwen"));
+  kaal.forEach(([geheel, deler]) => voegToe(geheel, deler, "hulp"));
   return uit;
 }
 
@@ -502,19 +502,37 @@ export const welkedeelsomGenerator: Generator = {
       },
       extraHulp: "Op de plek van {som} komt de uitkomst te staan.",
     }),
+    {
+      soort: "keuze",
+      sleutel: "vormen",
+      label: "Vorm",
+      opties: [
+        { waarde: "zelf", label: "Altijd twee lege vakjes (▢ : ▢ = 6)" },
+        { waarde: "afwisselen", label: "Afwisselen: ▢ : ▢ = 6, ▢ : 3 = 6 en 18 : ▢ = 6" },
+      ],
+      hulp: "Bij afwisselen is er een derde van de opgaven met twee lege vakjes, een derde met het getal dat je deelt leeg, en een derde met het getal waardoor je deelt leeg. Zo zijn er genoeg verschillende vragen, ook met uitkomsten tot en met 10.",
+    },
   ],
   vraagteksten: {
     standaard: WELKEZINNEN,
-    som: (s) => String(s.goed),
+    som: (s) => String(s.extra?.mee ?? s.goed),
   },
-  standaard: { tot: 10, max: 10 },
+  standaard: { tot: 10, max: 10, vormen: "zelf" },
   foutpatronen: deelPatronen,
   aanpak: welkedeelsomAanpak,
   uitleganimatie: welkedeelsomUitleg,
 
-  maximum: (inst) => grenzen(inst).tot,
+  maximum: (inst) => {
+    const { tot } = grenzen(inst);
+    if (tekst(inst, "vormen", "zelf") !== "afwisselen") return tot;
+    /* Twee lege vakjes: één per uitkomst; één leeg vakje: elke deler die past, twee keer. */
+    let n = tot;
+    for (let u = 2; u <= tot; u++) n += 2 * welkeDelers(u, inst).length;
+    return n;
+  },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
+    if (tekst(inst, "vormen", "zelf") === "afwisselen") return maakAfwisselend(inst, aantal, alGebruikt, zaad, groep);
     const kans = kansGenerator(zaad);
     const { tot } = grenzen(inst);
     const vasteMax = Math.max(2, Math.min(10, getal(inst, "max", 10)));
@@ -574,3 +592,110 @@ export const welkedeelsomGenerator: Generator = {
     return uit;
   },
 };
+
+// ---------------------------------------------------------------------------
+// Welke deelsom past erbij? — afwisselende vorm
+// ---------------------------------------------------------------------------
+
+/** De delers 2 tot en met 10 waarbij het getal dat je deelt binnen de grens blijft. */
+function welkeDelers(uitkomst: number, inst: Instellingen): number[] {
+  const geheelTot = Math.max(0, getal(inst, "geheelTot", 0)) || 100;
+  const uit: number[] = [];
+  for (let d = 2; d <= 10; d++) if (d * uitkomst <= geheelTot) uit.push(d);
+  return uit;
+}
+
+/**
+ * Om de beurt drie vormen, elk een derde van de opgaven:
+ *
+ *   ▢ : ▢ = 6   zelf een deelsom bedenken; elke goede deelsom telt
+ *   ▢ : 3 = 6   het getal dat je deelt is leeg (het antwoord is 18)
+ *   18 : ▢ = 6  het getal waardoor je deelt is leeg (het antwoord is 3)
+ *
+ * In die volgorde, en binnen een vorm oplopend: van makkelijk naar moeilijk.
+ */
+function maakAfwisselend(
+  inst: Instellingen,
+  aantal: number,
+  alGebruikt: Set<string>,
+  zaad: number,
+  groep: number,
+): Gegenereerd[] {
+  const kans = kansGenerator(zaad);
+  const { tot } = grenzen(inst);
+  const geheelTot = Math.max(0, getal(inst, "geheelTot", 0)) || 100;
+  const derde = Math.ceil(aantal / 3);
+
+  const zelf = husselen(kans, Array.from({ length: tot }, (_, i) => i + 1)).slice(0, derde).sort((a, b) => a - b);
+  const metEen = (leeg: "geheel" | "deler") =>
+    husselen(kans, Array.from({ length: Math.max(0, tot - 1) }, (_, i) => i + 2))
+      .slice(0, derde)
+      .map((u) => {
+        const delers = welkeDelers(u, inst);
+        return { u, d: delers.length ? kiesUit(kans, delers) : 1, leeg };
+      })
+      .sort((a, b) => a.u * a.d - b.u * b.d);
+
+  const uit: Gegenereerd[] = [];
+  const neem = (g: Gegenereerd, handtekening: string) => {
+    if (uit.length >= aantal || alGebruikt.has(handtekening)) return;
+    alGebruikt.add(handtekening);
+    if (g.figuur?.soort === "welkedeelsom") g.figuur.volgnummer = uit.length + 1;
+    uit.push(g);
+  };
+
+  /* Twee lege vakjes: zoals altijd, met een grens op het getal dat je deelt. */
+  for (const uitkomst of zelf) {
+    const max = Math.max(1, Math.floor(geheelTot / uitkomst));
+    const passend = passendeDeelsommen(uitkomst, max);
+    const voorbeeld = passend[Math.min(1, passend.length - 1)];
+    const gegevens = {
+      soort: "welkedeelsom",
+      variant: "zelf",
+      getallen: [voorbeeld[0], voorbeeld[1]],
+      goed: uitkomst,
+      extra: { tafel: voorbeeld[1], mee: uitkomst, product: voorbeeld[0], max },
+    };
+    neem(
+      {
+        handtekening: `welkedeelsom:${uitkomst}-${max}`,
+        vorm: "open",
+        vraagtekst: bepaalVraagtekst(welkedeelsomGenerator, inst, groep, gegevens),
+        antwoord: passend.map(([geheel, deler]) => `${geheel},${deler}`).join("|"),
+        figuur: { soort: "welkedeelsom", uitkomst, max },
+        somgegevens: gegevens,
+      },
+      `welkedeelsom:${uitkomst}-${max}`,
+    );
+  }
+
+  /* Eén leeg vakje: het getal dat je deelt, of het getal waardoor je deelt. */
+  for (const { u, d, leeg } of [...metEen("geheel"), ...metEen("deler")]) {
+    const geheel = u * d;
+    const handtekening = `welkedeelsom:${leeg}:${geheel}:${d}`;
+    const gevraagd = leeg === "geheel" ? geheel : d;
+    const gegevens = {
+      soort: "welkedeelsom",
+      variant: leeg === "geheel" ? "geheelvraag" : "delervraag",
+      getallen: [geheel, d],
+      goed: gevraagd,
+      extra: { tafel: d, mee: u, product: geheel },
+    };
+    neem(
+      {
+        handtekening,
+        vorm: "open",
+        vraagtekst: "Vul in.",
+        antwoord: String(gevraagd),
+        figuur:
+          leeg === "geheel"
+            ? { soort: "welkedeelsom", uitkomst: u, max: d, deler: d }
+            : { soort: "welkedeelsom", uitkomst: u, max: d, geheel },
+        somgegevens: gegevens,
+      },
+      handtekening,
+    );
+  }
+
+  return uit;
+}
