@@ -136,35 +136,32 @@ Elke titel geeft kale deelsommen uit die ene deeltafel, bijvoorbeeld 8 : 2 =
 | 4 | Deelsommen koppelen: tafels van 1 tot en met 10 | ●●●● | Hetzelfde, met alle deeltafels. |
 | 5 | Welke deelsommen passen? | ●●●●● | Het kind ziet een uitkomst, bijvoorbeeld 5, en typt zelf een deelsom die klopt: ▢ : ▢ = 5. Elke goede deelsom uit de deeltafels van 1 tot en met 10 telt goed, dus 10 : 2 en 45 : 9 zijn allebei goed. Sinds oktober 2026 wisselt de vorm af (zie hieronder). |
 
-### Zelf doen: groepjes maken en eerlijk verdelen (oktober 2026)
+### Zelf doen: vrije magneetjes (5 oktober 2026) — KLAAR
 
-Proef voor één domein. Titels, volgorde, bolletjes en webadressen zijn niet
-veranderd; de bolletjes staan met de hand op elk leerdoel (Moeilijkheid in
-beheer), omdat het kleinere bereik ze anders zou verlagen.
+- Aan bij alle tien oefeningen van **Deeltafels oefenen**, in de bestaande
+  volgorde en met dezelfde titels, bolletjes en webadressen.
+- De deelsom met het gewone invulvak staat boven het speelveld. Daaronder:
+  "Maak groepjes van …". De bestaande Thuisles-kaart, kleuren, vakjes en
+  Controleer-knop blijven gebruikt.
+- Vijftien visuele opgaven per oefening, maximaal 30 glanzende bolletjes,
+  uitkomsten 1 tot en met 10. Als er minder dan vijftien verschillende sommen
+  mogelijk zijn, herhalen sommen met een andere beginopstelling, nooit direct
+  achter elkaar. Bijvoorbeeld bij delen door 10 bestaan binnen deze grens
+  alleen 10 : 10, 20 : 10 en 30 : 10.
+- Zelf groepjes bouwen met slepen of tikken. Ook verkeerde groepjes mogen;
+  er is geen automatische stop bij de deler en geen teller vooraf. Elk
+  bolletje kan weer los, ook uit een goed groepje. Twee tikken op hetzelfde
+  bolletje maken het los; de zachte rand is de sleepgreep voor het geheel.
+- Het antwoordvak is vanaf het begin beschikbaar. Pas bij Controleer wordt
+  de bouw gecontroleerd; een onjuiste bouw geeft een aanwijzing en kan worden
+  hersteld. Pas daarna kijkt de bestaande antwoordlogica het getal na.
+- Goed: de groepjes lichten op en krijgen één voor één een telcijfer;
+  daarna volgt de gebruikelijke beloning. Verminderde beweging wordt gevolgd.
+- **Terug naar typen:** beheer → sjabloon → Werking → Alleen typen.
+  De eerdere werkingen blijven als keuze bestaan. De oude opgaven zijn als
+  concept bewaard; bestaande antwoorden en voortgang blijven behouden.
+- Het tweede onderwerp **Deelsommen** is voor deze wijziging niet aangepast.
 
-- **Bij alle 15:** uitkomsten 1 tot en met 10, geen getal boven 100, altijd
-  ":". 15 opgaven van makkelijk naar moeilijk, "vragen per oefensessie" 15. De
-  opgaven van daarvoor staan als concept bewaard.
-- **Deeltafels oefenen (1–10), opgave 1–5: groepjes maken.** De deelsom staat
-  vanaf het begin bovenaan met een leeg vakje. Daaronder losse appels en één
-  leeg zakje. Een aangetikte appel krijgt een rand (nog een tik: los). Is een
-  groepje vol, dan verbindt een lijntje de appels en schuiven ze in het zakje;
-  dan komt er een nieuw leeg zakje. Nooit alle zakjes vooraf, geen teller.
-  Meer dan 30 appels: één tik vult een heel zakje. Het vakje is zichtbaar maar
-  gaat pas open als alle appels in zakjes zitten. Knop Opnieuw.
-- **Deelsommen tot en met 5 en 10, opgave 1–5: eerlijk verdelen.** Dezelfde
-  stijl: som bovenaan, een stapel appels en mandjes. Tik op een mandje: er gaat
-  één appel naartoe; tik op een appel in een mandje: terug op de stapel. Meer
-  dan 30: ook "Iedereen één". Is de stapel op maar niet evenveel: "Kijk goed:
-  heeft iedereen evenveel?". Pas als iedereen evenveel heeft gaat het vakje open.
-- **Opgave 6–15:** de kale som met een knop Hulp, die hetzelfde bouwen opent.
-- **Goed:** "Goed zo! 4 zakjes met 3 appels. 12 : 3 = 4." / "Goed zo! Elk
-  mandje krijgt 5 appels. 20 : 4 = 5." **Fout:** "Het zijn 4 zakjes met 3
-  appels, want 12 : 3 = 4." / "Elk mandje krijgt 5 appels, want 20 : 4 = 5."
-- **Terug naar de oude werking, per oefening:** in beheer bij het sjabloon de
-  instelling **Werking** op "Alleen typen (de oude werking)" zetten. Dat geldt
-  meteen, ook voor de opgaven die er al liggen; er hoeft niets opnieuw gemaakt
-  te worden. Terugzetten naar groepjes of verdelen kan net zo.
 - **Koppelen (13, 14):** werking hetzelfde, alleen de getallen.
 - **Welke deelsommen passen? (15):** de vorm wisselt af, zodat er 15
   verschillende vragen zijn: 5 met twee lege vakjes (▢ : ▢ = 6, elke goede

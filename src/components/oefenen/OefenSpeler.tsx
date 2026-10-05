@@ -58,6 +58,7 @@ import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
+import { DeelbouwControle } from "@/components/oefenen/MagneetDeelsom";
 import { Keeropdracht, isKeerfiguur } from "@/components/oefenen/Keeropdracht";
 import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
@@ -307,6 +308,7 @@ export function OefenSpeler({
     overheen en ziet een kind van die sprong niets. Voor alle andere vraagvormen
     blijft het precies zoals het was: het feest begint direct.
   */
+  const deelbouwControle = useRef<(() => boolean) | null>(null);
   const [wachtOpVos, setWachtOpVos] = useState(false);
   /*
     Welke lege deur aan de beurt is bij "allebei de buren".
@@ -472,6 +474,7 @@ export function OefenSpeler({
     if (gekozen.trim() === "") return;
     /* Deze vraag is al nagekeken; een tweede klik telt niet nog eens mee. */
     if (nagekeken.current === index) return;
+    if (deelbouwControle.current && !deelbouwControle.current()) return;
     nagekeken.current = index;
 
     const seconden = (nuInMs() - start) / 1000;
@@ -485,7 +488,7 @@ export function OefenSpeler({
     const eerstDeRedenering =
       (vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10") ||
       /* Bij delen om zelf te doen: eerst "Goed zo!" met de deelsom, dan het feest. */
-      (vraag.figuur?.soort === "deelsom" && vraag.figuur.stap !== undefined);
+      (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true));
 
     if (goed) {
       setFase("goed");
@@ -825,7 +828,7 @@ export function OefenSpeler({
   const vraagtekst = vraag.figuur?.soort === "bus" ? vraag.vraagtekst.replace(/kinderen/g, "vosjes").replace(/kindje/g, "vosje") : vraag.vraagtekst;
 
   return (
-    <>
+    <DeelbouwControle.Provider value={deelbouwControle}>
       {/*
         Het feestscherm legt zich over de vraag heen zodra het antwoord goed is.
         `key` per feestje, zodat elk goed antwoord een eigen, opnieuw beginnende
@@ -1076,7 +1079,10 @@ export function OefenSpeler({
                   : leeftijd === "34"
                     ? "text-3xl sm:text-4xl"
                     : "text-2xl sm:text-3xl"
-              } ${heeftBeeld ? "" : "px-11 sm:px-10 lg:px-8"}`}
+              } ${heeftBeeld ? "" : "px-11 sm:px-10 lg:px-8"} ${
+                /* Delen met bolletjes: een rustig scherm, de zin alleen voor het voorlezen. */
+                vraag.figuur?.soort === "deelsom" && vraag.figuur.stil ? "sr-only" : ""
+              }`}
             >
               {vraagtekst}
             </h1>
@@ -1289,7 +1295,7 @@ export function OefenSpeler({
           </div>
         </div>
       </div>
-    </>
+    </DeelbouwControle.Provider>
   );
 }
 

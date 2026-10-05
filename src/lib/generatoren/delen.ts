@@ -113,11 +113,11 @@ const DEELZINNEN: Record<Leeftijdsgroep, string> = {
 };
 
 /** Hoe het kind de deelsom maakt; zie `Werking` hieronder. */
-export type Deelwerking = "groepjes" | "verdelen" | "typen";
+export type Deelwerking = "groepjes" | "verdelen" | "typen" | "magneetjes";
 
 export function deelwerking(inst: Instellingen): Deelwerking {
   const w = tekst(inst, "werking", "groepjes");
-  return w === "verdelen" || w === "typen" ? w : "groepjes";
+  return w === "verdelen" || w === "typen" || w === "magneetjes" ? w : "groepjes";
 }
 
 /** Standaard vijf opgaven waarin het kind eerst zelf bouwt. */
@@ -132,12 +132,13 @@ const WERKINGVELD = {
   sleutel: "werking",
   label: "Werking",
   opties: [
+    { waarde: "magneetjes", label: "Vrij bouwen met magneetjes (maximaal 30 bolletjes)" },
     { waarde: "groepjes", label: "Groepjes maken, daarna de som" },
     { waarde: "verdelen", label: "Eerlijk verdelen, daarna de som" },
     { waarde: "typen", label: "Alleen typen (de oude werking)" },
   ],
   hulp:
-    "Bij groepjes maken of eerlijk verdelen tikt het kind eerst zelf, en verschijnt het antwoordvakje pas als alles in groepjes zit of verdeeld is. De andere opgaven zijn de kale som met een knop Hulp. Alleen typen geldt meteen, ook voor de opgaven die er al liggen.",
+    "Bij magneetjes staat de som bovenaan en kijkt het kind pas na met Controleer. Met maximaal 30 bolletjes kunnen sommen terugkomen in een andere opstelling. Bij groepjes maken of eerlijk verdelen tikt het kind eerst zelf, en verschijnt het antwoordvakje pas als alles in groepjes zit of verdeeld is. De andere opgaven zijn de kale som met een knop Hulp. Alleen typen geldt meteen, ook voor de opgaven die er al liggen.",
 };
 
 const BOUWVELD = {
@@ -176,6 +177,7 @@ export const deelsomGenerator: Generator = {
 
   maximum: (inst) => {
     const { delers, tot } = grenzen(inst);
+    if (deelwerking(inst) === "magneetjes") return 15;
     /* Dezelfde som kan bij twee delers horen (8 : 2 en 8 : 4 zijn er twee). */
     if (deelwerking(inst) === "typen") return delers.length * tot;
     /* Een opgave om zelf te bouwen is een andere opgave dan dezelfde kale som. */
@@ -183,6 +185,7 @@ export const deelsomGenerator: Generator = {
   },
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
+    if (deelwerking(inst) === "magneetjes") return maakMagneetjes(inst, aantal, alGebruikt, zaad);
     if (deelwerking(inst) !== "typen") return maakMetBouwen(inst, aantal, alGebruikt, zaad, groep);
 
     const kans = kansGenerator(zaad);
@@ -235,6 +238,28 @@ export const deelsomGenerator: Generator = {
   },
 };
 
+/** Vijftien bouwopgaven. Bij een kleine voorraad herhaalt de som met een nieuwe opstelling. */
+function maakMagneetjes(inst: Instellingen, aantal: number, gebruikt: Set<string>, zaad: number): Gegenereerd[] {
+  const { delers, tot } = grenzen(inst);
+  const voorraad = deelsommen(delers, Math.min(tot, 10)).filter(([geheel]) => geheel <= 30)
+    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const uit: Gegenereerd[] = [];
+  for (let i = 0; i < 15 && uit.length < aantal; i++) {
+    const [geheel, deler] = voorraad[i % voorraad.length];
+    const handtekening = `deelsom:magneetjes:${geheel}:${deler}:${i}`;
+    if (gebruikt.has(handtekening)) continue;
+    gebruikt.add(handtekening);
+    const mee = geheel / deler;
+    uit.push({ handtekening, vorm: "open", vraagtekst: `Maak groepjes van ${deler}.`, antwoord: String(mee),
+      figuur: { soort: "deelsom", geheel, deler, magneetjes: true, speelzaad: zaad + i, stil: true,
+        bouw: "groepjes", stap: "bouwen", kaleVraag: `Hoeveel is ${geheel} : ${deler}?`, volgnummer: i + 1 },
+      somgegevens: { soort: "deelsom", variant: "groepjes", getallen: [geheel, deler], goed: mee,
+        extra: { tafel: deler, mee, product: geheel } },
+    });
+  }
+  return uit;
+}
+
 /**
  * De sommen die geschikt zijn om zelf te bouwen: uitkomst 2 tot en met 6, en
  * bij verdelen minstens twee houders en hoogstens 40 voorwerpen (anders past
@@ -244,9 +269,17 @@ export const deelsomGenerator: Generator = {
  */
 function bouwkandidaten(delers: number[], tot: number, werking: Deelwerking): [number, number][] {
   const verdelen = werking === "verdelen" && delers.some((d) => d >= 2);
-  return deelsommen(delers, Math.min(tot, 6))
-    .filter(([geheel, deler]) => geheel / deler >= 2 && (!verdelen || (deler >= 2 && geheel <= 40)))
-    .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+  const alle = deelsommen(delers, Math.min(tot, 6)).filter(
+    ([geheel, deler]) => geheel / deler >= 2 && (!verdelen || (deler >= 2 && geheel <= 40)),
+  );
+  /*
+    Groepjes maken: hoogstens 30 bolletjes (eigenaar, oktober 2026). Bij delen
+    door 6 tot en met 10 zijn er dan geen vijf bouwsommen meer; daar valt de
+    grens weg, zodat er toch vijftien verschillende opgaven zijn. Die
+    oefeningen staan voorlopig op "Alleen typen".
+  */
+  const klein = verdelen ? alle : alle.filter(([geheel]) => geheel <= 30);
+  return (klein.length >= BOUW_STANDAARD ? klein : alle).sort((a, b) => a[0] - b[0] || a[1] - b[1]);
 }
 
 /**
@@ -317,7 +350,12 @@ function maakMetBouwen(
     uit.push({
       handtekening,
       vorm: "open",
-      vraagtekst: stap === "bouwen" ? bouwOpdracht(bouw, deler) : kaleVraag,
+      /*
+        Groepjes maken is een rustig scherm: alleen de eerste opgave heeft een
+        zin in beeld ("Klik steeds 4 bolletjes tegen elkaar."). Bij de rest staat
+        de gewone vraag er alleen voor het voorlezen.
+      */
+      vraagtekst: stap === "bouwen" && (bouw === "verdelen" || uit.length === 0) ? bouwOpdracht(bouw, deler) : kaleVraag,
       antwoord: String(mee),
       figuur: {
         soort: "deelsom",
@@ -327,6 +365,7 @@ function maakMetBouwen(
         stap,
         thema,
         kaleVraag,
+        ...(bouw === "groepjes" && !(stap === "bouwen" && uit.length === 0) ? { stil: true } : {}),
         volgnummer: uit.length + 1,
       },
       somgegevens: gegevens,

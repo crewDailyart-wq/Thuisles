@@ -1,35 +1,30 @@
 "use client";
 
 /**
- * Delen om zelf te doen: groepjes maken en eerlijk verdelen, altijd met appels.
+ * Delen om zelf te doen: groepjes maken en eerlijk verdelen.
  *
  * Het kind doet eerst zelf wat er bij delen gebeurt, en typt daarna pas het
  * antwoord (ONTWERPREGELS.md, "Interactieve oefeningen"). De deelsom staat
  * vanaf het begin bovenaan, met het lege vakje erin.
  *
- *   groepjes  losse appels en één leeg zakje. Een aangetikte appel krijgt een
- *             rand; nog een tik laat hem weer los. Zijn er genoeg aangetikt
- *             voor een groepje, dan worden ze met een lijntje verbonden en
- *             schuiven ze samen in het zakje. Dan komt er een nieuw leeg zakje.
- *             Nooit alle zakjes vooraf, want dan verklap je het antwoord.
- *             Meer dan 30 appels: één tik vult meteen een heel zakje.
+ *   groepjes  bolletjes die als magneetjes tegen elkaar klikken; zie
+ *             `Bolletjes`. Een rustig scherm zonder extra tekst.
  *   verdelen  een stapel appels en de mandjes. Een tik op een mandje laat er
  *             één appel naartoe gaan; een tik op een appel in een mandje legt
  *             hem terug. Meer dan 30: ook een knop "Iedereen één".
  *
  * Er staat nergens een teller: het kind telt zelf. Het vakje is er meteen,
- * maar het kind kan pas typen als alle appels in zakjes zitten of eerlijk
- * verdeeld zijn. Bij stap "hulp" kan het kind meteen typen, en bouwt het
- * alleen als het op Hulp drukt.
+ * maar het kind kan pas typen als alle bolletjes in volle groepjes zitten of
+ * alle appels eerlijk verdeeld zijn; dan staat de cursor er meteen in. Bij
+ * stap "hulp" kan het kind meteen typen, en bouwt het alleen als het op Hulp
+ * drukt.
  *
- * Elke appel is een knop van minstens 44 bij 44 pixels; tikken werkt met muis
- * en vinger. Het vakje zelf komt uit `Keeropdracht`, zodat typen, nakijken en
- * meeschuiven met het toetsenbord hetzelfde blijven (HARDE REGEL 5).
+ * Het vakje zelf komt uit `Keeropdracht`, zodat typen, nakijken en meeschuiven
+ * met het toetsenbord hetzelfde blijven (HARDE REGEL 5).
  */
 
 import {
   useEffect,
-  useLayoutEffect,
   useRef,
   useState,
   type Dispatch,
@@ -37,6 +32,7 @@ import {
   type SetStateAction,
 } from "react";
 import { Gegeven } from "@/components/oefenen/Splitsopdracht";
+import { Bolletjes } from "@/components/oefenen/Bolletjes";
 import { bouwOpdracht, deelGoedZin, deelZin } from "@/lib/deelthema";
 import type { Figuur } from "@/lib/generatoren/soort";
 
@@ -45,16 +41,6 @@ type Deelfiguur = Extract<Figuur, { soort: "deelsom" }>;
 
 /** Boven dit aantal helpt het scherm: een heel zakje per tik, of "Iedereen één". */
 const VEEL = 30;
-/** Hoe lang het lijntje te zien is, en hoe lang het schuiven naar het zakje duurt. */
-const LIJN_MS = 550;
-const SCHUIF_MS = 450;
-
-function minderBeweging(): boolean {
-  return (
-    typeof window !== "undefined" &&
-    window.matchMedia?.("(prefers-reduced-motion: reduce)").matches
-  );
-}
 
 // ---------------------------------------------------------------------------
 // Tekeningen
@@ -77,36 +63,6 @@ function Appel({ className = "size-9" }: { className?: string }) {
       <path d="M22 9c3-4 8-4 9-2-2 3-6 4-9 2z" fill="var(--color-groen)" />
       <ellipse cx="13" cy="19" rx="2.4" ry="4" fill="#fff" opacity="0.35" />
     </svg>
-  );
-}
-
-/** Een zakje: leeg en open, of vol met kleine appels erin. */
-function Zakje({ inhoud, leeg = false }: { inhoud: number; leeg?: boolean }) {
-  const kolommen = Math.min(Math.max(inhoud, 1), 5);
-  return (
-    <span
-      className={`relative inline-flex min-h-16 min-w-16 flex-col items-center justify-end rounded-b-[1.6rem] rounded-t-md border-[3px] px-2 pb-2 pt-4 ${
-        leeg
-          ? "border-dashed border-huisstijl bg-huisstijl-zacht/60"
-          : "motion-safe:animate-teller-pop border-amber bg-amber-zacht"
-      }`}
-    >
-      {/* De rand bovenaan, waar het zakje dichtgaat. */}
-      <span
-        className="absolute inset-x-1 top-1 h-1.5 rounded-full bg-amber/50"
-        aria-hidden="true"
-      />
-      {!leeg && (
-        <span
-          className="grid gap-0.5"
-          style={{ gridTemplateColumns: `repeat(${kolommen}, 0.95rem)` }}
-        >
-          {Array.from({ length: inhoud }, (_, i) => (
-            <Appel key={i} className="size-[0.95rem]" />
-          ))}
-        </span>
-      )}
-    </span>
   );
 }
 
@@ -155,231 +111,6 @@ function Knop({
     >
       {children}
     </button>
-  );
-}
-
-/** Rijtjes van vijf, met ruimte tussen de rijtjes: zo is het te tellen. */
-function InRijtjes({ children }: { children: ReactNode[] }) {
-  const rijtjes: ReactNode[][] = [];
-  children.forEach((kind, i) => {
-    if (i % 5 === 0) rijtjes.push([]);
-    rijtjes[rijtjes.length - 1].push(kind);
-  });
-  return (
-    <div className="flex max-w-[34rem] flex-wrap justify-center gap-x-4 gap-y-1">
-      {rijtjes.map((rij, i) => (
-        <div key={i} className="flex gap-0.5">
-          {rij}
-        </div>
-      ))}
-    </div>
-  );
-}
-
-// ---------------------------------------------------------------------------
-// Groepjes maken
-// ---------------------------------------------------------------------------
-
-type Groepstand = {
-  /** Per vol zakje de nummers van de appels erin. */
-  zakjes: number[][];
-  /** De appels met een rand: aangetikt, nog niet in een zakje. */
-  gekozen: number[];
-  /** Wat er met een vol groepje gebeurt: eerst het lijntje, dan schuiven. */
-  stap: "kiezen" | "lijn" | "schuiven";
-};
-
-const LEGE_GROEPSTAND: Groepstand = { zakjes: [], gekozen: [], stap: "kiezen" };
-
-function Groepjes({
-  figuur,
-  uit,
-  stand,
-  zet,
-}: {
-  figuur: Deelfiguur;
-  uit: boolean;
-  stand: Groepstand;
-  zet: Dispatch<SetStateAction<Groepstand>>;
-}) {
-  const { geheel, deler } = figuur;
-  const veel = geheel > VEEL;
-  const inZakje = new Set(stand.zakjes.flat());
-  const los = geheel - inZakje.size;
-
-  const vlak = useRef<HTMLDivElement | null>(null);
-  const appels = useRef<(HTMLButtonElement | null)[]>([]);
-  const legeZak = useRef<HTMLSpanElement | null>(null);
-  const [lijn, setLijn] = useState<{ x: number; y: number }[]>([]);
-  const [schuif, setSchuif] = useState<Record<number, string>>({});
-
-  function tik(i: number) {
-    zet((s) => {
-      if (s.stap !== "kiezen" || s.zakjes.flat().includes(i)) return s;
-      if (s.gekozen.includes(i))
-        return { ...s, gekozen: s.gekozen.filter((x) => x !== i) };
-      if (veel) {
-        /* Eén tik vult meteen een heel zakje: deze appel en de losse erna. */
-        const bezet = new Set([...s.zakjes.flat(), ...s.gekozen]);
-        const vrij = Array.from(
-          { length: geheel },
-          (_, n) => (i + n) % geheel,
-        ).filter((n) => !bezet.has(n));
-        return { ...s, gekozen: [...s.gekozen, ...vrij].slice(0, deler) };
-      }
-      return { ...s, gekozen: [...s.gekozen, i] };
-    });
-  }
-
-  /* Is het groepje vol, dan het lijntje; daarna schuiven; daarna in het zakje. */
-  useEffect(() => {
-    if (stand.stap === "kiezen" && stand.gekozen.length === deler) {
-      zet((s) => ({ ...s, stap: "lijn" }));
-      return;
-    }
-    if (stand.stap === "lijn") {
-      const klokje = window.setTimeout(
-        () => zet((s) => ({ ...s, stap: "schuiven" })),
-        minderBeweging() ? 250 : LIJN_MS,
-      );
-      return () => window.clearTimeout(klokje);
-    }
-    if (stand.stap === "schuiven") {
-      const klokje = window.setTimeout(
-        () =>
-          zet((s) => ({
-            zakjes: [...s.zakjes, s.gekozen],
-            gekozen: [],
-            stap: "kiezen",
-          })),
-        minderBeweging() ? 0 : SCHUIF_MS,
-      );
-      return () => window.clearTimeout(klokje);
-    }
-  }, [stand.stap, stand.gekozen.length, deler, zet]);
-
-  /* Waar het lijntje loopt en waarheen de appels schuiven: gemeten, niet geschat. */
-  useLayoutEffect(() => {
-    const bak = vlak.current?.getBoundingClientRect();
-    if (!bak || stand.stap === "kiezen") {
-      setLijn([]);
-      setSchuif({});
-      return;
-    }
-    const midden = (el: Element | null | undefined) => {
-      const r = el?.getBoundingClientRect();
-      return r ? { x: r.left + r.width / 2, y: r.top + r.height / 2 } : null;
-    };
-    const punten = stand.gekozen
-      .map((i) => midden(appels.current[i]))
-      .filter((p) => p !== null);
-    setLijn(punten.map((p) => ({ x: p.x - bak.left, y: p.y - bak.top })));
-    if (stand.stap === "schuiven") {
-      const doel = midden(legeZak.current);
-      if (doel) {
-        setSchuif(
-          Object.fromEntries(
-            stand.gekozen.map((i, n) => {
-              const p = punten[n];
-              return [
-                i,
-                p
-                  ? `translate(${doel.x - p.x}px, ${doel.y - p.y}px) scale(0.4)`
-                  : "",
-              ];
-            }),
-          ),
-        );
-      }
-    }
-  }, [stand.stap, stand.gekozen]);
-
-  return (
-    <div
-      ref={vlak}
-      className="relative flex w-full flex-col items-center gap-4"
-    >
-      {/* De zakjes: de volle, en één leeg zakje zolang er nog losse appels zijn. */}
-      <div className="flex min-h-16 flex-wrap items-end justify-center gap-3">
-        {stand.zakjes.map((z, i) => (
-          <Zakje key={i} inhoud={z.length} />
-        ))}
-        {los > 0 && (
-          <span ref={legeZak} aria-label="Een leeg zakje">
-            <Zakje inhoud={0} leeg />
-          </span>
-        )}
-      </div>
-
-      {/*
-        De losse appels, in rijtjes van vijf. Een appel in een zakje laat een
-        lege plek achter, zodat de rest niet verspringt; zijn ze allemaal op,
-        dan verdwijnt het hele vak.
-      */}
-      {los > 0 && (
-        <InRijtjes>
-          {Array.from({ length: geheel }, (_, i) => {
-            if (inZakje.has(i))
-              return <span key={i} className="size-11" aria-hidden="true" />;
-            const gekozen = stand.gekozen.includes(i);
-            return (
-              <button
-                key={i}
-                ref={(el) => {
-                  appels.current[i] = el;
-                }}
-                type="button"
-                aria-label={
-                  gekozen
-                    ? "Laat deze appel los"
-                    : veel
-                      ? "Vul een zakje"
-                      : "Tik deze appel aan"
-                }
-                aria-pressed={gekozen}
-                disabled={uit || stand.stap !== "kiezen"}
-                onClick={() => tik(i)}
-                style={
-                  schuif[i]
-                    ? {
-                        transform: schuif[i],
-                        opacity: 0.3,
-                        transition: `transform ${SCHUIF_MS}ms ease-in, opacity ${SCHUIF_MS}ms ease-in`,
-                      }
-                    : undefined
-                }
-                className={`grid size-11 touch-manipulation place-items-center rounded-full border-[3px] transition-colors disabled:cursor-default ${
-                  gekozen
-                    ? "border-huisstijl bg-huisstijl-zacht"
-                    : "border-transparent enabled:hover:bg-room"
-                }`}
-              >
-                <Appel />
-              </button>
-            );
-          })}
-        </InRijtjes>
-      )}
-
-      {/* Het lijntje dat een vol groepje verbindt. */}
-      {lijn.length > 1 && (
-        <svg
-          className="pointer-events-none absolute inset-0 size-full overflow-visible"
-          aria-hidden="true"
-        >
-          <polyline
-            points={lijn.map((p) => `${p.x},${p.y}`).join(" ")}
-            fill="none"
-            stroke="var(--color-huisstijl)"
-            strokeWidth="4"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            opacity={stand.stap === "schuiven" ? 0 : 0.9}
-            style={{ transition: `opacity ${SCHUIF_MS}ms` }}
-          />
-        </svg>
-      )}
-    </div>
   );
 }
 
@@ -486,12 +217,15 @@ export function Deelbouwer({
   const hulpstap = figuur.stap === "hulp";
 
   const leeg = () => Array.from({ length: figuur.deler }, () => 0);
-  const [groepen, setGroepen] = useState<Groepstand>(LEGE_GROEPSTAND);
+  /* Bij groepjes maken: of alles in volle groepjes zit, en een teller om opnieuw te beginnen. */
+  const [groepjesKlaar, setGroepjesKlaar] = useState(false);
+  const [ronde, setRonde] = useState(0);
   const [verdeling, setVerdeling] = useState<number[]>(leeg);
   const [hulpOpen, setHulpOpen] = useState(false);
 
   function opnieuw() {
-    setGroepen(LEGE_GROEPSTAND);
+    setRonde((r) => r + 1);
+    setGroepjesKlaar(false);
     setVerdeling(leeg());
     onOpnieuw();
   }
@@ -502,7 +236,8 @@ export function Deelbouwer({
     const wasKlaar = vorigeFase.current !== "bezig";
     vorigeFase.current = fase;
     if (wasKlaar && fase === "bezig") {
-      setGroepen(LEGE_GROEPSTAND);
+      setRonde((r) => r + 1);
+      setGroepjesKlaar(false);
       setVerdeling(leeg());
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -519,9 +254,7 @@ export function Deelbouwer({
   const stapelLeeg = verdeeld === figuur.geheel;
   const evenveel = verdeling.every((n) => n === verdeling[0]);
   const klaar =
-    bouw === "groepjes"
-      ? groepen.zakjes.flat().length === figuur.geheel
-      : stapelLeeg && evenveel;
+    bouw === "groepjes" ? groepjesKlaar : stapelLeeg && evenveel;
   const bouwen = !hulpstap || hulpOpen;
   const geblokkeerd = bouwen && !klaar;
 
@@ -559,17 +292,20 @@ export function Deelbouwer({
 
       {bouwen && (
         <>
-          {hulpstap && (
+          {/* Bij verdelen staat de opdracht erbij; groepjes maken is een rustig scherm. */}
+          {hulpstap && bouw === "verdelen" && (
             <p className="text-center text-xl font-extrabold text-inkt">
               {bouwOpdracht(bouw, figuur.deler)}
             </p>
           )}
           {bouw === "groepjes" ? (
-            <Groepjes
-              figuur={figuur}
+            <Bolletjes
+              key={ronde}
+              geheel={figuur.geheel}
+              deler={figuur.deler}
               uit={uit}
-              stand={groepen}
-              zet={setGroepen}
+              oplichten={fase === "goed"}
+              onKlaar={setGroepjesKlaar}
             />
           ) : (
             <Verdelen

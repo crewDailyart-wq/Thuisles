@@ -5,9 +5,9 @@
  * antwoord en het scherm zelf precies dezelfde woorden gebruiken. Hier staat
  * geen React in.
  *
- * Sinds oktober 2026 altijd appels (keuze van de eigenaar): in zakjes bij
- * groepjes maken, in mandjes bij eerlijk verdelen. De andere thema's staan er
- * nog voor opgaven uit de eerste versie, die als concept bewaard zijn.
+ * Groepjes maken gaat met egale bolletjes (keuze van de eigenaar, oktober
+ * 2026); eerlijk verdelen met appels in mandjes. De andere thema's staan er nog
+ * voor opgaven uit eerdere versies, die als concept bewaard zijn.
  */
 
 import type { Deelthema } from "@/lib/generatoren/soort";
@@ -33,23 +33,28 @@ export function themaVoor(bouw: "groepjes" | "verdelen"): Deelthema {
   return bouw === "groepjes" ? "appels" : "mandjes";
 }
 
-/** De opdracht bovenaan: "Maak groepjes van 3." of "Verdeel de appels eerlijk over de 4 mandjes." */
+/**
+ * De opdracht bij de eerste opgave: "Klik steeds 4 bolletjes tegen elkaar." of
+ * "Verdeel de appels eerlijk over de 4 mandjes."
+ */
 export function bouwOpdracht(bouw: "groepjes" | "verdelen", deler: number): string {
-  if (bouw === "groepjes") return `Maak groepjes van ${deler}.`;
+  if (bouw === "groepjes") {
+    return deler === 1 ? "Zet elk bolletje apart." : `Klik steeds ${deler} bolletjes tegen elkaar.`;
+  }
   return deler === 1 ? "Leg de appels in het mandje." : `Verdeel de appels eerlijk over de ${deler} mandjes.`;
 }
 
 const appels = (n: number) => (n === 1 ? "1 appel" : `${n} appels`);
 
-/** De kern van de zin: "4 zakjes met 3 appels" of "elk mandje krijgt 5 appels". */
+/** De kern van de zin: "5 groepjes van 4" of "elk mandje krijgt 5 appels". */
 function kern(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {
   const r = geheel / deler;
-  if (bouw === "groepjes") return `${r === 1 ? "1 zakje" : `${r} zakjes`} met ${appels(deler)}`;
+  if (bouw === "groepjes") return `${r === 1 ? "1 groepje" : `${r} groepjes`} van ${deler}`;
   return deler === 1 ? `het mandje krijgt ${appels(r)}` : `elk mandje krijgt ${appels(r)}`;
 }
 
 /**
- * Na een goed antwoord: "Goed zo! 4 zakjes met 3 appels. 12 : 3 = 4."
+ * Na een goed antwoord: "Goed zo! 5 groepjes van 4. 20 : 4 = 5."
  */
 export function deelGoedZin(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {
   const k = kern(geheel, deler, bouw);
@@ -57,7 +62,7 @@ export function deelGoedZin(geheel: number, deler: number, bouw: "groepjes" | "v
 }
 
 /**
- * Na een fout antwoord: "Het zijn 4 zakjes met 3 appels, want 12 : 3 = 4." of
+ * Na een fout antwoord: "Het zijn 5 groepjes van 4, want 20 : 4 = 5." of
  * "Elk mandje krijgt 5 appels, want 20 : 4 = 5."
  */
 export function deelZin(geheel: number, deler: number, bouw: "groepjes" | "verdelen"): string {

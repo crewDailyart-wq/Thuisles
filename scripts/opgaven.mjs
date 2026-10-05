@@ -67,17 +67,19 @@ const OEFENINGEN = [
   // Groep 4 – Delen – Onderwerp 1: Deeltafels oefenen
   // Sinds de uitkomsten tot en met 10 gaan (oktober 2026) staan de bolletjes
   // met de hand op het leerdoel, zodat ze hetzelfde blijven als in WERKPLAN.md.
+  // Alle tien deeltafels: vrije magneetjes met maximaal dertig bolletjes.
+  // Bij weinig beschikbare sommen is de beginopstelling de visuele variant.
   // -------------------------------------------------------------------------
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 1", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["1"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 2", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["2"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 10", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["10"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 5", soort: "deelsom", bolletjes: 2, handmatig: true, inst: { delers: ["5"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 3", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["3"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 4", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["4"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 6", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["6"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 8", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["8"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 7", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["7"], tot: 10, werking: "groepjes", visueel: 5 } },
-  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 9", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["9"], tot: 10, werking: "groepjes", visueel: 5 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 1", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["1"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 2", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["2"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 10", soort: "deelsom", bolletjes: 1, handmatig: true, inst: { delers: ["10"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 5", soort: "deelsom", bolletjes: 2, handmatig: true, inst: { delers: ["5"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 3", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["3"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 4", soort: "deelsom", bolletjes: 3, handmatig: true, inst: { delers: ["4"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 6", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["6"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 8", soort: "deelsom", bolletjes: 4, handmatig: true, inst: { delers: ["8"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 7", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["7"], tot: 10, werking: "magneetjes", visueel: 15 } },
+  { groep: "Delen · Deeltafels oefenen", titel: "Delen door 9", soort: "deelsom", bolletjes: 5, handmatig: true, inst: { delers: ["9"], tot: 10, werking: "magneetjes", visueel: 15 } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Delen – Onderwerp 2: Deelsommen
@@ -784,6 +786,9 @@ for (const oefening of OEFENINGEN) {
         f.soort === "deelsom" ? [[f.geheel, f.deler]] : f.soort === "deelkoppelen" ? f.sommen.map((x) => [x.eerste, x.tweede]) : [];
       for (const [g, d] of sommen) {
         if (g > 100 || g % d !== 0 || g / d < 1 || g / d > 10) fouten.push(`${waar}: ${g} : ${d} past niet (uitkomst 1–10, tot en met 100).`);
+      }
+      if (f.soort === "deelsom" && oefening.inst.werking === "magneetjes") {
+        if (!f.magneetjes || f.geheel > 30 || !Number.isFinite(f.speelzaad)) fouten.push(`${waar}: magneetjes missen of meer dan 30 bolletjes.`);
       }
       if (f.soort === "welkedeelsom") {
         if (f.uitkomst < 1 || f.uitkomst > 10) fouten.push(`${waar}: uitkomst ${f.uitkomst} hoort tussen 1 en 10.`);

@@ -634,10 +634,18 @@ export type Figuur =
        * weg en zet het `kaleVraag` terug als vraagzin; zie `metWerkingVanSjabloon`
        * in `lib/data/vragen.ts`.
        */
+      /** Vrij bouwen, zonder begrenzing van de grootte van een groepje. */
+      magneetjes?: boolean;
+      speelzaad?: number;
       bouw?: "groepjes" | "verdelen";
       stap?: "bouwen" | "hulp";
       thema?: Deelthema;
       kaleVraag?: string;
+      /**
+       * Een rustig scherm: de vraagzin staat er alleen voor een voorleesprogramma,
+       * niet in beeld. Alleen de eerste opgave heeft een zichtbare zin.
+       */
+      stil?: boolean;
       /** Vaste plek in de oefening, van makkelijk naar moeilijk. */
       volgnummer?: number;
     }

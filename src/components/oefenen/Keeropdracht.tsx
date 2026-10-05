@@ -58,6 +58,7 @@ import { Gegeven, Invulvak } from "@/components/oefenen/Splitsopdracht";
 import { Koppelsommen } from "@/components/oefenen/Optelopdracht";
 import { Telplaatje } from "@/components/oefenen/Telplaatjes";
 import { Sleepkaartjes } from "@/components/oefenen/Sleepkaartjes";
+import { MagneetDeelsom } from "@/components/oefenen/MagneetDeelsom";
 import { Deelbouwer } from "@/components/oefenen/Deelbouwer";
 import { isTelplaatje } from "@/lib/telplaatjes";
 import {
@@ -278,7 +279,7 @@ export function Keeropdracht({
 
   /* Bij een nieuwe vraag staat de cursor meteen in het eerste lege vakje. */
   useEffect(() => {
-    if (!metCursor || fase !== "bezig") return;
+    if (!metCursor || fase !== "bezig" || (figuur.soort === "deelsom" && figuur.magneetjes)) return;
     velden.current[0]?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metCursor]);
@@ -341,6 +342,12 @@ export function Keeropdracht({
     Delen om zelf te doen: eerst groepjes maken of eerlijk verdelen, en pas
     daarna de som. Het vakje is hetzelfde als hieronder.
   */
+  if (figuur.soort === "deelsom" && figuur.magneetjes) {
+    return <MagneetDeelsom geheel={figuur.geheel} deler={figuur.deler}
+      zaad={figuur.speelzaad ?? 0} fase={fase} vakje={vak(0, "De uitkomst", "groot")}
+      onOpnieuw={() => meld([""])} onGezien={onKlaar} />;
+  }
+
   if (figuur.soort === "deelsom" && figuur.stap) {
     return (
       <Deelbouwer

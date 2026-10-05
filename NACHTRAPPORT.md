@@ -791,3 +791,40 @@ Samen 66 nieuwe oefeningen en 990 opgaven. "Geopend" betekent: de pagina laadde 
 
 - **00 — Optellen uitbreiden:** klaar; 28 nieuwe oefeningen (Optellen tot en met 50, Rekenen met tientallen, Optellen tot en met 100 en meer vleksommen). Test zelf: open als kind een paar oefeningen bij Optellen tot en met 100 en geef één keer bewust een fout antwoord.
 - **01 — Aftrekken uitbreiden en Optellen tot en met 30 en 40:** klaar; 66 nieuwe oefeningen in 9 onderwerpen (zie de tabel hierboven). Test zelf: "Aftrekken met plaatjes" bij Aftrekken tot en met 20 op een tablet, en een vlekoefening waarbij het toetsenbord opengaat.
+
+## 5 oktober 2026 — vrije magneetjes ingebouwd
+
+Het goedgekeurde losse concept is ingebouwd in alle tien oefeningen van Delen →
+Deeltafels oefenen. De bestaande Thuisles-stijl blijft gebruikt; de som en het
+invulvak staan boven het vrije speelveld. Slepen en tikken verbinden bolletjes,
+ook tot verkeerde groepjes. Losmaken en Opnieuw blijven mogelijk. De Controleer-
+knop controleert eerst de bouw; pas bij een kloppende bouw wordt het getypte
+antwoord langs de bestaande nakijk- en opslagroute verwerkt. Na goed verschijnen
+de telcijfers één voor één vóór de gewone beloning.
+
+Er zijn 150 nieuwe opgaven gepubliceerd, vijftien per oefening. De oude opgaven
+zijn als concept bewaard. Er zijn geen leerdoelen of sjablonen verwijderd en
+titels, volgorde, moeilijkheid en webadressen zijn behouden. Het tweede onderwerp
+Deelsommen is niet aangepast. In beheer kan Werking nog steeds op Alleen typen.
+
+De grens van dertig bolletjes betekent dat bij sommige deeltafels dezelfde som
+terugkomt met een andere beginopstelling, niet direct na zichzelf. Bij delen door
+10 zijn alleen 10 : 10, 20 : 10 en 30 : 10 mogelijk binnen die grens.
+
+Vooraf is een volledige SQLite-back-up gemaakt:
+`backups/thuisles-voor-magneetjes-2026-10-04T22-56-30-078Z.db`.
+De publicatiestap heeft met hashes gecontroleerd dat alle tabellen behalve
+sjablonen en vragen ongewijzigd bleven. Bij de schermtests is uitsluitend
+Testkind gebruikt: één fout en één goed antwoord; de gegevens van andere
+kinderen zijn vóór en na de tests vergeleken en ongewijzigd.
+
+Controles: alle tien oefeningen geopend; som boven speelveld; verkeerde bouw
+geeft pas bij Controleer een aanwijzing; te grote groepjes en losmaken; fout
+antwoord via de bestaande nakijkroute; telcijfers na goed; tikken met touch-events
+op tabletformaat; geen horizontale overflow op 375 pixels. Laptop- en
+tabletscreenshots gecontroleerd. TypeScript, lint (alleen een bestaande waarschuwing
+in OefenSpeler), `npm run bewaak` en de productiebuild geslaagd.
+De oude ontwikkelserver is herstart na problemen met laden van de clientcode.
+
+Zelf testen: begin een nieuwe ronde bij Delen → Deeltafels oefenen en probeer
+slepen en tikken op de eigen tablet, ook het lostrekken uit een groter groepje.

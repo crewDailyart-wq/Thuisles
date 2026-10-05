@@ -181,6 +181,50 @@
     }
   }
 
+  /*
+    Delen met bolletjes: een bolletje klikt vast (een klein tikje groter en
+    terug), een bolletje te veel stuitert zacht terug, en na een goed antwoord
+    lichten de volle groepjes één voor één op.
+  */
+  --animate-bolletje-klik: bolletje-klik 0.3s ease-out;
+  --animate-bolletje-stuiter: bolletje-stuiter 0.35s ease-out;
+  --animate-groepje-licht: groepje-licht 0.9s ease-in-out both;
+
+  @keyframes bolletje-klik {
+    0% {
+      transform: scale(1);
+    }
+    45% {
+      transform: scale(1.15);
+    }
+    100% {
+      transform: scale(1);
+    }
+  }
+
+  @keyframes bolletje-stuiter {
+    0%,
+    100% {
+      transform: translateX(0);
+    }
+    30% {
+      transform: translateX(-5px);
+    }
+    65% {
+      transform: translateX(4px);
+    }
+  }
+
+  @keyframes groepje-licht {
+    0%,
+    100% {
+      background-color: var(--color-huisstijl-zacht);
+    }
+    50% {
+      background-color: var(--color-geel);
+    }
+  }
+
   /* Vos beweegt zachtjes mee met de uitleg. */
   --animate-vos-wiebel: vos-wiebel 1.6s ease-in-out infinite;
   --animate-vos-sprong: vos-sprong 0.7s ease-out 2;
