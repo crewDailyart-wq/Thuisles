@@ -54,3 +54,6 @@ next-env.d.ts
 # Back-ups die Claude maakt vóór een wijziging in de database. Niet committen:
 # de volledige kopie bevat ook de kinderen en hun voortgang.
 /backups
+
+# Plugin-bestanden van de eigenaar: blijven op de laptop, niet in Git.
+/artifacts
