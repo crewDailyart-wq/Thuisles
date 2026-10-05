@@ -1,0 +1,27 @@
+{
+  "name": "magic-path-thuisles",
+  "version": "0.1.0",
+  "description": "Ontwerp en verbeter het bestaande Thuisles-leerplatform voor basisschoolkinderen.",
+  "author": {
+    "name": "Thuisles"
+  },
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "Magic Path voor Thuisles",
+    "shortDescription": "Speels en helder leren",
+    "longDescription": "Helpt het bestaande Thuisles-platform visueel en interactief verbeteren voor groep 3–8. Bouwt voort op de huidige code, huisstijl en leerdoelen. Werkt via de ontwikkel- en browsermogelijkheden van de host; geen externe MagicPath-koppeling.",
+    "developerName": "Thuisles",
+    "category": "Productivity",
+    "defaultPrompt": [
+      "Verbeter het startscherm van Thuisles voor groep 4.",
+      "Maak deze rekenoefening visueel duidelijker.",
+      "Controleer de kindomgeving op gebruiksgemak op een tablet."
+    ],
+    "brandColor": "#e8690f",
+    "logo": "./assets/icon.svg",
+    "composerIcon": "./assets/icon.svg",
+    "capabilities": [
+      "Write"
+    ]
+  }
+}
