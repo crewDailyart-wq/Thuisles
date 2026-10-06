@@ -135,7 +135,7 @@ function stapstenen(o: Opgave, stenen: (number | null)[], sprong: number, voorui
     fouten.push({
       code: `steen-${k}`,
       antwoorden: [juist.map((_, j) => (j === k ? `!${x}` : "*")).join(",")],
-      zinnen: [zin("Eén steen klopt nog niet."), zin(voor !== null ? `Na ${voor} komt ${x}: ${sprong} ${woord}.` : `Vóór ${volledig[idx + 1]} komt ${x}.`, "de steen licht op")],
+      zinnen: [zin(`Kijk naar de ${RANG[k] ?? "volgende"} lege steen.`), zin(voor !== null ? `Na ${voor} komt ${x}: ${sprong} ${woord}.` : `Vóór ${volledig[idx + 1]} komt ${x}.`, "de steen licht op")],
     });
   });
   const rij = volledig.length <= 7 ? volledig.join(", ") : volledig.slice(0, 7).join(", ");
@@ -234,7 +234,7 @@ function getallenlijn(o: Opgave, f: { stand?: string; gevraagd: number[]; marge?
   if (juist.length === 2) fouten.push({ code: "omgewisseld", antwoorden: [`${juist[1]},${juist[0]}`], zinnen: [zin("De getallen zijn omgewisseld."), zin(`${juist[0]} hoort links, ${juist[1]} verder naar rechts.`)] });
   juist.forEach((x, i) => {
     const { lo, hi } = tussenTientallen(x);
-    fouten.push({ code: `plek-${i}`, antwoorden: [juist.map((_, j) => (j === i ? `!${x}` : "*")).join(",")], zinnen: [zin("Eén getal staat nog niet goed."), zin(`${x} ligt tussen ${lo} en ${hi}.`, "het vakje licht op")], getallen: [lo, hi] });
+    fouten.push({ code: `plek-${i}`, antwoorden: [juist.map((_, j) => (j === i ? `!${x}` : "*")).join(",")], zinnen: [zin(`Kijk naar het ${RANG[i] ?? "volgende"} vakje.`), zin(`${x} ligt tussen ${lo} en ${hi}.`, "het vakje licht op")], getallen: [lo, hi] });
   });
   const { lo, hi } = tussenTientallen(juist[0]);
   return maak({
@@ -261,7 +261,7 @@ function trein(o: Opgave, wagons: number[], aflopend: boolean): Geschreven | nul
   ];
   juist.forEach((x, i) => {
     if (i === 0) return;
-    fouten.push({ code: `wagon-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin("Eén wagon staat nog niet goed."), zin(`Na ${juist[i - 1]} komt ${x}.`, "de wagon licht op")] });
+    fouten.push({ code: `wagon-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin(`Kijk naar de ${RANG[i] ?? "volgende"} wagon.`), zin(`Na ${juist[i - 1]} komt ${x}.`, "de wagon licht op")] });
   });
   return maak({
     antwoord: o.antwoord,
@@ -386,7 +386,7 @@ function huizenrij(o: Opgave, nummers: number[], gevraagd: number[]): Geschreven
     fouten.push({
       code: `huis-${k}`,
       antwoorden: [juist.map((_, j) => (j === k ? `!${x}` : "*")).join(",")],
-      zinnen: [zin("Eén huisnummer klopt nog niet."), zin(links !== null ? `Na ${links} komt ${x}.` : rechts !== null ? `Vóór ${rechts} komt ${x}.` : `Hier hoort ${x}.`, "het huis licht op")],
+      zinnen: [zin(`Kijk naar het ${RANG[k] ?? "volgende"} lege huis.`), zin(links !== null ? `Na ${links} komt ${x}.` : rechts !== null ? `Vóór ${rechts} komt ${x}.` : `Hier hoort ${x}.`, "het huis licht op")],
     });
   });
   return maak({

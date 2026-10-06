@@ -492,7 +492,7 @@ export function schrijfGeld(o: Opgave): Geschreven | null {
       ];
       juist.forEach((x, i) => {
         if (i === 0) return;
-        fouten.push({ code: `plek-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin("Eén stuk staat nog niet goed."), zin(`Na ${euro(s[juist[i - 1]])} komt ${euro(s[x])}.`)] });
+        fouten.push({ code: `plek-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin(`Kijk naar het ${RANG[i] ?? "volgende"} stuk.`), zin(`Na ${euro(s[juist[i - 1]])} komt ${euro(s[x])}.`)] });
       });
       return uit(o, {
         goed: [zin(`Eerst ${euro(s[juist[0]])}, als laatste ${euro(s[juist[juist.length - 1]])}.`)],

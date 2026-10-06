@@ -329,7 +329,7 @@ export function schrijfTijd(o: Opgave): Geschreven | null {
       ];
       juist.forEach((x, i) => {
         if (i === 0) return;
-        fouten.push({ code: `klok-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin("Eén klok staat nog niet goed."), zin(`Na ${w(juist[i - 1])} komt ${w(x)}.`)] });
+        fouten.push({ code: `klok-${i}`, antwoorden: [juist.map((y, j) => (j < i ? `${y}` : j === i ? `!${x}` : "*")).join(",")], zinnen: [zin(`Kijk naar de ${RANG[i] ?? "volgende"} klok.`), zin(`Na ${w(juist[i - 1])} komt ${w(x)}.`)] });
       });
       return maak({
         antwoord: o.antwoord,
@@ -491,7 +491,7 @@ export function schrijfTijd(o: Opgave): Geschreven | null {
       const fouten: Fout[] = leeg.map((idx, k) => ({
         code: `vakje-${k}`,
         antwoorden: [juist.map((x, j) => (j === k ? `!${x}` : "*")).join(",")],
-        zinnen: [zin(`Eén ${f.soort === "dagenaanvullen" ? "dag" : "maand"} klopt nog niet.`), zin(idx > 0 ? `Na ${volledig[idx - 1]} komt ${volledig[idx]}.` : `Vóór ${volledig[idx + 1]} komt ${volledig[idx]}.`)],
+        zinnen: [zin(`Kijk naar het ${RANG[k] ?? "volgende"} lege vakje.`), zin(idx > 0 ? `Na ${volledig[idx - 1]} komt ${volledig[idx]}.` : `Vóór ${volledig[idx + 1]} komt ${volledig[idx]}.`)],
       }));
       return maak({
         antwoord: o.antwoord,

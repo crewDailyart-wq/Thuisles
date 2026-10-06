@@ -839,6 +839,14 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 
 - **01 — verborgen onderwerp.** Onderwerpen hadden nog geen "verborgen"-stand; die heb ik erbij gebouwd (net als bij oefeningen). "Optellen met het rekenrek" staat nu op verborgen: kinderen en Google zien het niet meer, in beheer staat het er nog. Er is in beheer nog geen vinkje om dit zelf aan en uit te zetten. Zal ik dat bouwen?
 - **01 — webadressen.** De openbare pagina's hebben geen laag voor het onderwerp, dus "onder Optellen tot en met 20" heb ik gedaan door het onderwerp vooraan het adres te zetten: `/groep-4/optellen/optellen-tot-en-met-20-rekenrek-aanvullen-tot-10`. De oude adressen sturen door.
+- **02 — de stem wordt nog niet "één keer gemaakt en bewaard".** Thuisles heeft nog geen stemdienst: het voorlezen gebruikt de stem die in de browser zit, en die maakt elke zin ter plekke (gratis, maar niet bewaard). De schakelaar voor een stemdienst die elke zin één keer maakt en bewaart, staat al klaar in `src/lib/stem.ts`. Wil je zo'n dienst kiezen? Dan is daar een sleutel voor nodig.
+- **02 — geen Claude-sleutel.** Er was geen sleutel voor de Claude API, dus ik heb de teksten zelf geschreven: vaste zinnen per soort som, met de getallen uit de opgave, volgens de handleiding. Wil je ze later door de API laten herschrijven, dan kan dat als versie 2; versie 1 blijft dan staan.
+- **02 — plaatje en zinnen lopen nog niet helemaal gelijk.** Elke zin heeft zijn plaatje-stap, en het maatje geeft die stap door terwijl het praat (`src/lib/maatje/stap.ts`). Maar de rekenrekken, bolletjes, klokken en het geld luisteren daar nog niet naar. Daarom doet het plaatje de stap nog niet zelf voor. Bij een fout komt de bestaande uitleg-animatie direct na de woorden van het maatje. Zal ik de plaatjes één voor één laten meelopen? Dat is per soort plaatje een aparte klus.
+- **02 — de tip na 30 seconden** komt alleen bij oefeningen waar het maatje aan staat. Het bestaande knopje "Ik wil een tip" heb ik laten staan, omdat er niets weg mag. De handleiding zegt "nooit een knop Hulp". Wil je dat knopje bij groep 4 weg?
+- **02 — een zin in een vraag die niet klopt:** bij Geld → "Er gaan 1 munten af. Hoeveel euro blijft er over?" (moet "Er gaat 1 munt af" zijn). Die zin komt uit de generator; ik heb hem niet veranderd. Zal ik dat aanpassen?
+- **02 — twee antwoorden van mijn test** staan in de lijst "Antwoorden die het maatje niet herkende" (37 en 1,10, van Testkind). Ik heb ze laten staan, want er mag niets weg. Je kunt ze negeren.
+- **02 — de steekproef door een mens** uit hoofdstuk 11 (20 opgaven per domein lezen) heb ik niet kunnen doen; dat is voor jou of een leerkracht. In beheer zie je per leerdoel hoeveel teksten er zijn. `npm run maatje -- --toon 20` laat er 20 zien.
+- **02 — bestaande melding:** bij Aftrekken tot en met 20 geeft de ontwikkelserver een melding over twee onderdelen met dezelfde sleutel. Die stond er al vóór het maatje, en ik heb hem niet aangeraakt.
 
 ## 00 — Optellen ronde 2
 
@@ -878,9 +886,64 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 
 **Zo test je het:** ga naar `localhost:3000/oefenen/rekenen/optellen`, kies **Optellen tot en met 20** en kijk onder het kopje **Met het rekenrek**. Open bijvoorbeeld "Optellen tot en met 20 zonder over de 10": ook opgave 2 heeft nu het rekenrek.
 
-## 02 — Het maatje, fase 1 (bezig)
+## 02 — Het maatje, fase 1
 
-**Stand (wordt per domein bijgewerkt):** deel 1, 2 en 5 zijn gebouwd. Optellen
-(975 opgaven), Aftrekken (879), Delen (225), Tafels (240), Splitsen (625), Getallen
-(1232), Verhaaltjessommen (1950), Tijd (1260) en Geld (855) hebben teksten die
-allemaal door de controle komen. Alle domeinen van groep 4 zijn klaar.
+**Wat er is gebouwd**
+- **Vos als maatje op het oefenscherm**, onder de knoppen: een poppetje met een tekstwolkje en een eigen geluidsknop. Vos tekent zichzelf; komen er later echte plaatjes, dan hoeft alleen `src/lib/maatje/poppetje.ts` anders. Houdingen: rustig, praat (de mond beweegt mee), blij, denkt na en troost (voor troost is er nog geen eigen plaatje; dan wijst Vos rustig).
+- **Wanneer Vos iets zegt:**
+  - nieuwe opgave: hij leest de vraag voor (tekst 1), met de bouw-aanwijzing waar het kind zelf schuift of legt (tekst 2);
+  - tijdens het bouwen: de wolkjes die er al waren (zoals "Samen 10!"), daar is niets aan veranderd;
+  - goed: tekst 3 ("Goed zo!", "Knap gedaan!" of "Ja, dat klopt!", en "Zie je wel, je kunt het!" na een eerdere fout). Het feestscherm wacht tot hij uitgepraat is;
+  - fout: tekst 4 bij een bekende fout, anders de volledige uitleg (tekst 5). De bestaande uitleg-animatie komt daarna, zodat er nooit twee stemmen tegelijk praten;
+  - 30 seconden niets gedaan: de tip (tekst 6), één keer per opgave;
+  - einde van de ronde: "Je hebt 15 sommen gemaakt. Goed gewerkt!", of bij meer dan de helft fout "Dit was een moeilijke. Morgen nog een keer?".
+- **Geen knop "Hulp"** bij het maatje. Het bestaande knopje "Ik wil een tip" is blijven staan (niets weghalen).
+- **De stem:** dezelfde stem als het voorlezen. De zinnen komen één voor één, het wolkje loopt mee (de zin die klinkt staat vet), en zonder geluid verschijnen ze in hetzelfde tempo.
+- **Geluid uit:** de knop naast Vos. Dat wordt per kind onthouden in de database, dus ook op een ander apparaat. Het wolkje blijft altijd zichtbaar.
+- **Teksten:** alle 6 teksten per opgave, met 3 openers voor tekst 3 en 4 en een eigen tekst 4 per bekende fout uit de handleiding. Bij elke zin staat de plaatje-stap (of "geen plaatje"). Ze staan in de nieuwe tabel `maatje_teksten`, per opgave met een versie (nu versie 1).
+- **De controles uit hoofdstuk 11** zitten in `src/lib/maatje/controle.ts`. Een tekst die niet doorkomt, gebruikt het maatje niet. Ik heb elke melding opgelost door de tekst opnieuw te schrijven, tot alles doorkwam.
+- **Foutenherkenning:** Thuisles vergelijkt het antwoord met de bekende fouten van die opgave (bijvoorbeeld 3 bij 8 + 5: "Je bent de 10 vergeten"). Past er geen, dan komt de volledige uitleg en wordt het antwoord bewaard in `maatje_onbekend`, zonder naam van het kind.
+- **Beheer:**
+  - op elk leerdoelscherm het vinkje **Maatje aan**, met erbij hoeveel opgaven teksten hebben;
+  - op **Beheer → Vakken** het blok **Het maatje** met één vinkje **Maatje aan voor alle oefeningen** en de lijst **Antwoorden die het maatje niet herkende**;
+  - beide staan in het schermcontract.
+- **Script** om de teksten (opnieuw) te schrijven: `npm run maatje` (alleen kijken) en `npm run maatje -- --opslaan`. Komen er nieuwe opgaven bij, draai dan `npm run maatje -- --opslaan`; bestaande teksten blijven staan. Het script maakt geen vragen, leerdoelen of sjablonen aan.
+
+**Per domein: teksten geschreven / door de controle** (alle domeinen zijn klaar)
+
+| Domein | Opgaven | Teksten | Door de controle |
+| --- | --- | --- | --- |
+| Optellen | 975 | 975 | 975 |
+| Aftrekken | 879 | 879 | 879 |
+| Delen | 225 | 225 | 225 |
+| Tafels | 240 | 240 | 240 |
+| Splitsen | 625 | 625 | 625 |
+| Getallen | 1232 | 1232 | 1232 |
+| Verhaaltjessommen | 1950 | 1950 | 1950 |
+| Tijd | 1260 | 1260 | 1260 |
+| Geld | 855 | 855 | 855 |
+| **Samen** | **8241** | **8241** | **8241** |
+
+Het maatje staat aan bij alle 530 leerdoelen van groep 4. Er zijn geen andere domeinen in groep 4.
+
+**Getest met Testkind**
+- In Aftrekken een hele ronde:
+  - een goed antwoord ("Zie je wel, je kunt het!" en daarna het feestscherm);
+  - drie verschillende fouten: plus in plaats van min ("Bijna! Het is min. …"), er 1 naast ("Je zit er 1 naast. …") en een onbekend antwoord (37, met de volledige uitleg);
+  - 30 seconden niets doen ("Maak eerst de 10 vol." bij het rekenrek);
+  - het einde van de ronde ("Je hebt 15 sommen gemaakt. Goed gewerkt!");
+  - geluid uit: knop gaat om, het wolkje blijft, en het blijft uit na herladen.
+- Daarnaast een fout antwoord bij Tafels (plus in plaats van keer), Getallen (de vissen, met kiesknoppen), Splitsen (de tabel) en Geld (munten tellen).
+- Scherm: laptop en telefoonbreedte (390 px).
+
+**Waar je klikt om het maatje te zien en te horen**
+1. Start de website en kies het profiel Testkind.
+2. Ga naar `localhost:3000/oefenen/rekenen/aftrekken`, kies **Aftrekken tot en met 20** → **Erafsommen tot en met 20**.
+3. Zet het geluid van je laptop aan. Vos leest de vraag voor. Typ een fout antwoord en druk op Controleer: Vos legt het uit. Wacht 30 seconden zonder iets te doen: dan komt de tip.
+4. Uitzetten: per oefening op het leerdoelscherm in beheer (**Maatje aan**), of alles tegelijk op **Beheer → Vakken → Het maatje**.
+
+## Samenvatting per bestand
+
+- **00 — Optellen ronde 2:** gedaan. Test de pootjes bij "Optellen via 10" (eerst een fout getal in het linker pootje) en beide vormen van "Aanvullen tot 10".
+- **01 — Het rekenrek niet als apart onderwerp:** gedaan. Kijk in "Optellen tot en met 20" onder het kopje "Met het rekenrek", en probeer een oud webadres.
+- **02 — Het maatje, fase 1:** gedaan voor alle domeinen van groep 4 (8241 opgaven, alle teksten door de controle). Test met Testkind bij een paar domeinen: voorlezen, een fout antwoord, 30 seconden wachten, het einde van een ronde en de geluidsknop. Lees ook de vragen hierboven: over de stemdienst, de meelopende plaatjes en het knopje "Ik wil een tip".

@@ -11,6 +11,7 @@ import { getalWoord, hoofd, stuks } from "@/lib/maatje/taal";
 import type { Geschreven } from "@/lib/maatje/types";
 import type { Opgave } from "@/lib/maatje/schrijf";
 
+const RANG = ["eerste", "tweede", "derde", "vierde", "vijfde", "zesde", "zevende", "achtste"];
 const kralen = (n: number) => stuks(n, "kraal", "kralen");
 const doelZin = (geheel: number) => (geheel === 10 ? "om 10 te maken" : `om ${geheel} te krijgen`);
 
@@ -129,7 +130,7 @@ export function schrijfSplitsen(o: Opgave): Geschreven | null {
         const k = splitsKern(doel, g, plaats);
         /* Per vakje de bekende fouten, en daarna "dit vakje klopt nog niet". */
         for (const fout of k.fouten) fouten.push({ ...fout, code: `${fout.code}-vakje-${i}` });
-        fouten.push({ code: `vakje-${i}`, antwoorden: [plaats(`!${juist[i]}`)], zinnen: [zin("Eén vakje klopt nog niet."), zin(`${g} en ${juist[i]} is samen ${doel}.`)] });
+        fouten.push({ code: `vakje-${i}`, antwoorden: [plaats(`!${juist[i]}`)], zinnen: [zin(`Kijk naar het ${RANG[i] ?? "volgende"} vakje.`), zin(`${g} en ${juist[i]} is samen ${doel}.`)] });
       });
       return maak({
         antwoord: o.antwoord,

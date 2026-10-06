@@ -11,6 +11,7 @@ import type { Geschreven } from "@/lib/maatje/types";
 import type { Opgave } from "@/lib/maatje/schrijf";
 
 type Op = "+" | "−";
+const RANG = ["eerste", "tweede", "derde", "vierde", "vijfde", "zesde", "zevende", "achtste"];
 
 export function somWoorden(a: number | string, op: Op, b: number | string): string {
   return `${a} ${op === "+" ? "plus" : "min"} ${b}`;
@@ -424,7 +425,7 @@ export function aanvulTabel(o: Opgave, doel: number, getallen: number[], p: Plaa
   const fouten: Fout[] = getallen.map((g, i) => ({
     code: `vakje-${i}`,
     antwoorden: [getallen.map((_, j) => (j === i ? `!${juist[i]}` : "*")).join(",")],
-    zinnen: [zin("Eén vakje klopt nog niet."), zin(`Van ${g} naar ${doel} is ${juist[i]}.`, stap(p, "de strook vult zich aan"))],
+    zinnen: [zin(`Kijk naar het ${RANG[i] ?? "volgende"} vakje.`), zin(`Van ${g} naar ${doel} is ${juist[i]}.`, stap(p, "de strook vult zich aan"))],
   }));
   return maak({
     antwoord: o.antwoord,
