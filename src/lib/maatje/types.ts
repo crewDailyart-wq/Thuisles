@@ -29,8 +29,8 @@ export type Fouttekst = {
   code: string;
   /**
    * Antwoorden waaraan Thuisles deze fout herkent, zoals het kind ze geeft.
-   * Bij meer vakjes met komma's ertussen; `*` is "maakt niet uit" en `!4` is
-   * "alles behalve 4".
+   * Bij meer vakjes met komma's ertussen; `*` is "maakt niet uit", `!4` is
+   * "alles behalve 4" en `~37..45` is "een getal van 37 tot en met 45".
    */
   antwoorden: string[];
   /** De zinnen na de opener. */

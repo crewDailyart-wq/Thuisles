@@ -16,7 +16,7 @@
  * de speler veranderen.
  */
 
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useState, useSyncExternalStore } from "react";
 import {
   VOSPOSITIES,
   vosBestand,
@@ -47,23 +47,29 @@ export function VosFiguur({
   const praat = useSyncExternalStore(abonneerPraten, praatVos, praatOpServer);
   const [mondStand, setMondStand] = useState<Mond>("dicht");
   const [knippert, setKnippert] = useState(false);
-  const [heeftPlaatje, setHeeftPlaatjeZelf] = useState(plaatjesBestaan !== false);
-  const setHeeftPlaatje = (ja: boolean) => {
-    if (!ja) plaatjesBestaan = false;
-    setHeeftPlaatjeZelf(ja);
-  };
   /*
-    Een plaatje dat al mislukte vóórdat React de pagina overnam, geeft geen
-    `onError` meer: dan bleef er een kapot plaatje staan. Daarom bij het
-    openen één keer kijken of het echt geladen is.
+    Eerst getekend; pas als vaststaat dat het plaatje echt laadt, komt het
+    plaatje ervoor in de plaats. Andersom ging het mis: een plaatje dat al
+    mislukte vóórdat React de pagina overnam, gaf geen `onError` meer, en dan
+    bleef er een kapot plaatje staan.
   */
-  const plaatje = useRef<HTMLImageElement>(null);
+  const [heeftPlaatje, setHeeftPlaatje] = useState(false);
   useEffect(() => {
-    const img = plaatje.current;
-    if (img && img.complete && img.naturalWidth === 0) {
-      const klok = setTimeout(() => setHeeftPlaatje(false), 0);
-      return () => clearTimeout(klok);
-    }
+    if (plaatjesBestaan === false) return;
+    const proef = new Image();
+    let weg = false;
+    proef.onload = () => {
+      plaatjesBestaan = true;
+      if (!weg) setHeeftPlaatje(true);
+    };
+    proef.onerror = () => {
+      plaatjesBestaan = false;
+      if (!weg) setHeeftPlaatje(false);
+    };
+    proef.src = vosBestand(houding);
+    return () => {
+      weg = true;
+    };
   }, [houding]);
 
   /*
@@ -127,7 +133,6 @@ export function VosFiguur({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
-            ref={plaatje}
             src={vosBestand(houding)}
             alt=""
             onError={() => setHeeftPlaatje(false)}

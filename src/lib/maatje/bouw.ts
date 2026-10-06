@@ -61,7 +61,7 @@ export function maak(o: Ontwerp): Geschreven {
     const eigen = f.antwoorden.filter((a) => {
       const s = schoon(a);
       if (s === "" || goedeAntwoorden.has(s) || gezien.has(s)) return false;
-      if (!s.includes("*") && !s.includes("!") && /^-/.test(s)) return false;
+      if (!s.includes("*") && !s.includes("!") && !s.startsWith("~") && /^-/.test(s)) return false;
       gezien.add(s);
       return true;
     });
@@ -73,7 +73,7 @@ export function maak(o: Ontwerp): Geschreven {
       /* "Je zit er 1 naast", "Je zit er 10 naast": dat verschil rekent Thuisles uit. */
       ...(f.code.includes("een-ernaast") ? [1] : []),
       ...(/tien|tiental/.test(f.code) ? [10] : []),
-      ...eigen.flatMap((a) => (a.match(/\d+/g) ?? []).map(Number)),
+      ...eigen.filter((a) => !a.startsWith("~")).flatMap((a) => (a.match(/\d+/g) ?? []).map(Number)),
     ];
   }
 

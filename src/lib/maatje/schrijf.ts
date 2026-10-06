@@ -15,6 +15,7 @@ import type { Geschreven } from "@/lib/maatje/types";
 import { schrijfRekenen } from "@/lib/maatje/schrijvers/rekenen-kiezen";
 import { schrijfTafelsDelen } from "@/lib/maatje/schrijvers/tafels-delen";
 import { schrijfSplitsen } from "@/lib/maatje/schrijvers/splitsen";
+import { schrijfGetallen } from "@/lib/maatje/schrijvers/getallen";
 
 export type Opgave = {
   vorm: string;
@@ -32,7 +33,7 @@ export type Uitkomst = { geschreven: Geschreven; meldingen: Melding[] } | null;
 export function schrijfMaatje(o: Opgave): Uitkomst {
   let geschreven: Geschreven | null = null;
   try {
-    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o);
+    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o) ?? schrijfGetallen(o);
   } catch {
     geschreven = null;
   }

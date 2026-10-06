@@ -20,6 +20,12 @@ function schoon(waarde: string): string {
 
 function deelPast(patroon: string, waarde: string): boolean {
   if (patroon === "*") return true;
+  /* "~37..45": elk getal van 37 tot en met 45, ook met een komma ertussen (schatten op de getallenlijn). */
+  if (patroon.startsWith("~")) {
+    const [van, tot] = patroon.slice(1).split("..").map(Number);
+    const getal = Number(schoon(waarde).replace(",", "."));
+    return waarde.trim() !== "" && Number.isFinite(getal) && getal >= van && getal <= tot;
+  }
   if (patroon.startsWith("!")) return schoon(waarde) !== schoon(patroon.slice(1)) && waarde.trim() !== "";
   return schoon(waarde) === schoon(patroon);
 }
