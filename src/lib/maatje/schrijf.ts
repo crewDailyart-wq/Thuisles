@@ -18,6 +18,7 @@ import { schrijfSplitsen } from "@/lib/maatje/schrijvers/splitsen";
 import { schrijfGetallen } from "@/lib/maatje/schrijvers/getallen";
 import { schrijfVerhaal } from "@/lib/maatje/schrijvers/verhaal";
 import { schrijfTijd } from "@/lib/maatje/schrijvers/tijd";
+import { schrijfGeld } from "@/lib/maatje/schrijvers/geld";
 
 export type Opgave = {
   vorm: string;
@@ -35,7 +36,7 @@ export type Uitkomst = { geschreven: Geschreven; meldingen: Melding[] } | null;
 export function schrijfMaatje(o: Opgave): Uitkomst {
   let geschreven: Geschreven | null = null;
   try {
-    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o) ?? schrijfGetallen(o) ?? schrijfVerhaal(o) ?? schrijfTijd(o);
+    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o) ?? schrijfGetallen(o) ?? schrijfVerhaal(o) ?? schrijfTijd(o) ?? schrijfGeld(o);
   } catch {
     geschreven = null;
   }

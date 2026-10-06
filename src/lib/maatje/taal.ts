@@ -38,7 +38,8 @@ export function stuks(n: number, enkel: string, meer: string): string {
 export function euro(centen: number): string {
   const e = Math.floor(centen / 100);
   const c = centen % 100;
-  return c === 0 ? `€ ${e}` : `€ ${e},${String(c).padStart(2, "0")}`;
+  /* Hele euro's zoals overal in Thuisles: € 14,- */
+  return c === 0 ? `€ ${e},-` : `€ ${e},${String(c).padStart(2, "0")}`;
 }
 
 /** Geld zoals je het zegt: "2 euro 50", "50 cent", "3 euro". */
@@ -58,6 +59,7 @@ export function euroGezegd(centen: number): string {
  */
 export function spreekbaar(tekst: string): string {
   return tekst
+    .replace(/€\s?(\d+),-/g, "$1 euro")
     .replace(/€\s?(\d+),(\d{2})/g, (_, e: string, c: string) =>
       Number(e) === 0 ? `${Number(c)} cent` : `${e} euro ${Number(c) === 0 ? "" : Number(c)}`.trim(),
     )

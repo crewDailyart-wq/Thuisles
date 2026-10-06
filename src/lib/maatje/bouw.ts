@@ -82,7 +82,8 @@ export function maak(o: Ontwerp): Geschreven {
   const teksten: MaatjeTeksten = {
     versie: MAATJE_VERSIE,
     voor: o.antwoord,
-    voorlezen: zin(o.voorlezen),
+    /* De vraag zoals hij er staat; daar verandert het maatje geen woord aan. */
+    voorlezen: { tekst: o.voorlezen, stap: GEEN_PLAATJE },
     bouw: o.bouw ?? null,
     goed: { openers: GOED_OPENERS, zinnen: o.goed },
     fouten: { openers: FOUT_OPENERS, lijst },
