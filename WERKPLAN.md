@@ -861,10 +861,17 @@ oefeningen staat "vragen per oefensessie" op 15, anders vallen er opgaven weg.
 De tienstrook staat nog in de code (`Tienstrook.tsx`), maar wordt sinds 6
 oktober nergens meer gebruikt.
 
-## Groep 4 – Optellen met het rekenrek (oktober 2026)
+## Groep 4 – Optellen tot en met 20 · kopje "Met het rekenrek" (oktober 2026)
 
-Nieuw onderwerp, direct na Optellen tot en met 20, met dezelfde opbouw als
-Aftrekken met het rekenrek (vijf oefeningen, geen kopjes). Hetzelfde rekenrek:
+Sinds 6 oktober geen apart onderwerp meer: de vijf oefeningen staan in
+Optellen tot en met 20, onder het kopje "Met het rekenrek", direct na "Met
+plaatjes". Het oude onderwerp "Optellen met het rekenrek" staat op verborgen
+(niet verwijderd); zijn oude adres en de oude adressen van de oefeningen
+sturen door. Bij alle 15 opgaven werkt het kind met het rekenrek (Werking
+"Bij alle 15 opgaven met het rekenrek"); geen om en om meer.
+
+Daarvoor: een eigen onderwerp met dezelfde opbouw als Aftrekken met het
+rekenrek (vijf oefeningen, geen kopjes). Hetzelfde rekenrek:
 2 rijen van 10, vijf rode en vijf witte kralen, hetzelfde frame. Het rek voor
 aftrekken is niet aangeraakt; erbij heeft een eigen onderdeel
 (`RekenrekErbij.tsx`) met de beweging die erbij hoort.
@@ -884,14 +891,14 @@ aftrekken is niet aangeraakt; erbij heeft een eigen onderdeel
 |---|---|---|---|---|
 | 1 | Optellen tot en met 10 op het rekenrek | ● | 3 + 4 | Goed zo! 3 en 4 is 7. |
 | 2 | Optellen tot en met 20 zonder over de 10 | ●● | 12 + 5 | Goed zo! 12 en 5 is 17. |
-| 3 | Aanvullen tot 10 | ●●● | 7 + ▢ = 10 (na de negen sommen tot 10 ook tot 20: 13 + ▢ = 20) | Goed zo! 7 en 3 is 10. |
+| 3 | Aanvullen tot 10 | ●●● | 7 + ▢ = 10 en 10 = 7 + ▢, om en om (alleen over 10) | Goed zo! 7 en 3 is 10. |
 | 4 | Optellen over de 10 | ●●●● | 8 + 5 | Goed zo! 8 + 2 = 10, en dan nog 3 erbij: 13. |
-| 5 | Splitsen via 10 | ●●●●● | 6 + 5 met pootjes en het rekenrek | Goed zo! 6 + 4 = 10, en 10 + 1 = 11. |
+| 5 | Splitsen via 10 | ●●●●● | 6 + 5 met pootjes (lusje en hartje) en het rekenrek | Goed zo! 6 en 4 is samen 10. En nog 1 erbij: 11. |
 
-Webadressen: `/groep-4/optellen/rekenrek-optellen-tot-en-met-10`,
-`…/rekenrek-optellen-tot-en-met-20-zonder-over-de-10`,
-`…/rekenrek-aanvullen-tot-10`, `…/rekenrek-optellen-over-de-10`,
-`…/rekenrek-splitsen-via-10`. Elke pagina heeft een eigen titel en omschrijving
+Webadressen (sinds 6 oktober): `/groep-4/optellen/optellen-tot-en-met-20-rekenrek-tot-en-met-10`,
+`…-rekenrek-zonder-over-de-10`, `…-rekenrek-aanvullen-tot-10`,
+`…-rekenrek-over-de-10`, `…-rekenrek-splitsen-via-10`. De oude adressen
+(`/groep-4/optellen/rekenrek-…`) sturen door. Elke pagina heeft een eigen titel en omschrijving
 met "erbijsommen", "rekenrek" en "groep 4", en staat in de sitemap.
 
 ## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR

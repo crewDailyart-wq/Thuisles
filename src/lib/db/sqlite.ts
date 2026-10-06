@@ -760,6 +760,13 @@ function werkTabellenBij(d: DatabaseSync) {
   voegKolomToe(d, "leerdoelen", "verborgen", "integer not null default 0");
 
   /*
+    Ook een onderwerp kan verborgen zijn (oktober 2026): dan staat het bij geen
+    enkel kind en niet op de openbare pagina's of in de sitemap, maar het
+    blijft in beheer en in de database staan. Standaard 0.
+  */
+  voegKolomToe(d, "subdomeinen", "verborgen", "integer not null default 0");
+
+  /*
     Een eigen openbaar webadres voor een leerdoel (oktober 2026). Leeg is de
     normale stand: dan komt het adres uit de titel, zoals altijd. Nodig waar
     titels bewust hetzelfde zijn, zoals "Samen (kiezen)" onder drie kopjes bij

@@ -98,6 +98,8 @@ export type Subdomein = {
   omschrijving: string;
   icoon: PictogramNaam;
   volgorde: number;
+  /** Verborgen voor kinderen en op de openbare pagina's; blijft in beheer staan. */
+  verborgen?: boolean;
 };
 
 export type Leerdoel = {

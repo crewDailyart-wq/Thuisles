@@ -60,8 +60,9 @@ const structuur = {
   get domeinen() {
     return haalDomeinenUitDb();
   },
+  /* Een verborgen onderwerp bestaat voor een kind ook niet. */
   get subdomeinen() {
-    return haalSubdomeinenUitDb();
+    return haalSubdomeinenUitDb().filter((s) => !s.verborgen);
   },
   /* Een verborgen leerdoel bestaat voor een kind niet; zie `zetVerborgen`. */
   get leerdoelen() {

@@ -154,6 +154,7 @@ export const rekenrekerbijGenerator: Generator = {
       opties: [
         { waarde: "typen", label: "Alleen typen (zonder rekenrek)" },
         { waarde: "bouwen", label: "Om en om met het rekenrek" },
+        { waarde: "alles", label: "Bij alle 15 opgaven met het rekenrek" },
       ],
       hulp: "Alleen typen geldt meteen, ook voor de opgaven die er al liggen.",
     },
@@ -172,7 +173,14 @@ export const rekenrekerbijGenerator: Generator = {
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const stand = standVan(inst);
-    const metRek = optelwerking(inst) === "bouwen";
+    /*
+      "alles" (oktober 2026): bij elke opgave het rekenrek, van makkelijk naar
+      moeilijk. "bouwen": om en om. Bij allebei schuiven de kralen na een fout
+      antwoord zelf.
+    */
+    const werking = tekst(inst, "werking", "typen");
+    const alleRek = werking === "alles";
+    const metRek = alleRek || optelwerking(inst) === "bouwen";
     const opMoeite = (x: [number, number], y: [number, number]) => x[0] + x[1] - (y[0] + y[1]) || x[0] - y[0];
     const alle = sommen(stand);
     /*
@@ -193,11 +201,13 @@ export const rekenrekerbijGenerator: Generator = {
     const gekozen = vormen.slice(0, 15);
     /* De eerste tien om en om, van makkelijk naar moeilijk; dan nog vijf. */
     const tien = gekozen.slice(0, 10);
-    const reeks = omEnOm(
-      tien.filter((_, i) => i % 2 === 0),
-      tien.filter((_, i) => i % 2 === 1),
-      gekozen.slice(10),
-    );
+    const reeks = alleRek
+      ? gekozen.map((som) => ({ som, bouwen: true }))
+      : omEnOm(
+          tien.filter((_, i) => i % 2 === 0),
+          tien.filter((_, i) => i % 2 === 1),
+          gekozen.slice(10),
+        );
 
     const uit: Gegenereerd[] = [];
     for (const { som: [eerste, tweede, omgekeerd], bouwen } of reeks) {

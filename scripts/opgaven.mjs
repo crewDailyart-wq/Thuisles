@@ -474,11 +474,11 @@ const OEFENINGEN = [
   { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk I", soort: "balans", bolletjes: 4, inst: { van: 3, tot: 10, leeg: "links", werking: "bouwen" } },
   { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk II", soort: "balans", bolletjes: 5, inst: { van: 11, tot: 20, leeg: "wissel", werking: "hulp" } },
   // Groep 4 – Optellen – Optellen met het rekenrek (oktober 2026)
-  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen tot en met 10 op het rekenrek", soort: "rekenrekerbij", bolletjes: 1, inst: { stand: "tot10", werking: "bouwen", niveau: 1 } },
-  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen tot en met 20 zonder over de 10", soort: "rekenrekerbij", bolletjes: 2, inst: { stand: "zonder", werking: "bouwen", niveau: 2 } },
-  { groep: "Optellen · Optellen met het rekenrek", titel: "Aanvullen tot 10", soort: "rekenrekerbij", bolletjes: 3, inst: { stand: "aanvullen", werking: "bouwen", niveau: 3 } },
-  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen over de 10", soort: "rekenrekerbij", bolletjes: 4, inst: { stand: "over10", werking: "bouwen", niveau: 4 } },
-  { groep: "Optellen · Optellen met het rekenrek", titel: "Splitsen via 10", soort: "rekenrekerbij", bolletjes: 5, inst: { stand: "pootjes", werking: "bouwen", niveau: 5 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen tot en met 10 op het rekenrek", soort: "rekenrekerbij", bolletjes: 1, inst: { stand: "tot10", werking: "alles", niveau: 1 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen tot en met 20 zonder over de 10", soort: "rekenrekerbij", bolletjes: 2, inst: { stand: "zonder", werking: "alles", niveau: 2 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Aanvullen tot 10", soort: "rekenrekerbij", bolletjes: 3, inst: { stand: "aanvullen", werking: "alles", niveau: 3 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen over de 10", soort: "rekenrekerbij", bolletjes: 4, inst: { stand: "over10", werking: "alles", niveau: 4 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Splitsen via 10", soort: "rekenrekerbij", bolletjes: 5, inst: { stand: "pootjes", werking: "alles", niveau: 5 } },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
   { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
@@ -853,7 +853,8 @@ for (const oefening of OEFENINGEN) {
     */
     if (vraag.figuur?.soort === "rekenrekerbij") {
       const f = vraag.figuur;
-      const moet = f.volgnummer <= 10 && f.volgnummer % 2 === 1;
+      /* "alles": elke opgave met het rek; "bouwen": om en om. */
+      const moet = oefening.inst.werking === "alles" || (f.volgnummer <= 10 && f.volgnummer % 2 === 1);
       if (!!f.rekenrek !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} met het rekenrek.`);
       if (f.eerste + f.tweede > 20) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} is meer dan 20.`);
     }

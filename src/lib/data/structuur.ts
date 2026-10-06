@@ -214,6 +214,7 @@ export function haalSubdomeinen(domeinId?: string): Subdomein[] {
     omschrijving: r.omschrijving ? String(r.omschrijving) : "",
     icoon: alsPictogram(r.icoon, "tafels"),
     volgorde: Number(r.volgorde),
+    verborgen: Number(r.verborgen ?? 0) === 1,
   }));
 }
 

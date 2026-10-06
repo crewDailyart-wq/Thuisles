@@ -131,8 +131,10 @@ export function haalOpenbareOnderwerpen(domeinId: string): OpenbaarOnderdeel[] {
   return (
     verbinding()
       .prepare(
+        /* Een verborgen onderwerp heeft geen openbare pagina; zijn oude adres stuurt door. */
         `select id, naam, omschrijving, seo_titel, seo_omschrijving
-           from subdomeinen where domein_id = ? order by volgorde, naam`,
+           from subdomeinen where domein_id = ? and coalesce(verborgen, 0) = 0
+          order by volgorde, naam`,
       )
       .all(domeinId) as Rij[]
   ).map(alsOnderdeel);
@@ -174,7 +176,7 @@ export function haalOpenbareOefeningen(domeinId: string, groep: number): Openbar
            from leerdoelen l
            join subdomeinen s on s.id = l.subdomein_id
           where s.domein_id = ? and l.groep_van <= ? and l.groep_tot >= ?
-            and coalesce(l.verborgen, 0) = 0
+            and coalesce(l.verborgen, 0) = 0 and coalesce(s.verborgen, 0) = 0
             and exists (
               select 1 from vragen q
                where q.leerdoel_id = l.id and q.status = 'gepubliceerd'

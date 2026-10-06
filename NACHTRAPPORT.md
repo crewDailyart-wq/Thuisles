@@ -837,6 +837,9 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 
 (Bij twijfel heb ik steeds de veiligste keuze gemaakt; hier staat wat je nog kunt beslissen.)
 
+- **01 — verborgen onderwerp.** Onderwerpen hadden nog geen "verborgen"-stand; die heb ik erbij gebouwd (net als bij oefeningen). "Optellen met het rekenrek" staat nu op verborgen: kinderen en Google zien het niet meer, in beheer staat het er nog. Er is in beheer nog geen vinkje om dit zelf aan en uit te zetten. Zal ik dat bouwen?
+- **01 — webadressen.** De openbare pagina's hebben geen laag voor het onderwerp, dus "onder Optellen tot en met 20" heb ik gedaan door het onderwerp vooraan het adres te zetten: `/groep-4/optellen/optellen-tot-en-met-20-rekenrek-aanvullen-tot-10`. De oude adressen sturen door.
+
 ## 00 — Optellen ronde 2
 
 **Deel 1 – controle**
@@ -864,3 +867,13 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 3. Open op je telefoon of iPad de browser (Safari) en typ: **http://192.168.1.87:3000**
 4. Log daar in met je ouderaccount en kies het profiel Testkind (of Fenna).
 5. Lukt het niet? Vraagt je Mac om "inkomende verbindingen toe te staan" voor node, klik dan op Sta toe. En verandert het adres ooit: op de Mac staat het nummer bij Systeeminstellingen → Wi-Fi → Details → IP-adres.
+
+## 01 — Het rekenrek niet als apart onderwerp
+
+- De 5 rekenrek-oefeningen staan nu in **Optellen tot en met 20**, onder het nieuwe kopje **Met het rekenrek**, direct na "Met plaatjes". Titels, bolletjes en volgorde zijn hetzelfde. Het zijn dezelfde oefeningen, dus antwoorden en voortgang van kinderen zijn bewaard.
+- Het lege onderwerp "Optellen met het rekenrek" staat op **verborgen** (niet verwijderd).
+- Bij alle 15 opgaven werkt het kind nu met het rekenrek; geen om en om meer. Vragen per oefensessie blijft 15. Na een fout antwoord schuiven de kralen zelf. Bij "Splitsen via 10" staan de pootjes met het lusje en het hartje er bij elke opgave bij.
+- Nieuwe webadressen, zoals `/groep-4/optellen/optellen-tot-en-met-20-rekenrek-splitsen-via-10`. De oude adressen en het oude onderwerpadres sturen door (getest). Elke pagina heeft een eigen titel en omschrijving met "erbijsommen", "rekenrek" en "groep 4"; de sitemap toont alleen de nieuwe adressen.
+- "Aftrekken met het rekenrek" en de andere domeinen zijn niet veranderd.
+
+**Zo test je het:** ga naar `localhost:3000/oefenen/rekenen/optellen`, kies **Optellen tot en met 20** en kijk onder het kopje **Met het rekenrek**. Open bijvoorbeeld "Optellen tot en met 20 zonder over de 10": ook opgave 2 heeft nu het rekenrek.
