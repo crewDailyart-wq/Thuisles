@@ -16,7 +16,7 @@
  * de speler veranderen.
  */
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   VOSPOSITIES,
   vosBestand,
@@ -25,6 +25,12 @@ import {
 import { abonneerPraten, praatOpServer, praatVos } from "@/lib/stem";
 
 export type Beweging = "stil" | "praten" | "wijzen" | "juichen";
+
+/*
+  Onthouden dat de plaatjes er niet zijn, voor dit hele bezoek. Dan begint een
+  volgende Vos meteen getekend, in plaats van eerst een kapot plaatje te tonen.
+*/
+let plaatjesBestaan: boolean | null = null;
 
 /** Hoe ver de mond openstaat. */
 type Mond = "dicht" | "half" | "open";
@@ -41,7 +47,24 @@ export function VosFiguur({
   const praat = useSyncExternalStore(abonneerPraten, praatVos, praatOpServer);
   const [mondStand, setMondStand] = useState<Mond>("dicht");
   const [knippert, setKnippert] = useState(false);
-  const [heeftPlaatje, setHeeftPlaatje] = useState(true);
+  const [heeftPlaatje, setHeeftPlaatjeZelf] = useState(plaatjesBestaan !== false);
+  const setHeeftPlaatje = (ja: boolean) => {
+    if (!ja) plaatjesBestaan = false;
+    setHeeftPlaatjeZelf(ja);
+  };
+  /*
+    Een plaatje dat al mislukte vóórdat React de pagina overnam, geeft geen
+    `onError` meer: dan bleef er een kapot plaatje staan. Daarom bij het
+    openen één keer kijken of het echt geladen is.
+  */
+  const plaatje = useRef<HTMLImageElement>(null);
+  useEffect(() => {
+    const img = plaatje.current;
+    if (img && img.complete && img.naturalWidth === 0) {
+      const klok = setTimeout(() => setHeeftPlaatje(false), 0);
+      return () => clearTimeout(klok);
+    }
+  }, [houding]);
 
   /*
     De mond gaat open en dicht zolang de stem praat, met een natuurlijk ritme.
@@ -104,6 +127,7 @@ export function VosFiguur({
         <>
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
+            ref={plaatje}
             src={vosBestand(houding)}
             alt=""
             onError={() => setHeeftPlaatje(false)}

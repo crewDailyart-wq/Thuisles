@@ -14,6 +14,7 @@ import { beheerlabel } from "@/lib/leerdoelnaam";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 import { haalSeoteksten } from "@/lib/data/openbaar";
 import { naarAdresdeel, openbaarAdres } from "@/lib/seo";
+import { haalMaatjeStand } from "@/lib/data/maatje";
 
 export default async function LeerdoelPagina({
   params,
@@ -73,6 +74,7 @@ export default async function LeerdoelPagina({
         onderwerpen={onderwerpen}
         algemeenAantal={haalAlgemeenAantalVragen()}
         seo={haalSeoteksten("leerdoel", leerdoel.id)}
+        maatjeStand={haalMaatjeStand().get(leerdoel.id)}
         seoAdres={openbaarAdres(
           "nl",
           leerdoel.groepVan,

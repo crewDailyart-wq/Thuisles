@@ -33,6 +33,9 @@ import {
   telAntwoordenVanKind,
 } from "@/lib/data/voortgang";
 import type { OefenVraag, VraagInContext } from "@/lib/vraagtypes";
+import { haalMaatjeTeksten, leerdoelenMetMaatje } from "@/lib/data/maatje";
+import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
+import type { MaatjeTeksten } from "@/lib/maatje/types";
 
 /**
  * Hoeveel vragen deze oefensessie telt.
@@ -305,6 +308,21 @@ export default async function OefeningPagina({
     leerdoelTitel: v.leerdoelTitel,
   }));
 
+  /*
+    Het maatje (wachtrij, oktober 2026): alleen bij leerdoelen waar het in
+    beheer aan staat, en alleen bij vragen met gecontroleerde teksten die bij
+    precies dit antwoord geschreven zijn. Anders zwijgt het en verandert er
+    niets aan het scherm.
+  */
+  const metMaatje = leerdoelenMetMaatje(leerdoelen.map((l) => l.leerdoel.id));
+  const opgeslagen = haalMaatjeTeksten(vragen.filter((v) => metMaatje.has(v.leerdoelId)).map((v) => v.id));
+  const maatjeTeksten: Record<string, MaatjeTeksten> = {};
+  for (const v of vragen) {
+    const t = opgeslagen[v.id];
+    if (t && t.voor === v.antwoord) maatjeTeksten[v.id] = t;
+  }
+  const maatje = { teksten: maatjeTeksten, geluid: haalGeluidsvoorkeuren(kind.id).maatje };
+
   // Geen gepubliceerde vragen: eerlijk melden in plaats van een leeg scherm.
   if (vragen.length === 0) {
     return (
@@ -349,6 +367,7 @@ export default async function OefeningPagina({
       kindId={kind.id}
       oefenpad={oefenpad}
       hervat={hervat}
+      maatje={maatje}
     />
   );
 }

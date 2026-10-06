@@ -148,6 +148,8 @@ export type Leerdoel = {
    * voortgang gewoon in de database staan. Aan te zetten in het beheer.
    */
   verborgen: boolean;
+  /** Staat het maatje aan bij dit leerdoel? Standaard uit; aan te zetten in het beheer. */
+  maatje: boolean;
   /** Een eigen openbaar webadres, of null: dan komt het adres uit de titel. */
   adres: string | null;
   /**

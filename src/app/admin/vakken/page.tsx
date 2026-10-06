@@ -6,6 +6,8 @@
 import { Kop } from "@/components/beheer/Bouwstenen";
 import { VakkenBeheer } from "@/components/beheer/VakkenBeheer";
 import { OefensessieInstelling } from "@/components/beheer/OefensessieInstelling";
+import { MaatjeInstelling } from "@/components/beheer/MaatjeInstelling";
+import { haalOnbekendeAntwoorden, maatjeAlgemeenAan } from "@/lib/data/maatje";
 import { haalAlgemeenAantalVragen } from "@/lib/data/instellingen";
 import { haalDomeinen, haalLeerdoelen, haalVakken } from "@/lib/data/structuur";
 
@@ -15,7 +17,8 @@ export default function VakkenPagina() {
     vakken.map((v) => [v.id, haalDomeinen(v.id).length]),
   );
   // Hoeveel leerdoelen wijken af van de algemene standaard?
-  const afwijkend = haalLeerdoelen().filter((l) => l.vragenPerSessie !== null).length;
+  const leerdoelen = haalLeerdoelen();
+  const afwijkend = leerdoelen.filter((l) => l.vragenPerSessie !== null).length;
 
   return (
     <div className="flex flex-col gap-4">
@@ -29,6 +32,13 @@ export default function VakkenPagina() {
       <OefensessieInstelling
         huidig={haalAlgemeenAantalVragen()}
         afwijkend={afwijkend}
+      />
+
+      <MaatjeInstelling
+        aan={maatjeAlgemeenAan()}
+        leerdoelenAan={leerdoelen.filter((l) => l.maatje).length}
+        leerdoelenTotaal={leerdoelen.length}
+        onbekend={haalOnbekendeAntwoorden(100)}
       />
     </div>
   );

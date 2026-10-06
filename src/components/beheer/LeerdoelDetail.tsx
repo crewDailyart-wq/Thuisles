@@ -14,6 +14,7 @@ import {
   kopieerLeerdoel,
   verhuisLeerdoel,
   wegLeerdoel,
+  wisselMaatje,
   wisselVerborgen,
 } from "@/app/admin/structuuracties";
 import { Gegevens, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
@@ -40,6 +41,7 @@ export function LeerdoelDetail({
   algemeenAantal,
   seo,
   seoAdres,
+  maatjeStand,
 }: {
   vak: Vak;
   domein: Domein;
@@ -54,6 +56,8 @@ export function LeerdoelDetail({
   seo: { titel: string; omschrijving: string };
   /** Het openbare adres van deze oefening, zoals het nu is. */
   seoAdres: string;
+  /** Hoeveel gepubliceerde opgaven er zijn, en hoeveel daarvan gecontroleerde maatjeteksten hebben. */
+  maatjeStand?: { opgaven: number; metTekst: number };
 }) {
   const { doe, bezig, fout, router } = useActie();
   const [bewerken, setBewerken] = useState(false);
@@ -166,6 +170,36 @@ export function LeerdoelDetail({
                   {leerdoel.verborgen
                     ? "— geen enkel kind ziet dit leerdoel; vragen, antwoorden en voortgang blijven bewaard"
                     : "— aanvinken om het voor alle kinderen te verbergen"}
+                </span>
+              </label>,
+            ],
+            [
+              "Maatje",
+              /*
+                Vos die voorleest, iets zegt bij goed en fout, en na 30
+                seconden een tip geeft (wachtrij, oktober 2026). Net als
+                "Verborgen" altijd in beeld en meteen aan te passen.
+              */
+              <label key="m" className="flex flex-wrap items-center gap-2">
+                <input
+                  type="checkbox"
+                  name="maatje"
+                  checked={leerdoel.maatje}
+                  disabled={bezig}
+                  onChange={(e) =>
+                    doe(() => {
+                      const d = new FormData();
+                      d.set("id", leerdoel.id);
+                      d.set("maatje", e.target.checked ? "1" : "0");
+                      return wisselMaatje(d);
+                    })
+                  }
+                />
+                <span>Maatje aan</span>
+                <span className="text-xs text-beheer-zacht">
+                  {maatjeStand
+                    ? `— ${maatjeStand.metTekst} van de ${maatjeStand.opgaven} gepubliceerde opgaven hebben gecontroleerde teksten; bij de rest zwijgt het maatje`
+                    : "— nog geen teksten voor dit leerdoel; het maatje zwijgt"}
                 </span>
               </label>,
             ],

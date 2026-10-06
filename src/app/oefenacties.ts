@@ -12,6 +12,8 @@
  */
 
 import { revalidatePath } from "next/cache";
+import { verbinding } from "@/lib/db/sqlite";
+import { bewaarOnbekendAntwoord } from "@/lib/data/maatje";
 import { vereisKind } from "@/lib/auth/sessie";
 import { markeerKlaargezetGedaan } from "@/lib/data/dashboard";
 import {
@@ -89,6 +91,24 @@ export async function meldLastig(leerdoelId: string): Promise<{ ok: true }> {
 
   revalidatePath("/start");
   revalidatePath("/ouder", "layout");
+  return { ok: true };
+}
+
+/**
+ * Het maatje herkende een fout antwoord niet als bekende fout.
+ *
+ * Bewaard zonder kind, alleen de vraag en wat er stond, zodat er later nieuwe
+ * fouten bij kunnen. Een openbaar eindpunt: alleen bij een bestaande,
+ * gepubliceerde vraag, en het antwoord wordt ingekort.
+ */
+export async function meldOnbekendAntwoord(vraagId: string, antwoord: string): Promise<{ ok: true }> {
+  await vereisKind();
+  const vraag = verbinding()
+    .prepare("select leerdoel_id from vragen where id = ? and status = 'gepubliceerd'")
+    .get(String(vraagId)) as { leerdoel_id: string } | undefined;
+  if (vraag && String(antwoord).trim() !== "") {
+    bewaarOnbekendAntwoord(String(vraagId), vraag.leerdoel_id, String(antwoord));
+  }
   return { ok: true };
 }
 

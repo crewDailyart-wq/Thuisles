@@ -87,7 +87,7 @@ export const SCHERMCONTRACT = [
   {
     naam: "Vakken (algemene instellingen)",
     pad: "/admin/vakken",
-    bron: ["src/components/beheer/VakkenBeheer.tsx", "src/components/beheer/OefensessieInstelling.tsx"],
+    bron: ["src/components/beheer/VakkenBeheer.tsx", "src/components/beheer/OefensessieInstelling.tsx", "src/components/beheer/MaatjeInstelling.tsx"],
     zichtbaar: [
       "Alle vakken",
       "Nieuw vak",
@@ -97,6 +97,10 @@ export const SCHERMCONTRACT = [
       */
       "Oefensessies",
       "Standaard aantal vragen",
+      /* Het maatje voor alles aan of uit, en de lijst met niet-herkende antwoorden. */
+      "Het maatje",
+      "Maatje aan voor alle oefeningen",
+      "Antwoorden die het maatje niet herkende",
     ],
   },
   {
@@ -193,6 +197,9 @@ export const SCHERMCONTRACT = [
       /* Het vinkje "verborgen" (wachtrij, oktober 2026): altijd in beeld. */
       "Zichtbaar voor kinderen",
       "Verborgen",
+      /* Het maatje per leerdoel (wachtrij, oktober 2026): altijd in beeld. */
+      "Maatje",
+      "Maatje aan",
     ],
     naKlik: [{ tekst: "Titel", bron: LEERDOELDETAIL, na: "op Bewerken drukken" }],
   },

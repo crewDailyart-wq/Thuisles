@@ -55,6 +55,10 @@ import {
   zetOpgavegeluid,
 } from "@/lib/geluid";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
+import { Maatje, type MaatjeBericht } from "@/components/oefenen/Maatje";
+import { herkenMaatjeFout } from "@/lib/maatje/herken";
+import type { MaatjeTeksten } from "@/lib/maatje/types";
+import { meldOnbekendAntwoord, zetGeluidsvoorkeur } from "@/app/oefenacties";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
@@ -173,6 +177,7 @@ export function OefenSpeler({
   kindId,
   oefenpad,
   hervat,
+  maatje,
 }: {
   vragen: OefenVraag[];
   terugHref: string;
@@ -196,6 +201,12 @@ export function OefenSpeler({
     apparaat. `vragen` is dan de bewaarde serie en niet een nieuwe greep.
   */
   hervat: { rondeId: string; antwoorden: RondeAntwoord[] } | null;
+  /**
+   * Het maatje (wachtrij, oktober 2026): de teksten per vraag-id, alleen voor
+   * vragen waar het maatje aan staat, en of de stem aan staat voor dit kind.
+   * Zonder teksten bij een vraag verandert er niets aan het scherm.
+   */
+  maatje?: { teksten: Record<string, MaatjeTeksten>; geluid: boolean };
 }) {
   const leeftijd = leeftijdsgroepVan(groep);
   /*
@@ -330,6 +341,37 @@ export function OefenSpeler({
   const [klaar, setKlaar] = useState(false);
   const [snelFout, setSnelFout] = useState(0);
   const [rustBericht, setRustBericht] = useState("");
+
+  /*
+    Het maatje. `maatjeBericht` is wat het na een gebeurtenis zegt (goed, fout,
+    de tip); bij een nieuwe opgave leest het vanzelf voor, zie `voorleesBericht`.
+    Bij een goed antwoord wacht het feestscherm tot het maatje uitgepraat is,
+    en bij een fout wacht de uitleg-animatie daarop — anders praten er twee
+    stemmen door elkaar.
+  */
+  const [maatjeBericht, setMaatjeBericht] = useState<MaatjeBericht | null>(null);
+  const [maatjeWacht, setMaatjeWacht] = useState(false);
+  const [maatjeUitlegWacht, setMaatjeUitlegWacht] = useState(false);
+  const [maatjeGeluid, setMaatjeGeluid] = useState(maatje?.geluid ?? true);
+  const laatsteActiviteit = useRef(nuInMs());
+  const tipGegeven = useRef(-1);
+  const maatjeTekst = maatje?.teksten[vragen[index]?.id ?? ""];
+
+  /*
+    Tekst 6, de tip: alleen als het kind 30 seconden niets doet, één keer per
+    opgave. Elke tik, toets of invoer in de oefening zet de klok terug.
+  */
+  useEffect(() => {
+    if (!maatjeTekst || fase !== "bezig") return;
+    laatsteActiviteit.current = nuInMs();
+    const klok = setInterval(() => {
+      if (tipGegeven.current === index) return;
+      if (nuInMs() - laatsteActiviteit.current < 30_000) return;
+      tipGegeven.current = index;
+      setMaatjeBericht({ id: `tip:${index}`, zinnen: [maatjeTekst.tip], houding: "denkt" });
+    }, 1000);
+    return () => clearInterval(klok);
+  }, [maatjeTekst, fase, index]);
 
   /*
     Waar deze sessie onder bewaard wordt. Pas in de browser bekend, want het pad
@@ -533,6 +575,16 @@ export function OefenSpeler({
         seconden,
         gegokt: false,
       });
+      if (maatjeTekst) {
+        /* Tekst 3. Had het kind eerder een fout bij dit leerdoel: "Zie je wel, je kunt het!" */
+        const eerderFout = gelogd.some((a) => a.leerdoelId === vraag.leerdoelId && !a.goed);
+        const openers = maatjeTekst.goed.openers;
+        const opener = eerderFout ? "Zie je wel, je kunt het!" : openers[(index * 7 + gelogd.length) % openers.length];
+        setMaatjeBericht({ id: `goed:${index}`, zinnen: [{ tekst: opener, stap: "geen plaatje" }, ...maatjeTekst.goed.zinnen], houding: "blij" });
+        setMaatjeWacht(true);
+        /* Vangnet: hoe dan ook door na een paar tellen. */
+        setTimeout(() => setMaatjeWacht(false), 12_000);
+      }
       return;
     }
 
@@ -556,6 +608,20 @@ export function OefenSpeler({
 
     setPatroon(gevonden);
     setFase("fout");
+    if (maatjeTekst) {
+      /* Tekst 4 bij een bekende fout, anders tekst 5 — en dan onthouden we het antwoord. */
+      const bekend = herkenMaatjeFout(maatjeTekst, gekozen);
+      if (bekend) {
+        const openers = maatjeTekst.fouten.openers;
+        const opener = openers[(index * 7 + gelogd.length) % openers.length];
+        setMaatjeBericht({ id: `fout:${index}`, zinnen: [{ tekst: opener, stap: "geen plaatje" }, ...bekend.zinnen], houding: "troost" });
+      } else {
+        setMaatjeBericht({ id: `fout:${index}`, zinnen: maatjeTekst.uitleg, houding: "troost" });
+        void meldOnbekendAntwoord(vraag.id, gekozen);
+      }
+      setMaatjeUitlegWacht(true);
+      setTimeout(() => setMaatjeUitlegWacht(false), 15_000);
+    }
     leg({
       goed: false,
       uitkomst: "fout",
@@ -727,6 +793,19 @@ export function OefenSpeler({
     setUitlegWeggeklikt(false);
     setPatroon(null);
     setStart(nuInMs());
+    setMaatjeBericht(null);
+    setMaatjeWacht(false);
+    setMaatjeUitlegWacht(false);
+  }
+
+  function wisselMaatjeGeluid(aan: boolean) {
+    setMaatjeGeluid(aan);
+    void zetGeluidsvoorkeur("maatjegeluid", aan);
+  }
+
+  function maatjeKlaar(id: string) {
+    if (id.startsWith("goed:")) setMaatjeWacht(false);
+    if (id.startsWith("fout:")) setMaatjeUitlegWacht(false);
   }
 
   if (klaar) {
@@ -738,6 +817,15 @@ export function OefenSpeler({
         terugHref={terugHref}
         terugLabel={terugLabel}
         herhaalHref={herhaalHref}
+        maatje={
+          serie.some((v) => maatje?.teksten[v.id])
+            ? {
+                zin: eindzinMaatje(serie, gelogd, maatje?.teksten ?? {}),
+                geluid: maatjeGeluid,
+                onGeluid: wisselMaatjeGeluid,
+              }
+            : null
+        }
       />
     );
   }
@@ -840,7 +928,7 @@ export function OefenSpeler({
         `key` per feestje, zodat elk goed antwoord een eigen, opnieuw beginnende
         animatie krijgt in plaats van dat de tweede de eerste overneemt.
       */}
-      {fase === "goed" && !wachtOpVos && (
+      {fase === "goed" && !wachtOpVos && !maatjeWacht && (
         <Feestscherm
           key={`feest-${feestje}`}
           onAfgelopen={volgende}
@@ -864,7 +952,12 @@ export function OefenSpeler({
         kruimelpad — dat hoort bij kiezen wát je gaat oefenen, niet bij het
         oefenen zelf.
       */}
-      <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+      <div
+        className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10"
+        onPointerDownCapture={() => (laatsteActiviteit.current = nuInMs())}
+        onKeyDownCapture={() => (laatsteActiviteit.current = nuInMs())}
+        onInputCapture={() => (laatsteActiviteit.current = nuInMs())}
+      >
         {/*
           Onderaan blijft een strook vrij zodra er een mascotte bij hoort.
 
@@ -1159,7 +1252,7 @@ export function OefenSpeler({
               )}
 
               {/* De animatie hoort erbij en staat er meteen; geen knop. */}
-              {(animatie || uitlegStappen) && !uitlegWeggeklikt && (
+              {(animatie || uitlegStappen) && !uitlegWeggeklikt && !maatjeUitlegWacht && (
                 <Uitlegweergave
                   vorm={groepsvorm}
                   script={animatie}
@@ -1299,6 +1392,25 @@ export function OefenSpeler({
               </button>
             )}
           </div>
+
+          {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. */}
+          {maatjeTekst && (
+            <Maatje
+              bericht={
+                maatjeBericht ??
+                (fase === "bezig"
+                  ? {
+                      id: `lees:${index}:${vraag.id}`,
+                      zinnen: [maatjeTekst.voorlezen, ...(maatjeTekst.bouw ? [maatjeTekst.bouw] : [])],
+                      houding: "rustig",
+                    }
+                  : null)
+              }
+              geluid={maatjeGeluid}
+              onGeluid={wisselMaatjeGeluid}
+              onKlaar={maatjeKlaar}
+            />
+          )}
         </div>
       </div>
     </DeelbouwControle.Provider>
@@ -2092,6 +2204,7 @@ function Uitslag({
   terugHref,
   terugLabel,
   herhaalHref,
+  maatje,
 }: {
   vragen: OefenVraag[];
   antwoorden: RondeAntwoord[];
@@ -2099,6 +2212,8 @@ function Uitslag({
   terugHref: string;
   terugLabel: string;
   herhaalHref: string;
+  /** Wat het maatje aan het eind zegt; null als het maatje bij deze ronde uit stond. */
+  maatje?: { zin: string; geluid: boolean; onGeluid: (aan: boolean) => void } | null;
 }) {
   const [lastigGemeld, setLastigGemeld] = useState<string[]>([]);
 
@@ -2137,6 +2252,16 @@ function Uitslag({
           Je hebt {antwoorden.length} {antwoorden.length === 1 ? "vraag" : "vragen"} gemaakt,{" "}
           {totaalGoed} goed.
         </p>
+
+        {maatje && (
+          <div className="text-left">
+            <Maatje
+              bericht={{ id: "einde", zinnen: [{ tekst: maatje.zin, stap: "geen plaatje" }], houding: "blij" }}
+              geluid={maatje.geluid}
+              onGeluid={maatje.onGeluid}
+            />
+          </div>
+        )}
 
         <ul className="mt-5 flex flex-col gap-2 text-left">
           {regels.map((r) => (
@@ -2216,4 +2341,18 @@ function Uitslag({
       </div>
     </div>
   );
+}
+
+/**
+ * Wat het maatje aan het eind van de ronde zegt (hoofdstuk 3 van
+ * MAATJE-HANDLEIDING.md): wat het kind gedaan heeft, niet hoe goed het was.
+ * Bij veel fouten: "Dit was een moeilijke. Morgen nog een keer?"
+ */
+function eindzinMaatje(serie: OefenVraag[], gelogd: RondeAntwoord[], teksten: Record<string, MaatjeTeksten>): string {
+  const aantal = gelogd.length;
+  const fout = gelogd.filter((a) => !a.goed).length;
+  if (aantal > 0 && fout * 2 > aantal) return "Dit was een moeilijke. Morgen nog een keer?";
+  const alleSommen = serie.every((v) => (teksten[v.id]?.rondewoord ?? "sommen") === "sommen");
+  const woord = aantal === 1 ? (alleSommen ? "som" : "opdracht") : alleSommen ? "sommen" : "opdrachten";
+  return `Je hebt ${aantal} ${woord} gemaakt. Goed gewerkt!`;
 }

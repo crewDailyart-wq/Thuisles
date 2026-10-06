@@ -14,7 +14,8 @@
     "prepare": "git config core.hooksPath .githooks || true",
     "oefentypes": "node scripts/oefentypes.mjs",
     "opgaven": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/opgaven.mjs",
-    "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.mjs"
+    "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.mjs",
+    "maatje": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./scripts/registreer.mjs scripts/maatje-schrijf.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.3",

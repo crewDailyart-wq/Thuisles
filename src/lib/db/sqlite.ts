@@ -797,6 +797,45 @@ function werkTabellenBij(d: DatabaseSync) {
   `);
   d.exec("create index if not exists oude_adressen_op_doel on oude_adressen (doel_id)");
 
+  /*
+    Het maatje (wachtrij, oktober 2026).
+
+    Per leerdoel aan of uit; standaard uit. Het gaat pas aan als alle teksten
+    van dat leerdoel klaar en gecontroleerd zijn; zie `scripts/maatje-schrijf.mjs`.
+  */
+  voegKolomToe(d, "leerdoelen", "maatje", "integer not null default 0");
+
+  /*
+    De teksten van het maatje, per vraag en per versie. Een nieuwe versie komt
+    ernaast; de oude blijft staan. Het maatje leest de hoogste versie die door
+    de controles van hoofdstuk 11 van MAATJE-HANDLEIDING.md is gekomen.
+  */
+  d.exec(`
+    create table if not exists maatje_teksten (
+      vraag_id       text not null,
+      versie         integer not null,
+      teksten        text not null,
+      gecontroleerd  integer not null default 0,
+      aangemaakt_op  text not null,
+      primary key (vraag_id, versie)
+    );
+  `);
+
+  /*
+    Antwoorden die het maatje niet herkende als bekende fout. Bewust zonder
+    kind: alleen de vraag en wat er getypt is, zodat er later nieuwe fouten bij
+    kunnen.
+  */
+  d.exec(`
+    create table if not exists maatje_onbekend (
+      id             integer primary key autoincrement,
+      vraag_id       text not null,
+      leerdoel_id    text not null,
+      antwoord       text not null,
+      aangemaakt_op  text not null
+    );
+  `);
+
   /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
   werkVraagvormenBij(d);
 }

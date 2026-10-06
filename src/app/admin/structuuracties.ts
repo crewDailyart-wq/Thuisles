@@ -31,6 +31,7 @@ import {
   type RegelUitslag,
 } from "@/lib/data/structuur";
 import { zetSeoteksten, type Adressoort } from "@/lib/data/openbaar";
+import { zetMaatjeLeerdoel } from "@/lib/data/maatje";
 import type { Domein, Leerdoel, Subdomein, Vak } from "@/lib/types";
 
 export type Antwoord<T> = { ok: true; waarde: T } | { ok: false; fout: string };
@@ -197,6 +198,18 @@ export async function bewerkUitlegvorm(data: FormData): Promise<Antwoord<true>> 
   const uitslag = zetUitlegvorm(tekst(data, "id"), tekst(data, "uitlegvorm"));
   if (uitslag.ok) ververs();
   return uitslag;
+}
+
+/**
+ * Het maatje bij dit leerdoel aan of uit (wachtrij, oktober 2026). Een eigen
+ * actie, net als verbergen: zo raakt geen ander formulier deze instelling.
+ */
+export async function wisselMaatje(data: FormData): Promise<Antwoord<true>> {
+  const id = tekst(data, "id");
+  if (!id) return { ok: false, fout: "Geen leerdoel." };
+  zetMaatjeLeerdoel(id, tekst(data, "maatje") === "1");
+  ververs();
+  return { ok: true, waarde: true };
 }
 
 /** Verbergen voor kinderen, of weer laten zien. Een eigen actie; zie `zetVerborgen`. */
