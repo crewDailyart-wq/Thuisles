@@ -828,3 +828,39 @@ De oude ontwikkelserver is herstart na problemen met laden van de clientcode.
 
 Zelf testen: begin een nieuwe ronde bij Delen → Deeltafels oefenen en probeer
 slepen en tikken op de eigen tablet, ook het lostrekken uit een groter groepje.
+
+# Wachtrij — 6 oktober 2026
+
+Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aangeraakt. Getest met het profiel Testkind.
+
+## Vragen voor Sara
+
+(Bij twijfel heb ik steeds de veiligste keuze gemaakt; hier staat wat je nog kunt beslissen.)
+
+## 00 — Optellen ronde 2
+
+**Deel 1 – controle**
+- De zin bij "Optellen via 10" klopte wel: het voorbeeld in de vorige samenvatting hoorde bij de som 8 + 3 (8 + 2 = 10, en 10 + 1 = 11). Bij 6 + 5 staat er "6 + 4 = 10". Ik heb het voor alle sommen nagerekend in de controle. De zin is nu wel veranderd door deel 3 (zie hieronder). Ook "Optellen over de 10" ("8 + 2 = 10, en dan nog 3 erbij: 13.") past altijd bij de som.
+- "Aanvullen tot 10": geen sommen tot 20 meer. De negen sommen staan er in twee vormen, om en om: 7 + ☐ = 10 en 10 = 7 + ☐. Samen 15 verschillende opgaven, allemaal over 10. Het rekenrek werkt bij beide vormen hetzelfde.
+- Het eerste getal bij "Optellen over de 10" en "Splitsen via 10" begint nog steeds bij 5.
+
+**Deel 2 – "Reken uit."**
+- Bij **5 oefeningen** (samen 75 opgaven) is de zin nu "Reken uit.": "Optellen tot en met 10" en "Optellen tot en met 20" (Optellen tot en met 20), en "Optellen tot en met 10 op het rekenrek", "Optellen tot en met 20 zonder over de 10" en "Optellen over de 10" (Optellen met het rekenrek).
+- Alle andere oefeningen van groep 4 met "Vul in." hebben een leeg vakje ergens anders (zoals ☐ : 3 = 6, splitsen, ☐ × 2 = 20, 7 + ☐ = 10 of de pootjes) en houden "Vul in.". Oefeningen met een eigen zin ("Hoeveel samen?", "Reken via 10.") zijn niet veranderd.
+
+**Deel 3 – de pootjes**
+- Typt het kind het goede getal in het linker pootje, dan tekent zich een oranje lusje om het eerste getal en dat pootje, komt er een hartje met "10" op en zegt een wolkje "Samen 10!". Daarna springt een stippellijntje naar het rechter pootje: "En nog …?". Typt het kind daar de rest, dan springt die naar het antwoordvakje: "10 en nog 1 is …". Bij goed klopt het hartje even: "Goed zo! 8 en 2 is samen 10. En nog 1 erbij: 11."
+- Een verkeerd getal in het linker pootje: het vakje schudt zachtjes, het wolkje zegt "Nog geen 10. Hoeveel moet er bij 8 om 10 te maken?", en de cursor blijft staan zodat het kind kan verbeteren.
+- Staat het geluid aan (de geluidsknop bij de uitleg), dan worden de wolkjes voorgelezen. Het lusje wordt gemeten aan waar de vakjes staan, dus het past op elk scherm.
+- Bij "Optellen via 10" en bij "Splitsen via 10" (met het rekenrek erbij). Getest op telefoon-, laptop- en tabletformaat.
+
+**Zo test je het**
+- Ga naar `localhost:3000/oefenen/rekenen/optellen`, kies "Optellen tot en met 20" → onder "Uitrekenen" **Optellen via 10**. Typ eerst een fout getal in het linker pootje, verbeter het, en maak de som af.
+- Kies "Optellen met het rekenrek" → **Aanvullen tot 10** (opgave 2 is 10 = 8 + ☐) en **Splitsen via 10**.
+
+**Op je telefoon of iPad testen (op hetzelfde wifi)**
+1. Laat de website op je laptop gewoon aanstaan.
+2. Zorg dat je telefoon of iPad op hetzelfde wifi zit als je laptop.
+3. Open op je telefoon of iPad de browser (Safari) en typ: **http://192.168.1.87:3000**
+4. Log daar in met je ouderaccount en kies het profiel Testkind (of Fenna).
+5. Lukt het niet? Vraagt je Mac om "inkomende verbindingen toe te staan" voor node, klik dan op Sta toe. En verandert het adres ooit: op de Mac staat het nummer bij Systeeminstellingen → Wi-Fi → Details → IP-adres.

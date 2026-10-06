@@ -22,7 +22,8 @@ import { plussomAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { plussomUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
 import { omEnOm, optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
 
-const ZIN = "Vul in.";
+/* Alleen een leeg vakje achter het =-teken: "Reken uit." (ronde 2, oktober 2026). */
+const ZIN = "Reken uit.";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 

@@ -44,6 +44,16 @@ function standVan(inst: Instellingen): Stand {
 const ZIN = "Vul in.";
 const ZINNEN: Record<Leeftijdsgroep, string> = { "34": ZIN, "56": ZIN, "78": ZIN };
 
+/**
+ * De opdrachtzin (ronde 2): staat er alleen een leeg vakje achter het =-teken
+ * (3 + 4 = ▢), dan "Reken uit."; ontbreekt er een getal ergens anders (7 + ▢ =
+ * 10, of de pootjes), dan "Vul in.".
+ */
+function zinnenVoor(stand: Stand): Record<Leeftijdsgroep, string> {
+  const zin = stand === "aanvullen" || stand === "pootjes" ? "Vul in." : "Reken uit.";
+  return { "34": zin, "56": zin, "78": zin };
+}
+
 /** De doelsom van "aanvullen": tot 10, of tot 20 als het eerste getal boven de 10 ligt. */
 function doelVan(eerste: number): number {
   return eerste < 10 ? 10 : 20;
@@ -57,13 +67,8 @@ function sommen(stand: Stand): [number, number][] {
   } else if (stand === "zonder") {
     for (let a = 10; a <= 18; a++) for (let b = 1; b <= 9; b++) if ((a % 10) + b <= 10 && a + b <= 20) uit.push([a, b]);
   } else if (stand === "aanvullen") {
-    /*
-      Tot 10 zijn er maar negen (1 + 9 tot en met 9 + 1). Voor vijftien
-      verschillende opgaven komen daarna de sommen tot 20 (13 + 7): dezelfde
-      handeling, nu op de onderste rij.
-    */
-    for (let a = 1; a <= 9; a++) uit.push([a, 10 - a]);
-    for (let a = 11; a <= 19; a++) uit.push([a, 20 - a]);
+    /* Altijd over 10 (ronde 2); de twee vormen komen in `maak`. */
+    for (let a = 9; a >= 1; a--) uit.push([a, 10 - a]);
   } else {
     /* Over de 10: het eerste getal 5 tot en met 9, zoals bij aanvullen tot 10 op school. */
     for (let a = 5; a <= 9; a++) for (let b = 2; b <= 9; b++) if (a + b > 10) uit.push([a, b]);
@@ -83,12 +88,12 @@ export function rekenrekAntwoord(stand: Stand, eerste: number, tweede: number): 
  *   "3 en 4 is 7."
  *   "7 en 3 is 10."
  *   "8 + 2 = 10, en dan nog 3 erbij: 13."
- *   "6 + 4 = 10, en 10 + 1 = 11."
+ *   "6 en 4 is samen 10. En nog 1 erbij: 11."
  */
 export function rekenrekZin(stand: Stand, eerste: number, tweede: number): string {
   const n = eerste + tweede;
   if (stand === "over10") return `${eerste} + ${10 - eerste} = 10, en dan nog ${n - 10} erbij: ${n}.`;
-  if (stand === "pootjes") return `${eerste} + ${10 - eerste} = 10, en 10 + ${n - 10} = ${n}.`;
+  if (stand === "pootjes") return `${eerste} en ${10 - eerste} is samen 10. En nog ${n - 10} erbij: ${n}.`;
   return `${eerste} en ${tweede} is ${n}.`;
 }
 
@@ -161,21 +166,31 @@ export const rekenrekerbijGenerator: Generator = {
   aanpak: rekenrekerbijAanpak,
   uitleganimatie: plussomUitleg,
 
-  maximum: (inst) => sommen(standVan(inst)).length,
+  /* Bij aanvullen telt elke som twee keer: 7 + ▢ = 10 en 10 = 7 + ▢. */
+  maximum: (inst) => sommen(standVan(inst)).length * (standVan(inst) === "aanvullen" ? 2 : 1),
 
   maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const stand = standVan(inst);
     const metRek = optelwerking(inst) === "bouwen";
-    const opMoeite = (x: [number, number], y: [number, number]) =>
-      stand === "aanvullen"
-        ? doelVan(x[0]) - doelVan(y[0]) || y[0] - x[0]
-        : x[0] + x[1] - (y[0] + y[1]) || x[0] - y[0];
+    const opMoeite = (x: [number, number], y: [number, number]) => x[0] + x[1] - (y[0] + y[1]) || x[0] - y[0];
     const alle = sommen(stand);
-    const gekozen =
+    /*
+      Aanvullen tot 10 (ronde 2): de negen sommen in twee vormen om en om,
+      7 + ▢ = 10 en 10 = 7 + ▢. Eerst alle negen, dan nog zes in de andere vorm:
+      vijftien verschillende opgaven, allemaal over 10.
+    */
+    const vormen: [number, number, boolean][] =
       stand === "aanvullen"
-        ? [...alle].sort(opMoeite).slice(0, 15)
-        : husselen(kans, alle).slice(0, 15).sort(opMoeite);
+        ? [
+            ...alle.map(([a, b], i): [number, number, boolean] => [a, b, i % 2 === 1]),
+            ...alle.slice(0, 6).map(([a, b], i): [number, number, boolean] => [a, b, i % 2 === 0]),
+          ]
+        : husselen(kans, alle)
+            .slice(0, 15)
+            .sort(opMoeite)
+            .map(([a, b]): [number, number, boolean] => [a, b, false]);
+    const gekozen = vormen.slice(0, 15);
     /* De eerste tien om en om, van makkelijk naar moeilijk; dan nog vijf. */
     const tien = gekozen.slice(0, 10);
     const reeks = omEnOm(
@@ -185,9 +200,9 @@ export const rekenrekerbijGenerator: Generator = {
     );
 
     const uit: Gegenereerd[] = [];
-    for (const { som: [eerste, tweede], bouwen } of reeks) {
+    for (const { som: [eerste, tweede, omgekeerd], bouwen } of reeks) {
       if (uit.length >= aantal) break;
-      const handtekening = `rekenrekerbij:${stand}:${eerste}+${tweede}`;
+      const handtekening = `rekenrekerbij:${stand}:${omgekeerd ? "om:" : ""}${eerste}+${tweede}`;
       if (alGebruikt.has(handtekening)) continue;
       alGebruikt.add(handtekening);
       const gegevens = {
@@ -200,13 +215,14 @@ export const rekenrekerbijGenerator: Generator = {
       uit.push({
         handtekening,
         vorm: "open",
-        vraagtekst: bepaalVraagtekst(rekenrekerbijGenerator, inst, groep, gegevens),
+        vraagtekst: bepaalVraagtekst({ vraagteksten: { standaard: zinnenVoor(stand) } }, inst, groep, gegevens),
         antwoord: rekenrekAntwoord(stand, eerste, tweede).join(","),
         figuur: {
           soort: "rekenrekerbij",
           stand,
           eerste,
           tweede,
+          ...(omgekeerd ? { omgekeerd: true } : {}),
           ...(metRek && bouwen ? { rekenrek: true } : {}),
           ...(metRek ? { hulpBijFout: true } : {}),
           volgnummer: uit.length + 1,

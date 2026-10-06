@@ -521,6 +521,8 @@ export function Optelopdracht({
       pootje is altijd één cijfer, dus daar meteen.
     */
     const pootje = figuur.soort === "viatien" && !!figuur.pootjes && nummer < 2;
+    /* Het linker pootje: pas door als het samen met het eerste getal 10 is. */
+    if (pootje && nummer === 0 && figuur.soort === "viatien" && Number(tekst) !== 10 - figuur.eerste) return;
     if (!metCursor || tekst === "" || (!pootje && Number(tekst) * 10 <= grootste)) return;
     const volgende = nieuw.findIndex((w, i) => i > nummer && w === "");
     if (volgende >= 0) velden.current[volgende]?.focus();
@@ -792,6 +794,8 @@ export function Optelopdracht({
         links={vak(0, "Hoeveel tot 10?", "klein")}
         rechts={vak(1, "Hoeveel daarna nog?", "klein")}
         uitkomst={vak(2, "De uitkomst")}
+        waarden={getypt}
+        fase={fase}
       />,
     );
   }

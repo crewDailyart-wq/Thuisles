@@ -271,6 +271,8 @@ export function RekenrekErbijOpdracht({
       pootje is altijd één cijfer, dus daar meteen.
     */
     const pootje = stand === "pootjes" && i < 2;
+    /* Het linker pootje: pas door als het samen met het eerste getal 10 is. */
+    if (pootje && i === 0 && Number(tekst) !== 10 - eerste) return;
     if (!metCursor || tekst === "" || (!pootje && Number(tekst) * 10 <= Math.max(20, juist[i]))) return;
     const volgende = nieuw.findIndex((w, j) => j > i && w === "");
     if (volgende >= 0) velden.current[volgende]?.focus();
@@ -301,7 +303,18 @@ export function RekenrekErbijOpdracht({
         links={vak(0, "Hoeveel tot 10?", "klein")}
         rechts={vak(1, "Hoeveel daarna nog?", "klein")}
         uitkomst={vak(2, "De uitkomst")}
+        waarden={getypt}
+        fase={fase}
       />
+    ) : stand === "aanvullen" && figuur.omgekeerd ? (
+      /* Andersom: 10 = 7 + ▢. Het rekenrek werkt hetzelfde. */
+      <div className="flex items-center justify-center gap-3">
+        <Gegeven waarde={eerste + tweede} />
+        {teken("=")}
+        <Gegeven waarde={eerste} />
+        {teken("+")}
+        {vak(0, "Hoeveel erbij?")}
+      </div>
     ) : stand === "aanvullen" ? (
       <div className="flex items-center justify-center gap-3">
         <Gegeven waarde={eerste} />

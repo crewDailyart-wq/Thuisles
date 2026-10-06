@@ -157,6 +157,8 @@ export type Figuur =
       stand: "tot10" | "zonder" | "aanvullen" | "over10" | "pootjes";
       eerste: number;
       tweede: number;
+      /** Bij aanvullen: de som andersom, 10 = 7 + ▢ in plaats van 7 + ▢ = 10. */
+      omgekeerd?: boolean;
       rekenrek?: boolean;
       hulpBijFout?: boolean;
       volgnummer?: number;
