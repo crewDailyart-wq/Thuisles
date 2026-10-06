@@ -877,3 +877,9 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 - "Aftrekken met het rekenrek" en de andere domeinen zijn niet veranderd.
 
 **Zo test je het:** ga naar `localhost:3000/oefenen/rekenen/optellen`, kies **Optellen tot en met 20** en kijk onder het kopje **Met het rekenrek**. Open bijvoorbeeld "Optellen tot en met 20 zonder over de 10": ook opgave 2 heeft nu het rekenrek.
+
+## 02 — Het maatje, fase 1 (bezig)
+
+**Stand (wordt per domein bijgewerkt):** deel 1, 2 en 5 zijn gebouwd. Optellen
+(975 opgaven), Aftrekken (879), Delen (225) en Tafels (240) hebben teksten die
+allemaal door de controle komen. Volgende domein: Splitsen.
