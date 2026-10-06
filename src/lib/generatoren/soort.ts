@@ -138,6 +138,30 @@ export type Figuur =
       volgnummer?: number;
     }
   | {
+      /**
+       * Optellen met het rekenrek (oktober 2026).
+       *
+       * Het eerste getal staat al links op het rek; het kind schuift het tweede
+       * getal erbij, eerst de bovenste rij vol. Standen:
+       *   tot10      3 + 4
+       *   zonder     12 + 5 (zonder over de 10)
+       *   aanvullen  7 + ▢ = 10 (of 13 + ▢ = 20); `tweede` is het antwoord
+       *   over10     8 + 5
+       *   pootjes    6 + 5 met de pootjes onder de 5
+       *
+       * `rekenrek`: bij deze opgave schuift het kind zelf (om en om).
+       * `hulpBijFout`: na een fout antwoord schuiven de kralen rustig zelf.
+       * Bij "Alleen typen" haalt het ophalen beide weg.
+       */
+      soort: "rekenrekerbij";
+      stand: "tot10" | "zonder" | "aanvullen" | "over10" | "pootjes";
+      eerste: number;
+      tweede: number;
+      rekenrek?: boolean;
+      hulpBijFout?: boolean;
+      volgnummer?: number;
+    }
+  | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;
@@ -219,6 +243,12 @@ export type Figuur =
       soort: "viatien";
       eerste: number;
       tweede: number;
+      /**
+       * De schoolvorm met splitsen (oktober 2026): 6 + 5 = ▢ met twee pootjes
+       * onder de 5. Het antwoord is dan linker pootje, rechter pootje, uitkomst.
+       * Weggelaten = 6 + 5 = 10 + ▢ = ▢ zoals vroeger.
+       */
+      pootjes?: boolean;
       /**
        * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
        * 20". Weggelaten = de werking van vroeger.

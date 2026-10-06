@@ -64,6 +64,7 @@ import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
 import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
+import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/RekenrekErbij";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
@@ -490,7 +491,10 @@ export function OefenSpeler({
       /* Bij delen om zelf te doen: eerst "Goed zo!" met de deelsom, dan het feest. */
       (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true)) ||
       /* Optellen tot en met 20 met zelf bouwen: eerst "Goed zo!" met de som, dan het feest. */
-      (isOptelfiguur(vraag.figuur) && "bouw" in vraag.figuur && !!vraag.figuur.bouw);
+      (isOptelfiguur(vraag.figuur) && "bouw" in vraag.figuur && !!vraag.figuur.bouw) ||
+      /* Optellen met het rekenrek en de pootjes: eerst "Goed zo!" met de som. */
+      (vraag.figuur?.soort === "rekenrekerbij" && !!vraag.figuur.hulpBijFout) ||
+      (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
       setFase("goed");
@@ -1783,6 +1787,22 @@ function Antwoordvelden({
     Verhaaltjessommen: het verhaal staat als vraag bovenaan; hier alleen de
     vier knoppen of het invoerveld met de eenheid erachter.
   */
+  /* Optellen met het rekenrek: de som, het rek om en om, en de pootjes. */
+  if (vraag.vorm === "open" && isRekenrekfiguur(vraag.figuur)) {
+    return (
+      <RekenrekErbijOpdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+      />
+    );
+  }
+
   /* Erbij- en erafsommen tot en met 100: de som, de vlek, stippen, kaartjes. */
   if (vraag.vorm === "open" && isRekenfiguur(vraag.figuur)) {
     return (

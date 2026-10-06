@@ -38,6 +38,7 @@ import { isTelplaatje } from "@/lib/telplaatjes";
 import type { Figuur } from "@/lib/generatoren/soort";
 import { Sleepding, Strook, StrookBouwer, StrookUitleg, useStrook, type Kleur } from "@/components/oefenen/Tienstrook";
 import { WeegschaalBouwer, WeegschaalUitleg } from "@/components/oefenen/Weegschaal";
+import { Pootjes, pootjesZin } from "@/components/oefenen/Pootjes";
 
 /** Dezelfde drie standen als in het oefenscherm. */
 type Fase = "bezig" | "goed" | "fout";
@@ -105,6 +106,8 @@ export function juisteAntwoorden(figuur: Optelfiguur): number[] {
       return figuur.sommen.map((s) => s.eerste + s.tweede);
     case "viatien": {
       const totaal = figuur.eerste + figuur.tweede;
+      /* Met pootjes: linker pootje, rechter pootje, uitkomst. */
+      if (figuur.pootjes) return [10 - figuur.eerste, totaal - 10, totaal];
       return [totaal - 10, totaal];
     }
     case "tweegetallen": {
@@ -444,6 +447,8 @@ export function Optelopdracht({
   const hulpBijFout = "hulpBijFout" in figuur ? figuur.hulpBijFout : undefined;
   const [gebouwd, setGebouwd] = useState(false);
   const geblokkeerd = !!bouw && !gebouwd;
+  /* Optellen via 10 in de schoolvorm met pootjes. */
+  const pootjes = figuur.soort === "viatien" && !!figuur.pootjes;
   const juist = juisteAntwoorden(figuur);
   const aantal = juist.length;
   const grootste = grootsteAntwoord(figuur);
@@ -511,8 +516,12 @@ export function Optelopdracht({
     nieuw[nummer] = tekst;
     meld(nieuw);
 
-    /* Is dit vakje vol, dan springt de cursor door naar het volgende lege. */
-    if (!metCursor || tekst === "" || Number(tekst) * 10 <= grootste) return;
+    /*
+      Is dit vakje vol, dan springt de cursor door naar het volgende lege. Een
+      pootje is altijd één cijfer, dus daar meteen.
+    */
+    const pootje = figuur.soort === "viatien" && !!figuur.pootjes && nummer < 2;
+    if (!metCursor || tekst === "" || (!pootje && Number(tekst) * 10 <= grootste)) return;
     const volgende = nieuw.findIndex((w, i) => i > nummer && w === "");
     if (volgende >= 0) velden.current[volgende]?.focus();
   }
@@ -571,6 +580,9 @@ export function Optelopdracht({
     goedZin = `Goed zo! ${figuur.eerste} en ${figuur.tweede} is ${figuur.eerste + figuur.tweede}.`;
     foutZin = `${figuur.eerste} en ${figuur.tweede} is samen ${figuur.eerste + figuur.tweede}.`;
     uitlegBeeld = <StrookUitleg eerste={figuur.eerste} tweede={figuur.tweede} />;
+  } else if (figuur.soort === "viatien" && figuur.pootjes) {
+    goedZin = `Goed zo! ${pootjesZin(figuur.eerste, figuur.tweede)}`;
+    foutZin = pootjesZin(figuur.eerste, figuur.tweede);
   } else if (figuur.soort === "plussom" || figuur.soort === "viatien") {
     goedZin = `Goed zo! ${viaTien(figuur.eerste, figuur.tweede)}`;
     foutZin = viaTien(figuur.eerste, figuur.tweede);
@@ -600,10 +612,10 @@ export function Optelopdracht({
   /** Wat er onder de opdracht komt: bij goed de zin, bij fout de bouwsteen en de zin. */
   const naderhand = (
     <>
-      {fase === "goed" && bouw && goedZin && (
+      {fase === "goed" && (bouw || pootjes) && goedZin && (
         <p className="rounded-2xl bg-groen-zacht px-4 py-3 text-center text-xl font-extrabold text-groen-diep">{goedZin}</p>
       )}
-      {fase === "fout" && hulpBijFout && foutZin && (
+      {fase === "fout" && (hulpBijFout || pootjes) && foutZin && (
         <>
           {uitlegBeeld}
           <p className="rounded-2xl bg-lucht-zacht px-4 py-3 text-center text-lg font-extrabold text-lucht">{foutZin}</p>
@@ -612,7 +624,7 @@ export function Optelopdracht({
     </>
   );
   const metNaderhand = (kern: React.ReactNode) =>
-    bouw || hulpBijFout ? (
+    bouw || hulpBijFout || pootjes ? (
       <div className="flex w-full flex-col items-center gap-5">
         {kern}
         {naderhand}
@@ -769,6 +781,18 @@ export function Optelopdracht({
           </tr>
         </tbody>
       </table>
+    );
+  }
+
+  if (figuur.soort === "viatien" && figuur.pootjes) {
+    return metNaderhand(
+      <Pootjes
+        eerste={figuur.eerste}
+        tweede={figuur.tweede}
+        links={vak(0, "Hoeveel tot 10?", "klein")}
+        rechts={vak(1, "Hoeveel daarna nog?", "klein")}
+        uitkomst={vak(2, "De uitkomst")}
+      />,
     );
   }
 

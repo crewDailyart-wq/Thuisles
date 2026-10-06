@@ -460,11 +460,11 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Optellen – Optellen tot en met 20, visueel en interactief (oktober 2026)
   { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Maak de plussom bij het plaatje", soort: "plaatjessom", bolletjes: 1, inst: { stand: "som", van: 2, tot: 10, voorwerp: "gemengd" } },
-  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 10", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 2, tot: 10, voorwerp: "gemengd", werking: "bouwen" } },
-  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 20", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 11, tot: 20, voorwerp: "gemengd", werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 10", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 2, tot: 10, voorwerp: "gemengd", werking: "typen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 20", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 11, tot: 20, voorwerp: "gemengd", werking: "typen" } },
   { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 10", soort: "plussom", bolletjes: 2, inst: { van: 2, tot: 10 } },
-  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 20", soort: "plussom", bolletjes: 2, inst: { van: 11, tot: 20, werking: "bouwen" } },
-  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen via 10", soort: "viatien", bolletjes: 4, inst: { van: 11, tot: 18, werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 20", soort: "plussom", bolletjes: 2, inst: { van: 11, tot: 20, werking: "typen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen via 10", soort: "viatien", bolletjes: 4, inst: { van: 11, tot: 18, werking: "pootjes" } },
   { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som hoort er niet bij?", soort: "somkeuze", bolletjes: 3, inst: { stand: "nietbij", van: 11, tot: 20 } },
   { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som klopt?", soort: "somkeuze", bolletjes: 3, inst: { stand: "klopt", van: 3, tot: 20 } },
   { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Zoek de som die evenveel is", soort: "evenveelsom", bolletjes: 3, inst: { van: 4, tot: 20 } },
@@ -473,6 +473,12 @@ const OEFENINGEN = [
   { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Kies twee getallen", soort: "tweegetallen", bolletjes: 4, inst: { van: 11, tot: 20 } },
   { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk I", soort: "balans", bolletjes: 4, inst: { van: 3, tot: 10, leeg: "links", werking: "bouwen" } },
   { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk II", soort: "balans", bolletjes: 5, inst: { van: 11, tot: 20, leeg: "wissel", werking: "hulp" } },
+  // Groep 4 – Optellen – Optellen met het rekenrek (oktober 2026)
+  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen tot en met 10 op het rekenrek", soort: "rekenrekerbij", bolletjes: 1, inst: { stand: "tot10", werking: "bouwen", niveau: 1 } },
+  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen tot en met 20 zonder over de 10", soort: "rekenrekerbij", bolletjes: 2, inst: { stand: "zonder", werking: "bouwen", niveau: 2 } },
+  { groep: "Optellen · Optellen met het rekenrek", titel: "Aanvullen tot 10", soort: "rekenrekerbij", bolletjes: 3, inst: { stand: "aanvullen", werking: "bouwen", niveau: 3 } },
+  { groep: "Optellen · Optellen met het rekenrek", titel: "Optellen over de 10", soort: "rekenrekerbij", bolletjes: 4, inst: { stand: "over10", werking: "bouwen", niveau: 4 } },
+  { groep: "Optellen · Optellen met het rekenrek", titel: "Splitsen via 10", soort: "rekenrekerbij", bolletjes: 5, inst: { stand: "pootjes", werking: "bouwen", niveau: 5 } },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
   { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
@@ -838,6 +844,23 @@ for (const oefening of OEFENINGEN) {
           if (k.uitkomst > 20 || (k.uitkomst !== echt && Math.abs(k.uitkomst - echt) > 2)) fouten.push(`${waar}: kaartje ${k.eerste} + ${k.tweede} = ${k.uitkomst}.`);
         }
       }
+    }
+
+    /*
+      Optellen met het rekenrek: om en om met het rek bij opgave 1, 3, 5, 7
+      en 9, nooit boven 20, en het antwoord past bij de som. Bij "Optellen via
+      10" met pootjes: linker pootje + rechter pootje is het tweede getal.
+    */
+    if (vraag.figuur?.soort === "rekenrekerbij") {
+      const f = vraag.figuur;
+      const moet = f.volgnummer <= 10 && f.volgnummer % 2 === 1;
+      if (!!f.rekenrek !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} met het rekenrek.`);
+      if (f.eerste + f.tweede > 20) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} is meer dan 20.`);
+    }
+    if (vraag.figuur?.soort === "viatien" && vraag.figuur.pootjes) {
+      const [l, r, n] = vraag.antwoord.split(",").map(Number);
+      const f = vraag.figuur;
+      if (f.eerste + l !== 10 || l + r !== f.tweede || n !== f.eerste + f.tweede) fouten.push(`${waar}: de pootjes kloppen niet: ${vraag.antwoord}.`);
     }
 
     if (isKeerfiguur(vraag.figuur)) {

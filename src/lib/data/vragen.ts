@@ -274,7 +274,24 @@ function metWerkingVanSjabloon(
   figuur: Vraag["figuur"],
   vraagtekst: string,
   sjabloonId: string | null,
-): { figuur: Vraag["figuur"]; vraagtekst: string } {
+): { figuur: Vraag["figuur"]; vraagtekst: string; antwoord?: string } {
+  /*
+    Optellen via 10 met pootjes, terug naar "Alleen typen": weer de oude vorm
+    10 + ▢ = ▢, en dus ook het antwoord van vroeger (rest, uitkomst).
+  */
+  if (figuur?.soort === "viatien" && figuur.pootjes && sjabloonId && sjabloonrij(sjabloonId)?.inst.werking === "typen") {
+    const totaal = figuur.eerste + figuur.tweede;
+    return {
+      figuur: { soort: "viatien", eerste: figuur.eerste, tweede: figuur.tweede, volgnummer: figuur.volgnummer },
+      vraagtekst,
+      antwoord: `${totaal - 10},${totaal}`,
+    };
+  }
+  /* Optellen met het rekenrek: bij "Alleen typen" geen rekenrek en geen hulp. */
+  if (figuur?.soort === "rekenrekerbij" && sjabloonId && (figuur.rekenrek || figuur.hulpBijFout)) {
+    if (sjabloonrij(sjabloonId)?.inst.werking !== "typen") return { figuur, vraagtekst };
+    return { figuur: { ...figuur, rekenrek: undefined, hulpBijFout: undefined }, vraagtekst };
+  }
   /*
     Optellen tot en met 20 (oktober 2026): dezelfde instelling. Bij "Alleen
     typen" gaan de bouwstap en de hulp na een fout antwoord eruit.
@@ -307,7 +324,11 @@ function metWerkingVanSjabloon(
 
 function naarVraag(r: Record<string, string | number | null>): VraagInContext {
   const metVos = metVosVanSjabloon(r.figuur ? JSON.parse(String(r.figuur)) as Vraag["figuur"] : null, r.sjabloon_id ? String(r.sjabloon_id) : null);
-  const { figuur, vraagtekst } = metWerkingVanSjabloon(metVos, String(r.vraagtekst), r.sjabloon_id ? String(r.sjabloon_id) : null);
+  const { figuur, vraagtekst, antwoord } = metWerkingVanSjabloon(
+    metVos,
+    String(r.vraagtekst),
+    r.sjabloon_id ? String(r.sjabloon_id) : null,
+  );
   const som = r.somgegevens ? JSON.parse(String(r.somgegevens)) as Vraag["somgegevens"] : null;
   if (som && figuur?.soort === "bus") som.extra = { ...som.extra, busPlaatsen: figuur.plaatsen ?? 40 };
   return {
@@ -317,7 +338,7 @@ function naarVraag(r: Record<string, string | number | null>): VraagInContext {
     vorm: String(r.vorm) as Vraagvorm,
     vraagtekst,
     opties: leesOpties(r.opties === null ? null : String(r.opties)),
-    antwoord: String(r.antwoord),
+    antwoord: antwoord ?? String(r.antwoord),
     hint: r.hint ? String(r.hint) : null,
     afbeelding: r.afbeelding ? String(r.afbeelding) : null,
     figuur,

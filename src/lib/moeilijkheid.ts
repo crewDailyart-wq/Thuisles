@@ -681,6 +681,7 @@ export function puntenVan(soort: string, inst: Instellingen): number {
 
     case "rekensom":
     case "verhaaltje":
+    case "rekenrekerbij":
       /* De bolletjes staan per oefening in WERKPLAN.md en gaan als niveau mee. */
       p = NIVEAUPUNTEN[Math.max(1, Math.min(5, getal(inst, "niveau", 1)))];
       break;

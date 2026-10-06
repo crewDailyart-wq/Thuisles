@@ -15,6 +15,7 @@ import {
   heelGetal,
   husselen,
   kansGenerator,
+  tekst,
   type Generator,
   type Gegenereerd,
   type Instellingen,
@@ -25,7 +26,7 @@ import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { optelPatronen } from "@/lib/generatoren/patronen/optelopdrachten";
 import { viatienAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { viatienUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
-import { omEnOm, optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
+import { omEnOm, optelwerking } from "@/lib/generatoren/optelwerking";
 
 const ZIN = "Reken via 10.";
 
@@ -59,7 +60,18 @@ export const viatienGenerator: Generator = {
   velden: [
     { soort: "getal", sleutel: "van", label: "Kleinste uitkomst", min: 11, max: 20 },
     { soort: "getal", sleutel: "tot", label: "Grootste uitkomst", min: 11, max: 20 },
-    werkingVeld("Om en om zelf bouwen met de tienstrook"),
+    {
+      soort: "keuze",
+      sleutel: "werking",
+      label: "Werking",
+      opties: [
+        { waarde: "typen", label: "Alleen typen (de oude werking: 6 + 5 = 10 + ▢ = ▢)" },
+        { waarde: "pootjes", label: "Splitsen met pootjes: 6 + 5 = ▢ met twee pootjes onder de 5" },
+        { waarde: "bouwen", label: "Om en om zelf bouwen met de tienstrook" },
+        { waarde: "hulp", label: "Alleen hulp na een fout antwoord" },
+      ],
+      hulp: "Alleen typen geldt meteen, ook voor de opgaven die er al liggen; er hoeft niets opnieuw gemaakt te worden.",
+    },
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
@@ -79,6 +91,33 @@ export const viatienGenerator: Generator = {
     const mogelijk = sommen(van, tot);
     if (mogelijk.length === 0) return [];
     const werking = optelwerking(inst);
+
+    /*
+      Splitsen met pootjes: vijftien vaste sommen, van klein naar groot. Het
+      antwoord is linker pootje (tot 10), rechter pootje (wat er dan nog bij
+      moet) en de uitkomst.
+    */
+    if (tekst(inst, "werking", "typen") === "pootjes") {
+      const opTotaal = (x: [number, number], y: [number, number]) => x[0] + x[1] - (y[0] + y[1]) || y[0] - x[0];
+      const reeks = husselen(kans, mogelijk).slice(0, Math.max(aantal, 15)).sort(opTotaal);
+      const uit: Gegenereerd[] = [];
+      for (const [a, b] of reeks) {
+        if (uit.length >= aantal) break;
+        const handtekening = `viatien:pootjes:${a}+${b}`;
+        if (alGebruikt.has(handtekening)) continue;
+        alGebruikt.add(handtekening);
+        const gegevens = { soort: "viatien", variant: "pootjes", getallen: [a, b], goed: a + b };
+        uit.push({
+          handtekening,
+          vorm: "open",
+          vraagtekst: bepaalVraagtekst(viatienGenerator, inst, groep, gegevens),
+          antwoord: `${10 - a},${b - (10 - a)},${a + b}`,
+          figuur: { soort: "viatien", eerste: a, tweede: b, pootjes: true, volgnummer: uit.length + 1 },
+          somgegevens: gegevens,
+        });
+      }
+      return uit;
+    }
 
     /*
       Om en om: vijf sommen met de tienstrook, vijf zulke sommen zonder, en dan

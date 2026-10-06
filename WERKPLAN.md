@@ -844,11 +844,11 @@ oefeningen staat "vragen per oefensessie" op 15, anders vallen er opgaven weg.
 | Kopje | Oefening | Wat er is veranderd |
 |---|---|---|
 | Met plaatjes | Maak de plussom bij het plaatje | niets (plaatjes stonden al in rijtjes van 5) |
-| Met plaatjes | Optellen met plaatjes tot en met 10 | elk plaatje naar de tienstrook (1 rij), dan typen |
-| Met plaatjes | Optellen met plaatjes tot en met 20 | hetzelfde met 2 rijen; "Goed zo! 10 en 5 is 15." |
+| Met plaatjes | Optellen met plaatjes tot en met 10 | teruggezet (6 oktober): plaatjes tellen en typen, Werking "Alleen typen" |
+| Met plaatjes | Optellen met plaatjes tot en met 20 | teruggezet (6 oktober): plaatjes tellen en typen |
 | Uitrekenen | Optellen tot en met 10 | niets |
-| Uitrekenen | Optellen tot en met 20 | om en om met de tienstrook, bouwsommen over het tiental; "Goed zo! 8 + 2 = 10, en dan nog 3 erbij: 13." |
-| Uitrekenen | Optellen via 10 | om en om met de tienstrook; de volle eerste rij licht op als 10 |
+| Uitrekenen | Optellen tot en met 20 | teruggezet (6 oktober): alleen typen |
+| Uitrekenen | Optellen via 10 | sinds 6 oktober de schoolvorm met pootjes: 6 + 5 = ▢, onder de 5 twee pootjes (tot 10, en wat er dan nog bij moet); "Goed zo! 6 + 4 = 10, en 10 + 1 = 11." Werking "Splitsen met pootjes" |
 | Kiezen en controleren | Welke som hoort er niet bij? | niets |
 | Kiezen en controleren | Welke som klopt? | foute kaartjes 1 of 2 naast de echte uitkomst, nooit boven 20, geen dubbele uitkomsten |
 | Kiezen en controleren | Zoek de som die evenveel is | niets |
@@ -857,6 +857,42 @@ oefeningen staat "vragen per oefensessie" op 15, anders vallen er opgaven weg.
 | Puzzelen | Kies twee getallen | niets |
 | Puzzelen | Maak beide kanten gelijk I | om en om met de weegschaal |
 | Puzzelen | Maak beide kanten gelijk II | na een fout antwoord de weegschaal recht |
+
+De tienstrook staat nog in de code (`Tienstrook.tsx`), maar wordt sinds 6
+oktober nergens meer gebruikt.
+
+## Groep 4 – Optellen met het rekenrek (oktober 2026)
+
+Nieuw onderwerp, direct na Optellen tot en met 20, met dezelfde opbouw als
+Aftrekken met het rekenrek (vijf oefeningen, geen kopjes). Hetzelfde rekenrek:
+2 rijen van 10, vijf rode en vijf witte kralen, hetzelfde frame. Het rek voor
+aftrekken is niet aangeraakt; erbij heeft een eigen onderdeel
+(`RekenrekErbij.tsx`) met de beweging die erbij hoort.
+
+- De kralen beginnen rechts; wat links staat telt mee. Het eerste getal staat
+  er al. Een kraal naar links slepen of aantikken neemt alle kralen links ervan
+  mee; terug naar rechts zet ze terug. Eerst de bovenste rij vol, nooit meer
+  dan het tweede getal. De kralen van het tweede getal krijgen een gloed. Geen
+  teller; het vakje werkt pas als alles geschoven is.
+- Om en om: opgave 1, 3, 5, 7 en 9 met het rekenrek, 2, 4, 6, 8 en 10 zonder,
+  11 tot en met 15 zonder. Na een fout antwoord schuiven de kralen zelf.
+- 15 vaste opgaven, van makkelijk naar moeilijk, vragen per oefensessie 15.
+- Per oefening terug naar alleen typen: Werking "Alleen typen (zonder
+  rekenrek)" in beheer; dat geldt meteen.
+
+| # | Titel | Bolletjes | Voorbeeld | Na goed |
+|---|---|---|---|---|
+| 1 | Optellen tot en met 10 op het rekenrek | ● | 3 + 4 | Goed zo! 3 en 4 is 7. |
+| 2 | Optellen tot en met 20 zonder over de 10 | ●● | 12 + 5 | Goed zo! 12 en 5 is 17. |
+| 3 | Aanvullen tot 10 | ●●● | 7 + ▢ = 10 (na de negen sommen tot 10 ook tot 20: 13 + ▢ = 20) | Goed zo! 7 en 3 is 10. |
+| 4 | Optellen over de 10 | ●●●● | 8 + 5 | Goed zo! 8 + 2 = 10, en dan nog 3 erbij: 13. |
+| 5 | Splitsen via 10 | ●●●●● | 6 + 5 met pootjes en het rekenrek | Goed zo! 6 + 4 = 10, en 10 + 1 = 11. |
+
+Webadressen: `/groep-4/optellen/rekenrek-optellen-tot-en-met-10`,
+`…/rekenrek-optellen-tot-en-met-20-zonder-over-de-10`,
+`…/rekenrek-aanvullen-tot-10`, `…/rekenrek-optellen-over-de-10`,
+`…/rekenrek-splitsen-via-10`. Elke pagina heeft een eigen titel en omschrijving
+met "erbijsommen", "rekenrek" en "groep 4", en staat in de sitemap.
 
 ## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR
 
