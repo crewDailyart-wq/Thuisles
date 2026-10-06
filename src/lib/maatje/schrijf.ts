@@ -17,6 +17,7 @@ import { schrijfTafelsDelen } from "@/lib/maatje/schrijvers/tafels-delen";
 import { schrijfSplitsen } from "@/lib/maatje/schrijvers/splitsen";
 import { schrijfGetallen } from "@/lib/maatje/schrijvers/getallen";
 import { schrijfVerhaal } from "@/lib/maatje/schrijvers/verhaal";
+import { schrijfTijd } from "@/lib/maatje/schrijvers/tijd";
 
 export type Opgave = {
   vorm: string;
@@ -34,10 +35,12 @@ export type Uitkomst = { geschreven: Geschreven; meldingen: Melding[] } | null;
 export function schrijfMaatje(o: Opgave): Uitkomst {
   let geschreven: Geschreven | null = null;
   try {
-    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o) ?? schrijfGetallen(o) ?? schrijfVerhaal(o);
+    geschreven = schrijfRekenen(o) ?? schrijfTafelsDelen(o) ?? schrijfSplitsen(o) ?? schrijfGetallen(o) ?? schrijfVerhaal(o) ?? schrijfTijd(o);
   } catch {
     geschreven = null;
   }
   if (!geschreven) return null;
+  /* Leest het maatje de vraag letterlijk voor, dan is tekst 1 de tekst van de eigenaar; zie `voorlezenIsVraag`. */
+  if (geschreven.teksten.voorlezen.tekst === o.vraagtekst) geschreven.controle.voorlezenIsVraag = true;
   return { geschreven, meldingen: controleer(geschreven.teksten, geschreven.controle) };
 }

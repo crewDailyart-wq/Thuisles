@@ -882,5 +882,5 @@ Gewerkt op de aparte tak `werk-oktober-2026` op GitHub; de hoofdtak is niet aang
 
 **Stand (wordt per domein bijgewerkt):** deel 1, 2 en 5 zijn gebouwd. Optellen
 (975 opgaven), Aftrekken (879), Delen (225), Tafels (240), Splitsen (625), Getallen
-(1232) en Verhaaltjessommen (1950) hebben teksten die allemaal door de controle
-komen. Volgende domein: Tijd.
+(1232), Verhaaltjessommen (1950) en Tijd (1260) hebben teksten die allemaal
+door de controle komen. Volgende domein: Geld.
