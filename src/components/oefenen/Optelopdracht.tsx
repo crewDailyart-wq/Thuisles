@@ -36,6 +36,8 @@ import { Telplaatje } from "@/components/oefenen/Telplaatjes";
 import { ERAFSTIJL } from "@/components/oefenen/Wegtikken";
 import { isTelplaatje } from "@/lib/telplaatjes";
 import type { Figuur } from "@/lib/generatoren/soort";
+import { Sleepding, Strook, StrookBouwer, StrookUitleg, useStrook, type Kleur } from "@/components/oefenen/Tienstrook";
+import { WeegschaalBouwer, WeegschaalUitleg } from "@/components/oefenen/Weegschaal";
 
 /** Dezelfde drie standen als in het oefenscherm. */
 type Fase = "bezig" | "goed" | "fout";
@@ -295,6 +297,79 @@ export function Groepje({
 }
 
 // ---------------------------------------------------------------------------
+// Plaatjes naar de tienstrook
+// ---------------------------------------------------------------------------
+
+/**
+ * Twee groepjes plaatjes en een tienstrook. Het kind tikt elk plaatje aan (of
+ * sleept het), en dat plaatje schuift als blokje naar het volgende lege vakje.
+ * Het eerste groepje wordt oranje, het tweede viool. Een rij tot en met 10,
+ * twee rijen daarboven.
+ */
+function PlaatjesBouwer({
+  eerste,
+  tweede,
+  voorwerp,
+  uit,
+  onKlaar,
+}: {
+  eerste: number;
+  tweede: number;
+  voorwerp: string;
+  uit: boolean;
+  onKlaar: (klaar: boolean) => void;
+}) {
+  const totaal = eerste + tweede;
+  const rijen: 1 | 2 = totaal > 10 ? 2 : 1;
+  const s = useStrook(Array.from({ length: rijen * 10 }, () => null));
+  const [weg, setWeg] = useState<string[]>([]);
+  const klaar = s.vakjes.filter((k) => k !== null).length === totaal;
+  useEffect(() => onKlaar(klaar), [klaar, onKlaar]);
+
+  const groepje = (aantal: number, kleur: Kleur) => (
+    <div className="flex flex-col items-start gap-1">
+      {Array.from({ length: Math.ceil(aantal / PER_RIJ) }, (_, r) => (
+        <div key={r} className="flex gap-0.5">
+          {Array.from({ length: Math.min(PER_RIJ, aantal - r * PER_RIJ) }, (_, k) => {
+            const sleutel = `${kleur}-${r * PER_RIJ + k}`;
+            if (weg.includes(sleutel)) return <span key={k} className="size-12" aria-hidden="true" />;
+            return (
+              <Sleepding
+                key={k}
+                label="Plaatje naar de strook"
+                uit={uit}
+                boven={s.isBoven}
+                onBoven={s.setBoven}
+                onNaarStrook={(van) => {
+                  setWeg((w) => [...w, sleutel]);
+                  s.stuur(van, kleur);
+                }}
+              >
+                <Voorwerpje soort={voorwerp} kleur={kleur} />
+              </Sleepding>
+            );
+          })}
+        </div>
+      ))}
+    </div>
+  );
+
+  return (
+    <div className="flex w-full flex-col items-center gap-4">
+      {/* Zijn alle plaatjes in de strook, dan verdwijnt het lege vak erboven. */}
+      {weg.length < totaal && (
+        <div className="flex flex-wrap items-start justify-center gap-x-10 gap-y-3">
+          {groepje(eerste, 0)}
+          {groepje(tweede, 1)}
+        </div>
+      )}
+      <Strook vakjes={s.vakjes} rijen={rijen} vakRef={s.vakRef} strookRef={s.strookRef} opvallend={s.boven} />
+      {s.vluchten}
+    </div>
+  );
+}
+
+// ---------------------------------------------------------------------------
 // Kaartjes om aan te tikken
 // ---------------------------------------------------------------------------
 
@@ -348,6 +423,7 @@ export function Optelopdracht({
   metCursor = false,
   onWijzig,
   onBevestig,
+  onKlaar,
 }: {
   figuur: Optelfiguur;
   antwoord: string;
@@ -356,8 +432,18 @@ export function Optelopdracht({
   metCursor?: boolean;
   onWijzig: (waarde: string) => void;
   onBevestig: () => void;
+  /** Na een goed antwoord bij zelf bouwen: de zin heeft even gestaan, het feest mag komen. */
+  onKlaar?: () => void;
 }) {
   const uit = fase !== "bezig";
+  /*
+    Zelf bouwen (oktober 2026): eerst de tienstrook of de weegschaal, en pas
+    daarna werken de vakjes. Zie `Tienstrook` en `Weegschaal`.
+  */
+  const bouw = "bouw" in figuur ? figuur.bouw : undefined;
+  const hulpBijFout = "hulpBijFout" in figuur ? figuur.hulpBijFout : undefined;
+  const [gebouwd, setGebouwd] = useState(false);
+  const geblokkeerd = !!bouw && !gebouwd;
   const juist = juisteAntwoorden(figuur);
   const aantal = juist.length;
   const grootste = grootsteAntwoord(figuur);
@@ -377,10 +463,23 @@ export function Optelopdracht({
 
   /* Bij een nieuwe vraag staat de cursor meteen in het eerste lege vakje. */
   useEffect(() => {
-    if (!metCursor || kiest || fase !== "bezig") return;
+    if (!metCursor || kiest || fase !== "bezig" || bouw) return;
     velden.current[0]?.focus();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [metCursor]);
+
+  /* Zelf bouwen: zodra alles staat, gaat het eerste vakje open en krijgt het de cursor. */
+  useEffect(() => {
+    if (gebouwd && metCursor && fase === "bezig") velden.current[0]?.focus();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [gebouwd]);
+
+  /* Na een goed antwoord bij zelf bouwen blijft de zin even staan; daarna het feest. */
+  useEffect(() => {
+    if (fase !== "goed" || !bouw) return;
+    const klokje = window.setTimeout(() => onKlaar?.(), 2400);
+    return () => window.clearTimeout(klokje);
+  }, [fase, bouw, onKlaar]);
 
   /*
     Wat er per vakje goed of fout is.
@@ -426,7 +525,7 @@ export function Optelopdracht({
         uitslag={uitslagen[nummer] ?? null}
         maat={maat}
         label={label}
-        uit={uit}
+        uit={uit || geblokkeerd}
         veldRef={(el) => {
           velden.current[nummer] = el;
         }}
@@ -445,6 +544,104 @@ export function Optelopdracht({
 
   const teken = <span className="text-2xl font-extrabold text-inkt-zacht">+</span>;
   const isgelijk = <span className="text-2xl font-extrabold text-inkt-zacht">=</span>;
+
+  /*
+    De zinnen bij goed en fout, en de bouwsteen die na een fout antwoord
+    rustig laat zien hoe het wel werkt. Kort, in gewone taal.
+  */
+  const viaTien = (a: number, b: number) =>
+    a < 10 && a + b > 10 ? `${a} + ${10 - a} = 10, en dan nog ${a + b - 10} erbij: ${a + b}.` : `${a} + ${b} = ${a + b}.`;
+  const balansDelen = () => {
+    if (figuur.soort !== "balans") return null;
+    const leegLinks = figuur.links.includes(null);
+    const vol = (leegLinks ? figuur.rechts : figuur.links) as number[];
+    const bekend = ((leegLinks ? figuur.links : figuur.rechts).find((n) => n !== null) ?? 0) as number;
+    const erbij = vol[0] + vol[1] - bekend;
+    const zin = leegLinks
+      ? `${bekend} + ${erbij} = ${vol[0]} + ${vol[1]}`
+      : `${vol[0]} + ${vol[1]} = ${bekend} + ${erbij}`;
+    return { leegLinks, vol, bekend, erbij, zin };
+  };
+  const blokjes = (n: number) => (n === 1 ? "Er moest 1 blokje bij" : `Er moesten ${n} blokjes bij`);
+
+  let goedZin: string | null = null;
+  let foutZin: string | null = null;
+  let uitlegBeeld: React.ReactNode = null;
+  if (figuur.soort === "plaatjessom") {
+    goedZin = `Goed zo! ${figuur.eerste} en ${figuur.tweede} is ${figuur.eerste + figuur.tweede}.`;
+    foutZin = `${figuur.eerste} en ${figuur.tweede} is samen ${figuur.eerste + figuur.tweede}.`;
+    uitlegBeeld = <StrookUitleg eerste={figuur.eerste} tweede={figuur.tweede} />;
+  } else if (figuur.soort === "plussom" || figuur.soort === "viatien") {
+    goedZin = `Goed zo! ${viaTien(figuur.eerste, figuur.tweede)}`;
+    foutZin = viaTien(figuur.eerste, figuur.tweede);
+    uitlegBeeld = <StrookUitleg eerste={figuur.eerste} tweede={figuur.tweede} />;
+  } else if (figuur.soort === "balans") {
+    const b = balansDelen();
+    if (b) {
+      goedZin = `Goed zo! ${blokjes(b.erbij)}.`;
+      foutZin = `${blokjes(b.erbij)}: ${b.zin}.`;
+      uitlegBeeld = (
+        <WeegschaalUitleg
+          links={b.leegLinks ? [b.bekend] : b.vol}
+          rechts={b.leegLinks ? b.vol : [b.bekend]}
+          kant={b.leegLinks ? "links" : "rechts"}
+          erbij={b.erbij}
+        />
+      );
+    }
+  } else if (figuur.soort === "aanvultabel") {
+    /* Het eerste vakje dat niet klopt; staan ze allemaal goed, dan het eerste. */
+    const fout = Math.max(0, figuur.getallen.findIndex((n, i) => Number(getypt[i]) !== figuur.doel - n));
+    const n = figuur.getallen[fout];
+    foutZin = `Van ${n} tot ${figuur.doel} is ${figuur.doel - n}.`;
+    uitlegBeeld = <StrookUitleg eerste={n} tweede={figuur.doel - n} />;
+  }
+
+  /** Wat er onder de opdracht komt: bij goed de zin, bij fout de bouwsteen en de zin. */
+  const naderhand = (
+    <>
+      {fase === "goed" && bouw && goedZin && (
+        <p className="rounded-2xl bg-groen-zacht px-4 py-3 text-center text-xl font-extrabold text-groen-diep">{goedZin}</p>
+      )}
+      {fase === "fout" && hulpBijFout && foutZin && (
+        <>
+          {uitlegBeeld}
+          <p className="rounded-2xl bg-lucht-zacht px-4 py-3 text-center text-lg font-extrabold text-lucht">{foutZin}</p>
+        </>
+      )}
+    </>
+  );
+  const metNaderhand = (kern: React.ReactNode) =>
+    bouw || hulpBijFout ? (
+      <div className="flex w-full flex-col items-center gap-5">
+        {kern}
+        {naderhand}
+      </div>
+    ) : (
+      kern
+    );
+
+  /* Plaatjes in de tienstrook tikken; daarna de uitkomst typen. */
+  if (figuur.soort === "plaatjessom" && bouw) {
+    return metNaderhand(
+      <>
+        <PlaatjesBouwer
+          eerste={figuur.eerste}
+          tweede={figuur.tweede}
+          voorwerp={figuur.voorwerp}
+          uit={uit}
+          onKlaar={setGebouwd}
+        />
+        <div className="flex items-center justify-center gap-3">
+          <Gegeven waarde={figuur.eerste} />
+          {teken}
+          <Gegeven waarde={figuur.tweede} />
+          {isgelijk}
+          {vak(0, "Hoeveel samen?")}
+        </div>
+      </>,
+    );
+  }
 
   if (figuur.soort === "plaatjessom") {
     const heleSom = figuur.stand === "som";
@@ -473,14 +670,17 @@ export function Optelopdracht({
   }
 
   if (figuur.soort === "plussom") {
-    return (
-      <div className="flex w-full items-center justify-center gap-3">
-        <Gegeven waarde={figuur.eerste} maat="groot" />
-        {teken}
-        <Gegeven waarde={figuur.tweede} maat="groot" />
-        {isgelijk}
-        {vak(0, "De uitkomst", "groot")}
-      </div>
+    return metNaderhand(
+      <>
+        <div className="flex w-full items-center justify-center gap-3">
+          <Gegeven waarde={figuur.eerste} maat="groot" />
+          {teken}
+          <Gegeven waarde={figuur.tweede} maat="groot" />
+          {isgelijk}
+          {vak(0, "De uitkomst", "groot")}
+        </div>
+        {bouw && <StrookBouwer eerste={figuur.eerste} tweede={figuur.tweede} uit={uit} onKlaar={setGebouwd} />}
+      </>,
     );
   }
 
@@ -545,7 +745,7 @@ export function Optelopdracht({
       kleiner dan het vak zelf.
     */
     const HOKJE = "size-16 border-2 border-tabellijn p-0 sm:size-[4.25rem]";
-    return (
+    return metNaderhand(
       <table className="mx-auto border-collapse">
         <tbody>
           <tr>
@@ -573,18 +773,22 @@ export function Optelopdracht({
   }
 
   if (figuur.soort === "viatien") {
-    return (
-      <div className="flex w-full flex-wrap items-center justify-center gap-2.5">
-        <Gegeven waarde={figuur.eerste} />
-        {teken}
-        <Gegeven waarde={figuur.tweede} />
-        {isgelijk}
-        <Gegeven waarde={10} />
-        {teken}
-        {vak(0, "Hoeveel blijft er over?")}
-        {isgelijk}
-        {vak(1, "De uitkomst")}
-      </div>
+    return metNaderhand(
+      <>
+        <div className="flex w-full flex-wrap items-center justify-center gap-2.5">
+          <Gegeven waarde={figuur.eerste} />
+          {teken}
+          <Gegeven waarde={figuur.tweede} />
+          {isgelijk}
+          <Gegeven waarde={10} />
+          {teken}
+          {vak(0, "Hoeveel blijft er over?")}
+          {isgelijk}
+          {vak(1, "De uitkomst")}
+        </div>
+        {/* Is de eerste rij vol, dan licht die op als 10. */}
+        {bouw && <StrookBouwer eerste={figuur.eerste} tweede={figuur.tweede} uit={uit} tienLicht onKlaar={setGebouwd} />}
+      </>,
     );
   }
 
@@ -596,12 +800,24 @@ export function Optelopdracht({
         {getallen[1] === null ? vak(vanaf, "Het lege vakje") : <Gegeven waarde={getallen[1]} />}
       </span>
     );
-    return (
-      <div className="flex w-full flex-wrap items-center justify-center gap-2.5">
-        {kant(figuur.links, 0)}
-        {isgelijk}
-        {kant(figuur.rechts, 0)}
-      </div>
+    const b = balansDelen();
+    return metNaderhand(
+      <>
+        <div className="flex w-full flex-wrap items-center justify-center gap-2.5">
+          {kant(figuur.links, 0)}
+          {isgelijk}
+          {kant(figuur.rechts, 0)}
+        </div>
+        {bouw && b && (
+          <WeegschaalBouwer
+            links={b.leegLinks ? [b.bekend] : b.vol}
+            rechts={b.leegLinks ? b.vol : [b.bekend]}
+            kant={b.leegLinks ? "links" : "rechts"}
+            uit={uit}
+            onKlaar={setGebouwd}
+          />
+        )}
+      </>,
     );
   }
 

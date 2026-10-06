@@ -275,6 +275,23 @@ function metWerkingVanSjabloon(
   vraagtekst: string,
   sjabloonId: string | null,
 ): { figuur: Vraag["figuur"]; vraagtekst: string } {
+  /*
+    Optellen tot en met 20 (oktober 2026): dezelfde instelling. Bij "Alleen
+    typen" gaan de bouwstap en de hulp na een fout antwoord eruit.
+  */
+  if (
+    figuur &&
+    sjabloonId &&
+    (figuur.soort === "plaatjessom" ||
+      figuur.soort === "plussom" ||
+      figuur.soort === "viatien" ||
+      figuur.soort === "balans" ||
+      figuur.soort === "aanvultabel") &&
+    (figuur.bouw || figuur.hulpBijFout)
+  ) {
+    if (sjabloonrij(sjabloonId)?.inst.werking !== "typen") return { figuur, vraagtekst };
+    return { figuur: { ...figuur, bouw: undefined, hulpBijFout: undefined }, vraagtekst };
+  }
   if (figuur?.soort !== "deelsom" || !figuur.stap || !sjabloonId) return { figuur, vraagtekst };
   const rij = sjabloonrij(sjabloonId);
   if (rij?.inst.werking !== "typen") return { figuur, vraagtekst };

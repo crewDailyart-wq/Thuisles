@@ -458,6 +458,21 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Optellen uitgebreid (tot en met 50, tientallen, tot en met 100, vlek)
   // -------------------------------------------------------------------------
+  // Groep 4 – Optellen – Optellen tot en met 20, visueel en interactief (oktober 2026)
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Maak de plussom bij het plaatje", soort: "plaatjessom", bolletjes: 1, inst: { stand: "som", van: 2, tot: 10, voorwerp: "gemengd" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 10", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 2, tot: 10, voorwerp: "gemengd", werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 20", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 11, tot: 20, voorwerp: "gemengd", werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 10", soort: "plussom", bolletjes: 2, inst: { van: 2, tot: 10 } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 20", soort: "plussom", bolletjes: 2, inst: { van: 11, tot: 20, werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen via 10", soort: "viatien", bolletjes: 4, inst: { van: 11, tot: 18, werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som hoort er niet bij?", soort: "somkeuze", bolletjes: 3, inst: { stand: "nietbij", van: 11, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som klopt?", soort: "somkeuze", bolletjes: 3, inst: { stand: "klopt", van: 3, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Zoek de som die evenveel is", soort: "evenveelsom", bolletjes: 3, inst: { van: 4, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Koppel de som aan de uitkomst", soort: "koppelsommen", bolletjes: 3, inst: { van: 5, tot: 20, rijen: 5 } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Aanvullen in de tabel", soort: "aanvultabel", bolletjes: 3, inst: { van: 11, tot: 20, werking: "hulp" } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Kies twee getallen", soort: "tweegetallen", bolletjes: 4, inst: { van: 11, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk I", soort: "balans", bolletjes: 4, inst: { van: 3, tot: 10, leeg: "links", werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk II", soort: "balans", bolletjes: 5, inst: { van: 11, tot: 20, leeg: "wissel", werking: "hulp" } },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
   { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
@@ -799,6 +814,29 @@ for (const oefening of OEFENINGEN) {
         if (!f.stap || typeof f.volgnummer !== "number") fouten.push(`${waar}: zelf bouwen ontbreekt.`);
         const zin = generator.aanpak.controle(vraag.somgegevens);
         if (!/want \d+ : \d+ = \d+\.$/.test(zin)) fouten.push(`${waar}: de uitleg na een fout antwoord is "${zin}".`);
+      }
+    }
+
+    /*
+      Optellen tot en met 20, visueel (oktober 2026): om en om bouwen bij
+      opgave 1, 3, 5, 7 en 9, nooit boven 20, en bij "Welke som klopt?" foute
+      uitkomsten 1 of 2 ernaast, tot en met 20, zonder dubbele.
+    */
+    if (oefening.groep.startsWith("Optellen · Optellen tot en met 20") && vraag.figuur) {
+      const f = vraag.figuur;
+      const omEnOm = oefening.inst.werking === "bouwen" && ["plussom", "viatien", "balans"].includes(f.soort);
+      if (omEnOm) {
+        const moet = f.volgnummer <= 10 && f.volgnummer % 2 === 1;
+        if (!!f.bouw !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} te bouwen.`);
+        if (f.soort !== "balans" && f.bouw && (f.eerste > 10 || f.eerste + f.tweede > 20)) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} past niet in de strook.`);
+      }
+      if (f.soort === "somkeuze" && f.stand === "klopt") {
+        const uitk = f.kaarten.map((k) => k.uitkomst);
+        if (new Set(uitk).size !== uitk.length) fouten.push(`${waar}: twee kaartjes met dezelfde uitkomst (${uitk.join(", ")}).`);
+        for (const k of f.kaarten) {
+          const echt = k.eerste + k.tweede;
+          if (k.uitkomst > 20 || (k.uitkomst !== echt && Math.abs(k.uitkomst - echt) > 2)) fouten.push(`${waar}: kaartje ${k.eerste} + ${k.tweede} = ${k.uitkomst}.`);
+        }
       }
     }
 

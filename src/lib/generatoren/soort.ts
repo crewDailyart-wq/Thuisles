@@ -32,6 +32,9 @@ export type { Somgegevens };
  * in mandjes) bij eerlijk verdelen. De andere vijf staan nog in opgaven van de
  * eerste versie, die als concept bewaard zijn.
  */
+/** De twee bouwstenen bij optellen tot en met 20: de tienstrook en de weegschaal. */
+export type Bouwsteen = "strook" | "weegschaal";
+
 export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes" | "visjes" | "mandjes";
 
 /**
@@ -117,12 +120,44 @@ export type Figuur =
       tweede: number;
       stand: string;
       voorwerp: string;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;
       tweede: number;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /**
@@ -144,6 +179,22 @@ export type Figuur =
       soort: "aanvultabel";
       doel: number;
       getallen: number[];
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /** Eén som bovenaan en vier kaartjes; welke is evenveel? */
@@ -168,6 +219,22 @@ export type Figuur =
       soort: "viatien";
       eerste: number;
       tweede: number;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /** Zes getallen; welke twee maken samen het doelgetal? */
@@ -184,6 +251,22 @@ export type Figuur =
       soort: "balans";
       links: (number | null)[];
       rechts: (number | null)[];
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /**

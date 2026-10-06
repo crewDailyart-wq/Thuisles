@@ -821,6 +821,43 @@ webadres (`aftrekken-tot-en-met-30-sommen-met-dezelfde-uitkomst`).
 | Vleksommen tot en met 100 | ●●●● | 83 − ☐ = 47 |
 | Vleksommen met de vlek vooraan | ●●●●● | ☐ − 8 = 35, tot en met 100 |
 
+## Groep 4 – Optellen tot en met 20 — visueel en interactief (oktober 2026)
+
+Alleen dit onderwerp; de andere Optellen-onderwerpen zijn niet veranderd.
+Titels en bolletjes blijven gelijk. Per oefening terug naar de oude werking:
+in beheer bij het sjabloon **Werking** op "Alleen typen (de oude werking)";
+dat geldt meteen, ook voor de opgaven die er al liggen.
+
+Twee bouwstenen, met blokjes en vakjes van 48 pixels, tikken of slepen:
+- **Tienstrook**: 2 rijen van 10 (1 rij tot en met 10), met een tussenruimte
+  na elke 5. Eerste getal oranje, tweede getal viool; een blokje gaat altijd
+  naar het volgende lege vakje.
+- **Weegschaal**: hangt scheef naar de zwaarste kant en pas recht bij
+  evenveel. Een stapel losse blokjes ernaast; een erbij gelegd blokje tik je
+  terug.
+
+"Om en om": opgave 1, 3, 5, 7 en 9 bouwen, 2, 4, 6, 8 en 10 zulke sommen
+zonder bouwen, 11 tot en met 15 alleen de som. Geen knop Hulp; na een fout
+antwoord laat de bouwsteen rustig zien hoe het wel werkt. Bij deze drie
+oefeningen staat "vragen per oefensessie" op 15, anders vallen er opgaven weg.
+
+| Kopje | Oefening | Wat er is veranderd |
+|---|---|---|
+| Met plaatjes | Maak de plussom bij het plaatje | niets (plaatjes stonden al in rijtjes van 5) |
+| Met plaatjes | Optellen met plaatjes tot en met 10 | elk plaatje naar de tienstrook (1 rij), dan typen |
+| Met plaatjes | Optellen met plaatjes tot en met 20 | hetzelfde met 2 rijen; "Goed zo! 10 en 5 is 15." |
+| Uitrekenen | Optellen tot en met 10 | niets |
+| Uitrekenen | Optellen tot en met 20 | om en om met de tienstrook, bouwsommen over het tiental; "Goed zo! 8 + 2 = 10, en dan nog 3 erbij: 13." |
+| Uitrekenen | Optellen via 10 | om en om met de tienstrook; de volle eerste rij licht op als 10 |
+| Kiezen en controleren | Welke som hoort er niet bij? | niets |
+| Kiezen en controleren | Welke som klopt? | foute kaartjes 1 of 2 naast de echte uitkomst, nooit boven 20, geen dubbele uitkomsten |
+| Kiezen en controleren | Zoek de som die evenveel is | niets |
+| Kiezen en controleren | Koppel de som aan de uitkomst | niets |
+| Puzzelen | Aanvullen in de tabel | na een fout antwoord de tienstrook: "Van 2 tot 13 is 11." |
+| Puzzelen | Kies twee getallen | niets |
+| Puzzelen | Maak beide kanten gelijk I | om en om met de weegschaal |
+| Puzzelen | Maak beide kanten gelijk II | na een fout antwoord de weegschaal recht |
+
 ## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR
 
 KLAAR (oktober 2026). Volgorde van de onderwerpen: Optellen tot en met 20

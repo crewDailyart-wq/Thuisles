@@ -25,6 +25,7 @@ import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { optelPatronen } from "@/lib/generatoren/patronen/optelopdrachten";
 import { balansAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { balansUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
+import { omEnOm, optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
 
 const ZIN = "Maak beide kanten gelijk.";
 
@@ -56,6 +57,7 @@ export const balansGenerator: Generator = {
       ],
       hulp: "Wisselend is een stap moeilijker: het kind moet eerst kijken welke kant al compleet is.",
     },
+    werkingVeld("Om en om zelf blokjes op de weegschaal leggen"),
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
@@ -76,6 +78,7 @@ export const balansGenerator: Generator = {
     const kans = kansGenerator(zaad);
     const { van, tot, leeg } = grenzen(inst);
 
+    const werking = optelwerking(inst);
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 400 && uit.length < aantal; poging++) {
       const totaalPerKant = heelGetal(kans, van, tot);
@@ -113,9 +116,30 @@ export const balansGenerator: Generator = {
           soort: "balans",
           links: leegLinks ? [bekend, null] : [vol1, vol2],
           rechts: leegLinks ? [vol1, vol2] : [bekend, null],
+          ...(werking === "typen" ? {} : { hulpBijFout: "weegschaal" as const }),
         },
         somgegevens: gegevens,
       });
+    }
+
+    /*
+      Om en om met de weegschaal: opgave 1, 3, 5, 7 en 9 legt het kind zelf
+      blokjes op de schaal, 2, 4, 6, 8 en 10 zijn zulke sommen zonder, en dan
+      nog vijf. Binnen elk deel van klein naar groot.
+    */
+    if (werking === "bouwen") {
+      const totaal = (v: Gegenereerd) => (v.somgegevens.getallen[1] ?? 0) * 100 + v.somgegevens.goed;
+      const tien = uit.slice(0, 10).sort((a, b) => totaal(a) - totaal(b));
+      const reeks = omEnOm(
+        tien.filter((_, i) => i % 2 === 0),
+        tien.filter((_, i) => i % 2 === 1),
+        uit.slice(10).sort((a, b) => totaal(a) - totaal(b)),
+      );
+      return reeks.map(({ som, bouwen }, i) =>
+        som.figuur?.soort === "balans"
+          ? { ...som, figuur: { ...som.figuur, ...(bouwen ? { bouw: "weegschaal" as const } : {}), volgnummer: i + 1 } }
+          : som,
+      );
     }
 
     return uit;

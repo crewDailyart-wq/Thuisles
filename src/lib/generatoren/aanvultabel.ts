@@ -21,6 +21,7 @@ import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { optelPatronen } from "@/lib/generatoren/patronen/optelopdrachten";
 import { aanvultabelAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { aanvultabelUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
+import { optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
 
 const ZIN = "Vul aan tot {som}.";
 
@@ -43,6 +44,7 @@ export const aanvultabelGenerator: Generator = {
   velden: [
     { soort: "getal", sleutel: "van", label: "Kleinste doelgetal", min: KOLOMMEN + 1, max: 20 },
     { soort: "getal", sleutel: "tot", label: "Grootste doelgetal", min: KOLOMMEN + 1, max: 20 },
+    werkingVeld(null),
     ...vraagtekstVelden(STANDAARDZINNEN, {
       voorbeeldzinnen: { "34": "Vul aan tot 16.", "56": "Vul aan tot 16.", "78": "Vul aan tot 16." },
       extraHulp: "Op de plek van {som} komt het doelgetal van die vraag.",
@@ -94,7 +96,8 @@ export const aanvultabelGenerator: Generator = {
         vraagtekst: bepaalVraagtekst(aanvultabelGenerator, inst, groep, gegevens),
         /* Eén getal per kolom, van links naar rechts. */
         antwoord: getallen.map((n) => doel - n).join(","),
-        figuur: { soort: "aanvultabel", doel, getallen },
+        /* Met "hulp": na een fout antwoord laat de tienstrook zien wat erbij moet. */
+        figuur: { soort: "aanvultabel", doel, getallen, ...(optelwerking(inst) === "hulp" ? { hulpBijFout: "strook" as const } : {}) },
         somgegevens: gegevens,
       });
     }

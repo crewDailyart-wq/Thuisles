@@ -488,7 +488,9 @@ export function OefenSpeler({
     const eerstDeRedenering =
       (vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10") ||
       /* Bij delen om zelf te doen: eerst "Goed zo!" met de deelsom, dan het feest. */
-      (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true));
+      (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true)) ||
+      /* Optellen tot en met 20 met zelf bouwen: eerst "Goed zo!" met de som, dan het feest. */
+      (isOptelfiguur(vraag.figuur) && "bouw" in vraag.figuur && !!vraag.figuur.bouw);
 
     if (goed) {
       setFase("goed");
@@ -1706,6 +1708,7 @@ function Antwoordvelden({
         metCursor
         onWijzig={onKies}
         onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
       />
     );
   }

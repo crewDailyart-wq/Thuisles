@@ -13,6 +13,7 @@
 import {
   getal,
   heelGetal,
+  husselen,
   kansGenerator,
   type Generator,
   type Gegenereerd,
@@ -24,6 +25,7 @@ import type { Leeftijdsgroep } from "@/lib/generatoren/foutpatroon";
 import { optelPatronen } from "@/lib/generatoren/patronen/optelopdrachten";
 import { viatienAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { viatienUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
+import { omEnOm, optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
 
 const ZIN = "Reken via 10.";
 
@@ -57,6 +59,7 @@ export const viatienGenerator: Generator = {
   velden: [
     { soort: "getal", sleutel: "van", label: "Kleinste uitkomst", min: 11, max: 20 },
     { soort: "getal", sleutel: "tot", label: "Grootste uitkomst", min: 11, max: 20 },
+    werkingVeld("Om en om zelf bouwen met de tienstrook"),
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],
   vraagteksten: { standaard: STANDAARDZINNEN },
@@ -75,6 +78,46 @@ export const viatienGenerator: Generator = {
     const { van, tot } = grenzen(inst);
     const mogelijk = sommen(van, tot);
     if (mogelijk.length === 0) return [];
+    const werking = optelwerking(inst);
+
+    /*
+      Om en om: vijf sommen met de tienstrook, vijf zulke sommen zonder, en dan
+      nog vijf. Binnen elk deel van klein naar groot.
+    */
+    if (werking === "bouwen") {
+      const opTotaal = (x: [number, number], y: [number, number]) => x[0] + x[1] - (y[0] + y[1]) || x[0] - y[0];
+      const gehusseld = husselen(kans, mogelijk);
+      const tien = gehusseld.slice(0, 10).sort(opTotaal);
+      const reeks = omEnOm(
+        tien.filter((_, i) => i % 2 === 0),
+        tien.filter((_, i) => i % 2 === 1),
+        gehusseld.slice(10, 15).sort(opTotaal),
+      );
+      const uit: Gegenereerd[] = [];
+      for (const { som: [a, b], bouwen } of reeks) {
+        if (uit.length >= aantal) break;
+        const handtekening = `viatien:${a}+${b}`;
+        if (alGebruikt.has(handtekening)) continue;
+        alGebruikt.add(handtekening);
+        const gegevens = { soort: "viatien", variant: "over-tien", getallen: [a, b], goed: a + b };
+        uit.push({
+          handtekening,
+          vorm: "open",
+          vraagtekst: bepaalVraagtekst(viatienGenerator, inst, groep, gegevens),
+          antwoord: `${a + b - 10},${a + b}`,
+          figuur: {
+            soort: "viatien",
+            eerste: a,
+            tweede: b,
+            ...(bouwen ? { bouw: "strook" as const } : {}),
+            hulpBijFout: "strook",
+            volgnummer: uit.length + 1,
+          },
+          somgegevens: gegevens,
+        });
+      }
+      return uit;
+    }
 
     const uit: Gegenereerd[] = [];
     for (let poging = 0; poging < aantal * 300 && uit.length < aantal; poging++) {
@@ -92,7 +135,7 @@ export const viatienGenerator: Generator = {
         vraagtekst: bepaalVraagtekst(viatienGenerator, inst, groep, gegevens),
         /* Eerst wat er na de tien overblijft, dan de uitkomst. */
         antwoord: `${a + b - 10},${a + b}`,
-        figuur: { soort: "viatien", eerste: a, tweede: b },
+        figuur: { soort: "viatien", eerste: a, tweede: b, ...(werking === "hulp" ? { hulpBijFout: "strook" as const } : {}) },
         somgegevens: gegevens,
       });
     }
