@@ -98,6 +98,7 @@ export function controleer(t: MaatjeTeksten, g: Controlegegevens): Melding[] {
 
   for (const { soort, zin, fout } of alleZinnen(t)) {
     const tekst = zin.tekst;
+    const eigenVraag = soort === 1 && g.voorlezenIsVraag === true;
 
     // 1. Geen antwoord vóór Controleer.
     if (soort === 1 || soort === 2 || soort === 6) {
@@ -107,6 +108,8 @@ export function controleer(t: MaatjeTeksten, g: Controlegegevens): Melding[] {
         }
       }
     }
+
+    if (eigenVraag) continue;
 
     // 2. Getallen kloppen.
     const hierToegestaan = fout ? new Set([...toegestaan, ...(g.perFout[fout] ?? [])]) : toegestaan;
@@ -152,7 +155,7 @@ export function controleer(t: MaatjeTeksten, g: Controlegegevens): Melding[] {
 
   // 3. Aantal zinnen per tekst.
   const telZinnen = (zinnen: Zin[]) => zinnen.reduce((n, z) => n + zinnenVan(z.tekst).length, 0);
-  if (zinnenVan(t.voorlezen.tekst).length > 2) meld(3, "Tekst 1 heeft meer dan 2 zinnen.");
+  if (!g.voorlezenIsVraag && zinnenVan(t.voorlezen.tekst).length > 2) meld(3, "Tekst 1 heeft meer dan 2 zinnen.");
   if (t.bouw && zinnenVan(t.bouw.tekst).length > 1) meld(3, "Tekst 2 heeft meer dan 1 zin.");
   if (zinnenVan(t.tip.tekst).length > 1) meld(3, "Tekst 6 heeft meer dan 1 zin.");
   for (const o of t.goed.openers) {

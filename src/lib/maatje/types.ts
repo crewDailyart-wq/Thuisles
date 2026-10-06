@@ -63,6 +63,13 @@ export type Controlegegevens = {
   perFout: Record<string, number[]>;
   /** Bekende fouten van dit soort som; elk moet een eigen tekst 4 hebben. */
   bekend: string[];
+  /**
+   * Tekst 1 is letterlijk de vraag zoals de eigenaar hem schreef (een
+   * verhaaltje van een paar zinnen). Dan telt hij niet mee voor de lengte en
+   * de woordenlijst — die gelden voor wat het maatje zelf zegt — maar het
+   * antwoord mag er nog steeds niet in staan.
+   */
+  voorlezenIsVraag?: boolean;
 };
 
 export type Geschreven = { teksten: MaatjeTeksten; controle: Controlegegevens };
