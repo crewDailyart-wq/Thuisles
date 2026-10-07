@@ -1,0 +1,45 @@
+[gd_scene load_steps=7 format=3]
+
+[sub_resource type="StandardMaterial3D" id="noot"]
+albedo_color = Color(0.878, 0.643, 0.369, 1)
+roughness = 0.45
+
+[sub_resource type="StandardMaterial3D" id="hoed"]
+albedo_color = Color(0.604, 0.392, 0.2, 1)
+roughness = 0.85
+
+[sub_resource type="StandardMaterial3D" id="steel"]
+albedo_color = Color(0.478, 0.322, 0.188, 1)
+roughness = 0.9
+
+[sub_resource type="SphereMesh" id="nootvorm"]
+material = SubResource("noot")
+radius = 0.12
+height = 0.27
+
+[sub_resource type="SphereMesh" id="hoedvorm"]
+material = SubResource("hoed")
+radius = 0.14
+height = 0.14
+is_hemisphere = true
+
+[sub_resource type="CylinderMesh" id="steelvorm"]
+material = SubResource("steel")
+top_radius = 0.018
+bottom_radius = 0.025
+height = 0.08
+
+[node name="Eikel" type="Node3D"]
+
+[node name="Noot" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -0.02, 0)
+mesh = SubResource("nootvorm")
+
+[node name="Hoedje" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.06, 0)
+mesh = SubResource("hoedvorm")
+
+[node name="Steeltje" type="MeshInstance3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.16, 0)
+mesh = SubResource("steelvorm")
+

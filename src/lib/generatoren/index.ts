@@ -118,6 +118,7 @@ import { geldnotatieGenerator } from "@/lib/generatoren/geld-notatie";
 import { verhaaltjeGenerator } from "@/lib/generatoren/verhaaltje";
 import { rekensomGenerator } from "@/lib/generatoren/rekensom";
 import { rekenrekerbijGenerator } from "@/lib/generatoren/rekenrekerbij";
+import { groepjesmakerGenerator } from "@/lib/generatoren/groepjesmaker";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -226,6 +227,8 @@ export const alleGeneratoren: Generator[] = [
   /* Erbij- en erafsommen tot en met 100. */
   rekensomGenerator,
   rekenrekerbijGenerator,
+  /* Godot-bouwstenen (oktober 2026). */
+  groepjesmakerGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {

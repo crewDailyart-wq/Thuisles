@@ -24,3 +24,10 @@ export const POPPETJE: { naam: string; houdingen: Record<MaatjeHouding, { houdin
     troost: { houding: "wijzend", beweging: "wijzen" },
   },
 };
+
+/**
+ * Het tijdelijke maatje van de Godot-bouwstenen: geen vos, een bolletje zonder
+ * naam (`TijdelijkMaatje.tsx`). Komt de echte mascotte, dan vervang je hier en
+ * in dat ene bestand het poppetje; de rest van Thuisles blijft hetzelfde.
+ */
+export const POPPETJE_GODOT = { naam: "het maatje" };

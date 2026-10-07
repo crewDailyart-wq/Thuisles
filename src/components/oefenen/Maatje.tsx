@@ -17,7 +17,8 @@
 import { useEffect, useRef, useState } from "react";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
-import { POPPETJE, type MaatjeHouding } from "@/lib/maatje/poppetje";
+import { POPPETJE, POPPETJE_GODOT, type MaatjeHouding } from "@/lib/maatje/poppetje";
+import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
@@ -35,8 +36,11 @@ export function Maatje({
   geluid,
   onGeluid,
   onKlaar,
+  poppetje = "vos",
 }: {
   bericht: MaatjeBericht | null;
+  /** "tijdelijk": het bolletje van de Godot-bouwstenen, geen vos. */
+  poppetje?: "vos" | "tijdelijk";
   geluid: boolean;
   onGeluid: (aan: boolean) => void;
   /** Na de laatste zin van een bericht, met het id erbij. */
@@ -83,6 +87,8 @@ export function Maatje({
   const zichtbaar = bericht.zinnen.slice(0, Math.max(1, tot));
   const pop = POPPETJE.houdingen[bezig && bericht.houding === "rustig" ? "praat" : bericht.houding];
 
+  const naam = poppetje === "tijdelijk" ? POPPETJE_GODOT.naam : POPPETJE.naam;
+
   function wisselGeluid() {
     const aan = !geluid;
     if (!aan) stopPraten();
@@ -91,7 +97,14 @@ export function Maatje({
 
   return (
     <div className="mt-6 flex items-end gap-2 sm:gap-3" data-maatje="">
-      <VosFiguur houding={pop.houding} beweging={pop.beweging} className="size-16 shrink-0 sm:size-20" />
+      {poppetje === "tijdelijk" ? (
+        <TijdelijkMaatje
+          houding={bezig && bericht.houding === "rustig" ? "praat" : bericht.houding}
+          className="size-16 shrink-0 sm:size-20"
+        />
+      ) : (
+        <VosFiguur houding={pop.houding} beweging={pop.beweging} className="size-16 shrink-0 sm:size-20" />
+      )}
       <div
         className="relative min-w-0 flex-1 rounded-2xl border-2 border-rand bg-white px-4 py-3 text-base font-semibold leading-snug text-inkt shadow-op"
         aria-live="polite"
@@ -114,8 +127,8 @@ export function Maatje({
         type="button"
         onClick={wisselGeluid}
         aria-pressed={geluid}
-        aria-label={geluid ? `Stem van ${POPPETJE.naam} uitzetten` : `Stem van ${POPPETJE.naam} aanzetten`}
-        title={geluid ? `Stem van ${POPPETJE.naam} uit` : `Stem van ${POPPETJE.naam} aan`}
+        aria-label={geluid ? `Stem van ${naam} uitzetten` : `Stem van ${naam} aanzetten`}
+        title={geluid ? `Stem van ${naam} uit` : `Stem van ${naam} aan`}
         className="grid size-11 shrink-0 place-items-center self-center rounded-full border border-rand bg-white/80 text-inkt-zacht transition hover:text-huisstijl"
       >
         {geluid ? <Luidspreker className="size-6" /> : <LuidsprekerUit className="size-6" />}

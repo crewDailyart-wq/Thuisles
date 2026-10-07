@@ -432,6 +432,11 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = keertafelpunten(inst, ["1", "2", "3", "4", "5"]);
       break;
 
+    case "groepjesmaker":
+      /* Zelf bouwen met de groepjesmaker: tafels tot 5, knippen is een stap verder. */
+      p = NIVEAUPUNTEN[["groepjes", "nul-een"].includes(tekst(inst, "stand", "gemengd")) ? 2 : 3];
+      break;
+
     case "keerkoppelen":
       /* Vijf sommen door elkaar; meer tafels is meer omschakelen. */
       p = lijst(inst, "tafels", ["1", "2", "5", "10"]).length > 5 ? 4 : 2;

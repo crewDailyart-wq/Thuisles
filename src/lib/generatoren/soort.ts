@@ -164,6 +164,17 @@ export type Figuur =
       volgnummer?: number;
     }
   | {
+      /**
+       * De groepjesmaker (oktober 2026), een Godot-bouwsteen: a doosjes van b
+       * eikels. Het kind bouwt het zelf; zie `generatoren/groepjesmaker.ts`.
+       */
+      soort: "groepjesmaker";
+      stand: "groepjes" | "nul-een" | "wissel" | "knip";
+      a: number;
+      b: number;
+      volgnummer?: number;
+    }
+  | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;

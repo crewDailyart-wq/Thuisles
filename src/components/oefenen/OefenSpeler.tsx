@@ -20,7 +20,7 @@
 import Link from "next/link";
 import { KralenAvontuur } from "./KralenAvontuur";
 import { BosSpel } from "@/components/oefenen/BosSpel";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { beloonGoedAntwoord, bewaarAntwoord, meldLastig, rondAf } from "@/app/oefenacties";
 import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
@@ -69,6 +69,7 @@ import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
 import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
 import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/RekenrekErbij";
+import { GroepjesmakerOpdracht, isGroepjesfiguur } from "@/components/oefenen/Groepjesmaker";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
@@ -365,6 +366,23 @@ export function OefenSpeler({
   const maatjeTekst = maatje?.teksten[vragen[index]?.id ?? ""];
 
   /*
+    Tijdens het bouwen in een Godot-bouwsteen: wat daar gebeurt, telt als
+    bezig zijn (een tik in de kast komt hier niet als tik binnen), en soms zegt
+    het maatje iets ("Dat is evenveel!"). Een lege lijst = alleen bezig.
+  */
+  const bouwBericht = useRef(0);
+  const zegTijdensBouwen = useCallback((zinnen: string[]) => {
+    laatsteActiviteit.current = nuInMs();
+    if (zinnen.length === 0) return;
+    bouwBericht.current += 1;
+    setMaatjeBericht({
+      id: `bouw:${bouwBericht.current}`,
+      zinnen: zinnen.map((tekst) => ({ tekst, stap: "geen plaatje" })),
+      houding: "troost",
+    });
+  }, []);
+
+  /*
     Tekst 6, de tip: alleen als het kind 30 seconden niets doet, één keer per
     opgave. Elke tik, toets of invoer in de oefening zet de klok terug.
   */
@@ -543,6 +561,8 @@ export function OefenSpeler({
       (isOptelfiguur(vraag.figuur) && "bouw" in vraag.figuur && !!vraag.figuur.bouw) ||
       /* Optellen met het rekenrek en de pootjes: eerst "Goed zo!" met de som. */
       (vraag.figuur?.soort === "rekenrekerbij" && !!vraag.figuur.hulpBijFout) ||
+      /* De groepjesmaker: eerst tellen de doosjes mee, dan het feest. */
+      vraag.figuur?.soort === "groepjesmaker" ||
       (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
@@ -830,6 +850,8 @@ export function OefenSpeler({
                 zin: eindzinMaatje(serie, gelogd, maatje?.teksten ?? {}),
                 geluid: maatjeGeluid,
                 onGeluid: wisselMaatjeGeluid,
+                /* Godot-bouwstenen: het tijdelijke maatje, nergens de vos. */
+                poppetje: serie.some((v) => isGroepjesfiguur(v.figuur)) ? "tijdelijk" : "vos",
               }
             : null
         }
@@ -1207,6 +1229,7 @@ export function OefenSpeler({
                   if (magControleren) controleer();
                 }}
                 onSprongKlaar={() => setWachtOpVos(false)}
+                onMaatje={zegTijdensBouwen}
               />
             )}
           </div>
@@ -1420,6 +1443,7 @@ export function OefenSpeler({
               geluid={maatjeGeluid}
               onGeluid={wisselMaatjeGeluid}
               onKlaar={maatjeKlaar}
+              poppetje={isGroepjesfiguur(vraag.figuur) ? "tijdelijk" : "vos"}
             />
           )}
         </div>
@@ -1479,6 +1503,7 @@ function Antwoordvelden({
   onKies,
   onBevestig,
   onSprongKlaar,
+  onMaatje,
 }: {
   vraag: OefenVraag;
   antwoord: string;
@@ -1494,6 +1519,8 @@ function Antwoordvelden({
   onBevestig: () => void;
   /** Alleen bij de stapstenen: de mascotte is aan de overkant. */
   onSprongKlaar?: () => void;
+  /** Het maatje zegt iets tijdens het bouwen (Godot-bouwstenen). */
+  onMaatje?: (zinnen: string[]) => void;
 }) {
   /*
     Helemaal bovenaan, want hieronder staan de takken per vraagvorm en die
@@ -1910,6 +1937,25 @@ function Antwoordvelden({
     Verhaaltjessommen: het verhaal staat als vraag bovenaan; hier alleen de
     vier knoppen of het invoerveld met de eenheid erachter.
   */
+  /*
+    De groepjesmaker (Godot): met opzet zonder `key` per vraag, zodat de kast
+    blijft staan en Godot maar één keer laadt.
+  */
+  if (vraag.vorm === "open" && isGroepjesfiguur(vraag.figuur)) {
+    return (
+      <GroepjesmakerOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
   /* Optellen met het rekenrek: de som, het rek om en om, en de pootjes. */
   if (vraag.vorm === "open" && isRekenrekfiguur(vraag.figuur)) {
     return (
@@ -2224,7 +2270,7 @@ function Uitslag({
   terugLabel: string;
   herhaalHref: string;
   /** Wat het maatje aan het eind zegt; null als het maatje bij deze ronde uit stond. */
-  maatje?: { zin: string; geluid: boolean; onGeluid: (aan: boolean) => void } | null;
+  maatje?: { zin: string; geluid: boolean; onGeluid: (aan: boolean) => void; poppetje?: "vos" | "tijdelijk" } | null;
 }) {
   const [lastigGemeld, setLastigGemeld] = useState<string[]>([]);
 
@@ -2270,6 +2316,7 @@ function Uitslag({
               bericht={{ id: "einde", zinnen: [{ tekst: maatje.zin, stap: "geen plaatje" }], houding: "blij" }}
               geluid={maatje.geluid}
               onGeluid={maatje.onGeluid}
+              poppetje={maatje.poppetje}
             />
           </div>
         )}

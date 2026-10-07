@@ -120,6 +120,54 @@ function keerSom(o: Opgave, a: number, b: number): Geschreven {
   });
 }
 
+/**
+ * De groepjesmaker (Godot, oktober 2026): dezelfde keer-uitleg, maar met de
+ * doosjes die het kind zelf heeft gebouwd. Bij knippen (7 × 8) legt het maatje
+ * de twee makkelijke sommen uit in plaats van de steunsom met 10.
+ */
+function groepjesmakerSom(o: Opgave, a: number, b: number, stand: string): Geschreven | null {
+  if (String(a * b) !== o.antwoord) return null;
+  const c = a * b;
+  const k = keerKern(a, b, "doosjes");
+  const doos = (z: ReturnType<typeof zin>) => ({ ...z, tekst: z.tekst.replace(/groepje/g, "doosje") });
+  const doosjes = (n: number) => stuks(n, "doosje", "doosjes");
+  let uitleg = k.uitleg.map(doos);
+  let tussen = k.tussen;
+  let tip = doos(k.tip);
+  if (stand === "knip" && a > 5) {
+    const rest = a - 5;
+    uitleg = [
+      zin("Knip de kast na 5 doosjes.", "de kast gaat open na 5 doosjes"),
+      zin(`${keer(5, b)} is ${5 * b}.`, "de bovenste plank licht op"),
+      zin(`${keer(rest, b)} is ${rest * b}.`, "de onderste plank licht op"),
+      zin(`Samen is dat ${c}.`, "alle doosjes lichten op"),
+    ];
+    tussen = [...tussen, 5, rest, 5 * b, rest * b];
+    tip = zin("Knip na 5 doosjes en reken elk stuk uit.");
+  }
+  let goed = k.goed.map(doos);
+  if (a === 0) {
+    goed = [zin("Geen doosjes, dus geen eikels."), zin(`${keer(0, b)} is 0.`)];
+    tip = zin("Kijk goed: hoeveel doosjes vraagt de som?");
+  }
+  const bouw =
+    a === 0
+      ? `Hoeveel doosjes van ${b} zet je neer?`
+      : `Maak ${doosjes(a)} van ${b}.`;
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: metSom(o.vraagtekst, keer(a, b)),
+    bouw: zin(bouw, "de kast is leeg"),
+    goed,
+    fouten: k.fouten.map((f) => ({ ...f, zinnen: f.zinnen.map(doos) })),
+    uitleg,
+    tip,
+    opgave: [a, b],
+    tussen: [...tussen, 5],
+    geheim: [c],
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Delen
 // ---------------------------------------------------------------------------
@@ -229,6 +277,9 @@ export function schrijfTafelsDelen(o: Opgave): Geschreven | null {
   switch (f.soort) {
     case "keersom":
       return String(f.eerste * f.tweede) === o.antwoord ? keerSom(o, f.eerste, f.tweede) : null;
+
+    case "groepjesmaker":
+      return groepjesmakerSom(o, f.a, f.b, f.stand);
 
     case "deelsom": {
       const verdelen = f.bouw === "verdelen";

@@ -193,6 +193,12 @@ in `scripts/opgaven.mjs`.
 | 3 | Handig rekenen met keersommen | ●●● | Ziet een som die het al kent, bijvoorbeeld 1 × 5 = 5, en maakt daarmee een nieuwe: 1 × 10 = ▢. |
 | 4 | Rekenen met nullen | ●●●● | Een rijtje van drie: 2 × ▢ = 6, 2 × ▢ = 60, 2 × ▢ = 600. Niveau groep 5, als uitdaging. |
 
+Kopje **Met de groepjesmaker** (Godot-bouwsteen, oktober 2026; zie GODOT-RAPPORT.md):
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 5 | Groepjes maken | ●●● | Bouwt elke keersom zelf: kiest hoeveel eikels in een doosje en tikt voor elk doosje op de kast. De plussom groeit mee en krimpt tot de keersom; daarna typt het kind het antwoord. Met × 0 en × 1, wisselen (draaien) en knippen (7 × 8 = 5 × 8 + 2 × 8). Alle 15 opgaven met de groepjesmaker. |
+
 ### Onderwerp 2 — Tafels oefenen
 
 | # | Titel | Bolletjes | Wat het kind doet |

@@ -97,6 +97,7 @@ const OEFENINGEN = [
   { groep: "Tafels · Keersommen begrijpen", titel: "Een keersom bij een plaatje", soort: "keerplaatjes", bolletjes: 2, inst: {} },
   { groep: "Tafels · Keersommen begrijpen", titel: "Handig rekenen met keersommen", soort: "handigkeer", bolletjes: 3, inst: {} },
   { groep: "Tafels · Keersommen begrijpen", titel: "Rekenen met nullen", soort: "keernullen", bolletjes: 4, inst: {} },
+  { groep: "Tafels · Keersommen begrijpen · Met de groepjesmaker", titel: "Groepjes maken", soort: "groepjesmaker", bolletjes: 3, inst: { stand: "gemengd" } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 2: Tafels oefenen
@@ -857,6 +858,16 @@ for (const oefening of OEFENINGEN) {
       const moet = oefening.inst.werking === "alles" || (f.volgnummer <= 10 && f.volgnummer % 2 === 1);
       if (!!f.rekenrek !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} met het rekenrek.`);
       if (f.eerste + f.tweede > 20) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} is meer dan 20.`);
+    }
+    /*
+      De groepjesmaker: hoogstens 10 doosjes en 10 eikels per doosje (zo groot
+      is de kast), en het antwoord is a × b.
+    */
+    if (vraag.figuur?.soort === "groepjesmaker") {
+      const f = vraag.figuur;
+      if (f.a > 10 || f.b > 10 || f.b < 1) fouten.push(`${waar}: ${f.a} × ${f.b} past niet in de kast.`);
+      if (vraag.antwoord !== String(f.a * f.b)) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${f.a} × ${f.b}.`);
+      if (f.stand === "knip" && f.a <= 5) fouten.push(`${waar}: knippen kan pas vanaf 6 doosjes.`);
     }
     if (vraag.figuur?.soort === "viatien" && vraag.figuur.pootjes) {
       const [l, r, n] = vraag.antwoord.split(",").map(Number);
