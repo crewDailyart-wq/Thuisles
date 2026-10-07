@@ -148,7 +148,7 @@ export function geldStappen(som: Somgegevens): Geldstap[] {
       const munt = n(som, 0);
       const aantal = n(som, 1);
       return [
-        { som: `${aantal} munten`, zin: `Tel de munten: het zijn er ${aantal}.`, kort: "Tel de munten." },
+        { som: `${aantal} ${aantal === 1 ? "munt" : "munten"}`, zin: `Tel de munten: het zijn er ${aantal}.`, kort: "Tel de munten." },
         {
           som: `${aantal} × ${munt / 100} euro = ${(aantal * munt) / 100} euro`,
           zin: `Elke munt is ${naamVan(munt)} waard. Samen is dat ${(aantal * munt) / 100} euro.`,
@@ -407,7 +407,7 @@ function controleVan(som: Somgegevens): string {
     case "geldvolgorde":
       return `Van weinig naar veel: ${[...som.getallen].sort((a, b) => a - b).map(naamVan).join(", ")}.`;
     case "muntenofeuros":
-      return `Het zijn ${n(som, 1)} munten, samen ${goed} euro.`;
+      return `Het ${n(som, 1) === 1 ? "is" : "zijn"} ${n(som, 1)} ${n(som, 1) === 1 ? "munt" : "munten"}, samen ${goed} euro.`;
     case "evenveel":
       return `Het zijn er ${goed}: ${n(som, 0)} × ${naamVan(n(som, 1))} is evenveel als ${goed} × ${naamVan(n(som, 2))}.`;
     case "welkegroepjes":

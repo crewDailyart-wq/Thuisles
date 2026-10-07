@@ -71,7 +71,7 @@ export const rekenrekflitsUitleg: Uitlegbron = bron(
   (som, kort) => {
     const aantal = som.getallen[0];
     return [
-      rek(aantal, 0, kort ? "Zoveel kralen stonden er." : `Er stonden ${aantal} kralen.`, undefined),
+      rek(aantal, 0, kort ? "Zoveel kralen stonden er." : `${aantal === 1 ? "Er stond 1 kraal" : `Er stonden ${aantal} kralen`}.`, undefined),
       rek(
         aantal,
         0,
@@ -92,7 +92,7 @@ export const vanafTienUitleg: Uitlegbron = bron(
   (som, kort) => {
     const [van, af] = som.getallen;
     return [
-      rek(van, 0, kort ? "Zoveel kralen staan er." : `Je begint met ${van} kralen.`, String(van)),
+      rek(van, 0, kort ? "Zoveel kralen staan er." : `Je begint met ${van} ${van === 1 ? "kraal" : "kralen"}.`, String(van)),
       rek(van, af, kort ? "Schuif er zoveel weg." : `Schuif er ${af} weg.`, `${van} − ${af}`),
       rek(van, af, kort ? "Zoveel blijven er over!" : `Er blijven er ${van - af} over.`, `${van} − ${af} = ${van - af}`, true),
     ];
@@ -125,7 +125,7 @@ export const viaTienUitleg: Uitlegbron = bron(
   (som, kort) => {
     const { van, af, naarTien, rest, over } = viaDeTien(som);
     return [
-      rek(van, 0, kort ? "Zoveel kralen staan er." : `Je begint met ${van} kralen.`, String(van)),
+      rek(van, 0, kort ? "Zoveel kralen staan er." : `Je begint met ${van} ${van === 1 ? "kraal" : "kralen"}.`, String(van)),
       rek(van, naarTien, kort ? "Eerst naar de tien." : `Haal er eerst ${naarTien} af; dan sta je op 10.`, `${van} − ${naarTien} = 10`),
       rek(van, af, kort ? "En dan de rest eraf." : `Daarna nog ${rest} eraf.`, `10 − ${rest} = ${over}`),
       rek(van, af, kort ? "Zoveel blijven er over!" : `Er blijven er ${over} over.`, `${van} − ${af} = ${over}`, true),

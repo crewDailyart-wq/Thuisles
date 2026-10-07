@@ -137,7 +137,7 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
     strategieNaam: "eerst de staven",
     stappen: [
       {
-        model: { soort: "som", tekst: `${t} staven × 10 = ${t * 10}`, nadruk: `${t * 10}` },
+        model: { soort: "som", tekst: `${t} ${t === 1 ? "staaf" : "staven"} × 10 = ${t * 10}`, nadruk: `${t * 10}` },
         zin: "Elke staaf is een tiental.",
       },
       {

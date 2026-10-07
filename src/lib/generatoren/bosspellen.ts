@@ -23,7 +23,7 @@ export function bosAntwoorden(s: Somgegevens): number[] {
 
 function zin(s: Somgegevens): string {
   const o = ontwerpVan(s), f = bosfiguurVan(s);
-  if (o.modus === "maken") return `Leg ${f.doel} kralen neer.`;
+  if (o.modus === "maken") return `Leg ${f.doel} ${f.doel === 1 ? "kraal" : "kralen"} neer.`;
   if (o.modus === "rest") return "Hoeveel blaadjes blijven over?";
   if (o.modus === "ordenen") return f.stap === 1 ? "Van klein naar groot." : "Van groot naar klein.";
   if (o.modus === "kiezen") return f.stap === 1 ? "Kies het grootste getal." : "Kies het kleinste getal.";
@@ -63,7 +63,7 @@ const uitleg: Uitlegbron = {
       rij.forEach((n, i) => voeg(i === 0 ? `Dit is ${n}.` : `${n} is ${f.modus === "ordenen" && f.stap < 0 ? "kleiner" : "groter"} dan ${rij[i - 1]}.`, i + 1, false, rij.slice(0, i + 1).join(" → ")));
       if (f.modus === "kiezen") voeg(f.stap === 1 ? `${s.goed} is het grootste getal.` : `${s.goed} is het kleinste getal.`, f.getallen.length);
     } else {
-      if (f.modus === "rest") voeg(`${f.weg} blaadjes zijn weggewaaid.`, 0);
+      if (f.modus === "rest") voeg(f.weg === 1 ? "1 blaadje is weggewaaid." : `${f.weg} blaadjes zijn weggewaaid.`, 0);
       else if (o.meerMinder) voeg(`${f.doel} ${f.stap > 0 ? "plus" : "min"} 1 is ${s.goed}.`, 0, false, `${f.doel} ${f.stap > 0 ? "+" : "−"} 1 = ${s.goed}`);
       else voeg("Tel rustig één voor één.", 0);
       for (let n = 1; n <= s.goed; n++) voeg(String(n), n, false, `1 … ${n}`);

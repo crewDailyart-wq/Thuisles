@@ -52,7 +52,7 @@ export const blokkenAanpak: Aanpak = {
     const t = tientallenVan(som);
     const e = eenhedenVan(som);
     return e > 0
-      ? `Het goede antwoord is ${som.goed}: ${t} staven van tien is ${t * 10}, en dan nog ${e} losse blokjes.`
-      : `Het goede antwoord is ${som.goed}: ${t} staven van tien, en geen losse blokjes.`;
+      ? `Het goede antwoord is ${som.goed}: ${t} ${t === 1 ? "staaf" : "staven"} van tien is ${t * 10}, en dan nog ${e} ${e === 1 ? "los blokje" : "losse blokjes"}.`
+      : `Het goede antwoord is ${som.goed}: ${t} ${t === 1 ? "staaf" : "staven"} van tien, en geen losse blokjes.`;
   },
 };

@@ -39,6 +39,6 @@ export const kralenAanpak: Aanpak = {
   controle: (som) => {
     const perGroep = som.getallen[1] || 5;
     const { heleGroepjes, rest } = delen(som.goed, perGroep);
-    return `Het goede antwoord is ${som.goed}, want ${heleGroepjes} groepjes van ${perGroep} is ${heleGroepjes * perGroep}, en daar komt nog ${kralen(rest)} bij.`;
+    return `Het goede antwoord is ${som.goed}, want ${heleGroepjes} ${heleGroepjes === 1 ? "groepje" : "groepjes"} van ${perGroep} is ${heleGroepjes * perGroep}, en daar komt nog ${kralen(rest)} bij.`;
   },
 };

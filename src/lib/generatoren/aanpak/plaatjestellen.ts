@@ -78,7 +78,7 @@ export const plaatjestellenAanpak: Aanpak = {
     const helerijen = Math.floor(totaal / n);
     const rest = totaal - helerijen * n;
     return rest > 0
-      ? `Het goede antwoord is ${totaal}, want ${helerijen} rijen van ${n} is ${helerijen * n}, en dan nog ${rest} erbij.`
-      : `Het goede antwoord is ${totaal}, want ${helerijen} rijen van ${n} is ${totaal}.`;
+      ? `Het goede antwoord is ${totaal}, want ${helerijen} ${helerijen === 1 ? "rij" : "rijen"} van ${n} is ${helerijen * n}, en dan nog ${rest} erbij.`
+      : `Het goede antwoord is ${totaal}, want ${helerijen} ${helerijen === 1 ? "rij" : "rijen"} van ${n} is ${totaal}.`;
   },
 };

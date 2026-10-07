@@ -38,7 +38,7 @@ export const rekenrekflitsAanpak: Aanpak = {
       { tekst: "Zoveel zag je:", som: String(aantal) },
     ];
   },
-  controle: (som) => `Er stonden ${som.goed} kralen.`,
+  controle: (som) => `${som.goed === 1 ? "Er stond 1 kraal" : `Er stonden ${som.goed} kralen`}.`,
 };
 
 export const vanafTienAanpak: Aanpak = {
@@ -46,7 +46,7 @@ export const vanafTienAanpak: Aanpak = {
     const [van, af] = som.getallen;
     return {
       "34": `Schuif er ${af} weg. Tel wat er blijft.`,
-      "56": `Je begint met ${van} kralen en schuift er ${af} weg; er blijven er ${van - af} over.`,
+      "56": `Je begint met ${van} ${van === 1 ? "kraal" : "kralen"} en schuift er ${af} weg; er blijven er ${van - af} over.`,
       "78": `Tien min een getal onder tien hoef je niet te tellen: dat is een van de splitsingen van tien die je uit je hoofd kunt kennen.`,
     };
   },

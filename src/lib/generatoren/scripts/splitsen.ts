@@ -45,7 +45,7 @@ function erafHalenMetBlokjes(geheel: number, deel: number, antwoord: number, vor
           perRij: kolommen,
           bijschrift: String(geheel),
         },
-        zin: `Hier zijn ${geheel} blokjes.`,
+        zin: `${geheel === 1 ? "Hier is 1 blokje" : `Hier zijn ${geheel} blokjes`}.`,
         houding: "blij",
         kant: "links",
       },
@@ -118,7 +118,7 @@ function aanvullenMetBlokjes(geheel: number, deel: number, antwoord: number, vor
           perRij: kolommen,
           bijschrift: String(deel),
         },
-        zin: `We beginnen met ${deel} blokjes.`,
+        zin: `We beginnen met ${deel} ${deel === 1 ? "blokje" : "blokjes"}.`,
         houding: "blij",
       },
       {

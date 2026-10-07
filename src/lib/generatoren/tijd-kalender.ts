@@ -678,7 +678,7 @@ export const kalenderdagGenerator: Generator = {
       const zin =
         stap === 0
           ? `Op welke dag valt ${datumInWoorden({ jaar, maand, dag })}?`
-          : `Welke dag is het ${stap} dagen ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
+          : `Welke dag is het ${stap} ${stap === 1 ? "dag" : "dagen"} ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
 
       const gegevens = {
         soort: "kalenderdag",

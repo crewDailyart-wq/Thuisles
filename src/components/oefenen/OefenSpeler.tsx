@@ -166,6 +166,13 @@ const KIESPAUZE_MS = 500;
 
 // ---------------------------------------------------------------------------
 
+/**
+ * Het knopje "Ik wil een tip" onder de opgave. Verborgen, niet verwijderd: de
+ * maatje-handleiding zegt "nooit een knop Hulp", en het maatje geeft zelf een
+ * tip als een kind lang niets doet.
+ */
+const TIPKNOP_ZICHTBAAR = false;
+
 export function OefenSpeler({
   vragen,
   terugHref,
@@ -1204,8 +1211,12 @@ export function OefenSpeler({
             )}
           </div>
 
-          {/* Hint vragen mag altijd, ook vooraf. */}
-          {fase === "bezig" && !busWacht && hinttekst && (
+          {/*
+            Hint vragen mag altijd, ook vooraf. Het knopje staat op verborgen
+            (keuze van de eigenaar, 8 oktober 2026): het maatje geeft na 30
+            seconden zelf een tip. Weer tonen = TIPKNOP_ZICHTBAAR op true.
+          */}
+          {TIPKNOP_ZICHTBAAR && fase === "bezig" && !busWacht && hinttekst && (
             <div className="mt-4">
               {hintOpen ? (
                 <p className="rounded-2xl bg-amber-zacht px-4 py-3 text-sm font-semibold text-inkt-zacht">

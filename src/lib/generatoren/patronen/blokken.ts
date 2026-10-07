@@ -40,7 +40,7 @@ export const blokkenPatronen: Foutpatroon[] = [
       const t = tientallenVan(som);
       const e = eenhedenVan(som);
       return [
-        { tekst: `Tel de staven: ${t} staven.`, som: `${t} × 10 = ${t * 10}` },
+        { tekst: `Tel de staven: ${t} ${t === 1 ? "staaf" : "staven"}.`, som: `${t} × 10 = ${t * 10}` },
         { tekst: `Tel de losse blokjes: ${e}.`, som: `${e}` },
         { tekst: "De staven zeg je eerst.", som: `${t * 10} + ${e} = ${som.goed}` },
       ];
@@ -98,7 +98,7 @@ export const blokkenPatronen: Foutpatroon[] = [
       const t = tientallenVan(som);
       const e = eenhedenVan(som);
       return [
-        { tekst: "Wijs elke staaf aan.", som: `${t} staven` },
+        { tekst: "Wijs elke staaf aan.", som: `${t} ${t === 1 ? "staaf" : "staven"}` },
         {
           tekst: "Tel met sprongen van tien.",
           som: Array.from({ length: t }, (_, i) => `${(i + 1) * 10}`).join(" → "),
@@ -132,7 +132,7 @@ export const blokkenPatronen: Foutpatroon[] = [
       const e = eenhedenVan(som);
       return [
         { tekst: "Kijk in één staaf: tien blokjes.", som: "10" },
-        { tekst: `Dus ${t} staven is:`, som: `${t} × 10 = ${t * 10}` },
+        { tekst: `Dus ${t} ${t === 1 ? "staaf" : "staven"} is:`, som: `${t} × 10 = ${t * 10}` },
         { tekst: "En de losse erbij.", som: `${t * 10} + ${e} = ${som.goed}` },
       ];
     },

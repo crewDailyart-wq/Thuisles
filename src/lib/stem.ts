@@ -6,7 +6,9 @@
  *
  * Nu: de stem die in de browser zit (gratis, werkt overal, geen verbinding
  * nodig). Van de beschikbare Nederlandse stemmen wordt automatisch de beste
- * vrouwelijke gekozen — mannelijke en vlakke stemmen worden vermeden.
+ * vrouwelijke gekozen — mannelijke en vlakke stemmen worden vermeden. Heeft
+ * het apparaat geen Nederlandse stem, dan praat er niemand en staat alleen het
+ * tekstwolkje in beeld (keuze van de eigenaar: geen betaalde stemdienst).
  *
  * Later: een echte stemdienst met een vrolijke kinderstem. Die schakelaar
  * staat hieronder al klaar (`BRON`). De opzet is dan: elke unieke zin wordt
@@ -220,6 +222,12 @@ export function zeg(zin: string): void {
 
   void stemmenGereed().then(() => {
     if (mijnBeurt !== beurt) return;
+    /*
+      Geen Nederlandse stem op dit apparaat: dan zwijgen. Anders kiest de
+      browser zelf een stem, vaak een Engelse, en die maakt van een Nederlandse
+      zin onzin. Het tekstwolkje blijft gewoon staan.
+    */
+    if (!gekozen) return;
 
     const uiting = new SpeechSynthesisUtterance(zin);
     /*
@@ -286,6 +294,11 @@ export function zegNaElkaar(
   window.speechSynthesis.cancel();
   void stemmenGereed().then(() => {
     if (gestopt || mijnBeurt !== beurt) return;
+    /* Geen Nederlandse stem: de zinnen lopen zonder geluid, op de klok. */
+    if (!gekozen) {
+      opDeKlok(0);
+      return;
+    }
     const volgende = (i: number) => {
       if (gestopt || mijnBeurt !== beurt) return;
       if (i >= zinnen.length) {

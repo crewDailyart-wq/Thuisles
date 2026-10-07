@@ -140,6 +140,8 @@ vierkant als de vakjes waar ze in moeten.
   is het antwoordvak meteen beschikbaar en mogen verkeerde groepjes ontstaan.
   Alleen Controleer geeft feedback; na een goed antwoord telt het beeld mee.
   Bij de oudere begeleide bouwvormen gaat het antwoordvak pas na het bouwen open.
+- Oefeningen met een bouwsteen (zoals het rekenrek en de groepjesmaker): alle
+  15 opgaven met de bouwsteen.
 
 ## Plaatjes
 
