@@ -166,17 +166,17 @@ export function GodotSpelOpdracht({
       )}
 
       {/*
-        Zo groot als past: op een laptop moeten de kop, het spel en Controleer
-        samen in beeld blijven, dus de hoogte bepaalt mee hoe breed het wordt.
+        Het speelvlak, zonder kader: zo groot als het scherm toelaat. Hoe breed
+        precies, staat in globals.css ([data-godotvak]): op een laptop moeten
+        de som, het spel en Controleer samen in beeld blijven.
       */}
       <div
         data-godotvak=""
-        className="relative overflow-hidden rounded-2xl border-2 border-rand bg-[#0f1b3d] aspect-[6/5]"
-        style={{ width: "min(100%, 44rem, calc((100dvh - 19rem) * 1.2))", minWidth: "min(100%, 20rem)" }}
+        className="relative w-full overflow-hidden aspect-video"
       >
         <iframe ref={frame} title={label} className="absolute inset-0 size-full border-0" allow="autoplay" />
         {!geladen && (
-          <div className="absolute inset-0 grid place-items-center bg-[#0f1b3d] text-base font-bold text-white/80">
+          <div className="absolute inset-0 grid place-items-center text-base font-bold text-white/80">
             Het spel wordt klaargezet…
           </div>
         )}

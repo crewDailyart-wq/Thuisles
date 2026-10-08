@@ -197,16 +197,7 @@ func _route(langs: Array) -> Array:
 
 
 func _draw() -> void:
-	# zacht raster
-	var lijn := Color(1, 1, 1, 0.035)
-	var x := 0.0
-	while x <= 600:
-		draw_line(Vector2(x, 0), Vector2(x, 500), lijn, 1.0)
-		x += 28.0
-	var y := 0.0
-	while y <= 500:
-		draw_line(Vector2(0, y), Vector2(600, y), lijn, 1.0)
-		y += 28.0
+	# geen eigen raster: het spel staat op de achtergrond van Thuisles
 	var stijl = get_node_or_null("/root/Stijl")
 	var gloed: Color = stijl.GLOED if stijl else Color("#5fd4e8")
 	if fase == "bezig" or fase == "vliegt":

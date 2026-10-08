@@ -156,15 +156,7 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	var lijn := Color(1, 1, 1, 0.035)
-	var x := 0.0
-	while x <= 600:
-		draw_line(Vector2(x, 0), Vector2(x, 500), lijn, 1.0)
-		x += 28.0
-	var y := 0.0
-	while y <= 500:
-		draw_line(Vector2(0, y), Vector2(600, y), lijn, 1.0)
-		y += 28.0
+	# geen eigen raster: het spel staat op de achtergrond van Thuisles
 	if _straal > 0.0:
 		draw_line(_straal_van, _straal_naar, Color(_straal_kleur, 0.3 * _straal), 14.0, true)
 		draw_line(_straal_van, _straal_naar, Color(_straal_kleur, _straal), 4.0, true)

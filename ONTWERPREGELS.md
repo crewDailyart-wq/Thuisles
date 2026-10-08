@@ -182,9 +182,14 @@ Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
   `?stijl=thuisles` achter het adres van de oefening.
 - Dat geldt voor het hele oefenscherm, niet alleen voor de bouwsteen: de
   bovenbalk, de achtergrond, de som met de vakjes, Controleer en het maatje
-  (thema `data-stijl="nacht"` in globals.css). Op een groot scherm staat wat
-  het maatje zegt links naast de oefening, als grote witte tekst. Er staat
-  één maatje in beeld: dat in de bouwsteen zelf; onderaan blijft het wolkje.
+  (thema `data-stijl="nacht"` in globals.css).
+- Indeling zoals Synthesis (keuze eigenaar, 9 oktober 2026): één groot
+  speelvlak zonder kader of vak eromheen; het spel is doorzichtig en staat los
+  op het donkere raster, zo groot als het scherm toelaat. De vraag en de som
+  staan bovenaan. Rechts staat de mascotte (nu nog het tijdelijke bolletje)
+  met wat hij uitlegt, en daaronder Controleer. Op een smal scherm staan de
+  mascotte en Controleer onder het spel. In het spel zelf staat geen tweede
+  maatje.
 - De rest van Thuisles (alle andere oefeningen) houdt de eigen Thuisles-stijl.
 
 ## Inhoud van vragen

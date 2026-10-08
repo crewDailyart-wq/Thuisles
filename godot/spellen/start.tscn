@@ -5,7 +5,7 @@
 [node name="Start" type="Control"]
 layout_mode = 3
 anchors_preset = 0
-offset_right = 600.0
-offset_bottom = 500.0
+offset_right = 960.0
+offset_bottom = 540.0
 mouse_filter = 2
 script = ExtResource("1")

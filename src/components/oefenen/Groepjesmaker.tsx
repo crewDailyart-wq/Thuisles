@@ -139,7 +139,7 @@ export function GroepjesmakerOpdracht({
         />
       </div>
 
-      <div data-godotvak="" className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-rand bg-[#0f1b3d] aspect-[6/5]">
+      <div data-godotvak="" className="relative w-full overflow-hidden aspect-video">
         <iframe
           ref={frame}
           title="De groepjesmaker: doosjes met bolletjes"
@@ -147,7 +147,7 @@ export function GroepjesmakerOpdracht({
           allow="autoplay"
         />
         {!geladen && (
-          <div className="absolute inset-0 grid place-items-center bg-[#0f1b3d] text-base font-bold text-white/80">
+          <div className="absolute inset-0 grid place-items-center text-base font-bold text-white/80">
             De groepjesmaker wordt klaargezet…
           </div>
         )}

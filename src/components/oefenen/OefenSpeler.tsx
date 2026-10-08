@@ -1005,6 +1005,8 @@ export function OefenSpeler({
       */}
       <div
         className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10"
+        /* Bij een Godot-spel: een groot speelvlak met de mascotte rechts (globals.css). */
+        data-godotronde={godotRonde ? "" : undefined}
         onPointerDownCapture={() => (laatsteActiviteit.current = nuInMs())}
         onKeyDownCapture={() => (laatsteActiviteit.current = nuInMs())}
         onInputCapture={() => (laatsteActiviteit.current = nuInMs())}
@@ -1412,7 +1414,7 @@ export function OefenSpeler({
             Gecentreerd, net als de tekening, de vraag en het antwoordvak
             erboven. In de focusstand loopt alles over één middellijn.
           */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <div data-knoppen="" className="mt-6 flex flex-wrap items-center justify-center gap-3">
             {/*
               Geen knop bij de vraagtypes waar je uit vakken kiest: daar wordt
               de tik zelf nagekeken, een halve tel later.
@@ -1468,7 +1470,7 @@ export function OefenSpeler({
               geluid={maatjeGeluid}
               onGeluid={wisselMaatjeGeluid}
               onKlaar={maatjeKlaar}
-              poppetje={isGodotfiguur(vraag.figuur) ? "geen" : "vos"}
+              poppetje={isGodotfiguur(vraag.figuur) ? "tijdelijk" : "vos"}
             />
           )}
         </div>

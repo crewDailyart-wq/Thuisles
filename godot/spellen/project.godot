@@ -23,12 +23,15 @@ Brug="*res://gedeeld/brug.gd"
 
 [display]
 
-window/size/viewport_width=600
-window/size/viewport_height=500
+window/size/viewport_width=960
+window/size/viewport_height=540
 window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+window/per_pixel_transparency/allowed=true
 
 [rendering]
 
 renderer/rendering_method="gl_compatibility"
 renderer/rendering_method.mobile="gl_compatibility"
 environment/defaults/default_clear_color=Color(0.059, 0.106, 0.239, 1)
+viewport/transparent_background=true

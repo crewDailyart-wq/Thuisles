@@ -10,8 +10,9 @@ extends Spel
 ##           precies vol maakt (zoveel vakjes als het doelgetal)
 ## Na Controleer: goed → de stippen tellen mee; fout → de goede manier.
 
-const VAK := 46.0
-const RUIM := 8.0
+const VAK := 64.0
+const RUIM := 10.0
+const MIDDEN := 480.0
 
 ## Wat er in het veld ligt: per vakje de kleur, of null.
 var cellen: Array = []
@@ -104,9 +105,9 @@ func _maak_bak() -> void:
 	for n in range(1, 10):
 		var rij := 0 if n <= 5 else 1
 		var plek := (n - 1) % 5
-		var breed := 96.0
-		var x := 300.0 - 2.5 * (breed + 12.0) + plek * (breed + 12.0) + (54.0 if rij == 1 else 0.0)
-		_bak.append(Rect2(Vector2(x, 330.0 + rij * 76.0), Vector2(breed, 62.0)))
+		var breed := 130.0
+		var x := MIDDEN - 2.5 * (breed + 16.0) + plek * (breed + 16.0) + (73.0 if rij == 1 else 0.0)
+		_bak.append(Rect2(Vector2(x, 300.0 + rij * 104.0), Vector2(breed, 86.0)))
 
 
 func _gui_input(event: InputEvent) -> void:
@@ -212,7 +213,7 @@ func _tel_mee() -> void:
 func _veld_links() -> float:
 	var velden := aantal_vakken / 10
 	var breed := velden * (5 * VAK + 4 * RUIM) + (velden - 1) * 30.0
-	return 300.0 - breed / 2.0
+	return MIDDEN - breed / 2.0
 
 
 func _vak_rect(i: int) -> Rect2:
@@ -222,7 +223,7 @@ func _vak_rect(i: int) -> Rect2:
 	var kol := binnen % 5
 	var x := _veld_links() + veld * (5 * VAK + 4 * RUIM + 30.0) + kol * (VAK + RUIM)
 	# bij "maak" staat de bak eronder; anders staat het veld in het midden
-	var y := (120.0 if stand == "maak" else 190.0) + rij * (VAK + RUIM)
+	var y := (110.0 if stand == "maak" else 200.0) + rij * (VAK + RUIM)
 	return Rect2(Vector2(x, y), Vector2(VAK, VAK))
 
 
@@ -232,7 +233,6 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	Teken.raster(self)
 	if cellen.is_empty():
 		cellen.resize(aantal_vakken)
 	var schud := sin(_wiebel * 30.0) * 8.0 * _wiebel
@@ -247,17 +247,17 @@ func _draw() -> void:
 			rand = Teken.GOED
 		Teken.vak(self, r, rand, Color(1, 1, 1, 0.04 if leeg else 0.08), 2.5, 10.0)
 		if not leeg:
-			Teken.stip(self, r.get_center(), 15.0, cellen[i])
+			Teken.stip(self, r.get_center(), 21.0, cellen[i])
 		if i < _cijfers.size() and _cijfers[i] != null and str(_cijfers[i]) != "":
-			Teken.tekst(self, r.get_center(), str(_cijfers[i]), 20, Teken.NACHT)
+			Teken.tekst(self, r.get_center(), str(_cijfers[i]), 26, Teken.NACHT)
 	if stand == "maak":
 		# het doelgetal rechts van het veld: zoveel vakjes moeten vol
 		# naast het veld; bij twee velden past dat niet, dan erboven
-		var badge := Rect2(Vector2(_vak_rect(4).end.x + 26.0, _vak_rect(0).position.y), Vector2(70, VAK * 2 + RUIM))
+		var badge := Rect2(Vector2(_vak_rect(4).end.x + 34.0, _vak_rect(0).position.y), Vector2(96, VAK * 2 + RUIM))
 		if aantal_vakken == 20:
-			badge = Rect2(Vector2(265, 38), Vector2(70, 64))
-		Teken.vak(self, badge, Teken.GEEL, Color(Teken.GEEL, 0.1), 3.0, 14.0)
-		Teken.tekst(self, badge.get_center(), str(doel), 40, Teken.GEEL)
+			badge = Rect2(Vector2(MIDDEN - 48.0, 14), Vector2(96, 76))
+		Teken.vak(self, badge, Teken.GEEL, Color(Teken.GEEL, 0.1), 3.0, 16.0)
+		Teken.tekst(self, badge.get_center(), str(doel), 52, Teken.GEEL)
 		for i in range(_bak.size()):
 			_teken_tegel(_bak[i], i + 1, gekozen == i + 1)
 
@@ -271,5 +271,5 @@ func _teken_tegel(r: Rect2, n: int, weg: bool) -> void:
 		var rij := i / 5
 		var kol := i % 5
 		var kolommen := mini(n, 5)
-		var p := r.get_center() + Vector2((kol - (kolommen - 1) / 2.0) * 17.0, (rij - (rijen - 1) / 2.0) * 18.0)
-		Teken.stip(self, p, 6.0, Color(k, 0.3) if weg else k)
+		var p := r.get_center() + Vector2((kol - (kolommen - 1) / 2.0) * 23.0, (rij - (rijen - 1) / 2.0) * 25.0)
+		Teken.stip(self, p, 8.5, Color(k, 0.3) if weg else k)

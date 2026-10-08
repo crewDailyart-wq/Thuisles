@@ -29,5 +29,8 @@ func _ready() -> void:
 		if arg.begins_with("--stijl="):
 			keuze = arg.substr(8)
 	synthesis = keuze != "thuisles"
-	if synthesis:
+	# Het speelvlak is doorzichtig: het spel staat los op de achtergrond van
+	# Thuisles, zonder vak eromheen, zoals bij Synthesis (keuze eigenaar, 9
+	# oktober 2026). Alleen in de Godot-app zelf blijft de achtergrond donker.
+	if synthesis and not OS.has_feature("web"):
 		RenderingServer.set_default_clear_color(NACHT)

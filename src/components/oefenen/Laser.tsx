@@ -84,10 +84,10 @@ export function LaserOpdracht({
         )}
       </div>
 
-      <div data-godotvak="" className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-rand bg-[#0f1b3d] aspect-[6/5]">
+      <div data-godotvak="" className="relative w-full overflow-hidden aspect-video">
         <iframe ref={frame} title="De laser: raak de goede stenen" className="absolute inset-0 size-full border-0" allow="autoplay" />
         {!geladen && (
-          <div className="absolute inset-0 grid place-items-center bg-[#0f1b3d] text-base font-bold text-white/80">
+          <div className="absolute inset-0 grid place-items-center text-base font-bold text-white/80">
             De laser wordt klaargezet…
           </div>
         )}

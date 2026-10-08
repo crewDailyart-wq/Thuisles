@@ -11,8 +11,9 @@ extends Spel
 ##   teken      twee rijen met hun getal; het kind kiest <, = of >
 ## Na Controleer: goed → het antwoord licht op; fout → de goede manier.
 
-const VAK := 46.0
-const RUIM := 8.0
+const VAK := 64.0
+const RUIM := 10.0
+const MIDDEN := 480.0
 
 var stand := "weg"
 var a := 7
@@ -85,7 +86,7 @@ func _maak_knoppen() -> void:
 		return
 	var tekens := ["<", "=", ">"]
 	for i in range(3):
-		_knoppen.append([Rect2(Vector2(180 + i * 90, 380), Vector2(72, 72)), tekens[i]])
+		_knoppen.append([Rect2(Vector2(MIDDEN - 165.0 + i * 120.0, 420), Vector2(90, 90)), tekens[i]])
 
 
 # ---------------------------------------------------------------------------
@@ -228,7 +229,7 @@ func _klein() -> bool:
 
 
 func _maat() -> float:
-	return 22.0 if _klein() else VAK
+	return 36.0 if _klein() else VAK
 
 
 ## Elke rij een eigen vaste kleur, zodat je ze goed uit elkaar houdt.
@@ -238,8 +239,8 @@ func _rijkleur(rij: int) -> Color:
 
 func _rij_y(rij: int) -> float:
 	if stand == "weg":
-		return 170.0
-	return 130.0 + rij * 120.0
+		return 190.0
+	return 120.0 + rij * 150.0
 
 
 ## Bij weg: een tienveld (of twee). Anders: één lange rij per getal.
@@ -251,13 +252,13 @@ func _stip_rect(rij: int, i: int) -> Rect2:
 		var kol := binnen % 5
 		var velden := aantal_vakken / 10
 		var breed := velden * (5 * VAK + 4 * RUIM) + (velden - 1) * 30.0
-		var x := 300.0 - breed / 2.0 + veld * (5 * VAK + 4 * RUIM + 30.0) + kol * (VAK + RUIM)
+		var x := MIDDEN - breed / 2.0 + veld * (5 * VAK + 4 * RUIM + 30.0) + kol * (VAK + RUIM)
 		return Rect2(Vector2(x, _rij_y(0) + r * (VAK + RUIM)), Vector2(VAK, VAK))
 	var m := _maat()
-	var ruim := 3.0 if _klein() else 6.0
-	var breed_rij := aantal_vakken * m + (aantal_vakken - 1) * ruim + (8.0 if aantal_vakken == 20 else 0.0)
-	var links := 300.0 - breed_rij / 2.0 + (24.0 if stand == "teken" else 0.0)
-	var extra := 8.0 if i >= 10 else 0.0   # een klein gaatje na tien
+	var ruim := 5.0 if _klein() else 10.0
+	var breed_rij := aantal_vakken * m + (aantal_vakken - 1) * ruim + (12.0 if aantal_vakken == 20 else 0.0)
+	var links := MIDDEN - breed_rij / 2.0 + (30.0 if stand == "teken" else 0.0)
+	var extra := 12.0 if i >= 10 else 0.0   # een klein gaatje na tien
 	return Rect2(Vector2(links + i * (m + ruim) + extra, _rij_y(rij)), Vector2(m, m))
 
 
@@ -273,7 +274,6 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
-	Teken.raster(self)
 	var schud := sin(_wiebel * 30.0) * 8.0 * _wiebel
 	if stand == "weg":
 		for i in range(aantal_vakken):
@@ -291,7 +291,7 @@ func _draw() -> void:
 			if gekozen == mijn_rij:
 				Teken.vak(self, _rij_rect(rij), Teken.GEEL, Color(Teken.GEEL, 0.08), 3.0, 16.0)
 		if stand == "teken":
-			Teken.tekst(self, Vector2(_stip_rect(rij, 0).position.x - 30.0, _stip_rect(rij, 0).get_center().y), str(n), 32, _rijkleur(rij))
+			Teken.tekst(self, Vector2(_stip_rect(rij, 0).position.x - 38.0, _stip_rect(rij, 0).get_center().y), str(n), 40, _rijkleur(rij))
 		for i in range(aantal_vakken):
 			var r := _stip_rect(rij, i)
 			Teken.vak(self, r, Color(Teken.GLOED, 0.55), Color(1, 1, 1, 0.03), 2.0, 8.0 if not _klein() else 6.0)
@@ -302,7 +302,7 @@ func _draw() -> void:
 			var r: Rect2 = k[0]
 			var aan: bool = gekozen == k[1]
 			Teken.vak(self, r, Teken.GEEL if aan else Teken.GLOED, Color(Teken.GEEL if aan else Teken.KNOP, 0.25 if aan else 0.18), 3.0, 18.0)
-			Teken.tekst(self, r.get_center(), k[1], 44, Teken.WIT)
+			Teken.tekst(self, r.get_center(), k[1], 56, Teken.WIT)
 
 
 func _teken_stip(r: Rect2, kleur: Color, is_weg: bool, licht: bool, cijfer: int) -> void:

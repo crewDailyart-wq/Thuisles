@@ -919,34 +919,89 @@ body {
 }
 
 /*
- * Op een groot scherm staat wat het maatje zegt links naast de oefening, als
- * grote witte tekst, zoals de uitleg bij Synthesis. Kleiner dan 1180 px blijft
- * het gewoon onder de oefening.
+ * Een groot speelvlak, zoals bij Synthesis (keuze eigenaar, 9 oktober 2026):
+ * geen kader en geen vak met een eigen achtergrond om het spel. Het spel is
+ * doorzichtig en staat los op het donkere raster, zo groot als past. De som
+ * staat erboven. De mascotte staat rechts en legt uit; op een smal scherm
+ * staat hij onder het spel.
  */
+:root[data-stijl="nacht"] [data-godotronde] {
+  max-width: 82rem;
+}
+:root[data-stijl="nacht"] [data-godotronde] [data-oefenkaart] {
+  padding: 0.5rem 0.25rem;
+  border-width: 0;
+  box-shadow: none;
+}
+:root[data-stijl="nacht"] [data-godotvak] {
+  border: 0;
+  border-radius: 0;
+  background: transparent;
+  overflow: visible;
+  /* zo breed als past, maar nooit zo hoog dat Controleer uit beeld valt */
+  width: min(100%, calc((100dvh - 17rem) * 16 / 9));
+  margin-inline: auto;
+}
+:root[data-stijl="nacht"] [data-godotvak] iframe {
+  background: transparent;
+  color-scheme: normal;
+}
+
 @media (min-width: 1180px) {
-  :root[data-stijl="nacht"] [data-maatje] {
+  :root[data-stijl="nacht"] [data-godotronde] {
+    padding-right: 21rem;
+  }
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] {
     position: fixed;
-    left: 2rem;
-    top: 38%;
-    width: 17rem;
+    right: 2rem;
+    top: 20%;
+    width: 18rem;
     margin-top: 0;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
+    gap: 1rem;
     z-index: 30;
   }
-  :root[data-stijl="nacht"] [data-maatje] [aria-live] {
-    background: transparent;
-    border: 0;
-    box-shadow: none;
-    padding: 0;
-    font-size: 1.35rem;
+  /* de mascotte groot, met wat hij zegt eronder */
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] > svg {
+    width: 8rem;
+    height: 8rem;
+  }
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] [aria-live] {
+    width: 100%;
+    background-color: #1a2b57;
+    border-color: #263a70;
+    font-size: 1.3rem;
     line-height: 1.45;
     color: #f4f7ff;
+    padding: 1rem 1.15rem;
   }
-  :root[data-stijl="nacht"] [data-maatje] [aria-live] > span[aria-hidden] {
-    display: none;
+  /* het puntje van het wolkje wijst omhoog, naar de mascotte */
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] [aria-live] > span[aria-hidden] {
+    left: 50%;
+    top: -0.55rem;
+    bottom: auto;
+    margin-left: -0.5rem;
+    transform: rotate(135deg);
+    background-color: #1a2b57;
+    border-color: #263a70;
   }
-  :root[data-stijl="nacht"] [data-maatje] button {
-    align-self: flex-start;
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] button {
+    align-self: center;
+  }
+  /* Controleer en Volgende vraag staan rechts onder de mascotte, groot. */
+  :root[data-stijl="nacht"] [data-godotronde] [data-knoppen] {
+    position: fixed;
+    right: 2rem;
+    bottom: 2.5rem;
+    width: 18rem;
+    margin-top: 0;
+    z-index: 31;
+  }
+  :root[data-stijl="nacht"] [data-godotronde] [data-knoppen] button {
+    width: 100%;
+    justify-content: center;
+    padding-block: 1rem;
+    font-size: 1.25rem;
   }
 }
