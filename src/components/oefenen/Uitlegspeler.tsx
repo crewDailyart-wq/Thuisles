@@ -22,6 +22,7 @@ import {
   RondeTerugpijl,
 } from "@/components/oefenen/Symbolen";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
+import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
 import { Telfiguur } from "@/components/oefenen/Telfiguren";
 import { Steenrij } from "@/components/oefenen/Stapstenen";
 import { Getallenlijnbeeld } from "@/components/oefenen/Getallenlijn";
@@ -54,8 +55,14 @@ export function Uitlegspeler({
   telplaatje = null,
   vakmateriaal = null,
   vakperRij = null,
+  zonderVos = false,
 }: {
   script: Uitlegscript;
+  /**
+   * In een Godot-spel staat er geen Vos in beeld (keuze van de eigenaar): dan
+   * vertelt het tijdelijke maatje (het bolletje) de uitleg.
+   */
+  zonderVos?: boolean;
   onSluit: () => void;
   /** Aangeboden na afloop: nog een vergelijkbare som proberen. */
   onNogEen?: () => void;
@@ -309,11 +316,15 @@ export function Uitlegspeler({
           key={stapNr}
           className="animate-vos-knik grid size-16 shrink-0 place-items-center rounded-full bg-white shadow-zacht"
         >
-          <VosFiguur
-            houding={wijsNaarVerder ? "wijzend" : (stap.houding ?? "blij")}
-            beweging={wijsNaarVerder ? "wijzen" : (stap.beweging ?? "praten")}
-            className="size-14"
-          />
+          {zonderVos ? (
+            <TijdelijkMaatje houding={stap.feest ? "blij" : "praat"} className="size-14" />
+          ) : (
+            <VosFiguur
+              houding={wijsNaarVerder ? "wijzend" : (stap.houding ?? "blij")}
+              beweging={wijsNaarVerder ? "wijzen" : (stap.beweging ?? "praten")}
+              className="size-14"
+            />
+          )}
         </span>
         <p
           className={`relative rounded-kaart bg-white px-4 py-3 text-base font-extrabold shadow-zacht ${

@@ -1311,6 +1311,7 @@ export function OefenSpeler({
               {/* De animatie hoort erbij en staat er meteen; geen knop. */}
               {(animatie || uitlegStappen) && !uitlegWeggeklikt && !maatjeUitlegWacht && (
                 <Uitlegweergave
+                  zonderVos={isGodotfiguur(vraag.figuur)}
                   vorm={groepsvorm}
                   script={animatie}
                   terugval={uitlegStappen ?? undefined}
@@ -1378,6 +1379,7 @@ export function OefenSpeler({
               {(animatie || uitlegStappen) &&
                 (uitlegOpen ? (
                   <Uitlegweergave
+                    zonderVos={isGodotfiguur(vraag.figuur)}
                     vorm={groepsvorm}
                     script={animatie}
                     terugval={uitlegStappen ?? undefined}
