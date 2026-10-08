@@ -59,6 +59,18 @@ export function useGodot(naam: string, opBericht: (b: GodotBericht) => void) {
     return () => window.removeEventListener("message", luister);
   }, [naam]);
 
+  /*
+    Het adres van het iframe wordt pas in de browser gezet (zelfde tekening op
+    server en browser). Proef, oktober 2026: ?stijl=synthesis achter het adres
+    van de oefening gaat mee naar Godot, om de stijlen te vergelijken.
+  */
+  useEffect(() => {
+    if (!frame.current || frame.current.src) return;
+    const stijl = new URLSearchParams(window.location.search).get("stijl");
+    const bron = `/godot/${naam}/index.html`;
+    frame.current.src = stijl ? `${bron}?stijl=${encodeURIComponent(stijl)}` : bron;
+  }, [naam]);
+
   const stuur = useCallback(
     (bericht: GodotBericht) => {
       const metBron = { ...bericht, bron: "thuisles" };
@@ -68,5 +80,5 @@ export function useGodot(naam: string, opBericht: (b: GodotBericht) => void) {
     [naam],
   );
 
-  return { frame, geladen, laadtijd, stuur, bron: `/godot/${naam}/index.html` };
+  return { frame, geladen, laadtijd, stuur };
 }

@@ -56,6 +56,10 @@ func _rond(r: Rect2, kleur: Color, straal: int, schaduw := 0) -> void:
 
 
 func _draw() -> void:
+	var stijl = get_node_or_null("/root/Stijl")
+	if stijl and stijl.synthesis:
+		_teken_synthesis(stijl)
+		return
 	# de kast: houten rand met een zachte schaduw, licht hout van achteren
 	_rond(Rect2(0, 0, BREED, HOOG), Kleuren.HOUT_DIEP, 16, 14)
 	var binnen := Rect2(RAND, RAND, BREED - RAND * 2, HOOG - RAND * 2)
@@ -95,3 +99,35 @@ func _stippelrand(r: Rect2, kleur: Color) -> void:
 		while t < lengte:
 			draw_line(van.lerp(naar, t / lengte), van.lerp(naar, min(t + 9.0, lengte) / lengte), kleur, 3.0)
 			t += 16.0
+
+
+## Synthesis-stijl: geen kast, maar twee gloeiende lijnen op een donker raster.
+func _teken_synthesis(stijl) -> void:
+	var x := 0.0
+	while x <= BREED:
+		draw_line(Vector2(x, 0), Vector2(x, HOOG), stijl.RASTER, 1.0)
+		x += 24.0
+	var y := 0.0
+	while y <= HOOG:
+		draw_line(Vector2(0, y), Vector2(BREED, y), stijl.RASTER, 1.0)
+		y += 24.0
+	for rij in range(2):
+		var kleur: Color = stijl.GLOED
+		if geknipt:
+			kleur = Kleuren.LUCHT if rij == 0 else Kleuren.ROZE
+		var py := plank_y(rij) + 4
+		draw_line(Vector2(RAND, py), Vector2(BREED - RAND, py), Color(kleur, 0.25), 10.0)
+		draw_line(Vector2(RAND, py), Vector2(BREED - RAND, py), kleur, 3.0)
+	if geknipt:
+		var ky := plank_y(0) + PLANK + 4
+		var kx := RAND
+		while kx < BREED - RAND:
+			draw_line(Vector2(kx, ky), Vector2(min(kx + 12, BREED - RAND), ky), stijl.WIT, 3.0)
+			kx += 22
+	if toon_volgende and volgende < PER_PLANK * 2:
+		var p := plek(volgende)
+		var r := Rect2(p.x - 37, p.y - 172, 74, 172)
+		var a := 0.45 + 0.25 * sin(_tijd * 3.0)
+		_stippelrand(r, Color(stijl.GLOED, a))
+		var font := ThemeDB.fallback_font
+		draw_string(font, Vector2(r.position.x, r.get_center().y + 18), "+", HORIZONTAL_ALIGNMENT_CENTER, r.size.x, 52, Color(stijl.GLOED, a + 0.15))

@@ -77,7 +77,8 @@ export function GroepjesmakerOpdracht({
     },
     [],
   );
-  const { frame, geladen, stuur, bron } = useGodot("groepjesmaker", opBericht);
+  const { frame, geladen, stuur } = useGodot("groepjesmaker", opBericht);
+
 
   /* Een nieuwe opgave: alles terug naar het begin, en de som naar Godot. */
   const [vorige, setVorige] = useState(vraagId);
@@ -141,7 +142,6 @@ export function GroepjesmakerOpdracht({
       <div className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-rand bg-room aspect-[6/5]">
         <iframe
           ref={frame}
-          src={bron}
           title="De groepjesmaker: doosjes met eikels"
           className="absolute inset-0 size-full border-0"
           allow="autoplay"

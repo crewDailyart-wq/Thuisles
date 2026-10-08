@@ -20,6 +20,26 @@ const HOOG := 172.0
 func _ready() -> void:
 	if Engine.is_editor_hint():
 		toon_meteen()
+		return
+	var stijl = get_node_or_null("/root/Stijl")
+	if stijl and stijl.synthesis:
+		var doos := StyleBoxFlat.new()
+		doos.bg_color = stijl.NACHT_OP
+		doos.border_color = stijl.GLOED
+		doos.set_border_width_all(3)
+		doos.set_corner_radius_all(14)
+		doos.shadow_color = Color(stijl.GLOED, 0.35)
+		doos.shadow_size = 10
+		$Doos.add_theme_stylebox_override("panel", doos)
+		$Doos/Glans.visible = false
+		var rond := StyleBoxFlat.new()
+		rond.bg_color = stijl.GLOED
+		rond.set_corner_radius_all(26)
+		rond.shadow_color = Color(stijl.GLOED, 0.5)
+		rond.shadow_size = 8
+		$Telrondje.add_theme_stylebox_override("panel", rond)
+		$Telrondje/Getal.label_settings = $Telrondje/Getal.label_settings.duplicate()
+		$Telrondje/Getal.label_settings.font_color = stijl.NACHT
 
 
 func plek(i: int) -> Vector2:

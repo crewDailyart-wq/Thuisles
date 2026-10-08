@@ -79,6 +79,18 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
   kast (`maatje.tscn`). Op het oefenscherm staat het tijdelijke maatje
   (`TijdelijkMaatje.tsx`) in plaats van Vos. Elders op de website staat Vos nog.
 
+**Proef: twee stijlen naast elkaar** (op verzoek van Sara, om te vergelijken)
+
+- Thuisles-stijl (standaard): licht en warm, houten kast, eikels.
+- Synthesis-stijl: effen donkerblauw met een zacht raster, gloeiende vakjes,
+  gekleurde stippen in plaats van eikels, witte cijfers en felle knoppen. Kleur en
+  sfeer zoals Synthesis aanvoelt; geen plaatjes, figuurtjes, logo of teksten van
+  Synthesis. Kiezen met `&stijl=synthesis` achter het adres van de oefening
+  (`godot/groepjesmaker/stijl.gd`).
+- Screenshots van allebei: `~/Desktop/godot-screenshots/groepjesmaker-*.png`.
+- Kiest Sara de donkere stijl, dan moeten ONTWERPREGELS.md en de regel "niets
+  overnemen van Synthesis" eerst door haar worden aangepast.
+
 **Grootte en laadtijd**
 
 - Download: ongeveer 10 MB (gecomprimeerd; 39,5 MB zonder compressie). Bijna alles is

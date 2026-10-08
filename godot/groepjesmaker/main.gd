@@ -61,6 +61,8 @@ func _ready() -> void:
 	ui.get_node("Vraag/Ja").pressed.connect(func(): _knop("ja"))
 	ui.get_node("Vraag/Nee").pressed.connect(func(): _knop("nee"))
 	ui.get_node("Tikvlak").gui_input.connect(_tik_op_kast)
+	if Stijl.synthesis:
+		_kleur_synthesis()
 	Brug.bericht.connect(_op_bericht)
 	_ververs()
 	if not OS.has_feature("web"):
@@ -127,7 +129,7 @@ func _begin() -> void:
 	ui.get_node("Knip").visible = false
 	som.text = ""
 	som.modulate = Color.WHITE
-	som.label_settings.font_color = Kleuren.INKT
+	som.label_settings.font_color = Stijl.WIT if Stijl.synthesis else Kleuren.INKT
 	maatje.rustig()
 	_ververs()
 	_meld_bouw()
@@ -393,7 +395,7 @@ func _toon_plussom() -> void:
 		return
 	_past(nieuw)
 	som.modulate.a = 1.0
-	som.label_settings.font_color = Kleuren.INKT
+	som.label_settings.font_color = Stijl.WIT if Stijl.synthesis else Kleuren.INKT
 	if nieuw != "":
 		var t := create_tween()
 		t.tween_property(som, "scale", Vector2(1.12, 1.12), 0.08)
@@ -557,3 +559,44 @@ func _ververs() -> void:
 
 func _toon_per() -> void:
 	ui.get_node("Aantal/Getal").text = str(per)
+
+
+
+## Synthesis-stijl: donkerblauw, witte cijfers, felle knoppen met gloed.
+func _kleur_synthesis() -> void:
+	som.label_settings.font_color = Stijl.WIT
+	$InEenDoosje.label_settings = $InEenDoosje.label_settings.duplicate()
+	$InEenDoosje.label_settings.font_color = Stijl.ZACHT
+	var knop := StyleBoxFlat.new()
+	knop.bg_color = Stijl.KNOP
+	knop.set_corner_radius_all(20)
+	knop.shadow_color = Color(Stijl.KNOP, 0.45)
+	knop.shadow_size = 10
+	var in_ := knop.duplicate()
+	in_.bg_color = Stijl.KNOP_DIEP
+	var uit := knop.duplicate()
+	uit.bg_color = Color(Stijl.KNOP, 0.3)
+	uit.shadow_size = 0
+	for naam in ["Plus", "Min", "Opnieuw", "Knip", "Vraag/Ja", "Vraag/Nee", "Weg"]:
+		var b: Button = get_node(naam)
+		b.add_theme_stylebox_override("normal", knop)
+		b.add_theme_stylebox_override("hover", knop)
+		b.add_theme_stylebox_override("pressed", in_)
+		b.add_theme_stylebox_override("disabled", uit)
+	var vak := StyleBoxFlat.new()
+	vak.bg_color = Stijl.NACHT_OP
+	vak.border_color = Stijl.GLOED
+	vak.set_border_width_all(2)
+	vak.set_corner_radius_all(14)
+	$Aantal.add_theme_stylebox_override("panel", vak)
+	$Aantal/Getal.label_settings = $Aantal/Getal.label_settings.duplicate()
+	$Aantal/Getal.label_settings.font_color = Stijl.WIT
+	var paneel := StyleBoxFlat.new()
+	paneel.bg_color = Stijl.NACHT_OP
+	paneel.border_color = Stijl.GLOED
+	paneel.set_border_width_all(2)
+	paneel.set_corner_radius_all(18)
+	$Vraag.add_theme_stylebox_override("panel", paneel)
+	$Vraag/Tekst.label_settings = $Vraag/Tekst.label_settings.duplicate()
+	$Vraag/Tekst.label_settings.font_color = Stijl.WIT
+	$Sterren.color = Stijl.GLOED

@@ -18,6 +18,7 @@ boot_splash/show_image=false
 
 [autoload]
 
+Stijl="*res://stijl.gd"
 Brug="*res://brug.gd"
 
 [display]
