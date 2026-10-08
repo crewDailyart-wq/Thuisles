@@ -1,68 +1,84 @@
-[gd_scene load_steps=9 format=3]
+[gd_scene load_steps=6 format=3]
 
 [ext_resource type="Script" path="res://doosje.gd" id="1"]
 
-[sub_resource type="StandardMaterial3D" id="karton"]
-albedo_color = Color(0.925, 0.792, 0.6, 1)
-roughness = 0.9
+[sub_resource type="StyleBoxFlat" id="karton"]
+bg_color = Color(0.957, 0.867, 0.733, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 5
+border_color = Color(0.784, 0.6, 0.388, 1)
+corner_radius_top_left = 10
+corner_radius_top_right = 10
+corner_radius_bottom_right = 10
+corner_radius_bottom_left = 10
+shadow_color = Color(0.24, 0.2, 0.15, 0.2)
+shadow_size = 6
+shadow_offset = Vector2(0, 4)
 
-[sub_resource type="StandardMaterial3D" id="karton_binnen"]
-albedo_color = Color(0.85, 0.69, 0.5, 1)
-roughness = 0.95
+[sub_resource type="StyleBoxFlat" id="rondje"]
+bg_color = Color(0.949, 0.733, 0.18, 1)
+border_width_left = 3
+border_width_top = 3
+border_width_right = 3
+border_width_bottom = 3
+border_color = Color(1, 1, 1, 1)
+corner_radius_top_left = 26
+corner_radius_top_right = 26
+corner_radius_bottom_right = 26
+corner_radius_bottom_left = 26
+shadow_color = Color(0.24, 0.2, 0.15, 0.25)
+shadow_size = 4
+shadow_offset = Vector2(0, 3)
 
-[sub_resource type="BoxMesh" id="bodem"]
-material = SubResource("karton")
-size = Vector3(0.82, 0.05, 0.6)
+[sub_resource type="LabelSettings" id="telletter"]
+font_size = 26
+font_color = Color(0.173, 0.145, 0.271, 1)
 
-[sub_resource type="BoxMesh" id="zij"]
-material = SubResource("karton")
-size = Vector3(0.05, 1.78, 0.6)
+[sub_resource type="StyleBoxFlat" id="glans"]
+bg_color = Color(1, 1, 1, 0.35)
+corner_radius_top_left = 6
+corner_radius_top_right = 6
+corner_radius_bottom_right = 6
+corner_radius_bottom_left = 6
 
-[sub_resource type="BoxMesh" id="achter"]
-material = SubResource("karton_binnen")
-size = Vector3(0.82, 1.78, 0.05)
-
-[sub_resource type="BoxMesh" id="voorrand"]
-material = SubResource("karton")
-size = Vector3(0.82, 0.14, 0.05)
-
-[sub_resource type="LabelSettings" id="x"]
-
-[node name="Doosje" type="Node3D"]
+[node name="Doosje" type="Node2D"]
 script = ExtResource("1")
 
-[node name="Bodem" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.025, 0)
-mesh = SubResource("bodem")
+[node name="Doos" type="Panel" parent="."]
+offset_left = -37.0
+offset_top = -172.0
+offset_right = 37.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("karton")
 
-[node name="Links" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.38499999999999995, 0.89, 0)
-mesh = SubResource("zij")
+[node name="Glans" type="Panel" parent="Doos"]
+layout_mode = 0
+offset_left = 7.0
+offset_top = 7.0
+offset_right = 15.0
+offset_bottom = 60.0
+mouse_filter = 2
+theme_override_styles/panel = SubResource("glans")
 
-[node name="Rechts" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.38499999999999995, 0.89, 0)
-mesh = SubResource("zij")
+[node name="Eikels" type="Node2D" parent="."]
 
-[node name="Achter" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.89, -0.27499999999999997)
-mesh = SubResource("achter")
-
-[node name="Voorrand" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0.27499999999999997)
-mesh = SubResource("voorrand")
-
-[node name="Eikels" type="Node3D" parent="."]
-
-[node name="Telgetal" type="Label3D" parent="."]
+[node name="Telrondje" type="Panel" parent="."]
 visible = false
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.95, 0.55)
-billboard = 1
-no_depth_test = true
-fixed_size = false
-pixel_size = 0.006
-modulate = Color(0.173, 0.145, 0.271, 1)
-outline_modulate = Color(0.949, 0.733, 0.18, 1)
-text = "3"
-font_size = 110
-outline_size = 40
+offset_left = -26.0
+offset_top = -198.0
+offset_right = 26.0
+offset_bottom = -146.0
+pivot_offset = Vector2(26, 26)
+mouse_filter = 2
+theme_override_styles/panel = SubResource("rondje")
 
+[node name="Getal" type="Label" parent="Telrondje"]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+text = "3"
+label_settings = SubResource("telletter")
+horizontal_alignment = 1
+vertical_alignment = 1

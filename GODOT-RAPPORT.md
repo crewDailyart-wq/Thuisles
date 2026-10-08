@@ -4,16 +4,17 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
 
 ## Waar ben ik nu (8 oktober 2026)
 
-- **Bouwsteen 1, de groepjesmaker:** gebouwd in 3D, in Godot. Getest in Godot zelf
+- **Bouwsteen 1, de groepjesmaker:** gebouwd in 2D, in Godot (eerst 3D geprobeerd; zie Stijl). Getest in Godot zelf
   (opname van een demo). **Nog niet getest als kind in Thuisles**, want de oefening
   heeft nog geen opgaven: zie "Wacht op Sara".
-- **Wacht op Sara:** in het beheer staat het sjabloon klaar (tabblad "Thuisles
-  beheer"). Klik op **Opslaan en 15 sommen maken** en daarna op **publiceren**.
-  Claude mag zelf geen content in de database zetten; dat tegenhouden kwam van de
-  veiligheidscontrole van Claude Code, niet van een fout.
+- **Opgaven:** met toestemming van Sara heeft Claude het sjabloon opgeslagen en de
+  15 opgaven gepubliceerd (eerst een kopie van de database), en de 15
+  maatje-teksten gemaakt.
+- **Testen:** de oefening laadt in Thuisles als Testkind (3,1 s) en de brug werkt.
+  Verder testen kan pas als het Chrome-tabblad vooraan staat: anders remt Chrome
+  Godot af tot ongeveer één beeldje per seconde.
 - **Daarna:** de controle uit punt 5 (Testkind, 15 opgaven met minstens 3 fouten,
-  vier schermbreedtes, laadtijd, de brug, vingers), en het maatje-teksten-script
-  draaien (`npm run maatje -- --opslaan`).
+  vier schermbreedtes, laadtijd op een trage verbinding, vingers).
 
 ## Godot
 
@@ -35,7 +36,7 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
 
 - Godot-project: `godot/groepjesmaker/`. Elk onderdeel is een eigen scène die je
   in de Godot-app ziet: `eikel.tscn`, `doosje.tscn`, `kast.tscn`, `maatje.tscn`,
-  en `main.tscn` met camera, licht en de knoppen.
+  en `main.tscn` met de kast en de knoppen.
 - Thuisles: de soort oefening `groepjesmaker`
   (`src/lib/generatoren/groepjesmaker.ts`), het scherm
   (`src/components/oefenen/Groepjesmaker.tsx`), de brug (`src/lib/godot/brug.ts`)
@@ -64,10 +65,14 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
 
 **Stijl**
 
-- Op verzoek van Sara 3D, met het gevoel van Synthesis maar in een eigen jasje: een
-  effen, warme, lichte achtergrond, alleen de kast in beeld, zachte schaduw,
-  vloeiende bewegingen en geluidjes (door Godot zelf gemaakt, geen bestanden).
-  Niets overgenomen van Synthesis.
+- Eerst in 3D gebouwd, op verzoek van Sara. Dat werd onduidelijk (kleine doosjes
+  diep in de kast, eikels als bolletjes, cijfers die wegvielen), en Synthesis zelf
+  is ook gewoon 2D. Daarom terug naar 2D, netjes zoals Synthesis aanvoelt: een
+  effen lichte achtergrond, alleen de kast in beeld, grote doosjes met een zacht
+  randje en schaduw, dikke cijfers, vloeiende bewegingen en geluidjes (door Godot
+  zelf gemaakt, geen bestanden). Niets overgenomen van Synthesis.
+- De eikel komt uit de opdracht van Sara. Synthesis gebruikt effen bolletjes; de
+  eikel staat op één plek (`eikel.gd`) en is dus makkelijk te wisselen.
 - Tijdelijk maatje: een mint bolletje met ogen en een mond, zonder naam, bovenop de
   kast (`maatje.tscn`). Op het oefenscherm staat het tijdelijke maatje
   (`TijdelijkMaatje.tsx`) in plaats van Vos. Elders op de website staat Vos nog.

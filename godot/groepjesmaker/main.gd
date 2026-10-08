@@ -1,10 +1,9 @@
-extends Node3D
+extends Control
 ## De groepjesmaker (Tafels, groep 4): de spelregels.
 ##
-## Alles is 3D en staat als losse scènes in deze map: de kast (kast.tscn), een
-## doosje (doosje.tscn), een eikel (eikel.tscn) en het maatje (maatje.tscn).
-## De knoppen en de som liggen plat bovenop het beeld (Scherm/Bediening), zodat
-## ze groot en goed te raken blijven. Dit script laat alles samenspelen.
+## Alles staat als losse scènes in deze map: de kast (kast.tscn), een doosje
+## (doosje.tscn), een eikel (eikel.tscn) en het maatje (maatje.tscn). Effen
+## achtergrond, alleen de kast in beeld. Dit script laat alles samenspelen.
 ##
 ## Het kind kiest met − en + hoeveel eikels er in één doosje gaan (1 tot en met
 ## 10) en tikt op de kast: er valt een doosje op de plank en de eikels ploppen
@@ -29,12 +28,11 @@ const MAX_PER := 10
 const MAX_DOOSJES := 10
 const PER_PLANK := 5
 
-@onready var kast: Node3D = $Kast
-@onready var maatje: Node3D = $Maatje
+@onready var kast: Node2D = $Kast
+@onready var maatje: Node2D = $Maatje
 @onready var geluid: Node = $Geluid
-@onready var camera: Camera3D = $Camera
-@onready var ui: Control = $Scherm/Bediening
-@onready var som: Label = $Scherm/Bediening/Som
+@onready var ui: Control = self
+@onready var som: Label = $Som
 
 var a := 4
 var b := 3
@@ -119,7 +117,8 @@ func _begin() -> void:
 	bezig_met_animatie = false
 	gezegd = {}
 	kast.geknipt = false
-	kast.rotation = Vector3.ZERO
+	kast.scale = Vector2.ONE
+	kast.position = Vector2(160, 70)
 	ui.get_node("Vraag").visible = false
 	ui.get_node("Knip").visible = false
 	som.text = ""
@@ -200,14 +199,14 @@ func _tel_getal_op() -> void:
 # ---------------------------------------------------------------------------
 
 ## Een doosje valt met een stuiter op zijn plek, daarna ploppen de eikels erin.
-func _zet_doosje(inhoud: int) -> Node3D:
+func _zet_doosje(inhoud: int) -> Node2D:
 	var i := doosjes.size()
-	var d: Node3D = DOOSJE.instantiate()
+	var d: Node2D = DOOSJE.instantiate()
 	d.inhoud = inhoud
-	var doel: Vector3 = kast.plek(i)
+	var doel: Vector2 = kast.plek(i)
 	if geknipt and i >= PER_PLANK:
-		doel.z += 0.15
-	d.position = doel + Vector3(0, 3.5, 0)
+		doel.y += 8
+	d.position = doel - Vector2(0, 360)
 	kast.get_node("Doosjes").add_child(d)
 	doosjes.append(d)
 	var t := create_tween()
@@ -221,8 +220,8 @@ func _zet_doosje(inhoud: int) -> Node3D:
 func _maak_leeg() -> void:
 	for d in doosjes:
 		var t: Tween = d.create_tween().set_parallel()
-		t.tween_property(d, "position:y", d.position.y + 2.5, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-		t.tween_property(d, "scale", Vector3.ONE * 0.2, 0.3)
+		t.tween_property(d, "position:y", d.position.y - 80, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+		t.tween_property(d, "modulate:a", 0.0, 0.3)
 		t.chain().tween_callback(d.queue_free)
 	doosjes.clear()
 	_ververs()
@@ -233,7 +232,7 @@ func _wiebel_kast() -> void:
 	var x := kast.position.x
 	var t := create_tween()
 	for i in range(4):
-		t.tween_property(kast, "position:x", x + (0.08 if i % 2 == 0 else -0.08), 0.05)
+		t.tween_property(kast, "position:x", x + (8 if i % 2 == 0 else -8), 0.05)
 	t.tween_property(kast, "position:x", x, 0.05)
 
 
@@ -410,10 +409,12 @@ func _draai(voorspelling: String) -> void:
 	bezig_met_animatie = true
 	_ververs()
 	var t := create_tween()
-	# de kast draait een kwartslag weg, wisselt, en draait terug
-	t.tween_property(kast, "rotation:y", PI / 2.0, 0.35).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	# de kast draait om (smal worden, wisselen, weer breed)
+	t.tween_property(kast, "scale:x", 0.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
+	t.parallel().tween_property(kast, "position:x", 160.0 + 215.0, 0.3).set_trans(Tween.TRANS_SINE).set_ease(Tween.EASE_IN)
 	t.tween_callback(_wissel_om)
-	t.tween_property(kast, "rotation:y", 0.0, 0.45).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.tween_property(kast, "scale:x", 1.0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
+	t.parallel().tween_property(kast, "position:x", 160.0, 0.4).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_OUT)
 	t.tween_callback(func():
 		bezig_met_animatie = false
 		gedraaid = true
@@ -433,7 +434,7 @@ func _wissel_om() -> void:
 		d.queue_free()
 	doosjes.clear()
 	for i in range(k):
-		var d: Node3D = DOOSJE.instantiate()
+		var d: Node2D = DOOSJE.instantiate()
 		d.inhoud = n
 		d.position = kast.plek(i)
 		kast.get_node("Doosjes").add_child(d)
@@ -448,8 +449,8 @@ func _knip() -> void:
 	ui.get_node("Knip").visible = false
 	geluid.klop()
 	for i in range(PER_PLANK, doosjes.size()):
-		var d: Node3D = doosjes[i]
-		create_tween().tween_property(d, "position:z", 0.15, 0.25).set_trans(Tween.TRANS_BACK)
+		var d: Node2D = doosjes[i]
+		create_tween().tween_property(d, "position:y", kast.plek(i).y + 8, 0.25).set_trans(Tween.TRANS_BACK)
 	_zeg("geknipt")
 	maatje.lach()
 	_af("recht")
@@ -506,7 +507,7 @@ func _toon() -> void:
 func _tel_mee() -> void:
 	for i in range(doosjes.size()):
 		await get_tree().create_timer(0.45).timeout
-		var d: Node3D = doosjes[i]
+		var d: Node2D = doosjes[i]
 		d.tel((i + 1) * int(d.inhoud))
 		geluid.tel(i)
 
@@ -530,23 +531,8 @@ func _ververs() -> void:
 	ui.get_node("Opnieuw").disabled = not (bouwen and doosjes.size() > 0)
 	_toon_per()
 	kast.volgende = doosjes.size()
-	kast.toon_volgende = bouwen and doosjes.size() < MAX_DOOSJES
+	kast.toon_volgende = bouwen and fase == "bezig" and doosjes.size() < MAX_DOOSJES
 
 
 func _toon_per() -> void:
 	ui.get_node("Aantal/Getal").text = str(per)
-	ui.get_node("Aantal/Eenheid").text = "eikel" if per == 1 else "eikels"
-
-
-# ---------------------------------------------------------------------------
-# 3D en scherm bij elkaar houden
-# ---------------------------------------------------------------------------
-
-func _process(_delta: float) -> void:
-	# Het tikvlak ligt precies over de kast, wat de schermmaat ook is.
-	var hoeken := [Vector3(-3.0, 0, 0.5), Vector3(3.0, 4.5, 0.5)]
-	var p0 := camera.unproject_position(hoeken[0])
-	var p1 := camera.unproject_position(hoeken[1])
-	var tik: Control = ui.get_node("Tikvlak")
-	tik.position = Vector2(min(p0.x, p1.x), min(p0.y, p1.y))
-	tik.size = (p1 - p0).abs()

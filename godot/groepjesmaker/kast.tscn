@@ -1,85 +1,8 @@
-[gd_scene load_steps=12 format=3]
+[gd_scene load_steps=2 format=3]
 
 [ext_resource type="Script" path="res://kast.gd" id="1"]
 
-[sub_resource type="StandardMaterial3D" id="hout"]
-albedo_color = Color(0.788, 0.584, 0.376, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="hout_donker"]
-albedo_color = Color(0.604, 0.416, 0.235, 1)
-roughness = 0.75
-
-[sub_resource type="StandardMaterial3D" id="achterwand"]
-albedo_color = Color(0.965, 0.902, 0.8, 1)
-roughness = 0.95
-
-[sub_resource type="StandardMaterial3D" id="plank_boven"]
-albedo_color = Color(0.788, 0.584, 0.376, 1)
-roughness = 0.7
-
-[sub_resource type="StandardMaterial3D" id="plank_onder"]
-albedo_color = Color(0.788, 0.584, 0.376, 1)
-roughness = 0.7
-
-[sub_resource type="BoxMesh" id="bodemvorm"]
-material = SubResource("hout_donker")
-size = Vector3(5.88, 0.14, 1.0)
-
-[sub_resource type="BoxMesh" id="plankvorm_boven"]
-material = SubResource("plank_boven")
-size = Vector3(5.6, 0.14, 1.0)
-
-[sub_resource type="BoxMesh" id="plankvorm_onder"]
-material = SubResource("plank_onder")
-size = Vector3(5.88, 0.14, 1.0)
-
-[sub_resource type="BoxMesh" id="zijvorm"]
-material = SubResource("hout_donker")
-size = Vector3(0.14, 4.42, 1.0)
-
-[sub_resource type="BoxMesh" id="achtervorm"]
-material = SubResource("achterwand")
-size = Vector3(5.6, 4.28, 0.06)
-
-[sub_resource type="BoxMesh" id="knipvorm"]
-material = SubResource("hout")
-size = Vector3(5.6, 0.05, 0.06)
-
-[node name="Kast" type="Node3D"]
+[node name="Kast" type="Node2D"]
 script = ExtResource("1")
 
-[node name="Onderplank" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.07, 0)
-mesh = SubResource("plankvorm_onder")
-
-[node name="Middenplank" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2100000000000004, 0)
-mesh = SubResource("plankvorm_boven")
-
-[node name="Bovenkant" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 4.3500000000000005, 0)
-mesh = SubResource("bodemvorm")
-
-[node name="Links" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.8699999999999997, 2.21, 0)
-mesh = SubResource("zijvorm")
-
-[node name="Rechts" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2.8699999999999997, 2.21, 0)
-mesh = SubResource("zijvorm")
-
-[node name="Achterwand" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.14, -0.47)
-mesh = SubResource("achtervorm")
-
-[node name="Knip" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.3000000000000003, 0.55)
-mesh = SubResource("knipvorm")
-visible = false
-
-[node name="Doosjes" type="Node3D" parent="."]
-
-[node name="Spook" type="MeshInstance3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.2800000000000002, 0)
-
+[node name="Doosjes" type="Node2D" parent="."]
