@@ -172,6 +172,11 @@ Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
   figuurtjes, logo of teksten van Synthesis zelf overnemen.
 - De lichte Thuisles-stijl (houten kast, eikels) blijft beschikbaar met
   `?stijl=thuisles` achter het adres van de oefening.
+- Dat geldt voor het hele oefenscherm, niet alleen voor de bouwsteen: de
+  bovenbalk, de achtergrond, de som met de vakjes, Controleer en het maatje
+  (thema `data-stijl="nacht"` in globals.css). Op een groot scherm staat wat
+  het maatje zegt links naast de oefening, als grote witte tekst. Er staat
+  één maatje in beeld: dat in de bouwsteen zelf; onderaan blijft het wolkje.
 - De rest van Thuisles (alle andere oefeningen) houdt de eigen Thuisles-stijl.
 
 ## Inhoud van vragen

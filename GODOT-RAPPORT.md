@@ -90,6 +90,10 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
   "niets overnemen van Synthesis" uit de opdracht van stap B geldt nu alleen nog
   voor plaatjes, figuurtjes, logo en teksten, niet meer voor kleur en sfeer.
 - Screenshots van allebei: `~/Desktop/godot-screenshots/groepjesmaker-*.png`.
+- Het hele oefenscherm gaat mee in de donkere stijl (bovenbalk, achtergrond, som,
+  Controleer, maatje), met de tekst van het maatje links op een groot scherm.
+  Er is niets weggehaald: dezelfde onderdelen, andere kleuren. Andere oefeningen
+  blijven licht.
 
 **Grootte en laadtijd**
 

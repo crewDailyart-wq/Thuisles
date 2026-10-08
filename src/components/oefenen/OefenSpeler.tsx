@@ -370,6 +370,21 @@ export function OefenSpeler({
     bezig zijn (een tik in de kast komt hier niet als tik binnen), en soms zegt
     het maatje iets ("Dat is evenveel!"). Een lege lijst = alleen bezig.
   */
+  /*
+    Godot-bouwstenen krijgen het hele oefenscherm in het donkere thema (zie
+    globals.css, data-stijl="nacht"), tenzij ?stijl=thuisles in het adres staat.
+  */
+  const godotRonde = serie.some((v) => isGroepjesfiguur(v.figuur));
+  useEffect(() => {
+    if (!godotRonde) return;
+    if (new URLSearchParams(window.location.search).get("stijl") === "thuisles") return;
+    const html = document.documentElement;
+    html.dataset.stijl = "nacht";
+    return () => {
+      delete html.dataset.stijl;
+    };
+  }, [godotRonde]);
+
   const bouwBericht = useRef(0);
   const zegTijdensBouwen = useCallback((zinnen: string[]) => {
     laatsteActiviteit.current = nuInMs();
@@ -1001,6 +1016,7 @@ export function OefenSpeler({
           Controleer heen.
         */}
         <div
+          data-oefenkaart=""
           className={`relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10 ${
             metMascotte ? "pb-32 sm:pb-32 lg:pb-32" : ""
           }`}
@@ -1443,7 +1459,7 @@ export function OefenSpeler({
               geluid={maatjeGeluid}
               onGeluid={wisselMaatjeGeluid}
               onKlaar={maatjeKlaar}
-              poppetje={isGroepjesfiguur(vraag.figuur) ? "tijdelijk" : "vos"}
+              poppetje={isGroepjesfiguur(vraag.figuur) ? "geen" : "vos"}
             />
           )}
         </div>

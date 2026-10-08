@@ -39,8 +39,11 @@ export function Maatje({
   poppetje = "vos",
 }: {
   bericht: MaatjeBericht | null;
-  /** "tijdelijk": het bolletje van de Godot-bouwstenen, geen vos. */
-  poppetje?: "vos" | "tijdelijk";
+  /**
+   * "tijdelijk": het bolletje, geen vos. "geen": alleen het wolkje, omdat het
+   * maatje al in de Godot-bouwsteen zelf staat (één maatje in beeld).
+   */
+  poppetje?: "vos" | "tijdelijk" | "geen";
   geluid: boolean;
   onGeluid: (aan: boolean) => void;
   /** Na de laatste zin van een bericht, met het id erbij. */
@@ -87,7 +90,7 @@ export function Maatje({
   const zichtbaar = bericht.zinnen.slice(0, Math.max(1, tot));
   const pop = POPPETJE.houdingen[bezig && bericht.houding === "rustig" ? "praat" : bericht.houding];
 
-  const naam = poppetje === "tijdelijk" ? POPPETJE_GODOT.naam : POPPETJE.naam;
+  const naam = poppetje === "vos" ? POPPETJE.naam : POPPETJE_GODOT.naam;
 
   function wisselGeluid() {
     const aan = !geluid;
@@ -97,7 +100,7 @@ export function Maatje({
 
   return (
     <div className="mt-6 flex items-end gap-2 sm:gap-3" data-maatje="">
-      {poppetje === "tijdelijk" ? (
+      {poppetje === "geen" ? null : poppetje === "tijdelijk" ? (
         <TijdelijkMaatje
           houding={bezig && bericht.houding === "rustig" ? "praat" : bericht.houding}
           className="size-16 shrink-0 sm:size-20"
