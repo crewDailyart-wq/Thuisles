@@ -50,6 +50,7 @@ import { isTijdfiguur, juistAntwoord as tijdAntwoord } from "../src/lib/tijdfigu
 import { isGeldfiguur, juistAntwoord as geldAntwoord } from "../src/lib/geldfiguren.ts";
 import { isVerhaalfiguur, juistKeuzeAntwoord } from "../src/lib/verhaalfiguren.ts";
 import { GROEPJESMAKER_ZINNEN } from "../src/lib/godot/zinnen.ts";
+import { ALLE_LESSEN } from "../src/lib/lessen/index.ts";
 
 /* Hoeveel opgaven een ronde minstens moet opleveren. Nooit minder. */
 const PER_RONDE = 15;
@@ -1058,6 +1059,75 @@ for (const oefening of OEFENINGEN) {
 
     nagekeken++;
   }
+}
+
+/*
+  De uitleglessen (lib/lessen). Een les is geen oefening: geen vijftien
+  verschillende opgaven en geen bolletjes, maar een vast draaiboek. Hier wordt
+  nagekeken dat elke stap klopt: korte zinnen, het antwoord staat niet al in de
+  uitleg, en het antwoord past bij wat er in beeld staat.
+*/
+const telSom = (tekst) => tekst.split("+").reduce((t, d) => t + Number(d.trim()), 0);
+for (const les of ALLE_LESSEN) {
+  if (les.stappen.length < 4) fouten.push(`Les "${les.titel}": maar ${les.stappen.length} stappen.`);
+  les.stappen.forEach((st, i) => {
+    const waar = `Les "${les.titel}", stap ${i + 1}`;
+    for (const z of [...st.uitleg, st.goedZin, st.foutZin, st.tip, st.vraag]) {
+      if (!z || !z.trim()) fouten.push(`${waar}: een lege zin.`);
+      for (const deel of z.split(/(?<=[.!?])\s+/)) {
+        if (deel.split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length > 10) fouten.push(`${waar}: zin langer dan 10 woorden: "${deel}"`);
+      }
+      if (/eikel/i.test(z)) fouten.push(`${waar}: er staan geen eikels in beeld ("${z}").`);
+    }
+    if (st.invoer === "typen" && !st.kop.includes("?")) fouten.push(`${waar}: bij typen hoort een vraagteken in de kop.`);
+    if ((st.tip.match(/[.!?](\s|$)/g) ?? []).length > 1) fouten.push(`${waar}: de hint is meer dan één zin.`);
+    /* Bij typen staat het antwoord niet al in de uitleg, de vraag of de hint (tenzij het gegeven is). */
+    if (st.invoer === "typen") {
+      const gegeven = (st.kop.match(/\d+/g) ?? []);
+      for (const z of [...st.uitleg, st.vraag, st.tip]) {
+        if ((z.match(/\d+/g) ?? []).includes(st.antwoord) && !gegeven.includes(st.antwoord)) fouten.push(`${waar}: het antwoord ${st.antwoord} staat al in "${z}".`);
+      }
+    }
+    const o = st.opgave;
+    /* De tegels: het antwoord past bij de toren. */
+    if (st.spel === "tegels" && Array.isArray(o.torens)) {
+      const t = o.torens[o.leg ?? 0];
+      const som = (t.stukken ?? []).reduce((a, b) => a + b, 0);
+      if (o.knoppen?.length) {
+        if (!o.knoppen.includes(st.antwoord)) fouten.push(`${waar}: het antwoord "${st.antwoord}" staat niet tussen de knoppen.`);
+        if (/^\d.*=.*\d$/.test(st.kop) && (st.antwoord === "klopt" || st.antwoord === "klopt niet")) {
+          const [links, rechts] = st.kop.split("=");
+          const klopt = telSom(links) === Number(rechts.trim());
+          if (klopt !== (st.antwoord === "klopt")) fouten.push(`${waar}: "${st.kop}" ${klopt ? "klopt" : "klopt niet"}, maar het antwoord is "${st.antwoord}".`);
+        }
+      } else if (st.invoer === "typen") {
+        const verwacht = t.basis && som < t.basis ? t.basis - som : som;
+        if (String(verwacht) !== st.antwoord) fouten.push(`${waar}: de toren laat ${verwacht} zien, maar het antwoord is ${st.antwoord}.`);
+      } else if (o.bak?.length) {
+        for (const alt of st.antwoord.split("|")) {
+          const delen = alt.split(",").map(Number);
+          if (delen.some((d) => !o.bak.includes(d))) fouten.push(`${waar}: ${alt} zit niet in de bak.`);
+          if (delen.length !== (o.kies ?? 1)) fouten.push(`${waar}: ${alt} is niet ${o.kies ?? 1} tegel(s).`);
+          const doel = t.gat || 0;
+          if (doel && som + delen.reduce((a, b) => a + b, 0) !== doel) fouten.push(`${waar}: ${alt} vult het gat van ${doel} niet precies.`);
+          /* Op een basis: aanvullen tot de basis, of (zonder stukken) de helft ervan. */
+          const opgeteld = som + delen.reduce((a, b) => a + b, 0);
+          if (!doel && t.basis && som > 0 && opgeteld !== t.basis) fouten.push(`${waar}: ${alt} vult de ${t.basis} niet precies aan.`);
+          if (!doel && t.basis && som === 0 && delen.length === 1 && delen[0] * 2 !== t.basis) fouten.push(`${waar}: ${alt} is niet de helft van ${t.basis}.`);
+        }
+      }
+    }
+    /* Splitsen: de gekozen som is (niet) evenveel als alle bolletjes. */
+    if (st.spel === "stippen" && o.stand === "splits") {
+      const totaal = o.groepen.reduce((a, b) => a + b, 0);
+      if (st.invoer === "typen" && String(totaal) !== st.antwoord) fouten.push(`${waar}: er liggen ${totaal} bolletjes, maar het antwoord is ${st.antwoord}.`);
+      if (o.knoppen?.length) {
+        const niet = /níet|niet/.test(st.vraag);
+        const passend = o.knoppen.filter((k) => (telSom(k) === totaal) !== niet);
+        if (passend.length !== 1 || passend[0] !== st.antwoord) fouten.push(`${waar}: precies één knop hoort goed te zijn, en dat moet "${st.antwoord}" zijn.`);
+      }
+    }
+  });
 }
 
 /*

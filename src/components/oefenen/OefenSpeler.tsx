@@ -57,7 +57,7 @@ import {
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { Maatje, type MaatjeBericht } from "@/components/oefenen/Maatje";
 import { herkenMaatjeFout } from "@/lib/maatje/herken";
-import type { MaatjeTeksten } from "@/lib/maatje/types";
+import { GEEN_PLAATJE, type MaatjeTeksten } from "@/lib/maatje/types";
 import { meldOnbekendAntwoord, zetGeluidsvoorkeur } from "@/app/oefenacties";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
@@ -1462,7 +1462,14 @@ export function OefenSpeler({
                 (fase === "bezig"
                   ? {
                       id: `lees:${index}:${vraag.id}`,
-                      zinnen: [maatjeTekst.voorlezen, ...(maatjeTekst.bouw ? [maatjeTekst.bouw] : [])],
+                      /* Bij een les zegt de mascotte eerst de uitleg van deze stap. */
+                      zinnen: [
+                        ...(isGodotSpelfiguur(vraag.figuur) && vraag.figuur.uitleg
+                          ? vraag.figuur.uitleg.map((tekst) => ({ tekst, stap: GEEN_PLAATJE }))
+                          : []),
+                        maatjeTekst.voorlezen,
+                        ...(maatjeTekst.bouw ? [maatjeTekst.bouw] : []),
+                      ],
                       houding: "rustig",
                     }
                   : null)

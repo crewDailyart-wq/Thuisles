@@ -14,7 +14,7 @@ maatje.gd::GDScript::4694068600701894365::1791497141::0::1::::<>Node2D<><>0<>1<>
 maatje.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://gedeeld/maatje.gd
 spel.gd::GDScript::7320763570874751385::1791499869::0::1::::Spel<>Control<><>0<>0<><>::
 stijl.gd::GDScript::462147102009429975::1791501422::0::1::::<>Node<><>0<>0<><>::
-teken.gd::GDScript::4902940365522605449::1791499332::0::1::::Teken<>RefCounted<><>0<>0<><>::
+teken.gd::GDScript::4902940365522605449::1791502540::0::1::::Teken<>RefCounted<><>0<>0<><>::
 ::res://groepjesmaker/::1791497175
 doosje.gd::GDScript::4858490473015174044::1791497150::0::1::::<>Node2D<><>0<>1<><>::
 doosje.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://groepjesmaker/doosje.gd
@@ -42,8 +42,8 @@ schip.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://raket/sch
 steen.gd::GDScript::7101931335254046269::1791497150::0::1::::<>Node2D<><>0<>1<><>::
 steen.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://raket/steen.gd
 ::res://stippen/::1791499712
-main.gd::GDScript::648488502877635049::1791501458::0::1::::<>Spel<><>0<>0<><>::
+main.gd::GDScript::648488502877635049::1791502866::0::1::::<>Spel<><>0<>0<><>::
 main.tscn::PackedScene::-1::1791501447::0::1::::<><><>0<>0<><>::res://stippen/main.gd<>res://gedeeld/maatje.tscn<>res://gedeeld/geluid.gd
-::res://tegels/::1791498988
-main.gd::GDScript::6162313953435655454::1791501447::0::1::::<>Spel<><>0<>0<><>::
+::res://tegels/::1791503057
+main.gd::GDScript::6162313953435655454::1791503057::0::1::::<>Spel<><>0<>0<><>::
 main.tscn::PackedScene::-1::1791501447::0::1::::<><><>0<>0<><>::res://tegels/main.gd<>res://gedeeld/maatje.tscn<>res://gedeeld/geluid.gd

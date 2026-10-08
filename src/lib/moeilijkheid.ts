@@ -441,6 +441,11 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = NIVEAUPUNTEN[3];
       break;
 
+    case "les":
+      /* Een uitleg-les: geen oefening om moeilijkheid op te zetten; het eerste bolletje. */
+      p = NIVEAUPUNTEN[1];
+      break;
+
     case "tegelsom":
       /* Tot 10 en dubbel zijn de eerste stap; 10 + een getal en over de 10 een stap verder. */
       p = NIVEAUPUNTEN[{ tot10: 1, dubbel: 2, tien: 2, over10: 3 }[tekst(inst, "stand", "tot10")] ?? 1];

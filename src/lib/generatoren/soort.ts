@@ -227,6 +227,10 @@ export type Figuur =
       foutZin: string;
       /** Bij een uitles: wat het maatje eerst uitlegt, zin voor zin. */
       uitleg?: string[];
+      /** Bij een uitles: een kleine hint, zonder het antwoord. */
+      tip?: string;
+      /** Bij een uitles: welke les (`lib/lessen`). */
+      les?: string;
       volgnummer?: number;
     }
   | {

@@ -14,11 +14,12 @@ const GOED := Color("#3ddc97")
 const MIS := Color("#ff8fab")
 const GEEL := Color("#f6c945")
 
-## Een eigen kleur per getal 1 tot en met 10 (niet die van Synthesis).
+## Een eigen kleur per getal 1 tot en met 10, in de volgorde van de regenboog
+## (rood, oranje, geel, limoen, groen, lichtblauw, blauw, paars, magenta, roze).
 const GETALKLEUR := [
 	Color("#9fb3d9"),
-	Color("#ff6b6b"), Color("#ff9f43"), Color("#f6c945"), Color("#a3e048"), Color("#3ddc97"),
-	Color("#ff7ac6"), Color("#5fb8ff"), Color("#8c7cff"), Color("#d68bff"), Color("#eef3ff"),
+	Color("#ff5c5c"), Color("#ff9a3c"), Color("#f4d03f"), Color("#b5e655"), Color("#2ecc71"),
+	Color("#5dade2"), Color("#3a7bd5"), Color("#a066d3"), Color("#e056c8"), Color("#ff9fd6"),
 ]
 
 

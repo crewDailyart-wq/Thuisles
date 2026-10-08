@@ -1294,3 +1294,29 @@ heeft eigen denkfouten en een eigen uitleg (die van de vissen noemt vissen).
 | 4 | Aftrekken tot en met 20 · Met de stippen | Stippen: hoeveel meer? | ●●● | 11 tot en met 20 |
 | 4 | Vergelijken & ordenen · Met de stippen | Stippen: de meeste of de minste | ●● | 5 tot en met 20 |
 | 4 | Vergelijken & ordenen · Met de stippen | Stippen: <, = of > | ●●● | kies het teken |
+
+## Uitleglessen zoals Synthesis (9 oktober 2026)
+
+Op verzoek van de eigenaar: alles van Synthesis voor groep 4 nabouwen, met de
+uitleg die erbij past. Een les is een vast draaiboek (`src/lib/lessen`): bij
+elke stap legt de mascotte rechts eerst uit en stelt dan een kleine vraag over
+het spel. Elke stap is een vraag met een volgnummer; vragen per oefensessie =
+het aantal stappen, zodat het kind de hele les doorloopt. De controle staat in
+`scripts/opgaven.mjs` (korte zinnen, het antwoord staat niet al in de uitleg,
+het antwoord past bij het spel).
+
+### Optellen tot 10 (Synthesis "Add within 10"), groep 3 en 4
+
+Optellen tot en met 20, kopje "Lessen: optellen tot 10". De tegels zijn nu
+torens van insteekblokjes van twee breed, met een eigen kleur per getal.
+
+| Les | Synthesis | Stappen |
+|---|---|---|
+| Instaptoets: optellen tot 10 | Assessment | 7 |
+| Optellen onder de 10 | Adding below 10 | 9 |
+| Dubbelen | Doubles | 8 |
+| Klopt de som? | True or False | 7 |
+| Het ontbrekende getal | Missing Numbers | 6 |
+| Drie getallen optellen | Add Three Numbers | 6 |
+| Splitsen in meer delen | Splitting Sums | 7 |
+| Eindtoets: optellen tot 10 | Mastery Check | 6 |

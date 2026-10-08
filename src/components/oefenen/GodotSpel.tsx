@@ -87,7 +87,8 @@ export function GodotSpelOpdracht({
   }, [geladen, vraagId, stand, opgave, stuur]);
 
   useEffect(() => {
-    if (geladen && fase !== "bezig") stuur({ type: "fase", fase, antwoord: juist });
+    /* Zijn er meer goede antwoorden ("1,2,6|2,3,4"), dan laat het spel het eerste zien. */
+    if (geladen && fase !== "bezig") stuur({ type: "fase", fase, antwoord: juist.split("|")[0] });
   }, [fase, geladen, juist, stuur]);
 
   useEffect(() => {
@@ -114,19 +115,13 @@ export function GodotSpelOpdracht({
   }
 
   const gegeven = invoer === "typen" ? getypt : antwoord;
-  const uitslag = !uit ? null : gegeven.trim() === juist.trim() ? "goed" : "fout";
+  const uitslag = !uit ? null : juist.split("|").some((j) => j.trim() === gegeven.trim()) ? "goed" : "fout";
   const [voor, ...rest] = kop.split("?");
   const na = rest.join("?");
 
   return (
     <div className="flex w-full flex-col items-center gap-4">
-      {figuur.uitleg && figuur.uitleg.length > 0 && (
-        <div data-uitlegblok="" className="w-full max-w-[44rem] rounded-2xl border-2 border-rand bg-white/5 px-5 py-4 text-xl font-bold leading-snug">
-          {figuur.uitleg.map((z, i) => (
-            <p key={i}>{z}</p>
-          ))}
-        </div>
-      )}
+      {/* Bij een les vertelt de mascotte rechts de uitleg (zie OefenSpeler); hier staat alleen het spel. */}
 
       {kop.trim() !== "" && (
         <div className="flex flex-wrap items-center justify-center gap-3 text-3xl font-extrabold">

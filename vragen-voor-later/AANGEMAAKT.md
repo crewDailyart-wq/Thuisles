@@ -100,3 +100,14 @@ Vervangen (de kale som van het type Optellen/Aftrekken heeft geen uitleg-animati
 - REK-AFT-AFT-53 · Aftrekken → Aftrekken tot en met 20 · Met de stippen · Stippen: hoeveel meer? · groep 4 · stipverschil · 30 sommen
 - REK-GET-VER-11 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: de meeste of de minste · groep 4 · stipvergelijk · 30 sommen
 - REK-GET-VER-12 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: <, = of > · groep 4 · stipteken · 30 sommen
+
+## Ronde 4: uitleglessen optellen tot 10 (groep 3 en 4)
+
+- REK-OPT-OPT-75 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Instaptoets: optellen tot 10 · groep 3–4 · les · 7 sommen
+- REK-OPT-OPT-76 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Optellen onder de 10 · groep 3–4 · les · 9 sommen
+- REK-OPT-OPT-77 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Dubbelen · groep 3–4 · les · 8 sommen
+- REK-OPT-OPT-78 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Klopt de som? · groep 3–4 · les · 7 sommen
+- REK-OPT-OPT-79 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Het ontbrekende getal · groep 3–4 · les · 6 sommen
+- REK-OPT-OPT-80 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Drie getallen optellen · groep 3–4 · les · 6 sommen
+- REK-OPT-OPT-81 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Splitsen in meer delen · groep 3–4 · les · 7 sommen
+- REK-OPT-OPT-82 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Eindtoets: optellen tot 10 · groep 3–4 · les · 6 sommen

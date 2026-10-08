@@ -9,6 +9,9 @@ extends Spel
 ##              bovenste rij meer heeft
 ##   vergelijk  twee rijen; het kind tikt de rij met de meeste (of de minste)
 ##   teken      twee rijen met hun getal; het kind kiest <, = of >
+##   splits     bolletjes in groepjes, elk groepje met zijn getal erboven en
+##              plustekens ertussen (naar Synthesis "Splitting Sums"); het kind
+##              typt hoeveel, of kiest een som uit de knoppen
 ## Na Controleer: goed → het antwoord licht op; fout → de goede manier.
 
 const VAK := 64.0
@@ -28,6 +31,10 @@ var _licht := []              # stippen die oplichten na Controleer: [rij, index
 var _cijfers := {}            # tellen na Controleer: "rij:index" -> getal
 var _wiebel := 0.0
 var _beurt := 0
+## Bij splits: de groepjes bolletjes, en de knoppen met sommen om uit te kiezen.
+var groepen: Array = []
+var splitsknoppen: Array = []   # [Rect2, tekst]
+var gekozen_som := ""
 var _boven_te_zien := 0
 var _onder_te_zien := 0
 
@@ -49,6 +56,9 @@ func _demo() -> void:
 
 func _begin(o: Dictionary) -> void:
 	stand = str(o.get("stand", "weg"))
+	if stand == "splits":
+		_begin_splits(o)
+		return
 	a = int(o.get("a", 7))
 	b = int(o.get("b", 3))
 	zoek = str(o.get("zoek", "meeste"))
@@ -80,6 +90,68 @@ func _begin(o: Dictionary) -> void:
 		klaar(true)
 
 
+func _begin_splits(o: Dictionary) -> void:
+	_beurt += 1
+	groepen = []
+	for g in o.get("groepen", []):
+		groepen.append(int(g))
+	gekozen_som = ""
+	splitsknoppen = []
+	var teksten: Array = o.get("knoppen", [])
+	var breed := 250.0
+	for i in range(teksten.size()):
+		var x := 480.0 - (teksten.size() * (breed + 20.0) - 20.0) / 2.0 + i * (breed + 20.0)
+		splitsknoppen.append([Rect2(Vector2(x, 440), Vector2(breed, 72)), str(teksten[i])])
+	_licht = []
+	_cijfers = {}
+	queue_redraw()
+	$Geluid.plop(2)
+	if teksten.is_empty() and fase == "bezig":
+		klaar(true)
+
+
+## De plek van bolletje k in groepje g: groepjes naast elkaar, elk twee breed.
+func _splits_bolletje(g: int, k: int) -> Vector2:
+	var breedtes := []
+	var totaal := 0.0
+	for n in groepen:
+		var b := 44.0 if n == 1 else 88.0
+		breedtes.append(b)
+		totaal += b
+	totaal += (groepen.size() - 1) * 56.0
+	var x := 480.0 - totaal / 2.0
+	for i in range(g):
+		x += breedtes[i] + 56.0
+	var n: int = groepen[g]
+	if n == 1:
+		return Vector2(x + 22.0, 300.0)
+	var rij := k / 2
+	var kol := k % 2
+	var rijen := int(ceil(n / 2.0))
+	return Vector2(x + 22.0 + kol * 44.0, 300.0 + (rijen - 1) * 22.0 - rij * 44.0)
+
+
+func _teken_splits() -> void:
+	for g in range(groepen.size()):
+		var n: int = groepen[g]
+		var kleur := Teken.getalkleur(mini(n, 10))
+		var hoogste := 300.0
+		for k in range(n):
+			var p := _splits_bolletje(g, k)
+			hoogste = minf(hoogste, p.y)
+			Teken.stip(self, p, 17.0, kleur)
+		var midden := (_splits_bolletje(g, 0).x + _splits_bolletje(g, mini(1, n - 1)).x) / 2.0
+		Teken.tekst(self, Vector2(midden, hoogste - 44.0), str(n), 34, Teken.WIT)
+		if g < groepen.size() - 1:
+			var rechts := _splits_bolletje(g, mini(1, n - 1)).x + 22.0
+			Teken.tekst(self, Vector2(rechts + 28.0, 300.0), "+", 34, Teken.ZACHT)
+	for k in splitsknoppen:
+		var r: Rect2 = k[0]
+		var aan: bool = gekozen_som == k[1]
+		Teken.vak(self, r, Teken.GEEL if aan else Teken.GLOED, Color(Teken.GEEL if aan else Teken.KNOP, 0.25 if aan else 0.18), 3.0, 18.0)
+		Teken.tekst(self, r.get_center(), k[1], 28, Teken.WIT)
+
+
 func _maak_knoppen() -> void:
 	_knoppen = []
 	if stand != "teken":
@@ -99,6 +171,15 @@ func _gui_input(event: InputEvent) -> void:
 	if not (event is InputEventMouseButton and event.pressed and event.button_index == MOUSE_BUTTON_LEFT):
 		return
 	var p: Vector2 = event.position
+	if stand == "splits":
+		for k in splitsknoppen:
+			if (k[0] as Rect2).has_point(p):
+				gekozen_som = k[1]
+				$Geluid.plop(3)
+				kies(gekozen_som)
+				queue_redraw()
+				accept_event()
+		return
 	match stand:
 		"weg":
 			for i in range(a):
@@ -175,13 +256,21 @@ func _klaar_zetten() -> void:
 
 
 func _goed(_antwoord: String) -> void:
+	if stand == "splits":
+		$Geluid.tring()
+		return
 	_klaar_zetten()
 	$Maatje.lach()
 	await _toon_uitkomst()
 	$Geluid.tring()
 
 
-func _fout(_antwoord: String) -> void:
+func _fout(antwoord: String) -> void:
+	if stand == "splits":
+		# de goede som licht op
+		gekozen_som = antwoord
+		queue_redraw()
+		return
 	_klaar_zetten()
 	$Maatje.wijs()
 	await _toon_uitkomst()
@@ -274,6 +363,9 @@ func _process(_delta: float) -> void:
 
 
 func _draw() -> void:
+	if stand == "splits":
+		_teken_splits()
+		return
 	var schud := sin(_wiebel * 30.0) * 8.0 * _wiebel
 	if stand == "weg":
 		for i in range(aantal_vakken):
