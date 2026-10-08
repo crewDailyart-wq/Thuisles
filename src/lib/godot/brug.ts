@@ -3,8 +3,10 @@
 /**
  * De brug naar een Godot-bouwsteen (oktober 2026).
  *
- * Elke bouwsteen staat als losse webexport in `public/godot/<naam>/` en draait
- * in een iframe. Thuisles en Godot praten met postMessage, met een stukje
+ * Alle bouwstenen staan samen in één Godot-project (`godot/spellen`), met één
+ * webexport in `public/godot/spellen/`. Zo downloadt een kind de Godot-motor
+ * maar één keer, hoeveel spellen er ook zijn. Welk spel er komt, staat achter
+ * het adres (`?spel=<naam>`). Het spel draait in een iframe. Thuisles en Godot praten met postMessage, met een stukje
  * JSON-tekst per bericht:
  *
  *   Thuisles → Godot   { type: "opgave", ... }   welke som er nu is
@@ -67,8 +69,8 @@ export function useGodot(naam: string, opBericht: (b: GodotBericht) => void) {
   useEffect(() => {
     if (!frame.current || frame.current.src) return;
     const stijl = new URLSearchParams(window.location.search).get("stijl");
-    const bron = `/godot/${naam}/index.html`;
-    frame.current.src = stijl ? `${bron}?stijl=${encodeURIComponent(stijl)}` : bron;
+    const bron = `/godot/spellen/index.html?spel=${encodeURIComponent(naam)}`;
+    frame.current.src = stijl ? `${bron}&stijl=${encodeURIComponent(stijl)}` : bron;
   }, [naam]);
 
   const stuur = useCallback(
