@@ -235,7 +235,7 @@ export function Vakken({
       <span
         className="pointer-events-none -mt-1 block w-16 select-none sm:w-20"
         role="img"
-        aria-label={`Zoek het vak met ${gevraagd}`}
+        aria-label={`Het getal ${gevraagd}`}
       >
         <Getalkaart getal={gevraagd} />
       </span>

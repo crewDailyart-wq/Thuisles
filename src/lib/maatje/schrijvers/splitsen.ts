@@ -113,6 +113,8 @@ export function schrijfSplitsen(o: Opgave): Geschreven | null {
     case "aanvullen":
       return enkel(o, f.doel, f.gegeven, `${f.gegeven} en hoeveel?`);
 
+    /* De splitsboom: zelfde som als het splitsschema, met het geheel bovenaan. */
+    case "splitsboom":
     case "splitsschema": {
       const stuk = f.links ?? f.rechts;
       if (typeof stuk !== "number") return null;

@@ -1,5 +1,7 @@
 /**
- * Schrijft de teksten van het maatje voor de gepubliceerde opgaven van groep 4.
+ * Schrijft de teksten van het maatje voor de gepubliceerde opgaven van groep 3
+ * en 4 (sinds 9 oktober 2026 ook groep 3: dezelfde leeftijdsgroep, dezelfde
+ * teksten en dezelfde controles).
  *
  *   npm run maatje                         alleen kijken: hoeveel, en wat faalt
  *   npm run maatje -- --opslaan            ook opslaan in de database
@@ -11,7 +13,7 @@
  * versie er al, dan wordt alleen die regel vernieuwd.
  *
  * Met --opslaan gaat het maatje aan bij elk leerdoel waarvan ALLE gepubliceerde
- * opgaven van groep 4 gecontroleerde teksten hebben. Het zet het maatje nooit
+ * opgaven van groep 3 en 4 gecontroleerde teksten hebben. Het zet het maatje nooit
  * uit: dat doet de eigenaar in beheer.
  *
  * Maakt geen vragen, leerdoelen of sjablonen aan en verandert er niets aan.
@@ -30,13 +32,13 @@ const db = verbinding();
 const leerdoelIds = db
   .prepare(
     `select distinct q.leerdoel_id as id from vragen q
-     where q.status = 'gepubliceerd' and q.groep = 4`,
+     where q.status = 'gepubliceerd' and q.groep in (3, 4)`,
   )
   .all()
   .map((r) => r.id);
 
 const vragen = haalGepubliceerdeVragen(leerdoelIds).filter(
-  (v) => v.groep === 4 && (!domeinFilter || v.domeinNaam === domeinFilter),
+  (v) => (v.groep === 3 || v.groep === 4) && (!domeinFilter || v.domeinNaam === domeinFilter),
 );
 
 const perDomein = new Map();

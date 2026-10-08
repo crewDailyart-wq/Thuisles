@@ -142,7 +142,7 @@ function allebeiStappen(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: beeld(som, [midden], midden, String(basis)),
-        zin: "Hier woont Vos, in het middelste huis.",
+        zin: "Vos woont in het middelste huis.",
         houding: "wijzend",
         kant: "links",
       },
@@ -161,7 +161,7 @@ function allebeiStappen(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
       },
       {
         model: beeld(som, [midden, 0], 2),
-        zin: "Dan loopt hij terug en naar rechts.",
+        zin: "Dan loopt hij naar rechts.",
         houding: "wijzend",
         beweging: "wijzen",
         kant: "rechts",

@@ -28,7 +28,20 @@ const teken = (t: unknown): "+" | "−" => (t === "+" ? "+" : "−");
 
 export function schrijfRekenen(o: Opgave): Geschreven | null {
   const f = o.figuur;
-  if (!f || typeof f !== "object") return null;
+  /*
+    Een kale som zonder tekening ("Hoeveel is 5 + 3?"), van de types Optellen
+    en Aftrekken. Alleen met twee getallen; drie getallen krijgen (nog) geen
+    maatje.
+  */
+  if (!f) {
+    const s = o.somgegevens;
+    if (s && (s.soort === "optellen" || s.soort === "aftrekken") && s.getallen.length === 2) {
+      const [a, b] = s.getallen;
+      return gewoneSom(o, a, s.soort === "optellen" ? "+" : "−", b, "geen");
+    }
+    return null;
+  }
+  if (typeof f !== "object") return null;
 
   switch (f.soort) {
     case "plussom":

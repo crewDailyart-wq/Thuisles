@@ -1580,6 +1580,12 @@ export type Generator = {
     standaard: Record<Leeftijdsgroep, string>;
     /** Hoe `{som}` eruitziet. Weglaten als het type geen som in de zin heeft. */
     som?: (s: Somgegevens) => string;
+    /**
+     * De zin nog aanpassen aan deze ene som, nadat alles is ingevuld. Voor een
+     * zin die anders moet zijn bij een bepaalde variant, zodat de tekst altijd
+     * klopt met wat er in beeld staat. Geldt ook bij "teksten bijwerken".
+     */
+    pas?: (zin: string, s: Somgegevens, groep: number) => string;
   };
   /**
    * VERPLICHT. De denkfouten die bij dit soort som horen. Zonder patronen is
@@ -1979,7 +1985,8 @@ export function bepaalVraagtekst(
       ? uit.replaceAll(` {${naam}}`, "").replaceAll(`{${naam}}`, "")
       : uit.replaceAll(`{${naam}}`, woord);
   }
-  return uit.trim();
+  const pas = generator.vraagteksten.pas;
+  return (pas ? pas(uit, som, groep) : uit).trim();
 }
 
 /** Groep 3 t/m 8 naar de drie groepsvormen. Zelfde indeling als de uitleg. */

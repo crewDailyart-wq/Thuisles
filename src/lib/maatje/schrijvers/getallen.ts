@@ -15,6 +15,12 @@ const staven = (n: number) => stuks(n, "staaf", "staven");
 const rijen = (n: number) => stuks(n, "rij", "rijen");
 const groepjes = (n: number) => stuks(n, "groepje", "groepjes");
 const sprongen = (stap: number, aantal: number, vanaf = 0) => Array.from({ length: aantal }, (_, i) => vanaf + (i + 1) * stap).join(", ");
+/** Hoe het materiaal in een vak heet, enkelvoud en meervoud (zoals in de vraagzin). */
+const VAKWOORD: Record<string, [string, string]> = {
+  telplaatjes: ["plaatje", "plaatjes"],
+  kralen: ["kraal", "kralen"],
+  blokken: ["blokje", "blokjes"],
+};
 const RANG = ["eerste", "tweede", "derde", "vierde", "vijfde", "zesde", "zevende", "achtste", "negende", "tiende"];
 
 function omgedraaid(c: number): Fout | null {
@@ -365,7 +371,8 @@ function kralenrij(o: Opgave, p: number, pg: number): Geschreven | null {
       { code: "groepje-ernaast", antwoorden: [`${p - pg}`, `${p + pg}`], zinnen: [zin("Je zit één groepje ernaast."), zin(zinGoed, "de kralen lichten op")] },
     ],
     uitleg: [zin("Kijk, zo doe je het."), zin(`Tel in groepjes van ${pg}.`, "de groepjes lichten op"), zin(zinGoed, "de kraal licht op")],
-    tip: zin(`Tel in groepjes van ${pg}.`),
+    /* Is de kraal precies de laatste van het eerste groepje, dan noemt de tip dat getal niet. */
+    tip: zin(p === pg ? "Tel vanaf de eerste kraal." : `Tel in groepjes van ${pg}.`),
     rondewoord: "opdrachten",
     opgave: [],
     tussen: [g, r, pg, 1, ...Array.from({ length: p }, (_, i) => i + 1)],
@@ -403,6 +410,101 @@ function huizenrij(o: Opgave, nummers: number[], gevraagd: number[]): Geschreven
   });
 }
 
+/** Plaatjes door elkaar, zonder rijen: één voor één tellen. */
+function plaatjesVerspreid(o: Opgave, n: number): Geschreven | null {
+  if (String(n) !== o.antwoord) return null;
+  const fouten: Fout[] = [
+    { code: "een-ernaast", antwoorden: [`${n - 1}`, `${n + 1}`].filter((a) => Number(a) >= 0), zinnen: [zin("Je zit er 1 naast."), zin("Tik ze één voor één aan en tel mee.", "de plaatjes lichten één voor één op")] },
+  ];
+  const om = omgedraaid(n);
+  if (om) fouten.push(om);
+  return metKnoppen(o, {
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    goed: [zin(n === 1 ? "Het is er maar 1." : `Het zijn er ${n}.`, "alle plaatjes lichten op")],
+    fouten,
+    uitleg: [zin("Kijk, zo doe je het."), zin("Wijs elk plaatje één keer aan en tel mee."), zin(n === 1 ? "Het is er 1." : `Het zijn er ${n}.`, "de plaatjes lichten één voor één op")],
+    tip: zin("Wijs elk plaatje één keer aan."),
+    rondewoord: "opdrachten",
+    opgave: [],
+    tussen: [1],
+    geheim: [n],
+  });
+}
+
+/** Eén leeg huis, met keuzeknoppen: welk nummer hoort erbij? */
+function huisKiezen(o: Opgave, nummers: number[], gevraagd: number): Geschreven | null {
+  const x = nummers[gevraagd];
+  if (o.vorm !== "meerkeuze" || !o.opties || o.opties[Number(o.antwoord)]?.tekst.trim() !== String(x)) return null;
+  const stap = nummers.length > 1 ? nummers[1] - nummers[0] : 1;
+  const links = gevraagd > 0 ? nummers[gevraagd - 1] : null;
+  const rechts = gevraagd < nummers.length - 1 ? nummers[gevraagd + 1] : null;
+  /* Bij "het huis ervoor" kijk je naar het huis rechts ervan. */
+  const ervoor = o.somgegevens?.extra?.vooruit === 0;
+  const waarom = (ervoor && rechts !== null) || links === null ? `Vóór ${rechts} komt ${x}.` : `Na ${links} komt ${x}.`;
+  /* Elke andere knop krijgt een eigen tekst: een buurnummer staat er al, de rest past niet in de rij. */
+  const fouten: Fout[] = o.opties
+    .map((op) => Number(op.tekst.trim()))
+    .filter((y) => y !== x)
+    .map((y) => ({
+      code: y === links || y === rechts ? `staat-er-al-${y}` : `past-niet-${y}`,
+      antwoorden: [String(y)],
+      zinnen: [zin(y === links || y === rechts ? `${y} staat er al.` : "Kijk naar het huis ernaast."), zin(waarom, "het huis licht op")],
+    }));
+  return metKnoppen(o, {
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    goed: [zin(waarom, "het huis licht op")],
+    fouten,
+    uitleg: [zin("Kijk, zo doe je het."), zin(`Elk huis is ${stap} verder.`), zin(waarom, "het huis licht op")],
+    tip: zin("Kijk naar het nummer naast het lege huis."),
+    rondewoord: "opdrachten",
+    opgave: nummers.filter((_, i) => i !== gevraagd),
+    tussen: [stap, x],
+    geheim: [x],
+  });
+}
+
+/**
+ * Welk vak? Vos houdt een kaartje vast; het kind zoekt het vak met precies dat
+ * aantal, of met eentje meer of eentje minder. Het antwoord is de plek van het
+ * goede vak.
+ */
+function vakken(o: Opgave, inhoud: number[], kaart: number, variant: string, woordEen: string, woordMeer: string): Geschreven | null {
+  const zoek = variant === "meer" ? kaart + 1 : variant === "minder" ? kaart - 1 : kaart;
+  const index = inhoud.indexOf(zoek);
+  if (String(index) !== o.antwoord) return null;
+  const aantal = (n: number) => stuks(n, woordEen, woordMeer);
+  const fouten: Fout[] = inhoud
+    .map((x, i) => ({ x, i }))
+    .filter(({ i }) => i !== index)
+    .map(({ x, i }) => ({
+      code: x === kaart && variant !== "precies" ? "kaartgetal" : `vak-${i}`,
+      antwoorden: [String(i)],
+      zinnen:
+        x === kaart && variant !== "precies"
+          ? [zin(`Daar zitten er ${kaart}, net als op het kaartje.`), zin(`Je zoekt eentje ${variant}: ${zoek}.`, "het goede vak licht op")]
+          : [zin(`In dat vak zitten ${aantal(x)}.`), zin(`Je zoekt ${aantal(zoek)}.`, "het goede vak licht op")],
+      getallen: [x],
+    }));
+  const uitleg =
+    variant === "precies"
+      ? [zin("Kijk, zo doe je het."), zin("Tel in elk vak hoeveel erin zitten."), zin(`Het goede vak heeft ${aantal(zoek)}.`, "het goede vak licht op")]
+      : [zin("Kijk, zo doe je het."), zin(`Eentje ${variant} dan ${kaart} is ${zoek}.`), zin(`Zoek het vak met ${aantal(zoek)}.`, "het goede vak licht op")];
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    goed: [zin(variant === "precies" ? `In dit vak zitten ${aantal(zoek)}.` : `Eentje ${variant} dan ${kaart} is ${zoek}.`, "het goede vak licht op")],
+    fouten,
+    uitleg,
+    tip: zin(variant === "precies" ? "Tel in elk vak hoeveel erin zitten." : `Wat is eentje ${variant} dan ${kaart}?`),
+    rondewoord: "opdrachten",
+    opgave: [kaart, ...inhoud],
+    tussen: [1],
+    geheim: [],
+  });
+}
+
 function telrij(o: Opgave, items: { aantal: number }[]): Geschreven | null {
   const juist = items.map((i) => i.aantal);
   if (o.antwoord !== juist.join(",")) return null;
@@ -434,7 +536,12 @@ export function schrijfGetallen(o: Opgave): Geschreven | null {
     case "mabblokken":
       return f.stand === "tellen" || f.stand === "vosbouwt" ? blokken(o, f.tientallen, f.eenheden) : null;
     case "plaatjesraster":
+      if (typeof f.aantal === "number" && f.perRij === 0) return plaatjesVerspreid(o, f.aantal);
       return typeof f.aantal === "number" && typeof f.perRij === "number" ? plaatjesTellen(o, f.aantal, f.perRij) : null;
+    case "vakken": {
+      const woord = VAKWOORD[String(f.materiaal)] ?? VAKWOORD.telplaatjes;
+      return vakken(o, f.vakken, f.kaart, o.somgegevens?.variant ?? "precies", woord[0], woord[1]);
+    }
     case "stapstenen":
       return stapstenen(o, f.stenen, f.sprong, f.richting !== "terug");
     case "getallenlijn":
@@ -450,6 +557,7 @@ export function schrijfGetallen(o: Opgave): Geschreven | null {
     case "kralenrij":
       return typeof f.pijlOp === "number" ? kralenrij(o, f.pijlOp, f.perGroep) : null;
     case "huizenrij":
+      if (typeof f.gevraagd === "number" && !Array.isArray(f.gevraagden)) return huisKiezen(o, (f.huizen as { nummer: number }[]).map((h) => h.nummer), f.gevraagd);
       return Array.isArray(f.gevraagden) ? huizenrij(o, (f.huizen as { nummer: number }[]).map((h) => h.nummer), f.gevraagden) : null;
     case "telrij":
       return telrij(o, f.items);

@@ -36,6 +36,8 @@ function rek(
 function bron(
   strategie: { waarde: string; label: string; uitleg: string },
   regels: (som: Somgegevens, kort: boolean) => Uitlegscript["stappen"],
+  /* Flitsen heeft maar één getal: hoeveel kralen er stonden. */
+  eenGetal = false,
 ): Uitlegbron {
   return {
     modellen: ["rekenrek"],
@@ -43,7 +45,7 @@ function bron(
     standaardStrategie: () => strategie.waarde,
     script(som, vorm: Groepsvorm) {
       const [van, af] = som.getallen;
-      if (!Number.isFinite(van) || !Number.isFinite(af)) return null;
+      if (!Number.isFinite(van) || (!eenGetal && !Number.isFinite(af))) return null;
       return {
         vorm,
         strategie: strategie.waarde,
@@ -54,6 +56,10 @@ function bron(
     /* Een som van dezelfde soort met één getal anders. */
     vergelijkbaar(som) {
       const [van, af] = som.getallen;
+      if (eenGetal && Number.isFinite(van)) {
+        const nieuw = van > 1 ? van - 1 : van + 1;
+        return { soort: som.soort, variant: som.variant, getallen: [nieuw], goed: nieuw };
+      }
       if (!Number.isFinite(van) || !Number.isFinite(af)) return null;
       const nieuw = af > 2 ? af - 1 : af + 1;
       if (van - nieuw < 0) return null;
@@ -81,6 +87,7 @@ export const rekenrekflitsUitleg: Uitlegbron = bron(
       rek(aantal, 0, kort ? "Samen zijn het er zoveel!" : `Samen zijn dat er ${aantal}.`, String(aantal), true),
     ];
   },
+  true,
 );
 
 export const vanafTienUitleg: Uitlegbron = bron(

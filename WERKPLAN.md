@@ -1118,3 +1118,144 @@ terug; gemiste goede stenen lichten groen op. Alle 15 opgaven met de laser.
 | Tafels oefenen | 3 | Laser: tafels van 6 tot en met 9 | ●●●● | Raak alle getallen uit de tafel van 7. |
 | Aftrekken tot en met 20 | 1 | Laser: minsommen | ●●● | Raak alle sommen met uitkomst 8 (13 − 5, 12 − 4 …). |
 
+## Groep 3 — oefeningen met bestaande types (9 oktober 2026)
+
+Op verzoek van de eigenaar ("groep 3 heeft nog niks, maak extra veel"). Elk
+leerdoel staat alleen op groep 3 en heeft in beheer "(groep 3)" achter de naam;
+het kopje staat ervoor. Alle oefeningen: vragen per oefensessie 15, vijftien
+verschillende opgaven per ronde, 30 sommen gepubliceerd, maatje aan. Wat er
+precies is aangemaakt, staat ook in `vragen-voor-later/AANGEMAAKT.md`.
+
+### Getallen · Tellen & sprongen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Plaatjes tellen | Plaatjes tellen | ●● | plaatjestellen |
+| Plaatjes tellen | Plaatjes tellen en typen | ●●● | plaatjestellen |
+| Plaatjes tellen | Plaatjes door elkaar tellen | ●●● | plaatjestellen |
+| Plaatjes tellen | Welk vak hoort bij het getal? | ● | vakken |
+| Plaatjes tellen | Tellen en slepen | ● | tellenslepen |
+| Plaatjes tellen | Veel plaatjes tellen | ●● | plaatjestellen |
+| Tellen tot en met 20 | Kinderen in de bus | ● | bus |
+| Tellen tot en met 20 | De hoeveelste kraal? | ● | kralen |
+| Tellen tot en met 20 | Welk vak met kralen? | ● | vakken |
+| Tellen tot en met 20 | Een plek in de bioscoop | ● | bioscoop |
+| Verder en terug tellen | Tel verder | ● | stapstenen |
+| Verder en terug tellen | Tel verder: het gat zit ertussen | ●● | stapstenen |
+| Verder en terug tellen | Tel terug | ●● | stapstenen |
+| Verder en terug tellen | Het huis erna | ● | straat |
+| Verder en terug tellen | Het huis ervoor | ●● | straat |
+| Verder en terug tellen | Buurgetallen | ●●● | straat |
+
+### Getallen · Vergelijken & ordenen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Meer of minder | Zoek eentje meer | ●● | vakken |
+| Meer of minder | Zoek eentje minder | ●● | vakken |
+| Groot en klein | De grootste vis | ● | vissen |
+| Groot en klein | De kleinste vis | ● | vissen |
+| Groot en klein | Grootste en kleinste tot en met 20 | ●● | vissen |
+| Op volgorde | Van klein naar groot | ● | trein |
+| Op volgorde | Van groot naar klein | ● | trein |
+| Op volgorde | Op volgorde tot en met 20 | ●● | trein |
+
+### Getallen · Getallenlijn tot en met 100
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Zet het getal op de lijn | ● | getallenlijn |
+| Tot en met 20 | Welk getal hoort hier? | ●● | getallenlijn |
+| Tot en met 20 | De lijn met vijftallen | ●● | getallenlijn |
+
+### Splitsen · Splitsen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Splitsen tot en met 10 | Splitsen tot en met 10 | ●● | splitsen |
+| Splitsen tot en met 10 | Het splitsschema | ●● | splitsschema |
+| Splitsen tot en met 10 | Het splitsschema door elkaar | ●● | splitsschema |
+| Splitsen tot en met 10 | Splitsen in de tabel | ● | splitstabel |
+| Splitsen tot en met 10 | De splitsbloem | ● | splitstabel |
+| Splitsen tot en met 10 | Verdelen in twee groepen | ●●● | verdelen |
+| Splitsen tot en met 20 | Splitsen tot en met 20 | ●● | splitsen |
+
+### Optellen · Optellen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 10 | Optellen met plaatjes | ● | plaatjessom |
+| Tot en met 10 | Maak de plussom bij het plaatje | ● | plaatjessom |
+| Tot en met 10 | Optellen tot en met 10 | ●● | plussom |
+| Tot en met 10 | Welke som klopt? | ●● | somkeuze |
+| Tot en met 10 | Koppel de som aan de uitkomst | ●● | koppelsommen |
+| Tot en met 10 | Zoek de som die evenveel is | ●● | evenveelsom |
+| Tot en met 10 | Kies twee getallen | ●●● | tweegetallen |
+| Tot en met 10 | Maak beide kanten gelijk | ●●●● | balans |
+| Tot en met 10 | Aanvullen in de tabel | ●● | aanvultabel |
+| Tot en met 10 | Raket naar 10 | ●● | raketsom |
+| Tot en met 20 | Optellen zonder over de 10 | ● | rekensom |
+| Tot en met 20 | Optellen met plaatjes tot en met 20 | ● | plaatjessom |
+
+### Optellen · Optellen met het rekenrek
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Met het rekenrek | Optellen tot en met 10 | ● | rekenrekerbij |
+| Met het rekenrek | Optellen zonder over de 10 | ●● | rekenrekerbij |
+| Flitsen | Hoeveel kralen tot en met 20? | ● | rekenrekflits |
+
+### Aftrekken · Aftrekken tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 10 | Wegstrepen | ● | wegstrepen |
+| Tot en met 10 | Een minsom bij een plaatje | ● | minsomplaatje |
+| Tot en met 10 | Aftrekken met plaatjes | ● | plaatjesminsom |
+| Tot en met 10 | Aftrekken tot en met 10 | ●● | minsom |
+| Tot en met 10 | Koppel de minsom aan de uitkomst | ●●● | minkoppelen |
+| Tot en met 20 | Aftrekken zonder over de 10 | ● | rekensom |
+
+### Aftrekken · Aftrekken met het rekenrek
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Met het rekenrek | Aftrekken binnen het tiental | ●● | rekenrekaf |
+
+### Tijd · De wijzerklok
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Hele uren | Hoe laat is het? | ● | klokaflezen |
+| Hele uren | Zet de klok | ● | klokzetten |
+| Hele uren | De grote en de kleine wijzer | ● | wijzeraanwijzen |
+| Hele uren | Klokken koppelen | ● | klokkoppelen |
+| Halve uren | Halve uren aflezen | ●● | klokaflezen |
+
+### Tijd · Maanden en dagen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Dagen van de week | De dagen op volgorde | ● | dagvraag |
+| Dagen van de week | Welke dag ontbreekt? | ● | dagenaanvullen |
+
+### Geld · Munten en briefjes
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Munten | Geld tellen | ●● | geldtellen |
+| Munten | Welke munt is het meest waard? | ● | geldwaarde |
+| Munten | Leg het bedrag | ●●●● | geldleggen |
+
+### Verhaaltjessommen · Optellen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Erbij krijgen | ● | verhaaltje |
+| Tot en met 20 | Samen | ● | verhaaltje |
+
+### Verhaaltjessommen · Aftrekken
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Eraf | ● | verhaaltje |

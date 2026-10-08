@@ -45,7 +45,7 @@ function omgedraaid(c: number): Fout | null {
 // Plus
 // ---------------------------------------------------------------------------
 
-export function plusKern(a: number, b: number, p: Plaatje): Kern {
+function plusKernRuw(a: number, b: number, p: Plaatje): Kern {
   const c = a + b;
   const plus = `${a} plus ${b}`;
   const dus = (s: string) => zin(`Dus ${plus} is ${c}.`, stap(p, s));
@@ -246,7 +246,7 @@ export function plusKern(a: number, b: number, p: Plaatje): Kern {
 // Min
 // ---------------------------------------------------------------------------
 
-export function minKern(a: number, b: number, p: Plaatje): Kern {
+function minKernRuw(a: number, b: number, p: Plaatje): Kern {
   const c = a - b;
   const min = `${a} min ${b}`;
   const dus = (s: string) => zin(`Dus ${min} is ${c}.`, stap(p, s));
@@ -389,4 +389,45 @@ export function minKern(a: number, b: number, p: Plaatje): Kern {
     fouten,
     tussen: [ta, tb, T, ea, eb, E, losse, ta / 10, (ta - 10) / 10, tb / 10, 10],
   };
+}
+
+// ---------------------------------------------------------------------------
+// Zonder plaatje: geen staven en losse
+// ---------------------------------------------------------------------------
+
+/*
+  "Staven" en "losse" verwijzen naar de blokjes van school. Staat er geen
+  plaatje bij de som, dan zijn die er niet te zien, en dan heet het gewoon
+  tientallen en eenheden (regel van de eigenaar: de tekst noemt wat er in beeld
+  staat).
+*/
+function zonderStaven(t: string): string {
+  return t
+    .replace(/\bstaven\b/g, "tientallen")
+    .replace(/\bStaven\b/g, "Tientallen")
+    .replace(/\bstaaf\b/g, "tiental")
+    .replace(/\bStaaf\b/g, "Tiental")
+    .replace(/\blosse\b/g, "eenheden")
+    .replace(/\bLosse\b/g, "Eenheden");
+}
+
+function zonderPlaatje(k: Kern): Kern {
+  const z = (x: Zin): Zin => ({ ...x, tekst: zonderStaven(x.tekst) });
+  return {
+    ...k,
+    goed: k.goed.map(z),
+    uitleg: k.uitleg.map(z),
+    tip: z(k.tip),
+    fouten: k.fouten.map((f) => ({ ...f, zinnen: f.zinnen.map(z) })),
+  };
+}
+
+export function plusKern(a: number, b: number, p: Plaatje): Kern {
+  const k = plusKernRuw(a, b, p);
+  return p === "geen" ? zonderPlaatje(k) : k;
+}
+
+export function minKern(a: number, b: number, p: Plaatje): Kern {
+  const k = minKernRuw(a, b, p);
+  return p === "geen" ? zonderPlaatje(k) : k;
 }
