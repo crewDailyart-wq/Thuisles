@@ -1277,3 +1277,20 @@ vragen per oefensessie 15, maatje aan.
 | 4 | Optellen tot en met 20 · Met de tegels | Tegels: dubbel en bijna dubbel | ●● | 7 + 7, 7 + 8 |
 | 4 | Optellen tot en met 20 · Met de tegels | Tegels: samen meer dan 10 | ●●● | 7 + 6 over twee tienvelden |
 | 4 | Splitsen tot en met 20 · Met de tegels | Tegels: maak 11 tot en met 20 | ●●● | 8 + ? = 11 |
+
+## Godot-bouwsteen 5: de stippen (9 oktober 2026)
+
+Naar het idee van Synthesis "Dot Destruction", "Difference Dimension" en
+"Compare the Pair". Bij alle 15 opgaven het spel, maatje aan. Vergelijken
+heeft eigen denkfouten en een eigen uitleg (die van de vissen noemt vissen).
+
+| Groep | Waar | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|---|
+| 3 | Aftrekken tot en met 20 · Met de stippen | Stippen: tik ze weg | ● | 8 stippen, tik er 3 weg, typ wat overblijft |
+| 3 | Aftrekken tot en met 20 · Met de stippen | Stippen: hoeveel meer? | ●● | twee rijen, typ het verschil |
+| 3 | Vergelijken & ordenen · Met de stippen | Stippen: welke rij heeft de meeste? | ● | tik de rij |
+| 3 | Vergelijken & ordenen · Met de stippen | Stippen: de meeste of de minste | ●● | tik de rij |
+| 4 | Aftrekken tot en met 20 · Met de stippen | Stippen: tik ze weg | ●●● | 11 tot en met 20 |
+| 4 | Aftrekken tot en met 20 · Met de stippen | Stippen: hoeveel meer? | ●●● | 11 tot en met 20 |
+| 4 | Vergelijken & ordenen · Met de stippen | Stippen: de meeste of de minste | ●● | 5 tot en met 20 |
+| 4 | Vergelijken & ordenen · Met de stippen | Stippen: <, = of > | ●●● | kies het teken |

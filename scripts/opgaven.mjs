@@ -664,6 +664,15 @@ const OEFENINGEN = [
   { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: dubbel en bijna dubbel", soort: "tegelsom", bolletjes: 2, inst: { stand: "dubbel" } },
   { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: samen meer dan 10", soort: "tegelsom", bolletjes: 3, inst: { stand: "over10" } },
   { groep: "Splitsen · Splitsen tot en met 20 · Met de tegels", titel: "Tegels: maak 11 tot en met 20", soort: "tegelmaak", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  /* De stippen (Godot, 9 oktober 2026). */
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: tik ze weg", groepen: [3], soort: "stipweg", bolletjes: 1, inst: { van: 3, tot: 10 } },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: hoeveel meer?", groepen: [3], soort: "stipverschil", bolletjes: 2, inst: { van: 3, tot: 10 } },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: welke rij heeft de meeste?", groepen: [3], soort: "stipvergelijk", bolletjes: 1, inst: { van: 2, tot: 10, zoek: "meeste" } },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: de meeste of de minste", groepen: [3], soort: "stipvergelijk", bolletjes: 2, inst: { van: 2, tot: 10, zoek: "beide" } },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: tik ze weg", groepen: [4], soort: "stipweg", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: hoeveel meer?", groepen: [4], soort: "stipverschil", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  { groep: "Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: de meeste of de minste", soort: "stipvergelijk", bolletjes: 2, inst: { van: 5, tot: 20, zoek: "beide" } },
+  { groep: "Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: <, = of >", soort: "stipteken", bolletjes: 3, inst: { van: 2, tot: 20 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -969,13 +978,23 @@ for (const oefening of OEFENINGEN) {
     */
     if (vraag.figuur?.soort === "godotspel") {
       const f = vraag.figuur;
-      if (!f.kop.trim() || !f.goedZin.trim() || !f.foutZin.trim()) fouten.push(`${waar}: kop of zin bij goed/fout ontbreekt.`);
+      if (!f.goedZin.trim() || !f.foutZin.trim()) fouten.push(`${waar}: de zin bij goed of fout ontbreekt.`);
+      if (f.invoer === "typen" && !f.kop.trim()) fouten.push(`${waar}: bij typen hoort een kop met het invulvak.`);
       if (f.invoer === "typen" && !f.kop.includes("?")) fouten.push(`${waar}: bij typen hoort een vraagteken in de kop.`);
       if (f.spel === "tegels") {
         const { a, b, doel } = f.opgave;
         if (f.stand === "maak") {
           if (a + Number(vraag.antwoord) !== doel || Number(vraag.antwoord) < 1 || Number(vraag.antwoord) > 9) fouten.push(`${waar}: ${a} + ${vraag.antwoord} is niet ${doel}, of die tegel zit niet in de bak.`);
         } else if (a + b !== Number(vraag.antwoord) || a + b > 20) fouten.push(`${waar}: ${a} + ${b} is niet ${vraag.antwoord}.`);
+      }
+      if (f.spel === "stippen") {
+        const { a, b, zoek } = f.opgave;
+        const juist =
+          f.stand === "weg" || f.stand === "verschil" ? String(a - b) :
+          f.stand === "vergelijk" ? ((zoek === "minste" ? a < b : a > b) ? "boven" : "onder") :
+          a > b ? ">" : a < b ? "<" : "=";
+        if (vraag.antwoord !== juist) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${a} en ${b} (${f.stand}).`);
+        if (Math.max(a, b) > 20 || (f.stand !== "teken" && f.stand !== "vergelijk" && a <= b)) fouten.push(`${waar}: ${a} en ${b} passen niet bij ${f.stand}.`);
       }
     }
     /* De raket: precies één paar stenen maakt samen het doelgetal. */

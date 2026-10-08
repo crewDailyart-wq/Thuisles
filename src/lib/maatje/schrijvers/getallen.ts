@@ -505,6 +505,65 @@ function vakken(o: Opgave, inhoud: number[], kaart: number, variant: string, woo
   });
 }
 
+/** De stippen (Godot): welke rij heeft de meeste of de minste? */
+function rijKiezen(o: Opgave, a: number, b: number, meeste: boolean): Geschreven | null {
+  const boven = meeste ? a > b : a < b;
+  if (o.antwoord !== (boven ? "boven" : "onder")) return null;
+  const g = Math.max(a, b);
+  const k = Math.min(a, b);
+  const welke = boven ? "bovenste" : "onderste";
+  const woord = meeste ? "meeste" : "minste";
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    goed: [zin(`De ${welke} rij heeft de ${woord}.`, "de rij licht op"), zin(`${g} is meer dan ${k}.`)],
+    fouten: [
+      {
+        code: "andere-rij",
+        antwoorden: [boven ? "onder" : "boven"],
+        zinnen: [zin("Kijk welke rij verder doorloopt."), zin(`${g} is meer dan ${k}.`, "de stippen die meer zijn lichten op")],
+      },
+    ],
+    uitleg: [zin("Kijk, zo doe je het."), zin("Zet de rijen naast elkaar.", "de rijen staan naast elkaar"), zin(`De ${welke} rij heeft de ${woord}.`, "de rij licht op")],
+    tip: zin("Welke rij loopt verder door?"),
+    rondewoord: "opdrachten",
+    opgave: [a, b],
+    tussen: [g - k],
+    geheim: [],
+  });
+}
+
+/** De stippen (Godot): het teken <, = of > tussen twee getallen. */
+function tekenKiezen(o: Opgave, a: number, b: number): Geschreven | null {
+  const teken = a > b ? ">" : a < b ? "<" : "=";
+  if (o.antwoord !== teken) return null;
+  const woorden = a > b ? `${a} is meer dan ${b}` : a < b ? `${a} is minder dan ${b}` : `${a} is evenveel als ${b}`;
+  const betekenis: Record<string, string> = { "<": "minder dan", "=": "evenveel als", ">": "meer dan" };
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: `${o.vraagtekst} ${a} en ${b}.`,
+    goed: [zin(`${hoofd(woorden)}.`, "het teken komt tussen de getallen")],
+    fouten: ["<", "=", ">"]
+      .filter((t) => t !== teken)
+      .map((t) => ({
+        code: `teken-${t === "<" ? "minder" : t === "=" ? "evenveel" : "meer"}`,
+        antwoorden: [t],
+        zinnen: [zin(`${t} betekent ${betekenis[t]}.`), zin(`${hoofd(woorden)}.`, "de rijen staan naast elkaar")],
+      })),
+    uitleg: [
+      zin("Kijk, zo doe je het."),
+      zin("Zet de rijen naast elkaar.", "de rijen staan naast elkaar"),
+      zin(`${hoofd(woorden)}.`, "het teken komt tussen de getallen"),
+    ],
+    tip: zin("De open kant wijst naar het grootste getal."),
+    rondewoord: "opdrachten",
+    opgave: [a, b],
+    tussen: [],
+    geheim: [],
+  });
+}
+
+
 function telrij(o: Opgave, items: { aantal: number }[]): Geschreven | null {
   const juist = items.map((i) => i.aantal);
   if (o.antwoord !== juist.join(",")) return null;
@@ -561,6 +620,10 @@ export function schrijfGetallen(o: Opgave): Geschreven | null {
       return Array.isArray(f.gevraagden) ? huizenrij(o, (f.huizen as { nummer: number }[]).map((h) => h.nummer), f.gevraagden) : null;
     case "telrij":
       return telrij(o, f.items);
+    case "godotspel":
+      if (f.spel === "stippen" && f.stand === "vergelijk") return rijKiezen(o, Number(f.opgave.a), Number(f.opgave.b), f.opgave.zoek !== "minste");
+      if (f.spel === "stippen" && f.stand === "teken") return tekenKiezen(o, Number(f.opgave.a), Number(f.opgave.b));
+      return null;
     default:
       return null;
   }

@@ -52,6 +52,15 @@ export function schrijfRekenen(o: Opgave): Geschreven | null {
       if (f.spel === "tegels" && (f.stand === "samen" || f.stand === "dubbel")) {
         return gewoneSom(o, Number(f.opgave.a), "+", Number(f.opgave.b), "geen");
       }
+      /* De stippen (Godot): wegtikken en verschil zijn allebei een minsom. */
+      if (f.spel === "stippen" && (f.stand === "weg" || f.stand === "verschil")) {
+        const a = Number(f.opgave.a);
+        const b = Number(f.opgave.b);
+        const s = gewoneSom(o, a, "−", b, "geen", f.stand === "weg" ? `Tik er ${b} weg.` : undefined);
+        /* "Tik er 3 weg. Hoeveel blijven er over?" zegt het al; de som staat erboven. */
+        if (f.stand === "weg") s.teksten.voorlezen = zin(o.vraagtekst);
+        return s;
+      }
       return null;
 
     case "minsom":

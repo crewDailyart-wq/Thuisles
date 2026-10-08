@@ -18,7 +18,14 @@ var fase := "wacht"
 func _ready() -> void:
 	Brug.bericht.connect(_op_bericht)
 	if not OS.has_feature("web"):
-		_op_bericht.call_deferred(_voorbeeld().merged({"type": "opgave"}))
+		# los gestart in de Godot-app: een voorbeeld, of "-- --opgave={...}" om te proberen
+		var opgave := _voorbeeld()
+		for arg in OS.get_cmdline_user_args():
+			if arg.begins_with("--opgave="):
+				var eigen = JSON.parse_string(arg.substr(9))
+				if eigen is Dictionary:
+					opgave = eigen
+		_op_bericht.call_deferred(opgave.merged({"type": "opgave"}))
 		if "--demo" in OS.get_cmdline_user_args():
 			_demo.call_deferred()
 

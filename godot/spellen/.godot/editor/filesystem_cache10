@@ -1,7 +1,7 @@
 78098b89c88a74ebe8c20117b8754620
-::res://::1791498926
+::res://::1791499709
 export_presets.cfg::TextFile::-1::1791497166::0::1::::<><><>0<>0<><>::
-start.gd::GDScript::3232203979841042559::1791498985::0::1::::<>Control<><>0<>0<><>::
+start.gd::GDScript::3232203979841042559::1791499709::0::1::::<>Control<><>0<>0<><>::
 start.tscn::PackedScene::-1::1791497166::0::1::::<><><>0<>0<><>::res://start.gd
 ::res://gedeeld/::1791498988
 brug.gd::GDScript::535555408038027886::1791497166::0::1::::<>Node<><>0<>0<><>::
@@ -9,7 +9,7 @@ geluid.gd::GDScript::1598056706271527402::1791497141::0::1::::<>Node<><>0<>0<><>
 kleuren.gd::GDScript::5543812029944187739::1791497141::0::1::::Kleuren<>RefCounted<><>0<>0<><>::
 maatje.gd::GDScript::4694068600701894365::1791497141::0::1::::<>Node2D<><>0<>1<><>::
 maatje.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://gedeeld/maatje.gd
-spel.gd::GDScript::7320763570874751385::1791498926::0::1::::Spel<>Control<><>0<>0<><>::
+spel.gd::GDScript::7320763570874751385::1791499869::0::1::::Spel<>Control<><>0<>0<><>::
 stijl.gd::GDScript::462147102009429975::1791497166::0::1::::<>Node<><>0<>0<><>::
 teken.gd::GDScript::4902940365522605449::1791499332::0::1::::Teken<>RefCounted<><>0<>0<><>::
 ::res://groepjesmaker/::1791497175
@@ -38,6 +38,9 @@ schip.gd::GDScript::3901823814531081229::1791497150::0::1::::<>Node2D<><>0<>1<><
 schip.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://raket/schip.gd
 steen.gd::GDScript::7101931335254046269::1791497150::0::1::::<>Node2D<><>0<>1<><>::
 steen.tscn::PackedScene::-1::1791497150::0::1::::<><><>0<>0<><>::res://raket/steen.gd
+::res://stippen/::1791499712
+main.gd::GDScript::648488502877635049::1791499901::0::1::::<>Spel<><>0<>0<><>::
+main.tscn::PackedScene::-1::1791499709::0::1::::<><><>0<>0<><>::res://stippen/main.gd<>res://gedeeld/maatje.tscn<>res://gedeeld/geluid.gd
 ::res://tegels/::1791498988
 main.gd::GDScript::6162313953435655454::1791499426::0::1::::<>Spel<><>0<>0<><>::
 main.tscn::PackedScene::-1::1791498985::0::1::::<><><>0<>0<><>::res://tegels/main.gd<>res://gedeeld/maatje.tscn<>res://gedeeld/geluid.gd

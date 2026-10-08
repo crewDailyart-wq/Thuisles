@@ -451,6 +451,20 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = NIVEAUPUNTEN[getal(inst, "tot", 10) <= 10 ? 2 : 3];
       break;
 
+    case "stipweg":
+    case "stipverschil":
+      /* Tot 10 is groep 3; over de 10 een stap verder. */
+      p = NIVEAUPUNTEN[getal(inst, "tot", 10) <= 10 ? (soort === "stipweg" ? 1 : 2) : 3];
+      break;
+
+    case "stipvergelijk":
+      p = NIVEAUPUNTEN[tekst(inst, "zoek", "meeste") === "beide" ? 2 : 1];
+      break;
+
+    case "stipteken":
+      p = NIVEAUPUNTEN[getal(inst, "tot", 20) <= 10 ? 2 : 3];
+      break;
+
     case "raketsom":
       /* Naar 10 is de eerste stap, naar 20 en aanvullen een stap verder. */
       p = NIVEAUPUNTEN[tekst(inst, "stand", "tot10") === "tot10" ? 2 : 3];

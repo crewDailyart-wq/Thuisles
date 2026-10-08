@@ -89,3 +89,14 @@ Vervangen (de kale som van het type Optellen/Aftrekken heeft geen uitleg-animati
 - REK-OPT-OPT-73 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: dubbel en bijna dubbel · groep 4 · tegelsom · 30 sommen
 - REK-OPT-OPT-74 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: samen meer dan 10 · groep 4 · tegelsom · 30 sommen
 - REK-SPL-SPL-51 · Splitsen → Splitsen tot en met 20 · Met de tegels · Tegels: maak 11 tot en met 20 · groep 4 · tegelmaak · 30 sommen
+
+## Ronde 3: de stippen (Godot)
+
+- REK-AFT-AFT-50 · Aftrekken → Aftrekken tot en met 20 · Met de stippen · Stippen: tik ze weg (groep 3) · groep 3 · stipweg · 30 sommen
+- REK-AFT-AFT-51 · Aftrekken → Aftrekken tot en met 20 · Met de stippen · Stippen: hoeveel meer? (groep 3) · groep 3 · stipverschil · 30 sommen
+- REK-GET-VER-09 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: welke rij heeft de meeste? (groep 3) · groep 3 · stipvergelijk · 30 sommen
+- REK-GET-VER-10 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: de meeste of de minste (groep 3) · groep 3 · stipvergelijk · 30 sommen
+- REK-AFT-AFT-52 · Aftrekken → Aftrekken tot en met 20 · Met de stippen · Stippen: tik ze weg · groep 4 · stipweg · 30 sommen
+- REK-AFT-AFT-53 · Aftrekken → Aftrekken tot en met 20 · Met de stippen · Stippen: hoeveel meer? · groep 4 · stipverschil · 30 sommen
+- REK-GET-VER-11 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: de meeste of de minste · groep 4 · stipvergelijk · 30 sommen
+- REK-GET-VER-12 · Getallen → Vergelijken & ordenen · Met de stippen · Stippen: <, = of > · groep 4 · stipteken · 30 sommen
