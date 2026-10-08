@@ -159,6 +159,21 @@ vierkant als de vakjes waar ze in moeten.
   het invullen alleen neutraal; blij of bedenkelijk pas na Controleer.
   Bewegingen kort, en geen animaties als "minder beweging" aanstaat.
 
+## Godot-bouwstenen (oktober 2026)
+
+Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
+
+- De Godot-bouwstenen hebben de stijl zoals Synthesis aanvoelt: een effen
+  donkerblauwe achtergrond met een heel zacht raster, vakjes met een
+  lichtblauwe gloed, gekleurde stippen, witte cijfers en groenblauwe knoppen
+  met een gloed. Geen decor.
+- Hier geldt dus niet "oranje is alleen voor knoppen" en ook niet de regel
+  over de eigen Thuisles-stijl voor kleur en sfeer. Wel blijft: geen plaatjes,
+  figuurtjes, logo of teksten van Synthesis zelf overnemen.
+- De lichte Thuisles-stijl (houten kast, eikels) blijft beschikbaar met
+  `?stijl=thuisles` achter het adres van de oefening.
+- De rest van Thuisles (alle andere oefeningen) houdt de eigen Thuisles-stijl.
+
 ## Inhoud van vragen
 
 - 15 vragen per opdracht, geen dubbele, elke vraag precies één goed antwoord,

@@ -1,12 +1,13 @@
 extends Node
-## Welke stijl de groepjesmaker heeft. Om te vergelijken (proef, oktober 2026):
-##   thuisles   licht en warm, houten kast, eikels (standaard)
+## Welke stijl de groepjesmaker heeft (keuze van de eigenaar, oktober 2026):
 ##   synthesis  zoals Synthesis aanvoelt: effen donkerblauw, gloeiende vakjes en
-##              gekleurde stippen. Geen plaatjes of teksten van Synthesis zelf.
-## Kiezen: ?stijl=synthesis achter het adres, of in de Godot-app met
-## "-- --stijl=synthesis".
+##              gekleurde stippen (standaard). Geen plaatjes of teksten van
+##              Synthesis zelf; zie ONTWERPREGELS.md, "Godot-bouwstenen".
+##   thuisles   licht en warm, houten kast, eikels.
+## Kiezen: ?stijl=thuisles achter het adres, of in de Godot-app met
+## "-- --stijl=thuisles".
 
-var synthesis := false
+var synthesis := true
 
 const NACHT := Color("#0f1b3d")
 const NACHT_OP := Color("#1a2b57")
@@ -27,6 +28,6 @@ func _ready() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--stijl="):
 			keuze = arg.substr(8)
-	synthesis = keuze == "synthesis"
+	synthesis = keuze != "thuisles"
 	if synthesis:
 		RenderingServer.set_default_clear_color(NACHT)

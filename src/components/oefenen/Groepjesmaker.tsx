@@ -139,7 +139,7 @@ export function GroepjesmakerOpdracht({
         />
       </div>
 
-      <div className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-rand bg-room aspect-[6/5]">
+      <div className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-nacht-op bg-nacht aspect-[6/5]">
         <iframe
           ref={frame}
           title="De groepjesmaker: doosjes met eikels"
@@ -147,8 +147,8 @@ export function GroepjesmakerOpdracht({
           allow="autoplay"
         />
         {!geladen && (
-          <div className="absolute inset-0 grid place-items-center bg-room text-base font-bold text-inkt-zacht">
-            De kast wordt klaargezet…
+          <div className="absolute inset-0 grid place-items-center bg-nacht text-base font-bold text-white/80">
+            De groepjesmaker wordt klaargezet…
           </div>
         )}
       </div>

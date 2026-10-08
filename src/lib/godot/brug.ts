@@ -61,8 +61,8 @@ export function useGodot(naam: string, opBericht: (b: GodotBericht) => void) {
 
   /*
     Het adres van het iframe wordt pas in de browser gezet (zelfde tekening op
-    server en browser). Proef, oktober 2026: ?stijl=synthesis achter het adres
-    van de oefening gaat mee naar Godot, om de stijlen te vergelijken.
+    server en browser). ?stijl=thuisles achter het adres van de oefening gaat
+    mee naar Godot: dan de lichte stijl in plaats van de standaard (donker).
   */
   useEffect(() => {
     if (!frame.current || frame.current.src) return;
