@@ -110,6 +110,9 @@ const OEFENINGEN = [
   { groep: "Tafels · Tafels oefenen", titel: "Welke keersommen passen?", soort: "welkekeersom", bolletjes: 3, inst: { van: 4, max: 10 } },
   { groep: "Tafels · Tafels oefenen", titel: "Tafels van 11 tot en met 15", soort: "keersom", bolletjes: 4, inst: { tafels: ["11", "12", "13", "14", "15"], max: 10 } },
   { groep: "Tafels · Tafels oefenen", titel: "Tafels van 16 tot en met 20", soort: "keersom", bolletjes: 5, inst: { tafels: ["16", "17", "18", "19", "20"], max: 10 } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 2, 5 en 10", soort: "lasertafel", bolletjes: 2, inst: { tafels: "2-5-10" } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 3 en 4", soort: "lasertafel", bolletjes: 3, inst: { tafels: "3-4" } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 6 tot en met 9", soort: "lasertafel", bolletjes: 4, inst: { tafels: "6-9" } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 3: Keersom en deelsom
@@ -525,6 +528,7 @@ const OEFENINGEN = [
   { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":11,"tot":20,"stand":"nietbij","niveau":3} },
   { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":11,"tot":20,"stand":"koppelen","niveau":4} },
   { groep: "Aftrekken · Aftrekken tot en met 20 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":11,"tot":20,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de laser", titel: "Laser: minsommen", soort: "laserminsom", bolletjes: 3, inst: {} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Erafsommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"nee","niveau":2} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 30", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"ja","niveau":3} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"evenveel","niveau":3} },
@@ -871,6 +875,14 @@ for (const oefening of OEFENINGEN) {
       if (f.a > 10 || f.b > 10 || f.b < 1) fouten.push(`${waar}: ${f.a} × ${f.b} past niet in de kast.`);
       if (vraag.antwoord !== String(f.a * f.b)) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${f.a} × ${f.b}.`);
       if (f.stand === "knip" && f.a <= 5) fouten.push(`${waar}: knippen kan pas vanaf 6 doosjes.`);
+    }
+    /* De laser: precies drie goede stenen, en het antwoord zijn hun plekken. */
+    if (vraag.figuur?.soort === "laser") {
+      const f = vraag.figuur;
+      const isGoedeSteen = (t) => (f.stand === "tafel" ? Number(t) % f.tafel === 0 : t.split(" − ").reduce((x, y) => Number(x) - Number(y)) === f.doel);
+      const echt = f.stenen.flatMap((t, i) => (isGoedeSteen(t) ? [i] : []));
+      if (echt.join(",") !== vraag.antwoord || echt.length !== 3) fouten.push(`${waar}: goede stenen ${echt.join(",")} maar antwoord ${vraag.antwoord}.`);
+      if (new Set(f.stenen).size !== f.stenen.length) fouten.push(`${waar}: twee dezelfde stenen.`);
     }
     /* De raket: precies één paar stenen maakt samen het doelgetal. */
     if (vraag.figuur?.soort === "raketsom") {

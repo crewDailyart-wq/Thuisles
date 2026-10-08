@@ -188,6 +188,19 @@ export type Figuur =
       volgnummer?: number;
     }
   | {
+      /**
+       * De laser (oktober 2026), een Godot-bouwsteen: raak alle goede stenen.
+       * `goed` zijn de plekken van de goede stenen. Zie `generatoren/laser.ts`.
+       */
+      soort: "laser";
+      stand: "tafel" | "minsom";
+      stenen: string[];
+      goed: number[];
+      tafel?: number;
+      doel?: number;
+      volgnummer?: number;
+    }
+  | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;

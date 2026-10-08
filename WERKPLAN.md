@@ -1102,3 +1102,19 @@ met de raket, vragen per oefensessie 15.
 | 2 | Raket naar 20 | ●●● | Welke twee maken samen 16? (7 en 9) |
 | 3 | Raket: wat moet erbij? | ●●● | 8 staat al; welke steen moet erbij om 13 te maken? |
 
+## Groep 4 – Tafels oefenen en Aftrekken tot en met 20 · kopje "Met de laser" (oktober 2026)
+
+Godot-bouwsteen 3 (zie GODOT-RAPPORT.md), naar het voorbeeld van de
+schietspellen van Synthesis, maar "rustig schieten" (keuze van de eigenaar):
+acht zwevende stenen, niets valt weg, geen klok, geen levens. Het kind raakt met
+de laser alle goede stenen (er zijn er altijd precies drie) en drukt op Vuur! of
+Controleer. Goede stenen ontploffen; verkeerd geraakte stenen kaatsen de straal
+terug; gemiste goede stenen lichten groen op. Alle 15 opgaven met de laser.
+
+| Onderwerp | # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|---|
+| Tafels oefenen | 1 | Laser: tafels van 2, 5 en 10 | ●● | Raak alle getallen uit de tafel van 5. |
+| Tafels oefenen | 2 | Laser: tafels van 3 en 4 | ●●● | Raak alle getallen uit de tafel van 3. |
+| Tafels oefenen | 3 | Laser: tafels van 6 tot en met 9 | ●●●● | Raak alle getallen uit de tafel van 7. |
+| Aftrekken tot en met 20 | 1 | Laser: minsommen | ●●● | Raak alle sommen met uitkomst 8 (13 − 5, 12 − 4 …). |
+

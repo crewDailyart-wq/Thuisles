@@ -71,6 +71,7 @@ import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht
 import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/RekenrekErbij";
 import { GroepjesmakerOpdracht, isGroepjesfiguur } from "@/components/oefenen/Groepjesmaker";
 import { RaketOpdracht, isRaketfiguur } from "@/components/oefenen/Raket";
+import { LaserOpdracht, isLaserfiguur } from "@/components/oefenen/Laser";
 import { isGodotfiguur } from "@/lib/godot/figuren";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
@@ -581,6 +582,7 @@ export function OefenSpeler({
       /* De groepjesmaker: eerst tellen de doosjes mee, dan het feest. */
       vraag.figuur?.soort === "groepjesmaker" ||
       vraag.figuur?.soort === "raketsom" ||
+      vraag.figuur?.soort === "laser" ||
       (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
@@ -1966,6 +1968,21 @@ function Antwoordvelden({
         vraagId={vraag.id}
         figuur={vraag.figuur}
         antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* De laser (Godot): ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isLaserfiguur(vraag.figuur)) {
+    return (
+      <LaserOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
         fase={fase}
         onWijzig={onKies}
         onBevestig={onBevestig}

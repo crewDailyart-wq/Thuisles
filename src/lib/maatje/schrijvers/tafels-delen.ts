@@ -168,6 +168,49 @@ function groepjesmakerSom(o: Opgave, a: number, b: number, stand: string): Gesch
   });
 }
 
+/**
+ * De laser (Godot, oktober 2026): raak alle goede stenen. Bij de tafels: welke
+ * getallen uit de tafel horen. Bij de minsommen: welke sommen de uitkomst
+ * geven. Het antwoord zijn plekken, geen getal; dus geen "geheim" getal.
+ */
+function laserSom(o: Opgave, stand: string, stenen: string[], goed: number[], tafel: number, doel: number): Geschreven | null {
+  if (o.antwoord !== goed.join(",")) return null;
+  const goedeStenen = goed.map((i) => stenen[i]);
+  const getallen = stenen.flatMap((t) => t.split(" − ").map(Number));
+  if (stand === "tafel") {
+    const [x, y, z] = goedeStenen;
+    return maak({
+      antwoord: o.antwoord,
+      voorlezen: o.vraagtekst,
+      bouw: zin("Tik op een steen om hem te raken.", "de stenen zweven"),
+      goed: [zin(`${x}, ${y} en ${z} horen bij de tafel van ${tafel}.`, "de goede stenen ontploffen")],
+      fouten: [],
+      uitleg: [
+        zin("Kijk, zo doe je het.", GEEN_PLAATJE),
+        ...goedeStenen.map((t) => zin(`${keer(Number(t) / tafel, tafel)} is ${t}.`, "die steen licht op")),
+      ],
+      tip: zin(`Tel in sprongen van ${tafel}.`),
+      rondewoord: "opdrachten",
+      opgave: [tafel, ...getallen],
+      tussen: goedeStenen.map((t) => Number(t) / tafel),
+      geheim: [],
+    });
+  }
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    bouw: zin("Tik op een steen om hem te raken.", "de stenen zweven"),
+    goed: [zin(`Die drie sommen zijn allemaal ${doel}.`, "de goede stenen ontploffen")],
+    fouten: [],
+    uitleg: [zin("Reken elke som uit.", GEEN_PLAATJE), ...goedeStenen.map((t) => zin(`${t} is ${doel}.`, "die steen licht op"))],
+    tip: zin("Reken elke som uit."),
+    rondewoord: "opdrachten",
+    opgave: [doel, ...getallen],
+    tussen: [],
+    geheim: [],
+  });
+}
+
 // ---------------------------------------------------------------------------
 // Delen
 // ---------------------------------------------------------------------------
@@ -280,6 +323,9 @@ export function schrijfTafelsDelen(o: Opgave): Geschreven | null {
 
     case "groepjesmaker":
       return groepjesmakerSom(o, f.a, f.b, f.stand);
+
+    case "laser":
+      return laserSom(o, f.stand, f.stenen as string[], f.goed as number[], f.tafel ?? 0, f.doel ?? 0);
 
     case "deelsom": {
       const verdelen = f.bouw === "verdelen";

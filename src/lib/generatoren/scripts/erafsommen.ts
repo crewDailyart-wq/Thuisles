@@ -170,6 +170,22 @@ export const minsomUitleg: Uitlegbron = bron(
   ["erafplaatjes"],
 );
 
+/** De laser (Godot): reken elke som uit; de goede sommen geven het doelgetal. */
+export const laserminUitleg: Uitlegbron = bron(
+  {
+    waarde: "som-voor-som",
+    label: "Som voor som",
+    uitleg: "Reken elke som uit en kijk of het doelgetal eruit komt.",
+  },
+  (som, kort) => {
+    const [van, af] = som.getallen;
+    return [
+      stap(`${van} − ${af}`, kort ? "Reken deze som uit." : "Reken elke som uit."),
+      stap(String(van - af), kort ? "Dit komt eruit." : `${van} − ${af} is ${van - af}.`, true),
+    ];
+  },
+);
+
 export const minkoppelenUitleg: Uitlegbron = bron(
   {
     waarde: "som-voor-som",

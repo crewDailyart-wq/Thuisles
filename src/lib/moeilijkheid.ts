@@ -432,6 +432,15 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = keertafelpunten(inst, ["1", "2", "3", "4", "5"]);
       break;
 
+    case "lasertafel":
+      /* 2, 5 en 10 eerst; 3 en 4 een stap verder; 6 tot en met 9 het moeilijkst. */
+      p = NIVEAUPUNTEN[{ "2-5-10": 2, "3-4": 3, "6-9": 4 }[tekst(inst, "tafels", "2-5-10")] ?? 2];
+      break;
+
+    case "laserminsom":
+      p = NIVEAUPUNTEN[3];
+      break;
+
     case "raketsom":
       /* Naar 10 is de eerste stap, naar 20 en aanvullen een stap verder. */
       p = NIVEAUPUNTEN[tekst(inst, "stand", "tot10") === "tot10" ? 2 : 3];

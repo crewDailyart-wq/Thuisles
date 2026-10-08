@@ -172,6 +172,42 @@ Alle teksten komen door de controles uit hoofdstuk 11.
   bouwsteen). Later kunnen de bouwstenen één motor delen; dan hoeft een kind die
   maar één keer te downloaden.
 
+## Bouwsteen 3 — de laser (Tafels en Aftrekken)
+
+**Waar het staat**
+
+- Godot-project: `godot/laser/` met `kanon.tscn` (het laserkanon, eigen tekening),
+  `doelsteen.tscn`, `maatje.tscn` en `main.tscn`.
+- Thuisles: soorten `lasertafel` en `laserminsom` (`src/lib/generatoren/laser.ts`),
+  scherm `src/components/oefenen/Laser.tsx`.
+- In het beheer, kopje **Met de laser**:
+  - Tafels → Tafels oefenen: **Laser: tafels van 2, 5 en 10** (REK-TAF-TAF-09),
+    **Laser: tafels van 3 en 4** (REK-TAF-TAF-10), **Laser: tafels van 6 tot en met
+    9** (REK-TAF-TAF-11).
+  - Aftrekken → Aftrekken tot en met 20: **Laser: minsommen** (REK-AFT-AFT-42).
+  - Met toestemming van Sara aangemaakt (eerst een kopie van de database), elk 30
+    opgaven, gepubliceerd, met maatje-teksten.
+
+**Wat het kind doet**
+
+- "Rustig schieten" (keuze van Sara): naar het voorbeeld van de schietspellen van
+  Synthesis, maar acht stenen zweven langzaam en vallen niet weg; geen klok, geen
+  levens. Tik een steen aan: het kanon draait, er flitst een laserstraal en er
+  komt een vizier op. Nog een keer tikken haalt het vizier eraf.
+- Vuur! (of Controleer) laat Thuisles nakijken. Goede stenen ontploffen met
+  sterretjes; verkeerd geraakte stenen kaatsen de straal terug en kleuren roze;
+  gemiste goede stenen lichten groen op.
+- Altijd precies drie goede stenen (nagerekend in `npm run opgaven`). Het antwoord
+  zijn de plekken van de goede stenen.
+
+**Nieuwe zinnen van het maatje**
+
+- "Tik op een steen om hem te raken."
+- Tafels: "14, 18 en 2 horen bij de tafel van 2." en bij fout "Kijk, zo doe je
+  het. 7 keer 2 is 14. …".
+- Minsommen: "Die drie sommen zijn allemaal 8." en bij fout "Reken elke som uit.
+  13 − 5 is 8. …".
+
 ## Ook gedaan (open punten uit NACHTRAPPORT.md)
 
 - Stem: alleen een Nederlandse stem; heeft het apparaat er geen, dan alleen het
