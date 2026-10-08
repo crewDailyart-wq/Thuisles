@@ -216,6 +216,24 @@ theme_override_styles/disabled = SubResource("knop_uit")
 theme_override_styles/focus = SubResource("leeg")
 text = "Knip hier"
 
+[node name="Weg" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_right = 48.0
+offset_bottom = 48.0
+pivot_offset = Vector2(24, 24)
+focus_mode = 0
+tooltip_text = "Haal dit doosje weg"
+theme_override_font_sizes/font_size = 30
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_styles/normal = SubResource("knop")
+theme_override_styles/hover = SubResource("knop")
+theme_override_styles/pressed = SubResource("knop_in")
+theme_override_styles/focus = SubResource("leeg")
+text = "×"
+
 [node name="Vraag" type="Panel" parent="."]
 visible = false
 layout_mode = 0

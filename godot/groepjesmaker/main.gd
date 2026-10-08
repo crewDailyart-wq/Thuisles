@@ -7,7 +7,8 @@ extends Control
 ##
 ## Het kind kiest met − en + hoeveel eikels er in één doosje gaan (1 tot en met
 ## 10) en tikt op de kast: er valt een doosje op de plank en de eikels ploppen
-## erin. Hoogstens 10 doosjes; Opnieuw maakt de kast leeg. Bovenaan groeit de
+## erin. Hoogstens 10 doosjes. Het ×-knopje op het laatste doosje haalt dat
+## doosje weg; Opnieuw maakt de kast leeg. Bovenaan groeit de
 ## plussom mee: 3 → 3 + 3 → 3 + 3 + 3. Klopt de bouw, dan krimpt de plussom
 ## tot 3 × 3.
 ##
@@ -55,6 +56,7 @@ func _ready() -> void:
 	ui.get_node("Plus").pressed.connect(func(): _knop("plus"))
 	ui.get_node("Min").pressed.connect(func(): _knop("min"))
 	ui.get_node("Opnieuw").pressed.connect(func(): _knop("leeg"))
+	$Weg.pressed.connect(func(): _knop("weg"))
 	ui.get_node("Knip").pressed.connect(func(): _knop("knip"))
 	ui.get_node("Vraag/Ja").pressed.connect(func(): _knop("ja"))
 	ui.get_node("Vraag/Nee").pressed.connect(func(): _knop("nee"))
@@ -74,10 +76,12 @@ func _demo() -> void:
 	for i in range(2):
 		_knop("plus")
 		await get_tree().create_timer(0.2).timeout
-	for i in range(4):
+	for i in range(5):
 		_zet_doosje(per)
 		_na_wijziging()
 		await get_tree().create_timer(0.7).timeout
+	await get_tree().create_timer(1.0).timeout
+	_knop("weg")
 	await get_tree().create_timer(1.5).timeout
 	_goed()
 
@@ -150,7 +154,7 @@ func _tik_op_kast(event: InputEvent) -> void:
 
 
 func _knop(naam: String) -> void:
-	var knop: Control = {"plus": ui.get_node("Plus"), "min": ui.get_node("Min"), "leeg": ui.get_node("Opnieuw"), "knip": ui.get_node("Knip"), "ja": ui.get_node("Vraag/Ja"), "nee": ui.get_node("Vraag/Nee")}[naam]
+	var knop: Control = {"plus": ui.get_node("Plus"), "min": ui.get_node("Min"), "leeg": ui.get_node("Opnieuw"), "weg": $Weg, "knip": ui.get_node("Knip"), "ja": ui.get_node("Vraag/Ja"), "nee": ui.get_node("Vraag/Nee")}[naam]
 	_indruk(knop)
 	match naam:
 		"plus":
@@ -166,6 +170,11 @@ func _knop(naam: String) -> void:
 		"leeg":
 			if _mag_bouwen() and doosjes.size() > 0:
 				_maak_leeg()
+				_na_wijziging()
+		"weg":
+			if _mag_bouwen() and doosjes.size() > 0:
+				_haal_weg(doosjes.pop_back())
+				_ververs()
 				_na_wijziging()
 		"ja", "nee":
 			if vraag_open:
@@ -219,12 +228,18 @@ func _zet_doosje(inhoud: int) -> Node2D:
 
 func _maak_leeg() -> void:
 	for d in doosjes:
-		var t: Tween = d.create_tween().set_parallel()
-		t.tween_property(d, "position:y", d.position.y - 80, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
-		t.tween_property(d, "modulate:a", 0.0, 0.3)
-		t.chain().tween_callback(d.queue_free)
+		_haal_weg(d)
 	doosjes.clear()
 	_ververs()
+
+
+## Eén doosje vliegt omhoog de kast uit.
+func _haal_weg(d: Node2D) -> void:
+	geluid.wiebel()
+	var t: Tween = d.create_tween().set_parallel()
+	t.tween_property(d, "position:y", d.position.y - 80, 0.3).set_trans(Tween.TRANS_BACK).set_ease(Tween.EASE_IN)
+	t.tween_property(d, "modulate:a", 0.0, 0.3)
+	t.chain().tween_callback(d.queue_free)
 
 
 func _wiebel_kast() -> void:
@@ -531,6 +546,12 @@ func _ververs() -> void:
 	ui.get_node("Opnieuw").disabled = not (bouwen and doosjes.size() > 0)
 	_toon_per()
 	kast.volgende = doosjes.size()
+	# het ×-knopje op de rechterbovenhoek van het laatste doosje
+	var weg: Button = $Weg
+	weg.visible = bouwen and doosjes.size() > 0
+	if weg.visible:
+		var hoek: Vector2 = kast.position + kast.plek(doosjes.size() - 1) + Vector2(37, -172)
+		weg.position = hoek - Vector2(30, 18)
 	kast.toon_volgende = bouwen and fase == "bezig" and doosjes.size() < MAX_DOOSJES
 
 

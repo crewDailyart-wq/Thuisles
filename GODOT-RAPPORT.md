@@ -51,7 +51,9 @@ Bijgehouden door Claude op de tak `godot-lessen`. Niets hiervan staat live.
 
 - Kiest met − en + hoeveel eikels er in één doosje gaan (1 tot en met 10) en tikt
   op de kast: een doosje valt op de plank en de eikels ploppen erin. Hoogstens 10
-  doosjes; Opnieuw maakt de kast leeg.
+  doosjes. Het ×-knopje op het laatste doosje haalt dat doosje weg (voor een
+  doosje te veel); Opnieuw maakt de kast leeg. Tikken op de kast zelf voegt alleen
+  toe, zodat een kind dat snel tikt niet per ongeluk iets weghaalt.
 - De plussom groeit mee (3 → 3 + 3 → 3 + 3 + 3). Klopt de bouw, dan krimpt die met
   sterretjes tot 3 × 3 (de eerste keer langzaam) en gaat het invulvak in Thuisles
   open.
