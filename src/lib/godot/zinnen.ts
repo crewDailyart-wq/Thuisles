@@ -18,11 +18,11 @@ export const GROEPJESMAKER_ZINNEN: Record<string, (g: Getallen) => string[]> = {
   krimpen: () => ["Steeds evenveel erbij.", "Dat schrijf je korter met keer."],
   /* Andersom gebouwd: niet fout. */
   andersom: ({ a, b }) => [`Jij maakte ${doosjes(b)} van ${a}.`, "Dat is evenveel!"],
-  gebouwd: () => ["Typ nu hoeveel eikels het samen zijn."],
+  gebouwd: () => ["Typ nu hoeveel bolletjes het samen zijn."],
   /* Hints: een kleinere vraag. */
   ongelijk: () => ["Zit in elk doosje evenveel?"],
   teveel: ({ a }) => [a === 1 ? "Kijk naar de som. Hoeveel doosjes?" : "Kijk naar de som. Hoeveel doosjes horen erbij?"],
-  per: () => ["Kijk nog eens: hoeveel eikels in één doosje?"],
+  per: () => ["Kijk nog eens: hoeveel bolletjes in één doosje?"],
   nul: () => ["Kijk goed: hoeveel doosjes vraagt de som?"],
   /* Wisselen: eerst voorspellen, dan draaien. */
   voorspellen: () => ["Wat denk je?", "Is het na draaien evenveel?"],

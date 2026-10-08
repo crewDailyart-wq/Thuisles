@@ -29,7 +29,7 @@ export function isGroepjesfiguur(figuur: Figuur | null | undefined): figuur is G
 
 /** "4 doosjes van 3 is 12." — na Controleer. */
 export function groepjesZin(a: number, b: number): string {
-  if (a === 0) return `Geen doosjes, dus geen eikels: 0 × ${b} = 0.`;
+  if (a === 0) return `Geen doosjes, dus geen bolletjes: 0 × ${b} = 0.`;
   return `${stuks(a, "doosje", "doosjes")} van ${b} is ${a * b}.`;
 }
 
@@ -129,7 +129,7 @@ export function GroepjesmakerOpdracht({
         <Invulvak
           waarde={getypt}
           uitslag={uitslag}
-          label="Hoeveel eikels samen?"
+          label="Hoeveel bolletjes samen?"
           uit={uit || !gebouwd}
           veldRef={(el) => {
             veld.current = el;
@@ -142,7 +142,7 @@ export function GroepjesmakerOpdracht({
       <div data-godotvak="" className="relative w-full max-w-[44rem] overflow-hidden rounded-2xl border-2 border-rand bg-[#0f1b3d] aspect-[6/5]">
         <iframe
           ref={frame}
-          title="De groepjesmaker: doosjes met eikels"
+          title="De groepjesmaker: doosjes met bolletjes"
           className="absolute inset-0 size-full border-0"
           allow="autoplay"
         />

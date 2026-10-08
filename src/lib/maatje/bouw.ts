@@ -37,6 +37,8 @@ export type Ontwerp = {
   tussen?: number[];
   /** Wat vóór Controleer niet genoemd mag worden. */
   geheim: number[];
+  /** Woorden voor wat niet in beeld staat; zie `Controlegegevens.nietInBeeld`. */
+  nietInBeeld?: string[];
 };
 
 function schoon(w: string): string {
@@ -98,6 +100,7 @@ export function maak(o: Ontwerp): Geschreven {
     antwoord: [...new Set([...o.geheim])],
     perFout,
     bekend: lijst.map((f) => f.code),
+    ...(o.nietInBeeld ? { nietInBeeld: o.nietInBeeld } : {}),
   };
   /* Het goede antwoord mag na Controleer altijd genoemd worden. */
   controle.tussen.push(...antwoordGetallen);

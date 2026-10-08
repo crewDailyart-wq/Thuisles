@@ -109,6 +109,12 @@ tabel, een klok, een kalender of geld erin.
   het onderwerp, dan niet nog eens in de titel.
 - In beheer krijgt elk leerdoel een beheernaam met het bereik erin, en bij
   varianten I, II, III.
+- De tekst noemt precies wat er in beeld staat (regel van de eigenaar, 9
+  oktober 2026). Staan er bolletjes, dan zegt de tekst "bolletjes", nooit
+  "eikels". Dat geldt voor de vraag, het label van het invulvak, wat het
+  maatje zegt en de uitleg. Verandert het plaatje, dan verandert de tekst mee.
+  Geen enkele tekst mag een fout bevatten: later leest een pratende mascotte
+  alles voor.
 
 ## Bediening
 
@@ -169,7 +175,9 @@ Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
   met een gloed. Geen decor.
 - Hier geldt dus niet "oranje is alleen voor knoppen" en ook niet de regel
   over de eigen Thuisles-stijl voor kleur en sfeer. Wel blijft: geen plaatjes,
-  figuurtjes, logo of teksten van Synthesis zelf overnemen.
+  figuurtjes of logo van Synthesis zelf overnemen. De uitleg en het verloop
+  van een les mogen wel overgenomen worden, in het Nederlands (toestemming
+  eigenaar, 9 oktober 2026); zie "Uitleglessen".
 - De lichte Thuisles-stijl (houten kast, eikels) blijft beschikbaar met
   `?stijl=thuisles` achter het adres van de oefening.
 - Dat geldt voor het hele oefenscherm, niet alleen voor de bouwsteen: de

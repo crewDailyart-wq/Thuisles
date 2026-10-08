@@ -1,8 +1,8 @@
 /**
  * De groepjesmaker (Tafels, oktober 2026): de eerste Godot-bouwsteen.
  *
- * Het kind bouwt de keersom zelf in een kast met doosjes eikels: met − en +
- * kiest het hoeveel eikels er in één doosje gaan, en per tik komt er een
+ * Het kind bouwt de keersom zelf in een kast met doosjes bolletjes: met − en +
+ * kiest het hoeveel bolletjes er in één doosje gaan, en per tik komt er een
  * doosje bij. De plussom groeit mee (3 + 3 + 3) en krimpt tot de keersom
  * (3 × 3). Pas als de bouw klopt, werkt het antwoordvakje. Afspraak: 4 × 3 =
  * 4 doosjes van 3; andersom gebouwd (3 doosjes van 4) mag ook, dat is evenveel.
@@ -38,7 +38,7 @@ export type GroepjesStand = "groepjes" | "nul-een" | "wissel" | "knip";
 type Keuze = GroepjesStand | "gemengd";
 const KEUZES: Keuze[] = ["gemengd", "groepjes", "nul-een", "wissel", "knip"];
 
-/** Doosjes en eikels per doosje: nooit meer dan 10, zo groot is de kast. */
+/** Doosjes en bolletjes per doosje: nooit meer dan 10, zo groot is de kast. */
 export const MAX_DOOSJES = 10;
 
 const ZIN = "Reken uit.";
@@ -51,7 +51,7 @@ function keuzeVan(inst: Instellingen): Keuze {
 
 type Som = { a: number; b: number; stand: GroepjesStand };
 
-/** Alle sommen die bij een stand horen: a doosjes van b eikels. */
+/** Alle sommen die bij een stand horen: a doosjes van b bolletjes. */
 function sommenVan(stand: GroepjesStand): Som[] {
   const uit: Som[] = [];
   const voeg = (a: number, b: number) => uit.push({ a, b, stand });
@@ -83,7 +83,7 @@ export const groepjesmakerGenerator: Generator = {
   id: "groepjesmaker",
   naam: "Groepjes maken (groepjesmaker)",
   uitleg:
-    "Het kind bouwt de keersom met doosjes eikels: kies hoeveel er in één doosje gaan en tik voor elk doosje op de kast. De plussom groeit mee en krimpt tot de keersom. Daarna typt het kind het antwoord. Bij alle 15 opgaven; na een fout antwoord bouwt de kast zelf de goede manier.",
+    "Het kind bouwt de keersom met doosjes bolletjes: kies hoeveel er in één doosje gaan en tik voor elk doosje op de kast. De plussom groeit mee en krimpt tot de keersom. Daarna typt het kind het antwoord. Bij alle 15 opgaven; na een fout antwoord bouwt de kast zelf de goede manier.",
   suggestie: "Groep 4: gemengd (groepjes, × 0 en × 1, wisselen, knippen)",
   velden: [
     {

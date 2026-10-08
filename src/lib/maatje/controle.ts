@@ -149,6 +149,11 @@ export function controleer(t: MaatjeTeksten, g: Controlegegevens): Melding[] {
       if (new RegExp(`\\b([02-9]|\\d{2,}) ${enkel}\\b`).test(tekst)) meld(6, `Meervoud bij "${enkel}": "${tekst}"`);
     }
 
+    // 9. De tekst noemt wat er in beeld staat, niets anders.
+    for (const w of g.nietInBeeld ?? []) {
+      if (new RegExp(`\\b${w}`, "i").test(`${tekst} ${zin.stap}`)) meld(9, `"${w}" staat niet in beeld: "${tekst}"`);
+    }
+
     // 8. Plaatje-stappen bij tekst 4 en 5.
     if ((soort === 4 || soort === 5) && !zin.stap) meld(8, `Zin zonder plaatje-stap: "${tekst}"`);
   }

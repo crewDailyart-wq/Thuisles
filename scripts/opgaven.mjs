@@ -49,6 +49,7 @@ import { isKeerfiguur, juisteAntwoorden as keerAntwoorden } from "../src/lib/kee
 import { isTijdfiguur, juistAntwoord as tijdAntwoord } from "../src/lib/tijdfiguren.ts";
 import { isGeldfiguur, juistAntwoord as geldAntwoord } from "../src/lib/geldfiguren.ts";
 import { isVerhaalfiguur, juistKeuzeAntwoord } from "../src/lib/verhaalfiguren.ts";
+import { GROEPJESMAKER_ZINNEN } from "../src/lib/godot/zinnen.ts";
 
 /* Hoeveel opgaven een ronde minstens moet opleveren. Nooit minder. */
 const PER_RONDE = 15;
@@ -937,6 +938,17 @@ for (const oefening of OEFENINGEN) {
     herkenFout(generator.foutpatronen, vraag.somgegevens, "1");
 
     nagekeken++;
+  }
+}
+
+/*
+  De tekst noemt wat er in beeld staat (ONTWERPREGELS.md, "Tekst"). De
+  groepjesmaker tekent bolletjes, dus wat het maatje tijdens het bouwen zegt,
+  noemt nooit eikels.
+*/
+for (const [sleutel, maakZinnen] of Object.entries(GROEPJESMAKER_ZINNEN)) {
+  for (const z of maakZinnen({ a: 3, b: 4 })) {
+    if (/eikel/i.test(z)) fouten.push(`Groepjesmaker, zin "${sleutel}": er staan bolletjes in beeld, geen eikels ("${z}").`);
   }
 }
 

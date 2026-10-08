@@ -147,7 +147,7 @@ function groepjesmakerSom(o: Opgave, a: number, b: number, stand: string): Gesch
   }
   let goed = k.goed.map(doos);
   if (a === 0) {
-    goed = [zin("Geen doosjes, dus geen eikels."), zin(`${keer(0, b)} is 0.`)];
+    goed = [zin("Geen doosjes, dus geen bolletjes."), zin(`${keer(0, b)} is 0.`)];
     tip = zin("Kijk goed: hoeveel doosjes vraagt de som?");
   }
   const bouw =
@@ -165,6 +165,7 @@ function groepjesmakerSom(o: Opgave, a: number, b: number, stand: string): Gesch
     opgave: [a, b],
     tussen: [...tussen, 5],
     geheim: [c],
+    nietInBeeld: ["eikel"],
   });
 }
 

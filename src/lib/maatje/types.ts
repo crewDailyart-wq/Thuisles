@@ -70,6 +70,12 @@ export type Controlegegevens = {
    * antwoord mag er nog steeds niet in staan.
    */
   voorlezenIsVraag?: boolean;
+  /**
+   * Woorden voor dingen die NIET in beeld staan (regel van de eigenaar, 9
+   * oktober 2026: de tekst noemt wat er te zien is). Bij de groepjesmaker staan
+   * er bolletjes, dus "eikels" mag nergens staan.
+   */
+  nietInBeeld?: string[];
 };
 
 export type Geschreven = { teksten: MaatjeTeksten; controle: Controlegegevens };
