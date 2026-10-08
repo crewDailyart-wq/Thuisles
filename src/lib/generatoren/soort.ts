@@ -201,6 +201,35 @@ export type Figuur =
       volgnummer?: number;
     }
   | {
+      /**
+       * Een Godot-spel van het algemene soort (oktober 2026). Eén vorm voor
+       * alle nieuwe Godot-bouwstenen: `spel` zegt welk spel er in het iframe
+       * komt, `opgave` gaat ongewijzigd naar Godot. Zie
+       * `components/oefenen/GodotSpel.tsx` en `lib/godot/spellen.ts`.
+       *
+       * invoer "typen": het kind typt het antwoord in een echt invulvak
+       *   (HARDE REGEL 5); Godot laat alleen zien. Met `wacht` gaat het vakje
+       *   pas open als Godot "klaar" meldt.
+       * invoer "kiezen": het kind kiest in Godot; Godot stuurt het antwoord.
+       */
+      soort: "godotspel";
+      spel: string;
+      stand: string;
+      invoer: "typen" | "kiezen";
+      /** De som of zin boven het spel, met "?" waar het invulvak komt (bij typen). */
+      kop: string;
+      /** Waar het invulvak voor is, voor een voorleesprogramma. */
+      label: string;
+      wacht?: boolean;
+      opgave: Record<string, unknown>;
+      /** Wat er na Controleer onder het spel staat. */
+      goedZin: string;
+      foutZin: string;
+      /** Bij een uitles: wat het maatje eerst uitlegt, zin voor zin. */
+      uitleg?: string[];
+      volgnummer?: number;
+    }
+  | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;

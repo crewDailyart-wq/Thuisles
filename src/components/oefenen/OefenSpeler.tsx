@@ -72,6 +72,7 @@ import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/Re
 import { GroepjesmakerOpdracht, isGroepjesfiguur } from "@/components/oefenen/Groepjesmaker";
 import { RaketOpdracht, isRaketfiguur } from "@/components/oefenen/Raket";
 import { LaserOpdracht, isLaserfiguur } from "@/components/oefenen/Laser";
+import { GodotSpelOpdracht, isGodotSpelfiguur } from "@/components/oefenen/GodotSpel";
 import { isGodotfiguur } from "@/lib/godot/figuren";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
@@ -583,6 +584,7 @@ export function OefenSpeler({
       vraag.figuur?.soort === "groepjesmaker" ||
       vraag.figuur?.soort === "raketsom" ||
       vraag.figuur?.soort === "laser" ||
+      vraag.figuur?.soort === "godotspel" ||
       (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
@@ -1967,6 +1969,23 @@ function Antwoordvelden({
       <GroepjesmakerOpdracht
         vraagId={vraag.id}
         figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* Een Godot-spel van het algemene soort: ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isGodotSpelfiguur(vraag.figuur)) {
+    return (
+      <GodotSpelOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        juist={vraag.antwoord}
         antwoord={antwoord}
         fase={fase}
         onWijzig={onKies}

@@ -656,6 +656,14 @@ const OEFENINGEN = [
   { groep: "Groep 3 · Verhaaltjessommen · Optellen · Tot en met 20", titel: "Erbij krijgen", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "optellen", "situatie": "erbij", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
   { groep: "Groep 3 · Verhaaltjessommen · Optellen · Tot en met 20", titel: "Samen", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "optellen", "situatie": "samen", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
   { groep: "Groep 3 · Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Eraf", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "aftrekken", "situatie": "eraf", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
+  /* De getaltegels (Godot, 9 oktober 2026). */
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: samen tot en met 10", groepen: [3], soort: "tegelsom", bolletjes: 1, inst: { stand: "tot10" } },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: dubbel en bijna dubbel", groepen: [3], soort: "tegelsom", bolletjes: 2, inst: { stand: "dubbel" } },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Met de tegels", titel: "Tegels: maak het veld vol", groepen: [3], soort: "tegelmaak", bolletjes: 2, inst: { van: 5, tot: 10 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: 10 en nog wat", soort: "tegelsom", bolletjes: 2, inst: { stand: "tien" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: dubbel en bijna dubbel", soort: "tegelsom", bolletjes: 2, inst: { stand: "dubbel" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: samen meer dan 10", soort: "tegelsom", bolletjes: 3, inst: { stand: "over10" } },
+  { groep: "Splitsen · Splitsen tot en met 20 · Met de tegels", titel: "Tegels: maak 11 tot en met 20", soort: "tegelmaak", bolletjes: 3, inst: { van: 11, tot: 20 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -954,6 +962,21 @@ for (const oefening of OEFENINGEN) {
       const echt = f.stenen.flatMap((t, i) => (isGoedeSteen(t) ? [i] : []));
       if (echt.join(",") !== vraag.antwoord || echt.length !== 3) fouten.push(`${waar}: goede stenen ${echt.join(",")} maar antwoord ${vraag.antwoord}.`);
       if (new Set(f.stenen).size !== f.stenen.length) fouten.push(`${waar}: twee dezelfde stenen.`);
+    }
+    /*
+      Een Godot-spel van het algemene soort: er is een kop, bij typen staat er
+      een vraagteken voor het invulvak, en het antwoord past bij het spel.
+    */
+    if (vraag.figuur?.soort === "godotspel") {
+      const f = vraag.figuur;
+      if (!f.kop.trim() || !f.goedZin.trim() || !f.foutZin.trim()) fouten.push(`${waar}: kop of zin bij goed/fout ontbreekt.`);
+      if (f.invoer === "typen" && !f.kop.includes("?")) fouten.push(`${waar}: bij typen hoort een vraagteken in de kop.`);
+      if (f.spel === "tegels") {
+        const { a, b, doel } = f.opgave;
+        if (f.stand === "maak") {
+          if (a + Number(vraag.antwoord) !== doel || Number(vraag.antwoord) < 1 || Number(vraag.antwoord) > 9) fouten.push(`${waar}: ${a} + ${vraag.antwoord} is niet ${doel}, of die tegel zit niet in de bak.`);
+        } else if (a + b !== Number(vraag.antwoord) || a + b > 20) fouten.push(`${waar}: ${a} + ${b} is niet ${vraag.antwoord}.`);
+      }
     }
     /* De raket: precies één paar stenen maakt samen het doelgetal. */
     if (vraag.figuur?.soort === "raketsom") {

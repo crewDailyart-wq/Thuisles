@@ -6,7 +6,7 @@ extends Control
 ## Elk spel staat in zijn eigen map met een main.tscn; wat alle spellen delen
 ## (de brug, de stijl, het geluid, de kleuren en het maatje) staat in gedeeld/.
 
-const SPELLEN := ["groepjesmaker", "raket", "laser"]
+const SPELLEN := ["groepjesmaker", "raket", "laser", "tegels"]
 
 
 func _ready() -> void:

@@ -1259,3 +1259,21 @@ precies is aangemaakt, staat ook in `vragen-voor-later/AANGEMAAKT.md`.
 | Kopje | Titel | Bolletjes | Soort |
 |---|---|---|---|
 | Tot en met 20 | Eraf | ● | verhaaltje |
+
+## Godot-bouwsteen 4: de getaltegels (9 oktober 2026)
+
+Naar het idee van Synthesis "Add within 10". Tegels met stippen in een
+tienveld (twee tienvelden tot 20); elk getal heeft een eigen kleur. Eén
+algemeen Godot-onderdeel (`GodotSpel.tsx`, figuur `godotspel`) zodat nieuwe
+spellen geen eigen schermcode meer nodig hebben. Bij alle 15 opgaven het spel,
+vragen per oefensessie 15, maatje aan.
+
+| Groep | Waar | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|---|
+| 3 | Optellen tot en met 20 · Met de tegels | Tegels: samen tot en met 10 | ● | 3 + 4: typen hoeveel samen |
+| 3 | Optellen tot en met 20 · Met de tegels | Tegels: dubbel en bijna dubbel | ●● | 5 + 5, 5 + 6 |
+| 3 | Splitsen tot en met 20 · Met de tegels | Tegels: maak het veld vol | ●● | 3 + ? = 7: de tegel kiezen |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: 10 en nog wat | ●● | 10 + 4, 4 + 10 |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: dubbel en bijna dubbel | ●● | 7 + 7, 7 + 8 |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: samen meer dan 10 | ●●● | 7 + 6 over twee tienvelden |
+| 4 | Splitsen tot en met 20 · Met de tegels | Tegels: maak 11 tot en met 20 | ●●● | 8 + ? = 11 |

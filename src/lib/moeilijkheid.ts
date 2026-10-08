@@ -441,6 +441,16 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = NIVEAUPUNTEN[3];
       break;
 
+    case "tegelsom":
+      /* Tot 10 en dubbel zijn de eerste stap; 10 + een getal en over de 10 een stap verder. */
+      p = NIVEAUPUNTEN[{ tot10: 1, dubbel: 2, tien: 2, over10: 3 }[tekst(inst, "stand", "tot10")] ?? 1];
+      break;
+
+    case "tegelmaak":
+      /* Het veld vol maken tot 10 is splitsen; daarboven een stap verder. */
+      p = NIVEAUPUNTEN[getal(inst, "tot", 10) <= 10 ? 2 : 3];
+      break;
+
     case "raketsom":
       /* Naar 10 is de eerste stap, naar 20 en aanvullen een stap verder. */
       p = NIVEAUPUNTEN[tekst(inst, "stand", "tot10") === "tot10" ? 2 : 3];

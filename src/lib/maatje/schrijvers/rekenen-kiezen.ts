@@ -47,6 +47,13 @@ export function schrijfRekenen(o: Opgave): Geschreven | null {
     case "plussom":
       return gewoneSom(o, f.eerste, "+", f.tweede, "geen");
 
+    /* De getaltegels (Godot): twee tegels samen. */
+    case "godotspel":
+      if (f.spel === "tegels" && (f.stand === "samen" || f.stand === "dubbel")) {
+        return gewoneSom(o, Number(f.opgave.a), "+", Number(f.opgave.b), "geen");
+      }
+      return null;
+
     case "minsom":
       return gewoneSom(o, f.van, "−", f.af, "geen");
 

@@ -113,6 +113,15 @@ export function schrijfSplitsen(o: Opgave): Geschreven | null {
     case "aanvullen":
       return enkel(o, f.doel, f.gegeven, `${f.gegeven} en hoeveel?`);
 
+    /* De getaltegels (Godot): welke tegel maakt het veld vol? */
+    case "godotspel":
+      if (f.spel === "tegels" && f.stand === "maak") {
+        const doel = Number(f.opgave.doel);
+        const gegeven = Number(f.opgave.a);
+        return enkel(o, doel, gegeven, `${gegeven} en hoeveel is ${doel}?`);
+      }
+      return null;
+
     /* De splitsboom: zelfde som als het splitsschema, met het geheel bovenaan. */
     case "splitsboom":
     case "splitsschema": {

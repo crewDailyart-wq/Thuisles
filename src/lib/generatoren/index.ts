@@ -121,6 +121,7 @@ import { rekenrekerbijGenerator } from "@/lib/generatoren/rekenrekerbij";
 import { groepjesmakerGenerator } from "@/lib/generatoren/groepjesmaker";
 import { raketsomGenerator } from "@/lib/generatoren/raketsom";
 import { lasertafelGenerator, laserminsomGenerator } from "@/lib/generatoren/laser";
+import { tegelsomGenerator, tegelmaakGenerator } from "@/lib/generatoren/tegels";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -234,6 +235,8 @@ export const alleGeneratoren: Generator[] = [
   raketsomGenerator,
   lasertafelGenerator,
   laserminsomGenerator,
+  tegelsomGenerator,
+  tegelmaakGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {

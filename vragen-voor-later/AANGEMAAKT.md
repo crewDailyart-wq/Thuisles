@@ -79,3 +79,13 @@ Vervangen (de kale som van het type Optellen/Aftrekken heeft geen uitleg-animati
 
 - REK-OPT-OPT-65 · Optellen → Optellen tot en met 20 · Tot en met 20 · Optellen zonder over de 10 (groep 3) · groep 3 · rekensom · 30 sommen
 - REK-AFT-AFT-48 · Aftrekken → Aftrekken tot en met 20 · Tot en met 20 · Aftrekken zonder over de 10 (groep 3) · groep 3 · rekensom · 30 sommen
+
+## Ronde 2: de getaltegels (Godot)
+
+- REK-OPT-OPT-70 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: samen tot en met 10 (groep 3) · groep 3 · tegelsom · 30 sommen
+- REK-OPT-OPT-71 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: dubbel en bijna dubbel (groep 3) · groep 3 · tegelsom · 30 sommen
+- REK-SPL-SPL-50 · Splitsen → Splitsen tot en met 20 · Met de tegels · Tegels: maak het veld vol (groep 3) · groep 3 · tegelmaak · 30 sommen
+- REK-OPT-OPT-72 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: 10 en nog wat · groep 4 · tegelsom · 30 sommen
+- REK-OPT-OPT-73 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: dubbel en bijna dubbel · groep 4 · tegelsom · 30 sommen
+- REK-OPT-OPT-74 · Optellen → Optellen tot en met 20 · Met de tegels · Tegels: samen meer dan 10 · groep 4 · tegelsom · 30 sommen
+- REK-SPL-SPL-51 · Splitsen → Splitsen tot en met 20 · Met de tegels · Tegels: maak 11 tot en met 20 · groep 4 · tegelmaak · 30 sommen
