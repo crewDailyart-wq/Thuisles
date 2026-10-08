@@ -119,6 +119,7 @@ import { verhaaltjeGenerator } from "@/lib/generatoren/verhaaltje";
 import { rekensomGenerator } from "@/lib/generatoren/rekensom";
 import { rekenrekerbijGenerator } from "@/lib/generatoren/rekenrekerbij";
 import { groepjesmakerGenerator } from "@/lib/generatoren/groepjesmaker";
+import { raketsomGenerator } from "@/lib/generatoren/raketsom";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
 
@@ -229,6 +230,7 @@ export const alleGeneratoren: Generator[] = [
   rekenrekerbijGenerator,
   /* Godot-bouwstenen (oktober 2026). */
   groepjesmakerGenerator,
+  raketsomGenerator,
 ];
 
 export function zoekGenerator(id: string): Generator | null {

@@ -1085,3 +1085,20 @@ Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
 - **Sleepkaartjes** (`src/components/oefenen/Sleepkaartjes.tsx`) — kaartjes
   naar vakjes slepen; op een kaartje mag ook een tekening staan, zoals een klok
   of een munt. Gebruikt bij Tafels, Delen, Tijd en Geld.
+
+## Groep 4 – Optellen tot en met 20 · kopje "Met de raket" (oktober 2026)
+
+Godot-bouwsteen 2 (zie GODOT-RAPPORT.md), naar het voorbeeld van Asteroid
+Addition. Een raketje, zes zwevende stenen met een getal en een planeet met het
+doelgetal. Het kind tikt twee stenen aan die samen het doelgetal maken; er
+tekent zich een route. Controleer (of een tik op de planeet) laat de raket
+vliegen. Er is altijd precies één goed paar. Geen klok, geen levens. Bij fout
+lichten de goede stenen groen op en vliegt de raket die route. Alle 15 opgaven
+met de raket, vragen per oefensessie 15.
+
+| # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|
+| 1 | Raket naar 10 | ●● | Welke twee maken samen 9? (4 en 5) |
+| 2 | Raket naar 20 | ●●● | Welke twee maken samen 16? (7 en 9) |
+| 3 | Raket: wat moet erbij? | ●●● | 8 staat al; welke steen moet erbij om 13 te maken? |
+

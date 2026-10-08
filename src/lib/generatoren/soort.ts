@@ -175,6 +175,19 @@ export type Figuur =
       volgnummer?: number;
     }
   | {
+      /**
+       * De raket (oktober 2026), een Godot-bouwsteen: kies twee stenen die
+       * samen het doelgetal maken. `vast` is de steen die bij "aanvullen" al
+       * gekozen is (anders -1). Zie `generatoren/raketsom.ts`.
+       */
+      soort: "raketsom";
+      stand: "tot10" | "tot20" | "aanvullen";
+      doel: number;
+      stenen: number[];
+      vast: number;
+      volgnummer?: number;
+    }
+  | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;

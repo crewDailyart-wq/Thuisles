@@ -432,6 +432,11 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = keertafelpunten(inst, ["1", "2", "3", "4", "5"]);
       break;
 
+    case "raketsom":
+      /* Naar 10 is de eerste stap, naar 20 en aanvullen een stap verder. */
+      p = NIVEAUPUNTEN[tekst(inst, "stand", "tot10") === "tot10" ? 2 : 3];
+      break;
+
     case "groepjesmaker":
       /* Zelf bouwen met de groepjesmaker: tafels tot 5, knippen is een stap verder. */
       p = NIVEAUPUNTEN[["groepjes", "nul-een"].includes(tekst(inst, "stand", "gemengd")) ? 2 : 3];

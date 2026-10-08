@@ -70,6 +70,8 @@ import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
 import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
 import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/RekenrekErbij";
 import { GroepjesmakerOpdracht, isGroepjesfiguur } from "@/components/oefenen/Groepjesmaker";
+import { RaketOpdracht, isRaketfiguur } from "@/components/oefenen/Raket";
+import { isGodotfiguur } from "@/lib/godot/figuren";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
@@ -374,7 +376,7 @@ export function OefenSpeler({
     Godot-bouwstenen krijgen het hele oefenscherm in het donkere thema (zie
     globals.css, data-stijl="nacht"), tenzij ?stijl=thuisles in het adres staat.
   */
-  const godotRonde = serie.some((v) => isGroepjesfiguur(v.figuur));
+  const godotRonde = serie.some((v) => isGodotfiguur(v.figuur));
   useEffect(() => {
     if (!godotRonde) return;
     if (new URLSearchParams(window.location.search).get("stijl") === "thuisles") return;
@@ -578,6 +580,7 @@ export function OefenSpeler({
       (vraag.figuur?.soort === "rekenrekerbij" && !!vraag.figuur.hulpBijFout) ||
       /* De groepjesmaker: eerst tellen de doosjes mee, dan het feest. */
       vraag.figuur?.soort === "groepjesmaker" ||
+      vraag.figuur?.soort === "raketsom" ||
       (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
@@ -866,7 +869,7 @@ export function OefenSpeler({
                 geluid: maatjeGeluid,
                 onGeluid: wisselMaatjeGeluid,
                 /* Godot-bouwstenen: het tijdelijke maatje, nergens de vos. */
-                poppetje: serie.some((v) => isGroepjesfiguur(v.figuur)) ? "tijdelijk" : "vos",
+                poppetje: serie.some((v) => isGodotfiguur(v.figuur)) ? "tijdelijk" : "vos",
               }
             : null
         }
@@ -1459,7 +1462,7 @@ export function OefenSpeler({
               geluid={maatjeGeluid}
               onGeluid={wisselMaatjeGeluid}
               onKlaar={maatjeKlaar}
-              poppetje={isGroepjesfiguur(vraag.figuur) ? "geen" : "vos"}
+              poppetje={isGodotfiguur(vraag.figuur) ? "geen" : "vos"}
             />
           )}
         </div>
@@ -1963,6 +1966,22 @@ function Antwoordvelden({
         vraagId={vraag.id}
         figuur={vraag.figuur}
         antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* De raket (Godot): ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isRaketfiguur(vraag.figuur)) {
+    return (
+      <RaketOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        juist={vraag.antwoord}
         fase={fase}
         onWijzig={onKies}
         onBevestig={onBevestig}

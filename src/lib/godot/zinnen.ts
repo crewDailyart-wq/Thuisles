@@ -36,3 +36,9 @@ export const GROEPJESMAKER_ZINNEN: Record<string, (g: Getallen) => string[]> = {
 export function zinnenVoor(sleutels: string[], g: Getallen): string[] {
   return sleutels.flatMap((s) => GROEPJESMAKER_ZINNEN[s]?.(g) ?? []);
 }
+
+/** De raket: wat het maatje zegt tijdens het kiezen. */
+export const RAKET_ZINNEN: Record<string, string[]> = {
+  twee: ["Je kiest twee stenen.", "Tik op een steen om hem los te laten."],
+  eerst_twee: ["Kies eerst twee stenen."],
+};

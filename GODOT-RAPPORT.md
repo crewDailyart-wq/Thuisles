@@ -131,6 +131,47 @@ Alle teksten komen door de controles uit hoofdstuk 11.
 | Met de vinger te raken (knoppen ≥ 48 px) | knoppen zijn 88 bij 88 in een speelveld van 600 breed; op 390 breed ongeveer 57 px |
 | Bestaande oefeningen werken nog | `npm run bewaak` geslaagd |
 
+## Bouwsteen 2 — de raket (Optellen)
+
+**Waar het staat**
+
+- Godot-project: `godot/raket/` met `schip.tscn` (het raketje, eigen tekening),
+  `steen.tscn`, `planeet.tscn`, `maatje.tscn` en `main.tscn`.
+- Thuisles: soort `raketsom` (`src/lib/generatoren/raketsom.ts`), scherm
+  `src/components/oefenen/Raket.tsx`, zinnen in `src/lib/godot/zinnen.ts`.
+- In het beheer: Optellen → Optellen tot en met 20 → kopje **Met de raket**:
+  **Raket naar 10** (REK-OPT-OPT-52), **Raket naar 20** (REK-OPT-OPT-53) en
+  **Raket: wat moet erbij?** (REK-OPT-OPT-54). Gekozen omdat het rekenkundig
+  hetzelfde is als "Kies twee getallen" in dat onderwerp; een kopje, geen nieuw
+  onderwerp. Met toestemming van Sara aangemaakt (eerst een kopie van de
+  database): 21, 30 en 30 opgaven, allemaal gepubliceerd, met maatje-teksten.
+
+**Wat het kind doet**
+
+- Naar het voorbeeld van Asteroid Addition. Zes zwevende stenen met een getal, een
+  planeet met het doelgetal. Tik twee stenen aan: ring eromheen, een stippellijn
+  van de raket via de stenen naar de planeet. Nog een keer tikken laat een steen
+  los. Controleer, of een tik op de planeet, laat de raket vliegen.
+- Goed: de raket landt, sterretjes. Fout: de raket schiet langs de planeet;
+  daarna lichten de goede stenen groen op en vliegt hij die route.
+- Altijd precies één goed paar (nagerekend in de generator en in
+  `npm run opgaven`). Geen klok, geen levens; Thuisles kijkt na.
+- "Wat moet erbij?": één steen is al gekozen; het kind zoekt de andere.
+
+**Nieuwe zinnen van het maatje**
+
+- "Je kiest twee stenen. Tik op een steen om hem los te laten."
+- "Kies eerst twee stenen."
+- Per opgave: "Welke twee maken samen 9?", "Tik op twee stenen.",
+  "5 en 4 is samen 9.", en bij fout bijvoorbeeld "7 en 4 is 11, niet 9. 5 en 4
+  maken samen 9." Alle teksten door de controles.
+
+**Om te weten**
+
+- Elke bouwsteen heeft nu een eigen kopie van de Godot-motor (±10 MB download per
+  bouwsteen). Later kunnen de bouwstenen één motor delen; dan hoeft een kind die
+  maar één keer te downloaden.
+
 ## Ook gedaan (open punten uit NACHTRAPPORT.md)
 
 - Stem: alleen een Nederlandse stem; heeft het apparaat er geen, dan alleen het

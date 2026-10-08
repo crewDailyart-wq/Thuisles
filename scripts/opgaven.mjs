@@ -480,6 +480,9 @@ const OEFENINGEN = [
   { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Aanvullen tot 10", soort: "rekenrekerbij", bolletjes: 3, inst: { stand: "aanvullen", werking: "alles", niveau: 3 } },
   { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen over de 10", soort: "rekenrekerbij", bolletjes: 4, inst: { stand: "over10", werking: "alles", niveau: 4 } },
   { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Splitsen via 10", soort: "rekenrekerbij", bolletjes: 5, inst: { stand: "pootjes", werking: "alles", niveau: 5 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket naar 10", soort: "raketsom", bolletjes: 2, inst: { stand: "tot10" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket naar 20", soort: "raketsom", bolletjes: 3, inst: { stand: "tot20" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket: wat moet erbij?", soort: "raketsom", bolletjes: 3, inst: { stand: "aanvullen" } },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
   { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
@@ -868,6 +871,16 @@ for (const oefening of OEFENINGEN) {
       if (f.a > 10 || f.b > 10 || f.b < 1) fouten.push(`${waar}: ${f.a} × ${f.b} past niet in de kast.`);
       if (vraag.antwoord !== String(f.a * f.b)) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${f.a} × ${f.b}.`);
       if (f.stand === "knip" && f.a <= 5) fouten.push(`${waar}: knippen kan pas vanaf 6 doosjes.`);
+    }
+    /* De raket: precies één paar stenen maakt samen het doelgetal. */
+    if (vraag.figuur?.soort === "raketsom") {
+      const f = vraag.figuur;
+      let paren = 0;
+      for (let i = 0; i < f.stenen.length; i++) for (let j = i + 1; j < f.stenen.length; j++) if (f.stenen[i] + f.stenen[j] === f.doel) paren++;
+      if (paren !== 1) fouten.push(`${waar}: ${paren} paren maken samen ${f.doel}, dat moet er precies één zijn.`);
+      const [p, q] = vraag.antwoord.split(",").map(Number);
+      if (p + q !== f.doel || p > q) fouten.push(`${waar}: het antwoord ${vraag.antwoord} past niet bij ${f.doel}.`);
+      if (f.vast >= 0 && f.stenen[f.vast] !== p && f.stenen[f.vast] !== q) fouten.push(`${waar}: de vaste steen hoort niet bij het goede paar.`);
     }
     if (vraag.figuur?.soort === "viatien" && vraag.figuur.pootjes) {
       const [l, r, n] = vraag.antwoord.split(",").map(Number);

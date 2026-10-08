@@ -134,6 +134,13 @@ export function schrijfRekenen(o: Opgave): Geschreven | null {
     case "tweegetallen":
       return tweeGetallen(o, f.getallen, f.doel);
 
+    case "raketsom": {
+      /* De raket: dezelfde uitleg als "Kies twee getallen", met een bouw-aanwijzing. */
+      const s = tweeGetallen(o, f.stenen, f.doel);
+      if (s) s.teksten.bouw = zin(f.stand === "aanvullen" ? "Tik op de steen die erbij moet." : "Tik op twee stenen.", "de stenen zweven");
+      return s;
+    }
+
     default:
       return null;
   }
