@@ -3,6 +3,30 @@
 Afspraken over hoe de oefeningen eruitzien en aanvoelen. Ze gelden voor het
 hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
 
+## Nieuwe stijl voor de hele website: de avontuurstijl (oktober 2026)
+
+Keuze van de eigenaar: de avontuurstijl vervangt de oude Thuisles-stijl voor
+de hele website. Het voorbeeld staat in `ontwerp/startscherm.png` en de stijl is
+beschreven in `STIJLGIDS.md`. De code staat op één plek: `src/app/avontuur.css`,
+met de onderdelen in `src/components/avontuur/`.
+
+- Achtergrond: koningsblauwe sterrenhemel met gloed, sterretjes, een planeet en
+  wolkjes onderaan.
+- Letters: Fredoka voor titels, Nunito voor tekst en Caveat voor kleine
+  zinnetjes in handschrift. Alleen Google Fonts.
+- Tegels, knoppen, kaarten en het tekstwolkje hebben een 3D-rand: een donkerdere
+  onderkant en een schaduw. Tegels staan een heel klein beetje scheef.
+- Witte tekst op geel krijgt altijd een donkere rand om de letters.
+- Alles wat je kunt aantikken is minstens 48 pixels.
+- De naam van de website komt uit `src/lib/merk.ts`, de mascotte uit
+  `components/avontuur/HoofdMascotte.tsx`. Schrijf die nergens anders los neer.
+
+**Overgang.** Voorlopig zijn alleen het startscherm en "Binnenkort!" in de
+nieuwe stijl gebouwd. De eigenaar keurt eerst het startscherm goed. Tot alles is
+overgezet, houden de andere schermen hun huidige stijl, en daar gelden de regels
+hieronder nog. De regels over uitlijnen, tekst, bediening en inhoud van vragen
+blijven ook in de nieuwe stijl gelden.
+
 ## Uiterlijk
 
 - Gegeven getallen staan in een geel vakje met donkere cijfers. Lege vakjes
