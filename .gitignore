@@ -57,3 +57,6 @@ next-env.d.ts
 
 # Plugin-bestanden van de eigenaar: blijven op de laptop, niet in Git.
 /artifacts
+
+# Godot-exports: worden gemaakt met scripts/godot-export.sh (groot, ±40 MB per bouwsteen)
+/public/godot/

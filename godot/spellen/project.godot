@@ -1,0 +1,37 @@
+; Engine configuration file.
+; It's best edited using the editor UI and not directly,
+; since the parameters that go here are not all obvious.
+;
+; Format:
+;   [section] ; section goes between []
+;   param=value ; assign values to parameters
+
+config_version=5
+
+[application]
+
+config/name="Thuisles-spellen"
+run/main_scene="res://start.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+boot_splash/bg_color=Color(0.059, 0.106, 0.239, 1)
+boot_splash/show_image=false
+
+[autoload]
+
+Stijl="*res://gedeeld/stijl.gd"
+Brug="*res://gedeeld/brug.gd"
+
+[display]
+
+window/size/viewport_width=960
+window/size/viewport_height=540
+window/stretch/mode="canvas_items"
+window/stretch/aspect="keep"
+window/per_pixel_transparency/allowed=true
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+environment/defaults/default_clear_color=Color(0.059, 0.106, 0.239, 1)
+viewport/transparent_background=true

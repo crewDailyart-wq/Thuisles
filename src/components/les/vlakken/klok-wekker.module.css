@@ -1,0 +1,74 @@
+/*
+  De digitale wekker van de les "De digitale klok" (oktober 2026).
+*/
+
+.cijfers {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: 76px;
+}
+
+.kiesbaar {
+  cursor: pointer;
+  transition: transform 0.15s ease;
+}
+
+.groot {
+  animation: groot 0.45s ease-out;
+  transform-box: fill-box;
+}
+@keyframes groot {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.uurknop {
+  position: absolute;
+  transform: translateX(-50%);
+  display: grid;
+  place-items: center;
+  width: 108px;
+  height: 108px;
+  border-radius: 50%;
+  border: 5px solid #ffe2c2;
+  background: #f08a24;
+  box-shadow: 0 0 22px rgba(240, 138, 36, 0.45);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  animation: erin 0.25s ease-out;
+}
+.uurknop:active:not(:disabled) {
+  background: #d9771a;
+}
+.uurknop:disabled {
+  opacity: 0.45;
+  cursor: default;
+  box-shadow: none;
+}
+.uurknop:focus-visible {
+  outline: 3px solid #9cc0ff;
+  outline-offset: 4px;
+}
+@keyframes erin {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .kiesbaar {
+    transition: none;
+  }
+  .groot,
+  .uurknop {
+    animation: none;
+  }
+}

@@ -665,6 +665,17 @@ export function Plaatjesraster({
     In het uitlegfilmpje na een fout antwoord wordt nog wél geteld: daar is het
     uitleg, en dat blijft zoals het was.
   */
+  /*
+    `onKlaar` komt bij elke weergave als nieuwe functie binnen. Hing het effect
+    hieronder daaraan, dan brak elke tussentijdse weergave (sleutel, maatje,
+    opslaan) de klokken af, en omdat `gemeld` dan al waar was, kwam het
+    feestscherm nooit: de oefening bleef hangen. Daarom via een ref.
+  */
+  const onKlaarRef = useRef(onKlaar);
+  useEffect(() => {
+    onKlaarRef.current = onKlaar;
+  }, [onKlaar]);
+
   useEffect(() => {
     if (fase !== "goed" || !beweegt || gemeld.current) return;
     gemeld.current = true;
@@ -675,12 +686,14 @@ export function Plaatjesraster({
     klokken.push(setTimeout(() => setStand("ophalen"), LOOP_MS));
 
     /* Als de mand weer vol is, mag het feestscherm komen. */
-    klokken.push(setTimeout(() => onKlaar?.(), LOOP_MS + aantal * DRUPPEL_MS + 700));
+    klokken.push(setTimeout(() => onKlaarRef.current?.(), LOOP_MS + aantal * DRUPPEL_MS + 700));
 
     return () => {
       for (const k of klokken) clearTimeout(k);
+      /* Afgebroken (andere fase of weg van het scherm): mag later opnieuw. */
+      gemeld.current = false;
     };
-  }, [fase, beweegt, aantal, onKlaar]);
+  }, [fase, beweegt, aantal]);
 
   function tik(i: number) {
     /*

@@ -65,7 +65,7 @@ function opdrachtzin(s: Somgegevens): string {
   const aantal = s.getallen[0] ?? 0;
   const links = s.getallen[1] ?? 0;
   const rechts = s.goed;
-  return `Verdeel ${aantal} kralen. ${eis(links - rechts)}`;
+  return `Verdeel ${aantal} ${aantal === 1 ? "kraal" : "kralen"}. ${eis(links - rechts)}`;
 }
 
 export const verdelenGenerator: Generator = {

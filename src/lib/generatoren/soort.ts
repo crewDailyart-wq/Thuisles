@@ -32,6 +32,9 @@ export type { Somgegevens };
  * in mandjes) bij eerlijk verdelen. De andere vijf staan nog in opgaven van de
  * eerste versie, die als concept bewaard zijn.
  */
+/** De twee bouwstenen bij optellen tot en met 20: de tienstrook en de weegschaal. */
+export type Bouwsteen = "strook" | "weegschaal";
+
 export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes" | "visjes" | "mandjes";
 
 /**
@@ -41,6 +44,11 @@ export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes
  */
 export type Figuur =
   | import("./bosspellen-catalogus").Bosfiguur
+  | {
+      /** Een hele uitleg-les op het eigen lesscherm; zie `generatoren/lesscherm.ts`. */
+      soort: "lesscherm";
+      les: string;
+    }
   | {
       soort: "splitsboom";
       geheel: number;
@@ -117,12 +125,140 @@ export type Figuur =
       tweede: number;
       stand: string;
       voorwerp: string;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
+    }
+  | {
+      /**
+       * Optellen met het rekenrek (oktober 2026).
+       *
+       * Het eerste getal staat al links op het rek; het kind schuift het tweede
+       * getal erbij, eerst de bovenste rij vol. Standen:
+       *   tot10      3 + 4
+       *   zonder     12 + 5 (zonder over de 10)
+       *   aanvullen  7 + ▢ = 10 (of 13 + ▢ = 20); `tweede` is het antwoord
+       *   over10     8 + 5
+       *   pootjes    6 + 5 met de pootjes onder de 5
+       *
+       * `rekenrek`: bij deze opgave schuift het kind zelf (om en om).
+       * `hulpBijFout`: na een fout antwoord schuiven de kralen rustig zelf.
+       * Bij "Alleen typen" haalt het ophalen beide weg.
+       */
+      soort: "rekenrekerbij";
+      stand: "tot10" | "zonder" | "aanvullen" | "over10" | "pootjes";
+      eerste: number;
+      tweede: number;
+      /** Bij aanvullen: de som andersom, 10 = 7 + ▢ in plaats van 7 + ▢ = 10. */
+      omgekeerd?: boolean;
+      rekenrek?: boolean;
+      hulpBijFout?: boolean;
+      volgnummer?: number;
+    }
+  | {
+      /**
+       * De groepjesmaker (oktober 2026), een Godot-bouwsteen: a doosjes van b
+       * eikels. Het kind bouwt het zelf; zie `generatoren/groepjesmaker.ts`.
+       */
+      soort: "groepjesmaker";
+      stand: "groepjes" | "nul-een" | "wissel" | "knip";
+      a: number;
+      b: number;
+      volgnummer?: number;
+    }
+  | {
+      /**
+       * De raket (oktober 2026), een Godot-bouwsteen: kies twee stenen die
+       * samen het doelgetal maken. `vast` is de steen die bij "aanvullen" al
+       * gekozen is (anders -1). Zie `generatoren/raketsom.ts`.
+       */
+      soort: "raketsom";
+      stand: "tot10" | "tot20" | "aanvullen";
+      doel: number;
+      stenen: number[];
+      vast: number;
+      volgnummer?: number;
+    }
+  | {
+      /**
+       * De laser (oktober 2026), een Godot-bouwsteen: raak alle goede stenen.
+       * `goed` zijn de plekken van de goede stenen. Zie `generatoren/laser.ts`.
+       */
+      soort: "laser";
+      stand: "tafel" | "minsom";
+      stenen: string[];
+      goed: number[];
+      tafel?: number;
+      doel?: number;
+      volgnummer?: number;
+    }
+  | {
+      /**
+       * Een Godot-spel van het algemene soort (oktober 2026). Eén vorm voor
+       * alle nieuwe Godot-bouwstenen: `spel` zegt welk spel er in het iframe
+       * komt, `opgave` gaat ongewijzigd naar Godot. Zie
+       * `components/oefenen/GodotSpel.tsx` en `lib/godot/spellen.ts`.
+       *
+       * invoer "typen": het kind typt het antwoord in een echt invulvak
+       *   (HARDE REGEL 5); Godot laat alleen zien. Met `wacht` gaat het vakje
+       *   pas open als Godot "klaar" meldt.
+       * invoer "kiezen": het kind kiest in Godot; Godot stuurt het antwoord.
+       */
+      soort: "godotspel";
+      spel: string;
+      stand: string;
+      invoer: "typen" | "kiezen";
+      /** De som of zin boven het spel, met "?" waar het invulvak komt (bij typen). */
+      kop: string;
+      /** Waar het invulvak voor is, voor een voorleesprogramma. */
+      label: string;
+      wacht?: boolean;
+      opgave: Record<string, unknown>;
+      /** Wat er na Controleer onder het spel staat. */
+      goedZin: string;
+      foutZin: string;
+      /** Bij een uitles: wat het maatje eerst uitlegt, zin voor zin. */
+      uitleg?: string[];
+      /** Bij een uitles: een kleine hint, zonder het antwoord. */
+      tip?: string;
+      /** Bij een uitles: welke les (`lib/lessen`). */
+      les?: string;
+      volgnummer?: number;
     }
   | {
       /** De kale plussom: twee getallen en een leeg vakje. */
       soort: "plussom";
       eerste: number;
       tweede: number;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /**
@@ -144,6 +280,22 @@ export type Figuur =
       soort: "aanvultabel";
       doel: number;
       getallen: number[];
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /** Eén som bovenaan en vier kaartjes; welke is evenveel? */
@@ -168,6 +320,28 @@ export type Figuur =
       soort: "viatien";
       eerste: number;
       tweede: number;
+      /**
+       * De schoolvorm met splitsen (oktober 2026): 6 + 5 = ▢ met twee pootjes
+       * onder de 5. Het antwoord is dan linker pootje, rechter pootje, uitkomst.
+       * Weggelaten = 6 + 5 = 10 + ▢ = ▢ zoals vroeger.
+       */
+      pootjes?: boolean;
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /** Zes getallen; welke twee maken samen het doelgetal? */
@@ -184,6 +358,22 @@ export type Figuur =
       soort: "balans";
       links: (number | null)[];
       rechts: (number | null)[];
+      /**
+       * Visueel en interactief (oktober 2026), alleen bij "Optellen tot en met
+       * 20". Weggelaten = de werking van vroeger.
+       *
+       *   bouw         het kind bouwt eerst zelf: blokjes of plaatjes in de
+       *                tienstrook, of blokjes op de weegschaal
+       *   hulpBijFout  na een fout antwoord laat die bouwsteen rustig zien hoe
+       *                het wel werkt
+       *
+       * Staat het sjabloon op "Alleen typen", dan haalt het ophalen beide weg;
+       * zie `metWerkingVanSjabloon` in `lib/data/vragen.ts`.
+       */
+      bouw?: Bouwsteen;
+      hulpBijFout?: Bouwsteen;
+      /** Vaste plek in de oefening (om en om, van makkelijk naar moeilijk). */
+      volgnummer?: number;
     }
   | {
       /**
@@ -1428,6 +1618,12 @@ export type Generator = {
     standaard: Record<Leeftijdsgroep, string>;
     /** Hoe `{som}` eruitziet. Weglaten als het type geen som in de zin heeft. */
     som?: (s: Somgegevens) => string;
+    /**
+     * De zin nog aanpassen aan deze ene som, nadat alles is ingevuld. Voor een
+     * zin die anders moet zijn bij een bepaalde variant, zodat de tekst altijd
+     * klopt met wat er in beeld staat. Geldt ook bij "teksten bijwerken".
+     */
+    pas?: (zin: string, s: Somgegevens, groep: number) => string;
   };
   /**
    * VERPLICHT. De denkfouten die bij dit soort som horen. Zonder patronen is
@@ -1827,7 +2023,8 @@ export function bepaalVraagtekst(
       ? uit.replaceAll(` {${naam}}`, "").replaceAll(`{${naam}}`, "")
       : uit.replaceAll(`{${naam}}`, woord);
   }
-  return uit.trim();
+  const pas = generator.vraagteksten.pas;
+  return (pas ? pas(uit, som, groep) : uit).trim();
 }
 
 /** Groep 3 t/m 8 naar de drie groepsvormen. Zelfde indeling als de uitleg. */

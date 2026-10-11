@@ -1,0 +1,342 @@
+/* Speelvlakken van "Aftrekken tot 10": de stippenmachine en de twee torens. */
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  color: #ffffff;
+}
+
+/* ---------- stippen ---------- */
+
+.stip {
+  position: absolute;
+  width: 76px;
+  height: 76px;
+  margin: -38px 0 0 -38px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 35% 30%, #a5a7ff 0%, #8a86ff 45%, #7258f5 100%);
+  box-shadow: 0 6px 18px rgba(80, 60, 220, 0.35);
+  animation: stipin 0.35s cubic-bezier(0.2, 1.4, 0.4, 1), zweef 6s ease-in-out 0.35s infinite;
+}
+.stip:nth-child(3n) {
+  animation-duration: 0.35s, 7s;
+}
+.stip:nth-child(3n + 1) {
+  animation-duration: 0.35s, 5.2s;
+  animation-direction: normal, reverse;
+}
+.stipweg {
+  animation: stipweg 0.45s ease-in forwards;
+}
+@keyframes stipin {
+  from {
+    transform: scale(0.2);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+@keyframes zweef {
+  0%,
+  100% {
+    transform: translate(0, 0);
+  }
+  50% {
+    transform: translate(4px, -6px);
+  }
+}
+@keyframes stipweg {
+  from {
+    transform: scale(1);
+    opacity: 1;
+  }
+  to {
+    transform: scale(1.6);
+    opacity: 0;
+  }
+}
+
+.machineknop {
+  position: absolute;
+  width: 64px;
+  height: 64px;
+  margin: -32px 0 0 -32px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 3px solid currentColor;
+  background: rgba(20, 26, 48, 0.6);
+  padding: 0;
+  cursor: pointer;
+  transition:
+    opacity 0.2s,
+    transform 0.12s;
+}
+.machineknop:active:not(:disabled) {
+  transform: scale(0.92);
+}
+.machineknop:disabled {
+  opacity: 0.38;
+  cursor: default;
+}
+.knopin {
+  animation: stipin 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.teller {
+  position: absolute;
+  transform: translate(-100%, -50%);
+  font-size: 34px;
+  font-weight: 500;
+  color: #8f90ee;
+  min-width: 60px;
+  text-align: right;
+}
+
+/* De rode krabbelcirkel: alsof iemand er met een stift omheen tekent. */
+.krabbel {
+  position: absolute;
+  pointer-events: none;
+  overflow: visible;
+}
+.krabbel path {
+  stroke-dasharray: 600;
+  stroke-dashoffset: 600;
+  animation: teken 0.7s ease-out forwards;
+}
+@keyframes teken {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+/* ---------- torens ---------- */
+
+.ufo {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: default;
+  animation: ufoin 0.8s cubic-bezier(0.2, 1, 0.4, 1);
+}
+.ufo[data-aan="true"] {
+  cursor: pointer;
+}
+.ufo[data-aan="true"]:active {
+  transform: translateY(3px);
+}
+@keyframes ufoin {
+  from {
+    transform: translateY(-120px);
+    opacity: 0;
+  }
+}
+
+.straal {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  cursor: pointer;
+  background: linear-gradient(180deg, rgba(90, 230, 160, 0.75) 0%, rgba(90, 230, 160, 0.28) 60%, rgba(90, 230, 160, 0) 100%);
+  clip-path: polygon(18% 0, 82% 0, 100% 100%, 0 100%);
+  animation: straalin 0.3s ease-out;
+}
+@keyframes straalin {
+  from {
+    opacity: 0;
+    transform: scaleY(0.3);
+    transform-origin: top;
+  }
+}
+
+.blok {
+  position: absolute;
+  border-radius: 7px;
+  border: 2px solid rgba(255, 255, 255, 0.75);
+  transition:
+    opacity 0.45s,
+    background-color 0.45s,
+    border-color 0.45s;
+  animation: blokin 0.25s ease-out;
+}
+@keyframes blokin {
+  from {
+    transform: translateY(-40px);
+    opacity: 0;
+  }
+}
+.blokop {
+  background: transparent !important;
+  border: 2px dashed rgba(230, 236, 255, 0.55);
+}
+.blokrest {
+  box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.85), 0 0 22px rgba(255, 255, 255, 0.5);
+}
+
+.vakje {
+  position: absolute;
+  border-radius: 7px;
+  border: 1.5px dashed rgba(160, 180, 220, 0.35);
+}
+
+.cijfer {
+  position: absolute;
+  transform: translateY(-50%);
+  font-size: 18px;
+  font-weight: 700;
+  width: 28px;
+  text-align: center;
+  transition: opacity 0.2s;
+}
+
+.toren {
+  position: absolute;
+  inset: 0;
+  /* ligt over de ruimteschepen en de straal heen: tikken moet erdoorheen */
+  pointer-events: none;
+  transition: transform 0.55s cubic-bezier(0.5, 0, 0.3, 1);
+}
+
+.schuif {
+  position: absolute;
+  height: 44px;
+  border-radius: 22px;
+  background: #e5e7eb;
+  box-shadow: 0 0 18px rgba(90, 230, 160, 0.35);
+  touch-action: none;
+}
+.schuifknop {
+  position: absolute;
+  top: 3px;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: #6b7280;
+  border: 2px solid #4b5563;
+  cursor: grab;
+  touch-action: none;
+}
+.schuifknop:focus-visible {
+  outline: 3px solid #4b8af5;
+  outline-offset: 2px;
+}
+.terug {
+  transition: left 0.25s ease-out;
+}
+
+.lijst {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.lijstvak {
+  height: 40px;
+  border-radius: 8px;
+  background: rgba(43, 47, 59, 0.85);
+  border: 1px solid rgba(160, 180, 220, 0.25);
+  display: grid;
+  place-items: center;
+  font-size: 20px;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: 0.04em;
+}
+.lijstvak[data-vol="true"] {
+  animation: stipin 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+
+.knoppen {
+  position: absolute;
+  display: flex;
+  gap: 12px;
+  transform: translateX(-50%);
+}
+.knop {
+  min-width: 110px;
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #2b2f3b;
+  color: #d6d8e1;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.knop:hover {
+  background: #363b49;
+}
+.knopblauw {
+  background: #4b8af5;
+  color: #ffffff;
+}
+.knopblauw:hover {
+  background: #5d97f7;
+}
+
+/* De gekoppelde knop tussen de ruimteschepen (Same Difference). */
+.knooplijnen {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+}
+.knooplijnen line {
+  stroke: rgba(230, 236, 255, 0.55);
+  stroke-width: 2;
+  stroke-dasharray: 3 6;
+  stroke-linecap: round;
+}
+.knoop {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: linear-gradient(90deg, #ffa41b 0%, #e08bd0 50%, #c400ff 100%);
+  opacity: 0.55;
+  animation: stipin 0.35s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.knoop[data-aan="true"] {
+  opacity: 1;
+  cursor: pointer;
+  box-shadow: 0 0 18px rgba(224, 139, 208, 0.6);
+}
+.knoop[data-aan="true"]:active {
+  transform: scale(0.94);
+}
+.knoop:focus-visible {
+  outline: 3px solid #4b8af5;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .knoop {
+    animation: none;
+  }
+  .stip,
+  .stipweg,
+  .knopin,
+  .ufo,
+  .straal,
+  .blok,
+  .lijstvak[data-vol="true"] {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+  }
+  .krabbel path {
+    animation-duration: 0.01s;
+  }
+  .toren,
+  .blok,
+  .terug {
+    transition-duration: 0.01s;
+  }
+}

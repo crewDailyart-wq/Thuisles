@@ -3,9 +3,10 @@ import "server-only";
 /**
  * Voorkeuren van het kind zelf.
  *
- * Nu twee: staat het geluid in het uitlegfilmpje aan, en staat het geluid in de
- * opgave aan. Die stonden in `localStorage` en dus per browser — zette een kind
- * het geluid uit op de tablet, dan stond het op de laptop gewoon weer aan.
+ * Staat het geluid in het uitlegfilmpje aan, staat het geluid in de opgave aan,
+ * en staat de stem van het maatje aan. De eerste twee stonden in `localStorage`
+ * en dus per browser — zette een kind het geluid uit op de tablet, dan stond
+ * het op de laptop gewoon weer aan.
  *
  * Bewust sleutel-waarde en geen kolommen op `kinderen`: een voorkeur erbij is
  * dan één regel hier en geen migratie op een tabel waar echte gegevens in
@@ -24,7 +25,7 @@ import { verbinding } from "@/lib/db/sqlite";
  * een openbaar eindpunt; zonder deze lijst kon iemand er willekeurige sleutels
  * en waarden in schrijven en zo de tabel als vrije opslag gebruiken.
  */
-export const KIND_INSTELLINGEN = ["uitleggeluid", "opgavegeluid"] as const;
+export const KIND_INSTELLINGEN = ["uitleggeluid", "opgavegeluid", "maatjegeluid"] as const;
 
 export type KindInstelling = (typeof KIND_INSTELLINGEN)[number];
 
@@ -33,9 +34,9 @@ export function isKindInstelling(naam: string): naam is KindInstelling {
 }
 
 /** De standaard als het kind nog niets heeft gekozen: geluid aan. */
-export type Geluidsvoorkeuren = { uitleg: boolean; opgave: boolean };
+export type Geluidsvoorkeuren = { uitleg: boolean; opgave: boolean; maatje: boolean };
 
-const STANDAARD: Geluidsvoorkeuren = { uitleg: true, opgave: true };
+const STANDAARD: Geluidsvoorkeuren = { uitleg: true, opgave: true, maatje: true };
 
 /**
  * De geluidsvoorkeuren van dit kind.
@@ -52,6 +53,8 @@ export function haalGeluidsvoorkeuren(kindId: string): Geluidsvoorkeuren {
   for (const r of rijen) {
     if (r.sleutel === "uitleggeluid") uit.uitleg = r.waarde !== "uit";
     if (r.sleutel === "opgavegeluid") uit.opgave = r.waarde !== "uit";
+    /* De stem van het maatje (wachtrij, oktober 2026); het wolkje blijft altijd. */
+    if (r.sleutel === "maatjegeluid") uit.maatje = r.waarde !== "uit";
   }
   return uit;
 }

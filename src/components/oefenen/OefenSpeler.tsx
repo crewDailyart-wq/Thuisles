@@ -20,7 +20,7 @@
 import Link from "next/link";
 import { KralenAvontuur } from "./KralenAvontuur";
 import { BosSpel } from "@/components/oefenen/BosSpel";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { beloonGoedAntwoord, bewaarAntwoord, meldLastig, rondAf } from "@/app/oefenacties";
 import { Icoon } from "@/components/kind/Icoon";
 import { Feestscherm } from "@/components/oefenen/Feestscherm";
@@ -55,6 +55,10 @@ import {
   zetOpgavegeluid,
 } from "@/lib/geluid";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
+import { Maatje, type MaatjeBericht } from "@/components/oefenen/Maatje";
+import { herkenMaatjeFout } from "@/lib/maatje/herken";
+import { GEEN_PLAATJE, type MaatjeTeksten } from "@/lib/maatje/types";
+import { meldOnbekendAntwoord, zetGeluidsvoorkeur } from "@/app/oefenacties";
 import { Splitsopdracht, isSplitsfiguur } from "@/components/oefenen/Splitsopdracht";
 import { Optelopdracht, isOptelfiguur } from "@/components/oefenen/Optelopdracht";
 import { Erafopdracht, isEraffiguur } from "@/components/oefenen/Erafopdracht";
@@ -64,6 +68,12 @@ import { Tijdopdracht, isTijdfiguur } from "@/components/oefenen/Tijdopdracht";
 import { Geldopdracht, isGeldfiguur } from "@/components/oefenen/Geldopdracht";
 import { Verhaalopdracht } from "@/components/oefenen/Verhaalopdracht";
 import { Rekenopdracht, isRekenfiguur } from "@/components/oefenen/Rekenopdracht";
+import { RekenrekErbijOpdracht, isRekenrekfiguur } from "@/components/oefenen/RekenrekErbij";
+import { GroepjesmakerOpdracht, isGroepjesfiguur } from "@/components/oefenen/Groepjesmaker";
+import { RaketOpdracht, isRaketfiguur } from "@/components/oefenen/Raket";
+import { LaserOpdracht, isLaserfiguur } from "@/components/oefenen/Laser";
+import { GodotSpelOpdracht, isGodotSpelfiguur } from "@/components/oefenen/GodotSpel";
+import { isGodotfiguur } from "@/lib/godot/figuren";
 import { isVerhaalfiguur } from "@/lib/verhaalfiguren";
 import { nuInMs } from "@/lib/klok";
 import {
@@ -161,6 +171,13 @@ const KIESPAUZE_MS = 500;
 
 // ---------------------------------------------------------------------------
 
+/**
+ * Het knopje "Ik wil een tip" onder de opgave. Verborgen, niet verwijderd: de
+ * maatje-handleiding zegt "nooit een knop Hulp", en het maatje geeft zelf een
+ * tip als een kind lang niets doet.
+ */
+const TIPKNOP_ZICHTBAAR = false;
+
 export function OefenSpeler({
   vragen,
   terugHref,
@@ -172,6 +189,7 @@ export function OefenSpeler({
   kindId,
   oefenpad,
   hervat,
+  maatje,
 }: {
   vragen: OefenVraag[];
   terugHref: string;
@@ -195,6 +213,12 @@ export function OefenSpeler({
     apparaat. `vragen` is dan de bewaarde serie en niet een nieuwe greep.
   */
   hervat: { rondeId: string; antwoorden: RondeAntwoord[] } | null;
+  /**
+   * Het maatje (wachtrij, oktober 2026): de teksten per vraag-id, alleen voor
+   * vragen waar het maatje aan staat, en of de stem aan staat voor dit kind.
+   * Zonder teksten bij een vraag verandert er niets aan het scherm.
+   */
+  maatje?: { teksten: Record<string, MaatjeTeksten>; geluid: boolean };
 }) {
   const leeftijd = leeftijdsgroepVan(groep);
   /*
@@ -329,6 +353,69 @@ export function OefenSpeler({
   const [klaar, setKlaar] = useState(false);
   const [snelFout, setSnelFout] = useState(0);
   const [rustBericht, setRustBericht] = useState("");
+
+  /*
+    Het maatje. `maatjeBericht` is wat het na een gebeurtenis zegt (goed, fout,
+    de tip); bij een nieuwe opgave leest het vanzelf voor, zie `voorleesBericht`.
+    Bij een goed antwoord wacht het feestscherm tot het maatje uitgepraat is,
+    en bij een fout wacht de uitleg-animatie daarop — anders praten er twee
+    stemmen door elkaar.
+  */
+  const [maatjeBericht, setMaatjeBericht] = useState<MaatjeBericht | null>(null);
+  const [maatjeWacht, setMaatjeWacht] = useState(false);
+  const [maatjeUitlegWacht, setMaatjeUitlegWacht] = useState(false);
+  const [maatjeGeluid, setMaatjeGeluid] = useState(maatje?.geluid ?? true);
+  const laatsteActiviteit = useRef(nuInMs());
+  const tipGegeven = useRef(-1);
+  const maatjeTekst = maatje?.teksten[vragen[index]?.id ?? ""];
+
+  /*
+    Tijdens het bouwen in een Godot-bouwsteen: wat daar gebeurt, telt als
+    bezig zijn (een tik in de kast komt hier niet als tik binnen), en soms zegt
+    het maatje iets ("Dat is evenveel!"). Een lege lijst = alleen bezig.
+  */
+  /*
+    Godot-bouwstenen krijgen het hele oefenscherm in het donkere thema (zie
+    globals.css, data-stijl="nacht"), tenzij ?stijl=thuisles in het adres staat.
+  */
+  const godotRonde = serie.some((v) => isGodotfiguur(v.figuur));
+  useEffect(() => {
+    if (!godotRonde) return;
+    if (new URLSearchParams(window.location.search).get("stijl") === "thuisles") return;
+    const html = document.documentElement;
+    html.dataset.stijl = "nacht";
+    return () => {
+      delete html.dataset.stijl;
+    };
+  }, [godotRonde]);
+
+  const bouwBericht = useRef(0);
+  const zegTijdensBouwen = useCallback((zinnen: string[]) => {
+    laatsteActiviteit.current = nuInMs();
+    if (zinnen.length === 0) return;
+    bouwBericht.current += 1;
+    setMaatjeBericht({
+      id: `bouw:${bouwBericht.current}`,
+      zinnen: zinnen.map((tekst) => ({ tekst, stap: "geen plaatje" })),
+      houding: "troost",
+    });
+  }, []);
+
+  /*
+    Tekst 6, de tip: alleen als het kind 30 seconden niets doet, één keer per
+    opgave. Elke tik, toets of invoer in de oefening zet de klok terug.
+  */
+  useEffect(() => {
+    if (!maatjeTekst || fase !== "bezig") return;
+    laatsteActiviteit.current = nuInMs();
+    const klok = setInterval(() => {
+      if (tipGegeven.current === index) return;
+      if (nuInMs() - laatsteActiviteit.current < 30_000) return;
+      tipGegeven.current = index;
+      setMaatjeBericht({ id: `tip:${index}`, zinnen: [maatjeTekst.tip], houding: "denkt" });
+    }, 1000);
+    return () => clearInterval(klok);
+  }, [maatjeTekst, fase, index]);
 
   /*
     Waar deze sessie onder bewaard wordt. Pas in de browser bekend, want het pad
@@ -488,7 +575,17 @@ export function OefenSpeler({
     const eerstDeRedenering =
       (vraag.figuur?.soort === "rekenrekaf" && vraag.figuur.stand !== "vanaf10") ||
       /* Bij delen om zelf te doen: eerst "Goed zo!" met de deelsom, dan het feest. */
-      (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true));
+      (vraag.figuur?.soort === "deelsom" && (vraag.figuur.stap !== undefined || vraag.figuur.magneetjes === true)) ||
+      /* Optellen tot en met 20 met zelf bouwen: eerst "Goed zo!" met de som, dan het feest. */
+      (isOptelfiguur(vraag.figuur) && "bouw" in vraag.figuur && !!vraag.figuur.bouw) ||
+      /* Optellen met het rekenrek en de pootjes: eerst "Goed zo!" met de som. */
+      (vraag.figuur?.soort === "rekenrekerbij" && !!vraag.figuur.hulpBijFout) ||
+      /* De groepjesmaker: eerst tellen de doosjes mee, dan het feest. */
+      vraag.figuur?.soort === "groepjesmaker" ||
+      vraag.figuur?.soort === "raketsom" ||
+      vraag.figuur?.soort === "laser" ||
+      vraag.figuur?.soort === "godotspel" ||
+      (vraag.figuur?.soort === "viatien" && !!vraag.figuur.pootjes);
 
     if (goed) {
       setFase("goed");
@@ -527,6 +624,16 @@ export function OefenSpeler({
         seconden,
         gegokt: false,
       });
+      if (maatjeTekst) {
+        /* Tekst 3. Had het kind eerder een fout bij dit leerdoel: "Zie je wel, je kunt het!" */
+        const eerderFout = gelogd.some((a) => a.leerdoelId === vraag.leerdoelId && !a.goed);
+        const openers = maatjeTekst.goed.openers;
+        const opener = eerderFout ? "Zie je wel, je kunt het!" : openers[(index * 7 + gelogd.length) % openers.length];
+        setMaatjeBericht({ id: `goed:${index}`, zinnen: [{ tekst: opener, stap: "geen plaatje" }, ...maatjeTekst.goed.zinnen], houding: "blij" });
+        setMaatjeWacht(true);
+        /* Vangnet: hoe dan ook door na een paar tellen. */
+        setTimeout(() => setMaatjeWacht(false), 12_000);
+      }
       return;
     }
 
@@ -550,6 +657,20 @@ export function OefenSpeler({
 
     setPatroon(gevonden);
     setFase("fout");
+    if (maatjeTekst) {
+      /* Tekst 4 bij een bekende fout, anders tekst 5 — en dan onthouden we het antwoord. */
+      const bekend = herkenMaatjeFout(maatjeTekst, gekozen);
+      if (bekend) {
+        const openers = maatjeTekst.fouten.openers;
+        const opener = openers[(index * 7 + gelogd.length) % openers.length];
+        setMaatjeBericht({ id: `fout:${index}`, zinnen: [{ tekst: opener, stap: "geen plaatje" }, ...bekend.zinnen], houding: "troost" });
+      } else {
+        setMaatjeBericht({ id: `fout:${index}`, zinnen: maatjeTekst.uitleg, houding: "troost" });
+        void meldOnbekendAntwoord(vraag.id, gekozen);
+      }
+      setMaatjeUitlegWacht(true);
+      setTimeout(() => setMaatjeUitlegWacht(false), 15_000);
+    }
     leg({
       goed: false,
       uitkomst: "fout",
@@ -721,6 +842,19 @@ export function OefenSpeler({
     setUitlegWeggeklikt(false);
     setPatroon(null);
     setStart(nuInMs());
+    setMaatjeBericht(null);
+    setMaatjeWacht(false);
+    setMaatjeUitlegWacht(false);
+  }
+
+  function wisselMaatjeGeluid(aan: boolean) {
+    setMaatjeGeluid(aan);
+    void zetGeluidsvoorkeur("maatjegeluid", aan);
+  }
+
+  function maatjeKlaar(id: string) {
+    if (id.startsWith("goed:")) setMaatjeWacht(false);
+    if (id.startsWith("fout:")) setMaatjeUitlegWacht(false);
   }
 
   if (klaar) {
@@ -732,6 +866,17 @@ export function OefenSpeler({
         terugHref={terugHref}
         terugLabel={terugLabel}
         herhaalHref={herhaalHref}
+        maatje={
+          serie.some((v) => maatje?.teksten[v.id])
+            ? {
+                zin: eindzinMaatje(serie, gelogd, maatje?.teksten ?? {}),
+                geluid: maatjeGeluid,
+                onGeluid: wisselMaatjeGeluid,
+                /* Godot-bouwstenen: het tijdelijke maatje, nergens de vos. */
+                poppetje: serie.some((v) => isGodotfiguur(v.figuur)) ? "tijdelijk" : "vos",
+              }
+            : null
+        }
       />
     );
   }
@@ -834,7 +979,7 @@ export function OefenSpeler({
         `key` per feestje, zodat elk goed antwoord een eigen, opnieuw beginnende
         animatie krijgt in plaats van dat de tweede de eerste overneemt.
       */}
-      {fase === "goed" && !wachtOpVos && (
+      {fase === "goed" && !wachtOpVos && !maatjeWacht && (
         <Feestscherm
           key={`feest-${feestje}`}
           onAfgelopen={volgende}
@@ -858,7 +1003,14 @@ export function OefenSpeler({
         kruimelpad — dat hoort bij kiezen wát je gaat oefenen, niet bij het
         oefenen zelf.
       */}
-      <div className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10">
+      <div
+        className="mx-auto w-full max-w-3xl px-4 py-6 sm:px-6 sm:py-10"
+        /* Bij een Godot-spel: een groot speelvlak met de mascotte rechts (globals.css). */
+        data-godotronde={godotRonde ? "" : undefined}
+        onPointerDownCapture={() => (laatsteActiviteit.current = nuInMs())}
+        onKeyDownCapture={() => (laatsteActiviteit.current = nuInMs())}
+        onInputCapture={() => (laatsteActiviteit.current = nuInMs())}
+      >
         {/*
           Onderaan blijft een strook vrij zodra er een mascotte bij hoort.
 
@@ -873,6 +1025,7 @@ export function OefenSpeler({
           Controleer heen.
         */}
         <div
+          data-oefenkaart=""
           className={`relative rounded-groot border border-rand bg-kaart p-5 shadow-op sm:p-8 lg:p-10 ${
             metMascotte ? "pb-32 sm:pb-32 lg:pb-32" : ""
           }`}
@@ -1101,12 +1254,17 @@ export function OefenSpeler({
                   if (magControleren) controleer();
                 }}
                 onSprongKlaar={() => setWachtOpVos(false)}
+                onMaatje={zegTijdensBouwen}
               />
             )}
           </div>
 
-          {/* Hint vragen mag altijd, ook vooraf. */}
-          {fase === "bezig" && !busWacht && hinttekst && (
+          {/*
+            Hint vragen mag altijd, ook vooraf. Het knopje staat op verborgen
+            (keuze van de eigenaar, 8 oktober 2026): het maatje geeft na 30
+            seconden zelf een tip. Weer tonen = TIPKNOP_ZICHTBAAR op true.
+          */}
+          {TIPKNOP_ZICHTBAAR && fase === "bezig" && !busWacht && hinttekst && (
             <div className="mt-4">
               {hintOpen ? (
                 <p className="rounded-2xl bg-amber-zacht px-4 py-3 text-sm font-semibold text-inkt-zacht">
@@ -1146,15 +1304,16 @@ export function OefenSpeler({
                 waar/niet-waar staat het goede antwoord al groen tussen de
                 keuzes, dus dan hoeft dit niet.
               */}
-              {vraag.vorm === "open" && (
+              {vraag.vorm === "open" && !(vraag.figuur as { verbergGoedAntwoord?: boolean } | null)?.verbergGoedAntwoord && (
                 <div className="mt-4 flex justify-center">
                   <GoedAntwoordvak vraag={vraag} />
                 </div>
               )}
 
               {/* De animatie hoort erbij en staat er meteen; geen knop. */}
-              {(animatie || uitlegStappen) && !uitlegWeggeklikt && (
+              {(animatie || uitlegStappen) && !uitlegWeggeklikt && !maatjeUitlegWacht && (
                 <Uitlegweergave
+                  zonderVos={isGodotfiguur(vraag.figuur)}
                   vorm={groepsvorm}
                   script={animatie}
                   terugval={uitlegStappen ?? undefined}
@@ -1222,6 +1381,7 @@ export function OefenSpeler({
               {(animatie || uitlegStappen) &&
                 (uitlegOpen ? (
                   <Uitlegweergave
+                    zonderVos={isGodotfiguur(vraag.figuur)}
                     vorm={groepsvorm}
                     script={animatie}
                     terugval={uitlegStappen ?? undefined}
@@ -1254,7 +1414,7 @@ export function OefenSpeler({
             Gecentreerd, net als de tekening, de vraag en het antwoordvak
             erboven. In de focusstand loopt alles over één middellijn.
           */}
-          <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <div data-knoppen="" className="mt-6 flex flex-wrap items-center justify-center gap-3">
             {/*
               Geen knop bij de vraagtypes waar je uit vakken kiest: daar wordt
               de tik zelf nagekeken, een halve tel later.
@@ -1293,6 +1453,33 @@ export function OefenSpeler({
               </button>
             )}
           </div>
+
+          {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. */}
+          {maatjeTekst && (
+            <Maatje
+              bericht={
+                maatjeBericht ??
+                (fase === "bezig"
+                  ? {
+                      id: `lees:${index}:${vraag.id}`,
+                      /* Bij een les zegt de mascotte eerst de uitleg van deze stap. */
+                      zinnen: [
+                        ...(isGodotSpelfiguur(vraag.figuur) && vraag.figuur.uitleg
+                          ? vraag.figuur.uitleg.map((tekst) => ({ tekst, stap: GEEN_PLAATJE }))
+                          : []),
+                        maatjeTekst.voorlezen,
+                        ...(maatjeTekst.bouw ? [maatjeTekst.bouw] : []),
+                      ],
+                      houding: "rustig",
+                    }
+                  : null)
+              }
+              geluid={maatjeGeluid}
+              onGeluid={wisselMaatjeGeluid}
+              onKlaar={maatjeKlaar}
+              poppetje={isGodotfiguur(vraag.figuur) ? "tijdelijk" : "vos"}
+            />
+          )}
         </div>
       </div>
     </DeelbouwControle.Provider>
@@ -1350,6 +1537,7 @@ function Antwoordvelden({
   onKies,
   onBevestig,
   onSprongKlaar,
+  onMaatje,
 }: {
   vraag: OefenVraag;
   antwoord: string;
@@ -1365,6 +1553,8 @@ function Antwoordvelden({
   onBevestig: () => void;
   /** Alleen bij de stapstenen: de mascotte is aan de overkant. */
   onSprongKlaar?: () => void;
+  /** Het maatje zegt iets tijdens het bouwen (Godot-bouwstenen). */
+  onMaatje?: (zinnen: string[]) => void;
 }) {
   /*
     Helemaal bovenaan, want hieronder staan de takken per vraagvorm en die
@@ -1706,6 +1896,7 @@ function Antwoordvelden({
         metCursor
         onWijzig={onKies}
         onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
       />
     );
   }
@@ -1780,6 +1971,89 @@ function Antwoordvelden({
     Verhaaltjessommen: het verhaal staat als vraag bovenaan; hier alleen de
     vier knoppen of het invoerveld met de eenheid erachter.
   */
+  /*
+    De groepjesmaker (Godot): met opzet zonder `key` per vraag, zodat de kast
+    blijft staan en Godot maar één keer laadt.
+  */
+  if (vraag.vorm === "open" && isGroepjesfiguur(vraag.figuur)) {
+    return (
+      <GroepjesmakerOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* Een Godot-spel van het algemene soort: ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isGodotSpelfiguur(vraag.figuur)) {
+    return (
+      <GodotSpelOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        juist={vraag.antwoord}
+        antwoord={antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* De laser (Godot): ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isLaserfiguur(vraag.figuur)) {
+    return (
+      <LaserOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* De raket (Godot): ook zonder `key` per vraag. */
+  if (vraag.vorm === "open" && isRaketfiguur(vraag.figuur)) {
+    return (
+      <RaketOpdracht
+        vraagId={vraag.id}
+        figuur={vraag.figuur}
+        juist={vraag.antwoord}
+        fase={fase}
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+        onMaatje={onMaatje}
+      />
+    );
+  }
+
+  /* Optellen met het rekenrek: de som, het rek om en om, en de pootjes. */
+  if (vraag.vorm === "open" && isRekenrekfiguur(vraag.figuur)) {
+    return (
+      <RekenrekErbijOpdracht
+        key={vraag.id}
+        figuur={vraag.figuur}
+        antwoord={antwoord}
+        fase={fase}
+        metCursor
+        onWijzig={onKies}
+        onBevestig={onBevestig}
+        onKlaar={onSprongKlaar}
+      />
+    );
+  }
+
   /* Erbij- en erafsommen tot en met 100: de som, de vlek, stippen, kaartjes. */
   if (vraag.vorm === "open" && isRekenfiguur(vraag.figuur)) {
     return (
@@ -2069,6 +2343,7 @@ function Uitslag({
   terugHref,
   terugLabel,
   herhaalHref,
+  maatje,
 }: {
   vragen: OefenVraag[];
   antwoorden: RondeAntwoord[];
@@ -2076,6 +2351,8 @@ function Uitslag({
   terugHref: string;
   terugLabel: string;
   herhaalHref: string;
+  /** Wat het maatje aan het eind zegt; null als het maatje bij deze ronde uit stond. */
+  maatje?: { zin: string; geluid: boolean; onGeluid: (aan: boolean) => void; poppetje?: "vos" | "tijdelijk" } | null;
 }) {
   const [lastigGemeld, setLastigGemeld] = useState<string[]>([]);
 
@@ -2114,6 +2391,17 @@ function Uitslag({
           Je hebt {antwoorden.length} {antwoorden.length === 1 ? "vraag" : "vragen"} gemaakt,{" "}
           {totaalGoed} goed.
         </p>
+
+        {maatje && (
+          <div className="text-left">
+            <Maatje
+              bericht={{ id: "einde", zinnen: [{ tekst: maatje.zin, stap: "geen plaatje" }], houding: "blij" }}
+              geluid={maatje.geluid}
+              onGeluid={maatje.onGeluid}
+              poppetje={maatje.poppetje}
+            />
+          </div>
+        )}
 
         <ul className="mt-5 flex flex-col gap-2 text-left">
           {regels.map((r) => (
@@ -2193,4 +2481,18 @@ function Uitslag({
       </div>
     </div>
   );
+}
+
+/**
+ * Wat het maatje aan het eind van de ronde zegt (hoofdstuk 3 van
+ * MAATJE-HANDLEIDING.md): wat het kind gedaan heeft, niet hoe goed het was.
+ * Bij veel fouten: "Dit was een moeilijke. Morgen nog een keer?"
+ */
+function eindzinMaatje(serie: OefenVraag[], gelogd: RondeAntwoord[], teksten: Record<string, MaatjeTeksten>): string {
+  const aantal = gelogd.length;
+  const fout = gelogd.filter((a) => !a.goed).length;
+  if (aantal > 0 && fout * 2 > aantal) return "Dit was een moeilijke. Morgen nog een keer?";
+  const alleSommen = serie.every((v) => (teksten[v.id]?.rondewoord ?? "sommen") === "sommen");
+  const woord = aantal === 1 ? (alleSommen ? "som" : "opdracht") : alleSommen ? "sommen" : "opdrachten";
+  return `Je hebt ${aantal} ${woord} gemaakt. Goed gewerkt!`;
 }

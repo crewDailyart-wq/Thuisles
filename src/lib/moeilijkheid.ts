@@ -432,6 +432,54 @@ export function puntenVan(soort: string, inst: Instellingen): number {
       p = keertafelpunten(inst, ["1", "2", "3", "4", "5"]);
       break;
 
+    case "lasertafel":
+      /* 2, 5 en 10 eerst; 3 en 4 een stap verder; 6 tot en met 9 het moeilijkst. */
+      p = NIVEAUPUNTEN[{ "2-5-10": 2, "3-4": 3, "6-9": 4 }[tekst(inst, "tafels", "2-5-10")] ?? 2];
+      break;
+
+    case "laserminsom":
+      p = NIVEAUPUNTEN[3];
+      break;
+
+    case "les":
+      /* Een uitleg-les: geen oefening om moeilijkheid op te zetten; het eerste bolletje. */
+      p = NIVEAUPUNTEN[1];
+      break;
+
+    case "tegelsom":
+      /* Tot 10 en dubbel zijn de eerste stap; 10 + een getal en over de 10 een stap verder. */
+      p = NIVEAUPUNTEN[{ tot10: 1, dubbel: 2, tien: 2, over10: 3 }[tekst(inst, "stand", "tot10")] ?? 1];
+      break;
+
+    case "tegelmaak":
+      /* Het veld vol maken tot 10 is splitsen; daarboven een stap verder. */
+      p = NIVEAUPUNTEN[getal(inst, "tot", 10) <= 10 ? 2 : 3];
+      break;
+
+    case "stipweg":
+    case "stipverschil":
+      /* Tot 10 is groep 3; over de 10 een stap verder. */
+      p = NIVEAUPUNTEN[getal(inst, "tot", 10) <= 10 ? (soort === "stipweg" ? 1 : 2) : 3];
+      break;
+
+    case "stipvergelijk":
+      p = NIVEAUPUNTEN[tekst(inst, "zoek", "meeste") === "beide" ? 2 : 1];
+      break;
+
+    case "stipteken":
+      p = NIVEAUPUNTEN[getal(inst, "tot", 20) <= 10 ? 2 : 3];
+      break;
+
+    case "raketsom":
+      /* Naar 10 is de eerste stap, naar 20 en aanvullen een stap verder. */
+      p = NIVEAUPUNTEN[tekst(inst, "stand", "tot10") === "tot10" ? 2 : 3];
+      break;
+
+    case "groepjesmaker":
+      /* Zelf bouwen met de groepjesmaker: tafels tot 5, knippen is een stap verder. */
+      p = NIVEAUPUNTEN[["groepjes", "nul-een"].includes(tekst(inst, "stand", "gemengd")) ? 2 : 3];
+      break;
+
     case "keerkoppelen":
       /* Vijf sommen door elkaar; meer tafels is meer omschakelen. */
       p = lijst(inst, "tafels", ["1", "2", "5", "10"]).length > 5 ? 4 : 2;
@@ -681,6 +729,7 @@ export function puntenVan(soort: string, inst: Instellingen): number {
 
     case "rekensom":
     case "verhaaltje":
+    case "rekenrekerbij":
       /* De bolletjes staan per oefening in WERKPLAN.md en gaan als niveau mee. */
       p = NIVEAUPUNTEN[Math.max(1, Math.min(5, getal(inst, "niveau", 1)))];
       break;

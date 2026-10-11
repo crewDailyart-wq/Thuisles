@@ -172,7 +172,7 @@ export function Rekenopdracht({
 
   const vak = (i: number, label: string, opVlek = false) => (
     <Vak
-      key={i}
+      key={`vak-${i}`}
       waarde={vakjes[i] ?? ""}
       label={label}
       uitslag={uitslag(i)}

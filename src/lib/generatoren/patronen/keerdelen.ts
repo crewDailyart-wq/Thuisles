@@ -193,7 +193,7 @@ export const rasterPatronen: Foutpatroon[] = [
     uitleg: (som) => {
       const [rijen, kolommen] = som.getallen;
       return [
-        { tekst: `Er zijn ${rijen} rijen van ${kolommen}.`, som: `${rijen} × ${kolommen}` },
+        { tekst: `${rijen === 1 ? "Er is 1 rij" : `Er zijn ${rijen} rijen`} van ${kolommen}.`, som: `${rijen} × ${kolommen}` },
         { tekst: "Samen is dat:", som: String(rijen * kolommen) },
       ];
     },
@@ -223,7 +223,7 @@ export const rasterPatronen: Foutpatroon[] = [
       const [rijen, kolommen] = som.getallen;
       const reeks = Array.from({ length: Math.min(rijen, 8) }, () => kolommen).join(" + ");
       return [
-        { tekst: `${rijen} rijen van ${kolommen}:`, som: reeks + (rijen > 8 ? " + …" : "") },
+        { tekst: `${rijen} ${rijen === 1 ? "rij" : "rijen"} van ${kolommen}:`, som: reeks + (rijen > 8 ? " + …" : "") },
         { tekst: "Samen is dat:", som: String(rijen * kolommen) },
       ];
     },

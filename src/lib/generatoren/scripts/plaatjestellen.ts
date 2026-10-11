@@ -70,7 +70,8 @@ function perRijStappen(som: Somgegevens, vorm: Groepsvorm, metTikken: boolean): 
   const stappen: Uitlegscript["stappen"] = [
     {
       model: beeld(som, 0, null),
-      zin: "Tel niet één voor één. Tel per rij.",
+      /* Groep 3-4: hooguit zes woorden per zin. */
+      zin: MANIER_VAN_VORM[vorm] === "34" ? "Tel per rij." : "Tel niet één voor één. Tel per rij.",
       houding: "wijzend",
       kant: "links",
     },
@@ -154,7 +155,7 @@ function eenVoorEen(som: Somgegevens, vorm: Groepsvorm, metTikken: boolean): Uit
 
   stappen.push({
     model: beeld(som, totaal, null, String(totaal)),
-    zin: `Het laatste getal is het antwoord: ${totaal}.`,
+    zin: metTikken ? `Dus het zijn er ${totaal}.` : `Het laatste getal is het antwoord: ${totaal}.`,
     feest: true,
     houding: "juichend",
     beweging: "juichen",

@@ -1,0 +1,103 @@
+/*
+  De getallenlijn met sprongen (oktober 2026), naar Synthesis "Subtract on
+  the Number Line · Difference Dash". Maten in punten van het vlak van 980 × 720.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.tik {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 12px;
+}
+.tik:not(:disabled) {
+  cursor: pointer;
+}
+.tik:not(:disabled):hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.label {
+  position: absolute;
+  width: 60px;
+  text-align: center;
+  font-weight: 700;
+  pointer-events: none;
+  transition:
+    color 0.2s,
+    font-size 0.2s,
+    opacity 0.2s;
+}
+
+/* Een boog wordt getekend, van begin naar eind. */
+.boog {
+  stroke-dasharray: 1;
+  stroke-dashoffset: 0;
+  animation: teken 0.45s ease-out backwards;
+}
+@keyframes teken {
+  from {
+    stroke-dashoffset: 1;
+  }
+}
+
+/* Het getal boven een boog verschijnt als de boog getekend is. */
+.boogLabel {
+  animation: verschijn 0.3s ease-out 0.35s backwards;
+}
+@keyframes verschijn {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Het sterretje springt naar zijn nieuwe plek. */
+.springer {
+  position: absolute;
+  width: 54px;
+  height: 60px;
+  pointer-events: none;
+  transition: left 0.45s ease-in-out;
+}
+.hop {
+  animation: hop 0.45s ease-in-out;
+}
+@keyframes hop {
+  50% {
+    transform: translateY(-46px);
+  }
+}
+
+.kristal {
+  transition: fill 0.3s;
+}
+.kristalAan {
+  animation: glans 0.5s ease-out;
+}
+@keyframes glans {
+  from {
+    transform: scale(1.5);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .boog,
+  .boogLabel,
+  .hop,
+  .kristalAan {
+    animation: none;
+  }
+  .springer,
+  .label,
+  .kristal {
+    transition: none;
+  }
+}

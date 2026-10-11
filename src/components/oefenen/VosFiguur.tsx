@@ -26,6 +26,12 @@ import { abonneerPraten, praatOpServer, praatVos } from "@/lib/stem";
 
 export type Beweging = "stil" | "praten" | "wijzen" | "juichen";
 
+/*
+  Onthouden dat de plaatjes er niet zijn, voor dit hele bezoek. Dan begint een
+  volgende Vos meteen getekend, in plaats van eerst een kapot plaatje te tonen.
+*/
+let plaatjesBestaan: boolean | null = null;
+
 /** Hoe ver de mond openstaat. */
 type Mond = "dicht" | "half" | "open";
 
@@ -41,7 +47,30 @@ export function VosFiguur({
   const praat = useSyncExternalStore(abonneerPraten, praatVos, praatOpServer);
   const [mondStand, setMondStand] = useState<Mond>("dicht");
   const [knippert, setKnippert] = useState(false);
-  const [heeftPlaatje, setHeeftPlaatje] = useState(true);
+  /*
+    Eerst getekend; pas als vaststaat dat het plaatje echt laadt, komt het
+    plaatje ervoor in de plaats. Andersom ging het mis: een plaatje dat al
+    mislukte vóórdat React de pagina overnam, gaf geen `onError` meer, en dan
+    bleef er een kapot plaatje staan.
+  */
+  const [heeftPlaatje, setHeeftPlaatje] = useState(false);
+  useEffect(() => {
+    if (plaatjesBestaan === false) return;
+    const proef = new Image();
+    let weg = false;
+    proef.onload = () => {
+      plaatjesBestaan = true;
+      if (!weg) setHeeftPlaatje(true);
+    };
+    proef.onerror = () => {
+      plaatjesBestaan = false;
+      if (!weg) setHeeftPlaatje(false);
+    };
+    proef.src = vosBestand(houding);
+    return () => {
+      weg = true;
+    };
+  }, [houding]);
 
   /*
     De mond gaat open en dicht zolang de stem praat, met een natuurlijk ritme.

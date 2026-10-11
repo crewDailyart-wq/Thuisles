@@ -21,6 +21,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
 import { OefenSpeler } from "@/components/oefenen/OefenSpeler";
+import { LesOefening } from "@/components/les/LesOefening";
 import { haalHuidigKind, haalOefenStart, haalSleutelstand } from "@/lib/data/queries";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
 import { isVisueleSom, kansGenerator } from "@/lib/generatoren/soort";
@@ -33,6 +34,9 @@ import {
   telAntwoordenVanKind,
 } from "@/lib/data/voortgang";
 import type { OefenVraag, VraagInContext } from "@/lib/vraagtypes";
+import { haalMaatjeTeksten, leerdoelenMetMaatje } from "@/lib/data/maatje";
+import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
+import type { MaatjeTeksten } from "@/lib/maatje/types";
 
 /**
  * Hoeveel vragen deze oefensessie telt.
@@ -279,7 +283,7 @@ export default async function OefeningPagina({
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
   const rijen = hervat ? hervatRijen : opVolgorde;
 
-  const vragen: OefenVraag[] = rijen.map((v) => ({
+  const alleRondevragen: OefenVraag[] = rijen.map((v) => ({
     id: v.id,
     vorm: v.vorm,
     vraagtekst: v.vraagtekst,
@@ -304,6 +308,45 @@ export default async function OefeningPagina({
     leerdoelId: v.leerdoelId,
     leerdoelTitel: v.leerdoelTitel,
   }));
+
+  /*
+    Een uitleg-les op het eigen lesscherm (oktober 2026): de hele les is één
+    vraag en speelt schermvullend. Dat kan alleen als het kind precies dat ene
+    leerdoel koos. Oefent het kind het hele onderwerp, dan blijven de lessen
+    erbuiten: die passen niet in de gewone speler.
+  */
+  const lesvraag =
+    gekozenLeerdoel && alleRondevragen.length >= 1 && alleRondevragen[0].figuur?.soort === "lesscherm"
+      ? alleRondevragen[0]
+      : null;
+  if (lesvraag && lesvraag.figuur?.soort === "lesscherm") {
+    return (
+      <LesOefening
+        lesId={lesvraag.figuur.les}
+        vraagId={lesvraag.id}
+        leerdoelId={lesvraag.leerdoelId}
+        naam={kind.roepnaam}
+        pad={oefenpad}
+        terugHref={terugHref}
+      />
+    );
+  }
+  const vragen = alleRondevragen.filter((v) => v.figuur?.soort !== "lesscherm");
+
+  /*
+    Het maatje (wachtrij, oktober 2026): alleen bij leerdoelen waar het in
+    beheer aan staat, en alleen bij vragen met gecontroleerde teksten die bij
+    precies dit antwoord geschreven zijn. Anders zwijgt het en verandert er
+    niets aan het scherm.
+  */
+  const metMaatje = leerdoelenMetMaatje(leerdoelen.map((l) => l.leerdoel.id));
+  const opgeslagen = haalMaatjeTeksten(vragen.filter((v) => metMaatje.has(v.leerdoelId)).map((v) => v.id));
+  const maatjeTeksten: Record<string, MaatjeTeksten> = {};
+  for (const v of vragen) {
+    const t = opgeslagen[v.id];
+    if (t && t.voor === v.antwoord) maatjeTeksten[v.id] = t;
+  }
+  const maatje = { teksten: maatjeTeksten, geluid: haalGeluidsvoorkeuren(kind.id).maatje };
 
   // Geen gepubliceerde vragen: eerlijk melden in plaats van een leeg scherm.
   if (vragen.length === 0) {
@@ -349,6 +392,7 @@ export default async function OefeningPagina({
       kindId={kind.id}
       oefenpad={oefenpad}
       hervat={hervat}
+      maatje={maatje}
     />
   );
 }

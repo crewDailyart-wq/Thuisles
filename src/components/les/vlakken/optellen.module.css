@@ -1,0 +1,318 @@
+/*
+  Vlakken van het onderdeel Optellen tot 10 (oktober 2026): het tegelvlak met
+  bedekken en omtrekken, en de stippen. Zelfde stijl als het lesscherm.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  color: #ffffff;
+  touch-action: none;
+}
+
+/* ---------- tegels ---------- */
+
+.hokje {
+  position: absolute;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.gat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36%;
+  height: 36%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #0a1020;
+  box-shadow:
+    inset 0 3px 4px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.28);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #0a1020;
+  transition: background 0.15s;
+}
+.geteld {
+  background: #ffffff;
+  width: 52%;
+  height: 52%;
+  font-size: 22px;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
+}
+.nieuw {
+  animation: val 0.32s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+@keyframes val {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.weg {
+  animation: weg 0.4s ease-in forwards;
+}
+@keyframes weg {
+  to {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+.leeghokje {
+  position: absolute;
+  background: rgba(4, 9, 22, 0.75);
+}
+.rand {
+  position: absolute;
+  border: 2px solid #9fd3ff;
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* Hulp: hier hoort de tegel (het handje bij Synthesis). */
+.hint {
+  position: absolute;
+  border: 3px solid #fde01a;
+  border-radius: 8px;
+  box-shadow: 0 0 14px rgba(253, 224, 26, 0.55);
+  pointer-events: none;
+  animation: hintgloed 1.2s ease-in-out infinite;
+}
+@keyframes hintgloed {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.45;
+  }
+}
+
+/* Het handje: hulp vragen, op de plek van de bediening links. */
+.hulp {
+  position: absolute;
+  left: -276px;
+  top: 410px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 48px;
+  padding: 8px 20px 8px 12px;
+  border: 0;
+  border-radius: 24px;
+  background: #2b2f3b;
+  color: #d6d8e1;
+  font-family: var(--font-les), system-ui, sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.hulp:hover {
+  background: #343949;
+}
+
+/* ---------- de bak ---------- */
+
+.baktegel {
+  position: absolute;
+  transition:
+    transform 0.6s ease-in-out,
+    opacity 0.3s,
+    top 0.4s;
+}
+.baktegel[data-om="true"] {
+  transform: rotate(180deg);
+}
+.dof {
+  opacity: 0.5;
+}
+.slot {
+  opacity: 0.18;
+}
+.pakbaar {
+  cursor: grab;
+}
+.gekozen {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+.spook {
+  position: absolute;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.9;
+}
+
+/* ---------- de som ---------- */
+
+.som {
+  position: absolute;
+  left: 22px;
+  width: 792px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-weight: 800;
+}
+.somteken {
+  color: #c3c7d0;
+}
+.somvak {
+  display: grid;
+  place-items: center;
+  border: 2px solid #3a4256;
+  border-radius: 6px;
+  background: #212838;
+  color: #8a93a8;
+  transition: box-shadow 0.2s;
+}
+.somaan {
+  border-color: #4b8af5;
+  box-shadow: 0 0 0 4px rgba(75, 138, 245, 0.45);
+  animation: aan 1.6s ease-in-out infinite;
+}
+@keyframes aan {
+  50% {
+    box-shadow: 0 0 0 8px rgba(75, 138, 245, 0.15);
+  }
+}
+
+.knop {
+  position: absolute;
+  min-height: 40px;
+  padding: 8px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #c8394f;
+  color: #ffffff;
+  font: inherit;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.grijzeknop {
+  min-height: 44px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 8px;
+  background: #2b2f3b;
+  color: #d6d8e1;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  cursor: pointer;
+}
+.grijzeknop:hover {
+  background: #343949;
+}
+.grijzeknop:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+
+/* ---------- stippen ---------- */
+
+.stippenveld {
+  position: absolute;
+  left: 22px;
+  width: 900px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-content: center;
+  align-items: flex-end;
+  row-gap: 28px;
+}
+.groep {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 6px 8px;
+  border-radius: 10px;
+  cursor: pointer;
+  touch-action: none;
+  transition: background 0.15s;
+}
+.groep[data-doel="true"] {
+  background: rgba(75, 138, 245, 0.18);
+}
+.groepgetal {
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+}
+.stippen {
+  display: grid;
+  grid-template-columns: repeat(2, 30px);
+  gap: 10px;
+  justify-content: center;
+}
+.stippen[data-een="true"] {
+  grid-template-columns: 30px;
+}
+.stip {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  font-size: 15px;
+  font-weight: 800;
+  color: #0a1020;
+  animation: val 0.3s cubic-bezier(0.2, 1.4, 0.4, 1);
+  transition: background 0.2s;
+}
+.stipgeteld {
+  box-shadow: 0 0 0 3px #ffffff;
+}
+.plus {
+  align-self: flex-end;
+  margin: 0 18px 14px;
+  font-size: 30px;
+  font-weight: 800;
+  color: #5d667a;
+}
+.lijst {
+  position: absolute;
+  left: 30px;
+  top: 40px;
+  display: grid;
+  gap: 6px;
+  font-family: "KaTeX_Main", "Latin Modern Roman", "Cambria Math", Georgia, "Times New Roman", serif;
+  font-size: 24px;
+  color: #eef0f5;
+}
+.lijst span {
+  display: inline-block;
+  width: 28px;
+  font-family: var(--font-les), system-ui, sans-serif;
+  font-weight: 800;
+}
+.knoppen {
+  position: absolute;
+  left: 22px;
+  width: 900px;
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nieuw,
+  .weg,
+  .stip,
+  .hint,
+  .somaan {
+    animation-duration: 0.01s;
+    animation-iteration-count: 1;
+  }
+  .baktegel {
+    transition: none;
+  }
+}

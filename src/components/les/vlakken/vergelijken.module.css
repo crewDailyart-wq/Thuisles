@@ -1,0 +1,202 @@
+/* Speelvlakken van "Vergelijken": vakjeskaarten, tekens en getallen. */
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  color: #ffffff;
+}
+
+.naam {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 22px;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 800;
+  color: #f3e6c4;
+  letter-spacing: 0.01em;
+  animation: in 0.35s ease-out;
+}
+
+/* ---------- vakjeskaarten ---------- */
+
+.kaart {
+  position: absolute;
+  display: grid;
+  grid-template-columns: repeat(2, var(--cel));
+  grid-auto-rows: var(--cel);
+  gap: 14px;
+  padding: 10px;
+  margin: -10px;
+  border-radius: 18px;
+  border: 0;
+  background: none;
+  transition: box-shadow 0.2s;
+}
+.kaart[data-kies="true"] {
+  cursor: pointer;
+}
+.kaart[data-kies="true"]:hover {
+  box-shadow: 0 0 0 2px rgba(160, 180, 220, 0.3);
+}
+
+.vakje {
+  position: relative;
+  border-radius: 10px;
+  border: 1.5px solid rgba(214, 205, 190, 0.7);
+  box-shadow: 4px 4px 0 rgba(168, 150, 132, 0.85);
+  background: transparent;
+  padding: 0;
+  transition:
+    background-color 0.25s,
+    box-shadow 0.2s,
+    opacity 0.3s;
+}
+.vakje[data-tik="true"] {
+  cursor: pointer;
+}
+.vakje[data-tik="true"]:hover {
+  border-color: #ffffff;
+}
+.vol {
+  animation: plop 0.25s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+.kader {
+  box-shadow:
+    4px 4px 0 rgba(168, 150, 132, 0.85),
+    0 0 0 4px #ffd84a;
+}
+.verborgen {
+  opacity: 0;
+}
+@keyframes plop {
+  from {
+    transform: scale(0.7);
+  }
+}
+
+.aantal {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 52px;
+  font-weight: 800;
+  animation: in 0.3s ease-out;
+}
+
+.pijl {
+  position: absolute;
+  transform: translateX(-50%);
+  opacity: 0.75;
+  animation: wip 1.4s ease-in-out infinite;
+}
+@keyframes wip {
+  0%,
+  100% {
+    transform: translate(-50%, 0);
+  }
+  50% {
+    transform: translate(-50%, -6px);
+  }
+}
+
+/* ---------- tekens en getallen ---------- */
+
+.deel {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: inherit;
+  font: inherit;
+  transition: transform 0.35s cubic-bezier(0.2, 1.2, 0.4, 1);
+}
+.deel[data-tik="true"] {
+  cursor: pointer;
+}
+.deel[data-tik="true"]:active {
+  transform: translate(-50%, -50%) scale(0.94);
+}
+.getal {
+  font-size: 150px;
+  font-weight: 600;
+  line-height: 1;
+  transition:
+    color 0.2s,
+    font-size 0.35s;
+}
+.wissel {
+  animation: wissel 0.22s ease-out;
+}
+@keyframes wissel {
+  from {
+    transform: scale(0.75);
+    opacity: 0.4;
+  }
+}
+
+.stip {
+  position: absolute;
+  width: 18px;
+  height: 18px;
+  margin: -9px 0 0 -9px;
+  border-radius: 50%;
+  background: #ffd84a;
+  box-shadow: 0 0 12px rgba(255, 216, 74, 0.7);
+  animation: in 0.3s ease-out;
+  pointer-events: none;
+}
+
+.klaar {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  margin-left: -28px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #4b8af5;
+  color: #ffffff;
+  cursor: pointer;
+  animation: puls 1.8s ease-out 0.6s infinite;
+}
+@keyframes puls {
+  0% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(75, 138, 245, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0);
+  }
+}
+
+@keyframes in {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .naam,
+  .vol,
+  .aantal,
+  .pijl,
+  .wissel,
+  .stip,
+  .klaar {
+    animation-duration: 0.01s !important;
+    animation-iteration-count: 1 !important;
+  }
+  .vakje,
+  .deel,
+  .getal {
+    transition-duration: 0.01s;
+  }
+}

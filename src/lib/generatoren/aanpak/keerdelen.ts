@@ -192,7 +192,7 @@ export const keerrasterAanpak: Aanpak = {
     const totaal = rijen * kolommen;
     return {
       "34": `Tel per rij: ${rij(kolommen, rijen)}.`,
-      "56": `Er zijn ${rijen} rijen van ${kolommen}. Tel per rij met sprongen: ${rij(kolommen, rijen)}.`,
+      "56": `${rijen === 1 ? "Er is 1 rij" : `Er zijn ${rijen} rijen`} van ${kolommen}. Tel per rij met sprongen: ${rij(kolommen, rijen)}.`,
       "78": `${rijen} rijen van ${kolommen} is ${rijen} × ${kolommen} = ${totaal}. Tellen met sprongen van ${kolommen} gaat sneller dan blokje voor blokje.`,
     };
   },
@@ -218,7 +218,7 @@ export const keerplaatjesAanpak: Aanpak = {
     return {
       "34": `Tel de rijen. Tel er één rij.`,
       "56": `Tel eerst hoeveel rijen er zijn (${rijen}) en hoeveel er in een rij staan (${kolommen}). Dat wordt de som: ${rijen} × ${kolommen} = ${totaal}.`,
-      "78": `Schrijf op wat je ziet: ${rijen} rijen van ${kolommen}. Dat is de som ${rijen} × ${kolommen} = ${totaal}.`,
+      "78": `Schrijf op wat je ziet: ${rijen} ${rijen === 1 ? "rij" : "rijen"} van ${kolommen}. Dat is de som ${rijen} × ${kolommen} = ${totaal}.`,
     };
   },
   stappen: (som) => {

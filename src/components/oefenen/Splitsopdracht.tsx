@@ -307,7 +307,16 @@ export function Invulvak({
             e.preventDefault();
             onBevestig?.();
           }
-          if (e.key === "Tab" && !e.shiftKey) onVolgende?.();
+          /* Tab: zelf naar het volgende vakje, en niet nog een keer door de browser (anders sloeg hij er één over). */
+          if (e.key === "Tab" && !e.shiftKey && onVolgende) {
+            e.preventDefault();
+            /*
+              Na een getal springt de cursor al vanzelf naar het volgende vakje.
+              Een Tab in een leeg vakje daarna blijft dus staan; anders sloeg hij
+              er alsnog één over.
+            */
+            if (e.currentTarget.value !== "") onVolgende();
+          }
         }}
         className="size-full rounded-[inherit] bg-transparent text-center font-extrabold outline-none placeholder:text-rand"
       />

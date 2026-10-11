@@ -44,6 +44,6 @@ export const bioscoopAanpak: Aanpak = {
     const stappen = Math.abs(som.goed - h);
     return stappen === 0
       ? `Het goede antwoord is stoel ${som.goed}: dat nummer staat er gewoon.`
-      : `Het goede antwoord is stoel ${som.goed}: vanaf ${h} zijn dat ${stappen} stapjes.`;
+      : `Het goede antwoord is stoel ${som.goed}: vanaf ${h} ${stappen === 1 ? "is dat 1 stapje" : `zijn dat ${stappen} stapjes`}.`;
   },
 };

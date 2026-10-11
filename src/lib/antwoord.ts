@@ -90,6 +90,11 @@ export function goedeAntwoordInTekst(vraag: OefenVraag): string {
   */
   const eigen = (vraag.figuur as { antwoordTekst?: unknown } | null | undefined)?.antwoordTekst;
   if (typeof eigen === "string" && eigen !== "") return eigen;
+  /* Splitsen met pootjes: in het groene vak de uitkomst, niet "4,1,11". De pootjes staan in de zin. */
+  const f = vraag.figuur;
+  if ((f?.soort === "viatien" && f.pootjes) || (f?.soort === "rekenrekerbij" && f.stand === "pootjes")) {
+    return String(f.eerste + f.tweede);
+  }
   if (vraag.vorm === "meerkeuze") {
     const optie = vraag.opties?.[Number(vraag.antwoord)];
     return optie ? optie.tekst || optie.afbeelding || "" : "";

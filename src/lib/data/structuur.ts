@@ -214,6 +214,7 @@ export function haalSubdomeinen(domeinId?: string): Subdomein[] {
     omschrijving: r.omschrijving ? String(r.omschrijving) : "",
     icoon: alsPictogram(r.icoon, "tafels"),
     volgorde: Number(r.volgorde),
+    verborgen: Number(r.verborgen ?? 0) === 1,
   }));
 }
 
@@ -320,6 +321,7 @@ export function haalLeerdoelen(subdomeinId?: string): Leerdoel[] {
         : Number(r.vragen_per_sessie),
     volgorde: Number(r.volgorde),
     verborgen: Number(r.verborgen ?? 0) === 1,
+    maatje: Number(r.maatje ?? 0) === 1,
     adres: r.adres ? String(r.adres) : null,
     };
   });

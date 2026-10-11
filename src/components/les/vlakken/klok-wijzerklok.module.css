@@ -1,0 +1,135 @@
+/*
+  De wijzerklok van de uitleglessen Klokkijken (oktober 2026), zoals Synthesis.
+  Alleen wat niet inline kan: de overgangen en het knipperen van een wijzer.
+*/
+
+.klok {
+  transition: transform 0.6s ease-in-out;
+}
+
+/* De getallen glijden van de getallenlijn naar hun plek op de klok. */
+.getal {
+  transition:
+    transform 1.1s cubic-bezier(0.55, 0, 0.3, 1),
+    fill 0.8s ease;
+}
+
+.vervaag {
+  transition: opacity 0.8s ease;
+}
+
+/* De tweede klok (van Vos): de wijzers draaien rustig naar hun nieuwe plek. */
+.zacht {
+  transition: transform 1.2s ease-in-out;
+}
+
+/* Tik je op een getal zonder dat er een wijzer gekozen is: beide wijzers lichten even op. */
+.por {
+  animation: por 0.9s ease-in-out;
+}
+@keyframes por {
+  0%,
+  100% {
+    opacity: 0;
+  }
+  30%,
+  70% {
+    opacity: 1;
+  }
+}
+
+.knoppen {
+  position: absolute;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  transform: translateX(-50%);
+  animation: erin 0.25s ease-out;
+}
+@keyframes erin {
+  from {
+    opacity: 0;
+    transform: translate(-50%, 8px);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, 0);
+  }
+}
+
+.hulp,
+.controle {
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  cursor: pointer;
+}
+.hulp {
+  width: 50px;
+  height: 50px;
+  background: #2b2f3b;
+  color: #d6d8e1;
+}
+.controle {
+  width: 58px;
+  height: 58px;
+  background: #4b8af5;
+  color: #ffffff;
+}
+.hulp:focus-visible,
+.controle:focus-visible {
+  outline: 3px solid #9cc0ff;
+  outline-offset: 3px;
+}
+
+.naam {
+  position: absolute;
+  transform: translateX(-50%);
+  color: #e04848;
+  font-weight: 700;
+  font-size: 20px;
+  white-space: nowrap;
+}
+
+/* De digitale tijd onder de klok. */
+.digitaal {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 6px 34px;
+  border-radius: 14px;
+  background: #1e2433;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-weight: 700;
+  font-size: 56px;
+  line-height: 1.15;
+  white-space: nowrap;
+  pointer-events: none;
+}
+.dubbelpunt {
+  display: grid;
+  gap: 12px;
+}
+.dubbelpunt i {
+  display: block;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #b9bfd0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .klok,
+  .getal,
+  .vervaag,
+  .zacht {
+    transition: none;
+  }
+  .por,
+  .knoppen {
+    animation: none;
+  }
+}

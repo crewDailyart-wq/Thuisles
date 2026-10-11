@@ -40,8 +40,11 @@ export function Uitlegweergave({
   telplaatje = null,
   vakmateriaal = null,
   vakperRij = null,
+  zonderVos = false,
 }: {
   vorm: Groepsvorm;
+  /** In een Godot-spel: het bolletje in plaats van Vos; zie `Uitlegspeler`. */
+  zonderVos?: boolean;
   /** Het script van het generator-type, of null als het er nog niet is. */
   script: Uitlegscript | null;
   /** Stappen om te tonen als er geen script is. */
@@ -81,6 +84,7 @@ export function Uitlegweergave({
         telplaatje={telplaatje}
         vakmateriaal={vakmateriaal}
         vakperRij={vakperRij}
+        zonderVos={zonderVos}
       />
     );
   }

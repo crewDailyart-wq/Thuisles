@@ -103,7 +103,13 @@ export const koppelsommenGenerator: Generator = {
         vraagtekst: bepaalVraagtekst(koppelsommenGenerator, inst, groep, gegevens),
         /* Per rij de uitkomst, van boven naar beneden. */
         antwoord: uitkomsten.join(","),
-        figuur: { soort: "koppelsommen", sommen, keuzes: husselen(kans, uitkomsten) },
+        figuur: {
+          soort: "koppelsommen",
+          sommen,
+          keuzes: husselen(kans, uitkomsten),
+          /* Groep 3: de goede uitkomsten staan al groen bij de sommen; geen los vak met "5,10,9,7". */
+          ...(groep !== undefined && groep <= 3 ? { verbergGoedAntwoord: true } : {}),
+        },
         somgegevens: gegevens,
       });
     }

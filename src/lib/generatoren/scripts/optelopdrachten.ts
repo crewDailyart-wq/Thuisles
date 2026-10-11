@@ -57,9 +57,10 @@ function doortellen(som: Somgegevens, kort: boolean): Uitlegscript["stappen"] {
   const klein = Math.min(a, b);
   return [
     stap(`${a} + ${b}`, kort ? "Dit is de som." : `De som is ${a} plus ${b}.`),
-    stap(String(groot), kort ? "Begin bij het grootste." : `Begin bij ${groot}.`),
+    /* Twee gelijke getallen: dan is er geen grootste. */
+    stap(String(groot), kort ? (a === b ? "Begin bij het eerste getal." : "Begin bij het grootste getal.") : `Begin bij ${groot}.`),
     stap(`${groot} + ${klein}`, kort ? "Tel de rest erbij." : `Tel er ${klein} bij.`),
-    stap(`${a} + ${b} = ${a + b}`, kort ? "Samen is het dit!" : `Samen is dat ${a + b}.`, true),
+    stap(`${a} + ${b} = ${a + b}`, kort ? `Samen is het ${a + b}!` : `Samen is dat ${a + b}.`, true),
   ];
 }
 
@@ -96,6 +97,14 @@ export const somkeuzeUitleg: Uitlegbron = bron(
   },
   (som, kort) => {
     const doel = som.getallen[0];
+    /* Groep 3, "Welke som klopt?": er klopt er precies één (g3 komt van de generator). */
+    if (som.variant === "klopt" && som.extra?.g3) {
+      return [
+        stap("+ ?", "Reken elke som uit."),
+        stap(String(doel), `Welke komt uit op ${doel}?`),
+        stap("=", "Die som klopt!", true),
+      ];
+    }
     return [
       stap(String(doel), kort ? "Hier gaat het om." : `Het gaat om ${doel}.`),
       stap("+ ?", kort ? "Reken ze alle vier uit." : "Reken elke som uit."),

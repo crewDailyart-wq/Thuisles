@@ -180,7 +180,9 @@ export const geldsomGenerator: Generator = {
       const uitkomst = som.teken === "+" ? links + rechts : links - rechts;
       const zin =
         som.teken === "-"
-          ? `Er gaan ${som.rechts.length} munten af. Hoeveel euro blijft er over?`
+          ? (som.rechts.length === 1
+              ? "Er gaat 1 munt af. Hoeveel euro blijft er over?"
+              : `Er gaan ${som.rechts.length} munten af. Hoeveel euro blijft er over?`)
           : "Hoeveel is het samen?";
       const gegevens: Somgegevens = {
         soort: "geldsom",

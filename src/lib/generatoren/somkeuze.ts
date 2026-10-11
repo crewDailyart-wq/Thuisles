@@ -128,18 +128,25 @@ export const somkeuzeGenerator: Generator = {
         if (gebruikt.has(`${buiten.eerste}+${buiten.tweede}`)) continue;
         kaarten.push({ ...buiten, uitkomst: anders });
       } else {
-        /* Eén kloppende som en drie waarvan de uitkomst er net naast zit. */
+        /*
+          Eén kloppende som en drie waarvan de uitkomst er 1 of 2 naast zit.
+          Nooit hoger dan 20, en geen twee kaartjes met dezelfde uitkomst
+          (eigenaar, oktober 2026): anders kan een kind kiezen op wat er
+          dubbel staat in plaats van te rekenen.
+        */
         const goed = splits(kans, doel);
         gebruikt.add(`${goed.eerste}+${goed.tweede}`);
         kaarten.push({ ...goed, uitkomst: doel });
-        for (let ronde = 0; ronde < 80 && kaarten.length < KAARTEN; ronde++) {
+        const uitkomsten = new Set([doel]);
+        for (let ronde = 0; ronde < 120 && kaarten.length < KAARTEN; ronde++) {
           const s = splits(kans, heelGetal(kans, van, tot));
           const sleutel = `${s.eerste}+${s.tweede}`;
           if (gebruikt.has(sleutel)) continue;
           const mis = heelGetal(kans, 1, 2) * (kans() < 0.5 ? -1 : 1);
           const beweerd = s.eerste + s.tweede + mis;
-          if (beweerd < 1 || beweerd > 20) continue;
+          if (beweerd < 1 || beweerd > 20 || uitkomsten.has(beweerd)) continue;
           gebruikt.add(sleutel);
+          uitkomsten.add(beweerd);
           kaarten.push({ ...s, uitkomst: beweerd });
         }
         if (kaarten.length < KAARTEN) continue;
@@ -162,7 +169,8 @@ export const somkeuzeGenerator: Generator = {
         variant: stand,
         getallen: [doel, gehusseld[goedeKaart].eerste],
         goed: goedeKaart,
-        extra: { kaarten: gehusseld.length },
+        /* g3: groep 3 krijgt de uitleg die bij "welke som klopt?" past (zie somkeuzeUitleg). */
+        extra: { kaarten: gehusseld.length, ...(groep !== undefined && groep <= 3 ? { g3: 1 } : {}) },
       };
 
       uit.push({
@@ -176,7 +184,16 @@ export const somkeuzeGenerator: Generator = {
         ),
         /* Het nummer van het kaartje; het scherm laat het kind er één kiezen. */
         antwoord: String(goedeKaart),
-        figuur: { soort: "somkeuze", stand, doel, kaarten: gehusseld },
+        figuur: {
+          soort: "somkeuze",
+          stand,
+          doel,
+          kaarten: gehusseld,
+          /* Groep 3: in het groene vak de goede som, niet het nummer van het kaartje. */
+          ...(groep !== undefined && groep <= 3
+            ? { antwoordTekst: `${gehusseld[goedeKaart].eerste} + ${gehusseld[goedeKaart].tweede} = ${gehusseld[goedeKaart].uitkomst}` }
+            : {}),
+        },
         somgegevens: gegevens,
       });
     }

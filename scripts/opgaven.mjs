@@ -49,6 +49,8 @@ import { isKeerfiguur, juisteAntwoorden as keerAntwoorden } from "../src/lib/kee
 import { isTijdfiguur, juistAntwoord as tijdAntwoord } from "../src/lib/tijdfiguren.ts";
 import { isGeldfiguur, juistAntwoord as geldAntwoord } from "../src/lib/geldfiguren.ts";
 import { isVerhaalfiguur, juistKeuzeAntwoord } from "../src/lib/verhaalfiguren.ts";
+import { GROEPJESMAKER_ZINNEN } from "../src/lib/godot/zinnen.ts";
+import { ALLE_LESSEN } from "../src/lib/lessen/index.ts";
 
 /* Hoeveel opgaven een ronde minstens moet opleveren. Nooit minder. */
 const PER_RONDE = 15;
@@ -97,6 +99,7 @@ const OEFENINGEN = [
   { groep: "Tafels · Keersommen begrijpen", titel: "Een keersom bij een plaatje", soort: "keerplaatjes", bolletjes: 2, inst: {} },
   { groep: "Tafels · Keersommen begrijpen", titel: "Handig rekenen met keersommen", soort: "handigkeer", bolletjes: 3, inst: {} },
   { groep: "Tafels · Keersommen begrijpen", titel: "Rekenen met nullen", soort: "keernullen", bolletjes: 4, inst: {} },
+  { groep: "Tafels · Keersommen begrijpen · Met de groepjesmaker", titel: "Groepjes maken", soort: "groepjesmaker", bolletjes: 3, inst: { stand: "gemengd" } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 2: Tafels oefenen
@@ -109,6 +112,9 @@ const OEFENINGEN = [
   { groep: "Tafels · Tafels oefenen", titel: "Welke keersommen passen?", soort: "welkekeersom", bolletjes: 3, inst: { van: 4, max: 10 } },
   { groep: "Tafels · Tafels oefenen", titel: "Tafels van 11 tot en met 15", soort: "keersom", bolletjes: 4, inst: { tafels: ["11", "12", "13", "14", "15"], max: 10 } },
   { groep: "Tafels · Tafels oefenen", titel: "Tafels van 16 tot en met 20", soort: "keersom", bolletjes: 5, inst: { tafels: ["16", "17", "18", "19", "20"], max: 10 } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 2, 5 en 10", soort: "lasertafel", bolletjes: 2, inst: { tafels: "2-5-10" } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 3 en 4", soort: "lasertafel", bolletjes: 3, inst: { tafels: "3-4" } },
+  { groep: "Tafels · Tafels oefenen · Met de laser", titel: "Laser: tafels van 6 tot en met 9", soort: "lasertafel", bolletjes: 4, inst: { tafels: "6-9" } },
 
   // -------------------------------------------------------------------------
   // Groep 4 – Tafels – Onderwerp 3: Keersom en deelsom
@@ -458,6 +464,30 @@ const OEFENINGEN = [
   // -------------------------------------------------------------------------
   // Groep 4 – Optellen uitgebreid (tot en met 50, tientallen, tot en met 100, vlek)
   // -------------------------------------------------------------------------
+  // Groep 4 – Optellen – Optellen tot en met 20, visueel en interactief (oktober 2026)
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Maak de plussom bij het plaatje", soort: "plaatjessom", bolletjes: 1, inst: { stand: "som", van: 2, tot: 10, voorwerp: "gemengd" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 10", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 2, tot: 10, voorwerp: "gemengd", werking: "typen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met plaatjes", titel: "Optellen met plaatjes tot en met 20", soort: "plaatjessom", bolletjes: 1, inst: { stand: "uitkomst", van: 11, tot: 20, voorwerp: "gemengd", werking: "typen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 10", soort: "plussom", bolletjes: 2, inst: { van: 2, tot: 10 } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen tot en met 20", soort: "plussom", bolletjes: 2, inst: { van: 11, tot: 20, werking: "typen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Uitrekenen", titel: "Optellen via 10", soort: "viatien", bolletjes: 4, inst: { van: 11, tot: 18, werking: "pootjes" } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som hoort er niet bij?", soort: "somkeuze", bolletjes: 3, inst: { stand: "nietbij", van: 11, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Welke som klopt?", soort: "somkeuze", bolletjes: 3, inst: { stand: "klopt", van: 3, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Zoek de som die evenveel is", soort: "evenveelsom", bolletjes: 3, inst: { van: 4, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Kiezen en controleren", titel: "Koppel de som aan de uitkomst", soort: "koppelsommen", bolletjes: 3, inst: { van: 5, tot: 20, rijen: 5 } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Aanvullen in de tabel", soort: "aanvultabel", bolletjes: 3, inst: { van: 11, tot: 20, werking: "hulp" } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Kies twee getallen", soort: "tweegetallen", bolletjes: 4, inst: { van: 11, tot: 20 } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk I", soort: "balans", bolletjes: 4, inst: { van: 3, tot: 10, leeg: "links", werking: "bouwen" } },
+  { groep: "Optellen · Optellen tot en met 20 · Puzzelen", titel: "Maak beide kanten gelijk II", soort: "balans", bolletjes: 5, inst: { van: 11, tot: 20, leeg: "wissel", werking: "hulp" } },
+  // Groep 4 – Optellen – Optellen met het rekenrek (oktober 2026)
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen tot en met 10 op het rekenrek", soort: "rekenrekerbij", bolletjes: 1, inst: { stand: "tot10", werking: "alles", niveau: 1 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen tot en met 20 zonder over de 10", soort: "rekenrekerbij", bolletjes: 2, inst: { stand: "zonder", werking: "alles", niveau: 2 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Aanvullen tot 10", soort: "rekenrekerbij", bolletjes: 3, inst: { stand: "aanvullen", werking: "alles", niveau: 3 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Optellen over de 10", soort: "rekenrekerbij", bolletjes: 4, inst: { stand: "over10", werking: "alles", niveau: 4 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met het rekenrek", titel: "Splitsen via 10", soort: "rekenrekerbij", bolletjes: 5, inst: { stand: "pootjes", werking: "alles", niveau: 5 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket naar 10", soort: "raketsom", bolletjes: 2, inst: { stand: "tot10" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket naar 20", soort: "raketsom", bolletjes: 3, inst: { stand: "tot20" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de raket", titel: "Raket: wat moet erbij?", soort: "raketsom", bolletjes: 3, inst: { stand: "aanvullen" } },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Som bij de plaatjes", soort: "rekensom", bolletjes: 1, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"stippen","niveau":1} },
   { groep: "Optellen · Optellen tot en met 50 · Uitrekenen", titel: "Optellen tot en met 50", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"som","niveau":2} },
   { groep: "Optellen · Optellen tot en met 50 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":21,"tot":50,"stand":"koppelen","niveau":3} },
@@ -500,6 +530,7 @@ const OEFENINGEN = [
   { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "De som met een andere uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":11,"tot":20,"stand":"nietbij","niveau":3} },
   { groep: "Aftrekken · Aftrekken tot en met 20 · Kiezen en controleren", titel: "Sommen en uitkomsten koppelen", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"min","van":11,"tot":20,"stand":"koppelen","niveau":4} },
   { groep: "Aftrekken · Aftrekken tot en met 20 · Puzzelen", titel: "Vergelijkingen kloppend maken", soort: "rekensom", bolletjes: 5, inst: {"bewerking":"min","van":11,"tot":20,"stand":"balans","niveau":5} },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de laser", titel: "Laser: minsommen", soort: "laserminsom", bolletjes: 3, inst: {} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Erafsommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"nee","niveau":2} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Uitrekenen", titel: "Aftrekken met tientaloverschrijding tot 30", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"som","brug":"ja","niveau":3} },
   { groep: "Aftrekken · Aftrekken tot en met 30 · Kiezen en controleren", titel: "Sommen met dezelfde uitkomst", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"min","van":21,"tot":30,"stand":"evenveel","niveau":3} },
@@ -556,6 +587,93 @@ const OEFENINGEN = [
   { groep: "Optellen · Optellen tot en met 40 · Puzzelen", titel: "Beide kanten gelijk", soort: "rekensom", bolletjes: 4, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"balans","niveau":4} },
   { groep: "Optellen · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 30", soort: "rekensom", bolletjes: 2, inst: {"bewerking":"plus","van":21,"tot":30,"stand":"vlek","plek":"tweede","niveau":2} },
   { groep: "Optellen · Wat zit er onder de vlek?", titel: "Vleksommen tot en met 40", soort: "rekensom", bolletjes: 3, inst: {"bewerking":"plus","van":31,"tot":40,"stand":"vlek","plek":"tweede","niveau":3} },
+  /* Groep 3 (9 oktober 2026): dezelfde types, met het bereik van groep 3. */
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Plaatjes tellen", groepen: [3], soort: "plaatjestellen", bolletjes: 2, inst: {"van": 1, "tot": 15, "vraagvorm": "meerkeuze", "opstelling": "rijen", "perRij": 5} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Plaatjes tellen en typen", groepen: [3], soort: "plaatjestellen", bolletjes: 3, inst: {"van": 1, "tot": 15, "vraagvorm": "open", "opstelling": "rijen", "perRij": 5} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Plaatjes door elkaar tellen", groepen: [3], soort: "plaatjestellen", bolletjes: 3, inst: {"van": 1, "tot": 15, "vraagvorm": "open", "opstelling": "verspreid", "perRij": 5} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Welk vak hoort bij het getal?", groepen: [3], soort: "vakken", bolletjes: 1, inst: {"van": 1, "tot": 15, "materiaal": "telplaatjes", "opstelling": "rijen", "zoek": "precies", "aantalVakken": 3} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Tellen en slepen", groepen: [3], soort: "tellenslepen", bolletjes: 1, inst: {"hoeveel": 2, "van": 3, "tot": 8, "afleiders": false} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Plaatjes tellen", titel: "Veel plaatjes tellen", groepen: [3], soort: "plaatjestellen", bolletjes: 2, inst: {"van": 6, "tot": 20, "vraagvorm": "meerkeuze", "opstelling": "rijen", "perRij": 10} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Tellen tot en met 20", titel: "Kinderen in de bus", groepen: [3], soort: "bus", bolletjes: 1, inst: {"animatie": "instappen", "van": 5, "tot": 20, "perGroep": 5} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Tellen tot en met 20", titel: "De hoeveelste kraal?", groepen: [3], soort: "kralen", bolletjes: 1, inst: {"van": 10, "tot": 20, "perGroep": 5} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Tellen tot en met 20", titel: "Welk vak met kralen?", groepen: [3], soort: "vakken", bolletjes: 1, inst: {"van": 5, "tot": 20, "materiaal": "kralen", "opstelling": "rijen", "zoek": "precies", "aantalVakken": 3} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Tellen tot en met 20", titel: "Een plek in de bioscoop", groepen: [3], soort: "bioscoop", bolletjes: 1, inst: {"stoelen": 20, "perRij": 10, "nummers": "vijftallen"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Tel verder", groepen: [3], soort: "stapstenen", bolletjes: 1, inst: {"sprong": "1", "richting": "vooruit", "van": 1, "tot": 20, "stenen": 5, "leeg": "1", "plek": "achteraan"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Tel verder: het gat zit ertussen", groepen: [3], soort: "stapstenen", bolletjes: 2, inst: {"sprong": "1", "richting": "vooruit", "van": 1, "tot": 20, "stenen": 5, "leeg": "1", "plek": "tussenin"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Tel terug", groepen: [3], soort: "stapstenen", bolletjes: 2, inst: {"sprong": "1", "richting": "terug", "van": 1, "tot": 20, "stenen": 5, "leeg": "1", "plek": "achteraan"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Het huis erna", groepen: [3], soort: "straat", bolletjes: 1, inst: {"van": 1, "tot": 20, "richting": "erna", "vraagvorm": "meerkeuze", "straatsoort": "gewoon", "sprong": "1"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Het huis ervoor", groepen: [3], soort: "straat", bolletjes: 2, inst: {"van": 1, "tot": 20, "richting": "ervoor", "vraagvorm": "meerkeuze", "straatsoort": "gewoon", "sprong": "1"} },
+  { groep: "Groep 3 · Getallen · Tellen & sprongen tot en met 20 · Verder en terug tellen", titel: "Buurgetallen", groepen: [3], soort: "straat", bolletjes: 3, inst: {"van": 1, "tot": 20, "richting": "allebei", "vraagvorm": "open", "straatsoort": "gewoon", "sprong": "1"} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Meer of minder", titel: "Zoek eentje meer", groepen: [3], soort: "vakken", bolletjes: 2, inst: {"van": 1, "tot": 16, "materiaal": "telplaatjes", "opstelling": "rijen", "zoek": "meer", "aantalVakken": 3} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Meer of minder", titel: "Zoek eentje minder", groepen: [3], soort: "vakken", bolletjes: 2, inst: {"van": 1, "tot": 15, "materiaal": "telplaatjes", "opstelling": "rijen", "zoek": "minder", "aantalVakken": 3} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Groot en klein", titel: "De grootste vis", groepen: [3], soort: "vissen", bolletjes: 1, inst: {"van": 1, "tot": 10, "zoek": "grootste", "aantalVissen": 3} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Groot en klein", titel: "De kleinste vis", groepen: [3], soort: "vissen", bolletjes: 1, inst: {"van": 1, "tot": 10, "zoek": "kleinste", "aantalVissen": 3} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Groot en klein", titel: "Grootste en kleinste tot en met 20", groepen: [3], soort: "vissen", bolletjes: 2, inst: {"van": 1, "tot": 20, "zoek": "beide", "aantalVissen": 3} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Op volgorde", titel: "Van klein naar groot", groepen: [3], soort: "trein", bolletjes: 1, inst: {"van": 1, "tot": 10, "richting": "oplopend", "aantalWagons": 4} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Op volgorde", titel: "Van groot naar klein", groepen: [3], soort: "trein", bolletjes: 1, inst: {"van": 1, "tot": 10, "richting": "aflopend", "aantalWagons": 4} },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Op volgorde", titel: "Op volgorde tot en met 20", groepen: [3], soort: "trein", bolletjes: 2, inst: {"van": 1, "tot": 20, "richting": "oplopend", "aantalWagons": 5} },
+  { groep: "Groep 3 · Getallen · Getallenlijn tot en met 100 · Tot en met 20", titel: "Zet het getal op de lijn", groepen: [3], soort: "getallenlijn", bolletjes: 1, inst: {"van": 0, "tot": 20, "stap": "1", "stand": "schuiven", "zichtbaar": "alle"} },
+  { groep: "Groep 3 · Getallen · Getallenlijn tot en met 100 · Tot en met 20", titel: "Welk getal hoort hier?", groepen: [3], soort: "getallenlijn", bolletjes: 2, inst: {"van": 0, "tot": 20, "stap": "1", "stand": "invullen", "zichtbaar": "vijftallen", "vakjes": 2} },
+  { groep: "Groep 3 · Getallen · Getallenlijn tot en met 100 · Tot en met 20", titel: "De lijn met vijftallen", groepen: [3], soort: "getallenlijn", bolletjes: 2, inst: {"van": 0, "tot": 20, "stap": "1", "stand": "schuiven", "zichtbaar": "vijftallen"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "Splitsen tot en met 10", groepen: [3], soort: "splitsen", bolletjes: 2, inst: {"weergave": "boom", "van": 5, "tot": 10, "leeg": "wissel", "antwoordvorm": "open"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "Het splitsschema", groepen: [3], soort: "splitsschema", bolletjes: 2, inst: {"van": 3, "tot": 10, "leeg": "rechts", "nul": false, "uiterlijk": "eenvoudig"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "Het splitsschema door elkaar", groepen: [3], soort: "splitsschema", bolletjes: 2, inst: {"van": 3, "tot": 10, "leeg": "wissel", "nul": false, "uiterlijk": "eenvoudig"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "Splitsen in de tabel", groepen: [3], soort: "splitstabel", bolletjes: 1, inst: {"doel": 5, "doelTot": 10, "rijen": 3, "leeg": "rechts", "uiterlijk": "eenvoudig"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "De splitsbloem", groepen: [3], soort: "splitstabel", bolletjes: 1, inst: {"doel": 5, "doelTot": 10, "rijen": 3, "leeg": "wissel", "uiterlijk": "bloem"} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 10", titel: "Verdelen in twee groepen", groepen: [3], soort: "verdelen", bolletjes: 3, inst: {"van": 4, "tot": 14} },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Splitsen tot en met 20", titel: "Splitsen tot en met 20", groepen: [3], soort: "splitsen", bolletjes: 2, inst: {"weergave": "boom", "van": 11, "tot": 20, "leeg": "rechts", "antwoordvorm": "open"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Optellen met plaatjes", groepen: [3], soort: "plaatjessom", bolletjes: 1, inst: {"stand": "uitkomst", "van": 2, "tot": 10, "voorwerp": "gemengd", "werking": "typen"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Maak de plussom bij het plaatje", groepen: [3], soort: "plaatjessom", bolletjes: 1, inst: {"stand": "som", "van": 2, "tot": 10, "voorwerp": "gemengd"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Optellen tot en met 10", groepen: [3], soort: "plussom", bolletjes: 2, inst: {"van": 2, "tot": 10, "werking": "typen"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Welke som klopt?", groepen: [3], soort: "somkeuze", bolletjes: 2, inst: {"stand": "klopt", "van": 3, "tot": 10} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Koppel de som aan de uitkomst", groepen: [3], soort: "koppelsommen", bolletjes: 2, inst: {"van": 2, "tot": 10, "rijen": 4} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Zoek de som die evenveel is", groepen: [3], soort: "evenveelsom", bolletjes: 2, inst: {"van": 3, "tot": 10} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Kies twee getallen", groepen: [3], soort: "tweegetallen", bolletjes: 3, inst: {"van": 3, "tot": 10} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Maak beide kanten gelijk", groepen: [3], soort: "balans", bolletjes: 4, inst: {"van": 3, "tot": 10, "leeg": "links", "werking": "bouwen"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Aanvullen in de tabel", groepen: [3], soort: "aanvultabel", bolletjes: 2, inst: {"van": 5, "tot": 10, "werking": "hulp"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 10", titel: "Raket naar 10", groepen: [3], soort: "raketsom", bolletjes: 2, inst: {"stand": "tot10"} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 20", titel: "Optellen zonder over de 10", groepen: [3], soort: "rekensom", bolletjes: 1, inst: {"bewerking": "plus", "stand": "som", "van": 11, "tot": 20, "brug": "nee", "niveau": 1} },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Tot en met 20", titel: "Optellen met plaatjes tot en met 20", groepen: [3], soort: "plaatjessom", bolletjes: 1, inst: {"stand": "uitkomst", "van": 11, "tot": 20, "voorwerp": "gemengd", "werking": "typen"} },
+  { groep: "Groep 3 · Optellen · Optellen met het rekenrek · Met het rekenrek", titel: "Optellen tot en met 10", groepen: [3], soort: "rekenrekerbij", bolletjes: 1, inst: {"stand": "tot10", "werking": "bouwen", "niveau": 1} },
+  { groep: "Groep 3 · Optellen · Optellen met het rekenrek · Met het rekenrek", titel: "Optellen zonder over de 10", groepen: [3], soort: "rekenrekerbij", bolletjes: 2, inst: {"stand": "zonder", "werking": "bouwen", "niveau": 2} },
+  { groep: "Groep 3 · Optellen · Optellen met het rekenrek · Flitsen", titel: "Hoeveel kralen tot en met 20?", groepen: [3], soort: "rekenrekflits", bolletjes: 1, inst: {"van": 6, "tot": 20, "seconden": 3} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 10", titel: "Wegstrepen", groepen: [3], soort: "wegstrepen", bolletjes: 1, inst: {"van": 3, "tot": 10, "afTot": 4} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 10", titel: "Een minsom bij een plaatje", groepen: [3], soort: "minsomplaatje", bolletjes: 1, inst: {"van": 3, "tot": 10, "afTot": 4} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 10", titel: "Aftrekken met plaatjes", groepen: [3], soort: "plaatjesminsom", bolletjes: 1, inst: {"getallen": "nee", "van": 3, "tot": 10, "afTot": 5, "visueel": 0} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 10", titel: "Aftrekken tot en met 10", groepen: [3], soort: "minsom", bolletjes: 2, inst: {"van": 2, "tot": 10, "afTot": 9, "visueel": 3} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 10", titel: "Koppel de minsom aan de uitkomst", groepen: [3], soort: "minkoppelen", bolletjes: 3, inst: {"van": 0, "tot": 9, "grootste": 10, "rijen": 4} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Tot en met 20", titel: "Aftrekken zonder over de 10", groepen: [3], soort: "rekensom", bolletjes: 1, inst: {"bewerking": "min", "stand": "som", "van": 11, "tot": 20, "brug": "nee", "niveau": 1} },
+  { groep: "Groep 3 · Aftrekken · Aftrekken met het rekenrek · Met het rekenrek", titel: "Aftrekken binnen het tiental", groepen: [3], soort: "rekenrekaf", bolletjes: 2, inst: {"stand": "klein", "van": 11, "tot": 20, "afVan": 1, "afTot": 9} },
+  { groep: "Groep 3 · Tijd · De wijzerklok · Hele uren", titel: "Hoe laat is het?", groepen: [3], soort: "klokaflezen", bolletjes: 1, inst: {"tijden": ["heel"], "antwoordsoort": "woorden", "metDagdeel": false} },
+  { groep: "Groep 3 · Tijd · De wijzerklok · Hele uren", titel: "Zet de klok", groepen: [3], soort: "klokzetten", bolletjes: 1, inst: {"opdracht": "tijd", "tijden": ["heel"]} },
+  { groep: "Groep 3 · Tijd · De wijzerklok · Hele uren", titel: "De grote en de kleine wijzer", groepen: [3], soort: "wijzeraanwijzen", bolletjes: 1, inst: {"tijden": ["heel"]} },
+  { groep: "Groep 3 · Tijd · De wijzerklok · Hele uren", titel: "Klokken koppelen", groepen: [3], soort: "klokkoppelen", bolletjes: 1, inst: {"tijden": ["heel"], "hoeveel": 3} },
+  { groep: "Groep 3 · Tijd · De wijzerklok · Halve uren", titel: "Halve uren aflezen", groepen: [3], soort: "klokaflezen", bolletjes: 2, inst: {"tijden": ["half"], "antwoordsoort": "woorden", "metDagdeel": false} },
+  { groep: "Groep 3 · Tijd · Maanden en dagen · Dagen van de week", titel: "De dagen op volgorde", groepen: [3], soort: "dagvraag", bolletjes: 1, inst: {"stand": "volgorde"} },
+  { groep: "Groep 3 · Tijd · Maanden en dagen · Dagen van de week", titel: "Welke dag ontbreekt?", groepen: [3], soort: "dagenaanvullen", bolletjes: 1, inst: {"lengte": 4, "gaten": 1} },
+  { groep: "Groep 3 · Geld · Munten en briefjes · Munten", titel: "Geld tellen", groepen: [3], soort: "geldtellen", bolletjes: 2, inst: {"stand": "euros", "min": 1, "max": 15} },
+  { groep: "Groep 3 · Geld · Munten en briefjes · Munten", titel: "Welke munt is het meest waard?", groepen: [3], soort: "geldwaarde", bolletjes: 1, inst: {"geld": "munten", "vraag": "meest"} },
+  { groep: "Groep 3 · Geld · Munten en briefjes · Munten", titel: "Leg het bedrag", groepen: [3], soort: "geldleggen", bolletjes: 4, inst: {"voorraad": ["100", "200"], "van": 1, "tot": 15, "metPrijs": false} },
+  { groep: "Groep 3 · Verhaaltjessommen · Optellen · Tot en met 20", titel: "Erbij krijgen", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "optellen", "situatie": "erbij", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
+  { groep: "Groep 3 · Verhaaltjessommen · Optellen · Tot en met 20", titel: "Samen", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "optellen", "situatie": "samen", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
+  { groep: "Groep 3 · Verhaaltjessommen · Aftrekken · Tot en met 20", titel: "Eraf", groepen: [3], soort: "verhaaltje", bolletjes: 1, inst: {"onderwerp": "aftrekken", "situatie": "eraf", "tot": "20", "antwoord": "kiezen", "niveau": 1} },
+  /* De getaltegels (Godot, 9 oktober 2026). */
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: samen tot en met 10", groepen: [3], soort: "tegelsom", bolletjes: 1, inst: { stand: "tot10" } },
+  { groep: "Groep 3 · Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: dubbel en bijna dubbel", groepen: [3], soort: "tegelsom", bolletjes: 2, inst: { stand: "dubbel" } },
+  { groep: "Groep 3 · Splitsen · Splitsen tot en met 20 · Met de tegels", titel: "Tegels: maak het veld vol", groepen: [3], soort: "tegelmaak", bolletjes: 2, inst: { van: 5, tot: 10 } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: 10 en nog wat", soort: "tegelsom", bolletjes: 2, inst: { stand: "tien" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: dubbel en bijna dubbel", soort: "tegelsom", bolletjes: 2, inst: { stand: "dubbel" } },
+  { groep: "Optellen · Optellen tot en met 20 · Met de tegels", titel: "Tegels: samen meer dan 10", soort: "tegelsom", bolletjes: 3, inst: { stand: "over10" } },
+  { groep: "Splitsen · Splitsen tot en met 20 · Met de tegels", titel: "Tegels: maak 11 tot en met 20", soort: "tegelmaak", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  /* De stippen (Godot, 9 oktober 2026). */
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: tik ze weg", groepen: [3], soort: "stipweg", bolletjes: 1, inst: { van: 3, tot: 10 } },
+  { groep: "Groep 3 · Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: hoeveel meer?", groepen: [3], soort: "stipverschil", bolletjes: 2, inst: { van: 3, tot: 10 } },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: welke rij heeft de meeste?", groepen: [3], soort: "stipvergelijk", bolletjes: 1, inst: { van: 2, tot: 10, zoek: "meeste" } },
+  { groep: "Groep 3 · Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: de meeste of de minste", groepen: [3], soort: "stipvergelijk", bolletjes: 2, inst: { van: 2, tot: 10, zoek: "beide" } },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: tik ze weg", groepen: [4], soort: "stipweg", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  { groep: "Aftrekken · Aftrekken tot en met 20 · Met de stippen", titel: "Stippen: hoeveel meer?", groepen: [4], soort: "stipverschil", bolletjes: 3, inst: { van: 11, tot: 20 } },
+  { groep: "Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: de meeste of de minste", soort: "stipvergelijk", bolletjes: 2, inst: { van: 5, tot: 20, zoek: "beide" } },
+  { groep: "Getallen · Vergelijken & ordenen · Met de stippen", titel: "Stippen: <, = of >", soort: "stipteken", bolletjes: 3, inst: { van: 2, tot: 20 } },
 ];
 
 // ---------------------------------------------------------------------------
@@ -802,6 +920,100 @@ for (const oefening of OEFENINGEN) {
       }
     }
 
+    /*
+      Optellen tot en met 20, visueel (oktober 2026): om en om bouwen bij
+      opgave 1, 3, 5, 7 en 9, nooit boven 20, en bij "Welke som klopt?" foute
+      uitkomsten 1 of 2 ernaast, tot en met 20, zonder dubbele.
+    */
+    if (oefening.groep.startsWith("Optellen · Optellen tot en met 20") && vraag.figuur) {
+      const f = vraag.figuur;
+      const omEnOm = oefening.inst.werking === "bouwen" && ["plussom", "viatien", "balans"].includes(f.soort);
+      if (omEnOm) {
+        const moet = f.volgnummer <= 10 && f.volgnummer % 2 === 1;
+        if (!!f.bouw !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} te bouwen.`);
+        if (f.soort !== "balans" && f.bouw && (f.eerste > 10 || f.eerste + f.tweede > 20)) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} past niet in de strook.`);
+      }
+      if (f.soort === "somkeuze" && f.stand === "klopt") {
+        const uitk = f.kaarten.map((k) => k.uitkomst);
+        if (new Set(uitk).size !== uitk.length) fouten.push(`${waar}: twee kaartjes met dezelfde uitkomst (${uitk.join(", ")}).`);
+        for (const k of f.kaarten) {
+          const echt = k.eerste + k.tweede;
+          if (k.uitkomst > 20 || (k.uitkomst !== echt && Math.abs(k.uitkomst - echt) > 2)) fouten.push(`${waar}: kaartje ${k.eerste} + ${k.tweede} = ${k.uitkomst}.`);
+        }
+      }
+    }
+
+    /*
+      Optellen met het rekenrek: om en om met het rek bij opgave 1, 3, 5, 7
+      en 9, nooit boven 20, en het antwoord past bij de som. Bij "Optellen via
+      10" met pootjes: linker pootje + rechter pootje is het tweede getal.
+    */
+    if (vraag.figuur?.soort === "rekenrekerbij") {
+      const f = vraag.figuur;
+      /* "alles": elke opgave met het rek; "bouwen": om en om. */
+      const moet = oefening.inst.werking === "alles" || (f.volgnummer <= 10 && f.volgnummer % 2 === 1);
+      if (!!f.rekenrek !== moet) fouten.push(`${waar}: opgave ${f.volgnummer} hoort ${moet ? "wel" : "niet"} met het rekenrek.`);
+      if (f.eerste + f.tweede > 20) fouten.push(`${waar}: ${f.eerste} + ${f.tweede} is meer dan 20.`);
+    }
+    /*
+      De groepjesmaker: hoogstens 10 doosjes en 10 eikels per doosje (zo groot
+      is de kast), en het antwoord is a × b.
+    */
+    if (vraag.figuur?.soort === "groepjesmaker") {
+      const f = vraag.figuur;
+      if (f.a > 10 || f.b > 10 || f.b < 1) fouten.push(`${waar}: ${f.a} × ${f.b} past niet in de kast.`);
+      if (vraag.antwoord !== String(f.a * f.b)) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${f.a} × ${f.b}.`);
+      if (f.stand === "knip" && f.a <= 5) fouten.push(`${waar}: knippen kan pas vanaf 6 doosjes.`);
+    }
+    /* De laser: precies drie goede stenen, en het antwoord zijn hun plekken. */
+    if (vraag.figuur?.soort === "laser") {
+      const f = vraag.figuur;
+      const isGoedeSteen = (t) => (f.stand === "tafel" ? Number(t) % f.tafel === 0 : t.split(" − ").reduce((x, y) => Number(x) - Number(y)) === f.doel);
+      const echt = f.stenen.flatMap((t, i) => (isGoedeSteen(t) ? [i] : []));
+      if (echt.join(",") !== vraag.antwoord || echt.length !== 3) fouten.push(`${waar}: goede stenen ${echt.join(",")} maar antwoord ${vraag.antwoord}.`);
+      if (new Set(f.stenen).size !== f.stenen.length) fouten.push(`${waar}: twee dezelfde stenen.`);
+    }
+    /*
+      Een Godot-spel van het algemene soort: er is een kop, bij typen staat er
+      een vraagteken voor het invulvak, en het antwoord past bij het spel.
+    */
+    if (vraag.figuur?.soort === "godotspel") {
+      const f = vraag.figuur;
+      if (!f.goedZin.trim() || !f.foutZin.trim()) fouten.push(`${waar}: de zin bij goed of fout ontbreekt.`);
+      if (f.invoer === "typen" && !f.kop.trim()) fouten.push(`${waar}: bij typen hoort een kop met het invulvak.`);
+      if (f.invoer === "typen" && !f.kop.includes("?")) fouten.push(`${waar}: bij typen hoort een vraagteken in de kop.`);
+      if (f.spel === "tegels") {
+        const { a, b, doel } = f.opgave;
+        if (f.stand === "maak") {
+          if (a + Number(vraag.antwoord) !== doel || Number(vraag.antwoord) < 1 || Number(vraag.antwoord) > 9) fouten.push(`${waar}: ${a} + ${vraag.antwoord} is niet ${doel}, of die tegel zit niet in de bak.`);
+        } else if (a + b !== Number(vraag.antwoord) || a + b > 20) fouten.push(`${waar}: ${a} + ${b} is niet ${vraag.antwoord}.`);
+      }
+      if (f.spel === "stippen") {
+        const { a, b, zoek } = f.opgave;
+        const juist =
+          f.stand === "weg" || f.stand === "verschil" ? String(a - b) :
+          f.stand === "vergelijk" ? ((zoek === "minste" ? a < b : a > b) ? "boven" : "onder") :
+          a > b ? ">" : a < b ? "<" : "=";
+        if (vraag.antwoord !== juist) fouten.push(`${waar}: het antwoord ${vraag.antwoord} hoort niet bij ${a} en ${b} (${f.stand}).`);
+        if (Math.max(a, b) > 20 || (f.stand !== "teken" && f.stand !== "vergelijk" && a <= b)) fouten.push(`${waar}: ${a} en ${b} passen niet bij ${f.stand}.`);
+      }
+    }
+    /* De raket: precies één paar stenen maakt samen het doelgetal. */
+    if (vraag.figuur?.soort === "raketsom") {
+      const f = vraag.figuur;
+      let paren = 0;
+      for (let i = 0; i < f.stenen.length; i++) for (let j = i + 1; j < f.stenen.length; j++) if (f.stenen[i] + f.stenen[j] === f.doel) paren++;
+      if (paren !== 1) fouten.push(`${waar}: ${paren} paren maken samen ${f.doel}, dat moet er precies één zijn.`);
+      const [p, q] = vraag.antwoord.split(",").map(Number);
+      if (p + q !== f.doel || p > q) fouten.push(`${waar}: het antwoord ${vraag.antwoord} past niet bij ${f.doel}.`);
+      if (f.vast >= 0 && f.stenen[f.vast] !== p && f.stenen[f.vast] !== q) fouten.push(`${waar}: de vaste steen hoort niet bij het goede paar.`);
+    }
+    if (vraag.figuur?.soort === "viatien" && vraag.figuur.pootjes) {
+      const [l, r, n] = vraag.antwoord.split(",").map(Number);
+      const f = vraag.figuur;
+      if (f.eerste + l !== 10 || l + r !== f.tweede || n !== f.eerste + f.tweede) fouten.push(`${waar}: de pootjes kloppen niet: ${vraag.antwoord}.`);
+    }
+
     if (isKeerfiguur(vraag.figuur)) {
       const vakjes = keerAntwoorden(vraag.figuur);
       /* Bij "maak zelf een som" staan er meerdere antwoorden; dan telt het aantal. */
@@ -823,7 +1035,14 @@ for (const oefening of OEFENINGEN) {
     if (!generator.aanpak.controle(vraag.somgegevens).trim()) {
       fouten.push(`${waar}: er komt geen zin met het goede antwoord uit.`);
     }
-    const scriptgebrek = controleerUitleg(generator.uitleganimatie, vraag.somgegevens);
+    /*
+      Een oefening die alleen voor bepaalde groepen bestaat (`groepen`), hoeft
+      alleen voor die groepen een uitleg-animatie te hebben: een leerdoel van
+      groep 3 komt een kind van groep 7 nooit tegen.
+    */
+    const scriptgebrek = controleerUitleg(generator.uitleganimatie, vraag.somgegevens).filter(
+      (g) => !oefening.groepen || oefening.groepen.includes(Number(g.vorm)),
+    );
     if (scriptgebrek.length > 0) {
       fouten.push(
         `${waar}: uitleg-animatie niet in orde voor groep ${scriptgebrek[0].vorm} — ${scriptgebrek[0].wat}`,
@@ -840,6 +1059,108 @@ for (const oefening of OEFENINGEN) {
 
     nagekeken++;
   }
+}
+
+/*
+  De uitleglessen (lib/lessen). Een les is geen oefening: geen vijftien
+  verschillende opgaven en geen bolletjes, maar een vast draaiboek. Hier wordt
+  nagekeken dat elke stap klopt: korte zinnen, het antwoord staat niet al in de
+  uitleg, en het antwoord past bij wat er in beeld staat.
+*/
+const telSom = (tekst) => tekst.split("+").reduce((t, d) => t + Number(d.trim()), 0);
+for (const les of ALLE_LESSEN) {
+  if (les.stappen.length < 4) fouten.push(`Les "${les.titel}": maar ${les.stappen.length} stappen.`);
+  les.stappen.forEach((st, i) => {
+    const waar = `Les "${les.titel}", stap ${i + 1}`;
+    for (const z of [...st.uitleg, st.goedZin, st.foutZin, st.tip, st.vraag]) {
+      if (!z || !z.trim()) fouten.push(`${waar}: een lege zin.`);
+      for (const deel of z.split(/(?<=[.!?])\s+/)) {
+        if (deel.split(/\s+/).filter((w) => /[\p{L}\d]/u.test(w)).length > 10) fouten.push(`${waar}: zin langer dan 10 woorden: "${deel}"`);
+      }
+      if (/eikel/i.test(z)) fouten.push(`${waar}: er staan geen eikels in beeld ("${z}").`);
+    }
+    if (st.invoer === "typen" && !st.kop.includes("?")) fouten.push(`${waar}: bij typen hoort een vraagteken in de kop.`);
+    if ((st.tip.match(/[.!?](\s|$)/g) ?? []).length > 1) fouten.push(`${waar}: de hint is meer dan één zin.`);
+    /* Bij typen staat het antwoord niet al in de uitleg, de vraag of de hint (tenzij het gegeven is). */
+    if (st.invoer === "typen") {
+      const gegeven = (st.kop.match(/\d+/g) ?? []);
+      for (const z of [...st.uitleg, st.vraag, st.tip]) {
+        if ((z.match(/\d+/g) ?? []).includes(st.antwoord) && !gegeven.includes(st.antwoord)) fouten.push(`${waar}: het antwoord ${st.antwoord} staat al in "${z}".`);
+      }
+    }
+    const o = st.opgave;
+    /* De tegels: het antwoord past bij de toren. */
+    if (st.spel === "tegels" && Array.isArray(o.torens)) {
+      const t = o.torens[o.leg ?? 0];
+      const som = (t.stukken ?? []).reduce((a, b) => a + b, 0);
+      if (o.knoppen?.length) {
+        if (!o.knoppen.includes(st.antwoord)) fouten.push(`${waar}: het antwoord "${st.antwoord}" staat niet tussen de knoppen.`);
+        if (/^\d.*=.*\d$/.test(st.kop) && (st.antwoord === "klopt" || st.antwoord === "klopt niet")) {
+          const [links, rechts] = st.kop.split("=");
+          const klopt = telSom(links) === Number(rechts.trim());
+          if (klopt !== (st.antwoord === "klopt")) fouten.push(`${waar}: "${st.kop}" ${klopt ? "klopt" : "klopt niet"}, maar het antwoord is "${st.antwoord}".`);
+        }
+      } else if (st.invoer === "typen") {
+        const verwacht = t.basis && som < t.basis ? t.basis - som : som;
+        if (String(verwacht) !== st.antwoord) fouten.push(`${waar}: de toren laat ${verwacht} zien, maar het antwoord is ${st.antwoord}.`);
+      } else if (o.bak?.length) {
+        for (const alt of st.antwoord.split("|")) {
+          const delen = alt.split(",").map(Number);
+          if (delen.some((d) => !o.bak.includes(d))) fouten.push(`${waar}: ${alt} zit niet in de bak.`);
+          if (delen.length !== (o.kies ?? 1)) fouten.push(`${waar}: ${alt} is niet ${o.kies ?? 1} tegel(s).`);
+          const doel = t.gat || 0;
+          if (doel && som + delen.reduce((a, b) => a + b, 0) !== doel) fouten.push(`${waar}: ${alt} vult het gat van ${doel} niet precies.`);
+          /* Op een basis: aanvullen tot de basis, of (zonder stukken) de helft ervan. */
+          const opgeteld = som + delen.reduce((a, b) => a + b, 0);
+          if (!doel && t.basis && som > 0 && opgeteld !== t.basis) fouten.push(`${waar}: ${alt} vult de ${t.basis} niet precies aan.`);
+          if (!doel && t.basis && som === 0 && delen.length === 1 && delen[0] * 2 !== t.basis) fouten.push(`${waar}: ${alt} is niet de helft van ${t.basis}.`);
+        }
+      }
+    }
+    /* Splitsen: de gekozen som is (niet) evenveel als alle bolletjes. */
+    if (st.spel === "stippen" && o.stand === "splits") {
+      const totaal = o.groepen.reduce((a, b) => a + b, 0);
+      if (st.invoer === "typen" && String(totaal) !== st.antwoord) fouten.push(`${waar}: er liggen ${totaal} bolletjes, maar het antwoord is ${st.antwoord}.`);
+      if (o.knoppen?.length) {
+        const niet = /níet|niet/.test(st.vraag);
+        const passend = o.knoppen.filter((k) => (telSom(k) === totaal) !== niet);
+        if (passend.length !== 1 || passend[0] !== st.antwoord) fouten.push(`${waar}: precies één knop hoort goed te zijn, en dat moet "${st.antwoord}" zijn.`);
+      }
+    }
+  });
+}
+
+/*
+  De tekst noemt wat er in beeld staat (ONTWERPREGELS.md, "Tekst"). De
+  groepjesmaker tekent bolletjes, dus wat het maatje tijdens het bouwen zegt,
+  noemt nooit eikels.
+*/
+for (const [sleutel, maakZinnen] of Object.entries(GROEPJESMAKER_ZINNEN)) {
+  for (const z of maakZinnen({ a: 3, b: 4 })) {
+    if (/eikel/i.test(z)) fouten.push(`Groepjesmaker, zin "${sleutel}": er staan bolletjes in beeld, geen eikels ("${z}").`);
+  }
+}
+
+/*
+  De uitleglessen op het lesscherm (oktober 2026): de lichte catalogus
+  (src/lib/lessen/catalogus.ts, voor het oefentype "lesscherm") en de
+  draaiboeken (src/components/les/lessen) moeten dezelfde lessen kennen.
+  Anders kan beheer een les kiezen die niet bestaat, of mist er een.
+*/
+{
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const map = new URL("../src/components/les/lessen/", import.meta.url);
+  const inDraaiboeken = new Set();
+  for (const f of readdirSync(map)) {
+    if (!/\.tsx?$/.test(f) || f === "index.ts") continue;
+    const t = readFileSync(new URL(f, map), "utf8");
+    for (const m of t.matchAll(/\bid:\s*["`]([a-z0-9-]+)["`],\s*\n\s*titel:/g)) inDraaiboeken.add(m[1]);
+  }
+  const { LESCATALOGUS } = await import("../src/lib/lessen/catalogus.ts");
+  const inCatalogus = new Set(LESCATALOGUS.map((l) => l.id));
+  for (const id of inDraaiboeken) if (!inCatalogus.has(id)) fouten.push(`Les "${id}" staat niet in src/lib/lessen/catalogus.ts.`);
+  for (const id of inCatalogus) if (!inDraaiboeken.has(id)) fouten.push(`Les "${id}" uit de catalogus heeft geen draaiboek.`);
+  console.log(`Lessen: ${inCatalogus.size} in de catalogus, ${inDraaiboeken.size} draaiboeken.`);
 }
 
 // ---------------------------------------------------------------------------

@@ -3,6 +3,30 @@
 Afspraken over hoe de oefeningen eruitzien en aanvoelen. Ze gelden voor het
 hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
 
+## Nieuwe stijl voor de hele website: de avontuurstijl (oktober 2026)
+
+Keuze van de eigenaar: de avontuurstijl vervangt de oude Thuisles-stijl voor
+de hele website. Het voorbeeld staat in `ontwerp/startscherm.png` en de stijl is
+beschreven in `STIJLGIDS.md`. De code staat op één plek: `src/app/avontuur.css`,
+met de onderdelen in `src/components/avontuur/`.
+
+- Achtergrond: koningsblauwe sterrenhemel met gloed, sterretjes, een planeet en
+  wolkjes onderaan.
+- Letters: Fredoka voor titels, Nunito voor tekst en Caveat voor kleine
+  zinnetjes in handschrift. Alleen Google Fonts.
+- Tegels, knoppen, kaarten en het tekstwolkje hebben een 3D-rand: een donkerdere
+  onderkant en een schaduw. Tegels staan een heel klein beetje scheef.
+- Witte tekst op geel krijgt altijd een donkere rand om de letters.
+- Alles wat je kunt aantikken is minstens 48 pixels.
+- De naam van de website komt uit `src/lib/merk.ts`, de mascotte uit
+  `components/avontuur/HoofdMascotte.tsx`. Schrijf die nergens anders los neer.
+
+**Overgang.** Voorlopig zijn alleen het startscherm en "Binnenkort!" in de
+nieuwe stijl gebouwd. De eigenaar keurt eerst het startscherm goed. Tot alles is
+overgezet, houden de andere schermen hun huidige stijl, en daar gelden de regels
+hieronder nog. De regels over uitlijnen, tekst, bediening en inhoud van vragen
+blijven ook in de nieuwe stijl gelden.
+
 ## Uiterlijk
 
 - Gegeven getallen staan in een geel vakje met donkere cijfers. Lege vakjes
@@ -109,6 +133,12 @@ tabel, een klok, een kalender of geld erin.
   het onderwerp, dan niet nog eens in de titel.
 - In beheer krijgt elk leerdoel een beheernaam met het bereik erin, en bij
   varianten I, II, III.
+- De tekst noemt precies wat er in beeld staat (regel van de eigenaar, 9
+  oktober 2026). Staan er bolletjes, dan zegt de tekst "bolletjes", nooit
+  "eikels". Dat geldt voor de vraag, het label van het invulvak, wat het
+  maatje zegt en de uitleg. Verandert het plaatje, dan verandert de tekst mee.
+  Geen enkele tekst mag een fout bevatten: later leest een pratende mascotte
+  alles voor.
 
 ## Bediening
 
@@ -140,6 +170,8 @@ vierkant als de vakjes waar ze in moeten.
   is het antwoordvak meteen beschikbaar en mogen verkeerde groepjes ontstaan.
   Alleen Controleer geeft feedback; na een goed antwoord telt het beeld mee.
   Bij de oudere begeleide bouwvormen gaat het antwoordvak pas na het bouwen open.
+- Oefeningen met een bouwsteen (zoals het rekenrek en de groepjesmaker): alle
+  15 opgaven met de bouwsteen.
 
 ## Plaatjes
 
@@ -156,6 +188,33 @@ vierkant als de vakjes waar ze in moeten.
 - Vos zit ín het plaatje en heeft een rol; hij staat nooit los ernaast. Tijdens
   het invullen alleen neutraal; blij of bedenkelijk pas na Controleer.
   Bewegingen kort, en geen animaties als "minder beweging" aanstaat.
+
+## Godot-bouwstenen (oktober 2026)
+
+Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
+
+- De Godot-bouwstenen hebben de stijl zoals Synthesis aanvoelt: een effen
+  donkerblauwe achtergrond met een heel zacht raster, vakjes met een
+  lichtblauwe gloed, gekleurde stippen, witte cijfers en groenblauwe knoppen
+  met een gloed. Geen decor.
+- Hier geldt dus niet "oranje is alleen voor knoppen" en ook niet de regel
+  over de eigen Thuisles-stijl voor kleur en sfeer. Wel blijft: geen plaatjes,
+  figuurtjes of logo van Synthesis zelf overnemen. De uitleg en het verloop
+  van een les mogen wel overgenomen worden, in het Nederlands (toestemming
+  eigenaar, 9 oktober 2026); zie "Uitleglessen".
+- De lichte Thuisles-stijl (houten kast, eikels) blijft beschikbaar met
+  `?stijl=thuisles` achter het adres van de oefening.
+- Dat geldt voor het hele oefenscherm, niet alleen voor de bouwsteen: de
+  bovenbalk, de achtergrond, de som met de vakjes, Controleer en het maatje
+  (thema `data-stijl="nacht"` in globals.css).
+- Indeling zoals Synthesis (keuze eigenaar, 9 oktober 2026): één groot
+  speelvlak zonder kader of vak eromheen; het spel is doorzichtig en staat los
+  op het donkere raster, zo groot als het scherm toelaat. De vraag en de som
+  staan bovenaan. Rechts staat de mascotte (nu nog het tijdelijke bolletje)
+  met wat hij uitlegt, en daaronder Controleer. Op een smal scherm staan de
+  mascotte en Controleer onder het spel. In het spel zelf staat geen tweede
+  maatje.
+- De rest van Thuisles (alle andere oefeningen) houdt de eigen Thuisles-stijl.
 
 ## Inhoud van vragen
 

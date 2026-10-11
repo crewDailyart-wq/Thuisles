@@ -193,6 +193,12 @@ in `scripts/opgaven.mjs`.
 | 3 | Handig rekenen met keersommen | ●●● | Ziet een som die het al kent, bijvoorbeeld 1 × 5 = 5, en maakt daarmee een nieuwe: 1 × 10 = ▢. |
 | 4 | Rekenen met nullen | ●●●● | Een rijtje van drie: 2 × ▢ = 6, 2 × ▢ = 60, 2 × ▢ = 600. Niveau groep 5, als uitdaging. |
 
+Kopje **Met de groepjesmaker** (Godot-bouwsteen, oktober 2026; zie GODOT-RAPPORT.md):
+
+| # | Titel | Bolletjes | Wat het kind doet |
+|---|-------|-----------|-------------------|
+| 5 | Groepjes maken | ●●● | Bouwt elke keersom zelf: kiest hoeveel eikels in een doosje en tikt voor elk doosje op de kast. De plussom groeit mee en krimpt tot de keersom; daarna typt het kind het antwoord. Met × 0 en × 1, wisselen (draaien) en knippen (7 × 8 = 5 × 8 + 2 × 8). Alle 15 opgaven met de groepjesmaker. |
+
 ### Onderwerp 2 — Tafels oefenen
 
 | # | Titel | Bolletjes | Wat het kind doet |
@@ -821,6 +827,86 @@ webadres (`aftrekken-tot-en-met-30-sommen-met-dezelfde-uitkomst`).
 | Vleksommen tot en met 100 | ●●●● | 83 − ☐ = 47 |
 | Vleksommen met de vlek vooraan | ●●●●● | ☐ − 8 = 35, tot en met 100 |
 
+## Groep 4 – Optellen tot en met 20 — visueel en interactief (oktober 2026)
+
+Alleen dit onderwerp; de andere Optellen-onderwerpen zijn niet veranderd.
+Titels en bolletjes blijven gelijk. Per oefening terug naar de oude werking:
+in beheer bij het sjabloon **Werking** op "Alleen typen (de oude werking)";
+dat geldt meteen, ook voor de opgaven die er al liggen.
+
+Twee bouwstenen, met blokjes en vakjes van 48 pixels, tikken of slepen:
+- **Tienstrook**: 2 rijen van 10 (1 rij tot en met 10), met een tussenruimte
+  na elke 5. Eerste getal oranje, tweede getal viool; een blokje gaat altijd
+  naar het volgende lege vakje.
+- **Weegschaal**: hangt scheef naar de zwaarste kant en pas recht bij
+  evenveel. Een stapel losse blokjes ernaast; een erbij gelegd blokje tik je
+  terug.
+
+"Om en om": opgave 1, 3, 5, 7 en 9 bouwen, 2, 4, 6, 8 en 10 zulke sommen
+zonder bouwen, 11 tot en met 15 alleen de som. Geen knop Hulp; na een fout
+antwoord laat de bouwsteen rustig zien hoe het wel werkt. Bij deze drie
+oefeningen staat "vragen per oefensessie" op 15, anders vallen er opgaven weg.
+
+| Kopje | Oefening | Wat er is veranderd |
+|---|---|---|
+| Met plaatjes | Maak de plussom bij het plaatje | niets (plaatjes stonden al in rijtjes van 5) |
+| Met plaatjes | Optellen met plaatjes tot en met 10 | teruggezet (6 oktober): plaatjes tellen en typen, Werking "Alleen typen" |
+| Met plaatjes | Optellen met plaatjes tot en met 20 | teruggezet (6 oktober): plaatjes tellen en typen |
+| Uitrekenen | Optellen tot en met 10 | niets |
+| Uitrekenen | Optellen tot en met 20 | teruggezet (6 oktober): alleen typen |
+| Uitrekenen | Optellen via 10 | sinds 6 oktober de schoolvorm met pootjes: 6 + 5 = ▢, onder de 5 twee pootjes (tot 10, en wat er dan nog bij moet); "Goed zo! 6 + 4 = 10, en 10 + 1 = 11." Werking "Splitsen met pootjes" |
+| Kiezen en controleren | Welke som hoort er niet bij? | niets |
+| Kiezen en controleren | Welke som klopt? | foute kaartjes 1 of 2 naast de echte uitkomst, nooit boven 20, geen dubbele uitkomsten |
+| Kiezen en controleren | Zoek de som die evenveel is | niets |
+| Kiezen en controleren | Koppel de som aan de uitkomst | niets |
+| Puzzelen | Aanvullen in de tabel | na een fout antwoord de tienstrook: "Van 2 tot 13 is 11." |
+| Puzzelen | Kies twee getallen | niets |
+| Puzzelen | Maak beide kanten gelijk I | om en om met de weegschaal |
+| Puzzelen | Maak beide kanten gelijk II | na een fout antwoord de weegschaal recht |
+
+De tienstrook staat nog in de code (`Tienstrook.tsx`), maar wordt sinds 6
+oktober nergens meer gebruikt.
+
+## Groep 4 – Optellen tot en met 20 · kopje "Met het rekenrek" (oktober 2026)
+
+Sinds 6 oktober geen apart onderwerp meer: de vijf oefeningen staan in
+Optellen tot en met 20, onder het kopje "Met het rekenrek", direct na "Met
+plaatjes". Het oude onderwerp "Optellen met het rekenrek" staat op verborgen
+(niet verwijderd); zijn oude adres en de oude adressen van de oefeningen
+sturen door. Bij alle 15 opgaven werkt het kind met het rekenrek (Werking
+"Bij alle 15 opgaven met het rekenrek"); geen om en om meer.
+
+Daarvoor: een eigen onderwerp met dezelfde opbouw als Aftrekken met het
+rekenrek (vijf oefeningen, geen kopjes). Hetzelfde rekenrek:
+2 rijen van 10, vijf rode en vijf witte kralen, hetzelfde frame. Het rek voor
+aftrekken is niet aangeraakt; erbij heeft een eigen onderdeel
+(`RekenrekErbij.tsx`) met de beweging die erbij hoort.
+
+- De kralen beginnen rechts; wat links staat telt mee. Het eerste getal staat
+  er al. Een kraal naar links slepen of aantikken neemt alle kralen links ervan
+  mee; terug naar rechts zet ze terug. Eerst de bovenste rij vol, nooit meer
+  dan het tweede getal. De kralen van het tweede getal krijgen een gloed. Geen
+  teller; het vakje werkt pas als alles geschoven is.
+- Om en om: opgave 1, 3, 5, 7 en 9 met het rekenrek, 2, 4, 6, 8 en 10 zonder,
+  11 tot en met 15 zonder. Na een fout antwoord schuiven de kralen zelf.
+- 15 vaste opgaven, van makkelijk naar moeilijk, vragen per oefensessie 15.
+- Per oefening terug naar alleen typen: Werking "Alleen typen (zonder
+  rekenrek)" in beheer; dat geldt meteen.
+
+| # | Titel | Bolletjes | Voorbeeld | Na goed |
+|---|---|---|---|---|
+| 1 | Optellen tot en met 10 op het rekenrek | ● | 3 + 4 | Goed zo! 3 en 4 is 7. |
+| 2 | Optellen tot en met 20 zonder over de 10 | ●● | 12 + 5 | Goed zo! 12 en 5 is 17. |
+| 3 | Aanvullen tot 10 | ●●● | 7 + ▢ = 10 en 10 = 7 + ▢, om en om (alleen over 10) | Goed zo! 7 en 3 is 10. |
+| 4 | Optellen over de 10 | ●●●● | 8 + 5 | Goed zo! 8 + 2 = 10, en dan nog 3 erbij: 13. |
+| 5 | Splitsen via 10 | ●●●●● | 6 + 5 met pootjes (lusje en hartje) en het rekenrek | Goed zo! 6 en 4 is samen 10. En nog 1 erbij: 11. |
+
+Webadressen (sinds 6 oktober): `/groep-4/optellen/optellen-tot-en-met-20-rekenrek-tot-en-met-10`,
+`…-rekenrek-zonder-over-de-10`, `…-rekenrek-aanvullen-tot-10`,
+`…-rekenrek-over-de-10`, `…-rekenrek-splitsen-via-10`. De oude adressen
+(`/groep-4/optellen/rekenrek-…`) sturen door. Elke pagina heeft een eigen titel en omschrijving
+met "erbijsommen", "rekenrek" en "groep 4", en staat in de sitemap.
+
 ## Groep 4 – Optellen — uitbreiding tot en met 100 — KLAAR
 
 KLAAR (oktober 2026). Volgorde van de onderwerpen: Optellen tot en met 20
@@ -999,3 +1085,238 @@ Onderdelen die één keer gebouwd zijn en die elk volgend domein kan gebruiken:
 - **Sleepkaartjes** (`src/components/oefenen/Sleepkaartjes.tsx`) — kaartjes
   naar vakjes slepen; op een kaartje mag ook een tekening staan, zoals een klok
   of een munt. Gebruikt bij Tafels, Delen, Tijd en Geld.
+
+## Groep 4 – Optellen tot en met 20 · kopje "Met de raket" (oktober 2026)
+
+Godot-bouwsteen 2 (zie GODOT-RAPPORT.md), naar het voorbeeld van Asteroid
+Addition. Een raketje, zes zwevende stenen met een getal en een planeet met het
+doelgetal. Het kind tikt twee stenen aan die samen het doelgetal maken; er
+tekent zich een route. Controleer (of een tik op de planeet) laat de raket
+vliegen. Er is altijd precies één goed paar. Geen klok, geen levens. Bij fout
+lichten de goede stenen groen op en vliegt de raket die route. Alle 15 opgaven
+met de raket, vragen per oefensessie 15.
+
+| # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|
+| 1 | Raket naar 10 | ●● | Welke twee maken samen 9? (4 en 5) |
+| 2 | Raket naar 20 | ●●● | Welke twee maken samen 16? (7 en 9) |
+| 3 | Raket: wat moet erbij? | ●●● | 8 staat al; welke steen moet erbij om 13 te maken? |
+
+## Groep 4 – Tafels oefenen en Aftrekken tot en met 20 · kopje "Met de laser" (oktober 2026)
+
+Godot-bouwsteen 3 (zie GODOT-RAPPORT.md), naar het voorbeeld van de
+schietspellen van Synthesis, maar "rustig schieten" (keuze van de eigenaar):
+acht zwevende stenen, niets valt weg, geen klok, geen levens. Het kind raakt met
+de laser alle goede stenen (er zijn er altijd precies drie) en drukt op Vuur! of
+Controleer. Goede stenen ontploffen; verkeerd geraakte stenen kaatsen de straal
+terug; gemiste goede stenen lichten groen op. Alle 15 opgaven met de laser.
+
+| Onderwerp | # | Titel | Bolletjes | Voorbeeld |
+|---|---|---|---|---|
+| Tafels oefenen | 1 | Laser: tafels van 2, 5 en 10 | ●● | Raak alle getallen uit de tafel van 5. |
+| Tafels oefenen | 2 | Laser: tafels van 3 en 4 | ●●● | Raak alle getallen uit de tafel van 3. |
+| Tafels oefenen | 3 | Laser: tafels van 6 tot en met 9 | ●●●● | Raak alle getallen uit de tafel van 7. |
+| Aftrekken tot en met 20 | 1 | Laser: minsommen | ●●● | Raak alle sommen met uitkomst 8 (13 − 5, 12 − 4 …). |
+
+## Groep 3 — oefeningen met bestaande types (9 oktober 2026)
+
+Op verzoek van de eigenaar ("groep 3 heeft nog niks, maak extra veel"). Elk
+leerdoel staat alleen op groep 3 en heeft in beheer "(groep 3)" achter de naam;
+het kopje staat ervoor. Alle oefeningen: vragen per oefensessie 15, vijftien
+verschillende opgaven per ronde, 30 sommen gepubliceerd, maatje aan. Wat er
+precies is aangemaakt, staat ook in `vragen-voor-later/AANGEMAAKT.md`.
+
+### Getallen · Tellen & sprongen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Plaatjes tellen | Plaatjes tellen | ●● | plaatjestellen |
+| Plaatjes tellen | Plaatjes tellen en typen | ●●● | plaatjestellen |
+| Plaatjes tellen | Plaatjes door elkaar tellen | ●●● | plaatjestellen |
+| Plaatjes tellen | Welk vak hoort bij het getal? | ● | vakken |
+| Plaatjes tellen | Tellen en slepen | ● | tellenslepen |
+| Plaatjes tellen | Veel plaatjes tellen | ●● | plaatjestellen |
+| Tellen tot en met 20 | Kinderen in de bus | ● | bus |
+| Tellen tot en met 20 | De hoeveelste kraal? | ● | kralen |
+| Tellen tot en met 20 | Welk vak met kralen? | ● | vakken |
+| Tellen tot en met 20 | Een plek in de bioscoop | ● | bioscoop |
+| Verder en terug tellen | Tel verder | ● | stapstenen |
+| Verder en terug tellen | Tel verder: het gat zit ertussen | ●● | stapstenen |
+| Verder en terug tellen | Tel terug | ●● | stapstenen |
+| Verder en terug tellen | Het huis erna | ● | straat |
+| Verder en terug tellen | Het huis ervoor | ●● | straat |
+| Verder en terug tellen | Buurgetallen | ●●● | straat |
+
+### Getallen · Vergelijken & ordenen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Meer of minder | Zoek eentje meer | ●● | vakken |
+| Meer of minder | Zoek eentje minder | ●● | vakken |
+| Groot en klein | De grootste vis | ● | vissen |
+| Groot en klein | De kleinste vis | ● | vissen |
+| Groot en klein | Grootste en kleinste tot en met 20 | ●● | vissen |
+| Op volgorde | Van klein naar groot | ● | trein |
+| Op volgorde | Van groot naar klein | ● | trein |
+| Op volgorde | Op volgorde tot en met 20 | ●● | trein |
+
+### Getallen · Getallenlijn tot en met 100
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Zet het getal op de lijn | ● | getallenlijn |
+| Tot en met 20 | Welk getal hoort hier? | ●● | getallenlijn |
+| Tot en met 20 | De lijn met vijftallen | ●● | getallenlijn |
+
+### Splitsen · Splitsen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Splitsen tot en met 10 | Splitsen tot en met 10 | ●● | splitsen |
+| Splitsen tot en met 10 | Het splitsschema | ●● | splitsschema |
+| Splitsen tot en met 10 | Het splitsschema door elkaar | ●● | splitsschema |
+| Splitsen tot en met 10 | Splitsen in de tabel | ● | splitstabel |
+| Splitsen tot en met 10 | De splitsbloem | ● | splitstabel |
+| Splitsen tot en met 10 | Verdelen in twee groepen | ●●● | verdelen |
+| Splitsen tot en met 20 | Splitsen tot en met 20 | ●● | splitsen |
+
+### Optellen · Optellen tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 10 | Optellen met plaatjes | ● | plaatjessom |
+| Tot en met 10 | Maak de plussom bij het plaatje | ● | plaatjessom |
+| Tot en met 10 | Optellen tot en met 10 | ●● | plussom |
+| Tot en met 10 | Welke som klopt? | ●● | somkeuze |
+| Tot en met 10 | Koppel de som aan de uitkomst | ●● | koppelsommen |
+| Tot en met 10 | Zoek de som die evenveel is | ●● | evenveelsom |
+| Tot en met 10 | Kies twee getallen | ●●● | tweegetallen |
+| Tot en met 10 | Maak beide kanten gelijk | ●●●● | balans |
+| Tot en met 10 | Aanvullen in de tabel | ●● | aanvultabel |
+| Tot en met 10 | Raket naar 10 | ●● | raketsom |
+| Tot en met 20 | Optellen zonder over de 10 | ● | rekensom |
+| Tot en met 20 | Optellen met plaatjes tot en met 20 | ● | plaatjessom |
+
+### Optellen · Optellen met het rekenrek
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Met het rekenrek | Optellen tot en met 10 | ● | rekenrekerbij |
+| Met het rekenrek | Optellen zonder over de 10 | ●● | rekenrekerbij |
+| Flitsen | Hoeveel kralen tot en met 20? | ● | rekenrekflits |
+
+### Aftrekken · Aftrekken tot en met 20
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 10 | Wegstrepen | ● | wegstrepen |
+| Tot en met 10 | Een minsom bij een plaatje | ● | minsomplaatje |
+| Tot en met 10 | Aftrekken met plaatjes | ● | plaatjesminsom |
+| Tot en met 10 | Aftrekken tot en met 10 | ●● | minsom |
+| Tot en met 10 | Koppel de minsom aan de uitkomst | ●●● | minkoppelen |
+| Tot en met 20 | Aftrekken zonder over de 10 | ● | rekensom |
+
+### Aftrekken · Aftrekken met het rekenrek
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Met het rekenrek | Aftrekken binnen het tiental | ●● | rekenrekaf |
+
+### Tijd · De wijzerklok
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Hele uren | Hoe laat is het? | ● | klokaflezen |
+| Hele uren | Zet de klok | ● | klokzetten |
+| Hele uren | De grote en de kleine wijzer | ● | wijzeraanwijzen |
+| Hele uren | Klokken koppelen | ● | klokkoppelen |
+| Halve uren | Halve uren aflezen | ●● | klokaflezen |
+
+### Tijd · Maanden en dagen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Dagen van de week | De dagen op volgorde | ● | dagvraag |
+| Dagen van de week | Welke dag ontbreekt? | ● | dagenaanvullen |
+
+### Geld · Munten en briefjes
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Munten | Geld tellen | ●● | geldtellen |
+| Munten | Welke munt is het meest waard? | ● | geldwaarde |
+| Munten | Leg het bedrag | ●●●● | geldleggen |
+
+### Verhaaltjessommen · Optellen
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Erbij krijgen | ● | verhaaltje |
+| Tot en met 20 | Samen | ● | verhaaltje |
+
+### Verhaaltjessommen · Aftrekken
+
+| Kopje | Titel | Bolletjes | Soort |
+|---|---|---|---|
+| Tot en met 20 | Eraf | ● | verhaaltje |
+
+## Godot-bouwsteen 4: de getaltegels (9 oktober 2026)
+
+Naar het idee van Synthesis "Add within 10". Tegels met stippen in een
+tienveld (twee tienvelden tot 20); elk getal heeft een eigen kleur. Eén
+algemeen Godot-onderdeel (`GodotSpel.tsx`, figuur `godotspel`) zodat nieuwe
+spellen geen eigen schermcode meer nodig hebben. Bij alle 15 opgaven het spel,
+vragen per oefensessie 15, maatje aan.
+
+| Groep | Waar | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|---|
+| 3 | Optellen tot en met 20 · Met de tegels | Tegels: samen tot en met 10 | ● | 3 + 4: typen hoeveel samen |
+| 3 | Optellen tot en met 20 · Met de tegels | Tegels: dubbel en bijna dubbel | ●● | 5 + 5, 5 + 6 |
+| 3 | Splitsen tot en met 20 · Met de tegels | Tegels: maak het veld vol | ●● | 3 + ? = 7: de tegel kiezen |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: 10 en nog wat | ●● | 10 + 4, 4 + 10 |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: dubbel en bijna dubbel | ●● | 7 + 7, 7 + 8 |
+| 4 | Optellen tot en met 20 · Met de tegels | Tegels: samen meer dan 10 | ●●● | 7 + 6 over twee tienvelden |
+| 4 | Splitsen tot en met 20 · Met de tegels | Tegels: maak 11 tot en met 20 | ●●● | 8 + ? = 11 |
+
+## Godot-bouwsteen 5: de stippen (9 oktober 2026)
+
+Naar het idee van Synthesis "Dot Destruction", "Difference Dimension" en
+"Compare the Pair". Bij alle 15 opgaven het spel, maatje aan. Vergelijken
+heeft eigen denkfouten en een eigen uitleg (die van de vissen noemt vissen).
+
+| Groep | Waar | Titel | Bolletjes | Wat het kind doet |
+|---|---|---|---|---|
+| 3 | Aftrekken tot en met 20 · Met de stippen | Stippen: tik ze weg | ● | 8 stippen, tik er 3 weg, typ wat overblijft |
+| 3 | Aftrekken tot en met 20 · Met de stippen | Stippen: hoeveel meer? | ●● | twee rijen, typ het verschil |
+| 3 | Vergelijken & ordenen · Met de stippen | Stippen: welke rij heeft de meeste? | ● | tik de rij |
+| 3 | Vergelijken & ordenen · Met de stippen | Stippen: de meeste of de minste | ●● | tik de rij |
+| 4 | Aftrekken tot en met 20 · Met de stippen | Stippen: tik ze weg | ●●● | 11 tot en met 20 |
+| 4 | Aftrekken tot en met 20 · Met de stippen | Stippen: hoeveel meer? | ●●● | 11 tot en met 20 |
+| 4 | Vergelijken & ordenen · Met de stippen | Stippen: de meeste of de minste | ●● | 5 tot en met 20 |
+| 4 | Vergelijken & ordenen · Met de stippen | Stippen: <, = of > | ●●● | kies het teken |
+
+## Uitleglessen zoals Synthesis (9 oktober 2026)
+
+Op verzoek van de eigenaar: alles van Synthesis voor groep 4 nabouwen, met de
+uitleg die erbij past. Een les is een vast draaiboek (`src/lib/lessen`): bij
+elke stap legt de mascotte rechts eerst uit en stelt dan een kleine vraag over
+het spel. Elke stap is een vraag met een volgnummer; vragen per oefensessie =
+het aantal stappen, zodat het kind de hele les doorloopt. De controle staat in
+`scripts/opgaven.mjs` (korte zinnen, het antwoord staat niet al in de uitleg,
+het antwoord past bij het spel).
+
+### Optellen tot 10 (Synthesis "Add within 10"), groep 3 en 4
+
+Optellen tot en met 20, kopje "Lessen: optellen tot 10". De tegels zijn nu
+torens van insteekblokjes van twee breed, met een eigen kleur per getal.
+
+| Les | Synthesis | Stappen |
+|---|---|---|
+| Instaptoets: optellen tot 10 | Assessment | 7 |
+| Optellen onder de 10 | Adding below 10 | 9 |
+| Dubbelen | Doubles | 8 |
+| Klopt de som? | True or False | 7 |
+| Het ontbrekende getal | Missing Numbers | 6 |
+| Drie getallen optellen | Add Three Numbers | 6 |
+| Splitsen in meer delen | Splitting Sums | 7 |
+| Eindtoets: optellen tot 10 | Mastery Check | 6 |

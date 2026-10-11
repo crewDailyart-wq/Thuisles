@@ -50,7 +50,7 @@ export const tafelsAanpak: Aanpak = {
     return [
       { tekst: `Je zoekt hoe vaak ${tafel} in ${product} past.`, som: `${product} : ${tafel}` },
       { tekst: "Tel de tafel door tot je erbij bent:", som: rij(tafel, mee) },
-      { tekst: `Dat zijn ${mee} stappen.`, som: `${tafel} × ${mee} = ${product}` },
+      { tekst: `${mee === 1 ? "Dat is 1 stap" : `Dat zijn ${mee} stappen`}.`, som: `${tafel} × ${mee} = ${product}` },
     ];
   },
 

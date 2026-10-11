@@ -1,0 +1,496 @@
+/*
+  Het lesscherm, zoals Synthesis (oktober 2026). Maten in punten van een vast
+  speelvlak van 1280 × 720; het hele vlak wordt geschaald naar het scherm.
+  Kleuren en maten gemeten op de screenshots van ronde 2.
+*/
+
+.wortel {
+  position: relative;
+  width: 100%;
+  height: 100dvh;
+  overflow: hidden;
+  background:
+    radial-gradient(1px 1px at 12% 18%, rgba(255, 255, 255, 0.35), transparent 60%),
+    radial-gradient(1px 1px at 33% 72%, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(1px 1px at 58% 12%, rgba(255, 255, 255, 0.3), transparent 60%),
+    radial-gradient(1px 1px at 71% 64%, rgba(255, 255, 255, 0.22), transparent 60%),
+    radial-gradient(1px 1px at 88% 30%, rgba(255, 255, 255, 0.3), transparent 60%),
+    radial-gradient(1px 1px at 22% 46%, rgba(255, 255, 255, 0.2), transparent 60%),
+    radial-gradient(1px 1px at 46% 88%, rgba(255, 255, 255, 0.25), transparent 60%),
+    radial-gradient(1px 1px at 94% 82%, rgba(255, 255, 255, 0.2), transparent 60%),
+    radial-gradient(ellipse at 55% 42%, #12224a 0%, #0b1731 45%, #050b19 100%);
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+.vlak {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 1280px;
+  height: 720px;
+  transform-origin: center;
+}
+
+/* ---------- linkerkolom: naam, tekst, bediening, mascotte ---------- */
+
+.pil {
+  position: absolute;
+  left: 12px;
+  top: 12px;
+  display: flex;
+  align-items: center;
+  height: 38px;
+  border-radius: 8px;
+  background: #1e2433;
+  font-size: 17px;
+  color: #e6e8ee;
+}
+.pil button {
+  width: 46px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-right: 1px solid #0c111d;
+  background: transparent;
+  color: #e6e8ee;
+  cursor: pointer;
+}
+.pil span {
+  padding: 0 14px 0 10px;
+}
+
+.tekst {
+  position: absolute;
+  left: 24px;
+  top: 92px;
+  width: 262px;
+  font-size: 15px;
+  font-weight: 700;
+  line-height: 24px;
+}
+.tekst p {
+  margin: 0 0 24px;
+}
+/* Voorkeuren uit "Jouw instellingen": grote letters, of de zin meteen helemaal in beeld. */
+.tekst[data-letters="groot"] {
+  font-size: 20px;
+  line-height: 31px;
+}
+.tekst[data-letters="groot"] .getal {
+  font-size: 22px;
+}
+.tekst[data-letters="groot"] .knop {
+  font-size: 20px;
+}
+.tekst[data-oplichten="uit"] .woord {
+  animation: none;
+  opacity: 1;
+}
+.woord {
+  display: inline;
+  opacity: 0;
+  animation: verschijn 0.25s ease-out forwards;
+}
+@keyframes verschijn {
+  to {
+    opacity: 1;
+  }
+}
+.getal {
+  font-family: "KaTeX_Main", "Latin Modern Roman", "Cambria Math", Georgia, "Times New Roman", serif;
+  font-weight: 400;
+  font-size: 17px;
+}
+.tekst em {
+  font-style: italic;
+}
+
+.bediening {
+  margin-top: -4px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: flex-start;
+  animation: verschijn 0.25s ease-out forwards;
+  opacity: 0;
+}
+.rij {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.knop {
+  min-width: 96px;
+  min-height: 44px;
+  padding: 10px 26px;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  background: #2b2f3b;
+  color: #d6d8e1;
+  font: inherit;
+  font-size: 16px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+}
+.knop:hover {
+  background: #343949;
+}
+.knop[aria-pressed="true"] {
+  border-color: #4b8af5;
+  background: #2f3a57;
+}
+.breed {
+  width: 226px;
+  text-align: center;
+}
+.som {
+  font-family: "KaTeX_Main", "Latin Modern Roman", "Cambria Math", Georgia, "Times New Roman", serif;
+  font-size: 19px;
+  font-weight: 400;
+  color: #eef0f5;
+  white-space: nowrap;
+}
+
+.vak {
+  width: 110px;
+  height: 64px;
+  border: 2px solid #3a4256;
+  border-radius: 8px;
+  background: #212838;
+  color: #ffffff;
+  font: inherit;
+  font-size: 34px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+}
+.vak:focus {
+  border-color: #4b8af5;
+}
+
+/* De blauwe ronde knop van Synthesis: pijl = verder, vinkje = controleer. */
+.rond {
+  width: 44px;
+  height: 44px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #4b8af5;
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow: 0 0 0 0 rgba(75, 138, 245, 0.6);
+  animation: puls 1.8s ease-out 1s infinite;
+}
+.rond:disabled {
+  background: #2b2f3b;
+  color: #6b7280;
+  animation: none;
+  cursor: default;
+}
+@keyframes puls {
+  0% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(75, 138, 245, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0);
+  }
+}
+
+/* Vaste plek voor de mascotte; die zet de eigenaar er later in. */
+.mascotte {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  width: 150px;
+  height: 150px;
+  display: grid;
+  place-items: center;
+  border: 2px dashed rgba(160, 180, 220, 0.35);
+  border-radius: 50%;
+  color: rgba(200, 210, 230, 0.55);
+  font-size: 13px;
+  transition: transform 0.2s;
+}
+.mascotte[data-praat="true"] {
+  border-color: rgba(75, 138, 245, 0.8);
+  animation: praat 0.9s ease-in-out infinite;
+}
+@keyframes praat {
+  50% {
+    transform: scale(1.04);
+  }
+}
+
+/* ---------- midden: raster, torens, som ---------- */
+
+.raster {
+  position: absolute;
+}
+.raster svg {
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+}
+
+.toren {
+  position: absolute;
+  transform-origin: center;
+}
+.draait {
+  animation: draai 0.9s ease-in-out forwards;
+}
+@keyframes draai {
+  to {
+    transform: rotate(180deg);
+  }
+}
+
+.stuk {
+  position: absolute;
+  inset: 0;
+  animation: val 0.32s cubic-bezier(0.2, 1.4, 0.4, 1);
+}
+@keyframes val {
+  from {
+    transform: scale(0.7);
+    opacity: 0;
+  }
+}
+.weg {
+  animation: weg 0.4s ease-in forwards;
+}
+@keyframes weg {
+  to {
+    transform: scale(0.85);
+    opacity: 0;
+  }
+}
+
+.hokje {
+  position: absolute;
+  border-radius: 4px;
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.18),
+    inset 0 -3px 0 rgba(0, 0, 0, 0.16),
+    inset 0 0 0 1px rgba(0, 0, 0, 0.12);
+}
+.gat {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: 36%;
+  height: 36%;
+  transform: translate(-50%, -50%);
+  border-radius: 50%;
+  background: #0a1020;
+  box-shadow:
+    inset 0 3px 4px rgba(0, 0, 0, 0.7),
+    0 1px 0 rgba(255, 255, 255, 0.28);
+  display: grid;
+  place-items: center;
+  font-weight: 800;
+  color: #0a1020;
+  transition: background 0.15s;
+}
+.geteld {
+  background: #ffffff;
+  width: 52%;
+  height: 52%;
+  font-size: 22px;
+  box-shadow: 0 0 14px rgba(255, 255, 255, 0.7);
+}
+
+.sombalk {
+  position: absolute;
+  z-index: 3; /* boven een eigen speelvlak, zodat je in de vakjes kunt tikken */
+  left: 322px;
+  top: 28px;
+  width: 792px;
+  height: 76px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 52px;
+  font-size: 54px;
+  font-weight: 800;
+}
+.somteken {
+  color: #c3c7d0;
+}
+.somvak {
+  width: 90px;
+  height: 76px;
+  border: 2px solid #3a4256;
+  border-radius: 6px;
+  background: #212838;
+  color: #ffffff;
+  font: inherit;
+  font-size: 50px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+}
+.somvak:focus {
+  border-color: #4b8af5;
+}
+
+/* ---------- rechts: de bak ---------- */
+
+.baktegel {
+  position: absolute;
+  transition:
+    transform 0.6s ease-in-out,
+    opacity 0.3s,
+    top 0.4s;
+}
+.baktegel[data-om="true"] {
+  transform: rotate(180deg);
+}
+.bakdof {
+  opacity: 0.5;
+}
+.bakslot {
+  opacity: 0.18;
+}
+.pakbaar {
+  cursor: grab;
+}
+.gekozen {
+  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.8));
+}
+
+.spook {
+  position: fixed;
+  pointer-events: none;
+  z-index: 10;
+  opacity: 0.9;
+  cursor: grabbing;
+}
+
+/* Het handje dat één keer voordoet hoe je een tegel pakt. */
+.hand {
+  position: absolute;
+  width: 46px;
+  height: 46px;
+  pointer-events: none;
+  animation: voordoen 2.6s ease-in-out 0.6s 2 both;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.5));
+}
+@keyframes voordoen {
+  0% {
+    transform: translate(var(--van-x), var(--van-y));
+    opacity: 0;
+  }
+  12% {
+    transform: translate(var(--van-x), var(--van-y));
+    opacity: 1;
+  }
+  70% {
+    transform: translate(var(--naar-x), var(--naar-y));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--naar-x), var(--naar-y));
+    opacity: 0;
+  }
+}
+
+/* ---------- de kaart aan het eind ---------- */
+
+.kaart {
+  position: absolute;
+  left: 640px;
+  top: 140px;
+  width: 300px;
+  min-height: 350px;
+  padding: 28px;
+  border: 1px solid rgba(190, 200, 230, 0.35);
+  border-radius: 18px;
+  background: linear-gradient(160deg, rgba(92, 102, 132, 0.72), rgba(52, 60, 86, 0.72));
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.45);
+  transform: rotate(3deg);
+  cursor: pointer;
+  animation: kaartin 0.5s cubic-bezier(0.2, 1.2, 0.4, 1);
+  font: inherit;
+  color: #f1f3f8;
+  text-align: left;
+}
+@keyframes kaartin {
+  from {
+    transform: rotate(3deg) translateY(30px) scale(0.9);
+    opacity: 0;
+  }
+}
+/* Onder de tekening en niet eroverheen, ook als de titel twee regels is. */
+.kaarttitel {
+  display: block;
+  margin-top: 14px;
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: 0.3px;
+}
+.vinkje {
+  position: absolute;
+  right: -18px;
+  top: -18px;
+  width: 64px;
+  height: 64px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #3fb34f;
+  animation: val 0.35s cubic-bezier(0.2, 1.6, 0.4, 1);
+}
+
+.pauze {
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  display: grid;
+  place-items: center;
+  background: rgba(3, 7, 18, 0.75);
+}
+.pauzemenu {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: 26px;
+  font-weight: 800;
+}
+.pauzemenu p {
+  margin: 0 0 8px;
+}
+a.knop {
+  display: block;
+  text-decoration: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .woord,
+  .stuk,
+  .weg,
+  .hand,
+  .kaart,
+  .vinkje,
+  .bediening,
+  .mascotte[data-praat="true"],
+  .rond {
+    animation-duration: 0.01s;
+    animation-iteration-count: 1;
+  }
+  .draait {
+    animation-duration: 0.2s;
+  }
+}

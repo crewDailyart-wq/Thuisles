@@ -181,6 +181,15 @@ export const vakkenGenerator: Generator = {
       const woord = MATERIAALWOORD[MATERIAALCODES[code] ?? "telplaatjes"];
       return `${som.goed} ${som.goed === 1 ? woord.een : woord.meer}`;
     },
+    /*
+      Groep 3-4 ziet op het kaartje het getal van Vos. Bij "eentje meer" of
+      "eentje minder" is het goede vak dus níet het vak met dat getal; dat moet
+      in de zin staan, anders klopt de tekst niet met het antwoord.
+    */
+    pas: (zin, som) =>
+      zin === STANDAARDZINNEN["34"] && (som.variant === "meer" || som.variant === "minder")
+        ? `Zoek het vak met eentje ${som.variant} dan:`
+        : zin,
   },
   standaard: {
     van: 1,

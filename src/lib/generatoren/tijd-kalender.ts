@@ -247,7 +247,8 @@ export const dagvraagGenerator: Generator = {
 // Dagen aanvullen
 // ---------------------------------------------------------------------------
 
-const AANVULZIN = "Vul de ontbrekende dagen in.";
+/* "de ontbrekende dag" of "de ontbrekende dagen", naar het aantal gaten. */
+const AANVULZIN = "Vul {som} in.";
 const AANVULZINNEN: Record<Leeftijdsgroep, string> = {
   "34": AANVULZIN,
   "56": AANVULZIN,
@@ -278,7 +279,10 @@ export const dagenaanvullenGenerator: Generator = {
     },
     ...vraagtekstVelden(AANVULZINNEN),
   ],
-  vraagteksten: { standaard: AANVULZINNEN },
+  vraagteksten: {
+    standaard: AANVULZINNEN,
+    som: (s) => (s.getallen?.[1] === 1 ? "de ontbrekende dag" : "de ontbrekende dagen"),
+  },
   standaard: { lengte: 4, gaten: 2 },
   foutpatronen: tijdPatronen,
   aanpak: dagenAanpak,
@@ -678,7 +682,7 @@ export const kalenderdagGenerator: Generator = {
       const zin =
         stap === 0
           ? `Op welke dag valt ${datumInWoorden({ jaar, maand, dag })}?`
-          : `Welke dag is het ${stap} dagen ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
+          : `Welke dag is het ${stap} ${stap === 1 ? "dag" : "dagen"} ${terug ? "voor" : "na"} ${datumInWoorden({ jaar, maand, dag })}?`;
 
       const gegevens = {
         soort: "kalenderdag",

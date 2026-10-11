@@ -106,7 +106,7 @@ export const deelsomUitleg: Uitlegbron = bron(
       ),
       stap(
         `${product} : ${tafel} = ${mee}`,
-        kort ? "Tel de stappen!" : `Dat zijn ${mee} stappen, dus het antwoord is ${mee}.`,
+        kort ? "Tel de stappen!" : `${mee === 1 ? "Dat is 1 stap" : `Dat zijn ${mee} stappen`}, dus het antwoord is ${mee}.`,
         true,
       ),
     ];
@@ -233,7 +233,7 @@ export const keerrasterUitleg: Uitlegbron = bron(
     if (!rijen || !kolommen) return [];
     return [
       stap(String(kolommen), kort ? "Zoveel staan er in een rij." : `In één rij staan er ${kolommen}.`),
-      stap(String(rijen), kort ? "Zoveel rijen zijn er." : `En er zijn ${rijen} rijen.`),
+      stap(String(rijen), kort ? "Zoveel rijen zijn er." : `${rijen === 1 ? "En er is 1 rij" : `En er zijn ${rijen} rijen`}.`),
       stap(rij(kolommen, rijen), kort ? "Tel per rij mee." : `Tel met sprongen van ${kolommen}.`),
       stap(
         `${rijen} × ${kolommen} = ${rijen * kolommen}`,
@@ -266,7 +266,7 @@ export const keerplaatjesUitleg: Uitlegbron = bron(
     const [rijen, kolommen] = som.getallen;
     if (!rijen || !kolommen) return [];
     return [
-      stap(String(rijen), kort ? "Zoveel rijen zijn er." : `Er zijn ${rijen} rijen.`),
+      stap(String(rijen), kort ? "Zoveel rijen zijn er." : `${rijen === 1 ? "Er is 1 rij" : `Er zijn ${rijen} rijen`}.`),
       stap(String(kolommen), kort ? "Zoveel staan er in een rij." : `In elke rij staan er ${kolommen}.`),
       stap(
         `${rijen} × ${kolommen} = ${rijen * kolommen}`,

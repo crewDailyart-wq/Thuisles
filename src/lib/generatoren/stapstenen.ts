@@ -41,11 +41,12 @@ import { stapstenenUitleg } from "@/lib/generatoren/scripts/stapstenen";
  * rij af te lezen — dat is juist wat hier geoefend wordt, en zo staat het ook
  * in de schoolmethodes.
  *
- * `{som}` zit er niet meer in, maar blijft wel werken: zet je hem zelf in een
- * eigen zin, dan wordt hij nog steeds vervangen door "de lege steen" of "de
- * lege stenen", afhankelijk van hoeveel er leeg zijn.
+ * `{som}` is "het ontbrekende getal" of "de ontbrekende getallen", afhankelijk
+ * van hoeveel stenen er leeg zijn. Zo klopt de zin altijd: bij één lege steen
+ * staat er nooit "getallen" (regel van de eigenaar: geen enkele tekst mag een
+ * fout bevatten).
  */
-const VASTE_ZIN = "Vul de ontbrekende getallen in.";
+const VASTE_ZIN = "Vul {som} in.";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
   "34": VASTE_ZIN,
@@ -53,9 +54,9 @@ const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
   "78": VASTE_ZIN,
 };
 
-/** "de lege steen" of "de lege stenen", afhankelijk van hoeveel er leeg zijn. */
+/** "het ontbrekende getal" of "de ontbrekende getallen", naar het aantal lege stenen. */
 function legeStenenWoorden(som: { extra?: Record<string, number> }): string {
-  return (som.extra?.aantalLeeg ?? 1) === 1 ? "de lege steen" : "de lege stenen";
+  return (som.extra?.aantalLeeg ?? 1) === 1 ? "het ontbrekende getal" : "de ontbrekende getallen";
 }
 
 export type Steenplek = "achteraan" | "tussenin" | "vooraan" | "omenom" | "willekeurig";

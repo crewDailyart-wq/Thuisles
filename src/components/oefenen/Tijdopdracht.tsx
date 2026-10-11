@@ -669,7 +669,7 @@ export function Tijdopdracht({
               uitslagen.every((u) => u === "goed") ? "text-groen-diep" : "text-roze"
             }`}
           >
-            {uitslagen.every((u) => u === "goed") ? "Goed gezet!" : "Zo hoorde de klok te staan."}
+            {uitslagen.every((u) => u === "goed") ? "Goed gezet!" : "Zo moest de klok staan."}
           </p>
         )}
       </div>

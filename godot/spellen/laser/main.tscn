@@ -1,0 +1,83 @@
+[gd_scene load_steps=8 format=3]
+
+[ext_resource type="Script" path="res://laser/main.gd" id="1"]
+[ext_resource type="PackedScene" path="res://laser/kanon.tscn" id="2"]
+[ext_resource type="PackedScene" path="res://gedeeld/maatje.tscn" id="3"]
+[ext_resource type="Script" path="res://gedeeld/geluid.gd" id="4"]
+
+[sub_resource type="StyleBoxFlat" id="knop"]
+bg_color = Color(0.133, 0.722, 0.647, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+shadow_color = Color(0.133, 0.722, 0.647, 0.45)
+shadow_size = 10
+
+[sub_resource type="StyleBoxFlat" id="knop_in"]
+bg_color = Color(0.09, 0.541, 0.486, 1)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[sub_resource type="StyleBoxFlat" id="knop_uit"]
+bg_color = Color(0.133, 0.722, 0.647, 0.3)
+corner_radius_top_left = 20
+corner_radius_top_right = 20
+corner_radius_bottom_right = 20
+corner_radius_bottom_left = 20
+
+[node name="Laser" type="Control"]
+custom_minimum_size = Vector2(600, 500)
+layout_mode = 3
+anchors_preset = 0
+offset_right = 600.0
+offset_bottom = 500.0
+script = ExtResource("1")
+
+[node name="Kanon" parent="." instance=ExtResource("2")]
+position = Vector2(300, 440)
+
+[node name="Maatje" parent="." instance=ExtResource("3")]
+position = Vector2(62, 448)
+maat = 26.0
+
+[node name="Vuur" type="Button" parent="."]
+layout_mode = 0
+offset_left = 446.0
+offset_top = 418.0
+offset_right = 584.0
+offset_bottom = 482.0
+focus_mode = 0
+disabled = true
+theme_override_font_sizes/font_size = 26
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_hover_color = Color(1, 1, 1, 1)
+theme_override_colors/font_pressed_color = Color(1, 1, 1, 1)
+theme_override_colors/font_disabled_color = Color(1, 1, 1, 0.7)
+theme_override_styles/normal = SubResource("knop")
+theme_override_styles/hover = SubResource("knop")
+theme_override_styles/pressed = SubResource("knop_in")
+theme_override_styles/disabled = SubResource("knop_uit")
+text = "Vuur!"
+
+[node name="Sterren" type="CPUParticles2D" parent="."]
+position = Vector2(-100, -100)
+emitting = false
+amount = 26
+lifetime = 0.8
+one_shot = true
+explosiveness = 0.95
+emission_shape = 1
+emission_sphere_radius = 20.0
+spread = 180.0
+gravity = Vector2(0, 120)
+initial_velocity_min = 80.0
+initial_velocity_max = 180.0
+scale_amount_min = 4.0
+scale_amount_max = 7.0
+color = Color(0.965, 0.788, 0.271, 1)
+
+[node name="Geluid" type="Node" parent="."]
+script = ExtResource("4")

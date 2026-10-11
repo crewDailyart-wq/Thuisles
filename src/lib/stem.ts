@@ -6,7 +6,9 @@
  *
  * Nu: de stem die in de browser zit (gratis, werkt overal, geen verbinding
  * nodig). Van de beschikbare Nederlandse stemmen wordt automatisch de beste
- * vrouwelijke gekozen — mannelijke en vlakke stemmen worden vermeden.
+ * vrouwelijke gekozen — mannelijke en vlakke stemmen worden vermeden. Heeft
+ * het apparaat geen Nederlandse stem, dan praat er niemand en staat alleen het
+ * tekstwolkje in beeld (keuze van de eigenaar: geen betaalde stemdienst).
  *
  * Later: een echte stemdienst met een vrolijke kinderstem. Die schakelaar
  * staat hieronder al klaar (`BRON`). De opzet is dan: elke unieke zin wordt
@@ -220,6 +222,12 @@ export function zeg(zin: string): void {
 
   void stemmenGereed().then(() => {
     if (mijnBeurt !== beurt) return;
+    /*
+      Geen Nederlandse stem op dit apparaat: dan zwijgen. Anders kiest de
+      browser zelf een stem, vaak een Engelse, en die maakt van een Nederlandse
+      zin onzin. Het tekstwolkje blijft gewoon staan.
+    */
+    if (!gekozen) return;
 
     const uiting = new SpeechSynthesisUtterance(zin);
     /*
@@ -238,6 +246,89 @@ export function zeg(zin: string): void {
 
     window.speechSynthesis.speak(uiting);
   });
+}
+
+/**
+ * Een paar zinnen na elkaar, voor het maatje.
+ *
+ * `bijZin` hoort bij elke zin die begint, zodat het wolkje en het plaatje met
+ * de stem meelopen: terwijl het maatje "Maak eerst de 10 vol" zegt, vult de
+ * bovenste rij zich. `klaar` komt na de laatste zin. Een nieuwe aanroep (of
+ * `zeg`, of `stopPraten`) breekt een reeks die nog loopt af.
+ *
+ * Zonder stem in deze browser loopt de reeks op de klok, met ongeveer de tijd
+ * die het voorlezen zou kosten. Zo verschijnen de zinnen ook zonder geluid
+ * één voor één.
+ */
+export function zegNaElkaar(
+  zinnen: string[],
+  bijZin: (index: number) => void,
+  klaar: () => void,
+  metGeluid: boolean,
+): () => void {
+  beurt += 1;
+  const mijnBeurt = beurt;
+  let gestopt = false;
+  let klok: ReturnType<typeof setTimeout> | undefined;
+  const stop = () => {
+    gestopt = true;
+    clearTimeout(klok);
+  };
+
+  const opDeKlok = (i: number) => {
+    if (gestopt || mijnBeurt !== beurt) return;
+    if (i >= zinnen.length) {
+      klaar();
+      return;
+    }
+    bijZin(i);
+    klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
+  };
+
+  const kanPraten = typeof window !== "undefined" && !!window.speechSynthesis && BRON === "browser";
+  if (!metGeluid || !kanPraten) {
+    klok = setTimeout(() => opDeKlok(0), 0);
+    return stop;
+  }
+
+  window.speechSynthesis.cancel();
+  void stemmenGereed().then(() => {
+    if (gestopt || mijnBeurt !== beurt) return;
+    /* Geen Nederlandse stem: de zinnen lopen zonder geluid, op de klok. */
+    if (!gekozen) {
+      opDeKlok(0);
+      return;
+    }
+    const volgende = (i: number) => {
+      if (gestopt || mijnBeurt !== beurt) return;
+      if (i >= zinnen.length) {
+        meld(false);
+        klaar();
+        return;
+      }
+      const uiting = new SpeechSynthesisUtterance(zinnen[i]);
+      uiting.lang = gekozen?.lang ?? "nl-NL";
+      uiting.rate = TEMPO;
+      uiting.pitch = TOONHOOGTE;
+      if (gekozen) uiting.voice = gekozen;
+      let door = false;
+      const verder = () => {
+        if (door) return;
+        door = true;
+        clearTimeout(klok);
+        volgende(i + 1);
+      };
+      uiting.onstart = () => meld(true);
+      bijZin(i);
+      uiting.onend = verder;
+      uiting.onerror = verder;
+      /* Vangnet: komt er nooit een einde (dat gebeurt op sommige tablets), dan toch door. */
+      klok = setTimeout(verder, 2500 + zinnen[i].length * 120);
+      window.speechSynthesis.speak(uiting);
+    };
+    volgende(0);
+  });
+  return stop;
 }
 
 export function stopPraten(): void {

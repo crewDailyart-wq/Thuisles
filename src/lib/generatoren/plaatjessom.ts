@@ -33,6 +33,7 @@ import { TELPLAATJE_OPTIES } from "@/lib/telplaatjes";
 import { optelPatronen } from "@/lib/generatoren/patronen/optelopdrachten";
 import { plaatjessomAanpak } from "@/lib/generatoren/aanpak/optelopdrachten";
 import { plaatjessomUitleg } from "@/lib/generatoren/scripts/optelopdrachten";
+import { optelwerking, werkingVeld } from "@/lib/generatoren/optelwerking";
 
 /**
  * De voorwerpen waaruit „door elkaar” kiest: alle plaatjes van Plaatjes tellen.
@@ -121,6 +122,7 @@ export const plaatjessomGenerator: Generator = {
       ],
       hulp: "Per vraag staat er altijd één soort; „door elkaar” loopt alle soorten langs, elke vraag een andere. Het zijn dezelfde voorwerpen als bij Plaatjes tellen.",
     },
+    werkingVeld("Elk plaatje in de tienstrook tikken, dan typen (alleen bij „alleen de uitkomst”)", false),
     ...vraagtekstVelden(STANDAARDZINNEN, {
       voorbeeldzinnen: { "34": ZIN_UITKOMST, "56": ZIN_UITKOMST, "78": ZIN_UITKOMST },
       extraHulp: `Leeg laten geeft „${ZIN_UITKOMST}”, en bij de hele som „${ZIN_SOM}”.`,
@@ -172,6 +174,22 @@ export const plaatjessomGenerator: Generator = {
         figuur: { soort: "plaatjessom", eerste: a, tweede: b, stand, voorwerp: soort },
         somgegevens: gegevens,
       });
+    }
+
+    /*
+      Zelf bouwen: elk plaatje gaat met een tik naar de tienstrook. Alleen bij
+      "alleen de uitkomst"; bij de hele som telt het kind zelf beide groepjes.
+      Van klein naar groot, met een vaste plek.
+    */
+    if (optelwerking(inst) === "bouwen" && stand !== "som") {
+      const totaal = (v: Gegenereerd) => v.somgegevens.goed * 100 + (v.somgegevens.getallen[0] ?? 0);
+      return [...uit]
+        .sort((x, y) => totaal(x) - totaal(y))
+        .map((v, i) =>
+          v.figuur?.soort === "plaatjessom"
+            ? { ...v, figuur: { ...v.figuur, bouw: "strook" as const, hulpBijFout: "strook" as const, volgnummer: i + 1 } }
+            : v,
+        );
     }
 
     return uit;
