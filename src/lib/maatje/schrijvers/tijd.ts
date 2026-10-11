@@ -45,7 +45,7 @@ function wijzerZinnen(u: number, m: number): Zin[] {
   const h = twaalf(u);
   const nh = volgend(u);
   if (m === 0) return [zin("De grote wijzer staat op de 12.", "de grote wijzer licht op"), zin(`De kleine wijzer wijst naar de ${h}: ${tijdWoorden(u, m)}.`, "de kleine wijzer licht op")];
-  if (m === 30) return [zin("De grote wijzer op de 6 is half.", "de grote wijzer licht op"), zin(`De kleine wijzer is op weg naar de ${nh}.`, "de kleine wijzer licht op")];
+  if (m === 30) return [zin("De grote wijzer staat op de 6: het is half.", "de grote wijzer licht op"), zin(`De kleine wijzer is op weg naar de ${nh}.`, "de kleine wijzer licht op")];
   if (m === 15) return [zin("De grote wijzer op de 3 is kwart over.", "de grote wijzer licht op"), zin(`De kleine wijzer is net voorbij de ${h}.`, "de kleine wijzer licht op")];
   if (m === 45) return [zin("De grote wijzer op de 9 is kwart voor.", "de grote wijzer licht op"), zin(`De kleine wijzer is bijna bij de ${nh}.`, "de kleine wijzer licht op")];
   if (m % 5 !== 0) return [zin(`Het is ${digitaal(u, m)}.`), zin(`Dat is ${tijdWoorden(u, m)}.`)];
@@ -69,7 +69,7 @@ function leesTijd(tekst: string): { u: number; m: number } | null {
 function tijdVerschil(goed: { u: number; m: number }, gekozen: { u: number; m: number }): Zin[] {
   const g = tijdWoorden(goed.u, goed.m);
   if (gekozen.m === goed.m && twaalf(gekozen.u) !== twaalf(goed.u)) {
-    if (goed.m >= 30) return [zin(`${hoofd(g)} is op weg naar de ${volgend(goed.u)}.`, "de kleine wijzer licht op"), zin(`Bij ${tijdWoorden(gekozen.u, gekozen.m)} gaat hij naar de ${volgend(gekozen.u)}.`)];
+    if (goed.m >= 30) return [zin(`De kleine wijzer gaat al naar de ${volgend(goed.u)}.`, "de kleine wijzer licht op"), zin(`Het is dus ${g}.`)];
     return [zin("Kijk naar de kleine wijzer: die wijst het uur.", "de kleine wijzer licht op"), zin(`Het is ${g}.`)];
   }
   if ((goed.m === 15 && gekozen.m === 45) || (goed.m === 45 && gekozen.m === 15)) {

@@ -551,6 +551,8 @@ export const klokaflezenGenerator: Generator = {
           metDagdeel: metDeel,
           keuzes,
           goed,
+          /* Groep 3: in het groene vak de tijd ("zeven uur"), niet het nummer van de keuze. */
+          ...(groep !== undefined && groep <= 3 && Array.isArray(keuzes) && typeof keuzes[goed] === "string" ? { antwoordTekst: keuzes[goed] } : {}),
         },
         somgegevens: gegevens,
       });
@@ -925,6 +927,8 @@ export const klokzettenGenerator: Generator = {
           schuif: minutenSchuif,
           zin,
           stap,
+          /* Groep 3: in het groene vak de tijd in woorden, niet "3,30". */
+          ...(groep !== undefined && groep <= 3 ? { antwoordTekst: inWoorden(doel) } : {}),
           /*
             Waar de wijzers beginnen. Normaal op twaalf uur, maar nooit al op
             het antwoord: dan zou er niets te zetten zijn.

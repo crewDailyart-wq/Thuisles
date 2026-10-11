@@ -253,7 +253,7 @@ export function Uitlegspeler({
   if (!stap) return null;
 
   return (
-    <div className="mt-5 rounded-groot border-2 border-huisstijl/25 bg-huisstijl-zacht/40 p-4 sm:p-5">
+    <div data-uitlegspeler className="mt-5 rounded-groot border-2 border-huisstijl/25 bg-huisstijl-zacht/40 p-4 sm:p-5">
       {/*
         Kop met alleen knopjes.
 

@@ -108,7 +108,7 @@ export const stipwegGenerator: Generator = {
           wacht: true,
           opgave: { a, b },
           goedZin: `${a} min ${b} is ${c}.`,
-          foutZin: `Er blijven ${stippen(c)} over: ${a} min ${b} is ${c}.`,
+          foutZin: `${c === 1 ? "Er blijft" : "Er blijven"} ${stippen(c)} over: ${a} min ${b} is ${c}.`,
           volgnummer: 0,
         },
         somgegevens: gegevens,
@@ -172,7 +172,7 @@ export const stipverschilGenerator: Generator = {
           wacht: true,
           opgave: { a, b },
           goedZin: `De bovenste rij heeft er ${c} meer: ${a} min ${b} is ${c}.`,
-          foutZin: `Kijk naar de stippen zonder buurman: dat zijn er ${c}. ${a} min ${b} is ${c}.`,
+          foutZin: `Kijk naar de stippen zonder buurman: ${c === 1 ? "dat is er" : "dat zijn er"} ${c}. ${a} min ${b} is ${c}.`,
           volgnummer: 0,
         },
         somgegevens: gegevens,
@@ -333,7 +333,12 @@ export const stipvergelijkGenerator: Generator = {
           label: zin,
           opgave: { a, b, zoek: meeste ? "meeste" : "minste" },
           goedZin: `Ja: ${tekenWoorden(a, b)}.`,
-          foutZin: `De ${boven ? "bovenste" : "onderste"} rij heeft de ${meeste ? "meeste" : "minste"}: ${tekenWoorden(a, b)}.`,
+          /* Bij "de minste" ook andersom gezegd ("5 is minder dan 10"); groep 3 krijgt dat zo. */
+          foutZin: `De ${boven ? "bovenste" : "onderste"} rij heeft de ${meeste ? "meeste" : "minste"}: ${
+            !meeste && groep !== undefined && groep <= 3 ? `${Math.min(a, b)} is minder dan ${Math.max(a, b)}` : tekenWoorden(a, b)
+          }.`,
+          /* Groep 3: in het groene vak "de onderste rij", niet "onder". */
+          ...(groep !== undefined && groep <= 3 ? { antwoordTekst: boven ? "de bovenste rij" : "de onderste rij" } : {}),
           volgnummer: 0,
         },
         somgegevens: gegevens,

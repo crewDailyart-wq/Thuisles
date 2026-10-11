@@ -219,6 +219,8 @@ export const splitstabelGenerator: Generator = {
           leegRechts,
           uiterlijk,
           vos: { vangend: null, wachtend: null, blij: vosBlij || null },
+          /* Groep 3: de goede getallen staan al in de tabel; geen los vak met "5,1,9". */
+          ...(groep !== undefined && groep <= 3 ? { verbergGoedAntwoord: true } : {}),
         },
         somgegevens: gegevens,
       });

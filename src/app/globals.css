@@ -896,6 +896,12 @@ body {
 }
 
 /* Het tekstwolkje van het maatje. */
+/* De uitleg onder een fout antwoord: geen witte vlakken met witte letters. */
+:root[data-stijl="nacht"] [data-uitlegspeler] .bg-white,
+:root[data-stijl="nacht"] [data-uitlegspeler] .bg-white\/80 {
+  background-color: #1a2b57;
+}
+
 :root[data-stijl="nacht"] [data-maatje] .bg-white {
   background-color: #1a2b57;
 }

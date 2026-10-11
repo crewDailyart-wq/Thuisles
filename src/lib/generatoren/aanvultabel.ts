@@ -97,7 +97,14 @@ export const aanvultabelGenerator: Generator = {
         /* Eén getal per kolom, van links naar rechts. */
         antwoord: getallen.map((n) => doel - n).join(","),
         /* Met "hulp": na een fout antwoord laat de tienstrook zien wat erbij moet. */
-        figuur: { soort: "aanvultabel", doel, getallen, ...(optelwerking(inst) === "hulp" ? { hulpBijFout: "strook" as const } : {}) },
+        figuur: {
+          soort: "aanvultabel",
+          doel,
+          getallen,
+          ...(optelwerking(inst) === "hulp" ? { hulpBijFout: "strook" as const } : {}),
+          /* Groep 3: de goede getallen staan al in de tabel; geen los vak met "5,4,3,2". */
+          ...(groep !== undefined && groep <= 3 ? { verbergGoedAntwoord: true } : {}),
+        },
         somgegevens: gegevens,
       });
     }

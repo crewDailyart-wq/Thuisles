@@ -301,7 +301,7 @@ export function kaartKeuze(o: Opgave, stand: "klopt" | "nietbij" | "evenveel", k
       fouten.push({
         code: `kaart-${i}`,
         antwoorden: [String(i)],
-        zinnen: [zin(`${hoofd(kaartZin(k))} is ${waarde(k)}, niet ${k.uitkomst}.`), zin(`De som die klopt is ${kaartZin(juist)} is ${waarde(juist)}.`)],
+        zinnen: [zin(`${hoofd(kaartZin(k))} is ${waarde(k)}, niet ${k.uitkomst}.`), zin(`Deze som klopt: ${kaartZin(juist)} is ${waarde(juist)}.`)],
       });
     });
     uitleg = [zin("Kijk, zo doe je het."), zin("Reken elke som uit."), zin(`Alleen ${kaartZin(juist)} is ${waarde(juist)}.`), zin("Dus die som klopt.")];

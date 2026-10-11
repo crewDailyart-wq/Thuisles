@@ -328,6 +328,8 @@ export const verhaaltjeGenerator: Generator = {
     const uit: Gegenereerd[] = [];
     /* Elk verhaal zo veel mogelijk een ander sjabloon: eerst ieder één keer, dan opnieuw. */
     let volgorde: Sjabloon[] = [];
+    /* Groep 3: niet twee keer dezelfde getallen in één reeks, ook niet in een ander verhaal. */
+    const zelfdeGetallen = new Set<string>();
 
     for (let poging = 0; poging < aantal * 300 && uit.length < aantal; poging++) {
       if (volgorde.length === 0) volgorde = husselen(kans, situatie.sjablonen);
@@ -342,6 +344,8 @@ export const verhaaltjeGenerator: Generator = {
       if (alGebruikt.has(handtekening)) continue;
 
       const getallen = v.uitVerhaal;
+      const getallenSleutel = `${[...getallen].sort((a, b) => a - b).join(",")}=${v.antwoord}`;
+      if (groep !== undefined && groep <= 3 && zelfdeGetallen.has(getallenSleutel)) continue;
       let keuzes: string[] | null = null;
       let goed = 0;
       if (!typen) {
@@ -352,6 +356,7 @@ export const verhaaltjeGenerator: Generator = {
         goed = knoppen.indexOf(v.antwoord);
       }
       alGebruikt.add(handtekening);
+      zelfdeGetallen.add(getallenSleutel);
 
       const som: Somgegevens = {
         soort: "verhaaltje",
@@ -374,6 +379,8 @@ export const verhaaltjeGenerator: Generator = {
           goed,
           eenheid: v.eenheid.mv,
           sjabloon: sjabloon.id,
+          /* Groep 3: in het groene vak het antwoord ("9 euro"), niet het nummer van de knop. */
+          ...(keuzes && groep !== undefined && groep <= 3 ? { antwoordTekst: keuzes[goed] } : {}),
         },
         somgegevens: som,
       });

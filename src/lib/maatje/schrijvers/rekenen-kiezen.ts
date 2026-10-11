@@ -19,12 +19,38 @@ import {
   tweeGetallen,
   type Kaart,
 } from "@/lib/maatje/schrijvers/rekenen";
-import { zin } from "@/lib/maatje/bouw";
+import { maak, zin } from "@/lib/maatje/bouw";
 import type { Plaatje } from "@/lib/maatje/schrijvers/som";
 import type { Geschreven } from "@/lib/maatje/types";
 import type { Opgave } from "@/lib/maatje/schrijf";
 
 const teken = (t: unknown): "+" | "−" => (t === "+" ? "+" : "−");
+
+/**
+ * Drie getallen optellen ("Hoeveel is 4 + 2 + 3?"), groep 3 (11 okt 2026).
+ * Eerst twee getallen samen, dan de derde erbij. De typische fouten: één
+ * ernaast, of één van de drie getallen vergeten.
+ */
+function drieGetallen(o: Opgave, a: number, b: number, c: number): Geschreven {
+  const ab = a + b;
+  const som = ab + c;
+  return maak({
+    antwoord: o.antwoord,
+    voorlezen: o.vraagtekst,
+    goed: [zin(`${a} plus ${b} is ${ab}.`), zin(`En ${ab} plus ${c} is ${som}.`)],
+    fouten: [
+      { code: "laatste-vergeten", antwoorden: [`${ab}`], zinnen: [zin(`Dat is ${a} plus ${b}.`), zin(`Doe de ${c} er ook nog bij.`)] },
+      { code: "eerste-vergeten", antwoorden: [`${b + c}`], zinnen: [zin(`Dat is ${b} plus ${c}.`), zin(`De ${a} hoort er ook bij.`)] },
+      { code: "middelste-vergeten", antwoorden: [`${a + c}`], zinnen: [zin(`Dat is ${a} plus ${c}.`), zin(`Vergeet de ${b} niet.`)] },
+      { code: "een-ernaast", antwoorden: [`${som - 1}`, `${som + 1}`], zinnen: [zin("Je zit er 1 naast."), zin("Tel nog eens rustig verder.")] },
+    ],
+    uitleg: [zin("Kijk, zo doe je het."), zin(`Eerst ${a} plus ${b}: dat is ${ab}.`), zin(`Dan ${ab} plus ${c}: dat is ${som}.`)],
+    tip: zin("Doe eerst twee getallen samen, dan de derde."),
+    opgave: [a, b, c],
+    tussen: [ab, b + c, a + c],
+    geheim: [som],
+  });
+}
 
 export function schrijfRekenen(o: Opgave): Geschreven | null {
   const f = o.figuur;
@@ -38,6 +64,10 @@ export function schrijfRekenen(o: Opgave): Geschreven | null {
     if (s && (s.soort === "optellen" || s.soort === "aftrekken") && s.getallen.length === 2) {
       const [a, b] = s.getallen;
       return gewoneSom(o, a, s.soort === "optellen" ? "+" : "−", b, "geen");
+    }
+    if (s && s.soort === "optellen" && s.getallen.length === 3) {
+      const [a, b, c] = s.getallen;
+      return drieGetallen(o, a, b, c);
     }
     return null;
   }

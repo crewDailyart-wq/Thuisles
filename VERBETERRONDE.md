@@ -110,6 +110,103 @@ van 15 sommen van dezelfde soort, direct na de les en in hetzelfde onderwerp.
 Groep 4 is niet aangevuld of ingekort. Wat ik daar eerst had gedaan, is
 teruggezet.
 
+## 3b. Alle 56 oefeningen gespeeld als Testkind (11 oktober 2026, avond)
+
+Zes helpers hebben elke oefening gespeeld als Testkind: per oefening minstens 5
+sommen, waarvan één expres fout.
+
+- Alle oefeningen hebben 15 sommen.
+- Nergens kwam een getal boven de 20.
+- Getallen typ je overal in een echt invulvak.
+
+Daarna heeft een helper alle herstelde oefeningen nog een keer gespeeld.
+
+**Hersteld:**
+
+1. **Plaatjes tellen.** Na een goed antwoord bleef de oefening soms hangen: geen
+   feestscherm en geen volgende vraag. Bij de hertest kwamen 13 goede antwoorden
+   achter elkaar zonder hangen.
+2. **Het groene vak na een fout** toonde soms de code van het antwoord in plaats
+   van het antwoord zelf. Nu staat er het echte antwoord, of er komt geen los vak
+   als de oefening het antwoord al zelf laat zien.
+
+   | Oefening | Eerst | Nu |
+   | --- | --- | --- |
+   | Verhaaltjessommen | "2" | "9 euro" |
+   | Welke som klopt? | "0" | "2 + 3 = 5" |
+   | Klok aflezen | "3" | "zeven uur" |
+   | Klok zetten | "3,30" | "half vier" |
+   | De meeste of de minste | "onder" | "de onderste rij" |
+   | Koppel de som, Maak 10, Doortellen | "5,10,9,7" | geen los vak meer (het antwoord staat al in de opdracht) |
+3. **Welke som klopt?** De uitleg in beeld hoorde bij een ander soort vraag
+   ("Eentje past niet!"). Het maatje zei "De som die klopt is 2 plus 3 is 5."
+   Nu zegt het "Deze som klopt: 2 plus 3 is 5."
+4. **Maak 10** gebruikte het raketspel. Daar komt een tik ongeveer 66 pixels
+   naast de plek waar het kind tikt. Nu is het een splitstabel met vriendjes
+   van 10.
+5. **Splitsen tot 10** splitste alleen het getal 10. Nu gaat het om alle getallen
+   van 3 tot en met 10.
+6. **Verschil met sprongen** paste niet bij de les: het waren gewone minsommen.
+   Nu is het "Oefenen: zet het getal op de lijn", met de getallenlijn tot 20.
+7. **De uitleg in de donkere spellen** (tegels) was onleesbaar: witte letters op
+   wit. Nu staan er lichte letters op donker.
+8. **Tab bij de invulvakjes** sloeg een vakje over.
+9. **Verhaaltjessommen.** Dezelfde getallen kwamen vaak twee keer in één reeks
+   voor. Dat gebeurt niet meer.
+10. **Taal.**
+
+    | Eerst | Nu |
+    | --- | --- |
+    | "Er blijven 1 stip over" | "Er blijft 1 stip over" |
+    | "dat zijn er 1" | "dat is er 1" |
+    | "5 is meer dan 2" (bij "de minste") | "2 is minder dan 5" |
+    | "Vijf rood, vijf wit" (bij 1 kraal) | weg |
+    | "De tientallen zijn gelijk" (bij getallen onder de 10) | weg |
+    | "Half acht is op weg naar de 8. Bij half zeven gaat hij naar de 7." | "De kleine wijzer gaat al naar de 8. Het is dus half acht." |
+    | "Hier woont nummer 13." | "Hier is nummer 13." |
+    | "Zo hoorde de klok te staan." | "Zo moest de klok staan." |
+    | "Begin bij het grootste." (bij 4 + 4) | "Begin bij het eerste getal." |
+11. **Een rode foutmelding van Next** over dubbele sleutels bij sommen met een leeg
+    vakje. Een kind zag die niet, maar hij is weg.
+12. **Drie getallen optellen** heeft nu uitleg van het maatje, volgens de
+    handleiding (zinnen van hoogstens 10 woorden). Een voorbeeld na het fout
+    antwoord 5 bij 1 + 4 + 2: "Dat is 1 plus 4. Doe de 2 er ook nog bij."
+    Alle 15 opgaven komen door de controle.
+
+**Gedeelde code.** Sommige stukken code gebruikt groep 4 ook: het oefenscherm, de
+plaatjes, de invulvakjes en de uitleg in beeld. Waar het kon, geldt het herstel
+alleen voor groep 3. Bij een paar echte fouten kon dat niet, omdat de code voor
+beide groepen dezelfde is: het hangen bij plaatjes tellen, Tab, de leesbaarheid
+in het donker, "Hier is nummer", "Zo moest de klok staan" en de rode
+foutmelding. Die zijn nu ook in groep 4 opgelost. De opgaven en teksten van groep
+4 in de database zijn niet veranderd.
+
+**Opgemerkt, niet hersteld (voor later of voor de ronde van groep 4):**
+
+- Het raketspel (en waarschijnlijk het laserspel) vangt een tik op de verkeerde
+  plek op. Groep 3 gebruikt het niet meer; groep 4 wel.
+- Bij "minsommen tot 10" staat de instelling "met beeld", maar het beeld komt
+  niet: er staan alleen cijfers.
+- Bij "doortellen" legt de uitleg in beeld altijd het eerste vakje uit, ook als
+  een ander vakje fout was. De zin van het maatje noemt wel het goede vakje.
+- Bij stippen met "hoeveel meer?" legt het maatje het verschil uit als
+  wegnemen.
+- Bij halve uren staat het hele uur (acht uur bij half acht) niet tussen de
+  foute keuzes. Dat is wel een veelgemaakte kinderfout.
+- Bij verhaaltjessommen zegt het maatje soms "De som klopt, maar reken nog
+  eens", terwijl er geen som in beeld staat.
+- In groep 4 zegt het maatje bij "welke som klopt?" nog "De som die klopt is …
+  is …".
+
+## 3c. Bestanden
+
+- `MAATJE-HANDLEIDING.md` en de afbeelding erbij zijn meegecommit.
+- `vos.png`, `vrijoefenen1.png` en `vrijoefnenenx.png` stonden los in de
+  hoofdmap, niet in `public/`. De website kan ze dus niet tonen, en nergens in de
+  code wordt ernaar verwezen. Ze zijn verwijderd. De Vos die je op de site ziet,
+  komt uit `public/vos-lijf.png`, `public/vos-arm.png` en de map `public/vos/`;
+  die blijven staan.
+
 ## 4. Testen: hoeveel lessen werken
 
 Elke groep 3-les is gespeeld als een kind, met minstens één fout antwoord.

@@ -169,7 +169,8 @@ export const somkeuzeGenerator: Generator = {
         variant: stand,
         getallen: [doel, gehusseld[goedeKaart].eerste],
         goed: goedeKaart,
-        extra: { kaarten: gehusseld.length },
+        /* g3: groep 3 krijgt de uitleg die bij "welke som klopt?" past (zie somkeuzeUitleg). */
+        extra: { kaarten: gehusseld.length, ...(groep !== undefined && groep <= 3 ? { g3: 1 } : {}) },
       };
 
       uit.push({
@@ -183,7 +184,16 @@ export const somkeuzeGenerator: Generator = {
         ),
         /* Het nummer van het kaartje; het scherm laat het kind er één kiezen. */
         antwoord: String(goedeKaart),
-        figuur: { soort: "somkeuze", stand, doel, kaarten: gehusseld },
+        figuur: {
+          soort: "somkeuze",
+          stand,
+          doel,
+          kaarten: gehusseld,
+          /* Groep 3: in het groene vak de goede som, niet het nummer van het kaartje. */
+          ...(groep !== undefined && groep <= 3
+            ? { antwoordTekst: `${gehusseld[goedeKaart].eerste} + ${gehusseld[goedeKaart].tweede} = ${gehusseld[goedeKaart].uitkomst}` }
+            : {}),
+        },
         somgegevens: gegevens,
       });
     }

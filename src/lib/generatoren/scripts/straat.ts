@@ -109,7 +109,7 @@ function stapVoorStap(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
 
   stappen.push({
     model: beeld(som, [vos, doel], doel, String(som.goed)),
-    zin: `Hier woont nummer ${som.goed}.`,
+    zin: `Hier is nummer ${som.goed}.`,
     feest: true,
     houding: "juichend",
     beweging: "juichen",

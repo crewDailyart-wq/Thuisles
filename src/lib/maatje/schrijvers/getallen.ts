@@ -293,10 +293,13 @@ function vissen(o: Opgave, getallen: number[], grootste: boolean): Geschreven | 
     .map(({ x, i }) => ({
       code: `vis-${i}`,
       antwoorden: [String(i)],
+      /* Een getal onder de 10 heeft geen tiental: dan geen tip over tientallen. */
       zinnen:
-        Math.floor(x / 10) !== Math.floor(goedGetal / 10)
-          ? [zin("Kijk eerst naar de tientallen."), zin(`${goedGetal} is ${grootste ? "groter" : "kleiner"} dan ${x}.`)]
-          : [zin("De tientallen zijn gelijk, kijk naar de losse."), zin(`${goedGetal} is ${grootste ? "groter" : "kleiner"} dan ${x}.`)],
+        Math.min(x, goedGetal) < 10
+          ? [zin("Kijk goed naar de getallen."), zin(`${goedGetal} is ${grootste ? "groter" : "kleiner"} dan ${x}.`)]
+          : Math.floor(x / 10) !== Math.floor(goedGetal / 10)
+            ? [zin("Kijk eerst naar de tientallen."), zin(`${goedGetal} is ${grootste ? "groter" : "kleiner"} dan ${x}.`)]
+            : [zin("De tientallen zijn gelijk, kijk naar de losse."), zin(`${goedGetal} is ${grootste ? "groter" : "kleiner"} dan ${x}.`)],
     }));
   return maak({
     antwoord: o.antwoord,
@@ -516,16 +519,20 @@ function rijKiezen(o: Opgave, a: number, b: number, meeste: boolean): Geschreven
   return maak({
     antwoord: o.antwoord,
     voorlezen: o.vraagtekst,
-    goed: [zin(`De ${welke} rij heeft de ${woord}.`, "de rij licht op"), zin(`${g} is meer dan ${k}.`)],
+    /* Bij "de minste" ook andersom gezegd: "2 is minder dan 5". */
+    goed: [zin(`De ${welke} rij heeft de ${woord}.`, "de rij licht op"), zin(meeste ? `${g} is meer dan ${k}.` : `${k} is minder dan ${g}.`)],
     fouten: [
       {
         code: "andere-rij",
         antwoorden: [boven ? "onder" : "boven"],
-        zinnen: [zin("Kijk welke rij verder doorloopt."), zin(`${g} is meer dan ${k}.`, "de stippen die meer zijn lichten op")],
+        zinnen: [
+          zin(meeste ? "Kijk welke rij verder doorloopt." : "Kijk welke rij eerder stopt."),
+          zin(meeste ? `${g} is meer dan ${k}.` : `${k} is minder dan ${g}.`, "de stippen die meer zijn lichten op"),
+        ],
       },
     ],
     uitleg: [zin("Kijk, zo doe je het."), zin("Zet de rijen naast elkaar.", "de rijen staan naast elkaar"), zin(`De ${welke} rij heeft de ${woord}.`, "de rij licht op")],
-    tip: zin("Welke rij loopt verder door?"),
+    tip: zin(meeste ? "Welke rij loopt verder door?" : "Welke rij stopt eerder?"),
     rondewoord: "opdrachten",
     opgave: [a, b],
     tussen: [g - k],

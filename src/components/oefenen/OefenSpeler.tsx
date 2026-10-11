@@ -1304,7 +1304,7 @@ export function OefenSpeler({
                 waar/niet-waar staat het goede antwoord al groen tussen de
                 keuzes, dus dan hoeft dit niet.
               */}
-              {vraag.vorm === "open" && (
+              {vraag.vorm === "open" && !(vraag.figuur as { verbergGoedAntwoord?: boolean } | null)?.verbergGoedAntwoord && (
                 <div className="mt-4 flex justify-center">
                   <GoedAntwoordvak vraag={vraag} />
                 </div>

@@ -78,13 +78,22 @@ export const rekenrekflitsUitleg: Uitlegbron = bron(
     const aantal = som.getallen[0];
     return [
       rek(aantal, 0, kort ? "Zoveel kralen stonden er." : `${aantal === 1 ? "Er stond 1 kraal" : `Er stonden ${aantal} kralen`}.`, undefined),
+      /* Minder dan 5 kralen: er zijn alleen rode, dus geen "vijf rood, vijf wit". */
+      aantal < 5
+        ? rek(aantal, 0, kort ? "Ze zijn allemaal rood." : "Ze zijn allemaal rood: tel ze maar.", undefined)
+        : rek(
+            aantal,
+            0,
+            kort ? "Vijf rood, vijf wit." : "Tel met de groepjes van vijf: vijf rood, vijf wit.",
+            aantal >= 10 ? "10" : "5",
+          ),
       rek(
         aantal,
         0,
-        kort ? "Vijf rood, vijf wit." : "Tel met de groepjes van vijf: vijf rood, vijf wit.",
-        aantal >= 10 ? "10" : "5",
+        aantal === 1 ? (kort ? "Het is er maar één!" : "Het is er maar 1.") : kort ? "Samen zijn het er zoveel!" : `Samen zijn dat er ${aantal}.`,
+        String(aantal),
+        true,
       ),
-      rek(aantal, 0, kort ? "Samen zijn het er zoveel!" : `Samen zijn dat er ${aantal}.`, String(aantal), true),
     ];
   },
   true,
