@@ -21,6 +21,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
 import { OefenSpeler } from "@/components/oefenen/OefenSpeler";
+import { LesOefening } from "@/components/les/LesOefening";
 import { haalHuidigKind, haalOefenStart, haalSleutelstand } from "@/lib/data/queries";
 import { bestaatAfbeelding } from "@/lib/data/afbeeldingen";
 import { isVisueleSom, kansGenerator } from "@/lib/generatoren/soort";
@@ -282,7 +283,7 @@ export default async function OefeningPagina({
   /* Verdergaan gaat voor: een nieuwe greep zou de halve serie weggooien. */
   const rijen = hervat ? hervatRijen : opVolgorde;
 
-  const vragen: OefenVraag[] = rijen.map((v) => ({
+  const alleRondevragen: OefenVraag[] = rijen.map((v) => ({
     id: v.id,
     vorm: v.vorm,
     vraagtekst: v.vraagtekst,
@@ -307,6 +308,30 @@ export default async function OefeningPagina({
     leerdoelId: v.leerdoelId,
     leerdoelTitel: v.leerdoelTitel,
   }));
+
+  /*
+    Een uitleg-les op het eigen lesscherm (oktober 2026): de hele les is één
+    vraag en speelt schermvullend. Dat kan alleen als het kind precies dat ene
+    leerdoel koos. Oefent het kind het hele onderwerp, dan blijven de lessen
+    erbuiten: die passen niet in de gewone speler.
+  */
+  const lesvraag =
+    gekozenLeerdoel && alleRondevragen.length >= 1 && alleRondevragen[0].figuur?.soort === "lesscherm"
+      ? alleRondevragen[0]
+      : null;
+  if (lesvraag && lesvraag.figuur?.soort === "lesscherm") {
+    return (
+      <LesOefening
+        lesId={lesvraag.figuur.les}
+        vraagId={lesvraag.id}
+        leerdoelId={lesvraag.leerdoelId}
+        naam={kind.roepnaam}
+        pad={oefenpad}
+        terugHref={terugHref}
+      />
+    );
+  }
+  const vragen = alleRondevragen.filter((v) => v.figuur?.soort !== "lesscherm");
 
   /*
     Het maatje (wachtrij, oktober 2026): alleen bij leerdoelen waar het in

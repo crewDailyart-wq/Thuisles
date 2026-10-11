@@ -123,6 +123,7 @@ import { raketsomGenerator } from "@/lib/generatoren/raketsom";
 import { lasertafelGenerator, laserminsomGenerator } from "@/lib/generatoren/laser";
 import { tegelsomGenerator, tegelmaakGenerator } from "@/lib/generatoren/tegels";
 import { lesGenerator } from "@/lib/generatoren/les";
+import { lesschermGenerator } from "@/lib/generatoren/lesscherm";
 import { stipwegGenerator, stipverschilGenerator, stipvergelijkGenerator, stiptekenGenerator } from "@/lib/generatoren/stippen";
 import type { Generator } from "@/lib/generatoren/soort";
 import { bosGeneratoren } from "@/lib/generatoren/bosspellen";
@@ -240,6 +241,7 @@ export const alleGeneratoren: Generator[] = [
   tegelsomGenerator,
   tegelmaakGenerator,
   lesGenerator,
+  lesschermGenerator,
   stipwegGenerator,
   stipverschilGenerator,
   stipvergelijkGenerator,

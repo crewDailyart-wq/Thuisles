@@ -111,3 +111,95 @@ Vervangen (de kale som van het type Optellen/Aftrekken heeft geen uitleg-animati
 - REK-OPT-OPT-80 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Drie getallen optellen · groep 3–4 · les · 6 sommen
 - REK-OPT-OPT-81 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Splitsen in meer delen · groep 3–4 · les · 7 sommen
 - REK-OPT-OPT-82 · Optellen → Optellen tot en met 20 · Lessen: optellen tot 10 · Eindtoets: optellen tot 10 · groep 3–4 · les · 6 sommen
+
+## Ronde 5: uitleglessen groep 3 op het eigen lesscherm (10 oktober 2026, met toestemming eigenaar)
+
+Per les één leerdoel (vragen per sessie 1), één sjabloon "lesscherm" en één gepubliceerde vraag. Reservekopie vooraf: `backups/thuisles-voor-lessen-groep3-db-20261010-191124.db`.
+
+- REK-GET-TEL-49 · Getallen → Tellen & sprongen tot en met 20 · Les: zo werkt het · Zo werkt het · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-50 · Getallen → Tellen & sprongen tot en met 20 · Les: zo werkt het · Jouw instellingen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-52 · Getallen → Tellen & sprongen tot en met 20 · Les: tellen tot 120 · Kleuren tellen · groep 3 · lesscherm · 1 les
+- REK-GET-TEL-53 · Getallen → Tellen & sprongen tot en met 20 · Les: tellen tot 120 · Tellen van 10 tot 20 · groep 3 · lesscherm · 1 les
+- REK-GET-TEL-58 · Getallen → Tellen & sprongen tot en met 20 · Les: flitskaarten · Stippen tot 10 · groep 3 · lesscherm · 1 les
+- REK-GET-TIE-01 · Getallen → Tientallen & eenheden · Les: tientallen · Instaptoets: groepjes van tien · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-02 · Getallen → Tientallen & eenheden · Les: tientallen · Groepjes van tien · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-03 · Getallen → Tientallen & eenheden · Les: tientallen · Klodders lezen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-04 · Getallen → Tientallen & eenheden · Les: tientallen · Tientallen erbij · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-05 · Getallen → Tientallen & eenheden · Les: tientallen · Eindtoets: groepjes van tien · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-06 · Getallen → Tientallen & eenheden · Les: tientallen · Instaptoets: plaatswaarde · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-07 · Getallen → Tientallen & eenheden · Les: tientallen · De plek van de tientallen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-08 · Getallen → Tientallen & eenheden · Les: tientallen · Tientallen tot 99 · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-09 · Getallen → Tientallen & eenheden · Les: tientallen · Eindtoets: plaatswaarde · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-10 · Getallen → Tientallen & eenheden · Les: tientallen · Klodders bouwen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TIE-11 · Getallen → Tientallen & eenheden · Les: tientallen · Plaatsen in een som · groep 3–4 · lesscherm · 1 les
+- REK-GET-VER-01 · Getallen → Vergelijken & ordenen · Les: vergelijken · Instaptoets: vergelijken · groep 3 · lesscherm · 1 les
+- REK-GET-VER-02 · Getallen → Vergelijken & ordenen · Les: vergelijken · Meer of minder · groep 3 · lesscherm · 1 les
+- REK-GET-VER-03 · Getallen → Vergelijken & ordenen · Les: vergelijken · De tekens =, < en > · groep 3 · lesscherm · 1 les
+- REK-GET-VER-04 · Getallen → Vergelijken & ordenen · Les: vergelijken · Getallen vergelijken · groep 3 · lesscherm · 1 les
+- REK-GET-VER-05 · Getallen → Vergelijken & ordenen · Les: vergelijken · Eindtoets: vergelijken · groep 3 · lesscherm · 1 les
+- REK-GET-TEL-51 · Getallen → Tellen & sprongen tot en met 100 · Les: tellen tot 120 · Instaptoets: tellen tot 120 · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-54 · Getallen → Tellen & sprongen tot en met 100 · Les: tellen tot 120 · Doortellen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-55 · Getallen → Tellen & sprongen tot en met 100 · Les: tellen tot 120 · Getallen tot 50 · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-56 · Getallen → Tellen & sprongen tot en met 100 · Les: tellen tot 120 · Tienergetallen · groep 3–4 · lesscherm · 1 les
+- REK-GET-TEL-57 · Getallen → Tellen & sprongen tot en met 100 · Les: tellen tot 120 · Eindtoets: tellen tot 120 · groep 3–4 · lesscherm · 1 les
+- REK-SPL-SPL-43 · Splitsen → Splitsen tot en met 20 · Les: optellen tot 10 · Splitsen in delen · groep 3 · lesscherm · 1 les
+- REK-SPL-SPL-44 · Splitsen → Splitsen tot en met 20 · Les: optellen tot 100 · Splitsen · groep 3 · lesscherm · 1 les
+- REK-SPL-SPL-45 · Splitsen → Splitsen tot en met 20 · Les: flitskaarten · Maak 10 · groep 3 · lesscherm · 1 les
+- REK-SPL-VER-01 · Splitsen → Verdubbelen · Les: optellen tot 10 · Dubbelen · groep 3 · lesscherm · 1 les
+- REK-SPL-VER-02 · Splitsen → Verdubbelen · Les: flitskaarten · Dubbelen · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-55 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Instaptoets: optellen tot 10 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-56 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Optellen onder de 10 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-57 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Klopt de som? · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-58 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Het ontbrekende getal · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-59 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Drie getallen optellen · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-60 · Optellen → Optellen tot en met 20 · Les: optellen tot 10 · Eindtoets: optellen tot 10 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-61 · Optellen → Optellen tot en met 20 · Les: optellen tot 20 · Instaptoets: optellen tot 20 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-62 · Optellen → Optellen tot en met 20 · Les: optellen tot 20 · Optellen bij 10 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-63 · Optellen → Optellen tot en met 20 · Les: optellen tot 20 · Over de 10 heen · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-64 · Optellen → Optellen tot en met 20 · Les: optellen tot 20 · Bijna dubbel · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-65 · Optellen → Optellen tot en met 20 · Les: optellen tot 20 · Eindtoets: optellen tot 20 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-71 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Instaptoets: Flitskaarten · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-83 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Plussommen tot 5 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-84 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Plussommen tot 10 · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-85 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Eindtoets: Flitskaarten · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-86 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Instaptoets: Flitskaarten tot 20 · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-87 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Plussommen tot 20 · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-88 · Optellen → Optellen tot en met 20 · Les: flitskaarten · Eindtoets: Flitskaarten tot 20 · groep 3–4 · lesscherm · 1 les
+- REK-OPT-REK-08 · Optellen → Rekenen met tientallen · Les: optellen tot 100 · Tientallen erbij · groep 3–4 · lesscherm · 1 les
+- REK-OPT-REK-09 · Optellen → Rekenen met tientallen · Les: optellen tot 100 · Tientallen tot 100 · groep 3–4 · lesscherm · 1 les
+- REK-OPT-REK-10 · Optellen → Rekenen met tientallen · Les: flitskaarten · 10 erbij, 10 eraf · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-66 · Optellen → Optellen tot en met 100 · Les: optellen tot 100 · Instaptoets: optellen tot 100 · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-67 · Optellen → Optellen tot en met 100 · Les: optellen tot 100 · Aanvullen tot het tiental · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-68 · Optellen → Optellen tot en met 100 · Les: optellen tot 100 · Tiental plus eenheden · groep 3 · lesscherm · 1 les
+- REK-OPT-OPT-69 · Optellen → Optellen tot en met 100 · Les: optellen tot 100 · Over het tiental · groep 3–4 · lesscherm · 1 les
+- REK-OPT-OPT-70 · Optellen → Optellen tot en met 100 · Les: optellen tot 100 · Eindtoets: optellen tot 100 · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-43 · Aftrekken → Aftrekken tot en met 20 · Les: aftrekken tot 10 · Instaptoets: aftrekken tot 10 · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-44 · Aftrekken → Aftrekken tot en met 20 · Les: aftrekken tot 10 · Stippen weghalen · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-45 · Aftrekken → Aftrekken tot en met 20 · Les: aftrekken tot 10 · Het verschil · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-46 · Aftrekken → Aftrekken tot en met 20 · Les: aftrekken tot 10 · Eindtoets: aftrekken tot 10 · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-47 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Hetzelfde verschil · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-48 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Instaptoets: verschil op de getallenlijn · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-49 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Verschil: sprongen tellen · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-50 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Verschil: doortellen vanaf het kleinste getal · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-51 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Verschil: ook boven de 10 · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-54 · Aftrekken → Aftrekken tot en met 20 · Les: verschil op de getallenlijn · Eindtoets: verschil op de getallenlijn · groep 3–4 · lesscherm · 1 les
+- REK-AFT-AFT-55 · Aftrekken → Aftrekken tot en met 20 · Les: flitskaarten · Minsommen tot 5 · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-56 · Aftrekken → Aftrekken tot en met 20 · Les: flitskaarten · Minsommen tot 10 · groep 3 · lesscherm · 1 les
+- REK-AFT-AFT-57 · Aftrekken → Aftrekken tot en met 20 · Les: flitskaarten · Minsommen tot 20 · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-WIJ-24 · Tijd → Wijzerklok en digitale klok · Les: klokkijken · De digitale klok · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-26 · Tijd → De wijzerklok · Les: klokkijken · Instaptoets: klokkijken · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-27 · Tijd → De wijzerklok · Les: klokkijken · De urenwijzer · groep 3 · lesscherm · 1 les
+- REK-TIJ-DEW-28 · Tijd → De wijzerklok · Les: klokkijken · Hele uren zetten · groep 3 · lesscherm · 1 les
+- REK-TIJ-DEW-29 · Tijd → De wijzerklok · Les: klokkijken · Halve uren · groep 3 · lesscherm · 1 les
+- REK-TIJ-DEW-30 · Tijd → De wijzerklok · Les: klokkijken · Kwart over · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-31 · Tijd → De wijzerklok · Les: klokkijken · Tellen in vijven · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-32 · Tijd → De wijzerklok · Les: klokkijken · Eindtoets: klokkijken · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-33 · Tijd → De wijzerklok · Les: klokkijken · Versla de wekker · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-34 · Tijd → De wijzerklok · Les: klokkijken · 5 en 10 minuten later · groep 3–4 · lesscherm · 1 les
+- REK-TIJ-DEW-35 · Tijd → De wijzerklok · Les: klokkijken · Hoe lang samen? · groep 3–4 · lesscherm · 1 les
+- REK-VER-OPT-61 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Instaptoets: Verhaaltjessommen · groep 3–4 · lesscherm · 1 les
+- REK-VER-OPT-62 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Kleine verhaaltjes · groep 3 · lesscherm · 1 les
+- REK-VER-OPT-63 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Grotere verhaaltjes · groep 3–4 · lesscherm · 1 les
+- REK-VER-OPT-64 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Verstopte getallen · groep 3–4 · lesscherm · 1 les
+- REK-VER-OPT-65 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Eindtoets: Verhaaltjessommen · groep 3–4 · lesscherm · 1 les
+- REK-VER-OPT-66 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Meer verhaaltjes · groep 3–4 · lesscherm · 1 les

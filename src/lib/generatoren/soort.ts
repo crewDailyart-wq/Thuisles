@@ -45,6 +45,11 @@ export type Deelthema = "appels" | "knikkers" | "eieren" | "koekjes" | "snoepjes
 export type Figuur =
   | import("./bosspellen-catalogus").Bosfiguur
   | {
+      /** Een hele uitleg-les op het eigen lesscherm; zie `generatoren/lesscherm.ts`. */
+      soort: "lesscherm";
+      les: string;
+    }
+  | {
       soort: "splitsboom";
       geheel: number;
       links: number | null;

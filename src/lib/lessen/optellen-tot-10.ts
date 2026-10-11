@@ -21,16 +21,16 @@ export const instaptoetsTot10: Les = {
   stappen: [
     tegelsTypen({
       uitleg: ["Laat zien wat je al kunt.", "Dit is een tegel."],
-      vraag: "Welk getal is deze tegel?",
+      vraag: "Welk getal laat deze tegel zien?",
       torens: [{ stukken: [3] }],
       antwoord: "3",
       goed: "Ja, dat is een 3.",
-      fout: "Tel de gaatjes: het is een 3.",
-      tip: "Elk gaatje is er één.",
+      fout: "Tel de gaatjes: het zijn er 3.",
+      tip: "Elk gaatje telt als 1.",
     }),
     tegelsTypen({
       uitleg: ["Er komt een tegel bij."],
-      vraag: "Wat is 3 en 4 samen?",
+      vraag: "Hoeveel is 3 en 4 samen?",
       kop: "3 + 4 = ?",
       torens: [{ stukken: [3, 4] }],
       antwoord: "7",
@@ -39,7 +39,7 @@ export const instaptoetsTot10: Les = {
       tip: "Tel alle gaatjes van de toren.",
     }),
     tegelsTypen({
-      vraag: "Wat is 2 + 6?",
+      vraag: "Hoeveel is 2 + 6?",
       kop: "2 + 6 = ?",
       torens: [{ stukken: [2, 6] }],
       antwoord: "8",
@@ -48,7 +48,7 @@ export const instaptoetsTot10: Les = {
       tip: "Begin bij 6 en tel er 2 bij.",
     }),
     tegelsTypen({
-      uitleg: ["Twee dezelfde tegels heet een dubbel."],
+      uitleg: ["Twee dezelfde tegels noem je een dubbel."],
       vraag: "Wat is het dubbele van 3?",
       kop: "3 + 3 = ?",
       torens: [{ stukken: [3, 3] }],
@@ -58,7 +58,7 @@ export const instaptoetsTot10: Les = {
       tip: "Tel 3 en nog eens 3.",
     }),
     tegelsTypen({
-      vraag: "Wat is 7 + 8?",
+      vraag: "Hoeveel is 7 + 8?",
       kop: "7 + 8 = ?",
       torens: [{ stukken: [7, 8] }],
       antwoord: "15",
@@ -97,25 +97,25 @@ export const optellenOnder10: Les = {
   stappen: [
     tegelsTypen({
       uitleg: ["Dit zijn tegels.", "Elke tegel heeft een eigen kleur."],
-      vraag: "Welk getal is deze tegel?",
+      vraag: "Welk getal laat deze tegel zien?",
       torens: [{ stukken: [4] }],
       antwoord: "4",
-      goed: "Ja, de limoen tegel is een 4.",
-      fout: "Tel de gaatjes: het is een 4.",
+      goed: "Ja, de lichtgroene tegel is een 4.",
+      fout: "Tel de gaatjes: het zijn er 4.",
       tip: "Tel de gaatjes.",
     }),
     tegelsTypen({
       uitleg: ["Nog een tegel."],
-      vraag: "Welk getal is deze tegel?",
+      vraag: "Welk getal laat deze tegel zien?",
       torens: [{ stukken: [3] }],
       antwoord: "3",
       goed: "Ja, de gele tegel is een 3.",
-      fout: "Tel de gaatjes: het is een 3.",
+      fout: "Tel de gaatjes: het zijn er 3.",
       tip: "Tel de gaatjes.",
     }),
     tegelsTypen({
       uitleg: ["Twee tegels op elkaar klikken vast.", "Samen worden ze één toren."],
-      vraag: "Hoeveel zijn 2 en 3 samen?",
+      vraag: "Hoeveel is 2 en 3 samen?",
       kop: "2 + 3 = ?",
       torens: [{ stukken: [2, 3] }],
       antwoord: "5",
@@ -125,12 +125,12 @@ export const optellenOnder10: Les = {
     }),
     tegelsTypen({
       uitleg: ["Kijk: de 3 past in de 5."],
-      vraag: "Hoeveel zijn 3 en 5 samen?",
+      vraag: "Hoeveel is 3 en 5 samen?",
       kop: "3 + 5 = ?",
       torens: [{ stukken: [3, 5] }],
       antwoord: "8",
       goed: "3 en 5 is samen 8.",
-      fout: "Iets meer dan 7: 3 en 5 is 8.",
+      fout: "Tel alle gaatjes: 3 en 5 is 8.",
       tip: "Begin bij 5 en tel er 3 bij.",
     }),
     tegelsKiezen({
@@ -145,7 +145,7 @@ export const optellenOnder10: Les = {
       tip: "Hoeveel lege gaatjes zie je?",
     }),
     tegelsKiezen({
-      uitleg: ["We maken het moeilijker.", "Maak 10 met de 3."],
+      uitleg: ["Nu wordt het iets lastiger.", "Maak 10 met de 3."],
       vraag: "Welke tegel maakt samen met 3 precies 10?",
       kop: "3 + ? = 10",
       torens: [{ stukken: [3], gat: 10 }],
@@ -159,7 +159,7 @@ export const optellenOnder10: Les = {
       uitleg: ["De 3 en de 7 zijn samen 10."],
       vraag: "Hoe schrijf je dit als som?",
       torens: [{ stukken: [3, 7] }],
-      knoppen: ["3 + 7 = 10", "3 + 7 = 37", "3 − 7 = 10"],
+      knoppen: ["3 + 7 = 10", "3 + 7 = 11", "3 − 7 = 10"],
       antwoord: "3 + 7 = 10",
       goed: "Ja: 3 + 7 = 10.",
       fout: "Het is plus, en samen 10: 3 + 7 = 10.",
@@ -167,7 +167,7 @@ export const optellenOnder10: Les = {
     }),
     tegelsTypen({
       uitleg: ["De toren draait om.", "Nu ligt de 7 onderop."],
-      vraag: "Wat is het totaal nu?",
+      vraag: "Hoeveel is het nu samen?",
       kop: "7 + 3 = ?",
       torens: [{ stukken: [7, 3] }],
       antwoord: "10",
@@ -195,7 +195,7 @@ export const dubbelen: Les = {
   synthesis: "Add within 10 · Doubles",
   stappen: [
     tegelsTypen({
-      uitleg: ["Twee dezelfde tegels heet een dubbel.", "Hier liggen twee keer 3."],
+      uitleg: ["Twee dezelfde tegels noem je een dubbel.", "Hier liggen twee keer 3."],
       vraag: "Wat is het dubbele van 3?",
       kop: "3 + 3 = ?",
       torens: [{ stukken: [3, 3] }],
@@ -281,7 +281,7 @@ export const kloptDeSom: Les = {
   synthesis: "Add within 10 · True or False",
   stappen: [
     tegelsKnoppen({
-      uitleg: ["Een som klopt als beide kanten even veel zijn.", "Links de 6, rechts 3 en 2."],
+      uitleg: ["Een som klopt als beide kanten evenveel zijn.", "Links de 6, rechts 3 en 2."],
       vraag: "Klopt deze som?",
       kop: "3 + 2 = 6",
       torens: [{ stukken: [6], getal: true }, { stukken: [3, 2], getal: true }],
@@ -292,7 +292,7 @@ export const kloptDeSom: Les = {
       tip: "Zijn de twee torens even hoog?",
     }),
     tegelsKiezen({
-      uitleg: ["Maak hem kloppend.", "Leg er één tegel bij."],
+      uitleg: ["Zorg dat de som klopt.", "Leg er één tegel bij."],
       vraag: "Welke tegel maakt de torens even hoog?",
       kop: "3 + 2 + ? = 6",
       torens: [{ stukken: [6], getal: true }, { stukken: [3, 2], gat: 6 }],
@@ -301,7 +301,7 @@ export const kloptDeSom: Les = {
       antwoord: "1",
       goed: "Zo klopt het: 3 + 2 + 1 = 6.",
       fout: "Er mist er 1: 3 + 2 + 1 = 6.",
-      tip: "Hoeveel gaatjes mist de rechter toren?",
+      tip: "Hoeveel gaatjes mist de rechtertoren?",
     }),
     tegelsKnoppen({
       uitleg: ["Links 11: een 10 en een 1."],
@@ -347,7 +347,7 @@ export const kloptDeSom: Les = {
       tip: "Wat is het dubbele van 4?",
     }),
     tegelsKnoppen({
-      uitleg: ["Nu een moeilijke, met vier getallen."],
+      uitleg: ["Nu een som met vier getallen."],
       vraag: "Klopt deze som?",
       kop: "1 + 2 + 3 + 4 = 10",
       torens: [{ stukken: [10], getal: true }, { stukken: [1, 2, 3, 4], getal: true }],
@@ -367,11 +367,11 @@ export const ontbrekendGetal: Les = {
   stappen: [
     tegelsTypen({
       uitleg: ["Kijk naar deze blauwe tegel."],
-      vraag: "Welk getal is deze tegel?",
+      vraag: "Welk getal laat deze tegel zien?",
       torens: [{ basis: 7 }],
       antwoord: "7",
       goed: "Ja, de blauwe tegel is een 7.",
-      fout: "Tel de gaatjes: het is een 7.",
+      fout: "Tel de gaatjes: het zijn er 7.",
       tip: "Tel de gaatjes.",
     }),
     tegelsTypen({
@@ -405,7 +405,7 @@ export const ontbrekendGetal: Les = {
       tip: "Tel wat er nog zichtbaar is van de 8.",
     }),
     tegelsKiezen({
-      uitleg: ["Je doet het goed.", "Nu een moeilijke, tot 11."],
+      uitleg: ["Je doet het goed.", "Nu een som tot 11."],
       vraag: "Welke tegel maakt samen met 4 precies 11?",
       kop: "4 + ? = 11",
       torens: [{ stukken: [4], gat: 11 }],
@@ -520,7 +520,7 @@ export const splitsenInDelen: Les = {
       invoer: "typen",
       groepen: [1, 1, 1, 1, 1, 1, 1],
       antwoord: "7",
-      goed: "Ja: zeven enen samen is 7.",
+      goed: "Ja: 7 enen zijn samen 7.",
       fout: "Tel de enen: het zijn er 7.",
       tip: "Tel de enen.",
     }),
@@ -589,15 +589,15 @@ export const eindtoetsTot10: Les = {
   stappen: [
     tegelsTypen({
       uitleg: ["Laat zien wat je nu kunt."],
-      vraag: "Welk getal is deze tegel?",
+      vraag: "Welk getal laat deze tegel zien?",
       torens: [{ stukken: [6] }],
       antwoord: "6",
       goed: "Ja, de lichtblauwe tegel is een 6.",
-      fout: "Tel de gaatjes: het is een 6.",
+      fout: "Tel de gaatjes: het zijn er 6.",
       tip: "Tel de gaatjes.",
     }),
     tegelsTypen({
-      vraag: "Wat is 2 + 5?",
+      vraag: "Hoeveel is 2 + 5?",
       kop: "2 + 5 = ?",
       torens: [{ stukken: [2, 5] }],
       antwoord: "7",
@@ -615,7 +615,7 @@ export const eindtoetsTot10: Les = {
       tip: "Tel 4 en 4 samen.",
     }),
     tegelsTypen({
-      vraag: "Wat is 6 + 7?",
+      vraag: "Hoeveel is 6 + 7?",
       kop: "6 + 7 = ?",
       torens: [{ stukken: [6, 7] }],
       antwoord: "13",

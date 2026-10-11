@@ -1,0 +1,165 @@
+/*
+  Gedeelde stijl voor de vlakken van "Tellen tot 120" (oktober 2026):
+  het kleurenrooster, de tienstroken en het getallenveld. Maten in punten van
+  het vlak van 980 × 720. Kleuren gemeten op de screenshots van Synthesis.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  color: #ffffff;
+}
+
+/* Een groot vierkant vak (kleurenrooster, tienstrook, getallenveld). */
+.vak {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  box-shadow: 4px 5px 0 #9a918b;
+  font: inherit;
+  color: inherit;
+  transition:
+    filter 0.25s,
+    background-color 0.25s,
+    left 0.4s,
+    top 0.4s,
+    width 0.4s,
+    height 0.4s;
+}
+.vak:disabled {
+  cursor: default;
+}
+.tikbaar {
+  cursor: pointer;
+}
+.tikbaar:hover {
+  filter: brightness(1.08);
+}
+.leeg {
+  background: transparent;
+  box-shadow: none;
+  border: 2px solid rgba(190, 200, 230, 0.45);
+}
+.dof {
+  filter: brightness(0.38) saturate(0.7);
+}
+.dof.tikbaar:hover {
+  filter: brightness(0.5) saturate(0.7);
+}
+.rand {
+  outline: 4px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Het nummer dat bij samen tellen in een vak verschijnt. */
+.nummer {
+  font-size: 46px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.45);
+  animation: plop 0.25s ease-out;
+}
+@keyframes plop {
+  from {
+    transform: scale(0.4);
+    opacity: 0;
+  }
+}
+
+/* De cijfers boven en onder het kleurenrooster. */
+.cijfer {
+  position: absolute;
+  width: 90px;
+  height: 90px;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 12px;
+  background: transparent;
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  font-size: 46px;
+  font-weight: 500;
+  color: #ffffff;
+}
+.cijfer.tikbaar:hover {
+  background: rgba(255, 255, 255, 0.07);
+}
+
+/* Een getal in het getallenveld en het lijstje. */
+.mono {
+  font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+}
+
+/* Iets wat er net bij komt. */
+.in {
+  animation: in 0.35s ease-out backwards;
+}
+@keyframes in {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.92);
+  }
+}
+
+/* De blauwe ronde knop met het vinkje (klaar), zoals links in het lesscherm. */
+.klaar {
+  position: absolute;
+  width: 56px;
+  height: 56px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 50%;
+  background: #4b8af5;
+  color: #ffffff;
+  cursor: pointer;
+  animation: puls 1.8s ease-out 1s infinite;
+}
+@keyframes puls {
+  0% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0.55);
+  }
+  70% {
+    box-shadow: 0 0 0 12px rgba(75, 138, 245, 0);
+  }
+  100% {
+    box-shadow: 0 0 0 0 rgba(75, 138, 245, 0);
+  }
+}
+
+/* De verfpotjes boven het lege rooster. */
+.verf {
+  position: absolute;
+  width: 68px;
+  height: 68px;
+  border-radius: 50%;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  box-shadow: 0 4px 0 rgba(0, 0, 0, 0.35);
+  transition: transform 0.15s;
+}
+.verfGekozen {
+  outline: 4px solid #ffffff;
+  outline-offset: 4px;
+  transform: scale(1.06);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nummer,
+  .in,
+  .klaar {
+    animation: none;
+  }
+  .vak,
+  .verf {
+    transition: none;
+  }
+}

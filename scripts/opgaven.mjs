@@ -1141,6 +1141,28 @@ for (const [sleutel, maakZinnen] of Object.entries(GROEPJESMAKER_ZINNEN)) {
   }
 }
 
+/*
+  De uitleglessen op het lesscherm (oktober 2026): de lichte catalogus
+  (src/lib/lessen/catalogus.ts, voor het oefentype "lesscherm") en de
+  draaiboeken (src/components/les/lessen) moeten dezelfde lessen kennen.
+  Anders kan beheer een les kiezen die niet bestaat, of mist er een.
+*/
+{
+  const { readFileSync, readdirSync } = await import("node:fs");
+  const map = new URL("../src/components/les/lessen/", import.meta.url);
+  const inDraaiboeken = new Set();
+  for (const f of readdirSync(map)) {
+    if (!/\.tsx?$/.test(f) || f === "index.ts") continue;
+    const t = readFileSync(new URL(f, map), "utf8");
+    for (const m of t.matchAll(/\bid:\s*["`]([a-z0-9-]+)["`],\s*\n\s*titel:/g)) inDraaiboeken.add(m[1]);
+  }
+  const { LESCATALOGUS } = await import("../src/lib/lessen/catalogus.ts");
+  const inCatalogus = new Set(LESCATALOGUS.map((l) => l.id));
+  for (const id of inDraaiboeken) if (!inCatalogus.has(id)) fouten.push(`Les "${id}" staat niet in src/lib/lessen/catalogus.ts.`);
+  for (const id of inCatalogus) if (!inDraaiboeken.has(id)) fouten.push(`Les "${id}" uit de catalogus heeft geen draaiboek.`);
+  console.log(`Lessen: ${inCatalogus.size} in de catalogus, ${inDraaiboeken.size} draaiboeken.`);
+}
+
 // ---------------------------------------------------------------------------
 
 const perGroep = new Map();
