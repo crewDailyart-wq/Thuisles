@@ -203,3 +203,64 @@ Per les één leerdoel (vragen per sessie 1), één sjabloon "lesscherm" en éé
 - REK-VER-OPT-64 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Verstopte getallen · groep 3–4 · lesscherm · 1 les
 - REK-VER-OPT-65 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Eindtoets: Verhaaltjessommen · groep 3–4 · lesscherm · 1 les
 - REK-VER-OPT-66 · Verhaaltjessommen → Optellen en aftrekken · Les: verhaaltjessommen · Meer verhaaltjes · groep 3–4 · lesscherm · 1 les
+
+## Ronde 6 — oefeningen bij de groep 3-lessen (11 oktober 2026, met toestemming)
+
+Opdracht eigenaar: bij elke groep 3-les een losse oefening met 15 sommen van dezelfde soort, direct na de les, in hetzelfde onderwerp. Per oefening één leerdoel (groep 3, vragen per sessie 15), één sjabloon en 15 gepubliceerde opgaven met maatje-teksten. Reservekopie vooraf: `backups/thuisles-voor-groep3-oefeningen-*.db`. Niet bij de twee intro-lessen (Zo werkt het, Jouw instellingen): daar zijn geen sommen.
+
+- REK-AFT-AFT-58  Oefenen: minsommen tot 10 (minsom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-59  Oefenen: stippen weghalen (stipweg) 15 sommen, maatje 15/15
+- REK-AFT-AFT-60  Oefenen: het verschil (stipverschil) 15 sommen, maatje 15/15
+- REK-AFT-AFT-61  Herhalen: minsommen tot 10 (plaatjesminsom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-62  Oefenen: hetzelfde verschil (rekensom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-63  Oefenen: het verschil tot 10 (stipverschil) 15 sommen, maatje 15/15
+- REK-AFT-AFT-64  Oefenen: verschil met sprongen (minsom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-65  Oefenen: doortellen tot 10 (aanvultabel) 15 sommen, maatje 15/15
+- REK-AFT-AFT-66  Oefenen: doortellen tot 20 (aanvultabel) 15 sommen, maatje 15/15
+- REK-AFT-AFT-67  Herhalen: het verschil (rekensom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-68  Oefenen: minsommen tot 5 (minsom) 15 sommen, 2 herhaald, maatje 15/15
+- REK-AFT-AFT-69  Oefenen: snel minsommen tot 10 (minsom) 15 sommen, maatje 15/15
+- REK-AFT-AFT-70  Oefenen: minsommen tot 20 (rekensom) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-36  Oefenen: hele en halve uren (klokaflezen) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-37  Oefenen: hele uren lezen (klokaflezen) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-38  Oefenen: hele uren zetten (klokzetten) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-39  Oefenen: halve uren lezen (klokaflezen) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-40  Herhalen: hele en halve uren zetten (klokzetten) 15 sommen, maatje 15/15
+- REK-TIJ-DEW-41  Oefenen: klokken lezen (klokaflezen) 15 sommen, maatje 15/15
+- REK-VER-OPT-67  Oefenen: erbij krijgen (verhaaltje) 15 sommen, maatje 15/15
+- REK-VER-OPT-68  Oefenen: weggeven en opmaken (verhaaltje) 15 sommen, maatje 15/15
+- REK-VER-OPT-69  Oefenen: samen (verhaaltje) 15 sommen, maatje 15/15
+- REK-VER-OPT-70  Oefenen: hoeveel meer nodig? (verhaaltje) 15 sommen, maatje 15/15
+- REK-VER-OPT-71  Herhalen: erbij of eraf? (verhaaltje) 15 sommen, maatje 15/15
+- REK-VER-OPT-72  Oefenen: het verschil in een verhaal (verhaaltje) 15 sommen, maatje 15/15
+- REK-OPT-OPT-89  Oefenen: plussommen tot 10 (plussom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-90  Oefenen: tegels samen tot 10 (tegelsom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-91  Oefenen: welke som klopt? (somkeuze) 15 sommen, maatje 15/15
+- REK-OPT-OPT-92  Oefenen: wat zit er onder de vlek? (rekensom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-93  Oefenen: drie getallen optellen (optellen) 15 sommen, maatje 0/15
+- REK-OPT-OPT-94  Herhalen: koppel de som (koppelsommen) 15 sommen, maatje 15/15
+- REK-OPT-OPT-95  Oefenen: plussommen tot 20 (rekensom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-96  Oefenen: 10 en nog wat (tegelsom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-97  Oefenen: over de 10 (tegelsom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-98  Oefenen: dubbel en bijna dubbel (tegelsom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-99  Herhalen: plussommen tot 20 (rekensom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-100  Oefenen: snel plussommen tot 10 (plussom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-101  Oefenen: plussommen tot 5 (plussom) 15 sommen, 5 herhaald, maatje 15/15
+- REK-OPT-OPT-102  Oefenen: plussommen van 6 tot 10 (plussom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-103  Herhalen: plussommen tot 10 (plussom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-104  Oefenen: snel plussommen tot 20 (rekensom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-105  Oefenen: plussommen over de 10 (rekensom) 15 sommen, maatje 15/15
+- REK-OPT-OPT-106  Herhalen: minsommen tot 20 (rekensom) 15 sommen, maatje 15/15
+- REK-SPL-SPL-46  Oefenen: splitsen tot 10 (splitsschema) 15 sommen, maatje 15/15
+- REK-SPL-SPL-47  Oefenen: maak 10 (raketsom) 15 sommen, maatje 15/15
+- REK-GET-TEL-59  Oefenen: plaatjes tellen (plaatjestellen) 15 sommen, maatje 15/15
+- REK-GET-TEL-60  Oefenen: tellen van 10 tot 20 (plaatjestellen) 15 sommen, 4 herhaald, maatje 15/15
+- REK-GET-TEL-61  Oefenen: hoeveel kralen? (rekenrekflits) 15 sommen, 5 herhaald, maatje 15/15
+- REK-GET-TEL-62  Oefenen: welk huisnummer ontbreekt? (straat) 15 sommen, maatje 15/15
+- REK-SPL-VER-03  Oefenen: dubbelen (tegelsom) 15 sommen, maatje 15/15
+- REK-SPL-VER-04  Oefenen: dubbelen tot 20 (tegelsom) 15 sommen, maatje 15/15
+- REK-GET-VER-06  Oefenen: de grootste vis (vissen) 15 sommen, maatje 15/15
+- REK-GET-VER-07  Oefenen: de meeste of de minste (stipvergelijk) 15 sommen, maatje 15/15
+- REK-GET-VER-08  Oefenen: <, = of > (stipteken) 15 sommen, maatje 15/15
+- REK-GET-VER-09  Oefenen: grootste en kleinste (vissen) 15 sommen, maatje 15/15
+- REK-GET-VER-10  Herhalen: op volgorde (trein) 15 sommen, maatje 15/15

@@ -76,19 +76,38 @@ Ook gelijkgetrokken:
 10. Verschil 8 en 5: "3 − 5 = 8 / 8 − 5 = 3 / 3 − 5 = 3 / 5 − 8 = 3" →
     "8 − 5 = 3 / 8 − 5 = 2 / 8 − 5 = 4 / 8 + 5 = 13".
 
-## 3. Aangevuld tot 15 vragen
+## 3. Een oefening van 15 sommen bij elke les
 
-**Bij groep 3: 0 opdrachten aangevuld.** Groep 3 heeft in de database geen gewone
-oefeningen; daar staan alleen lessen.
+Zo heeft de eigenaar het gevraagd: bij elke groep 3-les komt een losse oefening
+van 15 sommen van dezelfde soort, direct na de les en in hetzelfde onderwerp.
 
-- **De 58 lessen.** Elke les is één "vraag": de hele les wordt in één keer
-  gespeeld. Daar 15 kopieën van maken heeft geen zin, dus dat heb ik niet gedaan.
-  Moet een les zelf 15 oefensommen krijgen, zeg het dan; dat is een grotere
-  verandering per les.
-- **De 8 oude lessen** (REK-OPT-OPT-75 t/m 82). Daar heb ik niets aan veranderd,
-  zoals je vroeg.
+**Er zijn 56 oefeningen gemaakt**, met de oefentypes die groep 3 al had.
 
-Bij groep 4 had ik in eerste instantie 65 opdrachten op 15 gezet. Dat is allemaal
+- **Titels.** Ze heten "Oefenen: …". Na een eindtoets heet de oefening
+  "Herhalen: …".
+- **Plek.** Ze staan in de lijst direct onder hun les, onder hetzelfde kopje
+  (bijvoorbeeld "Les: klokkijken"). De volgorde van de andere oefeningen is niet
+  veranderd.
+- **Groep.** Ze horen alleen bij groep 3.
+- **Opgaven.** Elke oefening heeft precies 15 gepubliceerde opgaven, met
+  maatje-teksten. Alleen bij "drie getallen optellen" ontbreken die, omdat er
+  voor dat type nog geen maatje-schrijver bestaat.
+- **Herhalingen.** Een paar soorten hebben er minder dan 15 verschillende,
+  omdat er niet meer bestaan. Plussommen tot 5 zijn er bijvoorbeeld maar 10.
+  Daar vult het platform aan met herhalingen, zoals bij alle oefeningen.
+- **Regels.** Alles blijft tot en met 20, en de keuzes zijn echte kinderfouten.
+  Bij de verhaaltjessommen kwamen er keuzes boven de 20 uit, zoals "26 appels"
+  bij 18 − 8. Die worden voor groep 3 nu vervangen door een andere kinderfout
+  binnen de 20. Voor andere groepen is niets veranderd.
+- **Geen oefening.** De twee intro-lessen ("Zo werkt het" en "Jouw instellingen")
+  hebben geen sommen en kregen dus geen oefening.
+- **Lijst.** Alle codes staan in `vragen-voor-later/AANGEMAAKT.md`, onder
+  "Ronde 6". Reservekopie vooraf: `backups/thuisles-voor-groep3-oefeningen-*.db`.
+- **Getest.** Twee oefeningen heb ik als Testkind gespeeld, met een fout antwoord:
+  "Oefenen: hele uren lezen" en "Oefenen: weggeven en opmaken". Bij een fout legt
+  het maatje uit wat er misging.
+
+Groep 4 is niet aangevuld of ingekort. Wat ik daar eerst had gedaan, is
 teruggezet.
 
 ## 4. Testen: hoeveel lessen werken
@@ -152,7 +171,6 @@ testronde opschreef: in die lessen staat geen getal boven de 20.
 
 ## 6. Wat ik niet zeker wist
 
-- **Lessen en 15 vragen.** Zie punt 3: moet een les zelf 15 oefensommen krijgen?
 - **De 8 oude lessen.** De taal is verbeterd in de code, maar in de database staan
   de oude zinnen nog, want daar mocht ik niet aankomen. Ze worden pas anders als
   die lessen opnieuw worden gemaakt, of als ze weggaan: dat beslis jij.

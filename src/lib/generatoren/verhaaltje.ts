@@ -161,6 +161,30 @@ function soortSom(getallen: number[], goed: number): string {
   return "erbij";
 }
 
+/**
+ * Groep 3 (verbeterronde 11 okt 2026): de vier knoppen allemaal binnen het
+ * getallengebied van de oefening. Valt er een keuze buiten het gebied — vaak de
+ * verkeerde bewerking, zoals 18 + 8 = 26 bij een minsom tot 20 — dan komt er
+ * een andere echte kinderfout voor in de plaats: 10 ernaast, 1 of 2 ernaast, of
+ * een getal uit het verhaal. Liggen alle keuzes al binnen het gebied, dan
+ * blijven ze precies zoals ze waren.
+ */
+function keuzesBinnenBereik(v: Parameters<typeof maakKeuzes>[0], kans: () => number, max: number): number[] | null {
+  const knoppen = maakKeuzes(v, kans);
+  if (!knoppen) return null;
+  if (knoppen.every((n) => n <= max)) return knoppen;
+  const r = v.antwoord;
+  const keuzes = knoppen.filter((n) => n <= max);
+  const kandidaten = [r + 10, r - 10, r - 1, r + 1, r - 2, r + 2, ...v.uitVerhaal, r - 3, r + 3];
+  for (const x of kandidaten) {
+    if (keuzes.length >= 4) break;
+    if (!Number.isInteger(x) || x < 1 || x > max || keuzes.includes(x)) continue;
+    if (v.datum && x > 31) continue;
+    keuzes.push(x);
+  }
+  return keuzes.length === 4 ? keuzes.sort((a, b) => a - b) : null;
+}
+
 const verhaalAanpak: Aanpak = {
   zin: (som): Record<Leeftijdsgroep, string> => {
     const welke = soortSom(som.getallen, som.goed);
@@ -294,7 +318,7 @@ export const verhaaltjeGenerator: Generator = {
 
   maximum: () => null,
 
-  maak(inst, aantal, alGebruikt, zaad) {
+  maak(inst, aantal, alGebruikt, zaad, groep) {
     const kans = kansGenerator(zaad);
     const onderwerp = SITUATIES[tekst(inst, "onderwerp", "optellen")] ? tekst(inst, "onderwerp", "optellen") : "optellen";
     const situaties = SITUATIES[onderwerp];
@@ -321,7 +345,8 @@ export const verhaaltjeGenerator: Generator = {
       let keuzes: string[] | null = null;
       let goed = 0;
       if (!typen) {
-        const knoppen = maakKeuzes(v, kans);
+        /* Groep 3: alle knoppen binnen het getallengebied (zie keuzesBinnenBereik). Andere groepen ongewijzigd. */
+        const knoppen = groep !== undefined && groep <= 3 ? keuzesBinnenBereik(v, kans, Math.min(100, bereik.tot)) : maakKeuzes(v, kans);
         if (!knoppen) continue;
         keuzes = knoppen.map((n) => metEenheid(n, v.eenheid));
         goed = knoppen.indexOf(v.antwoord);
