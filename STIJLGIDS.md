@@ -10,12 +10,26 @@ staan in `src/components/avontuur/`.
 
 ## Achtergrond: de sterrenhemel
 
-- Diep koningsblauw, met in het midden een zachte, lichtere gloed.
-- Kleine witte sterretjes en een paar grotere sterren met vier punten.
-- Een planeet met een ring rechtsboven.
-- Onderaan zachte wolkjes en een heuvel in lichter en donkerder blauw.
-- Een scherm krijgt deze hemel met `data-stijl="avontuur"`. De sterren, de
-  planeet en de wolkjes komen uit `<Sterrenhemel />`.
+- **Het plaatje** `ontwerp/achtergrond-breed.png` van de eigenaar: diep
+  koningsblauw, sterren, een planeet rechtsboven, wolkjes en heuvels onderaan.
+- Het plaatje vult altijd het hele scherm, zonder randen. Het staat stil terwijl
+  de inhoud eroverheen schuift.
+- De website laadt lichte versies uit `public/hemel/`: AVIF, met WebP voor
+  oudere browsers, elk in een paar maten. Een telefoon krijgt een bestand van
+  10 tot 14 KB, een computer hoogstens 28 KB. Na een nieuw plaatje maak je die
+  bestanden opnieuw met `node scripts/maak-hemel.mjs`.
+- **Staand** (telefoon, staande tablet): het rechterdeel van het plaatje, met de
+  planeet en de wolken. Er is nog geen echte staande versie.
+- **Levendig:**
+  - de sterren in het plaatje twinkelen zachtjes;
+  - een zachte gloed ligt achter de titel (`av-gloed`);
+  - een lichte donkere rand aan de zijkanten laat het midden oplichten.
+- **Minder beweging:** staat dat aan op het apparaat, dan twinkelt er niets en
+  pulseert de gloed niet.
+- In de code: `<Hemel />` uit `components/avontuur/Hemel.tsx`, binnen een vlak
+  met `data-stijl="avontuur"` en `isolate`.
+- De eerder getekende sterren en wolkjes (`Sterrenhemel.tsx`) staan uit, maar
+  zijn bewaard. Zet `GETEKENDE_HEMEL_AAN` op `true` om ze weer te tonen.
 
 ## Letters
 
@@ -27,7 +41,10 @@ Alle lettertypes komen van Google Fonts.
 | Gewone tekst | **Nunito** | goed leesbaar |
 | Kleine zinnetjes | **Caveat** | handschrift, iets scheef, bijvoorbeeld "Kies een vak en ga op ontdekking!" |
 
-In de code: `av-titel` voor Fredoka, `av-hand` voor Caveat.
+In de code: `av-titel` voor Fredoka, `av-hand` voor Caveat. Handschrift
+krijgt een zachte donkere schaduw, zodat het leesbaar blijft boven een lichte
+wolk. Van Fredoka en Caveat wordt maar één dikte geladen (700 en 600). Dat
+scheelt laadtijd.
 
 ## Tegels
 
@@ -43,6 +60,11 @@ In de code: `av-titel` voor Fredoka, `av-hand` voor Caveat.
 - **Witte letters op geel lezen slecht.** Een gele tegel krijgt daarom een
   donkerbruine rand om de letters (`av-tegel--licht`).
 - Een tegel is altijd groter dan 48 pixels, zodat een vinger hem makkelijk raakt.
+- Rijk, zoals op het voorbeeld:
+  - een glanzende band bovenaan;
+  - een kleurverloop van licht boven naar donker onder;
+  - een dikke 3D-onderkant met een donker randje;
+  - een harde en een zachte schaduw.
 
 Vaste kleuren, met de donkerdere onderkant erbij:
 

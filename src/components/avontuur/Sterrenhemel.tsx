@@ -10,6 +10,13 @@
  * vangt geen tikken op.
  */
 
+/**
+ * Uit sinds 11 oktober 2026 (opdracht eigenaar): de achtergrond is nu het
+ * plaatje in `Hemel.tsx`. Deze getekende sterren en wolkjes zijn bewaard;
+ * zet dit op true om ze weer over het plaatje te tekenen.
+ */
+export const GETEKENDE_HEMEL_AAN = false;
+
 /* Vaste plekken (x%, y%, grootte px), zodat server en browser hetzelfde tekenen. */
 const STIPJES: [number, number, number][] = [
   [4, 12, 3], [9, 34, 2], [14, 8, 2], [19, 58, 3], [23, 22, 2], [29, 44, 2],

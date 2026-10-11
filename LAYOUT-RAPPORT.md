@@ -5,7 +5,99 @@
 Alleen het uiterlijk is veranderd. Oefeningen, voortgang, accounts en het
 maatje werken zoals voorheen, en er is niets in de database veranderd.
 
-## Wat er klaar is
+## Ronde 2: achtergrond opvallender (11 oktober 2026)
+
+**Het plaatje.** `achtergrond-breed.png` uit Downloads staat nu in
+`ontwerp/achtergrond-breed.png`. Het origineel staat er nog. Het is de
+achtergrond van het startscherm en van "Binnenkort!", en straks van de rest van
+de kinderkant.
+
+- **Licht:** omgezet naar AVIF, met WebP als reserve, in de maten 828, 1280 en
+  1672 breed. Daarbij komt een staande uitsnede van 530 en 706 breed. De
+  bestanden zijn 10 tot 39 KB, ver onder de 400 KB. Een telefoon laadt 10 tot
+  14 KB.
+- **Vult altijd het hele scherm**, zonder randen. Het plaatje staat stil terwijl
+  de inhoud eroverheen schuift.
+- **Staand:** er is nog geen staande versie. Op telefoon en staande tablet laat
+  ik daarom het rechterdeel van het plaatje zien. Daar staan de planeet en de
+  wolken. Op 768 breed valt de planeet half achter de tegel Taal, op 390 breed
+  staat hij naast de titel. Maak je later een staande versie, dan zet ik die
+  erin.
+- **Levendig:**
+  - de sterren in het plaatje twinkelen zachtjes, met een lichtje precies op
+    elke ster;
+  - er ligt een zachte gloed achter "Wat wil je doen?";
+  - een lichte donkere rand aan de zijkanten laat het midden oplichten.
+- **Minder beweging:** getest met die instelling aan. De sterren en de gloed
+  staan dan stil.
+- **Mijn getekende sterren en wolkjes** staan uit, maar zijn niet verwijderd. Ze
+  staan nog in `Sterrenhemel.tsx`; één schakelaar zet ze terug.
+- **Tegels rijker:**
+  - een glanzende band bovenaan;
+  - een kleurverloop van licht naar donker;
+  - een dikkere 3D-onderkant met een donker randje;
+  - een harde en een zachte schaduw.
+- **Leesbaarheid:** het handschrift ("Jij kunt het!") en het motto kregen een
+  zachte schaduw, want op de telefoon vallen ze over een lichte wolk.
+
+**Wordt het wazig op een groot scherm? Ja, een beetje.** Het plaatje is 1672
+pixels breed. Op een gewone laptop van 1366 pixels is het scherp.
+
+| Scherm | Hoeveel vergroot | Wat je ziet |
+|---|---|---|
+| Groot scherm van 1920 breed | 1,15 keer | nauwelijks zachter |
+| Scherm van 2560 breed | 1,5 keer | de sterren en de rand van de planeet worden zachter |
+| Retinascherm (Mac, iPad) | 1,6 tot 2 keer | de sterren en de rand van de planeet worden zachter |
+| Telefoon (staande uitsnede van 941 pixels hoog) | ongeveer 2,7 keer | duidelijk zachter |
+
+Het meeste van het plaatje is een zacht kleurverloop, en dat blijft mooi. De
+twinkelende lichtjes liggen eroverheen en blijven scherp.
+
+Mijn advies: maak het plaatje opnieuw op 3840 pixels breed, en een staande versie
+van ongeveer 1440 bij 3200. Ook dan blijft het bestand onder de 400 KB.
+
+**Laadtijd op een trage verbinding.** Ik heb dit gemeten met een echte
+(geoptimaliseerde) versie van de site op deze laptop. De tijden zijn het
+gemiddelde van twee metingen.
+
+| Scherm en verbinding | Eerste beeld | Achtergrond binnen | Alles klaar |
+|---|---|---|---|
+| Telefoon, mobiel internet 1,6 Mbit/s | ca. 2,9 s | ca. 2,8 s | ca. 4,1 s |
+| Telefoon, heel traag 0,4 Mbit/s | ca. 5,9 s | ca. 5,8 s | ca. 10,8 s |
+| Computer, 1,6 Mbit/s | ca. 2,0 s | ca. 2,2 s | ca. 3,3 s |
+| Computer, 0,4 Mbit/s | ca. 4,7 s | ca. 6,3 s | ca. 9,8 s |
+
+De achtergrond is maar 14 tot 27 KB van de ongeveer 380 KB in totaal. Wat het
+meest weegt:
+
+| Wat | Gewicht |
+|---|---|
+| Lettertypes | 151 KB, was 187 KB |
+| JavaScript | 149 KB |
+| Antwoord van de server | 0,7 tot 2,7 s |
+
+De lettertypes heb ik lichter gemaakt: van Fredoka en Caveat laad ik nu alleen de
+dikte die gebruikt wordt.
+
+Het antwoord van de server is traag omdat het startscherm ook alle oude
+onderdelen onder "Nog meer voor jou" ophaalt. Mag dat blok weg of naar een ander
+scherm, dan wordt het startscherm sneller.
+
+Nog een punt: het lettertype Inter wordt alleen in het beheer gebruikt, maar
+laadt nu op elke pagina. Dat zou ik apart willen zetten. Dat heb ik niet gedaan
+zonder jouw ja.
+
+**Screenshots:** `~/Desktop/layout-screenshots`. Daar staan:
+- `start-1366/1024/768/390.png`;
+- `binnenkort-1366/390.png`;
+- `naast-elkaar.png`, met het voorbeeld en alle breedtes naast elkaar.
+
+**Wat nog afwijkt van het voorbeeld**
+- Het sterrenwachtje met de vlag staat niet in het nieuwe plaatje.
+- Het voorbeeld is wat paarser en voller, omdat daar 13 tegels staan.
+- De mascotte is nog het bolletje.
+
+## Wat er klaar is (ronde 1)
 
 **De basis (één plek)**
 - `src/app/avontuur.css` legt de hele stijl vast voor de code: de
@@ -162,3 +254,9 @@ breedtes:
   - `src/components/kind/Zijbalk.tsx`: het menu komt nu uit `navigatie.ts`.
   - `src/app/layout.tsx`: de lettertypes.
   - `ONTWERPREGELS.md`
+- Ronde 2:
+  - nieuw: `src/components/avontuur/Hemel.tsx`, `public/hemel/` (10 bestanden),
+    `scripts/maak-hemel.mjs` en `ontwerp/achtergrond-breed.png`;
+  - aangepast: `avontuur.css` (tegels, twinkelen, rand, gloed, schaduw op
+    handschrift), `Sterrenhemel.tsx` (staat uit), het startscherm,
+    "Binnenkort!" en `layout.tsx` (minder letterdiktes).

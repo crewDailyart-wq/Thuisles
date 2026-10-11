@@ -73,6 +73,8 @@
   font-family: var(--font-caveat), cursive;
   font-weight: 600;
   line-height: 1.1;
+  /* blijft leesbaar als het over een lichte wolk valt */
+  text-shadow: 0 2px 6px rgba(10, 16, 90, 0.7);
 }
 
 /* ---------------------------------------------------------------------------
@@ -110,6 +112,7 @@
   --tegel: var(--av-paars);
   --tegel-rand: var(--av-paars-rand);
   position: relative;
+  isolation: isolate;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -120,13 +123,30 @@
   padding: 9% 6% 8%;
   color: #ffffff;
   text-decoration: none;
+  /*
+    Kleurverloop: bovenin lichter, onderin donkerder, plus een zacht licht
+    linksboven. Alles uit één kleur (--tegel), zodat elke tegel er vanzelf
+    goed uitziet.
+  */
   background:
-    linear-gradient(160deg, rgba(255, 255, 255, 0.28) 0%, rgba(255, 255, 255, 0) 45%),
-    var(--tegel);
+    radial-gradient(120% 90% at 20% 0%, rgba(255, 255, 255, 0.35) 0%, rgba(255, 255, 255, 0) 55%),
+    linear-gradient(
+      180deg,
+      color-mix(in srgb, var(--tegel), #ffffff 18%) 0%,
+      var(--tegel) 45%,
+      color-mix(in srgb, var(--tegel), var(--tegel-rand) 55%) 100%
+    );
+  /*
+    3D-rand: een lichte rand bovenin, een donkere binnenrand onderin, de dikke
+    onderkant (--tegel-rand) en twee schaduwen: een harde dichtbij en een
+    zachte verder weg.
+  */
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.35),
-    0 10px 0 var(--tegel-rand),
-    0 22px 30px rgba(8, 14, 70, 0.45);
+    inset 0 3px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -6px 0 color-mix(in srgb, var(--tegel-rand), transparent 55%),
+    0 12px 0 var(--tegel-rand),
+    0 14px 0 color-mix(in srgb, var(--tegel-rand), #000000 25%),
+    0 26px 34px rgba(6, 10, 60, 0.55);
   transform: rotate(var(--scheef));
   transition: transform 160ms ease, box-shadow 160ms ease;
   -webkit-tap-highlight-color: transparent;
@@ -134,20 +154,38 @@
   container-type: inline-size;
 }
 
+/* De glans bovenaan: een zachte witte band, alsof er licht op valt. */
+.av-tegel::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  left: 6%;
+  right: 6%;
+  top: 3.5%;
+  height: 40%;
+  border-radius: calc(var(--av-ronding) - 0.5rem) calc(var(--av-ronding) - 0.5rem) 50% 50% / calc(var(--av-ronding) - 0.5rem) calc(var(--av-ronding) - 0.5rem) 30% 30%;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.42) 0%, rgba(255, 255, 255, 0.08) 70%, rgba(255, 255, 255, 0) 100%);
+  pointer-events: none;
+}
+
 .av-tegel:hover {
   transform: rotate(var(--scheef)) translateY(-4px);
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.35),
-    0 14px 0 var(--tegel-rand),
-    0 28px 34px rgba(8, 14, 70, 0.5);
+    inset 0 3px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -6px 0 color-mix(in srgb, var(--tegel-rand), transparent 55%),
+    0 16px 0 var(--tegel-rand),
+    0 18px 0 color-mix(in srgb, var(--tegel-rand), #000000 25%),
+    0 32px 40px rgba(6, 10, 60, 0.6);
 }
 
 .av-tegel:active {
-  transform: rotate(var(--scheef)) translateY(6px);
+  transform: rotate(var(--scheef)) translateY(8px);
   box-shadow:
-    inset 0 2px 0 rgba(255, 255, 255, 0.35),
+    inset 0 3px 0 rgba(255, 255, 255, 0.45),
+    inset 0 -6px 0 color-mix(in srgb, var(--tegel-rand), transparent 55%),
     0 4px 0 var(--tegel-rand),
-    0 10px 16px rgba(8, 14, 70, 0.45);
+    0 5px 0 color-mix(in srgb, var(--tegel-rand), #000000 25%),
+    0 10px 16px rgba(6, 10, 60, 0.5);
 }
 
 .av-tegel__icoon {
@@ -263,4 +301,58 @@
 .av-wolkje--rechts::after {
   left: auto;
   right: 1.25rem;
+}
+
+/* ---------------------------------------------------------------------------
+ * De hemel: twinkelende sterren, donkere zijkanten en gloed achter een titel.
+ * ------------------------------------------------------------------------- */
+
+.av-twinkel {
+  transform-box: view-box;
+  animation-name: av-twinkel;
+  animation-timing-function: ease-in-out;
+  animation-iteration-count: infinite;
+  opacity: 0.25;
+}
+
+@keyframes av-twinkel {
+  0%, 100% { opacity: 0.15; transform: scale(0.75); }
+  50%      { opacity: 0.95; transform: scale(1.1); }
+}
+
+/* Lichte donkere rand aan de zijkanten (en een beetje boven), zodat het midden oplicht. */
+.av-vignet {
+  background:
+    radial-gradient(ellipse 75% 85% at 50% 45%, rgba(0, 0, 0, 0) 55%, rgba(10, 6, 70, 0.45) 100%),
+    linear-gradient(90deg, rgba(40, 10, 120, 0.22) 0%, rgba(0, 0, 0, 0) 22%, rgba(0, 0, 0, 0) 78%, rgba(40, 10, 120, 0.22) 100%);
+}
+
+/* Zachte gloed achter een titel, zoals achter "Wat wil je doen?". */
+.av-gloed {
+  position: relative;
+  isolation: isolate;
+}
+
+.av-gloed::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  inset: -60% -18%;
+  background: radial-gradient(closest-side, rgba(140, 170, 255, 0.55), rgba(110, 120, 255, 0.22) 55%, rgba(0, 0, 0, 0) 100%);
+  filter: blur(8px);
+  pointer-events: none;
+  animation: av-gloed 6s ease-in-out infinite;
+}
+
+@keyframes av-gloed {
+  0%, 100% { opacity: 0.8; }
+  50%      { opacity: 1; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-twinkel,
+  .av-gloed::before {
+    animation: none;
+  }
+  .av-twinkel { opacity: 0.6; }
 }

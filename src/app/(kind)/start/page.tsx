@@ -21,7 +21,7 @@ import Link from "next/link";
 import { Glitter } from "@/components/avontuur/Glitter";
 import { HoofdMascotte } from "@/components/avontuur/HoofdMascotte";
 import { Logo } from "@/components/avontuur/Logo";
-import { Sterrenhemel } from "@/components/avontuur/Sterrenhemel";
+import { Hemel } from "@/components/avontuur/Hemel";
 import {
   IcoonLezen,
   IcoonRekenen,
@@ -88,13 +88,13 @@ export default async function StartPagina() {
   return (
     <div
       data-stijl="avontuur"
-      className="relative min-h-[100svh] overflow-x-hidden"
+      className="relative isolate min-h-[100svh] overflow-x-hidden"
     >
+      <Hemel />
       {/* ------------------------------------------------------------------
           Het eerste scherm: precies het voorbeeld.
           ------------------------------------------------------------------ */}
       <section className="relative isolate min-h-[100svh]">
-        <Sterrenhemel />
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[100rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-6 lg:px-12">
           <header className="grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-3 lg:grid-cols-[1fr_auto_1fr]">
             <div className="pt-1">
@@ -102,7 +102,7 @@ export default async function StartPagina() {
             </div>
 
             {/* Midden boven: de titel. Op een smal scherm onder logo en begroeting. */}
-            <div className="col-span-2 row-start-2 text-center lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:pt-2">
+            <div className="av-gloed col-span-2 row-start-2 text-center lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:pt-2">
               <h1 className="av-titel relative inline-flex items-center gap-[0.35em] text-[clamp(2.1rem,5vw,4.4rem)] drop-shadow-[0_5px_0_rgba(10,20,90,0.35)]">
                 <Glitter kant="links" className="size-[0.6em] shrink-0" />
                 Wat wil je doen?
@@ -182,7 +182,7 @@ export default async function StartPagina() {
           </div>
 
           {/* Linksonder: het motto. */}
-          <p className="relative text-xs font-extrabold uppercase tracking-[0.2em] text-white/70">
+          <p className="relative text-xs font-extrabold uppercase tracking-[0.2em] text-white/80 [text-shadow:0_1px_4px_rgba(10,16,90,0.8)]">
             {MERKMOTTO.join(" • ")}
           </p>
         </div>

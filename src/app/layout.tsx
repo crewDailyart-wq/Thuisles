@@ -20,14 +20,15 @@ const inter = Inter({
 const fredoka = Fredoka({
   variable: "--font-fredoka",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  /* alleen de dikte die gebruikt wordt: scheelt laadtijd op een trage verbinding */
+  weight: ["700"],
 });
 
 /** Avontuurstijl: handschrift voor kleine zinnetjes. */
 const caveat = Caveat({
   variable: "--font-caveat",
   subsets: ["latin"],
-  weight: ["500", "600", "700"],
+  weight: ["600"],
 });
 
 export const metadata: Metadata = {

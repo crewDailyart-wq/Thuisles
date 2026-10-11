@@ -9,7 +9,7 @@ import { notFound } from "next/navigation";
 import { Glitter } from "@/components/avontuur/Glitter";
 import { HoofdMascotte } from "@/components/avontuur/HoofdMascotte";
 import { Logo } from "@/components/avontuur/Logo";
-import { Sterrenhemel } from "@/components/avontuur/Sterrenhemel";
+import { Hemel } from "@/components/avontuur/Hemel";
 import { IcoonLezen, IcoonSpelling, IcoonTaal } from "@/components/avontuur/VakIconen";
 
 const VAKKEN = {
@@ -24,8 +24,8 @@ export default async function BinnenkortVak({ params }: PageProps<"/binnenkort/[
   if (!v) notFound();
 
   return (
-    <div data-stijl="avontuur" className="relative min-h-[100svh] overflow-hidden">
-      <Sterrenhemel />
+    <div data-stijl="avontuur" className="relative isolate min-h-[100svh] overflow-hidden">
+      <Hemel />
       <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[100rem] flex-col px-4 pb-8 pt-4 sm:px-8 sm:pt-6 lg:px-12">
         <div>
           <Logo />
@@ -44,7 +44,7 @@ export default async function BinnenkortVak({ params }: PageProps<"/binnenkort/[
             <v.Icoon />
           </span>
 
-          <h1 className="av-titel inline-flex items-center gap-[0.35em] text-[clamp(2.4rem,6vw,4.4rem)] drop-shadow-[0_5px_0_rgba(10,20,90,0.35)]">
+          <h1 className="av-titel av-gloed inline-flex items-center gap-[0.35em] text-[clamp(2.4rem,6vw,4.4rem)] drop-shadow-[0_5px_0_rgba(10,20,90,0.35)]">
             <Glitter kant="links" className="size-[0.6em]" />
             Binnenkort!
             <Glitter className="size-[0.6em]" kleur="var(--av-vonk)" />
