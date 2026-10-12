@@ -1,0 +1,55 @@
+/**
+ * Het wachtwoord voor de site online (Railway, oktober 2026).
+ *
+ * Er staan gegevens van een kind in de database, en echte inlog bestaat nog
+ * niet (zie src/lib/auth/sessie.ts). Daarom staat er een slot voor de hele
+ * site: de browser vraagt één keer om een gebruikersnaam en wachtwoord en
+ * onthoudt die daarna.
+ *
+ * Het slot staat alleen aan als de omgevingsvariabele THUISLES_WACHTWOORD is
+ * gezet, en dat gebeurt alleen op Railway. Op de laptop verandert er niets.
+ * De gebruikersnaam is THUISLES_GEBRUIKER, of "thuisles" als die niet staat.
+ *
+ * Bewust zonder matcher: ook de plaatjes, de Godot-lessen en de bestanden in
+ * public/ zitten achter het slot.
+ */
+
+import { NextResponse, type NextRequest } from "next/server";
+
+/** Vergelijkt zonder vroeg te stoppen, zodat de tijd niets verraadt. */
+function gelijk(a: string, b: string): boolean {
+  let verschil = a.length ^ b.length;
+  for (let i = 0; i < Math.max(a.length, b.length); i++) {
+    verschil |= (a.charCodeAt(i) || 0) ^ (b.charCodeAt(i) || 0);
+  }
+  return verschil === 0;
+}
+
+export function proxy(request: NextRequest) {
+  const wachtwoord = process.env.THUISLES_WACHTWOORD;
+  if (!wachtwoord) return NextResponse.next();
+  const gebruiker = process.env.THUISLES_GEBRUIKER || "thuisles";
+
+  const kop = request.headers.get("authorization") ?? "";
+  if (kop.startsWith("Basic ")) {
+    let tekst = "";
+    try {
+      tekst = atob(kop.slice(6));
+    } catch {
+      tekst = "";
+    }
+    const scheiding = tekst.indexOf(":");
+    if (
+      scheiding >= 0 &&
+      gelijk(tekst.slice(0, scheiding), gebruiker) &&
+      gelijk(tekst.slice(scheiding + 1), wachtwoord)
+    ) {
+      return NextResponse.next();
+    }
+  }
+
+  return new NextResponse("Thuisles is afgeschermd.", {
+    status: 401,
+    headers: { "WWW-Authenticate": 'Basic realm="Thuisles", charset="UTF-8"' },
+  });
+}
