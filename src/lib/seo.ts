@@ -233,4 +233,5 @@ export const GESLOTEN_PADEN = [
   "/wereld",
   "/maatje",
   "/voorbeeld",
+  "/zappie",
 ];

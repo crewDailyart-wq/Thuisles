@@ -1,0 +1,1659 @@
+/*
+ * Zappie: de opmaak van de Zappie-schermen onder /zappie.
+ *
+ * Voorbeeld: ontwerp/zappie/voorbeeld-startpagina.webp. Uitleg over de beelden:
+ * public/assets/zappie/BRON.md.
+ *
+ * ---------------------------------------------------------------------------
+ * De maat: --u
+ * ---------------------------------------------------------------------------
+ * Op een groot scherm staat de startpagina in een 16:9-vlak dat zo groot is
+ * als in het scherm past. 1u is 1% van de breedte van dat vlak. Alles op de
+ * startpagina heeft een plek en een maat in u, gemeten op het voorbeeld (1672
+ * pixels breed, dus 1u = 16,72 pixels van het voorbeeld). Daardoor blijft de
+ * compositie hetzelfde op elk liggend scherm, van een tablet tot een groot
+ * beeldscherm. Is het scherm breder dan 16:9, dan blijft het vlak in het midden
+ * staan; het menu, het logo, de punten en het profiel blijven aan de rand.
+ *
+ * Op telefoon en staande tablet (smaller dan 900 pixels, of staand) staat alles
+ * onder elkaar en is u een vaste maat die met de breedte meegroeit.
+ */
+
+.zp {
+  --zp-ruimte: #071b43;
+  --zp-paneel: #0b326a;
+  --zp-blauw: #087dd8;
+  --zp-cyaan: #52d9ff;
+  --zp-geel: #ffd447;
+  --zp-geel-donker: #e9a612;
+  --zp-inkt: #0a2350;
+  --zp-glas: rgb(8 34 88 / 0.78);
+  --zp-glasrand: rgb(140 214 255 / 0.5);
+  --zp-schaduw: 0 1.2em 2.4em rgb(2 10 40 / 0.45);
+
+  --u: clamp(8px, 2.5vw, 12px);
+
+  position: relative;
+  isolation: isolate;
+  flex: 1;
+  min-height: 100svh;
+  color: #fff;
+  background: var(--zp-ruimte);
+  font-family: var(--font-nunito), system-ui, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+  overflow-x: clip;
+}
+
+.zp-titel {
+  font-family: var(--font-fredoka), var(--font-nunito), system-ui, sans-serif;
+  font-weight: 700;
+  letter-spacing: 0.005em;
+}
+
+.zp :focus-visible {
+  outline: 3px solid var(--zp-geel);
+  outline-offset: 3px;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Achtergrond                                                                */
+/* ------------------------------------------------------------------------- */
+
+.zp-ruimte {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  overflow: hidden;
+  background: var(--zp-ruimte);
+}
+
+.zp-ruimte img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 60%;
+}
+
+.zp[data-focus="ja"] .zp-ruimte::after {
+  /* Tijdens een missie wat donkerder, zodat de sommen goed leesbaar zijn. */
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, rgb(7 27 67 / 0.35), rgb(7 27 67 / 0.7));
+}
+
+/* ------------------------------------------------------------------------- */
+/* Logo                                                                       */
+/* ------------------------------------------------------------------------- */
+
+.zp-logo {
+  position: relative;
+  display: inline-flex;
+  align-items: flex-start;
+  color: #fff;
+  font-size: calc(var(--u) * 5.4);
+  line-height: 1;
+  text-decoration: none;
+}
+
+.zp-logo-tekst {
+  /* Witte letters met een blauwe rand en een beetje diepte. */
+  -webkit-text-stroke: 0.07em #1468d6;
+  paint-order: stroke fill;
+  text-shadow:
+    0 0.06em 0 #0d4fb0,
+    0 0.12em 0.18em rgb(3 15 60 / 0.55),
+    0 0 0.5em rgb(82 217 255 / 0.45);
+  transform: rotate(-4deg);
+}
+
+.zp-logo-ster {
+  width: 0.42em;
+  height: 0.42em;
+  margin-left: -0.32em;
+  margin-top: -0.18em;
+  filter: drop-shadow(0 0 0.12em rgb(255 212 71 / 0.6));
+}
+
+/* ------------------------------------------------------------------------- */
+/* Menu, punten, profiel                                                      */
+/* ------------------------------------------------------------------------- */
+
+.zp-schil {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  pointer-events: none;
+}
+
+.zp-schil > * {
+  pointer-events: auto;
+}
+
+/* Telefoon: een donkere band achter de balk bovenaan, zodat wat eronder
+   doorschuift de punten en het logo niet onleesbaar maakt. */
+.zp-schil::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 76px;
+  background: linear-gradient(180deg, rgb(7 27 67 / 0.95) 55%, rgb(7 27 67 / 0));
+  pointer-events: none;
+}
+
+.zp-menu ul {
+  display: flex;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zp-menu-knop {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25em;
+  min-width: 48px;
+  min-height: 48px;
+  border: 2px solid transparent;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+  transition: background-color 0.15s, transform 0.15s;
+}
+
+.zp-menu-knop:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.zp-menu-knop[aria-current="page"] {
+  background: linear-gradient(180deg, #2a8cf0, #1259c4);
+  border-color: rgb(140 225 255 / 0.85);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.35),
+    0 0 1.2em rgb(82 217 255 / 0.45);
+}
+
+.zp-menu-icoon {
+  width: 2.4em;
+  height: 2.4em;
+  filter: drop-shadow(0 0.1em 0.12em rgb(0 10 40 / 0.4));
+}
+
+.zp-bovenbalk {
+  display: flex;
+  align-items: center;
+  gap: calc(var(--u) * 1.6);
+}
+
+.zp-punten,
+.zp-profiel {
+  display: flex;
+  align-items: center;
+  gap: 0.6em;
+  border: 2px solid var(--zp-glasrand);
+  border-radius: 999px;
+  background: var(--zp-glas);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15), 0 0.4em 1em rgb(2 10 40 / 0.35);
+  backdrop-filter: blur(6px);
+  white-space: nowrap;
+}
+
+.zp-punten {
+  padding: 0.35em 1.4em 0.35em 0.7em;
+  font-size: calc(var(--u) * 1.15);
+}
+
+.zp-punten-ster {
+  width: 2.6em;
+  height: 2.6em;
+  flex: none;
+  filter: drop-shadow(0 0 0.35em rgb(255 212 71 / 0.55));
+}
+
+.zp-punten-tekst {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.05;
+}
+
+.zp-punten-getal {
+  font-size: 1.75em;
+  font-variant-numeric: tabular-nums;
+}
+
+.zp-punten-label {
+  font-weight: 700;
+  opacity: 0.85;
+}
+
+.zp-profiel {
+  padding: 0.35em 1.4em 0.35em 0.35em;
+  font-size: calc(var(--u) * 1.35);
+}
+
+.zp-profiel-plaatje {
+  display: grid;
+  place-items: center;
+  width: 2.7em;
+  height: 2.7em;
+  overflow: hidden;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #8fe0ff, #2a8cf0);
+  color: #fff;
+  font-size: 1.05em;
+}
+
+.zp-profiel-plaatje svg {
+  width: 82%;
+  height: 82%;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Tekstballon                                                                */
+/* ------------------------------------------------------------------------- */
+
+.zp-ballon {
+  position: relative;
+  padding: 0.75em 1.05em;
+  border: 2px solid rgb(170 230 255 / 0.85);
+  border-radius: 1.5em;
+  background: rgb(6 26 70 / 0.82);
+  box-shadow: 0 0 1.4em rgb(82 217 255 / 0.25), var(--zp-schaduw);
+  backdrop-filter: blur(4px);
+  font-size: calc(var(--u) * 1.5);
+  line-height: 1.25;
+}
+
+.zp-ballon p {
+  margin: 0;
+}
+
+.zp-ballon-kop {
+  display: block;
+  font-weight: 900;
+}
+
+.zp-ballon-tekst {
+  font-weight: 800;
+}
+
+/* Het staartje: een gedraaid vierkantje met dezelfde rand. */
+.zp-ballon::after {
+  content: "";
+  position: absolute;
+  width: 1.1em;
+  height: 1.1em;
+  background: rgb(6 26 70);
+  border: solid rgb(170 230 255 / 0.85);
+  border-width: 0 2px 2px 0;
+  left: 38%;
+  bottom: -0.6em;
+  transform: rotate(45deg) skew(8deg, 8deg);
+}
+
+.zp-ballon-vonk {
+  position: absolute;
+  top: -1.2em;
+  right: -1.6em;
+  width: 2.2em;
+  height: 2.2em;
+  transform: rotate(20deg);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Zappie                                                                     */
+/* ------------------------------------------------------------------------- */
+
+.zp-zappie {
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+  /* Alleen Zappie zelf is aan te tikken, niet de lege ruimte om hem heen. */
+  pointer-events: none;
+}
+
+.zp-robot {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+  filter: drop-shadow(0 0 1.5em rgb(82 217 255 / 0.18));
+}
+
+.zp-robot * {
+  transform-box: fill-box;
+}
+
+.zp-zappie .zp-robot-lijf {
+  pointer-events: visiblePainted;
+}
+
+.zp-robot-lijf {
+  transform-origin: 50% 100%;
+  animation: zp-dobber 3.6s ease-in-out infinite;
+}
+
+.zp-robot-lijf.zp-wip {
+  animation: zp-wip 0.55s ease-out, zp-dobber 3.6s ease-in-out 0.55s infinite;
+}
+
+.zp-robot-lijf.zp-hop {
+  animation: zp-hop 0.7s cubic-bezier(0.3, 0.7, 0.4, 1), zp-dobber 3.6s ease-in-out 0.7s infinite;
+}
+
+.zp-wiel {
+  transform-origin: center;
+  animation: zp-wiel 3.6s ease-in-out infinite;
+}
+
+.zp-onderarm {
+  transform-box: view-box;
+  transform-origin: 204px 164px;
+  animation: zp-zwaai 5.5s ease-in-out infinite;
+}
+
+.zp-arm-links {
+  transform-box: view-box;
+  transform-origin: 80px 186px;
+  animation: zp-arm 3.6s ease-in-out infinite;
+}
+
+.zp-hoofd {
+  transform-box: view-box;
+  transform-origin: 120px 168px;
+  animation: zp-hoofd 7s ease-in-out infinite;
+}
+
+.zp-antennebol {
+  animation: zp-gloei 2.6s ease-in-out infinite;
+}
+
+.zp-ogen {
+  transform-origin: center;
+  animation: zp-knipper 5.2s infinite;
+}
+
+.zp-ogen-open {
+  display: none;
+}
+
+.zp-robot[data-stemming="kijk"] .zp-ogen-blij {
+  display: none;
+}
+
+.zp-robot[data-stemming="kijk"] .zp-ogen-open {
+  display: inline;
+}
+
+.zp-golf {
+  transform-origin: center;
+  transform: scaleY(0.5);
+  transition: transform 0.3s;
+}
+
+.zp-robot[data-praat="ja"] .zp-golf {
+  animation: zp-praat 0.34s ease-in-out infinite alternate;
+}
+
+@keyframes zp-dobber {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3%); }
+}
+
+@keyframes zp-wip {
+  0% { transform: translateY(0) scale(1); }
+  35% { transform: translateY(-5%) scale(1.02, 0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes zp-hop {
+  0% { transform: translateY(0) scale(1); }
+  20% { transform: translateY(1%) scale(1.04, 0.95); }
+  50% { transform: translateY(-9%) scale(0.98, 1.03); }
+  80% { transform: translateY(0) scale(1.02, 0.98); }
+  100% { transform: translateY(0) scale(1); }
+}
+
+@keyframes zp-wiel {
+  0%, 100% { transform: rotate(-8deg); }
+  50% { transform: rotate(8deg); }
+}
+
+@keyframes zp-zwaai {
+  0%, 55%, 100% { transform: rotate(0); }
+  64% { transform: rotate(-16deg); }
+  73% { transform: rotate(12deg); }
+  82% { transform: rotate(-12deg); }
+  91% { transform: rotate(6deg); }
+}
+
+@keyframes zp-arm {
+  0%, 100% { transform: rotate(0); }
+  50% { transform: rotate(4deg); }
+}
+
+@keyframes zp-hoofd {
+  0%, 100% { transform: rotate(0); }
+  30% { transform: rotate(-2.5deg); }
+  60% { transform: rotate(1.5deg); }
+}
+
+@keyframes zp-gloei {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; }
+}
+
+@keyframes zp-knipper {
+  0%, 93%, 100% { transform: scaleY(1); }
+  95.5% { transform: scaleY(0.12); }
+}
+
+@keyframes zp-praat {
+  0% { transform: scaleY(0.25); }
+  100% { transform: scaleY(1.2); }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Werelden en ontdekpad                                                      */
+/* ------------------------------------------------------------------------- */
+
+.zp-werelden {
+  /* Een eigen vlak van 68 bij 26u; alles erin in procenten en cqw. */
+  position: relative;
+  aspect-ratio: 68 / 26;
+  container-type: inline-size;
+}
+
+.zp-pad {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.zp-pad path {
+  fill: none;
+  stroke-linecap: round;
+}
+
+.zp-pad-stippen {
+  stroke: #e9fbff;
+  stroke-width: 0.5;
+  stroke-dasharray: 0 1.25;
+  filter: drop-shadow(0 0 0.35px #52d9ff) drop-shadow(0 0 0.8px rgb(82 217 255 / 0.8));
+}
+
+.zp-pad-dicht {
+  opacity: 0.55;
+}
+
+.zp-werelden[data-aarde-open="ja"] .zp-pad-dicht {
+  opacity: 1;
+}
+
+/* Een zacht lichtje dat over het pad naar de volgende wereld reist. */
+.zp-pad-licht {
+  stroke: #fff6c4;
+  stroke-width: 0.9;
+  stroke-dasharray: 0.05 40;
+  filter: drop-shadow(0 0 0.6px #ffd447) drop-shadow(0 0 1.4px rgb(255 212 71 / 0.8));
+  animation: zp-padlicht 4.5s ease-in-out infinite;
+}
+
+@keyframes zp-padlicht {
+  0% { stroke-dashoffset: 0; opacity: 0; }
+  10% { opacity: 1; }
+  70% { opacity: 1; }
+  85%, 100% { stroke-dashoffset: -11; opacity: 0; }
+}
+
+.zp-wereld {
+  position: absolute;
+  display: block;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  text-decoration: none;
+  cursor: pointer;
+  translate: -50% -50%;
+  /* Alleen de bol en het label zijn aan te tikken; de gloed eromheen niet. */
+  pointer-events: none;
+}
+
+
+.zp-wereld-zweef {
+  position: relative;
+  display: block;
+  aspect-ratio: 1;
+  animation: zp-zweef 7s ease-in-out infinite;
+}
+
+.zp-wereld-1 .zp-wereld-zweef { animation-delay: -2.3s; animation-duration: 8s; }
+.zp-wereld-2 .zp-wereld-zweef { animation-delay: -4.6s; animation-duration: 9s; }
+
+.zp-wereld-zweef::after {
+  /* De aanraakplek: de bol zelf, zonder de gloed. */
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border-radius: 999px;
+  pointer-events: auto;
+}
+
+.zp-wereld-beeld {
+  display: block;
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 1.6cqw 1.6cqw rgb(2 10 40 / 0.45));
+  transition: transform 0.35s cubic-bezier(0.3, 0.7, 0.4, 1), filter 0.35s;
+}
+
+.zp-wereld:hover .zp-wereld-beeld,
+.zp-wereld:focus-visible .zp-wereld-beeld {
+  transform: scale(1.06);
+}
+
+.zp-wereld:active .zp-wereld-beeld {
+  transform: scale(1.02);
+}
+
+.zp-wereld[data-open="nee"] .zp-wereld-beeld {
+  filter: saturate(0.6) brightness(0.72) drop-shadow(0 1.6cqw 1.6cqw rgb(2 10 40 / 0.45));
+}
+
+.zp-wereld[data-open="nee"]:hover .zp-wereld-beeld {
+  filter: saturate(0.8) brightness(0.85) drop-shadow(0 1.6cqw 1.6cqw rgb(2 10 40 / 0.45));
+}
+
+.zp-wereld[data-schud="ja"] .zp-wereldslot {
+  animation: zp-schud 0.5s ease-in-out;
+}
+
+@keyframes zp-zweef {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-3.5%); }
+}
+
+@keyframes zp-schud {
+  0%, 100% { transform: rotate(0); }
+  20% { transform: rotate(-18deg); }
+  40% { transform: rotate(14deg); }
+  60% { transform: rotate(-10deg); }
+  80% { transform: rotate(6deg); }
+}
+
+.zp-wereldlabel {
+  position: absolute;
+  left: 50%;
+  bottom: 86%;
+  translate: -50% 0;
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  padding: 0.35em 1em;
+  border: 2px solid var(--zp-glasrand);
+  border-radius: 999px;
+  background: var(--zp-glas);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.15), 0 0.4em 1em rgb(2 10 40 / 0.4);
+  backdrop-filter: blur(6px);
+  font-size: max(13px, 2.15cqw);
+  line-height: 1.1;
+  white-space: nowrap;
+  pointer-events: auto;
+}
+
+.zp-wereldlabel[data-huidig="ja"] {
+  flex-direction: column;
+  gap: 0.3em;
+  padding: 0.4em 1.2em 0.55em;
+  font-size: max(15px, 2.75cqw);
+  border-color: rgb(140 225 255 / 0.85);
+}
+
+/* Het puntje onder het label van de huidige wereld. */
+.zp-wereldlabel[data-huidig="ja"]::after {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: -0.42em;
+  width: 0.7em;
+  height: 0.7em;
+  translate: -50% 0;
+  rotate: 45deg;
+  background: rgb(8 34 88);
+  border: solid rgb(140 225 255 / 0.85);
+  border-width: 0 2px 2px 0;
+}
+
+.zp-wereldslot {
+  width: 1.15em;
+  height: 1.15em;
+  flex: none;
+}
+
+.zp-wereldbalk {
+  display: block;
+  width: 5.5em;
+  height: 0.38em;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.18);
+}
+
+.zp-wereldbalk-vol {
+  display: block;
+  height: 100%;
+  min-width: 0.38em;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #ffe27a, var(--zp-geel));
+  box-shadow: 0 0 0.5em rgb(255 212 71 / 0.6);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Start oefenen                                                              */
+/* ------------------------------------------------------------------------- */
+
+.zp-startplek {
+  position: relative;
+}
+
+.zp-start {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.45em;
+  width: 100%;
+  height: 100%;
+  min-height: 64px;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe680 0%, #ffd447 45%, #ffc72c 100%);
+  color: var(--zp-inkt);
+  font-size: calc(var(--u) * 3.3);
+  line-height: 1;
+  text-decoration: none;
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.65),
+    inset 0 -0.16em 0 var(--zp-geel-donker),
+    0 0.18em 0 #c98908,
+    0 0.45em 0.9em rgb(2 10 40 / 0.45),
+    0 0 1.2em rgb(255 212 71 / 0.4);
+  transition: transform 0.16s cubic-bezier(0.3, 0.7, 0.4, 1), box-shadow 0.16s, filter 0.16s;
+}
+
+.zp-start:hover {
+  transform: translateY(-0.06em) scale(1.025);
+  filter: brightness(1.04);
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.65),
+    inset 0 -0.16em 0 var(--zp-geel-donker),
+    0 0.24em 0 #c98908,
+    0 0.6em 1.1em rgb(2 10 40 / 0.45),
+    0 0 1.8em rgb(255 212 71 / 0.6);
+}
+
+.zp-start:active {
+  transform: translateY(0.14em) scale(0.985);
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.5),
+    inset 0 -0.08em 0 var(--zp-geel-donker),
+    0 0.04em 0 #c98908,
+    0 0.2em 0.5em rgb(2 10 40 / 0.45);
+}
+
+.zp-start-pijl {
+  width: 0.85em;
+  height: 0.85em;
+  transition: translate 0.2s;
+}
+
+.zp-start:hover .zp-start-pijl {
+  translate: 0.12em 0;
+}
+
+.zp-start-vonk {
+  position: absolute;
+  width: calc(var(--u) * 2.6);
+  height: calc(var(--u) * 2.6);
+  pointer-events: none;
+}
+
+.zp-start-vonk-links { left: calc(var(--u) * -1.8); top: calc(var(--u) * -1.6); }
+.zp-start-vonk-rechts { right: calc(var(--u) * -3.4); bottom: calc(var(--u) * 1.4); }
+
+/* ------------------------------------------------------------------------- */
+/* Panelen onderaan                                                           */
+/* ------------------------------------------------------------------------- */
+
+.zp-glaspaneel {
+  border: 2px solid var(--zp-glasrand);
+  border-radius: calc(var(--u) * 1.8);
+  background: linear-gradient(180deg, rgb(14 60 140 / 0.82), rgb(8 34 88 / 0.86));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 0 1.6em rgb(82 217 255 / 0.15), var(--zp-schaduw);
+  backdrop-filter: blur(6px);
+}
+
+.zp-vandaag {
+  display: flex;
+  flex-direction: column;
+  gap: calc(var(--u) * 1);
+  padding: calc(var(--u) * 1.1) calc(var(--u) * 1.4) calc(var(--u) * 1.4);
+}
+
+.zp-paneelkop {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  margin: 0;
+  font-size: max(16px, calc(var(--u) * 1.65));
+}
+
+.zp-paneelkop-icoon {
+  width: 1.7em;
+  height: 1.7em;
+}
+
+.zp-tegels {
+  display: grid;
+  flex: 1;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: calc(var(--u) * 1.1);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zp-tegel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: calc(var(--u) * 0.5);
+  width: 100%;
+  height: 100%;
+  min-height: 96px;
+  padding: calc(var(--u) * 0.6) calc(var(--u) * 0.8);
+  border: 0;
+  border-radius: calc(var(--u) * 1.3);
+  background: linear-gradient(180deg, #ffffff, #eef4fc);
+  color: var(--zp-inkt);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: inset 0 -0.3em 0 #c9d8ee, 0 0.5em 1em rgb(2 10 40 / 0.35);
+  font-size: var(--u);
+  transition: transform 0.16s cubic-bezier(0.3, 0.7, 0.4, 1), box-shadow 0.16s;
+}
+
+.zp-tegel:hover {
+  transform: translateY(-0.3em);
+  box-shadow: inset 0 -0.3em 0 #c9d8ee, 0 0.9em 1.4em rgb(2 10 40 / 0.4), 0 0 1.4em rgb(82 217 255 / 0.4);
+}
+
+.zp-tegel:active {
+  transform: translateY(0.15em);
+}
+
+.zp-tegelbeeld {
+  display: flex;
+  align-items: center;
+  height: calc(var(--u) * 5.2);
+  font-size: calc(var(--u) * 4.6);
+  line-height: 1;
+}
+
+.zp-tegelbeeld > span {
+  /* Dikke cijfers en letters met een donkerdere onderkant: een beetje 3D. */
+  -webkit-text-stroke: 0.05em var(--diep);
+  paint-order: stroke fill;
+  text-shadow: 0 0.07em 0 var(--diep), 0 0.12em 0.15em rgb(2 10 40 / 0.25);
+}
+
+.zp-tegellamp {
+  width: calc(var(--u) * 5.2);
+  height: calc(var(--u) * 5.2);
+}
+
+.zp-tegelnaam {
+  display: flex;
+  align-items: center;
+  gap: 0.4em;
+  font-size: max(15px, calc(var(--u) * 1.5));
+}
+
+.zp-tegelpijl {
+  width: 0.9em;
+  height: 0.9em;
+  color: var(--zp-blauw);
+}
+
+.zp-binnenkort {
+  position: absolute;
+  top: 0;
+  right: calc(var(--u) * 0.6);
+  translate: 0 -55%;
+  padding: 0.2em 0.7em;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #3a6fc4;
+  color: #fff;
+  box-shadow: 0 0.2em 0.5em rgb(2 10 40 / 0.35);
+  font-size: max(11px, calc(var(--u) * 0.85));
+  font-weight: 800;
+}
+
+.zp-tegel[data-binnenkort="ja"] .zp-tegelbeeld,
+.zp-tegel[data-binnenkort="ja"] .zp-tegellamp {
+  opacity: 0.85;
+}
+
+.zp-jouw {
+  position: relative;
+  display: block;
+  overflow: hidden;
+  color: #fff;
+  text-decoration: none;
+  transition: transform 0.2s cubic-bezier(0.3, 0.7, 0.4, 1), box-shadow 0.2s;
+}
+
+.zp-jouw:hover {
+  transform: translateY(-0.25em);
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 0 2em rgb(82 217 255 / 0.4), var(--zp-schaduw);
+}
+
+.zp-jouw picture {
+  position: absolute;
+  inset: 0;
+}
+
+.zp-jouw-beeld {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 70%;
+  transition: transform 0.6s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.zp-jouw:hover .zp-jouw-beeld {
+  transform: scale(1.04);
+}
+
+.zp-jouw-tekst {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.7em;
+  padding: calc(var(--u) * 1.1) calc(var(--u) * 1.4);
+  font-size: var(--u);
+  background: linear-gradient(180deg, rgb(8 40 110 / 0.55), transparent);
+}
+
+.zp-jouw-icoon {
+  width: 3.6em;
+  height: 3.6em;
+  flex: none;
+  filter: drop-shadow(0 0.15em 0.2em rgb(2 10 40 / 0.4));
+}
+
+.zp-jouw-kop {
+  display: block;
+  font-size: max(18px, 2em);
+  line-height: 1.1;
+  text-shadow: 0 0.08em 0.2em rgb(2 10 40 / 0.5);
+}
+
+.zp-jouw-zin {
+  display: block;
+  font-size: max(14px, 1.3em);
+  font-weight: 700;
+  text-shadow: 0 0.08em 0.2em rgb(2 10 40 / 0.6);
+}
+
+.zp-jouw-pijl {
+  position: absolute;
+  right: calc(var(--u) * 1.2);
+  bottom: calc(var(--u) * 1.2);
+  display: grid;
+  place-items: center;
+  width: max(48px, calc(var(--u) * 4.4));
+  height: max(48px, calc(var(--u) * 4.4));
+  border: 3px solid rgb(255 255 255 / 0.9);
+  border-radius: 999px;
+  background: rgb(8 34 88 / 0.75);
+  color: #fff;
+  box-shadow: 0 0 1em rgb(82 217 255 / 0.4);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Telefoon en staande tablet: onder elkaar                                   */
+/* ------------------------------------------------------------------------- */
+
+.zp-schil .zp-logo {
+  position: absolute;
+  top: 10px;
+  left: 16px;
+  font-size: 34px;
+}
+
+.zp-bovenbalk {
+  position: absolute;
+  top: 10px;
+  right: 16px;
+  gap: 8px;
+}
+
+.zp-punten { font-size: 10px; }
+.zp-profiel { font-size: 12px; }
+
+.zp-menu {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  padding: 6px 8px calc(6px + env(safe-area-inset-bottom));
+  border-top: 2px solid var(--zp-glasrand);
+  background: rgb(6 26 70 / 0.92);
+  backdrop-filter: blur(8px);
+}
+
+.zp-menu ul {
+  justify-content: space-around;
+}
+
+.zp-menu li {
+  flex: 1;
+}
+
+.zp-menu-knop {
+  padding: 6px 4px;
+  border-radius: 18px;
+  font-size: 12px;
+}
+
+.zp-menu-icoon {
+  width: 28px;
+  height: 28px;
+}
+
+.zp-podium {
+  display: grid;
+  grid-template-columns: minmax(0, 0.85fr) minmax(0, 1.15fr);
+  align-items: center;
+  gap: 18px 14px;
+  max-width: 40rem;
+  margin: 0 auto;
+  padding: 76px 16px 112px;
+}
+
+.zp-zappie {
+  grid-column: 1;
+  grid-row: 1;
+  width: 100%;
+  max-width: 13rem;
+  justify-self: center;
+}
+
+.zp-startballon {
+  grid-column: 2;
+  grid-row: 1;
+  font-size: 17px;
+}
+
+.zp-startballon::after {
+  left: -0.62em;
+  bottom: auto;
+  top: 45%;
+  transform: rotate(135deg) skew(8deg, 8deg);
+}
+
+.zp-werelden,
+.zp-startplek,
+.zp-vandaag,
+.zp-jouw {
+  grid-column: 1 / -1;
+}
+
+.zp-werelden {
+  margin-top: 30px;
+  aspect-ratio: 68 / 40;
+}
+
+/* Telefoon: de werelden groter, de Oceaan links en de andere twee rechts. */
+.zp-pad-breed { display: none; }
+.zp-wereld-0 { left: 30%; top: 56%; width: 52%; }
+.zp-wereld-1 { left: 74%; top: 30%; width: 31%; }
+.zp-wereld-2 { left: 79%; top: 80%; width: 27%; }
+
+.zp-startplek {
+  height: 76px;
+}
+
+.zp-start {
+  font-size: 30px;
+}
+
+.zp-vandaag {
+  --u: clamp(8px, 2.4vw, 11px);
+}
+
+.zp-tegel {
+  min-height: 112px;
+}
+
+.zp-jouw {
+  aspect-ratio: 33 / 16.4;
+  --u: clamp(8px, 2.4vw, 11px);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Groot liggend scherm: het 16:9-vlak                                        */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp {
+    /* 1% van de breedte van het grootste 16:9-vlak dat in het scherm past. */
+    --u: min(1vw, 1.7778svh);
+    --bx: calc((100vw - 100 * var(--u)) / 2);
+    --by: calc((100svh - 56.25 * var(--u)) / 2);
+  }
+
+  .zp-schil .zp-logo {
+    top: calc(var(--u) * 1.3);
+    left: calc(var(--u) * 2.2);
+    font-size: calc(var(--u) * 5.4);
+  }
+
+  .zp-menu {
+    left: 0;
+    right: auto;
+    bottom: auto;
+    top: calc(var(--by) + var(--u) * 9.3);
+    width: calc(var(--u) * 8.4);
+    padding: calc(var(--u) * 1.3) calc(var(--u) * 0.5);
+    border: 2px solid var(--zp-glasrand);
+    border-left: 0;
+    border-radius: 0 calc(var(--u) * 2) calc(var(--u) * 2) 0;
+    background: rgb(6 26 70 / 0.78);
+  }
+
+  .zp-menu ul {
+    flex-direction: column;
+    gap: calc(var(--u) * 1.2);
+  }
+
+  .zp-menu-knop {
+    gap: calc(var(--u) * 0.35);
+    padding: calc(var(--u) * 0.9) calc(var(--u) * 0.2);
+    border-radius: calc(var(--u) * 1.4);
+    font-size: max(13px, calc(var(--u) * 1.2));
+  }
+
+  .zp-menu-icoon {
+    width: calc(var(--u) * 3.3);
+    height: calc(var(--u) * 3.3);
+  }
+
+  .zp-bovenbalk {
+    top: calc(var(--u) * 1.3);
+    right: calc(var(--u) * 1.6);
+    gap: calc(var(--u) * 1.6);
+  }
+
+  .zp-punten { font-size: max(11px, calc(var(--u) * 1.15)); }
+  .zp-profiel { font-size: max(13px, calc(var(--u) * 1.35)); }
+
+  /* De startpagina: elk onderdeel op zijn plek in het vlak. */
+  .zp-podium {
+    display: block;
+    position: relative;
+    max-width: none;
+    height: 100svh;
+    margin: 0;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  .zp-podium > * {
+    position: absolute;
+    margin: 0;
+  }
+
+  .zp-zappie {
+    left: calc(var(--bx) + var(--u) * 9.2);
+    top: calc(var(--by) + var(--u) * 13.6);
+    width: calc(var(--u) * 24.4);
+    max-width: none;
+  }
+
+  .zp-startballon {
+    left: calc(var(--bx) + var(--u) * 14.2);
+    top: calc(var(--by) + var(--u) * 7.6);
+    width: calc(var(--u) * 19.4);
+    font-size: max(15px, calc(var(--u) * 1.45));
+  }
+
+  .zp-startballon::after {
+    left: 40%;
+    top: auto;
+    bottom: -0.6em;
+    transform: rotate(45deg) skew(8deg, 8deg);
+  }
+
+  .zp-werelden {
+    left: calc(var(--bx) + var(--u) * 30);
+    top: calc(var(--by) + var(--u) * 3.5);
+    width: calc(var(--u) * 68);
+    aspect-ratio: 68 / 26;
+  }
+
+  .zp-pad-breed { display: block; }
+  .zp-pad-smal { display: none; }
+  .zp-wereld-0 { left: 27.06%; top: 50%; width: 30.9%; }
+  .zp-wereld-1 { left: 62.8%; top: 57.7%; width: 21.6%; }
+  .zp-wereld-2 { left: 87.9%; top: 71.2%; width: 18.5%; }
+
+  .zp-schil::before { display: none; }
+
+  .zp-startplek {
+    left: calc(var(--bx) + var(--u) * 37.8);
+    top: calc(var(--by) + var(--u) * 25.6);
+    width: calc(var(--u) * 30);
+    height: calc(var(--u) * 7.8);
+  }
+
+  .zp-start {
+    min-height: 0;
+    font-size: calc(var(--u) * 3.3);
+  }
+
+  .zp-vandaag {
+    --u: inherit;
+    left: calc(var(--bx) + var(--u) * 28.4);
+    top: calc(var(--by) + var(--u) * 37.4);
+    width: calc(var(--u) * 35.6);
+    height: calc(var(--u) * 16.4);
+  }
+
+  .zp-tegel {
+    min-height: 0;
+  }
+
+  .zp-jouw {
+    --u: inherit;
+    left: calc(var(--bx) + var(--u) * 65.1);
+    top: calc(var(--by) + var(--u) * 37.4);
+    width: calc(var(--u) * 33);
+    height: calc(var(--u) * 16.4);
+    aspect-ratio: auto;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Andere Zappie-schermen                                                     */
+/* ------------------------------------------------------------------------- */
+
+.zp-pagina {
+  max-width: 100rem;
+  margin: 0 auto;
+  padding: 84px 16px 112px;
+}
+
+.zp-kop {
+  margin: 0 0 0.4em;
+  font-size: clamp(28px, calc(var(--u) * 3.2), 56px);
+  line-height: 1.1;
+  text-shadow: 0 0.08em 0.25em rgb(2 10 40 / 0.6);
+}
+
+.zp-zin {
+  margin: 0 0 1.4em;
+  font-size: clamp(16px, calc(var(--u) * 1.5), 24px);
+  font-weight: 700;
+  opacity: 0.9;
+}
+
+.zp-knop {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-height: 56px;
+  padding: 0.5em 1.4em;
+  border: 0;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe680 0%, #ffd447 45%, #ffc72c 100%);
+  color: var(--zp-inkt);
+  font-size: 22px;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.65),
+    inset 0 -0.16em 0 var(--zp-geel-donker),
+    0 0.18em 0 #c98908,
+    0 0.45em 0.9em rgb(2 10 40 / 0.45);
+  transition: transform 0.16s cubic-bezier(0.3, 0.7, 0.4, 1), filter 0.16s;
+}
+
+.zp-knop:hover {
+  transform: translateY(-2px);
+  filter: brightness(1.05);
+}
+
+.zp-knop:active {
+  transform: translateY(2px);
+}
+
+.zp-knop:disabled {
+  cursor: default;
+  filter: grayscale(0.6) brightness(0.85);
+  transform: none;
+}
+
+.zp-knop-glas {
+  background: var(--zp-glas);
+  color: #fff;
+  border: 2px solid var(--zp-glasrand);
+  box-shadow: 0 0.4em 1em rgb(2 10 40 / 0.35);
+}
+
+/* ------------------------------------------------------------------------- */
+/* Missie                                                                     */
+/* ------------------------------------------------------------------------- */
+
+.zp-missie {
+  display: flex;
+  flex-direction: column;
+  min-height: 100svh;
+  padding: 12px 16px 24px;
+}
+
+.zp-missiebalk {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  max-width: 64rem;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.zp-missiebalk .zp-punten {
+  margin-left: auto;
+  font-size: 10px;
+}
+
+.zp-stippenrij {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+  flex: 1;
+}
+
+.zp-stip {
+  width: 14px;
+  height: 14px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.2);
+  border: 2px solid rgb(255 255 255 / 0.35);
+}
+
+.zp-stip[data-stand="goed"] {
+  background: var(--zp-geel);
+  border-color: #fff3b8;
+  box-shadow: 0 0 8px rgb(255 212 71 / 0.6);
+}
+
+.zp-stip[data-stand="hulp"] {
+  background: var(--zp-cyaan);
+  border-color: #cdf5ff;
+}
+
+.zp-stip[data-stand="nu"] {
+  border-color: #fff;
+  box-shadow: 0 0 0 3px rgb(82 217 255 / 0.5);
+}
+
+.zp-missieveld {
+  display: grid;
+  flex: 1;
+  grid-template-columns: minmax(0, 1fr);
+  align-content: center;
+  justify-items: center;
+  gap: 18px;
+  max-width: 64rem;
+  width: 100%;
+  margin: 0 auto;
+  padding-top: 12px;
+}
+
+.zp-somkaart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 18px;
+  width: 100%;
+  max-width: 40rem;
+  padding: 22px 18px 24px;
+  border-radius: 28px;
+  background: #fff;
+  color: var(--zp-inkt);
+  box-shadow: inset 0 -6px 0 #d4e1f3, 0 18px 40px rgb(2 10 40 / 0.45);
+}
+
+.zp-vraagzin {
+  margin: 0;
+  font-size: 28px;
+}
+
+.zp-som {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  font-size: clamp(40px, 9vw, 64px);
+  line-height: 1;
+}
+
+.zp-somvak {
+  display: grid;
+  place-items: center;
+  min-width: 1.4em;
+  height: 1.4em;
+  padding: 0 0.15em;
+  border-radius: 0.28em;
+  background: #ffe58a;
+  color: var(--zp-inkt);
+  box-shadow: inset 0 -0.08em 0 #f0c43a;
+}
+
+.zp-invul {
+  width: 1.6em;
+  height: 1.4em;
+  padding: 0;
+  border: 3px solid #b9cce6;
+  border-radius: 0.28em;
+  background: #fff;
+  color: var(--zp-inkt);
+  font: inherit;
+  text-align: center;
+  caret-color: var(--zp-blauw);
+  outline: none;
+}
+
+.zp-invul:focus {
+  border-color: var(--zp-blauw);
+  box-shadow: 0 0 0 4px rgb(8 125 216 / 0.25);
+}
+
+.zp-invul[data-stand="goed"] {
+  border-color: #1f9d63;
+  background: #e3f7ec;
+  color: #11603b;
+}
+
+.zp-invul[data-stand="nog-niet"] {
+  border-color: #e4832a;
+  background: #fff4e8;
+}
+
+.zp-bolletjes {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 18px 30px;
+}
+
+.zp-bolletjesgroep {
+  display: grid;
+  grid-template-columns: repeat(5, 26px);
+  gap: 8px;
+}
+
+.zp-bolletje {
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: radial-gradient(circle at 35% 30%, #a8efff, var(--zp-blauw));
+  box-shadow: inset 0 -3px 0 rgb(0 40 110 / 0.3);
+}
+
+.zp-bolletje[data-kleur="geel"] {
+  background: radial-gradient(circle at 35% 30%, #fff1b0, #f2b80f);
+  box-shadow: inset 0 -3px 0 rgb(150 90 0 / 0.3);
+}
+
+.zp-bolletje[data-weg="ja"] {
+  background: #9aa7ba;
+  opacity: 0.45;
+  box-shadow: none;
+}
+
+.zp-missiezappie {
+  display: flex;
+  align-items: flex-end;
+  gap: 12px;
+  width: 100%;
+  max-width: 40rem;
+}
+
+.zp-missiezappie .zp-robot {
+  width: 96px;
+  flex: none;
+}
+
+.zp-missiezappie .zp-ballon {
+  flex: 1;
+  margin-bottom: 18px;
+  font-size: 18px;
+}
+
+.zp-missiezappie .zp-ballon::after {
+  left: -0.62em;
+  bottom: auto;
+  top: 40%;
+  transform: rotate(135deg) skew(8deg, 8deg);
+}
+
+.zp-klaar {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  text-align: center;
+}
+
+.zp-klaar .zp-robot {
+  width: 160px;
+}
+
+.zp-sterren {
+  display: flex;
+  gap: 8px;
+}
+
+.zp-sterren svg {
+  width: 48px;
+  height: 48px;
+}
+
+.zp-sterren [data-aan="nee"] {
+  filter: grayscale(1) brightness(0.6);
+  opacity: 0.5;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Wereld, beloningen en jouw wereld                                          */
+/* ------------------------------------------------------------------------- */
+
+.zp-wereldrij {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 20px;
+}
+
+.zp-wereldkaart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  padding: 20px;
+  text-align: center;
+}
+
+.zp-wereldkaart .zp-wereldbol {
+  width: min(100%, 16rem);
+  aspect-ratio: 1;
+}
+
+.zp-wereldkaart[data-open="nee"] .zp-wereldbol {
+  filter: saturate(0.55) brightness(0.7);
+}
+
+.zp-wereldkaart h2 {
+  display: flex;
+  align-items: center;
+  gap: 0.35em;
+  margin: 0;
+  font-size: 28px;
+}
+
+.zp-missiestenen {
+  display: grid;
+  grid-template-columns: repeat(6, 44px);
+  gap: 10px;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zp-missiesteen {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 999px;
+  border: 2px solid rgb(255 255 255 / 0.3);
+  background: rgb(255 255 255 / 0.1);
+  font-weight: 900;
+  font-size: 16px;
+}
+
+.zp-missiesteen[data-stand="klaar"] {
+  border-color: #fff3b8;
+  background: linear-gradient(180deg, #ffe680, #ffc72c);
+  color: var(--zp-inkt);
+}
+
+.zp-missiesteen[data-stand="nu"] {
+  border-color: #fff;
+  background: var(--zp-blauw);
+  box-shadow: 0 0 0 4px rgb(82 217 255 / 0.45), 0 0 18px rgb(82 217 255 / 0.6);
+}
+
+.zp-beloningrij {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  gap: 20px;
+}
+
+.zp-beloning {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 24px 18px;
+  text-align: center;
+}
+
+.zp-beloning-getal {
+  font-size: 44px;
+  line-height: 1;
+}
+
+.zp-eiland {
+  position: relative;
+  overflow: hidden;
+  border-radius: 28px;
+  aspect-ratio: 892 / 504;
+  max-width: 64rem;
+}
+
+.zp-eiland img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.zp-bouwplek {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: clamp(44px, 6vw, 64px);
+  height: clamp(44px, 6vw, 64px);
+  translate: -50% -50%;
+  border: 3px dashed rgb(255 255 255 / 0.85);
+  border-radius: 999px;
+  background: rgb(8 34 88 / 0.55);
+  color: #fff;
+  backdrop-filter: blur(2px);
+}
+
+.zp-bouwplek svg {
+  width: 50%;
+  height: 50%;
+}
+
+/* Groot scherm, andere schermen: ruimte voor het menu links en de balk
+   bovenaan. Staat hier en niet hoger, omdat hij de gewone `.zp-pagina`
+   hierboven moet overschrijven. */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp-pagina {
+    padding: max(96px, calc(var(--u) * 9)) calc(var(--u) * 3) calc(var(--u) * 4) calc(var(--u) * 11);
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Minder beweging                                                            */
+/* ------------------------------------------------------------------------- */
+
+@media (prefers-reduced-motion: reduce) {
+  .zp *,
+  .zp *::before,
+  .zp *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .zp-pad-licht {
+    display: none;
+  }
+}
+
+/* De stand onder de naam van de huidige wereld: balk en "7 / 12". */
+.zp-wereldstand {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+  font-size: 0.62em;
+}
+
+.zp-wereldstand .zp-wereldbalk {
+  width: 6em;
+  height: 0.6em;
+}
+
+.zp-wereldtal b {
+  color: var(--zp-geel);
+}

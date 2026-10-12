@@ -273,6 +273,67 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Kralenrij", bron: "src/components/oefenen/KralenAvontuur.tsx", na: "een kralenopdracht openen" }],
   },
   /*
+    Zappie, eerste fase (oktober 2026): de nieuwe startpagina voor groep 3 en
+    de schermen erachter. Staan los van de kinderkant onder /start.
+  */
+  {
+    naam: "Zappie start",
+    pad: "/zappie",
+    bron: ["src/components/zappie/Startscherm.tsx", "src/components/zappie/Schil.tsx", "src/lib/zappie/werelden.ts"],
+    zichtbaar: [
+      "Start oefenen",
+      "Klaar om te oefenen?",
+      "Oceaan",
+      "Aarde",
+      "Universum",
+      "Vandaag oefenen",
+      "Rekenen",
+      "Taal",
+      "Denken",
+      "Binnenkort",
+      "Jouw wereld",
+      "Bouw verder aan je wereld!",
+      "Zappie-punten",
+      "Start",
+      "Oefenen",
+      "Wereld",
+      "Beloningen",
+    ],
+    naKlik: [
+      { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Taal of Denken tikken" },
+    ],
+  },
+  {
+    naam: "Zappie missie",
+    pad: "/zappie/oefenen?wereld=oceaan&missie=1",
+    bron: ["src/components/zappie/Missie.tsx"],
+    zichtbaar: ["Vul in.", "Controleer", "Stoppen"],
+    naKlik: [
+      { tekst: "Nog niet helemaal", bron: "src/components/zappie/Missie.tsx", na: "een antwoord dat nog niet goed is" },
+      { tekst: "Missie klaar!", bron: "src/components/zappie/Missie.tsx", na: "alle 15 sommen" },
+      { tekst: "Terug naar start", bron: "src/components/zappie/Missie.tsx", na: "alle 15 sommen" },
+    ],
+  },
+  {
+    naam: "Zappie wereld",
+    pad: "/zappie/wereld",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["Met elke missie kom je verder", "Start missie", "dan gaat deze wereld open"],
+  },
+  {
+    naam: "Zappie beloningen",
+    pad: "/zappie/beloningen",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["Zappie-punten", "missies klaar", "sterren"],
+  },
+  {
+    naam: "Zappie jouw wereld",
+    pad: "/zappie/mijn-wereld",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["Jouw wereld", "Bouwen kan nog niet"],
+  },
+  /*
     Het adres heeft het vak nodig: elk beheerscherm hangt onder /admin/{vak}/.
     Zonder die plaatshouder kwam hier een 404 uit, en dan hield de bewaking elke
     commit tegen — terwijl er aan de instelling zelf niets mankeerde. Zie de
