@@ -10,8 +10,12 @@
  * gezet, en dat gebeurt alleen op Railway. Op de laptop verandert er niets.
  * De gebruikersnaam is THUISLES_GEBRUIKER, of "thuisles" als die niet staat.
  *
- * Bewust zonder matcher: ook de plaatjes, de Godot-lessen en de bestanden in
- * public/ zitten achter het slot.
+ * Losse bestanden met een extensie (plaatjes, lettertypen, de Godot-lessen,
+ * alles uit public/ en _next/static) gaan er wél langs. Next haalt een plaatje
+ * dat het verkleint bij zichzelf op, zonder wachtwoord; met het slot erop kwam
+ * het sleutelplaatje daardoor niet door. In die bestanden staan geen gegevens
+ * van een kind: die zitten in de pagina's en de serveracties, en die blijven
+ * achter het slot.
  */
 
 import { NextResponse, type NextRequest } from "next/server";
@@ -53,3 +57,10 @@ export function proxy(request: NextRequest) {
     headers: { "WWW-Authenticate": 'Basic realm="Thuisles", charset="UTF-8"' },
   });
 }
+
+export const config = {
+  matcher: [
+    // Alles behalve paden die eindigen op een extensie, zoals /sleutel.png.
+    "/((?!.*\\.[a-zA-Z0-9]+$).*)",
+  ],
+};
