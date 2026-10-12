@@ -21,7 +21,7 @@
  */
 
 import { Glitter } from "@/components/avontuur/Glitter";
-import { HoofdMascotte } from "@/components/avontuur/HoofdMascotte";
+import { PratendeMascotte } from "@/components/avontuur/PratendeMascotte";
 import { Logo } from "@/components/avontuur/Logo";
 import { Hemel } from "@/components/avontuur/Hemel";
 import {
@@ -169,16 +169,20 @@ export default async function StartPagina() {
               ))}
             </ul>
 
-            {/* Groot scherm: mascotte links, "Jij kunt het!" rechts, los op de hemel. */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-[3%] left-[-1.5rem] hidden w-[clamp(8rem,15vw,15rem)] lg:block"
-            >
+            {/*
+              Groot scherm: de robot links met een tekstwolkje, los op de
+              hemel. Tik op hem en hij zegt het hardop.
+            */}
+            <div className="absolute bottom-[2%] left-[-1rem] hidden lg:block">
               <Glitter
                 kant="links"
-                className="absolute -right-4 top-[22%] size-10"
+                className="pointer-events-none absolute left-[clamp(6rem,10vw,10rem)] top-[10%] size-10"
               />
-              <HoofdMascotte className="w-full drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]" />
+              <PratendeMascotte
+                tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
+                robotKlasse="w-[clamp(6.5rem,10vw,10rem)] drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]"
+                wolkjeKlasse="mb-[clamp(4rem,7vw,7rem)] ml-1 max-w-[13rem] text-sm"
+              />
             </div>
             <p className="av-hand absolute right-0 top-1/2 hidden -translate-y-1/2 rotate-[-8deg] text-center text-[clamp(1.8rem,3vw,2.8rem)] leading-[0.95] text-[#c9d6ff] lg:block">
               Jij
@@ -188,9 +192,13 @@ export default async function StartPagina() {
               <span aria-hidden="true">♡</span>
             </p>
 
-            {/* Smal scherm: mascotte en "Jij kunt het!" naast elkaar onder de tegels. */}
-            <div className="mt-10 flex items-center gap-4 lg:hidden">
-              <HoofdMascotte className="w-24 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-28" />
+            {/* Smal scherm: de robot met zijn wolkje en "Jij kunt het!" onder de tegels. */}
+            <div className="mt-1 flex flex-wrap items-end justify-center gap-x-4 gap-y-2 lg:hidden">
+              <PratendeMascotte
+                tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
+                robotKlasse="w-20 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-24"
+                wolkjeKlasse="mb-14 ml-1 max-w-[11rem] text-sm"
+              />
               <p className="av-hand rotate-[-6deg] text-4xl text-[#c9d6ff]">
                 Jij kunt het! <span aria-hidden="true">♡</span>
               </p>

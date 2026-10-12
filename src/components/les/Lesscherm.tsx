@@ -15,6 +15,7 @@
 
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { Robot } from "@/components/avontuur/Robot";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "./tegels";
@@ -602,8 +603,9 @@ function Lesscherm({
           )}
         </div>
 
+        {/* De robot: praat mee met de tekst, en juicht als de les klaar is. */}
         <div className={s.mascotte} data-praat={beeld.praat}>
-          mascotte
+          <Robot houding={beeld.klaar ? "blij" : "rustig"} praat={beeld.praat} className="h-full" />
         </div>
 
         {/* de som bovenaan */}
