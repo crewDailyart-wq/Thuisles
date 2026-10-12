@@ -14,6 +14,8 @@
  */
 
 import type { Metadata, Viewport } from "next";
+import { unstable_rethrow } from "next/navigation";
+import { connection } from "next/server";
 import { Pictogram } from "@/components/kind/Pictogram";
 import { Schil } from "@/components/zappie/Schil";
 import { huidigKind } from "@/lib/auth/sessie";
@@ -30,8 +32,33 @@ export const viewport: Viewport = {
   themeColor: "#071b43",
 };
 
+/**
+ * Het gekozen kind, of niemand.
+ *
+ * Zappie heeft de database alleen nodig voor de naam en het plaatje rechtsboven.
+ * Is de database er niet (bijvoorbeeld in een preview op Vercel, waar het
+ * SQLite-bestand niet kan staan), dan speelt Zappie gewoon zonder naam verder in
+ * plaats van het hele scherm met een foutmelding te laten vallen.
+ */
+async function gekozenKind() {
+  /*
+    Eerst wachten op een echt bezoek. Anders zou Next deze schermen tijdens het
+    bouwen als vaste pagina klaarzetten: daar is geen database, de fout hieronder
+    wordt opgevangen, en dan stond er voorgoed geen naam meer.
+  */
+  await connection();
+  try {
+    return await huidigKind();
+  } catch (fout) {
+    /* Fouten waarmee Next zelf werkt (doorsturen, niet gevonden) gaan gewoon door. */
+    unstable_rethrow(fout);
+    console.warn("[zappie] geen kind op te halen, verder zonder naam:", fout);
+    return null;
+  }
+}
+
 export default async function ZappieLayout({ children }: LayoutProps<"/zappie">) {
-  const kind = await huidigKind();
+  const kind = await gekozenKind();
   return (
     <Schil
       speler={{
