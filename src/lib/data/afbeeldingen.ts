@@ -34,7 +34,7 @@ import {
   Op de laptop is dat `public/vragen`. Online (Railway) wijst
   THUISLES_AFBEELDINGEN naar de vaste schijf (/data/vragen), zodat een upload
   een nieuwe versie van de site overleeft. Bij het opstarten worden de plaatjes
-  uit de code daar bijgezet (railway.json); uploads worden nooit overschreven.
+  uit de code daar bijgezet (scripts/start.mjs); uploads worden nooit overschreven.
   Wat niet in de gebouwde public-map staat, levert app/vragen/[naam]/route.ts.
 */
 export const AFBEELDINGEN_MAP =
