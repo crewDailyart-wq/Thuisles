@@ -1,5 +1,6 @@
 "use client";
 
+import { MERKNAAM } from "@/lib/merk";
 import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { BOSONTWERPEN } from "@/lib/generatoren/bosspellen-catalogus";
@@ -42,7 +43,7 @@ export function BosOverzicht({ spel }: { spel?: string }) {
   return <main className={`${stijl.wereld} text-inkt`}>
     <header className="sticky top-0 z-50 border-b border-huisstijl-diep/25 bg-huisstijl text-white">
       <div className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-4 py-4">
-        {gekozen === null ? <Link href="/start" className="font-extrabold">← Thuisles</Link> : <button type="button" className="min-h-11 font-extrabold" onClick={() => reset(null)}>← Alle spellen</button>}
+        {gekozen === null ? <Link href="/zappie" className="font-extrabold">← {MERKNAAM}</Link> : <button type="button" className="min-h-11 font-extrabold" onClick={() => reset(null)}>← Alle spellen</button>}
         <span className="text-xs font-bold sm:text-sm">Voorbeeld · oefensleutels</span>
         <span className="flex items-center gap-2 rounded-full bg-white/20 px-4 py-2 font-extrabold" aria-label={`${sleutels} oefensleutels`}>
           <span id={SLEUTEL_DOEL_ID} className="block size-8">

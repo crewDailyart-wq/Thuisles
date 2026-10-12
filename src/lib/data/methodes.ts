@@ -1,3 +1,4 @@
+import { MERKNAAM } from "@/lib/merk";
 import "server-only";
 
 /**
@@ -37,7 +38,7 @@ export function nietVerbondenZin(methode: Rekenmethode | null): string {
   const wie = methode
     ? [methode.uitgever, methode.naam].filter(Boolean).join(" / ")
     : "de uitgever of de methode";
-  return `Thuisles is niet verbonden aan ${wie}. De oefeningen zijn van Thuisles zelf; de methode wordt alleen gebruikt om de volgorde af te stemmen.`;
+  return `${MERKNAAM} is niet verbonden aan ${wie}. De oefeningen zijn van ${MERKNAAM} zelf; de methode wordt alleen gebruikt om de volgorde af te stemmen.`;
 }
 
 // ---------------------------------------------------------------------------

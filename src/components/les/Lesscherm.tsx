@@ -13,6 +13,7 @@
  * Schrijft niets naar de database.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
@@ -565,7 +566,7 @@ function Lesscherm({
               <rect x="9" y="1" width="4" height="14" rx="1.2" fill="currentColor" />
             </svg>
           </button>
-          <span>{naam || "Thuisles"}</span>
+          <span>{naam || MERKNAAM}</span>
         </div>
 
         {/* wat de mascotte zegt, en wat het kind kan doen */}

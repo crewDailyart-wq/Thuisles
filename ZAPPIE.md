@@ -6,9 +6,28 @@ richtlijn (`ontwerp/zappie/voorbeeld-startpagina.webp`).
 
 ## Waar het staat
 
-Alles staat onder **`/zappie`**, los van de bestaande kinderkant. Aan `/start`,
-de oude oefenschermen, de ouderomgeving en het beheer is niets veranderd en er
-is niets weggehaald.
+Alles staat onder **`/zappie`**.
+
+**Sinds 12 oktober 2026 is dit de startpagina** (keuze eigenaar: "vervang /start
+door /zappie en noem alles Zappie"):
+
+- De voordeur `/`, het kiezen van een kind en elke knop "Start" in de
+  kinderkant gaan naar `/zappie`.
+- `/start` stuurt door naar `/zappie` (`redirects` in `next.config.ts`), zodat
+  oude links en bladwijzers blijven werken. Het oude startscherm "Wat wil je
+  doen?" wordt dus niet meer getoond. Het bestand staat er nog
+  (`src/app/(kind)/start/page.tsx`); of het weg mag, beslist de eigenaar.
+- Wat alleen op het oude startscherm stond, is daarmee niet meer te zien: het
+  rekenpaneel (vrij oefenen en de volgorde van de methode), de tipkaartjes, het
+  wereldpad, het oude vakkenmenu en Vos onderaan. De oefeningen zelf blijven
+  bereikbaar via de tegel **Rekenen** onder "Vandaag oefenen" (naar
+  `/oefenen/rekenen`, zoals op het oude scherm) en via het menu van de
+  oefenschermen. De groep wisselen kan nog in de kopbalk van de oefenschermen.
+- De website heet **Zappie**: `MERKNAAM` in `src/lib/merk.ts`. Alle zichtbare
+  teksten, paginatitels en de namen van downloadbestanden halen de naam daar
+  vandaan. Interne namen (cookies, opslag in de browser, de map met back-ups,
+  de naam van de database) heten nog `thuisles`, zodat niemand wordt uitgelogd
+  en de back-ups op dezelfde plek blijven.
 
 | Adres | Wat |
 | --- | --- |

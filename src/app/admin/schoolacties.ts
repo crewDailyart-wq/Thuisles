@@ -10,6 +10,7 @@
  * methode. Komt daar iets van bij, dan eerst juridisch laten toetsen.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { revalidatePath } from "next/cache";
 import {
   koppelLeerdoelen,
@@ -48,7 +49,7 @@ function tekst(gegevens: FormData, naam: string): string {
 function ververs() {
   revalidatePath("/admin", "layout");
   revalidatePath("/ouder", "layout");
-  revalidatePath("/start");
+  revalidatePath("/zappie");
 }
 
 // ---------------------------------------------------------------------------
@@ -220,7 +221,7 @@ export async function bevestigOpgave(
   if (fout) return { fout };
 
   ververs();
-  return { gelukt: "Bevestigd. Ouders zien nu 'Geverifieerd door Thuisles'." };
+  return { gelukt: `Bevestigd. Ouders zien nu 'Geverifieerd door ${MERKNAAM}'.` };
 }
 
 /** Afwijzen: de opgaven gaan uit de wachtrij, de school blijft "nog niet bekend". */
@@ -290,7 +291,7 @@ export async function bevestigVoorstel(
   sluitOverigeVoorstellen(voorstel.schoolId, voorstel.id);
 
   ververs();
-  return { gelukt: "Bevestigd. Ouders zien nu 'Geverifieerd door Thuisles'." };
+  return { gelukt: `Bevestigd. Ouders zien nu 'Geverifieerd door ${MERKNAAM}'.` };
 }
 
 export async function wijsVoorstelAf(gegevens: FormData): Promise<void> {

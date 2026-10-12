@@ -10,5 +10,5 @@ import { huidigKind } from "@/lib/auth/sessie";
  */
 export default async function Home() {
   const kind = await huidigKind();
-  redirect(kind ? "/start" : "/ouder/overzicht");
+  redirect(kind ? "/zappie" : "/ouder/overzicht");
 }

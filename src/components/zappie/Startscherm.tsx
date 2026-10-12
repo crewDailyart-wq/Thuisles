@@ -38,9 +38,13 @@ const GROETEN: Bericht[] = [
   { tekst: "Met elke missie kom je verder in de Oceaan.", stemming: "kijk" },
 ];
 
-/** De vakken onder "Vandaag oefenen". Alleen Rekenen is er al. */
+/**
+ * De vakken onder "Vandaag oefenen". Alleen Rekenen is er al. Rekenen gaat naar
+ * alle rekenoefeningen, zoals de tegel Rekenen op het oude startscherm; de gele
+ * knop gaat naar de volgende Zappie-missie.
+ */
 const VAKKEN = [
-  { id: "rekenen", naam: "Rekenen", Beeld: BeeldRekenen, klaar: true },
+  { id: "rekenen", naam: "Rekenen", Beeld: BeeldRekenen, klaar: true, href: "/oefenen/rekenen" },
   { id: "taal", naam: "Taal", Beeld: BeeldTaal, klaar: false },
   { id: "denken", naam: "Denken", Beeld: () => <IcoonLamp className="zp-tegellamp" />, klaar: false },
 ] as const;
@@ -136,10 +140,10 @@ export function Startscherm() {
           Vandaag oefenen
         </h2>
         <ul className="zp-tegels">
-          {VAKKEN.map(({ id, naam, Beeld, klaar }) => (
+          {VAKKEN.map(({ id, naam, Beeld, klaar, ...rest }) => (
             <li key={id}>
               {klaar ? (
-                <Link href={oefenAdres} className="zp-tegel">
+                <Link href={"href" in rest ? rest.href : oefenAdres} className="zp-tegel">
                   <Beeld />
                   <span className="zp-tegelnaam zp-titel">
                     {naam}

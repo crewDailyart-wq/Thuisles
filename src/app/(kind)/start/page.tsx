@@ -201,7 +201,7 @@ export default async function StartPagina() {
 
         <div className="flex flex-wrap items-center gap-3">
           <nav aria-label="Hoofdmenu" className="flex flex-wrap gap-3">
-            {NAV_ITEMS.filter((item) => item.href !== "/start").map(
+            {NAV_ITEMS.filter((item) => item.href !== "/zappie").map(
               (item, i) => (
                 <Link
                   key={item.href}

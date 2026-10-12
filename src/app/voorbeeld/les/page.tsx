@@ -1,8 +1,9 @@
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { LESSEN } from "@/components/les/lessen";
 
-export const metadata: Metadata = { title: "Lessen · Thuisles", robots: { index: false, follow: false } };
+export const metadata: Metadata = { title: `Lessen · ${MERKNAAM}`, robots: { index: false, follow: false } };
 
 /** Overzicht van alle uitleglessen, om ze los te bekijken. Schrijft niets naar de database. */
 export default function Pagina() {

@@ -8,6 +8,7 @@
  * huisstijl van een uitgever.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { useActionState, useState } from "react";
 import {
   bewerkBlok,
@@ -202,7 +203,7 @@ export function BlokBewerken({
 
       <fieldset>
         <legend className="text-xs font-medium">
-          Welke Thuisles-leerdoelen horen bij dit blok?
+          Welke {MERKNAAM}-leerdoelen horen bij dit blok?
         </legend>
         <p className="mb-1.5 text-xs text-beheer-zacht">
           {gekozen.length} gekozen. Alleen leerdoelen die bij groep {blok.groep}{" "}

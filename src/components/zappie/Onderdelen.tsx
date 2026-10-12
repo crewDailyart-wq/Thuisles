@@ -4,14 +4,14 @@
  */
 
 import Link from "next/link";
-import { NIEUWE_MERKNAAM } from "@/lib/merk";
+import { MERKNAAM } from "@/lib/merk";
 import { ASSETS } from "@/lib/zappie/werelden";
 
 /** Het Zappie-logo, met code gemaakt: witte ronde letters en een geel sterretje. */
 export function ZappieLogo({ className = "" }: { className?: string }) {
   return (
-    <Link href="/zappie" className={`zp-logo zp-titel ${className}`} aria-label={`${NIEUWE_MERKNAAM}, naar de start`}>
-      <span className="zp-logo-tekst">{NIEUWE_MERKNAAM}</span>
+    <Link href="/zappie" className={`zp-logo zp-titel ${className}`} aria-label={`${MERKNAAM}, naar de start`}>
+      <span className="zp-logo-tekst">{MERKNAAM}</span>
       <svg viewBox="0 0 48 48" className="zp-logo-ster" aria-hidden="true">
         <path
           d="m24 4.5 5.9 12.2 13.3 1.9-9.6 9.4 2.3 13.3L24 35l-11.9 6.3 2.3-13.3-9.6-9.4 13.3-1.9z"

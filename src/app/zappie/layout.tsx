@@ -17,12 +17,12 @@ import type { Metadata, Viewport } from "next";
 import { Pictogram } from "@/components/kind/Pictogram";
 import { Schil } from "@/components/zappie/Schil";
 import { huidigKind } from "@/lib/auth/sessie";
-import { NIEUWE_MERKNAAM } from "@/lib/merk";
+import { MERKNAAM } from "@/lib/merk";
 import { NIET_INDEXEREN } from "@/lib/seo";
 import "@/components/zappie/zappie.css";
 
 export const metadata: Metadata = {
-  title: NIEUWE_MERKNAAM,
+  title: MERKNAAM,
   robots: NIET_INDEXEREN,
 };
 

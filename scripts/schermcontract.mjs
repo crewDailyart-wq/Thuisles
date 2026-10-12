@@ -273,8 +273,9 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Kralenrij", bron: "src/components/oefenen/KralenAvontuur.tsx", na: "een kralenopdracht openen" }],
   },
   /*
-    Zappie, eerste fase (oktober 2026): de nieuwe startpagina voor groep 3 en
-    de schermen erachter. Staan los van de kinderkant onder /start.
+    Zappie, eerste fase (oktober 2026): de startpagina voor groep 3 en de
+    schermen erachter. Sinds 12 oktober 2026 is /zappie de startpagina van de
+    kinderkant; /start stuurt hierheen door (next.config.ts).
   */
   {
     naam: "Zappie start",

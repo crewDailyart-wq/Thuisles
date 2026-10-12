@@ -15,6 +15,7 @@
  * bij het actieve menu-item en het beeldmerk.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -53,11 +54,11 @@ export function Zijbalk() {
     <aside className="fixed inset-y-0 left-0 z-40 hidden w-50 flex-col overflow-hidden lg:flex">
       {/* 1. Marineblauw blok: logo en navigatie dicht bij elkaar. */}
       <div className="bg-nacht px-2.5 pb-3 pt-4 text-white">
-        <Link href="/start" className="mb-4 flex items-center gap-2.5 px-1.5">
+        <Link href="/zappie" className="mb-4 flex items-center gap-2.5 px-1.5">
           <Beeldmerk />
           <span className="min-w-0">
             <span className="block text-base font-extrabold leading-tight">
-              Thuisles
+              {MERKNAAM}
             </span>
             <span className="block truncate text-[0.65rem] font-semibold text-white/55">
               Rekenen, in jouw tempo
@@ -118,7 +119,7 @@ export function Zijbalk() {
         <div className="relative mx-auto w-[8.25rem] drop-shadow-[0_10px_18px_rgba(10,23,48,0.35)]">
           <Image
             src="/vos-lijf.png"
-            alt="Vos, het maatje van Thuisles"
+            alt={`Vos, het maatje van ${MERKNAAM}`}
             width={1086}
             height={1448}
             sizes="160px"

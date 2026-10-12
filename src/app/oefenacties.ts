@@ -76,7 +76,7 @@ export async function bewaarRonde(antwoorden: RondeAntwoord[]): Promise<{ ok: tr
     markeerKlaargezetGedaan(kind.id, leerdoelId);
   }
 
-  revalidatePath("/start");
+  revalidatePath("/zappie");
   revalidatePath("/oefenen", "layout");
   revalidatePath("/admin", "layout");
   revalidatePath("/ouder", "layout");
@@ -89,7 +89,7 @@ export async function meldLastig(leerdoelId: string): Promise<{ ok: true }> {
 
   meldZelfLastig(kind.id, leerdoelId);
 
-  revalidatePath("/start");
+  revalidatePath("/zappie");
   revalidatePath("/ouder", "layout");
   return { ok: true };
 }
@@ -214,7 +214,7 @@ export async function rondAf(
 
   if (geldigPad(pad)) wisOefensessie(kind.id, pad);
 
-  revalidatePath("/start");
+  revalidatePath("/zappie");
   revalidatePath("/oefenen", "layout");
   revalidatePath("/admin", "layout");
   revalidatePath("/ouder", "layout");

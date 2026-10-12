@@ -11,6 +11,7 @@
  * bekend." Er wordt nooit een methode geraden.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Link from "next/link";
 import {
   BLOK_LABEL,
@@ -155,8 +156,8 @@ function MethodeVolgorde({
       {methode.herkomst === "opgegeven_door_ouder" && (
         <p className="mt-3 rounded-xl bg-room/70 px-3 py-2 text-[0.7rem] font-semibold leading-relaxed text-inkt-zacht">
           Deze volgorde is gebaseerd op wat je ouder heeft ingevuld over school.
-          Thuisles heeft dat niet gecontroleerd. De oefeningen zelf zijn altijd
-          van Thuisles.
+          {MERKNAAM} heeft dat niet gecontroleerd. De oefeningen zelf zijn altijd
+          van {MERKNAAM}.
         </p>
       )}
     </>

@@ -16,6 +16,7 @@
  * vergeten. Zie `src/lib/auth/sessie.ts`.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Kindwisselaar } from "@/components/ouder/Kindwisselaar";
@@ -25,7 +26,7 @@ import { haalKinderen } from "@/lib/data/kinderen";
 import { NIET_INDEXEREN } from "@/lib/seo";
 
 export const metadata: Metadata = {
-  title: "Thuisles voor ouders",
+  title: `${MERKNAAM} voor ouders`,
   /*
     Alles achter de login gaat over één kind en hoort niet in een zoekresultaat.
     De openbare pagina's voor ouders staan los hiervan; zie `(openbaar)`.
@@ -51,10 +52,10 @@ export default async function OuderLayout({
         <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
           <span className="flex items-center gap-2.5">
             <span className="grid size-8 shrink-0 place-items-center rounded-md bg-viool text-sm font-bold text-white">
-              T
+              {MERKNAAM.charAt(0)}
             </span>
             <span className="hidden text-sm sm:block">
-              <span className="block font-semibold leading-tight">Thuisles</span>
+              <span className="block font-semibold leading-tight">{MERKNAAM}</span>
               <span className="block text-xs text-beheer-zacht">Voor ouders</span>
             </span>
           </span>
@@ -88,7 +89,7 @@ export default async function OuderLayout({
             Supabase Auth is aangesloten.
           */}
           <p className="border-t border-beheer-rand pt-4 text-xs leading-relaxed text-beheer-zacht">
-            Thuisles staat nog niet online. Er is daarom geen inlog: iedereen
+            {MERKNAAM} staat nog niet online. Er is daarom geen inlog: iedereen
             die deze app opent, ziet deze gegevens.
           </p>
         </main>

@@ -6,6 +6,7 @@
  * gegevens vandaan komen. Dat is ook wat de licentie (CC-BY 4.0) verlangt.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Link from "next/link";
 import { Gegevens, Kop, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { Scholenimport } from "@/components/beheer/Schoolformulieren";
@@ -21,7 +22,7 @@ import {
 import type { MethodeHerkomst } from "@/lib/types";
 
 const STATUSLABEL: Record<MethodeHerkomst, string> = {
-  geverifieerd: "Geverifieerd door Thuisles",
+  geverifieerd: `Geverifieerd door ${MERKNAAM}`,
   opgegeven_door_ouder: "Opgegeven door een ouder, nog niet geverifieerd",
   onbekend: "Rekenmethode nog niet bekend",
 };

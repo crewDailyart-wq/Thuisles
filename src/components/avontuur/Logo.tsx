@@ -8,7 +8,7 @@
 import Link from "next/link";
 import { MERKNAAM, MERKZIN } from "@/lib/merk";
 
-export function Logo({ href = "/start" }: { href?: string }) {
+export function Logo({ href = "/zappie" }: { href?: string }) {
   return (
     <Link href={href} className="relative inline-block leading-none text-white">
       <span className="av-titel relative inline-block text-[clamp(2rem,4.2vw,3.6rem)] drop-shadow-[0_4px_0_rgba(10,20,90,0.35)]">

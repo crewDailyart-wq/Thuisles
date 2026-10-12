@@ -9,6 +9,7 @@
  * webadres begint met het vak.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import type { Vak } from "@/lib/types";
@@ -65,10 +66,10 @@ export function Beheerbalk({ vakken }: { vakken: Vak[] }) {
     <aside className="fixed inset-y-0 left-0 z-30 flex w-14 flex-col bg-beheer-balk py-3 text-white sm:w-56">
       <div className="mb-3 flex items-center gap-2.5 px-3 sm:px-4">
         <span className="grid size-8 shrink-0 place-items-center rounded-md bg-viool text-[0.7rem] font-bold">
-          T
+          {MERKNAAM.charAt(0)}
         </span>
         <span className="hidden min-w-0 sm:block">
-          <span className="block truncate text-sm font-semibold leading-tight">Thuisles</span>
+          <span className="block truncate text-sm font-semibold leading-tight">{MERKNAAM}</span>
           <span className="block truncate text-[0.68rem] text-white/50">Beheer</span>
         </span>
       </div>
@@ -211,7 +212,7 @@ export function Beheerbalk({ vakken }: { vakken: Vak[] }) {
       </Link>
 
       <Link
-        href="/start"
+        href="/zappie"
         className="mx-2 mb-0 rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"
       >
         <span className="hidden sm:inline">Naar de leeromgeving</span>

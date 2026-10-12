@@ -148,7 +148,7 @@ export default async function MethodePagina({
     <div className="flex flex-col gap-6">
       <Paginakop
         kruimels={[
-          { label: "Start", href: "/start" },
+          { label: "Start", href: "/zappie" },
           { label: "Oefenen", href: "/oefenen" },
           { label: vak.naam, href: `/oefenen/${vak.slug}` },
           { label: "Volgens school" },

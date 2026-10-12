@@ -1,3 +1,4 @@
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata, Viewport } from "next";
 import { Caveat, Fredoka, Inter, Nunito } from "next/font/google";
 import "./globals.css";
@@ -32,7 +33,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Thuisles",
+  title: `${MERKNAAM}`,
   description: "Oefenen met rekenen, in je eigen tempo.",
 };
 

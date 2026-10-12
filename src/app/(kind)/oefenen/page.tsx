@@ -28,7 +28,7 @@ export default async function OefenenPagina() {
   return (
     <div className="flex flex-col gap-6">
       <Paginakop
-        kruimels={[{ label: "Start", href: "/start" }, { label: "Oefenen" }]}
+        kruimels={[{ label: "Start", href: "/zappie" }, { label: "Oefenen" }]}
         titel="Waar wil je mee oefenen?"
         uitleg="Kies een vak."
       />

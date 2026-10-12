@@ -49,7 +49,7 @@ export async function kiesProfiel(
   }
 
   await kiesKind(kind.id);
-  redirect("/start");
+  redirect("/zappie");
 }
 
 /**

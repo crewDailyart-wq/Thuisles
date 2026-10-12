@@ -35,6 +35,19 @@ const nextConfig: NextConfig = {
     */
     qualities: [75, 90],
   },
+
+  /*
+    De startpagina is Zappie (keuze eigenaar, 12 oktober 2026). Het oude
+    startscherm "Wat wil je doen?" onder /start is vervangen; wie nog een oude
+    link of bladwijzer naar /start heeft, komt vanzelf op /zappie uit.
+
+    Het bestand van het oude scherm, app/(kind)/start/page.tsx, staat er nog:
+    doorsturen gaat vóór de pagina's, dus het wordt niet meer getoond. Of het
+    weg mag, beslist de eigenaar.
+  */
+  async redirects() {
+    return [{ source: "/start", destination: "/zappie", permanent: false }];
+  },
 };
 
 export default nextConfig;

@@ -43,7 +43,7 @@ function tekst(gegevens: FormData, naam: string): string {
 
 function ververs() {
   revalidatePath("/ouder", "layout");
-  revalidatePath("/start");
+  revalidatePath("/zappie");
   revalidatePath("/admin", "layout");
 }
 

@@ -37,7 +37,7 @@ function tekst(gegevens: FormData, naam: string): string {
 function ververs() {
   revalidatePath("/ouder", "layout");
   revalidatePath("/kies");
-  revalidatePath("/start");
+  revalidatePath("/zappie");
 }
 
 // ---------------------------------------------------------------------------
