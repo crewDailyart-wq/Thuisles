@@ -30,12 +30,21 @@ const RAILWAY = [path.join(homedir(), ".npm-global", "bin", "railway"), "/usr/lo
 /** Een Railway-opdracht; geeft wat hij op het scherm zet terug. */
 export function railway(...args) {
   if (!RAILWAY) throw new Error("De Railway-opdrachtregel is niet gevonden (~/.npm-global/bin/railway).");
-  return execFileSync(RAILWAY, args, {
-    cwd: WORTEL,
-    encoding: "utf8",
-    stdio: ["ignore", "pipe", "pipe"],
-    maxBuffer: 64 * 1024 * 1024,
-  });
+  try {
+    return execFileSync(RAILWAY, args, {
+      cwd: WORTEL,
+      encoding: "utf8",
+      stdio: ["ignore", "pipe", "pipe"],
+      maxBuffer: 64 * 1024 * 1024,
+      // De 22:00-taak (launchd) kent bijna geen PATH; railway is een
+      // Node-programma en moet Node kunnen vinden.
+      env: { ...process.env, PATH: `${path.dirname(process.execPath)}:/usr/bin:/bin:${process.env.PATH ?? ""}` },
+    });
+  } catch (fout) {
+    // Laat zien wat Railway zelf zegt, niet de hele opdracht.
+    const melding = `${fout.stderr ?? ""}${fout.stdout ?? ""}`.trim().split("\n").slice(-3).join(" / ");
+    throw new Error(`railway ${args[0]}: ${melding || fout.message}`);
+  }
 }
 
 /**

@@ -124,7 +124,8 @@ console.log("  staat erop");
 
 // 5. Opnieuw starten en wachten tot de site er weer is.
 stap("Site opnieuw starten…");
-railway("restart", "--service", "thuisles", "--yes");
+// Met --json: zonder bleef de opdracht wachten nadat de herstart al liep.
+railway("restart", "--service", "thuisles", "--yes", "--json");
 let op = false;
 for (let i = 0; i < 40 && !op; i++) {
   await new Promise((r) => setTimeout(r, 5000));
