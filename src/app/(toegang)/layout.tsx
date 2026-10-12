@@ -8,6 +8,7 @@
 
 import type { Metadata } from "next";
 import { NIET_INDEXEREN } from "@/lib/seo";
+import { zakelijk } from "@/lib/lettertypen";
 
 export const metadata: Metadata = {
   title: "Thuisles",
@@ -23,7 +24,7 @@ export default function ToegangLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt`}>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
         <div className="mb-6 flex items-center gap-2.5">
           <span className="grid size-9 shrink-0 place-items-center rounded-md bg-viool text-sm font-bold text-white">

@@ -34,7 +34,9 @@ import {
 import { haalBlokken } from "@/lib/data/methodes";
 import { haalSleutels } from "@/lib/data/sleutels";
 import { haalKlaargezet } from "@/lib/data/dashboard";
+import { telGepubliceerdPerLeerdoel } from "@/lib/data/vragen";
 import type {
+  Domein,
   DomeinMetVoortgang,
   Kind,
   LeerdoelVoortgang,
@@ -45,6 +47,7 @@ import type {
   OefenStart,
   Sleutelstand,
   Startscherm,
+  Subdomein,
   SubdomeinMetVoortgang,
   Vak,
 } from "@/lib/types";
@@ -424,4 +427,84 @@ export async function haalMethodeoverzicht(kindId: string): Promise<{
  */
 export async function haalSleutelstand(kindId: string): Promise<Sleutelstand> {
   return haalSleutels(kindId);
+}
+
+
+// ---------------------------------------------------------------------------
+// De schermen in de sterrenstijl (nieuwe layout, oktober 2026)
+// ---------------------------------------------------------------------------
+
+/** Een onderwerp waarin dit kind echt iets kan oefenen. */
+export type OefenbaarOnderwerp = {
+  subdomein: Subdomein;
+  /** leerdoelen voor de groep van het kind mét gepubliceerde vragen */
+  aantalOefeningen: number;
+  /** hoeveel daarvan al beheerst zijn */
+  aantalBeheerst: number;
+};
+
+/** Een domein waarin dit kind echt iets kan oefenen. */
+export type OefenbaarDomein = {
+  domein: Domein;
+  onderwerpen: OefenbaarOnderwerp[];
+  aantalOefeningen: number;
+  aantalBeheerst: number;
+};
+
+/**
+ * Wat er in een vak voor dit kind echt te oefenen valt: het rekenscherm en
+ * de domeinschermen in de sterrenstijl.
+ *
+ * Strenger dan `haalDomeinen`: een oefening telt pas mee als het leerdoel bij
+ * de groep van het kind past én er gepubliceerde vragen in staan. Een domein
+ * of onderwerp zonder zulke oefeningen valt weg, zodat een kind nooit op een
+ * leeg scherm uitkomt. Er komt geen nieuwe data aan te pas: dezelfde
+ * structuur, voortgang en vragen als op de andere schermen.
+ */
+export async function haalOefenbaar(
+  vakSlug: string,
+  kindId: string,
+): Promise<OefenbaarDomein[]> {
+  const kind = await haalKind(kindId);
+  const vak = await haalVak(vakSlug);
+  if (!kind || !vak) return [];
+
+  const domeinen = structuur.domeinen
+    .filter((d) => d.vakId === vak.id)
+    .sort((a, b) => a.volgorde - b.volgorde);
+  const subs = structuur.subdomeinen;
+  const perSub = new Map(
+    subs.map((s) => [s.id, leerdoelenVoor(s.id, kind)] as const),
+  );
+  const vragenPer = telGepubliceerdPerLeerdoel(
+    [...perSub.values()].flat().map((ld) => ld.id),
+  );
+
+  return domeinen
+    .map((domein) => {
+      const onderwerpen = subs
+        .filter((s) => s.domeinId === domein.id)
+        .sort((a, b) => a.volgorde - b.volgorde)
+        .map((subdomein) => {
+          const oefenbaar = (perSub.get(subdomein.id) ?? []).filter(
+            (ld) => (vragenPer[ld.id] ?? 0) > 0,
+          );
+          return {
+            subdomein,
+            aantalOefeningen: oefenbaar.length,
+            aantalBeheerst: oefenbaar.filter(
+              (ld) => statusVan(kind.id, ld.id) === "beheerst",
+            ).length,
+          };
+        })
+        .filter((o) => o.aantalOefeningen > 0);
+
+      return {
+        domein,
+        onderwerpen,
+        aantalOefeningen: onderwerpen.reduce((n, o) => n + o.aantalOefeningen, 0),
+        aantalBeheerst: onderwerpen.reduce((n, o) => n + o.aantalBeheerst, 0),
+      };
+    })
+    .filter((d) => d.aantalOefeningen > 0);
 }

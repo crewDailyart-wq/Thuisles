@@ -23,7 +23,14 @@ import { wisselGroep } from "@/app/groepacties";
 
 const GROEPEN = [3, 4, 5, 6, 7, 8];
 
-export function Groepwisselaar({ groep }: { groep: number }) {
+export function Groepwisselaar({
+  groep,
+  opDonker = false,
+}: {
+  groep: number;
+  /** op de sterrenhemel (het Hoi-vakje): lichte letters in plaats van grijze */
+  opDonker?: boolean;
+}) {
   const [open, setOpen] = useState(false);
   const [bezig, start] = useTransition();
   const router = useRouter();
@@ -68,7 +75,11 @@ export function Groepwisselaar({ groep }: { groep: number }) {
         aria-haspopup="listbox"
         aria-expanded={open}
         aria-label={`Groep ${groep}. Klik om een andere groep te kiezen.`}
-        className="flex items-center gap-1 rounded text-xs font-bold text-inkt-zacht transition hover:text-huisstijl disabled:opacity-60"
+        className={`flex items-center gap-1 rounded text-xs font-bold transition disabled:opacity-60 ${
+          opDonker
+            ? "min-h-8 rounded-full bg-white/15 px-2.5 text-white hover:bg-white/25"
+            : "text-inkt-zacht hover:text-huisstijl"
+        }`}
       >
         {bezig ? "Bezig…" : `Groep ${groep}`}
         <svg

@@ -216,12 +216,85 @@
   text-shadow: 0 3px 0 #8a4b00;
 }
 
+/*
+  Voortgang onderaan een tegel (rekenscherm, domeinscherm): een smal balkje
+  met "3 van 10" ernaast. Wit op een donker spoor, op elke tegelkleur leesbaar.
+*/
+.av-tegel__voortgang {
+  display: flex;
+  align-items: center;
+  gap: 0.45em;
+  width: 82%;
+  margin-top: 0.35em;
+  font-family: var(--font-nunito), ui-rounded, sans-serif;
+  font-weight: 800;
+  font-size: clamp(0.7rem, 6.5cqi, 0.95rem);
+  line-height: 1;
+  white-space: nowrap;
+  text-shadow: 0 1px 0 rgba(0, 0, 0, 0.25);
+}
+
+.av-tegel__balk {
+  position: relative;
+  flex: 1 1 auto;
+  height: 0.6em;
+  min-width: 2rem;
+  border-radius: 999px;
+  background: rgba(10, 16, 70, 0.32);
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+}
+
+.av-tegel__balk > span {
+  position: absolute;
+  inset: 0 auto 0 0;
+  border-radius: inherit;
+  background: #ffffff;
+}
+
+.av-tegel--licht .av-tegel__voortgang {
+  color: #5a3000;
+  text-shadow: none;
+}
+
+.av-tegel--licht .av-tegel__balk {
+  background: rgba(90, 48, 0, 0.25);
+}
+
+/*
+  Meteen iets zien als je tikt: zolang de volgende pagina laadt, licht de
+  tegel zacht op en neer (zie `TegelBezig`).
+*/
+.av-tegel__bezig {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.28);
+  opacity: 0;
+  transition: opacity 120ms ease;
+  pointer-events: none;
+}
+
+.av-tegel__bezig.is-bezig {
+  opacity: 1;
+  animation: av-bezig 0.9s ease-in-out infinite;
+}
+
+@keyframes av-bezig {
+  0%, 100% { background: rgba(255, 255, 255, 0.12); }
+  50%      { background: rgba(255, 255, 255, 0.34); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .av-tegel,
   .av-tegel:hover,
   .av-tegel:active {
     transition: none;
     transform: rotate(var(--scheef));
+  }
+  .av-tegel__bezig.is-bezig {
+    animation: none;
   }
 }
 
@@ -257,6 +330,43 @@
 .av-knop:active {
   transform: translateY(4px);
   box-shadow: 0 1px 0 var(--tegel-rand), 0 4px 8px rgba(8, 14, 70, 0.35);
+}
+
+/* Rond knopje (menu, terug): dezelfde 3D-rand, 48 bij 48 of groter. */
+.av-rondje {
+  position: relative;
+  --tegel: var(--av-lucht);
+  --tegel-rand: var(--av-lucht-rand);
+  display: inline-grid;
+  place-items: center;
+  flex-shrink: 0;
+  width: 3.25rem;
+  height: 3.25rem;
+  border-radius: 999px;
+  color: #ffffff;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0) 60%),
+    var(--tegel);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 255, 255, 0.4),
+    0 5px 0 var(--tegel-rand),
+    0 10px 18px rgba(8, 14, 70, 0.35);
+  transition: transform 120ms ease, box-shadow 120ms ease;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.av-rondje:hover { transform: translateY(-2px); }
+.av-rondje:active {
+  transform: translateY(4px);
+  box-shadow: inset 0 2px 0 rgba(255, 255, 255, 0.4), 0 1px 0 var(--tegel-rand), 0 4px 8px rgba(8, 14, 70, 0.35);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .av-knop, .av-knop:hover, .av-knop:active,
+  .av-rondje, .av-rondje:hover, .av-rondje:active {
+    transition: none;
+    transform: none;
+  }
 }
 
 /* ---------------------------------------------------------------------------
