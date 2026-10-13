@@ -1957,8 +1957,8 @@
   }
 
   .zp-zappieballon {
-    left: 78%;
-    top: -12%;
+    left: 74%;
+    top: -26%;
     width: calc(var(--u) * 19);
     font-size: max(14px, calc(var(--u) * 1.3));
   }

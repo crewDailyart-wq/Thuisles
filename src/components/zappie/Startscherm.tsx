@@ -106,6 +106,7 @@ export function Startscherm() {
   const [tik, zetTik] = useState(0);
   const [hulp, zetHulp] = useState(0);
   const [houding, zetHouding] = useState<Houding>("zwaai");
+  const [glimlach, zetGlimlach] = useState(false);
   const [schud, zetSchud] = useState<WereldId | null>(null);
   const [glans, zetGlans] = useState(false);
   const [oplicht, zetOplicht] = useState<WereldId | null>(null);
@@ -137,6 +138,15 @@ export function Startscherm() {
       window.clearTimeout(wijs);
       window.clearInterval(opnieuw);
     };
+  }, []);
+
+  /* Af en toe verandert zijn uitdrukking even: een tevreden glimlach. */
+  useEffect(() => {
+    const keer = window.setInterval(() => {
+      zetGlimlach(true);
+      window.setTimeout(() => zetGlimlach(false), 1400);
+    }, 9000);
+    return () => window.clearInterval(keer);
   }, []);
 
   /* Fase 5: wat er net verdiend is, één keer laten zien. */
@@ -219,7 +229,14 @@ export function Startscherm() {
             zetHulp((n) => n + 1);
           }}
         >
-          <Zappie stemming={bericht?.stemming ?? "kijk"} praat={praat} tik={tik} houding={houding} binnenrollen kijkMee />
+          <Zappie
+            stemming={bericht?.stemming ?? (glimlach ? "blij" : "kijk")}
+            praat={praat}
+            tik={tik}
+            houding={houding}
+            binnenrollen
+            kijkMee
+          />
         </button>
         {bericht && <Tekstballon tekst={bericht.tekst} className="zp-zappieballon" />}
       </div>
