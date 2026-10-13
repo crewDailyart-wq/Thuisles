@@ -6,9 +6,9 @@
  * die met `npm i -g --prefix ~/.npm-global @railway/cli` is geïnstalleerd en
  * waarop de eigenaar is ingelogd.
  *
- * Online staat de database op de vaste schijf als /data/thuisles.db en staan
- * de afbeeldingen in /data/vragen. Op de schijf heten paden zonder /data
- * ervoor (de schijf zelf is "/").
+ * Online staat de database op de vaste schijf als /data/thuisles.db, staan
+ * de afbeeldingen in /data/vragen en de Godot-spelletjes in /data/godot. Op de
+ * schijf heten paden zonder /data ervoor (de schijf zelf is "/").
  */
 
 import { execFileSync } from "node:child_process";

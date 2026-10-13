@@ -15,13 +15,20 @@
  *      staat dan alleen nog in die reservekopie;
  *   2. een veilige kopie van de laptop-database maken en controleren;
  *   3. afbeeldingen uit public/vragen die online nog ontbreken erbij zetten
- *      (online uploads blijven staan);
+ *      (online uploads blijven staan), en de Godot-spelletjes uit public/godot
+ *      die online ontbreken of anders zijn;
  *   4. de kopie op de schijf zetten onder een tijdelijke naam, controleren,
  *      en dan in één keer op de plek van thuisles.db zetten;
  *   5. de site opnieuw starten, zodat hij de nieuwe database opent.
+ *
+ * De code gaat sinds 13 oktober 2026 via GitHub online: Railway bouwt de site
+ * opnieuw zodra er iets op main komt. Wat niet in Git staat, gaat via dit
+ * script: de database, de afbeeldingen en de Godot-spelletjes (te groot voor
+ * Git; online levert app/godot/[...pad]/route.ts ze van de schijf).
  */
 
 import { backup, DatabaseSync } from "node:sqlite";
+import { createHash } from "node:crypto";
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, statSync, writeFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import path from "node:path";
@@ -100,6 +107,56 @@ const lokaal = readdirSync(path.join(WORTEL, "public", "vragen")).filter((f) => 
 const ontbreekt = lokaal.filter((f) => !online.has(f));
 for (const f of ontbreekt) zetOpSchijf(path.join(WORTEL, "public", "vragen", f), `/vragen/${f}`);
 console.log(ontbreekt.length ? `  ${ontbreekt.length} erbij gezet` : "  alles stond er al");
+
+// 3b. De Godot-spelletjes: wat online ontbreekt of anders is, gaat erop.
+// Online wordt niets weggehaald.
+stap("Godot-spelletjes bijwerken…");
+const GODOT = path.join(WORTEL, "public", "godot");
+if (!existsSync(GODOT)) {
+  console.log("  geen public/godot op deze laptop; overgeslagen");
+} else {
+  const afdrukVan = (bestand) => createHash("sha1").update(readFileSync(bestand)).digest("hex");
+  const alleBestanden = (map, voor = "") =>
+    readdirSync(map, { withFileTypes: true })
+      .filter((d) => !d.name.startsWith("."))
+      .flatMap((d) =>
+        d.isDirectory() ? alleBestanden(path.join(map, d.name), `${voor}${d.name}/`) : [`${voor}${d.name}`],
+      );
+  const godotOnline = new Map(
+    JSON.parse(
+      opServer(`
+        import fs from "node:fs";
+        import path from "node:path";
+        import { createHash } from "node:crypto";
+        const wortel = "/data/godot";
+        fs.mkdirSync(wortel, { recursive: true });
+        const uit = [];
+        const loop = (map) => {
+          for (const d of fs.readdirSync(map, { withFileTypes: true })) {
+            const p = path.join(map, d.name);
+            if (d.isDirectory()) loop(p);
+            else uit.push([path.relative(wortel, p), createHash("sha1").update(fs.readFileSync(p)).digest("hex")]);
+          }
+        };
+        loop(wortel);
+        console.log(JSON.stringify(uit));
+      `)
+        .split("\n")
+        .pop(),
+    ),
+  );
+  const anders = alleBestanden(GODOT).filter((rel) => godotOnline.get(rel) !== afdrukVan(path.join(GODOT, rel)));
+  const mappen = [...new Set(anders.map((rel) => path.posix.dirname(rel)).filter((m) => m !== "."))];
+  if (mappen.length) {
+    opServer(`
+      import fs from "node:fs";
+      for (const m of ${JSON.stringify(mappen)}) fs.mkdirSync("/data/godot/" + m, { recursive: true });
+      console.log("klaar");
+    `);
+  }
+  for (const rel of anders) zetOpSchijf(path.join(GODOT, rel), `/godot/${rel}`);
+  console.log(anders.length ? `  ${anders.length} bestanden bijgewerkt` : "  alles stond er al");
+}
 
 // 4. Database op de schijf.
 stap("Database online zetten…");
