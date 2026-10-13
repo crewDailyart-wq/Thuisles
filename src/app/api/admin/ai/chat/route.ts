@@ -31,6 +31,22 @@ const SYSTEM = `Je bent DeepSeek, de Nederlandse programmeerassistent van Thuisl
 type ToolCall = { id: string; type: "function"; function: { name: string; arguments: string } };
 type Completion = { usage?: { total_tokens?: number }; choices?: { message?: { role: string; content: string | null; tool_calls?: ToolCall[] } }[]; error?: { message?: string } };
 
+export async function GET(request: NextRequest) {
+  if (!(await authenticated())) return NextResponse.json({ error: "Niet ingelogd." }, { status: 401 });
+  const id = new URL(request.url).searchParams.get("jobId");
+  if (!id) return NextResponse.json({ error: "Opdracht-ID ontbreekt." }, { status: 400 });
+  try {
+    const job = await loadJob(id);
+    return NextResponse.json({
+      jobId: job.id, state: job.state, steps: job.steps,
+      totalTokens: job.totalTokens, reply: job.reply,
+      request: job.request, changes: job.changes,
+    });
+  } catch {
+    return NextResponse.json({ error: "Opdracht niet gevonden of verlopen." }, { status: 404 });
+  }
+}
+
 export async function POST(request: NextRequest) {
   if (!(await authenticated())) return NextResponse.json({ error: "Log eerst in bij AI Studio." }, { status: 401 });
   const apiKey = process.env.DEEPSEEK_API_KEY;
@@ -65,7 +81,7 @@ export async function POST(request: NextRequest) {
   let finished = false;
   let reply = "";
   try {
-    for (let round = 0; round < 4 && job.steps < MAX_STEPS && job.totalTokens < MAX_TOTAL_TOKENS; round++) {
+    for (let round = 0; round < 2 && job.steps < MAX_STEPS && job.totalTokens < MAX_TOTAL_TOKENS; round++) {
       const response = await fetch("https://api.deepseek.com/chat/completions", {
         method: "POST",
         headers: { Authorization: "Bearer " + apiKey, "Content-Type": "application/json" },
@@ -77,7 +93,7 @@ export async function POST(request: NextRequest) {
           tool_choice: "auto",
           max_tokens: 7000,
         }),
-        signal: AbortSignal.timeout(90000),
+        signal: AbortSignal.timeout(45000),
         cache: "no-store",
       });
       if (!response.ok) throw new Error("DeepSeek API: " + response.status + " " + (await response.text()).slice(0, 180));
