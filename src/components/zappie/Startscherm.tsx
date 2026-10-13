@@ -19,6 +19,8 @@
  */
 
 import Link from "next/link";
+import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
+import { ScrollReis } from "@/components/zappie/ScrollReis";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -218,7 +220,7 @@ export function Startscherm() {
   }
 
   return (
-    <main className="zp-podium" aria-label="Start">
+    <><ScrollReis /><main className="zp-podium" aria-label="Start">
       <h1 className="sr-only">Zappie: begin je missie</h1>
 
       {/* Zappie en zijn briefje. */}
@@ -454,7 +456,7 @@ export function Startscherm() {
         <br />
         Grote werelden.
       </p>
-    </main>
+    </main><OntdekkingsReis /></>
   );
 }
 
