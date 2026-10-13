@@ -73,7 +73,7 @@ export async function POST(request: NextRequest) {
       const calls = message.tool_calls ?? [];
       if (!calls.length) break;
       conversation.push({ role: "assistant", content: message.content, tool_calls: calls });
-      for (const tool of calls.slice(0, 8)) {
+      for (const tool of calls) {
         let output: unknown;
         try {
           const args = JSON.parse(tool.function.arguments) as Record<string, unknown>;
