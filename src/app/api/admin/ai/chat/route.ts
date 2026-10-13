@@ -113,8 +113,11 @@ export async function POST(request: NextRequest) {
     }
     return NextResponse.json({ reply: reply || "Bekijk mijn voorgestelde codewijzigingen.", changes });
   } catch (error) {
+    const detail = error instanceof Error ? error.message : "Onbekende fout tijdens het programmeren.";
+    const safe = detail.replace(/(?:sk-|github_pat_)[A-Za-z0-9_-]+/g, "[afgeschermd]");
+    console.error("[Thuisles AI] chat mislukt:", safe.slice(0, 400));
     return NextResponse.json({
-      error: error instanceof Error ? error.message : "Onbekende fout tijdens het programmeren.",
+      error: safe.slice(0, 400),
     }, { status: 502 });
   }
 }
