@@ -256,7 +256,7 @@
     0 0.06em 0 #0d4fb0,
     0 0.12em 0.18em rgb(3 15 60 / 0.55),
     0 0 0.5em rgb(82 217 255 / 0.45);
-  transform: rotate(-4deg);
+  transform: none;
 }
 
 .zp-logo-ster {

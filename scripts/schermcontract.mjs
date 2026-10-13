@@ -305,7 +305,11 @@ export const SCHERMCONTRACT = [
       "Op weg naar je volgende beloning!",
       "Jouw wereld",
       "Ga naar mijn wereld",
-      "Leren vandaag",
+      /*
+        "Leren vandaag, groter morgen." onder het logo is weggehaald op
+        verzoek van de eigenaar (13 oktober 2026, bouwopdracht cinematische
+        kinderhomepage: "Verwijder de slogan onder het logo").
+      */
       "Start",
       "Oefenen",
       "Werelden",

@@ -19,6 +19,9 @@
  */
 
 import Link from "next/link";
+import { Illustratie } from "@/components/zappie/reis/Illustratie";
+import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
+import { ScrollReis } from "@/components/zappie/ScrollReis";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -45,7 +48,7 @@ import {
   type Gebeurtenis,
   type WereldStand,
 } from "@/lib/zappie/voortgang";
-import { ASSETS, type WereldId } from "@/lib/zappie/werelden";
+import { type WereldId } from "@/lib/zappie/werelden";
 
 type Bericht = { tekst: string; stemming: Stemming };
 
@@ -218,7 +221,7 @@ export function Startscherm() {
   }
 
   return (
-    <main className="zp-podium" aria-label="Start">
+    <><ScrollReis /><main className="zp-podium" aria-label="Start">
       <h1 className="sr-only">Zappie: begin je missie</h1>
 
       {/* Zappie en zijn briefje. */}
@@ -403,14 +406,11 @@ export function Startscherm() {
       {/* Jouw wereld: het hele paneel is klikbaar. */}
       <Link
         href="/zappie/mijn-wereld"
-        className={`zp-jouwpaneel zp-glaspaneel${straal ? " zp-straal" : ""}`}
+        className={`zp-jouwpaneel zp-glaspaneel zi-wereldkaart${straal ? " zp-straal" : ""}`}
         aria-label={`Jouw wereld, ${huidig.wereld.naam}: ga naar mijn wereld`}
       >
         <span className="zp-jouw-eiland" aria-hidden="true">
-          <picture>
-            <source type="image/avif" srcSet={`${ASSETS}/my-world-island.avif`} />
-            <img src={`${ASSETS}/my-world-island.webp`} alt="" loading="lazy" decoding="async" />
-          </picture>
+          <Illustratie naam="wereld" sizes="(min-width: 900px) 45vw, 94vw" prioriteit />
           <span className="zp-jouw-water" />
           <span className="zp-jouw-wolk zp-jouw-wolk-1" />
           <span className="zp-jouw-wolk zp-jouw-wolk-2" />
@@ -454,7 +454,7 @@ export function Startscherm() {
         <br />
         Grote werelden.
       </p>
-    </main>
+    </main><OntdekkingsReis /></>
   );
 }
 

@@ -1,0 +1,181 @@
+/* Scrollreis. Bewust apart en onder /zappie: bestaande lessen houden hun opmaak. */
+.zp[data-start="ja"] {
+  --zr-scroll: 0; --zr-land: 0; --zr-wolken: 0;
+  --zr-goud: #ffdc79; --zr-ijs: #94eaff;
+  background: #051c45;
+}
+.zp[data-start="ja"] .zp-logo-tekst { transform: none; }
+.zp[data-start="ja"] .zp-logo { filter: drop-shadow(0 2px 0 #071637); }
+.zp[data-start="ja"] .zp-podium { overflow: visible; }
+/* De menubalk op mobiel blijft onderaan het VENSTER, niet onder een 100px header. */
+.zp[data-start="ja"] .zp-schil { inset: 0; height: auto; pointer-events: none; }
+.zp[data-start="ja"] .zp-schil > * { pointer-events: auto; }
+.zp[data-start="ja"] .zp-laag-ruimte {
+  scale: calc(1 + var(--zr-scroll) * .22);
+  transform-origin: 50% 70%;
+  opacity: calc(1 - var(--zr-land));
+}
+.zp[data-start="ja"] .zp-aarde { opacity: 0; }
+.zp[data-start="ja"] .zp-aarde[data-klaar="ja"] { opacity: calc(1 - var(--zr-land)); }
+.zp[data-start="ja"] .zp-sterrenveld { opacity: clamp(0, calc(1 - var(--zr-scroll) * 1.8), 1); }
+.zp[data-start="ja"] .zp-nevels,
+.zp[data-start="ja"] .zp-horizonlicht { opacity: calc(1 - var(--zr-land)); }
+.zr-camera { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.zp[data-start="ja"] .zp-podium, .zr-reis { position: relative; z-index: 1; }
+.zr-landing { position:absolute; inset:-3%; opacity:var(--zr-land); transform:scale(calc(1.1 + var(--zr-scroll) * .18)); transform-origin:50% 70%; }
+.zr-landing img { width:100%;height:100%;object-fit:cover; }
+.zr-landing::after { content:"";position:absolute;inset:0;background:linear-gradient(#0a408c33,#092e7470 75%,#0c3d6755); }
+.zr-camerawolk { position:absolute;top:0;bottom:0;width:55%;opacity:calc(var(--zr-wolken) * .7);background:radial-gradient(ellipse at center,#effaff 0, #b7e7ffbb 20%,#a1d5ff55 39%,transparent 66%); }
+.zr-camerawolk-links { left:-27%;transform:translateX(calc(var(--zr-scroll) * 18vw)); }
+.zr-camerawolk-rechts { right:-28%;transform:translateY(calc(var(--zr-scroll) * -20vh)); }
+.zr-beweging { position:fixed;right:22px;bottom:18px;z-index:45;display:flex;align-items:center;gap:7px;min-height:40px;padding:7px 12px;border:1px solid #8bddffc0;border-radius:30px;background:#061c49ed;color:#e9f7ff;box-shadow:0 4px 18px #03122a77;font-size:12px;font-weight:800;cursor:pointer; }
+.zr-beweging svg { width:14px;height:14px;fill:currentColor; }
+.zr-beweging[aria-pressed="true"] { border-color:#ffe396; }
+.zr-beweging:disabled { cursor:default; }
+.zr-skip { position:fixed;top:-100px;left:16px;z-index:100;padding:14px 20px;border-radius:16px;color:#072b59;background:#fff3b3;font-weight:800; }
+.zr-skip:focus { top:12px; }
+.zr-reis { isolation:isolate;overflow:clip; }
+.zr-reis::before { content:"";position:absolute;inset:0;z-index:-2;pointer-events:none;background:linear-gradient(180deg,#06245600 0%,#0b458a66 10%,#0e4d97c9 35%,#123f8acc 47%,#05629299 70%,#135b8977 85%,transparent); }
+.zr-reis::after { content:"";position:absolute;inset:0;z-index:-3;background:url('/achtergrond-wereld.png') center bottom / 100% auto no-repeat;pointer-events:none; }
+.zr-hoofdstuklijn { display:flex;justify-content:center;align-items:center;gap:18px;padding-top:38px;color:#ffe3a2; }
+.zr-hoofdstuklijn svg { width:24px;height:24px;filter:drop-shadow(0 0 8px #ffb94a); }
+.zr-hoofdstuklijn span { width:min(25vw,280px);height:1px;background:linear-gradient(90deg,transparent,#ffd474c0); }
+.zr-hoofdstuklijn span:last-child { rotate:180deg; }
+.zr-sectie { position:relative;max-width:1600px;margin:0 auto;padding:50px clamp(20px,4.5vw,72px) 34px;scroll-margin-top:120px; }
+.zr-sectieintro { margin:0 0 32px;text-shadow:0 3px 18px #062350; }
+.zr-hoofdstuk { display:flex;align-items:center;gap:12px;color:#ffe3a2;font-size:11px;font-weight:900;letter-spacing:.17em; }
+.zr-hoofdstuk > span { height:1px;width:34px;background:#ffce64; }
+.zr-sectieintro h2 { margin:12px 0 8px;font-size:clamp(27px,3.3vw,48px);letter-spacing:-.025em;line-height:1.1; }
+.zr-sectieintro > p { font-size:clamp(16px,1.6vw,21px);font-weight:700;margin:0;color:#e0f5ff; }
+.zr-leergrid { display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.03fr);gap:28px;align-items:start; }
+.zr-paneel { position:relative;border:2px solid #7ddeffc9;border-radius:28px;background:radial-gradient(ellipse at 12% 0,#258ee166,transparent 65%),linear-gradient(140deg,#0a3e83ee,#031c4aed);box-shadow:inset 0 2px 0 #ffffff55,0 2px 0 #0463a3,0 0 26px #42c8ff28,0 20px 45px #04143670; }
+.zr-paneelkop { display:flex;gap:13px;align-items:center;min-height:66px;margin-bottom:21px; }
+.zr-paneelkop > svg,.zr-gereedschap { width:43px;height:43px;flex:none;filter:drop-shadow(0 3px 6px #03184488); }
+.zr-paneelkop h3 { font-size:clamp(22px,2.25vw,33px);line-height:1.1;margin:0;letter-spacing:-.015em; }
+.zr-paneelkop p { font-size:14px;font-weight:600;color:#c1eaff;margin:5px 0 0; }
+.zr-gereedschap svg { width:100%;height:100%;fill:#ffda73; }
+.zr-statuslabel { margin-left:auto;font-size:10px;letter-spacing:.05em;text-transform:uppercase;font-weight:900;border:1px solid #ffe29a70;color:#ffeab7;background:#7d5a263b;border-radius:100px;padding:5px 9px;white-space:nowrap; }
+.zr-vakkenpaneel { padding:7px 0 0;min-width:0; }
+.zr-vakkenpaneel > .zr-paneelkop { margin-bottom:26px; }
+.zr-vakken { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px 14px; }
+.zr-vak { --vak:#228fe6;--vak-diep:#0754ae;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:7px;min-height:163px;padding:21px 12px 21px;min-width:0;text-align:center;text-decoration:none;color:#fff;border:1px solid #aeefffbb;border-radius:22px;background:radial-gradient(ellipse at 25% 0,#ffffff5e,transparent 55%),linear-gradient(150deg,var(--vak),var(--vak-diep));box-shadow:inset 0 2px 0 #ffffff80,inset 0 -3px 0 #ffffff12,0 5px 0 color-mix(in srgb,var(--vak-diep),#021331 30%),0 10px 20px #03173b66;transition:transform .18s,box-shadow .18s;cursor:pointer; }
+.zr-vak::before { content:"";position:absolute;inset:5px 5px auto;height:45%;border-radius:17px 17px 50% 50%;background:linear-gradient(#ffffff12,transparent);pointer-events:none; }
+.zr-vak[data-kleur="roze"] { --vak:#eb547f;--vak-diep:#af315b; }
+.zr-vak[data-kleur="goud"] { --vak:#eea330;--vak-diep:#b46013; }
+.zr-vak[data-kleur="violet"] { --vak:#8d62ed;--vak-diep:#5142b8; }
+.zr-vak[data-kleur="groen"] { --vak:#24b995;--vak-diep:#097c73; }
+.zr-vak[data-kleur="brons"] { --vak:#b69766;--vak-diep:#755737; }
+.zr-vak:hover { transform:translateY(-4px);box-shadow:inset 0 2px 0 #ffffff90,0 9px 0 color-mix(in srgb,var(--vak-diep),#021331 30%),0 18px 28px #0321558c; }
+.zr-vak:active { transform:translateY(2px); }
+.zr-vakicoon { width:clamp(68px,7vw,103px);height:clamp(68px,7vw,103px);filter:drop-shadow(0 6px 4px #04274b55); }
+.zr-vakicoon svg { width:100%;height:100%; }
+.zr-vaknaam { font-size:clamp(14px,1.18vw,18px);line-height:1.1;max-width:100%;text-shadow:0 2px 1px #00285566;overflow-wrap:normal;hyphens:auto; }
+.zr-vakpijl { position:absolute;right:8px;bottom:10px;width:20px;height:20px;display:grid;place-items:center;background:#02173c30;border-radius:50%; }
+.zr-vakpijl svg { width:11px;height:11px; }
+.zr-later { position:absolute;right:10px;top:9px;font-size:10px;font-weight:900;color:#fff;background:#04224b5e;padding:3px 7px;border-radius:100px; }
+.zr-vakbericht { min-height:3.6em;font-size:13px;line-height:1.5;font-weight:700;color:#ddf4ff;margin-top:20px; }
+.zr-extra-missie { display:inline-flex;align-items:center;gap:10px;font-weight:800;font-size:14px;color:#fff3b6;text-underline-offset:5px; }
+.zr-extra-missie svg { width:13px;height:13px; }
+.zr-werkplaats { overflow:hidden;padding:20px; }
+.zr-werkplaats .zr-paneelkop { margin-bottom:10px; }
+.zr-hangar { position:relative;height:310px;overflow:hidden;border-radius:18px;border:1px solid #3b8dc37a;background:radial-gradient(ellipse at 50% 80%,#21beff66,transparent 56%),radial-gradient(ellipse at 15% 20%,#136f9a99,transparent 70%),linear-gradient(145deg,#071e47,#064871 70%,#062445); }
+.zr-hangar-raster { position:absolute;inset:0;background-image:linear-gradient(#399ac01c 1px,transparent 1px),linear-gradient(90deg,#399ac01c 1px,transparent 1px);background-size:29px 29px; }
+.zr-hangar::before { content:"";position:absolute;inset:20px 35px 20px;border:1px solid #80e1ff66;border-radius:40% 40% 5px 5px;box-shadow:0 0 50px #48c5fa20,inset 0 0 45px #4fc4ff22; }
+.zr-werklicht { position:absolute;top:0;width:54%;height:100%;background:linear-gradient(#fff2b02e,transparent 90%);clip-path:polygon(40% 0,50% 0,100% 100%,0 100%); }
+.zr-werklicht-a { left:-12%; }.zr-werklicht-b { right:-12%; }
+.zr-kraanwerk { position:absolute;inset:0;width:100%;height:100%; }
+.zr-takel { transform-origin:73% 12%;animation:zr-takel 7s ease-in-out infinite; }
+@keyframes zr-takel { 0%,100%{transform:rotate(-2deg)}50%{transform:rotate(2deg)} }
+.zr-voertuig-opstelling { position:absolute;inset:36px 12% 30px;z-index:2;filter:drop-shadow(0 12px 9px #03101ecc); }
+.zr-voertuig-groot { width:100%;height:100%; }
+.zr-hulpbot { position:absolute;z-index:4;bottom:17px;width:90px; }
+.zr-hulpbot .zp-robot { width:100%;height:auto; }
+.zr-hulpbot-links { left:12px; }.zr-hulpbot-rechts { right:8px;scale:.82; }
+.zr-hulpbot-links .zp-robot { transform:scaleX(-1); }
+.zr-laslicht { position:absolute;left:26%;top:71%;z-index:5;width:5px;height:5px;background:#fff6c1;border-radius:50%;box-shadow:0 0 11px 4px #ffdb6388;animation:zr-lassen 5s ease-in-out infinite; }
+.zr-laslicht i { position:absolute;width:2px;height:12px;background:#ffe9ab;transform-origin:center 0; }
+.zr-laslicht i:nth-child(1){rotate:35deg}.zr-laslicht i:nth-child(2){rotate:80deg}.zr-laslicht i:nth-child(3){rotate:120deg}.zr-laslicht i:nth-child(4){rotate:175deg}
+@keyframes zr-lassen { 0%,20%,35%,100%{opacity:0}23%,28%{opacity:.8} }
+.zr-vloer { position:absolute;bottom:-25px;left:-20%;right:-20%;height:100px;transform:perspective(220px) rotateX(62deg);background:repeating-linear-gradient(90deg,#16669977 0 64px,#a3eaff44 64px 65px),repeating-linear-gradient(#185078 0 24px,#61b9df77 24px 25px);border-top:3px solid #ffcf61;box-shadow:0 -5px 20px #70dfff66; }
+.zr-bouwstand { display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;margin-top:18px;padding:13px 15px;border:1px solid #7acff940;border-radius:16px;background:#06193685; }
+.zr-kleine-kop { font-size:9px;letter-spacing:.14em;font-weight:900;color:#a4dbff; }
+.zr-bouwstand h4 { font-size:25px;line-height:1.1;margin:4px 0 0; }
+.zr-telstand { font-size:16px;color:#afdff9;text-align:right; }.zr-telstand strong { font-size:26px;color:#fff; }.zr-telstand small { display:block;font-size:10px;font-weight:800; }
+.zr-bouwstand progress { grid-column:1/-1;display:block;appearance:none;border:1px solid #528bc166;background:#001631;width:100%;height:12px;border-radius:20px;overflow:hidden; }
+.zr-bouwstand progress::-webkit-progress-bar { background:#031b3c; }
+.zr-bouwstand progress::-webkit-progress-value { background:linear-gradient(#fff0a8,#eeb226);border-radius:20px; }
+.zr-bouwstand progress::-moz-progress-bar { background:linear-gradient(#fff0a8,#eeb226);border-radius:20px; }
+.zr-bouwstand > p { grid-column:1/-1;font-size:13px;color:#c8eafa;margin:0; }
+.zr-voertuigen { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px; }
+.zr-voertuigkeuze { display:flex;position:relative;align-items:center;flex-direction:column;justify-content:center;gap:0;min-width:0;min-height:85px;padding:2px 7px 9px;border:1px solid #61bffb6e;border-radius:14px;color:#d0e4f5;background:#03224a;cursor:pointer; }
+.zr-voertuigkeuze[aria-pressed="true"]{border-color:#ffe9a4;color:#fff4c9;background:linear-gradient(145deg,#1c6392,#06375f);box-shadow:0 0 13px #ffd4701f; }
+.zr-voertuigkeuze > span { font-size:12px;font-weight:900; }.zr-voertuigkeuze > svg:last-child { width:13px;height:13px;position:absolute;right:6px;top:7px;opacity:.85; }
+.zr-voertuig-klein { width:100%;height:53px; }
+.zr-eerlijk { font-size:11px;line-height:1.6;color:#bedbf0;margin:13px 0 0; }.zr-eerlijk a { text-decoration:underline;text-underline-offset:3px; }
+.zr-volgende-halte { margin:40px auto 0;display:flex;align-items:center;flex-direction:column;gap:9px;width:fit-content;text-decoration:none;font-size:13px;font-weight:800;color:#e4f8ff; }
+.zr-volgende-halte svg { width:24px;height:24px;fill:none;stroke:#ffe298;stroke-width:2; }
+.zr-atelier { padding-top:66px; }
+.zr-ateliergrid { display:grid;grid-template-columns:minmax(280px,.75fr) minmax(0,1.25fr);gap:24px;align-items:stretch; }
+.zr-paspodium { position:relative;isolation:isolate;min-height:490px;border:2px solid #7adeffc7;border-radius:28px;overflow:hidden;background:radial-gradient(ellipse at 50% 35%,#207faa,#0b3467 50%,#061b41 90%);box-shadow:inset 0 0 40px #78eaff20,0 17px 40px #02173466;display:flex;justify-content:center;align-items:center;padding-bottom:66px; }
+.zr-paspodium::before { content:"";position:absolute;inset:0;background:url('/assets/zappie/my-world-island.webp') center / cover;opacity:.1;z-index:-1; }
+.zr-atelier-boog { position:absolute;inset:25px 20px 58px;border:6px solid #93cfea99;border-radius:45% 45% 8px 8px;box-shadow:0 0 0 4px #041d47,0 0 0 6px #edc87588,inset 0 0 28px #67d9ff66; }
+.zr-atelier-boog::before { content:"";position:absolute;inset:20px 20px;border:1px solid #64d5ffbb;border-radius:45% 45% 10px 10px; }
+.zr-paslabel { position:absolute;top:21px;left:50%;translate:-50% 0;z-index:2;font-size:10px;letter-spacing:.2em;font-weight:900;color:#ffeeb6;background:#072d55;padding:7px 15px;border:1px solid #f1d7928c;border-radius:100px;white-space:nowrap; }
+.zr-avatar { position:relative;width:min(75%,280px);z-index:3;margin-top:32px;filter:drop-shadow(0 15px 10px #04123080); }
+.zr-avatar > .zp-robot { width:100%;height:auto; }
+/* Tijdens passen staat het lijf stil: accessoire en gezicht blijven uitgelijnd. */
+.zr-avatar .zp-robot-lijf,.zr-avatar .zp-hoofd,.zr-avatar .zp-hoofd-draai { animation:none;transform:none; }
+.zr-avatar[data-accessoire="oceaan"] radialGradient[id$="-wit"] stop:nth-child(1){stop-color:#cbf9ff}
+.zr-avatar[data-accessoire="oceaan"] radialGradient[id$="-wit"] stop:nth-child(2){stop-color:#69cffa}
+.zr-avatar[data-accessoire="oceaan"] radialGradient[id$="-wit"] stop:nth-child(3){stop-color:#2874c9}
+.zr-avatar[data-accessoire="oceaan"] radialGradient[id$="-wit"] stop:nth-child(4){stop-color:#104293}
+.zr-gepast { position:absolute;z-index:5;pointer-events:none;overflow:visible; }
+.zr-gepast--pet { width:72%;top:0;left:12%;transform:rotate(4deg); }
+.zr-gepast--kroon { width:53%;top:-9%;left:21%; }
+.zr-gepast--bril { width:67%;top:16%;left:13%; }
+.zr-gepast--antenne { width:22%;top:-8%;left:37%; }
+.zr-podiumringen { position:absolute;bottom:65px;left:6%;right:6%;height:80px;border-radius:50%;background:linear-gradient(#216d9b,#031c44);border:3px solid #ddc17b;box-shadow:0 8px 0 #072b4c,0 11px 0 #edc06a,0 16px 20px #05152d; }
+.zr-podiumringen span { position:absolute;inset:8px 12%;border:2px solid #77e4ff;border-radius:50%;box-shadow:0 0 13px #54d8ff99; }
+.zr-podiumringen span:nth-child(2){inset:14px 22%;opacity:.7}.zr-podiumringen span:nth-child(3){inset:19px 32%;opacity:.5}
+.zr-pasbijschrift { position:absolute;bottom:15px;left:12px;right:12px;text-align:center;display:flex;flex-direction:column;gap:4px; }
+.zr-pasbijschrift strong { font-size:21px; }.zr-pasbijschrift button { border:0;background:none;text-decoration:underline;text-underline-offset:3px;color:#ccefff;font-size:11px;cursor:pointer;min-height:28px; }.zr-pasbijschrift button:disabled{opacity:.5;cursor:default}
+.zr-winkelpaneel { padding:22px; }
+.zr-winkelpaneel .zr-paneelkop { margin-bottom:18px; }
+.zr-filters { display:flex;flex-wrap:wrap;gap:9px;margin-bottom:20px; }
+.zr-filters button { border:1px solid #65b8e97d;min-height:40px;border-radius:12px;padding:8px 15px;font-size:12px;font-weight:900;color:#e4f7ff;background:#082d5c;cursor:pointer; }
+.zr-filters button[aria-pressed="true"] { color:#052d54;background:linear-gradient(#dbffff,#5ed9ff);border-color:#e7ffff;box-shadow:0 0 13px #56d3ff61,inset 0 2px 0 white; }
+.zr-producten { display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;min-height:340px;align-content:start; }
+.zr-product { display:flex;flex-direction:column;align-items:center;position:relative;min-width:0;min-height:159px;border:1px solid #9be5ff8a;border-radius:17px;padding:6px 8px 8px;background:radial-gradient(ellipse at 50% 25%,#75d3ec8c,transparent 70%),linear-gradient(#196daf,#084279);color:#fff;box-shadow:inset 0 2px 0 #d1f7ff77,0 7px 12px #061c466b;cursor:pointer;transition:transform .17s,border-color .17s; }
+.zr-product:hover { transform:translateY(-3px); }.zr-product[aria-pressed="true"] { border-color:#fff1aa;box-shadow:0 0 0 2px #f6c448,0 0 20px #ffd57544; }
+.zr-productbeeld { display:block;width:100%;max-width:125px;height:92px;filter:drop-shadow(0 5px 4px #061e5aaa); }.zr-productbeeld svg{height:100%;width:100%}
+.zr-productnaam { display:block;font-size:clamp(12px,1.05vw,15px);line-height:1.1;text-align:center;margin:0 0 10px; }
+.zr-productactie { display:flex;align-items:center;justify-content:center;gap:8px;margin-top:auto;min-height:29px;border-radius:20px;width:100%;padding:4px 7px;background:linear-gradient(#ffeaa2,#efb52e);color:#083457;box-shadow:inset 0 1px 0 #fff7cf;font-size:11px;font-weight:900; }.zr-productactie svg{width:11px;height:11px}
+.zr-passtatus { color:#e6f7ff;font-size:13px;line-height:1.5;min-height:1.5em;font-weight:700; }
+.zr-bestemming { position:relative;height:460px;margin-top:-100px;z-index:-1; }
+.zr-bestemming > img { position:absolute;width:100%;height:100%;object-fit:cover;object-position:center 66%;mask-image:linear-gradient(transparent,#000 35%); }
+.zr-bestemming::after { content:"";position:absolute;inset:0;background:linear-gradient(transparent 30%,#0625554d 60%,#041c4399); }
+.zr-bestemming-tekst { position:absolute;bottom:46px;left:20px;right:20px;z-index:2;display:flex;flex-direction:column;align-items:center;text-align:center;text-shadow:0 3px 15px #031947; }
+.zr-bestemming-tekst p { font-size:clamp(35px,4vw,60px);margin:13px 0; }
+.zr-terug { display:inline-flex;align-items:center;gap:12px;border:1px solid #9bdbf98c;border-radius:100px;background:#082e5bbd;color:#f3faff;padding:10px 20px;font-size:12px;font-weight:800;text-decoration:none; }
+.zr-terug svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2}
+@media(min-width:900px) and (min-aspect-ratio:5/4) {
+  .zp[data-start="ja"] .zp-schil::before { display:block;height:125px;background:linear-gradient(#051838ef,#051b4399 50%,transparent); }
+  .zp[data-start="ja"][data-reisfase="ruimte"] .zp-schil::before { opacity:.5; }
+  .zp[data-start="ja"] .zp-missieknop { background:radial-gradient(ellipse at 50% 0,#65e9ff99,transparent 65%),linear-gradient(#148cdf,#075dcc);color:#fff;border:2px solid #a5f1ff;box-shadow:inset 0 3px 0 #dbffff9c,inset 0 -4px 0 #063d96,0 3px 0 #edc063,0 0 24px #49caff77,0 12px 30px #021b49a1; }
+}
+@media(max-width:1100px) {
+ .zr-sectie { padding-left:26px;padding-right:26px; }.zr-leergrid{gap:22px}.zr-vak{min-height:149px}.zr-werkplaats{padding:15px}.zr-paneelkop h3{font-size:24px}.zr-statuslabel{font-size:9px;padding:4px 7px}.zr-paneelkop{gap:9px}.zr-hangar{height:280px}.zr-ateliergrid{grid-template-columns:minmax(250px,.75fr) minmax(0,1.25fr)}.zr-winkelpaneel{padding:18px}
+}
+@media(max-width:899px),(max-aspect-ratio:5/4) {
+ .zr-beweging { bottom:calc(92px + env(safe-area-inset-bottom));right:12px;font-size:11px; }.zr-sectie{scroll-margin-top:88px}.zr-leergrid{grid-template-columns:1fr}.zr-vakkenpaneel{padding:0}.zr-vak{min-height:162px}.zr-vakicoon{width:90px;height:88px}.zr-vaknaam{font-size:17px}.zr-hangar{height:355px}.zr-ateliergrid{grid-template-columns:1fr}.zr-paspodium{min-height:440px}.zr-avatar{width:240px}.zr-atelier-boog{left:calc(50% - 160px);right:calc(50% - 160px)}.zr-podiumringen{left:calc(50% - 160px);right:calc(50% - 160px)}.zr-producten{grid-template-columns:repeat(3,minmax(0,1fr));min-height:340px}.zr-bestemming{height:480px}.zr-bestemming-tekst{bottom:128px}.zr-paneelkop h3{font-size:28px}
+}
+@media(max-width:560px) {
+ .zr-sectie{padding-left:16px;padding-right:16px;padding-top:38px}.zr-sectieintro h2{font-size:30px}.zr-sectieintro > p{font-size:15px}.zr-hoofdstuk{font-size:9px;letter-spacing:.12em}.zr-vakken{grid-template-columns:repeat(2,minmax(0,1fr));gap:18px 13px}.zr-vak{min-height:154px}.zr-vaknaam{font-size:16px}.zr-paneelkop h3{font-size:24px}.zr-paneelkop p{font-size:12px}.zr-statuslabel{font-size:8px}.zr-werkplaats{padding:12px;border-radius:24px}.zr-hangar{height:250px}.zr-hulpbot{width:70px;bottom:8px}.zr-hulpbot-links{left:0}.zr-hulpbot-rechts{right:0}.zr-voertuig-opstelling{inset:38px 8% 25px}.zr-voertuigkeuze > span{font-size:11px}.zr-winkelpaneel{padding:15px}.zr-producten{grid-template-columns:repeat(2,minmax(0,1fr));min-height:518px}.zr-productnaam{font-size:15px}.zr-filters{gap:6px}.zr-filters button{padding:8px 12px;min-height:43px}.zr-productactie{min-height:33px}.zr-paspodium{min-height:410px}.zr-atelier-boog{inset:26px 22px 58px}.zr-podiumringen{left:6%;right:6%}.zr-bestemming .zr-hoofdstuk{font-size:8px}.zr-bestemming-tekst p{font-size:39px}.zr-beweging{min-height:38px}.zr-hoofdstuklijn{padding-top:10px}
+}
+/* Ook de handmatige knop pauzeert de bestaande WebGL-omgeving via Heelal. */
+.zp[data-beweging="rustig"] *, .zp[data-beweging="rustig"] *::before, .zp[data-beweging="rustig"] *::after { animation:none!important;transition:none!important; }
+.zp[data-beweging="rustig"] .zr-landing,.zp[data-beweging="rustig"] .zr-camerawolk,.zp[data-beweging="rustig"] .zp-laag-ruimte { transform:none!important;scale:1!important; }
+@media(prefers-reduced-motion:reduce) {
+ .zr-reis *, .zr-reis *::before,.zr-reis *::after{animation:none!important;transition:none!important}
+ .zr-landing,.zr-camerawolk,.zp[data-start="ja"] .zp-laag-ruimte{transform:none!important;scale:1!important}
+}
