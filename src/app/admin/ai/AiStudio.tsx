@@ -23,6 +23,10 @@ export function AiStudio() {
   const [busy, setBusy] = useState(false);
   const [publishing, setPublishing] = useState(false);
   const [error, setError] = useState("");
+  const [jobId, setJobId] = useState("");
+  const [jobState, setJobState] = useState<"paused" | "finished" | "limit" | "">("");
+  const [steps, setSteps] = useState(0);
+  const [tokens, setTokens] = useState(0);
 
   async function refresh() {
     try {
@@ -63,6 +67,8 @@ export function AiStudio() {
     setMessages([]);
     setChanges([]);
     setPrUrl("");
+    setJobId("");
+    setJobState("");
   }
 
   async function send(text?: string) {
@@ -74,6 +80,10 @@ export function AiStudio() {
     setChanges([]);
     setPrUrl("");
     setCurrentRequest(instruction);
+    setJobId("");
+    setJobState("");
+    setSteps(0);
+    setTokens(0);
     setError("");
     setBusy(true);
     try {
@@ -87,11 +97,38 @@ export function AiStudio() {
         role: "assistant", content: String(result.reply ?? "Geen antwoord"),
       }]);
       setChanges(Array.isArray(result.changes) ? result.changes : []);
+      setJobId(result.jobId ?? "");
+      setJobState(result.state ?? "");
+      setSteps(result.steps ?? 0);
+      setTokens(result.totalTokens ?? 0);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Er ging iets mis.");
     } finally {
       setBusy(false);
     }
+  }
+
+  async function continueJob() {
+    if (busy || !jobId || jobState !== "paused") return;
+    setBusy(true);
+    setError("");
+    try {
+      const response = await fetch("/api/admin/ai/chat", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ jobId }),
+      });
+      const result = await response.json();
+      if (!response.ok) throw new Error(result.error ?? "Kon opdracht niet hervatten.");
+      setMessages((previous) => [...previous, {
+        role: "assistant", content: String(result.reply || "Nog aan het werk."),
+      }]);
+      setChanges(Array.isArray(result.changes) ? result.changes : []);
+      setJobState(result.state ?? "");
+      setSteps(result.steps ?? steps);
+      setTokens(result.totalTokens ?? tokens);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "Hervatten mislukt.");
+    } finally { setBusy(false); }
   }
 
   async function publishProposal() {
@@ -181,6 +218,9 @@ export function AiStudio() {
                   <div className={`max-w-[94%] whitespace-pre-wrap break-words rounded-xl px-4 py-3 text-sm leading-relaxed ${message.role === "user" ? "bg-viool text-white" : "border border-slate-200 bg-slate-50 text-slate-800"}`}>{message.content}</div>
                 </div>
               ))}
+              {jobId && <div className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-700">Stappen: {steps}/60 · Verwerkte tokens: {tokens.toLocaleString("nl-NL")} / 180.000 · {jobState === "paused" ? "Kan verdergaan" : jobState === "finished" ? "Afgerond" : "Budgetlimiet bereikt"}</div>}
+              {jobState === "paused" && !busy && <button type="button" onClick={() => void continueJob()} className="rounded-lg bg-viool px-5 py-3 text-sm font-bold text-white">Ga verder met dezelfde opdracht →</button>}
+              {jobState === "limit" && <p className="text-sm text-amber-800">Veiligheidsbudget bereikt. Bekijk je voorstellen of begin een nieuwe opdracht.</p>}
               {busy && <div className="flex items-center gap-2 text-sm text-slate-500"><span className="size-2 animate-pulse rounded-full bg-viool" />DeepSeek onderzoekt de code en werkt aan je opdracht…</div>}
             </div>
 
