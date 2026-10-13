@@ -1,5 +1,6 @@
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata, Viewport } from "next";
-import { Caveat, Fredoka, Inter, Nunito } from "next/font/google";
+import { Caveat, Fredoka, Nunito } from "next/font/google";
 import "./globals.css";
 import "./avontuur.css";
 
@@ -9,12 +10,10 @@ const nunito = Nunito({
   weight: ["400", "600", "700", "800"],
 });
 
-/** Alleen voor de beheeromgeving: rustiger en compacter dan Nunito. */
-const inter = Inter({
-  variable: "--font-inter",
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-});
+/*
+  Het zakelijke lettertype (Inter) staat in lib/lettertypen.ts en laadt alleen
+  in het beheer, het ouderdeel, het inloggen en op de openbare pagina's.
+*/
 
 /** Avontuurstijl: dikke, ronde letters voor titels en tegels. */
 const fredoka = Fredoka({
@@ -32,7 +31,7 @@ const caveat = Caveat({
 });
 
 export const metadata: Metadata = {
-  title: "Thuisles",
+  title: `${MERKNAAM}`,
   description: "Oefenen met rekenen, in je eigen tempo.",
 };
 
@@ -44,7 +43,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="nl"
-      className={`${nunito.variable} ${inter.variable} ${fredoka.variable} ${caveat.variable} h-full antialiased`}
+      className={`${nunito.variable} ${fredoka.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="font-sans min-h-full flex flex-col">{children}</body>
     </html>

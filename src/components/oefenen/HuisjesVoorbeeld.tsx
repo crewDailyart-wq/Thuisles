@@ -1,5 +1,6 @@
 "use client";
 
+import { MERKNAAM } from "@/lib/merk";
 import { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { VosFiguur } from "@/components/oefenen/VosFiguur";
@@ -67,7 +68,7 @@ export function HuisjesVoorbeeld() {
   return (
     <main className={styles.pagina}>
       <header className={styles.balk}>
-        <Link href="/start" className={styles.terug}>← Thuisles</Link>
+        <Link href="/zappie" className={styles.terug}>← {MERKNAAM}</Link>
         <span className={styles.voorbeeld}>Speelvoorbeeld</span>
         <span className={styles.teller} aria-label={`${bezorgd} van 5 pakketjes bezorgd`}>📦 {bezorgd} / 5</span>
       </header>

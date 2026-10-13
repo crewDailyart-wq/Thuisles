@@ -38,7 +38,7 @@ export async function wisselGroep(groep: number): Promise<{ ok: boolean }> {
     Alles wat van de groep afhangt opnieuw ophalen: welke leerdoelen een kind
     ziet, de aanbeveling, de voortgang en de schermen van de ouder.
   */
-  revalidatePath("/start");
+  revalidatePath("/zappie");
   revalidatePath("/oefenen", "layout");
   revalidatePath("/wereld");
   revalidatePath("/voortgang");

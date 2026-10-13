@@ -1,7 +1,7 @@
 "use client";
 
 /**
- * Het maatje op het oefenscherm: Vos met een tekstwolkje.
+ * Het maatje op het oefenscherm: Vos of de robot, met een tekstwolkje.
  *
  * Krijgt een bericht (een paar zinnen) en zegt die één voor één. Het wolkje
  * loopt mee: de zin die nu klinkt staat er vet, de zinnen ervoor gewoon. Staat
@@ -101,10 +101,7 @@ export function Maatje({
   return (
     <div className="mt-6 flex items-end gap-2 sm:gap-3" data-maatje="">
       {poppetje === "geen" ? null : poppetje === "tijdelijk" ? (
-        <TijdelijkMaatje
-          houding={bezig && bericht.houding === "rustig" ? "praat" : bericht.houding}
-          className="size-16 shrink-0 sm:size-20"
-        />
+        <TijdelijkMaatje houding={bericht.houding} praat={bezig} className="h-28 shrink-0 sm:h-36" />
       ) : (
         <VosFiguur houding={pop.houding} beweging={pop.beweging} className="size-16 shrink-0 sm:size-20" />
       )}

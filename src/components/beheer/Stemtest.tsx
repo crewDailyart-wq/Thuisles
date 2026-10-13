@@ -9,6 +9,7 @@
  * daar echt hoort.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { useEffect, useState } from "react";
 import { Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { beoordeelStemmen, kiesStem, zeg } from "@/lib/stem";
@@ -44,7 +45,7 @@ export function Stemtest() {
     <div className="flex flex-col gap-4">
       <Paneel
         titel="Wat dit apparaat kiest"
-        bijschrift="Thuisles kiest automatisch de best beschikbare Nederlandse vrouwenstem."
+        bijschrift={`${MERKNAAM} kiest automatisch de best beschikbare Nederlandse vrouwenstem.`}
       >
         {gekozen ? (
           <>

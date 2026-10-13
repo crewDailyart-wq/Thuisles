@@ -93,7 +93,7 @@ export default async function DomeinPagina({
   const kop = (
     <Paginakop
       kruimels={[
-        { label: "Start", href: "/start" },
+        { label: "Start", href: "/zappie" },
         { label: "Oefenen", href: "/oefenen" },
         { label: vak.naam, href: `/oefenen/${vak.slug}` },
         { label: "Vrij oefenen", href: `/oefenen/${vak.slug}/vrij` },

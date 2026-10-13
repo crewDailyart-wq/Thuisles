@@ -7,6 +7,7 @@
  * één blik waar zijn kind staat ten opzichte van wat de klas doet.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import {
   Blokmarkering,
   GeenKind,
@@ -63,7 +64,7 @@ export default async function VoortgangPagina() {
             )}
             {groep.vaardigheden.length === 0 ? (
               <p className="py-2 text-sm text-beheer-zacht">
-                Bij dit blok heeft Thuisles nog geen onderdelen. Vrij oefenen
+                Bij dit blok heeft {MERKNAAM} nog geen onderdelen. Vrij oefenen
                 werkt gewoon.
               </p>
             ) : (

@@ -36,13 +36,20 @@ function isOefenscherm(pad: string): boolean {
 }
 
 /**
- * Schermen in de nieuwe avontuurstijl (oktober 2026): het startscherm en de
- * pagina "Binnenkort!". Die tekenen hun eigen sterrenhemel en hebben geen
- * zijbalk, kopbalk of balk onderaan; het menu staat op het startscherm onder
- * het eerste scherm, bij "Nog meer voor jou".
+ * Schermen in de nieuwe avontuurstijl (oktober 2026): het startscherm, het
+ * rekenscherm met zijn domeinen en onderwerpen, "Meer" en "Binnenkort!". Die
+ * tekenen hun eigen sterrenhemel en hebben geen zijbalk, kopbalk of balk
+ * onderaan; het menu zit achter het ronde knopje naast het Hoi-vakje op het
+ * startscherm en staat op "Meer".
  */
 function isAvontuurscherm(pad: string): boolean {
-  return pad === "/start" || pad.startsWith("/binnenkort/");
+  return (
+    pad === "/start" ||
+    pad === "/meer" ||
+    pad === "/rekenen" ||
+    pad.startsWith("/rekenen/") ||
+    pad.startsWith("/binnenkort/")
+  );
 }
 
 export function Kindschil({

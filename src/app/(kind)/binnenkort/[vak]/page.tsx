@@ -57,7 +57,7 @@ export default async function BinnenkortVak({ params }: PageProps<"/binnenkort/[
             </p>
           </div>
 
-          <Link href="/start" className="av-knop mt-2">
+          <Link href="/zappie" className="av-knop mt-2">
             Terug naar het begin
           </Link>
         </div>

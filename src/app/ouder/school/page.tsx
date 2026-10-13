@@ -13,6 +13,7 @@
  *     van de open data van DUO verlangt.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import {
   Beoordeling,
   GeenKind,
@@ -49,7 +50,7 @@ import type { MethodeHerkomst, SchoolMethodeStatus } from "@/lib/types";
 /** De drie standen, letterlijk zoals de opdracht ze voorschrijft. */
 const STAND: Record<MethodeHerkomst, { tekst: string; stijl: string }> = {
   geverifieerd: {
-    tekst: "Geverifieerd door Thuisles",
+    tekst: `Geverifieerd door ${MERKNAAM}`,
     stijl: "border-groen/40 bg-groen-zacht text-groen-diep",
   },
   opgegeven_door_ouder: {
@@ -77,7 +78,7 @@ function Standmelding({ stand }: { stand: SchoolMethodeStatus }) {
       <p className="text-sm font-semibold">{s.tekst}</p>
       {stand.herkomst === "geverifieerd" && (
         <p className="mt-0.5 text-xs leading-relaxed">
-          Gecontroleerd door Thuisles: {stand.bron}
+          Gecontroleerd door {MERKNAAM}: {stand.bron}
           {stand.bronLink && (
             <>
               {" — "}

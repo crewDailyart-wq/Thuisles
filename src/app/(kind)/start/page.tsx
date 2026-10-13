@@ -8,18 +8,20 @@
  * geen kopbalk (zie `Kindschil`).
  *
  * Alles wat er vóór de nieuwe layout op het startscherm stond, staat er nog
- * (HARDE REGEL 1): onder het eerste scherm, bij "Nog meer voor jou". Daar
- * staan het menu, de sleutels, de groep, het rekenpaneel, de schoolmethode,
- * de tips, het wereldpad en het oude vakkenmenu. Of dat zo blijft, beslist de
- * eigenaar.
+ * (HARDE REGEL 1), alleen op een andere plek:
+ *   - de sleutels en de groep klein in het Hoi-vakje rechtsboven;
+ *   - het menu achter het ronde knopje naast het Hoi-vakje, op de pagina
+ *     "Meer" (/meer). Daar staan ook vrij oefenen, oefenen volgens je
+ *     methode, school & methode, de tips, het oude vakkenmenu, jouw wereld
+ *     en de vos.
  *
- * Dit scherm haalt alles in één keer op via de datalaag en bevat zelf geen
- * logica.
+ * Dit scherm laadt alleen wat erop staat: het kind en de sleutels.
+ *
+ * Het haalt alles via de datalaag op en bevat zelf geen logica.
  */
 
-import Link from "next/link";
 import { Glitter } from "@/components/avontuur/Glitter";
-import { HoofdMascotte } from "@/components/avontuur/HoofdMascotte";
+import { PratendeMascotte } from "@/components/avontuur/PratendeMascotte";
 import { Logo } from "@/components/avontuur/Logo";
 import { Hemel } from "@/components/avontuur/Hemel";
 import {
@@ -29,29 +31,18 @@ import {
   IcoonTaal,
 } from "@/components/avontuur/VakIconen";
 import { VakTegel } from "@/components/avontuur/VakTegel";
+import { Menuknop } from "@/components/avontuur/Menuknop";
 import { Groepwisselaar } from "@/components/kind/Groepwisselaar";
-import { Icoon } from "@/components/kind/Icoon";
-import { Mascotte } from "@/components/kind/Mascotte";
 import { Pictogram } from "@/components/kind/Pictogram";
-import { RekenPaneel } from "@/components/kind/RekenPaneel";
-import { SchoolMethodeKaart } from "@/components/kind/SchoolMethodeKaart";
 import { Sleutelteller } from "@/components/kind/Sleutelteller";
-import { TipKaartjes } from "@/components/kind/TipKaartjes";
-import { Vakkenmenu } from "@/components/kind/Vakkenmenu";
-import { Wereldpad } from "@/components/kind/Wereldpad";
-import { NAV_ITEMS } from "@/components/kind/navigatie";
-import {
-  haalHuidigKind,
-  haalSleutelstand,
-  haalStartscherm,
-} from "@/lib/data/queries";
+import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
 import { MERKMOTTO } from "@/lib/merk";
 
 /** De vier vakken op het startscherm, in de kleuren van het voorbeeld. */
 const VAKKEN = [
   {
     naam: "Rekenen",
-    href: "/oefenen/rekenen",
+    href: "/rekenen",
     kleur: "paars",
     scheef: "-2.5deg",
     Icoon: IcoonRekenen,
@@ -82,7 +73,6 @@ const VAKKEN = [
 
 export default async function StartPagina() {
   const kind = await haalHuidigKind();
-  const data = await haalStartscherm(kind.id);
   const sleutels = await haalSleutelstand(kind.id);
 
   return (
@@ -96,14 +86,24 @@ export default async function StartPagina() {
           ------------------------------------------------------------------ */}
       <section className="relative isolate min-h-[100svh]">
         <div className="relative mx-auto flex min-h-[100svh] w-full max-w-[100rem] flex-col px-4 pb-6 pt-4 sm:px-8 sm:pt-6 lg:px-12">
-          <header className="grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-3 lg:grid-cols-[1fr_auto_1fr]">
+          {/*
+            De kop. Groot scherm (vanaf 1280): logo, titel en begroeting naast
+            elkaar, zoals het voorbeeld. Tablet en laptop tot 1280: logo en
+            begroeting boven, de titel eronder in het midden. Telefoon: logo en
+            menuknopje boven, de begroeting eronder, dan de titel.
+          */}
+          <header className="grid grid-cols-[1fr_auto] items-start gap-x-4 gap-y-3 xl:grid-cols-[1fr_auto_1fr]">
             <div className="pt-1">
               <Logo />
             </div>
 
-            {/* Midden boven: de titel. Op een smal scherm onder logo en begroeting. */}
-            <div className="av-gloed col-span-2 row-start-2 text-center lg:col-span-1 lg:col-start-2 lg:row-start-1 lg:pt-2">
-              <h1 className="av-titel relative inline-flex items-center gap-[0.35em] text-[clamp(2.1rem,5vw,4.4rem)] drop-shadow-[0_5px_0_rgba(10,20,90,0.35)]">
+            {/* Telefoon: het menuknopje rechts naast het logo. */}
+            <div className="justify-self-end sm:hidden">
+              <Menuknop />
+            </div>
+
+            <div className="av-gloed col-span-2 row-start-3 text-center sm:row-start-2 xl:col-span-1 xl:col-start-2 xl:row-start-1 xl:pt-2">
+              <h1 className="av-titel relative inline-flex items-center gap-[0.35em] text-[clamp(2.1rem,5vw,4.4rem)] drop-shadow-[0_5px_0_rgba(10,20,90,0.35)] xl:text-[clamp(2.1rem,4.4vw,4.4rem)]">
                 <Glitter kant="links" className="size-[0.6em] shrink-0" />
                 Wat wil je doen?
                 <Glitter
@@ -116,9 +116,13 @@ export default async function StartPagina() {
               </p>
             </div>
 
-            {/* Rechtsboven: de begroeting met het plaatje van het kind. */}
-            <div className="justify-self-end lg:col-start-3 lg:row-start-1">
-              <div className="av-kaart flex items-center gap-3 py-2 pl-2 pr-4 sm:pr-6">
+            {/*
+              De begroeting met het plaatje van het kind, klein de sleutels en
+              de groep, en (vanaf tablet) ernaast het ronde menuknopje naar
+              "Meer".
+            */}
+            <div className="col-span-2 row-start-2 flex items-start gap-3 sm:col-span-1 sm:col-start-2 sm:row-start-1 sm:justify-self-end xl:col-start-3">
+              <div className="av-kaart flex items-center gap-3 py-2 pl-2 pr-4 sm:pr-5">
                 <span className="grid size-11 shrink-0 place-items-center overflow-hidden rounded-full bg-white sm:size-14">
                   <Pictogram naam={kind.avatar} className="size-9 sm:size-11" />
                 </span>
@@ -129,7 +133,19 @@ export default async function StartPagina() {
                   <span className="block text-xs font-semibold text-white/80 sm:text-sm">
                     Fijn dat je er bent!
                   </span>
+                  {/* liever een regel erbij dan over elkaar heen */}
+                  <span className="mt-1 flex flex-wrap items-center gap-x-2 gap-y-1">
+                    <span className="shrink-0">
+                      <Sleutelteller beginsaldo={sleutels.saldo} klein />
+                    </span>
+                    <span className="shrink-0">
+                      <Groepwisselaar groep={kind.groep} opDonker />
+                    </span>
+                  </span>
                 </span>
+              </div>
+              <div className="hidden sm:block">
+                <Menuknop />
               </div>
             </div>
           </header>
@@ -153,16 +169,20 @@ export default async function StartPagina() {
               ))}
             </ul>
 
-            {/* Groot scherm: mascotte links, "Jij kunt het!" rechts, los op de hemel. */}
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute bottom-[3%] left-[-1.5rem] hidden w-[clamp(8rem,15vw,15rem)] lg:block"
-            >
+            {/*
+              Groot scherm: de robot links met een tekstwolkje, los op de
+              hemel. Tik op hem en hij zegt het hardop.
+            */}
+            <div className="absolute bottom-[2%] left-[-1rem] hidden lg:block">
               <Glitter
                 kant="links"
-                className="absolute -right-4 top-[22%] size-10"
+                className="pointer-events-none absolute left-[clamp(6rem,10vw,10rem)] top-[10%] size-10"
               />
-              <HoofdMascotte className="w-full drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]" />
+              <PratendeMascotte
+                tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
+                robotKlasse="w-[clamp(6.5rem,10vw,10rem)] drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]"
+                wolkjeKlasse="mb-[clamp(4rem,7vw,7rem)] ml-1 max-w-[13rem] text-sm"
+              />
             </div>
             <p className="av-hand absolute right-0 top-1/2 hidden -translate-y-1/2 rotate-[-8deg] text-center text-[clamp(1.8rem,3vw,2.8rem)] leading-[0.95] text-[#c9d6ff] lg:block">
               Jij
@@ -172,9 +192,13 @@ export default async function StartPagina() {
               <span aria-hidden="true">♡</span>
             </p>
 
-            {/* Smal scherm: mascotte en "Jij kunt het!" naast elkaar onder de tegels. */}
-            <div className="mt-10 flex items-center gap-4 lg:hidden">
-              <HoofdMascotte className="w-24 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-28" />
+            {/* Smal scherm: de robot met zijn wolkje en "Jij kunt het!" onder de tegels. */}
+            <div className="mt-1 flex flex-wrap items-end justify-center gap-x-4 gap-y-2 lg:hidden">
+              <PratendeMascotte
+                tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
+                robotKlasse="w-20 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-24"
+                wolkjeKlasse="mb-14 ml-1 max-w-[11rem] text-sm"
+              />
               <p className="av-hand rotate-[-6deg] text-4xl text-[#c9d6ff]">
                 Jij kunt het! <span aria-hidden="true">♡</span>
               </p>
@@ -185,94 +209,6 @@ export default async function StartPagina() {
           <p className="relative text-xs font-extrabold uppercase tracking-[0.2em] text-white/80 [text-shadow:0_1px_4px_rgba(10,16,90,0.8)]">
             {MERKMOTTO.join(" • ")}
           </p>
-        </div>
-      </section>
-
-      {/* ------------------------------------------------------------------
-          Onder het eerste scherm: alles wat er al op het startscherm stond.
-          ------------------------------------------------------------------ */}
-      <section
-        aria-labelledby="kop-meer"
-        className="relative mx-auto flex w-full max-w-[86rem] flex-col gap-8 px-4 pb-16 pt-6 sm:px-8 lg:px-12"
-      >
-        <h2 id="kop-meer" className="av-titel text-3xl">
-          Nog meer voor jou
-        </h2>
-
-        <div className="flex flex-wrap items-center gap-3">
-          <nav aria-label="Hoofdmenu" className="flex flex-wrap gap-3">
-            {NAV_ITEMS.filter((item) => item.href !== "/start").map(
-              (item, i) => (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className="av-knop"
-                  style={
-                    {
-                      "--tegel": [
-                        "var(--av-paars)",
-                        "var(--av-groen)",
-                        "var(--av-lucht)",
-                        "var(--av-roze)",
-                        "var(--av-oranje)",
-                      ][i % 5],
-                      "--tegel-rand": [
-                        "var(--av-paars-rand)",
-                        "var(--av-groen-rand)",
-                        "var(--av-lucht-rand)",
-                        "var(--av-roze-rand)",
-                        "var(--av-oranje-rand)",
-                      ][i % 5],
-                    } as React.CSSProperties
-                  }
-                >
-                  <Icoon naam={item.icoon} className="size-5" />
-                  {item.label}
-                </Link>
-              ),
-            )}
-          </nav>
-          <div className="ms-auto flex flex-wrap items-center gap-2.5 text-inkt">
-            <Sleutelteller beginsaldo={sleutels.saldo} />
-            <div className="flex items-center gap-2.5 rounded-full border border-white/70 bg-kaart py-1.5 pl-1.5 pr-4 shadow-zacht">
-              <span className="grid size-10 place-items-center overflow-hidden rounded-full bg-huisstijl-zacht">
-                <Pictogram naam={kind.avatar} className="size-8" />
-              </span>
-              <span className="leading-tight">
-                <span className="block text-sm font-extrabold">
-                  {kind.roepnaam}
-                </span>
-                <Groepwisselaar groep={kind.groep} />
-              </span>
-            </div>
-          </div>
-        </div>
-
-        <div className="text-inkt">
-          <Vakkenmenu vakken={data.vakken} />
-        </div>
-
-        <div className="grid gap-6 text-inkt xl:grid-cols-[minmax(0,1fr)_20rem]">
-          <div className="flex flex-col gap-8">
-            <RekenPaneel
-              subdomeinen={data.subdomeinen}
-              methode={data.methode}
-              blokken={data.methodeBlokken}
-            />
-          </div>
-
-          <aside className="flex flex-col gap-4">
-            <SchoolMethodeKaart
-              methode={data.methode}
-              groep={data.kind.groep}
-            />
-            <TipKaartjes />
-          </aside>
-        </div>
-
-        <div className="text-inkt">
-          <Wereldpad gebieden={data.wereld} />
-          <Mascotte />
         </div>
       </section>
     </div>

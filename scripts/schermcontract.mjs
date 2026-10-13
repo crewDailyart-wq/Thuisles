@@ -273,6 +273,139 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Kralenrij", bron: "src/components/oefenen/KralenAvontuur.tsx", na: "een kralenopdracht openen" }],
   },
   /*
+    Zappie (oktober 2026): de startpagina voor groep 3 en de schermen
+    erachter. Sinds 12 oktober 2026 is /zappie de startpagina van de
+    kinderkant; /start stuurt hierheen door (next.config.ts).
+
+    13 oktober 2026, tweede ontwerp van de eigenaar
+    (ontwerp/zappie/voorbeeld-startpagina-2.webp): "Start oefenen" werd
+    "Begin je missie", "Vandaag oefenen" met Rekenen/Taal/Denken werd
+    "Vandaag op ontdekking" met Schoolpad/IEP Sprong/Vrije Missie, de
+    Zappie-punten heten tokens, het menu staat bovenaan en "Wereld" heet
+    "Werelden". De regels hieronder volgen dat ontwerp.
+  */
+  {
+    naam: "Zappie start",
+    pad: "/zappie",
+    bron: ["src/components/zappie/Startscherm.tsx", "src/components/zappie/Schil.tsx", "src/lib/zappie/werelden.ts"],
+    zichtbaar: [
+      "Begin je missie",
+      "Oceaan",
+      "Aarde",
+      "Universum",
+      "Jouw huidige wereld",
+      "Vandaag op ontdekking",
+      "Schoolpad",
+      "IEP Sprong",
+      "Vrije Missie",
+      "Binnenkort",
+      "Jouw tokens",
+      "Op weg naar je volgende beloning!",
+      "Jouw wereld",
+      "Ga naar mijn wereld",
+      "Leren vandaag",
+      "Start",
+      "Oefenen",
+      "Werelden",
+      "Beloningen",
+    ],
+    naKlik: [
+      { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op IEP Sprong tikken" },
+      { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },
+      { tekst: 'href: "/rekenen"', bron: "src/components/zappie/Schil.tsx", na: "op Oefenen tikken (het rekenscherm)" },
+      { tekst: 'href="/meer"', bron: "src/components/zappie/Schil.tsx", na: "op het menuknopje naast het tandwiel tikken" },
+      { tekst: 'href="/profiel"', bron: "src/components/zappie/Schil.tsx", na: "op het tandwiel tikken" },
+    ],
+  },
+  {
+    naam: "Zappie missie",
+    pad: "/zappie/oefenen?wereld=oceaan&missie=1",
+    bron: ["src/components/zappie/Missie.tsx"],
+    zichtbaar: ["Vul in.", "Controleer", "Stoppen"],
+    naKlik: [
+      { tekst: "Nog niet helemaal", bron: "src/components/zappie/Missie.tsx", na: "een antwoord dat nog niet goed is" },
+      { tekst: "Missie klaar!", bron: "src/components/zappie/Missie.tsx", na: "alle 15 sommen" },
+      { tekst: "Terug naar start", bron: "src/components/zappie/Missie.tsx", na: "alle 15 sommen" },
+    ],
+  },
+  {
+    naam: "Zappie wereld",
+    pad: "/zappie/wereld",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["Met elke missie kom je verder", "Start missie", "dan gaat deze wereld open"],
+  },
+  {
+    naam: "Zappie beloningen",
+    pad: "/zappie/beloningen",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["tokens", "missies klaar", "sterren", "vrij in jouw wereld", "tokens tot de volgende"],
+  },
+  {
+    naam: "Zappie jouw wereld",
+    pad: "/zappie/mijn-wereld",
+    bron: ["src/components/zappie/Schermen.tsx"],
+    zichtbaar: ["Jouw wereld", "Bouwen kan nog niet"],
+    naKlik: [
+      { tekst: "Vrij!", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
+      { tekst: "vrijgespeeld", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
+    ],
+  },
+  /*
+    De kinderkant in de nieuwe layout (oktober 2026). Deze schermen zitten
+    achter het kindprofiel en zijn zonder koekje niet op te halen; daarom
+    staat alles bij `naKlik` en wordt er in de bronbestanden gekeken.
+
+    Het blok "Nog meer voor jou" stond onder het startscherm en is op verzoek
+    van de eigenaar verplaatst, niet weggehaald: de sleutels en de groep naar
+    het Hoi-vakje, de rest naar "Meer" achter het ronde menuknopje.
+  */
+  {
+    naam: "Startscherm (nieuwe layout)",
+    pad: "/start",
+    bron: ["src/app/(kind)/start/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "<Sleutelteller", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (Hoi-vakje)" },
+      { tekst: "<Groepwisselaar", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (Hoi-vakje)" },
+      { tekst: "<Menuknop", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (naast het Hoi-vakje)" },
+      { tekst: 'href: "/rekenen"', bron: "src/app/(kind)/start/page.tsx", na: "op de tegel Rekenen tikken" },
+      { tekst: 'href="/meer"', bron: "src/components/avontuur/Menuknop.tsx", na: "op het menuknopje tikken" },
+    ],
+  },
+  {
+    naam: "Meer (wat eerst onder het startscherm stond)",
+    pad: "/meer",
+    bron: ["src/app/(kind)/meer/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "NAV_ITEMS", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (het menu)" },
+      { tekst: "<Vakkenmenu", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<RekenPaneel", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (vrij oefenen, volgens je methode)" },
+      { tekst: "<SchoolMethodeKaart", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<TipKaartjes", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<Wereldpad", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (jouw wereld)" },
+      { tekst: "<Mascotte", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (de vos)" },
+      { tekst: "Vrij oefenen", bron: "src/components/kind/RekenPaneel.tsx", na: "op het menuknopje tikken" },
+      { tekst: "Oefenen volgens je methode", bron: "src/components/kind/RekenPaneel.tsx", na: "op het menuknopje tikken" },
+    ],
+  },
+  {
+    naam: "Rekenscherm, domein en onderwerp (sterrenstijl)",
+    pad: "/rekenen",
+    bron: ["src/app/(kind)/rekenen/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "voortgang={{", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken (voortgang per domein)" },
+      { tekst: "<HoofdMascotte", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken (het maatje)" },
+      { tekst: "Terug naar het startscherm", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken" },
+      { tekst: "voortgang={{", bron: "src/app/(kind)/rekenen/[domein]/page.tsx", na: "een domein openen" },
+      { tekst: "<Moeilijkheid", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een onderwerp openen" },
+      { tekst: "Nieuw", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een onderwerp openen" },
+      { tekst: "&van=ster", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een oefening kiezen (terug komt weer hier uit)" },
+    ],
+  },
+  /*
     Het adres heeft het vak nodig: elk beheerscherm hangt onder /admin/{vak}/.
     Zonder die plaatshouder kwam hier een 404 uit, en dan hield de bewaking elke
     commit tegen — terwijl er aan de instelling zelf niets mankeerde. Zie de

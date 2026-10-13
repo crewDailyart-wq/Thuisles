@@ -6,6 +6,7 @@
  * een methode.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Link from "next/link";
 import { Kop, Leeg, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import { NieuweMethode } from "@/components/beheer/Methodeformulieren";
@@ -19,7 +20,7 @@ export default function MethodesPagina() {
       <Kop
         kruimels={[{ label: "Beheer", href: "/admin" }, { label: "Methodes" }]}
         titel="Rekenmethodes"
-        bijschrift="De volgorde van school, gekoppeld aan eigen Thuisles-leerdoelen."
+        bijschrift={`De volgorde van school, gekoppeld aan eigen ${MERKNAAM}-leerdoelen.`}
       />
 
       <div className="rounded-lg border-2 border-dashed border-oranje/50 bg-oranje-zacht/40 p-3">
@@ -29,7 +30,7 @@ export default function MethodesPagina() {
         <p className="mt-1 text-xs leading-relaxed">
           Van een methode leggen we alleen de <strong>naam</strong> en de{" "}
           <strong>uitgever</strong> vast, als gewone tekst. Er staat geen inhoud
-          uit een methode in Thuisles: geen opgaven, teksten, uitleg of beeld.
+          uit een methode in {MERKNAAM}: geen opgaven, teksten, uitleg of beeld.
           Komt daar iets van bij, of wordt er een logo of omslag getoond, dan
           eerst juridisch laten toetsen.
         </p>

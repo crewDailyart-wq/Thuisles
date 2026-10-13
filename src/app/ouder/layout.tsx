@@ -16,6 +16,7 @@
  * vergeten. Zie `src/lib/auth/sessie.ts`.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Kindwisselaar } from "@/components/ouder/Kindwisselaar";
@@ -23,9 +24,10 @@ import { Navigatiebalk, Zijnavigatie } from "@/components/ouder/Oudernavigatie";
 import { bekekenKind, vereisOuder } from "@/lib/auth/sessie";
 import { haalKinderen } from "@/lib/data/kinderen";
 import { NIET_INDEXEREN } from "@/lib/seo";
+import { zakelijk } from "@/lib/lettertypen";
 
 export const metadata: Metadata = {
-  title: "Thuisles voor ouders",
+  title: `${MERKNAAM} voor ouders`,
   /*
     Alles achter de login gaat over één kind en hoort niet in een zoekresultaat.
     De openbare pagina's voor ouders staan los hiervan; zie `(openbaar)`.
@@ -46,15 +48,15 @@ export default async function OuderLayout({
   const gekozen = await bekekenKind(ouder.id);
 
   return (
-    <div className="font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt`}>
       <header className="sticky top-0 z-30 border-b border-beheer-rand bg-white">
         <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
           <span className="flex items-center gap-2.5">
             <span className="grid size-8 shrink-0 place-items-center rounded-md bg-viool text-sm font-bold text-white">
-              T
+              {MERKNAAM.charAt(0)}
             </span>
             <span className="hidden text-sm sm:block">
-              <span className="block font-semibold leading-tight">Thuisles</span>
+              <span className="block font-semibold leading-tight">{MERKNAAM}</span>
               <span className="block text-xs text-beheer-zacht">Voor ouders</span>
             </span>
           </span>
@@ -88,7 +90,7 @@ export default async function OuderLayout({
             Supabase Auth is aangesloten.
           */}
           <p className="border-t border-beheer-rand pt-4 text-xs leading-relaxed text-beheer-zacht">
-            Thuisles staat nog niet online. Er is daarom geen inlog: iedereen
+            {MERKNAAM} staat nog niet online. Er is daarom geen inlog: iedereen
             die deze app opent, ziet deze gegevens.
           </p>
         </main>

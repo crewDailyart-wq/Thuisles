@@ -10,13 +10,15 @@
  * eerste actieve vak.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import { Beheerbalk } from "@/components/beheer/Beheerbalk";
 import { haalVakken } from "@/lib/data/structuur";
 import { NIET_INDEXEREN } from "@/lib/seo";
+import { zakelijk } from "@/lib/lettertypen";
 
 export const metadata: Metadata = {
-  title: "Thuisles beheer",
+  title: `${MERKNAAM} beheer`,
   /* De beheeromgeving hoort niet in een zoekresultaat; zie `NIET_INDEXEREN`. */
   robots: NIET_INDEXEREN,
 };
@@ -32,7 +34,7 @@ export default function BeheerLayout({
   // min-h-dvh in plaats van min-h-full: anders stopt het grijze vlak bij het
   // einde van de inhoud en schemert de achtergrond van de kinderkant erdoor.
   return (
-    <div className="font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt`}>
       <Beheerbalk vakken={haalVakken()} />
       <div className="pl-14 sm:pl-56">
         <main className="mx-auto w-full max-w-[86rem] px-4 py-6 sm:px-6">

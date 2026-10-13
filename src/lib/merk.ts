@@ -5,7 +5,7 @@
  * hij overal waar het kind hem ziet via deze constanten, dan is dat één regel
  * aanpassen.
  */
-export const MERKNAAM = "Thuisles";
+export const MERKNAAM = "Zappie";
 
 /** Het handgeschreven zinnetje onder het logo. */
 export const MERKZIN = "leren is avontuur!";

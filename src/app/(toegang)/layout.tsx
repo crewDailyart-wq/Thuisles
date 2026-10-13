@@ -6,11 +6,13 @@
  * ouder die het apparaat doorgeeft.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import { NIET_INDEXEREN } from "@/lib/seo";
+import { zakelijk } from "@/lib/lettertypen";
 
 export const metadata: Metadata = {
-  title: "Thuisles",
+  title: `${MERKNAAM}`,
   /* Het kiezen van een profiel hoort niet in een zoekresultaat. */
   robots: NIET_INDEXEREN,
 };
@@ -23,14 +25,14 @@ export default function ToegangLayout({
   children: React.ReactNode;
 }) {
   return (
-    <div className="font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt`}>
       <main className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center px-4 py-10">
         <div className="mb-6 flex items-center gap-2.5">
           <span className="grid size-9 shrink-0 place-items-center rounded-md bg-viool text-sm font-bold text-white">
-            T
+            {MERKNAAM.charAt(0)}
           </span>
           <span className="text-sm">
-            <span className="block font-semibold leading-tight">Thuisles</span>
+            <span className="block font-semibold leading-tight">{MERKNAAM}</span>
             <span className="block text-xs text-beheer-zacht">
               Oefenen met rekenen, in je eigen tempo
             </span>

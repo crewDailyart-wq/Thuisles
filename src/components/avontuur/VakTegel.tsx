@@ -7,6 +7,7 @@
  */
 
 import Link from "next/link";
+import { TegelBezig } from "@/components/avontuur/TegelBezig";
 
 export function VakTegel({
   href,
@@ -15,6 +16,7 @@ export function VakTegel({
   rand,
   scheef,
   licht = false,
+  voortgang,
   children,
 }: {
   href: string;
@@ -27,6 +29,8 @@ export function VakTegel({
   scheef: string;
   /** lichte tegel (geel): de naam krijgt een donkere rand om de letters */
   licht?: boolean;
+  /** klein onderaan: hoeveel oefeningen al beheerst zijn (rekenscherm, domeinscherm) */
+  voortgang?: { beheerst: number; totaal: number };
   /** het icoon */
   children: React.ReactNode;
 }) {
@@ -47,6 +51,22 @@ export function VakTegel({
         {children}
       </span>
       <span className="av-tegel__naam">{naam}</span>
+      {voortgang && (
+        <span className="av-tegel__voortgang">
+          <span className="av-tegel__balk" aria-hidden="true">
+            <span
+              style={{
+                width: `${voortgang.totaal === 0 ? 0 : Math.round((voortgang.beheerst / voortgang.totaal) * 100)}%`,
+              }}
+            />
+          </span>
+          <span>
+            {voortgang.beheerst} van {voortgang.totaal}
+            <span className="sr-only"> oefeningen beheerst</span>
+          </span>
+        </span>
+      )}
+      <TegelBezig />
     </Link>
   );
 }

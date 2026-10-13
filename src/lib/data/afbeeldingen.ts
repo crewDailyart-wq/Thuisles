@@ -30,7 +30,16 @@ import {
   veiligeNaam,
 } from "@/lib/afbeeldingregels";
 
-const MAP = path.join(process.cwd(), "public", "vragen");
+/*
+  Op de laptop is dat `public/vragen`. Online (Railway) wijst
+  THUISLES_AFBEELDINGEN naar de vaste schijf (/data/vragen), zodat een upload
+  een nieuwe versie van de site overleeft. Bij het opstarten worden de plaatjes
+  uit de code daar bijgezet (scripts/start.mjs); uploads worden nooit overschreven.
+  Wat niet in de gebouwde public-map staat, levert app/vragen/[naam]/route.ts.
+*/
+export const AFBEELDINGEN_MAP =
+  process.env.THUISLES_AFBEELDINGEN ?? path.join(process.cwd(), "public", "vragen");
+const MAP = AFBEELDINGEN_MAP;
 const VEILIGE_NAAM = /^[A-Za-z0-9._-]+$/;
 
 /** Alle beschikbare bestanden, alfabetisch. Voor de keuzelijst in het beheer. */

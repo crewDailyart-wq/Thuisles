@@ -8,6 +8,7 @@
  * LEGAL REVIEW REQUIRED — automatisch lezen van schoolwebsites.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import Link from "next/link";
 import { Gegevens, Kop, Paneel, Tabelkop, stijl } from "@/components/beheer/Bouwstenen";
 import {
@@ -181,7 +182,7 @@ export default function ZoekerPagina() {
           ]}
         />
         <p className="mt-3 text-xs leading-relaxed text-beheer-zacht">
-          Scholen waar kinderen van Thuisles op zitten gaan voor; daarna de rest.
+          Scholen waar kinderen van {MERKNAAM} op zitten gaan voor; daarna de rest.
           Er worden drie scholen tegelijk bekeken — elke afzonderlijke website
           krijgt nog steeds hooguit één verzoek per drie seconden. Een school
           wordt eens per schooljaar vanzelf opnieuw bekeken. Ververs deze pagina

@@ -11,6 +11,7 @@
  * boekomslagen, logo's of andere beeldmerken van uitgevers getoond.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { Icoon } from "@/components/kind/Icoon";
 import type { MethodeHerkomst, MethodeKoppeling } from "@/lib/types";
 
@@ -96,7 +97,7 @@ export function SchoolMethodeKaart({
       <p className="mt-3 text-[0.7rem] font-semibold leading-relaxed text-inkt-zacht">
         {methode.herkomst === "onbekend"
           ? "Je ouder kan de school instellen. Zonder school werkt vrij oefenen gewoon."
-          : "Thuisles stemt de volgorde af op school. De oefeningen zelf zijn altijd van Thuisles."}
+          : `${MERKNAAM} stemt de volgorde af op school. De oefeningen zelf zijn altijd van ${MERKNAAM}.`}
       </p>
     </section>
   );

@@ -31,7 +31,7 @@ async function kindVanOuder(gegevens: FormData) {
 
 function ververs() {
   revalidatePath("/ouder", "layout");
-  revalidatePath("/start");
+  revalidatePath("/zappie");
 }
 
 /**

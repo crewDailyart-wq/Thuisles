@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "node scripts/start.mjs",
     "lint": "eslint",
     "schermen": "node scripts/schermcontrole.mjs",
     "bewaking": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/waardebewaking.mjs",
@@ -15,7 +15,8 @@
     "oefentypes": "node scripts/oefentypes.mjs",
     "opgaven": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/opgaven.mjs",
     "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.mjs",
-    "maatje": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./scripts/registreer.mjs scripts/maatje-schrijf.mjs"
+    "maatje": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./scripts/registreer.mjs scripts/maatje-schrijf.mjs",
+    "online": "node --disable-warning=ExperimentalWarning scripts/online.mjs"
   },
   "dependencies": {
     "fflate": "^0.8.3",

@@ -24,6 +24,7 @@
  * staat er grijs bij, zodat je ziet wat je overschrijft voordat je iets typt.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { useState } from "react";
 import { bewerkSeoteksten } from "@/app/admin/structuuracties";
 import { Gegevens, Paneel, stijl } from "@/components/beheer/Bouwstenen";
@@ -133,7 +134,7 @@ export function SeoPaneel({
             className={`${stijl.veld} mt-1`}
           />
           <p className="mt-2 text-xs text-beheer-zacht">
-            Leeg laten mag: dan maakt Thuisles zelf een nette titel en beschrijving,
+            Leeg laten mag: dan maakt {MERKNAAM} zelf een nette titel en beschrijving,
             zoals het grijze voorbeeld hierboven.
           </p>
           <Fout tekst={fout} />

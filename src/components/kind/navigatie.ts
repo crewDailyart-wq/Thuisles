@@ -6,13 +6,13 @@
 import type { IcoonNaam } from "@/components/kind/Icoon";
 
 type NavItem = {
-  href: "/start" | "/oefenen" | "/voortgang" | "/wereld" | "/maatje" | "/profiel";
+  href: "/zappie" | "/oefenen" | "/voortgang" | "/wereld" | "/maatje" | "/profiel";
   label: string;
   icoon: IcoonNaam;
 };
 
 export const NAV_ITEMS: NavItem[] = [
-  { href: "/start", label: "Start", icoon: "start" },
+  { href: "/zappie", label: "Start", icoon: "start" },
   { href: "/oefenen", label: "Oefenen", icoon: "oefenen" },
   { href: "/voortgang", label: "Voortgang", icoon: "voortgang" },
   { href: "/wereld", label: "Wereld", icoon: "wereld" },

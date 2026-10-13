@@ -40,7 +40,7 @@ export type Antwoord<T> = { ok: true; waarde: T } | { ok: false; fout: string };
 function ververs() {
   revalidatePath("/admin", "layout");
   revalidatePath("/oefenen", "layout");
-  revalidatePath("/start");
+  revalidatePath("/zappie");
 }
 
 function tekst(data: FormData, veld: string): string {

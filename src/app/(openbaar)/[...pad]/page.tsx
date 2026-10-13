@@ -30,6 +30,7 @@
  * bestaat komt dus op het onderwerp uit; dat is de pagina met het meeste erop.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound, permanentRedirect } from "next/navigation";
@@ -356,7 +357,7 @@ export default async function OpenbarePagina({
       <Kruimels delen={kruimels} />
 
       <h1 className="text-2xl font-semibold sm:text-3xl">
-        {paginatitel(eigen.titel, naam, groep).replace(" | Thuisles", "")}
+        {paginatitel(eigen.titel, naam, groep).replace(` | ${MERKNAAM}`, "")}
       </h1>
       <p className="mt-2 max-w-prose text-sm leading-relaxed text-beheer-zacht">
         {paginabeschrijving(eigen.omschrijving, naam, groep)}

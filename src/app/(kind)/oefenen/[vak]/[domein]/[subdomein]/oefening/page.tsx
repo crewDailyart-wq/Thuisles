@@ -185,7 +185,17 @@ export default async function OefeningPagina({
   const data = await haalOefenStart(vakSlug, domeinSlug, subSlug, kind.id);
   if (!data) notFound();
 
-  const terugHref = `/oefenen/${vakSlug}/${domeinSlug}/${subSlug}`;
+  /*
+    Waar "terug" heen gaat. Kwam het kind via het rekenscherm in de
+    sterrenstijl (`van=ster`), dan terug naar dat onderwerp daar; anders naar
+    de oude domeinpagina, zoals altijd.
+
+    Het opslagpad van de sessie (`oefenpad`) blijft precies hetzelfde, met of
+    zonder `van`: anders zou een halve sessie niet meer worden opgepakt.
+  */
+  const basisHref = `/oefenen/${vakSlug}/${domeinSlug}/${subSlug}`;
+  const vanSter = zoek.van === "ster" && vakSlug === "rekenen";
+  const terugHref = vanSter ? `/rekenen/${domeinSlug}/${subSlug}` : basisHref;
 
   const leerdoelen = gekozenLeerdoel
     ? data.leerdoelen.filter((l) => l.leerdoel.id === gekozenLeerdoel)
@@ -208,9 +218,13 @@ export default async function OefeningPagina({
     doen, dan ziet het kind eerst vraag 1 in beeld springen voordat het bij
     vraag 8 staat — en op een langzame telefoon is dat goed te zien.
   */
-  const oefenpad = `${terugHref}/oefening${
+  const oefenpad = `${basisHref}/oefening${
     gekozenLeerdoel ? `?leerdoel=${gekozenLeerdoel}` : ""
   }`;
+  /* Opnieuw oefenen houdt `van=ster` vast, zodat "terug" daarna nog klopt. */
+  const herhaalHref = vanSter
+    ? `${oefenpad}${oefenpad.includes("?") ? "&" : "?"}van=ster`
+    : oefenpad;
   const bewaard = haalOefensessie(kind.id, oefenpad);
 
   /*
@@ -387,7 +401,7 @@ export default async function OefeningPagina({
       terugLabel={data.subdomein.naam}
       groep={kind.groep}
       aandachtVooraf={aandachtVooraf}
-      herhaalHref={oefenpad}
+      herhaalHref={herhaalHref}
       beginsaldo={sleutels.saldo}
       kindId={kind.id}
       oefenpad={oefenpad}

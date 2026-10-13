@@ -1,3 +1,4 @@
+import { MERKNAAM } from "@/lib/merk";
 import { Kop, Paneel } from "@/components/beheer/Bouwstenen";
 import { Stemtest } from "@/components/beheer/Stemtest";
 
@@ -12,7 +13,7 @@ export default function StemtestPagina() {
       <Stemtest />
       <Paneel titel="Later: een echte kinderstem">
         <p className="text-sm text-beheer-zacht">
-          Nu gebruikt Thuisles de stem die in de browser zit: gratis, werkt
+          Nu gebruikt {MERKNAAM} de stem die in de browser zit: gratis, werkt
           overal en er gaat niets naar buiten. Wil je later een vrolijke
           voorleesstem van een stemdienst, dan gaat dat via één schakelaar in{" "}
           <code className="font-mono text-xs">src/lib/stem.ts</code>. Elke unieke

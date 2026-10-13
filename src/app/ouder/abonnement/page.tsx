@@ -6,6 +6,7 @@
  * Ook een lege pagina is netjes: geen leeg scherm, wel uitleg.
  */
 
+import { MERKNAAM } from "@/lib/merk";
 import { Leeg, Pagina } from "@/components/ouder/Bouwstenen";
 
 export default function AbonnementPagina() {
@@ -14,7 +15,7 @@ export default function AbonnementPagina() {
       titel="Abonnement"
       uitleg="Hier komt straks je abonnement te staan: wat je hebt, wat het kost en hoe je het wijzigt."
     >
-      <Leeg tekst="Nog niet beschikbaar. Je kunt Thuisles gewoon gebruiken." />
+      <Leeg tekst={`Nog niet beschikbaar. Je kunt ${MERKNAAM} gewoon gebruiken.`} />
     </Pagina>
   );
 }

@@ -1,3 +1,4 @@
+import { MERKNAAM } from "@/lib/merk";
 import "server-only";
 
 /**
@@ -178,7 +179,7 @@ export function exporteerGegevens(ouderId: string) {
   return {
     gemaaktOp: new Date().toISOString(),
     toelichting:
-      "Dit is alles wat Thuisles over jou en je kinderen bewaart. Een kindcode staat er niet in: die wordt niet leesbaar opgeslagen.",
+      `Dit is alles wat ${MERKNAAM} over jou en je kinderen bewaart. Een kindcode staat er niet in: die wordt niet leesbaar opgeslagen.`,
     account: {
       email: ouder.email ?? "niet ingevuld",
       weergavenaam: ouder.weergavenaam,

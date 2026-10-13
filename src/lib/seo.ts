@@ -31,6 +31,8 @@
  * Nederlands is de standaard en staat zonder voorvoegsel in het adres; de
  * andere drie krijgen er een: `/tr/...`, `/ar/...`, `/pl/...`.
  */
+import { MERKNAAM } from "@/lib/merk";
+
 export const TALEN = ["nl", "tr", "ar", "pl"] as const;
 
 export type Taal = (typeof TALEN)[number];
@@ -134,8 +136,8 @@ export function openbaarAdres(
 // Paginatitel en beschrijving
 // ---------------------------------------------------------------------------
 
-/** Wat er achter elke paginatitel komt. Eén plek, zodat het nooit afwijkt. */
-export const MERKNAAM = "Thuisles";
+/** Wat er achter elke paginatitel komt: de naam uit `merk.ts`. */
+export { MERKNAAM };
 
 /**
  * Een eigen tekst met `{groep}` erin: daar komt het nummer van de groep van
@@ -233,4 +235,5 @@ export const GESLOTEN_PADEN = [
   "/wereld",
   "/maatje",
   "/voorbeeld",
+  "/zappie",
 ];

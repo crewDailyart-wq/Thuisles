@@ -54,7 +54,7 @@ export const VORM_LABEL: Record<Vraagvorm, string> = {
 };
 
 export const VORM_UITLEG: Record<Vraagvorm, string> = {
-  bosspel: "Een Thuisles-spel voor tellen, buurgetallen, hoeveelheden of ordenen. Via een sjabloon.",
+  bosspel: `Een ${MERKNAAM}-spel voor tellen, buurgetallen, hoeveelheden of ordenen. Via een sjabloon.`,
   meerkeuze: "Het kind kiest uit twee tot zes antwoorden. Eén is goed.",
   open: "Het kind typt het antwoord. Meerdere schrijfwijzen mogen goed zijn.",
   waar_niet_waar: "Een stelling die waar of niet waar is.",
@@ -112,6 +112,7 @@ export function leesOpties(ruw: string | null): AntwoordOptie[] | null {
  * Tekening bij een vraag (splitsboom, later ook klok, breukfiguur, ...).
  * Wordt als gegevens opgeslagen en met code getekend.
  */
+import { MERKNAAM } from "@/lib/merk";
 import type { Figuur, Somgegevens } from "@/lib/generatoren/soort";
 export type { Figuur, Somgegevens };
 
