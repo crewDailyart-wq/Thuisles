@@ -1,52 +1,98 @@
 "use client";
 
 import { useEffect } from "react";
+import { reisStand, useBewegingsstand, zetOmgevingRustig } from "@/components/zappie/reis/beweging";
 
-/**
- * De homepage is een reis: van de ruimte via de wolken naar Zappies atelier.
- * We sturen slechts één CSS-variabele aan. De bestaande WebGL-aarde,
- * sterren en muis-parallax blijven zelfstandig draaien en bewegen.
- */
+const begrens = (n: number) => Math.max(0, Math.min(1, n));
+const vloeiend = (n: number) => { const t = begrens(n); return t * t * (3 - 2 * t); };
+
+/** Normaal scrollen blijft intact: alleen de decoratieve omgeving reageert. */
 export function ScrollReis() {
+  const stand = useBewegingsstand();
+  const rustig = stand !== "aan";
+
   useEffect(() => {
     const root = document.querySelector<HTMLElement>('.zp[data-start="ja"]');
-    if (!root) return;
+    const bestemming = document.getElementById("zappies-atelier");
+    if (!root || !bestemming) return;
+    root.dataset.beweging = rustig ? "rustig" : "aan";
 
-    const minderBeweging = window.matchMedia("(prefers-reduced-motion: reduce)");
     let frame = 0;
-    let huidigeStand = 0;
+    let vorigeTijd = 0;
+    let positie = 0;
     let doel = 0;
-
-    const meet = () => {
-      const lengte = Math.max(
-        1,
-        document.documentElement.scrollHeight - window.innerHeight,
-      );
-      doel = Math.max(0, Math.min(1, window.scrollY / lengte));
-      if (!frame) frame = window.requestAnimationFrame(teken);
-    };
-
-    const teken = () => {
+    let afstand = 1;
+    const teken = (nu: number) => {
       frame = 0;
-      huidigeStand += (doel - huidigeStand) * (minderBeweging.matches ? 1 : 0.18);
-      if (Math.abs(doel - huidigeStand) < 0.001) huidigeStand = doel;
-      root.style.setProperty("--zr-scroll", huidigeStand.toFixed(4));
-      root.dataset.reisfase =
-        huidigeStand < 0.2 ? "ruimte" : huidigeStand < 0.58 ? "atmosfeer" : "kust";
-      if (huidigeStand !== doel) frame = window.requestAnimationFrame(teken);
+      const delta = vorigeTijd ? Math.min(80, nu - vorigeTijd) : 16;
+      vorigeTijd = nu;
+      positie += (doel - positie) * (rustig ? 1 : 1 - Math.exp(-delta / 90));
+      if (Math.abs(doel - positie) < 0.0005) positie = doel;
+      const land = vloeiend((positie - 0.42) / 0.4);
+      const wolken = vloeiend((positie - 0.2) / 0.25) * (1 - vloeiend((positie - 0.62) / 0.28));
+      reisStand.positie = rustig ? 0 : positie;
+      root.style.setProperty("--zr-scroll", positie.toFixed(4));
+      root.style.setProperty("--zr-land", land.toFixed(4));
+      root.style.setProperty("--zr-wolken", wolken.toFixed(4));
+      root.dataset.reisfase = positie < 0.2 ? "ruimte" : positie < 0.67 ? "atmosfeer" : "kust";
+      if (!rustig && Math.abs(doel - positie) > 0.0005 && !document.hidden) frame = requestAnimationFrame(teken);
     };
-
+    const plan = () => {
+      if (!frame && !document.hidden) frame = requestAnimationFrame(teken);
+    };
+    const scroll = () => { doel = begrens(window.scrollY / afstand); plan(); };
+    const meet = () => {
+      // Een anker in de inhoud, niet een vaste pixelhoogte. Werkt ook na tekstzoom,
+      // laden van illustraties, lettertypen en wisselen van schermoriëntatie.
+      afstand = Math.max(1, bestemming.getBoundingClientRect().top + window.scrollY + Math.min(420, window.innerHeight * 0.35));
+      scroll();
+    };
+    const zichtbaarheid = () => {
+      cancelAnimationFrame(frame);
+      frame = 0;
+      vorigeTijd = 0;
+      if (!document.hidden) meet();
+    };
+    const observer = new ResizeObserver(meet);
+    observer.observe(root);
     meet();
-    window.addEventListener("scroll", meet, { passive: true });
-    window.addEventListener("resize", meet);
+    // Geen inhaalvlucht na herstel van een eerder bezochte scrollpositie.
+    positie = doel;
+    window.addEventListener("scroll", scroll, { passive: true });
+    window.addEventListener("resize", meet, { passive: true });
+    document.addEventListener("visibilitychange", zichtbaarheid);
     return () => {
-      window.cancelAnimationFrame(frame);
-      window.removeEventListener("scroll", meet);
+      cancelAnimationFrame(frame);
+      observer.disconnect();
+      window.removeEventListener("scroll", scroll);
       window.removeEventListener("resize", meet);
-      root.style.removeProperty("--zr-scroll");
+      document.removeEventListener("visibilitychange", zichtbaarheid);
+      for (const naam of ["--zr-scroll", "--zr-land", "--zr-wolken"]) root.style.removeProperty(naam);
       delete root.dataset.reisfase;
+      delete root.dataset.beweging;
+      reisStand.positie = 0;
     };
-  }, []);
+  }, [rustig]);
 
-  return null;
+  return (
+    <>
+      <div className="zr-camera" aria-hidden="true">
+        <div className="zr-landing"><img src="/achtergrond-wereld.png" alt="" decoding="async" /></div>
+        <div className="zr-camerawolk zr-camerawolk-links" />
+        <div className="zr-camerawolk zr-camerawolk-rechts" />
+      </div>
+      <a href="#vrij-oefenen" className="zr-skip">Direct naar de vakken</a>
+      <button
+        type="button"
+        className="zr-beweging"
+        aria-pressed={rustig}
+        disabled={stand === "systeem"}
+        title={stand === "systeem" ? "Je apparaat heeft minder beweging ingesteld." : "Zet de bewegende omgeving aan of uit."}
+        onClick={() => zetOmgevingRustig(!rustig)}
+      >
+        <svg viewBox="0 0 24 24" aria-hidden="true">{rustig ? <path d="m8 5 11 7-11 7z" /> : <path d="M7 5h3v14H7zm7 0h3v14h-3z" />}</svg>
+        <span>{rustig ? "Rustige weergave" : "Beweging uit"}</span>
+      </button>
+    </>
+  );
 }
