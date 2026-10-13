@@ -131,7 +131,6 @@ export async function POST(request: NextRequest) {
           content: JSON.stringify(output).slice(0, 36_000),
         });
       }
-      if (round === 7) reply += "\n\nIk heb de limiet voor deze opdracht bereikt. Bekijk de voorgestelde bestanden.";
     }
     job.state = finished ? "finished" : (job.steps >= MAX_STEPS || job.totalTokens >= MAX_TOTAL_TOKENS ? "limit" : "paused");
     job.reply = reply;
