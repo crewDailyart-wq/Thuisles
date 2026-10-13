@@ -45,6 +45,6 @@ export const COOKIE_OPTIONS = {
   httpOnly: true,
   sameSite: "strict" as const,
   secure: process.env.NODE_ENV === "production",
-  path: "/admin/ai",
+  path: "/",
   maxAge: TWELVE_HOURS,
 };
