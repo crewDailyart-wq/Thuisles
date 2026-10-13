@@ -15,7 +15,7 @@ export function allowedPath(path: string): boolean {
   if (typeof path !== "string" || path.length > 200 || path.includes("\\") || path.includes("//")) return false;
   if (path.split("/").some((p) => p === ".." || p === "." || !p)) return false;
   if (!/^(src\/(app|components|lib)\/|scripts\/|public\/)[\w\s().@+\-/]+\.(ts|tsx|js|jsx|mjs|css|json|md)$/.test(path)) return false;
-  if (/^src\/(lib\/auth\/|lib\/ai\/|app\/api\/admin\/ai\/)/.test(path)) return false;
+  if (/^src\/(lib\/auth\/|lib\/ai\/|app\/api\/admin\/ai\/|app\/admin\/ai\/)/.test(path)) return false;
   if (/\.env|secrets|credentials|token|password|node_modules/i.test(path)) return false;
   return true;
 }
