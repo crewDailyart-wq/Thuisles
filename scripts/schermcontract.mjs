@@ -287,7 +287,13 @@ export const SCHERMCONTRACT = [
   {
     naam: "Zappie start",
     pad: "/zappie",
-    bron: ["src/components/zappie/Startscherm.tsx", "src/components/zappie/Schil.tsx", "src/lib/zappie/werelden.ts"],
+    bron: [
+      "src/components/zappie/Startscherm.tsx",
+      "src/components/zappie/Schil.tsx",
+      "src/lib/zappie/werelden.ts",
+      "src/components/zappie/OntdekkingsReis.tsx",
+      "src/components/zappie/ScrollReis.tsx",
+    ],
     zichtbaar: [
       "Begin je missie",
       "Oceaan",
@@ -296,22 +302,62 @@ export const SCHERMCONTRACT = [
       "Jouw huidige wereld",
       "Vandaag op ontdekking",
       "Schoolpad",
-      "IEP Sprong",
+      /* Was "IEP Sprong"; hernoemd op verzoek van de eigenaar (13 oktober 2026), zie JURIDISCH.md. */
+      "Toetssprong",
+      "voorbereiding op de IEP",
       "Vrije Missie",
       "Binnenkort",
       "Jouw tokens",
       "Op weg naar je volgende beloning!",
       "Jouw wereld",
       "Ga naar mijn wereld",
-      "Leren vandaag",
+      /*
+        "Leren vandaag, groter morgen." onder het logo is weggehaald op
+        verzoek van de eigenaar (13 oktober 2026, bouwopdracht cinematische
+        kinderhomepage: "Verwijder de slogan onder het logo").
+      */
       "Start",
       "Oefenen",
-      "Werelden",
+      /*
+        Heette in het tweede ontwerp "Werelden". De bouwopdracht van het derde
+        ontwerp (13 oktober 2026) noemt de vier knoppen "Start, Oefenen, Wereld,
+        Beloningen".
+      */
+      "Wereld",
       "Beloningen",
+      /* Derde ontwerp (13 oktober 2026): de lange pagina onder de ruimte. */
+      "Zo kan jouw wereld worden",
+      "Wat wil je ontdekken?",
+      "Rekenen",
+      "Begrijpend lezen",
+      "Aardrijkskunde",
+      "Woordenschat",
+      "Engels",
+      "Liever meteen een vrije missie?",
+      "Werkplaats",
+      "Bouw aan nieuwe voertuigen!",
+      "Onderzeeër",
+      "Vliegtuig",
+      "Raket",
+      "Op de tekentafel",
+      "Zappies atelier",
+      "Wat past bij jou?",
+      "Petjes",
+      "Kleuren",
+      "Passen",
+      "Terug naar je eigen Zappie",
+      "Tot de volgende missie!",
+      "Terug naar de sterren",
+      "Beweging uit",
+      "Direct naar de vakken",
     ],
     naKlik: [
+      { tekst: "komt binnenkort. Met Rekenen kun je nu al beginnen!", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "op een vak met Binnenkort tikken" },
+      { tekst: "Dit bouwplan gaat open als", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "het vliegtuig of de raket kiezen in de werkplaats" },
+      { tekst: "Zappie past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
+      { tekst: "Beweging aan", bron: "src/components/zappie/ScrollReis.tsx", na: "op Beweging uit tikken" },
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
-      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op IEP Sprong tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Toetssprong tikken" },
       { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },
       { tekst: 'href: "/rekenen"', bron: "src/components/zappie/Schil.tsx", na: "op Oefenen tikken (het rekenscherm)" },
       { tekst: 'href="/meer"', bron: "src/components/zappie/Schil.tsx", na: "op het menuknopje naast het tandwiel tikken" },
@@ -349,6 +395,102 @@ export const SCHERMCONTRACT = [
     naKlik: [
       { tekst: "Vrij!", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
       { tekst: "vrijgespeeld", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
+    ],
+  },
+  /*
+    De openbare site (13 oktober 2026): de homepagina voor wie via Google
+    binnenkomt, de scholenkaart, de werkbladen en hun beheer. `/` stuurt een
+    apparaat waarop al een kind gekozen is door naar Zappie; zonder koekje
+    (zoals hier) is het de homepagina.
+  */
+  {
+    naam: "Homepagina",
+    pad: "/",
+    bron: ["src/app/(site)/page.tsx", "src/app/(site)/layout.tsx", "src/components/site/Kop.tsx"],
+    zichtbaar: [
+      "Oefenen met precies wat er",
+      "Zoek je school",
+      "Geen standaardpakket",
+      "Kies de school",
+      "Wij koppelen de methode",
+      "Je kind oefent gericht",
+      "Elke basisschool van Nederland",
+      "Open de scholenkaart",
+      "Toewerken naar de toets van groep 8",
+      "De referentieniveaus",
+      "Gratis digitale niveautest",
+      "Dyslexie",
+      "Slechthorend",
+      "ADHD en concentratie",
+      "Meertalig",
+      "Moeilijke onderwerpen",
+      "Begin gratis. Kies later",
+      "€6,95",
+      "€89",
+      "Veelgestelde vragen",
+      "Inloggen",
+      "Scholenkaart",
+      "Prijzen",
+      "is onafhankelijk en niet verbonden aan",
+      "DUO Open Onderwijsdata",
+    ],
+  },
+  {
+    naam: "Scholenkaart",
+    pad: "/scholen",
+    bron: ["src/app/(site)/scholen/page.tsx", "src/components/site/Scholenkaart.tsx"],
+    zichtbaar: ["basisscholen van Nederland", "Zoek de school van je kind", "Doorstroomtoets"],
+    naKlik: [
+      { tekst: "Koppel deze school aan mijn kind", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Ons doel voor ons kind", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Wat leerlingen hier halen", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Andere school zoeken", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+    ],
+  },
+  {
+    naam: "Werkbladen in beheer",
+    pad: "/admin/werkbladen",
+    bron: ["src/app/admin/werkbladen/page.tsx", "src/components/beheer/Werkbladformulier.tsx"],
+    zichtbaar: ["Werkbladen en posters", "Nieuw werkblad of poster", "Titel", "Bestand", "Opslaan"],
+    naKlik: [
+      { tekst: "Weghalen", bron: "src/components/beheer/Werkbladformulier.tsx", na: "er staat een werkblad" },
+      { tekst: "Op de site", bron: "src/app/admin/werkbladen/page.tsx", na: "er staat een werkblad" },
+    ],
+  },
+  /*
+    De gratis niveautest. Het beheerscherm is er altijd; de formuliervelden pas
+    als er leerdoelen zijn, en de openbare pagina's (/niveautest en
+    /niveautest/{groep}) pas als er een toets is samengesteld. Tot dan zijn die
+    een 404, dus worden ze in de bron gecontroleerd.
+  */
+  {
+    naam: "Niveautest in beheer",
+    pad: "/admin/niveautest",
+    bron: ["src/app/admin/niveautest/page.tsx"],
+    zichtbaar: ["Niveautest", "Onderdeel toevoegen", "Zo wordt de uitslag bepaald"],
+    naKlik: [
+      /* Een paneel per groep, 3 tot en met 8; de titel wordt in de code gemaakt. */
+      { tekst: "TOETSGROEPEN.map((groep)", bron: "src/app/admin/niveautest/page.tsx", na: "het scherm openen" },
+      { tekst: "Groep</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Leerdoel</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Vragen</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Referentieniveau</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Toevoegen", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Uit de toets", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: 'name="aantal"', bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: 'name="niveau"', bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: "Opslaan", bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: "Eén plek omhoog", bron: "src/app/admin/niveautest/page.tsx", na: "er staan twee onderdelen in de toets" },
+      { tekst: "Eén plek omlaag", bron: "src/app/admin/niveautest/page.tsx", na: "er staan twee onderdelen in de toets" },
+      { tekst: "In welke groep zit je kind?", bron: "src/app/(site)/niveautest/page.tsx", na: "er is een toets samengesteld; open /niveautest" },
+      { tekst: "Begin de toets", bron: "src/components/site/Toetsspeler.tsx", na: "kies een groep op /niveautest" },
+      { tekst: "Weet ik niet", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: '"Volgende"', bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: "Stoppen", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: "<Antwoordvelden", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets (dezelfde antwoordvelden als bij het oefenen)" },
+      { tekst: "Hier valt de meeste winst te halen", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
+      { tekst: "Nog een keer", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
+      { tekst: "Oefen met de methode van school", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
     ],
   },
   /*

@@ -580,6 +580,42 @@ create policy "ouder beheert eigen kinderen"
   using (ouder_id = auth.uid())
   with check (ouder_id = auth.uid());
 
+-- --------------------------------------------------------------------------
+-- Werkbladen en posters (openbare site). Alleen wat de beheerder uploadt;
+-- standaard niet zichtbaar tot het wordt aangezet.
+-- --------------------------------------------------------------------------
+create table werkbladen (
+  id             uuid primary key default gen_random_uuid(),
+  titel          text not null,
+  omschrijving   text not null default '',
+  soort          text not null check (soort in ('werkblad','poster')),
+  vak            text not null default '',
+  groepen        text not null default '',
+  bestand        text not null,
+  zichtbaar      boolean not null default false,
+  aangemaakt_op  timestamptz not null default now()
+);
+alter table werkbladen enable row level security;
+create policy "werkbladen openbaar" on werkbladen for select using (zichtbaar);
+
+-- --------------------------------------------------------------------------
+-- De gratis niveautest (openbare site). Per groep de samenstelling uit
+-- bestaande leerdoelen; de vragen zijn de gepubliceerde vragen daarvan.
+-- Leeg betekent: geen toets.
+-- --------------------------------------------------------------------------
+create table niveautest_onderdelen (
+  id             uuid primary key default gen_random_uuid(),
+  groep          smallint not null check (groep between 3 and 8),
+  leerdoel_id    uuid not null references leerdoelen (id) on delete cascade,
+  aantal         smallint not null default 3 check (aantal between 1 and 10),
+  niveau         text not null default '' check (niveau in ('', '1F', '2F', '1S')),
+  volgorde       integer not null default 0,
+  aangemaakt_op  timestamptz not null default now(),
+  unique (groep, leerdoel_id)
+);
+alter table niveautest_onderdelen enable row level security;
+create policy "niveautest openbaar" on niveautest_onderdelen for select using (true);
+
 -- Dezelfde regel voor elke tabel die aan een kind hangt.
 create policy "alleen eigen kind" on leerdoel_voortgang     for all using (is_mijn_kind(kind_id)) with check (is_mijn_kind(kind_id));
 create policy "alleen eigen kind" on sleutel_mutaties       for all using (is_mijn_kind(kind_id)) with check (is_mijn_kind(kind_id));

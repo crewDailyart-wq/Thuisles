@@ -39,14 +39,16 @@ export type Speler = {
  * De vier menuknoppen. Een knop erbij is één regel.
  *
  * Oefenen gaat naar het rekenscherm in sterrenstijl (/rekenen, uit de nieuwe
- * layout; keuze eigenaar 13 oktober 2026). Daar staan alle rekenoefeningen per
+ * layout; keuze eigenaar 13 oktober 2026). "Wereld" heette in het tweede
+ * ontwerp "Werelden"; de bouwopdracht van het derde ontwerp noemt hem weer
+ * "Wereld". Daar staan alle rekenoefeningen per
  * domein en onderwerp. De Zappie-missies zitten achter "Begin je missie" op de
  * startpagina.
  */
 export const MENU = [
   { href: "/zappie", label: "Start", Icoon: IcoonHuis, actief: ["/zappie", "/zappie/mijn-wereld"] },
   { href: "/rekenen", label: "Oefenen", Icoon: IcoonController, actief: ["/rekenen", "/oefenen"] },
-  { href: "/zappie/wereld", label: "Werelden", Icoon: IcoonWereldbol, actief: ["/zappie/wereld"] },
+  { href: "/zappie/wereld", label: "Wereld", Icoon: IcoonWereldbol, actief: ["/zappie/wereld"] },
   { href: "/zappie/beloningen", label: "Beloningen", Icoon: IcoonSter, actief: ["/zappie/beloningen"] },
 ] as const;
 
@@ -71,11 +73,6 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
         <div className="zp-schil">
           <div className="zp-logoplek">
             <ZappieLogo />
-            <p className="zp-hand zp-logozin" aria-hidden="true">
-              Leren vandaag,
-              <br />
-              groter morgen.
-            </p>
           </div>
           <nav className="zp-menu" aria-label="Menu">
             <ul>

@@ -256,7 +256,7 @@
     0 0.06em 0 #0d4fb0,
     0 0.12em 0.18em rgb(3 15 60 / 0.55),
     0 0 0.5em rgb(82 217 255 / 0.45);
-  transform: rotate(-4deg);
+  transform: none;
 }
 
 .zp-logo-ster {
@@ -1762,7 +1762,8 @@
   gap: 16px 14px;
   max-width: 40rem;
   margin: 0 auto;
-  padding: 76px 16px 112px;
+  /* Onderaan geen ruimte meer voor de menubalk: de pagina loopt hieronder door. */
+  padding: 76px 16px 28px;
 }
 
 .zp-zappieplek {
@@ -1927,15 +1928,23 @@
     padding: 0 0.6em 0 0.2em;
   }
 
-  /* De startpagina: elk onderdeel op zijn plek in het vlak. */
+  /*
+    De ruimte bovenaan de startpagina: elk onderdeel op zijn plek in het vlak.
+
+    Sinds het derde ontwerp (13 oktober 2026) is dit niet meer het hele
+    scherm maar de bovenste scène van een lange pagina: Zappie, de werelden en
+    "Begin je missie". De panelen eronder staan in gewone secties
+    (startpagina.css). --by houdt de werelden vrij van het menu.
+  */
   .zp-podium {
+    --by: calc(var(--u) * 5.2);
     display: block;
     position: relative;
     max-width: none;
-    height: 100svh;
+    height: calc(var(--u) * 45.5);
     margin: 0;
     padding: 0;
-    overflow: hidden;
+    overflow: visible;
   }
 
   .zp-podium > * {
@@ -2002,97 +2011,11 @@
     font-size: calc(var(--u) * 1.95);
   }
 
-  .zp-ontdekking {
-    --u: inherit;
-    left: calc(var(--bx) + var(--u) * 4.8);
-    top: calc(var(--by) + var(--u) * 38.6);
-    width: calc(var(--u) * 47.9);
-    height: calc(var(--u) * 11.1);
-  }
-
-  .zp-kaarten {
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-  }
-
-  .zp-notitie-drie {
-    position: absolute;
-    right: calc(var(--u) * 6);
-    top: calc(var(--u) * 0.6);
-    margin: 0;
-  }
-
-  /* Kleinere liggende schermen (laptop): de kaarten compacter, zodat de naam
-     en de zin passen bij een minimale lettergrootte. */
-  @media (max-width: 1500px), (max-height: 840px) {
-    .zp-kaart {
-      gap: 0.4em;
-      padding: 0.45em 0.45em 0.45em 0.4em;
-    }
-
-    .zp-kaart-beeld {
-      width: 3.3em;
-      height: 3.3em;
-    }
-
-    .zp-kaart-naam {
-      font-size: 1.32em;
-    }
-
-    .zp-kaart-pijl {
-      width: 2.1em;
-      height: 2.1em;
-    }
-
-    .zp-kaart-zin {
-      -webkit-line-clamp: 2;
-    }
-  }
-
-  .zp-kaart {
-    min-height: 0;
-  }
-
-  .zp-tokens {
-    --u: inherit;
-    left: calc(var(--bx) + var(--u) * 4.8);
-    top: calc(var(--by) + var(--u) * 50.1);
-    width: calc(var(--u) * 47.9);
-    height: calc(var(--u) * 4.8);
-    flex-wrap: nowrap;
-  }
-
-  .zp-tokens-weg {
-    min-width: 0;
-  }
-
-  .zp-jouwpaneel {
-    --u: inherit;
-    left: calc(var(--bx) + var(--u) * 53.7);
-    top: calc(var(--by) + var(--u) * 30.6);
-    width: calc(var(--u) * 45);
-    height: calc(var(--u) * 24.2);
-    display: block;
-  }
-
-  .zp-jouw-eiland {
-    position: absolute;
-    top: 0;
-    right: 0;
-    bottom: 0;
-    width: 60%;
-    aspect-ratio: auto;
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 24%), linear-gradient(180deg, #000 80%, transparent);
-    -webkit-mask-composite: source-in;
-    mask-image: linear-gradient(90deg, transparent, #000 24%), linear-gradient(180deg, #000 80%, transparent);
-    mask-composite: intersect;
-  }
-
-  .zp-jouw-tekst {
-    width: 52%;
-    height: 100%;
-    justify-content: center;
-    padding: calc(var(--u) * 1.4) 0 calc(var(--u) * 1.4) calc(var(--u) * 1.6);
-  }
+  /*
+    Hier stonden de plekken van "Vandaag op ontdekking", de tokens en "Jouw
+    wereld" in het 16:9-vlak. Die staan sinds het derde ontwerp in een eigen
+    sectie onder de ruimte (startpagina.css).
+  */
 
   .zp-notitie-stappen {
     display: block;

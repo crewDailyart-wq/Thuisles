@@ -34,6 +34,7 @@
 
 import { useEffect, useRef } from "react";
 import { parallax } from "@/components/zappie/parallax";
+import { reisStand } from "@/components/zappie/reis/beweging";
 
 /** Hoe lang één rondje duurt, in seconden. */
 const OMLOOP_SECONDEN = 1800;
@@ -232,31 +233,49 @@ function maakShader(gl: WebGLRenderingContext, soort: number, bron: string) {
   gl.compileShader(s);
   if (!gl.getShaderParameter(s, gl.COMPILE_STATUS)) {
     console.warn("[zappie] aarde-shader:", gl.getShaderInfoLog(s));
+    gl.deleteShader(s);
     return null;
   }
   return s;
 }
 
-export function DraaiendeAarde({ rustig = false }: { rustig?: boolean }) {
+export function DraaiendeAarde({ rustig = false, reis = false }: { rustig?: boolean; reis?: boolean }) {
   const canvas = useRef<HTMLCanvasElement>(null);
 
   useEffect(() => {
     const doek = canvas.current;
     if (!doek) return;
+    delete doek.dataset.klaar;
     const gl = doek.getContext("webgl", { premultipliedAlpha: true, alpha: true, antialias: false, powerPreference: "low-power" });
     if (!gl) return;
 
     const hv = maakShader(gl, gl.VERTEX_SHADER, HOEKPUNTEN);
     const bp = maakShader(gl, gl.FRAGMENT_SHADER, BEELDPUNTEN);
-    if (!hv || !bp) return;
-    const prog = gl.createProgram()!;
+    if (!hv || !bp) {
+      if (hv) gl.deleteShader(hv);
+      if (bp) gl.deleteShader(bp);
+      return;
+    }
+    const prog = gl.createProgram();
+    if (!prog) { gl.deleteShader(hv); gl.deleteShader(bp); return; }
     gl.attachShader(prog, hv);
     gl.attachShader(prog, bp);
     gl.linkProgram(prog);
-    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) return;
+    if (!gl.getProgramParameter(prog, gl.LINK_STATUS)) {
+      gl.deleteProgram(prog); gl.deleteShader(hv); gl.deleteShader(bp);
+      return;
+    }
     gl.useProgram(prog);
 
     const buffer = gl.createBuffer();
+    const opruimen = () => {
+      gl.deleteBuffer(buffer);
+      gl.deleteProgram(prog);
+      gl.deleteShader(hv);
+      gl.deleteShader(bp);
+      delete doek.dataset.klaar;
+    };
+    if (!buffer) { opruimen(); return; }
     gl.bindBuffer(gl.ARRAY_BUFFER, buffer);
     gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 3, -1, -1, 3]), gl.STATIC_DRAW);
     const a = gl.getAttribLocation(prog, "a");
@@ -268,6 +287,8 @@ export function DraaiendeAarde({ rustig = false }: { rustig?: boolean }) {
     const uTijd = plek("uTijd");
     const uParallax = plek("uParallax");
     const uHoek = plek("uHoek");
+    const uHoogte = plek("uHoogte");
+    const uKanteling = plek("uKanteling");
     const brandpunt = 0.5 / Math.tan(KIJKHOEK / 2);
     const duik = Math.acos(1 / (1 + HOOGTE));
     gl.uniform1f(plek("uMidden"), MIDDEN);
@@ -295,6 +316,15 @@ export function DraaiendeAarde({ rustig = false }: { rustig?: boolean }) {
     const begin = performance.now();
     const hoekBegin = (Date.now() / 1000) % OMLOOP_SECONDEN;
     const teken = (t: number) => {
+      // Werkelijke camera-afdaling in de bolshader, geen vergroot plat canvas.
+      // Een aparte geschilderde landschaplaag neemt het laatste stuk over.
+      // reisStand.positie loopt van 0 (boven) tot 1 (de vakken in beeld); zie ScrollReis.
+      const p = reis && !rustig ? Math.min(1, Math.max(0, reisStand.positie)) : 0;
+      const daling = p * p * (3 - 2 * p);
+      const hoogte = HOOGTE * (1 - daling * 0.82);
+      const top = TOP - daling * 0.19;
+      gl.uniform1f(uHoogte, hoogte);
+      gl.uniform1f(uKanteling, Math.acos(1 / (1 + hoogte)) + Math.atan((0.5 - top) / brandpunt));
       gl.uniform1f(uTijd, t);
       gl.uniform1f(uHoek, ((hoekBegin + t) / OMLOOP_SECONDEN) * Math.PI * 2);
       gl.uniform2f(uParallax, (parallax.x * 4) / window.innerHeight, (-parallax.y * 3) / window.innerHeight);
@@ -311,7 +341,10 @@ export function DraaiendeAarde({ rustig = false }: { rustig?: boolean }) {
         teken(0);
       };
       window.addEventListener("resize", opnieuw);
-      return () => window.removeEventListener("resize", opnieuw);
+      return () => {
+        window.removeEventListener("resize", opnieuw);
+        opruimen();
+      };
     }
 
     let frame = 0;
@@ -353,8 +386,9 @@ export function DraaiendeAarde({ rustig = false }: { rustig?: boolean }) {
       window.removeEventListener("resize", maat);
       document.removeEventListener("visibilitychange", zichtbaar);
       doek.removeEventListener("webglcontextlost", kwijt);
+      opruimen();
     };
-  }, [rustig]);
+  }, [rustig, reis]);
 
   return <canvas ref={canvas} className="zp-laag zp-aarde" />;
 }

@@ -47,6 +47,16 @@ const ALGEMEEN = [
     label: "Verificaties",
     pad: "M12 3.5 19.5 6v6c0 4-3.2 7.4-7.5 8.5C7.7 19.4 4.5 16 4.5 12V6zM9 12l2.2 2.2L15.5 10",
   },
+  {
+    href: "/admin/werkbladen",
+    label: "Werkbladen",
+    pad: "M6.5 3.5h8l4 4v13h-12zM14.5 3.5v4h4M9 12.5h6M9 16h6",
+  },
+  {
+    href: "/admin/niveautest",
+    label: "Niveautest",
+    pad: "M5 20.5V13M10 20.5V9M15 20.5V5.5M20 20.5v-9M3.5 20.5h17",
+  },
 ];
 
 export function Beheerbalk({ vakken }: { vakken: Vak[] }) {

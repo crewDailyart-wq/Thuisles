@@ -19,12 +19,17 @@
  */
 
 import { useRef } from "react";
+import { usePathname } from "next/navigation";
+import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { DraaiendeAarde } from "@/components/zappie/DraaiendeAarde";
 import { useParallax } from "@/components/zappie/parallax";
 import { Sterrenveld } from "@/components/zappie/Sterrenveld";
 import { ASSETS } from "@/lib/zappie/werelden";
 
-export function Heelal({ rustig = false }: { rustig?: boolean }) {
+export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
+  const bewegingsstand = useBewegingsstand();
+  const rustig = focus || bewegingsstand !== "aan";
+  const reis = usePathname() === "/zappie";
   const laag = useRef<HTMLDivElement>(null);
   useParallax(laag, !rustig);
 
@@ -53,7 +58,7 @@ export function Heelal({ rustig = false }: { rustig?: boolean }) {
         <span className="zp-planeetgloed zp-planeetgloed-2" />
       </div>
       <Sterrenveld rustig={rustig} />
-      <DraaiendeAarde rustig={rustig} />
+      <DraaiendeAarde rustig={rustig} reis={reis} />
       <div className="zp-laag zp-horizonlicht">
         <span className="zp-zon" />
         <span className="zp-straal-licht zp-straal-licht-1" />

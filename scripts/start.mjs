@@ -32,6 +32,26 @@ if (doel) {
   console.log(`[thuisles] afbeeldingen: ${erbij} bijgezet in ${doel}`);
 }
 
+/*
+  Werkbladen en posters die op de laptop zijn geüpload, komen via Git mee in
+  public/werkbladen. Online staan ze op de schijf naast de afbeeldingen
+  (src/lib/data/werkbladen.ts); hier worden ze bijgezet, zonder iets te
+  overschrijven, net als de afbeeldingen.
+*/
+const werkbladDoel =
+  process.env.THUISLES_WERKBLADEN ?? (doel ? path.join(path.dirname(doel), "werkbladen") : null);
+const werkbladBron = path.join(WORTEL, "public", "werkbladen");
+if (werkbladDoel && existsSync(werkbladBron)) {
+  mkdirSync(werkbladDoel, { recursive: true });
+  let erbij = 0;
+  for (const f of readdirSync(werkbladBron)) {
+    if (f.startsWith(".") || existsSync(path.join(werkbladDoel, f))) continue;
+    copyFileSync(path.join(werkbladBron, f), path.join(werkbladDoel, f));
+    erbij++;
+  }
+  console.log(`[thuisles] werkbladen: ${erbij} bijgezet in ${werkbladDoel}`);
+}
+
 const godotDoel = process.env.THUISLES_GODOT;
 const godotBron = path.join(WORTEL, "public", "godot");
 if (godotDoel && existsSync(godotBron)) {

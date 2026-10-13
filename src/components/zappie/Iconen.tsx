@@ -232,7 +232,7 @@ export function IcoonBoeken({ className }: P) {
   );
 }
 
-/** Een berg met een vlag: IEP Sprong. */
+/** Een berg met een vlag: Toetssprong. */
 export function IcoonBerg({ className }: P) {
   return (
     <svg viewBox="0 0 64 64" className={className} aria-hidden="true">

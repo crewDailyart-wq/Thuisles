@@ -112,6 +112,18 @@ export const huidigKind = cache(async (): Promise<Kind | null> => {
 });
 
 /**
+ * Is er op dít apparaat al een kind gekozen? Alleen het koekje telt.
+ *
+ * Bewust zonder de terugval van `huidigKind` (één kind zonder kindcode): zolang
+ * er geen inlog is, is elke bezoeker "de ouder", en dan zou ook Google meteen
+ * naar Zappie gaan. De homepagina gebruikt dit om een kind-apparaat door te
+ * sturen; iedereen anders ziet de homepagina.
+ */
+export async function kindOpDitApparaat(): Promise<boolean> {
+  return Boolean((await cookies()).get(KIND_COOKIE)?.value);
+}
+
+/**
  * Het actieve kind, met doorsturen als dat er niet is.
  *
  * Geen kinderen: naar Instellingen, want daar maak je er een aan. Meerdere

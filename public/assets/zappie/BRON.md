@@ -53,3 +53,11 @@ wielen, armen, ogen, antennes en de geluidsgolf. Dat was de wens ("bij
 voorkeur animatievriendelijk met afzonderlijk bestuurbare onderdelen"). Komt er
 later een 3D-render, dan moet die ook in losse lagen geleverd worden, anders
 kan hij niet meer zwaaien of praten.
+
+### De vier goedgekeurde illustraties (13 oktober 2026)
+
+Eigen wereld, werkplaats, atelier en kust staan in `illustraties/`, met een
+eigen `BRON.md` en `manifest.json`. Gemaakt met
+`node scripts/maak-zappie-illustraties.mjs` uit `ontwerp/zappie/illustraties/`.
+`eigen-wereld` vervangt op de startpagina het tijdelijke `my-world-island`
+(dat bestand blijft staan).

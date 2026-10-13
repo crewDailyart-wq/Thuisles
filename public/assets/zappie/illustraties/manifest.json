@@ -1,0 +1,157 @@
+{
+  "gemaakt": "scripts/maak-zappie-illustraties.mjs",
+  "assets": [
+    {
+      "naam": "eigen-wereld",
+      "bron": "ontwerp/zappie/illustraties/eigen-wereld.webp",
+      "origineel": {
+        "width": 1448,
+        "height": 1086
+      },
+      "bestanden": [
+        {
+          "file": "eigen-wereld-720.avif",
+          "width": 720,
+          "height": 540,
+          "bytes": 99015,
+          "sha256": "2c37afd2ab1bf9732c00188b34bafdd07e917ddddcdf8a7743c390bfb6bc5b8e"
+        },
+        {
+          "file": "eigen-wereld-720.webp",
+          "width": 720,
+          "height": 540,
+          "bytes": 139438,
+          "sha256": "7805cb7f1f2a7c8a118d647187aa14c6e2eefad1504fdeee4c718d8252c51d42"
+        },
+        {
+          "file": "eigen-wereld-1440.avif",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 243372,
+          "sha256": "baa726b581abf5ef774576c0e87498a05f93c874e7aeef149d44138572885e02"
+        },
+        {
+          "file": "eigen-wereld-1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 365992,
+          "sha256": "98815f954731a4ac1360a6e612037da14268ff85050d163f665ee3340776295c"
+        }
+      ]
+    },
+    {
+      "naam": "werkplaats",
+      "bron": "ontwerp/zappie/illustraties/werkplaats.webp",
+      "origineel": {
+        "width": 1448,
+        "height": 1086
+      },
+      "bestanden": [
+        {
+          "file": "werkplaats-720.avif",
+          "width": 720,
+          "height": 540,
+          "bytes": 93565,
+          "sha256": "001608bf558ab26d8657a734c15ce5c5320424966f2c033b806646e9fe80d7d8"
+        },
+        {
+          "file": "werkplaats-720.webp",
+          "width": 720,
+          "height": 540,
+          "bytes": 130752,
+          "sha256": "bf8e080c2ca7854052672351b3e096a1db044c4112e2333c470a813fd11f276e"
+        },
+        {
+          "file": "werkplaats-1440.avif",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 213629,
+          "sha256": "7740dc40b4108ac01e93532ef28502bc988173f08451daeefbaf032d02420817"
+        },
+        {
+          "file": "werkplaats-1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 321726,
+          "sha256": "08df393e8db04a5c369a205758c18985dc9ef333f882515db81639215320e99a"
+        }
+      ]
+    },
+    {
+      "naam": "atelier",
+      "bron": "ontwerp/zappie/illustraties/atelier.webp",
+      "origineel": {
+        "width": 1448,
+        "height": 1086
+      },
+      "bestanden": [
+        {
+          "file": "atelier-720.avif",
+          "width": 720,
+          "height": 540,
+          "bytes": 74639,
+          "sha256": "64dcb9bc1933e53437fc032fc915cbcc76498c26cf87fdcb0f302e9380a0f45f"
+        },
+        {
+          "file": "atelier-720.webp",
+          "width": 720,
+          "height": 540,
+          "bytes": 108212,
+          "sha256": "1c0ffd1d8a9d985016140da9673fc1575e34a0ff9e1ad4c5662fa390d664eac1"
+        },
+        {
+          "file": "atelier-1440.avif",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 177246,
+          "sha256": "1a0a34fdb5b67391521d26ee992f8a4b9f14e5d1f89d44e6769512280cedf355"
+        },
+        {
+          "file": "atelier-1440.webp",
+          "width": 1440,
+          "height": 1080,
+          "bytes": 270836,
+          "sha256": "80df5e18cb43e9cdad72064b93280f077160d7d56f30a4311d57c9a3825e947f"
+        }
+      ]
+    },
+    {
+      "naam": "kust",
+      "bron": "ontwerp/zappie/illustraties/kust.webp",
+      "origineel": {
+        "width": 1672,
+        "height": 941
+      },
+      "bestanden": [
+        {
+          "file": "kust-720.avif",
+          "width": 720,
+          "height": 405,
+          "bytes": 79473,
+          "sha256": "4ebd093ad938f24a3ed64a7eb60f9c50986a1d3836f6404aa8b3b1bc348acb61"
+        },
+        {
+          "file": "kust-720.webp",
+          "width": 720,
+          "height": 405,
+          "bytes": 113656,
+          "sha256": "dd9e7e89d2d85e67fc31cf289adfd7255f17ab9357708e1519c4411ccc05c484"
+        },
+        {
+          "file": "kust-1440.avif",
+          "width": 1440,
+          "height": 810,
+          "bytes": 210443,
+          "sha256": "b5dd1b5ba872700c1c4c6036286ded0768bdb750e4873f6eb0f77beeeed47326"
+        },
+        {
+          "file": "kust-1440.webp",
+          "width": 1440,
+          "height": 810,
+          "bytes": 313902,
+          "sha256": "2a1ba862f09375cf1901cd3a3dfe62ed25ac3704dbc3097343aee8d306590401"
+        }
+      ]
+    }
+  ]
+}

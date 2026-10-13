@@ -1526,7 +1526,7 @@ function GoedAntwoordvak({ vraag }: { vraag: OefenVraag }) {
   );
 }
 
-function Antwoordvelden({
+export function Antwoordvelden({
   vraag,
   antwoord,
   fase,

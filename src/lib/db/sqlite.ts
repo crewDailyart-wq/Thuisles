@@ -836,6 +836,52 @@ function werkTabellenBij(d: DatabaseSync) {
     );
   `);
 
+  /*
+    Werkbladen en posters (openbare site, oktober 2026).
+
+    Gratis te downloaden voor iedereen. Alleen wat de beheerder zelf uploadt
+    in Beheer → Werkbladen; er wordt hier niets aangemaakt of aangevuld. Een
+    nieuw werkblad staat standaard uit (zichtbaar = 0) tot het in beheer wordt
+    aangezet. Het bestand zelf staat op schijf (zie src/lib/data/werkbladen.ts).
+  */
+  d.exec(`
+    create table if not exists werkbladen (
+      id             text primary key,
+      titel          text not null,
+      omschrijving   text not null default '',
+      soort          text not null check (soort in ('werkblad','poster')),
+      vak            text not null default '',
+      groepen        text not null default '',
+      bestand        text not null,
+      zichtbaar      integer not null default 0,
+      aangemaakt_op  text not null
+    );
+  `);
+
+  /*
+    De gratis niveautest (openbare site, oktober 2026).
+
+    Per groep stelt de beheerder in Beheer → Niveautest de toets samen uit
+    bestaande leerdoelen: welk leerdoel, hoeveel vragen, bij welk
+    referentieniveau. De vragen zelf zijn de gepubliceerde vragen van dat
+    leerdoel; hier staat alleen de samenstelling. Er wordt hier niets
+    aangemaakt of aangevuld: een lege tabel betekent geen toets, en dan staat
+    hij nergens op de site. Verdwijnt een leerdoel, dan verdwijnt het onderdeel
+    mee; de rest van de toets blijft.
+  */
+  d.exec(`
+    create table if not exists niveautest_onderdelen (
+      id             text primary key,
+      groep          integer not null check (groep between 3 and 8),
+      leerdoel_id    text not null references leerdoelen (id) on delete cascade,
+      aantal         integer not null default 3 check (aantal between 1 and 10),
+      niveau         text not null default '' check (niveau in ('', '1F', '2F', '1S')),
+      volgorde       integer not null default 0,
+      aangemaakt_op  text not null,
+      unique (groep, leerdoel_id)
+    );
+  `);
+
   /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
   werkVraagvormenBij(d);
 }
