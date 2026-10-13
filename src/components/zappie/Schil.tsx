@@ -12,6 +12,7 @@
  */
 
 import Link from "next/link";
+import "@/components/zappie/reis.css";
 import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -71,11 +72,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
         <div className="zp-schil">
           <div className="zp-logoplek">
             <ZappieLogo />
-            <p className="zp-hand zp-logozin" aria-hidden="true">
-              Leren vandaag,
-              <br />
-              groter morgen.
-            </p>
+
           </div>
           <nav className="zp-menu" aria-label="Menu">
             <ul>
