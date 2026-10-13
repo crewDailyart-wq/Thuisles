@@ -1,0 +1,13 @@
+# Wat `railway up` NIET meestuurt naar Railway (bovenop .gitignore).
+# De database gaat apart naar de vaste schijf; die hoort hier nooit in.
+/data/
+/backups/
+/artifacts/
+/godot/
+/ontwerp/
+.env*
+*.db
+
+# De Godot-lessen staan wel in .gitignore (te groot voor Git), maar de site
+# heeft ze nodig. Daarom gaan ze hier wél mee.
+!/public/godot/

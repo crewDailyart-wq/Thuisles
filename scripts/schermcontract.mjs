@@ -349,6 +349,60 @@ export const SCHERMCONTRACT = [
     ],
   },
   /*
+    De kinderkant in de nieuwe layout (oktober 2026). Deze schermen zitten
+    achter het kindprofiel en zijn zonder koekje niet op te halen; daarom
+    staat alles bij `naKlik` en wordt er in de bronbestanden gekeken.
+
+    Het blok "Nog meer voor jou" stond onder het startscherm en is op verzoek
+    van de eigenaar verplaatst, niet weggehaald: de sleutels en de groep naar
+    het Hoi-vakje, de rest naar "Meer" achter het ronde menuknopje.
+  */
+  {
+    naam: "Startscherm (nieuwe layout)",
+    pad: "/start",
+    bron: ["src/app/(kind)/start/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "<Sleutelteller", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (Hoi-vakje)" },
+      { tekst: "<Groepwisselaar", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (Hoi-vakje)" },
+      { tekst: "<Menuknop", bron: "src/app/(kind)/start/page.tsx", na: "het startscherm openen (naast het Hoi-vakje)" },
+      { tekst: 'href: "/rekenen"', bron: "src/app/(kind)/start/page.tsx", na: "op de tegel Rekenen tikken" },
+      { tekst: 'href="/meer"', bron: "src/components/avontuur/Menuknop.tsx", na: "op het menuknopje tikken" },
+    ],
+  },
+  {
+    naam: "Meer (wat eerst onder het startscherm stond)",
+    pad: "/meer",
+    bron: ["src/app/(kind)/meer/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "NAV_ITEMS", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (het menu)" },
+      { tekst: "<Vakkenmenu", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<RekenPaneel", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (vrij oefenen, volgens je methode)" },
+      { tekst: "<SchoolMethodeKaart", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<TipKaartjes", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken" },
+      { tekst: "<Wereldpad", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (jouw wereld)" },
+      { tekst: "<Mascotte", bron: "src/app/(kind)/meer/page.tsx", na: "op het menuknopje tikken (de vos)" },
+      { tekst: "Vrij oefenen", bron: "src/components/kind/RekenPaneel.tsx", na: "op het menuknopje tikken" },
+      { tekst: "Oefenen volgens je methode", bron: "src/components/kind/RekenPaneel.tsx", na: "op het menuknopje tikken" },
+    ],
+  },
+  {
+    naam: "Rekenscherm, domein en onderwerp (sterrenstijl)",
+    pad: "/rekenen",
+    bron: ["src/app/(kind)/rekenen/page.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "voortgang={{", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken (voortgang per domein)" },
+      { tekst: "<HoofdMascotte", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken (het maatje)" },
+      { tekst: "Terug naar het startscherm", bron: "src/app/(kind)/rekenen/page.tsx", na: "op de tegel Rekenen tikken" },
+      { tekst: "voortgang={{", bron: "src/app/(kind)/rekenen/[domein]/page.tsx", na: "een domein openen" },
+      { tekst: "<Moeilijkheid", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een onderwerp openen" },
+      { tekst: "Nieuw", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een onderwerp openen" },
+      { tekst: "&van=ster", bron: "src/app/(kind)/rekenen/[domein]/[onderwerp]/page.tsx", na: "een oefening kiezen (terug komt weer hier uit)" },
+    ],
+  },
+  /*
     Het adres heeft het vak nodig: elk beheerscherm hangt onder /admin/{vak}/.
     Zonder die plaatshouder kwam hier een 404 uit, en dan hield de bewaking elke
     commit tegen — terwijl er aan de instelling zelf niets mankeerde. Zie de

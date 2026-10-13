@@ -8,8 +8,11 @@
  *   - het plaatje vult altijd het hele scherm, zonder randen, en staat vast
  *     terwijl de inhoud eroverheen scrolt;
  *   - liggend: het brede plaatje, in de maat die bij het scherm past;
- *   - staand (telefoon, staande tablet): het rechterdeel van het plaatje, met
- *     de planeet en de wolken. Er is nog geen echte staande versie;
+ *   - staand (telefoon): het rechterdeel van het plaatje, met de planeet en
+ *     de wolken. Er is nog geen echte staande versie;
+ *   - staande tablet (vanaf 600 breed): hetzelfde deel, iets ingezoomd en
+ *     bovenaan wat eraf, zodat de planeet tussen het Hoi-vakje en de tegels
+ *     valt en niet achter de tegel Taal;
  *   - de sterren in het plaatje twinkelen zachtjes: over elke ster ligt een
  *     gloeiend lichtje dat rustig aan- en uitgaat. Bij "minder beweging" staat
  *     dat stil;
@@ -21,8 +24,11 @@
 
 import { GETEKENDE_HEMEL_AAN, Sterrenhemel } from "@/components/avontuur/Sterrenhemel";
 
-/** De uitsnede voor staand: rechts in het plaatje, 706 breed (zie maak-hemel.mjs). */
+/** De uitsneden voor staand en staande tablet (zie maak-hemel.mjs). */
 const STAAND_X = 966;
+const TABLET = { x: 1007, y: 54, b: 665, h: 887 };
+/** Vanaf deze breedte geldt een staand scherm als tablet. */
+const TABLET_VANAF = "(orientation: portrait) and (min-width: 600px)";
 const B = 1672;
 const H = 941;
 
@@ -76,6 +82,8 @@ export function Hemel() {
   return (
     <div aria-hidden="true" className="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
       <picture>
+        <source media={TABLET_VANAF} type="image/avif" srcSet="/hemel/tablet-665.avif" />
+        <source media={TABLET_VANAF} type="image/webp" srcSet="/hemel/tablet-665.webp" />
         <source media="(orientation: portrait)" type="image/avif" srcSet="/hemel/staand-530.avif 530w, /hemel/staand-706.avif 706w" sizes="100vw" />
         <source media="(orientation: portrait)" type="image/webp" srcSet="/hemel/staand-530.webp 530w, /hemel/staand-706.webp 706w" sizes="100vw" />
         <source type="image/avif" srcSet="/hemel/breed-828.avif 828w, /hemel/breed-1280.avif 1280w, /hemel/breed-1672.avif 1672w" sizes="100vw" />
@@ -91,7 +99,8 @@ export function Hemel() {
 
       {/* twinkelende sterren, precies op de sterren van het plaatje */}
       <Twinkels viewBox={`0 0 ${B} ${H}`} uitlijnen="xMidYMid slice" className="absolute inset-0 h-full w-full portrait:hidden" />
-      <Twinkels viewBox={`${STAAND_X} 0 ${B - STAAND_X} ${H}`} uitlijnen="xMaxYMid slice" className="absolute inset-0 hidden h-full w-full portrait:block" />
+      <Twinkels viewBox={`${STAAND_X} 0 ${B - STAAND_X} ${H}`} uitlijnen="xMaxYMid slice" className="absolute inset-0 hidden h-full w-full portrait:block portrait:min-[600px]:hidden" />
+      <Twinkels viewBox={`${TABLET.x} ${TABLET.y} ${TABLET.b} ${TABLET.h}`} uitlijnen="xMaxYMid slice" className="absolute inset-0 hidden h-full w-full portrait:min-[600px]:block" />
 
       {/* donkere rand aan de zijkanten, zodat het midden oplicht */}
       <div className="av-vignet absolute inset-0" />

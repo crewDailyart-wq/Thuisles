@@ -207,29 +207,16 @@
   }
 }
 
-/* Vaste plek voor de mascotte; die zet de eigenaar er later in. */
+/* Vaste plek voor de mascotte: de robot (components/avontuur/Robot.tsx). */
 .mascotte {
   position: absolute;
-  left: 24px;
-  bottom: 24px;
+  left: 20px;
+  bottom: 16px;
   width: 150px;
-  height: 150px;
+  height: 180px;
   display: grid;
-  place-items: center;
-  border: 2px dashed rgba(160, 180, 220, 0.35);
-  border-radius: 50%;
-  color: rgba(200, 210, 230, 0.55);
-  font-size: 13px;
-  transition: transform 0.2s;
-}
-.mascotte[data-praat="true"] {
-  border-color: rgba(75, 138, 245, 0.8);
-  animation: praat 0.9s ease-in-out infinite;
-}
-@keyframes praat {
-  50% {
-    transform: scale(1.04);
-  }
+  place-items: end center;
+  filter: drop-shadow(0 10px 14px rgba(0, 0, 0, 0.35));
 }
 
 /* ---------- midden: raster, torens, som ---------- */

@@ -1,13 +1,16 @@
 "use client";
 
 /**
- * Het tijdelijke maatje van de Godot-bouwstenen (oktober 2026).
+ * Het maatje van de Godot-bouwstenen, het startscherm en de lessen.
  *
- * Geen vos, en nog geen naam: een rond bolletje in een Thuisles-kleur, met twee
- * ogen en een mond. Komt er een echte mascotte, dan hoeft alleen dit bestand
- * anders (en `POPPETJE_GODOT` in `lib/maatje/poppetje.ts`).
+ * Sinds 12 oktober 2026 is dat de robot van de eigenaar (`Robot`), op verzoek
+ * van de eigenaar in plaats van het bolletje. Elke plek die dit maatje toont,
+ * krijgt daardoor vanzelf de robot.
  *
- * Wat het kan:
+ * Het bolletje van eerst staat hieronder nog (`Bolletje`), maar wordt niet
+ * meer gebruikt.
+ *
+ * Wat het bolletje kon:
  *   rustig  knippert af en toe
  *   praat   de mond gaat open en dicht, en het wiebelt een beetje
  *   blij    lacht (bij een goed antwoord)
@@ -15,13 +18,28 @@
  *   troost  wijst omhoog naar het speelveld
  */
 
+import { Robot } from "@/components/avontuur/Robot";
 import type { MaatjeHouding } from "@/lib/maatje/poppetje";
+
+export function TijdelijkMaatje({
+  houding,
+  praat = false,
+  className = "",
+}: {
+  houding: MaatjeHouding;
+  /** praat het maatje nu? Dan beweegt de mond. */
+  praat?: boolean;
+  className?: string;
+}) {
+  return <Robot houding={houding} praat={praat} className={className} />;
+}
 
 /** De kleur van het bolletje: mint uit de Thuisles-kleuren. */
 const KLEUR = "var(--color-mint)";
 const KLEUR_ZACHT = "var(--color-mint-zacht)";
 
-export function TijdelijkMaatje({ houding, className = "" }: { houding: MaatjeHouding; className?: string }) {
+/** Het bolletje van vóór de robot; bewaard, niet meer in gebruik. */
+export function Bolletje({ houding, className = "" }: { houding: MaatjeHouding; className?: string }) {
   const blij = houding === "blij";
   const praat = houding === "praat";
   const denkt = houding === "denkt";

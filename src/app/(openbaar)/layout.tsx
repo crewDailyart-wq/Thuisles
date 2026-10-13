@@ -20,9 +20,11 @@
  * Het is een ouder die dit leest, meestal vanuit een zoekresultaat.
  */
 
+import { zakelijk } from "@/lib/lettertypen";
+
 export default function OpenbaarLayout({ children }: { children: React.ReactNode }) {
   return (
-    <div className="font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk flex min-h-dvh flex-col bg-beheer-vlak text-beheer-inkt`}>
       {children}
     </div>
   );

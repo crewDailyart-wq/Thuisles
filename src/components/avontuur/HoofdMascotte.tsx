@@ -1,13 +1,12 @@
 /**
- * De mascotte van de website, op één plek.
+ * De mascotte van de website, op één plek: de robot (sinds 12 oktober 2026).
  *
- * De echte mascotte komt later. Tot die tijd staat hier het tijdelijke
- * bolletje-maatje van de oefeningen. Komt de mascotte, dan hoeft alleen dit
- * bestand anders: elk scherm in de avontuurstijl haalt hem hier vandaan.
+ * Elk scherm in de avontuurstijl haalt hem hier vandaan. Op de oefenschermen
+ * en in de lessen staat dezelfde robot, via `TijdelijkMaatje` en `Robot`.
  */
 
-import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
+import { Robot } from "@/components/avontuur/Robot";
 
 export function HoofdMascotte({ className = "" }: { className?: string }) {
-  return <TijdelijkMaatje houding="rustig" className={className} />;
+  return <Robot houding="rustig" className={className} />;
 }

@@ -16,12 +16,18 @@
  *
  * Elke dag om 22:00 draait dit vanzelf via een LaunchAgent; zie
  * `scripts/nl.thuisles.backup.plist` en NACHTRAPPORT.md voor aan- en uitzetten.
+ *
+ * Daarna komt er ook een kopie van de ONLINE database (Railway) in dezelfde
+ * map, als `thuisles-online-<datum>.db`; ook daarvan blijven de laatste 14.
+ * Lukt dat niet (geen internet, niet ingelogd bij Railway), dan staat de
+ * laptop-back-up er gewoon en meldt het script wat er misging.
  */
 
 import { backup, DatabaseSync } from "node:sqlite";
 import { existsSync, mkdirSync, readdirSync, renameSync, rmSync, statSync } from "node:fs";
 import { homedir } from "node:os";
 import path from "node:path";
+import { kopieerOnlineDatabase } from "./railway-hulp.mjs";
 
 const WORTEL = path.resolve(import.meta.dirname, "..");
 const BRON = path.join(WORTEL, "data", "thuisles.db");
@@ -90,3 +96,24 @@ console.log(
   `Back-up gemaakt: ${pad} (${mb} MB, ${tabellen} tabellen). ` +
     `Er staan nu ${Math.min(kopieen.length, BEWAREN)} kopieën.`,
 );
+
+/* De online database (Railway). */
+const ONLINE_NAAM = /^thuisles-online-\d{4}-\d{2}-\d{2}-\d{4}(-\d+)?\.db$/;
+let onlineNaam = `thuisles-online-${stempel()}.db`;
+for (let n = 2; existsSync(path.join(DOEL, onlineNaam)); n++) onlineNaam = `thuisles-online-${stempel()}-${n}.db`;
+const onlinePad = path.join(DOEL, onlineNaam);
+try {
+  kopieerOnlineDatabase(`${onlinePad}.bezig`);
+  renameSync(`${onlinePad}.bezig`, onlinePad);
+  const online = readdirSync(DOEL)
+    .filter((f) => ONLINE_NAAM.test(f))
+    .map((f) => ({ f, t: statSync(path.join(DOEL, f)).mtimeMs }))
+    .sort((a, b) => b.t - a.t);
+  for (const { f } of online.slice(BEWAREN)) rmSync(path.join(DOEL, f), { force: true });
+  const onlineMb = (statSync(onlinePad).size / 1024 / 1024).toFixed(1);
+  console.log(`Online back-up gemaakt: ${onlinePad} (${onlineMb} MB).`);
+} catch (fout) {
+  rmSync(`${onlinePad}.bezig`, { force: true });
+  console.error(`Online back-up mislukt: ${fout.message.split("\n")[0]}`);
+  process.exitCode = 1;
+}

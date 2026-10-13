@@ -24,6 +24,7 @@ import { Navigatiebalk, Zijnavigatie } from "@/components/ouder/Oudernavigatie";
 import { bekekenKind, vereisOuder } from "@/lib/auth/sessie";
 import { haalKinderen } from "@/lib/data/kinderen";
 import { NIET_INDEXEREN } from "@/lib/seo";
+import { zakelijk } from "@/lib/lettertypen";
 
 export const metadata: Metadata = {
   title: `${MERKNAAM} voor ouders`,
@@ -47,7 +48,7 @@ export default async function OuderLayout({
   const gekozen = await bekekenKind(ouder.id);
 
   return (
-    <div className="font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt">
+    <div className={`${zakelijk.variable} font-zakelijk min-h-dvh bg-beheer-vlak text-beheer-inkt`}>
       <header className="sticky top-0 z-30 border-b border-beheer-rand bg-white">
         <div className="flex h-16 items-center justify-between gap-3 px-4 sm:px-6">
           <span className="flex items-center gap-2.5">

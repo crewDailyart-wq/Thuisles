@@ -1,9 +1,9 @@
 # Stijlgids: de avontuurstijl
 
 De nieuwe stijl van Thuisles, sinds oktober 2026. Het voorbeeld is
-`ontwerp/startscherm.png`. Het startscherm en de pagina "Binnenkort!" zijn al
-in deze stijl gebouwd. Na goedkeuring van de eigenaar volgt de rest van de
-website.
+`ontwerp/startscherm.png`. Al in deze stijl: het startscherm, het rekenscherm
+met de domeinen en onderwerpen, "Meer" en "Binnenkort!". Na goedkeuring van de
+eigenaar volgen de oefenschermen, het maatje en het ouderdeel.
 
 Voor de code staat alles op één plek: `src/app/avontuur.css`. De onderdelen
 staan in `src/components/avontuur/`.
@@ -18,8 +18,11 @@ staan in `src/components/avontuur/`.
   oudere browsers, elk in een paar maten. Een telefoon krijgt een bestand van
   10 tot 14 KB, een computer hoogstens 28 KB. Na een nieuw plaatje maak je die
   bestanden opnieuw met `node scripts/maak-hemel.mjs`.
-- **Staand** (telefoon, staande tablet): het rechterdeel van het plaatje, met de
-  planeet en de wolken. Er is nog geen echte staande versie.
+- **Staand** (telefoon): het rechterdeel van het plaatje, met de planeet en de
+  wolken. Er is nog geen echte staande versie.
+- **Staande tablet** (vanaf 600 breed): hetzelfde deel, iets ingezoomd en
+  bovenaan 54 pixels eraf. Dan valt de planeet in de vrije strook tussen het
+  Hoi-vakje en de tegels, en niet achter de tegel Taal.
 - **Levendig:**
   - de sterren in het plaatje twinkelen zachtjes;
   - een zachte gloed ligt achter de titel (`av-gloed`);
@@ -75,13 +78,27 @@ Vaste kleuren, met de donkerdere onderkant erbij:
 | Oranje | `--av-oranje` | `--av-oranje-rand` | Spelling |
 | Geel | `--av-geel` | `--av-geel-rand` | Begrijpend lezen |
 | Groen | `--av-groen` | `--av-groen-rand` | knoppen, later Engels |
-| Lichtblauw | `--av-lucht` | `--av-lucht-rand` | reserve |
+| Lichtblauw | `--av-lucht` | `--av-lucht-rand` | terugknop, domeinen |
+
+**Rekendomeinen** hebben elk een vaste kleur en een eigen, zelf getekend wit
+icoon: zie `components/avontuur/kleuren.ts` en `DomeinIconen.tsx`. Een domein
+dat daar nog niet staat, krijgt om de beurt een kleur en een ster als icoon.
+
+**Voortgang op een tegel:** klein onderaan een balkje met "3 van 10"
+(`av-tegel__voortgang`). Dat telt de oefeningen voor de groep van het kind met
+vragen erin, en hoeveel daarvan beheerst zijn.
+
+**Meteen iets zien bij tikken:** zolang de volgende pagina laadt, licht een
+tegel of rond knopje zacht op (`TegelBezig`). De avontuurschermen hebben ook een
+laadscherm met de sterrenhemel en het maatje (`Laden`).
 
 ## Knoppen
 
 - Rond, met dezelfde 3D-rand als een tegel, maar plat en breed (`av-knop`).
 - Minstens 48 pixels hoog.
 - De kleur komt uit de tegelkleuren; standaard groen.
+- **Rond knopje** (`av-rondje`), 52 bij 52 pixels: de terugknop linksboven op
+  elk scherm en het menuknopje naast het Hoi-vakje.
 
 ## Kaarten
 
@@ -94,6 +111,16 @@ Vaste kleuren, met de donkerdere onderkant erbij:
 - Wit en rond, met donkerblauwe letters en een puntje naar het maatje
   (`av-wolkje`).
 - Onder het wolkje zit een lichtblauwe rand, net als de 3D-rand van een tegel.
+
+## Een scherm opbouwen
+
+- `Sterrenscherm`: de hemel erachter en een kolom over de volle hoogte.
+- `Schermkop`: terugknop links, de titel groot en wit in het midden met een
+  gloed, een handgeschreven zinnetje eronder, en rechts iets kleins (het
+  maatje).
+- `Tegelraster`: de tegels, zo breed als past bij het aantal.
+- Zet een nieuw scherm ook in `isAvontuurscherm` in
+  `components/kind/Kindschil.tsx`; dan valt de oude zijbalk weg.
 
 ## Vaste plekken in de code
 
