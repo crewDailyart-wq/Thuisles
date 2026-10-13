@@ -72,7 +72,6 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
         <div className="zp-schil">
           <div className="zp-logoplek">
             <ZappieLogo />
-
           </div>
           <nav className="zp-menu" aria-label="Menu">
             <ul>
@@ -90,7 +89,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
             <span className="zp-profiel-plaatje">
               {speler.avatar ?? <span className="zp-titel">{(speler.naam ?? "Z").slice(0, 1)}</span>}
             </span>
-            <span className="zp-profiel-groet">{speler.naam ? `Hoi, ${speler.naam}!` : "Hoi, ontdekkingsreiziger!"}</span>
+            <span className="zp-profiel-groet">{speler.naam ? `Hoi, ${speler.naam}!` : "Hoi, ontdekker!"}</span>
             {/* Naar "Meer": het menu en alles wat vroeger onder het startscherm stond. */}
             <Link href="/meer" className="zp-profiel-knop zp-profiel-meer" aria-label="Menu en meer" title="Menu en meer">
               <IcoonMenu className="size-full" />

@@ -36,7 +36,6 @@ try {
     await pagina.evaluate(() => document.fonts.ready);
     await pagina.locator("#vrij-oefenen").waitFor();
     await pagina.locator("#zappies-atelier").waitFor();
-    // Activeer lazy illustraties en laat de compositor alle secties tekenen.
     const totaal = await pagina.evaluate(() => document.documentElement.scrollHeight);
     for (let y = 0; y < totaal; y += height * .75) {
       await pagina.evaluate((top) => window.scrollTo(0, top), y);
@@ -52,7 +51,6 @@ try {
       assert.ok(vrij, `${naam}: menuknop ${await item.innerText()} wordt niet bedekt`);
     }
     await pagina.screenshot({ path: path.join(uit, `${naam}-start.png`) });
-    await pagina.screenshot({ path: path.join(uit, `${naam}-hele-pagina.png`), fullPage: true });
     const saldoVoor = await pagina.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith("zappie:v1")).map(k => [k,localStorage.getItem(k)])));
     const breedte = await pagina.evaluate(() => ({ inhoud: document.documentElement.scrollWidth, venster: innerWidth, hoogte: document.documentElement.scrollHeight, viewport: innerHeight }));
     assert.ok(breedte.inhoud <= breedte.venster + 2, `${naam}: geen horizontale overflow (${JSON.stringify(breedte)})`);
@@ -61,7 +59,22 @@ try {
     assert.equal(await pagina.locator('.zr-vak[href="/rekenen"]').count(), 1);
     await pagina.locator('#vrij-oefenen').evaluate(el => el.scrollIntoView({block:"start"}));
     await pagina.waitForTimeout(300);
-    await pagina.screenshot({ path: path.join(uit, `${naam}-vrij-oefenen.png`) });
+    const vakkenBeeld = await pagina.screenshot({ path: path.join(uit, `${naam}-vrij-oefenen.png`) });
+    // Controleer ook de werkelijk getekende pixels. Een transparante decorlaag
+    // kan knoppen visueel bedekken terwijl elementFromPoint nog steeds slaagt.
+    const rozeTegel = pagina.locator('.zr-vak[data-kleur="roze"]').first();
+    const vakRand = await rozeTegel.boundingBox();
+    const kleur = await pagina.evaluate(async ({ png, x, y }) => {
+      const img = new Image();
+      img.src = `data:image/png;base64,${png}`;
+      await img.decode();
+      const doek = document.createElement('canvas');
+      doek.width = img.width; doek.height = img.height;
+      const ctx = doek.getContext('2d');
+      ctx.drawImage(img, 0, 0);
+      return Array.from(ctx.getImageData(x, y, 1, 1).data);
+    }, { png: vakkenBeeld.toString('base64'), x: Math.floor(vakRand.x + vakRand.width * .12), y: Math.floor(vakRand.y + vakRand.height * .58) });
+    assert.ok(kleur[0] > kleur[2], `${naam}: de roze tegel moet zichtbaar zijn, niet overschilderd door blauwe ruimte (${kleur})`);
     const rekenknop = pagina.locator('.zr-vak[href="/rekenen"]');
     await rekenknop.scrollIntoViewIfNeeded();
     assert.ok(await rekenknop.evaluate(el => {
@@ -90,6 +103,12 @@ try {
     for (const href of ["/rekenen", "/meer", "/profiel", "/zappie/mijn-wereld", "/zappie/beloningen"]) assert.ok(await pagina.locator(`a[href="${href}"]`).count(), `Route behouden: ${href}`);
     const saldoNa = await pagina.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith("zappie:v1")).map(k => [k,localStorage.getItem(k)])));
     assert.deepEqual(saldoNa, saldoVoor, "Passen en bouwplannen wijzigen de opgeslagen voortgang niet");
+    await pagina.getByRole("button", { name: "Onderzeeër", exact: true }).click();
+    await pagina.evaluate(() => window.scrollTo(0, 0));
+    await pagina.waitForTimeout(350);
+    // fullPage verandert tijdelijk de afmetingen van de compositor. Daarom is
+    // dit de LAATSTE opname in deze browsercontext, na alle viewportcontroles.
+    await pagina.screenshot({ path: path.join(uit, `${naam}-hele-pagina.png`), fullPage: true });
     rapport.schermen.push({ naam, width, height, ...breedte, status: "geslaagd" });
     await context.close();
   }
@@ -108,7 +127,7 @@ try {
   assert.ok(positie > .5, `Scroll stuurt de reis: ${positie}`);
   await p.emulateMedia({ reducedMotion: "reduce" });
   await p.waitForFunction(() => document.querySelector('.zp')?.getAttribute("data-beweging") === "rustig");
-  rapport.controles.push("Desktop/tablet/mobiel: scroll, geen horizontale overflow, negen vakken, geen nep-beschikbaarheid", "Menuknoppen en eerste vaktegel zijn niet bedekt", "Bouwplanselectie werkt; bestaande routes behouden", "Filters, petjes/kroon/kleur passen en herstellen werken; opgeslagen voortgang blijft gelijk", "Beweging handmatig pauzeren/hervatten en systeemvoorkeur tijdens bezoek wijzigen werken", `Scrollstand bereikt ${positie}`);
+  rapport.controles.push("Desktop/tablet/mobiel: scroll, geen horizontale overflow, negen vakken, geen nep-beschikbaarheid", "Menuknoppen bereikbaar en roze vaktegel zichtbaar in de daadwerkelijke pixels", "Bouwplanselectie werkt; bestaande routes behouden", "Filters, petjes/kroon/kleur passen en herstellen werken; opgeslagen voortgang blijft gelijk", "Beweging handmatig pauzeren/hervatten en systeemvoorkeur tijdens bezoek wijzigen werken", `Scrollstand bereikt ${positie}`);
   await beweging.close();
   assert.equal(rapport.fouten.length, 0, "Geen JavaScript-paginafouten");
 } catch (e) {
