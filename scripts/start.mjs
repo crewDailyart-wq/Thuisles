@@ -5,10 +5,16 @@
  * worden eerst de afbeeldingen uit public/vragen daar bijgezet. Wat er al
  * staat, zoals een online upload, wordt nooit overschreven. Op de laptop staat
  * die variabele niet en verandert er niets.
+ *
+ * Staat THUISLES_GODOT (online: /data/godot) én zit er een Godot-export in
+ * deze bouw (public/godot), dan gaat die ook naar de schijf: wat ontbreekt of
+ * een andere grootte heeft. Een bouw uit GitHub heeft geen public/godot; dan
+ * gebeurt er niets en levert app/godot/[...pad]/route.ts de spelletjes van de
+ * schijf.
  */
 
 import { spawn } from "node:child_process";
-import { copyFileSync, existsSync, mkdirSync, readdirSync } from "node:fs";
+import { copyFileSync, existsSync, mkdirSync, readdirSync, statSync } from "node:fs";
 import path from "node:path";
 
 const WORTEL = path.resolve(import.meta.dirname, "..");
@@ -24,6 +30,28 @@ if (doel) {
     erbij++;
   }
   console.log(`[thuisles] afbeeldingen: ${erbij} bijgezet in ${doel}`);
+}
+
+const godotDoel = process.env.THUISLES_GODOT;
+const godotBron = path.join(WORTEL, "public", "godot");
+if (godotDoel && existsSync(godotBron)) {
+  let bijgewerkt = 0;
+  const kopieer = (bron, doelMap) => {
+    mkdirSync(doelMap, { recursive: true });
+    for (const d of readdirSync(bron, { withFileTypes: true })) {
+      if (d.name.startsWith(".")) continue;
+      const van = path.join(bron, d.name);
+      const naar = path.join(doelMap, d.name);
+      if (d.isDirectory()) {
+        kopieer(van, naar);
+      } else if (!existsSync(naar) || statSync(naar).size !== statSync(van).size) {
+        copyFileSync(van, naar);
+        bijgewerkt++;
+      }
+    }
+  };
+  kopieer(godotBron, godotDoel);
+  console.log(`[thuisles] godot: ${bijgewerkt} bestanden bijgewerkt in ${godotDoel}`);
 }
 
 const next = spawn(process.execPath, [path.join(WORTEL, "node_modules", "next", "dist", "bin", "next"), "start", ...process.argv.slice(2)], {
