@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
 
 type Message = { role: "user" | "assistant"; content: string };
 type Change = { path: string; content: string; sha: string | null; explanation: string };
@@ -191,6 +192,9 @@ export function AiStudio() {
             Beschrijf wat je wilt veranderen. DeepSeek leest de bestaande GitHub-code, werkt een voorstel uit en jij beslist wat wordt opgeslagen.
           </p>
         </div>
+        {status?.authenticated && (
+          <Link href="/admin/ai/opencode" className="rounded-lg bg-viool px-4 py-2 text-sm font-bold text-white">OpenCode programmeeragent →</Link>
+        )}
         {status?.authenticated && (
           <button onClick={() => void logout()} className="rounded-lg border border-slate-300 bg-white px-3 py-2 text-xs font-semibold hover:bg-slate-50">
             Uitloggen
