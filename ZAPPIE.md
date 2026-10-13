@@ -26,11 +26,12 @@ door /zappie en noem alles Zappie"):
   (`src/app/(kind)/start/page.tsx`); of het weg mag, beslist de eigenaar.
 - Wat alleen op het oude startscherm stond, is daarmee niet meer te zien: het
   rekenpaneel (vrij oefenen en de volgorde van de methode), de tipkaartjes, het
-  wereldpad, het oude vakkenmenu en Vos onderaan. De oefeningen zelf blijven
-  bereikbaar via **Oefenen** in het menu (naar `/oefenen/rekenen`, zoals op het
-  oude scherm), via de kaart **Schoolpad** (naar `/oefenen/rekenen/methode`) en
-  via het menu van de oefenschermen. De groep wisselen kan nog in de kopbalk
-  van de oefenschermen.
+  wereldpad, het oude vakkenmenu en Vos onderaan. Sinds de samenvoeging met
+  nieuwe-layout (13 oktober 2026) staat dat allemaal op **Meer** (`/meer`), te
+  bereiken via het menuknopje naast het tandwiel rechtsboven. De oefeningen
+  zelf zitten achter **Oefenen** in het menu (het rekenscherm in sterrenstijl,
+  `/rekenen`), de kaart **Schoolpad** (naar `/oefenen/rekenen/methode`) en het
+  menu van de oefenschermen.
 - De website heet **Zappie**: `MERKNAAM` in `src/lib/merk.ts`. Alle zichtbare
   teksten, paginatitels en de namen van downloadbestanden halen de naam daar
   vandaan. Interne namen (cookies, opslag in de browser, de map met back-ups,
@@ -85,7 +86,8 @@ nieuwe teksten.
 | "Wereld" in het menu | "Werelden" |
 | "Start oefenen" | "Begin je missie", met een lichtstreep en een korte glans bij het klikken |
 | "Vandaag oefenen" met Rekenen, Taal (Binnenkort), Denken (Binnenkort) | "Vandaag op ontdekking" met Schoolpad, IEP Sprong (Binnenkort) en Vrije Missie |
-| Tegel Rekenen naar `/oefenen/rekenen` | Menuknop Oefenen naar `/oefenen/rekenen`; Schoolpad naar `/oefenen/rekenen/methode` |
+| Tegel Rekenen naar `/oefenen/rekenen` | Menuknop Oefenen naar `/rekenen` (het rekenscherm van nieuwe-layout); Schoolpad naar `/oefenen/rekenen/methode` |
+| — | Menuknopje naast het tandwiel naar Meer (`/meer`), zoals het ronde knopje van nieuwe-layout |
 | Zappie-punten | Tokens, met een strook "Op weg naar je volgende beloning!" |
 | Klein paneel "Jouw wereld" | Groot paneel rechtsonder met eiland, water, wolken en lichtjes |
 | Twee antennes, ogen als boogjes | Eén antenne, open ogen die knipperen (zoals het nieuwe voorbeeld) |
@@ -141,8 +143,8 @@ nieuwe teksten.
   tik geeft een uitleg van Zappie. *Let op: "IEP" is de naam van een toets van
   een ander bedrijf; laat juridisch nakijken of die naam zo gebruikt mag
   worden.*
-- **Oefenen** in het menu gaat naar de bestaande oefeningen
-  (`/oefenen/rekenen`), niet naar een nieuw Zappie-scherm.
+- **Oefenen** in het menu gaat naar het rekenscherm van nieuwe-layout
+  (`/rekenen`), niet naar een nieuw Zappie-scherm (keuze eigenaar).
 - **Op telefoon** zit de tokenstrook onder de vouw. Het lichtje vliegt dan van
   buiten beeld naar de Oceaan, en de gouden straal boven Jouw wereld valt
   buiten beeld; Zappie zegt het wel.

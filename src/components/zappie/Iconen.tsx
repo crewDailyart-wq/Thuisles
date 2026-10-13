@@ -297,6 +297,15 @@ export function IcoonTandwiel({ className }: P) {
   );
 }
 
+/** Drie streepjes: het menu ("Meer"), zoals het menuknopje van de nieuwe layout. */
+export function IcoonMenu({ className }: P) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      <path d="M5 7h14M5 12h14M5 17h14" fill="none" stroke="#9fdcff" strokeWidth={3} strokeLinecap="round" />
+    </svg>
+  );
+}
+
 /** Pijltje in handschrift, voor de notities. */
 export function HandPijl({ className }: P) {
   return (

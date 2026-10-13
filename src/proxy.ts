@@ -19,6 +19,7 @@
  */
 
 import { NextResponse, type NextRequest } from "next/server";
+import { MERKNAAM } from "@/lib/merk";
 
 /** Vergelijkt zonder vroeg te stoppen, zodat de tijd niets verraadt. */
 function gelijk(a: string, b: string): boolean {
@@ -52,9 +53,9 @@ export function proxy(request: NextRequest) {
     }
   }
 
-  return new NextResponse("Thuisles is afgeschermd.", {
+  return new NextResponse(`${MERKNAAM} is afgeschermd.`, {
     status: 401,
-    headers: { "WWW-Authenticate": 'Basic realm="Thuisles", charset="UTF-8"' },
+    headers: { "WWW-Authenticate": `Basic realm="${MERKNAAM}", charset="UTF-8"` },
   });
 }
 

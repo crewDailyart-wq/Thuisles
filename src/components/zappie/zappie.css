@@ -422,7 +422,7 @@
   font-weight: 800;
 }
 
-.zp-profiel-instellingen {
+.zp-profiel-knop {
   display: grid;
   place-items: center;
   width: 2.5em;
@@ -435,9 +435,16 @@
   transition: transform 0.4s cubic-bezier(0.3, 0.7, 0.4, 1), background-color 0.2s;
 }
 
-.zp-profiel-instellingen:hover {
+.zp-profiel-knop:hover {
   background: rgb(255 255 255 / 0.16);
+}
+
+.zp-profiel-instellingen:hover {
   transform: rotate(45deg);
+}
+
+.zp-profiel-meer {
+  padding: 0.55em;
 }
 
 /* ------------------------------------------------------------------------- */
