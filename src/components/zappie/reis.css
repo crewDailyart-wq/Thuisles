@@ -1,0 +1,116 @@
+/* Cinematische, scrollbare homepage: uitsluitend onder /zappie. */
+.zp[data-start="ja"] { --zr-scroll: 0; }
+.zp[data-start="ja"] .zp-heelal { overflow: hidden; }
+.zp[data-start="ja"] .zp-laag-ruimte {
+  scale: calc(1 + var(--zr-scroll) * .85);
+  transform-origin: 50% 72%;
+  opacity: calc(1 - var(--zr-scroll) * .67);
+}
+.zp[data-start="ja"] .zp-aarde {
+  transform: translate3d(0, calc(var(--zr-scroll) * -13vh), 0) scale(calc(1 + var(--zr-scroll) * 1.15));
+  transform-origin: 50% 74%;
+}
+.zp[data-start="ja"] .zp-sterrenveld { opacity: calc(1 - var(--zr-scroll) * 0.95); }
+.zp[data-start="ja"] .zp-horizonlicht { opacity: calc(1 - var(--zr-scroll) * .7); }
+.zp[data-start="ja"] .zp-schil {
+  height: 100px;
+  bottom: auto;
+  background: linear-gradient(180deg, rgb(3 14 47 / .6), transparent);
+}
+.zp[data-start="ja"] .zp-logo-tekst { transform: none; }
+.zp[data-start="ja"] .zp-logozin { display: none !important; }
+.zp[data-start="ja"] .zp-podium { overflow: visible; }
+@media (min-width:900px) and (min-aspect-ratio:5/4) {
+  .zp[data-start="ja"] .zp-podium { height: 100svh; overflow: visible; }
+}
+/* De achtergrond reis van kosmos naar kust. */
+.zr-reis { position: relative; isolation: isolate; padding-bottom: 0; color: #fff; }
+.zr-reis::before {
+  content:""; position:absolute; inset:0; z-index:-3; pointer-events:none;
+  background:linear-gradient(180deg, rgb(3 19 52 / .2), rgb(9 49 113 / .65) 20%, rgb(15 89 150 / .84) 58%, #07518b 84%, #084674);
+}
+.zr-sectie { max-width: 1590px; margin: 0 auto; padding: clamp(75px, 9vw, 135px) clamp(18px, 4.6vw, 75px); position:relative; }
+.zr-sectieintro { margin: 0 0 30px; text-shadow:0 3px 18px #051a4c; }
+.zr-bovenregel { color: #ffd87b; letter-spacing:.2em; font-size: .72rem; font-weight:900; }
+.zr-sectieintro h2 { font-size:clamp(2.1rem, 4vw, 4rem); margin: .2em 0 0; line-height:1.06; }
+.zr-sectieintro p { font-family:var(--font-caveat), cursive; font-size:clamp(1.5rem,2vw,2.3rem); color:#fbe5a3; }
+.zr-leergrid { display:grid; grid-template-columns:minmax(0,1.02fr) minmax(0,.98fr); gap:25px; align-items:stretch; }
+.zr-vakkenpaneel, .zr-werkplaats, .zr-winkelpaneel {
+  border:2px solid #69caffaa; border-radius:26px; padding:clamp(14px,2vw,29px);
+  background:linear-gradient(145deg,rgba(14,79,156,.91),rgba(3,24,68,.95));
+  box-shadow:inset 0 2px 0 #b8eaff66, 0 16px 44px #00184399, 0 0 25px #46bbff30;
+  backdrop-filter:blur(12px);
+}
+.zr-paneeltop { display:flex; gap:12px; align-items:center; margin-bottom:18px; flex-wrap:wrap; }
+.zr-paneeltop strong { font:700 clamp(1.4rem,2vw,2rem) var(--font-fredoka),sans-serif; }
+.zr-paneeltop > span:last-child:not(.zr-bolster) { margin-left:auto; font-size:.9rem; opacity:.8; }
+.zr-bolster { font-size:2.2rem; color:#ffd447; filter:drop-shadow(0 0 8px #ffdd50); }
+.zr-vakken { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+.zr-vak { position:relative; display:flex; min-height:150px; flex-direction:column; align-items:center; justify-content:center; gap:7px; padding:10px 6px;
+ border:2px solid #b5eaff77; border-radius:18px; color:#fff; text-decoration:none;
+ background:linear-gradient(145deg,#5ab7ff5e,#064c9a99);
+ box-shadow:inset 0 2px 0 #ffffff55, 0 7px 0 #011c57, 0 10px 15px #0008;
+ transition:transform .2s,filter .2s; text-align:center; }
+.zr-vak[href]:hover { transform:translateY(-5px);filter:brightness(1.16); }
+.zr-vak[data-kleur="roze"] { background:linear-gradient(145deg,#f65f95,#7b277a); }
+.zr-vak[data-kleur="goud"] { background:linear-gradient(145deg,#f3ad40,#99520c); }
+.zr-vak[data-kleur="violet"] { background:linear-gradient(145deg,#9e6ffe,#49318e); }
+.zr-vak[data-kleur="groen"] { background:linear-gradient(145deg,#43ca9d,#086f7e); }
+.zr-vak[data-kleur="brons"] { background:linear-gradient(145deg,#c69d5c,#6e4580); }
+.zr-vakicoon { display:grid; place-items:center; font:900 clamp(1.4rem,3vw,2.8rem) var(--font-fredoka),sans-serif; height:55px; text-shadow:0 3px 6px #092248; }
+.zr-vak strong { font-size:clamp(.85rem,1.3vw,1.1rem); line-height:1.15; }
+.zr-vakpijl { position:absolute; right:9px; bottom:7px; font-size:1.1rem; }
+.zr-later { position:absolute; top:6px; right:8px; color:#fffbd2; font-size:10px; font-weight:900; }
+.zr-werkplaats { overflow:hidden; }
+.zr-werkplaats > p { font-weight:700; opacity:.92; }
+.zr-werfbeeld { height:clamp(260px,29vw,405px); position:relative; overflow:hidden; border-radius:18px; margin:20px 0;
+ background:radial-gradient(ellipse at 50% 80%,#ffce54b0,transparent 50%),linear-gradient(180deg,#0e3982,#1459ac 55%,#031e55); border:1px solid #65c8ff90; }
+.zr-werfbeeld::before { content:""; position:absolute; inset:0; opacity:.24; background:repeating-linear-gradient(90deg,transparent 0 45px,#a4dcff 46px 48px); }
+.zr-werfbeeld::after { content:""; position:absolute; inset:auto 0 0; height:22%; background:repeating-linear-gradient(90deg,#06336e 0 30px,#0e5295 30px 55px); border-top:7px solid #ffd566; }
+.zr-lichtkegel { position:absolute; left:22%; top:-10%; height:95%; width:60%; background:linear-gradient(180deg,#ffda6e6b,transparent); clip-path:polygon(35% 0,65% 0,100% 100%,0 100%); }
+.zr-kraan { position:absolute; z-index:2; right:12%; top:4%; font-size:3rem; color:#ffd447; animation:zr-dobber 5s ease-in-out infinite; }
+.zr-duikboot { position:absolute; z-index:3; left:36%; top:40%; font-size:clamp(5rem,9vw,10rem); transform:rotate(-7deg); filter:drop-shadow(0 0 20px #ffcb55); }
+.zr-hulpje { position:absolute; z-index:4; bottom:14%; font-size:clamp(3rem,5vw,5.5rem); animation:zr-dobber 4s ease-in-out infinite; }
+.zr-hulpje-een { left:6%; } .zr-hulpje-twee { right:10%;animation-delay:-2s; }
+.zr-vonken { position:absolute; right:30%; top:42%; font-size:2rem; color:#ffe988; animation:zr-twinkel 2s infinite; }
+.zr-bouwvoortgang { background:#021a49aa; border-radius:18px; padding:15px; }
+.zr-bouwvoortgang > div { display:flex; justify-content:space-between;gap:10px; }
+.zr-bouwvoortgang progress { display:block; width:100%;height:19px;accent-color:#ffd447; margin-top:12px; }
+.zr-bouwvoortgang p {font-size:.95rem; margin:7px 0 0;opacity:.88;}
+.zr-toekomst { display:grid;grid-template-columns:1fr 1fr;gap:12px; margin-top:14px; }
+.zr-toekomst span { padding:14px; border:1px solid #96caff77;border-radius:15px;background:#082b67cc;font-weight:900; }
+.zr-toekomst small {display:block;color:#c8e2ff;font-weight:500;}
+.zr-atmosfeer { position:absolute;pointer-events:none;inset:0;overflow:hidden;z-index:-2; }
+.zr-wolk { position:absolute; display:block; width:55vw;height:23vw; max-height:450px; border-radius:50%;filter:blur(48px);
+ background:radial-gradient(ellipse,#d5efffe0,transparent 73%);opacity:.3;animation:zr-wolk 39s ease-in-out infinite alternate; }
+.zr-wolk-a {top:3%;left:-30%;}.zr-wolk-b {top:33%;right:-30%; animation-delay:-20s;}.zr-wolk-c {top:69%;left:-20%;animation-delay:-12s;}
+.zr-atelier {padding-bottom:280px;}
+.zr-ateliergrid {display:grid; grid-template-columns:minmax(260px,.43fr) minmax(0,.57fr); gap:22px;position:relative;z-index:2;}
+.zr-paspodium {position:relative; min-height:480px; border-radius:28px;display:grid;place-items:center;overflow:hidden;
+ background:radial-gradient(ellipse at 50% 53%,#5ccaffaa,transparent 65%),linear-gradient(155deg,#093b8d,#041d58);
+ border:2px solid #77d9ff;box-shadow:inset 0 0 45px #3baaff44,0 20px 35px #001b52bb;}
+.zr-paspodium .zp-robot {width:min(75%,330px); z-index:2;filter:drop-shadow(0 18px 13px #00132f); }
+.zr-atelierglans {position:absolute;inset:6% 18%;border:5px solid #58ccff55;border-radius:50%;box-shadow:0 0 100px #66d5ff55;}
+.zr-paslabel {position:absolute;top:15px;letter-spacing:.1em;font-weight:900;color:#ffdf86;}
+.zr-podiumvoet {position:absolute;bottom:10px;background:linear-gradient(#ffe69e,#e6a917);border-radius:40px;padding:8px 24px;color:#07214b;font-weight:900;}
+.zr-filters {display:flex;gap:9px;flex-wrap:wrap;margin:15px 0 20px;}
+.zr-filters button {border:1px solid #90d4ff; border-radius:100px;background:#0b3c81;color:#fff;padding:9px 16px;font-weight:800;cursor:pointer;}
+.zr-filters [aria-pressed="true"] {background:#39b7f8;color:#032659;box-shadow:0 0 16px #5ad1ff88;}
+.zr-producten {display:grid;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));gap:12px;}
+.zr-product {display:flex;flex-direction:column;align-items:center;gap:6px;min-height:194px;padding:12px 8px;color:#fff;text-align:center;
+ background:linear-gradient(#328ddd,#073873);border:2px solid #a6e1ff8f;border-radius:17px;cursor:pointer;}
+.zr-product[aria-pressed="true"] {border-color:#ffe993;box-shadow:0 0 20px #ffd44777;}
+.zr-productbeeld {font-size:3.5rem; filter:drop-shadow(0 6px 6px #001741bb);}.zr-product strong {font-size:.95rem;}
+.zr-product small {color:#ffe49d;}.zr-productactie {margin-top:auto;display:block;width:100%;border-radius:40px;padding:6px;background:linear-gradient(#ffe282,#ffb81c);color:#153366;font-weight:900;}
+.zr-winkelstatus {margin:18px 0 0;color:#ddedff;font-size:.91rem;}
+.zr-kust {position:absolute;left:0;right:0;bottom:0;height:350px;z-index:0;pointer-events:none;overflow:hidden;
+ background:linear-gradient(180deg,#237cb000,#2687c4 42%,#075891 88%);}
+.zr-bergen {position:absolute;inset:0 0 20%;background:linear-gradient(125deg,transparent 24%,#1f7377 24% 29%,transparent 29% 45%,#145e69 45% 51%,transparent 51% 68%,#398f72 68% 73%,transparent 73%);clip-path:polygon(0 80%,22% 45%,40% 80%,55% 35%,80% 75%,95% 20%,100% 70%,100% 100%,0 100%);}
+.zr-stad {position:absolute;left:35%;bottom:28%;color:#ffde86;font:900 clamp(1rem,2vw,2rem) var(--font-fredoka),sans-serif;text-shadow:0 0 18px #0b326a;}
+.zr-water {position:absolute;bottom:0;height:30%;width:100%;background:repeating-linear-gradient(173deg,#46d6f5 0 3px,#0569b1 5px 26px);}
+@keyframes zr-dobber {0%,100%{translate:0 0}50%{translate:0 -9px}}
+@keyframes zr-twinkel {0%,100%{opacity:.35}50%{opacity:1}}
+@keyframes zr-wolk {from{transform:translateX(-6%)}to{transform:translateX(16%)}}
+@media(max-width:930px){.zr-leergrid,.zr-ateliergrid{grid-template-columns:1fr}.zr-werfbeeld{height:300px}.zr-sectie{padding-top:75px}.zr-paspodium{min-height:360px}.zr-atelier{padding-bottom:235px}}
+@media(max-width:560px){.zr-vakken{grid-template-columns:repeat(2,minmax(0,1fr))}.zr-vak{min-height:132px}.zr-paneeltop>span:last-child:not(.zr-bolster){margin-left:0}.zr-sectieintro{margin-bottom:20px}.zr-producten{grid-template-columns:repeat(2,minmax(0,1fr))}.zr-atelier{padding-bottom:220px}}
+@media(prefers-reduced-motion:reduce){.zr-reis *{animation:none!important;transition:none!important}.zp[data-start="ja"] .zp-aarde,.zp[data-start="ja"] .zp-laag-ruimte{transform:none!important;scale:1!important;opacity:1!important}}
