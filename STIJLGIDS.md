@@ -40,17 +40,18 @@ Alle lettertypes komen van Google Fonts.
 
 | Waarvoor | Letter | Hoe |
 |---|---|---|
-| Titels en namen op tegels | **Figtree** | dik (700–900), wit, met een donkerblauwe schaduw eronder |
-| Gewone tekst | **Figtree** | goed leesbaar |
+| Titels, namen op tegels en knoppen | **Fredoka** | dik en rond, wit, met een donkerblauwe schaduw eronder |
+| Gewone tekst en vragen | **Lexend** | gemaakt voor vlot lezen |
 | Kleine zinnetjes | **Caveat** | handschrift, iets scheef, bijvoorbeeld "Kies een vak en ga op ontdekking!" |
 
-In de code: `av-titel` voor titels, `av-hand` voor Caveat. Handschrift
+In de code: `av-titel` voor Fredoka, `av-hand` voor Caveat. Handschrift
 krijgt een zachte donkere schaduw, zodat het leesbaar blijft boven een lichte
-wolk. Figtree is een variabel lettertype: één bestand voor alle diktes. Van
-Caveat wordt maar één dikte geladen (600). Dat scheelt laadtijd.
+wolk. Van Fredoka en Caveat wordt maar één dikte geladen (700 en 600); Lexend
+is een variabel lettertype, één bestand voor alle diktes. Dat scheelt
+laadtijd.
 
-Tot oktober 2026 waren dit Fredoka (titels) en Nunito (tekst); de eigenaar
-koos Figtree voor de hele site, zodat het minder gegenereerd oogt.
+Tot oktober 2026 was de gewone tekst Nunito. Op verzoek van de eigenaar is
+dat Lexend geworden, dat speciaal is ontworpen voor leesgemak.
 
 ## Tegels
 

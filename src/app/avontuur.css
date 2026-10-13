@@ -20,8 +20,9 @@
  *     `--av-paars`, `--av-roze`, enzovoort.
  *
  * De lettertypes komen uit Google Fonts en worden geladen in app/layout.tsx:
- *   --font-figtree  strak en geometrisch, voor titels én gewone tekst
- *                   (verving in oktober 2026 Fredoka en Nunito)
+ *   --font-fredoka  dik en rond, voor titels, namen op tegels en knoppen
+ *   --font-lexend   gemaakt voor vlot lezen, voor gewone tekst en vragen
+ *                   (verving in oktober 2026 Nunito)
  *   --font-caveat   handschrift, voor kleine zinnetjes
  */
 
@@ -63,7 +64,7 @@
  * ------------------------------------------------------------------------- */
 
 .av-titel {
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.05;
@@ -91,7 +92,7 @@
     radial-gradient(60rem 40rem at 50% 38%, var(--av-hemel-licht) 0%, transparent 70%),
     radial-gradient(40rem 30rem at 0% 100%, rgba(120, 90, 255, 0.35), transparent 70%),
     linear-gradient(180deg, var(--av-hemel) 0%, var(--av-hemel-diep) 100%);
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-lexend), ui-rounded, sans-serif;
 }
 
 [data-stijl="avontuur"] :focus-visible {
@@ -196,7 +197,7 @@
 }
 
 .av-tegel__naam {
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   font-size: clamp(0.95rem, 10.5cqi, 1.75rem);
   line-height: 1.1;
@@ -226,7 +227,7 @@
   gap: 0.45em;
   width: 82%;
   margin-top: 0.35em;
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 800;
   font-size: clamp(0.7rem, 6.5cqi, 0.95rem);
   line-height: 1;
@@ -312,7 +313,7 @@
   min-height: 48px;
   padding: 0.6rem 1.5rem;
   border-radius: 999px;
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   font-size: 1.15rem;
   color: #ffffff;

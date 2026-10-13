@@ -1,20 +1,31 @@
 import { MERKNAAM } from "@/lib/merk";
 import type { Metadata, Viewport } from "next";
-import { Caveat, Figtree } from "next/font/google";
+import { Caveat, Fredoka, Lexend } from "next/font/google";
 import "./globals.css";
 import "./avontuur.css";
 
 /*
-  Eén lettertype voor de hele site (keuze van de eigenaar, oktober 2026):
-  Figtree, strak en geometrisch. Vervangt Fredoka (titels) en Nunito (tekst)
-  op de kinderkant, de homepagina, het ouderdeel en het inloggen. Het is een
-  variabel lettertype: één bestand voor alle diktes van 300 tot 900.
+  Lettertypes, keuze van de eigenaar (oktober 2026), voor de kinderkant, de
+  oefeningen, de homepagina en scholenkaart, het ouderdeel en het inloggen:
+
+  - Lexend voor lopende tekst en vragen: ontworpen voor vlot lezen, veel
+    gebruikt in het onderwijs. Variabel lettertype: één bestand voor alle
+    diktes van 100 tot 900.
+  - Fredoka voor titels, koppen, namen op tegels en knoppen.
 
   Het beheer houdt Inter (lib/lettertypen.ts); dat laadt alleen daar.
 */
-const figtree = Figtree({
-  variable: "--font-figtree",
+const lexend = Lexend({
+  variable: "--font-lexend",
   subsets: ["latin"],
+});
+
+/** Titels en koppen: dik, rond en speels. */
+const fredoka = Fredoka({
+  variable: "--font-fredoka",
+  subsets: ["latin"],
+  /* alleen de dikte die gebruikt wordt: scheelt laadtijd op een trage verbinding */
+  weight: ["700"],
 });
 
 /** Avontuurstijl: handschrift voor kleine zinnetjes. */
@@ -37,7 +48,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="nl"
-      className={`${figtree.variable} ${caveat.variable} h-full antialiased`}
+      className={`${lexend.variable} ${fredoka.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="font-sans min-h-full flex flex-col">{children}</body>
     </html>

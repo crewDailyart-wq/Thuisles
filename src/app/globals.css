@@ -12,14 +12,14 @@
   `@theme inline`, zodat `var(--font-inter)` wordt opgezocht op de laag met
   `font-zakelijk` zelf: Inter staat alleen op de layout van het beheer
   (zie lib/lettertypen.ts), niet op de hele pagina. De rest van de site
-  gebruikt Figtree (`font-sans`, app/layout.tsx).
+  gebruikt Lexend (`font-sans`) en Fredoka voor titels (app/layout.tsx).
 */
 @theme inline {
   --font-zakelijk: var(--font-inter), "Segoe UI", system-ui, sans-serif;
 }
 
 @theme {
-  --font-sans: var(--font-figtree), "Segoe UI", system-ui, sans-serif;
+  --font-sans: var(--font-lexend), "Segoe UI", system-ui, sans-serif;
 
   /* Basis */
   --color-room: #fbf6ee;

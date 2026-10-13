@@ -88,7 +88,7 @@ export function IcoonSpelling() {
     <svg viewBox="0 0 100 100" aria-hidden="true" className="h-full w-full">
       <Streepjes x={76} y={10} />
       <g
-        fontFamily="var(--font-figtree), system-ui, sans-serif"
+        fontFamily="var(--font-fredoka), var(--font-lexend), sans-serif"
         fontWeight="700"
         textAnchor="middle"
       >
