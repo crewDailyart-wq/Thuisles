@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import "@/components/zappie/reis-afwerking.css";
 import { reisStand, useBewegingsstand, zetOmgevingRustig } from "@/components/zappie/reis/beweging";
 
 const begrens = (n: number) => Math.max(0, Math.min(1, n));
@@ -59,7 +60,7 @@ export function ScrollReis() {
     // Geen inhaalvlucht na herstel van een eerder bezochte scrollpositie.
     positie = doel;
     window.addEventListener("scroll", scroll, { passive: true });
-    window.addEventListener("resize", meet, { passive: true });
+    window.addEventListener("resize", meet);
     document.addEventListener("visibilitychange", zichtbaarheid);
     return () => {
       cancelAnimationFrame(frame);

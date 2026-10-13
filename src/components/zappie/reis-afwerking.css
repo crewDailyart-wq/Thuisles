@@ -1,0 +1,19 @@
+/* Afwerking na browsercontrole: geen overlap met de vaste navigatie of het paspodium. */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp[data-start="ja"] .zp-profiel-groet {
+    max-width: 8.2em;
+    white-space: normal;
+    line-height: 1.25;
+    font-size: max(11px, calc(var(--u) * .85));
+  }
+}
+@media (min-width: 900px) and (max-width: 1100px) and (min-aspect-ratio: 5/4) {
+  .zp[data-start="ja"] .zp-profiel-groet { max-width: 6em; }
+  .zp[data-start="ja"] .zp-profiel { right: 12px; }
+}
+.zp[data-start="ja"] .zr-podiumringen { bottom: 100px; }
+.zp[data-start="ja"] .zr-pasbijschrift { z-index: 6; bottom: 18px; }
+.zp[data-start="ja"] .zr-gepast--pet { top: -10%; }
+.zp[data-start="ja"] .zr-gepast--kroon { top: -17%; }
+.zp[data-start="ja"] .zr-bestemming { z-index: 0; }
+.zp[data-start="ja"] .zr-atelier { z-index: 1; }

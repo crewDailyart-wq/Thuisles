@@ -12,7 +12,6 @@ const tijdelijk = await mkdtemp(path.join(tmpdir(), "zappie-ui-"));
 const poort = 4317;
 const basis = `http://127.0.0.1:${poort}`;
 const env = { ...process.env, NODE_ENV: "production", NEXT_TELEMETRY_DISABLED: "1", THUISLES_DB: path.join(tijdelijk, "preview.db") };
-// Geen meegeërfde productieconfiguratie gebruiken in deze lokale browsercontrole.
 for (const naam of ["THUISLES_WACHTWOORD", "THUISLES_GEBRUIKER", "THUISLES_GODOT", "THUISLES_URL"]) delete env[naam];
 const server = spawn(process.execPath, ["node_modules/next/dist/bin/next", "start", "-p", String(poort), "-H", "127.0.0.1"], { env, stdio: ["ignore", "pipe", "pipe"] });
 let log = "";
@@ -37,12 +36,38 @@ try {
     await pagina.evaluate(() => document.fonts.ready);
     await pagina.locator("#vrij-oefenen").waitFor();
     await pagina.locator("#zappies-atelier").waitFor();
+    // Activeer lazy illustraties en laat de compositor alle secties tekenen.
+    const totaal = await pagina.evaluate(() => document.documentElement.scrollHeight);
+    for (let y = 0; y < totaal; y += height * .75) {
+      await pagina.evaluate((top) => window.scrollTo(0, top), y);
+      await pagina.waitForTimeout(130);
+    }
+    await pagina.evaluate(() => window.scrollTo(0, 0));
+    await pagina.waitForTimeout(350);
+    for (const item of await pagina.locator(".zp-menu a").all()) {
+      const vrij = await item.evaluate(el => {
+        const r = el.getBoundingClientRect();
+        return document.elementFromPoint(r.x + r.width / 2, r.y + r.height / 2)?.closest("a") === el;
+      });
+      assert.ok(vrij, `${naam}: menuknop ${await item.innerText()} wordt niet bedekt`);
+    }
+    await pagina.screenshot({ path: path.join(uit, `${naam}-start.png`) });
     await pagina.screenshot({ path: path.join(uit, `${naam}-hele-pagina.png`), fullPage: true });
+    const saldoVoor = await pagina.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith("zappie:v1")).map(k => [k,localStorage.getItem(k)])));
     const breedte = await pagina.evaluate(() => ({ inhoud: document.documentElement.scrollWidth, venster: innerWidth, hoogte: document.documentElement.scrollHeight, viewport: innerHeight }));
     assert.ok(breedte.inhoud <= breedte.venster + 2, `${naam}: geen horizontale overflow (${JSON.stringify(breedte)})`);
     assert.ok(breedte.hoogte > breedte.viewport * 1.7, `${naam}: homepage is echt scrollbaar`);
     assert.equal(await pagina.locator(".zr-vak").count(), 9);
     assert.equal(await pagina.locator('.zr-vak[href="/rekenen"]').count(), 1);
+    await pagina.locator('#vrij-oefenen').evaluate(el => el.scrollIntoView({block:"start"}));
+    await pagina.waitForTimeout(300);
+    await pagina.screenshot({ path: path.join(uit, `${naam}-vrij-oefenen.png`) });
+    const rekenknop = pagina.locator('.zr-vak[href="/rekenen"]');
+    await rekenknop.scrollIntoViewIfNeeded();
+    assert.ok(await rekenknop.evaluate(el => {
+      const r = el.getBoundingClientRect();
+      return document.elementFromPoint(r.x + r.width/2,r.y + r.height/2)?.closest("a") === el;
+    }), "De eerste vaktegel is niet bedekt");
     await pagina.getByRole("button", { name: "Geschiedenis, binnenkort", exact: true }).click();
     assert.match(await pagina.locator(".zr-vakbericht").innerText(), /komt later/);
     await pagina.getByRole("button", { name: "Vliegtuig", exact: true }).click();
@@ -52,6 +77,8 @@ try {
     await pagina.getByRole("button", { name: "Sterrenkroon passen", exact: true }).click();
     assert.equal(await pagina.locator(".zr-avatar").getAttribute("data-accessoire"), "kroon");
     assert.equal(await pagina.locator(".zr-gepast--kroon").count(), 1);
+    await pagina.locator(".zr-avatar").scrollIntoViewIfNeeded();
+    await pagina.screenshot({ path: path.join(uit, `${naam}-kroon-passen.png`) });
     await pagina.getByRole("button", { name: "Terug naar je eigen look", exact: true }).click();
     assert.equal(await pagina.locator(".zr-avatar").getAttribute("data-accessoire"), "standaard");
     await pagina.getByRole("button", { name: "Alles", exact: true }).click();
@@ -60,8 +87,9 @@ try {
     assert.equal(stop, "rgb(105, 207, 250)", "De kleur wordt op het robotlichaam toegepast");
     await pagina.screenshot({ path: path.join(uit, `${naam}-atelier-passen.png`) });
     await pagina.getByRole("button", { name: "Terug naar je eigen look", exact: true }).click();
-    // Links blijven bestaan; navigeren zou een echt kindprofiel vereisen.
     for (const href of ["/rekenen", "/meer", "/profiel", "/zappie/mijn-wereld", "/zappie/beloningen"]) assert.ok(await pagina.locator(`a[href="${href}"]`).count(), `Route behouden: ${href}`);
+    const saldoNa = await pagina.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith("zappie:v1")).map(k => [k,localStorage.getItem(k)])));
+    assert.deepEqual(saldoNa, saldoVoor, "Passen en bouwplannen wijzigen de opgeslagen voortgang niet");
     rapport.schermen.push({ naam, width, height, ...breedte, status: "geslaagd" });
     await context.close();
   }
@@ -80,7 +108,7 @@ try {
   assert.ok(positie > .5, `Scroll stuurt de reis: ${positie}`);
   await p.emulateMedia({ reducedMotion: "reduce" });
   await p.waitForFunction(() => document.querySelector('.zp')?.getAttribute("data-beweging") === "rustig");
-  rapport.controles.push("Desktop/tablet/mobiel: scroll, geen horizontale overflow, negen vakken, geen nep-beschikbaarheid", "Bouwplanselectie werkt; bestaande routes behouden", "Filters, petjes/kroon/kleur passen en herstellen werken; geen tokens afgeschreven", "Beweging handmatig pauzeren/hervatten en systeemvoorkeur tijdens bezoek wijzigen werken", `Scrollstand bereikt ${positie}`);
+  rapport.controles.push("Desktop/tablet/mobiel: scroll, geen horizontale overflow, negen vakken, geen nep-beschikbaarheid", "Menuknoppen en eerste vaktegel zijn niet bedekt", "Bouwplanselectie werkt; bestaande routes behouden", "Filters, petjes/kroon/kleur passen en herstellen werken; opgeslagen voortgang blijft gelijk", "Beweging handmatig pauzeren/hervatten en systeemvoorkeur tijdens bezoek wijzigen werken", `Scrollstand bereikt ${positie}`);
   await beweging.close();
   assert.equal(rapport.fouten.length, 0, "Geen JavaScript-paginafouten");
 } catch (e) {
