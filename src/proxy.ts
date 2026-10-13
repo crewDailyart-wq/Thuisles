@@ -49,10 +49,24 @@ const OPENBARE_SITE = [
   /^\/_next\/image$/,
 ];
 
+/**
+ * Alleen lezen gaat buiten het slot om. Een serveractie (een POST met de kop
+ * `Next-Action`) kan Next op élk adres binnenkrijgen, ook een actie uit
+ * beheer; zonder deze controle zou die via de openbare homepagina langs het
+ * slot kunnen. De openbare pagina's zelf hebben geen serveracties nodig.
+ */
+function isLeesverzoek(request: NextRequest): boolean {
+  return (request.method === "GET" || request.method === "HEAD") && !request.headers.has("next-action");
+}
+
 export function proxy(request: NextRequest) {
   const wachtwoord = process.env.THUISLES_WACHTWOORD;
   if (!wachtwoord) return NextResponse.next();
-  if (process.env.THUISLES_OPENBAAR === "ja" && OPENBARE_SITE.some((r) => r.test(request.nextUrl.pathname))) {
+  if (
+    process.env.THUISLES_OPENBAAR === "ja" &&
+    isLeesverzoek(request) &&
+    OPENBARE_SITE.some((r) => r.test(request.nextUrl.pathname))
+  ) {
     return NextResponse.next();
   }
   const gebruiker = process.env.THUISLES_GEBRUIKER || "thuisles";

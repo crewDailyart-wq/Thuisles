@@ -5,7 +5,9 @@ import {
   haalOpenbareOefeningen,
   haalOpenbareOnderwerpen,
 } from "@/lib/data/openbaar";
+import { aantalZichtbareWerkbladen } from "@/lib/data/werkbladen";
 import { TALEN, openbaarAdres, taalvoorvoegsel } from "@/lib/seo";
+import { niveautestBeschikbaar } from "@/lib/site/inhoud";
 
 /**
  * De sitemap: alle openbare adressen, met hun vertalingen.
@@ -35,6 +37,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   /* De openbare site: homepagina en scholenkaart (alleen Nederlands). */
   regels.push({ url: "/" }, { url: "/scholen" });
+  /* Werkbladen en de niveautest alleen als ze er echt zijn; anders is het een 404. */
+  if (aantalZichtbareWerkbladen() > 0) regels.push({ url: "/werkbladen" });
+  if (niveautestBeschikbaar()) regels.push({ url: "/niveautest" });
 
   const domeinen = haalOpenbareDomeinen();
 

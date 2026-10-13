@@ -2089,3 +2089,352 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
 }
+
+/* ------------------------------------------------------------------------- */
+/* De gratis niveautest (/niveautest)                                         */
+/* ------------------------------------------------------------------------- */
+
+.st-nt-punten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 22px;
+  margin: 24px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-nt-punten li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.st-nt-kies {
+  margin-bottom: 24px;
+  font-size: clamp(1.5rem, 3vw, 2.1rem);
+}
+
+.st-nt-groepen {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 220px), 1fr));
+  gap: 16px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.st-nt-groep {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 4px 12px;
+  min-height: 96px;
+  padding: 20px 24px;
+  text-decoration: none;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.st-nt-groep:hover {
+  transform: translateY(-3px);
+  border-color: var(--st-geel);
+}
+
+.st-nt-groep .st-titel {
+  color: #fff;
+  font-size: 1.5rem;
+}
+
+.st-nt-groep small {
+  grid-column: 1;
+  color: var(--st-zacht);
+  font-size: 0.95rem;
+}
+
+.st-nt-groep svg {
+  grid-row: 1 / span 2;
+  grid-column: 2;
+  width: 22px;
+  height: 22px;
+  color: var(--st-geel);
+}
+
+.st-nt-klein {
+  margin: 20px 0 0;
+  color: var(--st-stil);
+  font-size: 0.92rem;
+}
+
+.st-nt-sectie {
+  padding-top: clamp(20px, 4vw, 40px);
+}
+
+.st-nt-binnen {
+  max-width: 820px;
+}
+
+.st-nt-uitleg {
+  padding: clamp(24px, 4vw, 40px);
+}
+
+.st-nt-uitleg .st-h1 {
+  font-size: clamp(2rem, 4.4vw, 3rem);
+  margin: 0 0 18px;
+}
+
+.st-nt-uitleg > p {
+  margin: 0 0 14px;
+  color: var(--st-zacht);
+}
+
+.st-nt-uitleg strong {
+  color: var(--st-tekst);
+}
+
+.st-nt-uitleg .st-knop {
+  margin-top: 14px;
+}
+
+.st-nt-feiten {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin: 0 0 22px;
+  padding: 0;
+  list-style: none;
+}
+
+.st-nt-feiten li {
+  padding: 8px 16px;
+  border: 1px solid var(--st-rand);
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.05);
+  color: var(--st-zacht);
+}
+
+.st-nt-feiten strong {
+  color: var(--st-goud);
+}
+
+/* De vraag: de witte kaart van de oefeningen, met de letters en kleuren van daar. */
+.st-nt-voortgang {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.st-nt-voortgang p {
+  margin: 0;
+  color: var(--st-zacht);
+}
+
+.st-nt-voortgang strong {
+  color: #fff;
+}
+
+.st-nt-balk {
+  height: 10px;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 0.1);
+  overflow: hidden;
+}
+
+.st-nt-balk span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--st-cyaan), var(--st-goud));
+  transition: width 0.3s ease;
+}
+
+.st-nt-stop {
+  display: inline-flex;
+  align-items: center;
+  min-height: 48px;
+  padding: 0 6px;
+  color: var(--st-zacht);
+  font-weight: 700;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.st-nt-kaart {
+  color: var(--color-inkt);
+  font-size: 1rem;
+  line-height: 1.5;
+  font-weight: 400;
+}
+
+/* De eigen focusrand van de oefeningen, niet de gele van de site. */
+.st .st-nt-kaart :focus-visible {
+  outline: revert-layer;
+  outline-offset: revert-layer;
+  border-radius: revert-layer;
+}
+
+/* De uitslag */
+.st-nt-niveaus {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 0 0 24px;
+  padding: 0;
+  list-style: none;
+}
+
+.st-nt-niveaus li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 18px 12px 12px;
+  border: 1px solid var(--st-rand);
+  border-radius: 18px;
+  background: rgb(255 255 255 / 0.04);
+}
+
+.st-nt-niveaus li[data-beheerst="ja"] {
+  border-color: rgb(79 220 155 / 0.5);
+}
+
+.st-nt-niveau {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 14px;
+  background: rgb(255 255 255 / 0.08);
+  color: #fff;
+  font-size: 1.15rem;
+}
+
+.st-nt-niveaus li[data-beheerst="ja"] .st-nt-niveau {
+  background: rgb(79 220 155 / 0.2);
+  color: var(--st-groen);
+}
+
+.st-nt-niveaus small {
+  display: block;
+  color: var(--st-zacht);
+  font-size: 0.88rem;
+}
+
+.st-nt-tabel {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.98rem;
+}
+
+.st-nt-tabel th,
+.st-nt-tabel td {
+  padding: 12px 8px;
+  border-bottom: 1px solid var(--st-rand);
+  text-align: left;
+  vertical-align: middle;
+}
+
+.st-nt-tabel thead th {
+  color: var(--st-stil);
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.st-nt-tabel tbody th {
+  font-weight: 700;
+  color: var(--st-tekst);
+}
+
+.st-nt-tabel td {
+  white-space: nowrap;
+  color: var(--st-zacht);
+}
+
+.st-nt-label {
+  display: inline-block;
+  margin-left: 8px;
+  padding: 1px 8px;
+  border-radius: 999px;
+  background: rgb(82 217 255 / 0.14);
+  color: var(--st-cyaan);
+  font-size: 0.78rem;
+  font-weight: 800;
+  vertical-align: 1px;
+}
+
+.st-nt-oordeel {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.88rem;
+  font-weight: 800;
+}
+
+.st-nt-oordeel[data-oordeel="beheerst"] {
+  background: rgb(79 220 155 / 0.16);
+  color: var(--st-groen);
+}
+
+.st-nt-oordeel[data-oordeel="bijna"] {
+  background: rgb(255 207 77 / 0.16);
+  color: var(--st-goud);
+}
+
+.st-nt-oordeel[data-oordeel="oefenen"] {
+  background: rgb(255 126 182 / 0.16);
+  color: var(--st-roze);
+}
+
+.st-nt-advies {
+  margin-top: 26px;
+  padding: 20px 22px;
+  border: 1px solid rgb(255 207 77 / 0.35);
+  border-radius: 18px;
+  background: rgb(255 207 77 / 0.06);
+}
+
+.st-nt-advies h2 {
+  margin: 0 0 8px;
+  color: #fff;
+  font-size: 1.3rem;
+}
+
+.st-nt-advies ul {
+  margin: 0;
+  padding-left: 1.2em;
+  color: var(--st-tekst);
+}
+
+.st-nt-advies p {
+  margin: 0;
+  color: var(--st-zacht);
+}
+
+.st-nt-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 24px;
+}
+
+@media (max-width: 520px) {
+  .st-nt-voortgang {
+    grid-template-columns: 1fr auto;
+  }
+
+  .st-nt-balk {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .st-nt-tabel td {
+    white-space: normal;
+  }
+
+  .st-nt-knoppen .st-knop {
+    width: 100%;
+    white-space: normal;
+    text-align: center;
+  }
+}

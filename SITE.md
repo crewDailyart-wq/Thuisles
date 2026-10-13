@@ -25,9 +25,13 @@ en niet op `main`: Railway zet `main` meteen online.
 | `/scholen` | De scholenkaart: alle 6.087 basisscholen, zoeken, per school de doorstroomtoets, de referentieniveaus en de bekende methode. "Koppel deze school aan mijn kind" gaat naar `/ouder/school`. |
 | `/werkbladen` | Gratis werkbladen en posters. **Bestaat pas als er in beheer één aan staat**; tot dan 404 en niet in het menu. |
 | `/admin/werkbladen` | Uploaden (PDF, PNG, JPG, WEBP, tot 7 MB), aan- en uitzetten, weghalen. |
+| `/niveautest` | De gratis niveautest: kies de groep. **Bestaat pas als er in beheer een toets is samengesteld**; tot dan 404 en nergens een knop naartoe. |
+| `/niveautest/5` | De toets van groep 5: uitleg, de vragen, en aan het eind de uitslag. |
+| `/admin/niveautest` | Per groep de toets samenstellen uit bestaande leerdoelen. |
 
 Code: `src/app/(site)/` (pagina's, `site.css`), `src/components/site/`,
-`src/lib/site/`, `src/lib/data/werkbladen.ts`.
+`src/lib/site/`, `src/lib/data/werkbladen.ts`, `src/lib/data/niveautest.ts`,
+`src/lib/niveautest-uitslag.ts`.
 
 De homepagina toont alles als beschikbaar (keuze eigenaar). Wat er op
 13 oktober 2026 nog **niet** bestaat en vóór livegang moet kloppen:
@@ -36,16 +40,42 @@ De homepagina toont alles als beschikbaar (keuze eigenaar). Wat er op
 - ondertiteling, een focusmodus voor ADHD, een dyslexie-instelling buiten de lessen;
 - het automatisch koppelen van methodes per school (de methode wordt nu per
   school door ouders doorgegeven en in beheer gecontroleerd);
-- de niveautest (zie hieronder), de Zappie-box, betalen en de abonnementen;
+- de inhoud van de niveautest (het systeem is er; de toets stel je zelf samen,
+  zie hieronder), de Zappie-box, betalen en de abonnementen;
 - taal, spelling en lezen als oefenstof (nu vooral rekenen);
 - werkbladen en posters (het systeem is er, de inhoud nog niet).
 
-## De niveautest: nog te bouwen
+## De niveautest
 
-De homepagina beschrijft hem, maar er staat nergens een knop naar
-(`niveautestBeschikbaar()` in `src/lib/site/inhoud.ts`). De speler moet de
-bestaande vraagweergave van de oefeningen gebruiken; dat raakt de oefenspeler
-en valt onder `ONTWERPREGELS.md`. Voorstel staat in het verslag aan de eigenaar.
+**Samenstellen** in Beheer → Niveautest. Per groep (3 tot en met 8) een
+rijtje onderdelen: een bestaand leerdoel, hoeveel vragen (1 tot en met 10) en
+eventueel het referentieniveau (1F, 2F, 1S). Er wordt niets nieuws gemaakt: de
+toets kiest bij elk bezoek willekeurig uit de gepubliceerde vragen van die
+leerdoelen, en vragen voor de gekozen groep gaan voor.
+
+**Zichtbaar** zodra één groep een onderdeel heeft met vragen die in de toets
+passen: dan komen de knoppen op de homepagina, de link in de voet en
+`/niveautest` in de sitemap (`niveautestBeschikbaar()` in
+`src/lib/site/inhoud.ts`).
+
+**De toets** (`src/components/site/Toetsspeler.tsx`) gebruikt dezelfde
+tekening, vraagzin en antwoordvelden als de oefeningen (`Antwoordvelden` uit
+`OefenSpeler.tsx`; daar is alleen `export` bijgekomen). Wat anders is:
+- geen goed of fout tussendoor, geen tip, uitleg of feest;
+- bij elke vraag de knop Volgende, ook bij meerkeuze, plus "Weet ik niet"
+  (telt als niet goed);
+- er wordt niets bewaard, ook geen uitslag.
+
+**De uitslag**: per onderdeel 80% of meer goed is beheerst, 50% of meer
+bijna, minder nog oefenen. Per referentieniveau (alle onderdelen met dat
+niveau samen) 75% of meer is beheerst. Daaronder de drie zwakste onderdelen.
+De grenzen staan op één plek: `src/lib/niveautest-uitslag.ts`.
+
+**Doen niet mee** in de toets (in de oefeningen blijven ze gewoon staan):
+vragen waarbij Vos meebeweegt (plaatjesraster, blokken, huizenrij), de bus,
+de kralenrij, Godot-spellen, het bosspel en uitleg-lessen. Hun beeld wordt door
+de oefenspeler zelf bestuurd. Beheer laat per onderdeel zien hoeveel vragen er
+wél in passen.
 
 ## De scholenkaart bijwerken
 
@@ -67,5 +97,7 @@ staat er "±" bij het percentage.
 1. Branch naar `main` (Railway bouwt dan vanzelf).
 2. Op Railway de variabele `THUISLES_OPENBAAR=ja` zetten. Pas dan gaan `/`,
    `/scholen`, `/werkbladen` en `/niveautest` buiten het wachtwoordslot; alle
-   kinder- en ouderpagina's blijven erachter (`src/proxy.ts`).
+   kinder- en ouderpagina's blijven erachter (`src/proxy.ts`). Alleen lezen
+   (GET) gaat langs het slot; een serveractie (POST) vraagt altijd het
+   wachtwoord, ook op een openbaar adres.
 3. De punten uit `JURIDISCH.md` onder "Vóór livegang" afvinken.

@@ -3,20 +3,23 @@
  *
  * Werkbladen en de niveautest verschijnen alleen als er echt iets is (keuze
  * eigenaar, oktober 2026: "alleen het systeem, nog niets tonen"). Zodra er in
- * beheer een werkblad aan staat, komt het in het menu en op de homepagina.
+ * beheer een werkblad aan staat, komt het in het menu en op de homepagina; en
+ * zodra er in beheer een toets is samengesteld, de niveautest.
  */
 
+import { groepenMetToets } from "@/lib/data/niveautest";
 import { aantalZichtbareWerkbladen } from "@/lib/data/werkbladen";
 import overzicht from "@/lib/site/scholenoverzicht.json";
 
 export type Menupunt = { href: string; label: string };
 
 /**
- * De niveautest heeft nog geen speler (zie SITE.md). Tot die er is, staat er
- * nergens een knop naar.
+ * Is er een niveautest? Pas als in Beheer → Niveautest voor minstens één
+ * groep een toets is samengesteld met vragen die erin passen. Tot dan staat er
+ * nergens een knop naartoe.
  */
 export function niveautestBeschikbaar(): boolean {
-  return false;
+  return groepenMetToets().length > 0;
 }
 
 export function siteMenu(): Menupunt[] {

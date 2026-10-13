@@ -414,6 +414,42 @@ export const SCHERMCONTRACT = [
     ],
   },
   /*
+    De gratis niveautest. Het beheerscherm is er altijd; de formuliervelden pas
+    als er leerdoelen zijn, en de openbare pagina's (/niveautest en
+    /niveautest/{groep}) pas als er een toets is samengesteld. Tot dan zijn die
+    een 404, dus worden ze in de bron gecontroleerd.
+  */
+  {
+    naam: "Niveautest in beheer",
+    pad: "/admin/niveautest",
+    bron: ["src/app/admin/niveautest/page.tsx"],
+    zichtbaar: ["Niveautest", "Onderdeel toevoegen", "Zo wordt de uitslag bepaald"],
+    naKlik: [
+      /* Een paneel per groep, 3 tot en met 8; de titel wordt in de code gemaakt. */
+      { tekst: "TOETSGROEPEN.map((groep)", bron: "src/app/admin/niveautest/page.tsx", na: "het scherm openen" },
+      { tekst: "Groep</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Leerdoel</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Vragen</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Referentieniveau</span>", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Toevoegen", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er is minstens één leerdoel" },
+      { tekst: "Uit de toets", bron: "src/components/beheer/Niveautestformulier.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: 'name="aantal"', bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: 'name="niveau"', bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: "Opslaan", bron: "src/app/admin/niveautest/page.tsx", na: "er staat een onderdeel in de toets" },
+      { tekst: "Eén plek omhoog", bron: "src/app/admin/niveautest/page.tsx", na: "er staan twee onderdelen in de toets" },
+      { tekst: "Eén plek omlaag", bron: "src/app/admin/niveautest/page.tsx", na: "er staan twee onderdelen in de toets" },
+      { tekst: "In welke groep zit je kind?", bron: "src/app/(site)/niveautest/page.tsx", na: "er is een toets samengesteld; open /niveautest" },
+      { tekst: "Begin de toets", bron: "src/components/site/Toetsspeler.tsx", na: "kies een groep op /niveautest" },
+      { tekst: "Weet ik niet", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: '"Volgende"', bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: "Stoppen", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets" },
+      { tekst: "<Antwoordvelden", bron: "src/components/site/Toetsspeler.tsx", na: "begin de toets (dezelfde antwoordvelden als bij het oefenen)" },
+      { tekst: "Hier valt de meeste winst te halen", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
+      { tekst: "Nog een keer", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
+      { tekst: "Oefen met de methode van school", bron: "src/components/site/Toetsspeler.tsx", na: "maak de toets af" },
+    ],
+  },
+  /*
     De kinderkant in de nieuwe layout (oktober 2026). Deze schermen zitten
     achter het kindprofiel en zijn zonder koekje niet op te halen; daarom
     staat alles bij `naKlik` en wordt er in de bronbestanden gekeken.
