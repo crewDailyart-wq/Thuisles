@@ -8,9 +8,9 @@
  * plek van de secties op de pagina (niet een percentage van de hele hoogte),
  * zodat het ook klopt als alles op telefoon onder elkaar staat:
  *
- * - afdaling: van boven tot de vakken in beeld zijn. De aarde komt dichterbij
- *   (DraaiendeAarde leest `reisStand.positie`), de ruimte zoomt iets in en de
- *   lucht wordt blauwer;
+ * - afdaling: van boven tot de vakken in beeld zijn. De ruimtefoto zoomt iets
+ *   in en de lucht wordt blauwer. (`reisStand.positie` werd ook gelezen door de
+ *   draaiende aarde; die is op verzoek van de eigenaar weggehaald.)
  * - wolken: het sterkst als de wolkenband midden in beeld staat;
  * - land: na de wolken komt de kust tevoorschijn, helemaal bij het atelier.
  *

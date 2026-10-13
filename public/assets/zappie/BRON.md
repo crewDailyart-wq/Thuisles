@@ -40,12 +40,12 @@ vervangen door emoji of zelfgetekende vormen.
    los, zonder het bordje "Jouw wereld", liefst 1600 px breed.
 8. **Gebouwen voor Jouw wereld**: losse beelden van wat een kind straks op een
    vrije plek kan zetten. Nodig zodra het bouwen er komt.
-9. **Kale ruimteachtergrond** zonder aarde, minstens 2560 × 1440. De aarde
-   wordt nu in code getekend en draait; in de huidige achtergrond zit de aarde
-   er al in, dus die wordt erdoor bedekt.
+9. **Kale ruimteachtergrond** zonder aarde, minstens 2560 × 1440. Alleen
+   nodig als de draaiende aarde ooit terugkomt.
 
-Een 3D-model van de aarde is niet nodig: die wordt in code getekend
-(`src/components/zappie/DraaiendeAarde.tsx`).
+Sinds 13 oktober 2026 (verzoek eigenaar) staat de draaiende aarde uit code er
+niet meer over: de aarde op de startpagina is die uit de ruimtefoto zelf. De
+code staat nog in `src/components/zappie/DraaiendeAarde.tsx`.
 
 **Zappie zelf** is geen beeld maar een SVG in code
 (`src/components/zappie/Zappie.tsx`), met losse onderdelen die apart bewegen:
