@@ -8,8 +8,8 @@ const ROOT = process.env.THUISLES_DB
   ? path.join(path.dirname(process.env.THUISLES_DB), "ai-jobs")
   : "/data/ai-jobs";
 const MAX_AGE = 7 * 24 * 60 * 60 * 1000;
-export const MAX_STEPS = 60;
-export const MAX_TOTAL_TOKENS = 180_000;
+export const MAX_STEPS = 200;
+export const MAX_TOTAL_TOKENS = 1_000_000;
 
 export type AgentJob = {
   id: string;

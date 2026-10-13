@@ -250,7 +250,7 @@ export function AiStudio() {
                   <div className={`max-w-[94%] whitespace-pre-wrap break-words rounded-xl px-4 py-3 text-sm leading-relaxed ${message.role === "user" ? "bg-viool text-white" : "border border-slate-200 bg-slate-50 text-slate-800"}`}>{message.content}</div>
                 </div>
               ))}
-              {jobId && <div className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-700">Stappen: {steps}/60 · Verwerkte tokens: {tokens.toLocaleString("nl-NL")} / 180.000 · {jobState === "paused" ? "Kan verdergaan" : jobState === "finished" ? "Afgerond" : "Budgetlimiet bereikt"}</div>}
+              {jobId && <div className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-700">Stappen: {steps}/200 · Verwerkte tokens: {tokens.toLocaleString("nl-NL")} / 1.000.000 · {jobState === "paused" ? "Kan verdergaan" : jobState === "finished" ? "Afgerond" : "Budgetlimiet bereikt"}</div>}
               {jobId && <label className="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" checked={autoContinue} onChange={(e) => setAutoContinue(e.target.checked)} /> Automatisch verderwerken (tot het veiligheidsbudget)</label>}
               {jobState === "paused" && !busy && !autoContinue && <button type="button" onClick={() => void continueJob()} className="rounded-lg bg-viool px-5 py-3 text-sm font-bold text-white">Ga verder met dezelfde opdracht →</button>}
               {jobState === "paused" && autoContinue && <p className="text-xs text-slate-500">Volgende werkstap start automatisch. Zet automatisch verderwerken uit om te pauzeren.</p>}
