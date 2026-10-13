@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect } from "react";
+import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import "@/components/zappie/reis-afwerking.css";
 import { reisStand, useBewegingsstand, zetOmgevingRustig } from "@/components/zappie/reis/beweging";
 
@@ -78,7 +79,7 @@ export function ScrollReis() {
   return (
     <>
       <div className="zr-camera" aria-hidden="true">
-        <div className="zr-landing"><img src="/achtergrond-wereld.png" alt="" decoding="async" /></div>
+        <div className="zr-landing"><Illustratie naam="kust" sizes="100vw" /></div>
         <div className="zr-camerawolk zr-camerawolk-links" />
         <div className="zr-camerawolk zr-camerawolk-rechts" />
       </div>

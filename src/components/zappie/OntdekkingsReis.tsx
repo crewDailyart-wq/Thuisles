@@ -5,7 +5,10 @@ import { useState } from "react";
 import { Zappie } from "@/components/zappie/Zappie";
 import { IcoonKompas, IcoonPijl, IcoonSlot, IcoonSter } from "@/components/zappie/Iconen";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
-import { VoertuigBeeld, WerkplaatsBeeld, type VoertuigId } from "@/components/zappie/reis/WerkplaatsBeeld";
+import { VoertuigBeeld, type VoertuigId } from "@/components/zappie/reis/WerkplaatsBeeld";
+import { Illustratie } from "@/components/zappie/reis/Illustratie";
+import { WerkplaatsIllustratie } from "@/components/zappie/reis/WerkplaatsIllustratie";
+import "@/components/zappie/reis-illustraties.css";
 import { useVoortgang } from "@/lib/zappie/opslag";
 import { WERELDEN, type WereldId } from "@/lib/zappie/werelden";
 
@@ -78,7 +81,7 @@ export function OntdekkingsReis() {
 
           <aside className="zr-werkplaats zr-paneel" aria-labelledby="zr-werkplaatskop">
             <div className="zr-paneelkop"><span className="zr-gereedschap" aria-hidden="true"><svg viewBox="0 0 48 48"><path d="m29 7-9 9 4 8 8 4 9-9c5 17-13 20-18 16L10 45 3 38l12-13C9 15 19 2 29 7z"/></svg></span><div><h3 id="zr-werkplaatskop" className="zp-titel">Zappies werkplaats</h3><p>Grote plannen. Kleine bouwers.</p></div><span className="zr-statuslabel">Bouwplan</span></div>
-            <WerkplaatsBeeld voertuig={voertuig}/>
+            <WerkplaatsIllustratie voertuig={voertuig}/>
             <div className="zr-bouwstand">
               <div><span className="zr-kleine-kop">OP DE TEKENTAFEL</span><h4 className="zp-titel">{bouwplan.naam}</h4></div>
               <span className="zr-telstand"><strong>{aantal}</strong> / {wereld.missies}<small>{wereld.naam.toLowerCase()}missies</small></span>
@@ -97,7 +100,8 @@ export function OntdekkingsReis() {
       <section className="zr-sectie zr-atelier" id="zappies-atelier" aria-labelledby="zr-atelierkop">
         <header className="zr-sectieintro"><span className="zr-hoofdstuk">02 <span/> THUIS OP AARDE</span><h2 id="zr-atelierkop" className="zp-titel">Helemaal jouw Zappie.</h2><p>Een nieuwe look voor je volgende avontuur.</p></header>
         <div className="zr-ateliergrid">
-          <div className="zr-paspodium">
+          <div className="zr-paspodium zi-paskamer">
+            <Illustratie naam="atelier" alt="Zappies atelier met goud verlichte accessoirerekken, een blauw paspodium en uitzicht op zee." sizes="(min-width: 1600px) 700px, (min-width: 900px) 46vw, 94vw"/>
             <div className="zr-atelier-boog" aria-hidden="true"/>
             <span className="zr-paslabel">ZAPPIES ATELIER</span>
             <div className="zr-avatar" data-accessoire={accessoire}>
@@ -117,7 +121,7 @@ export function OntdekkingsReis() {
         </div>
       </section>
       <footer className="zr-bestemming">
-        <img src="/achtergrond-wereld.png" alt="Een zonnig landschap met bergen, een rivier en een kasteel" loading="lazy" decoding="async"/>
+        <Illustratie naam="kust" alt="Zappies thuisbasis aan een turquoise zee: watervallen, blauwe koepels, een vuurtoren en een stad tussen de bergen." sizes="100vw"/>
         <div className="zr-bestemming-tekst"><span className="zr-hoofdstuk">ER WACHT NOG EEN HELE WERELD</span><p className="zp-hand">Tot je volgende avontuur.</p><a href="#" className="zr-terug">Terug naar de sterren <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 15 7-7 7 7"/></svg></a></div>
       </footer>
     </div>
