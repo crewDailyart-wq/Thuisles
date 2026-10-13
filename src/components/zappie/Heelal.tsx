@@ -9,19 +9,21 @@
  *      planeten;
  *   3. sterren in drie dieptes, gouden sterren, gouden stofjes en af en toe een
  *      vallende ster (`Sterrenveld`);
- *   4. de draaiende aarde onderaan (`DraaiendeAarde`), met wolken en gloed;
- *   5. lichtstralen bij de horizon.
+ *   4. lichtstralen bij de horizon.
+ *
+ * De draaiende aarde (`DraaiendeAarde`, een WebGL-bol over de aarde in het
+ * plaatje) staat hier niet meer in: op verzoek van de eigenaar (13 oktober
+ * 2026) blijft alleen de oorspronkelijke ruimtefoto met de aarde erin over.
+ * Het bestand blijft staan, voor als hij ooit terug moet.
  *
  * Alles staat vast achter de inhoud en vangt geen klikken op. Bij een muis
  * bewegen de lagen een paar pixels mee (parallax), elk op zijn eigen diepte;
- * zie `useParallax`. Tijdens een missie (`rustig`) staat de aarde stil en zijn
- * er minder sterren, zodat niets afleidt van de sommen.
+ * zie `useParallax`. Tijdens een missie (`rustig`) zijn er minder sterren en
+ * beweegt er niets, zodat niets afleidt van de sommen.
  */
 
 import { useRef } from "react";
-import { usePathname } from "next/navigation";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
-import { DraaiendeAarde } from "@/components/zappie/DraaiendeAarde";
 import { useParallax } from "@/components/zappie/parallax";
 import { Sterrenveld } from "@/components/zappie/Sterrenveld";
 import { ASSETS } from "@/lib/zappie/werelden";
@@ -29,7 +31,6 @@ import { ASSETS } from "@/lib/zappie/werelden";
 export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
   const bewegingsstand = useBewegingsstand();
   const rustig = focus || bewegingsstand !== "aan";
-  const reis = usePathname() === "/zappie";
   const laag = useRef<HTMLDivElement>(null);
   useParallax(laag, !rustig);
 
@@ -58,7 +59,6 @@ export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
         <span className="zp-planeetgloed zp-planeetgloed-2" />
       </div>
       <Sterrenveld rustig={rustig} />
-      <DraaiendeAarde rustig={rustig} reis={reis} />
       <div className="zp-laag zp-horizonlicht">
         <span className="zp-zon" />
         <span className="zp-straal-licht zp-straal-licht-1" />

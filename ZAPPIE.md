@@ -109,6 +109,10 @@ nieuwe teksten.
   perspectief, eilanden, ondiep water, stranden, bos, een losse wolkenlaag die
   iets sneller draait en schaduw werpt, een dampkring en zonlicht van links.
   Geen WebGL of te traag apparaat: dan blijft de vaste achtergrond staan.
+  **Weggehaald op verzoek van de eigenaar (13 oktober 2026):** "haal dat de
+  aarde draait weg en behoud alleen de mooiste eerste foto". De bol staat niet
+  meer in `Heelal.tsx`; je ziet weer de aarde uit de ruimtefoto zelf. Het
+  bestand `DraaiendeAarde.tsx` blijft staan, voor als hij ooit terug moet.
 - **Fase 4 — Zappie leeft** (`Zappie.tsx`). Knipperen, af en toe een
   glimlach, hoofd en ogen volgen de muis, zwaaien bij binnenkomst en daarna
   wijzen naar "Begin je missie", rollen met draaiende wielen, de geluidsgolf
@@ -172,8 +176,8 @@ van PR #4 (een andere AI) daarin samengevoegd.
 | De kust | `kust` groot als eindbestemming, met "Terug naar de sterren". |
 
 De achtergrond reist mee (`ScrollReis.tsx`): eerst de ruimte, dan daalt de
-camera (de aarde komt dichterbij in `DraaiendeAarde.tsx`, de lucht wordt
-blauwer), daarna komen er wolken voorbij en bij het atelier ligt de kust
+camera (de ruimtefoto zoomt iets in en de lucht wordt blauwer; de draaiende
+aarde is weggehaald, zie fase 3), daarna komen er wolken voorbij en bij het atelier ligt de kust
 eronder. Dat volgt de plek van de secties, niet een percentage van de hele
 pagina, dus het klopt ook op telefoon. Omhoog scrollen speelt het terug.
 Niets neemt het scrollen over.
