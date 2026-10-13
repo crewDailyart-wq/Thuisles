@@ -17,3 +17,20 @@
 .zp[data-start="ja"] .zr-gepast--kroon { top: -17%; }
 .zp[data-start="ja"] .zr-bestemming { z-index: 0; }
 .zp[data-start="ja"] .zr-atelier { z-index: 1; }
+
+/* Expliciete schilderlagen. Negatieve lagen met een vast WebGL-canvas en
+   doorschijnende panelen konden bij scrollen boven een tegelrij verschijnen. */
+.zp[data-start="ja"] .zp-heelal { z-index: 0; }
+.zp[data-start="ja"] .zr-camera { z-index: 1; }
+.zp[data-start="ja"] .zp-podium,
+.zp[data-start="ja"] .zr-reis { z-index: 2; }
+.zp[data-start="ja"] .zr-reis {
+  overflow: visible;
+  isolation: isolate;
+  transform: translateZ(0);
+}
+.zp[data-start="ja"] .zr-reis::after { z-index: 0; }
+.zp[data-start="ja"] .zr-reis::before { z-index: 1; }
+.zp[data-start="ja"] .zr-reis > * { position: relative; z-index: 2; }
+.zp[data-start="ja"] .zr-reis > .zr-bestemming { z-index: 1; }
+.zp[data-start="ja"] .zp-profiel-groet { overflow-wrap: anywhere; }
