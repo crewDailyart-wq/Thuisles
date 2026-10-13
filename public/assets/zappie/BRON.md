@@ -24,6 +24,29 @@ een nieuw ontwerp neer, en draai het script opnieuw.
 3. **Ruimteachtergrond op 2560 × 1440** of groter.
 4. *Optioneel:* een zeeschildpad en een paar koraaltjes voor onderaan de pagina.
 
+### Voor het tweede ontwerp (13 oktober 2026)
+
+Het tweede voorbeeld (`ontwerp/zappie/voorbeeld-startpagina-2.webp`) heeft
+werelden en een eiland in een iets andere stijl. Die beelden zijn er nog niet
+los; tot ze er zijn, staan de beelden hierboven op hun plek. Niets is
+vervangen door emoji of zelfgetekende vormen.
+
+5. **Oceaan in de nieuwe stijl**: de bol met dolfijn en vuurtoren, los en met
+   een doorzichtige achtergrond, minstens 1200 × 1200 px, zonder tekst.
+6. **Aarde en Universum in de nieuwe stijl**: idem. Voor het Universum liefst
+   de ringen als aparte laag, dan kunnen ze langzaam draaien (nu draait er een
+   getekende baan omheen).
+7. **Jouw wereld in de nieuwe stijl**: het eiland uit het paneel rechtsonder,
+   los, zonder het bordje "Jouw wereld", liefst 1600 px breed.
+8. **Gebouwen voor Jouw wereld**: losse beelden van wat een kind straks op een
+   vrije plek kan zetten. Nodig zodra het bouwen er komt.
+9. **Kale ruimteachtergrond** zonder aarde, minstens 2560 × 1440. De aarde
+   wordt nu in code getekend en draait; in de huidige achtergrond zit de aarde
+   er al in, dus die wordt erdoor bedekt.
+
+Een 3D-model van de aarde is niet nodig: die wordt in code getekend
+(`src/components/zappie/DraaiendeAarde.tsx`).
+
 **Zappie zelf** is geen beeld maar een SVG in code
 (`src/components/zappie/Zappie.tsx`), met losse onderdelen die apart bewegen:
 wielen, armen, ogen, antennes en de geluidsgolf. Dat was de wens ("bij
