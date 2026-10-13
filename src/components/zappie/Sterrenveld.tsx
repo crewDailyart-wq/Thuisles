@@ -11,7 +11,8 @@
  *
  * Zuinig: hoogstens 30 beelden per seconde, niet scherper dan 1,5 keer de
  * pixels, en helemaal stil als het tabblad niet zichtbaar is. Bij "minder
- * beweging" wordt de hemel één keer getekend en staat hij stil.
+ * beweging" en tijdens een missie wordt de hemel één keer getekend en staat hij
+ * stil.
  *
  * Parallax: de muisstand komt uit `parallax` (zie useParallax); verre lagen
  * schuiven het minst.
@@ -246,7 +247,8 @@ export function Sterrenveld({ rustig = false }: { rustig?: boolean }) {
       ctx.globalAlpha = 1;
     };
 
-    if (stil) {
+    /* Bij "minder beweging" en tijdens een missie: één keer tekenen, dan stil. */
+    if (stil || rustig) {
       teken(0);
       const opnieuw = () => {
         maat();

@@ -169,6 +169,18 @@
   height: 100%;
 }
 
+/* De draaiende aarde: pas zichtbaar als WebGL werkt, met een zachte overgang. */
+.zp-aarde {
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+  transition: opacity 1.2s ease;
+}
+
+.zp-aarde[data-klaar="ja"] {
+  opacity: 1;
+}
+
 /* Lichtstralen bij de horizon, waar de zon opkomt. */
 .zp-horizonlicht {
   transform: translate3d(calc(var(--px) * -4px), calc(var(--py) * -3px), 0);
@@ -207,6 +219,11 @@
 @keyframes zp-straalpuls {
   0%, 100% { opacity: 0.18; }
   50% { opacity: 0.55; }
+}
+
+/* Tijdens een missie beweegt de achtergrond niet: niets mag afleiden. */
+.zp[data-focus="ja"] .zp-heelal * {
+  animation: none !important;
 }
 
 .zp[data-focus="ja"] .zp-heelal::after {

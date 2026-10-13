@@ -19,6 +19,7 @@
  */
 
 import { useRef } from "react";
+import { DraaiendeAarde } from "@/components/zappie/DraaiendeAarde";
 import { useParallax } from "@/components/zappie/parallax";
 import { Sterrenveld } from "@/components/zappie/Sterrenveld";
 import { ASSETS } from "@/lib/zappie/werelden";
@@ -52,6 +53,7 @@ export function Heelal({ rustig = false }: { rustig?: boolean }) {
         <span className="zp-planeetgloed zp-planeetgloed-2" />
       </div>
       <Sterrenveld rustig={rustig} />
+      <DraaiendeAarde rustig={rustig} />
       <div className="zp-laag zp-horizonlicht">
         <span className="zp-zon" />
         <span className="zp-straal-licht zp-straal-licht-1" />
