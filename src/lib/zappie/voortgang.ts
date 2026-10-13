@@ -8,20 +8,50 @@
 
 import { WERELDEN, type Wereld, type WereldId } from "@/lib/zappie/werelden";
 
+/**
+ * Wat er net verdiend is, zodat de startpagina het kan laten zien: tokens die
+ * bijtellen, een lichtje dat naar de wereld vliegt, een plek die vrijkomt.
+ * Wordt gewist zodra de startpagina het heeft laten zien.
+ */
+export type Gebeurtenis = {
+  tokens: number;
+  wereld: WereldId;
+  /** Telde de missie mee voor de wereld? Een vrije missie niet. */
+  vrij: boolean;
+  /** Hoeveel plekken in Jouw wereld er door deze missie vrijkwamen. */
+  nieuwePlekken: number;
+  tijd: number;
+};
+
 export type Voortgang = {
-  /** Alle verdiende Zappie-punten samen. */
+  /** Alle verdiende tokens samen (heette eerst Zappie-punten). */
   punten: number;
-  /** Hoeveel punten de teller het laatst heeft laten zien; daarvandaan telt hij op. */
+  /** Hoeveel tokens de teller het laatst heeft laten zien; daarvandaan telt hij op. */
   getoond: number;
   /** Voltooide missies per wereld. */
   missies: Record<WereldId, number>;
+  gebeurtenis: Gebeurtenis | null;
 };
 
 export const LEGE_VOORTGANG: Voortgang = {
   punten: 0,
   getoond: 0,
   missies: { oceaan: 0, aarde: 0, heelal: 0 },
+  gebeurtenis: null,
 };
+
+/** Om de zoveel tokens komt er een nieuwe plek vrij in Jouw wereld. */
+export const TOKENS_PER_PLEK = 250;
+
+/** Hoeveel plekken er vrij zijn en hoe ver het kind is op weg naar de volgende. */
+export function beloningStand(tokens: number) {
+  const t = Math.max(0, Math.floor(tokens));
+  return {
+    vrijePlekken: Math.floor(t / TOKENS_PER_PLEK),
+    opWeg: t % TOKENS_PER_PLEK,
+    stap: TOKENS_PER_PLEK,
+  };
+}
 
 /** Punten voor een som die meteen goed is. */
 export const PUNTEN_DIRECT = 10;
@@ -71,14 +101,32 @@ export function volgendeMissie(v: Voortgang): { wereld: WereldId; nummer: number
   return { wereld: s.wereld.id, nummer: Math.min(s.klaar + 1, s.wereld.missies) };
 }
 
-/** Een missie afmaken: punten erbij, en de missie telt mee in die wereld. */
-export function metVoltooideMissie(v: Voortgang, wereld: WereldId, verdiend: number): Voortgang {
+/**
+ * Een missie afmaken: tokens erbij, en de missie telt mee in die wereld.
+ * Een vrije missie geeft alleen tokens.
+ */
+export function metVoltooideMissie(
+  v: Voortgang,
+  wereld: WereldId,
+  verdiend: number,
+  vrij = false,
+  tijd = Date.now(),
+): Voortgang {
   const w = WERELDEN.find((x) => x.id === wereld);
   const nu = v.missies[wereld] ?? 0;
+  const erbij = Math.max(0, Math.round(verdiend));
+  const punten = v.punten + erbij;
   return {
     ...v,
-    punten: v.punten + Math.max(0, Math.round(verdiend)),
-    missies: { ...v.missies, [wereld]: Math.min(w?.missies ?? nu + 1, nu + 1) },
+    punten,
+    missies: vrij ? v.missies : { ...v.missies, [wereld]: Math.min(w?.missies ?? nu + 1, nu + 1) },
+    gebeurtenis: {
+      tokens: erbij,
+      wereld,
+      vrij,
+      nieuwePlekken: beloningStand(punten).vrijePlekken - beloningStand(v.punten).vrijePlekken,
+      tijd,
+    },
   };
 }
 

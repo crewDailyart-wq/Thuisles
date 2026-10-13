@@ -273,36 +273,46 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Kralenrij", bron: "src/components/oefenen/KralenAvontuur.tsx", na: "een kralenopdracht openen" }],
   },
   /*
-    Zappie, eerste fase (oktober 2026): de startpagina voor groep 3 en de
-    schermen erachter. Sinds 12 oktober 2026 is /zappie de startpagina van de
+    Zappie (oktober 2026): de startpagina voor groep 3 en de schermen
+    erachter. Sinds 12 oktober 2026 is /zappie de startpagina van de
     kinderkant; /start stuurt hierheen door (next.config.ts).
+
+    13 oktober 2026, tweede ontwerp van de eigenaar
+    (ontwerp/zappie/voorbeeld-startpagina-2.webp): "Start oefenen" werd
+    "Begin je missie", "Vandaag oefenen" met Rekenen/Taal/Denken werd
+    "Vandaag op ontdekking" met Schoolpad/IEP Sprong/Vrije Missie, de
+    Zappie-punten heten tokens, het menu staat bovenaan en "Wereld" heet
+    "Werelden". De regels hieronder volgen dat ontwerp.
   */
   {
     naam: "Zappie start",
     pad: "/zappie",
     bron: ["src/components/zappie/Startscherm.tsx", "src/components/zappie/Schil.tsx", "src/lib/zappie/werelden.ts"],
     zichtbaar: [
-      "Start oefenen",
-      "Klaar om te oefenen?",
+      "Begin je missie",
       "Oceaan",
       "Aarde",
       "Universum",
-      "Vandaag oefenen",
-      "Rekenen",
-      "Taal",
-      "Denken",
+      "Jouw huidige wereld",
+      "Vandaag op ontdekking",
+      "Schoolpad",
+      "IEP Sprong",
+      "Vrije Missie",
       "Binnenkort",
+      "Jouw tokens",
+      "Op weg naar je volgende beloning!",
       "Jouw wereld",
-      "Bouw verder aan je wereld!",
-      "Zappie-punten",
+      "Ga naar mijn wereld",
+      "Leren vandaag",
       "Start",
       "Oefenen",
-      "Wereld",
+      "Werelden",
       "Beloningen",
     ],
     naKlik: [
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
-      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Taal of Denken tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op IEP Sprong tikken" },
+      { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },
     ],
   },
   {
@@ -326,7 +336,7 @@ export const SCHERMCONTRACT = [
     naam: "Zappie beloningen",
     pad: "/zappie/beloningen",
     bron: ["src/components/zappie/Schermen.tsx"],
-    zichtbaar: ["Zappie-punten", "missies klaar", "sterren"],
+    zichtbaar: ["tokens", "missies klaar", "sterren"],
   },
   {
     naam: "Zappie jouw wereld",

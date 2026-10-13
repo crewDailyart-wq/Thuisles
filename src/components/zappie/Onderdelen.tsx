@@ -51,32 +51,6 @@ export function Tekstballon({
   );
 }
 
-/**
- * De ruimteachtergrond: vult altijd het hele scherm en staat stil terwijl de
- * inhoud eroverheen schuift. AVIF waar dat kan, anders WebP, in de maat die bij
- * het scherm past.
- */
-export function Ruimte() {
-  const maten = [828, 1280, 1672];
-  const set = (ext: string) =>
-    maten.map((b) => `${ASSETS}/space-earth-background-${b}.${ext} ${b}w`).join(", ");
-  return (
-    <div className="zp-ruimte" aria-hidden="true">
-      <picture>
-        <source type="image/avif" srcSet={set("avif")} sizes="100vw" />
-        <img
-          src={`${ASSETS}/space-earth-background-1672.webp`}
-          srcSet={set("webp")}
-          sizes="100vw"
-          alt=""
-          fetchPriority="high"
-          decoding="async"
-        />
-      </picture>
-    </div>
-  );
-}
-
 /** Een wereldbeeld als losse, doorzichtige bol. */
 export function Wereldbeeld({ beeld, className = "", laden = "eager" }: { beeld: string; className?: string; laden?: "eager" | "lazy" }) {
   return (

@@ -1,13 +1,14 @@
 "use client";
 
 /**
- * De schil om de Zappie-schermen: ruimteachtergrond, logo, menu, punten en
- * profiel.
+ * De schil om de Zappie-schermen: het levende heelal op de achtergrond, het
+ * logo, het menu en het profiel.
  *
- * Op een groot scherm staat het menu als smalle balk links en staan de punten en
- * het profiel rechtsboven. Op telefoon en staande tablet staat het menu als balk
- * onderaan. Tijdens een missie valt de schil weg, op de achtergrond na: het
- * kind houdt dan alleen de sommen over.
+ * Tweede ontwerp (oktober 2026, ontwerp/zappie/voorbeeld-startpagina-2.webp):
+ * op een groot scherm staan vier losse menuknoppen bovenaan in het midden, het
+ * logo linksboven en het profiel rechtsboven. Op telefoon en staande tablet
+ * staat het menu als balk onderaan. Tijdens een missie valt de schil weg, op de
+ * achtergrond na: het kind houdt dan alleen de sommen over.
  */
 
 import Link from "next/link";
@@ -16,12 +17,15 @@ import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   IcoonController,
   IcoonHuis,
+  IcoonMunt,
   IcoonSter,
+  IcoonTandwiel,
   IcoonWereldbol,
 } from "@/components/zappie/Iconen";
-import { Ruimte, ZappieLogo } from "@/components/zappie/Onderdelen";
+import { ZappieLogo } from "@/components/zappie/Onderdelen";
+import { Heelal } from "@/components/zappie/Heelal";
 import { onthoudGetoond, useVoortgang, zetSpeler } from "@/lib/zappie/opslag";
-import { puntenTekst, volgendeMissie } from "@/lib/zappie/voortgang";
+import { puntenTekst } from "@/lib/zappie/voortgang";
 
 export type Speler = {
   id: string | null;
@@ -30,18 +34,24 @@ export type Speler = {
   avatar?: React.ReactNode;
 };
 
-/** De vier onderdelen van het menu. Een onderdeel erbij is één regel. */
+/**
+ * De vier menuknoppen. Een knop erbij is één regel.
+ *
+ * Oefenen gaat naar alle rekenoefeningen die er al zijn (vrij oefenen en de
+ * volgorde van de methode), zodat die vanaf Zappie bereikbaar blijven. De
+ * Zappie-missies zitten achter "Begin je missie" op de startpagina.
+ */
 export const MENU = [
-  { href: "/zappie", label: "Start", Icoon: IcoonHuis },
-  { href: "/zappie/oefenen", label: "Oefenen", Icoon: IcoonController },
-  { href: "/zappie/wereld", label: "Wereld", Icoon: IcoonWereldbol },
-  { href: "/zappie/beloningen", label: "Beloningen", Icoon: IcoonSter },
+  { href: "/zappie", label: "Start", Icoon: IcoonHuis, actief: ["/zappie", "/zappie/mijn-wereld"] },
+  { href: "/oefenen/rekenen", label: "Oefenen", Icoon: IcoonController, actief: ["/oefenen"] },
+  { href: "/zappie/wereld", label: "Werelden", Icoon: IcoonWereldbol, actief: ["/zappie/wereld"] },
+  { href: "/zappie/beloningen", label: "Beloningen", Icoon: IcoonSter, actief: ["/zappie/beloningen"] },
 ] as const;
 
 const geenAbonnement = () => () => {};
 
-function isActief(pad: string, href: string) {
-  return href === "/zappie" ? pad === "/zappie" || pad === "/zappie/mijn-wereld" : pad.startsWith(href);
+function isActief(pad: string, paden: readonly string[]) {
+  return paden.some((p) => (p === "/zappie" ? pad === p : pad === p || pad.startsWith(`${p}/`)));
 }
 
 export function Schil({ speler, children }: { speler: Speler; children: React.ReactNode }) {
@@ -50,36 +60,41 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
 
   const pad = usePathname();
   const focus = pad.startsWith("/zappie/oefenen");
-  const volgende = volgendeMissie(useVoortgang());
-  const oefenAdres = `/zappie/oefenen?wereld=${volgende.wereld}&missie=${volgende.nummer}`;
+  const start = pad === "/zappie";
 
   return (
-    <div className="zp" data-focus={focus ? "ja" : "nee"}>
-      <Ruimte />
+    <div className="zp" data-focus={focus ? "ja" : "nee"} data-start={start ? "ja" : "nee"}>
+      <Heelal rustig={focus} />
       {!focus && (
         <div className="zp-schil">
-          <ZappieLogo />
+          <div className="zp-logoplek">
+            <ZappieLogo />
+            <p className="zp-hand zp-logozin" aria-hidden="true">
+              Leren vandaag,
+              <br />
+              groter morgen.
+            </p>
+          </div>
           <nav className="zp-menu" aria-label="Menu">
             <ul>
-              {MENU.map(({ href, label, Icoon }) => {
-                const actief = isActief(pad, href);
-                return (
-                  <li key={href}>
-                    <Link href={href === "/zappie/oefenen" ? oefenAdres : href} className="zp-menu-knop" aria-current={actief ? "page" : undefined}>
-                      <Icoon className="zp-menu-icoon" />
-                      <span>{label}</span>
-                    </Link>
-                  </li>
-                );
-              })}
+              {MENU.map(({ href, label, Icoon, actief }) => (
+                <li key={href}>
+                  <Link href={href} className="zp-menu-knop zp-titel" aria-current={isActief(pad, actief) ? "page" : undefined}>
+                    <Icoon className="zp-menu-icoon" />
+                    <span>{label}</span>
+                  </Link>
+                </li>
+              ))}
             </ul>
           </nav>
-          <div className="zp-bovenbalk">
-            <Puntenteller />
-            <div className="zp-profiel">
-              <span className="zp-profiel-plaatje">{speler.avatar ?? <span className="zp-titel">{(speler.naam ?? "Z").slice(0, 1)}</span>}</span>
-              <span className="zp-titel">{speler.naam ? `Hoi ${speler.naam}!` : "Hoi!"}</span>
-            </div>
+          <div className="zp-profiel">
+            <span className="zp-profiel-plaatje">
+              {speler.avatar ?? <span className="zp-titel">{(speler.naam ?? "Z").slice(0, 1)}</span>}
+            </span>
+            <span className="zp-profiel-groet">{speler.naam ? `Hoi, ${speler.naam}!` : "Hoi, ontdekkingsreiziger!"}</span>
+            <Link href="/profiel" className="zp-profiel-instellingen" aria-label="Instellingen">
+              <IcoonTandwiel className="size-full" />
+            </Link>
           </div>
         </div>
       )}
@@ -89,11 +104,15 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
 }
 
 /**
- * De Zappie-punten. Komen er punten bij, dan telt de teller op vanaf wat hij het
- * laatst liet zien en maakt de ster een sprongetje. Bij "minder beweging"
+ * De tokens. Komen er tokens bij, dan telt de teller op vanaf wat hij het
+ * laatst liet zien en maakt de munt een sprongetje. Bij "minder beweging"
  * springt het getal meteen naar het nieuwe aantal.
+ *
+ * - `soort="strook"`: de munt groot met "Jouw tokens" erboven (startpagina);
+ * - `soort="klein"`: een klein pilletje (tijdens een missie);
+ * - `soort="los"`: munt met getal en "tokens" (na een missie).
  */
-export function Puntenteller({ klein = false }: { klein?: boolean }) {
+export function Tokenteller({ soort = "los" }: { soort?: "strook" | "klein" | "los" }) {
   const v = useVoortgang();
   /* Pas na het laden in de browser is de echte voortgang bekend. */
   const inBrowser = useSyncExternalStore(geenAbonnement, () => true, () => false);
@@ -133,17 +152,32 @@ export function Puntenteller({ klein = false }: { klein?: boolean }) {
 
   /* Tot de teller begint te tellen: wat hij het laatst liet zien. */
   const waarde = tussenstand ?? Math.min(v.punten, v.getoond);
-  return (
-    <div className={`zp-punten ${klein ? "zp-punten-klein" : ""}`}>
-      <span key={wip} className={wip ? "zp-punten-ster zp-wip" : "zp-punten-ster"}>
-        <IcoonSter className="size-full" />
-      </span>
-      <span className="zp-punten-tekst">
-        <span className="zp-titel zp-punten-getal" aria-live="polite">
-          {puntenTekst(waarde)}
+  const munt = (
+    <span key={wip} className={wip ? "zp-tokens-munt zp-wip" : "zp-tokens-munt"} data-tokenmunt>
+      <IcoonMunt className="size-full" />
+    </span>
+  );
+
+  if (soort === "strook") {
+    return (
+      <span className="zp-tokenteller zp-tokenteller-strook">
+        {munt}
+        <span className="zp-tokenteller-tekst">
+          <span className="zp-tokenteller-label">Jouw tokens</span>
+          <span className="zp-titel zp-tokenteller-getal" aria-live="polite">
+            {puntenTekst(waarde)}
+          </span>
         </span>
-        <span className="zp-punten-label">Zappie-punten</span>
       </span>
-    </div>
+    );
+  }
+  return (
+    <span className={`zp-tokenteller zp-tokenteller-${soort}`}>
+      {munt}
+      <span className="zp-titel zp-tokenteller-getal" aria-live="polite">
+        {puntenTekst(waarde)}
+      </span>
+      <span className="zp-tokenteller-label">tokens</span>
+    </span>
   );
 }

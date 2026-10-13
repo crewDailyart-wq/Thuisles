@@ -63,6 +63,12 @@ function schud<T>(lijst: T[], kans: () => number): T[] {
   return uit;
 }
 
+/** Een vrije missie: plus of min, door het toeval gekozen. */
+export function vrijeMissie(kans: () => number = Math.random): { soort: MissieSoort; sommen: Som[] } {
+  const soort: MissieSoort = kans() < 0.5 ? "plus" : "min";
+  return { soort, sommen: maakSommen(soort, kans) };
+}
+
 /** 15 verschillende sommen; eerst uit de bovenste helft, pas als die op is lager. */
 export function maakSommen(soort: MissieSoort, kans: () => number = Math.random): Som[] {
   const { boven, onder } = kandidaten(soort);

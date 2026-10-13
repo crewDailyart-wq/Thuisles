@@ -22,7 +22,7 @@ import { useRef, useState } from "react";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { IcoonSter, IcoonTerug } from "@/components/zappie/Iconen";
 import { Tekstballon } from "@/components/zappie/Onderdelen";
-import { Puntenteller } from "@/components/zappie/Schil";
+import { Tokenteller } from "@/components/zappie/Schil";
 import { Zappie, type Stemming } from "@/components/zappie/Zappie";
 import { VISUELE_SOMMEN, type Som } from "@/lib/zappie/missie";
 import { voltooiMissie } from "@/lib/zappie/opslag";
@@ -48,7 +48,8 @@ export function Missie({
 }: {
   wereld: WereldId;
   wereldnaam: string;
-  nummer: number;
+  /** Het nummer van de missie in de wereld; `null` bij een vrije missie. */
+  nummer: number | null;
   titel: string;
   sommen: Som[];
 }) {
@@ -99,7 +100,7 @@ export function Missie({
       const punten =
         uitslagen.reduce((t, u) => t + (u === "goed" ? PUNTEN_DIRECT : u === "hulp" ? PUNTEN_TWEEDE_KEER : 0), 0) +
         PUNTEN_MISSIE;
-      voltooiMissie(wereld, punten);
+      voltooiMissie(wereld, punten, nummer === null);
       zetKlaar({ punten });
       zetTik((n) => n + 1);
       return;
@@ -130,9 +131,9 @@ export function Missie({
             <p className="zp-zin" style={{ margin: 0 }}>
               Je had er {goed} van de {sommen.length} goed.
               <br />
-              Je verdient <strong>{puntenTekst(klaar.punten)} Zappie-punten</strong>!
+              Je verdient <strong>{puntenTekst(klaar.punten)} tokens</strong>!
             </p>
-            <Puntenteller />
+            <Tokenteller />
             <div style={{ display: "flex", flexWrap: "wrap", gap: 12, justifyContent: "center" }}>
               <Link href="/zappie" className="zp-knop zp-titel">
                 Terug naar start
@@ -166,12 +167,12 @@ export function Missie({
             />
           ))}
         </ol>
-        <Puntenteller klein />
+        <Tokenteller soort="klein" />
       </div>
 
       <div className="zp-missieveld">
         <p className="zp-titel" style={{ margin: 0, fontSize: 18, opacity: 0.9 }}>
-          {wereldnaam} · Missie {nummer} · {titel}
+          {nummer === null ? `Vrije missie · ${titel}` : `${wereldnaam} · Missie ${nummer} · ${titel}`}
         </p>
 
         <form

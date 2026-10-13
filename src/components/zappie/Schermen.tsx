@@ -21,7 +21,7 @@ export function WereldScherm() {
 
   return (
     <main className="zp-pagina">
-      <h1 className="zp-kop zp-titel">Wereld</h1>
+      <h1 className="zp-kop zp-titel">Werelden</h1>
       <p className="zp-zin">Met elke missie kom je verder. Maak alle missies, dan gaat de volgende wereld open.</p>
       <div className="zp-wereldrij">
         {standen.map(({ wereld, open, klaar, huidig, nogNodig }) => (
@@ -74,7 +74,7 @@ export function WereldScherm() {
   );
 }
 
-/** Beloningen: de punten en de verdiende sterren per wereld. */
+/** Beloningen: de tokens, de vrije plekken en de verdiende sterren per wereld. */
 export function BeloningenScherm() {
   const v = useVoortgang();
   const missies = WERELDEN.reduce((t, w) => t + (v.missies[w.id] ?? 0), 0);
@@ -82,12 +82,12 @@ export function BeloningenScherm() {
   return (
     <main className="zp-pagina">
       <h1 className="zp-kop zp-titel">Beloningen</h1>
-      <p className="zp-zin">Elke som die je goed hebt, geeft punten. Elke missie geeft een ster.</p>
+      <p className="zp-zin">Elke som die je goed hebt, geeft tokens. Elke missie geeft een ster.</p>
       <div className="zp-beloningrij">
         <section className="zp-beloning zp-glaspaneel">
           <IcoonSter className="size-16" />
           <span className="zp-beloning-getal zp-titel">{puntenTekst(v.punten)}</span>
-          <span className="zp-titel" style={{ fontSize: 20 }}>Zappie-punten</span>
+          <span className="zp-titel" style={{ fontSize: 20 }}>tokens</span>
         </section>
         <section className="zp-beloning zp-glaspaneel">
           <IcoonSter className="size-16" />
@@ -139,7 +139,7 @@ export function MijnWereldScherm() {
       </div>
       <div className="zp-missiezappie" style={{ marginTop: 20 }}>
         <Zappie stemming="blij" />
-        <Tekstballon tekst="Bouwen kan nog niet. Op de lege plekken komen straks gebouwen. Oefen alvast, dan heb je punten om te bouwen!" />
+        <Tekstballon tekst="Bouwen kan nog niet. Op de lege plekken komen straks gebouwen. Oefen alvast, dan heb je tokens om te bouwen!" />
       </div>
     </main>
   );

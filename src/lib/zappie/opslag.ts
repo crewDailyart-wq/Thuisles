@@ -57,6 +57,7 @@ function lees(): Voortgang {
         punten: Number(v.punten) || 0,
         getoond: Number(v.getoond) || 0,
         missies: { ...LEGE_VOORTGANG.missies, ...(v.missies ?? {}) },
+        gebeurtenis: v.gebeurtenis ?? null,
       };
     } catch {
       waarde = LEGE_VOORTGANG;
@@ -94,9 +95,15 @@ export function useVoortgang(): Voortgang {
   return useSyncExternalStore(abonneer, lees, () => LEGE_VOORTGANG);
 }
 
-/** Missie af: punten erbij en de missie telt mee. */
-export function voltooiMissie(wereld: WereldId, verdiend: number) {
-  schrijf(metVoltooideMissie(lees(), wereld, verdiend));
+/** Missie af: tokens erbij en de missie telt mee (een vrije missie alleen tokens). */
+export function voltooiMissie(wereld: WereldId, verdiend: number, vrij = false) {
+  schrijf(metVoltooideMissie(lees(), wereld, verdiend, vrij));
+}
+
+/** De startpagina heeft laten zien wat er verdiend is. */
+export function wisGebeurtenis() {
+  const v = lees();
+  if (v.gebeurtenis) schrijf({ ...v, gebeurtenis: null });
 }
 
 /** De teller heeft dit aantal punten laten zien. */

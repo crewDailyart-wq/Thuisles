@@ -16,12 +16,16 @@ export type Wereld = {
   beeld: string;
   /** Hoeveel missies er in deze wereld zijn. */
   missies: number;
+  /** Het zinnetje onder de naam zolang de wereld nog dicht is. */
+  uitnodiging: string;
+  /** Het zinnetje in handschrift bij Jouw wereld, als dit de huidige wereld is. */
+  motto: string;
 };
 
 export const WERELDEN: readonly Wereld[] = [
-  { id: "oceaan", naam: "Oceaan", beeld: "ocean-world", missies: 12 },
-  { id: "aarde", naam: "Aarde", beeld: "earth-world", missies: 12 },
-  { id: "heelal", naam: "Universum", beeld: "universe-world", missies: 12 },
+  { id: "oceaan", naam: "Oceaan", beeld: "ocean-world", missies: 12, uitnodiging: "Duik erin", motto: "Golf na golf slimmer!" },
+  { id: "aarde", naam: "Aarde", beeld: "earth-world", missies: 12, uitnodiging: "Nieuwe avonturen", motto: "Stap voor stap verder!" },
+  { id: "heelal", naam: "Universum", beeld: "universe-world", missies: 12, uitnodiging: "Ontdek het onbekende", motto: "Tot de sterren en verder!" },
 ];
 
 export const ASSETS = "/assets/zappie";
