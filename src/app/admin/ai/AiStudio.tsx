@@ -184,7 +184,7 @@ export function AiStudio() {
               {busy && <div className="flex items-center gap-2 text-sm text-slate-500"><span className="size-2 animate-pulse rounded-full bg-viool" />DeepSeek onderzoekt de code en werkt aan je opdracht…</div>}
             </div>
 
-            <form onSubmit={(event) => { event.preventDefault(); void send(); }} className="border-t border-slate-200 p-4">
+            <form onSubmit={(event) => { event.preventDefault(); void send(); }} className="border-t border-slate-200 p-4">\n              {error && <div role="alert" className="mb-3 rounded-lg border border-red-300 bg-red-50 p-3 text-sm font-semibold text-red-800">DeepSeek reageert niet: {error}</div>}
               <label htmlFor="ai-prompt" className="sr-only">Opdracht voor DeepSeek</label>
               <textarea id="ai-prompt" rows={3} value={draft} onChange={(event) => setDraft(event.target.value)}
                 onKeyDown={(event) => { if (event.key === "Enter" && (event.ctrlKey || event.metaKey)) { event.preventDefault(); void send(); } }}
@@ -240,7 +240,7 @@ export function AiStudio() {
         </div>
       )}
 
-      {error && <div role="alert" className="rounded-xl border border-red-200 bg-red-50 p-4 text-sm font-medium text-red-800">{error}</div>}
+
     </div>
   );
 }
