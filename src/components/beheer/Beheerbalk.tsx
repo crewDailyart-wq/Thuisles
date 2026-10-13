@@ -28,6 +28,11 @@ const ITEMS: Item[] = [
 /** Onderdelen die niet bij één vak horen. */
 const ALGEMEEN = [
   {
+    href: "/admin/ai",
+    label: "AI Studio",
+    pad: "M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8zM19.5 17v4M17.5 19h4",
+  },
+  {
     href: "/admin/scholen",
     label: "Scholen",
     pad: "M12 3.5 21 8v1.5H3V8zM5.5 9.5v8M18.5 9.5v8M9.5 9.5v8M14.5 9.5v8M3.5 20.5h17",
