@@ -2,8 +2,8 @@
  * De openbare site van Zappie: de homepagina en de pagina's eromheen.
  *
  * Zelfde huisstijl als de kinderkant (src/components/zappie/zappie.css): het
- * diepe ruimteblauw, goud en cyaan, glazen panelen, Figtree voor koppen en
- * tekst en een vleugje Caveat. Maar rustiger en zakelijker: dit
+ * diepe ruimteblauw, goud en cyaan, glazen panelen, Fredoka voor koppen,
+ * Lexend voor tekst en een vleugje Caveat. Maar rustiger en zakelijker: dit
  * leest een ouder, vaak vanuit Google. Geen draaiende aarde, geen robot die
  * zwaait; wel een stille sterrenhemel op de achtergrond.
  *
@@ -39,7 +39,7 @@
   flex-direction: column;
   background: var(--st-ruimte);
   color: var(--st-tekst);
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-lexend), system-ui, sans-serif;
   font-size: 1.0625rem;
   line-height: 1.6;
   font-weight: 500;
@@ -64,7 +64,7 @@
 }
 
 .st-titel {
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.12;
@@ -209,7 +209,7 @@
   padding: 0 24px;
   border: 0;
   border-radius: 999px;
-  font: 800 1.02rem/1 var(--font-figtree), system-ui, sans-serif;
+  font: 800 1.02rem/1 var(--font-lexend), system-ui, sans-serif;
   text-decoration: none;
   white-space: nowrap;
   cursor: pointer;
@@ -289,7 +289,7 @@
 
 .st-logo-woord {
   position: relative;
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
   font-size: 1.85rem;
   font-weight: 700;
   line-height: 1;
@@ -1215,7 +1215,7 @@
 }
 
 .st-poster b {
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), system-ui, sans-serif;
   font-size: clamp(1.1rem, 2.4vw, 1.6rem);
   line-height: 1.05;
 }
@@ -1650,7 +1650,7 @@
   border: 0;
   background: none;
   color: #fff;
-  font: 700 1.05rem var(--font-figtree), system-ui, sans-serif;
+  font: 700 1.05rem var(--font-lexend), system-ui, sans-serif;
   outline: none;
 }
 
@@ -1787,7 +1787,7 @@
   border-radius: 12px;
   background: rgb(8 30 76 / 0.9);
   color: #fff;
-  font: 800 1.2rem var(--font-figtree), system-ui, sans-serif;
+  font: 800 1.2rem var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -1847,7 +1847,7 @@
   border-radius: 999px;
   background: rgb(255 255 255 / 0.05);
   color: var(--st-zacht);
-  font: 700 0.9rem var(--font-figtree), system-ui, sans-serif;
+  font: 700 0.9rem var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 

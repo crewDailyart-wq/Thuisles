@@ -160,9 +160,14 @@
     opacity: 1;
   }
 
-  /* De begroeting mag over twee regels, zodat het profiel niet over het menu valt. */
+  /*
+    De begroeting mag over twee regels, zodat het profiel niet over het menu
+    valt. Nooit smaller dan het langste woord ("ontdekkingsreiziger!"): anders
+    loopt dat woord onder de menuknop door. Lexend is breder dan Nunito was.
+  */
   .zp[data-start="ja"] .zp-profiel-groet {
     max-width: 8.4em;
+    min-width: min-content;
     white-space: normal;
     line-height: 1.2;
     font-size: max(11px, calc(var(--u) * 0.88));
@@ -1101,7 +1106,7 @@
   border-radius: 999px;
   background: rgb(6 36 90 / 0.7);
   color: #e4f6ff;
-  font: 800 14px/1 var(--font-figtree), system-ui, sans-serif;
+  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -1198,7 +1203,7 @@
   border-radius: 999px;
   background: transparent;
   color: #fff3c4;
-  font: 800 14px/1 var(--font-figtree), system-ui, sans-serif;
+  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -1332,7 +1337,7 @@
   border-radius: 999px;
   background: rgb(5 26 66 / 0.9);
   color: #e8f6ff;
-  font: 800 14px/1 var(--font-figtree), system-ui, sans-serif;
+  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
   box-shadow: 0 4px 18px rgb(3 18 42 / 0.5);
   backdrop-filter: blur(6px);
   cursor: pointer;

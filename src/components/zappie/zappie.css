@@ -50,13 +50,13 @@
   min-height: 100svh;
   color: #fff;
   background: var(--zp-ruimte);
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-lexend), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overflow-x: clip;
 }
 
 .zp-titel {
-  font-family: var(--font-figtree), system-ui, sans-serif;
+  font-family: var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   font-weight: 700;
   letter-spacing: 0.005em;
 }
