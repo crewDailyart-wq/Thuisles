@@ -3,7 +3,6 @@ set -euo pipefail
 
 : "${DEEPSEEK_API_KEY:?DEEPSEEK_API_KEY is verplicht}"
 : "${OPENCODE_SERVER_PASSWORD:?OPENCODE_SERVER_PASSWORD is verplicht}"
-: "${GITHUB_TOKEN:?GITHUB_TOKEN is verplicht voor repo-updates}"
 
 mkdir -p /root/.config/opencode
 cat > /root/.config/opencode/opencode.json <<'JSON'
