@@ -1,4 +1,4 @@
-.pagina{min-height:100dvh;background:#fffaf1;color:#344737;padding:24px 24px 18px;font-family:var(--font-nunito),sans-serif}
+.pagina{min-height:100dvh;background:#fffaf1;color:#344737;padding:24px 24px 18px;font-family:var(--font-figtree),system-ui,sans-serif}
 .balk{max-width:1100px;margin:auto;display:flex;align-items:center;justify-content:space-between;gap:12px;font-weight:800}
 .terug{color:#365440;text-decoration:none;padding:12px 0}.voorbeeld{font-size:13px;background:#efeade;border-radius:30px;padding:7px 14px;color:#62634f}.teller{background:white;border:1px solid #e8e3d6;border-radius:25px;padding:10px 18px}
 .kop{text-align:center;margin:30px auto 22px}.klein{font-size:12px;font-weight:800;letter-spacing:3px;color:#7b7056}.vraagrij{display:flex;gap:15px;justify-content:center;align-items:center;margin-top:8px}.vraagrij h1,.klaar h1{font-weight:800;font-size:clamp(24px,4vw,38px);line-height:1.2}.rond{background:white;border:1px solid #e4dece;border-radius:50%;width:46px;height:46px;flex-shrink:0;font-size:21px;cursor:pointer}
