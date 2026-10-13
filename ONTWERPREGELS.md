@@ -12,8 +12,11 @@ met de onderdelen in `src/components/avontuur/`.
 
 - Achtergrond: koningsblauwe sterrenhemel met gloed, sterretjes, een planeet en
   wolkjes onderaan.
-- Letters: Fredoka voor titels, Nunito voor tekst en Caveat voor kleine
-  zinnetjes in handschrift. Alleen Google Fonts.
+- Letters: Figtree voor titels én tekst, op de hele site (kinderkant,
+  oefeningen, homepagina, ouderdeel en inloggen), en Caveat voor kleine
+  zinnetjes in handschrift. Alleen Google Fonts. Figtree verving in oktober
+  2026 op verzoek van de eigenaar Fredoka en Nunito: strakker, minder
+  "gegenereerd". Alleen het beheer houdt Inter.
 - Tegels, knoppen, kaarten en het tekstwolkje hebben een 3D-rand: een donkerdere
   onderkant en een schaduw. Tegels staan een heel klein beetje scheef.
 - Witte tekst op geel krijgt altijd een donkere rand om de letters.

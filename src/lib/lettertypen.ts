@@ -1,6 +1,9 @@
 /**
- * Het zakelijke lettertype (Inter) voor het beheer, het ouderdeel, het
- * inloggen en de openbare pagina's.
+ * Het zakelijke lettertype (Inter) voor het beheer.
+ *
+ * Het ouderdeel, het inloggen en de openbare pagina's gebruikten dit ook, maar
+ * zijn in oktober 2026 op verzoek van de eigenaar overgegaan op Figtree, het
+ * lettertype van de rest van de site (app/layout.tsx).
  *
  * Staat bewust niet in de hoofdlayout: dan laadde elk kind het ook, terwijl
  * de kinderkant het nergens gebruikt. Nu laadt het alleen op de schermen
