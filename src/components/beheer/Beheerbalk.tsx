@@ -190,6 +190,14 @@ export function Beheerbalk({ vakken }: { vakken: Vak[] }) {
       </div>
 
       <Link
+        href="/admin/ai"
+        aria-current={pad.startsWith("/admin/ai") ? "page" : undefined}
+        className={`mx-2 mt-auto flex items-center gap-2 rounded-md px-2.5 py-2 text-sm font-semibold transition-colors ${pad.startsWith("/admin/ai") ? "bg-viool text-white" : "bg-white/10 text-white/90 hover:bg-viool"}`}
+      >
+        <span aria-hidden="true">✦</span><span className="hidden sm:inline">AI Studio</span>
+      </Link>
+
+      <Link
         href="/admin/stemtest"
         className="mx-2 mt-auto rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"
       >
