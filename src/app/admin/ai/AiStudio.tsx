@@ -27,6 +27,7 @@ export function AiStudio() {
   const [jobState, setJobState] = useState<"paused" | "finished" | "limit" | "">("");
   const [steps, setSteps] = useState(0);
   const [tokens, setTokens] = useState(0);
+  const [autoContinue, setAutoContinue] = useState(true);
 
   async function refresh() {
     try {
@@ -39,6 +40,34 @@ export function AiStudio() {
   }
 
   useEffect(() => { void refresh(); }, []);
+
+  useEffect(() => {
+    if (!status?.authenticated) return;
+    const savedId = window.localStorage.getItem("thuisles-ai-job");
+    if (!savedId || jobId) return;
+    void (async () => {
+      try {
+        const response = await fetch("/api/admin/ai/chat?jobId=" + encodeURIComponent(savedId));
+        if (!response.ok) { window.localStorage.removeItem("thuisles-ai-job"); return; }
+        const saved = await response.json();
+        setJobId(saved.jobId);
+        setJobState(saved.state);
+        setSteps(saved.steps);
+        setTokens(saved.totalTokens);
+        setCurrentRequest(saved.request);
+        setChanges(saved.changes ?? []);
+        setMessages([{ role: "user", content: saved.request }, {
+          role: "assistant", content: saved.reply || "Opdracht hersteld. Je kunt verdergaan.",
+        }]);
+      } catch { /* hervatten kan ook later */ }
+    })();
+  }, [status?.authenticated, jobId]);
+
+  useEffect(() => {
+    if (autoContinue && jobState === "paused" && jobId && !busy && !publishing && !error) {
+      void continueJob();
+    }
+  }, [autoContinue, jobState, jobId, busy, publishing, error, steps]);
 
   async function login(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -69,6 +98,7 @@ export function AiStudio() {
     setPrUrl("");
     setJobId("");
     setJobState("");
+    window.localStorage.removeItem("thuisles-ai-job");
   }
 
   async function send(text?: string) {
@@ -81,6 +111,7 @@ export function AiStudio() {
     setPrUrl("");
     setCurrentRequest(instruction);
     setJobId("");
+    window.localStorage.removeItem("thuisles-ai-job");
     setJobState("");
     setSteps(0);
     setTokens(0);
@@ -98,6 +129,7 @@ export function AiStudio() {
       }]);
       setChanges(Array.isArray(result.changes) ? result.changes : []);
       setJobId(result.jobId ?? "");
+      if (result.jobId) window.localStorage.setItem("thuisles-ai-job", result.jobId);
       setJobState(result.state ?? "");
       setSteps(result.steps ?? 0);
       setTokens(result.totalTokens ?? 0);
@@ -219,7 +251,9 @@ export function AiStudio() {
                 </div>
               ))}
               {jobId && <div className="rounded-lg bg-slate-100 px-4 py-3 text-xs text-slate-700">Stappen: {steps}/60 · Verwerkte tokens: {tokens.toLocaleString("nl-NL")} / 180.000 · {jobState === "paused" ? "Kan verdergaan" : jobState === "finished" ? "Afgerond" : "Budgetlimiet bereikt"}</div>}
-              {jobState === "paused" && !busy && <button type="button" onClick={() => void continueJob()} className="rounded-lg bg-viool px-5 py-3 text-sm font-bold text-white">Ga verder met dezelfde opdracht →</button>}
+              {jobId && <label className="flex items-center gap-2 text-sm text-slate-700"><input type="checkbox" checked={autoContinue} onChange={(e) => setAutoContinue(e.target.checked)} /> Automatisch verderwerken (tot het veiligheidsbudget)</label>}
+              {jobState === "paused" && !busy && !autoContinue && <button type="button" onClick={() => void continueJob()} className="rounded-lg bg-viool px-5 py-3 text-sm font-bold text-white">Ga verder met dezelfde opdracht →</button>}
+              {jobState === "paused" && autoContinue && <p className="text-xs text-slate-500">Volgende werkstap start automatisch. Zet automatisch verderwerken uit om te pauzeren.</p>}
               {jobState === "limit" && <p className="text-sm text-amber-800">Veiligheidsbudget bereikt. Bekijk je voorstellen of begin een nieuwe opdracht.</p>}
               {busy && <div className="flex items-center gap-2 text-sm text-slate-500"><span className="size-2 animate-pulse rounded-full bg-viool" />DeepSeek onderzoekt de code en werkt aan je opdracht…</div>}
             </div>
