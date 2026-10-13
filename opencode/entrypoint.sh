@@ -5,6 +5,31 @@ set -euo pipefail
 : "${OPENCODE_SERVER_PASSWORD:?OPENCODE_SERVER_PASSWORD is verplicht}"
 : "${GITHUB_TOKEN:?GITHUB_TOKEN is verplicht voor repo-updates}"
 
+mkdir -p /root/.config/opencode
+cat > /root/.config/opencode/opencode.json <<'JSON'
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "deepseek-custom/deepseek-v4-pro",
+  "small_model": "deepseek-custom/deepseek-v4-pro",
+  "provider": {
+    "deepseek-custom": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "DeepSeek API",
+      "options": {
+        "baseURL": "https://api.deepseek.com",
+        "apiKey": "{env:DEEPSEEK_API_KEY}"
+      },
+      "models": {
+        "deepseek-v4-pro": {
+          "name": "DeepSeek V4 Pro",
+          "tool_call": true
+        }
+      }
+    }
+  }
+}
+JSON
+
 mkdir -p /workspace
 cd /workspace
 if [ ! -d /workspace/Thuisles/.git ]; then
