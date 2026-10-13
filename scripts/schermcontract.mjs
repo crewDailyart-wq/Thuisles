@@ -336,13 +336,17 @@ export const SCHERMCONTRACT = [
     naam: "Zappie beloningen",
     pad: "/zappie/beloningen",
     bron: ["src/components/zappie/Schermen.tsx"],
-    zichtbaar: ["tokens", "missies klaar", "sterren"],
+    zichtbaar: ["tokens", "missies klaar", "sterren", "vrij in jouw wereld", "tokens tot de volgende"],
   },
   {
     naam: "Zappie jouw wereld",
     pad: "/zappie/mijn-wereld",
     bron: ["src/components/zappie/Schermen.tsx"],
     zichtbaar: ["Jouw wereld", "Bouwen kan nog niet"],
+    naKlik: [
+      { tekst: "Vrij!", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
+      { tekst: "vrijgespeeld", bron: "src/components/zappie/Schermen.tsx", na: "250 tokens verdiend" },
+    ],
   },
   /*
     Het adres heeft het vak nodig: elk beheerscherm hangt onder /admin/{vak}/.

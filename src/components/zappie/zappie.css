@@ -1035,14 +1035,15 @@
 /* Fase 5: het gouden lichtje dat van de munt naar de wereld vliegt. */
 .zp-vlieglichtje {
   position: fixed;
-  left: -11px;
-  top: -11px;
+  left: -18px;
+  top: -18px;
   z-index: 90;
-  width: 22px;
-  height: 22px;
+  width: 36px;
+  height: 36px;
   border-radius: 999px;
-  background: radial-gradient(circle, #fffbe0 0 25%, #ffd447 45%, rgb(255 207 77 / 0) 72%);
-  box-shadow: 0 0 18px 6px rgb(255 207 77 / 0.55);
+  background: radial-gradient(circle, #ffffff 0 14%, #fff2b0 24%, #ffd447 42%, rgb(255 207 77 / 0) 72%);
+  box-shadow: 0 0 26px 10px rgb(255 207 77 / 0.5);
+  opacity: 0;
   pointer-events: none;
 }
 
@@ -1188,14 +1189,14 @@
   padding: calc(var(--u) * 1) calc(var(--u) * 1.1) calc(var(--u) * 1.1);
 }
 
+/* Smal: onder de kop, rechts uitgelijnd, zodat hij niet over de kop valt.
+   Breed: rechtsboven in het paneel, naast de kop (zie de brede regels). */
 .zp-notitie-drie {
-  display: none;
-  position: absolute;
-  right: calc(var(--u) * 6);
-  top: calc(var(--u) * 0.6);
   display: flex;
+  align-self: flex-end;
   align-items: flex-end;
   gap: 0.2em;
+  margin: calc(var(--u) * -0.5) calc(var(--u) * 1.5) 0 0;
   font-size: max(15px, calc(var(--u) * 1.35));
   transform: rotate(-4deg);
 }
@@ -2007,7 +2008,10 @@
   }
 
   .zp-notitie-drie {
-    display: flex;
+    position: absolute;
+    right: calc(var(--u) * 6);
+    top: calc(var(--u) * 0.6);
+    margin: 0;
   }
 
   /* Kleinere liggende schermen (laptop): de kaarten compacter, zodat de naam
@@ -2508,6 +2512,58 @@
 .zp-bouwplek svg {
   width: 50%;
   height: 50%;
+}
+
+/* Een vrijgespeelde plek: goud, met een zachte gloed die ademt. */
+.zp-bouwplek[data-vrij="ja"] {
+  border: 3px solid #ffe27a;
+  background: radial-gradient(circle, rgb(255 230 140 / 0.55), rgb(255 200 60 / 0.25));
+  box-shadow: 0 0 1.2em rgb(255 212 71 / 0.8);
+  animation: zp-plekgloed 2.4s ease-in-out infinite;
+}
+
+.zp-bouwplek-label {
+  position: absolute;
+  top: 100%;
+  margin-top: 4px;
+  padding: 0.1em 0.6em;
+  border-radius: 999px;
+  background: #ffd447;
+  color: var(--zp-inkt);
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+@keyframes zp-plekgloed {
+  0%, 100% { box-shadow: 0 0 0.8em rgb(255 212 71 / 0.6); }
+  50% { box-shadow: 0 0 1.8em rgb(255 212 71 / 0.95); }
+}
+
+/* Missie klaar: gouden sterretjes die uit het midden spatten. */
+.zp-feest {
+  position: absolute;
+  left: 50%;
+  top: 22%;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.zp-feest span {
+  position: absolute;
+  left: -9px;
+  top: -9px;
+  width: 18px;
+  height: 18px;
+  background: radial-gradient(circle, #fffbe0 0 22%, #ffd447 40%, rgb(255 212 71 / 0) 70%);
+  opacity: 0;
+  animation: zp-spat 1.3s cubic-bezier(0.2, 0.7, 0.3, 1) forwards;
+}
+
+@keyframes zp-spat {
+  0% { opacity: 0; transform: rotate(var(--hoek)) translateY(0) scale(0.4); }
+  15% { opacity: 1; }
+  100% { opacity: 0; transform: rotate(var(--hoek)) translateY(var(--ver)) scale(1); }
 }
 
 

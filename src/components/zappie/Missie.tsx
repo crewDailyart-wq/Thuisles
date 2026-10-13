@@ -118,7 +118,24 @@ export function Missie({
     return (
       <main className="zp-missie">
         <div className="zp-missieveld">
-          <section className="zp-klaar zp-glaspaneel" style={{ padding: "28px 24px", maxWidth: "36rem", width: "100%" }}>
+          <section
+            className="zp-klaar zp-glaspaneel"
+            style={{ position: "relative", padding: "28px 24px", maxWidth: "36rem", width: "100%" }}
+          >
+            <span className="zp-feest" aria-hidden="true">
+              {Array.from({ length: 14 }, (_, i) => (
+                <span
+                  key={i}
+                  style={
+                    {
+                      "--hoek": `${i * (360 / 14)}deg`,
+                      "--ver": `${-110 - (i % 3) * 40}px`,
+                      animationDelay: `${(i % 4) * 0.06}s`,
+                    } as React.CSSProperties
+                  }
+                />
+              ))}
+            </span>
             <Zappie stemming="juich" praat tik={tik} />
             <h1 className="zp-kop zp-titel">Missie klaar!</h1>
             <div className="zp-sterren" aria-label={`${sterren} van de 3 sterren`}>

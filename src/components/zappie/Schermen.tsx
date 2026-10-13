@@ -10,7 +10,7 @@ import { IcoonKasteel, IcoonSlot, IcoonSter } from "@/components/zappie/Iconen";
 import { Tekstballon, Wereldbeeld } from "@/components/zappie/Onderdelen";
 import { Zappie } from "@/components/zappie/Zappie";
 import { useVoortgang } from "@/lib/zappie/opslag";
-import { puntenTekst, volgendeMissie, wereldStanden } from "@/lib/zappie/voortgang";
+import { beloningStand, puntenTekst, volgendeMissie, wereldStanden } from "@/lib/zappie/voortgang";
 import { ASSETS, WERELDEN } from "@/lib/zappie/werelden";
 
 /** Wereld: de drie werelden, met per wereld de missies als stenen. */
@@ -78,6 +78,7 @@ export function WereldScherm() {
 export function BeloningenScherm() {
   const v = useVoortgang();
   const missies = WERELDEN.reduce((t, w) => t + (v.missies[w.id] ?? 0), 0);
+  const beloning = beloningStand(v.punten);
 
   return (
     <main className="zp-pagina">
@@ -88,6 +89,16 @@ export function BeloningenScherm() {
           <IcoonSter className="size-16" />
           <span className="zp-beloning-getal zp-titel">{puntenTekst(v.punten)}</span>
           <span className="zp-titel" style={{ fontSize: 20 }}>tokens</span>
+        </section>
+        <section className="zp-beloning zp-glaspaneel">
+          <IcoonKasteel className="size-16" />
+          <span className="zp-beloning-getal zp-titel">{beloning.vrijePlekken}</span>
+          <span className="zp-titel" style={{ fontSize: 20 }}>
+            {beloning.vrijePlekken === 1 ? "plek vrij in jouw wereld" : "plekken vrij in jouw wereld"}
+          </span>
+          <span style={{ fontWeight: 700, opacity: 0.85 }}>
+            Nog {beloning.stap - beloning.opWeg} tokens tot de volgende.
+          </span>
         </section>
         <section className="zp-beloning zp-glaspaneel">
           <IcoonSter className="size-16" />
@@ -110,7 +121,9 @@ export function BeloningenScherm() {
 
 /**
  * Jouw wereld: de eigen bouwplek. Eerste versie: het eiland met lege plekken
- * waar later gebouwen komen. Er is nog niets te bouwen; dat zegt Zappie ook.
+ * waar later gebouwen komen. Om de 250 tokens komt er een plek vrij; die licht
+ * goud op. Er is nog niets te bouwen (daar zijn nog geen gebouwen voor
+ * getekend); dat zegt Zappie ook.
  */
 const BOUWPLEKKEN = [
   { x: 36, y: 71 },
@@ -119,6 +132,8 @@ const BOUWPLEKKEN = [
 ];
 
 export function MijnWereldScherm() {
+  const v = useVoortgang();
+  const vrij = Math.min(beloningStand(v.punten).vrijePlekken, BOUWPLEKKEN.length);
   return (
     <main className="zp-pagina">
       <h1 className="zp-kop zp-titel" style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -132,14 +147,27 @@ export function MijnWereldScherm() {
           <img src={`${ASSETS}/my-world-island.webp`} alt="Een eiland met huisjes, bomen, een vuurtoren en een steiger" />
         </picture>
         {BOUWPLEKKEN.map((p, i) => (
-          <span key={i} className="zp-bouwplek" style={{ left: `${p.x}%`, top: `${p.y}%` }} aria-hidden="true">
-            <IcoonSlot />
+          <span
+            key={i}
+            className="zp-bouwplek"
+            data-vrij={i < vrij ? "ja" : "nee"}
+            style={{ left: `${p.x}%`, top: `${p.y}%` }}
+            aria-hidden="true"
+          >
+            {i < vrij ? <IcoonSter /> : <IcoonSlot />}
+            {i < vrij && <span className="zp-bouwplek-label zp-titel">Vrij!</span>}
           </span>
         ))}
       </div>
       <div className="zp-missiezappie" style={{ marginTop: 20 }}>
         <Zappie stemming="blij" />
-        <Tekstballon tekst="Bouwen kan nog niet. Op de lege plekken komen straks gebouwen. Oefen alvast, dan heb je tokens om te bouwen!" />
+        <Tekstballon
+          tekst={
+            vrij > 0
+              ? `Je hebt ${vrij === 1 ? "al een plek" : `al ${vrij} plekken`} vrijgespeeld! Bouwen kan nog niet; straks kies je hier wat er komt.`
+              : "Bouwen kan nog niet. Op de lege plekken komen straks gebouwen. Oefen alvast: om de 250 tokens komt er een plek vrij!"
+          }
+        />
       </div>
     </main>
   );

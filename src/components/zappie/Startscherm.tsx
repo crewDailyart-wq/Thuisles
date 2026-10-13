@@ -114,7 +114,8 @@ export function Startscherm() {
   const [straal, zetStraal] = useState(false);
   const wereldRefs = useRef<Partial<Record<WereldId, HTMLElement | null>>>({});
   const stilte = useRef<number | undefined>(undefined);
-  const gespeeld = useRef(false);
+  /* De gebeurtenis als tekst, zodat het effect alleen opnieuw start als er echt iets nieuws is. */
+  const gebeurtenisSleutel = v.gebeurtenis ? JSON.stringify(v.gebeurtenis) : null;
 
   /** Zappie iets laten zeggen: ballon, golf beweegt, sprongetje. Daarna weer stil. */
   function zeg(b: Bericht) {
@@ -149,20 +150,25 @@ export function Startscherm() {
     return () => window.clearInterval(keer);
   }, []);
 
-  /* Fase 5: wat er net verdiend is, één keer laten zien. */
+  /*
+   * Fase 5: wat er net verdiend is, één keer laten zien. De gebeurtenis wordt
+   * pas gewist als alles is afgespeeld: zou dat eerder gebeuren, dan start dit
+   * effect opnieuw en ruimt het de eigen timers op voordat er iets te zien was.
+   * Wie halverwege weggaat, krijgt het de volgende keer alsnog te zien.
+   */
   useEffect(() => {
-    if (!inBrowser || gespeeld.current || !v.gebeurtenis) return;
-    gespeeld.current = true;
-    const g: Gebeurtenis = v.gebeurtenis;
-    wisGebeurtenis();
+    if (!inBrowser || !gebeurtenisSleutel) return;
+    const g: Gebeurtenis = JSON.parse(gebeurtenisSleutel);
     const rustig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const timers: number[] = [];
     const later = (ms: number, f: () => void) => timers.push(window.setTimeout(f, ms));
+    let stopVlucht = () => {};
 
     const aankomst = () => {
       zetOplicht(g.wereld);
       if (!g.vrij) zetNieuwLichtje(g.wereld);
       later(1600, () => zetOplicht(null));
+      later(g.nieuwePlekken > 0 ? 4000 : 1800, wisGebeurtenis);
       if (g.nieuwePlekken > 0) {
         later(700, () => {
           zetStraal(true);
@@ -187,10 +193,13 @@ export function Startscherm() {
         aankomst();
         return;
       }
-      vliegLichtje(van, naar, aankomst);
+      stopVlucht = vliegLichtje(van, naar, aankomst);
     });
-    return () => timers.forEach((t) => window.clearTimeout(t));
-  }, [inBrowser, v.gebeurtenis]);
+    return () => {
+      timers.forEach((t) => window.clearTimeout(t));
+      stopVlucht();
+    };
+  }, [inBrowser, gebeurtenisSleutel]);
 
   function kiesWereld(s: WereldStand) {
     if (s.open) return;
@@ -533,33 +542,64 @@ function WereldKnop({
 }
 
 /**
- * Een gouden lichtje dat van de munt naar de wereld vliegt, in een boog.
- * Alleen `transform` en `opacity` bewegen.
+ * Een gouden lichtje dat van de munt naar de wereld vliegt, in een boog, met
+ * een korte staart van vonkjes erachter. Alleen `transform` en `opacity`
+ * bewegen.
  */
-function vliegLichtje(van: HTMLElement, naar: HTMLElement, klaar: () => void) {
+function vliegLichtje(van: HTMLElement, naar: HTMLElement, klaar: () => void): () => void {
   const a = van.getBoundingClientRect();
   const b = naar.getBoundingClientRect();
   const x0 = a.left + a.width / 2;
   const y0 = a.top + a.height / 2;
   const x1 = b.left + b.width / 2;
   const y1 = b.top + b.height * 0.45;
-  const lichtje = document.createElement("span");
-  lichtje.className = "zp-vlieglichtje";
-  lichtje.setAttribute("aria-hidden", "true");
-  document.body.appendChild(lichtje);
-  const midX = (x0 + x1) / 2;
-  const midY = Math.min(y0, y1) - 120;
-  const animatie = lichtje.animate(
-    [
-      { transform: `translate(${x0}px, ${y0}px) scale(0.6)`, opacity: 0 },
-      { transform: `translate(${x0}px, ${y0 - 30}px) scale(1.1)`, opacity: 1, offset: 0.12 },
-      { transform: `translate(${midX}px, ${midY}px) scale(1)`, opacity: 1, offset: 0.55 },
-      { transform: `translate(${x1}px, ${y1}px) scale(0.5)`, opacity: 0.2 },
-    ],
-    { duration: 1150, easing: "cubic-bezier(0.45, 0, 0.3, 1)" },
+  /* Een boog: het lichtje stijgt eerst op en daalt dan in de wereld. */
+  const cx = x0 + (x1 - x0) * 0.25;
+  const cy = Math.min(y0, y1) - 220;
+  const STAPPEN = 18;
+  const zacht = (t: number) => (t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2);
+  const baan = (grootte: number, licht: number): Keyframe[] =>
+    Array.from({ length: STAPPEN + 1 }, (_, i) => {
+      const t = zacht(i / STAPPEN);
+      const x = (1 - t) * (1 - t) * x0 + 2 * (1 - t) * t * cx + t * t * x1;
+      const y = (1 - t) * (1 - t) * y0 + 2 * (1 - t) * t * cy + t * t * y1;
+      const f = i / STAPPEN;
+      const schaal = grootte * (f < 0.15 ? 0.5 + f * 4.5 : f > 0.85 ? 1.2 - (f - 0.85) * 4 : 1.2);
+      const zicht = licht * (f < 0.1 ? f * 10 : f > 0.9 ? 1 - (f - 0.9) * 7 : 1);
+      return { transform: `translate(${x}px, ${y}px) scale(${schaal})`, opacity: zicht, offset: f };
+    });
+
+  const stukjes = [
+    { grootte: 1, licht: 1, wacht: 0 },
+    { grootte: 0.6, licht: 0.75, wacht: 55 },
+    { grootte: 0.45, licht: 0.55, wacht: 110 },
+    { grootte: 0.32, licht: 0.4, wacht: 165 },
+  ];
+  const lichtjes = stukjes.map(() => {
+    const el = document.createElement("span");
+    el.className = "zp-vlieglichtje";
+    el.setAttribute("aria-hidden", "true");
+    document.body.appendChild(el);
+    return el;
+  });
+  const animaties = stukjes.map((st, i) =>
+    lichtjes[i].animate(baan(st.grootte, st.licht), {
+      duration: 1250,
+      delay: st.wacht,
+      easing: "linear",
+      fill: "both",
+    }),
   );
-  animatie.onfinish = () => {
-    lichtje.remove();
-    klaar();
+  const weg = () => lichtjes.forEach((el) => el.remove());
+  /* Aankomen zodra het grote lichtje er is; de staart dooft daarna vanzelf. */
+  animaties[0].onfinish = () => klaar();
+  animaties[animaties.length - 1].onfinish = weg;
+  /* Stoppen zonder aan te komen, als het scherm verdwijnt. */
+  return () => {
+    animaties.forEach((an) => {
+      an.onfinish = null;
+      an.cancel();
+    });
+    weg();
   };
 }
