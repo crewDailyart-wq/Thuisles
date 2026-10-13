@@ -11,7 +11,7 @@
  * - de werelden zweven, elk op een eigen tempo; het gouden ontdekpad laat zien
  *   hoeveel missies er in de huidige wereld klaar zijn (één lichtje per missie);
  * - Zappie rolt binnen, zwaait en wijst daarna naar "Begin je missie". Een tik
- *   op hem, op een dichte wereld of op IEP Sprong en hij zegt iets;
+ *   op hem, op een dichte wereld of op Toetssprong en hij zegt iets;
  * - na een missie (fase 5): de tokens tellen op, een gouden lichtje vliegt naar
  *   de wereld, die licht even op, en het nieuwe lichtje op het pad gaat aan.
  *   Komt er een plek vrij in Jouw wereld, dan valt daar een gouden lichtstraal.
@@ -348,13 +348,13 @@ export function Startscherm() {
               type="button"
               className="zp-kaart"
               data-kleur="groen"
-              onClick={() => zeg({ tekst: "IEP Sprong komt er binnenkort aan. Kies nu Schoolpad of Vrije Missie!", stemming: "kijk" })}
+              onClick={() => zeg({ tekst: "Toetssprong komt er binnenkort aan. Kies nu Schoolpad of Vrije Missie!", stemming: "kijk" })}
             >
               <span className="zp-binnenkort">Binnenkort</span>
               <IcoonBerg className="zp-kaart-beeld" />
               <span className="zp-kaart-tekst">
-                <span className="zp-kaart-naam zp-titel">IEP Sprong</span>
-                <span className="zp-kaart-zin">Een paar opdrachten voor IEP-voorbereiding.</span>
+                <span className="zp-kaart-naam zp-titel">Toetssprong</span>
+                <span className="zp-kaart-zin">Ter voorbereiding op de IEP.</span>
               </span>
               <span className="zp-kaart-pijl" aria-hidden="true">
                 <IcoonPijl className="size-[60%]" />

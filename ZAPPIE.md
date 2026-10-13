@@ -85,7 +85,7 @@ nieuwe teksten.
 | Menu links (telefoon: onderaan) | Vier losse knoppen bovenaan (telefoon: nog steeds onderaan) |
 | "Wereld" in het menu | "Werelden" |
 | "Start oefenen" | "Begin je missie", met een lichtstreep en een korte glans bij het klikken |
-| "Vandaag oefenen" met Rekenen, Taal (Binnenkort), Denken (Binnenkort) | "Vandaag op ontdekking" met Schoolpad, IEP Sprong (Binnenkort) en Vrije Missie |
+| "Vandaag oefenen" met Rekenen, Taal (Binnenkort), Denken (Binnenkort) | "Vandaag op ontdekking" met Schoolpad, Toetssprong (Binnenkort; heette eerst IEP Sprong) en Vrije Missie |
 | Tegel Rekenen naar `/oefenen/rekenen` | Menuknop Oefenen naar `/rekenen` (het rekenscherm van nieuwe-layout); Schoolpad naar `/oefenen/rekenen/methode` |
 | — | Menuknopje naast het tandwiel naar Meer (`/meer`), zoals het ronde knopje van nieuwe-layout |
 | Zappie-punten | Tokens, met een strook "Op weg naar je volgende beloning!" |
@@ -139,10 +139,11 @@ nieuwe teksten.
   we zo dicht bij de bol kijken, schoof het land dan zichtbaar snel voorbij.
   Nu één rondje per 30 minuten (`OMLOOP_SECONDEN` in `DraaiendeAarde.tsx`); dat
   is één getal om aan te passen.
-- **IEP Sprong** staat erop met "Binnenkort": er is nog geen inhoud voor. Een
-  tik geeft een uitleg van Zappie. *Let op: "IEP" is de naam van een toets van
-  een ander bedrijf; laat juridisch nakijken of die naam zo gebruikt mag
-  worden.*
+- **Toetssprong** (heette eerst IEP Sprong) staat erop met "Binnenkort": er
+  is nog geen inhoud voor. Een tik geeft een uitleg van Zappie. Hernoemd op
+  verzoek van de eigenaar (13 oktober 2026): "IEP" is de naam van een toets van
+  een ander bedrijf en hoort niet in de naam van een eigen onderdeel; eronder
+  staat nu "ter voorbereiding op de IEP" (zie JURIDISCH.md).
 - **Oefenen** in het menu gaat naar het rekenscherm van nieuwe-layout
   (`/rekenen`), niet naar een nieuw Zappie-scherm (keuze eigenaar).
 - **Op telefoon** zit de tokenstrook onder de vouw. Het lichtje vliegt dan van
@@ -160,7 +161,7 @@ nieuwe teksten.
   niets te kiezen.
 - De missies gebruiken nog niet de leerdoelen uit het beheer; de sommen worden
   in het geheugen gemaakt (`src/lib/zappie/missie.ts`).
-- IEP Sprong staat erop met "Binnenkort".
+- Toetssprong staat erop met "Binnenkort".
 - Zappie praat nog niet hardop; de golf beweegt op een vaste animatie.
 
 ## Beelden

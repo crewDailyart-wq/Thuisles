@@ -296,7 +296,9 @@ export const SCHERMCONTRACT = [
       "Jouw huidige wereld",
       "Vandaag op ontdekking",
       "Schoolpad",
-      "IEP Sprong",
+      /* Was "IEP Sprong"; hernoemd op verzoek van de eigenaar (13 oktober 2026), zie JURIDISCH.md. */
+      "Toetssprong",
+      "voorbereiding op de IEP",
       "Vrije Missie",
       "Binnenkort",
       "Jouw tokens",
@@ -311,7 +313,7 @@ export const SCHERMCONTRACT = [
     ],
     naKlik: [
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
-      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op IEP Sprong tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Toetssprong tikken" },
       { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },
       { tekst: 'href: "/rekenen"', bron: "src/components/zappie/Schil.tsx", na: "op Oefenen tikken (het rekenscherm)" },
       { tekst: 'href="/meer"', bron: "src/components/zappie/Schil.tsx", na: "op het menuknopje naast het tandwiel tikken" },

@@ -41,8 +41,9 @@ jurist te gaan, geen juridisch advies.
 - **"IEP Sprong" als productnaam.** "IEP" in de naam van een eigen onderdeel
   is iets anders dan verwijzen: het kan lezen als een product van Bureau ICE.
   Advies: hernoemen, bijvoorbeeld "Doorstroom Sprong" of "Toetssprong", met
-  een zin als "ter voorbereiding op de IEP". Niet aangepast; dat beslist de
-  eigenaar.
+  een zin als "ter voorbereiding op de IEP". Op 13 oktober 2026 op verzoek
+  van de eigenaar hernoemd naar "Toetssprong", met "ter voorbereiding op de
+  IEP" eronder.
 - **De naam Zappie.** NPO heeft het jeugdmerk "Zapp", voor kinderen en in
   dezelfde hoek (onderwijs en entertainment). Laat bij het BOIP en EUIPO
   nagaan of "Zappie" vrij is en of het te veel lijkt.
