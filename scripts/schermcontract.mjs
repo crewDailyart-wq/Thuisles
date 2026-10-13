@@ -287,7 +287,13 @@ export const SCHERMCONTRACT = [
   {
     naam: "Zappie start",
     pad: "/zappie",
-    bron: ["src/components/zappie/Startscherm.tsx", "src/components/zappie/Schil.tsx", "src/lib/zappie/werelden.ts"],
+    bron: [
+      "src/components/zappie/Startscherm.tsx",
+      "src/components/zappie/Schil.tsx",
+      "src/lib/zappie/werelden.ts",
+      "src/components/zappie/OntdekkingsReis.tsx",
+      "src/components/zappie/ScrollReis.tsx",
+    ],
     zichtbaar: [
       "Begin je missie",
       "Oceaan",
@@ -312,10 +318,44 @@ export const SCHERMCONTRACT = [
       */
       "Start",
       "Oefenen",
-      "Werelden",
+      /*
+        Heette in het tweede ontwerp "Werelden". De bouwopdracht van het derde
+        ontwerp (13 oktober 2026) noemt de vier knoppen "Start, Oefenen, Wereld,
+        Beloningen".
+      */
+      "Wereld",
       "Beloningen",
+      /* Derde ontwerp (13 oktober 2026): de lange pagina onder de ruimte. */
+      "Zo kan jouw wereld worden",
+      "Wat wil je ontdekken?",
+      "Rekenen",
+      "Begrijpend lezen",
+      "Aardrijkskunde",
+      "Woordenschat",
+      "Engels",
+      "Liever meteen een vrije missie?",
+      "Werkplaats",
+      "Bouw aan nieuwe voertuigen!",
+      "Onderzeeër",
+      "Vliegtuig",
+      "Raket",
+      "Op de tekentafel",
+      "Zappies atelier",
+      "Wat past bij jou?",
+      "Petjes",
+      "Kleuren",
+      "Passen",
+      "Terug naar je eigen Zappie",
+      "Tot de volgende missie!",
+      "Terug naar de sterren",
+      "Beweging uit",
+      "Direct naar de vakken",
     ],
     naKlik: [
+      { tekst: "komt binnenkort. Met Rekenen kun je nu al beginnen!", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "op een vak met Binnenkort tikken" },
+      { tekst: "Dit bouwplan gaat open als", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "het vliegtuig of de raket kiezen in de werkplaats" },
+      { tekst: "Zappie past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
+      { tekst: "Beweging aan", bron: "src/components/zappie/ScrollReis.tsx", na: "op Beweging uit tikken" },
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
       { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Toetssprong tikken" },
       { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },

@@ -1,0 +1,1577 @@
+/*
+ * De Zappie-startpagina, derde ontwerp (13 oktober 2026).
+ *
+ * Voorbeeld: ontwerp/zappie/voorbeeld-startpagina-3.webp. De ruimte-scène
+ * bovenaan staat in zappie.css (.zp-podium); hier staat alles daaronder, en de
+ * reis van de achtergrond terwijl je scrollt (ScrollReis.tsx):
+ *
+ *   --zr-scroll  0 → 1  de afdaling, van boven tot de vakken in beeld zijn;
+ *   --zr-wolken  0 → 1 → 0  de wolken, het sterkst bij de wolkenband;
+ *   --zr-land    0 → 1  de kust komt tevoorschijn, helemaal bij het atelier.
+ *
+ * Alles hangt onder .zp[data-start="ja"] of heeft een eigen zs-naam, zodat de
+ * andere Zappie-schermen, de oefeningen en de ouderomgeving niets merken.
+ *
+ * De illustraties houden hun eigen kleuren: geen filters, alleen een zacht
+ * verloop waar tekst op moet staan.
+ */
+
+.zp[data-start="ja"] {
+  --zs-rand: clamp(16px, 4.4vw, 72px);
+  --zs-breed: 1400px;
+  --zs-goud: #ffd36a;
+  --zs-goud-diep: #d99412;
+  --zs-ijs: #d9f3ff;
+  --zs-glasrand: rgb(140 214 255 / 0.55);
+  --zr-scroll: 0;
+  --zr-wolken: 0;
+  --zr-land: 0;
+  background: #051a42;
+}
+
+.zs-binnen {
+  width: min(100% - 2 * var(--zs-rand), var(--zs-breed));
+  margin-inline: auto;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Lagen: het heelal, de camera, de inhoud                                    */
+/* ------------------------------------------------------------------------- */
+
+/*
+  Vaste lagen met een WebGL-canvas en doorschijnende panelen kunnen in een
+  negatieve laag bij scrollen door elkaar gaan lopen. Daarom expliciet:
+  heelal 0, camera 1, inhoud 2, menu 40 (zappie.css).
+*/
+.zp[data-start="ja"] .zp-heelal {
+  z-index: 0;
+}
+
+.zp-start {
+  position: relative;
+  z-index: 2;
+}
+
+/* De ruimte zoomt iets in en de sterren vervagen als we dalen. */
+.zp[data-start="ja"] .zp-laag-ruimte {
+  scale: calc(1 + var(--zr-scroll) * 0.16);
+  transform-origin: 50% 78%;
+  opacity: calc(1 - var(--zr-land));
+}
+
+.zp[data-start="ja"] .zp-sterrenveld {
+  opacity: calc(1 - var(--zr-scroll) * 0.6);
+}
+
+.zp[data-start="ja"] .zp-nevels,
+.zp[data-start="ja"] .zp-horizonlicht {
+  opacity: calc(1 - var(--zr-land));
+}
+
+.zp[data-start="ja"] .zp-aarde[data-klaar="ja"] {
+  opacity: calc(1 - var(--zr-land));
+  transition: opacity 0.3s linear;
+}
+
+.zs-camera {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+/* De dampkring: hoe lager, hoe blauwer de lucht. */
+.zs-lucht {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% 110%, rgb(120 205 255 / 0.55), transparent 70%),
+    linear-gradient(180deg, rgb(8 40 110 / 0) 0%, rgb(18 84 180 / 0.5) 55%, rgb(70 160 235 / 0.55) 100%);
+  opacity: calc(var(--zr-scroll) * 0.9 * (1 - var(--zr-land)));
+}
+
+/* De kust, achter het atelier: eerst iets ingezoomd, bij aankomst op zijn plek. */
+.zs-camera-kust {
+  position: absolute;
+  inset: -2%;
+  opacity: var(--zr-land);
+  transform: scale(calc(1.1 - var(--zr-land) * 0.1));
+}
+
+.zs-camera-kust .zi-illustratie,
+.zs-camera-kust img {
+  width: 100%;
+  height: 100%;
+}
+
+.zs-camera-kust img {
+  object-fit: cover;
+  object-position: 55% 60%;
+}
+
+/* Een licht verloop bovenin, zodat het menu en de koppen leesbaar blijven. */
+.zs-camera-kust::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgb(4 26 70 / 0.5), rgb(4 26 70 / 0.08) 38%, rgb(4 26 70 / 0.2));
+}
+
+/* Wolkenflarden die van opzij binnenkomen terwijl we door de wolken gaan. */
+.zs-mist {
+  position: absolute;
+  top: -10%;
+  bottom: -10%;
+  width: 70%;
+  opacity: calc(var(--zr-wolken) * 0.85);
+  background:
+    radial-gradient(40% 30% at 50% 35%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0) 100%),
+    radial-gradient(45% 28% at 40% 65%, rgb(232 246 255 / 0.9), rgb(232 246 255 / 0) 100%),
+    radial-gradient(35% 24% at 62% 52%, rgb(214 238 255 / 0.85), rgb(214 238 255 / 0) 100%);
+  filter: blur(6px);
+}
+
+.zs-mist-links {
+  left: -38%;
+  transform: translateX(calc(var(--zr-wolken) * 14vw));
+}
+
+.zs-mist-rechts {
+  right: -38%;
+  transform: translateX(calc(var(--zr-wolken) * -14vw));
+}
+
+/* ------------------------------------------------------------------------- */
+/* Menu en de missieknop op de startpagina                                    */
+/* ------------------------------------------------------------------------- */
+
+/* Een donkere band achter het menu zodra de pagina eronder door schuift. */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp[data-start="ja"] .zp-schil::before {
+    display: block;
+    height: calc(var(--u) * 10.5);
+    background: linear-gradient(180deg, rgb(4 20 56 / 0.96), rgb(4 20 56 / 0.88) 68%, rgb(4 20 56 / 0));
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  .zp[data-start="ja"][data-gescrold="ja"] .zp-schil::before {
+    opacity: 1;
+  }
+
+  /* De begroeting mag over twee regels, zodat het profiel niet over het menu valt. */
+  .zp[data-start="ja"] .zp-profiel-groet {
+    max-width: 8.4em;
+    white-space: normal;
+    line-height: 1.2;
+    font-size: max(11px, calc(var(--u) * 0.88));
+  }
+}
+
+/*
+  "Begin je missie": helderblauw met gouden randen (bouwopdracht: de
+  geschreven voorkeur voor blauw gaat voor de gele knop in het voorbeeld).
+*/
+.zp-podium .zp-missieknop {
+  border: 2px solid #ffd76a;
+  background:
+    radial-gradient(120% 90% at 50% 0%, rgb(140 235 255 / 0.55), transparent 60%),
+    linear-gradient(180deg, #2fa0ff 0%, #1272e6 55%, #0a55c4 100%);
+  color: #fff;
+  text-shadow: 0 0.06em 0 rgb(3 30 90 / 0.6);
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.55),
+    inset 0 -0.16em 0 #0846a3,
+    0 0 0 0.12em rgb(255 215 106 / 0.35),
+    0 0.2em 0 #b9810f,
+    0 0.45em 0.9em rgb(2 10 40 / 0.5),
+    0 0 1.6em rgb(82 190 255 / 0.55);
+}
+
+.zp-podium .zp-missieknop:hover {
+  box-shadow:
+    inset 0 0.12em 0 rgb(255 255 255 / 0.55),
+    inset 0 -0.16em 0 #0846a3,
+    0 0 0 0.16em rgb(255 215 106 / 0.5),
+    0 0.26em 0 #b9810f,
+    0 0.6em 1.1em rgb(2 10 40 / 0.5),
+    0 0 2.2em rgb(82 190 255 / 0.75);
+}
+
+.zp-podium .zp-missieknop-kompas {
+  filter: drop-shadow(0 0 0.25em rgb(255 215 106 / 0.6));
+}
+
+/* ------------------------------------------------------------------------- */
+/* Gedeelde onderdelen                                                        */
+/* ------------------------------------------------------------------------- */
+
+.zs-paneel {
+  border: 2px solid var(--zs-glasrand);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgb(16 66 150 / 0.86), rgb(7 30 82 / 0.9));
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 0 28px rgb(82 217 255 / 0.16),
+    0 18px 40px rgb(2 10 40 / 0.45);
+  backdrop-filter: blur(8px);
+}
+
+.zs-sectie {
+  position: relative;
+  padding-block: clamp(48px, 6vw, 96px);
+  scroll-margin-top: 140px;
+}
+
+.zs-kop {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  margin-bottom: clamp(18px, 2.2vw, 28px);
+}
+
+.zs-kop-ster {
+  flex: none;
+  width: clamp(32px, 3vw, 44px);
+  height: auto;
+  margin-top: 2px;
+  filter: drop-shadow(0 0 10px rgb(255 205 80 / 0.75));
+}
+
+.zs-kop h2 {
+  margin: 0;
+  font-size: clamp(28px, 3.1vw, 46px);
+  line-height: 1.05;
+  text-shadow: 0 3px 0 rgb(4 30 80 / 0.5), 0 0 24px rgb(80 180 255 / 0.35);
+}
+
+.zs-kop p {
+  margin: 6px 0 0;
+  color: var(--zs-ijs);
+  font-size: clamp(16px, 1.35vw, 20px);
+  font-weight: 700;
+  text-shadow: 0 2px 10px rgb(2 16 50 / 0.6);
+}
+
+/* Een klein label: "Binnenkort", "Bouwplan", "Paskamer". */
+.zs-label {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 1;
+  padding: 3px 10px;
+  border: 2px solid #fff;
+  border-radius: 999px;
+  background: #1f6fd0;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1.3;
+  box-shadow: 0 3px 8px rgb(2 10 40 / 0.35);
+}
+
+.zs-label-los {
+  position: static;
+  border-width: 1px;
+  border-color: rgb(255 230 160 / 0.7);
+  background: rgb(125 90 38 / 0.35);
+  color: #ffeab7;
+  font-size: 11px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: none;
+}
+
+.zs-eerlijk {
+  margin: 12px 0 0;
+  color: #b9dcf3;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.zs-eerlijk a {
+  color: inherit;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+/* Een geschilderde scène: het beeld vult het vak, de bediening ligt erboven. */
+.zs-scene {
+  position: relative;
+  overflow: hidden;
+  isolation: isolate;
+  background: #0a2a5a;
+}
+
+.zs-scene > .zi-illustratie {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+}
+
+.zs-scene > .zi-illustratie,
+.zs-scene > .zi-illustratie img {
+  width: 100%;
+  height: 100%;
+}
+
+.zs-scene > .zi-illustratie img {
+  object-fit: cover;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Vandaag op ontdekking en Jouw wereld                                       */
+/* ------------------------------------------------------------------------- */
+
+.zs-vandaag {
+  position: relative;
+  padding-block: clamp(8px, 1.6vw, 20px) clamp(32px, 4vw, 64px);
+}
+
+.zs-vandaag-raster {
+  display: grid;
+  gap: 22px;
+}
+
+.zs-vandaag-links {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  min-width: 0;
+}
+
+.zs-ontdekking {
+  padding: clamp(16px, 1.6vw, 22px);
+}
+
+.zs-paneelkop {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.zs-paneelkop-icoon {
+  flex: none;
+  width: 46px;
+  height: 46px;
+}
+
+.zs-paneelkop h2 {
+  margin: 0;
+  font-size: clamp(22px, 1.9vw, 30px);
+  line-height: 1.1;
+}
+
+.zs-paneelzin {
+  margin: 2px 0 0;
+  color: #cfeeff;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.zs-missies {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* Een missietegel: plaatje, naam en zin onder elkaar, het pijltje rechtsonder. */
+.zs-missie {
+  --rand-diep: #0b55b8;
+  position: relative;
+  display: grid;
+  grid-template-rows: auto auto 1fr;
+  align-content: start;
+  justify-items: start;
+  gap: 4px;
+  width: 100%;
+  height: 100%;
+  min-height: 190px;
+  padding: 16px 14px;
+  border: 0;
+  border-radius: 20px;
+  color: #fff;
+  font: inherit;
+  text-align: left;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    inset 0 -4px 0 rgb(0 0 0 / 0.16),
+    0 6px 0 var(--rand-diep),
+    0 12px 22px rgb(2 10 40 / 0.4);
+  transition: transform 0.18s cubic-bezier(0.3, 0.7, 0.4, 1), box-shadow 0.18s, filter 0.18s;
+}
+
+.zs-missie:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.05);
+}
+
+.zs-missie:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    inset 0 -4px 0 rgb(0 0 0 / 0.16),
+    0 2px 0 var(--rand-diep),
+    0 6px 14px rgb(2 10 40 / 0.4);
+}
+
+.zs-missie[data-kleur="geel"] {
+  --rand-diep: #b06a08;
+  background:
+    radial-gradient(120% 70% at 30% 0%, rgb(255 255 255 / 0.45), transparent 55%),
+    linear-gradient(165deg, #ffe27a, #f8b225 60%, #ee9417);
+  color: var(--zp-inkt);
+}
+
+.zs-missie[data-kleur="groen"] {
+  --rand-diep: #0b6b41;
+  background:
+    radial-gradient(120% 70% at 30% 0%, rgb(255 255 255 / 0.35), transparent 55%),
+    linear-gradient(165deg, #74e39e, #2bb673 60%, #138a55);
+}
+
+.zs-missie[data-kleur="paars"] {
+  --rand-diep: #3a2496;
+  background:
+    radial-gradient(120% 70% at 30% 0%, rgb(255 255 255 / 0.3), transparent 55%),
+    linear-gradient(165deg, #b49bff, #7a58f0 60%, #5338c9);
+}
+
+.zs-missie-beeld {
+  width: 66px;
+  height: 66px;
+  margin-bottom: 6px;
+  filter: drop-shadow(0 4px 4px rgb(2 10 40 / 0.3));
+}
+
+.zs-missie-naam {
+  font-size: clamp(18px, 1.45vw, 22px);
+  line-height: 1.05;
+}
+
+.zs-missie-zin {
+  padding-right: 34px;
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.3;
+}
+
+.zs-missie-pijl {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  border-radius: 999px;
+  background: rgb(10 35 80 / 0.3);
+  color: #fff;
+}
+
+.zs-missie[data-kleur="geel"] .zs-missie-pijl {
+  background: rgb(120 70 0 / 0.35);
+}
+
+/* De tokenstrook: de opmaak staat in zappie.css; hier alleen de vorm. */
+.zs-vandaag .zp-tokens {
+  border-radius: 22px;
+  padding: 12px 18px;
+}
+
+/* Jouw wereld: het eiland groot, de tekst links op een rustig verloop. */
+.zs-jouw {
+  /* zappie.css zet dit paneel op telefoon over de volle breedte van de oude scène. */
+  grid-column: auto;
+  position: relative;
+  display: block;
+  min-height: 430px;
+  overflow: hidden;
+  isolation: isolate;
+  border: 2px solid rgb(140 214 255 / 0.65);
+  border-radius: 26px;
+  background: #062456;
+  box-shadow:
+    inset 0 1px 0 rgb(255 255 255 / 0.2),
+    0 0 30px rgb(82 217 255 / 0.22),
+    0 18px 40px rgb(2 10 40 / 0.45);
+}
+
+.zs-jouw-beeld {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 24%;
+  z-index: -2;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 26%);
+  mask-image: linear-gradient(90deg, transparent, #000 26%);
+}
+
+.zs-jouw-beeld .zi-illustratie,
+.zs-jouw-beeld img {
+  width: 100%;
+  height: 100%;
+}
+
+.zs-jouw-beeld img {
+  object-fit: cover;
+  object-position: 50% 48%;
+  transition: transform 0.8s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+.zs-jouw:hover .zs-jouw-beeld img {
+  transform: scale(1.03);
+}
+
+/* Een rustig leesvlak links; het grootste deel van het eiland blijft vrij. */
+.zs-jouw::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(90deg, rgb(5 28 76 / 0.96) 0%, rgb(5 30 80 / 0.86) 32%, rgb(5 30 80 / 0) 54%);
+  pointer-events: none;
+}
+
+.zs-jouw-tekst {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 10px;
+  width: min(45%, 360px);
+  min-height: 100%;
+  padding: 28px 0 28px 28px;
+  font-size: max(13px, calc(var(--u) * 1.05));
+  text-shadow: 0 2px 8px rgb(2 16 50 / 0.7);
+}
+
+.zs-jouw-tekst .zp-jouw-uitleg {
+  font-size: 15px;
+}
+
+.zs-jouw-tekst .zp-jouw-knop {
+  font-size: 18px;
+  text-shadow: none;
+}
+
+.zs-jouw-voorbeeld {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  padding: 4px 12px;
+  border: 1px solid rgb(255 255 255 / 0.5);
+  border-radius: 999px;
+  background: rgb(4 24 66 / 0.72);
+  color: #e8f6ff;
+  font-size: 12px;
+  font-weight: 800;
+  backdrop-filter: blur(4px);
+}
+
+.zs-jouw .zp-jouw-bord {
+  top: auto;
+  right: 6%;
+  bottom: 22%;
+}
+
+.zs-jouw .zp-jouw-straal {
+  left: 62%;
+}
+
+.zs-jouw .zp-notitie-bouw {
+  right: 4%;
+  bottom: 5%;
+  text-shadow: 0 2px 7px #001d40, 0 1px 2px #001d40;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Vrij oefenen en de werkplaats                                              */
+/* ------------------------------------------------------------------------- */
+
+.zs-leren-raster {
+  display: grid;
+  gap: 36px;
+}
+
+.zs-vakkenkant {
+  min-width: 0;
+}
+
+.zs-vakken {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zs-vak {
+  --vak: #2f95f2;
+  --vak-diep: #0c58c0;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 100%;
+  min-height: clamp(126px, 10.5vw, 158px);
+  padding: 18px 10px 16px;
+  border: 2px solid rgb(255 255 255 / 0.3);
+  border-radius: 22px;
+  background:
+    radial-gradient(110% 60% at 50% 0%, rgb(255 255 255 / 0.3), transparent 62%),
+    linear-gradient(170deg, var(--vak), var(--vak-diep));
+  color: #fff;
+  font: inherit;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    0 6px 0 color-mix(in srgb, var(--vak-diep), #000 30%),
+    0 14px 24px rgb(2 12 40 / 0.35);
+  transition: transform 0.18s cubic-bezier(0.3, 0.7, 0.4, 1), box-shadow 0.18s, filter 0.18s;
+}
+
+.zs-vak:hover {
+  transform: translateY(-3px);
+  filter: brightness(1.06);
+}
+
+.zs-vak:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 2px 0 rgb(255 255 255 / 0.45),
+    0 2px 0 color-mix(in srgb, var(--vak-diep), #000 30%),
+    0 6px 14px rgb(2 12 40 / 0.35);
+}
+
+.zs-vak[data-kleur="rood"] { --vak: #f0607f; --vak-diep: #b52f50; }
+.zs-vak[data-kleur="oranje"] { --vak: #f7a43b; --vak-diep: #c4650f; }
+.zs-vak[data-kleur="paars"] { --vak: #9c76f4; --vak-diep: #5a3fc4; }
+.zs-vak[data-kleur="groen"] { --vak: #35c38f; --vak-diep: #0e8461; }
+.zs-vak[data-kleur="brons"] { --vak: #c79d64; --vak-diep: #85603a; }
+
+.zs-vak-beeld {
+  width: clamp(56px, 5.2vw, 80px);
+  aspect-ratio: 120 / 110;
+}
+
+.zs-vak-beeld svg {
+  width: 100%;
+  height: 100%;
+}
+
+.zs-vak-naam {
+  max-width: 100%;
+  font-size: clamp(14px, 1.2vw, 18px);
+  line-height: 1.1;
+  text-align: center;
+  overflow-wrap: break-word;
+  text-shadow: 0 2px 0 rgb(0 20 60 / 0.35);
+}
+
+.zs-vak-pijl {
+  position: absolute;
+  right: 9px;
+  bottom: 9px;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border-radius: 999px;
+  background: rgb(0 20 60 / 0.25);
+}
+
+.zs-vak .zs-label {
+  top: 8px;
+  right: 8px;
+  padding: 2px 8px;
+  border-width: 1px;
+  background: rgb(4 30 80 / 0.55);
+  font-size: 11px;
+  box-shadow: none;
+}
+
+.zs-vakbericht {
+  min-height: 1.5em;
+  margin: 18px 0 8px;
+  color: #e3f6ff;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgb(2 16 50 / 0.6);
+}
+
+.zs-tekstlink {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  color: var(--zs-goud);
+  font-weight: 800;
+  text-underline-offset: 4px;
+}
+
+.zs-werkplaats {
+  min-width: 0;
+}
+
+/* De werkplaats: het hele beeld, zonder uitsnede, zodat de knoppen op de voertuigen blijven staan. */
+.zs-werkplaats-scene {
+  container-type: inline-size;
+  aspect-ratio: 1448 / 1086;
+  border: 2px solid rgb(255 220 140 / 0.6);
+  border-radius: 28px;
+  box-shadow:
+    0 0 0 6px rgb(6 30 80 / 0.45),
+    0 0 40px rgb(255 200 90 / 0.18),
+    0 24px 50px rgb(2 10 40 / 0.5);
+}
+
+.zs-scene-kop {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  padding: 18px 22px 54px;
+  background: linear-gradient(180deg, rgb(4 24 66 / 0.88), rgb(4 24 66 / 0.5) 58%, rgb(4 24 66 / 0));
+  text-shadow: 0 2px 8px rgb(2 16 50 / 0.8);
+}
+
+.zs-scene-kop h3 {
+  margin: 0;
+  font-size: clamp(22px, 2.2vw, 32px);
+  line-height: 1.1;
+}
+
+.zs-scene-kop p {
+  margin: 2px 0 0;
+  color: #ffe7a6;
+  font-size: 15px;
+  font-weight: 800;
+}
+
+/* Een zachte werklamp en af en toe een lasvonk: lagen op het beeld. */
+.zs-werklamp,
+.zs-lasvonk {
+  position: absolute;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  pointer-events: none;
+}
+
+.zs-werklamp {
+  left: 44%;
+  top: 12%;
+  width: 8%;
+  background: radial-gradient(closest-side, rgb(255 240 190 / 0.7), transparent);
+  animation: zs-lamp 9s ease-in-out infinite;
+}
+
+.zs-lasvonk {
+  left: 60.4%;
+  top: 42%;
+  width: 2.4%;
+  background: #fff4cc;
+  box-shadow: 0 0 12px 5px rgb(255 200 97 / 0.6);
+  opacity: 0.08;
+  animation: zs-lassen 7s ease-in-out infinite;
+}
+
+@keyframes zs-lamp {
+  0%, 100% { opacity: 0.35; }
+  50% { opacity: 0.85; }
+}
+
+@keyframes zs-lassen {
+  0%, 38%, 62%, 100% { opacity: 0.08; }
+  45%, 47%, 52%, 55% { opacity: 0.9; }
+  46%, 54% { opacity: 0.3; }
+}
+
+/* De knoppen op de voertuigen. */
+.zs-voertuigen {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zs-voertuigen li {
+  position: absolute;
+  translate: -50% -50%;
+}
+
+.zs-voertuig {
+  position: relative;
+  display: block;
+  width: 24cqw;
+  aspect-ratio: 1;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: #fff;
+  cursor: pointer;
+}
+
+.zs-voertuig[data-id="vliegtuig"] { width: 27cqw; aspect-ratio: 2; }
+.zs-voertuig[data-id="onderzeeer"] { width: 36cqw; aspect-ratio: 1.35; }
+.zs-voertuig[data-id="raket"] { width: 13cqw; aspect-ratio: 0.42; }
+
+.zs-voertuig-ring {
+  position: absolute;
+  inset: 0;
+  border: 2px dashed rgb(255 255 255 / 0.55);
+  border-radius: 50%;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.zs-voertuig:hover .zs-voertuig-ring {
+  border-color: rgb(255 230 150 / 0.95);
+}
+
+.zs-voertuig[aria-pressed="true"] .zs-voertuig-ring {
+  border: 3px solid #ffd96b;
+  box-shadow: 0 0 0 5px rgb(255 214 107 / 0.25), 0 0 26px rgb(255 200 80 / 0.6), inset 0 0 22px rgb(255 214 107 / 0.25);
+  animation: zs-ring 2.6s ease-in-out infinite;
+}
+
+@keyframes zs-ring {
+  0%, 100% { box-shadow: 0 0 0 5px rgb(255 214 107 / 0.25), 0 0 26px rgb(255 200 80 / 0.6), inset 0 0 22px rgb(255 214 107 / 0.25); }
+  50% { box-shadow: 0 0 0 9px rgb(255 214 107 / 0.12), 0 0 34px rgb(255 200 80 / 0.75), inset 0 0 28px rgb(255 214 107 / 0.35); }
+}
+
+.zs-voertuig-naam {
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  translate: -50% 4px;
+  padding: 5px 11px;
+  border: 1px solid rgb(160 225 255 / 0.6);
+  border-radius: 999px;
+  background: rgb(4 24 66 / 0.9);
+  font-size: 13px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.zs-voertuig[data-id="onderzeeer"] .zs-voertuig-naam {
+  top: auto;
+  bottom: 4%;
+}
+
+.zs-voertuig[aria-pressed="true"] .zs-voertuig-naam {
+  border-color: #fff3c4;
+  background: linear-gradient(180deg, #ffe48a, #f2b62c);
+  color: #2b1a00;
+}
+
+.zs-voertuig-slot {
+  width: 14px;
+  height: 14px;
+}
+
+.zs-bouwplan {
+  margin-top: 16px;
+  padding: 16px 18px;
+  border: 2px solid var(--zs-glasrand);
+  border-radius: 22px;
+  background: linear-gradient(180deg, rgb(14 58 132 / 0.85), rgb(6 28 76 / 0.9));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.18), 0 14px 30px rgb(2 10 40 / 0.4);
+  backdrop-filter: blur(8px);
+}
+
+.zs-bouwplan-kop {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 10px;
+}
+
+.zs-klein {
+  width: 100%;
+  color: #a8dcff;
+  font-size: 11px;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.zs-bouwplan-kop h4 {
+  margin: 0;
+  font-size: 24px;
+  line-height: 1.1;
+}
+
+.zs-bouwplan-stand {
+  display: grid;
+  gap: 6px;
+  margin: 10px 0 8px;
+  color: #d9f2ff;
+  font-weight: 700;
+}
+
+.zs-bouwplan-stand strong {
+  color: #fff;
+  font-size: 20px;
+}
+
+.zs-bouwplan progress {
+  display: block;
+  width: 100%;
+  height: 12px;
+  overflow: hidden;
+  border: 1px solid rgb(82 139 193 / 0.5);
+  border-radius: 999px;
+  background: #031b3c;
+  appearance: none;
+}
+
+.zs-bouwplan progress::-webkit-progress-bar { background: #031b3c; }
+.zs-bouwplan progress::-webkit-progress-value { border-radius: 999px; background: linear-gradient(180deg, #fff0a8, #eeb226); }
+.zs-bouwplan progress::-moz-progress-bar { border-radius: 999px; background: linear-gradient(180deg, #fff0a8, #eeb226); }
+
+.zs-bouwplan p {
+  margin: 0;
+  color: #d9f2ff;
+  font-size: 15px;
+  line-height: 1.45;
+}
+
+.zs-bouwplan .zs-eerlijk {
+  margin-top: 10px;
+  font-size: 13px;
+}
+
+/* ------------------------------------------------------------------------- */
+/* De wolkenovergang                                                          */
+/* ------------------------------------------------------------------------- */
+
+.zs-wolken {
+  position: relative;
+  z-index: 1;
+  height: clamp(170px, 22vw, 320px);
+  margin-block: clamp(-70px, -4vw, -30px);
+  pointer-events: none;
+}
+
+/* Elke wolk is een handvol zachte bollen over elkaar, met een blauwe schaduw onderin. */
+.zs-wolk {
+  position: absolute;
+  background:
+    radial-gradient(17% 30% at 20% 62%, rgb(255 255 255 / 0.9) 0 48%, rgb(255 255 255 / 0) 100%),
+    radial-gradient(22% 40% at 37% 46%, rgb(255 255 255 / 0.95) 0 50%, rgb(255 255 255 / 0) 100%),
+    radial-gradient(20% 36% at 55% 40%, rgb(255 255 255 / 0.95) 0 50%, rgb(255 255 255 / 0) 100%),
+    radial-gradient(17% 28% at 71% 54%, rgb(250 253 255 / 0.9) 0 48%, rgb(250 253 255 / 0) 100%),
+    radial-gradient(13% 22% at 85% 63%, rgb(245 251 255 / 0.85) 0 45%, rgb(245 251 255 / 0) 100%),
+    radial-gradient(42% 20% at 52% 74%, rgb(184 218 250 / 0.7) 0 40%, rgb(184 218 250 / 0) 100%);
+  filter: blur(1.5px);
+  transform: translateX(calc((var(--zr-wolken) - 0.5) * var(--drift, 0vw)));
+}
+
+.zs-wolk-1 { left: -6%; top: 10%; width: 44%; height: 78%; --drift: 7vw; }
+.zs-wolk-2 { left: 30%; top: 34%; width: 38%; height: 60%; --drift: -4vw; opacity: 0.9; }
+.zs-wolk-3 { right: -8%; top: 2%; width: 46%; height: 86%; --drift: -8vw; }
+.zs-wolk-4 { left: 14%; top: 50%; width: 28%; height: 48%; --drift: 5vw; opacity: 0.7; }
+
+/* ------------------------------------------------------------------------- */
+/* Zappies atelier                                                            */
+/* ------------------------------------------------------------------------- */
+
+.zs-atelier {
+  padding-bottom: 0;
+}
+
+.zs-atelier-podium {
+  position: relative;
+  width: min(100%, 1680px);
+  margin-inline: auto;
+}
+
+/*
+  Het atelier in één vaste verhouding, zodat Zappie altijd op het podium
+  staat. Het midden van het podium ligt op 50% / 70% van het beeld; met
+  object-position 50% 70% blijft het daar, welke uitsnede er ook valt.
+*/
+.zs-atelier-scene {
+  aspect-ratio: 1 / 1;
+}
+
+.zs-atelier-scene > .zi-illustratie img {
+  object-position: 50% 70%;
+}
+
+.zs-pasrobot {
+  position: absolute;
+  left: 50%;
+  bottom: 27.6%;
+  z-index: 2;
+  height: 31%;
+  aspect-ratio: 252 / 296;
+  translate: -50% 0;
+  filter: drop-shadow(0 12px 10px rgb(4 18 48 / 0.5));
+}
+
+.zs-pasrobot > .zp-robot {
+  width: 100%;
+  height: 100%;
+}
+
+/* Tijdens het passen staat het lijf stil, zodat een petje of bril blijft zitten. */
+.zs-pasrobot .zp-robot-lijf,
+.zs-pasrobot .zp-hoofd,
+.zs-pasrobot .zp-hoofd-draai {
+  animation: none;
+  transform: none;
+}
+
+/* Kleuren: het witte lijf krijgt een andere glans. */
+.zs-pasrobot[data-kleur="oceaan"] radialGradient[id$="-wit"] stop:nth-child(1) { stop-color: #cbf9ff; }
+.zs-pasrobot[data-kleur="oceaan"] radialGradient[id$="-wit"] stop:nth-child(2) { stop-color: #69cffa; }
+.zs-pasrobot[data-kleur="oceaan"] radialGradient[id$="-wit"] stop:nth-child(3) { stop-color: #2874c9; }
+.zs-pasrobot[data-kleur="oceaan"] radialGradient[id$="-wit"] stop:nth-child(4) { stop-color: #104293; }
+.zs-pasrobot[data-kleur="goud"] radialGradient[id$="-wit"] stop:nth-child(1) { stop-color: #fffbe0; }
+.zs-pasrobot[data-kleur="goud"] radialGradient[id$="-wit"] stop:nth-child(2) { stop-color: #ffe27a; }
+.zs-pasrobot[data-kleur="goud"] radialGradient[id$="-wit"] stop:nth-child(3) { stop-color: #e9a93a; }
+.zs-pasrobot[data-kleur="goud"] radialGradient[id$="-wit"] stop:nth-child(4) { stop-color: #a8670f; }
+
+.zs-gepast {
+  position: absolute;
+  z-index: 3;
+  overflow: visible;
+  pointer-events: none;
+}
+
+.zs-gepast-pet { left: 12%; top: -10%; width: 72%; transform: rotate(4deg); }
+.zs-gepast-kroon { left: 21%; top: -17%; width: 53%; }
+.zs-gepast-bril { left: 13%; top: 16%; width: 67%; }
+.zs-gepast-antenne { left: 37%; top: -8%; width: 22%; }
+
+.zs-paskamer {
+  position: relative;
+  z-index: 3;
+  width: min(100% - 2 * var(--zs-rand), 640px);
+  margin: 18px auto 0;
+  padding: clamp(16px, 1.6vw, 22px);
+  border: 2px solid var(--zs-glasrand);
+  border-radius: 26px;
+  background: linear-gradient(180deg, rgb(16 66 150 / 0.88), rgb(7 30 82 / 0.92));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.2), 0 0 28px rgb(82 217 255 / 0.18), 0 18px 40px rgb(2 10 40 / 0.5);
+  backdrop-filter: blur(10px);
+}
+
+.zs-paskamer-kop {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.zs-paskamer-kop h3 {
+  margin: 0;
+  font-size: clamp(22px, 1.9vw, 28px);
+  line-height: 1.1;
+}
+
+.zs-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+
+.zs-filters button {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid rgb(120 200 255 / 0.55);
+  border-radius: 999px;
+  background: rgb(6 36 90 / 0.7);
+  color: #e4f6ff;
+  font: 800 14px/1 var(--font-nunito), system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.zs-filters button:hover {
+  border-color: rgb(180 235 255 / 0.9);
+}
+
+.zs-filters button[aria-pressed="true"] {
+  border-color: #fff;
+  background: linear-gradient(180deg, #e1fbff, #66d8ff);
+  color: #05305e;
+  box-shadow: 0 0 12px rgb(86 211 255 / 0.45);
+}
+
+.zs-producten {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.zs-product {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+  height: 100%;
+  padding: 10px 8px;
+  border: 1px solid rgb(150 225 255 / 0.55);
+  border-radius: 18px;
+  background:
+    radial-gradient(90% 60% at 50% 20%, rgb(120 210 245 / 0.42), transparent 70%),
+    rgb(8 44 104 / 0.85);
+  color: #fff;
+  font: inherit;
+  cursor: pointer;
+  transition: transform 0.18s, box-shadow 0.18s, border-color 0.18s;
+}
+
+.zs-product:hover {
+  transform: translateY(-2px);
+}
+
+.zs-product[aria-pressed="true"] {
+  border-color: #ffe9a0;
+  box-shadow: 0 0 0 2px #f6c448, 0 0 18px rgb(255 213 117 / 0.4);
+}
+
+.zs-product-beeld {
+  width: 100%;
+  max-width: 96px;
+  height: 70px;
+  filter: drop-shadow(0 5px 4px rgb(6 30 90 / 0.6));
+}
+
+.zs-product-naam {
+  font-size: 14px;
+  line-height: 1.1;
+  text-align: center;
+}
+
+.zs-product-actie {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 30px;
+  margin-top: auto;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #ffe9a0, #f0b52e);
+  color: #2b1a00;
+  font-size: 13px;
+  font-weight: 900;
+}
+
+.zs-product[aria-pressed="true"] .zs-product-actie {
+  background: linear-gradient(180deg, #c4f7d8, #3fcf8e);
+  color: #052f1d;
+}
+
+.zs-passtatus {
+  min-height: 1.4em;
+  margin: 12px 0 8px;
+  color: #e6f7ff;
+  font-weight: 700;
+}
+
+.zs-terugknop {
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid rgb(255 233 160 / 0.7);
+  border-radius: 999px;
+  background: transparent;
+  color: #fff3c4;
+  font: 800 14px/1 var(--font-nunito), system-ui, sans-serif;
+  cursor: pointer;
+}
+
+.zs-terugknop:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+/* ------------------------------------------------------------------------- */
+/* De kust                                                                    */
+/* ------------------------------------------------------------------------- */
+
+.zs-kust {
+  position: relative;
+  height: clamp(460px, 58vw, 900px);
+  margin-top: clamp(-90px, -5vw, -40px);
+  overflow: hidden;
+}
+
+.zs-kust > .zi-illustratie {
+  position: absolute;
+  inset: 0;
+  -webkit-mask-image: linear-gradient(180deg, transparent, #000 16%);
+  mask-image: linear-gradient(180deg, transparent, #000 16%);
+}
+
+.zs-kust > .zi-illustratie,
+.zs-kust > .zi-illustratie img {
+  width: 100%;
+  height: 100%;
+}
+
+.zs-kust > .zi-illustratie img {
+  object-fit: cover;
+  object-position: 50% 56%;
+}
+
+.zs-kust::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 52%, rgb(3 24 64 / 0.5));
+  pointer-events: none;
+}
+
+.zs-kust-tekst {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: clamp(28px, 5vw, 72px);
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding-inline: 16px;
+  text-align: center;
+  text-shadow: 0 2px 6px #00264e, 0 5px 22px #001937;
+}
+
+.zs-kust-tekst h2 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 56px);
+  line-height: 1.05;
+}
+
+.zs-kust-tekst p {
+  margin: 0 0 8px;
+  font-size: clamp(16px, 1.4vw, 20px);
+  font-weight: 700;
+}
+
+.zs-terug {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 0 26px;
+  border: 2px solid #ffd76a;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #2fa0ff, #0b5fd0);
+  color: #fff;
+  font-size: 18px;
+  text-shadow: none;
+  cursor: pointer;
+  box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.45), 0 0 18px rgb(82 190 255 / 0.5), 0 8px 18px rgb(2 10 40 / 0.45);
+  transition: transform 0.18s;
+}
+
+.zs-terug:hover {
+  transform: translateY(-2px);
+}
+
+.zs-terug-pijl {
+  width: 18px;
+  height: 18px;
+  rotate: -90deg;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Overslaan en de knop voor beweging                                         */
+/* ------------------------------------------------------------------------- */
+
+.zs-overslaan {
+  position: fixed;
+  top: -120px;
+  left: 16px;
+  z-index: 100;
+  padding: 14px 20px;
+  border-radius: 16px;
+  background: #fff3b3;
+  color: #072b59;
+  font-weight: 800;
+}
+
+.zs-overslaan:focus {
+  top: 12px;
+}
+
+/* In de ruimte-scène: op telefoon onder "Begin je missie", groot scherm rechtsonder in de scène. */
+.zs-bewegingsknop {
+  grid-column: 1 / -1;
+  justify-self: end;
+  z-index: 5;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 8px 16px;
+  border: 1px solid rgb(140 214 255 / 0.7);
+  border-radius: 999px;
+  background: rgb(5 26 66 / 0.9);
+  color: #e8f6ff;
+  font: 800 14px/1 var(--font-nunito), system-ui, sans-serif;
+  box-shadow: 0 4px 18px rgb(3 18 42 / 0.5);
+  backdrop-filter: blur(6px);
+  cursor: pointer;
+}
+
+.zs-bewegingsknop svg {
+  width: 14px;
+  height: 14px;
+  fill: currentColor;
+}
+
+/* ------------------------------------------------------------------------- */
+/* Breed: naast elkaar                                                        */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 1100px) {
+  .zs-vandaag-raster {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 28px;
+    align-items: stretch;
+  }
+
+  .zs-leren-raster {
+    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+    gap: clamp(28px, 3vw, 48px);
+    align-items: start;
+  }
+
+  /* De werkplaats begint op de hoogte van de vakken, niet van de kop. */
+  .zs-werkplaats {
+    margin-top: calc(clamp(32px, 3vw, 44px) + 30px);
+  }
+
+  /* Het atelier over de hele breedte, met de paskamer rechts in de scène. */
+  .zs-atelier-scene {
+    aspect-ratio: 1448 / 860;
+    -webkit-mask-image:
+      linear-gradient(180deg, transparent, #000 7%, #000 93%, transparent),
+      linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    -webkit-mask-composite: source-in;
+    mask-image:
+      linear-gradient(180deg, transparent, #000 7%, #000 93%, transparent),
+      linear-gradient(90deg, transparent, #000 3%, #000 97%, transparent);
+    mask-composite: intersect;
+  }
+
+  .zs-paskamer {
+    position: absolute;
+    top: 9%;
+    right: max(var(--zs-rand), calc((100% - var(--zs-breed)) / 2));
+    width: min(34%, 470px);
+    margin: 0;
+  }
+}
+
+/* Midden: het atelier helemaal in beeld, de paskamer eronder. */
+@media (min-width: 700px) and (max-width: 1099px) {
+  .zs-atelier-scene {
+    width: min(100% - 2 * var(--zs-rand), 900px);
+    margin-inline: auto;
+    aspect-ratio: 1448 / 1086;
+    border: 2px solid rgb(255 220 140 / 0.55);
+    border-radius: 28px;
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Telefoon en staande tablet                                                 */
+/* ------------------------------------------------------------------------- */
+
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp-podium > .zs-bewegingsknop {
+    right: calc(var(--bx) + var(--u) * 2.2);
+    bottom: calc(var(--u) * 0.6);
+  }
+}
+
+@media (max-width: 899px), (max-aspect-ratio: 5/4) {
+  .zs-bewegingsknop {
+    font-size: 13px;
+  }
+
+  /* Onderaan blijft ruimte vrij voor de menubalk. */
+  .zs-kust-tekst {
+    bottom: calc(96px + env(safe-area-inset-bottom));
+  }
+
+  .zs-kust {
+    height: max(560px, 120vw);
+  }
+
+  .zs-kust > .zi-illustratie img {
+    object-position: 62% 50%;
+  }
+}
+
+@media (max-width: 699px) {
+  .zs-atelier-scene {
+    border-block: 2px solid rgb(255 220 140 / 0.45);
+  }
+
+  .zs-werkplaats-scene {
+    border-radius: 22px;
+  }
+
+  .zs-scene-kop {
+    padding: 12px 14px 36px;
+  }
+
+  .zs-voertuig-naam {
+    padding: 4px 8px;
+    font-size: 12px;
+  }
+
+  /* Jouw wereld: het eiland bovenaan, de tekst eronder. */
+  .zs-jouw {
+    min-height: 0;
+  }
+
+  .zs-jouw-beeld {
+    position: relative;
+    left: auto;
+    display: block;
+    aspect-ratio: 4 / 3;
+    -webkit-mask-image: linear-gradient(180deg, #000 72%, transparent);
+    mask-image: linear-gradient(180deg, #000 72%, transparent);
+  }
+
+  .zs-jouw-tekst {
+    width: auto;
+    min-height: 0;
+    margin-top: -40px;
+    padding: 0 18px 22px;
+  }
+
+  .zs-jouw .zp-jouw-bord {
+    top: 16px;
+    right: auto;
+    bottom: auto;
+    left: 16px;
+  }
+
+  .zs-jouw .zp-notitie-bouw {
+    display: none;
+  }
+}
+
+/* Smalle telefoon: de missies als liggende tegels, de vakken in twee kolommen. */
+@media (max-width: 639px) {
+  .zs-missies {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+
+  .zs-missie {
+    grid-template-columns: 56px minmax(0, 1fr) 36px;
+    grid-template-rows: auto auto;
+    grid-template-areas: "beeld naam pijl" "beeld zin pijl";
+    align-items: center;
+    column-gap: 12px;
+    row-gap: 2px;
+    min-height: 0;
+    padding: 12px 12px 12px 14px;
+  }
+
+  .zs-missie-beeld {
+    grid-area: beeld;
+    width: 56px;
+    height: 56px;
+    margin: 0;
+  }
+
+  .zs-missie-naam {
+    grid-area: naam;
+    align-self: end;
+  }
+
+  .zs-missie-zin {
+    grid-area: zin;
+    align-self: start;
+    padding: 0;
+  }
+
+  .zs-missie-pijl {
+    position: static;
+    grid-area: pijl;
+  }
+
+  .zs-missie .zs-label {
+    top: -9px;
+    right: 14px;
+  }
+
+  .zs-vakken {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .zs-producten {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ------------------------------------------------------------------------- */
+/* Rustige weergave en minder beweging                                        */
+/* ------------------------------------------------------------------------- */
+
+/* De knop "Beweging uit" zet de CSS-animaties stil; Heelal zet het canvas stil. */
+.zp[data-beweging="rustig"] *,
+.zp[data-beweging="rustig"] *::before,
+.zp[data-beweging="rustig"] *::after {
+  animation: none !important;
+  transition: none !important;
+}
+
+.zp[data-beweging="rustig"] .zs-camera-kust,
+.zp[data-beweging="rustig"] .zs-mist,
+.zp[data-beweging="rustig"] .zs-wolk {
+  transform: none !important;
+}
+
+.zp[data-beweging="rustig"] .zp-laag-ruimte {
+  scale: 1 !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zp-start *,
+  .zp-start *::before,
+  .zp-start *::after {
+    animation: none !important;
+    transition: none !important;
+  }
+
+  .zs-camera-kust,
+  .zs-mist,
+  .zs-wolk {
+    transform: none !important;
+  }
+
+  .zp[data-start="ja"] .zp-laag-ruimte {
+    scale: 1 !important;
+  }
+}

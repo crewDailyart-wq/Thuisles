@@ -60,3 +60,6 @@ next-env.d.ts
 
 # Godot-exports: worden gemaakt met scripts/godot-export.sh (groot, ±40 MB per bouwsteen)
 /public/godot/
+
+# Uitvoer van scripts/zappie-preview-test.mjs (schermafbeeldingen, testrapport).
+/preview-artifacts

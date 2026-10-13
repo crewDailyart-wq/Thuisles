@@ -1,27 +1,39 @@
 "use client";
 
 /**
- * De Zappie-startpagina voor groep 3, tweede ontwerp.
+ * De Zappie-startpagina: één lange pagina die je van de ruimte naar de kust
+ * brengt (derde ontwerp, 13 oktober 2026).
  *
- * Voorbeeld: ontwerp/zappie/voorbeeld-startpagina-2.webp. Op een groot scherm
- * staat alles op vaste plekken in een 16:9-vlak dat met het scherm meeschaalt
- * (zie `zappie.css`); op telefoon en staande tablet staat alles onder elkaar.
+ * Voorbeeld: ontwerp/zappie/voorbeeld-startpagina-3.webp, met de vier
+ * goedgekeurde illustraties in public/assets/zappie/illustraties. Van boven
+ * naar beneden:
  *
- * Wat er leeft:
+ * 1. de ruimte met Zappie, de drie werelden en "Begin je missie" (op een groot
+ *    scherm een eigen compositie in eenheden van het voorbeeld, zie zappie.css);
+ * 2. "Vandaag op ontdekking" met de tokens, naast de grote "Jouw wereld";
+ * 3. vrij oefenen met de vakken, naast de werkplaats (OntdekkingsReis);
+ * 4. de wolkenovergang, Zappies atelier en het kustpanorama.
+ *
+ * De achtergrond reist mee (ScrollReis): de aarde komt dichterbij, er komen
+ * wolken voorbij en onderaan ligt de kust. Dat volgt de plek van de secties,
+ * niet de muis of een timer, en staat stil bij "minder beweging".
+ *
+ * Wat er leeft, net als in het vorige ontwerp:
  * - de werelden zweven, elk op een eigen tempo; het gouden ontdekpad laat zien
  *   hoeveel missies er in de huidige wereld klaar zijn (één lichtje per missie);
  * - Zappie rolt binnen, zwaait en wijst daarna naar "Begin je missie". Een tik
  *   op hem, op een dichte wereld of op Toetssprong en hij zegt iets;
- * - na een missie (fase 5): de tokens tellen op, een gouden lichtje vliegt naar
- *   de wereld, die licht even op, en het nieuwe lichtje op het pad gaat aan.
- *   Komt er een plek vrij in Jouw wereld, dan valt daar een gouden lichtstraal.
- *   Dat volgt uit de opgeslagen voortgang, niet uit een klik.
+ * - na een missie: de tokens tellen op, een gouden lichtje vliegt naar de
+ *   wereld, die licht even op, en het nieuwe lichtje op het pad gaat aan. Komt
+ *   er een plek vrij in Jouw wereld, dan valt daar een gouden lichtstraal. Dat
+ *   volgt uit de opgeslagen voortgang, niet uit een klik.
  */
 
 import Link from "next/link";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
-import { ScrollReis } from "@/components/zappie/ScrollReis";
+import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
+import "@/components/zappie/startpagina.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
@@ -221,240 +233,250 @@ export function Startscherm() {
   }
 
   return (
-    <><ScrollReis /><main className="zp-podium" aria-label="Start">
-      <h1 className="sr-only">Zappie: begin je missie</h1>
+    <>
+      <ScrollReis />
+      <main className="zp-start" id="zappie-start" aria-label="Start">
+        <h1 className="sr-only">Zappie: begin je missie</h1>
 
-      {/* Zappie en zijn briefje. */}
-      <p className="zp-hand zp-notitie zp-notitie-hulp" aria-hidden="true">
-        Iets niet duidelijk?
-        <br />
-        Ik help je graag!
-        <HandPijl className="zp-notitie-pijl" />
-      </p>
-      <div className="zp-zappieplek">
-        <button
-          type="button"
-          className="zp-zappie"
-          aria-label="Zappie, tik voor hulp"
-          onClick={() => {
-            zeg(HULP[hulp % HULP.length]);
-            zetHulp((n) => n + 1);
-          }}
-        >
-          <Zappie
-            stemming={bericht?.stemming ?? (glimlach ? "blij" : "kijk")}
-            praat={praat}
-            tik={tik}
-            houding={houding}
-            binnenrollen
-            kijkMee
-          />
-        </button>
-        {bericht && <Tekstballon tekst={bericht.tekst} className="zp-zappieballon" />}
-      </div>
-
-      {/* De drie werelden met het ontdekpad ertussen. */}
-      <section
-        className="zp-werelden"
-        aria-label="Werelden"
-        data-diepte="voor"
-      >
-        {(["breed", "smal"] as const).map((soort) => (
-          <svg
-            key={soort}
-            viewBox={`0 0 ${PADEN[soort].vak[0]} ${PADEN[soort].vak[1]}`}
-            className={`zp-pad zp-pad-${soort}`}
-            aria-hidden="true"
-          >
-            {PADEN[soort].stukken.map((stuk, i) => {
-              const stand = standen[i];
-              const aan = stand.open ? stand.klaar : 0;
-              return (
-                <g key={i} className="zp-padstuk" data-open={stand.open ? "ja" : "nee"}>
-                  {Array.from({ length: LICHTJES }, (_, k) => {
-                    const [x, y] = opBocht(stuk, (k + 0.5) / LICHTJES);
-                    const status = k < aan ? "aan" : stand.huidig && k === aan ? "volgende" : "uit";
-                    const nieuw = status === "aan" && k === aan - 1 && nieuwLichtje === stand.wereld.id;
-                    return (
-                      <circle
-                        key={k}
-                        cx={x}
-                        cy={y}
-                        r={soort === "breed" ? 0.3 : 0.42}
-                        className={`zp-lichtje${nieuw ? " zp-lichtje-nieuw" : ""}`}
-                        data-status={status}
-                        style={{ animationDelay: `${(k * 0.28).toFixed(2)}s` }}
-                      />
-                    );
-                  })}
-                </g>
-              );
-            })}
-          </svg>
-        ))}
-        {standen.map((s, i) => (
-          <WereldKnop
-            key={s.wereld.id}
-            stand={s}
-            plek={i}
-            schud={schud === s.wereld.id}
-            oplicht={oplicht === s.wereld.id}
-            href={s.huidig ? missieAdres : "/zappie/wereld"}
-            onDicht={() => kiesWereld(s)}
-            refje={(el) => {
-              wereldRefs.current[s.wereld.id] = el;
-            }}
-          />
-        ))}
-      </section>
-
-      {/* De belangrijkste knop van het scherm. */}
-      <div className="zp-missieplek">
-        <Link
-          href={missieAdres}
-          className={`zp-missieknop zp-titel${glans ? " zp-glans" : ""}`}
-          onClick={beginMissie}
-        >
-          <span className="zp-missieknop-kompas">
-            <IcoonKompas className="size-full" />
-          </span>
-          <span>Begin je missie</span>
-          <IcoonPijl className="zp-missieknop-pijl" />
-        </Link>
-      </div>
-
-      {/* Vandaag op ontdekking. */}
-      <section className="zp-ontdekking zp-glaspaneel" aria-labelledby="zp-kop-ontdekking">
-        <h2 id="zp-kop-ontdekking" className="zp-paneelkop zp-titel">
-          <IcoonKompas className="zp-paneelkop-icoon" />
-          Vandaag op ontdekking
-        </h2>
-        <p className="zp-hand zp-notitie zp-notitie-drie" aria-hidden="true">
-          <HandPijl className="zp-notitie-pijl" />
-          Drie missies voor vandaag.
-        </p>
-        <ul className="zp-kaarten">
-          <li>
-            <Link href="/oefenen/rekenen/methode" className="zp-kaart" data-kleur="geel">
-              <IcoonBoeken className="zp-kaart-beeld" />
-              <span className="zp-kaart-tekst">
-                <span className="zp-kaart-naam zp-titel">Schoolpad</span>
-                <span className="zp-kaart-zin">Oefen met jouw schoolmethode.</span>
-              </span>
-              <span className="zp-kaart-pijl" aria-hidden="true">
-                <IcoonPijl className="size-[60%]" />
-              </span>
-            </Link>
-          </li>
-          <li>
+        {/*
+          1. De ruimte. Zappie, de drie werelden met het ontdekpad en de
+          belangrijkste knop van de pagina. Op een groot scherm een eigen
+          compositie in eenheden van het voorbeeld (zie zappie.css); daaronder
+          loopt de pagina gewoon door.
+        */}
+        <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte">
+          <p className="zp-hand zp-notitie zp-notitie-hulp" aria-hidden="true">
+            Iets niet duidelijk?
+            <br />
+            Ik help je graag!
+            <HandPijl className="zp-notitie-pijl" />
+          </p>
+          <div className="zp-zappieplek">
             <button
               type="button"
-              className="zp-kaart"
-              data-kleur="groen"
-              onClick={() => zeg({ tekst: "Toetssprong komt er binnenkort aan. Kies nu Schoolpad of Vrije Missie!", stemming: "kijk" })}
+              className="zp-zappie"
+              aria-label="Zappie, tik voor hulp"
+              onClick={() => {
+                zeg(HULP[hulp % HULP.length]);
+                zetHulp((n) => n + 1);
+              }}
             >
-              <span className="zp-binnenkort">Binnenkort</span>
-              <IcoonBerg className="zp-kaart-beeld" />
-              <span className="zp-kaart-tekst">
-                <span className="zp-kaart-naam zp-titel">Toetssprong</span>
-                <span className="zp-kaart-zin">Ter voorbereiding op de IEP.</span>
-              </span>
-              <span className="zp-kaart-pijl" aria-hidden="true">
-                <IcoonPijl className="size-[60%]" />
-              </span>
+              <Zappie
+                stemming={bericht?.stemming ?? (glimlach ? "blij" : "kijk")}
+                praat={praat}
+                tik={tik}
+                houding={houding}
+                binnenrollen
+                kijkMee
+              />
             </button>
-          </li>
-          <li>
-            <Link href="/zappie/oefenen?vrij=1" className="zp-kaart" data-kleur="paars">
-              <IcoonRaket className="zp-kaart-beeld" />
-              <span className="zp-kaart-tekst">
-                <span className="zp-kaart-naam zp-titel">Vrije Missie</span>
-                <span className="zp-kaart-zin">Extra oefenen voor meer tokens.</span>
+            {bericht && <Tekstballon tekst={bericht.tekst} className="zp-zappieballon" />}
+          </div>
+
+          <div className="zp-werelden" data-diepte="voor">
+            {(["breed", "smal"] as const).map((soort) => (
+              <svg
+                key={soort}
+                viewBox={`0 0 ${PADEN[soort].vak[0]} ${PADEN[soort].vak[1]}`}
+                className={`zp-pad zp-pad-${soort}`}
+                aria-hidden="true"
+              >
+                {PADEN[soort].stukken.map((stuk, i) => {
+                  const stand = standen[i];
+                  const aan = stand.open ? stand.klaar : 0;
+                  return (
+                    <g key={i} className="zp-padstuk" data-open={stand.open ? "ja" : "nee"}>
+                      {Array.from({ length: LICHTJES }, (_, k) => {
+                        const [x, y] = opBocht(stuk, (k + 0.5) / LICHTJES);
+                        const status = k < aan ? "aan" : stand.huidig && k === aan ? "volgende" : "uit";
+                        const nieuw = status === "aan" && k === aan - 1 && nieuwLichtje === stand.wereld.id;
+                        return (
+                          <circle
+                            key={k}
+                            cx={x}
+                            cy={y}
+                            r={soort === "breed" ? 0.3 : 0.42}
+                            className={`zp-lichtje${nieuw ? " zp-lichtje-nieuw" : ""}`}
+                            data-status={status}
+                            style={{ animationDelay: `${(k * 0.28).toFixed(2)}s` }}
+                          />
+                        );
+                      })}
+                    </g>
+                  );
+                })}
+              </svg>
+            ))}
+            {standen.map((s, i) => (
+              <WereldKnop
+                key={s.wereld.id}
+                stand={s}
+                plek={i}
+                schud={schud === s.wereld.id}
+                oplicht={oplicht === s.wereld.id}
+                href={s.huidig ? missieAdres : "/zappie/wereld"}
+                onDicht={() => kiesWereld(s)}
+                refje={(el) => {
+                  wereldRefs.current[s.wereld.id] = el;
+                }}
+              />
+            ))}
+          </div>
+
+          <div className="zp-missieplek">
+            <Link
+              href={missieAdres}
+              className={`zp-missieknop zp-titel${glans ? " zp-glans" : ""}`}
+              onClick={beginMissie}
+            >
+              <span className="zp-missieknop-kompas">
+                <IcoonKompas className="size-full" />
               </span>
-              <span className="zp-kaart-pijl" aria-hidden="true">
-                <IcoonPijl className="size-[60%]" />
+              <span>Begin je missie</span>
+              <IcoonPijl className="zp-missieknop-pijl" />
+            </Link>
+          </div>
+
+          <p className="zp-hand zp-notitie zp-notitie-stappen" aria-hidden="true">
+            Kleine stappen.
+            <br />
+            Grote werelden.
+          </p>
+          <Bewegingsknop />
+        </section>
+
+        {/* 2. Vandaag: links de missies en de tokens, rechts de eigen bouwwereld. */}
+        <section className="zs-vandaag" aria-label="Vandaag" data-reis="vandaag">
+          <div className="zs-binnen zs-vandaag-raster">
+            <div className="zs-vandaag-links">
+              <section className="zs-paneel zs-ontdekking" aria-labelledby="zp-kop-ontdekking">
+                <header className="zs-paneelkop">
+                  <IcoonKompas className="zs-paneelkop-icoon" />
+                  <div>
+                    <h2 id="zp-kop-ontdekking" className="zp-titel">
+                      Vandaag op ontdekking
+                    </h2>
+                    <p className="zs-paneelzin">Drie missies voor vandaag.</p>
+                  </div>
+                </header>
+                <ul className="zs-missies">
+                  <li>
+                    <Link href="/oefenen/rekenen/methode" className="zs-missie" data-kleur="geel">
+                      <IcoonBoeken className="zs-missie-beeld" />
+                      <span className="zs-missie-naam zp-titel">Schoolpad</span>
+                      <span className="zs-missie-zin">Oefen met jouw schoolmethode.</span>
+                      <span className="zs-missie-pijl" aria-hidden="true">
+                        <IcoonPijl className="size-[55%]" />
+                      </span>
+                    </Link>
+                  </li>
+                  <li>
+                    <button
+                      type="button"
+                      className="zs-missie"
+                      data-kleur="groen"
+                      onClick={() => zeg({ tekst: "Toetssprong komt er binnenkort aan. Kies nu Schoolpad of Vrije Missie!", stemming: "kijk" })}
+                    >
+                      <span className="zs-label">Binnenkort</span>
+                      <IcoonBerg className="zs-missie-beeld" />
+                      <span className="zs-missie-naam zp-titel">Toetssprong</span>
+                      <span className="zs-missie-zin">Ter voorbereiding op de IEP.</span>
+                      <span className="zs-missie-pijl" aria-hidden="true">
+                        <IcoonPijl className="size-[55%]" />
+                      </span>
+                    </button>
+                  </li>
+                  <li>
+                    <Link href="/zappie/oefenen?vrij=1" className="zs-missie" data-kleur="paars">
+                      <IcoonRaket className="zs-missie-beeld" />
+                      <span className="zs-missie-naam zp-titel">Vrije Missie</span>
+                      <span className="zs-missie-zin">Extra oefenen voor meer tokens.</span>
+                      <span className="zs-missie-pijl" aria-hidden="true">
+                        <IcoonPijl className="size-[55%]" />
+                      </span>
+                    </Link>
+                  </li>
+                </ul>
+              </section>
+
+              {/* Tokens en de volgende beloning. */}
+              <section className="zp-tokens zp-glaspaneel" aria-label="Jouw tokens">
+                <Link href="/zappie/beloningen" className="zp-tokens-link" aria-label="Jouw tokens, naar Beloningen">
+                  <Tokenteller soort="strook" />
+                  <span className="zp-rondpijl" aria-hidden="true">
+                    <IcoonPijl className="size-[55%]" />
+                  </span>
+                </Link>
+                <div className="zp-tokens-weg">
+                  <span className="zp-tokens-wegtekst">Op weg naar je volgende beloning!</span>
+                  <span
+                    className="zp-voortgangsbalk"
+                    role="progressbar"
+                    aria-valuemin={0}
+                    aria-valuemax={beloning.stap}
+                    aria-valuenow={beloning.opWeg}
+                    aria-label={`${beloning.opWeg} van de ${beloning.stap} tokens tot de volgende beloning`}
+                  >
+                    <span className="zp-voortgangsbalk-vol" style={{ width: `${(beloning.opWeg / beloning.stap) * 100}%` }} />
+                  </span>
+                  <IcoonCadeau className="zp-tokens-cadeau" />
+                </div>
+              </section>
+            </div>
+
+            {/*
+              Jouw wereld: de persoonlijke bouwplek, groot. Het beeld is een
+              voorbeeld van hoe een wereld vol gebouwen eruit kan zien; dat
+              staat er eerlijk bij, want een beginnend kind heeft nog niets
+              gebouwd. Het hele paneel is klikbaar.
+            */}
+            <Link
+              href="/zappie/mijn-wereld"
+              className={`zp-jouwpaneel zs-jouw${straal ? " zp-straal" : ""}`}
+              aria-label={`Jouw wereld, ${huidig.wereld.naam}: ga naar mijn wereld`}
+            >
+              <span className="zs-jouw-beeld" aria-hidden="true">
+                <Illustratie naam="wereld" sizes="(min-width: 1100px) 46vw, 94vw" />
+              </span>
+              <span className="zs-jouw-voorbeeld" aria-hidden="true">
+                Zo kan jouw wereld worden
+              </span>
+              <span className="zp-jouw-bord zp-titel" aria-hidden="true">
+                Jouw
+                <br />
+                wereld
+              </span>
+              <span className="zp-jouw-straal" aria-hidden="true" />
+              <span className="zs-jouw-tekst">
+                <span className="zp-jouw-kop">
+                  <IcoonGolf className="zp-jouw-icoon" />
+                  <span>
+                    <span className="zp-jouw-klein zp-titel">Jouw wereld</span>
+                    <span className="zp-jouw-naam zp-titel">{huidig.wereld.naam}</span>
+                  </span>
+                </span>
+                <span className="zp-hand zp-jouw-motto">{huidig.wereld.motto}</span>
+                <span className="zp-jouw-uitleg">
+                  Dit is jouw wereld. Verzamel tokens, ontgrendel nieuwe plekken en maak het helemaal van jou!
+                </span>
+                <span className="zp-jouw-knop zp-titel">
+                  Ga naar mijn wereld
+                  <IcoonPijl className="size-[0.9em]" />
+                </span>
+              </span>
+              <span className="zp-hand zp-notitie zp-notitie-bouw" aria-hidden="true">
+                Bouw,
+                <br />
+                ontdek, groei! ♡
               </span>
             </Link>
-          </li>
-        </ul>
-      </section>
+          </div>
+        </section>
 
-      {/* Tokens en de volgende beloning. */}
-      <section className="zp-tokens zp-glaspaneel" aria-label="Jouw tokens">
-        <Link href="/zappie/beloningen" className="zp-tokens-link" aria-label="Jouw tokens, naar Beloningen">
-          <Tokenteller soort="strook" />
-          <span className="zp-rondpijl" aria-hidden="true">
-            <IcoonPijl className="size-[55%]" />
-          </span>
-        </Link>
-        <div className="zp-tokens-weg">
-          <span className="zp-tokens-wegtekst">Op weg naar je volgende beloning!</span>
-          <span
-            className="zp-voortgangsbalk"
-            role="progressbar"
-            aria-valuemin={0}
-            aria-valuemax={beloning.stap}
-            aria-valuenow={beloning.opWeg}
-            aria-label={`${beloning.opWeg} van de ${beloning.stap} tokens tot de volgende beloning`}
-          >
-            <span className="zp-voortgangsbalk-vol" style={{ width: `${(beloning.opWeg / beloning.stap) * 100}%` }} />
-          </span>
-          <IcoonCadeau className="zp-tokens-cadeau" />
-        </div>
-      </section>
-
-      {/* Jouw wereld: het hele paneel is klikbaar. */}
-      <Link
-        href="/zappie/mijn-wereld"
-        className={`zp-jouwpaneel zp-glaspaneel zi-wereldkaart${straal ? " zp-straal" : ""}`}
-        aria-label={`Jouw wereld, ${huidig.wereld.naam}: ga naar mijn wereld`}
-      >
-        <span className="zp-jouw-eiland" aria-hidden="true">
-          <Illustratie naam="wereld" sizes="(min-width: 900px) 45vw, 94vw" prioriteit />
-          <span className="zp-jouw-water" />
-          <span className="zp-jouw-wolk zp-jouw-wolk-1" />
-          <span className="zp-jouw-wolk zp-jouw-wolk-2" />
-          <span className="zp-jouw-lichtje" style={{ left: "87%", top: "19%" }} />
-          <span className="zp-jouw-lichtje" style={{ left: "62%", top: "56%", animationDelay: "-1.3s" }} />
-          <span className="zp-jouw-lichtje" style={{ left: "70%", top: "61%", animationDelay: "-2.1s" }} />
-          <span className="zp-jouw-twinkel" style={{ left: "44%", top: "36%" }} />
-          <span className="zp-jouw-bord zp-titel">
-            Jouw
-            <br />
-            wereld
-          </span>
-          <span className="zp-jouw-straal" />
-        </span>
-        <span className="zp-jouw-tekst">
-          <span className="zp-jouw-kop">
-            <IcoonGolf className="zp-jouw-icoon" />
-            <span>
-              <span className="zp-jouw-klein zp-titel">Jouw wereld</span>
-              <span className="zp-jouw-naam zp-titel">{huidig.wereld.naam}</span>
-            </span>
-          </span>
-          <span className="zp-hand zp-jouw-motto">{huidig.wereld.motto}</span>
-          <span className="zp-jouw-uitleg">
-            Dit is jouw wereld. Verzamel tokens, ontgrendel nieuwe plekken en maak het helemaal van jou!
-          </span>
-          <span className="zp-jouw-knop zp-titel">
-            Ga naar mijn wereld
-            <IcoonPijl className="size-[0.9em]" />
-          </span>
-        </span>
-        <span className="zp-hand zp-notitie zp-notitie-bouw" aria-hidden="true">
-          Bouw,
-          <br />
-          ontdek, groei! ♡
-        </span>
-      </Link>
-
-      <p className="zp-hand zp-notitie zp-notitie-stappen" aria-hidden="true">
-        Kleine stappen.
-        <br />
-        Grote werelden.
-      </p>
-    </main><OntdekkingsReis /></>
+        {/* 3 tot en met 6: vakken en werkplaats, wolken, atelier, de kust. */}
+        <OntdekkingsReis standen={standen} />
+      </main>
+    </>
   );
 }
 

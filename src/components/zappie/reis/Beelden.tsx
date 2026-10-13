@@ -2,7 +2,7 @@
 
 import { useId } from "react";
 
-export type AccessoireId = "standaard" | "pet" | "oceaan" | "kroon" | "bril" | "antenne";
+export type AccessoireId = "standaard" | "pet" | "oceaan" | "goud" | "kroon" | "bril" | "antenne";
 export type VakId = "rekenen" | "taal" | "lezen" | "spelling" | "aardrijkskunde" | "geschiedenis" | "natuur" | "woordenschat" | "engels";
 
 /** Eigen SVG-illustraties: scherp op elk scherm, geen platform-afhankelijke emoji. */
@@ -19,6 +19,7 @@ export function AccessoireBeeld({ soort, className = "" }: { soort: AccessoireId
     {soort === "kroon" && <g><path d="m24 44 28 24 27-39 27 39 29-25-10 65H35z" fill={goud} stroke="#bc7717" strokeWidth="3"/><path d="m28 47 12 55h79l11-52-24 20-27-35-26 35z" fill="none" stroke="#fff3b2" strokeWidth="2"/><rect x="34" y="99" width="92" height="17" rx="8" fill={goud}/>{[24,79,135].map((x,i)=><circle key={x} cx={x} cy={i===1?25:40} r="7" fill={goud} stroke="#fff1aa" strokeWidth="2"/>)}<path d="m80 69 10 14-10 14-10-14z" fill={blauw}/><circle cx="48" cy="87" r="4" fill="#66edff"/><circle cx="112" cy="87" r="4" fill="#66edff"/></g>}
     {soort === "bril" && <g transform="rotate(-5 80 66)"><path d="m18 53-9-17m132 17 9-17M67 60q13-11 26 0" stroke="#173869" strokeWidth="8" fill="none" strokeLinecap="round"/><path d="M15 47q25-9 51 0l-3 31q-24 26-43-3zm78 0q26-9 51 0l-5 28q-21 28-43 3z" fill="#09284e" stroke={blauw} strokeWidth="7"/><path d="m26 55 22-3m54 4 22-3" stroke="#9fe8ff" strokeWidth="4" strokeLinecap="round"/><path d="m26 70 13-14m66 14 14-14" stroke="#d6f4ff" strokeOpacity=".26" strokeWidth="9"/></g>}
     {soort === "antenne" && <g><path d="M80 62v48" stroke="#a9c5e8" strokeWidth="9"/><path d="M78 66v39" stroke="#e3f9ff" strokeWidth="3"/><ellipse cx="80" cy="111" rx="23" ry="9" fill={blauw}/><path d="m80 14 11 23 25 3-18 18 4 25-22-12-22 12 4-25-18-18 25-3z" fill={goud} stroke="#fff2b4" strokeWidth="3"/><path d="m24 31 5 9m101-9-5 9m-12-29-3 11" stroke="#ffe589" strokeWidth="4" strokeLinecap="round"/></g>}
+    {soort === "goud" && <g><path d="M80 13C69 37 41 61 41 85a39 39 0 0 0 78 0c0-24-28-48-39-72z" fill={goud} stroke="#fff0b0" strokeWidth="3"/><path d="M57 83q-3 17 14 23" fill="none" stroke="#fff6cf" strokeWidth="6" strokeLinecap="round"/><circle cx="91" cy="54" r="5" fill="#fff" fillOpacity=".75"/></g>}
     {soort === "oceaan" && <g><path d="M80 13C69 37 41 61 41 85a39 39 0 0 0 78 0c0-24-28-48-39-72z" fill={blauw} stroke="#a2eeff" strokeWidth="3"/><path d="M57 83q-3 17 14 23" fill="none" stroke="#c0f9ff" strokeWidth="6" strokeLinecap="round"/><circle cx="91" cy="54" r="5" fill="#fff" fillOpacity=".7"/></g>}
     {soort === "standaard" && <g fill="none" stroke={blauw} strokeWidth="9" strokeLinecap="round"><path d="M119 44a45 45 0 1 0 4 45"/><path d="M119 19v28H92"/></g>}
   </svg>;

@@ -55,14 +55,14 @@ try {
     const breedte = await pagina.evaluate(() => ({ inhoud: document.documentElement.scrollWidth, venster: innerWidth, hoogte: document.documentElement.scrollHeight, viewport: innerHeight }));
     assert.ok(breedte.inhoud <= breedte.venster + 2, `${naam}: geen horizontale overflow (${JSON.stringify(breedte)})`);
     assert.ok(breedte.hoogte > breedte.viewport * 1.7, `${naam}: homepage is echt scrollbaar`);
-    assert.equal(await pagina.locator(".zr-vak").count(), 9);
-    assert.equal(await pagina.locator('.zr-vak[href="/rekenen"]').count(), 1);
+    assert.equal(await pagina.locator(".zs-vak").count(), 9);
+    assert.equal(await pagina.locator('.zs-vak[href="/rekenen"]').count(), 1);
     await pagina.locator('#vrij-oefenen').evaluate(el => el.scrollIntoView({block:"start"}));
     await pagina.waitForTimeout(300);
     const vakkenBeeld = await pagina.screenshot({ path: path.join(uit, `${naam}-vrij-oefenen.png`) });
     // Controleer ook de werkelijk getekende pixels. Een transparante decorlaag
     // kan knoppen visueel bedekken terwijl elementFromPoint nog steeds slaagt.
-    const rozeTegel = pagina.locator('.zr-vak[data-kleur="roze"]').first();
+    const rozeTegel = pagina.locator('.zs-vak[data-kleur="rood"]').first();
     const vakRand = await rozeTegel.boundingBox();
     const kleur = await pagina.evaluate(async ({ png, x, y }) => {
       const img = new Image();
@@ -75,35 +75,34 @@ try {
       return Array.from(ctx.getImageData(x, y, 1, 1).data);
     }, { png: vakkenBeeld.toString('base64'), x: Math.floor(vakRand.x + vakRand.width * .12), y: Math.floor(vakRand.y + vakRand.height * .58) });
     assert.ok(kleur[0] > kleur[2], `${naam}: de roze tegel moet zichtbaar zijn, niet overschilderd door blauwe ruimte (${kleur})`);
-    const rekenknop = pagina.locator('.zr-vak[href="/rekenen"]');
+    const rekenknop = pagina.locator('.zs-vak[href="/rekenen"]');
     await rekenknop.scrollIntoViewIfNeeded();
     assert.ok(await rekenknop.evaluate(el => {
       const r = el.getBoundingClientRect();
       return document.elementFromPoint(r.x + r.width/2,r.y + r.height/2)?.closest("a") === el;
     }), "De eerste vaktegel is niet bedekt");
     await pagina.getByRole("button", { name: "Geschiedenis, binnenkort", exact: true }).click();
-    assert.match(await pagina.locator(".zr-vakbericht").innerText(), /komt later/);
-    await pagina.getByRole("button", { name: "Vliegtuig", exact: true }).click();
-    assert.equal(await pagina.locator(".zr-bouwstand h4").innerText(), "Vliegtuig");
+    assert.match(await pagina.locator(".zs-vakbericht").innerText(), /komt binnenkort/);
+    await pagina.getByRole("button", { name: /^Vliegtuig/ }).click();
+    assert.equal(await pagina.locator(".zs-bouwplan h4").innerText(), "Vliegtuig");
     await pagina.getByRole("button", { name: "Petjes", exact: true }).click();
-    assert.equal(await pagina.locator(".zr-product").count(), 2);
+    assert.equal(await pagina.locator(".zs-product").count(), 2);
     await pagina.getByRole("button", { name: "Sterrenkroon passen", exact: true }).click();
-    assert.equal(await pagina.locator(".zr-avatar").getAttribute("data-accessoire"), "kroon");
-    assert.equal(await pagina.locator(".zr-gepast--kroon").count(), 1);
-    await pagina.locator(".zr-avatar").scrollIntoViewIfNeeded();
+    assert.equal(await pagina.locator(".zs-pasrobot .zs-gepast-kroon").count(), 1);
+    await pagina.locator(".zs-pasrobot").scrollIntoViewIfNeeded();
     await pagina.screenshot({ path: path.join(uit, `${naam}-kroon-passen.png`) });
-    await pagina.getByRole("button", { name: "Terug naar je eigen look", exact: true }).click();
-    assert.equal(await pagina.locator(".zr-avatar").getAttribute("data-accessoire"), "standaard");
+    await pagina.getByRole("button", { name: "Terug naar je eigen Zappie", exact: true }).click();
+    assert.equal(await pagina.locator(".zs-pasrobot .zs-gepast").count(), 0);
     await pagina.getByRole("button", { name: "Alles", exact: true }).click();
     await pagina.getByRole("button", { name: "Oceaanblauw passen", exact: true }).click();
-    const stop = await pagina.locator('.zr-avatar radialGradient[id$="-wit"] stop').nth(1).evaluate((el) => getComputedStyle(el).stopColor);
+    const stop = await pagina.locator('.zs-pasrobot radialGradient[id$="-wit"] stop').nth(1).evaluate((el) => getComputedStyle(el).stopColor);
     assert.equal(stop, "rgb(105, 207, 250)", "De kleur wordt op het robotlichaam toegepast");
     await pagina.screenshot({ path: path.join(uit, `${naam}-atelier-passen.png`) });
-    await pagina.getByRole("button", { name: "Terug naar je eigen look", exact: true }).click();
+    await pagina.getByRole("button", { name: "Terug naar je eigen Zappie", exact: true }).click();
     for (const href of ["/rekenen", "/meer", "/profiel", "/zappie/mijn-wereld", "/zappie/beloningen"]) assert.ok(await pagina.locator(`a[href="${href}"]`).count(), `Route behouden: ${href}`);
     const saldoNa = await pagina.evaluate(() => Object.fromEntries(Object.keys(localStorage).filter(k => k.startsWith("zappie:v1")).map(k => [k,localStorage.getItem(k)])));
     assert.deepEqual(saldoNa, saldoVoor, "Passen en bouwplannen wijzigen de opgeslagen voortgang niet");
-    await pagina.getByRole("button", { name: "Onderzeeër", exact: true }).click();
+    await pagina.getByRole("button", { name: /^Onderzeeër/ }).click();
     await pagina.evaluate(() => window.scrollTo(0, 0));
     await pagina.waitForTimeout(350);
     // fullPage verandert tijdelijk de afmetingen van de compositor. Daarom is
@@ -118,8 +117,7 @@ try {
   await p.goto(`${basis}/zappie`, { waitUntil: "networkidle" });
   await p.getByRole("button", { name: "Beweging uit", exact: true }).click();
   await p.waitForFunction(() => document.querySelector('.zp')?.getAttribute("data-beweging") === "rustig");
-  assert.equal(await p.getByRole("button", { name: "Rustige weergave", exact: true }).getAttribute("aria-pressed"), "true");
-  await p.getByRole("button", { name: "Rustige weergave", exact: true }).click();
+  await p.getByRole("button", { name: "Beweging aan", exact: true }).click();
   await p.waitForFunction(() => document.querySelector('.zp')?.getAttribute("data-beweging") === "aan");
   await p.evaluate(() => document.querySelector("#zappies-atelier").scrollIntoView());
   await p.waitForTimeout(800);

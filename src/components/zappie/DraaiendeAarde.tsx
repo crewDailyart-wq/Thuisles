@@ -318,7 +318,8 @@ export function DraaiendeAarde({ rustig = false, reis = false }: { rustig?: bool
     const teken = (t: number) => {
       // Werkelijke camera-afdaling in de bolshader, geen vergroot plat canvas.
       // Een aparte geschilderde landschaplaag neemt het laatste stuk over.
-      const p = reis && !rustig ? Math.min(1, Math.max(0, reisStand.positie / 0.8)) : 0;
+      // reisStand.positie loopt van 0 (boven) tot 1 (de vakken in beeld); zie ScrollReis.
+      const p = reis && !rustig ? Math.min(1, Math.max(0, reisStand.positie)) : 0;
       const daling = p * p * (3 - 2 * p);
       const hoogte = HOOGTE * (1 - daling * 0.82);
       const top = TOP - daling * 0.19;

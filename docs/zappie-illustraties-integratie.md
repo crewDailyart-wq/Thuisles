@@ -1,5 +1,12 @@
 # Zappie — goedgekeurde illustraties integreren
 
+> **Bijgewerkt 13 oktober 2026.** De beelden staan er nu in
+> (`public/assets/zappie/illustraties/`, gemaakt met
+> `scripts/maak-zappie-illustraties.mjs`) en de startpagina is daarna opnieuw
+> opgebouwd volgens het derde ontwerp. De actuele beschrijving staat in
+> `ZAPPIE.md`, "Het derde ontwerp". Hieronder het verslag van PR #4 zoals het
+> was.
+
 ## Scope
 
 De eigenaar heeft op 13 oktober 2026 vier renders goedgekeurd: het eigen wereldeiland, de robotwerkplaats met onderzeeër/vliegtuig/raket, het atelier met een leeg paspodium en het kustlandschap. Deze wijziging koppelt die beelden aan de bestaande kinderstartpagina `/zappie`; de oefeningen, profielkeuze, datalaag en tokenregels worden niet gewijzigd.

@@ -150,6 +150,106 @@ nieuwe teksten.
   buiten beeld naar de Oceaan, en de gouden straal boven Jouw wereld valt
   buiten beeld; Zappie zegt het wel.
 
+## Het derde ontwerp (13 oktober 2026)
+
+Bouwopdracht van de eigenaar: "maak het, geef het een make-over", met een
+uitgebreide opdracht voor een cinematische, scrollbare kinderhomepage en vier
+goedgekeurde illustraties. Voorbeeld: `ontwerp/zappie/voorbeeld-startpagina-3.webp`;
+de beelden staan in `public/assets/zappie/illustraties/` (zie de `BRON.md` daar).
+Gebouwd op de branch `claude/epic-faraday-kdkb1w` (keuze eigenaar), met het werk
+van PR #4 (een andere AI) daarin samengevoegd.
+
+### Van boven naar beneden
+
+| Deel | Wat |
+| --- | --- |
+| Menu | Logo linksboven (keuze eigenaar), vier losse knoppen Start, Oefenen, Wereld, Beloningen, profiel rechts. Bij scrollen een donkere band erachter. Telefoon: balk onderaan, zoals het was. |
+| De ruimte | Zappie, Oceaan groot, Aarde en Universum verder weg, het gouden ontdekpad, "Begin je missie" (blauw met goud) en de knop Beweging uit. Op een groot scherm de eigen compositie in eenheden van het voorbeeld. |
+| Vandaag | "Vandaag op ontdekking" met Schoolpad, Toetssprong (Binnenkort) en Vrije Missie als grote tegels, de tokenstrook, en daarnaast "Jouw wereld" met de illustratie `eigen-wereld` groot. |
+| Vrij oefenen | "Wat wil je ontdekken?": negen vakken. Rekenen gaat naar `/rekenen`, de andere zeggen Binnenkort. Daarnaast de werkplaats (`werkplaats`) met een knop op elk voertuig. |
+| Wolken | Een wolkenband als overgang van de lucht naar de kust. |
+| Atelier | `atelier` over de hele breedte, Zappie op het paspodium, ernaast de paskamer met Alles, Petjes, Kleuren en Extra's. |
+| De kust | `kust` groot als eindbestemming, met "Terug naar de sterren". |
+
+De achtergrond reist mee (`ScrollReis.tsx`): eerst de ruimte, dan daalt de
+camera (de aarde komt dichterbij in `DraaiendeAarde.tsx`, de lucht wordt
+blauwer), daarna komen er wolken voorbij en bij het atelier ligt de kust
+eronder. Dat volgt de plek van de secties, niet een percentage van de hele
+pagina, dus het klopt ook op telefoon. Omhoog scrollen speelt het terug.
+Niets neemt het scrollen over.
+
+### Wat er veranderde ten opzichte van het tweede ontwerp
+
+| Was | Is nu |
+| --- | --- |
+| Alles in één 16:9-vlak, zo groot als het scherm | De ruimte-scène bovenaan; de pagina loopt daaronder door |
+| "Werelden" in het menu | "Wereld" (zoals de bouwopdracht) |
+| "Leren vandaag, groter morgen." onder het logo | Weg (bouwopdracht: "Verwijder de slogan onder het logo") |
+| "Begin je missie" geel | Blauw met gouden rand (bouwopdracht: blauw gaat voor het gele voorbeeld) |
+| Kleine liggende kaarten in "Vandaag op ontdekking" | Grote tegels; op telefoon liggend. "Drie missies voor vandaag." staat er nog, als gewone tekst in plaats van handschrift |
+| Klein tijdelijk eiland in "Jouw wereld" | De goedgekeurde illustratie groot, met het label "Zo kan jouw wereld worden" |
+| — | Nieuw: vakken, werkplaats, wolken, atelier, kust, Beweging uit/aan, "Direct naar de vakken" voor het toetsenbord |
+| "Hoi, ontdekker!" (PR #4) | Weer "Hoi, ontdekkingsreiziger!", zoals in het voorbeeld |
+
+Niets is stilletjes verdwenen: alle knoppen, routes en teksten van het tweede
+ontwerp staan er nog (het schermcontract bewaakt ze, plus alle nieuwe).
+
+### Echt, of een voorbeeld
+
+- **Echt**: missies, tokens, het ontdekpad, het lichtje na een missie, de
+  voortgang per wereld in de werkplaats, het passen van kleuren, petjes en
+  extra's, alle routes.
+- **Een voorbeeld, en dat staat erbij**: het eiland in "Jouw wereld" ("Zo kan
+  jouw wereld worden"); de werkplaats ("je bekijkt de bouwplannen, de
+  voertuigen zijn nog niet speelbaar"); de paskamer ("kopen en bewaren komen
+  later, er gaan geen tokens af"); de vakken behalve Rekenen ("Binnenkort").
+- Er wordt niets opgeslagen of verrekend door te passen of een bouwplan te
+  bekijken; de browsertest controleert dat.
+
+### Wat met lagen kan, en wat er nog aan beelden nodig is
+
+De vier illustraties zijn platte, samengestelde beelden. Met lagen erboven kan
+(en is gedaan): inzoomen, de dampkring, wolken en de kust over de vaste
+achtergrond, de aarde die dichterbij komt, een lasvonk en een werklamp in de
+werkplaats, ringen om de voertuigen, Zappie op het podium met kleuren en
+accessoires.
+
+Voor de volgende stap zijn losse beelden nodig (in dezelfde stijl):
+
+1. **Bouwfasen per voertuig** (onderzeeër, vliegtuig, raket): geraamte, romp,
+   motor, afwerking; doorzichtige achtergrond. Dan kan de werkplaats echt
+   laten zien hoe ver een voertuig is. Tot dan geen nep-bouwteller.
+2. **Losse hulprobots** in twee of drie houdingen, om apart te laten bewegen.
+3. **Zappie als 3D-model of renders** (de eigenaar: Zappie wordt een 3D-model),
+   met accessoires die erop passen. Nu is het de bestaande SVG.
+4. **Accessoires in de stijl van de illustraties** (nu SVG-tekeningen).
+5. **Losse, doorzichtige wolkenlagen** voor een rijkere overgang (nu CSS).
+6. **Een kale ruimteachtergrond zonder aarde** (stond al op de lijst in
+   `public/assets/zappie/BRON.md`).
+
+### Gemeten (productieversie, 13 oktober 2026)
+
+- Desktop 1440 × 1000: het grootste beeld staat er na 0,5 s; 181 kB
+  JavaScript en ongeveer 1 MB aan beelden.
+- Telefoon 390 × 844 op een langzaam mobiel netwerk (1,6 Mbit/s, 150 ms):
+  grootste beeld na 2,4 s; bij openen 383 kB aan beelden, de rest pas bij het
+  scrollen.
+- De kust achter de reis laadt pas als je bijna bij de wolken bent.
+
+### Getest
+
+- Schermafbeeldingen op 1440 × 1000, 1366 × 768, 1024 × 768, 768 × 1024 en
+  390 × 844, per scrollplek (ruimte, vandaag, vakken, wolken, atelier, kust);
+  geen horizontaal schuiven, geen fouten in de console.
+- `scripts/zappie-preview-test.mjs` (van PR #4, bijgewerkt naar de nieuwe
+  opbouw): desktop, tablet en telefoon geslaagd. Negen vakken, menuknoppen
+  niet bedekt, de rode tegel echt zichtbaar in de pixels, Binnenkort-melding,
+  bouwplan kiezen, kroon passen, kleur op het lijf, terug naar eigen Zappie,
+  routes, opgeslagen voortgang onveranderd, Beweging uit/aan, de scroll stuurt
+  de reis.
+- Minder beweging (apparaat): alles staat stil, de knop is er dan niet.
+- Toetsenbord: zichtbare focusrand op de tegels.
+
 ## Bewust nog niet
 
 - **De voortgang staat in de browser** (`localStorage`), per kind. Er komt dus
@@ -175,3 +275,9 @@ en welke nog extern gemaakt moeten worden.
 - `src/components/zappie/` — de onderdelen en `zappie.css`
 - `src/lib/zappie/` — werelden, voortgang, opslag en de sommen van een missie
 - `scripts/maak-zappie.mjs` — maakt de beelden
+- `scripts/maak-zappie-illustraties.mjs` — maakt de webbestanden van de vier
+  illustraties; `scripts/check-zappie-illustraties.mjs` controleert ze vóór elke build
+- `src/components/zappie/startpagina.css`, `OntdekkingsReis.tsx`, `ScrollReis.tsx`
+  — het derde ontwerp onder de ruimte-scène
+- `scripts/zappie-preview-test.mjs` — de browsertest (draait op GitHub bij een
+  pull request die Zappie raakt)
