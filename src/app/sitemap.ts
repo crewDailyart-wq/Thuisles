@@ -33,6 +33,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     });
   };
 
+  /* De openbare site: homepagina en scholenkaart (alleen Nederlands). */
+  regels.push({ url: "/" }, { url: "/scholen" });
+
   const domeinen = haalOpenbareDomeinen();
 
   for (const groep of OPENBARE_GROEPEN) {

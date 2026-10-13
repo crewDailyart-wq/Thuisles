@@ -352,6 +352,66 @@ export const SCHERMCONTRACT = [
     ],
   },
   /*
+    De openbare site (13 oktober 2026): de homepagina voor wie via Google
+    binnenkomt, de scholenkaart, de werkbladen en hun beheer. `/` stuurt een
+    apparaat waarop al een kind gekozen is door naar Zappie; zonder koekje
+    (zoals hier) is het de homepagina.
+  */
+  {
+    naam: "Homepagina",
+    pad: "/",
+    bron: ["src/app/(site)/page.tsx", "src/app/(site)/layout.tsx", "src/components/site/Kop.tsx"],
+    zichtbaar: [
+      "Oefenen met precies wat er",
+      "Zoek je school",
+      "Geen standaardpakket",
+      "Kies de school",
+      "Wij koppelen de methode",
+      "Je kind oefent gericht",
+      "Elke basisschool van Nederland",
+      "Open de scholenkaart",
+      "Toewerken naar de toets van groep 8",
+      "De referentieniveaus",
+      "Gratis digitale niveautest",
+      "Dyslexie",
+      "Slechthorend",
+      "ADHD en concentratie",
+      "Meertalig",
+      "Moeilijke onderwerpen",
+      "Begin gratis. Kies later",
+      "€6,95",
+      "€89",
+      "Veelgestelde vragen",
+      "Inloggen",
+      "Scholenkaart",
+      "Prijzen",
+      "is onafhankelijk en niet verbonden aan",
+      "DUO Open Onderwijsdata",
+    ],
+  },
+  {
+    naam: "Scholenkaart",
+    pad: "/scholen",
+    bron: ["src/app/(site)/scholen/page.tsx", "src/components/site/Scholenkaart.tsx"],
+    zichtbaar: ["basisscholen van Nederland", "Zoek de school van je kind", "Doorstroomtoets"],
+    naKlik: [
+      { tekst: "Koppel deze school aan mijn kind", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Ons doel voor ons kind", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Wat leerlingen hier halen", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+      { tekst: "Andere school zoeken", bron: "src/components/site/Scholenkaart.tsx", na: "een school kiezen" },
+    ],
+  },
+  {
+    naam: "Werkbladen in beheer",
+    pad: "/admin/werkbladen",
+    bron: ["src/app/admin/werkbladen/page.tsx", "src/components/beheer/Werkbladformulier.tsx"],
+    zichtbaar: ["Werkbladen en posters", "Nieuw werkblad of poster", "Titel", "Bestand", "Opslaan"],
+    naKlik: [
+      { tekst: "Weghalen", bron: "src/components/beheer/Werkbladformulier.tsx", na: "er staat een werkblad" },
+      { tekst: "Op de site", bron: "src/app/admin/werkbladen/page.tsx", na: "er staat een werkblad" },
+    ],
+  },
+  /*
     De kinderkant in de nieuwe layout (oktober 2026). Deze schermen zitten
     achter het kindprofiel en zijn zonder koekje niet op te halen; daarom
     staat alles bij `naKlik` en wordt er in de bronbestanden gekeken.

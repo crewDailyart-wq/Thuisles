@@ -10,6 +10,12 @@
  * gezet, en dat gebeurt alleen op Railway. Op de laptop verandert er niets.
  * De gebruikersnaam is THUISLES_GEBRUIKER, of "thuisles" als die niet staat.
  *
+ * De openbare site (homepagina, scholenkaart, werkbladen, niveautest) kan
+ * buiten het slot worden gezet met THUISLES_OPENBAAR=ja. Zonder die variabele
+ * blijft alles dicht, precies zoals het was: er gaat niets open voordat de
+ * eigenaar dat beslist (13 oktober 2026: "niks gaat live totdat alles af is").
+ * De kinder- en ouderpagina's blijven altijd achter het slot.
+ *
  * Losse bestanden met een extensie (plaatjes, lettertypen, de Godot-lessen,
  * alles uit public/ en _next/static) gaan er wél langs. Next haalt een plaatje
  * dat het verkleint bij zichzelf op, zonder wachtwoord; met het slot erop kwam
@@ -30,9 +36,25 @@ function gelijk(a: string, b: string): boolean {
   return verschil === 0;
 }
 
+/**
+ * Wat open mag als THUISLES_OPENBAAR=ja staat. `/_next/image` hoort erbij:
+ * daarmee verkleint Next de plaatjes op de homepagina, en dat adres heeft zelf
+ * geen extensie.
+ */
+const OPENBARE_SITE = [
+  /^\/$/,
+  /^\/scholen(\/methode)?$/,
+  /^\/werkbladen(\/.*)?$/,
+  /^\/niveautest(\/.*)?$/,
+  /^\/_next\/image$/,
+];
+
 export function proxy(request: NextRequest) {
   const wachtwoord = process.env.THUISLES_WACHTWOORD;
   if (!wachtwoord) return NextResponse.next();
+  if (process.env.THUISLES_OPENBAAR === "ja" && OPENBARE_SITE.some((r) => r.test(request.nextUrl.pathname))) {
+    return NextResponse.next();
+  }
   const gebruiker = process.env.THUISLES_GEBRUIKER || "thuisles";
 
   const kop = request.headers.get("authorization") ?? "";

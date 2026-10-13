@@ -836,6 +836,28 @@ function werkTabellenBij(d: DatabaseSync) {
     );
   `);
 
+  /*
+    Werkbladen en posters (openbare site, oktober 2026).
+
+    Gratis te downloaden voor iedereen. Alleen wat de beheerder zelf uploadt
+    in Beheer → Werkbladen; er wordt hier niets aangemaakt of aangevuld. Een
+    nieuw werkblad staat standaard uit (zichtbaar = 0) tot het in beheer wordt
+    aangezet. Het bestand zelf staat op schijf (zie src/lib/data/werkbladen.ts).
+  */
+  d.exec(`
+    create table if not exists werkbladen (
+      id             text primary key,
+      titel          text not null,
+      omschrijving   text not null default '',
+      soort          text not null check (soort in ('werkblad','poster')),
+      vak            text not null default '',
+      groepen        text not null default '',
+      bestand        text not null,
+      zichtbaar      integer not null default 0,
+      aangemaakt_op  text not null
+    );
+  `);
+
   /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
   werkVraagvormenBij(d);
 }
