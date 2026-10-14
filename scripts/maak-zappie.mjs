@@ -155,6 +155,21 @@ async function maakBol(w) {
 
 for (const w of WERELDEN) await maakBol(w);
 
+/*
+  Sinds 14 oktober 2026 staan de werelden op de startpagina als vierkante
+  tegel in een eigen vak (voorbeeld van de eigenaar). Daarvoor het hele
+  plaatje, vierkant, 720 breed; de afgeronde hoeken maakt de website zelf.
+  Stuurt de eigenaar nieuwe losse wereldplaatjes, dan komen die in
+  ontwerp/zappie/ en draait dit script opnieuw.
+*/
+for (const w of WERELDEN) {
+  for (const [ext, opt] of [["avif", { quality: 64, effort: 6 }], ["webp", { quality: 84, effort: 6 }]]) {
+    const pad = `${UIT}/${w.naam}-tegel.${ext}`;
+    await sharp(`${BRON}/${w.bron}`).resize({ width: 720, height: 720, fit: "cover" })[ext](opt).toFile(pad);
+    meld(pad);
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Jouw wereld (tijdelijk, uit het voorbeeldplaatje)
 // ---------------------------------------------------------------------------

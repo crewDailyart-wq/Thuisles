@@ -1587,3 +1587,142 @@
 
 /* The live atelier replaces the old illustration in the existing scroll journey. */
 .zs-live-atelier{position:relative;width:calc(100% - 32px);height:clamp(620px,72vw,900px);margin:0 auto;overflow:hidden;border:1px solid #dfb86988;border-radius:28px;background:#071731;box-shadow:0 25px 70px #04152d55}.zs-atelier-loading{color:#ffe7b3;text-align:center;padding:100px 24px}.zs-atelier-podium:has(.zs-live-atelier)>.zs-paskamer{position:relative;top:auto;right:auto;width:min(calc(100% - 32px),1000px);margin:24px auto 0}.as-mascot .zs-pasrobot{position:relative;left:auto;bottom:auto;translate:none;height:100%;width:100%}@media(max-width:700px){.zs-live-atelier{height:760px;border-radius:20px;width:calc(100% - 20px)}}
+
+/* ------------------------------------------------------------------------- */
+/* Vandaag op ontdekking: drie dagmissies (14 oktober 2026)                   */
+/* ------------------------------------------------------------------------- */
+.zs-dag {
+  position: relative;
+}
+
+.zs-dag-procent {
+  position: absolute;
+  right: 4px;
+  top: -40px;
+  color: #ffffff;
+  font-size: clamp(16px, 1.3vw, 20px);
+  font-weight: 900;
+}
+
+.zs-dag-rij {
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+}
+
+.zs-dag-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  flex: 1;
+  min-width: 0;
+  padding: 4px;
+  border: 2px solid rgb(140 214 255 / 0.35);
+  border-radius: 999px;
+  background: rgb(4 18 56 / 0.6);
+}
+
+.zs-dag-tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 48px;
+  padding: 6px 10px;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: #fff;
+  font-weight: 800;
+  font-size: clamp(13px, 1.05vw, 16px);
+  cursor: pointer;
+  transition: background 0.2s, box-shadow 0.2s;
+}
+
+.zs-dag-tab + .zs-dag-tab {
+  border-left: 1px solid rgb(140 214 255 / 0.2);
+  border-radius: 0 999px 999px 0;
+}
+
+.zs-dag-tab:hover {
+  background: rgb(255 255 255 / 0.08);
+}
+
+.zs-dag-tab[data-gekozen="ja"] {
+  background: rgb(255 255 255 / 0.1);
+  box-shadow: inset 0 0 0 2px rgb(140 214 255 / 0.6);
+  border-radius: 999px;
+}
+
+.zs-dag-tab[data-klaar="ja"] {
+  background: linear-gradient(180deg, #34c472, #1f9d57);
+  box-shadow: 0 0 14px rgb(52 196 114 / 0.55), inset 0 1px 0 rgb(255 255 255 / 0.3);
+  border-radius: 999px;
+}
+
+.zs-dag-tab:focus-visible {
+  outline: 3px solid #ffd447;
+  outline-offset: 2px;
+}
+
+.zs-dag-icoon {
+  flex: none;
+  width: 26px;
+  height: 26px;
+}
+
+.zs-dag-naam {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.zs-dag-vink {
+  flex: none;
+  width: 20px;
+  height: 20px;
+}
+
+.zs-dag-start {
+  flex: none;
+  padding: 0 clamp(18px, 2vw, 30px);
+  border: 2px solid rgb(180 225 255 / 0.8);
+  border-radius: 16px;
+  background: linear-gradient(180deg, #4fa8ff, #1d6fd6);
+  color: #fff;
+  font-size: clamp(18px, 1.5vw, 22px);
+  box-shadow: 0 6px 16px rgb(2 10 40 / 0.4), inset 0 1px 0 rgb(255 255 255 / 0.35);
+  cursor: pointer;
+  transition: transform 0.15s, filter 0.15s;
+}
+
+.zs-dag-start:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.zs-dag-start:focus-visible {
+  outline: 3px solid #ffd447;
+  outline-offset: 2px;
+}
+
+@media (max-width: 639px) {
+  .zs-dag-procent { top: -34px; }
+  .zs-dag-rij { flex-direction: column; }
+  .zs-dag-tabs { border-radius: 22px; }
+  .zs-dag-tab,
+  .zs-dag-tab + .zs-dag-tab,
+  .zs-dag-tab[data-gekozen="ja"],
+  .zs-dag-tab[data-klaar="ja"] {
+    position: relative;
+    flex-direction: column;
+    gap: 3px;
+    min-height: 64px;
+    padding: 8px 4px 6px;
+    font-size: 13px;
+    border-radius: 18px;
+  }
+  .zs-dag-icoon { width: 24px; height: 24px; }
+  .zs-dag-vink { position: absolute; top: 5px; right: 6px; width: 15px; height: 15px; }
+  .zs-dag-start { min-height: 52px; }
+}

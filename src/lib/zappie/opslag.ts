@@ -58,6 +58,10 @@ function lees(): Voortgang {
         getoond: Number(v.getoond) || 0,
         missies: { ...LEGE_VOORTGANG.missies, ...(v.missies ?? {}) },
         gebeurtenis: v.gebeurtenis ?? null,
+        vandaag:
+          v.vandaag && typeof v.vandaag.datum === "string" && Array.isArray(v.vandaag.klaar)
+            ? { datum: v.vandaag.datum, klaar: v.vandaag.klaar }
+            : LEGE_VOORTGANG.vandaag,
       };
     } catch {
       waarde = LEGE_VOORTGANG;

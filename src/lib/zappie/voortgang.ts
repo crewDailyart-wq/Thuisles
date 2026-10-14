@@ -31,13 +31,36 @@ export type Voortgang = {
   /** Voltooide missies per wereld. */
   missies: Record<WereldId, number>;
   gebeurtenis: Gebeurtenis | null;
+  /** Welke van de drie dagmissies vandaag al klaar zijn (Vandaag op ontdekking). */
+  vandaag: Vandaag;
 };
+
+/** De drie dagmissies uit "Vandaag op ontdekking". */
+export type Dagmissie = "rekenen" | "herhalen" | "uitdaging";
+
+export type Vandaag = {
+  /** De dag als JJJJ-MM-DD, in de tijd van het apparaat. */
+  datum: string;
+  klaar: Dagmissie[];
+};
+
+/** JJJJ-MM-DD van dit moment, in de tijd van het apparaat. */
+export function datumVan(tijd = Date.now()): string {
+  const d = new Date(tijd);
+  return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+}
+
+/** Wat er vandaag klaar is; van een andere dag telt niets meer mee. */
+export function vandaagKlaar(v: Voortgang, tijd = Date.now()): Dagmissie[] {
+  return v.vandaag.datum === datumVan(tijd) ? v.vandaag.klaar : [];
+}
 
 export const LEGE_VOORTGANG: Voortgang = {
   punten: 0,
   getoond: 0,
   missies: { oceaan: 0, aarde: 0, heelal: 0 },
   gebeurtenis: null,
+  vandaag: { datum: "", klaar: [] },
 };
 
 /** Om de zoveel tokens komt er een nieuwe plek vrij in Jouw wereld. */
@@ -116,9 +139,13 @@ export function metVoltooideMissie(
   const nu = v.missies[wereld] ?? 0;
   const erbij = Math.max(0, Math.round(verdiend));
   const punten = v.punten + erbij;
+  /* Een wereldmissie telt als Rekenen van vandaag, een vrije missie als Herhalen. */
+  const dag: Dagmissie = vrij ? "herhalen" : "rekenen";
+  const eerder = vandaagKlaar(v, tijd);
   return {
     ...v,
     punten,
+    vandaag: { datum: datumVan(tijd), klaar: eerder.includes(dag) ? eerder : [...eerder, dag] },
     missies: vrij ? v.missies : { ...v.missies, [wereld]: Math.min(w?.missies ?? nu + 1, nu + 1) },
     gebeurtenis: {
       tokens: erbij,

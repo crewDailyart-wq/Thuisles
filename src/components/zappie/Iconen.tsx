@@ -315,3 +315,77 @@ export function HandPijl({ className }: P) {
     </svg>
   );
 }
+
+/** Stapstenen: Mijn leerpad. */
+export function IcoonStapjes({ className }: P) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <ellipse cx="12" cy="37" rx="8" ry="4.6" fill="#e8f4ff" />
+      <ellipse cx="24" cy="26" rx="7" ry="4" fill="#cfe7ff" />
+      <ellipse cx="35" cy="16.5" rx="6" ry="3.4" fill="#b3d8ff" />
+      <ellipse cx="42" cy="8.5" rx="4.2" ry="2.4" fill="#9cccff" />
+    </svg>
+  );
+}
+
+/** Rekenmachine: Rekenen. */
+export function IcoonRekenen({ className }: P) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <rect x="9" y="5" width="30" height="38" rx="6" fill="#2fbf71" stroke="#fff" strokeWidth="2.5" />
+      <rect x="14" y="10" width="20" height="8" rx="2" fill="#e9fff2" />
+      <g fill="#fff">
+        <circle cx="17" cy="25" r="2.6" />
+        <circle cx="24" cy="25" r="2.6" />
+        <circle cx="31" cy="25" r="2.6" />
+        <circle cx="17" cy="32" r="2.6" />
+        <circle cx="24" cy="32" r="2.6" />
+        <circle cx="31" cy="32" r="2.6" />
+        <circle cx="17" cy="38.5" r="2.2" />
+        <circle cx="24" cy="38.5" r="2.2" />
+        <circle cx="31" cy="38.5" r="2.2" />
+      </g>
+    </svg>
+  );
+}
+
+/** Open boek: Herhalen. */
+export function IcoonBoek({ className }: P) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M24 13c-5-4-12-5-18-4v27c6-1 13 0 18 4z" fill="#5aa9ff" />
+      <path d="M24 13c5-4 12-5 18-4v27c-6-1-13 0-18 4z" fill="#3b8cf0" />
+      <path d="M24 13v27" stroke="#fff" strokeWidth="2.4" {...rond} />
+      <path d="M10 16c3.5-.4 7 .2 10 1.6M10 22c3.5-.4 7 .2 10 1.6M38 16c-3.5-.4-7 .2-10 1.6M38 22c-3.5-.4-7 .2-10 1.6" stroke="#e5f2ff" strokeWidth="1.8" fill="none" {...rond} />
+    </svg>
+  );
+}
+
+/** Beker: Uitdaging. */
+export function IcoonBeker({ className }: P) {
+  return (
+    <svg viewBox="0 0 48 48" className={className} aria-hidden="true">
+      <path d="M15 7h18v10a9 9 0 0 1-18 0z" fill="#ffc83d" stroke="#e59b06" strokeWidth="2" />
+      <path d="M15 10H8c0 7 3 10 8 10M33 10h7c0 7-3 10-8 10" fill="none" stroke="#e59b06" strokeWidth="3" {...rond} />
+      <path d="M21 26h6v7h-6z" fill="#f2a20f" />
+      <rect x="14" y="33" width="20" height="6" rx="2" fill="#ffc83d" stroke="#e59b06" strokeWidth="2" />
+      <path d="M20 12v6" stroke="#fff6cf" strokeWidth="2.4" {...rond} />
+    </svg>
+  );
+}
+
+/** Vinkje in een rondje (klaar) of een leeg rondje (nog te doen). */
+export function IcoonVinkRond({ className, aan }: P & { aan: boolean }) {
+  return (
+    <svg viewBox="0 0 24 24" className={className} aria-hidden="true">
+      {aan ? (
+        <>
+          <circle cx="12" cy="12" r="10" fill="#fff" />
+          <path d="m7.2 12.4 3.2 3.2 6.4-7" fill="none" stroke="#1f9d57" strokeWidth="2.8" {...rond} />
+        </>
+      ) : (
+        <circle cx="12" cy="12" r="9" fill="none" stroke="rgb(214 232 255 / 0.85)" strokeWidth="2.2" />
+      )}
+    </svg>
+  );
+}

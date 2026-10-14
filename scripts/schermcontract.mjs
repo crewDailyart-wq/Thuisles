@@ -295,17 +295,24 @@ export const SCHERMCONTRACT = [
       "src/components/zappie/ScrollReis.tsx",
     ],
     zichtbaar: [
-      "Begin je missie",
+      /*
+        "Begin je missie" heet sinds 14 oktober 2026 "Mijn leerpad", op verzoek
+        van de eigenaar (voorbeeld met de werelden in drie vakken).
+      */
+      "Mijn leerpad",
       "Oceaan",
       "Aarde",
       "Universum",
       "Jouw huidige wereld",
       "Vandaag op ontdekking",
-      "Schoolpad",
-      /* Was "IEP Sprong"; hernoemd op verzoek van de eigenaar (13 oktober 2026), zie JURIDISCH.md. */
-      "Toetssprong",
-      "voorbereiding op de IEP",
-      "Vrije Missie",
+      /*
+        14 oktober 2026, op verzoek van de eigenaar: de tegels Schoolpad,
+        Toetssprong (voorbereiding op de IEP) en Vrije Missie zijn vervangen
+        door drie dagmissies Rekenen, Herhalen en Uitdaging met een
+        percentage en een Start-knop. Herhalen opent de vrije missie.
+      */
+      "Herhalen",
+      "Uitdaging",
       "Binnenkort",
       "Jouw tokens",
       "Op weg naar je volgende beloning!",
@@ -357,7 +364,7 @@ export const SCHERMCONTRACT = [
       { tekst: "Zappie past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
       { tekst: "Beweging aan", bron: "src/components/zappie/ScrollReis.tsx", na: "op Beweging uit tikken" },
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
-      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Toetssprong tikken" },
+      { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Uitdaging tikken (bij Vandaag op ontdekking)" },
       { tekst: "Er is een nieuwe plek vrij in jouw wereld!", bron: "src/components/zappie/Startscherm.tsx", na: "een missie waarmee een nieuwe plek vrijkomt" },
       { tekst: 'href: "/rekenen"', bron: "src/components/zappie/Schil.tsx", na: "op Oefenen tikken (het rekenscherm)" },
       { tekst: 'href="/meer"', bron: "src/components/zappie/Schil.tsx", na: "op het menuknopje naast het tandwiel tikken" },

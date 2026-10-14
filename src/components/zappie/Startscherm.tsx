@@ -8,7 +8,7 @@
  * goedgekeurde illustraties in public/assets/zappie/illustraties. Van boven
  * naar beneden:
  *
- * 1. de ruimte met Zappie, de drie werelden en "Begin je missie" (op een groot
+ * 1. de ruimte met de drie werelden in vakken en "Mijn leerpad" (op een groot
  *    scherm een eigen compositie in eenheden van het voorbeeld, zie zappie.css);
  * 2. "Vandaag op ontdekking" met de tokens, naast de grote "Jouw wereld";
  * 3. vrij oefenen met de vakken, naast de werkplaats (OntdekkingsReis);
@@ -38,16 +38,18 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   HandPijl,
-  IcoonBerg,
+  IcoonBeker,
   IcoonBlad,
-  IcoonBoeken,
+  IcoonBoek,
   IcoonCadeau,
   IcoonGolf,
   IcoonKompas,
   IcoonPijl,
-  IcoonRaket,
+  IcoonRekenen,
   IcoonSlot,
   IcoonSpiraal,
+  IcoonStapjes,
+  IcoonVinkRond,
 } from "@/components/zappie/Iconen";
 import { Tekstballon, Wereldbeeld } from "@/components/zappie/Onderdelen";
 import { Tokenteller } from "@/components/zappie/Schil";
@@ -55,7 +57,9 @@ import { Zappie, type Houding, type Stemming } from "@/components/zappie/Zappie"
 import { useVoortgang, wisGebeurtenis } from "@/lib/zappie/opslag";
 import {
   beloningStand,
+  vandaagKlaar,
   volgendeMissie,
+  type Dagmissie,
   wereldStanden,
   type Gebeurtenis,
   type WereldStand,
@@ -72,8 +76,16 @@ type Bericht = { tekst: string; stemming: Stemming };
 */
 const TOON_ZAPPIE = false;
 
+/*
+  Het gouden stippenpad tussen de werelden en de notitie "Kleine stappen.
+  Grote werelden." staan sinds 14 oktober 2026 niet meer in beeld, op verzoek
+  van de eigenaar (voorbeeld met de werelden in drie vakken). Zet dit op true
+  en ze zijn terug.
+*/
+const TOON_PAD = false;
+
 const HULP: Bericht[] = [
-  { tekst: "Druk op Begin je missie. Dan gaan we samen oefenen!", stemming: "blij" },
+  { tekst: "Druk op Mijn leerpad. Dan gaan we samen oefenen!", stemming: "blij" },
   { tekst: "Met elke missie gaat er een lichtje aan op het pad.", stemming: "kijk" },
   { tekst: "Verzamel tokens. Dan komen er plekken vrij in jouw wereld!", stemming: "blij" },
 ];
@@ -123,6 +135,9 @@ export function Startscherm() {
   const volgende = volgendeMissie(v);
   const missieAdres = `/zappie/oefenen?wereld=${volgende.wereld}&missie=${volgende.nummer}`;
   const beloning = beloningStand(v.punten);
+  const klaarVandaag = useSyncExternalStore(geenAbonnement, () => vandaagKlaar(v).join(","), () => "")
+    .split(",")
+    .filter(Boolean) as Dagmissie[];
 
   const [bericht, zetBericht] = useState<Bericht | null>(null);
   const [praat, zetPraat] = useState(false);
@@ -286,7 +301,7 @@ export function Startscherm() {
           </div>
 
           <div className="zp-werelden" data-diepte="voor">
-            {(["breed", "smal"] as const).map((soort) => (
+            {TOON_PAD && (["breed", "smal"] as const).map((soort) => (
               <svg
                 key={soort}
                 viewBox={`0 0 ${PADEN[soort].vak[0]} ${PADEN[soort].vak[1]}`}
@@ -341,19 +356,21 @@ export function Startscherm() {
               className={`zp-missieknop zp-titel${glans ? " zp-glans" : ""}`}
               onClick={beginMissie}
             >
-              <span className="zp-missieknop-kompas">
-                <IcoonKompas className="size-full" />
+              <span className="zp-missieknop-kompas zp-missieknop-stapjes">
+                <IcoonStapjes className="size-full" />
               </span>
-              <span>Begin je missie</span>
+              <span>Mijn leerpad</span>
               <IcoonPijl className="zp-missieknop-pijl" />
             </Link>
           </div>
 
-          <p className="zp-hand zp-notitie zp-notitie-stappen" aria-hidden="true">
-            Kleine stappen.
-            <br />
-            Grote werelden.
-          </p>
+          {TOON_PAD && (
+            <p className="zp-hand zp-notitie zp-notitie-stappen" aria-hidden="true">
+              Kleine stappen.
+              <br />
+              Grote werelden.
+            </p>
+          )}
           <Bewegingsknop />
         </section>
 
@@ -371,44 +388,13 @@ export function Startscherm() {
                     <p className="zs-paneelzin">Drie missies voor vandaag.</p>
                   </div>
                 </header>
-                <ul className="zs-missies">
-                  <li>
-                    <Link href="/oefenen/rekenen/methode" className="zs-missie" data-kleur="geel">
-                      <IcoonBoeken className="zs-missie-beeld" />
-                      <span className="zs-missie-naam zp-titel">Schoolpad</span>
-                      <span className="zs-missie-zin">Oefen met jouw schoolmethode.</span>
-                      <span className="zs-missie-pijl" aria-hidden="true">
-                        <IcoonPijl className="size-[55%]" />
-                      </span>
-                    </Link>
-                  </li>
-                  <li>
-                    <button
-                      type="button"
-                      className="zs-missie"
-                      data-kleur="groen"
-                      onClick={() => zeg({ tekst: "Toetssprong komt er binnenkort aan. Kies nu Schoolpad of Vrije Missie!", stemming: "kijk" })}
-                    >
-                      <span className="zs-label">Binnenkort</span>
-                      <IcoonBerg className="zs-missie-beeld" />
-                      <span className="zs-missie-naam zp-titel">Toetssprong</span>
-                      <span className="zs-missie-zin">Ter voorbereiding op de IEP.</span>
-                      <span className="zs-missie-pijl" aria-hidden="true">
-                        <IcoonPijl className="size-[55%]" />
-                      </span>
-                    </button>
-                  </li>
-                  <li>
-                    <Link href="/zappie/oefenen?vrij=1" className="zs-missie" data-kleur="paars">
-                      <IcoonRaket className="zs-missie-beeld" />
-                      <span className="zs-missie-naam zp-titel">Vrije Missie</span>
-                      <span className="zs-missie-zin">Extra oefenen voor meer tokens.</span>
-                      <span className="zs-missie-pijl" aria-hidden="true">
-                        <IcoonPijl className="size-[55%]" />
-                      </span>
-                    </Link>
-                  </li>
-                </ul>
+                <DagMissies
+                  klaar={klaarVandaag}
+                  adres={{ rekenen: missieAdres, herhalen: "/zappie/oefenen?vrij=1", uitdaging: null }}
+                  onBinnenkort={() =>
+                    zeg({ tekst: "Uitdaging komt er binnenkort aan. Kies nu Rekenen of Herhalen!", stemming: "kijk" })
+                  }
+                />
               </section>
 
               {/* Tokens en de volgende beloning. */}
@@ -520,8 +506,8 @@ function WereldKnop({
     <>
       <span className="zp-wereld-parallax">
         <span className="zp-wereld-zweef">
-          <Wereldbeeld beeld={wereld.beeld} className="zp-wereld-beeld" />
-          {wereld.id === "heelal" && (
+          <Wereldbeeld beeld={`${wereld.beeld}-tegel`} className="zp-wereld-beeld" />
+          {TOON_PAD && wereld.id === "heelal" && (
             <svg viewBox="0 0 100 100" className="zp-baan" aria-hidden="true">
               <ellipse cx="50" cy="50" rx="47" ry="15" />
               <circle cx="97" cy="50" r="1.6" />
@@ -636,4 +622,76 @@ function vliegLichtje(van: HTMLElement, naar: HTMLElement, klaar: () => void): (
     });
     weg();
   };
+}
+
+/*
+  Vandaag op ontdekking (14 oktober 2026, voorbeeld van de eigenaar): drie
+  dagmissies naast elkaar, met een vinkje als ze vandaag klaar zijn, het
+  percentage en één Start-knop.
+  - Rekenen: de volgende missie in de huidige wereld.
+  - Herhalen: een vrije missie (heette eerder Vrije Missie).
+  - Uitdaging: bestaat nog niet; tikken laat de tekstballon "binnenkort" zien.
+  Een tik op een tabje kiest het; Start gaat naar het gekozen tabje. Zonder
+  keuze kiest Start de eerste die vandaag nog niet klaar is.
+*/
+const DAGMISSIES: { id: Dagmissie; naam: string; Icoon: (p: { className?: string }) => React.ReactNode }[] = [
+  { id: "rekenen", naam: "Rekenen", Icoon: IcoonRekenen },
+  { id: "herhalen", naam: "Herhalen", Icoon: IcoonBoek },
+  { id: "uitdaging", naam: "Uitdaging", Icoon: IcoonBeker },
+];
+
+function DagMissies({
+  klaar,
+  adres,
+  onBinnenkort,
+}: {
+  klaar: Dagmissie[];
+  adres: Record<Dagmissie, string | null>;
+  onBinnenkort: () => void;
+}) {
+  const router = useRouter();
+  const [gekozen, zetGekozen] = useState<Dagmissie | null>(null);
+  const procent = Math.round((klaar.length / DAGMISSIES.length) * 100);
+  const doel = gekozen ?? DAGMISSIES.find((d) => !klaar.includes(d.id) && adres[d.id])?.id ?? "rekenen";
+
+  function start(id: Dagmissie) {
+    const a = adres[id];
+    if (a) router.push(a);
+    else onBinnenkort();
+  }
+
+  return (
+    <div className="zs-dag">
+      <span className="zs-dag-procent" aria-label={`${procent} procent van vandaag klaar`}>
+        {procent}%
+      </span>
+      <div className="zs-dag-rij">
+        <div className="zs-dag-tabs" role="radiogroup" aria-label="Kies een missie voor vandaag">
+          {DAGMISSIES.map(({ id, naam, Icoon }) => {
+            const af = klaar.includes(id);
+            return (
+              <button
+                key={id}
+                type="button"
+                role="radio"
+                aria-checked={doel === id}
+                className="zs-dag-tab"
+                data-klaar={af ? "ja" : "nee"}
+                data-gekozen={doel === id ? "ja" : "nee"}
+                onClick={() => (adres[id] ? zetGekozen(id) : onBinnenkort())}
+              >
+                <Icoon className="zs-dag-icoon" />
+                <span className="zs-dag-naam">{naam}</span>
+                <IcoonVinkRond className="zs-dag-vink" aan={af} />
+                <span className="sr-only">{af ? ", vandaag klaar" : adres[id] ? "" : ", binnenkort"}</span>
+              </button>
+            );
+          })}
+        </div>
+        <button type="button" className="zs-dag-start zp-titel" onClick={() => start(doel)}>
+          Start
+        </button>
+      </div>
+    </div>
+  );
 }
