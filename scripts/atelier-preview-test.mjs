@@ -61,6 +61,23 @@ try {
     } catch (error) { console.error('Original failure:',error); report.errors.push(String(error)); await page.screenshot({ path:`${dir}/${name}-failure.png`,timeout:5000 }).catch(()=>{}); throw error; }
     finally { await context.close(); }
   }
+  for (const [name,width,height] of [['desktop',1440,1000],['tablet',1024,768],['mobile',390,844]]) {
+    const page = await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
+    page.on('pageerror',e=>report.errors.push(`study ${name}: ${e.message}`));
+    await page.goto('http://127.0.0.1:4320/atelier-prototype/studie');
+    await page.locator('.as[data-status="ready"]').waitFor({timeout:60000});
+    for (const [view,label] of [['samen','Het geheel'],['podium','Het podium'],['vitrine','De vitrine']]) {
+      await page.getByRole('button',{name:label,exact:true}).click();
+      await page.waitForTimeout(500);
+      assert.equal(await page.locator('.as').getAttribute('data-view'),view);
+      await page.screenshot({path:`${dir}/study-${name}-${view}.png`});
+    }
+    await page.getByRole('button',{name:'Gloed aan'}).click();
+    assert.equal(await page.getByRole('button',{name:'Gloed uit'}).getAttribute('aria-pressed'),'false');
+    await page.screenshot({path:`${dir}/study-${name}-no-glow.png`});
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
+    await page.close();
+  }
   const fallback = await browser.newPage();
   await fallback.addInitScript(() => {
     const get = HTMLCanvasElement.prototype.getContext;

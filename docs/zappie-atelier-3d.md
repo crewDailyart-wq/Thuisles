@@ -12,3 +12,7 @@ Entry: `/atelier-prototype`, linked from the existing atelier heading. The proto
 Files: `src/components/zappie/atelier/{Atelier3D.tsx,scene.ts,model.ts,atelier.css}`.
 
 Verification: `npx next typegen && npx tsc --noEmit`; targeted ESLint; `scripts/atelier-preview-test.mjs` after a production build. The workflow uploads desktop/tablet/mobile screenshots and checks outfit changes, reset, keyboard navigation, reload, no local storage writes and WebGL failure. Software-rendered CI is not a performance benchmark for real school tablets.
+
+## Material study 01
+
+`/atelier-prototype/studie` is an isolated art-direction slice: one detailed pedestal and one display cabinet. It intentionally has no character or completed fantasy backdrop. Deep blue clearcoat, gold fittings, amber light ports, emissive cyan rings, a planar reflected floor and HDR bloom are rendered from geometry. Three fixed inspection views and a bloom toggle help review the materials. Rendering happens only after a view, size or glow change. No choices are stored.
