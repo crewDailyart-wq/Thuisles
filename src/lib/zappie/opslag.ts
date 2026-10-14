@@ -24,6 +24,8 @@ import {
   type Voortgang,
 } from "@/lib/zappie/voortgang";
 import type { WereldId } from "@/lib/zappie/werelden";
+import { LEEG_LEERPAD, normaliseerLeerpad, rondStapAf, type Bewijs, type Toetsperiode } from "@/lib/leerpad/model";
+import { PUNTEN_MISSIE } from "@/lib/zappie/voortgang";
 
 const VERSIE = "zappie:v1";
 
@@ -54,6 +56,7 @@ function lees(): Voortgang {
     try {
       const v = JSON.parse(ruw) as Partial<Voortgang>;
       waarde = {
+        leerpad: normaliseerLeerpad(v.leerpad),
         punten: Number(v.punten) || 0,
         getoond: Number(v.getoond) || 0,
         missies: { ...LEGE_VOORTGANG.missies, ...(v.missies ?? {}) },
@@ -114,4 +117,29 @@ export function wisGebeurtenis() {
 export function onthoudGetoond(punten: number) {
   const v = lees();
   if (v.getoond !== punten) schrijf({ ...v, getoond: punten });
+}
+
+/** Begeleider heeft de concrete opdracht gecontroleerd. Een herhaling betaalt niet nogmaals. */
+export function voltooiLeerstap(id: string, bewijs: Bewijs) {
+  const v=lees();
+  const oud=v.leerpad ?? LEEG_LEERPAD;
+  const nieuw=rondStapAf(oud,id,bewijs,new Date().toISOString());
+  if(nieuw===oud) return false;
+  schrijf({...v,leerpad:nieuw,punten:v.punten+PUNTEN_MISSIE});
+  return true;
+}
+
+export function bewaarToetsperiodes(toetsperiodes: Toetsperiode[]) {
+  const v=lees();
+  schrijf({...v,leerpad:normaliseerLeerpad({...v.leerpad,toetsperiodes})});
+}
+
+/** Uitgestelde nieuwe stof alsnog oefenen, zonder de eerdere herhaalbeloning te verdubbelen. */
+export function voltooiInhaalstap(id: string, bewijs: Bewijs) {
+  const v=lees();
+  const stand=v.leerpad??LEEG_LEERPAD;
+  const oud=stand.resultaten[id];
+  if(!oud?.toetsvoorbereiding || !['zelfstandig','met_hulp'].includes(bewijs)) return false;
+  schrijf({...v,leerpad:{...stand,resultaten:{...stand.resultaten,[id]:{bewijs,datum:new Date().toISOString(),geoefendeStap:id,toetsvoorbereiding:false}}}});
+  return true;
 }

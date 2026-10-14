@@ -252,7 +252,7 @@ export function Startscherm() {
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
     e.preventDefault();
     zetGlans(true);
-    window.setTimeout(() => router.push(missieAdres), 320);
+    window.setTimeout(() => router.push('/zappie/leerpad'), 320);
   }
 
   return (
@@ -352,7 +352,7 @@ export function Startscherm() {
 
           <div className="zp-missieplek">
             <Link
-              href={missieAdres}
+              href="/zappie/leerpad"
               className={`zp-missieknop zp-titel${glans ? " zp-glans" : ""}`}
               onClick={beginMissie}
             >
