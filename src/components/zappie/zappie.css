@@ -2526,3 +2526,119 @@
     transform: none !important;
   }
 }
+
+/* ------------------------------------------------------------------------- */
+/* Werelden als kaarten (14 oktober 2026, op verzoek van de eigenaar)          */
+/* ------------------------------------------------------------------------- */
+/*
+  Elke wereld staat in een eigen vak: de bol bovenin, daaronder een lijntje en
+  de naam met het zinnetje. De huidige wereld heeft een lichtblauwe rand; een
+  wereld die nog dicht is, heeft een grijs vak zodat meteen te zien is dat hij
+  nog ontgrendeld moet worden. De posities hieronder vervangen die van de losse
+  bollen; het midden van elke kaart blijft op dezelfde plek in het vlak.
+*/
+.zp-wereld {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  padding: clamp(8px, 1.3cqw, 18px) clamp(8px, 1.3cqw, 18px) 0;
+  border: 2px solid rgb(120 180 255 / 0.35);
+  border-radius: clamp(14px, 2.2cqw, 26px);
+  background: linear-gradient(180deg, rgb(14 36 92 / 0.92), rgb(8 22 64 / 0.94));
+  box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.12), 0 1.2cqw 2.6cqw rgb(2 10 40 / 0.5);
+  backdrop-filter: blur(6px);
+  pointer-events: auto;
+  animation: zp-zweef var(--zweeftijd) ease-in-out infinite;
+  transition: border-color 0.25s, box-shadow 0.25s;
+}
+
+.zp-wereld-1 { animation-delay: -2.3s; }
+.zp-wereld-2 { animation-delay: -4.6s; }
+
+/* De bol zweeft niet meer los in de kaart; de hele kaart zweeft. */
+.zp-wereld .zp-wereld-parallax { transform: none; }
+.zp-wereld .zp-wereld-zweef { animation: none; }
+.zp-wereld .zp-wereld-zweef::after { content: none; }
+
+.zp-wereld:hover,
+.zp-wereld:focus-visible {
+  border-color: rgb(160 215 255 / 0.7);
+}
+
+/* De huidige wereld: lichtblauwe rand met gloed. */
+.zp-wereld:has(.zp-wereldlabel[data-huidig="ja"]) {
+  border: 3px solid rgb(90 210 255 / 0.95);
+  box-shadow: 0 0 0 1px rgb(90 210 255 / 0.25), 0 0 2.4cqw rgb(82 217 255 / 0.45), 0 1.2cqw 2.6cqw rgb(2 10 40 / 0.5);
+}
+
+/* Nog dicht: een grijs vak. */
+.zp-wereld[data-open="nee"] {
+  border-color: rgb(190 198 214 / 0.45);
+  background: linear-gradient(180deg, rgb(74 82 100 / 0.94), rgb(52 58 74 / 0.96));
+}
+
+.zp-wereld[data-open="nee"]:hover,
+.zp-wereld[data-open="nee"]:focus-visible {
+  border-color: rgb(215 222 236 / 0.7);
+}
+
+.zp-wereld[data-open="nee"] .zp-wereld-beeld {
+  filter: grayscale(0.45) brightness(0.85) drop-shadow(0 1.2cqw 1.2cqw rgb(10 14 30 / 0.45));
+}
+
+.zp-wereld[data-open="nee"]:hover .zp-wereld-beeld {
+  filter: grayscale(0.25) brightness(0.95) drop-shadow(0 1.2cqw 1.2cqw rgb(10 14 30 / 0.45));
+}
+
+.zp-wereld[data-open="nee"] .zp-wereldlabel-zin {
+  opacity: 0.8;
+}
+
+/* Het label staat onder de bol in de kaart, met een lijntje erboven. */
+.zp-wereld .zp-wereldlabel,
+.zp-wereld-0 .zp-wereldlabel,
+.zp-wereld-1 .zp-wereldlabel,
+.zp-wereld-2 .zp-wereldlabel {
+  position: static;
+  translate: none;
+  margin-top: clamp(6px, 1cqw, 14px);
+  padding: 0.7em 0.2em 0.85em;
+  border: 0;
+  border-top: 1px solid rgb(255 255 255 / 0.18);
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  white-space: normal;
+}
+
+.zp-wereld .zp-wereldlabel[data-huidig="ja"] {
+  padding: 0.75em 0.3em 0.9em;
+}
+
+/* Telefoon en tablet staand: het vlak iets hoger, de kaarten iets kleiner. */
+.zp-werelden {
+  aspect-ratio: 78 / 90;
+}
+
+.zp-wereld-0 { left: 27%; top: 50%; width: 50%; }
+.zp-wereld-1 { left: 77%; top: 25%; width: 36%; }
+.zp-wereld-2 { left: 77%; top: 75%; width: 36%; }
+
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp-werelden {
+    aspect-ratio: 78 / 34;
+  }
+
+  .zp-wereld { translate: -50% 0; }
+  .zp-wereld-0 { left: 24%; top: 6%; width: 26%; }
+  .zp-wereld-1 { left: 53%; top: 14%; width: 20%; }
+  .zp-wereld-2 { left: 78.5%; top: 10%; width: 17%; }
+
+  .zp-wereld .zp-wereldlabel { font-size: max(11px, 1.15cqw); white-space: nowrap; }
+  .zp-wereld .zp-wereldlabel[data-huidig="ja"] { font-size: max(13px, 1.45cqw); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zp-wereld { animation: none; }
+}
