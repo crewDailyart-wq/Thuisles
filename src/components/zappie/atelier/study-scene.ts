@@ -77,9 +77,9 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   // Continue the top into cavern darkness instead of exposing the panorama rectangle.
   backdropMaterial.onBeforeCompile=shader=>{
     shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
-      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.00212, 0.00857, 0.03071), smoothstep(0.84, 1.18, vMapUv.y));`);
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.00212, 0.00857, 0.03071), smoothstep(0.78, 0.995, vMapUv.y));`);
   };
-  backdropMaterial.customProgramCacheKey=()=> 'atelier-cavern-ceiling-v1';
+  backdropMaterial.customProgramCacheKey=()=> 'atelier-cavern-ceiling-v2';
   materials.push(backdropMaterial);
   const backdropGeometry=new T.BufferGeometry(),bp:number[]=[],bu:number[]=[],bi:number[]=[];
   const radius=55,span=2,backdropHeight=radius*span/3;
