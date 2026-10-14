@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import type { StudyController, StudyView } from './study-scene';
 import './study.css';
@@ -14,20 +14,22 @@ const badges=[
   {name:'Doorzetter',hint:'Voorbeeld: oefen vijf dagen.'},
   {name:'Wereldbouwer',hint:'Voorbeeld: voltooi een creatieve opdracht.'},
 ];
-export function AtelierStudy(){
+export function AtelierStudy({embedded=false,mascot}:{embedded?:boolean;mascot?:ReactNode}){
+  const mascotAnchor=useRef<HTMLDivElement>(null);
   const host=useRef<HTMLDivElement>(null),controller=useRef<StudyController|null>(null);
   const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
   const [badge,setBadge]=useState(0),[unlocked,setUnlocked]=useState([true,true,true,false,false,false]);
   const [view,setView]=useState<StudyView>('samen'),[glow,setGlow]=useState(true);
   useEffect(()=>{let cancelled=false;let instance:StudyController|undefined;
-    import('./study-scene').then(({createStudy})=>{if(cancelled||!host.current)return;instance=createStudy(host.current,()=>{if(!cancelled)setStatus('ready');},()=>{if(!cancelled)setStatus('error');},index=>{if(!cancelled){setBadge(index);setView('lintjes');instance?.view('lintjes');}});controller.current=instance;}).catch(()=>{if(!cancelled)setStatus('error');});
+    import('./study-scene').then(({createStudy})=>{if(cancelled||!host.current)return;instance=createStudy(host.current,()=>{if(!cancelled)setStatus('ready');},()=>{if(!cancelled)setStatus('error');},index=>{if(!cancelled){setBadge(index);setView('lintjes');instance?.view('lintjes');}},mascotAnchor.current);controller.current=instance;}).catch(()=>{if(!cancelled)setStatus('error');});
     return()=>{cancelled=true;instance?.dispose();controller.current=null;};
   },[]);
   useEffect(()=>{controller.current?.badge(badge,unlocked[badge]);},[badge,unlocked,status]);
-  return <main className="as" data-status={status} data-view={view}>
+  return <div className={`as${embedded?' as-embedded':''}`} role="region" aria-label="Interactief 3D-atelier" data-status={status} data-view={view}>
     <div className="as-canvas" ref={host}/>
-    <header className="as-header"><div><p>ZAPPIES ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>
-    {view!=='lintjes'&&<div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>}
+    {mascot&&<div ref={mascotAnchor} className="as-mascot">{mascot}</div>}
+    {!embedded&&<header className="as-header"><div><p>ZAPPIES ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>}
+    {!embedded&&view!=='lintjes'&&<div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>}
     {view==='lintjes'&&status==='ready'&&<section className="as-badges" aria-label="De lintjeskast">
       <span className="as-eyebrow">DE LINTJESKAST · PROTOTYPE</span>
       <nav aria-label="Kies een badge">{badges.map((b,i)=><button key={b.name} aria-label={b.name} aria-pressed={badge===i} onClick={()=>setBadge(i)}>{String(i+1).padStart(2,'0')}<span aria-hidden="true">{unlocked[i]?'✦':'◇'}</span></button>)}</nav>
@@ -35,7 +37,7 @@ export function AtelierStudy(){
       <button className="as-unlock" disabled={unlocked[badge]} onClick={()=>setUnlocked(values=>values.map((value,i)=>i===badge?true:value))}>{unlocked[badge]?'In je voorbeeldcollectie':'Ontgrendel voorbeeld'}</button>
       <small>Probeer het uit. Je echte voortgang verandert niet.</small>
     </section>}
-    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>3D-atelier & glazen koepel · Zappie volgt later</p></footer>
+    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>{embedded?<>Passen is gratis · <Link href="/zappie/beloningen">Bekijk je echte beloningen</Link></>:'3D-atelier & glazen koepel · Zappie volgt later'}</p></footer>
     {status!=='ready'&&<div className="as-status" role="status"><span>✦</span><h2>{status==='error'?'De 3D-studie kon niet openen':'Het licht gaat aan…'}</h2>{status==='error'&&<><p>Controleer of je browser 3D-weergave ondersteunt.</p><button onClick={()=>window.location.reload()}>Opnieuw proberen</button></>}</div>}
-  </main>;
+  </div>;
 }

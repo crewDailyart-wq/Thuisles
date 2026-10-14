@@ -40,14 +40,14 @@ for (const b of [1672, 1280, 828]) {
 // ---------------------------------------------------------------------------
 /*
   Per wereld: het midden en de straal van de uitsnede, in pixels van het
-  origineel. Gemeten zo dat de bovenkant van de cirkel onder de ingebakken naam
-  en voortgangsbalk blijft (die lopen tot ongeveer y = 205 bij de oceaan en
-  y = 170 bij aarde en heelal) en de onderkant binnen het plaatje.
+  origineel. Sinds 14 oktober 2026 zijn de bronnen nieuwe vierkante plaatjes
+  van 1254 × 1254 zonder ingebakken tekst; de cirkel staat in het midden en
+  pakt bijna het hele plaatje.
 */
 const WERELDEN = [
-  { naam: "ocean-world", bron: "wereld-oceaan.webp", x: 958, y: 572, r: 342, rand: [120, 230, 255] },
-  { naam: "earth-world", bron: "wereld-aarde.webp", x: 842, y: 568, r: 356, rand: [150, 225, 255] },
-  { naam: "universe-world", bron: "wereld-heelal.webp", x: 872, y: 568, r: 362, rand: [170, 170, 255] },
+  { naam: "ocean-world", bron: "wereld-oceaan.webp", x: 627, y: 627, r: 615, rand: [120, 230, 255] },
+  { naam: "earth-world", bron: "wereld-aarde.webp", x: 627, y: 627, r: 615, rand: [150, 225, 255] },
+  { naam: "universe-world", bron: "wereld-heelal.webp", x: 627, y: 627, r: 615, rand: [170, 170, 255] },
 ];
 
 /** Hoeveel ruimte er om de bol blijft voor de gloed, als deel van de straal. */

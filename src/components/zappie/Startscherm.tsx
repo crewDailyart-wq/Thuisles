@@ -64,6 +64,14 @@ import { type WereldId } from "@/lib/zappie/werelden";
 
 type Bericht = { tekst: string; stemming: Stemming };
 
+/*
+  Zappie de robot en "Iets niet duidelijk? Ik help je graag!" staan sinds
+  14 oktober 2026 niet meer in de ruimte, op verzoek van de eigenaar. De code
+  blijft staan: zet dit op true en hij is terug. Wat Zappie zegt (bij een dichte
+  wereld of een verdiende beloning) verschijnt nog wel als tekstballon.
+*/
+const TOON_ZAPPIE = false;
+
 const HULP: Bericht[] = [
   { tekst: "Druk op Begin je missie. Dan gaan we samen oefenen!", stemming: "blij" },
   { tekst: "Met elke missie gaat er een lichtje aan op het pad.", stemming: "kijk" },
@@ -245,13 +253,16 @@ export function Startscherm() {
           loopt de pagina gewoon door.
         */}
         <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte">
+          {TOON_ZAPPIE && (
           <p className="zp-hand zp-notitie zp-notitie-hulp" aria-hidden="true">
             Iets niet duidelijk?
             <br />
             Ik help je graag!
             <HandPijl className="zp-notitie-pijl" />
           </p>
-          <div className="zp-zappieplek">
+          )}
+          <div className="zp-zappieplek" data-zappie={TOON_ZAPPIE ? "ja" : "nee"}>
+            {TOON_ZAPPIE && (
             <button
               type="button"
               className="zp-zappie"
@@ -270,6 +281,7 @@ export function Startscherm() {
                 kijkMee
               />
             </button>
+            )}
             {bericht && <Tekstballon tekst={bericht.tekst} className="zp-zappieballon" />}
           </div>
 

@@ -15,11 +15,12 @@
  * - het atelier is een paskamer: passen kan altijd, kopen en bewaren komen
  *   later. Er gaan geen tokens af.
  *
- * De illustraties zijn platte beelden. Wat erop beweegt, zijn lagen erboven:
+ * Het atelier is een 3D-scène; de overige illustraties zijn platte beelden:
  * een lasvonk, een werklamp, de knoppen op de voertuigen en Zappie zelf.
  */
 
 import Link from "next/link";
+import { EmbeddedAtelier } from "@/components/zappie/atelier/EmbeddedAtelier";
 import { useState } from "react";
 import { IcoonPijl, IcoonSlot, IcoonSter } from "@/components/zappie/Iconen";
 import { Zappie } from "@/components/zappie/Zappie";
@@ -246,28 +247,19 @@ function Atelier() {
               Zappies atelier
             </h2>
             <p>Maak Zappie van jou! Pas petjes, kleuren en extra’s.</p>
-            <Link href="/atelier-prototype" className="zs-atelier-prototype-link">Ontdek het 3D-atelier ↗</Link>
+
           </div>
         </header>
       </div>
 
       <div className="zs-atelier-podium">
-        <div className="zs-scene zs-atelier-scene">
-          <Illustratie
-            naam="atelier"
-            alt="Zappies atelier: vitrines met petjes, koptelefoons, brillen en capes, een paspodium in het midden en uitzicht op zee."
-            sizes="(min-width: 1100px) 100vw, 94vw"
-          />
-          <div
-            className="zs-pasrobot"
-            data-kleur={gepast.Kleuren ?? "eigen"}
-            aria-hidden="true"
-          >
+        <EmbeddedAtelier mascot={
+          <div className="zs-pasrobot" data-kleur={gepast.Kleuren ?? "eigen"} aria-hidden="true">
             <Zappie stemming="blij" houding="zwaai" />
             {gepast.Petjes && <AccessoireBeeld soort={gepast.Petjes} className={`zs-gepast zs-gepast-${gepast.Petjes}`} />}
             {gepast["Extra’s"] && <AccessoireBeeld soort={gepast["Extra’s"]} className={`zs-gepast zs-gepast-${gepast["Extra’s"]}`} />}
           </div>
-        </div>
+        } />
 
         <section className="zs-paskamer" aria-labelledby="zs-kop-paskamer">
           <div className="zs-paskamer-kop">

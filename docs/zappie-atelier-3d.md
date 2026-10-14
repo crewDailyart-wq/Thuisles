@@ -23,3 +23,6 @@ The study now uses the approved generated underground observatory panorama (`pub
 
 ### Studie 03 — Lintjeskast
 Een vrijstaande blauw geëmailleerde kast met gouden kroonlijst, zes fluwelen nissen en zes afzonderlijk gemodelleerde medailles (ster, bliksem, boek, kompas, kiem en planeet). Stoffen linten hebben gevorkte uiteinden en gouden stiksels. De kast is onderdeel van dezelfde 3D-scène en vloerreflectie. Een vaste detailcamera, aanklikbare medailles en toegankelijke knoppen openen de voorbeeldcollectie. Drie badges beginnen vergrendeld; ontgrendelen is uitsluitend lokale componentstatus en vervalt bij herladen. Criteria zijn expliciete voorbeelden, zonder koppeling aan leerlinggegevens.
+
+### Integratie in de kinderpagina
+De bestaande atelierillustratie in OntdekkingsReis is vervangen door dezelfde Sterrenwerkplaats, zonder navigatie naar een prototypepagina. De scène laadt pas bij naderen van de sectie. Bestaande paskamerkeuzes blijven werken; de huidige 2D-Zappie wordt op het 3D-podium geprojecteerd bij elke camerawissel en schermgrootte. De paskamer staat onder het atelier zodat de koepel en kasten vrij blijven. De lintjeskast blijft een duidelijk gemarkeerde demo; de bestaande echte beloningenpagina is rechtstreeks bereikbaar. Geen verandering van leerlingdata of beloningsregels.

@@ -95,6 +95,34 @@ try {
     assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth));
     await page.close();
   }
+  for (const [name,width,height] of [['desktop',1440,1000],['tablet',1024,768],['mobile',390,844]]) {
+    const page=await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
+    page.on('pageerror',e=>report.errors.push(`embedded ${name}: ${e.message}`));
+    await page.goto('http://127.0.0.1:4320/zappie');
+    const area=page.locator('.zs-live-atelier');
+    await area.scrollIntoViewIfNeeded();
+    await area.locator('.as[data-status="ready"]').waitFor({timeout:60000});
+    assert.equal(await page.locator('.zs-atelier-scene > .zi-illustratie').count(),0,'Old atelier image replaced');
+    assert.equal(await area.locator('canvas').count(),1);
+    const before=await page.evaluate(()=>JSON.stringify({...localStorage}));
+    await page.getByRole('button',{name:'Sterrenkroon passen',exact:true}).click();
+    assert.equal(await area.locator('.zs-gepast-kroon').count(),1);
+    await area.scrollIntoViewIfNeeded();
+    await page.waitForTimeout(500);
+    await area.screenshot({path:`${dir}/embedded-${name}-atelier.png`});
+    await area.getByRole('button',{name:'Het podium',exact:true}).click();
+    assert.equal(await area.locator('.as-mascot').evaluate(el=>getComputedStyle(el).visibility),'visible');
+    await area.getByRole('button',{name:'Lintjes',exact:true}).click();
+    assert.equal(await area.locator('.as-mascot').evaluate(el=>getComputedStyle(el).visibility),'hidden');
+    await area.getByRole('button',{name:'Doorzetter',exact:true}).click();
+    await area.getByRole('button',{name:'Ontgrendel voorbeeld',exact:true}).click();
+    assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),before,'Integrated fitting and demo badges preserve progress');
+    await area.screenshot({path:`${dir}/embedded-${name}-lintjes.png`});
+    await page.getByRole('button',{name:'Terug naar je eigen Zappie',exact:true}).click();
+    assert.equal(await area.locator('.zs-gepast-kroon').count(),0);
+    assert.ok(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth+2));
+    await page.close();
+  }
   const fallback = await browser.newPage();
   await fallback.addInitScript(() => {
     const get = HTMLCanvasElement.prototype.getContext;

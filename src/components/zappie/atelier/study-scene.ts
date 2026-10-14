@@ -13,7 +13,7 @@ export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean)
 const V = (x:number,y:number,z:number) => new T.Vector3(x,y,z);
 
 /** First art-direction slice: modeled objects, physical materials, HDR glow and planar reflections. */
-export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void): StudyController {
+export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null = null): StudyController {
   let dirty=true,disposed=false,first=true,panoramaReady=false;
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference:'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
@@ -277,7 +277,15 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     // Widen the lens on narrow screens instead of moving the camera outside the shell.
     camera.aspect=w/h;camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(v.fov/2))*factor));
     camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);
-    camera.position.copy(v.eye);camera.lookAt(v.target);camera.updateMatrixWorld();dirty=true;
+    camera.position.copy(v.eye);camera.lookAt(v.target);camera.updateMatrixWorld();
+    if(mascotAnchor){
+      const feet=V(1.65,1.12,1.2).project(camera),head=V(1.65,3.35,1.2).project(camera);
+      mascotAnchor.style.left=`${(feet.x+1)*w/2+host.offsetLeft}px`;
+      mascotAnchor.style.top=`${(1-feet.y)*h/2+host.offsetTop}px`;
+      mascotAnchor.style.height=`${Math.abs(head.y-feet.y)*h/2}px`;
+      mascotAnchor.style.visibility=active==='samen'||active==='podium'||active==='koepel'?'visible':'hidden';
+    }
+    dirty=true;
   };
   const observer=new ResizeObserver(resize);observer.observe(host);resize();
   const lost=(e:Event)=>{e.preventDefault();renderer.setAnimationLoop(null);failed();};renderer.domElement.addEventListener('webglcontextlost',lost);
