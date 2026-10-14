@@ -7,9 +7,9 @@ een nieuw ontwerp neer, en draai het script opnieuw.
 | Bestand | Bron | Stand |
 | --- | --- | --- |
 | `space-earth-background-{1672,1280,828}.{avif,webp}` | `ontwerp/zappie/ruimte-aarde.webp` | Klaar. Het origineel is 1672 × 941; de opdracht vraagt minstens 2560 × 1440. Een groter origineel maakt het op grote schermen scherper. |
-| `ocean-world.{avif,webp}` | `ontwerp/zappie/wereld-oceaan.webp` | Ronde uitsnede, als bol bewerkt, doorzichtig eromheen. De ingebakken naam, voortgangsbalk en gele stippen vallen erbuiten. |
-| `earth-world.{avif,webp}` | `ontwerp/zappie/wereld-aarde.webp` | Idem. |
-| `universe-world.{avif,webp}` | `ontwerp/zappie/wereld-heelal.webp` | Idem. |
+| `ocean-world.{avif,webp}` | `ontwerp/zappie/wereld-oceaan.webp` | Nieuw plaatje sinds 14 oktober 2026 (1254 × 1254, zonder tekst). Ronde uitsnede uit het midden, als bol bewerkt, doorzichtig eromheen. |
+| `earth-world.{avif,webp}` | `ontwerp/zappie/wereld-aarde.webp` | Idem (nieuw sinds 14 oktober 2026). |
+| `universe-world.{avif,webp}` | `ontwerp/zappie/wereld-heelal.webp` | Idem (nieuw sinds 14 oktober 2026). |
 | `my-world-island.{avif,webp}` | `ontwerp/zappie/voorbeeld-startpagina.webp` (paneel rechtsonder) | **Tijdelijk.** Uit het voorbeeldplaatje gesneden, de titel weggepoetst en 2× vergroot. Wat zacht op een scherp beeldscherm. Moet nog los gemaakt worden. |
 
 ## Nog te maken (extern)
