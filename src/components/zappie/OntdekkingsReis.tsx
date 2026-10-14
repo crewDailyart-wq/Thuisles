@@ -246,6 +246,7 @@ function Atelier() {
               Zappies atelier
             </h2>
             <p>Maak Zappie van jou! Pas petjes, kleuren en extra’s.</p>
+            <Link href="/atelier-prototype" className="zs-atelier-prototype-link">Ontdek het 3D-atelier ↗</Link>
           </div>
         </header>
       </div>

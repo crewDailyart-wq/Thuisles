@@ -1580,3 +1580,7 @@
     scale: 1 !important;
   }
 }
+
+/* Tijdelijke ingang naar het afzonderlijke 3D-prototype. */
+.zs-atelier-prototype-link { display: inline-flex; align-items: center; min-height: 44px; margin-top: 12px; padding: 8px 18px; border: 1px solid #e7c481; border-radius: 24px; background: #123455; color: #fff0c9; font-weight: 600; text-decoration: none; }
+.zs-atelier-prototype-link:focus-visible { outline: 3px solid #74e5ff; outline-offset: 4px; }
