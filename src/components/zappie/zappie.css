@@ -2590,7 +2590,7 @@
 .zp-wereld .zp-wereld-parallax { transform: none; }
 .zp-wereld .zp-wereld-zweef {
   aspect-ratio: 1.08;
-  overflow: hidden;
+  overflow: visible;
   border-radius: clamp(10px, 1.5cqw, 18px);
   animation: none;
 }
@@ -2603,24 +2603,25 @@
 .zp-wereld[data-open="nee"]:hover .zp-wereld-beeld {
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  filter: none;
-  transform: none;
+  object-fit: contain;
+  filter: drop-shadow(0 0.8cqw 1cqw rgb(2 10 40 / 0.45));
+  transform: scale(1.1);
 }
 
 .zp-wereld:hover .zp-wereld-beeld,
 .zp-wereld:focus-visible .zp-wereld-beeld {
-  transform: scale(1.04);
+  transform: scale(1.15);
 }
 
-/* Nog dicht: een heel licht grijs waas over het plaatje. */
-.zp-wereld[data-open="nee"] .zp-wereld-zweef::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  z-index: 1;
-  background: rgb(160 168 186 / 0.2);
-  pointer-events: none;
+/*
+  Nog dicht: een heel licht grijs waas over de illustratie. Het plaatje heeft
+  een doorzichtige achtergrond, dus het waas zit in het plaatje zelf (iets
+  minder kleur, iets lichter grijs) en niet als vlak erover.
+*/
+.zp-wereld[data-open="nee"] .zp-wereld-beeld,
+.zp-wereld[data-open="nee"]:hover .zp-wereld-beeld {
+  filter: grayscale(0.22) contrast(0.92) brightness(1.04) drop-shadow(0 0.8cqw 1cqw rgb(2 10 40 / 0.45));
+  opacity: 0.88;
 }
 
 .zp-wereld .zp-wereldslot {
