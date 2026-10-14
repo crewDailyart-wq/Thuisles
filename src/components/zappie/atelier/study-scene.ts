@@ -27,7 +27,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   scene.fog = new T.Fog('#071731',22,60);
   const camera = new T.PerspectiveCamera(39,1,0.1,90);
   const pmrem = new T.PMREMGenerator(renderer), room = new RoomEnvironment();
-  const env = pmrem.fromScene(room,0.04); scene.environment = env.texture; scene.environmentIntensity = 0.8;
+  const env = pmrem.fromScene(room,0.04); scene.environment = env.texture; scene.environmentIntensity = 0.5;
   room.dispose(); pmrem.dispose();
   const materials: T.Material[] = [];
   const physical = (color:string,metalness:number,roughness:number,coat=0) => {
@@ -35,11 +35,11 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   };
   const gold=physical('#e7ae47',0.88,0.21), paleGold=physical('#ffe3a1',0.8,0.18);
   const blue=physical('#073a8e',0.58,0.22,1), navy=physical('#061832',0.5,0.24,1);
-  const inset=physical('#031026',0.3,0.35), velvet=physical('#0d3683',0.05,0.88);
+  const inset=physical('#031026',0,0.8), velvet=physical('#0d3683',0.05,0.88);
   const lightMaterial=(color:string,intensity:number)=>{
     const m=new T.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,roughness:0.23}); materials.push(m); return m;
   };
-  const cyan=lightMaterial('#00cfff',5), amber=lightMaterial('#ffbd48',4), pearl=lightMaterial('#fff0c2',2.8);
+  const cyan=lightMaterial('#00aaff',2.8), amber=lightMaterial('#ffac26',2.4), pearl=lightMaterial('#ffdc9c',1.8);
   function mesh(g:T.BufferGeometry,m:T.Material,p:T.Object3D,x=0,y=0,z=0){const o=new T.Mesh(g,m);o.position.set(x,y,z);o.castShadow=true;o.receiveShadow=true;p.add(o);return o;}
   const box=(w:number,h:number,d:number,m:T.Material,p:T.Object3D,x=0,y=0,z=0)=>mesh(new RoundedBoxGeometry(w,h,d,3,Math.min(.05,h/3)),m,p,x,y,z);
   const cyl=(a:number,b:number,h:number,m:T.Material,p:T.Object3D,x=0,y=0,z=0)=>mesh(new T.CylinderGeometry(a,b,h,96),m,p,x,y,z);
@@ -51,15 +51,15 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   }
   // Warm key, cool rim and localized pools of light; deliberately restrained ambient light.
   scene.add(new T.HemisphereLight('#91caff','#07122c',0.65));
-  const key=new T.DirectionalLight('#ffdea3',3.6);key.position.set(-3,9,6);key.castShadow=true;
+  const key=new T.DirectionalLight('#ffdea3',2.6);key.position.set(-3,9,6);key.castShadow=true;
   key.shadow.mapSize.set(1024,1024);Object.assign(key.shadow.camera,{left:-8,right:8,top:8,bottom:-8,near:1,far:30});key.shadow.normalBias=.035;scene.add(key);
   const rim=new T.DirectionalLight('#4da5ff',2.1);rim.position.set(4,7,-4);scene.add(rim);
   const lights:T.PointLight[]=[];
   function pool(color:string,intensity:number,x:number,y:number,z:number,distance=7){const l=new T.PointLight(color,intensity,distance,2);l.position.set(x,y,z);scene.add(l);lights.push(l);return l;}
-  pool('#10cfff',30,1.65,1.5,1.2);pool('#ffbb50',22,-2.5,3,-.5);pool('#4e99ff',35,1,5,-4,14);
+  pool('#10cfff',5,1.65,1.5,1.2);pool('#ffbb50',2.5,-2.5,3,-.5);pool('#4e99ff',12,1,5,-4,14);
 
   // A real reflected floor, with independent gold inlays and a stone foundation.
-  const floor=new Reflector(new T.CircleGeometry(16,96),{color:0x68788e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:0});
+  const floor=new Reflector(new T.CircleGeometry(16,96),{color:0x38485e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:0});
   floor.rotation.x=-Math.PI/2;floor.position.y=-.025;scene.add(floor);
   cyl(16,16,.25,navy,scene,0,-.17);
   const inlays=new T.Group();scene.add(inlays);
@@ -113,7 +113,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     box(2.64,.12,1.05,blue,cabinet,0,y,.23);
     box(2.67,.065,.09,paleGold,cabinet,0,y,.75);
     box(2.48,.024,.04,pearl,cabinet,0,y-.055,.72);
-    pool('#ffc36b',8,-2.55,y+.36,-1.2,3);
+    pool('#ffc36b',1.8,-2.55,y+.36,-1.2,3);
   }
   star(.19,gold,cabinet,0,4.67,.08);
   // Upper shelf: a blue enamel explorer helmet with gold rim and a raised crest.
@@ -143,11 +143,6 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   mesh(new T.OctahedronGeometry(.23),cyan,cabinet,.58,1.32,.32).scale.y=1.55;
   ring(.24,.016,paleGold,cabinet,1.15).position.x=.58;
 
-  // Sparse architectural frame keeps the first slice readable while the full world is designed later.
-  for(const x of [-6.6,5.9]){
-    cyl(.25,.32,7.5,blue,scene,x,3.7,-4.8);cyl(.38,.38,.15,gold,scene,x,.1,-4.8);cyl(.38,.31,.18,gold,scene,x,6.4,-4.8);
-    for(let j=0;j<8;j++){const a=j*Math.PI/4;cyl(.018,.018,6.1,paleGold,scene,x+Math.sin(a)*.265,3.3,-4.8+Math.cos(a)*.265);}
-  }
   // Batch opaque static geometry to make high-detail fittings affordable on the web.
   scene.updateMatrixWorld(true);
   const batches=new Map<T.Material,{objects:T.Mesh[];geometries:T.BufferGeometry[]}>();
@@ -155,10 +150,10 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   for(const [m,b] of batches){const g=mergeGeometries(b.geometries);if(g){mesh(g,m,scene);b.objects.forEach(o=>{o.removeFromParent();o.geometry.dispose();});}b.geometries.forEach(g=>g.dispose());}
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
-  const bloom=new UnrealBloomPass(new T.Vector2(1,1),.65,.55,1.15);composer.addPass(bloom);
+  const bloom=new UnrealBloomPass(new T.Vector2(1,1),.2,.12,1.5);composer.addPass(bloom);
   const output=new OutputPass();composer.addPass(output);
   const views:Record<StudyView,{eye:T.Vector3;target:T.Vector3}>={
-    samen:{eye:V(7.2,5.9,14.8),target:V(-.1,2,0)},
+    samen:{eye:V(6,5.3,12.5),target:V(-.1,2,0)},
     podium:{eye:V(5.9,4.7,9.2),target:V(1.65,.65,1.2)},
     vitrine:{eye:V(-.4,3.2,7.8),target:V(-2.55,2.7,-1.25)},
   };
