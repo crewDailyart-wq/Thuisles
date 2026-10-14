@@ -5,7 +5,7 @@ import Link from 'next/link';
 import type { StudyController, StudyView } from './study-scene';
 import './study.css';
 
-const views: { id:StudyView;label:string }[] = [{id:'samen',label:'Het geheel'},{id:'podium',label:'Het podium'},{id:'vitrine',label:'De vitrine'}];
+const views: { id:StudyView;label:string }[] = [{id:'samen',label:'Het geheel'},{id:'podium',label:'Het podium'},{id:'vitrine',label:'De vitrine'},{id:'koepel',label:'De koepel'}];
 export function AtelierStudy(){
   const host=useRef<HTMLDivElement>(null),controller=useRef<StudyController|null>(null);
   const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
@@ -16,9 +16,9 @@ export function AtelierStudy(){
   },[]);
   return <main className="as" data-status={status} data-view={view}>
     <div className="as-canvas" ref={host}/>
-    <header className="as-header"><div><p>ZAPPIES ATELIER <span> / </span> ONTWERPSTUDIE 01</p><h1>Het begint met licht.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>
-    <div className="as-caption"><span>01 — PODIUM & VITRINE</span><p>Diepblauw email. Warm goud.<br/>Een vleugje magie.</p></div>
-    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>Een eerste 3D-materiaalstudie · De fantasiewereld en Zappie volgen later</p></footer>
+    <header className="as-header"><div><p>ZAPPIES ATELIER <span> / </span> ONTWERPSTUDIE 02</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>
+    <div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>
+    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>3D-atelier & glazen koepel · Zappie volgt later</p></footer>
     {status!=='ready'&&<div className="as-status" role="status"><span>✦</span><h2>{status==='error'?'De 3D-studie kon niet openen':'Het licht gaat aan…'}</h2>{status==='error'&&<><p>Controleer of je browser 3D-weergave ondersteunt.</p><button onClick={()=>window.location.reload()}>Opnieuw proberen</button></>}</div>}
   </main>;
 }

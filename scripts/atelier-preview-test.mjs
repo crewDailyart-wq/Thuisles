@@ -66,7 +66,8 @@ try {
     page.on('pageerror',e=>report.errors.push(`study ${name}: ${e.message}`));
     await page.goto('http://127.0.0.1:4320/atelier-prototype/studie');
     await page.locator('.as[data-status="ready"]').waitFor({timeout:60000});
-    for (const [view,label] of [['samen','Het geheel'],['podium','Het podium'],['vitrine','De vitrine']]) {
+    assert.equal(await page.locator('.as-canvas').getAttribute('data-panorama'),'ready');
+    for (const [view,label] of [['samen','Het geheel'],['podium','Het podium'],['vitrine','De vitrine'],['koepel','De koepel']]) {
       await page.getByRole('button',{name:label,exact:true}).click();
       await page.waitForTimeout(500);
       assert.equal(await page.locator('.as').getAttribute('data-view'),view);

@@ -3,6 +3,7 @@ on:
   pull_request:
     paths:
       - 'src/components/zappie/atelier/**'
+      - 'public/atelier/**'
       - 'src/app/atelier-prototype/**'
       - 'scripts/atelier-preview-test.mjs'
       - '.github/workflows/atelier-preview.yml'

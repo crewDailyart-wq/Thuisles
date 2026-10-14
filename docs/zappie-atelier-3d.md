@@ -16,3 +16,7 @@ Verification: `npx next typegen && npx tsc --noEmit`; targeted ESLint; `scripts/
 ## Material study 01
 
 `/atelier-prototype/studie` is an isolated art-direction slice: one detailed pedestal and one display cabinet. It intentionally has no character or completed fantasy backdrop. Deep blue clearcoat, gold fittings, amber light ports, emissive cyan rings, a planar reflected floor and HDR bloom are rendered from geometry. Three fixed inspection views and a bloom toggle help review the materials. Rendering happens only after a view, size or glow change. No choices are stored.
+
+## Dome study 02
+
+The study now uses the approved generated underground observatory panorama (`public/atelier/sterrenwerkplaats-panorama.webp`) on a curved backdrop. It is not a seamless 360-degree environment. A separate ellipsoidal glass shell has modeled brass ribs, footing sockets, an oculus and a cyan perimeter light. The glass uses subtle transparent physical shading without costly refraction; the floor reflects the actual scene and backdrop. Four fixed views stay within the shell, with a wider lens on phones. Readiness waits for the panorama, and load failures show the existing retry screen. No character or persistent state is added.
