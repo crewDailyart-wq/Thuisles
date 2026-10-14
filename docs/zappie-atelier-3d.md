@@ -20,3 +20,6 @@ Verification: `npx next typegen && npx tsc --noEmit`; targeted ESLint; `scripts/
 ## Dome study 02
 
 The study now uses the approved generated underground observatory panorama (`public/atelier/sterrenwerkplaats-panorama.webp`) on a curved backdrop. It is not a seamless 360-degree environment. A separate ellipsoidal glass shell has modeled brass ribs, footing sockets, an oculus and a cyan perimeter light. The glass uses subtle transparent physical shading without costly refraction; the floor reflects the actual scene and backdrop. Four fixed views stay within the shell, with a wider lens on phones. Readiness waits for the panorama, and load failures show the existing retry screen. No character or persistent state is added.
+
+### Studie 03 — Lintjeskast
+Een vrijstaande blauw geëmailleerde kast met gouden kroonlijst, zes fluwelen nissen en zes afzonderlijk gemodelleerde medailles (ster, bliksem, boek, kompas, kiem en planeet). Stoffen linten hebben gevorkte uiteinden en gouden stiksels. De kast is onderdeel van dezelfde 3D-scène en vloerreflectie. Een vaste detailcamera, aanklikbare medailles en toegankelijke knoppen openen de voorbeeldcollectie. Drie badges beginnen vergrendeld; ontgrendelen is uitsluitend lokale componentstatus en vervalt bij herladen. Criteria zijn expliciete voorbeelden, zonder koppeling aan leerlinggegevens.

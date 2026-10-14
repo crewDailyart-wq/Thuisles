@@ -8,12 +8,12 @@ import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
-export type StudyView = 'samen' | 'podium' | 'vitrine' | 'koepel';
-export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; dispose: () => void };
+export type StudyView = 'samen' | 'podium' | 'vitrine' | 'koepel' | 'lintjes';
+export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; badge: (index: number, unlocked: boolean) => void; dispose: () => void };
 const V = (x:number,y:number,z:number) => new T.Vector3(x,y,z);
 
 /** First art-direction slice: modeled objects, physical materials, HDR glow and planar reflections. */
-export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void): StudyController {
+export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void): StudyController {
   let dirty=true,disposed=false,first=true,panoramaReady=false;
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference:'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
@@ -193,10 +193,70 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   mesh(new T.OctahedronGeometry(.23),cyan,cabinet,.58,1.32,.32).scale.y=1.55;
   ring(.24,.016,paleGold,cabinet,1.15).position.x=.58;
 
+  // A freestanding ribbon treasury: enamel shell, six velvet niches and individual medals.
+  const treasury=new T.Group();treasury.position.set(4.75,0,-2.8);treasury.rotation.y=-.13;scene.add(treasury);
+  box(3.5,.23,1.1,gold,treasury,0,.18);box(3.35,.18,1.03,blue,treasury,0,.37);
+  box(3.18,4.35,.42,blue,treasury,0,2.6,-.3);
+  box(2.91,4.05,.1,inset,treasury,0,2.6,-.04);
+  for(const x of [-1.51,1.51]){
+    box(.11,4.2,.15,gold,treasury,x,2.61,.02);
+    box(.025,3.95,.035,cyan,treasury,x*.93,2.6,.11);
+    orb(.11,paleGold,treasury,x,4.77,.03);
+    for(const y of [.65,4.55])box(.21,.13,.28,paleGold,treasury,x,y,.05);
+  }
+  // Sweeping crown and central star identify the cabinet even at the wide camera angle.
+  const crestPath=new T.CatmullRomCurve3([V(-1.6,4.78,0),V(-.9,5.02,0),V(0,5.26,0),V(.9,5.02,0),V(1.6,4.78,0)]);
+  mesh(new T.TubeGeometry(crestPath,64,.08,12,false),gold,treasury);
+  mesh(new T.TorusGeometry(.28,.027,12,48),paleGold,treasury,0,5.04,.1);
+  star(.19,amber,treasury,0,5.04,.11);
+  for(const y of [.55,1.9,3.25,4.6]){box(2.95,.065,.46,gold,treasury,0,y,.13);box(2.7,.018,.025,pearl,treasury,0,y-.05,.34);}
+  box(.055,3.95,.16,gold,treasury,0,2.6,.08);
+  pool('#ffcd80',5,4.75,3.3,-.8,7);
+  // Dynamic parts remain independent of the static geometry batches.
+  const badgeRoots:T.Group[]=[],locks:T.Group[]=[],medals:T.Group[]=[],halos:T.Mesh[]=[],hitTargets:T.Mesh[]=[];
+  const ribbonColors=['#167bd2','#693cc4','#11877f','#b34272','#3452ae','#7b4ec6'];
+  const darkMetal=physical('#526582',.64,.36), ribbonSeam=physical('#caa25b',.45,.48);
+  function faceDisk(r:number,h:number,m:T.Material,p:T.Object3D,y:number,z:number){const o=cyl(r,r,h,m,p,0,y,z);o.rotation.x=Math.PI/2;return o;}
+  for(let i=0;i<6;i++){
+    const x=i%2===0?-.74:.74,y=3.88-Math.floor(i/2)*1.35;
+    box(1.28,1.2,.07,velvet,treasury,x,y,-.005);
+    const root=new T.Group();root.position.set(x,y,.12);treasury.add(root);badgeRoots.push(root);
+    const ribbon=physical(ribbonColors[i],.08,.8);ribbon.sheen=1;ribbon.sheenColor.set(ribbonColors[i]);ribbon.sheenRoughness=.7;
+    // Split, folded cloth tails, with real depth and gold stitching along each edge.
+    for(const side of [-1,1]){
+      const tail=new T.Group();tail.position.set(side*.12,-.2,0);tail.rotation.z=side*.16;root.add(tail);
+      const shape=new T.Shape();shape.moveTo(-.13,.44);shape.lineTo(.13,.44);shape.lineTo(.13,-.32);shape.lineTo(0,-.22);shape.lineTo(-.13,-.32);shape.closePath();
+      mesh(new T.ExtrudeGeometry(shape,{depth:.025,bevelEnabled:true,bevelSize:.008,bevelThickness:.008,bevelSegments:2,steps:1}),ribbon,tail);
+      for(const edge of [-.105,.105])box(.008,.58,.01,ribbonSeam,tail,edge,.09,.035);
+    }
+    box(.6,.07,.11,gold,root,0,.43,.04);orb(.035,paleGold,root,-.23,.43,.11);orb(.035,paleGold,root,.23,.43,.11);
+    const halo=mesh(new T.TorusGeometry(.375,.016,10,64),cyan,root,0,.025,.06);halos.push(halo);halo.visible=i===0;
+    const medal=new T.Group();medal.position.set(0,.025,.12);root.add(medal);medals.push(medal);
+    faceDisk(.32,.075,gold,medal,0,0);faceDisk(.277,.03,blue,medal,0,.05);
+    mesh(new T.TorusGeometry(.294,.02,12,64),paleGold,medal,0,0,.065);
+    for(let j=0;j<24;j++){const a=j*Math.PI/12;orb(.009,paleGold,medal,Math.sin(a)*.26,Math.cos(a)*.26,.078);}
+    // Six reliefs: guiding star, lightning, open book, compass, growing sprout, planet.
+    if(i===0)star(.17,paleGold,medal,0,0,.075);
+    if(i===1){const sh=new T.Shape();sh.moveTo(.05,.2);sh.lineTo(-.14,-.025);sh.lineTo(-.015,-.025);sh.lineTo(-.05,-.2);sh.lineTo(.14,.03);sh.lineTo(.015,.03);sh.closePath();mesh(new T.ExtrudeGeometry(sh,{depth:.035,bevelEnabled:true,bevelSize:.008,bevelThickness:.008,bevelSegments:2}),paleGold,medal,0,0,.08);}
+    if(i===2){for(const side of [-1,1]){const page=box(.145,.24,.035,paleGold,medal,side*.082,0,.1);page.rotation.y=side*-.16;for(const yy of [-.06,0,.06])box(.09,.009,.01,navy,medal,side*.082,yy,.126);}box(.012,.27,.04,gold,medal,0,0,.11);}
+    if(i===3){const compass=star(.19,paleGold,medal,0,0,.08);compass.scale.x=.65;mesh(new T.TorusGeometry(.16,.009,8,48),gold,medal,0,0,.09);orb(.035,cyan,medal,0,0,.14);}
+    if(i===4){box(.023,.25,.04,paleGold,medal,0,-.025,.1);for(const side of [-1,1]){const leaf=orb(.09,paleGold,medal,side*.07,.04,.1);leaf.scale.set(.55,1,.3);leaf.rotation.z=side*-.65;}mesh(new T.TorusGeometry(.13,.012,8,32,Math.PI),gold,medal,0,-.12,.1).rotation.z=Math.PI;}
+    if(i===5){orb(.12,paleGold,medal,0,0,.1);const orbit=mesh(new T.TorusGeometry(.2,.015,10,64),cyan,medal,0,0,.1);orbit.rotation.set(.65,.25,-.4);}
+    const lock=new T.Group();lock.position.set(.22,-.25,.23);root.add(lock);locks.push(lock);lock.visible=i>=3;
+    box(.19,.16,.07,darkMetal,lock);mesh(new T.TorusGeometry(.065,.018,10,32,Math.PI),paleGold,lock,0,.075,0);orb(.018,amber,lock,0,.01,.045);
+    const target=mesh(new T.PlaneGeometry(1.25,1.2),new T.MeshBasicMaterial({visible:false}),root,0,0,.4);materials.push(target.material);target.userData.badge=i;hitTargets.push(target);
+    if(i>=3)medal.scale.setScalar(.85);
+  }
+  function setBadge(index:number,unlocked:boolean){if(index<0||index>=6)return;halos.forEach((h,i)=>{h.visible=i===index;});locks[index].visible=!unlocked;medals[index].scale.setScalar(unlocked?1:.85);renderer.shadowMap.needsUpdate=true;dirty=true;}
+  const raycaster=new T.Raycaster();
+  const pick=(event:PointerEvent)=>{const r=renderer.domElement.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1),camera);const hit=raycaster.intersectObjects(hitTargets)[0];if(hit)selected(hit.object.userData.badge);};
+  renderer.domElement.addEventListener('pointerup',pick);
+
   // Batch opaque static geometry to make high-detail fittings affordable on the web.
   scene.updateMatrixWorld(true);
   const batches=new Map<T.Material,{objects:T.Mesh[];geometries:T.BufferGeometry[]}>();
-  scene.traverse(o=>{if(!(o instanceof T.Mesh)||o===floor||o===backdrop||o===glass||Array.isArray(o.material))return;const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);const b=batches.get(o.material)??{objects:[],geometries:[]};b.objects.push(o);b.geometries.push(g);batches.set(o.material,b);});
+  const isBadge=(o:T.Object3D):boolean=>badgeRoots.includes(o as T.Group)||(o.parent!==null&&isBadge(o.parent));
+  scene.traverse(o=>{if(isBadge(o)||!(o instanceof T.Mesh)||o===floor||o===backdrop||o===glass||Array.isArray(o.material))return;const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);const b=batches.get(o.material)??{objects:[],geometries:[]};b.objects.push(o);b.geometries.push(g);batches.set(o.material,b);});
   for(const [m,b] of batches){const g=mergeGeometries(b.geometries);if(g){mesh(g,m,scene);b.objects.forEach(o=>{o.removeFromParent();o.geometry.dispose();});}b.geometries.forEach(g=>g.dispose());}
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
   const renderTarget=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:4});
@@ -204,15 +264,16 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   const bloom=new UnrealBloomPass(new T.Vector2(1,1),.2,.12,1.5);composer.addPass(bloom);
   const output=new OutputPass();composer.addPass(output);
   const views:Record<StudyView,{eye:T.Vector3;target:T.Vector3;fov:number}>={
-    samen:{eye:V(4,5.3,14),target:V(0,2.6,0),fov:43},
+    samen:{eye:V(4,5.3,16),target:V(.8,2.6,0),fov:46},
     podium:{eye:V(5.9,4.7,9.2),target:V(1.65,.65,1.2),fov:39},
     vitrine:{eye:V(-.4,3.2,7.8),target:V(-2.55,2.7,-1.25),fov:39},
+    lintjes:{eye:V(5.5,3.4,6.5),target:V(4.75,2.75,-2.8),fov:39},
     koepel:{eye:V(0,5.5,15.7),target:V(0,4,-1),fov:62},
   };
   let active:StudyView='samen';
   const resize=()=>{
     const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;
-    const v=views[active],factor=w/h<1?(active==='samen'?1.95:active==='koepel'?1.7:1.3):1;
+    const v=views[active],factor=w/h<1?(active==='samen'?1.95:active==='koepel'?1.7:active==='lintjes'?1.65:1.3):1;
     // Widen the lens on narrow screens instead of moving the camera outside the shell.
     camera.aspect=w/h;camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(v.fov/2))*factor));
     camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);
@@ -222,5 +283,5 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   const lost=(e:Event)=>{e.preventDefault();renderer.setAnimationLoop(null);failed();};renderer.domElement.addEventListener('webglcontextlost',lost);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
   renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
-  return {view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
+  return {badge:setBadge,view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('pointerup',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
 }

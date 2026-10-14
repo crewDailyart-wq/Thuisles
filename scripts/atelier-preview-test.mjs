@@ -68,12 +68,27 @@ try {
     await page.goto('http://127.0.0.1:4320/atelier-prototype/studie');
     await page.locator('.as[data-status="ready"]').waitFor({timeout:60000});
     assert.equal(await page.locator('.as-canvas').getAttribute('data-panorama'),'ready');
-    for (const [view,label] of [['samen','Het geheel'],['podium','Het podium'],['vitrine','De vitrine'],['koepel','De koepel']]) {
+    for (const [view,label] of [['samen','Het geheel'],['podium','Het podium'],['vitrine','De vitrine'],['koepel','De koepel'],['lintjes','Lintjes']]) {
       await page.getByRole('button',{name:label,exact:true}).click();
       await page.waitForTimeout(500);
       assert.equal(await page.locator('.as').getAttribute('data-view'),view);
       await page.screenshot({path:`${dir}/study-${name}-${view}.png`});
     }
+    const storage=await page.evaluate(()=>JSON.stringify({...localStorage}));
+    await page.getByRole('button',{name:'Sterrenverkenner',exact:true}).focus();
+    await page.keyboard.press('Enter');
+    assert.equal(await page.locator('.as-badge-state').textContent(),'Nog vergrendeld');
+    await page.getByRole('button',{name:'Ontgrendel voorbeeld',exact:true}).click();
+    assert.equal(await page.locator('.as-badge-state').textContent(),'Ontgrendeld in deze demo');
+    await page.waitForTimeout(500);
+    await page.screenshot({path:`${dir}/study-${name}-badge-unlocked.png`});
+    assert.equal(await page.evaluate(()=>JSON.stringify({...localStorage})),storage);
+    const bounds=await page.locator('.as-badges').boundingBox();
+    assert.ok(bounds&&bounds.x>=0&&bounds.y>=0&&bounds.x+bounds.width<=width&&bounds.y+bounds.height<=height,'Badge controls fit viewport');
+    await page.reload();await page.locator('.as[data-status="ready"]').waitFor();
+    await page.getByRole('button',{name:'Lintjes',exact:true}).click();
+    await page.getByRole('button',{name:'Sterrenverkenner',exact:true}).click();
+    assert.equal(await page.locator('.as-badge-state').textContent(),'Nog vergrendeld','Demo unlock resets on reload');
     await page.getByRole('button',{name:'Gloed aan'}).click();
     assert.equal(await page.getByRole('button',{name:'Gloed uit'}).getAttribute('aria-pressed'),'false');
     await page.screenshot({path:`${dir}/study-${name}-no-glow.png`});
