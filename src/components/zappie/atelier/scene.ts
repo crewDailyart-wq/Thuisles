@@ -377,6 +377,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
     const dt = Math.min((time - last) / 1000 || 0.016, 0.05); last = time; elapsed += dt;
     const blend = reducedMotion.matches ? 1 : 1 - Math.exp(-dt * 4.5);
     camera.position.lerp(goalEye, blend); aim.lerp(goalAim, blend); camera.lookAt(aim);
+    camera.updateMatrixWorld();
     for (const [id, obj] of itemObjects) {
       const selected = Object.values(currentOutfit).includes(id);
       const scale = selected || hovered === id ? 1.14 : 1;
@@ -390,7 +391,9 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
       const item = ITEMS.find(i => i.id === id);
       const visible = item ? item.station === active : active === 'podium';
       element.hidden = !visible || point.z > 1 || Math.abs(point.x) > 1.1 || Math.abs(point.y) > 1.1;
-      element.style.transform = `translate(-50%,-50%) translate(${(point.x * 0.5 + 0.5) * width}px,${(-point.y * 0.5 + 0.5) * height}px)`;
+      const margin = element.offsetWidth / 2 + 12;
+      const x = Math.max(margin, Math.min(width - margin, (point.x * 0.5 + 0.5) * width));
+      element.style.transform = `translate(-50%,-50%) translate(${x}px,${(-point.y * 0.5 + 0.5) * height}px)`;
     }
     renderer.render(scene, camera); dirty = false;
     if (!ready) { ready = true; onReady(); }
