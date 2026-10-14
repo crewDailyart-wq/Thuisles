@@ -40,7 +40,7 @@ try {
         const bounds = await button.boundingBox();
         assert.ok(bounds && bounds.x >= 0 && bounds.x + bounds.width <= width && bounds.y >= 0 && bounds.y + bounds.height <= height, 'Object control is inside viewport');
         await button.click();
-        assert.equal(await button.getAttribute('aria-pressed'), 'true');
+        assert.equal(await page.getByRole('button', { name: `${item} ✓ Aan`, exact: true }).getAttribute('aria-pressed'), 'true');
         await page.screenshot({ path: `${dir}/${name}-${id}.png` });
       }
       await page.getByRole('button', { name: 'Bekijk Zappie' }).click();

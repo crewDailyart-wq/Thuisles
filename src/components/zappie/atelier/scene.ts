@@ -166,7 +166,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
       const h = 1.7 + random() * 3.1, radius = 0.35 + random() * 0.28;
       cyl(radius, radius * 1.05, h, cream, g, bx, 3 + h / 2, bz, 12);
       cyl(radius * 1.3, radius * 1.3, 0.15, gold, g, bx, 3 + h, bz, 16);
-      const dome = orb(radius * 1.23, teal, g, bx, 3 + h + 0.08, bz); dome.scale.y = 1.4;
+      const dome = mesh(new T.SphereGeometry(radius * 1.23, 24, 14, 0, Math.PI * 2, 0, Math.PI / 2), teal, g, bx, 3 + h + 0.08, bz); dome.scale.y = 1.4;
       cyl(0.025, 0.025, 0.65, gold, g, bx, 3 + h + radius * 1.5, bz, 6);
       for (let j = 0; j < 3; j++) box(0.1, 0.36, 0.08, blue, g, bx + (j - 1) * 0.22, 3 + h * 0.64, bz + radius, 0.015);
     }
@@ -174,7 +174,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
     const fall = mat('#a4f1ef', 0.25, 0.28, '#388d9c');
     box(0.55, 4.6, 0.1, fall, g, 1.0, 0.7, 3.0, 0.03);
   }
-  island(-16, -25, 1.7); island(16, -34, 2); island(-3, -48, 2.6); island(31, -62, 2.6);
+  island(-16, -30, 1.35); island(16, -38, 1.65); island(-3, -55, 2); island(31, -67, 2.1);
   const cloudMat = mat('#f4fbf7', 0, 1);
   for (let i = 0; i < 8; i++) {
     const g = new T.Group(); g.position.set(-65 + i * 19, 16 + random() * 8, -75); scene.add(g);
@@ -250,9 +250,10 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
     const p = PLACES[station];
     const cabinet = new T.Group(); cabinet.position.copy(p); scene.add(cabinet);
     // Deep blue niche; each arch, shelf and fitting is a separate mesh.
-    box(2.95, 4.15, 0.5, deep, cabinet, 0, 2.05, -0.38, 0.2);
-    const top = mesh(new T.SphereGeometry(1.45, 32, 16, 0, Math.PI, 0, Math.PI / 2), deep, cabinet, 0, 3.65, -0.38);
-    top.scale.z = 0.2;
+    const niche = new T.Shape();
+    niche.moveTo(-1.45, 0); niche.lineTo(-1.45, 3.5);
+    niche.absarc(0, 3.5, 1.45, Math.PI, 0, true); niche.lineTo(1.45, 0); niche.closePath();
+    mesh(new T.ExtrudeGeometry(niche, { depth: 0.35, bevelEnabled: true, bevelSize: 0.04, bevelThickness: 0.04, bevelSegments: 2, steps: 1 }), deep, cabinet, 0, 0, -0.4);
     const frame = new T.Group(); frame.position.z = 0.12; cabinet.add(frame);
     arch(2.8, 3.5, 0.07, frame, gold);
     arch(2.59, 3.5, 0.017, frame, warm);
@@ -279,7 +280,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
   svgCopy.setAttribute('xmlns', 'http://www.w3.org/2000/svg');
   svgCopy.setAttribute('width', '504'); svgCopy.setAttribute('height', '592');
   const style = document.createElementNS('http://www.w3.org/2000/svg', 'style');
-  style.textContent = '.zp-ogen-open,.zp-praat-golf{display:none}.zp-ogen-blij{display:block}';
+  style.textContent = '.zp-ogen-open,.zp-golf,.zp-arm-wijs{display:none}.zp-ogen-blij{display:inline}';
   svgCopy.prepend(style);
   const texture = new T.Texture(); texture.colorSpace = T.SRGBColorSpace;
   const spriteMat = new T.SpriteMaterial({ map: texture, transparent: true, depthWrite: false }); materials.push(spriteMat);
