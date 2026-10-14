@@ -34,7 +34,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     const m = new T.MeshPhysicalMaterial({color,metalness,roughness,clearcoat:coat,clearcoatRoughness:0.16}); materials.push(m); return m;
   };
   const gold=physical('#e7ae47',0.88,0.21), paleGold=physical('#ffe3a1',0.8,0.18);
-  const blue=physical('#073a8e',0.58,0.22,1), navy=physical('#061832',0.5,0.24,1);
+  const blue=physical('#043b9f',0.22,0.24,0.55), navy=physical('#061832',0.18,0.28,0.45);
   const inset=physical('#031026',0,0.8), velvet=physical('#0d3683',0.05,0.88);
   const lightMaterial=(color:string,intensity:number)=>{
     const m=new T.MeshStandardMaterial({color,emissive:color,emissiveIntensity:intensity,roughness:0.23}); materials.push(m); return m;
@@ -64,7 +64,6 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   cyl(16,16,.25,navy,scene,0,-.17);
   const inlays=new T.Group();scene.add(inlays);
   for(const r of [3.7,5.8,8.1,11])ring(r,.013,gold,inlays,.005);
-  for(let i=0;i<20;i++){const a=i*Math.PI/10;const seam=box(.012,.008,10,gold,inlays,Math.sin(a)*8,.006,Math.cos(a)*8);seam.rotation.y=a;}
 
   // Hero pedestal: turned profiles, inset curved panels, machined seams and glowing portholes.
   const podium=new T.Group();podium.position.set(1.65,0,1.2);scene.add(podium);
@@ -97,7 +96,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   // One finished cabinet, with a continuous curved arch and lit shelf recesses.
   const cabinet=new T.Group();cabinet.position.set(-2.55,0,-1.5);scene.add(cabinet);
   function archShape(r:number,spring:number){const s=new T.Shape();s.moveTo(-r,0);s.lineTo(-r,spring);s.absarc(0,spring,r,Math.PI,0,true);s.lineTo(r,0);s.closePath();return s;}
-  const extrude=(shape:T.Shape,depth:number,m:T.Material,z:number)=>mesh(new T.ExtrudeGeometry(shape,{depth,bevelEnabled:true,bevelThickness:.035,bevelSize:.035,bevelSegments:3,steps:1}),m,cabinet,0,.2,z);
+  const extrude=(shape:T.Shape,depth:number,m:T.Material,z:number)=>mesh(new T.ExtrudeGeometry(shape,{depth,curveSegments:48,bevelEnabled:true,bevelThickness:.035,bevelSize:.035,bevelSegments:3,steps:1}),m,cabinet,0,.2,z);
   extrude(archShape(1.5,3.7),.42,blue,-.54);
   extrude(archShape(1.31,3.68),.035,inset,-.065);
   function archTrim(r:number,spring:number,thickness:number,m:T.Material,z:number){
@@ -149,7 +148,8 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   scene.traverse(o=>{if(!(o instanceof T.Mesh)||o===floor||Array.isArray(o.material))return;const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);const b=batches.get(o.material)??{objects:[],geometries:[]};b.objects.push(o);b.geometries.push(g);batches.set(o.material,b);});
   for(const [m,b] of batches){const g=mergeGeometries(b.geometries);if(g){mesh(g,m,scene);b.objects.forEach(o=>{o.removeFromParent();o.geometry.dispose();});}b.geometries.forEach(g=>g.dispose());}
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
-  const composer=new EffectComposer(renderer);composer.addPass(new RenderPass(scene,camera));
+  const renderTarget=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:4});
+  const composer=new EffectComposer(renderer,renderTarget);composer.addPass(new RenderPass(scene,camera));
   const bloom=new UnrealBloomPass(new T.Vector2(1,1),.2,.12,1.5);composer.addPass(bloom);
   const output=new OutputPass();composer.addPass(output);
   const views:Record<StudyView,{eye:T.Vector3;target:T.Vector3}>={
@@ -158,7 +158,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     vitrine:{eye:V(-.4,3.2,7.8),target:V(-2.55,2.7,-1.25)},
   };
   let active:StudyView='samen',dirty=true,disposed=false,first=true;
-  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);const v=views[active];camera.position.copy(v.eye);if(w/h<1)camera.position.sub(v.target).multiplyScalar(active==='samen'?1.65:1.3).add(v.target);camera.lookAt(v.target);camera.updateMatrixWorld();dirty=true;};
+  const resize=()=>{const w=host.clientWidth,h=host.clientHeight;if(!w||!h)return;camera.aspect=w/h;camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);const v=views[active];camera.position.copy(v.eye);if(w/h<1)camera.position.sub(v.target).multiplyScalar(active==='samen'?1.95:1.3).add(v.target);camera.lookAt(v.target);camera.updateMatrixWorld();dirty=true;};
   const observer=new ResizeObserver(resize);observer.observe(host);resize();
   const lost=(e:Event)=>{e.preventDefault();renderer.setAnimationLoop(null);failed();};renderer.domElement.addEventListener('webglcontextlost',lost);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
