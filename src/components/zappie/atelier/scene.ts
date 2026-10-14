@@ -337,7 +337,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
   function updateCameraGoal() {
     goalEye.copy(VIEWS[active].eye); goalAim.copy(VIEWS[active].aim);
     if (width / height < 1.1) {
-      const factor = active === 'podium' ? Math.min(2.25, 1.08 / (width / height)) : 1.16;
+      const factor = active === 'podium' ? Math.min(2.25, 1.08 / (width / height)) : 1.6;
       goalEye.sub(goalAim).multiplyScalar(factor).add(goalAim);
     }
   }
