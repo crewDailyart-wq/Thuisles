@@ -1,4 +1,5 @@
 import * as T from 'three';
+import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 import { RoomEnvironment } from 'three/addons/environments/RoomEnvironment.js';
 import { RoundedBoxGeometry } from 'three/addons/geometries/RoundedBoxGeometry.js';
 import { ITEMS, type AtelierController, type ItemId, type Outfit, type Station } from './model';
@@ -285,7 +286,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
   const sprite = new T.Sprite(spriteMat); sprite.position.set(0, 2.06, 0); sprite.scale.set(1.99, 2.34, 1); mascotGroup.add(sprite);
   let disposed = false;
   const image = new Image();
-  image.onload = () => { if (!disposed) { texture.image = image; texture.needsUpdate = true; } };
+  image.onload = () => { if (!disposed) { texture.image = image; texture.needsUpdate = true; dirty = true; } };
   image.onerror = () => { if (!disposed) onError(); };
   image.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(new XMLSerializer().serializeToString(svgCopy))}`;
   const worn = new Map<ItemId, T.Group>();
@@ -302,6 +303,31 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
   const particleMat = new T.PointsMaterial({ color: '#ffdea0', size: 0.035, transparent: true, opacity: 0.75 }); materials.push(particleMat);
   const particles = new T.Points(particleGeo, particleMat); scene.add(particles);
 
+  // Batch static architecture by material: dozens of draw calls instead of hundreds.
+  const batches = new Map<T.Material, { meshes: T.Mesh[]; geometry: T.BufferGeometry[] }>();
+  const movingRoots = new Set<T.Object3D>([mascotGroup, ripples, ...itemObjects.values()]);
+  scene.updateMatrixWorld(true);
+  scene.traverse(object => {
+    if (!(object instanceof T.Mesh) || Array.isArray(object.material)) return;
+    let parent: T.Object3D | null = object;
+    while (parent) { if (movingRoots.has(parent)) return; parent = parent.parent; }
+    const geometry = object.geometry.index ? object.geometry.toNonIndexed() : object.geometry.clone();
+    geometry.applyMatrix4(object.matrixWorld);
+    const batch = batches.get(object.material) ?? { meshes: [], geometry: [] };
+    batch.meshes.push(object); batch.geometry.push(geometry); batches.set(object.material, batch);
+  });
+  for (const [material, batch] of batches) {
+    const combined = mergeGeometries(batch.geometry);
+    if (combined) {
+      const merged = mesh(combined, material);
+      merged.castShadow = material !== water && material !== cloudMat;
+      batch.meshes.forEach(m => { m.removeFromParent(); m.geometry.dispose(); });
+    }
+    batch.geometry.forEach(g => g.dispose());
+  }
+  renderer.shadowMap.autoUpdate = false;
+  renderer.shadowMap.needsUpdate = true;
+  let dirty = true, previousRender = 0;
   let active: Station = 'podium', currentOutfit: Outfit = {}, inView = true;
   let width = 1, height = 1, last = 0, elapsed = 0, hovered: ItemId | null = null;
   const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -318,7 +344,7 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
     width = host.clientWidth; height = host.clientHeight;
     if (!width || !height) return;
     camera.aspect = width / height; camera.updateProjectionMatrix();
-    renderer.setSize(width, height, false); updateCameraGoal();
+    renderer.setSize(width, height, false); updateCameraGoal(); dirty = true;
   };
   const observer = new ResizeObserver(resize); observer.observe(host); resize();
   camera.position.copy(goalEye); camera.lookAt(aim);
@@ -334,8 +360,8 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
     while (object && !object.userData.item) object = object.parent;
     return object?.userData.item ?? null;
   }
-  const move = (e: PointerEvent) => { hovered = pick(e); renderer.domElement.style.cursor = hovered ? 'pointer' : 'default'; };
-  const leave = () => { hovered = null; };
+  const move = (e: PointerEvent) => { hovered = pick(e); dirty = true; renderer.domElement.style.cursor = hovered ? 'pointer' : 'default'; };
+  const leave = () => { hovered = null; dirty = true; };
   const click = (e: PointerEvent) => { const id = pick(e); if (id) onPick(id); };
   const lost = (e: Event) => { e.preventDefault(); renderer.setAnimationLoop(null); onError(); };
   renderer.domElement.addEventListener('pointermove', move);
@@ -345,6 +371,8 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
   let ready = false;
   renderer.setAnimationLoop((time) => {
     if (disposed || document.hidden || !inView) { last = time; return; }
+    if ((reducedMotion.matches && !dirty) || time - previousRender < 32) return;
+    previousRender = time;
     const dt = Math.min((time - last) / 1000 || 0.016, 0.05); last = time; elapsed += dt;
     const blend = reducedMotion.matches ? 1 : 1 - Math.exp(-dt * 4.5);
     camera.position.lerp(goalEye, blend); aim.lerp(goalAim, blend); camera.lookAt(aim);
@@ -363,13 +391,13 @@ export function createAtelier({ host, mascot, anchors, onPick, onReady, onError 
       element.hidden = !visible || point.z > 1 || Math.abs(point.x) > 1.1 || Math.abs(point.y) > 1.1;
       element.style.transform = `translate(-50%,-50%) translate(${(point.x * 0.5 + 0.5) * width}px,${(-point.y * 0.5 + 0.5) * height}px)`;
     }
-    renderer.render(scene, camera);
+    renderer.render(scene, camera); dirty = false;
     if (!ready) { ready = true; onReady(); }
   });
   return {
-    station(next) { active = next; updateCameraGoal(); },
+    station(next) { active = next; updateCameraGoal(); dirty = true; },
     outfit(next) {
-      currentOutfit = next;
+      currentOutfit = next; dirty = true; renderer.shadowMap.needsUpdate = true;
       for (const [id, obj] of worn) obj.visible = Object.values(next).includes(id);
       spriteMat.color.set(next.kleuren === 'oceaan' ? '#72d9ff' : next.kleuren === 'goud' ? '#ffe083' : '#ffffff');
     },

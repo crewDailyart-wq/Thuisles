@@ -58,7 +58,7 @@ try {
       await page.reload(); await page.locator('.za[data-status="ready"]').waitFor();
       assert.equal(await page.locator('.za-chosen span').count(),0,'Reload resets outfit');
       report.screens.push({ name, width, height, result:'passed' });
-    } catch (error) { await page.screenshot({ path:`${dir}/${name}-failure.png` }); throw error; }
+    } catch (error) { console.error('Original failure:',error); report.errors.push(String(error)); await page.screenshot({ path:`${dir}/${name}-failure.png`,timeout:5000 }).catch(()=>{}); throw error; }
     finally { await context.close(); }
   }
   const fallback = await browser.newPage();
