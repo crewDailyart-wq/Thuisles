@@ -7,6 +7,7 @@
  */
 
 import { WERELDEN, type Wereld, type WereldId } from "@/lib/zappie/werelden";
+import type { LeerpadStand } from "@/lib/leerpad/model";
 
 /**
  * Wat er net verdiend is, zodat de startpagina het kan laten zien: tokens die
@@ -24,6 +25,8 @@ export type Gebeurtenis = {
 };
 
 export type Voortgang = {
+  /** Jaarpad groep 3, apart van de bestaande wereldmissies en beheersing. */
+  leerpad?: LeerpadStand;
   /** Alle verdiende tokens samen (heette eerst Zappie-punten). */
   punten: number;
   /** Hoeveel tokens de teller het laatst heeft laten zien; daarvandaan telt hij op. */

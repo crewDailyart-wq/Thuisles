@@ -63,7 +63,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   if (typeof window !== "undefined") zetSpeler(speler.id);
 
   const pad = usePathname();
-  const focus = pad.startsWith("/zappie/oefenen");
+  const focus = pad.startsWith("/zappie/oefenen") || pad.startsWith("/zappie/leerpad");
   const start = pad === "/zappie";
 
   return (
