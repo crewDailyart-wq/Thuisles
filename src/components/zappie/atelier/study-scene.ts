@@ -74,12 +74,18 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   panoramaTexture.colorSpace=T.SRGBColorSpace;
   panoramaTexture.anisotropy=Math.min(8,renderer.capabilities.getMaxAnisotropy());
   const backdropMaterial=new T.MeshBasicMaterial({map:panoramaTexture,side:T.DoubleSide,fog:false,toneMapped:false});
+  // Continue the top into cavern darkness instead of exposing the panorama rectangle.
+  backdropMaterial.onBeforeCompile=shader=>{
+    shader.fragmentShader=shader.fragmentShader.replace('#include <map_fragment>',`#include <map_fragment>
+      diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.00212, 0.00857, 0.03071), smoothstep(0.84, 1.18, vMapUv.y));`);
+  };
+  backdropMaterial.customProgramCacheKey=()=> 'atelier-cavern-ceiling-v1';
   materials.push(backdropMaterial);
   const backdropGeometry=new T.BufferGeometry(),bp:number[]=[],bu:number[]=[],bi:number[]=[];
   const radius=55,span=2,backdropHeight=radius*span/3;
   for(let i=0;i<=128;i++){
     const u=i/128,a=(u-.5)*span-.12;
-    for(const v of [0,1]){bp.push(Math.sin(a)*radius,5+(v-.5)*backdropHeight,-Math.cos(a)*radius);bu.push(u,v);}
+    for(const v of [0,2.6]){bp.push(Math.sin(a)*radius,5+(v-.5)*backdropHeight,-Math.cos(a)*radius);bu.push(u,v);}
     if(i<128){const n=i*2;bi.push(n,n+1,n+2,n+1,n+3,n+2);}
   }
   backdropGeometry.setAttribute('position',new T.Float32BufferAttribute(bp,3));

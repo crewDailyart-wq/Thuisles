@@ -64,6 +64,7 @@ try {
   for (const [name,width,height] of [['desktop',1440,1000],['tablet',1024,768],['mobile',390,844]]) {
     const page = await browser.newPage({viewport:{width,height},reducedMotion:'reduce'});
     page.on('pageerror',e=>report.errors.push(`study ${name}: ${e.message}`));
+    page.on('console',m=>{if(m.type()==='error' && /THREE.WebGLProgram|Shader Error/.test(m.text()))report.errors.push(m.text());});
     await page.goto('http://127.0.0.1:4320/atelier-prototype/studie');
     await page.locator('.as[data-status="ready"]').waitFor({timeout:60000});
     assert.equal(await page.locator('.as-canvas').getAttribute('data-panorama'),'ready');
