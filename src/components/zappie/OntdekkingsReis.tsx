@@ -323,11 +323,7 @@ function Kust() {
 
   return (
     <section className="zs-kust" aria-labelledby="zs-kop-kust" data-reis="kust">
-      <Illustratie
-        naam="kust"
-        alt="Zappies thuisbasis aan een turquoise zee, met blauwe koepels, een vuurtoren, watervallen en een stad tussen de bergen."
-        sizes="100vw"
-      />
+      {/* De kustillustratie is op 15 oktober 2026 met akkoord van de eigenaar weggehaald: hier eindigt de reis nu bij de aarde in de ruimtehemel. */}
       <div className="zs-kust-tekst">
         <h2 id="zs-kop-kust" className="zp-titel">
           Tot de volgende missie!

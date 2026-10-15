@@ -52,18 +52,20 @@
   z-index: 2;
 }
 
-/* De ruimte zoomt iets in en de sterren vervagen als we dalen. */
+/*
+  De ruimte zoomt iets in en de sterren vervagen als we dalen. Sinds de
+  kustillustratie weg is (15 oktober 2026) blijft de ruimte tot onderaan
+  zichtbaar en verdwijnt hij niet meer bij --zr-land.
+*/
 .zp[data-start="ja"] .zp-laag-ruimte {
   scale: calc(1 + var(--zr-scroll) * 0.16);
   transform-origin: 50% 78%;
-  opacity: calc(1 - var(--zr-land));
 }
 
 .zp[data-start="ja"] .zp-sterrenveld {
   opacity: calc(1 - var(--zr-scroll) * 0.6);
 }
 
-.zp[data-start="ja"] .zp-nevels,
 .zp[data-start="ja"] .zp-horizonlicht {
   opacity: calc(1 - var(--zr-land));
 }
@@ -1218,7 +1220,7 @@
 
 .zs-kust {
   position: relative;
-  height: clamp(460px, 58vw, 900px);
+  height: clamp(360px, 40vw, 560px);
   margin-top: clamp(-90px, -5vw, -40px);
   overflow: hidden;
 }

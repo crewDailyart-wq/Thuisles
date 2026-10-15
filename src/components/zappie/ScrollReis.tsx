@@ -19,8 +19,7 @@
  * alleen door rustig over te vloeien.
  */
 
-import { useEffect, useState } from "react";
-import { Illustratie } from "@/components/zappie/reis/Illustratie";
+import { useEffect } from "react";
 import { reisStand, useBewegingsstand, zetOmgevingRustig } from "@/components/zappie/reis/beweging";
 
 const begrens = (n: number) => Math.max(0, Math.min(1, n));
@@ -32,8 +31,6 @@ const glad = (n: number) => {
 export function ScrollReis() {
   const stand = useBewegingsstand();
   const rustig = stand !== "aan";
-  /* De kust achter de reis pas laden als hij bijna nodig is. */
-  const [kustNodig, zetKustNodig] = useState(false);
 
   useEffect(() => {
     const root = document.querySelector<HTMLElement>('.zp[data-start="ja"]');
@@ -55,7 +52,6 @@ export function ScrollReis() {
       const afdaling = glad(y / Math.max(1, plek.leren - h * 0.2));
       const wolk = glad(1 - Math.abs(kijkpunt - plek.wolken) / (h * 0.85));
       const land = glad((kijkpunt - plek.wolken) / Math.max(1, plek.atelier + h * 0.25 - plek.wolken));
-      if (land > 0 || afdaling > 0.6) zetKustNodig(true);
 
       reisStand.positie = rustig ? 0 : afdaling;
       root.style.setProperty("--zr-scroll", (rustig ? 0 : afdaling).toFixed(4));
@@ -104,7 +100,8 @@ export function ScrollReis() {
     <>
       <div className="zs-camera" aria-hidden="true">
         <div className="zs-lucht" />
-        <div className="zs-camera-kust">{kustNodig && <Illustratie naam="kust" sizes="100vw" />}</div>
+        {/* Hier stond de kustillustratie; op 15 oktober 2026 met akkoord van de eigenaar weggehaald. De ruimte blijft nu tot onderaan staan. */}
+        <div className="zs-camera-kust" />
         <div className="zs-mist zs-mist-links" />
         <div className="zs-mist zs-mist-rechts" />
       </div>
