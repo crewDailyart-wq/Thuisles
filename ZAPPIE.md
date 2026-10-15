@@ -254,6 +254,28 @@ Voor de volgende stap zijn losse beelden nodig (in dezelfde stijl):
 - Minder beweging (apparaat): alles staat stil, de knop is er dan niet.
 - Toetsenbord: zichtbare focusrand op de tegels.
 
+## De blauwe bovenbalk (15 oktober 2026)
+
+Opdracht van de eigenaar: "Voeg op de startpagina van Thuisles alleen een
+nieuwe blauwe bovenbalk toe." Code: `src/components/zappie/Bovenbalk.tsx`,
+opmaak in `src/components/zappie/bovenbalk.css`.
+
+- Links het logo **Thuisles** (niet Zappie, op verzoek) met een geel
+  sterretje; in het midden Start, Oefenen, Wereld en Beloningen, dezelfde
+  adressen als het oude menu (`MENU` in `Schil.tsx`); rechts een pil met het
+  plaatje en "Hoi, [naam]!" uit de database, het menu-icoon (naar `/meer`) en
+  het tandwiel (naar `/profiel`).
+- De balk staat vast bovenaan en blijft staan bij het scrollen. Op een groot
+  scherm 90 à 100 pixels hoog, op een kleiner liggend scherm (zoals een tablet
+  van 1024 breed) iets lager, zodat de werelden eronder vrij blijven.
+- Op telefoon en staande tablet zitten de vier knoppen achter het menu-icoon,
+  samen met Meer.
+- De kleuren staan als variabelen bovenaan `bovenbalk.css` (`--balk-...`).
+- **Alleen op de startpagina.** Daar wordt het zwevende Zappie-logo, menu en
+  profiel (en op telefoon de menubalk onderaan) niet meer getoond (keuze
+  eigenaar: "verbergen, alleen startpagina"). De code staat er nog in
+  `Schil.tsx`; Wereld, Beloningen en Mijn wereld houden die bovenkant.
+
 ## Bewust nog niet
 
 - **De voortgang staat in de browser** (`localStorage`), per kind. Er komt dus
