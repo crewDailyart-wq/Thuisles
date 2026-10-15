@@ -103,6 +103,84 @@
   object-position: 50% 60%;
 }
 
+/*
+  De ruimtehemel in code (15 oktober 2026), zie Ruimtehemel.tsx: lucht,
+  planeten in de zijranden en de aarde onderaan.
+*/
+.zp-rh {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+.zp-rh-lucht {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 45% 35% at 82% 18%, rgb(167 139 250 / 0.22), transparent 70%),
+    radial-gradient(ellipse 40% 30% at 12% 45%, rgb(34 211 238 / 0.12), transparent 70%),
+    radial-gradient(ellipse 75% 40% at 50% 112%, #3fa9f5 0%, rgb(63 169 245 / 0.3) 35%, transparent 70%),
+    linear-gradient(180deg, #0a1438 0%, #0d2264 60%, #10307f 100%);
+}
+
+.zp-rh-planeten {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  height: 100%;
+  will-change: transform;
+}
+
+.zp-rh-planeet {
+  position: absolute;
+  transform: translate(-50%, -50%);
+  animation: zp-rh-zweef var(--duur) ease-in-out var(--wacht) infinite alternate;
+}
+
+.zp-rh-planeet svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+@keyframes zp-rh-zweef {
+  from { translate: 0 -6px; rotate: -2deg; }
+  to { translate: 0 6px; rotate: 2deg; }
+}
+
+.zp-rh-aarde {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: clamp(110px, 20vh, 200px);
+}
+
+.zp-rh-aarde svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.zp-rh-draai-land { animation: zp-rh-draai 160s linear infinite; }
+.zp-rh-draai-wolken { animation: zp-rh-draai 100s linear infinite; }
+
+@keyframes zp-rh-draai {
+  from { transform: translateX(0); }
+  to { transform: translateX(-1000px); }
+}
+
+.zp-rh[data-rustig="ja"] * {
+  animation: none !important;
+}
+
+@media (max-width: 720px) {
+  .zp-rh-planeet { opacity: 0.55; scale: 0.65; }
+  .zp-rh-aarde { height: 100px; }
+}
+
 /* Nevels: groot, bijna doorzichtig, heel langzaam. */
 .zp-nevels {
   transform: translate3d(calc(var(--px) * -3px), calc(var(--py) * -2px), 0);

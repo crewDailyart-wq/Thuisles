@@ -4,7 +4,10 @@
  * Het heelal achter alle Zappie-schermen, in lagen.
  *
  * Van achter naar voor:
- *   1. de ruimteachtergrond van de eigenaar (het plaatje);
+ *   1. de ruimtehemel (`Ruimtehemel`): lucht, planeten en de aarde onderaan,
+ *      helemaal in code. Tot 15 oktober 2026 stond hier de ruimtefoto
+ *      (`space-earth-background-*`); die is op verzoek van de eigenaar
+ *      vervangen. De bestanden van de foto blijven staan;
  *   2. nevels die heel langzaam verschuiven, en een zachte gloed om de verre
  *      planeten;
  *   3. sterren in drie dieptes, gouden sterren, gouden stofjes en af en toe een
@@ -25,8 +28,8 @@
 import { useRef } from "react";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { useParallax } from "@/components/zappie/parallax";
+import { Ruimtehemel } from "@/components/zappie/Ruimtehemel";
 import { Sterrenveld } from "@/components/zappie/Sterrenveld";
-import { ASSETS } from "@/lib/zappie/werelden";
 
 export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
   const bewegingsstand = useBewegingsstand();
@@ -34,22 +37,10 @@ export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
   const laag = useRef<HTMLDivElement>(null);
   useParallax(laag, !rustig);
 
-  const maten = [828, 1280, 1672];
-  const set = (ext: string) => maten.map((b) => `${ASSETS}/space-earth-background-${b}.${ext} ${b}w`).join(", ");
   return (
     <div ref={laag} className="zp-heelal" aria-hidden="true" data-rustig={rustig ? "ja" : "nee"}>
       <div className="zp-laag zp-laag-ruimte">
-        <picture>
-          <source type="image/avif" srcSet={set("avif")} sizes="100vw" />
-          <img
-            src={`${ASSETS}/space-earth-background-1672.webp`}
-            srcSet={set("webp")}
-            sizes="100vw"
-            alt=""
-            fetchPriority="high"
-            decoding="async"
-          />
-        </picture>
+        <Ruimtehemel rustig={rustig} />
       </div>
       <div className="zp-laag zp-nevels">
         <span className="zp-nevel zp-nevel-1" />
