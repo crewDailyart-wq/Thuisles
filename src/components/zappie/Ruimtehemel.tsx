@@ -8,47 +8,76 @@
  * gemaakt uit. De bestanden van de foto blijven staan.
  *
  * Drie delen:
- *   1. de lucht: een verloop van donker naar blauw met zachte nevelvlekken;
- *   2. planeten als vlakke pictogrammen in de wereldkleuren, alleen in de
- *      zijranden zodat ze nooit achter de vakken staan. Ze schuiven bij het
- *      scrollen langzamer mee dan de inhoud (diepte), en hoe langer de pagina,
- *      hoe meer planeten er langskomen;
- *   3. de aarde onderaan, in dezelfde vlakke stijl, die heel langzaam draait.
+ *   1. de lucht: een verloop van donker naar blauw met zachte nevelvlekken die
+ *      bij het scrollen langzaam omhoog schuiven;
+ *   2. planeten als vlakke pictogrammen, alleen in de zijranden zodat ze nooit
+ *      achter de vakken staan. Ze schuiven bij het scrollen langzamer mee dan de
+ *      inhoud (diepte). Er staat er ongeveer één per 300 pixels, dus hoe langer
+ *      de pagina, hoe meer planeten er langskomen;
+ *   3. de aarde onderaan, die langzaam draait en groter wordt naarmate je
+ *      verder naar beneden scrolt: je vliegt er naartoe.
  *
- * De sterren komen nog steeds uit `Sterrenveld`. Bij "minder beweging" en
- * tijdens een missie (`rustig`) draait en schuift er niets.
+ * De voortgang van het scrollen (0 bovenaan, 1 onderaan) staat als
+ * `--rh-voortgang` op `.zp-rh`; de CSS doet de rest. De sterren komen nog steeds
+ * uit `Sterrenveld`. Bij "minder beweging" en tijdens een missie (`rustig`)
+ * draait en schuift er niets.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 
-const DIEPTE = 0.35;
+const DIEPTE = 0.5;
+const AFSTAND = 300;
 
-type Planeet = {
-  x: number;
-  y: number;
+type Ontwerp = {
   maat: number;
   kleur: string;
   donker: string;
   band?: string;
   banden?: [number, number][];
   kraters?: [number, number, number][];
+  vlek?: string;
   ring?: string;
 };
 
-/** x in procenten van de breedte, y in procenten van de hoogte van de laag. */
-const PLANETEN: Planeet[] = [
-  { x: 88, y: 5, maat: 130, kleur: "#A78BFA", donker: "#4C3A9E", band: "#C4B5FD", banden: [[34, 5], [46, 3], [58, 6]], ring: "#FDE68A" },
-  { x: 7, y: 13, maat: 72, kleur: "#22D3EE", donker: "#0E6C8C", band: "#67E8F9", banden: [[40, 4], [54, 6]] },
-  { x: 93, y: 27, maat: 88, kleur: "#4ADE80", donker: "#166534", kraters: [[38, 44, 5], [56, 34, 3], [48, 60, 4]] },
-  { x: 9, y: 37, maat: 42, kleur: "#FB923C", donker: "#9A3412", kraters: [[44, 46, 4], [56, 58, 3]] },
-  { x: 86, y: 50, maat: 56, kleur: "#CBD5E1", donker: "#475569", kraters: [[40, 40, 6], [58, 52, 4], [44, 62, 3], [60, 36, 2.5]] },
-  { x: 5, y: 62, maat: 150, kleur: "#FBBF24", donker: "#92400E", band: "#FDE68A", banden: [[30, 5], [42, 8], [60, 4]], ring: "#E0F2FE" },
-  { x: 94, y: 74, maat: 36, kleur: "#F472B6", donker: "#9D174D" },
-  { x: 8, y: 87, maat: 84, kleur: "#38BDF8", donker: "#075985", band: "#7DD3FC", banden: [[44, 5]], ring: "#C4B5FD" },
-  { x: 90, y: 95, maat: 64, kleur: "#A78BFA", donker: "#4C3A9E", kraters: [[42, 42, 5], [58, 56, 4]] },
+/** De planeten in de volgorde waarin ze langskomen; daarna begint de rij opnieuw. */
+const ONTWERPEN: Ontwerp[] = [
+  { maat: 150, kleur: "#A78BFA", donker: "#4C3A9E", band: "#C4B5FD", banden: [[34, 5], [46, 3], [58, 6]], ring: "#FDE68A" },
+  { maat: 180, kleur: "#FBBF24", donker: "#92400E", band: "#FDE68A", banden: [[30, 5], [42, 8], [60, 4]], ring: "#E0F2FE" },
+  { maat: 90, kleur: "#22D3EE", donker: "#0E6C8C", band: "#67E8F9", banden: [[40, 4], [54, 6]] },
+  { maat: 105, kleur: "#4ADE80", donker: "#166534", kraters: [[38, 44, 5], [56, 34, 3], [48, 60, 4]] },
+  { maat: 130, kleur: "#F59E0B", donker: "#78350F", band: "#FCD34D", banden: [[28, 4], [38, 6], [52, 4], [64, 5]], vlek: "#DC2626" },
+  { maat: 55, kleur: "#EF4444", donker: "#7F1D1D", kraters: [[42, 44, 4], [58, 56, 3]] },
+  { maat: 70, kleur: "#CBD5E1", donker: "#475569", kraters: [[40, 40, 6], [58, 52, 4], [44, 62, 3], [60, 36, 2.5]] },
+  { maat: 110, kleur: "#3B82F6", donker: "#1E3A8A", band: "#93C5FD", banden: [[36, 3], [50, 5], [62, 3]] },
+  { maat: 48, kleur: "#F472B6", donker: "#9D174D" },
+  { maat: 120, kleur: "#38BDF8", donker: "#075985", band: "#7DD3FC", banden: [[44, 5]], ring: "#C4B5FD" },
+  { maat: 60, kleur: "#FB923C", donker: "#9A3412", kraters: [[44, 46, 4], [56, 58, 3]] },
+  { maat: 85, kleur: "#2DD4BF", donker: "#115E59", band: "#99F6E4", banden: [[42, 6]], ring: "#F9A8D4" },
+  { maat: 75, kleur: "#C084FC", donker: "#581C87", kraters: [[42, 42, 5], [58, 56, 4]] },
+  { maat: 140, kleur: "#E9D5A6", donker: "#8B6B3A", band: "#F5E6C4", banden: [[32, 4], [46, 7], [60, 4]], ring: "#FDE68A" },
 ];
 
-function PlaneetBeeld({ p, id }: { p: Planeet; id: string }) {
+type Plek = { ontwerp: Ontwerp; x: number; y: number; duur: number; wacht: number };
+
+/** Vaste plekken, elke keer hetzelfde: afwisselend links en rechts, met een beetje speling. */
+function plekken(hoogte: number): Plek[] {
+  let zaad = 17;
+  const toeval = () => {
+    zaad = (zaad * 16807) % 2147483647;
+    return (zaad - 1) / 2147483646;
+  };
+  const lijst: Plek[] = [];
+  const aantal = Math.max(4, Math.ceil((hoogte - 130) / AFSTAND));
+  for (let i = 0; i < aantal; i++) {
+    const links = i % 2 === 1;
+    const x = links ? 2 + toeval() * 6 : 92 + toeval() * 6;
+    const y = Math.min(hoogte - 60, 150 + i * AFSTAND + (toeval() - 0.5) * 120);
+    lijst.push({ ontwerp: ONTWERPEN[i % ONTWERPEN.length], x, y, duur: 6 + (i % 4), wacht: -i });
+  }
+  return lijst;
+}
+
+function PlaneetBeeld({ p, id }: { p: Ontwerp; id: string }) {
   const ring = p.ring ? { cx: 50, cy: 50, rx: 48, ry: 12, fill: "none", stroke: p.ring, strokeWidth: 5, transform: "rotate(-18 50 50)" } : null;
   return (
     <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
@@ -67,6 +96,7 @@ function PlaneetBeeld({ p, id }: { p: Planeet; id: string }) {
       <g clipPath={`url(#${id}-bol)`}>
         <circle cx="50" cy="50" r="30" fill={p.kleur} />
         {p.banden?.map(([y, h]) => <rect key={y} x="0" y={y} width="100" height={h} fill={p.band} />)}
+        {p.vlek && <ellipse cx="58" cy="56" rx="7" ry="4.5" fill={p.vlek} opacity="0.85" />}
         {p.kraters?.map(([cx, cy, r]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r={r} fill={p.donker} opacity="0.6" />)}
         <circle cx="66" cy="62" r="34" fill={p.donker} opacity="0.45" />
         <circle cx="40" cy="38" r="7" fill="#fff" opacity="0.18" />
@@ -144,6 +174,7 @@ function Aarde() {
 }
 
 export function Ruimtehemel({ rustig }: { rustig: boolean }) {
+  const hemel = useRef<HTMLDivElement>(null);
   const laag = useRef<HTMLDivElement>(null);
   const [hoogte, zetHoogte] = useState<number | null>(null);
 
@@ -152,7 +183,7 @@ export function Ruimtehemel({ rustig }: { rustig: boolean }) {
     const meet = () => {
       const vh = window.innerHeight;
       const pagina = document.documentElement.scrollHeight;
-      zetHoogte(vh + Math.max(0, pagina - vh) * DIEPTE);
+      zetHoogte(Math.round(vh + Math.max(0, pagina - vh) * DIEPTE));
     };
     meet();
     const waarnemer = new ResizeObserver(meet);
@@ -164,49 +195,59 @@ export function Ruimtehemel({ rustig }: { rustig: boolean }) {
     };
   }, []);
 
-  /* Bij scrollen schuiven de planeten langzamer mee dan de inhoud. */
+  /* Bij scrollen: planeten langzamer mee dan de inhoud, en de voortgang voor de lucht en de aarde. */
   useEffect(() => {
     const el = laag.current;
-    if (!el) return;
+    const root = hemel.current;
+    if (!el || !root) return;
     if (rustig) {
       el.style.transform = "";
+      root.style.setProperty("--rh-voortgang", "0");
       return;
     }
     let frame = 0;
     const teken = () => {
       frame = 0;
-      el.style.transform = `translate3d(0, ${(-window.scrollY * DIEPTE).toFixed(1)}px, 0)`;
+      const y = window.scrollY;
+      /* Op een korte pagina verandert de aarde maar een beetje; pas na twee schermen scrollen is hij op zijn grootst. */
+      const max = Math.max(window.innerHeight * 2, document.documentElement.scrollHeight - window.innerHeight);
+      el.style.transform = `translate3d(0, ${(-y * DIEPTE).toFixed(1)}px, 0)`;
+      root.style.setProperty("--rh-voortgang", Math.min(1, y / max).toFixed(4));
     };
     const scroll = () => {
       if (!frame) frame = requestAnimationFrame(teken);
     };
     teken();
     window.addEventListener("scroll", scroll, { passive: true });
+    window.addEventListener("resize", scroll);
     return () => {
       window.removeEventListener("scroll", scroll);
+      window.removeEventListener("resize", scroll);
       cancelAnimationFrame(frame);
     };
   }, [rustig]);
 
+  const lijst = useMemo(() => (hoogte ? plekken(hoogte) : []), [hoogte]);
+
   return (
-    <div className="zp-rh" data-rustig={rustig ? "ja" : "nee"}>
+    <div ref={hemel} className="zp-rh" data-rustig={rustig ? "ja" : "nee"}>
       <div className="zp-rh-lucht" />
       <div ref={laag} className="zp-rh-planeten" style={hoogte ? { height: `${hoogte}px` } : undefined}>
-        {PLANETEN.map((p, i) => (
+        {lijst.map((plek, i) => (
           <div
             key={i}
             className="zp-rh-planeet"
             style={
               {
-                left: `${p.x}%`,
-                top: hoogte ? `${Math.max(150, Math.min((p.y / 100) * hoogte, hoogte - 80))}px` : `${p.y}%`,
-                width: `${p.maat}px`,
-                "--duur": `${6 + (i % 4)}s`,
-                "--wacht": `${-i}s`,
+                left: `${plek.x}%`,
+                top: `${plek.y}px`,
+                width: `${plek.ontwerp.maat}px`,
+                "--duur": `${plek.duur}s`,
+                "--wacht": `${plek.wacht}s`,
               } as React.CSSProperties
             }
           >
-            <PlaneetBeeld p={p} id={`zp-rh-p${i}`} />
+            <PlaneetBeeld p={plek.ontwerp} id={`zp-rh-p${i}`} />
           </div>
         ))}
       </div>

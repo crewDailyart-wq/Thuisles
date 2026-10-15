@@ -8,11 +8,13 @@
  *      helemaal in code. Tot 15 oktober 2026 stond hier de ruimtefoto
  *      (`space-earth-background-*`); die is op verzoek van de eigenaar
  *      vervangen. De bestanden van de foto blijven staan;
- *   2. nevels die heel langzaam verschuiven, en een zachte gloed om de verre
- *      planeten;
+ *   2. nevels die heel langzaam verschuiven;
  *   3. sterren in drie dieptes, gouden sterren, gouden stofjes en af en toe een
- *      vallende ster (`Sterrenveld`);
- *   4. lichtstralen bij de horizon.
+ *      vallende ster (`Sterrenveld`).
+ *
+ * De lichtstralen bij de horizon (de zon uit de foto) en de gloed om de
+ * planeten uit de foto zijn op 15 oktober 2026 met akkoord van de eigenaar
+ * weggehaald: zonder de foto hingen ze los in de lucht.
  *
  * De draaiende aarde (`DraaiendeAarde`, een WebGL-bol over de aarde in het
  * plaatje) staat hier niet meer in: op verzoek van de eigenaar (13 oktober
@@ -46,16 +48,8 @@ export function Heelal({ rustig: focus = false }: { rustig?: boolean }) {
         <span className="zp-nevel zp-nevel-1" />
         <span className="zp-nevel zp-nevel-2" />
         <span className="zp-nevel zp-nevel-3" />
-        <span className="zp-planeetgloed zp-planeetgloed-1" />
-        <span className="zp-planeetgloed zp-planeetgloed-2" />
       </div>
       <Sterrenveld rustig={rustig} />
-      <div className="zp-laag zp-horizonlicht">
-        <span className="zp-zon" />
-        <span className="zp-straal-licht zp-straal-licht-1" />
-        <span className="zp-straal-licht zp-straal-licht-2" />
-        <span className="zp-straal-licht zp-straal-licht-3" />
-      </div>
     </div>
   );
 }
