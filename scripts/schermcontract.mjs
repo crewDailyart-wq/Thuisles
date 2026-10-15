@@ -341,12 +341,11 @@ export const SCHERMCONTRACT = [
       "Woordenschat",
       "Engels",
       "Liever meteen een vrije missie?",
-      "Werkplaats",
-      "Bouw aan nieuwe voertuigen!",
-      "Onderzeeër",
-      "Vliegtuig",
-      "Raket",
-      "Op de tekentafel",
+      /*
+        De werkplaats (Werkplaats, Bouw aan nieuwe voertuigen!, Onderzeeër,
+        Vliegtuig, Raket, Op de tekentafel) is op 15 oktober 2026 op
+        uitdrukkelijk verzoek van de eigenaar weggehaald.
+      */
       "Zappies atelier",
       "Wat past bij jou?",
       "Petjes",
@@ -360,7 +359,6 @@ export const SCHERMCONTRACT = [
     ],
     naKlik: [
       { tekst: "komt binnenkort. Met Rekenen kun je nu al beginnen!", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "op een vak met Binnenkort tikken" },
-      { tekst: "Dit bouwplan gaat open als", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "het vliegtuig of de raket kiezen in de werkplaats" },
       { tekst: "Zappie past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
       { tekst: "Beweging aan", bron: "src/components/zappie/ScrollReis.tsx", na: "op Beweging uit tikken" },
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },

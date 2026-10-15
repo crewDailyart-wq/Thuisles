@@ -1362,10 +1362,25 @@
     align-items: stretch;
   }
 
+  /* Sinds de werkplaats weg is (15 oktober 2026) krijgen de vakken de hele breedte. */
   .zs-leren-raster {
-    grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
-    gap: clamp(28px, 3vw, 48px);
-    align-items: start;
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .zs-vakken {
+    gap: 18px;
+  }
+
+  .zs-vak {
+    min-height: clamp(150px, 12vw, 200px);
+  }
+
+  .zs-vak-beeld {
+    width: clamp(70px, 6.4vw, 100px);
+  }
+
+  .zs-vak-naam {
+    font-size: clamp(17px, 1.5vw, 22px);
   }
 
   /* De werkplaats begint op de hoogte van de vakken, niet van de kop. */

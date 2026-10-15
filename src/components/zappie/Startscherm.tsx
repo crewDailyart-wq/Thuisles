@@ -472,7 +472,7 @@ export function Startscherm() {
         </section>
 
         {/* 3 tot en met 6: vakken en werkplaats, wolken, atelier, de kust. */}
-        <OntdekkingsReis standen={standen} />
+        <OntdekkingsReis />
       </main>
     </>
   );
