@@ -110,24 +110,82 @@ function PlaneetBeeld({ p, id }: { p: Ontwerp; id: string }) {
   );
 }
 
+/*
+  De aarde (16 oktober 2026, naar het voorbeeld van de eigenaar): een vlakkere
+  horizon met een felle blauwe gloed erboven en dikke witte wolken die op de
+  rand liggen. De bol is een cirkel met straal STRAAL; de bovenkant ligt in
+  het midden op y = TOP van het 2000 × 300-vlak.
+*/
+const STRAAL = 5600;
+const TOP = 50;
+const MIDDEN_Y = TOP + STRAAL;
+
+/** Hoogte van de rand van de aarde op plek x. */
+function rand(x: number) {
+  return MIDDEN_Y - Math.sqrt(STRAAL * STRAAL - (x - 1000) * (x - 1000));
+}
+
+/** Wolken op de horizon: plek, grootte en of hij gespiegeld is. */
+const HORIZONWOLKEN: [number, number, boolean][] = [
+  [140, 0.85, false],
+  [330, 0.55, true],
+  [740, 0.62, false],
+  [1060, 0.42, true],
+  [1580, 0.6, false],
+  [1770, 0.85, true],
+  [1940, 0.55, false],
+];
+
+/** Eén wolk: overlappende bollen met een platte onderkant. */
+const BOLLEN: [number, number, number][] = [
+  [-112, -6, 34],
+  [-72, -26, 46],
+  [-22, -44, 58],
+  [34, -34, 50],
+  [80, -16, 38],
+  [114, -4, 26],
+];
+
+function Horizonwolk({ x, maat, spiegel }: { x: number; maat: number; spiegel: boolean }) {
+  const y = rand(x) + 10 * maat;
+  return (
+    <g transform={`translate(${x} ${y}) scale(${spiegel ? -maat : maat} ${maat})`}>
+      {BOLLEN.map(([bx, by, r]) => (
+        <circle key={bx} cx={bx} cy={by} r={r} fill="url(#zp-rh-wolkkleur)" />
+      ))}
+      <rect x="-130" y="-22" width="260" height="28" rx="14" fill="url(#zp-rh-wolkkleur)" />
+    </g>
+  );
+}
+
 function Aarde() {
+  const bol = { cx: 1000, cy: MIDDEN_Y };
   return (
     <div className="zp-rh-aarde">
+      <div className="zp-rh-gloed" />
       <svg viewBox="0 0 2000 300" preserveAspectRatio="xMidYMin slice" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <clipPath id="zp-rh-aardebol">
-            <circle cx="1000" cy="2700" r="2640" />
+            <circle {...bol} r={STRAAL} />
           </clipPath>
           <linearGradient id="zp-rh-nacht" x1="0" x2="1" y1="0" y2="0">
-            <stop offset="0" stopColor="#0A1438" stopOpacity="0" />
-            <stop offset="0.6" stopColor="#0A1438" stopOpacity="0.05" />
-            <stop offset="1" stopColor="#0A1438" stopOpacity="0.55" />
+            <stop offset="0" stopColor="#0A1438" stopOpacity="0.25" />
+            <stop offset="0.5" stopColor="#0A1438" stopOpacity="0" />
+            <stop offset="1" stopColor="#0A1438" stopOpacity="0.25" />
           </linearGradient>
           <linearGradient id="zp-rh-diepte" x1="0" x2="0" y1="0" y2="1">
-            <stop offset="0" stopColor="#FFFFFF" stopOpacity="0.12" />
-            <stop offset="0.5" stopColor="#0A1438" stopOpacity="0" />
-            <stop offset="1" stopColor="#0A1438" stopOpacity="0.35" />
+            <stop offset="0" stopColor="#BFE9FF" stopOpacity="0.45" />
+            <stop offset="0.25" stopColor="#FFFFFF" stopOpacity="0.05" />
+            <stop offset="1" stopColor="#0A1438" stopOpacity="0.3" />
           </linearGradient>
+          <linearGradient id="zp-rh-wolkkleur" x1="0" x2="0" y1="0" y2="1">
+            <stop offset="0" stopColor="#FFFFFF" />
+            <stop offset="0.55" stopColor="#F4FAFF" />
+            <stop offset="1" stopColor="#BFDDF7" />
+          </linearGradient>
+          <filter id="zp-rh-zacht" x="-10%" y="-200%" width="120%" height="500%">
+            <feGaussianBlur stdDeviation="9" />
+          </filter>
           <g id="zp-rh-land">
             <path fill="#3FAE5A" d="M60 120 C120 90 210 95 250 130 C290 165 260 210 200 220 C150 228 130 260 90 250 C50 240 70 200 40 180 C10 160 20 140 60 120 Z" />
             <path fill="#3FAE5A" d="M420 90 C480 70 560 85 590 110 C620 135 600 160 640 175 C690 195 680 240 620 250 C560 260 520 230 500 200 C480 170 430 175 410 145 C395 120 400 100 420 90 Z" />
@@ -148,12 +206,13 @@ function Aarde() {
             <ellipse cx="300" cy="250" rx="100" ry="12" opacity="0.6" />
           </g>
         </defs>
-        <circle cx="1000" cy="2700" r="2700" fill="#3FA9F5" opacity="0.06" />
-        <circle cx="1000" cy="2700" r="2680" fill="#5BBEF7" opacity="0.10" />
-        <circle cx="1000" cy="2700" r="2662" fill="#8FD3FF" opacity="0.18" />
-        <circle cx="1000" cy="2700" r="2650" fill="#A8DDFF" opacity="0.25" />
+        {/* De dampkring: lagen licht boven de rand, de binnenste het felst. */}
+        <circle {...bol} r={STRAAL + 70} fill="#3FA9F5" opacity="0.08" />
+        <circle {...bol} r={STRAAL + 40} fill="#5BBEF7" opacity="0.12" />
+        <circle {...bol} r={STRAAL + 20} fill="#8FD3FF" opacity="0.2" />
+        <circle {...bol} r={STRAAL + 8} fill="#BFE6FF" opacity="0.3" />
         <g clipPath="url(#zp-rh-aardebol)">
-          <rect x="0" y="0" width="2000" height="300" fill="#1D5FC4" />
+          <rect x="0" y="0" width="2000" height="300" fill="#2A7BE0" />
           <g className="zp-rh-draai zp-rh-draai-land">
             <use href="#zp-rh-land" />
             <use href="#zp-rh-land" x="1000" />
@@ -167,7 +226,14 @@ function Aarde() {
           <rect x="0" y="0" width="2000" height="300" fill="url(#zp-rh-diepte)" />
           <rect x="0" y="0" width="2000" height="300" fill="url(#zp-rh-nacht)" />
         </g>
-        <circle cx="1000" cy="2700" r="2640" fill="none" stroke="#BFE6FF" strokeWidth="3" opacity="0.8" />
+        {/* De felle rand van de dampkring. */}
+        <circle {...bol} r={STRAAL + 2} fill="none" stroke="#A8E4FF" strokeWidth="16" opacity="0.8" filter="url(#zp-rh-zacht)" />
+        <circle {...bol} r={STRAAL} fill="none" stroke="#E6F7FF" strokeWidth="3" />
+        <g className="zp-rh-horizonwolken">
+          {HORIZONWOLKEN.map(([x, maat, spiegel]) => (
+            <Horizonwolk key={x} x={x} maat={maat} spiegel={spiegel} />
+          ))}
+        </g>
       </svg>
     </div>
   );

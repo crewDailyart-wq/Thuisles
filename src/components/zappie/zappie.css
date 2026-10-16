@@ -175,9 +175,28 @@
 }
 
 .zp-rh-aarde svg {
+  position: relative;
   display: block;
   width: 100%;
   height: 100%;
+  overflow: visible;
+}
+
+/* De blauwe gloed boven de aarde, tot ver de lucht in. */
+.zp-rh-gloed {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: 30%;
+  height: 170%;
+  background:
+    radial-gradient(ellipse 60% 70% at 50% 100%, rgb(150 220 255 / 0.6), rgb(90 175 255 / 0.26) 45%, transparent 75%),
+    linear-gradient(0deg, rgb(70 160 255 / 0.34), transparent 70%);
+  pointer-events: none;
+}
+
+.zp-rh-horizonwolken {
+  filter: drop-shadow(0 6px 10px rgb(60 150 255 / 0.45));
 }
 
 .zp-rh-draai-land { animation: zp-rh-draai 160s linear infinite; }

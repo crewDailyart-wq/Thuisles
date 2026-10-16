@@ -179,35 +179,91 @@
   height: 60px;
 }
 
+/*
+  Groot liggend scherm (16 oktober 2026, naar het voorbeeld van de eigenaar).
+  Alle maten in u (zie zappie.css), zodat de balk, het logo, de knoppen en de
+  aarde op elke laptop dezelfde verhouding hebben, los van de schermgrootte.
+*/
 @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
   .zp[data-start="ja"] .zp-schil::before {
     display: block;
-    height: calc(var(--u) * 7.9);
+    height: calc(var(--u) * 7.2);
+    box-shadow: inset 0 -2px 0 rgb(140 200 255 / 0.25), 0 0.4rem 1.4rem rgb(2 10 40 / 0.4);
   }
 
+  /* Het logo links, verticaal in het midden van de balk. */
   .zp[data-start="ja"] .zp-logoplek {
     top: calc(var(--u) * 0.35);
-    left: calc(var(--u) * 2.4);
+    left: calc(var(--u) * 7.8);
   }
 
   .zp[data-start="ja"] .zp-logo-plaatje img {
-    height: calc(var(--u) * 7.2);
+    height: calc(var(--u) * 6.5);
+  }
+
+  /* Vier knoppen, precies in het midden, bijna zo hoog als de balk. */
+  .zp[data-start="ja"] .zp-menu {
+    top: calc(var(--u) * 0.7);
+    left: calc(50% - var(--u) * 23.1);
+  }
+
+  .zp[data-start="ja"] .zp-menu ul {
+    gap: var(--u);
   }
 
   .zp[data-start="ja"] .zp-menu-knop {
-    border-color: rgb(255 255 255 / 0.12);
+    width: calc(var(--u) * 10.8);
+    height: calc(var(--u) * 5.8);
+    gap: calc(var(--u) * 0.2);
+    border-color: rgb(255 255 255 / 0.1);
+    border-radius: calc(var(--u) * 0.8);
     background: var(--balk-knop);
     backdrop-filter: none;
+    box-shadow: inset 0 1px 0 rgb(255 255 255 / 0.1), 0 0.2em 0.5em rgb(2 10 40 / 0.35);
+    font-size: calc(var(--u) * 1.2);
   }
 
   .zp[data-start="ja"] .zp-menu-knop[aria-current="page"] {
-    border-color: rgb(255 255 255 / 0.55);
+    border-color: rgb(255 255 255 / 0.45);
     background: var(--balk-actief);
+    box-shadow: inset 0 2px 0 rgb(255 255 255 / 0.3), 0 0 1.2em rgb(34 181 245 / 0.45);
   }
 
+  .zp[data-start="ja"] .zp-menu-icoon {
+    width: calc(var(--u) * 2.3);
+    height: calc(var(--u) * 2.3);
+  }
+
+  /* Het profiel: een grote pil rechts, even hoog als de knoppen. */
   .zp[data-start="ja"] .zp-profiel {
-    border-color: rgb(255 255 255 / 0.12);
+    top: calc(var(--u) * 0.8);
+    right: calc(var(--u) * 2.4);
+    gap: 0.5em;
+    padding: 0.45em;
+    border-color: rgb(255 255 255 / 0.1);
     background: var(--balk-knop);
+    font-size: calc(var(--u) * 1.05);
+  }
+
+  .zp[data-start="ja"] .zp-profiel-plaatje {
+    width: 3.6em;
+    height: 3.6em;
+  }
+
+  .zp[data-start="ja"] .zp-profiel-knop {
+    width: 3.6em;
+    height: 3.6em;
+    padding: 0.9em;
+    background: rgb(255 255 255 / 0.1);
+  }
+
+  /*
+    De aarde ligt op elke laptop op dezelfde plek onder de werelden, net onder
+    "Mijn leerpad".
+  */
+  .zp[data-start="ja"] .zp-rh-aarde {
+    top: calc(var(--u) * 42.5);
+    height: auto;
   }
 
   /*
@@ -216,11 +272,11 @@
     loopt dat woord onder de menuknop door. Lexend is breder dan Nunito was.
   */
   .zp[data-start="ja"] .zp-profiel-groet {
-    max-width: 8.4em;
+    max-width: 9em;
     min-width: min-content;
     white-space: normal;
     line-height: 1.2;
-    font-size: max(11px, calc(var(--u) * 0.88));
+    font-size: 1em;
   }
 }
 
