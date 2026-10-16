@@ -3684,3 +3684,23 @@
     transition: none;
   }
 }
+
+/*
+  De werelden tijdelijk verborgen (TOON_WERELDEN in Startscherm.tsx, keuze
+  eigenaar 16 oktober 2026). Mijn leerpad schuift omhoog, direct onder het
+  vakkenpaneel.
+*/
+.zp-podium[data-werelden="nee"] .zp-werelden,
+.zp-podium[data-werelden="nee"] .zp-notitie-stappen {
+  display: none;
+}
+
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp-vakpaneel ~ .zp-podium[data-werelden="nee"] {
+    height: calc(var(--u) * 9);
+  }
+
+  .zp-podium[data-werelden="nee"] .zp-missieplek {
+    top: calc(var(--by) + var(--u) * 1.4);
+  }
+}

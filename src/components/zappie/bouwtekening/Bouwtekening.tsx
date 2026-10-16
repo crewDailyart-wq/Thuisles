@@ -127,7 +127,15 @@ export function Bouwtekening() {
         return { l, t, r, o, b: r - l, h: o - t };
       };
       const nieuw: Plekken = {};
-      const kaarten = [...document.querySelectorAll(".zp-werelden a, .zp-werelden button")].map((k) => k.getBoundingClientRect());
+      /*
+        De wereldkaarten; zijn die verborgen (TOON_WERELDEN in Startscherm.tsx),
+        dan liggen de bladen naast het vakkenpaneel.
+      */
+      const wereldkaarten = [...document.querySelectorAll(".zp-werelden a, .zp-werelden button")]
+        .map((k) => k.getBoundingClientRect())
+        .filter((r) => r.width > 0);
+      const paneel = document.querySelector(".zp-vk-kaart")?.getBoundingClientRect();
+      const kaarten = wereldkaarten.length ? wereldkaarten : paneel && paneel.width > 0 ? [paneel] : [];
       const missie = rect(".zp-missieplek");
       const panelen = rect(".zs-ontdekking");
       const beweging = rect(".zs-bewegingsknop");
@@ -136,7 +144,9 @@ export function Bouwtekening() {
         const rechts = Math.max(...kaarten.map((k) => k.right)) - basis.left;
         const boven = Math.min(...kaarten.map((k) => k.top)) - basis.top;
         const onder = Math.max(...kaarten.map((k) => k.bottom)) - basis.top;
-        nieuw.a = past({ x: 16, y: boven - 8, b: links - 32, h: onder - boven + 16 }, 150, 260);
+        /* Naast het vakkenpaneel iets lager, zodat het opschrift niet achter het logo valt. */
+        const zak = wereldkaarten.length ? 0 : 40;
+        nieuw.a = past({ x: 16, y: boven - 8 + zak, b: links - 32, h: onder - boven + 16 - zak }, 150, 260);
         nieuw.b = past({ x: rechts + 16, y: boven - 8, b: B - rechts - 32, h: onder - boven + 16 }, 150, 260);
         if (missie && panelen) {
           if (missie.l > 240) {

@@ -118,7 +118,11 @@ export function Wereldreis() {
         };
       };
 
-      const kaarten = [...document.querySelectorAll(".zp-werelden a, .zp-werelden button")].map((k) => rect(k)!);
+      const wereldkaarten = [...document.querySelectorAll(".zp-werelden a, .zp-werelden button")]
+        .filter((k) => k.getBoundingClientRect().width > 0)
+        .map((k) => rect(k)!);
+      const paneel = document.querySelector(".zp-vk-kaart");
+      const kaarten = wereldkaarten.length ? wereldkaarten : paneel ? [rect(paneel)!] : [];
       const vakkop = tekst("#vrij-oefenen .zs-kop");
       const vakkenLijst = [...document.querySelectorAll(".zs-vakken > *")].map((k) => rect(k)!);
       const vrij = tekst("#vrij-oefenen .zs-vrijemissie") ?? null;

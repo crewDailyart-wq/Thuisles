@@ -78,6 +78,14 @@ type Bericht = { tekst: string; stemming: Stemming };
 const TOON_ZAPPIE = false;
 
 /*
+  De drie werelden (Oceaan, Aarde, Universum) zijn sinds 16 oktober 2026
+  tijdelijk verborgen, op verzoek van de eigenaar ("haal de werelden even
+  tijdelijk helemaal weg"). Ze staan nog in de pagina, alleen niet in beeld.
+  Zet dit op true en ze zijn terug. Mijn leerpad blijft gewoon staan.
+*/
+const TOON_WERELDEN = false;
+
+/*
   Het gouden stippenpad tussen de werelden en de notitie "Kleine stappen.
   Grote werelden." staan sinds 14 oktober 2026 niet meer in beeld, op verzoek
   van de eigenaar (voorbeeld met de werelden in drie vakken). Zet dit op true
@@ -274,7 +282,7 @@ export function Startscherm() {
         */}
         <VakkenPaneel />
 
-        <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte">
+        <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte" data-werelden={TOON_WERELDEN ? "ja" : "nee"}>
           {TOON_ZAPPIE && (
           <p className="zp-hand zp-notitie zp-notitie-hulp" aria-hidden="true">
             Iets niet duidelijk?
