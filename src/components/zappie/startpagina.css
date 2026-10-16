@@ -3025,3 +3025,38 @@
 .bt[data-rustig="ja"] .bt-los {
   transform: rotate(var(--draai));
 }
+
+/*
+  De rustige bouwtekening (16 oktober 2026, keuze eigenaar). Zachte lijnen
+  die stil staan en meteen getekend zijn; het reageren op muis of vinger
+  blijft. Terug naar de volle versie: RUSTIG = false in Bouwtekening.tsx.
+*/
+.bt[data-sfeer="rustig"] {
+  --bt-lijn: rgb(242 249 255 / 0.34);
+  --bt-lijn-zacht: rgb(238 246 255 / 0.26);
+}
+
+.bt[data-sfeer="rustig"] .bt-blad > svg {
+  animation: none;
+}
+
+.bt[data-sfeer="rustig"] .bt-l {
+  stroke-dashoffset: 0;
+  transition: none;
+}
+
+.bt[data-sfeer="rustig"] .bt-stippel,
+.bt[data-sfeer="rustig"] .bt-schrift,
+.bt[data-sfeer="rustig"] .bt-handtekening {
+  opacity: 1;
+  transition: none;
+}
+
+/* Het raster een tikje zachter, en de spullen op tafel iets minder fel. */
+.bt[data-sfeer="rustig"] .bt-raster {
+  opacity: 0.7;
+}
+
+.bt[data-sfeer="rustig"] .bt-los {
+  opacity: 0.75;
+}

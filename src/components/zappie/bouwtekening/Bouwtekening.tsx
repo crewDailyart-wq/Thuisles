@@ -53,9 +53,22 @@ import { useVoortgang } from "@/lib/zappie/opslag";
 type Vak = { x: number; y: number; b: number; h: number };
 type Plekken = Partial<Record<"a" | "b" | "c" | "d" | "e" | "f" | "g" | "prototype" | "titel", Vak>>;
 /** Een los voorwerp op de werktafel: plek, breedte, draaiing en hoe "los" het ligt. */
-type Los = { soort: "koffie" | "potlood" | "gum" | "clip" | "liniaal" | "inkt"; x: number; y: number; b: number; draai: number; diepte: number };
+type Los = { naam: string; soort: "koffie" | "potlood" | "gum" | "clip" | "liniaal" | "inkt"; x: number; y: number; b: number; draai: number; diepte: number };
 /** Waar de stukken van de pagina beginnen, voor de kleurzones. */
 type Zones = { vakken: number; atelier: number; kust: number; einde: number };
+
+/*
+  De rustige bouwtekening (16 oktober 2026, keuze eigenaar: "combineer 1 en
+  2"): zachtere lijnen die niet trillen en zich niet meer zelf tekenen, en
+  minder bladen en spullen, zodat de werelden, Mijn leerpad en de vakken
+  eruit springen. Op muis of vinger reageren de tekeningen nog wel.
+
+  Niets is weggegooid. Zet RUSTIG op false en alles is terug zoals het was,
+  of zet een blad of voorwerp weer in TOON_BLADEN of TOON_SPULLEN.
+*/
+const RUSTIG = true;
+const TOON_BLADEN = new Set(["a", "f", "titel", "prototype"]);
+const TOON_SPULLEN = new Set(["potlood-boven", "koffie-vakken"]);
 
 /** Hoe ver een reactie reikt, in pixels rond het stukje tekening. */
 const BEREIK = 60;
@@ -184,8 +197,9 @@ export function Bouwtekening() {
       */
       const smal = B < 700;
       const spul: Los[] = [];
-      const zet = (soort: Los["soort"], x: number, y: number, b: number, draai: number, diepte: number) => {
-        if (x >= 4 && x + b <= B - 4) spul.push({ soort, x, y, b, draai, diepte });
+      const zet = (naam: string, soort: Los["soort"], x: number, y: number, b: number, draai: number, diepte: number) => {
+        if (RUSTIG && !TOON_SPULLEN.has(naam)) return;
+        if (x >= 4 && x + b <= B - 4) spul.push({ naam, soort, x, y, b, draai, diepte });
       };
       if (kaarten.length && missie) {
         const onder = Math.max(...kaarten.map((k) => k.bottom)) - basis.top;
@@ -194,20 +208,20 @@ export function Bouwtekening() {
           const boven = Math.min(...kaarten.map((k) => k.top)) - basis.top;
           const hoogste = Math.max(...kaarten.map((k) => k.top)) - basis.top;
           const tweede = kaarten.map((k) => k.left - basis.left).sort((a, b) => a - b)[1];
-          if (hoogste - boven > 34) zet("potlood", tweede + 60, boven + 4, 220, -4, 0.03);
+          if (hoogste - boven > 34) zet("potlood-boven", "potlood", tweede + 60, boven + 4, 220, -4, 0.03);
         }
-        zet("clip", smal ? B - 34 : (nieuw.b?.x ?? B - 120) + 6, (nieuw.b?.y ?? onder - 300) - 16, smal ? 20 : 26, 12, 0);
+        zet("clip", "clip", smal ? B - 34 : (nieuw.b?.x ?? B - 120) + 6, (nieuw.b?.y ?? onder - 300) - 16, smal ? 20 : 26, 12, 0);
       }
       if (vakken && !smal) {
-        if (vakkop) zet("koffie", B * 0.8, vakkop.t - 30, 110, 0, 0.05);
-        zet("inkt", B * 0.46, vakken.t - 120, 46, 0, 0.02);
+        if (vakkop) zet("koffie-vakken", "koffie", B * 0.8, vakkop.t - 30, 110, 0, 0.05);
+        zet("inkt", "inkt", B * 0.46, vakken.t - 120, 46, 0, 0.02);
       }
-      if (atelier && !smal) zet("liniaal", B * 0.05, atelier.t - 150, Math.min(320, B * 0.24), -5, 0.04);
+      if (atelier && !smal) zet("liniaal", "liniaal", B * 0.05, atelier.t - 150, Math.min(320, B * 0.24), -5, 0.04);
       if (atelier) {
-        if (!smal) zet("potlood", B * 0.68, atelier.t - 80, 240, -14, 0.08);
-        if (!smal) zet("gum", B * 0.86, atelier.t - 40, 80, 9, 0.06);
+        if (!smal) zet("potlood-atelier", "potlood", B * 0.68, atelier.t - 80, 240, -14, 0.08);
+        if (!smal) zet("gum", "gum", B * 0.86, atelier.t - 40, 80, 9, 0.06);
       }
-      if (kusttekst && !smal) zet("koffie", B * 0.6, kusttekst.t - 190, 100, 0, 0.05);
+      if (kusttekst && !smal) zet("koffie-slot", "koffie", B * 0.6, kusttekst.t - 190, 100, 0, 0.05);
       zetLos(spul);
     };
     meet();
@@ -313,6 +327,7 @@ export function Bouwtekening() {
   }, [plek, rustig]);
 
   const blad = (naam: keyof Plekken, inhoud: React.ReactNode, extra = "") => {
+    if (RUSTIG && !TOON_BLADEN.has(naam)) return null;
     const vak = plek?.[naam];
     if (!vak) return null;
     return (
@@ -323,7 +338,7 @@ export function Bouwtekening() {
   };
 
   return (
-    <div ref={laag} className="bt" aria-hidden="true" data-rustig={rustig ? "ja" : "nee"}>
+    <div ref={laag} className="bt" aria-hidden="true" data-rustig={rustig ? "ja" : "nee"} data-sfeer={RUSTIG ? "rustig" : "vol"}>
       {/* Het raster ligt verder weg: het schuift langzamer dan de pagina. */}
       <div className="bt-raster" />
       {zones && (
