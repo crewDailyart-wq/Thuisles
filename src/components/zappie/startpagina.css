@@ -2470,14 +2470,10 @@
   --bt-geel: #ffd447;
 
   background-color: var(--bt-papier);
-  background-image:
-    radial-gradient(ellipse 80% 70% at 50% 35%, transparent 55%, var(--bt-papier-rand) 100%),
-    linear-gradient(var(--bt-raster-groot) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bt-raster-groot) 1px, transparent 1px),
-    linear-gradient(var(--bt-raster) 1px, transparent 1px),
-    linear-gradient(90deg, var(--bt-raster) 1px, transparent 1px);
-  background-size: 100% 100vh, 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-  background-attachment: fixed, scroll, scroll, scroll, scroll;
+  /* Het raster zelf ligt in .bt-raster (Bouwtekening.tsx), voor de diepte. */
+  background-image: radial-gradient(ellipse 80% 70% at 50% 35%, transparent 55%, var(--bt-papier-rand) 100%);
+  background-size: 100% 100vh;
+  background-attachment: fixed;
 }
 
 /* De ruimtehemel weg: het tekenpapier is de achtergrond. */
@@ -2880,4 +2876,152 @@
 .zp[data-achtergrond="bouwtekening"] .zs-wolken {
   opacity: 0.16;
   filter: grayscale(1);
+}
+
+/* ---- Kleurzones, diepte en Tesla's werktafel (16 oktober 2026) ---- */
+
+/*
+  Het raster ligt "verder weg": het staat vast in beeld en schuift met 75%
+  van de snelheid van de pagina mee. Zo lijken de tekeningen erboven te
+  zweven. Bij Beweging uit is --scroll 0 en schuift het gewoon niet.
+*/
+.bt-raster {
+  position: fixed;
+  inset: 0;
+  background-image:
+    linear-gradient(var(--bt-raster-groot) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bt-raster-groot) 1px, transparent 1px),
+    linear-gradient(var(--bt-raster) 1px, transparent 1px),
+    linear-gradient(90deg, var(--bt-raster) 1px, transparent 1px);
+  background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
+  background-position: 0 calc(var(--scroll, 0) * -0.75px);
+}
+
+.bt[data-rustig="ja"] .bt-raster {
+  position: absolute;
+}
+
+/*
+  Zachte kleurzones: bovenaan dieper blauw, bij de vakken lichter, bij het
+  atelier een tikje paarsblauw, onderaan weer diep, als avond. De grenzen
+  volgen de echte plek van de stukken (--z-... uit Bouwtekening.tsx).
+*/
+.bt-zones {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(
+    180deg,
+    rgb(6 18 60 / 0.22) 0px,
+    rgb(6 18 60 / 0.06) calc(var(--z-vakken) - 420px),
+    rgb(150 178 255 / 0.11) var(--z-vakken),
+    rgb(150 178 255 / 0.07) calc(var(--z-atelier) - 520px),
+    rgb(112 82 214 / 0.17) var(--z-atelier),
+    rgb(112 82 214 / 0.1) calc(var(--z-kust) - 160px),
+    rgb(4 12 48 / 0.32) 100%
+  );
+}
+
+/* Losse spullen op het papier: ze liggen dichterbij en schuiven iets sneller. */
+.bt-los {
+  position: absolute;
+  /*
+    Verschuift alleen rond het moment dat het voorwerp in beeld is: precies in
+    het midden van het scherm ligt het op zijn plek. Bij Beweging uit staat
+    --scroll op 0 en --midden op 0; dan ligt alles stil.
+  */
+  transform: translate3d(0, calc((var(--scroll, 0) + var(--midden, 0) - var(--top, 0)) * var(--d) * -1px), 0) rotate(var(--draai));
+  filter: drop-shadow(2px 4px 0 rgb(5 15 50 / 0.22)) drop-shadow(1px 8px 8px rgb(5 15 50 / 0.18));
+}
+
+.bt-los svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  overflow: visible;
+}
+
+.bt-los-koffie,
+.bt-los-inkt {
+  filter: none;
+}
+
+.bt-koffie {
+  fill: none;
+  stroke: rgb(150 110 80 / 0.42);
+  stroke-linecap: round;
+}
+
+.bt-koffie-druppel {
+  fill: rgb(150 110 80 / 0.4);
+}
+
+.bt-inkt {
+  fill: rgb(6 16 52 / 0.5);
+}
+
+.bt-potlood-tekst {
+  fill: rgb(80 55 20 / 0.7);
+  font-family: var(--font-architect), sans-serif;
+  font-size: 11px;
+  letter-spacing: 0.12em;
+}
+
+.bt-liniaal-tekst {
+  fill: rgb(240 248 255 / 0.8);
+  font-family: var(--font-architect), sans-serif;
+  font-size: 10px;
+  text-anchor: middle;
+}
+
+/* Plakbandjes op de hoeken van de bladen. */
+.bt-blad-a::before,
+.bt-blad-b::before,
+.bt-blad-e::before,
+.bt-blad-e::after,
+.bt-blad-titel::before,
+.bt-blad-titel::after,
+.bt-blad-g::before {
+  content: "";
+  position: absolute;
+  z-index: 2;
+  width: 64px;
+  height: 20px;
+  background: rgb(246 238 212 / 0.3);
+  box-shadow: 0 1px 2px rgb(5 15 50 / 0.15);
+}
+
+.bt-blad-a::before { top: -6px; left: 30%; transform: rotate(-4deg); }
+.bt-blad-b::before { top: -6px; right: 22%; transform: rotate(5deg); }
+.bt-blad-e::before { top: -4px; left: -14px; transform: rotate(-38deg); }
+.bt-blad-e::after { top: -4px; right: -14px; transform: rotate(36deg); }
+.bt-blad-g::before { top: -2px; left: 40%; transform: rotate(-3deg); }
+.bt-blad-titel::before { top: -8px; left: -16px; transform: rotate(-40deg); }
+.bt-blad-titel::after { bottom: -8px; right: -16px; transform: rotate(-40deg); }
+
+/* Het ezelsoor rechtsonder: de hoek van het vel is omgekruld. */
+.bt-ezelsoor {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  width: 64px;
+  height: 64px;
+  background: linear-gradient(to top left, #0b2564 49.5%, #4a76d6 50.5%, #3762c4 100%);
+  filter: drop-shadow(-3px -3px 4px rgb(5 15 50 / 0.35));
+}
+
+@media (max-width: 699px) {
+  .bt-blad-e::before,
+  .bt-blad-e::after,
+  .bt-blad-titel::before,
+  .bt-blad-titel::after {
+    width: 44px;
+    height: 14px;
+  }
+}
+
+/* Beweging uit: de losse spullen liggen gewoon stil op hun plek. */
+.bt[data-rustig="ja"] .bt-los {
+  transform: rotate(var(--draai));
 }

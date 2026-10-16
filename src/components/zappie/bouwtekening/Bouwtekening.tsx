@@ -47,10 +47,15 @@ import {
   Vooraanzicht,
   Werkbank,
 } from "@/components/zappie/bouwtekening/Tekeningen";
+import { Gum, Inktvlek, Koffiekring, Liniaal, Paperclip, Potlood } from "@/components/zappie/bouwtekening/Werktafel";
 import { useVoortgang } from "@/lib/zappie/opslag";
 
 type Vak = { x: number; y: number; b: number; h: number };
 type Plekken = Partial<Record<"a" | "b" | "c" | "d" | "e" | "f" | "g" | "prototype" | "titel", Vak>>;
+/** Een los voorwerp op de werktafel: plek, breedte, draaiing en hoe "los" het ligt. */
+type Los = { soort: "koffie" | "potlood" | "gum" | "clip" | "liniaal" | "inkt"; x: number; y: number; b: number; draai: number; diepte: number };
+/** Waar de stukken van de pagina beginnen, voor de kleurzones. */
+type Zones = { vakken: number; atelier: number; kust: number; einde: number };
 
 /** Hoe ver een reactie reikt, in pixels rond het stukje tekening. */
 const BEREIK = 60;
@@ -65,6 +70,8 @@ function past(v: Vak, minB: number, minH: number) {
 export function Bouwtekening() {
   const laag = useRef<HTMLDivElement>(null);
   const [plek, zetPlek] = useState<Plekken | null>(null);
+  const [los, zetLos] = useState<Los[]>([]);
+  const [zones, zetZones] = useState<Zones | null>(null);
   const rustig = useBewegingsstand() !== "aan";
   const v = useVoortgang();
   const testritten = Object.values(v.missies).reduce((som, n) => som + n, 0);
@@ -156,8 +163,8 @@ export function Bouwtekening() {
           const b = Math.min(300, ruimteLinks - 24);
           const h = Math.min(kust.h - 24, b * 1.35);
           nieuw.prototype = { x: Math.max(24, (ruimteLinks - b) / 2), y: kust.o - h - 12, b, h };
-          const tb = Math.min(320, B - kusttekst.r - 48);
-          if (tb >= 200) nieuw.titel = { x: B - 24 - tb, y: kust.o - tb * 0.5 - 28, b: tb, h: tb * 0.5 };
+          const tb = Math.min(320, B - kusttekst.r - 88);
+          if (tb >= 200) nieuw.titel = { x: B - 64 - tb, y: kust.o - tb * 0.5 - 70, b: tb, h: tb * 0.5 };
         } else {
           const b = Math.min(240, B - 32);
           const h = Math.min(b * 1.3, kusttekst.t - kust.t - 12);
@@ -165,6 +172,36 @@ export function Bouwtekening() {
         }
       }
       zetPlek(nieuw);
+
+      /* De kleurzones: waar de vakken, het atelier en het slot beginnen. */
+      const atelier = rect("#zappies-atelier");
+      const einde = document.documentElement.scrollHeight;
+      if (vakken && atelier && kust) zetZones({ vakken: vakken.t, atelier: atelier.t, kust: kust.t, einde });
+
+      /*
+        De losse spullen op de werktafel, in de marges waar niets anders ligt.
+        Op een smal scherm alleen de kleine, en minder.
+      */
+      const smal = B < 700;
+      const spul: Los[] = [];
+      const zet = (soort: Los["soort"], x: number, y: number, b: number, draai: number, diepte: number) => {
+        if (x >= 4 && x + b <= B - 4) spul.push({ soort, x, y, b, draai, diepte });
+      };
+      if (kaarten.length && missie) {
+        const onder = Math.max(...kaarten.map((k) => k.bottom)) - basis.top;
+        zet("clip", smal ? B - 34 : (nieuw.b?.x ?? B - 120) + 6, (nieuw.b?.y ?? onder - 300) - 16, smal ? 20 : 26, 12, 0);
+      }
+      if (vakken && !smal) {
+        if (vakkop) zet("koffie", B * 0.8, vakkop.t - 30, 110, 0, 0.05);
+        zet("inkt", B * 0.46, vakken.t - 120, 46, 0, 0.02);
+      }
+      if (atelier && !smal) zet("liniaal", B * 0.05, atelier.t - 150, Math.min(320, B * 0.24), -5, 0.04);
+      if (atelier) {
+        if (!smal) zet("potlood", B * 0.68, atelier.t - 80, 240, -14, 0.08);
+        if (!smal) zet("gum", B * 0.86, atelier.t - 40, 80, 9, 0.06);
+      }
+      if (kusttekst && !smal) zet("koffie", B * 0.6, kusttekst.t - 190, 100, 0, 0.05);
+      zetLos(spul);
     };
     meet();
     const waarnemer = new ResizeObserver(meet);
@@ -208,11 +245,18 @@ export function Bouwtekening() {
   /* Tandwielen en wiel draaien mee met het scrollen. */
   useEffect(() => {
     const el = laag.current;
-    if (!el || rustig) return;
+    if (!el) return;
+    if (rustig) {
+      el.style.setProperty("--scroll", "0");
+      el.style.setProperty("--midden", "0");
+      return;
+    }
     let frame = 0;
     const draai = () => {
       frame = 0;
       el.style.setProperty("--rol", `${(window.scrollY * 0.3).toFixed(1)}deg`);
+      el.style.setProperty("--scroll", window.scrollY.toFixed(0));
+      el.style.setProperty("--midden", (window.innerHeight / 2).toFixed(0));
     };
     const scroll = () => {
       if (!frame) frame = requestAnimationFrame(draai);
@@ -273,6 +317,36 @@ export function Bouwtekening() {
 
   return (
     <div ref={laag} className="bt" aria-hidden="true" data-rustig={rustig ? "ja" : "nee"}>
+      {/* Het raster ligt verder weg: het schuift langzamer dan de pagina. */}
+      <div className="bt-raster" />
+      {zones && (
+        <div
+          className="bt-zones"
+          style={
+            {
+              "--z-vakken": `${zones.vakken}px`,
+              "--z-atelier": `${zones.atelier}px`,
+              "--z-kust": `${zones.kust}px`,
+              height: `${zones.einde}px`,
+            } as React.CSSProperties
+          }
+        />
+      )}
+      {los.map((l, i) => (
+        <div
+          key={i}
+          className={`bt-los bt-los-${l.soort}`}
+          style={{ left: l.x, top: l.y, width: l.b, "--draai": `${l.draai}deg`, "--d": l.diepte, "--top": l.y } as React.CSSProperties}
+        >
+          {l.soort === "koffie" && <Koffiekring zaad={i + 3} />}
+          {l.soort === "potlood" && <Potlood />}
+          {l.soort === "gum" && <Gum />}
+          {l.soort === "clip" && <Paperclip />}
+          {l.soort === "liniaal" && <Liniaal />}
+          {l.soort === "inkt" && <Inktvlek zaad={i + 7} />}
+        </div>
+      ))}
+      <div className="bt-ezelsoor" />
       <svg className="bt-filters" width="0" height="0" aria-hidden="true">
         {[1, 2, 3].map((n) => (
           <filter key={n} id={`bt-kriebel-${n}`}>
