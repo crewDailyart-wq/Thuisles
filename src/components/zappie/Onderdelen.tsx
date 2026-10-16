@@ -7,8 +7,25 @@ import Link from "next/link";
 import { MERKNAAM } from "@/lib/merk";
 import { ASSETS } from "@/lib/zappie/werelden";
 
-/** Het Zappie-logo, met code gemaakt: witte ronde letters en een geel sterretje. */
+/*
+  Het Zappie-logo. Sinds 15 oktober 2026 het plaatje van de eigenaar (robot
+  op de letters, public/assets/zappie/logo-zappie.*). Het oude logo in code
+  (witte letters en een geel sterretje) staat er nog: zet LOGO_PLAATJE op false
+  en het is terug.
+*/
+const LOGO_PLAATJE = true;
+
 export function ZappieLogo({ className = "" }: { className?: string }) {
+  if (LOGO_PLAATJE) {
+    return (
+      <Link href="/zappie" className={`zp-logo zp-logo-plaatje ${className}`} aria-label={`${MERKNAAM}, naar de start`}>
+        <picture>
+          <source type="image/webp" srcSet="/assets/zappie/logo-zappie.webp" />
+          <img src="/assets/zappie/logo-zappie.png" alt={MERKNAAM} width={720} height={339} draggable={false} />
+        </picture>
+      </Link>
+    );
+  }
   return (
     <Link href="/zappie" className={`zp-logo zp-titel ${className}`} aria-label={`${MERKNAAM}, naar de start`}>
       <span className="zp-logo-tekst">{MERKNAAM}</span>

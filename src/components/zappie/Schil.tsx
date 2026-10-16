@@ -9,11 +9,6 @@
  * logo linksboven en het profiel rechtsboven. Op telefoon en staande tablet
  * staat het menu als balk onderaan. Tijdens een missie valt de schil weg, op de
  * achtergrond na: het kind houdt dan alleen de sommen over.
- *
- * Op de startpagina (/zappie) staat sinds 15 oktober 2026 de blauwe bovenbalk
- * (Bovenbalk.tsx) in plaats van het logo, menu en profiel hieronder (keuze
- * eigenaar: "verbergen, alleen startpagina"). Op de andere Zappie-schermen
- * blijft het zoals het was.
  */
 
 import Link from "next/link";
@@ -28,7 +23,6 @@ import {
   IcoonTandwiel,
   IcoonWereldbol,
 } from "@/components/zappie/Iconen";
-import { Bovenbalk } from "@/components/zappie/Bovenbalk";
 import { ZappieLogo } from "@/components/zappie/Onderdelen";
 import { Heelal } from "@/components/zappie/Heelal";
 import { onthoudGetoond, useVoortgang, zetSpeler } from "@/lib/zappie/opslag";
@@ -75,13 +69,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   return (
     <div className="zp" data-focus={focus ? "ja" : "nee"} data-start={start ? "ja" : "nee"}>
       <Heelal rustig={focus} />
-      {start && (
-        <Bovenbalk
-          speler={speler}
-          knoppen={MENU.map(({ href, label, Icoon, actief }) => ({ href, label, Icoon, huidig: isActief(pad, actief) }))}
-        />
-      )}
-      {!focus && !start && (
+      {!focus && (
         <div className="zp-schil">
           <div className="zp-logoplek">
             <ZappieLogo />

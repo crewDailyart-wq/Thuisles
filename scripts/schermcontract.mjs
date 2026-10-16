@@ -293,16 +293,8 @@ export const SCHERMCONTRACT = [
       "src/lib/zappie/werelden.ts",
       "src/components/zappie/OntdekkingsReis.tsx",
       "src/components/zappie/ScrollReis.tsx",
-      "src/components/zappie/Bovenbalk.tsx",
     ],
     zichtbaar: [
-      /*
-        15 oktober 2026, op verzoek van de eigenaar: een blauwe bovenbalk met
-        het logo Thuisles, de vier knoppen en de pil met de naam van het kind
-        (Bovenbalk.tsx). Op de startpagina vervangt hij het zwevende logo,
-        menu en profiel uit Schil.tsx; die code blijft staan.
-      */
-      "Thuisles",
       /*
         "Begin je missie" heet sinds 14 oktober 2026 "Mijn leerpad", op verzoek
         van de eigenaar (voorbeeld met de werelden in drie vakken).
@@ -375,11 +367,6 @@ export const SCHERMCONTRACT = [
       { tekst: 'href: "/rekenen"', bron: "src/components/zappie/Schil.tsx", na: "op Oefenen tikken (het rekenscherm)" },
       { tekst: 'href="/meer"', bron: "src/components/zappie/Schil.tsx", na: "op het menuknopje naast het tandwiel tikken" },
       { tekst: 'href="/profiel"', bron: "src/components/zappie/Schil.tsx", na: "op het tandwiel tikken" },
-      /* De blauwe bovenbalk (15 oktober 2026). */
-      { tekst: "Hoi, ${speler.naam}!", bron: "src/components/zappie/Bovenbalk.tsx", na: "een kind kiezen (de naam komt uit de database)" },
-      { tekst: 'href="/meer"', bron: "src/components/zappie/Bovenbalk.tsx", na: "op het menu-icoon in de bovenbalk tikken" },
-      { tekst: 'href="/profiel"', bron: "src/components/zappie/Bovenbalk.tsx", na: "op het tandwiel in de bovenbalk tikken" },
-      { tekst: "<span>Meer</span>", bron: "src/components/zappie/Bovenbalk.tsx", na: "op telefoon het menu-icoon openen" },
     ],
   },
   {

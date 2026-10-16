@@ -350,6 +350,13 @@
   font-size: 34px;
 }
 
+/* Het logo als plaatje (Onderdelen.tsx, LOGO_PLAATJE). */
+.zp-logo-plaatje img {
+  display: block;
+  width: auto;
+  height: 52px;
+}
+
 .zp-logozin {
   display: none;
 }
@@ -1900,6 +1907,10 @@
 
   .zp-schil .zp-logo {
     font-size: calc(var(--u) * 6);
+  }
+
+  .zp-logo-plaatje img {
+    height: calc(var(--u) * 6.4);
   }
 
   .zp-logozin {

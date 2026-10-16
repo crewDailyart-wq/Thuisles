@@ -148,18 +148,66 @@
 /* Menu en de missieknop op de startpagina                                    */
 /* ------------------------------------------------------------------------- */
 
-/* Een donkere band achter het menu zodra de pagina eronder door schuift. */
+/*
+  De kleuren van de blauwe balk achter het logo en de menuknoppen
+  (15 oktober 2026, op verzoek van de eigenaar). Hier aanpassen.
+*/
+:root {
+  --balk-blauw-van: #1e4fc2;
+  --balk-blauw-naar: #2a5fd8;
+  --balk-knop: #10235a;
+  --balk-actief: #22b5f5;
+}
+
+/*
+  De blauwe balk: staat vast bovenaan, achter het logo, de vier knoppen en het
+  profiel. (Was een donkere band die pas bij het scrollen verscheen.)
+*/
+.zp[data-start="ja"] .zp-schil::before {
+  height: 72px;
+  background: linear-gradient(90deg, var(--balk-blauw-van), var(--balk-blauw-naar));
+  box-shadow: 0 0.35rem 1.2rem rgb(2 10 40 / 0.35);
+}
+
+.zp[data-start="ja"] .zp-logoplek {
+  top: 6px;
+}
+
+.zp[data-start="ja"] .zp-logo-plaatje img {
+  display: block;
+  width: auto;
+  height: 60px;
+}
+
 @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
   .zp[data-start="ja"] .zp-schil::before {
     display: block;
-    height: calc(var(--u) * 10.5);
-    background: linear-gradient(180deg, rgb(4 20 56 / 0.96), rgb(4 20 56 / 0.88) 68%, rgb(4 20 56 / 0));
-    opacity: 0;
-    transition: opacity 0.3s ease;
+    height: calc(var(--u) * 7.9);
   }
 
-  .zp[data-start="ja"][data-gescrold="ja"] .zp-schil::before {
-    opacity: 1;
+  .zp[data-start="ja"] .zp-logoplek {
+    top: calc(var(--u) * 0.35);
+    left: calc(var(--u) * 2.4);
+  }
+
+  .zp[data-start="ja"] .zp-logo-plaatje img {
+    height: calc(var(--u) * 7.2);
+  }
+
+  .zp[data-start="ja"] .zp-menu-knop {
+    border-color: rgb(255 255 255 / 0.12);
+    background: var(--balk-knop);
+    backdrop-filter: none;
+  }
+
+  .zp[data-start="ja"] .zp-menu-knop[aria-current="page"] {
+    border-color: rgb(255 255 255 / 0.55);
+    background: var(--balk-actief);
+  }
+
+  .zp[data-start="ja"] .zp-profiel {
+    border-color: rgb(255 255 255 / 0.12);
+    background: var(--balk-knop);
   }
 
   /*
