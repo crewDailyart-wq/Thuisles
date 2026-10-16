@@ -189,6 +189,13 @@ export function Bouwtekening() {
       };
       if (kaarten.length && missie) {
         const onder = Math.max(...kaarten.map((k) => k.bottom)) - basis.top;
+        /* Een tweede potlood helemaal bovenaan, in de strook boven Aarde en Universum. */
+        if (!smal && kaarten.length >= 3) {
+          const boven = Math.min(...kaarten.map((k) => k.top)) - basis.top;
+          const hoogste = Math.max(...kaarten.map((k) => k.top)) - basis.top;
+          const tweede = kaarten.map((k) => k.left - basis.left).sort((a, b) => a - b)[1];
+          if (hoogste - boven > 34) zet("potlood", tweede + 60, boven + 4, 220, -4, 0.03);
+        }
         zet("clip", smal ? B - 34 : (nieuw.b?.x ?? B - 120) + 6, (nieuw.b?.y ?? onder - 300) - 16, smal ? 20 : 26, 12, 0);
       }
       if (vakken && !smal) {
