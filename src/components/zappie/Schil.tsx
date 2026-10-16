@@ -67,19 +67,34 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   const focus = pad.startsWith("/zappie/oefenen") || pad.startsWith("/zappie/leerpad");
   const start = pad === "/zappie";
   /*
-    Proef van 16 oktober 2026: een rustige, lichte achtergrond, alleen te zien
-    met /zappie?achtergrond=rustig. Zonder dat stukje blijft alles zoals het is.
+    Proeven van 16 oktober 2026, alleen te zien met een stukje achter het
+    adres. Zonder dat stukje blijft alles zoals het is.
+    - /zappie?achtergrond=rustig: een rustige, lichte daglucht;
+    - /zappie?achtergrond=schrift: een bladzijde uit een rekenschrift met
+      potloodkrabbels van Zappie (startpagina.css, onderaan).
   */
-  const rustigeProef = start && zoek.get("achtergrond") === "rustig";
+  const gevraagd = zoek.get("achtergrond");
+  const proef = start && (gevraagd === "rustig" || gevraagd === "schrift") ? gevraagd : undefined;
 
   return (
     <div
       className="zp"
       data-focus={focus ? "ja" : "nee"}
       data-start={start ? "ja" : "nee"}
-      data-achtergrond={rustigeProef ? "rustig" : undefined}
+      data-achtergrond={proef}
     >
       <Heelal rustig={focus} />
+      {proef === "schrift" && (
+        /* Drie bijna gelijke vervormingen: om beurten gebruikt laten ze de potloodlijnen licht trillen. */
+        <svg className="zp-kriebelfilters" aria-hidden="true" width="0" height="0">
+          {[1, 2, 3].map((n) => (
+            <filter key={n} id={`zp-kriebel-${n}`}>
+              <feTurbulence type="fractalNoise" baseFrequency="0.035" numOctaves={2} seed={n * 7} />
+              <feDisplacementMap in="SourceGraphic" scale="2.6" />
+            </filter>
+          ))}
+        </svg>
+      )}
       {!focus && (
         <div className="zp-schil">
           <div className="zp-logoplek">
