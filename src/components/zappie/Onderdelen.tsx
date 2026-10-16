@@ -21,7 +21,7 @@ export function ZappieLogo({ className = "" }: { className?: string }) {
       <Link href="/zappie" className={`zp-logo zp-logo-plaatje ${className}`} aria-label={`${MERKNAAM}, naar de start`}>
         <picture>
           <source type="image/webp" srcSet="/assets/zappie/logo-zappie.webp" />
-          <img src="/assets/zappie/logo-zappie.png" alt={MERKNAAM} width={720} height={339} draggable={false} />
+          <img src="/assets/zappie/logo-zappie.png" alt={MERKNAAM} width={900} height={450} draggable={false} />
         </picture>
       </Link>
     );

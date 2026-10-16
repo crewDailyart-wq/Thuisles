@@ -170,13 +170,15 @@
 }
 
 .zp[data-start="ja"] .zp-logoplek {
-  top: 6px;
+  top: 3px;
+  left: 10px;
 }
 
+/* Het logo groot en duidelijk (16 oktober 2026, op verzoek van de eigenaar). */
 .zp[data-start="ja"] .zp-logo-plaatje img {
   display: block;
   width: auto;
-  height: 60px;
+  height: 66px;
 }
 
 /*
@@ -191,14 +193,18 @@
     box-shadow: inset 0 -2px 0 rgb(140 200 255 / 0.25), 0 0.4rem 1.4rem rgb(2 10 40 / 0.4);
   }
 
-  /* Het logo links, verticaal in het midden van de balk. */
+  /*
+    Het logo groot en duidelijk linksboven (16 oktober 2026, op verzoek van de
+    eigenaar): zo hoog als de balk, iets meer naar links zodat het niet tegen
+    de Oceaan-kaart komt.
+  */
   .zp[data-start="ja"] .zp-logoplek {
-    top: calc(var(--u) * 0.35);
-    left: calc(var(--u) * 7.8);
+    top: calc(var(--u) * 0.1);
+    left: calc(var(--u) * 3);
   }
 
   .zp[data-start="ja"] .zp-logo-plaatje img {
-    height: calc(var(--u) * 6.5);
+    height: calc(var(--u) * 7.6);
   }
 
   /* Vier knoppen, precies in het midden, bijna zo hoog als de balk. */
