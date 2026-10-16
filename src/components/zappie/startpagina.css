@@ -3060,3 +3060,289 @@
 .bt[data-sfeer="rustig"] .bt-los {
   opacity: 0.75;
 }
+
+/* ------------------------------------------------------------------------- */
+/* De reis door de drie werelden (vaste achtergrond, Wereldreis.tsx)         */
+/* ------------------------------------------------------------------------- */
+
+/*
+  16 oktober 2026, keuze eigenaar: Universum bovenaan, Aarde in het midden,
+  Oceaan onderaan. Waterverf voor lucht en water, geknipt papier ervoor. De
+  grenzen (--wr-lucht, --wr-zee) volgen de echte plek van de vakken en het
+  atelier. De kleuren blijven donker genoeg voor witte tekst.
+*/
+.zp[data-achtergrond="reis"] {
+  background-color: #111a4e;
+}
+
+.zp[data-achtergrond="reis"] .zp-heelal {
+  background: transparent;
+}
+
+.zp[data-achtergrond="reis"] .zp-heelal > *,
+.zp[data-achtergrond="reis"] .zs-camera,
+.zp[data-achtergrond="reis"] .zs-kust::after {
+  display: none;
+}
+
+/* De vage wolkenband van de ruimtelucht past niet bij papier en verf. */
+.zp[data-achtergrond="reis"] .zs-wolken {
+  opacity: 0;
+}
+
+.wr {
+  --scroll: 0;
+  --midden: 0;
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.wr-filters {
+  position: absolute;
+  width: 0;
+  height: 0;
+}
+
+/* De lucht en het water: nacht, dag, zee. */
+.wr-kleur {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(
+    180deg,
+    #111a4e 0px,
+    #1a2a6e calc(var(--wr-lucht, 1400px) - 420px),
+    #2c58b8 var(--wr-lucht, 1400px),
+    #3672c9 calc(var(--wr-zee, 2600px) - 160px),
+    #2f7fc4 var(--wr-zee, 2600px),
+    #2266ad calc(var(--wr-zee, 2600px) + 420px),
+    #143f7c calc(var(--wr-einde, 4400px) - 260px),
+    #0d2f60 100%
+  );
+}
+
+/* Papierkorrel over alles heen, heel zacht. */
+.wr-korrel {
+  position: absolute;
+  inset: 0;
+  opacity: 0.35;
+  mix-blend-mode: soft-light;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='k'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.35 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23k)'/%3E%3C/svg%3E");
+}
+
+/*
+  Elk stuk schuift bij het scrollen een beetje, rond het moment dat het in
+  beeld is: --d > 0 blijft achter (verder weg), --d < 0 gaat voor (dichterbij).
+*/
+.wr-stuk {
+  position: absolute;
+  transform: translate3d(0, calc((var(--scroll) + var(--midden) - var(--top, 0)) * var(--d, 0) * 1px), 0) rotate(var(--draai, 0deg));
+}
+
+.wr-stuk > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* Geknipt papier: een korte, harde schaduw en een zachte eronder. */
+.wr-p {
+  filter: drop-shadow(1.5px 2.5px 0 rgb(4 14 46 / 0.28)) drop-shadow(1px 6px 6px rgb(4 14 46 / 0.22));
+}
+
+/* ---- Rustige, langzame beweging ---- */
+
+.wr-zweef-0 { animation: wr-zweef 26s ease-in-out infinite alternate; }
+.wr-zweef-1 { animation: wr-zweef 32s ease-in-out -8s infinite alternate-reverse; }
+.wr-zweef-2 { animation: wr-zweef 29s ease-in-out -14s infinite alternate; }
+
+@keyframes wr-zweef {
+  from { translate: -40px 6px; }
+  to { translate: 60px -8px; }
+}
+
+.wr-zwem-0 { animation: wr-zwem 34s ease-in-out infinite alternate; }
+.wr-zwem-1 { animation: wr-zwem 40s ease-in-out -12s infinite alternate-reverse; }
+.wr-zwem-2 { animation: wr-zwem 37s ease-in-out -20s infinite alternate; }
+
+@keyframes wr-zwem {
+  from { translate: -30px 0; }
+  to { translate: 40px -10px; }
+}
+
+.wr-wier > svg {
+  transform-origin: 50% 100%;
+}
+
+.wr-wieg-0 > svg { animation: wr-wieg 7s ease-in-out infinite alternate; }
+.wr-wieg-1 > svg { animation: wr-wieg 9s ease-in-out -3s infinite alternate; }
+.wr-wieg-2 > svg { animation: wr-wieg 8s ease-in-out -5s infinite alternate; }
+
+@keyframes wr-wieg {
+  from { rotate: -3deg; }
+  to { rotate: 3deg; }
+}
+
+.wr-bel {
+  animation: wr-bel 9s ease-in infinite;
+}
+
+@keyframes wr-bel {
+  0% { translate: 0 0; opacity: 0; }
+  15% { opacity: 1; }
+  100% { translate: 6px -160px; opacity: 0; }
+}
+
+/* ---- Kleine verrassingen in de buurt van muis of vinger ---- */
+
+.wr-vis.wr-actief > svg {
+  animation: wr-schiet 1.2s cubic-bezier(0.2, 0.8, 0.3, 1);
+}
+
+@keyframes wr-schiet {
+  0% { translate: 0 0; }
+  35% { translate: 46px -14px; }
+  100% { translate: 0 0; }
+}
+
+.wr-boot > svg {
+  transform-origin: 50% 90%;
+}
+
+.wr-boot.wr-actief > svg {
+  animation: wr-deinen 1.4s ease-in-out;
+}
+
+@keyframes wr-deinen {
+  0%, 100% { rotate: 0deg; }
+  25% { rotate: -8deg; translate: 0 -3px; }
+  60% { rotate: 6deg; translate: 0 2px; }
+}
+
+.wr-vogel .wr-vleugel-l,
+.wr-vogel .wr-vleugel-r {
+  transform-box: fill-box;
+}
+
+.wr-vleugel-l { transform-origin: 100% 100%; }
+.wr-vleugel-r { transform-origin: 0% 100%; }
+
+.wr-vogel.wr-actief .wr-vleugel-l,
+.wr-vogel.wr-actief .wr-vleugel-r {
+  animation: wr-flap 0.28s ease-in-out 5 alternate;
+}
+
+@keyframes wr-flap {
+  to { scale: 1 -0.4; }
+}
+
+.wr-ster.wr-actief > svg {
+  animation: wr-twinkel 1.2s ease-in-out;
+}
+
+@keyframes wr-twinkel {
+  0%, 100% { rotate: 0deg; scale: 1; }
+  40% { rotate: 25deg; scale: 1.25; }
+}
+
+.wr-molen .wr-wieken {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+}
+
+.wr-molen.wr-actief .wr-wieken {
+  animation: wr-wieken 1.4s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+@keyframes wr-wieken {
+  to { rotate: 90deg; }
+}
+
+.wr-zeester.wr-actief > svg {
+  animation: wr-twinkel 1.2s ease-in-out;
+}
+
+.wr-reageer.wr-actief:not(.wr-vis, .wr-boot, .wr-vogel, .wr-ster, .wr-molen, .wr-zeester) > svg {
+  animation: wr-twinkel 1.2s ease-in-out;
+}
+
+/* ---- Zappie op de zeebodem ---- */
+
+.wr-zappie {
+  position: absolute;
+}
+
+.wr-zappie .bt-prototype {
+  left: 0;
+  right: 0;
+  bottom: 0;
+}
+
+.wr-zappie .bt-ballon {
+  border-color: #e9f6ff;
+  background: #1f62a8;
+  font-family: var(--font-caveat), cursive;
+  font-size: 19px;
+}
+
+.wr-zappie .bt-ballon > span:last-child {
+  border-color: #e9f6ff;
+  background: #1f62a8;
+}
+
+.wr-tikhint {
+  position: absolute;
+  left: 92%;
+  top: 22%;
+  white-space: nowrap;
+  margin: 0;
+  color: rgb(233 246 255 / 0.85);
+  font-family: var(--font-caveat), cursive;
+  font-size: 20px;
+  transform: rotate(-6deg);
+}
+
+/* Op een smal scherm is naast Zappie geen plek voor de hint. */
+@media (max-width: 699px) {
+  .wr-tikhint {
+    display: none;
+  }
+}
+
+/* Een papieren bordje in het zand met het aantal gespeelde missies. */
+.wr-bordje {
+  position: absolute;
+  left: 50%;
+  bottom: -14px;
+  margin: 0;
+  padding: 6px 12px;
+  border-radius: 4px;
+  background: #f4ecd6;
+  color: #3a2f22;
+  font-family: var(--font-caveat), cursive;
+  font-size: 18px;
+  white-space: nowrap;
+  transform: translateX(-50%) rotate(-2deg);
+  filter: drop-shadow(1.5px 2.5px 0 rgb(4 14 46 / 0.28));
+}
+
+/* Beweging uit of minder beweging: alles staat stil. */
+.wr[data-rustig="ja"] *,
+.wr[data-rustig="ja"] .wr-stuk {
+  animation: none !important;
+}
+
+.wr[data-rustig="ja"] .wr-stuk {
+  transform: rotate(var(--draai, 0deg));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wr *,
+  .wr .wr-stuk {
+    animation: none !important;
+  }
+}

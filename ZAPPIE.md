@@ -315,3 +315,24 @@ eigenaar: het model staat in `public/assets/zappie/3d/zappie.glb`, de code
 voor gebaren en feedback in `src/lib/zappie3d/zappie.js` (alleen de imports
 aangepast). Three.js wordt pas geladen als het prototype in beeld komt. De
 Blender-bestanden en de bewegingsstudio uit het pakket staan niet in de repo.
+
+## De reis door de drie werelden (16 oktober 2026)
+
+Keuze van de eigenaar: "doe maar een simpele reis door de 3 werelden als
+achtergrond", met waterverf en geknipt papier. Sindsdien is dit de vaste
+achtergrond van de startpagina (`src/components/zappie/wereldreis/`).
+
+- **Universum** bovenaan, bij de werelden: een diepblauwe nacht met een
+  papieren maan, een planeet met een ring en uitgeknipte sterren.
+- **Aarde** in het midden: papieren wolken boven de vakken, gevouwen
+  vogeltjes, heuvels met bomen en een molen, een strandje.
+- **Oceaan** onderaan: golven met een papieren bootje, dan onder water
+  lichtstralen, vissen, belletjes, zeewier en de zeebodem met Zappie (het
+  3D-model) en een bordje met het aantal gespeelde missies.
+
+Lucht en water zijn waterverf (`Waterverf.tsx`), wat ervoor staat is geknipt
+papier (`Papier.tsx`). Vogels en vissen bewegen heel langzaam, het zeewier
+wiegt; muis of vinger in de buurt laat een vis wegschieten, de boot deinen,
+een vogel klapperen, een ster draaien en de molen draaien. Bij Beweging uit
+staat alles stil. De bouwtekening is te zien met
+`/zappie?achtergrond=bouwtekening`.
