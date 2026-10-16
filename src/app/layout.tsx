@@ -24,8 +24,11 @@ const lexend = Lexend({
 const fredoka = Fredoka({
   variable: "--font-fredoka",
   subsets: ["latin"],
-  /* alleen de dikte die gebruikt wordt: scheelt laadtijd op een trage verbinding */
-  weight: ["700"],
+  /*
+    700 voor titels; 400 tot 600 sinds 16 oktober 2026 ook voor de lopende
+    tekst op de Zappie-schermen (keuze eigenaar).
+  */
+  weight: ["400", "500", "600", "700"],
 });
 
 /** Avontuurstijl: handschrift voor kleine zinnetjes. */

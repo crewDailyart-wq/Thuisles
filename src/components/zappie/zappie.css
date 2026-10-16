@@ -50,7 +50,8 @@
   min-height: 100svh;
   color: #fff;
   background: var(--zp-ruimte);
-  font-family: var(--font-lexend), system-ui, sans-serif;
+  /* Sinds 16 oktober 2026 Fredoka voor alle tekst (keuze eigenaar); was Lexend. */
+  font-family: var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   -webkit-tap-highlight-color: transparent;
   overflow-x: clip;
 }

@@ -1212,7 +1212,7 @@
   border-radius: 999px;
   background: rgb(6 36 90 / 0.7);
   color: #e4f6ff;
-  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
+  font: 700 14px/1 var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -1309,7 +1309,7 @@
   border-radius: 999px;
   background: transparent;
   color: #fff3c4;
-  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
+  font: 700 14px/1 var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   cursor: pointer;
 }
 
@@ -1443,7 +1443,7 @@
   border-radius: 999px;
   background: rgb(5 26 66 / 0.9);
   color: #e8f6ff;
-  font: 800 14px/1 var(--font-lexend), system-ui, sans-serif;
+  font: 700 14px/1 var(--font-fredoka), var(--font-lexend), system-ui, sans-serif;
   box-shadow: 0 4px 18px rgb(3 18 42 / 0.5);
   backdrop-filter: blur(6px);
   cursor: pointer;
