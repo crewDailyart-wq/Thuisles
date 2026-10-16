@@ -69,17 +69,28 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   const focus = pad.startsWith("/zappie/oefenen") || pad.startsWith("/zappie/leerpad");
   const start = pad === "/zappie";
   /*
-    Proeven van 16 oktober 2026, alleen te zien met een stukje achter het
-    adres. Zonder dat stukje blijft alles zoals het is.
+    De achtergrond van de startpagina. Sinds 16 oktober 2026 is Tesla's
+    bouwtekening de vaste achtergrond (keuze eigenaar: "maak de bouwtekening
+    de vaste achtergrond"). De andere blijven te zien met een stukje achter
+    het adres:
+    - /zappie?achtergrond=ruimte: de ruimtelucht met planeten en de aarde, de
+      achtergrond van daarvoor (Heelal.tsx, Ruimtehemel.tsx);
     - /zappie?achtergrond=rustig: een rustige, lichte daglucht;
     - /zappie?achtergrond=schrift: een bladzijde uit een rekenschrift met
       potloodkrabbels van Zappie (startpagina.css, onderaan);
     - /zappie?achtergrond=popup: een opengeslagen pop-upboek (PopupBoek.tsx);
     - /zappie?achtergrond=bouwtekening: Tesla's blauwdruk van Zappie, met het
-      3D-prototype onderaan (bouwtekening/Bouwtekening.tsx).
+      3D-prototype onderaan (bouwtekening/Bouwtekening.tsx). Ook zonder iets
+      achter het adres.
   */
   const gevraagd = zoek.get("achtergrond");
-  const proef = start && ["rustig", "schrift", "popup", "bouwtekening"].includes(gevraagd ?? "") ? gevraagd : undefined;
+  const proef = !start
+    ? undefined
+    : gevraagd === "ruimte"
+      ? undefined
+      : ["rustig", "schrift", "popup", "bouwtekening"].includes(gevraagd ?? "")
+        ? (gevraagd ?? undefined)
+        : "bouwtekening";
 
   return (
     <div

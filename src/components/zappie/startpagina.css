@@ -210,7 +210,7 @@
   /* Vier knoppen, precies in het midden, bijna zo hoog als de balk. */
   .zp[data-start="ja"] .zp-menu {
     top: calc(var(--u) * 0.7);
-    left: calc(50% - var(--u) * 23.1);
+    left: calc(50% - var(--u) * 24.8);
   }
 
   .zp[data-start="ja"] .zp-menu ul {
@@ -282,7 +282,8 @@
     min-width: min-content;
     white-space: normal;
     line-height: 1.2;
-    font-size: 1em;
+    /* Iets kleiner, zodat "ontdekkingsreiziger!" niet over Beloningen valt. */
+    font-size: 0.86em;
   }
 }
 

@@ -288,9 +288,11 @@ en welke nog extern gemaakt moeten worden.
 
 ## Proeven voor de achtergrond (16 oktober 2026)
 
-Op verzoek van de eigenaar zijn er vier achtergronden als proef gebouwd. Ze
-zijn alleen te zien met een stukje achter het adres; zonder dat stukje blijft
-de startpagina precies zoals hij is.
+Op verzoek van de eigenaar zijn er vier achtergronden als proef gebouwd, te
+zien met een stukje achter het adres. **Sinds 16 oktober 2026 is de
+bouwtekening de vaste achtergrond** ("maak de bouwtekening de vaste
+achtergrond"). De ruimtelucht van daarvoor blijft in de code en is te zien met
+`/zappie?achtergrond=ruimte`.
 
 | Adres | Wat |
 | --- | --- |
