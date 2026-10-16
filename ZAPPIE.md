@@ -336,3 +336,7 @@ wiegt; muis of vinger in de buurt laat een vis wegschieten, de boot deinen,
 een vogel klapperen, een ster draaien en de molen draaien. Bij Beweging uit
 staat alles stil. De bouwtekening is te zien met
 `/zappie?achtergrond=bouwtekening`.
+
+**16 oktober 2026, later:** op verzoek van de eigenaar is de rustige
+bouwtekening weer de vaste achtergrond. De reis door de drie werelden blijft te
+zien met `/zappie?achtergrond=reis`.

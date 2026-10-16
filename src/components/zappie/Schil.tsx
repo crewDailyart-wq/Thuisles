@@ -70,21 +70,20 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   const focus = pad.startsWith("/zappie/oefenen") || pad.startsWith("/zappie/leerpad");
   const start = pad === "/zappie";
   /*
-    De achtergrond van de startpagina. Sinds 16 oktober 2026 is de reis door
-    de drie werelden de vaste achtergrond (keuze eigenaar: "doe maar een
-    simpele reis door de 3 werelden als achtergrond", met waterverf en geknipt
-    papier; wereldreis/Wereldreis.tsx). De andere blijven te zien met een
-    stukje achter het adres:
-    - /zappie?achtergrond=bouwtekening: Tesla's blauwdruk van Zappie
-      (bouwtekening/Bouwtekening.tsx), de vaste achtergrond van daarvoor;
+    De achtergrond van de startpagina. Sinds 16 oktober 2026 is de rustige
+    bouwtekening weer de vaste achtergrond (keuze eigenaar: "kan je de rustige
+    blauwprint weer terugdoen"; bouwtekening/Bouwtekening.tsx). De andere
+    blijven te zien met een stukje achter het adres:
+    - /zappie?achtergrond=bouwtekening: Tesla's blauwdruk van Zappie (ook
+      zonder iets achter het adres);
     - /zappie?achtergrond=ruimte: de ruimtelucht met planeten en de aarde
       (Heelal.tsx, Ruimtehemel.tsx);
     - /zappie?achtergrond=rustig: een rustige, lichte daglucht;
     - /zappie?achtergrond=schrift: een bladzijde uit een rekenschrift met
       potloodkrabbels van Zappie (startpagina.css, onderaan);
     - /zappie?achtergrond=popup: een opengeslagen pop-upboek (PopupBoek.tsx);
-    - /zappie?achtergrond=reis: de reis door de drie werelden (ook zonder
-      iets achter het adres).
+    - /zappie?achtergrond=reis: de reis door de drie werelden, met waterverf
+      en geknipt papier (wereldreis/Wereldreis.tsx).
   */
   const gevraagd = zoek.get("achtergrond");
   const proef = !start
@@ -93,7 +92,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
       ? undefined
       : ["rustig", "schrift", "popup", "bouwtekening", "reis"].includes(gevraagd ?? "")
         ? (gevraagd ?? undefined)
-        : "reis";
+        : "bouwtekening";
 
   return (
     <div
