@@ -12,7 +12,7 @@
  */
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import {
   IcoonController,
@@ -63,11 +63,22 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
   if (typeof window !== "undefined") zetSpeler(speler.id);
 
   const pad = usePathname();
+  const zoek = useSearchParams();
   const focus = pad.startsWith("/zappie/oefenen") || pad.startsWith("/zappie/leerpad");
   const start = pad === "/zappie";
+  /*
+    Proef van 16 oktober 2026: een rustige, lichte achtergrond, alleen te zien
+    met /zappie?achtergrond=rustig. Zonder dat stukje blijft alles zoals het is.
+  */
+  const rustigeProef = start && zoek.get("achtergrond") === "rustig";
 
   return (
-    <div className="zp" data-focus={focus ? "ja" : "nee"} data-start={start ? "ja" : "nee"}>
+    <div
+      className="zp"
+      data-focus={focus ? "ja" : "nee"}
+      data-start={start ? "ja" : "nee"}
+      data-achtergrond={rustigeProef ? "rustig" : undefined}
+    >
       <Heelal rustig={focus} />
       {!focus && (
         <div className="zp-schil">

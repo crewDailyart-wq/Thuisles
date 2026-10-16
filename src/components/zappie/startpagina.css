@@ -1847,3 +1847,58 @@
   .zs-dag-vink { position: absolute; top: 5px; right: 6px; width: 15px; height: 15px; }
   .zs-dag-start { min-height: 52px; }
 }
+
+/* ------------------------------------------------------------------------- */
+/* Proef: een rustige achtergrond (/zappie?achtergrond=rustig)                */
+/* ------------------------------------------------------------------------- */
+
+/*
+  16 oktober 2026, op vraag van de eigenaar: hoe ziet de startpagina eruit met
+  een rustige, lichte achtergrond in één tekenstijl? Alleen zichtbaar met
+  ?achtergrond=rustig achter het adres; de gewone pagina verandert niet.
+
+  Wat er anders is: geen nachtlucht, sterren, planeten, gloed of
+  wolkenstempels, maar een zachte daglucht, drie verschillende wolken met een
+  dunne, iets onregelmatige lijn (alsof ze getekend zijn) en lage heuvels
+  onderaan. De inhoud levert de kleur. Teksten die direct op de achtergrond
+  staan, worden donkerblauw zodat ze leesbaar blijven.
+*/
+.zp[data-achtergrond="rustig"] {
+  --rustig-lucht-boven: #cfe6fa;
+  --rustig-lucht-onder: #f1f8fe;
+  --rustig-heuvel-ver: #cfe7c6;
+  --rustig-heuvel-dichtbij: #b5d9a8;
+  --rustig-inkt: #10235a;
+
+  background: var(--rustig-lucht-onder);
+}
+
+.zp[data-achtergrond="rustig"] .zp-heelal {
+  background:
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900' preserveAspectRatio='xMidYMax slice'%3E%3Cpath d='M0 790 C180 740 330 760 470 785 C640 815 760 770 930 760 C1110 750 1260 790 1420 775 C1500 768 1560 760 1600 755 L1600 900 L0 900Z' fill='%23cfe7c6'/%3E%3Cpath d='M0 845 C220 805 420 830 620 848 C820 866 1000 822 1200 826 C1380 830 1500 852 1600 840 L1600 900 L0 900Z' fill='%23b5d9a8'/%3E%3C/svg%3E") center bottom / 100% auto no-repeat,
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1600 900'%3E%3Cg fill='%23ffffff' stroke='%23bcd8ef' stroke-width='3' stroke-linejoin='round'%3E%3Cpath d='M130 262 c-6-30 22-50 48-40 c8-34 58-42 76-14 c20-20 60-10 62 20 c30 0 40 34 18 44 c-60 6-150 6-204-10z'/%3E%3Cpath d='M1330 168 c-4-22 18-36 38-28 c10-30 56-34 70-8 c16-14 46-6 48 16 c24 2 30 28 12 36 c-50 4-120 4-168-16z'/%3E%3Cpath d='M1390 560 c-2-16 14-26 28-20 c8-20 40-24 50-4 c14-8 32-2 34 12 c18 2 20 20 6 24 c-36 2-84 2-118-12z'/%3E%3C/g%3E%3C/svg%3E") center / cover no-repeat,
+    linear-gradient(180deg, var(--rustig-lucht-boven), var(--rustig-lucht-onder) 75%);
+}
+
+/* Alles van de nachtlucht weg: lucht, planeten, aarde, nevels, sterren. */
+.zp[data-achtergrond="rustig"] .zp-heelal > *,
+.zp[data-achtergrond="rustig"] .zs-camera {
+  display: none;
+}
+
+/* Teksten die direct op de lucht staan: donker in plaats van wit. */
+.zp[data-achtergrond="rustig"] .zs-kop,
+.zp[data-achtergrond="rustig"] .zs-kop h2,
+.zp[data-achtergrond="rustig"] .zs-kop p,
+.zp[data-achtergrond="rustig"] .zp-notitie,
+.zp[data-achtergrond="rustig"] .zs-kust-tekst,
+.zp[data-achtergrond="rustig"] .zs-kust-tekst h2,
+.zp[data-achtergrond="rustig"] .zs-kust-tekst p {
+  color: var(--rustig-inkt);
+  text-shadow: none;
+}
+
+/* Het donkere verloop onder het slotstuk hoort bij de nachtlucht. */
+.zp[data-achtergrond="rustig"] .zs-kust::after {
+  display: none;
+}
