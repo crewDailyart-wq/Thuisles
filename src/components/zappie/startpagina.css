@@ -2152,3 +2152,291 @@
     animation: none !important;
   }
 }
+
+/* ------------------------------------------------------------------------- */
+/* Proef: het pop-upboek (/zappie?achtergrond=popup, PopupBoek.tsx)          */
+/* ------------------------------------------------------------------------- */
+
+/*
+  16 oktober 2026, keuze van de eigenaar: een mix van "pop-upboek" en
+  "papier dat op je reageert". De pagina is een opengeslagen boek; de
+  pop-ups zijn lagen geknipt papier in een paar matte kleuren, met een harde
+  papierschaduw van linksboven. Geen verlopen, gloed of glans: dat is wat een
+  ontwerp AI-achtig maakt. Alleen zichtbaar met ?achtergrond=popup.
+*/
+.zp[data-achtergrond="popup"] {
+  /* De papierkleuren van het boek. Hier aanpassen. */
+  --pb-papier: #f6efe1;
+  --pb-inkt: #26385f;
+  --pb-zee: #3f8f8b;
+  --pb-zee-licht: #8cc3bd;
+  --pb-salie: #9dbf8e;
+  --pb-salie-licht: #cfdcb8;
+  --pb-oker: #e3aa4f;
+  --pb-zand: #ecd3a0;
+  --pb-koraal: #df6f56;
+  --pb-room: #fffaf0;
+  --pb-maan: #f1dfae;
+  --pb-rots: #6f7c97;
+
+  background-color: var(--pb-papier);
+  background-image:
+    /* de vouw in het midden van het boek */
+    linear-gradient(90deg, transparent calc(50% - 40px), rgb(120 90 50 / 0.07) calc(50% - 6px), rgb(90 60 30 / 0.16) 50%, rgb(120 90 50 / 0.07) calc(50% + 6px), transparent calc(50% + 40px)),
+    /* de randjes van de gestapelde bladzijden links en rechts */
+    repeating-linear-gradient(90deg, rgb(150 120 80 / 0.22) 0 1px, transparent 1px 4px),
+    repeating-linear-gradient(90deg, rgb(150 120 80 / 0.22) 0 1px, transparent 1px 4px);
+  background-size: 100% 100%, 14px 100%, 14px 100%;
+  background-position: 0 0, left top, right top;
+  background-repeat: no-repeat;
+}
+
+/* De nachtlucht helemaal weg: het boek is de achtergrond. */
+.zp[data-achtergrond="popup"] .zp-heelal {
+  background: transparent;
+}
+
+.zp[data-achtergrond="popup"] .zp-heelal > *,
+.zp[data-achtergrond="popup"] .zs-camera,
+.zp[data-achtergrond="popup"] .zs-kust::after {
+  display: none;
+}
+
+/* Teksten die direct op het papier staan: donkerblauwe inkt. */
+.zp[data-achtergrond="popup"] .zs-kop,
+.zp[data-achtergrond="popup"] .zs-kop h2,
+.zp[data-achtergrond="popup"] .zs-kop p,
+.zp[data-achtergrond="popup"] .zp-notitie,
+.zp[data-achtergrond="popup"] .zs-kust-tekst,
+.zp[data-achtergrond="popup"] .zs-kust-tekst h2,
+.zp[data-achtergrond="popup"] .zs-kust-tekst p {
+  color: var(--pb-inkt);
+  text-shadow: none;
+}
+
+/* De laag met alle pop-ups: achter de inhoud, over de hele pagina. */
+.pb {
+  --mx: 0;
+  --my: 0;
+
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.pb-scene {
+  position: absolute;
+  perspective: 900px;
+  perspective-origin: 50% 0%;
+}
+
+.pb-laag {
+  position: absolute;
+  inset: 0;
+  transform: translate3d(calc(var(--mx) * var(--d) * -1.4px), calc(var(--my) * var(--d) * -0.7px), 0);
+  transition: transform 0.25s ease-out;
+}
+
+/* Elke laag klapt vanaf zijn onderkant omhoog, de achterste eerst. */
+.pb-vouw {
+  position: absolute;
+  inset: 0;
+  transform-origin: 50% 100%;
+  transform: rotateX(86deg);
+  opacity: 0;
+  /* Geknipt papier op papier: een korte, harde schaduw en een zachte eronder. */
+  filter: drop-shadow(2px 3px 0 rgb(80 55 25 / 0.16)) drop-shadow(1px 6px 5px rgb(80 55 25 / 0.14));
+  transition:
+    transform 0.9s cubic-bezier(0.2, 0.9, 0.25, 1.15) calc(var(--i) * 0.12s),
+    opacity 0.3s ease calc(var(--i) * 0.12s);
+}
+
+.pb-scene-vlaggen .pb-vouw {
+  transform-origin: 50% 0%;
+  transform: rotateX(-86deg);
+}
+
+.pb-scene[data-open="ja"] .pb-vouw {
+  transform: none;
+  opacity: 1;
+}
+
+.pb svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* ---- Kleine verrassingen (alleen als de muis of een vinger in de buurt komt) ---- */
+
+.pb [data-reageer] {
+  transform-box: fill-box;
+}
+
+.pb-raket {
+  transform-origin: 50% 100%;
+}
+
+.pb-raket.pb-actief {
+  animation: pb-raket 1.2s cubic-bezier(0.3, 0.6, 0.3, 1);
+}
+
+@keyframes pb-raket {
+  0% { transform: none; }
+  12% { transform: translateY(4px) scaleY(0.96); }
+  40% { transform: translateY(-46px) rotate(-3deg); }
+  70% { transform: translateY(-10px) rotate(2deg); }
+  100% { transform: none; }
+}
+
+.pb-vlam {
+  transform-box: fill-box;
+  transform-origin: 50% 0%;
+  transform: scaleY(0.35);
+  transition: transform 0.2s;
+}
+
+.pb-raket.pb-actief .pb-vlam {
+  transform: scaleY(1.2);
+}
+
+.pb-hangster,
+.pb-vlag {
+  transform-origin: 50% 0%;
+}
+
+.pb-hangster.pb-actief,
+.pb-vlag.pb-actief {
+  animation: pb-schommel 1.3s ease-out;
+}
+
+@keyframes pb-schommel {
+  0% { transform: rotate(0); }
+  18% { transform: rotate(14deg); }
+  40% { transform: rotate(-9deg); }
+  62% { transform: rotate(5deg); }
+  82% { transform: rotate(-2deg); }
+  100% { transform: rotate(0); }
+}
+
+.pb-zappie .pb-oog-knipoog {
+  transform-box: fill-box;
+  transform-origin: 50% 50%;
+  transition: transform 0.12s;
+}
+
+.pb-zappie.pb-actief .pb-oog-knipoog {
+  animation: pb-knipoog 1.2s ease;
+}
+
+@keyframes pb-knipoog {
+  0%, 100% { transform: none; }
+  15%, 55% { transform: scaleY(0.12); }
+}
+
+.pb-zwaaiarm {
+  transform-box: fill-box;
+  transform-origin: 0% 100%;
+}
+
+.pb-zappie.pb-actief .pb-zwaaiarm {
+  animation: pb-zwaai 1.2s ease;
+}
+
+@keyframes pb-zwaai {
+  0%, 100% { transform: none; }
+  20%, 60% { transform: rotate(-22deg); }
+  40%, 80% { transform: rotate(8deg); }
+}
+
+.pb-vleugel {
+  transform-box: fill-box;
+}
+
+.pb-vleugel-l {
+  transform-origin: 100% 60%;
+}
+
+.pb-vleugel-r {
+  transform-origin: 0% 60%;
+}
+
+.pb-vogel.pb-actief {
+  animation: pb-vogel 1.3s ease-in-out;
+}
+
+.pb-vogel.pb-actief .pb-vleugel {
+  animation: pb-flap 0.26s ease-in-out 5 alternate;
+}
+
+@keyframes pb-vogel {
+  0%, 100% { transform: none; }
+  50% { transform: translate(18px, -14px); }
+}
+
+@keyframes pb-flap {
+  to { transform: scaleY(-0.6); }
+}
+
+.pb-wieken {
+  transform-origin: 50% 50%;
+}
+
+.pb-wieken.pb-actief {
+  animation: pb-molen 1.2s cubic-bezier(0.3, 0.7, 0.3, 1);
+}
+
+@keyframes pb-molen {
+  to { transform: rotate(90deg); }
+}
+
+.pb-boot {
+  transform-origin: 50% 100%;
+}
+
+.pb-boot.pb-actief {
+  animation: pb-deinen 1.3s ease-in-out;
+}
+
+@keyframes pb-deinen {
+  0%, 100% { transform: none; }
+  25% { transform: translateY(-4px) rotate(-5deg); }
+  60% { transform: translateY(2px) rotate(4deg); }
+}
+
+/* Beweging uit of minder beweging: alles staat meteen rechtop en stil. */
+.pb[data-rustig="ja"] .pb-vouw {
+  transform: none;
+  opacity: 1;
+  transition: none;
+}
+
+.pb[data-rustig="ja"] *,
+.pb[data-rustig="ja"] .pb-laag {
+  animation: none !important;
+  transition: none !important;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pb *,
+  .pb .pb-laag {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* De slottekst op een papieren bordje, zodat de grachtenhuizen erachter niet storen. */
+.zp[data-achtergrond="popup"] .zs-kust-tekst {
+  left: 50%;
+  right: auto;
+  width: max-content;
+  max-width: calc(100% - 32px);
+  padding: 18px 32px 22px;
+  border-radius: 10px;
+  background: var(--pb-room);
+  box-shadow: 2px 3px 0 rgb(80 55 25 / 0.16), 1px 8px 14px rgb(80 55 25 / 0.16);
+  transform: translateX(-50%) rotate(-1.2deg);
+}

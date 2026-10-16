@@ -25,6 +25,7 @@ import {
 } from "@/components/zappie/Iconen";
 import { ZappieLogo } from "@/components/zappie/Onderdelen";
 import { Heelal } from "@/components/zappie/Heelal";
+import { PopupBoek } from "@/components/zappie/PopupBoek";
 import { onthoudGetoond, useVoortgang, zetSpeler } from "@/lib/zappie/opslag";
 import { puntenTekst } from "@/lib/zappie/voortgang";
 
@@ -71,10 +72,11 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
     adres. Zonder dat stukje blijft alles zoals het is.
     - /zappie?achtergrond=rustig: een rustige, lichte daglucht;
     - /zappie?achtergrond=schrift: een bladzijde uit een rekenschrift met
-      potloodkrabbels van Zappie (startpagina.css, onderaan).
+      potloodkrabbels van Zappie (startpagina.css, onderaan);
+    - /zappie?achtergrond=popup: een opengeslagen pop-upboek (PopupBoek.tsx).
   */
   const gevraagd = zoek.get("achtergrond");
-  const proef = start && (gevraagd === "rustig" || gevraagd === "schrift") ? gevraagd : undefined;
+  const proef = start && (gevraagd === "rustig" || gevraagd === "schrift" || gevraagd === "popup") ? gevraagd : undefined;
 
   return (
     <div
@@ -127,6 +129,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
           </div>
         </div>
       )}
+      {proef === "popup" && <PopupBoek />}
       {children}
     </div>
   );
