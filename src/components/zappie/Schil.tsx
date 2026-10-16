@@ -26,6 +26,7 @@ import {
 import { ZappieLogo } from "@/components/zappie/Onderdelen";
 import { Heelal } from "@/components/zappie/Heelal";
 import { PopupBoek } from "@/components/zappie/PopupBoek";
+import { Bouwtekening } from "@/components/zappie/bouwtekening/Bouwtekening";
 import { onthoudGetoond, useVoortgang, zetSpeler } from "@/lib/zappie/opslag";
 import { puntenTekst } from "@/lib/zappie/voortgang";
 
@@ -73,10 +74,12 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
     - /zappie?achtergrond=rustig: een rustige, lichte daglucht;
     - /zappie?achtergrond=schrift: een bladzijde uit een rekenschrift met
       potloodkrabbels van Zappie (startpagina.css, onderaan);
-    - /zappie?achtergrond=popup: een opengeslagen pop-upboek (PopupBoek.tsx).
+    - /zappie?achtergrond=popup: een opengeslagen pop-upboek (PopupBoek.tsx);
+    - /zappie?achtergrond=bouwtekening: Tesla's blauwdruk van Zappie, met het
+      3D-prototype onderaan (bouwtekening/Bouwtekening.tsx).
   */
   const gevraagd = zoek.get("achtergrond");
-  const proef = start && (gevraagd === "rustig" || gevraagd === "schrift" || gevraagd === "popup") ? gevraagd : undefined;
+  const proef = start && ["rustig", "schrift", "popup", "bouwtekening"].includes(gevraagd ?? "") ? gevraagd : undefined;
 
   return (
     <div
@@ -130,6 +133,7 @@ export function Schil({ speler, children }: { speler: Speler; children: React.Re
         </div>
       )}
       {proef === "popup" && <PopupBoek />}
+      {proef === "bouwtekening" && <Bouwtekening />}
       {children}
     </div>
   );

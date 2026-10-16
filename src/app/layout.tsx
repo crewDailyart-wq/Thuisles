@@ -1,6 +1,6 @@
 import { MERKNAAM } from "@/lib/merk";
 import type { Metadata, Viewport } from "next";
-import { Caveat, Fredoka, Grandstander, Lexend } from "next/font/google";
+import { Architects_Daughter, Caveat, Fredoka, Grandstander, Lexend } from "next/font/google";
 import "./globals.css";
 import "./avontuur.css";
 
@@ -41,6 +41,18 @@ const grandstander = Grandstander({
   subsets: ["latin"],
 });
 
+/**
+ * Tesla's handschrift op de bouwtekening (proef ?achtergrond=bouwtekening):
+ * blokletters zoals een architect ze schrijft. Niet vooraf geladen, zodat de
+ * andere pagina's er niets van merken.
+ */
+const architect = Architects_Daughter({
+  variable: "--font-architect",
+  subsets: ["latin"],
+  weight: ["400"],
+  preload: false,
+});
+
 /** Avontuurstijl: handschrift voor kleine zinnetjes. */
 const caveat = Caveat({
   variable: "--font-caveat",
@@ -61,7 +73,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="nl"
-      className={`${lexend.variable} ${fredoka.variable} ${grandstander.variable} ${caveat.variable} h-full antialiased`}
+      className={`${lexend.variable} ${fredoka.variable} ${grandstander.variable} ${architect.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="font-sans min-h-full flex flex-col">{children}</body>
     </html>

@@ -285,3 +285,31 @@ en welke nog extern gemaakt moeten worden.
   — het derde ontwerp onder de ruimte-scène
 - `scripts/zappie-preview-test.mjs` — de browsertest (draait op GitHub bij een
   pull request die Zappie raakt)
+
+## Proeven voor de achtergrond (16 oktober 2026)
+
+Op verzoek van de eigenaar zijn er vier achtergronden als proef gebouwd. Ze
+zijn alleen te zien met een stukje achter het adres; zonder dat stukje blijft
+de startpagina precies zoals hij is.
+
+| Adres | Wat |
+| --- | --- |
+| `/zappie?achtergrond=rustig` | Een rustige daglucht met getekende wolken en heuvels |
+| `/zappie?achtergrond=schrift` | Een bladzijde uit een rekenschrift met potloodkrabbels |
+| `/zappie?achtergrond=popup` | Een pop-upboek van geknipt papier dat op de muis reageert (`PopupBoek.tsx`) |
+| `/zappie?achtergrond=bouwtekening` | Tesla's blauwdruk van Zappie, met het 3D-prototype onderaan (`bouwtekening/`) |
+
+**De bouwtekening.** Tesla is de (verzonnen) uitvinder van Zappie. Zijn bladen
+A t/m G liggen op de vrije plekken tussen de blokken en tekenen zichzelf lijn
+voor lijn zodra ze in beeld komen; de lijnen trillen licht. Tandwielen en wiel
+draaien mee met het scrollen. Muis of vinger in de buurt: de lamp gaat aan, de
+teslaspoel vonkt, de raket krijgt een vlam, de delen van blad B klikken in
+elkaar. Onderaan staat het echte 3D-prototype op een getekend plateau: hij
+zwaait, praat bij een tik en juicht daarna. In het titelblokje turft Tesla
+Zappies testritten, één streepje per gespeelde missie.
+
+**Het 3D-model** komt uit het pakket "Zappie 3D — Blender-editie 02" van de
+eigenaar: het model staat in `public/assets/zappie/3d/zappie.glb`, de code
+voor gebaren en feedback in `src/lib/zappie3d/zappie.js` (alleen de imports
+aangepast). Three.js wordt pas geladen als het prototype in beeld komt. De
+Blender-bestanden en de bewegingsstudio uit het pakket staan niet in de repo.
