@@ -11,7 +11,7 @@
 const WIT = "#ffffff";
 const SCHADUW = "#e4e8ff";
 const GLITTER = "var(--av-glitter)";
-const LETTERS = "var(--font-fredoka), var(--font-lexend), sans-serif";
+const LETTERS = "var(--font-grandstander), var(--font-fredoka), var(--font-lexend), sans-serif";
 
 function Svg({ children }: { children: React.ReactNode }) {
   return (

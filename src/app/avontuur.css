@@ -64,7 +64,7 @@
  * ------------------------------------------------------------------------- */
 
 .av-titel {
-  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
+  font-family: var(--font-grandstander), var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   letter-spacing: -0.01em;
   line-height: 1.05;
@@ -197,7 +197,7 @@
 }
 
 .av-tegel__naam {
-  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
+  font-family: var(--font-grandstander), var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   font-size: clamp(0.95rem, 10.5cqi, 1.75rem);
   line-height: 1.1;
@@ -313,7 +313,7 @@
   min-height: 48px;
   padding: 0.6rem 1.5rem;
   border-radius: 999px;
-  font-family: var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
+  font-family: var(--font-grandstander), var(--font-fredoka), var(--font-lexend), ui-rounded, sans-serif;
   font-weight: 700;
   font-size: 1.15rem;
   color: #ffffff;

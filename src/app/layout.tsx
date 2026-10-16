@@ -1,6 +1,6 @@
 import { MERKNAAM } from "@/lib/merk";
 import type { Metadata, Viewport } from "next";
-import { Caveat, Fredoka, Lexend } from "next/font/google";
+import { Caveat, Fredoka, Grandstander, Lexend } from "next/font/google";
 import "./globals.css";
 import "./avontuur.css";
 
@@ -31,6 +31,16 @@ const fredoka = Fredoka({
   weight: ["400", "500", "600", "700"],
 });
 
+/**
+ * Grandstander (16 oktober 2026, keuze eigenaar): speels en herkenbaar, gemaakt
+ * voor kindermedia. Staat vóór Fredoka op alle plekken waar Fredoka stond;
+ * Fredoka blijft als reserve geladen. Variabel lettertype: alle diktes in één bestand.
+ */
+const grandstander = Grandstander({
+  variable: "--font-grandstander",
+  subsets: ["latin"],
+});
+
 /** Avontuurstijl: handschrift voor kleine zinnetjes. */
 const caveat = Caveat({
   variable: "--font-caveat",
@@ -51,7 +61,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html
       lang="nl"
-      className={`${lexend.variable} ${fredoka.variable} ${caveat.variable} h-full antialiased`}
+      className={`${lexend.variable} ${fredoka.variable} ${grandstander.variable} ${caveat.variable} h-full antialiased`}
     >
       <body className="font-sans min-h-full flex flex-col">{children}</body>
     </html>
