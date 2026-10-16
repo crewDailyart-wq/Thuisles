@@ -293,6 +293,7 @@ export const SCHERMCONTRACT = [
       "src/lib/zappie/werelden.ts",
       "src/components/zappie/OntdekkingsReis.tsx",
       "src/components/zappie/ScrollReis.tsx",
+      "src/components/zappie/VakkenPaneel.tsx",
     ],
     zichtbaar: [
       /*
@@ -300,6 +301,9 @@ export const SCHERMCONTRACT = [
         van de eigenaar (voorbeeld met de werelden in drie vakken).
       */
       "Mijn leerpad",
+      /* 16 oktober 2026, op verzoek van de eigenaar: het vakkenpaneel bovenaan (VakkenPaneel.tsx). */
+      "Kies jouw vak",
+      "Start missie",
       "Oceaan",
       "Aarde",
       "Universum",

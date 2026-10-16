@@ -3346,3 +3346,341 @@
     animation: none !important;
   }
 }
+
+/* ------------------------------------------------------------------------- */
+/* "Kies jouw vak": het vakkenpaneel bovenaan (VakkenPaneel.tsx)             */
+/* ------------------------------------------------------------------------- */
+
+/*
+  16 oktober 2026, op verzoek van de eigenaar. Een donkerblauwe kaart met een
+  lichtblauwe rand, felle vlakke vaktegels en een oranjegele startknop. De
+  werelden staan eronder; de ruimte voor de menubalk zit nu in dit paneel.
+*/
+.zp-vakpaneel {
+  --vk-kaart: #10235a;
+  --vk-rand: #4fc3f7;
+  --vk-start: #ffb627;
+  --vk-start-donker: #e08e0b;
+
+  position: relative;
+  z-index: 3;
+  padding: 84px 12px 8px;
+}
+
+.zp-vk-kaart {
+  position: relative;
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 16px 12px 18px;
+  border: 3px solid var(--vk-rand);
+  border-radius: 26px;
+  background: var(--vk-kaart);
+  box-shadow: 0 0 0 4px rgb(79 195 247 / 0.18), 0 0.8rem 2rem rgb(2 10 40 / 0.45);
+  text-align: center;
+}
+
+.zp-vk-kop {
+  margin: 0 0 12px;
+  color: #fff;
+  font-size: clamp(26px, 6vw, 48px);
+  line-height: 1.1;
+  text-shadow: 0 0.06em 0 rgb(2 10 40 / 0.5);
+}
+
+.zp-vk-schuif {
+  position: relative;
+}
+
+.zp-vk-rij {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+  padding: 6px 4px 10px;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  list-style: none;
+  overscroll-behavior-x: contain;
+}
+
+.zp-vk-rij::-webkit-scrollbar {
+  display: none;
+}
+
+.zp-vk-rij > li {
+  flex: none;
+  width: clamp(124px, 38vw, 200px);
+  scroll-snap-align: start;
+}
+
+/* Een vaktegel: een vlak, fel gekleurd vierkant met het plaatje en de naam. */
+.zp-vk-tegel {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 4px;
+  width: 100%;
+  aspect-ratio: 1 / 1.08;
+  padding: 10px 8px 12px;
+  border: 4px solid transparent;
+  border-radius: 14px;
+  background: var(--vk-tegel, #2f7fe0);
+  color: var(--vk-tekst, #fff);
+  cursor: pointer;
+  box-shadow: inset 0 -6px 0 rgb(0 0 0 / 0.14);
+  transition: transform 0.18s cubic-bezier(0.3, 0.7, 0.4, 1), border-color 0.15s;
+}
+
+.zp-vk-tegel[data-kleur="blauw"] { --vk-tegel: #1f4fe0; --vk-tekst: #fff; }
+.zp-vk-tegel[data-kleur="rood"] { --vk-tegel: #ffd23f; --vk-tekst: #10235a; }
+.zp-vk-tegel[data-kleur="oranje"] { --vk-tegel: #ff5a36; --vk-tekst: #10235a; }
+.zp-vk-tegel[data-kleur="paars"] { --vk-tegel: #2fcf4f; --vk-tekst: #10235a; }
+.zp-vk-tegel[data-kleur="groen"] { --vk-tegel: #ff9f1c; --vk-tekst: #10235a; }
+.zp-vk-tegel[data-kleur="brons"] { --vk-tegel: #2ec4c4; --vk-tekst: #10235a; }
+
+/* Natuur, Woordenschat en Engels krijgen een eigen kleur, zodat er geen twee gelijke naast elkaar staan. */
+.zp-vk-rij > li:nth-child(7) .zp-vk-tegel { --vk-tegel: #8bd450; --vk-tekst: #10235a; }
+.zp-vk-rij > li:nth-child(8) .zp-vk-tegel { --vk-tegel: #ff6fa8; --vk-tekst: #10235a; }
+.zp-vk-rij > li:nth-child(9) .zp-vk-tegel { --vk-tegel: #7a5cff; --vk-tekst: #fff; }
+
+.zp-vk-tegel[aria-pressed="true"] {
+  border-color: #7fe3ff;
+  box-shadow: inset 0 -6px 0 rgb(0 0 0 / 0.14), 0 0 0 3px #10235a, 0 0 0 6px #7fe3ff;
+}
+
+@media (hover: hover) {
+  .zp-vk-tegel:hover {
+    transform: translateY(-3px);
+  }
+}
+
+.zp-vk-beeld {
+  display: block;
+  flex: 1;
+  width: 78%;
+  min-height: 0;
+}
+
+.zp-vk-beeld svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+.zp-vk-naam {
+  max-width: 100%;
+  font-size: clamp(15px, 3.8vw, 22px);
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.zp-vk-label {
+  position: absolute;
+  top: 7px;
+  left: 7px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: rgb(16 35 90 / 0.85);
+  color: #fff;
+  font-size: 11px;
+  font-weight: 700;
+}
+
+.zp-vk-vink {
+  position: absolute;
+  top: 6px;
+  right: 6px;
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: #22b5f5;
+  color: #fff;
+}
+
+.zp-vk-vink svg {
+  width: 70%;
+  height: 70%;
+}
+
+/* De pijltjes links en rechts, half over de rij. */
+.zp-vk-pijl {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 3px solid #fff;
+  border-radius: 999px;
+  background: #1f6fe0;
+  color: #fff;
+  cursor: pointer;
+  box-shadow: 0 0.3rem 0.8rem rgb(2 10 40 / 0.45);
+  translate: 0 -50%;
+}
+
+.zp-vk-pijl-links {
+  left: -8px;
+}
+
+.zp-vk-pijl-links svg {
+  rotate: 180deg;
+}
+
+.zp-vk-pijl-rechts {
+  right: -8px;
+}
+
+.zp-vk-pijl:disabled {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.zp-vk-stipjes {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin: 6px 0 14px;
+}
+
+.zp-vk-stip {
+  width: 14px;
+  height: 14px;
+  padding: 0;
+  border: 2px solid #b9d6ff;
+  border-radius: 999px;
+  background: transparent;
+  cursor: pointer;
+}
+
+.zp-vk-stip[aria-current="true"] {
+  border-color: #fff;
+  background: #22b5f5;
+}
+
+/* "Start missie": oranjegeel, met donkere letters (witte tekst op geel kan niet). */
+.zp-vk-start {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4em;
+  min-width: min(100%, 360px);
+  min-height: 56px;
+  padding: 0.35em 1.4em;
+  border: 3px solid #ffe08a;
+  border-radius: 999px;
+  background: var(--vk-start);
+  color: #10235a;
+  font-size: clamp(20px, 5vw, 30px);
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: inset 0 -5px 0 var(--vk-start-donker), 0 0.4rem 1rem rgb(2 10 40 / 0.4);
+  transition: transform 0.18s cubic-bezier(0.3, 0.7, 0.4, 1);
+}
+
+@media (hover: hover) {
+  .zp-vk-start:hover {
+    transform: translateY(-2px);
+  }
+}
+
+.zp-vk-start-pijl {
+  width: 0.9em;
+  height: 0.9em;
+}
+
+.zp-vk-bericht {
+  min-height: 1.4em;
+  margin: 10px 0 0;
+  color: #e9f6ff;
+  font-weight: 700;
+}
+
+.zp-vk-bericht:empty {
+  min-height: 0;
+  margin: 0;
+}
+
+/* Telefoon: de ruimte voor de menubalk zit nu boven het paneel. */
+.zp-vakpaneel ~ .zp-podium {
+  padding-top: 16px;
+}
+
+/* Groot liggend scherm: alles in u, net als de rest van de startpagina. */
+@media (min-width: 900px) and (min-aspect-ratio: 5/4) {
+  .zp-vakpaneel {
+    padding: calc(var(--u) * 8.2) 0 0;
+  }
+
+  .zp-vk-kaart {
+    width: calc(var(--u) * 62);
+    max-width: none;
+    padding: calc(var(--u) * 1.2) calc(var(--u) * 1.4) calc(var(--u) * 1.4);
+    border-radius: calc(var(--u) * 1.8);
+  }
+
+  .zp-vk-kop {
+    margin-bottom: calc(var(--u) * 0.8);
+    font-size: calc(var(--u) * 3.2);
+  }
+
+  .zp-vk-rij {
+    gap: calc(var(--u) * 0.8);
+    padding: calc(var(--u) * 0.4) calc(var(--u) * 0.3) calc(var(--u) * 0.6);
+  }
+
+  .zp-vk-rij > li {
+    width: calc(var(--u) * 11.4);
+  }
+
+  .zp-vk-tegel {
+    border-radius: calc(var(--u) * 0.9);
+  }
+
+  .zp-vk-naam {
+    font-size: calc(var(--u) * 1.3);
+  }
+
+  .zp-vk-label {
+    font-size: max(10px, calc(var(--u) * 0.75));
+  }
+
+  .zp-vk-pijl {
+    width: calc(var(--u) * 3.4);
+    height: calc(var(--u) * 3.4);
+  }
+
+  .zp-vk-pijl-links { left: calc(var(--u) * -1.6); }
+  .zp-vk-pijl-rechts { right: calc(var(--u) * -1.6); }
+
+  .zp-vk-stip {
+    width: calc(var(--u) * 1);
+    height: calc(var(--u) * 1);
+  }
+
+  .zp-vk-start {
+    min-width: calc(var(--u) * 26);
+    min-height: calc(var(--u) * 4.4);
+    font-size: calc(var(--u) * 2.1);
+  }
+
+  /* De werelden schuiven onder het paneel; het menu zit er niet meer boven. */
+  .zp-vakpaneel ~ .zp-podium {
+    --by: calc(var(--u) * 1.6);
+    height: calc(var(--u) * 41.9);
+    padding-top: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zp-vk-tegel,
+  .zp-vk-start {
+    transition: none;
+  }
+}

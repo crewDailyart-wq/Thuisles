@@ -26,7 +26,7 @@ import { IcoonPijl, IcoonSter } from "@/components/zappie/Iconen";
 import { Zappie } from "@/components/zappie/Zappie";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
 
-const VAKKEN: readonly { id: VakId; naam: string; kleur: string; href?: string }[] = [
+export const VAKKEN: readonly { id: VakId; naam: string; kleur: string; href?: string }[] = [
   { id: "rekenen", naam: "Rekenen", kleur: "blauw", href: "/rekenen" },
   { id: "taal", naam: "Taal", kleur: "rood" },
   { id: "lezen", naam: "Begrijpend lezen", kleur: "oranje" },

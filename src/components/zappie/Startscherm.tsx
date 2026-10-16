@@ -33,6 +33,7 @@ import Link from "next/link";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
 import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
+import { VakkenPaneel } from "@/components/zappie/VakkenPaneel";
 import "@/components/zappie/startpagina.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -267,6 +268,12 @@ export function Startscherm() {
           compositie in eenheden van het voorbeeld (zie zappie.css); daaronder
           loopt de pagina gewoon door.
         */}
+        {/*
+          0. "Kies jouw vak" (16 oktober 2026, op verzoek van de eigenaar): het
+          vakkenpaneel bovenaan, de werelden en Mijn leerpad eronder.
+        */}
+        <VakkenPaneel />
+
         <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte">
           {TOON_ZAPPIE && (
           <p className="zp-hand zp-notitie zp-notitie-hulp" aria-hidden="true">
