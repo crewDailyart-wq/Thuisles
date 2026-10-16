@@ -11,6 +11,11 @@
  * Rekenen heeft oefeningen en gaat naar /rekenen; de andere vakken zeggen
  * eerlijk dat ze binnenkort komen, met dezelfde zin als bij de vakken verderop.
  *
+ * Sinds 16 oktober 2026 staat het paneel in een robotscherm (voorbeeld van de
+ * eigenaar): een witte behuizing met antennes, drie lampjes, ronde oren waar
+ * de pijltjes in zitten, en Start missie half over de onderrand. Vlak en
+ * strak gehouden, zodat het ook voor groep 8 past.
+ *
  * De vakken zelf (namen, volgorde, waar ze heen gaan) komen uit VAKKEN in
  * OntdekkingsReis.tsx, zodat ze op één plek staan. De vakken onder "Wat wil je
  * ontdekken?" blijven gewoon staan.
@@ -68,83 +73,101 @@ export function VakkenPaneel() {
 
   return (
     <section className="zp-vakpaneel" aria-labelledby="zp-kop-vakpaneel">
-      <div className="zp-vk-kaart">
-        <h2 id="zp-kop-vakpaneel" className="zp-titel zp-vk-kop">
-          Kies jouw vak
-        </h2>
+      <div className="zp-vk-robot">
+        <span className="zp-vk-antenne zp-vk-antenne-links" aria-hidden="true" />
+        <span className="zp-vk-antenne zp-vk-antenne-rechts" aria-hidden="true" />
+        <span className="zp-vk-lampjes" aria-hidden="true">
+          <span />
+          <span />
+          <span />
+        </span>
+        <span className="zp-vk-schroef zp-vk-schroef-links" aria-hidden="true" />
+        <span className="zp-vk-schroef zp-vk-schroef-rechts" aria-hidden="true" />
+        <div className="zp-vk-kaart">
+          <h2 id="zp-kop-vakpaneel" className="zp-titel zp-vk-kop">
+            Kies jouw vak
+          </h2>
 
-        <div className="zp-vk-schuif">
-          <button type="button" className="zp-vk-pijl zp-vk-pijl-links" aria-label="Vorige vakken" onClick={() => schuif(-1)} disabled={pagina === 0}>
-            <IcoonPijl className="size-[55%]" />
-          </button>
-          <ul ref={rij} className="zp-vk-rij" aria-label="Vakken">
-            {VAKKEN.map((v) => (
-              <li key={v.id}>
-                <button
-                  type="button"
-                  className="zp-vk-tegel"
-                  data-kleur={v.kleur}
-                  aria-pressed={v.id === gekozen}
-                  onClick={() => {
-                    zetGekozen(v.id);
-                    zetBericht("");
-                  }}
-                >
-                  {!v.href && <span className="zp-vk-label">Binnenkort</span>}
-                  {v.id === gekozen && (
-                    <span className="zp-vk-vink" aria-hidden="true">
-                      <svg viewBox="0 0 24 24">
-                        <path d="M6 12.5 10.2 16.5 18 8" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
-                      </svg>
+          <div className="zp-vk-schuif">
+            <div className="zp-vk-oor zp-vk-oor-links">
+              <button type="button" className="zp-vk-pijl zp-vk-pijl-links" aria-label="Vorige vakken" onClick={() => schuif(-1)} disabled={pagina === 0}>
+                <IcoonPijl className="size-[55%]" />
+              </button>
+            </div>
+            <ul ref={rij} className="zp-vk-rij" aria-label="Vakken">
+              {VAKKEN.map((v) => (
+                <li key={v.id}>
+                  <button
+                    type="button"
+                    className="zp-vk-tegel"
+                    data-kleur={v.kleur}
+                    aria-pressed={v.id === gekozen}
+                    onClick={() => {
+                      zetGekozen(v.id);
+                      zetBericht("");
+                    }}
+                  >
+                    {!v.href && <span className="zp-vk-label">Binnenkort</span>}
+                    {v.id === gekozen && (
+                      <span className="zp-vk-vink" aria-hidden="true">
+                        <svg viewBox="0 0 24 24">
+                          <path d="M6 12.5 10.2 16.5 18 8" fill="none" stroke="currentColor" strokeWidth="3.4" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </span>
+                    )}
+                    <span className="zp-vk-beeld">
+                      <VakBeeld soort={v.id} />
                     </span>
-                  )}
-                  <span className="zp-vk-beeld">
-                    <VakBeeld soort={v.id} />
-                  </span>
-                  <span className="zp-vk-naam zp-titel">{v.naam}</span>
-                </button>
-              </li>
-            ))}
-          </ul>
-          <button type="button" className="zp-vk-pijl zp-vk-pijl-rechts" aria-label="Volgende vakken" onClick={() => schuif(1)} disabled={pagina >= paginas - 1}>
-            <IcoonPijl className="size-[55%]" />
-          </button>
-        </div>
-
-        {paginas > 1 && (
-          <div className="zp-vk-stipjes">
-            {Array.from({ length: paginas }, (_, i) => (
+                    <span className="zp-vk-naam zp-titel">{v.naam}</span>
+                  </button>
+                </li>
+              ))}
+            </ul>
+            <div className="zp-vk-oor zp-vk-oor-rechts">
               <button
-                key={i}
                 type="button"
-                className="zp-vk-stip"
-                aria-label={`Vakken, deel ${i + 1} van ${paginas}`}
-                aria-current={i === pagina ? "true" : undefined}
-                onClick={() => naarPagina(i)}
-              />
-            ))}
+                className="zp-vk-pijl zp-vk-pijl-rechts"
+                aria-label="Volgende vakken"
+                onClick={() => schuif(1)}
+                disabled={pagina >= paginas - 1}
+              >
+                <IcoonPijl className="size-[55%]" />
+              </button>
+            </div>
           </div>
-        )}
 
+          {paginas > 1 && (
+            <div className="zp-vk-stipjes">
+              {Array.from({ length: paginas }, (_, i) => (
+                <button
+                  key={i}
+                  type="button"
+                  className="zp-vk-stip"
+                  aria-label={`Vakken, deel ${i + 1} van ${paginas}`}
+                  aria-current={i === pagina ? "true" : undefined}
+                  onClick={() => naarPagina(i)}
+                />
+              ))}
+            </div>
+          )}
+        </div>
         {vak.href ? (
           <Link href={vak.href} className="zp-vk-start zp-titel">
             Start missie
             <IcoonPijl className="zp-vk-start-pijl" />
           </Link>
         ) : (
-          <button
-            type="button"
-            className="zp-vk-start zp-titel"
-            onClick={() => zetBericht(`${vak.naam} komt binnenkort. Met Rekenen kun je nu al beginnen!`)}
-          >
+          <button type="button" className="zp-vk-start zp-titel" onClick={() => zetBericht(`${vak.naam} komt binnenkort. Met Rekenen kun je nu al beginnen!`)}>
             Start missie
             <IcoonPijl className="zp-vk-start-pijl" />
           </button>
         )}
-        <p className="zp-vk-bericht" role="status">
-          {bericht}
-        </p>
+        <span className="zp-vk-ledje zp-vk-ledje-links" aria-hidden="true" />
+        <span className="zp-vk-ledje zp-vk-ledje-rechts" aria-hidden="true" />
       </div>
+      <p className="zp-vk-bericht" role="status">
+        {bericht}
+      </p>
     </section>
   );
 }
