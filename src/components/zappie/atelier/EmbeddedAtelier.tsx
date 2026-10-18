@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import dynamic from 'next/dynamic';
+import { useLichteWeergave } from '@/lib/lichte-weergave';
 const Scene=dynamic(()=>import('./AtelierStudy').then(m=>m.AtelierStudy),{ssr:false,loading:()=> <p className="zs-atelier-loading" role="status">Het atelier gaat open…</p>});
 
 /**
@@ -12,7 +13,10 @@ const Scene=dynamic(()=>import('./AtelierStudy').then(m=>m.AtelierStudy),{ssr:fa
 export function EmbeddedAtelier({mascot}:{mascot:ReactNode}){
   const host=useRef<HTMLDivElement>(null);
   const [visible,setVisible]=useState(false);
+  /* Lichte weergave (telefoon, tablet, traag apparaat): plaatjes in plaats van 3D, en niet vooraf klaarzetten. */
+  const licht=useLichteWeergave();
   useEffect(()=>{
+    if(licht===null)return;
     const observer=new IntersectionObserver(entries=>{if(entries.some(e=>e.isIntersecting)){setVisible(true);observer.disconnect();}},{rootMargin:'200px'});
     if(host.current)observer.observe(host.current);
     /*
@@ -22,10 +26,11 @@ export function EmbeddedAtelier({mascot}:{mascot:ReactNode}){
       er al. Het bouwen gaat in kleine stukjes (study-scene.ts), zodat de pagina
       bovenaan gewoon blijft reageren.
     */
+    if(licht)return()=>observer.disconnect();
     let wacht=0,rust=0;
     const klaarzetten=()=>{wacht=window.setTimeout(()=>{if(typeof window.requestIdleCallback==='function')rust=window.requestIdleCallback(()=>setVisible(true),{timeout:6000});else setVisible(true);},1500);};
     if(document.readyState==='complete')klaarzetten();else window.addEventListener('load',klaarzetten,{once:true});
     return()=>{observer.disconnect();window.removeEventListener('load',klaarzetten);window.clearTimeout(wacht);if(rust&&typeof window.cancelIdleCallback==='function')window.cancelIdleCallback(rust);};
-  },[]);
-  return <div className="zs-live-atelier" ref={host}>{visible?<Scene embedded mascot={mascot} reflectie="c"/>:<p className="zs-atelier-loading">Het atelier wacht op je…</p>}</div>;
+  },[licht]);
+  return <div className="zs-live-atelier" ref={host}>{visible?<Scene embedded mascot={mascot} reflectie="c" plaatjes={licht===true}/>:<p className="zs-atelier-loading">Het atelier wacht op je…</p>}</div>;
 }

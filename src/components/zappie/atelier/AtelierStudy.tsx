@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
 import type { Reflectie, StudyController, StudyView } from './study-scene';
 import './study.css';
+import { AtelierPlaatjes } from './AtelierPlaatjes';
 
 const views: { id:StudyView;label:string }[] = [{id:'samen',label:'Het geheel'},{id:'podium',label:'Het podium'},{id:'vitrine',label:'De vitrine'},{id:'koepel',label:'De koepel'},{id:'lintjes',label:'Lintjes'}];
 const badges=[
@@ -14,23 +15,27 @@ const badges=[
   {name:'Doorzetter',hint:'Voorbeeld: oefen vijf dagen.'},
   {name:'Wereldbouwer',hint:'Voorbeeld: voltooi een creatieve opdracht.'},
 ];
-/** reflectie: welke weerspiegeling (zie study-scene.ts); onKlaar: voor de metingen op /voorbeeld-bliepo?atelier=1. */
-export function AtelierStudy({embedded=false,mascot,reflectie=null,onKlaar}:{embedded?:boolean;mascot?:ReactNode;reflectie?:Reflectie|null;onKlaar?:(c:StudyController)=>void}){
+/**
+ * reflectie: welke weerspiegeling (zie study-scene.ts); onKlaar: voor de metingen op /voorbeeld-bliepo?atelier=1.
+ * plaatjes: lichte weergave (telefoon, tablet, traag apparaat): vooraf gemaakte plaatjes in plaats van 3D, met
+ * dezelfde knoppen; de 3D-motor wordt dan niet geladen (AtelierPlaatjes.tsx).
+ */
+export function AtelierStudy({embedded=false,mascot,reflectie=null,onKlaar,plaatjes=false}:{embedded?:boolean;mascot?:ReactNode;reflectie?:Reflectie|null;onKlaar?:(c:StudyController)=>void;plaatjes?:boolean}){
   const mascotAnchor=useRef<HTMLDivElement>(null);
   const host=useRef<HTMLDivElement>(null),controller=useRef<StudyController|null>(null);
   const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
   const [badge,setBadge]=useState(0),[unlocked,setUnlocked]=useState([true,true,true,false,false,false]);
   const [view,setView]=useState<StudyView>('samen'),[glow,setGlow]=useState(true);
-  useEffect(()=>{let cancelled=false;let instance:StudyController|undefined;
+  useEffect(()=>{if(plaatjes)return;let cancelled=false;let instance:StudyController|undefined;
     import('./study-scene').then(({createStudy})=>{if(cancelled||!host.current)return;instance=createStudy(host.current,()=>{if(!cancelled)setStatus('ready');},()=>{if(!cancelled)setStatus('error');},index=>{if(!cancelled){setBadge(index);setView('lintjes');instance?.view('lintjes');}},mascotAnchor.current,reflectie);controller.current=instance;}).catch(()=>{if(!cancelled)setStatus('error');});
     return()=>{cancelled=true;instance?.dispose();controller.current=null;};
-  },[reflectie]);
+  },[reflectie,plaatjes]);
   useEffect(()=>{controller.current?.badge(badge,unlocked[badge]);},[badge,unlocked,status]);
   const klaarMelder=useRef(onKlaar);
   useEffect(()=>{klaarMelder.current=onKlaar;});
   useEffect(()=>{if(status==='ready'&&controller.current)klaarMelder.current?.(controller.current);},[status]);
   return <div className={`as${embedded?' as-embedded':''}`} role="region" aria-label="Interactief 3D-atelier" data-status={status} data-view={view}>
-    <div className="as-canvas" ref={host}/>
+    <div className="as-canvas" ref={host}>{plaatjes&&<AtelierPlaatjes view={view} glow={glow} onKlaar={()=>setStatus('ready')}/>}</div>
     {mascot&&<div ref={mascotAnchor} className="as-mascot">{mascot}</div>}
     {!embedded&&<header className="as-header"><div><p>BLIEPO’S ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>}
     {!embedded&&view!=='lintjes'&&<div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>}

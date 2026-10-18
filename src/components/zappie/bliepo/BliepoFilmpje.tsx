@@ -2,7 +2,9 @@
 
 /**
  * Bliepo als klein herhalend filmpje: hij zweeft rustig en zwaait (18 oktober
- * 2026, fase 1: alleen op de testpagina /voorbeeld-bliepo).
+ * 2026; eerst op de testpagina /voorbeeld-bliepo). Sinds 19 oktober 2026 is dit
+ * Bliepo op telefoon, tablet en trage apparaten, in plaats van de 3D-robot
+ * (lichte weergave, zie Bliepo3DGedeeld en lib/lichte-weergave.ts).
  *
  * Opgenomen uit hetzelfde 3D-model (zappie.glb), in dezelfde hoek als de robot
  * onderaan de startpagina, met een doorzichtige achtergrond:

@@ -21,11 +21,71 @@
  *   - hij start pas als de browser even niets te doen heeft.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
+import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { useLichteWeergave } from "@/lib/lichte-weergave";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
 
-export function Bliepo3DGedeeld({
+type Instellingen = {
+  rustig: boolean;
+  /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
+  rusthoek?: number;
+  /** draait hij mee met de muis? */
+  volgMuis?: boolean;
+  /** wordt aangeroepen als hij voor het eerst getekend is */
+  onKlaar?: () => void;
+  className?: string;
+};
+
+/*
+  Lichte weergave (19 oktober 2026, opdracht eigenaar): op telefoon, tablet en
+  trage apparaten geen 3D en geen 3D-motor, maar het filmpje van Bliepo
+  (BliepoFilmpje, opgenomen uit hetzelfde model). Tik je erop, dan zegt hij
+  wie hij is, net als de 3D-robot. Op laptop en computer: de 3D-robot.
+*/
+export function Bliepo3DGedeeld(instellingen: Instellingen) {
+  const licht = useLichteWeergave();
+  if (licht) return <BliepoAlsFilmpje {...instellingen} />;
+  if (licht === null) return <div className={`bt-prototype ${instellingen.className ?? ""}`} aria-hidden="true" />;
+  return <Bliepo3DEcht {...instellingen} />;
+}
+
+function BliepoAlsFilmpje({ rustig, onKlaar, className = "" }: Instellingen) {
+  const plek = useRef<HTMLDivElement>(null);
+  const [praat, zetPraat] = useState(false);
+  useEffect(() => {
+    const host = plek.current;
+    if (!host) return;
+    let stil = 0;
+    const tik = (e: PointerEvent) => {
+      const r = host.getBoundingClientRect();
+      if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
+      if ((e.target as Element | null)?.closest("a, button, input, select, textarea")) return;
+      zetPraat(true);
+      window.clearTimeout(stil);
+      stil = window.setTimeout(() => zetPraat(false), 4000);
+    };
+    window.addEventListener("pointerdown", tik, { passive: true });
+    return () => {
+      window.removeEventListener("pointerdown", tik);
+      window.clearTimeout(stil);
+    };
+  }, []);
+  return (
+    <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
+      <BliepoFilmpje rustig={rustig} className="bt-prototype-doek" onKlaar={onKlaar} />
+      {praat && (
+        <div className="bt-ballon" role="status">
+          <span>{TIKTEKST}</span>
+          <span />
+        </div>
+      )}
+    </div>
+  );
+}
+
+function Bliepo3DEcht({
   rustig,
   rusthoek = -Math.PI / 9,
   volgMuis = true,
