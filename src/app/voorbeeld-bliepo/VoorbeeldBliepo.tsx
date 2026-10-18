@@ -15,27 +15,35 @@
  * versie, gemeten vanaf een lege pagina (inclusief Three.js).
  */
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { Bliepo3D } from "@/components/zappie/bliepo/Bliepo3D";
+import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
 import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
 
-type Id = "links" | "midden" | "rechts";
+type Id = "links" | "midden" | "rechts" | "vier";
 const VERSIES: { id: Id; titel: string; uitleg: string }[] = [
   { id: "links", titel: "Nu op de site", uitleg: "Het 3D-model zoals het nu op de startpagina staat (zappie.glb)." },
   { id: "midden", titel: "3D, kleiner model", uitleg: "Zelfde 3D-robot, kleiner model, laadt 1 keer, tekent alleen in beeld." },
   { id: "rechts", titel: "Filmpje", uitleg: "Herhalend filmpje uit hetzelfde model: zweeft en zwaait." },
+  {
+    id: "vier",
+    titel: "3D zoals nu, één gedeelde motor",
+    uitleg: "Precies de 3D-robot van nu, klein model, en alle robots op de pagina delen één 3D-motor. Twee keer, om te laten zien dat de tweede bijna niets kost.",
+  },
 ];
 
 const BESTAND: Record<Id, string[]> = {
   links: ["/assets/zappie/3d/zappie.glb"],
   midden: ["/assets/zappie/3d/zappie-klein.glb"],
   rechts: ["/assets/zappie/bliepo/bliepo-zweef.webm", "/assets/zappie/bliepo/bliepo-zweef.webp"],
+  vier: ["/assets/zappie/3d/zappie-klein.glb"],
 };
 
 type Hapering = { t: number; duur: number };
+const geenAbonnement = () => () => {};
 
 function mb(bytes: number) {
   return (bytes / 1048576).toLocaleString("nl-NL", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
@@ -45,6 +53,84 @@ function sec(ms: number) {
 }
 
 export function VoorbeeldBliepo() {
+  const scenario = useSyncExternalStore(
+    geenAbonnement,
+    () => {
+      const p = new URLSearchParams(location.search).get("scenario");
+      return p === "oud" || p === "nieuw" ? p : null;
+    },
+    () => null,
+  );
+  if (scenario) return <Scenario soort={scenario} />;
+  return <Vergelijking />;
+}
+
+/**
+ * ?scenario=oud of ?scenario=nieuw: drie robots tegelijk, zoals op de
+ * startpagina (naast de vakken, op het podium, onderaan). "oud" = elk een
+ * eigen 3D-motor en het grote model (zoals nu); "nieuw" = klein model en één
+ * gedeelde motor. Gemeten vanaf het moment dat ze verschijnen tot 1,5 s nadat
+ * de laatste klaar is.
+ */
+function Scenario({ soort }: { soort: "oud" | "nieuw" }) {
+  const [aan, zetAan] = useState(false);
+  const [uitslag, zetUitslag] = useState<string | null>(null);
+  const haperingen = useRef<Hapering[]>([]);
+  const t0 = useRef(0);
+  const klaarTeller = useRef(0);
+  useEffect(() => {
+    let frame = 0;
+    let vorige = performance.now();
+    const tel = (nu: number) => {
+      if (nu - vorige > 50) haperingen.current.push({ t: vorige, duur: nu - vorige });
+      vorige = nu;
+      frame = requestAnimationFrame(tel);
+    };
+    frame = requestAnimationFrame(tel);
+    const wacht = window.setTimeout(() => {
+      t0.current = performance.now();
+      zetAan(true);
+    }, 1200);
+    return () => {
+      cancelAnimationFrame(frame);
+      window.clearTimeout(wacht);
+    };
+  }, []);
+  const eenKlaar = useCallback(() => {
+    klaarTeller.current++;
+    if (klaarTeller.current !== 3) return;
+    window.setTimeout(() => {
+      const stil = haperingen.current.filter((h) => h.t >= t0.current - 1).reduce((a, h) => a + h.duur, 0);
+      zetUitslag(sec(stil));
+    }, 1500);
+  }, []);
+  return (
+    <main className="min-h-svh bg-[#0d2a6b] px-4 py-8 text-white sm:px-8">
+      <h1 className="text-2xl font-bold">
+        Drie robots tegelijk: {soort === "oud" ? "zoals nu (elk een eigen motor, groot model)" : "klein model, één gedeelde motor"}
+      </h1>
+      <p className="mt-3 font-semibold" data-uitslag="scenario">
+        {uitslag ? `Stilstand: ${uitslag} s` : "Meten…"}
+      </p>
+      <ul className="mt-6 grid grid-cols-3 gap-4">
+        {[0, 1, 2].map((i) => (
+          <li key={i} className="relative aspect-[276/348]">
+            {aan &&
+              (soort === "oud" ? (
+                <KlaarWacht onKlaar={eenKlaar}>
+                  <Prototype3D rustig={false} />
+                </KlaarWacht>
+              ) : (
+                <Bliepo3DGedeeld rustig={false} onKlaar={eenKlaar} />
+              ))}
+          </li>
+        ))}
+      </ul>
+    </main>
+  );
+}
+
+function Vergelijking() {
   const [alleen, zetAlleen] = useState<Id | null | undefined>(undefined);
   const [actief, zetActief] = useState<Id[]>([]);
   const [uitslag, zetUitslag] = useState<Partial<Record<Id, { mb: string; net: string; stil: string }>>>({});
@@ -72,7 +158,7 @@ export function VoorbeeldBliepo() {
   /* Volgorde: eerst Three.js apart (tenzij ?alleen=), dan links, midden, rechts. */
   useEffect(() => {
     const p = new URLSearchParams(location.search).get("alleen");
-    const keuze = p === "links" || p === "midden" || p === "rechts" ? p : null;
+    const keuze = p === "links" || p === "midden" || p === "rechts" || p === "vier" ? p : null;
     const wacht = window.setTimeout(async () => {
       zetAlleen(keuze);
       if (keuze) {
@@ -106,7 +192,7 @@ export function VoorbeeldBliepo() {
         const net = regels.reduce((a, r) => a + (r.encodedBodySize || 0), 0);
         zetUitslag((u) => ({ ...u, [id]: { mb: mb(groot), net: mb(net), stil: sec(stil) } }));
         if (alleen) return;
-        const volgende: Id | undefined = id === "links" ? "midden" : id === "midden" ? "rechts" : undefined;
+        const volgende: Id | undefined = id === "links" ? "midden" : id === "midden" ? "rechts" : id === "rechts" ? "vier" : undefined;
         if (volgende) {
           begin.current[volgende] = performance.now();
           zetActief((a) => [...a, volgende]);
@@ -118,10 +204,11 @@ export function VoorbeeldBliepo() {
 
   return (
     <main className="min-h-svh bg-[#0d2a6b] px-4 py-8 text-white sm:px-8">
-      <h1 className="font-[family-name:var(--font-fredoka)] text-3xl font-bold">Voorbeeld: drie versies van Bliepo</h1>
+      <h1 className="font-[family-name:var(--font-fredoka)] text-3xl font-bold">Voorbeeld: vier versies van Bliepo</h1>
       <p className="mt-2 max-w-3xl text-white/80">
         Testpagina, staat in geen menu. Ze komen één voor één in beeld; onder elke versie staat hoe groot het bestand is
-        en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat.
+        en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat. Met ?alleen=links, midden,
+        rechts of vier staat er maar één, gemeten vanaf een lege pagina.
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-white/80">
         {alleen === null && <span>3D-motor (Three.js, nodig voor links en midden) laden: {three ? `${three} s stilstand` : "bezig…"}</span>}
@@ -134,14 +221,14 @@ export function VoorbeeldBliepo() {
         </button>
       </div>
 
-      <ul className="mt-6 grid gap-5 sm:grid-cols-3">
+      <ul className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
         {VERSIES.filter((v) => !alleen || v.id === alleen).map((v) => {
           const u = uitslag[v.id];
           const aan = actief.includes(v.id);
           return (
             <li key={v.id} className="rounded-3xl border border-white/20 bg-white/5 p-4">
               <h2 className="text-lg font-bold">
-                {v.id === "links" ? "Links" : v.id === "midden" ? "Midden" : "Rechts"}: {v.titel}
+                {v.id === "links" ? "1" : v.id === "midden" ? "2" : v.id === "rechts" ? "3" : "4"}. {v.titel}
               </h2>
               <p className="text-sm text-white/70">{v.uitleg}</p>
               <div className="relative mx-auto mt-3 aspect-[276/348] w-full max-w-[276px]" data-versie={v.id}>
@@ -151,6 +238,12 @@ export function VoorbeeldBliepo() {
                   /* Zelfde vlak als de 3D-versies (.bt-prototype), zodat hij even groot staat. */
                   <div className="absolute inset-x-[4%] top-0 bottom-[14%]">
                     <BliepoFilmpje rustig={rustig} onKlaar={() => klaar("rechts")} />
+                  </div>
+                )}
+                {aan && v.id === "vier" && (
+                  <div className="absolute inset-0 grid grid-cols-2">
+                    <div className="relative"><Bliepo3DGedeeld rustig={rustig} onKlaar={() => klaar("vier")} /></div>
+                    <div className="relative"><Bliepo3DGedeeld rustig={rustig} rusthoek={Math.PI / 8} /></div>
                   </div>
                 )}
                 {!aan && <p className="absolute inset-0 grid place-items-center text-sm text-white/60">Wacht op zijn beurt…</p>}

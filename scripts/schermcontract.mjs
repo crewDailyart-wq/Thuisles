@@ -386,7 +386,7 @@ export const SCHERMCONTRACT = [
     naam: "Voorbeeld Bliepo",
     pad: "/voorbeeld-bliepo",
     bron: ["src/app/voorbeeld-bliepo/VoorbeeldBliepo.tsx"],
-    zichtbaar: ["Voorbeeld: drie versies van Bliepo", "Nu op de site", "3D, kleiner model", "Filmpje", "Beweging uit"],
+    zichtbaar: ["Voorbeeld: vier versies van Bliepo", "Nu op de site", "3D, kleiner model", "Filmpje", "één gedeelde motor", "Beweging uit"],
   },
   {
     naam: "Zappie missie",
