@@ -20,7 +20,14 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   renderer.toneMapping = T.ACESFilmicToneMapping;
   renderer.toneMappingExposure = 0.95;
   renderer.shadowMap.enabled = true;
-  renderer.shadowMap.type = T.PCFSoftShadowMap;
+  /*
+    PCFShadowMap (18 oktober 2026): deze versie van three.js kent
+    PCFSoftShadowMap niet meer en tekende bij de eerste tekening toch al met
+    PCFShadowMap. Nu staat dat er meteen, zodat de shaders vooraf in de
+    achtergrond klaargezet kunnen worden (zie compileAsync hieronder). Het beeld
+    is daardoor niet veranderd.
+  */
+  renderer.shadowMap.type = T.PCFShadowMap;
   renderer.domElement.setAttribute('role','img');
   renderer.domElement.setAttribute('aria-label','Sterrenwerkplaats: 3D-podium en vitrine in een glazen koepel met uitzicht op een ondergrondse energiekern');
   host.append(renderer.domElement);
@@ -289,7 +296,18 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   };
   const observer=new ResizeObserver(resize);observer.observe(host);resize();
   const lost=(e:Event)=>{e.preventDefault();renderer.setAnimationLoop(null);failed();};renderer.domElement.addEventListener('webglcontextlost',lost);
+  /*
+    Snelheid (18 oktober 2026): de shaders van het atelier worden eerst in de
+    achtergrond klaargezet (compileAsync), in plaats van bij de eerste
+    tekening. Dat klaarzetten hield de pagina anders bijna een halve seconde
+    vast. Het beeld zelf verandert niet. De render target staat er even bij,
+    zodat precies dezelfde shaders klaarstaan als de composer straks gebruikt.
+  */
+  let compiled=false;
+  renderer.setRenderTarget(composer.readBuffer);
+  renderer.compileAsync(scene,camera).catch(()=>{}).finally(()=>{compiled=true;dirty=true;});
+  renderer.setRenderTarget(null);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
-  renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
+  renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||!compiled||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
   return {badge:setBadge,view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('pointerup',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
 }

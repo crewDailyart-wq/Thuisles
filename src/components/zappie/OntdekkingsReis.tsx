@@ -23,7 +23,7 @@ import Link from "next/link";
 import { EmbeddedAtelier } from "@/components/zappie/atelier/EmbeddedAtelier";
 import { useState } from "react";
 import { IcoonPijl, IcoonSter } from "@/components/zappie/Iconen";
-import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
 
@@ -169,7 +169,8 @@ function Atelier() {
           /*
             Bliepo op het podium (18 oktober 2026, met toestemming van de
             eigenaar): dezelfde 3D-robot als onderaan de pagina
-            (public/assets/zappie/3d/zappie.glb via Prototype3D), naar voren
+            (sinds 18 oktober 2026 via Bliepo3DGedeeld: kleiner model, één
+            gedeelde 3D-motor; zappie.glb en Prototype3D staan er nog), naar voren
             en zonder de muis te volgen. Hij vervangt de oude robot met de Z.
             Die staat nog in components/zappie/Zappie.tsx, maar wordt hier niet
             meer getoond.
@@ -177,7 +178,7 @@ function Atelier() {
             "zs-pasrobot--bliepo").
           */
           <div className="zs-pasrobot zs-pasrobot--bliepo" data-kleur={gepast.Kleuren ?? "eigen"} aria-hidden="true">
-            <Prototype3D rustig={bewegingRustig} rusthoek={0} volgMuis={false} />
+            <Bliepo3DGedeeld rustig={bewegingRustig} rusthoek={0} volgMuis={false} />
             {gepast.Petjes && <AccessoireBeeld soort={gepast.Petjes} className={`zs-gepast zs-gepast-${gepast.Petjes}`} />}
             {gepast["Extra’s"] && <AccessoireBeeld soort={gepast["Extra’s"]} className={`zs-gepast zs-gepast-${gepast["Extra’s"]}`} />}
           </div>

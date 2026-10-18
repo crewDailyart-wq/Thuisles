@@ -31,7 +31,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
-import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { Vlek, WaterverfFilters } from "@/components/zappie/wereldreis/Waterverf";
 import {
   Bel,
@@ -368,7 +368,7 @@ export function Wereldreis() {
       <div className="wr-korrel" />
       {zappie && (
         <div className="wr-zappie" style={{ left: zappie.x, top: zappie.y, width: zappie.b, height: zappie.h }}>
-          <Prototype3D rustig={rustig} />
+          <Bliepo3DGedeeld rustig={rustig} />
           <p className="wr-tikhint">← tik maar eens op mij!</p>
           <p className="wr-bordje">
             {missies === 0 ? "Nog geen missies. Doe je mee?" : missies === 1 ? "Al 1 missie gedaan!" : `Al ${missies} missies gedaan!`}

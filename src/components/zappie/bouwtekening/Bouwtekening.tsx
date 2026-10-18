@@ -35,7 +35,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
-import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import {
   Ideelamp,
   Opengewerkt,
@@ -403,7 +403,7 @@ export function Bouwtekening() {
         "prototype",
         <>
           <Plateau />
-          <Prototype3D rustig={rustig} />
+          <Bliepo3DGedeeld rustig={rustig} />
           <p className="bt-tikhint">← tik maar eens op mij!</p>
         </>,
       )}

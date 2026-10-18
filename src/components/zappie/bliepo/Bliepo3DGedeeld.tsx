@@ -1,8 +1,9 @@
 "use client";
 
 /**
- * Bliepo in 3D met één gedeelde 3D-motor (18 oktober 2026, fase 1, vierde
- * versie: alleen op de testpagina /voorbeeld-bliepo).
+ * Bliepo in 3D met één gedeelde 3D-motor (18 oktober 2026; eerst als vierde
+ * versie op de testpagina /voorbeeld-bliepo, daarna met akkoord van de
+ * eigenaar overal waar Bliepo in 3D staat).
  *
  * Zoals Bliepo3D (klein model, één keer geladen, tekent alleen in beeld),
  * maar alle Bliepo's op de pagina delen één WebGL-motor
