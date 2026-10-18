@@ -379,6 +379,16 @@ export const SCHERMCONTRACT = [
     ],
   },
   {
+    /*
+      Testpagina met drie versies van Bliepo (18 oktober 2026, fase 1). Staat in
+      geen menu; blijft tot de eigenaar zegt dat hij weg mag.
+    */
+    naam: "Voorbeeld Bliepo",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/VoorbeeldBliepo.tsx"],
+    zichtbaar: ["Voorbeeld: drie versies van Bliepo", "Nu op de site", "3D, kleiner model", "Filmpje", "Beweging uit"],
+  },
+  {
     naam: "Zappie missie",
     pad: "/zappie/oefenen?wereld=oceaan&missie=1",
     bron: ["src/components/zappie/Missie.tsx"],
