@@ -108,7 +108,7 @@ export function createSpeechBubble(container){
   Object.assign(bubble.style,{position:'absolute',width:'min(280px, calc(100vw - 32px))',boxSizing:'border-box',padding:'16px 18px',border:'2px solid #74e5ff',borderRadius:'22px',background:'linear-gradient(145deg,#103b68,#061c38)',boxShadow:'0 0 18px #36c8ff66, inset 0 0 12px #36c8ff22',color:'#eaffff',fontFamily:'Consolas, "Courier New", monospace',fontSize:'16px',fontWeight:'600',lineHeight:'1.5',overflowWrap:'anywhere',pointerEvents:'none',zIndex:'1001'});
   const text=document.createElement('span');bubble.append(text);
   const tip=document.createElement('span');Object.assign(tip.style,{position:'absolute',bottom:'-8px',left:'50%',width:'13px',height:'13px',transform:'rotate(45deg)',background:'#082440',borderRight:'2px solid #74e5ff',borderBottom:'2px solid #74e5ff'});bubble.append(tip);container.append(bubble);
-  return {element:bubble,update(controller){bubble.hidden=controller.action!=='talk';const value=controller.talkDisplay.text;if(text.textContent!==value)text.textContent=value;},dispose(){bubble.remove();}};
+  return {element:bubble,update(controller){const verborgen=controller.action!=='talk';if(bubble.hidden!==verborgen)bubble.hidden=verborgen;const value=controller.talkDisplay.text;if(text.textContent!==value)text.textContent=value;},dispose(){bubble.remove();}};
 }
 const tempQ=new T.Quaternion(),tempE=new T.Euler();
 export function applyPose(model,pose,blend=1){

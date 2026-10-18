@@ -290,9 +290,18 @@ export function Bouwtekening() {
     let frame = 0;
     const draai = () => {
       frame = 0;
-      el.style.setProperty("--rol", `${(window.scrollY * 0.3).toFixed(1)}deg`);
-      el.style.setProperty("--scroll", window.scrollY.toFixed(0));
-      el.style.setProperty("--midden", (window.innerHeight / 2).toFixed(0));
+      /*
+        Snelheid (19 oktober 2026): op de tandwielen en het wiel zelf, niet op
+        .bt; anders rekent de browser bij elk stukje scrollen de stijl van de
+        hele pagina opnieuw uit. Het beeld is gelijk.
+      */
+      const waarden: [string, string][] = [
+        ["--rol", `${(window.scrollY * 0.3).toFixed(1)}deg`],
+        ["--scroll", window.scrollY.toFixed(0)],
+        ["--midden", (window.innerHeight / 2).toFixed(0)],
+      ];
+      for (const doel of el.querySelectorAll<HTMLElement>(".bt-tandwiel, .bt-wiel"))
+        for (const [naam, waarde] of waarden) if (doel.style.getPropertyValue(naam) !== waarde) doel.style.setProperty(naam, waarde);
     };
     const scroll = () => {
       if (!frame) frame = requestAnimationFrame(draai);

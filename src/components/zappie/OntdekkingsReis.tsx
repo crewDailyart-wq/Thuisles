@@ -25,6 +25,7 @@ import { useState } from "react";
 import { IcoonPijl, IcoonSter } from "@/components/zappie/Iconen";
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
+import { haalZachtScrollen } from "@/components/zappie/ZachtScrollen";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
 
 export const VAKKEN: readonly { id: VakId; naam: string; kleur: string; href?: string }[] = [
@@ -240,7 +241,10 @@ function Kust() {
   /* Terug naar boven: rustig scrollen, of meteen bij "minder beweging". */
   function naarBoven() {
     const rustig = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-    window.scrollTo({ top: 0, behavior: rustig ? "auto" : "smooth" });
+    /* Staat vloeiend scrollen aan (ZachtScrollen), dan gaat het daarmee, anders zoals altijd. */
+    const zacht = haalZachtScrollen();
+    if (zacht && !rustig) zacht.scrollTo(0);
+    else window.scrollTo({ top: 0, behavior: rustig ? "auto" : "smooth" });
     document.querySelector<HTMLElement>(".zp-missieknop")?.focus({ preventScroll: true });
   }
 

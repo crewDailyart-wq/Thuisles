@@ -28,6 +28,14 @@ const glad = (n: number) => {
   return t * t * (3 - 2 * t);
 };
 
+/** De lagen die --zr-scroll, --zr-wolken en --zr-land gebruiken (startpagina.css). */
+const LAGEN = ".zp-laag-ruimte, .zp-sterrenveld, .zp-horizonlicht, .zp-aarde, .zs-lucht, .zs-camera-kust, .zs-mist, .zs-wolk";
+
+/** Zet een variabele op elk element, maar alleen als de waarde echt verandert. */
+function zet(doelen: NodeListOf<HTMLElement>, naam: string, waarde: string) {
+  for (const el of doelen) if (el.style.getPropertyValue(naam) !== waarde) el.style.setProperty(naam, waarde);
+}
+
 export function ScrollReis() {
   const stand = useBewegingsstand();
   const rustig = stand !== "aan";
@@ -54,12 +62,21 @@ export function ScrollReis() {
       const land = glad((kijkpunt - plek.wolken) / Math.max(1, plek.atelier + h * 0.25 - plek.wolken));
 
       reisStand.positie = rustig ? 0 : afdaling;
-      root.style.setProperty("--zr-scroll", (rustig ? 0 : afdaling).toFixed(4));
-      root.style.setProperty("--zr-wolken", (rustig ? 0 : wolk).toFixed(4));
-      root.style.setProperty("--zr-land", land.toFixed(4));
-      root.dataset.reisfase = land > 0.5 ? "kust" : afdaling > 0.35 ? "atmosfeer" : "ruimte";
+      /*
+        Snelheid (19 oktober 2026): de waarden staan op de lagen die ze
+        gebruiken, niet op .zp. Een variabele op .zp liet de browser bij elk
+        stukje scrollen de stijl van de hele pagina (±870 onderdelen) opnieuw
+        uitrekenen; nu alleen die van deze paar lagen. Het beeld is gelijk.
+      */
+      const doelen = root.querySelectorAll<HTMLElement>(LAGEN);
+      zet(doelen, "--zr-scroll", (rustig ? 0 : afdaling).toFixed(4));
+      zet(doelen, "--zr-wolken", (rustig ? 0 : wolk).toFixed(4));
+      zet(doelen, "--zr-land", land.toFixed(4));
+      const fase = land > 0.5 ? "kust" : afdaling > 0.35 ? "atmosfeer" : "ruimte";
+      if (root.dataset.reisfase !== fase) root.dataset.reisfase = fase;
       /* Een donkere band achter het menu zodra de pagina onder het menu door schuift. */
-      root.dataset.gescrold = y > 24 ? "ja" : "nee";
+      const gescrold = y > 24 ? "ja" : "nee";
+      if (root.dataset.gescrold !== gescrold) root.dataset.gescrold = gescrold;
     };
     const plan = () => {
       if (!frame && !document.hidden) frame = requestAnimationFrame(teken);

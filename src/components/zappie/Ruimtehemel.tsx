@@ -269,6 +269,7 @@ export function Ruimtehemel({ rustig }: { rustig: boolean }) {
     if (rustig) {
       el.style.transform = "";
       root.style.setProperty("--rh-voortgang", "0");
+      for (const doel of root.querySelectorAll<HTMLElement>(".zp-rh-lucht, .zp-rh-aarde")) doel.style.removeProperty("--rh-voortgang");
       return;
     }
     let frame = 0;
@@ -278,7 +279,14 @@ export function Ruimtehemel({ rustig }: { rustig: boolean }) {
       /* Op een korte pagina verandert de aarde maar een beetje; pas na twee schermen scrollen is hij op zijn grootst. */
       const max = Math.max(window.innerHeight * 2, document.documentElement.scrollHeight - window.innerHeight);
       el.style.transform = `translate3d(0, ${(-y * DIEPTE).toFixed(1)}px, 0)`;
-      root.style.setProperty("--rh-voortgang", Math.min(1, y / max).toFixed(4));
+      /*
+        Snelheid (19 oktober 2026): de voortgang op de lucht en de aarde zelf,
+        niet op .zp-rh; anders rekent de browser bij elk stukje scrollen de hele
+        hemel opnieuw uit. Het beeld is gelijk.
+      */
+      const voortgang = Math.min(1, y / max).toFixed(4);
+      for (const doel of root.querySelectorAll<HTMLElement>(".zp-rh-lucht, .zp-rh-aarde"))
+        if (doel.style.getPropertyValue("--rh-voortgang") !== voortgang) doel.style.setProperty("--rh-voortgang", voortgang);
     };
     const scroll = () => {
       if (!frame) frame = requestAnimationFrame(teken);

@@ -35,6 +35,7 @@ import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
 import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
+import { ZachtScrollen } from "@/components/zappie/ZachtScrollen";
 import { VakkenPaneel } from "@/components/zappie/VakkenPaneel";
 import "@/components/zappie/startpagina.css";
 import { useRouter } from "next/navigation";
@@ -270,6 +271,8 @@ export function Startscherm() {
   return (
     <>
       <ScrollReis />
+      {/* Vloeiend scrollen op laptop en computer (19 oktober 2026). */}
+      <ZachtScrollen />
       <main className="zp-start" id="zappie-start" aria-label="Start">
         <h1 className="sr-only">Zappie: begin je missie</h1>
 

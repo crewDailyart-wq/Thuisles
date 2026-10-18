@@ -24,6 +24,7 @@
 import { useEffect, useRef, useState } from "react";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
+import { wachtOpScrollrust } from "@/lib/scrollrust";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
 
@@ -135,6 +136,9 @@ function Bliepo3DEcht({
     kijker.observe(host);
 
     async function start() {
+      /* Vloeiend scrollen (19 oktober 2026): niet opstarten midden in het scrollen. */
+      await wachtOpScrollrust();
+      if (opgeruimd) return;
       const [Z, { laadBliepoKlein }, G] = await Promise.all([
         import("@/lib/zappie3d/zappie"),
         import("@/lib/zappie3d/bliepo-klein"),

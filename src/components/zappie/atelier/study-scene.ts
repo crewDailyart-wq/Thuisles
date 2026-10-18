@@ -7,6 +7,7 @@ import { UnrealBloomPass } from 'three/addons/postprocessing/UnrealBloomPass.js'
 import { OutputPass } from 'three/addons/postprocessing/OutputPass.js';
 import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
+import { scrolltNet, wachtOpScrollrust } from '@/lib/scrollrust';
 
 export type StudyView = 'samen' | 'podium' | 'vitrine' | 'koepel' | 'lintjes';
 export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; badge: (index: number, unlocked: boolean) => void; dispose: () => void; foto?: (glow: boolean) => string | null };
@@ -112,7 +113,12 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
   let lastPause=performance.now();
   const vast=await laadVast();
   const leeg=new T.BufferGeometry();
-  const doorgaan=async()=>{if(performance.now()-lastPause<30)return;await pauze();lastPause=performance.now();};
+  /*
+    Vloeiend scrollen (19 oktober 2026): stukjes van hoogstens 10 ms, en zolang
+    er gescrold wordt even helemaal niet bouwen, zodat het vooraf klaarzetten
+    het scrollen nooit stoort.
+  */
+  const doorgaan=async()=>{if(performance.now()-lastPause<10&&!scrolltNet())return;await pauze();await wachtOpScrollrust();lastPause=performance.now();};
   let dirty=true,disposed=false,first=true,panoramaReady=false;
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference:'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
@@ -466,6 +472,7 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
   Promise.all([renderer.compileAsync(scene,camera),renderer.compileAsync(postScene,camera)]).catch(()=>{}).finally(()=>{postQuad.dispose();compiled=true;dirty=true;});
   renderer.setRenderTarget(null);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
-  renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||!compiled||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
+  renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||!compiled||document.hidden)return;if(first&&scrolltNet())return; // de eerste (zware) tekening pas als er even niet gescrold wordt
+  composer.render();dirty=false;if(first){first=false;ready();}});
   return {badge:setBadge,view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},foto(on){if(!panoramaReady||!compiled)return null;const was=bloom.enabled;bloom.enabled=on;composer.render();const url=renderer.domElement.toDataURL('image/jpeg',.9);bloom.enabled=was;dirty=true;return url;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('pointerup',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
 }
