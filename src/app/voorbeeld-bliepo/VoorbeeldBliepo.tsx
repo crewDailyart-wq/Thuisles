@@ -20,6 +20,7 @@ import { Bliepo3D } from "@/components/zappie/bliepo/Bliepo3D";
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
 import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { VoorbeeldWeerspiegeling } from "./VoorbeeldWeerspiegeling";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
 
@@ -57,10 +58,12 @@ export function VoorbeeldBliepo() {
     geenAbonnement,
     () => {
       const p = new URLSearchParams(location.search).get("scenario");
+      if (new URLSearchParams(location.search).get("atelier")) return "atelier";
       return p === "oud" || p === "nieuw" ? p : null;
     },
     () => null,
   );
+  if (scenario === "atelier") return <VoorbeeldWeerspiegeling />;
   if (scenario) return <Scenario soort={scenario} />;
   return <Vergelijking />;
 }
@@ -209,6 +212,13 @@ function Vergelijking() {
         Testpagina, staat in geen menu. Ze komen één voor één in beeld; onder elke versie staat hoe groot het bestand is
         en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat. Met ?alleen=links, midden,
         rechts of vier staat er maar één, gemeten vanaf een lege pagina.
+      </p>
+      <p className="mt-2">
+        {/* Een gewone link: de pagina moet opnieuw laden om ?atelier=1 te lezen. */}
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
+        <a href="/voorbeeld-bliepo?atelier=1" className="font-semibold underline">
+          Naar de drie versies van de weerspiegeling in het atelier
+        </a>
       </p>
       <div className="mt-3 flex flex-wrap items-center gap-3 text-sm text-white/80">
         {alleen === null && <span>3D-motor (Three.js, nodig voor links en midden) laden: {three ? `${three} s stilstand` : "bezig…"}</span>}

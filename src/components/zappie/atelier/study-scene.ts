@@ -9,7 +9,46 @@ import { Reflector } from 'three/addons/objects/Reflector.js';
 import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 
 export type StudyView = 'samen' | 'podium' | 'vitrine' | 'koepel' | 'lintjes';
-export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; badge: (index: number, unlocked: boolean) => void; dispose: () => void };
+export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; badge: (index: number, unlocked: boolean) => void; dispose: () => void; foto?: (glow: boolean) => string | null };
+/**
+ * Proef met de weerspiegeling in de vloer (18 oktober 2026, alleen op de
+ * testpagina /voorbeeld-bliepo?atelier=1; de echte pagina geeft niets mee en
+ * blijft zoals hij is):
+ *   a: scherp, in de resolutie van het scherm en met anti-aliasing;
+ *   b: zoals a, met een heel lichte vervaging;
+ *   c: zoals b, en verder van het podium zachter en vager.
+ * Op een smal scherm (telefoon) wordt de weerspiegeling in een lagere resolutie
+ * getekend; de anti-aliasing en de vervaging houden de randen vloeiend.
+ */
+export type Reflectie = 'a' | 'b' | 'c';
+const zachteReflectie = {
+  name: 'ZachteReflectie',
+  uniforms: { color: { value: null }, tDiffuse: { value: null }, textureMatrix: { value: null }, texel: { value: new T.Vector2(1/1024,1/1024) }, zacht: { value: 1.4 }, rand: { value: 0 } },
+  vertexShader: `uniform mat4 textureMatrix;varying vec4 vUv;varying vec3 vPlek;
+    #include <common>
+    #include <logdepthbuf_pars_vertex>
+    void main(){vUv=textureMatrix*vec4(position,1.0);vPlek=(modelMatrix*vec4(position,1.0)).xyz;gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);
+    #include <logdepthbuf_vertex>
+    }`,
+  fragmentShader: `uniform vec3 color;uniform sampler2D tDiffuse;uniform vec2 texel;uniform float zacht;uniform float rand;varying vec4 vUv;varying vec3 vPlek;
+    #include <logdepthbuf_pars_fragment>
+    float blendOverlay(float b,float c){return b<0.5?(2.0*b*c):(1.0-2.0*(1.0-b)*(1.0-c));}
+    vec3 blendOverlay(vec3 b,vec3 c){return vec3(blendOverlay(b.r,c.r),blendOverlay(b.g,c.g),blendOverlay(b.b,c.b));}
+    void main(){
+      #include <logdepthbuf_fragment>
+      vec2 uv=vUv.xy/vUv.w;
+      float f=rand*smoothstep(3.0,15.0,length(vPlek.xz-vec2(1.65,1.2)));
+      float r=zacht*(1.0+f*6.0);
+      vec2 p[12];p[0]=vec2(-.326,-.406);p[1]=vec2(-.840,-.074);p[2]=vec2(-.696,.457);p[3]=vec2(-.203,.621);p[4]=vec2(.962,-.195);p[5]=vec2(.473,-.480);p[6]=vec2(.519,.767);p[7]=vec2(.185,-.893);p[8]=vec2(.507,.064);p[9]=vec2(.896,.412);p[10]=vec2(-.322,-.933);p[11]=vec2(-.792,-.598);
+      vec3 som=texture2D(tDiffuse,uv).rgb;
+      for(int i=0;i<12;i++)som+=texture2D(tDiffuse,uv+p[i]*texel*r).rgb;
+      som/=13.0;
+      som*=1.0-f*0.7;
+      gl_FragColor=vec4(blendOverlay(som,color),1.0);
+      #include <tonemapping_fragment>
+      #include <colorspace_fragment>
+    }`,
+};
 const V = (x:number,y:number,z:number) => new T.Vector3(x,y,z);
 
 /** First art-direction slice: modeled objects, physical materials, HDR glow and planar reflections. */
@@ -23,14 +62,14 @@ const V = (x:number,y:number,z:number) => new T.Vector3(x,y,z);
   wordt, gebeurt zodra het atelier klaar is.
 */
 const pauze=()=>new Promise<void>(r=>{const s=(globalThis as {scheduler?:{yield?:()=>Promise<void>}}).scheduler;if(s?.yield)s.yield().then(r);else setTimeout(r,0);});
-export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null = null): StudyController {
+export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null = null, reflectie: Reflectie | null = null): StudyController {
   let inner:StudyController|null=null,stopped=false;const waiting:((c:StudyController)=>void)[]=[];
   const later=(f:(c:StudyController)=>void)=>{if(inner)f(inner);else waiting.push(f);};
-  bouwStudy(host,ready,failed,selected,mascotAnchor).then(c=>{if(stopped){c.dispose();return;}inner=c;waiting.splice(0).forEach(f=>f(c));}).catch(()=>{if(!stopped)failed();});
-  return {view:v=>later(c=>c.view(v)),glow:v=>later(c=>c.glow(v)),badge:(i,u)=>later(c=>c.badge(i,u)),dispose(){stopped=true;inner?.dispose();inner=null;}};
+  bouwStudy(host,ready,failed,selected,mascotAnchor,reflectie).then(c=>{if(stopped){c.dispose();return;}inner=c;waiting.splice(0).forEach(f=>f(c));}).catch(()=>{if(!stopped)failed();});
+  return {view:v=>later(c=>c.view(v)),glow:v=>later(c=>c.glow(v)),badge:(i,u)=>later(c=>c.badge(i,u)),foto:on=>inner?.foto?.(on)??null,dispose(){stopped=true;inner?.dispose();inner=null;}};
 }
 
-async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null): Promise<StudyController> {
+async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null, reflectie: Reflectie | null): Promise<StudyController> {
   let lastPause=performance.now();
   const doorgaan=async()=>{if(performance.now()-lastPause<30)return;await pauze();lastPause=performance.now();};
   let dirty=true,disposed=false,first=true,panoramaReady=false;
@@ -88,7 +127,18 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
 
   await doorgaan();
   // A real reflected floor, with independent gold inlays and a stone foundation.
-  const floor=new Reflector(new T.CircleGeometry(18.8,128),{color:0x38485e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:0});
+  const floor=reflectie
+    ?new Reflector(new T.CircleGeometry(18.8,128),{color:0x38485e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:4,shader:reflectie==='a'?undefined:zachteReflectie})
+    :new Reflector(new T.CircleGeometry(18.8,128),{color:0x38485e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:0});
+  if(reflectie==='c')(floor.material as T.ShaderMaterial).uniforms.rand.value=1;
+  // Proef: de weerspiegeling krijgt de resolutie van het scherm (op een telefoon iets minder).
+  const reflectieMaat=(w:number,h:number)=>{
+    if(!reflectie)return;
+    const schaal=renderer.getPixelRatio()*(w<700?(reflectie==='a'?.75:.6):(reflectie==='a'?1:.8));
+    const b=Math.max(2,Math.round(w*schaal)),hh=Math.max(2,Math.round(h*schaal));
+    floor.getRenderTarget().setSize(b,hh);
+    const u=(floor.material as T.ShaderMaterial).uniforms;if(u.texel)u.texel.value.set(1/b,1/hh);
+  };
   floor.rotation.x=-Math.PI/2;floor.position.y=-.025;scene.add(floor);
   cyl(18.8,18.8,.25,navy,scene,0,-.17);
   const inlays=new T.Group();scene.add(inlays);
@@ -322,7 +372,7 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
     const v=views[active],factor=w/h<1?(active==='samen'?1.95:active==='koepel'?1.7:active==='lintjes'?1.65:1.3):1;
     // Widen the lens on narrow screens instead of moving the camera outside the shell.
     camera.aspect=w/h;camera.fov=T.MathUtils.radToDeg(2*Math.atan(Math.tan(T.MathUtils.degToRad(v.fov/2))*factor));
-    camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);
+    camera.updateProjectionMatrix();renderer.setSize(w,h,false);composer.setSize(w,h);reflectieMaat(w,h);
     camera.position.copy(v.eye);camera.lookAt(v.target);camera.updateMatrixWorld();
     if(mascotAnchor){
       const feet=V(1.65,1.12,1.2).project(camera),head=V(1.65,3.35,1.2).project(camera);
@@ -351,5 +401,5 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
   renderer.setRenderTarget(null);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
   renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||!compiled||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
-  return {badge:setBadge,view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('pointerup',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
+  return {badge:setBadge,view(v){active=v;resize();},glow(on){bloom.enabled=on;dirty=true;},foto(on){if(!panoramaReady||!compiled)return null;const was=bloom.enabled;bloom.enabled=on;composer.render();const url=renderer.domElement.toDataURL('image/jpeg',.9);bloom.enabled=was;dirty=true;return url;},dispose(){disposed=true;renderer.setAnimationLoop(null);observer.disconnect();renderer.domElement.removeEventListener('pointerup',pick);renderer.domElement.removeEventListener('webglcontextlost',lost);const geometries=new Set<T.BufferGeometry>();scene.traverse(o=>{if(o instanceof T.Mesh)geometries.add(o.geometry);});geometries.forEach(g=>g.dispose());materials.forEach(m=>m.dispose());floor.dispose();bloom.dispose();output.dispose();composer.dispose();env.dispose();panoramaTexture.dispose();renderer.dispose();renderer.domElement.remove();}};
 }

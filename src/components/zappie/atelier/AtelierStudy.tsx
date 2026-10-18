@@ -2,7 +2,7 @@
 
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import Link from 'next/link';
-import type { StudyController, StudyView } from './study-scene';
+import type { Reflectie, StudyController, StudyView } from './study-scene';
 import './study.css';
 
 const views: { id:StudyView;label:string }[] = [{id:'samen',label:'Het geheel'},{id:'podium',label:'Het podium'},{id:'vitrine',label:'De vitrine'},{id:'koepel',label:'De koepel'},{id:'lintjes',label:'Lintjes'}];
@@ -14,17 +14,21 @@ const badges=[
   {name:'Doorzetter',hint:'Voorbeeld: oefen vijf dagen.'},
   {name:'Wereldbouwer',hint:'Voorbeeld: voltooi een creatieve opdracht.'},
 ];
-export function AtelierStudy({embedded=false,mascot}:{embedded?:boolean;mascot?:ReactNode}){
+/** reflectie en onKlaar: alleen voor de proef op /voorbeeld-bliepo?atelier=1; de echte pagina geeft ze niet mee. */
+export function AtelierStudy({embedded=false,mascot,reflectie=null,onKlaar}:{embedded?:boolean;mascot?:ReactNode;reflectie?:Reflectie|null;onKlaar?:(c:StudyController)=>void}){
   const mascotAnchor=useRef<HTMLDivElement>(null);
   const host=useRef<HTMLDivElement>(null),controller=useRef<StudyController|null>(null);
   const [status,setStatus]=useState<'loading'|'ready'|'error'>('loading');
   const [badge,setBadge]=useState(0),[unlocked,setUnlocked]=useState([true,true,true,false,false,false]);
   const [view,setView]=useState<StudyView>('samen'),[glow,setGlow]=useState(true);
   useEffect(()=>{let cancelled=false;let instance:StudyController|undefined;
-    import('./study-scene').then(({createStudy})=>{if(cancelled||!host.current)return;instance=createStudy(host.current,()=>{if(!cancelled)setStatus('ready');},()=>{if(!cancelled)setStatus('error');},index=>{if(!cancelled){setBadge(index);setView('lintjes');instance?.view('lintjes');}},mascotAnchor.current);controller.current=instance;}).catch(()=>{if(!cancelled)setStatus('error');});
+    import('./study-scene').then(({createStudy})=>{if(cancelled||!host.current)return;instance=createStudy(host.current,()=>{if(!cancelled)setStatus('ready');},()=>{if(!cancelled)setStatus('error');},index=>{if(!cancelled){setBadge(index);setView('lintjes');instance?.view('lintjes');}},mascotAnchor.current,reflectie);controller.current=instance;}).catch(()=>{if(!cancelled)setStatus('error');});
     return()=>{cancelled=true;instance?.dispose();controller.current=null;};
-  },[]);
+  },[reflectie]);
   useEffect(()=>{controller.current?.badge(badge,unlocked[badge]);},[badge,unlocked,status]);
+  const klaarMelder=useRef(onKlaar);
+  useEffect(()=>{klaarMelder.current=onKlaar;});
+  useEffect(()=>{if(status==='ready'&&controller.current)klaarMelder.current?.(controller.current);},[status]);
   return <div className={`as${embedded?' as-embedded':''}`} role="region" aria-label="Interactief 3D-atelier" data-status={status} data-view={view}>
     <div className="as-canvas" ref={host}/>
     {mascot&&<div ref={mascotAnchor} className="as-mascot">{mascot}</div>}
