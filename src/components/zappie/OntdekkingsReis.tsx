@@ -23,7 +23,8 @@ import Link from "next/link";
 import { EmbeddedAtelier } from "@/components/zappie/atelier/EmbeddedAtelier";
 import { useState } from "react";
 import { IcoonPijl, IcoonSter } from "@/components/zappie/Iconen";
-import { Bliepo } from "@/components/avontuur/Bliepo";
+import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
 
 export const VAKKEN: readonly { id: VakId; naam: string; kleur: string; href?: string }[] = [
@@ -139,6 +140,7 @@ function VrijOefenen() {
 function Atelier() {
   const [filter, zetFilter] = useState<(typeof FILTERS)[number]>("Alles");
   const [gepast, zetGepast] = useState<Gepast>({});
+  const bewegingRustig = useBewegingsstand() !== "aan";
   const lijst = ACCESSOIRES.filter((a) => filter === "Alles" || a.groep === filter);
   const aan = ACCESSOIRES.filter((a) => gepast[a.groep] === a.id);
   const niets = aan.length === 0;
@@ -166,13 +168,16 @@ function Atelier() {
         <EmbeddedAtelier mascot={
           /*
             Bliepo op het podium (18 oktober 2026, met toestemming van de
-            eigenaar): hij vervangt de oude robot met de Z. Die staat nog in
-            components/zappie/Zappie.tsx, maar wordt hier niet meer getoond.
+            eigenaar): dezelfde 3D-robot als onderaan de pagina
+            (public/assets/zappie/3d/zappie.glb via Prototype3D), naar voren
+            en zonder de muis te volgen. Hij vervangt de oude robot met de Z.
+            Die staat nog in components/zappie/Zappie.tsx, maar wordt hier niet
+            meer getoond.
             Wat je in de paskamer kiest, past nu op Bliepo (startpagina.css,
             "zs-pasrobot--bliepo").
           */
           <div className="zs-pasrobot zs-pasrobot--bliepo" data-kleur={gepast.Kleuren ?? "eigen"} aria-hidden="true">
-            <Bliepo />
+            <Prototype3D rustig={bewegingRustig} rusthoek={0} volgMuis={false} />
             {gepast.Petjes && <AccessoireBeeld soort={gepast.Petjes} className={`zs-gepast zs-gepast-${gepast.Petjes}`} />}
             {gepast["Extra’s"] && <AccessoireBeeld soort={gepast["Extra’s"]} className={`zs-gepast zs-gepast-${gepast["Extra’s"]}`} />}
           </div>

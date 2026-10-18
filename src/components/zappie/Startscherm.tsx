@@ -30,7 +30,8 @@
  */
 
 import Link from "next/link";
-import { Bliepo } from "@/components/avontuur/Bliepo";
+import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
+import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
 import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
@@ -140,6 +141,7 @@ export function Startscherm() {
   const router = useRouter();
   const v = useVoortgang();
   const inBrowser = useSyncExternalStore(geenAbonnement, () => true, () => false);
+  const bewegingRustig = useBewegingsstand() !== "aan";
   const standen = wereldStanden(v);
   const huidig = standen.find((s) => s.huidig) ?? standen[0];
   const volgende = volgendeMissie(v);
@@ -283,19 +285,22 @@ export function Startscherm() {
         */}
         {/*
           Bliepo bij "Kies jouw vak" (18 oktober 2026, op verzoek van de
-          eigenaar). Op een groot scherm staat hij links naast het vakkenscherm,
-          met zijn wielen op de onderkant ervan, voor de bouwtekening langs; op
-          telefoon en tablet klein erboven. Twee plekken, omdat hij op telefoon
-          vóór het paneel moet staan en op een groot scherm onderaan ernaast.
-          Het paneel zelf is niet veranderd.
+          eigenaar). Precies dezelfde robot als onderaan de pagina bij "tik maar
+          eens op mij!": het 3D-model public/assets/zappie/3d/zappie.glb via
+          Prototype3D. Op een groot scherm staat hij links naast het
+          vakkenscherm, met zijn wielen op de onderkant ervan, voor de
+          bouwtekening langs, en kijkt naar de vakken; op telefoon en tablet
+          klein erboven. Twee plekken, omdat hij op telefoon vóór het paneel moet
+          staan en op een groot scherm onderaan ernaast. Het paneel zelf is niet
+          veranderd.
         */}
         <div className="zp-bliepo-boven" aria-hidden="true">
-          <Bliepo className="bliepo--zweef" kijkt="rechts" />
+          <Prototype3D rustig={bewegingRustig} rusthoek={0} />
         </div>
         <VakkenPaneel />
         <div className="zp-bliepo-naast" aria-hidden="true">
           <div className="zp-bliepo-staan">
-            <Bliepo className="bliepo--zweef" kijkt="rechts" />
+            <Prototype3D rustig={bewegingRustig} rusthoek={Math.PI / 8} />
           </div>
         </div>
 

@@ -1187,38 +1187,77 @@
   petjes en de bril staan op zijn hoofd en scherm.
 */
 .zs-pasrobot--bliepo {
-  aspect-ratio: 953 / 1249;
-  scale: 1.15;
-  transform-origin: 50% 100%;
-  animation: bliepo-zweef 5.5s ease-in-out infinite;
+  aspect-ratio: 0.55;
+  filter: none;
 }
 
 .as-mascot:has(.zs-pasrobot--bliepo) {
-  aspect-ratio: 953 / 1249;
+  aspect-ratio: 0.55;
 }
 
-.zs-pasrobot--bliepo .bliepo {
-  display: block;
-  width: 100%;
-  height: 100%;
+/*
+  Het tekenvlak van de 3D-robot (Prototype3D) is 276 bij 348; de robot zelf
+  is daarin 83% van de hoogte, met zijn wielen op 91%. Zo staat hij ruim 1,5
+  keer zo groot als de oude robot, met zijn wielen precies op het podium
+  (18 oktober 2026, op verzoek van de eigenaar: "mag wat groter").
+*/
+.zs-pasrobot--bliepo .bt-prototype {
+  position: absolute;
+  inset: auto;
+  left: 50%;
+  bottom: -17.1%;
+  height: 190%;
+  aspect-ratio: 276 / 348;
+  translate: -50% 0;
 }
 
-.zs-pasrobot--bliepo .bliepo__lijf {
-  animation: none;
+/*
+  "Het podium" zoomt in: dan is het vlak van het podium veel groter, en zou hij
+  op 190% boven het beeld uitkomen. Daar staat hij op 145%, net als de oude
+  robot helemaal in beeld.
+*/
+.as[data-view="podium"] .zs-pasrobot--bliepo .bt-prototype {
+  bottom: -13%;
+  height: 145%;
 }
 
-.zs-pasrobot--bliepo[data-kleur="oceaan"] .bliepo__plaatje {
-  filter: hue-rotate(-28deg) saturate(1.15) brightness(1.12);
+/*
+  Een zachte donkere gloed achter hem, zodat hij ook met "Gloed aan" goed los
+  staat van het lichte podium. (Een filter op het 3D-vlak zelf kan niet: dan
+  wordt zijn zwarte scherm wit.)
+*/
+.zs-pasrobot--bliepo::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  bottom: 0;
+  width: 150%;
+  height: 160%;
+  translate: -50% 0;
+  background: radial-gradient(closest-side, rgb(3 14 40 / 0.55), rgb(3 14 40 / 0.25) 60%, transparent);
+  pointer-events: none;
 }
 
-.zs-pasrobot--bliepo[data-kleur="goud"] .bliepo__plaatje {
-  filter: sepia(0.9) saturate(2.6) hue-rotate(-8deg) brightness(1.08);
+.as[data-view="podium"] .zs-pasrobot--bliepo::before {
+  height: 125%;
 }
 
-.zs-pasrobot--bliepo .zs-gepast-pet { left: 22%; top: -7%; width: 62%; }
-.zs-pasrobot--bliepo .zs-gepast-kroon { left: 30%; top: -12%; width: 48%; }
-.zs-pasrobot--bliepo .zs-gepast-bril { left: 33%; top: 17%; width: 56%; }
-.zs-pasrobot--bliepo .zs-gepast-antenne { left: 47%; top: -9%; width: 18%; }
+.zs-pasrobot--bliepo .bt-ballon {
+  display: none;
+}
+
+.zs-pasrobot--bliepo[data-kleur="oceaan"] .bt-prototype-doek {
+  filter: hue-rotate(-28deg) saturate(1.6) brightness(1.05) sepia(0.15);
+}
+
+.zs-pasrobot--bliepo[data-kleur="goud"] .bt-prototype-doek {
+  filter: sepia(0.85) saturate(2.4) hue-rotate(-10deg) brightness(1.05);
+}
+
+.zs-pasrobot--bliepo .zs-gepast-pet { left: 6%; top: -2%; width: 88%; }
+.zs-pasrobot--bliepo .zs-gepast-kroon { left: 18%; top: -10%; width: 64%; }
+.zs-pasrobot--bliepo .zs-gepast-bril { left: 4%; top: 14%; width: 92%; }
+.zs-pasrobot--bliepo .zs-gepast-antenne { left: 40%; top: -8%; width: 22%; }
 
 .zs-paskamer {
   position: relative;
@@ -4033,6 +4072,11 @@
 /* ------------------------------------------------------------------------- */
 
 /*
+  Bliepo is hier dezelfde 3D-robot als onderaan de pagina (Prototype3D, met
+  public/assets/zappie/3d/zappie.glb). Zijn tekenvlak is 276 bij 348 (0,793);
+  daarin is de robot 83% van de hoogte, met de bovenkant op 8%, de wielen op
+  91% en de breedte ongeveer 55% van het vlak.
+
   Telefoon en tablet: klein boven het vakkenscherm, tussen de bovenbalk en de
   antennes. De negatieve marge laat hem in de ruimte boven het paneel staan
   zonder dat iets elkaar raakt.
@@ -4040,15 +4084,17 @@
 .zp-bliepo-boven {
   position: relative;
   z-index: 4;
-  display: flex;
-  justify-content: center;
-  height: 92px;
-  margin: 76px 0 -80px;
+  height: 110px;
+  margin: 68px 0 -94px;
   pointer-events: none;
 }
 
-.zp-bliepo-boven .bliepo {
+.zp-bliepo-boven .bt-prototype {
+  position: absolute;
+  inset: 0 auto auto 50%;
   height: 100%;
+  aspect-ratio: 276 / 348;
+  translate: -50% 0;
 }
 
 .zp-bliepo-naast {
@@ -4058,13 +4104,14 @@
 /*
   Groot liggend scherm: links naast het vakkenscherm. Het blok heeft geen
   hoogte en staat direct onder het paneel, dus "onderaan" is precies de
-  onderkant van het paneel: daar staan zijn wielen. Hij staat achter het
-  paneel (z-index 2 tegen 3), zodat hij nooit een knop afdekt.
+  onderkant van het paneel: daar staan zijn wielen (9% van het vlak lager).
+  Hij staat achter het paneel (z-index 2 tegen 3), zodat hij nooit een knop
+  afdekt.
 
-  Breedte: zo breed als er plek is links van het oor met het pijltje (het
-  hoofd mag daar niet achter verdwijnen; het hoofd eindigt op 92% van de
-  breedte), maar nooit hoger dan ongeveer 28u. Op 16:9 wordt hij zo ongeveer
-  20u hoog; het paneel is 31u met antennes, het blauwe scherm 25u.
+  --r is hoe hoog de robot zelf is: zo groot als er plek is links van het oor
+  met het pijltje (zijn rechterkant blijft daar 1u vandaan, ook met een
+  schuifbalk), maar nooit hoger dan 19u (18 oktober 2026: "in verhouding", op verzoek van de eigenaar). Gedraaid naar de vakken is hij ongeveer 0,6 keer zo breed als hoog. Op 16:9 wordt hij ongeveer 19u; het paneel is 31u met
+  antennes, het blauwe scherm 25u.
 */
 @media (min-width: 900px) and (min-aspect-ratio: 5/4) {
   .zp-bliepo-boven {
@@ -4080,16 +4127,19 @@
   }
 
   .zp-bliepo-staan {
-    --bw: min(calc((50% - var(--u) * 36.2) / 0.92), calc(var(--u) * 21.4));
+    /* 50vw en niet 50%: --r wordt ook voor de hoogte gebruikt, en daar zou 50% van een blok zonder hoogte 0 zijn. */
+    --r: min(calc((50vw - var(--u) * 38) / 0.6), calc(var(--u) * 19));
+    --h: calc(var(--r) / 0.83);
+    --w: calc(var(--h) * 0.793);
     position: absolute;
-    bottom: 0;
-    right: calc(50% + var(--u) * 35.7 - 0.08 * var(--bw));
-    width: var(--bw);
+    bottom: calc(var(--h) * -0.09);
+    right: calc(50% + var(--u) * 36.5 - var(--w) * 0.24);
+    width: var(--w);
+    height: var(--h);
   }
 
-  .zp-bliepo-staan .bliepo {
-    display: block;
-    width: 100%;
+  .zp-bliepo-staan .bt-prototype {
+    inset: 0;
   }
 }
 

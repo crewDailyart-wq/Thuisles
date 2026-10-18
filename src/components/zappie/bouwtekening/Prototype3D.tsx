@@ -21,15 +21,32 @@
  *
  * De muis en tikken worden op het venster gevolgd (zoals in Bouwtekening.tsx),
  * omdat de inhoud van de pagina boven deze laag ligt.
+ *
+ * Sinds 18 oktober 2026 staat dezelfde robot (Bliepo) ook naast "Kies jouw
+ * vak" en op het podium in de prijzenkamer. Daarvoor twee keuzes, die op de
+ * bouwtekening niets veranderen: `rusthoek` (welke kant hij op kijkt) en
+ * `volgMuis` (op het podium staat hij stil naar voren, zodat wat hij past
+ * blijft zitten).
  */
 
 import { useEffect, useRef } from "react";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
 
-export function Prototype3D({ rustig }: { rustig: boolean }) {
+export function Prototype3D({
+  rustig,
+  rusthoek = -Math.PI / 9,
+  volgMuis = true,
+}: {
+  rustig: boolean;
+  /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
+  rusthoek?: number;
+  /** draait hij mee met de muis? */
+  volgMuis?: boolean;
+}) {
   const plek = useRef<HTMLDivElement>(null);
   const rustigRef = useRef(rustig);
+  const instelling = useRef({ rusthoek, volgMuis });
 
   useEffect(() => {
     rustigRef.current = rustig;
@@ -121,7 +138,7 @@ export function Prototype3D({ rustig }: { rustig: boolean }) {
         return;
       }
       scene.add(model.root);
-      const RUSTHOEK = -Math.PI / 9;
+      const RUSTHOEK = instelling.current.rusthoek;
       model.root.rotation.y = RUSTHOEK;
 
       const besturing = new Z.ZappieController(model, { reducedMotion: rustigRef.current });
@@ -165,7 +182,8 @@ export function Prototype3D({ rustig }: { rustig: boolean }) {
       const beweeg = (e: PointerEvent) => {
         const r = host.getBoundingClientRect();
         const midden = r.left + r.width / 2;
-        doelhoek = RUSTHOEK + Math.max(-1, Math.min(1, (e.clientX - midden) / (window.innerWidth / 2))) * 0.55;
+        if (instelling.current.volgMuis)
+          doelhoek = RUSTHOEK + Math.max(-1, Math.min(1, (e.clientX - midden) / (window.innerWidth / 2))) * 0.55;
         if (binnen(e.clientX, e.clientY, 40) && besturing.action === "idle") speel("wave");
       };
       const tik = (e: PointerEvent) => {
@@ -200,7 +218,7 @@ export function Prototype3D({ rustig }: { rustig: boolean }) {
           besturing.play("checkTail");
           rustTijd = 0;
         }
-        const hoek = besturing.action === "talk" ? -Math.PI / 14 : doelhoek;
+        const hoek = besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
         model.root.rotation.y += (hoek - model.root.rotation.y) * Math.min(1, dt * 4);
         besturing.update(dt, {});
         ballon.update(besturing);

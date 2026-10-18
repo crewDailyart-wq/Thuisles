@@ -67,7 +67,12 @@ type Zones = { vakken: number; atelier: number; kust: number; einde: number };
   of zet een blad of voorwerp weer in TOON_BLADEN of TOON_SPULLEN.
 */
 const RUSTIG = true;
-const TOON_BLADEN = new Set(["a", "f", "titel", "prototype"]);
+/*
+  Blad "a" (de getekende robot van voren) staat sinds 18 oktober 2026 niet
+  meer in beeld, op verzoek van de eigenaar: Bliepo staat daar nu zelf, naast
+  "Kies jouw vak". Zet "a" terug in deze lijst en de tekening is er weer.
+*/
+const TOON_BLADEN = new Set(["f", "titel", "prototype"]);
 const TOON_SPULLEN = new Set(["potlood-boven", "koffie-vakken"]);
 
 /** Hoe ver een reactie reikt, in pixels rond het stukje tekening. */
