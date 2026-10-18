@@ -20,10 +20,10 @@ import type { Reflectie, StudyController } from "@/components/zappie/atelier/stu
 
 type Id = "nu" | Reflectie;
 const VERSIES: { id: Id; titel: string; uitleg: string; gemeten: string }[] = [
-  { id: "nu", titel: "Zoals nu (ter vergelijking)", uitleg: "De weerspiegeling van nu: 1024 bij 1024, zonder anti-aliasing.", gemeten: "" },
-  { id: "a", titel: "Versie A: scherp en helder", uitleg: "Hoge resolutie (die van het scherm) met anti-aliasing, als een gepolijste glanzende vloer.", gemeten: "" },
-  { id: "b", titel: "Versie B: heel licht zacht", uitleg: "Hogere resolutie met anti-aliasing en een heel lichte vervaging: vloeiende randen, vormen goed herkenbaar.", gemeten: "" },
-  { id: "c", titel: "Versie C: zacht, vervaagt naar de randen", uitleg: "Zoals B, maar hoe verder van het podium, hoe zachter en vager.", gemeten: "" },
+  { id: "nu", titel: "Zoals nu (ter vergelijking)", uitleg: "De weerspiegeling van nu: 1024 bij 1024, zonder anti-aliasing.", gemeten: "Online gemeten: laptop ±0,5 s, nagebootste trage telefoon ±1,8 s (laadt als eerste, en betaalt daardoor iets extra)" },
+  { id: "a", titel: "Versie A: scherp en helder", uitleg: "Hoge resolutie (die van het scherm) met anti-aliasing, als een gepolijste glanzende vloer.", gemeten: "Online gemeten: laptop ±0,4 s, nagebootste trage telefoon ±1,45 s" },
+  { id: "b", titel: "Versie B: heel licht zacht", uitleg: "Hogere resolutie met anti-aliasing en een heel lichte vervaging: vloeiende randen, vormen goed herkenbaar.", gemeten: "Online gemeten: laptop ±0,4 s, nagebootste trage telefoon ±1,45 s" },
+  { id: "c", titel: "Versie C: zacht, vervaagt naar de randen", uitleg: "Zoals B, maar hoe verder van het podium, hoe zachter en vager.", gemeten: "Online gemeten: laptop ±0,4 s, nagebootste trage telefoon ±1,45 s" },
 ];
 const VOLGORDE: Id[] = ["nu", "a", "b", "c"];
 
