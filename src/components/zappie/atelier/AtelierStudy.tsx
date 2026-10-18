@@ -28,7 +28,7 @@ export function AtelierStudy({embedded=false,mascot}:{embedded?:boolean;mascot?:
   return <div className={`as${embedded?' as-embedded':''}`} role="region" aria-label="Interactief 3D-atelier" data-status={status} data-view={view}>
     <div className="as-canvas" ref={host}/>
     {mascot&&<div ref={mascotAnchor} className="as-mascot">{mascot}</div>}
-    {!embedded&&<header className="as-header"><div><p>ZAPPIES ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>}
+    {!embedded&&<header className="as-header"><div><p>BLIEPO’S ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>}
     {!embedded&&view!=='lintjes'&&<div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>}
     {view==='lintjes'&&status==='ready'&&<section className="as-badges" aria-label="De lintjeskast">
       <span className="as-eyebrow">DE LINTJESKAST · PROTOTYPE</span>
@@ -37,7 +37,7 @@ export function AtelierStudy({embedded=false,mascot}:{embedded?:boolean;mascot?:
       <button className="as-unlock" disabled={unlocked[badge]} onClick={()=>setUnlocked(values=>values.map((value,i)=>i===badge?true:value))}>{unlocked[badge]?'In je voorbeeldcollectie':'Ontgrendel voorbeeld'}</button>
       <small>Probeer het uit. Je echte voortgang verandert niet.</small>
     </section>}
-    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>{embedded?<>Passen is gratis · <Link href="/zappie/beloningen">Bekijk je echte beloningen</Link></>:'3D-atelier & glazen koepel · Zappie volgt later'}</p></footer>
+    <footer className="as-footer"><nav aria-label="Kies een detail">{views.map(v=><button key={v.id} disabled={status!=='ready'} aria-pressed={view===v.id} onClick={()=>{setView(v.id);controller.current?.view(v.id);}}>{v.label}</button>)}</nav><button className="as-glow" disabled={status!=='ready'} aria-pressed={glow} onClick={()=>{setGlow(!glow);controller.current?.glow(!glow);}}>Gloed {glow?'aan':'uit'} <span aria-hidden="true">✦</span></button><p>{embedded?<>Passen is gratis · <Link href="/zappie/beloningen">Bekijk je echte beloningen</Link></>:'3D-atelier & glazen koepel · Bliepo volgt later'}</p></footer>
     {status!=='ready'&&<div className="as-status" role="status"><span>✦</span><h2>{status==='error'?'De 3D-studie kon niet openen':'Het licht gaat aan…'}</h2>{status==='error'&&<><p>Controleer of je browser 3D-weergave ondersteunt.</p><button onClick={()=>window.location.reload()}>Opnieuw proberen</button></>}</div>}
   </div>;
 }

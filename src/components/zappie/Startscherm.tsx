@@ -12,7 +12,7 @@
  *    scherm een eigen compositie in eenheden van het voorbeeld, zie zappie.css);
  * 2. "Vandaag op ontdekking" met de tokens, naast de grote "Jouw wereld";
  * 3. vrij oefenen met de vakken, naast de werkplaats (OntdekkingsReis);
- * 4. de wolkenovergang, Zappies atelier en het kustpanorama.
+ * 4. de wolkenovergang, Bliepo’s atelier en het kustpanorama.
  *
  * De achtergrond reist mee (ScrollReis): de aarde komt dichterbij, er komen
  * wolken voorbij en onderaan ligt de kust. Dat volgt de plek van de secties,
@@ -30,6 +30,7 @@
  */
 
 import Link from "next/link";
+import { Bliepo } from "@/components/avontuur/Bliepo";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
 import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
@@ -280,7 +281,23 @@ export function Startscherm() {
           0. "Kies jouw vak" (16 oktober 2026, op verzoek van de eigenaar): het
           vakkenpaneel bovenaan, de werelden en Mijn leerpad eronder.
         */}
+        {/*
+          Bliepo bij "Kies jouw vak" (18 oktober 2026, op verzoek van de
+          eigenaar). Op een groot scherm staat hij links naast het vakkenscherm,
+          met zijn wielen op de onderkant ervan, voor de bouwtekening langs; op
+          telefoon en tablet klein erboven. Twee plekken, omdat hij op telefoon
+          vóór het paneel moet staan en op een groot scherm onderaan ernaast.
+          Het paneel zelf is niet veranderd.
+        */}
+        <div className="zp-bliepo-boven" aria-hidden="true">
+          <Bliepo className="bliepo--zweef" kijkt="rechts" />
+        </div>
         <VakkenPaneel />
+        <div className="zp-bliepo-naast" aria-hidden="true">
+          <div className="zp-bliepo-staan">
+            <Bliepo className="bliepo--zweef" kijkt="rechts" />
+          </div>
+        </div>
 
         <section className="zp-podium" aria-label="Je werelden" data-reis="ruimte" data-werelden={TOON_WERELDEN ? "ja" : "nee"}>
           {TOON_ZAPPIE && (
@@ -296,7 +313,7 @@ export function Startscherm() {
             <button
               type="button"
               className="zp-zappie"
-              aria-label="Zappie, tik voor hulp"
+              aria-label="Bliepo, tik voor hulp"
               onClick={() => {
                 zeg(HULP[hulp % HULP.length]);
                 zetHulp((n) => n + 1);

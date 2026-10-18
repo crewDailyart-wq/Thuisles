@@ -5,7 +5,7 @@
  *
  * 1. Vrij oefenen: de vakken over de hele breedte;
  * 2. een wolkenlaag als overgang;
- * 3. Zappies atelier: Zappie op het paspodium en de paskamer ernaast;
+ * 3. Bliepo’s atelier: Bliepo op het paspodium en de paskamer ernaast;
  * 4. het slot: "Tot de volgende missie!" boven de aarde.
  *
  * Op 15 oktober 2026 zijn op verzoek van de eigenaar de werkplaats (voertuigen
@@ -23,7 +23,7 @@ import Link from "next/link";
 import { EmbeddedAtelier } from "@/components/zappie/atelier/EmbeddedAtelier";
 import { useState } from "react";
 import { IcoonPijl, IcoonSter } from "@/components/zappie/Iconen";
-import { Zappie } from "@/components/zappie/Zappie";
+import { Bliepo } from "@/components/avontuur/Bliepo";
 import { AccessoireBeeld, VakBeeld, type AccessoireId, type VakId } from "@/components/zappie/reis/Beelden";
 
 export const VAKKEN: readonly { id: VakId; naam: string; kleur: string; href?: string }[] = [
@@ -49,7 +49,7 @@ const ACCESSOIRES: readonly { id: Exclude<AccessoireId, "standaard">; naam: stri
 ];
 const FILTERS = ["Alles", "Petjes", "Kleuren", "Extra’s"] as const;
 
-/** Wat Zappie aan het passen is: per groep hoogstens één ding. */
+/** Wat Bliepo aan het passen is: per groep hoogstens één ding. */
 type Gepast = Partial<Record<Groep, Exclude<AccessoireId, "standaard">>>;
 
 export function OntdekkingsReis() {
@@ -154,9 +154,9 @@ function Atelier() {
           <IcoonSter className="zs-kop-ster" />
           <div>
             <h2 id="zs-kop-atelier" className="zp-titel">
-              Zappies atelier
+              Bliepo’s atelier
             </h2>
-            <p>Maak Zappie van jou! Pas petjes, kleuren en extra’s.</p>
+            <p>Maak Bliepo van jou! Pas petjes, kleuren en extra’s.</p>
 
           </div>
         </header>
@@ -164,8 +164,15 @@ function Atelier() {
 
       <div className="zs-atelier-podium">
         <EmbeddedAtelier mascot={
-          <div className="zs-pasrobot" data-kleur={gepast.Kleuren ?? "eigen"} aria-hidden="true">
-            <Zappie stemming="blij" houding="zwaai" />
+          /*
+            Bliepo op het podium (18 oktober 2026, met toestemming van de
+            eigenaar): hij vervangt de oude robot met de Z. Die staat nog in
+            components/zappie/Zappie.tsx, maar wordt hier niet meer getoond.
+            Wat je in de paskamer kiest, past nu op Bliepo (startpagina.css,
+            "zs-pasrobot--bliepo").
+          */
+          <div className="zs-pasrobot zs-pasrobot--bliepo" data-kleur={gepast.Kleuren ?? "eigen"} aria-hidden="true">
+            <Bliepo />
             {gepast.Petjes && <AccessoireBeeld soort={gepast.Petjes} className={`zs-gepast zs-gepast-${gepast.Petjes}`} />}
             {gepast["Extra’s"] && <AccessoireBeeld soort={gepast["Extra’s"]} className={`zs-gepast zs-gepast-${gepast["Extra’s"]}`} />}
           </div>
@@ -207,11 +214,11 @@ function Atelier() {
           </ul>
           <p className="zs-passtatus" role="status">
             {niets
-              ? "Tik op iets om het op Zappie te passen."
-              : `Zappie past nu: ${aan.map((a) => a.naam).join(", ")}.`}
+              ? "Tik op iets om het op Bliepo te passen."
+              : `Bliepo past nu: ${aan.map((a) => a.naam).join(", ")}.`}
           </p>
           <button type="button" className="zs-terugknop" disabled={niets} onClick={() => zetGepast({})}>
-            Terug naar je eigen Zappie
+            Terug naar je eigen Bliepo
           </button>
           <p className="zs-eerlijk">
             Dit is een paskamer: passen kan altijd en er gaan geen tokens af. Kopen en bewaren komen later. Echte

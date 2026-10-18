@@ -469,28 +469,29 @@
 }
 
 /* ---------------------------------------------------------------------------
- * De robot: de mascotte en tutor (components/avontuur/Robot.tsx).
+ * Bliepo: de robot, mascotte en tutor (components/avontuur/Bliepo.tsx).
+ * Zo heet hij sinds 18 oktober 2026 (keuze eigenaar).
  *
  * Het plaatje is staand (953 x 1249). Over het schermpje ligt een getekend
  * gezicht dat knippert, praat en lacht. Het hele lijf wiebelt rustig om de
  * wielen; bij juichen springt hij op.
  * ------------------------------------------------------------------------- */
 
-.robot {
+.bliepo {
   position: relative;
   display: inline-block;
   aspect-ratio: 953 / 1249;
   flex-shrink: 0;
 }
 
-.robot__lijf {
+.bliepo__lijf {
   position: absolute;
   inset: 0;
   transform-origin: 50% 92%;
-  animation: robot-wiebel 3.2s ease-in-out infinite;
+  animation: bliepo-wiebel 3.2s ease-in-out infinite;
 }
 
-.robot__plaatje {
+.bliepo__plaatje {
   display: block;
   width: 100%;
   height: 100%;
@@ -500,53 +501,63 @@
   pointer-events: none;
 }
 
-.robot__gezicht {
+.bliepo__gezicht {
   position: absolute;
   overflow: visible;
 }
 
-.robot__ogen {
+.bliepo__ogen {
   transform-box: fill-box;
   transform-origin: center;
-  animation: robot-knipper 4.2s infinite;
+  animation: bliepo-knipper 4.2s infinite;
 }
 
-.robot__mond {
+.bliepo__mond {
   transform-box: fill-box;
   transform-origin: 50% 0%;
-  animation: robot-mond 0.42s ease-in-out infinite;
+  animation: bliepo-mond 0.42s ease-in-out infinite;
 }
 
-.robot--praat .robot__lijf {
+.bliepo--praat .bliepo__lijf {
   animation-duration: 1.4s;
 }
 
-.robot--blij .robot__lijf {
-  animation: robot-juich 0.9s ease-out 3, robot-wiebel 3.2s ease-in-out 2.7s infinite;
+.bliepo--blij .bliepo__lijf {
+  animation: bliepo-juich 0.9s ease-out 3, bliepo-wiebel 3.2s ease-in-out 2.7s infinite;
 }
 
-.robot--troost .robot__lijf {
-  animation: robot-leun 3s ease-in-out infinite;
+.bliepo--troost .bliepo__lijf {
+  animation: bliepo-leun 3s ease-in-out infinite;
 }
 
-@keyframes robot-wiebel {
+/* Rustig zweven in plaats van wiebelen (startpagina, prijzenkamer). */
+.bliepo--zweef .bliepo__lijf {
+  animation: bliepo-zweef 5.5s ease-in-out infinite;
+}
+
+@keyframes bliepo-wiebel {
   0%, 100% { transform: rotate(-2.5deg); }
   50%      { transform: rotate(2.5deg); }
 }
 
-@keyframes robot-knipper {
+@keyframes bliepo-zweef {
+  0%, 100% { transform: translateY(0) rotate(-0.8deg); }
+  50%      { transform: translateY(-2.2%) rotate(0.8deg); }
+}
+
+@keyframes bliepo-knipper {
   0%, 90%, 100% { transform: scaleY(1); }
   94%           { transform: scaleY(0.08); }
 }
 
-@keyframes robot-mond {
+@keyframes bliepo-mond {
   0%, 100% { transform: scaleY(0.25); }
   35%      { transform: scaleY(1); }
   60%      { transform: scaleY(0.55); }
   80%      { transform: scaleY(0.9); }
 }
 
-@keyframes robot-juich {
+@keyframes bliepo-juich {
   0%   { transform: translateY(0) scale(1, 1); }
   15%  { transform: translateY(0) scale(1.06, 0.92); }
   45%  { transform: translateY(-16%) scale(0.96, 1.05) rotate(-4deg); }
@@ -554,13 +565,13 @@
   100% { transform: translateY(0) scale(1, 1); }
 }
 
-@keyframes robot-leun {
+@keyframes bliepo-leun {
   0%, 100% { transform: rotate(-5deg); }
   50%      { transform: rotate(-2deg); }
 }
 
 /* drie puntjes rechtsboven (nadenken) */
-.robot__puntjes {
+.bliepo__puntjes {
   position: absolute;
   right: -6%;
   top: 0;
@@ -570,55 +581,56 @@
   width: 34%;
 }
 
-.robot__puntjes i {
+.bliepo__puntjes i {
   display: block;
   flex: 1;
   aspect-ratio: 1;
   border-radius: 999px;
   background: #ffffff;
   opacity: 0.85;
-  animation: robot-puntje 1.2s ease-in-out infinite;
+  animation: bliepo-puntje 1.2s ease-in-out infinite;
 }
 
-.robot__puntjes i:nth-child(2) { animation-delay: 0.2s; transform: scale(1.2); }
-.robot__puntjes i:nth-child(3) { animation-delay: 0.4s; transform: scale(1.4); }
+.bliepo__puntjes i:nth-child(2) { animation-delay: 0.2s; transform: scale(1.2); }
+.bliepo__puntjes i:nth-child(3) { animation-delay: 0.4s; transform: scale(1.4); }
 
-@keyframes robot-puntje {
+@keyframes bliepo-puntje {
   0%, 100% { opacity: 0.35; }
   50%      { opacity: 1; }
 }
 
 /* sterretjes bij juichen */
-.robot__sterren i {
+.bliepo__sterren i {
   position: absolute;
   width: 16%;
   aspect-ratio: 1;
   background: var(--av-glitter, #ffd23f);
   clip-path: polygon(50% 0, 61% 39%, 100% 50%, 61% 61%, 50% 100%, 39% 61%, 0 50%, 39% 39%);
-  animation: robot-ster 0.9s ease-out 3 both;
+  animation: bliepo-ster 0.9s ease-out 3 both;
 }
 
-.robot__sterren i:nth-child(1) { left: -8%; top: 12%; }
-.robot__sterren i:nth-child(2) { right: -10%; top: 4%; animation-delay: 0.15s; }
-.robot__sterren i:nth-child(3) { left: 2%; top: 46%; width: 11%; animation-delay: 0.3s; }
-.robot__sterren i:nth-child(4) { right: -4%; top: 40%; width: 12%; animation-delay: 0.45s; }
+.bliepo__sterren i:nth-child(1) { left: -8%; top: 12%; }
+.bliepo__sterren i:nth-child(2) { right: -10%; top: 4%; animation-delay: 0.15s; }
+.bliepo__sterren i:nth-child(3) { left: 2%; top: 46%; width: 11%; animation-delay: 0.3s; }
+.bliepo__sterren i:nth-child(4) { right: -4%; top: 40%; width: 12%; animation-delay: 0.45s; }
 
-@keyframes robot-ster {
+@keyframes bliepo-ster {
   0%   { opacity: 0; transform: scale(0.2) rotate(0deg); }
   40%  { opacity: 1; transform: scale(1.15) rotate(25deg); }
   100% { opacity: 0; transform: scale(0.6) rotate(60deg); }
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .robot__lijf,
-  .robot--blij .robot__lijf,
-  .robot--troost .robot__lijf,
-  .robot__ogen,
-  .robot__puntjes i,
-  .robot__sterren i {
+  .bliepo__lijf,
+  .bliepo--blij .bliepo__lijf,
+  .bliepo--troost .bliepo__lijf,
+  .bliepo--zweef .bliepo__lijf,
+  .bliepo__ogen,
+  .bliepo__puntjes i,
+  .bliepo__sterren i {
     animation: none;
   }
-  .robot__sterren i { opacity: 1; }
+  .bliepo__sterren i { opacity: 1; }
   /* de mond mag nog wel praten, rustig: zo zie je wie er spreekt */
-  .robot__mond { animation-duration: 0.8s; }
+  .bliepo__mond { animation-duration: 0.8s; }
 }

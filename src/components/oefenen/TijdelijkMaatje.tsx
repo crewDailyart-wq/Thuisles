@@ -3,7 +3,7 @@
 /**
  * Het maatje van de Godot-bouwstenen, het startscherm en de lessen.
  *
- * Sinds 12 oktober 2026 is dat de robot van de eigenaar (`Robot`), op verzoek
+ * Sinds 12 oktober 2026 is dat de robot van de eigenaar (`Bliepo`), op verzoek
  * van de eigenaar in plaats van het bolletje. Elke plek die dit maatje toont,
  * krijgt daardoor vanzelf de robot.
  *
@@ -18,7 +18,7 @@
  *   troost  wijst omhoog naar het speelveld
  */
 
-import { Robot } from "@/components/avontuur/Robot";
+import { Bliepo } from "@/components/avontuur/Bliepo";
 import type { MaatjeHouding } from "@/lib/maatje/poppetje";
 
 export function TijdelijkMaatje({
@@ -31,7 +31,7 @@ export function TijdelijkMaatje({
   praat?: boolean;
   className?: string;
 }) {
-  return <Robot houding={houding} praat={praat} className={className} />;
+  return <Bliepo houding={houding} praat={praat} className={className} />;
 }
 
 /** De kleur van het bolletje: mint uit de Thuisles-kleuren. */

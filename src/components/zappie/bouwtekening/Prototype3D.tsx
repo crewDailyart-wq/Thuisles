@@ -25,7 +25,7 @@
 
 import { useEffect, useRef } from "react";
 
-const TIKTEKST = "Hoi! Ik ben Zappie. Tesla heeft mij uitgevonden.";
+const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
 
 export function Prototype3D({ rustig }: { rustig: boolean }) {
   const plek = useRef<HTMLDivElement>(null);

@@ -2,10 +2,10 @@ export type Station = 'podium' | 'petjes' | 'kleuren' | 'extras';
 export type ItemId = 'pet' | 'kroon' | 'oceaan' | 'goud' | 'bril' | 'antenne';
 export type Outfit = Partial<Record<Exclude<Station, 'podium'>, ItemId>>;
 export const STATIONS: { id: Station; naam: string; icoon: string; uitleg: string }[] = [
-  { id: 'podium', naam: 'Het podium', icoon: '✦', uitleg: 'Kies een vitrine. Ontdek wat bij jouw Zappie past.' },
+  { id: 'podium', naam: 'Het podium', icoon: '✦', uitleg: 'Kies een vitrine. Ontdek wat bij jouw Bliepo past.' },
   { id: 'petjes', naam: 'Petjes', icoon: '♛', uitleg: 'Tik op een petje in de vitrine om het te passen.' },
-  { id: 'kleuren', naam: 'Kleuren', icoon: '◈', uitleg: 'Kies een magische kleur voor Zappie.' },
-  { id: 'extras', naam: 'Extra’s', icoon: '✧', uitleg: 'Geef Zappie iets bijzonders. Tik op een accessoire.' },
+  { id: 'kleuren', naam: 'Kleuren', icoon: '◈', uitleg: 'Kies een magische kleur voor Bliepo.' },
+  { id: 'extras', naam: 'Extra’s', icoon: '✧', uitleg: 'Geef Bliepo iets bijzonders. Tik op een accessoire.' },
 ];
 export const ITEMS: { id: ItemId; naam: string; station: Exclude<Station, 'podium'> }[] = [
   { id: 'pet', naam: 'Ontdekkerspet', station: 'petjes' },

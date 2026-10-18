@@ -119,7 +119,7 @@ export function applyPose(model,pose,blend=1){
   }
 }
 export class ZappieController {
-  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.setTalkText('Hoi! Ik ben Zappie.');}
+  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.setTalkText('Hoi! Ik ben Bliepo.');}
   setTalkText(text){this.talkDisplay?.set(text);}
   showText(text){this.setTalkText(text);this.play('talk');this.duration=this.talkDisplay?.duration||4;}
   play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);this.action=action;this.time=0;this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);this.onAction(action);}

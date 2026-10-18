@@ -24,7 +24,7 @@ export function Atelier3D() {
   function pick(id: ItemId) {
     const item = ITEMS.find(i => i.id === id)!;
     setOutfit(previous => ({ ...previous, [item.station]: previous[item.station] === id ? undefined : id }));
-    setMessage(outfit[item.station] === id ? `${item.naam} afgedaan` : `${item.naam} gepast! Bekijk Zappie op het podium.`);
+    setMessage(outfit[item.station] === id ? `${item.naam} afgedaan` : `${item.naam} gepast! Bekijk Bliepo op het podium.`);
   }
   useEffect(() => { pickRef.current = pick; });
   useEffect(() => {
@@ -72,7 +72,7 @@ export function Atelier3D() {
       </div>
       <header className="za-header">
         <Link className="za-back" href="/zappie" aria-label="Terug naar Zappie">←</Link>
-        <div><p className="za-eyebrow">Een wereld vol mogelijkheden</p><h1>Zappies atelier<span>✦</span></h1></div>
+        <div><p className="za-eyebrow">Een wereld vol mogelijkheden</p><h1>Bliepo’s atelier<span>✦</span></h1></div>
         <span className="za-prototype">PROTOTYPE</span>
       </header>
       <div className="za-direction" aria-live="polite"><span className="za-dot" />{current.uitleg}</div>
@@ -80,18 +80,18 @@ export function Atelier3D() {
         <div className="za-loading" role="status">
           <span className="za-loading-star">✦</span>
           <h2>{status === 'error' ? 'Het atelier kon niet openen' : 'De deuren gaan open…'}</h2>
-          <p>{status === 'error' ? 'Voor dit atelier is een browser met WebGL nodig.' : 'Even de lichten aan, Zappie staat al klaar.'}</p>
+          <p>{status === 'error' ? 'Voor dit atelier is een browser met WebGL nodig.' : 'Even de lichten aan, Bliepo staat al klaar.'}</p>
           {status === 'error' && <button onClick={() => { setStatus('loading'); setRetry(n => n + 1); }}>Probeer opnieuw</button>}
           {status === 'error' && <Link href="/zappie">Terug naar Zappie</Link>}
         </div>
       )}
       <aside className="za-outfit" aria-label="Je gekozen outfit">
-        <span className="za-eyebrow">Jouw Zappie</span>
+        <span className="za-eyebrow">Jouw Bliepo</span>
         <p role="status">{message}</p>
         {chosen.length > 0 && <div className="za-chosen">{chosen.map(i => <span key={i.id}>{i.naam}</span>)}</div>}
         <div className="za-outfit-actions">
-          {station !== 'podium' && <button className="za-see" onClick={() => setStation('podium')}>Bekijk Zappie <span>↗</span></button>}
-          {chosen.length > 0 && <button className="za-reset" onClick={() => { setOutfit({}); setMessage('Zappie is weer helemaal zichzelf'); }}>Opnieuw</button>}
+          {station !== 'podium' && <button className="za-see" onClick={() => setStation('podium')}>Bekijk Bliepo <span>↗</span></button>}
+          {chosen.length > 0 && <button className="za-reset" onClick={() => { setOutfit({}); setMessage('Bliepo is weer helemaal zichzelf'); }}>Opnieuw</button>}
         </div>
       </aside>
       <footer className="za-footer">

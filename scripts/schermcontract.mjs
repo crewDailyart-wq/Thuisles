@@ -350,12 +350,17 @@ export const SCHERMCONTRACT = [
         Vliegtuig, Raket, Op de tekentafel) is op 15 oktober 2026 op
         uitdrukkelijk verzoek van de eigenaar weggehaald.
       */
-      "Zappies atelier",
+      /*
+        De robot heet sinds 18 oktober 2026 Bliepo (keuze eigenaar): "Zappies
+        atelier" en "Terug naar je eigen Zappie" zijn daarom hernoemd, niet
+        weggehaald.
+      */
+      "Bliepo’s atelier",
       "Wat past bij jou?",
       "Petjes",
       "Kleuren",
       "Passen",
-      "Terug naar je eigen Zappie",
+      "Terug naar je eigen Bliepo",
       "Tot de volgende missie!",
       "Terug naar de sterren",
       "Beweging uit",
@@ -363,7 +368,7 @@ export const SCHERMCONTRACT = [
     ],
     naKlik: [
       { tekst: "komt binnenkort. Met Rekenen kun je nu al beginnen!", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "op een vak met Binnenkort tikken" },
-      { tekst: "Zappie past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
+      { tekst: "Bliepo past nu:", bron: "src/components/zappie/OntdekkingsReis.tsx", na: "iets passen in het atelier" },
       { tekst: "Beweging aan", bron: "src/components/zappie/ScrollReis.tsx", na: "op Beweging uit tikken" },
       { tekst: "Maak meer missies om deze wereld te ontdekken!", bron: "src/components/zappie/Startscherm.tsx", na: "op een wereld met een slotje tikken" },
       { tekst: "komt er binnenkort aan", bron: "src/components/zappie/Startscherm.tsx", na: "op Uitdaging tikken (bij Vandaag op ontdekking)" },

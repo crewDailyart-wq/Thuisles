@@ -1,17 +1,17 @@
-// Maakt van ontwerp/mascotte/mascotte.png de lichte bestanden in public/mascotte/.
-//   node scripts/maak-mascotte.mjs
+// Maakt van ontwerp/mascotte/bliepo.png (Bliepo, de robot) de lichte bestanden in public/mascotte/.
+//   node scripts/maak-bliepo.mjs
 //
 // Wat er gebeurt:
 //   1. de lichtgrijze achtergrond (en de schaduw eronder) wordt doorzichtig,
 //      met een zachte rand zonder witte waas;
 //   2. de vaste lach op het schermpje wordt zwart gemaakt: de ogen en de mond
 //      tekent de website er zelf overheen, zodat ze kunnen knipperen en praten
-//      (zie src/components/avontuur/Robot.tsx);
+//      (zie src/components/avontuur/Bliepo.tsx);
 //   3. bijgesneden en verkleind tot 300, 480 en 720 pixels hoog, als WebP.
 import sharp from "sharp";
 import fs from "node:fs";
 
-const BRON = "ontwerp/mascotte/mascotte.png";
+const BRON = "ontwerp/mascotte/bliepo.png";
 const UIT = "public/mascotte";
 fs.mkdirSync(UIT, { recursive: true });
 
@@ -91,9 +91,9 @@ for (let y = MOND.y - MOND.ry; y <= MOND.y + MOND.ry; y++)
 const basis = sharp(rgba, { raw: { width: B, height: H, channels: 4 } });
 const { info: bij } = await basis.clone().trim({ threshold: 1 }).png().toBuffer({ resolveWithObject: true });
 console.log("bijgesneden:", JSON.stringify({ links: -bij.trimOffsetLeft, boven: -bij.trimOffsetTop, breed: bij.width, hoog: bij.height }));
-await basis.clone().trim({ threshold: 1 }).png().toFile("ontwerp/mascotte/mascotte-vrij.png");
+await basis.clone().trim({ threshold: 1 }).png().toFile("ontwerp/mascotte/bliepo-vrij.png");
 for (const h of [300, 480, 720]) {
-  const pad = `${UIT}/robot-${h}.webp`;
-  await sharp("ontwerp/mascotte/mascotte-vrij.png").resize({ height: h }).webp({ quality: 88, alphaQuality: 90, effort: 6 }).toFile(pad);
+  const pad = `${UIT}/bliepo-${h}.webp`;
+  await sharp("ontwerp/mascotte/bliepo-vrij.png").resize({ height: h }).webp({ quality: 88, alphaQuality: 90, effort: 6 }).toFile(pad);
   console.log(pad, Math.round(fs.statSync(pad).size / 1024), "KB");
 }

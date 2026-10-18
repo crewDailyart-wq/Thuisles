@@ -64,7 +64,7 @@ const TOEGANKELIJK = [
     titel: "Slechthorend",
     kleur: "#4fdc9b",
     Icoon: IcoonOor,
-    tekst: "Alles wat Zappie zegt, staat ook in beeld. Geluid is nooit nodig om een opdracht te begrijpen of te maken.",
+    tekst: "Alles wat Bliepo zegt, staat ook in beeld. Geluid is nooit nodig om een opdracht te begrijpen of te maken.",
     punten: ["Ondertiteling bij elke uitleg", "Feedback in beeld, niet alleen met geluid", "Geluid per onderdeel uit te zetten"],
   },
   {

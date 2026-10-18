@@ -180,7 +180,7 @@ export default async function StartPagina() {
               />
               <PratendeMascotte
                 tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
-                robotKlasse="w-[clamp(6.5rem,10vw,10rem)] drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]"
+                bliepoKlasse="w-[clamp(6.5rem,10vw,10rem)] drop-shadow-[0_14px_20px_rgba(8,14,70,0.45)]"
                 wolkjeKlasse="mb-[clamp(4rem,7vw,7rem)] ml-1 max-w-[13rem] text-sm"
               />
             </div>
@@ -196,7 +196,7 @@ export default async function StartPagina() {
             <div className="mt-1 flex flex-wrap items-end justify-center gap-x-4 gap-y-2 lg:hidden">
               <PratendeMascotte
                 tekst={`Hoi ${kind.roepnaam}! Tik op een vak om te beginnen.`}
-                robotKlasse="w-20 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-24"
+                bliepoKlasse="w-20 drop-shadow-[0_10px_16px_rgba(8,14,70,0.45)] sm:w-24"
                 wolkjeKlasse="mb-14 ml-1 max-w-[11rem] text-sm"
               />
               <p className="av-hand rotate-[-6deg] text-4xl text-[#c9d6ff]">

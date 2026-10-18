@@ -1,10 +1,11 @@
 "use client";
 
 /**
- * De robot: de mascotte en tutor van Thuisles (oktober 2026).
+ * Bliepo: de robot, mascotte en tutor (oktober 2026). Zo heet hij sinds
+ * 18 oktober 2026 (keuze eigenaar).
  *
- * Bron: ontwerp/mascotte/mascotte.png van de eigenaar. De lichte bestanden in
- * public/mascotte/ maak je opnieuw met `node scripts/maak-mascotte.mjs`. Daarin
+ * Bron: ontwerp/mascotte/bliepo.png van de eigenaar. De lichte bestanden in
+ * public/mascotte/ maak je opnieuw met `node scripts/maak-bliepo.mjs`. Daarin
  * is de vaste lach van het schermpje gehaald: de ogen en de mond tekent dit
  * bestand er zelf overheen, zodat ze kunnen bewegen.
  *
@@ -16,7 +17,7 @@
  *   troost  leunt naar je toe met zachte ogen
  *
  * Bij "minder beweging" staat hij stil; alleen de mond en ogen veranderen nog.
- * De stijl staat in app/avontuur.css onder "De robot".
+ * De stijl staat in app/avontuur.css onder "Bliepo".
  */
 
 import { useSyncExternalStore } from "react";
@@ -32,14 +33,17 @@ const SCHERM = { links: 35.4, boven: 17.9, breed: 51.4, hoog: 28.4 };
 
 const GLOED = "#7ff6ff";
 
-export function Robot({
+export function Bliepo({
   houding = "rustig",
   praat = false,
+  kijkt,
   className = "",
 }: {
   houding?: MaatjeHouding;
   /** praat hij nu? (de mond beweegt ook vanzelf zodra de stem klinkt) */
   praat?: boolean;
+  /** kijkt hij opzij? Dan schuiven ogen en mond die kant op (bijv. naar de vakken). */
+  kijkt?: "links" | "rechts";
   className?: string;
 }) {
   const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, praatOpServer);
@@ -50,24 +54,24 @@ export function Robot({
 
   return (
     <div
-      className={`robot robot--${houding} ${mondBeweegt ? "robot--praat" : ""} ${className}`}
+      className={`bliepo bliepo--${houding} ${mondBeweegt ? "bliepo--praat" : ""} ${className}`}
       role="img"
-      aria-label="De robot"
+      aria-label="Bliepo"
     >
-      <div className="robot__lijf">
+      <div className="bliepo__lijf">
         {/* eslint-disable-next-line @next/next/no-img-element -- een plaatje met doorzichtigheid in drie maten; next/image voegt hier niets toe */}
         <img
-          src="/mascotte/robot-480.webp"
-          srcSet="/mascotte/robot-300.webp 229w, /mascotte/robot-480.webp 366w, /mascotte/robot-720.webp 549w"
+          src="/mascotte/bliepo-480.webp"
+          srcSet="/mascotte/bliepo-300.webp 229w, /mascotte/bliepo-480.webp 366w, /mascotte/bliepo-720.webp 549w"
           sizes="(min-width: 1024px) 15vw, 30vw"
           alt=""
           draggable={false}
-          className="robot__plaatje"
+          className="bliepo__plaatje"
         />
 
         <svg
           viewBox="0 0 490 355"
-          className="robot__gezicht"
+          className="bliepo__gezicht"
           style={{
             left: `${SCHERM.links}%`,
             top: `${SCHERM.boven}%`,
@@ -77,7 +81,7 @@ export function Robot({
           aria-hidden="true"
         >
           <defs>
-            <filter id="robot-gloed" x="-50%" y="-50%" width="200%" height="200%">
+            <filter id="bliepo-gloed" x="-50%" y="-50%" width="200%" height="200%">
               <feGaussianBlur stdDeviation="7" result="w" />
               <feMerge>
                 <feMergeNode in="w" />
@@ -86,7 +90,14 @@ export function Robot({
             </filter>
           </defs>
 
-          <g filter="url(#robot-gloed)" fill={GLOED} stroke={GLOED} strokeLinecap="round" strokeLinejoin="round">
+          <g
+            filter="url(#bliepo-gloed)"
+            transform={kijkt === "rechts" ? "translate(34 4)" : kijkt === "links" ? "translate(-34 4)" : undefined}
+            fill={GLOED}
+            stroke={GLOED}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+          >
             {/* ogen */}
             {blij ? (
               <g fill="none" strokeWidth="17">
@@ -99,7 +110,7 @@ export function Robot({
                 <path d="M290 140 Q330 168 370 140" />
               </g>
             ) : (
-              <g className="robot__ogen" stroke="none">
+              <g className="bliepo__ogen" stroke="none">
                 <rect x={denkt ? 150 : 132} y={denkt ? 92 : 112} width="56" height="74" rx="26" />
                 <rect x={denkt ? 320 : 302} y={denkt ? 92 : 112} width="56" height="74" rx="26" />
               </g>
@@ -107,7 +118,7 @@ export function Robot({
 
             {/* mond */}
             {mondBeweegt ? (
-              <g className="robot__mond">
+              <g className="bliepo__mond">
                 <path d="M190 220 Q245 210 300 220 Q300 290 245 292 Q190 290 190 220 Z" strokeWidth="6" fillOpacity="0.85" />
               </g>
             ) : blij ? (
@@ -123,7 +134,7 @@ export function Robot({
 
       {/* nadenken: drie puntjes */}
       {denkt && (
-        <span className="robot__puntjes" aria-hidden="true">
+        <span className="bliepo__puntjes" aria-hidden="true">
           <i />
           <i />
           <i />
@@ -132,7 +143,7 @@ export function Robot({
 
       {/* juichen: sterretjes eromheen */}
       {blij && (
-        <span className="robot__sterren" aria-hidden="true">
+        <span className="bliepo__sterren" aria-hidden="true">
           <i />
           <i />
           <i />

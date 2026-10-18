@@ -13,11 +13,11 @@
 
 import { L, Maat, Pijl, Schrift, blok, bliksem, kring, lijn, tandwiel, vloeiend } from "@/components/zappie/bouwtekening/pen";
 
-/** BLAD A: Zappie van voren, met maten en aantekeningen. */
+/** BLAD A: Bliepo van voren, met maten en aantekeningen. */
 export function Vooraanzicht() {
   return (
     <svg viewBox="0 0 240 450" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <Schrift x={120} y={14} anker="middle" grootte={13} className="bt-kop">BLAD A · ZAPPIE VAN VOREN</Schrift>
+      <Schrift x={120} y={14} anker="middle" grootte={13} className="bt-kop">BLAD A · BLIEPO VAN VOREN</Schrift>
       <Schrift x={238} y={40} anker="end" grootte={14}>petje achterstevoren!</Schrift>
       <Pijl punten={[[178, 42], [158, 56], [140, 86]]} zaad={9} dik={1} />
       <g transform="translate(0 24)">
@@ -83,7 +83,7 @@ export function Vooraanzicht() {
         {Array.from({ length: 15 }, (_, i) => (
           <L key={i} d={lijn([[36 + i * 12, 380], [28 + i * 12, 390]], 61 + i, 0.3, 0)} dik={0.7} />
         ))}
-        <Maat van={[24, 40]} tot={[24, 380]} tekst="1 Zappie hoog" zaad={80} />
+        <Maat van={[24, 40]} tot={[24, 380]} tekst="1 Bliepo hoog" zaad={80} />
         <Maat van={[60, 400]} tot={[180, 400]} tekst="wielbreedte" zaad={90} />
       </g>
     </svg>
@@ -206,7 +206,7 @@ export function Oplaadpaal() {
         <L key={i} d={lijn([[36 + i * 12, 196], [28 + i * 12, 205]], 51 + i, 0.3, 0)} dik={0.7} />
       ))}
       <Schrift x={170} y={96} grootte={19}>de oplaadpaal</Schrift>
-      <Schrift x={170} y={118} grootte={15}>hier laadt Zappie op</Schrift>
+      <Schrift x={170} y={118} grootte={15}>hier laadt Bliepo op</Schrift>
       <Schrift x={170} y={138} grootte={15}>(niet aanraken!)</Schrift>
       <Pijl punten={[[172, 92], [150, 80], [126, 72]]} zaad={60} dik={1} />
       <Schrift x={326} y={206} anker="end" grootte={12} className="bt-kop">BLAD D · OPLADEN</Schrift>
@@ -236,7 +236,7 @@ export function Werkbank() {
       <L d={kring(508, 52, 7, 21)} dik={0.9} />
       <L d={kring(532, 74, 5, 22)} dik={0.9} />
       <L d={kring(526, 48, 3, 23)} dik={0.9} />
-      <Schrift x={404} y={128} grootte={20}>plan: Zappie naar de maan</Schrift>
+      <Schrift x={404} y={128} grootte={20}>plan: Bliepo naar de maan</Schrift>
       <Schrift x={404} y={152} grootte={16}>(versie 2?)</Schrift>
       <g className="bt-wiel">
         <L d={kring(310, 196, 52, 30)} dik={2} />
@@ -288,7 +288,7 @@ export function Ideelamp() {
   );
 }
 
-/** BLAD G: het petje, voor in Zappies atelier. Muis in de buurt: hij tikt het aan. */
+/** BLAD G: het petje, voor in Bliepo’s atelier. Muis in de buurt: hij tikt het aan. */
 export function Petje() {
   return (
     <svg viewBox="0 0 280 160" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
@@ -299,7 +299,7 @@ export function Petje() {
         <L d={lijn([[104, 58], [92, 78], [104, 78], [94, 96]], 3, 0.3, 0)} dik={1.4} className="bt-geel" />
         <L d={kring(96, 46, 4, 4)} dik={1} />
       </g>
-      <Maat van={[44, 124]} tot={[154, 124]} tekst="maat: Zappie-hoofd" zaad={10} />
+      <Maat van={[44, 124]} tot={[154, 124]} tekst="maat: Bliepo-hoofd" zaad={10} />
       <Schrift x={168} y={56} grootte={17}>ontwerp 3</Schrift>
       <Schrift x={168} y={78} grootte={14}>klep naar achteren!</Schrift>
       <Schrift x={276} y={154} anker="end" grootte={12} className="bt-kop">BLAD G · HET PETJE</Schrift>
