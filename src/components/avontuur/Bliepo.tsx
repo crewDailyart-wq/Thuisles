@@ -17,12 +17,23 @@
  *   troost  leunt naar je toe met zachte ogen
  *
  * Bij "minder beweging" staat hij stil; alleen de mond en ogen veranderen nog.
+ *
+ * Sinds 18 oktober 2026 (keuze eigenaar) is Bliepo in de lessen en oefeningen
+ * het filmpje van de 3D-robot (BliepoFilmpje: WebM, met WebP voor
+ * iPhone/Safari), zodat hij overal dezelfde robot is. Het filmpje heeft zijn
+ * eigen schermgezicht (het hartslaglijntje), dus de getekende ogen en mond
+ * staan er dan niet op; juichen (opspringen, sterretjes), nadenken (puntjes) en
+ * troosten (naar je toe leunen) blijven. Bij "Beweging uit" of "minder
+ * beweging" staat het filmpje stil. De oude blauwe robot (het plaatje met
+ * ogen en mond) staat er nog: soort="plaatje".
  * De stijl staat in app/avontuur.css onder "Bliepo".
  */
 
 import { useSyncExternalStore } from "react";
 import type { MaatjeHouding } from "@/lib/maatje/poppetje";
 import { abonneerPraten, praatOpServer, praatVos } from "@/lib/stem";
+import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 
 /*
   Het schermpje in het bijgesneden plaatje (953 x 1249), in procenten. Het
@@ -38,6 +49,7 @@ export function Bliepo({
   praat = false,
   kijkt,
   className = "",
+  soort = "filmpje",
 }: {
   houding?: MaatjeHouding;
   /** praat hij nu? (de mond beweegt ook vanzelf zodra de stem klinkt) */
@@ -45,8 +57,15 @@ export function Bliepo({
   /** kijkt hij opzij? Dan schuiven ogen en mond die kant op (bijv. naar de vakken). */
   kijkt?: "links" | "rechts";
   className?: string;
+  /** filmpje (sinds 18 oktober 2026) of het oude plaatje van de blauwe robot */
+  soort?: "filmpje" | "plaatje";
 }) {
-  const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, praatOpServer);
+  const rustig = useBewegingsstand() !== "aan";
+  const stemKlinkt = useSyncExternalStore(
+    abonneerPraten,
+    praatVos,
+    praatOpServer,
+  );
   const mondBeweegt = praat || houding === "praat" || stemKlinkt;
   const blij = houding === "blij";
   const denkt = houding === "denkt";
@@ -54,82 +73,124 @@ export function Bliepo({
 
   return (
     <div
-      className={`bliepo bliepo--${houding} ${mondBeweegt ? "bliepo--praat" : ""} ${className}`}
+      className={`bliepo bliepo--${houding} ${mondBeweegt ? "bliepo--praat" : ""} ${soort === "filmpje" ? "bliepo--filmpje" : ""} ${className}`}
       role="img"
       aria-label="Bliepo"
     >
       <div className="bliepo__lijf">
-        {/* eslint-disable-next-line @next/next/no-img-element -- een plaatje met doorzichtigheid in drie maten; next/image voegt hier niets toe */}
-        <img
-          src="/mascotte/bliepo-480.webp"
-          srcSet="/mascotte/bliepo-300.webp 229w, /mascotte/bliepo-480.webp 366w, /mascotte/bliepo-720.webp 549w"
-          sizes="(min-width: 1024px) 15vw, 30vw"
-          alt=""
-          draggable={false}
-          className="bliepo__plaatje"
-        />
+        {soort === "filmpje" ? (
+          <BliepoFilmpje rustig={rustig} className="bliepo__plaatje" />
+        ) : (
+          <>
+            {/* eslint-disable-next-line @next/next/no-img-element -- een plaatje met doorzichtigheid in drie maten; next/image voegt hier niets toe */}
+            <img
+              src="/mascotte/bliepo-480.webp"
+              srcSet="/mascotte/bliepo-300.webp 229w, /mascotte/bliepo-480.webp 366w, /mascotte/bliepo-720.webp 549w"
+              sizes="(min-width: 1024px) 15vw, 30vw"
+              alt=""
+              draggable={false}
+              className="bliepo__plaatje"
+            />
 
-        <svg
-          viewBox="0 0 490 355"
-          className="bliepo__gezicht"
-          style={{
-            left: `${SCHERM.links}%`,
-            top: `${SCHERM.boven}%`,
-            width: `${SCHERM.breed}%`,
-            height: `${SCHERM.hoog}%`,
-          }}
-          aria-hidden="true"
-        >
-          <defs>
-            <filter id="bliepo-gloed" x="-50%" y="-50%" width="200%" height="200%">
-              <feGaussianBlur stdDeviation="7" result="w" />
-              <feMerge>
-                <feMergeNode in="w" />
-                <feMergeNode in="SourceGraphic" />
-              </feMerge>
-            </filter>
-          </defs>
+            <svg
+              viewBox="0 0 490 355"
+              className="bliepo__gezicht"
+              style={{
+                left: `${SCHERM.links}%`,
+                top: `${SCHERM.boven}%`,
+                width: `${SCHERM.breed}%`,
+                height: `${SCHERM.hoog}%`,
+              }}
+              aria-hidden="true"
+            >
+              <defs>
+                <filter
+                  id="bliepo-gloed"
+                  x="-50%"
+                  y="-50%"
+                  width="200%"
+                  height="200%"
+                >
+                  <feGaussianBlur stdDeviation="7" result="w" />
+                  <feMerge>
+                    <feMergeNode in="w" />
+                    <feMergeNode in="SourceGraphic" />
+                  </feMerge>
+                </filter>
+              </defs>
 
-          <g
-            filter="url(#bliepo-gloed)"
-            transform={kijkt === "rechts" ? "translate(34 4)" : kijkt === "links" ? "translate(-34 4)" : undefined}
-            fill={GLOED}
-            stroke={GLOED}
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            {/* ogen */}
-            {blij ? (
-              <g fill="none" strokeWidth="17">
-                <path d="M118 158 Q160 108 202 158" />
-                <path d="M288 158 Q330 108 372 158" />
-              </g>
-            ) : troost ? (
-              <g fill="none" strokeWidth="17">
-                <path d="M120 140 Q160 168 200 140" />
-                <path d="M290 140 Q330 168 370 140" />
-              </g>
-            ) : (
-              <g className="bliepo__ogen" stroke="none">
-                <rect x={denkt ? 150 : 132} y={denkt ? 92 : 112} width="56" height="74" rx="26" />
-                <rect x={denkt ? 320 : 302} y={denkt ? 92 : 112} width="56" height="74" rx="26" />
-              </g>
-            )}
+              <g
+                filter="url(#bliepo-gloed)"
+                transform={
+                  kijkt === "rechts"
+                    ? "translate(34 4)"
+                    : kijkt === "links"
+                      ? "translate(-34 4)"
+                      : undefined
+                }
+                fill={GLOED}
+                stroke={GLOED}
+                strokeLinecap="round"
+                strokeLinejoin="round"
+              >
+                {/* ogen */}
+                {blij ? (
+                  <g fill="none" strokeWidth="17">
+                    <path d="M118 158 Q160 108 202 158" />
+                    <path d="M288 158 Q330 108 372 158" />
+                  </g>
+                ) : troost ? (
+                  <g fill="none" strokeWidth="17">
+                    <path d="M120 140 Q160 168 200 140" />
+                    <path d="M290 140 Q330 168 370 140" />
+                  </g>
+                ) : (
+                  <g className="bliepo__ogen" stroke="none">
+                    <rect
+                      x={denkt ? 150 : 132}
+                      y={denkt ? 92 : 112}
+                      width="56"
+                      height="74"
+                      rx="26"
+                    />
+                    <rect
+                      x={denkt ? 320 : 302}
+                      y={denkt ? 92 : 112}
+                      width="56"
+                      height="74"
+                      rx="26"
+                    />
+                  </g>
+                )}
 
-            {/* mond */}
-            {mondBeweegt ? (
-              <g className="bliepo__mond">
-                <path d="M190 220 Q245 210 300 220 Q300 290 245 292 Q190 290 190 220 Z" strokeWidth="6" fillOpacity="0.85" />
+                {/* mond */}
+                {mondBeweegt ? (
+                  <g className="bliepo__mond">
+                    <path
+                      d="M190 220 Q245 210 300 220 Q300 290 245 292 Q190 290 190 220 Z"
+                      strokeWidth="6"
+                      fillOpacity="0.85"
+                    />
+                  </g>
+                ) : blij ? (
+                  <path
+                    d="M170 212 L320 212 Q316 296 245 298 Q174 296 170 212 Z"
+                    strokeWidth="6"
+                    fillOpacity="0.9"
+                  />
+                ) : denkt ? (
+                  <path d="M215 248 L282 240" fill="none" strokeWidth="15" />
+                ) : (
+                  <path
+                    d="M180 226 Q245 284 310 226"
+                    fill="none"
+                    strokeWidth="16"
+                  />
+                )}
               </g>
-            ) : blij ? (
-              <path d="M170 212 L320 212 Q316 296 245 298 Q174 296 170 212 Z" strokeWidth="6" fillOpacity="0.9" />
-            ) : denkt ? (
-              <path d="M215 248 L282 240" fill="none" strokeWidth="15" />
-            ) : (
-              <path d="M180 226 Q245 284 310 226" fill="none" strokeWidth="16" />
-            )}
-          </g>
-        </svg>
+            </svg>
+          </>
+        )}
       </div>
 
       {/* nadenken: drie puntjes */}

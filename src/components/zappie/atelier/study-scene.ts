@@ -11,9 +11,10 @@ import { mergeGeometries } from 'three/addons/utils/BufferGeometryUtils.js';
 export type StudyView = 'samen' | 'podium' | 'vitrine' | 'koepel' | 'lintjes';
 export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean) => void; badge: (index: number, unlocked: boolean) => void; dispose: () => void; foto?: (glow: boolean) => string | null };
 /**
- * Proef met de weerspiegeling in de vloer (18 oktober 2026, alleen op de
- * testpagina /voorbeeld-bliepo?atelier=1; de echte pagina geeft niets mee en
- * blijft zoals hij is):
+ * De weerspiegeling in de vloer (18 oktober 2026). Eerst als proef op
+ * /voorbeeld-bliepo?atelier=1; de eigenaar koos versie C, die het atelier op
+ * de startpagina nu gebruikt (EmbeddedAtelier). Zonder keuze blijft de oude
+ * weerspiegeling (1024 bij 1024, zonder anti-aliasing):
  *   a: scherp, in de resolutie van het scherm en met anti-aliasing;
  *   b: zoals a, met een heel lichte vervaging;
  *   c: zoals b, en verder van het podium zachter en vager.

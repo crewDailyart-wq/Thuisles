@@ -14,7 +14,7 @@ const badges=[
   {name:'Doorzetter',hint:'Voorbeeld: oefen vijf dagen.'},
   {name:'Wereldbouwer',hint:'Voorbeeld: voltooi een creatieve opdracht.'},
 ];
-/** reflectie en onKlaar: alleen voor de proef op /voorbeeld-bliepo?atelier=1; de echte pagina geeft ze niet mee. */
+/** reflectie: welke weerspiegeling (zie study-scene.ts); onKlaar: voor de metingen op /voorbeeld-bliepo?atelier=1. */
 export function AtelierStudy({embedded=false,mascot,reflectie=null,onKlaar}:{embedded?:boolean;mascot?:ReactNode;reflectie?:Reflectie|null;onKlaar?:(c:StudyController)=>void}){
   const mascotAnchor=useRef<HTMLDivElement>(null);
   const host=useRef<HTMLDivElement>(null),controller=useRef<StudyController|null>(null);

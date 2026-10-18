@@ -530,6 +530,21 @@
   animation: bliepo-leun 3s ease-in-out infinite;
 }
 
+/*
+  Bliepo als filmpje (18 oktober 2026): het filmpje zweeft en zwaait zelf al,
+  dus geen extra wiebelen of zweven eromheen. Juichen en leunen blijven.
+*/
+.bliepo--filmpje .bliepo__lijf,
+.bliepo--filmpje.bliepo--zweef .bliepo__lijf {
+  animation: none;
+}
+.bliepo--filmpje.bliepo--blij .bliepo__lijf {
+  animation: bliepo-juich 0.9s ease-out 3;
+}
+.bliepo--filmpje.bliepo--troost .bliepo__lijf {
+  animation: bliepo-leun 3s ease-in-out infinite;
+}
+
 /* Rustig zweven in plaats van wiebelen (startpagina, prijzenkamer). */
 .bliepo--zweef .bliepo__lijf {
   animation: bliepo-zweef 5.5s ease-in-out infinite;
