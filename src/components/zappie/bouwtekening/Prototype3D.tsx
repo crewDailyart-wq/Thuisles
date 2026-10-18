@@ -58,12 +58,19 @@ export function Prototype3D({
     let opgeruimd = false;
     let opruimen: (() => void) | null = null;
 
-    /* Pas laden als het prototype bijna in beeld is. */
+    /*
+      Pas laden als het prototype bijna in beeld is, en dan nog pas als de
+      browser even niets te doen heeft: het opstarten (Three.js, het model,
+      de belichting) houdt de pagina anders bijna een seconde vast, en de
+      robot naast "Kies jouw vak" staat al bij het openen in beeld.
+    */
+    let wachtOpRust = 0;
     const kijker = new IntersectionObserver(
       (items) => {
         if (!items.some((i) => i.isIntersecting)) return;
         kijker.disconnect();
-        void start();
+        if ("requestIdleCallback" in window) wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
+        else wachtOpRust = window.setTimeout(() => void start(), 600);
       },
       { rootMargin: "400px 0px" },
     );
@@ -222,7 +229,12 @@ export function Prototype3D({
         model.root.rotation.y += (hoek - model.root.rotation.y) * Math.min(1, dt * 4);
         besturing.update(dt, {});
         ballon.update(besturing);
-        const pauze = besturing.action !== "idle" ? 0 : rustigRef.current ? 250 : 1000 / 30;
+        /*
+          Zuinig tekenen (18 oktober 2026, de site werd traag): in rust 15 keer
+          per seconde (hij ademt alleen rustig), tijdens een gebaar 30 keer;
+          niet meer op de volle snelheid van het scherm (tot 120 keer).
+        */
+        const pauze = besturing.action !== "idle" ? 1000 / 30 : rustigRef.current ? 250 : 1000 / 15;
         if (nu - laatsteTekening >= pauze) {
           renderer.render(scene, camera);
           laatsteTekening = nu;
@@ -254,6 +266,8 @@ export function Prototype3D({
     return () => {
       opgeruimd = true;
       kijker.disconnect();
+      if ("cancelIdleCallback" in window) window.cancelIdleCallback(wachtOpRust);
+      window.clearTimeout(wachtOpRust);
       opruimen?.();
     };
   }, []);
