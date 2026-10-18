@@ -343,8 +343,11 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
     zodat precies dezelfde shaders klaarstaan als de composer straks gebruikt.
   */
   let compiled=false;
+  // De shaders van de gloed (bloom) gaan op dezelfde manier mee, via een losse hulpscène.
+  const postScene=new T.Scene(),postQuad=new T.PlaneGeometry(2,2).deleteAttribute('normal'); // zonder normalen, net als het vlak van de composer
+  for(const m of [bloom.materialHighPassFilter,...bloom.separableBlurMaterials,bloom.compositeMaterial,bloom.blendMaterial]){const o=new T.Mesh(postQuad,m);o.frustumCulled=false;postScene.add(o);}
   renderer.setRenderTarget(composer.readBuffer);
-  renderer.compileAsync(scene,camera).catch(()=>{}).finally(()=>{compiled=true;dirty=true;});
+  Promise.all([renderer.compileAsync(scene,camera),renderer.compileAsync(postScene,camera)]).catch(()=>{}).finally(()=>{postQuad.dispose();compiled=true;dirty=true;});
   renderer.setRenderTarget(null);
   // This design study only renders when changed, avoiding an idle animation/GPU loop.
   renderer.setAnimationLoop(()=>{if(disposed||!dirty||!panoramaReady||!compiled||document.hidden)return;composer.render();dirty=false;if(first){first=false;ready();}});
