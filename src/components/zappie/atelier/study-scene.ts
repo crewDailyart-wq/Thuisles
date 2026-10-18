@@ -13,7 +13,26 @@ export type StudyController = { view: (v: StudyView) => void; glow: (v: boolean)
 const V = (x:number,y:number,z:number) => new T.Vector3(x,y,z);
 
 /** First art-direction slice: modeled objects, physical materials, HDR glow and planar reflections. */
+/*
+  Snelheid (18 oktober 2026): het atelier werd in één keer gebouwd, en dat hield
+  de pagina op een trage telefoon meer dan een seconde vast. Nu bouwt
+  bouwStudy dezelfde onderdelen in dezelfde volgorde, maar geeft de browser
+  tussendoor steeds even de beurt (doorgaan()), zodat de pagina blijft
+  bewegen. Wat er gebouwd wordt en hoe het eruitziet, is niet veranderd.
+  createStudy geeft meteen een besturing terug; wat daar intussen mee gedaan
+  wordt, gebeurt zodra het atelier klaar is.
+*/
+const pauze=()=>new Promise<void>(r=>{const s=(globalThis as {scheduler?:{yield?:()=>Promise<void>}}).scheduler;if(s?.yield)s.yield().then(r);else setTimeout(r,0);});
 export function createStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null = null): StudyController {
+  let inner:StudyController|null=null,stopped=false;const waiting:((c:StudyController)=>void)[]=[];
+  const later=(f:(c:StudyController)=>void)=>{if(inner)f(inner);else waiting.push(f);};
+  bouwStudy(host,ready,failed,selected,mascotAnchor).then(c=>{if(stopped){c.dispose();return;}inner=c;waiting.splice(0).forEach(f=>f(c));}).catch(()=>{if(!stopped)failed();});
+  return {view:v=>later(c=>c.view(v)),glow:v=>later(c=>c.glow(v)),badge:(i,u)=>later(c=>c.badge(i,u)),dispose(){stopped=true;inner?.dispose();inner=null;}};
+}
+
+async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null): Promise<StudyController> {
+  let lastPause=performance.now();
+  const doorgaan=async()=>{if(performance.now()-lastPause<30)return;await pauze();lastPause=performance.now();};
   let dirty=true,disposed=false,first=true,panoramaReady=false;
   const renderer = new T.WebGLRenderer({ antialias: true, powerPreference:'high-performance' });
   renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));
@@ -57,6 +76,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     const s=new T.Shape();for(let i=0;i<10;i++){const a=Math.PI/2+i*Math.PI/5,rr=i%2?r*.46:r;const px=Math.cos(a)*rr,py=Math.sin(a)*rr;if(i===0)s.moveTo(px,py);else s.lineTo(px,py);}s.closePath();
     return mesh(new T.ExtrudeGeometry(s,{depth:.065,bevelEnabled:true,bevelThickness:.025,bevelSize:.025,bevelSegments:3,steps:1}),m,p,x,y,z);
   }
+  await doorgaan();
   // Warm key, cool rim and localized pools of light; deliberately restrained ambient light.
   scene.add(new T.HemisphereLight('#91caff','#07122c',0.65));
   const key=new T.DirectionalLight('#ffdea3',2.6);key.position.set(-3,9,6);key.castShadow=true;
@@ -66,6 +86,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   function pool(color:string,intensity:number,x:number,y:number,z:number,distance=7){const l=new T.PointLight(color,intensity,distance,2);l.position.set(x,y,z);scene.add(l);lights.push(l);return l;}
   pool('#10cfff',5,1.65,1.5,1.2);pool('#ffbb50',2.5,-2.5,3,-.5);pool('#4e99ff',12,1,5,-4,14);
 
+  await doorgaan();
   // A real reflected floor, with independent gold inlays and a stone foundation.
   const floor=new Reflector(new T.CircleGeometry(18.8,128),{color:0x38485e,textureWidth:1024,textureHeight:1024,clipBias:.003,multisample:0});
   floor.rotation.x=-Math.PI/2;floor.position.y=-.025;scene.add(floor);
@@ -73,6 +94,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   const inlays=new T.Group();scene.add(inlays);
   for(const r of [3.7,5.8,8.1,14.8,18.5])ring(r,.013,gold,inlays,.005);
 
+  await doorgaan();
   // Approved panorama on a cylindrical backdrop, separate from the modeled interior.
   const panoramaTexture=new T.TextureLoader().load('/atelier/sterrenwerkplaats-panorama.webp',()=>{
     if(disposed)return;
@@ -99,6 +121,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   backdropGeometry.setAttribute('uv',new T.Float32BufferAttribute(bu,2));backdropGeometry.setIndex(bi);backdropGeometry.computeVertexNormals();
   const backdrop=mesh(backdropGeometry,backdropMaterial,scene);backdrop.castShadow=false;backdrop.receiveShadow=false;
 
+  await doorgaan();
   // Clear ellipsoidal shell, modeled brass ribs, perimeter light and a small crown oculus.
   const dome=new T.Group();scene.add(dome);
   const domeRadius=18.5,domeHeight=13.5;
@@ -110,6 +133,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   ring(domeRadius,.13,structuralGold,dome,.18);
   ring(domeRadius-.16,.022,cyan,dome,.28);
   for(let i=0;i<12;i++){
+    await doorgaan();
     const a=(i+.5)*Math.PI/6,points:T.Vector3[]=[];
     for(let j=0;j<=64;j++){const t=j/64*Math.PI/2;points.push(V(Math.sin(a)*domeRadius*Math.cos(t),.25+domeHeight*Math.sin(t),Math.cos(a)*domeRadius*Math.cos(t)));}
     mesh(new T.TubeGeometry(new T.CatmullRomCurve3(points),96,.055,8,false),structuralGold,dome);
@@ -123,6 +147,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   ring(1.05,.018,cyan,dome,13.7);
   pool('#9060ff',5,7,3,-8,16);
 
+  await doorgaan();
   // Hero pedestal: turned profiles, inset curved panels, machined seams and glowing portholes.
   const podium=new T.Group();podium.position.set(1.65,0,1.2);scene.add(podium);
   const profile=[[0,0],[2.72,0],[2.83,.07],[2.83,.15],[2.73,.23],[2.58,.25],[2.5,.34],[2.37,.93],[2.32,1.01],[0,1.01]].map(([x,y])=>new T.Vector2(x,y));
@@ -136,6 +161,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   ring(1.27,.012,paleGold,podium,1.085);
   cyl(1.18,1.18,.025,blue,podium,0,1.085);
   for(let i=0;i<18;i++){
+    await doorgaan();
     const a=i*Math.PI*2/18;
     const panel=new T.Group();panel.position.set(Math.sin(a)*2.46,.62,Math.cos(a)*2.46);panel.rotation.y=a;panel.rotation.x=-.23;podium.add(panel);
     box(.62,.46,.045,navy,panel);
@@ -148,9 +174,11 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   mesh(new T.TorusGeometry(.3,.035,12,48),gold,crest);
   mesh(new T.CircleGeometry(.28,48),inset,crest,0,0,.002);
   star(.22,amber,crest,0,0,.025);
+  await doorgaan();
   // Fine engraved radial markers on the luminous deck.
   for(let i=0;i<48;i++){const a=i*Math.PI/24;const tick=box(.012,.01,i%4===0?.18:.07,paleGold,podium,Math.sin(a)*1.93,1.085,Math.cos(a)*1.93);tick.rotation.y=a;}
 
+  await doorgaan();
   // One finished cabinet, with a continuous curved arch and lit shelf recesses.
   const cabinet=new T.Group();cabinet.position.set(-2.55,0,-1.5);scene.add(cabinet);
   function archShape(r:number,spring:number){const s=new T.Shape();s.moveTo(-r,0);s.lineTo(-r,spring);s.absarc(0,spring,r,Math.PI,0,true);s.lineTo(r,0);s.closePath();return s;}
@@ -173,6 +201,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     pool('#ffc36b',1.8,-2.55,y+.36,-1.2,3);
   }
   star(.19,gold,cabinet,0,4.67,.08);
+  await doorgaan();
   // Upper shelf: a blue enamel explorer helmet with gold rim and a raised crest.
   const helmet=new T.Group();helmet.position.set(0,3.76,.27);cabinet.add(helmet);
   cyl(.6,.62,.09,velvet,helmet,0,-.12);
@@ -180,6 +209,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   cyl(.48,.5,.07,gold,helmet,0,.04);
   const brim=cyl(.5,.51,.04,blue,helmet,0,0,.2);brim.scale.z=1.15;
   star(.13,paleGold,helmet,0,.23,.42);
+  await doorgaan();
   // Middle shelf: a smooth cut gold crown with turquoise gemstones.
   const crown=new T.Group();crown.position.set(0,2.42,.3);cabinet.add(crown);
   cyl(.62,.65,.11,velvet,crown,0,-.2);
@@ -194,12 +224,14 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   const crownGold=gold.clone();crownGold.side=T.DoubleSide;materials.push(crownGold);mesh(crownGeometry,crownGold,crown);
   ring(.41,.04,paleGold,crown,.04);
   for(let i=0;i<6;i++){const a=i*Math.PI/3;orb(.055,paleGold,crown,Math.sin(a)*.5,.6,Math.cos(a)*.5);const jewel=orb(.065,cyan,crown,Math.sin(a)*.445,.2,Math.cos(a)*.445);jewel.scale.y=1.4;}
+  await doorgaan();
   // Lower shelf: star wand and luminous crystal, each with its own display base.
   for(const x of [-.58,.58]){cyl(.3,.33,.07,gold,cabinet,x,.78,.32);cyl(.24,.27,.17,velvet,cabinet,x,.9,.32);}
   cyl(.03,.04,.48,gold,cabinet,-.58,1.2,.32);star(.2,amber,cabinet,-.58,1.54,.32);
   mesh(new T.OctahedronGeometry(.23),cyan,cabinet,.58,1.32,.32).scale.y=1.55;
   ring(.24,.016,paleGold,cabinet,1.15).position.x=.58;
 
+  await doorgaan();
   // A freestanding ribbon treasury: enamel shell, six velvet niches and individual medals.
   const treasury=new T.Group();treasury.position.set(4.75,0,-2.8);treasury.rotation.y=-.13;scene.add(treasury);
   box(3.5,.23,1.1,gold,treasury,0,.18);box(3.35,.18,1.03,blue,treasury,0,.37);
@@ -211,6 +243,7 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
     orb(.11,paleGold,treasury,x,4.77,.03);
     for(const y of [.65,4.55])box(.21,.13,.28,paleGold,treasury,x,y,.05);
   }
+  await doorgaan();
   // Sweeping crown and central star identify the cabinet even at the wide camera angle.
   const crestPath=new T.CatmullRomCurve3([V(-1.6,4.78,0),V(-.9,5.02,0),V(0,5.26,0),V(.9,5.02,0),V(1.6,4.78,0)]);
   mesh(new T.TubeGeometry(crestPath,64,.08,12,false),gold,treasury);
@@ -219,12 +252,14 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   for(const y of [.55,1.9,3.25,4.6]){box(2.95,.065,.46,gold,treasury,0,y,.13);box(2.7,.018,.025,pearl,treasury,0,y-.05,.34);}
   box(.055,3.95,.16,gold,treasury,0,2.6,.08);
   pool('#ffcd80',5,4.75,3.3,-.8,7);
+  await doorgaan();
   // Dynamic parts remain independent of the static geometry batches.
   const badgeRoots:T.Group[]=[],locks:T.Group[]=[],medals:T.Group[]=[],halos:T.Mesh[]=[],hitTargets:T.Mesh[]=[];
   const ribbonColors=['#167bd2','#693cc4','#11877f','#b34272','#3452ae','#7b4ec6'];
   const darkMetal=physical('#526582',.64,.36), ribbonSeam=physical('#caa25b',.45,.48);
   function faceDisk(r:number,h:number,m:T.Material,p:T.Object3D,y:number,z:number){const o=cyl(r,r,h,m,p,0,y,z);o.rotation.x=Math.PI/2;return o;}
   for(let i=0;i<6;i++){
+    await doorgaan();
     const x=i%2===0?-.74:.74,y=3.88-Math.floor(i/2)*1.35;
     box(1.28,1.2,.07,velvet,treasury,x,y,-.005);
     const root=new T.Group();root.position.set(x,y,.12);treasury.add(root);badgeRoots.push(root);
@@ -259,13 +294,17 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
   const pick=(event:PointerEvent)=>{const r=renderer.domElement.getBoundingClientRect();raycaster.setFromCamera(new T.Vector2((event.clientX-r.left)/r.width*2-1,-(event.clientY-r.top)/r.height*2+1),camera);const hit=raycaster.intersectObjects(hitTargets)[0];if(hit)selected(hit.object.userData.badge);};
   renderer.domElement.addEventListener('pointerup',pick);
 
+  await doorgaan();
   // Batch opaque static geometry to make high-detail fittings affordable on the web.
   scene.updateMatrixWorld(true);
   const batches=new Map<T.Material,{objects:T.Mesh[];geometries:T.BufferGeometry[]}>();
   const isBadge=(o:T.Object3D):boolean=>badgeRoots.includes(o as T.Group)||(o.parent!==null&&isBadge(o.parent));
-  scene.traverse(o=>{if(isBadge(o)||!(o instanceof T.Mesh)||o===floor||o===backdrop||o===glass||Array.isArray(o.material))return;const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);const b=batches.get(o.material)??{objects:[],geometries:[]};b.objects.push(o);b.geometries.push(g);batches.set(o.material,b);});
-  for(const [m,b] of batches){const g=mergeGeometries(b.geometries);if(g){mesh(g,m,scene);b.objects.forEach(o=>{o.removeFromParent();o.geometry.dispose();});}b.geometries.forEach(g=>g.dispose());}
+  const toBatch:T.Mesh<T.BufferGeometry,T.Material>[]=[];
+  scene.traverse(o=>{if(isBadge(o)||!(o instanceof T.Mesh)||o===floor||o===backdrop||o===glass||Array.isArray(o.material))return;toBatch.push(o as T.Mesh<T.BufferGeometry,T.Material>);});
+  for(const o of toBatch){await doorgaan();const g=o.geometry.index?o.geometry.toNonIndexed():o.geometry.clone();g.applyMatrix4(o.matrixWorld);const b=batches.get(o.material)??{objects:[],geometries:[]};b.objects.push(o);b.geometries.push(g);batches.set(o.material,b);}
+  for(const [m,b] of batches){await doorgaan();const g=mergeGeometries(b.geometries);if(g){mesh(g,m,scene);b.objects.forEach(o=>{o.removeFromParent();o.geometry.dispose();});}b.geometries.forEach(g=>g.dispose());}
   renderer.shadowMap.autoUpdate=false;renderer.shadowMap.needsUpdate=true;
+  await doorgaan();
   const renderTarget=new T.WebGLRenderTarget(1,1,{type:T.HalfFloatType,samples:4});
   const composer=new EffectComposer(renderer,renderTarget);composer.addPass(new RenderPass(scene,camera));
   const bloom=new UnrealBloomPass(new T.Vector2(1,1),.2,.12,1.5);composer.addPass(bloom);
