@@ -17,6 +17,8 @@
  * dienst en betalen we per zin maar één keer.
  */
 
+import { koppelBliepoGeluid } from "@/lib/bliepo-geluid";
+
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
 // ---------------------------------------------------------------------------
@@ -353,7 +355,8 @@ function speelVanServer(zin: string): void {
   const bron = bekend ?? `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
   if (!bekend) opgehaald.set(zin, bron);
 
-  const geluid = new Audio(bron);
+  /* Via de geluidsmeter van Bliepo, zodat het lijntje op zijn scherm meebeweegt (lib/bliepo-geluid.ts). */
+  const geluid = koppelBliepoGeluid(new Audio(bron));
   huidigGeluid = geluid;
   geluid.onplay = () => meld(true);
   geluid.onended = () => meld(false);

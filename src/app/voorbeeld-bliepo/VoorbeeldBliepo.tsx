@@ -21,6 +21,7 @@ import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
 import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
 import { VoorbeeldWeerspiegeling } from "./VoorbeeldWeerspiegeling";
+import { PratendeBliepo } from "./PratendeBliepo";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
 
@@ -213,6 +214,7 @@ function Vergelijking() {
         en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat. Met ?alleen=links, midden,
         rechts of vier staat er maar één, gemeten vanaf een lege pagina.
       </p>
+      <PratendeBliepo />
       <p className="mt-2">
         {/* Een gewone link: de pagina moet opnieuw laden om ?atelier=1 te lezen. */}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}

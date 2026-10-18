@@ -19,20 +19,22 @@
  * Bij "minder beweging" staat hij stil; alleen de mond en ogen veranderen nog.
  *
  * Sinds 18 oktober 2026 (keuze eigenaar) is Bliepo in de lessen en oefeningen
- * het filmpje van de 3D-robot (BliepoFilmpje: WebM, met WebP voor
- * iPhone/Safari), zodat hij overal dezelfde robot is. Het filmpje heeft zijn
- * eigen schermgezicht (het hartslaglijntje), dus de getekende ogen en mond
- * staan er dan niet op; juichen (opspringen, sterretjes), nadenken (puntjes) en
- * troosten (naar je toe leunen) blijven. Bij "Beweging uit" of "minder
- * beweging" staat het filmpje stil. De oude blauwe robot (het plaatje met
- * ogen en mond) staat er nog: soort="plaatje".
- * De stijl staat in app/avontuur.css onder "Bliepo".
+ * de witte robot uit het 3D-model, als plaatje zonder lijntje op zijn scherm
+ * (soort="lijn"). Alleen het lijntje wordt live getekend (BliepoLijn): het
+ * springt mee op elk geluid dat Bliepo afspeelt (lib/bliepo-geluid.ts) en is
+ * een rustig hartslaglijntje als hij stil is. De getekende ogen en mond horen
+ * bij de oude blauwe robot en staan er dan niet op; juichen (opspringen,
+ * sterretjes), nadenken (puntjes) en troosten (naar je toe leunen) blijven.
+ * Bij "Beweging uit" blijft het lijntje een rustige lijn. Er even tussenin
+ * was het het filmpje (soort="filmpje"); de oude blauwe robot met ogen en mond
+ * is soort="plaatje". Beide staan er nog.
  */
 
 import { useSyncExternalStore } from "react";
 import type { MaatjeHouding } from "@/lib/maatje/poppetje";
 import { abonneerPraten, praatOpServer, praatVos } from "@/lib/stem";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { BliepoLijn } from "@/components/avontuur/BliepoLijn";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 
 /*
@@ -49,7 +51,7 @@ export function Bliepo({
   praat = false,
   kijkt,
   className = "",
-  soort = "filmpje",
+  soort = "lijn",
 }: {
   houding?: MaatjeHouding;
   /** praat hij nu? (de mond beweegt ook vanzelf zodra de stem klinkt) */
@@ -58,7 +60,7 @@ export function Bliepo({
   kijkt?: "links" | "rechts";
   className?: string;
   /** filmpje (sinds 18 oktober 2026) of het oude plaatje van de blauwe robot */
-  soort?: "filmpje" | "plaatje";
+  soort?: "lijn" | "filmpje" | "plaatje";
 }) {
   const rustig = useBewegingsstand() !== "aan";
   const stemKlinkt = useSyncExternalStore(
@@ -78,7 +80,20 @@ export function Bliepo({
       aria-label="Bliepo"
     >
       <div className="bliepo__lijf">
-        {soort === "filmpje" ? (
+        {soort === "lijn" ? (
+          <div className="bliepo__beeld">
+            {/* eslint-disable-next-line @next/next/no-img-element -- een doorzichtig plaatje in vier maten; next/image voegt hier niets toe */}
+            <img
+              src="/assets/zappie/bliepo/bliepo-leeg-290.webp"
+              srcSet="/assets/zappie/bliepo/bliepo-leeg-200.webp 200w, /assets/zappie/bliepo/bliepo-leeg-290.webp 290w, /assets/zappie/bliepo/bliepo-leeg-435.webp 435w, /assets/zappie/bliepo/bliepo-leeg-580.webp 580w"
+              sizes="(min-width: 1024px) 15vw, 30vw"
+              alt=""
+              draggable={false}
+              className="bliepo__plaatje"
+            />
+            <BliepoLijn rustig={rustig} praat={mondBeweegt} />
+          </div>
+        ) : soort === "filmpje" ? (
           <BliepoFilmpje rustig={rustig} className="bliepo__plaatje" />
         ) : (
           <>

@@ -531,6 +531,24 @@
 }
 
 /*
+  Bliepo met het live lijntje (18 oktober 2026): het plaatje heeft zijn eigen
+  verhouding en staat midden in het vak van Bliepo, zodat de opmaak eromheen
+  niet verandert. Het lijntje ligt er precies overheen (BliepoLijn.tsx).
+*/
+.bliepo__beeld {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  aspect-ratio: 580 / 894;
+  translate: -50% 0;
+}
+.bliepo__lijn {
+  position: absolute;
+  pointer-events: none;
+}
+
+/*
   Bliepo als filmpje (18 oktober 2026): het filmpje zweeft en zwaait zelf al,
   dus geen extra wiebelen of zweven eromheen. Juichen en leunen blijven.
 */
