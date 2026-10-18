@@ -69,8 +69,9 @@ export function Prototype3D({
       (items) => {
         if (!items.some((i) => i.isIntersecting)) return;
         kijker.disconnect();
-        if ("requestIdleCallback" in window) wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
-        else wachtOpRust = window.setTimeout(() => void start(), 600);
+        if (typeof window.requestIdleCallback === "function")
+          wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
+        else wachtOpRust = globalThis.setTimeout(() => void start(), 600) as unknown as number;
       },
       { rootMargin: "400px 0px" },
     );
@@ -266,8 +267,8 @@ export function Prototype3D({
     return () => {
       opgeruimd = true;
       kijker.disconnect();
-      if ("cancelIdleCallback" in window) window.cancelIdleCallback(wachtOpRust);
-      window.clearTimeout(wachtOpRust);
+      if (typeof window.cancelIdleCallback === "function") window.cancelIdleCallback(wachtOpRust);
+      globalThis.clearTimeout(wachtOpRust);
       opruimen?.();
     };
   }, []);
