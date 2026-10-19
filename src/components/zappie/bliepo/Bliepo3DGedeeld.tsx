@@ -131,7 +131,13 @@ function Bliepo3DEcht({
           wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
         else wachtOpRust = globalThis.setTimeout(() => void start(), 600) as unknown as number;
       },
-      { rootMargin: "400px 0px" },
+      /*
+        Vloeiend scrollen (19 oktober 2026): de hele pagina telt als "in de
+        buurt", zodat alle Bliepo's al opstarten als de pagina net geladen is
+        en de browser rust heeft, en niet pas midden in het scrollen. Tekenen
+        doen ze daarna nog steeds alleen als ze echt in beeld zijn.
+      */
+      { rootMargin: "100000px 0px" },
     );
     kijker.observe(host);
 
