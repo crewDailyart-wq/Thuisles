@@ -110,12 +110,15 @@ export function createStudy(host: HTMLDivElement, ready: () => void, failed: () 
 }
 
 async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => void, selected: (index: number) => void, mascotAnchor: HTMLDivElement | null, reflectie: Reflectie | null): Promise<StudyController> {
+  // Vloeiend scrollen: pas beginnen als er 1 seconde niet gescrold is.
+  await wachtOpScrollrust();
   let lastPause=performance.now();
   const vast=await laadVast();
+  await pauze();await wachtOpScrollrust();
   const leeg=new T.BufferGeometry();
   /*
-    Vloeiend scrollen (19 oktober 2026): stukjes van hoogstens 10 ms, en zolang
-    er gescrold wordt even helemaal niet bouwen, zodat het vooraf klaarzetten
+    Vloeiend scrollen (19 oktober 2026): stukjes van hoogstens 10 ms, en zodra
+    er gescrold wordt meteen pauzeren tot er 1 seconde niet gescrold is, zodat het vooraf klaarzetten
     het scrollen nooit stoort.
   */
   const doorgaan=async()=>{if(performance.now()-lastPause<10&&!scrolltNet())return;await pauze();await wachtOpScrollrust();lastPause=performance.now();};
@@ -140,6 +143,7 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
   scene.fog = new T.Fog('#071731',35,100);
   const camera = new T.PerspectiveCamera(43,1,0.1,130);
   const pmrem = new T.PMREMGenerator(renderer), room = new RoomEnvironment();
+  await pauze();await wachtOpScrollrust();
   const env = pmrem.fromScene(room,0.04); scene.environment = env.texture; scene.environmentIntensity = 0.5;
   room.dispose(); pmrem.dispose();
   const materials: T.Material[] = [];

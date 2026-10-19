@@ -51,6 +51,7 @@ export function ScrollReis() {
     /* Waar de secties staan, in pixels vanaf de bovenkant van de pagina. */
     let plek = { leren: 1, wolken: 1, atelier: 1 };
     let frame = 0;
+    let doelen: NodeListOf<HTMLElement> | null = null;
 
     const teken = () => {
       frame = 0;
@@ -68,7 +69,8 @@ export function ScrollReis() {
         stukje scrollen de stijl van de hele pagina (±870 onderdelen) opnieuw
         uitrekenen; nu alleen die van deze paar lagen. Het beeld is gelijk.
       */
-      const doelen = root.querySelectorAll<HTMLElement>(LAGEN);
+      /* De lagen één keer opzoeken (en opnieuw als de pagina van maat verandert), niet bij elk beeldje. */
+      if (!doelen) doelen = root.querySelectorAll<HTMLElement>(LAGEN);
       zet(doelen, "--zr-scroll", (rustig ? 0 : afdaling).toFixed(4));
       zet(doelen, "--zr-wolken", (rustig ? 0 : wolk).toFixed(4));
       zet(doelen, "--zr-land", land.toFixed(4));
@@ -82,6 +84,7 @@ export function ScrollReis() {
       if (!frame && !document.hidden) frame = requestAnimationFrame(teken);
     };
     const meet = () => {
+      doelen = null;
       const y = window.scrollY;
       const top = (el: HTMLElement) => el.getBoundingClientRect().top + y;
       plek = {

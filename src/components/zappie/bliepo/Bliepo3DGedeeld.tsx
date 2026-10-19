@@ -125,11 +125,23 @@ function Bliepo3DEcht({
     let wachtOpRust = 0;
     const kijker = new IntersectionObserver(
       (items) => {
-        if (!items.some((i) => i.isIntersecting)) return;
+        const item = items.find((i) => i.isIntersecting);
+        if (!item) return;
         kijker.disconnect();
-        if (typeof window.requestIdleCallback === "function")
-          wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
-        else wachtOpRust = globalThis.setTimeout(() => void start(), 600) as unknown as number;
+        /*
+          Volgorde (19 oktober 2026): een Bliepo die nu al in beeld is, start
+          eerst; de andere (podium, onderaan) pas een paar tellen later, zodat ze
+          niet allemaal tegelijk opstarten.
+        */
+        const nuInBeeld = item.boundingClientRect.top < window.innerHeight && item.boundingClientRect.bottom > 0;
+        const plan = () => {
+          if (opgeruimd) return;
+          if (typeof window.requestIdleCallback === "function")
+            wachtOpRust = window.requestIdleCallback(() => void start(), { timeout: 2500 });
+          else wachtOpRust = globalThis.setTimeout(() => void start(), 600) as unknown as number;
+        };
+        if (nuInBeeld) plan();
+        else wachtOpRust = globalThis.setTimeout(plan, 3000) as unknown as number;
       },
       /*
         Vloeiend scrollen (19 oktober 2026): de hele pagina telt als "in de
@@ -154,6 +166,8 @@ function Bliepo3DEcht({
 
       let m: Awaited<ReturnType<typeof G.haalMotor>>;
       try {
+        await new Promise((r) => setTimeout(r, 0));
+        await wachtOpScrollrust();
         m = await G.haalMotor();
       } catch {
         return; /* Geen WebGL: de tekening blijft staan. */
@@ -191,6 +205,8 @@ function Bliepo3DEcht({
 
       let model: Awaited<ReturnType<typeof laadBliepoKlein>>;
       try {
+        await new Promise((r) => setTimeout(r, 0));
+        await wachtOpScrollrust();
         model = await laadBliepoKlein();
       } catch (fout) {
         console.warn("[zappie] 3D-model niet geladen, de tekening blijft staan:", fout);
@@ -205,6 +221,12 @@ function Bliepo3DEcht({
       const RUSTHOEK = instelling.current.rusthoek;
       model.root.rotation.y = RUSTHOEK;
 
+      await new Promise((r) => setTimeout(r, 0));
+      await wachtOpScrollrust();
+      if (opgeruimd) {
+        doek.remove();
+        return;
+      }
       const besturing = new Z.ZappieController(model, { reducedMotion: rustigRef.current });
       const ballon = Z.createSpeechBubble(host);
       ballon.element.className = "bt-ballon";
