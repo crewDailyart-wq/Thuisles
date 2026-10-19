@@ -24,3 +24,6 @@ export const PLAATJES: Record<Vorm, Record<StudyView, { breedte: number; hoogte:
     lintjes: { breedte: 552, hoogte: 747, mascot: null },
   },
 };
+
+/** Waar elk lintje staat in het plaatje van de lintjeskast (x, y, breedte, hoogte in procenten); zie scripts/maak-atelier-lintjes.mjs. */
+export const LINTJES: Record<Vorm, number[][]> = {"breed":[[35.156,22.692,13.126,19.394],[49.903,22.054,13.198,20.102],[35.311,44.198,12.987,19.273],[49.904,44.334,13.053,19.972],[35.464,64.136,12.851,20.276],[49.905,64.935,12.911,21.044]],"smal":[[30.938,33.45,16.855,11.754],[49.875,33.063,16.948,12.183],[31.138,46.484,16.677,11.681],[49.877,46.566,16.762,12.104],[31.334,58.567,16.503,12.289],[49.878,59.051,16.58,12.754]]};

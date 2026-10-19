@@ -435,6 +435,17 @@ async function bouwStudy(host: HTMLDivElement, ready: () => void, failed: () => 
   const composer=new EffectComposer(renderer,renderTarget);composer.addPass(new RenderPass(scene,camera));
   const bloom=new UnrealBloomPass(new T.Vector2(1,1),.2,.12,1.5);composer.addPass(bloom);
   const output=new OutputPass();composer.addPass(output);
+  /*
+    Alleen voor scripts/maak-atelier-lintjes.mjs (19 oktober 2026): waar elk
+    lintje in beeld staat, in procenten van het tekenvlak, zodat de plaatjes
+    voor telefoon en tablet per lintje gemaakt kunnen worden. Staat alleen aan
+    als het script daarom vraagt.
+  */
+  if((window as {__atelierMaakPlaatjes?:boolean}).__atelierMaakPlaatjes)(window as {__atelierLintjes?:()=>number[][]}).__atelierLintjes=()=>badgeRoots.map(root=>{
+    const doos=new T.Box3().setFromObject(root);let x0=1,y0=1,x1=-1,y1=-1;
+    for(const x of [doos.min.x,doos.max.x])for(const y of [doos.min.y,doos.max.y])for(const z of [doos.min.z,doos.max.z]){const v=new T.Vector3(x,y,z).project(camera);x0=Math.min(x0,v.x);x1=Math.max(x1,v.x);y0=Math.min(y0,v.y);y1=Math.max(y1,v.y);}
+    return [(x0+1)/2*100,(1-y1)/2*100,(x1-x0)/2*100,(y1-y0)/2*100];
+  });
   const views:Record<StudyView,{eye:T.Vector3;target:T.Vector3;fov:number}>={
     samen:{eye:V(4,5.3,16),target:V(.8,2.6,0),fov:46},
     podium:{eye:V(5.9,4.7,9.2),target:V(1.65,.65,1.2),fov:39},

@@ -35,7 +35,7 @@ export function AtelierStudy({embedded=false,mascot,reflectie=null,onKlaar,plaat
   useEffect(()=>{klaarMelder.current=onKlaar;});
   useEffect(()=>{if(status==='ready'&&controller.current)klaarMelder.current?.(controller.current);},[status]);
   return <div className={`as${embedded?' as-embedded':''}`} role="region" aria-label="Interactief 3D-atelier" data-status={status} data-view={view}>
-    <div className="as-canvas" ref={host}>{plaatjes&&<AtelierPlaatjes view={view} glow={glow} onKlaar={()=>setStatus('ready')}/>}</div>
+    <div className="as-canvas" ref={host}>{plaatjes&&<AtelierPlaatjes view={view} glow={glow} badge={badge} unlocked={unlocked} onKlaar={()=>setStatus('ready')}/>}</div>
     {mascot&&<div ref={mascotAnchor} className="as-mascot">{mascot}</div>}
     {!embedded&&<header className="as-header"><div><p>BLIEPO’S ATELIER <span> / </span> ONTWERPSTUDIE 03</p><h1>De Sterrenwerkplaats.</h1></div><Link href="/atelier-prototype" aria-label="Terug naar het eerdere prototype">Terug ↗</Link></header>}
     {!embedded&&view!=='lintjes'&&<div className="as-caption"><span>02 — HET STERRENOBSERVATORIUM</span><p>Onder de glazen koepel.<br/>Een wereld vol energie.</p></div>}

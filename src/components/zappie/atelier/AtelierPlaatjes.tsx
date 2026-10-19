@@ -18,13 +18,23 @@
 
 import { useEffect, useRef, useState } from 'react';
 import type { StudyView } from './study-scene';
-import { PLAATJES, type Vorm } from './plaatjes-data';
+import { LINTJES, PLAATJES, type Vorm } from './plaatjes-data';
 
 const MAP = '/atelier/licht';
 const VIEWS: StudyView[] = ['samen', 'podium', 'vitrine', 'koepel', 'lintjes'];
 const bron = (vorm: Vorm, view: StudyView, gloed: boolean) => `${MAP}/${vorm}-${view}-${gloed ? 'aan' : 'uit'}.webp`;
 
-export function AtelierPlaatjes({ view, glow, onKlaar }: { view: StudyView; glow: boolean; onKlaar: () => void }) {
+const lintjeBron = (vorm: Vorm, j: number, gekozen: boolean, open: boolean, gloed: boolean) =>
+  `${MAP}/${vorm}-lintje${j}-${gekozen ? 'gekozen' : 'niet'}-${open ? 'open' : 'dicht'}-${gloed ? 'aan' : 'uit'}.webp`;
+
+/*
+  De lintjeskast (19 oktober 2026): per lintje een klein plaatje van zijn stand
+  (gekozen of niet, open of op slot), precies over het plaatje van de kast, zodat
+  kiezen en ontgrendelen hier net zo zichtbaar zijn als in 3D
+  (scripts/maak-atelier-lintjes.mjs).
+*/
+export function AtelierPlaatjes({ view, glow, onKlaar, badge = 0, unlocked = [] }: { view: StudyView; glow: boolean; onKlaar: () => void; badge?: number; unlocked?: boolean[] }) {
+  const [maat, zetMaat] = useState<{ w: number; h: number } | null>(null);
   const plek = useRef<HTMLDivElement>(null);
   const [vorm, zetVorm] = useState<Vorm | null>(null);
   const klaarGemeld = useRef(false);
@@ -36,6 +46,7 @@ export function AtelierPlaatjes({ view, glow, onKlaar }: { view: StudyView; glow
     const zet = () => {
       const w = host.clientWidth, h = host.clientHeight;
       if (!w || !h) return;
+      zetMaat((oud) => (oud && oud.w === w && oud.h === h ? oud : { w, h }));
       const v: Vorm = w / h < 0.8 ? 'smal' : 'breed';
       zetVorm(v);
       /* Het laagje met Bliepo (.as-mascot) hoort bij hetzelfde atelier. */
@@ -89,6 +100,22 @@ export function AtelierPlaatjes({ view, glow, onKlaar }: { view: StudyView; glow
           onLoad={g === glow ? geladen : undefined}
         />
       ))}
+      {vorm && maat && view === 'lintjes' && (() => {
+        const d = PLAATJES[vorm].lintjes;
+        const sc = Math.max(maat.w / d.breedte, maat.h / d.hoogte);
+        const ox = (maat.w - d.breedte * sc) / 2, oy = (maat.h - d.hoogte * sc) / 2;
+        return LINTJES[vorm].map(([x, y, b, h], j) => (
+          // eslint-disable-next-line @next/next/no-img-element -- vooraf gemaakte stukjes van de schermfoto's
+          <img
+            key={j}
+            src={lintjeBron(vorm, j, badge === j, unlocked[j] ?? true, glow)}
+            alt=""
+            draggable={false}
+            className="as-lintje"
+            style={{ left: ox + (x / 100) * d.breedte * sc, top: oy + (y / 100) * d.hoogte * sc, width: (b / 100) * d.breedte * sc, height: (h / 100) * d.hoogte * sc }}
+          />
+        ));
+      })()}
     </div>
   );
 }
