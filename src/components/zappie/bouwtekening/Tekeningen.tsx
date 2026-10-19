@@ -339,7 +339,7 @@ export function Titelblok({ testritten }: { testritten: number }) {
       <L d={lijn([[4, 96], [316, 96]], 3)} dik={1} />
       <L d={lijn([[176, 4], [176, 96]], 4)} dik={1} />
       <Schrift x={12} y={18} grootte={11} className="bt-label">ONTWERP</Schrift>
-      <Schrift x={12} y={38} grootte={22}>ZAPPIE</Schrift>
+      <Schrift x={12} y={38} grootte={22}>BLIEPO</Schrift>
       <Schrift x={184} y={18} grootte={11} className="bt-label">VERSIE</Schrift>
       <Schrift x={184} y={38} grootte={22}>1</Schrift>
       <Schrift x={12} y={58} grootte={11} className="bt-label">UITVINDER</Schrift>
@@ -347,7 +347,7 @@ export function Titelblok({ testritten }: { testritten: number }) {
       <L d={vloeiend([[12, 90], [60, 94], [110, 86], [150, 90]])} dik={1.1} />
       <Schrift x={184} y={58} grootte={11} className="bt-label">BLAD</Schrift>
       <Schrift x={184} y={82} grootte={20}>1 VAN 1</Schrift>
-      <Schrift x={12} y={112} grootte={11} className="bt-label">TESTRITTEN VAN ZAPPIE</Schrift>
+      <Schrift x={12} y={112} grootte={11} className="bt-label">TESTRITTEN VAN BLIEPO</Schrift>
       {testritten > 0 ? (
         <Turven aantal={testritten} />
       ) : (

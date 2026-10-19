@@ -71,7 +71,7 @@ export function Atelier3D() {
         </div>
       </div>
       <header className="za-header">
-        <Link className="za-back" href="/zappie" aria-label="Terug naar Zappie">←</Link>
+        <Link className="za-back" href="/zappie" aria-label="Terug naar Bliepo">←</Link>
         <div><p className="za-eyebrow">Een wereld vol mogelijkheden</p><h1>Bliepo’s atelier<span>✦</span></h1></div>
         <span className="za-prototype">PROTOTYPE</span>
       </header>
@@ -82,7 +82,7 @@ export function Atelier3D() {
           <h2>{status === 'error' ? 'Het atelier kon niet openen' : 'De deuren gaan open…'}</h2>
           <p>{status === 'error' ? 'Voor dit atelier is een browser met WebGL nodig.' : 'Even de lichten aan, Bliepo staat al klaar.'}</p>
           {status === 'error' && <button onClick={() => { setStatus('loading'); setRetry(n => n + 1); }}>Probeer opnieuw</button>}
-          {status === 'error' && <Link href="/zappie">Terug naar Zappie</Link>}
+          {status === 'error' && <Link href="/zappie">Terug naar Bliepo</Link>}
         </div>
       )}
       <aside className="za-outfit" aria-label="Je gekozen outfit">

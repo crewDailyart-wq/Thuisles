@@ -166,8 +166,8 @@ export default async function Homepagina() {
           <div className="st-beeld">
             <div className="st-scherm">
               <Image
-                src="/assets/site/zappie-start.webp"
-                alt={`De startpagina van ${MERKNAAM} voor een kind: drie werelden om te ontdekken, de robot Zappie en de missies van vandaag.`}
+                src="/assets/site/bliepo-start.webp"
+                alt={`De startpagina van ${MERKNAAM} voor een kind: kies je vak, start een missie of volg je leerpad, met de robot Bliepo ernaast.`}
                 width={1280}
                 height={720}
                 priority
@@ -597,7 +597,7 @@ export default async function Homepagina() {
                 ["Voortgang en resultaten worden bewaard", true],
                 ["Ouderoverzicht per leerdoel en referentieniveau", true],
                 ["Alle toegankelijkheidsopties", true],
-                ["Zonder de Zappie-box", false],
+                ["Zonder de Bliepo-box", false],
               ]}
               knop="Kies Maand"
               href="/ouder/abonnement"
@@ -611,7 +611,7 @@ export default async function Homepagina() {
               onder="Na het eerste jaar maandelijks opzegbaar"
               punten={[
                 ["Alles van Maand", true],
-                ["De Zappie-box thuisbezorgd: leermiddelen en oefentoetsboekjes", true],
+                ["De Bliepo-box thuisbezorgd: leermiddelen en oefentoetsboekjes", true],
                 ["Uitgebreide niveaumeting voor de doorstroomtoets, met rapport", true],
                 ["Zie waar je kind staat ten opzichte van IEP en Cito", true],
               ]}

@@ -22,7 +22,7 @@ export const metadata: Metadata = {
     template: `%s | ${MERKNAAM}`,
   },
   description:
-    "Zappie laat kinderen in groep 3 tot en met 8 oefenen met precies wat er in de klas gebeurt: afgestemd op de lesmethode van hun school, de kerndoelen en de referentieniveaus van de doorstroomtoets. Toegankelijk voor ieder kind.",
+    "Bliepo laat kinderen in groep 3 tot en met 8 oefenen met precies wat er in de klas gebeurt: afgestemd op de lesmethode van hun school, de kerndoelen en de referentieniveaus van de doorstroomtoets. Toegankelijk voor ieder kind.",
 };
 
 export const viewport: Viewport = {

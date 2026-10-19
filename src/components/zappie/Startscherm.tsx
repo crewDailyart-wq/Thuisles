@@ -274,7 +274,7 @@ export function Startscherm() {
       {/* Vloeiend scrollen op laptop en computer (19 oktober 2026). */}
       <ZachtScrollen />
       <main className="zp-start" id="zappie-start" aria-label="Start">
-        <h1 className="sr-only">Zappie: begin je missie</h1>
+        <h1 className="sr-only">Bliepo: begin je missie</h1>
 
         {/*
           1. De ruimte. Zappie, de drie werelden met het ontdekpad en de

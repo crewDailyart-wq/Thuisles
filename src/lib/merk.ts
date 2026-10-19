@@ -1,11 +1,11 @@
 /**
  * De naam van de website, op één plek.
  *
- * De naam gaat later veranderen (het voorbeeldplaatje zegt al "Zappie"). Staat
- * hij overal waar het kind hem ziet via deze constanten, dan is dat één regel
- * aanpassen.
+ * Sinds 19 oktober 2026 heet het platform "Bliepo", net als de robot (keuze
+ * eigenaar; daarvoor "Zappie"). De webadressen (/zappie) en mapnamen in de code
+ * zijn met opzet niet veranderd.
  */
-export const MERKNAAM = "Zappie";
+export const MERKNAAM = "Bliepo";
 
 /** Het handgeschreven zinnetje onder het logo. */
 export const MERKZIN = "leren is avontuur!";

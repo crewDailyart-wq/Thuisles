@@ -9,7 +9,9 @@ import { ASSETS } from "@/lib/zappie/werelden";
 
 /*
   Het Zappie-logo. Sinds 15 oktober 2026 het plaatje van de eigenaar (robot
-  op de letters, public/assets/zappie/logo-zappie.*). Het oude logo in code
+  op de letters, public/assets/zappie/logo-zappie.*). Sinds 19 oktober 2026
+  het Bliepo-logo (public/assets/bliepo/bliepo-logo.*); het Zappie-plaatje
+  staat nog in de map. Het oude logo in code
   (witte letters en een geel sterretje) staat er nog: zet LOGO_PLAATJE op false
   en het is terug.
 */
@@ -20,8 +22,8 @@ export function ZappieLogo({ className = "" }: { className?: string }) {
     return (
       <Link href="/zappie" className={`zp-logo zp-logo-plaatje ${className}`} aria-label={`${MERKNAAM}, naar de start`}>
         <picture>
-          <source type="image/webp" srcSet="/assets/zappie/logo-zappie.webp" />
-          <img src="/assets/zappie/logo-zappie.png" alt={MERKNAAM} width={900} height={450} draggable={false} />
+          <source type="image/webp" srcSet="/assets/bliepo/bliepo-logo.webp" />
+          <img src="/assets/bliepo/bliepo-logo.png" alt={MERKNAAM} width={1200} height={614} draggable={false} />
         </picture>
       </Link>
     );
