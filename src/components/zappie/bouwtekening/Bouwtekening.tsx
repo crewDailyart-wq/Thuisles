@@ -290,6 +290,7 @@ export function Bouwtekening() {
       for (const doel of el.querySelectorAll<HTMLElement>(DOELEN)) {
         doel.style.setProperty("--scroll", "0");
         doel.style.setProperty("--midden", "0");
+        doel.style.setProperty("--raster", "0");
       }
       return;
     }
@@ -308,6 +309,16 @@ export function Bouwtekening() {
       ];
       for (const doel of el.querySelectorAll<HTMLElement>(DOELEN))
         for (const [naam, waarde] of waarden) if (doel.style.getPropertyValue(naam) !== waarde) doel.style.setProperty(naam, waarde);
+      /*
+        Het raster schuift met een verschuiving (transform), niet meer met
+        background-position: dan hoeft de browser het niet bij elk beeldje
+        opnieuw over het hele scherm te tekenen (19 oktober 2026). Het patroon
+        herhaalt zich elke 120px, dus de rest na delen door 120 geeft precies
+        hetzelfde beeld.
+      */
+      const raster = el.querySelector<HTMLElement>(".bt-raster");
+      const schuif = ((window.scrollY * 0.75) % 120).toFixed(2);
+      if (raster && raster.style.getPropertyValue("--raster") !== schuif) raster.style.setProperty("--raster", schuif);
     };
     const scroll = () => {
       if (!frame) frame = requestAnimationFrame(draai);

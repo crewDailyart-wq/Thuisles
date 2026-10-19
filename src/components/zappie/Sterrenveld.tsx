@@ -260,8 +260,16 @@ export function Sterrenveld({ rustig = false }: { rustig?: boolean }) {
 
     let frame = 0;
     let vorige = 0;
+    /*
+      Alleen tekenen als het sterrenveld te zien is (19 oktober 2026). Bij de
+      bouwtekening staat het verborgen (display: none), maar het tekende toch
+      30 keer per seconde door; dat kostte rekenwerk tijdens het scrollen.
+    */
+    let inBeeld = true;
     const begin = performance.now();
     const lus = (nu: number) => {
+      frame = 0;
+      if (!inBeeld || document.hidden) return;
       frame = requestAnimationFrame(lus);
       if (nu - vorige < 1000 / 30) return;
       vorige = nu;
@@ -269,13 +277,20 @@ export function Sterrenveld({ rustig = false }: { rustig?: boolean }) {
     };
     const zichtbaar = () => {
       cancelAnimationFrame(frame);
-      if (!document.hidden) frame = requestAnimationFrame(lus);
+      frame = 0;
+      if (!document.hidden && inBeeld) frame = requestAnimationFrame(lus);
     };
+    const kijker = new IntersectionObserver((items) => {
+      inBeeld = items.some((i) => i.isIntersecting);
+      zichtbaar();
+    });
+    kijker.observe(doek);
     frame = requestAnimationFrame(lus);
     window.addEventListener("resize", maat);
     document.addEventListener("visibilitychange", zichtbaar);
     return () => {
       cancelAnimationFrame(frame);
+      kijker.disconnect();
       window.removeEventListener("resize", maat);
       document.removeEventListener("visibilitychange", zichtbaar);
     };

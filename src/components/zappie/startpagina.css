@@ -121,12 +121,20 @@
 }
 
 /* Wolkenflarden die van opzij binnenkomen terwijl we door de wolken gaan. */
+/* Net als bij de wolken: de flard zelf in ::before, één keer getekend; de laag schuift en vervaagt (19 oktober 2026). */
 .zs-mist {
   position: absolute;
   top: -10%;
   bottom: -10%;
   width: 70%;
   opacity: calc(var(--zr-wolken) * 0.85);
+  will-change: transform, opacity;
+}
+
+.zs-mist::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
     radial-gradient(40% 30% at 50% 35%, rgb(255 255 255 / 0.95), rgb(255 255 255 / 0) 100%),
     radial-gradient(45% 28% at 40% 65%, rgb(232 246 255 / 0.9), rgb(232 246 255 / 0) 100%),
@@ -1086,9 +1094,24 @@
   pointer-events: none;
 }
 
-/* Elke wolk is een handvol zachte bollen over elkaar, met een blauwe schaduw onderin. */
+/*
+  Elke wolk is een handvol zachte bollen over elkaar, met een blauwe schaduw onderin.
+
+  Vloeiend scrollen (19 oktober 2026): de bollen en de waas zitten in ::before,
+  en de wolk zelf schuift als eigen laag (will-change). Dan tekent de browser
+  elke wolk één keer en schuift hij hem daarna alleen nog op; eerst tekende hij
+  bij elk beeldje alle bollen met waas opnieuw. Het beeld is gelijk.
+*/
 .zs-wolk {
   position: absolute;
+  transform: translateX(calc((var(--zr-wolken) - 0.5) * var(--drift, 0vw)));
+  will-change: transform;
+}
+
+.zs-wolk::before {
+  content: "";
+  position: absolute;
+  inset: 0;
   background:
     radial-gradient(17% 30% at 20% 62%, rgb(255 255 255 / 0.9) 0 48%, rgb(255 255 255 / 0) 100%),
     radial-gradient(22% 40% at 37% 46%, rgb(255 255 255 / 0.95) 0 50%, rgb(255 255 255 / 0) 100%),
@@ -1097,7 +1120,6 @@
     radial-gradient(13% 22% at 85% 63%, rgb(245 251 255 / 0.85) 0 45%, rgb(245 251 255 / 0) 100%),
     radial-gradient(42% 20% at 52% 74%, rgb(184 218 250 / 0.7) 0 40%, rgb(184 218 250 / 0) 100%);
   filter: blur(1.5px);
-  transform: translateX(calc((var(--zr-wolken) - 0.5) * var(--drift, 0vw)));
 }
 
 .zs-wolk-1 { left: -6%; top: 10%; width: 44%; height: 78%; --drift: 7vw; }
@@ -2993,7 +3015,15 @@ body:has(.zp)::before {
 /* De wolkenband als vage krijtwaas op de blauwdruk, in plaats van echte wolken. */
 .zp[data-achtergrond="bouwtekening"] .zs-wolken {
   opacity: 0.16;
-  filter: grayscale(1);
+}
+
+/*
+  Het grijs zit op elke wolk zelf in plaats van op de hele band (19 oktober
+  2026): dan wordt het één keer mee getekend en niet bij elk beeldje over de
+  hele band opnieuw. Grijs maken per wolk geeft precies hetzelfde beeld.
+*/
+.zp[data-achtergrond="bouwtekening"] .zs-wolk::before {
+  filter: blur(1.5px) grayscale(1);
 }
 
 /* ---- Kleurzones, diepte en Tesla's werktafel (16 oktober 2026) ---- */
@@ -3005,18 +3035,33 @@ body:has(.zp)::before {
 */
 .bt-raster {
   position: fixed;
-  inset: 0;
+  top: 0;
+  left: 0;
+  right: 0;
+  /*
+    Vloeiend scrollen (19 oktober 2026): 120px (één ruit) hoger dan het
+    scherm, en schuift met transform in plaats van background-position. Dan
+    hoeft het niet bij elk beeldje opnieuw getekend te worden. --raster is
+    (scroll × 0,75) gedeeld door 120, de rest (Bouwtekening.tsx); het beeld is
+    gelijk aan vroeger.
+  */
+  height: calc(100% + 120px);
   background-image:
     linear-gradient(var(--bt-raster-groot) 1px, transparent 1px),
     linear-gradient(90deg, var(--bt-raster-groot) 1px, transparent 1px),
     linear-gradient(var(--bt-raster) 1px, transparent 1px),
     linear-gradient(90deg, var(--bt-raster) 1px, transparent 1px);
   background-size: 120px 120px, 120px 120px, 24px 24px, 24px 24px;
-  background-position: 0 calc(var(--scroll, 0) * -0.75px);
+  background-position: 0 0;
+  transform: translate3d(0, calc(var(--raster, 0) * -1px), 0);
+  will-change: transform;
 }
 
 .bt[data-rustig="ja"] .bt-raster {
   position: absolute;
+  bottom: 0;
+  height: auto;
+  transform: none;
 }
 
 /*
