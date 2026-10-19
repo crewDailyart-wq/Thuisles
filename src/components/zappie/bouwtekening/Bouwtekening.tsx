@@ -282,16 +282,22 @@ export function Bouwtekening() {
   useEffect(() => {
     const el = laag.current;
     if (!el) return;
+    /* De onderdelen die deze waarden gebruiken (startpagina.css): tandwielen, wiel, raster en de losse spullen. */
+    const DOELEN = ".bt-tandwiel, .bt-wiel, .bt-raster, .bt-los";
     if (rustig) {
       el.style.setProperty("--scroll", "0");
       el.style.setProperty("--midden", "0");
+      for (const doel of el.querySelectorAll<HTMLElement>(DOELEN)) {
+        doel.style.setProperty("--scroll", "0");
+        doel.style.setProperty("--midden", "0");
+      }
       return;
     }
     let frame = 0;
     const draai = () => {
       frame = 0;
       /*
-        Snelheid (19 oktober 2026): op de tandwielen en het wiel zelf, niet op
+        Snelheid (19 oktober 2026): op de onderdelen zelf (DOELEN), niet op
         .bt; anders rekent de browser bij elk stukje scrollen de stijl van de
         hele pagina opnieuw uit. Het beeld is gelijk.
       */
@@ -300,7 +306,7 @@ export function Bouwtekening() {
         ["--scroll", window.scrollY.toFixed(0)],
         ["--midden", (window.innerHeight / 2).toFixed(0)],
       ];
-      for (const doel of el.querySelectorAll<HTMLElement>(".bt-tandwiel, .bt-wiel"))
+      for (const doel of el.querySelectorAll<HTMLElement>(DOELEN))
         for (const [naam, waarde] of waarden) if (doel.style.getPropertyValue(naam) !== waarde) doel.style.setProperty(naam, waarde);
     };
     const scroll = () => {

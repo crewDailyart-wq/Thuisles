@@ -2552,9 +2552,46 @@
 
   background-color: var(--bt-papier);
   /* Het raster zelf ligt in .bt-raster (Bouwtekening.tsx), voor de diepte. */
+  /*
+    Vloeiend scrollen (19 oktober 2026): de donkere rand van het papier lag hier
+    als vaste achtergrond (background-attachment: fixed). Dan moet de browser
+    bij elk stukje scrollen de hele pagina opnieuw tekenen. Nu ligt precies
+    dezelfde rand in een vaste laag eronder (::before hieronder); het beeld is
+    gelijk.
+  */
+}
+
+.zp[data-achtergrond="bouwtekening"]::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
   background-image: radial-gradient(ellipse 80% 70% at 50% 35%, transparent 55%, var(--bt-papier-rand) 100%);
-  background-size: 100% 100vh;
-  background-attachment: fixed;
+}
+
+/*
+  Zelfde reden voor het kleurverloop van body (globals.css, ook
+  background-attachment: fixed): op pagina's met .zp ligt het nu in een vaste
+  laag. Houd de kleuren gelijk aan die in globals.css.
+*/
+body:has(.zp) {
+  background-image: none;
+  background-attachment: scroll;
+}
+
+body:has(.zp)::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    radial-gradient(58rem 38rem at 6% 40%, rgba(160, 205, 255, 0.3), transparent 62%),
+    radial-gradient(50rem 34rem at 98% 56%, rgba(255, 196, 138, 0.34), transparent 62%),
+    radial-gradient(46rem 30rem at 46% 96%, rgba(150, 226, 190, 0.34), transparent 65%),
+    linear-gradient(180deg, #fdeee2 0%, #fdf2e6 34%, #fdf6ec 60%, #eef7f0 100%);
+  background-repeat: no-repeat;
 }
 
 /* De ruimtehemel weg: het tekenpapier is de achtergrond. */
