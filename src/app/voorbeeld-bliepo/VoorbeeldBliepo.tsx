@@ -22,6 +22,7 @@ import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
 import { Prototype3D } from "@/components/zappie/bouwtekening/Prototype3D";
 import { VoorbeeldWeerspiegeling } from "./VoorbeeldWeerspiegeling";
 import { PratendeBliepo } from "./PratendeBliepo";
+import { StemZinnen } from "./StemZinnen";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
 
@@ -215,6 +216,7 @@ function Vergelijking() {
         rechts of vier staat er maar één, gemeten vanaf een lege pagina.
       </p>
       <PratendeBliepo />
+      <StemZinnen />
       <p className="mt-2">
         {/* Een gewone link: de pagina moet opnieuw laden om ?atelier=1 te lezen. */}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages */}
