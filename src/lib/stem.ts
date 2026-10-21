@@ -25,8 +25,13 @@ import { koppelBliepoGeluid } from "@/lib/bliepo-geluid";
 
 type Bron = "browser" | "server";
 
-/** Omzetten naar "server" zodra de stemdienst er is. Verder verandert niets. */
-const BRON: Bron = "browser";
+/*
+  Sinds 21 oktober 2026 praat Bliepo met de stem die de eigenaar op Fish Audio
+  heeft gekozen (app/api/stem/route.ts). Lukt dat niet — geen tegoed, geen
+  verbinding, de zin duurt te lang — dan praat hij met de browserstem zoals
+  hiervoor. Terug naar alleen de browserstem: zet dit op "browser".
+*/
+const BRON: Bron = "server";
 
 /** Waar de vooraf gemaakte zinnen straks vandaan komen. */
 const SERVER_PAD = "/api/stem";
@@ -206,13 +211,15 @@ export function abonneerPraten(herteken: () => void): () => void {
 export function zeg(zin: string): void {
   if (typeof window === "undefined") return;
 
-  if (BRON === "server") {
-    speelVanServer(zin);
+  if (serverBruikbaar()) {
+    window.speechSynthesis?.cancel();
+    beurt += 1;
+    const mijnBeurt = beurt;
+    speelVanServer(zin, mijnBeurt, () => meld(false), () => {
+      if (mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
+    });
     return;
   }
-
-  if (!window.speechSynthesis) return;
-  window.speechSynthesis.cancel();
 
   /*
     Elke aanroep krijgt een nummer. Komt er tijdens het wachten op de
@@ -220,7 +227,13 @@ export function zeg(zin: string): void {
     — anders zouden er twee tegelijk gaan praten.
   */
   beurt += 1;
-  const mijnBeurt = beurt;
+  zegMetBrowser(zin, beurt);
+}
+
+/** De zin met de stem uit de browser (zoals Bliepo vóór Fish Audio praatte). */
+function zegMetBrowser(zin: string, mijnBeurt: number): void {
+  if (!window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
 
   void stemmenGereed().then(() => {
     if (mijnBeurt !== beurt) return;
@@ -287,10 +300,46 @@ export function zegNaElkaar(
     klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
   };
 
-  const kanPraten = typeof window !== "undefined" && !!window.speechSynthesis && BRON === "browser";
+  if (metGeluid && serverBruikbaar()) {
+    window.speechSynthesis?.cancel();
+    /* Alvast de volgende zinnen ophalen, zodat er tussen de zinnen geen gat valt. */
+    zinnen.slice(1).forEach(haalAlvast);
+    let gestart = false;
+    const volgende = (i: number) => {
+      if (gestopt || mijnBeurt !== beurt) return;
+      if (i >= zinnen.length) {
+        meld(false);
+        klaar();
+        return;
+      }
+      bijZin(i);
+      speelVanServer(
+        zinnen[i],
+        mijnBeurt,
+        () => volgende(i + 1),
+        () => {
+          if (gestopt || mijnBeurt !== beurt) return;
+          /* Lukt de eerste zin al niet, dan alles met de browserstem; halverwege gewoon door op de klok. */
+          if (!gestart) browserReeks();
+          else klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
+        },
+        () => {
+          gestart = true;
+        },
+      );
+    };
+    volgende(0);
+    return stop;
+  }
+
+  browserReeks();
+  return stop;
+
+  function browserReeks() {
+  const kanPraten = typeof window !== "undefined" && !!window.speechSynthesis;
   if (!metGeluid || !kanPraten) {
     klok = setTimeout(() => opDeKlok(0), 0);
-    return stop;
+    return;
   }
 
   window.speechSynthesis.cancel();
@@ -330,36 +379,92 @@ export function zegNaElkaar(
     };
     volgende(0);
   });
-  return stop;
+  }
 }
 
 export function stopPraten(): void {
   if (typeof window === "undefined") return;
+  beurt += 1;
   window.speechSynthesis?.cancel();
   huidigGeluid?.pause();
+  huidigGeluid = null;
   meld(false);
 }
 
 // ---------------------------------------------------------------------------
-// Voorbereid: geluid van de server
+// Geluid van de server: de stem van Fish Audio (app/api/stem/route.ts)
 // ---------------------------------------------------------------------------
 
 let huidigGeluid: HTMLAudioElement | null = null;
-/** Zinnen die al eens zijn opgehaald, zodat er nooit dubbel wordt gevraagd. */
-const opgehaald = new Map<string, string>();
+/**
+ * Werkt de stem van de server in dit bezoek? Na één mislukte zin (geen
+ * tegoed, geen verbinding) niet meer proberen, zodat het kind niet bij elke
+ * zin op stilte wacht; dan praat Bliepo de rest van het bezoek met de
+ * browserstem.
+ */
+let serverWerkt = true;
+/** Zo lang mag het maken van een nieuwe zin duren; daarna de browserstem. */
+const GEDULD_MS = 7000;
 
-function speelVanServer(zin: string): void {
+function serverBruikbaar(): boolean {
+  return BRON === "server" && serverWerkt && typeof Audio !== "undefined";
+}
+
+const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
+
+/** Een zin alvast laten maken en in de browser zetten. */
+function haalAlvast(zin: string): void {
+  void fetch(adres(zin)).catch(() => {});
+}
+
+/**
+ * Speelt één zin met de stem van de server. `klaar` als hij is uitgesproken,
+ * `mislukt` als het niet lukte (dan praat de browserstem verder).
+ */
+function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislukt: () => void, gestart?: () => void): void {
   huidigGeluid?.pause();
 
-  const bekend = opgehaald.get(zin);
-  const bron = bekend ?? `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
-  if (!bekend) opgehaald.set(zin, bron);
-
   /* Via de geluidsmeter van Bliepo, zodat het lijntje op zijn scherm meebeweegt (lib/bliepo-geluid.ts). */
-  const geluid = koppelBliepoGeluid(new Audio(bron));
+  const geluid = koppelBliepoGeluid(new Audio(adres(zin)));
   huidigGeluid = geluid;
-  geluid.onplay = () => meld(true);
-  geluid.onended = () => meld(false);
-  geluid.onerror = () => meld(false);
-  void geluid.play().catch(() => meld(false));
+  let afgerond = false;
+  const wachter = setTimeout(() => faal(true), GEDULD_MS);
+  function faal(teLang: boolean) {
+    if (afgerond) return;
+    afgerond = true;
+    clearTimeout(wachter);
+    geluid.pause();
+    if (huidigGeluid === geluid) huidigGeluid = null;
+    /* Te lang wachten: alleen deze zin met de browser (de volgende keer staat hij wel klaar). Echt kapot: de rest van het bezoek. */
+    if (!teLang) serverWerkt = false;
+    meld(false);
+    if (mijnBeurt === beurt) mislukt();
+  }
+  geluid.onplaying = () => {
+    clearTimeout(wachter);
+    if (mijnBeurt !== beurt) {
+      geluid.pause();
+      return;
+    }
+    gestart?.();
+    meld(true);
+  };
+  geluid.onended = () => {
+    if (afgerond) return;
+    afgerond = true;
+    if (huidigGeluid === geluid) huidigGeluid = null;
+    meld(false);
+    if (mijnBeurt === beurt) klaar();
+  };
+  geluid.onerror = () => faal(false);
+  void geluid.play().catch((fout: unknown) => {
+    /* Geen tik gehad (autoplay): dat is geen kapotte stem, de browserstem mag het ook niet; gewoon stil. */
+    if (fout instanceof DOMException && fout.name === "NotAllowedError") {
+      afgerond = true;
+      clearTimeout(wachter);
+      meld(false);
+      return;
+    }
+    faal(false);
+  });
 }
