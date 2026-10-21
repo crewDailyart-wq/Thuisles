@@ -1,38 +1,59 @@
 /**
- * De stem van Bliepo (21 oktober 2026, keuze eigenaar: Fish Audio).
+ * De stem van Bliepo (21 oktober 2026, keuze eigenaar: Fish Audio; sinds
+ * 22 oktober 2026 de stem "Sanne" met toon en tempo per groep).
  *
- * GET /api/stem?zin=... geeft de zin als mp3, uitgesproken met de stem die de
- * eigenaar op fish.audio heeft gekozen (FISH_STEM_ID, model FISH_MODEL).
+ * GET /api/stem?zin=... geeft de zin als mp3. Hoe hij gemaakt en gecontroleerd
+ * wordt, staat in lib/stem-server.ts. De groep komt van het kind dat op dit
+ * apparaat oefent; `&groep=1..8` kiest zelf een groep (voor /voorbeeld-bliepo).
  *
  * Elke zin wordt maar één keer bij Fish Audio gemaakt en daarna bewaard in de
  * map `stem` naast de database (online op het volume: /data/stem). Wie de zin
  * daarna nog eens vraagt, krijgt het bewaarde bestand; dat kost niets.
  *
- * Lukt het niet (geen sleutel, geen tegoed, geen verbinding), dan komt er een
+ * Lukt de nieuwe stem niet op tijd, dan komt de oude Fish Audio-stem. Lukt ook
+ * die niet (geen sleutel, geen tegoed, geen verbinding), dan komt er een
  * foutcode terug en praat Bliepo met de stem uit de browser (lib/stem.ts).
  *
- * POST /api/stem met { zin } maakt één zin opnieuw (knop "Opnieuw maken" op
- * /voorbeeld-bliepo, 21 oktober 2026). De oude versie wordt niet weggegooid:
- * die gaat naar de map `stem/oud`, met datum en tijd in de naam.
+ * POST /api/stem met { zin, groep? } maakt één zin opnieuw (knop "Opnieuw
+ * maken" op /voorbeeld-bliepo). De oude versie wordt niet weggegooid: die gaat
+ * naar de map `stem/oud`, met datum en tijd in de naam.
+ *
+ * GET /api/stem?mislukt=1 geeft het lijstje zinnen waarin een woord bleef
+ * ontbreken, plus de teller en de voortgang van "alles opnieuw".
+ * POST /api/stem met { actie: "alles" } maakt alle bewaarde zinnen en de vaste
+ * zinnen opnieuw met de nieuwe stem (op de achtergrond).
  *
  * Dit adres heeft geen extensie en zit dus achter het slot van de site
  * (proxy.ts); alleen wie binnen mag, kan zinnen laten maken.
  */
 
 import { createHash } from "node:crypto";
-import { copyFile, mkdir, readFile, rename, writeFile } from "node:fs/promises";
+import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
 import { NextRequest, NextResponse } from "next/server";
+import { huidigKind } from "@/lib/auth/sessie";
+import { verbinding } from "@/lib/db/sqlite";
+import {
+  instellingen,
+  leesMislukt,
+  leesTeller,
+  leesVoortgang,
+  maakAllesOpnieuw,
+  maakZin,
+  MAP,
+  MAX_LENGTE,
+  type Profiel,
+  profielVoor,
+  zinBestand,
+  zinVoorKind,
+} from "@/lib/stem-server";
+import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
 
-const MAP = path.join(path.dirname(process.env.THUISLES_DB ?? path.join(process.cwd(), "data", "thuisles.db")), "stem");
-/** Langer dan dit is geen zin van Bliepo meer; dat maken we niet. */
-const MAX_LENGTE = 500;
-
-/** Zinnen die nu gemaakt worden, zodat twee gelijke verzoeken maar één keer betalen. */
-const bezig = new Map<string, Promise<Buffer | number>>();
+/** Zo lang wacht een kind op een nieuwe zin met de nieuwe stem; daarna de oude stem. */
+const WACHT_MS = 6000;
 
 function mp3(data: Buffer, request: NextRequest) {
   /*
@@ -49,87 +70,35 @@ function mp3(data: Buffer, request: NextRequest) {
   });
 }
 
-/** De instellingen uit de omgeving, of null als er geen stem is ingesteld. */
-function instellingen() {
-  const sleutel = process.env.FISH_API_KEY;
-  const stem = process.env.FISH_STEM_ID;
-  const model = process.env.FISH_MODEL ?? "s2.1-pro";
-  /*
-    Spreektempo (FISH_SNELHEID, 1 = gewoon). 21 oktober 2026: s2-pro met 0,88.
-    Gemeten op lange zinnen schommelt de stem met s2-pro het minst in
-    toonhoogte en volume; 0,88 maakt hem even snel als met drama-3.
-  */
-  const snelheid = Number(process.env.FISH_SNELHEID ?? 1) || 1;
-  return sleutel && stem ? { sleutel, stem, model, snelheid } : null;
+/** De groep: zelf gekozen (testpagina), anders die van het kind op dit apparaat, anders groep 4. */
+async function groepVan(gevraagd: unknown): Promise<number> {
+  const g = Number(gevraagd);
+  if (Number.isInteger(g) && g >= 1 && g <= 8) return g;
+  const kind = await huidigKind().catch(() => null);
+  return kind?.groep ?? 4;
 }
 
-type Instellingen = NonNullable<ReturnType<typeof instellingen>>;
-
-/**
- * Waar een zin bewaard wordt: één bestand per model, stem, tempo en zin. Het
- * tempo telt alleen mee als het niet 1 is, zodat de zinnen die eerder zijn
- * gemaakt bij hun instellingen blijven horen (terugzetten = de oude weer).
- */
-function bestandVoor(zin: string, s: Instellingen) {
-  const tempo = s.snelheid !== 1 ? `\nsnelheid ${s.snelheid}` : "";
-  const naam = createHash("sha256").update(`${s.model}\n${s.stem}\n${zin}${tempo}`).digest("hex").slice(0, 32);
-  return { naam, bestand: path.join(MAP, `${naam}.mp3`) };
-}
-
-/** Maakt de zin (één keer tegelijk per zin) en bewaart hem. Geeft het geluid of een foutcode. */
-async function maakEnBewaar(zin: string, s: Instellingen): Promise<Buffer | number> {
-  const { naam, bestand } = bestandVoor(zin, s);
-  let klus = bezig.get(naam);
-  if (!klus) {
-    klus = maak(zin, s)
-      .then(async (uitkomst) => {
-        if (typeof uitkomst === "number") return uitkomst;
-        await mkdir(MAP, { recursive: true });
-        const tijdelijk = `${bestand}.${process.pid}.tmp`;
-        await writeFile(tijdelijk, uitkomst);
-        await rename(tijdelijk, bestand);
-        /* De zin zelf erbij, zodat later te zien is welk bestand bij welke zin hoort. */
-        await writeFile(path.join(MAP, `${naam}.txt`), `${zin}\n`).catch(() => {});
-        return uitkomst;
-      })
-      .finally(() => bezig.delete(naam));
-    bezig.set(naam, klus);
-  }
-  return klus;
-}
-
-async function maak(zin: string, { sleutel, stem, model, snelheid }: Instellingen): Promise<Buffer | number> {
-  const antwoord = await fetch("https://api.fish.audio/v1/tts", {
-    method: "POST",
-    headers: { Authorization: `Bearer ${sleutel}`, "Content-Type": "application/json", model },
-    body: JSON.stringify({
-      text: zin,
-      reference_id: stem,
-      format: "mp3",
-      latency: "normal",
-      ...(snelheid !== 1 && { prosody: { speed: snelheid } }),
-    }),
-    signal: AbortSignal.timeout(45000),
-  }).catch(() => null);
-  if (!antwoord) return 504;
-  if (!antwoord.ok) {
-    console.error(`[stem] Fish Audio gaf ${antwoord.status}: ${(await antwoord.text().catch(() => "")).slice(0, 200)}`);
-    return antwoord.status;
-  }
-  return Buffer.from(await antwoord.arrayBuffer());
+/** De groepen van alle kinderen, voor "alles opnieuw". */
+function profielenVanKinderen(): Profiel[] {
+  const rijen = verbinding().prepare("SELECT DISTINCT groep FROM kinderen").all() as { groep: number }[];
+  const profielen = new Set(rijen.map((r) => profielVoor(Number(r.groep))));
+  if (profielen.size === 0) profielen.add("3-5");
+  return [...profielen];
 }
 
 export async function GET(request: NextRequest) {
-  const zin = (request.nextUrl.searchParams.get("zin") ?? "").trim();
+  const params = request.nextUrl.searchParams;
+  if (params.has("mislukt")) {
+    return NextResponse.json({ mislukt: await leesMislukt(), teller: await leesTeller(), voortgang: leesVoortgang() });
+  }
+
+  const zin = (params.get("zin") ?? "").trim();
   if (!zin || zin.length > MAX_LENGTE) return NextResponse.json({ fout: "Geen geldige zin." }, { status: 400 });
 
-  const s = instellingen();
-  if (!s) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
+  const profiel = profielVoor(await groepVan(params.get("groep")));
+  if (!instellingen(profiel)) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
 
-  const bewaard = await readFile(bestandVoor(zin, s).bestand).catch(() => null);
-  if (bewaard) return mp3(bewaard, request);
-
-  const uitkomst = await maakEnBewaar(zin, s);
+  const uitkomst = await zinVoorKind(zin, profiel, WACHT_MS);
   if (typeof uitkomst === "number") {
     /* 402 = geen tegoed bij Fish Audio, 401 = sleutel klopt niet. De browser valt dan terug op zijn eigen stem. */
     return NextResponse.json({ fout: "De stem kon niet gemaakt worden.", code: uitkomst }, { status: 503 });
@@ -139,27 +108,28 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
+
+  if (body?.actie === "alles") {
+    return NextResponse.json(maakAllesOpnieuw(VASTE_ZINNEN, profielenVanKinderen()));
+  }
+
   const zin = typeof body?.zin === "string" ? body.zin.trim() : "";
   if (!zin || zin.length > MAX_LENGTE) return NextResponse.json({ fout: "Geen geldige zin." }, { status: 400 });
 
-  const s = instellingen();
+  const profiel = profielVoor(await groepVan(body?.groep));
+  const s = instellingen(profiel);
   if (!s) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
 
   /* De oude versie bewaren in stem/oud (niets weggooien), daarna opnieuw maken. */
-  const { naam, bestand } = bestandVoor(zin, s);
+  const { naam, bestand } = zinBestand(zin, s);
   const oud = path.join(MAP, "oud");
   await mkdir(oud, { recursive: true });
   const tijd = new Date().toISOString().replace(/[:.]/g, "-");
   await copyFile(bestand, path.join(oud, `${naam}-${tijd}.mp3`)).catch(() => {});
 
-  const uitkomst = await maak(zin, s);
-  if (typeof uitkomst === "number") {
-    return NextResponse.json({ fout: "De stem kon niet opnieuw gemaakt worden.", code: uitkomst }, { status: 503 });
+  const uitkomst = await maakZin(zin, profiel, true);
+  if (!uitkomst.goed) {
+    return NextResponse.json({ fout: "De stem kon niet opnieuw gemaakt worden.", code: uitkomst.code ?? 422 }, { status: 503 });
   }
-  const tijdelijk = `${bestand}.${process.pid}.tmp`;
-  await mkdir(MAP, { recursive: true });
-  await writeFile(tijdelijk, uitkomst);
-  await rename(tijdelijk, bestand);
-  await writeFile(path.join(MAP, `${naam}.txt`), `${zin}\n`).catch(() => {});
   return NextResponse.json({ ok: true });
 }

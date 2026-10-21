@@ -27,7 +27,8 @@ type Bron = "browser" | "server";
 
 /*
   Sinds 21 oktober 2026 praat Bliepo met de stem die de eigenaar op Fish Audio
-  heeft gekozen (app/api/stem/route.ts). Lukt dat niet — geen tegoed, geen
+  heeft gekozen (app/api/stem/route.ts). Lukt de nieuwe stem niet, dan geeft
+  de server de oude Fish Audio-stem. Lukt ook dat niet — geen tegoed, geen
   verbinding, de zin duurt te lang — dan praat hij met de browserstem zoals
   hiervoor. Terug naar alleen de browserstem: zet dit op "browser".
 */
@@ -407,8 +408,12 @@ let huidigGeluid: HTMLAudioElement | null = null;
  * browserstem.
  */
 let serverWerkt = true;
-/** Zo lang mag het maken van een nieuwe zin duren; daarna de browserstem. */
-const GEDULD_MS = 7000;
+/**
+ * Zo lang mag het maken van een nieuwe zin duren; daarna de browserstem.
+ * De server wacht zelf 6 seconden op de nieuwe stem en geeft daarna de oude
+ * Fish Audio-stem (22 oktober 2026); die moet hier nog binnen passen.
+ */
+const GEDULD_MS = 15000;
 
 function serverBruikbaar(): boolean {
   return BRON === "server" && serverWerkt && typeof Audio !== "undefined";

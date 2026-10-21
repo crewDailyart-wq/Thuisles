@@ -13,55 +13,43 @@
  * verschillende zinnen.
  */
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { zeg } from "@/lib/stem";
-
-const VASTE_ZINNEN = [
-  "Goed zo.",
-  "Goed zo!",
-  "Goed.",
-  "Goed gedaan.",
-  "Goed gedaan!",
-  "Goed gezien.",
-  "Heel goed.",
-  "Helemaal goed.",
-  "Helemaal goed!",
-  "Precies.",
-  "Precies goed.",
-  "Dat klopt.",
-  "Klopt.",
-  "Ja.",
-  "Ja!",
-  "Mooi.",
-  "Mooi!",
-  "Mooi gedaan.",
-  "Prima.",
-  "Knap gedaan.",
-  "Knap gedaan!",
-  "Wauw!",
-  "Je hebt het!",
-  "Oké.",
-  "Bijna.",
-  "Bijna!",
-  "Probeer het nog eens.",
-  "Probeer deze.",
-  "Probeer deze eens.",
-  "Geen zorgen.",
-  "Geen probleem.",
-  "Ik snap wat je denkt.",
-  "Kijk eens.",
-  "Nog eentje.",
-  "Nog twee, om zeker te weten dat je het snapt.",
-  "Reken uit.",
-  "Hoe laat is het?",
-];
+import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
 
 type Stand = "nieuw" | "gehoord" | "bezig" | "opnieuw" | "fout";
+
+/** Een zin waarin na 3 keer opnieuw maken nog steeds een woord ontbrak (app/api/stem). */
+type Mislukt = { zin: string; stuk: string; groep: string; gehoord: string; mist: string[]; tijd: string };
+type Overzicht = {
+  mislukt: Mislukt[];
+  teller: { gemaakt: number; opnieuw: number; mislukt: number };
+  voortgang: { bezig: boolean; klaar: number; totaal: number; mislukt: number };
+};
 
 export function StemZinnen() {
   const [stand, zetStand] = useState<Record<string, Stand>>({});
   const [eigen, zetEigen] = useState("");
   const [extra, zetExtra] = useState<string[]>([]);
+  const [overzicht, zetOverzicht] = useState<Overzicht | null>(null);
+
+  /* Het lijstje met zinnen waarin een woord bleef ontbreken; ververst zolang "alles opnieuw" loopt. */
+  useEffect(() => {
+    let weg = false;
+    let klok: ReturnType<typeof setTimeout> | undefined;
+    const haal = async () => {
+      const o = (await fetch("/api/stem?mislukt=1").then((a) => (a.ok ? a.json() : null)).catch(() => null)) as Overzicht | null;
+      if (weg) return;
+      zetOverzicht(o);
+      klok = setTimeout(haal, o?.voortgang.bezig ? 4000 : 30000);
+    };
+    void haal();
+    return () => {
+      weg = true;
+      clearTimeout(klok);
+    };
+  }, []);
+
   const knop = "rounded-full border border-white/40 px-3 py-1 text-sm font-semibold text-white hover:bg-white/10 disabled:opacity-50";
 
   const speel = (zin: string) => {
@@ -146,6 +134,35 @@ export function StemZinnen() {
           ▶ Afspelen
         </button>
       </form>
+      <div className="mt-4 rounded-2xl bg-white/5 p-3" aria-live="polite">
+        <h3 className="font-bold">Zinnen waarin een woord bleef ontbreken</h3>
+        <p className="text-sm text-white/70">
+          Elke nieuwe zin wordt teruggeluisterd. Mist er een woord, dan maakt Fish Audio hem opnieuw, hoogstens 3 keer.
+          Lukt het dan nog niet, dan staat hij hier en zegt Bliepo hem met de oude stem.
+        </p>
+        {overzicht?.voortgang.bezig && (
+          <p className="mt-1 text-sm">
+            Alle zinnen worden opnieuw gemaakt: {overzicht.voortgang.klaar} van {overzicht.voortgang.totaal} klaar.
+          </p>
+        )}
+        {overzicht && (
+          <p className="mt-1 text-xs text-white/60">
+            Gemaakt: {overzicht.teller.gemaakt} · opnieuw omdat er een woord miste: {overzicht.teller.opnieuw} · niet gelukt:{" "}
+            {overzicht.teller.mislukt}
+          </p>
+        )}
+        {overzicht && overzicht.mislukt.length === 0 && <p className="mt-2 text-sm">Geen. Alle zinnen zijn compleet.</p>}
+        <ul className="mt-2 grid gap-1.5">
+          {overzicht?.mislukt.map((m) => (
+            <li key={`${m.groep}-${m.zin}`} className="rounded-xl bg-white/5 px-3 py-1.5 text-sm">
+              <span className="font-medium">{m.zin}</span>
+              <span className="block text-xs text-white/70">
+                Groep {m.groep}. Gehoord: &quot;{m.gehoord}&quot;{m.mist.length > 0 && ` (mist: ${m.mist.join(", ")})`}
+              </span>
+            </li>
+          ))}
+        </ul>
+      </div>
     </section>
   );
 }
