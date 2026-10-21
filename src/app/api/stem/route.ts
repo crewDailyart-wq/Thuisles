@@ -54,21 +54,34 @@ function instellingen() {
   const sleutel = process.env.FISH_API_KEY;
   const stem = process.env.FISH_STEM_ID;
   const model = process.env.FISH_MODEL ?? "s2.1-pro";
-  return sleutel && stem ? { sleutel, stem, model } : null;
+  /*
+    Spreektempo (FISH_SNELHEID, 1 = gewoon). 21 oktober 2026: s2-pro met 0,88.
+    Gemeten op lange zinnen schommelt de stem met s2-pro het minst in
+    toonhoogte en volume; 0,88 maakt hem even snel als met drama-3.
+  */
+  const snelheid = Number(process.env.FISH_SNELHEID ?? 1) || 1;
+  return sleutel && stem ? { sleutel, stem, model, snelheid } : null;
 }
 
-/** Waar een zin bewaard wordt: één bestand per model, stem en zin. */
-function bestandVoor(zin: string, stem: string, model: string) {
-  const naam = createHash("sha256").update(`${model}\n${stem}\n${zin}`).digest("hex").slice(0, 32);
+type Instellingen = NonNullable<ReturnType<typeof instellingen>>;
+
+/**
+ * Waar een zin bewaard wordt: één bestand per model, stem, tempo en zin. Het
+ * tempo telt alleen mee als het niet 1 is, zodat de zinnen die eerder zijn
+ * gemaakt bij hun instellingen blijven horen (terugzetten = de oude weer).
+ */
+function bestandVoor(zin: string, s: Instellingen) {
+  const tempo = s.snelheid !== 1 ? `\nsnelheid ${s.snelheid}` : "";
+  const naam = createHash("sha256").update(`${s.model}\n${s.stem}\n${zin}${tempo}`).digest("hex").slice(0, 32);
   return { naam, bestand: path.join(MAP, `${naam}.mp3`) };
 }
 
 /** Maakt de zin (één keer tegelijk per zin) en bewaart hem. Geeft het geluid of een foutcode. */
-async function maakEnBewaar(zin: string, s: { sleutel: string; stem: string; model: string }): Promise<Buffer | number> {
-  const { naam, bestand } = bestandVoor(zin, s.stem, s.model);
+async function maakEnBewaar(zin: string, s: Instellingen): Promise<Buffer | number> {
+  const { naam, bestand } = bestandVoor(zin, s);
   let klus = bezig.get(naam);
   if (!klus) {
-    klus = maak(zin, s.sleutel, s.stem, s.model)
+    klus = maak(zin, s)
       .then(async (uitkomst) => {
         if (typeof uitkomst === "number") return uitkomst;
         await mkdir(MAP, { recursive: true });
@@ -85,11 +98,17 @@ async function maakEnBewaar(zin: string, s: { sleutel: string; stem: string; mod
   return klus;
 }
 
-async function maak(zin: string, sleutel: string, stem: string, model: string): Promise<Buffer | number> {
+async function maak(zin: string, { sleutel, stem, model, snelheid }: Instellingen): Promise<Buffer | number> {
   const antwoord = await fetch("https://api.fish.audio/v1/tts", {
     method: "POST",
     headers: { Authorization: `Bearer ${sleutel}`, "Content-Type": "application/json", model },
-    body: JSON.stringify({ text: zin, reference_id: stem, format: "mp3", latency: "normal" }),
+    body: JSON.stringify({
+      text: zin,
+      reference_id: stem,
+      format: "mp3",
+      latency: "normal",
+      ...(snelheid !== 1 && { prosody: { speed: snelheid } }),
+    }),
     signal: AbortSignal.timeout(45000),
   }).catch(() => null);
   if (!antwoord) return 504;
@@ -107,7 +126,7 @@ export async function GET(request: NextRequest) {
   const s = instellingen();
   if (!s) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
 
-  const bewaard = await readFile(bestandVoor(zin, s.stem, s.model).bestand).catch(() => null);
+  const bewaard = await readFile(bestandVoor(zin, s).bestand).catch(() => null);
   if (bewaard) return mp3(bewaard, request);
 
   const uitkomst = await maakEnBewaar(zin, s);
@@ -127,13 +146,13 @@ export async function POST(request: NextRequest) {
   if (!s) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
 
   /* De oude versie bewaren in stem/oud (niets weggooien), daarna opnieuw maken. */
-  const { naam, bestand } = bestandVoor(zin, s.stem, s.model);
+  const { naam, bestand } = bestandVoor(zin, s);
   const oud = path.join(MAP, "oud");
   await mkdir(oud, { recursive: true });
   const tijd = new Date().toISOString().replace(/[:.]/g, "-");
   await copyFile(bestand, path.join(oud, `${naam}-${tijd}.mp3`)).catch(() => {});
 
-  const uitkomst = await maak(zin, s.sleutel, s.stem, s.model);
+  const uitkomst = await maak(zin, s);
   if (typeof uitkomst === "number") {
     return NextResponse.json({ fout: "De stem kon niet opnieuw gemaakt worden.", code: uitkomst }, { status: 503 });
   }
