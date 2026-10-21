@@ -17,7 +17,7 @@
  * dienst en betalen we per zin maar één keer.
  */
 
-import { koppelBliepoGeluid } from "@/lib/bliepo-geluid";
+import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
 
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
@@ -232,6 +232,8 @@ export function zeg(zin: string): void {
 
 /** De zin met de stem uit de browser (zoals Bliepo vóór Fish Audio praatte). */
 function zegMetBrowser(zin: string, mijnBeurt: number): void {
+  stopServerGeluid?.();
+  stopServerGeluid = null;
   if (!window.speechSynthesis) return;
   window.speechSynthesis.cancel();
 
@@ -388,6 +390,8 @@ export function stopPraten(): void {
   window.speechSynthesis?.cancel();
   huidigGeluid?.pause();
   huidigGeluid = null;
+  stopServerGeluid?.();
+  stopServerGeluid = null;
   meld(false);
 }
 
@@ -417,54 +421,84 @@ function haalAlvast(zin: string): void {
   void fetch(adres(zin)).catch(() => {});
 }
 
+/** Stopt wat er nu van de server klinkt (Web Audio); null als er niets klinkt. */
+let stopServerGeluid: (() => void) | null = null;
+
 /**
  * Speelt één zin met de stem van de server. `klaar` als hij is uitgesproken,
  * `mislukt` als het niet lukte (dan praat de browserstem verder).
+ *
+ * Het eerste woordje viel soms weg (21 oktober 2026). Oorzaak: het geluid
+ * begon al terwijl de geluidsmeter van het lijntje (een AudioContext) nog aan
+ * het opstarten was, en het werd afgespeeld terwijl het nog binnenkwam. Nu:
+ *   1. de zin wordt eerst helemaal opgehaald;
+ *   2. de geluidsmeter wordt aangezet en we wachten tot hij echt draait;
+ *   3. de zin begint na een stilte van 0,2 seconde.
  */
 function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislukt: () => void, gestart?: () => void): void {
+  stopServerGeluid?.();
+  stopServerGeluid = null;
   huidigGeluid?.pause();
+  huidigGeluid = null;
 
-  /* Via de geluidsmeter van Bliepo, zodat het lijntje op zijn scherm meebeweegt (lib/bliepo-geluid.ts). */
-  const geluid = koppelBliepoGeluid(new Audio(adres(zin)));
-  huidigGeluid = geluid;
   let afgerond = false;
-  const wachter = setTimeout(() => faal(true), GEDULD_MS);
-  function faal(teLang: boolean) {
+  const nogAanDeBeurt = () => !afgerond && mijnBeurt === beurt;
+  const faal = (kapot: boolean) => {
     if (afgerond) return;
     afgerond = true;
-    clearTimeout(wachter);
-    geluid.pause();
-    if (huidigGeluid === geluid) huidigGeluid = null;
-    /* Te lang wachten: alleen deze zin met de browser (de volgende keer staat hij wel klaar). Echt kapot: de rest van het bezoek. */
-    if (!teLang) serverWerkt = false;
+    /* Te lang wachten of geen tik gehad: alleen deze zin met de browser. Echt kapot: de rest van het bezoek. */
+    if (kapot) serverWerkt = false;
     meld(false);
     if (mijnBeurt === beurt) mislukt();
-  }
-  geluid.onplaying = () => {
-    clearTimeout(wachter);
-    if (mijnBeurt !== beurt) {
-      geluid.pause();
-      return;
-    }
+  };
+  const begint = () => {
+    if (mijnBeurt !== beurt) return;
     gestart?.();
     meld(true);
   };
-  geluid.onended = () => {
+  const eindigt = () => {
     if (afgerond) return;
     afgerond = true;
-    if (huidigGeluid === geluid) huidigGeluid = null;
     meld(false);
     if (mijnBeurt === beurt) klaar();
   };
-  geluid.onerror = () => faal(false);
-  void geluid.play().catch((fout: unknown) => {
-    /* Geen tik gehad (autoplay): dat is geen kapotte stem, de browserstem mag het ook niet; gewoon stil. */
-    if (fout instanceof DOMException && fout.name === "NotAllowedError") {
-      afgerond = true;
+
+  const wacht = new AbortController();
+  const wachter = setTimeout(() => wacht.abort(), GEDULD_MS);
+  void fetch(adres(zin), { signal: wacht.signal })
+    .then(async (antwoord) => {
+      if (!antwoord.ok) throw new Error(String(antwoord.status));
+      return antwoord.arrayBuffer();
+    })
+    .then(async (data) => {
       clearTimeout(wachter);
-      meld(false);
-      return;
-    }
-    faal(false);
-  });
+      if (!nogAanDeBeurt()) return;
+      const stop = await speelBliepoData(data.slice(0), { stilte: 0.2, gestart: begint, klaar: eindigt });
+      if (stop) {
+        if (!nogAanDeBeurt()) stop();
+        else stopServerGeluid = stop;
+        return;
+      }
+      /* Zonder Web Audio (of de browser wil nog niet): de gewone speler, met het al geladen geluid. */
+      if (!nogAanDeBeurt()) return;
+      if (!(await bliepoGeluidKlaar()) && navigator.userActivation && !navigator.userActivation.hasBeenActive) {
+        faal(false);
+        return;
+      }
+      const url = URL.createObjectURL(new Blob([data], { type: "audio/mpeg" }));
+      const geluid = koppelBliepoGeluid(new Audio(url));
+      huidigGeluid = geluid;
+      geluid.onplaying = begint;
+      geluid.onended = () => {
+        URL.revokeObjectURL(url);
+        if (huidigGeluid === geluid) huidigGeluid = null;
+        eindigt();
+      };
+      geluid.onerror = () => faal(true);
+      void geluid.play().catch(() => faal(false));
+    })
+    .catch((fout: unknown) => {
+      clearTimeout(wachter);
+      faal(!(fout instanceof DOMException && fout.name === "AbortError"));
+    });
 }

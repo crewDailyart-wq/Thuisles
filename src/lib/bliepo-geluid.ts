@@ -20,7 +20,7 @@
 let context: AudioContext | null = null;
 let meter: AnalyserNode | null = null;
 const gekoppeld = new WeakSet<HTMLMediaElement>();
-const klinkt = new Set<HTMLMediaElement>();
+const klinkt = new Set<object>();
 
 function haalMeter(): AnalyserNode | null {
   if (meter) return meter;
@@ -67,6 +67,66 @@ export function speelBliepoGeluid(bron: string): HTMLAudioElement {
   const geluid = koppelBliepoGeluid(new Audio(bron));
   void geluid.play().catch(() => {});
   return geluid;
+}
+
+/**
+ * Zet de geluidsmeter aan en wacht tot hij echt geluid doorgeeft.
+ *
+ * Een AudioContext begint vaak "suspended". Zolang hij nog aan het opstarten
+ * is, komt er niets uit de luidsprekers; begon een zin in die tijd, dan viel
+ * het eerste woordje weg (21 oktober 2026). Geeft false als de browser het
+ * niet toestaat (nog niet op het scherm getikt).
+ */
+export async function bliepoGeluidKlaar(): Promise<boolean> {
+  if (typeof window === "undefined" || !haalMeter() || !context) return false;
+  if (context.state === "running") return true;
+  await Promise.race([context.resume().catch(() => {}), new Promise((r) => setTimeout(r, 400))]);
+  /* Na het wachten opnieuw kijken (TypeScript denkt dat de stand niet veranderd kan zijn). */
+  return (context.state as AudioContextState) === "running";
+}
+
+/**
+ * Speelt een helemaal geladen geluid (bijvoorbeeld een mp3) als Bliepo, met
+ * eerst `stilte` seconden niets, zodat er nooit een begin wegvalt. Het lijntje
+ * beweegt mee. Geeft een functie om te stoppen terug, of null als het zo niet
+ * kan (geen Web Audio, of het geluid is niet te lezen): speel het dan op de
+ * gewone manier af.
+ */
+export async function speelBliepoData(
+  data: ArrayBuffer,
+  { stilte = 0.2, gestart, klaar }: { stilte?: number; gestart?: () => void; klaar?: () => void } = {},
+): Promise<(() => void) | null> {
+  if (!(await bliepoGeluidKlaar()) || !context || !meter) return null;
+  const buffer = await context.decodeAudioData(data).catch(() => null);
+  if (!buffer) return null;
+  const bron = context.createBufferSource();
+  bron.buffer = buffer;
+  bron.connect(meter);
+  const sleutel = {};
+  let gestopt = false;
+  const begin = window.setTimeout(() => {
+    if (gestopt) return;
+    klinkt.add(sleutel);
+    gestart?.();
+  }, stilte * 1000);
+  bron.onended = () => {
+    window.clearTimeout(begin);
+    klinkt.delete(sleutel);
+    bron.disconnect();
+    if (!gestopt) klaar?.();
+  };
+  bron.start(context.currentTime + stilte);
+  return () => {
+    if (gestopt) return;
+    gestopt = true;
+    window.clearTimeout(begin);
+    klinkt.delete(sleutel);
+    try {
+      bron.stop();
+    } catch {
+      /* Was al afgelopen. */
+    }
+  };
 }
 
 /** Speelt er nu een geluid van Bliepo? */
