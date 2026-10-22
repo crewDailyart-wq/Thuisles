@@ -24,6 +24,8 @@ import { VoorbeeldWeerspiegeling } from "./VoorbeeldWeerspiegeling";
 import { PratendeBliepo } from "./PratendeBliepo";
 import { StemZinnen } from "./StemZinnen";
 import { TutorDemo } from "./TutorDemo";
+import { BewegingenDemo } from "./BewegingenDemo";
+import { Opname } from "./Opname";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
 
@@ -62,11 +64,13 @@ export function VoorbeeldBliepo() {
     () => {
       const p = new URLSearchParams(location.search).get("scenario");
       if (new URLSearchParams(location.search).get("atelier")) return "atelier";
+      if (new URLSearchParams(location.search).get("opname")) return "opname";
       return p === "oud" || p === "nieuw" ? p : null;
     },
     () => null,
   );
   if (scenario === "atelier") return <VoorbeeldWeerspiegeling />;
+  if (scenario === "opname") return <Opname />;
   if (scenario) return <Scenario soort={scenario} />;
   return <Vergelijking />;
 }
@@ -216,6 +220,7 @@ function Vergelijking() {
         en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat. Met ?alleen=links, midden,
         rechts of vier staat er maar één, gemeten vanaf een lege pagina.
       </p>
+      <BewegingenDemo />
       <PratendeBliepo />
       <TutorDemo />
       <StemZinnen />

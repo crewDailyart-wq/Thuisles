@@ -24,6 +24,8 @@ import { useEffect, useRef } from "react";
 import { bliepoGeluidKlinkt, leesBliepoGolf } from "@/lib/bliepo-geluid";
 
 type Punt = readonly [number, number];
+/** De vier hoeken van het scherm (links/rechts, boven/onder), in procenten van het vak waar het lijntje over ligt. */
+export type Schermhoeken = { lb: Punt; rb: Punt; lo: Punt; ro: Punt };
 const HOEK: { lb: Punt; rb: Punt; lo: Punt; ro: Punt } = {
   lb: [29.6, 13.8],
   rb: [78.5, 11.2],
@@ -48,13 +50,19 @@ function hartslag(x: number, midden: number, b: number) {
   return -0.1 + ((d - 0.6) / 0.4) * 0.1;
 }
 
-export function BliepoLijn({ rustig, praat }: { rustig: boolean; praat: boolean }) {
+/*
+  Bewegend scherm (23 oktober 2026): bij de filmpjes van Bliepo (BliepoFilm)
+  beweegt zijn hoofd. Dan geeft `hoeken` per beeldje waar het scherm staat,
+  ligt het canvas over het hele vak en loopt het lijntje mee met het scherm.
+  Zonder `hoeken` blijft alles zoals het was.
+*/
+export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: boolean; hoeken?: () => Schermhoeken | null }) {
   const doek = useRef<HTMLCanvasElement>(null);
-  const instelling = useRef({ rustig, praat });
+  const instelling = useRef({ rustig, praat, hoeken });
 
   useEffect(() => {
-    instelling.current = { rustig, praat };
-  }, [rustig, praat]);
+    instelling.current = { rustig, praat, hoeken };
+  }, [rustig, praat, hoeken]);
 
   useEffect(() => {
     const c = doek.current;
@@ -77,16 +85,26 @@ export function BliepoLijn({ rustig, praat }: { rustig: boolean; praat: boolean 
     };
 
     /* Een punt op het scherm: u langs de breedte (0..1), v langs de hoogte (0 = boven). */
+    const VOL = { links: 0, boven: 0, breed: 100, hoog: 100 };
+    let H: Schermhoeken = HOEK;
+    let V = VAK;
     const plek = (u: number, v: number): Punt => {
-      const boven = [HOEK.lb[0] + (HOEK.rb[0] - HOEK.lb[0]) * u, HOEK.lb[1] + (HOEK.rb[1] - HOEK.lb[1]) * u];
-      const onder = [HOEK.lo[0] + (HOEK.ro[0] - HOEK.lo[0]) * u, HOEK.lo[1] + (HOEK.ro[1] - HOEK.lo[1]) * u];
+      const boven = [H.lb[0] + (H.rb[0] - H.lb[0]) * u, H.lb[1] + (H.rb[1] - H.lb[1]) * u];
+      const onder = [H.lo[0] + (H.ro[0] - H.lo[0]) * u, H.lo[1] + (H.ro[1] - H.lo[1]) * u];
       const x = boven[0] + (onder[0] - boven[0]) * v;
       const y = boven[1] + (onder[1] - boven[1]) * v;
-      return [((x - VAK.links) / VAK.breed) * c.width, ((y - VAK.boven) / VAK.hoog) * c.height];
+      return [((x - V.links) / V.breed) * c.width, ((y - V.boven) / V.hoog) * c.height];
     };
 
     const teken = (nu: number) => {
-      const { rustig: stil, praat: browserPraat } = instelling.current;
+      const { rustig: stil, praat: browserPraat, hoeken: haalHoeken } = instelling.current;
+      const nuHoeken = haalHoeken?.();
+      if (haalHoeken && !nuHoeken) {
+        ctx.clearRect(0, 0, c.width, c.height);
+        return;
+      }
+      H = nuHoeken ?? HOEK;
+      V = nuHoeken ? VOL : VAK;
       const geluid = !stil && leesBliepoGolf(golf);
       if (geluid) {
         /* Het geluid zelf: de golf in stukjes, sterk vergroot, zacht nagelopen. */
@@ -129,9 +147,11 @@ export function BliepoLijn({ rustig, praat }: { rustig: boolean; praat: boolean 
       ctx.lineJoin = "round";
       ctx.lineCap = "round";
       ctx.strokeStyle = "#effcff";
-      ctx.lineWidth = Math.max(1, c.width * 0.012);
+      /* Even dik als altijd: naar de breedte van het scherm, niet van het canvas. */
+      const schermBreed = (((H.rb[0] - H.lb[0]) / V.breed) * c.width) / ((HOEK.rb[0] - HOEK.lb[0]) / VAK.breed);
+      ctx.lineWidth = Math.max(1, schermBreed * 0.012);
       ctx.shadowColor = "#7ff6ff";
-      ctx.shadowBlur = c.width * 0.03;
+      ctx.shadowBlur = schermBreed * 0.03;
       ctx.stroke();
     };
 
@@ -180,7 +200,11 @@ export function BliepoLijn({ rustig, praat }: { rustig: boolean; praat: boolean 
     <canvas
       ref={doek}
       className="bliepo__lijn"
-      style={{ left: `${VAK.links}%`, top: `${VAK.boven}%`, width: `${VAK.breed}%`, height: `${VAK.hoog}%` }}
+      style={
+        hoeken
+          ? { left: 0, top: 0, width: "100%", height: "100%" }
+          : { left: `${VAK.links}%`, top: `${VAK.boven}%`, width: `${VAK.breed}%`, height: `${VAK.hoog}%` }
+      }
       aria-hidden="true"
     />
   );

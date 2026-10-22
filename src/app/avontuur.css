@@ -563,6 +563,31 @@
   animation: bliepo-leun 3s ease-in-out infinite;
 }
 
+/*
+  Bliepo als filmpjes met losse bewegingen (23 oktober 2026, opdracht
+  eigenaar): de bewegingen zitten in het filmpje zelf (zwaaien, juichen met
+  een rondje, nadenken, knikken), dus niet meer de hele robot als één blok
+  laten wiebelen, springen of leunen. Het filmpje is breder en iets hoger
+  opgenomen dan het vak (ruimte voor zijn armen en het sprongetje) en steekt
+  er even ver buiten, zodat de robot even groot en op dezelfde plek staat en
+  de opmaak eromheen niet verandert.
+*/
+.bliepo--film .bliepo__lijf,
+.bliepo--film.bliepo--blij .bliepo__lijf,
+.bliepo--film.bliepo--troost .bliepo__lijf,
+.bliepo--film.bliepo--praat .bliepo__lijf,
+.bliepo--film.bliepo--zweef .bliepo__lijf {
+  animation: none;
+}
+.bliepo__film {
+  position: absolute;
+  left: -21.84%;
+  top: -11.94%;
+  width: 143.68%;
+  height: 111.94%;
+  pointer-events: none;
+}
+
 /* Rustig zweven in plaats van wiebelen (startpagina, prijzenkamer). */
 .bliepo--zweef .bliepo__lijf {
   animation: bliepo-zweef 5.5s ease-in-out infinite;

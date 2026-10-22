@@ -408,6 +408,16 @@ export const SCHERMCONTRACT = [
   },
   {
     /*
+      Bewegingen van Bliepo (23 oktober 2026, opdracht eigenaar): elke
+      beweging los bekijken op de testpagina.
+    */
+    naam: "Bewegingen van Bliepo",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/BewegingenDemo.tsx"],
+    zichtbaar: ["Bewegingen van Bliepo", "Zwaaien (begroeting)", "Petje rechtzetten", "Nadenken", "Goed antwoord", "Fout (bemoedigend knikken)", "Praten"],
+  },
+  {
+    /*
       De begroeting van Bliepo op de startpagina (23 oktober 2026, opdracht
       eigenaar), met het luidsprekertje waarmee zijn stem daar uit kan.
     */

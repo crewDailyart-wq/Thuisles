@@ -34,6 +34,7 @@ import { useSyncExternalStore } from "react";
 import type { MaatjeHouding } from "@/lib/maatje/poppetje";
 import { abonneerPraten, praatOpServer, praatVos } from "@/lib/stem";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { BliepoFilm, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
 import { BliepoLijn } from "@/components/avontuur/BliepoLijn";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 
@@ -51,7 +52,7 @@ export function Bliepo({
   praat = false,
   kijkt,
   className = "",
-  soort = "lijn",
+  soort = "film",
 }: {
   houding?: MaatjeHouding;
   /** praat hij nu? (de mond beweegt ook vanzelf zodra de stem klinkt) */
@@ -59,8 +60,12 @@ export function Bliepo({
   /** kijkt hij opzij? Dan schuiven ogen en mond die kant op (bijv. naar de vakken). */
   kijkt?: "links" | "rechts";
   className?: string;
-  /** filmpje (sinds 18 oktober 2026) of het oude plaatje van de blauwe robot */
-  soort?: "lijn" | "filmpje" | "plaatje";
+  /**
+   * film (sinds 23 oktober 2026, standaard): filmpjes met losse bewegingen die
+   * wisselen met wat hij doet, met het live lijntje erover; lijn: het plaatje
+   * met het live lijntje; filmpje: het zweef-filmpje; plaatje: de oude blauwe robot.
+   */
+  soort?: "film" | "lijn" | "filmpje" | "plaatje";
 }) {
   const rustig = useBewegingsstand() !== "aan";
   const stemKlinkt = useSyncExternalStore(
@@ -72,15 +77,20 @@ export function Bliepo({
   const blij = houding === "blij";
   const denkt = houding === "denkt";
   const troost = houding === "troost";
+  const filmhouding: Filmhouding = blij ? "juichen" : denkt ? "nadenken" : troost ? "troost" : mondBeweegt ? "praten" : "rust";
 
   return (
     <div
-      className={`bliepo bliepo--${houding} ${mondBeweegt ? "bliepo--praat" : ""} ${soort === "filmpje" ? "bliepo--filmpje" : ""} ${className}`}
+      className={`bliepo bliepo--${houding} ${mondBeweegt ? "bliepo--praat" : ""} ${soort === "filmpje" ? "bliepo--filmpje" : ""} ${soort === "film" ? "bliepo--film" : ""} ${className}`}
       role="img"
       aria-label="Bliepo"
     >
       <div className="bliepo__lijf">
-        {soort === "lijn" ? (
+        {soort === "film" ? (
+          <div className="bliepo__beeld">
+            <BliepoFilm houding={filmhouding} rustig={rustig} praat={mondBeweegt} className="bliepo__film" />
+          </div>
+        ) : soort === "lijn" ? (
           <div className="bliepo__beeld">
             {/* eslint-disable-next-line @next/next/no-img-element -- een doorzichtig plaatje in vier maten; next/image voegt hier niets toe */}
             <img

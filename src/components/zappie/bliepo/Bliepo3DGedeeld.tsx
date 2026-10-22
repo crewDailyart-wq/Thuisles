@@ -21,10 +21,10 @@
  *   - hij start pas als de browser even niets te doen heeft.
  */
 
-import { useEffect, useRef, useState } from "react";
-import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { BliepoFilm, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
 import { bliepoGeluidKlinkt, leesBliepoGolf } from "@/lib/bliepo-geluid";
-import { zeg } from "@/lib/stem";
+import { abonneerPraten, praatVos, zeg } from "@/lib/stem";
 import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
@@ -44,6 +44,8 @@ type Instellingen = {
   ballon?: string | null;
   /** Telt op bij elke keer dat hij moet zwaaien (niet bij "Beweging uit"). */
   zwaai?: number;
+  /** Een gebaar van buitenaf (23 oktober 2026): bij elke nieuwe n speelt hij `naam` (zie ACTIONS in zappie.js). */
+  gebaar?: { naam: string; n: number } | null;
 };
 
 /*
@@ -53,6 +55,9 @@ type Instellingen = {
 function zegTiktekst() {
   if (startstemAan()) zeg(TIKTEKST);
 }
+
+/** Kijkt hij naar rechts (positieve rusthoek), dan ook bij voorkeur zijn hoofd die kant op. */
+const RUSTHOEK_VOORKEUR = (rusthoek: number) => Math.max(-0.35, Math.min(0.35, rusthoek * 1.5));
 
 /** Het lijntje op zijn scherm volgt de stem: hoe hard klinkt Bliepo nu (0 tot 1), of null als hij stil is. */
 const golf = new Uint8Array(512);
@@ -76,9 +81,23 @@ export function Bliepo3DGedeeld(instellingen: Instellingen) {
   return <Bliepo3DEcht {...instellingen} />;
 }
 
-function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon }: Instellingen) {
+/*
+  Sinds 23 oktober 2026 (opdracht eigenaar) de filmpjes met losse bewegingen
+  (BliepoFilm) in plaats van het ene zweef-filmpje: rust, en zwaaien bij de
+  begroeting of een gebaar, praten zolang zijn stem klinkt. Het lijntje op
+  zijn scherm beweegt live mee. BliepoFilmpje (het zweef-filmpje) staat er nog.
+*/
+const geenPraat = () => false;
+function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
   const [praat, zetPraat] = useState(false);
+  const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, geenPraat);
+  /* Het laatste gebaar (of de begroeting) speelt één keer; daarna rust, of praten zolang zijn stem klinkt. */
+  const kaart: Record<string, Filmhouding> = { greet: "zwaaien", wave: "zwaaien", think: "nadenken", correct: "juichen", celebrate: "juichen", incorrect: "troost" };
+  const gebaarHouding = gebaar?.n ? kaart[gebaar.naam] : undefined;
+  const daarna: Filmhouding = stemKlinkt ? "praten" : "rust";
+  const houding: Filmhouding = gebaarHouding ?? (zwaai > 0 ? "zwaaien" : daarna);
+  const beurt = zwaai + (gebaar?.n ?? 0);
   const ballonRef = useRef(ballon);
   useEffect(() => {
     ballonRef.current = ballon;
@@ -105,7 +124,7 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon }: Instellin
   }, []);
   return (
     <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
-      <BliepoFilmpje rustig={rustig} className="bt-prototype-doek" onKlaar={onKlaar} />
+      <BliepoFilm houding={houding} beurt={beurt} daarna={daarna} rustig={rustig} praat={stemKlinkt} className="bt-prototype-doek" onKlaar={onKlaar} />
       {(ballon || praat) && (
         <div className={`bt-ballon${ballon ? " bt-ballon-groet" : ""}`} role="status">
           <span>{ballon || TIKTEKST}</span>
@@ -124,9 +143,11 @@ function Bliepo3DEcht({
   className = "",
   ballon,
   zwaai = 0,
+  gebaar = null,
 }: {
   ballon?: string | null;
   zwaai?: number;
+  gebaar?: { naam: string; n: number } | null;
   rustig: boolean;
   /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
   rusthoek?: number;
@@ -154,6 +175,13 @@ function Bliepo3DEcht({
   useEffect(() => {
     if (zwaai > 0 && !rustigRef.current) zwaaiRef.current?.("wave");
   }, [zwaai]);
+
+  /* Een gebaar van buitenaf (testknoppen op /voorbeeld-bliepo), niet bij "Beweging uit". */
+  const gebaarNaam = gebaar?.naam;
+  const gebaarN = gebaar?.n ?? 0;
+  useEffect(() => {
+    if (gebaarN > 0 && gebaarNaam && !rustigRef.current) zwaaiRef.current?.(gebaarNaam);
+  }, [gebaarN, gebaarNaam]);
 
   useEffect(() => {
     const host = plek.current;
@@ -273,6 +301,8 @@ function Bliepo3DEcht({
         return;
       }
       const besturing = new Z.ZappieController(model, { reducedMotion: rustigRef.current });
+      /* Levendig (23 oktober 2026): hij kijkt bij voorkeur naar de kant waar hij al heen staat (de vakken). */
+      if (besturing.levendig) besturing.levendig.voorkeur = RUSTHOEK_VOORKEUR(instelling.current.rusthoek);
       const ballon = Z.createSpeechBubble(host);
       ballon.element.className = "bt-ballon";
       ballon.element.removeAttribute("style");
@@ -321,11 +351,26 @@ function Bliepo3DEcht({
         wachtTot = nu + 2200;
         besturing.play(actie);
       };
+      /*
+        De muis (23 oktober 2026): het hoofd kijkt naar de muis en het lijf
+        draait maar een klein beetje mee (eerst draaide de hele robot als één
+        blok). Beweegt de muis een tijdje niet, dan kijkt hij weer zelf rond.
+      */
+      let muisStil = 0;
       const beweeg = (e: PointerEvent) => {
         const r = host.getBoundingClientRect();
         const midden = r.left + r.width / 2;
-        if (instelling.current.volgMuis)
-          doelhoek = RUSTHOEK + Math.max(-1, Math.min(1, (e.clientX - midden) / (window.innerWidth / 2))) * 0.55;
+        if (instelling.current.volgMuis) {
+          const nx = Math.max(-1, Math.min(1, (e.clientX - midden) / (window.innerWidth / 2)));
+          const ny = Math.max(-1, Math.min(1, (e.clientY - (r.top + r.height * 0.25)) / (window.innerHeight / 2)));
+          doelhoek = RUSTHOEK + nx * 0.15;
+          if (besturing.levendig) besturing.levendig.kijk = { x: nx, y: ny };
+          window.clearTimeout(muisStil);
+          muisStil = window.setTimeout(() => {
+            if (besturing.levendig) besturing.levendig.kijk = null;
+            doelhoek = RUSTHOEK;
+          }, 2500);
+        }
         if (binnen(e.clientX, e.clientY, 40) && besturing.action === "idle") speel("wave");
       };
       const tik = (e: PointerEvent) => {
@@ -343,6 +388,8 @@ function Bliepo3DEcht({
       };
       window.addEventListener("pointermove", beweeg, { passive: true });
       window.addEventListener("pointerdown", tik, { passive: true });
+      /* Alleen op de ontwikkelcomputer: de robot bereikbaar voor het afstellen van houdingen. */
+      if (process.env.NODE_ENV === "development") (window as unknown as { __bliepo?: unknown }).__bliepo = { besturing, model, T, host };
       zwaaiRef.current = (actie) => {
         wachtTot = 0;
         speel(actie);
@@ -405,6 +452,7 @@ function Bliepo3DEcht({
         cancelAnimationFrame(frame);
         document.removeEventListener("visibilitychange", wakker);
         window.removeEventListener("pointermove", beweeg);
+        window.clearTimeout(muisStil);
         window.removeEventListener("pointerdown", tik);
         maatkijker.disconnect();
         inBeeld.disconnect();
