@@ -1,6 +1,7 @@
 /**
  * De stem van Bliepo (21 oktober 2026, keuze eigenaar: Fish Audio; sinds
- * 22 oktober 2026 de stem "Sanne" met toon en tempo per groep).
+ * 22 oktober 2026 ElevenLabs met de stem "Ruth", met toon en tempo per groep,
+ * en Fish Audio als reserve).
  *
  * GET /api/stem?zin=... geeft de zin als mp3. Hoe hij gemaakt en gecontroleerd
  * wordt, staat in lib/stem-server.ts. De groep komt van het kind dat op dit
@@ -10,7 +11,8 @@
  * map `stem` naast de database (online op het volume: /data/stem). Wie de zin
  * daarna nog eens vraagt, krijgt het bewaarde bestand; dat kost niets.
  *
- * Lukt de nieuwe stem niet op tijd, dan komt de oude Fish Audio-stem. Lukt ook
+ * Lukt ElevenLabs niet op tijd, dan komt Fish Audio, en daarna de oude Fish
+ * Audio-stem. Lukt ook
  * die niet (geen sleutel, geen tegoed, geen verbinding), dan komt er een
  * foutcode terug en praat Bliepo met de stem uit de browser (lib/stem.ts).
  *

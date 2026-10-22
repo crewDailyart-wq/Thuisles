@@ -3,7 +3,11 @@ import "server-only";
 /**
  * De stem van Bliepo op de server (22 oktober 2026, opdracht eigenaar).
  *
- * Bliepo praat met de stem "Sanne" van Fish Audio, model drama-3.
+ * Sinds 22 oktober 2026 (keuze eigenaar) praat Bliepo met de stem "Ruth" van
+ * ElevenLabs, model eleven_v4 (zie `maakStukEleven`). Fish Audio met de stem
+ * "Sanne" is de reserve; daaronder staat wat voor Fish Audio is gemeten.
+ *
+ * Fish Audio: stem "Sanne", model drama-3.
  *
  * Instellingen (gemeten op 101 zinnen, 22 oktober 2026): temperature 0,7,
  * top_p 0,7, herhalingsrem 1,2, latency normal. Met de website-instellingen
@@ -48,7 +52,7 @@ import { createHash } from "node:crypto";
 import { copyFile, mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { knipInZinnen, vergelijkZin, voorStem } from "@/lib/stemtekst";
-import { bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE } from "@/lib/stem-klank";
+import { bewerkKlank, bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE, leesPcm } from "@/lib/stem-klank";
 import { UITSPRAAK_VERSIE, voorUitspraak } from "@/lib/stem-uitspraak";
 
 export const MAP = path.join(path.dirname(process.env.THUISLES_DB ?? path.join(process.cwd(), "data", "thuisles.db")), "stem");
@@ -80,16 +84,73 @@ export function profielVoor(groep: number): Profiel {
   return "6-8";
 }
 
-/** De nieuwe stem, voor één groep. Null als er geen sleutel of stem is. */
-export function instellingen(profiel: Profiel) {
-  const sleutel = process.env.FISH_API_KEY;
+/**
+ * Welke stemdienst Bliepo gebruikt (STEM_DIENST). Sinds 22 oktober 2026
+ * ElevenLabs met de stem "Ruth" (keuze eigenaar); Fish Audio is de reserve.
+ * Zonder STEM_DIENST: ElevenLabs als daar een sleutel en stem voor zijn.
+ */
+export type Dienst = "elevenlabs" | "fish";
+
+export function hoofdDienst(): Dienst {
+  const gekozen = process.env.STEM_DIENST;
+  if (gekozen === "fish" || gekozen === "elevenlabs") return gekozen;
+  return process.env.ELEVEN_API_KEY && process.env.ELEVEN_STEM_ID ? "elevenlabs" : "fish";
+}
+
+/*
+  Toon per groep bij ElevenLabs (Eleven v4). V4 heeft geen tempo-instelling
+  ("Style and Speed sliders are not available in Eleven v4"), dus toon én
+  tempo gaan via een aanwijzing tussen [haken]. Gemeten op vier zinnen
+  (22 oktober 2026): groep 1-2 duurde 12,9 s, groep 3-5 11,4 s, groep 6-8
+  10,7 s, zonder aanwijzing 10,2 s; geen aanwijzing werd voorgelezen.
+*/
+const ELEVEN_TOON: Record<Profiel, string> = {
+  "1-2": "[slowly, softly and very kindly, like a gentle kindergarten teacher]",
+  "3-5": "[warm and cheerful, like a kind teacher]",
+  "6-8": "[friendly and clear, natural pace, not childish]",
+};
+
+/** De stem voor één groep, bij één dienst. Null als er geen sleutel of stem is. */
+export function instellingen(profiel: Profiel, dienst: Dienst = hoofdDienst()) {
+  const achter = profiel.replace("-", "_");
+  /* Spraak naar tekst (de controle) loopt altijd via Fish Audio. */
+  const sleutel = process.env.FISH_API_KEY ?? "";
+  const controle = tekst("FISH_CONTROLE", "aan") !== "uit" && Boolean(sleutel);
+  if (dienst === "elevenlabs") {
+    const elevenSleutel = process.env.ELEVEN_API_KEY;
+    const stem = process.env.ELEVEN_STEM_ID;
+    if (!elevenSleutel || !stem) return null;
+    return {
+      dienst,
+      sleutel,
+      elevenSleutel,
+      stem,
+      model: tekst("ELEVEN_MODEL", "eleven_v4"),
+      stabiliteit: getal("ELEVEN_STABILITEIT", 0.5),
+      gelijkenis: getal("ELEVEN_GELIJKENIS", 0.75),
+      formaat: tekst("ELEVEN_FORMAAT", "pcm_24000"),
+      temperature: 0,
+      top_p: 0,
+      herhaling: 0,
+      latency: "",
+      volume: 0,
+      tempo: 1,
+      deEsser: tekst("ELEVEN_DE_ESSER", "aan") !== "uit",
+      toon: tekst(`ELEVEN_TOON_GROEP_${achter}`, ELEVEN_TOON[profiel]).trim(),
+      controle,
+    };
+  }
   const stem = process.env.FISH_STEM_ID;
   if (!sleutel || !stem) return null;
-  const achter = profiel.replace("-", "_");
   return {
+    dienst,
     sleutel,
+    elevenSleutel: "",
     stem,
     model: tekst("FISH_MODEL", "drama-3"),
+    stabiliteit: 0,
+    gelijkenis: 0,
+    formaat: "wav",
     temperature: getal("FISH_TEMPERATURE", 0.7),
     top_p: getal("FISH_TOP_P", 0.7),
     herhaling: getal("FISH_HERHALING", 1.2),
@@ -98,7 +159,7 @@ export function instellingen(profiel: Profiel) {
     deEsser: tekst("FISH_DE_ESSER", "aan") !== "uit",
     tempo: getal(`FISH_TEMPO_GROEP_${achter}`, STANDAARD_TEMPO[profiel]),
     toon: tekst(`FISH_TOON_GROEP_${achter}`, STANDAARD_TOON[profiel]).trim(),
-    controle: tekst("FISH_CONTROLE", "aan") !== "uit",
+    controle,
   };
 }
 
@@ -124,6 +185,9 @@ const hash = (s: string) => createHash("sha256").update(s).digest("hex").slice(0
 
 /** Alles wat het geluid bepaalt, zodat een andere instelling een ander bestand geeft. */
 function kenmerk(s: Instellingen) {
+  if (s.dienst === "elevenlabs") {
+    return JSON.stringify([5, "elevenlabs", KLANK_VERSIE, s.deEsser, s.model, s.stem, s.stabiliteit, s.gelijkenis, s.formaat, s.toon]);
+  }
   return JSON.stringify([4, UITSPRAAK_VERSIE, KLANK_VERSIE, s.deEsser, s.model, s.stem, s.temperature, s.top_p, s.herhaling, s.latency, s.volume, s.tempo, s.toon]);
 }
 
@@ -181,6 +245,7 @@ async function tts(body: Record<string, unknown>, sleutel: string, model: string
  * eindresultaat.
  */
 async function maakStuk(stuk: string, s: Instellingen): Promise<Buffer | number> {
+  if (s.dienst === "elevenlabs") return maakStukEleven(stuk, s);
   /* De uitspraaklijst alleen voor wat Fish Audio krijgt; de controle vergelijkt met de gewone zin. */
   const uitspraak = voorUitspraak(stuk);
   const wav = await tts(
@@ -202,6 +267,40 @@ async function maakStuk(stuk: string, s: Instellingen): Promise<Buffer | number>
   if (typeof wav === "number") return wav;
   try {
     return bewerkStem(wav, s.deEsser ? GEKOZEN_DE_ESSER : null);
+  } catch (fout) {
+    console.error("[stem] bewerken lukte niet:", fout);
+    return 500;
+  }
+}
+
+/**
+ * Eén stuk bij ElevenLabs: model, stem, stabiliteit en gelijkenis precies
+ * zoals in de proef van de eigenaar (geschiedenis-ID UKoJSen5xE2ujUjW2Mtg:
+ * eleven_v4, stabiliteit 0,5, gelijkenis 0,75). Taal Nederlands. Ruw geluid
+ * (pcm 24 kHz; 44,1 kHz kan pas vanaf het Pro-abonnement), daarna dezelfde
+ * de-esser en even hard als bij Fish Audio. Geen uitspraaklijst: die is
+ * gemeten voor Fish Audio.
+ */
+async function maakStukEleven(stuk: string, s: Instellingen): Promise<Buffer | number> {
+  const sr = Number(s.formaat.split("_")[1]) || 24000;
+  const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}?output_format=${s.formaat}`, {
+    method: "POST",
+    headers: { "xi-api-key": s.elevenSleutel, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: s.toon ? `${s.toon} ${stuk}` : stuk,
+      model_id: s.model,
+      language_code: "nl",
+      voice_settings: { stability: s.stabiliteit, similarity_boost: s.gelijkenis },
+    }),
+    signal: AbortSignal.timeout(45000),
+  }).catch(() => null);
+  if (!antwoord) return 504;
+  if (!antwoord.ok) {
+    console.error(`[stem] ElevenLabs gaf ${antwoord.status}: ${(await antwoord.text().catch(() => "")).slice(0, 200)}`);
+    return antwoord.status;
+  }
+  try {
+    return bewerkKlank(leesPcm(Buffer.from(await antwoord.arrayBuffer()), sr), s.deEsser ? GEKOZEN_DE_ESSER : null);
   } catch (fout) {
     console.error("[stem] bewerken lukte niet:", fout);
     return 500;
@@ -291,8 +390,13 @@ function tel(veld: "gemaakt" | "opnieuw" | "mislukt", aantal = 1) {
  * teruggeluisterd en de versie zonder fouten wint. Hebben ze allebei fouten,
  * dan komen er nieuwe versies bij, tot hoogstens 4 in totaal.
  */
-const PER_RONDE = 2;
 const HOOGSTENS = 4;
+/*
+  Bij ElevenLabs één versie per ronde: het tegoed is per teken (Starter:
+  40.000 per maand) en Ruth haalde de controle in de proef meteen. Bij Fish
+  Audio twee tegelijk (gemeten nodig, en goedkoop).
+*/
+const perRonde = (s: Instellingen) => (s.dienst === "elevenlabs" ? 1 : 2);
 
 type StukUitkomst = { data: Buffer; goed: true } | { data: Buffer | null; goed: false; code?: number; gehoord?: string; mist?: string[] };
 /**
@@ -363,9 +467,9 @@ async function maakGecontroleerdStuk(stuk: string, s: Instellingen, opnieuw: boo
     if (bewaard) return { data: bewaard, goed: true };
   }
   const alle: Exclude<Versie, { code: number }>[] = [];
-  for (let gemaakt = 0; gemaakt < HOOGSTENS; gemaakt += PER_RONDE) {
+  for (let gemaakt = 0; gemaakt < HOOGSTENS; gemaakt += perRonde(s)) {
     if (gemaakt > 0) await tel("opnieuw");
-    const versies = await Promise.all(Array.from({ length: PER_RONDE }, () => maakVersie(stuk, s)));
+    const versies = await Promise.all(Array.from({ length: perRonde(s) }, () => maakVersie(stuk, s)));
     const kapot = versies.find((v): v is { code: number } => "code" in v);
     if (kapot && versies.every((v) => "code" in v)) return { data: null, goed: false, code: kapot.code };
     for (const v of versies) if (!("code" in v)) alle.push(v);
@@ -401,8 +505,8 @@ const bezig = new Map<string, Promise<ZinUitkomst>>();
  * Een hele zin met de nieuwe stem: uit de bewaarde bestanden, of nieuw gemaakt
  * en gecontroleerd. `opnieuw` maakt alles opnieuw (knop "Opnieuw maken").
  */
-export function maakZin(zin: string, profiel: Profiel, opnieuw = false): Promise<ZinUitkomst> {
-  const s = instellingen(profiel);
+export function maakZin(zin: string, profiel: Profiel, opnieuw = false, dienst: Dienst = hoofdDienst()): Promise<ZinUitkomst> {
+  const s = instellingen(profiel, dienst);
   if (!s) return Promise.resolve({ data: null, goed: false, code: 503 });
   const { naam, bestand } = zinBestand(zin, s);
   const sleutel = `${naam}${opnieuw ? ":opnieuw" : ""}`;
@@ -464,15 +568,22 @@ export async function oudeZin(zin: string): Promise<Buffer | number> {
 }
 
 /**
- * De zin voor een kind: de nieuwe stem als die op tijd klaar is, anders (of
- * als hij niet lukt) de oude stem. Wat niet op tijd klaar was, wordt op de
+ * De zin voor een kind: de hoofdstem als die op tijd klaar is, anders (of
+ * als hij niet lukt) Fish Audio en daarna de oude stem. Wat niet op tijd klaar was, wordt op de
  * achtergrond gewoon afgemaakt en bewaard, zodat het de volgende keer wel de
  * nieuwe stem is.
  */
 export async function zinVoorKind(zin: string, profiel: Profiel, wachtMs: number): Promise<Buffer | number> {
-  const nieuw = maakZin(zin, profiel);
-  const opTijd = await Promise.race([nieuw, new Promise<null>((klaar) => setTimeout(() => klaar(null), wachtMs))]);
+  const wacht = <T,>(p: Promise<T>, ms: number) => Promise.race([p, new Promise<null>((klaar) => setTimeout(() => klaar(null), ms))]);
+  const dienst = hoofdDienst();
+  const nieuw = maakZin(zin, profiel, false, dienst);
+  const opTijd = await wacht(nieuw, wachtMs);
   if (opTijd?.goed) return opTijd.data;
+  /* De reserve: is de hoofdstem ElevenLabs, dan eerst Fish Audio (Sanne), daarna de oude stem. */
+  if (dienst === "elevenlabs" && instellingen(profiel, "fish")) {
+    const reserve = await wacht(maakZin(zin, profiel, false, "fish"), wachtMs);
+    if (reserve?.goed) return reserve.data;
+  }
   const oud = await oudeZin(zin);
   if (typeof oud !== "number") return oud;
   /* Ook de oude stem lukt niet: dan nog even op de nieuwe wachten. */

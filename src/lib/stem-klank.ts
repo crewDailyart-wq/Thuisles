@@ -255,7 +255,8 @@ export function evenHard(k: Klank, doelLufs = -16): Klank {
 // ---------------------------------------------------------------------------
 
 export function naarMp3(k: Klank, kbps = 192): Buffer {
-  const enc = new Mp3Encoder(1, k.sr, kbps);
+  /* Onder 32 kHz (MPEG-2) kan een mp3 hooguit 160 kbps zijn. */
+  const enc = new Mp3Encoder(1, k.sr, k.sr < 32000 ? Math.min(kbps, 160) : kbps);
   const pcm = new Int16Array(k.samples.length);
   for (let i = 0; i < pcm.length; i++) pcm[i] = Math.max(-32768, Math.min(32767, Math.round(k.samples[i] * 32767)));
   const delen: Uint8Array[] = [];
@@ -289,7 +290,18 @@ export const KLANK_VERSIE = 1;
 
 /** Van wav van Fish Audio naar de mp3 die Bliepo afspeelt. */
 export function bewerkStem(wav: Buffer, d: DeEsser | null = GEKOZEN_DE_ESSER): Buffer {
-  let k = leesWav(wav);
-  if (d) k = deEss(k, d);
-  return naarMp3(evenHard(k));
+  return bewerkKlank(leesWav(wav), d);
+}
+
+/** Ruw geluid (16-bit mono PCM zonder kop, zoals ElevenLabs het geeft) naar een klank. */
+export function leesPcm(buf: Buffer, sr: number): Klank {
+  const n = Math.floor(buf.length / 2);
+  const samples = new Float32Array(n);
+  for (let i = 0; i < n; i++) samples[i] = buf.readInt16LE(i * 2) / 32768;
+  return { samples, sr };
+}
+
+/** De-esser, even hard, mp3. */
+export function bewerkKlank(k: Klank, d: DeEsser | null = GEKOZEN_DE_ESSER): Buffer {
+  return naarMp3(evenHard(d ? deEss(k, d) : k));
 }
