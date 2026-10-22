@@ -69,6 +69,8 @@ export function StemZinnen() {
       return;
     }
     zetStand((s) => ({ ...s, [zin]: "opnieuw" }));
+    /* De browser bewaart zinnen 30 dagen: de bewaarde versie eerst vervangen door de nieuwe. */
+    await fetch(`/api/stem?zin=${encodeURIComponent(zin)}`, { cache: "reload" }).catch(() => null);
     zeg(zin);
   };
 

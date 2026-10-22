@@ -14,6 +14,7 @@
 import { redirect } from "next/navigation";
 import { kiesKind, verlaatKind, vereisOuder } from "@/lib/auth/sessie";
 import { haalKindVanOuder, kindcodeKlopt } from "@/lib/data/kinderen";
+import { maakNaamStukje } from "@/lib/begroeting-server";
 
 type Uitkomst = { fout: string } | null;
 
@@ -49,6 +50,8 @@ export async function kiesProfiel(
   }
 
   await kiesKind(kind.id);
+  /* Het korte naamstukje van de begroeting ("Hoi Sam!") pas nu maken, bij het inloggen, en niet voor alle kinderen tegelijk. */
+  maakNaamStukje(kind);
   redirect("/zappie");
 }
 

@@ -54,6 +54,7 @@ import path from "node:path";
 import { knipInZinnen, vergelijkZin, voorStem } from "@/lib/stemtekst";
 import { bewerkKlank, bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE, leesPcm } from "@/lib/stem-klank";
 import { UITSPRAAK_VERSIE, voorUitspraak } from "@/lib/stem-uitspraak";
+import { elevenVoorLive } from "@/lib/tutor/gebruik";
 
 export const MAP = path.join(path.dirname(process.env.THUISLES_DB ?? path.join(process.cwd(), "data", "thuisles.db")), "stem");
 /** Langer dan dit is geen zin van Bliepo meer; dat maken we niet. */
@@ -104,11 +105,38 @@ export function hoofdDienst(): Dienst {
   (22 oktober 2026): groep 1-2 duurde 12,9 s, groep 3-5 11,4 s, groep 6-8
   10,7 s, zonder aanwijzing 10,2 s; geen aanwijzing werd voorgelezen.
 */
+/*
+  Goedkoper (23 oktober 2026, opdracht eigenaar): de aanwijzing telt bij
+  ElevenLabs mee als tekens, en bij een kort zinnetje als "Goed zo." was hij
+  langer dan de zin zelf. Korte aanwijzingen, gemeten op tien zinnen met
+  eleven_v4_turbo: groep 1-2 31,3 s (lang was 28,9 s: nog iets rustiger),
+  groep 3-5 24,2 s, groep 6-8 24,1 s; alle tien woord voor woord verstaan.
+*/
 const ELEVEN_TOON: Record<Profiel, string> = {
+  "1-2": "[slowly and gently]",
+  "3-5": "[warm and cheerful]",
+  "6-8": "[friendly and clear]",
+};
+
+/* De aanwijzingen en het model tot 23 oktober 2026: zinnen die daarmee al gemaakt zijn, blijven bruikbaar. */
+const ELEVEN_TOON_VORIG: Record<Profiel, string> = {
   "1-2": "[slowly, softly and very kindly, like a gentle kindergarten teacher]",
   "3-5": "[warm and cheerful, like a kind teacher]",
   "6-8": "[friendly and clear, natural pace, not childish]",
 };
+
+/*
+  Model (23 oktober 2026): eleven_v4_turbo kost de helft van de tekens van
+  eleven_v4 (character_cost_multiplier 0,5) en is ruim twee keer zo snel.
+  Gemeten met Ruth op tien zinnen: allebei 10 van 10 woord voor woord
+  verstaan, en precies even lang (25,0 s), dus dezelfde toon en hetzelfde
+  tempo. Het duurdere model is daarom nergens meer nodig; ELEVEN_MODEL kan
+  het terugzetten.
+*/
+const ELEVEN_MODEL = "eleven_v4_turbo";
+
+/** Hoeveel tekens een model per teken rekent. */
+const tekenPrijs = (model: string) => (/turbo|flash|conversational/.test(model) ? 0.5 : 1);
 
 /** De stem voor één groep, bij één dienst. Null als er geen sleutel of stem is. */
 export function instellingen(profiel: Profiel, dienst: Dienst = hoofdDienst()) {
@@ -125,7 +153,7 @@ export function instellingen(profiel: Profiel, dienst: Dienst = hoofdDienst()) {
       sleutel,
       elevenSleutel,
       stem,
-      model: tekst("ELEVEN_MODEL", "eleven_v4"),
+      model: tekst("ELEVEN_MODEL", ELEVEN_MODEL),
       stabiliteit: getal("ELEVEN_STABILITEIT", 0.5),
       gelijkenis: getal("ELEVEN_GELIJKENIS", 0.75),
       formaat: tekst("ELEVEN_FORMAAT", "pcm_24000"),
@@ -195,6 +223,20 @@ function kenmerk(s: Instellingen) {
 export function zinBestand(zin: string, s: Instellingen) {
   const naam = `z-${hash(`${kenmerk(s)}\n${voorStem(zin)}`)}`;
   return { naam, bestand: path.join(MAP, `${naam}.mp3`) };
+}
+
+/**
+ * Dezelfde zin, gemaakt met Ruth vóór 23 oktober 2026 (eleven_v4, lange
+ * aanwijzing). Die is al betaald en goedgekeurd: nooit opnieuw maken wat al
+ * bestaat en goed is.
+ */
+function vorigBestand(zin: string, s: Instellingen) {
+  if (s.dienst !== "elevenlabs") return null;
+  const profiel = (Object.keys(ELEVEN_TOON) as Profiel[]).find((p) => ELEVEN_TOON[p] === s.toon || ELEVEN_TOON_VORIG[p] === s.toon);
+  if (!profiel) return null;
+  const vorig = { ...s, model: "eleven_v4", toon: ELEVEN_TOON_VORIG[profiel] };
+  if (vorig.model === s.model && vorig.toon === s.toon) return null;
+  return zinBestand(zin, vorig).bestand;
 }
 
 function stukBestand(stuk: string, s: Instellingen) {
@@ -281,7 +323,38 @@ async function maakStuk(stuk: string, s: Instellingen): Promise<Buffer | number>
  * de-esser en even hard als bij Fish Audio. Geen uitspraaklijst: die is
  * gemeten voor Fish Audio.
  */
-async function maakStukEleven(stuk: string, s: Instellingen, model = s.model): Promise<Buffer | number> {
+/*
+  Het Starter-abonnement van ElevenLabs staat hooguit 3 verzoeken tegelijk toe
+  (gemeten 23 oktober 2026: het vierde gaf 429). Zinnen die vooraf of voor het
+  eerst gemaakt worden, gaan daarom met hooguit 2 tegelijk, zodat er altijd
+  plek blijft voor een live antwoord; bij 429 even wachten en opnieuw.
+*/
+let elevenBezig = 0;
+const elevenRij: (() => void)[] = [];
+async function elevenBeurt<T>(klus: () => Promise<T>, live: boolean): Promise<T> {
+  if (!live) {
+    while (elevenBezig >= 2) await new Promise<void>((r) => elevenRij.push(r));
+    elevenBezig++;
+  }
+  try {
+    return await klus();
+  } finally {
+    if (!live) {
+      elevenBezig--;
+      elevenRij.shift()?.();
+    }
+  }
+}
+
+async function maakStukEleven(stuk: string, s: Instellingen, model = s.model, live = false): Promise<Buffer | number> {
+  for (let poging = 0; ; poging++) {
+    const uit = await elevenBeurt(() => maakStukElevenEenKeer(stuk, s, model), live);
+    if (uit !== 429 || poging >= 3) return uit;
+    await new Promise((r) => setTimeout(r, 800 * (poging + 1)));
+  }
+}
+
+async function maakStukElevenEenKeer(stuk: string, s: Instellingen, model: string): Promise<Buffer | number> {
   const sr = Number(s.formaat.split("_")[1]) || 24000;
   const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}?output_format=${s.formaat}`, {
     method: "POST",
@@ -517,8 +590,16 @@ export function maakZin(zin: string, profiel: Profiel, opnieuw = false, dienst: 
     if (!opnieuw) {
       const bewaard = await lees(bestand);
       if (bewaard) return { data: bewaard, goed: true };
+      const vorig = vorigBestand(zin, s);
+      const eerder = vorig ? await lees(vorig) : null;
+      if (eerder) return { data: eerder, goed: true };
     }
     const stukken = knipInZinnen(voorStem(zin));
+    /* Altijd minstens ELEVEN_RESERVE tekens overhouden; anders Fish Audio (zinVoorKind). */
+    if (s.dienst === "elevenlabs") {
+      const nodig = Math.ceil(stukken.reduce((n, st) => n + st.length + s.toon.length + 1, 0) * tekenPrijs(s.model));
+      if (!(await elevenVoorLive(nodig))) return { data: null, goed: false, code: 402 };
+    }
     const uitkomsten = await Promise.all(stukken.map((stuk) => maakGecontroleerdStuk(stuk, s, opnieuw)));
     const fout = uitkomsten.findIndex((u) => !u.goed);
     if (fout >= 0) {
@@ -682,6 +763,42 @@ export function maakAllesOpnieuw(vasteZinnen: string[], profielen: Profiel[]): V
   return leesVoortgang();
 }
 
+/**
+ * Alleen wat vooraf klaar moet staan (23 oktober 2026, opdracht eigenaar):
+ * de vaste zinnen, de begroetingen en de hints, voor de groepen van de
+ * kinderen. Wat al bestaat en goed is (ook van vóór het goedkopere model),
+ * wordt niet opnieuw gemaakt. Alle andere zinnen worden pas gemaakt als een
+ * kind ze voor het eerst nodig heeft, en daarna bewaard voor iedereen.
+ */
+export function maakVooraf(zinnen: string[], profielen: Profiel[]): Voortgang {
+  if (voortgang.bezig) return leesVoortgang();
+  voortgang.bezig = true;
+  voortgang.klaar = 0;
+  voortgang.mislukt = 0;
+  voortgang.map = null;
+  voortgang.begonnen = new Date().toISOString();
+  const klussen = profielen.flatMap((p) => [...new Set(zinnen)].map((zin) => ({ zin, p })));
+  voortgang.totaal = klussen.length;
+  void (async () => {
+    try {
+      let volgende = 0;
+      await Promise.all(
+        Array.from({ length: 3 }, async () => {
+          while (volgende < klussen.length) {
+            const { zin, p } = klussen[volgende++];
+            const uitkomst = await maakZin(zin, p).catch(() => ({ goed: false }) as ZinUitkomst);
+            if (!uitkomst.goed) voortgang.mislukt++;
+            voortgang.klaar++;
+          }
+        }),
+      );
+    } finally {
+      voortgang.bezig = false;
+    }
+  })();
+  return leesVoortgang();
+}
+
 // ---------------------------------------------------------------------------
 // Live antwoorden (Praten met Bliepo, 22 oktober 2026)
 // ---------------------------------------------------------------------------
@@ -701,8 +818,9 @@ export async function spreekLive(
 ): Promise<{ data: Buffer; dienst: Dienst; tekens: number } | null> {
   const eleven = elevenMag ? instellingen(profiel, "elevenlabs") : null;
   if (eleven) {
-    const data = await maakStukEleven(voorStem(tekst), eleven, process.env.ELEVEN_MODEL_LIVE ?? "eleven_v4_turbo");
-    if (typeof data !== "number") return { data, dienst: "elevenlabs", tekens: tekst.length + eleven.toon.length + 1 };
+    const model = process.env.ELEVEN_MODEL_LIVE ?? "eleven_v4_turbo";
+    const data = await maakStukEleven(voorStem(tekst), eleven, model, true);
+    if (typeof data !== "number") return { data, dienst: "elevenlabs", tekens: Math.ceil((tekst.length + eleven.toon.length + 1) * tekenPrijs(model)) };
   }
   const fish = instellingen(profiel, "fish");
   if (!fish) return null;

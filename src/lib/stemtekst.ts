@@ -238,7 +238,14 @@ export function knipInZinnen(tekst: string): string[] {
  * Woorden die precies hetzelfde klinken maar die de luisteraar (spraak naar
  * tekst) anders opschrijft: "Wauw" schrijft hij als "Wow", "Oké" als "Okay".
  */
-const KLINKT_GELIJK: Record<string, string> = { wow: "wauw", okay: "oke", okee: "oke", ok: "oke", jaa: "ja", hooij: "hoi" };
+/*
+  "hi" en "yeah" (23 oktober 2026): de spraak-naar-tekst schrijft een los
+  "Hoi Sam!" of "Ja." van Ruth vaak in het Engels op, ook met de Nederlandse
+  dragerzin ervoor; "Hoi Testkind!" werd wel als "hoi" verstaan. In onze
+  Nederlandse teksten komen "hi" en "yeah" nooit voor, dus dit verbergt geen
+  echt ontbrekend woord.
+*/
+const KLINKT_GELIJK: Record<string, string> = { wow: "wauw", okay: "oke", okee: "oke", ok: "oke", jaa: "ja", hooij: "hoi", hi: "hoi", yeah: "ja" };
 
 /** De woorden van een zin, voor de controle: kleine letters, zonder leestekens en accenten. */
 export function woordenVan(tekst: string): string[] {

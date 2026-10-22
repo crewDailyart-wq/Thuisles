@@ -407,6 +407,17 @@ export const SCHERMCONTRACT = [
     ],
   },
   {
+    /*
+      De begroeting van Bliepo op de startpagina (23 oktober 2026, opdracht
+      eigenaar), met het luidsprekertje waarmee zijn stem daar uit kan.
+    */
+    naam: "Begroeting Bliepo",
+    pad: "/zappie",
+    bron: ["src/components/zappie/BliepoBegroeting.tsx"],
+    zichtbaar: ["Stem van Bliepo uitzetten"],
+    naKlik: [{ tekst: "Tik op mij!", bron: "src/components/zappie/BliepoBegroeting.tsx", na: "de startpagina openen voordat er getikt is" }],
+  },
+  {
     naam: "Beheer: Bliepo-gebruik",
     pad: "/admin/bliepo",
     bron: ["src/app/admin/bliepo/page.tsx"],

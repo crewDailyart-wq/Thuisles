@@ -24,6 +24,8 @@
  * ontbreken, plus de teller en de voortgang van "alles opnieuw".
  * POST /api/stem met { actie: "alles" } maakt alle bewaarde zinnen en de vaste
  * zinnen opnieuw met de nieuwe stem (op de achtergrond).
+ * POST /api/stem met { actie: "vooraf" } maakt alleen de vaste zinnen, de
+ * begroetingen en de hints, en alleen als ze nog niet bestaan (23 oktober 2026).
  *
  * Dit adres heeft geen extensie en zit dus achter het slot van de site
  * (proxy.ts); alleen wie binnen mag, kan zinnen laten maken.
@@ -41,6 +43,7 @@ import {
   leesTeller,
   leesVoortgang,
   maakAllesOpnieuw,
+  maakVooraf,
   maakZin,
   MAP,
   MAX_LENGTE,
@@ -51,6 +54,7 @@ import {
 } from "@/lib/stem-server";
 import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
 import { alleHintZinnen } from "@/lib/tutor/hints";
+import { alleBegroetingen } from "@/lib/begroeting";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -60,13 +64,14 @@ const WACHT_MS = 6000;
 
 function mp3(data: Buffer, request: NextRequest) {
   /*
-    De browser mag de zin bewaren, maar vraagt elke keer kort na of hij nog
-    klopt (ETag). Zo hoort iedereen een zin die opnieuw is gemaakt meteen in
-    de nieuwe versie; is hij niet veranderd, dan komt er alleen een kort
-    "niet veranderd" terug.
+    De browser bewaart de zin 30 dagen en haalt hem in die tijd niet opnieuw
+    op (23 oktober 2026, opdracht eigenaar: zuinig). Daarna vraagt hij kort na
+    of hij nog klopt (ETag); is hij niet veranderd, dan komt er alleen een kort
+    "niet veranderd" terug. Een zin die met "Opnieuw maken" is vervangen, hoor
+    je op /voorbeeld-bliepo meteen (die vraagt zonder bewaarde versie).
   */
   const etag = `"${createHash("sha1").update(data).digest("hex").slice(0, 20)}"`;
-  const headers = { ETag: etag, "Cache-Control": "private, no-cache" };
+  const headers = { ETag: etag, "Cache-Control": "private, max-age=2592000" };
   if (request.headers.get("if-none-match") === etag) return new NextResponse(null, { status: 304, headers });
   return new NextResponse(new Uint8Array(data), {
     headers: { ...headers, "Content-Type": "audio/mpeg", "Content-Length": String(data.length) },
@@ -111,6 +116,11 @@ export async function GET(request: NextRequest) {
 
 export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
+
+  /* Alleen wat vooraf klaar moet staan, en alleen wat nog ontbreekt (23 oktober 2026). */
+  if (body?.actie === "vooraf") {
+    return NextResponse.json(maakVooraf([...VASTE_ZINNEN, ...alleBegroetingen(), ...alleHintZinnen()], profielenVanKinderen()));
+  }
 
   if (body?.actie === "alles") {
     return NextResponse.json(maakAllesOpnieuw([...VASTE_ZINNEN, ...alleHintZinnen()], profielenVanKinderen()));

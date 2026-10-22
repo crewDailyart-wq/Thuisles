@@ -174,7 +174,10 @@ export function elevenReserve(): number {
   return Number.isFinite(n) && n >= 0 ? n : 10_000;
 }
 
-/** Mag een live antwoord nog met ElevenLabs? Anders Fish Audio. */
+/**
+ * Mag dit nog met ElevenLabs (een live antwoord of een nieuwe zin)? Anders
+ * Fish Audio. Er blijven altijd minstens ELEVEN_RESERVE tekens over.
+ */
 export async function elevenVoorLive(nodig: number): Promise<boolean> {
   const t = await elevenTekens();
   if (!t) return false;

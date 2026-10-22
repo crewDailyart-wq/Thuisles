@@ -7,6 +7,9 @@
  * worden één keer ingesproken met Ruth en daarna bewaard (app/api/stem), dus
  * ze kosten na de eerste keer niets meer.
  *
+ * Kort gehouden (23 oktober 2026, opdracht eigenaar): elk teken kost bij de
+ * stem geld, dus geen overbodige woorden, wel even warm.
+ *
  * De hintladder: per soort som drie hints, van makkelijk naar duidelijk, en
  * daarna een korte uitleg. Geen enkele hint noemt het antwoord. Heeft de
  * opgave eigen teksten van het maatje (tip en uitleg), dan gaan die voor.
@@ -36,7 +39,7 @@ export type Ladder = { hints: [string, string, string]; uitleg: string };
 const LADDERS: Record<string, Ladder> = {
   getallen: {
     hints: [
-      "Kijk nog eens goed naar het getal. Hoeveel tientallen zie je?",
+      "Kijk goed naar het getal. Hoeveel tientallen zie je?",
       "Tel eerst de tientallen, en dan de losse eenheden erbij.",
       "Zeg de getallen hardop. Welk getal komt er steeds na het vorige?",
     ],
@@ -70,7 +73,7 @@ const LADDERS: Record<string, Ladder> = {
     hints: [
       "Welke tafel is dit? Kijk naar de getallen in de som.",
       "Keer betekent: zoveel keer hetzelfde getal. Tel in sprongen.",
-      "Weet je een som uit dezelfde tafel die er dichtbij ligt? Reken vanaf daar verder.",
+      "Weet je een som uit dezelfde tafel? Reken vanaf daar verder.",
     ],
     uitleg: "Keer is steeds hetzelfde getal erbij. Tel in sprongen, of begin bij een som die je al weet.",
   },
@@ -96,7 +99,7 @@ const LADDERS: Record<string, Ladder> = {
       "Vergelijk met iets wat je kent, zoals je hand of een liniaal.",
       "Moet je omrekenen? Denk aan hoeveel er in één meter of één kilo gaan.",
     ],
-    uitleg: "Bij meten kijk je eerst welke maat er gevraagd wordt. Daarna vergelijk je, of reken je om naar dezelfde maat.",
+    uitleg: "Kijk eerst welke maat er gevraagd wordt. Vergelijk dan, of reken om naar dezelfde maat.",
   },
   tijd: {
     hints: [
@@ -128,7 +131,7 @@ const LADDERS: Record<string, Ladder> = {
       "Zoek de juiste rij of kolom, en volg die met je vinger.",
       "Vergelijk de getallen. Welke is het grootst, en welke het kleinst?",
     ],
-    uitleg: "Bij een tabel of grafiek lees je eerst de titel. Dan zoek je de goede rij of kolom en lees je het getal af.",
+    uitleg: "Lees eerst de titel. Zoek dan de goede rij of kolom, en lees het getal af.",
   },
   verhaaltjessommen: {
     hints: [
@@ -136,7 +139,7 @@ const LADDERS: Record<string, Ladder> = {
       "Komt er iets bij, of gaat er iets af?",
       "Schrijf de som op met de getallen uit het verhaal.",
     ],
-    uitleg: "Bij een verhaaltjessom zoek je eerst wat je wilt weten. Dan kijk je of er iets bij komt of af gaat, en maak je de som.",
+    uitleg: "Zoek eerst wat je wilt weten. Komt er iets bij, of gaat er iets af? Maak dan de som.",
   },
   algemeen: {
     hints: [
@@ -144,7 +147,7 @@ const LADDERS: Record<string, Ladder> = {
       "Kijk goed naar het plaatje en de getallen. Wat valt je op?",
       "Doe het in kleine stapjes. Wat is de eerste stap?",
     ],
-    uitleg: "Lees eerst rustig wat er gevraagd wordt. Doe het daarna stap voor stap, en kijk aan het eind of het klopt.",
+    uitleg: "Lees eerst rustig wat er gevraagd wordt. Doe het dan stap voor stap.",
   },
 };
 
@@ -184,7 +187,7 @@ export const VASTE_ANTWOORDEN = {
   isGoed: "Dat zie je zo! Druk op Controleer, dan kijken we het samen na.",
   watDoen: "Vul je antwoord in, en druk dan op Controleer.",
   limiet: "Ik moet even opladen! Morgen kun je me weer vragen stellen. De hints werken wel gewoon.",
-  kanNiet: "Ik kan nu even niet goed nadenken. Probeer eerst een hint, door te zeggen: ik snap het niet.",
+  kanNiet: "Ik kan nu even niet nadenken. Zeg: ik snap het niet. Dan krijg je een hint.",
   laatsteHint: "Je hebt alle hints gehad. Probeer het nu zelf, je kunt het!",
   /* Meteen na het loslaten, als het antwoord nog even duurt: dan wacht het kind niet op stilte. */
   denken: "Hmm, even nadenken.",

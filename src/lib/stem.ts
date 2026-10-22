@@ -26,11 +26,14 @@ import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bl
 type Bron = "browser" | "server";
 
 /*
-  Sinds 21 oktober 2026 praat Bliepo met de stem die de eigenaar op Fish Audio
-  heeft gekozen (app/api/stem/route.ts). Lukt de nieuwe stem niet, dan geeft
-  de server de oude Fish Audio-stem. Lukt ook dat niet — geen tegoed, geen
-  verbinding, de zin duurt te lang — dan praat hij met de browserstem zoals
-  hiervoor. Terug naar alleen de browserstem: zet dit op "browser".
+  Sinds 22 oktober 2026 praat Bliepo overal met de ElevenLabs-stem Ruth
+  (app/api/stem/route.ts), met toon en tempo per groep. Lukt Ruth niet, dan
+  geeft de server Fish Audio (Sanne), en daarna de oude Fish Audio-stem.
+  Sinds 23 oktober 2026 (opdracht eigenaar) komt de browserstem alleen nog als
+  de server helemaal niet te bereiken is (geen verbinding, server kapot). Duurt
+  een zin te lang, of mag de browser nog geen geluid maken omdat er nog niet
+  getikt is, dan blijft Bliepo stil en staat de tekst in zijn wolkje.
+  Terug naar alleen de browserstem: zet dit op "browser".
 */
 const BRON: Bron = "server";
 
@@ -216,8 +219,8 @@ export function zeg(zin: string): void {
     window.speechSynthesis?.cancel();
     beurt += 1;
     const mijnBeurt = beurt;
-    speelVanServer(zin, mijnBeurt, () => meld(false), () => {
-      if (mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
+    speelVanServer(zin, mijnBeurt, () => meld(false), (kapot) => {
+      if (kapot && mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
     });
     return;
   }
@@ -320,15 +323,17 @@ export function zegNaElkaar(
         zinnen[i],
         mijnBeurt,
         () => volgende(i + 1),
-        () => {
+        (kapot) => {
           if (gestopt || mijnBeurt !== beurt) return;
-          /* Lukt de eerste zin al niet, dan alles met de browserstem; halverwege gewoon door op de klok. */
-          if (!gestart) browserReeks();
+          /* Is de server kapot bij de eerste zin, dan alles met de browserstem; anders gewoon door op de klok. */
+          if (!gestart && kapot) browserReeks();
           else klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
         },
         () => {
           gestart = true;
         },
+        /* Alleen de eerste zin krijgt 0,2 s stilte ervoor; daarna loopt het door, zonder rare pauze. */
+        gestart ? 0.03 : 0.2,
       );
     };
     volgende(0);
@@ -440,7 +445,14 @@ let stopServerGeluid: (() => void) | null = null;
  *   2. de geluidsmeter wordt aangezet en we wachten tot hij echt draait;
  *   3. de zin begint na een stilte van 0,2 seconde.
  */
-function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislukt: () => void, gestart?: () => void): void {
+function speelVanServer(
+  zin: string,
+  mijnBeurt: number,
+  klaar: () => void,
+  mislukt: (kapot: boolean) => void,
+  gestart?: () => void,
+  stilte = 0.2,
+): void {
   stopServerGeluid?.();
   stopServerGeluid = null;
   huidigGeluid?.pause();
@@ -454,7 +466,7 @@ function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislu
     /* Te lang wachten of geen tik gehad: alleen deze zin met de browser. Echt kapot: de rest van het bezoek. */
     if (kapot) serverWerkt = false;
     meld(false);
-    if (mijnBeurt === beurt) mislukt();
+    if (mijnBeurt === beurt) mislukt(kapot);
   };
   const begint = () => {
     if (mijnBeurt !== beurt) return;
@@ -478,7 +490,7 @@ function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislu
     .then(async (data) => {
       clearTimeout(wachter);
       if (!nogAanDeBeurt()) return;
-      const stop = await speelBliepoData(data.slice(0), { stilte: 0.2, gestart: begint, klaar: eindigt });
+      const stop = await speelBliepoData(data.slice(0), { stilte, gestart: begint, klaar: eindigt });
       if (stop) {
         if (!nogAanDeBeurt()) stop();
         else stopServerGeluid = stop;
@@ -504,6 +516,7 @@ function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislu
     })
     .catch((fout: unknown) => {
       clearTimeout(wachter);
+      /* 503 = geen enkele stem lukte op de server; geen antwoord = geen verbinding. Allebei "kapot". */
       faal(!(fout instanceof DOMException && fout.name === "AbortError"));
     });
 }
@@ -560,6 +573,12 @@ export function speelAntwoord(data: ArrayBuffer): Promise<void> {
       void geluid.play().catch(einde);
     });
   });
+}
+
+/** Mag de browser al geluid maken (heeft het kind al ergens op getikt)? */
+export function magGeluid(): boolean {
+  if (typeof navigator === "undefined") return false;
+  return navigator.userActivation ? navigator.userActivation.hasBeenActive : true;
 }
 
 /** Zinnen met de gewone stem na elkaar, als belofte (voor de hints van Praten met Bliepo). */

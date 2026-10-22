@@ -301,7 +301,35 @@ export function leesPcm(buf: Buffer, sr: number): Klank {
   return { samples, sr };
 }
 
-/** De-esser, even hard, mp3. */
+/*
+  Kleine bestanden (23 oktober 2026, opdracht eigenaar): mono mp3 van 64 kbps
+  bij 24 kHz (ElevenLabs) en 96 kbps bij 44,1 kHz (Fish Audio), in plaats van
+  160/192 kbps. Voor gesproken tekst klinkt dat nog helder en het bestand is
+  2,5 keer zo klein. Bewust geen nieuwe KLANK_VERSIE: dan zouden alle zinnen
+  opnieuw betaald moeten worden; de bestaande zijn los kleiner gemaakt.
+*/
+export const KBPS_STEM = (sr: number) => (sr < 32000 ? 64 : 96);
+
+/*
+  Stilte aan het begin en eind inkorten (23 oktober 2026): een zin achter een
+  andere ("Hoi Sam!" en dan de begroeting) had anders een rare pauze, want
+  ElevenLabs zet er tot 0,6 s stilte achter. Hooguit 0,05 s ervoor (de speler
+  zet er zelf al 0,2 s stilte voor, zodat er nooit een begin wegvalt) en 0,2 s
+  erachter, met een korte uitloop zodat er niets afgeknipt klinkt.
+*/
+export function knipStilte(k: Klank, voor = 0.05, na = 0.2): Klank {
+  const drempel = 0.01;
+  let a = 0;
+  let b = k.samples.length - 1;
+  while (a < b && Math.abs(k.samples[a]) < drempel) a++;
+  while (b > a && Math.abs(k.samples[b]) < drempel) b--;
+  if (b <= a) return k;
+  const begin = Math.max(0, a - Math.round(voor * k.sr));
+  const eind = Math.min(k.samples.length, b + 1 + Math.round(na * k.sr));
+  return { samples: k.samples.slice(begin, eind), sr: k.sr };
+}
+
+/** De-esser, even hard, stilte inkorten, mp3. */
 export function bewerkKlank(k: Klank, d: DeEsser | null = GEKOZEN_DE_ESSER): Buffer {
-  return naarMp3(evenHard(d ? deEss(k, d) : k));
+  return naarMp3(knipStilte(evenHard(d ? deEss(k, d) : k)), KBPS_STEM(k.sr));
 }

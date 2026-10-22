@@ -907,7 +907,7 @@
 
 .zs-lasvonk {
   left: 60.4%;
-  top: 42%;
+  top: 60%;
   width: 2.4%;
   background: #fff4cc;
   box-shadow: 0 0 12px 5px rgb(255 200 97 / 0.6);
@@ -4225,3 +4225,80 @@ body:has(.zp)::before {
   }
 }
 
+
+/*
+  De begroeting van Bliepo bij "Kies jouw vak" (23 oktober 2026): het
+  luidsprekertje waarmee zijn stem op de startpagina uit kan. De blokken
+  eromheen laten tikken door (pointer-events: none); de knop zelf niet.
+*/
+.zp-startstem {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 34px;
+  height: 34px;
+  padding: 7px;
+  border: 2px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  background: rgba(20, 63, 154, 0.85);
+  color: #fff;
+  pointer-events: auto;
+  cursor: pointer;
+}
+
+.zp-startstem svg {
+  width: 100%;
+  height: 100%;
+}
+
+.zp-startstem:focus-visible {
+  outline: 3px solid #ffd54a;
+  outline-offset: 2px;
+}
+
+.zp-bliepo-boven .zp-startstem {
+  top: 4px;
+  left: calc(50% + 46px);
+}
+
+.zp-bliepo-staan .zp-startstem {
+  top: 4%;
+  left: 20%;
+}
+
+.zp-bliepo-boven .bt-ballon-groet,
+.zp-bliepo-staan .bt-ballon-groet {
+  width: max-content;
+  max-width: min(260px, 80vw);
+}
+
+/* Naast het paneel: de ballon begint bij Bliepo en loopt naar rechts, zodat hij nooit buiten beeld valt. */
+.zp-bliepo-staan .bt-ballon-groet {
+  left: 8%;
+  max-width: min(240px, 30vw);
+  transform: translate(0, -100%);
+}
+
+.zp-bliepo-staan .bt-ballon-groet > span:last-child {
+  left: 30%;
+}
+
+/* Telefoon en tablet: boven Bliepo zit de bovenbalk, dus de ballon staat links naast hem. */
+.zp-bliepo-boven .bt-ballon-groet {
+  top: 60%;
+  right: calc(100% + 6px);
+  left: auto;
+  max-width: calc(50vw - 64px);
+  padding: 8px 10px;
+  font-size: 14px;
+  transform: translate(0, -50%);
+}
+
+.zp-bliepo-boven .bt-ballon-groet > span:last-child {
+  top: calc(50% - 6px);
+  right: -8px;
+  bottom: auto;
+  left: auto;
+  transform: rotate(-45deg);
+}

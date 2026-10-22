@@ -23,6 +23,9 @@
 
 import { useEffect, useRef, useState } from "react";
 import { BliepoFilmpje } from "@/components/zappie/bliepo/BliepoFilmpje";
+import { bliepoGeluidKlinkt, leesBliepoGolf } from "@/lib/bliepo-geluid";
+import { zeg } from "@/lib/stem";
+import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
 
@@ -37,7 +40,28 @@ type Instellingen = {
   /** wordt aangeroepen als hij voor het eerst getekend is */
   onKlaar?: () => void;
   className?: string;
+  /** Een tekstballon van buitenaf (de begroeting op de startpagina, 23 oktober 2026). */
+  ballon?: string | null;
+  /** Telt op bij elke keer dat hij moet zwaaien (niet bij "Beweging uit"). */
+  zwaai?: number;
 };
+
+/*
+  Tikken op Bliepo: hij zegt wie hij is, sinds 23 oktober 2026 ook met zijn
+  stem (Ruth), behalve als de luidspreker op de startpagina uit staat.
+*/
+function zegTiktekst() {
+  if (startstemAan()) zeg(TIKTEKST);
+}
+
+/** Het lijntje op zijn scherm volgt de stem: hoe hard klinkt Bliepo nu (0 tot 1), of null als hij stil is. */
+const golf = new Uint8Array(512);
+function stemNiveau(): number | null {
+  if (!bliepoGeluidKlinkt() || !leesBliepoGolf(golf)) return null;
+  let som = 0;
+  for (const v of golf) som += ((v - 128) / 128) ** 2;
+  return Math.min(1, Math.sqrt(som / golf.length) * 5);
+}
 
 /*
   Lichte weergave (19 oktober 2026, opdracht eigenaar): op telefoon, tablet en
@@ -52,9 +76,13 @@ export function Bliepo3DGedeeld(instellingen: Instellingen) {
   return <Bliepo3DEcht {...instellingen} />;
 }
 
-function BliepoAlsFilmpje({ rustig, onKlaar, className = "" }: Instellingen) {
+function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
   const [praat, zetPraat] = useState(false);
+  const ballonRef = useRef(ballon);
+  useEffect(() => {
+    ballonRef.current = ballon;
+  }, [ballon]);
   useEffect(() => {
     const host = plek.current;
     if (!host) return;
@@ -63,7 +91,9 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "" }: Instellingen) {
       const r = host.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
       if ((e.target as Element | null)?.closest("a, button, input, select, textarea")) return;
+      if (ballonRef.current) return;
       zetPraat(true);
+      zegTiktekst();
       window.clearTimeout(stil);
       stil = window.setTimeout(() => zetPraat(false), 4000);
     };
@@ -76,9 +106,9 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "" }: Instellingen) {
   return (
     <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
       <BliepoFilmpje rustig={rustig} className="bt-prototype-doek" onKlaar={onKlaar} />
-      {praat && (
-        <div className="bt-ballon" role="status">
-          <span>{TIKTEKST}</span>
+      {(ballon || praat) && (
+        <div className={`bt-ballon${ballon ? " bt-ballon-groet" : ""}`} role="status">
+          <span>{ballon || TIKTEKST}</span>
           <span />
         </div>
       )}
@@ -92,7 +122,11 @@ function Bliepo3DEcht({
   volgMuis = true,
   onKlaar,
   className = "",
+  ballon,
+  zwaai = 0,
 }: {
+  ballon?: string | null;
+  zwaai?: number;
   rustig: boolean;
   /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
   rusthoek?: number;
@@ -105,10 +139,21 @@ function Bliepo3DEcht({
   const plek = useRef<HTMLDivElement>(null);
   const rustigRef = useRef(rustig);
   const instelling = useRef({ rusthoek, volgMuis, onKlaar });
+  const ballonRef = useRef(ballon);
+  const zwaaiRef = useRef<((actie: string) => void) | null>(null);
 
   useEffect(() => {
     rustigRef.current = rustig;
   }, [rustig]);
+
+  useEffect(() => {
+    ballonRef.current = ballon;
+  }, [ballon]);
+
+  /* Zwaaien op verzoek (de begroeting), niet bij "Beweging uit". */
+  useEffect(() => {
+    if (zwaai > 0 && !rustigRef.current) zwaaiRef.current?.("wave");
+  }, [zwaai]);
 
   useEffect(() => {
     const host = plek.current;
@@ -286,15 +331,22 @@ function Bliepo3DEcht({
       const tik = (e: PointerEvent) => {
         if (!binnen(e.clientX, e.clientY, 0)) return;
         if ((e.target as Element | null)?.closest("a, button, input, select, textarea")) return;
+        /* Begroet hij net (tekstballon van buitenaf), dan niet ook nog wie hij is. */
+        if (ballonRef.current) return;
         wachtTot = 0;
         if (!getikt) {
           getikt = true;
           besturing.showText(TIKTEKST);
+          zegTiktekst();
           wachtTot = performance.now() + 4000;
         } else speel("celebrate");
       };
       window.addEventListener("pointermove", beweeg, { passive: true });
       window.addEventListener("pointerdown", tik, { passive: true });
+      zwaaiRef.current = (actie) => {
+        wachtTot = 0;
+        speel(actie);
+      };
 
       let frame = 0;
       let vorige = performance.now();
@@ -321,6 +373,7 @@ function Bliepo3DEcht({
         }
         const hoek = besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
         model.root.rotation.y += (hoek - model.root.rotation.y) * Math.min(1, dt * 4);
+        besturing.setSpeechLevel(stemNiveau());
         besturing.update(dt, {});
         ballon.update(besturing);
         /*
@@ -328,7 +381,7 @@ function Bliepo3DEcht({
           per seconde (hij ademt alleen rustig), tijdens een gebaar 30 keer;
           niet meer op de volle snelheid van het scherm (tot 120 keer).
         */
-        const pauze = besturing.action !== "idle" ? 1000 / 30 : rustigRef.current ? 250 : 1000 / 15;
+        const pauze = besturing.action !== "idle" || bliepoGeluidKlinkt() ? 1000 / 30 : rustigRef.current ? 250 : 1000 / 15;
         if (nu - laatsteTekening >= pauze) {
           renderer.render(scene, camera);
           laatsteTekening = nu;
@@ -348,6 +401,7 @@ function Bliepo3DEcht({
       document.addEventListener("visibilitychange", wakker);
 
       opruimen = () => {
+        zwaaiRef.current = null;
         cancelAnimationFrame(frame);
         document.removeEventListener("visibilitychange", wakker);
         window.removeEventListener("pointermove", beweeg);
@@ -376,5 +430,14 @@ function Bliepo3DEcht({
     };
   }, []);
 
-  return <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true" />;
+  return (
+    <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
+      {ballon && (
+        <div className="bt-ballon bt-ballon-groet" role="status">
+          <span>{ballon}</span>
+          <span />
+        </div>
+      )}
+    </div>
+  );
 }

@@ -31,6 +31,9 @@
 
 import Link from "next/link";
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
+import { StartstemKnop, useBegroeting } from "@/components/zappie/BliepoBegroeting";
+import { startstemAan } from "@/components/zappie/startstem";
+import { zeg as zegHardop } from "@/lib/stem";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { Illustratie } from "@/components/zappie/reis/Illustratie";
 import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
@@ -152,6 +155,7 @@ export function Startscherm() {
     .split(",")
     .filter(Boolean) as Dagmissie[];
 
+  const begroeting = useBegroeting();
   const [bericht, zetBericht] = useState<Bericht | null>(null);
   const [praat, zetPraat] = useState(false);
   const [tik, zetTik] = useState(0);
@@ -170,6 +174,8 @@ export function Startscherm() {
 
   /** Zappie iets laten zeggen: ballon, golf beweegt, sprongetje. Daarna weer stil. */
   function zeg(b: Bericht) {
+    /* Sinds 23 oktober 2026 ook hardop, met de stem van Bliepo (Ruth), tenzij de luidspreker uit staat. */
+    if (startstemAan()) zegHardop(b.tekst);
     zetBericht(b);
     zetTik((n) => n + 1);
     zetPraat(true);
@@ -299,13 +305,24 @@ export function Startscherm() {
           staan en op een groot scherm onderaan ernaast. Het paneel zelf is niet
           veranderd.
         */}
-        <div className="zp-bliepo-boven" aria-hidden="true">
-          <Bliepo3DGedeeld rustig={bewegingRustig} rusthoek={0} />
+        {/*
+          De begroeting (23 oktober 2026): Bliepo zwaait, praat en zijn tekst
+          staat in een ballon; met het luidsprekertje gaat zijn stem uit. De
+          robot zelf is voor een voorleesprogramma verborgen; de tekst staat
+          daarom ook onzichtbaar in een meldregel.
+        */}
+        <p className="sr-only" aria-live="polite">
+          {begroeting.ballon ?? ""}
+        </p>
+        <div className="zp-bliepo-boven">
+          <Bliepo3DGedeeld rustig={bewegingRustig} rusthoek={0} ballon={begroeting.ballon} zwaai={begroeting.zwaai} />
+          <StartstemKnop />
         </div>
         <VakkenPaneel />
-        <div className="zp-bliepo-naast" aria-hidden="true">
+        <div className="zp-bliepo-naast">
           <div className="zp-bliepo-staan">
-            <Bliepo3DGedeeld rustig={bewegingRustig} rusthoek={Math.PI / 8} />
+            <Bliepo3DGedeeld rustig={bewegingRustig} rusthoek={Math.PI / 8} ballon={begroeting.ballon} zwaai={begroeting.zwaai} />
+            <StartstemKnop />
           </div>
         </div>
 
