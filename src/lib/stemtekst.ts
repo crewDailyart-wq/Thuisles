@@ -234,6 +234,12 @@ export function knipInZinnen(tekst: string): string[] {
   return samen;
 }
 
+/**
+ * Woorden die precies hetzelfde klinken maar die de luisteraar (spraak naar
+ * tekst) anders opschrijft: "Wauw" schrijft hij als "Wow", "Oké" als "Okay".
+ */
+const KLINKT_GELIJK: Record<string, string> = { wow: "wauw", okay: "oke", okee: "oke", ok: "oke", jaa: "ja", hooij: "hoi" };
+
 /** De woorden van een zin, voor de controle: kleine letters, zonder leestekens en accenten. */
 export function woordenVan(tekst: string): string[] {
   return voorStem(tekst.replace(/\[[^\]]*\]/g, " "))
@@ -243,7 +249,8 @@ export function woordenVan(tekst: string): string[] {
     .replace(/[^a-z0-9\s'-]/g, " ")
     .replace(/[-']/g, "")
     .split(/\s+/)
-    .filter(Boolean);
+    .filter(Boolean)
+    .map((w) => KLINKT_GELIJK[w] ?? w);
 }
 
 function lijktOp(a: string, b: string): boolean {

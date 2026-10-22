@@ -350,11 +350,12 @@ function Lesscherm({
       kies: (opties) =>
         new Promise((res) => {
           zet((b) => ({ ...b, bediening: { soort: "kies", opties } }));
-          /* "Zal ik de keuzes voorlezen?" uit "Zo werkt het". */
-          if (vk().keuzesVoorlezen) {
-            stopStem?.();
-            stopStem = zegNaElkaar(opties.map(kaal), () => {}, () => {}, true);
-          }
+          /*
+            De keuzes worden niet voorgelezen (22 oktober 2026, opdracht
+            eigenaar): Bliepo leest alleen de vraag, de uitleg en zijn reacties
+            voor. Tot dan las hij ze voor als het kind dat in "Zo werkt het"
+            had gekozen (`keuzesVoorlezen`); die keuze wordt nog wel bewaard.
+          */
           wacht.current.kies = (v) => {
             wacht.current.kies = undefined;
             pas((b) => ({ ...b, bediening: null }));
