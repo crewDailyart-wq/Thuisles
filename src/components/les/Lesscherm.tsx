@@ -16,6 +16,7 @@
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { VraagBliepo } from "@/components/tutor/VraagBliepo";
 import { Bliepo } from "@/components/avontuur/Bliepo";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
@@ -247,15 +248,26 @@ export function Lesspeler({
   naam = "",
   onKlaar,
   terugHref,
+  tutor = null,
 }: {
   les: Lesdraaiboek;
   naam?: string;
   onKlaar?: () => void;
   terugHref?: string;
+  /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
+  tutor?: { groep: number } | null;
 }) {
   const [ronde, setRonde] = useState(0);
   return (
-    <Lesscherm key={ronde} les={les} naam={naam} opnieuw={() => setRonde((r) => r + 1)} onKlaar={onKlaar} terugHref={terugHref} />
+    <Lesscherm
+      key={ronde}
+      les={les}
+      naam={naam}
+      opnieuw={() => setRonde((r) => r + 1)}
+      onKlaar={onKlaar}
+      terugHref={terugHref}
+      tutor={tutor}
+    />
   );
 }
 
@@ -265,12 +277,14 @@ function Lesscherm({
   opnieuw,
   onKlaar,
   terugHref,
+  tutor,
 }: {
   les: Lesdraaiboek;
   naam: string;
   opnieuw: () => void;
   onKlaar?: () => void;
   terugHref?: string;
+  tutor: { groep: number } | null;
 }) {
   const klaarMelding = useRef(onKlaar);
   useEffect(() => {
@@ -591,6 +605,23 @@ function Lesscherm({
               </button>
             </div>
           )}
+          {/*
+            Praten met Bliepo: alleen als de ouder het aanzette, en alleen als
+            het kind iets gevraagd wordt (een getal, een keuze of een som).
+          */}
+          {tutor && b && b.soort !== "verder" && (
+            <div className={s.bediening} style={{ marginTop: 16 }}>
+              <VraagBliepo
+                opgave={{
+                  opgaveId: `les:${les.id}:${kortKenmerk(beeld.zinnen.join("|"))}`,
+                  opgaveTekst: beeld.zinnen.map(kaal).join(" "),
+                  domein: les.id,
+                  leerdoel: les.titel,
+                }}
+                groep={tutor.groep}
+              />
+            </div>
+          )}
           {beeld.klaar && (
             <div className={s.bediening}>
               <button type="button" className={`${s.knop} ${s.breed}`} onClick={opnieuw}>
@@ -878,4 +909,11 @@ function Keuzes({ opties, onKlaar }: { opties: string[]; onKlaar: (v: string | n
       </div>
     </div>
   );
+}
+
+/** Een kort, vast kenmerk van een tekst (voor Praten met Bliepo: welke vraag in de les). */
+function kortKenmerk(tekst: string): string {
+  let h = 5381;
+  for (let i = 0; i < tekst.length; i++) h = ((h << 5) + h + tekst.charCodeAt(i)) >>> 0;
+  return h.toString(36);
 }

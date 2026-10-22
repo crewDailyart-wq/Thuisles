@@ -882,6 +882,48 @@ function werkTabellenBij(d: DatabaseSync) {
     );
   `);
 
+  /*
+    Praten met Bliepo (22 oktober 2026, opdracht eigenaar). Alleen tellers en
+    gedeelde antwoorden, niets wat naar een kind herleidbaar is:
+      - tutor_teller: hoeveel live vragen een kind vandaag stelde (voor de
+        daglimiet), per kind per dag alleen een getal;
+      - tutor_dag: per dag de totalen voor de beheerpagina, zonder kind;
+      - tutor_antwoorden: antwoorden die gedeeld worden tussen kinderen, per
+        opgave en soort vraag; zonder kind, zonder stem, zonder de vraag zelf
+        (alleen een vingerafdruk om dezelfde soort vraag te herkennen).
+    Stemopnames worden nergens bewaard.
+  */
+  d.exec(`
+    create table if not exists tutor_teller (
+      kind_id  text not null references kinderen (id) on delete cascade,
+      datum    text not null,
+      live     integer not null default 0,
+      primary key (kind_id, datum)
+    );
+    create table if not exists tutor_dag (
+      datum          text primary key,
+      vragen         integer not null default 0,
+      hints          integer not null default 0,
+      live           integer not null default 0,
+      gedeeld        integer not null default 0,
+      kosten_usd     real not null default 0,
+      eleven_tekens  integer not null default 0,
+      fish_tekens    integer not null default 0
+    );
+    create table if not exists tutor_antwoorden (
+      id             integer primary key autoincrement,
+      opgave         text not null,
+      profiel        text not null,
+      soort          text not null,
+      vingerafdruk   text not null,
+      tekst          text not null,
+      bestand        text not null,
+      gebruikt       integer not null default 1,
+      aangemaakt_op  text not null
+    );
+    create index if not exists tutor_antwoorden_opgave on tutor_antwoorden (opgave, profiel);
+  `);
+
   /* Als laatste: alle kolommen staan er dan, en die gaan één op één mee. */
   werkVraagvormenBij(d);
 }

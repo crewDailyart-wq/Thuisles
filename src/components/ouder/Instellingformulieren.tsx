@@ -15,6 +15,7 @@ import {
   voegKindToe,
   wijzigInstellingen,
   wijzigKindprofiel,
+  wijzigPratenMetBliepo,
 } from "@/app/ouder/acties";
 import { Knop } from "@/components/ouder/Bouwstenen";
 import { Pictogram } from "@/components/kind/Pictogram";
@@ -261,6 +262,53 @@ export function KindWijzigen({ kind }: { kind: Kind }) {
         </label>
       )}
 
+      <Melding uitkomst={uitkomst} />
+      <Verstuurknop label="Opslaan" bezig={bezig} />
+    </form>
+  );
+}
+
+/**
+ * Praten met Bliepo (22 oktober 2026). Standaard uit: de ouder zet het zelf
+ * aan. Daarbij staat uitgelegd wat er met de stem van het kind gebeurt.
+ */
+export function PratenMetBliepo({
+  kind,
+  instellingen,
+}: {
+  kind: Kind;
+  instellingen: { praten: boolean; vragenPerDag: number };
+}) {
+  const [uitkomst, verstuur, bezig] = useActionState<Uitkomst, FormData>(wijzigPratenMetBliepo, null);
+  return (
+    <form action={verstuur} className="flex flex-col gap-4">
+      <input type="hidden" name="kindId" value={kind.id} />
+      <label className="flex items-start gap-3 text-sm">
+        <input
+          type="checkbox"
+          name="praten"
+          value="aan"
+          defaultChecked={instellingen.praten}
+          className="mt-0.5 size-5 accent-[#5b3fd6]"
+        />
+        <span>
+          <span className="block font-semibold">Praten met Bliepo</span>
+          <span className="block text-beheer-zacht">
+            {kind.roepnaam} kan dan bij elke vraag een knop ingedrukt houden en Bliepo iets vragen. Bliepo geeft een
+            hint, maar verklapt nooit het antwoord. De stem van {kind.roepnaam} gaat naar OpenAI om te verstaan wat er
+            gevraagd wordt; er wordt geen opname bewaard en er gaat geen naam mee.
+          </span>
+        </span>
+      </label>
+      <Label tekst="Vragen per dag" hulp="Hints zoals 'ik snap het niet' tellen niet mee.">
+        <select name="vragenPerDag" defaultValue={String(instellingen.vragenPerDag)} className={`${VELD} max-w-[10rem]`}>
+          {[10, 20, 30, 50].map((n) => (
+            <option key={n} value={n}>
+              {n} vragen
+            </option>
+          ))}
+        </select>
+      </Label>
       <Melding uitkomst={uitkomst} />
       <Verstuurknop label="Opslaan" bezig={bezig} />
     </form>

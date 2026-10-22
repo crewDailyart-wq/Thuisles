@@ -50,6 +50,7 @@ import {
   zinVoorKind,
 } from "@/lib/stem-server";
 import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
+import { alleHintZinnen } from "@/lib/tutor/hints";
 
 export const runtime = "nodejs";
 export const maxDuration = 60;
@@ -112,7 +113,7 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
 
   if (body?.actie === "alles") {
-    return NextResponse.json(maakAllesOpnieuw(VASTE_ZINNEN, profielenVanKinderen()));
+    return NextResponse.json(maakAllesOpnieuw([...VASTE_ZINNEN, ...alleHintZinnen()], profielenVanKinderen()));
   }
 
   const zin = typeof body?.zin === "string" ? body.zin.trim() : "";

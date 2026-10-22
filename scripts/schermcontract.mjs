@@ -385,8 +385,32 @@ export const SCHERMCONTRACT = [
     */
     naam: "Voorbeeld Bliepo",
     pad: "/voorbeeld-bliepo",
-    bron: ["src/app/voorbeeld-bliepo/VoorbeeldBliepo.tsx"],
+    /* "Laat Bliepo praten" staat in PratendeBliepo.tsx; die hoort daarom ook bij de bron. */
+    bron: ["src/app/voorbeeld-bliepo/VoorbeeldBliepo.tsx", "src/app/voorbeeld-bliepo/PratendeBliepo.tsx"],
     zichtbaar: ["Voorbeeld: vier versies van Bliepo", "Nu op de site", "3D, kleiner model", "Filmpje", "één gedeelde motor", "Beweging uit", "Laat Bliepo praten"],
+  },
+  {
+    /*
+      Praten met Bliepo (22 oktober 2026, opdracht eigenaar): de demo op de
+      testpagina, de knop in oefeningen en lessen (alleen als de ouder het
+      aanzette), de instelling bij de ouder en de beheerpagina.
+    */
+    naam: "Praten met Bliepo",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/TutorDemo.tsx", "src/components/tutor/VraagBliepo.tsx"],
+    zichtbaar: ["Praten met Bliepo (demo)", "Groep 1-2", "Groep 3-5", "Groep 6-8", "Vraag het Bliepo"],
+    naKlik: [
+      { tekst: "<VraagBliepo", bron: "src/components/oefenen/OefenSpeler.tsx", na: "een oefening openen met Praten met Bliepo aan" },
+      { tekst: "<VraagBliepo", bron: "src/components/les/Lesscherm.tsx", na: "een les openen met Praten met Bliepo aan" },
+      { tekst: "Praten met Bliepo", bron: "src/components/ouder/Instellingformulieren.tsx", na: "Instellingen → Profiel van een kind openklappen" },
+      { tekst: "Vragen per dag", bron: "src/components/ouder/Instellingformulieren.tsx", na: "Instellingen → Profiel van een kind openklappen" },
+    ],
+  },
+  {
+    naam: "Beheer: Bliepo-gebruik",
+    pad: "/admin/bliepo",
+    bron: ["src/app/admin/bliepo/page.tsx"],
+    zichtbaar: ["Bliepo-gebruik", "Deze maand", "Per dag"],
   },
   {
     naam: "Zappie missie",

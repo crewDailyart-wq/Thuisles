@@ -507,3 +507,64 @@ function speelVanServer(zin: string, mijnBeurt: number, klaar: () => void, mislu
       faal(!(fout instanceof DOMException && fout.name === "AbortError"));
     });
 }
+
+/**
+ * Een kant-en-klaar antwoord van Bliepo afspelen (Praten met Bliepo,
+ * 22 oktober 2026): het mp3-geluid dat de server al meestuurde. Zelfde weg als
+ * de andere zinnen: eerst helemaal geladen, 0,2 s stilte, de mond en het
+ * lijntje bewegen mee, en `stopPraten` of een nieuwe zin breekt hem af.
+ * Geeft een belofte die klaar is als Bliepo uitgepraat is (of werd gestopt).
+ */
+export function speelAntwoord(data: ArrayBuffer): Promise<void> {
+  if (typeof window === "undefined") return Promise.resolve();
+  window.speechSynthesis?.cancel();
+  beurt += 1;
+  const mijnBeurt = beurt;
+  stopServerGeluid?.();
+  stopServerGeluid = null;
+  huidigGeluid?.pause();
+  huidigGeluid = null;
+  return new Promise((klaar) => {
+    let afgerond = false;
+    const einde = () => {
+      if (afgerond) return;
+      afgerond = true;
+      meld(false);
+      klaar();
+    };
+    void speelBliepoData(data.slice(0), {
+      stilte: 0.2,
+      gestart: () => {
+        if (mijnBeurt === beurt) meld(true);
+      },
+      klaar: einde,
+    }).then((stop) => {
+      if (stop) {
+        if (mijnBeurt !== beurt) stop();
+        else
+          stopServerGeluid = () => {
+            stop();
+            einde();
+          };
+        return;
+      }
+      /* Zonder Web Audio: de gewone speler. */
+      const url = URL.createObjectURL(new Blob([data], { type: "audio/mpeg" }));
+      const geluid = koppelBliepoGeluid(new Audio(url));
+      huidigGeluid = geluid;
+      geluid.onplaying = () => meld(true);
+      geluid.onended = geluid.onerror = () => {
+        URL.revokeObjectURL(url);
+        einde();
+      };
+      void geluid.play().catch(einde);
+    });
+  });
+}
+
+/** Zinnen met de gewone stem na elkaar, als belofte (voor de hints van Praten met Bliepo). */
+export function zegEnWacht(zinnen: string[]): Promise<void> {
+  return new Promise((klaar) => {
+    zegNaElkaar(zinnen, () => {}, klaar, true);
+  });
+}

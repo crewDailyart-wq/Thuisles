@@ -17,6 +17,7 @@
  * `greepMetVariatie` en `uitElkaar` hieronder.
  */
 
+import { haalBliepoInstellingen } from "@/lib/tutor/instellingen";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
@@ -342,6 +343,7 @@ export default async function OefeningPagina({
         naam={kind.roepnaam}
         pad={oefenpad}
         terugHref={terugHref}
+        tutor={haalBliepoInstellingen(kind.id).praten ? { groep: kind.groep } : null}
       />
     );
   }
@@ -407,6 +409,7 @@ export default async function OefeningPagina({
       oefenpad={oefenpad}
       hervat={hervat}
       maatje={maatje}
+      tutor={haalBliepoInstellingen(kind.id).praten ? { domein: domeinSlug } : null}
     />
   );
 }

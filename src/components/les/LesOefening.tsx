@@ -21,6 +21,7 @@ export function LesOefening({
   naam,
   pad,
   terugHref,
+  tutor = null,
 }: {
   lesId: string;
   vraagId: string;
@@ -28,6 +29,8 @@ export function LesOefening({
   naam: string;
   pad: string;
   terugHref: string;
+  /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
+  tutor?: { groep: number } | null;
 }) {
   const les = zoekDraaiboek(lesId);
   const begin = useRef(0);
@@ -58,7 +61,7 @@ export function LesOefening({
   if (!les) return null;
   return (
     <div style={{ position: "fixed", inset: 0, zIndex: 60 }}>
-      <Lesspeler les={les} naam={naam} onKlaar={klaar} terugHref={terugHref} />
+      <Lesspeler les={les} naam={naam} onKlaar={klaar} terugHref={terugHref} tutor={tutor} />
     </div>
   );
 }

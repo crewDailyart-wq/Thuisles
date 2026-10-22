@@ -19,10 +19,12 @@ import {
   KindToevoegen,
   KindVerwijderen,
   KindWijzigen,
+  PratenMetBliepo,
 } from "@/components/ouder/Instellingformulieren";
 import { Pictogram } from "@/components/kind/Pictogram";
 import { vereisOuder } from "@/lib/auth/sessie";
 import { haalKinderen } from "@/lib/data/kinderen";
+import { haalBliepoInstellingen } from "@/lib/tutor/instellingen";
 import { TALEN } from "@/lib/types";
 
 export default async function InstellingenPagina() {
@@ -78,9 +80,12 @@ export default async function InstellingenPagina() {
           <Uitklap
             key={kind.id}
             titel={`Profiel van ${kind.roepnaam}`}
-            bijschrift="Roepnaam, groep, avatar en kindcode"
+            bijschrift="Roepnaam, groep, avatar, kindcode en Praten met Bliepo"
           >
             <KindWijzigen kind={kind} />
+            <div className="mt-5 border-t border-beheer-rand-zacht pt-4">
+              <PratenMetBliepo kind={kind} instellingen={haalBliepoInstellingen(kind.id)} />
+            </div>
             <details className="mt-5 border-t border-beheer-rand-zacht pt-4">
               <summary className="cursor-pointer text-sm text-beheer-zacht">
                 Profiel verwijderen

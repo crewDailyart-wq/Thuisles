@@ -14,6 +14,7 @@ import { redirect } from "next/navigation";
 import { bekijkKind, vereisOuder, vergeetKeuzes } from "@/lib/auth/sessie";
 import {
   controleerKind,
+  haalKindVanOuder,
   maakKind,
   verwijderKind,
   wijzigKind,
@@ -24,6 +25,7 @@ import {
   wijzigTaal,
   wijzigWeergavenaam,
 } from "@/lib/data/ouders";
+import { zetBliepoInstellingen } from "@/lib/tutor/instellingen";
 import type { Taal } from "@/lib/types";
 
 type Uitkomst = { fout: string } | { gelukt: string } | null;
@@ -172,3 +174,20 @@ export async function verwijderJeAccount(
   await vergeetKeuzes();
   redirect("/ouder/instellingen");
 }
+
+/**
+ * Praten met Bliepo aan of uit, en hoeveel vragen per dag (22 oktober 2026).
+ * Eigen formulier: het profielformulier blijft precies zoals het was.
+ */
+export async function wijzigPratenMetBliepo(_vorige: Uitkomst, gegevens: FormData): Promise<Uitkomst> {
+  const ouder = await vereisOuder();
+  const kindId = tekst(gegevens, "kindId");
+  if (!haalKindVanOuder(ouder.id, kindId)) return { fout: "Dat profiel bestaat niet." };
+  zetBliepoInstellingen(kindId, {
+    praten: gegevens.get("praten") === "aan",
+    vragenPerDag: Number(gegevens.get("vragenPerDag")),
+  });
+  ververs();
+  return { gelukt: "Opgeslagen." };
+}
+

@@ -84,6 +84,7 @@ import {
 } from "@/lib/oefensessie";
 import { zetSaldo } from "@/lib/sleutelwinkel";
 import { zoekGenerator } from "@/lib/generatoren";
+import { VraagBliepo } from "@/components/tutor/VraagBliepo";
 import {
   ALGEMENE_OPENING,
   ZONDER_GEGEVENS,
@@ -190,6 +191,7 @@ export function OefenSpeler({
   oefenpad,
   hervat,
   maatje,
+  tutor = null,
 }: {
   vragen: OefenVraag[];
   terugHref: string;
@@ -219,6 +221,11 @@ export function OefenSpeler({
    * Zonder teksten bij een vraag verandert er niets aan het scherm.
    */
   maatje?: { teksten: Record<string, MaatjeTeksten>; geluid: boolean };
+  /**
+   * Praten met Bliepo (22 oktober 2026): alleen als de ouder het heeft
+   * aangezet. Dan staat bij elke vraag de knop "Vraag het Bliepo".
+   */
+  tutor?: { domein: string } | null;
 }) {
   const leeftijd = leeftijdsgroepVan(groep);
   /*
@@ -1453,6 +1460,26 @@ export function OefenSpeler({
               </button>
             )}
           </div>
+
+          {/*
+            Praten met Bliepo: alleen als de ouder het aanzette, en niet na een
+            goed antwoord (dan gaat het scherm vanzelf door). Geen tekst van de
+            uitleg erbij: die kan het antwoord bevatten, en Bliepo verklapt het
+            antwoord nooit. De tip is juist bedoeld als hint.
+          */}
+          {tutor && vraag && fase !== "goed" && (
+            <div className="mt-4 flex justify-center">
+              <VraagBliepo
+                opgave={{
+                  opgaveId: `oef:${vraag.id}`,
+                  opgaveTekst: maatjeTekst?.voorlezen.tekst ?? vraagtekst,
+                  domein: tutor.domein,
+                  leerdoel: vraag.leerdoelTitel ?? "",
+                  tip: maatjeTekst?.tip.tekst ?? "",
+                }}
+              />
+            </div>
+          )}
 
           {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. */}
           {maatjeTekst && (

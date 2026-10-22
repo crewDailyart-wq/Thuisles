@@ -281,14 +281,14 @@ async function maakStuk(stuk: string, s: Instellingen): Promise<Buffer | number>
  * de-esser en even hard als bij Fish Audio. Geen uitspraaklijst: die is
  * gemeten voor Fish Audio.
  */
-async function maakStukEleven(stuk: string, s: Instellingen): Promise<Buffer | number> {
+async function maakStukEleven(stuk: string, s: Instellingen, model = s.model): Promise<Buffer | number> {
   const sr = Number(s.formaat.split("_")[1]) || 24000;
   const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}?output_format=${s.formaat}`, {
     method: "POST",
     headers: { "xi-api-key": s.elevenSleutel, "Content-Type": "application/json" },
     body: JSON.stringify({
       text: s.toon ? `${s.toon} ${stuk}` : stuk,
-      model_id: s.model,
+      model_id: model,
       language_code: "nl",
       voice_settings: { stability: s.stabiliteit, similarity_boost: s.gelijkenis },
     }),
@@ -681,3 +681,52 @@ export function maakAllesOpnieuw(vasteZinnen: string[], profielen: Profiel[]): V
   })();
   return leesVoortgang();
 }
+
+// ---------------------------------------------------------------------------
+// Live antwoorden (Praten met Bliepo, 22 oktober 2026)
+// ---------------------------------------------------------------------------
+
+/**
+ * Eén live antwoord uitspreken, zo snel mogelijk. Ruth met het snelle model
+ * eleven_v4_turbo (zelfde stem en model-familie; gemeten 0,65 s voor twee
+ * zinnen, tegen 1,65 s met eleven_v4), zelfde toon per groep, de-esser en even
+ * hard. Mag ElevenLabs niet (tekens voor live op, of een fout), dan Fish Audio
+ * (Sanne). De controle met spraak naar tekst gebeurt hier niet (dat kost
+ * tijd); `controleerLive` doet hem achteraf, voordat het antwoord gedeeld wordt.
+ */
+export async function spreekLive(
+  tekst: string,
+  profiel: Profiel,
+  elevenMag: boolean,
+): Promise<{ data: Buffer; dienst: Dienst; tekens: number } | null> {
+  const eleven = elevenMag ? instellingen(profiel, "elevenlabs") : null;
+  if (eleven) {
+    const data = await maakStukEleven(voorStem(tekst), eleven, process.env.ELEVEN_MODEL_LIVE ?? "eleven_v4_turbo");
+    if (typeof data !== "number") return { data, dienst: "elevenlabs", tekens: tekst.length + eleven.toon.length + 1 };
+  }
+  const fish = instellingen(profiel, "fish");
+  if (!fish) return null;
+  const data = await maakStuk(voorStem(tekst), fish);
+  return typeof data === "number" ? null : { data, dienst: "fish", tekens: tekst.length };
+}
+
+/** Achteraf: klopt het uitgesproken antwoord woord voor woord? Alleen dan wordt het gedeeld. */
+export async function controleerLive(tekst: string, data: Buffer): Promise<boolean> {
+  const sleutel = process.env.FISH_API_KEY;
+  if (!sleutel) return false;
+  const gehoord = await luister(data, sleutel);
+  return gehoord !== null && vergelijkZin(voorStem(tekst), gehoord).goed;
+}
+
+/** Waar de gedeelde live antwoorden staan. */
+export const TUTOR_MAP = path.join(MAP, "tutor");
+
+export async function bewaarTutorGeluid(naam: string, data: Buffer) {
+  await bewaar(path.join(TUTOR_MAP, naam), data);
+}
+
+export async function leesTutorGeluid(naam: string): Promise<Buffer | null> {
+  if (!/^[a-z0-9-]+\.mp3$/.test(naam)) return null;
+  return lees(path.join(TUTOR_MAP, naam));
+}
+
