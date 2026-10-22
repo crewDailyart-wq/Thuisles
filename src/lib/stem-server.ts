@@ -9,7 +9,11 @@ import "server-only";
  * top_p 0,7, herhalingsrem 1,2, latency normal. Met de website-instellingen
  * (temperature 1, top_p 0,95) gingen 10 van de 101 zinnen fout bij het
  * terugluisteren, hiermee 5; de stem varieert bijna even veel in toon (even
- * levendig) maar wisselt minder tussen twee opnames. Volume +5.
+ * levendig) maar wisselt minder tussen twee opnames.
+ *
+ * Klank: volume 0, onbewerkt geluid (wav) van Fish Audio, daarna een
+ * de-esser voor een zachtere s, alles even hard (-16 LUFS) en mp3 van
+ * 192 kbps (lib/stem-klank.ts).
  *
  * Toon en tempo hangen af van de groep van het kind:
  *   - groep 1-2: rustig, langzaam en heel lief (tempo 0,85);
@@ -44,6 +48,7 @@ import { createHash } from "node:crypto";
 import { copyFile, mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { knipInZinnen, vergelijkZin, voorStem } from "@/lib/stemtekst";
+import { bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE } from "@/lib/stem-klank";
 import { UITSPRAAK_VERSIE, voorUitspraak } from "@/lib/stem-uitspraak";
 
 export const MAP = path.join(path.dirname(process.env.THUISLES_DB ?? path.join(process.cwd(), "data", "thuisles.db")), "stem");
@@ -89,7 +94,8 @@ export function instellingen(profiel: Profiel) {
     top_p: getal("FISH_TOP_P", 0.7),
     herhaling: getal("FISH_HERHALING", 1.2),
     latency: tekst("FISH_LATENCY", "normal"),
-    volume: getal("FISH_VOLUME", 5),
+    volume: getal("FISH_VOLUME", 0),
+    deEsser: tekst("FISH_DE_ESSER", "aan") !== "uit",
     tempo: getal(`FISH_TEMPO_GROEP_${achter}`, STANDAARD_TEMPO[profiel]),
     toon: tekst(`FISH_TOON_GROEP_${achter}`, STANDAARD_TOON[profiel]).trim(),
     controle: tekst("FISH_CONTROLE", "aan") !== "uit",
@@ -118,7 +124,7 @@ const hash = (s: string) => createHash("sha256").update(s).digest("hex").slice(0
 
 /** Alles wat het geluid bepaalt, zodat een andere instelling een ander bestand geeft. */
 function kenmerk(s: Instellingen) {
-  return JSON.stringify([3, UITSPRAAK_VERSIE, s.model, s.stem, s.temperature, s.top_p, s.herhaling, s.latency, s.volume, s.tempo, s.toon]);
+  return JSON.stringify([4, UITSPRAAK_VERSIE, KLANK_VERSIE, s.deEsser, s.model, s.stem, s.temperature, s.top_p, s.herhaling, s.latency, s.volume, s.tempo, s.toon]);
 }
 
 /** Het bestand van een hele zin met de nieuwe stem. */
@@ -168,14 +174,21 @@ async function tts(body: Record<string, unknown>, sleutel: string, model: string
   return Buffer.from(await antwoord.arrayBuffer());
 }
 
-function maakStuk(stuk: string, s: Instellingen) {
+/**
+ * Maakt één stuk. Fish Audio levert onbewerkt geluid (wav, 44,1 kHz); daarna
+ * gaat het door de de-esser (zachtere s), wordt het even hard gemaakt en als
+ * mp3 van 192 kbps bewaard (lib/stem-klank.ts). De controle luistert naar dit
+ * eindresultaat.
+ */
+async function maakStuk(stuk: string, s: Instellingen): Promise<Buffer | number> {
   /* De uitspraaklijst alleen voor wat Fish Audio krijgt; de controle vergelijkt met de gewone zin. */
   const uitspraak = voorUitspraak(stuk);
-  return tts(
+  const wav = await tts(
     {
       text: s.toon ? `${s.toon} ${uitspraak}` : uitspraak,
       reference_id: s.stem,
-      format: "mp3",
+      format: "wav",
+      sample_rate: 44100,
       latency: s.latency,
       temperature: s.temperature,
       top_p: s.top_p,
@@ -186,6 +199,13 @@ function maakStuk(stuk: string, s: Instellingen) {
     s.sleutel,
     s.model,
   );
+  if (typeof wav === "number") return wav;
+  try {
+    return bewerkStem(wav, s.deEsser ? GEKOZEN_DE_ESSER : null);
+  } catch (fout) {
+    console.error("[stem] bewerken lukte niet:", fout);
+    return 500;
+  }
 }
 
 /** Spraak naar tekst (transcribe-1): wat zegt het geluid? Null als het niet lukte. */
