@@ -418,6 +418,13 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Typ je code van vier cijfers", bron: "src/components/zappie/ProfielKiezer.tsx", na: "op een profiel met kindcode tikken" }],
   },
   {
+    /* Voorbeeld "Tekst boven Bliepo" (23 oktober 2026): tekst vrij boven Bliepo, oplichten per woord. */
+    naam: "Tekst boven Bliepo (voorbeeld)",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/TekstBovenBliepo.tsx"],
+    zichtbaar: ["Tekst boven Bliepo", "Laat Bliepo praten", "Woorden oplichten"],
+  },
+  {
     /*
       Bewegingen van Bliepo (23 oktober 2026, opdracht eigenaar): elke
       beweging los bekijken op de testpagina.

@@ -329,6 +329,20 @@ export function knipStilte(k: Klank, voor = 0.05, na = 0.2): Klank {
   return { samples: k.samples.slice(begin, eind), sr: k.sr };
 }
 
+/**
+ * Zoals bewerkKlank, maar geeft ook terug hoeveel seconden er aan het begin
+ * is weggeknipt (voor de tijden per woord: oplichten tijdens het voorlezen).
+ */
+export function bewerkKlankMetBegin(k: Klank, d: DeEsser | null = GEKOZEN_DE_ESSER): { mp3: Buffer; begin: number } {
+  const hard = evenHard(d ? deEss(k, d) : k);
+  const kort = knipStilte(hard);
+  /* knipStilte knipt alleen aan het begin en eind: het verschil in lengte vooraan is wat er weg is. */
+  let a = 0;
+  while (a < hard.samples.length && Math.abs(hard.samples[a]) < 0.01) a++;
+  const begin = Math.max(0, a - Math.round(0.05 * hard.sr)) / hard.sr;
+  return { mp3: naarMp3(kort, KBPS_STEM(kort.sr)), begin };
+}
+
 /** De-esser, even hard, stilte inkorten, mp3. */
 export function bewerkKlank(k: Klank, d: DeEsser | null = GEKOZEN_DE_ESSER): Buffer {
   return naarMp3(knipStilte(evenHard(d ? deEss(k, d) : k)), KBPS_STEM(k.sr));

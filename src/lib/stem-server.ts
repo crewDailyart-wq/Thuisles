@@ -52,7 +52,7 @@ import { createHash } from "node:crypto";
 import { copyFile, mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { knipInZinnen, vergelijkZin, voorStem } from "@/lib/stemtekst";
-import { bewerkKlank, bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE, leesPcm } from "@/lib/stem-klank";
+import { bewerkKlank, bewerkKlankMetBegin, bewerkStem, GEKOZEN_DE_ESSER, KLANK_VERSIE, leesPcm } from "@/lib/stem-klank";
 import { UITSPRAAK_VERSIE, voorUitspraak } from "@/lib/stem-uitspraak";
 import { elevenVoorLive } from "@/lib/tutor/gebruik";
 
@@ -848,3 +848,76 @@ export async function leesTutorGeluid(naam: string): Promise<Buffer | null> {
   return lees(path.join(TUTOR_MAP, naam));
 }
 
+
+// ---------------------------------------------------------------------------
+// Voorlezen met de tijd per woord (voorbeeld "Tekst boven Bliepo", 23 oktober 2026)
+// ---------------------------------------------------------------------------
+
+export type Woordtijd = { woord: string; begin: number; eind: number };
+
+/**
+ * Een zin met Ruth, samen met de tijd per woord (ElevenLabs "with
+ * timestamps"), zodat elk woord kan oplichten op het moment dat Bliepo het
+ * zegt. Eén keer gemaakt en bewaard in stem/karaoke (geluid en tijden horen
+ * bij elkaar). De tijden zijn in seconden vanaf het begin van het bewaarde
+ * geluid (de weggeknipte stilte is er al af).
+ */
+export async function zinMetTijden(zin: string, profiel: Profiel): Promise<{ data: Buffer; woorden: Woordtijd[] } | number> {
+  const s = instellingen(profiel, "elevenlabs");
+  if (!s) return 503;
+  const naam = `k-${hash(`${kenmerk(s)}\n${voorStem(zin)}`)}`;
+  const map = path.join(MAP, "karaoke");
+  const bewaard = await lees(path.join(map, `${naam}.mp3`));
+  const tijden = await readFile(path.join(map, `${naam}.json`), "utf8").catch(() => null);
+  if (bewaard && tijden) return { data: bewaard, woorden: JSON.parse(tijden) as Woordtijd[] };
+
+  const gesproken = voorStem(zin);
+  const tekst = s.toon ? `${s.toon} ${gesproken}` : gesproken;
+  const nodig = Math.ceil(tekst.length * tekenPrijs(s.model));
+  if (!(await elevenVoorLive(nodig))) return 402;
+  const sr = Number(s.formaat.split("_")[1]) || 24000;
+  const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}/with-timestamps?output_format=${s.formaat}`, {
+    method: "POST",
+    headers: { "xi-api-key": s.elevenSleutel, "Content-Type": "application/json" },
+    body: JSON.stringify({
+      text: tekst,
+      model_id: s.model,
+      language_code: "nl",
+      voice_settings: { stability: s.stabiliteit, similarity_boost: s.gelijkenis },
+    }),
+    signal: AbortSignal.timeout(45000),
+  }).catch(() => null);
+  if (!antwoord) return 504;
+  if (!antwoord.ok) return antwoord.status;
+  const j = (await antwoord.json().catch(() => null)) as {
+    audio_base64?: string;
+    alignment?: { characters: string[]; character_start_times_seconds: number[]; character_end_times_seconds: number[] };
+  } | null;
+  if (!j?.audio_base64 || !j.alignment) return 502;
+  const { mp3, begin } = bewerkKlankMetBegin(leesPcm(Buffer.from(j.audio_base64, "base64"), sr), s.deEsser ? GEKOZEN_DE_ESSER : null);
+
+  /* De woorden van het gesproken deel (na de toonaanwijzing), met hun eerste en laatste letter. */
+  const a = j.alignment;
+  const vanaf = tekst.length - gesproken.length;
+  const woorden: Woordtijd[] = [];
+  let huidig: Woordtijd | null = null;
+  for (let i = vanaf; i < a.characters.length; i++) {
+    const c = a.characters[i];
+    if (/\s/.test(c)) {
+      huidig = null;
+      continue;
+    }
+    const b = Math.max(0, a.character_start_times_seconds[i] - begin);
+    const e = Math.max(0, a.character_end_times_seconds[i] - begin);
+    if (!huidig) {
+      huidig = { woord: c, begin: b, eind: e };
+      woorden.push(huidig);
+    } else {
+      huidig.woord += c;
+      huidig.eind = e;
+    }
+  }
+  await bewaar(path.join(map, `${naam}.mp3`), mp3);
+  await bewaar(path.join(map, `${naam}.json`), Buffer.from(JSON.stringify(woorden)));
+  return { data: mp3, woorden };
+}

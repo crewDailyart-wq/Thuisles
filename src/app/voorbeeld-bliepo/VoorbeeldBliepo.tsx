@@ -25,6 +25,7 @@ import { PratendeBliepo } from "./PratendeBliepo";
 import { StemZinnen } from "./StemZinnen";
 import { TutorDemo } from "./TutorDemo";
 import { BewegingenDemo } from "./BewegingenDemo";
+import { TekstBovenBliepo } from "./TekstBovenBliepo";
 import { Opname } from "./Opname";
 /* Dezelfde stijl als op de startpagina (.bt-prototype, .bt-ballon), zodat ze er precies zo uitzien. */
 import "@/components/zappie/startpagina.css";
@@ -220,6 +221,7 @@ function Vergelijking() {
         en hoe lang de pagina stilstond toen hij in beeld kwam, gemeten op dit apparaat. Met ?alleen=links, midden,
         rechts of vier staat er maar één, gemeten vanaf een lege pagina.
       </p>
+      <TekstBovenBliepo />
       <BewegingenDemo />
       <PratendeBliepo />
       <TutorDemo />

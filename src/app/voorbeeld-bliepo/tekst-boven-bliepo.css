@@ -1,0 +1,184 @@
+/* Voorbeeld "Tekst boven Bliepo" (23 oktober 2026). Alleen op /voorbeeld-bliepo. */
+
+.tbb-scene {
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  aspect-ratio: 16 / 9;
+  background: #0b3fc4;
+  container-type: inline-size;
+}
+.tbb-achtergrond {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+/* Een voorbeeldopdracht op het glazen bord. */
+.tbb-bord {
+  position: absolute;
+  left: 17%;
+  top: 12%;
+  width: 46%;
+  height: 62%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4cqw;
+  border: 2px solid rgba(170, 225, 255, 0.55);
+  border-radius: 2.4cqw;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
+  box-shadow: 0 0 42px rgba(90, 190, 255, 0.35);
+}
+.tbb-som {
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: 6cqw;
+  font-weight: 800;
+  color: #fff;
+}
+.tbb-vak {
+  width: 9cqw;
+  height: 7cqw;
+  border: 3px solid #7fe6ff;
+  border-radius: 1.2cqw;
+}
+.tbb-tekens {
+  display: flex;
+  gap: 2cqw;
+}
+.tbb-tekens span {
+  display: grid;
+  place-items: center;
+  width: 6cqw;
+  height: 6cqw;
+  border-radius: 1cqw;
+  background: #ffb21e;
+  font-family: var(--font-grandstander), system-ui, sans-serif;
+  font-size: 3.6cqw;
+  font-weight: 800;
+  color: #10306f;
+}
+
+/* Bliepo op de cirkel (85% / 83,5%), de tekst vrij boven zijn hoofd. */
+.tbb-bliepo {
+  position: absolute;
+  left: 84%;
+  bottom: 16.5%;
+  width: 28%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  translate: -50% 0;
+}
+.tbb-robot {
+  position: relative;
+  width: 22cqw;
+  height: 27cqw;
+}
+.tbb-robot .bt-prototype {
+  position: absolute;
+  inset: 0;
+}
+.tbb-tekst {
+  position: relative;
+  margin-bottom: 0.6cqw;
+  padding: 0 1cqw;
+  text-align: center;
+}
+.tbb-tekst p {
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(20px, 2.7cqw, 40px);
+  font-weight: 800;
+  line-height: 1.22;
+  color: #fff;
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.65);
+  text-wrap: balance;
+}
+.tbb-woord {
+  transition: color 0.12s ease, text-shadow 0.12s ease;
+}
+/* Al gezegd: geel, met een zachte gloed; het woord van nu het felst. */
+.tbb-gezegd {
+  color: #ffe36e;
+}
+.tbb-nu {
+  color: #fff3a8;
+  text-shadow:
+    0 0 14px rgba(255, 230, 120, 0.9),
+    0 2px 0 rgba(0, 25, 90, 0.55);
+}
+.tbb-luister {
+  display: inline-grid;
+  vertical-align: middle;
+  margin-left: 0.3em;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  padding: 7px;
+  border: 2px solid rgba(255, 255, 255, 0.7);
+  border-radius: 999px;
+  background: rgba(10, 40, 120, 0.45);
+  color: #fff;
+}
+.tbb-luister svg {
+  width: 100%;
+  height: 100%;
+}
+
+/* Telefoon: het bord bovenaan, Bliepo met de tekst eronder. */
+@media (max-width: 640px) {
+  .tbb-scene {
+    aspect-ratio: auto;
+    min-height: 620px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 16px;
+    gap: 14px;
+  }
+  .tbb-bord {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: 220px;
+    gap: 14px;
+    border-radius: 22px;
+  }
+  .tbb-som {
+    font-size: 40px;
+  }
+  .tbb-vak {
+    width: 70px;
+    height: 54px;
+  }
+  .tbb-tekens span {
+    width: 44px;
+    height: 44px;
+    font-size: 26px;
+  }
+  .tbb-bliepo {
+    position: relative;
+    left: auto;
+    bottom: auto;
+    width: 100%;
+    translate: none;
+    margin-top: auto;
+  }
+  .tbb-tekst {
+    padding: 0 8px;
+  }
+  .tbb-tekst p {
+    font-size: 27px;
+  }
+  .tbb-robot {
+    width: 150px;
+    height: 186px;
+  }
+}
