@@ -41,11 +41,12 @@ export function maakNaamStukje(kind: Pick<Kind, "roepnaam" | "groep">): void {
 
 export type Begroeting = { al: true } | { al: false; situatie: Situatie; zinnen: string[] };
 
-export function begroetingVoor(kind: Kind): Begroeting {
+/** `opnieuw`: ook als het kind vandaag al begroet is (testknop ?begroeting=opnieuw). */
+export function begroetingVoor(kind: Kind, opnieuw = false): Begroeting {
   const nu = new Date();
   const dag = vandaag();
   const groet = laatsteGroet(kind.id);
-  if (groet === dag) return { al: true };
+  if (groet === dag && !opnieuw) return { al: true };
 
   const gisteren = datumVan(new Date(nu.getTime() - 86_400_000));
   /* Antwoorden zijn in UTC bewaard; ruim ophalen en daarna per Nederlandse datum tellen. */

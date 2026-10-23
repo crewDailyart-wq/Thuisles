@@ -14,10 +14,14 @@
  *     niet, dan staat er "Tik op mij!" in zijn ballon en begint hij zodra er
  *     ergens op de pagina getikt wordt.
  *   - Met de luidspreker gaat zijn stem op de startpagina uit; de ballon blijft.
+ *   - Hij telt pas als "begroet" als zijn stem echt geklonken heeft (23 oktober
+ *     2026): eerder kon een begroeting zonder geluid de dag al opmaken.
+ *   - Testen: zet ?begroeting=opnieuw achter het adres van de startpagina, dan
+ *     begroet hij altijd opnieuw, ook als het vandaag al gebeurd is.
  */
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { magGeluid, stopPraten, zegNaElkaar } from "@/lib/stem";
+import { abonneerPraten, magGeluid, praatVos, stopPraten, zegNaElkaar } from "@/lib/stem";
 import { abonneerStartstem, startstemAan, zetStartstem } from "@/components/zappie/startstem";
 
 const ZELF = "bliepo-begroet-op";
@@ -54,7 +58,9 @@ export function useBegroeting() {
     let weg = false;
     let stopReeks: (() => void) | null = null;
     let wachtOpTik: (() => void) | null = null;
+    let stopLuisteren: (() => void) | null = null;
     const timers: number[] = [];
+    const opnieuw = new URLSearchParams(location.search).get("begroeting") === "opnieuw";
 
     const begin = (zinnen: string[], zelf: boolean) => {
       if (weg || klaar.current) return;
@@ -62,22 +68,31 @@ export function useBegroeting() {
       wachtOpTik?.();
       zetZwaai((n) => n + 1);
       zetBallon(zinnen.join(" "));
+      /* Heeft zijn stem echt geklonken? Pas dan telt hij als begroet voor vandaag. */
+      let gehoord = false;
+      stopLuisteren = abonneerPraten(() => {
+        if (praatVos()) gehoord = true;
+      });
+      const metStem = startstemAan();
       const afronden = () => {
         if (weg) return;
-        if (zelf) zetZelf();
-        void fetch("/api/begroeting", { method: "POST" }).catch(() => {});
+        stopLuisteren?.();
+        if (gehoord || !metStem) {
+          if (zelf) zetZelf();
+          void fetch("/api/begroeting", { method: "POST" }).catch(() => {});
+        }
         timers.push(window.setTimeout(() => !weg && zetBallon(null), 2500));
       };
-      if (startstemAan()) stopReeks = zegNaElkaar(zinnen, () => {}, afronden, true);
+      if (metStem) stopReeks = zegNaElkaar(zinnen, () => {}, afronden, true);
       else timers.push(window.setTimeout(afronden, 1500 + zinnen.join(" ").length * 60));
     };
 
     void (async () => {
-      const j = (await fetch("/api/begroeting", { cache: "no-store" })
+      const j = (await fetch(`/api/begroeting${opnieuw ? "?opnieuw=1" : ""}`, { cache: "no-store" })
         .then((a) => (a.ok ? a.json() : null))
         .catch(() => null)) as Antwoord | null;
       if (weg || !j || j.al || !j.zinnen?.length) return;
-      if (j.zelfOnthouden && leesZelf() === vandaag()) return;
+      if (j.zelfOnthouden && leesZelf() === vandaag() && !opnieuw) return;
       const zinnen = j.zinnen;
       const zelf = Boolean(j.zelfOnthouden);
       /* Even wachten tot Bliepo in beeld staat. */
@@ -87,12 +102,16 @@ export function useBegroeting() {
         begin(zinnen, zelf);
         return;
       }
-      /* Nog geen tik gehad: de browser mag nog geen geluid maken. */
+      /* Nog geen tik gehad: de browser mag nog geen geluid maken. Hij zwaait al en vraagt om een tik. */
       zetBallon(TIK);
+      zetZwaai((n) => n + 1);
+      /* Zolang er niet getikt is, zwaait hij af en toe opnieuw. */
+      const blijfZwaaien = window.setInterval(() => !weg && zetZwaai((n) => n + 1), 6000);
       const opTik = () => begin(zinnen, zelf);
       window.addEventListener("pointerdown", opTik, { once: true });
       window.addEventListener("keydown", opTik, { once: true });
       wachtOpTik = () => {
+        window.clearInterval(blijfZwaaien);
         window.removeEventListener("pointerdown", opTik);
         window.removeEventListener("keydown", opTik);
       };
@@ -102,6 +121,7 @@ export function useBegroeting() {
       weg = true;
       wachtOpTik?.();
       stopReeks?.();
+      stopLuisteren?.();
       timers.forEach((t) => window.clearTimeout(t));
     };
   }, []);

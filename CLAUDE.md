@@ -1,3 +1,12 @@
+# ⛔ VASTE REGEL — ANTWOORD ALTIJD IN HET NEDERLANDS
+
+**Claude antwoordt altijd in het Nederlands, in korte en simpele zinnen.** De
+eigenaar heeft weinig computerkennis: geen vakjargon, geen lange uitleg. Wat
+technisch nodig is, staat in de code en de commits; aan de eigenaar vertel je
+alleen wat er gebeurd is en wat dat voor de site betekent.
+
+---
+
 # ⛔ HARDE REGEL 1 — NIETS WAT AL BESTAAT MAG VERDWIJNEN
 
 Geldt voor de HELE website: kinderkant, ouderomgeving, beheeromgeving, alles.
