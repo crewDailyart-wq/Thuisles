@@ -10,7 +10,7 @@ import "server-only";
  */
 
 import { verbinding } from "@/lib/db/sqlite";
-import { kiesBegroeting, naamZin, type Situatie } from "@/lib/begroeting";
+import { KORTE_BEGROETINGEN, kiesBegroeting, naamZin, type Situatie } from "@/lib/begroeting";
 import { maakZin, profielVoor } from "@/lib/stem-server";
 import { vandaag } from "@/lib/tutor/gebruik";
 import type { Kind } from "@/lib/types";
@@ -39,7 +39,7 @@ export function maakNaamStukje(kind: Pick<Kind, "roepnaam" | "groep">): void {
   if (zin) void maakZin(zin, profielVoor(kind.groep)).catch(() => {});
 }
 
-export type Begroeting = { al: true } | { al: false; situatie: Situatie; zinnen: string[] };
+export type Begroeting = { al: true } | { al: false; situatie: Situatie | "kort"; zinnen: string[] };
 
 /** `opnieuw`: ook als het kind vandaag al begroet is (testknop ?begroeting=opnieuw). */
 export function begroetingVoor(kind: Kind, opnieuw = false): Begroeting {
@@ -68,6 +68,27 @@ export function begroetingVoor(kind: Kind, opnieuw = false): Begroeting {
   });
   const naam = naamZin(kind.roepnaam);
   return { al: false, situatie, zinnen: naam ? [naam, zin] : [zin] };
+}
+
+/**
+ * Via "Wie gaat er oefenen?" binnengekomen (23 oktober 2026): de volledige
+ * begroeting hooguit één keer per dag, daarna steeds een korte, om de beurt
+ * (sleutel `bliepokort` onthoudt welke de vorige was).
+ */
+export function begroetingViaProfiel(kind: Kind, opnieuw = false): Begroeting {
+  const vol = begroetingVoor(kind, opnieuw);
+  if (!vol.al) return vol;
+  const rij = verbinding().prepare("select waarde from kind_instellingen where kind_id = ? and sleutel = 'bliepokort'").get(kind.id) as
+    | { waarde: string }
+    | undefined;
+  const volgende = ((Number(rij?.waarde) || 0) + 1) % KORTE_BEGROETINGEN.length;
+  verbinding()
+    .prepare(
+      `insert into kind_instellingen (kind_id, sleutel, waarde, bijgewerkt_op) values (?, 'bliepokort', ?, ?)
+       on conflict (kind_id, sleutel) do update set waarde = excluded.waarde, bijgewerkt_op = excluded.bijgewerkt_op`,
+    )
+    .run(kind.id, String(volgende), new Date().toISOString());
+  return { al: false, situatie: "kort", zinnen: [KORTE_BEGROETINGEN[volgende]] };
 }
 
 /** Na het afspelen: vandaag niet nog eens begroeten. */

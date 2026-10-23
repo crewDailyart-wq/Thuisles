@@ -67,6 +67,23 @@ export async function openProfiel(gegevens: FormData): Promise<void> {
   if (uitkomst?.fout) redirect("/kies");
 }
 
+/**
+ * Een profiel kiezen op het scherm "Wie gaat er oefenen?" van de startpagina
+ * (23 oktober 2026). Dezelfde controles als `kiesProfiel`, maar zonder door te
+ * sturen: de startpagina blijft staan (dan blijft het geluid vrij dat bij de
+ * tik is ontgrendeld) en Bliepo begroet meteen.
+ */
+export async function kiesProfielOpStart(kindId: string, code = ""): Promise<{ ok: true } | { code: true } | { fout: string }> {
+  const ouder = await vereisOuder();
+  const kind = haalKindVanOuder(ouder.id, kindId);
+  if (!kind) return { fout: "Dat profiel bestaat niet." };
+  if (kind.heeftKindcode && !code) return { code: true };
+  if (!kindcodeKlopt(ouder.id, kind.id, code)) return { fout: "Die code klopt niet. Probeer het nog eens." };
+  await kiesKind(kind.id);
+  maakNaamStukje(kind);
+  return { ok: true };
+}
+
 /** Terug van de kinderkant naar de ouderomgeving. */
 export async function verlaatProfiel(): Promise<void> {
   await verlaatKind();

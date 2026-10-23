@@ -32,6 +32,8 @@
 import Link from "next/link";
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { StartstemKnop, useBegroeting } from "@/components/zappie/BliepoBegroeting";
+import { ProfielKiezer, type Profiel } from "@/components/zappie/ProfielKiezer";
+import { abonneerProfielkeuze, binnenViaProfiel, profielGekozen } from "@/components/zappie/profielkeuze";
 import { startstemAan } from "@/components/zappie/startstem";
 import { zeg as zegHardop } from "@/lib/stem";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
@@ -141,7 +143,11 @@ function opBocht([a, b, c]: [Punt, Punt, Punt], t: number): Punt {
 
 const geenAbonnement = () => () => {};
 
-export function Startscherm() {
+export type { Profiel };
+
+const nietGekozen = () => false;
+
+export function Startscherm({ profielen = [] }: { profielen?: Profiel[] }) {
   const router = useRouter();
   const v = useVoortgang();
   const inBrowser = useSyncExternalStore(geenAbonnement, () => true, () => false);
@@ -155,7 +161,14 @@ export function Startscherm() {
     .split(",")
     .filter(Boolean) as Dagmissie[];
 
-  const begroeting = useBegroeting();
+  /*
+    "Wie gaat er oefenen?" (23 oktober 2026): na openen of verversen eerst het
+    profielscherm; de begroeting begint pas als er een profiel gekozen is.
+  */
+  const gekozen = useSyncExternalStore(abonneerProfielkeuze, profielGekozen, nietGekozen);
+  const toonProfielen = profielen.length > 0 && !gekozen;
+  const viaProfiel = useSyncExternalStore(abonneerProfielkeuze, binnenViaProfiel, nietGekozen);
+  const begroeting = useBegroeting(!toonProfielen, viaProfiel);
   const [bericht, zetBericht] = useState<Bericht | null>(null);
   const [praat, zetPraat] = useState(false);
   const [tik, zetTik] = useState(0);
@@ -279,7 +292,8 @@ export function Startscherm() {
       <ScrollReis />
       {/* Vloeiend scrollen op laptop en computer (19 oktober 2026). */}
       <ZachtScrollen />
-      <main className="zp-start" id="zappie-start" aria-label="Start">
+      {toonProfielen && <ProfielKiezer profielen={profielen} rustig={bewegingRustig} />}
+      <main className="zp-start" id="zappie-start" aria-label="Start" inert={toonProfielen || undefined}>
         <h1 className="sr-only">Bliepo: begin je missie</h1>
 
         {/*

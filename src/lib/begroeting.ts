@@ -21,9 +21,23 @@ export const BEGROETINGEN: Record<Situatie, string[]> = {
   avond: ["Goedenavond! Nog even oefenen?", "Goedenavond! Fijn dat je er bent."],
 };
 
+/*
+  Korte begroetingen (23 oktober 2026, opdracht eigenaar): komt het kind via
+  "Wie gaat er oefenen?" binnen en is het vandaag al volledig begroet, dan zegt
+  Bliepo iets korts. Ze wisselen elkaar af, zodat het niet saai wordt.
+*/
+export const KORTE_BEGROETINGEN = [
+  "Daar ben je weer!",
+  "Zullen we verder?",
+  "Fijn dat je er weer bent!",
+  "Hoi! Klaar voor een rondje?",
+  "Daar ben je! Zin om te oefenen?",
+  "Welkom terug, rekenheld!",
+];
+
 /** Alle begroetingen, om ze vooraf in te spreken. */
 export function alleBegroetingen(): string[] {
-  return Object.values(BEGROETINGEN).flat();
+  return [...Object.values(BEGROETINGEN).flat(), ...KORTE_BEGROETINGEN];
 }
 
 /** Het losse naamstukje. Alleen letters, spaties en streepjes; hooguit 24 tekens. */

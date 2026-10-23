@@ -14,7 +14,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { huidigKind } from "@/lib/auth/sessie";
 import { kiesBegroeting } from "@/lib/begroeting";
-import { begroetingVoor, maakNaamStukje, markeerBegroet } from "@/lib/begroeting-server";
+import { begroetingViaProfiel, begroetingVoor, maakNaamStukje, markeerBegroet } from "@/lib/begroeting-server";
 
 export const runtime = "nodejs";
 
@@ -34,7 +34,8 @@ export async function GET(request: NextRequest) {
     });
     return NextResponse.json({ al: false, situatie, zinnen: [zin], zelfOnthouden: true }, { headers: geenOpslag });
   }
-  const b = begroetingVoor(kind, opnieuw);
+  /* ?via=profiel: binnengekomen via "Wie gaat er oefenen?": altijd iets korts als de volledige begroeting vandaag al was. */
+  const b = request.nextUrl.searchParams.get("via") === "profiel" ? begroetingViaProfiel(kind, opnieuw) : begroetingVoor(kind, opnieuw);
   /* Eén kind zonder kindcode komt zonder inlogscherm binnen: dan het naamstukje hier maken. */
   if (!b.al) maakNaamStukje(kind);
   return NextResponse.json(b, { headers: geenOpslag });

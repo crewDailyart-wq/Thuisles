@@ -408,6 +408,17 @@ export const SCHERMCONTRACT = [
   },
   {
     /*
+      "Wie gaat er oefenen?" (23 oktober 2026, opdracht eigenaar): eerst op de
+      startpagina na openen of verversen; de tik geeft het geluid vrij.
+    */
+    naam: "Wie gaat er oefenen? (startpagina)",
+    pad: "/zappie",
+    bron: ["src/components/zappie/ProfielKiezer.tsx"],
+    zichtbaar: ["Wie gaat er oefenen?"],
+    naKlik: [{ tekst: "Typ je code van vier cijfers", bron: "src/components/zappie/ProfielKiezer.tsx", na: "op een profiel met kindcode tikken" }],
+  },
+  {
+    /*
       Bewegingen van Bliepo (23 oktober 2026, opdracht eigenaar): elke
       beweging los bekijken op de testpagina.
     */

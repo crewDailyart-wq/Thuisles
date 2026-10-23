@@ -50,12 +50,19 @@ function zetZelf() {
 
 type Antwoord = { al: true } | { al: false; zinnen: string[]; zelfOnthouden?: boolean };
 
-export function useBegroeting() {
+/**
+ * `actief`: pas beginnen als dit waar is (niet zolang "Wie gaat er oefenen?"
+ * nog in beeld is). `viaProfiel`: het kind kwam binnen via dat scherm; dan is
+ * het geluid al vrij (de tik) en zegt hij altijd iets, kort als de volledige
+ * begroeting vandaag al was.
+ */
+export function useBegroeting(actief = true, viaProfiel = false) {
   const [ballon, zetBallon] = useState<string | null>(null);
   const [zwaai, zetZwaai] = useState(0);
   const klaar = useRef(false);
 
   useEffect(() => {
+    if (!actief) return;
     let weg = false;
     let stopReeks: (() => void) | null = null;
     let wachtOpTik: (() => void) | null = null;
@@ -89,15 +96,18 @@ export function useBegroeting() {
     };
 
     void (async () => {
-      const j = (await fetch(`/api/begroeting${opnieuw ? "?opnieuw=1" : ""}`, { cache: "no-store" })
+      const vraag = new URLSearchParams();
+      if (opnieuw) vraag.set("opnieuw", "1");
+      if (viaProfiel) vraag.set("via", "profiel");
+      const j = (await fetch(`/api/begroeting${vraag.size ? `?${vraag}` : ""}`, { cache: "no-store" })
         .then((a) => (a.ok ? a.json() : null))
         .catch(() => null)) as Antwoord | null;
       if (weg || !j || j.al || !j.zinnen?.length) return;
       if (j.zelfOnthouden && leesZelf() === vandaag() && !opnieuw) return;
       const zinnen = j.zinnen;
       const zelf = Boolean(j.zelfOnthouden);
-      /* Even wachten tot Bliepo in beeld staat. */
-      await new Promise((r) => timers.push(window.setTimeout(r, 1200)));
+      /* Even wachten tot Bliepo in beeld staat (via het profielscherm staat hij er al). */
+      await new Promise((r) => timers.push(window.setTimeout(r, viaProfiel ? 350 : 1200)));
       if (weg) return;
       /*
         Meteen praten als het mag (23 oktober 2026, wens eigenaar). Ook zonder
@@ -133,7 +143,7 @@ export function useBegroeting() {
       stopLuisteren?.();
       timers.forEach((t) => window.clearTimeout(t));
     };
-  }, []);
+  }, [actief, viaProfiel]);
 
   return { ballon, zwaai };
 }
