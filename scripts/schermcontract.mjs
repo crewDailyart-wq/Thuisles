@@ -418,6 +418,17 @@ export const SCHERMCONTRACT = [
     naKlik: [{ tekst: "Typ je code van vier cijfers", bron: "src/components/zappie/ProfielKiezer.tsx", na: "op een profiel met kindcode tikken" }],
   },
   {
+    /* Instelling bij het kind (23 oktober 2026): woorden oplichten tijdens het voorlezen, standaard aan. */
+    naam: "Profiel: woorden oplichten",
+    pad: "/profiel",
+    bron: ["src/components/kind/OplichtenKeuze.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "Woorden oplichten bij voorlezen", bron: "src/components/kind/OplichtenKeuze.tsx", na: "als kind naar Profiel gaan" },
+      { tekst: "<OplichtenKeuze", bron: "src/app/(kind)/profiel/page.tsx", na: "als kind naar Profiel gaan" },
+    ],
+  },
+  {
     /* Voorbeeld "Tekst boven Bliepo" (23 oktober 2026): tekst vrij boven Bliepo, oplichten per woord. */
     naam: "Tekst boven Bliepo (voorbeeld)",
     pad: "/voorbeeld-bliepo",

@@ -22,9 +22,9 @@ export function OplichtenKeuze() {
   };
   return (
     <fieldset className="mt-6 border-t border-rand pt-6 text-left">
-      <legend className="text-base font-extrabold">Woorden laten oplichten</legend>
+      <legend className="text-base font-extrabold">Woorden oplichten bij voorlezen</legend>
       <p className="mt-1 text-sm font-semibold text-inkt-zacht">Terwijl Bliepo voorleest, lichten de woorden en sommen op.</p>
-      <div className="mt-3 flex gap-2" role="radiogroup" aria-label="Woorden laten oplichten">
+      <div className="mt-3 flex gap-2" role="radiogroup" aria-label="Woorden oplichten bij voorlezen">
         {[
           { w: true, tekst: "Aan" },
           { w: false, tekst: "Uit" },

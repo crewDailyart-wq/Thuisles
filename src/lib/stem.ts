@@ -18,6 +18,7 @@
  */
 
 import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
+import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
@@ -392,6 +393,7 @@ export function zegNaElkaar(
 
 export function stopPraten(): void {
   if (typeof window === "undefined") return;
+  stopVoorlezen();
   beurt += 1;
   window.speechSynthesis?.cancel();
   huidigGeluid?.pause();
@@ -459,6 +461,8 @@ function speelVanServer(
   huidigGeluid = null;
 
   let afgerond = false;
+  /* Waar de spraak in het geluid zit, voor het oplichten van de woorden (lib/voorlezen.ts). */
+  let grenzen: { begin: number; eind: number } | null = null;
   const nogAanDeBeurt = () => !afgerond && mijnBeurt === beurt;
   const faal = (kapot: boolean) => {
     if (afgerond) return;
@@ -470,12 +474,14 @@ function speelVanServer(
   };
   const begint = () => {
     if (mijnBeurt !== beurt) return;
+    meldVoorlezen(zin, grenzen ?? { begin: 0.05, eind: Math.max(0.5, (huidigGeluid?.duration || 2) - 0.2) });
     gestart?.();
     meld(true);
   };
   const eindigt = () => {
     if (afgerond) return;
     afgerond = true;
+    stopVoorlezen();
     meld(false);
     if (mijnBeurt === beurt) klaar();
   };
@@ -490,7 +496,12 @@ function speelVanServer(
     .then(async (data) => {
       clearTimeout(wachter);
       if (!nogAanDeBeurt()) return;
-      const stop = await speelBliepoData(data.slice(0), { stilte, gestart: begint, klaar: eindigt });
+      const stop = await speelBliepoData(data.slice(0), {
+        stilte,
+        gestart: begint,
+        klaar: eindigt,
+        metGeluid: (b) => (grenzen = spraakGrenzen(b.getChannelData(0), b.sampleRate)),
+      });
       if (stop) {
         if (!nogAanDeBeurt()) stop();
         else stopServerGeluid = stop;

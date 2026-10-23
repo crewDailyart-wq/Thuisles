@@ -582,3 +582,90 @@
     margin-left: max(17vw, calc(50vw - 520px));
   }
 }
+
+/* =====================================================================
+   Tekst boven Bliepo, zonder ballon (23 oktober 2026, akkoord eigenaar op
+   het voorbeeld): vrij boven zijn hoofd, groot, dik en wit met een zachte
+   schaduw; woorden lichten op als hij ze zegt (BliepoTekst).
+   ===================================================================== */
+
+.bliepo-vloer .bliepo-vloer-ballon {
+  justify-content: center;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  text-align: center;
+}
+.bliepo-vloer .bliepo-vloer-ballon::after {
+  display: none;
+}
+.bliepo-tekst {
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(24px, 2.1vw, 34px);
+  font-weight: 800;
+  line-height: 1.22;
+  color: #fff;
+  text-align: center;
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.65);
+  text-wrap: balance;
+}
+.bliepo-tekst-woord {
+  transition: color 0.12s ease, text-shadow 0.12s ease;
+}
+.bliepo-tekst-gezegd {
+  color: #ffe36e;
+}
+.bliepo-tekst-nu {
+  color: #fff3a8;
+  text-shadow:
+    0 0 14px rgba(255, 230, 120, 0.9),
+    0 2px 0 rgba(0, 25, 90, 0.55);
+}
+/* De gekleurde getallen van de lessen houden hun kleur, ook als ze oplichten (alleen de gloed). */
+.bliepo-tekst-gezegd [style*="color"] {
+  filter: brightness(1.15);
+}
+/* De knopjes (nog eens horen, stem aan/uit) klein naast de tekst. */
+.bliepo-vloer .bliepo-vloer-knoppen {
+  align-self: center;
+}
+.bliepo-vloer .bliepo-vloer-geluid {
+  width: 38px;
+  height: 38px;
+  background: rgba(10, 40, 120, 0.45);
+}
+@media (max-width: 639px) {
+  .bliepo-tekst {
+    font-size: 26px;
+  }
+}
+/* In de les (het lesvlak van 1280 x 720 wordt geschaald): wat groter. */
+.bliepo-vloer[data-plek="kolom"] .bliepo-tekst {
+  font-size: 30px;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon,
+.les-staand .bliepo-vloer-ballon {
+  overflow: visible;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-knoppen,
+.les-staand .bliepo-vloer-knoppen {
+  position: static;
+  flex-direction: row;
+  justify-content: center;
+  margin-top: 8px;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-tekst,
+.les-staand .les-tekst {
+  padding-right: 0;
+}
+/* De knoppen van de les (keuzes, invulvak, verder) gecentreerd onder de tekst. */
+.bliepo-vloer .les-tekst [class*="bediening"] {
+  align-items: center;
+  margin-top: 12px;
+}

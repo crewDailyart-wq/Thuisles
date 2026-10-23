@@ -25,6 +25,7 @@ import type { Lesdraaiboek, Lesgids, Somdeel, Vlak, Vlakgebeurtenis } from "./so
 import s from "./Lesscherm.module.css";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
+import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
 import "@/components/oefenen/opdracht-nieuw.css";
 
 /*
@@ -177,6 +178,40 @@ function Tegel({ n, c }: { n: number; c: number }) {
       <Hokjes n={n} hokjes={vorm(n)} c={c} h={hoogte(n)} />
     </div>
   );
+}
+
+/**
+ * Een lesregel in woorden voor BliepoTekst: per gesproken woord één stukje,
+ * met de opmaak van de les (gekleurd getal, nadruk); een leesteken plakt aan
+ * het woord ervoor.
+ */
+function zinWoorden(zin: string): React.ReactNode[] {
+  const uit: React.ReactNode[] = [];
+  const re = /\{(\d+)\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
+  let m: RegExpExecArray | null;
+  let i = 0;
+  while ((m = re.exec(zin))) {
+    if (m[1] !== undefined)
+      uit.push(
+        <span key={i++}>
+          <span className={s.getal} style={{ color: getalkleur(Number(m[1])) }}>
+            {m[1]}
+          </span>
+          {m[2]}
+        </span>,
+      );
+    else if (m[3] !== undefined)
+      for (const [j, w] of m[3].split(/\s+/).entries())
+        uit.push(
+          <em key={i++}>
+            {w}
+            {j === m[3].split(/\s+/).length - 1 ? m[4] : ""}
+          </em>,
+        );
+    else if (/^[.,!?:]$/.test(m[5]) && uit.length) uit[uit.length - 1] = <span key={i++}>{uit[uit.length - 1]}{m[5]}</span>;
+    else uit.push(<span key={i++}>{m[5]}</span>);
+  }
+  return uit;
 }
 
 function Zin({ zin }: { zin: string }) {
@@ -598,9 +633,20 @@ function Lesscherm({
           data-letters={voorkeuren?.letters ?? "gewoon"}
           data-oplichten={voorkeuren && !voorkeuren.oplichten ? "uit" : "aan"}
         >
-          {beeld.zinnen.slice(0, beeld.zichtbaar).map((z, i) => (
-            <Zin key={`${i}-${z}`} zin={z} />
-          ))}
+          {/*
+            Nieuw ontwerp (23 oktober 2026, akkoord eigenaar): alleen de zin die
+            Bliepo nu zegt, vrij boven hem, met oplichtende woorden (BliepoTekst).
+            Oud: alle zinnen onder elkaar.
+          */}
+          {nieuw
+            ? beeld.zichtbaar > 0 && (
+                <BliepoTekst
+                  key={`${beeld.zichtbaar}-${beeld.zinnen[beeld.zichtbaar - 1]}`}
+                  woorden={zinWoorden(beeld.zinnen[beeld.zichtbaar - 1])}
+                  gesproken={metUitspraak(kaal(beeld.zinnen[beeld.zichtbaar - 1]), naam, voorkeuren ?? leesVoorkeuren())}
+                />
+              )
+            : beeld.zinnen.slice(0, beeld.zichtbaar).map((z, i) => <Zin key={`${i}-${z}`} zin={z} />)}
           {b?.soort === "getal" && <Getalvak onKlaar={(v) => wacht.current.getal?.(v)} />}
           {b?.soort === "somvak" && <SomBevestig />}
           {b?.soort === "kies" && <Keuzes opties={b.opties} onKlaar={(v) => wacht.current.kies?.(v)} />}

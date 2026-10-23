@@ -20,6 +20,7 @@ import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { POPPETJE, POPPETJE_GODOT, type MaatjeHouding } from "@/lib/maatje/poppetje";
 import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
+import { BliepoTekst, inWoorden } from "@/components/oefenen/BliepoTekst";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
@@ -109,6 +110,8 @@ export function Maatje({
   }
 
   if (vloer) {
+    /* De zin die hij nu zegt (of de laatste als hij klaar is). */
+    const huidigeZin = Math.max(0, Math.min(bericht.zinnen.length - 1, (bezig ? tot : zichtbaar.length) - 1));
     /* Juichen bij goed, bemoedigend knikken bij fout, nadenken bij een tip. */
     const kaart: Partial<Record<MaatjeHouding, string>> = { blij: "correct", troost: "incorrect", denkt: "think" };
     const naam = kaart[bericht.houding];
@@ -122,14 +125,15 @@ export function Maatje({
           onGeluid(aan);
         }}
       >
-        <p>
-          {zichtbaar.map((z, i) => (
-            <span key={i} className={bezig && i === tot - 1 ? "bliepo-vloer-nu" : ""}>
-              {i > 0 ? " " : ""}
-              {z.tekst}
-            </span>
-          ))}
-        </p>
+        {/*
+          Tekst boven Bliepo (23 oktober 2026): steeds de zin die hij nu zegt,
+          in stukjes na elkaar, met oplichtende woorden (BliepoTekst).
+        */}
+        <BliepoTekst
+          key={`${bericht.id}:${huidigeZin}`}
+          woorden={inWoorden(bericht.zinnen[huidigeZin]?.tekst ?? "")}
+          gesproken={spreekbaar(bericht.zinnen[huidigeZin]?.tekst ?? "")}
+        />
       </BliepoVloer>
     );
   }

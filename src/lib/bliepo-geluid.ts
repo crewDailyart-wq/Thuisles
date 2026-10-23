@@ -94,11 +94,18 @@ export async function bliepoGeluidKlaar(): Promise<boolean> {
  */
 export async function speelBliepoData(
   data: ArrayBuffer,
-  { stilte = 0.2, gestart, klaar }: { stilte?: number; gestart?: () => void; klaar?: () => void } = {},
+  {
+    stilte = 0.2,
+    gestart,
+    klaar,
+    metGeluid,
+  }: { stilte?: number; gestart?: () => void; klaar?: () => void; metGeluid?: (buffer: AudioBuffer) => void } = {},
 ): Promise<(() => void) | null> {
   if (!(await bliepoGeluidKlaar()) || !context || !meter) return null;
   const buffer = await context.decodeAudioData(data).catch(() => null);
   if (!buffer) return null;
+  /* Het uitgepakte geluid, voor wie wil weten waar de spraak zit (woorden oplichten). */
+  metGeluid?.(buffer);
   const bron = context.createBufferSource();
   bron.buffer = buffer;
   bron.connect(meter);
