@@ -22,6 +22,7 @@
 
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerPraten, magGeluid, praatVos, stopPraten, zegNaElkaar } from "@/lib/stem";
+import { bliepoGeluidKlaar } from "@/lib/bliepo-geluid";
 import { abonneerStartstem, startstemAan, zetStartstem } from "@/components/zappie/startstem";
 
 const ZELF = "bliepo-begroet-op";
@@ -98,10 +99,18 @@ export function useBegroeting() {
       /* Even wachten tot Bliepo in beeld staat. */
       await new Promise((r) => timers.push(window.setTimeout(r, 1200)));
       if (weg) return;
-      if (!startstemAan() || magGeluid()) {
+      /*
+        Meteen praten als het mag (23 oktober 2026, wens eigenaar). Ook zonder
+        tik staat de browser geluid soms toe: Chrome bij een site die je vaak
+        gebruikt, Safari en Firefox als je "automatisch afspelen" voor de site
+        hebt aangezet. Daarom eerst proberen; lukt het niet, dan "Tik op mij!".
+      */
+      if (!startstemAan() || magGeluid() || (await bliepoGeluidKlaar())) {
+        if (weg) return;
         begin(zinnen, zelf);
         return;
       }
+      if (weg) return;
       /* Nog geen tik gehad: de browser mag nog geen geluid maken. Hij zwaait al en vraagt om een tik. */
       zetBallon(TIK);
       zetZwaai((n) => n + 1);
