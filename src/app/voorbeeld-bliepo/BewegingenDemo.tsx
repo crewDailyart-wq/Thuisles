@@ -22,6 +22,15 @@ const KNOPPEN: { naam: string; tekst: string }[] = [
   { naam: "correct", tekst: "Goed antwoord" },
   { naam: "incorrect", tekst: "Fout (bemoedigend knikken)" },
   { naam: "checkTail", tekst: "Naar zijn stekker kijken" },
+  /* Gebaren bij het praten (23 oktober 2026). */
+  { naam: "ask", tekst: "Vraag (open handen)" },
+  { naam: "pointTask", tekst: "Wijzen naar de opdracht" },
+  { naam: "explain", tekst: "Iets laten zien" },
+  { naam: "idea", tekst: "Idee (hint)" },
+  { naam: "thumbsUp", tekst: "Duim omhoog" },
+  { naam: "clap", tekst: "Klappen" },
+  { naam: "fist", tekst: "Vuistje" },
+  { naam: "encourage", tekst: "Aanmoedigen" },
 ];
 
 export function BewegingenDemo() {

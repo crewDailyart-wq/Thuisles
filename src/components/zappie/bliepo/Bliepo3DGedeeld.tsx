@@ -23,10 +23,11 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { BliepoFilm, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
-import { bliepoGeluidKlinkt, leesBliepoGolf } from "@/lib/bliepo-geluid";
+import { bliepoGeluidKlinkt, bliepoStemNiveau } from "@/lib/bliepo-geluid";
 import { abonneerPraten, praatVos, zeg } from "@/lib/stem";
 import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
+import { huidigeVoorlees } from "@/lib/voorlezen";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
@@ -44,8 +45,11 @@ type Instellingen = {
   ballon?: string | null;
   /** Telt op bij elke keer dat hij moet zwaaien (niet bij "Beweging uit"). */
   zwaai?: number;
-  /** Een gebaar van buitenaf (23 oktober 2026): bij elke nieuwe n speelt hij `naam` (zie ACTIONS in zappie.js). */
-  gebaar?: { naam: string; n: number | string } | null;
+  /**
+   * Een gebaar van buitenaf (23 oktober 2026): bij elke nieuwe n speelt hij `naam` (zie ACTIONS in zappie.js).
+   * Met `opStem` wacht het gebaar tot de volgende zin echt begint te klinken (hoogstens 2,5 tellen).
+   */
+  gebaar?: { naam: string; n: number | string; opStem?: boolean } | null;
   /** Bij een tik niet zeggen wie hij is (in opdrachten en lessen praat hij daar al). */
   geenTiktekst?: boolean;
 };
@@ -61,13 +65,12 @@ function zegTiktekst() {
 /** Kijkt hij naar rechts (positieve rusthoek), dan ook bij voorkeur zijn hoofd die kant op. */
 const RUSTHOEK_VOORKEUR = (rusthoek: number) => Math.max(-0.35, Math.min(0.35, rusthoek * 1.5));
 
-/** Het lijntje op zijn scherm volgt de stem: hoe hard klinkt Bliepo nu (0 tot 1), of null als hij stil is. */
-const golf = new Uint8Array(512);
+/**
+ * Het lijntje op zijn scherm volgt de stem: hoe hard klinkt Bliepo nu (0 tot 1), of null als hij stil is.
+ * Sinds 23 oktober 2026 de gedeelde meter (bliepoStemNiveau): per lettergreep, in decibel, direct.
+ */
 function stemNiveau(): number | null {
-  if (!bliepoGeluidKlinkt() || !leesBliepoGolf(golf)) return null;
-  let som = 0;
-  for (const v of golf) som += ((v - 128) / 128) ** 2;
-  return Math.min(1, Math.sqrt(som / golf.length) * 3.2);
+  return bliepoStemNiveau();
 }
 
 /*
@@ -95,7 +98,8 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
   const [praat, zetPraat] = useState(false);
   const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, geenPraat);
   /* Het laatste gebaar (of de begroeting) speelt één keer; daarna rust, of praten zolang zijn stem klinkt. */
-  const kaart: Record<string, Filmhouding> = { greet: "zwaaien", wave: "zwaaien", think: "nadenken", correct: "juichen", celebrate: "juichen", incorrect: "troost" };
+  /* De gebaren bij het praten (23 oktober 2026) op het filmpje dat er het meest op lijkt; vraag en uitleg: praten. */
+  const kaart: Record<string, Filmhouding> = { greet: "zwaaien", wave: "zwaaien", think: "nadenken", correct: "juichen", celebrate: "juichen", incorrect: "troost", idea: "nadenken", thumbsUp: "juichen", clap: "juichen", encourage: "troost", fist: "troost" };
   const gebaarHouding = gebaar?.n ? kaart[gebaar.naam] : undefined;
   /* Na juichen of troosten weer rust; nadenken blijft (BliepoFilm). */
   const daarna: Filmhouding = stemKlinkt ? "praten" : "rust";
@@ -151,7 +155,7 @@ function Bliepo3DEcht({
 }: {
   ballon?: string | null;
   zwaai?: number;
-  gebaar?: { naam: string; n: number | string } | null;
+  gebaar?: { naam: string; n: number | string; opStem?: boolean } | null;
   geenTiktekst?: boolean;
   rustig: boolean;
   /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
@@ -167,7 +171,7 @@ function Bliepo3DEcht({
   const instelling = useRef({ rusthoek, volgMuis, onKlaar });
   const ballonRef = useRef(ballon);
   const geenTikRef = useRef(geenTiktekst);
-  const zwaaiRef = useRef<((actie: string) => void) | null>(null);
+  const zwaaiRef = useRef<((actie: string, opStem?: boolean) => void) | null>(null);
 
   useEffect(() => {
     rustigRef.current = rustig;
@@ -185,9 +189,10 @@ function Bliepo3DEcht({
   /* Een gebaar van buitenaf (testknoppen op /voorbeeld-bliepo), niet bij "Beweging uit". */
   const gebaarNaam = gebaar?.naam;
   const gebaarN = gebaar?.n ?? 0;
+  const gebaarOpStem = gebaar?.opStem ?? false;
   useEffect(() => {
-    if (gebaarN && gebaarNaam && !rustigRef.current) zwaaiRef.current?.(gebaarNaam);
-  }, [gebaarN, gebaarNaam]);
+    if (gebaarN && gebaarNaam && !rustigRef.current) zwaaiRef.current?.(gebaarNaam, gebaarOpStem);
+  }, [gebaarN, gebaarNaam, gebaarOpStem]);
 
   useEffect(() => {
     const host = plek.current;
@@ -395,8 +400,24 @@ function Bliepo3DEcht({
       window.addEventListener("pointermove", beweeg, { passive: true });
       window.addEventListener("pointerdown", tik, { passive: true });
       /* Alleen op de ontwikkelcomputer: de robot bereikbaar voor het afstellen van houdingen. */
-      if (process.env.NODE_ENV === "development") (window as unknown as { __bliepo?: unknown }).__bliepo = { besturing, model, T, host };
-      zwaaiRef.current = (actie) => {
+      if (process.env.NODE_ENV === "development") {
+        const w = window as unknown as { __bliepo?: unknown; __bliepos?: unknown[] };
+        w.__bliepo = { besturing, model, T, host };
+        (w.__bliepos ??= []).push(w.__bliepo);
+      }
+      /*
+        Gebaar op de stem (23 oktober 2026): het gebaar bij een zin begint
+        pas als die zin echt klinkt (de stem meldt elke nieuwe zin in
+        lib/voorlezen.ts), niet al terwijl de stem nog geladen wordt. Klinkt
+        er na 2,5 tellen nog niets (stem uit), dan toch.
+      */
+      let wachtend: { actie: string; zin: number; tot: number } | null = null;
+      zwaaiRef.current = (actie, opStem) => {
+        if (opStem) {
+          wachtend = { actie, zin: huidigeVoorlees()?.id ?? 0, tot: performance.now() + 2500 };
+          return;
+        }
+        wachtend = null;
         wachtTot = 0;
         speel(actie);
       };
@@ -405,6 +426,7 @@ function Bliepo3DEcht({
       let vorige = performance.now();
       let laatsteTekening = 0;
       let rustTijd = 0;
+      let praatTot = 0;
       let eersteKeer = true;
       const tel = (nu: number) => {
         if (!zichtbaar || document.hidden) {
@@ -424,9 +446,29 @@ function Bliepo3DEcht({
           besturing.play("checkTail");
           rustTijd = 0;
         }
-        const hoek = besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
+        /*
+          Praten (23 oktober 2026, opdracht eigenaar): zolang zijn stem klinkt
+          (en een tel daarna, tussen twee zinnen) draait hij zich meer naar het
+          kind en kijkt hij recht in de camera; rondkijken en de muis volgen
+          alleen als hij stil is.
+        */
+        const niveau = stemNiveau();
+        if (wachtend && ((huidigeVoorlees()?.id ?? 0) !== wachtend.zin || nu > wachtend.tot)) {
+          const actie = wachtend.actie;
+          wachtend = null;
+          wachtTot = 0;
+          speel(actie);
+        }
+        if (niveau !== null || praatVos()) praatTot = nu + 800;
+        const praatNu = nu < praatTot && !rustigRef.current;
+        const hoek = praatNu ? RUSTHOEK * 0.45 : besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
         model.root.rotation.y += (hoek - model.root.rotation.y) * Math.min(1, dt * 4);
-        besturing.setSpeechLevel(stemNiveau());
+        if (besturing.levendig) {
+          besturing.levendig.praat = praatNu;
+          /* Het hoofd draait de rest bij (het lijf draait een vijfde mee), zodat hij precies naar voren kijkt. */
+          besturing.levendig.naarKind = -model.root.rotation.y / 1.22;
+        }
+        besturing.setSpeechLevel(niveau);
         besturing.update(dt, {});
         ballon.update(besturing);
         /*

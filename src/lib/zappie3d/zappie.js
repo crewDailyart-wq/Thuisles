@@ -15,7 +15,9 @@ export const ACTIONS={idle:'Rust',drive:'Rijden',reverse:'Achteruit',turn:'Rondj
 Object.assign(ACTIONS,{stop:'Klunzig afremmen',checkTail:'Stekker controleren'});
 /* Levendiger (23 oktober 2026, opdracht eigenaar): petje rechtzetten. */
 Object.assign(ACTIONS,{cap:'Petje rechtzetten'});
-export const DURATIONS={cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
+/* Gebaren bij het praten, passend bij de soort zin (23 oktober 2026, opdracht eigenaar). */
+Object.assign(ACTIONS,{ask:'Vraag stellen',explain:'Laten zien',pointTask:'Wijzen naar de opdracht',idea:'Idee',thumbsUp:'Duim omhoog',clap:'Klappen',fist:'Vuistje',encourage:'Aanmoedigen'});
+export const DURATIONS={ask:2.6,explain:3,pointTask:2.6,idea:2.6,thumbsUp:2.4,clap:2.4,fist:2.2,encourage:2.6,cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
 export const JOINTS=['Rig','Torso','Head','ArmLeft','ArmRight','ElbowLeft','ElbowRight','HandLeft','HandRight','AntennaLeft','AntennaRight','TailRoot',...Array.from({length:6},(_,i)=>'Tail'+(i+1)),...['Left','Right'].flatMap(s=>Array.from({length:4},(_,i)=>'Finger'+s+i)), 'SpeechWave'];
 
 export async function loadZappie(url='/assets/zappie/3d/zappie.glb') {
@@ -26,7 +28,7 @@ export function waveMood(action,t,reducedMotion=false,speechLevel=null){
   const modes={think:[.16,1.4,'#b2caff'],listen:[.12,1.9,'#7ddfff'],sleep:[.045,.7,'#6ba9dc'],celebrate:[.8,13,'#bbfff0'],correct:[.8,13,'#bbfff0'],incorrect:[.27,3,'#ffd3df'],surprise:[.8,9,'#fff0a0'],talk:[.65,11,'#b1faff'],drive:[.4,7,'#64edff'],reverse:[.4,7,'#64edff']};
   const [energy,rate,color]=modes[action]||[.2,3,'#80edff'];
   /* Klinkt zijn stem, dan volgt het lijntje het echte geluid (geluidsmeter), bij elke beweging; anders een rustig hartslaglijntje (23 oktober 2026). */
-  return {amplitude:speechLevel!==null?.08+.85*T.MathUtils.clamp(speechLevel,0,1):energy*(reducedMotion?.6:.45+.55*Math.abs(Math.sin(t*rate)*Math.cos(t*rate*.37))),rate,color};
+  return {amplitude:speechLevel!==null?.05+.95*T.MathUtils.clamp(speechLevel,0,1):energy*(reducedMotion?.6:.45+.55*Math.abs(Math.sin(t*rate)*Math.cos(t*rate*.37))),rate,color};
 }
 /** Het rondje op zijn wielen bij een goed antwoord: 0 tot 2π, zacht op gang en zacht tot stilstand. */
 export function rondje(action,t){
@@ -46,7 +48,7 @@ export function prepareZappie(scene){
 }
 
 // All gestures stay in a restricted outward arm envelope. No reach through the monitor.
-export function samplePose(action,t,{speed=0,turnRate=0,acceleration=0,speechLevel=null,reducedMotion=false}={}) {
+export function samplePose(action,t,{speed=0,turnRate=0,acceleration=0,speechLevel=null,reducedMotion=false,variant=0}={}) {
   const p={};const rot=(n,x=0,y=0,z=0)=>p[n]={r:[x,y,z]};
   rot('ArmLeft',0,0,.26);rot('ArmRight',0,0,-.26);
   rot('ElbowLeft',0,0,-.18);rot('ElbowRight',0,0,.18);
@@ -97,6 +99,37 @@ export function samplePose(action,t,{speed=0,turnRate=0,acceleration=0,speechLev
   if(action==='incorrect'){const k=Math.min(1,t/.4);rot('Head',(reducedMotion?.06:Math.sin(t*5.5)*.13*Math.exp(-t*.5))+.04,0,.08*k);rot('ArmLeft',-.25*k,0,-.5*k);rot('ArmRight',-.25*k,0,.5*k);rot('ElbowLeft',0,0,-.45*k);rot('ElbowRight',0,0,.45*k);}
   /* Petje rechtzetten: zijn armen zijn te kort om bij de klep te komen (gemeten); de hand gaat naar de zijkant van zijn hoofd, het hoofd buigt ernaartoe en het petje wiebelt recht. */
   if(action==='cap'){const k=Math.sin(Math.PI*Math.min(1,t/DURATIONS.cap));const tik=t>.8&&t<1.6?Math.sin((t-.8)/.8*Math.PI*2):0;rot('ArmRight',.18*k,-.04*k,-.26+1.91*k);rot('ElbowRight',.23*k,.01*k,.18+1.04*k);rot('Head',.07*k,0,-.15*k);rot('Cap',.08*tik,0,-.12*tik);}
+  /*
+    Gebaren bij het praten (23 oktober 2026, opdracht eigenaar), zoals een juf.
+    k laat het gebaar zacht beginnen en eindigen; de veren in Levendig maken
+    het daarna vloeiend. `variant` (per keer willekeurig) wisselt de kant of
+    de uitvoering af, zodat hij niet steeds precies hetzelfde doet.
+  */
+  const k=reducedMotion?1:Math.min(1,t/.35)*Math.min(1,Math.max(0,(DURATIONS[action]||3)-t)/.45);
+  const kant=variant<.5?1:-1;
+  /*
+    De hoeken hieronder zijn op het model zelf uitgeprobeerd (schermfoto's):
+    ArmRight is de arm rechts in beeld; x = arm naar voren, z = opzij omhoog;
+    bij de elleboog z = onderarm naar buiten (+ rechts, - links).
+  */
+  const L=(a,b)=>a+(b-a)*k;
+  const armen=(xr,zr,ezr,xl,zl,ezl,exr=0,exl=0)=>{rot('ArmRight',L(0,xr),0,L(-.26,zr));rot('ArmLeft',L(0,xl),0,L(.26,zl));rot('ElbowRight',L(0,exr),0,L(.18,ezr));rot('ElbowLeft',L(0,exl),0,L(-.18,ezl));};
+  /* Vraag: open handen naar voren (handpalmen naar boven), hoofd licht scheef. */
+  if(action==='ask'){armen(1.1,-.1,.9,1.1,.1,-.9);rot('Head',.03*k,0,.13*kant*k);}
+  /* Uitleg: met beide handen iets laten zien, de handen gaan zacht open en dicht. */
+  if(action==='explain'){const a=reducedMotion?.5:.5+.5*Math.sin(t*3.4);armen(.95,-.15,.35+.45*a,.95,.15,-.35-.45*(1-a));rot('Head',.02*k,0,.05*kant*k);}
+  /* Uitleg: wijzen naar de opdracht (die staat links van hem), met de arm links in beeld. */
+  if(action==='pointTask'){rot('ArmLeft',0,0,L(.26,-.88));rot('ElbowLeft',0,0,L(-.18,-.13));for(const i of [0,2,3])rot('FingerLeft'+i,-1.15*k);}
+  /* Hint: één hand omhoog naast zijn hoofd met de wijsvinger, alsof hij een idee heeft. */
+  if(action==='idea'){const tik=reducedMotion?0:Math.exp(-t*2)*Math.sin(t*9)*.12;rot('ArmRight',0,0,L(-.26,1.0));rot('ElbowRight',0,0,L(.18,1.8)+tik);for(const i of [0,2,3])rot('FingerRight'+i,-1.15*k);rot('Head',.02*k,0,-.08*k);}
+  /* Goed: duim omhoog (soms met twee handen). */
+  if(action==='thumbsUp'){const knik=reducedMotion?0:Math.sin(t*5)*.05*k;rot('ArmRight',L(0,1.3),0,-.26);rot('ElbowRight',L(0,1.2),0,.18);for(const i of [1,2,3])rot('FingerRight'+i,-1.25*k);if(variant>.6){rot('ArmLeft',L(0,1.3),0,.26);rot('ElbowLeft',L(0,1.2),0,-.18);for(const i of [1,2,3])rot('FingerLeft'+i,-1.25*k);}rot('Head',.04*k+knik,0,0);}
+  /* Goed: in zijn handen klappen, voor zijn lijf. */
+  if(action==='clap'){const slag=reducedMotion?.5:.5+.5*Math.sin(t*13);armen(1.2,-.26,-(.4+.45*slag),1.2,.26,.4+.45*slag);rot('Head',.05*k+(reducedMotion?0:Math.abs(Math.sin(t*6.5))*.04*k),0,0);}
+  /* Na een fout: een vuistje, "jij kunt het!", met een klein knikje. */
+  if(action==='fist'){const pomp=reducedMotion?0:Math.max(0,Math.sin(t*7))*.3*k;rot('ArmRight',L(0,1.2),0,-.26);rot('ElbowRight',L(0,1.2)+pomp,0,.18);for(let i=0;i<4;i++)rot('FingerRight'+i,-1.3*k);rot('Head',(reducedMotion?.04:Math.sin(t*5)*.08)*k,0,0);}
+  /* Na een fout: bemoedigend knikken met open handen (zoals "incorrect", zonder rood scherm). */
+  if(action==='encourage'){armen(.7,-.12,.75,.7,.12,-.75);rot('Head',((reducedMotion?.06:Math.sin(t*5.5)*.12*Math.exp(-t*.4))+.04)*k,0,.08*kant*k);}
   if(action==='sleep'){rot('Head',.12);amplitude=.035;}
   if(action==='listen'){rot('Head',0,.1,.07);amplitude=.11;}
   if(action==='surprise'){rot('Head',-.09);rot('ArmLeft',0,0,-.6);rot('ArmRight',0,0,.6);amplitude=.5;}
@@ -139,21 +172,21 @@ export function applyPose(model,pose,blend=1,schaalBlend=blend){
   for(const name of JOINTS){const o=model.parts[name],rest=model.rest[name],v=pose[name]||{};
     tempE.set(...(v.r||[0,0,0]));tempQ.setFromEuler(tempE).premultiply(rest.q);o.quaternion.slerp(tempQ,blend);
     const targetY=rest.p.y+(v.dy||0);o.position.y=T.MathUtils.lerp(o.position.y,targetY,blend);
-    const sc=v.s||[1,1,1];o.scale.x=T.MathUtils.lerp(o.scale.x,rest.s.x*sc[0],schaalBlend);o.scale.y=T.MathUtils.lerp(o.scale.y,rest.s.y*sc[1],schaalBlend);o.scale.z=T.MathUtils.lerp(o.scale.z,rest.s.z*sc[2],schaalBlend);
+    /* Het lijntje (SpeechWave) volgt de stemmeter direct; die is zelf al zacht gemaakt (23 oktober 2026). */const sb=name==='SpeechWave'?Math.max(schaalBlend,.8):schaalBlend;const sc=v.s||[1,1,1];o.scale.x=T.MathUtils.lerp(o.scale.x,rest.s.x*sc[0],sb);o.scale.y=T.MathUtils.lerp(o.scale.y,rest.s.y*sc[1],sb);o.scale.z=T.MathUtils.lerp(o.scale.z,rest.s.z*sc[2],sb);
   }
 }
 export class ZappieController {
   constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.levendig=new Levendig();this.setTalkText('Hoi! Ik ben Bliepo.');}
   setTalkText(text){this.talkDisplay?.set(text);}
   showText(text){this.setTalkText(text);this.play('talk');this.duration=this.talkDisplay?.duration||4;}
-  play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);this.action=action;this.time=0;this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);this.onAction(action);}
+  play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);this.action=action;this.time=0;this.variant=Math.random();this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);if(action==='thumbsUp'||action==='clap')this.setFeedback('correct',DURATIONS[action]);this.onAction(action);}
   setFeedback(result='neutral',duration=3){if(!['neutral','correct','incorrect'].includes(result))throw new Error('Unknown feedback');this.feedback=result;this.feedbackTime=result==='neutral'?0:Math.max(0,duration);}
   setSpeechLevel(level){this.speechLevel=level===null?null:T.MathUtils.clamp(Number(level)||0,0,1);}
   update(dt,motion={}){
     if(this.paused)return;dt=T.MathUtils.clamp(dt,0,.05);this.time+=dt;
     if(this.time>this.duration){this.play('idle');}
     this.feedbackTime=Math.max(0,this.feedbackTime-dt);if(this.feedbackTime===0)this.feedback='neutral';
-    const pose=samplePose(this.action,this.time,{...motion,speechLevel:this.speechLevel,reducedMotion:this.reducedMotion});
+    const pose=samplePose(this.action,this.time,{...motion,speechLevel:this.speechLevel,reducedMotion:this.reducedMotion,variant:this.variant||0});
     this.tailYaw??=0;this.tailVelocity??=0;const target=this.reducedMotion?0:T.MathUtils.clamp(-(motion.turnRate||0)*.08,-.48,.48);
     this.tailVelocity+=((target-this.tailYaw)*45-this.tailVelocity*10)*dt;this.tailYaw=T.MathUtils.clamp(this.tailYaw+this.tailVelocity*dt,-.55,.55);
     pose.TailRoot.r[1]+=this.reducedMotion?0:this.tailYaw;
@@ -226,6 +259,15 @@ export class Levendig{
     this.kijk=null;
     /** Een voorkeurskant om naar te kijken (bijvoorbeeld de vakken), in radialen. */
     this.voorkeur=0;
+    /*
+      Praten (23 oktober 2026, opdracht eigenaar): zolang hij praat kijkt hij
+      recht naar het kind. `praat` zet de 3D-Bliepo; `naarKind` is de draai
+      van het hoofd waarmee hij recht in de camera kijkt (hangt af van hoe zijn
+      lijf staat), `naarOpdracht` die waarmee hij naar de opdracht kijkt.
+    */
+    this.praat=false;
+    this.naarKind=0;
+    this.naarOpdracht=-.42;
     this.zelf=Math.random()*100;
   }
   /** Eén waarde met een veer naar zijn doel; k = stijfheid, z = demping (onder 1 = na-veren). */
@@ -251,18 +293,27 @@ export class Levendig{
       this.blikDoel.pitch=terug?0:willekeurig(0,.1);/* Niet omhoog kijken: dan weerspiegelt het scherm licht en ziet het er niet meer donker uit. */
       this.volgendeBlik=t+willekeurig(1.6,4.8);
     }
-    const doelYaw=rustig||actie==='talk'?this.blikDoel.yaw:0,doelPitch=rustig||actie==='talk'?this.blikDoel.pitch:0;
+    let doelYaw=rustig||actie==='talk'?this.blikDoel.yaw:0,doelPitch=rustig||actie==='talk'?this.blikDoel.pitch:0;
+    /* Praat hij, dan kijkt hij naar het kind; wijst hij, dan even naar de opdracht en daarna weer terug. Rondkijken alleen als hij stil is. */
+    if(actie==='point'||actie==='pointTask'){doelYaw=this.naarOpdracht;doelPitch=.04;}
+    else if(this.praat&&actie!=='checkTail'&&actie!=='think'&&actie!=='cap'){doelYaw=this.naarKind;doelPitch=0;}
     const yaw=this.veer('blik:yaw',doelYaw,dt,38,.58),pitch=this.veer('blik:pitch',doelPitch,dt,38,.6);
     const kop=zet('Head');kop.r[1]+=yaw;kop.r[0]+=pitch;
     /* Het lijf draait een klein beetje mee, later en trager: dat voelt levend. */
     const lijf=zet('Torso');lijf.r[1]+=this.veer('lijf:yaw',yaw*.22,dt,10,.9);
 
     /* 2. Praten: knikken op de stem en kleine handgebaren. */
-    this.spraak=this.veer('spraak',actie==='talk'||c.speechLevel!==null?(c.speechLevel??.4):0,dt,60,.9);
+    /*
+      Op het ritme van de stem (23 oktober 2026): zolang zijn stem klinkt
+      bewegen de handen altijd een beetje mee (nooit stil), en meer op luide
+      lettergrepen.
+    */
+    const stemNu=c.speechLevel!==null?.35+.65*c.speechLevel:actie==='talk'||this.praat?.4:0;
+    this.spraak=this.veer('spraak',stemNu,dt,140,.8);
     if(this.spraak>.01){
-      kop.r[0]+=this.spraak*(.05+.05*Math.sin(t*7.3+this.zelf));
-      kop.r[2]+=this.spraak*.04*ruis(t*1.7,this.zelf);
-      const g1=Math.max(0,ruis(t*1.3,this.zelf+1)),g2=Math.max(0,ruis(t*1.1,this.zelf+5));
+      kop.r[0]+=this.spraak*(.04+.04*Math.sin(t*7.3+this.zelf));
+      kop.r[2]+=this.spraak*.035*ruis(t*1.7,this.zelf);
+      const g1=.3+.7*Math.max(0,ruis(t*1.3,this.zelf+1)),g2=.3+.7*Math.max(0,ruis(t*1.1,this.zelf+5));
       if(actie==='idle'||actie==='talk'){
         const ar=zet('ArmRight'),er=zet('ElbowRight'),al=zet('ArmLeft'),el=zet('ElbowLeft');
         ar.r[0]-=.25*g1*this.spraak;ar.r[2]+=.2*g1*this.spraak;er.r[2]+=.45*g1*this.spraak;
@@ -271,7 +322,7 @@ export class Levendig{
     }
 
     /* 3. Gebaren op willekeurige tijden, alleen in rust. */
-    if(actie==='idle'&&t>=this.volgendGebaar){
+    if(actie==='idle'&&t>=this.volgendGebaar&&!this.praat){
       const kans=Math.random();
       c.play(kans<.4?'wave':kans<.8?'cap':'checkTail');
       this.volgendGebaar=t+willekeurig(14,30);

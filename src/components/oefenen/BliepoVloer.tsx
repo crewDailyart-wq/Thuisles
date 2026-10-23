@@ -32,7 +32,7 @@ export function BliepoVloer({
 }: {
   children: React.ReactNode;
   plek?: "vast" | "kolom";
-  gebaar?: { naam: string; n: number | string } | null;
+  gebaar?: { naam: string; n: number | string; opStem?: boolean } | null;
   /** Het luidsprekerknopje: nog eens voorlezen. */
   onNogEens?: () => void;
   /** Staat zijn stem aan? Dan wisselt het knopje de stem aan/uit (opdrachten). */

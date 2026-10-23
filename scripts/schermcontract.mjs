@@ -429,6 +429,17 @@ export const SCHERMCONTRACT = [
     ],
   },
   {
+    /*
+      Test praten (23 oktober 2026, opdracht eigenaar): vijf voorbeeldzinnen
+      om te zien of Bliepo naar het kind kijkt, passende gebaren maakt en het
+      lijntje goed meebeweegt.
+    */
+    naam: "Test praten (voorbeeld)",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/TestPraten.tsx"],
+    zichtbaar: ["Test praten", "Vraag", "Uitleg", "Hint", "Goed antwoord", "Aanmoediging"],
+  },
+  {
     /* Voorbeeld "Tekst boven Bliepo" (23 oktober 2026): tekst vrij boven Bliepo, oplichten per woord. */
     naam: "Tekst boven Bliepo (voorbeeld)",
     pad: "/voorbeeld-bliepo",
@@ -443,7 +454,7 @@ export const SCHERMCONTRACT = [
     naam: "Bewegingen van Bliepo",
     pad: "/voorbeeld-bliepo",
     bron: ["src/app/voorbeeld-bliepo/BewegingenDemo.tsx"],
-    zichtbaar: ["Bewegingen van Bliepo", "Zwaaien (begroeting)", "Petje rechtzetten", "Nadenken", "Goed antwoord", "Fout (bemoedigend knikken)", "Praten"],
+    zichtbaar: ["Bewegingen van Bliepo", "Zwaaien (begroeting)", "Petje rechtzetten", "Nadenken", "Goed antwoord", "Fout (bemoedigend knikken)", "Praten", "Vraag (open handen)", "Wijzen naar de opdracht", "Iets laten zien", "Idee (hint)", "Duim omhoog", "Klappen", "Vuistje", "Aanmoedigen"],
   },
   {
     /*

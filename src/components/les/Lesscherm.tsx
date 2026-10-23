@@ -25,6 +25,7 @@ import type { Lesdraaiboek, Lesgids, Somdeel, Vlak, Vlakgebeurtenis } from "./so
 import s from "./Lesscherm.module.css";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
+import { kiesGebaar, vraagOfUitleg } from "@/lib/bliepo-gebaren";
 import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
 import "@/components/oefenen/opdracht-nieuw.css";
 
@@ -624,6 +625,17 @@ function Lesscherm({
   const b = beeld.bediening;
 
   const nieuw = ONTWERP === "nieuw";
+  /*
+    Gebaren bij het praten (23 oktober 2026, opdracht eigenaar): bij elke zin
+    die Bliepo zegt een passend gebaar (vraag: open handen; uitleg: wijzen of
+    laten zien; lib/bliepo-gebaren.ts); juichen als de les klaar is.
+  */
+  const lesZin = beeld.zichtbaar > 0 ? kaal(beeld.zinnen[beeld.zichtbaar - 1] ?? "") : "";
+  const lesGebaar = beeld.klaar
+    ? { naam: "correct", n: "klaar" }
+    : lesZin
+      ? { naam: kiesGebaar(vraagOfUitleg(lesZin), lesZin, beeld.zichtbaar), n: `${beeld.zichtbaar}:${lesZin}`, opStem: true }
+      : null;
 
   /* Wat de mascotte zegt, en wat het kind kan doen (oud: linksboven; nieuw: in de ballon boven Bliepo). */
   const tekstblok = (
@@ -737,7 +749,7 @@ function Lesscherm({
         {nieuw && !staand && (
           <BliepoVloer
             plek="kolom"
-            gebaar={beeld.klaar ? { naam: "correct", n: "klaar" } : null}
+            gebaar={lesGebaar}
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0
                 ? undefined
@@ -906,7 +918,7 @@ function Lesscherm({
       {nieuw && staand && (
         <div className="les-staand" style={{ top: 16 + H * (schaal || 1) }}>
           <BliepoVloer
-            gebaar={beeld.klaar ? { naam: "correct", n: "klaar" } : null}
+            gebaar={lesGebaar}
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0
                 ? undefined

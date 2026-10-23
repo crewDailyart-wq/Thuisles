@@ -22,6 +22,7 @@ import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { BliepoTekst, inWoorden } from "@/components/oefenen/BliepoTekst";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
+import { kiesGebaar, vraagOfUitleg, type Zinsoort } from "@/lib/bliepo-gebaren";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
@@ -112,12 +113,29 @@ export function Maatje({
   if (vloer) {
     /* De zin die hij nu zegt (of de laatste als hij klaar is). */
     const huidigeZin = Math.max(0, Math.min(bericht.zinnen.length - 1, (bezig ? tot : zichtbaar.length) - 1));
-    /* Juichen bij goed, bemoedigend knikken bij fout, nadenken bij een tip. */
-    const kaart: Partial<Record<MaatjeHouding, string>> = { blij: "correct", troost: "incorrect", denkt: "think" };
-    const naam = kaart[bericht.houding];
+    /*
+      Een gebaar bij elke zin, passend bij de soort zin (23 oktober 2026,
+      opdracht eigenaar; lib/bliepo-gebaren.ts). De eerste zin na een goed
+      antwoord: duim, klappen of juichen; na een fout: bemoedigend knikken of
+      een vuistje (ook bij de laatste zin, de aanmoediging); bij een tip: een
+      idee. De andere zinnen: een vraag (open handen) of uitleg (wijzen naar
+      de opdracht of iets laten zien).
+    */
+    const zin = bericht.zinnen[huidigeZin]?.tekst ?? "";
+    const laatste = huidigeZin === bericht.zinnen.length - 1 && bericht.zinnen.length > 1;
+    const bouw = bericht.id.startsWith("bouw:");
+    const soort: Zinsoort =
+      bericht.houding === "blij" && huidigeZin === 0
+        ? "goed"
+        : bericht.houding === "troost" && !bouw && (huidigeZin === 0 || laatste)
+          ? "fout"
+          : bericht.houding === "denkt" && huidigeZin === 0
+            ? "hint"
+            : vraagOfUitleg(zin);
+    const naam = kiesGebaar(soort, bericht.id, huidigeZin);
     return (
       <BliepoVloer
-        gebaar={naam ? { naam, n: bericht.id } : null}
+        gebaar={{ naam, n: `${bericht.id}:${huidigeZin}:${herhaal}`, opStem: true }}
         onNogEens={() => setHerhaal((n) => n + 1)}
         geluid={geluid}
         onGeluid={(aan) => {

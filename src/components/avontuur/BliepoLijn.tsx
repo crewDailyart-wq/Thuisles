@@ -21,7 +21,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { bliepoGeluidKlinkt, leesBliepoGolf } from "@/lib/bliepo-geluid";
+import { bliepoGeluidKlinkt, bliepoStemNiveau } from "@/lib/bliepo-geluid";
 
 type Punt = readonly [number, number];
 /** De vier hoeken van het scherm (links/rechts, boven/onder), in procenten van het vak waar het lijntje over ligt. */
@@ -68,7 +68,6 @@ export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: 
     const c = doek.current;
     const ctx = c?.getContext("2d");
     if (!c || !ctx) return;
-    const golf = new Uint8Array(new ArrayBuffer(1024));
     const hoogte = new Float32Array(PUNTEN);
     let frame = 0;
     let zichtbaar = false;
@@ -105,14 +104,20 @@ export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: 
       }
       H = nuHoeken ?? HOEK;
       V = nuHoeken ? VOL : VAK;
-      const geluid = !stil && leesBliepoGolf(golf);
-      if (geluid) {
-        /* Het geluid zelf: de golf in stukjes, sterk vergroot, zacht nagelopen. */
-        const stap = Math.floor(golf.length / PUNTEN);
+      const niveau = stil ? null : bliepoStemNiveau();
+      if (niveau !== null) {
+        /*
+          Het geluid zelf (23 oktober 2026): hoe hard hij nu klinkt (de gedeelde
+          stemmeter, per lettergreep) bepaalt hoe hoog het lijntje uitslaat;
+          de vorm is een levendige golf die meeloopt. Eerst werden hier losse
+          samples van de geluidsgolf getekend: dat gaf ruis in plaats van
+          lettergrepen.
+        */
         for (let i = 0; i < PUNTEN; i++) {
-          const w = (golf[i * stap] - 128) / 128;
-          const rand = Math.sin((i / (PUNTEN - 1)) * Math.PI);
-          hoogte[i] += (Math.max(-1, Math.min(1, w * 3.2)) * 0.42 * rand - hoogte[i]) * 0.6;
+          const x = i / (PUNTEN - 1);
+          const rand = Math.sin(x * Math.PI);
+          const vorm = Math.sin(x * 19 + nu / 55) * 0.55 + Math.sin(x * 37 - nu / 38) * 0.3 + Math.sin(x * 61 + nu / 27) * 0.15;
+          hoogte[i] += (vorm * (0.02 + niveau * 0.46) * rand - hoogte[i]) * 0.75;
         }
       } else if (!stil && (browserPraat || bliepoGeluidKlinkt())) {
         /* Nagebootst praten: lettergrepen van wisselende sterkte. */

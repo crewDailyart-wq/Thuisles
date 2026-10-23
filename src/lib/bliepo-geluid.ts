@@ -150,3 +150,55 @@ export function leesBliepoGolf(golf: Uint8Array<ArrayBuffer>): boolean {
   meter.getByteTimeDomainData(golf);
   return true;
 }
+
+/*
+  Hoe hard klinkt Bliepo nu, voor het lijntje (23 oktober 2026, opdracht
+  eigenaar: "het lijntje beweegt niet goed mee"). Gemeten met een echte zin
+  van Ruth:
+    - het lijntje keek naar maar 512 samples (een honderdste seconde); daardoor
+      sprong het niveau elk beeldje willekeurig op en neer, niet per lettergreep;
+    - daarna werd het zo afgevlakt en recht doorgerekend dat luid en zacht
+      bijna even groot werden (meestal tussen 30 en 55 procent);
+    - op telefoon tekende het lijntje losse samples van de golf: ruis, niet hoe
+      hard het klinkt.
+  Nu: de hele meter (1024 samples, precieze getallen), omgerekend in decibel
+  zoals een oor hoort, met een snelle aanzet (12 ms) en een korte uitloop
+  (70 ms). Zo springt het lijntje met elke lettergreep, groot bij luide en
+  klein bij zachte klanken, en zakt het in een pauze meteen terug. Een
+  langzaam meelopende bovengrens zorgt dat een zachtere of hardere opname
+  net zo goed beweegt.
+*/
+let vlak: Float32Array<ArrayBuffer> | null = null;
+let omhulsel = 0;
+let piek = -14;
+let vorigeMeting = 0;
+
+/** Hoe hard klinkt Bliepo nu (0 = stil, 1 = hard), of null als er geen geluid van hem speelt. */
+export function bliepoStemNiveau(): number | null {
+  if (!meter || klinkt.size === 0) {
+    omhulsel = 0;
+    return null;
+  }
+  const nu = performance.now();
+  const dt = Math.min(0.1, (nu - vorigeMeting) / 1000);
+  /* Twee keer in hetzelfde beeldje (3D-Bliepo én lijntje): dezelfde waarde. */
+  if (dt < 0.004) return omhulsel;
+  vorigeMeting = nu;
+  if (!vlak || vlak.length !== meter.fftSize) vlak = new Float32Array(new ArrayBuffer(meter.fftSize * 4));
+  let som = 0;
+  if (typeof meter.getFloatTimeDomainData === "function") {
+    meter.getFloatTimeDomainData(vlak);
+    for (let i = 0; i < vlak.length; i++) som += vlak[i] * vlak[i];
+  } else {
+    const b = new Uint8Array(new ArrayBuffer(meter.fftSize));
+    (meter as AnalyserNode).getByteTimeDomainData(b);
+    for (let i = 0; i < b.length; i++) som += ((b[i] - 128) / 128) ** 2;
+  }
+  const db = 20 * Math.log10(Math.sqrt(som / vlak.length) + 1e-6);
+  piek = Math.max(db, piek - 3 * dt, -24);
+  const boven = Math.min(-6, piek + 1);
+  const doel = Math.min(1, Math.max(0, (db - (boven - 30)) / 30));
+  const tijd = doel > omhulsel ? 0.012 : 0.07;
+  omhulsel += (doel - omhulsel) * (1 - Math.exp(-Math.max(dt, 0.001) / tijd));
+  return omhulsel;
+}

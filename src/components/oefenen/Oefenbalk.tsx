@@ -32,6 +32,7 @@
 import { useEffect, useRef } from "react";
 import { Sleutelteller } from "@/components/kind/Sleutelteller";
 import { PijlTerug } from "@/components/oefenen/Symbolen";
+import { Voortgangskop } from "@/components/oefenen/Voortgangskop";
 
 export type Bolstand = "goed" | "fout" | "nu" | "open";
 
@@ -100,6 +101,13 @@ export function Oefenbalk({
       rij.scrollLeft + (bolVak.left - rijVak.left) - rij.clientWidth / 2 + bolVak.width / 2;
     rij.scrollTo({ left: Math.max(0, doel), behavior: "smooth" });
   }, [index, standen.length]);
+
+  /*
+    Nieuw ontwerp: de gloeiende bovenbalk over de hele breedte (Voortgangskop,
+    23 oktober 2026, opdracht eigenaar). Het oude ontwerp hieronder blijft
+    zoals het was.
+  */
+  if (muur) return <Voortgangskop terugHref={terugHref} titel={titel} standen={standen} index={index} />;
 
   const aantal = standen.length;
   const gevuld = aantal === 0 ? 0 : (index / aantal) * 100;
