@@ -20,6 +20,14 @@ import { niveautestBeschikbaar } from "@/lib/site/inhoud";
  * Per adres staan de vier talen als `alternates`, zodat een zoekmachine weet
  * dat het dezelfde pagina is. Nederlands is het hoofdadres.
  */
+/*
+  Bij elk bezoek opnieuw, niet tijdens het bouwen (23 oktober 2026). Tijdens
+  het bouwen openden meerdere bouwprocessen tegelijk de database ("database
+  is locked") en brak het bouwen af; bovendien is daar alleen een lege
+  database, dus stond er een lege lijst online.
+*/
+export const dynamic = "force-dynamic";
+
 export default function sitemap(): MetadataRoute.Sitemap {
   const regels: MetadataRoute.Sitemap = [];
 
