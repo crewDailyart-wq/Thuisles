@@ -37,7 +37,14 @@ export function Maatje({
   onGeluid,
   onKlaar,
   poppetje = "vos",
+  vloer = false,
 }: {
+  /**
+   * Nieuw ontwerp van de opdrachten (23 oktober 2026): Bliepo staat rechts op
+   * de ronde cirkel op de vloer, met zijn tekstballon naast zijn hoofd; op een
+   * staand scherm kleiner onder het bord (zie opdracht-nieuw.css).
+   */
+  vloer?: boolean;
   bericht: MaatjeBericht | null;
   /**
    * "tijdelijk": het bolletje, geen vos. "geen": alleen het wolkje, omdat het
@@ -96,6 +103,34 @@ export function Maatje({
     const aan = !geluid;
     if (!aan) stopPraten();
     onGeluid(aan);
+  }
+
+  if (vloer) {
+    return (
+      <div className="maatje-vloer" data-maatje="" data-houding={bericht.houding}>
+        <TijdelijkMaatje houding={bericht.houding} praat={bezig} className="maatje-vloer-bliepo" />
+        <div className="maatje-vloer-ballon" aria-live="polite">
+          <p>
+            {zichtbaar.map((z, i) => (
+              <span key={i} className={bezig && i === tot - 1 ? "font-extrabold" : ""}>
+                {i > 0 ? " " : ""}
+                {z.tekst}
+              </span>
+            ))}
+          </p>
+          <button
+            type="button"
+            onClick={wisselGeluid}
+            aria-pressed={geluid}
+            aria-label={geluid ? "Stem van Bliepo uitzetten" : "Stem van Bliepo aanzetten"}
+            title={geluid ? "Stem van Bliepo uit" : "Stem van Bliepo aan"}
+            className="maatje-vloer-geluid"
+          >
+            {geluid ? <Luidspreker className="size-5" /> : <LuidsprekerUit className="size-5" />}
+          </button>
+        </div>
+      </div>
+    );
   }
 
   return (

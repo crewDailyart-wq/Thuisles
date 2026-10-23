@@ -58,7 +58,16 @@ export function Oefenbalk({
   standen,
   index,
   beginsaldo,
+  muur = false,
+  titel,
 }: {
+  /**
+   * Nieuw ontwerp (23 oktober 2026, opdracht eigenaar): de balk staat
+   * doorzichtig bovenaan op de muur, met de titel van het leerdoel en
+   * "Vraag 3 van 15". Zonder `muur` precies zoals hij was.
+   */
+  muur?: boolean;
+  titel?: string;
   terugHref: string;
   /** Eén stand per vraag van deze sessie, in volgorde. */
   standen: Bolstand[];
@@ -104,9 +113,9 @@ export function Oefenbalk({
         sleutel naar een punt buiten beeld.
       */
       data-oefenbalk=""
-      className="sticky top-0 z-50 w-full border-b border-huisstijl-diep/25 bg-huisstijl"
+      className={muur ? "opdracht-kop" : "sticky top-0 z-50 w-full border-b border-huisstijl-diep/25 bg-huisstijl"}
     >
-      <div className="mx-auto flex w-full max-w-5xl items-center gap-3 px-3 py-2.5 sm:gap-5 sm:px-5">
+      <div className={muur ? "opdracht-kop-binnen" : "mx-auto flex w-full max-w-5xl items-center gap-3 px-3 py-2.5 sm:gap-5 sm:px-5"}>
         {/*
           Terug. Een gewone link en geen "ga terug in de geschiedenis": het
           kind moet altijd op hetzelfde, bekende scherm uitkomen.
@@ -121,6 +130,14 @@ export function Oefenbalk({
         </a>
 
         <div className="flex min-w-0 flex-1 flex-col gap-1.5">
+          {muur && (
+            <p className="opdracht-kop-tekst">
+              {titel && <span className="opdracht-kop-titel">{titel}</span>}
+              <span className="opdracht-kop-teller">
+                Vraag {Math.min(index + 1, aantal)} van {aantal}
+              </span>
+            </p>
+          )}
           {/*
             De rij bolletjes. `overflow-x-auto` met verborgen schuifbalk: bij
             veel vragen schuift de rij mee in plaats van dat alles kleiner

@@ -85,6 +85,8 @@ import {
 import { zetSaldo } from "@/lib/sleutelwinkel";
 import { zoekGenerator } from "@/lib/generatoren";
 import { VraagBliepo } from "@/components/tutor/VraagBliepo";
+import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
+import "@/components/oefenen/opdracht-nieuw.css";
 import {
   ALGEMENE_OPENING,
   ZONDER_GEGEVENS,
@@ -178,6 +180,15 @@ const KIESPAUZE_MS = 500;
  * tip als een kind lang niets doet.
  */
 const TIPKNOP_ZICHTBAAR = false;
+
+/*
+  Het ontwerp rond de opdrachten (23 oktober 2026, opdracht eigenaar): "nieuw"
+  is de blauwe ruimte met het glazen bord op de muur en Bliepo rechts op de
+  cirkel (opdracht-nieuw.css, OpdrachtDecor). Terug naar het oude witte
+  ontwerp: zet dit op "oud". De visualisaties en de werking zijn bij allebei
+  precies hetzelfde.
+*/
+const ONTWERP: "nieuw" | "oud" = "nieuw";
 
 export function OefenSpeler({
   vragen,
@@ -997,11 +1008,15 @@ export function OefenSpeler({
         />
       )}
 
+      {ONTWERP === "nieuw" && <OpdrachtDecor />}
+      <div className={ONTWERP === "nieuw" ? "opdracht-nieuw" : undefined} data-fase={fase}>
       <Oefenbalk
         terugHref={terugHref}
         standen={bolstanden}
         index={index}
         beginsaldo={beginsaldo}
+        muur={ONTWERP === "nieuw"}
+        titel={vraag.leerdoelTitel ?? terugLabel}
       />
 
       {/*
@@ -1481,8 +1496,8 @@ export function OefenSpeler({
             </div>
           )}
 
-          {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. */}
-          {maatjeTekst && (
+          {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. (Nieuw ontwerp: buiten het bord, op de vloer.) */}
+          {maatjeTekst && ONTWERP === "oud" && (
             <Maatje
               bericht={
                 maatjeBericht ??
@@ -1508,6 +1523,33 @@ export function OefenSpeler({
             />
           )}
         </div>
+        {/* Nieuw ontwerp: Bliepo op de cirkel rechts (op een staand scherm kleiner onder het bord). */}
+        {maatjeTekst && ONTWERP === "nieuw" && (
+          <Maatje
+            vloer
+            bericht={
+              maatjeBericht ??
+              (fase === "bezig"
+                ? {
+                    id: `lees:${index}:${vraag.id}`,
+                    zinnen: [
+                      ...(isGodotSpelfiguur(vraag.figuur) && vraag.figuur.uitleg
+                        ? vraag.figuur.uitleg.map((tekst) => ({ tekst, stap: GEEN_PLAATJE }))
+                        : []),
+                      maatjeTekst.voorlezen,
+                      ...(maatjeTekst.bouw ? [maatjeTekst.bouw] : []),
+                    ],
+                    houding: "rustig",
+                  }
+                : null)
+            }
+            geluid={maatjeGeluid}
+            onGeluid={wisselMaatjeGeluid}
+            onKlaar={maatjeKlaar}
+            poppetje="tijdelijk"
+          />
+        )}
+      </div>
       </div>
     </DeelbouwControle.Provider>
   );

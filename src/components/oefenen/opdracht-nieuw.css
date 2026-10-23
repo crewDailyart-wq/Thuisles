@@ -1,0 +1,351 @@
+/*
+  Het nieuwe ontwerp rond de opdrachten (23 oktober 2026, opdracht eigenaar).
+
+  Eén gedeeld ontwerp voor alle opdrachten (OefenSpeler, ONTWERP = "nieuw"):
+    - de blauwe ruimte als vaste achtergrond (OpdrachtDecor);
+    - bovenaan op de muur: terug, titel van het leerdoel, "Vraag 3 van 15",
+      de bolletjes en de sleutels (Oefenbalk met `muur`);
+    - de opdracht op een groot, licht doorzichtig glazen bord met zachte
+      gloed; de tekeningen staan op een licht vlak op dat bord, zodat ze net
+      zo goed leesbaar blijven als op wit;
+    - Bliepo rechts op de ronde cirkel op de vloer, met zijn ballon naast zijn
+      hoofd; op een staand of smal scherm kleiner onder het bord;
+    - bij goed gloeit het bord kort groen, bij fout zacht oranje.
+  De visualisaties en de werking veranderen niet. Alles staat onder
+  .opdracht-nieuw, dus met ONTWERP = "oud" is het weer het witte ontwerp.
+
+  De cirkel op de vloer staat in het plaatje op 85% van de breedte en 82% van
+  de hoogte. Het plaatje (16:9) vult het scherm met object-fit: cover; --w en
+  --h zijn de maat waarin het dan getekend wordt, zodat Bliepo precies op de
+  cirkel staat, hoe groot het scherm ook is.
+*/
+
+.opdracht-decor {
+  position: fixed;
+  inset: 0;
+  z-index: 0;
+  background: #0b3fc4;
+  pointer-events: none;
+}
+.opdracht-decor img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 50% 50%;
+}
+
+.opdracht-nieuw {
+  --w: max(100vw, 177.78vh);
+  --h: calc(var(--w) * 0.5628);
+  --rand: rgba(170, 225, 255, 0.55);
+  --gloed: rgba(90, 190, 255, 0.35);
+  position: relative;
+  z-index: 1;
+  min-height: 100svh;
+  color: #fff;
+}
+
+/* ---------------------------------------------------------------- de kop */
+
+.opdracht-kop {
+  position: relative;
+  z-index: 50;
+}
+.opdracht-kop-binnen {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: min(100%, 60rem);
+  margin: 0 auto;
+  padding: 12px 16px 4px;
+}
+.opdracht-kop-binnen > a {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  flex-shrink: 0;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: rgba(10, 40, 120, 0.45);
+  color: #fff;
+}
+.opdracht-kop-tekst {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 2px 12px;
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  text-shadow: 0 2px 8px rgba(0, 20, 80, 0.45);
+}
+.opdracht-kop-titel {
+  min-width: 0;
+  overflow: hidden;
+  font-size: clamp(17px, 2.2vw, 22px);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.opdracht-kop-teller {
+  flex-shrink: 0;
+  font-size: clamp(15px, 1.8vw, 18px);
+  font-weight: 700;
+  color: #d8f0ff;
+}
+
+/* --------------------------------------------------------------- het bord */
+
+.opdracht-nieuw [data-oefenkaart] {
+  border: 2px solid var(--rand);
+  border-radius: 30px;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
+  box-shadow:
+    0 0 42px var(--gloed),
+    inset 0 0 36px rgba(140, 210, 255, 0.16),
+    0 18px 40px rgba(0, 20, 80, 0.3);
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+  color: #fff;
+}
+
+/* De vraag zelf: groot, rond en wit. */
+.opdracht-nieuw [data-oefenkaart] h1 {
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-weight: 800;
+  color: #fff;
+  text-shadow: 0 2px 10px rgba(0, 20, 80, 0.45);
+}
+
+/*
+  Het vak met de tekening: een licht vlak op het glas, zodat elke tekening
+  (klok, rekenrek, splitsboom, plaatjes) net zo duidelijk blijft als op wit.
+*/
+.opdracht-nieuw [data-oefenkaart] > div > div:first-child:not(:only-child) {
+  border-radius: 22px;
+}
+.opdracht-nieuw [data-oefenkaart] .bg-room\/50,
+.opdracht-nieuw [data-oefenkaart] .bg-kaart {
+  background: rgba(248, 252, 255, 0.95);
+  color: #172554;
+}
+
+/* De geluidsknop rechtsboven op het bord. */
+.opdracht-nieuw [data-oefenkaart] > button:first-child {
+  border: 2px solid var(--rand);
+  background: rgba(10, 40, 120, 0.45);
+  color: #fff;
+}
+
+/* Grote, ronde knoppen. */
+.opdracht-nieuw [data-knoppen] button {
+  min-height: 56px;
+  padding-inline: 32px;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: 20px;
+  font-weight: 800;
+  box-shadow: 0 5px 0 rgba(0, 20, 80, 0.35);
+}
+.opdracht-nieuw [data-controleer] {
+  background: #ffb21e;
+  color: #10306f;
+}
+.opdracht-nieuw [data-controleer]:hover:not(:disabled) {
+  background: #ffc54d;
+}
+/* Nog niets gekozen: een rustige glazen knop, nog niet oranje. */
+.opdracht-nieuw [data-controleer]:disabled {
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  background: rgba(255, 255, 255, 0.16);
+  color: rgba(255, 255, 255, 0.85);
+  opacity: 1;
+  box-shadow: none;
+}
+
+/* Kort oplichten na het nakijken. */
+.opdracht-nieuw[data-fase="goed"] [data-oefenkaart] {
+  animation: bord-goed 1.4s ease-out;
+}
+.opdracht-nieuw[data-fase="fout"] [data-oefenkaart] {
+  animation: bord-fout 1.6s ease-out;
+}
+@keyframes bord-goed {
+  0% { box-shadow: 0 0 42px var(--gloed), 0 18px 40px rgba(0, 20, 80, 0.3); }
+  25% { border-color: #6dffa8; box-shadow: 0 0 70px 10px rgba(80, 255, 150, 0.6), inset 0 0 50px rgba(80, 255, 150, 0.35); }
+  100% { box-shadow: 0 0 42px var(--gloed), 0 18px 40px rgba(0, 20, 80, 0.3); }
+}
+@keyframes bord-fout {
+  0% { box-shadow: 0 0 42px var(--gloed), 0 18px 40px rgba(0, 20, 80, 0.3); }
+  25% { border-color: #ffb36b; box-shadow: 0 0 60px 6px rgba(255, 160, 70, 0.5), inset 0 0 40px rgba(255, 160, 70, 0.25); }
+  100% { box-shadow: 0 0 42px var(--gloed), 0 18px 40px rgba(0, 20, 80, 0.3); }
+}
+
+/* ------------------------------------------------- Bliepo: staand of smal */
+
+.maatje-vloer {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 10px;
+  margin-top: 16px;
+}
+.maatje-vloer-bliepo {
+  width: 96px;
+  height: 128px;
+  flex-shrink: 0;
+}
+.maatje-vloer-ballon {
+  position: relative;
+  display: flex;
+  flex: 1;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  margin-bottom: 40px;
+  padding: 12px 14px;
+  border: 2px solid var(--rand);
+  border-radius: 20px;
+  background: rgba(8, 36, 110, 0.82);
+  color: #fff;
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.35;
+  box-shadow: 0 0 24px var(--gloed);
+}
+.maatje-vloer-ballon p {
+  flex: 1;
+  margin: 0;
+}
+.maatje-vloer-geluid {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  flex-shrink: 0;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.12);
+  color: #fff;
+}
+
+/* Telefoon: de geluidsknop rechtsboven krijgt een eigen strook, zodat hij niet over de tekening valt. */
+@media (max-width: 639px) {
+  .opdracht-nieuw [data-oefenkaart] {
+    padding-top: 60px;
+  }
+}
+
+/* Tablet rechtop: Bliepo onder het bord, wat groter. */
+@media (min-width: 640px) {
+  .maatje-vloer-bliepo {
+    width: 140px;
+    height: 186px;
+  }
+  .maatje-vloer-ballon {
+    margin-bottom: 70px;
+    font-size: 19px;
+  }
+}
+
+/* ------------------------------------------ groot, liggend scherm (laptop) */
+
+@media (min-width: 1100px) and (min-aspect-ratio: 3/2) {
+  /* Het bord op de muur: links van Bliepo, rechts van de boeken en potloden. */
+  .opdracht-nieuw [data-oefenkaart] {
+    width: min(50vw, 840px);
+  }
+  .opdracht-nieuw [data-oefenkaart],
+  .opdracht-nieuw .opdracht-kop-binnen {
+    margin-left: max(17vw, calc(50vw - 520px));
+    margin-right: auto;
+  }
+  .opdracht-nieuw .opdracht-kop-binnen {
+    width: min(50vw, 840px);
+  }
+  /* De plek van het bord (max-w-3xl uit OefenSpeler) mag hier breder zijn. */
+  .opdracht-nieuw [data-oefenkaart] {
+    max-width: none;
+  }
+  .opdracht-nieuw [data-oefenkaart]:only-child,
+  .opdracht-nieuw [data-oefenkaart] {
+    position: relative;
+  }
+  .opdracht-nieuw > div:has(> [data-oefenkaart]) {
+    max-width: none;
+    margin: 0;
+    padding-top: 12px;
+  }
+
+  /* Bliepo op de cirkel, met zijn ballon links naast zijn hoofd. */
+  .maatje-vloer {
+    position: fixed;
+    left: calc((100vw - var(--w)) / 2 + var(--w) * 0.85);
+    top: calc((100vh - var(--h)) / 2 + var(--h) * 0.835);
+    display: block;
+    margin: 0;
+    translate: -50% -100%;
+  }
+  .maatje-vloer-bliepo {
+    width: calc(var(--h) * 0.26);
+    height: calc(var(--h) * 0.36);
+  }
+  .maatje-vloer-ballon {
+    position: absolute;
+    right: 82%;
+    top: 4%;
+    width: clamp(180px, 15vw, 260px);
+    margin: 0;
+  }
+  .maatje-vloer-ballon::after {
+    content: "";
+    position: absolute;
+    right: -9px;
+    top: 22px;
+    width: 14px;
+    height: 14px;
+    border-top: 2px solid var(--rand);
+    border-right: 2px solid var(--rand);
+    background: rgba(8, 36, 110, 0.82);
+    rotate: 45deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .opdracht-nieuw[data-fase="goed"] [data-oefenkaart],
+  .opdracht-nieuw[data-fase="fout"] [data-oefenkaart] {
+    animation-duration: 0.01s;
+  }
+}
+
+/*
+  Godot-spelletjes in de stijl "nacht" (globals.css) zetten Bliepo en de
+  knoppen vast rechts in beeld. In het nieuwe ontwerp staan de knoppen op het
+  bord en Bliepo op de cirkel; deze regels gaan daarom voor.
+*/
+:root .opdracht-nieuw[data-fase] [data-godotronde] {
+  padding-right: 16px;
+}
+:root .opdracht-nieuw[data-fase] [data-godotronde] [data-knoppen] {
+  position: static;
+  width: auto;
+  margin-top: 24px;
+}
+:root .opdracht-nieuw[data-fase] [data-godotronde] .maatje-vloer {
+  right: auto;
+  width: auto;
+  flex-direction: row;
+}
+:root .opdracht-nieuw[data-fase] [data-godotronde] .maatje-vloer [aria-live] {
+  width: auto;
+  font-size: inherit;
+}
+@media (min-width: 1100px) and (min-aspect-ratio: 3/2) {
+  :root .opdracht-nieuw[data-fase] [data-godotronde] .maatje-vloer {
+    top: calc((100vh - var(--h)) / 2 + var(--h) * 0.835);
+  }
+  :root .opdracht-nieuw[data-fase] [data-godotronde] .maatje-vloer [aria-live] {
+    width: clamp(180px, 15vw, 260px);
+  }
+}
