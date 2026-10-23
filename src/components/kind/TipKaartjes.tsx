@@ -21,7 +21,7 @@ const TIPS: Tip[] = [
   {
     id: "tip-tempo",
     icoon: "gloeilamp",
-    kop: "Tip van Vos",
+    kop: "Tip van Bliepo",
     tekst: "Tien minuten per dag helpt meer dan een uur op zaterdag.",
     stijl: "border-geel/40 bg-geel-zacht",
     merkStijl: "bg-geel/25 text-oranje-diep",

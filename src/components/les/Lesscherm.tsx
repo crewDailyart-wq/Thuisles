@@ -23,6 +23,19 @@ import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "./tegels";
 import type { Lesdraaiboek, Lesgids, Somdeel, Vlak, Vlakgebeurtenis } from "./soort";
 import s from "./Lesscherm.module.css";
+import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
+import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
+import "@/components/oefenen/opdracht-nieuw.css";
+
+/*
+  Het ontwerp van de lessen (23 oktober 2026, opdracht eigenaar): "nieuw" =
+  de blauwe ruimte als achtergrond, het speelvlak links en Bliepo rechts voor
+  de cirkel met een tekstballon erboven (wat hij zegt en wat het kind kan
+  doen). "oud" = het donkere scherm met de tekst linksboven en Bliepo klein in
+  de hoek. Het lesvlak (1280 x 720) en het plaatje hebben allebei 16:9, dus op
+  een gewoon scherm staat Bliepo precies op de cirkel.
+*/
+const ONTWERP: "nieuw" | "oud" = "nieuw";
 
 /* ---------- vaste maten van het speelvlak ---------- */
 
@@ -293,6 +306,12 @@ function Lesscherm({
   const [beeld, setBeeld] = useState<Beeld>(BEGIN);
   const wacht = useRef<Wachters>({});
   const [schaal, setSchaal] = useState(0);
+  /*
+    Staand scherm (telefoon, tablet rechtop) in het nieuwe ontwerp: het
+    speelvlak vult de breedte bovenaan, de ballon met Bliepo staat eronder in
+    de vrije ruimte (anders werd alles heel klein).
+  */
+  const [staand, setStaand] = useState(false);
   const [pauze, setPauze] = useState(false);
   const raster = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<null | { n: number; x: number; y: number; vanX: number; vanY: number }>(null);
@@ -303,7 +322,15 @@ function Lesscherm({
 
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   useEffect(() => {
-    const meet = () => setSchaal(Math.min(window.innerWidth / B, window.innerHeight / H));
+    const meet = () => {
+      const rechtop = ONTWERP === "nieuw" && window.innerHeight > window.innerWidth;
+      setStaand(rechtop);
+      setSchaal(
+        rechtop
+          ? Math.min(window.innerWidth / (B - 300), (window.innerHeight * 0.52) / H)
+          : Math.min(window.innerWidth / B, window.innerHeight / H),
+      );
+    };
     meet();
     window.addEventListener("resize", meet);
     return () => window.removeEventListener("resize", meet);
@@ -561,33 +588,12 @@ function Lesscherm({
 
   const b = beeld.bediening;
 
-  return (
-    <div className={s.wortel}>
-      <div
-        className={s.vlak}
-        style={{ transform: `translate(-50%, -50%) scale(${schaal || 1})`, opacity: schaal ? 1 : 0 }}
-      >
-        {/* naam en pauze */}
-        <div className={s.pil}>
-          <button
-            type="button"
-            aria-label="Pauze"
-            onClick={() => {
-              window.speechSynthesis?.pause();
-              setPauze(true);
-            }}
-          >
-            <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden>
-              <rect x="1" y="1" width="4" height="14" rx="1.2" fill="currentColor" />
-              <rect x="9" y="1" width="4" height="14" rx="1.2" fill="currentColor" />
-            </svg>
-          </button>
-          <span>{naam || MERKNAAM}</span>
-        </div>
+  const nieuw = ONTWERP === "nieuw";
 
-        {/* wat de mascotte zegt, en wat het kind kan doen */}
+  /* Wat de mascotte zegt, en wat het kind kan doen (oud: linksboven; nieuw: in de ballon boven Bliepo). */
+  const tekstblok = (
         <div
-          className={s.tekst}
+          className={`${s.tekst} les-tekst`}
           aria-live="polite"
           data-letters={voorkeuren?.letters ?? "gewoon"}
           data-oplichten={voorkeuren && !voorkeuren.oplichten ? "uit" : "aan"}
@@ -635,12 +641,69 @@ function Lesscherm({
             </div>
           )}
         </div>
+  );
 
-        {/* Bliepo: praat mee met de tekst, en juicht als de les klaar is. */}
-        <div className={s.mascotte} data-praat={beeld.praat}>
-          <Bliepo houding={beeld.klaar ? "blij" : "rustig"} praat={beeld.praat} className="h-full" />
+  return (
+    <div className={s.wortel} data-les-ontwerp={ONTWERP}>
+      {nieuw && <OpdrachtDecor />}
+      <div
+        className={s.vlak}
+        style={
+          staand
+            ? {
+                left: `calc((100vw - ${(B - 300) * (schaal || 1)}px) / 2)`,
+                top: 8,
+                transformOrigin: "0 0",
+                transform: `scale(${schaal || 1})`,
+                opacity: schaal ? 1 : 0,
+              }
+            : { transform: `translate(-50%, -50%) scale(${schaal || 1})`, opacity: schaal ? 1 : 0 }
+        }
+      >
+        {/* naam en pauze */}
+        <div className={s.pil} style={nieuw ? { left: "auto", right: staand ? 312 : 12 } : undefined}>
+          <button
+            type="button"
+            aria-label="Pauze"
+            onClick={() => {
+              window.speechSynthesis?.pause();
+              setPauze(true);
+            }}
+          >
+            <svg width="14" height="16" viewBox="0 0 14 16" aria-hidden>
+              <rect x="1" y="1" width="4" height="14" rx="1.2" fill="currentColor" />
+              <rect x="9" y="1" width="4" height="14" rx="1.2" fill="currentColor" />
+            </svg>
+          </button>
+          <span>{naam || MERKNAAM}</span>
         </div>
 
+        {!nieuw && tekstblok}
+
+        {/* Bliepo: praat mee met de tekst, en juicht als de les klaar is. */}
+        {!nieuw && (
+          <div className={s.mascotte} data-praat={beeld.praat}>
+            <Bliepo houding={beeld.klaar ? "blij" : "rustig"} praat={beeld.praat} className="h-full" />
+          </div>
+        )}
+
+        {/* Nieuw: Bliepo rechts voor de cirkel, met de ballon erboven. */}
+        {nieuw && !staand && (
+          <BliepoVloer
+            plek="kolom"
+            gebaar={beeld.klaar ? { naam: "correct", n: "klaar" } : null}
+            onNogEens={
+              beeld.praat || beeld.zichtbaar === 0
+                ? undefined
+                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
+            }
+          >
+            {tekstblok}
+          </BliepoVloer>
+        )}
+
+        {/* Nieuw: het speelvlak schuift 300 naar links (de rechterkolom is voor Bliepo). */}
+        <div className={nieuw ? "les-inhoud" : undefined} style={nieuw ? undefined : { display: "contents" }}>
         {/* de som bovenaan */}
         {beeld.som && !beeld.kaart && (
           <div className={s.sombalk}>
@@ -747,6 +810,7 @@ function Lesscherm({
             />
           </svg>
         )}
+        </div>
 
         {/* de kaart aan het eind */}
         {beeld.kaart && (
@@ -791,6 +855,22 @@ function Lesscherm({
           </div>
         )}
       </div>
+
+      {/* Nieuw, staand scherm: de ballon met Bliepo onder het speelvlak. */}
+      {nieuw && staand && (
+        <div className="les-staand" style={{ top: 16 + H * (schaal || 1) }}>
+          <BliepoVloer
+            gebaar={beeld.klaar ? { naam: "correct", n: "klaar" } : null}
+            onNogEens={
+              beeld.praat || beeld.zichtbaar === 0
+                ? undefined
+                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
+            }
+          >
+            {tekstblok}
+          </BliepoVloer>
+        </div>
+      )}
 
       {/* de tegel die onder de vinger hangt */}
       {sleep && Math.hypot(sleep.x - sleep.vanX, sleep.y - sleep.vanY) > 8 && (

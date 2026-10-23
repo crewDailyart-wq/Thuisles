@@ -14,7 +14,7 @@ import type { Beweging } from "@/components/oefenen/VosFiguur";
 export type MaatjeHouding = "rustig" | "praat" | "blij" | "denkt" | "troost";
 
 export const POPPETJE: { naam: string; houdingen: Record<MaatjeHouding, { houding: Houding; beweging: Beweging }> } = {
-  naam: "Vos",
+  naam: "Bliepo",
   houdingen: {
     rustig: { houding: "blij", beweging: "stil" },
     praat: { houding: "blij", beweging: "praten" },

@@ -85,7 +85,7 @@ function stapVoorStap(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = [
     {
       model: beeld(som, [vos], vos, String(basis)),
-      zin: "Hier woont Vos.",
+      zin: "Hier woont Bliepo.",
       houding: "wijzend",
       kant: "links",
     },
@@ -142,7 +142,7 @@ function allebeiStappen(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: beeld(som, [midden], midden, String(basis)),
-        zin: "Vos woont in het middelste huis.",
+        zin: "Bliepo woont in het middelste huis.",
         houding: "wijzend",
         kant: "links",
       },
@@ -191,7 +191,7 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: { soort: "som", tekst: `${basis}`, nadruk: `${basis}` },
-        zin: "Begin bij het nummer van Vos.",
+        zin: "Begin bij het nummer van Bliepo.",
       },
       {
         model: { soort: "som", tekst: `${basis} ${teken} ${stap} = ${som.goed}` },
@@ -210,7 +210,7 @@ export const straatUitleg: Uitlegbron = {
       waarde: "stap",
       label: "Eén huis verder",
       uitleg:
-        "Kijk waar Vos staat, kijk welke kant je op moet, en doe één stap. Bij even en oneven zijn het er twee, want het huis aan dezelfde kant staat er twee verder.",
+        "Kijk waar Bliepo staat, kijk welke kant je op moet, en doe één stap. Bij even en oneven zijn het er twee, want het huis aan dezelfde kant staat er twee verder.",
     },
   ],
   standaardStrategie: () => "stap",

@@ -199,7 +199,7 @@ function schatLijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
       },
       {
         model: { soort: "som", tekst: `${doel}` },
-        zin: "Daar zet je Vos neer; precies hoeft niet.",
+        zin: "Daar zet je Bliepo neer; precies hoeft niet.",
       },
     ],
   };
@@ -312,7 +312,7 @@ function tellen(som: Somgegevens, vorm: Groepsvorm, kort: boolean): Uitlegscript
 
   stappen.push({
     model: beeld(som, doel, true, doel),
-    zin: kort ? `Daar staat de ${doel}.` : `Daar hoort de ${doel}, en daar zet Vos zijn vlag.`,
+    zin: kort ? `Daar staat de ${doel}.` : `Daar hoort de ${doel}, en daar zet Bliepo zijn vlag.`,
     feest: true,
     houding: "juichend",
     beweging: "juichen",
@@ -354,7 +354,7 @@ function lijst78(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
       },
       {
         model: { soort: "som", tekst: `${doel}` },
-        zin: "Daar zet je Vos neer: het gezochte getal wijst het streepje aan.",
+        zin: "Daar zet je Bliepo neer: het gezochte getal wijst het streepje aan.",
       },
     ],
   };

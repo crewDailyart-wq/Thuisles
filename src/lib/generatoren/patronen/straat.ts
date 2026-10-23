@@ -163,19 +163,19 @@ export const straatPatronen: Foutpatroon[] = [
   ...allebeiPatronen,
   {
     id: "zelfde-getal",
-    naam: "Het nummer van Vos zelf teruggegeven",
+    naam: "Het nummer van Bliepo zelf teruggegeven",
     herkent: (som, gegeven) => gegeven === basisVan(som),
     kindtekst: {
-      "34": "Dat is het huis van Vos zelf.",
-      "56": "Dat nummer staat al op de deur waar Vos voor staat. Je zoekt het buurhuis.",
+      "34": "Dat is het huis van Bliepo zelf.",
+      "56": "Dat nummer staat al op de deur waar Bliepo voor staat. Je zoekt het buurhuis.",
       "78": "Je hebt het uitgangsgetal teruggegeven. Gevraagd is het buurgetal, dus één stap verder.",
     },
-    hint: "Kijk naar het huis ernaast, niet naar het huis van Vos.",
+    hint: "Kijk naar het huis ernaast, niet naar het huis van Bliepo.",
     uitleg: (som) => {
       const basis = basisVan(som);
       const stap = stapVan(som);
       return [
-        { tekst: "Vos staat hier.", som: `${basis}` },
+        { tekst: "Bliepo staat hier.", som: `${basis}` },
         { tekst: "Ga één huis verder.", som: `${basis} → ${som.goed}` },
         { tekst: "Dat is het buurhuis.", som: `${som.goed}`, },
       ].concat(
@@ -188,7 +188,7 @@ export const straatPatronen: Foutpatroon[] = [
       uitleg:
         "Het kind herhaalt het getal dat het ziet staan. Meestal is de vraag niet doorgekomen: het weet wel welk nummer er staat, maar niet dat er iets naast gevraagd wordt.",
       zinnen: [
-        "Wijs samen het huis van Vos aan en daarna het huis ernaast.",
+        "Wijs samen het huis van Bliepo aan en daarna het huis ernaast.",
         "Vraag: welk nummer hoort bij dát huis?",
       ],
       schoolwoord: "buurgetal",
@@ -203,11 +203,11 @@ export const straatPatronen: Foutpatroon[] = [
       "56": "Je bent de andere kant op gegaan. Kijk goed welk huis er gevraagd wordt.",
       "78": "Je hebt de goede stap gemaakt, maar de andere kant op. Let op of er naar het huis ervóór of erná wordt gevraagd.",
     },
-    hint: "Kijk welke kant Vos op kijkt: naar links of naar rechts.",
+    hint: "Kijk welke kant Bliepo op kijkt: naar links of naar rechts.",
     uitleg: (som) => {
       const basis = basisVan(som);
       return [
-        { tekst: "Vos staat hier.", som: `${basis}` },
+        { tekst: "Bliepo staat hier.", som: `${basis}` },
         {
           tekst: kantVan(som) === 1 ? "Je moet naar rechts." : "Je moet naar links.",
           som: kantVan(som) === 1 ? "→" : "←",
@@ -238,16 +238,16 @@ export const straatPatronen: Foutpatroon[] = [
     uitleg: (som) => {
       const basis = basisVan(som);
       return [
-        { tekst: "Vos staat hier.", som: `${basis}` },
+        { tekst: "Bliepo staat hier.", som: `${basis}` },
         { tekst: "Eén huis verder, niet twee.", som: `${basis} → ${som.goed}` },
         { tekst: "Dat is het buurhuis.", som: `${som.goed}` },
       ];
     },
     ouder: {
       uitleg:
-        "Het antwoord ligt één huis te ver. Het kind telt de stap wel, maar begint bij het verkeerde huis mee te tellen — het telt het huis van Vos als eerste stap.",
+        "Het antwoord ligt één huis te ver. Het kind telt de stap wel, maar begint bij het verkeerde huis mee te tellen — het telt het huis van Bliepo als eerste stap.",
       zinnen: [
-        "Tik samen op het huis van Vos en zeg: dit is nul stappen.",
+        "Tik samen op het huis van Bliepo en zeg: dit is nul stappen.",
         "Tik dan op het volgende huis: dát is één stap.",
       ],
       schoolwoord: "doortellen",

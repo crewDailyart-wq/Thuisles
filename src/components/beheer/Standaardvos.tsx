@@ -18,17 +18,17 @@ import { bewaarStandaardvos } from "@/app/admin/vosacties";
 const HOUDINGEN = [
   {
     sleutel: "vangend" as const,
-    label: "Vos — bezig",
+    label: "Bliepo — bezig",
     hulp: "Te zien terwijl hij iets doet: plaatjes opvangen, blokken neerleggen, staven bouwen.",
   },
   {
     sleutel: "wachtend" as const,
-    label: "Vos — wachtend",
+    label: "Bliepo — wachtend",
     hulp: "Te zien zolang het kind nadenkt. Leeg = dezelfde als bezig.",
   },
   {
     sleutel: "blij" as const,
-    label: "Vos — blij",
+    label: "Bliepo — blij",
     hulp: "Te zien na een goed antwoord. Leeg = dezelfde als bezig.",
   },
 ];
@@ -69,7 +69,7 @@ export function Standaardvos({
 
   return (
     <section className="rounded-xl border border-beheer-rand bg-white p-4">
-      <h2 className="text-sm font-semibold text-beheer-inkt">De vos van de oefeningen</h2>
+      <h2 className="text-sm font-semibold text-beheer-inkt">De mascotte van de oefeningen</h2>
       <p className="mt-1 text-xs text-beheer-zacht">
         Deze drie afbeeldingen gebruikt elk oefeningstype vanzelf. Laat je ze bij een sjabloon
         leeg, dan pakt dat sjabloon wat hier staat. Zo hoef je ze maar één keer te kiezen.
@@ -111,7 +111,7 @@ export function Standaardvos({
           disabled={bezig}
           className="inline-flex h-9 items-center rounded-md bg-viool px-4 text-sm font-semibold text-white transition hover:bg-viool-diep disabled:opacity-60"
         >
-          {bezig ? "Bezig…" : "Vos opslaan"}
+          {bezig ? "Bezig…" : "Bliepo opslaan"}
         </button>
         {bewaard && <span className="text-xs text-beheer-zacht">Opgeslagen.</span>}
       </div>

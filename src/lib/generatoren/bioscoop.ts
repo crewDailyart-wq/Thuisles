@@ -39,7 +39,7 @@ import { bioscoopUitleg } from "@/lib/generatoren/scripts/bioscoop";
 
 /** De standaardzinnen. Kort: het kaartje zegt al welk getal het is. */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Waar hoort Vos te zitten?",
+  "34": "Waar hoort Bliepo te zitten?",
   "56": "Welke stoel hoort bij het kaartje?",
   "78": "Op welke stoel hoort dit nummer?",
 };
@@ -78,9 +78,9 @@ export function dichtstbijzijnde(zichtbaar: number[], doel: number): number {
 
 export const bioscoopGenerator: Generator = {
   id: "bioscoop",
-  naam: "Vos in de bioscoop (plek in het twintigveld)",
+  naam: "Bliepo in de bioscoop (plek in het twintigveld)",
   uitleg:
-    "Twee rijen van tien bioscoopstoelen, waarvan er maar een paar een nummer hebben. Vos heeft een kaartje; het kind tikt de goede stoel aan. Oefent springen vanaf de vijf- en tienstructuur in plaats van tellen vanaf één.",
+    "Twee rijen van tien bioscoopstoelen, waarvan er maar een paar een nummer hebben. Bliepo heeft een kaartje; het kind tikt de goede stoel aan. Oefent springen vanaf de vijf- en tienstructuur in plaats van tellen vanaf één.",
   suggestie:
     "Groep 3: 20 stoelen, alle vijftallen zichtbaar · groep 4: 20 stoelen, alleen 1, 10 en 20 · later: 100 stoelen voor het honderdveld",
   velden: [

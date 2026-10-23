@@ -129,7 +129,7 @@ export function machinistVan(inst: Instellingen) {
 
 export const treinGenerator: Generator = {
   id: "trein",
-  naam: "Vos' trein (op volgorde zetten)",
+  naam: "Bliepo's trein (op volgorde zetten)",
   uitleg:
     "Vier of vijf wagons met getallen staan door elkaar; het kind sleept ze op volgorde achter de locomotief. Klopt het, dan rijdt de trein toeterend weg. Oefent ordenen, niet alleen vergelijken.",
   suggestie:
@@ -172,8 +172,8 @@ export const treinGenerator: Generator = {
     {
       soort: "afbeelding",
       sleutel: "vosMachinist",
-      label: "Vos als machinist",
-      hulp: "De vos die in het raampje van de locomotief komt te staan: kop, pet en zwaaiende poot, afgesneden op borsthoogte. Hij wordt passend in het raampje gezet, dus hij valt er nooit buiten. Leeg = geen machinist; dan kijkt de gewone vos mee vanaf de kant.",
+      label: "Bliepo als machinist",
+      hulp: "Bliepo, die in het raampje van de locomotief komt te staan: kop, pet en zwaaiende poot, afgesneden op borsthoogte. Hij wordt passend in het raampje gezet, dus hij valt er nooit buiten. Leeg = geen machinist; dan kijkt de gewone vos mee vanaf de kant.",
     },
     /*
       Overal dezelfde velden om de vraagzin aan te passen, per groep.

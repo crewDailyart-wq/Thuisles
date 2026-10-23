@@ -119,7 +119,7 @@ export function Zijbalk() {
         <div className="relative mx-auto w-[8.25rem] drop-shadow-[0_10px_18px_rgba(10,23,48,0.35)]">
           <Image
             src="/vos-lijf.png"
-            alt={`Vos, het maatje van ${MERKNAAM}`}
+            alt={`Bliepo, het maatje van ${MERKNAAM}`}
             width={1086}
             height={1448}
             sizes="160px"

@@ -7,7 +7,7 @@ export default function StemtestPagina() {
     <div className="flex flex-col gap-4">
       <Kop
         kruimels={[{ label: "Beheer", href: "/admin" }, { label: "Stemtest" }]}
-        titel="Stem van Vos"
+        titel="Stem van Bliepo"
         bijschrift="Open deze pagina op elk apparaat waar kinderen op werken. Elk apparaat heeft eigen stemmen."
       />
       <Stemtest />

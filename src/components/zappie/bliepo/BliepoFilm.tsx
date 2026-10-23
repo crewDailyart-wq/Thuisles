@@ -56,8 +56,8 @@ export function BliepoFilm({
   onKlaar,
 }: {
   houding?: Filmhouding;
-  /** Verhoog dit om dezelfde beweging nog eens te spelen. */
-  beurt?: number;
+  /** Verander dit om dezelfde beweging nog eens te spelen. */
+  beurt?: number | string;
   /** Wat hij doet als een beweging die één keer speelt, klaar is (rust, of praten als zijn stem nog klinkt). */
   daarna?: Filmhouding;
   rustig?: boolean;

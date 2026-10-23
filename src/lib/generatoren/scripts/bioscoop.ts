@@ -61,7 +61,7 @@ function stapVoorStap(som: Somgegevens, vorm: Groepsvorm): Uitlegscript {
 
   stappen.push({
     model: beeld(som, som.goed, String(som.goed)),
-    zin: "Hier zit Vos!",
+    zin: "Hier zit Bliepo!",
     feest: true,
     houding: "juichend",
     beweging: "juichen",

@@ -635,7 +635,7 @@ export const SCHERMCONTRACT = [
   */
   { naam: "Busanimatie in beheer", pad: "/admin/{vak}/sjablonen/nieuw", bron: ["src/lib/generatoren/bus.ts"], zichtbaar: [], naKlik: [
     { tekst: "Busanimatie", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
-    { tekst: "Vosjes stappen in vóór het tellen", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
-    { tekst: "Vosjes zitten klaar; bus rijdt weg bij goed antwoord", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
+    { tekst: "Diertjes stappen in vóór het tellen", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
+    { tekst: "Diertjes zitten klaar; bus rijdt weg bij goed antwoord", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
   ] },
 ];

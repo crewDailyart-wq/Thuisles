@@ -107,7 +107,7 @@ export const vakkenGenerator: Generator = {
   id: "vakken",
   naam: "Welk vak? (getal herkennen)",
   uitleg:
-    "Vos houdt een kaartje vast met een getal, en daaronder staan drie of vier vakken met spulletjes. Het kind tikt het vak aan met dat aantal. Kan ook als „eentje meer” of „eentje minder”, en dan is het een rekenstap in plaats van een zoekstap.",
+    "Bliepo houdt een kaartje vast met een getal, en daaronder staan drie of vier vakken met spulletjes. Het kind tikt het vak aan met dat aantal. Kan ook als „eentje meer” of „eentje minder”, en dan is het een rekenstap in plaats van een zoekstap.",
   suggestie:
     "Groep 3: 1 tot 10, drie vakken, precies dit aantal · groep 4: 1 tot 20, vier vakken, eentje meer",
   velden: [

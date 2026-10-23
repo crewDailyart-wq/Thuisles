@@ -876,8 +876,13 @@ export function OefenSpeler({
   }
 
   if (klaar) {
+    /* Nieuw ontwerp: ook de uitslag in de blauwe ruimte, met Bliepo op de cirkel. */
     return (
+      <>
+      {ONTWERP === "nieuw" && <OpdrachtDecor />}
+      <div className={ONTWERP === "nieuw" ? "opdracht-nieuw uitslag-nieuw" : undefined}>
       <Uitslag
+        nieuw={ONTWERP === "nieuw"}
         vragen={serie}
         antwoorden={gelogd}
         aandachtVooraf={new Set(aandachtVooraf)}
@@ -896,6 +901,8 @@ export function OefenSpeler({
             : null
         }
       />
+      </div>
+      </>
     );
   }
 
@@ -988,7 +995,7 @@ export function OefenSpeler({
     Bewust niet hier nog eens overschrijven: dan zou een beheerder een zin
     kunnen invullen die het kind vervolgens niet te zien krijgt.
   */
-  const vraagtekst = vraag.figuur?.soort === "bus" ? vraag.vraagtekst.replace(/kinderen/g, "vosjes").replace(/kindje/g, "vosje") : vraag.vraagtekst;
+  const vraagtekst = vraag.figuur?.soort === "bus" ? vraag.vraagtekst.replace(/kinderen/g, "diertjes").replace(/kindje/g, "diertje") : vraag.vraagtekst;
 
   return (
     <DeelbouwControle.Provider value={deelbouwControle}>
@@ -1290,7 +1297,7 @@ export function OefenSpeler({
             <div className="mt-4">
               {hintOpen ? (
                 <p className="rounded-2xl bg-amber-zacht px-4 py-3 text-sm font-semibold text-inkt-zacht">
-                  <span className="font-extrabold text-oranje-diep">Tip van Vos: </span>
+                  <span className="font-extrabold text-oranje-diep">Tip van Bliepo: </span>
                   {hinttekst}
                 </p>
               ) : (
@@ -2413,7 +2420,10 @@ function Uitslag({
   terugLabel,
   herhaalHref,
   maatje,
+  nieuw = false,
 }: {
+  /** Nieuw ontwerp (23 oktober 2026): Bliepo op de vloer in plaats van in de kaart. */
+  nieuw?: boolean;
   vragen: OefenVraag[];
   antwoorden: RondeAntwoord[];
   aandachtVooraf: Set<string>;
@@ -2461,7 +2471,7 @@ function Uitslag({
           {totaalGoed} goed.
         </p>
 
-        {maatje && (
+        {maatje && !nieuw && (
           <div className="text-left">
             <Maatje
               bericht={{ id: "einde", zinnen: [{ tekst: maatje.zin, stap: "geen plaatje" }], houding: "blij" }}
@@ -2511,10 +2521,10 @@ function Uitslag({
         {comeback.length > 0 && (
           <div className="mt-4 rounded-2xl border-2 border-groen/30 bg-groen-zacht px-4 py-3.5 text-left">
             <p className="text-base font-extrabold text-groen-diep">
-              Je hebt {comeback[0].titel.toLowerCase()} gefikst! 🦊
+              Je hebt {comeback[0].titel.toLowerCase()} gefikst! 🤖
             </p>
             <p className="mt-0.5 text-sm font-semibold text-inkt-zacht">
-              Dit ging eerst nog niet, en nu wel. Vos is trots op je — je krijgt er een edelsteen
+              Dit ging eerst nog niet, en nu wel. Bliepo is trots op je — je krijgt er een edelsteen
               bij.
             </p>
           </div>
@@ -2548,6 +2558,15 @@ function Uitslag({
           Terug naar {terugLabel}
         </Link>
       </div>
+      {maatje && nieuw && (
+        <Maatje
+          vloer
+          bericht={{ id: "einde", zinnen: [{ tekst: maatje.zin, stap: "geen plaatje" }], houding: "blij" }}
+          geluid={maatje.geluid}
+          onGeluid={maatje.onGeluid}
+          poppetje="tijdelijk"
+        />
+      )}
     </div>
   );
 }

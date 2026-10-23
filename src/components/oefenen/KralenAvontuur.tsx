@@ -36,11 +36,11 @@ export function KralenAvontuur({ figuur, fase, onKlaar }: {
   const goed = fase === "goed";
   /* Vos wacht rustig en juicht pas als het antwoord goed is. */
   const pose = goed ? "4" : "2";
-  return <section className="w-full" aria-label="Kralen tellen met Vos">
+  return <section className="w-full" aria-label="Kralen tellen met Bliepo">
     <div className={stijl.pad}>
       <div className={`${stijl.reiziger} ${goed ? stijl.naarSleutel : ""}`}>
         {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className={stijl.vos} src={`/vragen/chatgpt-image-sep-15-2026-08-18-08-pm-${pose}.png`} alt="Vos"/>
+        <img className={stijl.vos} src={`/vragen/chatgpt-image-sep-15-2026-08-18-08-pm-${pose}.png`} alt="Bliepo"/>
       </div>
       <p className={stijl.ballon} aria-live="polite">{goed ? "Gevonden!" : fase === "fout" ? "We kijken samen." : "Tel je mee?"}</p>
       {/* eslint-disable-next-line @next/next/no-img-element */}

@@ -27,7 +27,7 @@ export function MaatjeInstelling({
   const [stand, setStand] = useState(aan);
 
   return (
-    <Paneel titel="Het maatje" bijschrift="Vos helpt bij het oefenen: hij leest voor, zegt iets bij goed en fout, en geeft na 30 seconden een tip.">
+    <Paneel titel="Het maatje" bijschrift="Bliepo helpt bij het oefenen: hij leest voor, zegt iets bij goed en fout, en geeft na 30 seconden een tip.">
       <label className="flex items-center gap-2 text-sm">
         <input
           type="checkbox"

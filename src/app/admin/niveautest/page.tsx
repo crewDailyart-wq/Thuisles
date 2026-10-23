@@ -81,7 +81,7 @@ export default function NiveautestBeheer() {
             <strong>beheerst</strong>. Onderdelen zonder niveau tellen alleen per onderdeel mee.
           </li>
           <li>
-            Er wordt niets bewaard: geen antwoorden en geen uitslag. Vragen waarbij Vos meebeweegt, de bus, de
+            Er wordt niets bewaard: geen antwoorden en geen uitslag. Vragen waarbij Bliepo meebeweegt, de bus, de
             kralenrij, een Godot-spel, een bosspel of een uitleg-les doen niet mee in de toets; in de oefeningen blijven
             ze gewoon staan.
           </li>

@@ -62,9 +62,9 @@ function mogelijkeTotalen(inst: Instellingen): { totalen: number[]; perGroep: nu
 
 /** De standaardzinnen van dit type. Per sjabloon aan te passen in het beheer. */
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
-  "34": "Hoeveel vosjes zitten er in de bus?",
-  "56": "Hoeveel vosjes zitten er in de bus?",
-  "78": "Hoeveel vosjes zitten er in totaal in de bus?",
+  "34": "Hoeveel diertjes zitten er in de bus?",
+  "56": "Hoeveel diertjes zitten er in de bus?",
+  "78": "Hoeveel diertjes zitten er in totaal in de bus?",
 };
 
 export const busGenerator: Generator = {
@@ -75,8 +75,8 @@ export const busGenerator: Generator = {
   suggestie: "Groep 3: 5 tot 20 kinderen · groep 4: 10 tot 30 kinderen",
   velden: [
     { soort: "keuze", sleutel: "animatie", label: "Busanimatie", opties: [
-      { waarde: "instappen", label: "Vosjes stappen in vóór het tellen" },
-      { waarde: "wegrijden", label: "Vosjes zitten klaar; bus rijdt weg bij goed antwoord" },
+      { waarde: "instappen", label: "Diertjes stappen in vóór het tellen" },
+      { waarde: "wegrijden", label: "Diertjes zitten klaar; bus rijdt weg bij goed antwoord" },
     ], hulp: "Bij beide varianten rijdt de bus weg na een goed antwoord. Daarna volgt de bestaande sleutelbeloning. De bus houdt binnen dit sjabloon steeds evenveel ramen." },
     {
       soort: "getal",

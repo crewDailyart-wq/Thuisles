@@ -310,14 +310,18 @@ export const LESSEN_ZO_WERKT_HET: Lesdraaiboek[] = [
         "We kennen elkaar al een beetje.",
         "Maar we kunnen samen nog wat instellen.",
       );
+      /*
+        Oplichten wordt hier niet meer gevraagd (23 oktober 2026, opdracht
+        eigenaar): het staat standaard aan en staat bij Profiel. Het stukje
+        hieronder voor "oplichten" blijft bestaan, maar wordt niet meer gekozen.
+      */
       await l.zeg(
-        "De roze knop is voor het oplichten van de woorden.",
         "De groene knop is voor je naam.",
         "De oranje knop is voor de letters.",
         "Wat wil je eerst doen?",
       );
 
-      while (gedaan.length < 3) {
+      while (gedaan.length < 2) {
         zet({ scherm: "menu", gedaan: [...gedaan], actief: true });
         const { keuze } = await l.wachtOpVlak<{ soort: string; keuze: Instelonderdeel }>("menu");
         zet({ actief: false });
@@ -383,7 +387,7 @@ export const LESSEN_ZO_WERKT_HET: Lesdraaiboek[] = [
         }
 
         gedaan.push(keuze);
-        const over = 3 - gedaan.length;
+        const over = 2 - gedaan.length;
         if (over === 2) await l.zeg("Nog twee te gaan.");
         else if (over === 1) await l.zeg("Nog één te gaan.");
       }

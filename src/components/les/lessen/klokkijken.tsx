@@ -1054,23 +1054,23 @@ const halveUren: Lesdraaiboek = {
 
     /* 5. De klok van Vos: zoek de fout. */
     k.zet(u(5, 30));
-    k.pas({ tweede: { tijd: u(6, 30), naam: "De klok van Vos" } });
-    await l.zeg("Dit is de klok van Vos.", "Vos wilde half 6 laten zien.", "Maar er ging iets mis.");
+    k.pas({ tweede: { tijd: u(6, 30), naam: "De klok van Bliepo" } });
+    await l.zeg("Dit is de klok van Bliepo.", "Bliepo wilde half 6 laten zien.", "Maar er ging iets mis.");
     await l.verder();
-    await l.zeg("Links staat jouw klok.", "Wat deed Vos fout?");
+    await l.zeg("Links staat jouw klok.", "Wat deed Bliepo fout?");
     await vraag(l, ["de urenwijzer", "de minutenwijzer", "niets"], "de urenwijzer", {
       goedZin: ["Ja, de urenwijzer!"],
       fout: async (x) => {
         if (x === null) return geenZorgen(l, x);
-        await l.zeg("Kijk naar elke wijzer op jouw klok.", "Zoek dan dezelfde wijzer bij Vos.", "Welke staat anders?");
+        await l.zeg("Kijk naar elke wijzer op jouw klok.", "Zoek dan dezelfde wijzer bij Bliepo.", "Welke staat anders?");
         return ["de urenwijzer", "de minutenwijzer"];
       },
       antwoord: ["Het was de urenwijzer."],
     });
-    await l.zeg("Vos zette hem tussen de 6 en de 7.", "Maar half 6 komt vóór 6 uur.", "Hij hoort tussen de 5 en de 6.");
+    await l.zeg("Bliepo zette hem tussen de 6 en de 7.", "Maar half 6 komt vóór 6 uur.", "Hij hoort tussen de 5 en de 6.");
     await l.verder();
-    k.pas({ tweede: { tijd: u(5, 30), naam: "De klok van Vos" } });
-    await l.zeg("Vos zet hem goed.");
+    k.pas({ tweede: { tijd: u(5, 30), naam: "De klok van Bliepo" } });
+    await l.zeg("Bliepo zet hem goed.");
     await l.wacht(1500);
     k.pas({ tweede: null });
 
@@ -2088,7 +2088,7 @@ const minutenLater: Lesdraaiboek = {
 
     /* 1. De koekjes: de minutenwijzer 5 minuten verder. */
     k.pas({ vlag: u(2, 35), boog: { van: u(2, 35), stap: 5 } });
-    await l.zeg("Het is nu 2:35.", "De koekjes van Vos zijn over 5 minuten klaar.", "Zet de minutenwijzer 5 minuten verder.");
+    await l.zeg("Het is nu 2:35.", "De koekjes van Bliepo zijn over 5 minuten klaar.", "Zet de minutenwijzer 5 minuten verder.");
     await minuutVerder(l, k, u(2, 40), { hint: ["Elk getal op de klok is 5 minuten.", "Tik dus op het volgende getal: de 8."] });
     await l.zeg("De minutenwijzer schoof één getal op.", "Dat is 5 minuten.", "Om 2:40 zijn de koekjes klaar.");
     await l.verder();
@@ -2121,7 +2121,7 @@ const minutenLater: Lesdraaiboek = {
     k.zet(u(1, 15));
     await l.wacht(600);
     k.pas({ vlag: u(1, 15), boog: { van: u(1, 15), stap: 10 } });
-    await l.zeg("Nu ga je 10 minuten verder.", "Het is 1:15.", "De pannenkoeken van Vos zijn over 10 minuten klaar.");
+    await l.zeg("Nu ga je 10 minuten verder.", "Het is 1:15.", "De pannenkoeken van Bliepo zijn over 10 minuten klaar.");
     await l.verder();
     await l.zeg("Zet de minutenwijzer 10 minuten verder.");
     await minuutVerder(l, k, u(1, 25), {
@@ -2167,9 +2167,9 @@ async function tweeNaElkaar(
     verder: true,
     fout: async (x) => {
       if (x === String(Math.abs(a - b))) {
-        await l.zeg(`Dat is het verschil tussen ${a} en ${b}.`, "Maar Vos deed allebei, het ene na het andere.", "We tellen ze bij elkaar.");
+        await l.zeg(`Dat is het verschil tussen ${a} en ${b}.`, "Maar Bliepo deed allebei, het ene na het andere.", "We tellen ze bij elkaar.");
       } else if (x === String(a) || x === String(b)) {
-        await l.zeg("Dat is maar één van de twee.", "Vos deed daarna nog iets.", "We tellen ze bij elkaar.");
+        await l.zeg("Dat is maar één van de twee.", "Bliepo deed daarna nog iets.", "We tellen ze bij elkaar.");
       } else if (x !== null) {
         await l.zeg("Kijk naar de boog.", "Die laat zien hoe lang het samen duurde.");
       } else {
@@ -2193,24 +2193,24 @@ const samenHoeLang: Lesdraaiboek = {
   async speel(l) {
     const k = new Klok(l, u(3), { digitaal: true, uurwijzer: "flets" });
     await weetJeHet(l, "We gaan zeggen hoe lang iets duurt, in minuten.");
-    await l.zeg("Vos doet twee dingen, het ene na het andere.", "Het blauwe vlaggetje laat zien waar hij begint.");
+    await l.zeg("Bliepo doet twee dingen, het ene na het andere.", "Het blauwe vlaggetje laat zien waar hij begint.");
     await l.verder();
 
     let fouten = 0;
     if (
-      !(await tweeNaElkaar(l, k, u(3), 25, 20, { eerst: "Eerst leest Vos 25 minuten.", dan: "Daarna tekent hij 20 minuten." }, ["5", "20", "25", "45"]))
+      !(await tweeNaElkaar(l, k, u(3), 25, 20, { eerst: "Eerst leest Bliepo 25 minuten.", dan: "Daarna tekent hij 20 minuten." }, ["5", "20", "25", "45"]))
     ) {
       fouten++;
     }
     await l.zeg("Nog eentje.");
     if (
-      !(await tweeNaElkaar(l, k, u(4), 15, 10, { eerst: "Eerst speelt Vos 15 minuten buiten.", dan: "Daarna eet hij 10 minuten." }, ["5", "10", "15", "25"]))
+      !(await tweeNaElkaar(l, k, u(4), 15, 10, { eerst: "Eerst speelt Bliepo 15 minuten buiten.", dan: "Daarna eet hij 10 minuten." }, ["5", "10", "15", "25"]))
     ) {
       fouten++;
     }
     await l.zeg("De laatste.");
     if (
-      !(await tweeNaElkaar(l, k, u(5), 30, 20, { eerst: "Eerst fietst Vos 30 minuten.", dan: "Daarna zwemt hij 20 minuten." }, ["10", "20", "30", "50"]))
+      !(await tweeNaElkaar(l, k, u(5), 30, 20, { eerst: "Eerst fietst Bliepo 30 minuten.", dan: "Daarna zwemt hij 20 minuten." }, ["10", "20", "30", "50"]))
     ) {
       fouten++;
     }

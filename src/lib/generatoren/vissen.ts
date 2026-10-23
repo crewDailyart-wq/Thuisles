@@ -112,7 +112,7 @@ export function opEersteCijfer(getallen: number[], grootste: boolean): number {
 
 export const vissenGenerator: Generator = {
   id: "vissen",
-  naam: "Vos gaat vissen (vergelijken)",
+  naam: "Bliepo gaat vissen (vergelijken)",
   uitleg:
     "Drie of vier vissen zwemmen met een getal op hun buik; het kind tikt de vis met het grootste of het kleinste getal aan. De vissen zijn zelf de knoppen, dus er staat geen rijtje getallen onder de vraag.",
   suggestie:
@@ -155,8 +155,8 @@ export const vissenGenerator: Generator = {
     {
       soort: "afbeelding",
       sleutel: "vosHengel",
-      label: "Vos met hengel",
-      hulp: "De vos die op de steiger staat, met zijn hengel in zijn poten. Hij hoort rechtop te staan met de hengel schuin omhoog naar rechtsboven. Het touw wordt in code getekend en zit vast aan het puntje dat je hieronder opgeeft. Leeg = terug naar de gewone vos van het afbeeldingenbeheer, met een hengel die in code getekend wordt.",
+      label: "Bliepo met hengel",
+      hulp: "Bliepo, die op de steiger staat, met zijn hengel in zijn poten. Hij hoort rechtop te staan met de hengel schuin omhoog naar rechtsboven. Het touw wordt in code getekend en zit vast aan het puntje dat je hieronder opgeeft. Leeg = terug naar de gewone vos van het afbeeldingenbeheer, met een hengel die in code getekend wordt.",
     },
     {
       soort: "getal",

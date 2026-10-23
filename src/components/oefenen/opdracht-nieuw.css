@@ -349,3 +349,236 @@
     width: clamp(180px, 15vw, 260px);
   }
 }
+
+/* =====================================================================
+   Bliepo op de vloer met zijn ballon erboven (BliepoVloer, 23 oktober
+   2026): opdrachten (plek "vast") en lessen (plek "kolom").
+   ===================================================================== */
+
+.bliepo-vloer {
+  --w: max(100vw, 177.78vh);
+  --h: calc(var(--w) * 0.5628);
+  --rand: rgba(170, 225, 255, 0.6);
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 18px;
+  color: #fff;
+}
+.bliepo-vloer-ballon {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  max-width: 560px;
+  padding: 14px 16px;
+  border: 2px solid var(--rand);
+  border-radius: 22px;
+  background: rgba(8, 36, 110, 0.86);
+  box-shadow: 0 0 26px rgba(90, 190, 255, 0.4);
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+}
+/* Het puntje, naar zijn hoofd. */
+.bliepo-vloer-ballon::after {
+  content: "";
+  position: absolute;
+  left: calc(50% - 9px);
+  bottom: -10px;
+  width: 16px;
+  height: 16px;
+  border-right: 2px solid var(--rand);
+  border-bottom: 2px solid var(--rand);
+  background: rgba(8, 36, 110, 0.95);
+  rotate: 45deg;
+}
+.bliepo-vloer-tekst {
+  flex: 1;
+  min-width: 0;
+}
+.bliepo-vloer-tekst p {
+  margin: 0;
+}
+.bliepo-vloer-nu {
+  color: #ffe58a;
+}
+.bliepo-vloer-knoppen {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-self: flex-start;
+}
+.bliepo-vloer-geluid {
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  border: 2px solid var(--rand);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.14);
+  color: #fff;
+  cursor: pointer;
+}
+.bliepo-vloer-stem {
+  width: 36px;
+  height: 36px;
+  align-self: center;
+  opacity: 0.85;
+}
+.bliepo-vloer-robot {
+  position: relative;
+  width: 120px;
+  height: 150px;
+  margin-top: 14px;
+}
+.bliepo-vloer-robot .bt-prototype {
+  position: absolute;
+  inset: 0;
+}
+.bliepo-vloer-robot .bt-prototype-doek {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+@media (min-width: 640px) {
+  .bliepo-vloer-robot {
+    width: 160px;
+    height: 200px;
+  }
+  .bliepo-vloer-ballon {
+    font-size: 21px;
+  }
+}
+
+/* Groot liggend scherm: rechts op de cirkel, groot, ballon erboven. */
+@media (min-width: 1100px) and (min-aspect-ratio: 3/2) {
+  .bliepo-vloer[data-plek="vast"] {
+    position: fixed;
+    left: calc((100vw - var(--w)) / 2 + var(--w) * 0.85);
+    top: calc((100vh - var(--h)) / 2 + var(--h) * 0.835);
+    width: clamp(240px, 21vw, 340px);
+    margin: 0;
+    translate: -50% -100%;
+  }
+  .bliepo-vloer[data-plek="vast"] .bliepo-vloer-robot {
+    width: calc(var(--h) * 0.27);
+    height: calc(var(--h) * 0.37);
+  }
+  .bliepo-vloer[data-plek="vast"] .bliepo-vloer-ballon {
+    max-height: calc(var(--h) * 0.4);
+    overflow-y: auto;
+  }
+}
+
+/* In de les: de rechterkolom van het lesvlak (1280 x 720), Bliepo voor de cirkel. */
+.bliepo-vloer[data-plek="kolom"] {
+  position: absolute;
+  left: 976px;
+  top: 58px;
+  width: 296px;
+  height: 640px;
+  justify-content: flex-end;
+  margin: 0;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon {
+  flex-direction: column;
+  align-items: stretch;
+  max-height: 336px;
+  overflow-y: auto;
+  font-size: 19px;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-knoppen {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-tekst {
+  padding-right: 44px;
+}
+.bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  width: 232px;
+  height: 290px;
+}
+
+/* ------------------------------------------------------------- de lessen */
+
+[data-les-ontwerp="nieuw"] {
+  z-index: 1;
+  background: transparent !important;
+}
+/* Het speelvlak schuift 300 naar links: de rechterkolom is voor Bliepo. */
+.les-inhoud {
+  position: absolute;
+  left: -300px;
+  top: 0;
+  width: 1280px;
+  height: 720px;
+}
+/* De tekst van de les in de ballon: groter, rond en wit. */
+.bliepo-vloer .les-tekst {
+  position: static;
+  width: auto;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: 19px;
+  line-height: 27px;
+  color: #fff;
+}
+.bliepo-vloer .les-tekst p {
+  margin: 0 0 10px;
+}
+.bliepo-vloer .les-tekst[data-letters="groot"] {
+  font-size: 23px;
+  line-height: 32px;
+}
+/* Les op een staand scherm: de ballon met Bliepo onder het speelvlak. */
+.les-staand {
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 8px;
+  z-index: 2;
+  display: flex;
+  justify-content: center;
+  overflow-y: auto;
+}
+.les-staand .bliepo-vloer {
+  width: 100%;
+  max-width: 620px;
+  margin: 0;
+}
+.les-staand .bliepo-vloer-ballon {
+  flex-direction: column;
+  align-items: stretch;
+}
+.les-staand .bliepo-vloer-knoppen {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+.les-staand .les-tekst {
+  padding-right: 46px;
+}
+.les-staand .bliepo-vloer-robot {
+  width: 150px;
+  height: 188px;
+}
+
+/* De uitslag na een ronde, in de blauwe ruimte. */
+.uitslag-nieuw {
+  padding: 32px 16px 24px;
+}
+.uitslag-nieuw h1 {
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+}
+@media (min-width: 1100px) and (min-aspect-ratio: 3/2) {
+  .uitslag-nieuw > div {
+    margin-left: max(17vw, calc(50vw - 520px));
+  }
+}

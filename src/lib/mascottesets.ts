@@ -49,17 +49,17 @@ export type Mascotteset = {
 const DRIELUIK: Mascotteveld[] = [
   {
     sleutel: "vosVangend",
-    label: "Vos — bezig",
+    label: "Bliepo — bezig",
     hulp: "Te zien terwijl hij iets doet: plaatjes opvangen, blokken neerleggen.",
   },
   {
     sleutel: "vosWachtend",
-    label: "Vos — wachtend",
+    label: "Bliepo — wachtend",
     hulp: "Te zien zolang het kind nadenkt.",
   },
   {
     sleutel: "vosBlij",
-    label: "Vos — blij",
+    label: "Bliepo — blij",
     hulp: "Te zien na een goed antwoord.",
   },
 ];
@@ -71,17 +71,17 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: [
       {
         sleutel: "mascotte",
-        label: "Vos — staand",
+        label: "Bliepo — staand",
         hulp: "Op de steen waar hij staat te wachten tot het antwoord klopt.",
       },
       {
         sleutel: "mascotteSpringend",
-        label: "Vos — springend",
+        label: "Bliepo — springend",
         hulp: "Terwijl hij van steen naar steen springt.",
       },
       {
         sleutel: "mascotteJuichend",
-        label: "Vos — juichend",
+        label: "Bliepo — juichend",
         hulp: "Aan de overkant, als alles goed is.",
       },
     ],
@@ -102,12 +102,12 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: [
       {
         sleutel: "vosWachtend",
-        label: "Vos — wachtend",
-        hulp: "Dit is de vos die het kind over de getallenlijn schuift.",
+        label: "Bliepo — wachtend",
+        hulp: "Dit is Bliepo die het kind over de getallenlijn schuift.",
       },
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "Als hij op het goede streepje staat; dan plant hij zijn vlaggetje en springt hij op.",
       },
     ],
@@ -118,7 +118,7 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: [
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "Alleen bij het splitshuis: hij kijkt uit het raam en zwaait als alle rijen kloppen.",
       },
     ],
@@ -129,40 +129,40 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: [
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "Alleen bij de kersen: hij plukt ze zodra het antwoord goed is.",
       },
     ],
   },
   {
     type: "straat",
-    naam: "Vos' straat (buurgetallen)",
+    naam: "Bliepo's straat (buurgetallen)",
     velden: [
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "In de straat staat hij pas ná een goed antwoord; dan duikt hij onder de huisjes op.",
       },
     ],
   },
   {
     type: "vissen",
-    naam: "Vos gaat vissen",
+    naam: "Bliepo gaat vissen",
     velden: [
       {
         sleutel: "vosHengel",
-        label: "Vos met hengel",
+        label: "Bliepo met hengel",
         hulp: "Op de steiger, met de hengel in zijn poten. Het touw wordt in code getekend en hangt aan het puntje van die hengel; staat dat puntje op een nieuwe afbeelding ergens anders, dan hoort het bij het sjabloon bijgesteld te worden.",
       },
     ],
   },
   {
     type: "trein",
-    naam: "Vos' trein",
+    naam: "Bliepo's trein",
     velden: [
       {
         sleutel: "vosMachinist",
-        label: "Vos als machinist",
+        label: "Bliepo als machinist",
         hulp: "In het raampje van de locomotief: kop, pet en zwaaiende poot, afgesneden op borsthoogte.",
       },
     ],
@@ -173,23 +173,23 @@ export const MASCOTTESETS: Mascotteset[] = [
     velden: [
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "Hij komt er pas bij ná een antwoord; tijdens het kiezen staat hij er niet.",
       },
     ],
   },
   {
     type: "bioscoop",
-    naam: "Vos in de bioscoop",
+    naam: "Bliepo in de bioscoop",
     velden: [
       {
         sleutel: "vosWachtend",
-        label: "Vos — wachtend",
+        label: "Bliepo — wachtend",
         hulp: "Met zijn kaartje onder het stoelenveld, terwijl het kind zoekt.",
       },
       {
         sleutel: "vosBlij",
-        label: "Vos — blij",
+        label: "Bliepo — blij",
         hulp: "Als hij op de goede stoel zit en de film begint.",
       },
     ],

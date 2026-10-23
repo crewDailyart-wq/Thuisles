@@ -83,7 +83,7 @@ export const splitsschemaGenerator: Generator = {
   id: "splitsschema",
   naam: "Splitsen met het splitsschema",
   uitleg:
-    "Het hele getal bovenaan, twee pijlen naar beneden, één vakje gegeven en één leeg. Als speels uiterlijk worden het kersen aan twee steeltjes, met Vos die ze plukt.",
+    "Het hele getal bovenaan, twee pijlen naar beneden, één vakje gegeven en één leeg. Als speels uiterlijk worden het kersen aan twee steeltjes, met Bliepo die ze plukt.",
   suggestie:
     "Groep 4: 3 tot en met 20 met nul erbij — de sommen vanaf tien komen vanzelf eerst",
   velden: [
@@ -120,15 +120,15 @@ export const splitsschemaGenerator: Generator = {
       label: "Uiterlijk",
       opties: [
         { waarde: "eenvoudig", label: "Eenvoudig — het schema met pijltjes" },
-        { waarde: "speels", label: "Speels — de kersen met Vos" },
+        { waarde: "speels", label: "Speels — de kersen met Bliepo" },
       ],
       hulp: "De som is in allebei de gevallen precies dezelfde; alleen het beeld verschilt. Het uiterlijk telt daarom niet mee voor de moeilijkheid.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
-      label: "Vos — blij",
-      hulp: "Alleen bij de kersen: Vos plukt ze zodra het antwoord goed is. Leeg = de standaardvos.",
+      label: "Bliepo — blij",
+      hulp: "Alleen bij de kersen: Bliepo plukt ze zodra het antwoord goed is. Leeg = de standaardafbeelding.",
     },
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],

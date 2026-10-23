@@ -162,7 +162,7 @@ export const blokkenGenerator: Generator = {
   uitleg:
     "MAB-blokken zoals ze op school in de kast staan: staven van tien links, losse blokjes rechts. Het kind kiest uit vier getallen of vult het getal zelf in. Oefent dat één staaf voor tien telt — niet voor één.",
   suggestie:
-    "Groep 4: 10 tot 50, stand „Vos bouwt de staven” · groep 4 gevorderd: 20 tot 100, stand „Tellen”",
+    "Groep 4: 10 tot 50, stand „Bliepo bouwt de staven” · groep 4 gevorderd: 20 tot 100, stand „Tellen”",
   velden: [
     {
       soort: "keuze",
@@ -170,9 +170,9 @@ export const blokkenGenerator: Generator = {
       label: "Wat er met de blokken gebeurt",
       opties: [
         { waarde: "tellen", label: "Tellen — alles ligt klaar" },
-        { waarde: "vosbouwt", label: "Vos bouwt de staven" },
+        { waarde: "vosbouwt", label: "Bliepo bouwt de staven" },
       ],
-      hulp: "Tellen oefent het aflezen: het kind ziet staven en losse blokjes liggen en zegt welk getal dat is. Vos bouwt de staven oefent waar een tiental vandaan komt: alles ligt eerst los, Vos schuift er tien tegen elkaar aan en die klikken vast tot één staaf. Wat overblijft blijft los liggen. Kies dat als een kind nog denkt dat een staaf één ding is.",
+      hulp: "Tellen oefent het aflezen: het kind ziet staven en losse blokjes liggen en zegt welk getal dat is. Bliepo bouwt de staven oefent waar een tiental vandaan komt: alles ligt eerst los, Bliepo schuift er tien tegen elkaar aan en die klikken vast tot één staaf. Wat overblijft blijft los liggen. Kies dat als een kind nog denkt dat een staaf één ding is.",
     },
     {
       soort: "keuze",
@@ -209,19 +209,19 @@ export const blokkenGenerator: Generator = {
     {
       soort: "afbeelding",
       sleutel: "vosVangend",
-      label: "Vos — bouwend",
-      hulp: "Te zien terwijl Vos de staven in elkaar schuift. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond. Alleen nodig bij de stand „Vos bouwt de staven”.",
+      label: "Bliepo — bouwend",
+      hulp: "Te zien terwijl Bliepo de staven in elkaar schuift. Leeg = de standaardafbeelding van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond. Alleen nodig bij de stand „Bliepo bouwt de staven”.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosWachtend",
-      label: "Vos — wachtend",
+      label: "Bliepo — wachtend",
       hulp: "Te zien zodra alles klaarligt en het kind aan de beurt is. Leeg = de standaardvos van dit soort oefening.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
-      label: "Vos — blij",
+      label: "Bliepo — blij",
       hulp: "Te zien na een goed antwoord. Leeg = de standaardvos van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */

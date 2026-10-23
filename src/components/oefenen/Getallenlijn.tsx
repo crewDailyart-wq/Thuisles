@@ -680,8 +680,8 @@ export function Getallenlijnbeeld({
                   onKeyDown={onVosToets}
                   aria-label={
                     vlag === null
-                      ? `Vos staat bij ${vosWaarde}. Schuif hem naar het goede getal.`
-                      : `Vos staat bij ${vosWaarde} met het vlaggetje ${vlag}. Schuif hem naar het goede getal.`
+                      ? `Bliepo staat bij ${vosWaarde}. Schuif hem naar het goede getal.`
+                      : `Bliepo staat bij ${vosWaarde} met het vlaggetje ${vlag}. Schuif hem naar het goede getal.`
                   }
                   className={`block w-full cursor-grab touch-none rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-huisstijl ${
                     aangeraakt ? "cursor-grabbing scale-105" : ""

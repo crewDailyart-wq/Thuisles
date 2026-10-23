@@ -34,7 +34,7 @@ function lees(som: Somgegevens): Bussom {
 
 /** "zit er nog 1 vosje" of "zitten er nog 3 vosjes": het werkwoord buigt mee. */
 function zittenNog(n: number): string {
-  return n === 1 ? "zit er nog 1 vosje" : `zitten er nog ${n} vosjes`;
+  return n === 1 ? "zit er nog 1 diertje" : `zitten er nog ${n} diertjes`;
 }
 
 function delen({ totaal, perGroep }: Bussom) {
@@ -67,7 +67,7 @@ function metRamen34(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = [
     {
       model: beeld(s, 0),
-      zin: "Kijk, een bus vol vosjes.",
+      zin: "Kijk, een bus vol diertjes.",
       houding: "blij",
       kant: "links",
     },
@@ -97,7 +97,7 @@ function metRamen34(s: Bussom, vorm: Groepsvorm): Uitlegscript {
     stappen.push({
       model: beeld(s, volleRamen * s.perGroep, String(volleRamen * s.perGroep)),
       zin: `En dan nog ${rest} erbij.`,
-      meetellen: { aantal: rest, aansporing: "Tik de vosjes aan!" },
+      meetellen: { aantal: rest, aansporing: "Tik de diertjes aan!" },
       houding: "denkend",
       kant: "rechts",
     });
@@ -128,7 +128,7 @@ function metRamen56(s: Bussom, vorm: Groepsvorm): Uitlegscript {
     stappen: [
       {
         model: beeld(s, 0),
-        zin: `In elk raam zitten ${s.perGroep} vosjes.`,
+        zin: `In elk raam zitten ${s.perGroep} diertjes.`,
         houding: "blij",
         kant: "links",
       },
@@ -162,7 +162,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
   const stappen: Uitlegscript["stappen"] = [
     {
       model: { soort: "som", tekst: `${volleRamen} volle ramen van ${s.perGroep}` },
-      zin: "De vosjes zitten per raam gegroepeerd, dus tellen met sprongen kan.",
+      zin: "De diertjes zitten per raam gegroepeerd, dus tellen met sprongen kan.",
     },
     {
       model: {
@@ -170,7 +170,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
         tekst: `${volleRamen} × ${s.perGroep} = ${volleRamen * s.perGroep}`,
         nadruk: String(volleRamen * s.perGroep),
       },
-      zin: "Zoveel vosjes zitten er in de volle ramen.",
+      zin: "Zoveel diertjes zitten er in de volle ramen.",
     },
   ];
 
@@ -181,7 +181,7 @@ function metRamen78(s: Bussom, vorm: Groepsvorm): Uitlegscript {
         tekst: `${volleRamen * s.perGroep} + ${rest} = ${s.totaal}`,
         nadruk: String(s.totaal),
       },
-      zin: "Het laatste raam is niet vol; die vosjes tellen gewoon mee.",
+      zin: "Het laatste raam is niet vol; die diertjes tellen gewoon mee.",
     });
   }
 

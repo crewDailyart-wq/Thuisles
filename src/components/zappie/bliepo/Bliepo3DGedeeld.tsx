@@ -45,7 +45,9 @@ type Instellingen = {
   /** Telt op bij elke keer dat hij moet zwaaien (niet bij "Beweging uit"). */
   zwaai?: number;
   /** Een gebaar van buitenaf (23 oktober 2026): bij elke nieuwe n speelt hij `naam` (zie ACTIONS in zappie.js). */
-  gebaar?: { naam: string; n: number } | null;
+  gebaar?: { naam: string; n: number | string } | null;
+  /** Bij een tik niet zeggen wie hij is (in opdrachten en lessen praat hij daar al). */
+  geenTiktekst?: boolean;
 };
 
 /*
@@ -65,7 +67,7 @@ function stemNiveau(): number | null {
   if (!bliepoGeluidKlinkt() || !leesBliepoGolf(golf)) return null;
   let som = 0;
   for (const v of golf) som += ((v - 128) / 128) ** 2;
-  return Math.min(1, Math.sqrt(som / golf.length) * 5);
+  return Math.min(1, Math.sqrt(som / golf.length) * 3.2);
 }
 
 /*
@@ -88,16 +90,17 @@ export function Bliepo3DGedeeld(instellingen: Instellingen) {
   zijn scherm beweegt live mee. BliepoFilmpje (het zweef-filmpje) staat er nog.
 */
 const geenPraat = () => false;
-function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null }: Instellingen) {
+function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null, geenTiktekst = false }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
   const [praat, zetPraat] = useState(false);
   const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, geenPraat);
   /* Het laatste gebaar (of de begroeting) speelt één keer; daarna rust, of praten zolang zijn stem klinkt. */
   const kaart: Record<string, Filmhouding> = { greet: "zwaaien", wave: "zwaaien", think: "nadenken", correct: "juichen", celebrate: "juichen", incorrect: "troost" };
   const gebaarHouding = gebaar?.n ? kaart[gebaar.naam] : undefined;
+  /* Na juichen of troosten weer rust; nadenken blijft (BliepoFilm). */
   const daarna: Filmhouding = stemKlinkt ? "praten" : "rust";
   const houding: Filmhouding = gebaarHouding ?? (zwaai > 0 ? "zwaaien" : daarna);
-  const beurt = zwaai + (gebaar?.n ?? 0);
+  const beurt = `${zwaai}:${gebaar?.n ?? 0}`;
   const ballonRef = useRef(ballon);
   useEffect(() => {
     ballonRef.current = ballon;
@@ -110,7 +113,7 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
       const r = host.getBoundingClientRect();
       if (e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom) return;
       if ((e.target as Element | null)?.closest("a, button, input, select, textarea")) return;
-      if (ballonRef.current) return;
+      if (ballonRef.current || geenTiktekst) return;
       zetPraat(true);
       zegTiktekst();
       window.clearTimeout(stil);
@@ -121,7 +124,7 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
       window.removeEventListener("pointerdown", tik);
       window.clearTimeout(stil);
     };
-  }, []);
+  }, [geenTiktekst]);
   return (
     <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
       <BliepoFilm houding={houding} beurt={beurt} daarna={daarna} rustig={rustig} praat={stemKlinkt} className="bt-prototype-doek" onKlaar={onKlaar} />
@@ -144,10 +147,12 @@ function Bliepo3DEcht({
   ballon,
   zwaai = 0,
   gebaar = null,
+  geenTiktekst = false,
 }: {
   ballon?: string | null;
   zwaai?: number;
-  gebaar?: { naam: string; n: number } | null;
+  gebaar?: { naam: string; n: number | string } | null;
+  geenTiktekst?: boolean;
   rustig: boolean;
   /** de hoek waarin hij staat als niemand iets doet; positief = naar rechts */
   rusthoek?: number;
@@ -161,6 +166,7 @@ function Bliepo3DEcht({
   const rustigRef = useRef(rustig);
   const instelling = useRef({ rusthoek, volgMuis, onKlaar });
   const ballonRef = useRef(ballon);
+  const geenTikRef = useRef(geenTiktekst);
   const zwaaiRef = useRef<((actie: string) => void) | null>(null);
 
   useEffect(() => {
@@ -180,7 +186,7 @@ function Bliepo3DEcht({
   const gebaarNaam = gebaar?.naam;
   const gebaarN = gebaar?.n ?? 0;
   useEffect(() => {
-    if (gebaarN > 0 && gebaarNaam && !rustigRef.current) zwaaiRef.current?.(gebaarNaam);
+    if (gebaarN && gebaarNaam && !rustigRef.current) zwaaiRef.current?.(gebaarNaam);
   }, [gebaarN, gebaarNaam]);
 
   useEffect(() => {
@@ -376,8 +382,8 @@ function Bliepo3DEcht({
       const tik = (e: PointerEvent) => {
         if (!binnen(e.clientX, e.clientY, 0)) return;
         if ((e.target as Element | null)?.closest("a, button, input, select, textarea")) return;
-        /* Begroet hij net (tekstballon van buitenaf), dan niet ook nog wie hij is. */
-        if (ballonRef.current) return;
+        /* Begroet hij net (tekstballon van buitenaf), of praat hij al in een opdracht, dan niet ook nog wie hij is. */
+        if (ballonRef.current || geenTikRef.current) return;
         wachtTot = 0;
         if (!getikt) {
           getikt = true;

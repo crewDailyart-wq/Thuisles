@@ -103,7 +103,7 @@ import { getallenlijnUitleg } from "@/lib/generatoren/scripts/getallenlijn";
  * bedoeling — een kind dat nog niet vlot leest, laat de zin voorlezen en hoort
  * het getal dan.
  */
-const VASTE_ZIN = "Breng Vos naar {som}.";
+const VASTE_ZIN = "Breng Bliepo naar {som}.";
 
 const STANDAARDZINNEN: Record<Leeftijdsgroep, string> = {
   "34": VASTE_ZIN,
@@ -161,7 +161,7 @@ function tussenzinnen(sprong: number): Record<Leeftijdsgroep, string> {
  * Alleen om in beheer in het grijs te laten zien. Anders staat daar "Breng Vos
  * naar {som}." en zie je niet wat het kind straks krijgt.
  */
-const VOORBEELDZIN = "Breng Vos naar 12.";
+const VOORBEELDZIN = "Breng Bliepo naar 12.";
 
 const VOORBEELDZINNEN: Record<Leeftijdsgroep, string> = {
   "34": VOORBEELDZIN,
@@ -397,7 +397,7 @@ export const getallenlijnGenerator: Generator = {
   id: "getallenlijn",
   naam: "Getallenlijn",
   uitleg:
-    "Een rechte getallenlijn met streepjes, zoals op school. Vos staat erboven met een vlaggetje in zijn poot waar het gezochte getal op staat; het kind schuift hem naar het streepje waar dat getal hoort en hij plant zijn vlag. Hoeveel getallen er onder de lijn staan, bepaalt hoe moeilijk het is.",
+    "Een rechte getallenlijn met streepjes, zoals op school. Bliepo staat erboven met een vlaggetje in zijn poot waar het gezochte getal op staat; het kind schuift hem naar het streepje waar dat getal hoort en hij plant zijn vlag. Hoeveel getallen er onder de lijn staan, bepaalt hoe moeilijk het is.",
   suggestie:
     "Groep 3: 0 tot 20, streepje per getal, alle getallen · eind groep 3: alleen de vijftallen · halverwege groep 4: 0 tot 50, alleen de tientallen · groep 5: 0 tot 100 met een streepje per vijf",
   velden: [
@@ -432,12 +432,12 @@ export const getallenlijnGenerator: Generator = {
       sleutel: "stand",
       label: "Wat het kind doet",
       opties: [
-        { waarde: "schuiven", label: "Vos naar het getal schuiven" },
+        { waarde: "schuiven", label: "Bliepo naar het getal schuiven" },
         { waarde: "invullen", label: "Zelf het getal invullen" },
         { waarde: "tussen", label: "Tussen welke tientallen ligt het getal" },
         { waarde: "schatten", label: "Schatten op een lege lijn" },
       ],
-      hulp: "Bij schuiven draagt Vos een vlaggetje met het gezochte getal en zoekt het kind de plek op de lijn. Bij invullen staan er lege vakjes met een pijltje naar een streepje en typt het kind zelf het getal; dat is moeilijker, want het kind moet het getal zelf bedenken in plaats van het te herkennen. Bij de derde stand staat er een wijzertje met een getal boven de lijn — bijvoorbeeld 21 — en typt het kind in twee vakjes óp de lijn tussen welke tientallen dat getal ligt: 20 en 30. Dat oefent het positioneren op de lijn en is de vaste opdracht uit het rekenboek. De vierde stand is schatten: een lege lijn met alleen het begin en het eind, waarop het kind Vos vrij naar de geschatte plek schuift. Daar gaat het niet om precies plaatsen maar om schatten met ankerpunten — 74 ligt net voorbij driekwart — en het antwoord is goed als het dicht genoeg in de buurt is.",
+      hulp: "Bij schuiven draagt Bliepo een vlaggetje met het gezochte getal en zoekt het kind de plek op de lijn. Bij invullen staan er lege vakjes met een pijltje naar een streepje en typt het kind zelf het getal; dat is moeilijker, want het kind moet het getal zelf bedenken in plaats van het te herkennen. Bij de derde stand staat er een wijzertje met een getal boven de lijn — bijvoorbeeld 21 — en typt het kind in twee vakjes óp de lijn tussen welke tientallen dat getal ligt: 20 en 30. Dat oefent het positioneren op de lijn en is de vaste opdracht uit het rekenboek. De vierde stand is schatten: een lege lijn met alleen het begin en het eind, waarop het kind Bliepo vrij naar de geschatte plek schuift. Daar gaat het niet om precies plaatsen maar om schatten met ankerpunten — 74 ligt net voorbij driekwart — en het antwoord is goed als het dicht genoeg in de buurt is.",
     },
     {
       soort: "keuze",
@@ -501,13 +501,13 @@ export const getallenlijnGenerator: Generator = {
     {
       soort: "afbeelding",
       sleutel: "vosWachtend",
-      label: "Vos — wachtend",
-      hulp: "Dit is de vos die het kind over de lijn schuift. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen.",
+      label: "Bliepo — wachtend",
+      hulp: "Dit is Bliepo die het kind over de lijn schuift. Leeg = de standaardafbeelding van dit soort oefening; die staat bij Afbeeldingen.",
     },
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
-      label: "Vos — blij",
+      label: "Bliepo — blij",
       hulp: "Te zien als hij op het goede streepje staat; dan plant hij een vlaggetje en springt hij op. Leeg = de standaardvos van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */

@@ -73,7 +73,7 @@ export const splitstabelGenerator: Generator = {
   id: "splitstabel",
   naam: "Splitsen in de tabel",
   uitleg:
-    "Bovenaan het getal dat gesplitst wordt, daaronder een paar rijen met links een gegeven getal en rechts een leeg vakje. Het kind vult in wat erbij hoort. Als speels uiterlijk wordt het een splitshuis met raampjes en Vos.",
+    "Bovenaan het getal dat gesplitst wordt, daaronder een paar rijen met links een gegeven getal en rechts een leeg vakje. Het kind vult in wat erbij hoort. Als speels uiterlijk wordt het een splitshuis met raampjes en Bliepo.",
   suggestie: "Groep 4: doelgetal 20 met drie rijen",
   velden: [
     {
@@ -117,7 +117,7 @@ export const splitstabelGenerator: Generator = {
       label: "Uiterlijk",
       opties: [
         { waarde: "eenvoudig", label: "Eenvoudig — een rustige tabel" },
-        { waarde: "speels", label: "Speels — het splitshuis met Vos" },
+        { waarde: "speels", label: "Speels — het splitshuis met Bliepo" },
         { waarde: "bloem", label: "Speels — de splitsbloem" },
       ],
       hulp: "De som is in allebei de gevallen precies dezelfde; alleen het beeld verschilt. Het uiterlijk telt daarom niet mee voor de moeilijkheid.",
@@ -125,8 +125,8 @@ export const splitstabelGenerator: Generator = {
     {
       soort: "afbeelding",
       sleutel: "vosBlij",
-      label: "Vos — blij",
-      hulp: "Alleen bij het splitshuis: Vos kijkt uit het raam en zwaait als alles goed is ingevuld. Leeg = de standaardvos.",
+      label: "Bliepo — blij",
+      hulp: "Alleen bij het splitshuis: Bliepo kijkt uit het raam en zwaait als alles goed is ingevuld. Leeg = de standaardafbeelding.",
     },
     ...vraagtekstVelden(STANDAARDZINNEN),
   ],

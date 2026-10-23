@@ -34,7 +34,7 @@ function zin(s: Somgegevens): string {
       const richting = f.leeg[0] === 0 ? "vóór" : "na";
       return o.evenOneven ? `Welk ${f.getallen[1] % 2 === 0 ? "even" : "oneven"} getal komt ${richting} ${f.getallen[1]}?` : `Welk getal komt ${richting} ${f.getallen[1]}?`;
     }
-    return o.sprong === 2 ? "Spring steeds twee verder." : "Help Vos naar de sleutel.";
+    return o.sprong === 2 ? "Spring steeds twee verder." : "Help Bliepo naar de sleutel.";
   }
   return ({ kralen: "Hoeveel kralen tel je?", trein: "Hoeveel dieren reizen mee?", appels: "Hoeveel appels tel je?", blokken: "Hoeveel blokjes tel je?", sterren: "Hoeveel sterren tel je?", blaadjes: "Hoeveel blaadjes tel je?", huisjes: "Hoeveel huisjes tel je?", waterlelies: "Hoeveel waterlelies tel je?" })[o.thema];
 }
@@ -42,7 +42,7 @@ function zin(s: Somgegevens): string {
 /** Elke animatie gebruikt precies hetzelfde tafereel als de opgave. */
 const uitleg: Uitlegbron = {
   modellen: ["bosspel", "som"],
-  strategieen: [{ waarde: "kijken-tellen", label: "Kijken, tellen en controleren", uitleg: "Dezelfde afbeelding, stap voor stap met Vos." }],
+  strategieen: [{ waarde: "kijken-tellen", label: "Kijken, tellen en controleren", uitleg: "Dezelfde afbeelding, stap voor stap met Bliepo." }],
   standaardStrategie: () => "kijken-tellen",
   vergelijkbaar: () => null,
   script(s, vorm) {

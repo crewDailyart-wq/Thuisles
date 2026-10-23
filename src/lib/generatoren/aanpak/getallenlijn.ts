@@ -91,7 +91,7 @@ export const getallenlijnAanpak: Aanpak = {
           som: `${doel}`,
         },
         { tekst: "Kijk naar het dichtstbijzijnde hulpgetal.", som: `${kwart}` },
-        { tekst: "Daar vlakbij zet je Vos neer.", som: `${doel}` },
+        { tekst: "Daar vlakbij zet je Bliepo neer.", som: `${doel}` },
       ];
     }
     const anker = ankerVoor(som, doel);
@@ -108,7 +108,7 @@ export const getallenlijnAanpak: Aanpak = {
         tekst: `Dat zijn ${stappen} ${stappen === 1 ? "stap" : "stappen"}.`,
         som: `${doel}`,
       },
-      { tekst: "Daar zet je Vos neer.", som: `${doel}` },
+      { tekst: "Daar zet je Bliepo neer.", som: `${doel}` },
     ];
   },
 
@@ -116,7 +116,7 @@ export const getallenlijnAanpak: Aanpak = {
     if (isSchatten(som)) {
       const midden = middenVan(som);
       const doel = som.getallen[0];
-      return `${doel} ligt ${doel > midden ? "na" : "voor"} het midden (${midden}). Zet Vos daar ongeveer neer; precies hoeft niet.`;
+      return `${doel} ligt ${doel > midden ? "na" : "voor"} het midden (${midden}). Zet Bliepo daar ongeveer neer; precies hoeft niet.`;
     }
     const doelen = som.getallen;
     if (doelen.length === 1) {

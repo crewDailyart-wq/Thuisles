@@ -296,7 +296,12 @@ export function IntroInstellingen(p: InstelProps & Vlakbasis) {
     return (
       <div className={s.paneel} style={{ top: 170 }}>
         <div className={s.menu}>
-          {MENU.map((m) => {
+          {/*
+            Oplichten staat sinds 23 oktober 2026 niet meer in het menu (opdracht
+            eigenaar): het staat standaard aan, en het kind of de ouder zet het
+            om bij Profiel. Het scherm Oplichten zelf bestaat nog.
+          */}
+          {MENU.filter((m) => m.id !== "oplichten").map((m) => {
             const klaar = gedaan.includes(m.id);
             return (
               <button

@@ -148,9 +148,9 @@ function stapstenen(o: Opgave, stenen: (number | null)[], sprong: number, voorui
   return maak({
     antwoord: o.antwoord,
     voorlezen: `${o.vraagtekst} Tel ${sprong} ${woord}.`,
-    goed: [zin(`Steeds ${sprong} ${woord}: ${rij}.`, "Vos springt over de stenen")],
+    goed: [zin(`Steeds ${sprong} ${woord}: ${rij}.`, "Bliepo springt over de stenen")],
     fouten,
-    uitleg: [zin("Kijk, zo doe je het."), zin(`Elke steen is ${sprong} ${vooruit ? "meer" : "minder"}.`), zin(`Dus: ${rij}.`, "Vos springt over de stenen")],
+    uitleg: [zin("Kijk, zo doe je het."), zin(`Elke steen is ${sprong} ${vooruit ? "meer" : "minder"}.`), zin(`Dus: ${rij}.`, "Bliepo springt over de stenen")],
     tip: zin(`Tel steeds ${sprong} ${woord}.`),
     rondewoord: "opdrachten",
     opgave: [...stenen.filter((s): s is number => s !== null), sprong],
@@ -180,7 +180,7 @@ function getallenlijn(o: Opgave, f: { stand?: string; gevraagd: number[]; marge?
       voorlezen: `${o.vraagtekst} Zet ${x} op de lijn.`,
       goed: [zin(`${x} ligt tussen ${lo} en ${hi}.`, "de tientallen lichten op"), zin(`Dicht bij ${dichtbij}.`)],
       fouten,
-      uitleg: [zin("Kijk, zo doe je het."), zin(`Zoek eerst de tientallen: ${lo} en ${hi}.`, "de tientallen lichten op"), zin(`${x} ligt daartussen, dicht bij ${dichtbij}.`, "Vos gaat naar de goede plek")],
+      uitleg: [zin("Kijk, zo doe je het."), zin(`Zoek eerst de tientallen: ${lo} en ${hi}.`, "de tientallen lichten op"), zin(`${x} ligt daartussen, dicht bij ${dichtbij}.`, "Bliepo gaat naar de goede plek")],
       tip: zin("Zoek eerst de tientallen op de lijn."),
       rondewoord: "opdrachten",
       opgave: [x, f.start, f.eind],
@@ -219,12 +219,12 @@ function getallenlijn(o: Opgave, f: { stand?: string; gevraagd: number[]; marge?
     return maak({
       antwoord: o.antwoord,
       voorlezen: o.vraagtekst,
-      goed: [zin(verschil, "Vos staat op de goede plek")],
+      goed: [zin(verschil, "Bliepo staat op de goede plek")],
       fouten: [
-        { code: "een-ernaast", antwoorden: [`${x - 1}`, `${x + 1}`], zinnen: [zin("Je zit er 1 naast."), zin(verschil, "Vos gaat naar de goede plek")] },
-        { code: "vijf-ernaast", antwoorden: [`${x - 5}`, `${x + 5}`], zinnen: [zin("Je zit er 5 naast."), zin(verschil, "Vos gaat naar de goede plek")] },
+        { code: "een-ernaast", antwoorden: [`${x - 1}`, `${x + 1}`], zinnen: [zin("Je zit er 1 naast."), zin(verschil, "Bliepo gaat naar de goede plek")] },
+        { code: "vijf-ernaast", antwoorden: [`${x - 5}`, `${x + 5}`], zinnen: [zin("Je zit er 5 naast."), zin(verschil, "Bliepo gaat naar de goede plek")] },
       ],
-      uitleg: [zin("Kijk, zo doe je het."), zin(`Zoek eerst de ${m}.`, `de ${m} licht op`), zin(verschil, "Vos gaat naar de goede plek")],
+      uitleg: [zin("Kijk, zo doe je het."), zin(`Zoek eerst de ${m}.`, `de ${m} licht op`), zin(verschil, "Bliepo gaat naar de goede plek")],
       tip: zin("Kijk naar de getallen die er al staan."),
       rondewoord: "opdrachten",
       opgave: [x, ...zichtbaar],
@@ -320,7 +320,7 @@ function bioscoop(o: Opgave, gezocht: number, zichtbaar: number[], perRij: numbe
   const verschil = d === 0 ? `Het staat erop: ${gezocht}.` : `${gezocht} is ${Math.abs(d)} ${d > 0 ? "meer" : "minder"} dan ${m}.`;
   return metKnoppen(o, {
     antwoord: o.antwoord,
-    voorlezen: `${o.vraagtekst} Vos zoekt stoel ${gezocht}.`,
+    voorlezen: `${o.vraagtekst} Bliepo zoekt stoel ${gezocht}.`,
     goed: [zin(verschil, "de stoel licht op")],
     fouten: [
       { code: "een-ernaast", antwoorden: [`${gezocht - 1}`, `${gezocht + 1}`], zinnen: [zin("Je zit er 1 naast."), zin(verschil, "de stoel licht op")], getallen: [m, Math.abs(d)] },

@@ -16,7 +16,7 @@ import { beoordeelStemmen, kiesStem, zeg } from "@/lib/stem";
 
 type Regel = { naam: string; taal: string; lokaal: boolean; score: number; reden: string };
 
-const PROEFZIN = "Hoi! Ik ben Vos. Tel je met me mee?";
+const PROEFZIN = "Hoi! Ik ben Bliepo. Tel je met me mee?";
 
 export function Stemtest() {
   const [regels, setRegels] = useState<Regel[]>([]);

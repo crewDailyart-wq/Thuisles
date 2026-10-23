@@ -49,7 +49,7 @@ export const vissenPatronen: Foutpatroon[] = [
     herkent: (som, gegeven) => gegeven === dichtbij(som) && gegeven !== som.goed,
     kindtekst: {
       "34": "Je pakte de vis die het dichtst bij was.",
-      "56": "Je koos de vis die het dichtst bij Vos zwemt. Kijk eerst naar alle getallen.",
+      "56": "Je koos de vis die het dichtst bij Bliepo zwemt. Kijk eerst naar alle getallen.",
       "78": "Je hebt de dichtstbijzijnde gekozen in plaats van de gevraagde. Vergelijk eerst alle getallen met elkaar.",
     },
     hint: "Kijk eerst naar alle vissen, ook die verderop zwemmen.",

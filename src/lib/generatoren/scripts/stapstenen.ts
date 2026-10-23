@@ -118,7 +118,7 @@ function terugNaarHetBegin(som: Somgegevens, kort: boolean): Uitlegscript["stapp
       model: beeld(som, -1, begin.eersteGevuld, null),
       zin: kort
         ? "De eerste steen is leeg."
-        : "De eerste steen is nog leeg. Vos begint bij de eerste steen met een getal.",
+        : "De eerste steen is nog leeg. Bliepo begint bij de eerste steen met een getal.",
       houding: "wijzend",
       beweging: "wijzen",
       kant: "links",

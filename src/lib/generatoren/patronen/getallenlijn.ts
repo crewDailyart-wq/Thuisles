@@ -140,7 +140,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
     },
     kindtekst: {
       "34": "Je zat aan de verkeerde kant.",
-      "56": "Je zette Vos precies aan de andere kant van het midden.",
+      "56": "Je zette Bliepo precies aan de andere kant van het midden.",
       "78": "Je schatting ligt gespiegeld om het midden: even ver van het midden, maar de andere kant op. Kijk eerst of het getal vóór of ná de helft komt.",
     },
     hint: "Komt dit getal vóór of na de helft van de lijn?",
@@ -188,8 +188,8 @@ export const getallenlijnPatronen: Foutpatroon[] = [
     },
     kindtekst: {
       "34": "Niet elk getal ligt in het midden.",
-      "56": "Je zette Vos in het midden. Kijk eerst of je getal veel kleiner of veel groter is dan de helft.",
-      "78": "Je zet Vos rond het midden terwijl dit getal daar ver vandaan ligt. Gebruik het midden als ankerpunt, niet als antwoord: is je getal de helft, een kwart, of bijna het eind?",
+      "56": "Je zette Bliepo in het midden. Kijk eerst of je getal veel kleiner of veel groter is dan de helft.",
+      "78": "Je zet Bliepo rond het midden terwijl dit getal daar ver vandaan ligt. Gebruik het midden als ankerpunt, niet als antwoord: is je getal de helft, een kwart, of bijna het eind?",
     },
     hint: "Het midden is een hulpje, geen antwoord. Waar ligt jouw getal ten opzichte daarvan?",
     uitleg: (som) => {
@@ -204,7 +204,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
             deel < 0.4 ? "Jouw getal ligt in het eerste deel." : deel > 0.6 ? "Jouw getal ligt in het laatste deel." : "Jouw getal ligt rond de helft.",
           som: `${doel}`,
         },
-        { tekst: "Daar hoort Vos te staan.", som: `${start} … ${doel} … ${eind}` },
+        { tekst: "Daar hoort Bliepo te staan.", som: `${start} … ${doel} … ${eind}` },
       ];
     },
     ouder: {
@@ -245,7 +245,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
       return [
         { tekst: "Zoek eerst het tiental.", som: `${tien}` },
         { tekst: "Jouw getal ligt net daarna.", som: `${tien} → ${doel}` },
-        { tekst: "Daar hoort Vos te staan.", som: `${doel}` },
+        { tekst: "Daar hoort Bliepo te staan.", som: `${doel}` },
       ];
     },
     ouder: {
@@ -271,7 +271,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
     },
     kindtekst: {
       "34": "Nog een stukje naar rechts.",
-      "56": "Je zette Vos te ver naar links: het getal ligt verder op de lijn.",
+      "56": "Je zette Bliepo te ver naar links: het getal ligt verder op de lijn.",
       "78": "Je schatting ligt links van de goede plek. Neem het midden als ankerpunt en kijk hoeveel verder je getal daarna nog komt.",
     },
     hint: "Kijk waar de helft ligt; jouw getal ligt verder naar rechts dan je dacht.",
@@ -308,7 +308,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
     },
     kindtekst: {
       "34": "Nog een stukje naar links.",
-      "56": "Je zette Vos te ver naar rechts: het getal ligt dichter bij het begin.",
+      "56": "Je zette Bliepo te ver naar rechts: het getal ligt dichter bij het begin.",
       "78": "Je schatting ligt rechts van de goede plek. Neem het midden als ankerpunt en kijk hoe ver je getal daarvóór al komt.",
     },
     hint: "Kijk waar de helft ligt; jouw getal ligt dichter bij het begin dan je dacht.",
@@ -601,7 +601,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
         "Eén plek ernaast. Het aanwijzen loopt uit de pas met het hardop tellen — dezelfde misser als bij het tellen van plaatjes, maar dan op de getallenlijn.",
       zinnen: [
         "Laat je kind elk streepje aanraken op het moment dat het het getal zegt.",
-        "Vraag na afloop: welk getal zei je het laatst? Daar hoort Vos te staan.",
+        "Vraag na afloop: welk getal zei je het laatst? Daar hoort Bliepo te staan.",
       ],
       schoolwoord: "één-op-één-koppeling",
     },
@@ -671,7 +671,7 @@ export const getallenlijnPatronen: Foutpatroon[] = [
       return [
         { tekst: "Het tiental klopt al.", som: `${tien}` },
         { tekst: "Tel vanaf daar de eenheden.", som: `${tien} → ${fout.j}` },
-        { tekst: "Daar hoort Vos te staan.", som: `${fout.j}` },
+        { tekst: "Daar hoort Bliepo te staan.", som: `${fout.j}` },
       ];
     },
     ouder: {

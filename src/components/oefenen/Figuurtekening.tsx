@@ -805,7 +805,7 @@ export function Bus({
       className="h-auto w-full"
       role="img"
       aria-label={
-        `Een bus met ${totaal} vosjes. Er zitten ${perGroep} vosjes per raam, ` +
+        `Een bus met ${totaal} diertjes. Er zitten ${perGroep} diertjes per raam, ` +
         `om en om van kleur: ${heleRamen} volle ramen` +
         (rest > 0 ? ` en nog een raam met ${rest}.` : ".")
       }

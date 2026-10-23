@@ -94,7 +94,7 @@ export function Mascotte() {
           Zullen we samen iets nieuws leren?
         </p>
         <p className="mt-0.5 text-xs font-semibold text-inkt-zacht">
-          Vos loopt met je mee tijdens het oefenen.
+          Bliepo loopt met je mee tijdens het oefenen.
         </p>
       </div>
     </section>

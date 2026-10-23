@@ -25,7 +25,8 @@ JOINTS.push('Cap');
 export function waveMood(action,t,reducedMotion=false,speechLevel=null){
   const modes={think:[.16,1.4,'#b2caff'],listen:[.12,1.9,'#7ddfff'],sleep:[.045,.7,'#6ba9dc'],celebrate:[.8,13,'#bbfff0'],correct:[.8,13,'#bbfff0'],incorrect:[.27,3,'#ffd3df'],surprise:[.8,9,'#fff0a0'],talk:[.65,11,'#b1faff'],drive:[.4,7,'#64edff'],reverse:[.4,7,'#64edff']};
   const [energy,rate,color]=modes[action]||[.2,3,'#80edff'];
-  return {amplitude:action==='talk'&&speechLevel!==null?.08+.85*T.MathUtils.clamp(speechLevel,0,1):energy*(reducedMotion?.6:.45+.55*Math.abs(Math.sin(t*rate)*Math.cos(t*rate*.37))),rate,color};
+  /* Klinkt zijn stem, dan volgt het lijntje het echte geluid (geluidsmeter), bij elke beweging; anders een rustig hartslaglijntje (23 oktober 2026). */
+  return {amplitude:speechLevel!==null?.08+.85*T.MathUtils.clamp(speechLevel,0,1):energy*(reducedMotion?.6:.45+.55*Math.abs(Math.sin(t*rate)*Math.cos(t*rate*.37))),rate,color};
 }
 /** Het rondje op zijn wielen bij een goed antwoord: 0 tot 2π, zacht op gang en zacht tot stilstand. */
 export function rondje(action,t){

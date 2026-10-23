@@ -51,7 +51,7 @@ export type Blokkenstand = "tellen" | "vosbouwt" | "slepen";
 
 export const BLOKKENSTANDEN: { waarde: Blokkenstand; label: string }[] = [
   { waarde: "tellen", label: "Tellen" },
-  { waarde: "vosbouwt", label: "Vos bouwt de staven" },
+  { waarde: "vosbouwt", label: "Bliepo bouwt de staven" },
 ];
 
 export type Plek = { x: number; y: number };

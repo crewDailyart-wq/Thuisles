@@ -315,7 +315,7 @@ function maakAllebei(
 
 export const straatGenerator: Generator = {
   id: "straat",
-  naam: "Vos' straat (buurgetallen)",
+  naam: "Bliepo's straat (buurgetallen)",
   uitleg:
     "Een rij vrolijke huisjes met de nummers op de deuren; bij één huis is de deur leeg en die licht op. Het kind zegt welk nummer daar hoort. Oefent doortellen en terugtellen — en met even en oneven ook de sprong van twee aan dezelfde kant van de straat.",
   suggestie:

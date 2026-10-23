@@ -318,13 +318,13 @@ export const stapstenenGenerator: Generator = {
       soort: "vinkje",
       sleutel: "eersteLeeg",
       label: "Eerste steen mag ook leeg zijn",
-      hulp: "Uit: de eerste steen heeft altijd een getal en het kind begint verderop in de rij \u2014 zoals het tot nu toe ging. Aan: bij ongeveer de helft van de vragen is de eerste steen leeg en moet het kind daar beginnen. Dat oefent iets anders: het kind kan niet doortellen vanaf een getal dat er al staat, maar moet vanaf de eerste steen die w\u00e9l een getal heeft terugrekenen naar het begin van de rij. Werkt bij elke keuze hierboven: achteraan wordt dan \u201eleeg \u2026 vol \u2026 leeg\u201d, vooraan wordt \u201eleeg leeg vol \u2026\u201d en om en om draait om naar leeg, getal, leeg, getal. Er blijven altijd minstens twee getallen staan, anders valt de sprong niet af te lezen. Vos gaat nooit op een lege steen staan; hij begint op de eerste steen met een getal.",
+      hulp: "Uit: de eerste steen heeft altijd een getal en het kind begint verderop in de rij \u2014 zoals het tot nu toe ging. Aan: bij ongeveer de helft van de vragen is de eerste steen leeg en moet het kind daar beginnen. Dat oefent iets anders: het kind kan niet doortellen vanaf een getal dat er al staat, maar moet vanaf de eerste steen die w\u00e9l een getal heeft terugrekenen naar het begin van de rij. Werkt bij elke keuze hierboven: achteraan wordt dan \u201eleeg \u2026 vol \u2026 leeg\u201d, vooraan wordt \u201eleeg leeg vol \u2026\u201d en om en om draait om naar leeg, getal, leeg, getal. Er blijven altijd minstens twee getallen staan, anders valt de sprong niet af te lezen. Bliepo gaat nooit op een lege steen staan; hij begint op de eerste steen met een getal.",
     },
     {
       soort: "afbeelding",
       sleutel: "mascotte",
       label: "Mascotte — staand",
-      hulp: "Kies of upload een afbeelding, bijvoorbeeld de vos. Leeg = de standaardvos van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond.",
+      hulp: "Kies of upload een afbeelding, bijvoorbeeld Bliepo. Leeg = de standaardafbeelding van dit soort oefening; die staat bij Afbeeldingen en wordt hieronder getoond.",
     },
     {
       soort: "afbeelding",
@@ -336,7 +336,7 @@ export const stapstenenGenerator: Generator = {
       soort: "afbeelding",
       sleutel: "mascotteJuichend",
       label: "Mascotte — juichend",
-      hulp: "Te zien als de vos aan de overkant de sleutel oppakt. Leeg = de standaardvos van dit soort oefening.",
+      hulp: "Te zien als Bliepo aan de overkant de sleutel oppakt. Leeg = de standaardafbeelding van dit soort oefening.",
     },
     /* Overal dezelfde velden om de vraagzin aan te passen, per groep. */
     ...vraagtekstVelden(STANDAARDZINNEN),

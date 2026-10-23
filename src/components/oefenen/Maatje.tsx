@@ -19,6 +19,7 @@ import { VosFiguur } from "@/components/oefenen/VosFiguur";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { POPPETJE, POPPETJE_GODOT, type MaatjeHouding } from "@/lib/maatje/poppetje";
 import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
+import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
@@ -58,6 +59,8 @@ export function Maatje({
 }) {
   /* Hoeveel zinnen er al te zien zijn, bij welk bericht. */
   const [stand, setStand] = useState<{ id: string; tot: number; klaar: boolean }>({ id: "", tot: 0, klaar: false });
+  /* "Nog eens horen" (23 oktober 2026): hetzelfde bericht nog een keer voorlezen. */
+  const [herhaal, setHerhaal] = useState(0);
   const klaarRef = useRef(onKlaar);
   useEffect(() => {
     klaarRef.current = onKlaar;
@@ -88,7 +91,7 @@ export function Maatje({
       niet bij elke nieuwe render.
     */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bericht?.id, geluid]);
+  }, [bericht?.id, geluid, herhaal]);
 
   if (!bericht) return null;
 
@@ -106,30 +109,28 @@ export function Maatje({
   }
 
   if (vloer) {
+    /* Juichen bij goed, bemoedigend knikken bij fout, nadenken bij een tip. */
+    const kaart: Partial<Record<MaatjeHouding, string>> = { blij: "correct", troost: "incorrect", denkt: "think" };
+    const naam = kaart[bericht.houding];
     return (
-      <div className="maatje-vloer" data-maatje="" data-houding={bericht.houding}>
-        <TijdelijkMaatje houding={bericht.houding} praat={bezig} className="maatje-vloer-bliepo" />
-        <div className="maatje-vloer-ballon" aria-live="polite">
-          <p>
-            {zichtbaar.map((z, i) => (
-              <span key={i} className={bezig && i === tot - 1 ? "font-extrabold" : ""}>
-                {i > 0 ? " " : ""}
-                {z.tekst}
-              </span>
-            ))}
-          </p>
-          <button
-            type="button"
-            onClick={wisselGeluid}
-            aria-pressed={geluid}
-            aria-label={geluid ? "Stem van Bliepo uitzetten" : "Stem van Bliepo aanzetten"}
-            title={geluid ? "Stem van Bliepo uit" : "Stem van Bliepo aan"}
-            className="maatje-vloer-geluid"
-          >
-            {geluid ? <Luidspreker className="size-5" /> : <LuidsprekerUit className="size-5" />}
-          </button>
-        </div>
-      </div>
+      <BliepoVloer
+        gebaar={naam ? { naam, n: bericht.id } : null}
+        onNogEens={() => setHerhaal((n) => n + 1)}
+        geluid={geluid}
+        onGeluid={(aan) => {
+          if (!aan) stopPraten();
+          onGeluid(aan);
+        }}
+      >
+        <p>
+          {zichtbaar.map((z, i) => (
+            <span key={i} className={bezig && i === tot - 1 ? "bliepo-vloer-nu" : ""}>
+              {i > 0 ? " " : ""}
+              {z.tekst}
+            </span>
+          ))}
+        </p>
+      </BliepoVloer>
     );
   }
 

@@ -40,7 +40,7 @@ export const straatAanpak: Aanpak = {
     }
     return {
       "34": `Doe één huis ${richting}.`,
-      "56": `Het buurhuis is één ${richting}: tel één stap vanaf het nummer van Vos.`,
+      "56": `Het buurhuis is één ${richting}: tel één stap vanaf het nummer van Bliepo.`,
       "78": `Het buurgetal ligt één stap ${richting} op de telrij.`,
     };
   },
@@ -57,7 +57,7 @@ export const straatAanpak: Aanpak = {
     }
     const teken = vooruit(som) ? "+" : "−";
     return [
-      { tekst: "Kijk waar Vos staat.", som: `${basis}` },
+      { tekst: "Kijk waar Bliepo staat.", som: `${basis}` },
       {
         tekst: vooruit(som) ? "Ga naar rechts." : "Ga naar links.",
         som: `${basis} ${teken} ${stap}`,
