@@ -95,7 +95,7 @@ export function samplePose(action,t,{speed=0,turnRate=0,acceleration=0,speechLev
   /* Fout: bemoedigend knikken, met open handen (23 oktober 2026). */
   if(action==='incorrect'){const k=Math.min(1,t/.4);rot('Head',(reducedMotion?.06:Math.sin(t*5.5)*.13*Math.exp(-t*.5))+.04,0,.08*k);rot('ArmLeft',-.25*k,0,-.5*k);rot('ArmRight',-.25*k,0,.5*k);rot('ElbowLeft',0,0,-.45*k);rot('ElbowRight',0,0,.45*k);}
   /* Petje rechtzetten: zijn armen zijn te kort om bij de klep te komen (gemeten); de hand gaat naar de zijkant van zijn hoofd, het hoofd buigt ernaartoe en het petje wiebelt recht. */
-  if(action==='cap'){const k=Math.sin(Math.PI*Math.min(1,t/DURATIONS.cap));const tik=t>.8&&t<1.6?Math.sin((t-.8)/.8*Math.PI*2):0;rot('ArmRight',.18*k,-.04*k,-.26+1.91*k);rot('ElbowRight',.23*k,.01*k,.18+1.04*k);rot('Head',-.05*k,0,-.15*k);rot('Cap',.08*tik,0,-.12*tik);}
+  if(action==='cap'){const k=Math.sin(Math.PI*Math.min(1,t/DURATIONS.cap));const tik=t>.8&&t<1.6?Math.sin((t-.8)/.8*Math.PI*2):0;rot('ArmRight',.18*k,-.04*k,-.26+1.91*k);rot('ElbowRight',.23*k,.01*k,.18+1.04*k);rot('Head',.07*k,0,-.15*k);rot('Cap',.08*tik,0,-.12*tik);}
   if(action==='sleep'){rot('Head',.12);amplitude=.035;}
   if(action==='listen'){rot('Head',0,.1,.07);amplitude=.11;}
   if(action==='surprise'){rot('Head',-.09);rot('ArmLeft',0,0,-.6);rot('ArmRight',0,0,.6);amplitude=.5;}
