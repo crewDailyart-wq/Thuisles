@@ -17,7 +17,9 @@ Object.assign(ACTIONS,{stop:'Klunzig afremmen',checkTail:'Stekker controleren'})
 Object.assign(ACTIONS,{cap:'Petje rechtzetten'});
 /* Gebaren bij het praten, passend bij de soort zin (23 oktober 2026, opdracht eigenaar). */
 Object.assign(ACTIONS,{ask:'Vraag stellen',explain:'Laten zien',pointTask:'Wijzen naar de opdracht',idea:'Idee',thumbsUp:'Duim omhoog',clap:'Klappen',fist:'Vuistje',encourage:'Aanmoedigen'});
-export const DURATIONS={ask:2.6,explain:3,pointTask:2.6,idea:2.6,thumbsUp:2.4,clap:2.4,fist:2.2,encourage:2.6,cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
+/* Echte, door mensen opgenomen bewegingen (24 oktober 2026; lib/zappie3d/echte-gebaren.ts). De duur hangt af van de clip. */
+Object.assign(ACTIONS,{echt:'Echte beweging'});
+export const DURATIONS={echt:3,ask:2.6,explain:3,pointTask:2.6,idea:2.6,thumbsUp:2.4,clap:2.4,fist:2.2,encourage:2.6,cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
 export const JOINTS=['Rig','Torso','Head','ArmLeft','ArmRight','ElbowLeft','ElbowRight','HandLeft','HandRight','AntennaLeft','AntennaRight','TailRoot',...Array.from({length:6},(_,i)=>'Tail'+(i+1)),...['Left','Right'].flatMap(s=>Array.from({length:4},(_,i)=>'Finger'+s+i)), 'SpeechWave'];
 
 export async function loadZappie(url='/assets/zappie/3d/zappie.glb') {
@@ -176,10 +178,16 @@ export function applyPose(model,pose,blend=1,schaalBlend=blend){
   }
 }
 export class ZappieController {
-  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.levendig=new Levendig();this.setTalkText('Hoi! Ik ben Bliepo.');}
+  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.levendig=new Levendig();/** @type {import('./echte-gebaren').EchteGebaren|null} */this.echt=null;/** Lopen de praat-bewegingen door zolang hij praat? (Uit bij het opnemen van één gebaar.) */this.praatLus=true;this.setTalkText('Hoi! Ik ben Bliepo.');}
   setTalkText(text){this.talkDisplay?.set(text);}
   showText(text){this.setTalkText(text);this.play('talk');this.duration=this.talkDisplay?.duration||4;}
-  play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);this.action=action;this.time=0;this.variant=Math.random();this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);if(action==='thumbsUp'||action==='clap')this.setFeedback('correct',DURATIONS[action]);this.onAction(action);}
+  play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);if(this.echt&&action!=='idle'&&action!=='echt')this.echt.stop();this.action=action;this.time=0;this.variant=Math.random();this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);if(action==='thumbsUp'||action==='clap')this.setFeedback('correct',DURATIONS[action]);this.onAction(action);}
+  /**
+   * Een echte beweging spelen (24 oktober 2026). `vanaf`: zoveel seconden in
+   * de clip beginnen, zodat het hoogste punt precies op het woord valt.
+   * Geeft false als de clips (nog) niet geladen zijn; speel dan een eigen gebaar.
+   */
+  speelEcht(clip,vanaf=0){if(!this.echt||this.reducedMotion||!this.echt.heeft(clip))return false;this.action='echt';this.time=Math.max(0,vanaf);this.variant=Math.random();this.duration=this.echt.duur(clip);this.echt.speel(clip,vanaf);if(clip==='duim'||clip==='klappen')this.setFeedback('correct',this.duration);this.onAction('echt');return true;}
   setFeedback(result='neutral',duration=3){if(!['neutral','correct','incorrect'].includes(result))throw new Error('Unknown feedback');this.feedback=result;this.feedbackTime=result==='neutral'?0:Math.max(0,duration);}
   setSpeechLevel(level){this.speechLevel=level===null?null:T.MathUtils.clamp(Number(level)||0,0,1);}
   update(dt,motion={}){
@@ -193,6 +201,8 @@ export class ZappieController {
     /* Levendig (23 oktober 2026): veren, rondkijken, antennes die na-veren. Bij "Beweging uit" de oude, rustige overgang. */
     if(this.levendig&&!this.reducedMotion){this.levendig.pas(pose,dt,this,motion);applyPose(this.model,pose,1,1-Math.exp(-12*dt));}
     else applyPose(this.model,pose,1-Math.exp(-12*dt));
+    /* Echte bewegingen over de houding heen (crossfade); praten lopen door zolang hij praat. */
+    if(this.echt&&!this.reducedMotion){const vrij=this.action==='idle'||this.action==='echt'||this.action==='talk';this.echt.stap(dt,!!this.levendig?.praat&&this.praatLus,this.speechLevel,vrij);this.echt.toepas();}
     this.model.wave.visible=true;if(this.action==='talk')this.talkDisplay.draw(this.time);
     this.wheelL+=((motion.distance||0)+(motion.turn||0)*.85)/.48;this.wheelR+=((motion.distance||0)-(motion.turn||0)*.85)/.48;
     const draai=this.reducedMotion?0:rondje(this.action,this.time)*.85/.48;
@@ -295,8 +305,9 @@ export class Levendig{
     }
     let doelYaw=rustig||actie==='talk'?this.blikDoel.yaw:0,doelPitch=rustig||actie==='talk'?this.blikDoel.pitch:0;
     /* Praat hij, dan kijkt hij naar het kind; wijst hij, dan even naar de opdracht en daarna weer terug. Rondkijken alleen als hij stil is. */
-    if(actie==='point'||actie==='pointTask'){doelYaw=this.naarOpdracht;doelPitch=.04;}
-    else if(this.praat&&actie!=='checkTail'&&actie!=='think'&&actie!=='cap'){doelYaw=this.naarKind;doelPitch=0;}
+    if(actie==='point'||actie==='pointTask'||c.echt?.gebaar==='wijzen1'||c.echt?.gebaar==='wijzen2'){doelYaw=this.naarOpdracht;doelPitch=.04;}
+    /* Recht naar het kind, met het hoofd een heel klein beetje omlaag (24 oktober 2026, gemeten): recht vooruit weerkaatst zijn scherm het licht en wordt het grijs of wit. */
+    else if(this.praat&&actie!=='checkTail'&&actie!=='think'&&actie!=='cap'){doelYaw=this.naarKind;doelPitch=.11;}
     const yaw=this.veer('blik:yaw',doelYaw,dt,38,.58),pitch=this.veer('blik:pitch',doelPitch,dt,38,.6);
     const kop=zet('Head');kop.r[1]+=yaw;kop.r[0]+=pitch;
     /* Het lijf draait een klein beetje mee, later en trager: dat voelt levend. */

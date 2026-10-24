@@ -13,6 +13,11 @@
  *
  * Instellingen in het adres: b en h (maat in pixels), hoek (draaiing van de
  * robot), afstand, hoogte (waar de camera naar kijkt) en lens.
+ *
+ * Echte bewegingen (24 oktober 2026): ook de door mensen opgenomen gebaren
+ * (lib/zappie3d/echte-gebaren.ts) kunnen worden opgenomen: speelEcht(clip),
+ * en praat(aan, lus) zet hem recht naar de camera kijkend aan het praten
+ * (lus: de praat-bewegingen lopen door).
  */
 
 import { useEffect, useRef } from "react";
@@ -70,6 +75,13 @@ export function Opname() {
       model.root.rotation.y = getal("hoek", -Math.PI / 9);
       scene.add(model.root);
       const besturing = new Z.ZappieController(model, { reducedMotion: false });
+      const E = await import("@/lib/zappie3d/echte-gebaren");
+      besturing.echt = new E.EchteGebaren(
+        T,
+        await E.laadEchteGebaren(),
+        model.parts as unknown as Record<string, import("three").Object3D>,
+        model.rest as unknown as Record<string, { q: import("three").Quaternion }>,
+      );
       /* Het scherm: de voorkant van zijn kastje, in de eigen maat van het scherm. */
       scherm.geometry.computeBoundingBox();
       const kast = scherm.geometry.boundingBox!;
@@ -88,12 +100,31 @@ export function Opname() {
         speel(actie: string) {
           besturing.play(actie);
         },
-        stap(dt: number, opties: { spraak?: number | null; kijk?: { x: number; y: number } | null } = {}) {
+        speelEcht(clip: string) {
+          return besturing.speelEcht(clip);
+        },
+        piek(clip: string) {
+          return besturing.echt?.piek(clip) ?? 0;
+        },
+        duur(clip: string) {
+          return besturing.echt?.duur(clip) ?? 0;
+        },
+        stopEcht() {
+          besturing.echt?.stop();
+        },
+        praat(aan: boolean, lus = true) {
+          if (!besturing.levendig) return;
+          besturing.levendig.praat = aan;
+          /* Recht naar de camera: het hoofd draait de rest bij (zoals in Bliepo3DGedeeld). */
+          besturing.levendig.naarKind = -model.root.rotation.y / 1.22;
+          besturing.praatLus = lus;
+        },
+        stap(dt: number, opties: { spraak?: number | null; kijk?: { x: number; y: number } | null; lijn?: boolean } = {}) {
           if (opties.spraak !== undefined) besturing.setSpeechLevel(opties.spraak);
           if (opties.kijk !== undefined && besturing.levendig) besturing.levendig.kijk = opties.kijk;
           besturing.update(dt, {});
-          /* Het lijntje tekent de site er live overheen. */
-          golf.visible = false;
+          /* Het lijntje tekent de site er live overheen (behalve als erom gevraagd wordt, voor een voor/na-filmpje). */
+          golf.visible = !!opties.lijn;
           tekenNu();
           return {
             beeld: doek.toDataURL("image/png"),

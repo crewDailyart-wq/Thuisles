@@ -24,19 +24,46 @@
 import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { BliepoLijn, type Schermhoeken } from "@/components/avontuur/BliepoLijn";
 
-export type Filmhouding = "rust" | "praten" | "juichen" | "nadenken" | "zwaaien" | "troost";
+export type Filmhouding =
+  | "rust"
+  | "praten"
+  | "juichen"
+  | "nadenken"
+  | "zwaaien"
+  | "troost"
+  | "vraag"
+  | "wijzen"
+  | "latenzien"
+  | "tellen"
+  | "duim"
+  | "klappen"
+  | "knikken"
+  | "aanmoedigen";
 
-const MAP = "/assets/zappie/bliepo/film";
+/*
+  Echte bewegingen (24 oktober 2026, opdracht eigenaar): de filmpjes zijn
+  opnieuw opgenomen met de door mensen opgenomen gebaren
+  (lib/zappie3d/echte-gebaren.ts), recht naar de camera kijkend, in de map
+  film2. De oude filmpjes staan nog in de map film (niet weggehaald).
+  In schermen.json staat nu ook per gebaar wanneer het op zijn hoogste punt
+  is (piek), zodat dat moment op het woord kan vallen.
+*/
+const MAP = "/assets/zappie/bliepo/film2";
 const HERHAAL: Filmhouding[] = ["rust", "praten"];
 const geenAbonnement = () => () => {};
 
-type Sporen = { fps: number; b: number; h: number; clips: Record<Filmhouding, number[][]> };
+type Sporen = { fps: number; b: number; h: number; clips: Record<Filmhouding, number[][]>; piek?: Partial<Record<Filmhouding, number>> };
 let sporen: Promise<Sporen | null> | null = null;
 function haalSporen() {
   sporen ??= fetch(`${MAP}/schermen.json`)
     .then((a) => (a.ok ? (a.json() as Promise<Sporen>) : null))
     .catch(() => null);
   return sporen;
+}
+
+/** Wanneer elk gebaar-filmpje op zijn hoogste punt is (seconden na het begin). */
+export async function filmPieken(): Promise<Partial<Record<Filmhouding, number>>> {
+  return (await haalSporen())?.piek ?? {};
 }
 
 /** Safari en alles op iPhone/iPad (ook Chrome daar is WebKit) toont de doorzichtigheid van WebM niet. */
@@ -71,7 +98,8 @@ export function BliepoFilm({
   const [afgelopen, zetAfgelopen] = useState<string | null>(null);
   const keer = `${houding}:${beurt}`;
   const klaarMet = afgelopen === keer;
-  const nu: Filmhouding = rustig ? "rust" : klaarMet && houding !== "nadenken" ? daarna : houding;
+  /* Nadenken blijft staan als hij stil nadenkt; praat hij verder (een hint), dan weer praten (24 oktober 2026). */
+  const nu: Filmhouding = rustig ? "rust" : klaarMet && (houding !== "nadenken" || praat) ? daarna : houding;
 
   const vak = useRef<HTMLDivElement>(null);
   const film = useRef<HTMLVideoElement>(null);

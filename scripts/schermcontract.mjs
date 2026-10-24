@@ -440,6 +440,35 @@ export const SCHERMCONTRACT = [
     zichtbaar: ["Test praten", "Vraag", "Uitleg", "Hint", "Goed antwoord", "Aanmoediging"],
   },
   {
+    /*
+      Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
+      opgenomen gebaren (Mixamo), in Blender op Bliepo gezet; een knop per
+      beweging onder "Test praten". De namen staan in echte-gebaren.ts.
+    */
+    naam: "Echte bewegingen (voorbeeld)",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/TestPraten.tsx", "src/lib/zappie3d/echte-gebaren.ts"],
+    zichtbaar: [
+      "Echte bewegingen",
+      "Praten 1 (General Conversation)",
+      "Praten 2 (Having A Chat)",
+      "Vraag met twee handen",
+      "Vraag met één hand",
+      "Vraag stellen",
+      "Wijzen naar de opdracht",
+      "Laten zien",
+      "Tellen op de vingers",
+      "Nadenken (hint)",
+      "Duim omhoog",
+      "Klappen",
+      "Ja knikken",
+      "Bedachtzaam knikken (aanmoedigen)",
+      "Geruststellen (geeft niet)",
+      "Zwaaien",
+      "Zwaaien (groot)",
+    ],
+  },
+  {
     /* Voorbeeld "Tekst boven Bliepo" (23 oktober 2026): tekst vrij boven Bliepo, oplichten per woord. */
     naam: "Tekst boven Bliepo (voorbeeld)",
     pad: "/voorbeeld-bliepo",

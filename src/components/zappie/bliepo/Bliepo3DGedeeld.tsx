@@ -22,12 +22,13 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { BliepoFilm, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
+import { BliepoFilm, filmPieken, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
 import { bliepoGeluidKlinkt, bliepoStemNiveau } from "@/lib/bliepo-geluid";
 import { abonneerPraten, praatVos, zeg } from "@/lib/stem";
 import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
-import { huidigeVoorlees } from "@/lib/voorlezen";
+import { abonneerVoorlees, huidigeVoorlees } from "@/lib/voorlezen";
+import { gebarenBijZin, soortVanGebaar } from "@/lib/bliepo-gebaren";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
@@ -93,18 +94,101 @@ export function Bliepo3DGedeeld(instellingen: Instellingen) {
   zijn scherm beweegt live mee. BliepoFilmpje (het zweef-filmpje) staat er nog.
 */
 const geenPraat = () => false;
+/** Welk filmpje hoort bij welke echte beweging (lib/zappie3d/echte-gebaren.ts). */
+const FILM_VAN_CLIP: Record<string, Filmhouding> = {
+  praten1: "praten",
+  praten2: "praten",
+  vraag1: "vraag",
+  vraag2: "vraag",
+  vraag3: "vraag",
+  wijzen1: "wijzen",
+  wijzen2: "latenzien",
+  tellen: "tellen",
+  nadenken: "nadenken",
+  duim: "duim",
+  klappen: "klappen",
+  knikken: "knikken",
+  knikken2: "aanmoedigen",
+  geruststellen: "troost",
+  zwaaien: "zwaaien",
+  zwaaien2: "zwaaien",
+};
 function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null, geenTiktekst = false }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
   const [praat, zetPraat] = useState(false);
   const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, geenPraat);
   /* Het laatste gebaar (of de begroeting) speelt één keer; daarna rust, of praten zolang zijn stem klinkt. */
-  /* De gebaren bij het praten (23 oktober 2026) op het filmpje dat er het meest op lijkt; vraag en uitleg: praten. */
-  const kaart: Record<string, Filmhouding> = { greet: "zwaaien", wave: "zwaaien", think: "nadenken", correct: "juichen", celebrate: "juichen", incorrect: "troost", idea: "nadenken", thumbsUp: "juichen", clap: "juichen", encourage: "troost", fist: "troost" };
-  const gebaarHouding = gebaar?.n ? kaart[gebaar.naam] : undefined;
-  /* Na juichen of troosten weer rust; nadenken blijft (BliepoFilm). */
+  /*
+    Echte bewegingen (24 oktober 2026, opdracht eigenaar): net als de
+    3D-Bliepo kiest hij per zin de gebaren die bij de woorden horen
+    (lib/bliepo-gebaren.ts) en start hij het filmpje zo dat het hoogste punt
+    op dat woord valt. Een gebaar van buitenaf (opdrachten, lessen) telt als
+    soort zin; klinkt er na 2,5 tellen geen stem, dan het passende filmpje
+    meteen. De oude koppeling (kaart) blijft voor gebaren zonder stem.
+  */
+  const kaart: Record<string, Filmhouding> = {
+    greet: "zwaaien",
+    wave: "zwaaien",
+    think: "nadenken",
+    correct: "juichen",
+    celebrate: "juichen",
+    incorrect: "troost",
+    idea: "nadenken",
+    thumbsUp: "duim",
+    clap: "klappen",
+    encourage: "aanmoedigen",
+    fist: "aanmoedigen",
+    ask: "vraag",
+    pointTask: "wijzen",
+    explain: "latenzien",
+  };
+  const [filmGebaar, zetFilmGebaar] = useState<{ houding: Filmhouding; n: string } | null>(null);
+  const gebaarRef = useRef(gebaar);
+  const wachtOpStem = useRef(0);
+  useEffect(() => {
+    gebaarRef.current = gebaar;
+    if (!gebaar?.n) return;
+    const echt = gebaar.naam.startsWith("echt:") ? FILM_VAN_CLIP[gebaar.naam.slice(5)] : undefined;
+    const houding = echt ?? kaart[gebaar.naam];
+    if (!houding) return;
+    /* Zonder stem (of een losse echte beweging) meteen, anders als vangnet na 2,5 tellen. */
+    window.clearTimeout(wachtOpStem.current);
+    wachtOpStem.current = window.setTimeout(() => zetFilmGebaar({ houding, n: `g:${gebaar.n}` }), !gebaar.opStem || echt ? 0 : 2500);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen bij een nieuw gebaar
+  }, [gebaar?.n]);
+  useEffect(() => {
+    let laatste = huidigeVoorlees()?.id ?? 0;
+    let klokken: number[] = [];
+    const opZin = () => {
+      const z = huidigeVoorlees();
+      if (!z || z.id === laatste) return;
+      laatste = z.id;
+      window.clearTimeout(wachtOpStem.current);
+      klokken.forEach((k) => window.clearTimeout(k));
+      klokken = [];
+      const plan = gebarenBijZin(z.zin, soortVanGebaar(gebaarRef.current?.naam));
+      void filmPieken().then((pieken) => {
+        if (laatste !== z.id) return;
+        for (const m of plan) {
+          const houding = FILM_VAN_CLIP[m.clip];
+          if (!houding) continue;
+          const op = z.start + ((z.tijden[m.woord]?.begin ?? 0) - 0.1 - (pieken[houding] ?? 0.4)) * 1000;
+          klokken.push(window.setTimeout(() => zetFilmGebaar({ houding, n: `${z.id}:${m.woord}` }), Math.max(0, op - performance.now())));
+        }
+      });
+    };
+    const af = abonneerVoorlees(opZin);
+    return () => {
+      af();
+      klokken.forEach((k) => window.clearTimeout(k));
+      window.clearTimeout(wachtOpStem.current);
+    };
+  }, []);
+  const gebaarHouding = filmGebaar?.houding;
+  /* Na een gebaar weer rust, of praten zolang zijn stem klinkt; nadenken blijft (BliepoFilm). */
   const daarna: Filmhouding = stemKlinkt ? "praten" : "rust";
   const houding: Filmhouding = gebaarHouding ?? (zwaai > 0 ? "zwaaien" : daarna);
-  const beurt = `${zwaai}:${gebaar?.n ?? 0}`;
+  const beurt = `${zwaai}:${filmGebaar?.n ?? 0}`;
   const ballonRef = useRef(ballon);
   useEffect(() => {
     ballonRef.current = ballon;
@@ -419,7 +503,53 @@ function Bliepo3DEcht({
         }
         wachtend = null;
         wachtTot = 0;
+        /* "echt:<clip>": een echte beweging (testknoppen op /voorbeeld-bliepo). */
+        if (actie.startsWith("echt:")) {
+          besturing.speelEcht(actie.slice(5));
+          return;
+        }
         speel(actie);
+      };
+
+      /*
+        Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
+        opgenomen gebaren (Mixamo), in Blender op Bliepo gezet. Ze worden pas
+        geladen als hij er staat (klein bestand, apart van het model). Lukt
+        dat niet, dan blijven de eigen gebaren uit zappie.js.
+
+        Per zin kiest lib/bliepo-gebaren.ts welke gebaren bij de woorden
+        horen; elk gebaar wordt zo gestart dat zijn hoogste punt op dat woord
+        valt (de stem meldt wanneer elk woord klinkt). Een gewone uitleg
+        krijgt geen los gebaar: dan lopen de praat-bewegingen door.
+      */
+      void import("@/lib/zappie3d/echte-gebaren")
+        .then(async (E) => {
+          const clips = await E.laadEchteGebaren();
+          if (opgeruimd) return;
+          besturing.echt = new E.EchteGebaren(
+            T,
+            clips,
+            model.parts as unknown as Record<string, import("three").Object3D>,
+            model.rest as unknown as Record<string, { q: import("three").Quaternion }>,
+          );
+        })
+        .catch((fout) => console.warn("[zappie] echte bewegingen niet geladen, de eigen gebaren blijven:", fout));
+      let laatsteZin = huidigeVoorlees()?.id ?? 0;
+      let gepland: { clip: string; op: number; woord: string; woordOp: number; woordTot: number }[] = [];
+      const planZin = (zin: string, soort: ReturnType<typeof soortVanGebaar>, start: number, tijden: { begin: number; eind: number }[]) => {
+        const echt = besturing.echt;
+        if (!echt) return false;
+        const plan = gebarenBijZin(zin, soort).filter((m) => echt.heeft(m.clip));
+        const woorden = zin.trim().split(/\s+/);
+        gepland = plan.map((m) => ({
+          clip: m.clip,
+          /* Zoals bij mensen: het hoogste punt van het gebaar net voor het woord (0,1 tel). */
+          op: start + ((tijden[m.woord]?.begin ?? 0) - 0.1 - echt.piek(m.clip)) * 1000,
+          woord: woorden[m.woord] ?? "",
+          woordOp: start + (tijden[m.woord]?.begin ?? 0) * 1000,
+          woordTot: start + (tijden[m.woord]?.eind ?? 0) * 1000,
+        }));
+        return true;
       };
 
       let frame = 0;
@@ -453,11 +583,36 @@ function Bliepo3DEcht({
           alleen als hij stil is.
         */
         const niveau = stemNiveau();
+        const zin = huidigeVoorlees();
+        if (zin && zin.id !== laatsteZin) {
+          laatsteZin = zin.id;
+          /* Een nieuwe zin klinkt: de gebaren op de woorden (en het gebaar van buitenaf telt als soort zin). */
+          if (!rustigRef.current && planZin(zin.zin, soortVanGebaar(wachtend?.actie), zin.start, zin.tijden)) wachtend = null;
+        }
         if (wachtend && ((huidigeVoorlees()?.id ?? 0) !== wachtend.zin || nu > wachtend.tot)) {
           const actie = wachtend.actie;
           wachtend = null;
           wachtTot = 0;
-          speel(actie);
+          /* Geen stem (uit of niet gelukt): het passende echte gebaar meteen, anders het eigen gebaar. */
+          const soort = soortVanGebaar(actie);
+          const eerste = besturing.echt && soort ? gebarenBijZin("", soort)[0] : undefined;
+          if (!eerste || !besturing.speelEcht(eerste.clip)) speel(actie);
+        }
+        while (gepland.length && gepland[0].op <= nu) {
+          const g = gepland.shift()!;
+          /*
+            Te laat (de zin begon al): verder in het gebaar beginnen, zodat het
+            hoogste punt toch op het woord valt, met minstens 0,2 tel aanloop
+            (anders springt de arm). Bij het eerste woord van een zin valt het
+            hoogste punt dan nog binnen dat woord.
+          */
+          const vanaf = Math.max(0, Math.min((nu - g.op) / 1000, (besturing.echt?.piek(g.clip) ?? 0) - 0.2));
+          if (!rustigRef.current) besturing.speelEcht(g.clip, vanaf);
+          /* Alleen op de ontwikkelcomputer: bijhouden voor het nameten (welk gebaar, welk woord, wanneer). */
+          if (process.env.NODE_ENV === "development") {
+            const w = window as unknown as { __gebarenlog?: unknown[] };
+            (w.__gebarenlog ??= []).push({ clip: g.clip, woord: g.woord, start: Math.round(nu), op: Math.round(g.op), vanaf: +vanaf.toFixed(3), piek: +(besturing.echt?.piek(g.clip) ?? 0).toFixed(3), piekOp: Math.round(nu + ((besturing.echt?.piek(g.clip) ?? 0) - vanaf) * 1000), woordOp: Math.round(g.woordOp), woordTot: Math.round(g.woordTot) });
+          }
         }
         if (niveau !== null || praatVos()) praatTot = nu + 800;
         const praatNu = nu < praatTot && !rustigRef.current;

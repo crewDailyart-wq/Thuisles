@@ -14,6 +14,7 @@ import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { BliepoTekst, inWoorden } from "@/components/oefenen/BliepoTekst";
 import { kiesGebaar, type Zinsoort } from "@/lib/bliepo-gebaren";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { ECHTE_GEBAREN } from "@/lib/zappie3d/echte-gebaren";
 import "./tekst-boven-bliepo.css";
 import "@/components/oefenen/opdracht-nieuw.css";
 
@@ -28,6 +29,8 @@ const ZINNEN: { soort: Zinsoort; label: string; tekst: string }[] = [
 export function TestPraten() {
   const [nu, zetNu] = useState(-1);
   const [ronde, zetRonde] = useState(0);
+  /* Een losse echte beweging (knoppen hieronder, 24 oktober 2026). */
+  const [los, zetLos] = useState<{ naam: string; n: number } | null>(null);
   const stop = useRef<(() => void) | null>(null);
 
   useEffect(
@@ -52,7 +55,11 @@ export function TestPraten() {
   }
 
   const zin = nu >= 0 ? ZINNEN[nu] : null;
-  const gebaar = zin ? { naam: kiesGebaar(zin.soort, `test:${ronde}`, nu), n: `${ronde}:${nu}`, opStem: true } : null;
+  const gebaar = zin
+    ? { naam: kiesGebaar(zin.soort, `test:${ronde}`, nu), n: `${ronde}:${nu}`, opStem: true }
+    : los
+      ? { naam: `echt:${los.naam}`, n: `los:${los.n}` }
+      : null;
 
   return (
     <section className="mx-auto mt-10 max-w-5xl rounded-3xl border border-white/20 bg-white/5 p-5" aria-labelledby="kop-test-praten">
@@ -91,6 +98,33 @@ export function TestPraten() {
             </li>
           ))}
         </ol>
+      </div>
+
+      {/*
+        Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
+        opgenomen (Mixamo) en in Blender op Bliepo gezet. Een knop per beweging.
+        Tijdens "Test praten" kiest Bliepo ze zelf, op de woorden.
+      */}
+      <h3 className="mt-5 text-base font-bold">Echte bewegingen</h3>
+      <p className="mt-1 text-sm text-white/75">
+        Door mensen opgenomen en op Bliepo gezet. Tijdens het praten kiest hij ze zelf, op het woord waar ze bij horen.
+      </p>
+      <div className="mt-2 flex flex-wrap gap-2">
+        {Object.entries(ECHTE_GEBAREN).map(([naam, label]) => (
+          <button
+            key={naam}
+            type="button"
+            onClick={() => {
+              stop.current?.();
+              stopPraten();
+              zetNu(-1);
+              zetLos((l) => ({ naam, n: (l?.n ?? 0) + 1 }));
+            }}
+            className="min-h-11 rounded-full bg-white/10 px-4 text-sm font-bold hover:bg-white/20"
+          >
+            {label}
+          </button>
+        ))}
       </div>
     </section>
   );
