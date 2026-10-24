@@ -23,7 +23,7 @@
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { BliepoFilm, filmPieken, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
-import { bliepoGeluidKlinkt, bliepoStemNiveau } from "@/lib/bliepo-geluid";
+import { bliepoGeluidKlinkt, bliepoStemNiveau, luisterNiveau } from "@/lib/bliepo-geluid";
 import { abonneerPraten, praatVos, zeg } from "@/lib/stem";
 import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
@@ -616,7 +616,11 @@ function Bliepo3DEcht({
         }
         if (niveau !== null || praatVos()) praatTot = nu + 800;
         const praatNu = nu < praatTot && !rustigRef.current;
-        const hoek = praatNu ? RUSTHOEK * 0.45 : besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
+        /* Luistert hij naar het kind (praatknop, 24 oktober 2026)? Dan draait hij zich ook naar het kind. */
+        const luister = rustigRef.current ? null : luisterNiveau();
+        besturing.luisterNiveau = luister;
+        if (besturing.levendig) besturing.levendig.luistert = luister !== null;
+        const hoek = praatNu || luister !== null ? RUSTHOEK * 0.45 : besturing.action === "talk" && instelling.current.volgMuis ? -Math.PI / 14 : doelhoek;
         model.root.rotation.y += (hoek - model.root.rotation.y) * Math.min(1, dt * 4);
         if (besturing.levendig) {
           besturing.levendig.praat = praatNu;
@@ -631,7 +635,7 @@ function Bliepo3DEcht({
           per seconde (hij ademt alleen rustig), tijdens een gebaar 30 keer;
           niet meer op de volle snelheid van het scherm (tot 120 keer).
         */
-        const pauze = besturing.action !== "idle" || bliepoGeluidKlinkt() ? 1000 / 30 : rustigRef.current ? 250 : 1000 / 15;
+        const pauze = besturing.action !== "idle" || bliepoGeluidKlinkt() || luister !== null ? 1000 / 30 : rustigRef.current ? 250 : 1000 / 15;
         if (nu - laatsteTekening >= pauze) {
           renderer.render(scene, camera);
           laatsteTekening = nu;

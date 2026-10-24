@@ -141,7 +141,7 @@ export function TekstBovenBliepo() {
 
         <div className="tbb-bliepo">
           <div className="tbb-tekst" aria-live="polite">
-            <p>
+            <p className={oplichten && praat ? "tbb-meelezen" : undefined}>
               {delen[stukIndex].map((w, i) => {
                 const index = eersteVanStuk + i;
                 const gezegd = oplichten && woordNu >= index && praat;

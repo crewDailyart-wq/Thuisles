@@ -447,8 +447,34 @@ export const SCHERMCONTRACT = [
     */
     naam: "Gesprek met Bliepo (voorbeeld)",
     pad: "/voorbeeld-bliepo",
-    bron: ["src/app/voorbeeld-bliepo/GesprekMetBliepo.tsx"],
-    zichtbaar: ["Gesprek met Bliepo", "Start het gesprek", "Woorden oplichten", "Houd vast om te praten"],
+    /*
+      24 oktober 2026, op verzoek van de eigenaar: de oranje balk "Houd vast om
+      te praten" is vervangen door een ronde microfoonknop naast Bliepo (één
+      keer tikken); die staat in het gedeelde onderdeel components/gesprek.
+    */
+    bron: ["src/app/voorbeeld-bliepo/GesprekMetBliepo.tsx", "src/components/gesprek/Gesprek.tsx"],
+    zichtbaar: ["Gesprek met Bliepo", "Start het gesprek", "Woorden oplichten", "Tik om iets te zeggen"],
+  },
+  {
+    /* Stijlkiezer (24 oktober 2026, opdracht eigenaar): lettertype, kleuren en knopvorm van de nieuwe onderdelen. */
+    naam: "Beheer: Stijl",
+    pad: "/admin/stijl",
+    bron: ["src/app/admin/stijl/page.tsx", "src/components/beheer/Stijlkiezer.tsx", "src/lib/stijl.ts"],
+    zichtbaar: [
+      "Lettertype",
+      "Knopvorm",
+      "Rond",
+      "Zacht afgerond",
+      "Hoekig",
+      "Tekst van Bliepo",
+      "Nog niet gezegd",
+      "Woord van nu",
+      "Antwoordknop",
+      "Tekst op de knop",
+      "Microfoontje",
+      "Bewaren",
+      "Terug naar de standaard",
+    ],
   },
   {
     /*

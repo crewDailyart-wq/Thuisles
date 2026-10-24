@@ -1,3 +1,4 @@
+import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
@@ -22,6 +23,7 @@ export default async function Pagina({
   if (!zoekDraaiboek(les)) notFound();
   return (
     <div className={letter.variable}>
+      <StijlVariabelen />
       <LesVoorbeeld id={les} naam={naam ?? ""} />
     </div>
   );

@@ -8,7 +8,9 @@
  *
  * - Vrij boven Bliepo, zonder ballon of kader: groot, dik en wit (ronde
  *   letters), met een zachte schaduw (opdracht-nieuw.css, .bliepo-tekst).
- * - Elk woord licht op op het moment dat Bliepo het zegt (lib/voorlezen.ts:
+ * - Meelezen (sinds 24 oktober 2026): nog niet gezegd gedimd, gezegd wit,
+ *   het woord van nu in de warme accentkleur (eerst lichtten de woorden geel
+ *   op). Elk woord wordt wit op het moment dat Bliepo het zegt (lib/voorlezen.ts:
  *   de stem meldt wanneer de zin begint, de tijden per woord worden geschat
  *   uit het geluid zelf). Staat standaard aan; uit bij Profiel ("Woorden
  *   oplichten bij voorlezen").
@@ -61,14 +63,39 @@ export function BliepoTekst({
 }) {
   const oplichten = useOplichten();
   const nu = useWoordNu(oplichten ? gesproken : null);
+  /*
+    Meelezen (24 oktober 2026, akkoord eigenaar; vervangt de gele oplichting):
+    wat Bliepo nog niet gezegd heeft is gedimd, een woord wordt wit zodra hij
+    het zegt, en het woord van nu krijgt de warme accentkleur. Een nieuwe zin
+    staat al gedimd klaar tot de stem begint (geen witte flits ervoor); begint
+    er binnen 2,5 tel geen stem (stem uit), dan gewoon helemaal wit.
+  */
+  const [wacht, zetWacht] = useState(true);
+  const [gelezen, zetGelezen] = useState<string | null>(null);
+  useEffect(() => {
+    const klok = window.setTimeout(() => zetWacht(false), 2500);
+    return () => window.clearTimeout(klok);
+  }, [gesproken]);
+  const leest = nu >= 0;
+  useEffect(() => {
+    if (leest && gesproken) {
+      const klok = window.setTimeout(() => zetGelezen(gesproken), 0);
+      return () => window.clearTimeout(klok);
+    }
+  }, [leest, gesproken]);
+  const klaarMetZin = gelezen === gesproken;
+  const voorStem = oplichten && Boolean(gesproken) && wacht && !leest && !klaarMetZin;
   return (
-    <p className={`bliepo-tekst ${className}`}>
-      {woorden.map((w, i) => (
-        <span key={i} className={`bliepo-tekst-woord${nu >= i ? " bliepo-tekst-gezegd" : ""}${nu === i ? " bliepo-tekst-nu" : ""}`}>
-          {w}
-          {i < woorden.length - 1 ? " " : ""}
-        </span>
-      ))}
+    <p className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}>
+      {woorden.map((w, i) => {
+        const soort = leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
+        return (
+          <span key={i} className={`bliepo-tekst-woord${soort}`}>
+            {w}
+            {i < woorden.length - 1 ? " " : ""}
+          </span>
+        );
+      })}
     </p>
   );
 }

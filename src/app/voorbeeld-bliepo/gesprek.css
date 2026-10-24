@@ -71,205 +71,23 @@
   background: #7fd8ff;
 }
 
-/* De kolom rechts: het gesprek, de antwoordknoppen, Bliepo en de microfoon. */
+/* De kolom rechts: het gedeelde gesprek (components/gesprek): tekst, antwoordknoppen, Bliepo met de praatknop. */
 .gmb-kolom {
   position: absolute;
   right: 2.5%;
   top: 5%;
   bottom: 3%;
-  width: 36%;
-  display: flex;
-  flex-direction: column;
-  align-items: stretch;
-}
-.gmb-gesprek {
-  flex: 1 1 auto;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  gap: 0.55em;
-  overflow: hidden;
-  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
-  font-size: clamp(17px, 1.85cqw, 26px);
-  /* Bovenaan zacht vervagen, zodat een wegschuivende zin niet hard afgesneden wordt. */
-  mask-image: linear-gradient(to bottom, transparent 0, #000 0.5em);
-}
-.gmb-alinea {
-  margin: 0;
-  font-weight: 800;
-  line-height: 1.25;
-  color: #fff;
-  text-align: left;
-  text-shadow:
-    0 2px 0 rgba(0, 25, 90, 0.55),
-    0 4px 14px rgba(0, 20, 80, 0.6);
-  animation: gmb-erin 0.35s ease-out both;
+  width: 38%;
 }
 .gmb-uitleg {
-  color: rgba(255, 255, 255, 0.7);
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
   font-size: 0.8em;
-}
-/* Meelezen: nog niet gezegd = gedimd, gezegd = wit, het woord van nu = warme accentkleur. */
-.gmb-meelezen .gmb-woord {
-  color: var(--gmb-gedimd);
-  text-shadow: none;
-  transition: color 0.14s ease, text-shadow 0.14s ease;
-}
-.gmb-meelezen .gmb-gezegd {
-  color: #fff;
-  text-shadow:
-    0 2px 0 rgba(0, 25, 90, 0.55),
-    0 4px 14px rgba(0, 20, 80, 0.6);
-}
-.gmb-meelezen .gmb-nu {
-  color: var(--gmb-accent);
-  text-shadow:
-    0 0 14px rgba(255, 170, 60, 0.55),
-    0 2px 0 rgba(0, 25, 90, 0.55);
-}
-/* Wat het kind zei: kleiner, rechts, in een zacht vlakje. */
-.gmb-kind {
-  align-self: flex-end;
-  max-width: 85%;
-  margin: 0;
-  padding: 0.35em 0.85em;
-  border-radius: 999px;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1.5px solid rgba(255, 255, 255, 0.45);
-  font-size: 0.72em;
-  font-weight: 700;
-  color: #fff;
-  animation: gmb-erin 0.3s ease-out both;
-}
-/* De oudste alinea schuift rustig weg. */
-.gmb-weg {
-  animation: gmb-weg 0.6s ease-in forwards;
-}
-@keyframes gmb-erin {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-}
-@keyframes gmb-weg {
-  to {
-    opacity: 0;
-    transform: translateY(-14px);
-    margin-top: -1.3em;
-  }
-}
-
-/* De antwoordknoppen: groot en rond, onder de tekst. */
-.gmb-knoppen {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin-top: 12px;
-  min-height: 0;
-}
-.gmb-knop {
-  min-height: 52px;
-  padding: 10px 22px;
-  border: 0;
-  border-radius: 999px;
-  background: #fff;
-  color: #0d2a6b;
-  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
-  font-size: clamp(16px, 1.55cqw, 21px);
   font-weight: 800;
-  box-shadow:
-    0 4px 0 rgba(4, 30, 100, 0.45),
-    0 8px 18px rgba(0, 20, 80, 0.3);
-  cursor: pointer;
-  animation: gmb-knop-erin 0.35s ease-out both;
-  transition: transform 0.12s ease, background 0.12s ease;
-}
-.gmb-knop:hover {
-  background: #fff4dc;
-}
-.gmb-knop:active {
-  transform: translateY(3px);
-  box-shadow: 0 1px 0 rgba(4, 30, 100, 0.45);
-}
-.gmb-knop:focus-visible {
-  outline: 4px solid var(--gmb-accent);
-  outline-offset: 3px;
-}
-@keyframes gmb-knop-erin {
-  from {
-    opacity: 0;
-    transform: translateY(8px) scale(0.96);
-  }
+  color: rgba(255, 255, 255, 0.7);
 }
 
-/* Bliepo, en onderaan de microfoon. */
-.gmb-robot {
-  position: relative;
-  flex: 0 0 auto;
-  align-self: center;
-  width: 17cqw;
-  height: 20.5cqw;
-  margin-top: 4px;
-}
-.gmb-robot .bt-prototype {
-  position: absolute;
-  inset: 0;
-}
-.gmb-praat {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  margin-top: 6px;
-}
-.gmb-praatknop {
-  display: inline-flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 52px;
-  padding: 10px 22px;
-  border: 0;
-  border-radius: 999px;
-  background: #ff8a1f;
-  color: #fff;
-  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
-  font-size: clamp(15px, 1.45cqw, 19px);
-  font-weight: 800;
-  box-shadow: 0 4px 0 rgba(120, 50, 0, 0.45);
-  cursor: pointer;
-  touch-action: none;
-  user-select: none;
-  -webkit-user-select: none;
-  -webkit-touch-callout: none;
-}
-.gmb-praatknop:disabled {
-  opacity: 0.55;
-  cursor: default;
-}
-.gmb-luistert {
-  background: #e5484d;
-  animation: gmb-puls 1s ease-in-out infinite;
-}
-@keyframes gmb-puls {
-  50% {
-    box-shadow: 0 0 0 10px rgba(229, 72, 77, 0.25);
-  }
-}
-.gmb-microfoon {
-  width: 24px;
-  height: 24px;
-}
-.gmb-melding {
-  margin: 0;
-  max-width: 22em;
-  text-align: center;
-  font-size: 14px;
-  font-weight: 700;
-  color: #fff;
-}
-
-/* Telefoon: het bord bovenaan, daaronder het gesprek, de knoppen, Bliepo en de microfoon. */
+/* Telefoon: het bord bovenaan, daaronder het gesprek, de knoppen, en Bliepo met de praatknop. */
 @container (max-width: 640px) {
   .gmb-scene {
     aspect-ratio: auto;
@@ -308,38 +126,16 @@
     bottom: auto;
     width: 100%;
     margin-top: 16px;
+    --gs-tekstmaat: 21px;
+    --gs-knopmaat: 18px;
+    --gs-robot-b: 150px;
+    --gs-robot-h: 182px;
   }
-  .gmb-gesprek {
-    font-size: 21px;
+  .gmb-kolom .gs-gesprek {
     min-height: 8.5em;
   }
-  .gmb-knoppen {
+  .gmb-kolom .gs-knoppen {
     flex-direction: column;
     align-items: stretch;
-  }
-  .gmb-knop {
-    font-size: 18px;
-  }
-  .gmb-robot {
-    width: 150px;
-    height: 182px;
-  }
-  .gmb-praatknop {
-    width: 100%;
-    justify-content: center;
-    font-size: 17px;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .gmb-alinea,
-  .gmb-kind,
-  .gmb-knop,
-  .gmb-weg,
-  .gmb-luistert {
-    animation: none;
-  }
-  .gmb-weg {
-    display: none;
   }
 }

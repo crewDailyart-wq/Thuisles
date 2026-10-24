@@ -14,6 +14,7 @@
 import type { Metadata } from "next";
 import { Geluidsvoorkeur } from "@/components/kind/Geluidsvoorkeur";
 import { Kindschil } from "@/components/kind/Kindschil";
+import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
 import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
 import { NIET_INDEXEREN } from "@/lib/seo";
@@ -50,6 +51,8 @@ export default async function KindLayout({
   return (
     <Kindschil kind={kind} sleutels={sleutels}>
       <Geluidsvoorkeur uitleg={geluid.uitleg} opgave={geluid.opgave} />
+      {/* De gekozen stijl van de nieuwe onderdelen (stijlkiezer, /admin/stijl). */}
+      <StijlVariabelen />
       {children}
     </Kindschil>
   );

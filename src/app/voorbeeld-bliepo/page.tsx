@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { VoorbeeldBliepo } from "./VoorbeeldBliepo";
 
 /*
@@ -11,6 +12,14 @@ export const metadata: Metadata = {
   robots: { index: false, follow: false },
 };
 
+/* De gekozen stijl (stijlkiezer, /admin/stijl) komt uit de database: niet vooraf klaarzetten. */
+export const dynamic = "force-dynamic";
+
 export default function Pagina() {
-  return <VoorbeeldBliepo />;
+  return (
+    <>
+      <StijlVariabelen />
+      <VoorbeeldBliepo />
+    </>
+  );
 }

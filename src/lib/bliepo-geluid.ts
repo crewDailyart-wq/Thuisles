@@ -202,3 +202,21 @@ export function bliepoStemNiveau(): number | null {
   omhulsel += (doel - omhulsel) * (1 - Math.exp(-Math.max(dt, 0.001) / tijd));
   return omhulsel;
 }
+
+/*
+  Luisteren (24 oktober 2026, gesprek met Bliepo): terwijl Bliepo naar het
+  kind luistert (de praatknop, components/gesprek), geeft de praatknop hier
+  door hoe hard het kind nu praat (0..1). Bliepo's scherm laat dan zachte
+  golfjes van die stem zien, en hij houdt zijn hoofd luisterend schuin.
+*/
+let luisterBron: (() => number) | null = null;
+
+/** Zet (of stop, met null) het luisteren naar het kind. */
+export function zetLuisteren(bron: (() => number) | null): void {
+  luisterBron = bron;
+}
+
+/** Hoe hard het kind nu praat (0..1) terwijl Bliepo luistert, of null als hij niet luistert. */
+export function luisterNiveau(): number | null {
+  return luisterBron ? Math.max(0, Math.min(1, luisterBron())) : null;
+}

@@ -5,6 +5,8 @@
  * kunnen worden.
  */
 
+import { PRAATKNOP_UITLEG } from "@/components/gesprek/teksten";
+
 export type Knop = { label: string; naar: string };
 /** Een stap in het gesprek: wat Bliepo zegt (een zin per alinea) en waarmee het kind kan antwoorden. */
 export type Stap = { zinnen: string[]; knoppen: Knop[]; gebaar?: string };
@@ -65,4 +67,4 @@ export const GESPREK: Record<string, Stap> = {
   },
 };
 /** Alle zinnen van het voorbeeld (om ze vooraf met Ruth te maken). */
-export const GESPREK_ZINNEN = [...new Set(Object.values(GESPREK).flatMap((s) => s.zinnen))];
+export const GESPREK_ZINNEN = [...new Set([...Object.values(GESPREK).flatMap((s) => s.zinnen), PRAATKNOP_UITLEG])];

@@ -1,0 +1,262 @@
+/*
+  Gesprek met Bliepo — gedeeld onderdeel (24 oktober 2026). Kleuren,
+  lettertype en knopvorm komen uit de stijlkiezer (/admin/stijl) als
+  variabelen --stijl-…; de waarden hieronder zijn de standaard (het
+  goedgekeurde voorbeeld).
+*/
+
+.gs-kolom {
+  --gs-letter: var(--stijl-lettertype, var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif);
+  --gs-tekst: var(--stijl-tekst, #fff);
+  --gs-gedimd: var(--stijl-gedimd, rgba(214, 224, 242, 0.42));
+  --gs-accent: var(--stijl-accent, #ffb547);
+  --gs-knop: var(--stijl-knop, #fff);
+  --gs-knoptekst: var(--stijl-knoptekst, #0d2a6b);
+  --gs-rond: var(--stijl-knopvorm, 999px);
+  --gs-microfoon: var(--stijl-microfoon, #1f63e0);
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  min-height: 0;
+  height: 100%;
+}
+.gs-gesprek {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.55em;
+  overflow: hidden;
+  font-family: var(--gs-letter);
+  font-size: var(--gs-tekstmaat, clamp(17px, 1.85cqw, 26px));
+  /* Bovenaan zacht vervagen, zodat een wegschuivende zin niet hard afgesneden wordt. */
+  mask-image: linear-gradient(to bottom, transparent 0, #000 0.5em);
+}
+.gs-alinea {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--gs-tekst);
+  text-align: left;
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.6);
+  animation: gs-erin 0.35s ease-out both;
+}
+/* Meelezen: nog niet gezegd = gedimd, gezegd = wit, het woord van nu = warme accentkleur. */
+.gs-meelezen .gs-woord {
+  color: var(--gs-gedimd);
+  text-shadow: none;
+  transition: color 0.14s ease, text-shadow 0.14s ease;
+}
+.gs-meelezen .gs-gezegd {
+  color: var(--gs-tekst);
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.6);
+}
+.gs-meelezen .gs-nu {
+  color: var(--gs-accent);
+  text-shadow:
+    0 0 14px color-mix(in srgb, var(--gs-accent) 55%, transparent),
+    0 2px 0 rgba(0, 25, 90, 0.55);
+}
+/* Wat het kind zei: kleiner, rechts, in een zacht vlakje. */
+.gs-kind {
+  align-self: flex-end;
+  max-width: 85%;
+  margin: 0;
+  padding: 0.35em 0.85em;
+  border-radius: var(--gs-rond);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  font-family: var(--gs-letter);
+  font-size: 0.72em;
+  font-weight: 700;
+  color: #fff;
+  animation: gs-erin 0.3s ease-out both;
+}
+.gs-weg {
+  animation: gs-weg 0.6s ease-in forwards;
+}
+@keyframes gs-erin {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes gs-weg {
+  to {
+    opacity: 0;
+    transform: translateY(-14px);
+    margin-top: -1.3em;
+  }
+}
+
+/* De antwoordknoppen: groot en rond, onder de tekst. */
+.gs-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+}
+.gs-knop {
+  min-height: 52px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: var(--gs-rond);
+  background: var(--gs-knop);
+  color: var(--gs-knoptekst);
+  font-family: var(--gs-letter);
+  font-size: var(--gs-knopmaat, clamp(16px, 1.55cqw, 21px));
+  font-weight: 800;
+  box-shadow:
+    0 4px 0 rgba(4, 30, 100, 0.45),
+    0 8px 18px rgba(0, 20, 80, 0.3);
+  cursor: pointer;
+  animation: gs-knop-erin 0.35s ease-out both;
+  transition: transform 0.12s ease, filter 0.12s ease;
+}
+.gs-knop:hover {
+  filter: brightness(0.96);
+}
+.gs-knop:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(4, 30, 100, 0.45);
+}
+.gs-knop:focus-visible {
+  outline: 4px solid var(--gs-accent);
+  outline-offset: 3px;
+}
+@keyframes gs-knop-erin {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+/* Bliepo met de praatknop direct ernaast (rechts, laag). */
+.gs-onder {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.gs-robot {
+  position: relative;
+  width: var(--gs-robot-b, 17cqw);
+  height: var(--gs-robot-h, 20.5cqw);
+}
+.gs-robot .bt-prototype {
+  position: absolute;
+  inset: 0;
+}
+.gs-praat {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 8%;
+}
+/*
+  De praatknop: rond, wit met een blauw microfoontje, rustiger dan de knop
+  Controleer (die houdt de warme accentkleur). Pulseert zacht mee met de stem
+  van het kind (--gs-luid, 0..1).
+*/
+.gs-praatknop {
+  --gs-luid: 0;
+  display: grid;
+  place-items: center;
+  width: 70px;
+  height: 70px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  color: var(--gs-microfoon);
+  box-shadow:
+    0 4px 0 rgba(4, 30, 100, 0.35),
+    0 8px 20px rgba(0, 20, 80, 0.3);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.2s ease;
+}
+.gs-praatknop:hover {
+  transform: translateY(-1px);
+}
+.gs-praatknop:focus-visible {
+  outline: 4px solid var(--gs-accent);
+  outline-offset: 3px;
+}
+.gs-praatknop:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.gs-microfoon {
+  width: 32px;
+  height: 32px;
+}
+.gs-luistert {
+  transform: scale(calc(1 + var(--gs-luid) * 0.1));
+  box-shadow:
+    0 0 0 calc(5px + var(--gs-luid) * 14px) color-mix(in srgb, var(--gs-microfoon) 22%, transparent),
+    0 8px 20px rgba(0, 20, 80, 0.3);
+  animation: gs-adem 1.6s ease-in-out infinite;
+  transition: transform 0.08s linear, box-shadow 0.08s linear;
+}
+@keyframes gs-adem {
+  50% {
+    outline: 3px solid color-mix(in srgb, var(--gs-microfoon) 35%, transparent);
+    outline-offset: 6px;
+  }
+}
+.gs-denkt {
+  animation: gs-denk 1s ease-in-out infinite;
+}
+@keyframes gs-denk {
+  50% {
+    opacity: 0.75;
+  }
+}
+/* Bliepo wijst de knop aan (de eerste keer): zacht oplichten. */
+.gs-aangewezen {
+  animation: gs-licht 0.9s ease-in-out infinite;
+}
+@keyframes gs-licht {
+  50% {
+    box-shadow:
+      0 0 0 10px color-mix(in srgb, var(--gs-accent) 35%, transparent),
+      0 8px 20px rgba(0, 20, 80, 0.3);
+  }
+}
+.gs-melding {
+  position: absolute;
+  bottom: calc(100% + 8px);
+  right: 0;
+  width: 15em;
+  margin: 0;
+  padding: 6px 10px;
+  border-radius: 12px;
+  background: rgba(8, 30, 90, 0.75);
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-alinea,
+  .gs-kind,
+  .gs-knop,
+  .gs-weg,
+  .gs-luistert,
+  .gs-denkt,
+  .gs-aangewezen {
+    animation: none;
+  }
+  .gs-weg {
+    display: none;
+  }
+}

@@ -19,7 +19,9 @@ Object.assign(ACTIONS,{cap:'Petje rechtzetten'});
 Object.assign(ACTIONS,{ask:'Vraag stellen',explain:'Laten zien',pointTask:'Wijzen naar de opdracht',idea:'Idee',thumbsUp:'Duim omhoog',clap:'Klappen',fist:'Vuistje',encourage:'Aanmoedigen'});
 /* Echte, door mensen opgenomen bewegingen (24 oktober 2026; lib/zappie3d/echte-gebaren.ts). De duur hangt af van de clip. */
 Object.assign(ACTIONS,{echt:'Echte beweging'});
-export const DURATIONS={echt:3,ask:2.6,explain:3,pointTask:2.6,idea:2.6,thumbsUp:2.4,clap:2.4,fist:2.2,encourage:2.6,cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
+/* De praatknop aanwijzen (24 oktober 2026): de knop staat rechts naast hem, laag. */
+Object.assign(ACTIONS,{wijsKnop:'Wijzen naar de praatknop'});
+export const DURATIONS={wijsKnop:2.8,echt:3,ask:2.6,explain:3,pointTask:2.6,idea:2.6,thumbsUp:2.4,clap:2.4,fist:2.2,encourage:2.6,cap:2.4,wave:3,point:3,talk:4,think:4,celebrate:3,correct:3,incorrect:2.5,wobble:3,nod:2,greet:3,listen:4,surprise:2,bow:2.5,turn:4,drive:3,reverse:3,idle:4,sleep:4,stop:1.6,checkTail:2.8};
 export const JOINTS=['Rig','Torso','Head','ArmLeft','ArmRight','ElbowLeft','ElbowRight','HandLeft','HandRight','AntennaLeft','AntennaRight','TailRoot',...Array.from({length:6},(_,i)=>'Tail'+(i+1)),...['Left','Right'].flatMap(s=>Array.from({length:4},(_,i)=>'Finger'+s+i)), 'SpeechWave'];
 
 export async function loadZappie(url='/assets/zappie/3d/zappie.glb') {
@@ -122,6 +124,8 @@ export function samplePose(action,t,{speed=0,turnRate=0,acceleration=0,speechLev
   if(action==='explain'){const a=reducedMotion?.5:.5+.5*Math.sin(t*3.4);armen(.95,-.15,.35+.45*a,.95,.15,-.35-.45*(1-a));rot('Head',.02*k,0,.05*kant*k);}
   /* Uitleg: wijzen naar de opdracht (die staat links van hem), met de arm links in beeld. */
   if(action==='pointTask'){rot('ArmLeft',0,0,L(.26,-.88));rot('ElbowLeft',0,0,L(-.18,-.13));for(const i of [0,2,3])rot('FingerLeft'+i,-1.15*k);}
+  /* De praatknop aanwijzen: de arm rechts in beeld schuin naar beneden-opzij, met gestrekte wijsvinger (de knop staat rechts naast hem). */
+  if(action==='wijsKnop'){const tik=reducedMotion?0:Math.sin(Math.max(0,t-.6)*7)*.06*k;rot('ArmRight',L(0,.35),0,L(-.26,.55)+tik);rot('ElbowRight',L(0,.2),0,L(.18,.15));for(const i of [0,1,3])rot('FingerRight'+i,-1.15*k);}
   /* Hint: één hand omhoog naast zijn hoofd met de wijsvinger, alsof hij een idee heeft. */
   if(action==='idea'){const tik=reducedMotion?0:Math.exp(-t*2)*Math.sin(t*9)*.12;rot('ArmRight',0,0,L(-.26,1.0));rot('ElbowRight',0,0,L(.18,1.8)+tik);for(const i of [0,2,3])rot('FingerRight'+i,-1.15*k);rot('Head',.02*k,0,-.08*k);}
   /* Goed: duim omhoog (soms met twee handen). */
@@ -178,7 +182,7 @@ export function applyPose(model,pose,blend=1,schaalBlend=blend){
   }
 }
 export class ZappieController {
-  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.levendig=new Levendig();/** @type {import('./echte-gebaren').EchteGebaren|null} */this.echt=null;/** Lopen de praat-bewegingen door zolang hij praat? (Uit bij het opnemen van één gebaar.) */this.praatLus=true;this.setTalkText('Hoi! Ik ben Bliepo.');}
+  constructor(model,{reducedMotion=false,onAction=()=>{}}={}) {this.model=model;this.action='idle';this.time=0;this.duration=Infinity;this.feedback='neutral';this.feedbackTime=0;this.speechLevel=null;this.reducedMotion=reducedMotion;this.onAction=onAction;this.wheelL=0;this.wheelR=0;this.paused=false;this.feedbackColor=new T.Color();this.feedbackEmission=new T.Color();this.talkDisplay=createTalkDisplay(model);this.levendig=new Levendig();/** @type {import('./echte-gebaren').EchteGebaren|null} */this.echt=null;/** Lopen de praat-bewegingen door zolang hij praat? (Uit bij het opnemen van één gebaar.) */this.praatLus=true;/** Hoe hard het kind praat terwijl hij luistert (0..1), of null. */this.luisterNiveau=null;this.setTalkText('Hoi! Ik ben Bliepo.');}
   setTalkText(text){this.talkDisplay?.set(text);}
   showText(text){this.setTalkText(text);this.play('talk');this.duration=this.talkDisplay?.duration||4;}
   play(action,{loop=false}={}){if(!ACTIONS[action])throw new Error('Unknown action '+action);if(this.echt&&action!=='idle'&&action!=='echt')this.echt.stop();this.action=action;this.time=0;this.variant=Math.random();this.duration=loop||['idle','sleep','drive','reverse'].includes(action)?Infinity:DURATIONS[action];if(action==='correct'||action==='incorrect')this.setFeedback(action,DURATIONS[action]);if(action==='thumbsUp'||action==='clap')this.setFeedback('correct',DURATIONS[action]);this.onAction(action);}
@@ -203,6 +207,8 @@ export class ZappieController {
     else applyPose(this.model,pose,1-Math.exp(-12*dt));
     /* Echte bewegingen over de houding heen (crossfade); praten lopen door zolang hij praat. */
     if(this.echt&&!this.reducedMotion){const vrij=this.action==='idle'||this.action==='echt'||this.action==='talk';this.echt.stap(dt,!!this.levendig?.praat&&this.praatLus,this.speechLevel,vrij);this.echt.toepas();}
+    /* Luisteren: zachte golfjes van de stem van het kind op zijn scherm. */
+    if(this.luisterNiveau!==null&&this.speechLevel===null){const w=this.model.parts.SpeechWave,r=this.model.rest.SpeechWave;w.scale.y=T.MathUtils.lerp(w.scale.y,r.s.y*(.06+.5*this.luisterNiveau),.5);}
     this.model.wave.visible=true;if(this.action==='talk')this.talkDisplay.draw(this.time);
     this.wheelL+=((motion.distance||0)+(motion.turn||0)*.85)/.48;this.wheelR+=((motion.distance||0)-(motion.turn||0)*.85)/.48;
     const draai=this.reducedMotion?0:rondje(this.action,this.time)*.85/.48;
@@ -276,6 +282,8 @@ export class Levendig{
       lijf staat), `naarOpdracht` die waarmee hij naar de opdracht kijkt.
     */
     this.praat=false;
+    /** Luistert hij naar het kind (praatknop)? Dan kijkt hij naar het kind met zijn hoofd licht schuin. */
+    this.luistert=false;
     this.naarKind=0;
     this.naarOpdracht=-.42;
     this.zelf=Math.random()*100;
@@ -306,10 +314,16 @@ export class Levendig{
     let doelYaw=rustig||actie==='talk'?this.blikDoel.yaw:0,doelPitch=rustig||actie==='talk'?this.blikDoel.pitch:0;
     /* Praat hij, dan kijkt hij naar het kind; wijst hij, dan even naar de opdracht en daarna weer terug. Rondkijken alleen als hij stil is. */
     if(actie==='point'||actie==='pointTask'||c.echt?.gebaar==='wijzen1'||c.echt?.gebaar==='wijzen2'){doelYaw=this.naarOpdracht;doelPitch=.04;}
+    /* De praatknop aanwijzen: even naar de knop kijken (rechts onder hem). */
+    else if(actie==='wijsKnop'){doelYaw=.38;doelPitch=.2;}
+    /* Luisteren: recht naar het kind, hoofd licht omlaag (scherm blijft donker). */
+    else if(this.luistert){doelYaw=this.naarKind;doelPitch=.11;}
     /* Recht naar het kind, met het hoofd een heel klein beetje omlaag (24 oktober 2026, gemeten): recht vooruit weerkaatst zijn scherm het licht en wordt het grijs of wit. */
     else if(this.praat&&actie!=='checkTail'&&actie!=='think'&&actie!=='cap'){doelYaw=this.naarKind;doelPitch=.11;}
     const yaw=this.veer('blik:yaw',doelYaw,dt,38,.58),pitch=this.veer('blik:pitch',doelPitch,dt,38,.6);
     const kop=zet('Head');kop.r[1]+=yaw;kop.r[0]+=pitch;
+    /* Luisteren: het hoofd licht schuin, alsof hij goed luistert (zacht erin en eruit). */
+    kop.r[2]+=this.veer('luister:rol',this.luistert?.14:0,dt,30,.8);
     /* Het lijf draait een klein beetje mee, later en trager: dat voelt levend. */
     const lijf=zet('Torso');lijf.r[1]+=this.veer('lijf:yaw',yaw*.22,dt,10,.9);
 

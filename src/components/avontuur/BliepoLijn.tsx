@@ -21,7 +21,7 @@
  */
 
 import { useEffect, useRef } from "react";
-import { bliepoGeluidKlinkt, bliepoStemNiveau } from "@/lib/bliepo-geluid";
+import { bliepoGeluidKlinkt, bliepoStemNiveau, luisterNiveau } from "@/lib/bliepo-geluid";
 
 type Punt = readonly [number, number];
 /** De vier hoeken van het scherm (links/rechts, boven/onder), in procenten van het vak waar het lijntje over ligt. */
@@ -104,7 +104,10 @@ export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: 
       }
       H = nuHoeken ?? HOEK;
       V = nuHoeken ? VOL : VAK;
-      const niveau = stil ? null : bliepoStemNiveau();
+      /* Luistert hij naar het kind (praatknop), dan zachte golfjes van die stem (24 oktober 2026). */
+      const luister = stil ? null : luisterNiveau();
+      const stemNiveau = stil ? null : bliepoStemNiveau();
+      const niveau = stemNiveau ?? (luister === null ? null : luister * 0.55);
       if (niveau !== null) {
         /*
           Het geluid zelf (23 oktober 2026): hoe hard hij nu klinkt (de gedeelde

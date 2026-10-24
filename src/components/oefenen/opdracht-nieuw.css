@@ -604,7 +604,8 @@
 }
 .bliepo-tekst {
   margin: 0;
-  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  /* Het lettertype uit de stijlkiezer (/admin/stijl), anders Grandstander. */
+  font-family: var(--stijl-lettertype, var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif);
   font-size: clamp(24px, 2.1vw, 34px);
   font-weight: 800;
   line-height: 1.22;
@@ -618,18 +619,27 @@
 .bliepo-tekst-woord {
   transition: color 0.12s ease, text-shadow 0.12s ease;
 }
+/*
+  Meelezen (24 oktober 2026, akkoord eigenaar; vervangt de gele oplichting):
+  nog niet gezegd = gedimd (lichtgrijs), gezegd = wit, het woord van nu = de
+  warme accentkleur. Kleuren uit de stijlkiezer (/admin/stijl), anders deze.
+*/
+.bliepo-tekst-meelezen .bliepo-tekst-nog {
+  color: var(--stijl-gedimd, rgba(214, 224, 242, 0.42));
+  text-shadow: none;
+}
 .bliepo-tekst-gezegd {
-  color: #ffe36e;
+  color: var(--stijl-tekst, #fff);
 }
 .bliepo-tekst-nu {
-  color: #fff3a8;
+  color: var(--stijl-accent, #ffb547);
   text-shadow:
-    0 0 14px rgba(255, 230, 120, 0.9),
+    0 0 14px color-mix(in srgb, var(--stijl-accent, #ffb547) 55%, transparent),
     0 2px 0 rgba(0, 25, 90, 0.55);
 }
-/* De gekleurde getallen van de lessen houden hun kleur, ook als ze oplichten (alleen de gloed). */
-.bliepo-tekst-gezegd [style*="color"] {
-  filter: brightness(1.15);
+/* De gekleurde getallen van de lessen houden hun kleur; nog niet gezegd wat zachter. */
+.bliepo-tekst-nog [style*="color"] {
+  opacity: 0.5;
 }
 /* De knopjes (nog eens horen, stem aan/uit) klein naast de tekst. */
 .bliepo-vloer .bliepo-vloer-knoppen {

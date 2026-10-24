@@ -205,6 +205,15 @@ export function Beheerbalk({ vakken }: { vakken: Vak[] }) {
         <span className="sm:hidden">🔊</span>
       </Link>
 
+      {/* Stijlkiezer (24 oktober 2026): lettertype, kleuren en knopvorm van de nieuwe onderdelen. */}
+      <Link
+        href="/admin/stijl"
+        className="mx-2 rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"
+      >
+        <span className="hidden sm:inline">Stijl</span>
+        <span className="sm:hidden">Aa</span>
+      </Link>
+
       <Link
         href="/admin/bliepo"
         className="mx-2 rounded-md px-2.5 py-2 text-[0.72rem] text-white/45 transition-colors hover:bg-beheer-balk-op hover:text-white/80"

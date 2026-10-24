@@ -103,14 +103,18 @@
 .tbb-woord {
   transition: color 0.12s ease, text-shadow 0.12s ease;
 }
-/* Al gezegd: geel, met een zachte gloed; het woord van nu het felst. */
+/* Meelezen (24 oktober 2026, vervangt de gele oplichting): gedimd tot hij het zegt, dan wit; het woord van nu oranje. */
+.tbb-meelezen .tbb-woord:not(.tbb-gezegd) {
+  color: var(--stijl-gedimd, rgba(214, 224, 242, 0.42));
+  text-shadow: none;
+}
 .tbb-gezegd {
-  color: #ffe36e;
+  color: var(--stijl-tekst, #fff);
 }
 .tbb-nu {
-  color: #fff3a8;
+  color: var(--stijl-accent, #ffb547);
   text-shadow:
-    0 0 14px rgba(255, 230, 120, 0.9),
+    0 0 14px color-mix(in srgb, var(--stijl-accent, #ffb547) 55%, transparent),
     0 2px 0 rgba(0, 25, 90, 0.55);
 }
 .tbb-luister {
