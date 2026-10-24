@@ -862,6 +862,19 @@ export type Woordtijd = { woord: string; begin: number; eind: number };
  * bij elkaar). De tijden zijn in seconden vanaf het begin van het bewaarde
  * geluid (de weggeknipte stilte is er al af).
  */
+/**
+ * Waar een zin met tijden per woord bewaard wordt (mp3 en json), of null als
+ * ElevenLabs niet is ingesteld. Ook om een online gemaakte zin hier neer te
+ * zetten, zodat hij maar één keer betaald wordt (24 oktober 2026).
+ */
+export function karaokeBestanden(zin: string, profiel: Profiel): { mp3: string; json: string } | null {
+  const s = instellingen(profiel, "elevenlabs");
+  if (!s) return null;
+  const naam = `k-${hash(`${kenmerk(s)}\n${voorStem(zin)}`)}`;
+  const map = path.join(MAP, "karaoke");
+  return { mp3: path.join(map, `${naam}.mp3`), json: path.join(map, `${naam}.json`) };
+}
+
 export async function zinMetTijden(zin: string, profiel: Profiel): Promise<{ data: Buffer; woorden: Woordtijd[] } | number> {
   const s = instellingen(profiel, "elevenlabs");
   if (!s) return 503;

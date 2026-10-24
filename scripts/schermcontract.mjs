@@ -441,6 +441,17 @@ export const SCHERMCONTRACT = [
   },
   {
     /*
+      Gesprek met Bliepo (24 oktober 2026, opdracht eigenaar): voorbeeld van
+      een gesprek bij de start van een les, met meelezen, antwoordknoppen en
+      terugpraten. Nog niet in de echte lessen.
+    */
+    naam: "Gesprek met Bliepo (voorbeeld)",
+    pad: "/voorbeeld-bliepo",
+    bron: ["src/app/voorbeeld-bliepo/GesprekMetBliepo.tsx"],
+    zichtbaar: ["Gesprek met Bliepo", "Start het gesprek", "Woorden oplichten", "Houd vast om te praten"],
+  },
+  {
+    /*
       Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
       opgenomen gebaren (Mixamo), in Blender op Bliepo gezet; een knop per
       beweging onder "Test praten". De namen staan in echte-gebaren.ts.

@@ -33,9 +33,15 @@ export function abonneerVoorlees(f: () => void): () => void {
   };
 }
 
-/** Een zin begint nu te klinken; `spraak` = waar in het geluid de spraak begint en eindigt (seconden). */
-export function meldVoorlezen(zin: string, spraak: { begin: number; eind: number }): void {
-  huidig = { id: ++teller, zin, start: performance.now(), tijden: schatWoordtijden(zin, spraak.begin, spraak.eind) };
+/**
+ * Een zin begint nu te klinken; `spraak` = waar in het geluid de spraak begint
+ * en eindigt (seconden). `tijden` (optioneel, 24 oktober 2026): de precieze
+ * tijden per woord (van ElevenLabs), als die er zijn en bij de woorden passen.
+ */
+export function meldVoorlezen(zin: string, spraak: { begin: number; eind: number }, tijden?: Woordvak[]): void {
+  const woorden = zin.trim().split(/\s+/).filter(Boolean).length;
+  const precies = tijden && tijden.length === woorden ? tijden : null;
+  huidig = { id: ++teller, zin, start: performance.now(), tijden: precies ?? schatWoordtijden(zin, spraak.begin, spraak.eind) };
   for (const f of luisteraars) f();
 }
 

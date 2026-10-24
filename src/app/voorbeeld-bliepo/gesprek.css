@@ -1,0 +1,345 @@
+/* Voorbeeld "Gesprek met Bliepo" (24 oktober 2026). Alleen op /voorbeeld-bliepo. */
+
+/* Het omhulsel is de container: zo kan de scène zelf op telefoonbreedte anders staan. */
+.gmb-houder {
+  container-type: inline-size;
+}
+.gmb-scene {
+  --gmb-gedimd: rgba(214, 224, 242, 0.42);
+  --gmb-accent: #ffb547;
+  position: relative;
+  overflow: hidden;
+  border-radius: 24px;
+  aspect-ratio: 16 / 10;
+  min-height: 560px;
+  background: #0b3fc4;
+}
+.gmb-achtergrond {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Het bord met de opdracht (links). */
+.gmb-bord {
+  position: absolute;
+  left: 4%;
+  top: 9%;
+  width: 54%;
+  height: 66%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4cqw;
+  border: 2px solid rgba(170, 225, 255, 0.55);
+  border-radius: 2.4cqw;
+  background: linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.07));
+  box-shadow: 0 0 42px rgba(90, 190, 255, 0.35);
+}
+.gmb-bord-titel {
+  margin: 0;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(18px, 2.6cqw, 34px);
+  font-weight: 800;
+  color: #fff;
+}
+.gmb-groepjes {
+  display: flex;
+  gap: 6cqw;
+}
+.gmb-groepje {
+  display: grid;
+  grid-template-columns: repeat(3, auto);
+  gap: 1.2cqw;
+  padding: 2cqw;
+  border-radius: 2cqw;
+  border: 2px dashed rgba(190, 235, 255, 0.6);
+}
+.gmb-stip {
+  width: 3.6cqw;
+  height: 3.6cqw;
+  border-radius: 50%;
+  box-shadow: 0 0.3cqw 0 rgba(0, 0, 0, 0.18);
+}
+.gmb-stip-rood {
+  background: #ff6b6b;
+}
+.gmb-stip-blauw {
+  background: #7fd8ff;
+}
+
+/* De kolom rechts: het gesprek, de antwoordknoppen, Bliepo en de microfoon. */
+.gmb-kolom {
+  position: absolute;
+  right: 2.5%;
+  top: 4%;
+  bottom: 3%;
+  width: 36%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+}
+.gmb-gesprek {
+  flex: 1 1 auto;
+  min-height: 0;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  gap: 0.55em;
+  overflow: hidden;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(17px, 2.05cqw, 28px);
+  /* Bovenaan zacht vervagen, zodat een wegschuivende zin niet hard afgesneden wordt. */
+  mask-image: linear-gradient(to bottom, transparent 0, #000 0.5em);
+}
+.gmb-alinea {
+  margin: 0;
+  font-weight: 800;
+  line-height: 1.25;
+  color: #fff;
+  text-align: left;
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.6);
+  animation: gmb-erin 0.35s ease-out both;
+}
+.gmb-uitleg {
+  color: rgba(255, 255, 255, 0.7);
+  font-size: 0.8em;
+}
+/* Meelezen: nog niet gezegd = gedimd, gezegd = wit, het woord van nu = warme accentkleur. */
+.gmb-meelezen .gmb-woord {
+  color: var(--gmb-gedimd);
+  text-shadow: none;
+  transition: color 0.14s ease, text-shadow 0.14s ease;
+}
+.gmb-meelezen .gmb-gezegd {
+  color: #fff;
+  text-shadow:
+    0 2px 0 rgba(0, 25, 90, 0.55),
+    0 4px 14px rgba(0, 20, 80, 0.6);
+}
+.gmb-meelezen .gmb-nu {
+  color: var(--gmb-accent);
+  text-shadow:
+    0 0 14px rgba(255, 170, 60, 0.55),
+    0 2px 0 rgba(0, 25, 90, 0.55);
+}
+/* Wat het kind zei: kleiner, rechts, in een zacht vlakje. */
+.gmb-kind {
+  align-self: flex-end;
+  max-width: 85%;
+  margin: 0;
+  padding: 0.35em 0.85em;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1.5px solid rgba(255, 255, 255, 0.45);
+  font-size: 0.72em;
+  font-weight: 700;
+  color: #fff;
+  animation: gmb-erin 0.3s ease-out both;
+}
+/* De oudste alinea schuift rustig weg. */
+.gmb-weg {
+  animation: gmb-weg 0.6s ease-in forwards;
+}
+@keyframes gmb-erin {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+}
+@keyframes gmb-weg {
+  to {
+    opacity: 0;
+    transform: translateY(-14px);
+    margin-top: -1.3em;
+  }
+}
+
+/* De antwoordknoppen: groot en rond, onder de tekst. */
+.gmb-knoppen {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 12px;
+  min-height: 0;
+}
+.gmb-knop {
+  min-height: 52px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #fff;
+  color: #0d2a6b;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(16px, 1.55cqw, 21px);
+  font-weight: 800;
+  box-shadow:
+    0 4px 0 rgba(4, 30, 100, 0.45),
+    0 8px 18px rgba(0, 20, 80, 0.3);
+  cursor: pointer;
+  animation: gmb-knop-erin 0.35s ease-out both;
+  transition: transform 0.12s ease, background 0.12s ease;
+}
+.gmb-knop:hover {
+  background: #fff4dc;
+}
+.gmb-knop:active {
+  transform: translateY(3px);
+  box-shadow: 0 1px 0 rgba(4, 30, 100, 0.45);
+}
+.gmb-knop:focus-visible {
+  outline: 4px solid var(--gmb-accent);
+  outline-offset: 3px;
+}
+@keyframes gmb-knop-erin {
+  from {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+}
+
+/* Bliepo, en onderaan de microfoon. */
+.gmb-robot {
+  position: relative;
+  flex: 0 0 auto;
+  align-self: center;
+  width: 19cqw;
+  height: 23cqw;
+  margin-top: 8px;
+}
+.gmb-robot .bt-prototype {
+  position: absolute;
+  inset: 0;
+}
+.gmb-praat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  margin-top: 6px;
+}
+.gmb-praatknop {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 52px;
+  padding: 10px 22px;
+  border: 0;
+  border-radius: 999px;
+  background: #ff8a1f;
+  color: #fff;
+  font-family: var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif;
+  font-size: clamp(15px, 1.45cqw, 19px);
+  font-weight: 800;
+  box-shadow: 0 4px 0 rgba(120, 50, 0, 0.45);
+  cursor: pointer;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-touch-callout: none;
+}
+.gmb-praatknop:disabled {
+  opacity: 0.55;
+  cursor: default;
+}
+.gmb-luistert {
+  background: #e5484d;
+  animation: gmb-puls 1s ease-in-out infinite;
+}
+@keyframes gmb-puls {
+  50% {
+    box-shadow: 0 0 0 10px rgba(229, 72, 77, 0.25);
+  }
+}
+.gmb-microfoon {
+  width: 24px;
+  height: 24px;
+}
+.gmb-melding {
+  margin: 0;
+  max-width: 22em;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 700;
+  color: #fff;
+}
+
+/* Telefoon: het bord bovenaan, daaronder het gesprek, de knoppen, Bliepo en de microfoon. */
+@container (max-width: 640px) {
+  .gmb-scene {
+    aspect-ratio: auto;
+    min-height: 0;
+    display: flex;
+    flex-direction: column;
+    padding: 14px 16px 16px;
+  }
+  .gmb-bord {
+    position: relative;
+    left: auto;
+    top: auto;
+    width: 100%;
+    height: auto;
+    padding: 14px 10px;
+    gap: 12px;
+  }
+  .gmb-bord-titel {
+    font-size: 19px;
+  }
+  .gmb-groepjes {
+    gap: 22px;
+  }
+  .gmb-groepje {
+    gap: 6px;
+    padding: 9px;
+  }
+  .gmb-stip {
+    width: 18px;
+    height: 18px;
+  }
+  .gmb-kolom {
+    position: relative;
+    right: auto;
+    top: auto;
+    bottom: auto;
+    width: 100%;
+    margin-top: 16px;
+  }
+  .gmb-gesprek {
+    font-size: 21px;
+    min-height: 8.5em;
+  }
+  .gmb-knoppen {
+    flex-direction: column;
+    align-items: stretch;
+  }
+  .gmb-knop {
+    font-size: 18px;
+  }
+  .gmb-robot {
+    width: 150px;
+    height: 182px;
+  }
+  .gmb-praatknop {
+    width: 100%;
+    justify-content: center;
+    font-size: 17px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .gmb-alinea,
+  .gmb-kind,
+  .gmb-knop,
+  .gmb-weg,
+  .gmb-luistert {
+    animation: none;
+  }
+  .gmb-weg {
+    display: none;
+  }
+}

@@ -539,7 +539,15 @@ function speelVanServer(
  * lijntje bewegen mee, en `stopPraten` of een nieuwe zin breekt hem af.
  * Geeft een belofte die klaar is als Bliepo uitgepraat is (of werd gestopt).
  */
-export function speelAntwoord(data: ArrayBuffer): Promise<void> {
+export function speelAntwoord(
+  data: ArrayBuffer,
+  /*
+    Optioneel (24 oktober 2026, voorbeeld "Gesprek met Bliepo"): `gestart` op
+    het moment dat het geluid echt begint, `metGeluid` met het uitgepakte
+    geluid (om te meten waar de spraak zit). Zonder: zoals altijd.
+  */
+  opties: { gestart?: () => void; metGeluid?: (buffer: AudioBuffer) => void } = {},
+): Promise<void> {
   if (typeof window === "undefined") return Promise.resolve();
   window.speechSynthesis?.cancel();
   beurt += 1;
@@ -559,9 +567,13 @@ export function speelAntwoord(data: ArrayBuffer): Promise<void> {
     void speelBliepoData(data.slice(0), {
       stilte: 0.2,
       gestart: () => {
-        if (mijnBeurt === beurt) meld(true);
+        if (mijnBeurt === beurt) {
+          meld(true);
+          opties.gestart?.();
+        }
       },
       klaar: einde,
+      metGeluid: opties.metGeluid,
     }).then((stop) => {
       if (stop) {
         if (mijnBeurt !== beurt) stop();
