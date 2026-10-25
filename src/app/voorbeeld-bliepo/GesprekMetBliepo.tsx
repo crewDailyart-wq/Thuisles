@@ -63,6 +63,8 @@ export function GesprekMetBliepo() {
         <div className="gmb-scene">
           {/* eslint-disable-next-line @next/next/no-img-element -- dezelfde achtergrond als de opdrachten */}
           <img className="gmb-achtergrond" src="/assets/bliepo/achtergrond-opdracht/liggend-1280.webp" alt="" />
+          {/* De hoofdkleur uit de stijlkiezer kleurt de ruimte, net als bij de opdrachten. */}
+          <div className="gmb-tint" aria-hidden="true" />
 
           <div className="gmb-bord" aria-label="Twee groepjes stippen: links vijf, rechts drie">
             <p className="gmb-bord-titel">Groepjes vergelijken</p>

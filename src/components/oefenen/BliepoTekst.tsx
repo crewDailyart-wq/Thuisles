@@ -20,7 +20,7 @@
  * dat met de zin die nu klinkt, dan lichten de woorden op.
  */
 
-import { useEffect, useState, useSyncExternalStore } from "react";
+import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
 
@@ -84,9 +84,22 @@ export function BliepoTekst({
     }
   }, [leest, gesproken]);
   const klaarMetZin = gelezen === gesproken;
+  /*
+    Een lange zin past soms niet helemaal boven Bliepo (dan schuift de ballon):
+    het woord van nu blijft in beeld, zonder dat de pagina zelf verschuift.
+  */
+  const zin = useRef<HTMLParagraphElement>(null);
+  useEffect(() => {
+    const woord = zin.current?.querySelector<HTMLElement>(".bliepo-tekst-nu");
+    const vak = zin.current?.closest<HTMLElement>(".bliepo-vloer-ballon");
+    if (!woord || !vak || vak.scrollHeight <= vak.clientHeight) return;
+    const w = woord.getBoundingClientRect();
+    const v = vak.getBoundingClientRect();
+    if (w.top < v.top || w.bottom > v.bottom) vak.scrollTop += w.top - v.top - v.height / 3;
+  }, [nu]);
   const voorStem = oplichten && Boolean(gesproken) && wacht && !leest && !klaarMetZin;
   return (
-    <p className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}>
+    <p ref={zin} className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}>
       {woorden.map((w, i) => {
         const soort = leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
         return (

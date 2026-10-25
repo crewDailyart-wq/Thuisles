@@ -399,6 +399,12 @@ export function OefenSpeler({
   const godotRonde = serie.some((v) => isGodotfiguur(v.figuur));
   useEffect(() => {
     if (!godotRonde) return;
+    /*
+      Niet in het nieuwe ontwerp (26 oktober 2026): dat heeft zijn eigen blauwe
+      ruimte, en de indeling van het donkere thema (Bliepo vast op 20% van
+      boven, knoppen rechts) zette Bliepo daar achter de bovenbalk.
+    */
+    if (ONTWERP === "nieuw") return;
     if (new URLSearchParams(window.location.search).get("stijl") === "thuisles") return;
     const html = document.documentElement;
     html.dataset.stijl = "nacht";

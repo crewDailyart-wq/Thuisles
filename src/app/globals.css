@@ -966,7 +966,7 @@ body {
   :root[data-stijl="nacht"] [data-godotronde] {
     padding-right: 21rem;
   }
-  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] {
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje]:not(.bliepo-vloer) {
     position: fixed;
     right: 2rem;
     top: 20%;
@@ -978,11 +978,11 @@ body {
     z-index: 30;
   }
   /* de mascotte groot, met wat hij zegt eronder */
-  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] > svg {
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje]:not(.bliepo-vloer) > svg {
     width: 8rem;
     height: 8rem;
   }
-  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] [aria-live] {
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje]:not(.bliepo-vloer) [aria-live] {
     width: 100%;
     background-color: #1a2b57;
     border-color: #263a70;
@@ -992,7 +992,7 @@ body {
     padding: 1rem 1.15rem;
   }
   /* het puntje van het wolkje wijst omhoog, naar de mascotte */
-  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] [aria-live] > span[aria-hidden] {
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje]:not(.bliepo-vloer) [aria-live] > span[aria-hidden] {
     left: 50%;
     top: -0.55rem;
     bottom: auto;
@@ -1001,7 +1001,7 @@ body {
     background-color: #1a2b57;
     border-color: #263a70;
   }
-  :root[data-stijl="nacht"] [data-godotronde] [data-maatje] button {
+  :root[data-stijl="nacht"] [data-godotronde] [data-maatje]:not(.bliepo-vloer) button {
     align-self: center;
   }
   /* Controleer en Volgende vraag staan rechts onder de mascotte, groot. */

@@ -15,6 +15,12 @@
  *     een groot scherm; op een staand of smal scherm onder het bord), "kolom"
  *     = in de rechterkolom van het lesvlak.
  *   - `gebaar`: juichen, bemoedigend knikken, nadenken of zwaaien.
+ *   - `plek: "gesprek"` (26 oktober 2026): het gesprek met Bliepo
+ *     (components/gesprek) gebruikt hetzelfde onderdeel, met zijn zinnen en
+ *     antwoordknoppen boven hem zonder ballon, en de praatknop (`naast`)
+ *     direct naast hem. Zo staat Bliepo in de oefening, de instaptoets, de les
+ *     en het gesprek op dezelfde manier.
+ *   - `robot`: een eigen Bliepo in plaats van de standaard 3D-Bliepo.
  */
 
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
@@ -29,9 +35,11 @@ export function BliepoVloer({
   geluid,
   onGeluid,
   className = "",
+  robot,
+  naast,
 }: {
   children: React.ReactNode;
-  plek?: "vast" | "kolom";
+  plek?: "vast" | "kolom" | "gesprek";
   gebaar?: { naam: string; n: number | string; opStem?: boolean } | null;
   /** Het luidsprekerknopje: nog eens voorlezen. */
   onNogEens?: () => void;
@@ -39,13 +47,23 @@ export function BliepoVloer({
   geluid?: boolean;
   onGeluid?: (aan: boolean) => void;
   className?: string;
+  /** Een eigen Bliepo (bijvoorbeeld met een gebaar van buitenaf). */
+  robot?: React.ReactNode;
+  /** Iets direct naast Bliepo, zoals de praatknop. */
+  naast?: React.ReactNode;
 }) {
   const rustig = useBewegingsstand() !== "aan";
   const metSchakelaar = typeof geluid === "boolean" && onGeluid;
+  const bliepo = (
+    <div className="bliepo-vloer-robot" aria-hidden="true">
+      {robot ?? <Bliepo3DGedeeld rustig={rustig} rusthoek={-Math.PI / 9} volgMuis gebaar={gebaar} geenTiktekst />}
+    </div>
+  );
   return (
     <div className={`bliepo-vloer ${className}`} data-plek={plek} data-maatje="">
       <div className="bliepo-vloer-ballon" aria-live="polite">
         <div className="bliepo-vloer-tekst">{children}</div>
+        {(onNogEens || metSchakelaar) && (
         <div className="bliepo-vloer-knoppen">
           {onNogEens && (
             <button type="button" className="bliepo-vloer-geluid" onClick={onNogEens} aria-label="Nog eens horen" title="Nog eens horen">
@@ -65,10 +83,16 @@ export function BliepoVloer({
             </button>
           )}
         </div>
+        )}
       </div>
-      <div className="bliepo-vloer-robot" aria-hidden="true">
-        <Bliepo3DGedeeld rustig={rustig} rusthoek={-Math.PI / 9} volgMuis gebaar={gebaar} geenTiktekst />
-      </div>
+      {naast ? (
+        <div className="bliepo-vloer-onder">
+          {bliepo}
+          {naast}
+        </div>
+      ) : (
+        bliepo
+      )}
     </div>
   );
 }

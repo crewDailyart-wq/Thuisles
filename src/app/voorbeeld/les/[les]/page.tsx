@@ -22,7 +22,8 @@ export default async function Pagina({
   const { naam } = await searchParams;
   if (!zoekDraaiboek(les)) notFound();
   return (
-    <div className={letter.variable}>
+    /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
+    <div className={letter.variable} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
       <StijlVariabelen />
       <LesVoorbeeld id={les} naam={naam ?? ""} />
     </div>

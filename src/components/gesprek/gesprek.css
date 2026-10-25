@@ -5,7 +5,10 @@
   goedgekeurde voorbeeld).
 */
 
-.gs-kolom {
+/* De standaardkleuren staan ook op de knoppen zelf, zodat ze ook los (bijvoorbeeld op het bord) kloppen. */
+.gs-kolom,
+.gs-knoppen,
+.gs-praat {
   --gs-letter: var(--stijl-lettertype, var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif);
   --gs-tekst: var(--stijl-tekst, #fff);
   --gs-gedimd: var(--stijl-gedimd, rgba(214, 224, 242, 0.42));
@@ -14,6 +17,8 @@
   --gs-knoptekst: var(--stijl-knoptekst, #0d2a6b);
   --gs-rond: var(--stijl-knopvorm, 999px);
   --gs-microfoon: var(--stijl-microfoon, #1f63e0);
+}
+.gs-kolom {
   display: flex;
   flex-direction: column;
   align-items: stretch;
@@ -29,7 +34,7 @@
   gap: 0.55em;
   overflow: hidden;
   font-family: var(--gs-letter);
-  font-size: var(--gs-tekstmaat, clamp(17px, 1.85cqw, 26px));
+  font-size: calc(var(--gs-tekstmaat, clamp(17px, 1.85cqw, 26px)) * var(--stijl-schaal, 1));
   /* Bovenaan zacht vervagen, zodat een wegschuivende zin niet hard afgesneden wordt. */
   mask-image: linear-gradient(to bottom, transparent 0, #000 0.5em);
 }
@@ -102,6 +107,9 @@
   margin-top: 12px;
 }
 .gs-knop {
+  /* De kleur van de knop en de tekst; de knopstijl uit de stijlkiezer bepaalt wat daarmee gebeurt (lib/stijl.ts). */
+  --k-vul: var(--gs-knop);
+  --k-tekst: var(--gs-knoptekst);
   min-height: 52px;
   padding: 10px 22px;
   border: 0;
@@ -109,7 +117,7 @@
   background: var(--gs-knop);
   color: var(--gs-knoptekst);
   font-family: var(--gs-letter);
-  font-size: var(--gs-knopmaat, clamp(16px, 1.55cqw, 21px));
+  font-size: calc(var(--gs-knopmaat, clamp(16px, 1.55cqw, 21px)) * var(--stijl-schaal, 1));
   font-weight: 800;
   box-shadow:
     0 4px 0 rgba(4, 30, 100, 0.45),
@@ -259,4 +267,73 @@
   .gs-weg {
     display: none;
   }
+}
+
+/*
+  Het gesprek in het gedeelde onderdeel BliepoVloer (26 oktober 2026): in een
+  eigen vak (plek "gesprek") staan de zinnen en de antwoordknoppen zonder
+  ballon boven Bliepo, met de praatknop direct naast hem. Deze regels zijn
+  sterker dan de ballon van de opdrachten (opdracht-nieuw.css).
+*/
+.bliepo-vloer[data-plek="gesprek"] {
+  margin: 0;
+  align-items: stretch;
+}
+.bliepo-vloer.gs-kolom .bliepo-vloer-ballon {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  flex: 1 1 auto;
+  min-height: 0;
+  max-width: none;
+  padding: 0;
+  border: 0;
+  background: none;
+  box-shadow: none;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  font: inherit;
+  text-align: left;
+}
+.bliepo-vloer.gs-kolom .bliepo-vloer-ballon::after {
+  display: none;
+}
+.bliepo-vloer.gs-kolom .bliepo-vloer-tekst {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+  min-height: 0;
+}
+.bliepo-vloer.gs-kolom .bliepo-vloer-onder {
+  position: relative;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 6px;
+}
+.bliepo-vloer[data-plek="gesprek"] .bliepo-vloer-robot {
+  width: var(--gs-robot-b, 17cqw);
+  height: var(--gs-robot-h, 20.5cqw);
+  margin-top: 0;
+}
+/* In een opdracht (plek "vast"): de praatknop naast Bliepo op de cirkel. */
+.bliepo-vloer[data-plek="vast"] .bliepo-vloer-onder {
+  display: flex;
+  align-items: flex-end;
+}
+/*
+  Op de cirkel blijft Bliepo zelf precies in het midden staan; de praatknop
+  staat links naast hem (rechts is op een laptop vaak geen ruimte meer).
+*/
+.bliepo-vloer[data-plek="vast"] .bliepo-vloer-onder {
+  position: relative;
+  justify-content: center;
+}
+.bliepo-vloer[data-plek="vast"] .bliepo-vloer-onder > .gs-praat {
+  position: absolute;
+  right: calc(100% - 6px);
+  bottom: 10%;
+  margin: 0;
 }

@@ -18,6 +18,7 @@ import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Pictogram } from "@/components/kind/Pictogram";
 import { Schil } from "@/components/zappie/Schil";
+import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { huidigKind } from "@/lib/auth/sessie";
 import { MERKNAAM } from "@/lib/merk";
 import { NIET_INDEXEREN } from "@/lib/seo";
@@ -67,6 +68,8 @@ export default async function ZappieLayout({ children }: LayoutProps<"/zappie">)
         avatar: kind ? <Pictogram naam={kind.avatar} /> : undefined,
       }}
     >
+      {/* De gekozen stijl van de kinderkant (stijlkiezer, /admin/stijl). */}
+      <StijlVariabelen />
       {children}
     </Schil>
   );

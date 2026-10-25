@@ -22,6 +22,15 @@
   object-fit: cover;
 }
 
+/* De hoofdkleur uit de stijlkiezer (/admin/stijl): kleurt de ruimte in die tint; zonder keuze niets. */
+.gmb-tint {
+  position: absolute;
+  inset: 0;
+  background: var(--stijl-hoofd, transparent);
+  mix-blend-mode: color;
+  pointer-events: none;
+}
+
 /* Het bord met de opdracht (links). */
 .gmb-bord {
   position: absolute;

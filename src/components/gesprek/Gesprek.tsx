@@ -35,6 +35,7 @@
  */
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { useOplichten, useWoordNu } from "@/components/oefenen/BliepoTekst";
 import { zetLuisteren } from "@/lib/bliepo-geluid";
 import { speelAntwoord, stopPraten, zegEnWacht } from "@/lib/stem";
@@ -493,6 +494,7 @@ export function BliepoGesprek({
   onGebaar,
   leeg,
   children,
+  plek = "gesprek",
 }: {
   stappen: Record<string, Stap>;
   start?: string;
@@ -504,7 +506,10 @@ export function BliepoGesprek({
   /** Een gebaar voor de 3D-Bliepo (zie Bliepo3DGedeeld, prop `gebaar`). */
   onGebaar?: (naam: string, opStem: boolean) => void;
   leeg?: React.ReactNode;
-  children: React.ReactNode;
+  /** Een eigen Bliepo; zonder staat de gewone 3D-Bliepo er. */
+  children?: React.ReactNode;
+  /** "vast": op de cirkel rechts in een opdracht; "gesprek": in een eigen vak. */
+  plek?: "vast" | "gesprek";
 }) {
   const voorkeur = useOplichten();
   const oplichten = oplichtenEigen ?? voorkeur;
@@ -568,31 +573,34 @@ export function BliepoGesprek({
     void speelStap(k.naar);
   };
 
+  const praatknop = (
+    <Praatknop
+      uit={!begin}
+      aangewezen={aangewezen}
+      onderwerp={() => ({ ...onderwerp, opgaveTekst: laatsteVraag.current || stappen[stapNu.current]?.zinnen.join(" ") || "" })}
+      onBegin={() => {
+        g.onderbreek();
+        zetKnoppen([]);
+      }}
+      onAntwoord={async (a) => {
+        if (a.gehoord) g.kindZegt(a.gehoord);
+        const af = await g.zegAntwoord(a);
+        /* Daarna gaat het gesprek verder waar het was. */
+        if (af) zetKnoppen(stappen[stapNu.current]?.knoppen ?? []);
+      }}
+      onKlaar={() => zetKnoppen(stappen[stapNu.current]?.knoppen ?? [])}
+    />
+  );
+
+  /*
+    Hetzelfde gedeelde onderdeel als de opdrachten en de lessen (BliepoVloer):
+    in een opdracht op een groot scherm staat Bliepo zo vast op de cirkel rechts
+    (plek "vast"), in een eigen vak zoals het voorbeeld in een kolom ("gesprek").
+  */
   return (
-    <div className="gs-kolom">
+    <BliepoVloer plek={plek} className="gs-kolom" robot={children} naast={praatknop}>
       <GesprekTekst alineas={g.alineas} oplichten={oplichten} leeg={leeg} />
       <Antwoordknoppen knoppen={knoppen} onKies={kies} />
-      <div className="gs-onder">
-        <div className="gs-robot" aria-hidden="true">
-          {children}
-        </div>
-        <Praatknop
-          uit={!begin}
-          aangewezen={aangewezen}
-          onderwerp={() => ({ ...onderwerp, opgaveTekst: laatsteVraag.current || stappen[stapNu.current]?.zinnen.join(" ") || "" })}
-          onBegin={() => {
-            g.onderbreek();
-            zetKnoppen([]);
-          }}
-          onAntwoord={async (a) => {
-            if (a.gehoord) g.kindZegt(a.gehoord);
-            const af = await g.zegAntwoord(a);
-            /* Daarna gaat het gesprek verder waar het was. */
-            if (af) zetKnoppen(stappen[stapNu.current]?.knoppen ?? []);
-          }}
-          onKlaar={() => zetKnoppen(stappen[stapNu.current]?.knoppen ?? [])}
-        />
-      </div>
-    </div>
+    </BliepoVloer>
   );
 }
