@@ -211,12 +211,24 @@ export function BliepoFilm({
   let beeld: React.ReactNode;
   if (soort === "stil" || rustig) {
     // eslint-disable-next-line @next/next/no-img-element -- een doorzichtig stilstaand beeldje
-    beeld = <img src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={(e) => meldGetoond(e.currentTarget)} />;
+    /* Als lijst met de sleutel "stil", net als hieronder: zo blijft hetzelfde beeldje staan als het filmpje begint. */
+    beeld = [<img key="stil" src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={(e) => meldGetoond(e.currentTarget)} />];
   } else if (soort === "webp") {
     const sleutel = `${nu}-${keer}`;
     const vorige = getoond && getoond !== sleutel ? getoond : null;
     /* Als lijst met vaste sleutels: zo blijft het vorige filmpje hetzelfde beeld (het begint niet opnieuw). */
     const lagen: React.ReactNode[] = [];
+    /*
+      Nog geen filmpje getoond (net op de pagina): het stilstaande beeldje
+      blijft eronder staan tot het eerste filmpje er is. Anders is Bliepo even
+      weg terwijl zijn tekst en stem al beginnen (26 oktober 2026).
+    */
+    const eerste = !getoond;
+    if (eerste)
+      lagen.push(
+        // eslint-disable-next-line @next/next/no-img-element -- het stilstaande beeldje tot het eerste filmpje geladen is
+        <img key="stil" src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={(e) => meldGetoond(e.currentTarget)} />,
+      );
     if (vorige)
       lagen.push(
         // eslint-disable-next-line @next/next/no-img-element -- het vorige filmpje blijft staan tot het nieuwe geladen is
@@ -230,7 +242,7 @@ export function BliepoFilm({
         alt=""
         draggable={false}
         className={klasse}
-        style={vorige ? { opacity: 0 } : undefined}
+        style={vorige || eerste ? { opacity: 0 } : undefined}
         onLoad={(e) => {
           zetGetoond(sleutel);
           begin.current = performance.now();

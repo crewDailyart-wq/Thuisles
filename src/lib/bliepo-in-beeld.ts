@@ -35,7 +35,12 @@ export function meldBliepoAan() {
       aanwezig--;
       if (isGetekend) getekend--;
       isGetekend = false;
-      roep();
+      /*
+        Even later kijken: wordt Bliepo vervangen door een nieuwe (zelfde
+        scherm, ander bericht), dan staat die nieuwe er direct daarna al, en
+        moet er nog op hem gewacht worden (anders begint de stem te vroeg).
+      */
+      window.setTimeout(roep, 0);
     },
   };
 }
