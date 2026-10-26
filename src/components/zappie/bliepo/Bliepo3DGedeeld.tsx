@@ -440,6 +440,8 @@ function Bliepo3DEcht({
       } catch (fout) {
         console.warn("[zappie] 3D-model niet geladen, de tekening blijft staan:", fout);
         doek.remove();
+        /* Niet laten wachten op een Bliepo die niet komt (lib/bliepo-in-beeld.ts). */
+        instelling.current.onKlaar?.();
         return;
       }
       if (opgeruimd) {

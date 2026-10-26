@@ -199,11 +199,19 @@ export function BliepoFilm({
     if (!HERHAAL.includes(nu)) zetAfgelopen(keer);
   };
 
+  /* Pas "klaar" als het beeld echt op het scherm staat (uitgepakt en getekend), niet al als het bestand binnen is (26 oktober 2026). */
+  const meldGetoond = (img: HTMLImageElement) => {
+    if (!onKlaar) return;
+    void img
+      .decode()
+      .catch(() => {})
+      .then(() => requestAnimationFrame(() => requestAnimationFrame(() => onKlaar())));
+  };
   const klasse = "absolute inset-0 block h-full w-full object-contain";
   let beeld: React.ReactNode;
   if (soort === "stil" || rustig) {
     // eslint-disable-next-line @next/next/no-img-element -- een doorzichtig stilstaand beeldje
-    beeld = <img src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={onKlaar} />;
+    beeld = <img src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={(e) => meldGetoond(e.currentTarget)} />;
   } else if (soort === "webp") {
     const sleutel = `${nu}-${keer}`;
     const vorige = getoond && getoond !== sleutel ? getoond : null;
@@ -226,7 +234,7 @@ export function BliepoFilm({
         onLoad={(e) => {
           zetGetoond(sleutel);
           begin.current = performance.now();
-          onKlaar?.();
+          meldGetoond(e.currentTarget);
           if (!HERHAAL.includes(nu)) {
             const duur = ((spoor?.clips[nu]?.length ?? 48) / (spoor?.fps ?? 24)) * 1000;
             const img = e.currentTarget;

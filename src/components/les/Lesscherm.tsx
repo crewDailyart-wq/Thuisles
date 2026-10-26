@@ -16,6 +16,7 @@
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
 import { LosPraatknop } from "@/components/gesprek/Gesprek";
 import { Bliepo } from "@/components/avontuur/Bliepo";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
@@ -400,16 +401,20 @@ function Lesscherm({
         zet((b) => ({ ...b, zinnen, zichtbaar: 0, praat: zinnen.length > 0, bediening: null }));
         if (zinnen.length === 0) return res();
         stopStem?.();
-        stopStem = zegNaElkaar(
-          zinnen.map((z) => metUitspraak(kaal(z), naam, vk())),
-          (i) => pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: Math.max(b.zichtbaar, i + 1) } : b)),
-          () => {
-            if (!levend) return;
-            pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: zinnen.length, praat: false } : b));
-            setTimeout(res, 300);
-          },
-          true,
-        );
+        /* Eerst Bliepo in beeld, dan pas zijn stem (26 oktober 2026, lib/bliepo-in-beeld.ts). */
+        void wachtOpBliepo().then(() => {
+          if (!levend || staat.zinnen !== zinnen) return res();
+          stopStem = zegNaElkaar(
+            zinnen.map((z) => metUitspraak(kaal(z), naam, vk())),
+            (i) => pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: Math.max(b.zichtbaar, i + 1) } : b)),
+            () => {
+              if (!levend) return;
+              pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: zinnen.length, praat: false } : b));
+              setTimeout(res, 300);
+            },
+            true,
+          );
+        });
       });
 
     const gids: Lesgids = {

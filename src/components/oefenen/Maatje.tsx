@@ -25,6 +25,7 @@ import { Praatknop, type TutorAntwoord, type TutorOnderwerp } from "@/components
 import { PRATEN_UIT } from "@/components/gesprek/teksten";
 import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
+import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
 import { kiesGebaar, vraagOfUitleg, type Zinsoort } from "@/lib/bliepo-gebaren";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
@@ -87,8 +88,24 @@ export function Maatje({
     klaarRef.current = onKlaar;
   }, [onKlaar]);
 
+  /*
+    Eerst Bliepo, dan pas zijn tekst en stem (26 oktober 2026, opdracht
+    eigenaar): op de vloer wachten tot hij in beeld staat (lib/bliepo-in-beeld.ts).
+  */
+  const [inBeeld, zetInBeeld] = useState(!vloer);
   useEffect(() => {
-    if (!bericht) return;
+    if (inBeeld) return;
+    let weg = false;
+    void wachtOpBliepo().then(() => {
+      if (!weg) zetInBeeld(true);
+    });
+    return () => {
+      weg = true;
+    };
+  }, [inBeeld]);
+
+  useEffect(() => {
+    if (!bericht || !inBeeld) return;
     const stop = zegNaElkaar(
       bericht.zinnen.map((z) => spreekbaar(z.tekst)),
       (i) => {
@@ -112,18 +129,18 @@ export function Maatje({
       niet bij elke nieuwe render.
     */
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [bericht?.id, geluid, herhaal]);
+  }, [bericht?.id, geluid, herhaal, inBeeld]);
 
   /* De zin die hij nu zegt komt bij de zinnen (in het nieuwe ontwerp). */
   const nuTot = bericht && stand.id === bericht.id ? stand.tot : 0;
   const nuZin = bericht ? Math.max(0, Math.min(bericht.zinnen.length - 1, nuTot - 1)) : -1;
   const nuTekst = bericht?.zinnen[nuZin]?.tekst ?? "";
   useEffect(() => {
-    if (!vloer || !bericht || !nuTekst) return;
+    if (!vloer || !bericht || !nuTekst || !inBeeld) return;
     const t = window.setTimeout(() => voegToe({ id: `${bericht.id}:${nuZin}`, tekst: nuTekst, gesproken: spreekbaar(nuTekst) }), 0);
     return () => window.clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen bij een nieuwe zin
-  }, [vloer, bericht?.id, nuZin, nuTekst]);
+  }, [vloer, bericht?.id, nuZin, nuTekst, inBeeld]);
 
   /* Het antwoord van de tutor: zijn stem, met meelezen, als nieuwe zin onderaan. */
   const zegAntwoord = async (a: TutorAntwoord) => {
@@ -221,7 +238,7 @@ export function Maatje({
         */}
         <BliepoZinnen
           regels={
-            regels.length
+            regels.length || !inBeeld
               ? regels
               : [{ id: `${bericht.id}:${huidigeZin}`, tekst: bericht.zinnen[huidigeZin]?.tekst ?? "", gesproken: spreekbaar(bericht.zinnen[huidigeZin]?.tekst ?? "") }]
           }

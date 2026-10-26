@@ -26,6 +26,8 @@
 import { Bliepo3DGedeeld } from "@/components/zappie/bliepo/Bliepo3DGedeeld";
 import { useBewegingsstand } from "@/components/zappie/reis/beweging";
 import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
+import { useEffect, useRef } from "react";
+import { meldBliepoAan } from "@/lib/bliepo-in-beeld";
 
 export function BliepoVloer({
   children,
@@ -54,9 +56,25 @@ export function BliepoVloer({
 }) {
   const rustig = useBewegingsstand() !== "aan";
   const metSchakelaar = typeof geluid === "boolean" && onGeluid;
+  /*
+    Tekst en stem wachten tot Bliepo in beeld staat (26 oktober 2026,
+    lib/bliepo-in-beeld.ts): hij meldt zich hier aan, en zodra hij voor het
+    eerst getekend is, mogen opdracht en les beginnen met praten.
+  */
+  const aanmelding = useRef<ReturnType<typeof meldBliepoAan> | null>(null);
+  const eigenRobot = Boolean(robot);
+  useEffect(() => {
+    const a = meldBliepoAan();
+    aanmelding.current = a;
+    if (eigenRobot) a.getekend();
+    return () => {
+      a.weg();
+      aanmelding.current = null;
+    };
+  }, [eigenRobot]);
   const bliepo = (
     <div className="bliepo-vloer-robot" aria-hidden="true">
-      {robot ?? <Bliepo3DGedeeld rustig={rustig} rusthoek={-Math.PI / 9} volgMuis gebaar={gebaar} geenTiktekst />}
+      {robot ?? <Bliepo3DGedeeld rustig={rustig} rusthoek={-Math.PI / 9} volgMuis gebaar={gebaar} geenTiktekst onKlaar={() => aanmelding.current?.getekend()} />}
     </div>
   );
   return (
