@@ -129,6 +129,7 @@ const FILM_VAN_CLIP: Record<string, Filmhouding> = {
   denken: "denken",
   duimop: "duim",
   openhanden: "vraag",
+  wijsvinger: "wijzen",
   vingers1: "tellen",
   vingers2: "tellen",
   vingers3: "tellen",

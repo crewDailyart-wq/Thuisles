@@ -30,7 +30,7 @@ const sleutel = (zin: string) => createHash("sha256").update(zin.trim()).digest(
 
 /** De gebaren die het model mag kiezen, met wat ze laten zien. */
 const KEUZES: Record<string, string> = {
-  wijzen1: "naar de opdracht op het scherm wijzen (bij kijk, hier, deze)",
+  wijsvinger: "met de wijsvinger naar de opdracht op het scherm wijzen (bij klik op, tik op, kijk, hier, hiernaar)",
   vraag1: "open handen, een vraag stellen",
   denken: "hand bij de borst, hoofd scheef: nadenken",
   geruststellen: "geruststellen: geeft niet",
@@ -49,9 +49,18 @@ const KEUZES: Record<string, string> = {
   langzaam: "rustige trage beweging",
 };
 
+/*
+  Versie van het gebarenwoordenboek: verandert het woordenboek, dan wordt een
+  bewaarde uitkomst die uit het woordenboek kwam opnieuw uitgerekend (anders
+  blijft een oud gebaar hangen, zoals de open hand bij "hier" midden in een
+  zin; 26 oktober 2026). Wat het AI-model koos blijft gewoon bewaard.
+*/
+const WOORDENBOEK_VERSIE = 2;
+
 async function leesBewaard(zin: string): Promise<Gebaarmoment[] | null> {
   try {
-    const j = JSON.parse(await readFile(path.join(GEBAREN_MAP, `${sleutel(zin)}.json`), "utf8")) as { zin: string; gebaren: Gebaarmoment[] };
+    const j = JSON.parse(await readFile(path.join(GEBAREN_MAP, `${sleutel(zin)}.json`), "utf8")) as { zin: string; bron?: string; versie?: number; gebaren: Gebaarmoment[] };
+    if (j.bron === "woordenboek" && j.versie !== WOORDENBOEK_VERSIE) return null;
     return j.zin === zin.trim() && Array.isArray(j.gebaren) ? j.gebaren : null;
   } catch {
     return null;
@@ -60,7 +69,7 @@ async function leesBewaard(zin: string): Promise<Gebaarmoment[] | null> {
 
 async function bewaar(zin: string, gebaren: Gebaarmoment[], bron: string) {
   await mkdir(GEBAREN_MAP, { recursive: true });
-  await writeFile(path.join(GEBAREN_MAP, `${sleutel(zin)}.json`), JSON.stringify({ zin: zin.trim(), bron, gebaren }));
+  await writeFile(path.join(GEBAREN_MAP, `${sleutel(zin)}.json`), JSON.stringify({ zin: zin.trim(), bron, ...(bron === "woordenboek" ? { versie: WOORDENBOEK_VERSIE } : {}), gebaren }));
 }
 
 /** Het goedkope model: hooguit twee gebaren uit de lijst, op een woord, met een tempo. Bij twijfel geen. */

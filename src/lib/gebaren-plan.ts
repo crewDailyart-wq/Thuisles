@@ -14,7 +14,8 @@ export function haalGebarenPlan(zin: string): void {
   const z = zin.trim();
   if (!z || plannen.has(z) || bezig.has(z) || typeof window === "undefined") return;
   bezig.add(z);
-  void fetch(`/api/stem/gebaren?zin=${encodeURIComponent(z)}`)
+  /* `v`: de versie van het woordenboek, zodat de browser geen oud plan uit zijn geheugen haalt (26 oktober 2026). */
+  void fetch(`/api/stem/gebaren?v=2&zin=${encodeURIComponent(z)}`)
     .then((r) => (r.ok ? r.json() : null))
     .then((j: { gebaren?: Gebaarmoment[] } | null) => {
       if (Array.isArray(j?.gebaren)) plannen.set(z, j.gebaren);

@@ -38,6 +38,8 @@ export const WOORDENBOEK_ZINNEN: { kort: string; tekst: string; verwacht: string
   { kort: "Eraf", tekst: "Haal er twee weg.", verwacht: "wegvegen op 'weg'" },
   { kort: "Snel", tekst: "Dat ging heel snel!", verwacht: "snelle korte bewegingen op 'snel'" },
   { kort: "Stop", tekst: "Stop, wacht even.", verwacht: "hand vooruit op 'Stop'" },
+  { kort: "Klik op", tekst: "Klik op het goede antwoord.", verwacht: "met zijn wijsvinger naar de opdracht wijzen op 'Klik op'" },
+  { kort: "Kijk hiernaar", tekst: "Kijk hiernaar, dit zijn de kralen.", verwacht: "met zijn wijsvinger naar de opdracht wijzen op 'Kijk hiernaar'" },
   { kort: "Links", tekst: "Kijk naar de toren links.", verwacht: "naar de opdracht wijzen, dan wijzen naar links" },
   { kort: "Rechts", tekst: "Het antwoord staat rechts.", verwacht: "wijzen naar rechts op 'rechts'" },
   { kort: "Boven", tekst: "Wijs het bovenste plaatje aan.", verwacht: "wijzen naar boven op 'bovenste'" },

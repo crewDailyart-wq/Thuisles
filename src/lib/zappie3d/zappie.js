@@ -314,7 +314,7 @@ export class Levendig{
     }
     let doelYaw=rustig||actie==='talk'?this.blikDoel.yaw:0,doelPitch=rustig||actie==='talk'?this.blikDoel.pitch:0;
     /* Praat hij, dan kijkt hij naar het kind; wijst hij, dan even naar de opdracht en daarna weer terug. Rondkijken alleen als hij stil is. */
-    if(actie==='point'||actie==='pointTask'||c.echt?.gebaar==='wijzen1'||c.echt?.gebaar==='wijzen2'){doelYaw=this.naarOpdracht;doelPitch=.04;}
+    if(actie==='point'||actie==='pointTask'||c.echt?.gebaar==='wijzen1'||c.echt?.gebaar==='wijzen2'||c.echt?.gebaar==='wijsvinger'){doelYaw=this.naarOpdracht;doelPitch=.04;}
     /* De praatknop aanwijzen: even naar de knop kijken (rechts onder hem). */
     else if(actie==='wijsKnop'){doelYaw=.38;doelPitch=.2;}
     /* Luisteren: recht naar het kind, hoofd licht omlaag (scherm blijft donker). */

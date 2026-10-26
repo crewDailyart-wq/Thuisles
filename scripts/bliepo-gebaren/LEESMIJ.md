@@ -73,3 +73,12 @@ woordenboek). Zinnen zonder trefwoord: één keer een goedkoop AI-model
 (`src/lib/gebaren-server.ts`, bewaard in `stem/gebaren/`). Het gebaar begint
 0,3 s voor het woord en is op zijn hoogste punt precies op het woord
 (`Bliepo3DGedeeld`), met een tempo dat past bij het woord en hoe snel hij praat.
+
+## Wijzen met de wijsvinger (26 oktober 2026)
+
+Bij "klik op", "tik op", "druk op", "kies", "sleep", "kijk (hiernaar)", "zie
+je" en "hier/daar" vooraan in de zin wijst Bliepo met zijn wijsvinger naar de
+opdracht (links van hem in beeld), met een klein tikje: het keyframe-gebaar
+`wijsvinger` in `sleutelgebaren.py`. Het oude wijsgebaar (`wijzen1`, open hand)
+staat er nog. Het telefoonfilmpje `wijzen` is ermee opnieuw opgenomen; het oude
+staat in `film2-oud/wijzen-wijzen1.*`.

@@ -522,6 +522,10 @@ export const SCHERMCONTRACT = [
       "Groot (handen ver uit elkaar)",
       "Tellen: 3 vingers",
       "Stop / wacht even (hand vooruit)",
+      /* Echt wijzen met de wijsvinger bij "klik op", "kijk hiernaar" (26 oktober 2026). */
+      "Klik op het goede antwoord.",
+      "Kijk hiernaar, dit zijn de kralen.",
+      "Wijzen met de wijsvinger naar de opdracht",
       "Echte bewegingen",
       "Praten 1 (General Conversation)",
       "Praten 2 (Having A Chat)",

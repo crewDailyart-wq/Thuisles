@@ -78,6 +78,8 @@ export const ECHTE_GEBAREN: Record<string, string> = {
   /* 26 oktober 2026: een vuist met de duim omhoog op borsthoogte (de Mixamo-duim leek op zwaaien). */
   duimop: "Duim omhoog (vuist, borsthoogte)",
   openhanden: "Vraag: twee open handen, palmen omhoog",
+  /* 26 oktober 2026: echt wijzen met de wijsvinger naar de opdracht, met een tikje (bij "klik op", "kijk hiernaar"). */
+  wijsvinger: "Wijzen met de wijsvinger naar de opdracht",
 };
 /**
  * Het hoogste punt van de gebaren uit Blender (seconden): het moment dat bij
@@ -175,7 +177,7 @@ export class EchteGebaren {
    */
   piek(clip: string) {
     if (clip in PIEK_EXTRA) return PIEK_EXTRA[clip];
-    if (/^(groot|klein|snel|langzaam|stop|boven|onder|links|rechts|eerst|dan|denken|vingers\d|openhand|duimop|openhanden)$/.test(clip)) return 0.3;
+    if (/^(groot|klein|snel|langzaam|stop|boven|onder|links|rechts|eerst|dan|denken|vingers\d|openhand|duimop|openhanden|wijsvinger)$/.test(clip)) return 0.3;
     const bekend = this.pieken.get(clip);
     if (bekend !== undefined) return bekend;
     const c = this.clips.get(clip);

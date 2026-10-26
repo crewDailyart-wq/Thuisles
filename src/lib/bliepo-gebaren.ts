@@ -103,7 +103,14 @@ const REGELS: Regel[] = [
   { soort: "helemaal", clips: ["helemaal"], woorden: /^(helemaal|alles|allemaal|overal|heel veel)$/, betekenis: true },
   { soort: "hint", clips: ["denken"], woorden: /^(tip|hint|bedenk|nadenken|denk na|denk eens na|hmm|eens kijken|weet je nog)$/ },
   { soort: "tellen", clips: ["tellen"], woorden: /^(tel|tellen|telt|tel maar|samen tellen|één twee|een twee)$/ },
-  { soort: "wijzen", clips: ["wijzen1"], woorden: /^(kijk|hier|daar|zie je|op het bord|op het scherm)$/ },
+  /*
+    Wijzen met de wijsvinger naar de opdracht (26 oktober 2026, opdracht
+    eigenaar: "als hij zegt klik op... of kijk hiernaar, wijst hij echt met
+    zijn vinger"). Het oude wijsgebaar (wijzen1, een open hand) blijft bestaan.
+  */
+  { soort: "wijzen", clips: ["wijsvinger"], woorden: /^(klik|klik op|klik maar|klik dan|tik|tik op|tik maar|tik dan|druk op|kies|kies maar|sleep|kijk|kijk eens|kijk maar|kijk hier|kijk daar|kijk hiernaar|kijk daarnaar|hiernaar|daarnaar|zie je|zie je dit|op het bord|op het scherm)$/ },
+  /* "Hier" en "daar" alleen vooraan ("Hier zie je..."); midden in een zin ("je leert hier...") is het geen aanwijzen. Twijfel = geen gebaar. */
+  { soort: "wijzen", clips: ["wijsvinger"], woorden: /^(hier|daar)$/, alleenEerste: true },
   { soort: "vraag", clips: ["openhanden"], woorden: /^(hoeveel|wat|welke|welk|waar|wie|hoe|waarom|kun|kan|weet|zie|wil)$/ },
 ];
 

@@ -314,6 +314,13 @@ G["onder"] = kort(pose(right=dict(pols=(0.83, -0.7, 1.65), hint=(1, 0.3, -0.6), 
 G["links"] = kort(pose(left=dict(pols=(-1.38, -0.45, 2.0), hint=(-0.6, 0.3, -1), vingers=(-1, -0.15, 0.1), palm=(0, -1, 0), krom=WIJS), hoofd=(0.02, 0, -0.06)), houd=0.6)
 G["rechts"] = kort(pose(right=dict(pols=(1.4, -0.45, 2.0), hint=(0.6, 0.3, -1), vingers=(1, -0.15, 0.1), palm=(0, -1, 0), krom=WIJS), hoofd=(0.02, 0, 0.06)), houd=0.6)
 
+# Wijzen met de wijsvinger naar de opdracht (26 oktober 2026, opdracht eigenaar: bij "klik op", "kijk hiernaar"
+# wijst hij echt met zijn vinger). De opdracht staat links van hem in beeld: de linkerarm schuin omhoog en naar
+# voren, wijsvinger gestrekt en de andere vingers strak krom (duidelijker dan WIJS), met een klein tikje in de richting van de vinger (alsof hij erop drukt).
+wv_a = pose(left=dict(pols=(-1.08, -0.56, 2.2), hint=(-0.6, 0.3, -1), vingers=(-0.8, -0.45, 0.4), palm=(0.2, -0.3, -1), krom=(0.9, 0, 1.35, 1.35)), hoofd=(0.02, 0, -0.05))
+wv_b = pose(left=dict(pols=(-1.18, -0.66, 2.25), hint=(-0.6, 0.3, -1), vingers=(-0.8, -0.45, 0.4), palm=(0.2, -0.3, -1), krom=(0.9, 0, 1.35, 1.35)), hoofd=(0.02, 0, -0.05))
+G["wijsvinger"] = kort(wv_a, houd=0.5, tussen=[(0.14, wv_b), (0.14, wv_a)])
+
 # eerst / dan: twee korte handbewegingen na elkaar (eerst links, dan rechts), handpalm omhoog.
 eerst = pose(left=dict(pols=(-0.82, -0.77, 1.84), hint=(-1, 0.2, -1), vingers=(0, -1, 0.15), palm=(0, 0, 1), krom=ZACHT))
 dan = pose(right=dict(pols=(0.82, -0.77, 1.84), hint=(1, 0.2, -1), vingers=(0, -1, 0.15), palm=(0, 0, 1), krom=ZACHT))

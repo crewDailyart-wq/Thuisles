@@ -13,7 +13,7 @@ const ev = async (e) => (await st("Runtime.evaluate", { returnByValue: true, awa
 await ev("window.__opname.besturing.levendig.volgendGebaar=1e9");
 const kijkOp = (t, plan) => { for (const [van, tot, k] of plan) if (t >= van && t < tot) return k; return null; };
 const spraakOp = (t) => Math.max(0, Math.min(1, .2 + .6 * Math.abs(Math.sin(t * 8.7) * Math.sin(t * 2.3 + .7)) + .15 * Math.sin(t * 13.1)));
-const GEBAAR = { vraag: "openhanden", wijzen: "wijzen1", latenzien: "wijzen2", tellen: "tellen", nadenken: "nadenken", duim: "duimop", klappen: "klappen", knikken: "knikken", troost: "geruststellen", aanmoedigen: "knikken2", zwaaien: "zwaaien2" };
+const GEBAAR = { vraag: "openhanden", wijzen: "wijsvinger", latenzien: "wijzen2", tellen: "tellen", nadenken: "nadenken", duim: "duimop", klappen: "klappen", knikken: "knikken", troost: "geruststellen", aanmoedigen: "knikken2", zwaaien: "zwaaien2" };
 /* Het gebarenwoordenboek (26 oktober 2026): de belangrijkste nieuwe gebaren, met keyframes gemaakt in Blender. */
 Object.assign(GEBAAR, { groot: "groot", klein: "klein", erbij: "erbij", eraf: "eraf", stop: "stop", samen: "samen", meer: "meer", minder: "minder", links: "links", rechts: "rechts", boven: "boven", onder: "onder", denken: "denken" });
 const alleen = process.argv.slice(2);
