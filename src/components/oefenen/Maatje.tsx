@@ -20,12 +20,15 @@ import { Luidspreker, LuidsprekerUit } from "@/components/oefenen/Symbolen";
 import { POPPETJE, POPPETJE_GODOT, type MaatjeHouding } from "@/lib/maatje/poppetje";
 import { TijdelijkMaatje } from "@/components/oefenen/TijdelijkMaatje";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
-import { BliepoTekst, inWoorden } from "@/components/oefenen/BliepoTekst";
+import { BliepoZinnen, MAX_REGELS, type BliepoRegel } from "@/components/oefenen/BliepoTekst";
+import { Praatknop, type TutorAntwoord, type TutorOnderwerp } from "@/components/gesprek/Gesprek";
+import { PRATEN_UIT } from "@/components/gesprek/teksten";
+import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 import { zetMaatjeStap } from "@/lib/maatje/stap";
 import { kiesGebaar, vraagOfUitleg, type Zinsoort } from "@/lib/bliepo-gebaren";
 import { spreekbaar } from "@/lib/maatje/taal";
 import type { Zin } from "@/lib/maatje/types";
-import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { speelAntwoord, stopPraten, zegEnWacht, zegNaElkaar } from "@/lib/stem";
 
 export type MaatjeBericht = {
   /** Uniek per bericht; een nieuw id laat het maatje opnieuw beginnen. */
@@ -41,7 +44,15 @@ export function Maatje({
   onKlaar,
   poppetje = "vos",
   vloer = false,
+  praten = null,
 }: {
+  /**
+   * De ronde microfoonknop naast Bliepo (nieuw ontwerp, 26 oktober 2026,
+   * opdracht eigenaar). `aan`: "Praten met Bliepo" staat aan voor dit kind.
+   * Staat het uit, dan staat de knop er grijs en zegt Bliepo bij een tik dat
+   * papa of mama het kan aanzetten. `onderwerp`: waar de vraag over gaat.
+   */
+  praten?: { aan: boolean; onderwerp: () => TutorOnderwerp } | null;
   /**
    * Nieuw ontwerp van de opdrachten (23 oktober 2026): Bliepo staat rechts op
    * de ronde cirkel op de vloer, met zijn tekstballon naast zijn hoofd; op een
@@ -63,6 +74,14 @@ export function Maatje({
   const [stand, setStand] = useState<{ id: string; tot: number; klaar: boolean }>({ id: "", tot: 0, klaar: false });
   /* "Nog eens horen" (23 oktober 2026): hetzelfde bericht nog een keer voorlezen. */
   const [herhaal, setHerhaal] = useState(0);
+  /*
+    De zinnen onder elkaar (26 oktober 2026, opdracht eigenaar): elke zin die
+    hij zegt, komt er onderaan bij, ook wat het kind via de microfoon vraagt
+    en zijn antwoord. Hoeveel er te zien zijn, bepaalt de stijlkiezer.
+  */
+  const [regels, zetRegels] = useState<BliepoRegel[]>([]);
+  const voegToe = (r: BliepoRegel) => zetRegels((l) => (l.some((x) => x.id === r.id) ? l : [...l, r].slice(-MAX_REGELS)));
+  const extra = useRef(0);
   const klaarRef = useRef(onKlaar);
   useEffect(() => {
     klaarRef.current = onKlaar;
@@ -94,6 +113,42 @@ export function Maatje({
     */
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bericht?.id, geluid, herhaal]);
+
+  /* De zin die hij nu zegt komt bij de zinnen (in het nieuwe ontwerp). */
+  const nuTot = bericht && stand.id === bericht.id ? stand.tot : 0;
+  const nuZin = bericht ? Math.max(0, Math.min(bericht.zinnen.length - 1, nuTot - 1)) : -1;
+  const nuTekst = bericht?.zinnen[nuZin]?.tekst ?? "";
+  useEffect(() => {
+    if (!vloer || !bericht || !nuTekst) return;
+    const t = window.setTimeout(() => voegToe({ id: `${bericht.id}:${nuZin}`, tekst: nuTekst, gesproken: spreekbaar(nuTekst) }), 0);
+    return () => window.clearTimeout(t);
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- alleen bij een nieuwe zin
+  }, [vloer, bericht?.id, nuZin, nuTekst]);
+
+  /* Het antwoord van de tutor: zijn stem, met meelezen, als nieuwe zin onderaan. */
+  const zegAntwoord = async (a: TutorAntwoord) => {
+    if (a.gehoord) voegToe({ id: `kind:${++extra.current}`, tekst: a.gehoord, van: "kind" });
+    if (a.audio && a.zinnen.length) {
+      const tekst = a.zinnen.join(" ");
+      voegToe({ id: `tutor:${++extra.current}`, tekst, gesproken: tekst });
+      let grenzen: { begin: number; eind: number } | null = null;
+      await speelAntwoord(a.audio, {
+        metGeluid: (b) => (grenzen = spraakGrenzen(b.getChannelData(0), b.sampleRate)),
+        gestart: () => meldVoorlezen(tekst, grenzen ?? { begin: 0.05, eind: 2 }),
+      });
+      stopVoorlezen();
+    } else {
+      for (const zin of a.zinnen) {
+        voegToe({ id: `tutor:${++extra.current}`, tekst: zin, gesproken: spreekbaar(zin) });
+        await zegEnWacht([spreekbaar(zin)]);
+      }
+    }
+  };
+  const pratenUit = async () => {
+    stopPraten();
+    voegToe({ id: `uit:${++extra.current}`, tekst: PRATEN_UIT, gesproken: PRATEN_UIT });
+    await zegEnWacht([PRATEN_UIT]);
+  };
 
   if (!bericht) return null;
 
@@ -135,6 +190,17 @@ export function Maatje({
     const naam = kiesGebaar(soort, bericht.id, huidigeZin);
     return (
       <BliepoVloer
+        naast={
+          praten ? (
+            <Praatknop
+              dicht={!praten.aan}
+              onDicht={() => void pratenUit()}
+              onderwerp={praten.onderwerp}
+              onBegin={() => stopPraten()}
+              onAntwoord={zegAntwoord}
+            />
+          ) : undefined
+        }
         gebaar={{ naam, n: `${bericht.id}:${huidigeZin}:${herhaal}`, opStem: true }}
         onNogEens={() => setHerhaal((n) => n + 1)}
         geluid={geluid}
@@ -144,13 +210,15 @@ export function Maatje({
         }}
       >
         {/*
-          Tekst boven Bliepo (23 oktober 2026): steeds de zin die hij nu zegt,
-          in stukjes na elkaar, met oplichtende woorden (BliepoTekst).
+          Tekst boven Bliepo: zijn zinnen onder elkaar, zoals een gesprek
+          (26 oktober 2026); de nieuwste leest mee (BliepoZinnen).
         */}
-        <BliepoTekst
-          key={`${bericht.id}:${huidigeZin}`}
-          woorden={inWoorden(bericht.zinnen[huidigeZin]?.tekst ?? "")}
-          gesproken={spreekbaar(bericht.zinnen[huidigeZin]?.tekst ?? "")}
+        <BliepoZinnen
+          regels={
+            regels.length
+              ? regels
+              : [{ id: `${bericht.id}:${huidigeZin}`, tekst: bericht.zinnen[huidigeZin]?.tekst ?? "", gesproken: spreekbaar(bericht.zinnen[huidigeZin]?.tekst ?? "") }]
+          }
         />
       </BliepoVloer>
     );

@@ -17,14 +17,19 @@ export const metadata: Metadata = { title: `Voorbeeld opdracht · ${MERKNAAM}`, 
  * - de automatische controle (scripts/bliepocontrole.mjs), met
  *   ?opdracht=lang (een hoog bord), ?tekst=lang (een lange zin van Bliepo) en
  *   ?ronde=godot (zoals een opdracht met een Godot-spel, zoals de instaptoets,
- *   met het oude donkere thema erbij: dat zette Bliepo achter de bovenbalk).
+ *   met het oude donkere thema erbij: dat zette Bliepo achter de bovenbalk),
+ *   ?zinnen=6 (zoveel zinnen onder elkaar) en ?praten=uit (grijze praatknop).
  */
-export default async function Pagina({ searchParams }: { searchParams: Promise<{ opdracht?: string; tekst?: string; fase?: string; ronde?: string }> }) {
-  const { opdracht, tekst, fase, ronde } = await searchParams;
+export default async function Pagina({ searchParams }: { searchParams: Promise<{ opdracht?: string; tekst?: string; fase?: string; ronde?: string; zinnen?: string; praten?: string }> }) {
+  const { opdracht, tekst, fase, ronde, zinnen, praten } = await searchParams;
+  const aantal = Number(zinnen);
   return (
     <>
       <StijlVariabelen />
-      <StijlVoorbeeld lang={opdracht === "lang"} langeTekst={tekst === "lang"} fase={fase === "goed" || fase === "fout" ? fase : "bezig"} godot={ronde === "godot"} />
+      <StijlVoorbeeld lang={opdracht === "lang"} langeTekst={tekst === "lang"} fase={fase === "goed" || fase === "fout" ? fase : "bezig"} godot={ronde === "godot"}
+        zinnen={Number.isInteger(aantal) && aantal >= 1 && aantal <= 6 ? aantal : undefined}
+        pratenUit={praten === "uit"}
+      />
     </>
   );
 }

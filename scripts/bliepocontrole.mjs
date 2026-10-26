@@ -39,8 +39,9 @@ const SCHERMEN = [
 ];
 const OPDRACHTEN = [
   { naam: "korte opdracht", query: "" },
-  { naam: "heel lange opdracht", query: "?opdracht=lang&tekst=lang" },
+  { naam: "heel lange opdracht, 6 lange zinnen", query: "?opdracht=lang&tekst=lang&zinnen=6" },
   { naam: "lange opdracht met Godot-spel", query: "?opdracht=lang&tekst=lang&ronde=godot" },
+  { naam: "praten uit (grijze microfoonknop)", query: "?praten=uit&zinnen=6" },
 ];
 
 const CHROME = [
@@ -110,7 +111,7 @@ function verbind(url) {
 /* In de pagina: waar staan de bovenbalk, Bliepo en zijn tekst? */
 const MEET = `(() => {
   const vak = (s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, b: r.width, h: r.height }; };
-  return { vw: innerWidth, vh: innerHeight, balk: vak('.vk'), robot: vak('.bliepo-vloer .bliepo-vloer-robot'), tekst: vak('.bliepo-vloer .bliepo-vloer-ballon') };
+  return { vw: innerWidth, vh: innerHeight, balk: vak('.vk'), robot: vak('.bliepo-vloer .bliepo-vloer-robot'), tekst: vak('.bliepo-vloer .bliepo-vloer-ballon'), knop: vak('.bliepo-vloer .gs-praatknop'), bord: vak('[data-oefenkaart]') };
 })()`;
 
 function fouten(m, scherm) {
@@ -119,7 +120,10 @@ function fouten(m, scherm) {
   if (!m.robot) return ["Bliepo staat niet op het scherm."];
   if (!m.tekst) uit.push("de tekst van Bliepo staat niet op het scherm");
   if (m.robot.h < 80) uit.push(`Bliepo is te klein (${Math.round(m.robot.h)} px hoog)`);
-  for (const [naam, r] of [["Bliepo", m.robot], ["zijn tekst", m.tekst]]) {
+  /* De microfoonknop naast Bliepo moet er altijd staan (26 oktober 2026, opdracht eigenaar). */
+  if (!m.knop) uit.push("de microfoonknop staat niet naast Bliepo");
+  else if (m.knop.b < 40) uit.push(`de microfoonknop is te klein (${Math.round(m.knop.b)} px)`);
+  for (const [naam, r] of [["Bliepo", m.robot], ["zijn tekst", m.tekst], ["de microfoonknop", m.knop]]) {
     if (!r) continue;
     if (r.top < -marge || r.left < -marge || r.right > m.vw + marge || r.bottom > m.vh + marge)
       uit.push(`${naam} valt (deels) buiten beeld (boven ${Math.round(r.top)}, onder ${Math.round(r.bottom)}, links ${Math.round(r.left)}, rechts ${Math.round(r.right)}; scherm ${m.vw} x ${m.vh})`);
@@ -128,6 +132,10 @@ function fouten(m, scherm) {
       uit.push(`${naam} valt achter de bovenbalk (bovenkant ${Math.round(r.top)}, balk tot ${Math.round(m.balk.bottom)})`);
   }
   if (m.tekst && m.robot && m.tekst.bottom > m.robot.top + 24) uit.push("de tekst staat over Bliepo heen");
+  /* De zinnen mogen niet over het bord vallen. */
+  const overlapt = (a, b) => a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1;
+  if (overlapt(m.tekst, m.bord)) uit.push("de tekst van Bliepo valt over het bord");
+  if (overlapt(m.knop, m.bord)) uit.push("de microfoonknop valt over het bord");
   if (!scherm.mobiel && m.robot && m.robot.bottom < m.vh * 0.6) uit.push(`Bliepo staat niet op de vloer (onderkant op ${Math.round(m.robot.bottom)} van ${m.vh})`);
   return uit;
 }

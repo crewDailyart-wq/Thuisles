@@ -80,6 +80,10 @@ export const BLIEPO_MATEN = {
 } as const;
 export type BliepoMaat = keyof typeof BLIEPO_MATEN;
 
+/** "Aantal zinnen zichtbaar" boven Bliepo (26 oktober 2026): 1 tot 6. */
+export const ZINNEN = { "1": { label: "1" }, "2": { label: "2" }, "3": { label: "3" }, "4": { label: "4" }, "5": { label: "5" }, "6": { label: "6" } } as const;
+export const STANDAARD_ZINNEN = 3;
+
 export type Stijl = {
   /** Titels, koppen en knoppen. */
   titelLetter: Lettertype;
@@ -105,6 +109,8 @@ export type Stijl = {
   /** Het microfoontje op de witte praatknop. */
   microfoon: string;
   bliepo: BliepoMaat;
+  /** Hoeveel zinnen van Bliepo er onder elkaar te zien zijn (1 tot 6). */
+  zinnen: number;
 };
 
 export const STANDAARD_STIJL: Stijl = {
@@ -124,6 +130,7 @@ export const STANDAARD_STIJL: Stijl = {
   praatknop: "wit",
   microfoon: "#1f63e0",
   bliepo: "normaal",
+  zinnen: STANDAARD_ZINNEN,
 };
 
 const KLEUR = /^#[0-9a-f]{6}$/i;
@@ -154,6 +161,7 @@ export function maakStijl(ruw: unknown): Stijl {
     praatknop: uit(r.praatknop, PRAATKNOPPEN, s.praatknop),
     microfoon: kleur(r.microfoon, s.microfoon),
     bliepo: uit(r.bliepo, BLIEPO_MATEN, s.bliepo),
+    zinnen: typeof r.zinnen === "number" && Number.isInteger(r.zinnen) && r.zinnen >= 1 && r.zinnen <= 6 ? r.zinnen : s.zinnen,
   };
 }
 
@@ -269,11 +277,18 @@ function praatRegels(s: Stijl, waar: string): string {
   }
 }
 
+/** Het aantal zinnen boven Bliepo (de standaard, 3, staat in opdracht-nieuw.css). */
+function zinRegels(s: Stijl, waar: string): string {
+  if (s.zinnen === STANDAARD_ZINNEN) return "";
+  const z = `${waar} .bliepo-zinnen > .bliepo-zin`;
+  return `${z}{display:block}${z}:nth-last-child(n + ${s.zinnen + 1}){display:none}`;
+}
+
 /** De hele CSS voor deze stijl; leeg bij de standaard. */
 export function stijlCss(s: Stijl, waar = "html:root"): string {
   const v = Object.entries(stijlVariabelen(s))
     .map(([k, w]) => `${k}:${w};`)
     .join("");
   const schaal = s.grootte !== STANDAARD_STIJL.grootte ? `font-size:${GROOTTES[s.grootte].factor * 100}%;` : "";
-  return [v || schaal ? `${waar}{${v}${schaal}}` : "", knopRegels(s, waar), praatRegels(s, waar)].join("");
+  return [v || schaal ? `${waar}{${v}${schaal}}` : "", knopRegels(s, waar), praatRegels(s, waar), zinRegels(s, waar)].join("");
 }

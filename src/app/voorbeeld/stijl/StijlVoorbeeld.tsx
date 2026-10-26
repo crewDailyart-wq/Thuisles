@@ -11,7 +11,8 @@ import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { Voortgangskop } from "@/components/oefenen/Voortgangskop";
 import type { Bolstand } from "@/components/oefenen/Oefenbalk";
-import { maakStijl, stijlCss } from "@/lib/stijl";
+import { maakStijl, STANDAARD_STIJL, stijlCss } from "@/lib/stijl";
+import { MAX_REGELS } from "@/components/oefenen/BliepoTekst";
 import "@/components/oefenen/opdracht-nieuw.css";
 import "@/components/gesprek/gesprek.css";
 
@@ -22,8 +23,16 @@ const STANDEN: Bolstand[] = [
   "nu",
   ...Array<Bolstand>(11).fill("open"),
 ];
-const KORT = "Hoeveel stippen zie je samen?";
-const LANG =
+/* Een kort gesprek: de zinnen komen onder elkaar (zoals in een echte opdracht, BliepoZinnen). */
+const KORT = [
+  "Hoi! Fijn dat je er bent.",
+  "Kijk eens naar de stippen op het bord.",
+  "Links staan er vijf, rechts staan er drie.",
+  "Hoeveel stippen zie je samen?",
+  "Tel ze maar rustig.",
+  "Je mag ze aanwijzen met je vinger.",
+];
+const LANG_TEKST =
   "Kijk eens goed naar de twee groepjes stippen op het bord. Links zie je een groepje rode stippen en rechts een groepje blauwe stippen. Tel eerst de rode stippen, dan de blauwe stippen, en bedenk dan hoeveel stippen het samen zijn. Je mag ze aanwijzen met je vinger als dat helpt. Welk getal hoort erbij?";
 
 export function StijlVoorbeeld({
@@ -31,7 +40,13 @@ export function StijlVoorbeeld({
   langeTekst,
   fase: beginFase,
   godot = false,
+  zinnen,
+  pratenUit = false,
 }: {
+  /** Zoveel zinnen laten zien, los van de stijl (voor de controle). */
+  zinnen?: number;
+  /** De praatknop grijs, zoals bij een kind waarvoor "Praten met Bliepo" uit staat. */
+  pratenUit?: boolean;
   lang: boolean;
   langeTekst: boolean;
   fase: "bezig" | "goed" | "fout";
@@ -39,8 +54,10 @@ export function StijlVoorbeeld({
 }) {
   const [css, zetCss] = useState<string | null>(null);
   const [fase, zetFase] = useState(beginFase);
-  const [woord, zetWoord] = useState(0);
-  const zin = (langeTekst ? LANG : KORT).split(" ");
+  const lijst = langeTekst ? LANG_TEKST.split(/(?<=[.?!])\s+/) : KORT;
+  /* Hoeveel zinnen er al gezegd zijn; de laatste zes staan op de pagina, de nieuwste leest mee. */
+  const [{ n, woord }, zetLees] = useState({ n: MAX_REGELS, woord: 0 });
+  const zin = lijst[(n - 1) % lijst.length].split(" ");
 
   /* De stijl uit de stijlkiezer (alleen van dezelfde site). */
   useEffect(() => {
@@ -82,18 +99,24 @@ export function StijlVoorbeeld({
     };
   }, [godot]);
 
-  /* Het meelezen loopt steeds rond. */
+  /* Net als in een opdracht (BliepoZinnen): de nieuwste zin blijft in beeld als het vak schuift. */
   useEffect(() => {
-    const klok = window.setInterval(
-      () => zetWoord((w) => (w + 1) % (zin.length + 4)),
-      380,
-    );
+    const ballon = document.querySelector<HTMLElement>(".bliepo-vloer-ballon");
+    if (ballon && ballon.scrollHeight > ballon.clientHeight) ballon.scrollTop = ballon.scrollHeight;
+  }, [n]);
+
+  /* Het meelezen loopt; is de zin uit, dan komt de volgende onderaan erbij. */
+  useEffect(() => {
+    const klok = window.setInterval(() => {
+      zetLees((l) => (l.woord + 1 < zin.length + 4 ? { n: l.n, woord: l.woord + 1 } : { n: l.n + 1, woord: 0 }));
+    }, 340);
     return () => window.clearInterval(klok);
   }, [zin.length]);
 
   return (
     <>
       {css !== null && <style data-stijl-proef="">{css}</style>}
+      {zinnen && <style>{stijlCss({ ...STANDAARD_STIJL, zinnen })}</style>}
       <OpdrachtDecor />
       <div className="opdracht-nieuw" data-fase={fase}>
         <Voortgangskop
@@ -160,7 +183,7 @@ export function StijlVoorbeeld({
               <div className="gs-praat">
                 <button
                   type="button"
-                  className="gs-praatknop"
+                  className={`gs-praatknop${pratenUit ? " gs-dicht" : ""}`}
                   aria-label="Tik om iets te zeggen"
                   tabIndex={-1}
                 >
@@ -187,17 +210,27 @@ export function StijlVoorbeeld({
               </div>
             }
           >
-            <p className="bliepo-tekst bliepo-tekst-meelezen">
-              {zin.map((w, i) => (
-                <span
-                  key={i}
-                  className={`bliepo-tekst-woord ${woord > i ? "bliepo-tekst-gezegd" : woord === i ? "bliepo-tekst-nu" : "bliepo-tekst-nog"}`}
-                >
-                  {w}
-                  {i < zin.length - 1 ? " " : ""}
-                </span>
-              ))}
-            </p>
+            <div className="bliepo-zinnen">
+              {Array.from({ length: Math.min(n, MAX_REGELS) }, (_, k) => n - Math.min(n, MAX_REGELS) + k).map((i) =>
+                i < n - 1 ? (
+                  <p key={i} className="bliepo-tekst bliepo-zin">
+                    {lijst[i % lijst.length]}
+                  </p>
+                ) : (
+                  <p key={i} className="bliepo-tekst bliepo-tekst-meelezen bliepo-zin">
+                    {zin.map((w, j) => (
+                      <span
+                        key={j}
+                        className={`bliepo-tekst-woord ${woord > j ? "bliepo-tekst-gezegd" : woord === j ? "bliepo-tekst-nu" : "bliepo-tekst-nog"}`}
+                      >
+                        {w}
+                        {j < zin.length - 1 ? " " : ""}
+                      </span>
+                    ))}
+                  </p>
+                ),
+              )}
+            </div>
           </BliepoVloer>
         </div>
       </div>

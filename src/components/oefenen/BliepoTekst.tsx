@@ -23,6 +23,7 @@
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
+import { spreekbaar } from "@/lib/maatje/taal";
 
 const geen = () => () => {};
 
@@ -116,4 +117,54 @@ export function BliepoTekst({
 /** Een gewone zin in woorden. */
 export function inWoorden(zin: string): string[] {
   return zin.trim().split(/\s+/).filter(Boolean);
+}
+
+/** Eén regel in het gesprek boven Bliepo. */
+export type BliepoRegel = {
+  id: string;
+  tekst: string;
+  van?: "bliepo" | "kind";
+  /** Wat hij precies uitspreekt (voor het meelezen); anders de tekst, uitspreekbaar gemaakt. */
+  gesproken?: string;
+};
+
+/** Hooguit zoveel regels staan er op de pagina; hoeveel er te zien zijn, bepaalt de stijl (1 tot 6, standaard 3). */
+export const MAX_REGELS = 6;
+
+/**
+ * De zinnen van Bliepo onder elkaar, zoals een gesprek (26 oktober 2026,
+ * opdracht eigenaar). Nieuwe zinnen komen onderaan erbij; zijn er meer dan
+ * het aantal uit de stijlkiezer ("Aantal zinnen zichtbaar"), dan valt de
+ * oudste bovenaan weg (opdracht-nieuw.css, .bliepo-zinnen). Alleen de nieuwste
+ * zin leest mee (grijs, wit, het woord van nu oranje); de eerdere staan wit.
+ * Is er weinig ruimte, dan kan het kind binnen het tekstvak omhoog schuiven;
+ * de nieuwste zin blijft in beeld.
+ */
+export function BliepoZinnen({ regels }: { regels: BliepoRegel[] }) {
+  const lijst = regels.slice(-MAX_REGELS);
+  const vak = useRef<HTMLDivElement>(null);
+  const laatste = lijst[lijst.length - 1]?.id;
+  useEffect(() => {
+    const ballon = vak.current?.closest<HTMLElement>(".bliepo-vloer-ballon");
+    if (ballon && ballon.scrollHeight > ballon.clientHeight) ballon.scrollTop = ballon.scrollHeight;
+  }, [laatste]);
+  return (
+    <div ref={vak} className="bliepo-zinnen">
+      {lijst.map((r, i) =>
+        r.van === "kind" ? (
+          <p key={r.id} className="bliepo-zin bliepo-zin-kind">
+            <span className="sr-only">Jij: </span>
+            {r.tekst}
+          </p>
+        ) : (
+          <BliepoTekst
+            key={r.id}
+            className="bliepo-zin"
+            woorden={inWoorden(r.tekst)}
+            gesproken={i === lijst.length - 1 ? (r.gesproken ?? spreekbaar(r.tekst)) : null}
+          />
+        ),
+      )}
+    </div>
+  );
 }

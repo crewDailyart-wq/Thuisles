@@ -1560,6 +1560,21 @@ export function OefenSpeler({
             onGeluid={wisselMaatjeGeluid}
             onKlaar={maatjeKlaar}
             poppetje="tijdelijk"
+            /*
+              De ronde microfoonknop naast Bliepo (26 oktober 2026, opdracht
+              eigenaar): altijd te zien; grijs als de ouder "Praten met Bliepo"
+              niet heeft aangezet.
+            */
+            praten={{
+              aan: Boolean(tutor),
+              onderwerp: () => ({
+                opgaveId: `oef:${vraag.id}`,
+                opgaveTekst: maatjeTekst?.voorlezen.tekst ?? vraagtekst,
+                domein: tutor?.domein,
+                leerdoel: vraag.leerdoelTitel ?? "",
+                groep,
+              }),
+            }}
           />
         )}
       </div>

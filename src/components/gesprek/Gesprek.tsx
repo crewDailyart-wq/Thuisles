@@ -299,9 +299,18 @@ export function Praatknop({
   onBegin,
   onAntwoord,
   onKlaar,
+  dicht = false,
+  onDicht,
 }: {
   onderwerp: () => TutorOnderwerp;
   uit?: boolean;
+  /**
+   * "Praten met Bliepo" staat uit voor dit kind (26 oktober 2026, opdracht
+   * eigenaar): de knop staat er wel, maar grijs; een tik roept `onDicht` aan
+   * (Bliepo legt dan uit dat papa of mama het kan aanzetten).
+   */
+  dicht?: boolean;
+  onDicht?: () => void;
   /** Bliepo wijst de knop nu aan (de eerste keer): de knop licht op. */
   aangewezen?: boolean;
   onBegin?: () => void;
@@ -452,7 +461,13 @@ export function Praatknop({
     stopRef.current = stop;
   });
 
-  const label = stand === "luistert" ? "Ik luister. Tik nog eens als je klaar bent." : stand === "denkt" ? "Bliepo denkt na" : "Tik om iets te zeggen";
+  const label = dicht
+    ? "Praten met Bliepo staat uit"
+    : stand === "luistert"
+      ? "Ik luister. Tik nog eens als je klaar bent."
+      : stand === "denkt"
+        ? "Bliepo denkt na"
+        : "Tik om iets te zeggen";
   return (
     <div className="gs-praat">
       <button
@@ -460,8 +475,9 @@ export function Praatknop({
         type="button"
         disabled={uit || stand === "denkt"}
         title={label}
-        className={`gs-praatknop${stand === "luistert" ? " gs-luistert" : ""}${stand === "denkt" ? " gs-denkt" : ""}${aangewezen ? " gs-aangewezen" : ""}`}
-        onClick={() => (stand === "luistert" ? void stop(true) : void begin())}
+        className={`gs-praatknop${dicht ? " gs-dicht" : ""}${stand === "luistert" ? " gs-luistert" : ""}${stand === "denkt" ? " gs-denkt" : ""}${aangewezen ? " gs-aangewezen" : ""}`}
+        aria-disabled={dicht || undefined}
+        onClick={() => (dicht ? onDicht?.() : stand === "luistert" ? void stop(true) : void begin())}
       >
         <svg viewBox="0 0 24 24" className="gs-microfoon" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" aria-hidden>
           <rect x="9" y="3" width="6" height="11" rx="3" fill="currentColor" />

@@ -23,6 +23,7 @@ import {
   letterLabel,
   PRAATKNOPPEN,
   STANDAARD_STIJL,
+  ZINNEN,
   zelfdeStijl,
   type Lettertype,
   type Stijl,
@@ -177,6 +178,13 @@ export function Stijlkiezer({ begin, vorige: beginVorige, themas: beginThemas }:
         <Rondjes naam="knopstijl" label="Knopstijl" keuzes={KNOPSTIJLEN} waarde={stijl.knopstijl} onKies={(k) => zet("knopstijl", k)} />
         <Rondjes naam="praatknop" label="Praatknop" keuzes={PRAATKNOPPEN} waarde={stijl.praatknop} onKies={(k) => zet("praatknop", k)} />
         <Rondjes naam="bliepo" label="Grootte van Bliepo" keuzes={BLIEPO_MATEN} waarde={stijl.bliepo} onKies={(k) => zet("bliepo", k)} />
+        <Rondjes
+          naam="zinnen"
+          label="Aantal zinnen zichtbaar"
+          keuzes={ZINNEN}
+          waarde={String(stijl.zinnen) as keyof typeof ZINNEN}
+          onKies={(k) => zet("zinnen", Number(k))}
+        />
 
         <div className="flex flex-wrap items-center gap-2 border-t border-beheer-rand pt-3">
           <button

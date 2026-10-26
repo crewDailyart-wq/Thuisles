@@ -202,6 +202,12 @@
   opacity: 0.6;
   cursor: default;
 }
+/* "Praten met Bliepo" staat uit: grijs, maar wel te tikken (Bliepo legt het dan uit). */
+.gs-praatknop.gs-dicht {
+  background: #d9dde5;
+  color: #8a93a3;
+  box-shadow: 0 3px 0 rgba(4, 30, 100, 0.25);
+}
 .gs-microfoon {
   width: 32px;
   height: 32px;

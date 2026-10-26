@@ -490,6 +490,7 @@ export const SCHERMCONTRACT = [
       "Glas",
       "Praatknop",
       "Grootte van Bliepo",
+      "Aantal zinnen zichtbaar",
       "Terug naar vorige versie",
       "Opslaan als thema",
       "Voorbeeld als",
