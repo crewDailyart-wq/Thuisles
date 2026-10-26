@@ -290,8 +290,11 @@ kinderen; een volledige laptop-database erover overschrijft die.
   `node scripts/online-wijzig.mjs <bestand.sql>`. Dat maakt eerst een
   reservekopie van online in `backups/` en voert de wijziging uit in één
   transactie.
-- De opdrachten blijven zoals ze nu zijn (open); niets op concept zetten
-  zonder dat de eigenaar het vraagt.
+- De status van de opdrachten verandert alleen als de eigenaar het vraagt.
+  Op 27 oktober 2026 zette de eigenaar alle opdrachten van groep 3 en 4 online
+  op concept (9680; de lijst met ids staat in
+  `backups/online-gepubliceerd-voor-concept-20261027.json`, voor als het terug
+  moet). Domeinen, subdomeinen en leerdoelen bleven staan.
 
 ## Waarom deze regel er is
 
