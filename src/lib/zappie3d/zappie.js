@@ -342,17 +342,18 @@ export class Levendig{
       const g1=.3+.7*Math.max(0,ruis(t*1.3,this.zelf+1)),g2=.3+.7*Math.max(0,ruis(t*1.1,this.zelf+5));
       if(actie==='idle'||actie==='talk'){
         const ar=zet('ArmRight'),er=zet('ElbowRight'),al=zet('ArmLeft'),el=zet('ElbowLeft');
-        ar.r[0]-=.25*g1*this.spraak;ar.r[2]+=.2*g1*this.spraak;er.r[2]+=.45*g1*this.spraak;
-        al.r[0]-=.25*g2*this.spraak;al.r[2]-=.2*g2*this.spraak;el.r[2]-=.45*g2*this.spraak;
+        /* Rustig en klein (26 oktober 2026): de handen praten zacht mee, nooit groot. */
+        ar.r[0]-=.12*g1*this.spraak;ar.r[2]+=.08*g1*this.spraak;er.r[2]+=.22*g1*this.spraak;
+        al.r[0]-=.12*g2*this.spraak;al.r[2]-=.08*g2*this.spraak;el.r[2]-=.22*g2*this.spraak;
       }
     }
 
-    /* 3. Gebaren op willekeurige tijden, alleen in rust. */
-    if(actie==='idle'&&t>=this.volgendGebaar&&!this.praat){
-      const kans=Math.random();
-      c.play(kans<.4?'wave':kans<.8?'cap':'checkTail');
-      this.volgendGebaar=t+willekeurig(14,30);
-    }
+    /*
+      3. Gebaren op willekeurige tijden in rust (zwaaien, petje, stekker):
+      weggehaald (26 oktober 2026, opdracht eigenaar). Hij zwaait alleen nog op
+      een groetwoord, en een groot gebaar hoort altijd bij een woord. In rust
+      ademt hij en kijkt hij rond.
+    */
     if(actie!=='idle'&&this.volgendGebaar<t+6)this.volgendGebaar=t+willekeurig(8,14);
 
     /* 4. Alle scharnieren met een veer naar hun doel (het rondje en de schermgolf niet). */

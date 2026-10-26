@@ -24,7 +24,7 @@
  */
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, readdirSync, readFileSync, statSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -42,7 +42,24 @@ const OPDRACHTEN = [
   { naam: "heel lange opdracht, 6 lange zinnen", query: "?opdracht=lang&tekst=lang&zinnen=6" },
   { naam: "lange opdracht met Godot-spel", query: "?opdracht=lang&tekst=lang&ronde=godot" },
   { naam: "praten uit (grijze microfoonknop)", query: "?praten=uit&zinnen=6" },
+  /* Ook een echte opdracht en een echte les (als Testkind), met de echte onderdelen. */
+  { naam: "echte opdracht (Testkind)", pad: "/oefenen/rekenen/getallen/tellen-sprongen/oefening", kind: true },
+  { naam: "echte les", pad: "/voorbeeld/les/optellen-onder-10?naam=Testkind", kind: true },
 ];
+
+/* Het profiel "Testkind" (HARDE REGEL: testen als kind alleen met Testkind): uit de database van de laptop, of KIND=<id>. */
+async function testkind() {
+  if (process.env.KIND) return process.env.KIND;
+  try {
+    const { DatabaseSync } = await import("node:sqlite");
+    const db = new DatabaseSync(new URL("../data/thuisles.db", import.meta.url).pathname, { readOnly: true });
+    const rij = db.prepare("select id from kinderen where roepnaam = 'Testkind' limit 1").get();
+    db.close();
+    return rij?.id ?? null;
+  } catch {
+    return null;
+  }
+}
 
 const CHROME = [
   process.env.CHROME,
@@ -111,7 +128,7 @@ function verbind(url) {
 /* In de pagina: waar staan de bovenbalk, Bliepo en zijn tekst? */
 const MEET = `(() => {
   const vak = (s) => { const e = document.querySelector(s); if (!e) return null; const r = e.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, left: r.left, right: r.right, b: r.width, h: r.height }; };
-  return { vw: innerWidth, vh: innerHeight, balk: vak('.vk'), robot: vak('.bliepo-vloer .bliepo-vloer-robot'), tekst: vak('.bliepo-vloer .bliepo-vloer-ballon'), knop: vak('.bliepo-vloer .gs-praatknop'), bord: vak('[data-oefenkaart]') };
+  return { vw: innerWidth, vh: innerHeight, balk: vak('.vk'), robot: vak('.bliepo-vloer .bliepo-vloer-robot'), tekst: vak('.bliepo-vloer .bliepo-vloer-ballon'), knop: vak('.bliepo-vloer .gs-praatknop'), bord: vak('[data-oefenkaart]'), oranje: [...document.querySelectorAll('button')].some((b) => /Vraag het Bliepo/.test(b.textContent)) };
 })()`;
 
 function fouten(m, scherm) {
@@ -122,6 +139,7 @@ function fouten(m, scherm) {
   if (m.robot.h < 80) uit.push(`Bliepo is te klein (${Math.round(m.robot.h)} px hoog)`);
   /* De microfoonknop naast Bliepo moet er altijd staan (26 oktober 2026, opdracht eigenaar). */
   if (!m.knop) uit.push("de microfoonknop staat niet naast Bliepo");
+  if (m.oranje) uit.push('de oranje knop "Vraag het Bliepo" staat er nog');
   else if (m.knop.b < 40) uit.push(`de microfoonknop is te klein (${Math.round(m.knop.b)} px)`);
   for (const [naam, r] of [["Bliepo", m.robot], ["zijn tekst", m.tekst], ["de microfoonknop", m.knop]]) {
     if (!r) continue;
@@ -140,7 +158,40 @@ function fouten(m, scherm) {
   return uit;
 }
 
+/*
+  De oranje knop "Vraag het Bliepo" hoort nergens meer aan de kindkant (26
+  oktober 2026, opdracht eigenaar): praten gaat met de ronde microfoonknop naast
+  Bliepo. Eerst in de code: geen enkel bestand van de kindkant gebruikt nog
+  VraagBliepo. Alleen de demo op /voorbeeld-bliepo (TutorDemo) en het onderdeel
+  zelf mogen het nog hebben.
+*/
+function oranjeInCode() {
+  const wortel = new URL("..", import.meta.url).pathname;
+  const toegestaan = new Set(["src/components/tutor/VraagBliepo.tsx", "src/app/voorbeeld-bliepo/TutorDemo.tsx"]);
+  const fout = [];
+  const loop = (map) => {
+    for (const naam of readdirSync(map)) {
+      const pad = map + "/" + naam;
+      if (statSync(pad).isDirectory()) loop(pad);
+      else if (/\.(tsx?|jsx?)$/.test(naam)) {
+        const rel = pad.slice(wortel.length);
+        if (toegestaan.has(rel)) continue;
+        const tekst = readFileSync(pad, "utf8");
+        if (/<VraagBliepo\b|from "@\/components\/tutor\/VraagBliepo"/.test(tekst)) fout.push(rel);
+      }
+    }
+  };
+  loop(wortel + "src");
+  return fout;
+}
+
 async function main() {
+  const inCode = oranjeInCode();
+  if (inCode.length) {
+    console.error(`✗ De oranje knop "Vraag het Bliepo" wordt nog gebruikt in: ${inCode.join(", ")}`);
+    process.exit(1);
+  }
+  console.log('✓ De oranje knop "Vraag het Bliepo" staat nergens meer in de code van de kindkant.');
   if (!CHROME) {
     console.error("Bliepo-controle: geen Chrome gevonden (zet CHROME=/pad/naar/chrome).");
     process.exit(IN_BEWAKING ? 0 : 1);
@@ -154,6 +205,7 @@ async function main() {
     console.error(tekst);
     process.exit(1);
   }
+  const kindId = await testkind();
   const chrome = await startChrome();
   const { stuur, sluit } = await verbind(chrome.url);
   let mis = 0;
@@ -161,13 +213,19 @@ async function main() {
   try {
     for (const scherm of SCHERMEN) {
       for (const opdracht of OPDRACHTEN) {
+        if (opdracht.kind && !kindId) {
+          console.warn(`⚠️  ${opdracht.naam} overgeslagen: geen Testkind gevonden (zet KIND=<id>).`);
+          continue;
+        }
         const { targetId } = await stuur("Target.createTarget", { url: "about:blank" });
         const { sessionId: s } = await stuur("Target.attachToTarget", { targetId, flatten: true });
         await stuur("Page.enable", {}, s);
         await stuur("Network.enable", {}, s);
         if (process.env.WW) await stuur("Network.setExtraHTTPHeaders", { headers: { Authorization: "Basic " + Buffer.from("thuisles:" + process.env.WW).toString("base64") } }, s);
         await stuur("Emulation.setDeviceMetricsOverride", { width: scherm.b, height: scherm.h, deviceScaleFactor: 1, mobile: scherm.mobiel }, s);
-        await stuur("Page.navigate", { url: BASIS + "/voorbeeld/stijl" + opdracht.query }, s);
+        const adres = BASIS + (opdracht.pad ?? "/voorbeeld/stijl" + opdracht.query);
+        if (opdracht.kind) await stuur("Network.setCookie", { name: "thuisles_kind", value: kindId, url: adres }, s);
+        await stuur("Page.navigate", { url: adres }, s);
         /* Wachten tot Bliepo er staat (en de lettertypes geladen zijn). */
         let m = null;
         for (let i = 0; i < 60; i++) {

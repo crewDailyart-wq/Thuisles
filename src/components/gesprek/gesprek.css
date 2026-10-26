@@ -333,11 +333,13 @@
   Op de cirkel blijft Bliepo zelf precies in het midden staan; de praatknop
   staat links naast hem (rechts is op een laptop vaak geen ruimte meer).
 */
-.bliepo-vloer[data-plek="vast"] .bliepo-vloer-onder {
+.bliepo-vloer:not([data-plek="gesprek"]) .bliepo-vloer-onder {
   position: relative;
+  display: flex;
+  align-items: flex-end;
   justify-content: center;
 }
-.bliepo-vloer[data-plek="vast"] .bliepo-vloer-onder > .gs-praat {
+.bliepo-vloer:not([data-plek="gesprek"]) .bliepo-vloer-onder > .gs-praat {
   position: absolute;
   right: calc(100% - 6px);
   bottom: 10%;

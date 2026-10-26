@@ -58,7 +58,7 @@ type Antwoord = { al: true } | { al: false; zinnen: string[]; zelfOnthouden?: bo
  */
 export function useBegroeting(actief = true, viaProfiel = false) {
   const [ballon, zetBallon] = useState<string | null>(null);
-  const [zwaai, zetZwaai] = useState(0);
+  const [zwaai] = useState(0);
   const klaar = useRef(false);
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export function useBegroeting(actief = true, viaProfiel = false) {
       if (weg || klaar.current) return;
       klaar.current = true;
       wachtOpTik?.();
-      zetZwaai((n) => n + 1);
+      /* Geen losse zwaai: hij zwaait op het groetwoord ("Hoi Sam!") zelf (26 oktober 2026). */
       zetBallon(zinnen.join(" "));
       /* Heeft zijn stem echt geklonken? Pas dan telt hij als begroet voor vandaag. */
       let gehoord = false;
@@ -123,9 +123,8 @@ export function useBegroeting(actief = true, viaProfiel = false) {
       if (weg) return;
       /* Nog geen tik gehad: de browser mag nog geen geluid maken. Hij zwaait al en vraagt om een tik. */
       zetBallon(TIK);
-      zetZwaai((n) => n + 1);
-      /* Zolang er niet getikt is, zwaait hij af en toe opnieuw. */
-      const blijfZwaaien = window.setInterval(() => !weg && zetZwaai((n) => n + 1), 6000);
+      /* Zolang er niet getikt is, zwaaide hij af en toe; weggehaald (26 oktober 2026: alleen zwaaien op een groetwoord). */
+      const blijfZwaaien = 0;
       const opTik = () => begin(zinnen, zelf);
       window.addEventListener("pointerdown", opTik, { once: true });
       window.addEventListener("keydown", opTik, { once: true });

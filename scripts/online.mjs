@@ -3,6 +3,16 @@
  *
  *   npm run online
  *
+ * ⛔ SINDS 26 OKTOBER 2026 (besluit eigenaar): de HELE laptop-database gaat
+ * NIET meer online. Online staan de profielen en de voortgang van echte
+ * kinderen; die zou je overschrijven. Dit script maakt nu alleen een
+ * reservekopie van online en zet ontbrekende afbeeldingen en Godot-spelletjes
+ * erbij, en stopt dan. Wijzigingen aan de online database gaan alleen nog met
+ * een gericht script (scripts/online-wijzig.mjs), met eerst een reservekopie.
+ * Alleen als de eigenaar het zelf uitdrukkelijk wil, met
+ * THUISLES_HELE_DATABASE_OVERSCHRIJVEN=ja ervoor, gaat de hele database er
+ * nog overheen (zie CLAUDE.md, HARDE REGEL 6).
+ *
  * De database op de laptop is de baas (afspraak van de eigenaar, 12 oktober
  * 2026). Dit script zet hem online en start de site opnieuw. Draai het na
  * elke klus waarbij de database verandert.
@@ -158,7 +168,16 @@ if (!existsSync(GODOT)) {
   console.log(anders.length ? `  ${anders.length} bestanden bijgewerkt` : "  alles stond er al");
 }
 
-// 4. Database op de schijf.
+// 4. Database op de schijf: NIET meer, tenzij de eigenaar het zelf uitdrukkelijk wil (HARDE REGEL 6).
+if (process.env.THUISLES_HELE_DATABASE_OVERSCHRIJVEN !== "ja") {
+  rmSync(kopie, { force: true });
+  console.log(
+    "\n⛔ De database is NIET online gezet (HARDE REGEL 6: online staat de voortgang van echte kinderen).\n" +
+      "   Afbeeldingen en spelletjes zijn bijgewerkt; de reservekopie van online staat in backups/.\n" +
+      "   Iets aan de online database veranderen: node scripts/online-wijzig.mjs <bestand.sql> (maakt eerst een reservekopie).",
+  );
+  process.exit(0);
+}
 stap("Database online zetten…");
 zetOpSchijf(kopie, "/thuisles-nieuw.db");
 const uit = opServer(`

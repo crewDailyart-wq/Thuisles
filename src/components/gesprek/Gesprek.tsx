@@ -40,7 +40,7 @@ import { useOplichten, useWoordNu } from "@/components/oefenen/BliepoTekst";
 import { zetLuisteren } from "@/lib/bliepo-geluid";
 import { speelAntwoord, stopPraten, zegEnWacht } from "@/lib/stem";
 import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
-import { PRAATKNOP_UITLEG } from "./teksten";
+import { PRAATKNOP_UITLEG, PRATEN_UIT } from "./teksten";
 import "./gesprek.css";
 
 export type Knop = { label: string; naar: string };
@@ -618,5 +618,36 @@ export function BliepoGesprek({
       <GesprekTekst alineas={g.alineas} oplichten={oplichten} leeg={leeg} />
       <Antwoordknoppen knoppen={knoppen} onKies={kies} />
     </BliepoVloer>
+  );
+}
+
+/**
+ * De ronde microfoonknop voor een scherm zonder eigen gesprek (zoals een les,
+ * 26 oktober 2026): dezelfde knop, en Bliepo spreekt het antwoord uit. Staat
+ * "Praten met Bliepo" uit (`aan` false), dan grijs, en bij een tik legt hij
+ * uit dat papa of mama het kan aanzetten.
+ */
+export function LosPraatknop({ aan, onderwerp }: { aan: boolean; onderwerp: () => TutorOnderwerp }) {
+  return (
+    <Praatknop
+      dicht={!aan}
+      onDicht={() => {
+        stopPraten();
+        void zegEnWacht([PRATEN_UIT]);
+      }}
+      onderwerp={onderwerp}
+      onBegin={() => stopPraten()}
+      onAntwoord={async (a) => {
+        if (a.audio && a.zinnen.length) {
+          const tekst = a.zinnen.join(" ");
+          let grenzen: { begin: number; eind: number } | null = null;
+          await speelAntwoord(a.audio, {
+            metGeluid: (b) => (grenzen = spraakGrenzen(b.getChannelData(0), b.sampleRate)),
+            gestart: () => meldVoorlezen(tekst, grenzen ?? { begin: 0.05, eind: 2 }),
+          });
+          stopVoorlezen();
+        } else if (a.zinnen.length) await zegEnWacht(a.zinnen);
+      }}
+    />
   );
 }

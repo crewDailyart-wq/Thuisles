@@ -16,7 +16,7 @@
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
 import { stopPraten, zegNaElkaar } from "@/lib/stem";
-import { VraagBliepo } from "@/components/tutor/VraagBliepo";
+import { LosPraatknop } from "@/components/gesprek/Gesprek";
 import { Bliepo } from "@/components/avontuur/Bliepo";
 import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
@@ -638,6 +638,19 @@ function Lesscherm({
       : null;
 
   /* Wat de mascotte zegt, en wat het kind kan doen (oud: linksboven; nieuw: in de ballon boven Bliepo). */
+  /* De ronde microfoonknop naast Bliepo; grijs als "Praten met Bliepo" uit staat (26 oktober 2026). */
+  const praatknop = (
+    <LosPraatknop
+      aan={Boolean(tutor)}
+      onderwerp={() => ({
+        opgaveId: `les:${les.id}:${kortKenmerk(beeld.zinnen.join("|"))}`,
+        opgaveTekst: beeld.zinnen.map(kaal).join(" "),
+        domein: les.id,
+        leerdoel: les.titel,
+        groep: tutor?.groep,
+      })}
+    />
+  );
   const tekstblok = (
         <div
           className={`${s.tekst} les-tekst`}
@@ -670,22 +683,10 @@ function Lesscherm({
             </div>
           )}
           {/*
-            Praten met Bliepo: alleen als de ouder het aanzette, en alleen als
-            het kind iets gevraagd wordt (een getal, een keuze of een som).
+            De oranje knop "Vraag het Bliepo" staat hier niet meer (26 oktober
+            2026, opdracht eigenaar): praten gaat met de ronde microfoonknop
+            naast Bliepo (BliepoVloer), dezelfde als in de stijlkiezer.
           */}
-          {tutor && b && b.soort !== "verder" && (
-            <div className={s.bediening} style={{ marginTop: 16 }}>
-              <VraagBliepo
-                opgave={{
-                  opgaveId: `les:${les.id}:${kortKenmerk(beeld.zinnen.join("|"))}`,
-                  opgaveTekst: beeld.zinnen.map(kaal).join(" "),
-                  domein: les.id,
-                  leerdoel: les.titel,
-                }}
-                groep={tutor.groep}
-              />
-            </div>
-          )}
           {beeld.klaar && (
             <div className={s.bediening}>
               <button type="button" className={`${s.knop} ${s.breed}`} onClick={opnieuw}>
@@ -749,6 +750,7 @@ function Lesscherm({
         {nieuw && !staand && (
           <BliepoVloer
             plek="kolom"
+            naast={praatknop}
             gebaar={lesGebaar}
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0
@@ -918,6 +920,7 @@ function Lesscherm({
       {nieuw && staand && (
         <div className="les-staand" style={{ top: 16 + H * (schaal || 1) }}>
           <BliepoVloer
+            naast={praatknop}
             gebaar={lesGebaar}
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0

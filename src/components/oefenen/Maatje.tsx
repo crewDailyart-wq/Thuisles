@@ -150,7 +150,23 @@ export function Maatje({
     await zegEnWacht([PRATEN_UIT]);
   };
 
-  if (!bericht) return null;
+  /* De ronde microfoonknop naast Bliepo (dezelfde als in het voorbeeld van de stijlkiezer, /admin/stijl). */
+  const praatknop = praten ? (
+    <Praatknop dicht={!praten.aan} onDicht={() => void pratenUit()} onderwerp={praten.onderwerp} onBegin={() => stopPraten()} onAntwoord={zegAntwoord} />
+  ) : undefined;
+
+  if (!bericht) {
+    /* Nieuw ontwerp zonder eigen tekst bij deze opgave: Bliepo en de microfoonknop staan er toch (26 oktober 2026). */
+    if (!vloer) return null;
+    return (
+      <BliepoVloer naast={praatknop} geluid={geluid} onGeluid={(aan) => {
+          if (!aan) stopPraten();
+          onGeluid(aan);
+        }}>
+        <BliepoZinnen regels={regels} />
+      </BliepoVloer>
+    );
+  }
 
   const tot = stand.id === bericht.id ? stand.tot : 0;
   const bezig = stand.id === bericht.id && !stand.klaar;
@@ -190,17 +206,7 @@ export function Maatje({
     const naam = kiesGebaar(soort, bericht.id, huidigeZin);
     return (
       <BliepoVloer
-        naast={
-          praten ? (
-            <Praatknop
-              dicht={!praten.aan}
-              onDicht={() => void pratenUit()}
-              onderwerp={praten.onderwerp}
-              onBegin={() => stopPraten()}
-              onAntwoord={zegAntwoord}
-            />
-          ) : undefined
-        }
+        naast={praatknop}
         gebaar={{ naam, n: `${bericht.id}:${huidigeZin}:${herhaal}`, opStem: true }}
         onNogEens={() => setHerhaal((n) => n + 1)}
         geluid={geluid}

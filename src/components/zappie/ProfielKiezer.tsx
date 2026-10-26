@@ -30,13 +30,11 @@ export function ProfielKiezer({ profielen, rustig }: { profielen: Profiel[]; rus
   const [codeVoor, zetCodeVoor] = useState<Profiel | null>(null);
   const [code, zetCode] = useState("");
   const [fout, zetFout] = useState("");
-  const [zwaai, zetZwaai] = useState(1);
-
-  /* Bliepo zwaait om de paar tellen. */
-  useEffect(() => {
-    const t = window.setInterval(() => zetZwaai((n) => n + 1), 5000);
-    return () => window.clearInterval(t);
-  }, []);
+  /*
+    Bliepo zwaaide hier om de paar tellen; sinds 26 oktober 2026 (opdracht
+    eigenaar) zwaait hij alleen nog op een groetwoord. Hier staat hij rustig
+    (het rust-filmpje: ademen en rondkijken).
+  */
 
   /* Niet scrollen achter het scherm. */
   useEffect(() => {
@@ -71,7 +69,7 @@ export function ProfielKiezer({ profielen, rustig }: { profielen: Profiel[]; rus
   return (
     <div className="zp-wie" role="dialog" aria-modal="true" aria-labelledby="zp-wie-kop">
       <div className="zp-wie-bliepo" aria-hidden="true">
-        <BliepoFilm houding="zwaaien" beurt={zwaai} rustig={rustig} className="h-full w-full" />
+        <BliepoFilm houding="rust" rustig={rustig} className="h-full w-full" />
       </div>
       <h1 id="zp-wie-kop" className="zp-titel zp-wie-kop">
         {codeVoor ? `Hoi ${codeVoor.naam}!` : "Wie gaat er oefenen?"}

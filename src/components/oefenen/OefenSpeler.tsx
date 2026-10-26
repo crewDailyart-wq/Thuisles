@@ -84,7 +84,6 @@ import {
 } from "@/lib/oefensessie";
 import { zetSaldo } from "@/lib/sleutelwinkel";
 import { zoekGenerator } from "@/lib/generatoren";
-import { VraagBliepo } from "@/components/tutor/VraagBliepo";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import "@/components/oefenen/opdracht-nieuw.css";
 import {
@@ -1490,24 +1489,10 @@ export function OefenSpeler({
           </div>
 
           {/*
-            Praten met Bliepo: alleen als de ouder het aanzette, en niet na een
-            goed antwoord (dan gaat het scherm vanzelf door). Geen tekst van de
-            uitleg erbij: die kan het antwoord bevatten, en Bliepo verklapt het
-            antwoord nooit. De tip is juist bedoeld als hint.
+            De oranje knop "Vraag het Bliepo" staat hier niet meer (26 oktober
+            2026, opdracht eigenaar): praten gaat met de ronde microfoonknop
+            naast Bliepo (Maatje, hieronder), dezelfde als in de stijlkiezer.
           */}
-          {tutor && vraag && fase !== "goed" && (
-            <div className="mt-4 flex justify-center">
-              <VraagBliepo
-                opgave={{
-                  opgaveId: `oef:${vraag.id}`,
-                  opgaveTekst: maatjeTekst?.voorlezen.tekst ?? vraagtekst,
-                  domein: tutor.domein,
-                  leerdoel: vraag.leerdoelTitel ?? "",
-                  tip: maatjeTekst?.tip.tekst ?? "",
-                }}
-              />
-            </div>
-          )}
 
           {/* Het maatje, onder de knoppen: daar kijkt het kind na Controleer. (Nieuw ontwerp: buiten het bord, op de vloer.) */}
           {maatjeTekst && ONTWERP === "oud" && (
@@ -1537,12 +1522,16 @@ export function OefenSpeler({
           )}
         </div>
         {/* Nieuw ontwerp: Bliepo op de cirkel rechts (op een staand scherm kleiner onder het bord). */}
-        {maatjeTekst && ONTWERP === "nieuw" && (
+        {/*
+          Ook zonder eigen tekst bij de opgave (26 oktober 2026): Bliepo en de
+          microfoonknop staan er altijd; hij zegt dan alleen niets vanzelf.
+        */}
+        {ONTWERP === "nieuw" && (
           <Maatje
             vloer
             bericht={
               maatjeBericht ??
-              (fase === "bezig"
+              (fase === "bezig" && maatjeTekst
                 ? {
                     id: `lees:${index}:${vraag.id}`,
                     zinnen: [

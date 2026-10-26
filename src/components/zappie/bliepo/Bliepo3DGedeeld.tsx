@@ -138,7 +138,7 @@ const FILM_VAN_CLIP: Record<string, Filmhouding> = {
   dan: "latenzien",
   openhand: "vraag",
 };
-function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null, geenTiktekst = false }: Instellingen) {
+function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, gebaar = null, geenTiktekst = false }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
   const [praat, zetPraat] = useState(false);
   const stemKlinkt = useSyncExternalStore(abonneerPraten, praatVos, geenPraat);
@@ -170,11 +170,19 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
   const [filmGebaar, zetFilmGebaar] = useState<{ houding: Filmhouding; n: string } | null>(null);
   const gebaarRef = useRef(gebaar);
   const wachtOpStem = useRef(0);
+  const laatsteZwaaiFilm = useRef(-1e9);
   useEffect(() => {
     gebaarRef.current = gebaar;
     if (!gebaar?.n) return;
     const echt = gebaar.naam.startsWith("echt:") ? FILM_VAN_CLIP[gebaar.naam.slice(5)] : undefined;
-    const houding = echt ?? kaart[gebaar.naam];
+    /*
+      Alleen nog een losse echte beweging (testknoppen) meteen. De oude
+      koppeling (kaart) speelde zonder stem na 2,5 tellen een filmpje dat
+      niet bij een woord hoorde: weggehaald (26 oktober 2026). De gebaren op
+      de woorden komen hieronder (opZin).
+    */
+    const houding = echt;
+    void kaart;
     if (!houding) return;
     /* Zonder stem (of een losse echte beweging) meteen, anders als vangnet na 2,5 tellen. */
     window.clearTimeout(wachtOpStem.current);
@@ -193,6 +201,10 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
       klokken = [];
       let plan = gebarenBijZin(z.zin, soortVanGebaar(gebaarRef.current?.naam));
       if (!plan.length) plan = bekendGebarenPlan(z.zin) ?? [];
+      /* Eén zwaai per begroeting. */
+      const nuMs = performance.now();
+      plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaaiFilm.current > 10000);
+      if (plan.some((m) => m.soort === "begroeting")) laatsteZwaaiFilm.current = nuMs;
       /* Een telrij ("een, twee, drie") is op de telefoon één telfilmpje, bij het eerste getal. */
       plan = plan.filter((m, i) => !(FILM_VAN_CLIP[m.clip] === "tellen" && i > 0 && FILM_VAN_CLIP[plan[i - 1].clip] === "tellen"));
       void filmPieken().then((pieken) => {
@@ -221,8 +233,9 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
   const gebaarHouding = filmGebaar?.houding;
   /* Na een gebaar weer rust, of praten zolang zijn stem klinkt; nadenken blijft (BliepoFilm). */
   const daarna: Filmhouding = stemKlinkt ? "praten" : "rust";
-  const houding: Filmhouding = gebaarHouding ?? (zwaai > 0 ? "zwaaien" : daarna);
-  const beurt = `${zwaai}:${filmGebaar?.n ?? 0}`;
+  /* Geen zwaaifilmpje meer op verzoek (`zwaai`): alleen op een groetwoord (26 oktober 2026). */
+  const houding: Filmhouding = gebaarHouding ?? daarna;
+  const beurt = `0:${filmGebaar?.n ?? 0}`;
   const ballonRef = useRef(ballon);
   useEffect(() => {
     ballonRef.current = ballon;
@@ -299,10 +312,13 @@ function Bliepo3DEcht({
     ballonRef.current = ballon;
   }, [ballon]);
 
-  /* Zwaaien op verzoek (de begroeting), niet bij "Beweging uit". */
-  useEffect(() => {
-    if (zwaai > 0 && !rustigRef.current) zwaaiRef.current?.("wave");
-  }, [zwaai]);
+  /*
+    Zwaaien op verzoek (`zwaai`) doet hij niet meer (26 oktober 2026, opdracht
+    eigenaar): hij zwaait alleen nog precies op een groetwoord ("Hoi",
+    "Hallo", "Goedemorgen", "Tot morgen", "Doei") aan het begin van een
+    begroeting, via het gebarenwoordenboek (lib/bliepo-gebaren.ts).
+  */
+  void zwaai;
 
   /* Een gebaar van buitenaf (testknoppen op /voorbeeld-bliepo), niet bij "Beweging uit". */
   const gebaarNaam = gebaar?.naam;
@@ -500,7 +516,7 @@ function Bliepo3DEcht({
             doelhoek = RUSTHOEK;
           }, 2500);
         }
-        if (binnen(e.clientX, e.clientY, 40) && besturing.action === "idle") speel("wave");
+        /* Zwaaien als de muis in de buurt komt: weggehaald (26 oktober 2026, alleen nog zwaaien op een groetwoord). */
       };
       const tik = (e: PointerEvent) => {
         if (!binnen(e.clientX, e.clientY, 0)) return;
@@ -569,6 +585,7 @@ function Bliepo3DEcht({
         })
         .catch((fout) => console.warn("[zappie] echte bewegingen niet geladen, de eigen gebaren blijven:", fout));
       let laatsteZin = huidigeVoorlees()?.id ?? 0;
+      let laatsteZwaai = -1e9;
       let gepland: { clip: string; op: number; vanaf: number; tempo: number; woord: string; woordOp: number; woordTot: number }[] = [];
       /* Het gebaar begint ongeveer 0,3 tel voor het woord en is op zijn hoogste punt precies op het woord (26 oktober 2026). */
       const AANLOOP = 0.3;
@@ -578,6 +595,10 @@ function Bliepo3DEcht({
         /* Het gebarenwoordenboek; vindt dat niets, dan het plan dat de server één keer maakte (lib/gebaren-plan.ts). */
         let plan = gebarenBijZin(zin, soort).filter((m) => echt.heeft(m.clip));
         if (!plan.length) plan = (bekendGebarenPlan(zin) ?? []).filter((m) => echt.heeft(m.clip));
+        /* Eén zwaai per begroeting: "Hoi Sam! Goedemorgen!" zwaait alleen op "Hoi". */
+        const nuMs = performance.now();
+        plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaai > 10000);
+        if (plan.some((m) => m.soort === "begroeting")) laatsteZwaai = nuMs;
         const woorden = zin.trim().split(/\s+/);
         /* Het tempo past ook bij hoe snel hij praat (gewoon: zo'n 2,5 woorden per tel). */
         const duur = tijden.length > 1 ? tijden[tijden.length - 1].eind - tijden[0].begin : 0;
@@ -622,15 +643,13 @@ function Bliepo3DEcht({
         const dt = Math.min((nu - vorige) / 1000, 0.05);
         vorige = nu;
         besturing.reducedMotion = rustigRef.current;
-        if (!gegroet) {
-          gegroet = true;
-          if (!rustigRef.current) besturing.play("greet");
-        }
+        /*
+          Bij elke start zwaaien (greet) en na 24 tellen rust naar zijn stekker
+          kijken: weggehaald (26 oktober 2026, opdracht eigenaar). Geen grote
+          gebaren meer die niet bij een woord horen.
+        */
+        if (!gegroet) gegroet = true;
         rustTijd = besturing.action === "idle" ? rustTijd + dt : 0;
-        if (rustTijd > 24 && !rustigRef.current) {
-          besturing.play("checkTail");
-          rustTijd = 0;
-        }
         /*
           Praten (23 oktober 2026, opdracht eigenaar): zolang zijn stem klinkt
           (en een tel daarna, tussen twee zinnen) draait hij zich meer naar het
@@ -650,13 +669,12 @@ function Bliepo3DEcht({
           }
         }
         if (wachtend && ((huidigeVoorlees()?.id ?? 0) !== wachtend.zin || nu > wachtend.tot)) {
-          const actie = wachtend.actie;
           wachtend = null;
           wachtTot = 0;
-          /* Geen stem (uit of niet gelukt): het passende echte gebaar meteen, anders het eigen gebaar. */
-          const soort = soortVanGebaar(actie);
-          const eerste = besturing.echt && soort ? gebarenBijZin("", soort)[0] : undefined;
-          if (!eerste || !besturing.speelEcht(eerste.clip)) speel(actie);
+          /*
+            Geen stem (uit of niet gelukt): geen gebaar (26 oktober 2026). Een
+            gebaar hoort bij een woord; zonder woord blijft hij rustig.
+          */
         }
         while (gepland.length && gepland[0].op <= nu) {
           const g = gepland.shift()!;

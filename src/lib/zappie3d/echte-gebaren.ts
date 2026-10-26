@@ -82,8 +82,15 @@ export const ECHTE_GEBAREN: Record<string, string> = {
  * een gebaar in twee delen het tweede deel (bij "erbij" het naar zich toe halen).
  */
 const PIEK_EXTRA: Record<string, number> = { erbij: 0.55, eraf: 0.5, samen: 0.55, meer: 0.55, minder: 0.55, helemaal: 0.75 };
-/** Welke clips tijdens het praten doorlopen. */
-export const PRAAT_CLIPS = ["praten1", "praten2"];
+/**
+ * Welke clips tijdens het praten doorlopen. Sinds 26 oktober 2026 alleen
+ * praten1: in praten2 ("Having A Chat") gaat een hand een flink deel van de
+ * tijd boven zijn schouder (gemeten: 12 tot 20% van de beeldjes), en dat zag
+ * eruit als zwaaien tijdens het praten. De clip blijft in het bestand.
+ */
+export const PRAAT_CLIPS = ["praten1"];
+/** Tijdens het praten bewegen de armen maar half zo ver als de opname: rustig en klein. */
+const PRAAT_GEWICHT = 0.5;
 /** Korte opnames die een paar keer achter elkaar spelen (één zwaai of klap is te kort). */
 const HERHAAL: Record<string, number> = { zwaaien: 4, zwaaien2: 2, klappen: 2 };
 
@@ -248,7 +255,9 @@ export class EchteGebaren {
       if (actief.length) this.stop();
     } else if (praat && (!bovenste || bovenste.t > bovenste.duur - ERUIT)) {
       /* Praten: de volgende praat-clip, steeds een andere. */
-      const keus = PRAAT_CLIPS.filter((c) => c !== this.vorigePraat && this.clips.has(c));
+      const andere = PRAAT_CLIPS.filter((c) => c !== this.vorigePraat && this.clips.has(c));
+      /* Met één praat-clip: gewoon dezelfde weer (op een andere plek beginnen). */
+      const keus = andere.length ? andere : PRAAT_CLIPS.filter((c) => this.clips.has(c));
       const clip = keus[Math.floor(Math.random() * keus.length)];
       if (clip) {
         this.vorigePraat = clip;
@@ -291,7 +300,7 @@ export class EchteGebaren {
     const T = this.T;
     for (const l of this.lagen) {
       if (l.gewicht <= 0) continue;
-      const w = l.gewicht * l.gewicht * (3 - 2 * l.gewicht);
+      const w = l.gewicht * l.gewicht * (3 - 2 * l.gewicht) * (l.lus ? PRAAT_GEWICHT : 1);
       const tijd = l.lus || l.duur > l.lengte ? l.t % l.lengte : Math.min(l.t, l.lengte);
       for (const s of l.sporen) {
         const waarden = s.track.values;
@@ -339,7 +348,7 @@ export class EchteGebaren {
       for (const naam of ["ElbowLeft", "ElbowRight"]) {
         const o = this.onderdelen[naam];
         if (!o) continue;
-        this.q.setFromAxisAngle(this.xAs, this.klem * 0.55 * praatGewicht);
+        this.q.setFromAxisAngle(this.xAs, this.klem * 0.3 * praatGewicht);
         o.quaternion.multiply(this.q);
       }
     }

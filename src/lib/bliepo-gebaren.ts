@@ -74,10 +74,13 @@ type Regel = { soort: string; clips: string[]; woorden: RegExp; alleenEerste?: b
   links...); die gaan voor een gewoon vraaggebaar.
 */
 const REGELS: Regel[] = [
-  { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^(hoi|hallo|hey|hee|welkom|doei|daag|tot ziens|tot de volgende keer|tot straks)$/ },
-  { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^dag$/, alleenEerste: true },
-  { soort: "juichen", clips: ["klappen"], woorden: /^(geweldig|fantastisch|wauw|hoera|joepie|helemaal goed|allemaal goed|alles goed|wat goed)$/ },
-  { soort: "goed", clips: ["duim", "knikken"], woorden: /^(goed zo|goed gedaan|knap|super|top|prima|heel goed|netjes|mooi zo|keurig)$/ },
+  /*
+    Zwaaien ALLEEN precies op een groetwoord aan het begin van een begroeting
+    (26 oktober 2026, opdracht eigenaar): het eerste woord van de zin.
+  */
+  { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^(hoi|hallo|goedemorgen|goedemiddag|goedenavond|tot morgen|tot ziens|doei)$/, alleenEerste: true },
+  { soort: "juichen", clips: ["klappen"], woorden: /^(hoera|joepie|geweldig|fantastisch)$/ },
+  { soort: "goed", clips: ["duim"], woorden: /^(goed zo|goed gedaan|knap|super|top|heel goed|mooi zo|keurig|helemaal goed|allemaal goed|alles goed|wat goed)$/ },
   { soort: "ja", clips: ["knikken"], woorden: /^(ja|klopt|precies|juist|dat klopt|inderdaad)$/ },
   { soort: "troost", clips: ["geruststellen"], woorden: /^(bijna|geeft niet|niet erg|geen probleem|jammer|oeps)$/ },
   { soort: "aanmoedigen", clips: ["knikken2"], woorden: /^(probeer|probeer het|nog een keer|nog eens|jij kunt het|je kunt het|rustig aan)$/ },
@@ -109,6 +112,12 @@ const GETAL: Record<string, number> = { een: 1, één: 1, twee: 2, drie: 3, vier
 const HOEVEELHEID = /^(twee|drie|vier|2|3|4)$/;
 
 /* Zonder trefwoord: een gebaar per soort zin (van buitenaf), op het eerste woord. */
+/*
+  Sinds 26 oktober 2026 (opdracht eigenaar: "een groot gebaar alleen als een
+  woord erom vraagt") komt er geen gebaar meer alleen omdat de zin een vraag,
+  hint of goed antwoord is: alleen op een woord dat erbij past. De soort zin
+  bepaalt nog wel welk gebaar voorgaat als er meer passen.
+*/
 const PER_SOORT: Record<Zinsoort, string | null> = {
   vraag: "vraag",
   uitleg: null,
@@ -117,6 +126,7 @@ const PER_SOORT: Record<Zinsoort, string | null> = {
   fout: "troost",
   begroeting: "begroeting",
 };
+const ZONDER_WOORD = false;
 
 const kaal = (w: string) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, "");
 
@@ -204,7 +214,10 @@ export function gebarenBijZin(zin: string, soort?: Zinsoort | null): Gebaarmomen
   if (gewenst) {
     const eigen = keuzes.find((k) => familie[gewenst]?.includes(k.soort));
     /* Bij een vraag gaat een betekenisgebaar voor het vraaggebaar. */
-    if (!(gewenst === "vraag" && keuzes.some((k) => k.betekenis))) plan.push(eigen ?? { leden: [{ woord: 0, soort: gewenst }], soort: gewenst, woord: 0, betekenis: false });
+    if (!(gewenst === "vraag" && keuzes.some((k) => k.betekenis))) {
+      if (eigen) plan.push(eigen);
+      else if (ZONDER_WOORD) plan.push({ leden: [{ woord: 0, soort: gewenst }], soort: gewenst, woord: 0, betekenis: false });
+    }
   }
   const rest = keuzes
     .filter((k) => !plan.includes(k) && !(k.soort === "vraag" && (plan.length || keuzes.some((x) => x.betekenis))))

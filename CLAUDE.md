@@ -274,6 +274,34 @@ geval het ooit nog nodig is. Gebruik het niet.
 
 ---
 
+# ⛔ HARDE REGEL 6 — NOOIT DE HELE DATABASE VAN DE LAPTOP ONLINE ZETTEN
+
+**Zet de hele database van de laptop nooit meer online** (besluit eigenaar,
+26 oktober 2026). Online staan de profielen en de voortgang van echte
+kinderen; een volledige laptop-database erover overschrijft die.
+
+- `npm run online` zet daarom alleen nog afbeeldingen en Godot-spelletjes
+  online (met eerst een reservekopie van online) en stopt vóór de database.
+  De oude stap staat er nog, maar alleen achter
+  `THUISLES_HELE_DATABASE_OVERSCHRIJVEN=ja`; die zet alleen de eigenaar zelf
+  aan, nooit Claude.
+- Moet er iets in de online database veranderen (een instelling, een status),
+  gebruik dan een gericht script met een precieze `where`:
+  `node scripts/online-wijzig.mjs <bestand.sql>`. Dat maakt eerst een
+  reservekopie van online in `backups/` en voert de wijziging uit in één
+  transactie.
+- De opdrachten blijven zoals ze nu zijn (open); niets op concept zetten
+  zonder dat de eigenaar het vraagt.
+
+## Waarom deze regel er is
+
+Tot 26 oktober 2026 was de laptop-database de baas en ging hij na elke klus in
+zijn geheel online. Het script meldde daarbij steeds dat er online iets was
+veranderd (zoals voortgang) dat werd overschreven. Zodra echte kinderen online
+oefenen, zou hun voortgang zo verdwijnen.
+
+---
+
 **Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
 gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
 grootte.** De bestanden staan in `public/geld/`, met de bron in

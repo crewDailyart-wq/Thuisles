@@ -400,8 +400,14 @@ export const SCHERMCONTRACT = [
     bron: ["src/app/voorbeeld-bliepo/TutorDemo.tsx", "src/components/tutor/VraagBliepo.tsx"],
     zichtbaar: ["Praten met Bliepo (demo)", "Groep 1-2", "Groep 3-5", "Groep 6-8", "Vraag het Bliepo"],
     naKlik: [
-      { tekst: "<VraagBliepo", bron: "src/components/oefenen/OefenSpeler.tsx", na: "een oefening openen met Praten met Bliepo aan" },
-      { tekst: "<VraagBliepo", bron: "src/components/les/Lesscherm.tsx", na: "een les openen met Praten met Bliepo aan" },
+      /*
+        26 oktober 2026, op verzoek van de eigenaar: de oranje knop "Vraag het
+        Bliepo" is aan de kindkant vervangen door de ronde microfoonknop naast
+        Bliepo (Praatknop). Die moet er in oefeningen en lessen staan.
+      */
+      { tekst: "<Praatknop", bron: "src/components/oefenen/Maatje.tsx", na: "een oefening openen (de ronde microfoonknop naast Bliepo)" },
+      { tekst: "praten={{", bron: "src/components/oefenen/OefenSpeler.tsx", na: "een oefening openen (Praten met Bliepo aan of uit)" },
+      { tekst: "<LosPraatknop", bron: "src/components/les/Lesscherm.tsx", na: "een les openen (de ronde microfoonknop naast Bliepo)" },
       { tekst: "Praten met Bliepo", bron: "src/components/ouder/Instellingformulieren.tsx", na: "Instellingen → Profiel van een kind openklappen" },
       { tekst: "Vragen per dag", bron: "src/components/ouder/Instellingformulieren.tsx", na: "Instellingen → Profiel van een kind openklappen" },
     ],

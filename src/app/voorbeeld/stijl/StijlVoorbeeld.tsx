@@ -8,6 +8,7 @@
 
 import { useEffect, useState } from "react";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
+import { Praatknop } from "@/components/gesprek/Gesprek";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { Voortgangskop } from "@/components/oefenen/Voortgangskop";
 import type { Bolstand } from "@/components/oefenen/Oefenbalk";
@@ -180,34 +181,13 @@ export function StijlVoorbeeld({
             plek="vast"
             onNogEens={() => {}}
             naast={
-              <div className="gs-praat">
-                <button
-                  type="button"
-                  className={`gs-praatknop${pratenUit ? " gs-dicht" : ""}`}
-                  aria-label="Tik om iets te zeggen"
-                  tabIndex={-1}
-                >
-                  <svg
-                    viewBox="0 0 24 24"
-                    className="gs-microfoon"
-                    fill="none"
-                    stroke="currentColor"
-                    strokeWidth={2.2}
-                    strokeLinecap="round"
-                    aria-hidden="true"
-                  >
-                    <rect
-                      x="9"
-                      y="3"
-                      width="6"
-                      height="11"
-                      rx="3"
-                      fill="currentColor"
-                    />
-                    <path d="M5 11a7 7 0 0 0 14 0M12 18v3" />
-                  </svg>
-                </button>
-              </div>
+              /* Dezelfde ronde microfoonknop als aan de kindkant (components/gesprek, Praatknop). */
+              <Praatknop
+                dicht={pratenUit}
+                onDicht={() => {}}
+                onderwerp={() => ({ opgaveId: "voorbeeld:stijl", opgaveTekst: "Hoeveel is 5 + 3?", demo: true, groep: 3 })}
+                onAntwoord={() => {}}
+              />
             }
           >
             <div className="bliepo-zinnen">
