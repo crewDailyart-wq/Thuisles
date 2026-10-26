@@ -29,6 +29,7 @@ import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
 import { abonneerVoorlees, huidigeVoorlees } from "@/lib/voorlezen";
 import { gebarenBijZin, soortVanGebaar } from "@/lib/bliepo-gebaren";
+import { bekendGebarenPlan } from "@/lib/gebaren-plan";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
@@ -112,6 +113,30 @@ const FILM_VAN_CLIP: Record<string, Filmhouding> = {
   geruststellen: "troost",
   zwaaien: "zwaaien",
   zwaaien2: "zwaaien",
+  /* Het gebarenwoordenboek (26 oktober 2026): de belangrijkste nieuwe gebaren als filmpje; tellen op de vingers via het telfilmpje. */
+  groot: "groot",
+  klein: "klein",
+  erbij: "erbij",
+  eraf: "eraf",
+  stop: "stop",
+  samen: "samen",
+  meer: "meer",
+  minder: "minder",
+  links: "links",
+  rechts: "rechts",
+  boven: "boven",
+  onder: "onder",
+  denken: "denken",
+  vingers1: "tellen",
+  vingers2: "tellen",
+  vingers3: "tellen",
+  vingers4: "tellen",
+  helemaal: "groot",
+  snel: "praten",
+  langzaam: "praten",
+  eerst: "latenzien",
+  dan: "latenzien",
+  openhand: "vraag",
 };
 function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, gebaar = null, geenTiktekst = false }: Instellingen) {
   const plek = useRef<HTMLDivElement>(null);
@@ -166,13 +191,22 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, zwaai = 0, 
       window.clearTimeout(wachtOpStem.current);
       klokken.forEach((k) => window.clearTimeout(k));
       klokken = [];
-      const plan = gebarenBijZin(z.zin, soortVanGebaar(gebaarRef.current?.naam));
+      let plan = gebarenBijZin(z.zin, soortVanGebaar(gebaarRef.current?.naam));
+      if (!plan.length) plan = bekendGebarenPlan(z.zin) ?? [];
+      /* Een telrij ("een, twee, drie") is op de telefoon één telfilmpje, bij het eerste getal. */
+      plan = plan.filter((m, i) => !(FILM_VAN_CLIP[m.clip] === "tellen" && i > 0 && FILM_VAN_CLIP[plan[i - 1].clip] === "tellen"));
       void filmPieken().then((pieken) => {
         if (laatste !== z.id) return;
+        /* Een filmpje moet zijn hoogste punt halen: begint het volgende eerder, dan valt dat volgende weg. */
+        let vrijVanaf = 0;
         for (const m of plan) {
           const houding = FILM_VAN_CLIP[m.clip];
-          if (!houding) continue;
-          const op = z.start + ((z.tijden[m.woord]?.begin ?? 0) - 0.1 - (pieken[houding] ?? 0.4)) * 1000;
+          if (!houding || houding === "praten") continue;
+          /* Het hoogste punt van het filmpje precies op het woord (26 oktober 2026). */
+          const woordOp = z.start + (z.tijden[m.woord]?.begin ?? 0) * 1000;
+          const op = woordOp - (pieken[houding] ?? 0.4) * 1000;
+          if (op < vrijVanaf) continue;
+          vrijVanaf = woordOp + 300;
           klokken.push(window.setTimeout(() => zetFilmGebaar({ houding, n: `${z.id}:${m.woord}` }), Math.max(0, op - performance.now())));
         }
       });
@@ -535,20 +569,41 @@ function Bliepo3DEcht({
         })
         .catch((fout) => console.warn("[zappie] echte bewegingen niet geladen, de eigen gebaren blijven:", fout));
       let laatsteZin = huidigeVoorlees()?.id ?? 0;
-      let gepland: { clip: string; op: number; woord: string; woordOp: number; woordTot: number }[] = [];
+      let gepland: { clip: string; op: number; vanaf: number; tempo: number; woord: string; woordOp: number; woordTot: number }[] = [];
+      /* Het gebaar begint ongeveer 0,3 tel voor het woord en is op zijn hoogste punt precies op het woord (26 oktober 2026). */
+      const AANLOOP = 0.3;
       const planZin = (zin: string, soort: ReturnType<typeof soortVanGebaar>, start: number, tijden: { begin: number; eind: number }[]) => {
         const echt = besturing.echt;
         if (!echt) return false;
-        const plan = gebarenBijZin(zin, soort).filter((m) => echt.heeft(m.clip));
+        /* Het gebarenwoordenboek; vindt dat niets, dan het plan dat de server één keer maakte (lib/gebaren-plan.ts). */
+        let plan = gebarenBijZin(zin, soort).filter((m) => echt.heeft(m.clip));
+        if (!plan.length) plan = (bekendGebarenPlan(zin) ?? []).filter((m) => echt.heeft(m.clip));
         const woorden = zin.trim().split(/\s+/);
-        gepland = plan.map((m) => ({
-          clip: m.clip,
-          /* Zoals bij mensen: het hoogste punt van het gebaar net voor het woord (0,1 tel). */
-          op: start + ((tijden[m.woord]?.begin ?? 0) - 0.1 - echt.piek(m.clip)) * 1000,
-          woord: woorden[m.woord] ?? "",
-          woordOp: start + (tijden[m.woord]?.begin ?? 0) * 1000,
-          woordTot: start + (tijden[m.woord]?.eind ?? 0) * 1000,
-        }));
+        /* Het tempo past ook bij hoe snel hij praat (gewoon: zo'n 2,5 woorden per tel). */
+        const duur = tijden.length > 1 ? tijden[tijden.length - 1].eind - tijden[0].begin : 0;
+        const spreek = duur > 0.5 ? Math.max(0.85, Math.min(1.15, tijden.length / duur / 2.5)) : 1;
+        gepland = plan.map((m, j) => {
+          const tempo = Math.max(0.5, Math.min(1.8, (m.tempo ?? 1) * spreek));
+          const piek = echt.piek(m.clip);
+          const woordOp = start + (tijden[m.woord]?.begin ?? 0) * 1000;
+          /*
+            Een lange aanloop (Mixamo) begint verder in de clip, zodat het gebaar
+            0,3 tel voor het woord in beeld komt. Tellen na tellen ("een, twee,
+            drie"): de hand staat al omhoog, dan alleen de volgende vinger, kort
+            voor het woord.
+          */
+          const telVerder = /^vingers\d$/.test(m.clip) && /^vingers\d$/.test(plan[j - 1]?.clip ?? "");
+          const vanaf = Math.max(0, piek - (telVerder ? 0.12 : AANLOOP) * tempo);
+          return {
+            clip: m.clip,
+            op: woordOp - ((piek - vanaf) / tempo) * 1000,
+            vanaf,
+            tempo,
+            woord: woorden[m.woord] ?? "",
+            woordOp,
+            woordTot: start + (tijden[m.woord]?.eind ?? 0) * 1000,
+          };
+        });
         return true;
       };
 
@@ -588,6 +643,11 @@ function Bliepo3DEcht({
           laatsteZin = zin.id;
           /* Een nieuwe zin klinkt: de gebaren op de woorden (en het gebaar van buitenaf telt als soort zin). */
           if (!rustigRef.current && planZin(zin.zin, soortVanGebaar(wachtend?.actie), zin.start, zin.tijden)) wachtend = null;
+          /* Alleen op de ontwikkelcomputer: wanneer de zin begon te klinken (voor het nameten en de testfilmpjes). */
+          if (process.env.NODE_ENV === "development") {
+            const w = window as unknown as { __zinnenlog?: unknown[] };
+            (w.__zinnenlog ??= []).push({ zin: zin.zin, start: zin.start, epoch: performance.timeOrigin + zin.start });
+          }
         }
         if (wachtend && ((huidigeVoorlees()?.id ?? 0) !== wachtend.zin || nu > wachtend.tot)) {
           const actie = wachtend.actie;
@@ -606,12 +666,13 @@ function Bliepo3DEcht({
             (anders springt de arm). Bij het eerste woord van een zin valt het
             hoogste punt dan nog binnen dat woord.
           */
-          const vanaf = Math.max(0, Math.min((nu - g.op) / 1000, (besturing.echt?.piek(g.clip) ?? 0) - 0.2));
-          if (!rustigRef.current) besturing.speelEcht(g.clip, vanaf);
+          const piek = besturing.echt?.piek(g.clip) ?? 0;
+          const vanaf = Math.max(g.vanaf, Math.min(g.vanaf + ((nu - g.op) / 1000) * g.tempo, piek - 0.15 * g.tempo));
+          if (!rustigRef.current) besturing.speelEcht(g.clip, vanaf, g.tempo);
           /* Alleen op de ontwikkelcomputer: bijhouden voor het nameten (welk gebaar, welk woord, wanneer). */
           if (process.env.NODE_ENV === "development") {
             const w = window as unknown as { __gebarenlog?: unknown[] };
-            (w.__gebarenlog ??= []).push({ clip: g.clip, woord: g.woord, start: Math.round(nu), op: Math.round(g.op), vanaf: +vanaf.toFixed(3), piek: +(besturing.echt?.piek(g.clip) ?? 0).toFixed(3), piekOp: Math.round(nu + ((besturing.echt?.piek(g.clip) ?? 0) - vanaf) * 1000), woordOp: Math.round(g.woordOp), woordTot: Math.round(g.woordTot) });
+            (w.__gebarenlog ??= []).push({ clip: g.clip, woord: g.woord, start: Math.round(nu), op: Math.round(g.op), vanaf: +vanaf.toFixed(3), piek: +(besturing.echt?.piek(g.clip) ?? 0).toFixed(3), tempo: +g.tempo.toFixed(2), piekOp: Math.round(nu + ((besturing.echt?.piek(g.clip) ?? 0) - vanaf) * 1000 / g.tempo), woordOp: Math.round(g.woordOp), woordTot: Math.round(g.woordTot) });
           }
         }
         if (niveau !== null || praatVos()) praatTot = nu + 800;

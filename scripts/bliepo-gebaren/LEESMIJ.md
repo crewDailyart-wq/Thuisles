@@ -49,3 +49,27 @@ veranderd.
 - Wijzen: de arm draait naar de opdracht (links van hem in beeld).
 - Let op: `Vector.normalize()` van Blender rekent bij 4 getallen maar met 3;
   daarom worden quaternions zelf gedeeld door hun lengte.
+
+## Het gebarenwoordenboek (26 oktober 2026)
+
+Gebaren die Mixamo niet goed heeft voor Bliepo's korte armen (groot/klein,
+erbij/eraf, snel/langzaam, meer/minder, stop, samen, wijzen naar boven, onder,
+links en rechts, eerst/dan, helemaal, nadenken met de hand bij de borst, tellen
+op 1 tot 4 vingers, open hand) zijn met keyframes gemaakt in Blender:
+
+- `Blender -b --python sleutelgebaren.py -- sleutel.json`: per gebaar
+  sleutelmomenten (waar de pols is, hoe de hand staat, welke vingers krom),
+  de armen uitgerekend, en weggeduwd van zijn lijf, hoofd en wielen (zelfde
+  dozen als overzetten.py). Het hoogste punt ligt op 0,3 s.
+- Controle: `botscheck.py` en `piekbeeld.py` zoals hierboven.
+- Klein bestand: `node maak-gebaren-glb.mjs sleutel.json zappie-gebaren-extra.glb 30`
+  (`TOL=1e-3`). Een eigen bestand naast `zappie-gebaren.glb`; het oude blijft
+  ongewijzigd.
+- Filmpjes: `node filmpjes-opnemen.mjs groot klein erbij ...` (dezelfde
+  werkwijze als hierboven).
+
+Welk gebaar bij welk woord: `REGELS` in `src/lib/bliepo-gebaren.ts` (het
+woordenboek). Zinnen zonder trefwoord: één keer een goedkoop AI-model
+(`src/lib/gebaren-server.ts`, bewaard in `stem/gebaren/`). Het gebaar begint
+0,3 s voor het woord en is op zijn hoogste punt precies op het woord
+(`Bliepo3DGedeeld`), met een tempo dat past bij het woord en hoe snel hij praat.

@@ -17,6 +17,7 @@
  * dienst en betalen we per zin maar één keer.
  */
 
+import { haalGebarenPlan } from "@/lib/gebaren-plan";
 import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
 import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 
@@ -430,6 +431,7 @@ const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
 
 /** Een zin alvast laten maken en in de browser zetten. */
 function haalAlvast(zin: string): void {
+  haalGebarenPlan(zin);
   void fetch(adres(zin)).catch(() => {});
 }
 
@@ -486,6 +488,8 @@ function speelVanServer(
     if (mijnBeurt === beurt) klaar();
   };
 
+  /* Tegelijk het gebarenplan van deze zin (lib/gebaren-plan.ts). */
+  haalGebarenPlan(zin);
   const wacht = new AbortController();
   const wachter = setTimeout(() => wacht.abort(), GEDULD_MS);
   void fetch(adres(zin), { signal: wacht.signal })

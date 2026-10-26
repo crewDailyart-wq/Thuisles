@@ -26,8 +26,32 @@ const ZINNEN: { soort: Zinsoort; label: string; tekst: string }[] = [
   { soort: "fout", label: "Aanmoediging", tekst: "Bijna! Probeer het nog een keer, jij kunt het." },
 ];
 
+/*
+  Het gebarenwoordenboek testen (26 oktober 2026, opdracht eigenaar): vijftien
+  zinnen met het gebaar dat je zou moeten zien, op het woord waar het bij hoort.
+*/
+export const WOORDENBOEK_ZINNEN: { kort: string; tekst: string; verwacht: string }[] = [
+  { kort: "Langzaam", tekst: "We doen het heel langzaam.", verwacht: "trage, rustige beweging op 'langzaam'" },
+  { kort: "Erbij", tekst: "Er komen er drie bij.", verwacht: "drie vingers op 'drie', dan iets naar zich toe halen op 'bij'" },
+  { kort: "Groot en klein", tekst: "Deze is groot, en deze is klein.", verwacht: "handen ver uit elkaar op 'groot', dicht bij elkaar op 'klein'" },
+  { kort: "Tellen", tekst: "Tel maar mee: een, twee, drie.", verwacht: "op zijn vingers tellen: 1, 2, 3 vingers" },
+  { kort: "Eraf", tekst: "Haal er twee weg.", verwacht: "twee vingers, dan wegvegen op 'weg'" },
+  { kort: "Snel", tekst: "Dat ging heel snel!", verwacht: "snelle korte bewegingen op 'snel'" },
+  { kort: "Stop", tekst: "Stop, wacht even.", verwacht: "hand vooruit op 'Stop'" },
+  { kort: "Links", tekst: "Kijk naar de toren links.", verwacht: "naar de opdracht wijzen, dan wijzen naar links" },
+  { kort: "Rechts", tekst: "Het antwoord staat rechts.", verwacht: "wijzen naar rechts op 'rechts'" },
+  { kort: "Boven", tekst: "Wijs het bovenste plaatje aan.", verwacht: "wijzen naar boven op 'bovenste'" },
+  { kort: "Onder", tekst: "Het getal staat onderaan.", verwacht: "wijzen naar onder op 'onderaan'" },
+  { kort: "Eerst, dan", tekst: "Eerst tel je de rode, dan de blauwe.", verwacht: "linkerhand op 'Eerst', rechterhand op 'dan'" },
+  { kort: "Samen", tekst: "Zet ze samen in een groep.", verwacht: "handen naar elkaar op 'samen'" },
+  { kort: "Meer", tekst: "Welke kant heeft meer stippen?", verwacht: "hand omhoog op 'meer'" },
+  { kort: "Nadenken", tekst: "Hmm, denk even goed na.", verwacht: "hand bij zijn borst, hoofd scheef" },
+];
+
 export function TestPraten() {
   const [nu, zetNu] = useState(-1);
+  /* Een zin uit het gebarenwoordenboek (index), of geen. */
+  const [boek, zetBoek] = useState<number | null>(null);
   const [ronde, zetRonde] = useState(0);
   /* Een losse echte beweging (knoppen hieronder, 24 oktober 2026). */
   const [los, zetLos] = useState<{ naam: string; n: number } | null>(null);
@@ -41,9 +65,20 @@ export function TestPraten() {
     [],
   );
 
+  function zegBoek(i: number) {
+    stop.current?.();
+    stopPraten();
+    zetNu(-1);
+    zetLos(null);
+    zetRonde((r) => r + 1);
+    zetBoek(i);
+    stop.current = zegNaElkaar([WOORDENBOEK_ZINNEN[i].tekst], () => {}, () => {}, true);
+  }
+
   function start() {
     stop.current?.();
     stopPraten();
+    zetBoek(null);
     zetRonde((r) => r + 1);
     zetNu(0);
     stop.current = zegNaElkaar(
@@ -54,8 +89,8 @@ export function TestPraten() {
     );
   }
 
-  const zin = nu >= 0 ? ZINNEN[nu] : null;
-  const gebaar = zin
+  const zin = nu >= 0 ? ZINNEN[nu] : boek !== null ? { label: WOORDENBOEK_ZINNEN[boek].kort, tekst: WOORDENBOEK_ZINNEN[boek].tekst, soort: null } : null;
+  const gebaar = zin?.soort
     ? { naam: kiesGebaar(zin.soort, `test:${ronde}`, nu), n: `${ronde}:${nu}`, opStem: true }
     : los
       ? { naam: `echt:${los.naam}`, n: `los:${los.n}` }
@@ -99,6 +134,30 @@ export function TestPraten() {
           ))}
         </ol>
       </div>
+
+      {/* Het gebarenwoordenboek (26 oktober 2026): vijftien testzinnen met het gebaar dat je zou moeten zien. */}
+      <h3 className="mt-5 text-base font-bold">Gebarenwoordenboek</h3>
+      <p className="mt-1 text-sm text-white/75">
+        Vijftien zinnen. Tik op een zin: Bliepo zegt hem en maakt het gebaar op het woord waar het bij hoort (het hoogste punt precies op
+        het woord). Ernaast staat wat je zou moeten zien.
+      </p>
+      <ol className="mt-2 grid gap-2 sm:grid-cols-2">
+        {WOORDENBOEK_ZINNEN.map((z, i) => (
+          <li key={z.tekst}>
+            <button
+              type="button"
+              onClick={() => zegBoek(i)}
+              aria-pressed={boek === i}
+              className={`flex w-full min-h-11 flex-col items-start rounded-2xl px-4 py-2 text-left text-sm ${boek === i ? "bg-white text-[#0d2a6b]" : "bg-white/10 hover:bg-white/20"}`}
+            >
+              <span className="font-bold">
+                {i + 1}. {z.tekst}
+              </span>
+              <span className={boek === i ? "text-[#0d2a6b]/75" : "text-white/70"}>Verwacht: {z.verwacht}</span>
+            </button>
+          </li>
+        ))}
+      </ol>
 
       {/*
         Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen

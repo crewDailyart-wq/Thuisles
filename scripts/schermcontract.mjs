@@ -508,6 +508,14 @@ export const SCHERMCONTRACT = [
     pad: "/voorbeeld-bliepo",
     bron: ["src/app/voorbeeld-bliepo/TestPraten.tsx", "src/lib/zappie3d/echte-gebaren.ts"],
     zichtbaar: [
+      /* Het gebarenwoordenboek (26 oktober 2026, opdracht eigenaar). */
+      "Gebarenwoordenboek",
+      "We doen het heel langzaam.",
+      "Er komen er drie bij.",
+      "Deze is groot, en deze is klein.",
+      "Groot (handen ver uit elkaar)",
+      "Tellen: 3 vingers",
+      "Stop / wacht even (hand vooruit)",
       "Echte bewegingen",
       "Praten 1 (General Conversation)",
       "Praten 2 (Having A Chat)",

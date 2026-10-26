@@ -38,7 +38,21 @@ export type Filmhouding =
   | "duim"
   | "klappen"
   | "knikken"
-  | "aanmoedigen";
+  | "aanmoedigen"
+  /* Het gebarenwoordenboek (26 oktober 2026): keyframes uit Blender, recht naar de camera opgenomen. */
+  | "groot"
+  | "klein"
+  | "erbij"
+  | "eraf"
+  | "stop"
+  | "samen"
+  | "meer"
+  | "minder"
+  | "links"
+  | "rechts"
+  | "boven"
+  | "onder"
+  | "denken";
 
 /*
   Echte bewegingen (24 oktober 2026, opdracht eigenaar): de filmpjes zijn

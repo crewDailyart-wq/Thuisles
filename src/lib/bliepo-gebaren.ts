@@ -57,12 +57,22 @@ export function vraagOfUitleg(zin: string): Zinsoort {
   (handen die meepraten, zoals een juf bij uitleg).
 */
 
-/** Een gebaar bij een woord: `woord` is het hoeveelste woord (gescheiden door spaties). */
-export type Gebaarmoment = { clip: string; woord: number; soort: string };
+/**
+ * Een gebaar bij een woord: `woord` is het hoeveelste woord (gescheiden door
+ * spaties). `tempo`: 1 = gewoon, hoger = sneller, lager = rustiger.
+ */
+export type Gebaarmoment = { clip: string; woord: number; soort: string; tempo?: number };
 
-type Regel = { soort: string; clips: string[]; woorden: RegExp; alleenEerste?: boolean };
+type Regel = { soort: string; clips: string[]; woorden: RegExp; alleenEerste?: boolean; tempo?: number; betekenis?: boolean };
 
-/* Volgorde = voorrang bij twee woorden op dezelfde plek. Woorden zonder leestekens, kleine letters. */
+/*
+  Het gebarenwoordenboek (24 oktober 2026, uitgebreid 26 oktober 2026,
+  opdracht eigenaar: "zoals een juf die met haar handen uitlegt"). Volgorde =
+  voorrang bij twee woorden op dezelfde plek; langere stukken (3, 2, 1
+  woorden) gaan voor. Woorden zonder leestekens, kleine letters.
+  `betekenis`: het gebaar laat zien wat het woord betekent (groot, erbij,
+  links...); die gaan voor een gewoon vraaggebaar.
+*/
 const REGELS: Regel[] = [
   { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^(hoi|hallo|hey|hee|welkom|doei|daag|tot ziens|tot de volgende keer|tot straks)$/ },
   { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^dag$/, alleenEerste: true },
@@ -71,11 +81,32 @@ const REGELS: Regel[] = [
   { soort: "ja", clips: ["knikken"], woorden: /^(ja|klopt|precies|juist|dat klopt|inderdaad)$/ },
   { soort: "troost", clips: ["geruststellen"], woorden: /^(bijna|geeft niet|niet erg|geen probleem|jammer|oeps)$/ },
   { soort: "aanmoedigen", clips: ["knikken2"], woorden: /^(probeer|probeer het|nog een keer|nog eens|jij kunt het|je kunt het|rustig aan)$/ },
-  { soort: "hint", clips: ["nadenken"], woorden: /^(tip|hint|denk|bedenk|hmm|eens kijken|weet je nog|let op)$/ },
+  { soort: "stop", clips: ["stop"], woorden: /^(stop|wacht|wacht even|wacht maar|even wachten|halt)$/, betekenis: true },
+  { soort: "snel", clips: ["snel"], woorden: /^(snel|heel snel|supersnel|vlug|snelle|sneller)$/, tempo: 1.4, betekenis: true },
+  { soort: "langzaam", clips: ["langzaam"], woorden: /^(langzaam|heel langzaam|langzamer|rustig|stap voor stap|voorzichtig)$/, tempo: 0.65, betekenis: true },
+  { soort: "erbij", clips: ["erbij"], woorden: /^(erbij|plus|bij elkaar|optellen|komen erbij|komt erbij|doe erbij|toevoegen)$/, betekenis: true },
+  { soort: "eraf", clips: ["eraf"], woorden: /^(eraf|min|minus|weg|aftrekken|haal weg|haal eraf|gaan eraf|gaat eraf)$/, betekenis: true },
+  { soort: "meer", clips: ["meer"], woorden: /^(meer|meeste|het meest|hoger|groter dan)$/, betekenis: true },
+  { soort: "minder", clips: ["minder"], woorden: /^(minder|minste|het minst|lager|kleiner dan)$/, betekenis: true },
+  { soort: "groot", clips: ["groot"], woorden: /^(groot|grote|groter|grootste|heel groot|enorm|reusachtig)$/, betekenis: true },
+  { soort: "klein", clips: ["klein"], woorden: /^(klein|kleine|kleiner|kleinste|heel klein|een beetje|piepklein)$/, betekenis: true },
+  { soort: "samen", clips: ["samen"], woorden: /^(samen|tegelijk|allebei|met elkaar)$/, betekenis: true },
+  { soort: "boven", clips: ["boven"], woorden: /^(boven|bovenaan|bovenste|daarboven|omhoog)$/, betekenis: true },
+  { soort: "onder", clips: ["onder"], woorden: /^(onder|onderaan|onderste|daaronder|beneden|omlaag)$/, betekenis: true },
+  { soort: "links", clips: ["links"], woorden: /^(links|naar links|linkerkant|aan de linkerkant)$/, betekenis: true },
+  { soort: "rechts", clips: ["rechts"], woorden: /^(rechts|naar rechts|rechterkant|aan de rechterkant)$/, betekenis: true },
+  { soort: "eerst", clips: ["eerst"], woorden: /^(eerst|als eerste|begin met)$/, betekenis: true },
+  { soort: "helemaal", clips: ["helemaal"], woorden: /^(helemaal|alles|allemaal|overal|heel veel)$/, betekenis: true },
+  { soort: "hint", clips: ["denken"], woorden: /^(tip|hint|denk|bedenk|nadenken|denk na|hmm|eens kijken|weet je nog|let op)$/ },
   { soort: "tellen", clips: ["tellen"], woorden: /^(tel|tellen|telt|tel maar|samen tellen|één twee|een twee)$/ },
-  { soort: "wijzen", clips: ["wijzen1", "wijzen2"], woorden: /^(kijk|hier|daar|zie je|deze|op het bord|op het scherm|bovenaan|onderaan)$/ },
+  { soort: "wijzen", clips: ["wijzen1", "wijzen2"], woorden: /^(kijk|hier|daar|zie je|deze|op het bord|op het scherm)$/ },
   { soort: "vraag", clips: ["vraag1", "vraag3", "vraag2"], woorden: /^(hoeveel|wat|welke|welk|waar|wie|hoe|waarom|kun|kan|weet|zie|wil)$/ },
 ];
+
+/* Getallen die hij op zijn vingers laat zien (Bliepo heeft drie vingers en een duim: tot 4). */
+const GETAL: Record<string, number> = { een: 1, één: 1, twee: 2, drie: 3, vier: 4, "1": 1, "2": 2, "3": 3, "4": 4 };
+/* Een los getal alleen als het om een hoeveelheid gaat (niet "een appel"): twee tot vier, of een getal in een telrij. */
+const HOEVEELHEID = /^(twee|drie|vier|2|3|4)$/;
 
 /* Zonder trefwoord: een gebaar per soort zin (van buitenaf), op het eerste woord. */
 const PER_SOORT: Record<Zinsoort, string | null> = {
@@ -101,46 +132,101 @@ function uitvoering(regel: Regel, zin: string) {
   return clip;
 }
 
-/**
- * Welke echte bewegingen bij deze zin horen, en op welk woord.
- * `soort` (als die bekend is: goed antwoord, fout, groet...) gaat voor; een
- * vraag krijgt een vraaggebaar op het vraagwoord. Hoogstens twee gebaren per
- * zin, en alleen als er genoeg woorden tussen zitten.
- */
-export function gebarenBijZin(zin: string, soort?: Zinsoort | null): Gebaarmoment[] {
+type Treffer = { woord: number; soort: string; clip?: string; tempo?: number; betekenis?: boolean; groep?: number };
+
+/** Alle woorden in de zin die een gebaar hebben (nog zonder te kiezen). */
+export function treffersInZin(zin: string): Treffer[] {
   const woorden = zin.trim().split(/\s+/).filter(Boolean).map(kaal);
   const isVraag = /\?\s*$/.test(zin.trim());
-  const treffers: Gebaarmoment[] = [];
+  const treffers: Treffer[] = [];
+  let groep = 0;
   for (let i = 0; i < woorden.length; i++) {
+    /* Tellen op de vingers: "een, twee, drie" (een telrij) of een losse hoeveelheid ("er komen er drie bij"). */
+    const n = GETAL[woorden[i]];
+    if (n) {
+      const naVorige = i > 0 && GETAL[woorden[i - 1]] === n - 1;
+      const inRij = naVorige || GETAL[woorden[i + 1]] === n + 1;
+      if (inRij || HOEVEELHEID.test(woorden[i])) {
+        if (!naVorige) groep += 1;
+        treffers.push({ woord: i, soort: "vingers", clip: `vingers${n}`, betekenis: true, groep });
+        continue;
+      }
+    }
     for (const lengte of [3, 2, 1]) {
       const stuk = woorden.slice(i, i + lengte).join(" ");
       if (!stuk) continue;
-      const regel = REGELS.find((r) => r.woorden.test(stuk) && (!r.alleenEerste || i === 0) && (r.soort !== "vraag" || isVraag));
+      let regel = REGELS.find((r) => r.woorden.test(stuk) && (!r.alleenEerste || i === 0) && (r.soort !== "vraag" || isVraag));
+      /* "Er komen er drie bij": "bij" aan het eind van de zin is erbij. */
+      if (!regel && stuk === "bij" && i === woorden.length - 1) regel = REGELS.find((r) => r.soort === "erbij");
+      /* "dan" alleen na "eerst" (anders: "groter dan", "wat dan"). */
+      if (!regel && /^(dan|daarna|en dan)$/.test(stuk) && treffers.some((t) => t.soort === "eerst")) {
+        treffers.push({ woord: i, soort: "dan", clip: "dan", betekenis: true });
+        i += lengte - 1;
+        break;
+      }
       if (regel) {
-        treffers.push({ clip: "", woord: i, soort: regel.soort });
+        /* "heel langzaam", "heel groot": het gebaar hoort bij het tweede woord. */
+        const kern = lengte > 1 && /^heel /.test(stuk) ? i + 1 : i;
+        treffers.push({ woord: kern, soort: regel.soort, tempo: regel.tempo, betekenis: regel.betekenis });
         i += lengte - 1;
         break;
       }
     }
   }
-  /* De soort van buitenaf gaat voor: zit er geen passend woord in, dan op het eerste woord. */
+  return treffers;
+}
+
+/**
+ * Welke bewegingen bij deze zin horen, en op welk woord (het gebarenwoordenboek).
+ * `soort` (als die bekend is: goed antwoord, fout, groet...) gaat voor; een
+ * gebaar dat laat zien wat een woord betekent (groot, erbij, links, tellen)
+ * gaat voor een gewoon vraaggebaar. Hoogstens twee gebaren per zin (een telrij
+ * "een, twee, drie" telt als één), met minstens twee woorden ertussen. Een
+ * gewone uitleg zonder zo'n woord krijgt geen los gebaar: dan lopen de
+ * rustige praatbewegingen door.
+ */
+export function gebarenBijZin(zin: string, soort?: Zinsoort | null): Gebaarmoment[] {
+  const isVraag = /\?\s*$/.test(zin.trim());
+  const treffers = treffersInZin(zin);
   const gewenst = soort ? PER_SOORT[soort] : isVraag ? "vraag" : null;
-  const plan: Gebaarmoment[] = [];
   const familie: Record<string, string[]> = { goed: ["goed", "juichen", "ja"], troost: ["troost", "aanmoedigen"], vraag: ["vraag"], hint: ["hint"], begroeting: ["begroeting"] };
-  if (gewenst) {
-    const eigen = treffers.find((t) => familie[gewenst]?.includes(t.soort));
-    plan.push(eigen ?? { clip: "", woord: 0, soort: gewenst });
+  /* Groepen: een telrij is één gebaar; de rest elk apart. */
+  type Keuze = { leden: Treffer[]; soort: string; woord: number; betekenis: boolean };
+  const keuzes: Keuze[] = [];
+  for (const t of treffers) {
+    const vorigeKeuze = keuzes[keuzes.length - 1];
+    if (t.groep && vorigeKeuze?.leden[0].groep === t.groep) vorigeKeuze.leden.push(t);
+    else keuzes.push({ leden: [t], soort: t.soort, woord: t.woord, betekenis: Boolean(t.betekenis) });
   }
-  /* Een vraag krijgt het vraaggebaar pas als er geen wijs-, tel- of hintwoord in zit (dat zegt meer). */
-  const rest = treffers.filter((t) => !plan.includes(t) && !(plan.length && t.soort === "vraag"));
-  const beste = rest.find((t) => t.soort !== "vraag") ?? rest[0];
-  if (beste && (!plan.length || Math.abs(beste.woord - plan[0].woord) >= 5)) plan.push(beste);
-  if (plan.length === 2 && plan[0].soort === "vraag" && plan[1].soort !== "vraag") plan.shift();
+  /* Een telrij laat het tellen al zien: dan geen apart telgebaar. */
+  if (keuzes.some((k) => k.soort === "vingers" && k.leden.length > 1)) keuzes.splice(0, keuzes.length, ...keuzes.filter((k) => k.soort !== "tellen"));
+  const plan: Keuze[] = [];
+  if (gewenst) {
+    const eigen = keuzes.find((k) => familie[gewenst]?.includes(k.soort));
+    /* Bij een vraag gaat een betekenisgebaar voor het vraaggebaar. */
+    if (!(gewenst === "vraag" && keuzes.some((k) => k.betekenis))) plan.push(eigen ?? { leden: [{ woord: 0, soort: gewenst }], soort: gewenst, woord: 0, betekenis: false });
+  }
+  const rest = keuzes
+    .filter((k) => !plan.includes(k) && !(k.soort === "vraag" && (plan.length || keuzes.some((x) => x.betekenis))))
+    /* Eerst de betekenisgebaren, dan wijzen/tellen/hint, als laatste een vraag. */
+    .sort((a, b) => Number(b.betekenis) - Number(a.betekenis) || (a.soort === "vraag" ? 1 : 0) - (b.soort === "vraag" ? 1 : 0) || a.woord - b.woord);
+  for (const k of rest) {
+    if (plan.length >= 2) break;
+    const laatsteWoord = (x: Keuze) => x.leden[x.leden.length - 1].woord;
+    const ver = plan.every((p) => k.woord - laatsteWoord(p) >= 2 || p.woord - laatsteWoord(k) >= 2);
+    /* Horen samen: eerst/dan, en een getal met erbij of eraf ("er komen er drie bij"). */
+    const paar = (a: string, b: string) => (a === "eerst" && b === "dan") || (a === "vingers" && (b === "erbij" || b === "eraf")) || (b === "vingers" && (a === "erbij" || a === "eraf"));
+    /* Twee keer hetzelfde soort gebaar in één zin is te druk. */
+    if (plan.some((p) => p.soort === k.soort)) continue;
+    if (ver || plan.some((p) => paar(p.soort, k.soort))) plan.push(k);
+  }
   plan.sort((a, b) => a.woord - b.woord);
-  return plan.slice(0, 2).map((m) => {
-    const regel = REGELS.find((r) => r.soort === m.soort)!;
-    return { ...m, clip: uitvoering(regel, zin) };
-  });
+  return plan.flatMap((k) =>
+    k.leden.map((t) => {
+      const regel = REGELS.find((r) => r.soort === t.soort);
+      return { clip: t.clip ?? (regel ? uitvoering(regel, zin) : ""), woord: t.woord, soort: t.soort, ...(t.tempo ? { tempo: t.tempo } : {}) };
+    }),
+  ).filter((m) => m.clip);
 }
 
 /** Het gebaar dat een opdracht of les meegeeft (de oude namen uit zappie.js), terug naar de soort zin. */

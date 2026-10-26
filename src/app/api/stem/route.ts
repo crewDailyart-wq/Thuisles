@@ -34,6 +34,7 @@
 import { createHash } from "node:crypto";
 import { copyFile, mkdir } from "node:fs/promises";
 import path from "node:path";
+import { gebarenPlan } from "@/lib/gebaren-server";
 import { NextRequest, NextResponse } from "next/server";
 import { huidigKind } from "@/lib/auth/sessie";
 import { verbinding } from "@/lib/db/sqlite";
@@ -111,6 +112,8 @@ export async function GET(request: NextRequest) {
     /* 402 = geen tegoed bij Fish Audio, 401 = sleutel klopt niet. De browser valt dan terug op zijn eigen stem. */
     return NextResponse.json({ fout: "De stem kon niet gemaakt worden.", code: uitkomst }, { status: 503 });
   }
+  /* Het gebarenplan meteen ook (één keer, bewaard naast de stem; lib/gebaren-server.ts). */
+  void gebarenPlan(zin).catch(() => {});
   return mp3(uitkomst, request);
 }
 
