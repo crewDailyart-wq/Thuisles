@@ -100,8 +100,9 @@ export function Opname() {
         speel(actie: string) {
           besturing.play(actie);
         },
-        speelEcht(clip: string) {
-          return besturing.speelEcht(clip);
+        /* `vanaf`: verder in de clip beginnen (kortere aanloop, 26 oktober 2026). */
+        speelEcht(clip: string, vanaf = 0) {
+          return besturing.speelEcht(clip, vanaf);
         },
         piek(clip: string) {
           return besturing.echt?.piek(clip) ?? 0;

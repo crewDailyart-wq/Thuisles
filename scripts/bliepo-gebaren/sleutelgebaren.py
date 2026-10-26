@@ -206,7 +206,8 @@ def frame(p):
         rij["Elbow" + s] = qE
         rij["Hand" + s] = qH
         for i, j in enumerate(VINGER[s]):
-            rij["Finger" + s + str(j)] = Quaternion((1, 0, 0), -1.25 * max(0.0, min(1.0, k["krom"][i])))
+            # Tot 1.35: een stevige vuist (bij de duim), zodat de duim er verder bovenuit steekt.
+            rij["Finger" + s + str(j)] = Quaternion((1, 0, 0), -1.25 * max(0.0, min(1.35, k["krom"][i])))
     x, y, z = p["hoofd"]
     rij["Head"] = Euler((x, y, z), "XYZ").to_quaternion()
     return rij, duwen
@@ -239,7 +240,7 @@ OPEN = (0, 0, 0, 0)
 WIJS = (0.55, 0, 1, 1)          # wijsvinger gestrekt, de rest krom, duim half
 ZACHT = (0.25, 0.2, 0.25, 0.3)  # ontspannen hand
 VUIST = (0.8, 1, 1, 1)
-TEL = {1: (0.9, 0, 1, 1), 2: (0.9, 0, 0, 1), 3: (0.9, 0, 0, 0), 4: (0, 0, 0, 0)}
+TEL = {1: (1, 0, 1, 1), 2: (1, 0, 0, 1), 3: (1, 0, 0, 0), 4: (0, 0, 0, 0)}
 
 R0 = rust()
 
@@ -326,11 +327,19 @@ hm_c = pose(right=dict(pols=(1.45, -0.35, 1.95), hint=(1, 0.3, -0.7), vingers=(1
 G["helemaal"] = kort(hm_a, houd=0.15, tussen=[(0.3, hm_b), (0.3, hm_c)])
 
 # nadenken: hand bij zijn borst, hoofd scheef.
-G["denken"] = kort(pose(right=dict(pols=(0.64, -0.6, 2.15), hint=(1, 0.1, -1), vingers=(-0.6, -0.3, 0.7), palm=(0, 1, 0), krom=(0.5, 0.35, 0.45, 0.55)), hoofd=(0.05, 0.13, 0.03)), houd=0.9)
+G["denken"] = kort(pose(right=dict(pols=(0.5, -0.68, 2.3), hint=(1, 0.2, -0.8), vingers=(-0.35, -0.15, 1), palm=(0, 1, 0), krom=(0.35, 0.45, 0.6, 0.7)), hoofd=(0.05, 0.13, 0.03)), houd=0.9)
 
 # tellen op de vingers: hand omhoog, één vinger per getal (1 tot 4; Bliepo heeft drie vingers en een duim).
 for n, kr in TEL.items():
-    G[f"vingers{n}"] = kort(pose(right=dict(pols=(0.92, -0.66, 2.16), hint=(1, 0.3, -1), vingers=(0.05, -0.2, 1), palm=(0, -1, 0), krom=kr), hoofd=(0.03, 0, 0)), houd=0.45)
+    G[f"vingers{n}"] = kort(pose(right=dict(pols=(0.82, -0.76, 1.98), hint=(1, 0.2, -1), vingers=(0, -0.2, 1), palm=(0, -1, 0), krom=kr), hoofd=(0.03, 0, 0)), houd=0.45)
+
+# duim omhoog (26 oktober 2026): een vuist met de duim recht omhoog, op borsthoogte en iets naar voren,
+# ver onder zijn hoofd (de Mixamo-duim hief een open hand naast zijn hoofd: dat leek op zwaaien).
+# De handrug naar het kind: de vingers krommen naar zijn lijf tot een vuist, en de duim steekt aan de buitenkant recht omhoog (tegen de achtergrond goed te zien).
+G["duimop"] = kort(pose(right=dict(pols=(0.8, -0.8, 2.05), hint=(1, 0.2, -1), vingers=(0.12, -0.15, 1), palm=(-0.25, 1, 0), krom=(0, 1.35, 1.35, 1.35)), hoofd=(0.04, 0, 0)), houd=0.6)
+
+# Een vraag: twee open handen naar voren, de palmen omhoog, al op het hoogste punt (26 oktober 2026).
+G["openhanden"] = kort(pose(right=dict(pols=(0.9, -0.72, 1.82), hint=(1, 0.2, -1), vingers=(0.25, -1, 0.25), palm=(0, 0, 1), krom=(0.1, 0, 0.05, 0.1)), left="spiegel", hoofd=(0.03, 0.06, 0)), houd=0.55)
 
 # open hand (uitnodigend), en een rustige hand met zachte vingers.
 G["openhand"] = kort(pose(right=dict(pols=(0.86, -0.74, 1.86), hint=(1, 0.2, -1), vingers=(0.2, -1, 0.3), palm=(0, 0, 1), krom=OPEN)), houd=0.5)

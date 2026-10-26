@@ -13,7 +13,7 @@ const ev = async (e) => (await st("Runtime.evaluate", { returnByValue: true, awa
 await ev("window.__opname.besturing.levendig.volgendGebaar=1e9");
 const kijkOp = (t, plan) => { for (const [van, tot, k] of plan) if (t >= van && t < tot) return k; return null; };
 const spraakOp = (t) => Math.max(0, Math.min(1, .2 + .6 * Math.abs(Math.sin(t * 8.7) * Math.sin(t * 2.3 + .7)) + .15 * Math.sin(t * 13.1)));
-const GEBAAR = { vraag: "vraag1", wijzen: "wijzen1", latenzien: "wijzen2", tellen: "tellen", nadenken: "nadenken", duim: "duim", klappen: "klappen", knikken: "knikken", troost: "geruststellen", aanmoedigen: "knikken2", zwaaien: "zwaaien2" };
+const GEBAAR = { vraag: "openhanden", wijzen: "wijzen1", latenzien: "wijzen2", tellen: "tellen", nadenken: "nadenken", duim: "duimop", klappen: "klappen", knikken: "knikken", troost: "geruststellen", aanmoedigen: "knikken2", zwaaien: "zwaaien2" };
 /* Het gebarenwoordenboek (26 oktober 2026): de belangrijkste nieuwe gebaren, met keyframes gemaakt in Blender. */
 Object.assign(GEBAAR, { groot: "groot", klein: "klein", erbij: "erbij", eraf: "eraf", stop: "stop", samen: "samen", meer: "meer", minder: "minder", links: "links", rechts: "rechts", boven: "boven", onder: "onder", denken: "denken" });
 const alleen = process.argv.slice(2);
@@ -53,9 +53,15 @@ for (const [naam, clip] of Object.entries(GEBAAR)) {
   await ev(`window.__opname.stopEcht(); window.__opname.speel('idle'); window.__opname.praat(true, false)`);
   await rustig(2.5, () => ({ kijk: null, spraak: null }));
   const piek = await ev(`window.__opname.piek('${clip}')`);
-  const duur = Math.min(await ev(`window.__opname.duur('${clip}')`), piek + 1.6);
-  pieken[naam] = +piek.toFixed(3);
-  await ev(`window.__opname.speelEcht('${clip}')`);
+  /*
+    Korte aanloop (26 oktober 2026): het filmpje begint 0,15 tel voor het
+    hoogste punt. Op de telefoon kan een filmpje niet eerder beginnen dan de
+    zin; met een lange aanloop viel het gebaar op het eerste woord te laat.
+  */
+  const vanaf = Math.max(0, piek - 0.15);
+  const duur = Math.min(await ev(`window.__opname.duur('${clip}')`), piek + 1.6) - vanaf;
+  pieken[naam] = +(piek - vanaf).toFixed(3);
+  await ev(`window.__opname.speelEcht('${clip}', ${vanaf})`);
   let gestopt = false;
   await neem(naam, duur + 0.45, () => ({ kijk: null, spraak: null }), async (t) => {
     if (!gestopt && t >= duur - 0.1) { gestopt = true; await ev(`window.__opname.stopEcht(); window.__opname.speel('idle')`); }

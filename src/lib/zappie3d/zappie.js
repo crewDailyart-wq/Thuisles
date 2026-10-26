@@ -192,7 +192,7 @@ export class ZappieController {
    * Geeft false als de clips (nog) niet geladen zijn; speel dan een eigen gebaar.
    */
   /* tempo (26 oktober 2026): sneller of langzamer, passend bij het woord en hoe snel hij praat. */
-  speelEcht(clip,vanaf=0,tempo=1){if(!this.echt||this.reducedMotion||!this.echt.heeft(clip))return false;this.action='echt';this.time=Math.max(0,vanaf)/tempo;this.variant=Math.random();this.duration=this.echt.duur(clip)/tempo;this.echt.speel(clip,vanaf,tempo);if(clip==='duim'||clip==='klappen')this.setFeedback('correct',this.duration);this.onAction('echt');return true;}
+  speelEcht(clip,vanaf=0,tempo=1){if(!this.echt||this.reducedMotion||!this.echt.heeft(clip))return false;this.action='echt';this.time=Math.max(0,vanaf)/tempo;this.variant=Math.random();this.duration=this.echt.duur(clip)/tempo;this.echt.speel(clip,vanaf,tempo);if(clip==='duim'||clip==='duimop'||clip==='klappen')this.setFeedback('correct',this.duration);this.onAction('echt');return true;}
   setFeedback(result='neutral',duration=3){if(!['neutral','correct','incorrect'].includes(result))throw new Error('Unknown feedback');this.feedback=result;this.feedbackTime=result==='neutral'?0:Math.max(0,duration);}
   setSpeechLevel(level){this.speechLevel=level===null?null:T.MathUtils.clamp(Number(level)||0,0,1);}
   update(dt,motion={}){

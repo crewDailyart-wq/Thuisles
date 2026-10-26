@@ -75,6 +75,9 @@ export const ECHTE_GEBAREN: Record<string, string> = {
   vingers3: "Tellen: 3 vingers",
   vingers4: "Tellen: 4 vingers",
   openhand: "Open hand",
+  /* 26 oktober 2026: een vuist met de duim omhoog op borsthoogte (de Mixamo-duim leek op zwaaien). */
+  duimop: "Duim omhoog (vuist, borsthoogte)",
+  openhanden: "Vraag: twee open handen, palmen omhoog",
 };
 /**
  * Het hoogste punt van de gebaren uit Blender (seconden): het moment dat bij
@@ -92,7 +95,11 @@ export const PRAAT_CLIPS = ["praten1"];
 /** Tijdens het praten bewegen de armen maar half zo ver als de opname: rustig en klein. */
 const PRAAT_GEWICHT = 0.5;
 /** Korte opnames die een paar keer achter elkaar spelen (één zwaai of klap is te kort). */
-const HERHAAL: Record<string, number> = { zwaaien: 4, zwaaien2: 2, klappen: 2 };
+/*
+  Sinds 26 oktober 2026 één korte zwaai (twee keer heen en weer) op het
+  groetwoord: vier keer duurde zo lang dat hij in de volgende zin nog zwaaide.
+*/
+const HERHAAL: Record<string, number> = { zwaaien: 2, zwaaien2: 1, klappen: 2 };
 
 type Spoor = { naam: string; track: QuaternionKeyframeTrack; doel: Object3D };
 type Laag = { clip: string; t: number; gewicht: number; erin: number; eruit: boolean; lus: boolean; duur: number; lengte: number; sporen: Spoor[]; tempo: number };
@@ -156,7 +163,9 @@ export class EchteGebaren {
   }
 
   duur(clip: string) {
-    return (this.clips.get(clip)?.duration ?? 0) * (HERHAAL[clip] ?? 1);
+    const heel = (this.clips.get(clip)?.duration ?? 0) * (HERHAAL[clip] ?? 1);
+    /* Niet langer dan nodig: na het hoogste punt hooguit 1,2 tel (zie speel). */
+    return PRAAT_CLIPS.includes(clip) ? heel : Math.min(heel, this.piek(clip) + 1.2 + ERUIT);
   }
 
   /**
@@ -166,7 +175,7 @@ export class EchteGebaren {
    */
   piek(clip: string) {
     if (clip in PIEK_EXTRA) return PIEK_EXTRA[clip];
-    if (/^(groot|klein|snel|langzaam|stop|boven|onder|links|rechts|eerst|dan|denken|vingers\d|openhand)$/.test(clip)) return 0.3;
+    if (/^(groot|klein|snel|langzaam|stop|boven|onder|links|rechts|eerst|dan|denken|vingers\d|openhand|duimop|openhanden)$/.test(clip)) return 0.3;
     const bekend = this.pieken.get(clip);
     if (bekend !== undefined) return bekend;
     const c = this.clips.get(clip);
@@ -221,6 +230,12 @@ export class EchteGebaren {
     const laag = this.maakLaag(clip, false);
     if (!laag) return false;
     laag.tempo = Math.max(0.4, Math.min(2, tempo));
+    /*
+      Een gebaar duurt niet langer dan nodig (26 oktober 2026): na het hoogste
+      punt nog hooguit 1,2 tel, dan zacht terug. Lange Mixamo-opnames (zoals
+      tellen) hielden de hand anders nog omhoog in de volgende zin.
+    */
+    laag.duur = Math.min(laag.duur, this.piek(clip) + 1.2 + ERUIT);
     /* Tellen na tellen (een, twee, drie): de hand staat al omhoog, dan meteen de volgende vinger. */
     if (/^vingers\d$/.test(clip) && /^vingers\d$/.test(this.gebaar)) laag.erin = 0.12;
     laag.t = Math.max(laag.t, Math.min(vanaf, laag.duur - ERUIT - 0.1));

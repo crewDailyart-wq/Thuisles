@@ -32,10 +32,10 @@ const ZINNEN: { soort: Zinsoort; label: string; tekst: string }[] = [
 */
 export const WOORDENBOEK_ZINNEN: { kort: string; tekst: string; verwacht: string }[] = [
   { kort: "Langzaam", tekst: "We doen het heel langzaam.", verwacht: "trage, rustige beweging op 'langzaam'" },
-  { kort: "Erbij", tekst: "Er komen er drie bij.", verwacht: "drie vingers op 'drie', dan iets naar zich toe halen op 'bij'" },
+  { kort: "Erbij", tekst: "Er komen er drie bij.", verwacht: "iets naar zich toe halen op 'bij' (bij een los getal geen vingers)" },
   { kort: "Groot en klein", tekst: "Deze is groot, en deze is klein.", verwacht: "handen ver uit elkaar op 'groot', dicht bij elkaar op 'klein'" },
   { kort: "Tellen", tekst: "Tel maar mee: een, twee, drie.", verwacht: "op zijn vingers tellen: 1, 2, 3 vingers" },
-  { kort: "Eraf", tekst: "Haal er twee weg.", verwacht: "twee vingers, dan wegvegen op 'weg'" },
+  { kort: "Eraf", tekst: "Haal er twee weg.", verwacht: "wegvegen op 'weg'" },
   { kort: "Snel", tekst: "Dat ging heel snel!", verwacht: "snelle korte bewegingen op 'snel'" },
   { kort: "Stop", tekst: "Stop, wacht even.", verwacht: "hand vooruit op 'Stop'" },
   { kort: "Links", tekst: "Kijk naar de toren links.", verwacht: "naar de opdracht wijzen, dan wijzen naar links" },
@@ -52,10 +52,32 @@ export function TestPraten() {
   const [nu, zetNu] = useState(-1);
   /* Een zin uit het gebarenwoordenboek (index), of geen. */
   const [boek, zetBoek] = useState<number | null>(null);
+  /*
+    Alleen op de ontwikkelcomputer (26 oktober 2026): een paar zinnen laten
+    zeggen zoals in een opdracht (met de soort zin), voor de grote gebarentest.
+  */
+  const [proef, zetProef] = useState<{ zinnen: string[]; soort: Zinsoort | null; nu: number; n: number } | null>(null);
   const [ronde, zetRonde] = useState(0);
   /* Een losse echte beweging (knoppen hieronder, 24 oktober 2026). */
   const [los, zetLos] = useState<{ naam: string; n: number } | null>(null);
   const stop = useRef<(() => void) | null>(null);
+  useEffect(() => {
+    if (process.env.NODE_ENV !== "development") return;
+    const w = window as unknown as { __proefZeg?: (zinnen: string[], soort: Zinsoort | null) => void };
+    w.__proefZeg = (zinnen, soort) => {
+      stop.current?.();
+      stopPraten();
+      zetNu(-1);
+      zetBoek(null);
+      zetLos(null);
+      const n = Date.now();
+      zetProef({ zinnen, soort, nu: 0, n });
+      stop.current = zegNaElkaar(zinnen, (i) => zetProef((p) => (p && p.n === n ? { ...p, nu: i } : p)), () => {}, true);
+    };
+    return () => {
+      delete w.__proefZeg;
+    };
+  }, []);
 
   useEffect(
     () => () => {
@@ -89,9 +111,9 @@ export function TestPraten() {
     );
   }
 
-  const zin = nu >= 0 ? ZINNEN[nu] : boek !== null ? { label: WOORDENBOEK_ZINNEN[boek].kort, tekst: WOORDENBOEK_ZINNEN[boek].tekst, soort: null } : null;
+  const zin = proef ? { label: "Test", tekst: proef.zinnen[proef.nu], soort: proef.soort } : nu >= 0 ? ZINNEN[nu] : boek !== null ? { label: WOORDENBOEK_ZINNEN[boek].kort, tekst: WOORDENBOEK_ZINNEN[boek].tekst, soort: null } : null;
   const gebaar = zin?.soort
-    ? { naam: kiesGebaar(zin.soort, `test:${ronde}`, nu), n: `${ronde}:${nu}`, opStem: true }
+    ? { naam: kiesGebaar(zin.soort, `test:${ronde}:${proef?.n ?? 0}`, proef ? proef.nu : nu), n: `${ronde}:${proef ? `${proef.n}:${proef.nu}` : nu}`, opStem: true }
     : los
       ? { naam: `echt:${los.naam}`, n: `los:${los.n}` }
       : null;
@@ -114,7 +136,7 @@ export function TestPraten() {
         </div>
         <div className="tbb-bliepo">
           <div className="tbb-tekst" aria-live="polite">
-            {zin && <BliepoTekst key={`${ronde}:${nu}`} woorden={inWoorden(zin.tekst)} gesproken={zin.tekst} />}
+            {zin && <BliepoTekst key={`${ronde}:${nu}:${proef?.n ?? 0}:${proef?.nu ?? 0}`} woorden={inWoorden(zin.tekst)} gesproken={zin.tekst} />}
           </div>
           <div className="tbb-robot" aria-hidden="true">
             <Bliepo3DGedeeld rustig={false} rusthoek={-Math.PI / 9} volgMuis gebaar={gebaar} geenTiktekst />

@@ -92,3 +92,19 @@ export function spraakGrenzen(kanaal: Float32Array, sr: number): { begin: number
   if (b <= a) return { begin: 0, eind: kanaal.length / sr };
   return { begin: a / sr, eind: b / sr };
 }
+
+/*
+  Een zin die eraan komt (26 oktober 2026): zodra het geluid van een zin wordt
+  opgehaald, nog voor hij klinkt. Zo kan de telefoon het filmpje van een gebaar
+  op het eerste woord alvast laden (BliepoAlsFilmpje).
+*/
+const komendLuisteraars = new Set<(zin: string) => void>();
+export function meldKomendeZin(zin: string): void {
+  for (const f of komendLuisteraars) f(zin);
+}
+export function abonneerKomendeZin(f: (zin: string) => void): () => void {
+  komendLuisteraars.add(f);
+  return () => {
+    komendLuisteraars.delete(f);
+  };
+}

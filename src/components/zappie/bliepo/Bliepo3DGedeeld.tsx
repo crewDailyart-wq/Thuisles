@@ -22,12 +22,12 @@
  */
 
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
-import { BliepoFilm, filmPieken, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
+import { BliepoFilm, filmPieken, laadFilmVooraf, type Filmhouding } from "@/components/zappie/bliepo/BliepoFilm";
 import { bliepoGeluidKlinkt, bliepoStemNiveau, luisterNiveau } from "@/lib/bliepo-geluid";
 import { abonneerPraten, praatVos, zeg } from "@/lib/stem";
 import { startstemAan } from "@/components/zappie/startstem";
 import { useLichteWeergave } from "@/lib/lichte-weergave";
-import { abonneerVoorlees, huidigeVoorlees } from "@/lib/voorlezen";
+import { abonneerKomendeZin, abonneerVoorlees, huidigeVoorlees } from "@/lib/voorlezen";
 import { gebarenBijZin, soortVanGebaar } from "@/lib/bliepo-gebaren";
 import { bekendGebarenPlan } from "@/lib/gebaren-plan";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
@@ -127,6 +127,8 @@ const FILM_VAN_CLIP: Record<string, Filmhouding> = {
   boven: "boven",
   onder: "onder",
   denken: "denken",
+  duimop: "duim",
+  openhanden: "vraag",
   vingers1: "tellen",
   vingers2: "tellen",
   vingers3: "tellen",
@@ -203,7 +205,7 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, gebaar = nu
       if (!plan.length) plan = bekendGebarenPlan(z.zin) ?? [];
       /* Eén zwaai per begroeting. */
       const nuMs = performance.now();
-      plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaaiFilm.current > 10000);
+      plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaaiFilm.current > 4000);
       if (plan.some((m) => m.soort === "begroeting")) laatsteZwaaiFilm.current = nuMs;
       /* Een telrij ("een, twee, drie") is op de telefoon één telfilmpje, bij het eerste getal. */
       plan = plan.filter((m, i) => !(FILM_VAN_CLIP[m.clip] === "tellen" && i > 0 && FILM_VAN_CLIP[plan[i - 1].clip] === "tellen"));
@@ -223,9 +225,18 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, gebaar = nu
         }
       });
     };
+    /* Komt er een zin aan, dan de filmpjes voor zijn gebaren alvast laden (26 oktober 2026). */
+    const afKomend = abonneerKomendeZin((zin) => {
+      const plan = gebarenBijZin(zin, soortVanGebaar(gebaarRef.current?.naam));
+      for (const m of plan) {
+        const houding = FILM_VAN_CLIP[m.clip];
+        if (houding && houding !== "praten") laadFilmVooraf(houding);
+      }
+    });
     const af = abonneerVoorlees(opZin);
     return () => {
       af();
+      afKomend();
       klokken.forEach((k) => window.clearTimeout(k));
       window.clearTimeout(wachtOpStem.current);
     };
@@ -597,7 +608,7 @@ function Bliepo3DEcht({
         if (!plan.length) plan = (bekendGebarenPlan(zin) ?? []).filter((m) => echt.heeft(m.clip));
         /* Eén zwaai per begroeting: "Hoi Sam! Goedemorgen!" zwaait alleen op "Hoi". */
         const nuMs = performance.now();
-        plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaai > 10000);
+        plan = plan.filter((m) => m.soort !== "begroeting" || nuMs - laatsteZwaai > 4000);
         if (plan.some((m) => m.soort === "begroeting")) laatsteZwaai = nuMs;
         const woorden = zin.trim().split(/\s+/);
         /* Het tempo past ook bij hoe snel hij praat (gewoon: zo'n 2,5 woorden per tel). */

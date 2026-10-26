@@ -79,8 +79,9 @@ const REGELS: Regel[] = [
     (26 oktober 2026, opdracht eigenaar): het eerste woord van de zin.
   */
   { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^(hoi|hallo|goedemorgen|goedemiddag|goedenavond|tot morgen|tot ziens|doei)$/, alleenEerste: true },
-  { soort: "juichen", clips: ["klappen"], woorden: /^(hoera|joepie|geweldig|fantastisch)$/ },
-  { soort: "goed", clips: ["duim"], woorden: /^(goed zo|goed gedaan|knap|super|top|heel goed|mooi zo|keurig|helemaal goed|allemaal goed|alles goed|wat goed)$/ },
+  /* Juichen: een duim omhoog (klappen was op het woord niet goed te zien; 26 oktober 2026). */
+  { soort: "juichen", clips: ["duimop"], woorden: /^(hoera|joepie|geweldig|fantastisch)$/ },
+  { soort: "goed", clips: ["duimop"], woorden: /^(goed zo|goed gedaan|knap|super|top|heel goed|mooi zo|keurig|helemaal goed|allemaal goed|alles goed|wat goed)$/ },
   { soort: "ja", clips: ["knikken"], woorden: /^(ja|klopt|precies|juist|dat klopt|inderdaad)$/ },
   { soort: "troost", clips: ["geruststellen"], woorden: /^(bijna|geeft niet|niet erg|geen probleem|jammer|oeps)$/ },
   { soort: "aanmoedigen", clips: ["knikken2"], woorden: /^(probeer|probeer het|nog een keer|nog eens|jij kunt het|je kunt het|rustig aan)$/ },
@@ -100,16 +101,29 @@ const REGELS: Regel[] = [
   { soort: "rechts", clips: ["rechts"], woorden: /^(rechts|naar rechts|rechterkant|aan de rechterkant)$/, betekenis: true },
   { soort: "eerst", clips: ["eerst"], woorden: /^(eerst|als eerste|begin met)$/, betekenis: true },
   { soort: "helemaal", clips: ["helemaal"], woorden: /^(helemaal|alles|allemaal|overal|heel veel)$/, betekenis: true },
-  { soort: "hint", clips: ["denken"], woorden: /^(tip|hint|denk|bedenk|nadenken|denk na|hmm|eens kijken|weet je nog|let op)$/ },
+  { soort: "hint", clips: ["denken"], woorden: /^(tip|hint|bedenk|nadenken|denk na|denk eens na|hmm|eens kijken|weet je nog)$/ },
   { soort: "tellen", clips: ["tellen"], woorden: /^(tel|tellen|telt|tel maar|samen tellen|één twee|een twee)$/ },
-  { soort: "wijzen", clips: ["wijzen1", "wijzen2"], woorden: /^(kijk|hier|daar|zie je|deze|op het bord|op het scherm)$/ },
-  { soort: "vraag", clips: ["vraag1", "vraag3", "vraag2"], woorden: /^(hoeveel|wat|welke|welk|waar|wie|hoe|waarom|kun|kan|weet|zie|wil)$/ },
+  { soort: "wijzen", clips: ["wijzen1"], woorden: /^(kijk|hier|daar|zie je|op het bord|op het scherm)$/ },
+  { soort: "vraag", clips: ["openhanden"], woorden: /^(hoeveel|wat|welke|welk|waar|wie|hoe|waarom|kun|kan|weet|zie|wil)$/ },
 ];
 
 /* Getallen die hij op zijn vingers laat zien (Bliepo heeft drie vingers en een duim: tot 4). */
 const GETAL: Record<string, number> = { een: 1, één: 1, twee: 2, drie: 3, vier: 4, "1": 1, "2": 2, "3": 3, "4": 4 };
-/* Een los getal alleen als het om een hoeveelheid gaat (niet "een appel"): twee tot vier, of een getal in een telrij. */
-const HOEVEELHEID = /^(twee|drie|vier|2|3|4)$/;
+/*
+  Een los getal alleen als het duidelijk om een hoeveelheid gaat (twijfel =
+  geen gebaar): twee tot vier als woord, met "er" ervoor ("er komen er drie
+  bij", "haal er twee weg") of een ding erachter ("drie appels"). Niet bij een
+  tijd ("kwart over drie", "om vier uur") of een cijfer op de klok ("op de 3").
+*/
+const HOEVEELHEID = /^(twee|drie|vier)$/;
+const TELLEN_LOS = false;
+const GEEN_DING = /^(uur|uren|minuten|over|voor|keer|en|of)$/;
+function isHoeveelheid(woorden: string[], i: number) {
+  if (!HOEVEELHEID.test(woorden[i])) return false;
+  if (/^(over|voor|half|kwart|om|de|het)$/.test(woorden[i - 1] ?? "")) return false;
+  const na = woorden[i + 1] ?? "";
+  return woorden[i - 1] === "er" || (/(en|s)$/.test(na) && !GEEN_DING.test(na));
+}
 
 /* Zonder trefwoord: een gebaar per soort zin (van buitenaf), op het eerste woord. */
 /*
@@ -156,7 +170,12 @@ export function treffersInZin(zin: string): Treffer[] {
     if (n) {
       const naVorige = i > 0 && GETAL[woorden[i - 1]] === n - 1;
       const inRij = naVorige || GETAL[woorden[i + 1]] === n + 1;
-      if (inRij || HOEVEELHEID.test(woorden[i])) {
+      /*
+        Alleen in een telrij ("een, twee, drie"). Een los getal ("er komen er
+        drie bij") krijgt geen vingers meer (26 oktober 2026): met drie vingers
+        en een duim leek "drie" te veel op een open hand, en twijfel = geen gebaar.
+      */
+      if (inRij || (TELLEN_LOS && isHoeveelheid(woorden, i))) {
         if (!naVorige) groep += 1;
         treffers.push({ woord: i, soort: "vingers", clip: `vingers${n}`, betekenis: true, groep });
         continue;
@@ -174,6 +193,9 @@ export function treffersInZin(zin: string): Treffer[] {
         i += lengte - 1;
         break;
       }
+      /* Twijfel = geen gebaar (26 oktober 2026): "de grote wijzer" is een naam, geen grootte; "eerst" zonder "dan" erna is geen volgorde. */
+      if (regel && (regel.soort === "groot" || regel.soort === "klein") && /^wijzers?$/.test(woorden[i + lengte] ?? "")) regel = undefined;
+      if (regel?.soort === "eerst" && !woorden.slice(i + 1).some((w) => /^(dan|daarna)$/.test(w))) regel = undefined;
       if (regel) {
         /* "heel langzaam", "heel groot": het gebaar hoort bij het tweede woord. */
         const kern = lengte > 1 && /^heel /.test(stuk) ? i + 1 : i;
@@ -233,6 +255,8 @@ export function gebarenBijZin(zin: string, soort?: Zinsoort | null): Gebaarmomen
     if (plan.some((p) => p.soort === k.soort)) continue;
     if (ver || plan.some((p) => paar(p.soort, k.soort))) plan.push(k);
   }
+  /* Zegt een ander gebaar al wat er bedoeld wordt (tellen, wijzen, meer...), dan geen vraaggebaar erbij: liever te weinig dan te druk. */
+  if (plan.length === 2 && plan.some((p) => p.soort === "vraag") && plan.some((p) => p.soort !== "vraag")) plan.splice(plan.findIndex((p) => p.soort === "vraag"), 1);
   plan.sort((a, b) => a.woord - b.woord);
   return plan.flatMap((k) =>
     k.leden.map((t) => {

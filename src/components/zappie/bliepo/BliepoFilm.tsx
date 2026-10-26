@@ -76,6 +76,24 @@ function haalSporen() {
 }
 
 /** Wanneer elk gebaar-filmpje op zijn hoogste punt is (seconden na het begin). */
+/**
+ * Een filmpje alvast in de browser zetten (26 oktober 2026), zodat het meteen
+ * kan beginnen als het gebaar op het eerste woord van een zin valt.
+ */
+const vooraf = new Set<string>();
+export function laadFilmVooraf(houding: Filmhouding): void {
+  if (typeof window === "undefined") return;
+  const soort = isWebKit() ? "webp" : "webm";
+  const url = `${MAP}/${houding}.${soort}`;
+  if (vooraf.has(url)) return;
+  vooraf.add(url);
+  if (soort === "webp") {
+    const img = new Image();
+    img.decoding = "async";
+    img.src = url;
+  } else void fetch(url).catch(() => vooraf.delete(url));
+}
+
 export async function filmPieken(): Promise<Partial<Record<Filmhouding, number>>> {
   return (await haalSporen())?.piek ?? {};
 }

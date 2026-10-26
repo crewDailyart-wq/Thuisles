@@ -19,7 +19,7 @@
 
 import { haalGebarenPlan } from "@/lib/gebaren-plan";
 import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
-import { meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
+import { meldKomendeZin, meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
@@ -432,6 +432,7 @@ const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
 /** Een zin alvast laten maken en in de browser zetten. */
 function haalAlvast(zin: string): void {
   haalGebarenPlan(zin);
+  meldKomendeZin(zin);
   void fetch(adres(zin)).catch(() => {});
 }
 
@@ -490,6 +491,7 @@ function speelVanServer(
 
   /* Tegelijk het gebarenplan van deze zin (lib/gebaren-plan.ts). */
   haalGebarenPlan(zin);
+  meldKomendeZin(zin);
   const wacht = new AbortController();
   const wachter = setTimeout(() => wacht.abort(), GEDULD_MS);
   void fetch(adres(zin), { signal: wacht.signal })
