@@ -336,7 +336,7 @@ for n, kr in TEL.items():
 # duim omhoog (26 oktober 2026): een vuist met de duim recht omhoog, op borsthoogte en iets naar voren,
 # ver onder zijn hoofd (de Mixamo-duim hief een open hand naast zijn hoofd: dat leek op zwaaien).
 # De handrug naar het kind: de vingers krommen naar zijn lijf tot een vuist, en de duim steekt aan de buitenkant recht omhoog (tegen de achtergrond goed te zien).
-G["duimop"] = kort(pose(right=dict(pols=(0.8, -0.8, 2.05), hint=(1, 0.2, -1), vingers=(0.12, -0.15, 1), palm=(-0.25, 1, 0), krom=(0, 1.35, 1.35, 1.35)), hoofd=(0.04, 0, 0)), houd=0.6)
+G["duimop"] = kort(pose(right=dict(pols=(1.08, -0.68, 2.05), hint=(1, 0.3, -0.8), vingers=(0.12, -0.15, 1), palm=(-0.25, 1, 0), krom=(0, 1.35, 1.35, 1.35)), hoofd=(0.04, 0, 0)), houd=0.6)
 
 # Een vraag: twee open handen naar voren, de palmen omhoog, al op het hoogste punt (26 oktober 2026).
 G["openhanden"] = kort(pose(right=dict(pols=(0.9, -0.72, 1.82), hint=(1, 0.2, -1), vingers=(0.25, -1, 0.25), palm=(0, 0, 1), krom=(0.1, 0, 0.05, 0.1)), left="spiegel", hoofd=(0.03, 0.06, 0)), houd=0.55)

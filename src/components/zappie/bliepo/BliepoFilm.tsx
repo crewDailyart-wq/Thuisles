@@ -134,6 +134,12 @@ export function BliepoFilm({
   const nu: Filmhouding = rustig ? "rust" : klaarMet && (houding !== "nadenken" || praat) ? daarna : houding;
 
   const vak = useRef<HTMLDivElement>(null);
+  /*
+    Het filmpje dat nu echt te zien is (26 oktober 2026): een nieuw filmpje
+    blijft onzichtbaar tot het geladen is, en tot dan blijft het vorige staan.
+    Anders was Bliepo even helemaal weg bij een wissel (gezien bij "Ja,").
+  */
+  const [getoond, zetGetoond] = useState<string | null>(null);
   const film = useRef<HTMLVideoElement>(null);
   const begin = useRef(0);
   const [spoor, zetSpoor] = useState<Sporen | null>(null);
@@ -199,15 +205,26 @@ export function BliepoFilm({
     // eslint-disable-next-line @next/next/no-img-element -- een doorzichtig stilstaand beeldje
     beeld = <img src={`${MAP}/stil.webp`} alt="" draggable={false} className={klasse} onLoad={onKlaar} />;
   } else if (soort === "webp") {
-    beeld = (
+    const sleutel = `${nu}-${keer}`;
+    const vorige = getoond && getoond !== sleutel ? getoond : null;
+    /* Als lijst met vaste sleutels: zo blijft het vorige filmpje hetzelfde beeld (het begint niet opnieuw). */
+    const lagen: React.ReactNode[] = [];
+    if (vorige)
+      lagen.push(
+        // eslint-disable-next-line @next/next/no-img-element -- het vorige filmpje blijft staan tot het nieuwe geladen is
+        <img key={vorige} src={`${MAP}/${vorige.split("-")[0]}.webp`} alt="" draggable={false} className={klasse} />,
+      );
+    lagen.push(
       // eslint-disable-next-line @next/next/no-img-element -- geanimeerde WebP; next/image zou hem stilzetten
       <img
-        key={`${nu}-${keer}`}
+        key={sleutel}
         src={`${MAP}/${nu}.webp`}
         alt=""
         draggable={false}
         className={klasse}
+        style={vorige ? { opacity: 0 } : undefined}
         onLoad={(e) => {
+          zetGetoond(sleutel);
           begin.current = performance.now();
           onKlaar?.();
           if (!HERHAAL.includes(nu)) {
@@ -216,8 +233,9 @@ export function BliepoFilm({
             window.setTimeout(() => img.isConnected && afgelopenNu(), duur);
           }
         }}
-      />
+      />,
     );
+    beeld = lagen;
   } else {
     beeld = (
       <video
