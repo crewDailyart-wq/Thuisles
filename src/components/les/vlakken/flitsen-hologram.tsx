@@ -220,21 +220,17 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       });
       this.bak("schelp", "schelp-gloed", OCEAAN, 1.6, 30);
 
-      /* De lichtstraal uit de vloer: van fel onderaan naar niets bovenaan. */
+      /* De lichtstraal uit de vloer: van fel onderaan naar niets bovenaan, met zachte zijkanten (kolom voor kolom). */
       this.canvasPlaatje("straal", 120, 520, (c) => {
-        const g = c.createLinearGradient(0, 520, 0, 0);
-        g.addColorStop(0, "rgba(170,245,255,0.85)");
-        g.addColorStop(0.5, "rgba(127,233,255,0.25)");
-        g.addColorStop(1, "rgba(127,233,255,0)");
-        const z = c.createLinearGradient(0, 0, 120, 0);
-        z.addColorStop(0, "rgba(0,0,0,0)");
-        z.addColorStop(0.5, "rgba(0,0,0,1)");
-        z.addColorStop(1, "rgba(0,0,0,0)");
-        c.fillStyle = g;
-        c.fillRect(0, 0, 120, 520);
-        c.globalCompositeOperation = "destination-in";
-        c.fillStyle = z;
-        c.fillRect(0, 0, 120, 520);
+        for (let x = 0; x < 120; x++) {
+          const zij = Math.sin((Math.PI * (x + 0.5)) / 120) ** 2;
+          const g = c.createLinearGradient(0, 520, 0, 0);
+          g.addColorStop(0, `rgba(170,245,255,${0.8 * zij})`);
+          g.addColorStop(0.45, `rgba(127,233,255,${0.22 * zij})`);
+          g.addColorStop(1, "rgba(127,233,255,0)");
+          c.fillStyle = g;
+          c.fillRect(x, 0, 1, 520);
+        }
       });
 
       /* Een lichtring (flits en lichtgolf). */
@@ -325,8 +321,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
       /* De lichtstraal schiet omhoog uit de vloer, het hologram verschijnt met een flits. */
       const vloer = this.plaats("vloerlicht", SCHELP.x, VLOER_Y).setAlpha(0);
-      const straal = this.plaats("straal", SCHELP.x, VLOER_Y).setOrigin(0.5, 1).setScale(1.6 / TX, 0).setBlendMode(Phaser.BlendModes.ADD);
-      const flits = this.plaats("ring", SCHELP.x, SCHELP.y + 10).setScale(0.2 / TX).setAlpha(0).setBlendMode(Phaser.BlendModes.ADD);
+      const straal = this.plaats("straal", SCHELP.x, VLOER_Y).setOrigin(0.5, 1).setScale(1.6 / TX, 0);
+      const flits = this.plaats("ring", SCHELP.x, SCHELP.y + 10).setScale(0.2 / TX).setAlpha(0);
       groep.setAlpha(0).setScale(0.86 * GROOT, 0.2 * GROOT);
       this.tweens.add({ targets: vloer, alpha: 1, duration: 120, yoyo: true, hold: 260, onComplete: () => vloer.destroy() });
       this.tweens.add({
@@ -350,7 +346,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     goed() {
       if (!this.schelp) return;
-      const golf = this.plaats("ring", SCHELP.x, SCHELP.y + 10).setScale(0.6 / TX).setBlendMode(Phaser.BlendModes.ADD).setTint(0xc8ffe6);
+      const golf = this.plaats("ring", SCHELP.x, SCHELP.y + 10).setScale(0.6 / TX).setTint(0xc8ffe6);
       this.tweens.add({ targets: golf, scale: 4 / TX, alpha: { from: 1, to: 0 }, duration: rustig ? 1 : 520, ease: "Cubic.easeOut", onComplete: () => golf.destroy() });
       this.tweens.add({ targets: this.schelp, scale: GROOT * 1.05, duration: 120, yoyo: true });
     }
