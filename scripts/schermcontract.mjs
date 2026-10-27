@@ -512,6 +512,13 @@ export const SCHERMCONTRACT = [
     zichtbaar: ["Phaser laden…"],
   },
   {
+    /* Hetzelfde proefje in Godot (27 oktober 2026, opdracht eigenaar), om te vergelijken. */
+    naam: "Voorbeeld Godot",
+    pad: "/voorbeeld-godot",
+    bron: ["src/app/voorbeeld-godot/ParelsGodot.tsx"],
+    zichtbaar: ["Godot laden…"],
+  },
+  {
     /*
       Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
       opgenomen gebaren (Mixamo), in Blender op Bliepo gezet; een knop per
