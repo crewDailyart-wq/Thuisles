@@ -42,6 +42,7 @@ import { OntdekkingsReis } from "@/components/zappie/OntdekkingsReis";
 import { Bewegingsknop, ScrollReis } from "@/components/zappie/ScrollReis";
 import { ZachtScrollen } from "@/components/zappie/ZachtScrollen";
 import { VakkenPaneel } from "@/components/zappie/VakkenPaneel";
+import { PhaserVooraf } from "@/components/PhaserVooraf";
 import "@/components/zappie/startpagina.css";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
@@ -290,6 +291,8 @@ export function Startscherm({ profielen = [] }: { profielen?: Profiel[] }) {
   return (
     <>
       <ScrollReis />
+      {/* Phaser alvast laden voor de lessen (27 oktober 2026); onzichtbaar. */}
+      <PhaserVooraf />
       {/* Vloeiend scrollen op laptop en computer (19 oktober 2026). */}
       <ZachtScrollen />
       {toonProfielen && <ProfielKiezer profielen={profielen} rustig={bewegingRustig} />}

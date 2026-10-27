@@ -37,6 +37,7 @@ import { Pictogram } from "@/components/kind/Pictogram";
 import { Sleutelteller } from "@/components/kind/Sleutelteller";
 import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
 import { MERKMOTTO } from "@/lib/merk";
+import { PhaserVooraf } from "@/components/PhaserVooraf";
 
 /** De vier vakken op het startscherm, in de kleuren van het voorbeeld. */
 const VAKKEN = [
@@ -81,6 +82,8 @@ export default async function StartPagina() {
       className="relative isolate min-h-[100svh] overflow-x-hidden"
     >
       <Hemel />
+      {/* Phaser alvast laden voor de lessen (27 oktober 2026); onzichtbaar. */}
+      <PhaserVooraf />
       {/* ------------------------------------------------------------------
           Het eerste scherm: precies het voorbeeld.
           ------------------------------------------------------------------ */}

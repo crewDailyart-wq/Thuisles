@@ -24,8 +24,9 @@
  *
  * Een Phaser-scherm doet mee als het hieronder in SCHERMEN staat. Het scherm
  * zet bij zijn eerste beeld `window.__phaser = { klaarOp: performance.now(),
- * sleepPunt: () => ({ x, y }) }` (x en y in pixels van de pagina). Elke
- * nieuwe Phaser-les of -opdracht komt hier meteen bij.
+ * sleepPunt: () => ({ x, y }) }` (x en y in pixels van de pagina), of zonder
+ * slepen `beweeg: (ms) => …` (speelt zijn animaties). Elke nieuwe Phaser-les
+ * of -opdracht komt hier meteen bij.
  *
  *   npm run vloeiend                       tegen http://localhost:3000
  *   BASIS=https://… WW=… npm run vloeiend  tegen een andere site (met slot)
@@ -43,7 +44,11 @@ const BASIS = (process.env.BASIS ?? "http://localhost:3000").replace(/\/$/, "");
 const IN_BEWAKING = process.env.BEWAAK === "1";
 
 /* Alle Phaser-schermen. Elke nieuwe Phaser-les, -opdracht of -game hoort hier bij. */
-const SCHERMEN = [{ naam: "Phaser-proefje (parels)", pad: "/voorbeeld-phaser" }];
+const SCHERMEN = [
+  { naam: "Phaser-proefje (parels)", pad: "/voorbeeld-phaser" },
+  /* De voorbeeldles (27 oktober 2026): Stippen tot 10 met Oceaan-hologrammen; geen slepen, dus de hologrammen spelen 3 s hun animaties (verschijnen + lichtgolf). */
+  { naam: "Les Stippen tot 10 (hologrammen)", pad: "/voorbeeld/les/flitsen-tellen-tot-10?naam=Testkind" },
+];
 
 const APPARATEN = [
   { naam: "laptop", b: 1440, h: 900, dpr: 1, mobiel: false },
@@ -168,6 +173,8 @@ async function meet(c, scherm, apparaat) {
 
     /* 3 seconden slepen en ondertussen beelden tellen. */
     const punt = await ev(`window.__phaser?.sleepPunt?.() ?? null`);
+    /* Schermen zonder slepen laten zelf 3 seconden hun animaties zien (window.__phaser.beweeg). */
+    if (!punt) await ev(`window.__phaser?.beweeg?.(3000) ?? null`);
     const telling = c.stuur("Runtime.evaluate", { expression: TEL(3000), returnByValue: true, awaitPromise: true }, s);
     let eind = null;
     if (punt) {

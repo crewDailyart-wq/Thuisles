@@ -1,0 +1,265 @@
+/*
+  Flitskaarten als hologrammen (27 oktober 2026). Geen eigen achtergrond of
+  kader: de blauwe ruimte van het lesscherm blijft zichtbaar en het Phaser-
+  canvas is doorzichtig. Knoppen en het invulvak zijn gewone HTML (echte
+  invoer, HARDE REGEL 5), met een zachte gloed zodat ze bij de hologrammen
+  passen. Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+.canvas {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.canvas canvas {
+  display: block;
+}
+
+/* Tekst die vóór de blauwe ruimte staat: altijd een zachte donkere rand, zodat hij goed leesbaar is. */
+.titel,
+.best,
+.klok,
+.antwoord,
+.uitslag h2,
+.uitslag p {
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.9);
+}
+
+.start {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 470px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: verschijn 0.3s ease-out both;
+}
+.titel {
+  margin: 0 0 4px;
+  font-size: 34px;
+  font-weight: 800;
+}
+.best {
+  margin: 0 0 18px;
+  font-size: 18px;
+  color: #d9ecff;
+}
+.knoppen {
+  display: flex;
+  gap: 16px;
+}
+
+.knop {
+  min-width: 160px;
+  height: 62px;
+  padding: 0 28px;
+  border: 2px solid rgba(255, 255, 255, 0.55);
+  border-radius: 999px;
+  color: #ffffff;
+  font: inherit;
+  font-size: 21px;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    opacity 0.2s,
+    box-shadow 0.2s;
+}
+.knop:active {
+  transform: scale(0.97);
+}
+.knop:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.groen {
+  background: rgba(46, 170, 104, 0.85);
+  box-shadow: 0 0 22px rgba(90, 240, 160, 0.55);
+}
+.oranje {
+  background: rgba(226, 124, 50, 0.88);
+  box-shadow: 0 0 22px rgba(255, 170, 90, 0.55);
+}
+.roze {
+  background: rgba(214, 74, 150, 0.88);
+  box-shadow: 0 0 22px rgba(255, 120, 200, 0.5);
+}
+
+.klok {
+  position: absolute;
+  right: 40px;
+  top: 30px;
+  font-size: 26px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.antwoord {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 60px;
+  text-align: center;
+  font-size: 34px;
+  font-weight: 800;
+  color: #fff3c4;
+  animation: verschijn 0.25s ease-out both;
+}
+
+.midden {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 300px;
+  display: flex;
+  justify-content: center;
+}
+
+.aftellen {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 230px;
+  text-align: center;
+  font-size: 150px;
+  font-weight: 800;
+  color: #ffffff;
+  text-shadow: 0 0 40px rgba(127, 233, 255, 0.9);
+  animation: tel 0.85s ease-out both;
+}
+
+/* Het invulvak onder de schelp. */
+.invoer {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 486px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+}
+.vak {
+  width: 128px;
+  height: 78px;
+  border: 3px solid rgba(190, 245, 255, 0.9);
+  border-radius: 18px;
+  background: rgba(8, 30, 80, 0.55);
+  color: #ffffff;
+  font: inherit;
+  font-size: 46px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  box-shadow:
+    0 0 24px rgba(127, 233, 255, 0.55),
+    inset 0 0 12px rgba(127, 233, 255, 0.25);
+}
+.vak:focus {
+  border-color: #ffd36e;
+  box-shadow:
+    0 0 28px rgba(255, 211, 110, 0.75),
+    inset 0 0 12px rgba(255, 211, 110, 0.25);
+}
+.rond {
+  width: 66px;
+  height: 66px;
+  border: 0;
+  border-radius: 50%;
+  background: #4b8af5;
+  color: #ffffff;
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  box-shadow: 0 0 22px rgba(120, 170, 255, 0.7);
+}
+.rond:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+.weetniet {
+  height: 54px;
+  padding: 0 20px;
+  border: 2px solid rgba(255, 255, 255, 0.45);
+  border-radius: 999px;
+  background: rgba(8, 30, 80, 0.5);
+  color: #e6f1ff;
+  font: inherit;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.uitslag {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 150px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  animation: verschijn 0.3s ease-out both;
+}
+.uitslag h2 {
+  margin: 0 0 8px;
+  font-size: 40px;
+  font-weight: 800;
+}
+.uitslag p {
+  margin: 0 0 28px;
+  max-width: 560px;
+  font-size: 21px;
+  line-height: 1.4;
+  color: #e6f1ff;
+}
+.kolom {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 380px;
+}
+
+@keyframes verschijn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes tel {
+  from {
+    opacity: 0;
+    transform: scale(1.5);
+  }
+  30% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  to {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .start,
+  .antwoord,
+  .uitslag,
+  .aftellen {
+    animation: none;
+  }
+}

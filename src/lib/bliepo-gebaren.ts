@@ -80,7 +80,7 @@ const REGELS: Regel[] = [
   */
   { soort: "begroeting", clips: ["zwaaien2", "zwaaien"], woorden: /^(hoi|hallo|goedemorgen|goedemiddag|goedenavond|tot morgen|tot ziens|doei)$/, alleenEerste: true },
   /* Juichen: een duim omhoog (klappen was op het woord niet goed te zien; 26 oktober 2026). */
-  { soort: "juichen", clips: ["duimop"], woorden: /^(hoera|joepie|geweldig|fantastisch)$/ },
+  { soort: "juichen", clips: ["duimop"], woorden: /^(hoera|joepie|geweldig|fantastisch|jij wint)$/ },
   { soort: "goed", clips: ["duimop"], woorden: /^(goed zo|goed gedaan|knap|super|top|heel goed|mooi zo|keurig|helemaal goed|allemaal goed|alles goed|wat goed)$/ },
   { soort: "ja", clips: ["knikken"], woorden: /^(ja|klopt|precies|juist|dat klopt|inderdaad)$/ },
   { soort: "troost", clips: ["geruststellen"], woorden: /^(bijna|geeft niet|niet erg|geen probleem|jammer|oeps)$/ },
@@ -203,6 +203,9 @@ export function treffersInZin(zin: string): Treffer[] {
       /* Twijfel = geen gebaar (26 oktober 2026): "de grote wijzer" is een naam, geen grootte; "eerst" zonder "dan" erna is geen volgorde. */
       if (regel && (regel.soort === "groot" || regel.soort === "klein") && /^wijzers?$/.test(woorden[i + lengte] ?? "")) regel = undefined;
       if (regel?.soort === "eerst" && !woorden.slice(i + 1).some((w) => /^(dan|daarna)$/.test(w))) regel = undefined;
+      /* "Je hoeft niet te tellen": met "niet" of "geen" ervoor betekent het woord juist het omgekeerde, dus geen gebaar (27 oktober 2026). */
+      if (regel && regel.betekenis !== undefined && woorden.slice(Math.max(0, i - 3), i).some((w) => /^(niet|geen|nooit)$/.test(w))) regel = undefined;
+      if (regel?.soort === "tellen" && woorden.slice(Math.max(0, i - 3), i).some((w) => /^(niet|geen|nooit)$/.test(w))) regel = undefined;
       if (regel) {
         /* "heel langzaam", "heel groot": het gebaar hoort bij het tweede woord. */
         const kern = lengte > 1 && /^heel /.test(stuk) ? i + 1 : i;

@@ -11,25 +11,13 @@
  */
 
 import { useEffect, useRef, useState } from "react";
+import "@/lib/phaser/laden";
 
 const PARELS = [
   { kleur: 0x7fe9ff, x: 0.3, y: 0.45 },
   { kleur: 0xffd36e, x: 0.5, y: 0.6 },
   { kleur: 0xff8ad8, x: 0.7, y: 0.45 },
 ];
-
-declare global {
-  interface Window {
-    __phaser?: {
-      geladenMs?: number;
-      eersteBeeldMs?: number;
-      klaarOp?: number;
-      versie?: string;
-      sleepPunt?: () => { x: number; y: number };
-      parels?: () => { x: number; y: number }[];
-    };
-  }
-}
 
 /* Phaser al gaan laden zodra dit stukje code binnen is, niet pas na het opbouwen van de pagina (sneller open). */
 const phaserLaden = typeof window === "undefined" ? null : import("phaser");
