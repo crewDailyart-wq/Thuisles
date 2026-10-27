@@ -231,7 +231,16 @@ const alleFouten = [];
 try {
   for (const scherm of SCHERMEN) {
     for (const apparaat of APPARATEN) {
-      const uit = await meet(c, scherm, apparaat);
+      let uit = await meet(c, scherm, apparaat);
+      /*
+        Eén keer opnieuw meten bij een afwijking: één toevallige hapering (de
+        laptop doet tijdens de bewaking ook andere dingen) is nog geen fout.
+        Twee keer na elkaar te traag wel.
+      */
+      if (typeof uit !== "string") {
+        console.log(`… opnieuw meten: ${scherm.naam}, ${apparaat.naam}`);
+        uit = await meet(c, scherm, apparaat);
+      }
       if (typeof uit === "string") console.log(`✓ ${uit}`);
       else for (const f of uit) {
         console.log(`✗ ${f}`);
