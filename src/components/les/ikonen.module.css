@@ -1,0 +1,82 @@
+/* Icoonknoppen voor kinderen die nog niet lezen (27 oktober 2026). Het icoon is groot genoeg om zonder woord te begrijpen. */
+.knop {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-width: 74px;
+  height: 74px;
+  padding: 6px 10px 4px;
+  border: 2px solid rgba(255, 255, 255, 0.5);
+  border-radius: 20px;
+  color: #ffffff;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    opacity 0.2s;
+}
+.knop:active {
+  transform: scale(0.96);
+}
+.knop:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.icoon {
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+}
+.icoon svg {
+  width: 34px;
+  height: 34px;
+}
+.woord {
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 1;
+  opacity: 0.85;
+  white-space: nowrap;
+}
+.standaard {
+  background: rgba(8, 30, 80, 0.55);
+}
+.blauw {
+  background: #4b8af5;
+  border-color: rgba(255, 255, 255, 0.7);
+}
+.groen {
+  background: rgba(46, 170, 104, 0.9);
+}
+.oranje {
+  background: rgba(226, 124, 50, 0.92);
+}
+.roze {
+  background: rgba(214, 74, 150, 0.92);
+}
+
+/* De knop die Bliepo aanwijst (l.wijsAan): een warme, zacht pulserende ring. */
+:global(.les-aanwijs) {
+  position: relative;
+  z-index: 3;
+  opacity: 1 !important;
+  animation: aanwijs 1s ease-in-out infinite !important;
+}
+@keyframes aanwijs {
+  0%,
+  100% {
+    box-shadow: 0 0 0 3px rgba(255, 211, 110, 0.9), 0 0 12px 4px rgba(255, 211, 110, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 0 7px rgba(255, 211, 110, 0.55), 0 0 22px 8px rgba(255, 211, 110, 0.25);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  :global(.les-aanwijs) {
+    animation: none !important;
+    box-shadow: 0 0 0 4px rgba(255, 211, 110, 0.9);
+  }
+}

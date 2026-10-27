@@ -12,6 +12,7 @@
     "bewaak": "npm run schermen && npm run bewaking && npm run oefentypes && npm run bosspellen && npm run opgaven && BEWAAK=1 npm run bliepo && BEWAAK=1 npm run vloeiend",
     "bliepo": "node scripts/bliepocontrole.mjs",
     "vloeiend": "node scripts/vloeiendcontrole.mjs",
+    "stemzinnen": "node scripts/stemzinnen.mjs",
     "bosspellen": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/bosspellen.mjs",
     "prepare": "git config core.hooksPath .githooks || true",
     "oefentypes": "node scripts/oefentypes.mjs",

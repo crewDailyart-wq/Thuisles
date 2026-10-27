@@ -221,8 +221,8 @@ export function zeg(zin: string): void {
     window.speechSynthesis?.cancel();
     beurt += 1;
     const mijnBeurt = beurt;
-    speelVanServer(zin, mijnBeurt, () => meld(false), (kapot) => {
-      if (kapot && mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
+    speelVanServer(zin, mijnBeurt, () => meld(false), (kapot, browser) => {
+      if ((kapot || browser) && mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
     });
     return;
   }
@@ -263,10 +263,70 @@ function zegMetBrowser(zin: string, mijnBeurt: number): void {
     uiting.pitch = TOONHOOGTE;
     if (gekozen) uiting.voice = gekozen;
 
-    uiting.onstart = () => meld(true);
-    uiting.onend = () => meld(false);
-    uiting.onerror = () => meld(false);
+    uiting.onstart = () => {
+      meldVoorlezen(zin, browserGrenzen(zin));
+      meld(true);
+    };
+    uiting.onend = () => {
+      stopVoorlezen();
+      meld(false);
+    };
+    uiting.onerror = () => {
+      stopVoorlezen();
+      meld(false);
+    };
 
+    window.speechSynthesis.speak(uiting);
+  });
+}
+
+/*
+  Hoe lang de browserstem ongeveer over een zin doet, voor het meelezen en de
+  gebaren (de woorden lichten op in dit tempo). Geschat op het aantal letters
+  en het tempo; de browser vertelt het niet vooraf.
+*/
+function browserGrenzen(zin: string): { begin: number; eind: number } {
+  return { begin: 0.05, eind: Math.max(0.6, (zin.length * 0.066) / TEMPO) };
+}
+
+/**
+ * Eén zin met de browserstem, met meelezen en het lijntje; daarna `klaar`
+ * (ook als de browser geen einde meldt: dan na een ruime schatting).
+ */
+function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void): void {
+  stopServerGeluid?.();
+  stopServerGeluid = null;
+  let door = false;
+  let vangnet: ReturnType<typeof setTimeout> | undefined;
+  const verder = () => {
+    if (door) return;
+    door = true;
+    clearTimeout(vangnet);
+    stopVoorlezen();
+    meld(false);
+    if (magNog()) klaar();
+  };
+  /* Geen stem op dit apparaat: de woorden lichten toch op in het tempo van voorlezen, en de les loopt door. */
+  const zonderStem = () => {
+    meldVoorlezen(zin, browserGrenzen(zin));
+    vangnet = setTimeout(verder, 900 + zin.length * 55);
+  };
+  if (!window.speechSynthesis) return zonderStem();
+  void stemmenGereed().then(() => {
+    if (!magNog()) return;
+    if (!gekozen) return zonderStem();
+    const uiting = new SpeechSynthesisUtterance(zin);
+    uiting.lang = gekozen.lang ?? "nl-NL";
+    uiting.rate = TEMPO;
+    uiting.pitch = TOONHOOGTE;
+    uiting.voice = gekozen;
+    uiting.onstart = () => {
+      meldVoorlezen(zin, browserGrenzen(zin));
+      meld(true);
+    };
+    uiting.onend = verder;
+    uiting.onerror = verder;
+    vangnet = setTimeout(verder, 2500 + zin.length * 120);
     window.speechSynthesis.speak(uiting);
   });
 }
@@ -325,8 +385,14 @@ export function zegNaElkaar(
         zinnen[i],
         mijnBeurt,
         () => volgende(i + 1),
-        (kapot) => {
+        (kapot, browser) => {
           if (gestopt || mijnBeurt !== beurt) return;
+          /* Nog niet bewaard: deze ene zin met de browserstem, daarna gewoon verder (27 oktober 2026). */
+          if (browser) {
+            gestart = true;
+            spreekMetBrowser(zinnen[i], () => mijnBeurt === beurt && !gestopt, () => volgende(i + 1));
+            return;
+          }
           /* Is de server kapot bij de eerste zin, dan alles met de browserstem; anders gewoon door op de klok. */
           if (!gestart && kapot) browserReeks();
           else klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
@@ -379,9 +445,15 @@ export function zegNaElkaar(
         clearTimeout(klok);
         volgende(i + 1);
       };
-      uiting.onstart = () => meld(true);
+      uiting.onstart = () => {
+        meldVoorlezen(zinnen[i], browserGrenzen(zinnen[i]));
+        meld(true);
+      };
       bijZin(i);
-      uiting.onend = verder;
+      uiting.onend = () => {
+        stopVoorlezen();
+        verder();
+      };
       uiting.onerror = verder;
       /* Vangnet: komt er nooit een einde (dat gebeurt op sommige tablets), dan toch door. */
       klok = setTimeout(verder, 2500 + zinnen[i].length * 120);
@@ -409,6 +481,8 @@ export function stopPraten(): void {
 // ---------------------------------------------------------------------------
 
 let huidigGeluid: HTMLAudioElement | null = null;
+/** De server heeft deze zin nog niet met de gekozen stem: dan de browserstem (alleen voor deze zin). */
+class NietBewaard extends Error {}
 /**
  * Werkt de stem van de server in dit bezoek? Na één mislukte zin (geen
  * tegoed, geen verbinding) niet meer proberen, zodat het kind niet bij elke
@@ -454,7 +528,7 @@ function speelVanServer(
   zin: string,
   mijnBeurt: number,
   klaar: () => void,
-  mislukt: (kapot: boolean) => void,
+  mislukt: (kapot: boolean, browser?: boolean) => void,
   gestart?: () => void,
   stilte = 0.2,
 ): void {
@@ -467,13 +541,13 @@ function speelVanServer(
   /* Waar de spraak in het geluid zit, voor het oplichten van de woorden (lib/voorlezen.ts). */
   let grenzen: { begin: number; eind: number } | null = null;
   const nogAanDeBeurt = () => !afgerond && mijnBeurt === beurt;
-  const faal = (kapot: boolean) => {
+  const faal = (kapot: boolean, browser = false) => {
     if (afgerond) return;
     afgerond = true;
     /* Te lang wachten of geen tik gehad: alleen deze zin met de browser. Echt kapot: de rest van het bezoek. */
     if (kapot) serverWerkt = false;
     meld(false);
-    if (mijnBeurt === beurt) mislukt(kapot);
+    if (mijnBeurt === beurt) mislukt(kapot, browser);
   };
   const begint = () => {
     if (mijnBeurt !== beurt) return;
@@ -496,6 +570,8 @@ function speelVanServer(
   const wachter = setTimeout(() => wacht.abort(), GEDULD_MS);
   void fetch(adres(zin), { signal: wacht.signal })
     .then(async (antwoord) => {
+      /* 404 = deze zin is nog niet met de gekozen stem gemaakt: de browser leest hem voor (27 oktober 2026). */
+      if (antwoord.status === 404) throw new NietBewaard();
       if (!antwoord.ok) throw new Error(String(antwoord.status));
       return antwoord.arrayBuffer();
     })
@@ -533,6 +609,10 @@ function speelVanServer(
     })
     .catch((fout: unknown) => {
       clearTimeout(wachter);
+      if (fout instanceof NietBewaard) {
+        faal(false, true);
+        return;
+      }
       /* 503 = geen enkele stem lukte op de server; geen antwoord = geen verbinding. Allebei "kapot". */
       faal(!(fout instanceof DOMException && fout.name === "AbortError"));
     });

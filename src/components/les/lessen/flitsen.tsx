@@ -30,7 +30,7 @@
 
 import type { ComponentType } from "react";
 import type { Lesdraaiboek, Lesgids } from "../soort";
-import { FlitsKaart, FlitsStapel, tijdTekst, type Flitskaart, type FlitsProps } from "../vlakken/flitsen-kaart";
+import { FlitsStapel, tijdTekst, type Flitskaart, type FlitsProps } from "../vlakken/flitsen-kaart";
 import { FlitsHologram } from "../vlakken/flitsen-hologram";
 
 /* ---------- stapels ---------- */
@@ -240,7 +240,40 @@ function maakTekening(kaart: Flitskaart): ComponentType {
 /** Eerste letter een hoofdletter ("het lichtvisje" → "Het lichtvisje"). */
 const hoofd = (t: string) => t.charAt(0).toUpperCase() + t.slice(1);
 
+/*
+  Sinds 27 oktober 2026 (opdracht eigenaar) zijn ALLE flitslessen hologrammen
+  in Phaser, met 4 keuzeknoppen (zoals Synthesis) in plaats van typen, en
+  minstens 15 kaarten per oefenronde. Het oude venster (FlitsKaart) blijft in
+  de code staan. De wereld (kleur) volgt LESSENPLAN.md.
+*/
+const WERELD_VAN: Record<string, "oceaan" | "aarde" | "universum"> = {
+  "flitsen-plus-tot-20": "aarde",
+  "flitsen-min-tot-5": "aarde",
+  "flitsen-min-tot-10": "aarde",
+  "flitsen-min-tot-20": "aarde",
+  "flitsen-instaptoets-20": "aarde",
+  "flitsen-eindtoets-20": "aarde",
+  "flitsen-tien-erbij-eraf": "universum",
+};
+const STANDAARD_HOLO = { tegenstander: "het lichtvisje", pion: "jouw stip", finish: "de streep" };
+
+/** Minstens 15 kaarten (vaste regel), aangevuld uit dezelfde stapel; nooit twee keer dezelfde kaart na elkaar. */
+function minstens15(stapel: Flitskaart[]): Flitskaart[] {
+  if (stapel.length >= 15 || stapel.length === 0) return stapel;
+  const sleutel = (k: Flitskaart) => JSON.stringify(k);
+  const uit = [...stapel];
+  let poging = 0;
+  while (uit.length < 15 && poging++ < 500) {
+    const k = stapel[Math.floor(Math.random() * stapel.length)];
+    if (sleutel(k) !== sleutel(uit[uit.length - 1])) uit.push(k);
+  }
+  return uit;
+}
+
 function flitsles(o: Flitsles): Lesdraaiboek {
+  const holo = o.hologram ?? STANDAARD_HOLO;
+  const wereld = WERELD_VAN[o.id] ?? "oceaan";
+  const stapel = () => minstens15(o.stapel());
   return {
     id: o.id,
     titel: o.titel,
@@ -255,9 +288,10 @@ function flitsles(o: Flitsles): Lesdraaiboek {
       let oefenrondes = 0;
       const zet = (p: Partial<FlitsProps>) => l.pasVlakAan<FlitsProps>(p);
 
-      l.vlak(o.hologram ? FlitsHologram : FlitsKaart, {
+      l.vlak(FlitsHologram, {
+        wereld,
         titel: o.kop,
-        stapel: o.stapel(),
+        stapel: stapel(),
         voorbeeld: o.voorbeeld,
         fase: "start",
         ronde,
@@ -267,7 +301,10 @@ function flitsles(o: Flitsles): Lesdraaiboek {
         knoppen: ["race", "oefenen"],
         trofee: o.trofee,
       });
-      await l.zeg(...o.uitleg, "Wil je eerst oefenen?", "Tik dan op de oranje knop.", "De groene knop is de race.");
+      await l.zeg(...o.uitleg);
+      /* De eerste keer wijst Bliepo de knoppen aan (groep 3 leest nog niet). */
+      await l.wijsAan("oefenen", "Wil je eerst oefenen?", "Tik dan op de oranje knop.");
+      await l.wijsAan("race", "De groene knop is de race.");
 
       for (;;) {
         zet({ actief: true });
@@ -278,10 +315,9 @@ function flitsles(o: Flitsles): Lesdraaiboek {
         if (keuze === "oefenen" || keuze === "verder") {
           await l.zeg(
             keuze === "verder" ? "We oefenen nog een rondje." : "We gaan oefenen.",
-            "Typ het antwoord.",
-            "Tik dan op het vinkje.",
+            "Tik op het goede getal.",
           );
-          zet({ fase: "oefenen", ronde: ++ronde, stapel: o.stapel() });
+          zet({ fase: "oefenen", ronde: ++ronde, stapel: stapel() });
           const u = await l.wachtOpVlak<{ soort: string; goed: number; van: number }>("oefenKlaar");
           oefenrondes++;
           /* Naar verhouding (de hologramles heeft 15 kaarten per ronde, de andere 10). */
@@ -292,7 +328,7 @@ function flitsles(o: Flitsles): Lesdraaiboek {
               : deel >= 0.8
                 ? ["Knap gedaan.", "Je bent snel genoeg voor de race."]
                 : deel >= 0.5
-                  ? ["Goed gewerkt.", `Blijf oefenen, dan word je sneller dan ${o.hologram ? o.hologram.tegenstander : "de haas"}.`]
+                  ? ["Goed gewerkt.", `Blijf oefenen, dan word je sneller dan ${holo.tegenstander}.`]
                   : ["Goed geprobeerd.", "Nog een rondje oefenen helpt."];
           zet({
             fase: "uitslag",
@@ -301,18 +337,21 @@ function flitsles(o: Flitsles): Lesdraaiboek {
           });
           await l.zeg(`{${u.goed}} van de {${u.van}}.`, ...oordeel);
           /* Groep 3 kan de knoppen nog niet lezen: zeg wat de kleuren doen. */
-          await l.zeg("Oranje is nog een keer oefenen.", "Groen is de race.", "Roze is klaar.");
+          /* Groep 3 kan de knoppen nog niet lezen: Bliepo wijst ze aan en zegt wat ze doen. */
+          await l.wijsAan("verder", "Oranje is nog een keer oefenen.");
+          await l.wijsAan("race", "Groen is de race.");
+          await l.wijsAan("klaar", "Roze is klaar.");
           continue;
         }
 
         /* De race. */
         await l.zeg(
           "Klaar voor de race?",
-          o.hologram ? `Elk goed antwoord laat ${o.hologram.pion} verder rollen.` : "Elk goed antwoord brengt de schildpad verder.",
-          o.hologram ? `Ben jij eerder bij ${o.hologram.finish} dan ${o.hologram.tegenstander}?` : "Ben jij eerder bij de vlag dan de haas?",
+          `Elk goed antwoord brengt ${holo.pion} verder.`,
+          `Ben jij eerder bij ${holo.finish} dan ${holo.tegenstander}?`,
           "Tik op *Start* als je klaar bent.",
         );
-        zet({ fase: "race", ronde: ++ronde, stapel: o.stapel(), haasTijd });
+        zet({ fase: "race", ronde: ++ronde, stapel: stapel(), haasTijd });
         const r = await l.wachtOpVlak<{ soort: string; gewonnen: boolean; tijd: number }>("raceKlaar");
         if (r.gewonnen) {
           const nieuw = best === null || r.tijd < best;
@@ -326,7 +365,6 @@ function flitsles(o: Flitsles): Lesdraaiboek {
             uitslag: {
               kop: "Jij wint!",
               tekst: `Je tijd: ${tijdTekst(r.tijd)} s. Beste tijd: ${tijdTekst(best ?? r.tijd)} s.`,
-              ...(o.hologram ? {} : { dier: "schildpad" as const }),
             },
             knoppen: ["opnieuw", "klaar"],
           });
@@ -335,23 +373,24 @@ function flitsles(o: Flitsles): Lesdraaiboek {
             `Je deed er ${tijdTekst(r.tijd)} seconden over.`,
             nieuw ? "Dat is je beste tijd." : `Je beste tijd is ${tijdTekst(best ?? r.tijd)} seconden.`,
           );
-          await l.zeg("Groen is nog een keer racen.", "Roze is klaar.");
+          await l.wijsAan("opnieuw", "Groen is nog een keer racen.");
+          await l.wijsAan("klaar", "Roze is klaar.");
         } else {
           haasTijd = Math.min(HAAS_MAX, haasTijd + 10);
           zet({
             fase: "uitslag",
-            uitslag: o.hologram
-              ? { kop: `${hoofd(o.hologram.tegenstander)} wint.`, tekst: "Je was heel dichtbij. Probeer het nog eens, of oefen eerst." }
-              : { kop: "De haas wint.", tekst: "Je was heel dichtbij. Probeer het nog eens, of oefen eerst.", dier: "haas" },
+            uitslag: { kop: `${hoofd(holo.tegenstander)} wint.`, tekst: "Je was heel dichtbij. Probeer het nog eens, of oefen eerst." },
             knoppen: ["opnieuw", "oefenen", "klaar"],
           });
           await l.zeg(
-            o.hologram ? `${hoofd(o.hologram.tegenstander)} wint deze keer.` : "De haas wint deze keer.",
+            `${hoofd(holo.tegenstander)} wint deze keer.`,
             "Je was heel dichtbij.",
             "Wil je nog een keer racen?",
             "Of eerst oefenen?",
           );
-          await l.zeg("Groen is nog een keer racen.", "Oranje is oefenen.", "Roze is klaar.");
+          await l.wijsAan("opnieuw", "Groen is nog een keer racen.");
+          await l.wijsAan("oefenen", "Oranje is oefenen.");
+          await l.wijsAan("klaar", "Roze is klaar.");
         }
       }
 
@@ -375,21 +414,21 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     stapel: STAPELS.gemengd,
     voorbeeld: stip(5),
     record: "flitsen-toets",
-    uitleg: ["Dit zijn flitskaarten.", "Op een kaart staan stippen of een som.", "Typ het antwoord zo snel als je kunt."],
+    uitleg: ["Dit zijn flitskaarten.", "Op een kaart staan stippen of een som.", "Tik zo snel als je kunt op het goede getal."],
   }),
   flitsles({
     id: "flitsen-tellen-tot-10",
     titel: "Stippen tot 10",
     synthesis: "Flashcards 1 · Count to 10",
     /* De voorbeeldles in Phaser met Oceaan-hologrammen (27 oktober 2026). De oude stapel en tekst staan hieronder bij de andere lessen. */
-    kop: "Parels tot 10",
+    kop: "Stippen tot 10",
     stapel: STAPELS.parels15,
     voorbeeld: stip(10),
-    hologram: { tegenstander: "het lichtvisje", pion: "jouw parel", finish: "de schelp" },
+    hologram: { tegenstander: "het lichtvisje", pion: "jouw stip", finish: "de streep" },
     uitleg: [
-      "Kijk, ik tover een schelp tevoorschijn.",
-      "Er liggen parels in.",
-      "Hoeveel parels zijn het?",
+      "Kijk, ik tover een kaart tevoorschijn.",
+      "Er staan stippen op.",
+      "Hoeveel stippen zijn het?",
       "Kijk goed naar het patroon.",
       "Dan hoef je niet te tellen.",
     ],
@@ -448,7 +487,7 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     voorbeeld: stip(5),
     record: "flitsen-toets",
     trofee: true,
-    uitleg: ["Weet je nog hoe de flitskaarten werken?", "Typ het antwoord zo snel als je kunt.", "Kun je je beste tijd verbeteren?"],
+    uitleg: ["Weet je nog hoe de flitskaarten werken?", "Tik zo snel als je kunt op het goede getal.", "Kun je je beste tijd verbeteren?"],
   }),
 
   /* ---------- Flashcards 2 ---------- */
@@ -464,7 +503,7 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
       "Dit zijn flitskaarten.",
       "Er staan plussommen en minsommen tot {20} op.",
       "Soms komt er {10} bij, of gaat er {10} af.",
-      "Typ het antwoord zo snel als je kunt.",
+      "Tik zo snel als je kunt op het goede getal.",
     ],
   }),
   flitsles({
@@ -520,7 +559,7 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     uitleg: [
       "Weet je nog hoe de flitskaarten werken?",
       "Alle soorten kaarten komen door elkaar.",
-      "Typ het antwoord zo snel als je kunt.",
+      "Tik zo snel als je kunt op het goede getal.",
       "Kun je je beste tijd verbeteren?",
     ],
   }),

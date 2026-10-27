@@ -1,0 +1,41 @@
+/* Grote keuzeknoppen voor hologramlessen (27 oktober 2026). Maten in punten van het vlak. */
+.rij {
+  display: flex;
+  justify-content: center;
+  gap: 18px;
+}
+.knop {
+  min-width: 104px;
+  height: 92px;
+  padding: 0 18px;
+  border: 3px solid rgba(190, 240, 255, 0.85);
+  border-radius: 22px;
+  background: rgba(8, 30, 80, 0.62);
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-size: 50px;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(127, 233, 255, 0.35);
+  transition:
+    transform 0.08s,
+    opacity 0.2s,
+    background 0.2s;
+}
+.knop:active {
+  transform: scale(0.96);
+}
+.knop:disabled {
+  cursor: default;
+}
+.uit {
+  opacity: 0.32;
+  border-color: rgba(200, 210, 230, 0.4);
+  background: rgba(40, 50, 70, 0.6);
+  box-shadow: none;
+}
+.goed {
+  border-color: #8ff0c0;
+  background: rgba(30, 140, 90, 0.7);
+  box-shadow: 0 0 16px rgba(143, 240, 192, 0.45);
+}

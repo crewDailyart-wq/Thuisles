@@ -111,6 +111,14 @@ export type Stijl = {
   bliepo: BliepoMaat;
   /** Hoeveel zinnen van Bliepo er onder elkaar te zien zijn (1 tot 6). */
   zinnen: number;
+  /**
+   * Hoe sterk de gloed rond de hologrammen in de lessen is (27 oktober 2026,
+   * opdracht eigenaar: subtiel; ONTWERPREGELS.md "Gloed"). 0 = geen gloed,
+   * 1 = de sterke gloed van de eerste voorbeeldles. Standaard 0,5: een zacht,
+   * smal randje licht. Later in de stijlkiezer aan te passen; de lessen lezen
+   * hem uit de variabele --stijl-gloed (lib/phaser/gloed.ts).
+   */
+  gloed: number;
 };
 
 export const STANDAARD_STIJL: Stijl = {
@@ -131,6 +139,7 @@ export const STANDAARD_STIJL: Stijl = {
   microfoon: "#1f63e0",
   bliepo: "normaal",
   zinnen: STANDAARD_ZINNEN,
+  gloed: 0.5,
 };
 
 const KLEUR = /^#[0-9a-f]{6}$/i;
@@ -162,6 +171,7 @@ export function maakStijl(ruw: unknown): Stijl {
     microfoon: kleur(r.microfoon, s.microfoon),
     bliepo: uit(r.bliepo, BLIEPO_MATEN, s.bliepo),
     zinnen: typeof r.zinnen === "number" && Number.isInteger(r.zinnen) && r.zinnen >= 1 && r.zinnen <= 6 ? r.zinnen : s.zinnen,
+    gloed: typeof r.gloed === "number" && r.gloed >= 0 && r.gloed <= 1 ? Math.round(r.gloed * 100) / 100 : s.gloed,
   };
 }
 
@@ -211,6 +221,7 @@ export function stijlVariabelen(s: Stijl): Record<string, string> {
     v["--stijl-lettertype"] = familie(s.leesLetter);
   }
   if (s.grootte !== d.grootte) v["--stijl-schaal"] = String(GROOTTES[s.grootte].factor);
+  if (s.gloed !== d.gloed) v["--stijl-gloed"] = String(s.gloed);
   if (s.hoofd !== d.hoofd) {
     v["--stijl-hoofd"] = s.hoofd;
     v["--stijl-hoofd-licht"] = `color-mix(in srgb, ${s.hoofd} 70%, #fff)`;

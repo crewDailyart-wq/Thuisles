@@ -38,7 +38,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 470px;
+  top: 410px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -204,7 +204,7 @@
   position: absolute;
   left: 0;
   right: 0;
-  top: 150px;
+  top: 200px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -262,4 +262,48 @@
   .aftellen {
     animation: none;
   }
+}
+
+/* ---------- versie 2 (27 oktober 2026): stippen of een som op de kaart, 4 keuzeknoppen, iconen ---------- */
+
+/* De som staat als scherpe tekst midden op de hologramkaart (kaart: midden 490, 250). */
+.som {
+  position: absolute;
+  left: 290px;
+  width: 400px;
+  top: 190px;
+  height: 120px;
+  display: grid;
+  place-items: center;
+  font-size: 76px;
+  font-weight: 800;
+  color: #ffffff;
+  pointer-events: none;
+  text-shadow: 0 2px 10px rgba(4, 18, 60, 0.7);
+  font-variant-numeric: tabular-nums;
+}
+.gat {
+  display: inline-block;
+  min-width: 70px;
+  height: 84px;
+  margin: 0 6px;
+  border: 3px dashed rgba(190, 240, 255, 0.85);
+  border-radius: 14px;
+  vertical-align: middle;
+  line-height: 78px;
+  text-align: center;
+}
+.keuzes {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 430px;
+}
+.groot {
+  min-width: 132px;
+  height: 92px;
+}
+.groot svg {
+  width: 40px;
+  height: 40px;
 }

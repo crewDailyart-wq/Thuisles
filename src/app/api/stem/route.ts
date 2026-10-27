@@ -52,6 +52,9 @@ import {
   profielVoor,
   zinBestand,
   zinVoorKind,
+  bewaardeZin,
+  nieuweZinnenMetBrowser,
+  noteerNieuweZin,
 } from "@/lib/stem-server";
 import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
 import { alleHintZinnen } from "@/lib/tutor/hints";
@@ -106,6 +109,18 @@ export async function GET(request: NextRequest) {
 
   const profiel = profielVoor(await groepVan(params.get("groep")));
   if (!instellingen(profiel)) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
+
+  /*
+    Voor nu geen nieuwe zinnen bij een stemdienst (27 oktober 2026): wat al met
+    Ruth bewaard is, krijgt de browser; een nieuwe zin wordt alleen genoteerd
+    en de browser leest hem zelf voor (404 met "nietBewaard").
+  */
+  if (nieuweZinnenMetBrowser()) {
+    const bewaard = await bewaardeZin(zin, profiel);
+    if (bewaard) return mp3(bewaard, request);
+    void noteerNieuweZin(zin);
+    return NextResponse.json({ nietBewaard: true }, { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
 
   const uitkomst = await zinVoorKind(zin, profiel, WACHT_MS);
   if (typeof uitkomst === "number") {

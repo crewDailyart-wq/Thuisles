@@ -39,6 +39,17 @@ export interface Lesgids {
   zeg(...zinnen: string[]): Promise<void>;
   /** Een invulvak links. Geeft het getal, of `null` bij "Weet ik niet". */
   getal(): Promise<number | null>;
+  /**
+   * Bliepo wijst een knop aan en zegt erbij wat hij doet (27 oktober 2026,
+   * groep 3 kan nog niet lezen; ONTWERPREGELS.md). De knop met
+   * `data-knop="<knop>"` pulseert zolang hij praat; wat er in beeld staat
+   * (ook de knoppen) blijft staan. Gebruik dit de eerste keer in een les,
+   * bijvoorbeeld: `const p = l.getal(); await l.wijsAan("weetniet", "Weet je
+   * het niet? Tik dan op het vraagteken."); const v = await p;`
+   * Knoppen: controleer, weetniet, verder, nogeens, opnieuw, terug, en wat
+   * een vlak zelf een `data-knop` geeft.
+   */
+  wijsAan(knop: string, ...zinnen: string[]): Promise<void>;
   /** Knoppen links. Het kind kiest en bevestigt met het vinkje; `null` = "Weet ik niet". */
   kies(opties: string[]): Promise<string | null>;
   /** De blauwe pijl: het kind tikt als het klaar is met kijken. */

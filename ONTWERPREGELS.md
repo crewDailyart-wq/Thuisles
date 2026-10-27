@@ -219,6 +219,55 @@ Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
   maatje.
 - De rest van Thuisles (alle andere oefeningen) houdt de eigen Thuisles-stijl.
 
+## Lessen in Phaser: hologrammen en gloed (27 oktober 2026)
+
+Alle lessen, opdrachten en games worden in Phaser gebouwd (CLAUDE.md, HARDE
+REGEL 7). Wat daarbij altijd geldt:
+
+- **Achtergrond:** de huidige opdrachtachtergrond blijft precies zoals hij is
+  (de blauwe ruimte met de ruitjesmuur, de vloer met de ronde cirkel, Bliepo
+  rechts). Geen eigen achtergrond per wereld; het Phaser-canvas is
+  doorzichtig.
+- **Hologrammen:** de voorwerpen zijn gloeiende hologrammen die Bliepo
+  tevoorschijn tovert (lichtstraal uit de vloer + zachte flits). De wereld
+  (Oceaan, Aarde, Universum) zie je alleen aan de voorwerpen en hun kleur.
+  Eén soort voorwerp per opdracht; los van elkaar, groot genoeg en niet
+  overlappend, zodat ze goed te tellen zijn.
+- **Gloed: subtiel.** Een zacht, smal randje licht rond een voorwerp, geen
+  grote lichtwolk; het voorwerp zelf blijft duidelijk en scherp (niet
+  wit-uitgebeten). De lichtring bij selecteren en de lichtflits/-golf bij een
+  goed antwoord zijn er ook, maar rustig. De sterkte is één centrale
+  instelling: `gloed` in de stijl (lib/stijl.ts, standaard 0,5; later in de
+  stijlkiezer), via `lib/phaser/gloed.ts`. Geen enkele les zet zelf een
+  gloedsterkte; gebruik altijd `bak()` en de effecten uit
+  `src/components/les/holo/basis.ts`.
+- **Vloeiend:** gloed altijd één keer bakken in een plaatje, nooit elk beeld
+  opnieuw uitrekenen. Test met `npm run vloeiend` (HARDE REGEL 7).
+
+## Groep 3: kinderen die nog niet lezen (27 oktober 2026, vaste regel)
+
+Geldt voor alle groep 3-lessen en -opdrachten. Een kind dat nog niet kan
+lezen, moet de les helemaal kunnen doen. Controleer dat bij elke les.
+
+1. **Bliepo leest alles voor** wat het kind moet weten: de opdracht, de
+   vraag, de uitleg, hints en feedback. Het kind hoeft nooit iets te lezen om
+   de les te kunnen doen.
+2. **Knoppen hebben een duidelijk icoon** in plaats van alleen een woord
+   (`src/components/les/ikonen.tsx`): vinkje = Controleer, vraagteken = Weet
+   ik niet, pijl = Verder, luidspreker = Nog eens horen, rondje-pijl =
+   Opnieuw. Een klein woord eronder mag; het icoon moet genoeg zijn.
+3. **Antwoordkeuzes zijn cijfers, stippen of plaatjes, nooit woorden.**
+   Cijfers worden niet voorgelezen, maar staan groot en duidelijk. Moet een
+   keuze toch een woord zijn, dan leest Bliepo die voor als het kind erop
+   tikt.
+4. **Tikt het kind op tekst of op Bliepo's zin**, dan leest Bliepo die (nog
+   eens) voor (BliepoTekst).
+5. **De eerste keer in een les wijst Bliepo de knoppen aan** en zegt wat ze
+   doen (`l.wijsAan("weetniet", "Weet je het niet? Tik dan op het
+   vraagteken.")`); de knop pulseert zolang hij praat.
+6. **Zo weinig mogelijk tekst op het scherm.** Het meelezen boven Bliepo
+   blijft, want dat helpt bij leren lezen.
+
 ## Inhoud van vragen
 
 - 15 vragen per opdracht, geen dubbele, elke vraag precies één goed antwoord,

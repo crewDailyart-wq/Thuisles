@@ -20,6 +20,7 @@
  * dat met de zin die nu klinkt, dan lichten de woorden op.
  */
 
+import { zeg } from "@/lib/stem";
 import { useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
@@ -100,7 +101,14 @@ export function BliepoTekst({
   }, [nu]);
   const voorStem = oplichten && Boolean(gesproken) && wacht && !leest && !klaarMetZin;
   return (
-    <p ref={zin} className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}>
+    <p
+      ref={zin}
+      className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}
+      /* Tikt het kind op de zin, dan leest Bliepo hem nog eens voor (27 oktober 2026; groep 3 leest nog niet). */
+      onClick={gesproken ? () => zeg(gesproken) : undefined}
+      style={gesproken ? { cursor: "pointer" } : undefined}
+      title={gesproken ? "Tik om het nog eens te horen" : undefined}
+    >
       {woorden.map((w, i) => {
         const soort = leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
         return (

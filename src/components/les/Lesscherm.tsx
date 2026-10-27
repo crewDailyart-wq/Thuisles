@@ -15,7 +15,7 @@
 
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { stopPraten, zegNaElkaar } from "@/lib/stem";
+import { stopPraten, zeg, zegNaElkaar } from "@/lib/stem";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
 import { LosPraatknop } from "@/components/gesprek/Gesprek";
 import { Bliepo } from "@/components/avontuur/Bliepo";
@@ -28,6 +28,7 @@ import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { kiesGebaar, vraagOfUitleg } from "@/lib/bliepo-gebaren";
 import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
+import { IkoonKnop, IkoonTeken } from "./ikonen";
 import "@/components/oefenen/opdracht-nieuw.css";
 
 /*
@@ -69,6 +70,8 @@ type Beeld = {
   zichtbaar: number;
   praat: boolean;
   bediening: Bediening;
+  /** De knop die Bliepo nu aanwijst (`data-knop`), of null. */
+  aanwijs: string | null;
   bak: { tegels: number[]; om: boolean; slot: number[] };
   bakActief: boolean;
   hand: boolean;
@@ -85,6 +88,7 @@ const BEGIN: Beeld = {
   zichtbaar: 0,
   praat: false,
   bediening: null,
+  aanwijs: null,
   bak: { tegels: [], om: false, slot: [] },
   bakActief: false,
   hand: false,
@@ -394,11 +398,11 @@ function Lesscherm({
     const pauzeer = (ms: number) =>
       new Promise<void>((res, rej) => setTimeout(() => (levend ? res() : rej(STOP)), ms));
 
-    const spreek = (zinnen: string[]) =>
+    const spreek = (zinnen: string[], houdBediening = false) =>
       new Promise<void>((res) => {
         /* Bij elke zin opnieuw, zodat een keuze in "Jouw instellingen" meteen zichtbaar is. */
         if (levend) setVoorkeuren(vk());
-        zet((b) => ({ ...b, zinnen, zichtbaar: 0, praat: zinnen.length > 0, bediening: null }));
+        zet((b) => ({ ...b, zinnen, zichtbaar: 0, praat: zinnen.length > 0, bediening: houdBediening ? b.bediening : null }));
         if (zinnen.length === 0) return res();
         stopStem?.();
         /* Eerst Bliepo in beeld, dan pas zijn stem (26 oktober 2026, lib/bliepo-in-beeld.ts). */
@@ -420,6 +424,15 @@ function Lesscherm({
     const gids: Lesgids = {
       naam,
       zeg: (...zinnen) => spreek(zinnen.filter(Boolean)),
+      wijsAan: async (knop, ...zinnen) => {
+        zet((b) => ({ ...b, aanwijs: knop }));
+        try {
+          await spreek(zinnen.filter(Boolean), true);
+          await pauzeer(500);
+        } finally {
+          pas((b) => ({ ...b, aanwijs: null }));
+        }
+      },
       getal: () =>
         new Promise((res) => {
           zet((b) => ({ ...b, bediening: { soort: "getal" } }));
@@ -682,7 +695,7 @@ function Lesscherm({
           {b?.soort === "kies" && <Keuzes opties={b.opties} onKlaar={(v) => wacht.current.kies?.(v)} />}
           {b?.soort === "verder" && (
             <div className={s.bediening}>
-              <button type="button" className={s.rond} aria-label="Verder" autoFocus onClick={() => wacht.current.verder?.()}>
+              <button type="button" className={s.rond} aria-label="Verder" data-knop="verder" autoFocus onClick={() => wacht.current.verder?.()}>
                 <Pijl />
               </button>
             </div>
@@ -694,18 +707,29 @@ function Lesscherm({
           */}
           {beeld.klaar && (
             <div className={s.bediening}>
-              <button type="button" className={`${s.knop} ${s.breed}`} onClick={opnieuw}>
-                Nog een keer
-              </button>
-              {terugHref && (
-                <a className={`${s.knop} ${s.breed}`} href={terugHref}>
-                  Terug
-                </a>
-              )}
+              {/* Met iconen (groep 3 leest nog niet; 27 oktober 2026). */}
+              <div className={s.rij}>
+                <IkoonKnop ikoon="opnieuw" label="Nog een keer" knop="opnieuw" onClick={opnieuw} />
+                {terugHref && (
+                  <a className={`${s.knop}`} href={terugHref} data-knop="terug" aria-label="Terug" style={{ display: "inline-flex", alignItems: "center", gap: 8 }}>
+                    <IkoonTeken ikoon="terug" />
+                    Terug
+                  </a>
+                )}
+              </div>
             </div>
           )}
         </div>
   );
+
+  /* De knop die Bliepo aanwijst pulseert (ook knoppen in een eigen speelvlak). */
+  useEffect(() => {
+    const k = beeld.aanwijs;
+    if (!k) return;
+    const knoppen = [...document.querySelectorAll<HTMLElement>(`[data-knop="${k}"]`)];
+    knoppen.forEach((el) => el.classList.add("les-aanwijs"));
+    return () => knoppen.forEach((el) => el.classList.remove("les-aanwijs"));
+  }, [beeld.aanwijs, beeld.bediening]);
 
   return (
     <div className={s.wortel} data-les-ontwerp={ONTWERP}>
@@ -979,13 +1003,11 @@ function Getalvak({ onKlaar }: { onKlaar: (v: number | null) => void }) {
           onFocus={(e) => bijAandacht(e.currentTarget)}
           onBlur={bijWeggaan}
         />
-        <button type="submit" className={s.rond} aria-label="Controleer" data-controleer disabled={!waarde}>
+        <button type="submit" className={s.rond} aria-label="Controleer" data-controleer data-knop="controleer" disabled={!waarde}>
           <Vink />
         </button>
       </form>
-      <button type="button" className={`${s.knop} ${s.breed}`} onClick={() => onKlaar(null)}>
-        Weet ik niet
-      </button>
+      <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" onClick={() => onKlaar(null)} />
     </div>
   );
 }
@@ -1023,7 +1045,7 @@ function Somvak({ onKlaar }: { onKlaar: (v: number) => void }) {
 function SomBevestig() {
   return (
     <div className={s.bediening}>
-      <button type="submit" form="somvak" className={s.rond} aria-label="Controleer" data-controleer>
+      <button type="submit" form="somvak" className={s.rond} aria-label="Controleer" data-controleer data-knop="controleer">
         <Vink />
       </button>
     </div>
@@ -1038,17 +1060,25 @@ function Keuzes({ opties, onKlaar }: { opties: string[]; onKlaar: (v: string | n
     <div className={s.bediening}>
       <div className={kort ? s.rij : s.bediening} style={kort ? { flexWrap: "wrap", width: 262 } : { opacity: 1, animation: "none" }}>
         {opties.map((o) => (
-          <button key={o} type="button" className={`${s.knop} ${/[=+−]/.test(o) || /^\d+$/.test(o) ? s.som : ""}`} aria-pressed={keuze === o} onClick={() => setKeuze(o)}>
+          <button
+            key={o}
+            type="button"
+            className={`${s.knop} ${/[=+−]/.test(o) || /^\d+$/.test(o) ? s.som : ""}`}
+            aria-pressed={keuze === o}
+            onClick={() => {
+              setKeuze(o);
+              /* Een keuze met een woord leest Bliepo voor (groep 3 leest nog niet); cijfers niet (27 oktober 2026). */
+              if (/[a-z]/i.test(o)) zeg(kaal(o));
+            }}
+          >
             {o}
           </button>
         ))}
       </div>
       <div className={s.rij}>
-        <button type="button" className={s.knop} onClick={() => onKlaar(null)}>
-          Weet ik niet
-        </button>
+        <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" onClick={() => onKlaar(null)} />
         {keuze !== null && (
-          <button type="button" className={s.rond} aria-label="Controleer" data-controleer onClick={() => onKlaar(keuze)}>
+          <button type="button" className={s.rond} aria-label="Controleer" data-controleer data-knop="controleer" onClick={() => onKlaar(keuze)}>
             <Vink />
           </button>
         )}

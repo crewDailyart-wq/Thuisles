@@ -266,6 +266,8 @@ const lees = (bestand: string) => readFile(bestand).catch(() => null);
 
 /** Maakt één stuk geluid. Geeft het geluid of een foutcode. */
 async function tts(body: Record<string, unknown>, sleutel: string, model: string): Promise<Buffer | number> {
+  /* Voor nu geen betaalde stem voor nieuwe zinnen (27 oktober 2026, STEM_NIEUWE_ZINNEN); 409 = "doe het met de browser". */
+  if (nieuweZinnenMetBrowser()) return 409;
   const antwoord = await fetch("https://api.fish.audio/v1/tts", {
     method: "POST",
     headers: { Authorization: `Bearer ${sleutel}`, "Content-Type": "application/json", model },
@@ -355,6 +357,8 @@ async function maakStukEleven(stuk: string, s: Instellingen, model = s.model, li
 }
 
 async function maakStukElevenEenKeer(stuk: string, s: Instellingen, model: string): Promise<Buffer | number> {
+  /* Voor nu geen betaalde stem voor nieuwe zinnen (27 oktober 2026, STEM_NIEUWE_ZINNEN); 409 = "doe het met de browser". */
+  if (nieuweZinnenMetBrowser()) return 409;
   const sr = Number(s.formaat.split("_")[1]) || 24000;
   const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}?output_format=${s.formaat}`, {
     method: "POST",
@@ -387,6 +391,7 @@ async function luister(data: Buffer, sleutel: string): Promise<string | null> {
     formulier.append("audio", new Blob([new Uint8Array(data)], { type: "audio/mpeg" }), "zin.mp3");
     formulier.append("language", "nl");
     formulier.append("ignore_timestamps", "true");
+    if (nieuweZinnenMetBrowser()) return null;
     const antwoord = await fetch("https://api.fish.audio/v1/asr", {
       method: "POST",
       headers: { Authorization: `Bearer ${sleutel}`, model: "transcribe-1" },
@@ -628,6 +633,47 @@ export function maakZin(zin: string, profiel: Profiel, opnieuw = false, dienst: 
 
   bezig.set(sleutel, klus);
   return klus;
+}
+
+/**
+ * Welke stem maakt NIEUWE zinnen? (27 oktober 2026, opdracht eigenaar: voor nu
+ * geen tegoed meer bij ElevenLabs of Fish Audio.)
+ *
+ *   STEM_NIEUWE_ZINNEN=browser  (standaard) nieuwe zinnen niet maken: de
+ *                               browser leest ze voor met zijn eigen
+ *                               Nederlandse stem; wat al met Ruth bewaard is,
+ *                               klinkt gewoon met Ruth.
+ *   STEM_NIEUWE_ZINNEN=dienst   zoals tot 27 oktober: nieuwe zinnen maken
+ *                               met de gekozen stemdienst (STEM_DIENST).
+ *
+ * Wisselen naar een andere stem is dus alleen deze instelling (in Railway of
+ * .env.local). Welke zinnen nog gemaakt moeten worden, staat in
+ * STEMZINNEN.md (`npm run stemzinnen`) en in stem/nieuwe-zinnen.txt.
+ */
+export function nieuweZinnenMetBrowser(): boolean {
+  return (process.env.STEM_NIEUWE_ZINNEN ?? "browser") !== "dienst";
+}
+
+/** De zin zoals hij al met de hoofdstem (Ruth) bewaard is, of null. Maakt niets nieuws. */
+export async function bewaardeZin(zin: string, profiel: Profiel): Promise<Buffer | null> {
+  const s = instellingen(profiel);
+  if (!s) return null;
+  const bewaard = await lees(zinBestand(zin, s).bestand);
+  if (bewaard) return bewaard;
+  const vorig = vorigBestand(zin, s);
+  return vorig ? await lees(vorig) : null;
+}
+
+/** Een zin die nog met de gekozen stem gemaakt moet worden, één keer onthouden (stem/nieuwe-zinnen.txt). */
+const alGenoteerd = new Set<string>();
+export async function noteerNieuweZin(zin: string): Promise<void> {
+  if (alGenoteerd.has(zin)) return;
+  alGenoteerd.add(zin);
+  const bestand = path.join(MAP, "nieuwe-zinnen.txt");
+  const huidig = (await readFile(bestand, "utf8").catch(() => "")).split("\n");
+  if (huidig.includes(zin)) return;
+  await mkdir(MAP, { recursive: true }).catch(() => {});
+  await writeFile(bestand, `${zin}\n`, { flag: "a" }).catch(() => {});
 }
 
 /** De zin met de oude stem: bewaard, of nieuw gemaakt (en dan ook bewaard). */
@@ -889,6 +935,7 @@ export async function zinMetTijden(zin: string, profiel: Profiel): Promise<{ dat
   const nodig = Math.ceil(tekst.length * tekenPrijs(s.model));
   if (!(await elevenVoorLive(nodig))) return 402;
   const sr = Number(s.formaat.split("_")[1]) || 24000;
+  if (nieuweZinnenMetBrowser()) return 409;
   const antwoord = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${s.stem}/with-timestamps?output_format=${s.formaat}`, {
     method: "POST",
     headers: { "xi-api-key": s.elevenSleutel, "Content-Type": "application/json" },
