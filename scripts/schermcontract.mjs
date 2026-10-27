@@ -505,6 +505,13 @@ export const SCHERMCONTRACT = [
     ],
   },
   {
+    /* Proefje Phaser (27 oktober 2026, opdracht eigenaar): drie gloeiende parels om te slepen. */
+    naam: "Voorbeeld Phaser",
+    pad: "/voorbeeld-phaser",
+    bron: ["src/app/voorbeeld-phaser/ParelsProef.tsx"],
+    zichtbaar: ["Phaser laden…"],
+  },
+  {
     /*
       Echte bewegingen (24 oktober 2026, opdracht eigenaar): door mensen
       opgenomen gebaren (Mixamo), in Blender op Bliepo gezet; een knop per
