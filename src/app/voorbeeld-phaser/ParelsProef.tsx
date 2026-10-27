@@ -57,13 +57,39 @@ export function ParelsProef() {
           g.generateTexture("parel", r * 2, r * 2);
           g.destroy();
 
-          for (const p of PARELS) {
-            const parel = this.add.image(b * p.x, h * p.y, "parel").setTint(p.kleur).setInteractive({ draggable: true, useHandCursor: true });
-            parel.enableFilters();
-            const gloed = parel.filters!.external.addGlow(p.kleur, 2.5, 0, 2.5, false, 12, 18);
-            gloed.setPaddingOverride(null);
+          /*
+            De gloed één keer maken en bewaren (27 oktober 2026): het
+            Glow-filter van Phaser bij elk beeld opnieuw uitrekenen voor drie
+            parels haalde op de laptop van de eigenaar maar 13 beelden per
+            seconde (slepen liep achter de muis aan). Nu tekent Phaser elke
+            parel mét zijn ingebouwde gloed één keer in een eigen plaatje
+            (DynamicTexture); daarna is het een gewoon plaatje (61 per seconde).
+            `?gloed=uit` laat de gloed weg, `?gloed=live` rekent hem elk beeld uit (om te vergelijken).
+          */
+          const proef = new URLSearchParams(window.location.search).get("gloed");
+          const RAND = 64;
+          const maat = r * 2 + RAND * 2;
+          PARELS.forEach((p, i) => {
+            let sleutel = "parel";
+            if (proef !== "uit" && proef !== "live") {
+              const los = this.add.image(0, 0, "parel").setTint(p.kleur);
+              los.enableFilters();
+              los.filters!.external.addGlow(p.kleur, 2.5, 0, 2.5, false, 12, 18).setPaddingOverride(null);
+              sleutel = `parel-gloed-${i}`;
+              this.textures.addDynamicTexture(sleutel, maat, maat)!.draw(los, maat / 2, maat / 2).render();
+              los.destroy();
+            }
+            const parel = this.add.image(b * p.x, h * p.y, sleutel);
+            if (sleutel === "parel") parel.setTint(p.kleur);
+            if (proef === "live") {
+              parel.enableFilters();
+              parel.filters!.external.addGlow(p.kleur, 2.5, 0, 2.5, false, 12, 18).setPaddingOverride(null);
+            }
+            /* Alleen de parel zelf pakt (niet de gloed eromheen). */
+            const m = parel.width / 2;
+            parel.setInteractive({ hitArea: new Phaser.Geom.Circle(m, m, r + 4), hitAreaCallback: Phaser.Geom.Circle.Contains, draggable: true, useHandCursor: true });
             this.parels.push(parel);
-          }
+          });
           this.input.on("drag", (_w: unknown, obj: import("phaser").GameObjects.Image, x: number, y: number) => obj.setPosition(x, y));
           this.input.on("dragstart", (_w: unknown, obj: import("phaser").GameObjects.Image) => obj.setScale(1.12));
           this.input.on("dragend", (_w: unknown, obj: import("phaser").GameObjects.Image) => obj.setScale(1));
