@@ -36,7 +36,7 @@
  */
 
 import { spawn } from "node:child_process";
-import { mkdtempSync, rmSync, existsSync } from "node:fs";
+import { mkdtempSync, rmSync, existsSync, readdirSync, readFileSync } from "node:fs";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 
@@ -49,6 +49,20 @@ const SCHERMEN = [
   /* De voorbeeldles (27 oktober 2026): Stippen tot 10 met Oceaan-hologrammen; geen slepen, dus de hologrammen spelen 3 s hun animaties (verschijnen + lichtgolf). */
   { naam: "Les Stippen tot 10 (hologrammen)", pad: "/voorbeeld/les/flitsen-tellen-tot-10?naam=Testkind" },
 ];
+/* Elke bouwer van een onderdeel zet zijn Phaser-lessen in een eigen lijstje: scripts/vloeiend-schermen/<onderdeel>.json ([{ naam, pad }]). */
+const LIJSTJES = new URL("./vloeiend-schermen/", import.meta.url).pathname;
+if (existsSync(LIJSTJES)) {
+  for (const f of readdirSync(LIJSTJES).filter((f) => f.endsWith(".json")).sort()) {
+    try {
+      for (const sch of JSON.parse(readFileSync(LIJSTJES + f, "utf8"))) if (sch?.pad && !SCHERMEN.some((x) => x.pad === sch.pad)) SCHERMEN.push(sch);
+    } catch {
+      console.log(`⚠️  ${f} is geen geldige lijst; overgeslagen.`);
+    }
+  }
+}
+/* Alleen bepaalde schermen meten: ALLEEN=<stukje van het pad> (bijvoorbeeld tijdens het bouwen). */
+if (process.env.ALLEEN) SCHERMEN.splice(0, SCHERMEN.length, ...SCHERMEN.filter((x) => x.pad.includes(process.env.ALLEEN)));
+
 
 const APPARATEN = [
   { naam: "laptop", b: 1440, h: 900, dpr: 1, mobiel: false },
