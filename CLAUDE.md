@@ -305,6 +305,50 @@ oefenen, zou hun voortgang zo verdwijnen.
 
 ---
 
+# ⛔ HARDE REGEL 7 — ALLES IN PHASER, EN ALTIJD VLOEIEND
+
+**Alle lessen, opdrachten en games van Bliepo worden gebouwd in Phaser (2D)
+en lopen ALTIJD vloeiend** (besluit eigenaar, 27 oktober 2026). Geen Godot
+meer voor nieuw werk: dat is te zwaar op telefoons (39,5 MB, seconden
+stilstand). Wat er al in Godot staat, blijft staan (regel 1).
+
+Bij elke nieuwe of aangepaste les, opdracht of game test je dit zelf,
+vóórdat hij online gaat, op laptop én op een nagebootste trage telefoon:
+
+- minstens **55–60 beeldjes per seconde** tijdens slepen, animaties en gloed;
+- **geen hapering langer dan 50 ms**;
+- de opdracht **opent in minder dan 1 seconde**.
+
+Haalt hij dat niet, dan los je het eerst op zonder dat hij er duidelijk
+anders uitziet (bijvoorbeeld een dure gloed één keer "bakken" in een
+plaatje in plaats van elk beeld uitrekenen, minder deeltjes, een lichtere
+gloed op telefoon, kleinere plaatjes), en pas dan zet je hem online.
+
+## De controle
+
+```
+npm run vloeiend                        (lokaal, zit ook in npm run bewaak)
+BASIS=https://… WW=… npm run vloeiend   (de echte site, na het online zetten)
+```
+
+`scripts/vloeiendcontrole.mjs` start Chrome zonder venster maar mét de
+grafische kaart, en meet per Phaser-scherm op laptop en trage telefoon
+(4× tragere processor, trage 4G) de opentijd, de beeldjes per seconde en de
+langste hapering tijdens 3 seconden slepen. Elk Phaser-scherm staat in de
+lijst `SCHERMEN` en zet bij zijn eerste beeld
+`window.__phaser = { klaarOp, sleepPunt }`. Een nieuw Phaser-scherm zet je
+er meteen bij. De opentijd telt als harde eis op de echte site; lokaal
+(ontwikkelversie, veel trager) geeft hij alleen een waarschuwing.
+
+## Waarom deze regel er is
+
+Het eerste Phaser-proefje haalde op de laptop van de eigenaar maar 13
+beeldjes per seconde: de gloed werd bij elk beeld opnieuw uitgerekend, en
+het slepen liep achter de muis aan. Een gewone test zonder grafische kaart
+zag dat niet.
+
+---
+
 **Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
 gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
 grootte.** De bestanden staan in `public/geld/`, met de bron in

@@ -20,9 +20,19 @@ const PARELS = [
 
 declare global {
   interface Window {
-    __phaser?: { geladenMs?: number; eersteBeeldMs?: number; versie?: string; parels?: () => { x: number; y: number }[] };
+    __phaser?: {
+      geladenMs?: number;
+      eersteBeeldMs?: number;
+      klaarOp?: number;
+      versie?: string;
+      sleepPunt?: () => { x: number; y: number };
+      parels?: () => { x: number; y: number }[];
+    };
   }
 }
+
+/* Phaser al gaan laden zodra dit stukje code binnen is, niet pas na het opbouwen van de pagina (sneller open). */
+const phaserLaden = typeof window === "undefined" ? null : import("phaser");
 
 export function ParelsProef() {
   const plek = useRef<HTMLDivElement>(null);
@@ -32,7 +42,7 @@ export function ParelsProef() {
     let spel: import("phaser").Game | null = null;
     let weg = false;
     const t0 = performance.now();
-    void import("phaser").then((P) => {
+    void (phaserLaden ?? import("phaser")).then((P) => {
       const Phaser = P.default ?? P;
       if (weg || !plek.current) return;
       window.__phaser = { geladenMs: Math.round(performance.now() - t0), versie: Phaser.VERSION };
@@ -94,7 +104,17 @@ export function ParelsProef() {
           this.input.on("dragstart", (_w: unknown, obj: import("phaser").GameObjects.Image) => obj.setScale(1.12));
           this.input.on("dragend", (_w: unknown, obj: import("phaser").GameObjects.Image) => obj.setScale(1));
           this.game.events.once("postrender", () => {
-            window.__phaser = { ...window.__phaser, eersteBeeldMs: Math.round(performance.now() - t0), parels: () => this.parels.map((q) => ({ x: Math.round(q.x), y: Math.round(q.y) })) };
+            window.__phaser = {
+              ...window.__phaser,
+              eersteBeeldMs: Math.round(performance.now() - t0),
+              /* Voor de vloeiendheidscontrole (scripts/vloeiendcontrole.mjs): wanneer het eerste beeld er stond, en waar je kunt slepen. */
+              klaarOp: performance.now(),
+              sleepPunt: () => {
+                const r = host.getBoundingClientRect();
+                return { x: r.left + this.parels[0].x, y: r.top + this.parels[0].y };
+              },
+              parels: () => this.parels.map((q) => ({ x: Math.round(q.x), y: Math.round(q.y) })),
+            };
             zetStand(`Phaser ${Phaser.VERSION}: sleep de parels`);
           });
         }
