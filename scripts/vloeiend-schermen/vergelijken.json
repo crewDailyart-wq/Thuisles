@@ -1,0 +1,7 @@
+[
+  { "naam": "Les Instaptoets: vergelijken (hologrammen)", "pad": "/voorbeeld/les/vergelijken-instaptoets?naam=Testkind" },
+  { "naam": "Les Meer of minder (hologrammen)", "pad": "/voorbeeld/les/vergelijken-meer-of-minder?naam=Testkind" },
+  { "naam": "Les De tekens =, < en > (hologrammen)", "pad": "/voorbeeld/les/vergelijken-tekens?naam=Testkind" },
+  { "naam": "Les Getallen vergelijken (hologrammen)", "pad": "/voorbeeld/les/vergelijken-getallen?naam=Testkind" },
+  { "naam": "Les Eindtoets: vergelijken (hologrammen)", "pad": "/voorbeeld/les/vergelijken-eindtoets?naam=Testkind" }
+]

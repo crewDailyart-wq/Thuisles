@@ -1,0 +1,7 @@
+[
+  { "naam": "Verhaaltjessommen: instaptoets (hologrammen)", "pad": "/voorbeeld/les/verhaal-instaptoets?naam=Testkind" },
+  { "naam": "Verhaaltjessommen: kleine verhaaltjes (hologrammen)", "pad": "/voorbeeld/les/verhaal-kleine-verhalen?naam=Testkind" },
+  { "naam": "Verhaaltjessommen: grotere verhaaltjes (hologrammen)", "pad": "/voorbeeld/les/verhaal-grote-verhalen?naam=Testkind" },
+  { "naam": "Verhaaltjessommen: verstopte getallen (hologrammen)", "pad": "/voorbeeld/les/verhaal-verstopte-getallen?naam=Testkind" },
+  { "naam": "Verhaaltjessommen: eindtoets (hologrammen)", "pad": "/voorbeeld/les/verhaal-eindtoets?naam=Testkind" }
+]

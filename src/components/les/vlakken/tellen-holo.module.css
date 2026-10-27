@@ -1,0 +1,283 @@
+/*
+  De hologramvlakken van "Tellen" (27 oktober 2026). Geen eigen achtergrond
+  of kader: de blauwe ruimte van het lesscherm blijft zichtbaar en het
+  Phaser-canvas is doorzichtig. Wat het kind aantikt zijn gewone knoppen
+  (zonder rand) over de hologrammen heen; getallen zijn scherpe HTML-tekst.
+  Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Tekst vóór de blauwe ruimte: altijd een zachte donkere rand. */
+.cijfer,
+.nummer,
+.getal,
+.lijst,
+.bubbelgetal,
+.kaartcijfer {
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.9);
+}
+
+/* Een onzichtbare tikplek over een hologram. */
+.tik {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.tik:disabled {
+  cursor: default;
+}
+.tik:focus-visible {
+  outline: 3px solid #ffd36e;
+  outline-offset: -3px;
+  border-radius: 18px;
+}
+
+/* De cijfers 0–9 rond het rooster. */
+.cijfer {
+  position: absolute;
+  width: 130px;
+  height: 100px;
+  padding: 0;
+  border: 0;
+  border-radius: 22px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 72px;
+  font-weight: 800;
+  line-height: 100px;
+  text-align: center;
+  cursor: default;
+  touch-action: manipulation;
+  transition:
+    transform 0.08s,
+    color 0.2s,
+    background 0.2s;
+}
+.cijfer.aan {
+  cursor: pointer;
+  background: rgba(8, 30, 80, 0.35);
+  box-shadow: 0 0 12px rgba(127, 233, 255, 0.25);
+}
+.cijfer.aan:active {
+  transform: scale(0.95);
+}
+.cijfer.uit {
+  opacity: 0.3;
+}
+.driehoek {
+  position: absolute;
+  left: 50%;
+  width: 26px;
+  height: 18px;
+  margin-left: -13px;
+  pointer-events: none;
+}
+
+/* Een nummer in een visje of parel (samen tellen). */
+.nummer {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: 46px;
+  font-weight: 800;
+  color: #ffffff;
+  animation: plop 0.28s ease-out both;
+}
+
+/* Verfbolletjes en de knop met het vinkje. */
+.verf {
+  position: absolute;
+  width: 84px;
+  height: 84px;
+  border: 3px solid rgba(255, 255, 255, 0.55);
+  border-radius: 50%;
+  cursor: pointer;
+  touch-action: manipulation;
+  transition: transform 0.12s;
+}
+.verfGekozen {
+  border-color: #ffffff;
+  transform: scale(1.14);
+  box-shadow: 0 0 0 5px rgba(255, 211, 110, 0.75);
+}
+.vinkje {
+  position: absolute;
+}
+
+/* De getallen boven de schelpen en het lijstje met getalwoorden. */
+.getal {
+  position: absolute;
+  width: 160px;
+  margin-left: -80px;
+  text-align: center;
+  font-size: 76px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+}
+.lijst {
+  position: absolute;
+  left: 690px;
+  top: 40px;
+  width: 270px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  font-size: 30px;
+  font-weight: 700;
+  line-height: 1;
+  pointer-events: none;
+}
+.lijst li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 52px;
+  animation: plop 0.28s ease-out both;
+}
+.lijst .stip {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  flex: none;
+  box-shadow: 0 0 8px currentColor;
+}
+.lijst .doel {
+  text-decoration: underline;
+  text-decoration-color: #ffd36e;
+  text-decoration-thickness: 4px;
+  text-underline-offset: 6px;
+}
+
+/* Het getallenveld: het getal op een bubbel. */
+.bubbelgetal {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-weight: 800;
+  cursor: default;
+  touch-action: manipulation;
+  transition: opacity 0.25s;
+}
+.bubbelgetal.aan {
+  cursor: pointer;
+}
+.bubbelgetal.dof {
+  opacity: 0.3;
+}
+
+/* Cijferkaarten (kleine schelpjes met een cijfer) en het invulvak op het schrijfbord. */
+.kaartcijfer {
+  position: absolute;
+  width: 100px;
+  height: 92px;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 58px;
+  font-weight: 800;
+  line-height: 92px;
+  text-align: center;
+  cursor: default;
+  touch-action: manipulation;
+  transition:
+    opacity 0.25s,
+    transform 0.08s;
+}
+.kaartcijfer.aan {
+  cursor: pointer;
+}
+.kaartcijfer.aan:active {
+  transform: scale(0.95);
+}
+.kaartcijfer.uit {
+  opacity: 0.28;
+}
+.invoer {
+  position: absolute;
+  height: 150px;
+  border: 3px dashed rgba(190, 245, 255, 0.85);
+  border-radius: 22px;
+  background: rgba(8, 30, 80, 0.35);
+  color: #ffffff;
+  font: inherit;
+  font-size: 120px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  caret-color: #ffd36e;
+  box-shadow: 0 0 22px rgba(127, 233, 255, 0.4);
+  animation: licht 1.6s ease-in-out infinite;
+}
+.invoer:focus {
+  border-color: #ffd36e;
+}
+.groot {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  font-size: 150px;
+  font-weight: 800;
+  line-height: 1;
+  pointer-events: none;
+  border: 5px solid #ff8f8f;
+  border-radius: 24px;
+  background: rgba(8, 30, 80, 0.55);
+  animation: plop 0.28s ease-out both;
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes licht {
+  0%,
+  100% {
+    box-shadow: 0 0 14px rgba(255, 211, 110, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 26px rgba(255, 211, 110, 0.6);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nummer,
+  .lijst li,
+  .groot {
+    animation: none;
+  }
+  .invoer {
+    animation: none;
+  }
+}

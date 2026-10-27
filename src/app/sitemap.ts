@@ -8,6 +8,7 @@ import {
 import { aantalZichtbareWerkbladen } from "@/lib/data/werkbladen";
 import { TALEN, openbaarAdres, taalvoorvoegsel } from "@/lib/seo";
 import { niveautestBeschikbaar } from "@/lib/site/inhoud";
+import { lesAdres, lessenOpRoute } from "@/lib/seo/lessen-groep3";
 
 /**
  * De sitemap: alle openbare adressen, met hun vertalingen.
@@ -63,6 +64,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       }
     }
   }
+
+  /*
+    De lespagina's van groep 3 (LESSENPLAN.md § 6). Die staan in code, niet in
+    de database, en zijn alleen in het Nederlands geschreven: daarom zonder
+    vertalingen.
+  */
+  for (const les of lessenOpRoute()) regels.push({ url: lesAdres(les) });
 
   return regels;
 }

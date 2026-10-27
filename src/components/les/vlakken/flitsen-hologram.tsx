@@ -303,7 +303,7 @@ function Spel({
   const antwoord = antwoordVan(kaart);
   const speelt = !race || aftel === 0;
   /* Vier keuzes per kaart, vast zolang de kaart staat. */
-  const keuzes = useMemo(() => vierKeuzes(antwoord, kaart.soort === "stippen" ? 1 : 0, kaart.soort === "stippen" ? 10 : 20), [antwoord, kaart.soort]);
+  const keuzes = useMemo(() => vierKeuzes(antwoord, kaart.soort === "stippen" ? 1 : 0, kaart.soort === "stippen" ? 10 : Math.max(20, antwoord + 20)), [antwoord, kaart.soort]);
 
   useEffect(() => {
     if (!scene || !speelt || afgelopen.current) return;

@@ -1,0 +1,287 @@
+/*
+  Verhaaltjessommen als hologrammen (27 oktober 2026). Geen bord of kader:
+  de blauwe ruimte van het lesscherm blijft zichtbaar en het Phaser-canvas is
+  doorzichtig. Tekst, som en knoppen zijn gewone HTML (echte knoppen).
+  Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* ---------- de som, bovenaan in het midden ---------- */
+
+.som {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 14px;
+  height: 86px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+  font-size: 62px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.9);
+  pointer-events: none;
+}
+.somgetal {
+  color: #ffffff;
+}
+.teken {
+  color: #cfe6ff;
+}
+.vak {
+  display: grid;
+  place-items: center;
+  min-width: 82px;
+  height: 80px;
+  padding: 0 8px;
+  border: 3px solid rgba(190, 240, 255, 0.55);
+  border-radius: 16px;
+  background: rgba(8, 30, 80, 0.45);
+  color: #ffffff;
+}
+.smal {
+  min-width: 56px;
+}
+/* Het vakje dat nu aan de beurt is: warm oplichten. */
+.actief {
+  border-color: #ffd36e;
+  box-shadow:
+    0 0 18px rgba(255, 211, 110, 0.55),
+    inset 0 0 10px rgba(255, 211, 110, 0.25);
+  animation: licht 1.6s ease-in-out infinite;
+}
+
+/* ---------- het verhaal ---------- */
+
+.verhaal {
+  position: absolute;
+  left: 40px;
+  right: 40px;
+  top: 112px;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 46px;
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.9);
+}
+/* Bij het uitpluizen: alleen de tekst, groot in het midden (zoals Synthesis). */
+.midden {
+  top: 120px;
+  font-size: 50px;
+  line-height: 78px;
+  text-align: center;
+}
+.midden .zin {
+  margin: 8px auto;
+}
+
+.zin {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0;
+  padding: 0 12px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  text-shadow: inherit;
+  animation: verschijn 0.3s ease-out both;
+}
+.zinTik {
+  cursor: pointer;
+  border-color: rgba(190, 240, 255, 0.35);
+  background: rgba(8, 30, 80, 0.25);
+}
+.zinTik:active {
+  transform: scale(0.99);
+}
+.roze {
+  color: #ffb3dc;
+  border-color: rgba(255, 150, 210, 0.7);
+  background: rgba(120, 30, 90, 0.25);
+}
+.groen {
+  color: #a6f5cc;
+}
+/* "Hier staat het": een warme rand rond de zin. */
+.hint {
+  border-color: #ffd36e;
+  box-shadow: 0 0 16px rgba(255, 211, 110, 0.45);
+}
+.vraagHint {
+  display: inline-block;
+  color: #ffd36e;
+  text-shadow: 0 0 14px rgba(255, 211, 110, 0.95);
+  animation: licht 1.2s ease-in-out infinite;
+}
+
+.stippel {
+  width: 70%;
+  margin: 6px 0 6px 12px;
+  border-top: 3px dashed rgba(190, 240, 255, 0.55);
+}
+.midden .stippel {
+  margin: 10px auto;
+}
+
+.getal {
+  position: relative;
+  display: inline-block;
+  padding: 0 3px;
+  color: #fff3c4;
+}
+.cirkel {
+  position: absolute;
+  inset: -6px -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  overflow: visible;
+}
+.woord {
+  display: inline-block;
+}
+.signaal {
+  color: #8ff0c0;
+}
+/* Wat je kunt aantikken: een echte knop, groot genoeg, zonder dat het een bord wordt. */
+.tikbaar {
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 12px;
+  background: rgba(190, 240, 255, 0.1);
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
+}
+.tikbaar.getal {
+  color: #fff3c4;
+}
+.tikbaar.signaal {
+  color: #8ff0c0;
+}
+.tikbaar:active {
+  background: rgba(190, 240, 255, 0.25);
+}
+
+/* ---------- de voorwerpen (hologrammen in Phaser; hier alleen tikken en nummers) ---------- */
+
+.plekken {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.plek {
+  position: absolute;
+  display: grid;
+  place-items: start center;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.plekTik {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 18px;
+}
+.plekTik:active {
+  background: rgba(255, 211, 110, 0.12);
+}
+.nummer {
+  margin-top: -10px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: rgba(8, 30, 80, 0.85);
+  border: 2px solid #ffd36e;
+  color: #ffffff;
+  font-size: 24px;
+  font-weight: 800;
+  box-shadow: 0 0 10px rgba(255, 211, 110, 0.5);
+  animation: verschijn 0.2s ease-out both;
+}
+
+/* ---------- knoppen onderaan ---------- */
+
+.keuzes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  top: 616px;
+  flex-wrap: nowrap;
+}
+.keuzes button {
+  min-width: 96px;
+  height: 90px;
+}
+.somKeuzes button {
+  font-size: 36px;
+  padding: 0 22px;
+  white-space: nowrap;
+}
+.weetniet {
+  position: absolute;
+  right: 18px;
+  top: 624px;
+}
+.klaar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 616px;
+  display: flex;
+  justify-content: center;
+}
+.grootIkoon {
+  min-width: 96px;
+  height: 90px;
+}
+
+@keyframes verschijn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes licht {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zin,
+  .nummer,
+  .actief,
+  .vraagHint {
+    animation: none;
+  }
+}

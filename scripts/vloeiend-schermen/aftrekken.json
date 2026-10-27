@@ -1,0 +1,8 @@
+[
+  { "naam": "Les Instaptoets aftrekken tot 10 (potje met vuurvliegjes)", "pad": "/voorbeeld/les/aftrekken-10-instaptoets?naam=Testkind" },
+  { "naam": "Les Vuurvliegjes laten wegvliegen", "pad": "/voorbeeld/les/aftrekken-10-stippen-weghalen?naam=Testkind" },
+  { "naam": "Les Het verschil (lantaarnpalen)", "pad": "/voorbeeld/les/aftrekken-10-verschil?naam=Testkind" },
+  { "naam": "Les Eindtoets aftrekken tot 10", "pad": "/voorbeeld/les/aftrekken-10-eindtoets?naam=Testkind" },
+  { "naam": "Les Verschil: sprongen tellen (lantaarntjeslijn)", "pad": "/voorbeeld/les/getallenlijn-sprongen-tellen?naam=Testkind" },
+  { "naam": "Les Verschil: doortellen (lantaarntjeslijn)", "pad": "/voorbeeld/les/getallenlijn-doortellen?naam=Testkind" }
+]

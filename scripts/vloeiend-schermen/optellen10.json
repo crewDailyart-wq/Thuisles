@@ -1,0 +1,10 @@
+[
+  { "naam": "Les Optellen onder de 10 (hologram-tegels)", "pad": "/voorbeeld/les/optellen-onder-10?naam=Testkind" },
+  { "naam": "Les Instaptoets optellen tot 10 (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-instaptoets?naam=Testkind" },
+  { "naam": "Les Dubbelen (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-dubbelen?naam=Testkind" },
+  { "naam": "Les Klopt de som? (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-klopt-de-som?naam=Testkind" },
+  { "naam": "Les Het ontbrekende getal (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-ontbrekend-getal?naam=Testkind" },
+  { "naam": "Les Drie getallen optellen (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-drie-getallen?naam=Testkind" },
+  { "naam": "Les Splitsen in delen (hologram-parels)", "pad": "/voorbeeld/les/optellen-tot-10-splitsen?naam=Testkind" },
+  { "naam": "Les Eindtoets optellen tot 10 (hologram-tegels)", "pad": "/voorbeeld/les/optellen-tot-10-eindtoets?naam=Testkind" }
+]

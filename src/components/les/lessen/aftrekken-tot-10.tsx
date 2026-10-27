@@ -1,23 +1,30 @@
 /**
  * Lessen van "Aftrekken tot 10", naar de Synthesis-unit "Subtract Within 10"
- * (INSPIRATIE.md, ronde 1 en 2). Groep 3.
+ * (INSPIRATIE.md, ronde 1, 2 en 3). Groep 3.
  *
- * 1. Instaptoets: stippen maken en wegzappen, welke som, hoeveel blijft er
- *    over, hoeveel moeten er nog weg; daarna het verschil tussen twee torens.
- * 2. Stippen weghalen ("Dot Destruction"): aftrekken als weghalen met de
- *    stippenmachine.
- * 3. Het verschil ("Difference Dimension"): twee torens laten botsen; wat
- *    overblijft is het verschil.
- * 4. Eindtoets: als de instaptoets, met andere getallen.
+ * 1. Instaptoets (A1): vuurvliegjes in het potje en laten wegvliegen, welke
+ *    som, hoeveel blijven er over, hoeveel moeten er nog weg; daarna het
+ *    verschil tussen twee lantaarnpalen; en nog negen korte toetsvragen.
+ * 2. Vuurvliegjes laten wegvliegen (A2, "Dot Destruction"): aftrekken als
+ *    weghalen met het potje.
+ * 3. Het verschil (A3, "Difference Dimension"): twee lantaarnpalen tegen
+ *    elkaar schuiven; lampjes op dezelfde hoogte gaan tegen elkaar uit, wat
+ *    blijft branden is het verschil.
+ * 4. Eindtoets (A7): als de instaptoets, met andere getallen.
  * 5. Hetzelfde verschil (groep 3-deel van "Subtraction Strategies · Same
  *    Difference"): de gekoppelde plus- en minknop, en 12 = 10 + 2.
  *
- * Vlakken: ../vlakken/aftrekken-stippen.tsx en ../vlakken/aftrekken-torens.tsx.
+ * Lessen 1–4 in Phaser (27 oktober 2026, HARDE REGEL 7; LESSENPLAN.md § 2.4):
+ * vlakken ../vlakken/aftrekken-holo-potje.tsx en aftrekken-holo-palen.tsx
+ * (hologrammen in de wereld Aarde). Les 5 gebruikt nog de torens
+ * (../vlakken/aftrekken-torens.tsx); de stippenmachine
+ * (../vlakken/aftrekken-stippen.tsx) blijft ook bestaan.
  */
 
 import type { Lesdraaiboek, Lesgids, Somdeel } from "../soort";
-import { AftrekkenStippen, type StippenProps } from "../vlakken/aftrekken-stippen";
 import { AftrekkenTorens, ORANJE, PAARS, type TorensProps } from "../vlakken/aftrekken-torens";
+import { AftrekkenHoloPotje, type PotjeProps } from "../vlakken/aftrekken-holo-potje";
+import { AftrekkenHoloPalen, ORANJE_LAMP, PAARS_LAMP, type PalenProps } from "../vlakken/aftrekken-holo-palen";
 
 /* ---------- algemeen ---------- */
 
@@ -87,47 +94,6 @@ async function toetsKeuze(l: Lesgids, opties: string[], goed: string, opnieuw: s
       await l.zeg(`${kleur(k)}?`, "Probeer die nog eens.", ...opnieuw);
     }
   }
-}
-
-/* ---------- de stippenmachine ---------- */
-
-type Stipmelding = { soort: string; aantal: number };
-
-/** Bedient de stippenmachine vanuit het draaiboek. */
-function stippenmachine(l: Lesgids) {
-  let zet = 0;
-  return {
-    toon(p: Omit<StippenProps, "zet">) {
-      zet++;
-      l.vlak<StippenProps>(AftrekkenStippen, { ...p, zet });
-    },
-    /** Een nieuw aantal stippen neerzetten. */
-    zet(aantal: number, extra: Partial<StippenProps> = {}) {
-      zet++;
-      l.pasVlakAan<StippenProps>({ ...extra, aantal, zet });
-    },
-    pas(p: Partial<StippenProps>) {
-      l.pasVlakAan<StippenProps>(p);
-    },
-    /** Het kind tikt op de plusknop tot er `doel` stippen zijn. */
-    async plusTot(doel: number) {
-      l.pasVlakAan<StippenProps>({ plus: "aan", plusTot: doel });
-      for (;;) {
-        const g = await l.wachtOpVlak<Stipmelding>("plus");
-        if (g.aantal >= doel) break;
-      }
-      l.pasVlakAan<StippenProps>({ plus: "dof", plusTot: 20 });
-    },
-    /** Het kind zapt tot er nog `doel` stippen zijn. */
-    async zapTot(doel: number) {
-      l.pasVlakAan<StippenProps>({ zapper: "aan", zapTot: doel });
-      for (;;) {
-        const g = await l.wachtOpVlak<Stipmelding>("zap");
-        if (g.aantal <= doel) break;
-      }
-      l.pasVlakAan<StippenProps>({ zapper: "dof", zapTot: 0 });
-    },
-  };
 }
 
 /* ---------- de torens ---------- */
@@ -245,114 +211,358 @@ function KaartKnoop() {
   );
 }
 
+/* ---------- de eerste keer: Bliepo wijst de knoppen aan (groep 3 leest nog niet) ---------- */
+
+/**
+ * Een gids die de eerste keer in de les de knoppen van het lesscherm
+ * aanwijst en zegt wat ze doen (ONTWERPREGELS.md "Groep 3: kinderen die nog
+ * niet lezen"): de pijl, het vinkje en het vraagteken. `wijs` doet hetzelfde
+ * voor de knoppen in het vlak (met hun `data-knop`), ook maar één keer.
+ * Ook gebruikt in ./getallenlijn.tsx (A8, A9).
+ */
+export function metAanwijzen(l: Lesgids): Lesgids & { wijs: (knop: string, ...zinnen: string[]) => Promise<void> } {
+  const gezien = new Set<string>();
+  const wijs = async (knop: string, ...zinnen: string[]) => {
+    if (gezien.has(knop)) return;
+    gezien.add(knop);
+    await l.wijsAan(knop, ...zinnen);
+  };
+  return {
+    ...l,
+    wijs,
+    getal: async () => {
+      const p = l.getal();
+      /* Stopt de les voordat `p` wordt teruggegeven, dan is dit geen onafgehandelde fout. */
+      p.catch(() => {});
+      await wijs("controleer", "Typ je antwoord in het vakje.", "Tik dan op het vinkje.");
+      await wijs("weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
+      return p;
+    },
+    kies: async (opties) => {
+      const p = l.kies(opties);
+      /* Stopt de les voordat `p` wordt teruggegeven, dan is dit geen onafgehandelde fout. */
+      p.catch(() => {});
+      /*
+        Alleen bij keuzes zonder woorden: een keuze met een woord leest Bliepo
+        voor als het kind erop tikt, en die stem breekt het aanwijzen af,
+        waarna de les blijft hangen. Het vraagteken wordt dan bij het eerste
+        invulvak aangewezen.
+      */
+      if (!opties.some((o) => /[a-z]/i.test(o))) await wijs("weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
+      return p;
+    },
+    verder: async () => {
+      const p = l.verder();
+      /* Stopt de les voordat `p` wordt teruggegeven, dan is dit geen onafgehandelde fout. */
+      p.catch(() => {});
+      await wijs("verder", "Tik op de pijl als je verder wilt.");
+      return p;
+    },
+    somVak: async (index) => {
+      const p = l.somVak(index);
+      /* Stopt de les voordat `p` wordt teruggegeven, dan is dit geen onafgehandelde fout. */
+      p.catch(() => {});
+      await wijs("controleer", "Typ je antwoord in het vakje.", "Tik dan op het vinkje.");
+      return p;
+    },
+  };
+}
+
+/* ---------- het potje met vuurvliegjes (A1, A2, A7) ---------- */
+
+type Potjemelding = { soort: string; aantal: number };
+
+/** Bedient het potje vanuit het draaiboek (zelfde gebruik als de oude stippenmachine). */
+function potje(l: Lesgids) {
+  let zet = 0;
+  return {
+    toon(p: Omit<PotjeProps, "zet">) {
+      zet++;
+      l.vlak<PotjeProps>(AftrekkenHoloPotje, { ...p, zet });
+    },
+    /** Een nieuw aantal vuurvliegjes neerzetten. */
+    zet(aantal: number, extra: Partial<PotjeProps> = {}) {
+      zet++;
+      l.pasVlakAan<PotjeProps>({ ...extra, aantal, zet });
+    },
+    pas(p: Partial<PotjeProps>) {
+      l.pasVlakAan<PotjeProps>(p);
+    },
+    /** Het kind tikt op de plusknop tot er `doel` vuurvliegjes zijn. */
+    async plusTot(doel: number) {
+      l.pasVlakAan<PotjeProps>({ plus: "aan", plusTot: doel });
+      for (;;) {
+        const g = await l.wachtOpVlak<Potjemelding>("plus");
+        if (g.aantal >= doel) break;
+      }
+      l.pasVlakAan<PotjeProps>({ plus: "dof", plusTot: 20 });
+    },
+    /** Het kind laat vuurvliegjes wegvliegen tot er nog `doel` zijn. */
+    async wegTot(doel: number) {
+      l.pasVlakAan<PotjeProps>({ zapper: "aan", zapTot: doel });
+      for (;;) {
+        const g = await l.wachtOpVlak<Potjemelding>("zap");
+        if (g.aantal <= doel) break;
+      }
+      l.pasVlakAan<PotjeProps>({ zapper: "dof", zapTot: 0 });
+    },
+  };
+}
+
+/* ---------- de twee lantaarnpalen (A1, A3, A7) ---------- */
+
+type Paalmelding = { soort: string; links: number; rechts: number; kant?: "links" | "rechts" };
+
+function palen(l: Lesgids) {
+  let zet = 0;
+  return {
+    toon(p: Omit<PalenProps, "zet">) {
+      zet++;
+      l.vlak<PalenProps>(AftrekkenHoloPalen, { ...p, zet });
+    },
+    /** Nieuwe hoogtes neerzetten (ook na het tegen elkaar schuiven). */
+    zet(links: number, rechts: number, extra: Partial<PalenProps> = {}) {
+      zet++;
+      l.pasVlakAan<PalenProps>({ ...extra, links, rechts, zet });
+    },
+    pas(p: Partial<PalenProps>) {
+      l.pasVlakAan<PalenProps>(p);
+    },
+    /** Het kind tikt tot de paal aan `kant` `doel` lampjes heeft (het stopt vanzelf). */
+    async bouwTot(kant: "links" | "rechts", doel: number, vanaf: number) {
+      if (vanaf === doel) return;
+      const omhoog = doel > vanaf;
+      l.pasVlakAan<PalenProps>({
+        erbij: omhoog ? { [kant]: true } : {},
+        eraf: omhoog ? {} : { [kant]: true },
+        max: { [kant]: doel },
+      });
+      for (;;) {
+        const g = await l.wachtOpVlak<Paalmelding>(["erbij", "eraf"]);
+        if (g[kant] === doel) break;
+      }
+      l.pasVlakAan<PalenProps>({ erbij: {}, eraf: {}, max: {} });
+    },
+    /** De schuif aanzetten en wachten tot de palen tegen elkaar geschoven zijn. */
+    async bots() {
+      l.pasVlakAan<PalenProps>({ schuif: true, erbij: {}, eraf: {}, knoppen: null });
+      await l.wachtOpVlak("gebotst");
+    },
+  };
+}
+
+/* ---------- kaarttekeningen (Bliepo-stijl: vuurvliegjes, potje, lantaarnpalen) ---------- */
+
+/** Een potje met vuurvliegjes, en eentje dat wegvliegt. */
+function KaartPotje() {
+  const vlieg = (x: number, y: number) => (
+    <g key={`${x}-${y}`}>
+      <ellipse cx={x - 7} cy={y - 9} rx="7" ry="4.5" stroke="#cfe9ff" strokeWidth="2" fill="none" />
+      <ellipse cx={x + 7} cy={y - 9} rx="7" ry="4.5" stroke="#cfe9ff" strokeWidth="2" fill="none" />
+      <circle cx={x} cy={y} r="8" fill="#f2f79a" stroke="#c9d84a" strokeWidth="2" />
+    </g>
+  );
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M78 52 Q50 56 50 80 L50 164 Q50 178 64 178 L146 178 Q160 178 160 164 L160 80 Q160 56 132 52 Z" stroke="#f2c94c" strokeWidth="3.4" />
+      <rect x="72" y="34" width="66" height="16" rx="5" stroke="#f2c94c" strokeWidth="3.2" />
+      {[
+        [82, 96],
+        [126, 104],
+        [96, 140],
+        [134, 150],
+      ].map(([x, y]) => vlieg(x, y))}
+      {vlieg(204, 48)}
+      <path d="M176 82 196 60" stroke="#f2c94c" strokeWidth="2.6" strokeDasharray="3 6" />
+    </g>
+  );
+}
+
+/** Twee lantaarnpalen met lampjes. */
+function KaartPalen() {
+  const paal = (x: number, kleur: string, n: number) => (
+    <g key={x}>
+      <path d={`M${x - 16} 34 L${x} 20 L${x + 16} 34 Z`} stroke={kleur} strokeWidth="3" />
+      <line x1={x} y1="36" x2={x} y2="176" stroke="#d6dbe8" strokeWidth="2.4" />
+      {Array.from({ length: n }, (_, i) => (
+        <circle key={i} cx={x} cy={164 - i * 24} r="9" fill={kleur} />
+      ))}
+    </g>
+  );
+  return (
+    <g fill="none" strokeLinecap="round" strokeLinejoin="round">
+      {paal(82, ORANJE_LAMP, 5)}
+      {paal(162, PAARS_LAMP, 2)}
+    </g>
+  );
+}
+
+/* De oude kaarttekeningen (ruimteschepen, bliksem) blijven bestaan; de Phaser-lessen gebruiken de nieuwe. */
+export { KaartBliksem, KaartTorens };
+
 /* ---------- de toets (instap en eind) ---------- */
 
 type Toetsgetallen = {
-  stippen: number;
+  vliegjes: number;
   weg: number;
   keuzes: string[];
   oranje: number;
   paars: number;
   verschilKeuzes: string[];
   overgang: boolean;
+  /** Nog meer toetsvragen, zodat het er minstens 15 zijn: weghalen (a − b) en het verschil tussen twee palen. */
+  weghalen: [number, number][];
+  verschillen: [number, number][];
 };
 
-async function toets(l: Lesgids, t: Toetsgetallen) {
-  const over = t.stippen - t.weg;
-  const m = stippenmachine(l);
+/**
+ * Een toetsvraag met een getal (LESSENPLAN.md A1 en A7): 1× fout = de som
+ * met jouw antwoord en een vraagteken, "laten we nog eens kijken" en dezelfde
+ * vraag anders gezegd; 2× fout = het antwoord, en "dat leren we samen in de
+ * les"; weet ik niet = "geen probleem, we leren het samen" en het antwoord.
+ * Geeft terug of het meteen goed was.
+ */
+async function toetsGetal(l: Lesgids, goed: number, foutSom: (x: number) => string, anders: string[], antwoord: string[]): Promise<boolean> {
+  for (let poging = 0; ; poging++) {
+    const x = await l.getal();
+    if (x === goed) {
+      if (poging > 0) await l.zeg("Ja, goed zo.");
+      return poging === 0;
+    }
+    if (x === null) {
+      await l.zeg("Geen probleem, we leren het samen.", ...antwoord);
+      await l.verder();
+      return false;
+    }
+    if (poging >= 1) {
+      await l.zeg(...antwoord, "Dat leren we samen in de les.");
+      await l.verder();
+      return false;
+    }
+    await l.zeg(`${foutSom(x)}?`, "Laten we nog eens kijken.", ...anders);
+  }
+}
+
+async function toets(ruw: Lesgids, t: Toetsgetallen) {
+  const l = metAanwijzen(ruw);
+  const over = t.vliegjes - t.weg;
+  const m = potje(l);
+  let goed = 0;
+  let vragen = 0;
+  const tel = (ok: boolean) => {
+    vragen++;
+    if (ok) goed++;
+  };
 
   /* Begin: de som groot in beeld. */
   m.toon({ aantal: 0, plus: "weg", zapper: "weg", teller: false });
-  l.som(somDelen(`${t.stippen} − ${t.weg} = ?`));
+  l.som(somDelen(`${t.vliegjes} − ${t.weg} = ?`));
   await l.zeg("We gaan minsommen leren.", "Kun je dat al?");
   const al = await l.kies(["Ja", "Nee"]);
   await l.zeg(al === "Ja" ? "Oké." : "Geen probleem.", al === "Ja" ? "Laat maar zien wat je kunt." : "We kijken eerst wat je al weet.");
   l.som(null);
 
-  /* Stippen maken. */
-  m.pas({ plus: "dof" });
-  await l.zeg("Zie je de knop rechts?", `Tik erop tot er {${t.stippen}} stippen zijn.`);
-  await m.plusTot(t.stippen);
+  /* Vuurvliegjes in het potje. */
+  /* Het wachten begint al, zodat een tik terwijl Bliepo praat ook telt. */
+  m.pas({ teller: true });
+  const erin = m.plusTot(t.vliegjes);
+  await l.wijs("erbij", "Zie je de plusknop rechts?", "Daarmee vliegt er een vuurvliegje in het potje.");
+  await l.zeg(`Tik erop tot er {${t.vliegjes}} vuurvliegjes zijn.`);
+  await erin;
   m.pas({ zapper: "dof" });
-  await l.zeg("Goed zo.", `Je hebt {${t.stippen}} stippen gemaakt.`);
+  await l.zeg("Goed zo.", `Er zitten {${t.vliegjes}} vuurvliegjes in het potje.`);
   await l.verder();
 
-  /* Stippen wegzappen. */
-  await l.zeg("Nu halen we er stippen af.", "Met de bliksemknop haal je een stip weg.", `Haal er {${t.weg}} weg.`);
-  await m.zapTot(over);
+  /* Laten wegvliegen. */
+  const eruit = m.wegTot(over);
+  await l.wijs("wegvliegen", "Nu halen we er vuurvliegjes af.", "Met deze knop vliegt er een weg.");
+  await l.zeg(`Laat er {${t.weg}} wegvliegen.`);
+  await eruit;
 
   /* Welke som? */
-  const goedeSom = `${t.stippen} − ${t.weg}`;
-  await l.zeg(`We hadden {${t.stippen}} stippen.`, `Je hebt er {${t.weg}} weggehaald.`, "Welke som past daarbij?");
+  const goedeSom = `${t.vliegjes} − ${t.weg}`;
+  await l.zeg(`We hadden {${t.vliegjes}} vuurvliegjes.`, `Er vlogen er {${t.weg}} weg.`, "Welke som past daarbij?");
   const meteen = await toetsKeuze(
     l,
     t.keuzes,
     goedeSom,
-    [`Je begon met {${t.stippen}}.`, `Je haalde er {${t.weg}} weg.`, "Welke som laat dat zien?"],
-    [`Het is {${t.stippen}} − {${t.weg}}.`, `Je begon met {${t.stippen}} en haalde er {${t.weg}} weg.`],
+    [`Je begon met {${t.vliegjes}}.`, `Er vlogen er {${t.weg}} weg.`, "Welke som laat dat zien?"],
+    [`Het is {${t.vliegjes}} − {${t.weg}}.`, `Je begon met {${t.vliegjes}} en er vlogen er {${t.weg}} weg.`],
   );
+  tel(meteen);
   if (meteen) await l.zeg("Precies.", `${kleur(goedeSom)}.`);
 
-  /* Hoeveel blijft er over? */
+  /* Hoeveel blijven er over? */
   l.som(somDelen(`${goedeSom} = ?`));
   await l.zeg("Kun je deze uitrekenen?", `Hoeveel is ${kleur(goedeSom)}?`);
-  const somGoed = await vraagGetal(l, over, {
-    fout: (x) => (x < 0 ? ["Tel de stippen die over zijn."] : [`${kleur(goedeSom)} = {${x}}?`, "We kijken nog eens.", "Tel de stippen die over zijn."]),
-    antwoord: [`Er zijn {${over}} stippen over.`, `Dus ${kleur(goedeSom)} = {${over}}.`],
-  });
+  const somGoed = await toetsGetal(
+    l,
+    over,
+    (x) => `${kleur(goedeSom)} = {${x}}`,
+    ["Hoeveel vuurvliegjes zitten er nog in het potje?"],
+    [`Er zitten nog {${over}} vuurvliegjes in het potje.`, `Dus ${kleur(goedeSom)} = {${over}}.`],
+  );
+  tel(somGoed);
   l.som(somDelen(`${goedeSom} = ${over}`));
   if (somGoed) await l.zeg("Juist.", `${kleur(goedeSom)} = {${over}}.`);
   await l.wacht(500);
   l.som(null);
 
   /* Hoeveel moeten er nog weg tot 0? */
-  await l.zeg("Hoeveel stippen moeten er nog weg?", "Er mogen geen stippen overblijven.");
+  await l.zeg(`Hoeveel van deze {${over}} vuurvliegjes moeten er nog weg?`, "Er mogen er geen overblijven.");
+  let nulGoed = false;
   for (let poging = 0; ; poging++) {
     const x = await l.getal();
     if (x === over) {
       l.som(somDelen(`${over} − ${over} = 0`));
-      await l.zeg("Juist.", `{${over}} − {${over}} = {0}.`);
+      await l.zeg(poging === 0 ? "Juist." : "Ja, goed zo.", `{${over}} − {${over}} = {0}.`);
+      nulGoed = poging === 0;
       break;
     }
     if (poging === 0 && x !== null) {
-      /* Zoals Synthesis: de som met het antwoord van het kind en een vraagteken, en de bliksemknop licht op. */
+      /* Zoals Synthesis: de som met het antwoord van het kind en een vraagteken; de wegvliegknop licht op. */
       l.som([...somDelen(`${over} − ${over} = ${x}`), { t: "teken", s: "?" }]);
-      m.pas({ zapper: "aan", zapTot: 0 });
-      await l.zeg(`{${over}} − {${over}} = {${x}}?`, "Kijk nog eens.", `Hoeveel van deze {${over}} stippen moeten er weg?`);
+      m.pas({ cirkel: "zapper" });
+      await l.zeg(`{${over}} − {${over}} = {${x}}?`, "Laten we nog eens kijken.", `Hoeveel van deze {${over}} vuurvliegjes moeten er weg?`);
+      m.pas({ cirkel: null });
       l.som(null);
       continue;
     }
     l.som(null);
     m.zet(over, { zapper: "dof" });
-    await l.zeg(x === null ? "Geen zorgen." : "We doen het samen.", "Haal ze weg met de bliksemknop.");
-    await m.zapTot(0);
+    await l.zeg(x === null ? "Geen probleem, we leren het samen." : "We doen het samen.", "Laat ze allemaal wegvliegen.");
+    await m.wegTot(0);
     l.som(somDelen(`${over} − ${over} = 0`));
-    await l.zeg(`Je haalde er {${over}} weg.`, `{${over}} − {${over}} = {0}.`);
+    await l.zeg(`Er vlogen er {${over}} weg.`, `{${over}} − {${over}} = {0}.`);
     await l.verder();
     break;
   }
-  m.zet(0, { zapper: "dof" });
+  tel(nulGoed);
+  m.zet(0, { zapper: "weg", plus: "weg", teller: false });
   await l.wacht(600);
   l.som(null);
 
-  /* Het verschil tussen twee torens. */
-  const tr = torens(l);
-  tr.toon({ links: t.oranje, rechts: 0, binnen: true, cijfers: true });
+  /* Het verschil tussen twee lantaarnpalen. */
+  const p = palen(l);
+  p.toon({ links: t.oranje, rechts: 0, binnen: true, cijfers: true });
   if (t.overgang) {
-    await l.zeg("Nu doen we min op een andere manier.");
+    await l.zeg("Laten we op een andere manier over aftrekken nadenken.");
     await l.verder();
   }
-  await l.zeg(`Kun je een toren van {${t.paars}} maken?`, "Tik op het paarse ruimteschip.");
-  await tr.bouwTot("rechts", t.paars, 0);
+  const bouw = p.bouwTot("rechts", t.paars, 0);
+  await l.wijs("erbij-rechts", "Zie je de plus bij de paarse paal?", "Daarmee gaat er een lampje aan.");
+  await l.zeg(`Geef de paarse paal {${t.paars}} lampjes.`);
+  await bouw;
   const verschil = t.oranje - t.paars;
-  await l.zeg("Wat is het verschil tussen de torens?", `Tussen {${t.oranje}} en {${t.paars}}?`);
-  const vGoed = await vraagGetal(l, verschil, {
-    fout: (x) =>
-      x < 0
-        ? ["Hoeveel blokken steekt de oranje toren boven de paarse uit?"]
-        : [`{${t.oranje}} − {${t.paars}} = {${x}}?`, "We kijken nog eens.", "Hoeveel blokken steekt de oranje toren boven de paarse uit?"],
-    antwoord: [`De oranje toren heeft {${verschil}} blokken meer.`, `Het verschil is {${verschil}}.`],
-  });
+  await l.zeg("Wat is het verschil tussen de palen?", `Tussen {${t.oranje}} en {${t.paars}}?`);
+  const vGoed = await toetsGetal(
+    l,
+    verschil,
+    (x) => `{${t.oranje}} − {${t.paars}} = {${x}}`,
+    ["Hoeveel lampjes heeft de oranje paal meer dan de paarse?"],
+    [`De oranje paal heeft {${verschil}} lampjes meer.`, `Het verschil is {${verschil}}.`],
+  );
+  tel(vGoed);
   if (vGoed) await l.zeg("Ja.", `Een verschil van {${verschil}}.`);
 
   const goedeVerschilSom = `${t.oranje} − ${t.paars} = ${verschil}`;
@@ -361,15 +571,61 @@ async function toets(l: Lesgids, t: Toetsgetallen) {
     l,
     t.verschilKeuzes,
     goedeVerschilSom,
-    ["Het verschil is een minsom.", "Welke som past bij de torens?"],
-    [`Het is ${kleur(goedeVerschilSom)}.`, `De hoogste toren min de laagste toren.`],
+    ["Het verschil is een minsom.", "Welke som past bij de palen?"],
+    [`Het is ${kleur(goedeVerschilSom)}.`, "De grootste paal min de kleinste paal."],
   );
+  tel(sGoed);
   if (sGoed) await l.zeg("Heel goed gezien.", `${kleur(goedeVerschilSom)}.`);
   await l.verder();
 
+  /* Nog meer toetsvragen: in je hoofd weghalen (het potje mag helpen). */
+  await l.zeg("Nog een paar minsommen.", "Bij elke som zie je de vuurvliegjes.");
+  m.toon({ aantal: 0, plus: "weg", zapper: "weg", teller: true });
+  for (const [a, b] of t.weghalen) {
+    m.zet(a, { plus: "weg", zapper: "aan", zapTot: a - b, teller: true });
+    l.som(somDelen(`${a} − ${b} = ?`));
+    await l.zeg(`Hoeveel is {${a}} − {${b}}?`);
+    const ok = await toetsGetal(
+      l,
+      a - b,
+      (x) => `{${a}} − {${b}} = {${x}}`,
+      [`Er zijn {${a}} vuurvliegjes.`, `Er vliegen er {${b}} weg.`, "Hoeveel blijven er over?"],
+      [`{${a}} − {${b}} = {${a - b}}.`],
+    );
+    tel(ok);
+    l.som(somDelen(`${a} − ${b} = ${a - b}`));
+    if (ok) await l.zeg("Klopt.");
+    await l.wacht(400);
+  }
+  l.som(null);
+
+  /* En het verschil tussen twee palen. */
+  p.toon({ links: 0, rechts: 0, cijfers: true });
+  await l.zeg("Nu nog het verschil tussen twee palen.");
+  for (const [a, b] of t.verschillen) {
+    p.zet(a, b, { cijfers: true });
+    const groot = Math.max(a, b);
+    const klein = Math.min(a, b);
+    await l.zeg(`Wat is het verschil tussen {${a}} en {${b}}?`);
+    const ok = await toetsGetal(
+      l,
+      groot - klein,
+      (x) => `{${groot}} − {${klein}} = {${x}}`,
+      [`Hoeveel lampjes heeft de ${a > b ? "oranje" : "paarse"} paal meer?`],
+      [`Het verschil is {${groot - klein}}.`],
+    );
+    tel(ok);
+    if (ok) await l.zeg("Precies.");
+  }
+
   /* De kaart. */
+  l.vlak(null);
   const tik = l.kaart();
-  await l.zeg(l.naam ? `Goed gedaan, ${l.naam}!` : "Goed gedaan!", "Je kunt minsommen maken onder de {10}.", "Tik op de kaart om hem af te vinken.");
+  await l.zeg(
+    l.naam ? `Goed gedaan, ${l.naam}!` : "Goed gedaan!",
+    goed >= vragen - 2 ? "Je kunt minsommen maken onder de {10}." : "Een paar sommen leren we nog samen in de lessen.",
+    "Tik op de kaart om hem af te vinken.",
+  );
   await tik;
 }
 
@@ -379,88 +635,105 @@ const instaptoets: Lesdraaiboek = {
   id: "aftrekken-10-instaptoets",
   titel: "Instaptoets: aftrekken tot 10",
   synthesis: "Subtract Within 10 · Assessment",
-  kaarttekening: KaartBliksem,
+  kaarttekening: KaartPotje,
   async speel(l) {
     await toets(l, {
-      stippen: 9,
+      vliegjes: 9,
       weg: 5,
-      keuzes: ["9 − 5", "10 − 5", "9 − 4", "9 + 5"],
+      keuzes: ["9 − 5", "5 − 9", "9 − 4", "9 + 5"],
       oranje: 8,
       paars: 5,
-      verschilKeuzes: ["8 − 5 = 3", "8 − 5 = 2", "8 − 5 = 4", "8 + 5 = 13"],
+      verschilKeuzes: ["3 − 5 = 8", "8 − 5 = 3", "3 − 5 = 3", "5 − 8 = 3"],
       overgang: false,
+      weghalen: [
+        [7, 3],
+        [10, 6],
+        [6, 6],
+        [9, 2],
+        [8, 5],
+      ],
+      verschillen: [
+        [7, 4],
+        [3, 9],
+        [10, 8],
+        [6, 1],
+        [2, 7],
+      ],
     });
   },
 };
 
-/* ---------- les 2: stippen weghalen ---------- */
 
-const stippenWeghalen: Lesdraaiboek = {
+/* ---------- les 2: vuurvliegjes laten wegvliegen (weghalen) ---------- */
+
+const vuurvliegjesWeghalen: Lesdraaiboek = {
   id: "aftrekken-10-stippen-weghalen",
-  titel: "Stippen weghalen",
+  titel: "Vuurvliegjes laten wegvliegen",
   synthesis: "Subtract Within 10 · Dot Destruction",
-  kaarttekening: KaartBliksem,
+  kaarttekening: KaartPotje,
 
-  async speel(l) {
-    const m = stippenmachine(l);
+  async speel(ruw) {
+    const l = metAanwijzen(ruw);
+    const m = potje(l);
     m.toon({ aantal: 0, plus: "dof", zapper: "weg", teller: true });
 
     /* 1. Even kennismaken. */
     await l.zeg("Voor we beginnen, even een vraag.", "Heb je al eens minsommen gemaakt?");
-    const al = await l.kies(["Ja, dat heb ik al gedaan", "Nee, nog niet"]);
-    await l.zeg(al === "Ja, dat heb ik al gedaan" ? "Mooi." : "Geen probleem.", "De stippenmachine helpt ons.", "Ik laat zien wat hij doet.");
+    const al = await l.kies(["Ja", "Nee"]);
+    await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "Dit potje helpt ons.", "Ik laat zien wat het doet.");
     await l.verder();
 
     /* 2. De plusknop en het getal. */
     m.pas({ cirkel: "plus" });
-    await l.zeg("Druk op de knop rechts.");
-    await m.plusTot(1);
+    const een = m.plusTot(1);
+    await l.wijs("erbij", "Tik op de plusknop rechts.");
+    await een;
     m.pas({ cirkel: "teller" });
-    await l.zeg("Kijk hier.", "Dit getal zegt hoeveel stippen er zijn.");
+    await l.zeg("Kijk, er vloog een vuurvliegje in het potje.", "Kijk hier.", "Dit getal zegt hoeveel vuurvliegjes er zijn.");
     await l.verder();
     m.pas({ cirkel: null });
 
-    await l.zeg("Doe er nog wat stippen bij.", "Kijk wat er met het getal gebeurt.");
+    await l.zeg("Doe er nog wat vuurvliegjes bij.", "Kijk wat er met het getal gebeurt.");
     await m.plusTot(3);
     m.pas({ cirkel: "teller" });
-    await l.zeg("Mooi.", "Wat gebeurt er als je er een stip bij doet?");
-    const hoger = await l.kies(["Het getal wordt hoger", "Het getal wordt lager"]);
+    await l.zeg("Mooi.", "Wat gebeurt er met het getal als er een vuurvliegje bij komt?");
+    const hoger = await l.kies(["Hoger", "Lager"]);
     m.pas({ cirkel: null });
-    if (hoger === "Het getal wordt hoger") {
-      await l.zeg("Ja!", "Elke stip erbij maakt het getal hoger.");
+    if (hoger === "Hoger") {
+      await l.zeg("Ja!", "Elk vuurvliegje erbij maakt het getal hoger.");
       await l.verder();
     } else {
-      await l.zeg(hoger === null ? "Geen zorgen." : "Kijk nog eens goed.", "Ik maak de machine leeg.", "We doen het stap voor stap.");
+      await l.zeg(hoger === null ? "Geen zorgen." : "Dat is niet wat ik zie.", "Ik maak het potje leeg.", "We doen het stap voor stap.");
       await l.verder();
       m.zet(0, { cirkel: "teller" });
-      await l.zeg("Er zijn geen stippen.", "Het getal is nu {0}.");
+      await l.zeg("Er zijn geen vuurvliegjes.", "Het getal is nu {0}.");
       await l.verder();
-      await l.zeg("Doe er één stip bij.", "Kijk naar het getal.");
+      await l.zeg("Doe er één vuurvliegje bij.", "Kijk naar het getal.");
       await m.plusTot(1);
       await l.zeg("We hadden {0}.", "Nu hebben we er {1}.", "Het getal is hoger geworden.");
       await l.verder();
-      await l.zeg("Wordt het steeds hoger als je blijft drukken?");
+      await l.zeg("Wordt het steeds hoger als je blijft tikken?");
       const steeds = await l.kies(["Ja", "Nee"]);
-      await l.zeg(steeds === "Ja" ? "Dat gaan we zien." : "We proberen het.", "Doe er nog een stip bij.");
+      await l.zeg(steeds === "Ja" ? "Dat gaan we zien." : "We proberen het.", "Doe er nog een vuurvliegje bij.");
       await m.plusTot(2);
-      await l.zeg("Kijk, nu is het {2}.", "Elke stip erbij maakt het getal hoger.");
+      await l.zeg("Kijk, nu is het {2}.", "Elk vuurvliegje erbij maakt het getal hoger.");
       await l.verder();
       m.pas({ cirkel: null });
     }
 
     /* 3. Dat is een plussom. */
     await l.zeg("Welke som maak je met deze knop?");
-    const doe = await l.kies(["Een plussom", "Een minsom"]);
-    if (doe === "Een plussom") {
-      await l.zeg("Ja, zo simpel is het.", "Je doet er stippen bij.");
+    const doe = await l.kies(["Plussom", "Minsom"]);
+    if (doe === "Plussom") {
+      await l.zeg("Ja, zo simpel is het.", "Je doet er vuurvliegjes bij.");
     } else {
-      await l.zeg(doe === null ? "Geen zorgen." : "Kijk goed.", "De machine doet er steeds een stip *bij*.", "Dat is een plussom.");
+      await l.zeg(doe === null ? "Geen zorgen." : "Kijk goed.", "Er komt steeds een vuurvliegje *bij*.", "Dat is een plussom.");
     }
     await l.verder();
 
-    /* 4. Optellen met de machine. */
+    /* 4. Optellen met het potje. */
     m.zet(2);
-    await l.zeg("Er zitten nu {2} stippen in de machine.", "Hoeveel zijn het er als er {3} bij komen?");
+    await l.zeg("Er zitten nu {2} vuurvliegjes in het potje.", "Hoeveel zijn het er als er {3} bij komen?");
     for (let poging = 0; ; poging++) {
       const x = await l.getal();
       if (x === 5) {
@@ -472,7 +745,7 @@ const stippenWeghalen: Lesdraaiboek = {
         await l.zeg(`Hmm, {2} en {3} is samen iets ${x < 5 ? "meer" : "minder"} dan {${x}}.`, "Probeer het nog eens.");
         continue;
       }
-      await l.zeg(x === null ? "Geen zorgen." : "We doen het samen.", "Doe er {3} stippen bij.");
+      await l.zeg(x === null ? "Geen zorgen." : "We doen het samen.", "Doe er {3} vuurvliegjes bij.");
       await m.plusTot(5);
       await l.zeg("Nu zijn er {5}.", "{2} + {3} = {5}.");
       await l.verder();
@@ -492,7 +765,7 @@ const stippenWeghalen: Lesdraaiboek = {
     } else {
       await l.zeg(vier === null ? "Geen zorgen." : "Dit is een lastige.", "Ik laat het je zien.");
       await l.verder();
-      await l.zeg("Doe er eerst {1} stip bij.");
+      await l.zeg("Doe er eerst {1} vuurvliegje bij.");
       await m.plusTot(1);
       await l.zeg("Nu {2} erbij.");
       await m.plusTot(3);
@@ -500,33 +773,35 @@ const stippenWeghalen: Lesdraaiboek = {
       await m.plusTot(6);
       await l.zeg("En nog {4}.");
       await m.plusTot(10);
-      await l.zeg("Mooi zo.", "Hoeveel stippen zijn er nu?");
+      await l.zeg("Mooi zo.", "Hoeveel vuurvliegjes zijn er nu?");
       await vraagGetal(l, 10, {
-        fout: () => ["Kijk naar het getal bij de knop."],
+        fout: () => ["Kijk naar het getal in het lantaarntje."],
         antwoord: ["Het zijn er {10}.", "{1} + {2} + {3} + {4} = {10}."],
       });
     }
     l.som(null);
 
-    /* 5. Aftrekken = weghalen. */
-    await l.zeg("De machine helpt ook bij minsommen.", "Hoe maak je met stippen een minsom?");
-    const hoe = await l.kies(["Er stippen bij doen", "Er stippen weghalen"]);
-    if (hoe === "Er stippen weghalen") {
+    /* 5. Aftrekken = laten wegvliegen. */
+    await l.zeg("Het potje helpt ook bij minsommen.", "Hoe maak je met vuurvliegjes een minsom?");
+    const hoe = await l.kies(["Erbij doen", "Weg laten vliegen"]);
+    if (hoe === "Weg laten vliegen") {
       await l.zeg("Precies.", "Dat gaan we nu doen.");
     } else {
-      await l.zeg(hoe === null ? "Geen zorgen." : "Er stippen bij doen is een plussom.", "Bij een minsom haal je stippen weg.");
+      await l.zeg(hoe === null ? "Geen zorgen." : "Erbij doen is een plussom.", "Bij een minsom gaan er vuurvliegjes weg.");
       await l.verder();
     }
-    m.pas({ zapper: "dof", cirkel: "zapper" });
-    await l.zeg("Druk op de bliksemknop.", "Dan haal je een stip weg.");
-    await m.zapTot(9);
+    m.pas({ cirkel: "zapper" });
+    const weg1 = m.wegTot(9);
+    await l.wijs("wegvliegen", "Zie je deze knop?", "Daarmee vliegt er een vuurvliegje weg.");
+    await l.zeg("Laat er één wegvliegen.");
+    await weg1;
     m.pas({ cirkel: null });
-    await l.zeg("Mooi.", "Je hebt een stip weggehaald.", "Het getal ging van {10} naar {9}.");
+    await l.zeg("Mooi.", "Zie je dat het minder wordt?", "Het getal ging van {10} naar {9}.");
     await l.verder();
 
     /* 6. Het minteken. */
     await l.zeg("Bij een plussom hoort het plusteken.", "Welk teken hoort bij een minsom?");
-    let tekens = ["+", "=", "−"];
+    let tekens = ["+", "÷", "−"];
     for (let poging = 0; ; poging++) {
       const t = await l.kies(tekens);
       if (t === "−") {
@@ -537,240 +812,281 @@ const stippenWeghalen: Lesdraaiboek = {
         await l.zeg(t === null ? "Geen zorgen." : "Kijk, dit is het.", "Het streepje is het minteken.");
         break;
       }
-      await l.zeg(t === "+" ? "Dat is het plusteken." : "Dat is het is-teken.", "Welke van deze twee is het dan?");
+      await l.zeg(t === "+" ? "Dat is het plusteken." : "Dat teken is voor delen.", "Welke van deze twee is het dan?");
       tekens = tekens.filter((x) => x !== t);
     }
     l.som(somDelen("10 − 1"));
-    await l.zeg("Zo schrijf je een minsom:", "{10} − {1}.", "We begonnen met {10}.", "We haalden er {1} weg.");
+    await l.zeg("Zo schrijf je een minsom:", "{10} − {1}.", "We begonnen met {10}.", "Er vloog er {1} weg.");
     await l.verder();
     l.som(null);
 
     /* 7. Een minsom in je hoofd. */
     m.zet(0, { zapper: "weg" });
-    await l.zeg("We doen een minsom vanaf het begin.", "Doe er {5} stippen in.");
+    await l.zeg("We doen een minsom vanaf het begin.", "Doe er {5} vuurvliegjes in.");
     await m.plusTot(5);
     l.som(somDelen("5 − 2 = ?"));
     await l.zeg("Nu reken je in je hoofd.", "Hoeveel is {5} − {2}?");
     for (let poging = 0; ; poging++) {
       const x = await l.getal();
       if (x === 3) {
-        await l.zeg("Dat klopt.", "Je haalde de stippen weg in je hoofd.");
+        await l.zeg("Dat klopt.", "Je liet ze in je hoofd wegvliegen.");
         break;
       }
       if (poging >= 1) {
-        await l.zeg("Er zijn {3} stippen over.", "Dus {5} − {2} = {3}.");
+        await l.zeg("Er zijn {3} vuurvliegjes over.", "Dus {5} − {2} = {3}.");
         await l.verder();
         break;
       }
-      await l.zeg(x === null ? "Geen zorgen." : "Kijk mee.", "We hebben {5} stippen.", "Haal er {2} weg met de bliksemknop.");
+      await l.zeg(x === null ? "Geen zorgen." : "Dat klopt niet; laten we het samen doen.", "We hebben {5} vuurvliegjes.", "Laat er {2} wegvliegen.");
       m.pas({ zapper: "dof" });
-      await m.zapTot(3);
+      await m.wegTot(3);
       await l.zeg("Tel wat er over is.", "Hoeveel is {5} − {2}?");
     }
     l.som(somDelen("5 − 2 = 3"));
     await l.wacht(700);
 
-    /* 8. 10 − 4, met de zapper als hulp. */
+    /* 8. 10 − 4, met de wegvliegknop als hulp. */
     m.zet(10, { zapper: "aan", plus: "dof", zapTot: 0 });
     l.som(somDelen("10 − 4 = ?"));
-    await l.zeg("Gebruik de bliksemknop als dat helpt.", "Er zitten {10} stippen in de machine.", "Hoeveel blijven er over als je er {4} weghaalt?");
+    await l.zeg("Gebruik de wegvliegknop als dat helpt.", "Er zitten {10} vuurvliegjes in het potje.", "Hoeveel blijven er over als er {4} wegvliegen?");
     const tien = await l.getal();
     if (tien === 6) {
       await l.zeg("Je hebt het!");
     } else {
-      await l.zeg(tien === null ? "Geen zorgen." : "Hmm, dat klopt nog niet.", "We doen het samen.");
+      await l.zeg(tien === null ? "Geen zorgen." : "Dat klopt niet; laten we het samen doen.");
       m.zet(10, { zapper: "dof" });
-      await l.zeg("Haal er {4} weg.");
-      await m.zapTot(6);
-      await l.zeg("Er zijn {6} stippen over.", "{10} − {4} = {6}.");
+      await l.zeg("Laat er {4} wegvliegen.");
+      await m.wegTot(6);
+      await l.zeg("Er zijn {6} vuurvliegjes over.", "{10} − {4} = {6}.");
     }
     l.som(somDelen("10 − 4 = 6"));
     m.pas({ zapper: "weg" });
     await l.verder();
     l.som(null);
 
-    /* 9. Alles weghalen: dan houd je 0 over. */
+    /* 9. Alles weg: dan houd je 0 over. */
     await l.zeg("Ik wil je nog één belangrijk ding laten zien.", "Daarna gaan we oefenen.");
     await l.verder();
     m.zet(20, { zapper: "dof" });
-    await l.zeg("Nu zijn er {20} stippen.", "Hoeveel moet je weghalen?", "Er mogen geen stippen overblijven.");
+    await l.zeg("Nu zijn er {20} vuurvliegjes.", "Hoeveel moeten er wegvliegen?", "Er mogen er geen overblijven.");
     const twintig = await vraagGetal(l, 20, {
-      fout: (x) => (x < 0 ? ["Alle stippen moeten weg."] : x < 20 ? ["Dan blijven er nog stippen over.", "Alle stippen moeten weg."] : ["Zoveel stippen zijn er niet.", "Alle stippen moeten weg."]),
-      antwoord: ["Je moet ze alle {20} weghalen."],
+      fout: (x) => (x < 0 ? ["Ze moeten allemaal weg."] : x < 20 ? ["Dan blijven er nog vuurvliegjes over.", "Ze moeten allemaal weg."] : ["Zoveel zijn er niet.", "Ze moeten allemaal weg."]),
+      antwoord: ["Ze moeten alle {20} wegvliegen."],
     });
     if (twintig) await l.zeg("Goed zo.");
-    await l.zeg("Wil jij ze weghalen?", "Of zal ik het doen?");
-    const wie = await l.kies(["Ik doe het zelf", "Doe jij het maar"]);
-    if (wie === "Ik doe het zelf") {
+    await l.zeg("Wil jij ze laten wegvliegen?", "Of zal ik het doen?");
+    const wie = await l.kies(["Ik", "Jij"]);
+    if (wie === "Ik") {
       await l.zeg("Ga je gang.");
-      await m.zapTot(0);
+      await m.wegTot(0);
     } else {
       await l.zeg("Daar gaan ze!");
       m.zet(0);
-      await l.wacht(700);
+      await l.wacht(900);
     }
-    await l.zeg("Een getal min hetzelfde getal is altijd {0}.", "Haal je alles weg, dan blijft er niets over.");
+    await l.zeg("Elk getal min zichzelf is nul.", "Gaan ze allemaal weg, dan blijft er niets over.");
     await l.verder();
 
-    /* 10. Oefenen; de machine mag je zelf gebruiken. */
-    await l.zeg("Je hebt het door.", "We doen er nog een paar.", "Gebruik de machine zoveel je wilt.");
-    const oefen: [number, number, string][] = [
-      [5, 4, "Goed zo."],
-      [12, 9, "Ja, dat klopt."],
-      [8, 7, "Knap gedaan."],
-      [14, 11, "Precies."],
+    /* 10. Oefenen; het potje mag je zelf gebruiken. Wat niet lukt, komt aan het eind nog één keer terug. */
+    await l.zeg("Je hebt het door.", "We doen er nog een paar.", "Gebruik het potje zoveel je wilt.");
+    const oefen: [number, number][] = [
+      [5, 4],
+      [12, 9],
+      [8, 7],
+      [14, 11],
+      [9, 3],
+      [7, 7],
+      [6, 2],
     ];
-    for (const [a, b, lof] of oefen) {
+    const lof = ["Goed zo.", "Ja, dat klopt.", "Knap gedaan.", "Precies.", "Mooi.", "Heel goed.", "Klopt."];
+    const later: [number, number][] = [];
+    const oefenSom = async (a: number, b: number, nogEens: boolean, k: number) => {
       m.zet(0, { plus: "aan", zapper: "aan", plusTot: 20, zapTot: 0 });
       l.som(somDelen(`${a} − ${b} = ?`));
-      await l.zeg(`Hoeveel is {${a}} − {${b}}?`);
+      await l.zeg(nogEens ? "Deze kwam net al." : "", `Hoeveel is {${a}} − {${b}}?`);
       const x = await l.getal();
       if (x === a - b) {
-        await l.zeg(lof);
+        await l.zeg(lof[k % lof.length]);
       } else {
-        await l.zeg(x === null ? "Geen zorgen." : "Dat klopt nog niet.", "We doen het samen.");
+        /* 1× fout of weet ik niet: Bliepo doet het voor in het potje, dan dezelfde vraag. */
+        await l.zeg(x === null ? "Geen zorgen." : "Dat klopt niet; laten we het samen doen.");
         m.zet(a, { plus: "dof", zapper: "dof" });
-        await l.wacht(900);
+        await l.wacht(1100);
         m.zet(a - b, { plus: "dof", zapper: "dof" });
-        await l.wacht(600);
-        await l.zeg(`Ik haalde er {${b}} weg.`, "Wat overblijft, is je antwoord.", `Hoeveel is {${a}} − {${b}}?`);
-        await vraagGetal(l, a - b, {
-          fout: () => ["Tel de stippen die over zijn."],
-          antwoord: [a - b === 1 ? "Er is {1} stip over." : `Er zijn {${a - b}} stippen over.`, `{${a}} − {${b}} = {${a - b}}.`],
-        });
+        await l.wacht(900);
+        await l.zeg(`Ik liet er {${b}} wegvliegen.`, "Wat overblijft, is je antwoord.", `Hoeveel is {${a}} − {${b}}?`);
+        const y = await l.getal();
+        if (y === a - b) {
+          await l.zeg("Ja, goed zo.");
+        } else {
+          /* 2× fout: het antwoord, en de som komt later terug. */
+          await l.zeg(a - b === 1 ? "Er is {1} vuurvliegje over." : `Er zijn {${a - b}} vuurvliegjes over.`, `{${a}} − {${b}} = {${a - b}}.`, nogEens ? "" : "Daar komen we later op terug.");
+          if (!nogEens) later.push([a, b]);
+          await l.verder();
+        }
       }
       l.som(somDelen(`${a} − ${b} = ${a - b}`));
       await l.wacht(800);
-    }
+    };
+    for (let k = 0; k < oefen.length; k++) await oefenSom(oefen[k][0], oefen[k][1], false, k);
+    for (let k = 0; k < later.length; k++) await oefenSom(later[k][0], later[k][1], true, k);
     l.som(null);
 
     /* 11. Terugblik. */
     m.zet(0, { plus: "dof", zapper: "dof" });
-    await l.zeg("Je hebt goed minsommen gemaakt met de machine.", "Zullen we herhalen wat je hebt geleerd?");
-    const terug = await l.kies(["Ja, graag", "Nee, ik snap het"]);
-    if (terug !== "Nee, ik snap het") {
+    await l.zeg("Je hebt goed minsommen gemaakt met het potje.", "Zullen we herhalen wat je hebt geleerd?");
+    const terug = await l.kies(["Ja", "Nee"]);
+    if (terug !== "Nee") {
       await l.zeg("Oké, daar gaan we.");
       m.zet(1);
-      await l.zeg("Eerst deden we er stippen bij.", "Dan wordt het getal hoger.");
+      await l.zeg("Eerst deden we er vuurvliegjes bij.", "Dan wordt het getal hoger.");
       m.zet(7);
-      await l.wacht(800);
+      await l.wacht(1200);
       m.zet(6);
-      await l.wacht(450);
+      await l.wacht(600);
       m.zet(5);
-      await l.zeg("Daarna haalden we stippen weg.", "Dan wordt het getal lager.");
-      /* De stippen gaan één voor één weg, zoals bij Synthesis. */
+      await l.zeg("Daarna lieten we er wegvliegen.", "Dan wordt het getal lager.");
+      /* Ze vliegen één voor één weg. */
       for (let n = 4; n >= 0; n--) {
         m.zet(n);
-        await l.wacht(400);
+        await l.wacht(500);
       }
-      await l.zeg("We haalden er evenveel weg als er waren.", "Dan houd je {0} over.");
+      await l.zeg("Vliegen ze allemaal weg?", "Dan houd je {0} over.");
       await l.verder();
     }
 
     /* Einde: de kaart. */
+    l.vlak(null);
     const tik = l.kaart();
     await l.zeg(l.naam ? `Goed gewerkt vandaag, ${l.naam}!` : "Goed gewerkt vandaag!", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
 
+
 /* ---------- les 3: het verschil ---------- */
 
-/** "Tik op Klaar": wacht tot het kind klaar is of om hulp vraagt. */
-async function klaarOfHulp(l: Lesgids): Promise<Torenmelding> {
-  return l.wachtOpVlak<Torenmelding>(["klaar", "hulp"]);
+/** Wacht tot het kind op Klaar (vinkje) of Hulp (vraagteken) tikt. */
+async function klaarOfHulpPalen(l: Lesgids): Promise<Paalmelding> {
+  return l.wachtOpVlak<Paalmelding>(["klaar", "hulp"]);
 }
 
 const verschil: Lesdraaiboek = {
   id: "aftrekken-10-verschil",
   titel: "Het verschil",
   synthesis: "Subtract Within 10 · Difference Dimension",
-  kaarttekening: KaartTorens,
+  kaarttekening: KaartPalen,
 
-  async speel(l) {
-    const t = torens(l);
-    const KNOPPEN = { klaar: "Klaar", hulp: "Hulp" };
+  async speel(ruw) {
+    const l = metAanwijzen(ruw);
+    const t = palen(l);
+    const KNOPPEN = { klaar: true, hulp: true };
     const vol = { links: true, rechts: true };
+    /*
+      Op Klaar of Hulp wachten begint al vóór Bliepo uitgepraat is (`wacht`),
+      zodat een tik terwijl hij praat niet verloren gaat. Alleen doen als er
+      daarna niets anders van het vlak verwacht wordt.
+    */
+    let vroeg: Promise<Paalmelding> | null = null;
+    const wacht = () => {
+      vroeg = klaarOfHulpPalen(l);
+    };
+    const knop = () => {
+      const p = vroeg ?? klaarOfHulpPalen(l);
+      vroeg = null;
+      return p;
+    };
+    /* De eerste keer met Klaar en Hulp: Bliepo wijst ze aan. */
+    const wijsKnoppen = async () => {
+      await l.wijs("klaar", "Ben je klaar? Tik dan op het vinkje.");
+      await l.wijs("hulp", "Wil je hulp? Tik dan op het vraagteken.");
+    };
 
-    /* 1. Een toren bouwen. */
+    /* 1. Een paal met lampjes. */
     t.toon({ links: 0, rechts: 0, binnen: true });
-    await l.zeg("Zie je het paarse ruimteschip?", "Tik erop en kijk wat er gebeurt.");
-    t.pas({ ufo: { rechts: true }, max: { rechts: 1 } });
-    await l.wachtOpVlak("erbij");
-    t.zet(0, 1, { ufo: {}, max: {} });
-    await l.zeg("Wauw!", "Tik er nog eens op.");
+    await l.zeg("Kijk, twee lantaarnpalen.", "Ze hebben nog geen lampjes.");
+    t.pas({ erbij: { rechts: true }, max: { rechts: 1 } });
+    const eerste = l.wachtOpVlak("erbij");
+    await l.wijs("erbij-rechts", "Zie je de plus bij de paarse paal?", "Tik erop en kijk wat er gebeurt.");
+    await eerste;
+    t.zet(0, 1, { erbij: {}, max: {} });
+    await l.zeg("Wauw!", "Er ging een lampje aan.", "Tik er nog eens op.");
     await t.bouwTot("rechts", 2, 1);
-    await l.zeg("Je bent een ruimtetoren begonnen.", "Hoeveel blokken is hij hoog?");
+    await l.zeg("Hoeveel lampjes branden er nu?");
     const twee = await vraagGetal(l, 2, {
-      fout: () => ["Hmm, kijk naar de paarse blokken.", "Hoeveel zijn het er?"],
-      antwoord: ["Het zijn er {2}.", "De toren is {2} blokken hoog."],
+      fout: () => ["Hmm, kijk naar de paarse lampjes.", "Hoeveel zijn het er?"],
+      antwoord: ["Het zijn er {2}.", "Er branden {2} lampjes."],
     });
-    if (twee) await l.zeg("Ja.", "De toren is {2} blokken hoog.");
+    if (twee) await l.zeg("Ja.", "Er branden {2} lampjes.");
 
-    await l.zeg("We bouwen hem hoger.", "Tik tot de toren {7} blokken hoog is.");
+    await l.zeg("We doen er meer bij.", "Tik tot er {7} lampjes branden.");
     await t.bouwTot("rechts", 7, 2);
-    await l.zeg("Heel gaaf.", "Het ruimteschip kan nog iets.");
+    await l.zeg("Heel mooi.", "De paal kan nog iets.");
     await l.verder();
 
-    /* 2. De groene straal haalt een blok weg. */
-    await l.zeg("Het paarse ruimteschip heeft een groene straal.", "Tik op de straal.");
-    await t.bouwTot("rechts", 6, 7);
-    await l.zeg("Hé, er is een blok verdwenen!");
+    /* 2. De minknop doet het bovenste lampje uit. */
+    const uit1 = t.bouwTot("rechts", 6, 7);
+    await l.wijs("eraf-rechts", "Zie je de min bij de paarse paal?", "Tik erop.");
+    await uit1;
+    await l.zeg("Hé, er ging een lampje uit!");
     await l.verder();
-    await l.zeg("Kun je er nog één weghalen?");
+    await l.zeg("Kun je er nog één uitdoen?");
     await t.bouwTot("rechts", 5, 6);
     await l.zeg("Mooi gedaan.");
 
-    /* 3. Even hoog maken. */
-    t.zet(0, 5, { ufo: { links: true }, straal: { links: true }, knoppen: KNOPPEN });
-    await l.zeg("Nu een opdracht.", "Maak de oranje toren even hoog als de paarse.", "We willen niet dat ze verschillen.", "Tik op Klaar als je klaar bent.");
+    /* 3. Even veel maken. */
+    t.zet(0, 5, { erbij: { links: true }, eraf: { links: true }, knoppen: KNOPPEN });
+    wacht();
+    await l.zeg("Nu een opdracht.", "Geef de oranje paal evenveel lampjes als de paarse.", "Ze mogen niet verschillen.");
+    await wijsKnoppen();
     for (;;) {
-      const g = await klaarOfHulp(l);
+      const g = await knop();
       if (g.soort === "klaar" && g.links === 5) {
-        t.zet(5, 5, { ufo: {}, straal: {}, knoppen: null });
-        await l.zeg("Ja!", "Ze zijn even hoog.");
+        t.zet(5, 5, { erbij: {}, eraf: {}, knoppen: null });
+        await l.zeg("Ja!", "Ze hebben evenveel lampjes.");
         break;
       }
       if (g.soort === "hulp") {
         t.pas({ cijfers: true });
-        await l.zeg("Tik op het oranje ruimteschip voor een blok erbij.", "Tik op de straal om er één weg te halen.", "Kijk naar de cijfers.");
+        wacht();
+        await l.zeg("Met de plus gaat er een lampje aan.", "Met de min gaat er een uit.", "Kijk naar de getallen.");
         continue;
       }
-      t.zet(g.links, 5, { cijfers: true, knoppen: null, ufo: {}, straal: {} });
-      await l.zeg("Kijk goed.", "De torens zijn nog niet even hoog.", "Ze *verschillen* een beetje.");
+      t.zet(g.links, 5, { cijfers: true, knoppen: null, erbij: {}, eraf: {} });
+      await l.zeg("Kijk goed.", "De palen hebben nog niet evenveel lampjes.", "Ze *verschillen* een beetje.");
       await l.verder();
-      await l.zeg(g.links > 5 ? "Haal oranje blokken weg met de straal." : "Zet er oranje blokken bij.");
+      await l.zeg(g.links > 5 ? "Doe oranje lampjes uit met de min." : "Doe er oranje lampjes bij met de plus.");
       await t.bouwTot("links", 5, g.links);
-      await l.zeg("Zo is het goed.", "Nu hebben ze evenveel blokken.");
+      await l.zeg("Zo is het goed.", "Nu hebben ze evenveel lampjes.");
       break;
     }
     t.zet(5, 5, { cijfers: false, knoppen: null });
-    await l.zeg("Hoeveel blokken zitten er in *elke* toren?");
+    await l.zeg("Hoeveel lampjes heeft *elke* paal?");
     const vijf = await vraagGetal(l, 5, {
-      fout: () => ["Tel de oranje blokken maar."],
-      antwoord: ["In elke toren zitten {5} blokken."],
+      fout: () => ["Tel de oranje lampjes maar."],
+      antwoord: ["Elke paal heeft {5} lampjes."],
     });
-    if (vijf) await l.zeg("Ja, dat klopt.", "{5} blokken in elke toren.", "Er is geen verschil.");
+    if (vijf) await l.zeg("Ja, dat klopt.", "{5} lampjes aan elke paal.", "Er is geen verschil.");
 
-    /* 4. Er rommelt iets: nu zijn ze verschillend. */
+    /* 4. Er gebeurt iets: nu zijn ze verschillend. */
     t.zet(3, 5);
-    await l.zeg("Oei, er rommelt iets aan de torens.", "Zijn ze nog even hoog?");
-    const zelfde = await l.kies(["Ze zijn even hoog", "Ze zijn verschillend"]);
-    if (zelfde !== "Ze zijn verschillend") {
-      await l.zeg(zelfde === null ? "Geen zorgen." : "Hmm, ze lijken niet hetzelfde.", "We kijken nog eens.");
+    await l.zeg("Oei, er gingen lampjes uit.", "Hebben ze nog evenveel?");
+    const zelfde = await l.kies(["Evenveel", "Verschillend"]);
+    if (zelfde !== "Verschillend") {
+      await l.zeg(zelfde === null ? "Geen zorgen." : "Hmm, dat lijkt niet hetzelfde.", "We kijken nog eens.");
       await l.verder();
       t.pas({ cijfers: true });
-      await l.zeg("Tel de oranje blokken.", "Hoeveel zie je?");
+      await l.zeg("Tel de oranje lampjes.", "Hoeveel zie je?");
       const drie = await vraagGetal(l, 3, {
-        fout: () => ["Kijk naar de cijfers naast de oranje toren."],
+        fout: () => ["Kijk naar de getallen naast de oranje lampjes."],
         antwoord: ["Het zijn er {3}."],
       });
-      if (drie) await l.zeg("Dat klopt!", "De oranje toren is {3} blokken hoog.");
+      if (drie) await l.zeg("Dat klopt!", "De oranje paal heeft {3} lampjes.");
       t.pas({ cijfers: false });
     } else {
       await l.zeg("Ja, ze zijn verschillend.");
     }
-    await l.zeg("{3} blokken in de oranje toren.", "{5} blokken in de paarse toren.");
+    await l.zeg("{3} lampjes aan de oranje paal.", "{5} lampjes aan de paarse paal.");
     await l.verder();
 
     await l.zeg("Heb je al eens het verschil gezocht?");
@@ -778,146 +1094,145 @@ const verschil: Lesdraaiboek = {
     await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "We leren samen iets nieuws.");
     await l.verder();
 
-    await l.zeg("Wat is er anders aan de torens?");
-    const anders = await l.kies(["De paarse toren heeft meer blokken", "De oranje toren heeft meer blokken"]);
-    if (anders === "De paarse toren heeft meer blokken") {
-      await l.zeg("Dat klopt.");
+    await l.zeg("Welke paal heeft er meer?");
+    const meer = await l.kies(["Oranje", "Paars"]);
+    if (meer === "Paars") {
+      await l.zeg("Dat klopt.", "De paarse paal heeft meer lampjes.");
     } else {
       t.pas({ cijfers: true });
-      await l.zeg(anders === null ? "Geen zorgen." : "Kijk nog eens.", "De paarse toren is hoger.", "De paarse toren heeft meer blokken.");
+      await l.zeg(meer === null ? "Geen zorgen." : "Kijk nog eens.", "De paarse paal heeft meer lampjes.");
       await l.verder();
       t.pas({ cijfers: false });
     }
-    await l.zeg("Dan moeten er oranje blokken bij.", "Maak ze weer even hoog met het oranje ruimteschip.");
+    await l.zeg("Dan moeten er oranje lampjes bij.", "Maak ze weer even veel met de plus.");
     await t.bouwTot("links", 5, 3);
     await l.zeg("Zo is het goed.");
 
-    /* 5. De botsschuif. */
-    await l.zeg("Oké, nu iets nieuws.", "Ik heb een apparaatje voor je.");
+    /* 5. De schuif: de palen tegen elkaar. */
+    await l.zeg("Oké, nu iets nieuws.", "Ik heb een schuif voor je.");
     await l.verder();
     t.zet(5, 5);
-    t.pas({ schuif: true });
-    await l.zeg("Het heet de botsschuif.", "Schuif het rondje helemaal naar de overkant.", "Laat dan los.");
-    await t.bots();
-    await l.zeg("Wauw!", "Wat is er met de blokken gebeurd?");
-    const weg = await l.kies(["Ze vielen tegen elkaar weg"]);
+    const bots1 = t.bots();
+    await l.wijs("schuif", "Schuif het lichtje helemaal naar de overkant.", "Dan schuiven de palen tegen elkaar.");
+    await bots1;
+    await l.zeg("Wauw!", "Wat gebeurde er met de lampjes?");
+    const weg = await l.kies(["Ze gingen uit"]);
     if (weg === null) {
-      await l.zeg("Dat is niet erg.", "Het is een lastig idee.", "We kijken beter wat er gebeurt als ze botsen.");
+      await l.zeg("Dat is niet erg.", "Het is een lastig idee.", "We kijken beter wat er gebeurt als ze tegen elkaar komen.");
     } else {
-      await l.zeg("Ja!", "We kijken nog beter hoe dat gaat.");
+      await l.zeg("Ja!", "Ze gingen tegen elkaar uit.", "We kijken nog beter hoe dat gaat.");
     }
     await l.verder();
 
     t.zet(1, 1, { schuif: false, cijfers: true });
-    await l.zeg("Kleine torens, hè?", "Is één blok eigenlijk wel een toren?", "Hmm, dat zoeken we later uit.");
+    await l.zeg("Maar één lampje per paal, hè?", "Dat is niet veel licht.");
     await l.verder();
-    await l.zeg("Hoe hoog is elke toren nu?");
+    await l.zeg("Hoeveel lampjes heeft elke paal nu?");
     const een = await l.kies(["1", "2"]);
-    await l.zeg(een === "1" ? "Klopt." : "Kijk naar de cijfers.", "Elke toren heeft één blok onderaan.");
+    await l.zeg(een === "1" ? "Klopt." : "Kijk naar de getallen.", "Elke paal heeft één lampje onderaan.");
     await l.verder();
-    await l.zeg("Beide blokken zitten op dezelfde hoogte.", "Dus botsen ze tegen elkaar.", "En dan vallen ze weg.");
+    await l.zeg("Ze zitten op dezelfde hoogte.", "Dus komen ze tegen elkaar.", "En dan gaan ze allebei uit.");
     await l.verder();
     t.pas({ cijfers: false });
-    await l.zeg("Laat de torens nu botsen.");
+    await l.zeg("Schuif de palen nu tegen elkaar.");
     await t.bots();
-    await l.zeg("Daar gaan ze!", "Allebei een blok op dezelfde hoogte.", "Ze vielen tegen elkaar weg.");
+    await l.zeg("Daar gaan ze!", "Allebei een lampje op dezelfde hoogte.", "Ze gingen tegen elkaar uit.");
     await l.verder();
 
     t.zet(3, 3, { schuif: false, cijfers: true });
-    await l.zeg("Nu bouw ik hogere torens.", "Hoeveel blokken heeft elke toren?");
+    await l.zeg("Nu doe ik er meer aan.", "Hoeveel lampjes heeft elke paal?");
     const drie = await vraagGetal(l, 3, {
-      fout: () => ["Kijk naar de cijfers."],
-      antwoord: ["Elke toren heeft {3} blokken."],
+      fout: () => ["Kijk naar de getallen."],
+      antwoord: ["Elke paal heeft {3} lampjes."],
     });
     if (drie) await l.zeg("Dat klopt.");
-    await l.zeg("Wat gebeurt er als ze botsen?");
-    const voorspel = await l.kies(["Ze vallen allemaal weg", "Er gebeurt niets"]);
-    await l.zeg(voorspel === "Ze vallen allemaal weg" ? "Misschien heb je gelijk." : "We gaan het zien.", "Laat ze nu botsen.");
+    await l.zeg("Wat gebeurt er als ze tegen elkaar schuiven?");
+    const voorspel = await l.kies(["Allemaal uit", "Er gebeurt niets"]);
+    await l.zeg(voorspel === "Allemaal uit" ? "Misschien heb je gelijk." : "We gaan het zien.", "Schuif ze nu tegen elkaar.");
     t.pas({ cijfers: false });
     await t.bots();
-    await l.zeg("Wauw!", "Beide torens hadden {3} blokken.", "Ze vielen allemaal tegen elkaar weg.");
+    await l.zeg("Wauw!", "Beide palen hadden {3} lampjes.", "Ze gingen allemaal tegen elkaar uit.");
     await l.verder();
 
-    /* 6. De aliens: 5 tegen 4. */
+    /* 6. 5 tegen 4. */
     t.zet(0, 0, { schuif: false });
-    await l.zeg("De aliens hebben je hulp nodig.");
+    await l.zeg("Nu mag jij de palen maken.");
     await l.verder();
-    t.pas({ ufo: vol, straal: vol, knoppen: KNOPPEN });
-    await l.zeg("De oranje aliens willen {5} blokken.", "De paarse aliens willen {4} blokken.", "Bouw hun torens.", "Tik op Klaar als het af is.");
+    t.pas({ erbij: vol, eraf: vol, knoppen: KNOPPEN });
+    wacht();
+    await l.zeg("De oranje paal krijgt {5} lampjes.", "De paarse paal krijgt er {4}.", "Tik op het vinkje als het af is.");
     for (;;) {
-      const g = await klaarOfHulp(l);
+      const g = await knop();
       if (g.soort === "klaar" && g.links === 5 && g.rechts === 4) break;
       t.pas({ cijfers: true });
+      wacht();
       if (g.soort === "hulp") {
-        await l.zeg("Tik op een ruimteschip voor een blok erbij.", "Tik op de straal om er één weg te halen.");
+        await l.zeg("Met de plus gaat er een lampje aan.", "Met de min gaat er een uit.");
       } else {
-        await l.zeg(`Je torens zijn {${g.links}} en {${g.rechts}} hoog.`, "Oranje moet {5} zijn, paars {4}.");
+        await l.zeg(`Je palen hebben {${g.links}} en {${g.rechts}} lampjes.`, "Oranje moet {5} zijn, paars {4}.");
       }
     }
-    t.zet(5, 4, { ufo: {}, straal: {}, knoppen: null, cijfers: false });
+    t.zet(5, 4, { erbij: {}, eraf: {}, knoppen: null, cijfers: false });
     await l.zeg("Goed gedaan.");
     await l.verder();
-    await l.zeg("Eerst een voorspelling.", "Welke toren houdt blokken over na de botsing?");
-    const winnaar = await l.kies(["De oranje toren", "De paarse toren"]);
-    await l.zeg(
-      winnaar === "De oranje toren" ? "Jij denkt de oranje toren." : winnaar === "De paarse toren" ? "Jij denkt de paarse toren." : "We gaan het zien.",
-      "Laat ze botsen, dan zien we het.",
-    );
+    await l.zeg("Eerst een voorspelling.", "Welke paal houdt lampjes over?");
+    const winnaar = await l.kies(["Oranje", "Paars"]);
+    await l.zeg(winnaar === "Oranje" ? "Jij denkt oranje." : winnaar === "Paars" ? "Jij denkt paars." : "We gaan het zien.", "Schuif ze tegen elkaar, dan zien we het.");
     await t.bots();
-    await l.zeg("Wauw!", "De oranje toren houdt één blok over.");
+    await l.zeg("Wauw!", "De oranje paal houdt één lampje over.");
     await l.verder();
-    await l.zeg("Van elke toren vielen {4} blokken weg.", "Maar er bleef {1} oranje blok over.", "Waarom viel dat blok niet weg?");
-    const waarom = await l.kies(["Er zat geen paars blok naast", "Er waren meer paarse blokken"]);
-    if (waarom === "Er zat geen paars blok naast") {
-      await l.zeg("Ja.", "De oranje toren had één blok extra.");
+    await l.zeg("Bij elke paal gingen er {4} uit.", "Maar er bleef {1} oranje lampje branden.", "Waarom ging dat lampje niet uit?");
+    const waarom = await l.kies(["Geen paars lampje ernaast", "Meer paarse lampjes"]);
+    if (waarom === "Geen paars lampje ernaast") {
+      await l.zeg("Ja.", "De oranje paal had één lampje extra.");
     } else {
-      await l.zeg("Kijk, naast het bovenste oranje blok zit geen paars blok.", "Daarom bleef het over.");
+      await l.zeg("Kijk, naast het bovenste oranje lampje zat geen paars lampje.", "Daarom bleef het branden.");
     }
     await l.verder();
-    await l.zeg("Wat was het verschil tussen de torens?");
+    await l.zeg("Wat was het verschil tussen de palen?");
     const eenGoed = await vraagGetal(l, 1, {
-      fout: () => ["Tel de blokken die over zijn."],
-      antwoord: ["Er bleef {1} blok over.", "Het verschil is {1}."],
+      fout: () => ["Tel de lampjes die nog branden."],
+      antwoord: ["Er bleef {1} lampje branden.", "Het verschil is {1}."],
     });
-    if (eenGoed) await l.zeg("Je hebt het.", "De oranje toren had {1} blok meer.", "Het verschil is {1}.");
+    if (eenGoed) await l.zeg("Je hebt het.", "De oranje paal had {1} lampje meer.", "Het verschil is {1}.");
 
     /* 7. Is het verschil plus of min? */
     t.zet(3, 5, { schuif: false });
-    await l.zeg("Nu {3} oranje tegen {5} paarse.", "Laat ze maar botsen!");
+    await l.zeg("Nu {3} oranje tegen {5} paarse.", "Schuif ze maar tegen elkaar!");
     await t.bots();
-    await l.zeg("Er blijven {2} paarse blokken over.");
+    await l.zeg("Er blijven {2} paarse lampjes branden.");
     await l.verder();
-    await l.zeg("Nu heb ik een vraag.", "Op welke soort sommen lijkt het verschil zoeken?");
-    const soort = await l.kies(["Plussommen", "Minsommen"]);
-    if (soort !== "Minsommen") {
+    await l.zeg("Nu heb ik een vraag.", "Op welke som lijkt het verschil zoeken?");
+    const soort = await l.kies(["Plussom", "Minsom"]);
+    if (soort !== "Minsom") {
       await l.zeg(soort === null ? "Geen zorgen." : "Hmm, vind je het verschil met een plussom?", "We kijken samen.");
       await l.verder();
       t.zet(1, 2, { schuif: false, cijfers: true });
-      await l.zeg("Hier is een toren van {1}.", "En een toren van {2}.", "Hoeveel is dat samen?");
+      await l.zeg("Hier is een paal met {1} lampje.", "En een paal met {2}.", "Hoeveel is dat samen?");
       const samen = await vraagGetal(l, 3, {
-        fout: () => ["Tel alle blokken."],
+        fout: () => ["Tel alle lampjes."],
         antwoord: ["Samen zijn het er {3}."],
       });
       if (samen) await l.zeg("Ja.", "{1} + {2} = {3}.");
-      await l.zeg("Maar voor het verschil laten we ze botsen.");
+      await l.zeg("Maar voor het verschil schuiven we ze tegen elkaar.");
       t.pas({ cijfers: false });
       await t.bots();
-      await l.zeg("Kijk naar het paarse blok dat over is.", "Hoeveel blokken verschillen de torens?");
+      await l.zeg("Kijk naar het paarse lampje dat nog brandt.", "Hoeveel lampjes verschillen de palen?");
       const v1 = await vraagGetal(l, 1, {
-        fout: () => ["Tel de blokken die over zijn."],
-        antwoord: ["Er is {1} blok over.", "Het verschil is {1}."],
+        fout: () => ["Tel de lampjes die nog branden."],
+        antwoord: ["Er brandt nog {1} lampje.", "Het verschil is {1}."],
       });
       if (v1) await l.zeg("Ja!", "Het verschil is {1}.");
       t.zet(1, 2, { schuif: false });
       await l.zeg("Het verschil is {1}.", "Maar samen was het {3}.", "Een plussom helpt dus niet bij het verschil.");
       await l.verder();
       await l.zeg("Wat helpt wel om het verschil te vinden?");
-      const wel = await l.kies(["Een plussom", "Een minsom"]);
-      if (wel !== "Een minsom") await l.zeg("Het is een minsom.");
+      const wel = await l.kies(["Plussom", "Minsom"]);
+      if (wel !== "Minsom") await l.zeg("Het is een minsom.");
     } else {
       await l.zeg("Ja!");
     }
-    await l.zeg("Precies, kapitein!", "Blokken laten wegvallen is een minsom.", "Je haalt ze weg.");
+    await l.zeg("Precies.", "Verschil is aftrekken.", "De lampjes gaan tegen elkaar uit: je haalt ze weg.");
     await l.verder();
 
     /* 8. Welke som hoort erbij? 5 en 3. */
@@ -927,33 +1242,33 @@ const verschil: Lesdraaiboek = {
       l,
       ["5 + 3", "5 − 3", "5 − 2"],
       "5 − 3",
-      ["Bij het verschil haal je blokken weg.", "Welke som past bij deze torens?"],
+      ["Bij het verschil haal je lampjes weg.", "Welke som past bij deze palen?"],
       ["Het is {5} − {3}."],
     );
-    if (hulpsom) await l.zeg("Precies, kapitein.", "Het is {5} − {3}.");
-    await l.zeg("Wil je de torens laten botsen?", "Of weet je het verschil al?");
-    const weet = await l.kies(["Laat ze botsen", "Ik weet het al"]);
-    if (weet === "Ik weet het al") {
+    if (hulpsom) await l.zeg("Precies.", "Het is {5} − {3}.");
+    await l.zeg("Wil je de palen tegen elkaar schuiven?", "Of weet je het verschil al?");
+    const weet = await l.kies(["Schuiven", "Ik weet het"]);
+    if (weet === "Ik weet het") {
       await l.zeg("Wat is het verschil tussen {5} en {3}?", "Of: hoeveel is {5} − {3}?");
       const x = await l.getal();
       if (x === 2) {
         await l.zeg("Dat klopt.", "Knap dat je dat in je hoofd kon.");
-        /* Ter controle: twee oranje blokken weg, dan zijn ze even hoog. */
+        /* Ter controle: twee oranje lampjes uit, dan hebben ze evenveel. */
         t.zet(3, 3, { schuif: false, cijfers: true });
         await l.wacht(900);
         t.zet(5, 3, { schuif: false, cijfers: true });
       } else {
-        await l.zeg("Laat ze botsen om te kijken.");
+        await l.zeg("Schuif ze tegen elkaar om te kijken.");
         t.pas({ cijfers: false });
         await t.bots();
-        await l.zeg("Er blijven {2} oranje blokken over.", "Het verschil is {2}.");
+        await l.zeg("Er blijven {2} oranje lampjes branden.", "Het verschil is {2}.");
         await l.verder();
       }
     } else {
       t.pas({ cijfers: false });
       await t.bots();
-      await l.zeg("Hoeveel blokken zijn er over?");
-      await vraagGetal(l, 2, { fout: () => ["Tel de oranje blokken die over zijn."], antwoord: ["Er zijn {2} over.", "Het verschil is {2}."] });
+      await l.zeg("Hoeveel lampjes branden er nog?");
+      await vraagGetal(l, 2, { fout: () => ["Tel de oranje lampjes die nog branden."], antwoord: ["Er branden er nog {2}.", "Het verschil is {2}."] });
       await l.zeg("Het verschil is {2}.");
     }
     t.zet(5, 3, { schuif: false, cijfers: true });
@@ -964,180 +1279,187 @@ const verschil: Lesdraaiboek = {
       await l.verder();
     } else {
       if (somKeuze === null) {
-        await l.zeg("Geen zorgen.", "We vergelijken de sommen met de torens.");
+        await l.zeg("Geen zorgen.", "We vergelijken de sommen met de palen.");
       } else {
-        await l.zeg("{5} − {2} = {3}.", "Ik snap waarom je die koos.", "Maar we vergelijken hem met de torens.");
+        await l.zeg("{5} − {2} = {3}.", "Ik snap waarom je die koos.", "Maar laten we het met de palen bekijken.");
       }
       await l.verder();
-      await l.zeg("De oranje toren heeft {5} blokken.", "Hoeveel halen we eraf?", "Hoeveel blokken heeft de kleine toren?");
+      await l.zeg("De oranje paal heeft {5} lampjes.", "Hoeveel halen we eraf?", "Hoeveel lampjes heeft de kleine paal?");
       const af = await l.kies(["2", "3"]);
-      await l.zeg(af === "3" ? "Ja, dat klopt." : "De kleine toren heeft {3} blokken.");
-      await l.zeg("We hebben {5} blokken.", "We halen er {3} af.", "Dus schrijven we {5} − {3}.");
+      await l.zeg(af === "3" ? "Ja, dat klopt." : "De kleine paal heeft {3} lampjes.");
+      await l.zeg("We hebben {5} lampjes.", "We halen er {3} af.", "Dus schrijven we {5} − {3}.");
       await l.verder();
       t.pas({ cijfers: false });
-      await l.zeg("Laat ze nu botsen.");
+      await l.zeg("Schuif ze nu tegen elkaar.");
       await t.bots();
       l.som([{ t: "getal", n: 5 }, { t: "teken", s: "−" }, { t: "getal", n: 3 }, { t: "teken", s: "=" }, { t: "vak" }]);
       await l.zeg("Maak de som af.");
       let fout = 0;
       while ((await l.somVak(4)) !== 2) {
         fout++;
-        await l.zeg(fout === 1 ? "Tel de oranje blokken die over zijn." : "Er zijn {2} over. Typ de {2}.");
+        await l.zeg(fout === 1 ? "Tel de oranje lampjes die nog branden." : "Er branden er nog {2}. Typ de {2}.");
       }
       l.som([{ t: "getal", n: 5 }, { t: "teken", s: "−" }, { t: "getal", n: 3 }, { t: "teken", s: "=" }, { t: "getal", n: 2 }]);
-      await l.zeg("Goed zo, kapitein!", "{5} en {3} verschillen {2}.", "{5} − {3} = {2}.");
+      await l.zeg("Goed zo!", "{5} en {3} verschillen {2}.", "{5} − {3} = {2}.");
       await l.verder();
       l.som(null);
     }
 
     /* 9. 3 tegen 8. */
-    t.zet(0, 0, { schuif: false, cijfers: false, ufo: vol, straal: vol, knoppen: KNOPPEN });
-    await l.zeg("Nieuwe opdracht.", "De oranje aliens willen {3} blokken.", "De paarse aliens willen er {8}.", "Tik op Klaar als het af is.");
+    t.zet(0, 0, { schuif: false, cijfers: false, erbij: vol, eraf: vol, knoppen: KNOPPEN });
+    wacht();
+    await l.zeg("Nieuwe opdracht.", "De oranje paal krijgt {3} lampjes.", "De paarse paal krijgt er {8}.", "Tik op het vinkje als het af is.");
     for (;;) {
-      const g = await klaarOfHulp(l);
+      const g = await knop();
       if (g.soort === "klaar" && g.links === 3 && g.rechts === 8) break;
       t.pas({ cijfers: true });
+      wacht();
       if (g.soort === "hulp") {
-        await l.zeg("Tik op een ruimteschip voor een blok erbij.", "Tik op de straal om er één weg te halen.");
+        await l.zeg("Met de plus gaat er een lampje aan.", "Met de min gaat er een uit.");
       } else {
-        await l.zeg(`Je torens zijn {${g.links}} en {${g.rechts}} hoog.`, "Oranje moet {3} zijn, paars {8}.");
+        await l.zeg(`Je palen hebben {${g.links}} en {${g.rechts}} lampjes.`, "Oranje moet {3} zijn, paars {8}.");
       }
     }
-    t.zet(3, 8, { ufo: {}, straal: {}, knoppen: null, cijfers: false });
-    await l.zeg("Bravo.", "Wie houdt er blokken over na de botsing?");
+    t.zet(3, 8, { erbij: {}, eraf: {}, knoppen: null, cijfers: false });
+    await l.zeg("Bravo.", "Welke paal houdt lampjes over?");
     const wie = await l.kies(["Oranje", "Paars"]);
     let gok: number | null = null;
     if (wie === "Paars") {
-      await l.zeg("Met hoeveel blokken winnen ze dan?", "Hoeveel verschillen de torens?");
+      await l.zeg("Hoeveel lampjes houdt paars dan over?", "Hoeveel verschillen de palen?");
       gok = await l.getal();
-      await l.zeg("We zoeken het uit.", "Laat ze botsen.");
+      await l.zeg("We zoeken het uit.", "Schuif ze tegen elkaar.");
     } else {
-      await l.zeg(wie === "Oranje" ? "Jij denkt oranje." : "We gaan het zien.", "Laat ze botsen.");
+      await l.zeg(wie === "Oranje" ? "Jij denkt oranje." : "We gaan het zien.", "Schuif ze tegen elkaar.");
     }
     await t.bots();
     if (gok === 5) {
-      await l.zeg("Precies zoals je zei!", "De paarse toren houdt {5} blokken over.");
+      await l.zeg("Precies zoals je zei!", "De paarse paal houdt {5} lampjes over.");
     } else if (wie === "Paars" && gok !== null) {
-      await l.zeg("De paarse toren houdt blokken over, zoals je zei!", `Maar ${gok > 5 ? "minder" : "meer"} blokken dan je dacht.`);
+      await l.zeg("De paarse paal houdt lampjes over, zoals je zei!", `Maar ${gok > 5 ? "minder" : "meer"} lampjes dan je dacht.`);
     } else {
-      await l.zeg("De paarse toren houdt blokken over.");
+      await l.zeg("De paarse paal houdt lampjes over.");
     }
     await l.verder();
     if (gok !== 5) {
-      await l.zeg("Tel de paarse blokken die over zijn.", "Hoeveel verschillen de torens?");
-      await vraagGetal(l, 5, { fout: () => ["Tel alleen de paarse blokken die over zijn."], antwoord: ["Er zijn {5} over."] });
+      await l.zeg("Tel de paarse lampjes die nog branden.", "Hoeveel verschillen de palen?");
+      await vraagGetal(l, 5, { fout: () => ["Tel alleen de paarse lampjes die nog branden."], antwoord: ["Er branden er nog {5}."] });
     }
-    await l.zeg("Dat klopt, kapitein.", "Deze torens verschillen {5}.");
+    await l.zeg("Dat klopt.", "Deze palen verschillen {5}.");
     t.zet(3, 8, { schuif: false, cijfers: true });
     await l.zeg("Ik vraag het nog op een andere manier.", "Welke som laat het verschil zien?");
     const s8 = await toetsKeuze(
       l,
       ["8 − 3 = 4", "8 + 3 = 11", "8 − 3 = 5"],
       "8 − 3 = 5",
-      ["Begin bij de hoogste toren.", "Haal de kleine toren eraf."],
+      ["Begin bij de paal met de meeste lampjes.", "Haal de kleine paal eraf."],
       ["Het is {8} − {3} = {5}."],
     );
     if (s8) await l.zeg("Je hebt helemaal gelijk.", "{8} − {3} = {5}.");
     await l.verder();
 
     /* 10. Zelf een verschil van 3 maken. */
-    await l.zeg("Kapitein, er komen nieuwe berichten uit de ruimte.");
+    await l.zeg("Nu iets moeilijkers.");
     await l.verder();
-    t.zet(4, 0, { cijfers: true, ufo: { rechts: true }, straal: { rechts: true }, knoppen: KNOPPEN });
-    await l.zeg("Bouw de paarse toren.", "Maak een *verschil* van {3}.", "Tik op Klaar als het af is.");
-    const g3 = await klaarOfHulp(l);
+    t.zet(4, 0, { cijfers: true, erbij: { rechts: true }, eraf: { rechts: true }, knoppen: KNOPPEN });
+    wacht();
+    await l.zeg("Geef de paarse paal lampjes.", "Maak een *verschil* van {3}.", "Tik op het vinkje als het af is.");
+    const g3 = await knop();
     if (g3.soort === "klaar" && Math.abs(4 - g3.rechts) === 3) {
-      t.zet(4, g3.rechts, { ufo: {}, straal: {}, knoppen: null });
-      await l.zeg("Ja!", `Een toren van {${g3.rechts}} en een toren van {4}.`, "Laat ze botsen om te kijken.");
+      t.zet(4, g3.rechts, { erbij: {}, eraf: {}, knoppen: null });
+      await l.zeg("Ja!", `Een paal met {${g3.rechts}} en een paal met {4}.`, "Schuif ze tegen elkaar om te kijken.");
       await t.bots();
       await l.zeg("Prachtig.", "Ze verschillen {3}.");
       await l.verder();
     } else {
       if (g3.soort === "klaar") {
-        t.zet(4, g3.rechts, { ufo: {}, straal: {}, knoppen: null });
+        t.zet(4, g3.rechts, { erbij: {}, eraf: {}, knoppen: null });
         const d = Math.abs(4 - g3.rechts);
-        await l.zeg(`Hmm, je torens zijn {4} en {${g3.rechts}} hoog.`, "Laat ze botsen om het verschil te zien.");
+        await l.zeg(`Hmm, je palen hebben {4} en {${g3.rechts}} lampjes.`, "Schuif ze tegen elkaar om het verschil te zien.");
         await t.bots();
-        await l.zeg(d === 0 ? "Ze vielen allemaal weg." : `Het verschil is {${d}}.`, "Maar de aliens willen een verschil van {3}.");
+        await l.zeg(d === 0 ? "Ze gingen allemaal uit." : `Het verschil is {${d}}.`, "Maar we zoeken een verschil van {3}.");
         await l.verder();
       } else {
         await l.zeg("Natuurlijk help ik je.");
       }
       t.zet(4, 0, { schuif: false, cijfers: true, knoppen: null });
-      await l.zeg("Zet {3} paarse blokken *meer* dan oranje.", "Probeer het maar.");
+      await l.zeg("Geef de paarse paal {3} lampjes *meer* dan de oranje.", "Probeer het maar.");
       await t.bouwTot("rechts", 7, 0);
-      await l.zeg("Uitstekend, kapitein.", "Een toren van {7} en een toren van {4}.");
+      await l.zeg("Uitstekend.", "Een paal met {7} en een paal met {4}.");
       await l.verder();
-      await l.zeg("Laat ze botsen om te kijken.");
+      await l.zeg("Schuif ze tegen elkaar om te kijken.");
       await t.bots();
-      await l.zeg("Prachtig gedaan.", "Je maakte twee torens met een verschil van {3}.");
+      await l.zeg("Prachtig gedaan.", "Je maakte twee palen met een verschil van {3}.");
       await l.verder();
     }
 
-    await l.zeg("De aliens willen nog een manier zien.");
-    t.zet(2, 0, { schuif: false, cijfers: true, ufo: { rechts: true }, straal: { rechts: true }, knoppen: KNOPPEN });
-    await l.zeg("Dezelfde opdracht.", "Bouw de paarse toren tot het verschil {3} is.", "Tik op Klaar als het af is.");
-    const g4 = await klaarOfHulp(l);
+    await l.zeg("Kan het ook op een andere manier?");
+    t.zet(2, 0, { schuif: false, cijfers: true, erbij: { rechts: true }, eraf: { rechts: true }, knoppen: KNOPPEN });
+    wacht();
+    await l.zeg("Dezelfde opdracht.", "Geef de paarse paal lampjes tot het verschil {3} is.", "Tik op het vinkje als het af is.");
+    const g4 = await knop();
     if (g4.soort === "klaar" && g4.rechts === 5) {
-      t.zet(2, 5, { ufo: {}, straal: {}, knoppen: null });
+      t.zet(2, 5, { erbij: {}, eraf: {}, knoppen: null });
       await l.zeg("Gelukt!", "{5} en {2} verschillen {3}.");
       await l.verder();
     } else {
-      await l.zeg(g4.soort === "hulp" ? "Natuurlijk, ik help je op weg." : "Bijna, ik help je op weg.", "Eerst maken we de torens even hoog.");
+      await l.zeg(g4.soort === "hulp" ? "Natuurlijk, ik help je op weg." : "Bijna, ik help je op weg.", "Eerst maken we de palen gelijk.");
       await l.verder();
-      t.zet(2, 0, { ufo: {}, straal: {}, knoppen: null });
-      await l.zeg("Maak de paarse toren even hoog als de oranje.");
+      t.zet(2, 0, { erbij: {}, eraf: {}, knoppen: null });
+      await l.zeg("Geef de paarse paal evenveel lampjes als de oranje.");
       await t.bouwTot("rechts", 2, 0);
-      await l.zeg("Goed zo.", "Nu hebben ze evenveel blokken.");
+      await l.zeg("Goed zo.", "Nu hebben ze evenveel lampjes.");
       await l.verder();
-      await l.zeg("Maar ze moeten {3} verschillen.", "Zet er nog genoeg paarse blokken bij.", "Tik dan op Klaar.");
-      t.pas({ ufo: { rechts: true }, straal: { rechts: true }, knoppen: { klaar: "Klaar" } });
+      await l.zeg("Maar ze moeten {3} verschillen.", "Doe er nog genoeg paarse lampjes bij.", "Tik dan op het vinkje.");
+      t.pas({ erbij: { rechts: true }, eraf: { rechts: true }, knoppen: { klaar: true } });
       for (;;) {
-        const g = await l.wachtOpVlak<Torenmelding>("klaar");
+        const g = await l.wachtOpVlak<Paalmelding>("klaar");
         if (g.rechts === 5) break;
-        await l.zeg("Tel de paarse blokken boven de oranje toren.", "Dat moeten er {3} zijn.");
+        await l.zeg("Tel de paarse lampjes boven de oranje.", "Dat moeten er {3} zijn.");
       }
-      t.zet(2, 5, { ufo: {}, straal: {}, knoppen: null });
+      t.zet(2, 5, { erbij: {}, eraf: {}, knoppen: null });
       await l.zeg("Gelukt!", "{5} en {2} verschillen {3}.");
       await l.verder();
     }
 
-    /* 11. De laatste opdracht: alle torens met een verschil van 4. */
-    await l.zeg("De aliens vinden je heel goed.", "Ze hebben nog één laatste opdracht.", "Doe je mee?");
-    const mee = await l.kies(["Ja, ik doe mee", "Nee, ik ben klaar"]);
-    if (mee !== "Nee, ik ben klaar") {
-      await l.zeg(mee === null ? "We proberen het samen." : "Uitstekend.", "Voor de aliens is {4} een geluksgetal.");
+    /* 11. De laatste opdracht: alle palen met een verschil van 4 (het scorebord). */
+    await l.zeg("Je bent er heel goed in.", "Ik heb nog één laatste opdracht.", "Doe je mee?");
+    const mee = await l.kies(["Ja", "Nee"]);
+    if (mee !== "Nee") {
+      await l.zeg(mee === null ? "We proberen het samen." : "Uitstekend.", "Nu zoeken we alle palen met een verschil van {4}.");
       await l.verder();
       const lijst: (string | null)[] = Array(7).fill(null);
-      t.zet(0, 0, { cijfers: true, ufo: vol, straal: vol, knoppen: KNOPPEN, lijst });
-      await l.zeg("Bouw twee torens met een verschil van {4}.", "Je mag blokken erbij doen en weghalen.", "Tik op Klaar als het af is.");
+      t.zet(0, 0, { cijfers: true, erbij: vol, eraf: vol, knoppen: KNOPPEN, lijst });
+      wacht();
+      await l.zeg("Maak twee palen met een verschil van {4}.", "Je mag lampjes aandoen en uitdoen.", "Tik op het vinkje als het af is.");
       const reacties: string[][] = [
         [],
         ["Goed zo!", "Dat zijn er al twee."],
-        ["Ja!", "Het bord raakt al vol."],
-        ["Raak, kapitein!", "Dat zijn er al vier."],
+        ["Ja!", "Het scorebord raakt al vol."],
+        ["Raak!", "Dat zijn er al vier."],
         ["Mooi!", "Je bent er bijna."],
         ["Nog één te gaan!"],
-        ["Gefeliciteerd, kapitein!", "Je hebt ze allemaal gevonden."],
+        ["Gefeliciteerd!", "Je hebt ze allemaal gevonden."],
       ];
       let gevonden = 0;
       while (gevonden < 7) {
-        const g = await klaarOfHulp(l);
+        const g = await knop();
+        /* Hierna wacht de les alleen nog op Klaar of Hulp (of is hij klaar). */
+        wacht();
         const hoog = Math.max(g.links, g.rechts);
         const laag = Math.min(g.links, g.rechts);
         if (g.soort === "hulp") {
           const plek = lijst.findIndex((x) => x === null);
           const a = 10 - plek;
-          await l.zeg(`Probeer eens een toren van {${a}}.`, `Maak de andere toren {${a - 4}} hoog.`);
+          await l.zeg(`Probeer eens een paal met {${a}}.`, `Geef de andere paal {${a - 4}}.`);
           continue;
         }
         if (hoog - laag !== 4) {
           const ander = hoog >= 4 && lijst[10 - hoog] === null ? hoog - 4 : laag + 4;
-          await l.zeg(`Torens van {${g.links}} en {${g.rechts}}?`, "Bijna, maar dat is niet het goede verschil.", `Misschien kan een toren {${Math.min(10, ander)}} hoog zijn?`);
-          await l.zeg("Zal ik de torens leegmaken?");
+          await l.zeg(`Palen met {${g.links}} en {${g.rechts}}?`, "Bijna, maar dat is niet het goede verschil.", `Misschien kan een paal {${Math.min(10, ander)}} lampjes hebben?`);
+          await l.zeg("Zal ik de palen leegmaken?");
           const leeg = await l.kies(["Ja", "Nee"]);
           if (leeg === "Ja") t.zet(0, 0);
-          await l.zeg("Ga maar verder.", "Tik op Klaar als je torens af zijn.");
+          await l.zeg("Ga maar verder.", "Tik op het vinkje als je palen af zijn.");
           continue;
         }
         const plek = 10 - hoog;
@@ -1150,29 +1472,24 @@ const verschil: Lesdraaiboek = {
         t.pas({ lijst: [...lijst] });
         if (gevonden === 1) {
           await l.zeg(`{${g.links}} en {${g.rechts}}.`, "Een verschil van {4}.", "Goed zo!");
-          await l.zeg("Maak nog een paar torens met een verschil van {4}.", "Tik op een ruimteschip voor een blok erbij.", "Tik op de straal om er één weg te halen.");
+          await l.zeg("Maak nog een paar palen met een verschil van {4}.");
         } else {
           await l.zeg(...reacties[gevonden - 1]);
-          if (gevonden === 3 && lijst[6] === null) await l.zeg("Vergeet niet: je kunt ook blokken weghalen.");
+          if (gevonden === 3 && lijst[6] === null) await l.zeg("Vergeet niet: je kunt ook lampjes uitdoen.");
         }
       }
-      t.pas({ ufo: {}, straal: {}, knoppen: null, cijfers: false });
+      t.pas({ erbij: {}, eraf: {}, knoppen: null, cijfers: false });
       await l.verder();
-      await l.zeg("Kijk eens naar de lijst.", "Beide getallen gaan steeds één omhoog.", "Het verschil blijft {4}.");
-      await l.verder();
-      await l.zeg(l.naam ? `Kapitein ${l.naam}, de aliens zeggen dank je wel.` : "Kapitein, de aliens zeggen dank je wel.");
-      await l.verder();
-      /* Zoals Synthesis: een nieuwe knop tussen de ruimteschepen kondigt de volgende les aan. */
-      t.zet(0, 0, { lijst: null, knoop: "plus", knoopAan: false });
-      await l.zeg("Je hebt een nieuwe knop verdiend.", "Achter de sterren wacht een nieuwe uitdaging.");
+      await l.zeg("Kijk eens naar het scorebord.", "Beide getallen gaan steeds één omhoog.", "Het verschil blijft {4}.");
       await l.verder();
     } else {
       await l.zeg("Prima.", "Je hebt al heel veel gedaan.");
     }
 
     /* Einde: de kaart. */
+    l.vlak(null);
     const tik = l.kaart();
-    await l.zeg("Over en uit, kapitein!", "Tik op de kaart om hem af te vinken.");
+    await l.zeg(l.naam ? `Heel goed gedaan, ${l.naam}!` : "Heel goed gedaan!", "Je weet nu wat het verschil is.", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
@@ -1183,19 +1500,34 @@ const eindtoets: Lesdraaiboek = {
   id: "aftrekken-10-eindtoets",
   titel: "Eindtoets: aftrekken tot 10",
   synthesis: "Subtract Within 10 · Mastery Check",
-  kaarttekening: KaartBliksem,
+  kaarttekening: KaartPotje,
   async speel(l) {
     await toets(l, {
-      stippen: 8,
+      vliegjes: 8,
       weg: 3,
-      keuzes: ["8 − 4", "8 + 3", "9 − 3", "8 − 3"],
+      keuzes: ["8 − 4", "8 + 3", "3 − 8", "8 − 3"],
       oranje: 9,
       paars: 5,
-      verschilKeuzes: ["9 − 5 = 4", "9 − 5 = 3", "9 − 5 = 5", "9 + 5 = 14"],
+      verschilKeuzes: ["5 − 9 = 4", "9 − 5 = 4", "5 + 4 = 9", "4 − 5 = 9"],
       overgang: true,
+      weghalen: [
+        [6, 2],
+        [9, 7],
+        [5, 5],
+        [10, 4],
+        [7, 1],
+      ],
+      verschillen: [
+        [8, 6],
+        [2, 9],
+        [10, 7],
+        [5, 1],
+        [3, 6],
+      ],
     });
   },
 };
+
 
 /* ---------- les 5: hetzelfde verschil (groep 3-deel van Same Difference) ---------- */
 
@@ -1376,4 +1708,4 @@ const zelfdeVerschil: Lesdraaiboek = {
   },
 };
 
-export const LESSEN_AFTREKKEN_TOT_10: Lesdraaiboek[] = [instaptoets, stippenWeghalen, verschil, eindtoets, zelfdeVerschil];
+export const LESSEN_AFTREKKEN_TOT_10: Lesdraaiboek[] = [instaptoets, vuurvliegjesWeghalen, verschil, eindtoets, zelfdeVerschil];

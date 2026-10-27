@@ -1,0 +1,7 @@
+[
+  { "naam": "Les De urenwijzer (sterrenklok)", "pad": "/voorbeeld/les/klok-urenwijzer?naam=Testkind" },
+  { "naam": "Les Hele uren zetten (sterrenklok)", "pad": "/voorbeeld/les/klok-hele-uren-zetten?naam=Testkind" },
+  { "naam": "Les Halve uren (sterrenklok)", "pad": "/voorbeeld/les/klok-halve-uren?naam=Testkind" },
+  { "naam": "Les Kwart over (sterrenklok)", "pad": "/voorbeeld/les/klok-kwart-over?naam=Testkind" },
+  { "naam": "Les 5 minuten later (sterrenklok)", "pad": "/voorbeeld/les/klok-minuten-later?naam=Testkind" }
+]

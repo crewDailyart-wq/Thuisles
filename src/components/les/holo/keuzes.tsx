@@ -56,7 +56,9 @@ export function KeuzeKnoppen({
 /** Vier keuzes rond het goede antwoord: dichtbij (±1, ±2), zonder dubbele, binnen [min, max]. */
 export function vierKeuzes(antwoord: number, min = 0, max = 20): number[] {
   const set = new Set<number>([antwoord]);
-  const kandidaten = [antwoord - 1, antwoord + 1, antwoord - 2, antwoord + 2, antwoord + 3, antwoord - 3, antwoord + 10, antwoord - 10].filter((n) => n >= min && n <= max);
+  /* Bij grote getallen (boven 20) liggen de afleiders vooral 10 ernaast (de typische fout bij tientallen). */
+  const basis = antwoord > 20 ? [antwoord - 10, antwoord + 10, antwoord - 1, antwoord + 1, antwoord - 20, antwoord + 20] : [antwoord - 1, antwoord + 1, antwoord - 2, antwoord + 2, antwoord + 3, antwoord - 3, antwoord + 10, antwoord - 10];
+  const kandidaten = basis.filter((n) => n >= min && n <= max);
   for (const k of kandidaten.sort(() => Math.random() - 0.5)) {
     if (set.size >= 4) break;
     set.add(k);

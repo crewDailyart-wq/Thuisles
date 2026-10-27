@@ -1,0 +1,247 @@
+/*
+  De hologramvlakken van Aftrekken (27 oktober 2026, LESSENPLAN.md A1–A3,
+  A7–A9; wereld Aarde): het potje met vuurvliegjes, de twee lantaarnpalen en
+  de lantaarntjeslijn. Geen eigen achtergrond of kader: de blauwe ruimte van
+  het lesscherm blijft zichtbaar, het Phaser-canvas is doorzichtig. Knoppen,
+  getallen en het invulvak zijn gewone HTML (scherp, echte invoer). Maten in
+  punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* Tekst vóór de blauwe ruimte: een zachte donkere rand, zodat hij goed leesbaar is. */
+.schaduw {
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.9);
+}
+
+/* ---------- ronde hologramknoppen (plus, wegvliegen, lampje erbij/eraf) ---------- */
+
+.rond {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  width: 84px;
+  height: 84px;
+  margin: -42px 0 0 -42px;
+  padding: 0;
+  border: 3px solid var(--kleur, rgba(255, 220, 140, 0.95));
+  border-radius: 50%;
+  background: rgba(10, 34, 86, 0.62);
+  color: #ffffff;
+  cursor: pointer;
+  box-shadow:
+    0 0 14px color-mix(in srgb, var(--kleur, #ffd36e) 55%, transparent),
+    inset 0 0 10px color-mix(in srgb, var(--kleur, #ffd36e) 30%, transparent);
+  transition:
+    transform 0.08s,
+    opacity 0.2s;
+  animation: verschijn 0.3s ease-out backwards;
+}
+.rond:active {
+  transform: scale(0.94);
+}
+.rond:disabled {
+  opacity: 0.38;
+  cursor: default;
+  box-shadow: none;
+}
+.rond svg {
+  width: 44px;
+  height: 44px;
+}
+/* Op de telefoon minstens 48 px: het vlak wordt daar ±0,4 keer zo groot, dus 120 punten. */
+.groot {
+  width: 120px;
+  height: 120px;
+  margin: -60px 0 0 -60px;
+}
+.groot svg {
+  width: 58px;
+  height: 58px;
+}
+.klein {
+  width: 70px;
+  height: 70px;
+  margin: -35px 0 0 -35px;
+}
+.klein svg {
+  width: 36px;
+  height: 36px;
+}
+
+/* ---------- het potje: de teller in het lantaarntje ---------- */
+
+.teller {
+  position: absolute;
+  width: 110px;
+  margin-left: -55px;
+  text-align: center;
+  font-size: 46px;
+  font-weight: 800;
+  line-height: 1;
+  color: #fff3c4;
+  pointer-events: none;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- de lantaarnpalen ---------- */
+
+.cijfer {
+  position: absolute;
+  width: 30px;
+  margin: -11px 0 0 -15px;
+  text-align: center;
+  font-size: 18px;
+  font-weight: 800;
+  line-height: 22px;
+  pointer-events: none;
+  transition: opacity 0.2s;
+}
+
+.knoppen {
+  position: absolute;
+  display: flex;
+  gap: 16px;
+  transform: translateX(-50%);
+  animation: verschijn 0.25s ease-out backwards;
+}
+
+.lijst {
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.lijstvak {
+  height: 40px;
+  border: 2px dashed rgba(255, 220, 140, 0.45);
+  border-radius: 12px;
+  display: grid;
+  place-items: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff3c4;
+  background: rgba(10, 34, 86, 0.35);
+  font-variant-numeric: tabular-nums;
+}
+.lijstvak[data-vol="true"] {
+  border-style: solid;
+  border-color: rgba(255, 220, 140, 0.9);
+  background: rgba(60, 50, 20, 0.45);
+  box-shadow: 0 0 10px rgba(255, 211, 110, 0.35);
+  animation: verschijn 0.3s ease-out backwards;
+}
+
+/* De schuif die de palen tegen elkaar laat schuiven. */
+.schuif {
+  position: absolute;
+  height: 100px;
+  cursor: pointer;
+  border: 2px solid rgba(255, 220, 140, 0.7);
+  border-radius: 999px;
+  background: rgba(10, 34, 86, 0.55);
+  box-shadow: 0 0 12px rgba(255, 211, 110, 0.3);
+  animation: verschijn 0.3s ease-out backwards;
+}
+.schuifpijl {
+  position: absolute;
+  right: 22px;
+  top: 50%;
+  transform: translateY(-50%);
+  opacity: 0.6;
+  pointer-events: none;
+}
+.schuifknop {
+  position: absolute;
+  top: 2px;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 35%, #fff8dc, #ffd36e 60%, #e0a23a);
+  box-shadow: 0 0 14px rgba(255, 211, 110, 0.8);
+  cursor: grab;
+  touch-action: none;
+}
+.terug {
+  transition: left 0.25s ease-out;
+}
+
+/* ---------- de lantaarntjeslijn ---------- */
+
+.label {
+  position: absolute;
+  width: 60px;
+  margin-left: -30px;
+  text-align: center;
+  font-weight: 800;
+  pointer-events: none;
+  transition:
+    color 0.2s,
+    font-size 0.2s,
+    opacity 0.2s;
+}
+.tik {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 14px;
+}
+.tik:not(:disabled) {
+  cursor: pointer;
+}
+.tik:not(:disabled):hover {
+  background: rgba(255, 230, 160, 0.06);
+}
+.boogLabel {
+  position: absolute;
+  width: 40px;
+  margin-left: -20px;
+  text-align: center;
+  font-size: 22px;
+  font-weight: 800;
+  color: #fff3c4;
+  pointer-events: none;
+  animation: verschijn 0.3s ease-out 0.35s backwards;
+}
+
+/* Alleen "van onzichtbaar", met `backwards`: zo blijft een dof gezette knop daarna echt dof. */
+@keyframes verschijn {
+  from {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rond,
+  .knoppen,
+  .schuif,
+  .lijstvak[data-vol="true"],
+  .boogLabel {
+    animation: none;
+  }
+}
+
+/* Icoonknoppen (Klaar, Hulp) groot genoeg voor de telefoon (minstens 48 px). */
+.ikoonGroot {
+  min-width: 120px;
+  height: 120px;
+  border-radius: 28px;
+}
+.ikoonGroot svg {
+  width: 52px;
+  height: 52px;
+}
+.ikoonGroot span:first-child {
+  width: 56px;
+  height: 56px;
+}
+.ikoonGroot span:last-child {
+  font-size: 15px;
+}

@@ -32,6 +32,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "tellen-120-instaptoets", titel: "Instaptoets: tellen tot 100", synthesis: "Count to 120 · Assessment" },
   { id: "tellen-120-kleuren-tellen", titel: "Kleuren tellen", synthesis: "Count to 120 · Color Count" },
   { id: "tellen-120-na-tien", titel: "Tellen van 10 tot 20", synthesis: "Count to 120 · The Next 10" },
+  { id: "tellen-120-getallen-schrijven", titel: "Getallen tot 20 schrijven", synthesis: "Count to 120 · Writing Numbers to 20" },
   { id: "tellen-120-doortellen", titel: "Doortellen", synthesis: "Count to 120 · Counting On" },
   { id: "tellen-120-tot-50", titel: "Getallen tot 50", synthesis: "Count to 120 · Count to 120 (groep 3-deel)" },
   { id: "tellen-120-tienergetallen", titel: "Tienergetallen", synthesis: "Count to 120 · Counting in 10s (groep 3-deel)" },

@@ -1,0 +1,7 @@
+[
+  { "naam": "Les Instaptoets: optellen tot 20 (hologrammen)", "pad": "/voorbeeld/les/optellen-20-instaptoets?naam=Testkind" },
+  { "naam": "Les Optellen bij 10 (hologrammen)", "pad": "/voorbeeld/les/optellen-20-bij-10?naam=Testkind" },
+  { "naam": "Les Over de 10 heen (hologrammen)", "pad": "/voorbeeld/les/optellen-20-over-de-10?naam=Testkind" },
+  { "naam": "Les Bijna dubbel (hologrammen)", "pad": "/voorbeeld/les/optellen-20-bijna-dubbel?naam=Testkind" },
+  { "naam": "Les Eindtoets: optellen tot 20 (hologrammen)", "pad": "/voorbeeld/les/optellen-20-eindtoets?naam=Testkind" }
+]

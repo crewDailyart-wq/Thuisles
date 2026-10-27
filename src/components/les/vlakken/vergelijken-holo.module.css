@@ -1,0 +1,219 @@
+/*
+  Vergelijken als hologrammen (27 oktober 2026). Geen eigen achtergrond of
+  kader: de blauwe ruimte van het lesscherm blijft zichtbaar, het Phaser-canvas
+  is doorzichtig. Hier alleen de gewone HTML erboven: tikvlakken (onzichtbaar,
+  over de getekende plekjes), getallen, het invulvak en de knoppen. Maten in
+  punten van het vlak (980 × 720); op de telefoon wordt alles ongeveer 0,4 keer
+  zo groot, dus tikvlakken zijn hier minstens 100 punten.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* Onzichtbare tikvlakken over de hologrammen. */
+.pot,
+.plek,
+.teken,
+.lamp {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.pot {
+  border-radius: 34px;
+}
+.pot:focus-visible,
+.plek:focus-visible,
+.teken:focus-visible,
+.lamp:focus-visible {
+  outline: 3px solid rgba(255, 211, 110, 0.9);
+  outline-offset: 2px;
+}
+.plek {
+  border-radius: 50%;
+  z-index: 2;
+}
+.teken {
+  width: 150px;
+  height: 150px;
+  border-radius: 24px;
+}
+.lamp {
+  width: 190px;
+  height: 230px;
+  display: grid;
+  place-items: center;
+  cursor: default;
+}
+
+/* Grote getallen: wit-gekleurd met een heel lichte gloed. */
+.getal,
+.vraag,
+.aantal {
+  font-weight: 800;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+  text-shadow:
+    0 0 10px rgba(255, 255, 255, 0.35),
+    0 2px 10px rgba(4, 18, 60, 0.75);
+}
+.getal {
+  display: block;
+  animation: rol 0.22s ease-out both;
+}
+.vraag {
+  font-size: 124px;
+  color: #ffe27a;
+}
+.aantal {
+  position: absolute;
+  width: 160px;
+  margin-left: -80px;
+  text-align: center;
+  font-size: 76px;
+  pointer-events: none;
+  animation: rol 0.22s ease-out both;
+}
+
+/* Het invulvak in de lantaarn: een echt invoerveld (HARDE REGEL 5), dat zacht oplicht. */
+.invul {
+  position: absolute;
+  width: 156px;
+  height: 140px;
+  border: 3px dashed rgba(255, 226, 122, 0.95);
+  border-radius: 22px;
+  background: rgba(8, 30, 80, 0.35);
+  color: #ffffff;
+  font: inherit;
+  font-size: 104px;
+  font-weight: 800;
+  text-align: center;
+  outline: none;
+  caret-color: #ffe27a;
+  animation: licht 1.6s ease-in-out infinite;
+}
+.invul:focus {
+  border-style: solid;
+}
+
+/* Keuzes: tussen de potjes in een kolom (2 × 2), of in een rij onder de lantaarns. */
+.keuzes {
+  position: absolute;
+  width: 0;
+  display: flex;
+  justify-content: center;
+}
+.keuzes > div {
+  flex: none;
+}
+.kolom > div {
+  display: grid;
+  grid-template-columns: repeat(2, 112px);
+  gap: 12px;
+}
+.kolom button {
+  min-width: 112px;
+  width: 112px;
+  height: 100px;
+  padding: 0;
+}
+.woorden button {
+  font-size: 32px;
+  min-width: 150px;
+  height: 92px;
+}
+.kolom.woorden > div {
+  grid-template-columns: 200px;
+}
+.kolom.woorden button {
+  width: 200px;
+}
+
+/* De ronde knoppen: hulphandje, weet ik niet, vinkje. */
+.knoppen {
+  position: absolute;
+  width: 0;
+  display: flex;
+  justify-content: center;
+}
+.knoppen > * + * {
+  margin-left: 12px;
+}
+.rond {
+  flex: none;
+  width: 112px;
+  height: 112px;
+  border: 3px solid rgba(255, 255, 255, 0.7);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  color: #ffffff;
+  cursor: pointer;
+  transition:
+    transform 0.08s,
+    opacity 0.2s;
+}
+.rond:active {
+  transform: scale(0.95);
+}
+.rond:disabled {
+  opacity: 0.4;
+  cursor: default;
+}
+.vink {
+  background: #4b8af5;
+  box-shadow: 0 0 18px rgba(120, 170, 255, 0.6);
+}
+.hand {
+  background: rgba(8, 30, 80, 0.6);
+  color: #ffe9b0;
+  box-shadow: 0 0 14px rgba(255, 211, 110, 0.35);
+}
+.weetniet {
+  background: rgba(8, 30, 80, 0.6);
+  box-shadow: 0 0 14px rgba(127, 233, 255, 0.3);
+}
+
+@keyframes rol {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.9);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes licht {
+  0%,
+  100% {
+    box-shadow: 0 0 10px rgba(255, 226, 122, 0.35);
+  }
+  50% {
+    box-shadow: 0 0 22px rgba(255, 226, 122, 0.7);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .getal,
+  .aantal,
+  .invul {
+    animation: none;
+  }
+}
+
+/* Een gekozen potje: de lichtringen staan in Phaser; hier alleen de focus. */
+.gekozen {
+  outline: none;
+}
+
+/* Het tikvlak van een plekje vult de ruimte eromheen (groter dan het rondje zelf). */
+.vierkant {
+  border-radius: 18px;
+}

@@ -60,8 +60,8 @@ if (existsSync(LIJSTJES)) {
     }
   }
 }
-/* Alleen bepaalde schermen meten: ALLEEN=<stukje van het pad> (bijvoorbeeld tijdens het bouwen). */
-if (process.env.ALLEEN) SCHERMEN.splice(0, SCHERMEN.length, ...SCHERMEN.filter((x) => x.pad.includes(process.env.ALLEEN)));
+/* Alleen bepaalde schermen meten: ALLEEN=<stukje van het pad>[,<nog een>] (bijvoorbeeld tijdens het bouwen). */
+if (process.env.ALLEEN) SCHERMEN.splice(0, SCHERMEN.length, ...SCHERMEN.filter((x) => process.env.ALLEEN.split(",").some((a) => x.pad.includes(a))));
 
 
 const APPARATEN = [

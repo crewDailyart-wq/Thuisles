@@ -1,0 +1,154 @@
+/*
+  Optellen tot 20 als hologrammen (27 oktober 2026, optellen20-holo-tegels.tsx).
+  Geen eigen achtergrond of kader: de blauwe ruimte van het lesscherm blijft
+  zichtbaar en het Phaser-canvas is doorzichtig. De keuzeknoppen, de getallen
+  bij het tellen en het logboekje zijn gewone HTML (scherp, echte knoppen).
+  Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  touch-action: none;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Getallen die Bliepo bij het samen tellen in de hokjes zet. */
+.tel {
+  position: absolute;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  font-size: 30px;
+  font-weight: 800;
+  color: #ffffff;
+  pointer-events: none;
+  text-shadow:
+    0 0 6px rgba(4, 18, 60, 0.95),
+    0 0 2px rgba(4, 18, 60, 1);
+  animation: plop 0.25s ease-out both;
+}
+
+/* Het logboekje: de sommen van het trucje onder elkaar. */
+.logboek {
+  position: absolute;
+  left: 26px;
+  top: 116px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  font-size: 34px;
+  font-weight: 800;
+  pointer-events: none;
+  text-shadow: 0 2px 10px rgba(4, 18, 60, 0.85);
+  font-variant-numeric: tabular-nums;
+}
+.logboek > div {
+  animation: plop 0.3s ease-out both;
+}
+.grijs {
+  color: #c3c7d0;
+}
+
+/* De keuzes: grote cijferknoppen, het vraagteken en het vinkje op één rij onderaan. */
+.keuzerij {
+  position: absolute;
+  left: 0;
+  width: 840px;
+  top: 584px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 14px;
+  animation: verschijn 0.25s ease-out both;
+}
+.opties {
+  display: flex;
+  gap: 14px;
+  margin-right: 10px;
+}
+.optie {
+  min-width: 118px;
+  height: 116px;
+  padding: 0 18px;
+  border: 3px solid rgba(190, 240, 255, 0.85);
+  border-radius: 24px;
+  background: rgba(8, 30, 80, 0.62);
+  color: #ffffff;
+  font: inherit;
+  font-size: 56px;
+  font-weight: 800;
+  line-height: 1;
+  white-space: nowrap;
+  cursor: pointer;
+  box-shadow: 0 0 14px rgba(127, 233, 255, 0.35);
+  font-variant-numeric: tabular-nums;
+  transition:
+    transform 0.08s,
+    opacity 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.optie:active {
+  transform: scale(0.96);
+}
+.woord {
+  font-size: 42px;
+  min-width: 150px;
+}
+.gekozen {
+  border-color: #ffd36e;
+  background: rgba(70, 56, 20, 0.6);
+  box-shadow:
+    0 0 0 3px rgba(255, 211, 110, 0.55),
+    0 0 22px rgba(255, 211, 110, 0.5);
+}
+.uit {
+  opacity: 0.3;
+  border-color: rgba(200, 210, 230, 0.4);
+  background: rgba(40, 50, 70, 0.6);
+  box-shadow: none;
+  cursor: default;
+}
+.ikoon {
+  min-width: 108px;
+  height: 116px;
+  border-radius: 24px;
+}
+.ikoon svg {
+  width: 46px;
+  height: 46px;
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes verschijn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tel,
+  .logboek > div,
+  .keuzerij {
+    animation: none;
+  }
+}

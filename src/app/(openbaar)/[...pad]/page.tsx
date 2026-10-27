@@ -28,6 +28,18 @@
  * Allebei hangen ze onder het domein. Er wordt eerst naar een onderwerp
  * gekeken en daarna naar een oefening. Een naam die toevallig bij allebei
  * bestaat komt dus op het onderwerp uit; dat is de pagina met het meeste erop.
+ *
+ * ---------------------------------------------------------------------------
+ * Het vierde deel: een les (groep 3)
+ * ---------------------------------------------------------------------------
+ *
+ *     /groep-3/getallen/tellen-sprongen-tot-en-met-20/stippen-tot-10
+ *
+ * Eén niveau onder het onderwerp staat de openbare pagina van een les. Die
+ * komt niet uit de database maar uit `lib/seo/lessen-groep3.ts`, en hij wordt
+ * gezocht vóór de rest: een adres met vier delen gaf hiervoor altijd een 404,
+ * dus aan de bestaande pagina's verandert er niets. De lessen zijn alleen in
+ * het Nederlands geschreven; met een taal ervoor stuurt het adres door.
  */
 
 import { MERKNAAM } from "@/lib/merk";
@@ -60,6 +72,8 @@ import {
   taalvoorvoegsel,
   type Taal,
 } from "@/lib/seo";
+import { lesAdres, lessenVanSubdomein, zoekSeoLes, type SeoLes } from "@/lib/seo/lessen-groep3";
+import { Lespagina } from "./Lespagina";
 
 // ---------------------------------------------------------------------------
 // Het adres lezen
@@ -82,7 +96,8 @@ type Pagina =
       groep: number;
       domein: OpenbaarOnderdeel;
       oefening: OpenbareOefening;
-    };
+    }
+  | { soort: "les"; taal: Taal; groep: number; les: SeoLes };
 
 /**
  * Het pad uit elkaar halen, en `null` als er geen openbare pagina bij hoort.
@@ -100,6 +115,12 @@ function leesPad(delen: string[]): Pagina | null {
   const groep = leesGroepdeel(rest.shift() ?? "");
   if (!isOpenbareGroep(groep)) return null;
   if (rest.length === 0) return { soort: "groep", taal, groep };
+
+  /* Vier delen: misschien een les. Staat los van de database. */
+  if (rest.length === 3) {
+    const les = zoekSeoLes(groep, rest[0], rest[1], rest[2]);
+    if (les) return { soort: "les", taal, groep, les };
+  }
 
   const domein = zoekOpenbaarDomein(rest.shift() as string);
   if (!domein) return null;
@@ -121,6 +142,8 @@ function leesPad(delen: string[]): Pagina | null {
 /** Het adres zoals het nú hoort te zijn. Het echte adres van deze pagina. */
 function huidigAdres(pagina: Pagina): string {
   const { taal, groep } = pagina;
+  /* Een les is er alleen in het Nederlands. */
+  if (pagina.soort === "les") return lesAdres(pagina.les);
   if (pagina.soort === "groep") return openbaarAdres(taal, groep);
   if (pagina.soort === "domein") return openbaarAdres(taal, groep, pagina.domein.adresdeel);
   if (pagina.soort === "onderwerp") {
@@ -148,12 +171,16 @@ function onderdeelnaam(pagina: Pagina): string {
   if (pagina.soort === "groep") return "Rekenen";
   if (pagina.soort === "domein") return pagina.domein.naam;
   if (pagina.soort === "onderwerp") return pagina.onderwerp.naam;
+  if (pagina.soort === "les") return pagina.les.titel;
   return pagina.oefening.naam;
 }
 
 /** De eigen titel en beschrijving uit de admin, als er een is ingevuld. */
 function eigenTeksten(pagina: Pagina): { titel: string | null; omschrijving: string | null } {
   if (pagina.soort === "groep") return { titel: null, omschrijving: null };
+  if (pagina.soort === "les") {
+    return { titel: pagina.les.seoTitel, omschrijving: pagina.les.beschrijving };
+  }
   const bron =
     pagina.soort === "domein"
       ? pagina.domein
@@ -179,6 +206,15 @@ export async function generateMetadata({
   const naam = onderdeelnaam(pagina);
   const eigen = eigenTeksten(pagina);
   const adres = huidigAdres(pagina);
+
+  /* Een les: alleen Nederlands, dus geen vertalingen in de kop. */
+  if (pagina.soort === "les") {
+    return {
+      title: paginatitel(eigen.titel, naam, pagina.groep),
+      description: paginabeschrijving(eigen.omschrijving, naam, pagina.groep),
+      alternates: { canonical: adres },
+    };
+  }
 
   /*
     Elke taal krijgt zijn eigen adres, met de juiste taalaanduiding voor
@@ -313,6 +349,22 @@ function Kaarten({
   );
 }
 
+/**
+ * De lessen van dit onderwerp, als er openbare lespagina's voor zijn (nu
+ * alleen groep 3). Staat er niets, dan verschijnt er ook geen kop.
+ */
+function Lessenlijst({ groep, domein, subdomein }: { groep: number; domein: string; subdomein: string }) {
+  if (groep !== 3) return null;
+  const lessen = lessenVanSubdomein(domein, subdomein);
+  if (lessen.length === 0) return null;
+  return (
+    <>
+      <h2 className="mt-8 text-lg font-semibold">Lessen voor groep {groep}</h2>
+      <Kaarten items={lessen.map((l) => ({ naam: l.titel, onder: l.leert, adres: lesAdres(l) }))} />
+    </>
+  );
+}
+
 // ---------------------------------------------------------------------------
 // De pagina
 // ---------------------------------------------------------------------------
@@ -328,6 +380,8 @@ export default async function OpenbarePagina({
 
   const naar = nieuwAdres(pad, pagina);
   if (naar) permanentRedirect(naar);
+
+  if (pagina.soort === "les") return <Lespagina les={pagina.les} />;
 
   const { taal, groep } = pagina;
   const naam = onderdeelnaam(pagina);
@@ -418,6 +472,11 @@ export default async function OpenbarePagina({
                 naam: l.naam,
                 adres: openbaarAdres(taal, groep, pagina.domein.adresdeel, l.adresdeel),
               }))}
+          />
+          <Lessenlijst
+            groep={groep}
+            domein={pagina.domein.adresdeel}
+            subdomein={pagina.onderwerp.adresdeel}
           />
           <Oudertekst onderdeel={pagina.onderwerp.naam} groep={groep} />
         </>

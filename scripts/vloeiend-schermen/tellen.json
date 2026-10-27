@@ -1,0 +1,8 @@
+[
+  { "naam": "Tellen: instaptoets", "pad": "/voorbeeld/les/tellen-120-instaptoets?naam=Testkind" },
+  { "naam": "Tellen: kleuren tellen", "pad": "/voorbeeld/les/tellen-120-kleuren-tellen?naam=Testkind" },
+  { "naam": "Tellen: van 10 tot 20", "pad": "/voorbeeld/les/tellen-120-na-tien?naam=Testkind" },
+  { "naam": "Tellen: getallen tot 20 schrijven", "pad": "/voorbeeld/les/tellen-120-getallen-schrijven?naam=Testkind" },
+  { "naam": "Tellen: doortellen", "pad": "/voorbeeld/les/tellen-120-doortellen?naam=Testkind" },
+  { "naam": "Tellen: eindtoets", "pad": "/voorbeeld/les/tellen-120-eindtoets?naam=Testkind" }
+]

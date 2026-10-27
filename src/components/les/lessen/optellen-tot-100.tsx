@@ -17,11 +17,13 @@
 
 import type { Lesdraaiboek, Lesgids, Somdeel } from "../soort";
 import { Klodder, Tienenmachine, type MachineMelding, type MachineProps } from "../vlakken/optellen100-machine";
-import { Piano, type PianoMelding, type PianoProps } from "../vlakken/optellen100-piano";
 import { Stippenkaders, kleurGetal, type KadersMelding, type KadersProps, type SomStuk } from "../vlakken/optellen100-kaders";
-import { Splitsschema, type SplitsMelding, type SplitsProps, type Splitsknop } from "../vlakken/optellen100-splitsen";
-import { Tientallenbord, type TientallenMelding, type TientallenProps } from "../vlakken/optellen100-tientallen";
-import { kiesGetal, plusSom, schud, somFout, toetsvraag } from "./optellen-tot-20";
+import { HoloSplitshuis, type HoloSplitsMelding, type HoloSplitsProps, type Splitsknop } from "../vlakken/tientallen-holo-splits";
+import { HoloStaven, type StavenMelding, type StavenProps } from "../vlakken/tientallen-holo-staven";
+import { SterMachine, type SterMachineMelding, type SterMachineProps } from "../vlakken/tientallen-holo-machine";
+import { testHaak } from "../vlakken/tientallen-holo-basis";
+import { getalvraag, kiesGetalHolo, nieuwLater, speelLater, type Later } from "./tientallen";
+import { kiesGetal, plusSom, schud } from "./optellen-tot-20";
 
 /* ---------- hulpjes ---------- */
 
@@ -37,16 +39,16 @@ function plusZonderUitkomst(a: number, b: number): Somdeel[] {
   return [{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: b }];
 }
 
-/* ---------- de tienenmachine ---------- */
+/* ---------- de oude tienenmachine (nog voor "Tientallen tot 100", ongewijzigd) ---------- */
 
-type Machine = {
+type OudeMachine = {
   st: MachineProps;
   zet(p: Partial<MachineProps>): void;
   /** Wacht tot het kind `keer` keer op de knop tikt; elke tik komt er een groepje (of stip) bij. */
   tik(keer: number, bijTik?: (st: MachineProps) => void): Promise<void>;
 };
 
-function maakMachine(l: Lesgids, begin: Partial<MachineProps>): Machine {
+function maakOudeMachine(l: Lesgids, begin: Partial<MachineProps>): OudeMachine {
   const st: MachineProps = { tienen: 0, enen: 0, knop: 10, actief: false, ...begin };
   l.vlak(Tienenmachine, { ...st });
   const zet = (p: Partial<MachineProps>) => {
@@ -69,8 +71,67 @@ function maakMachine(l: Lesgids, begin: Partial<MachineProps>): Machine {
   };
 }
 
+/* ---------- de sterrenmachine (hologrammen) ---------- */
+
+/** De stand van de machine zoals de draaiboeken hem gebruiken: lichtbollen en losse sterren. */
+type MachineStand = {
+  tienen: number;
+  enen: number;
+  /** Eén grote lichtbol van honderd (het beginbeeld van de toets). */
+  honderd?: boolean;
+  /** Welke plusknop er onderaan staat; `null` = geen knop. */
+  knop?: 10 | 1 | null;
+  actief?: boolean;
+  slot?: boolean;
+  /** Een warme ring om de knop. */
+  wijs?: boolean;
+};
+
+type Machine = {
+  st: MachineStand;
+  zet(p: Partial<MachineStand>): void;
+  /** Wacht tot het kind `keer` keer op de knop tikt; elke tik komt er een lichtbol (of ster) bij. */
+  tik(keer: number, bijTik?: (st: MachineStand) => void): Promise<void>;
+};
+
+function machineProps(st: MachineStand): SterMachineProps {
+  return {
+    aantal: st.honderd ? 100 : st.tienen * 10 + st.enen,
+    knoppen: st.knop ? [st.knop] : [],
+    actief: !!st.actief,
+    slot: !!st.slot,
+    wijs: st.wijs && st.knop ? st.knop : null,
+  };
+}
+
+function maakMachine(l: Lesgids, begin: Partial<MachineStand>): Machine {
+  const st: MachineStand = { tienen: 0, enen: 0, knop: 10, actief: false, ...begin };
+  l.vlak(SterMachine, machineProps(st));
+  const zet = (p: Partial<MachineStand>) => {
+    Object.assign(st, p);
+    l.pasVlakAan<SterMachineProps>(machineProps(st));
+  };
+  return {
+    st,
+    zet,
+    async tik(keer, bijTik) {
+      testHaak({ doel: st.tienen * 10 + st.enen + keer * (st.knop ?? 10) });
+      for (let i = 0; i < keer; i++) {
+        zet({ actief: true });
+        const g = await l.wachtOpVlak<SterMachineMelding>("plus");
+        if (g.soort !== "plus") continue;
+        if (g.waarde === 10) zet({ tienen: st.tienen + 1, wijs: false });
+        else zet({ enen: st.enen + 1, wijs: false });
+        bijTik?.(st);
+      }
+      zet({ actief: false });
+      testHaak({ doel: undefined });
+    },
+  };
+}
+
 /**
- * Een keuzevraag terwijl de machine aan staat: het kind mag eerst groepjes
+ * Een keuzevraag terwijl de machine aan staat: het kind mag eerst lichtbollen
  * erbij tikken om te kijken, maar hoeft niet. Tijdens het kiezen zegt de les
  * niets, zodat de keuzeknoppen blijven staan.
  */
@@ -79,67 +140,206 @@ async function kiesMetMachine(l: Lesgids, m: Machine, lijst: number[], bijPlus: 
   m.zet({ actief: true });
   void (async () => {
     while (!klaar) {
-      await l.wachtOpVlak<MachineMelding>("plus");
+      await l.wachtOpVlak<SterMachineMelding>("plus");
       if (klaar) return;
       bijPlus();
     }
   })();
-  const x = await kiesGetal(l, lijst);
+  const x = await kiesGetalHolo(l, lijst);
   klaar = true;
   m.zet({ actief: false });
   return x;
 }
 
 /**
- * Een somvraag in een les (geen toets): bij de eerste fout een richting, de
- * tweede keer (of bij "Weet ik niet") het antwoord met de reden.
+ * Een somvraag in een les (geen toets): bij de eerste fout een hint, de tweede
+ * keer (of bij "Weet ik niet") het antwoord met de reden, en met `later` komt
+ * de som aan het eind terug.
  */
 async function somVraag(
   l: Lesgids,
   a: number,
   b: number,
   o: {
-    kies: () => Promise<number | null>;
+    kies: (lijst?: number[]) => Promise<number | null>;
+    lijst?: number[];
     hint?: (x: number) => string[];
     uitleg: string[];
     bijGoed?: string[];
     toonSom?: boolean;
+    later?: Later;
+    /** Zet het beeld klaar als de som later terugkomt. */
+    klaarzetten?: () => void;
   },
 ): Promise<boolean> {
   const s = a + b;
+  testHaak({ antwoord: s, vraagId: Math.random() });
+  let lijst = o.lijst;
   for (let poging = 1; ; poging++) {
-    const x = await o.kies();
+    const x = await o.kies(lijst);
     if (x === s) {
       if (o.toonSom !== false) l.som(plusSom(a, b, s));
       await l.zeg(...(o.bijGoed ?? ["Precies."]), `{${a}} plus {${b}} is {${s}}.`);
       return poging === 1;
     }
     if (x !== null && poging === 1) {
+      if (lijst) lijst = lijst.filter((w) => w !== x);
       await l.zeg(...(o.hint?.(x) ?? ["Kijk nog eens goed.", `Hoeveel is {${a}} plus {${b}}?`]));
       continue;
     }
-    await l.zeg(x === null ? "Geen zorgen." : "", ...o.uitleg);
+    await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", ...o.uitleg, o.later ? "We komen hier later op terug." : "");
     if (o.toonSom !== false) l.som(plusSom(a, b, s));
     await l.verder();
+    if (o.later) {
+      const terug = { ...o, later: undefined };
+      o.later.lijst.push(async () => {
+        o.klaarzetten?.();
+        l.som(plusSom(a, b));
+        await l.zeg(`Hoeveel is {${a}} plus {${b}}?`);
+        await somVraag(l, a, b, terug);
+        await l.wacht(600);
+        l.som(null);
+      });
+    }
     return false;
   }
 }
 
-/* ---------- het splitsschema ---------- */
+/**
+ * Een toetsvraag (LESSENPLAN.md O17/O20, ronde 3): geen uitleg. 1× fout: de
+ * som als vraag terug ("30 plus 40 is 34?") en nog één kans. 2× fout: "Laten
+ * we je wat helpen." Weet ik niet: "Geen probleem, we leren het samen." In
+ * die twee gevallen stopt de toets en gaan we samen oefenen.
+ */
+async function toetsHolo(
+  l: Lesgids,
+  v: { opties: number[]; goed: number; bijGoed: string[]; bijFout: (x: number) => string[]; tempo: "alleenTraag" | "beide" },
+): Promise<"goed" | "herkansing" | "stop"> {
+  testHaak({ antwoord: v.goed, vraagId: Math.random() });
+  const t0 = Date.now();
+  const x = await kiesGetalHolo(l, v.opties);
+  const duur = Date.now() - t0;
+  if (x === v.goed) {
+    const traag = duur > 12000;
+    const tempo = traag ? ["Probeer de volgende iets sneller."] : v.tempo === "beide" && duur < 5000 ? ["Dat was razendsnel!"] : [];
+    await l.zeg(...v.bijGoed, ...tempo);
+    return "goed";
+  }
+  if (x === null) {
+    await l.zeg("Geen probleem.", "We leren het samen.");
+    return "stop";
+  }
+  await l.zeg(...v.bijFout(x));
+  const y = await kiesGetal(l, v.opties.filter((w) => w !== x));
+  if (y === v.goed) {
+    await l.zeg(...v.bijGoed);
+    return "herkansing";
+  }
+  await l.zeg(y === null ? "Geen probleem." : "Laten we je wat helpen.", "We leren het samen.");
+  return "stop";
+}
+
+/** "Eén lichtbol en 8 losse sterren." / "4 lichtbollen van 10." */
+function inLichtbollen(n: number): string {
+  const t = Math.floor(n / 10);
+  const e = n % 10;
+  const bol = t === 1 ? "Eén lichtbol" : `{${t}} lichtbollen`;
+  if (e === 0) return `${bol} van {10}.`;
+  return `${bol} en {${e}} losse ${e === 1 ? "ster" : "sterren"}.`;
+}
+
+/** "30 plus 40 is 34?" — de som met het foute antwoord als vraag. */
+const somAlsVraag = (a: number, b: number) => (x: number) => [`{${a}} plus {${b}} is {${x}}?`, "Kijk nog eens goed."];
+
+/**
+ * Na een toets: samen oefenen met de sterrenmachine (tientallen tellen, een
+ * tiental erbij, een tiental en eenheden), tot er samen met de toets minstens
+ * 15 opgaven zijn. Lesvragen: hint bij 1× fout, antwoord bij 2× fout of
+ * "weet ik niet", en de vraag komt aan het eind terug.
+ */
+async function oefenNaToets(l: Lesgids, aantal: number) {
+  const later = nieuwLater();
+  const m = maakMachine(l, { knop: null });
+  const vragen: { soort: "lees" | "som"; a: number; b?: number; lijst: number[] }[] = [
+    { soort: "lees", a: 40, lijst: [4, 14, 40, 50] },
+    { soort: "som", a: 20, b: 10, lijst: [3, 21, 30, 40] },
+    { soort: "lees", a: 23, lijst: [5, 23, 32, 33] },
+    { soort: "som", a: 30, b: 20, lijst: [5, 32, 40, 50] },
+    { soort: "som", a: 30, b: 7, lijst: [10, 37, 47, 73] },
+    { soort: "lees", a: 60, lijst: [6, 16, 60, 70] },
+    { soort: "som", a: 13, b: 10, lijst: [14, 23, 33, 113] },
+    { soort: "lees", a: 35, lijst: [8, 35, 45, 53] },
+    { soort: "som", a: 20, b: 5, lijst: [7, 25, 52, 70] },
+    { soort: "som", a: 10, b: 30, lijst: [4, 13, 40, 50] },
+    { soort: "lees", a: 47, lijst: [11, 47, 57, 74] },
+    { soort: "som", a: 24, b: 20, lijst: [26, 34, 44, 64] },
+    { soort: "som", a: 40, b: 10, lijst: [5, 41, 50, 60] },
+    { soort: "lees", a: 18, lijst: [9, 18, 28, 81] },
+  ];
+  await l.zeg("Nu gaan we samen oefenen.", "Kijk goed naar de lichtbollen en de sterren.");
+  for (const v of vragen.slice(0, aantal)) {
+    m.zet({ tienen: Math.floor(v.a / 10), enen: v.a % 10, knop: null });
+    if (v.soort === "lees") {
+      const t = Math.floor(v.a / 10);
+      const e = v.a % 10;
+      await getalvraag(
+        l,
+        {
+          vraag: ["Welk getal is dit?"],
+          lijst: v.lijst,
+          goed: v.a,
+          bijGoed: ["Ja.", `{${v.a}}.`],
+          hint: (x) =>
+            x === t || x === t + e
+              ? ["Elke lichtbol heeft {10} sterren.", "Tel de lichtbollen met tientallen."]
+              : x === omgedraaid(v.a)
+                ? ["Kijk goed.", "Eerst de lichtbollen, dan de losse sterren."]
+                : ["Tel eerst de lichtbollen: {10}, {20}, …", "Dan de losse sterren erbij."],
+          antwoord: [inLichtbollen(v.a), `Dat is {${v.a}}.`],
+          klaarzetten: () => m.zet({ tienen: t, enen: e, knop: null }),
+        },
+        later,
+      );
+    } else {
+      const b = v.b ?? 0;
+      l.som(plusSom(v.a, b));
+      const goed = await somVraag(l, v.a, b, {
+        kies: (lijst) => kiesGetalHolo(l, lijst ?? v.lijst),
+        lijst: v.lijst,
+        hint: (x) =>
+          x === v.a + b / 10 || x === v.a + 1
+            ? ["Kijk goed.", b >= 10 ? "Er komen hele lichtbollen van {10} bij." : "Er komen losse sterren bij."]
+            : ["Probeer het nog eens.", b >= 10 ? "Tel de lichtbollen erbij met tientallen." : "De tientallen blijven gelijk."],
+        uitleg: b >= 10 ? [`Bij {${v.a}} komen er {${b / 10}} lichtbollen van {10}.`, `Dan heb je {${v.a + b}}.`] : [`De tientallen van {${v.a}} blijven gelijk.`, `Er komen {${b}} sterren bij: {${v.a + b}}.`],
+        bijGoed: ["Goed."],
+        later,
+        klaarzetten: () => m.zet({ tienen: Math.floor(v.a / 10), enen: v.a % 10, knop: null }),
+      });
+      m.zet({ tienen: Math.floor((v.a + b) / 10), enen: (v.a + b) % 10 });
+      if (goed) await l.wacht(400);
+      await l.wacht(700);
+      l.som(null);
+    }
+  }
+  await speelLater(l, later);
+  l.som(null);
+}
+
+/* ---------- het splitshuis (hologrammen) ---------- */
 
 type Schema = {
-  st: SplitsProps;
-  zet(p: Partial<SplitsProps>): void;
+  st: HoloSplitsProps;
+  zet(p: Partial<HoloSplitsProps>): void;
 };
 
-function maakSchema(l: Lesgids, begin: Partial<SplitsProps>): Schema {
-  const st: SplitsProps = { links: 0, rechts: 0, geheel: null, knoppen: false, alleen: null, vraag: null, klaar: false, lijst: [], tegel: null, ...begin };
-  l.vlak(Splitsschema, { ...st });
+function maakSchema(l: Lesgids, begin: Partial<HoloSplitsProps>): Schema {
+  const st: HoloSplitsProps = { links: 0, rechts: 0, geheel: null, knoppen: false, alleen: null, vraag: null, klaar: false, hulp: false, lijst: [], tegel: null, snoer: null, ...begin };
+  l.vlak(HoloSplitshuis, { ...st });
   return {
     st,
     zet(p) {
       Object.assign(st, p);
-      l.pasVlakAan<SplitsProps>(p);
+      l.pasVlakAan<HoloSplitsProps>(p);
     },
   };
 }
@@ -154,54 +354,81 @@ function drukKnop(sch: Schema, k: Splitsknop, max: number) {
 
 /** Knoppen laten gebruiken tot de stand klopt. */
 async function knoppenTot(l: Lesgids, sch: Schema, klopt: () => boolean, alleen: Splitsknop | null, max = 10) {
+  testHaak({ splitsDoel: { alleen, links: null, rechts: null } });
   sch.zet({ knoppen: true, alleen });
   while (!klopt()) {
-    const g = await l.wachtOpVlak<SplitsMelding>("knop");
+    const g = await l.wachtOpVlak<HoloSplitsMelding>("knop");
     if (g.soort === "knop") drukKnop(sch, g.knop, max);
   }
   sch.zet({ knoppen: false, alleen: null });
+  testHaak({ splitsDoel: null });
 }
 
 /**
  * Het kind zoekt zelf twee delen die samen `totaal` maken en tikt op het
- * vinkje. Een splitsing die al gevonden is, telt niet nog eens.
+ * vinkje. Een splitsing die al gevonden is, telt niet nog eens. 1× fout:
+ * Bliepo rekent het voor ("3 en 3 is 6, we zoeken 7") en maakt de bellen leeg.
+ * 2× fout of het vraagteken: Bliepo zet een splitsing neer, en (met `later`)
+ * komt de opdracht aan het eind terug.
  */
-async function zoekSplitsing(l: Lesgids, sch: Schema, totaal: number, gevonden: [number, number][], legeStart = true): Promise<[number, number]> {
+async function zoekSplitsing(l: Lesgids, sch: Schema, totaal: number, gevonden: [number, number][], legeStart = true, later?: Later): Promise<[number, number]> {
   if (legeStart) sch.zet({ links: 0, rechts: 0 });
   const al = (a: number, b: number) => gevonden.some(([p, q]) => (p === a && q === b) || (p === b && q === a));
-  sch.zet({ knoppen: true, klaar: true });
+  const nogNiet = () => Array.from({ length: totaal - 1 }, (_, i) => [totaal - 1 - i, i + 1] as [number, number]).find(([x, y]) => !al(x, y)) ?? [totaal - 1, 1];
+  testHaak({ splitsDoel: { totaal, voorbeeld: nogNiet() } });
+  if (!aangewezenHulp.has(l)) {
+    aangewezenHulp.add(l);
+    sch.zet({ knoppen: false, klaar: true, hulp: true });
+    await l.wijsAan("klaar", "Ben je klaar? Tik dan op het vinkje.");
+    await l.wijsAan("hulpvlak", "Weet je het niet? Tik dan op het vraagteken.");
+  }
+  sch.zet({ knoppen: true, klaar: true, hulp: true });
   for (let fout = 0; ; ) {
-    const g = await l.wachtOpVlak<SplitsMelding>(["knop", "klaar"]);
+    const g = await l.wachtOpVlak<HoloSplitsMelding>(["knop", "klaar", "hulp"]);
     if (g.soort === "knop") {
       drukKnop(sch, g.knop, totaal);
       continue;
     }
     const { links: a, rechts: b } = sch.st;
-    if (a + b === totaal && a > 0 && b > 0 && !al(a, b)) {
-      sch.zet({ knoppen: false, klaar: false });
+    sch.zet({ knoppen: false, klaar: false, hulp: false });
+    if (g.soort === "klaar" && a + b === totaal && a > 0 && b > 0 && !al(a, b)) {
+      sch.zet({ golf: Date.now() });
+      testHaak({ splitsDoel: null });
       return [a, b];
     }
-    sch.zet({ knoppen: false, klaar: false });
-    fout++;
-    if (a === 0 || b === 0) {
-      await l.zeg("Doe in allebei de rondjes stippen.");
-    } else if (a + b !== totaal) {
-      await l.zeg("Kijk maar.", `Je hebt {${a}} en {${b}}.`, `Dat is samen {${a + b}}.`, `We zoeken {${totaal}}.`);
-      sch.zet({ links: 0, rechts: 0 });
-    } else {
-      await l.zeg(`Je hebt {${a}} en {${b}}.`, "Die hadden we al.", "Zoek een andere manier.");
+    if (g.soort === "klaar") {
+      fout++;
+      if (a === 0 || b === 0) {
+        await l.zeg("Doe in allebei de bellen iets.");
+      } else if (a + b !== totaal) {
+        await l.zeg("Laten we kijken.", `Je hebt {${a}} en {${b}}.`, `Dat is samen {${a + b}}.`, `We zoeken {${totaal}}.`);
+        sch.zet({ links: 0, rechts: 0 });
+      } else {
+        await l.zeg(`Je hebt {${a}} en {${b}}.`, "Die hadden we al.", "Zoek een andere manier.");
+      }
     }
-    if (fout >= 3) {
-      /* Na drie keer helpt de les: een splitsing die nog niet gevonden is. */
-      const [p, q] = Array.from({ length: totaal - 1 }, (_, i) => [totaal - 1 - i, i + 1] as [number, number]).find(([x, y]) => !al(x, y)) ?? [totaal - 1, 1];
+    if (g.soort === "hulp" || fout >= 2) {
+      /* Bliepo zet een splitsing neer die nog niet gevonden is. */
+      const [p, q] = nogNiet();
       sch.zet({ links: p, rechts: q });
-      await l.zeg("Ik help je.", `Kijk: {${p}} en {${q}} is samen {${totaal}}.`);
+      await l.zeg(g.soort === "hulp" ? "Geen zorgen." : "Ik help je.", `Kijk: {${p}} en {${q}} is samen {${totaal}}.`, later ? "We komen hier later op terug." : "");
       await l.verder();
+      testHaak({ splitsDoel: null });
+      if (later)
+        later.lijst.push(async () => {
+          sch.zet({ geheel: totaal, links: 0, rechts: 0, lijst: [] });
+          await l.zeg(`Zoek nog eens twee delen die samen {${totaal}} maken.`);
+          const [x, y] = await zoekSplitsing(l, sch, totaal, []);
+          await l.zeg("Goed zo.", `{${x}} en {${y}} is samen {${totaal}}.`);
+        });
       return [p, q];
     }
-    sch.zet({ knoppen: true, klaar: true });
+    sch.zet({ knoppen: true, klaar: true, hulp: true });
   }
 }
+
+/** Welke lessen het vinkje en het vraagteken in het splitshuis al hebben aangewezen. */
+const aangewezenHulp = new WeakSet<Lesgids>();
 
 /* ---------- kaarttekeningen (SVG van 244 × 190) ---------- */
 
@@ -253,6 +480,15 @@ function KaartEindtoets() {
 
 /* ---------- 1. Instaptoets ---------- */
 
+/*
+  Volgt LESSENPLAN.md O17 en Synthesis "Add up to 100 · Assessment": drie
+  keer op de 10-knop (drie lichtbollen) → welk getal, 30 + 50, 30 + 40
+  (bedenktijd telt mee), en de vragen die hier al stonden (40 + 7, de 7
+  splitsen). Toetsregels: geen uitleg; 1× fout = de som als vraag terug;
+  2× fout of "weet ik niet" = "we leren het samen" en de toets stopt. Daarna
+  samen oefenen tot er minstens 15 opgaven zijn. Eigen Bliepo: we zeggen het
+  eerlijk als het om de tijd ging.
+*/
 const instaptoets: Lesdraaiboek = {
   id: "optellen-100-instaptoets",
   titel: "Instaptoets: optellen tot 100",
@@ -262,136 +498,104 @@ const instaptoets: Lesdraaiboek = {
   async speel(l) {
     let goed = 0;
     let traag = 0;
-    const tel = (r: { goed: boolean; traag: boolean }) => {
-      if (r.goed) goed++;
-      if (r.traag) traag++;
+    let gedaan = 0;
+    let stop = false;
+    const tel = async (vraag: () => Promise<"goed" | "herkansing" | "stop">, t0 = Date.now()) => {
+      if (stop) return;
+      const r = await vraag();
+      gedaan++;
+      if (r === "goed") {
+        goed++;
+        if (Date.now() - t0 > 12000) traag++;
+      }
+      if (r === "stop") stop = true;
     };
 
     const m = maakMachine(l, { honderd: true, knop: null });
     await l.zeg("Nu gaan we plussommen maken tot {100}.", "Ken je dit al?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const al = await l.kies(["Ja", "Nee"]);
-    await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "In deze toets laat je zien wat je al kunt.");
+    await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "In deze toets laat je zien wat je al kunt.", "Probeer vlot te antwoorden.");
     m.zet({ honderd: false, knop: 10, wijs: true });
-    await l.zeg("Tik {3} keer op de plusknop.", "Dan komen er groepjes van {10} in de machine.");
+    await l.zeg("Tik {3} keer op de knop.", "Dan komen er lichtbollen van {10}.");
     await m.tik(3);
 
-    /* Drie groepjes van 10. */
-    await l.zeg("Je hebt {3} groepjes van {10}.", "Welk getal is dat?");
-    tel(
-      await toetsvraag(l, {
-        opties: [3, 20, 30, 40],
-        goed: 30,
-        herkansing: [3, 13, 30, 40],
-        bijGoed: ["Goed, {30} stippen.", "{3} groepjes van {10}."],
-        bijFout: (x) => (x === null ? ["Geen zorgen.", "Kijk nog eens goed."] : [`{${x}}?`, "Kijk nog eens goed."]),
-        opnieuw: ["{3} groepjes van {10}.", "Hoeveel stippen zijn dat?"],
-        antwoord: async () => {
-          await l.zeg("{10}, {20}, {30}.", "Het zijn {30} stippen.");
-          await l.verder();
-        },
-        tempo: "alleenTraag",
-      }),
-    );
+    /* Drie lichtbollen van 10. */
+    await l.zeg("Je hebt {3} lichtbollen van {10}.", "Welk getal is dat?");
+    await tel(() => toetsHolo(l, { opties: [3, 30, 40, 300], goed: 30, bijGoed: ["Goed, {30} sterren.", "{3} lichtbollen van {10}."], bijFout: (x) => [`{${x}}?`, "Kijk nog eens goed."], tempo: "alleenTraag" }));
 
     /* 30 + 50. */
-    await l.zeg("Wat krijg je als je er {50} bij doet?", "Hoeveel is {30} plus {50}?");
-    tel(
-      await toetsvraag(l, {
-        opties: [35, 70, 80, 90],
-        goed: 80,
-        herkansing: [35, 70, 80, 90],
-        bijGoed: ["Ja, samen {80}."],
-        bijFout: somFout(30, 50),
-        opnieuw: ["Hoeveel is {30} plus {50}?"],
-        antwoord: async () => {
-          await l.zeg("{3} groepjes van {10} en {5} groepjes van {10}.", "Dat zijn {8} groepjes: {80}.");
-          await l.verder();
-        },
-        tempo: "alleenTraag",
-      }),
-    );
-    m.zet({ tienen: 8 });
-    l.som(plusSom(30, 50, 80));
-    await l.wacht(900);
-    l.som(null);
+    if (!stop) {
+      l.som(plusSom(30, 50));
+      await l.zeg("Wat krijg je als je er {50} bij doet?", "Hoeveel is {30} plus {50}?");
+      await tel(() => toetsHolo(l, { opties: [35, 70, 80, 90], goed: 80, bijGoed: ["Ja, samen {80}."], bijFout: somAlsVraag(30, 50), tempo: "alleenTraag" }));
+      if (!stop) {
+        m.zet({ tienen: 8 });
+        l.som(plusSom(30, 50, 80));
+        await l.wacht(900);
+      }
+      l.som(null);
+    }
 
     /* 30 + 40, in woorden. */
-    m.zet({ tienen: 3 });
-    await l.zeg("Probeer deze eens.", "Hoeveel is {30} plus {40}?");
-    tel(
-      await toetsvraag(l, {
-        opties: [34, 60, 70, 80],
-        goed: 70,
-        herkansing: [34, 60, 70, 80],
-        bijGoed: ["Goed, {70}.", "Je doet het echt heel goed."],
-        bijFout: somFout(30, 40),
-        opnieuw: ["Hoeveel is {30} plus {40}?"],
-        antwoord: async () => {
-          await l.zeg("{3} groepjes van {10} en {4} groepjes van {10}.", "Dat zijn {7} groepjes: {70}.");
-          await l.verder();
-        },
-        tempo: "alleenTraag",
-      }),
-    );
-    m.zet({ tienen: 7 });
-    await l.wacht(700);
+    if (!stop) {
+      m.zet({ tienen: 3 });
+      await l.zeg("Probeer deze eens.", "Als je {30} en {40} optelt, hoeveel is het dan samen?");
+      await tel(() => toetsHolo(l, { opties: [34, 60, 70, 80], goed: 70, bijGoed: ["Goed, {70}.", "Je doet het echt heel goed."], bijFout: somAlsVraag(30, 40), tempo: "alleenTraag" }));
+      if (!stop) {
+        m.zet({ tienen: 7 });
+        await l.wacht(700);
+      }
+    }
 
     /* Een tiental plus eenheden. */
-    m.zet({ tienen: 4, enen: 7, knop: null });
-    await l.zeg("Kijk, nu zijn er ook losse stippen.", "Hoeveel is {40} plus {7}?");
-    tel(
-      await toetsvraag(l, {
-        opties: [37, 47, 57, 74],
-        goed: 47,
-        herkansing: [46, 47, 57, 74],
-        bijGoed: ["Precies, {47}."],
-        bijFout: somFout(40, 7),
-        opnieuw: ["Hoeveel is {40} plus {7}?"],
-        antwoord: async () => {
-          await l.zeg("{4} groepjes van {10} en {7} losse stippen.", "Dat is {47}.");
-          await l.verder();
-        },
-        tempo: "alleenTraag",
-      }),
-    );
+    if (!stop) {
+      m.zet({ tienen: 4, enen: 7, knop: null });
+      l.som(plusSom(40, 7));
+      await l.zeg("Kijk, nu zijn er ook losse sterren.", "Hoeveel is {40} plus {7}?");
+      await tel(() => toetsHolo(l, { opties: [37, 47, 57, 74], goed: 47, bijGoed: ["Precies, {47}."], bijFout: somAlsVraag(40, 7), tempo: "alleenTraag" }));
+      l.som(null);
+    }
 
     /* Splitsen. */
-    const sch = maakSchema(l, { geheel: 7, links: 5, rechts: 0, vraag: "rechts" });
-    await l.zeg("Nu splitsen we de {7}.", "Eén deel is {5}.", "Hoeveel is het andere deel?");
-    tel(
-      await toetsvraag(l, {
-        opties: [1, 2, 3, 12],
-        goed: 2,
-        herkansing: [1, 2, 3, 4],
-        bijGoed: ["Ja, {5} en {2} is samen {7}."],
-        bijFout: (x) => (x === null ? ["Geen zorgen.", "Kijk nog eens goed."] : [`{5} en {${x}} is samen {${5 + x}}.`, "We zoeken {7}."]),
-        opnieuw: ["Welk getal hoort in het lege rondje?"],
-        antwoord: async () => {
-          await l.zeg("{5} en {2} is samen {7}.", "Het andere deel is {2}.");
-          await l.verder();
-        },
-        tempo: "alleenTraag",
-      }),
-    );
-    sch.zet({ rechts: 2, vraag: null });
-    await l.wacht(700);
+    if (!stop) {
+      const sch = maakSchema(l, { geheel: 7, links: 5, rechts: 0, vraag: "rechts", sterren: true });
+      await l.zeg("Nu splitsen we de {7}.", "Eén deel is {5}.", "Hoeveel is het andere deel?");
+      await tel(() =>
+        toetsHolo(l, { opties: [1, 2, 3, 12], goed: 2, bijGoed: ["Ja, {5} en {2} is samen {7}."], bijFout: (x) => [`{5} en {${x}} is samen {${5 + x}}?`, "Kijk nog eens goed."], tempo: "alleenTraag" }),
+      );
+      if (!stop) {
+        sch.zet({ rechts: 2, vraag: null });
+        await l.wacht(700);
+      }
+    }
+
+    /* De uitslag, eerlijk (ook als het om de tijd ging). */
+    if (!stop && goed === 5 && traag === 0) await l.zeg("Je doet het echt heel goed.", "Je kunt al plussommen tot {100} maken.");
+    else if (!stop && goed >= 4 && traag > 0) await l.zeg("Je weet het allemaal.", "Alleen ging het nog niet zo vlot.", "Laten we je wat helpen.");
+    else if (!stop) await l.zeg("Goed gedaan.", "In de lessen oefenen we dit nog meer.");
+    await l.verder();
+
+    /* Samen oefenen, zodat het samen minstens 15 opgaven zijn. */
+    await oefenNaToets(l, Math.max(10, 15 - gedaan));
 
     l.vlak(null);
     l.bak([]);
     const tik = l.kaart();
-    if (goed === 5 && traag === 0) {
-      await l.zeg("Je doet het echt heel goed.", "Je kunt al plussommen tot {100} maken.", "Tik op de kaart om hem af te vinken.");
-    } else if (goed >= 4) {
-      await l.zeg("Goed gedaan.", "In de lessen oefenen we dit nog meer.", "Tik op de kaart om hem af te vinken.");
-    } else {
-      await l.zeg("Dank je wel.", "In de lessen gaan we dit samen oefenen.", "Tik op de kaart om hem af te vinken.");
-    }
+    await l.zeg("Dank je wel.", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
 
 /* ---------- 2. Tientallen erbij ---------- */
 
+/*
+  Volgt LESSENPLAN.md O18 en Synthesis "Add up to 100 · Add 10s": eerst raden,
+  dan zelf met de sterrenmachine controleren; lichtbollen van 10 en losse
+  sterren. Eigen Bliepo: het groep 3-deel tot 50 (13 + 10, 17 + 20; het
+  oefenen ook tot 50). "Drie goed en we gaan verder", de laatste op slot (uit
+  het hoofd). 15 opgaven of meer.
+*/
 const tientallenErbij: Lesdraaiboek = {
   id: "optellen-100-tientallen-erbij",
   titel: "Tientallen erbij",
@@ -399,41 +603,52 @@ const tientallenErbij: Lesdraaiboek = {
   kaarttekening: KaartKlodders,
 
   async speel(l) {
+    const later = nieuwLater();
     const m = maakMachine(l, { tienen: 2, enen: 0, knop: 10 });
 
-    /* Twee groepjes van 10. */
-    await l.zeg("Kijk naar de groepjes stippen.", "Welk getal maken ze samen?");
-    const x = await kiesGetal(l, [2, 10, 20, 30]);
+    /* Twee lichtbollen van 10. */
+    testHaak({ antwoord: 20, vraagId: Math.random() });
+    await l.zeg("Kijk naar de lichtbollen.", "Welk getal maken ze samen?");
+    const x = await kiesGetalHolo(l, [2, 10, 20, 30]);
     if (x === 20) {
-      await l.zeg("Goed zo.", "{2} groepjes van {10} is {20}.");
+      await l.zeg("Goed zo.", "{2} lichtbollen van {10} is {20}.");
     } else {
-      if (x === 2) await l.zeg("Ja, het zijn {2} groepjes.", "Maar in elk groepje zitten {10} stippen.");
-      else await l.zeg(x === null ? "Geen zorgen." : "Kijk nog eens goed.", "In elk groepje zitten {10} stippen.");
-      await l.verder();
-      await l.zeg("{2} groepjes van {10}.", "Hoeveel stippen zijn het samen?");
-      const y = await kiesGetal(l, [2, 10, 20, 30]);
-      if (y === 20) await l.zeg("Goed.", "{2} groepjes van {10} is {20}.");
-      else {
-        await l.zeg("{10} stippen en nog {10} stippen.", "Samen zijn dat {20} stippen.");
-        await l.verder();
-      }
+      if (x === 2) await l.zeg("Je hebt gelijk dat het {2} lichtbollen zijn.", "Maar elke lichtbol heeft {10} sterren.");
+      else await l.zeg(x === null ? "Geen zorgen." : "Kijk nog eens goed.", "In elke lichtbol zitten {10} sterren.");
+      await getalvraag(
+        l,
+        {
+          vraag: ["{2} lichtbollen van {10}.", "Hoeveel sterren zijn het samen?"],
+          lijst: [2, 10, 20, 30],
+          goed: 20,
+          bijGoed: ["Goed.", "{2} lichtbollen van {10} is {20}."],
+          hint: () => ["{10} sterren en nog {10} sterren."],
+          antwoord: ["{10} sterren en nog {10} sterren.", "Samen zijn dat {20} sterren."],
+          klaarzetten: () => m.zet({ tienen: 2, enen: 0, knop: null }),
+        },
+        later,
+      );
     }
     l.som(getal(20));
 
-    /* Zelf een groepje erbij. */
-    m.zet({ wijs: true });
-    await l.zeg("Doe er nog een groepje van {10} bij.", "Zie je de plusknop onderaan?", "Tik erop.");
+    /* Zelf een lichtbol erbij. */
+    m.zet({ wijs: true, knop: 10 });
+    await l.zeg("Doe er nog een lichtbol van {10} bij.", "Zie je de knop onderaan?", "Tik erop.");
     await m.tik(1);
     l.som(plusZonderUitkomst(20, 10));
-    await l.zeg("Goed zo.", "{20} plus {10}.", "Hoeveel stippen zijn het nu samen?");
+    await l.zeg("Goed zo.", "{20} plus {10}.", "Hoeveel sterren zijn het nu samen?");
     await somVraag(l, 20, 10, {
-      kies: () => kiesGetal(l, [3, 20, 30, 40]),
-      hint: (v) => (v === 3 ? ["Ja, het zijn {3} groepjes.", "Hoeveel stippen zijn dat?"] : ["Tel de groepjes van {10}.", "{10}, {20}, …"]),
-      uitleg: ["{10}, {20}, {30}.", "Het zijn {30} stippen."],
+      kies: (lijst) => kiesGetalHolo(l, lijst ?? [3, 20, 30, 40]),
+      lijst: [3, 20, 30, 40],
+      hint: (v) => (v === 3 ? ["Ja, het zijn {3} lichtbollen.", "Hoeveel sterren zijn dat?"] : ["Tel de lichtbollen met tientallen.", "{10}, {20}, …"]),
+      uitleg: ["{10}, {20}, {30}.", "Het zijn {30} sterren."],
+      later,
+      klaarzetten: () => m.zet({ tienen: 3, enen: 0, knop: null }),
     });
     await l.wacht(800);
 
     /* 30 + 20 en 50 + 30; de machine mag helpen. */
+    m.zet({ tienen: 3, enen: 0, knop: 10 });
     l.som(getal(30));
     await l.zeg("Probeer deze eens.", "{30} plus {20}.", "Je mag de {20} erbij doen met de machine.");
     let erbij = 0;
@@ -444,32 +659,40 @@ const tientallenErbij: Lesdraaiboek = {
       l.som(plusZonderUitkomst(a, erbij));
     };
     await somVraag(l, 30, 20, {
-      kies: () => kiesMetMachine(l, m, [5, 40, 50, 60], tikErbij(30)),
-      hint: (v) => (v === 5 ? ["Dat zijn de groepjes samen.", "Maar elk groepje is {10}."] : ["Tel er {2} groepjes van {10} bij.", "Hoeveel is het dan?"]),
-      uitleg: ["Bij {30} komen {2} groepjes van {10}.", "{40}, {50}."],
+      kies: (lijst) => kiesMetMachine(l, m, lijst ?? [5, 40, 50, 60], tikErbij(30)),
+      lijst: [5, 40, 50, 60],
+      hint: (v) => (v === 5 ? ["Dat zijn de lichtbollen samen.", "Maar elke lichtbol is {10}."] : ["Doe er {2} lichtbollen van {10} bij.", "Hoeveel is het dan?"]),
+      uitleg: ["Bij {30} komen {2} lichtbollen van {10}.", "{40}, {50}."],
       bijGoed: ["Klopt."],
+      later,
+      klaarzetten: () => m.zet({ tienen: 3, enen: 0, knop: null }),
     });
     m.zet({ tienen: 5 });
     await l.wacht(800);
 
+    m.zet({ tienen: 5, enen: 0, knop: 10 });
     l.som(getal(50));
     erbij = 0;
     await l.zeg("Je doet het goed.", "Probeer deze eens: {50} plus {30}.");
     await somVraag(l, 50, 30, {
-      kies: () => kiesMetMachine(l, m, [8, 70, 80, 90], tikErbij(50)),
-      hint: (v) => (v === 8 ? ["Dat zijn de groepjes samen.", "Maar elk groepje is {10}."] : ["Tel er {3} groepjes van {10} bij.", "Hoeveel is het dan?"]),
-      uitleg: ["Bij {50} komen {3} groepjes van {10}.", "{60}, {70}, {80}."],
+      kies: (lijst) => kiesMetMachine(l, m, lijst ?? [8, 70, 80, 90], tikErbij(50)),
+      lijst: [8, 70, 80, 90],
+      hint: (v) => (v === 8 ? ["Dat zijn de lichtbollen samen.", "Maar elke lichtbol is {10}."] : ["Doe er {3} lichtbollen van {10} bij.", "Hoeveel is het dan?"]),
+      uitleg: ["Bij {50} komen {3} lichtbollen van {10}.", "{60}, {70}, {80}."],
       bijGoed: ["Ja."],
+      later,
+      klaarzetten: () => m.zet({ tienen: 5, enen: 0, knop: null }),
     });
     m.zet({ tienen: 8 });
     await l.wacht(800);
 
-    /* Nu losse stippen erbij: eerst voorspellen, dan zelf doen. */
+    /* Nu losse sterren erbij: eerst voorspellen, dan zelf doen. */
     l.som(getal(10));
     m.zet({ tienen: 1, enen: 0, knop: 1 });
-    await l.zeg("Nu heb je één groepje van {10}.", "We proberen iets anders.", "Je doet er {3} stippen bij.", "Hoeveel is het dan?");
-    const v13 = await kiesGetal(l, [4, 10, 13, 23]);
-    await l.zeg(v13 === 13 ? "Goed bedacht." : v13 === null ? "Geen zorgen." : "Kijk maar mee.", "Doe ze er zelf maar bij.", "Tik {3} keer op de plusknop.");
+    await l.zeg("Nu heb je één lichtbol van {10}.", "We proberen iets anders.", "Je doet er {3} sterren bij.", "Hoeveel is het dan?");
+    testHaak({ antwoord: 13, vraagId: Math.random() });
+    const v13 = await kiesGetalHolo(l, [4, 10, 13, 23]);
+    await l.zeg(v13 === 13 ? "Goed bedacht." : v13 === null ? "Geen zorgen." : "Kijk maar mee.", "Doe ze er zelf maar bij.", "Tik {3} keer op de knop.");
     m.zet({ wijs: true });
     await m.tik(3, (st) => l.som(plusZonderUitkomst(10, st.enen)));
     l.som(plusSom(10, 3, 13));
@@ -478,11 +701,12 @@ const tientallenErbij: Lesdraaiboek = {
 
     l.som(getal(13));
     m.zet({ knop: 10 });
-    await l.zeg("Je hebt er nu {13}.", "Nu komt er een groepje van {10} bij.", "Hoeveel is {13} plus {10}?");
-    const v23 = await kiesGetal(l, [13, 14, 23, 33]);
-    if (v23 === 23) await l.zeg("Goed bedacht.", "Doe zelf een groepje van {10} erbij.");
-    else if (v23 === 14) await l.zeg("Kijk goed.", "Er komt een heel groepje van {10} bij.", "Niet één stip.", "Doe zelf een groepje van {10} erbij.");
-    else await l.zeg(v23 === null ? "Geen zorgen." : "Kijk maar mee.", "Doe zelf een groepje van {10} erbij.");
+    await l.zeg("Je hebt er nu {13}.", "Nu komt er een lichtbol van {10} bij.", "Hoeveel is {13} plus {10}?");
+    testHaak({ antwoord: 23, vraagId: Math.random() });
+    const v23 = await kiesGetalHolo(l, [13, 14, 23, 33]);
+    if (v23 === 23) await l.zeg("Goed bedacht.", "Doe zelf een lichtbol van {10} erbij.");
+    else if (v23 === 14) await l.zeg("Kijk goed.", "Er komt een hele lichtbol van {10} bij.", "Niet één ster.", "Doe zelf een lichtbol van {10} erbij.");
+    else await l.zeg(v23 === null ? "Geen zorgen." : "Kijk maar mee.", "Doe zelf een lichtbol van {10} erbij.");
     m.zet({ wijs: true });
     await m.tik(1);
     l.som(plusSom(13, 10, 23));
@@ -491,36 +715,63 @@ const tientallenErbij: Lesdraaiboek = {
 
     /* 17 + 20. */
     l.som(null);
-    m.zet({ tienen: 1, enen: 7 });
-    await l.zeg("Er staat nu een nieuw getal.", "Welk getal is dit?");
-    const v17 = await kiesGetal(l, [7, 17, 27, 71]);
-    if (v17 === 17) await l.zeg("Ja, {17}.");
-    else {
-      await l.zeg(v17 === null ? "Geen zorgen." : "Kijk nog eens.", "Eén groepje van {10} en {7} losse stippen.", "Dat is {17}.");
-      await l.verder();
-    }
+    m.zet({ tienen: 1, enen: 7, knop: null });
+    await getalvraag(
+      l,
+      {
+        vraag: ["Er staat nu een nieuw getal.", "Welk getal is dit?"],
+        lijst: [7, 17, 27, 71],
+        goed: 17,
+        bijGoed: ["Ja, {17}."],
+        hint: (v) => (v === 71 ? ["Kijk goed.", "Eerst de lichtbol, dan de losse sterren."] : ["Eén lichtbol is {10}.", "Tel de losse sterren erbij."]),
+        antwoord: ["Eén lichtbol van {10} en {7} losse sterren.", "Dat is {17}."],
+        klaarzetten: () => m.zet({ tienen: 1, enen: 7, knop: null }),
+      },
+      later,
+    );
+    m.zet({ knop: 10 });
     l.som(getal(17));
     erbij = 0;
     await l.zeg("Nu komt er {20} bij.", "Hoeveel is {17} plus {20}?");
     await somVraag(l, 17, 20, {
-      kies: () => kiesMetMachine(l, m, [17, 19, 27, 37], tikErbij(17)),
-      hint: (v) => (v === 19 ? ["Kijk goed.", "Er komen {2} groepjes van {10} bij.", "Geen losse stippen."] : ["Tel er {2} groepjes van {10} bij.", "Hoeveel is het dan?"]),
-      uitleg: ["Bij {17} komen {2} groepjes van {10}.", "{27}, {37}."],
+      kies: (lijst) => kiesMetMachine(l, m, lijst ?? [17, 19, 27, 37], tikErbij(17)),
+      lijst: [17, 19, 27, 37],
+      hint: (v) => (v === 19 ? ["Kijk goed.", "Er komen {2} lichtbollen van {10} bij.", "Geen losse sterren."] : ["Doe er {2} lichtbollen van {10} bij.", "Hoeveel is het dan?"]),
+      uitleg: ["Bij {17} komen {2} lichtbollen van {10}.", "{27}, {37}."],
       bijGoed: ["Klopt."],
+      later,
+      klaarzetten: () => m.zet({ tienen: 1, enen: 7, knop: null }),
     });
     await l.wacht(800);
 
-    /* Oefenen: drie goed, dan klaar. De laatste zonder machine. */
+    /* Nog een getal lezen. */
+    l.som(null);
+    m.zet({ tienen: 2, enen: 5, knop: null });
+    await getalvraag(
+      l,
+      {
+        vraag: ["En welk getal is dit?"],
+        lijst: [7, 25, 52, 35],
+        goed: 25,
+        bijGoed: ["Goed zo, {25}."],
+        hint: (v) => (v === 52 ? ["Kijk goed.", "Eerst de lichtbollen, dan de losse sterren."] : ["Tel de lichtbollen: {10}, {20}.", "Dan de losse sterren erbij."]),
+        antwoord: ["{2} lichtbollen van {10} en {5} losse sterren.", "Dat is {25}."],
+        klaarzetten: () => m.zet({ tienen: 2, enen: 5, knop: null }),
+      },
+      later,
+    );
+
+    /* Oefenen: drie goed, dan klaar. De laatste zonder machine. Groep 3: tot 50. */
     await l.zeg("Ik geef je er nog een paar.", "Als je er {3} goed hebt, gaan we verder.", "De machine helpt als je hem nodig hebt.");
     await l.verder();
     const sommen: [number, number][] = [
-      [34, 10],
-      [28, 30],
+      [24, 10],
+      [18, 30],
       [27, 20],
-      [45, 20],
-      [36, 30],
-      [52, 10],
-      [61, 20],
+      [31, 10],
+      [15, 30],
+      [22, 20],
+      [36, 10],
     ];
     let goed = 0;
     for (const [a, b] of sommen) {
@@ -533,20 +784,25 @@ const tientallenErbij: Lesdraaiboek = {
       if (zonder) await l.zeg("Nog één goed en we zijn klaar.", "Deze keer zet ik de machine op slot.");
       await l.zeg(`Hoeveel is {${a}} plus {${b}}?`);
       const enkel = a + b / 10;
+      const keuzes = oplopend(enkel, s - 10, s, s + 10);
       const inEen = await somVraag(l, a, b, {
-        kies: () => (zonder ? kiesGetal(l, oplopend(enkel, s - 10, s, s + 10)) : kiesMetMachine(l, m, oplopend(enkel, s - 10, s, s + 10), tikErbij(a))),
+        kies: (lijst) => (zonder ? kiesGetalHolo(l, lijst ?? keuzes) : kiesMetMachine(l, m, lijst ?? keuzes, tikErbij(a))),
+        lijst: keuzes,
         hint: (v) =>
           v === enkel
-            ? ["Kijk goed.", `Er komen hele groepjes van {10} bij.`, "Geen losse stippen."]
-            : [`Tel er ${b === 10 ? "één groepje" : `{${b / 10}} groepjes`} van {10} bij.`, `Hoeveel is {${a}} plus {${b}}?`],
-        uitleg: [`Bij {${a}} komen ${b === 10 ? "één groepje" : `{${b / 10}} groepjes`} van {10}.`, `Dan heb je {${s}}.`],
+            ? ["Kijk goed.", "Er komen hele lichtbollen van {10} bij.", "Geen losse sterren."]
+            : [`Doe er ${b === 10 ? "één lichtbol" : `{${b / 10}} lichtbollen`} van {10} bij.`, `Hoeveel is {${a}} plus {${b}}?`],
+        uitleg: [`Bij {${a}} komen ${b === 10 ? "één lichtbol" : `{${b / 10}} lichtbollen`} van {10}.`, `Dan heb je {${s}}.`],
         bijGoed: [["Ja.", "Klopt.", "Precies."][goed % 3]],
       });
       if (inEen) goed++;
-      m.zet({ tienen: Math.floor(s / 10), enen: s % 10 });
+      m.zet({ tienen: Math.floor(s / 10), enen: s % 10, slot: false });
       await l.wacht(900);
       l.som(null);
     }
+    m.zet({ knop: null, slot: false });
+    await speelLater(l, later);
+    l.som(null);
 
     l.vlak(null);
     l.bak([]);
@@ -558,6 +814,16 @@ const tientallenErbij: Lesdraaiboek = {
 
 /* ---------- 3. Splitsen ---------- */
 
+/*
+  Volgt LESSENPLAN.md S2 (wereld Oceaan) en Synthesis "Add up to 100 · Part
+  Part Whole": eerst de woorden samenstellen en splitsen (met een parelsnoer
+  rijgen als voorbeeld in plaats van muziek), een parelplank van 5 die
+  uiteenvalt, het splitshuis stap voor stap (plus, min, het geheel bovenaan),
+  een lijstje met de gevonden splitsingen, 5 en 7 op meer manieren, en zelf
+  kiezen: zo een of een groter getal (12). Start (ronde 3): "weet je hoe je
+  splitst?" Ja = korte proef met 8; het vraagteken in de proef = de les begint
+  bij de opbouw. 20 opgaven.
+*/
 const splitsen: Lesdraaiboek = {
   id: "optellen-100-splitsen",
   titel: "Splitsen",
@@ -565,146 +831,170 @@ const splitsen: Lesdraaiboek = {
   kaarttekening: KaartSplitsen,
 
   async speel(l) {
+    const later = nieuwLater();
     const sch = maakSchema(l, { geheel: 8, links: 0, rechts: 0 });
     await l.zeg("Weet je hoe je een getal splitst?", "Bijvoorbeeld de {8}?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const weet = await l.kies(["Ja", "Nee"]);
-    await l.zeg(weet === "Ja" ? "Mooi, dan frissen we het even op." : "Geen probleem.", "Eerst kijken we naar {2} woorden.");
+    if (weet === "Ja") {
+      /* Korte proef (ronde 3): splits de 8 in twee delen. */
+      await l.zeg("Mooi.", "Met deze knoppen verander je de delen.", "Splits de {8} in twee delen.");
+      const proef = await zoekSplitsingProef(l, sch, 8);
+      if (proef) {
+        await l.zeg("Goed zo, dat kun je al.", "Toch kijken we samen nog even naar de woorden.");
+        sch.zet({ lijst: [[proef[0], proef[1], 8]] });
+        await l.verder();
+        sch.zet({ lijst: [] });
+      } else await l.zeg("Geen probleem.", "We leren het samen, vanaf het begin.");
+    } else await l.zeg("Geen probleem.");
+    await l.zeg("Eerst kijken we naar {2} lastige woorden.");
 
-    /* De woorden samenvoegen en splitsen. */
-    sch.zet({ verborgen: true });
-    await l.zeg("Het eerste woord is *samenvoegen*.", "Heb je dat woord al eens gehoord?");
+    /* De woorden samenstellen en splitsen. */
+    sch.zet({ verborgen: true, links: 0, rechts: 0 });
+    await l.zeg("Het eerste woord is *samenstellen*.", "Heb je dat woord al eens gehoord?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const gehoord = await l.kies(["Ja", "Nee"]);
-    await l.zeg(gehoord === "Ja" ? "Mooi." : "Geen probleem.", "Samenvoegen is als bouwen.", "Je maakt iets groots van kleine stukjes.");
+    await l.zeg(gehoord === "Ja" ? "Mooi." : "Geen probleem.", "Samenstellen is als bouwen.", "Je maakt iets groots van kleine stukjes.");
     await l.verder();
 
-    /* Een voorbeeld uit het leven: een liedje maken uit losse noten. */
-    const noten: number[] = [];
-    l.vlak(Piano, { noten: [], actief: false, speelknop: false } satisfies PianoProps);
-    await l.zeg("Een voorbeeld: een liedje maken.", "Je voegt losse noten samen.", "Probeer het zelf maar.", "Tik op de toetsen.");
-    l.pasVlakAan<PianoProps>({ actief: true });
-    while (noten.length < 6) {
-      const g = await l.wachtOpVlak<PianoMelding>("toets");
-      if (g.soort !== "toets") continue;
-      noten.push(g.n);
-      l.pasVlakAan<PianoProps>({ noten: [...noten] });
-      if (noten.length === 2) {
-        /* Terwijl het kind verder tikt, zegt de les wat er moet gebeuren. */
-        const volgende = l.wachtOpVlak<PianoMelding>("toets");
-        await l.zeg("Blijf op de toetsen tikken.", "Zo maak je je liedje af.");
-        const h = await volgende;
-        if (h.soort === "toets") {
-          noten.push(h.n);
-          l.pasVlakAan<PianoProps>({ noten: [...noten] });
-        }
-      }
+    /* Een voorbeeld: een parelsnoer rijgen uit losse parels (Synthesis: een liedje uit noten). */
+    sch.zet({ verborgen: false, snoer: 0, snoerActief: false, snoerDicht: false });
+    await l.zeg("Een voorbeeld: een parelsnoer maken.", "Je rijgt losse parels aan een snoer.", "Probeer het zelf maar.", "Tik op de parels onderaan.");
+    sch.zet({ snoerActief: true });
+    testHaak({ snoerTik: "parel" });
+    let n = 0;
+    while (n < 6) {
+      const g = await l.wachtOpVlak<HoloSplitsMelding>("parel");
+      if (g.soort !== "parel") continue;
+      n++;
+      sch.zet({ snoer: n });
+      if (n === 2) void l.zeg("Ga maar door.", "Zo maak je je snoer af.").catch(() => {});
     }
-    l.pasVlakAan<PianoProps>({ actief: false });
+    sch.zet({ snoerActief: false });
     await l.wacht(500);
-    l.pasVlakAan<PianoProps>({ speelknop: true });
-    await l.zeg("Je hebt een liedje gemaakt met {6} noten.", "Dat zijn {6} stukjes.", "Tik op de afspeelknop om het te horen.");
-    l.pasVlakAan<PianoProps>({ actief: true });
-    await l.wachtOpVlak<PianoMelding>("speel");
-    l.pasVlakAan<PianoProps>({ actief: false });
-    await l.wacht(2800);
-    await l.zeg("Prachtig.", "Samenvoegen is iets bouwen van kleine stukjes.", "Net als jouw liedje.");
+    await l.zeg("Je hebt een snoer gemaakt met {6} parels.", "Dat zijn {6} stukjes.", "Tik op het snoer om het dicht te maken.");
+    testHaak({ snoerTik: "sluit" });
+    sch.zet({ snoerActief: true });
+    await l.wachtOpVlak<HoloSplitsMelding>("sluit");
+    sch.zet({ snoerActief: false, snoerDicht: true });
+    testHaak({ snoerTik: null });
+    await l.wacht(1200);
+    await l.zeg("Prachtig.", "Samenstellen is iets bouwen van kleine stukjes.", "Net als jouw parelsnoer.");
     await l.verder();
-    l.vlak(Splitsschema, { ...sch.st });
-    await l.zeg("Het tweede woord is *splitsen*.", "Samenvoegen is stukjes bij elkaar doen.", "Wat betekent splitsen, denk je?");
+    sch.zet({ snoer: null, snoerDicht: false, verborgen: true });
+    await l.zeg("Het tweede woord is *splitsen*.", "Samenstellen is stukjes bij elkaar doen.", "Wat betekent splitsen, denk je?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const woord = await l.kies(["In stukjes breken", "Groter maken"]);
     if (woord === "In stukjes breken") await l.zeg("Ja!", "Splitsen is iets in stukjes breken.");
     else {
-      await l.zeg(woord === null ? "Geen zorgen." : "Niet helemaal.", "Splitsen is het omgekeerde van samenvoegen.", "Je breekt iets in stukjes.");
+      await l.zeg(woord === null ? "Geen zorgen." : "Niet helemaal.", "Splitsen is het omgekeerde van samenstellen.", "Je breekt iets in stukjes.");
       await l.verder();
     }
 
-    /* Een tegel van 5 valt uit elkaar. */
+    /* Een parelplank van 5 valt uit elkaar. */
     sch.zet({ verborgen: false, tegel: "heel" });
-    await l.zeg("Bij rekenen splitsen we getallen.", "Probeer het maar.", "Tik op deze tegel van {5}.");
-    await l.wachtOpVlak<SplitsMelding>("tegel");
+    await l.zeg("Bij rekenen splitsen we getallen.", "Probeer het maar.", "Tik op deze plank met {5} parels.");
+    testHaak({ tegelTik: true });
+    await l.wachtOpVlak<HoloSplitsMelding>("tegel");
+    testHaak({ tegelTik: false });
     sch.zet({ tegel: "los" });
-    await l.wacht(800);
-    await l.zeg("Goed zo.", "Je hebt de {5} gesplitst.", "In hoeveel stukjes?");
-    let stukjes = await kiesGetal(l, [3, 4, 5]);
-    if (stukjes !== 5 && stukjes !== null) {
-      await l.zeg("Tel de stukjes nog eens.");
-      stukjes = await kiesGetal(l, [3, 4, 5]);
-    }
-    if (stukjes === 5) await l.zeg("Ja, precies.", "In {5} stukjes van {1}.");
-    else {
-      await l.zeg(stukjes === null ? "Geen zorgen." : "", "Het zijn {5} stukjes van {1}.");
-      await l.verder();
-    }
+    await l.wacht(900);
+    await l.zeg("Goed zo.", "Je hebt de {5} gesplitst.");
+    await getalvraag(
+      l,
+      {
+        vraag: ["In hoeveel stukjes?"],
+        lijst: [3, 4, 5],
+        goed: 5,
+        bijGoed: ["Ja, precies.", "In {5} stukjes van {1}."],
+        hint: () => ["Tel de parels nog eens."],
+        antwoord: ["Het zijn {5} stukjes van {1}."],
+      },
+    );
 
-    /* De splitsmachine, stap voor stap. */
+    /* Het splitshuis, stap voor stap. */
     sch.zet({ tegel: null, geheel: null, links: 0, rechts: 0 });
-    await l.zeg("Dat gaan we vandaag doen: getallen splitsen.", "Deze machine helpt ons.");
+    await l.zeg("Dat gaan we vandaag doen: getallen splitsen.", "Dit splitshuis helpt ons.");
     await l.verder();
-    await l.zeg("Begin bij dit rondje onderaan.", "Tik op de plusknop.");
+    await l.zeg("Begin bij deze bel onderaan.", "Tik op de plus.");
     await knoppenTot(l, sch, () => sch.st.links >= 1, "links-plus");
-    await l.zeg("Mooi, er zit een {1} in.", "Kun je er een {4} van maken?");
+    await l.zeg("Mooi, er zit {1} parel in.", "Kun je er {4} van maken?");
     await knoppenTot(l, sch, () => sch.st.links === 4, "links-plus");
     await l.zeg("Goed.", "Tik nu één keer op de min.");
     await knoppenTot(l, sch, () => sch.st.links === 3, "links-min");
-    await l.zeg("Je hebt van de {4} een {3} gemaakt.", "Zag je het grote rondje bovenaan?", "Daar staan ook {3} stippen.", "Dat is het totaal.");
+    await l.zeg("Je hebt van de {4} een {3} gemaakt.", "Zag je de grote bel bovenaan?", "Daar zitten ook {3} parels.", "Dat is het totaal.");
     await l.verder();
-    await l.zeg("Dit rondje is nog leeg.", "Doe er {2} stippen in.", "Tik op deze plusknop.");
+    await l.zeg("Deze bel is nog leeg.", "Doe er {2} parels in.", "Tik op deze plus.");
     await knoppenTot(l, sch, () => sch.st.rechts === 2, "rechts-plus");
-    await l.zeg("Je hebt ook het totaal veranderd.", "Hoeveel is het nu?");
-    const tot = await kiesGetal(l, [2, 3, 5]);
-    if (tot === 5) await l.zeg("Natuurlijk, {5}.");
-    else await l.zeg(tot === null ? "Geen zorgen." : "Kijk naar het grote rondje.", "Daar staan {5} stippen.");
+    await l.zeg("Je hebt ook het totaal veranderd.");
+    await getalvraag(l, {
+      vraag: ["Hoeveel parels zitten er nu in de grote bel?"],
+      lijst: [2, 3, 5],
+      goed: 5,
+      bijGoed: ["Natuurlijk, {5}."],
+      hint: () => ["Kijk naar de grote bel.", "Tel de parels."],
+      antwoord: ["In de grote bel zitten {5} parels."],
+    });
     await l.zeg("De delen {3} en {2} maken samen {5}.", "Het totaal staat altijd bovenaan.");
     await l.verder();
     await l.zeg("Je hebt dus {2} delen en één totaal.", "Welke som heb je gemaakt?");
+    testHaak({ antwoord: "3 + 2 = 5", vraagId: Math.random() });
     const somKeuze = await l.kies(schud(["3 + 2 = 5", "4 + 2 = 6"]));
     if (somKeuze === "3 + 2 = 5") await l.zeg("Precies.");
     else {
-      await l.zeg("Kijk naar de delen: {3} en {2}.", "Samen is dat {5}.", "Dus {3} plus {2} is {5}.");
+      await l.zeg(somKeuze === null ? "Geen zorgen." : "Kijk naar de delen: {3} en {2}.", "Samen is dat {5}.", "Dus {3} plus {2} is {5}.");
       await l.verder();
     }
     sch.zet({ lijst: [[3, 2, 5]] });
 
     /* Nog een manier om 5 te splitsen. */
     await l.zeg("{3} en {2} is één manier om {5} te splitsen.", "Kun je het ook *anders*?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const anders = await l.kies(["Ja", "Nee"]);
-    await l.zeg(
-      anders === "Ja" ? "Mooi." : "We proberen het samen.",
-      "Verander de stippen in de rondjes onderaan.",
-      "Zorg dat het samen weer {5} is.",
-      "Tik op het vinkje als je klaar bent.",
-    );
-    const [a5, b5] = await zoekSplitsing(l, sch, 5, [[3, 2]], false);
+    await l.zeg(anders === "Ja" ? "Mooi." : "We proberen het samen.", "Verander de parels in de bellen onderaan.", "Zorg dat het samen weer {5} is.");
+    const [a5, b5] = await zoekSplitsing(l, sch, 5, [[3, 2]], false, later);
     sch.zet({ lijst: [[3, 2, 5], [a5, b5, 5]] });
     await l.zeg("Eerst splitste je {5} in {3} en {2}.", "Hoe deed je het deze keer?");
-    const hoe = await l.kies(schud([`${a5} en ${b5}`, `${a5 + 1} en ${b5}`]));
-    await l.zeg(hoe === `${a5} en ${b5}` ? "Goed." : "Kijk naar de rondjes.", `{${a5}} en {${b5}}.`);
+    testHaak({ antwoord: `${a5} + ${b5}`, vraagId: Math.random() });
+    const hoe = await l.kies(schud([`${a5} + ${b5}`, `${a5 + 1} + ${b5}`]));
+    await l.zeg(hoe === `${a5} + ${b5}` ? "Goed." : "Kijk naar de bellen.", `{${a5}} en {${b5}}.`);
     await l.wacht(600);
 
     /* Een vast totaal van 7: drie manieren zoeken. */
     sch.zet({ geheel: 7, links: 0, rechts: 0, lijst: [] });
-    await l.zeg("Ik heb een nieuw totaal klaargezet.", "Welk getal is het?");
-    const z = await kiesGetal(l, [6, 7, 8]);
-    if (z === 7) await l.zeg("Ja, {7}.");
-    else await l.zeg(z === null ? "Geen zorgen." : "Tel de stippen nog eens.", "Het zijn er {7}.");
-    await l.zeg("Zoek {2} delen die samen {7} maken.", "Tik dan op het vinkje.");
+    await getalvraag(
+      l,
+      {
+        vraag: ["Ik heb een nieuw totaal klaargezet.", "Hoeveel parels zijn het?"],
+        lijst: [6, 7, 8],
+        goed: 7,
+        bijGoed: ["Ja, {7}."],
+        hint: () => ["Tel de parels in de grote bel nog eens."],
+        antwoord: ["Het zijn er {7}."],
+        klaarzetten: () => sch.zet({ geheel: 7, links: 0, rechts: 0, lijst: [] }),
+      },
+      later,
+    );
+    await l.zeg("Zoek {2} delen die samen {7} maken.");
     const gevonden: [number, number][] = [];
     const lijst7 = () => gevonden.map(([p, q]) => [p, q, 7] as [number, number, number]);
-    let [p, q] = await zoekSplitsing(l, sch, 7, gevonden);
+    let [p, q] = await zoekSplitsing(l, sch, 7, gevonden, true, later);
     gevonden.push([p, q]);
     sch.zet({ lijst: lijst7() });
-    await l.zeg("Dat klopt.", `Je hebt {7} gesplitst in {${p}} en {${q}}.`);
-    await l.zeg("Je snapt het al goed.", "We breken een getal in stukjes.", "Weet je nog hoe dat heet?");
-    const naam = await l.kies(schud(["Splitsen", "Samenvoegen"]));
+    await l.zeg("Dat werkt.", `Je hebt {7} gesplitst in {${p}} en {${q}}.`);
+    await l.zeg("Je krijgt het echt door.", "We breken een getal in stukjes.", "Weet je nog hoe dat heet?");
+    testHaak({ antwoord: "Splitsen", vraagId: Math.random() });
+    const naam = await l.kies(schud(["Splitsen", "Samenstellen"]));
     if (naam === "Splitsen") await l.zeg("Precies.", "Splitsen is een getal in stukjes breken.", `Net zoals jij {7} splitste in {${p}} en {${q}}.`);
     else await l.zeg(naam === null ? "Geen zorgen." : "Bijna.", "Het heet splitsen.", "Splitsen is een getal in stukjes breken.");
     await l.verder();
 
     await l.zeg("Zoek nog een manier om {7} te splitsen.");
-    [p, q] = await zoekSplitsing(l, sch, 7, gevonden);
+    [p, q] = await zoekSplitsing(l, sch, 7, gevonden, true, later);
     gevonden.push([p, q]);
     sch.zet({ lijst: lijst7() });
     await l.zeg("Heel goed.", `Je hebt {7} gesplitst in {${p}} en {${q}}.`, "Zoek nog één manier.");
-    [p, q] = await zoekSplitsing(l, sch, 7, gevonden);
+    [p, q] = await zoekSplitsing(l, sch, 7, gevonden, true, later);
     gevonden.push([p, q]);
     sch.zet({ lijst: lijst7() });
     await l.zeg(`{${p}} en {${q}}, goed zo.`, "Je hebt {7} nu op {3} manieren gesplitst.", "Knap gedaan.");
@@ -712,19 +1002,21 @@ const splitsen: Lesdraaiboek = {
 
     /* Zelf kiezen: zo een, of een groter getal. */
     await l.zeg("Nog één getal, dan zijn we klaar.", "Wil je er nog een zoals deze?", "Of een groter getal?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const groter = (await l.kies(["Zo een", "Groter"])) === "Groter";
     const g = groter ? 12 : 8;
     const gevondenG: [number, number][] = [];
     sch.zet({ geheel: g, links: 0, rechts: 0, lijst: [] });
     await l.zeg(groter ? "Goed, een groter getal." : "Goed, nog een zoals deze.", `Splits de {${g}} in {2} delen.`);
-    [p, q] = await zoekSplitsing(l, sch, g, gevondenG);
+    [p, q] = await zoekSplitsing(l, sch, g, gevondenG, true, later);
     gevondenG.push([p, q]);
     sch.zet({ lijst: [[p, q, g]] });
     await l.zeg("Ja.", `{${p}} plus {${q}} is {${g}}.`, `Zoek een andere manier om {${g}} te splitsen.`);
-    const [r1, r2] = await zoekSplitsing(l, sch, g, gevondenG);
+    const [r1, r2] = await zoekSplitsing(l, sch, g, gevondenG, true, later);
     sch.zet({ lijst: [[p, q, g], [r1, r2, g]] });
     await l.zeg("Mooi.", `Je hebt {${g}} op {2} manieren gesplitst.`, l.naam ? `Echt knap werk, ${l.naam}.` : "Echt knap werk.");
     await l.verder();
+    await speelLater(l, later);
 
     l.vlak(null);
     l.bak([]);
@@ -734,8 +1026,47 @@ const splitsen: Lesdraaiboek = {
   },
 };
 
+/** De korte proef (ronde 3): één splitsing; het vraagteken = "we leren het samen". */
+async function zoekSplitsingProef(l: Lesgids, sch: Schema, totaal: number): Promise<[number, number] | null> {
+  sch.zet({ geheel: totaal, links: 0, rechts: 0 });
+  testHaak({ splitsDoel: { totaal, voorbeeld: [totaal - 3, 3] } });
+  sch.zet({ knoppen: false, klaar: true, hulp: true });
+  await l.wijsAan("klaar", "Ben je klaar? Tik dan op het vinkje.");
+  await l.wijsAan("hulpvlak", "Weet je het niet? Tik dan op het vraagteken.");
+  sch.zet({ knoppen: true });
+  for (let poging = 0; poging < 2; ) {
+    const g = await l.wachtOpVlak<HoloSplitsMelding>(["knop", "klaar", "hulp"]);
+    if (g.soort === "knop") {
+      drukKnop(sch, g.knop, totaal);
+      continue;
+    }
+    if (g.soort === "hulp") break;
+    const { links: a, rechts: b } = sch.st;
+    if (a + b === totaal && a > 0 && b > 0) {
+      sch.zet({ knoppen: false, klaar: false, hulp: false, golf: Date.now() });
+      testHaak({ splitsDoel: null });
+      return [a, b];
+    }
+    poging++;
+    if (poging < 2) await l.zeg(`{${a}} en {${b}} is samen {${a + b}}.`, `We zoeken {${totaal}}.`);
+  }
+  sch.zet({ knoppen: false, klaar: false, hulp: false, links: 0, rechts: 0 });
+  testHaak({ splitsDoel: null });
+  aangewezenHulp.add(l);
+  return null;
+}
+
 /* ---------- 4. Tiental plus eenheden ---------- */
 
+/*
+  Volgt LESSENPLAN.md G14 en Synthesis "Add up to 100 · 10s Plus Ones": eerst
+  met sterrenbeelden van tien (30, ronde getallen met het niet-voorbeeld 25),
+  dan een gekleurd sterrengroepje bij een rond getal (het gekozen groepje gaat
+  op slot), het trucje met pijlen in de som, de kaart met twee kristallen
+  kolommen, en snelle vragen. Eigen Bliepo: sterren en kristallen; vragen met
+  woorden als antwoord zijn cijfervragen of een tik op een kolom geworden.
+  19 opgaven.
+*/
 const tientalPlusEenheden: Lesdraaiboek = {
   id: "optellen-100-tiental-plus-eenheden",
   titel: "Tiental plus eenheden",
@@ -743,125 +1074,161 @@ const tientalPlusEenheden: Lesdraaiboek = {
   kaarttekening: KaartStaven,
 
   async speel(l) {
-    const st: TientallenProps = { modus: "staven", staven: 3 };
-    l.vlak(Tientallenbord, { ...st });
-    const zet = (p: Partial<TientallenProps>) => {
+    const later = nieuwLater();
+    const st: StavenProps = { modus: "staven", tienen: 3, los: 0, bij: [], lege: false };
+    l.vlak(HoloStaven, { ...st });
+    const zet = (p: Partial<StavenProps>) => {
       Object.assign(st, p);
-      l.pasVlakAan<TientallenProps>(p);
+      l.pasVlakAan<StavenProps>(p);
     };
-    const kiesUitPalet = async () => {
+    let golf = 0;
+    const goedGolf = () => zet({ golf: ++golf });
+    const kiesUitPalet = async (eerste: boolean) => {
+      if (eerste) await l.wijsAan("groepje4", "Tik op een groepje sterren.");
+      testHaak({ palet: true });
       zet({ actief: true });
-      const gk = await l.wachtOpVlak<TientallenMelding>("kies");
+      const gk = await l.wachtOpVlak<StavenMelding>("kies");
       zet({ actief: false });
+      testHaak({ palet: false });
       return gk.soort === "kies" ? gk.n : 1;
     };
 
-    /* Drie staven van 10. */
-    await l.zeg("We beginnen hiermee.", "Welk getal heb ik met de stippen gemaakt?");
-    const x = await kiesGetal(l, [3, 10, 30]);
-    if (x === 30) await l.zeg("Goed, {30}.");
-    else {
-      await l.zeg(x === null ? "Geen zorgen." : x === 3 ? "{3}?" : `{${x}}?`, x === 3 ? "Ik zie wel {3} groepjes." : "", "Maar elk groepje heeft {10} stippen.");
-      await l.verder();
-      await l.zeg("Probeer het nog eens.", "Welk getal laten de witte stippen zien?");
-      const y = await kiesGetal(l, [20, 29, 30]);
-      if (y === 30) await l.zeg("Goed, {30}.");
-      else {
-        await l.zeg("{10}, {20}, {30}.", "Het is {30}.");
-        await l.verder();
-      }
-    }
+    /* Drie sterrenbeelden van 10. */
+    await getalvraag(
+      l,
+      {
+        vraag: ["We beginnen hiermee.", "Welk getal heb ik met de sterren gemaakt?"],
+        lijst: [3, 10, 30],
+        goed: 30,
+        bijGoed: ["Goed, {30}."],
+        hint: (x) => (x === 3 ? ["{3}?", "Ik zie wel {3} groepen.", "Maar elke groep heeft {10} sterren."] : [`{${x}}?`, "Elke groep heeft {10} sterren.", "Tel maar met tientallen."]),
+        antwoord: ["{10}, {20}, {30}.", "Het is {30}."],
+        klaarzetten: () => zet({ modus: "staven", tienen: 3, los: 0, bij: [], palet: false }),
+      },
+      later,
+    );
 
-    /* Een rond getal: alleen groepjes van 10. */
+    /* Een rond getal: alleen groepen van 10. */
     await l.zeg("{30} is een bijzonder getal.", "Het is een *rond* getal.", "Weet je wat ronde getallen zijn?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const weetRond = await l.kies(["Ja", "Nee"]);
     await l.zeg(
       weetRond === "Ja" ? "Mooi, dan frissen we het even op." : "Geen probleem, ik help je.",
       weetRond === "Ja" ? "" : "Het klinkt lastig, maar je kent er al een paar.",
-      "Een rond getal bestaat alleen uit groepjes van {10}.",
+      "Een rond getal bestaat alleen uit volle groepen van {10}.",
     );
     await l.verder();
-    zet({ staven: 1 });
-    await l.zeg("Zoals deze: {10}.", "Ik doe er een groepje bij.", "Wat is het volgende ronde getal?");
-    const v20 = await kiesGetal(l, [15, 20, 25]);
-    zet({ staven: 2 });
-    if (v20 === 20) await l.zeg("Ja, {20}.", "Want het zijn {2} groepjes van {10}.");
-    else {
-      await l.zeg(v20 === null ? "Geen zorgen." : "Kijk maar.", "Het is {20}.", "{2} groepjes van {10}.");
-      await l.verder();
-    }
-    zet({ half: true });
+    zet({ tienen: 1 });
+    await l.zeg("Zoals deze: {10}.", "Ik doe er een groep bij.");
+    await getalvraag(l, {
+      vraag: ["Wat is het volgende ronde getal?"],
+      lijst: [15, 20, 25],
+      goed: 20,
+      bijGoed: ["Ja, {20}.", "Want het zijn {2} groepen van {10}."],
+      hint: () => ["Er komt een hele groep van {10} bij.", "{10} en nog {10}."],
+      antwoord: ["Het is {20}.", "{2} groepen van {10}."],
+    });
+    zet({ tienen: 2 });
+    await l.wacht(600);
+    zet({ los: 5, lege: true });
     await l.zeg("Hm, {25}.", "Is *dit* een rond getal?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const rond25 = await l.kies(["Ja", "Nee"]);
-    if (rond25 === "Nee") await l.zeg("Je hebt gelijk.", "{2} groepjes van {10} en een beetje extra.", "Dus het is geen rond getal.");
-    else {
-      await l.zeg(rond25 === null ? "Geen zorgen." : "Kijk goed.", "Het laatste groepje is niet vol.", "Dus {25} is geen rond getal.");
-    }
+    if (rond25 === "Nee") await l.zeg("Je hebt gelijk.", "{2} groepen van {10} en een beetje extra.", "Dus het is geen rond getal.");
+    else await l.zeg(rond25 === null ? "Geen zorgen." : "Kijk goed.", "De laatste groep is niet vol.", "Dus {25} is geen rond getal.");
     await l.verder();
-    zet({ half: false, staven: 3 });
+    zet({ tienen: 3, los: 0, lege: false });
     await l.zeg("En zo komen we bij {30}.", "Is dit een rond getal?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const rond30 = await l.kies(["Ja", "Nee"]);
-    await l.zeg(rond30 === "Ja" ? "Natuurlijk." : "Kijk goed.", "{3} groepjes van {10} en niets extra.", "Dus {30} is een rond getal.");
+    await l.zeg(rond30 === "Ja" ? "Natuurlijk." : "Kijk goed.", "{3} groepen van {10} en niets extra.", "Dus {30} is een rond getal.");
     await l.verder();
 
-    /* Een klein getal bij een rond getal. */
-    zet({ palet: true, som: { a: 30, b: null, c: null } });
-    await l.zeg("Nu doen we een klein getal bij een rond getal.", "Kies een gekleurd getal om bij {30} te doen.", "Tik op een van de stippen bovenaan.");
-    const n = await kiesUitPalet();
-    zet({ extra: n, som: { a: 30, b: n, c: null } });
-    await l.zeg(`Kijk naar je stippen.`, `Hoeveel is {30} plus {${n}}?`);
-    await vraagTiental(l, 30, n, (c) => zet({ som: { a: 30, b: n, c } }));
+    /* Een klein getal bij een rond getal: kies een gekleurd groepje. */
+    zet({ palet: true, paletSlot: [] });
+    l.som(plusVak(30));
+    await l.zeg("Nu doen we een klein getal bij een rond getal.", "Kies een groepje sterren om bij {30} te doen.");
+    const n = await kiesUitPalet(true);
+    zet({ bij: [n] });
+    l.som(plusSom(30, n));
+    await l.zeg("Kijk naar je sterren.", `Hoeveel is {30} plus {${n}}?`);
+    await vraagTiental(l, 30, n, () => goedGolf());
 
-    zet({ staven: 4, extra: null, paletSlot: [n], som: { a: 40, b: null, c: null } });
-    await l.zeg(`Probeer nu een getal bij {40}.`, `De {${n}} zet ik op slot.`, "Die hadden we al.");
-    const k = await kiesUitPalet();
-    zet({ extra: k, som: { a: 40, b: k, c: null } });
+    zet({ tienen: 4, bij: [], paletSlot: [n] });
+    l.som(plusVak(40));
+    await l.zeg("Probeer nu een groepje bij {40}.", `De {${n}} zet ik op slot.`, "Die hadden we al.");
+    const k = await kiesUitPalet(false);
+    zet({ bij: [k] });
+    l.som(plusSom(40, k));
     await l.zeg(`Hoeveel is {40} plus {${k}}?`);
-    await vraagTiental(l, 40, k, (c) => zet({ som: { a: 40, b: k, c } }));
+    await vraagTiental(l, 40, k, () => goedGolf());
+    l.som(null);
 
     /* Het trucje, met pijlen. */
-    zet({ modus: "pijlen", pijlen: { a: 20, b: 3, c: 23 }, palet: false });
+    zet({ modus: "pijlen", pijlen: { a: 20, b: 3, c: 23 }, palet: false, bij: [] });
     await l.zeg("Je doet het goed.", "Misschien zag je al een trucje.");
     await l.verder();
-    await l.zeg("We hebben een rond getal, zoals {20}.", "We doen er een klein getal bij.", "Wat gebeurt er met de tientallen?");
-    const t = await l.kies(["Ze blijven gelijk", "Ze worden meer", "Ze worden minder"]);
-    if (t === "Ze blijven gelijk") await l.zeg("Ja.", "Het aantal tientallen verandert helemaal niet.");
-    else {
-      await l.zeg(t === null ? "Geen zorgen." : "Kijk naar de pijlen.", "Er staat twee keer een {2}.", "De tientallen blijven gelijk.");
-      await l.verder();
-    }
-    await l.zeg("En de eenheden?", "Veranderden die toen we er {3} bij deden?");
-    const e = await l.kies(["Ja", "Nee"]);
-    await l.zeg(e === "Ja" ? "Natuurlijk." : "Kijk nog eens.", "Ze werden het getal dat we erbij deden.", "Van {0} naar {3}.");
-    await l.verder();
+    await l.zeg("We hebben een rond getal, zoals {20}.", "We doen er een klein getal bij: {3}.");
+    await getalvraag(
+      l,
+      {
+        vraag: ["Kijk naar de pijlen.", "Hoeveel tientallen heeft {23}?"],
+        lijst: [2, 3, 23],
+        goed: 2,
+        bijGoed: ["Ja, {2}.", "Net als {20}.", "Het aantal tientallen verandert helemaal niet."],
+        hint: () => ["Kijk naar het gele cijfer.", "Bij {20} staat er een {2}."],
+        antwoord: ["Er staat twee keer een {2}.", "De tientallen blijven gelijk."],
+        klaarzetten: () => zet({ modus: "pijlen", pijlen: { a: 20, b: 3, c: 23 } }),
+      },
+      later,
+    );
+    await getalvraag(
+      l,
+      {
+        vraag: ["En de eenheden?", "Hoeveel eenheden heeft {23}?"],
+        lijst: [0, 2, 3],
+        goed: 3,
+        bijGoed: ["Natuurlijk, {3}.", "Ze werden het getal dat we erbij deden.", "Van {0} naar {3}."],
+        hint: () => ["Kijk naar het laatste cijfer van {23}."],
+        antwoord: ["{23} heeft {3} eenheden.", "Ze werden het getal dat we erbij deden.", "Van {0} naar {3}."],
+        klaarzetten: () => zet({ modus: "pijlen", pijlen: { a: 20, b: 3, c: 23 } }),
+      },
+      later,
+    );
 
-    /* De plaatswaardekaart. */
-    zet({ modus: "kaart", tienen: 2, enen: 0 });
-    await l.zeg("Ik laat het nog op een andere manier zien.", "Ik heb {2} tientallen in deze kaart gezet.", "Samen is dat {20}.", "En hoeveel eenheden zijn er?");
-    const nul = await kiesGetal(l, [0, 1, 2]);
-    if (nul === 0) await l.zeg("Ja, er zijn geen eenheden.", "Dan is het een rond getal.");
-    else {
-      await l.zeg(nul === null ? "Geen zorgen." : "Kijk in het vak van de eenheden.", "Het is leeg.", "Er zijn {0} eenheden.");
-      await l.verder();
-    }
-    await l.zeg("Nu doen we er wat bij.", "Laat {20} plus {3} zien.", "Tik {3} keer in het vak van de eenheden.");
+    /* De kaart met twee kristallen kolommen. */
+    zet({ modus: "kaart", kaartTienen: 2, kaartEnen: 0, pijlen: null });
+    await l.zeg("Ik laat het nog op een andere manier zien.", "Links staan de tientallen.", "Rechts de eenheden.", "Ik heb {2} tientallen gezet.", "Samen is dat {20}.");
+    await getalvraag(
+      l,
+      {
+        vraag: ["En hoeveel eenheden zijn er?"],
+        lijst: [0, 1, 2],
+        goed: 0,
+        bijGoed: ["Ja, er zijn geen eenheden.", "Dan is het een rond getal."],
+        hint: () => ["Kijk in de rechter kolom.", "Zitten er sterren in?"],
+        antwoord: ["De rechter kolom is leeg.", "Er zijn {0} eenheden."],
+        klaarzetten: () => zet({ modus: "kaart", kaartTienen: 2, kaartEnen: 0 }),
+      },
+      later,
+    );
+    await l.zeg("Nu doen we er wat bij.", "Laat {20} plus {3} zien.", "Tik {3} keer in de kolom van de eenheden.");
     await eenhedenTikken(l, st, zet, 3);
-    await l.zeg("Goed, je deed er {3} bij.", "Wat veranderde er?");
-    const wat = await l.kies(["De tientallen", "De eenheden"]);
-    await l.zeg(wat === "De eenheden" ? "Ja, klopt." : "Kijk naar de kaart.", "Alleen de eenheden veranderen.", "Nu nog één.");
-    await l.verder();
-    zet({ tienen: 4, enen: 0 });
+    await l.zeg("Goed, je deed er {3} bij.", "Welke kolom veranderde?", "Tik erop.");
+    await kolomVraag(l, zet, "Ja, klopt.", ["Kijk naar de cijfers boven de kolommen.", "Links staat nog steeds {2}.", "Alleen de eenheden veranderen."]);
+    await l.zeg("Nu nog één.");
+    zet({ kaartTienen: 4, kaartEnen: 0 });
     await l.zeg("Ik heb er {4} tientallen in gezet.", "Maar {0} eenheden.", "Dat is {40}.");
-    await l.zeg("Laat nu {40} plus {5} zien.", "Zet {5} eenheden in het vak.");
+    await l.zeg("Laat nu {40} plus {5} zien.", "Zet {5} sterren bij de eenheden.");
     await eenhedenTikken(l, st, zet, 5);
-    await l.zeg("Goed zo.", "Je doet een klein getal bij een rond getal.", "Wat verandert er dan?");
-    const regel = await l.kies(["De eenheden veranderen", "De tientallen veranderen"]);
-    await l.zeg(regel === "De eenheden veranderen" ? "Klopt." : "Kijk nog eens naar de kaart.", "Dan veranderen alleen de eenheden.");
+    await l.zeg("Goed zo.", "Je deed een klein getal bij een rond getal.", "Welke kolom verandert dan?", "Tik erop.");
+    await kolomVraag(l, zet, "Klopt.", ["Kijk nog eens naar de kaart.", "Alleen de eenheden veranderen."]);
+    await l.zeg("Als je een klein getal bij een rond getal doet, veranderen alleen de eenheden.");
     await l.verder();
 
-    /* Snelle vragen, zonder stippen. */
+    /* Snelle vragen, zonder sterren. */
     zet({ modus: "leeg" });
-    await l.zeg("Nu nog een paar snelle vragen.", "Geen stippen, alleen jij en ik.");
+    await l.zeg("Nu nog een paar snelle vragen.", "Geen sterren, alleen jij en ik.");
     const snel: [number, number, number[]][] = [
       [70, 3, [63, 72, 73, 83]],
       [70, 8, [77, 78, 87, 88]],
@@ -870,28 +1237,29 @@ const tientalPlusEenheden: Lesdraaiboek = {
     ];
     for (const [i, [a, b, lijst]] of snel.entries()) {
       l.som(plusSom(a, b));
-      await l.zeg(i === 0 ? "Probeer deze eerst." : i === 3 ? "Oké, nog één." : "En deze?", `Hoeveel is {${a}} plus {${b}}?`);
-      let keuzes = lijst;
-      for (let poging = 1; ; poging++) {
-        const v = await kiesGetal(l, keuzes);
-        if (v === a + b) {
-          l.som(plusSom(a, b, a + b));
-          await l.zeg(["Ja.", "Precies.", "Goed.", "Helemaal goed."][i], `{${a + b}}.`);
-          break;
-        }
-        if (v !== null && poging === 1) {
-          keuzes = schud(keuzes.filter((w) => w !== v));
-          await l.zeg("Probeer het nog eens.");
-          continue;
-        }
-        l.som(plusSom(a, b, a + b));
-        await l.zeg(a === 10 ? "Het tiental van {10} blijft gelijk." : `De tientallen van {${a}} blijven gelijk.`, `Er komen {${b}} eenheden bij: {${a + b}}.`);
-        await l.verder();
-        break;
-      }
-      await l.wacht(600);
+      const goed = await getalvraag(
+        l,
+        {
+          vraag: [i === 0 ? "Probeer deze eerst." : i === 3 ? "Oké, nog één." : "En deze?", `Hoeveel is {${a}} plus {${b}}?`],
+          lijst,
+          goed: a + b,
+          bijGoed: [["Ja.", "Precies.", "Goed.", "Helemaal goed."][i], `{${a + b}}.`],
+          hint: (x) => (x === omgedraaid(a + b) ? ["Kijk goed.", "Eerst de tientallen, dan de eenheden."] : ["Probeer het nog eens.", "De tientallen blijven gelijk."]),
+          antwoord: [a === 10 ? "Het tiental van {10} blijft gelijk." : `De tientallen van {${a}} blijven gelijk.`, `Er komen {${b}} eenheden bij: {${a + b}}.`],
+          klaarzetten: () => {
+            zet({ modus: "leeg" });
+            l.som(plusSom(a, b));
+          },
+        },
+        later,
+      );
+      l.som(plusSom(a, b, a + b));
+      if (goed) goedGolf();
+      await l.wacht(700);
       l.som(null);
     }
+    await speelLater(l, later);
+    l.som(null);
     await l.zeg(l.naam ? `${l.naam}, je snapt het helemaal.` : "Je snapt het helemaal.", "Knap gedaan.");
     await l.wacht(600);
 
@@ -903,6 +1271,11 @@ const tientalPlusEenheden: Lesdraaiboek = {
   },
 };
 
+/** "30 + ▢": een rond getal met een leeg vakje erachter. */
+function plusVak(a: number): Somdeel[] {
+  return [{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "vak" }];
+}
+
 /** Het getal met de cijfers omgedraaid: 37 wordt 73. */
 function omgedraaid(n: number): number {
   return Number(String(n).split("").reverse().join(""));
@@ -910,16 +1283,18 @@ function omgedraaid(n: number): number {
 
 /**
  * "Hoeveel is 30 plus 7?" met de valkuil 73 (cijfers omgedraaid). Bij 33 en 44
- * kan dat niet; dan is de valkuil alleen de losse stippen (3).
+ * kan dat niet; dan is de valkuil alleen de losse sterren (3).
  */
-async function vraagTiental(l: Lesgids, a: number, b: number, zetUitkomst: (c: number) => void) {
+async function vraagTiental(l: Lesgids, a: number, b: number, bijGoed: () => void) {
   const s = a + b;
   const fout = omgedraaid(s) !== s ? omgedraaid(s) : b;
   let keuzes = oplopend(s, s + 10, fout);
+  testHaak({ antwoord: s, vraagId: Math.random() });
   for (let poging = 1; ; poging++) {
-    const v = await kiesGetal(l, keuzes);
+    const v = poging === 1 ? await kiesGetalHolo(l, keuzes) : await kiesGetal(l, keuzes);
     if (v === s) {
-      zetUitkomst(s);
+      l.som(plusSom(a, b, s));
+      bijGoed();
       await l.zeg(poging === 1 ? "Precies." : "Helemaal goed.", `{${a}} plus {${b}} is {${s}}.`);
       await l.verder();
       return;
@@ -928,31 +1303,54 @@ async function vraagTiental(l: Lesgids, a: number, b: number, zetUitkomst: (c: n
       /* De foute keuze verdwijnt; er komt een nieuwe bij. */
       keuzes = oplopend(...keuzes.filter((w) => w !== v), s - 1);
       await l.zeg(
-        v === fout && fout !== b ? "Eerst de tientallen, dan de losse stippen." : v === fout ? "Vergeet de groepjes van {10} niet." : "Tel de groepjes van {10} nog eens.",
+        v === fout && fout !== b ? "Eerst de tientallen, dan de losse sterren." : v === fout ? "Vergeet de groepen van {10} niet." : "Tel de groepen van {10} nog eens.",
         "Probeer het nog eens.",
       );
       continue;
     }
-    zetUitkomst(s);
-    await l.zeg(v === null ? "Geen zorgen." : "Kijk.", "Het getal valt op de plek van de nul.", `{${a}} plus {${b}} is {${s}}.`);
+    l.som(plusSom(a, b, s));
+    await l.zeg(v === null ? "Geen zorgen." : "Kijk.", `De tientallen blijven: {${a}}.`, `Er komen {${b}} eenheden bij.`, `{${a}} plus {${b}} is {${s}}.`);
     await l.verder();
     return;
   }
 }
 
-/** Het kind tikt eenheden in het vak tot er `aantal` bij zijn gekomen. */
-async function eenhedenTikken(l: Lesgids, st: TientallenProps, zet: (p: Partial<TientallenProps>) => void, aantal: number) {
-  const doel = (st.enen ?? 0) + aantal;
-  zet({ actief: true });
-  while ((st.enen ?? 0) < doel) {
-    await l.wachtOpVlak<TientallenMelding>("eenheid");
-    zet({ enen: (st.enen ?? 0) + 1 });
+/** Het kind tikt sterren in de kolom van de eenheden tot er `aantal` bij zijn gekomen. */
+async function eenhedenTikken(l: Lesgids, st: StavenProps, zet: (p: Partial<StavenProps>) => void, aantal: number) {
+  const doel = (st.kaartEnen ?? 0) + aantal;
+  testHaak({ kaartDoel: doel });
+  zet({ actief: true, kolomKiezen: false });
+  while ((st.kaartEnen ?? 0) < doel) {
+    await l.wachtOpVlak<StavenMelding>("eenheid");
+    zet({ kaartEnen: (st.kaartEnen ?? 0) + 1 });
   }
   zet({ actief: false });
+  testHaak({ kaartDoel: null });
+}
+
+/** "Welke kolom veranderde?": het kind tikt op een kolom (geen woorden om te lezen). */
+async function kolomVraag(l: Lesgids, zet: (p: Partial<StavenProps>) => void, bijGoed: string, uitleg: string[]) {
+  testHaak({ kolomAntwoord: "een" });
+  zet({ actief: true, kolomKiezen: true });
+  const g = await l.wachtOpVlak<StavenMelding>("kolom");
+  zet({ actief: false, kolomKiezen: false });
+  testHaak({ kolomAntwoord: null });
+  if (g.soort === "kolom" && g.kolom === "een") await l.zeg(bijGoed, "Alleen de eenheden veranderen.");
+  else {
+    await l.zeg(...uitleg);
+    await l.verder();
+  }
 }
 
 /* ---------- 5. Eindtoets ---------- */
 
+/*
+  Volgt LESSENPLAN.md O20 en Synthesis "Add up to 100 · Mastery Check": drie
+  lichtbollen tikken en lezen, 30 + 40 en 70 + 6 (het groep 3-deel; 76 + ? =
+  100 en 37 + 8 zijn groep 4 en vallen weg), en de vragen die hier al stonden
+  (de 8 splitsen, 27 + 20). Toetsregels zoals de instaptoets; daarna samen
+  oefenen tot er minstens 15 opgaven zijn.
+*/
 const eindtoets: Lesdraaiboek = {
   id: "optellen-100-eindtoets",
   titel: "Eindtoets: optellen tot 100",
@@ -961,128 +1359,82 @@ const eindtoets: Lesdraaiboek = {
 
   async speel(l) {
     let goed = 0;
-    let traag = 0;
-    const tel = (r: { goed: boolean; traag: boolean }) => {
-      if (r.goed) goed++;
-      if (r.traag) traag++;
+    let gedaan = 0;
+    let stop = false;
+    const tel = async (vraag: () => Promise<"goed" | "herkansing" | "stop">) => {
+      if (stop) return;
+      const r = await vraag();
+      gedaan++;
+      if (r === "goed") goed++;
+      if (r === "stop") stop = true;
     };
 
     const m = maakMachine(l, { honderd: true, knop: null });
     await l.zeg("Dit is de eindtoets van optellen tot {100}.", "Ken je dit al?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const al = await l.kies(["Ja", "Nee"]);
     await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "We kijken wat je al kunt.", "Probeer zo vlot mogelijk te antwoorden.");
     m.zet({ honderd: false, knop: 10, wijs: true });
-    await l.zeg("Tik {3} keer op de plusknop.");
+    await l.zeg("Tik {3} keer op de knop.");
     await m.tik(3);
     await l.zeg("Welk getal is dat?");
-    tel(
-      await toetsvraag(l, {
-        opties: [3, 20, 30, 40],
-        goed: 30,
-        herkansing: [3, 13, 30, 40],
-        bijGoed: ["Goed, {30} stippen.", "{3} groepjes van {10}."],
-        bijFout: (x) => (x === null ? ["Geen zorgen.", "Kijk nog eens goed."] : [`{${x}}?`, "Kijk nog eens goed."]),
-        opnieuw: ["{3} groepjes van {10}.", "Hoeveel stippen zijn dat?"],
-        antwoord: async () => {
-          await l.zeg("Het zijn {30} stippen.");
-          await l.verder();
-        },
-        tempo: "beide",
-      }),
-    );
+    await tel(() => toetsHolo(l, { opties: [3, 30, 40, 300], goed: 30, bijGoed: ["Goed, {30} sterren.", "{3} lichtbollen van {10}."], bijFout: (x) => [`{${x}}?`, "Kijk nog eens goed."], tempo: "beide" }));
 
-    await l.zeg("Wat krijg je als je er {40} bij doet?", "Hoeveel is {30} plus {40}?");
-    tel(
-      await toetsvraag(l, {
-        opties: [34, 60, 70, 80],
-        goed: 70,
-        herkansing: [34, 60, 70, 80],
-        bijGoed: ["Precies, {30} plus {40} is {70}."],
-        bijFout: somFout(30, 40),
-        opnieuw: ["Hoeveel is {30} plus {40}?"],
-        antwoord: async () => {
-          await l.zeg("{30} plus {40} is {70}.");
-          await l.verder();
-        },
-        tempo: "beide",
-      }),
-    );
-    m.zet({ tienen: 7, knop: null });
-    await l.zeg("Kijk hoe ik er nu eenheden bij doe.");
-    for (let i = 1; i <= 6; i++) {
-      m.zet({ enen: i });
-      await l.wacht(220);
+    if (!stop) {
+      l.som(plusSom(30, 40));
+      await l.zeg("Wat krijg je als je er {40} bij doet?", "Hoeveel is {30} plus {40}?");
+      await tel(() => toetsHolo(l, { opties: [34, 60, 70, 80], goed: 70, bijGoed: ["Precies, {30} plus {40} is {70}."], bijFout: somAlsVraag(30, 40), tempo: "beide" }));
+      l.som(null);
     }
-    await l.zeg("{70} plus {6}.", "Weet je welk getal dit is?");
-    tel(
-      await toetsvraag(l, {
-        opties: [66, 67, 76, 86],
-        goed: 76,
-        herkansing: [67, 75, 76, 86],
-        bijGoed: ["Precies, {76}."],
-        bijFout: somFout(70, 6),
-        opnieuw: ["{7} groepjes van {10} en {6} losse stippen.", "Welk getal is dat?"],
-        antwoord: async () => {
-          await l.zeg("{7} groepjes van {10} en {6} losse stippen.", "Dat is {76}.");
-          await l.verder();
-        },
-        tempo: "beide",
-      }),
-    );
+    if (!stop) {
+      m.zet({ tienen: 7, knop: null });
+      await l.zeg("Kijk hoe ik er nu eenheden bij doe.");
+      for (let i = 1; i <= 6; i++) {
+        m.zet({ enen: i });
+        await l.wacht(260);
+      }
+      l.som(plusSom(70, 6));
+      await l.zeg("{70} plus {6}.", "Weet je welk getal dit is?");
+      await tel(() => toetsHolo(l, { opties: [66, 76, 86, 706], goed: 76, bijGoed: ["Precies, {76}."], bijFout: somAlsVraag(70, 6), tempo: "beide" }));
+      l.som(null);
+    }
 
-    const sch = maakSchema(l, { geheel: 8, links: 5, rechts: 0, vraag: "rechts" });
-    await l.zeg("Nu splitsen we de {8}.", "Eén deel is {5}.", "Hoeveel is het andere deel?");
-    tel(
-      await toetsvraag(l, {
-        opties: [2, 3, 4, 13],
-        goed: 3,
-        herkansing: [1, 2, 3, 4],
-        bijGoed: ["Ja, {5} en {3} is samen {8}."],
-        bijFout: (x) => (x === null ? ["Geen zorgen.", "Kijk nog eens goed."] : [`{5} en {${x}} is samen {${5 + x}}.`, "We zoeken {8}."]),
-        opnieuw: ["Welk getal hoort in het lege rondje?"],
-        antwoord: async () => {
-          await l.zeg("{5} en {3} is samen {8}.");
-          await l.verder();
-        },
-        tempo: "beide",
-      }),
-    );
-    sch.zet({ rechts: 3, vraag: null });
-    await l.wacht(700);
+    if (!stop) {
+      const sch = maakSchema(l, { geheel: 8, links: 5, rechts: 0, vraag: "rechts", sterren: true });
+      await l.zeg("Nu splitsen we de {8}.", "Eén deel is {5}.", "Hoeveel is het andere deel?");
+      await tel(() =>
+        toetsHolo(l, { opties: [2, 3, 4, 13], goed: 3, bijGoed: ["Ja, {5} en {3} is samen {8}."], bijFout: (x) => [`{5} en {${x}} is samen {${5 + x}}?`, "Kijk nog eens goed."], tempo: "beide" }),
+      );
+      if (!stop) {
+        sch.zet({ rechts: 3, vraag: null });
+        await l.wacht(700);
+      }
+    }
 
     /* Een kale som. */
-    maakMachine(l, { knop: null });
-    l.som(plusSom(27, 20));
-    await l.zeg("Nog één vraag.", "Hoeveel is {27} plus {20}?");
-    tel(
-      await toetsvraag(l, {
-        opties: [29, 37, 47, 57],
-        goed: 47,
-        herkansing: [29, 37, 47, 57],
-        bijGoed: ["Helemaal goed."],
-        bijFout: somFout(27, 20),
-        opnieuw: ["Hoeveel is {27} plus {20}?"],
-        antwoord: async () => {
-          await l.zeg("Bij {27} komen {2} groepjes van {10}.", "{37}, {47}.");
-          await l.verder();
-        },
-        tempo: "beide",
-      }),
-    );
-    l.som(plusSom(27, 20, 47));
-    await l.wacht(900);
-    l.som(null);
+    if (!stop) {
+      maakMachine(l, { knop: null });
+      l.som(plusSom(27, 20));
+      await l.zeg("Nog één vraag.", "Hoeveel is {27} plus {20}?");
+      await tel(() => toetsHolo(l, { opties: [29, 37, 47, 57], goed: 47, bijGoed: ["Helemaal goed."], bijFout: somAlsVraag(27, 20), tempo: "beide" }));
+      if (!stop) {
+        l.som(plusSom(27, 20, 47));
+        await l.wacht(900);
+      }
+      l.som(null);
+    }
+
+    if (!stop && goed === 5) await l.zeg(l.naam ? `Echt knap gedaan, ${l.naam}!` : "Echt knap gedaan!", "Je kunt plussommen tot {100} maken.");
+    else if (!stop) await l.zeg("Goed gedaan.", "Je weet het bijna allemaal.");
+    await l.verder();
+
+    /* Samen oefenen, zodat het samen minstens 15 opgaven zijn. */
+    await oefenNaToets(l, Math.max(10, 15 - gedaan));
 
     l.vlak(null);
     l.bak([]);
     const tik = l.kaart();
-    if (goed === 5 && traag <= 1) {
-      await l.zeg(l.naam ? `Echt knap gedaan, ${l.naam}!` : "Echt knap gedaan!", "Je kunt plussommen tot {100} maken.", "Tik op de kaart om hem af te vinken.");
-    } else if (goed >= 4) {
-      await l.zeg("Goed gedaan.", traag > 1 ? "Je weet het, nu nog wat vlotter." : "Je weet het bijna allemaal.", "Tik op de kaart om hem af te vinken.");
-    } else {
-      await l.zeg("Je weet al veel.", "Oefen nog wat met de lessen.", "Daarna doe je de toets nog eens.", "Tik op de kaart om hem af te vinken.");
-    }
+    await l.zeg(stop ? "Goed geoefend." : "Goed gedaan.", stop ? "Doe de toets later nog eens." : "", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
@@ -1240,91 +1592,145 @@ async function vulAan(
   }
 }
 
+/* ---------- aanvullen met sterrenbeelden (hologrammen) ---------- */
+
+type Sterbeeld = { st: StavenProps; zet(p: Partial<StavenProps>): void };
+
+function maakSterbeeld(l: Lesgids, begin: Partial<StavenProps>): Sterbeeld {
+  const st: StavenProps = { modus: "staven", tienen: 0, los: 0, bij: [], lege: true, palet: false, paletSlot: [], actief: false, vinkje: false, hulp: false, ...begin };
+  l.vlak(HoloStaven, { ...st });
+  return {
+    st,
+    zet(p) {
+      Object.assign(st, p);
+      l.pasVlakAan<StavenProps>(p);
+    },
+  };
+}
+
+/** "a + ▢ = doel", of met het gekozen getal in het vakje. */
+function aanvulSom(a: number, doel: number, g: number | null = null): Somdeel[] {
+  return [{ t: "getal", n: a }, { t: "teken", s: "+" }, g === null ? { t: "vak" } : { t: "vak", waarde: String(g) }, { t: "teken", s: "=" }, { t: "getal", n: doel }];
+}
+
 /**
- * Een telvraag met keuzes. Met `opnieuw` krijgt het kind na een fout dezelfde
- * vraag anders gesteld, met andere keuzes; daarna (of bij "Weet ik niet") het
- * antwoord met de reden.
+ * Aanvullen tot het volgende tiental met een gekleurd sterrengroepje uit het
+ * palet (LESSENPLAN.md O19). Het kind kiest, ziet de sterren in de lege
+ * plekjes vallen, en bevestigt met het vinkje. 1× fout: het kind ziet wat er
+ * gebeurt (een gaatje, of sterren over de groep heen), de keuze gaat op slot.
+ * 2× fout of het vraagteken: Bliepo zegt welk groepje het moet zijn (alleen dat
+ * groepje blijft over) en de vraag komt later terug. Geeft terug of het in één
+ * keer goed was.
  */
-async function telVraag(
-  l: Lesgids,
-  lijst: number[],
-  goed: number,
-  o: { bijGoed: string[]; uitleg: string[]; bijFout?: (x: number) => string[]; opnieuw?: { zin: string[]; lijst: number[] } },
-): Promise<boolean> {
-  const x = await kiesGetal(l, lijst);
-  if (x === goed) {
-    await l.zeg(...o.bijGoed);
-    return true;
-  }
-  if (x !== null && o.opnieuw) {
-    await l.zeg(...(o.bijFout?.(x) ?? [`{${x}}?`, "Dat is het niet helemaal."]));
-    await l.verder();
-    await l.zeg(...o.opnieuw.zin);
-    const y = await kiesGetal(l, o.opnieuw.lijst);
-    if (y === goed) {
-      await l.zeg(...o.bijGoed);
-      return false;
-    }
-  }
-  await l.zeg(x === null ? "Geen zorgen." : "", ...o.uitleg);
-  await l.verder();
-  return false;
-}
-
-/** Aanvullen tot het volgende tiental met de stippen: "Wat moet er bij 17 om 20 te maken?" */
-async function aanvullenMetStippen(l: Lesgids, k: Kaders, a: number, doel: number, eerste: boolean): Promise<boolean> {
+async function sterAanvullen(l: Lesgids, k: Sterbeeld, a: number, doel: number, o: { eerste: boolean; later?: Later }): Promise<boolean> {
   const nodig = doel - a;
-  k.zet({ modus: "stippen", tienen: Math.floor(a / 10), los: a % 10, bij: [], palet: true, paletSlot: [], som: somBij(a, [null]), omlijnLos: false });
-  await l.zeg(`Wat moet er bij {${a}} om {${doel}} te maken?`, eerste ? "Tik op een groepje stippen bovenaan." : "");
-  return vulAan(l, k, {
-    vaste: [],
-    nodig,
-    vinkje: true,
-    uitlegVinkje: eerste,
-    som: (g, klaar) => (g === null ? somBij(a, [null]) : klaar ? somBij(a, [g], a + g) : somBij(a, [g])),
-    fout: (g) => [`{${a}} plus {${g}} is {${a + g}}.`, `We zoeken {${doel}}.`, g < nodig ? "Kijk, er zijn nog lege plekjes." : "Kijk, er gaan stippen over de groep heen."],
-    hint: ["Tel de lege plekjes in de groep.", legePlekjes(nodig), `Tik op de {${nodig}}.`],
-  });
-}
-
-/** Aanvullen zonder stippen: alleen de som, het kind typt het getal. Na een fout mag het de stippen erbij halen. */
-async function aanvullenZonderStippen(l: Lesgids, k: Kaders, a: number, doel: number, bijGoed: string) {
-  const nodig = doel - a;
-  const vraag = () => k.zet({ modus: "som", palet: false, bij: [], som: [wit(a), PLUS, LEEG, IS, wit(doel)] });
-  vraag();
-  await l.zeg(`Wat moet er bij {${a}} om {${doel}} te maken?`);
-  for (let poging = 1; ; poging++) {
-    const x = await l.getal();
-    if (x === nodig) {
-      k.zet({ som: [wit(a), PLUS, kleurGetal(nodig), IS, wit(doel)] });
-      await l.zeg(bijGoed, `{${a}} plus {${nodig}} is {${doel}}.`);
-      await l.wacht(800);
-      return;
-    }
-    if (x !== null) {
-      k.zet({ som: somBij(a, [x], a + x) });
-      await l.zeg(`{${a}} plus {${x}} is {${a + x}}.`, `We zoeken {${doel}}.`);
-      if (poging >= 2) {
-        k.zet({ som: [wit(a), PLUS, kleurGetal(nodig), IS, wit(doel)] });
-        await l.zeg(`Er moet {${nodig}} bij.`, `{${a}} plus {${nodig}} is {${doel}}.`);
-        await l.verder();
-        return;
+  k.zet({ modus: "staven", tienen: Math.floor(a / 10), los: a % 10, bij: [], lege: true, palet: true, paletSlot: [], omlijnLos: false });
+  l.som(aanvulSom(a, doel));
+  await l.zeg(`Wat moet er bij {${a}} om {${doel}} te maken?`, o.eerste ? "Tik op een groepje sterren bovenaan." : "");
+  if (o.eerste) await l.wijsAan("groepje3", "Dit is een groepje van {3} sterren.");
+  let fouten = 0;
+  let slot: number[] = [];
+  let alleen = false;
+  let vinkjeUitgelegd = !o.eerste;
+  for (;;) {
+    k.zet({ bij: [], paletSlot: alleen ? NEGEN.filter((n) => n !== nodig) : slot, vinkje: false, hulp: !alleen });
+    l.som(aanvulSom(a, doel));
+    testHaak({ antwoord: nodig, palet: true, vraagId: Math.random() });
+    /* Kiezen (wisselen mag), dan het vinkje; het vraagteken = weet ik niet. */
+    let g: number | null = null;
+    k.zet({ actief: true });
+    for (;;) {
+      const ev = await l.wachtOpVlak<StavenMelding>(["kies", "klaar", "hulp"]);
+      if (ev.soort === "hulp") {
+        g = null;
+        break;
       }
-      await l.zeg("Wil je het nog eens proberen?", "Of zullen we de stippen erbij halen?");
-      const keuze = await l.kies(["Nog eens", "Met stippen"]);
-      if (keuze === "Nog eens") {
-        vraag();
-        await l.zeg(`Wat moet er bij {${a}} om {${doel}} te maken?`);
+      if (ev.soort === "klaar") {
+        if (g !== null) break;
         continue;
       }
-      await l.zeg("Goed, we halen de stippen erbij.");
-    } else {
-      await l.zeg("Geen zorgen.", "We halen de stippen erbij.");
+      if (ev.soort !== "kies") continue;
+      g = ev.n;
+      k.zet({ bij: [g], vinkje: true });
+      l.som(aanvulSom(a, doel, g));
+      if (!vinkjeUitgelegd) {
+        vinkjeUitgelegd = true;
+        k.zet({ actief: false });
+        await l.wijsAan("klaar", "Ben je tevreden met je keuze?", "Tik dan op het vinkje.");
+        k.zet({ actief: true });
+      }
     }
-    await aanvullenMetStippen(l, k, a, doel, false);
-    await l.zeg("Ja.", `{${a}} plus {${nodig}} is {${doel}}.`);
+    k.zet({ actief: false, vinkje: false, hulp: false });
+    testHaak({ palet: false });
+    if (g === nodig) {
+      k.zet({ paletSlot: [], golf: Date.now() });
+      l.som([{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: nodig }, { t: "teken", s: "=" }, { t: "getal", n: doel }]);
+      return fouten === 0;
+    }
+    fouten++;
+    if (g === null || fouten >= 2) {
+      if (g !== null) {
+        l.som([{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: g }, { t: "teken", s: "=" }, { t: "getal", n: a + g }]);
+        await l.zeg(`{${a}} plus {${g}} is {${a + g}}.`, `We zoeken {${doel}}.`);
+      } else await l.zeg("Geen zorgen.");
+      k.zet({ bij: [] });
+      await l.zeg("Tel de lege plekjes in de groep.", legePlekjes(nodig), `Tik op de {${nodig}}.`, o.later ? "We komen hier later op terug." : "");
+      if (o.later) {
+        const lt = o.later;
+        lt.lijst.push(async () => {
+          await sterAanvullen(l, k, a, doel, { eerste: false });
+          await l.zeg("Ja.", `{${a}} plus {${nodig}} is {${doel}}.`);
+          await l.wacht(800);
+        });
+        o = { ...o, later: undefined };
+      }
+      alleen = true;
+      continue;
+    }
+    /* 1× fout: laten zien wat er gebeurt, en de keuze gaat op slot. */
+    l.som([{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: g }, { t: "teken", s: "=" }, { t: "getal", n: a + g }]);
+    await l.zeg(`{${a}} plus {${g}} is {${a + g}}.`, `We zoeken {${doel}}.`, g < nodig ? "Kijk, er zijn nog lege plekjes." : "Kijk, er gaan sterren over de groep heen.");
     await l.verder();
-    return;
+    slot = [g];
+    await l.zeg("Probeer het nog eens.");
+  }
+}
+
+/**
+ * Aanvullen zonder sterren: alleen de som; het kind typt het getal in een
+ * echt invulvak. 1× fout: Bliepo rekent het voor en zet de sterren erbij als
+ * hulp in beeld. 2× fout of "weet ik niet": het antwoord, en de vraag komt
+ * later terug.
+ */
+async function sterAanvullenZonder(l: Lesgids, k: Sterbeeld, a: number, doel: number, bijGoed: string, later?: Later): Promise<boolean> {
+  const nodig = doel - a;
+  k.zet({ modus: "leeg", palet: false, bij: [] });
+  l.som(aanvulSom(a, doel));
+  await l.zeg(`Wat moet er bij {${a}} om {${doel}} te maken?`);
+  for (let poging = 1; ; poging++) {
+    testHaak({ antwoord: nodig, vraagId: `zonder${a}-${poging}` });
+    const x = await l.getal();
+    if (x === nodig) {
+      l.som(aanvulSom(a, doel, nodig));
+      k.zet({ golf: Date.now() });
+      await l.zeg(bijGoed, `{${a}} plus {${nodig}} is {${doel}}.`);
+      await l.wacht(800);
+      return poging === 1;
+    }
+    if (x !== null && poging === 1) {
+      l.som([{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: x }, { t: "teken", s: "=" }, { t: "getal", n: a + x }]);
+      await l.zeg(`{${a}} plus {${x}} is {${a + x}}.`, `We zoeken {${doel}}.`, "Kijk, ik zet de sterren erbij.");
+      k.zet({ modus: "staven", tienen: Math.floor(a / 10), los: a % 10, bij: [], lege: true, palet: false, omlijnLos: true });
+      l.som(aanvulSom(a, doel));
+      await l.zeg("Hoeveel lege plekjes zie je?", `Wat moet er bij {${a}} om {${doel}} te maken?`);
+      continue;
+    }
+    k.zet({ modus: "staven", tienen: Math.floor(a / 10), los: a % 10, bij: [nodig], lege: true, palet: false, omlijnLos: false });
+    l.som(aanvulSom(a, doel, nodig));
+    await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", `Er moeten {${nodig}} sterren bij.`, `{${a}} plus {${nodig}} is {${doel}}.`, later ? "We komen hier later op terug." : "");
+    await l.verder();
+    if (later) later.lijst.push(() => sterAanvullenZonder(l, k, a, doel, "Goed zo.").then(() => undefined));
+    return false;
   }
 }
 
@@ -1376,6 +1782,14 @@ function KaartOverTiental() {
 
 /* ---------- 6. Aanvullen tot het tiental ---------- */
 
+/*
+  Volgt LESSENPLAN.md O19 en Synthesis "Add up to 100 · Bridging to 10s":
+  eerst tientallen en eenheden tellen tot 38 in sterrenbeelden van tien (2 × 5),
+  dan aanvullen tot het volgende tiental door een gekleurd sterrengroepje te
+  kiezen (de lege plekjes lichten op) en te bevestigen met het vinkje, daarna
+  zelf kiezen: zonder sterren verder (het getal typen in een echt vak).
+  15 of 16 opgaven.
+*/
 const aanvullenTotTiental: Lesdraaiboek = {
   id: "optellen-100-aanvullen-tot-tiental",
   titel: "Aanvullen tot het tiental",
@@ -1383,94 +1797,156 @@ const aanvullenTotTiental: Lesdraaiboek = {
   kaarttekening: KaartAanvullen,
 
   async speel(l) {
-    const k = maakKaders(l, { tienen: 3, los: 3, som: somBij(33, [null]) });
+    const later = nieuwLater();
+    const k = maakSterbeeld(l, { tienen: 3, los: 3 });
+    l.som(aanvulSom(33, 40));
     await l.zeg("We gaan naar het volgende ronde getal.", "Wat moet er bij {33} om {40} te maken?", "Weet je dat al?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const weet = await l.kies(["Ja", "Nee"]);
     await l.zeg(weet === "Ja" ? "Mooi, dan kijken we samen of het klopt." : "Helemaal geen probleem.", "We ontdekken het samen.");
+    l.som(null);
 
-    /* 1. Tellen: groepen van tien en losse stippen, tot 38. */
-    k.zet({ tienen: 1, los: 0, som: null });
-    await l.zeg("Kijk naar de witte stippen.", "Hoeveel stippen zijn het?");
-    await telVraag(l, [7, 10, 9], 10, {
-      bijGoed: ["Goed.", "We hebben een groep van {10}."],
-      bijFout: (x) => [`{${x}}?`, x === 9 ? "Bijna, je zit er {1} naast." : "Dat is het niet helemaal."],
-      opnieuw: { zin: ["Probeer het nog eens.", "Welk getal laten de witte stippen zien?"], lijst: [9, 10, 11] },
-      uitleg: ["Het zijn {10} stippen.", "We hebben een groep van {10}."],
-    });
-
-    k.zet({ tienen: 2 });
+    /* 1. Tellen: groepen van tien en losse sterren, tot 38. */
+    const zetTel = (tienen: number, los: number, omlijnLos = false) => () => k.zet({ modus: "staven", tienen, los, bij: [], lege: false, palet: false, omlijnLos });
+    zetTel(1, 0)();
+    await getalvraag(
+      l,
+      {
+        vraag: ["Kijk naar de sterren.", "Hoeveel sterren zijn het?"],
+        lijst: [7, 9, 10],
+        goed: 10,
+        bijGoed: ["Goed.", "We hebben een groep van {10}."],
+        hint: (x) => (x === 9 ? ["{9}? Heel dichtbij, maar net niet.", "Welk getal laten de sterren zien?"] : [`{${x}}?`, "Tel de sterren nog eens.", "Welk getal laten ze zien?"]),
+        antwoord: ["Het zijn {10} sterren.", "We hebben een groep van {10}."],
+        klaarzetten: zetTel(1, 0),
+      },
+      later,
+    );
+    zetTel(2, 0)();
     await l.wacht(400);
-    await l.zeg("Hoeveel groepen van {10} hebben we *deze* keer?");
-    await telVraag(l, [10, 2, 20], 2, {
-      bijGoed: ["Ja.", "De groepen zijn even groot.", "In elke groep zitten {10} stippen."],
-      uitleg: ["Kijk, ik zie {2} groepen.", "Ze zijn even groot.", "In elke groep zitten {10} stippen."],
-    });
-    await l.zeg("{2} groepen van {10}.", "Hoeveel stippen zijn het samen?");
-    await telVraag(l, [20, 10, 2], 20, {
-      bijGoed: ["Heel goed.", "{2} groepen van {10} is {20}."],
-      uitleg: ["{10} en nog {10} is {20}.", "Het zijn {20} stippen."],
-    });
-
-    k.zet({ tienen: 3 });
+    await getalvraag(
+      l,
+      {
+        vraag: ["Hoeveel groepen van {10} hebben we *deze* keer?"],
+        lijst: [2, 10, 20],
+        goed: 2,
+        bijGoed: ["Ja.", "De groepen zijn even groot.", "In elke groep zitten {10} sterren."],
+        hint: () => ["We tellen nu de groepen, niet de sterren."],
+        antwoord: ["Kijk, ik zie {2} groepen.", "In elke groep zitten {10} sterren."],
+        klaarzetten: zetTel(2, 0),
+      },
+      later,
+    );
+    await getalvraag(
+      l,
+      {
+        vraag: ["{2} groepen van {10}.", "Hoeveel sterren zijn het samen?"],
+        lijst: [2, 10, 20],
+        goed: 20,
+        bijGoed: ["Heel goed.", "{2} groepen van {10} is {20}."],
+        hint: (x) => (x === 2 ? ["Ja, het zijn {2} groepen.", "Maar elke groep heeft {10} sterren."] : ["{10} en nog {10}.", "Hoeveel is dat?"]),
+        antwoord: ["{10} en nog {10} is {20}.", "Het zijn {20} sterren."],
+        klaarzetten: zetTel(2, 0),
+      },
+      later,
+    );
+    zetTel(3, 0)();
     await l.wacht(400);
-    await l.zeg("Ik heb er nog een groep bij gedaan.", "Hoeveel stippen zijn het nu?");
-    await telVraag(l, [20, 29, 30], 30, {
-      bijGoed: ["Ja, {30} stippen."],
-      uitleg: ["{10}, {20}, {30}.", "Het zijn {30} stippen."],
-    });
-
+    await getalvraag(
+      l,
+      {
+        vraag: ["Ik heb er nog een groep bij gedaan.", "Hoeveel sterren zijn het nu?"],
+        lijst: [20, 29, 30],
+        goed: 30,
+        bijGoed: ["Ja, {30} sterren."],
+        hint: () => ["Tel de groepen met tientallen.", "{10}, {20}, …"],
+        antwoord: ["{10}, {20}, {30}.", "Het zijn {30} sterren."],
+        klaarzetten: zetTel(3, 0),
+      },
+      later,
+    );
     await l.zeg("Nu doe ik er een beetje bij.");
-    k.zet({ los: 8, omlijnLos: true });
-    await l.wacht(500);
-    await l.zeg("Deze groep is wat kleiner dan de andere.", "Hoeveel stippen zitten erin?");
-    await telVraag(l, [8, 5, 7], 8, {
-      bijGoed: ["Ja, {8}."],
-      uitleg: ["Tel maar mee: {2}, {4}, {6}, {8}.", "Er zitten {8} stippen in."],
-    });
+    zetTel(3, 8, true)();
+    await l.wacht(600);
+    await getalvraag(
+      l,
+      {
+        vraag: ["Deze groep is wat kleiner dan de andere.", "Hoeveel sterren zitten erin?"],
+        lijst: [5, 7, 8],
+        goed: 8,
+        bijGoed: ["Ja, {8}."],
+        hint: () => ["Tel per rijtje van twee.", "{2}, {4}, …"],
+        antwoord: ["Tel maar mee: {2}, {4}, {6}, {8}.", "Er zitten {8} sterren in."],
+        klaarzetten: zetTel(3, 8, true),
+      },
+      later,
+    );
     k.zet({ omlijnLos: false });
-    await l.zeg("We hebben dus {3} tientallen.", "En {8} eenheden.", "Hoeveel is dat samen?");
-    await telVraag(l, [37, 38, 48, 83], 38, {
-      bijGoed: ["Ja!", "Je kunt al flink grote getallen tellen."],
-      uitleg: ["{3} tientallen is {30}.", "En {8} erbij is {38}."],
-    });
-    await l.zeg("Nu gaan we met deze stippen rekenen.");
+    await getalvraag(
+      l,
+      {
+        vraag: ["We hebben dus {3} tientallen.", "En {8} eenheden.", "Hoeveel is dat samen?"],
+        lijst: [37, 38, 48, 83],
+        goed: 38,
+        bijGoed: ["Ja!", "Je kunt al flink grote getallen tellen."],
+        hint: (x) => (x === 83 ? ["Kijk goed.", "Eerst de tientallen: {30}.", "Dan de eenheden erbij."] : ["Tel eerst de groepen: {10}, {20}, {30}.", "Dan de {8} losse sterren erbij."]),
+        antwoord: ["{3} tientallen is {30}.", "En {8} erbij is {38}."],
+        klaarzetten: zetTel(3, 8),
+      },
+      later,
+    );
+    await l.zeg("Nu gaan we met deze sterren rekenen.");
     await l.verder();
 
-    /* 2. Aanvullen tot het volgende tiental, met stippen. */
+    /* 2. Aanvullen tot het volgende tiental, met sterren. */
     const rondes: { a: number; doel: number; lijst: number[]; goed: string }[] = [
-      { a: 17, doel: 20, lijst: [17, 7, 16], goed: "Helemaal goed." },
-      { a: 24, doel: 30, lijst: [4, 24, 23], goed: "Precies." },
-      { a: 32, doel: 40, lijst: [31, 32, 2], goed: "Goed." },
+      { a: 17, doel: 20, lijst: [7, 16, 17], goed: "Helemaal goed." },
+      { a: 24, doel: 30, lijst: [4, 23, 24], goed: "Precies." },
+      { a: 32, doel: 40, lijst: [2, 31, 32], goed: "Goed." },
     ];
-    for (const [i, r] of rondes.entries()) {
-      k.zet({ tienen: Math.floor(r.a / 10), los: r.a % 10, bij: [], palet: false, som: null });
+    const rondeMet = async (r: { a: number; doel: number; lijst: number[]; goed: string }, i: number) => {
+      zetTel(Math.floor(r.a / 10), r.a % 10)();
       await l.wacht(400);
-      await l.zeg(i === 0 ? "We beginnen met deze." : "Oké.", "Hoeveel stippen staan er nu?");
-      await telVraag(l, r.lijst, r.a, {
-        bijGoed: [i === 0 ? "Goed." : i === 1 ? "Ja." : "Precies.", `{${r.a}} stippen.`],
-        uitleg: [groepenZin(r.a), `Dat is {${r.a}}.`],
-      });
-      await aanvullenMetStippen(l, k, r.a, r.doel, i === 0);
+      await getalvraag(
+        l,
+        {
+          vraag: [i === 0 ? "We beginnen met deze." : "Oké.", "Hoeveel sterren staan er nu?"],
+          lijst: r.lijst,
+          goed: r.a,
+          bijGoed: [i === 0 ? "Goed." : i === 1 ? "Ja." : "Precies.", `{${r.a}} sterren.`],
+          hint: () => ["Tel eerst de volle groepen.", "Dan de losse sterren erbij."],
+          antwoord: [groepenZin(r.a), `Dat is {${r.a}}.`],
+          klaarzetten: zetTel(Math.floor(r.a / 10), r.a % 10),
+        },
+        later,
+      );
+      await sterAanvullen(l, k, r.a, r.doel, { eerste: i === 0, later });
       await l.zeg(r.goed, `{${r.a}} plus {${r.doel - r.a}} is {${r.doel}}.`);
       await l.wacht(900);
-    }
+      l.som(null);
+    };
+    for (const [i, r] of rondes.entries()) await rondeMet(r, i);
 
-    /* 3. Zonder stippen (het kind kiest zelf). */
-    await l.zeg(l.naam ? `Dit gaat je goed af, ${l.naam}.` : "Dit gaat je goed af.", "Zullen we er een paar *zonder* stippen doen?");
+    /* 3. Zonder sterren (het kind kiest zelf). */
+    k.zet({ palet: false });
+    await l.zeg(l.naam ? `Je hebt hier echt aanleg voor, ${l.naam}.` : "Je hebt hier echt aanleg voor.", "Zullen we er een paar *zonder* sterren doen?");
+    testHaak({ antwoord: null, vraagId: Math.random() });
     const zonder = await l.kies(["Ja", "Nee"]);
     if (zonder === "Ja") {
       await l.zeg("Mooi.", "Ik zet het voor je klaar.");
-      await aanvullenZonderStippen(l, k, 23, 30, "Goed.");
-      await aanvullenZonderStippen(l, k, 36, 40, "Klopt.");
+      await sterAanvullenZonder(l, k, 23, 30, "Goed.", later);
+      await sterAanvullenZonder(l, k, 36, 40, "Klopt.", later);
       await l.zeg("Oké, nog één.");
-      await aanvullenZonderStippen(l, k, 41, 50, "Goed zo.");
-      await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Dit waren moeilijke vragen.", "En je hebt ze allemaal gedaan.");
+      await sterAanvullenZonder(l, k, 41, 50, "Goed zo.", later);
+      await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Dit waren moeilijke vragen.");
     } else {
-      await l.zeg(zonder === null ? "Geen zorgen." : "Prima.", "Dan doen we er nog één met stippen.");
-      await aanvullenMetStippen(l, k, 26, 30, false);
-      await l.zeg("Goed.", "{26} plus {4} is {30}.");
-      await l.wacht(800);
+      await l.zeg(zonder === null ? "Geen zorgen." : "Prima.", "Dan doen we er nog twee met sterren.");
+      await rondeMet({ a: 26, doel: 30, lijst: [6, 25, 26], goed: "Goed." }, 1);
+      await rondeMet({ a: 18, doel: 20, lijst: [8, 17, 18], goed: "Goed zo." }, 2);
     }
+    l.som(null);
+    await speelLater(l, later);
+    l.som(null);
 
     l.vlak(null);
     l.bak([]);
@@ -1489,7 +1965,7 @@ const tientallenTot100: Lesdraaiboek = {
   kaarttekening: KaartHonderd,
 
   async speel(l) {
-    const m = maakMachine(l, { tienen: 0, enen: 0, knop: 10, wijs: true });
+    const m = maakOudeMachine(l, { tienen: 0, enen: 0, knop: 10, wijs: true });
     l.som(getal(0));
     await l.zeg(l.naam ? `Oké, ${l.naam}.` : "Oké.", "Tik op de plusknop met de {10}.");
     await m.tik(1);

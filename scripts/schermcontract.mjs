@@ -782,6 +782,26 @@ export const SCHERMCONTRACT = [
     commit tegen — terwijl er aan de instelling zelf niets mankeerde. Zie de
     regel hierboven, die naar hetzelfde scherm wijst.
   */
+  /*
+    De openbare lespagina's van groep 3 (voor ouders en Google). Eén voorbeeld
+    met een vorige én een volgende les; de teksten staan in code, niet in de
+    database (lib/seo/lessen-groep3.ts).
+  */
+  {
+    naam: "Openbare lespagina groep 3 (Kleuren tellen)",
+    pad: "/groep-3/getallen/tellen-sprongen-tot-en-met-20/kleuren-tellen",
+    bron: ["src/app/(openbaar)/[...pad]/Lespagina.tsx", "src/lib/seo/lessen-groep3.ts"],
+    zichtbaar: [
+      "Tellen tot 10 met kleuren – groep 3",
+      "Probeer deze les",
+      "Start gratis",
+      "Wat leert je kind?",
+      "Zo gaat de les",
+      "Veelgestelde vragen",
+      "Vorige les",
+      "Volgende les",
+    ],
+  },
   { naam: "Busanimatie in beheer", pad: "/admin/{vak}/sjablonen/nieuw", bron: ["src/lib/generatoren/bus.ts"], zichtbaar: [], naKlik: [
     { tekst: "Busanimatie", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },
     { tekst: "Diertjes stappen in vóór het tellen", bron: "src/lib/generatoren/bus.ts", na: "Bus tellen kiezen" },

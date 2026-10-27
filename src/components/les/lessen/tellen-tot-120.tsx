@@ -22,6 +22,7 @@ import { KLEURCODE, Kleurrooster, type Kleur, type KleurroosterProps } from "../
 import { Tienstroken, type TienstrokenProps } from "../vlakken/tellen-tienstroken";
 import { Getallenveld, KOLOMKLEUR, type GetallenveldProps } from "../vlakken/tellen-getallenveld";
 import { GETALWOORD } from "../vlakken/tellen-tienstroken";
+import { instaptoetsTellen, kleurenTellen, tellenNa10, getallenSchrijven, doortellen, eindtoetsTellen } from "./tellen-holo";
 
 /* ---------- algemeen ---------- */
 
@@ -620,7 +621,8 @@ function KaartDoortellen() {
 
 /* ---------- de lessen ---------- */
 
-export const instaptoetsTellen: Lesdraaiboek = {
+/** De vorige versie (vóór Phaser, 27 oktober 2026); blijft bewaard (HARDE REGEL 1), staat niet meer in de lijst. */
+export const instaptoetsTellenOud: Lesdraaiboek = {
   id: "tellen-120-instaptoets",
   titel: "Instaptoets: tellen tot 100",
   synthesis: "Count to 120 · Assessment",
@@ -649,7 +651,8 @@ export const instaptoetsTellen: Lesdraaiboek = {
   },
 };
 
-export const kleurenTellen: Lesdraaiboek = {
+/** De vorige versie (vóór Phaser, 27 oktober 2026); blijft bewaard (HARDE REGEL 1), staat niet meer in de lijst. */
+export const kleurenTellenOud: Lesdraaiboek = {
   id: "tellen-120-kleuren-tellen",
   titel: "Kleuren tellen",
   synthesis: "Count to 120 · Color Count",
@@ -776,7 +779,8 @@ export const kleurenTellen: Lesdraaiboek = {
   },
 };
 
-export const tellenNa10: Lesdraaiboek = {
+/** De vorige versie (vóór Phaser, 27 oktober 2026); blijft bewaard (HARDE REGEL 1), staat niet meer in de lijst. */
+export const tellenNa10Oud: Lesdraaiboek = {
   id: "tellen-120-na-tien",
   titel: "Tellen van 10 tot 20",
   synthesis: "Count to 120 · The Next 10",
@@ -948,7 +952,8 @@ export const tellenNa10: Lesdraaiboek = {
   },
 };
 
-export const doortellen: Lesdraaiboek = {
+/** De vorige versie (vóór Phaser, 27 oktober 2026); blijft bewaard (HARDE REGEL 1), staat niet meer in de lijst. */
+export const doortellenOud: Lesdraaiboek = {
   id: "tellen-120-doortellen",
   titel: "Doortellen",
   synthesis: "Count to 120 · Counting On",
@@ -1026,7 +1031,8 @@ export const doortellen: Lesdraaiboek = {
   },
 };
 
-export const eindtoetsTellen: Lesdraaiboek = {
+/** De vorige versie (vóór Phaser, 27 oktober 2026); blijft bewaard (HARDE REGEL 1), staat niet meer in de lijst. */
+export const eindtoetsTellenOud: Lesdraaiboek = {
   id: "tellen-120-eindtoets",
   titel: "Eindtoets: tellen tot 100",
   synthesis: "Count to 120 · Mastery Check",
@@ -1215,5 +1221,18 @@ export const tienergetallen: Lesdraaiboek = {
   },
 };
 
-/* De volgorde van Synthesis: Assessment, Color Count, The Next 10, Counting On, Count to 120, Counting in 10s, Mastery Check. */
-export const LESSEN_TELLEN_TOT_120: Lesdraaiboek[] = [instaptoetsTellen, kleurenTellen, tellenNa10, doortellen, getallenTot50, tienergetallen, eindtoetsTellen];
+/*
+  De volgorde van Synthesis: Assessment, Color Count, The Next 10, Writing Numbers to 20 (nieuw in ronde 3),
+  Counting On, Count to 120, Counting in 10s, Mastery Check. Sinds 27 oktober 2026 de Phaser-versies
+  (zie tellen-holo.tsx); de vorige versies hierboven (…Oud) blijven bewaard.
+*/
+export const LESSEN_TELLEN_TOT_120: Lesdraaiboek[] = [
+  instaptoetsTellen,
+  kleurenTellen,
+  tellenNa10,
+  getallenSchrijven,
+  doortellen,
+  getallenTot50,
+  tienergetallen,
+  eindtoetsTellen,
+];

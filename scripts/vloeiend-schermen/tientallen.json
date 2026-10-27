@@ -1,0 +1,10 @@
+[
+  { "naam": "G12 Groepjes van tien (sterrenmachine)", "pad": "/voorbeeld/les/tientallen-groepjes-van-tien?naam=Testkind" },
+  { "naam": "G13 De plek van de tientallen (kristallen vakken)", "pad": "/voorbeeld/les/tientallen-plek-van-de-tientallen?naam=Testkind" },
+  { "naam": "G14 Tiental plus eenheden (sterrenbeelden)", "pad": "/voorbeeld/les/optellen-100-tiental-plus-eenheden?naam=Testkind" },
+  { "naam": "S2 Splitsen (splitshuis)", "pad": "/voorbeeld/les/optellen-100-splitsen?naam=Testkind" },
+  { "naam": "O17 Instaptoets optellen tot 100", "pad": "/voorbeeld/les/optellen-100-instaptoets?naam=Testkind" },
+  { "naam": "O18 Tientallen erbij", "pad": "/voorbeeld/les/optellen-100-tientallen-erbij?naam=Testkind" },
+  { "naam": "O19 Aanvullen tot het tiental", "pad": "/voorbeeld/les/optellen-100-aanvullen-tot-tiental?naam=Testkind" },
+  { "naam": "O20 Eindtoets optellen tot 100", "pad": "/voorbeeld/les/optellen-100-eindtoets?naam=Testkind" }
+]
