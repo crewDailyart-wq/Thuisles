@@ -53,7 +53,10 @@
 
 ## Online
 
-ONLINE-STATUS
+- **Staat online** sinds 29 oktober 2026, 22:20: https://thuisles-production.up.railway.app (versie a0b4de4).
+- Online gecontroleerd: de 10 lessen en de andere pagina's openen, alle 50 Phaser-schermen lopen vloeiend (laptop én trage telefoon, openen onder 0,6 s), de stem van Ruth en de geluidjes komen binnen, en de 10 lessen zijn online doorgespeeld zonder fouten. 7 zijn helemaal uitgespeeld. Bij 3 lange lessen (kleine verhaaltjes, verstopte getallen, minuten later) was de proeftijd van 7 minuten op, maar ze liepen goed door. Op de laptop zijn alle 10 helemaal uitgespeeld.
+- **Zelf nog doen:** zet in Railway bij *Variables* de nieuwe `ELEVEN_API_KEY`. Pas dan zegt Bliepo online de naam van het kind; de vaste zinnen werken al.
+- **Terugdraaien** (als er toch iets mis is): vraag Claude "zet versie c5cdd55 terug online". Dat is de versie van vóór deze klus.
 
 ## Eerlijk: wat nog niet gelijk is aan Synthesis
 
