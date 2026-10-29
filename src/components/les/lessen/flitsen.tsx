@@ -426,10 +426,10 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     voorbeeld: stip(10),
     hologram: { tegenstander: "het lichtvisje", pion: "jouw stip", finish: "de streep" },
     uitleg: [
-      "Kijk, ik tover een kaart tevoorschijn.",
+      "Kijk, ik maak een kaart.",
       "Er staan stippen op.",
       "Hoeveel stippen zijn het?",
-      "Kijk goed naar het patroon.",
+      "Kijk goed hoe de stippen staan.",
       "Dan hoef je niet te tellen.",
     ],
   }),
@@ -476,7 +476,7 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     kop: "Maak 10",
     stapel: STAPELS.maak10,
     voorbeeld: gat(7),
-    uitleg: ["Op deze kaarten mist een getal.", "Samen moet het {10} zijn.", "Typ het getal dat ontbreekt."],
+    uitleg: ["Op deze kaarten mist een getal.", "Samen moet het {10} zijn.", "Typ het getal dat mist."],
   }),
   flitsles({
     id: "flitsen-eindtoets",
@@ -513,7 +513,7 @@ export const LESSEN_FLITSEN: Lesdraaiboek[] = [
     kop: "Dubbelen",
     stapel: STAPELS.dubbel,
     voorbeeld: plus(5, 5),
-    uitleg: ["Op deze kaarten staan dubbelen.", "Daarin staat twee keer hetzelfde getal.", "Zoals {5} + {5}."],
+    uitleg: ["Op deze kaarten staan dubbele sommen.", "Daarin staat twee keer hetzelfde getal.", "Zoals {5} + {5}."],
   }),
   flitsles({
     id: "flitsen-plus-tot-20",

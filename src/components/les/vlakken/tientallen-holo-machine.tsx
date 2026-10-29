@@ -37,6 +37,8 @@ export type SterMachineProps = {
   hand?: boolean;
   /** Het vinkje: klaar met bouwen. */
   klaar?: boolean;
+  /** Teken het handje en het vinkje in het vlak zelf (de oude plek). Standaard uit: ze staan op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   /** Een warme ring om deze knop. */
   wijs?: 1 | 10 | null;
   /** De machine staat op slot (dof, met een slotje). */
@@ -293,7 +295,7 @@ export function Slotje() {
 
 /* ---------- het vlak ---------- */
 
-export function SterMachine({ aantal, knoppen, actief = false, wissen = false, hand = false, klaar = false, wijs = null, slot = false, meld, schaal }: SterMachineProps & Vlakbasis) {
+export function SterMachine({ aantal, knoppen, actief = false, wissen = false, hand = false, klaar = false, knoppenInVlak = false, wijs = null, slot = false, meld, schaal }: SterMachineProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<MachineScene>(schaal, maakScene());
 
   useEffect(() => {
@@ -307,7 +309,7 @@ export function SterMachine({ aantal, knoppen, actief = false, wissen = false, h
     <div className={s.vlak}>
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
 
-      {(knoppen.length > 0 || wissen || hand || klaar) && (
+      {(knoppen.length > 0 || wissen || (knoppenInVlak && (hand || klaar))) && (
         <div className={s.machine}>
           {wissen && <IkoonKnop ikoon="opnieuw" label="Wissen" knop="wis" className={s.ikoon} disabled={!actief} onClick={() => meld({ soort: "wis" })} />}
           {knoppen.map((k) => (
@@ -325,12 +327,12 @@ export function SterMachine({ aantal, knoppen, actief = false, wissen = false, h
               {slot && <Slotje />}
             </button>
           ))}
-          {hand && (
+          {knoppenInVlak && hand && (
             <button type="button" data-knop="hand" aria-label="Hulp" className={`${s.plus} ${s.ikoon}`} disabled={!actief} onClick={() => meld({ soort: "hand" })} style={{ color: "#ffe9b0" }}>
               <HandIcoon />
             </button>
           )}
-          {klaar && <IkoonKnop ikoon="vink" label="Klaar" knop="klaar" kleur="blauw" className={s.ikoon} disabled={!actief} onClick={() => meld({ soort: "klaar" })} />}
+          {knoppenInVlak && klaar && <IkoonKnop ikoon="vink" label="Klaar" knop="klaar" kleur="blauw" className={s.ikoon} disabled={!actief} onClick={() => meld({ soort: "klaar" })} />}
         </div>
       )}
     </div>

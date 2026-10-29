@@ -91,6 +91,19 @@ export type HoloProps = {
   vink?: boolean;
   hand?: boolean;
   weetniet?: boolean;
+  /**
+   * Teken het vinkje, het handje en "weet ik niet" in het vlak zelf (de oude
+   * plek). Standaard uit: ze staan op de vaste plek onder de zin van Bliepo
+   * (28 oktober 2026).
+   */
+  knoppenInVlak?: boolean;
+  /**
+   * Uitzondering: het handje blijft in het vlak als er tegelijk een
+   * "weet ik niet" staat met een ander gevolg (de toetsvraag met het getal).
+   */
+  handInVlak?: boolean;
+  /** Geeft het lesscherm een functie die de stand levert als het vinkje op de vaste plek getikt wordt. */
+  standBron?: (geef: () => Record<string, unknown>) => void;
   keuzes?: (number | string)[] | null;
   uit?: (number | string)[];
   goedeKeuze?: number | string | null;
@@ -166,6 +179,9 @@ export function VergelijkenHolo(p: HoloProps & Vlakbasis) {
     vink = false,
     hand = false,
     weetniet = false,
+    knoppenInVlak = false,
+    handInVlak = false,
+    standBron,
     keuzes = null,
     uit = [],
     goedeKeuze = null,
@@ -371,18 +387,22 @@ export function VergelijkenHolo(p: HoloProps & Vlakbasis) {
   };
 
   const kanVink = kies ? gekozen !== null : invoer && nu.some((d) => d.t === "vraag") ? waarde !== "" : true;
+  const klaarStand = () => ({
+    gekozen,
+    links: telVol(vakjes.links),
+    rechts: telVol(vakjes.rechts),
+    teken: metPotjes ? tk : (nu.find((d) => d.t === "teken") as { s: Teken } | undefined)?.s ?? null,
+    delen: nu,
+    waarde: waarde === "" ? null : Number(waarde),
+  });
   const druk = () => {
     if (!vink || !kanVink || bezig) return;
-    antwoord({
-      soort: "klaar",
-      gekozen,
-      links: telVol(vakjes.links),
-      rechts: telVol(vakjes.rechts),
-      teken: metPotjes ? tk : (nu.find((d) => d.t === "teken") as { s: Teken } | undefined)?.s ?? null,
-      delen: nu,
-      waarde: waarde === "" ? null : Number(waarde),
-    });
+    antwoord({ soort: "klaar", ...klaarStand() });
   };
+  /* Het vinkje op de vaste plek leest de stand van het vlak op het moment van tikken. */
+  useEffect(() => {
+    standBron?.(() => ({ ...klaarStand(), kanVink }));
+  });
 
   /* Zeg het ook voor een voorleesprogramma. */
   const voorlezen = metPotjes
@@ -540,19 +560,19 @@ export function VergelijkenHolo(p: HoloProps & Vlakbasis) {
       )}
 
       {/* Hulphandje, weet ik niet en het vinkje. */}
-      {(vink || hand || weetniet) && (
+      {((knoppenInVlak && (vink || weetniet)) || (hand && (knoppenInVlak || handInVlak))) && (
         <div className={s.knoppen} style={knoppenStijl}>
-          {hand && (
+          {hand && (knoppenInVlak || handInVlak) && (
             <button type="button" className={`${s.rond} ${s.hand}`} data-knop="hand" aria-label="Hulp" disabled={bezig} onClick={() => antwoord({ soort: "hand" })}>
               <HandTeken />
             </button>
           )}
-          {weetniet && (
+          {knoppenInVlak && weetniet && (
             <button type="button" className={`${s.rond} ${s.weetniet}`} data-knop="weetniet" aria-label="Weet ik niet" disabled={bezig} onClick={() => antwoord({ soort: "weetniet" })}>
               <IkoonTeken ikoon="vraag" maat={40} />
             </button>
           )}
-          {vink && (
+          {knoppenInVlak && vink && (
             <button type="button" className={`${s.rond} ${s.vink}`} data-knop="vink" data-controleer aria-label="Controleer" disabled={!kanVink || bezig} onClick={druk}>
               <IkoonTeken ikoon="vink" maat={44} />
             </button>

@@ -18,6 +18,7 @@
  */
 
 import { haalBliepoInstellingen } from "@/lib/tutor/instellingen";
+import { haalLesgeluidjes } from "@/lib/lesgeluiden-ouder";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Icoon } from "@/components/kind/Icoon";
@@ -344,6 +345,7 @@ export default async function OefeningPagina({
         pad={oefenpad}
         terugHref={terugHref}
         tutor={haalBliepoInstellingen(kind.id).praten ? { groep: kind.groep } : null}
+        geluidjes={haalLesgeluidjes(kind.id)}
       />
     );
   }
@@ -364,7 +366,7 @@ export default async function OefeningPagina({
   }
   const maatje = { teksten: maatjeTeksten, geluid: haalGeluidsvoorkeuren(kind.id).maatje };
 
-  // Geen gepubliceerde vragen: eerlijk melden in plaats van een leeg scherm.
+  // Geen gepubliceerde vragen (ook bij een directe link naar een leerdoel op concept): eerlijk melden in plaats van een leeg scherm.
   if (vragen.length === 0) {
     return (
       <div className="mx-auto w-full max-w-xl rounded-groot border border-rand bg-kaart p-8 text-center shadow-op">
@@ -372,7 +374,7 @@ export default async function OefeningPagina({
           <Icoon naam="oefenen" className="size-8" />
         </span>
         <h1 className="mt-4 text-xl font-extrabold">
-          Nog geen oefeningen beschikbaar
+          Deze les is nog niet beschikbaar
         </h1>
         <p className="mx-auto mt-2 max-w-sm text-sm font-semibold text-inkt-zacht">
           Voor {data.subdomein.naam.toLowerCase()} staan nog geen vragen klaar.

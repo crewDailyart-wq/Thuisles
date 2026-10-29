@@ -1,0 +1,135 @@
+/*
+  De Bliepo-klok (28 oktober 2026; kopie van de sterrenklok in de vlakke Bliepo-stijl, zie bliepo-voorwerpen.ts): de klok zelf is een Phaser-hologram; hier
+  alleen wat gewone HTML is: de tijd bovenaan, de digitale tijd, de naam bij
+  de klok van Bliepo en de knoppen. Geen eigen achtergrond of kader. Maten in
+  punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* De tijd die het kind moet zetten: groot en rustig bovenaan in het midden. */
+.doel {
+  position: absolute;
+  transform: translateX(-50%);
+  top: 6px;
+  text-align: center;
+  white-space: nowrap;
+  font-size: 54px;
+  font-weight: 800;
+  line-height: 1.1;
+  color: #fff7ea;
+  pointer-events: none;
+  animation: erin 0.3s ease-out both;
+}
+
+/* Sam, het vriendje van Bliepo (een eigen tekening, zie SamTekening). */
+.sam {
+  position: absolute;
+  transform: translateX(-50%);
+  pointer-events: none;
+  animation: erin 0.3s ease-out both;
+}
+
+.naam {
+  position: absolute;
+  transform: translateX(-50%);
+  font-size: 22px;
+  font-weight: 700;
+  color: #fff7ea;
+  white-space: nowrap;
+  pointer-events: none;
+}
+
+/* De digitale tijd onder de klok: het uur oranje, de minuten paars, als een zwevend schermpje. */
+.digitaal {
+  position: absolute;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 2px 30px;
+  border: 5px solid #1d2b5e;
+  border-radius: 18px;
+  background: #fff7ea;
+  font-weight: 800;
+  font-size: 54px;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+  pointer-events: none;
+}
+/* Zoals Synthesis (28 oktober 2026): de digitale klok komt zacht in beeld, is vaag als het kind zelf zet, en de minuten lichten op bij een samenvatting. */
+.digitaal {
+  animation: erin 0.4s ease-out both;
+  transition: opacity 0.4s;
+}
+/* Vaag (zelf zetten, zoals Synthesis): de animatie "erin" eindigt op opacity 1 en wint van gewone CSS, dus hier een eigen animatie die vaag eindigt. */
+.vaag {
+  opacity: 0.25;
+  animation: vaagIn 0.4s ease-out both;
+}
+@keyframes vaagIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 0.25;
+  }
+}
+.licht {
+  padding: 0 8px;
+  border-radius: 10px;
+  background: #bfe6e3;
+}
+.uur {
+  color: #f2715e; /* de kleur van de urenwijzer */
+}
+.min {
+  color: #127c86;
+}
+.dubbelpunt {
+  display: grid;
+  gap: 12px;
+}
+.dubbelpunt i {
+  display: block;
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: #1d2b5e;
+}
+
+/* Handje en vinkje: linksboven in het vlak, bij de opdracht (zoals bij Synthesis). */
+.knoppen {
+  position: absolute;
+  left: 20px;
+  top: 10px;
+  display: flex;
+  gap: 18px;
+  align-items: center;
+  animation: erin 0.25s ease-out both;
+}
+
+@keyframes erin {
+  from {
+    opacity: 0;
+    translate: 0 8px;
+  }
+  to {
+    opacity: 1;
+    translate: 0 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .doel,
+  .sam,
+  .knoppen {
+    animation: none;
+  }
+}

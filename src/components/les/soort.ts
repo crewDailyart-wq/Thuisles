@@ -32,6 +32,8 @@ export type Somdeel =
   | { t: "teken"; s: string }
   | { t: "vak"; waarde?: string };
 
+export type Kiesinstel = { direct?: boolean; weetniet?: string | false; raster?: boolean };
+
 export interface Lesgids {
   /** De naam van het kind, of leeg. */
   naam: string;
@@ -51,7 +53,21 @@ export interface Lesgids {
    */
   wijsAan(knop: string, ...zinnen: string[]): Promise<void>;
   /** Knoppen links. Het kind kiest en bevestigt met het vinkje; `null` = "Weet ik niet". */
-  kies(opties: string[]): Promise<string | null>;
+  /**
+   * Kiezen uit knoppen. `instel` (28 oktober 2026, nabouw naar Synthesis):
+   * `direct` = een tik is meteen het antwoord (geen vinkje), `weetniet` = de
+   * tekst van de weet-ik-niet-knop of `false` voor geen, `raster` = cijfertegels
+   * in een raster van 3 breed (antwoordtegels 1–9, besluit eigenaar).
+   */
+  kies(opties: string[], instel?: Kiesinstel): Promise<string | null>;
+  /**
+   * Losse knoppen op de vaste plek onder de zin van Bliepo (28 oktober 2026,
+   * besluit eigenaar: antwoordknoppen staan altijd bij Bliepo, nooit in het
+   * speelvlak). "weetniet" = het vraagteken, "controleer" = het vinkje. Geeft
+   * terug welke knop getikt is. Verdwijnt vanzelf als het vlak een tik meldt
+   * (net als `kies([])`). Gebruik met `Promise.race` naast `wachtOpVlak`.
+   */
+  knoppen(welke: ("weetniet" | "controleer" | "hulp")[]): Promise<"weetniet" | "controleer" | "hulp">;
   /** De blauwe pijl: het kind tikt als het klaar is met kijken. */
   verder(): Promise<void>;
   /** Wat er in de bak rechts ligt. `om`: alle tegels omgedraaid, zodat ze in de inham passen. */
@@ -78,6 +94,14 @@ export interface Lesgids {
   somVak(index: number): Promise<number>;
   /** De verzamelkaart aan het eind. Staat meteen in beeld; de belofte is klaar als het kind erop tikt. */
   kaart(): Promise<void>;
+  /**
+   * De les stopt hier, zonder kaart (28 oktober 2026, besluit eigenaar: zoals
+   * Synthesis bij 2× fout op het eindantwoord, "laten we even pauze nemen").
+   * Zeg eerst de zinnen; daarna staan de knoppen "Nog een keer" en "Terug" in
+   * beeld. De les telt niet als af. Komt nooit terug (de belofte wordt
+   * afgewezen met het stopteken van het lesscherm).
+   */
+  stopLes(): Promise<never>;
   wacht(ms: number): Promise<void>;
   /**
    * Een eigen speelvlak in plaats van het tegelraster en de bak: een
@@ -97,6 +121,13 @@ export type Lesdraaiboek = {
   titel: string;
   /** De Synthesis-les waar hij op lijkt, alleen voor in beheer. */
   synthesis: string;
+  /**
+   * "synthesis" (28 oktober 2026, besluit eigenaar): de indeling van het
+   * scherm zoals Synthesis. Links een kolom met de zin en de knoppen, het
+   * voorwerp in het midden, Bliepo en de microfoonknop rechts op hun plek.
+   * Zonder: de zin en de knoppen in de ballon boven Bliepo.
+   */
+  indeling?: "synthesis";
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

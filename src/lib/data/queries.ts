@@ -121,10 +121,14 @@ export async function haalStartscherm(kindId: string): Promise<Startscherm> {
 
   const voortgangVanKind = voortgangAlsLijst(kind.id);
 
+  /* Alleen leerdoelen met gepubliceerde vragen (28 oktober 2026): geen opdrachten op concept in de lijst of als tip. */
+  const vragenPer = telGepubliceerdPerLeerdoel(structuur.leerdoelen.map((ld) => ld.id));
+  const oefenbareLeerdoelen = structuur.leerdoelen.filter((ld) => (vragenPer[ld.id] ?? 0) > 0);
+
   const subdomeinen: SubdomeinMetVoortgang[] = structuur.subdomeinen
     .map((subdomein) => {
       const domein = structuur.domeinen.find((d) => d.id === subdomein.domeinId)!;
-      const leerdoelenVanSubdomein = structuur.leerdoelen.filter(
+      const leerdoelenVanSubdomein = oefenbareLeerdoelen.filter(
         (ld) => ld.subdomeinId === subdomein.id && pastBijGroep(ld, kind),
       );
       const aantalBeheerst = leerdoelenVanSubdomein.filter((ld) =>
@@ -176,7 +180,7 @@ export async function haalStartscherm(kindId: string): Promise<Startscherm> {
     eerstKlaar ??
     bepaalAanbeveling(
       kind,
-      structuur.leerdoelen,
+      oefenbareLeerdoelen,
       structuur.subdomeinen,
       voortgangVanKind,
     );
@@ -217,6 +221,18 @@ function leerdoelenVoor(subdomeinId: string, kind: Kind) {
   );
 }
 
+/**
+ * Alleen leerdoelen met gepubliceerde vragen (28 oktober 2026, vraag
+ * eigenaar): de overzichten van vrij oefenen tonen geen opdrachten die op
+ * concept staan. Niets wordt weggehaald; zet de eigenaar een opdracht weer op
+ * gepubliceerd, dan staat hij er vanzelf weer bij.
+ */
+function oefenbareLeerdoelenVoor(subdomeinId: string, kind: Kind) {
+  const leerdoelen = leerdoelenVoor(subdomeinId, kind);
+  const vragenPer = telGepubliceerdPerLeerdoel(leerdoelen.map((ld) => ld.id));
+  return leerdoelen.filter((ld) => (vragenPer[ld.id] ?? 0) > 0);
+}
+
 function statusVan(kindId: string, leerdoelId: string): MasteryStatus {
   const v = haalVoortgang(kindId).find((r) => r.leerdoelId === leerdoelId);
   return v?.status ?? "nog_niet_gestart";
@@ -244,7 +260,7 @@ export async function haalDomeinen(
     .sort((a, b) => a.volgorde - b.volgorde)
     .map((domein) => {
       const subs = structuur.subdomeinen.filter((s) => s.domeinId === domein.id);
-      const leerdoelen = subs.flatMap((s) => leerdoelenVoor(s.id, kind));
+      const leerdoelen = subs.flatMap((s) => oefenbareLeerdoelenVoor(s.id, kind));
 
       return {
         domein,
@@ -280,7 +296,7 @@ export async function haalSubdomeinen(
     .filter((s) => s.domeinId === domein.id)
     .sort((a, b) => a.volgorde - b.volgorde)
     .map((subdomein) => {
-      const leerdoelen = leerdoelenVoor(subdomein.id, kind);
+      const leerdoelen = oefenbareLeerdoelenVoor(subdomein.id, kind);
       return {
         subdomein,
         domein,
@@ -318,7 +334,7 @@ export async function haalOefenStart(
     Hier dus niet opnieuw sorteren — dat zette de tegels terug op de volgorde
     waarin ze ooit zijn aangemaakt.
   */
-  const leerdoelen: LeerdoelMetStatus[] = leerdoelenVoor(subdomein.id, kind).map((leerdoel) => ({
+  const leerdoelen: LeerdoelMetStatus[] = oefenbareLeerdoelenVoor(subdomein.id, kind).map((leerdoel) => ({
     leerdoel,
     status: statusVan(kind.id, leerdoel.id),
   }));
@@ -398,7 +414,7 @@ export async function haalMethodeoverzicht(kindId: string): Promise<{
       const domein = structuur.domeinen.find((d) => d.id === subdomein.domeinId);
       if (!domein) continue;
 
-      const leerdoelen = leerdoelenVoor(subdomein.id, kind);
+      const leerdoelen = oefenbareLeerdoelenVoor(subdomein.id, kind);
       onderwerpen.push({
         subdomein,
         domein,

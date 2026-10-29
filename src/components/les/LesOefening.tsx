@@ -13,6 +13,7 @@ import { useCallback, useEffect, useRef } from "react";
 import { rondAf } from "@/app/oefenacties";
 import { Lesspeler } from "./Lesscherm";
 import { zoekDraaiboek } from "./lessen";
+import { zetGeluidjesVanOuder } from "@/lib/lesgeluiden";
 
 export function LesOefening({
   lesId,
@@ -22,6 +23,7 @@ export function LesOefening({
   pad,
   terugHref,
   tutor = null,
+  geluidjes = true,
 }: {
   lesId: string;
   vraagId: string;
@@ -31,12 +33,18 @@ export function LesOefening({
   terugHref: string;
   /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
   tutor?: { groep: number } | null;
+  /** Geluidjes in de lessen (29 oktober 2026): de instelling van de ouder, standaard aan. */
+  geluidjes?: boolean;
 }) {
   const les = zoekDraaiboek(lesId);
   const begin = useRef(0);
   useEffect(() => {
     begin.current = performance.now();
   }, []);
+  useEffect(() => {
+    zetGeluidjesVanOuder(geluidjes);
+    return () => zetGeluidjesVanOuder(true);
+  }, [geluidjes]);
 
   const klaar = useCallback(() => {
     const seconden = Math.round((performance.now() - begin.current) / 1000);

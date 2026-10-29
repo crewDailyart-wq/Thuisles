@@ -90,11 +90,21 @@ export type Holo20Props = {
   /** Het logboekje linksboven ("5 + 5 = 10", "5 + 6 = ?"). */
   logboek?: { a: number; b: number; c: number | null }[];
   keuzes?: HoloKeuzes | null;
+  /**
+   * Teken het vinkje en het vraagteken bij de keuzes in het vlak zelf (de oude
+   * plek). Standaard uit: ze staan op de vaste plek onder de zin van Bliepo
+   * (28 oktober 2026); het vlak meldt dan alleen `gekozen`.
+   */
+  knoppenInVlak?: boolean;
   /** Telt op bij elk goed antwoord: een rustige lichtgolf over de tegels. */
   golf?: number;
 };
 
-export type Holo20Melding = { soort: "tegel"; n: number } | { soort: "antwoord"; waarde: number | string | null };
+export type Holo20Melding =
+  | { soort: "tegel"; n: number }
+  | { soort: "antwoord"; waarde: number | string | null }
+  /** Een keuze aangetikt (nog niet bevestigd), voor het vinkje op de vaste plek. */
+  | { soort: "gekozen"; waarde: number | string };
 
 /* ---------- vormen ---------- */
 
@@ -611,7 +621,7 @@ function maakTegelScene() {
 
 /* ---------- de keuzeknoppen ---------- */
 
-function Keuzes({ k, meld }: { k: HoloKeuzes; meld: Vlakbasis["meld"] }) {
+function Keuzes({ k, meld, inVlak }: { k: HoloKeuzes; meld: Vlakbasis["meld"]; inVlak: boolean }) {
   const [gekozen, setGekozen] = useState<number | string | null>(null);
   const [klaar, setKlaar] = useState(false);
   const uit = k.uit ?? [];
@@ -636,6 +646,7 @@ function Keuzes({ k, meld }: { k: HoloKeuzes; meld: Vlakbasis["meld"] }) {
               aria-label={String(o)}
               onClick={() => {
                 setGekozen(o);
+                if (!inVlak) meld({ soort: "gekozen", waarde: o });
                 /* Een woord leest Bliepo voor (groep 3 leest nog niet); cijfers niet. */
                 if (woord) zeg(String(o));
               }}
@@ -645,16 +656,20 @@ function Keuzes({ k, meld }: { k: HoloKeuzes; meld: Vlakbasis["meld"] }) {
           );
         })}
       </div>
-      <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" className={s.ikoon} disabled={klaar} onClick={() => stuur(null)} />
-      <IkoonKnop
-        ikoon="vink"
-        label="Controleer"
-        knop="controleer"
-        kleur="blauw"
-        className={s.ikoon}
-        disabled={gekozen === null || klaar}
-        onClick={() => stuur(gekozen)}
-      />
+      {inVlak && (
+        <>
+          <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" className={s.ikoon} disabled={klaar} onClick={() => stuur(null)} />
+          <IkoonKnop
+            ikoon="vink"
+            label="Controleer"
+            knop="controleer"
+            kleur="blauw"
+            className={s.ikoon}
+            disabled={gekozen === null || klaar}
+            onClick={() => stuur(gekozen)}
+          />
+        </>
+      )}
     </div>
   );
 }
@@ -662,7 +677,7 @@ function Keuzes({ k, meld }: { k: HoloKeuzes; meld: Vlakbasis["meld"] }) {
 /* ---------- het vlak ---------- */
 
 export function Optellen20HoloTegels(p: Holo20Props & Vlakbasis) {
-  const { stroken, bak, slot, bakLiggend = false, actief = false, hand = false, doel = null, tel = 0, logboek, keuzes = null, golf = 0, meld, schaal } = p;
+  const { stroken, bak, slot, bakLiggend = false, actief = false, hand = false, doel = null, tel = 0, logboek, keuzes = null, golf = 0, knoppenInVlak = false, meld, schaal } = p;
   const { plek, scene } = useHoloMotor<TegelScene>(schaal, maakTegelScene(), { invoer: true });
   const meldRef = useRef(meld);
   useEffect(() => {
@@ -703,7 +718,7 @@ export function Optellen20HoloTegels(p: Holo20Props & Vlakbasis) {
         </div>
       )}
 
-      {keuzes && <Keuzes key={keuzes.vraag} k={keuzes} meld={meld} />}
+      {keuzes && <Keuzes key={keuzes.vraag} k={keuzes} meld={meld} inVlak={knoppenInVlak} />}
     </div>
   );
 }

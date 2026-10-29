@@ -100,7 +100,7 @@ export async function toetsvraag(l: Lesgids, v: Toetsvraag): Promise<{ goed: boo
   if (x === v.goed) {
     const traag = duur > TRAAG;
     const tempo =
-      v.tempo && traag ? ["Probeer de volgende iets sneller."] : v.tempo === "beide" && duur < SNEL ? ["Dat was razendsnel!"] : [];
+      v.tempo && traag ? ["Probeer de volgende iets sneller."] : v.tempo === "beide" && duur < SNEL ? ["Dat ging supersnel!"] : [];
     await l.zeg(...v.bijGoed, ...tempo);
     return { goed: true, traag };
   }
@@ -276,17 +276,58 @@ class Bord {
     await this.l.wijsAan("weetniet", "Weet je het niet? Tik dan op het vraagteken.");
   }
 
+  /**
+   * Wacht op een antwoord bij de keuzes in het vlak. Het vraagteken en het
+   * vinkje staan op de vaste plek onder de zin van Bliepo (28 oktober 2026);
+   * het vlak meldt alleen welke keuze is aangetikt. Het vinkje zonder keuze
+   * doet niets. Geeft het antwoord, of `null` bij het vraagteken. Tegels die
+   * het kind intussen legt, gaan naar `opTegel`.
+   */
+  private async antwoordOpPlek(
+    opTegel?: (n: number) => void,
+    wijs?: () => Promise<void>,
+  ): Promise<number | string | null> {
+    let gekozen: number | string | null = null;
+    for (;;) {
+      const soorten = opTegel ? ["tegel", "gekozen"] : ["gekozen"];
+      const g: Promise<Holo20Melding> = this.l.wachtOpVlak<Holo20Melding>(soorten);
+      const k = this.l.knoppen(["weetniet", "controleer"]);
+      k.catch(() => {});
+      const aanwijzen = wijs ? wijs() : null;
+      if (wijs) wijs = undefined;
+      aanwijzen?.catch(() => {});
+      const r = await Promise.race([g.then((m) => ({ m })), k.then((knop) => ({ knop }))]);
+      await aanwijzen;
+      if ("m" in r) {
+        if (r.m.soort === "tegel") opTegel?.(r.m.n);
+        else if (r.m.soort === "gekozen") gekozen = r.m.waarde;
+        continue;
+      }
+      if (r.knop === "weetniet") return null;
+      if (gekozen !== null) return gekozen;
+    }
+  }
+
   /** Keuzeknoppen; geeft het gekozen antwoord, of `null` bij het vraagteken. `uit`: al geprobeerd (grijs). */
   async vraag<T extends number | string>(opties: T[], uit: T[] = [], goed?: T): Promise<T | null> {
-    this.zet({ keuzes: { vraag: ++this.vraagNr, opties, uit } });
     Bord.voorTest(goed);
-    const wacht = this.l.wachtOpVlak<Holo20Melding>("antwoord");
-    await this.wijsKnoppen();
+    /* Woorden en sommen (Ja, Nee, "5 + 5"): de keuzes van het lesscherm, ook op de vaste plek. */
+    if (opties.some((o) => typeof o === "string")) {
+      const over = opties.filter((o) => !uit.includes(o)).map(String);
+      const p = this.l.kies(over);
+      p.catch(() => {});
+      await this.wijsKnoppen();
+      const t0 = Date.now();
+      const x = await p;
+      this.duur = Date.now() - t0;
+      return x as T | null;
+    }
+    this.zet({ keuzes: { vraag: ++this.vraagNr, opties, uit } });
     const t0 = Date.now();
-    const g = await wacht;
+    const x = await this.antwoordOpPlek(undefined, () => this.wijsKnoppen());
     this.duur = Date.now() - t0;
     this.zet({ keuzes: null });
-    return g.soort === "antwoord" ? (g.waarde as T | null) : null;
+    return x as T | null;
   }
 
   /**
@@ -296,15 +337,9 @@ class Bord {
   async vraagMetTegels(opties: number[], uit: number[], opTegel: (n: number) => void, doel: HoloDoel | null, goed?: number): Promise<number | null> {
     this.zet({ keuzes: { vraag: ++this.vraagNr, opties, uit }, actief: true, doel });
     Bord.voorTest(goed);
-    const eerste = this.l.wachtOpVlak<Holo20Melding>(["tegel", "antwoord"]);
-    await this.wijsKnoppen();
-    let g = await eerste;
-    while (g.soort === "tegel") {
-      opTegel(g.n);
-      g = await this.l.wachtOpVlak<Holo20Melding>(["tegel", "antwoord"]);
-    }
+    const x = await this.antwoordOpPlek(opTegel, () => this.wijsKnoppen());
     this.zet({ keuzes: null, actief: false, doel: null });
-    return g.waarde as number | null;
+    return x as number | null;
   }
 
   /** Voor de automatische test (zoals bij de flitslessen): welk antwoord er nu hoort. */
@@ -396,7 +431,7 @@ async function oefenSom(l: Lesgids, bord: Bord, a: number, b: number, beurt: num
   await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", "We tellen samen.");
   await bord.tel();
   l.som(plusSom(a, b, s));
-  await l.zeg(`Het zijn {${s}} hokjes.`, `{${a}} plus {${b}} is {${s}}.`, "Daar komen we later op terug.");
+  await l.zeg(`Het zijn {${s}} hokjes.`, `{${a}} plus {${b}} is {${s}}.`, "Dat zien we later.");
   await bord.verder();
   l.som(null);
   bord.zet({ tel: 0 });
@@ -445,7 +480,7 @@ async function toetsvraagHolo(l: Lesgids, bord: Bord, v: Toetsvraag): Promise<To
     bord.goed();
     const traag = bord.duur > TRAAG;
     const tempo =
-      v.tempo && traag ? ["Probeer de volgende iets sneller."] : v.tempo === "beide" && bord.duur < SNEL ? ["Dat was razendsnel!"] : [];
+      v.tempo && traag ? ["Probeer de volgende iets sneller."] : v.tempo === "beide" && bord.duur < SNEL ? ["Dat ging supersnel!"] : [];
     await l.zeg(...v.bijGoed, ...tempo);
     return { goed: true, traag, weetNiet: false };
   }
@@ -606,7 +641,7 @@ const instaptoets: Lesdraaiboek = {
           opties: opties(p, p + 9, p + 10, p + 11),
           goed: 10 + p,
           herkansing: opties(10, p + 9, p + 10, p + 11),
-          bijGoed: [`Juist, samen {${10 + p}}.`],
+          bijGoed: [`Ja, samen {${10 + p}}.`],
           bijFout: somFout(10, p),
           opnieuw: [`Wat is {10} plus {${p}}?`],
           antwoord: async () => {
@@ -699,7 +734,7 @@ const optellenBij10: Lesdraaiboek = {
     l.vlak(null);
     const tik = l.kaart();
     await l.zeg(
-      fouten === 0 ? "Foutloos gewerkt vandaag!" : "Goed gewerkt!",
+      fouten === 0 ? "Zonder fouten gewerkt vandaag!" : "Goed gewerkt!",
       "Je kunt al plussommen met {10} maken.",
       "Tik op de kaart om hem af te vinken.",
     );
@@ -816,7 +851,7 @@ const overDe10: Lesdraaiboek = {
       toon();
       bord.slot([]);
       await l.wacht(500);
-      await l.zeg(x === null ? "Geen zorgen." : "Kijk.", `{10} plus {${s - 10}} is {${s}}.`, `Dus {${a}} plus {${b}} is ook {${s}}.`, "Daar komen we later op terug.");
+      await l.zeg(x === null ? "Geen zorgen." : "Kijk.", `{10} plus {${s - 10}} is {${s}}.`, `Dus {${a}} plus {${b}} is ook {${s}}.`, "Dat zien we later.");
       await bord.verder();
       return "later";
     };
@@ -872,7 +907,7 @@ const overDe10: Lesdraaiboek = {
 
     /* De uitdaging: de 10 aanvullen (opgave 2), en hoeveel is het (opgave 3). */
     bord.bak([1, 2, 3, 4, 5, 6, 7, 8], { liggend: true });
-    await l.zeg("Hier is een uitdaging.", "Leg een tegel bij de {10}.", `Dan is het evenveel als {${a}} plus {${b}}.`);
+    await l.zeg("Hier is een moeilijke opdracht.", "Leg een tegel bij de {10}.", `Dan is het evenveel als {${a}} plus {${b}}.`);
     const k = await maakGelijk(a, b);
     bord.goed();
     await l.zeg("Kijk, nu zijn ze even groot.", `Dus {10} plus {${k}} en {${a}} plus {${b}} zijn evenveel.`, "Hoeveel is het?");
@@ -1090,7 +1125,7 @@ const bijnaDubbel: Lesdraaiboek = {
       [7, 8],
     ]);
     await l.zeg(
-      voor.goed === 3 ? "Allemaal goed!" : voor.goed === 0 ? "Dat waren lastige." : `Je had er {${voor.goed}} goed.`,
+      voor.goed === 3 ? "Allemaal goed!" : voor.goed === 0 ? "Dat waren lastige vragen." : `Je had er {${voor.goed}} goed.`,
       voor.goed >= 2 ? "Goed geprobeerd." : "",
       "Ik heb een paar trucjes.",
       "Die kunnen je echt helpen.",
@@ -1099,7 +1134,7 @@ const bijnaDubbel: Lesdraaiboek = {
 
     /* Trucje: dubbel 5, en één erbij (opgaven 4 en 5). */
     bord.bak([1, 2, 3, 4, 5]);
-    await l.zeg("Je bent goed in dubbelen.", "Die gaan we gebruiken.", "Zet een {5} in het vak.", "Dan maak ik hem dubbel.");
+    await l.zeg("Je bent goed in dubbele sommen.", "Die gaan we gebruiken.", "Zet een {5} in het vak.", "Dan maak ik hem dubbel.");
     for (let fout = 0; ; fout++) {
       const t = fout >= 2 ? 5 : await bord.pak({ hand: fout === 0, doel: opLinks, hulp: ["Zoek de {5}.", "Dat is de groene tegel."] });
       if (t === 5) break;
@@ -1229,7 +1264,7 @@ const eindtoets: Lesdraaiboek = {
     bord.bak([2, 4, 6, 8, 10]);
     await l.zeg("Dit is de eindtoets: plussommen tot {20}.", "Ben je daar al best goed in?");
     const al = await bord.jaNee();
-    await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "We kijken wat je al kunt.", "Probeer zo vlot mogelijk te antwoorden.");
+    await l.zeg(al === "Ja" ? "Mooi." : "Geen probleem.", "We kijken wat je al kunt.", "Antwoord maar zo snel je kunt.");
     bord.bak([]);
 
     let n = 6;
@@ -1287,7 +1322,7 @@ const eindtoets: Lesdraaiboek = {
           opties: opties(m, 9 + m, 10 + m, 11 + m),
           goed: 10 + m,
           herkansing: opties(10, 9 + m, 10 + m, 11 + m),
-          bijGoed: [`Juist, samen {${10 + m}}.`],
+          bijGoed: [`Ja, samen {${10 + m}}.`],
           bijFout: somFout(10, m),
           opnieuw: [`Wat is {10} plus {${m}}?`],
           antwoord: async () => {
@@ -1387,7 +1422,7 @@ const eindtoets: Lesdraaiboek = {
     await bord.leeg();
     if (gestopt) await l.zeg("Geen probleem.", "We leren het samen.", "We gaan meteen oefenen.");
     else if (goed === 6 && traag <= 1) await l.zeg(l.naam ? `Knap gedaan, ${l.naam}!` : "Knap gedaan!", "Je kunt plussommen maken tot {20}.");
-    else if (goed >= 5) await l.zeg("Goed gedaan.", traag > 1 ? "Je weet het, nu nog wat vlotter." : "Je weet het bijna allemaal.");
+    else if (goed >= 5) await l.zeg("Goed gedaan.", traag > 1 ? "Je weet het, nu nog wat sneller." : "Je weet het bijna allemaal.");
     else await l.zeg("Je weet al veel.", "We gaan nog wat oefenen.", "Daarna doe je de toets nog eens.");
     await bord.verder();
 

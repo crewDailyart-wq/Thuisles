@@ -34,8 +34,11 @@ import {
   type VerhaalProps,
   type Verhaalsoort,
 } from "../vlakken/verhaal-bord";
-import { VerhaalHolo, type HoloSoort, type VerhaalHoloProps } from "../vlakken/verhaal-holo-bord";
+/* Sinds 28 oktober 2026 de bloementuin (eigen voorwerpenstijl, voorbeeld voor de eigenaar); het hologrambord blijft staan. */
+import { knoppenOpPlek } from "./antwoordknoppen";
+import { VerhaalTuin, type HoloSoort, type VerhaalHoloProps } from "../vlakken/verhaal-bliepo-tuin";
 import { vierKeuzes } from "../holo/keuzes";
+import { sfeerVoor, speelLesgeluid } from "@/lib/lesgeluiden";
 
 /* ---------- kleine hulpjes ---------- */
 
@@ -49,8 +52,15 @@ function schud<T>(lijst: T[]): T[] {
 }
 
 /** De naam van het kind in het verhaal, of "jij". */
-const wie = (l: Lesgids) => l.naam || "jij";
-const Wie = (l: Lesgids) => l.naam || "Jij";
+/*
+  In de verhaaltjes is het kind "jij", niet zijn naam (28 oktober 2026, stem van Ruth): de naam is een los
+  stemfragment dat alleen bij het begin, na een mooie reeks en aan het eind klinkt; midden in een verhaalzin
+  zou hij niet natuurlijk klinken en zou elke zin per kind opnieuw gemaakt moeten worden.
+*/
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const wie = (_l: Lesgids) => "jij";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const Wie = (_l: Lesgids) => "Jij";
 
 /** Antwoordtegels: het goede getal en de afleiders, zonder dubbele, aangevuld tot `aantal`. Nooit boven de 20 (groep 3). */
 function tegels(aantal: number, goed: number, ...andere: number[]): number[] {
@@ -377,7 +387,7 @@ async function pluisUit(b: Bord, l: Lesgids, v: Pluisverhaal, o: { levend?: bool
       await l.zeg("Kijk, deze zin stelt de vraag.", "Hij eindigt met een vraagteken.", v.watZoeken);
       break;
     }
-    await l.zeg("Hmm, goed geprobeerd.", "Maar die zin stelt geen vraag.");
+    await l.zeg("Hm, goed geprobeerd.", "Maar die zin stelt geen vraag.");
     await l.verder();
     await l.zeg("Ik geef je een tip.", "Zoek de zin die eindigt met een vraagteken.", "Tik dan op die zin.");
   }
@@ -481,7 +491,7 @@ async function meteenProberen(b: Bord, l: Lesgids, v: Pluisverhaal) {
     await l.zeg("Zie je wel?", v.antwoordZin);
     return;
   }
-  await l.zeg(x === null ? "Geen zorgen." : `{${x}}? Niet helemaal.`, "We halen hem samen uit elkaar.");
+  await l.zeg(x === null ? "Geen zorgen." : `{${x}}? Niet helemaal.`, "We doen het samen stap voor stap.");
   b.zetPlaatjes(v.soort, v.aan, v.leeg);
   await pluisUit(b, l, v);
 }
@@ -563,7 +573,7 @@ function ballonnen(l: Lesgids, start: number, weg: number, gemaakt: boolean, keu
   const over = start - weg;
   return {
     zinnen: gemaakt
-      ? [`Ik blies ${start} ballonnen op.`, `${Wie(l)} liet er ${weg} [knappen].`, "Hoeveel ballonnen zijn er nog over?"]
+      ? [`${Wie(l)} blies ${start} ballonnen op.`, `Daarna liet ${wie(l)} er ${weg} [knappen].`, "Hoeveel ballonnen zijn er nog over?"]
       : [`Er zijn ${start} ballonnen op een feestje.`, weg === 1 ? "Er [vliegt] 1 [weg]." : `Er [vliegen] ${weg} [weg].`, "Hoeveel ballonnen zijn er nog over?"],
     soort: "ballon",
     aan: start,
@@ -594,7 +604,7 @@ function ballonnen(l: Lesgids, start: number, weg: number, gemaakt: boolean, keu
     ],
     naspelen: gemaakt
       ? ["Je weet het antwoord vast al.", weg === 1 ? "Laat die ballon toch nog eens knappen." : `Laat de {${weg}} ballonnen toch nog eens knappen.`]
-      : ["De som staat klaar.", `Laat {${weg}} ${mv(weg, "ballon", "ballonnen")} wegvliegen.`, `Tik op {${weg}} ${mv(weg, "ballon", "ballonnen")}.`],
+      : ["De som staat klaar.", weg === 1 ? "Tik op de ballon die wegvliegt." : `Tik op de {${weg}} ballonnen die wegvliegen.`],
     antwoordVraag: "Hoeveel ballonnen zijn er nog over?",
     telTip: "Tel de ballonnen die er nog zijn.",
     antwoordZin: nogOver(over, "ballon", "ballonnen"),
@@ -605,7 +615,7 @@ function ballonnen(l: Lesgids, start: number, weg: number, gemaakt: boolean, keu
 function lampjes(l: Lesgids, start: number, uit: number, keuzes?: number[]): Pluisverhaal {
   const nog = start - uit;
   return {
-    zinnen: [`Er zijn ${start} lampjes aan.`, `${Wie(l)} doet er ${uit} [uit].`, "Hoeveel lampjes zijn er nog aan?"],
+    zinnen: [`Er branden ${start} lampjes.`, `${Wie(l)} doet er ${uit} [uit].`, "Hoeveel lampjes branden er nog?"],
     soort: "lampje",
     aan: start,
     leeg: 0,
@@ -613,7 +623,7 @@ function lampjes(l: Lesgids, start: number, uit: number, keuzes?: number[]): Plu
     b: uit,
     op: "−",
     vraagZin: 2,
-    watZoeken: "We zoeken hoeveel lampjes er nog aan blijven.",
+    watZoeken: "We zoeken hoeveel lampjes er nog blijven branden.",
     signaalVraag: "Tik op het woord dat zegt dat er lampjes uitgaan.",
     signaalTip: "Tip: tik op het woord dat zegt wat er met de lampjes gebeurt.",
     signaalUitleg: "Het woord *uit* zegt dat er minder lampjes branden.",
@@ -624,14 +634,14 @@ function lampjes(l: Lesgids, start: number, uit: number, keuzes?: number[]): Plu
       eraf: "Minder",
       goed: ["Er branden minder lampjes.", "Dus het is eraf."],
     },
-    beginVraag: "Hoeveel lampjes waren er eerst aan?",
-    beginAntwoord: [`Er waren eerst {${start}} lampjes aan.`, "Die zetten we vooraan."],
+    beginVraag: "Hoeveel lampjes brandden er eerst?",
+    beginAntwoord: [`Eerst brandden er {${start}} lampjes.`, "Die zetten we vooraan."],
     tweedeVraag: "En welk getal zegt hoeveel er uitgaan?",
     tweedeAntwoord: [uit === 1 ? "Er gaat {1} lampje uit." : `Er gaan {${uit}} lampjes uit.`, `Dus halen we {${uit}} eraf.`],
     naspelen: ["De som staat klaar.", uit === 1 ? "Tik op {1} lampje om het uit te doen." : `Tik op {${uit}} lampjes om ze uit te doen.`],
-    antwoordVraag: "Hoeveel lampjes zijn er nog aan?",
+    antwoordVraag: "Hoeveel lampjes branden er nog?",
     telTip: "Tel de lampjes die nog branden.",
-    antwoordZin: nog === 1 ? "Er is nog {1} lampje aan." : `Er zijn nog {${nog}} lampjes aan.`,
+    antwoordZin: nog === 1 ? "Er brandt nog {1} lampje." : `Er branden nog {${nog}} lampjes.`,
     keuzes,
   };
 }
@@ -691,11 +701,11 @@ async function omgekeerd(b: Bord, l: Lesgids, v: Omgekeerd) {
       await l.zeg("Precies.");
       gebouwd = true;
     } else {
-      if (k === null) await l.zeg("Geen zorgen.", "We halen hem samen uit elkaar.");
-      else await l.zeg(`${k.replace(/(\d+)/g, "{$1}")}?`, "Niet helemaal.", "Zullen we hem samen uit elkaar halen?");
+      if (k === null) await l.zeg("Geen zorgen.", "We doen het samen stap voor stap.");
+      else await l.zeg(`${k.replace(/(\d+)/g, "{$1}")}?`, "Niet helemaal.", "Zullen we het samen stap voor stap doen?");
     }
   } else {
-    await l.zeg("Zulke sommen zijn in het begin lastig.", "We halen hem samen uit elkaar.");
+    await l.zeg("Zulke sommen zijn in het begin lastig.", "We doen het samen stap voor stap.");
   }
 
   if (!gebouwd) {
@@ -768,7 +778,7 @@ async function omgekeerd(b: Bord, l: Lesgids, v: Omgekeerd) {
     await l.zeg(v.antwoordZin, "De som ziet er goed uit.", "Maar we controleren hem even.");
   } else {
     /* Het plaatje komt erbij en we rekenen terug. */
-    await l.zeg(x === null ? "Geen zorgen." : "Hmm.", "We kijken samen.");
+    await l.zeg(x === null ? "Geen zorgen." : "Hm.", "We kijken samen.");
     if (onbekend === 0) {
       b.zetPlaatjes(v.soort, eind, 0);
       await l.zeg(`Dit zijn alle {${eind}} ${v.ding}.`, `Haal de {${q}} weg die erbij kwamen.`);
@@ -782,9 +792,9 @@ async function omgekeerd(b: Bord, l: Lesgids, v: Omgekeerd) {
       });
     } else {
       b.zetPlaatjes(v.soort, p ?? 0, 0);
-      await l.zeg(`Kijk, {${p}} ${v.ding}.`, `Doe ze uit tot er nog {${eind}} aan zijn.`);
+      await l.zeg(`Kijk, {${p}} ${v.ding}.`, `Doe ze uit tot er nog {${eind}} branden.`);
       await naspelen(b, l, antwoord, "weg");
-      await l.zeg(`Nu zijn er nog {${eind}} aan.`, "Hoeveel heb je er uitgedaan?");
+      await l.zeg(`Nu branden er nog {${eind}}.`, "Hoeveel heb je er uitgedaan?");
       await vraagAntwoord(b, l, {
         antwoord,
         telTip: `Tel de ${v.ding} die uit zijn.`,
@@ -806,7 +816,7 @@ async function omgekeerd(b: Bord, l: Lesgids, v: Omgekeerd) {
     b.zetPlaatjes(v.soort, p ?? 0, 0);
     await l.zeg(`Er waren {${p}} ${v.ding}.`, `Er gingen er {${antwoord}} uit.`, "Kun je die nu uitdoen?");
     await naspelen(b, l, antwoord, "weg");
-    await l.zeg("Kijk eens.", `Er zijn nog {${eind}} ${v.ding} aan.`);
+    await l.zeg("Kijk eens.", `Nu branden er nog {${eind}} ${v.ding}.`);
   }
   await l.verder();
 }
@@ -819,22 +829,22 @@ async function omgekeerd(b: Bord, l: Lesgids, v: Omgekeerd) {
  */
 async function toetsLampjes(b: Bord, l: Lesgids, start: number, uit: number, keuzes: number[], voorDeVraag?: () => Promise<boolean>): Promise<boolean> {
   const nog = start - uit;
-  b.nieuw([`Er zijn ${start} lampjes aan.`, `${Wie(l)} doet er ${uit} uit.`, "Hoeveel lampjes zijn er nog aan?"]);
+  b.nieuw([`Er branden ${start} lampjes.`, `${Wie(l)} doet er ${uit} uit.`, "Hoeveel lampjes branden er nog?"]);
   b.zetPlaatjes("lampje", start, 20 - start);
   await vertel(b, l);
   if (voorDeVraag && !(await voorDeVraag())) return false;
-  await l.zeg("Wat denk jij?", "Hoeveel lampjes blijven er aan?");
+  await l.zeg("Wat denk jij?", "Hoeveel lampjes blijven er branden?");
   for (let poging = 1; ; poging++) {
     const x = await kiesGetal(l, keuzes);
     if (x === nog) {
-      await l.zeg("Goed zo.", `Er zijn er nog {${nog}} aan.`);
+      await l.zeg("Goed zo.", `Er branden er nog {${nog}}.`);
       break;
     }
     if (x !== null && poging === 1) {
       await l.zeg(`{${x}}?`, Math.abs(x - nog) <= 1 ? "Dat is heel dichtbij." : "Niet helemaal.", "Kijk nog eens.");
       continue;
     }
-    await l.zeg(x === null ? "Geen zorgen." : "Niet helemaal.", `Er blijven er {${nog}} aan.`);
+    await l.zeg(x === null ? "Geen zorgen." : "Niet helemaal.", `Er blijven er {${nog}} branden.`);
     break;
   }
   /* Als controle gaan de lampjes echt uit, één voor één. */
@@ -1003,7 +1013,7 @@ const kleineVerhalenOud: Lesdraaiboek = {
     if (hulp === "Nee") {
       await meteenProberen(b, l, v1);
     } else {
-      await l.zeg("Geen probleem.", "We halen het verhaal uit elkaar.", "Dan snappen we wat er gevraagd wordt.");
+      await l.zeg("Geen probleem.", "We kijken stap voor stap naar het verhaal.", "Dan snappen we wat er gevraagd wordt.");
       await pluisUit(b, l, v1);
     }
     await l.verder();
@@ -1016,20 +1026,20 @@ const kleineVerhalenOud: Lesdraaiboek = {
     if (weet === "Ja") {
       await meteenProberen(b, l, v2);
     } else {
-      await l.zeg("Geen probleem.", "We halen hem samen uit elkaar.");
+      await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
       await pluisUit(b, l, v2);
     }
     await l.zeg("Je deed dus {5} plus {3}.", "Wissel de getallen nu eens om.", "Krijg je dan hetzelfde antwoord?");
     const om = await l.kies(["Ja", "Nee"]);
     b.zet({ som: [{ t: "getal", n: 3 }, { t: "teken", s: "+" }, { t: "getal", n: 5 }, { t: "teken", s: "=" }, { t: "getal", n: 8 }] });
-    if (om === "Ja") await l.zeg("Natuurlijk.", "Bij plussen maakt de volgorde niet uit.", "Het antwoord blijft {8}.");
-    else await l.zeg("Kijk maar.", "{3} + {5} is ook {8}.", "Bij plussen maakt de volgorde niet uit.");
+    if (om === "Ja") await l.zeg("Natuurlijk.", "Bij plussen mag je de getallen wisselen.", "Het antwoord blijft {8}.");
+    else await l.zeg("Kijk maar.", "{3} + {5} is ook {8}.", "Bij plussen mag je de getallen wisselen.");
     await l.verder();
 
     /* 3. Zelf een verhaal maken: ballonnen laten knappen. */
     b.nieuw([]);
     b.zetPlaatjes("ballon", 10, 0);
-    await l.zeg("Nu ben jij de baas over het verhaal.", "Laat een paar ballonnen knappen.", "Tik op het vinkje als je klaar bent.");
+    await l.zeg("Nu bepaal jij het verhaal.", "Laat een paar ballonnen knappen.", "Tik op het vinkje als je klaar bent.");
     const knal = await zelfKiezen(b, l, "weg", 9);
     await l.zeg("Goed zo.", "Ik lees jouw verhaal voor.");
     const v3 = ballonnen(l, 10, knal, true);
@@ -1043,7 +1053,7 @@ const kleineVerhalenOud: Lesdraaiboek = {
       if (k === goed) {
         await l.zeg(`Precies, {10} − {${knal}}.`, "Wat is het antwoord?");
       } else {
-        if (k === `10 + ${knal}`) await l.zeg("Erbij past niet.", "Er knappen ballonnen.", "Dan gaan er ballonnen weg.");
+        if (k === `10 + ${knal}`) await l.zeg("Erbij past hier niet.", "Er knappen ballonnen.", "Dan gaan er ballonnen weg.");
         else if (k !== null) await l.zeg(`Daar staat {${10 + knal}} in.`, "Maar er waren maar {10} ballonnen.");
         else await l.zeg("Geen zorgen.");
         await l.zeg(`Deze som past: {10} − {${knal}}.`, "Hoeveel ballonnen zijn er nog over?");
@@ -1061,12 +1071,12 @@ const kleineVerhalenOud: Lesdraaiboek = {
       }
       b.somDeel(4, { t: "getal", n: 10 - knal });
     } else {
-      await l.zeg("Geen probleem.", "We halen hem samen uit elkaar.");
+      await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
       await pluisUit(b, l, v3);
     }
 
-    await l.zeg(l.naam ? `${l.naam}, wil je afronden?` : "Wil je afronden?", "Of nog één, waarbij je zelf de som bouwt?");
-    const nog = await l.kies(["Afronden", "Nog één"]);
+    await l.zeg(l.naam ? `${l.naam}, wil je stoppen?` : "Wil je stoppen?", "Of nog één, waarbij je zelf de som bouwt?");
+    const nog = await l.kies(["Stoppen", "Nog één"]);
     if (nog === "Nog één") {
       /* 4. Zelf bloemen planten. */
       b.nieuw([]);
@@ -1132,7 +1142,7 @@ const groteVerhalenOud: Lesdraaiboek = {
     if (alleen === "Ja") {
       await meteenProberen(b, l, v1);
     } else {
-      await l.zeg("Dat is oké.", "We halen dit verhaal samen uit elkaar.");
+      await l.zeg("Dat is oké.", "We doen dit verhaal samen stap voor stap.");
       await pluisUit(b, l, v1);
     }
     await l.verder();
@@ -1145,7 +1155,7 @@ const groteVerhalenOud: Lesdraaiboek = {
     if (weet === "Ja") {
       await meteenProberen(b, l, v2);
     } else {
-      await l.zeg("Dat is oké.", "We halen hem samen uit elkaar.");
+      await l.zeg("Dat is oké.", "We doen het samen stap voor stap.");
       await pluisUit(b, l, v2);
     }
     await l.verder();
@@ -1153,7 +1163,7 @@ const groteVerhalenOud: Lesdraaiboek = {
     /* 3. Zelf bloemen planten; nu meteen de som kiezen. */
     b.nieuw([]);
     b.zetPlaatjes("bloem", 7, 13);
-    await l.zeg("Nu ben jij de baas over de som.", "Er staan al {7} bloemen.", "Plant er nog wat bij.", "Tik op het vinkje als je klaar bent.");
+    await l.zeg("Nu bepaal jij de som.", "Er staan al {7} bloemen.", "Plant er nog wat bij.", "Tik op het vinkje als je klaar bent.");
     const plant = await zelfKiezen(b, l, "erbij", 13);
     const samen = 7 + plant;
     b.nieuw([`Er staan 7 bloemen in een tuin.`, `${Wie(l)} plant er ${plant} bij.`, "Hoeveel bloemen zijn het nu?"]);
@@ -1169,7 +1179,7 @@ const groteVerhalenOud: Lesdraaiboek = {
     const keuzes = tegels(4, samen, samen + 1, 7, plant);
     const x = await kiesGetal(l, keuzes);
     if (x !== samen) {
-      await l.zeg(x === null ? "Geen zorgen." : `{${x}} bloemen? Niet helemaal.`, "We planten de nieuwe bloemen.", `Plant {${plant}} ${mv(plant, "bloem", "bloemen")} in de lege potjes.`);
+      await l.zeg(x === null ? "Geen zorgen." : `{${x}} ${x === 1 ? "bloem" : "bloemen"}? Niet helemaal.`, "We planten de nieuwe bloemen.", `Plant {${plant}} ${mv(plant, "bloem", "bloemen")} in de lege potjes.`);
       await naspelen(b, l, plant, "erbij");
       await l.zeg("Tel alle bloemen.", "Hoeveel zijn het er nu?");
       const zelf = await vraagAntwoord(b, l, { antwoord: samen, keuzes, telTip: "Tel alle bloemen nog eens.", antwoordZin: `Er zijn nu {${samen}} bloemen.`, telOp: "aan" });
@@ -1181,8 +1191,8 @@ const groteVerhalenOud: Lesdraaiboek = {
     }
     await l.verder();
 
-    await l.zeg(l.naam ? `${l.naam}, wil je afronden?` : "Wil je afronden?", "Of nog één verhaal met knikkers?");
-    const nog = await l.kies(["Afronden", "Nog één"]);
+    await l.zeg(l.naam ? `${l.naam}, wil je stoppen?` : "Wil je stoppen?", "Of nog één verhaal met knikkers?");
+    const nog = await l.kies(["Stoppen", "Nog één"]);
     if (nog === "Nog één") {
       /* 4. Zelf knikkers weggeven. */
       b.nieuw([]);
@@ -1232,7 +1242,7 @@ const verstopteGetallenOud: Lesdraaiboek = {
 
     /* 1. Bloemen: ? + 5 = 9. */
     await omgekeerd(b, l, {
-      zinnen: ["Er staan _wat_ _bloemen_ in de tuin.", `${Wie(l)} plantte er nog 5 bij.`, "Nu zijn het er samen 9.", "Hoeveel bloemen stonden er eerst?"],
+      zinnen: ["Er staan _een_ _paar_ _bloemen_ in de tuin.", `${Wie(l)} plantte er nog 5 bij.`, "Nu zijn het er samen 9.", "Hoeveel bloemen stonden er eerst?"],
       soort: "bloem",
       ding: "bloemen",
       delen: [null, 5, 9],
@@ -1246,7 +1256,7 @@ const verstopteGetallenOud: Lesdraaiboek = {
       },
       vragen: ["Hoeveel bloemen stonden er eerst?", `En hoeveel bloemen plantte ${wie(l)}?`, "En hoeveel bloemen zijn er samen?"],
       betekenis: { 5: `Er kwamen {5} bloemen bij.`, 9: "Er zijn er samen {9}." },
-      onbekendKnop: "Wat bloemen",
+      onbekendKnop: "Een paar bloemen",
       rekenVraag: "Hoeveel plus {5} is {9}?",
       antwoordZin: "Ja, er stonden eerst {4} bloemen.",
       somKeuzes: ["? + 5 = 9", "5 + ? = 9", "? − 5 = 9"],
@@ -1256,7 +1266,7 @@ const verstopteGetallenOud: Lesdraaiboek = {
     /* 2. Lampjes: 20 − ? = 13. */
     await l.zeg("Goed zo.", "We kijken naar een nieuw verhaal.");
     await omgekeerd(b, l, {
-      zinnen: ["Er zijn 20 lampjes aan.", `${Wie(l)} doet er _een_ _paar_ uit.`, "Nu zijn er nog 13 aan.", `Hoeveel lampjes deed ${wie(l)} uit?`],
+      zinnen: ["Er branden 20 lampjes.", `${Wie(l)} doet er _een_ _paar_ uit.`, "Nu branden er nog 13.", `Hoeveel lampjes deed ${wie(l)} uit?`],
       soort: "lampje",
       ding: "lampjes",
       delen: [20, null, 13],
@@ -1268,8 +1278,8 @@ const verstopteGetallenOud: Lesdraaiboek = {
         opties: ["Minder", "Meer"],
         goed: ["Het worden er minder.", "Dat is eraf."],
       },
-      vragen: ["Hoeveel lampjes waren er in het begin aan?", "Hoeveel lampjes gingen uit?", "Hoeveel zijn er nog aan?"],
-      betekenis: { 13: "Dat zijn de lampjes die nog aan zijn.", 20: "Zoveel lampjes waren er in het begin." },
+      vragen: ["Hoeveel lampjes brandden er in het begin?", "Hoeveel lampjes gingen uit?", "Hoeveel branden er nog?"],
+      betekenis: { 13: "Dat zijn de lampjes die nog branden.", 20: "Zoveel lampjes waren er in het begin." },
       onbekendKnop: "Een paar",
       rekenVraag: "{20} min hoeveel is {13}?",
       antwoordZin: "Precies, er gingen {7} lampjes uit.",
@@ -1280,7 +1290,7 @@ const verstopteGetallenOud: Lesdraaiboek = {
     /* 3. Knikkers: ? + 7 = 12. */
     await l.zeg(l.naam ? `Je doet het goed, ${l.naam}.` : "Je doet het goed.", "Nog één.", "Dit is het laatste verhaal.");
     await omgekeerd(b, l, {
-      zinnen: ["Tim heeft _wat_ _knikkers_.", `${Wie(l)} geeft hem er nog 7.`, "Nu heeft Tim er 12.", "Met hoeveel knikkers begon Tim?"],
+      zinnen: ["Tim heeft _een_ _paar_ _knikkers_.", `${Wie(l)} geeft hem er nog 7.`, "Nu heeft Tim er 12.", "Met hoeveel knikkers begon Tim?"],
       soort: "knikker",
       ding: "knikkers",
       delen: [null, 7, 12],
@@ -1294,7 +1304,7 @@ const verstopteGetallenOud: Lesdraaiboek = {
       },
       vragen: ["Met hoeveel knikkers begon Tim?", `En hoeveel knikkers gaf ${wie(l)} hem?`, "En hoeveel heeft hij er nu?"],
       betekenis: { 7: "Zoveel knikkers kreeg Tim erbij.", 12: "Zoveel heeft Tim er nu." },
-      onbekendKnop: "Wat knikkers",
+      onbekendKnop: "Een paar knikkers",
       rekenVraag: "Hoeveel plus {7} is {12}?",
       antwoordZin: "Ja, Tim begon met {5} knikkers.",
       somKeuzes: ["? + 7 = 12", "7 + ? = 12", "? − 7 = 12"],
@@ -1543,8 +1553,8 @@ const meerVerhaaltjes: Lesdraaiboek = {
     await l.verder();
 
     /* 4. Nog één, als het kind wil: koekjes. Meteen de som kiezen. */
-    await l.zeg(l.naam ? `Goed gedaan, ${l.naam}.` : "Goed gedaan.", "Wil je nog één verhaal over koekjes?", "Of zullen we afronden?");
-    const nog = await l.kies(["Nog één", "Afronden"]);
+    await l.zeg(l.naam ? `Goed gedaan, ${l.naam}.` : "Goed gedaan.", "Wil je nog één verhaal over koekjes?", "Of zullen we stoppen?");
+    const nog = await l.kies(["Nog één", "Stoppen"]);
     if (nog === "Nog één") {
       const v4 = koekjesOp(l);
       await begin(b, l, v4);
@@ -1555,7 +1565,7 @@ const meerVerhaaltjes: Lesdraaiboek = {
         await l.zeg("Goed zo.", "{20} − {9}.");
         await antwoordMetNaspelen(b, l, v4, "Goed.", ["We eten de koekjes zelf op."]);
       } else {
-        await l.zeg(k === null ? "Geen zorgen." : "Niet helemaal.", "We halen hem samen uit elkaar.");
+        await l.zeg(k === null ? "Geen zorgen." : "Niet helemaal.", "We doen het samen stap voor stap.");
         await pluisUit(b, l, v4, { levend: true });
       }
       await l.verder();
@@ -1564,7 +1574,7 @@ const meerVerhaaltjes: Lesdraaiboek = {
     l.vlak(null);
     l.bak([]);
     const tik = l.kaart();
-    await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je lost deze verhaaltjes vlot op.", "Tik op de kaart om hem af te vinken.");
+    await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je lost deze verhaaltjes snel op.", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
@@ -1591,17 +1601,43 @@ export const LESSEN_VERHAALTJESSOMMEN_OUD: Lesdraaiboek[] = [instaptoetsOud, kle
  *   wist, komt aan het eind nog één keer terug.
  * ===================================================================== */
 
+/**
+ * Het vinkje en "weet ik niet" van het verhaal staan op de vaste plek onder de
+ * zin van Bliepo (28 oktober 2026, besluit eigenaar), niet meer in het vlak.
+ */
+function metVasteKnoppen(les: Lesdraaiboek): Lesdraaiboek {
+  return {
+    ...les,
+    speel: (l) =>
+      les.speel(
+        knoppenOpPlek(l, {
+          voor: VerhaalTuin,
+          soorten: { klaar: "controleer", weetniet: "weetniet" },
+          zichtbaar: (p) => [p.klaarKnop ? "klaar" : "", p.weetNiet ? "weetniet" : ""].filter(Boolean),
+        }),
+      ),
+  };
+}
+
 /** Houdt bij wat er in het hologramvlak staat, en hoeveel opgaven het kind al deed. */
+/** "1 vogeltje", niet "1 vogeltjes" (keurder, 28 okt 2026). */
+function enkelvoud(ding: string): string {
+  const vast: Record<string, string> = { vogeltjes: "vogeltje", bloemen: "bloem", ballonnen: "ballon", lampen: "lamp", lampjes: "lampje", munten: "munt", lichtjes: "lichtje", lantaarntjes: "lantaarntje", paddenstoelen: "paddenstoel", knikkers: "knikker", potten: "pot", vuurvliegjes: "vuurvliegje", koekjes: "koekje" };
+  return vast[ding] ?? ding;
+}
+
 class HBord {
   p: VerhaalHoloProps = { zinnen: [], zichtbaar: 0 };
   /** Knoppen die Bliepo al eens heeft aangewezen. */
   gewezen = new Set<string>();
+  /** Nagebouwde lessen: geen extra aanwijs-zinnen ("Tik op de pijl."), want Synthesis heeft die niet (28 okt 2026). */
+  zonderAanwijzen = false;
   /** Aantal opgaven in deze les (vaste regel: minstens 15). */
   opgaven = 0;
   /** Korte verhaaltjes die later in de les terugkomen (2× fout of "weet ik niet"). */
   later: Kort[] = [];
   constructor(private l: Lesgids) {
-    l.vlak(VerhaalHolo, this.p);
+    l.vlak(VerhaalTuin, this.p);
   }
   zet(extra: Partial<VerhaalHoloProps>) {
     this.p = { ...this.p, ...extra };
@@ -1631,6 +1667,15 @@ class HBord {
       keuzes: null,
       weetNiet: false,
       klaarKnop: false,
+      leesZin: null,
+      woordKleur: {},
+      somBijMidden: false,
+      alleenZin: null,
+      tikAlleen: null,
+      scheidingNa: null,
+      handje: false,
+      /* Nagebouwde lessen (vergelijking 28 okt 2026): geen streepje onder wat je kunt aantikken, zoals Synthesis. */
+      kaal: this.zonderAanwijzen,
       ...extra,
     };
     this.p = { ...leeg, golfNr: this.p.golfNr, schudNr: this.p.schudNr };
@@ -1639,8 +1684,37 @@ class HBord {
   somDeel(i: number, d: Somstuk) {
     this.zet({ som: (this.p.som ?? []).map((x, j) => (j === i ? d : x)) });
   }
-  zetPlaatjes(soort: HoloSoort, aan: number, uit: number, leeg: "plek" | "eigen" = "eigen") {
-    this.zet({ plaatjes: { soort, plekken: plekken(aan, uit), leeg }, geteld: [], tel: null });
+  zetPlaatjes(soort: HoloSoort, aan: number, uit: number, leeg: "plek" | "eigen" = "eigen", extra: { rij?: number; bloeit?: boolean } = {}) {
+    this.sfeer(soort);
+    this.zet({ plaatjes: { soort, plekken: plekken(aan, uit), leeg, zweefNr: this.zweefTeller, ...extra }, geteld: [], tel: null });
+  }
+  /*
+    Sfeergeluidje als de voorwerpen van een nieuw verhaal in beeld komen (29 oktober 2026):
+    Synthesis laat bij het vogelverhaal heel zacht 2 s vogeltjes horen. Wij doen dat bij elk
+    nieuw soort voorwerp; niet opnieuw bij dezelfde voorwerpen binnen 20 s. Het wacht als
+    Bliepo praat. LEGAL REVIEW REQUIRED (moment van Synthesis overgenomen).
+  */
+  private laatsteSfeer: { soort: string; op: number } | null = null;
+  private sfeer(soort: HoloSoort) {
+    if (this.p.plaatjes?.soort === soort) return;
+    const nu = Date.now();
+    if (this.laatsteSfeer && this.laatsteSfeer.soort === soort && nu - this.laatsteSfeer.op < 20000) return;
+    const naam = sfeerVoor(soort);
+    if (!naam) return;
+    this.laatsteSfeer = { soort, op: nu };
+    speelLesgeluid(naam);
+  }
+  /** Telt op per les: de voorwerpen zweven van onderen omhoog als dit hoger wordt (ballonnen bij het voorlezen). */
+  zweefTeller = 0;
+  /** Voorwerpen met een eigen stand per plek (bijvoorbeeld 16 munten en 4 lege plekken). */
+  zetStand(soort: HoloSoort, stand: Plekstaat[], leeg: "plek" | "eigen" = "eigen", extra: { rij?: number; bloeit?: boolean } = {}) {
+    this.sfeer(soort);
+    this.zet({ plaatjes: { soort, plekken: stand, leeg, zweefNr: this.zweefTeller, ...extra }, geteld: [], tel: null });
+  }
+  /** Bloempotten met een plantje laten bloeien (of weer een spruitje). */
+  bloei(aan: boolean) {
+    const pl = this.p.plaatjes;
+    if (pl) this.zet({ plaatjes: { ...pl, bloeit: aan } });
   }
   /** De plekken veranderen, de soort blijft. */
   zetPlekken(nieuw: Plekstaat[]) {
@@ -1655,18 +1729,56 @@ class HBord {
   }
   opgave() {
     this.opgaven++;
+    /* Voor de automatische test: hoeveel opgaven er al waren. */
+    window.__phaser = { ...window.__phaser, opgaven: this.opgaven };
   }
+}
+
+/**
+ * De woorden rond woord `j` tot het volgende getal (Synthesis Bigger Problems: de knoppen in het
+ * verhaal zijn woordgroepen, zoals "fly away."). Zonder `j`: alle woorden van de zin die geen getal zijn.
+ */
+function woordGroep(zin: string, i: number, j?: number): Record<string, "r" | "g"> {
+  const woorden = zin.split(" ").filter(Boolean);
+  const getal = (w: string) => /^\d+[.,?!]?$/.test(w);
+  let van = 0;
+  let tot = woorden.length - 1;
+  if (j !== undefined && !getal(woorden[j] ?? "")) {
+    van = j;
+    while (van > 0 && !getal(woorden[van - 1])) van--;
+    tot = j;
+    while (tot < woorden.length - 1 && !getal(woorden[tot + 1])) tot++;
+  }
+  const uit: Record<string, "r" | "g"> = {};
+  for (let k = van; k <= tot; k++) if (!getal(woorden[k])) uit[`${i}-${k}`] = "r";
+  return uit;
+}
+const kleurAlles = (m: Record<string, "r" | "g">, kleur: "r" | "g") => Object.fromEntries(Object.keys(m).map((k) => [k, kleur])) as Record<string, "r" | "g">;
+
+/** "En welk getal halen we eraf?" → het woord eraf/erbij/weg in het groen (hoort bij het groene vraagteken, zoals Synthesis). */
+function groenWoord(zin: string): string {
+  return zin.replace(/\b(eraf|erbij|weg|bij|uit)(?=[?.!]?$)/, "[[g:$1]]");
 }
 
 /** Bliepo wijst een knop één keer per les aan. */
 async function wijsEenKeer(b: HBord, l: Lesgids, knop: string, ...zinnen: string[]) {
-  if (b.gewezen.has(knop)) return;
+  if (b.zonderAanwijzen || b.gewezen.has(knop)) return;
   b.gewezen.add(knop);
   await l.wijsAan(knop, ...zinnen);
 }
 
 /** Het verhaal voorlezen; de zinnen verschijnen één voor één. */
 async function vertelH(b: HBord, l: Lesgids) {
+  if (b.zonderAanwijzen) {
+    /* Zoals Synthesis: het hele verhaal staat er; de zin die Bliepo voorleest kleurt op. */
+    b.zet({ zichtbaar: b.p.zinnen.length });
+    for (let i = 0; i < b.p.zinnen.length; i++) {
+      b.zet({ leesZin: i });
+      await l.zeg(voorleeszin(b.p.zinnen[i]));
+    }
+    b.zet({ leesZin: null });
+    return;
+  }
   for (let i = 0; i < b.p.zinnen.length; i++) {
     b.zet({ zichtbaar: i + 1 });
     await l.zeg(voorleeszin(b.p.zinnen[i]));
@@ -1681,24 +1793,27 @@ async function kiesH(
   b: HBord,
   l: Lesgids,
   opties: (number | string)[],
-  o: { uit?: (number | string)[]; som?: boolean; weetNiet?: boolean; wijs?: string[]; wijsSleutel?: string; goed?: number | string } = {},
+  o: { uit?: (number | string)[]; som?: boolean; weetNiet?: boolean; wijs?: string[]; wijsSleutel?: string; goed?: number | string; tegels?: boolean; vinkje?: boolean } = {},
 ): Promise<number | string | null> {
-  const weetNiet = o.weetNiet !== false;
-  /* Voor de automatische test: welke knop nu goed is (zoals bij de flitskaarten). */
+  /* Sinds 28 oktober 2026 (Synthesis-indeling): de keuzes, de cijferknoppen en "Weet ik niet" staan in het lesscherm (l.kies),
+     in een kolom links. Wat fout was, staat er niet meer bij. Voor de automatische test: welke knop nu goed is. */
   window.__phaser = { ...window.__phaser, antwoord: o.goed ?? null };
-  b.zet({ keuzes: { opties, uit: o.uit ?? [], som: o.som }, weetNiet });
-  const p = l.wachtOpVlak<{ soort: string; waarde?: number | string }>(["keuze", "weetniet"]);
-  /* Na een tik meteen weg, ook als Bliepo de knoppen nog aanwijst. */
-  void p.then(() => b.zet({ keuzes: null, weetNiet: false }));
+  const uit = o.uit ?? [];
+  const lijst = opties.filter((x) => !uit.includes(x)).map(String);
+  /* Zoals Synthesis: getallen en tegels zijn meteen het antwoord (geen vinkje); sommen en erbij/eraf met vinkje. */
+  const direct = !o.som && !o.vinkje;
+  /* De cijfertegels 1–9 staan altijd links in het rooster van drie (zoals Synthesis), ook als de aanroep het niet vraagt. */
+  const tegels = !!o.tegels || (lijst.length >= 5 && lijst.every((x) => /^[1-9]$/.test(x)));
+  const p = l.kies(lijst, { direct, weetniet: o.weetNiet === false ? false : "Weet ik niet", raster: tegels });
   const sleutel = o.wijsSleutel ?? "keuzes";
-  if (!b.gewezen.has(sleutel)) {
+  if (!b.zonderAanwijzen && !b.gewezen.has(sleutel)) {
     b.gewezen.add(sleutel);
-    await l.wijsAan("keuzes", ...(o.wijs ?? ["Tik op het goede getal."]));
+    await l.wijsAan(direct ? "keuzes" : "controleer", ...(o.wijs ?? (direct ? ["Tik op het goede antwoord."] : ["Kies het goede antwoord.", "Tik dan op het vinkje."])));
   }
-  if (weetNiet) await wijsEenKeer(b, l, "weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
-  const g = await p;
-  b.zet({ keuzes: null, weetNiet: false });
-  return g.soort === "weetniet" ? null : (g.waarde ?? null);
+  if (o.weetNiet !== false) await wijsEenKeer(b, l, "weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
+  const k = await p;
+  if (k === null) return null;
+  return opties.find((x) => String(x) === k) ?? k;
 }
 
 async function kiesGetalH(b: HBord, l: Lesgids, opties: number[], uit: number[] = [], goed?: number): Promise<number | null> {
@@ -1708,12 +1823,13 @@ async function kiesGetalH(b: HBord, l: Lesgids, opties: number[], uit: number[] 
 
 /** Erbij of eraf, met een plus- en een minknop (groep 3 leest nog niet). */
 async function erbijErafH(b: HBord, l: Lesgids, op: "+" | "−"): Promise<"Erbij" | "Eraf" | null> {
-  const k = await kiesH(b, l, ["+", "−"], {
-    goed: op,
+  const k = await kiesH(b, l, ["+ Erbij", "− Eraf"], {
+    goed: op === "+" ? "+ Erbij" : "− Eraf",
     wijsSleutel: "plusmin",
-    wijs: ["Komt er iets bij?", "Tik dan op de plus.", "Gaat er iets af?", "Tik dan op de min."],
+    wijs: ["Komt er iets bij?", "Kies dan erbij.", "Gaat er iets af?", "Kies dan eraf.", "Tik dan op het vinkje."],
+    vinkje: true,
   });
-  return k === null ? null : k === "+" ? "Erbij" : "Eraf";
+  return k === null ? null : String(k).startsWith("+") ? "Erbij" : "Eraf";
 }
 
 /** De pijl om verder te gaan; de eerste keer wijst Bliepo hem aan. */
@@ -1724,10 +1840,11 @@ async function verderH(b: HBord, l: Lesgids) {
 }
 
 /** Wachten op een tik in het verhaal (of "Weet ik niet"); `hulp` zegt Bliepo als het kind na een tijdje niets doet. */
-async function wachtTikH(b: HBord, l: Lesgids, tik: "getal" | "zin" | "woord", hulp?: string[]): Promise<Vlakgebeurtenis> {
-  b.zet({ tik, weetNiet: true });
+async function wachtTikH(b: HBord, l: Lesgids, tik: "getal" | "zin" | "woord", hulp?: string[], weetNiet = true): Promise<Vlakgebeurtenis> {
+  /* Synthesis-lessen: bij het aantikken van getallen, de vraagzin en het signaalwoord heeft Synthesis geen "Weet ik niet" (`weetNiet = false`). */
+  b.zet({ tik, weetNiet });
   const p = l.wachtOpVlak(["getal", "zin", "woord", "weetniet"]);
-  await wijsEenKeer(b, l, "weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
+  if (weetNiet) await wijsEenKeer(b, l, "weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
   let klaar = false;
   const klok = hulp
     ? setTimeout(() => {
@@ -1804,8 +1921,10 @@ async function telDeze(b: HBord, l: Lesgids, deze: number[]) {
 /** Het verhaal laat zichzelf gebeuren: de voorwerpen gaan één voor één aan of uit. */
 async function laatGebeurenH(b: HBord, l: Lesgids, van: number, tot: number, totaal: number, ms = 260) {
   const stap = van < tot ? 1 : -1;
+  /* Lege plekken van het begin blijven leeg (stippelrondje); alleen wat uitgaat wordt grijs. */
+  const leeg = (b.p.plaatjes?.plekken ?? []).filter((st) => st === "leeg").length;
   for (let k = van + stap; stap > 0 ? k <= tot : k >= tot; k += stap) {
-    b.zetPlekken(plekken(k, totaal - k));
+    b.zetPlekken([...plekken(k, totaal - k - leeg), ...Array<Plekstaat>(leeg).fill("leeg")]);
     await l.wacht(ms);
   }
 }
@@ -1897,7 +2016,7 @@ async function kortNaspelen(b: HBord, l: Lesgids, k: Kort) {
 const JA = ["Ja!", "Precies.", "Klopt.", "Goed zo."];
 
 /** Een kort verhaaltje: voorlezen, het antwoord kiezen, en hulp zoals in de les. */
-async function kortH(b: HBord, l: Lesgids, k: Kort, magLater = true) {
+async function kortH(b: HBord, l: Lesgids, k: Kort, magLater = true, tegels = false) {
   const { totaal, startAan } = kortPlekken(k);
   const antwoord = antwoordVan(k);
   b.nieuw(k.zinnen, { stippelVoor: k.onbekend === undefined || k.onbekend === 4 ? null : k.zinnen.length - 1 });
@@ -1910,7 +2029,7 @@ async function kortH(b: HBord, l: Lesgids, k: Kort, magLater = true) {
   await l.zeg(k.vraag === laatste ? "Wat denk jij?" : k.vraag);
   /* De denkfout: opgeteld waar het eraf moest, of een getal uit het verhaal op de plek van het onbekende. */
   const opgeteld = k.op === "−" && (k.onbekend ?? 4) === 4 ? k.a + k.b : -1;
-  const keuzes = keuzesMet(antwoord, opgeteld);
+  const keuzes = tegels && antwoord <= 9 ? TEGELS : keuzesMet(antwoord, opgeteld);
   let uit: number[] = [];
   let geholpen = false;
   for (let poging = 1; ; poging++) {
@@ -1943,7 +2062,7 @@ async function kortH(b: HBord, l: Lesgids, k: Kort, magLater = true) {
     b.zet({ som: kortSom(k, true), somActief: null });
     await l.zeg(k.antwoordZin);
     if (magLater) {
-      await l.zeg("We komen hier later nog op terug.");
+      await l.zeg("Dit verhaaltje komt straks nog een keer terug.");
       b.later.push(k);
     }
     break;
@@ -1953,14 +2072,14 @@ async function kortH(b: HBord, l: Lesgids, k: Kort, magLater = true) {
 }
 
 /** Korte verhaaltjes tot er minstens 15 opgaven zijn; daarna komt terug wat nog lastig was. */
-async function vulAan(b: HBord, l: Lesgids, bank: Kort[]) {
-  const lijst = schud(bank);
+async function vulAan(b: HBord, l: Lesgids, bank: Kort[], ordered = false, tegels = false) {
+  const lijst = ordered ? bank : schud(bank);
   if (b.opgaven < 15) await l.zeg("We oefenen nog een paar korte verhaaltjes.", "Luister goed.");
-  for (let i = 0; b.opgaven < 15 && i < lijst.length; i++) await kortH(b, l, lijst[i]);
+  for (let i = 0; b.opgaven < 15 && i < lijst.length; i++) await kortH(b, l, lijst[i], true, tegels);
   const terug = b.later.splice(0);
   for (const k of terug) {
     await l.zeg("Deze kwam net al langs.", "Weet je het nu?");
-    await kortH(b, l, k, false);
+    await kortH(b, l, k, false, tegels);
   }
 }
 
@@ -2177,7 +2296,7 @@ async function vraagAntwoordH(
     await l.zeg(v.antwoordZin);
     b.zet({ tel: null });
     if (v.kort) {
-      await l.zeg("We komen hier later nog op terug.");
+      await l.zeg("Dit verhaaltje komt straks nog een keer terug.");
       b.later.push(v.kort);
     }
     return false;
@@ -2352,11 +2471,11 @@ async function meteenH(b: HBord, l: Lesgids, v: HPluis, opening: string[]) {
     await l.zeg("Zie je wel?", v.antwoordZin);
     return;
   }
-  if (x === null) await l.zeg("Geen probleem.", "We halen hem samen uit elkaar.");
+  if (x === null) await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
   else {
     b.fout();
-    if (x === opgeteld) await l.zeg(`{${x}}?`, "Ah, ik zie wat je denkt.", "Het lijkt alsof je ze hebt opgeteld.", "We halen hem samen uit elkaar.");
-    else await l.zeg(`{${x}}? Niet helemaal.`, "We halen hem samen uit elkaar.");
+    if (x === opgeteld) await l.zeg(`{${x}}?`, "Ah, ik zie wat je denkt.", "Het lijkt alsof je ze hebt opgeteld.", "We doen het samen stap voor stap.");
+    else await l.zeg(`{${x}}? Niet helemaal.`, "We doen het samen stap voor stap.");
   }
   await pluisUitH(b, l, v);
 }
@@ -2408,11 +2527,11 @@ async function somKiezenH(
  * knop grijs); 2× niet goed of "weet ik niet" = naar de les. Geeft `false` als
  * het kind naar de les gaat.
  */
-async function toetsVraag(b: HBord, l: Lesgids, opties: (number | string)[], goed: number | string, som = false): Promise<boolean> {
+async function toetsVraag(b: HBord, l: Lesgids, opties: (number | string)[], goed: number | string, som = false, weetNiet = true): Promise<boolean> {
   b.opgave();
   let uit: (number | string)[] = [];
   for (let poging = 1; poging <= 2; poging++) {
-    const x = await kiesH(b, l, opties, { uit, som, goed, wijsSleutel: som ? "sommen" : "keuzes", wijs: som ? ["Tik op de som die past."] : undefined });
+    const x = await kiesH(b, l, opties, { uit, som, goed, weetNiet, wijsSleutel: som ? "sommen" : "keuzes", wijs: som ? ["Tik op de som die past."] : undefined });
     if (x === goed) {
       b.goed();
       return true;
@@ -2470,7 +2589,7 @@ async function toetsH(l: Lesgids, t: { uitA: number; uitN: number; uitKeuzes: nu
     await naarDeLes(l);
     return false;
   }
-  await l.zeg("Dat is 'm.", `Er branden er nog {${nog}}.`);
+  await l.zeg("Dat klopt.", `Er branden er nog {${nog}}.`);
   await laatGebeurenH(b, l, t.uitA, nog, 20, 180);
   b.zet({ som: somVol(t.uitA, "−", t.uitN) });
   await verderH(b, l);
@@ -2537,7 +2656,7 @@ const BANK_10: Kort[] = [
   kortPlus("bloem", ["Er bloeien 4 bloemen.", "Er gaan nog 2 knopjes open.", "Hoeveel bloemen bloeien er nu?"], 4, 2, "Hoeveel bloemen bloeien er nu?", "Tel alle bloemen die bloeien.", "Er bloeien nu {6} bloemen."),
   kortMin("lantaarn", ["Er branden 9 lantaarntjes.", "Er gaan er 4 uit.", "Hoeveel lantaarntjes branden er nog?"], 9, 4, "lantaarntjes", "Hoeveel lantaarntjes branden er nog?", "Tel de lantaarntjes die nog branden.", "Er branden nog {5} lantaarntjes."),
   kortPlus("paddenstoel", ["Er gloeien 3 paddenstoelen.", "Er gaan er nog 4 gloeien.", "Hoeveel paddenstoelen gloeien er nu?"], 3, 4, "Hoeveel paddenstoelen gloeien er nu?", "Tel alle paddenstoelen die gloeien.", "Er gloeien nu {7} paddenstoelen."),
-  kortMin("lichtje", ["Er zweven 6 lichtjes.", "Er zweven er 2 weg.", "Hoeveel lichtjes zijn er nog?"], 6, 2, "lichtjes", "Hoeveel lichtjes zijn er nog?", "Tel de lichtjes die er nog zijn.", "Er zijn nog {4} lichtjes."),
+  kortMin("lichtje", ["Er zweven 6 lichtjes.", "Er vliegen er 2 weg.", "Hoeveel lichtjes zijn er nog?"], 6, 2, "lichtjes", "Hoeveel lichtjes zijn er nog?", "Tel de lichtjes die er nog zijn.", "Er zijn nog {4} lichtjes."),
   kortPlus("bloem", ["Er staan 6 bloemen in de tuin.", "Bliepo plant er 3 bij.", "Hoeveel bloemen staan er nu?"], 6, 3, "Hoeveel bloemen staan er nu?", "Tel alle bloemen.", "Er staan nu {9} bloemen.", "plek"),
   kortPlus("vuurvlieg", ["Er zweven 5 vuurvliegjes.", "Er komen er 4 bij.", "Hoeveel vuurvliegjes zijn het nu?"], 5, 4, "Hoeveel vuurvliegjes zijn het nu?", "Tel alle vuurvliegjes.", "Het zijn nu {9} vuurvliegjes."),
   kortPlus("lantaarn", ["Er branden 2 lantaarntjes.", "Bliepo doet er nog 5 aan.", "Hoeveel lantaarntjes branden er nu?"], 2, 5, "Hoeveel lantaarntjes branden er nu?", "Tel alle lantaarntjes die branden.", "Er branden nu {7} lantaarntjes."),
@@ -2553,7 +2672,7 @@ const BANK_20: Kort[] = [
   kortPlus("bloem", ["Er staan 8 bloemen in de tuin.", "Bliepo plant er 5 bij.", "Hoeveel bloemen staan er nu?"], 8, 5, "Hoeveel bloemen staan er nu?", "Tel alle bloemen.", "Er staan nu {13} bloemen.", "plek"),
   kortMin("lantaarn", ["Er branden 18 lantaarntjes.", "Er gaan er 9 uit.", "Hoeveel lantaarntjes branden er nog?"], 18, 9, "lantaarntjes", "Hoeveel lantaarntjes branden er nog?", "Tel de lantaarntjes die nog branden.", "Er branden nog {9} lantaarntjes."),
   kortPlus("paddenstoel", ["Er gloeien 9 paddenstoelen.", "Er gaan er nog 6 gloeien.", "Hoeveel paddenstoelen gloeien er nu?"], 9, 6, "Hoeveel paddenstoelen gloeien er nu?", "Tel alle paddenstoelen die gloeien.", "Er gloeien nu {15} paddenstoelen."),
-  kortMin("lichtje", ["Er zweven 13 lichtjes.", "Er zweven er 5 weg.", "Hoeveel lichtjes zijn er nog?"], 13, 5, "lichtjes", "Hoeveel lichtjes zijn er nog?", "Tel de lichtjes die er nog zijn.", "Er zijn nog {8} lichtjes."),
+  kortMin("lichtje", ["Er zweven 13 lichtjes.", "Er vliegen er 5 weg.", "Hoeveel lichtjes zijn er nog?"], 13, 5, "lichtjes", "Hoeveel lichtjes zijn er nog?", "Tel de lichtjes die er nog zijn.", "Er zijn nog {8} lichtjes."),
   kortPlus("vuurvlieg", ["Er zweven 7 vuurvliegjes.", "Er komen er 7 bij.", "Hoeveel vuurvliegjes zijn het nu?"], 7, 7, "Hoeveel vuurvliegjes zijn het nu?", "Tel alle vuurvliegjes.", "Het zijn nu {14} vuurvliegjes."),
   kortPlus("lantaarn", ["Er branden 11 lantaarntjes.", "Bliepo doet er nog 6 aan.", "Hoeveel lantaarntjes branden er nu?"], 11, 6, "Hoeveel lantaarntjes branden er nu?", "Tel alle lantaarntjes die branden.", "Er branden nu {17} lantaarntjes."),
   kortMin("bloem", ["Er bloeien 16 bloemen.", "Er gaan er 8 dicht.", "Hoeveel bloemen bloeien er nog?"], 16, 8, "bloemen", "Hoeveel bloemen bloeien er nog?", "Tel de bloemen die nog bloeien.", "Er bloeien nog {8} bloemen."),
@@ -2579,17 +2698,17 @@ const vers = (soort: HoloSoort, zinnen: string[], a: number, b: number, op: "+" 
   leeg,
 });
 const BANK_VERSTOPT: Kort[] = [
-  vers("bloem", ["Er staan wat bloemen in de tuin.", "Bliepo plant er 4 bij.", "Nu zijn het er 10.", "Hoeveel bloemen stonden er eerst?"], 6, 4, "+", 0, "Tel de bloemen die er eerst stonden.", "Er stonden eerst {6} bloemen.", "plek"),
+  vers("bloem", ["Er staan een paar bloemen in de tuin.", "Bliepo plant er 4 bij.", "Nu zijn het er 10.", "Hoeveel bloemen stonden er eerst?"], 6, 4, "+", 0, "Tel de bloemen die er eerst stonden.", "Er stonden eerst {6} bloemen.", "plek"),
   vers("lantaarn", ["Er branden 15 lantaarntjes.", "Bliepo doet er een paar uit.", "Nu branden er nog 9.", "Hoeveel lantaarntjes deed Bliepo uit?"], 15, 6, "−", 2, "Tel de lantaarntjes die uit zijn.", "Bliepo deed er {6} uit."),
   vers("vuurvlieg", ["Er zweven 8 vuurvliegjes.", "Er komen er nog wat bij.", "Nu zijn het er 13.", "Hoeveel vuurvliegjes kwamen erbij?"], 8, 5, "+", 2, "Tel de vuurvliegjes die erbij kwamen.", "Er kwamen {5} vuurvliegjes bij."),
-  vers("paddenstoel", ["Er gloeien wat paddenstoelen.", "Er gaan er nog 6 gloeien.", "Nu gloeien er 14.", "Hoeveel paddenstoelen gloeiden er eerst?"], 8, 6, "+", 0, "Tel de paddenstoelen die eerst gloeiden.", "Er gloeiden eerst {8} paddenstoelen."),
-  vers("lichtje", ["Er zweven wat lichtjes.", "Er zweven er 5 weg.", "Nu zijn er nog 7.", "Hoeveel lichtjes waren er eerst?"], 12, 5, "−", 0, "Tel alle lichtjes.", "Er waren eerst {12} lichtjes."),
+  vers("paddenstoel", ["Er gloeien een paar paddenstoelen.", "Er gaan er nog 6 gloeien.", "Nu gloeien er 14.", "Hoeveel paddenstoelen gloeiden er eerst?"], 8, 6, "+", 0, "Tel de paddenstoelen die eerst gloeiden.", "Er gloeiden eerst {8} paddenstoelen."),
+  vers("lichtje", ["Er zweven een paar lichtjes.", "Er vliegen er 5 weg.", "Nu zijn er nog 7.", "Hoeveel lichtjes waren er eerst?"], 12, 5, "−", 0, "Tel alle lichtjes.", "Er waren eerst {12} lichtjes."),
   vers("vuurvlieg", ["Er zweven 18 vuurvliegjes.", "Er vliegen er een paar weg.", "Nu zijn er nog 10.", "Hoeveel vuurvliegjes vlogen er weg?"], 18, 8, "−", 2, "Tel de plekjes waar een vuurvliegje was.", "Er vlogen {8} vuurvliegjes weg."),
   vers("bloem", ["Er staan 9 bloemen in de tuin.", "Bliepo plant er nog wat bij.", "Nu zijn het er 16.", "Hoeveel bloemen plantte Bliepo?"], 9, 7, "+", 2, "Tel de bloemen die erbij kwamen.", "Bliepo plantte er {7}.", "plek"),
   vers("lantaarn", ["Er branden wat lantaarntjes.", "Bliepo doet er nog 3 aan.", "Nu branden er 11.", "Hoeveel lantaarntjes brandden er eerst?"], 8, 3, "+", 0, "Tel de lantaarntjes die eerst brandden.", "Er brandden eerst {8} lantaarntjes."),
   vers("paddenstoel", ["Er gloeien 17 paddenstoelen.", "Er gaan er een paar uit.", "Nu gloeien er nog 8.", "Hoeveel paddenstoelen gingen er uit?"], 17, 9, "−", 2, "Tel de paddenstoelen die uit zijn.", "Er gingen {9} paddenstoelen uit."),
   vers("lichtje", ["Er zweven 5 lichtjes.", "Bliepo tovert er nog wat bij.", "Nu zijn het er 12.", "Hoeveel lichtjes toverde Bliepo erbij?"], 5, 7, "+", 2, "Tel de lichtjes die erbij kwamen.", "Bliepo toverde er {7} bij."),
-  vers("vuurvlieg", ["Er zweven wat vuurvliegjes.", "Er komen er nog 7 bij.", "Nu zijn het er 15.", "Hoeveel vuurvliegjes waren er eerst?"], 8, 7, "+", 0, "Tel de vuurvliegjes die er eerst waren.", "Er waren eerst {8} vuurvliegjes."),
+  vers("vuurvlieg", ["Er zweven een paar vuurvliegjes.", "Er komen er nog 7 bij.", "Nu zijn het er 15.", "Hoeveel vuurvliegjes waren er eerst?"], 8, 7, "+", 0, "Tel de vuurvliegjes die er eerst waren.", "Er waren eerst {8} vuurvliegjes."),
   vers("lantaarn", ["Er branden 20 lantaarntjes.", "Bliepo doet er een paar uit.", "Nu branden er nog 14.", "Hoeveel lantaarntjes deed Bliepo uit?"], 20, 6, "−", 2, "Tel de lantaarntjes die uit zijn.", "Bliepo deed er {6} uit."),
 ];
 
@@ -2613,13 +2732,13 @@ async function omgekeerdH(b: HBord, l: Lesgids, v: OmgekeerdH) {
   await vertelH(b, l);
   b.zet({ som: [{ t: "leeg" }, { t: "leeg", smal: true }, { t: "leeg" }, { t: "teken", s: "=" }, { t: "leeg" }] });
 
-  await l.zeg("Dit verhaal is een beetje door elkaar.", "Denk je dat je het zelf kunt?");
+  await l.zeg("Dit verhaal is een beetje anders.", "Denk je dat je het zelf kunt?");
   const zelf = await l.kies(["Ja", "Nee"]);
   let gebouwd = false;
   if (zelf === "Ja") {
     await l.zeg("Mooi.", "Welke som past bij het verhaal?");
     b.opgave();
-    const k = await kiesH(b, l, schud(v.somKeuzes), { som: true, wijsSleutel: "sommen", wijs: ["Tik op de som die past."], goed: v.goedeSom });
+    const k = await kiesH(b, l, b.zonderAanwijzen ? v.somKeuzes : schud(v.somKeuzes), { som: true, wijsSleutel: "sommen", wijs: ["Tik op de som die past."], goed: v.goedeSom });
     if (k === v.goedeSom) {
       b.zet({
         som: [
@@ -2633,13 +2752,13 @@ async function omgekeerdH(b: HBord, l: Lesgids, v: OmgekeerdH) {
       });
       await l.zeg("Precies.");
       gebouwd = true;
-    } else if (k === null) await l.zeg("Geen zorgen.", "We halen hem samen uit elkaar.");
+    } else if (k === null) await l.zeg("Geen zorgen.", "We doen het samen stap voor stap.");
     else {
       b.fout();
-      await l.zeg(`${String(k).replace(/(\d+)/g, "{$1}")}?`, "Niet helemaal.", "Zullen we hem samen uit elkaar halen?");
+      await l.zeg(`${String(k).replace(/(\d+)/g, "{$1}")}?`, "Niet helemaal.", "Zullen we het samen stap voor stap doen?");
     }
   } else {
-    await l.zeg("Zulke sommen zijn in het begin lastig.", "We halen hem samen uit elkaar.");
+    await l.zeg("Zulke sommen zijn in het begin lastig.", "We doen het samen stap voor stap.");
   }
 
   if (!gebouwd) {
@@ -2723,7 +2842,7 @@ async function omgekeerdH(b: HBord, l: Lesgids, v: OmgekeerdH) {
   } else {
     /* Met de voorwerpen terugrekenen. */
     if (x !== null) b.fout();
-    await l.zeg(x === null ? "Geen zorgen." : "Hmm.", "We kijken samen.");
+    await l.zeg(x === null ? "Geen zorgen." : "Hm.", "We kijken samen.");
     if (onbekend === 0) {
       b.zetPlaatjes(v.soort, eind, 0, leeg);
       await l.zeg(`Dit zijn alle {${eind}} ${v.ding}.`, `Haal de {${q}} weg die erbij kwamen.`);
@@ -2847,7 +2966,7 @@ function KaartVerstoptH() {
 
 /* ---------- de lessen ---------- */
 
-const instaptoets: Lesdraaiboek = {
+const instaptoetsHolo: Lesdraaiboek = {
   id: "verhaal-instaptoets",
   titel: "Instaptoets: verhaaltjessommen",
   synthesis: "Word Problems · Assessment",
@@ -2872,7 +2991,7 @@ const instaptoets: Lesdraaiboek = {
   },
 };
 
-const kleineVerhalen: Lesdraaiboek = {
+const kleineVerhalenHolo: Lesdraaiboek = {
   id: "verhaal-kleine-verhalen",
   titel: "Kleine verhaaltjes",
   synthesis: "Word Problems · Small Problems",
@@ -2890,7 +3009,7 @@ const kleineVerhalen: Lesdraaiboek = {
     if (hulp === "Nee") {
       await meteenH(b, l, v1, ["Uitstekend.", "Vertel eens."]);
     } else {
-      await l.zeg("Geen probleem.", "We halen het verhaal uit elkaar.", "Dan snappen we wat er gevraagd wordt.");
+      await l.zeg("Geen probleem.", "We kijken stap voor stap naar het verhaal.", "Dan snappen we wat er gevraagd wordt.");
       await pluisUitH(b, l, v1);
     }
     await verderH(b, l);
@@ -2902,7 +3021,7 @@ const kleineVerhalen: Lesdraaiboek = {
     const weet = await l.kies(["Ja", "Nee"]);
     if (weet === "Ja") await meteenH(b, l, v2, ["Laat maar zien."]);
     else {
-      await l.zeg("Geen probleem.", "We halen hem samen uit elkaar.");
+      await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
       await pluisUitH(b, l, v2);
     }
     b.opgave();
@@ -2911,15 +3030,15 @@ const kleineVerhalen: Lesdraaiboek = {
     b.zet({ som: somVol(3, "+", 5) });
     if (om === "Ja") {
       b.goed();
-      await l.zeg("Natuurlijk.", "Bij plussen maakt de volgorde niet uit.", "Het antwoord blijft {8}.");
-    } else await l.zeg("Kijk maar.", "{3} + {5} is ook {8}.", "Bij plussen maakt de volgorde niet uit.");
+      await l.zeg("Natuurlijk.", "Bij plussen mag je de getallen wisselen.", "Het antwoord blijft {8}.");
+    } else await l.zeg("Kijk maar.", "{3} + {5} is ook {8}.", "Bij plussen mag je de getallen wisselen.");
     await verderH(b, l);
 
     /* 3. Zelf een verhaal maken: lantaarntjes uitdoen. */
     b.nieuw([]);
     b.zetPlaatjes("lantaarn", 10, 0);
     b.opgave();
-    await l.zeg("Nu ben jij de baas over het verhaal.", "Laat een paar lantaarntjes uitgaan.", "Tik op een lantaarntje om het uit te doen.");
+    await l.zeg("Nu bepaal jij het verhaal.", "Laat een paar lantaarntjes uitgaan.", "Tik op een lantaarntje om het uit te doen.");
     const uit = await zelfKiezenH(b, l, "weg", 9);
     await l.zeg("Goed zo.", "Ik lees jouw verhaal voor.");
     const v3 = lantaarnsUit(l, 10, uit);
@@ -2942,7 +3061,7 @@ const kleineVerhalen: Lesdraaiboek = {
         kort: v3.kort,
       });
     } else {
-      await l.zeg("Geen probleem.", "We halen hem samen uit elkaar.");
+      await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
       await pluisUitH(b, l, v3);
     }
     await verderH(b, l);
@@ -2984,7 +3103,7 @@ const kleineVerhalen: Lesdraaiboek = {
   },
 };
 
-const groteVerhalen: Lesdraaiboek = {
+const groteVerhalenHolo: Lesdraaiboek = {
   id: "verhaal-grote-verhalen",
   titel: "Grotere verhaaltjes",
   synthesis: "Word Problems · Bigger Problems",
@@ -3007,7 +3126,7 @@ const groteVerhalen: Lesdraaiboek = {
     const alleen = await l.kies(["Ja", "Nee"]);
     if (alleen === "Ja") await meteenH(b, l, v1, ["Laat maar zien."]);
     else {
-      await l.zeg("Dat is oké.", "Laten we hem samen uit elkaar halen.");
+      await l.zeg("Dat is oké.", "Laten we het samen stap voor stap doen.");
       await pluisUitH(b, l, v1, { terugLaten: true });
     }
     await verderH(b, l);
@@ -3019,7 +3138,7 @@ const groteVerhalen: Lesdraaiboek = {
     const weet = await l.kies(["Ja", "Nee"]);
     if (weet === "Ja") await meteenH(b, l, v2, ["Laat maar zien."]);
     else {
-      await l.zeg("Dat is oké.", "Laten we hem samen uit elkaar halen.");
+      await l.zeg("Dat is oké.", "Laten we het samen stap voor stap doen.");
       await pluisUitH(b, l, v2, { terugLaten: true });
     }
     await verderH(b, l);
@@ -3028,7 +3147,7 @@ const groteVerhalen: Lesdraaiboek = {
     b.nieuw([]);
     b.zetPlaatjes("bloem", 7, 13, "plek");
     b.opgave();
-    await l.zeg("Nu ben jij de baas over de som.", "Er staan al {7} bloemen.", "Plant er nog wat bij.", "Tik op de lege plekjes.");
+    await l.zeg("Nu bepaal jij de som.", "Er staan al {7} bloemen.", "Plant er nog wat bij.", "Tik op de lege plekjes.");
     const plant = await zelfKiezenH(b, l, "erbij", 13);
     const samen = 7 + plant;
     const v3zinnen = ["Er staan 7 bloemen in de tuin.", `${Wie(l)} plant er ${plant} bij.`, "Hoeveel bloemen zijn het nu?"];
@@ -3089,7 +3208,7 @@ const groteVerhalen: Lesdraaiboek = {
   },
 };
 
-const verstopteGetallen: Lesdraaiboek = {
+const verstopteGetallenHolo: Lesdraaiboek = {
   id: "verhaal-verstopte-getallen",
   titel: "Verstopte getallen",
   synthesis: "Word Problems · Mixed Problems",
@@ -3100,7 +3219,7 @@ const verstopteGetallen: Lesdraaiboek = {
 
     /* 1. Bloemen: ? + 5 = 9. */
     await omgekeerdH(b, l, {
-      zinnen: ["Er staan _wat_ _bloemen_ in de tuin.", `${Wie(l)} plant er nog 5 bij.`, "Nu zijn het er samen 9.", "Hoeveel bloemen stonden er eerst?"],
+      zinnen: ["Er staan _een_ _paar_ _bloemen_ in de tuin.", `${Wie(l)} plant er nog 5 bij.`, "Nu zijn het er samen 9.", "Hoeveel bloemen stonden er eerst?"],
       soort: "bloem",
       leeg: "plek",
       ding: "bloemen",
@@ -3149,7 +3268,7 @@ const verstopteGetallen: Lesdraaiboek = {
     /* 3. Paddenstoelen: ? + 7 = 12 (Synthesis: munten; 7 + ? = 12 telt als niet goed: de som volgt het verhaal). */
     await l.zeg(l.naam ? `Je doet het goed, ${l.naam}.` : "Je doet het goed.", "Nog één verhaal.");
     await omgekeerdH(b, l, {
-      zinnen: ["Er gloeien _wat_ _paddenstoelen_.", "Er gaan er nog 7 gloeien.", "Nu gloeien er 12.", "Hoeveel paddenstoelen gloeiden er eerst?"],
+      zinnen: ["Er gloeien _een_ _paar_ _paddenstoelen_.", "Er gaan er nog 7 gloeien.", "Nu gloeien er 12.", "Hoeveel paddenstoelen gloeiden er eerst?"],
       soort: "paddenstoel",
       ding: "paddenstoelen",
       delen: [null, 7, 12],
@@ -3180,7 +3299,7 @@ const verstopteGetallen: Lesdraaiboek = {
   },
 };
 
-const eindtoets: Lesdraaiboek = {
+const eindtoetsHolo: Lesdraaiboek = {
   id: "verhaal-eindtoets",
   titel: "Eindtoets: verhaaltjessommen",
   synthesis: "Word Problems · Mastery Check",
@@ -3205,4 +3324,1969 @@ const eindtoets: Lesdraaiboek = {
   },
 };
 
-export const LESSEN_VERHAALTJESSOMMEN: Lesdraaiboek[] = [instaptoets, kleineVerhalen, groteVerhalen, verstopteGetallen, eindtoets, meerVerhaaltjes];
+/** De vorige versie (hologram-bloementuin, 27 oktober 2026); blijft staan, maar staat niet meer in de catalogus. */
+export const LESSEN_VERHAALTJESSOMMEN_HOLO: Lesdraaiboek[] = [instaptoetsHolo, kleineVerhalenHolo, groteVerhalenHolo, verstopteGetallenHolo, eindtoetsHolo].map(metVasteKnoppen);
+
+/* =====================================================================
+ * NABOUW SYNTHESIS (28 oktober 2026, opdracht eigenaar): V1–V5 precies zoals
+ * Synthesis "Word Problems", met Nederlandse zinnen van Bliepo en de eigen
+ * voorwerpen (vogeltjes op een draad, bloempotten, ballonnen, gloeilampen,
+ * munten). Zie SYNTHESIS-ANALYSE/V*-NABOUW.md. Verschillen met de vorige
+ * versie hierboven (Holo):
+ * - antwoorden kiezen met 9 cijferknoppen (1–9) of 4 / 6 getallen;
+ * - 2× fout op het eindantwoord: "laten we even pauze nemen" en de les stopt
+ *   (l.stopLes), in een toets begint de eerste les meteen;
+ * - na het uitpluizen pijlen om verder te gaan, 3 hints bij de vraagzin;
+ * - extra oefenvragen van dezelfde soort NA de stappen van Synthesis, tot 15.
+ * ===================================================================== */
+
+const TEGELS = [1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+/** Zes antwoordknoppen rond het goede antwoord (de toetsen). */
+/* Sinds de vergelijking (28 okt 2026) gebruiken de toetsen toetsKeuzes; deze blijft staan (niets weghalen). */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function zesKeuzes(antwoord: number, ...extra: number[]): number[] {
+  const set = new Set<number>([antwoord]);
+  for (const x of [...extra, antwoord + 1, antwoord - 1, antwoord + 2, antwoord - 2, antwoord + 10, antwoord - 10, antwoord + 3]) {
+    if (set.size >= 6) break;
+    if (x >= 0 && x <= 30) set.add(x);
+  }
+  for (let n = 0; set.size < 6; n++) set.add(n);
+  return [...set].sort((p, q) => p - q);
+}
+
+/** Het kind speelt het verhaal na en Bliepo telt hardop mee ("Eén." "Twee."). */
+/** Het geluidje bij het naspelen (eigen klank, zelfde moment als Synthesis). */
+function naspeelGeluid(soort: HoloSoort) {
+  if (soort === "vogel" || soort === "vuurvlieg" || soort === "lichtje") return "vlieg" as const;
+  if (soort === "pot" || soort === "bloem") return "groei" as const;
+  if (soort === "ballon") return "knal" as const;
+  if (soort === "munt") return "munt" as const;
+  return "lamp" as const;
+}
+
+/**
+ * `o.alleen`: alleen deze voorwerpen mogen (Synthesis Mixed Problems: alleen de
+ * bloemen die erbij kwamen); `o.doel`: wat er van een getikt voorwerp wordt
+ * (standaard uit of aan; een uitgegeven munt wordt een lege plek).
+ */
+async function naspelenS(b: HBord, l: Lesgids, aantal: number, modus: "weg" | "erbij", tel = true, o: { alleen?: number[]; doel?: Plekstaat } = {}) {
+  const geteld: number[] = [];
+  const naar: Plekstaat = o.doel ?? (modus === "weg" ? "uit" : "aan");
+  b.zet({ tik: "plaatje", tikPlaatje: modus, geteld: [], tel: null, tikAlleen: o.alleen ?? null });
+  while (geteld.length < aantal) {
+    const g = await l.wachtOpVlak<{ soort: string; i: number }>("plaatje");
+    const pl = b.p.plaatjes;
+    if (!pl || pl.plekken[g.i] !== (modus === "weg" ? "aan" : "uit")) continue;
+    if (o.alleen && !o.alleen.includes(g.i)) continue;
+    geteld.push(g.i);
+    speelLesgeluid(naspeelGeluid(pl.soort));
+    b.zet({ plaatjes: { ...pl, plekken: pl.plekken.map((st, j) => (j === g.i ? naar : st)) }, geteld: [...geteld] });
+    if (tel) void l.zeg(`{${geteld.length}}`).catch(() => {});
+  }
+  b.zet({ tik: null, tikAlleen: null });
+  await l.wacht(800);
+  /* De nummertjes waren voor het tellen tijdens het tikken; daarna weg, anders staan ze op lege plekken bij "hoeveel zijn er nog?". */
+  b.zet({ geteld: [] });
+}
+
+/** Lampen die uit zijn, worden na een tel een lege omtrek (Synthesis: eerst grijs, dan alleen het lijntje). */
+async function omtrekS(b: HBord, l: Lesgids) {
+  const pl = b.p.plaatjes;
+  if (!pl || pl.soort !== "lamp" || !pl.plekken.includes("uit")) return;
+  await l.wacht(500);
+  b.zetPlekken((b.p.plaatjes ?? pl).plekken.map((st) => (st === "uit" ? "leeg" : st)));
+}
+
+/**
+ * Het kind maakt zelf een verhaal (Synthesis Bigger Problems): het tikt zoveel
+ * voorwerpen als het wil; is het `stilNa` ms stil na een tik, dan gaat Bliepo
+ * vanzelf verder. Geeft de getikte plekken.
+ */
+async function zelfKiezenS(b: HBord, l: Lesgids, modus: "weg" | "erbij", max: number, naar: Plekstaat, stilNa: number): Promise<number[]> {
+  const geteld: number[] = [];
+  b.zet({ tik: "plaatje", tikPlaatje: modus, geteld: [], tel: null });
+  while (geteld.length < max) {
+    const tik = l.wachtOpVlak<{ soort: string; i: number }>("plaatje");
+    const g = geteld.length === 0 ? await tik : await Promise.race([tik, l.wacht(stilNa).then(() => null)]);
+    if (!g) break;
+    const pl = b.p.plaatjes;
+    if (!pl || pl.plekken[g.i] !== (modus === "weg" ? "aan" : "uit")) continue;
+    geteld.push(g.i);
+    speelLesgeluid(naspeelGeluid(pl.soort));
+    b.zetPlekken(pl.plekken.map((st, j) => (j === g.i ? naar : st)));
+  }
+  b.zet({ tik: null });
+  await l.wacht(400);
+  return geteld;
+}
+
+/** Het kind doet voorwerpen uit tot er nog `tot` aan zijn; Bliepo telt AF hoeveel er nog aan zijn (Synthesis Mixed Problems). */
+async function uitTotS(b: HBord, l: Lesgids, tot: number) {
+  b.zet({ tik: "plaatje", tikPlaatje: "weg", geteld: [], tel: null });
+  for (;;) {
+    const pl0 = b.p.plaatjes;
+    const aan = pl0 ? pl0.plekken.filter((st) => st === "aan").length : 0;
+    if (!pl0 || aan <= tot) break;
+    const g = await l.wachtOpVlak<{ soort: string; i: number }>("plaatje");
+    const pl = b.p.plaatjes;
+    if (!pl || pl.plekken[g.i] !== "aan") continue;
+    speelLesgeluid(naspeelGeluid(pl.soort));
+    b.zetPlekken(pl.plekken.map((st, j) => (j === g.i ? "uit" : st)));
+    void l.zeg(`{${aan - 1}}`).catch(() => {});
+  }
+  b.zet({ tik: null });
+  await l.wacht(700);
+  await omtrekS(b, l);
+}
+
+/**
+ * Voorlezen met de voorwerpen erbij zoals Synthesis Bigger Problems: "zweef" =
+ * ballonnen zweven van onderen omhoog; "aan" = de lampen gaan tijdens het
+ * voorlezen één voor één aan.
+ */
+async function vertelS(b: HBord, l: Lesgids, komt?: "zweef" | "aan") {
+  const pl = b.p.plaatjes;
+  if (komt === "zweef" && pl) {
+    b.zweefTeller++;
+    b.zet({ plaatjes: { ...pl, zweefNr: b.zweefTeller } });
+  }
+  let klaar: Promise<void> = Promise.resolve();
+  if (komt === "aan" && pl) {
+    const doel = [...pl.plekken];
+    b.zetPlekken(doel.map((st) => (st === "aan" ? "uit" : st)));
+    klaar = (async () => {
+      await l.wacht(400);
+      for (let i = 0; i < doel.length; i++) {
+        if (doel[i] !== "aan") continue;
+        const nu = b.p.plaatjes;
+        if (!nu) return;
+        b.zetPlekken(nu.plekken.map((st, j) => (j === i ? "aan" : st)));
+        await l.wacht(140);
+      }
+    })().catch(() => {});
+  }
+  await vertelH(b, l);
+  await klaar;
+}
+
+/** Vier antwoordknoppen (2 × 2) zoals Synthesis: het antwoord, één meer, en de getallen uit het verhaal. */
+function vierS(antwoord: number, ...extra: number[]): number[] {
+  const uit: number[] = [];
+  for (const x of [antwoord, antwoord + 1, ...extra, antwoord - 1, antwoord + 2, antwoord + 3]) {
+    if (uit.length >= 4) break;
+    if (x >= 0 && x <= 40 && !uit.includes(x)) uit.push(x);
+  }
+  return uit;
+}
+
+/** Een som als tekst voor Bliepo: "{7} + ? = {15}". */
+const somTekst = (som: string) => som.replace(/(\d+)/g, "{$1}");
+
+/** Antwoord kiezen tot het goed is (een kleine tussenstap; fout = grijs, "weet ik niet" = Bliepo zegt het). */
+async function kiesTotGoed(b: HBord, l: Lesgids, antwoord: number, tip: string) {
+  let uit: number[] = [];
+  for (;;) {
+    /* Zonder "Weet ik niet": Synthesis heeft hem hier niet; bij een fout volgt de tip (zoals bij 1× en 2× fout). */
+    const x = await kiesH(b, l, TEGELS, { uit, goed: antwoord, tegels: true, weetNiet: false });
+    if (x === antwoord) {
+      b.goed();
+      return;
+    }
+    if (x === null) {
+      await l.zeg("Geen probleem.", `Het is {${antwoord}}.`);
+      return;
+    }
+    b.fout();
+    uit = [...uit, Number(x)];
+    await l.zeg(`{${x}}? Niet helemaal.`, tip);
+  }
+}
+
+/**
+ * Het eindantwoord, zoals Synthesis: 1× fout = "niet helemaal" en een tip,
+ * 2× fout = "laten we even pauze nemen" en de les stopt. `terugBijWeetNiet`:
+ * "weet ik niet" geeft "weetniet" terug (dan volgt het uitpluizen); anders telt
+ * het als een poging.
+ */
+async function eindAntwoordS(
+  b: HBord,
+  l: Lesgids,
+  o: { antwoord: number; keuzes?: number[]; weetNiet: boolean; terugBijWeetNiet?: boolean; tip: string; ding: string; groot?: boolean; vraag?: string },
+): Promise<"goed" | "weetniet"> {
+  const opties = o.keuzes ?? TEGELS;
+  let uit: number[] = [];
+  for (let poging = 1; ; poging++) {
+    const x = await kiesH(b, l, opties, { uit, goed: o.antwoord, weetNiet: o.weetNiet, tegels: !o.keuzes });
+    if (x === o.antwoord) {
+      b.goed();
+      return "goed";
+    }
+    if (x === null && o.terugBijWeetNiet) return "weetniet";
+    if (poging === 1 && o.groot) {
+      /* Synthesis Bigger Problems: een hint "een paar minder/meer" (of "dat is oké"), dan de pijl, dan "tel nog eens". */
+      if (x === null) await l.zeg("Dat is oké.");
+      else {
+        b.fout();
+        const n = Number(x);
+        await l.zeg(`{${n}} ${n === 1 ? enkelvoud(o.ding) : o.ding}?`, n > o.antwoord ? "Het zijn er een paar minder." : "Het zijn er een paar meer.");
+      }
+      await verderH(b, l);
+      await l.zeg(o.tip, ...(o.vraag ? [o.vraag] : []));
+      continue;
+    }
+    if (poging === 1) {
+      if (x === null) await l.zeg("Geen probleem.", o.tip);
+      else {
+        b.fout();
+        /* Synthesis laat de foute tegel staan. */
+        uit = b.zonderAanwijzen ? [] : [Number(x)];
+        await l.zeg(`{${x}} ${x === 1 ? enkelvoud(o.ding) : o.ding}? Niet helemaal.`);
+        await verderH(b, l);
+        await l.zeg(o.tip);
+      }
+      continue;
+    }
+    if (x !== null) b.fout();
+    await l.zeg(x === null ? "Dat is niet erg." : `{${x}} ${x === 1 ? enkelvoud(o.ding) : o.ding}? Dat is nog niet het getal dat ik tel.`, "Zullen we even pauze nemen?", "Dan doen we het straks nog eens.");
+    await verderH(b, l);
+    return l.stopLes();
+  }
+}
+
+/* ---------- de verhalen die we uitpluizen ---------- */
+
+type SPluis = {
+  zinnen: string[];
+  soort: HoloSoort;
+  leegVorm?: "plek" | "eigen";
+  rij?: number;
+  aan: number;
+  leeg: number;
+  a: number;
+  b: number;
+  op: "+" | "−";
+  /** De zin met de woorden die zeggen of het erbij of eraf is. */
+  signaalZin: number;
+  watZoeken: string;
+  signaalTip: string;
+  signaalUitleg: string;
+  foutUitleg: string[];
+  kleineVraag: { zinnen: string[]; erbij: string; eraf: string; goed: string[] };
+  beginVraag: string;
+  beginAntwoord: string[];
+  tweedeVraag: string;
+  tweedeVraag2: string;
+  tweedeAntwoord: string[];
+  naspelen: string[];
+  antwoordVraag: string;
+  ding: string;
+  telTip: string;
+  antwoordZin: string;
+  /** Vier antwoordknoppen (grotere verhaaltjes); zonder: de cijferknoppen 1–9. */
+  keuzes?: number[];
+  /** Wat Bliepo zegt als het kind het getal van de verandering als antwoord kiest. */
+  redenB?: string;
+  /** De opdracht bij het signaalwoord, in de woorden van het verhaal (Synthesis). Zonder: "Tik op het woord dat zegt dat dit een minsom is." */
+  signaalOpdracht?: string;
+  /** Welke voorwerpen het kind zelf koos (zelfgemaakt verhaal): Bliepo speelt na met precies die. */
+  gekozenPlekken?: number[];
+  /** Grotere verhaaltjes (Synthesis): de vraag naar het tweede getal, met het signaalwoord uit het verhaal in het groen. */
+  tweedeVraagGroot?: string;
+  /** Grotere verhaaltjes: "weet ik niet" bij erbij of eraf = meteen naspelen, vóór de som (Synthesis Bigger Problems). */
+  naspelenUitleg?: { zinnen: string[]; klaar: string[] };
+};
+
+const sMinKlein = (zinnen: string[]) => zinnen;
+
+function vogeltjesWeg(a: number, w: number): SPluis {
+  const c = a - w;
+  return {
+    zinnen: sMinKlein([`Er zitten ${a} vogeltjes op een draad.`, `Er [vliegen] er ${w} [weg].`, "Hoeveel vogeltjes zitten er nog op de draad?"]),
+    soort: "vogel",
+    rij: a,
+    aan: a,
+    leeg: 0,
+    a,
+    b: w,
+    op: "−",
+    signaalZin: 1,
+    watZoeken: "We zoeken hoeveel vogeltjes er nog zitten.",
+    /* Het signaal is twee woorden ("vliegen … weg"), dus meervoud, zoals Synthesis ("Tap on the words"). */
+    signaalTip: "Welke woorden zeggen dat er vogeltjes weggaan?",
+    signaalOpdracht: "Tik op de woorden die zeggen dat dit een minsom is.",
+    signaalUitleg: "Er vliegen vogeltjes weg. Dat is een minsom.",
+    foutUitleg: ["Maar er komen geen vogeltjes bij."],
+    kleineVraag: {
+      zinnen: ["Willen we dat er vogeltjes wegvliegen?", "Moeten er dan vogeltjes bij, of eraf?"],
+      erbij: "Erbij doen",
+      eraf: "Weghalen",
+      goed: ["We halen er vogeltjes weg.", "Dat is een minsom."],
+    },
+    beginVraag: "Hoeveel vogeltjes zaten er eerst op de draad?",
+    beginAntwoord: [`Er zaten eerst {${a}} vogeltjes op de draad.`, "Die zetten we vooraan."],
+    tweedeVraag: "En welk getal halen we eraf?",
+    tweedeVraag2: "Welk getal zegt hoeveel vogeltjes er wegvliegen?",
+    tweedeAntwoord: [`Er vliegen {${w}} vogeltjes weg.`, `Dus halen we {${w}} eraf.`],
+    naspelen: ["Je weet het antwoord vast al.", `Laat de {${w}} vogeltjes maar wegvliegen.`, "Tik op de vogeltjes."],
+    antwoordVraag: "Hoeveel vogeltjes zijn er nog?",
+    ding: "vogeltjes",
+    telTip: "Probeer de vogeltjes nog eens te tellen.",
+    antwoordZin: `Er zijn nog {${c}} vogeltjes.`,
+  };
+}
+
+/** Bloemen die erbij komen: K2 (5 + 3), K4 (3 + 4) en G3 (7 + 6). */
+function bloemenBij(o: { a: number; n: number; leeg: number; zin2: string; vraag: string; keuzes?: number[] }): SPluis {
+  const { a, n } = o;
+  return {
+    zinnen: [`Er staan ${a} bloemen in een tuin.`, o.zin2, o.vraag],
+    soort: "pot",
+    aan: a,
+    leeg: o.leeg,
+    a,
+    b: n,
+    op: "+",
+    signaalZin: 1,
+    watZoeken: "We zoeken hoeveel bloemen het samen zijn.",
+    signaalTip: "Welk woord zegt dat er bloemen bijkomen?",
+    signaalUitleg: "Het woord *bij* zegt dat er bloemen bijkomen. Dat is een plussom.",
+    foutUitleg: ["Bloemen weghalen helpt ons niet.", "We willen weten hoeveel het er samen zijn."],
+    kleineVraag: {
+      zinnen: ["Willen we dat er meer bloemen groeien?", "Moeten er dan bloemen bij, of eraf?"],
+      erbij: "Erbij planten",
+      eraf: "Weghalen",
+      goed: ["We planten er bloemen bij.", "Dat is een plussom."],
+    },
+    beginVraag: "Hoeveel bloemen stonden er eerst in de tuin?",
+    beginAntwoord: [`Er stonden eerst {${a}} bloemen.`, "Die zetten we vooraan."],
+    tweedeVraag: "En welk getal doen we erbij?",
+    tweedeVraag2: "Welk getal zegt hoeveel bloemen erbij komen?",
+    tweedeAntwoord: [`Er komen {${n}} bloemen bij.`, `Dus doen we {${n}} erbij.`],
+    naspelen: ["Je bent klaar met de som.", `Laat de {${n}} extra bloemen maar groeien.`, "Tik op de lege potjes."],
+    antwoordVraag: "Hoeveel bloemen zijn het nu?",
+    ding: "bloemen",
+    telTip: "Tel alle bloemen nog eens.",
+    antwoordZin: `Het zijn er {${a + n}} samen.`,
+    keuzes: o.keuzes,
+  };
+}
+
+function ballonnenPoppen(l: Lesgids, a: number, k: number): SPluis {
+  return {
+    zinnen: [`Er zijn ${a} ballonnen.`, `${Wie(l)} laat er ${k} [knappen].`, "Hoeveel ballonnen zijn er nog heel?"],
+    soort: "ballon",
+    rij: a <= 10 ? a : undefined,
+    aan: a,
+    leeg: 0,
+    a,
+    b: k,
+    op: "−",
+    signaalZin: 1,
+    watZoeken: "We zoeken hoeveel ballonnen er nog heel zijn.",
+    signaalTip: "Welk woord zegt dat er ballonnen weggaan?",
+    signaalUitleg: "Er knappen ballonnen. Dat is een minsom.",
+    foutUitleg: ["Maar er komen geen ballonnen bij."],
+    kleineVraag: {
+      zinnen: ["Willen we dat er ballonnen knappen?", "Moeten er dan ballonnen bij, of eraf?"],
+      erbij: "Erbij doen",
+      eraf: "Weghalen",
+      goed: ["We halen er ballonnen weg.", "Dat is een minsom."],
+    },
+    beginVraag: "Hoeveel ballonnen waren er eerst?",
+    beginAntwoord: [`Er waren eerst {${a}} ballonnen.`, "Die zetten we vooraan."],
+    tweedeVraag: "En welk getal halen we eraf?",
+    tweedeVraag2: "Welk getal zegt hoeveel ballonnen er knappen?",
+    /* Het kind kiest zelf hoeveel (ook 1): enkelvoud en meervoud kloppen. */
+    tweedeAntwoord: [k === 1 ? "Er knapt {1} ballon." : `Er knappen {${k}} ballonnen.`, `Dus halen we {${k}} eraf.`],
+    naspelen: ["Je weet het antwoord vast al.", k === 1 ? "Laat de ballon maar knappen." : `Laat de {${k}} ballonnen maar knappen.`, k === 1 ? "Tik op een ballon." : "Tik op de ballonnen."],
+    antwoordVraag: "Hoeveel ballonnen zijn er nog heel?",
+    ding: "ballonnen",
+    telTip: "Probeer de ballonnen die heel zijn nog eens te tellen.",
+    antwoordZin: a - k === 1 ? "Er is nog {1} ballon heel." : `Er zijn nog {${a - k}} ballonnen heel.`,
+  };
+}
+
+function ballonnenWeg(a: number, w: number, keuzes: number[]): SPluis {
+  return {
+    ...ballonnenPoppen({ naam: "", } as Lesgids, a, w),
+    zinnen: [`Er zijn ${a} ballonnen op een feestje.`, `Er [vliegen] er ${w} [weg].`, "Hoeveel ballonnen zijn er nog?"],
+    watZoeken: "We zoeken hoeveel ballonnen er nog zijn.",
+    /* Twee woorden ("vliegen … weg"), dus meervoud (Synthesis: "Which words tell us …"). */
+    signaalTip: "Welke woorden zeggen dat er ballonnen weggaan?",
+    signaalUitleg: "Er vliegen ballonnen weg. Dat is een minsom.",
+    kleineVraag: {
+      zinnen: ["Willen we dat er ballonnen wegvliegen?", "Moeten er dan ballonnen bij, of eraf?"],
+      erbij: "Erbij doen",
+      eraf: "Weghalen",
+      goed: ["We halen er ballonnen weg.", "Dat is een minsom."],
+    },
+    tweedeVraag2: "Welk getal zegt hoeveel ballonnen er wegvliegen?",
+    signaalOpdracht: "Tik op de woorden die zeggen dat er ballonnen wegvliegen.",
+    tweedeVraagGroot: "En welk getal zegt hoeveel er [[g:wegvliegen]]?",
+    tweedeAntwoord: [`Er vliegen {${w}} ballonnen weg.`, `Dus halen we {${w}} eraf.`],
+    naspelen: ["De som staat klaar.", `Tik op de {${w}} ballonnen die wegvliegen.`],
+    antwoordVraag: "Hoeveel ballonnen zijn er nog?",
+    antwoordZin: `Er zijn nog {${a - w}} ballonnen.`,
+    telTip: "Probeer de ballonnen die er nog zijn eens te tellen.",
+    keuzes,
+    redenB: `{${w}}? Zoveel ballonnen vliegen weg. We zoeken hoeveel er blijven.`,
+    naspelenUitleg: {
+      zinnen: ["Hm, als ballonnen wegvliegen, komen er geen bij.", "Er gaan er een paar weg.", `Tik op {${w}} ballonnen om ze te laten knappen.`],
+      klaar: ["Zie je?", `Je haalde er {${w}} weg.`, "Dat is een minsom."],
+    },
+  };
+}
+
+function lampenUit(a: number, w: number, keuzes: number[], wie: string): SPluis {
+  return {
+    zinnen: [`Er branden ${a} lampen.`, `${wie} doe${wie === "Ik" ? "" : "t"} er ${w} [uit].`, "Hoeveel lampen branden er nog?"],
+    soort: "lamp",
+    aan: a,
+    leeg: 20 - a,
+    a,
+    b: w,
+    op: "−",
+    signaalZin: 1,
+    watZoeken: "We zoeken hoeveel lampen er nog branden.",
+    signaalTip: "Welk woord zegt dat er lampen uitgaan?",
+    signaalUitleg: "Er gaan lampen uit. Dat is een minsom.",
+    foutUitleg: ["Maar er gaan geen lampen aan."],
+    kleineVraag: {
+      zinnen: ["Willen we dat er lampen uitgaan?", "Moeten er dan lampen bij, of eraf?"],
+      erbij: "Erbij doen",
+      eraf: "Weghalen",
+      goed: ["We halen er lampen weg.", "Dat is een minsom."],
+    },
+    beginVraag: "Hoeveel lampen brandden er eerst?",
+    beginAntwoord: [`Eerst brandden er {${a}} lampen.`, "Die zetten we vooraan."],
+    tweedeVraag: "En welk getal halen we eraf?",
+    tweedeVraag2: "Welk getal zegt hoeveel lampen er uitgaan?",
+    signaalOpdracht: "Tik op het woord dat zegt dat er lampen uitgaan.",
+    tweedeVraagGroot: "En welk getal zegt hoeveel er [[g:uitgaan]]?",
+    tweedeAntwoord: [`Er gaan {${w}} lampen uit.`, `Dus halen we {${w}} eraf.`],
+    naspelen: ["De som staat klaar.", `Doe de {${w}} lampen maar uit.`, "Tik op de lampen."],
+    antwoordVraag: "Hoeveel lampen branden er nog?",
+    ding: "lampen",
+    telTip: "Tel de lampen die nog branden.",
+    antwoordZin: `Er branden nog {${a - w}} lampen.`,
+    keuzes,
+    redenB: `{${w}}? Zoveel lampen gaan uit. We zoeken hoeveel er nog branden.`,
+    naspelenUitleg: {
+      zinnen: ["Hm, als je lampen uitdoet, komen er geen bij.", "Er gaan er een paar uit.", `Tik op {${w}} lampen om ze uit te doen.`],
+      klaar: ["Zie je?", `Je deed er {${w}} uit.`, "Dat is een minsom."],
+    },
+  };
+}
+
+function muntenUit(l: Lesgids, a: number, w: number, keuzes: number[]): SPluis {
+  return {
+    zinnen: [`Er zijn ${a} munten.`, `${Wie(l)} geeft er ${w} [uit].`, "Hoeveel munten zijn er nog?"],
+    soort: "munt",
+    aan: a,
+    leeg: 0,
+    a,
+    b: w,
+    op: "−",
+    signaalZin: 1,
+    watZoeken: "We zoeken hoeveel munten er nog zijn. Als je munten uitgeeft, heb je er minder.",
+    signaalTip: "Welk woord zegt dat er munten weggaan?",
+    signaalUitleg: "Munten uitgeven. Dat is een minsom.",
+    foutUitleg: ["Maar er komen geen munten bij."],
+    kleineVraag: { zinnen: [], erbij: "Erbij", eraf: "Weghalen", goed: [] },
+    beginVraag: "Hoeveel munten waren er eerst?",
+    beginAntwoord: [`Er waren eerst {${a}} munten.`, "Die zetten we vooraan."],
+    tweedeVraag: "En welk getal zegt hoeveel er zijn uitgegeven?",
+    tweedeVraag2: "Welk getal zegt hoeveel munten er zijn uitgegeven?",
+    tweedeAntwoord: [w === 1 ? "Er is {1} munt uitgegeven." : `Er zijn {${w}} munten uitgegeven.`, `Dus halen we {${w}} eraf.`],
+    naspelen: ["De som staat klaar.", w === 1 ? "Tik op {1} munt om hem uit te geven." : `Tik op {${w}} munten om ze uit te geven.`],
+    antwoordVraag: "Hoeveel munten zijn er nog?",
+    ding: "munten",
+    telTip: "Tel de munten die er nog zijn.",
+    antwoordZin: a - w === 1 ? "Er is nog {1} munt." : `Er zijn nog {${a - w}} munten.`,
+    keuzes,
+    redenB: `{${w}}? Zoveel munten zijn uitgegeven. We zoeken hoeveel er nog zijn.`,
+  };
+}
+
+const uitkomstS = (v: { a: number; b: number; op: "+" | "−" }) => (v.op === "+" ? v.a + v.b : v.a - v.b);
+
+async function beginS(b: HBord, l: Lesgids, v: SPluis, komt?: "zweef" | "aan") {
+  b.nieuw(v.zinnen);
+  b.zetPlaatjes(v.soort, v.aan, v.leeg, v.leegVorm ?? "eigen", { rij: v.rij, bloeit: false });
+  /* Grotere verhaaltjes (Synthesis): de voorwerpen komen tijdens het voorlezen binnen; anders gewoon voorlezen. */
+  if (komt) await vertelS(b, l, komt);
+  else await vertelH(b, l);
+}
+
+/** Na een goed antwoord bij bloemen: de nieuwe bloemen staan er, en alle bloemen bloeien. */
+async function bloeiNa(b: HBord, l: Lesgids, v: SPluis, laatErbij: boolean) {
+  if (v.soort !== "pot") return;
+  if (laatErbij) await laatGebeurenH(b, l, v.a, v.a + v.b, v.aan + v.leeg, 220);
+  b.bloei(true);
+  await l.wacht(500);
+}
+
+/**
+ * De hele uitpluisroute, stap voor stap, zoals Synthesis (Small en Bigger
+ * Problems): getallen, vraagzin (3 hints), erbij of eraf, signaalwoord, de som
+ * vakje voor vakje, naspelen, eindantwoord. `kort`: zonder erbij/eraf en zonder
+ * signaalwoord (Bigger Problems, munten).
+ */
+async function pluisUitS(b: HBord, l: Lesgids, v: SPluis, o: { kort?: boolean; groot?: boolean; somBlijft?: boolean } = {}) {
+  const antwoord = uitkomstS(v);
+  const getallen = getallenIn(v.zinnen);
+  const vraagZin = v.zinnen.length - 1;
+
+  /* Grotere verhaaltjes (Synthesis): stond er al een som, dan blijft die onderaan staan tot we de som bouwen. */
+  b.zet({ midden: true, som: o.somBlijft ? b.p.som : null, somBijMidden: !!o.somBlijft });
+  await l.wacht(400);
+
+  /* 1. De getallen. */
+  b.opgave();
+  await l.zeg("Tik op alle getallen in het verhaal.");
+  const gevonden: string[] = [];
+  while (gevonden.length < getallen.length) {
+    const g = await wachtTikH(b, l, "getal", ["Getallen schrijven we met cijfers, zoals {2} of {7}.", "Tik op de getallen in het verhaal."], false);
+    if (g.soort === "weetniet") {
+      b.zet({ omcirkeld: getallen.map((x) => x.sleutel) });
+      await l.zeg("Kijk, hier staan de getallen.");
+      break;
+    }
+    const sleutel = g.sleutel as string;
+    if (gevonden.includes(sleutel)) continue;
+    gevonden.push(sleutel);
+    b.zet({ omcirkeld: [...gevonden] });
+    speelLesgeluid("goed");
+    /* Synthesis zegt tussendoor niets: alleen de ring en het geluidje. */
+    if (gevonden.length < getallen.length && !b.zonderAanwijzen) await l.zeg("Je hebt één getal.", "Tik nu op het andere.");
+  }
+  await l.zeg(`Ja, {${v.a}} en {${v.b}}.`, "Dat is een goed begin.");
+  await verderH(b, l);
+
+  /* 2. De vraag: drie hints. */
+  b.opgave();
+  await l.zeg("Wat moeten we uitzoeken?", "Tik op de zin die de vraag stelt.");
+  for (let fout = 0; ; ) {
+    const g = await wachtTikH(b, l, "zin", undefined, false);
+    if (g.soort === "zin" && g.i === vraagZin) {
+      b.zet({ vraagZin, hintVraagteken: false, woordKleur: {} });
+      speelLesgeluid("goed");
+      await l.zeg("Dat klopt.", v.watZoeken);
+      break;
+    }
+    if (g.soort === "zin" && b.zonderAanwijzen) {
+      /* Zoals Synthesis: alleen het aangetikte woord kleurt (tot de pijl); bij Grotere verhaaltjes de woordgroep. Tik naast de woorden: de hele zin. */
+      const i = g.i as number;
+      const j = g.j as number | undefined;
+      b.zet({ woordKleur: o.groot || j === undefined ? woordGroep(v.zinnen[i], i, j) : { [`${i}-${j}`]: "r" } });
+      speelLesgeluid("mis");
+    } else if (g.soort === "zin") {
+      b.zet({ flitsZin: g.i as number });
+      b.fout();
+      await l.wacht(700);
+      b.zet({ flitsZin: null });
+    }
+    fout++;
+    if (g.soort === "weetniet" || fout >= 3) {
+      b.zet({ vraagZin, hintVraagteken: false });
+      await l.zeg("Kijk, deze zin stelt de vraag.", "Daar staat het vraagteken.", v.watZoeken);
+      break;
+    }
+    await l.zeg("Goed geprobeerd.", fout === 1 ? "Maar die zin stelt geen vraag." : "Maar ook die zin stelt geen vraag.");
+    await verderH(b, l);
+    if (b.zonderAanwijzen) {
+      b.zet({ woordKleur: {} });
+      speelLesgeluid("terug");
+    }
+    if (fout === 1) {
+      if (!b.zonderAanwijzen) b.zet({ hintVraagteken: true });
+      await l.zeg("Hier is een hint.", "Zoek de zin met het vraagteken.", "Tik dan op die zin.");
+    } else {
+      await l.zeg("Nog een hint.", "Zoek de zin die begint met *Hoeveel*.", "Tik op die zin.");
+    }
+  }
+  await verderH(b, l);
+
+  /* 3. Erbij of eraf, en het signaalwoord. */
+  if (!o.kort) {
+    b.opgave();
+    await l.zeg("Is dit een plussom of een minsom?", "Komt er iets bij of gaat er iets af?");
+    const keuze = await erbijErafH(b, l, v.op);
+    if (keuze === (v.op === "+" ? "Erbij" : "Eraf")) {
+      await l.zeg("Heel goed.", v.signaalOpdracht ? v.signaalOpdracht : `Tik op het woord dat zegt dat dit een ${v.op === "+" ? "plussom" : "minsom"} is.`);
+      for (let fout = 0; ; ) {
+        const g = await wachtTikH(b, l, "woord", fout === 0 ? [v.signaalTip] : undefined, false);
+        if (g.soort === "woord" && g.signaal) {
+          b.zet({ signaalGroen: true, hintZin: null, woordKleur: {} });
+          speelLesgeluid("goed");
+          await l.zeg("Goed gekozen.", v.signaalUitleg);
+          break;
+        }
+        fout++;
+        if (g.soort === "weetniet" || fout >= 2) {
+          b.zet({ signaalGroen: true, hintZin: null });
+          await l.zeg("Kijk, hier staat het.", v.signaalUitleg);
+          break;
+        }
+        if (b.zonderAanwijzen) {
+          /* Zoals Synthesis: het aangetikte woord kleurt groen, na de pijl weer wit; dan een andere vraag. */
+          if (g.sleutel) {
+            /* Grotere verhaaltjes: de hele woordgroep kleurt (Synthesis: "balloons at a party." groen). */
+            const [zi, wj] = String(g.sleutel).split("-").map(Number);
+            b.zet({ woordKleur: o.groot ? kleurAlles(woordGroep(v.zinnen[zi], zi, wj), "g") : { [String(g.sleutel)]: "g" } });
+          }
+          speelLesgeluid("mis");
+          /* Grotere verhaaltjes: de hele woordgroep kleurt, dus geen los woord noemen (Synthesis: "You've chosen that part."). */
+          /* Vroeg Bliepo om "de woorden", dan ook "niet de woorden" (taal, vergelijking 28 okt 2026). */
+          const meer = (v.signaalOpdracht ?? "").includes("woorden");
+          await l.zeg(o.groot ? "Je koos dat stuk." : `Je koos *${String(g.tekst ?? "")}*.`, o.groot ? "Dat is niet wat ik zoek." : meer ? "Dat zijn niet de woorden die ik zoek." : "Dat is niet het woord dat ik zoek.", "Probeer het nog een keer.");
+          await verderH(b, l);
+          b.zet({ woordKleur: {} });
+          speelLesgeluid("terug");
+          await l.zeg(v.signaalTip);
+          continue;
+        }
+        b.fout();
+        b.zet({ hintZin: v.signaalZin });
+        await l.zeg(`Je koos *${String(g.tekst ?? "")}*.`, "Dat is niet het woord dat ik zoek.");
+        await verderH(b, l);
+        await l.zeg("Het staat in de zin met de rand.", voorleeszin(v.zinnen[v.signaalZin]), v.signaalTip);
+      }
+      await verderH(b, l);
+    } else if (o.groot && v.naspelenUitleg) {
+      /*
+        Synthesis Bigger Problems: de voorwerpen schuiven terug in beeld. Fout = een
+        kleinere vraag; "weet ik niet" (op de vraag of de kleinere vraag) = meteen
+        naspelen, vóór de som, en daarna geen signaalwoord.
+      */
+      if (keuze === null) await l.zeg("Geen zorgen.", "We kijken samen.");
+      else {
+        b.fout();
+        await l.zeg("Goed geprobeerd.", ...v.foutUitleg, "Zullen we ze terug in beeld halen?");
+      }
+      b.zet({ midden: false, somBijMidden: false });
+      b.zetPlaatjes(v.soort, v.aan, v.leeg, v.leegVorm ?? "eigen", { rij: v.rij, bloeit: false });
+      speelLesgeluid("schuif");
+      await l.wacht(900);
+      const goedKlein = v.op === "+" ? v.kleineVraag.erbij : v.kleineVraag.eraf;
+      let k2: string | null = null;
+      if (keuze !== null) {
+        await l.zeg(...v.kleineVraag.zinnen);
+        k2 = await kiesH(b, l, [v.kleineVraag.erbij, v.kleineVraag.eraf], { goed: goedKlein, vinkje: true }).then((x) => (x === null ? null : String(x)));
+      }
+      if (k2 === goedKlein) {
+        speelLesgeluid("goed");
+        await l.zeg("Precies.", ...v.kleineVraag.goed);
+      } else {
+        if (k2 !== null) b.fout();
+        await l.zeg(...v.naspelenUitleg.zinnen);
+        await naspelenS(b, l, v.b, v.op === "+" ? "erbij" : "weg");
+        await omtrekS(b, l);
+        await l.zeg(...v.naspelenUitleg.klaar);
+      }
+      await verderH(b, l);
+    } else {
+      /* De voorwerpen komen terug in beeld, met een kleinere vraag in gewone woorden. */
+      if (keuze === null) await l.zeg("Geen zorgen.", "Ik laat het je zien.");
+      else {
+        b.fout();
+        await l.zeg("Goed geprobeerd.", ...v.foutUitleg, "Zullen we ze erbij laten komen en beter kijken?");
+      }
+      b.zet({ midden: false });
+      b.zetPlaatjes(v.soort, v.aan, v.leeg, v.leegVorm ?? "eigen", { rij: v.rij, bloeit: false });
+      await l.wacht(900);
+      await l.zeg(...v.kleineVraag.zinnen);
+      const k2 = await l.kies([v.kleineVraag.erbij, v.kleineVraag.eraf]);
+      if (k2 === (v.op === "+" ? v.kleineVraag.erbij : v.kleineVraag.eraf)) await l.zeg("Precies.", ...v.kleineVraag.goed);
+      else await l.zeg("Kijk maar.", ...v.kleineVraag.goed);
+      await verderH(b, l);
+    }
+  }
+
+  /* 4. De som, vakje voor vakje. */
+  /* Zoals Synthesis: de plaatjes schuiven terug in beeld, het signaal blijft groen, het eerste vraagteken is blauw. */
+  b.zet({ midden: false, somBijMidden: false, som: LEGE_SOM(v.op), somActief: 0, signaalGroen: b.zonderAanwijzen ? (b.p.signaalGroen ?? false) : false });
+  if (b.zonderAanwijzen) b.somDeel(0, { t: "vraag", kleur: BLAUW });
+  b.zetPlaatjes(v.soort, v.aan, v.leeg, v.leegVorm ?? "eigen", { rij: v.rij, bloeit: false });
+  speelLesgeluid("schuif");
+  const streep = (n: number) => {
+    const plek = getallen.find((x) => x.n === n && !(b.p.doorgestreept ?? []).includes(x.sleutel));
+    if (plek) b.zet({ doorgestreept: [...(b.p.doorgestreept ?? []), plek.sleutel] });
+  };
+  b.opgave();
+  await l.zeg("We hebben alles voor de som.", b.zonderAanwijzen ? "Welk getal zetten we [[b:eerst]]?" : "Welk getal zetten we eerst?");
+  /* Grotere verhaaltjes (Synthesis): de getallen in de volgorde van het verhaal; Kleine verhaaltjes: van klein naar groot. */
+  const opties = o.groot ? [v.a, v.b] : [v.a, v.b].sort((x, y) => x - y);
+  if (v.a !== v.b) {
+    let k = await kiesGetalH(b, l, opties, [], v.a);
+    if (k !== v.a) {
+      if (k === null) {
+        b.zet({ hintZin: 0 });
+        await l.zeg("Laten we alleen naar deze zin kijken.", voorleeszin(v.zinnen[0]), v.beginVraag);
+      } else {
+        b.fout();
+        await l.zeg(`{${k}}? Niet helemaal.`, v.beginVraag);
+      }
+      /* Grotere verhaaltjes (Synthesis): de knoppen blijven op hun plek; Kleine verhaaltjes: omgedraaid. */
+      k = await kiesGetalH(b, l, o.groot ? opties : [...opties].reverse(), [], v.a);
+      b.zet({ hintZin: null });
+      if (k !== v.a) await l.zeg(...v.beginAntwoord);
+    }
+  }
+  b.somDeel(0, { t: "getal", n: v.a });
+  streep(v.a);
+  speelLesgeluid("naarSom");
+  b.somDeel(2, { t: "vraag", kleur: MINT });
+  b.zet({ somActief: 2, groeneZin: b.zonderAanwijzen ? null : v.signaalZin });
+  await l.zeg("Klopt.", b.zonderAanwijzen ? groenWoord(o.groot && v.tweedeVraagGroot ? v.tweedeVraagGroot : v.tweedeVraag) : v.tweedeVraag);
+  if (v.a !== v.b) {
+    /* Grotere verhaaltjes (Synthesis): de knoppen blijven eerst op hun plek, en draaien pas om na een fout of "weet ik niet". */
+    let k = await kiesGetalH(b, l, o.groot ? opties : [...opties].reverse(), [], v.b);
+    if (k !== v.b) {
+      if (k !== null) b.fout();
+      await l.zeg(k === null ? (o.groot ? "Dat is oké. Ik help je een beetje." : "Geen zorgen.") : `{${k}}? Niet helemaal.`, v.tweedeVraag2);
+      k = await kiesGetalH(b, l, o.groot ? [...opties].reverse() : opties, [], v.b);
+      if (k !== v.b && o.groot) {
+        /* Synthesis Bigger Problems: het verhaal krimpt tot de zin met het antwoord. Daarna komt alles terug en kleurt het signaal groen. */
+        if (k !== null) b.fout();
+        b.zet({ alleenZin: v.signaalZin });
+        speelLesgeluid("terug");
+        await l.zeg("Kijk naar deze zin.", v.tweedeVraag2);
+        for (let p = 0; p < 2 && k !== v.b; p++) {
+          k = await kiesGetalH(b, l, [...opties].reverse(), [], v.b);
+          if (k !== v.b && p === 0) {
+            if (k !== null) b.fout();
+            await l.zeg("Kijk nog eens goed.", v.tweedeVraag2);
+          }
+        }
+        b.zet({ alleenZin: null, signaalGroen: true });
+        if (k !== v.b) await l.zeg(...v.tweedeAntwoord);
+      } else if (k !== v.b) await l.zeg(...v.tweedeAntwoord);
+    }
+  }
+  b.somDeel(2, { t: "getal", n: v.b });
+  streep(v.b);
+  speelLesgeluid("naarSom");
+  b.zet({ somActief: 4, groeneZin: null });
+
+  /* 5. Naspelen, Bliepo telt mee. */
+  /* Niet twee keer "klaar" ("Mooi, alles staat klaar." + "De som staat klaar."): Synthesis zegt het één keer. */
+  await l.zeg(...(v.naspelen[0] === "De som staat klaar." ? [] : ["Mooi, alles staat klaar."]), ...v.naspelen);
+  await naspelenS(b, l, v.b, v.op === "+" ? "erbij" : "weg");
+  /* Synthesis: uitgedane lampen worden na de laatste tik een lege omtrek. */
+  if (o.groot) await omtrekS(b, l);
+
+  /* 6. Het antwoord. */
+  await l.zeg(v.antwoordVraag);
+  b.opgave();
+  await eindAntwoordS(b, l, { antwoord, keuzes: v.keuzes, weetNiet: !!v.keuzes, tip: v.telTip, ding: v.ding, groot: o.groot, vraag: o.groot ? v.antwoordVraag : undefined });
+  b.somDeel(4, { t: "getal", n: antwoord });
+  b.zet({ somActief: null, geteld: [] });
+  await bloeiNa(b, l, v, false);
+  if (o.groot) await l.zeg("Goed zo.", v.antwoordZin);
+  else await l.zeg("Goed zo.", somZin(v.a, v.op, v.b, antwoord));
+}
+
+/** Het kind probeert het zonder hulp. Goed: klaar. Fout of "weet ik niet": we pluizen het uit. */
+/** Geeft `true` als het antwoord meteen goed was (zonder uitpluisroute). */
+async function meteenS(b: HBord, l: Lesgids, v: SPluis, opening: string[]): Promise<boolean> {
+  const antwoord = uitkomstS(v);
+  b.opgave();
+  await l.zeg(...opening, v.antwoordVraag);
+  const x = await kiesH(b, l, v.keuzes ?? TEGELS, { goed: antwoord, tegels: !v.keuzes });
+  if (x === antwoord) {
+    b.goed();
+    b.zet({ som: somVol(v.a, v.op, v.b) });
+    if (v.op === "+") await bloeiNa(b, l, v, true);
+    await l.zeg("Precies.", somZin(v.a, v.op, v.b, antwoord), v.antwoordZin);
+    return true;
+  }
+  if (x === null) await l.zeg("Geen probleem.", "We doen het verhaal samen stap voor stap.");
+  else if (b.zonderAanwijzen) {
+    /* Zoals Synthesis: na één fout de keuze "Nog een keer" of "Hulp"; na nog een fout samen uitpluizen. */
+    b.fout();
+    await l.zeg(`{${x}}? Niet helemaal.`);
+    await l.zeg("Wil je hulp, of nog een keer proberen?");
+    const keuze = await l.kies(["Nog een keer", "Hulp"], { weetniet: false });
+    if (keuze === "Nog een keer") {
+      await l.zeg(v.antwoordVraag);
+      const y = await kiesH(b, l, v.keuzes ?? TEGELS, { goed: antwoord, tegels: !v.keuzes });
+      if (y === antwoord) {
+        b.goed();
+        b.zet({ som: somVol(v.a, v.op, v.b) });
+        if (v.op === "+") await bloeiNa(b, l, v, true);
+        await l.zeg("Precies.", somZin(v.a, v.op, v.b, antwoord), v.antwoordZin);
+        return true;
+      }
+      if (y !== null) b.fout();
+      await l.zeg(y === null ? "Geen probleem." : `{${y}}? Niet helemaal.`, "Laten we het samen uitzoeken.");
+    } else await l.zeg("Goed.", "We doen het verhaal samen stap voor stap.");
+  } else {
+    b.fout();
+    await l.zeg(`{${x}}? Niet helemaal.`, "We doen het verhaal samen stap voor stap.");
+  }
+  await pluisUitS(b, l, v);
+  return false;
+}
+
+/**
+ * Welke som past bij het verhaal? Goed: het antwoord kiezen. Fout, of een
+ * verkeerd antwoord: "laten we het samen uitzoeken" en de hele route.
+ */
+async function somKiezenS(b: HBord, l: Lesgids, v: SPluis, o: { foutSommen: string[]; kort?: boolean; groot?: boolean }) {
+  const goed = `${v.a} ${v.op} ${v.b}`;
+  const antwoord = uitkomstS(v);
+  b.opgave();
+  /*
+    Zoals Synthesis: vaste volgorde. Minsom: de goede als laatste (17 + 9 | 26 − 17 | 17 − 9, 10 + 2 | 12 − 10 | 10 − 2);
+    plussom: de goede bovenaan. Vóór de vergelijking (28 okt 2026) werden ze geschud.
+  */
+  const k = await kiesH(b, l, b.zonderAanwijzen ? (v.op === "+" ? [goed, ...o.foutSommen] : [...o.foutSommen, goed]) : schud([goed, ...o.foutSommen]), { som: true, wijsSleutel: "sommen", wijs: ["Tik op de som die past."], goed });
+  if (k !== goed) {
+    if (k !== null) b.fout();
+    await l.zeg(k === null ? "Geen zorgen." : `${String(k).replace(/(\d+)/g, "{$1}")}? Dat is niet de som die ik zocht.`, "Laten we het samen uitzoeken.");
+    await pluisUitS(b, l, v, { kort: o.kort, groot: o.groot });
+    return;
+  }
+  /* Grotere verhaaltjes (Synthesis): de gekozen som schuift onderaan in beeld. Kleine verhaaltjes: geen som onderaan (Synthesis Small Problems 032). */
+  const somOnder = o.groot || !b.zonderAanwijzen;
+  if (somOnder) b.zet({ som: somVraag(v.a, v.op, v.b), somActief: 4 });
+  if (o.groot) speelLesgeluid("schuif");
+  await l.zeg(`Precies, {${v.a}} ${v.op} {${v.b}}.`, v.antwoordVraag);
+  b.opgave();
+  /* Zoals Synthesis: de vier antwoordknoppen hebben "Weet ik niet"; de cijfertegels hier ook (Small Problems 032: "I don't know"). */
+  const x = await kiesH(b, l, v.keuzes ?? TEGELS, { goed: antwoord, tegels: !v.keuzes, weetNiet: !!v.keuzes || b.zonderAanwijzen });
+  if (x === antwoord) {
+    b.goed();
+    if (somOnder) b.somDeel(4, { t: "getal", n: antwoord });
+    b.zet({ somActief: null });
+    if (v.op === "+") await bloeiNa(b, l, v, true);
+    /* Bij eraf het plaatje laten meegaan (keurder, 28 okt): anders branden er nog alle lampen terwijl Bliepo zegt dat er 8 branden. */
+    else if (b.p.plaatjes && b.p.plaatjes.soort !== "ballon") await laatGebeurenH(b, l, v.a, antwoord, b.p.plaatjes.plekken.length, 140);
+    /* Ballonnen (Synthesis Small Problems 033): Bliepo laat ze zelf knappen, de laatste eerst. */
+    else if (b.p.plaatjes && b.zonderAanwijzen) await knapZelfS(b, l, v.b, v.gekozenPlekken);
+    if (o.groot) await omtrekS(b, l);
+    await l.zeg("Precies.", ...(o.groot ? [] : [somZin(v.a, v.op, v.b, antwoord)]), v.antwoordZin);
+    return;
+  }
+  if (x !== null) b.fout();
+  await l.zeg(x === null ? "Geen zorgen." : x === v.b && v.redenB ? v.redenB : `{${x}}? Niet helemaal.`, "Laten we het samen uitzoeken.");
+  /* Grotere verhaaltjes (Synthesis): gaat vanzelf door, en de som blijft onderaan staan tijdens het uitpluizen. */
+  if (!o.groot) await verderH(b, l);
+  await pluisUitS(b, l, v, { kort: o.kort, groot: o.groot, somBlijft: o.groot });
+}
+
+/**
+ * Een verhaal dat het kind zelf maakte (Synthesis Bigger Problems): welke som
+ * past? Een foute som krijgt GEEN uitpluisroute, maar uitleg, en Bliepo zet
+ * de goede som onderaan. Daarna het antwoord: goed = Bliepo speelt het zelf
+ * na; fout = het kind speelt het na en telt; nog eens fout = pauze.
+ */
+async function zelfSomS(
+  b: HBord,
+  l: Lesgids,
+  v: SPluis,
+  o: { foutSommen: string[]; waarom: (som: string) => string[]; naspeelHulp: string[]; telVraag: string[]; naspeelDoel?: Plekstaat },
+) {
+  const goed = `${v.a} ${v.op} ${v.b}`;
+  const antwoord = uitkomstS(v);
+  b.opgave();
+  /* Zoals Synthesis: vaste volgorde, de plussom bovenaan (7 + 1 | 7 − 1 | 8 − 7 en 16 + 5 | 21 − 16 | 16 − 5). */
+  const k = await kiesH(b, l, v.op === "+" ? [goed, ...o.foutSommen] : [...o.foutSommen, goed], { som: true, goed });
+  if (k !== goed) {
+    if (k !== null) b.fout();
+    await l.zeg(...(k === null ? ["Geen zorgen."] : [`Jij koos de som ${somTekst(String(k))}.`, ...o.waarom(String(k))]), `Deze som past: ${somTekst(goed)}.`);
+  }
+  b.zet({ som: somVraag(v.a, v.op, v.b), somActief: 4 });
+  speelLesgeluid("schuif");
+  await l.zeg(k === goed ? `Precies, ${somTekst(goed)}.` : "", v.antwoordVraag);
+  b.opgave();
+  const keuzes = v.keuzes ?? TEGELS;
+  for (let poging = 1; ; poging++) {
+    const x = await kiesH(b, l, keuzes, { goed: antwoord, tegels: !v.keuzes });
+    if (x === antwoord) {
+      b.goed();
+      b.somDeel(4, { t: "getal", n: antwoord });
+      b.zet({ somActief: null });
+      /* Synthesis: na een goed antwoord speelt Bliepo het verhaal zelf na. */
+      if (poging === 1) await speelZelfNaS(b, l, v);
+      else if (v.soort === "pot") b.bloei(true);
+      await l.zeg("Goed zo.", v.antwoordZin);
+      return;
+    }
+    if (x !== null) b.fout();
+    const n = Number(x);
+    if (poging === 1) {
+      await l.zeg(x === null ? "Geen zorgen." : `{${n}} ${n === 1 ? enkelvoud(v.ding) : v.ding}? Niet helemaal.`, ...o.naspeelHulp);
+      await naspelenS(b, l, v.b, v.op === "+" ? "erbij" : "weg", false, { doel: o.naspeelDoel });
+      if (v.soort === "pot") b.bloei(true);
+      await l.zeg(...o.telVraag);
+      continue;
+    }
+    await l.zeg(x === null ? "Dat is niet erg." : `{${n}} ${n === 1 ? enkelvoud(v.ding) : v.ding}? Dat is nog niet het getal dat ik tel.`, "Zullen we even pauze nemen?", "Dan doen we het straks nog eens.");
+    await verderH(b, l);
+    return l.stopLes();
+  }
+}
+
+/** Bliepo laat zelf `n` ballonnen knappen (de laatste eerst), met het knalgeluidje. */
+async function knapZelfS(b: HBord, l: Lesgids, n: number, gekozen?: number[]) {
+  const pl = b.p.plaatjes;
+  if (!pl) return;
+  const aanPlekken = pl.plekken.map((st, i) => (st === "aan" ? i : -1)).filter((i) => i >= 0);
+  /* Synthesis: dezelfde ballonnen die het kind koos. */
+  const deze = gekozen && gekozen.length === n ? gekozen : aanPlekken.slice(-n).reverse();
+  for (const i of deze) {
+    const nu = b.p.plaatjes;
+    if (!nu) return;
+    speelLesgeluid(naspeelGeluid(nu.soort));
+    b.zetPlekken(nu.plekken.map((st, j) => (j === i ? "uit" : st)));
+    await l.wacht(260);
+  }
+}
+
+/** Bliepo speelt een zelfgemaakt verhaal na: bloemen erbij, of munten die wegdraaien (de laatste eerst). */
+async function speelZelfNaS(b: HBord, l: Lesgids, v: SPluis) {
+  const pl = b.p.plaatjes;
+  if (!pl) return;
+  if (v.op === "+") {
+    await laatGebeurenH(b, l, v.a, v.a + v.b, pl.plekken.length, 220);
+    if (v.soort === "pot") b.bloei(true);
+    return;
+  }
+  const aanPlekken = pl.plekken.map((st, i) => (st === "aan" ? i : -1)).filter((i) => i >= 0);
+  for (const i of aanPlekken.slice(-v.b).reverse()) {
+    const nu = b.p.plaatjes;
+    if (!nu) return;
+    speelLesgeluid(naspeelGeluid(nu.soort));
+    b.zetPlekken(nu.plekken.map((st, j) => (j === i ? "leeg" : st)));
+    await l.wacht(260);
+  }
+}
+
+/** Het kind maakt zelf het verhaal: Bliepo zegt wat het moet doen, het kind tikt. */
+async function zelfMaken(b: HBord, l: Lesgids, o: { soort: HoloSoort; aan: number; leeg: number; rij?: number; modus: "weg" | "erbij"; aantal: number; opening: string[]; klaar: string[] }) {
+  b.nieuw([]);
+  b.zetPlaatjes(o.soort, o.aan, o.leeg, "eigen", { rij: o.rij, bloeit: false });
+  await l.zeg(...o.opening);
+  await naspelenS(b, l, o.aantal, o.modus, false);
+  await l.zeg(...o.klaar);
+  await verderH(b, l);
+}
+
+const KANS = ["Ja", "Nee"];
+
+/* ---------- toetsen (Assessment en Mastery Check) ---------- */
+
+/** Een korte toets-stop: Bliepo zegt het, en de eerste les begint meteen in hetzelfde scherm. */
+async function stopToets(l: Lesgids, eerste: Lesdraaiboek): Promise<false> {
+  await l.zeg("Laten we de toets hier stoppen.", "We beginnen met de eerste les.", "Daar leren we het samen.");
+  await eerste.speel(l);
+  return false;
+}
+
+/**
+ * De zes antwoordknoppen van een toetsvraag zoals Synthesis Word Problems Check: het antwoord,
+ * één eronder en één erboven, en de denkfouten (de getallen uit het verhaal en hun som), door
+ * elkaar (Synthesis zet ze niet op volgorde). Eén keer gemengd: bij "kijk nog eens" blijven ze staan.
+ */
+function toetsKeuzes(antwoord: number, ...denkfouten: number[]): number[] {
+  const set = new Set<number>([antwoord]);
+  for (const x of [antwoord - 1, antwoord + 1, ...denkfouten, antwoord + 2, antwoord - 2, antwoord + 10]) {
+    if (set.size >= 6) break;
+    if (x >= 0 && x <= 40) set.add(x);
+  }
+  return schud([...set]);
+}
+
+/** Extra toetsverhalen, oplopend in moeilijkheid: "hoeveel blijven er over". */
+type ToetsUit = { soort: HoloSoort; a: number; w: number; zinnen: string[]; rij?: boolean };
+const TOETS_UIT: ToetsUit[] = [
+  { soort: "ballon", a: 12, w: 5, zinnen: ["Er zijn 12 ballonnen.", "Er vliegen er 5 weg.", "Hoeveel ballonnen zijn er nog?"] },
+  { soort: "munt", a: 13, w: 6, zinnen: ["Er zijn 13 munten.", "Je geeft er 6 uit.", "Hoeveel munten zijn er nog?"] },
+  { soort: "vogel", a: 9, w: 4, zinnen: ["Er zitten 9 vogeltjes op een draad.", "Er vliegen er 4 weg.", "Hoeveel vogeltjes zitten er nog?"], rij: true },
+  { soort: "lamp", a: 16, w: 7, zinnen: ["Er branden 16 lampen.", "Er gaan er 7 uit.", "Hoeveel lampen branden er nog?"] },
+  { soort: "ballon", a: 19, w: 11, zinnen: ["Er zijn 19 ballonnen op een feestje.", "Er vliegen er 11 weg.", "Hoeveel ballonnen zijn er nog?"] },
+  { soort: "munt", a: 17, w: 8, zinnen: ["Er zijn 17 munten.", "Je geeft er 8 uit.", "Hoeveel munten zijn er nog?"] },
+];
+
+/** Extra toetsverhalen met een verstopt getal: "hoeveel kwamen erbij". */
+type ToetsBij = { soort: HoloSoort; a: number; c: number; zinnen: string[]; leeg: "plek" | "eigen" };
+const TOETS_BIJ: ToetsBij[] = [
+  /* Vraag en verhaal in dezelfde tijd (vergelijking 28 okt 2026): "komen erbij", niet "kwamen erbij". */
+  { soort: "vogel", a: 4, c: 11, zinnen: ["Er zitten 4 vogeltjes op een draad.", "Er komen er nog een paar bij.", "Nu zijn het er 11.", "Hoeveel vogeltjes komen erbij?"], leeg: "plek" },
+  { soort: "munt", a: 6, c: 14, zinnen: ["Je hebt 6 munten.", "Je krijgt er nog een paar bij.", "Nu heb je er 14.", "Hoeveel munten krijg je erbij?"], leeg: "plek" },
+  { soort: "ballon", a: 8, c: 16, zinnen: ["Je hebt 8 ballonnen.", "Je krijgt er nog een paar bij.", "Nu heb je er 16.", "Hoeveel ballonnen krijg je erbij?"], leeg: "plek" },
+  { soort: "pot", a: 9, c: 17, zinnen: ["Er staan 9 bloemen in een tuin.", "Er komen er nog een paar bij.", "Nu zijn het er 17.", "Hoeveel bloemen komen erbij?"], leeg: "eigen" },
+  { soort: "munt", a: 11, c: 19, zinnen: ["Je hebt 11 munten.", "Je krijgt er nog een paar bij.", "Nu heb je er 19.", "Hoeveel munten krijg je erbij?"], leeg: "plek" },
+];
+
+/**
+ * Het begin van een toets, zoals Synthesis: "Weet je hoe je dit oplost?", dan
+ * de keuze toets of les. Geeft `true` als de toets doorgaat.
+ */
+async function toetsOfLesS(l: Lesgids, eerste: Lesdraaiboek): Promise<boolean> {
+  await l.zeg("Weet je hoe je zulke verhaaltjessommen oplost?");
+  const weet = await l.kies(KANS, { weetniet: false });
+  if (weet !== "Ja") {
+    await stopToets(l, eerste);
+    return false;
+  }
+  await l.zeg("Oké.", "Wil je laten zien wat je al kunt?", "Dan doen we een toets, en kun je sneller verder.", "Of doen we samen de lessen?");
+  const keuze = await l.kies(["Toets", "Les"], { weetniet: false });
+  /* Zoals Synthesis: na "Toets" meteen de eerste vraag ("Goed. Wat denk je?"), geen extra "Mooi." ervoor. */
+  if (keuze === "Toets") return true;
+  await l.zeg("Prima.", "Dan beginnen we met de eerste les.");
+  await eerste.speel(l);
+  return false;
+}
+
+/**
+ * Eén toetsvraag zoals Synthesis Word Problems Check: geen "Weet ik niet",
+ * wel het handje (stopt de toets, de eerste les begint). 1× fout: "Dat is heel
+ * dichtbij. Kijk nog eens." en dezelfde vraag met dezelfde knoppen; 2× fout:
+ * de toets stopt en de eerste les begint. Geeft `false` als de toets stopt.
+ */
+async function toetsVraagS(b: HBord, l: Lesgids, eerste: Lesdraaiboek, opties: (number | string)[], goed: number | string, vraag: string[], herhaal: string[], som = false, doorNaar?: Lesdraaiboek): Promise<boolean> {
+  b.opgave();
+  for (let poging = 1; poging <= 2; poging++) {
+    await l.zeg(...(poging === 1 ? vraag : herhaal));
+    const keuze = kiesH(b, l, opties, { som, goed, weetNiet: false });
+    /* Het handje verschijnt na de spraak, naast de vraag. */
+    b.zet({ handje: true });
+    const hand = l.wachtOpVlak("handje").then(
+      () => "handje" as const,
+      () => new Promise<never>(() => {}),
+    );
+    const x = await Promise.race([keuze, hand]);
+    b.zet({ handje: false });
+    if (x === "handje") {
+      await l.zeg("Geen zorgen.", "Laten we de toets hier stoppen en met de eerste les beginnen.");
+      await eerste.speel(l);
+      return false;
+    }
+    if (x === goed) {
+      b.goed();
+      return true;
+    }
+    b.fout();
+    if (poging === 1) await l.zeg(typeof x === "number" ? `{${x}}? Dat is heel dichtbij.` : `${somTekst(String(x))}?`, "Kijk nog eens.");
+  }
+  await l.zeg("Dat is een goede poging.", "We bekijken dit samen in een les.");
+  await verderH(b, l);
+  /*
+    Synthesis: was er al een vraag goed, dan tellen de eerste lessen als gehaald en stelt de tutor
+    de volgende les voor ("Should we jump right in?" Ja/Nee). De kaarten van de gehaalde lessen
+    toont het lesscherm niet (valt buiten deze klus).
+  */
+  if (doorNaar) {
+    l.vlak(null);
+    await l.zeg("De kleine en de grotere verhaaltjes kun je al.", `De les ${doorNaar.titel} is een mooie volgende stap.`, "Zullen we meteen beginnen?");
+    if ((await l.kies(KANS, { weetniet: false })) === "Ja") {
+      await doorNaar.speel(l);
+      return false;
+    }
+  }
+  await eerste.speel(l);
+  return false;
+}
+
+async function toetsS(
+  l: Lesgids,
+  eerste: Lesdraaiboek,
+  /** Synthesis: na een goede eerste vraag en daarna 2× fout stelt de tutor deze les voor. */
+  volgende: Lesdraaiboek | undefined,
+  t: { lampA: number; lampN: number; lampKeuzes: number[]; potA: number; potEind: number; sommen: string[]; potKeuzes: number[] },
+): Promise<boolean> {
+  const b = new HBord(l);
+  b.zonderAanwijzen = true;
+  const nog = t.lampA - t.lampN;
+
+  /* Vraag 1: lampen uit (20 plekken, zoals Synthesis). Geen aankondiging: meteen voorlezen; de lampen gaan één voor één aan, de rest zijn lege omtrekken. */
+  b.nieuw([`Er branden ${t.lampA} lampen.`, `${Wie(l)} doet er ${t.lampN} uit.`, "Hoeveel lampen branden er nog?"]);
+  b.zetStand("lamp", [...Array<Plekstaat>(t.lampA).fill("aan"), ...Array<Plekstaat>(20 - t.lampA).fill("leeg")]);
+  await vertelS(b, l, "aan");
+  if (!(await toetsOfLesS(l, eerste))) return false;
+  if (!(await toetsVraagS(b, l, eerste, schud(t.lampKeuzes), nog, ["Goed.", "Wat denk je?", "Hoeveel lampen branden er nog?"], ["Hoeveel lampen branden er nog?"]))) return false;
+  await l.zeg("Dat klopt.", `Er branden nog {${nog}} lampen.`);
+  /* Bliepo doet zelf de lampen uit: eerst grijs, dan een lege omtrek. Geen som in beeld. */
+  await laatGebeurenH(b, l, t.lampA, nog, 20, 180);
+  await omtrekS(b, l);
+  await verderH(b, l);
+
+  /* Vraag 2: bloemen, alleen tekst met een stippellijn voor de vraag (geen plaatjes). */
+  const erbij = t.potEind - t.potA;
+  b.nieuw([`Er staan ${t.potA} bloemen in een tuin.`, `${Wie(l)} plant er nog een paar bij.`, `Nu zijn het er ${t.potEind}.`, `Hoeveel bloemen plant ${wie(l)} erbij?`], { stippelVoor: 3 });
+  await vertelH(b, l);
+  const goedeSom = `${t.potA} + ? = ${t.potEind}`;
+  /* Zoals Synthesis: drie sommen in vaste volgorde, de goede bovenaan (6 + ? = 17 | 6 + 17 = ? | 6 − ? = 17). */
+  if (!(await toetsVraagS(b, l, eerste, [goedeSom, ...t.sommen], goedeSom, ["Voordat we het oplossen, eerst een vraag.", "Welke som past bij het verhaal?"], ["Welke som past bij het verhaal?"], true, volgende))) return false;
+  /* De som verschijnt pas nu, met een groen vraagteken op de tweede plek. */
+  b.zet({ som: [{ t: "getal", n: t.potA }, { t: "teken", s: "+" }, { t: "vraag", kleur: MINT }, { t: "teken", s: "=" }, { t: "getal", n: t.potEind }], somActief: 2 });
+  speelLesgeluid("schuif");
+  if (!(await toetsVraagS(b, l, eerste, schud(t.potKeuzes), erbij, ["Klopt.", `[[b:Hoeveel]] bloemen plant ${wie(l)} erbij?`], [`Hoeveel bloemen plant ${wie(l)} erbij?`], false, volgende))) return false;
+  b.somDeel(2, { t: "getal", n: erbij });
+  b.zet({ somActief: null });
+  await l.zeg("Precies.", `${Wie(l)} plant er {${erbij}} bij.`);
+  await verderH(b, l);
+
+  /* Extra toetsvragen van dezelfde soort (alleen tekst, zoals vraag 2), tot er 15 zijn. Na het allerlaatste goede antwoord meteen de kaart. */
+  let u = 0;
+  let p = 0;
+  for (let ronde = 0; b.opgaven < 15 && ronde < 12; ronde++) {
+    if (ronde % 2 === 0 && u < TOETS_UIT.length) {
+      const v = TOETS_UIT[u++];
+      const ant = v.a - v.w;
+      /* Zelfde soort vraag als vraag 1, dus ook met plaatjes (vergelijking 28 okt 2026). Lampen: 20 plekken. */
+      const totaal = v.soort === "lamp" ? 20 : v.a;
+      b.nieuw(v.zinnen);
+      b.zetStand(v.soort, [...Array<Plekstaat>(v.a).fill("aan"), ...Array<Plekstaat>(totaal - v.a).fill("leeg")], "eigen", { rij: v.rij ? v.a : undefined });
+      await vertelH(b, l);
+      const vraag = v.zinnen[2].replace(/\b(\d+)\b/g, "{$1}");
+      if (!(await toetsVraagS(b, l, eerste, toetsKeuzes(ant, v.a, v.a + v.w, v.a + v.w - 1), ant, ["Wat denk je?", vraag], [vraag], false, volgende))) return false;
+      if (b.opgaven >= 15) return true;
+      /* Zoals Synthesis ("6 are still on"): de bevestiging noemt wat er geteld wordt. */
+      const telZin: Record<string, string> = { ballon: "Er zijn nog {N} ballonnen.", munt: "Er zijn nog {N} munten.", vogel: "Er zitten nog {N} vogeltjes.", lamp: "Er branden nog {N} lampen." };
+      await l.zeg("Dat klopt.", (telZin[v.soort] ?? "Het zijn er {N}.").replace("N", String(ant)));
+      /* Zoals vraag 1: Bliepo laat het zelf gebeuren. */
+      await laatGebeurenH(b, l, v.a, ant, totaal, 160);
+      if (v.soort === "lamp") await omtrekS(b, l);
+      await verderH(b, l);
+    } else if (p < TOETS_BIJ.length) {
+      const v = TOETS_BIJ[p++];
+      const ant = v.c - v.a;
+      b.nieuw(v.zinnen, { stippelVoor: 3 });
+      await vertelH(b, l);
+      const goed = `${v.a} + ? = ${v.c}`;
+      if (!(await toetsVraagS(b, l, eerste, [goed, `${v.a} + ${v.c} = ?`, `${v.a} − ? = ${v.c}`], goed, ["Welke som past bij het verhaal?"], ["Welke som past bij het verhaal?"], true, volgende))) return false;
+      b.zet({ som: [{ t: "getal", n: v.a }, { t: "teken", s: "+" }, { t: "vraag", kleur: MINT }, { t: "teken", s: "=" }, { t: "getal", n: v.c }], somActief: 2 });
+      speelLesgeluid("schuif");
+      const vraag = v.zinnen[3].replace(/\b(\d+)\b/g, "{$1}");
+      /* Zoals vraag 2: "Hoeveel" blauw zodra de som onderaan staat. */
+      const vraagBlauw = vraag.replace(/^Hoeveel/, "[[b:Hoeveel]]");
+      if (!(await toetsVraagS(b, l, eerste, toetsKeuzes(ant, v.a, v.c, v.a + v.c), ant, ["Klopt.", vraagBlauw], [vraag], false, volgende))) return false;
+      b.somDeel(2, { t: "getal", n: ant });
+      b.zet({ somActief: null });
+      if (b.opgaven >= 15) return true;
+      /* Zelfde werkwoord als het verhaal: "Je krijgt er 8 bij." of "Er komen er 7 bij." */
+      await l.zeg("Precies.", v.zinnen[1].startsWith("Je krijgt") ? `Je krijgt er {${ant}} bij.` : `Er komen er {${ant}} bij.`);
+      await verderH(b, l);
+    }
+  }
+  return true;
+}
+
+/* ---------- oefenverhalen NA de stappen van Synthesis (tot 15 vragen) ---------- */
+
+const kMin = (soort: HoloSoort, zinnen: string[], a: number, b: number, telTip: string, antwoordZin: string, leeg?: "plek"): Kort => ({
+  zinnen,
+  soort,
+  a,
+  b,
+  op: "−",
+  vraag: zinnen[zinnen.length - 1].replace(/\b(\d+)\b/g, "{$1}"),
+  telTip,
+  antwoordZin,
+  leeg,
+});
+const kPlus = (soort: HoloSoort, zinnen: string[], a: number, b: number, telTip: string, antwoordZin: string, leeg?: "plek"): Kort => ({
+  ...kMin(soort, zinnen, a, b, telTip, antwoordZin, leeg),
+  op: "+",
+});
+
+/** Tot 10 (Kleine verhaaltjes): oplopend, antwoorden 1–9, elk voorwerp en elke getallenreeks één keer. */
+const BANK_S10: Kort[] = [
+  kMin("ballon", ["Er zijn 6 ballonnen.", "Er knappen er 2.", "Hoeveel ballonnen zijn er nog heel?"], 6, 2, "Tel de ballonnen die heel zijn.", "Er zijn nog {4} ballonnen heel."),
+  kPlus("pot", ["Er staan 4 bloemen in een tuin.", "Er komen er nog 2 bij.", "Hoeveel bloemen zijn het nu?"], 4, 2, "Tel alle bloemen.", "Het zijn er {6}."),
+  kMin("lamp", ["Er branden 8 lampen.", "Er gaan er 3 uit.", "Hoeveel lampen branden er nog?"], 8, 3, "Tel de lampen die nog branden.", "Er branden nog {5} lampen."),
+  kPlus("munt", ["Je hebt 3 munten.", "Je krijgt er 4 bij.", "Hoeveel munten heb je nu?"], 3, 4, "Tel alle munten.", "Je hebt nu {7} munten.", "plek"),
+  kMin("vogel", ["Er zitten 9 vogeltjes op een draad.", "Er vliegen er 5 weg.", "Hoeveel vogeltjes zitten er nog?"], 9, 5, "Tel de vogeltjes die er nog zijn.", "Er zitten nog {4} vogeltjes."),
+  kPlus("ballon", ["Er zijn 5 ballonnen.", "Er komen er 3 bij.", "Hoeveel ballonnen zijn het nu?"], 5, 3, "Tel alle ballonnen.", "Het zijn er {8}.", "plek"),
+  kMin("munt", ["Je hebt 10 munten.", "Je geeft er 6 uit.", "Hoeveel munten heb je nog?"], 10, 6, "Tel de munten die je nog hebt.", "Je hebt nog {4} munten."),
+  kPlus("lamp", ["Er branden 2 lampen.", "Ik doe er nog 6 aan.", "Hoeveel lampen branden er nu?"], 2, 6, "Tel alle lampen die branden.", "Er branden nu {8} lampen."),
+  kPlus("vogel", ["Er zitten 4 vogeltjes op een draad.", "Er komen er 5 bij.", "Hoeveel vogeltjes zitten er nu?"], 4, 5, "Tel alle vogeltjes.", "Er zitten nu {9} vogeltjes.", "plek"),
+  kMin("ballon", ["Er zijn 9 ballonnen.", "Er knappen er 4.", "Hoeveel ballonnen zijn er nog heel?"], 9, 4, "Tel de ballonnen die heel zijn.", "Er zijn nog {5} ballonnen heel."),
+];
+
+/** Tot 20 (Grotere verhaaltjes): oplopend. */
+const BANK_S20: Kort[] = [
+  kMin("ballon", ["Er zijn 12 ballonnen.", "Er vliegen er 5 weg.", "Hoeveel ballonnen zijn er nog?"], 12, 5, "Tel de ballonnen die er nog zijn.", "Er zijn nog {7} ballonnen."),
+  kMin("lamp", ["Er branden 15 lampen.", "Er gaan er 8 uit.", "Hoeveel lampen branden er nog?"], 15, 8, "Tel de lampen die nog branden.", "Er branden nog {7} lampen."),
+  kPlus("pot", ["Er staan 8 bloemen in een tuin.", "Er komen er 7 bij.", "Hoeveel bloemen zijn het nu?"], 8, 7, "Tel alle bloemen.", "Het zijn er {15}."),
+  kMin("munt", ["Je hebt 18 munten.", "Je geeft er 9 uit.", "Hoeveel munten heb je nog?"], 18, 9, "Tel de munten die je nog hebt.", "Je hebt nog {9} munten."),
+  kPlus("vogel", ["Er zitten 9 vogeltjes op een draad.", "Er komen er 6 bij.", "Hoeveel vogeltjes zitten er nu?"], 9, 6, "Tel alle vogeltjes.", "Er zitten nu {15} vogeltjes.", "plek"),
+  kMin("vogel", ["Er zitten 16 vogeltjes op een draad.", "Er vliegen er 7 weg.", "Hoeveel vogeltjes zitten er nog?"], 16, 7, "Tel de vogeltjes die er nog zijn.", "Er zitten nog {9} vogeltjes."),
+  kPlus("ballon", ["Er zijn 11 ballonnen.", "Er komen er 6 bij.", "Hoeveel ballonnen zijn het nu?"], 11, 6, "Tel alle ballonnen.", "Het zijn er {17}.", "plek"),
+  kMin("lamp", ["Er branden 20 lampen.", "Er gaan er 13 uit.", "Hoeveel lampen branden er nog?"], 20, 13, "Tel de lampen die nog branden.", "Er branden nog {7} lampen."),
+  kPlus("munt", ["Je hebt 12 munten.", "Je krijgt er 8 bij.", "Hoeveel munten heb je nu?"], 12, 8, "Tel alle munten.", "Je hebt nu {20} munten.", "plek"),
+  kMin("ballon", ["Er zijn 17 ballonnen.", "Er knappen er 8.", "Hoeveel ballonnen zijn er nog heel?"], 17, 8, "Tel de ballonnen die heel zijn.", "Er zijn nog {9} ballonnen heel."),
+];
+
+/** Met een verstopt getal (Verstopte getallen): oplopend. */
+const vs = (soort: HoloSoort, zinnen: string[], a: number, b: number, op: "+" | "−", onbekend: 0 | 2, telTip: string, antwoordZin: string, leeg?: "plek"): Kort => ({
+  zinnen,
+  soort,
+  a,
+  b,
+  op,
+  onbekend,
+  vraag: zinnen[zinnen.length - 1].replace(/\b(\d+)\b/g, "{$1}"),
+  telTip,
+  antwoordZin,
+  leeg,
+});
+const BANK_S_VERSTOPT: Kort[] = [
+  vs("pot", ["Er staan een paar bloemen in een tuin.", "Er komen er 3 bij.", "Nu zijn het er 8.", "Hoeveel bloemen stonden er eerst?"], 5, 3, "+", 0, "Tel de bloemen die er eerst stonden.", "Er stonden eerst {5} bloemen."),
+  vs("lamp", ["Er branden 10 lampen.", "Ik doe er een paar uit.", "Nu branden er nog 6.", "Hoeveel lampen doe ik uit?"], 10, 4, "−", 2, "Tel de lampen die uit zijn.", "Ik doe er {4} uit."),
+  vs("munt", ["Je hebt 6 munten.", "Je krijgt er nog een paar bij.", "Nu heb je er 11.", "Hoeveel munten kreeg je erbij?"], 6, 5, "+", 2, "Tel de munten die erbij kwamen.", "Je kreeg er {5} bij.", "plek"),
+  vs("ballon", ["Er zijn een paar ballonnen.", "Er knappen er 4.", "Nu zijn er nog 5 heel.", "Hoeveel ballonnen waren er eerst?"], 9, 4, "−", 0, "Tel alle ballonnen.", "Er waren eerst {9} ballonnen."),
+  vs("vogel", ["Er zitten een paar vogeltjes op een draad.", "Er komen er 4 bij.", "Nu zijn het er 11.", "Hoeveel vogeltjes zaten er eerst?"], 7, 4, "+", 0, "Tel de vogeltjes die er eerst waren.", "Er zaten eerst {7} vogeltjes.", "plek"),
+  vs("lamp", ["Er branden 14 lampen.", "Ik doe er een paar uit.", "Nu branden er nog 9.", "Hoeveel lampen doe ik uit?"], 14, 5, "−", 2, "Tel de lampen die uit zijn.", "Ik doe er {5} uit."),
+  vs("munt", ["Je hebt een paar munten.", "Je krijgt er 8 bij.", "Nu heb je er 15.", "Hoeveel munten had je eerst?"], 7, 8, "+", 0, "Tel de munten die je eerst had.", "Je had eerst {7} munten.", "plek"),
+  vs("ballon", ["Er zijn 18 ballonnen.", "Er vliegen er een paar weg.", "Nu zijn er nog 11.", "Hoeveel ballonnen vlogen er weg?"], 18, 7, "−", 2, "Tel de ballonnen die wegvlogen.", "Er vlogen {7} ballonnen weg."),
+  vs("pot", ["Er staan 9 bloemen in een tuin.", "Er komen er nog een paar bij.", "Nu zijn het er 17.", "Hoeveel bloemen kwamen erbij?"], 9, 8, "+", 2, "Tel de bloemen die erbij kwamen.", "Er kwamen {8} bloemen bij."),
+  vs("munt", ["Je hebt een paar munten.", "Je geeft er 9 uit.", "Nu heb je er nog 8.", "Hoeveel munten had je eerst?"], 17, 9, "−", 0, "Tel alle munten.", "Je had eerst {17} munten."),
+];
+type OmgekeerdS = Omit<Omgekeerd, "soort"> & {
+  soort: HoloSoort;
+  leeg?: "plek" | "eigen";
+  rij?: number;
+  intro?: string[];
+  rekenVraagBouw?: string;
+  /** Hulp na een fout antwoord: "Laten we naar … kijken." */
+  hulpNaar?: string;
+  /** Hulp bij eraf: wat Bliepo zegt vóór het uitdoen, en erna. */
+  uitTot?: string[];
+  uitKlaar?: string[];
+  /** De controle bij erbij: "Jij plantte er {5} bij." */
+  erbijZin?: string;
+  /** Ik-verhaal: de beginzin bij de controle (N = het getal), anders "We begonnen met …". */
+  beginZin?: string;
+  /** Een getal op de plek van het onbekende: waarom niet ("Maar we *begonnen* niet met zoveel."), per deel. */
+  nietZo?: [string, string, string];
+  /** "Dat weten we nog niet" bij een deel dat we wél weten: waarom wel, per deel. */
+  welWeten?: [string, string, string];
+};
+
+/** De Synthesis-knop voor het onbekende deel; na een fout heet hij naar het woord uit het verhaal. */
+const EEN_PAAR = "Een paar";
+
+/**
+ * Verstopte getallen, gedrag zoals Synthesis Mixed Problems
+ * (GEDRAG-V4-verstopte-getallen.md, 28 okt 2026):
+ * - alleen de tekst met een stippellijn voor de vraag; plaatjes pas bij hulp en controle;
+ * - Nee (of een foute som): de lege som schuift in beeld en we bouwen hem deel voor deel,
+ *   met de knop "Dat weten we nog niet" (goed bij het onbekende deel: een crème "?");
+ * - bij een fout maakt Bliepo zelf de hulpzin groen; geen ringen, niets doorgestreept;
+ * - het "?" krijgt pas een kleur als de som af is (blauw vooraan, groen in het midden);
+ * - Ja + goede som: geen som onderaan; de som komt pas na het goede antwoord;
+ * - fout antwoord: het verhaal verdwijnt, we rekenen terug met de plaatjes;
+ * - na elk goed antwoord een controle met de plaatjes.
+ */
+async function omgekeerdS(b: HBord, l: Lesgids, v: OmgekeerdS) {
+  const onbekend = v.delen[0] === null ? 0 : 1;
+  const [p, q, eind] = v.delen;
+  const antwoord = v.op === "+" ? eind - (p ?? q ?? 0) : (p ?? 0) - eind;
+  const kleur = onbekend === 0 ? BLAUW : MINT;
+  const getallen = [...new Set(v.delen.filter((x): x is number => x !== null))].sort((x, y) => x - y);
+  const somPlek = [0, 2, 4];
+  const leeg = v.leeg ?? "eigen";
+  const ding = (n: number) => (n === 1 ? enkelvoud(v.ding) : v.ding);
+  const somMet = (ant: Somstuk): Somstuk[] => [
+    p === null ? ant : { t: "getal", n: p },
+    { t: "teken", s: v.op },
+    q === null ? ant : { t: "getal", n: q },
+    { t: "teken", s: "=" },
+    { t: "getal", n: eind },
+  ];
+  const plusMin = v.op === "+" ? "plussom" : "minsom";
+
+  b.nieuw(v.zinnen, { stippelVoor: v.zinnen.length - 1 });
+  /* Eerst alleen de tekst, zonder plaatjes en zonder som (zoals Synthesis). */
+  await vertelH(b, l);
+
+  await l.zeg(...(v.intro ?? ["Dit verhaal is een beetje anders.", "Denk je dat je het zelf kunt?"]));
+  const zelf = await l.kies(["Ja", "Nee"], { weetniet: false });
+  let direct = false;
+  if (zelf === "Ja") {
+    await l.zeg("Mooi.", "Welke som past bij het verhaal?");
+    b.opgave();
+    const k = await kiesH(b, l, b.zonderAanwijzen ? v.somKeuzes : schud(v.somKeuzes), { som: true, wijsSleutel: "sommen", wijs: ["Tik op de som die past."], goed: v.goedeSom });
+    if (k === v.goedeSom) direct = true;
+    else if (k === null) await l.zeg("Geen zorgen.", "We doen het samen stap voor stap.");
+    else {
+      b.fout();
+      await l.zeg(`${somTekst(String(k))}?`, "Niet helemaal.", "Zullen we het samen stap voor stap doen?");
+    }
+  } else {
+    await l.zeg("Zulke sommen zijn in het begin lastig.", "We doen het samen stap voor stap.");
+  }
+
+  if (!direct) {
+    /* De lege som schuift onderaan in beeld (open strepen, geen vakjes). */
+    b.zet({ som: [{ t: "leeg" }, { t: "leeg", smal: true }, { t: "leeg" }, { t: "teken", s: "=" }, { t: "leeg" }] });
+    speelLesgeluid("schuif");
+
+    /* Erbij of eraf; niet goed = Bliepo maakt de zin over de verandering groen en stelt een makkelijkere vraag. */
+    b.opgave();
+    await l.zeg("Eerst: is dit een plussom of een minsom?");
+    const k = await erbijErafH(b, l, v.op);
+    if (k === (v.op === "+" ? "Erbij" : "Eraf")) {
+      speelLesgeluid("goed");
+      b.somDeel(1, { t: "teken", s: v.op });
+      await l.zeg("Precies.", `Het is een ${plusMin}.`, v.waarom);
+    } else {
+      if (k !== null) b.fout();
+      b.zet({ groeneZin: v.veranderZin });
+      speelLesgeluid("markeer");
+      await l.zeg(...v.groterKleiner.vraag);
+      const k2 = await l.kies(v.groterKleiner.opties);
+      speelLesgeluid("goed");
+      b.somDeel(1, { t: "teken", s: v.op });
+      await l.zeg(k2 === v.groterKleiner.opties[0] ? "Precies." : "Kijk naar de groene zin.", ...v.groterKleiner.goed);
+      b.zet({ groeneZin: null });
+    }
+    await verderH(b, l);
+
+    /* Het begin, de verandering en het eind, één voor één. */
+    const nietZo = v.nietZo ?? ["Maar we *begonnen* niet met zoveel.", `Maar zoveel ${v.ding} kwamen er niet bij.`, "Maar zoveel zijn het er niet."];
+    const welWeten = v.welWeten ?? ["Want hoe het begon, weten we *wel*.", "Want hoeveel erbij kwamen, weten we *wel*.", "Want hoeveel het er nu zijn, weten we *wel*."];
+    for (let j = 0; j < 3; j++) {
+      const goed = v.delen[j];
+      b.opgave();
+      await l.zeg(j === 0 ? "Denk hier goed over na." : "", v.vragen[j]);
+      let knop = WEET_NIET;
+      for (let poging = 1; ; poging++) {
+        const keuze = await kiesH(b, l, [...getallen, knop], { weetNiet: false, goed: goed ?? knop, wijsSleutel: "nognietweten" });
+        const isGoed = goed === null ? keuze === knop : keuze === goed;
+        if (isGoed) {
+          b.zet({ groeneZin: null });
+          speelLesgeluid("goed");
+          if (goed === null) {
+            /* Een crème "?": de kleur komt pas als de som af is. */
+            b.somDeel(somPlek[j], { t: "vraag" });
+            if (knop === EEN_PAAR) {
+              await l.zeg("Ja, precies.", "Het zijn er *een paar*.", "Maar we weten nog niet precies hoeveel.");
+              await verderH(b, l);
+            } else await l.zeg("Klopt.", "Dat weten we nog niet.");
+          } else {
+            b.somDeel(somPlek[j], { t: "getal", n: goed });
+            await l.zeg(`Precies, {${goed}} ${ding(goed)}.`);
+          }
+          break;
+        }
+        if (poging >= 2) {
+          /* Nog eens niet goed: Bliepo zet het erin en zegt waarom. */
+          b.zet({ groeneZin: null });
+          if (goed === null) {
+            b.somDeel(somPlek[j], { t: "vraag" });
+            await l.zeg("Kijk, hier staan *een paar*.", "Dat weten we nog niet.");
+          } else {
+            b.somDeel(somPlek[j], { t: "getal", n: goed });
+            await l.zeg(`Kijk, het is {${goed}}.`, v.betekenis[goed] ?? "");
+          }
+          break;
+        }
+        b.fout();
+        if (goed === null && typeof keuze === "number") {
+          await l.zeg(`{${keuze}} ${ding(keuze)}?`, "Ah, ik zie wat je denkt.", nietZo[j]);
+          await verderH(b, l);
+          knop = EEN_PAAR;
+        } else if (goed !== null && keuze === WEET_NIET) {
+          await l.zeg("Ah, ik zie waarom je dat kiest.", "Maar deze vraag is anders.", welWeten[j]);
+          await verderH(b, l);
+        } else {
+          await l.zeg(`{${String(keuze)}} ${ding(Number(keuze))}? Niet helemaal.`);
+        }
+        /* Bliepo maakt zelf de zin groen die helpt. */
+        b.zet({ groeneZin: j });
+        speelLesgeluid("markeer");
+        await l.zeg("Kijk naar de zin die ik groen heb gemaakt.", v.vragen[j]);
+      }
+    }
+    /* De som is af: nu krijgt het "?" zijn kleur (blauw vooraan, groen in het midden). */
+    b.somDeel(somPlek[onbekend], { t: "vraag", kleur });
+    await l.zeg("We hebben de som gebouwd.", v.rekenVraagBouw ?? v.rekenVraag);
+  } else {
+    /* Ja + goede som: nog geen som onderaan (zoals Synthesis). */
+    await l.zeg(`Precies, ${somTekst(v.goedeSom)}.`, v.rekenVraag);
+  }
+
+  /* Rekenen: cijfertegels 1–9 en "Weet ik niet". */
+  b.opgave();
+  let x = await kiesH(b, l, TEGELS, { goed: antwoord, tegels: true });
+  if (direct && x !== antwoord && x !== null) {
+    /* 1× fout zonder hulp: een korte hint, dan nog één keer. */
+    b.fout();
+    await l.zeg(`{${Number(x)}}? Ik tel er ${Number(x) > antwoord ? "minder" : "meer"}.`);
+    await l.zeg("Probeer het nog één keer.", v.rekenVraag);
+    x = await kiesH(b, l, TEGELS, { goed: antwoord, tegels: true });
+  }
+  if (x === antwoord) {
+    b.goed();
+    speelLesgeluid("goed");
+    b.zet({ som: somMet({ t: "getal", n: antwoord }), somActief: null });
+  } else {
+    /* Hulp: het verhaal verdwijnt, alleen de som blijft (met een crème "?"), en we rekenen terug met de plaatjes. */
+    if (x !== null) b.fout();
+    await l.zeg(x === null ? "Dat is oké." : `{${Number(x)}}?`, `Laten we naar ${v.hulpNaar ?? `de ${v.ding}`} kijken.`);
+    b.zet({ zinnen: [], zichtbaar: 0, stippelVoor: null, som: somMet({ t: "vraag" }), somActief: null });
+    await l.wacht(400);
+    if (onbekend === 0) {
+      const totaal = v.soort === "munt" ? 20 : Math.max(10, eind);
+      const alleen = Array.from({ length: q ?? 0 }, (_, i) => eind - (q ?? 0) + i);
+      b.zetStand(v.soort, plekken(eind, totaal - eind), v.soort === "pot" ? "eigen" : leeg, { rij: v.rij, bloeit: true });
+      /* Bij de hulp geen grenslijn tussen de bloemen (Synthesis); 0 = geen lijn. */
+      b.zet({ scheidingNa: 0 });
+      speelLesgeluid("schuif");
+      await l.zeg("Kijk, dit is ons totaal.", `Er zijn er {${eind}}.`, `Haal de {${q}} weg die erbij kwamen.`);
+      await naspelenS(b, l, q ?? 0, "weg", true, { alleen });
+      await l.zeg("Perfect.", "Dit is wat we in het [[b:begin]] hadden.", `Hoeveel ${v.ding} zijn het?`);
+    } else {
+      b.zetStand(v.soort, plekken(p ?? 0, 0), leeg, { rij: v.rij });
+      speelLesgeluid("schuif");
+      await l.zeg(`We begonnen met deze {${p}} ${ding(p ?? 0)}.`, ...(v.uitTot ?? [`Haal er een paar weg tot er nog {${eind}} zijn.`]));
+      await uitTotS(b, l, eind);
+      await l.zeg(...(v.uitKlaar ?? ["Goed zo.", `Nu zijn er nog {${eind}}.`, "Kijk goed.", `Hoeveel ${v.ding} haalde je weg?`]));
+    }
+    const y = await kiesH(b, l, TEGELS, { goed: antwoord, tegels: true });
+    if (y === antwoord) {
+      b.goed();
+      speelLesgeluid("goed");
+    } else await l.zeg(`Kijk, het zijn er {${antwoord}}.`);
+    b.zet({ som: somMet({ t: "getal", n: antwoord }) });
+  }
+  await l.zeg(v.antwoordZin, "De som ziet er goed uit.", "Maar we controleren hem even.");
+  await verderH(b, l);
+
+  /* De controle: het verhaal verdwijnt, de plaatjes in de beginstand, en het kind speelt het verhaal vooruit na. */
+  b.zet({ zinnen: [], zichtbaar: 0, stippelVoor: null });
+  if (onbekend === 0) {
+    const totaal = v.soort === "munt" ? 20 : Math.max(10, eind);
+    b.zetStand(v.soort, plekken(antwoord, totaal - antwoord), v.soort === "pot" ? "eigen" : leeg, { rij: v.rij, bloeit: true });
+    /* Bij de bloemen een stippellijn: links wat er in het begin stond, rechts wat erbij komt. */
+    if (v.soort === "pot") b.zet({ scheidingNa: antwoord });
+    speelLesgeluid("schuif");
+    await l.zeg(v.beginZin ? v.beginZin.replace("N", String(antwoord)) : `We begonnen met {${antwoord}} ${ding(antwoord)}.`, v.erbijZin ?? `Er kwamen er {${q}} bij.`, "Kun je die er nu bij doen?");
+    await naspelenS(b, l, q ?? 0, "erbij");
+    b.goed();
+    if (v.soort === "pot") b.bloei(true);
+    await l.zeg("Kijk eens.", `Er zijn nu {${eind}} ${ding(eind)}.`, `{${antwoord}} + {${q}} = {${eind}}.`);
+  } else {
+    b.zetStand(v.soort, plekken(p ?? 0, 0), leeg, { rij: v.rij });
+    speelLesgeluid("schuif");
+    /* Synthesis: "There are 20 lights. I turned 7 off." De lampen branden dan allemaal, dus "Er zijn" (niet "Er waren"). */
+    await l.zeg(v.soort === "lamp" ? `Er zijn {${p}} ${ding(p ?? 0)}.` : `Er waren {${p}} ${ding(p ?? 0)}.`, v.soort === "lamp" ? `Ik doe er {${antwoord}} uit.` : `Er gingen er {${antwoord}} weg.`, v.soort === "lamp" ? "Kun je die nu uitdoen?" : "Kun je die nu weghalen?");
+    await naspelenS(b, l, antwoord, "weg");
+    await omtrekS(b, l);
+    b.goed();
+    await l.zeg("Kijk eens.", v.soort === "lamp" ? `Er branden nog {${eind}} ${ding(eind)}.` : `Er zijn nog {${eind}} ${ding(eind)}.`, `{${p}} − {${antwoord}} = {${eind}}.`);
+  }
+  await verderH(b, l);
+}
+
+/* ---------- kaarttekeningen (244 × 190), in de Bliepo-stijl ---------- */
+
+const KP = { navy: "#1d2b5e", geel: "#ffc845", koraal: "#f2715e", petrol: "#127c86", warmwit: "#fff7ea", grijs: "#c3c9d8", roze: "#f6a9c8" };
+
+function KaartDing({ vorm, x, y, aan = true, nr = 0 }: { vorm: "ballon" | "lamp" | "munt" | "pot" | "vogel"; x: number; y: number; aan?: boolean; nr?: number }) {
+  void nr;
+  const kl = vorm === "vogel" ? KP.geel : vorm === "ballon" ? KP.koraal : KP.roze;
+  switch (vorm) {
+    case "ballon":
+      return (
+        <g transform={`translate(${x} ${y})`}>
+          <path d="M0 10 Q-4 16 0 22" fill="none" stroke={KP.navy} strokeWidth="2" />
+          {aan ? <ellipse cx="0" cy="-2" rx="11" ry="13" fill={kl} stroke={KP.navy} strokeWidth="2.5" /> : <path d="M0 -8 L4 -3 L10 -4 L6 1 L9 7 L3 5 L0 10 L-3 5 L-9 7 L-6 1 L-10 -4 L-4 -3 Z" fill={KP.navy} />}
+        </g>
+      );
+    case "lamp":
+      return (
+        <g transform={`translate(${x} ${y})`}>
+          <circle cx="0" cy="-4" r="12" fill={aan ? KP.geel : KP.grijs} stroke={KP.navy} strokeWidth="2.5" />
+          <rect x="-7" y="7" width="14" height="8" rx="2" fill="#8a93ab" stroke={KP.navy} strokeWidth="2" />
+        </g>
+      );
+    case "munt":
+      return (
+        <g transform={`translate(${x} ${y})`}>
+          <circle cx="0" cy="0" r="13" fill={aan ? KP.geel : KP.grijs} stroke={KP.navy} strokeWidth="2.5" />
+          <circle cx="0" cy="0" r="8" fill="none" stroke={aan ? KP.navy : "#8a93ab"} strokeWidth="1.8" />
+        </g>
+      );
+    case "pot":
+      return (
+        <g transform={`translate(${x} ${y})`}>
+          <path d="M0 2 V-12" stroke={KP.petrol} strokeWidth="3" />
+          <circle cx="0" cy="-15" r="7" fill={kl} stroke={KP.navy} strokeWidth="2" />
+          <path d="M-9 2 H9 L7 15 H-7 Z" fill={KP.koraal} stroke={KP.navy} strokeWidth="2.5" />
+        </g>
+      );
+    default:
+      return (
+        <g transform={`translate(${x} ${y})`}>
+          <ellipse cx="0" cy="0" rx="12" ry="9" fill={kl} stroke={KP.navy} strokeWidth="2.5" />
+          <path d="M-12 -2 L-19 0 L-12 3 Z" fill={KP.geel} stroke={KP.navy} strokeWidth="1.5" />
+          <circle cx="-6" cy="-3" r="1.8" fill={KP.navy} />
+        </g>
+      );
+  }
+}
+
+function KaartRijS({ vorm, aantal, uit = 0, y }: { vorm: "ballon" | "lamp" | "munt" | "pot" | "vogel"; aantal: number; uit?: number; y: number }) {
+  return (
+    <>
+      {Array.from({ length: aantal }, (_, i) => (
+        <KaartDing key={i} vorm={vorm} x={42 + i * 40} y={y} aan={i < aantal - uit} nr={i} />
+      ))}
+    </>
+  );
+}
+
+function KaartToetsS() {
+  return (
+    <>
+      <KaartRijS vorm="lamp" aantal={5} uit={2} y={46} />
+      <KaartRijS vorm="pot" aantal={5} y={110} />
+    </>
+  );
+}
+function KaartKleinS() {
+  return (
+    <>
+      <KaartRijS vorm="vogel" aantal={5} uit={2} y={70} />
+      <KaartSom tekst="7 − 2 = 5" />
+    </>
+  );
+}
+function KaartGrootS() {
+  return (
+    <>
+      <KaartRijS vorm="munt" aantal={5} uit={2} y={70} />
+      <KaartSom tekst="15 − 7 = 8" />
+    </>
+  );
+}
+function KaartVerstoptS() {
+  return (
+    <>
+      <KaartRijS vorm="lamp" aantal={5} y={70} />
+      <KaartSom tekst="5 + ? = 12" />
+    </>
+  );
+}
+
+/* ---------- de lessen ---------- */
+
+const instaptoets: Lesdraaiboek = {
+  id: "verhaal-instaptoets",
+  indeling: "synthesis",
+  titel: "Instaptoets: verhaaltjessommen",
+  synthesis: "Word Problems · Assessment",
+  kaarttekening: KaartToetsS,
+
+  async speel(l) {
+    const af = await toetsS(l, kleineVerhalen, verstopteGetallen, {
+      lampA: 18,
+      lampN: 9,
+      lampKeuzes: [8, 9, 10, 18, 26, 27],
+      potA: 7,
+      potEind: 15,
+      sommen: ["7 + 15 = ?", "7 − ? = 15"],
+      potKeuzes: [7, 8, 9, 14, 15, 22],
+    });
+    if (!af) return;
+    l.vlak(null);
+    l.bak([]);
+    const tik = l.kaart();
+    await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je hebt lastige verhaaltjessommen opgelost.", "Tik op de kaart om hem af te vinken.");
+    await tik;
+  },
+};
+
+const kleineVerhalen: Lesdraaiboek = {
+  id: "verhaal-kleine-verhalen",
+  indeling: "synthesis",
+  titel: "Kleine verhaaltjes",
+  synthesis: "Word Problems · Small Problems",
+  kaarttekening: KaartKleinS,
+
+  async speel(l) {
+    const b = new HBord(l);
+    b.zonderAanwijzen = true;
+
+    /* 1. Vogeltjes: 7 − 2. Eerst: heb je hulp nodig? */
+    const v1 = vogeltjesWeg(7, 2);
+    await l.zeg("We gaan verhaaltjessommen maken.", "Luister goed.");
+    await beginS(b, l, v1);
+    await l.zeg("Denk je dat je hulp nodig hebt bij deze?");
+    const hulp = await l.kies(KANS, { weetniet: false });
+    let metHulp = hulp !== "Nee";
+    if (hulp === "Nee") metHulp = !(await meteenS(b, l, v1, ["Heel goed.", "Laat maar zien."]));
+    else {
+      await l.zeg("Geen probleem.", "We kijken stap voor stap naar het verhaal.", "Dan snappen we wat er gevraagd wordt.");
+      await pluisUitS(b, l, v1);
+    }
+    await verderH(b, l);
+
+    /* 2. Bloemen: 5 + 3. Meteen het antwoord; bij "weet ik niet" of een fout de hele route. */
+    const v2 = bloemenBij({ a: 5, n: 3, leeg: 5, zin2: "Er komen er nog 3 [bij].", vraag: "Hoeveel bloemen zijn het nu samen?" });
+    /* Zoals Synthesis: eerst alleen de plaatjes en de aankondiging, na de pijl het verhaal. */
+    b.nieuw([]);
+    b.zetPlaatjes(v2.soort, v2.aan, v2.leeg, v2.leegVorm ?? "eigen", { rij: v2.rij, bloeit: false });
+    speelLesgeluid("schuif");
+    await l.zeg("We hebben een nieuw verhaaltje over bloemen.", "Laten we het samen lezen.");
+    await verderH(b, l);
+    await beginS(b, l, v2);
+    /* Synthesis: ging verhaal 1 met hulp, dan eerst "Weet je het antwoord al?" (Ja/Nee). */
+    let direct2 = false;
+    if (metHulp) {
+      await l.zeg("Weet je het antwoord al?");
+      if ((await l.kies(KANS, { weetniet: false })) === "Ja") direct2 = await meteenS(b, l, v2, ["Lees de vraag goed."]);
+      else {
+        await l.zeg("Geen probleem.", "We doen het verhaal samen stap voor stap.");
+        await pluisUitS(b, l, v2);
+      }
+    } else direct2 = await meteenS(b, l, v2, ["Lees de vraag goed."]);
+    /* Synthesis: het omwisselen komt alleen na de hulproute; bij een direct goed antwoord gaat het meteen door. */
+    if (!direct2) {
+    b.opgave();
+    /* Zoals Synthesis: het verhaal (met de gekleurde vraagzin) blijft staan; alleen de som draait om. */
+    await l.zeg("Je telde {5} en {3} bij elkaar op.", "Maar als je de getallen omwisselt, krijg je dan nog steeds hetzelfde antwoord?");
+    const om = await l.kies(KANS);
+    b.zet({ som: somVol(3, "+", 5) });
+    speelLesgeluid("naarSom");
+    if (om === "Ja") {
+      b.goed();
+      await l.zeg("Natuurlijk.", "Bij een plussom mag je de getallen omwisselen.", "Het antwoord blijft hetzelfde.");
+    } else {
+      b.fout();
+      await l.zeg("Kijk maar.", "De som is nu {3} plus {5}.", "Hoeveel is dat samen?");
+      await kiesTotGoed(b, l, 8, "Tel {3} en {5} bij elkaar op.");
+      await l.zeg("Natuurlijk.", "Bij een plussom mag je de getallen omwisselen.", "Het antwoord blijft hetzelfde.");
+    }
+    }
+    await verderH(b, l);
+
+    /* 3. Ballonnen: jij maakt het verhaal. */
+    /* Nieuwe stap: het oude verhaal en de som gaan weg; de ballonnen staan al in beeld bij de aankondiging (Synthesis). */
+    b.nieuw([]);
+    b.zetPlaatjes("ballon", 10, 0, "eigen", { rij: 10 });
+    await l.zeg("Oké, bij deze mag *jij* het verhaal maken.");
+    await verderH(b, l);
+    /* Synthesis: het kind kiest zelf hoeveel ballonnen knappen; na een korte stilte gaat Bliepo verder. */
+    await l.zeg("Laat een paar ballonnen knappen.");
+    const gekozen = await zelfKiezenS(b, l, "weg", 9, "uit", 2500);
+    const geknapt = gekozen.length;
+    await l.zeg("Perfect.", "Ik lees jouw verhaal voor.");
+    await verderH(b, l);
+    const v3 = { ...ballonnenPoppen(l, 10, geknapt), gekozenPlekken: gekozen };
+    await beginS(b, l, v3);
+    await l.zeg("Wat denk je?", "Kun je dit zelf oplossen?");
+    const direct = await l.kies(KANS, { weetniet: false });
+    if (direct === "Ja") {
+      await l.zeg("Goed.", "Eerst nog iets.", "Welke som zegt wat we moeten doen?");
+      await somKiezenS(b, l, v3, { foutSommen: [`10 + ${geknapt}`, `${10 + geknapt} − 10`] });
+    } else {
+      await l.zeg("Geen probleem.", "We doen het samen stap voor stap.");
+      await pluisUitS(b, l, v3);
+    }
+    await verderH(b, l);
+
+    /* Synthesis: "Wil je afronden? Of nog één, waarin je zelf het verhaal maakt?" (Finish | One more). */
+    await l.zeg(l.naam ? `${l.naam}, wil je afronden?` : "Wil je afronden?", "Of nog één verhaaltje dat je zelf maakt?");
+    const nogEen = (await kiesH(b, l, ["Afronden", "Nog één"], { goed: "Nog één", weetNiet: false, vinkje: true })) === "Nog één";
+
+    /* 4. Bloemen planten: jij maakt de som. */
+    if (nogEen) {
+    await zelfMaken(b, l, {
+      soort: "pot",
+      aan: 3,
+      leeg: 7,
+      modus: "erbij",
+      aantal: 4,
+      opening: ["Nog één, en nu met bloemen.", "Er staan er al {3}.", "Plant er nog een paar bij.", "Tik op de lege potjes."],
+      klaar: ["Mooi.", "Laten we er een verhaal van maken."],
+    });
+    const v4 = bloemenBij({ a: 3, n: 4, leeg: 7, zin2: `${Wie(l)} plant er 4 [bij].`, vraag: "Hoeveel bloemen staan er nu in de tuin?" });
+    await beginS(b, l, v4);
+    await l.zeg("Welke som past bij dit verhaal?");
+    /* Geen onmogelijke som (3 − 4) meer tussen de keuzes. */
+    await somKiezenS(b, l, v4, { foutSommen: ["4 − 3", "7 − 3"] });
+    await verderH(b, l);
+    }
+
+    /* Extra oefenvragen van dezelfde soort, oplopend, tot er 15 zijn. */
+    await vulAan(b, l, BANK_S10, true, true);
+
+    l.vlak(null);
+    l.bak([]);
+    const tik = l.kaart();
+    await l.zeg(l.naam ? `Echt goed gedaan, ${l.naam}.` : "Echt goed gedaan.", "Je snapt de verhaaltjessommen steeds beter.", "Tik op de kaart om hem af te vinken.");
+    await tik;
+  },
+};
+
+const groteVerhalen: Lesdraaiboek = {
+  id: "verhaal-grote-verhalen",
+  indeling: "synthesis",
+  titel: "Grotere verhaaltjes",
+  synthesis: "Word Problems · Bigger Problems",
+  kaarttekening: KaartGrootS,
+
+  async speel(l) {
+    const b = new HBord(l);
+    b.zonderAanwijzen = true;
+
+    /*
+      Gedrag zoals Synthesis Bigger Problems (GEDRAG-V3-grotere-verhaaltjes.md,
+      28 okt 2026): geen aankondiging per verhaal; de voorwerpen komen tijdens het
+      voorlezen binnen; eerst de som kiezen, dan 4 antwoordknoppen; 2× fout op het
+      antwoord = pauze (de les stopt).
+    */
+    /* 1. Ballonnen: 17 − 9. De ballonnen zweven tijdens het voorlezen van onderen omhoog. */
+    const v1 = ballonnenWeg(17, 9, [8, 17, 9, 7]);
+    await beginS(b, l, v1, "zweef");
+    await l.zeg("Deze verhaaltjes zijn wat lastiger.", "Kun je deze zelf oplossen?");
+    if ((await l.kies(KANS, { weetniet: false })) === "Ja") {
+      await l.zeg("Goed.", "Eerst nog iets.", "Welke som zegt wat we moeten doen?");
+      await somKiezenS(b, l, v1, { foutSommen: ["17 + 9", "26 − 17"], groot: true });
+    } else {
+      await l.zeg("Dat is oké.", "Laten we het samen stap voor stap doen.");
+      await pluisUitS(b, l, v1, { groot: true });
+    }
+    await verderH(b, l);
+
+    /* 2. Lampen: 20 − 12. De lampen gaan tijdens het voorlezen één voor één aan. */
+    const v2 = lampenUit(20, 12, [8, 20, 12, 32], "Ik");
+    await beginS(b, l, v2, "aan");
+    /* Synthesis: "Think you know this one already?" */
+    await l.zeg("Weet je deze al?");
+    if ((await l.kies(KANS, { weetniet: false })) === "Ja") {
+      await l.zeg("Goed.", "Welke som past bij het verhaal?");
+      await somKiezenS(b, l, v2, { foutSommen: ["20 + 12", "32 − 20"], groot: true });
+    } else {
+      await l.zeg("Dat is oké.", "Laten we het samen stap voor stap doen.");
+      await pluisUitS(b, l, v2, { groot: true });
+    }
+    await verderH(b, l);
+
+    /* 3. Bloemen planten: het kind plant er zelf zoveel bij als het wil (Synthesis: na een korte stilte gaat Bliepo verder). */
+    b.nieuw([]);
+    b.zetStand("pot", plekken(7, 13), "eigen", { bloeit: true });
+    /* Synthesis: de stippellijn staat meteen na de 7 bloemen (grens tussen het begin en wat erbij komt). */
+    b.zet({ scheidingNa: 7 });
+    speelLesgeluid("schuif");
+    await l.zeg("Oké, bij deze mag jij het verhaal maken.");
+    await verderH(b, l);
+    await l.zeg("Plant er een paar bloemen bij.", "Tik op de lege potjes.");
+    const geplant = (await zelfKiezenS(b, l, "erbij", 13, "aan", 2500)).length;
+    await l.zeg("Mooi.", `Je plantte er {${geplant}} bij.`, "Laten we er een verhaaltje van maken.");
+    await verderH(b, l);
+    const v3 = bloemenBij({ a: 7, n: geplant, leeg: 13, zin2: `${Wie(l)} plant er ${geplant} [bij].`, vraag: "Hoeveel bloemen zijn het nu?", keuzes: vierS(7 + geplant, 7, geplant) });
+    /* Het verhaal komt boven de bloemen; bij de vraag staan de nieuwe bloemen er weer niet (Bliepo speelt het pas na het goede antwoord na). */
+    b.nieuw(v3.zinnen, { plaatjes: b.p.plaatjes, scheidingNa: 7 });
+    await vertelH(b, l);
+    b.zetPlekken(plekken(7, 13));
+    await l.zeg("Welke som past bij dit verhaal?");
+    await zelfSomS(b, l, v3, {
+      /* Geen onmogelijke som (7 − 13) als het kind meer plantte dan er stonden. */
+      foutSommen: [geplant > 7 ? `${geplant} − 7` : `7 − ${geplant}`, `${7 + geplant} − 7`],
+      waarom: (som) => (som.includes("−") ? ["Dan gaan er bloemen weg.", "Maar er komen bloemen bij."] : ["Die past niet bij het verhaal."]),
+      naspeelHulp: ["Laten we de nieuwe bloemen planten.", `Plant er {${geplant}} in de lege potjes.`],
+      telVraag: ["Tel alle bloemen.", "Hoeveel zijn het nu?"],
+    });
+
+    /* Afronden, of nog één verhaaltje met munten (Synthesis). */
+    await verderH(b, l);
+    await l.zeg(l.naam ? `${l.naam}, wil je afronden?` : "Wil je afronden?", "Of nog één verhaaltje, waarin ik je munten geef om uit te geven?");
+    const nogEen = (await kiesH(b, l, ["Afronden", "Nog één"], { goed: "Nog één", weetNiet: false, vinkje: true })) === "Nog één";
+
+    /* 4. Munten uitgeven: het kind kiest zelf hoeveel. */
+    if (nogEen) {
+      const begin: Plekstaat[] = [...Array<Plekstaat>(16).fill("aan"), ...Array<Plekstaat>(4).fill("leeg")];
+      b.nieuw([]);
+      b.zetStand("munt", begin);
+      speelLesgeluid("schuif");
+      await l.zeg("Tik op een paar munten om ze uit te geven.");
+      const weg = await zelfKiezenS(b, l, "weg", 15, "leeg", 2000);
+      const n = weg.length;
+      await l.zeg("Mooi.", `Je gaf {${n}} ${mv(n, "munt", "munten")} uit.`, "Ik lees jouw verhaal voor.");
+      await verderH(b, l);
+      const v4 = muntenUit(l, 16, n, vierS(16 - n, 16, 16 + n));
+      /* Bij het voorlezen staan de uitgegeven munten grijs op hun plek; bij de vraag zijn ze weer allemaal goud. */
+      b.nieuw(v4.zinnen);
+      b.zetStand("munt", begin.map((st, i) => (weg.includes(i) ? "uit" : st)));
+      await vertelH(b, l);
+      b.zetPlekken(begin);
+      /* Korte zin: de vraag van vier regels duwde het knopje "nog eens horen" tegen Bliepo aan. */
+      await l.zeg("Eerst nog iets.", "Welke som past bij het verhaal?");
+      await zelfSomS(b, l, v4, {
+        foutSommen: [`16 + ${n}`, `${16 + n} − 16`],
+        waarom: (som) => (som.includes("+") ? ["Dan komen er munten bij.", "Maar je gaf munten uit."] : ["Die past niet bij het verhaal."]),
+        naspeelHulp: ["Laten we de munten uitgeven.", `Tik op {${n}} ${mv(n, "munt", "munten")}.`],
+        telVraag: ["Tel de munten die er nog zijn.", "Hoeveel zijn het?"],
+        naspeelDoel: "leeg",
+      });
+      await verderH(b, l);
+    }
+
+    await vulAan(b, l, BANK_S20, true, false);
+
+    l.vlak(null);
+    l.bak([]);
+    const tik = l.kaart();
+    await l.zeg(l.naam ? `Heel goed gedaan, ${l.naam}.` : "Heel goed gedaan.", "Je kunt deze verhaaltjessommen al goed.", "Tik op de kaart om hem af te vinken.");
+    await tik;
+  },
+};
+
+const verstopteGetallen: Lesdraaiboek = {
+  id: "verhaal-verstopte-getallen",
+  indeling: "synthesis",
+  titel: "Verstopte getallen",
+  synthesis: "Word Problems · Mixed Problems",
+  kaarttekening: KaartVerstoptS,
+
+  async speel(l) {
+    const b = new HBord(l);
+    b.zonderAanwijzen = true;
+
+    /* 1. Bloemen: ? + 5 = 9. */
+    await omgekeerdS(b, l, {
+      zinnen: ["Er staan _een_ _paar_ _bloemen_ in een tuin.", `${Wie(l)} plant er nog 5 bij.`, "Nu zijn het er samen 9.", "Hoeveel bloemen stonden er eerst?"],
+      soort: "pot",
+      leeg: "eigen",
+      ding: "bloemen",
+      delen: [null, 5, 9],
+      op: "+",
+      veranderZin: 1,
+      waarom: "Er komen bloemen bij.",
+      groterKleiner: {
+        vraag: [`${Wie(l)} plant er bloemen bij.`, "Wordt de tuin dan groter of kleiner?"],
+        opties: ["Groter", "Kleiner"],
+        goed: ["De tuin wordt groter.", "Dat is een plussom."],
+      },
+      vragen: ["Met hoeveel bloemen begonnen we?", `Hoeveel bloemen plant ${wie(l)}?`, "Hoeveel bloemen zijn het samen?"],
+      betekenis: { 5: "Er komen {5} bloemen bij.", 9: "Er zijn er samen {9}." },
+      onbekendKnop: "?",
+      rekenVraag: "Hoeveel bloemen stonden er eerst?",
+      rekenVraagBouw: "[[b:Hoeveel]] moeten we bij {5} doen om {9} te krijgen?",
+      antwoordZin: "Ja, er stonden eerst {4} bloemen.",
+      hulpNaar: "de tuin",
+      erbijZin: `${Wie(l)} plantte er {5} bij.`,
+      somKeuzes: ["? + 5 = 9", "5 + ? = 9", "? − 5 = 9"],
+      goedeSom: "? + 5 = 9",
+      intro: ["Dit verhaaltje is een beetje anders.", "Kun je het zelf oplossen?"],
+    });
+    await l.zeg("Goed werk.", "Laten we naar een nieuw verhaaltje kijken.");
+    await verderH(b, l);
+    /* Zoals Synthesis: tussen de verhalen wordt het scherm helemaal leeg. */
+    b.nieuw([]);
+    await l.wacht(500);
+
+    /* 2. Lampen: 20 − ? = 13. */
+    await omgekeerdS(b, l, {
+      zinnen: ["Er branden 20 lampen.", "Ik doe er _een_ _paar_ uit.", "Er branden er nog 13.", "Hoeveel lampen doe ik uit?"],
+      soort: "lamp",
+      ding: "lampen",
+      delen: [20, null, 13],
+      op: "−",
+      veranderZin: 1,
+      waarom: "Ik doe lampen uit.",
+      groterKleiner: {
+        vraag: ["Ik doe er lampen uit.", "Branden er dan meer of minder lampen?"],
+        opties: ["Minder", "Meer"],
+        goed: ["Er branden er minder.", "Dat is een minsom."],
+      },
+      vragen: ["Hoeveel lampen brandden er eerst?", "Hoeveel lampen doe ik uit?", "Hoeveel lampen branden er nog?"],
+      betekenis: { 13: "Dat zijn de lampen die nog branden.", 20: "Zoveel lampen brandden er eerst." },
+      onbekendKnop: "?",
+      rekenVraag: "Hoeveel lampen doe ik uit?",
+      rekenVraagBouw: "[[g:Hoeveel]] moeten we van {20} afhalen om {13} over te houden?",
+      antwoordZin: "Precies, ik doe er {7} uit.",
+      hulpNaar: "de lampen",
+      uitTot: ["Doe er een paar uit, tot er nog {13} branden."],
+      uitKlaar: ["Goed zo.", "Je deed er een paar uit, en nu branden er nog maar {13}.", "Kijk goed.", "Hoeveel lampen deed je uit?"],
+      nietZo: ["Maar we *begonnen* niet met zoveel.", "Maar zoveel lampen doe ik niet uit.", "Maar zoveel branden er niet."],
+      welWeten: ["Want hoeveel lampen er eerst brandden, weten we *wel*.", "Want hoeveel lampen ik uitdoe, weten we *wel*.", "Want hoeveel lampen er nog branden, weten we *wel*."],
+      somKeuzes: ["20 − ? = 13", "? − 20 = 13", "20 + ? = 13"],
+      goedeSom: "20 − ? = 13",
+      intro: ["En dit verhaaltje?", "Kun je het zelf oplossen?"],
+    });
+    await l.zeg(l.naam ? `Je doet het goed, ${l.naam}.` : "Je doet het goed.", "Laten we er nog één doen.");
+    await verderH(b, l);
+    b.nieuw([]);
+    await l.wacht(500);
+
+    /* 3. Munten: ? + 7 = 12. */
+    await omgekeerdS(b, l, {
+      zinnen: ["Ik heb _een_ _paar_ _munten_.", `${Wie(l)} geeft me er nog 7.`, "Nu heb ik er 12.", "Hoeveel munten had ik eerst?"],
+      soort: "munt",
+      leeg: "plek",
+      ding: "munten",
+      delen: [null, 7, 12],
+      op: "+",
+      veranderZin: 1,
+      waarom: "Ik krijg munten erbij.",
+      groterKleiner: {
+        vraag: ["Ik krijg munten erbij.", "Heb ik dan meer of minder munten?"],
+        opties: ["Meer", "Minder"],
+        goed: ["Ik heb er meer.", "Dat is een plussom."],
+      },
+      vragen: ["Hoeveel munten had ik eerst?", "Hoeveel munten kreeg ik erbij?", "Hoeveel munten heb ik nu?"],
+      betekenis: { 7: "Zoveel munten kreeg ik erbij.", 12: "Zoveel munten heb ik nu." },
+      onbekendKnop: "?",
+      rekenVraag: "Hoeveel munten had ik eerst?",
+      rekenVraagBouw: "[[b:Hoeveel]] moeten we bij {7} doen om {12} te krijgen?",
+      antwoordZin: "Ja, ik had eerst {5} munten.",
+      hulpNaar: "de munten",
+      erbijZin: `${Wie(l)} gaf me er {7} bij.`,
+      /* Het verhaal is in de ik-vorm (Synthesis: "I started with 5 coins"). */
+      beginZin: "Ik had eerst {N} munten.",
+      somKeuzes: ["? + 7 = 12", "7 + ? = 12", "? − 7 = 12"],
+      goedeSom: "? + 7 = 12",
+      intro: ["Het laatste verhaaltje.", "Denk je dat je het kunt?"],
+    });
+    /* Zoals Synthesis: na het laatste verhaal geen "afronden of nog één"; het scherm wordt leeg. */
+    b.nieuw([]);
+
+    await vulAan(b, l, BANK_S_VERSTOPT, true, true);
+
+    l.vlak(null);
+    l.bak([]);
+    const tik = l.kaart();
+    await l.zeg(l.naam ? `Echt goed gedaan, ${l.naam}.` : "Echt goed gedaan.", "Je vindt de verstopte getallen al.", "Tik op de kaart om hem af te vinken.");
+    await tik;
+  },
+};
+
+const eindtoets: Lesdraaiboek = {
+  id: "verhaal-eindtoets",
+  indeling: "synthesis",
+  titel: "Eindtoets: verhaaltjessommen",
+  synthesis: "Word Problems · Mastery Check",
+  kaarttekening: KaartToetsS,
+
+  async speel(l) {
+    const af = await toetsS(l, kleineVerhalen, verstopteGetallen, {
+      lampA: 14,
+      lampN: 8,
+      lampKeuzes: [5, 6, 7, 8, 14, 22],
+      potA: 6,
+      potEind: 17,
+      /* Drie sommen, zoals Synthesis (er stond er maar één foute). */
+      sommen: ["6 + 17 = ?", "6 − ? = 17"],
+      potKeuzes: [6, 10, 11, 12, 17, 23],
+    });
+    if (!af) return;
+    l.vlak(null);
+    l.bak([]);
+    const tik = l.kaart();
+    await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je hebt lastige verhaaltjessommen opgelost.", "Tik op de kaart om hem af te vinken.");
+    await tik;
+  },
+};
+
+export const LESSEN_VERHAALTJESSOMMEN: Lesdraaiboek[] = [instaptoets, kleineVerhalen, groteVerhalen, verstopteGetallen, eindtoets, meerVerhaaltjes].map(metVasteKnoppen);

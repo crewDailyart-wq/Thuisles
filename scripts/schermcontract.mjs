@@ -414,6 +414,25 @@ export const SCHERMCONTRACT = [
   },
   {
     /*
+      Geluidjes in de lessen (29 oktober 2026, opdracht eigenaar): los van de
+      stem van Bliepo uit te zetten. Het kind met de knop naast Pauze in de
+      lesbalk (bewaard op het apparaat), de ouder met een schakelaar bij het
+      profiel van het kind (eigen formulier, schrijft niets anders over).
+    */
+    naam: "Geluidjes in de lessen",
+    pad: "/ouder/instellingen",
+    bron: ["src/components/ouder/Instellingformulieren.tsx", "src/components/les/GeluidjesKnop.tsx"],
+    zichtbaar: [],
+    naKlik: [
+      { tekst: "Geluidjes in de lessen", bron: "src/components/ouder/Instellingformulieren.tsx", na: "Instellingen → Profiel van een kind openklappen" },
+      { tekst: "<GeluidjesInDeLessen", bron: "src/app/ouder/instellingen/page.tsx", na: "Instellingen → Profiel van een kind openklappen" },
+      { tekst: "Geluidjes aan/uit", bron: "src/components/les/GeluidjesKnop.tsx", na: "een nagebouwde les openen (knop naast Pauze)" },
+      { tekst: "<GeluidjesKnop", bron: "src/components/les/Lesscherm.tsx", na: "een nagebouwde les openen (knop naast Pauze)" },
+      { tekst: 'aria-label="Pauze"', bron: "src/components/les/Lesscherm.tsx", na: "een les openen (de Pauze-knop links boven)" },
+    ],
+  },
+  {
+    /*
       "Wie gaat er oefenen?" (23 oktober 2026, opdracht eigenaar): eerst op de
       startpagina na openen of verversen; de tik geeft het geluid vrij.
     */

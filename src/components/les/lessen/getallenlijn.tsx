@@ -123,7 +123,7 @@ async function springen(l: Lesgids, van: number, naar: number, label?: string): 
       plek = van;
       zet(l, { springer: plek, bogen });
     } else if (n !== plek) {
-      await l.zeg("Probeer opnieuw.", `Spring naar de {${plek + richting}}.`, "Het vuurvliegje springt één getal tegelijk.");
+      await l.zeg("Probeer het opnieuw.", `Spring naar de {${plek + richting}}.`, "Het vuurvliegje springt één getal tegelijk.");
     }
   }
   await l.wacht(500);
@@ -176,7 +176,7 @@ function nieuweLijn(l: Lesgids, van: number, tot: number, extra: Partial<P> = {}
 /* ---------- de onderdelen van "Verschil: sprongen tellen" (A8) ---------- */
 
 async function rondleiding(l: Lesgids): Promise<void> {
-  await l.zeg("We kijken samen hoe de lantaarntjes werken.", "Stel, we zoeken het verschil tussen {7} en {3}.");
+  await l.zeg("We kijken samen hoe de lantaarntjes werken.", "We zoeken het verschil tussen {7} en {3}.");
   minsom(l, null, null);
   await l.zeg("Tik eerst allebei de getallen aan.", "Eerst de {7}, dan de {3}.");
   await tikTwee(l, 7, 3, 7, ["Goed zo.", "Nu het andere getal."]);
@@ -194,7 +194,7 @@ async function rondleiding(l: Lesgids): Promise<void> {
     /* een ander getal doet niets */
   }
   zet(l, { springer: 3, bogen: [] });
-  await l.zeg("Spring je terug naar het begin?", "Dan gaan de boogjes weg.", "Dat is handig als je opnieuw wilt beginnen.");
+  await l.zeg("Je sprong terug naar het begin.", "Dan gaan de boogjes weg.", "Dat is handig als je opnieuw wilt beginnen.");
   await l.verder();
 
   /* Zoals Synthesis: bij een fout meteen "dat is het niet, probeer opnieuw". */
@@ -203,7 +203,7 @@ async function rondleiding(l: Lesgids): Promise<void> {
   for (let fout = 0; ; fout++) {
     const x = await l.somVak(4);
     if (x === 4) break;
-    if (fout === 0) await l.zeg(`Dat is geen {${x}}.`, "Probeer opnieuw.");
+    if (fout === 0) await l.zeg(`Dat is geen {${x}}.`, "Probeer het opnieuw.");
     else {
       zet(l, { springer: 3, bogen: [] });
       await laatZien(l, 3, 7);
@@ -219,7 +219,7 @@ async function eenSprong(l: Lesgids, later: [number, number][]): Promise<void> {
   l.som(null);
   nieuweLijn(l, 0, 5);
   minsom(l, 3, 2, true);
-  await l.zeg("We beginnen met op deze getallen te tikken.", "{3} en {2}.", "Begin met de {2}.");
+  await l.zeg("Eerst tikken we op deze getallen.", "{3} en {2}.", "Begin met de {2}.");
   await tikTwee(l, 3, 2, 2, ["Goed!", "Tik nu het andere getal."]);
   minsom(l, 3, 2, true);
   await l.zeg("Hm, ze liggen dicht bij elkaar, hè?", "We zoeken uit hoe ver ze uit elkaar liggen.");
@@ -232,7 +232,7 @@ async function eenSprong(l: Lesgids, later: [number, number][]): Promise<void> {
   if (x === 1) {
     await l.zeg("Precies.", "Ze liggen naast elkaar.", "Ze liggen {1} uit elkaar.");
   } else if (x === null) {
-    await l.zeg("Geen zorgen.", "Het sprong van {2} naar {3}.", "Dat is een sprong van {1}.", "We komen hier later nog op terug.");
+    await l.zeg("Geen zorgen.", "Het sprong van {2} naar {3}.", "Dat is een sprong van {1}.", "Dat zien we later.");
     later.push([3, 2]);
   } else {
     /* 1× fout: de denkfout uitleggen, en dan maar twee knoppen (Synthesis ronde 3). */
@@ -325,7 +325,7 @@ async function parenZoeken(l: Lesgids): Promise<void> {
         await laatZien(l, a, b);
         if (d === 2) {
           gevonden.push(`${a}-${b}`);
-          await l.zeg(paar === 1 ? "Heel goed." : "Een perfect paar!", `{${b}} en {${a}} hebben een verschil van {2}!`);
+          await l.zeg(paar === 1 ? "Heel goed." : "Een goed paar!", `{${b}} en {${a}} hebben een verschil van {2}!`);
           break;
         }
         fout++;
@@ -570,7 +570,7 @@ async function spel(l: Lesgids, later: [number, number][]): Promise<void> {
       zet(l, { kristallen: lampjes });
       await l.zeg(...goed[i], `Het verschil is {${a - b}}.`);
     } else {
-      await l.zeg(`Het verschil is {${a - b}}.`, ...(fout >= 2 ? ["Daar komen we straks nog op terug."] : []));
+      await l.zeg(`Het verschil is {${a - b}}.`, ...(fout >= 2 ? ["Dat zien we straks."] : []));
       if (fout >= 2) nogEens.push([a, b]);
     }
     await l.wacht(400);
@@ -791,7 +791,7 @@ const doortellenVanafKleinste: Lesdraaiboek = {
     /* 1. 8 − 5: wat kunnen we doen? */
     nieuweLijn(l, 0, 13, { gemarkeerd: [5, 8], springer: 5 });
     minsom(l, 8, 5, true);
-    await l.zeg("Stel, we zoeken het verschil tussen {8} en {5}.", "Wat kunnen we doen?", "Optellen van {5} tot {8}?", "{5} en {8} optellen?", "Of optellen van {0} tot {8}?");
+    await l.zeg("We zoeken het verschil tussen {8} en {5}.", "Wat kunnen we doen?", "Optellen van {5} tot {8}?", "{5} en {8} optellen?", "Of optellen van {0} tot {8}?");
     const goed = "Van 5 tot 8";
     const optellen = "5 en 8 optellen";
     const keuze = await l.kies([goed, optellen, "Van 0 tot 8"]);
@@ -801,7 +801,7 @@ const doortellenVanafKleinste: Lesdraaiboek = {
       await springen(l, 5, 8, "1");
     } else {
       if (keuze === optellen) {
-        await l.zeg("Dat klopt niet helemaal.", "{5} en {8} optellen vertelt iets anders.");
+        await l.zeg("Dat klopt niet helemaal.", "Als je {5} en {8} optelt, is het antwoord anders.");
         await l.verder();
         await l.zeg("{5} en {8} samen is {13}.", "Tik op de {13} om het te zien.");
         while ((await tikGetal(l)) !== 13) {
@@ -828,12 +828,12 @@ const doortellenVanafKleinste: Lesdraaiboek = {
     await l.verder();
 
     /* 2. Ben je zeker? Dan in één sprong. */
-    await l.zeg("Elk getal tellen is soms het beste.", "Vooral als je iets voor het eerst leert.");
+    await l.zeg("Soms is het best om elk getal te tellen.", "Vooral als je iets voor het eerst leert.");
     await l.verder();
     l.som(null);
     nieuweLijn(l, 0, 10, { gemarkeerd: [5, 10], springer: 5 });
     minsom(l, 10, 5, true);
-    await l.zeg("Maar soms weet je het zeker.", "Hier zoeken we het verschil tussen {10} en {5}.", "Ben je zeker? Dan in één sprong.", "Tik maar op de {10}.");
+    await l.zeg("Maar soms weet je het zeker.", "Hier zoeken we het verschil tussen {10} en {5}.", "Weet je het zeker? Dan in één sprong.", "Tik maar op de {10}.");
     let plek = 5;
     let bogen: Boog[] = [];
     let gezegd = false;
@@ -897,7 +897,7 @@ const doortellenVanafKleinste: Lesdraaiboek = {
         zet(l, { kristallen: lampjes });
         await l.zeg(lof[i % lof.length], `Van {${b}} tot {${a}} is {${a - b}}.`);
       } else {
-        await l.zeg(`Het verschil is {${a - b}}.`, ...(fout >= 2 ? ["Daar komen we straks nog op terug."] : []));
+        await l.zeg(`Het verschil is {${a - b}}.`, ...(fout >= 2 ? ["Dat zien we straks."] : []));
         if (fout >= 2) later.push([a, b]);
       }
       await l.wacht(300);
@@ -930,7 +930,7 @@ const verschilBoven10: Lesdraaiboek = {
     l.vlak(GetallenlijnSprongen, { van: 0, tot: 10 });
     await l.zeg(l.naam ? `Welkom terug, ${l.naam}.` : "Welkom terug.", "We zoeken het verschil tussen grotere getallen.");
     await l.verder();
-    await l.zeg("We beginnen met kleine getallen.", "Worden de getallen groter?", "Dan blijft het idee hetzelfde.");
+    await l.zeg("We beginnen met kleine getallen.", "Worden de getallen groter?", "Dan blijft het hetzelfde.");
     await l.verder();
 
     const eerst = await spelSom(l, 8, 5, ["Wat is het verschil tussen {8} en {5}?", "Spring op de lijn als dat helpt."], {
@@ -940,7 +940,7 @@ const verschilBoven10: Lesdraaiboek = {
     await l.zeg(eerst ? "Goed zo!" : "Ja, zo is het.", "Het verschil is {3}.");
     await l.verder();
 
-    const tweede = await spelSom(l, 18, 15, ["We gaan een tandje hoger.", "{18} en {15}.", "Wat is het verschil?"], {
+    const tweede = await spelSom(l, 18, 15, ["Nu wordt het iets moeilijker.", "{18} en {15}.", "Wat is het verschil?"], {
       van: 10,
       tot: 20,
       groteSprong: true,
@@ -948,7 +948,7 @@ const verschilBoven10: Lesdraaiboek = {
     });
     await l.zeg(tweede ? "Precies!" : "Ja.", "Het verschil is weer {3}.");
     await l.verder();
-    await l.zeg("{8} en {5} verschillen {3}.", "{18} en {15} ook.", "De getallen zijn groter, maar het idee blijft hetzelfde.");
+    await l.zeg("{8} en {5} verschillen {3}.", "{18} en {15} ook.", "De getallen zijn groter, maar het blijft hetzelfde.");
     await l.verder();
 
     l.som(null);

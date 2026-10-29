@@ -21,6 +21,7 @@
  */
 
 import type { Lesdraaiboek, Lesgids, Somdeel } from "../soort";
+import { knoppenOpPlek } from "./antwoordknoppen";
 import { KaartLichtbol, SterMachine, type SterMachineMelding, type SterMachineProps } from "../vlakken/tientallen-holo-machine";
 import { testHaak } from "../vlakken/tientallen-holo-basis";
 import { HoloPlaatsmachine, type HoloPlaatsMelding, type HoloPlaatsProps } from "../vlakken/tientallen-holo-plaats";
@@ -123,7 +124,7 @@ export async function getalvraag(l: Lesgids, v: Getalvraag, later?: Later, zegVr
       return false;
     }
   }
-  await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", ...v.antwoord, later ? "We komen hier later op terug." : "");
+  await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", ...v.antwoord, later ? "Dat zien we later." : "");
   await l.verder();
   if (later)
     later.lijst.push(async () => {
@@ -175,7 +176,14 @@ const groepjesVanTien: Lesdraaiboek = {
   synthesis: "Grouping 10s · 10s All the Way Up",
   kaarttekening: KaartLichtbolGroot,
 
-  async speel(l) {
+  async speel(ruw) {
+    /* Het vinkje en het vraagteken (het handje) staan op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+    const l = knoppenOpPlek(ruw, {
+      voor: SterMachine,
+      soorten: { klaar: "controleer", hand: "weetniet" },
+      aanwijs: { klaar: "controleer", hand: "weetniet" },
+      zichtbaar: (p) => [p.klaar ? "klaar" : "", p.hand ? "hand" : ""].filter(Boolean),
+    });
     const later = nieuwLater();
     const st: SterMachineProps = { aantal: 0, knoppen: [10, 1], actief: false, wissen: true, klaar: true, hand: true, wijs: null };
     l.vlak(SterMachine, { ...st });
@@ -187,15 +195,19 @@ const groepjesVanTien: Lesdraaiboek = {
 
     /** Vrij bouwen tot het kind op het vinkje tikt. Geeft het getal, of `null` bij het handje. */
     const bouw = async (max = 100): Promise<number | null> => {
+      /* Het vinkje en het vraagteken staan er pas als de les erop wacht; daarom eerst wachten, dan aanwijzen. */
+      let wacht: Promise<SterMachineMelding> | null = l.wachtOpVlak<SterMachineMelding>(["plus", "wis", "klaar", "hand"]);
+      wacht.catch(() => {});
       if (!knoppenUitgelegd) {
         knoppenUitgelegd = true;
         await l.wijsAan("klaar", "Ben je klaar? Tik dan op het vinkje.");
-        await l.wijsAan("hand", "Wil je hulp? Tik dan op het handje.");
+        await l.wijsAan("hand", "Wil je hulp? Tik dan op het vraagteken.");
         await l.wijsAan("wis", "Met deze knop begin je opnieuw.");
       }
       zet({ actief: true });
       for (;;) {
-        const g = await l.wachtOpVlak<SterMachineMelding>(["plus", "wis", "klaar", "hand"]);
+        const g = await (wacht ?? l.wachtOpVlak<SterMachineMelding>(["plus", "wis", "klaar", "hand"]));
+        wacht = null;
         if (g.soort === "plus") {
           if (st.aantal + g.waarde <= max) zet({ aantal: st.aantal + g.waarde });
         } else if (g.soort === "wis") zet({ aantal: 0 });
@@ -242,7 +254,7 @@ const groepjesVanTien: Lesdraaiboek = {
     zet({ aantal: 0, knoppen: [1], wissen: false, klaar: false, hand: false, wijs: 1 });
     await l.zeg("We beginnen met {7} sterren.", "Tik op deze knop.");
     await telTot(7, 1);
-    await l.zeg(`Alsjeblieft, ${sterren(7)}.`, "Sterren zijn handig om te tellen.", "Maar wat lees je makkelijker?", "Het getal {7}, of de sterren?");
+    await l.zeg(`Kijk, ${sterren(7)}.`, "Sterren zijn handig om te tellen.", "Maar wat lees je makkelijker?", "Het getal {7}, of de sterren?");
     testHaak({ antwoord: null, vraagId: Math.random() });
     const lees = await l.kies(["7", "De sterren"]);
     if (lees === "7") await l.zeg("Dat vind ik ook.", "Daarom hebben mensen cijfers bedacht.");
@@ -294,13 +306,17 @@ const groepjesVanTien: Lesdraaiboek = {
 
     /* Naar 100: de lange weg, of het handje (de makkelijkere manier pas als het kind erom vraagt). */
     zet({ knoppen: [1], hand: true });
-    await l.zeg("Nu wil ik {100} sterren.", "Je mag ze één voor één erbij doen.", "Of tik op het handje.", "Dan laat ik een makkelijkere manier zien.");
-    await l.wijsAan("hand", "Dit is het handje.");
+    await l.zeg("Nu wil ik {100} sterren.", "Je mag ze één voor één erbij doen.", "Of tik op het vraagteken.", "Dan laat ik een makkelijkere manier zien.");
+    /* Het vraagteken staat er pas als de les erop wacht; daarom eerst wachten, dan aanwijzen. */
+    let wachtHand: Promise<SterMachineMelding> | null = l.wachtOpVlak<SterMachineMelding>(["plus", "hand"]);
+    wachtHand.catch(() => {});
+    await l.wijsAan("hand", "Dit is het vraagteken.");
     testHaak({ hand: true });
     zet({ actief: true });
     let extra = 0;
     for (;;) {
-      const g = await l.wachtOpVlak<SterMachineMelding>(["plus", "hand"]);
+      const g = await (wachtHand ?? l.wachtOpVlak<SterMachineMelding>(["plus", "hand"]));
+      wachtHand = null;
       if (g.soort === "hand") break;
       if (g.soort !== "plus") continue;
       zet({ aantal: st.aantal + 1 });
@@ -309,7 +325,7 @@ const groepjesVanTien: Lesdraaiboek = {
       if (extra === 8) {
         zet({ actief: false });
         await l.wacht(900);
-        await l.zeg("Dat duurt lang, hè?", "Tik op het handje.");
+        await l.zeg("Dat duurt lang, hè?", "Tik op het vraagteken.");
         zet({ actief: true });
       }
       if (extra >= 20) break;
@@ -438,7 +454,7 @@ const groepjesVanTien: Lesdraaiboek = {
           }
         }
         if (!terug) {
-          await l.zeg("We komen hier later op terug.");
+          await l.zeg("Dat zien we later.");
           later.lijst.push(() => bouwOpdracht(doel, alleenEnen, i, true));
         }
       }
@@ -457,7 +473,7 @@ const groepjesVanTien: Lesdraaiboek = {
     l.vlak(null);
     l.bak([]);
     const tik = l.kaart();
-    await l.zeg(l.naam ? `Je bouwt al flinke getallen, ${l.naam}.` : "Je bouwt al flinke getallen.", "Tik op de kaart om hem af te vinken.");
+    await l.zeg(l.naam ? `Je bouwt al grote getallen, ${l.naam}.` : "Je bouwt al grote getallen.", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };
@@ -528,7 +544,7 @@ const plekVanDeTientallen: Lesdraaiboek = {
       }
       await l.zeg("Dat zijn {9} cijfers.");
       zet({ cijferrij: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9] });
-      await l.zeg("En dan hebben we nog de {0}.", "Een beetje een vreemde.", "Samen zijn dat {10} cijfers.");
+      await l.zeg("En dan hebben we nog de {0}.", "Een beetje een rare.", "Samen zijn dat {10} cijfers.");
     }
     await l.verder();
     zet({ cijferrij: null });
@@ -1132,7 +1148,7 @@ const instaptoetsPlaatswaarde: Lesdraaiboek = {
   synthesis: "Power of Place · Assessment (groep 3-deel)",
   kaarttekening: KaartPlaats,
   async speel(l) {
-    await plaatswaardeToets(l, 54, [metNaam(l, "Knap gedaan!"), "Je weet echt de weg in plaatswaarde."]);
+    await plaatswaardeToets(l, 54, [metNaam(l, "Knap gedaan!"), "Je snapt plaatswaarde echt goed."]);
   },
 };
 
@@ -1142,7 +1158,7 @@ const eindtoetsPlaatswaarde: Lesdraaiboek = {
   synthesis: "Power of Place · Mastery Check (groep 3-deel)",
   kaarttekening: KaartPlaats,
   async speel(l) {
-    await plaatswaardeToets(l, 28, [metNaam(l, "Knap gedaan!"), "Je weet echt de weg in plaatswaarde."]);
+    await plaatswaardeToets(l, 28, [metNaam(l, "Knap gedaan!"), "Je snapt plaatswaarde echt goed."]);
   },
 };
 
@@ -1266,7 +1282,7 @@ const kloddersBouwen: Lesdraaiboek = {
     }
     const e = k.st.enen;
     k.zet({ wijs: "totaal" });
-    await l.zeg(e === 1 ? "Mooi, je hebt {1} stip." : `Mooi, je hebt {${e}} stippen.`, "Bovenaan zie je het totaal.");
+    await l.zeg(e === 1 ? "Mooi, je hebt {1} stip." : `Mooi, je hebt {${e}} stippen.`, "Bovenaan zie je hoeveel het samen is.");
     await l.verder();
     k.zet({ wijs: null });
 
@@ -1382,7 +1398,7 @@ const plaatsenInEenSom: Lesdraaiboek = {
       l.pasVlakAan<OnderelkaarProps>(p);
     };
 
-    await l.zeg("Dit is een flinke som.", "Maar we kunnen hem samen opdelen.");
+    await l.zeg("Dit is een grote som.", "Maar we kunnen hem samen opdelen.");
     await l.verder();
     await welkGetalStaatEr(l, 87, "Eerst: welk getal staat er bovenaan?", () => zet({ uitleg: true }));
     zet({ uitleg: false });

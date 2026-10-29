@@ -33,6 +33,7 @@ import {
   TelSchelpen,
   type TelSchelpenProps,
 } from "../vlakken/tellen-holo-schelpen";
+import { knoppenOpPlek } from "./antwoordknoppen";
 import { TelVeld, type TelVeldProps } from "../vlakken/tellen-holo-veld";
 import {
   TelSchrijven,
@@ -190,6 +191,18 @@ async function weetJeDitAl(
   return k === null ? "weetniet" : k === "Ja" ? "ja" : "nee";
 }
 
+/**
+ * Het vinkje van "Klaar" staat op de vaste plek onder de zin van Bliepo, niet
+ * meer in het vlak (28 oktober 2026, besluit eigenaar).
+ */
+const metVinkje = (l: Lesgids) =>
+  knoppenOpPlek(l, {
+    voor: [TelRooster, TelSchelpen, TelVeld],
+    soorten: { klaar: "controleer" },
+    aanwijs: { vinkje: "controleer" },
+    zichtbaar: (p) => (p.klaarKnop ? ["klaar"] : []),
+  });
+
 type Staat = { gewezen: Set<string> };
 const nieuweStaat = (): Staat => ({ gewezen: new Set() });
 
@@ -317,7 +330,7 @@ async function telVraag(
       await telSamen(l, vakjes, kleuren, { cijfers: true });
       await l.zeg(
         `Het zijn {${n}} ${wat}.`,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (o.later && o.opnieuw) o.later.push(o.opnieuw);
@@ -346,7 +359,7 @@ async function telVraag(
       await telSamen(l, vakjes, kleuren, { cijfers: true });
       await l.zeg(
         `Het zijn {${n}} ${wat}.`,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (o.later && o.opnieuw) o.later.push(o.opnieuw);
@@ -423,7 +436,7 @@ async function welkeKleur(
     await telSamen(l, vakjes, [doel]);
     await l.zeg(
       `Er zijn {${n}} *${BIJ[doel]}* visjes.`,
-      "We komen hier later nog op terug.",
+      "Dat zien we later.",
     );
     await l.verder();
     if (later && opnieuw) later.push(opnieuw);
@@ -522,7 +535,8 @@ export const kleurenTellen: Lesdraaiboek = {
   synthesis: "Color Count · Color Count",
   kaarttekening: KaartRooster,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     const st = nieuweStaat();
     const later: Later = [];
     const vijf: Kleur[] = ["rood", "oranje", "paars", "blauw", "geel"];
@@ -877,7 +891,7 @@ export const kleurenTellen: Lesdraaiboek = {
         ["blauw", 7],
         ["groen", 10],
       ],
-      ["Nog twee laatste uitdagingen.", "Zullen we meer kleuren gebruiken?"],
+      ["Nog twee laatste opdrachten.", "Zullen we meer kleuren gebruiken?"],
     );
     await verdelen(
       [
@@ -942,7 +956,7 @@ async function getalVraag(
       await l.zeg(
         k === null ? "Geen zorgen." : "Ik help je even.",
         ...antwoord,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (later) later.lijst.push(later.vraag);
@@ -1111,7 +1125,8 @@ export const tellenNa10: Lesdraaiboek = {
   synthesis: "Color Count · The Next 10",
   kaarttekening: KaartTienstrook,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     const st = nieuweStaat();
     const later: Later = [];
     const staat = { links: 0, rechts: 0 };
@@ -1214,7 +1229,7 @@ export const tellenNa10: Lesdraaiboek = {
       st,
       [
         "Nu heb je een groep van {10}.",
-        "En er komt er {1} bij.",
+        "En er komt {1} bij.",
         "Welk getal is dit?",
       ],
       ["1", "10", "11", "101"],
@@ -1230,7 +1245,7 @@ export const tellenNa10: Lesdraaiboek = {
                 "Dat is alleen de tweede schelp.",
                 "Kijk ook naar de groep van {10}.",
               ]
-            : ["{10} is alleen de volle schelp.", "Er is er nog {1} bij."],
+            : ["{10} is alleen de volle schelp.", "Er komt nog {1} bij."],
       ["Een groep van {10}, en nog {1}.", "Welk getal is dit?"],
       ["Na {10} komt {11}.", "{10} en nog {1} is {11}."],
       { lijst: later, vraag: vraag11 },
@@ -1293,7 +1308,7 @@ export const tellenNa10: Lesdraaiboek = {
       st,
       [
         "Je hebt nog steeds een groep van {10}.",
-        "Nu zijn er {2} bij.",
+        "Nu komen er {2} bij.",
         "Welk getal heb je gemaakt?",
       ],
       ["2", "10", "12", "102"],
@@ -1309,7 +1324,7 @@ export const tellenNa10: Lesdraaiboek = {
                 "Dat is alleen de tweede schelp.",
                 "Kijk ook naar de groep van {10}.",
               ]
-            : ["{10} is alleen de volle schelp.", "Er zijn er nog {2} bij."],
+            : ["{10} is alleen de volle schelp.", "Er komen nog {2} bij."],
       ["Een groep van {10}, en nog {2}.", "Welk getal is dit?"],
       ["{10} en nog {2} is {12}."],
       {
@@ -1418,7 +1433,7 @@ export const tellenNa10: Lesdraaiboek = {
 
     /* 5. Het spel: bouw het getal (11 getallen). */
     await l.zeg(
-      "Je bent goed opgewarmd.",
+      "Je bent goed begonnen.",
       "Nu doen we een spel.",
       "Ik zeg een getal, jij bouwt het.",
     );
@@ -1564,7 +1579,7 @@ async function kiesCijfer(
           "Het getal voor niets is *nul*.",
         );
       else await telVoor();
-      await l.zeg(`Het is {${goed}}.`, "We komen hier later nog op terug.");
+      await l.zeg(`Het is {${goed}}.`, "Dat zien we later.");
       const vakken = [...o.vakken];
       vakken[o.vak] = String(goed);
       hw(l, { vakken, nummers: 0 });
@@ -1771,7 +1786,8 @@ export const getallenSchrijven: Lesdraaiboek = {
   synthesis: "Color Count · Writing Numbers to 20",
   kaarttekening: KaartSchrijven,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     const st = nieuweStaat();
     const eerste = { tellen: true, schrijven: true, tien: true };
     const later: number[] = [];
@@ -1918,7 +1934,7 @@ async function zoekGetal(
       await l.zeg(
         "Geen zorgen.",
         `Hier staat {${doel}}.`,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (later)
@@ -2005,7 +2021,7 @@ async function benoem(
   } else {
     await l.zeg(
       `Het is {${n}}: een {${a}} en een {${b}}.`,
-      "We komen hier later nog op terug.",
+      "Dat zien we later.",
     );
     await l.verder();
     if (later)
@@ -2099,7 +2115,7 @@ async function telVerder(
       await loop(l, start, eind, true);
       await l.zeg(
         `Je komt uit op {${eind}}.`,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (later)
@@ -2199,7 +2215,7 @@ async function nogTot(
       await loop(l, van, tiental, true);
       await l.zeg(
         `Van {${van}} naar {${tiental}} tel je {${d}} verder.`,
-        "We komen hier later nog op terug.",
+        "Dat zien we later.",
       );
       await l.verder();
       if (later)
@@ -2236,7 +2252,8 @@ export const doortellen: Lesdraaiboek = {
   synthesis: "Color Count · Counting On",
   kaarttekening: KaartDoortellen,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     const st = nieuweStaat();
     const later: Later = [];
 
@@ -2321,7 +2338,7 @@ export const doortellen: Lesdraaiboek = {
       await l.wacht(300);
     }
     hv(l, { rand: [] });
-    await l.zeg(metNaam(l, "Je hebt het door."), "Nu gaan we doortellen.");
+    await l.zeg(metNaam(l, "Je snapt het."), "Nu gaan we doortellen.");
     await l.verder();
 
     /* 2. Benoemen (4) en doortellen (6), door elkaar. */
@@ -2455,7 +2472,7 @@ async function toets(l: Lesgids, o: Toetsopzet, slot: string[]): Promise<void> {
   const later: Later = [];
   let vakjes = rooster([[o.kleur, o.aantal], ...o.rest]);
   l.vlak(TelRooster, { vakjes, voorwerp: "kwal" });
-  await l.zeg("Hoi!", "We gaan tellen, tot wel {50}.");
+  await l.zeg("Hoi!", "We gaan tellen, tot {50}.");
   const weet = await weetJeDitAl(l, st, ["Kun je dit al?"]);
   const echteToets = weet === "ja";
   if (echteToets) await l.zeg("Mooi.", "Laten we kijken wat je al weet.");
@@ -2782,7 +2799,8 @@ export const instaptoetsTellen: Lesdraaiboek = {
   synthesis: "Color Count · Assessment",
   kaarttekening: KaartRooster,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     await toets(
       l,
       {
@@ -2843,7 +2861,8 @@ export const eindtoetsTellen: Lesdraaiboek = {
   synthesis: "Color Count · Mastery Check",
   kaarttekening: KaartRooster,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVinkje(ruw);
     await toets(
       l,
       {

@@ -46,7 +46,8 @@ export default async function VrijOefenenPagina({
       ) : (
       <ul className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
         {domeinen.map(({ domein, aantalSubdomeinen, aantalLeerdoelen, aantalBeheerst }) => {
-          const teOpenen = domein.actief && aantalSubdomeinen > 0;
+          /* Zonder gepubliceerde opdrachten (28 okt 2026) valt er niets te openen: dan "Nog geen onderwerpen". */
+          const teOpenen = domein.actief && aantalSubdomeinen > 0 && aantalLeerdoelen > 0;
           return (
             <li key={domein.id}>
               <Tegel

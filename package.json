@@ -9,7 +9,7 @@
     "lint": "eslint",
     "schermen": "node scripts/schermcontrole.mjs",
     "bewaking": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/waardebewaking.mjs",
-    "bewaak": "npm run schermen && npm run bewaking && npm run oefentypes && npm run bosspellen && npm run opgaven && BEWAAK=1 npm run bliepo && BEWAAK=1 npm run vloeiend",
+    "bewaak": "npm run schermen && npm run bewaking && npm run oefentypes && npm run bosspellen && npm run opgaven && BEWAAK=1 npm run bliepo && BEWAAK=1 npm run vloeiend && BEWAAK=1 DUUR=20000 npm run overlap && BEWAAK=1 MAXMIN=6 npm run speel && BEWAAK=1 CONTROLE=1 npm run stemlessen",
     "bliepo": "node scripts/bliepocontrole.mjs",
     "vloeiend": "node scripts/vloeiendcontrole.mjs",
     "stemzinnen": "node scripts/stemzinnen.mjs",
@@ -19,7 +19,12 @@
     "opgaven": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --import ./scripts/registreer.mjs scripts/opgaven.mjs",
     "backup": "node --disable-warning=ExperimentalWarning scripts/backup-db.mjs",
     "maatje": "node --disable-warning=MODULE_TYPELESS_PACKAGE_JSON --disable-warning=ExperimentalWarning --import ./scripts/registreer.mjs scripts/maatje-schrijf.mjs",
-    "online": "node --disable-warning=ExperimentalWarning scripts/online.mjs"
+    "online": "node --disable-warning=ExperimentalWarning scripts/online.mjs",
+    "overlap": "node scripts/overlapcontrole.mjs",
+    "speel": "node scripts/speelcontrole.mjs",
+    "taal": "node scripts/taalcontrole.mjs",
+    "stemlessen": "node scripts/stemlessen.mjs",
+    "reken": "node scripts/rekencontrole.mjs"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",

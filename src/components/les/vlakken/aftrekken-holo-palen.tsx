@@ -45,6 +45,13 @@ export type PalenProps = {
   cijfers?: boolean;
   /** De knoppen Klaar en Hulp in het midden. */
   knoppen?: { klaar?: boolean; hulp?: boolean } | null;
+  /**
+   * Teken Klaar en Hulp in het vlak zelf (de oude plek). Standaard uit: ze
+   * staan op de vaste plek onder de zin van Bliepo (28 oktober 2026).
+   */
+  knoppenInVlak?: boolean;
+  /** Meldt de stand (hoogtes) aan het lesscherm, voor het vinkje op de vaste plek. */
+  standBron?: (geef: () => Record<string, unknown>) => void;
   /** De schuif waarmee de palen tegen elkaar schuiven. */
   schuif?: boolean;
   /** Een scorebord met sommen in het midden; `null` is een leeg vakje. */
@@ -289,6 +296,8 @@ export function AftrekkenHoloPalen({
   max = {},
   cijfers = false,
   knoppen = null,
+  knoppenInVlak = false,
+  standBron,
   schuif = false,
   lijst = null,
   binnen = false,
@@ -297,6 +306,9 @@ export function AftrekkenHoloPalen({
 }: PalenProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<PalenScene & { nieuw(h: Record<Kant, number>): void }>(schaal, maakPalenScene);
   const [hoogte, setHoogte] = useState({ links, rechts });
+  useEffect(() => {
+    standBron?.(() => ({ links: hoogte.links, rechts: hoogte.rechts }));
+  }, [standBron, hoogte]);
   const [vorigeZet, setVorigeZet] = useState(zet);
   const [fase, setFase] = useState<Fase>("rust");
   const [knop, setKnop] = useState(0);
@@ -415,7 +427,7 @@ export function AftrekkenHoloPalen({
         </div>
       )}
 
-      {knoppen && !bezig && (
+      {knoppenInVlak && knoppen && !bezig && (
         <div className={s.knoppen} style={{ left: 490, top: lijst ? 520 : 470 }}>
           {knoppen.klaar && <IkoonKnop ikoon="vink" label="Klaar" knop="klaar" kleur="blauw" className={s.ikoonGroot} onClick={() => meld({ soort: "klaar", ...hoogte })} />}
           {knoppen.hulp && <IkoonKnop ikoon="vraag" label="Hulp" knop="hulp" className={s.ikoonGroot} onClick={() => meld({ soort: "hulp", ...hoogte })} />}

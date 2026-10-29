@@ -36,6 +36,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { vierKeuzes } from "../holo/keuzes";
+import { knoppenOpPlek } from "./antwoordknoppen";
 import { VergelijkenHolo, type Deel, type HoloProps, type Kant, type Kleur, type Teken, type Vak } from "../vlakken/vergelijken-holo-vlak";
 import { VAKKLEUR } from "../vlakken/vergelijken-kaarten";
 
@@ -234,14 +235,28 @@ async function wachtOp(l: Lesgids, soorten: string[], herinner?: string[]): Prom
   }
 }
 
+/**
+ * Het vinkje, het handje en "weet ik niet" staan op de vaste plek onder de zin
+ * van Bliepo (28 oktober 2026). Het handje en "weet ik niet" zijn daar één
+ * vraagteken; alleen bij de toetsvraag met het getal staan ze naast elkaar met
+ * een ander gevolg, daar blijft het handje in het vlak (`handInVlak`).
+ */
+const metVasteKnoppen = (l: Lesgids) =>
+  knoppenOpPlek(l, {
+    voor: VergelijkenHolo,
+    soorten: { klaar: "controleer", hand: "weetniet", weetniet: "weetniet" },
+    aanwijs: { vink: "controleer", hand: "weetniet" },
+    zichtbaar: (p) => [p.vink ? "klaar" : "", p.hand && !p.handInVlak ? "hand" : "", p.weetniet ? "weetniet" : ""].filter(Boolean),
+    geldig: (knop, stand) => knop !== "controleer" || stand.kanVink !== false,
+  });
+
 /** Een keuze met woorden (Bliepo leest ze voor bij tikken). `null` = weet ik niet. */
 async function kiesWoord(l: Lesgids, v: V, opties: string[], o: { weetniet?: boolean } = {}): Promise<string | null> {
-  v.pas({ keuzes: opties, uit: [], goedeKeuze: null, weetniet: !!o.weetniet });
-  const p = l.wachtOpVlak<Melding>(["keuze", "weetniet"]);
+  /* Woorden staan op de vaste plek onder de zin van Bliepo (28 oktober 2026), niet meer in het vlak. */
+  const p = l.kies(opties, { direct: true, weetniet: o.weetniet ? undefined : false });
+  p.catch(() => {});
   await v.wijs(p, ["keuzes", "Tik op je antwoord."], ...(o.weetniet ? [["weetniet", "Weet je het niet? Tik dan op het vraagteken."] as [string, string]] : []));
-  const g = await p;
-  v.pas({ keuzes: null, weetniet: false });
-  return g.soort === "keuze" ? String(g.keuze) : null;
+  return p;
 }
 
 /** Alle vragen die nog terug moesten komen, één keer. */
@@ -302,7 +317,7 @@ async function grootsteGroep(
   let hier = vraag;
   for (let poging = 0; ; ) {
     const p = wachtOp(l, ["klaar", "hand"], [hier]);
-    await v.wijs(p, ["hand", "Vind je het lastig? Tik dan op het handje."], ["vink", "Ben je klaar? Tik dan op het vinkje."]);
+    await v.wijs(p, ["hand", "Vind je het lastig? Tik dan op het vraagteken."], ["vink", "Ben je klaar? Tik dan op het vinkje."]);
     const g = await p;
     if (g.soort === "hand") {
       handGebruikt = true;
@@ -324,7 +339,7 @@ async function grootsteGroep(
     poging++;
     if (poging >= 2) {
       if (o.opnieuw) {
-        await l.zeg("Ah, dat zie ik anders.", "Geen zorgen, we stoppen hier even mee.", "We komen er later op terug.");
+        await l.zeg("Ah, dat zie ik anders.", "Geen zorgen, we stoppen hier even mee.", "Dat zien we later.");
         await l.verder();
         v.later.push(async () => {
           const r = await grootsteGroep(l, v, links, rechts, vraag, { kleur });
@@ -379,7 +394,7 @@ async function hoeveelMeer(l: Lesgids, v: V, links: Vak[], rechts: Vak[], o: { o
   v.pas({ keuzes: opties, uit: [], goedeKeuze: null, weetniet: true });
   const antwoord = async (later: boolean) => {
     v.pas({ keuzes: null, weetniet: false, aantallen: true });
-    await l.zeg(`Kijk: er ${n === 1 ? "steekt" : "steken"} {${n}} ${n === 1 ? KN[kleur] : BN[kleur]} ${vliegjes(n)} boven uit.`, `Er ${n === 1 ? "is" : "zijn"} er {${n}} meer.`, ...(later ? ["We komen hier later op terug."] : []));
+    await l.zeg(`Kijk: er ${n === 1 ? "steekt" : "steken"} {${n}} ${n === 1 ? KN[kleur] : BN[kleur]} ${vliegjes(n)} bovenuit.`, `Er ${n === 1 ? "is" : "zijn"} er {${n}} meer.`, ...(later ? ["Dat zien we later."] : []));
     await l.verder();
     if (later) v.later.push(async () => void (await hoeveelMeer(l, v, verspreid(a, eersteKleur(links, "blauw"), links.length / 2), verspreid(b, eersteKleur(rechts, "geel"), rechts.length / 2), { vers: true })));
   };
@@ -434,7 +449,7 @@ async function gelijkMaken(l: Lesgids, v: V, links: Vak[], rechts: Vak[], zinnen
   let handGebruikt = false;
   for (let poging = 0; ; poging++) {
     const p = wachtOp(l, ["klaar", "hand"], ["Maak de groepen gelijk.", "Tik dan op het vinkje."]);
-    await v.wijs(p, ["hand", "Vind je het lastig? Tik dan op het handje."], ["vink", "Ben je klaar? Tik dan op het vinkje."]);
+    await v.wijs(p, ["hand", "Vind je het lastig? Tik dan op het vraagteken."], ["vink", "Ben je klaar? Tik dan op het vinkje."]);
     const g = await p;
     if (g.soort === "hand") {
       handGebruikt = true;
@@ -505,7 +520,7 @@ async function vulIn(l: Lesgids, v: V, a: number | null, t: Vast, b: number | nu
   const voorbeeldZeggen = async () => {
     v.lampen(delen(voorbeeld));
     v.golf(vraagkant);
-    await l.zeg(`Bijvoorbeeld {${voorbeeld}}.`, `${zin(a ?? voorbeeld, t, b ?? voorbeeld)}.`, ...(o.opnieuw ? ["We komen hier later op terug."] : []));
+    await l.zeg(`Bijvoorbeeld {${voorbeeld}}.`, `${zin(a ?? voorbeeld, t, b ?? voorbeeld)}.`, ...(o.opnieuw ? ["Dat zien we later."] : []));
     await l.verder();
     if (o.opnieuw) v.later.push(async () => void (await vulIn(l, v, a, t, b, voorbeeld, ["Welk getal past op het vraagteken?"])));
   };
@@ -650,7 +665,7 @@ async function toets(l: Lesgids, t: Toetsgetallen) {
   await l.zeg("Tik op de grootste groep.", "Tik dan op het vinkje.");
   v.pas({ kies: true, vink: true, hand: true });
   const p = wachtOp(l, ["klaar", "hand"], ["Tik op de grootste groep."]);
-  await v.wijs(p, ["vink", "Ben je klaar? Tik dan op het vinkje."], ["hand", "Kun je dit nog niet? Tik dan op het handje."]);
+  await v.wijs(p, ["vink", "Ben je klaar? Tik dan op het vinkje."], ["hand", "Kun je dit nog niet? Tik dan op het vraagteken."]);
   let g = await p;
   v.pas({ kies: false, vink: false, hand: false });
   if (g.soort === "hand") return stop("hand");
@@ -687,11 +702,11 @@ async function toets(l: Lesgids, t: Toetsgetallen) {
     ];
     v.lampen(delen(null), { invoer: true });
     await l.zeg(...zinnen);
-    v.pas({ vink: true, weetniet: true, hand: true });
+    v.pas({ vink: true, weetniet: true, hand: true, handInVlak: true });
     const q = wachtOp(l, ["klaar", "weetniet", "hand"], ["Welk getal past op het vraagteken?"]);
     await v.wijs(q, ["invul", "Tik op het vraagteken en typ een getal."], ["weetniet", "Weet je het niet? Tik dan op het vraagteken hier."]);
     const m = await q;
-    v.pas({ vink: false, weetniet: false, hand: false });
+    v.pas({ vink: false, weetniet: false, hand: false, handInVlak: false });
     if (m.soort === "hand") return "hand" as const;
     if (m.soort === "weetniet") {
       /* Alleen hier is "weet ik niet" (R3): Bliepo zegt het antwoord; telt als niet beheerst. */
@@ -753,7 +768,8 @@ const instaptoets: Lesdraaiboek = {
   titel: "Instaptoets: vergelijken",
   synthesis: "Compare the Pair · Assessment",
   kaarttekening: KaartGroepen,
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVasteKnoppen(ruw);
     await toets(l, {
       groot: [7, 6],
       gelijk: [8, 6],
@@ -792,7 +808,8 @@ const meerOfMinder: Lesdraaiboek = {
   synthesis: "Compare the Pair · More or Less",
   kaarttekening: KaartGroepen,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVasteKnoppen(ruw);
     const v = maakVlak(l);
     v.potjes(leeg(3), leeg(3));
     await l.zeg("Vandaag gaan we groepen vergelijken.");
@@ -822,7 +839,7 @@ const meerOfMinder: Lesdraaiboek = {
     if (!(await hoeveelMeer(l, v, st.li, st.re, { opnieuw: true }))) foutloos = false;
 
     /* Synthesis maakt het moeilijker omdat het goed gaat; anders zegt hij gewoon dat er iets nieuws komt. */
-    if (foutloos) await l.zeg(l.naam ? `${l.naam}, dit gaat je makkelijk af.` : "Dit gaat je makkelijk af.", "De volgende wordt iets moeilijker.");
+    if (foutloos) await l.zeg(l.naam ? `${l.naam}, dit gaat je makkelijk af.` : "Dit kun je makkelijk.", "De volgende wordt iets moeilijker.");
     else await l.zeg("Goed geoefend.", "Nu komt er iets nieuws.");
     await l.verder();
 
@@ -834,7 +851,7 @@ const meerOfMinder: Lesdraaiboek = {
     };
     await kleurVraag(gemengd({ groen: 4, blauw: 1, geel: 1 }, 3), gemengd({ groen: 3, geel: 2, blauw: 1 }, 3), "groen", ["Ja.", "Dat potje heeft meer groene."]);
     await kleurVraag(gemengd({ blauw: 3, groen: 2, geel: 1 }, 3), gemengd({ blauw: 2, geel: 2, groen: 2 }, 3), "blauw", [
-      l.naam ? `Dat is hem, ${l.naam}.` : "Dat is hem.",
+      l.naam ? `Dat klopt, ${l.naam}.` : "Dat klopt.",
       "Het linker potje heeft de meeste blauwe.",
     ]);
     await kleurVraag(gemengd({ groen: 8, blauw: 1, geel: 1 }, 5), gemengd({ groen: 6, geel: 2, blauw: 2 }, 5), "groen", ["Dat klopt.", "Het linker potje heeft meer groene."]);
@@ -892,7 +909,7 @@ async function kiesTekenPotjes(l: Lesgids, v: V, li: Vak[], re: Vak[], vraag: st
   const uitleg = async (later: boolean) => {
     const rijen = li.length / 2;
     v.potjes(onderaan(a, eersteKleur(li, "blauw"), rijen), onderaan(b, eersteKleur(re, "geel"), rijen), { teken: goed, aantallen: true, stip: goed === "=" ? null : "klein", overgang: "zak" });
-    await l.zeg(`Het hoort zo: ${zin(a, goed, b)}.`, goed === "=" ? "Ze zijn even groot." : "De kleine kant wijst naar de kleinste groep.", ...(later ? ["We komen hier later op terug."] : []));
+    await l.zeg(`Het hoort zo: ${zin(a, goed, b)}.`, goed === "=" ? "Ze zijn even groot." : "De kleine kant wijst naar de kleinste groep.", ...(later ? ["Dat zien we later."] : []));
     await l.verder();
     if (later) v.later.push(async () => void (await kiesTekenPotjes(l, v, li, re, ["Welk teken hoort hier?"], "Goed zo.")));
   };
@@ -942,7 +959,8 @@ const tekens: Lesdraaiboek = {
   synthesis: "Compare the Pair · Comparison Symbols",
   kaarttekening: KaartTekens,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVasteKnoppen(ruw);
     const v = maakVlak(l);
 
     /* 1. Drie verstopte tekens in drie lantaarntjes. */
@@ -1064,7 +1082,7 @@ const tekens: Lesdraaiboek = {
 
     /* 6. Zelf het teken kiezen. */
     const opgaven: [Vak[], Vak[], string][] = [
-      [verspreid(5, "groen", 3), verspreid(4, "blauw", 3), "Dat ziet er perfect uit."],
+      [verspreid(5, "groen", 3), verspreid(4, "blauw", 3), "Dat ziet er goed uit."],
       [verspreid(3, "geel", 3), verspreid(5, "groen", 3), "Ja, goed zo."],
       [verspreid(4, "blauw", 3), verspreid(4, "geel", 3), "Helemaal goed."],
       [verspreid(8, "blauw", 5), verspreid(7, "geel", 5), l.naam ? `Netjes gedaan, ${l.naam}.` : "Netjes gedaan."],
@@ -1161,7 +1179,7 @@ const tekens: Lesdraaiboek = {
         if (x === null || poging >= 2) {
           v.pas({ keuzes: null, weetniet: false });
           v.potjes(onderaan(re, "blauw", rijen), onderaan(re, "geel", rijen), { teken: "=", aantallen: true, overgang: "zak" });
-          await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", `Er ${nodig === 1 ? "moet" : "moeten"} er {${nodig}} bij.`, `{${li}} en {${nodig}} is samen {${re}}.`, ...(opnieuw ? ["We komen hier later op terug."] : []));
+          await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", `Er ${nodig === 1 ? "moet" : "moeten"} er {${nodig}} bij.`, `{${li}} en {${nodig}} is samen {${re}}.`, ...(opnieuw ? ["Dat zien we later."] : []));
           await l.verder();
           if (opnieuw) v.later.push(() => erbij(li, re, false));
           return;
@@ -1204,7 +1222,7 @@ async function kiesTeken(l: Lesgids, v: V, a: number, b: number, vraag: string[]
   v.pas({ vink: true, weetniet: true });
   const zegHet = async (later: boolean) => {
     v.lampen(delen(goed, false, false), { stip: goed === "=" ? null : "klein" });
-    await l.zeg(`Het hoort zo: ${zin(a, goed, b)}.`, goed === "=" ? "Ze zijn hetzelfde." : "De kleine kant wijst naar het kleinste getal.", ...(later ? ["We komen hier later op terug."] : []));
+    await l.zeg(`Het hoort zo: ${zin(a, goed, b)}.`, goed === "=" ? "Ze zijn hetzelfde." : "De kleine kant wijst naar het kleinste getal.", ...(later ? ["Dat zien we later."] : []));
     await l.verder();
     if (later) v.later.push(async () => void (await kiesTeken(l, v, a, b, ["Welk teken hoort hier?"], "Goed zo.")));
   };
@@ -1272,7 +1290,8 @@ const getallenVergelijken: Lesdraaiboek = {
   synthesis: "Compare the Pair · Comparing Numbers",
   kaarttekening: KaartGetallen,
 
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVasteKnoppen(ruw);
     const v = maakVlak(l);
     v.lampen([{ t: "getal", n: 6 }, { t: "teken", s: "?" }, { t: "getal", n: 3 }]);
     await l.zeg("We gaan getallen vergelijken met tekens.", "Kun je dat al?");
@@ -1287,7 +1306,7 @@ const getallenVergelijken: Lesdraaiboek = {
       v.lampen([{ t: "teken", s: "=" }]);
       await l.zeg("Dit teken zie je vaak bij rekenen.", "Weet je hoe het heet?");
       const naam = await kiesWoord(l, v, ["is gelijk aan", "plus", "min"], { weetniet: true });
-      if (naam === "is gelijk aan") await l.zeg("Dat is hem.", "Het heet het is-gelijkteken.");
+      if (naam === "is gelijk aan") await l.zeg("Dat klopt.", "Het heet het is-gelijkteken.");
       else await l.zeg(naam === null ? "Geen zorgen." : naam === "plus" ? "Een plusteken? Niet helemaal." : "Een minteken? Niet helemaal.", "Het heet het is-gelijkteken.");
       await l.zeg("Het is-gelijkteken zegt: beide kanten zijn hetzelfde.", "We proberen het met getallen.");
       await l.verder();
@@ -1358,7 +1377,7 @@ const getallenVergelijken: Lesdraaiboek = {
 
     /* Zelf het teken kiezen; tussendoor vraagt Bliepo of het kind wil doorgaan (Synthesis). */
     const opgaven: [number, number, string][] = [
-      [7, 5, "Dat ziet er perfect uit."],
+      [7, 5, "Dat ziet er goed uit."],
       [5, 8, "Absoluut."],
       [5, 5, "Helemaal goed."],
       [9, 6, "Netjes."],
@@ -1378,10 +1397,10 @@ const getallenVergelijken: Lesdraaiboek = {
       await l.wacht(500);
       /* Na elke 4 opgaven: even checken (R3, hulpregel 10). "Nee" rondt netjes af. */
       if ((i + 1) % 4 === 0 && i + 1 < opgaven.length) {
-        await l.zeg(i < 4 ? "Even checken." : "", i < 4 ? "Wil je doorgaan met deze les?" : "Zullen we doorgaan?");
+        await l.zeg(i < 4 ? "Even kijken." : "", i < 4 ? "Wil je doorgaan met deze les?" : "Zullen we doorgaan?");
         const door = await kiesWoord(l, v, ["Ja", "Nee"]);
         if (door === "Nee") {
-          await l.zeg("Oké.", "Dan ronden we af.");
+          await l.zeg("Oké.", "Dan stoppen we.");
           gestopt = true;
           break;
         }
@@ -1389,12 +1408,12 @@ const getallenVergelijken: Lesdraaiboek = {
       }
     }
 
-    let nog: string | null = "Afronden";
+    let nog: string | null = "Stoppen";
     if (!gestopt) {
-      await l.zeg("Wil je nog wat oefenen?", "Of zullen we afronden?");
-      nog = await kiesWoord(l, v, ["Oefenen", "Afronden"]);
+      await l.zeg("Wil je nog wat oefenen?", "Of zullen we stoppen?");
+      nog = await kiesWoord(l, v, ["Oefenen", "Stoppen"]);
     }
-    if (nog !== "Afronden") {
+    if (nog !== "Stoppen") {
       await l.zeg("Goed, nu kies jij het getal.");
       const invul: [number | null, Vast, number | null, number][] = [
         [5, ">", null, 3],
@@ -1430,7 +1449,8 @@ const eindtoets: Lesdraaiboek = {
   titel: "Eindtoets: vergelijken",
   synthesis: "Compare the Pair · Mastery Check",
   kaarttekening: KaartGroepen,
-  async speel(l) {
+  async speel(ruw) {
+    const l = metVasteKnoppen(ruw);
     await toets(l, {
       groot: [9, 7],
       gelijk: [9, 7],

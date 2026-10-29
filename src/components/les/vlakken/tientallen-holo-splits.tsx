@@ -55,6 +55,8 @@ export type HoloSplitsProps = {
   golf?: number;
   /** Het vraagteken (weet ik niet) naast het vinkje. */
   hulp?: boolean;
+  /** Teken het vinkje en het vraagteken in het vlak zelf (de oude plek). Standaard uit: ze staan op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   /** In het Universum (de toetsen van Optellen tot 100): sterren in lichtbellen in plaats van parels. */
   sterren?: boolean;
 };
@@ -364,7 +366,7 @@ function Rondknop({ x, y, teken, aan, goud, knop, onTik }: { x: number; y: numbe
 }
 
 export function HoloSplitshuis(p: HoloSplitsProps & Vlakbasis) {
-  const { links, rechts, geheel = null, knoppen = false, alleen = null, vraag = null, klaar = false, hulp = false, lijst = [], tegel = null, verborgen = false, snoer = null, snoerActief = false, snoerDicht = false, golf = 0, sterren = false, meld, schaal } = p;
+  const { links, rechts, geheel = null, knoppen = false, alleen = null, vraag = null, klaar = false, hulp = false, knoppenInVlak = false, lijst = [], tegel = null, verborgen = false, snoer = null, snoerActief = false, snoerDicht = false, golf = 0, sterren = false, meld, schaal } = p;
   const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene());
   const totaal = geheel ?? links + rechts;
   const huisZichtbaar = !tegel && !verborgen && snoer === null;
@@ -396,7 +398,7 @@ export function HoloSplitshuis(p: HoloSplitsProps & Vlakbasis) {
           <Rondknop x={LINKS.x + 58} y={LINKS.y + LINKS.r + 52} teken="+" knop="links-plus" aan={werkt("links-plus")} goud={alleen === "links-plus"} onTik={knop("links-plus")} />
           <Rondknop x={RECHTS.x - 58} y={RECHTS.y + RECHTS.r + 52} teken="−" knop="rechts-min" aan={werkt("rechts-min")} goud={alleen === "rechts-min"} onTik={knop("rechts-min")} />
           <Rondknop x={RECHTS.x + 58} y={RECHTS.y + RECHTS.r + 52} teken="+" knop="rechts-plus" aan={werkt("rechts-plus")} goud={alleen === "rechts-plus"} onTik={knop("rechts-plus")} />
-          {(klaar || hulp) && (
+          {knoppenInVlak && (klaar || hulp) && (
             <div style={{ position: "absolute", left: 790, top: 440, display: "flex", flexDirection: "column", gap: 16 }}>
               {hulp && <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="hulpvlak" className={s.ikoon} onClick={() => meld({ soort: "hulp" })} />}
               {klaar && <IkoonKnop ikoon="vink" label="Klaar" knop="klaar" kleur="blauw" className={s.ikoon} onClick={() => meld({ soort: "klaar" })} />}

@@ -36,6 +36,8 @@ export type TelSchelpenProps = {
   nummersLinks?: boolean;
   modus?: "links" | "rechts" | "bouw" | null;
   klaarKnop?: boolean;
+  /** Teken het vinkje in het vlak zelf (de oude plek). Standaard uit: het staat op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   /** Een warme rand om deze schelp (hulp: "kijk hier"). */
   gloei?: 1 | 2 | null;
   golf?: number;
@@ -189,6 +191,7 @@ export function TelSchelpen({
   nummersLinks = false,
   modus = null,
   klaarKnop = false,
+  knoppenInVlak = false,
   gloei = null,
   golf = 0,
   zonderLijst = false,
@@ -277,7 +280,7 @@ export function TelSchelpen({
         </ol>
       )}
 
-      {klaarKnop && (
+      {knoppenInVlak && klaarKnop && (
         <div className={s.vinkje} style={zonderLijst ? { left: 430, top: 600 } : { left: 578, top: 516 }}>
           <IkoonKnop ikoon="vink" label="Klaar" knop="vinkje" kleur="blauw" style={{ width: 112, height: 112 }} onClick={() => meld({ soort: "klaar" })} />
         </div>

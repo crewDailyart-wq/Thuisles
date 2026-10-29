@@ -12,12 +12,13 @@
  *   luidspreker = Nog eens horen
  *   opnieuw     = Opnieuw / Nog een keer
  *   terug       = Terug
+ *   hand        = Hulp (een open hand, bij het zetten van de klok; 28 oktober 2026)
  */
 
 import type { ButtonHTMLAttributes } from "react";
 import s from "./ikonen.module.css";
 
-export type Ikoon = "vink" | "vraag" | "verder" | "luidspreker" | "opnieuw" | "terug" | "start" | "race" | "klaar";
+export type Ikoon = "vink" | "vraag" | "verder" | "luidspreker" | "opnieuw" | "terug" | "start" | "race" | "klaar" | "hand";
 
 export function IkoonTeken({ ikoon, maat = 26 }: { ikoon: Ikoon; maat?: number }) {
   const lijn = { fill: "none", stroke: "currentColor", strokeWidth: 2.6, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
@@ -50,6 +51,10 @@ export function IkoonTeken({ ikoon, maat = 26 }: { ikoon: Ikoon; maat?: number }
           <path d="M5 21V4" {...lijn} />
           <path d="M5 4.5h12l-2.5 4 2.5 4H5" fill="currentColor" />
         </>
+      )}
+      {/* Een open hand: vier vingers en een duim, zelf getekend. */}
+      {ikoon === "hand" && (
+        <path d="M8 13V6.2a1.4 1.4 0 0 1 2.8 0V11M10.8 11V4.6a1.4 1.4 0 0 1 2.8 0V11M13.6 11V5.4a1.4 1.4 0 0 1 2.8 0V12M16.4 12V8.2a1.4 1.4 0 0 1 2.8 0v5.3c0 4-2.6 7-6.6 7h-.8c-2.4 0-3.8-1-5.2-2.9l-2.4-3.4a1.4 1.4 0 0 1 2.2-1.7L8 14" {...lijn} strokeWidth={2.2} />
       )}
       {ikoon === "klaar" && (
         <>

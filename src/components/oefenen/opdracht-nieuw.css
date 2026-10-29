@@ -1035,3 +1035,125 @@
     animation: none;
   }
 }
+
+/* De lessen met de indeling van Synthesis (28 oktober 2026, besluit eigenaar):
+   de zin boven Bliepo zonder zware schaduw of gloed. */
+[data-indeling="synthesis"] .bliepo-tekst,
+[data-indeling="synthesis"] .bliepo-tekst-nu,
+[data-indeling="synthesis"] .bliepo-tekst-nog {
+  text-shadow: none;
+}
+
+/* Nagebouwde lessen: de kolom van Bliepo begint onder de naam- en pauzebalk, zodat een lange vraag daar niet overheen valt (keurder, 28 okt 2026). */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] {
+  top: 112px;
+  height: 586px;
+}
+/* Nooit boven de bovenrand uit (ook niet met veel knoppen): eerst krimpt de wolk, die kan dan scrollen. */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] {
+  justify-content: safe flex-end;
+}
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon {
+  flex: 0 1 auto;
+  min-height: 0;
+}
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  flex-shrink: 0;
+}
+/* Het knopje "nog eens horen" niet op Bliepo's antenne. */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  margin-top: 36px;
+}
+/* Nagebouwde lessen: Bliepo iets kleiner (zelfde verhouding), zodat zijn vraag, de keuzes en hijzelf samen in de kolom passen (keurder ronde 4). */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  width: 196px;
+  height: 245px;
+  margin-top: 30px;
+}
+
+/* Nagebouwde lessen op een staand scherm (telefoon, tablet): Bliepo met de microfoon naast zijn wolk, niet eronder,
+   zodat veel keuzes hem niet onder uit beeld duwen (keurder ronde 5). */
+[data-indeling="synthesis"] .les-staand .bliepo-vloer {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+}
+[data-indeling="synthesis"] .les-staand .bliepo-vloer-ballon {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+[data-indeling="synthesis"] .les-staand .bliepo-vloer-onder,
+[data-indeling="synthesis"] .les-staand .bliepo-vloer > .bliepo-vloer-robot {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+[data-indeling="synthesis"] .les-staand .bliepo-vloer-robot {
+  width: 92px;
+  height: 115px;
+  margin-top: 0;
+}
+/* Staand: de microfoon in de kolom van Bliepo (boven hem), niet zwevend over de wolk. */
+[data-indeling="synthesis"] .les-staand .bliepo-vloer-onder > .gs-praat {
+  position: static;
+  order: -1;
+  margin: 0;
+}
+/* De wolk zelf geen maximale hoogte: anders schuift wat niet past naar boven, over de pauzeknop (overlapcontrole). */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon {
+  max-height: none;
+}
+/* Vijf of meer keuzes: de vraag van Bliepo iets kleiner, zodat alles onder de naambalk past (overlapcontrole). */
+[data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"]:has([class*="twee"] > button:nth-child(5)) .bliepo-tekst {
+  font-size: calc(24px * var(--stijl-schaal, 1));
+}
+
+/* De andere lessen (29 oktober 2026, overlapcontrole): de vraag van Bliepo en de keuzes nooit over de naam- en
+   pauzebalk, en op een staand scherm met 3 of meer keuzes (of keuzes met het vraagteken) Bliepo met de microfoon naast zijn wolk, zodat niets onder uit beeld valt.
+   Dezelfde regels als bij de nagebouwde lessen hierboven. */
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .bliepo-vloer[data-plek="kolom"] {
+  top: 112px;
+  height: 586px;
+  justify-content: safe flex-end;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon {
+  flex: 0 1 auto;
+  min-height: 0;
+  max-height: none;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  flex-shrink: 0;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .bliepo-vloer[data-plek="kolom"]:has([class*="bediening"] button:nth-child(3)) .bliepo-vloer-robot {
+  width: 196px;
+  height: 245px;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer {
+  flex-direction: row;
+  align-items: flex-end;
+  gap: 8px;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer-ballon {
+  flex: 1 1 auto;
+  min-width: 0;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer-onder,
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer > .bliepo-vloer-robot {
+  flex: 0 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer-robot {
+  width: 92px;
+  height: 115px;
+  margin-top: 0;
+}
+[data-les-ontwerp="nieuw"]:not([data-indeling="synthesis"]) .les-staand:is(:has([class*="bediening"] button:nth-child(3)), :has([data-knop="weetniet"])) .bliepo-vloer-onder > .gs-praat {
+  position: static;
+  order: -1;
+  margin: 0;
+}

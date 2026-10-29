@@ -47,6 +47,8 @@ export type TelRoosterProps = {
   verf?: Kleur[] | null;
   gekozenVerf?: Kleur | null;
   klaarKnop?: boolean;
+  /** Teken het vinkje in het vlak zelf (de oude plek). Standaard uit: het staat op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   /** Ophogen = een lichtgolf over het rooster (goed antwoord). */
   golf?: number;
 };
@@ -215,6 +217,7 @@ export function TelRooster({
   verf = null,
   gekozenVerf = null,
   klaarKnop = false,
+  knoppenInVlak = false,
   golf = 0,
   meld,
   schaal,
@@ -319,7 +322,7 @@ export function TelRooster({
           />
         ))}
 
-      {klaarKnop && (
+      {knoppenInVlak && klaarKnop && (
         <div className={s.vinkje} style={{ left: MIDDEN - 60, top: 556 }}>
           <IkoonKnop ikoon="vink" label="Klaar" knop="vinkje" kleur="blauw" style={{ width: 120, height: 120 }} onClick={() => meld({ soort: "klaar" })} />
         </div>

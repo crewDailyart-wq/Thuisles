@@ -55,6 +55,9 @@ import {
   bewaardeZin,
   nieuweZinnenMetBrowser,
   noteerNieuweZin,
+  maakVast,
+  naamZin,
+  zonderNaam,
 } from "@/lib/stem-server";
 import { VASTE_ZINNEN } from "@/lib/stem-vaste-zinnen";
 import { alleHintZinnen } from "@/lib/tutor/hints";
@@ -116,6 +119,22 @@ export async function GET(request: NextRequest) {
     en de browser leest hem zelf voor (404 met "nietBewaard").
   */
   if (nieuweZinnenMetBrowser()) {
+    /*
+      De naam van het kind (28 oktober 2026): de zin zonder naam ("Knap gedaan.")
+      en daarachter het losse naamfragment, als dat er is. Zonder fragment: de zin
+      zonder naam. Zo hoeft geen zin per kind opnieuw gemaakt te worden.
+    */
+    const naam = (params.get("naam") ?? (await huidigKind().catch(() => null))?.roepnaam ?? "").trim();
+    const zonder = naam ? zonderNaam(zin, naam) : null;
+    if (zonder) {
+      const basis = await bewaardeZin(zonder, profiel);
+      if (basis) {
+        const fragment = await bewaardeZin(naamZin(naam), profiel);
+        return mp3(fragment ? Buffer.concat([basis, fragment]) : basis, request);
+      }
+      void noteerNieuweZin(zonder);
+      return NextResponse.json({ nietBewaard: true }, { status: 404, headers: { "Cache-Control": "no-store" } });
+    }
     const bewaard = await bewaardeZin(zin, profiel);
     if (bewaard) return mp3(bewaard, request);
     void noteerNieuweZin(zin);
@@ -138,6 +157,28 @@ export async function POST(request: NextRequest) {
   /* Alleen wat vooraf klaar moet staan, en alleen wat nog ontbreekt (23 oktober 2026). */
   if (body?.actie === "vooraf") {
     return NextResponse.json(maakVooraf([...VASTE_ZINNEN, ...alleBegroetingen(), ...alleHintZinnen()], profielenVanKinderen()));
+  }
+
+  /*
+    Vaste zinnen van de nagebouwde lessen (28 oktober 2026; scripts/stemlessen.mjs):
+    "ontbreekt" geeft de zinnen zonder bewaarde stem terug (kost niets), "vast"
+    maakt ze met Ruth (alleen op de laptop, niet op de echte site).
+  */
+  if (body?.actie === "ontbreekt" || body?.actie === "vast") {
+    const zinnen: string[] = Array.isArray(body.zinnen) ? body.zinnen.filter((z: unknown) => typeof z === "string" && z.trim() && z.length <= MAX_LENGTE) : [];
+    const profiel = profielVoor(await groepVan(body?.groep));
+    if (body.actie === "ontbreekt") {
+      const ontbreekt: string[] = [];
+      for (const z of zinnen) if (!(await bewaardeZin(z, profiel))) ontbreekt.push(z);
+      return NextResponse.json({ ontbreekt });
+    }
+    if (process.env.NODE_ENV === "production") return NextResponse.json({ fout: "Alleen op de laptop." }, { status: 403 });
+    const uitkomst: { zin: string; goed: boolean; code?: number }[] = [];
+    for (const z of zinnen) {
+      const u = await maakVast(z, profiel);
+      uitkomst.push({ zin: z, goed: u.goed, code: u.goed ? undefined : u.code });
+    }
+    return NextResponse.json({ uitkomst });
   }
 
   if (body?.actie === "alles") {

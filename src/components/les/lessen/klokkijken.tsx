@@ -36,9 +36,12 @@
 import type { ReactNode } from "react";
 import type { Lesdraaiboek, Lesgids, Vlakgebeurtenis } from "../soort";
 import { draaiduur, MINUUTKLEUR, UURKLEUR, Wijzerklok } from "../vlakken/klok-wijzerklok";
-import { Sterrenklok, type SterrenklokProps } from "../vlakken/klok-holo-sterrenklok";
+/* Sinds 28 oktober 2026 de Bliepo-klok (eigen voorwerpenstijl, voorbeeld voor de eigenaar); de sterrenklok blijft staan. */
+import { knoppenOpPlek } from "./antwoordknoppen";
+import { BliepoKlok, type BliepoKlokProps as SterrenklokProps } from "../vlakken/klok-bliepo-klok";
 import { Wekker, type WekkerProps } from "../vlakken/klok-wekker";
 import { Wekkerrace, type WekkerraceProps } from "../vlakken/klok-wekkerrace";
+import { speelLesgeluid } from "@/lib/lesgeluiden";
 
 /* ---------- tijd ---------- */
 
@@ -75,27 +78,105 @@ class Klok {
   ) {
     this.nu = tijd;
     klokVan.set(l, this);
-    l.vlak<SterrenklokProps>(holo ? Sterrenklok : Wijzerklok, { stand: { tijd }, ...extra });
+    l.vlak<SterrenklokProps>(holo ? BliepoKlok : Wijzerklok, { stand: { tijd }, ...extra });
   }
   pas(p: Partial<SterrenklokProps>) {
     this.l.pasVlakAan<SterrenklokProps>(p);
   }
-  /** Een rustige lichtgolf over de sterrenklok (goed antwoord). */
+  /**
+   * Goed antwoord: een rustige lichtgolf over de klok, en (zoals Synthesis,
+   * 28 oktober 2026) een eigen goed-geluidje direct na het beurtgeluid. Fout
+   * heeft geen eigen geluid. LEGAL REVIEW REQUIRED: het moment komt van Synthesis.
+   */
   goed() {
-    if (this.holo) this.pas({ goed: ++this.golven });
+    if (!this.holo) return;
+    this.pas({ goed: ++this.golven });
+    setTimeout(() => speelLesgeluid("goed"), 350);
   }
-  /** Meteen naar deze tijd (elke wijzer de kortste weg). */
+  /** Meteen naar deze tijd (elke wijzer de kortste weg). Een gekleurd getal van de vorige opgave wordt weer gewoon. */
   zet(tijd: number) {
     this.nu = tijd;
-    this.pas({ stand: { tijd } });
+    this.pas({ stand: { tijd }, ...(this.holo ? { getalKleur: null } : {}) });
   }
   /** Rustig meedraaien, zoals een echte klok; klaar als de wijzers stilstaan. */
-  async draai(tijd: number) {
+  async draai(tijd: number, houdKleur = false) {
     const verschil = tijd - this.nu;
     this.nu = tijd;
-    this.pas({ stand: { tijd, draai: true } });
+    /* `houdKleur` (Synthesis, Hour Hand Hunt): het gekleurde getal van de vorige klok blijft staan tot de volgende tip. */
+    this.pas({ stand: { tijd, draai: true }, ...(this.holo && !houdKleur ? { getalKleur: null } : {}) });
     await this.l.wacht(draaiduur(verschil) + 250);
   }
+  /** Iets verschijnt op de klok (wijzers, vlaggetje, Sam, een nieuwe tijd): een kort plopje, zoals Synthesis. */
+  plop() {
+    if (this.holo) speelLesgeluid("plop");
+  }
+  private rondjes = 0;
+  /** Na een begeleide stap: de minutenwijzer draait één keer rond (Synthesis), de tijd blijft gelijk. */
+  rondje() {
+    this.pas({ rondje: ++this.rondjes });
+  }
+  /** Het vlaggetje en de boog van de huidige opgave (5 minuten later), om na het samen tellen terug te zetten. */
+  vlagNu: number | null = null;
+  boogNu: number | false = false;
+  /** Hoeveel lof er al gegeven is (steeds een ander woord). */
+  lofN = 0;
+  /** Synthesis (Hour Hand Hunt): een net gekleurd getal blijft één klok langer staan; daarna gaat het weg. */
+  kleurVers = false;
+  snelN = 0;
+}
+
+/* ---------- gedrag van Synthesis (28 oktober 2026, nabouw; LEGAL REVIEW REQUIRED voor de overgenomen momenten) ---------- */
+
+/** Korte lof na een goed antwoord, steeds een andere (Synthesis: Right, That's right, Exactly right, Spot on, Correct, Nice). */
+const LOF = ["Klopt.", "Dat klopt.", "Precies goed.", "Helemaal goed.", "Goed zo.", "Mooi."];
+function lof(l: Lesgids): string {
+  const k = klokVan.get(l);
+  const n = k ? k.lofN++ : 0;
+  return LOF[n % LOF.length];
+}
+
+/** Snel goed geantwoord (binnen 3 seconden): Synthesis zegt dat erbij, soms met de naam. */
+const SNEL_MS = 3000;
+function snelZin(l: Lesgids): string {
+  const k = klokVan.get(l);
+  const n = k ? k.snelN++ : 0;
+  const zinnen = [l.naam ? `Dat ging snel, ${l.naam}.` : "Dat ging snel.", "Dat was snel.", "Wat snel!"];
+  return zinnen[n % zinnen.length];
+}
+
+/** Synthesis: een tip, dan wacht Bliepo op de pijl, dan komt de vraag opnieuw. */
+async function tipDan(l: Lesgids, tip: string[], vraagZinnen: string[], naPijl?: () => void) {
+  await l.zeg(...tip);
+  await verder(l);
+  /* Synthesis: wat na de pijl in beeld komt (een ring om het goede getal) staat er al tijdens de vraagzin. */
+  naPijl?.();
+  if (vraagZinnen.length) await l.zeg(...vraagZinnen);
+}
+
+/**
+ * Synthesis: doet het kind een tijdje niets (±8 s, bij de urenwijzer ±3,5 s),
+ * dan zegt Bliepo vanzelf een aanwijzing, één keer. Geeft een functie die de
+ * aanwijzing afzegt (als het kind iets doet).
+ */
+function hintNa(l: Lesgids, ms: number, zinnen: string[]): () => void {
+  let weg = false;
+  const t = setTimeout(() => {
+    if (!weg) l.zeg(...zinnen).catch(() => {});
+  }, ms);
+  return () => {
+    weg = true;
+    clearTimeout(t);
+  };
+}
+
+/**
+ * Eerst de testhaak zetten (wat de klokles nu vraagt), dan wachten op de klok
+ * of een knop. Zo weten de speel- en rekencontrole wat er moet, ook als Bliepo
+ * de opdracht daarna nog uitspreekt.
+ */
+function wachtKlok(l: Lesgids, soorten: string | string[], taak: Record<string, unknown>, nieuw: boolean): Promise<Klokmelding> {
+  haak(taak, nieuw);
+  return straks(l.wachtOpVlak<Klokmelding>(soorten));
 }
 
 type Klokmelding = Vlakgebeurtenis & { tijd: number };
@@ -137,17 +218,31 @@ function haak(info: Record<string, unknown> | null, nieuw = false) {
   window.__phaser = { ...window.__phaser, klokTaak: info ? { ...info, n: ++haakN, v: vraagN } : null };
 }
 
-/** Een keuze; de eerste keer wijst Bliepo het vraagteken aan. */
-async function kies(l: Lesgids, opties: string[], goed: string | null = null, poging = 1) {
+/** De vijf Synthesis-lessen (T1 t/m T5): elke keuze is direct (een tik = het antwoord), "Weet ik niet" is een gewone keuzeknop. */
+const direct = new WeakSet<Lesgids>();
+
+/**
+ * Een keuze; de eerste keer wijst Bliepo het vraagteken aan. In de Synthesis-lessen
+ * staat "Weet ik niet" alleen waar Synthesis hem ook heeft: `weetniet: false` laat
+ * hem weg (een kind dat het niet weet krijgt dan hulp via 1× en 2× fout).
+ */
+async function kies(l: Lesgids, opties: string[], goed: string | null = null, poging = 1, o: { weetniet?: boolean } = {}) {
   haak({ soort: "kies", opties, goed, poging }, poging === 1);
-  const p = straks(l.kies(opties));
-  await wijsEenKeer(l, "weetniet", "Weet je het niet?", "Tik dan op het vraagteken.");
+  const begonnen = Date.now();
+  const metKnop = o.weetniet !== false;
+  const p = straks(direct.has(l) ? l.kies(opties, metKnop ? { direct: true, weetniet: "Weet ik niet" } : { direct: true, weetniet: false }) : l.kies(opties));
+  if (metKnop || !direct.has(l)) await wijsEenKeer(l, "weetniet", "Weet je het niet?", direct.has(l) ? "Tik dan op de knop: Weet ik niet." : "Tik dan op het vraagteken.");
   const uit = await p;
   haak(null);
+  laatsteKeuzeMs = Date.now() - begonnen;
   return uit;
 }
+/** Hoe lang het kind over de laatste keuze deed (voor "Dat ging snel"). */
+let laatsteKeuzeMs = 99999;
 
 /** De vragen die terugkomen ("weet ik niet" of 2× fout), nog één keer. */
+/* Blijft staan (regel 1); sinds de nabouw van 28 oktober 2026 niet meer gebruikt in de vijf lessen. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 async function terugkomen(l: Lesgids, k: Klok) {
   const lijst = k.later.splice(0);
   if (!lijst.length) return;
@@ -173,35 +268,86 @@ type Vraag = {
   antwoord: string[];
   /** De vraag nog eens, later in de les (na "weet ik niet" of 2× fout). */
   later?: () => Promise<unknown>;
+  /** Synthesis-lessen: `false` = geen "Weet ik niet"-knop bij de eerste keuze (Synthesis heeft hem daar niet). */
+  weetniet?: boolean;
+  /** Idem bij de tweede poging; standaard geen knop (Synthesis heeft hem daar alleen waar de analyse het zegt). */
+  weetnietTweede?: boolean;
+  /*
+    Gedrag van Synthesis (alleen in de vijf nagebouwde lessen, 28 oktober 2026):
+  */
+  /** Het goede getal op de klok: bij 2× fout een ring erom, daarna krijgt het de donkere kleur van zijn wijzer. */
+  ring?: number;
+  /** De ring hoort bij deze wijzer (kleur); standaard de urenwijzer. */
+  ringWijzer?: "uur" | "minuut";
+  /** De ring staat er al bij de tweede poging (na de tip). */
+  ringTweede?: boolean;
+  /** Extra beeld bij 2× fout (bijvoorbeeld het pulserende boogje). */
+  bijFout2?: () => void;
+  /** Bij 2× fout eerst samen iets doen (Synthesis: "We tellen het op de klok."), daarna het antwoord. */
+  samenBijFout2?: () => Promise<void>;
+  /** Iets wat pas na een tijdje in beeld komt terwijl het kind nadenkt (het driehoekje, ±4 s). */
+  naVraag?: { ms: number; doe: () => void };
+  /** Snel goed (binnen 3 s): Bliepo zegt dat erbij. */
+  snel?: boolean;
 };
 
 /** Een keuzevraag. Geeft terug of het meteen goed was. */
 async function vraag(l: Lesgids, opties: string[], goed: string, v: Vraag): Promise<boolean> {
-  const keuze = await kies(l, opties, goed);
+  const synth = direct.has(l);
+  const kl = klokVan.get(l);
+  const uitstel = synth && v.naVraag ? setTimeout(v.naVraag.doe, v.naVraag.ms) : undefined;
+  const keuze = await kies(l, opties, goed, 1, { weetniet: v.weetniet });
+  clearTimeout(uitstel);
   if (keuze === goed) {
-    klokVan.get(l)?.goed();
+    kl?.goed();
     v.toon?.();
-    if (v.goedZin) await l.zeg(...v.goedZin);
+    const zin = [...(v.goedZin ?? [])];
+    if (synth && v.snel && laatsteKeuzeMs < SNEL_MS) zin.push(snelZin(l));
+    if (zin.length) await l.zeg(...zin);
     if (v.verder) await verder(l);
     return true;
   }
   const tweede = await v.fout(keuze);
   if (tweede) {
-    const opnieuw = await kies(l, tweede, goed, 2);
+    if (synth && v.ring != null && v.ringTweede) kl?.pas({ ring: v.ring, ringWijzer: v.ringWijzer ?? "uur", ringPuls: false });
+    const opnieuw = await kies(l, tweede, goed, 2, { weetniet: v.weetnietTweede ?? false });
     if (opnieuw === goed) {
-      klokVan.get(l)?.goed();
+      kl?.goed();
+      /* Synthesis: goed na de tip = de ring gaat weg en het getal krijgt de donkere kleur van zijn wijzer. */
+      if (synth && v.ring != null) {
+        kl?.pas({ ring: null, getalKleur: { n: v.ring, wijzer: v.ringWijzer ?? "uur" } });
+        if (kl) kl.kleurVers = true;
+      }
       v.toon?.();
       await l.zeg(...(v.goedZin ?? ["Ja."]));
       if (v.verder) await verder(l);
       return false;
     }
   }
+  if (synth) {
+    /*
+      Synthesis bij 2× fout: het antwoord met de reden, een ring om het goede
+      getal dat daarna de kleur van zijn wijzer krijgt, en de les gaat vanzelf
+      door (geen pijl, geen "komt straks terug").
+    */
+    if (v.ring != null) kl?.pas({ ring: v.ring, ringWijzer: v.ringWijzer ?? "uur", ringPuls: false });
+    v.bijFout2?.();
+    if (v.samenBijFout2) await v.samenBijFout2();
+    v.toon?.();
+    if (v.antwoord.length) await l.zeg(...v.antwoord);
+    if (v.ring != null) {
+      kl?.pas({ ring: null, getalKleur: { n: v.ring, wijzer: v.ringWijzer ?? "uur" } });
+      if (kl) kl.kleurVers = true;
+    }
+    await l.wacht(500);
+    return false;
+  }
   v.toon?.();
   await l.zeg(...v.antwoord);
   const k = klokVan.get(l);
   if (v.later && k) {
     k.later.push(v.later);
-    await l.zeg("We komen hier later op terug.");
+    await l.zeg("Deze vraag komt straks nog een keer terug.");
   }
   await verder(l);
   return false;
@@ -230,9 +376,10 @@ async function weetJeHet(l: Lesgids, ...zinnen: string[]) {
  * uitlegzin en dan meteen oefenen ("kort").
  */
 async function begin(l: Lesgids, zinnen: string[], o: { uitleg: string[]; proef: () => Promise<boolean> }): Promise<"kan" | "leer" | "kort"> {
-  await l.zeg(...zinnen, "Denk je dat je dit al weet?", "Tik op je antwoord, en dan op het vinkje.");
+  await l.zeg(...zinnen, "Denk je dat je dit al weet?");
   const k = await kies(l, ["Ja", "Nee"]);
-  if (k === "Nee") {
+  /* Synthesis-lessen: "Weet ik niet" geeft net als Nee de hele les ("No problem. Let's go through it together."). */
+  if (k === "Nee" || (k === null && direct.has(l))) {
     await l.zeg("Geen probleem.", "We doen het samen.");
     return "leer";
   }
@@ -243,7 +390,8 @@ async function begin(l: Lesgids, zinnen: string[], o: { uitleg: string[]; proef:
   }
   await l.zeg("Mooi.", "Laat maar eens zien.");
   if (await o.proef()) {
-    await l.zeg("Knap, dat kun je al!", "Dan gaan we meteen oefenen.");
+    /* "Dan slaan we het begin over." klopt in elke les (de opbouw valt weg); "meteen oefenen" klopte niet bij de urenwijzer (29 oktober 2026). */
+    await l.zeg("Knap, dat kun je al!", "Dan slaan we het begin over.");
     await verder(l);
     return "kan";
   }
@@ -253,8 +401,8 @@ async function begin(l: Lesgids, zinnen: string[], o: { uitleg: string[]; proef:
 }
 
 /** Een proefvraag aan het begin: geen uitleg, geen tweede kans. */
-async function proefvraag(l: Lesgids, opties: string[], goed: string): Promise<boolean> {
-  const keuze = await kies(l, opties, goed);
+async function proefvraag(l: Lesgids, opties: string[], goed: string, weetniet = true): Promise<boolean> {
+  const keuze = await kies(l, opties, goed, 1, { weetniet });
   if (keuze === goed) {
     klokVan.get(l)?.goed();
     await l.zeg("Ja.");
@@ -264,8 +412,10 @@ async function proefvraag(l: Lesgids, opties: string[], goed: string): Promise<b
 }
 
 /** Een vraag uit het toetsdeel: kort, bij een fout meteen het antwoord. */
-async function toetsvraag(l: Lesgids, opties: string[], goed: string, goedZin: string, uitleg: () => Promise<void>): Promise<boolean> {
-  const keuze = await kies(l, opties, goed);
+/* Blijft staan (regel 1); sinds de nabouw van 28 oktober 2026 niet meer gebruikt in de vijf lessen. */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+async function toetsvraag(l: Lesgids, opties: string[], goed: string, goedZin: string, uitleg: () => Promise<void>, weetniet = true): Promise<boolean> {
+  const keuze = await kies(l, opties, goed, 1, { weetniet });
   if (keuze === goed) {
     klokVan.get(l)?.goed();
     await l.zeg(goedZin);
@@ -296,37 +446,132 @@ async function kaartEinde(l: Lesgids, fouten: number, slot: string) {
 
 /* ---------- zelf de klok zetten ---------- */
 
-/** "Ga naar de 2": alleen de urenwijzer, alleen het getal met het ringetje. */
-async function gaNaar(l: Lesgids, k: Klok, n: number) {
-  k.pas({ ring: n, alleenGetal: n, beweegbaar: "uur", actief: true });
-  for (let poging = 1; ; poging++) {
-    haak({ soort: "uur", doel: n, poging, alleen: true }, poging === 1);
-    const g = await l.wachtOpVlak<Klokmelding>(["gezet", "mis"]);
-    haak(null);
-    k.nu = g.tijd;
-    if (g.soort === "gezet" && zelfde(g.tijd, u(n))) break;
-    k.pas({ actief: false });
-    await l.zeg(`Tik op de ${n}.`, "Of sleep de oranje urenwijzer erheen.");
-    k.pas({ actief: true });
-  }
-  k.goed();
-  k.pas({ ring: null, alleenGetal: null, beweegbaar: null, actief: false });
+/*
+  Zelf de klok zetten, zoals Synthesis (28 oktober 2026, GEDRAG-T1 t/m T5;
+  LEGAL REVIEW REQUIRED voor de overgenomen momenten): de opdracht staat als
+  kop boven de klok en Bliepo zegt hem; het handje (hulp) en soms het vinkje
+  staan op de vaste plek. Doet het kind een tijdje niets, dan komt vanzelf een
+  aanwijzing. Een tik op een verkeerd getal zet de wijzer daar, zonder reactie.
+*/
+
+/** De eerste keer wijst Bliepo het handje en het vinkje aan (groep 3 leest nog niet). */
+async function wijsHandje(l: Lesgids, vinkje: boolean) {
+  await wijsEenKeer(l, "hulp", "Hulp nodig?", "Tik dan op het handje.");
+  if (vinkje) await wijsEenKeer(l, "klokcontrole", "Klaar?", "Tik dan op het vinkje.");
 }
 
-/** De minutenwijzer zelf laten draaien tot `doel` (een rondje, een half rondje). */
-async function draaiMinuut(l: Lesgids, k: Klok, doel: number, hint: string[]) {
-  k.pas({ actief: true, beweegbaar: "minuut", grens: { van: k.nu, tot: doel } });
+/**
+ * "Ga naar de 2" (Synthesis, Hour Hand Hunt): een kop met de opdracht en een
+ * ring om het getal. Tikt het kind een ander getal, dan gaat de wijzer daarheen
+ * en gebeurt er verder niets. Na ±3,5 s niets doen komt de aanwijzing. Op het
+ * doel: de wijzers draaien (de minutenwijzer een rondje) en het getal krijgt
+ * de kleur van de urenwijzer. `hulpknop`: het handje staat erbij (stap voor
+ * stap na het handje, Halfway Around); dan zegt het handje de aanwijzing nog eens.
+ */
+async function gaNaar(l: Lesgids, k: Klok, n: number, o: { kop?: string; hintMs?: number; hint?: string[]; hulpknop?: boolean } = {}) {
+  const kop = o.kop ?? `Ga naar de ${n}.`;
+  const hint = o.hint ?? [`Tik op de ${n}, of sleep de [[u:oranje urenwijzer]] erheen.`];
+  const soorten = o.hulpknop ? ["gezet", "hulp"] : ["gezet"];
+  k.pas({ doel: kop, ring: n, ringWijzer: "uur", ringPuls: false, pil: "uur", alleenGetal: null, beweegbaar: "uur", actief: false, hulpknop: !!o.hulpknop });
+  const taak = (poging: number) => ({ soort: "uur", doel: n, poging });
+  await l.zeg(kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, soorten, taak(1), true);
+  if (o.hulpknop) await wijsHandje(l, false);
   for (let poging = 1; ; poging++) {
-    haak({ soort: "minuut", doel, poging }, poging === 1);
-    const g = await l.wachtOpVlak<Klokmelding>("gezet");
+    const stop = hintNa(l, o.hintMs ?? 3500, hint);
+    const g = await (klaar ?? wachtKlok(l, soorten, taak(poging), false));
+    klaar = null;
+    stop();
     haak(null);
+    if (g.soort === "hulp") {
+      klaar = wachtKlok(l, soorten, taak(poging + 1), false);
+      await l.zeg(...hint);
+      continue;
+    }
+    k.nu = g.tijd;
+    if (zelfde(g.tijd, u(n))) break;
+  }
+  speelLesgeluid("wijzerKlik");
+  k.rondje();
+  k.pas({ ring: null, getalKleur: { n, wijzer: "uur" }, doel: null, beweegbaar: null, actief: false, pil: null, hulpknop: false });
+}
+
+/**
+ * De minutenwijzer naar `doel` (Synthesis: "Tik op het volgende getal",
+ * "Draai de minutenwijzer één keer rond", "Minutenwijzer naar de 6"). Alleen
+ * het handje erbij; er wordt meteen nagekeken. Met `klem` doet een getal
+ * voorbij het doel niets (geen geluid, geen tekst); een getal ervoor (bij 10
+ * minuten: eerst één getal) zet de wijzer daar en de opdracht loopt door. Het
+ * handje zegt de aanwijzing nog eens. Geeft terug of het zonder handje lukte.
+ */
+async function minuutNaar(
+  l: Lesgids,
+  k: Klok,
+  doel: number,
+  o: { kop: string; hint: string[]; hintMs?: number; ring?: number | null; klem?: boolean; inkleur?: boolean; hintMeteen?: boolean; kijkUur?: boolean; boog?: "nu" | "naTik" | "eigen" },
+): Promise<boolean> {
+  const start = k.nu;
+  const klem = o.klem ?? true;
+  /* De boog van de opgave: meteen ("nu", standaard), pas na de tik ("naTik", Synthesis bij de eerste opdracht) of niet ("eigen": samen tellen heeft al een eigen boog vanaf de tijd van nu). */
+  if ((o.boog ?? "nu") === "nu") toonBoog(k);
+  k.pas({
+    doel: o.kop,
+    actief: false,
+    beweegbaar: "minuut",
+    grens: { van: start, tot: doel },
+    klem,
+    /* `kijkUur` (Synthesis, vooruitkijken): de pil om de urenwijzer en de minutenwijzer vaag, zodat het kind naar de urenwijzer kijkt. */
+    pil: o.kijkUur ? "uur" : "minuut",
+    ...(o.kijkUur ? { minuutwijzer: "flets" as const } : {}),
+    ring: o.ring ?? null,
+    ringWijzer: "minuut",
+    ringPuls: false,
+    alleenGetal: null,
+    hulpknop: true,
+    ...(o.inkleur ? { inkleur: true } : {}),
+  });
+  let handje = false;
+  const taak = (poging: number) => ({ soort: "minuut", doel, poging, klem });
+  await l.zeg(o.kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, ["gezet", "hulp"], taak(1), true);
+  /* Synthesis (vooruitkijken): de aanwijzing komt meteen na de kop. */
+  if (o.hintMeteen) await l.zeg(...o.hint);
+  await wijsHandje(l, false);
+  for (let poging = 1; ; poging++) {
+    const stop = hintNa(l, o.hintMs ?? 8000, o.hint);
+    const g = await (klaar ?? wachtKlok(l, ["gezet", "hulp"], taak(poging), false));
+    klaar = null;
+    stop();
+    haak(null);
+    if (g.soort === "hulp") {
+      handje = true;
+      klaar = wachtKlok(l, ["gezet", "hulp"], taak(poging + 1), false);
+      await l.zeg(...o.hint);
+      continue;
+    }
+    /* Alleen via de testhaak kan de wijzer voorbij het doel komen: dan stil terug. */
+    if (g.tijd > doel || g.tijd < start) {
+      /* Terug zonder het gekleurde getal weg te halen. */
+      k.pas({ stand: { tijd: k.nu } });
+      continue;
+    }
     k.nu = g.tijd;
     if (g.tijd === doel) break;
-    k.pas({ actief: false });
-    await l.zeg(...hint);
-    k.pas({ actief: true });
   }
-  k.pas({ actief: false, beweegbaar: null, grens: null });
+  /* De klok in beeld staat zeker op het doel (een onderbroken animatie kon hem ertussen laten staan; het gekleurde getal blijft). */
+  k.pas({ stand: { tijd: doel } });
+  speelLesgeluid("wijzerKlik");
+  if (o.boog === "naTik") toonBoog(k);
+  k.pas({ actief: false, beweegbaar: null, grens: null, klem: false, pil: null, ring: null, doel: null, hulpknop: false, ...(o.kijkUur ? { minuutwijzer: "fel" as const } : {}) });
+  return !handje;
+}
+
+/** De minutenwijzer zelf laten draaien tot `doel` (een rondje, een half rondje): kop, alleen het handje, meteen nagekeken. */
+async function draaiMinuut(l: Lesgids, k: Klok, doel: number, hint: string[], kop = "Draai de minutenwijzer.", hintMeteen = false) {
+  /* Met de aanwijzing meteen = vooruitkijken: dan ook de pil om de urenwijzer (Synthesis). */
+  await minuutNaar(l, k, doel, { kop, hint, klem: false, hintMeteen, kijkUur: hintMeteen });
 }
 
 /** De eerste keer dat het vraagteken en het vinkje onder de klok staan, wijst Bliepo ze aan. */
@@ -336,7 +581,7 @@ async function wijsKlokknoppen(l: Lesgids) {
 }
 
 type Zetten = {
-  modus: "uur" | "beide";
+  modus: "uur" | "beide" | "minuut";
   /** De tijd groot bovenaan ("half 9"). */
   doel?: string;
   /** Wat het handje zegt, en welk getal dan een ringetje krijgt. */
@@ -346,6 +591,8 @@ type Zetten = {
   fout: (t: number) => Promise<void>;
   /** Na twee keer zet Bliepo het zelf goed en zegt dit (ALGEMENE HULPREGELS: 2× fout = voordoen). */
   uitleg: string[];
+  /** Het handje (en 2× fout): Bliepo zet de klok samen met het kind, stap voor stap. */
+  stappen?: () => Promise<void>;
 };
 
 /** Het kind zet de klok en tikt op het vinkje. Geeft terug of het meteen en zonder hulp lukte. */
@@ -360,6 +607,13 @@ async function laatZien(l: Lesgids, k: Klok, doel: number, z: Zetten): Promise<b
     haak(null);
     k.nu = g.tijd;
     k.pas({ actief: false, pijl: null, pil: null });
+    if (g.soort === "hulp" && z.stappen) {
+      zonderHulp = false;
+      k.pas({ controle: false });
+      await l.zeg("Ik help je.");
+      await z.stappen();
+      break;
+    }
     if (g.soort === "hulp") {
       zonderHulp = false;
       k.pas({ ring: z.hulpring });
@@ -373,6 +627,12 @@ async function laatZien(l: Lesgids, k: Klok, doel: number, z: Zetten): Promise<b
     }
     zonderHulp = false;
     fouten++;
+    if (fouten >= 2 && z.stappen) {
+      k.pas({ ring: null, controle: false });
+      await l.zeg("Laten we hem samen zetten.");
+      await z.stappen();
+      break;
+    }
     if (fouten >= 2) {
       k.pas({ ring: null });
       await l.zeg("Kijk, zo.");
@@ -390,61 +650,95 @@ async function laatZien(l: Lesgids, k: Klok, doel: number, z: Zetten): Promise<b
 }
 
 /**
- * Een heel uur zetten met alleen de urenwijzer, met de hulp uit INSPIRATIE.md
- * (R3 · Set the Hour): 1× fout = "dat is de 8, we willen de 9, draai verder"
- * met een gebogen lichtpijl; het hulphandje (vraagteken) of 2× fout = een
- * cirkel om het goede getal en "tik op de 9, of sleep de urenwijzer erheen";
- * daarna telt alleen nog het goede getal, zonder vinkje. Geeft terug of het
- * zonder hulp lukte.
+ * Een heel uur zetten met alleen de urenwijzer, zoals Synthesis (Set the Hour,
+ * GEDRAG-T2): de kop "Laat 5 uur zien.", het handje en het vinkje. Er wordt
+ * pas nagekeken bij het vinkje; een tik op een getal zet de wijzer daar.
+ * Na ±8 s niets doen komt de aanwijzing. `start`: de urenwijzer begint op
+ * een ander uur (de wijzers draaien er eerst heen).
+ * - 1× fout: een blauwe pijl met de klok mee, "Dat is de 4. We willen de 5,
+ *   dus draai verder." en wachten op de pijl; dan dezelfde opdracht (de pijl blijft).
+ * - 2× fout of het handje ("Geen probleem."): een ring om het goede getal, het
+ *   vinkje weg, alleen dat getal tikken; dan draait de minutenwijzer een rondje
+ *   en het getal krijgt de kleur van de urenwijzer.
+ * Geeft terug of het meteen en zonder hulp lukte; `hulp` zegt of het handje of
+ * 2× fout de begeleide stap gaf, `handje` of dat het handje was.
  */
-async function zetUur(l: Lesgids, k: Klok, uur: number): Promise<boolean> {
+async function zetUur(l: Lesgids, k: Klok, uur: number, start: number | null = null): Promise<boolean> {
   if (!k.holo) return heelUur(l, k, uur);
-  k.pas({ actief: true, beweegbaar: "uur", controle: true, pil: "uur", doel: `${uur} uur` });
+  if (start !== null && !zelfde(k.nu, u(start))) {
+    k.zet(u(start));
+    await l.wacht(700);
+  }
+  const kop = `Laat ${uur} uur zien.`;
+  const hint = [`Tik op de ${uur}, of sleep de [[u:oranje urenwijzer]] erheen.`];
+  const open = () => k.pas({ doel: kop, actief: false, beweegbaar: "uur", controle: true, hulpknop: true, pil: "uur" });
+  open();
+  const taak = (poging: number) => ({ soort: "uur", doel: uur, poging, controle: true });
+  await l.zeg(kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, ["controle", "hulp"], taak(1), true);
+  await wijsHandje(l, true);
   let fouten = 0;
   let hulp = false;
+  let handje = false;
   for (let poging = 1; ; poging++) {
-    haak({ soort: "uur", doel: uur, poging, controle: true }, poging === 1);
-    const wacht = straks(l.wachtOpVlak<Klokmelding>(["controle", "hulp"]));
-    await wijsKlokknoppen(l);
-    const g = await wacht;
+    const voor = k.nu;
+    const stop = hintNa(l, 8000, hint);
+    const g = await (klaar ?? wachtKlok(l, ["controle", "hulp"], taak(poging), false));
+    klaar = null;
+    stop();
     haak(null);
     k.nu = g.tijd;
     if (g.soort === "controle" && zelfde(g.tijd, u(uur))) break;
-    k.pas({ actief: false, pijl: null });
-    if (g.soort === "controle") fouten++;
-    if (g.soort === "hulp" || fouten >= 2) {
+    k.pas({ doel: null, actief: false, controle: false, hulpknop: false });
+    if (g.soort === "hulp") {
+      hulp = handje = true;
+      break;
+    }
+    fouten++;
+    if (fouten >= 2) {
       hulp = true;
       break;
     }
+    /* De blauwe pijl wijst altijd met de klok mee, vanaf het getal waar de wijzer nu staat. */
     const nu = uurVan(g.tijd);
-    const vooruit = mod(uur - nu, 12) <= 6;
-    k.pas({ pijl: { van: nu, naar: vooruit ? volgend(nu) : vorig(nu) } });
-    await l.zeg(`Dat is de ${nu}.`, `We willen de ${uur}.`, vooruit ? "Draai dus verder." : "Draai dus een stukje terug.");
+    k.pas({ pijl: { van: nu, naar: volgend(nu) } });
+    if (zelfde(g.tijd, voor)) await tipDan(l, [`De wijzer staat op de ${nu}.`, `Hij moet naar de ${uur}.`], []);
+    else await tipDan(l, [`Dat is de ${nu}.`, `We willen de ${uur}, dus draai verder.`], []);
+    open();
+    await l.zeg(kop);
     k.pas({ actief: true });
+    klaar = wachtKlok(l, ["controle", "hulp"], taak(poging + 1), false);
   }
   if (hulp) {
-    /* Het goede getal krijgt een cirkel; alleen dat getal werkt nog, het vinkje is weg. */
-    k.pas({ actief: false, controle: false, pijl: null, ring: uur, alleenGetal: uur });
-    await l.zeg(`Tik op de ${uur}.`, "Of sleep de urenwijzer erheen.");
+    /* Synthesis: na het handje pulseert de ring licht; na 2× fout staat hij stil. */
+    k.pas({ pijl: null, ring: uur, ringWijzer: "uur", ringPuls: handje, alleenGetal: uur, beweegbaar: "uur", pil: "uur" });
+    if (handje) await l.zeg("Geen probleem.");
+    const begeleid = { soort: "uur", doel: uur, poging: 99, alleen: true };
+    await l.zeg(`Tik op de ${uur}, of sleep de [[u:urenwijzer]] erheen.`);
     k.pas({ actief: true });
-    /* Een ander getal doet niets (zoals Synthesis); na een paar keer zegt Bliepo het nog eens. */
-    for (let mis = 1; ; mis++) {
-      haak({ soort: "uur", doel: uur, poging: 99, alleen: true });
-      const g = await l.wachtOpVlak<Klokmelding>(["gezet", "mis"]);
+    let tik: Promise<Klokmelding> | null = wachtKlok(l, "gezet", begeleid, false);
+    for (;;) {
+      const g = await (tik ?? wachtKlok(l, "gezet", begeleid, false));
+      tik = null;
       haak(null);
       k.nu = g.tijd;
-      if (g.soort === "gezet" && zelfde(g.tijd, u(uur))) break;
-      if (mis % 3 === 0) {
-        k.pas({ actief: false });
-        await l.zeg(`Tik op de ${uur}, in de cirkel.`);
-        k.pas({ actief: true });
-      }
+      if (zelfde(g.tijd, u(uur))) break;
     }
+    speelLesgeluid("wijzerKlik");
   }
   k.goed();
-  k.pas({ actief: false, beweegbaar: null, controle: false, ring: null, alleenGetal: null, pijl: null, pil: null, doel: null });
+  if (hulp) {
+    k.rondje();
+    k.pas({ getalKleur: { n: uur, wijzer: "uur" } });
+  }
+  /* Synthesis (Set the Hour): de pil om de urenwijzer blijft staan na goed, tot de volgende vraag. */
+  k.pas({ actief: false, beweegbaar: null, controle: false, hulpknop: false, ring: null, ringPuls: false, alleenGetal: null, pijl: null, pil: "uur", doel: null });
+  zetUurUitslag = { hulp, handje };
   return !hulp && fouten === 0;
 }
+/** Hoe de laatste `zetUur` ging (voor de goede zin erna: "Daar is hij." of "Gelukt."). */
+let zetUurUitslag = { hulp: false, handje: false };
 
 /** Een heel uur zetten met alleen de urenwijzer (Set the Hour). */
 function heelUur(l: Lesgids, k: Klok, uur: number): Promise<boolean> {
@@ -462,56 +756,153 @@ function heelUur(l: Lesgids, k: Klok, uur: number): Promise<boolean> {
   });
 }
 
-/** Half of kwart over zetten met beide wijzers. `doel` is bijvoorbeeld u(8, 30) voor half 9. */
-function halfOfKwart(l: Lesgids, k: Klok, doel: number): Promise<boolean> {
+/**
+ * Samen zetten in stappen (Synthesis, na het handje: "Your wish is my command"):
+ * eerst de kop "Urenwijzer naar de 8." met een ring, dan "Minutenwijzer naar de 6."
+ * met een ring in de kleur van de minutenwijzer. Alleen het handje erbij.
+ */
+async function zetInStappen(l: Lesgids, k: Klok, doel: number) {
+  const half = mod(doel, 60) === 30;
+  const uur = uurVan(doel);
+  const m = half ? 6 : 3;
+  k.pas({ gekozen: null });
+  await gaNaar(l, k, uur, { kop: `Urenwijzer naar de ${uur}.`, hintMs: 8000, hint: [`Tik op de ${uur}, of sleep de [[u:oranje urenwijzer]] erheen.`], hulpknop: true });
+  await l.zeg(`Dat is ${uur} uur.`, half ? "Nu nog een half uur erbij." : "Nu nog een kwartier erbij.");
+  await minuutNaar(l, k, doel, { kop: `Minutenwijzer naar de ${m}.`, hint: [`Tik op de ${m}, of sleep de [[m:minutenwijzer]] erheen.`], ring: m });
+  k.goed();
+  /* Synthesis: bij half wordt de 6 donkerpaars (Halfway Around); bij kwart over blijft de 8 gekleurd (Quarter Past). */
+  if (half) k.pas({ getalKleur: { n: m, wijzer: "minuut" } });
+  await l.zeg(half ? `Half ${volgend(uur)}.` : `Kwart over ${uur}.`, "Nu lukt het.");
+}
+
+/**
+ * Half of kwart over zetten met beide wijzers, zoals Synthesis (Halfway Around,
+ * Quarter Past): de klok begint op `start`, de kop "Laat half 9 zien.", het
+ * handje en het vinkje; de urenwijzer is al gekozen. Een wijzer aantikken kiest
+ * hem; een getal tikken zet de gekozen wijzer daar (de urenwijzer op een getal:
+ * de minutenwijzer springt naar de 12; de minutenwijzer verzetten: de urenwijzer
+ * schuift mee). Nagekeken bij het vinkje.
+ * - Fout: uitleg in drie zinnen (wat goed is, wat niet, wat te doen), met de
+ *   blauwe pijl als de urenwijzer verder moet; wachten op de pijl; opnieuw.
+ * - Het handje ("Komt eraan!") of 2× fout: de klok terug naar het begin, en
+ *   samen stap voor stap.
+ * Geeft terug of het meteen en zonder hulp lukte.
+ */
+async function halfOfKwart(l: Lesgids, k: Klok, doel: number, start = u(12)): Promise<boolean> {
   const half = mod(doel, 60) === 30;
   const uur = uurVan(doel);
   const na = volgend(uur);
-  return laatZien(l, k, doel, {
-    modus: "beide",
-    doel: half ? `half ${na}` : `kwart over ${uur}`,
-    hulp: half
-      ? ["Bij half staat de minutenwijzer op de 6.", `De urenwijzer is op weg naar de ${na}.`]
-      : ["Bij kwart over staat de minutenwijzer op de 3.", `De urenwijzer staat net na de ${uur}.`],
-    hulpring: half ? 6 : 3,
-    fout: async (t) => {
-      if (mod(t, 60) !== mod(doel, 60)) {
-        k.pas({ pil: "minuut" });
-        await l.zeg(half ? "Bij half staat de minutenwijzer op de 6." : "Bij kwart over staat de minutenwijzer op de 3.");
-        return;
-      }
-      k.pas({ pil: "uur" });
-      if (half && uurVan(t) === na) {
-        await l.zeg(`Half ${na} komt vóór ${na} uur.`, `De urenwijzer is nog op weg naar de ${na}.`, `Hij hoort tussen de ${uur} en de ${na}.`);
-      } else if (half) {
-        await l.zeg(`De urenwijzer hoort tussen de ${uur} en de ${na}.`);
-      } else {
-        await l.zeg(`De urenwijzer hoort net na de ${uur}.`);
-      }
-    },
-    uitleg: half
-      ? ["De minutenwijzer staat op de 6.", `De urenwijzer staat tussen de ${uur} en de ${na}.`, `Het is half ${na}.`]
-      : ["De minutenwijzer staat op de 3.", `De urenwijzer staat net na de ${uur}.`, `Het is kwart over ${uur}.`],
-  });
-}
-
-/** Een stuk van de klok inkleuren met de minutenwijzer: de helft (30) of een kwart (15). */
-async function kleurIn(l: Lesgids, k: Klok, minuten: 30 | 15) {
-  const start = k.nu;
-  const getal = minuten / 5;
-  k.pas({ inkleur: true, actief: true, beweegbaar: "minuut", controle: true, grens: { van: start, tot: start + 55 } });
-  for (let fouten = 0, poging = 1; ; poging++) {
-    haak({ soort: "minuut", doel: start + minuten, poging, controle: true }, poging === 1);
-    const wacht = straks(l.wachtOpVlak<Klokmelding>(["controle", "hulp"]));
-    await wijsKlokknoppen(l);
-    const g = await wacht;
+  const naam = half ? `half ${na}` : `kwart over ${uur}`;
+  const m = half ? 6 : 3;
+  const kop = `Laat ${naam} zien.`;
+  if (!zelfde(k.nu, start)) {
+    /* Synthesis: een getal dat bij de stappen gekleurd werd, blijft gekleurd tot het kind iets doet. */
+    k.nu = start;
+    k.pas({ stand: { tijd: start } });
+    k.plop();
+    await l.wacht(700);
+  }
+  /* Synthesis: de gekozen urenwijzer heeft meteen een pil (en houdt die ook als de minutenwijzer gekozen wordt). */
+  const open = () => k.pas({ doel: kop, actief: false, beweegbaar: "beide", controle: true, hulpknop: true, gekozen: "uur", pil: "uur" });
+  open();
+  const taak = (poging: number) => ({ soort: "tijd", doel, poging, controle: true });
+  await l.zeg(kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, ["controle", "hulp"], taak(1), true);
+  await wijsHandje(l, true);
+  let fouten = 0;
+  let stappen = false;
+  let handje = false;
+  for (let poging = 1; ; poging++) {
+    const stop = hintNa(l, 8000, ["Tik op een wijzer om hem te kiezen.", "Tik dan waar hij heen moet."]);
+    const g = await (klaar ?? wachtKlok(l, ["controle", "hulp"], taak(poging), false));
+    klaar = null;
+    stop();
     haak(null);
     k.nu = g.tijd;
-    k.pas({ actief: false });
+    k.pas({ getalKleur: null });
+    if (g.soort === "controle" && zelfde(g.tijd, doel)) break;
+    k.pas({ doel: null, actief: false, controle: false, hulpknop: false, gekozen: null });
     if (g.soort === "hulp") {
-      k.pas({ ring: getal });
-      await l.zeg(`Tik op de ${getal}.`, "Kijk dan naar het gekleurde stuk.");
-      k.pas({ actief: true });
+      stappen = handje = true;
+      break;
+    }
+    fouten++;
+    if (fouten >= 2) {
+      stappen = true;
+      break;
+    }
+    const t = g.tijd;
+    const minuutGoed = mod(t, 60) === mod(doel, 60);
+    const uurNu = uurVan(t);
+    if (minuutGoed) {
+      k.pas({ pil: "uur", pijl: { van: uurNu, naar: volgend(uurNu) } });
+      await tipDan(
+        l,
+        /* Synthesis: zeg waar de urenwijzer nu is, en draai hem verder ("has only passed the 6 … take it on around"). */
+        [
+          `De [[m:minutenwijzer]] klopt: ${half ? "een half rondje" : "een kwartrondje"}.`,
+          `Maar de [[u:urenwijzer]] is pas de ${uurNu} voorbij.`,
+          half ? `Draai hem verder, tot hij tussen de ${uur} en de ${na} staat.` : `Draai hem verder, tot hij net voorbij de ${uur} is.`,
+        ],
+        [],
+      );
+    } else if (uurNu === uur) {
+      k.pas({ pil: "minuut" });
+      await tipDan(
+        l,
+        [`De [[u:urenwijzer]] staat goed bij de ${uur}.`, `Maar bij ${half ? "half" : "kwart over"} staat de [[m:minutenwijzer]] op de ${m}.`, `Tik op de minutenwijzer, en dan op de ${m}.`],
+        [],
+      );
+    } else {
+      k.pas({ pil: "uur", pijl: { van: uurNu, naar: volgend(uurNu) } });
+      /* Synthesis: "That's 9 o'clock. Tap the 8, or take the hour hand on around to it." (past bij de pijl met de klok mee). */
+      await tipDan(l, [`Dat is ${tijdnaam(t)}.`, `We willen ${naam}.`, `Tik op de ${uur}, of draai de [[u:urenwijzer]] verder rond.`], []);
+    }
+    k.pas({ pil: null, pijl: null });
+    open();
+    await l.zeg(kop);
+    k.pas({ actief: true });
+    klaar = wachtKlok(l, ["controle", "hulp"], taak(poging + 1), false);
+  }
+  if (stappen) {
+    await l.zeg(handje ? "Komt eraan!" : "Laten we hem samen zetten.");
+    k.zet(start);
+    await l.wacht(600);
+    await zetInStappen(l, k, doel);
+  } else k.goed();
+  k.pas({ actief: false, beweegbaar: null, controle: false, hulpknop: false, gekozen: null, ring: null, pijl: null, pil: null, doel: null });
+  return !stappen && fouten === 0;
+}
+
+/**
+ * Een stuk van de klok inkleuren met de minutenwijzer, zoals Synthesis: de kop
+ * "Kleur de helft in." met het handje en het vinkje. Nagekeken bij het vinkje.
+ * 1× fout: een tip en wachten op de pijl, dan opnieuw. 2× fout: Bliepo zet de
+ * wijzer zelf goed ("Hier is de helft."). Het handje zegt de aanwijzing nog eens.
+ */
+async function kleurIn(l: Lesgids, k: Klok, minuten: 30 | 15) {
+  const start = k.nu;
+  const kop = minuten === 30 ? "Kleur de helft in." : "Kleur een kwart in.";
+  const hint = ["Tik op een getal om de [[m:minutenwijzer]] daar te zetten.", "Kijk dan naar het gekleurde stuk."];
+  const open = () =>
+    k.pas({ doel: kop, inkleur: true, actief: false, beweegbaar: "minuut", controle: true, hulpknop: true, pil: "minuut", grens: { van: start, tot: start + 55 } });
+  open();
+  const taak = (poging: number) => ({ soort: "minuut", doel: start + minuten, poging, controle: true });
+  await l.zeg(kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, ["controle", "hulp"], taak(1), true);
+  await wijsHandje(l, true);
+  for (let fouten = 0, poging = 1; ; poging++) {
+    const stop = hintNa(l, 8000, hint);
+    const g = await (klaar ?? wachtKlok(l, ["controle", "hulp"], taak(poging), false));
+    klaar = null;
+    stop();
+    haak(null);
+    k.nu = g.tijd;
+    if (g.soort === "hulp") {
+      klaar = wachtKlok(l, ["controle", "hulp"], taak(poging + 1), false);
+      await l.zeg(...hint);
       continue;
     }
     const m = g.tijd - start;
@@ -519,24 +910,34 @@ async function kleurIn(l: Lesgids, k: Klok, minuten: 30 | 15) {
       k.goed();
       break;
     }
+    k.pas({ doel: null, actief: false, controle: false, hulpknop: false });
     fouten++;
     if (fouten >= 2) {
-      await l.zeg("Kijk, zo.");
       k.zet(start + minuten);
-      await l.wacht(700);
+      speelLesgeluid("wijzerKlik");
+      await l.zeg(
+        ...(minuten === 30
+          ? ["Hier is de helft.", "Het gekleurde stuk en het witte stuk zijn even groot."]
+          : ["Hier is een kwart.", "De helft van de helft: één van vier even grote stukken."]),
+      );
       break;
     }
-    if (m === 0) await l.zeg("Er is nog niets gekleurd.", "Tik op een getal.");
-    else if (minuten === 30) {
-      await l.zeg(
-        m < 30 ? "Het gekleurde stuk is kleiner dan het lege stuk." : "Het gekleurde stuk is groter dan het lege stuk.",
-        "Bij de helft zijn ze even groot.",
-      );
-    } else if (m === 30) await l.zeg("Dit is de helft.", "Een kwart is de helft van de helft.");
-    else await l.zeg(m < 15 ? "Dit is minder dan een kwart." : "Dit is meer dan een kwart.", "Een kwart is de helft van de helft.");
+    let tip: string[];
+    if (m === 0) tip = ["Er is nog niets gekleurd."];
+    else if (minuten === 30)
+      tip = [
+        m === 15 ? "Dat is een kwart." : m < 30 ? "Het gekleurde stuk is kleiner dan het witte stuk." : "Het gekleurde stuk is groter dan het witte stuk.",
+        "De helft is als het gekleurde en het witte stuk even groot zijn.",
+      ];
+    else if (m === 30) tip = ["Dat is de helft.", "Een kwart is de helft van de helft."];
+    else tip = [m < 15 ? "Dat is minder dan een kwart." : "Dat is meer dan een kwart.", "Een kwart is één van vier even grote stukken."];
+    await tipDan(l, tip, []);
+    open();
+    await l.zeg(kop);
     k.pas({ actief: true });
+    klaar = wachtKlok(l, ["controle", "hulp"], taak(poging + 1), false);
   }
-  k.pas({ actief: false, beweegbaar: null, controle: false, grens: null, ring: null });
+  k.pas({ actief: false, beweegbaar: null, controle: false, hulpknop: false, grens: null, ring: null, doel: null, pil: null });
 }
 
 /* ---------- de kaarten aan het eind (lijntekeningen, 244 × 190) ---------- */
@@ -632,11 +1033,21 @@ function KaartKwart() {
 
 /* =====================================================================
    Les 1 — De urenwijzer (Hour Hand Hunt)
+   Gedrag naar SYNTHESIS-ANALYSE/GEDRAG-T1-de-urenwijzer.md (28 oktober 2026).
    ===================================================================== */
 
-/** "Waar wijst de urenwijzer naar?" Met `k`: bij "weet ik niet" of 2× fout komt hij later terug. */
+/**
+ * "Waar wijst de urenwijzer naar?" (Synthesis stap 14 en 15). Fout 9 (de
+ * achterkant): pil om de urenwijzer en een pijl bij de 9, tip, wachten op de
+ * pijl; dan dezelfde vier knoppen. 2× fout: ring om het goede getal, het getal
+ * kleurt, vanzelf door. Met `k`: bij "weet ik niet" of 2× fout komt hij
+ * later terug (alleen in de oude lessen).
+ */
 function wijstNaar(l: Lesgids, opties: string[], n: number, k?: Klok): Promise<boolean> {
+  const kl = k ?? klokVan.get(l);
   return vraag(l, opties, String(n), {
+    weetnietTweede: true,
+    ring: n,
     later: k
       ? async () => {
           k.pas({ wijzers: true, pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
@@ -647,20 +1058,22 @@ function wijstNaar(l: Lesgids, opties: string[], n: number, k?: Klok): Promise<b
           k.pas({ pil: null, minuutwijzer: "fel" });
         }
       : undefined,
-    goedZin: [`Ja, naar de ${n}.`],
+    goedZin: [lof(l)],
     fout: async (x) => {
-      if (x === null) {
-        await l.zeg("Geen zorgen.", "Volg de korte wijzer tot het puntje.");
-        return null;
-      }
-      await l.zeg("Volg de urenwijzer tot het puntje.", "Waar wijst hij naar?");
-      return opties.filter((o) => o === String(n) || o === x);
+      kl?.pas({ pil: "uur" });
+      const achter = mod(n + 6 - 1, 12) + 1;
+      if (x === String(achter)) {
+        kl?.pas({ pijl: { van: achter, naar: volgend(achter) } });
+        await tipDan(l, [`De ${achter} snap ik.`, "De wijzer lijkt op een pijl, en zijn achterkant wijst die kant op."], ["Waar wijst de [[u:urenwijzer]] dan naar?"]);
+        kl?.pas({ pijl: null });
+      } else await tipDan(l, [x === null ? "Een tip." : "Bijna.", "Volg de [[u:urenwijzer]] vanaf het midden tot zijn punt."], ["Waar wijst hij naar?"]);
+      return opties;
     },
-    antwoord: [`De urenwijzer wijst naar de ${n}.`],
-  });
+    antwoord: [`Het is de ${n}.`, `De [[u:urenwijzer]] begint in het midden, en zijn punt komt op de ${n}.`],
+  }).finally(() => kl?.pas({ pil: "uur" }));
 }
 
-/** "Hoe laat is het?" bij een heel uur, nog een keer (een vraag die terugkomt). */
+/** "Hoe laat is het?" bij een heel uur, nog een keer (een vraag die terugkomt, alleen in de oude lessen). */
 async function nogEensHeel(l: Lesgids, k: Klok, uur: number, opties: string[]) {
   k.pas({ wijzers: true, pil: null, uurwijzer: "fel", minuutwijzer: "fel" });
   k.zet(u(uur));
@@ -674,7 +1087,7 @@ async function nogEensHeel(l: Lesgids, k: Klok, uur: number, opties: string[]) {
         await l.zeg("Geen zorgen.");
         return null;
       }
-      await l.zeg("De korte wijzer zegt het uur.", "Hoe laat is het?");
+      await l.zeg("De korte wijzer laat het uur zien.", "Hoe laat is het?");
       return zonder(opties, x);
     },
     antwoord: [`De korte wijzer wijst naar de ${uur}.`, `Het is ${uur} uur.`],
@@ -682,24 +1095,49 @@ async function nogEensHeel(l: Lesgids, k: Klok, uur: number, opties: string[]) {
   k.pas({ pil: null });
 }
 
-/** Een heel uur aflezen in het toetsdeel. */
-function toetsHeelUur(l: Lesgids, k: Klok, uur: number, opties: string[]): Promise<boolean> {
-  return toetsvraag(l, opties, `${uur} uur`, "Klopt.", async () => {
-    k.pas({ pil: "uur" });
-    await l.zeg(`De korte wijzer wijst naar de ${uur}.`, `Het is ${uur} uur.`);
-    k.pas({ pil: null });
-  });
+/**
+ * Een heel uur aflezen in het oefenblok (Synthesis stap 22): "9 minuten" →
+ * de minutenwijzer vaag, pil om de urenwijzer, "Je vond de 9. Maar kijk bij
+ * welke wijzer hij hoort." (wachten), dan een ring om de 9 en drie knoppen.
+ * "Weet ik niet" → "Een tip. De urenwijzer laat het uur zien." (wachten),
+ * ring, drie knoppen zonder "12 uur". 2× fout: het antwoord, vanzelf door.
+ */
+function toetsHeelUur(l: Lesgids, k: Klok, uur: number, opties: string[], vraagZin = "Hoe laat is het dan?"): Promise<boolean> {
+  return vraag(l, opties, `${uur} uur`, {
+    /* Synthesis (Hour Hand Hunt): ook bij de tweede poging staat "Weet ik niet" erbij. */
+    weetnietTweede: true,
+    ring: uur,
+    ringTweede: true,
+    snel: true,
+    goedZin: [lof(l)],
+    fout: async (x) => {
+      /* Synthesis: hier verdwijnt het gekleurde getal van de vorige klok. */
+      k.pas({ pil: "uur", minuutwijzer: "flets", getalKleur: null });
+      const ringNu = () => k.pas({ ring: uur, ringWijzer: "uur", ringPuls: false });
+      if (x === null) {
+        await tipDan(l, ["Een tip.", "De [[u:urenwijzer]] laat het uur zien."], [vraagZin], ringNu);
+        return zonder(opties, "12 uur");
+      }
+      if (x === "12 uur") await tipDan(l, ["De 12 is het getal van de [[m:minutenwijzer]].", "Het uur komt van de korte wijzer."], [vraagZin], ringNu);
+      else await tipDan(l, [`Je vond de ${uur}.`, "Maar kijk bij welke wijzer hij hoort."], ["Welke tijd past bij de [[u:urenwijzer]]?"], ringNu);
+      return zonder(opties, x);
+    },
+    antwoord: [`De korte wijzer wijst naar de ${uur}.`, "De lange wijzer staat recht omhoog.", `Dus het is ${uur} uur.`],
+    later: () => nogEensHeel(l, k, uur, opties),
+  }).finally(() => k.pas({ pil: null, minuutwijzer: "fel" }));
 }
 
 const urenwijzer: Lesdraaiboek = {
   id: "klok-urenwijzer",
   titel: "De urenwijzer",
+  indeling: "synthesis",
   synthesis: "Telling Time · Hour Hand Hunt",
   kaarttekening: KaartUrenwijzer,
 
   async speel(l) {
+    direct.add(l);
     const k = new Klok(l, u(3), {}, true);
-    const start = await begin(l, ["We gaan het uur lezen op een klok.", "Een klok met wijzers, zoals deze."], {
+    const start = await begin(l, ["We gaan leren hoe je het uur leest op een klok met wijzers, zoals deze."], {
       uitleg: ["De korte oranje wijzer is de urenwijzer.", "Hij wijst het uur aan."],
       proef: async () => {
         k.zet(u(5));
@@ -718,365 +1156,391 @@ const urenwijzer: Lesdraaiboek = {
       await l.wacht(600);
     }
 
-    /* 4. Waar wijst de urenwijzer? De klok draait door. */
+    /* 8 t/m 16. De urenwijzer leest het uur, zetten, oefenen. */
     await urenwijzerOefenen(l, k);
   },
 };
 
-/** De opbouw van "De urenwijzer": de klok uit een getallenlijn, de draairichting, de twee wijzers. */
+/**
+ * De opbouw van "De urenwijzer" (Synthesis stap 3 t/m 13): de getallenlijn
+ * die een klok wordt, boven en onder, met de klok mee, de 12 en de 1, de twee wijzers.
+ */
 async function urenwijzerOpbouw(l: Lesgids, k: Klok) {
-  {
-    /* 1. De klok is een opgerolde getallenlijn. */
-    k.pas({ vorm: "lijn", wijzers: false });
-    await l.wacht(1200);
-    await l.zeg("Weet je hoe dit heet?");
-    const lijn = await kies(l, ["een getallenlijn", "een klok"]);
-    if (lijn === "een getallenlijn") await l.zeg("Ja, een getallenlijn.");
-    else if (lijn === "een klok") await l.zeg("Het is nog geen klok.", "Maar je bent me een stapje voor!");
-    else await l.zeg("Geen zorgen.", "Dit heet een getallenlijn.");
-    await l.zeg("Tik op een van de getallen.");
-    k.pas({ actief: true, tikGetal: true });
-    haak({ soort: "getal", poging: 1 }, true);
-    await l.wachtOpVlak("getal");
-    haak(null);
-    k.pas({ actief: false, tikGetal: false, vorm: "klok" });
-    await l.wacht(1400);
-    await l.zeg("Zo kun je een getallenlijn ook oprollen!", "Hoe noemen we dit?");
-    const rond = await kies(l, ["een klok", "een getallenlijn"]);
-    if (rond === "een klok") await l.zeg("Een klok, precies.");
-    else {
-      await l.zeg(rond ? "Het is nog steeds een getallenlijn." : "Geen zorgen.", "Maar dan in een rondje.", "Zo'n rondje noemen we een klok.");
-      await verder(l);
-    }
+  /* Stap 3–6. De klok is een opgerolde getallenlijn. */
+  k.pas({ wijzers: false });
+  await l.zeg("Kijk eens hiernaar.");
+  speelLesgeluid("klokDraai");
+  k.pas({ vorm: "lijn" });
+  await l.wacht(1300);
+  await l.zeg("Weet je hoe dit heet?");
+  const lijn = await kies(l, ["een getallenlijn", "een klok"]);
+  if (lijn === "een getallenlijn") {
+    k.goed();
+    await l.zeg("Een getallenlijn. Precies.");
+  } else if (lijn === "een klok") await tipDan(l, ["Het is nog geen klok.", "Maar je bent me al voor!"], []);
+  else await tipDan(l, ["Dit is een getallenlijn.", "De getallen 1 tot en met 12, op een rij."], []);
+  await l.zeg("Tik op een van de getallen.");
+  k.pas({ actief: true, tikGetal: true });
+  haak({ soort: "getal", poging: 1 }, true);
+  await l.wachtOpVlak("getal");
+  haak(null);
+  speelLesgeluid("klokDraai");
+  k.pas({ actief: false, tikGetal: false, vorm: "klok" });
+  await l.wacht(1400);
+  await l.zeg("Dat is een rare manier om een getallenlijn vast te houden.", "Hoe noemen we dit?");
+  const rond = await kies(l, ["een klok", "nog steeds een getallenlijn"]);
+  if (rond === "een klok") {
+    k.goed();
+    await l.zeg("Een klok. Precies.");
+  } else await l.zeg(rond === null ? "Geen zorgen." : "Hij is rond geworden.", "Het is een klok.");
 
-    /* 2. Boven, onder en de draairichting. */
-    k.pas({ driehoek: 12 });
-    await l.zeg("Kijk naar het hoogste punt van de klok.", "Welk getal staat daar?");
-    await vraag(l, ["1", "6", "12"], "12", {
-      toon: () => k.pas({ ring: 12 }),
-      goedZin: ["De 12, helemaal bovenaan."],
-      fout: async (x) => {
-        await l.zeg(x ? `De ${x} staat niet bovenaan.` : "Geen zorgen.", "Kijk waar het driehoekje wijst.");
-        return x ? zonder(["1", "6", "12"], x) : null;
-      },
-      antwoord: ["Helemaal bovenaan staat de 12."],
-    });
+  /* Stap 7. Het hoogste punt; het driehoekje komt pas na een paar tellen. */
+  await l.zeg("Kijk naar het hoogste punt van de klok.", "Welk getal zie je daar?");
+  await vraag(l, ["1", "6", "12"], "12", {
+    weetniet: false,
+    ring: 12,
+    naVraag: { ms: 4000, doe: () => k.pas({ driehoek: 12 }) },
+    goedZin: ["De 12. Helemaal bovenaan."],
+    fout: async (x) => {
+      k.pas({ driehoek: 12 });
+      if (x === "1") await tipDan(l, ["Kijk hoger dan de 1."], ["Welk getal staat helemaal bovenaan?"]);
+      else await tipDan(l, [`De ${x} staat niet bovenaan.`, "Kijk waar het driehoekje wijst."], ["Welk getal staat helemaal bovenaan?"]);
+      return ["1", "6", "12"];
+    },
+    antwoord: ["Niet helemaal.", "De 12 staat helemaal bovenaan de cirkel."],
+  });
 
-    k.pas({ driehoek: 6, ring: null });
-    await l.zeg("Volg de klok rond, naar beneden.", "Welk getal staat helemaal onderaan?");
-    await vraag(l, ["3", "6", "12"], "6", {
-      toon: () => k.pas({ ring: 6 }),
-      goedZin: ["Ja, de 6 staat onderaan."],
-      fout: async (x) => {
-        await l.zeg(x ? `De ${x} staat niet onderaan.` : "Geen zorgen.", "Kijk waar het driehoekje wijst.");
-        return x ? zonder(["3", "6", "12"], x) : null;
-      },
-      antwoord: ["Helemaal onderaan staat de 6."],
-    });
-    k.pas({ driehoek: null });
+  /* Stap 8. Het laagste punt: het driehoekje springt naar onder de 6 en komt weer zacht in beeld. */
+  k.pas({ driehoek: null, ring: null });
+  await l.zeg("Volg de klok helemaal rond.", "Welk getal staat helemaal onderaan?");
+  await vraag(l, ["3", "6", "12"], "6", {
+    weetniet: false,
+    ring: 6,
+    naVraag: { ms: 1500, doe: () => k.pas({ driehoek: 6 }) },
+    goedZin: ["De 6. Helemaal onderaan."],
+    fout: async (x) => {
+      k.pas({ driehoek: 6 });
+      if (x === "3") await tipDan(l, ["Ga verder, voorbij de 3, helemaal naar beneden."], ["Welk getal staat helemaal onderaan?"]);
+      else await tipDan(l, [`De ${x} staat bovenaan.`, "Volg de klok helemaal rond, naar beneden."], ["Welk getal staat helemaal onderaan?"]);
+      return ["3", "6", "12"];
+    },
+    antwoord: ["De 6 staat helemaal onderaan."],
+  });
+  k.pas({ driehoek: null, ring: null });
 
-    await l.zeg("Kijk naar de 6.", "Welk getal komt direct na de 6?");
-    await vraag(l, ["5", "7", "8"], "7", {
-      toon: () => k.pas({ pijl: { van: 6, naar: 7 } }),
-      goedZin: ["Van de 6 gaan we naar de 7.", "Die kant op heet *met de klok mee*."],
-      verder: true,
-      fout: async (x) => {
-        if (x === "5") {
-          k.pas({ pijl: { van: 6, naar: 5, rood: true } });
-          await l.zeg("Ik snap waarom je de 5 kiest.", "Een getallenlijn lees je vaak zo.");
-          await verder(l);
-        } else if (x === "8") {
-          await l.zeg("De 8 komt wel na de 6.", "Maar er zit nog een getal tussen.");
-          await verder(l);
-        }
-        k.pas({ pijl: { van: 6, naar: 7 } });
-        if (x === null) {
-          await l.zeg("Geen zorgen.", "Een klok draait deze kant op.");
-          return null;
-        }
-        await l.zeg("Maar een klok draait deze kant op.", "Welk getal komt direct na de 6?");
-        return zonder(["5", "7", "8"], x);
-      },
-      antwoord: ["Na de 6 komt de 7.", "Die kant op heet *met de klok mee*."],
-    });
-    k.pas({ pijl: null, ring: null });
+  /* Stap 9. Wat komt erna: met de klok mee. */
+  await l.zeg("Kijk nu naar de 6.", "Welk getal komt meteen na de 6?");
+  const na6 = await vraag(l, ["5", "7", "8"], "7", {
+    ring: 7,
+    toon: () => k.pas({ pijl: { van: 6, naar: 7 } }),
+    goedZin: ["Van de 6 gaan we deze kant op naar de 7."],
+    fout: async () => {
+      k.pas({ pijl: { van: 6, naar: 7 } });
+      await tipDan(l, ["*Na* betekent: deze kant op.", "Volg de pijl vanaf de 6."], ["Klokken gaan deze kant op.", "Welk getal komt dan meteen na de 6?"]);
+      return ["5", "7", "8"];
+    },
+    antwoord: ["Ga één getal verder, waar de pijl naartoe wijst."],
+  });
+  if (!na6) await l.zeg("Van de 6 gaan we deze kant op naar de 7.");
+  await l.zeg("Deze kant op heet *met de klok mee*.");
+  await verder(l);
+  k.pas({ pijl: null });
 
-    await l.zeg("Nu een lastige.", "Welk getal komt direct na de 12?");
-    await vraag(l, ["1", "11", "13"], "1", {
-      toon: () => k.pas({ pijl: { van: 12, naar: 1 } }),
-      goedZin: ["De 1!", "Na de 12 begint de klok weer bij de 1."],
-      verder: true,
-      fout: async (x) => {
-        if (x === "13") {
-          await l.zeg("De 13?", "Op een getallenlijn klopt dat.");
-          await verder(l);
-          k.pas({ pijl: { van: 12, naar: 1 } });
-          await l.zeg("Maar op de klok staat geen 13.", "Ga met de klok mee vanaf de 12.", "Welk getal komt dan?");
-          return ["1", "2"];
-        }
-        if (x === "11") {
-          k.pas({ pijl: { van: 12, naar: 11, rood: true } });
-          await l.zeg("De 11 komt vóór de 12.");
-          await verder(l);
-          k.pas({ pijl: { van: 12, naar: 1 } });
-          await l.zeg("Ga met de klok mee vanaf de 12.", "Welk getal komt dan?");
-          return ["1", "11"];
-        }
-        await l.zeg("Geen zorgen.");
-        return null;
-      },
-      antwoord: ["Ga met de klok mee vanaf de 12.", "Dan kom je bij de 1.", "De klok begint weer opnieuw."],
-    });
-    k.pas({ pijl: null });
+  /* Stap 10. Na de 12 komt de 1. */
+  await l.zeg("Nu een lastige.", "Welk getal komt meteen na de 12?");
+  await vraag(l, ["1", "11", "13"], "1", {
+    ring: 1,
+    toon: () => k.pas({ pijl: { van: 12, naar: 1 } }),
+    goedZin: ["De 1.", "Na de 12 begint de klok weer bij 1."],
+    fout: async (x) => {
+      if (x === "13") {
+        await l.zeg("De 13? Ik snap wat je bedoelt.", "Op een getallenlijn zou dat kloppen.");
+        await verder(l);
+        k.pas({ pijl: { van: 12, naar: 1 } });
+        await l.zeg("Maar deze cirkel heeft geen 13.", "Ga met de klok mee vanaf de 12.", "Welk getal komt dan?");
+        return ["1", "2", "11"];
+      }
+      k.pas({ pijl: { van: 12, naar: 1 } });
+      await tipDan(l, [x === null ? "Een tip." : `De ${x} komt vóór de 12.`, "Ga met de klok mee vanaf de 12."], ["Welk getal komt dan?"]);
+      return ["1", "2", "11"];
+    },
+    antwoord: ["Na de 12 begint de klok weer bij 1.", "Eén stap met de klok mee, en daar is hij."],
+  });
+  k.pas({ pijl: null });
+  await l.wacht(300);
 
-    /* 3. De twee wijzers. */
-    k.zet(u(1));
-    await l.wacht(500);
-    k.pas({ wijzers: true });
-    await l.wacht(600);
-    await l.zeg("Er staan nu twee wijzers op de klok.", "Een lange en een korte.", "Welke telt de uren, denk je?");
-    const welke = await kies(l, ["de lange", "de korte"]);
-    if (welke === "de korte") await l.zeg("Goed gedacht!");
-    else if (welke === "de lange") await l.zeg("Dat klinkt logisch.", "Een uur duurt langer dan een minuut.", "Maar op de klok is het andersom.");
-    else await l.zeg("Geen zorgen.", "We kijken samen.");
-    await verder(l);
-
-    k.pas({ pil: "minuut", uurwijzer: "flets" });
-    await l.zeg("De lange paarse wijzer telt de minuten.", "Hoe heet hij, denk je?");
-    await vraag(l, ["de minutenwijzer", "de urenwijzer", "de secondewijzer"], "de minutenwijzer", {
-      goedZin: ["De minutenwijzer, precies."],
-      fout: async (x) => {
-        if (x === "de secondewijzer") {
-          await l.zeg("Een secondewijzer is heel dun.", "Die zit niet op deze klok.", "Deze wijzer telt de minuten.");
-          return ["de minutenwijzer", "de urenwijzer"];
-        }
-        return geenZorgen(l, x);
-      },
-      antwoord: ["Hij telt de minuten.", "Dus heet hij de minutenwijzer."],
-    });
-    k.pas({ pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
-    await l.zeg("En de korte oranje wijzer?", "Hoe heet die?");
-    await vraag(l, ["de urenwijzer", "de minutenwijzer", "de secondewijzer"], "de urenwijzer", {
-      goedZin: ["De urenwijzer, ja."],
-      fout: async (x) => {
-        if (x === "de minutenwijzer") {
-          await l.zeg("De minutenwijzer is de lange.", "Deze is kort.", "Hij telt de uren.");
-          return ["de urenwijzer", "de secondewijzer"];
-        }
-        if (x === "de secondewijzer") {
-          await l.zeg("Een secondewijzer is heel dun.", "Die zit niet op deze klok.", "Deze korte wijzer telt de uren.");
-          return ["de urenwijzer", "de minutenwijzer"];
-        }
-        return geenZorgen(l, x);
-      },
-      antwoord: ["Hij telt de uren.", "Dus heet hij de urenwijzer."],
-    });
-    await l.zeg("Met de urenwijzer lees je het uur.", "We kijken hoe hij werkt.");
-    await verder(l);
+  /* Stap 11. Twee wijzers verschijnen (plopje): welke telt wat? */
+  k.zet(u(1));
+  await l.wacht(400);
+  k.pas({ wijzers: true });
+  k.plop();
+  await l.wacht(500);
+  await l.zeg("Er staan nu twee wijzers op onze klok.");
+  await verder(l);
+  await l.zeg("De ene telt de minuten, en de andere laat het uur zien.", "Wat telt de lange wijzer, denk je?");
+  const lang = await kies(l, ["de minuten", "de uren"], "de minuten", 1, { weetniet: false });
+  if (lang === "de minuten") {
+    k.goed();
+    await l.zeg("De lange telt de minuten.");
+  } else {
+    await l.zeg("Dat klinkt logisch, want een uur duurt langer dan een minuut.", "Maar op een klok is het andersom.");
+    await l.zeg("De lange telt de minuten.");
   }
+  await verder(l);
+
+  /* Stap 12. Hoe heet de lange? De pil om de minutenwijzer, de urenwijzer vaag. */
+  k.pas({ pil: "minuut", uurwijzer: "flets", minuutwijzer: "fel" });
+  await l.zeg("Deze lange [[m:blauwgroene wijzer]] telt de minuten op een klok.", "Hoe heet hij, denk je?");
+  await vraag(l, ["de minutenwijzer", "de urenwijzer", "de secondewijzer"], "de minutenwijzer", {
+    weetnietTweede: true,
+    goedZin: ["De [[m:minutenwijzer]]. Precies."],
+    fout: async (x) => {
+      await tipDan(
+        l,
+        x === "de secondewijzer" ? ["Een secondewijzer is heel dun.", "Die zit niet op deze klok."] : ["Een tip.", "De uren lezen we af met de [[u:korte wijzer]]."],
+        ["Hoe heet de lange wijzer dan, denk je?"],
+      );
+      return zonder(["de minutenwijzer", "de urenwijzer", "de secondewijzer"], x ?? "de urenwijzer");
+    },
+    antwoord: ["Het is de [[m:minutenwijzer]].", "Minuten tellen is zijn enige taak."],
+  });
+
+  /* Stap 13. De pil verhuist naar de urenwijzer. */
+  k.pas({ pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
+  await l.zeg("En deze korte [[u:oranje wijzer]].", "Hoe noemen we die?");
+  await vraag(l, ["de urenwijzer", "de secondewijzer"], "de urenwijzer", {
+    goedZin: ["De [[u:urenwijzer]]. Ja."],
+    fout: async (x) => {
+      if (x === "de secondewijzer") await tipDan(l, ["Een secondewijzer is heel dun.", "Deze korte wijzer laat het uur zien."], ["Hoe noemen we hem dan?"]);
+      else await tipDan(l, ["Een tip.", "Deze korte wijzer laat het uur zien."], ["Hoe noemen we hem dan?"]);
+      return ["de urenwijzer", "de secondewijzer"];
+    },
+    antwoord: ["Hij laat het uur zien.", "Dus heet hij de [[u:urenwijzer]]."],
+  });
 }
 
-/** Het oefen- en toetsdeel van "De urenwijzer" (ook na een goede proef). */
+/** Het uur lezen met de urenwijzer, zelf zetten en oefenen (Synthesis stap 14 t/m 23). */
 async function urenwijzerOefenen(l: Lesgids, k: Klok) {
-  {
-    await k.draai(u(3));
-    await l.zeg("Waar wijst de urenwijzer naar?");
-    await vraag(l, ["3", "9", "12"], "3", {
-      goedZin: ["Ja, naar de 3."],
-      fout: async (x) => {
-        if (x === "12") {
-          k.pas({ pil: "minuut", minuutwijzer: "fel", uurwijzer: "flets" });
-          await l.zeg("Ah, ik snap het.", "Naar de 12 wijst de minutenwijzer.");
-          await verder(l);
-          k.pas({ pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
-          await l.zeg("Waar wijst de urenwijzer naar?");
-          return ["3", "12"];
-        }
-        if (x === null) {
-          await l.zeg("Geen zorgen.", "Volg de korte wijzer tot het puntje.");
-          return null;
-        }
-        await l.zeg("Volg de urenwijzer tot het puntje.", "Waar wijst hij naar?");
-        return ["3", "9"];
-      },
-      antwoord: ["De urenwijzer wijst naar de 3."],
-      later: async () => {
-        k.pas({ pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
-        k.zet(u(3));
-        await l.wacht(600);
-        await l.zeg("Waar wijst de urenwijzer naar?");
-        await wijstNaar(l, ["3", "9", "12"], 3);
-        k.pas({ pil: null, minuutwijzer: "fel" });
-      },
-    });
-    k.pas({ pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
+  /* Stap 14. "Laten we kijken hoe hij werkt." (wacht) — de urenwijzer draait terwijl de vraag klinkt. */
+  k.pas({ wijzers: true, pil: "uur", uurwijzer: "fel", minuutwijzer: "flets" });
+  await l.zeg("We gebruiken de [[u:urenwijzer]] om het uur te lezen.", "Laten we kijken hoe hij werkt.");
+  await verder(l);
+  const draait = k.draai(u(3));
+  await l.zeg("Naar welk getal wijst de [[u:urenwijzer]]?");
+  await draait;
+  await wijstNaar(l, ["3", "9", "12"], 3);
 
-    await k.draai(u(7));
-    await l.zeg("De urenwijzer draait weer.", "Waar wijst hij nu naar?");
-    await wijstNaar(l, ["6", "7", "12"], 7, k);
-    await k.draai(u(11));
-    await l.zeg("Nog eentje.", "Waar wijst hij nu naar?");
-    await wijstNaar(l, ["1", "11", "12"], 11, k);
+  /* Stap 15. Hij beweegt weer: naar de 7, dan naar de 11. */
+  const draait7 = k.draai(u(7));
+  await l.zeg("De urenwijzer beweegt weer.", "Waar wijst hij nu?");
+  await draait7;
+  await wijstNaar(l, ["6", "7", "12"], 7);
+  const draait11 = k.draai(u(11));
+  await l.zeg("Nog eentje.", "Naar welk uur wijst hij nu?");
+  await draait11;
+  await wijstNaar(l, ["1", "11", "12"], 11);
+  await l.zeg("Je kunt het uur lezen met de [[u:urenwijzer]].");
 
-    /* 5. Zelf de urenwijzer zetten: de minutenwijzer blijft op de 12. */
-    k.pas({ pil: null, minuutwijzer: "fel" });
-    await l.zeg("Nu mag jij de urenwijzer draaien.", "Kijk goed wat de minutenwijzer doet.");
-    await verder(l);
-    await l.zeg("Zet de urenwijzer op de 2.", "Tik op de wijzer en dan op de 2.", "Je mag hem ook slepen.");
-    await gaNaar(l, k, 2);
+  /* Stap 16. De minutenwijzer komt terug, met de pil. */
+  k.pas({ pil: "minuut", minuutwijzer: "fel", uurwijzer: "fel" });
+  await l.wacht(500);
+  await l.zeg("Laten we kijken wat de [[m:minutenwijzer]] doet.");
+  await verder(l);
+  k.pas({ pil: null });
+
+  /* Stap 17. Zelf de urenwijzer verzetten: een kop met de opdracht, een ring om het getal. */
+  await gaNaar(l, k, 2);
+  await l.zeg("Kijk eens!", "De [[m:minutenwijzer]] wijst recht omhoog, naar de 12.");
+  await gaNaar(l, k, 3);
+  await l.zeg("Nu staan we op de 3.", "De [[m:minutenwijzer]] wijst nog steeds recht omhoog.");
+  await gaNaar(l, k, 6);
+
+  /* Stap 18. Waar wees de minutenwijzer? De urenwijzer vaag. */
+  k.pas({ uurwijzer: "flets", pil: null });
+  await l.zeg("Kijk eens!", "Waar wees de [[m:minutenwijzer]] elke keer bij een nieuw uur?");
+  const opties18 = ["6", "12"];
+  const keuze18 = await kies(l, opties18, "12", 1);
+  if (keuze18 === "12") {
+    k.goed();
     k.pas({ pil: "minuut" });
-    await l.zeg("Kijk eens naar de minutenwijzer.", "Hij wijst recht omhoog, naar de 12.");
+    await l.zeg("Recht omhoog, naar de 12.", "Elke keer.");
+  } else {
+    k.pas({ pil: "minuut" });
+    if (keuze18 === "6") await tipDan(l, ["Op de 6 staat de korte wijzer.", "De lange wijzer wijst ergens anders heen."], []);
+    else await tipDan(l, ["Geen zorgen."], []);
+    await l.zeg("Let deze keer goed op de [[m:minutenwijzer]].");
     await verder(l);
     k.pas({ pil: null });
-    await l.zeg("Zet de urenwijzer nu op de 3.");
-    await gaNaar(l, k, 3);
-    await l.zeg("Nu staat hij op de 3.", "De minutenwijzer wijst nog steeds naar de 12.");
-    await verder(l);
-    await l.zeg("Zet hem nu op de 6.");
-    await gaNaar(l, k, 6);
-    await l.zeg("Elke keer stond de urenwijzer op een heel uur.", "Waar wees de minutenwijzer dan?");
-    await vraag(l, ["6", "12"], "12", {
-      toon: () => k.pas({ pil: "minuut" }),
-      goedZin: ["Recht omhoog, naar de 12.", "Elke keer."],
-      fout: async (x) => {
-        if (x === "6") {
-          k.pas({ pil: "minuut" });
-          await l.zeg("Op de 6 staat nu de urenwijzer.", "Kijk naar de lange wijzer.", "Waar wijst die naar?");
-          return ["6", "12"];
-        }
-        return geenZorgen(l, x);
-      },
-      antwoord: ["De minutenwijzer wees steeds naar de 12."],
-    });
-    k.pas({ pil: "minuut" });
-    await l.zeg("Bij een heel uur wijst de minutenwijzer altijd naar de 12.");
-    await verder(l);
-    k.pas({ pil: null });
-
-    /* 6. Hoe heet deze tijd? */
-    k.zet(u(3));
-    await l.wacht(600);
-    await l.zeg("En waar wijst de urenwijzer nu?");
-    await wijstNaar(l, ["3", "9", "12"], 3, k);
-    await l.zeg("Hoe noemen we deze tijd, denk je?");
-    await vraag(l, ["3 uur", "12 uur", "9 uur", "4 uur"], "3 uur", {
-      goedZin: ["Ja, het is 3 uur."],
-      fout: async (x) => {
-        if (x === "4 uur") {
-          await l.zeg("De 4 komt na de 3.", "De korte wijzer is nog niet bij de 4.");
-          await verder(l);
-        } else if (x === "9 uur") {
-          await l.zeg("De 9 staat aan de andere kant.", "Kijk goed waar de korte wijzer wijst.");
-          await verder(l);
-        } else if (x === "12 uur") {
-          k.pas({ pil: "minuut" });
-          await l.zeg("Naar de 12 wijst de minutenwijzer.", "Die zegt niet welk uur het is.");
-          await verder(l);
-        }
-        k.pas({ pil: "uur", ring: 3 });
-        if (x === null) {
-          await l.zeg("Geen zorgen.", "De korte wijzer zegt het uur.");
-          return null;
-        }
-        await l.zeg("De korte wijzer zegt het uur.", "Hoe heet deze tijd?");
-        return x === "12 uur" ? ["3 uur", "9 uur"] : ["3 uur", "12 uur"];
-      },
-      antwoord: ["De korte wijzer wijst naar de 3.", "Het is 3 uur."],
-      later: () => nogEensHeel(l, k, 3, ["3 uur", "12 uur", "9 uur"]),
-    });
-    k.pas({ pil: null, ring: null });
-
-    await k.draai(u(6));
-    await l.zeg("Hoe laat is het nu?");
-    await vraag(l, ["6 uur", "12 uur", "5 uur"], "6 uur", {
-      goedZin: ["Klopt, het is 6 uur."],
-      fout: async (x) => {
-        k.pas({ pil: "uur", minuutwijzer: "flets" });
-        if (x === "5 uur") await l.zeg("De 5 komt vóór de 6.", "Kijk goed waar de korte wijzer wijst.", "Hoe laat is het?");
-        else if (x === "12 uur") await l.zeg("De 12 is van de minutenwijzer.", "De korte wijzer zegt het uur.", "Hoe laat is het?");
-        else {
-          await l.zeg("Geen zorgen.", "De korte wijzer zegt het uur.");
-          return null;
-        }
-        return zonder(["6 uur", "12 uur", "5 uur"], x);
-      },
-      antwoord: ["De korte wijzer wijst naar de 6.", "Het is 6 uur."],
-      later: () => nogEensHeel(l, k, 6, ["6 uur", "12 uur", "5 uur"]),
-    });
-    k.pas({ pil: null, minuutwijzer: "fel" });
-
-    /* 7. Een stiekeme: half 8 is geen 7 uur. */
-    await k.draai(u(7, 30));
-    await l.zeg("Nu een lastige.", "Is dit 7 uur?");
-    const strik = await kies(l, ["Ja", "Nee"]);
-    k.pas({ pil: "minuut" });
-    if (strik === "Nee") {
-      await l.zeg("Goed gezien!", "Bij een heel uur wijst de minutenwijzer naar de 12.", "Deze staat beneden, bij de 6.");
+    await gaNaar(l, k, 7);
+    k.pas({ uurwijzer: "flets", pil: "minuut" });
+    await l.zeg("Waar eindigde de [[m:minutenwijzer]]?");
+    const eind = await kies(l, ["7", "12"], "12", 2);
+    if (eind === "12") {
+      k.goed();
+      await l.zeg("Recht omhoog, naar de 12.");
     } else {
-      await l.zeg(
-        strik ? "Kijk naar de minutenwijzer." : "Geen zorgen.",
-        "Bij een heel uur wijst hij naar de 12.",
-        "Deze staat beneden, bij de 6.",
-        "Dus het is geen 7 uur.",
-      );
+      k.pas({ ring: 12, ringWijzer: "minuut" });
+      await l.zeg("De korte wijzer kwam op de 7.", "De lange wijzer eindigde recht omhoog, zoals bij elk heel uur: op de 12.");
+      k.pas({ ring: null, getalKleur: { n: 12, wijzer: "minuut" } });
     }
-    await verder(l);
-    k.pas({ pil: null });
-
-    /* Wat net niet lukte, komt nu terug. */
-    await terugkomen(l, k);
-
-    /* 8. Toetsdeel: drie klokken. */
-    await l.zeg("Nu een paar klokken voor jou.");
-    await verder(l);
-    let fouten = 0;
-
-    k.zet(u(9));
-    await l.zeg("Hoe laat is het?");
-    if (!(await toetsHeelUur(l, k, 9, ["9 uur", "12 uur", "10 uur"]))) fouten++;
-    await l.zeg("Welke wijzer vertelde je het uur?");
-    const wijzer = await toetsvraag(l, ["de korte", "de lange"], "de korte", "Ja, de korte urenwijzer.", async () => {
-      k.pas({ pil: "uur" });
-      await l.zeg("De korte wijzer vertelt het uur.", "Dat is de urenwijzer.");
-      k.pas({ pil: null });
-    });
-    if (!wijzer) fouten++;
-
-    await l.zeg("Nog twee, om zeker te weten dat je het snapt.");
-    await verder(l);
-    k.zet(u(4));
-    await l.zeg("En deze?", "Hoe laat is het?");
-    if (!(await toetsHeelUur(l, k, 4, ["4 uur", "5 uur", "12 uur"]))) fouten++;
-    await l.zeg("Waar wijst de minutenwijzer naar?");
-    const minuut = await toetsvraag(l, ["4", "12"], "12", "Ja, naar de 12.", async () => {
-      k.pas({ pil: "minuut" });
-      await l.zeg("Hij wijst recht omhoog, naar de 12.");
-      k.pas({ pil: null });
-    });
-    if (!minuut) fouten++;
-
-    await l.zeg("Nog één, dan is de les klaar.");
-    await verder(l);
-    await k.draai(u(14));
-    await l.zeg("Hoe laat is het?");
-    if (!(await toetsHeelUur(l, k, 2, ["2 uur", "3 uur", "12 uur"]))) fouten++;
-
-    /* 9. Om af te sluiten: een uur later. */
-    k.zet(u(12));
-    await l.wacht(500);
-    await l.zeg(fouten === 0 ? "Je had ze allemaal goed." : "Goed gewerkt.", "Nog één om mee af te sluiten.", "Hoe laat is het over een uur?");
-    const later = await kies(l, ["1 uur", "11 uur", "2 uur"]);
-    if (later === "1 uur") await l.zeg("Ja! We kijken even.");
-    else if (later === "11 uur") await l.zeg("11 uur is een uur *eerder*.", "We kijken even.");
-    else await l.zeg(later ? "Hmm, we kijken even." : "Geen zorgen, we kijken even.");
-    await k.draai(u(13));
-    await l.zeg("De minutenwijzer ging één keer rond.", "De urenwijzer ging van de 12 naar de 1.", "Het is 1 uur.");
-    await verder(l);
-    await l.zeg("Nu kun je het uur lezen met de urenwijzer.");
-    await verder(l);
-
-    await kaartEinde(l, fouten, "Jij kunt mij nu les geven.");
   }
+  await l.zeg("Wijst de [[m:minutenwijzer]] recht omhoog? Dan begint er een nieuw uur.", "Zo'n tijd noemen we een *heel uur*.");
+  await verder(l);
+  k.pas({ pil: null, uurwijzer: "fel" });
+
+  /* Stap 19. De klok naar 3 uur: waar wijst de urenwijzer, en hoe heet deze tijd? */
+  k.zet(u(3));
+  await l.wacht(600);
+  await l.zeg("En waar wijst de [[u:urenwijzer]] nu?");
+  await wijstNaar(l, ["3", "9", "12"], 3);
+  k.pas({ pil: null });
+  await l.zeg("Hoe noemen we deze tijd, denk je?");
+  const naamOpties = ["3 uur", "3 twaalf", "3 nul", "12 uur"];
+  await vraag(l, naamOpties, "3 uur", {
+    weetniet: false,
+    weetnietTweede: true,
+    ring: 3,
+    ringTweede: true,
+    goedZin: ["Ja, het is 3 uur."],
+    fout: async (x) => {
+      if (x === "12 uur") {
+        await l.zeg("De 12 is het getal van de [[m:minutenwijzer]].", "Het uur komt van de korte wijzer.");
+        await verder(l);
+      } else {
+        await l.zeg("Bij een heel uur zeggen we het getal van de urenwijzer, en dan *uur*.");
+        await verder(l);
+      }
+      k.pas({ pil: "uur" });
+      await l.zeg("De korte wijzer laat het uur zien.", "Hoe noemen we deze tijd dan?");
+      return ["3 uur", "4 uur"];
+    },
+    antwoord: ["De [[u:urenwijzer]] staat op de 3, en de [[m:minutenwijzer]] recht omhoog.", "Dus het is 3 uur."],
+    later: () => nogEensHeel(l, k, 3, ["3 uur", "12 uur", "9 uur"]),
+  });
+  k.pas({ pil: null, ring: null });
+
+  /* Stap 20. 6 uur. */
+  await k.draai(u(6));
+  await l.zeg("Hoe laat is het nu?");
+  await toetsHeelUur(l, k, 6, ["6 uur", "12 uur", "6 minuten"], "Kijk naar de [[u:urenwijzer]]. Hoe laat is het dan?");
+
+  /* Stap 21. Een lastige: half 8 is geen 7 uur. De klok springt (eigen geluid). */
+  speelLesgeluid("klokDraai");
+  await k.draai(u(7, 30));
+  await l.zeg("Hier is een lastige.", "Is dit 7 uur?");
+  const strik = await kies(l, ["Nee", "Ja"], "Nee", 1, { weetniet: false });
+  if (strik === "Nee") k.goed();
+  k.pas({ pil: "minuut" });
+  /* Synthesis: bij een fout meteen de uitleg (geen "Kijk nog eens."). */
+  await l.zeg(...(strik === "Nee" ? ["Goed gezien!"] : []), "Bij een heel uur wijst de [[m:minutenwijzer]] recht omhoog.", "Deze staat beneden, bij de 6.");
+  /* Synthesis: alleen de pil om de urenwijzer (geen pijltje), en de kern: het uur is nog steeds 7 ("past 7", in het Nederlands: later dan 7 uur, nog geen 8 uur). */
+  k.pas({ pil: "uur" });
+  await l.zeg("Deze klok is dus al voorbij 7 uur.");
+  await l.zeg("De [[u:urenwijzer]] is de 7 al voorbij, maar nog niet bij de 8.", "Het is nog geen 8 uur.");
+  await verder(l);
+  k.pas({ pil: null, pijl: null });
+
+  /*
+    Stap 22. Het oefenblok. Zoals Synthesis: bij een fout komt er meteen een
+    extra klok ("Probeer deze."), en de bonusvraag komt alleen als alles goed ging.
+  */
+  await l.zeg("Nu een paar klokken voor jou.");
+  let fouten = 0;
+  /*
+    Synthesis: één rij klokken (9, 4, 2, 10, 1). Elke klok in het oefenblok én
+    elke extra klok na een fout ("Probeer deze.") is de volgende uit de rij. Wie
+    alles goed heeft, ziet dus 9, 4 en 2 uur; wie fouten maakt, ook 10 en 1 uur.
+  */
+  const rij: [number, string[]][] = [
+    [9, ["9 uur", "12 uur", "9 minuten"]],
+    [4, ["4 uur", "5 uur", "12 uur"]],
+    [2, ["2 uur", "3 uur", "12 uur"]],
+    [10, ["10 uur", "11 uur", "12 uur"]],
+    [1, ["1 uur", "2 uur", "12 uur"]],
+    [8, ["8 uur", "12 uur", "8 minuten"]],
+    [5, ["5 uur", "6 uur", "12 uur"]],
+  ];
+  /* Eén klok in het oefenblok: de wijzers draaien naar de tijd, dan de vraag. Bij een fout een extra klok. */
+  /* Een gekleurd getal van de vorige klok blijft alleen staan als het net gekleurd is (één klok). */
+  const draaiNaar = async (uur: number) => {
+    if (!k.kleurVers) k.pas({ getalKleur: null });
+    k.kleurVers = false;
+    await k.draai(u(uur), true);
+  };
+  const klok = async (zin: string) => {
+    const [uur, opties] = rij.shift() ?? [9, ["9 uur", "12 uur", "9 minuten"]];
+    await draaiNaar(uur);
+    await l.zeg(zin);
+    const goed = await toetsHeelUur(l, k, uur, [...opties]);
+    if (goed) return true;
+    fouten++;
+    const volgende = rij.shift();
+    if (volgende) {
+      const [eu, eo] = volgende;
+      await l.zeg("Probeer deze.");
+      await draaiNaar(eu);
+      await l.zeg("Hoe laat is het?");
+      await toetsHeelUur(l, k, eu, [...eo]);
+    }
+    return false;
+  };
+
+  await klok("Hoe laat is het?");
+  await l.zeg("Welke wijzer liet het uur zien?");
+  const w1 = await kies(l, ["de kleine", "de grote"], "de kleine", 1, { weetniet: false });
+  if (w1 === "de kleine") {
+    k.goed();
+    await l.zeg(lof(l));
+  } else {
+    /* Synthesis: meteen opnieuw, met de gloed om de urenwijzer, zonder pijl. */
+    k.pas({ pil: "uur" });
+    await l.zeg("Kijk naar de wijzer die oplicht.", "Welke liet het uur zien?");
+    const w2 = await kies(l, ["de kleine", "de grote"], "de kleine", 2, { weetniet: false });
+    if (w2 === "de kleine") {
+      k.goed();
+      await l.zeg(lof(l));
+    } else {
+      fouten++;
+      await l.zeg("De kleine.", "De [[u:urenwijzer]] laat het uur zien.");
+    }
+    k.pas({ pil: null });
+  }
+
+  await l.zeg("Nog twee zoals deze, om zeker te weten dat je het snapt.");
+  await klok("En deze? Hoe laat is het?");
+  /* Synthesis: de knoppen horen bij de klok in beeld (na een fout is dat de extra klok). */
+  await l.zeg("Waar wijst de [[m:minutenwijzer]]?");
+  const m1 = await kies(l, [String(uurVan(k.nu)), "12"], "12", 1, { weetniet: false });
+  if (m1 === "12") {
+    k.goed();
+    await l.zeg(lof(l));
+  } else {
+    fouten++;
+    k.pas({ pil: "minuut" });
+    await l.zeg("Recht omhoog, naar de 12, bij elk heel uur.");
+    k.pas({ pil: null });
+  }
+
+  await l.zeg("De laatste, en dan is de les klaar.");
+  await klok("Hoe laat is het?");
+
+  /* Stap 7 van de goede doorloop: de bonus, alleen als alles goed ging (de klok draait met een eigen geluid). */
+  if (fouten === 0) {
+    speelLesgeluid("klokDraai");
+    await k.draai(u(12));
+    await l.zeg("Je had ze allemaal goed.", "Dus hier is een vraag om mee af te sluiten.", "Hoe laat is het over een uur?");
+    await vraag(l, ["1 uur", "11 uur", "2 uur"], "1 uur", {
+      goedZin: [lof(l)],
+      fout: async (x) => {
+        await tipDan(l, [x === null ? "Een tip." : "Bijna.", "Een uur later is de [[u:urenwijzer]] één getal verder.", "Na de 12 komt de 1."], ["Hoe laat is het over een uur?"]);
+        return zonder(["1 uur", "11 uur", "2 uur"], x);
+      },
+      antwoord: ["Over een uur is het 1 uur.", "Na de 12 begint de klok weer bij 1."],
+    });
+  }
+  await l.zeg("Nu kun je het uur lezen met de [[u:urenwijzer]].");
+
+  await kaartEinde(l, fouten, "Jij kunt mij nu les geven.");
 }
 
 /* =====================================================================
@@ -1086,85 +1550,102 @@ async function urenwijzerOefenen(l: Lesgids, k: Klok) {
 const heleUrenZetten: Lesdraaiboek = {
   id: "klok-hele-uren-zetten",
   titel: "Hele uren zetten",
+  indeling: "synthesis",
   synthesis: "Telling Time · Set the Hour",
   kaarttekening: KaartUrenZetten,
 
   /*
-    Naar INSPIRATIE.md (R2 en R3 · Set the Hour): een korte les; het kind zet
-    steeds een heel uur met de urenwijzer en tikt op het vinkje. De wijzer
-    blijft staan waar hij stond. Tussendoor één kijkvraag over de
-    minutenwijzer (bij een fout alleen het goede antwoord). Daarna een
-    toetsdeel; elke fout daarin geeft nog een klok erbij (hoogstens twee).
-    Samen 15 opgaven.
+    Gedrag naar SYNTHESIS-ANALYSE/GEDRAG-T2-hele-uren-zetten.md (28 oktober
+    2026): "Weet je dit al?", de urenwijzer met pil (de minutenwijzer vaag),
+    "Nu mag jij de wijzers bewegen.", dan de zet-opdrachten 5, 9, 12 en 7, de
+    vraag naar de minutenwijzer (geen tweede kans), "Nog twee zoals deze" (11 en
+    4, de minutenwijzer nu vol) en extra klokken van dezelfde soort tot
+    minstens 15 (besluit 2 van de eigenaar). Elke opdracht begint op een ander
+    uur. Zoals Synthesis telt voor de kaart alleen het oefenblok.
   */
   async speel(l) {
+    direct.add(l);
     const k = new Klok(l, u(3), {}, true);
-    await l.zeg("Je kunt al een heel uur lezen.", "Nu ga je er zelf een zetten.", "Denk je dat je dat al kunt?", "Tik op je antwoord, en dan op het vinkje.");
+    await l.zeg("Je kunt al een heel uur lezen, en nu gaan we er zelf een zetten op deze klok.", "Denk je dat je dit al weet?");
     const al = await kies(l, ["Ja", "Nee"]);
     if (al === "Ja") await l.zeg("Mooi, dan gaan we kijken.");
-    else if (al === null) {
-      /* R3: bij "weet ik niet" één korte uitlegzin en dan meteen oefenen. */
-      k.pas({ pil: "uur", minuutwijzer: "flets" });
-      await l.zeg("Geen zorgen.", "De urenwijzer zegt welk uur het is.");
-    } else {
-      k.pas({ pil: "uur", minuutwijzer: "flets" });
-      await l.zeg("Geen probleem.", "We doen het samen.", "De urenwijzer vertelt ons het uur.", "Alleen die mag jij draaien.");
-      await verder(l);
-    }
-    k.pas({ pil: null, minuutwijzer: "flets" });
-
-    await l.zeg("Laat 5 uur zien.", "Tik op een getal, of sleep de oranje urenwijzer.");
-    await zetUur(l, k, 5);
-    await l.zeg("Ja.", "Laat nu 9 uur zien.");
-    await zetUur(l, k, 9);
-    await l.zeg("Goed zo.", "Laat 12 uur zien.");
-    await zetUur(l, k, 12);
-    await l.zeg("Klopt.", "De 12 staat helemaal bovenaan.");
+    else await l.zeg("Geen probleem.", "We doen het samen.");
+    k.pas({ pil: "uur", minuutwijzer: "flets" });
+    await l.zeg("De [[u:urenwijzer]] laat het uur zien.");
     await verder(l);
-    await l.zeg("Laat 7 uur zien.");
-    await zetUur(l, k, 7);
-    await l.zeg("Precies goed.");
+    k.pas({ pil: null });
+    await l.zeg("Nu mag jij de wijzers bewegen.");
 
-    k.pas({ minuutwijzer: "fel" });
-    await l.zeg("Waar wijst de minutenwijzer naar?");
-    const minuut = await kies(l, ["7", "12"]);
-    k.pas({ pil: "minuut" });
+    let fouten = 0;
+    /** Na een zet-opdracht: de lof, of na de begeleide stap "Daar is hij. 5 uur." */
+    const naZet = async (uur: number, goed: boolean, telt: boolean) => {
+      if (zetUurUitslag.hulp) await l.zeg(zetUurUitslag.handje ? "Gelukt." : "Daar is hij.", `${uur} uur.`);
+      else await l.zeg(lof(l));
+      if (!goed && telt) fouten++;
+    };
+
+    /* 1–4. De eerste opdrachten (tellen niet mee voor de kaart, zoals Synthesis). */
+    await naZet(5, await zetUur(l, k, 5, 3), false);
+    await naZet(9, await zetUur(l, k, 9, 8), false);
+    const twaalf = await zetUur(l, k, 12, null);
+    await naZet(12, twaalf, false);
+    k.pas({ ring: 12, ringWijzer: "uur", ringPuls: false });
+    await l.zeg("De 12 staat helemaal bovenaan.");
+    k.pas({ ring: null });
+    await naZet(7, await zetUur(l, k, 7, 4), false);
+
+    /* 5. Waar wijst de minutenwijzer? Geen tweede kans: bij een fout meteen het antwoord, vanzelf door. */
+    k.pas({ minuutwijzer: "fel", pil: null });
+    await l.zeg("Waar wijst de [[m:minutenwijzer]]?");
+    const minuut = await kies(l, ["7", "12"], "12", 1, { weetniet: false });
     if (minuut === "12") {
       k.goed();
-      await l.zeg("Ja, recht omhoog naar de 12.", "Bij elk heel uur.");
-    } else await l.zeg(minuut === null ? "Geen zorgen." : "Op de 7 staat de urenwijzer.", "De minutenwijzer wijst recht omhoog, naar de 12.");
-    await verder(l);
-    k.pas({ pil: null, minuutwijzer: "flets" });
-
-    /* Nog meer hele uren, steeds vanaf waar de wijzer staat. */
-    await l.zeg("Laat 3 uur zien.");
-    await zetUur(l, k, 3);
-    for (const [uur, zin] of [
-      [10, "Laat 10 uur zien."],
-      [1, "Laat 1 uur zien."],
-      [8, "Laat 8 uur zien."],
-      [6, "Laat 6 uur zien."],
-      [2, "Laat 2 uur zien."],
-    ] as const) {
-      await l.zeg(["Ja.", "Goed zo.", "Klopt.", "Precies."][uur % 4], zin);
-      await zetUur(l, k, uur);
+      await l.zeg(lof(l));
+    } else {
+      k.pas({ pil: "minuut" });
+      await l.zeg("Recht omhoog, naar de 12, bij elk heel uur.");
+      await l.wacht(500);
+      k.pas({ pil: null });
     }
 
-    /* Toetsdeel. Bij een fout komt er nog een klok bij, zoals bij Synthesis. */
-    await l.zeg("Goed zo.", "Nog een paar, om zeker te weten dat je het snapt.");
-    await verder(l);
-    let fouten = 0;
-    for (const uur of [11, 4, 9, 7]) {
-      await l.zeg(`Laat ${uur} uur zien.`);
-      if (!(await zetUur(l, k, uur))) fouten++;
+    /* 6 en 7. Het oefenblok: de minutenwijzer blijft nu vol. */
+    await l.zeg("Nog twee zoals deze, om zeker te weten dat je het snapt.");
+    await naZet(11, await zetUur(l, k, 11, 8), true);
+    await l.zeg("En deze.");
+    await naZet(4, await zetUur(l, k, 4, 1), true);
+
+    /* Extra klokken van dezelfde soort (besluit 2: tot minstens 15). */
+    await l.zeg("Nu nog wat extra oefenen.");
+    const minuutVraag = async (uur: number) => {
+      k.pas({ pil: null });
+      await l.zeg("Waar wijst de [[m:minutenwijzer]]?");
+      const m = await kies(l, [String(uur), "12"], "12", 1, { weetniet: false });
+      if (m === "12") {
+        k.goed();
+        await l.zeg(lof(l));
+      } else {
+        fouten++;
+        k.pas({ pil: "minuut" });
+        await l.zeg("Recht omhoog, naar de 12, bij elk heel uur.");
+        await l.wacht(500);
+        k.pas({ pil: null });
+      }
+    };
+    const extra = [
+      [3, 10, true],
+      [10, 6, false],
+      [1, 9, false],
+      [8, 2, true],
+      [6, 11, false],
+      [2, 7, false],
+    ] as const;
+    for (const [i, [uur, van, vraagMin]] of extra.entries()) {
+      if (i === extra.length - 1) await l.zeg("De laatste, en dan is de les klaar.");
+      await naZet(uur, await zetUur(l, k, uur, van), true);
+      if (vraagMin) await minuutVraag(uur);
     }
-    /* Elke fout in het toetsdeel geeft nog een klok erbij, hoogstens twee. */
-    for (const extra of [2, 6].slice(0, Math.min(2, fouten))) {
-      await l.zeg("Probeer deze.", `Laat ${extra} uur zien.`);
-      if (!(await zetUur(l, k, extra))) fouten++;
-    }
-    await l.zeg("Goed zo.", "Nu kun je zelf een heel uur zetten.");
-    await verder(l);
+    /* Synthesis: de slotzin pas aan het eind (eerst stond hij ook al vóór de extra opdrachten). */
+    await l.zeg("Nu kun je de klok op elk heel uur zetten met de [[u:urenwijzer]].");
 
     await kaartEinde(l, fouten, "Je hebt het zonder hulp gedaan.");
   },
@@ -1172,52 +1653,101 @@ const heleUrenZetten: Lesdraaiboek = {
 
 /* =====================================================================
    Les 3 — Halve uren (Halfway Around)
+   Gedrag naar SYNTHESIS-ANALYSE/GEDRAG-T3-halve-uren.md (28 oktober 2026).
    ===================================================================== */
 
-/** Een halve tijd aflezen in het toetsdeel, met de Nederlandse valkuil. */
-async function toetsHalf(l: Lesgids, k: Klok, t: number, opties: string[], terug = true): Promise<boolean> {
+/**
+ * Een halve tijd aflezen (oefenblok), met de Nederlandse valkuil: het uur dat
+ * voorbij is. 1× fout: een tip, wachten op de pijl, dan andere knoppen (zoals
+ * Synthesis bij half 12). 2× fout: een pulserend boogje tussen de twee getallen
+ * en het antwoord, vanzelf door.
+ */
+async function toetsHalf(l: Lesgids, k: Klok, t: number, opties: string[], terug = true, weetniet = true, verborgen = false): Promise<boolean> {
   const uur = uurVan(t);
   const na = volgend(uur);
   const goed = await vraag(l, opties, `half ${na}`, {
-    goedZin: ["Klopt."],
+    weetniet,
+    snel: true,
+    toon: () => k.pas({ randboog: { van: uur, tot: uur + 1 } }),
+    bijFout2: () => k.pas({ randboog: { van: uur, tot: uur + 1, puls: true } }),
+    goedZin: [`Half ${na}. ${lof(l)}`],
     later: terug
       ? async () => {
           k.pas({ minuutwijzer: "fel", inkleur: false });
           k.zet(t);
           await l.wacht(600);
           await l.zeg("Hoe laat is het?");
-          await toetsHalf(l, k, t, opties, false);
+          await toetsHalf(l, k, t, opties, false, weetniet);
         }
       : undefined,
     fout: async (x) => {
-      k.pas({ pil: "uur" });
+      /* Synthesis: na een fout de pil om de urenwijzer en de minutenwijzer vaag. */
+      k.pas({ pil: "uur", ...(verborgen ? {} : { minuutwijzer: "flets" as const }) });
       if (x === `half ${uur}`) {
-        await l.zeg(`Ik snap waarom: hij is de ${uur} voorbij.`, "Maar bij half noemen we het uur dat eraan komt.", "Hoe laat is het dan?");
-      } else if (x === `${na} uur`) {
-        await l.zeg(`Hij is dicht bij de ${na}.`, "Maar hij is er nog niet.", "Hoe laat is het dan?");
-      } else if (x !== null) {
-        await l.zeg("Kijk naar de urenwijzer.", "Waar is hij naar op weg?");
-      } else {
-        await l.zeg("Geen zorgen.");
-        return null;
+        await tipDan(l, ["Ik snap wat je bedoelt.", `De [[u:urenwijzer]] is de ${uur} al voorbij.`], ["Maar bij half noemen we het uur waar hij naartoe gaat.", "Hoe laat is het dan?"]);
+        /* Synthesis geeft hier (deels) andere knoppen. */
+        const andere = [...new Set([...zonder(opties, x), `${na} uur`])];
+        if (andere.length < 3) andere.push(`half ${mod(na + 5, 12) + 1}`);
+        return andere.slice(0, 3);
       }
+      if (x === "half 7" && na !== 7) {
+        /* Synthesis: de valkuil met het getal van de minutenwijzer. */
+        k.pas({ pil: "minuut" });
+        await tipDan(l, ["Ik snap waar dat vandaan komt.", "De 6 is het getal van de [[m:minutenwijzer]]."], ["Het uur lees je af aan de [[u:urenwijzer]].", "Hoe laat is het dan?"]);
+        k.pas({ pil: "uur" });
+        return zonder(opties, x);
+      }
+      if (x === `${na} uur`) await tipDan(l, ["Ik snap waar dat vandaan komt.", `De [[u:urenwijzer]] is dicht bij de ${na}, maar hij is er nog niet.`], ["Hoe laat is het dan?"]);
+      else if (x === null) await tipDan(l, ["Een tip.", "Kijk naar de [[u:urenwijzer]].", "Naar welk getal is hij op weg?"], ["Hoe laat is het dan?"]);
+      else await tipDan(l, ["Kijk naar de [[u:urenwijzer]].", "Naar welk getal is hij op weg?"], ["Hoe laat is het dan?"]);
       return zonder(opties, x);
     },
-    antwoord: [`De urenwijzer is de ${uur} voorbij.`, `Hij is op weg naar de ${na}.`, `Dus het is half ${na}.`],
+    antwoord: [`Half ${na}.`, `De [[u:urenwijzer]] is de ${uur} voorbij, en op weg naar de ${na}.`],
   });
-  k.pas({ pil: null });
+  k.pas({ pil: null, randboog: null, ...(verborgen ? {} : { minuutwijzer: "fel" as const }) });
+  return goed;
+}
+
+/** "Waar moet de minutenwijzer dan wijzen?" met de minutenwijzer verstopt (half: de 6, kwart over: de 3). */
+async function waarMinuut(l: Lesgids, k: Klok, m: 3 | 6): Promise<boolean> {
+  const opties = m === 6 ? ["6", "11", "12"] : ["3", "6", "12"];
+  const goed = await vraag(l, opties, String(m), {
+    ring: m,
+    ringWijzer: "minuut",
+    ringTweede: true,
+    snel: true,
+    toon: () => {
+      k.pas({ minuutwijzer: "fel", pil: "minuut" });
+      k.plop();
+    },
+    goedZin: [lof(l)],
+    fout: async (x) => {
+      if (m === 6) await tipDan(l, [x === null ? "Een tip." : `Op de ${x} staat hij niet.`, "Bij half is de [[m:minutenwijzer]] een half rondje gegaan."], ["Waar moet hij dan wijzen?"]);
+      else await tipDan(l, [x === null ? "Een tip." : x === "6" ? "Op de 6 staat hij bij half." : "Op de 12 staat hij bij een heel uur.", "Bij kwart over is de [[m:minutenwijzer]] een kwartrondje gegaan."], ["Waar moet hij dan wijzen?"]);
+      return zonder(opties, x);
+    },
+    antwoord: m === 6 ? ["Bij half wijst de [[m:minutenwijzer]] naar de 6."] : ["Bij kwart over wijst de [[m:minutenwijzer]] naar de 3."],
+  });
+  k.pas({ minuutwijzer: "fel", pil: null });
   return goed;
 }
 
 const halveUren: Lesdraaiboek = {
   id: "klok-halve-uren",
   titel: "Halve uren",
+  indeling: "synthesis",
   synthesis: "Telling Time · Halfway Around",
   kaarttekening: KaartHalf,
 
+  /*
+    Naar Synthesis · Halfway Around (GEDRAG-T3), in het Nederlands: "half past
+    4" is bij ons half 5 (het uur waar de urenwijzer naartoe gaat). Daarom
+    staat er na "half" steeds één zin extra over de urenwijzer die op weg is.
+  */
   async speel(l) {
+    direct.add(l);
     const k = new Klok(l, u(4, 30), {}, true);
-    const start = await begin(l, ["We lezen de klok bij een half rondje."], {
+    const start = await begin(l, ["We leren de klok lezen als de minutenwijzer een half rondje is gegaan.", "Dat heet half."], {
       uitleg: ["Bij half staat de minutenwijzer op de 6.", "De urenwijzer is dan op weg naar het volgende uur."],
       proef: async () => {
         k.zet(u(3, 30));
@@ -1232,300 +1762,355 @@ const halveUren: Lesdraaiboek = {
     });
 
     if (start === "leer") {
-      /* 1. De urenwijzer staat tussen twee getallen. */
-      k.pas({ pil: "uur", minuutwijzer: "flets" });
-      await l.zeg("De urenwijzer staat op een vreemde plek.", "Waar wijst zijn punt naar?");
+      /* Stap 2. De urenwijzer staat tussen twee getallen; de minutenwijzer vaag. */
+      k.zet(u(4, 30));
+      /* Synthesis: de minutenwijzer vaag; de pil om de urenwijzer komt pas na een fout. */
+      k.pas({ pil: null, minuutwijzer: "flets" });
+      await l.zeg("De [[u:urenwijzer]] staat op een gekke plek.", "Waar wijst zijn punt naar?");
       const tussenOpties = ["de 4", "tussen de 4 en de 5", "de 5", "tussen de 5 en de 6", "de 6"];
       await vraag(l, tussenOpties, "tussen de 4 en de 5", {
-        goedZin: ["Tussen de 4 en de 5.", "Helemaal niet op een getal."],
-        fout: async (x) => {
-          if (x === null) return geenZorgen(l, x);
-          if (x === "de 4" || x === "de 5" || x === "de 6") await l.zeg(`De punt raakt ${x} niet.`, "Volg de urenwijzer tot het puntje.");
-          else await l.zeg("Volg de urenwijzer tot het puntje.", "Waar komt hij uit?");
-          return zonder(tussenOpties, x);
-        },
-        antwoord: ["Hij staat tussen de 4 en de 5.", "Helemaal niet op een getal."],
-      });
-
-      await l.zeg("Welk getal is hij al voorbij?");
-      const voorbij = await kies(l, ["4", "5"]);
-      if (voorbij === "4") {
-        k.pas({ pijl: { van: 4, naar: 5 } });
-        await l.zeg("Ja, de 4.", "Een klok draait met de klok mee.", "Nu is hij op weg naar de 5.");
-      } else {
-        if (voorbij === "5") {
-          await l.zeg("Ik snap wat je denkt.", "De punt wijst wel die kant op.");
-          await verder(l);
-        }
-        k.pas({ pijl: { van: 4, naar: 5 } });
-        await l.zeg(voorbij ? "Een klok draait deze kant op." : "Geen zorgen. Een klok draait deze kant op.", "Hij kwam eerst langs de 4.", "Nu is hij op weg naar de 5.");
-      }
-      await verder(l);
-      k.pas({ pijl: null, pil: "minuut", minuutwijzer: "fel" });
-      await l.zeg("Het is dus tussen 4 uur en 5 uur.", "De minutenwijzer weet precies waar.");
-      await verder(l);
-      k.pas({ pil: null });
-      await l.zeg("We beginnen bij een tijd die je kent.");
-      await verder(l);
-
-      /* 2. Eén rondje van de minutenwijzer is een uur. */
-      k.zet(u(3));
-      await l.wacht(600);
-      await l.zeg("Hoe laat is het?");
-      await vraag(l, ["3 uur", "9 uur", "12 uur"], "3 uur", {
-        goedZin: ["3 uur.", "Je weet het nog."],
+        toon: () => k.pas({ randboog: { van: 4, tot: 5 } }),
+        bijFout2: () => k.pas({ randboog: { van: 4, tot: 5, puls: true } }),
+        goedZin: ["Tussen de 4 en de 5."],
         fout: async (x) => {
           k.pas({ pil: "uur" });
-          if (x === null) return geenZorgen(l, x);
-          await l.zeg("De korte wijzer zegt het uur.", "Hoe laat is het?");
-          return zonder(["3 uur", "9 uur", "12 uur"], x);
+          if (x === "de 5") await tipDan(l, ["Ik snap wat je bedoelt.", "De punt gaat naar de 5, maar raakt hem nog niet."], ["Volg de [[u:urenwijzer]] dus tot zijn punt.", "Staat hij op de 4, of ergens ertussen?"]);
+          else await tipDan(l, [x === null ? "Een tip." : "Bijna.", "Volg de [[u:urenwijzer]] vanaf het midden tot zijn punt."], ["Staat hij op een getal, of ergens ertussen?"]);
+          return zonder(tussenOpties, x).slice(0, 4);
         },
-        antwoord: ["De urenwijzer wijst naar de 3.", "Het is 3 uur."],
+        antwoord: ["Hij staat tussen de 4 en de 5.", "De punt staat in de ruimte ertussen, niet op een van beide."],
       });
-      k.pas({ pil: null });
+      await l.wacht(400);
+      k.pas({ randboog: null, pil: null });
 
-      await l.zeg("Vandaag mag jij de minutenwijzer draaien.", "Draai hem één keer helemaal rond.", "Tik op de 12, of sleep hem rond.");
-      await draaiMinuut(l, k, u(4), ["Draai verder.", "Helemaal rond, tot de 12."]);
-      await l.zeg("De minutenwijzer ging helemaal rond.", "Wat deed de urenwijzer?");
-      const deed = await kies(l, ["ging één getal verder", "bleef stilstaan", "ging ook helemaal rond"]);
-      let van = 3;
-      if (deed === "ging één getal verder") {
-        await l.zeg("Ja, van de 3 naar de 4.");
+      /* Stap 3. Welk uur is hij al voorbij? Geen tweede kans: na een fout het rode en dan het blauwe pijltje. */
+      await l.zeg("Welk uur is hij al voorbij?");
+      const voorbij = await kies(l, ["4", "5"], "4", 1);
+      if (voorbij === "4") {
+        k.goed();
+        k.pas({ pijl: { van: 4, naar: 5 } });
+        await l.zeg("Ja, de 4.", "Hij kwam eerst langs de 4, en nu is hij op weg naar de 5.");
       } else {
-        if (deed === "ging ook helemaal rond") await l.zeg("Hij bewoog wel.", "Maar lang niet helemaal rond.");
-        else if (deed === "bleef stilstaan") await l.zeg("Hij bewoog wel een stukje.");
-        else await l.zeg("Geen zorgen.", "We kijken nog een keer.");
+        if (voorbij === "5") {
+          k.pas({ pijl: { van: 5, naar: 4, rood: true } });
+          await l.zeg("Ik snap waarom je dat kiest.", "De punt wijst wel die kant op.");
+        }
+        k.pas({ pijl: { van: 4, naar: 5 } });
+        await l.zeg("Klokken gaan met de klok mee, deze kant op.", "Hij kwam dus eerst langs de 4, en nu is hij op weg naar de 5.");
+      }
+      await verder(l);
+      k.pas({ pijl: null });
+      await l.zeg("De tijd is dus ergens tussen 4 uur en 5 uur.");
+      /* Synthesis: de pil om de (nog vage) minutenwijzer blijft bij de derde zin staan. */
+      k.pas({ pil: "minuut" });
+      await l.zeg("De [[m:minutenwijzer]] weet precies waar.");
+      await l.zeg("We zetten de klok op een tijd die we kennen, en kijken hoe hij op die plek komt.");
+      await verder(l);
+
+      /* Stap 4. Een heel uur (plopje): de minutenwijzer weer vol, de pil om de urenwijzer. */
+      k.zet(u(3));
+      k.pas({ pil: "uur", minuutwijzer: "fel" });
+      k.plop();
+      await l.wacht(500);
+      await l.zeg("Hier staan we, op een heel uur.", "Hoe laat is het?");
+      const driePlus = ["3 uur", "9 uur", "12 uur"];
+      await vraag(l, driePlus, "3 uur", {
+        ring: 3,
+        toon: () => k.pas({ ring: 3 }),
+        goedZin: ["3 uur. Klopt."],
+        fout: async (x) => {
+          await tipDan(l, ["Een tip.", "De [[u:urenwijzer]] laat het uur zien, en de [[m:minutenwijzer]] staat recht omhoog."], ["Hoe laat is het dan?"]);
+          return zonder(driePlus, x);
+        },
+        antwoord: ["De [[u:urenwijzer]] wijst naar de 3.", "Het is 3 uur."],
+      });
+      k.pas({ ring: null, pil: null });
+
+      /* Stap 5 en 6. Eén keer rond; wat deed de urenwijzer? Bij een fout: nog een keer rond, dan "waar eindigde hij?". */
+      k.pas({ pil: "minuut" });
+      await l.zeg("Vandaag mag jij de [[m:minutenwijzer]] bewegen.");
+      await draaiMinuut(l, k, u(4), ["Tik op de 12, of sleep de [[m:minutenwijzer]] helemaal rond."], "Draai de minutenwijzer één keer rond.");
+      /* Synthesis: de minutenwijzer vervaagt bij deze vraag, en blijft vaag tot het inkleuren. */
+      k.pas({ minuutwijzer: "flets" });
+      await l.zeg("De [[m:minutenwijzer]] ging helemaal rond.", "Wat deed de [[u:urenwijzer]] dan?");
+      let h = 4;
+      const deed = await kies(l, ["ging één getal verder", "bleef stilstaan", "ging ook helemaal rond"], "ging één getal verder", 1);
+      if (deed === "ging één getal verder") {
+        k.goed();
+        await l.zeg("Hij ging één getal verder, naar de 4.");
+      } else {
         k.pas({ pil: "uur" });
-        await l.zeg("Kijk nu goed naar de urenwijzer.", "Draai de minutenwijzer nog een keer rond.");
-        await draaiMinuut(l, k, u(5), ["Draai verder.", "Helemaal rond, tot de 12."]);
-        await l.zeg("De urenwijzer begon bij de 4.", "Waar staat hij nu?");
+        if (deed === "bleef stilstaan") await l.zeg("Dat kiezen veel kinderen.", "Hij beweegt zo langzaam dat je het makkelijk mist.");
+        else if (deed === "ging ook helemaal rond") await l.zeg("Hij bewoog wel, maar lang niet helemaal rond.");
+        await l.zeg("Hij staat niet meer op de 3.");
+        k.pas({ pil: null });
+        await l.zeg("Kijk nog een keer.");
+        k.pas({ minuutwijzer: "fel" });
+        await draaiMinuut(l, k, u(5), ["Tik op de 12, of sleep de [[m:minutenwijzer]] helemaal rond."], "Draai de minutenwijzer één keer rond.");
+        h = 5;
+        k.pas({ minuutwijzer: "flets" });
+        await l.zeg("De [[u:urenwijzer]] begon op de 4.", "Waar eindigde hij?");
         await vraag(l, ["4", "5", "6"], "5", {
-          goedZin: ["De 5.", "Hij ging één getal verder."],
-          fout: (x) => geenZorgen(l, x),
-          antwoord: ["Hij staat nu op de 5.", "Eén getal verder."],
+          weetniet: false,
+          ring: 5,
+          goedZin: [lof(l)],
+          fout: async (x) => {
+            k.pas({ pil: "uur" });
+            await tipDan(l, [`Op de ${x} staat hij niet.`, "Kijk waar de punt van de [[u:urenwijzer]] nu is."], ["Waar eindigde hij?"]);
+            return zonder(["4", "5", "6"], x);
+          },
+          antwoord: ["Hij ging van de 4 naar de 5.", "Elke keer dat de [[m:minutenwijzer]] rond gaat, gaat de [[u:urenwijzer]] één getal verder."],
         });
         k.pas({ pil: null });
-        van = 4;
       }
-      await l.zeg(`Eerst was het ${van} uur.`, `Nu is het ${van + 1} uur.`, "Hoeveel tijd is er voorbij?");
+
+      /* Stap 7. Hoeveel tijd? Bij een fout meteen "Niet helemaal." en de vraag anders gesteld (geen pijl). */
+      await l.zeg(`Het was ${h - 1} uur, en nu is het ${h} uur.`, "Hoeveel tijd is er voorbij?");
       await vraag(l, ["een uur", "een minuut", "een dag"], "een uur", {
-        goedZin: ["Een uur.", "Eén rondje van de minutenwijzer is een heel uur."],
-        verder: true,
-        fout: (x) => geenZorgen(l, x),
-        antwoord: ["Er is een uur voorbij.", "Eén rondje van de minutenwijzer is een heel uur."],
+        goedZin: ["Een uur.", "Eén rondje van de [[m:minutenwijzer]] is een heel uur."],
+        fout: async (x) => {
+          await l.zeg("Niet helemaal.", `Van ${h - 1} uur tot ${h} uur: hoe lang is dat?`);
+          return x === "een dag" ? ["een uur", "een minuut"] : ["een uur", "een dag"];
+        },
+        antwoord: ["Er is een uur voorbij.", "Eén rondje van de [[m:minutenwijzer]] is een heel uur."],
       });
 
-      /* 3. Een half rondje is een half uur. */
-      await l.zeg("En als de minutenwijzer maar half rond gaat?");
+      /* Stap 8. Een half rondje: de helft inkleuren (Synthesis: pil om de minutenwijzer, die weer vol is). */
+      k.pas({ pil: "minuut", minuutwijzer: "fel" });
+      await l.zeg("Nu kijken we wat er met de tijd gebeurt als de [[m:minutenwijzer]] maar een half rondje gaat.");
       await verder(l);
-      k.zet(u(5));
-      await l.wacht(500);
-      await l.zeg("Kleur de helft van de klok in.", "Tik op een getal.", "Kijk dan naar het gekleurde stuk.");
       await kleurIn(l, k, 30);
-      await l.zeg("Dat is de helft!", "De minutenwijzer ging half rond.", "Hoeveel tijd is er voorbij?");
+
+      /* Stap 9. Hoeveel van een uur? (Synthesis: de urenwijzer vaag.) */
+      k.pas({ uurwijzer: "flets" });
+      await l.zeg("Kijk naar het gekleurde stuk: het ging half rond.", "Hoeveel van een uur is er voorbij?");
       await vraag(l, ["een uur", "een half uur", "geen tijd"], "een half uur", {
         goedZin: ["Een half uur.", "Een half rondje is een half uur."],
         fout: async (x) => {
-          if (x === "een uur") {
-            await l.zeg("Een heel rondje is een uur.", "Dit is maar een half rondje.", "Hoeveel tijd is dat?");
-            return ["een half uur", "een uur"];
-          }
-          if (x === "geen tijd") {
-            await l.zeg("De minutenwijzer heeft wel bewogen.", "Er is dus tijd voorbij.", "Hoeveel tijd is dat?");
-            return ["een half uur", "geen tijd"];
-          }
-          return geenZorgen(l, x);
+          await tipDan(l, ["Probeer dit.", "Helemaal rond was één uur."], ["Hoeveel van een uur is het gekleurde stuk dan?"]);
+          return zonder(["een uur", "een half uur", "geen tijd"], x);
         },
-        antwoord: ["Een half rondje is een half uur."],
+        antwoord: ["Een half uur.", "Een half rondje is een half uur."],
       });
+      await l.zeg(`Het is dus een half uur na ${h} uur.`);
 
-      k.pas({ pil: "uur" });
-      await l.zeg("Kijk nu naar de urenwijzer.", "Waar staat hij?");
-      const plekHalf = ["op de 5", "tussen de 5 en de 6", "op de 6", "tussen de 6 en de 7"];
-      await vraag(l, plekHalf, "tussen de 5 en de 6", {
-        goedZin: ["Ja, halverwege de 5 en de 6."],
-        fout: async (x) => {
-          if (x === null) return geenZorgen(l, x);
-          await l.zeg(
-            x === "op de 5" ? "Om 5 uur stond hij op de 5." : x === "op de 6" ? "Hij is dicht bij de 6, maar staat er nog niet op." : "Zo ver is hij nog niet.",
-            "Er is een half uur voorbij.",
-            "Waar staat hij nu?",
-          );
-          return zonder(plekHalf, x);
-        },
-        antwoord: ["Hij staat halverwege de 5 en de 6."],
-      });
-
-      /* Het Nederlands: we noemen het uur dat eraan komt. */
-      k.pas({ pijl: { van: 5, naar: 6 } });
-      await l.zeg("Het is een half uur na 5 uur.", "De urenwijzer is op weg naar de 6.", "Hij is al halverwege.");
-      await verder(l);
-      await l.zeg("Daarom heet deze tijd *half 6*.", "Half op weg naar 6 uur.");
-      await verder(l);
-      await l.zeg("Bij half noemen we altijd het uur dat eraan komt.");
-      await verder(l);
-      k.pas({ pijl: null, pil: null });
-
-      /* 4. Alleen de urenwijzer. */
-      k.pas({ inkleur: false, minuutwijzer: "weg" });
-      await l.zeg("Nu verstopt de minutenwijzer zich.", "Hoe laat is het, met alleen de urenwijzer?");
-      const alleenUur = ["5 uur", "half 5", "half 6", "6 uur"];
-      await vraag(l, alleenUur, "half 6", {
-        toon: () => k.pas({ minuutwijzer: "fel" }),
-        goedZin: ["Half 6.", "Je kunt het lezen met alleen de urenwijzer!"],
-        verder: true,
+      /* Stap 10. Waar is de urenwijzer nu? Goed: een rustig boogje. Synthesis: de urenwijzer weer vol, de minutenwijzer vaag. */
+      k.pas({ pil: null, uurwijzer: "fel", minuutwijzer: "flets" });
+      await l.zeg("Maar wat doet de [[u:urenwijzer]]?", "Waar staat hij nu?");
+      const plekHalf = [`op de ${h}`, `tussen de ${h} en de ${h + 1}`, `op de ${h + 1}`, `tussen de ${h + 1} en de ${h + 2}`];
+      await vraag(l, plekHalf, `tussen de ${h} en de ${h + 1}`, {
+        toon: () => k.pas({ randboog: { van: h, tot: h + 1 } }),
+        bijFout2: () => k.pas({ randboog: { van: h, tot: h + 1, puls: true } }),
+        goedZin: [`Halverwege de ${h} en de ${h + 1}.`],
         fout: async (x) => {
           k.pas({ pil: "uur" });
-          if (x === "half 5") {
-            await l.zeg("Ik snap waarom: hij is de 5 voorbij.", "Maar bij half noemen we het uur dat eraan komt.", "Hoe laat is het dan?");
-          } else if (x === "6 uur") {
-            await l.zeg("Hij is dicht bij de 6.", "Maar hij is er nog niet.", "Hoe laat is het dan?");
-          } else if (x === "5 uur") {
-            await l.zeg("Om 5 uur staat hij precies op de 5.", "Deze is de 5 al voorbij.", "Hoe laat is het dan?");
-          } else {
-            await l.zeg("Geen zorgen.", "Hij staat halverwege de 5 en de 6.");
-            return null;
-          }
-          return zonder(alleenUur, x);
+          await tipDan(l, [x === `op de ${h}` ? `Om ${h} uur stond hij precies op de ${h}.` : x === `op de ${h + 1}` ? `Hij is dicht bij de ${h + 1}, maar staat er nog niet op.` : "Kijk goed naar de punt.", "Er is een half uur voorbij."], ["Waar staat hij nu?"]);
+          return zonder(plekHalf, x);
         },
-        antwoord: ["Hij is halverwege op weg naar de 6.", "Het is half 6."],
+        antwoord: [`Hij staat halverwege de ${h} en de ${h + 1}.`],
       });
-      k.pas({ pil: null });
-
-      k.zet(u(4, 30));
-      await l.wacht(600);
-      await l.zeg("Nu snap je ook de klok van het begin.", "Het was half 5.");
+      /* Het Nederlands: bij half noemen we het uur waar de urenwijzer naartoe gaat (Synthesis toont hier geen pijltje en geen boogje). */
+      k.pas({ randboog: null });
+      await l.zeg(`De [[u:urenwijzer]] is op weg naar de ${h + 1}, en hij is al halverwege.`, `Daarom heet deze tijd *half ${h + 1}*.`);
       await verder(l);
+      k.pas({ pijl: null, pil: null, randboog: null });
 
-      /* 5. De klok van Vos: zoek de fout. */
-      k.zet(u(5, 30));
-      k.pas({ tweede: { tijd: u(6, 30), naam: "De klok van Bliepo" } });
-      await l.zeg("Dit is de klok van Bliepo.", "Bliepo wilde half 6 laten zien.", "Maar er ging iets mis.");
-      await verder(l);
-      await l.zeg("Links staat jouw klok.", "Wat deed Bliepo fout?");
-      await vraag(l, ["de urenwijzer", "de minutenwijzer", "niets"], "de urenwijzer", {
-        goedZin: ["Ja, de urenwijzer!"],
+      /* Stap 11. De minutenwijzer en het gekleurde stuk verdwijnen. */
+      k.pas({ inkleur: false, minuutwijzer: "weg" });
+      await l.zeg("Nu verstopt de [[m:minutenwijzer]] zich.", "Hoe laat is het, met alleen de [[u:urenwijzer]]?");
+      const alleenUur = [`${h} uur`, `half ${h + 1}`, `${h + 1} uur`, `half ${h + 2}`];
+      await vraag(l, alleenUur, `half ${h + 1}`, {
+        goedZin: [`Half ${h + 1}.`, "Je kunt het lezen met alleen de [[u:urenwijzer]]."],
         fout: async (x) => {
-          if (x === null) return geenZorgen(l, x);
-          await l.zeg("Kijk naar elke wijzer op jouw klok.", "Zoek dan dezelfde wijzer bij Bliepo.", "Welke staat anders?");
+          k.pas({ pil: "uur" });
+          if (x === `${h + 1} uur` || x === `half ${h + 2}`) await tipDan(l, ["Ik snap waar dat vandaan komt.", `De [[u:urenwijzer]] is dicht bij de ${h + 1}, maar hij is er nog niet.`], ["Hoe laat is het dan?"]);
+          else if (x === `${h} uur`) await tipDan(l, [`Om ${h} uur staat de [[u:urenwijzer]] precies op de ${h}.`, `Hij is de ${h} al voorbij.`], ["Hoe laat is het dan?"]);
+          else await tipDan(l, ["Een tip.", `Hij staat halverwege, op weg naar de ${h + 1}.`], ["Hoe laat is het dan?"]);
+          return zonder(alleenUur, x ?? `half ${h + 2}`);
+        },
+        /* Eerst stond hier ook "Hij is halverwege op weg naar de …": bijna dezelfde zin als de tip ervoor. */
+        antwoord: [`Het is dus half ${h + 1}.`],
+      });
+      k.pas({ pil: null, minuutwijzer: "fel" });
+      await l.zeg("En nu ken je de gekke klok van het begin: dat was half 5.");
+
+      /* Stap 12. Sam (plopjes): zijn klok staat ernaast. */
+      k.zet(u(h, 30));
+      await l.wacht(400);
+      k.pas({ sam: true, tweede: { tijd: u(h, 30), uurTijd: u(h), naam: "De klok van Sam" } });
+      k.plop();
+      await l.wacht(300);
+      k.plop();
+      await l.wacht(600);
+      await l.zeg("Hier is mijn vriend Sam.");
+      await l.zeg("Sam tekende een tijd op deze klok, en deed iets fout.");
+      await l.zeg(`Sam wilde half ${h + 1} laten zien.`);
+      await l.zeg("Daar is de tekening van Sam, naast jouw klok.", "Wat deed Sam fout?");
+      await vraag(l, ["de urenwijzer", "de minutenwijzer", "niets"], "de urenwijzer", {
+        goedZin: ["De [[u:urenwijzer]]. " + lof(l)],
+        fout: async () => {
+          await tipDan(l, ["Op de klok van Sam staat één wijzer op een andere plek."], ["Vergelijk ze nog eens.", "Welke wijzer zette Sam op de verkeerde plek?"]);
           return ["de urenwijzer", "de minutenwijzer"];
         },
-        antwoord: ["Het was de urenwijzer."],
+        bijFout2: () => k.pas({ pil: "uur" }),
+        antwoord: ["De [[u:urenwijzer]].", `Sam liet hem op de ${h} staan.`],
       });
-      await l.zeg("Bliepo zette hem tussen de 6 en de 7.", "Maar half 6 komt vóór 6 uur.", "Hij hoort tussen de 5 en de 6.");
-      await verder(l);
-      k.pas({ tweede: { tijd: u(5, 30), naam: "De klok van Bliepo" } });
-      await l.zeg("Bliepo zet hem goed.");
-      await l.wacht(1500);
-      k.pas({ tweede: null });
+      await l.zeg(`Maar er ging een half uur voorbij, dus hij moet halverwege de ${h} en de ${h + 1} staan.`);
+      /* Synthesis: Sam en zijn klok vervagen al tijdens deze zin, de pil is weg. */
+      k.pas({ pil: null, tweede: null, sam: false, wijzers: false });
+      await l.zeg("Sam gaat het verbeteren.");
+      await l.wacht(500);
+      /* Synthesis: jouw klok staat even zonder wijzers, daarna springt hij naar half 8 (de wijzers komen terug met een plopje, hieronder). */
+
+      /* Stap 13. Het hele verhaal van half (plopje, half 8). */
+      k.zet(u(7, 30));
+      k.pas({ wijzers: true });
+      k.plop();
+      await l.wacht(500);
+      await l.zeg("Nu heb je het hele verhaal van half gezien.");
+      /* Synthesis: geen pil bij deze vraag (pas na een fout). */
+      await l.zeg("Tussen welke twee getallen staat de [[u:urenwijzer]]?");
+      await vraag(l, ["6 en 7", "7 en 8", "8 en 9"], "7 en 8", {
+        toon: () => k.pas({ randboog: { van: 7, tot: 8 } }),
+        bijFout2: () => k.pas({ randboog: { van: 7, tot: 8, puls: true } }),
+        goedZin: ["Tussen de 7 en de 8."],
+        fout: async (x) => {
+          k.pas({ pil: "uur" });
+          await tipDan(l, [x === null ? "Een tip." : "Bijna.", "Volg de [[u:urenwijzer]] tot zijn punt."], ["Tussen welke twee getallen staat hij?"]);
+          return zonder(["6 en 7", "7 en 8", "8 en 9"], x);
+        },
+        antwoord: ["Hij staat tussen de 7 en de 8."],
+      });
+      k.pas({ pil: null, randboog: null });
+      /* Synthesis: "Half past 7. Good." en door, zonder nog een vraag (de oude vraag "Hoe laat is het dan?" is hier vervallen, 29 oktober 2026). */
+      await l.zeg("Dan is het half 8.", lof(l));
     }
 
-    /* 6. Toetsdeel. */
-    await l.zeg("Nu weet je hoe half werkt.", "Een paar klokken voor jou.");
-    await verder(l);
+    /* Stap 14 en 15. Het oefenblok. */
+    await l.zeg("Laten we nog meer halve uren lezen.");
     let fouten = 0;
-
-    k.zet(u(7, 30));
-    await l.wacht(500);
-    await l.zeg("Tussen welke getallen staat de urenwijzer?");
-    const tussen = await toetsvraag(l, ["6 en 7", "7 en 8", "8 en 9"], "7 en 8", "Tussen de 7 en de 8.", async () => {
-      k.pas({ pil: "uur" });
-      await l.zeg("Hij staat tussen de 7 en de 8.");
-      k.pas({ pil: null });
-    });
-    if (!tussen) fouten++;
-    await l.zeg("Hoe laat is het?");
-    if (!(await toetsHalf(l, k, u(7, 30), ["half 7", "half 8", "half 9"]))) fouten++;
-
-    await l.zeg("Nog wat halve uren.", "Hier is een stiekeme.");
-    k.zet(u(11, 30));
-    await l.wacht(500);
-    await l.zeg("Hoe laat is het?");
-    if (!(await toetsHalf(l, k, u(11, 30), ["half 11", "half 12", "12 uur"]))) fouten++;
-
-    k.pas({ minuutwijzer: "weg" });
-    await l.zeg("Kijk waar de urenwijzer staat.", "Waar moet de minutenwijzer dan staan?");
-    const waar = await toetsvraag(l, ["6", "11", "12"], "6", "Dat klopt.", async () => {
-      k.pas({ minuutwijzer: "fel", pil: "minuut" });
-      await l.zeg("Bij half staat de minutenwijzer op de 6.");
-      k.pas({ pil: null });
-    });
-    if (!waar) fouten++;
-    k.pas({ minuutwijzer: "fel" });
-
-    await l.zeg("Nog een paar, om zeker te weten dat je het snapt.");
-    await verder(l);
-    /* De reeks van Synthesis: 2:30, 10:30, 9:30, 1:30, en bij ons ook 6:30. */
-    for (const [t, opties, zin] of [
-      [u(2, 30), ["half 2", "half 3", "3 uur"], "Hoe laat is het?"],
-      [u(10, 30), ["half 10", "half 11", "11 uur"], "En nu?"],
-      [u(9, 30), ["half 9", "half 10", "10 uur"], "Hoe laat is het?"],
-      [u(1, 30), ["half 1", "half 2", "2 uur"], "En deze?"],
-      [u(6, 30), ["half 6", "half 7", "7 uur"], "Hoe laat is het nu?"],
-    ] as const) {
+    const lees = async (t: number, opties: string[], zin: string[], verborgen = false) => {
       k.zet(t);
+      k.pas({ minuutwijzer: verborgen ? "weg" : "fel" });
+      k.plop();
       await l.wacht(500);
-      await l.zeg(zin);
-      if (!(await toetsHalf(l, k, t, [...opties]))) fouten++;
-    }
-    if (fouten > 0) {
-      /* Een fout in het toetsdeel geeft nog een klok erbij, zoals bij Synthesis. */
-      k.zet(u(3, 30));
-      await l.wacht(500);
-      await l.zeg("Probeer deze.", "Hoe laat is het?");
-      if (!(await toetsHalf(l, k, u(3, 30), ["half 3", "half 4", "4 uur"]))) fouten++;
-    }
-
-    await l.zeg("Deze is het moeilijkst.", "Nu zet jij allebei de wijzers.");
-    await verder(l);
-    k.zet(u(12));
+      await l.zeg(...zin);
+      const ok = await toetsHalf(l, k, t, opties, true, true, verborgen);
+      if (!ok) fouten++;
+      k.pas({ minuutwijzer: "fel" });
+      return ok;
+    };
+    /*
+      Synthesis: de keuzes hebben steeds een valkuil met het getal van de
+      minutenwijzer (half past 6 = bij ons half 7), en na een meteen goede half
+      12 volgt direct de verstopte minutenwijzer; half 3 komt na een fout.
+    */
+    /* Synthesis: één rij klokken (half 12, half 3, half 11, half 10); een extra klok na een fout is de volgende uit de rij. */
+    const rijHalf: [number, string[]][] = [
+      [u(2, 30), ["half 2", "half 3", "half 7"]],
+      [u(10, 30), ["half 7", "half 10", "half 11"]],
+      [u(9, 30), ["half 7", "half 9", "half 10"]],
+    ];
+    const volgendeHalf = async (zin: string[]) => {
+      const [t, o] = rijHalf.shift() ?? [u(9, 30), ["half 7", "half 9", "half 10"]];
+      return lees(t, o, zin);
+    };
+    const eerste = await lees(u(11, 30), ["half 7", "half 11", "half 12"], ["Hier is een lastige.", "Hoe laat is het?"]);
+    if (!eerste) await volgendeHalf(["Hoe laat is het?"]);
+    /* Terug naar half 12, nu zonder minutenwijzer. */
+    k.zet(u(11, 30));
+    k.pas({ minuutwijzer: "weg" });
+    k.plop();
     await l.wacht(500);
-    await l.zeg("Laat half 9 zien.", "Tik op een wijzer om hem te kiezen.", "Tik dan waar hij heen moet.");
-    if (!(await halfOfKwart(l, k, u(8, 30)))) fouten++;
-    await l.zeg("Mooi.", "Nog eentje.", "Laat half 5 zien.");
-    if (!(await halfOfKwart(l, k, u(4, 30)))) fouten++;
-    await l.zeg("Goed zo.");
+    await l.zeg("Kijk waar de [[u:urenwijzer]] staat.", "Waar moet de [[m:minutenwijzer]] dan wijzen?");
+    if (!(await waarMinuut(l, k, 6))) fouten++;
+    await l.zeg("Nog twee zoals deze, om zeker te weten dat je het snapt.");
+    await volgendeHalf(["Hoe laat is het?"]);
+    await l.zeg("Nog één op dit niveau.");
+    await volgendeHalf(["En deze? Hoe laat is het nu?"]);
 
-    /* Vooruitkijken: eerst zeggen waar de urenwijzer komt, dan zelf draaien. */
-    k.zet(u(9));
-    await l.wacht(500);
-    await l.zeg("Het is nu 9 uur.", "Over een half uur is het half 10.", "Waar staat de urenwijzer dan?");
-    const voorspel = await kies(l, ["op de 9", "tussen de 9 en de 10", "op de 10"]);
-    await l.zeg("Draai de minutenwijzer half rond.", "Kijk goed naar de urenwijzer.");
-    k.pas({ inkleur: true });
-    await draaiMinuut(l, k, u(9, 30), ["Half rond is tot de 6.", "Tik op de 6."]);
-    k.pas({ pil: "uur" });
-    if (voorspel === "tussen de 9 en de 10") {
-      k.goed();
-      await l.zeg("Precies.", "Dat zei jij al!");
-    }
+    /* Stap 16. Zetten met twee wijzers (start 5 uur). Na hulp: "Nu eentje helemaal zelf." */
+    await l.zeg("Dit is de moeilijkste vraag die ik voor je heb in deze les.");
+    const zelf = await halfOfKwart(l, k, u(8, 30), u(5));
+    if (zelf) await l.zeg(lof(l));
     else {
       fouten++;
-      await l.zeg("Kijk, hij staat tussen de 9 en de 10.", "Halverwege op weg naar de 10.");
+      await l.zeg("Nu eentje helemaal zelf.");
+      if (!(await halfOfKwart(l, k, u(2, 30), u(11)))) fouten++;
+      else await l.zeg(lof(l));
     }
-    await verder(l);
-    k.pas({ pil: null, inkleur: false });
 
-    /* Wat net niet lukte, komt nu terug. */
-    await terugkomen(l, k);
-
-    /* Om af te sluiten. */
-    k.zet(u(12, 30));
+    /* Stap 17. Vooruitkijken: eerst kiezen, dan altijd zelf de minutenwijzer half rond draaien. */
+    k.zet(u(9));
+    k.plop();
     await l.wacht(500);
-    await l.zeg(fouten === 0 ? "Je had ze allemaal goed." : "Goed gewerkt.", "Nog één om af te sluiten.", "Hoe laat is dit?");
-    const slot = await kies(l, ["half 12", "half 1", "1 uur"]);
-    if (slot === "half 1") {
+    await l.zeg("Nu een ander soort vraag.");
+    await l.zeg("Half 10 is nog maar een half uur weg.", "Waar staat de [[u:urenwijzer]] dan?");
+    const vooruit = ["op de 9", "tussen de 9 en de 10", "op de 10", "tussen de 10 en de 11"];
+    const voorspel = await kies(l, vooruit, "tussen de 9 en de 10", 1);
+    /* Synthesis: hier wordt niets ingekleurd. */
+    await draaiMinuut(l, k, u(9, 30), ["Tik op de 6, of sleep de [[m:minutenwijzer]] erheen."], "Draai de minutenwijzer een half rondje.", true);
+    /* Synthesis: geen pil om de urenwijzer bij "Kijk waar hij uitkwam" (pas na een fout). */
+    if (voorspel === "tussen de 9 en de 10") {
       k.goed();
-      await l.zeg("Klopt.", "Na de 12 begint de klok weer bij de 1.");
+      k.pas({ randboog: { van: 9, tot: 10 } });
+      await l.zeg("Precies.", "Net waar jij zei.");
+    } else {
+      fouten++;
+      await l.zeg("Kijk waar hij uitkwam.", "Waar staat de [[u:urenwijzer]] nu?");
+      await vraag(l, zonder(vooruit, voorspel).slice(0, 3), "tussen de 9 en de 10", {
+        weetniet: false,
+        toon: () => k.pas({ randboog: { van: 9, tot: 10 } }),
+        bijFout2: () => k.pas({ randboog: { van: 9, tot: 10, puls: true } }),
+        goedZin: ["Halverwege.", "Het halve uur ging voorbij, dus hij ging halverwege."],
+        fout: async (x) => {
+          k.pas({ pil: "uur" });
+          await tipDan(l, [`Hij staat niet ${x}.`, "Volg de [[u:urenwijzer]] tot zijn punt."], ["Waar staat hij nu?"]);
+          return zonder(vooruit, x).filter((o) => o !== voorspel);
+        },
+        antwoord: ["Hij staat halverwege de 9 en de 10.", "Het halve uur ging voorbij, dus hij ging halverwege."],
+      });
     }
-    else {
-      k.pas({ pil: "uur" });
-      await l.zeg("Hij is de 12 voorbij.", "Hij is op weg naar de 1.", "Het is half 1.");
+    k.pas({ pil: null, inkleur: false, randboog: null });
+
+    /* Korte route (Ja of Weet ik niet bij het begin): extra klokken van dezelfde soort, tot minstens 15 vragen. */
+    if (start !== "leer") {
+      await l.zeg("Nu nog wat extra oefenen.");
+      for (const [t, opties, zin, verborgen] of [
+        [u(5, 30), ["half 5", "half 6", "6 uur"], "Hoe laat is het?", false],
+        [u(8, 30), ["half 8", "half 9", "9 uur"], "En deze?", false],
+        [u(1, 30), ["half 1", "half 2", "half 7"], "Hoe laat is het nu?", false],
+        [u(9, 30), ["half 9", "half 10", "10 uur"], "Hier is de minutenwijzer verstopt. Hoe laat is het?", true],
+        [u(3, 30), ["half 3", "half 4", "half 9"], "Nog een met een verstopte minutenwijzer. Hoe laat is het?", true],
+        [u(12, 30), ["half 12", "half 1", "1 uur"], "Een lastige. Ook hier is de minutenwijzer verstopt. Hoe laat is het?", true],
+      ] as const) {
+        await lees(t, [...opties], [zin], verborgen);
+      }
+      if (!(await halfOfKwart(l, k, u(5, 30), u(12)))) fouten++;
+      else await l.zeg(lof(l));
+      await l.zeg("Nu de moeilijkste.");
+      if (!(await halfOfKwart(l, k, u(10, 30), u(3)))) fouten++;
+      else await l.zeg(lof(l));
     }
-    await verder(l);
-    k.pas({ pil: null });
+
     await l.zeg("Nu kun je halve uren lezen en zetten.");
-    await verder(l);
+
+    /* De bonus, alleen als alles goed ging (de klok draait met een eigen geluid). */
+    if (fouten === 0) {
+      speelLesgeluid("klokDraai");
+      await k.draai(u(12, 30));
+      await l.zeg("Je had alles goed, dus hier is er nog één om mee af te sluiten.", "Hoe laat is het?");
+      await vraag(l, ["half 1", "half 7", "half 12", "1 uur"], "half 1", {
+        goedZin: [lof(l), "Na de 12 begint de klok weer opnieuw."],
+        fout: async (x) => {
+          k.pas({ pil: "uur" });
+          await tipDan(l, ["Een tip.", "De [[u:urenwijzer]] is de 12 voorbij.", "Na de 12 komt de 1."], ["Hoe laat is het dan?"]);
+          return zonder(["half 1", "half 7", "half 12", "1 uur"], x);
+        },
+        antwoord: ["Half 1.", "Na de 12 begint de klok weer opnieuw."],
+      });
+      k.pas({ pil: null });
+    }
 
     await kaartEinde(l, fouten, "Jij kunt mij nu les geven.");
   },
@@ -1533,57 +2118,75 @@ const halveUren: Lesdraaiboek = {
 
 /* =====================================================================
    Les 4 — Kwart over (Quarter Past)
+   Gedrag naar SYNTHESIS-ANALYSE/GEDRAG-T4-kwart-over.md (28 oktober 2026).
    ===================================================================== */
 
-/** Kwart over aflezen in het toetsdeel; vangt "kwart over 3" (de 3 van de minutenwijzer). */
-async function toetsKwart(l: Lesgids, k: Klok, t: number, opties: string[], terug = true): Promise<boolean> {
+/**
+ * Kwart over aflezen (oefenblok). "kwart over 3" (de 3 van de minutenwijzer):
+ * pil om de minutenwijzer, "Dat kiezen veel kinderen. De 3 is waar de
+ * minutenwijzer naar wijst." (wachten), dan de pil naar de urenwijzer en
+ * andere knoppen. 2× fout: een pulserend boogje net voorbij het uur, vanzelf door.
+ */
+async function toetsKwart(l: Lesgids, k: Klok, t: number, opties: string[], terug = true, weetniet = true): Promise<boolean> {
   const uur = uurVan(t);
   const goed = await vraag(l, opties, `kwart over ${uur}`, {
-    goedZin: ["Klopt."],
+    weetniet,
+    snel: true,
+    toon: () => k.pas({ randboog: { van: uur, tot: uur + 0.25 } }),
+    bijFout2: () => k.pas({ pil: "uur", randboog: { van: uur, tot: uur + 0.25, puls: true } }),
+    goedZin: [lof(l)],
     later: terug
       ? async () => {
           k.pas({ minuutwijzer: "fel", inkleur: false });
           k.zet(t);
           await l.wacht(600);
           await l.zeg("Hoe laat is het?");
-          await toetsKwart(l, k, t, opties, false);
+          await toetsKwart(l, k, t, opties, false, weetniet);
         }
       : undefined,
     fout: async (x) => {
       if (x === "kwart over 3") {
         k.pas({ pil: "minuut" });
-        await l.zeg("Ik snap het: de minutenwijzer staat op de 3.");
+        await l.zeg("Dat kiezen veel kinderen.", "De 3 is waar de [[m:minutenwijzer]] naar wijst.");
         await verder(l);
         k.pas({ pil: "uur" });
-        await l.zeg("Maar de 3 hoort bij de minutenwijzer.", "Kijk naar de korte wijzer.", "Hoe laat is het?");
-      } else if (x?.startsWith("half")) {
+        await l.zeg("Maar de 3 is het getal van de minutenwijzer, niet van het uur.", "Hoe laat is het dan?");
+        return [...new Set([`kwart over ${uur}`, `half ${volgend(uur)}`, `kwart over ${volgend(uur)}`])];
+      }
+      if (x?.startsWith("half")) {
         k.pas({ pil: "minuut" });
-        await l.zeg("Bij half staat de minutenwijzer op de 6.", "Deze staat op de 3.", "Hoe laat is het?");
-      } else if (x !== null) {
-        k.pas({ pil: "uur" });
-        await l.zeg("Kijk naar de korte wijzer.", "Welk uur is hij net voorbij?");
+        await tipDan(l, ["Bij half staat de [[m:minutenwijzer]] op de 6.", "Deze staat op de 3."], ["Hoe laat is het dan?"]);
       } else {
-        await l.zeg("Geen zorgen.");
-        return null;
+        k.pas({ pil: "uur" });
+        await tipDan(l, [x === null ? "Een tip." : "Bijna.", "Kijk naar de [[u:urenwijzer]].", "Welk getal is hij net voorbij?"], ["Hoe laat is het dan?"]);
       }
       return zonder(opties, x);
     },
-    antwoord: ["De 3 hoort bij de minutenwijzer.", `De urenwijzer staat net na de ${uur}.`, `Het is kwart over ${uur}.`],
+    antwoord: [`Kwart over ${uur}.`, "De 3 hoort bij de [[m:minutenwijzer]].", `De [[u:urenwijzer]] staat net voorbij de ${uur}.`],
   });
-  k.pas({ pil: null });
+  k.pas({ pil: null, randboog: null });
   return goed;
 }
 
 const kwartOver: Lesdraaiboek = {
   id: "klok-kwart-over",
   titel: "Kwart over",
+  indeling: "synthesis",
   synthesis: "Telling Time · Quarter Past",
   kaarttekening: KaartKwart,
 
+  /*
+    Naar Synthesis · Quarter Past (GEDRAG-T4): een bekende tijd, een kwart
+    inkleuren, een kwartier, de minutenwijzer op de 3, de urenwijzer net
+    voorbij het uur, lezen, "Wil je een moeilijkere?", zetten, vooruitkijken,
+    de bonus. Daarna extra klokken van dezelfde soort tot minstens 15
+    (besluit 2 van de eigenaar).
+  */
   async speel(l) {
+    direct.add(l);
     const k = new Klok(l, u(7, 15), {}, true);
-    const start = await begin(l, ["We lezen de klok bij een kwart rondje.", "Dat heet *kwart over*."], {
-      uitleg: ["Bij kwart over staat de minutenwijzer op de 3.", "De urenwijzer staat dan net na het uur."],
+    const start = await begin(l, ["We leren de klok lezen als de minutenwijzer een kwartrondje is gegaan.", "Dat heet *kwart over*."], {
+      uitleg: ["Bij kwart over staat de minutenwijzer op de 3.", "De urenwijzer staat dan net voorbij het uur."],
       proef: async () => {
         k.zet(u(6, 15));
         await l.wacht(600);
@@ -1597,189 +2200,213 @@ const kwartOver: Lesdraaiboek = {
     });
 
     if (start === "leer") {
-      /* 1. Opwarmer: een tijd die je al kent. */
+      /* Stap 2. Een tijd die je al kent (plopje). Fout: meteen het antwoord, geen tweede kans. */
       k.zet(u(4, 30));
-      await l.wacht(600);
+      k.plop();
+      await l.wacht(500);
       await l.zeg("Hier is een tijd die je al kent.", "Hoe laat is het?");
-      await vraag(l, ["4 uur", "half 4", "half 5"], "half 5", {
-        goedZin: ["Half 5.", "Je weet het nog."],
-        fout: async (x) => {
-          k.pas({ pil: "uur" });
-          if (x === "half 4") await l.zeg("Hij is de 4 voorbij.", "Bij half noemen we het uur dat eraan komt.", "Hoe laat is het dan?");
-          else if (x === "4 uur") await l.zeg("Bij 4 uur staat de minutenwijzer op de 12.", "Deze staat op de 6.", "Hoe laat is het dan?");
-          else return geenZorgen(l, x);
-          return zonder(["4 uur", "half 4", "half 5"], x);
-        },
-        antwoord: ["De urenwijzer is op weg naar de 5.", "Het is half 5."],
-      });
-      k.pas({ pil: null });
-
-      /* 2. Een kwart inkleuren. */
-      await l.zeg("We zetten de klok terug op 4 uur.");
+      const bekend = await kies(l, ["4 uur", "half 5", "half 6"], "half 5", 1);
+      if (bekend === "half 5") {
+        k.goed();
+        await l.zeg("Half 5. " + lof(l));
+      } else {
+        await l.zeg("Het is half 5.", "De [[m:minutenwijzer]] staat op de 6, en de [[u:urenwijzer]] staat halverwege de 4 en de 5.");
+      }
+      /* Synthesis: de klok springt terug tijdens de zin. */
       k.zet(u(4));
-      await l.wacht(700);
-      await l.zeg("Kleur een kwart van de klok in.", "Tik op een getal.", "Kijk dan naar het gekleurde stuk.");
+      k.plop();
+      await l.zeg("We zetten de klok terug op 4 uur.");
+      await l.wacht(300);
+
+      /* Stap 3. Een kwart inkleuren. */
       await kleurIn(l, k, 15);
-      await l.zeg("Hier is een kwart.", "Dat is de helft van de helft.", "Met 4 kwarten is de klok vol.");
-      await verder(l);
 
-      await l.zeg("De minutenwijzer ging een kwart rond.", "Hoeveel tijd is er voorbij?");
+      /* Stap 4. Hoeveel van het uur? */
+      /* Synthesis: de urenwijzer vaag, tot de vraag over de minutenwijzer. */
+      k.pas({ uurwijzer: "flets" });
+      await l.zeg("De [[m:minutenwijzer]] ging dus een kwartrondje.", "Hoeveel van het uur is er voorbij?");
       await vraag(l, ["een kwartier", "een half uur", "een heel uur"], "een kwartier", {
-        goedZin: ["Een kwartier.", "Een heel rondje duurt een uur."],
+        goedZin: ["Een kwartier.", "Een kwart van het rondje duurt een kwart van het uur."],
         fout: async (x) => {
-          if (x === "een half uur") {
-            await l.zeg("Ik snap wat je denkt.", "Een half uur is een half rondje.");
-            await verder(l);
-            await l.zeg("Dit was maar een kwart rondje.", "Hoeveel tijd is dat?");
-            return ["een kwartier", "een heel uur"];
-          }
-          if (x === "een heel uur") {
-            await l.zeg("Een heel uur is een heel rondje.", "Dit was maar een kwart rondje.", "Hoeveel tijd is dat?");
-            return ["een kwartier", "een half uur"];
-          }
-          return geenZorgen(l, x);
+          if (x === "een half uur") await tipDan(l, ["Ik snap wat je bedoelt.", "Een half uur is een half rondje."], ["Maar dit was maar een kwartrondje.", "Hoeveel van het uur is dat?"]);
+          else if (x === "een heel uur") await tipDan(l, ["Een heel uur is een heel rondje."], ["Maar dit was maar een kwartrondje.", "Hoeveel van het uur is dat?"]);
+          else await tipDan(l, ["Een tip.", "Een heel rondje is een uur."], ["Hoeveel van het uur is een kwartrondje?"]);
+          /* Synthesis: bij de tweede poging zijn de foute keuze en "Weet ik niet" weg. */
+          return x === null ? ["een kwartier", "een half uur"] : zonder(["een kwartier", "een half uur", "een heel uur"], x);
         },
-        antwoord: ["Een kwart rondje is een kwartier."],
+        antwoord: ["Een kwartier.", "Een kwart van het rondje duurt een kwart van het uur."],
       });
-      await l.zeg("Het is dus een kwartier na 4 uur.", "Dat noemen we *kwart over 4*.");
-      await verder(l);
+      await l.zeg("Het is dus een kwartier na 4 uur.", "Deze tijd noemen we *kwart over 4*.");
 
-      /* 3. De minutenwijzer op de 3, de urenwijzer net na het uur. */
-      await l.zeg("Bij kwart over staat de minutenwijzer altijd op dezelfde plek.", "Naar welk getal wijst hij?");
+      /* Stap 5. De minutenwijzer staat altijd op de 3: bij goed flitst een ring om de 3. */
+      k.pas({ uurwijzer: "fel" });
+      await l.zeg("Bij kwart over stopt de [[m:minutenwijzer]] altijd op dezelfde plek.", "Naar welk getal wijst hij?");
       await vraag(l, ["3", "6", "12"], "3", {
-        toon: () => k.pas({ pil: "minuut" }),
-        goedZin: ["De 3.", "Bij kwart over staat hij altijd op de 3."],
+        ring: 3,
+        ringWijzer: "minuut",
+        ringTweede: true,
+        toon: () => k.pas({ pil: "minuut", ring: 3, ringWijzer: "minuut" }),
+        goedZin: ["De 3.", "Een kwartrondje, bij elk kwart over."],
         fout: async (x) => {
           k.pas({ pil: "minuut" });
-          if (x === "6") await l.zeg("Op de 6 staat hij bij half.", "Kijk naar de lange wijzer.", "Waar wijst hij nu naar?");
-          else if (x === "12") await l.zeg("Op de 12 staat hij bij een heel uur.", "Kijk naar de lange wijzer.", "Waar wijst hij nu naar?");
-          else return geenZorgen(l, x);
+          await tipDan(l, [x === "6" ? "Op de 6 staat hij bij half." : x === "12" ? "Op de 12 staat hij bij een heel uur." : "Een tip.", "Kijk naar de lange wijzer."], ["Naar welk getal wijst hij?"]);
           return zonder(["3", "6", "12"], x);
         },
-        antwoord: ["De minutenwijzer wijst naar de 3."],
+        antwoord: ["De [[m:minutenwijzer]] wijst naar de 3."],
       });
-      k.pas({ pil: "uur" });
-      await l.zeg("Kijk nu naar de urenwijzer.", "Waar staat hij?");
-      const plekken = ["op de 4", "een beetje na de 4", "halverwege de 4 en de 5"];
-      await vraag(l, plekken, "een beetje na de 4", {
-        goedZin: ["Ja, een klein stukje na de 4."],
+      k.pas({ ring: null });
+
+      /* Stap 6. De urenwijzer net voorbij het uur; de minutenwijzer vaag. */
+      /* Synthesis: de minutenwijzer vaag; de pil om de urenwijzer komt pas na een fout. */
+      k.pas({ pil: null, minuutwijzer: "flets", uurwijzer: "fel" });
+      await l.zeg("Kijk nu naar de [[u:urenwijzer]].", "Waar staat hij?");
+      const plekken = ["op de 4", "een klein stukje voorbij de 4", "halverwege de 4 en de 5"];
+      await vraag(l, plekken, "een klein stukje voorbij de 4", {
+        toon: () => k.pas({ randboog: { van: 4, tot: 4.25 } }),
+        bijFout2: () => k.pas({ randboog: { van: 4, tot: 4.25, puls: true } }),
+        goedZin: ["Een klein stukje voorbij de 4."],
         fout: async (x) => {
-          if (x === "op de 4") {
-            await l.zeg("Ik snap waarom.", "Om 4 uur stond hij precies op de 4.");
-            await verder(l);
-            await l.zeg("Maar er is een kwartier voorbij.", "Dus is hij een stukje verder.", "Waar staat hij nu?");
-          } else if (x === "halverwege de 4 en de 5") {
-            await l.zeg("Halverwege staat hij bij half 5.", "Er is pas een kwartier voorbij.", "Waar staat hij nu?");
-          } else return geenZorgen(l, x);
-          return zonder(plekken, x);
+          k.pas({ pil: "uur" });
+          if (x === "halverwege de 4 en de 5") await tipDan(l, ["Ik snap waarom je dat kiest.", "Halverwege staat hij bij half."], ["Maar er is pas een kwartier voorbij.", "Hoe ver is hij dan gekomen?"]);
+          else if (x === "op de 4") await tipDan(l, ["Om 4 uur stond hij precies op de 4."], ["Maar er is een kwartier voorbij.", "Hoe ver is hij dan gekomen?"]);
+          else await tipDan(l, ["Een tip.", "Er is een kwartier voorbij."], ["Hoe ver is de [[u:urenwijzer]] dan gekomen?"]);
+          return x === "op de 4" ? ["een klein stukje voorbij de 4", "halverwege de 4 en de 5"] : x === null ? plekken : ["op de 4", "een klein stukje voorbij de 4"];
         },
-        antwoord: ["Hij staat een klein stukje na de 4."],
+        antwoord: ["Een klein stukje voorbij de 4.", "Er is een kwart van het uur voorbij, dus de [[u:urenwijzer]] ging een kwart van zijn weg."],
       });
-      k.pas({ pil: null, inkleur: false });
+      k.pas({ pil: null, inkleur: false, minuutwijzer: "fel", randboog: null });
     }
 
-    /* 4. Toetsdeel. */
-    await l.zeg("Nu een paar klokken voor jou.");
-    await verder(l);
+    /* Stap 7–9. Het oefenblok. Bij een fout komt er een extra klok ("Probeer deze."). */
     let fouten = 0;
+    let moeilijker = false;
+    /* Synthesis: na een fout eerst kwart over 7 ("Try this one."). */
+    const extra = [u(7, 15), u(4, 15), u(10, 15)];
+    const lees = async (t: number, opties: string[], zin: string[]) => {
+      k.zet(t);
+      k.plop();
+      await l.wacht(500);
+      await l.zeg(...zin);
+      if (await toetsKwart(l, k, t, opties, true, true)) return true;
+      fouten++;
+      const e = extra.shift();
+      if (e !== undefined) {
+        /* Synthesis: de nieuwe klok staat er al bij "Probeer deze.". */
+        k.zet(e);
+        k.plop();
+        await l.zeg("Probeer deze.");
+        await l.wacht(300);
+        await l.zeg("Hoe laat is het?");
+        await toetsKwart(l, k, e, [`kwart over ${uurVan(e)}`, "kwart over 3", `half ${volgend(uurVan(e))}`], true, true);
+      }
+      return false;
+    };
+    await lees(u(9, 15), ["kwart over 3", "kwart over 9", "half 10"], ["Hoe laat is het?"]);
 
-    k.zet(u(9, 15));
-    await l.wacht(500);
-    await l.zeg("Hoe laat is dit?");
-    if (!(await toetsKwart(l, k, u(9, 15), ["kwart over 3", "kwart over 9", "half 10"]))) fouten++;
-
+    /* De minutenwijzer verstopt (stap 8). Synthesis: daarna meteen "Wil je een moeilijkere?"; kwart over 7 en kwart over 2 staan nu bij het extra oefenen. */
     k.zet(u(5, 15));
     k.pas({ minuutwijzer: "weg" });
+    k.plop();
     await l.wacht(500);
-    await l.zeg("De urenwijzer staat net na de 5.", "Waar moet de minutenwijzer dan staan?");
-    const waar = await vraag(l, ["3", "6", "12"], "3", {
-      toon: () => k.pas({ minuutwijzer: "fel", pil: "minuut" }),
-      goedZin: ["Dat klopt."],
-      fout: async (x) => {
-        if (x === "6") {
-          await l.zeg("Veel kinderen kiezen die.", "Op de 6 stopt de minutenwijzer bij half.");
-          await verder(l);
-          await l.zeg("Maar deze urenwijzer heeft nog maar net bewogen.", "Er is pas een kwartier voorbij.", "Waar staat de minutenwijzer dan?");
-          return ["3", "12"];
-        }
-        if (x === "12") {
-          await l.zeg("Op de 12 staat hij bij een heel uur.", "Maar de urenwijzer is de 5 al voorbij.", "Waar staat de minutenwijzer dan?");
-          return ["3", "6"];
-        }
-        await l.zeg("Geen zorgen.");
-        return null;
-      },
-      antwoord: ["Er is pas een kwartier voorbij.", "Bij kwart over staat de minutenwijzer op de 3."],
-    });
-    if (!waar) fouten++;
-    k.pas({ minuutwijzer: "fel", pil: null });
+    await l.zeg("De [[u:urenwijzer]] staat een klein stukje voorbij de 5.", "Waar moet de [[m:minutenwijzer]] dan wijzen?");
+    if (!(await waarMinuut(l, k, 3))) fouten++;
 
-    await l.zeg("Nog een paar, om zeker te weten dat je het snapt.");
-    await verder(l);
-    /* De reeks van Synthesis (7:15, 2:15) en bij ons nog 1:15, 4:15 en 6:15. */
-    for (const [t, opties, zin] of [
-      [u(7, 15), ["kwart over 6", "kwart over 7", "kwart over 3"], "Hoe laat is het nu?"],
-      [u(2, 15), ["kwart over 2", "kwart over 3", "half 3"], "En deze?"],
-      [u(1, 15), ["kwart over 1", "kwart over 3", "half 2"], "Hoe laat is het?"],
-      [u(4, 15), ["kwart over 4", "kwart over 5", "half 5"], "En nu?"],
-      [u(6, 15), ["kwart over 3", "kwart over 6", "half 7"], "Hoe laat is het?"],
-    ] as const) {
-      k.zet(t);
-      await l.wacht(500);
-      await l.zeg(zin);
-      if (!(await toetsKwart(l, k, t, [...opties]))) fouten++;
+    /* Stap 9. "Wil je een moeilijkere?" Nee: "Nog eentje zoals deze", een gewone klok, en dan nog eens vragen. */
+    const nogEen = [u(11, 15), u(6, 15)];
+    for (let keer = 0; keer < 2 && !moeilijker; keer++) {
+      await l.zeg("Wil je een moeilijkere?");
+      const wil = await kies(l, ["Ja", "Nee"], null, 1, { weetniet: false });
+      if (wil === "Ja") {
+        moeilijker = true;
+        await l.zeg(keer === 0 ? "Klinkt goed." : "Prima.");
+      } else {
+        await l.zeg("Prima.", keer === 0 ? "Nog eentje zoals deze, om zeker te weten dat je het snapt." : "Nog eentje dan.");
+        const t = nogEen[keer];
+        await lees(t, [`kwart over ${uurVan(t)}`, "kwart over 3", `half ${volgend(uurVan(t))}`], ["Hoe laat is het?"]);
+      }
     }
 
-    await l.zeg("Deze is het moeilijkst.", "Nu zet jij allebei de wijzers.");
-    await verder(l);
-    k.zet(u(12));
-    await l.wacht(500);
-    await l.zeg("Laat kwart over 8 zien.", "Tik op een wijzer om hem te kiezen.", "Tik dan waar hij heen moet.");
-    if (!(await halfOfKwart(l, k, u(8, 15)))) fouten++;
-    await l.zeg("Mooi.", "Laat nu kwart over 3 zien.");
-    if (!(await halfOfKwart(l, k, u(3, 15)))) fouten++;
-    await l.zeg("Goed zo.", "Nog eentje.", "Laat kwart over 10 zien.");
-    if (!(await halfOfKwart(l, k, u(10, 15)))) fouten++;
-    await l.zeg("Knap.");
-
-    /* Vooruitkijken. */
-    k.zet(u(11));
-    await l.wacht(500);
-    await l.zeg("We kijken een beetje vooruit.", "Het is nu 11 uur.", "Waar staat de urenwijzer om kwart over 11?");
-    const voorspel = await kies(l, ["op de 11", "een beetje na de 11", "halverwege de 11 en de 12"]);
-    await l.zeg("Zet de minutenwijzer op de 3.", "Kijk goed naar de urenwijzer.");
-    k.pas({ inkleur: true });
-    await draaiMinuut(l, k, u(11, 15), ["Tik op de 3.", "Of sleep de paarse wijzer erheen."]);
-    k.pas({ pil: "uur" });
-    if (voorspel === "een beetje na de 11") {
-      k.goed();
-      await l.zeg("Precies.", "Dat zei jij al!");
-    }
+    /* Stap 10. Zetten met twee wijzers (start 6 uur). Na hulp: "Nu eentje helemaal zelf." */
+    await l.zeg(moeilijker ? "Dit is de moeilijkste vraag die ik voor je heb in deze les." : "Nu zet jij er een op de klok.");
+    if (await halfOfKwart(l, k, u(8, 15), u(6))) await l.zeg(lof(l));
     else {
       fouten++;
-      await l.zeg("Kijk, hij is een klein stukje verder.", "Net na de 11.");
+      await l.zeg("Nu eentje helemaal zelf.");
+      if (!(await halfOfKwart(l, k, u(2, 15), u(12)))) fouten++;
+      else await l.zeg(lof(l));
     }
-    await verder(l);
-    k.pas({ pil: null, inkleur: false });
 
-    /* Wat net niet lukte, komt nu terug. */
-    await terugkomen(l, k);
-
-    /* Om af te sluiten. */
-    k.zet(u(12, 15));
+    /* Stap 11. Vooruitkijken: eerst kiezen, dan altijd zelf de minutenwijzer naar de 3. */
+    k.zet(u(11));
+    k.plop();
     await l.wacht(500);
-    await l.zeg(fouten === 0 ? "Je had ze allemaal goed." : "Goed gewerkt.", "Nog één om af te sluiten.", "Hoe laat is het op deze klok?");
-    const slot = await kies(l, ["kwart over 1", "kwart over 3", "kwart over 12"]);
-    k.pas({ pil: "uur" });
-    if (slot === "kwart over 12") {
+    await l.zeg("Laten we een beetje vooruitkijken.");
+    await l.zeg("Het is nu 11 uur.", "Waar staat de [[u:urenwijzer]] om kwart over 11?");
+    const vooruit = ["op de 11", "een klein stukje voorbij de 11", "halverwege de 11 en de 12"];
+    const voorspel = await kies(l, vooruit, "een klein stukje voorbij de 11", 1);
+    /* Synthesis: hier wordt niets ingekleurd en krijgt de urenwijzer geen pil. */
+    await draaiMinuut(l, k, u(11, 15), ["Tik op de 3, of sleep de [[m:minutenwijzer]] erheen.", "Kijk dan naar de [[u:urenwijzer]]."], "Minutenwijzer naar de 3.", true);
+    if (voorspel === "een klein stukje voorbij de 11") {
       k.goed();
-      await l.zeg("Klopt.", "Net een stukje na de 12.");
+      k.pas({ randboog: { van: 11, tot: 11.25 } });
+      await l.zeg(lof(l), "Net waar jij zei.");
+    } else {
+      fouten++;
+      await l.zeg("Kijk waar hij stopte.", "Waar staat de [[u:urenwijzer]]?");
+      const twee = voorspel === "op de 11" ? ["een klein stukje voorbij de 11", "halverwege de 11 en de 12"] : ["op de 11", "een klein stukje voorbij de 11"];
+      await vraag(l, twee, "een klein stukje voorbij de 11", {
+        weetniet: false,
+        toon: () => k.pas({ randboog: { van: 11, tot: 11.25 } }),
+        bijFout2: () => k.pas({ randboog: { van: 11, tot: 11.25, puls: true } }),
+        goedZin: ["Net een stukje voorbij.", "Er ging een kwart van het uur voorbij, dus hij ging een kwart van zijn weg."],
+        fout: async () => null,
+        antwoord: ["Net een stukje voorbij de 11.", "Er ging een kwart van het uur voorbij, dus hij ging een kwart van zijn weg."],
+      });
     }
-    else await l.zeg("De urenwijzer staat net na de 12.", "Het is kwart over 12.");
-    await verder(l);
-    k.pas({ pil: null });
+    k.pas({ pil: null, inkleur: false, randboog: null });
+
+    /* Extra klokken van dezelfde soort (besluit 2: tot minstens 15). */
+    await l.zeg("Nu nog wat extra oefenen.");
+    await lees(u(7, 15), ["kwart over 3", "kwart over 7", "half 8"], ["Hoe laat is het?"]);
+    await lees(u(2, 15), ["kwart over 2", "half 3", "kwart over 3"], ["En deze?"]);
+    await lees(u(1, 15), ["kwart over 1", "kwart over 3", "half 2"], ["Hoe laat is het?"]);
+    await lees(u(4, 15), ["kwart over 4", "kwart over 5", "half 5"], ["En deze?"]);
+    await lees(u(6, 15), ["kwart over 3", "kwart over 6", "half 7"], ["Hoe laat is het nu?"]);
+    if (await halfOfKwart(l, k, u(3, 15), u(12))) await l.zeg(lof(l));
+    else fouten++;
+    if (await halfOfKwart(l, k, u(10, 15), u(7))) await l.zeg(lof(l));
+    else fouten++;
+
+    /* Korte route (Ja of Weet ik niet bij het begin): nog drie extra's, tot minstens 15 vragen. */
+    if (start !== "leer") {
+      await lees(u(3, 15), ["kwart over 3", "kwart over 4", "half 4"], ["Nog een paar.", "Hoe laat is het?"]);
+      k.zet(u(8, 15));
+      k.pas({ minuutwijzer: "weg" });
+      k.plop();
+      await l.wacht(500);
+      await l.zeg("De [[u:urenwijzer]] staat een klein stukje voorbij de 8.", "Waar moet de [[m:minutenwijzer]] dan wijzen?");
+      if (!(await waarMinuut(l, k, 3))) fouten++;
+      await l.zeg("Nu de moeilijkste.");
+      if (await halfOfKwart(l, k, u(6, 15), u(1))) await l.zeg(lof(l));
+      else fouten++;
+    }
+
     await l.zeg("Nu kun je kwart over lezen en zetten.");
-    await verder(l);
+
+    /* De bonus, alleen als alles goed ging (de klok draait met een eigen geluid). */
+    if (fouten === 0) {
+      speelLesgeluid("klokDraai");
+      await k.draai(u(12, 15));
+      await l.zeg("Je had alles goed, dus hier is nog een extra vraag.", "Hoe laat is het op deze klok?");
+      await toetsKwart(l, k, u(12, 15), ["kwart over 1", "kwart over 3", "kwart over 12"], false, true);
+      await l.zeg("Net een stukje voorbij het hoogste punt.");
+    }
+
+    /* Wie de moeilijkere koos, hoort dat aan het eind (wacht op de pijl). */
+    if (moeilijker) {
+      await l.zeg("Wat goed dat je de moeilijkere vragen kiest.", "Jij durft wel!");
+      await verder(l);
+    }
 
     await kaartEinde(l, fouten, "Heel knap gedaan.");
   },
@@ -2211,7 +2838,7 @@ const tellenInVijven: Lesdraaiboek = {
         await l.zeg("Ik snap wat je denkt.", "Je zette hem op de 1, dat klopt.");
         await verder(l);
       } else if (x !== null) {
-        await l.zeg(`Hmm, het is niet ${x}.`);
+        await l.zeg(`Hm, het is niet ${x}.`);
       }
       k.pas({ streepjes: { van: 1, tot: 4 } });
       await l.zeg(x === null ? "Geen zorgen, we tellen samen." : "Maar elk paars streepje is één minuut.", "Tel de streepjes van de 12 tot de 1.", "Hoeveel minuten zijn het?");
@@ -2336,7 +2963,7 @@ const tellenInVijven: Lesdraaiboek = {
     /* 8. De klok is een getallenlijn die in vijven telt, rondgebogen. */
     k.pas({ uurwijzer: "fel", vorm: "lijn", lijnMinuten: true });
     await l.wacht(1300);
-    await l.zeg("Kijk, een getallenlijn die in vijven telt.", "Een klok is zo'n lijn, maar dan rondgebogen.");
+    await l.zeg("Kijk, een getallenlijn die in vijven telt.", "Een klok is zo'n lijn, maar dan in een cirkel.");
     await verder(l);
     k.pas({ vorm: "klok" });
     await l.wacht(1300);
@@ -2393,7 +3020,7 @@ const eindtoets: Lesdraaiboek = {
 
     const lees = (t: number, opties: string[], goedZin: string): Stap => async () => {
       const r = await leesToets(l, k, t, ["Hoe laat is het?"], opties, goedZin);
-      return { goed: r.goed, reactie: r.keuze ? `${r.keuze.charAt(0).toUpperCase()}${r.keuze.slice(1)}?` : "Hmm." };
+      return { goed: r.goed, reactie: r.keuze ? `${r.keuze.charAt(0).toUpperCase()}${r.keuze.slice(1)}?` : "Hm." };
     };
     const zet = (doel: number, hulp: string[], goedZin: string): Stap => async () => {
       const r = await zetToets(l, k, doel, [`Laat ${tijdnaam(doel)} zien.`], hulp, goedZin);
@@ -2468,12 +3095,55 @@ const verslaDeWekker: Lesdraaiboek = {
 
 /* =====================================================================
    5 en 10 minuten later (How Long It Takes: Five en Ten Minutes Later, groep 3-deel)
+   Gedrag naar SYNTHESIS-ANALYSE/GEDRAG-T5-minuten-later.md (28 oktober 2026).
    ===================================================================== */
 
 /**
- * "Hoe laat is het 5 (of 10) minuten later?" De klok loopt daarna mee, de
- * boog groeit. Geeft terug of het meteen goed was. Met `terug`: bij "weet ik
- * niet" of 2× fout komt de vraag later in de les terug.
+ * Bij 2× fout (Synthesis: "Let's count it on the clock."): het vlaggetje gaat
+ * naar de tijd van nu. Bij 5 minuten vanaf een getal tikt het kind zelf het
+ * volgende getal; anders draait Bliepo de minutenwijzer, 5 of 10 minuten per
+ * keer, en het kind kijkt naar de cijfers. Dan "Dan is het dus 2:45." en wachten
+ * op de pijl. Het vlaggetje en de boog van de opgave komen terug.
+ */
+async function telOpDeKlok(l: Lesgids, k: Klok, van: number, stap: number) {
+  const doel = van + stap;
+  const per = stap % 10 === 0 ? 10 : 5;
+  /*
+    Synthesis: het eindantwoord pas na het tellen (niet vooraf verklappen). Het
+    vlaggetje gaat naar de tijd van nu, met de '0' erbij; de boog groeit mee
+    terwijl er geteld wordt. (De oude zin "Van 2:40 naar 2:45." is vervallen,
+    29 oktober 2026.)
+  */
+  /* Synthesis: tijdens de zin alleen het vlaggetje (met de pil om de minutenwijzer); de '0' en de boog komen met de opdracht. */
+  k.pas({ boog: null, vlag: van, pil: "minuut" });
+  k.plop();
+  await l.zeg("We tellen het samen op de klok.");
+  k.pas({ boog: { van, stap: per } });
+  if (stap === 5 && mod(van, 5) === 0) {
+    const getal = mod(doel, 60) / 5 || 12;
+    await minuutNaar(l, k, doel, { kop: "Tik op het volgende getal.", hint: [`Tik op de ${getal} op de klok.`], boog: "eigen" });
+  } else {
+    await l.zeg(`Kijk naar de cijfers terwijl de [[m:minutenwijzer]] draait, ${per} minuten per keer.`);
+    for (let t = van + per; t <= doel; t += per) {
+      await k.draai(t);
+      speelLesgeluid("wijzerKlik");
+    }
+  }
+  /* De pil om de minutenwijzer hoort bij het samen tellen; daarna weer weg (Synthesis heeft hem niet bij de volgende vragen). */
+  k.pas({ pil: null });
+  await l.zeg(`Dan is het dus ${digitaal(doel)}.`);
+  await verder(l);
+  if (k.vlagNu !== null) k.pas({ vlag: k.vlagNu, boog: k.boogNu ? { van: k.vlagNu, stap: k.boogNu } : null });
+  else k.pas({ vlag: null, boog: null });
+}
+
+/**
+ * "Hoe laat is het 5 (10, 15, 25, 30) minuten later?" Zoals Synthesis: goed =
+ * lof, en Bliepo draait zelf de minutenwijzer door (de boog groeit). 1× fout:
+ * twee zinnen (de eerste gaat vanzelf, de tweede wacht op de pijl) en dan de
+ * vraag anders gesteld met 3 knoppen. 2× fout: samen tellen op de klok.
+ * Een antwoord als 2:60 of 3:68 krijgt: een klok telt niet tot 60, na 2:59
+ * komt 3:00; bij 10 minuten eerst de tussenvraag "wat zegt de klok bij de 12?".
  */
 async function hoeLaatLater(
   l: Lesgids,
@@ -2481,79 +3151,221 @@ async function hoeLaatLater(
   van: number,
   opties: string[],
   goedZin: string,
-  o: { stap?: 5 | 10; terug?: boolean } = {},
+  o: { stap?: number; terug?: boolean; weetniet?: boolean } = {},
 ): Promise<boolean> {
   const stap = o.stap ?? 5;
   const doel = van + stap;
   const goed = digitaal(doel);
-  return vraag(l, opties, goed, {
-    toon: () => void k.draai(doel),
+  const getallen = stap / 5 === 1 ? "één getal" : `${stap / 5} getallen`;
+  const nu = mod(van, 60);
+  const uur = uurVan(van);
+  const daarna = volgend(uur);
+  const opnieuw = [`Het is ${digitaal(van)}, en er gaan ${stap} minuten voorbij.`, "Hoe laat is het dan?"];
+  const uitslag = await vraag(l, opties, goed, {
+    /* Synthesis heeft "Weet ik niet" alleen bij de eerste keuzevraag van elke klok. */
+    weetniet: o.weetniet ?? true,
+    snel: true,
+    toon: () => {
+      toonBoog(k);
+      if (!zelfde(k.nu, doel)) void k.draai(doel).then(() => speelLesgeluid("wijzerKlik"));
+    },
     goedZin: [goedZin],
     fout: async (x) => {
+      const minuten = x === null ? -1 : Number(x.split(":")[1]);
       if (x === digitaal(van + 1)) {
-        await l.zeg("Ik zie wat je denkt.", "Eén klein streepje is 1 minuut.");
-        await verder(l);
-        await l.zeg(`Maar ${stap} minuten is ${stap} streepjes verder.`, `Het is ${digitaal(van)}.`, "Hoe laat is het dan?");
+        await l.zeg("Ik snap wat je bedoelt.", "Eén klein streepje is 1 minuut, dat klopt.");
+        await tipDan(l, [`Maar ${stap} minuten later is ${stap} streepjes verder, niet 1.`], opnieuw);
+      } else if (x !== null && minuten >= 60) {
+        await l.zeg("Ik snap waarom je dat kiest.", `${nu} en ${stap} erbij is ${nu + stap} minuten, en je optelling klopt.`);
+        if (stap === 10) {
+          await tipDan(l, [`Maar een klok telt niet tot ${nu + stap} minuten.`], [`Het is ${digitaal(van)}.`, "Wat zegt de klok als de [[m:minutenwijzer]] bij de 12 bovenaan komt?"]);
+          const tussen = await kies(l, [`${uur}:00`, `${uur}:60`, `${daarna}:00`], `${daarna}:00`, 2, { weetniet: false });
+          if (tussen === `${daarna}:00`) {
+            k.goed();
+            await l.zeg(lof(l));
+          } else await l.zeg(`Na ${uur}:59 komt ${daarna}:00 op de klok, en dan begint een nieuw uur.`);
+          await l.zeg(`Het is ${digitaal(van)}, en er gaan ${stap} minuten voorbij.`, `Onderweg zegt de klok ${daarna}:00.`, "Hoe laat is het dan?");
+        } else await tipDan(l, ["Maar een klok telt niet tot 60 minuten.", `Na ${uur}:59 komt ${daarna}:00, en dan begint een nieuw uur.`], opnieuw);
       } else if (stap === 5 && x === digitaal(van + 10)) {
-        await l.zeg("Dat is 10 minuten later.", "We gaan maar 5 minuten verder: één getal.", "Hoe laat is het dan?");
+        await l.zeg("Dat kiezen veel kinderen.", "Dat is 10 minuten later: twee keer vijf.");
+        await tipDan(l, ["Maar 5 minuten later is maar één keer vijf."], opnieuw);
       } else if (stap === 10 && x === digitaal(van + 5)) {
-        await l.zeg("Dat is 5 minuten later.", "10 minuten is 2 getallen verder.", "Hoe laat is het dan?");
+        await l.zeg("Dat kiezen veel kinderen.", "Dat is 5 minuten later: één getal.");
+        await tipDan(l, ["Maar 10 minuten later is twee getallen verder."], opnieuw);
+      } else if (x !== null && nu % 5 !== 0 && minuten % 5 === 0 && minuten > nu && minuten < nu + stap) {
+        await l.zeg("Ik snap waar die vandaan komt.", `Om ${x} komt de [[m:minutenwijzer]] bij het volgende getal, dat klopt.`);
+        await tipDan(l, [`Maar ${stap} minuten later is ${stap} streepjes verder, en dat gaat er voorbij.`], opnieuw);
+      } else if (x === `${uur}:00` && nu + stap >= 60) {
+        await l.zeg("Ik snap wat je bedoelt.", "De [[m:minutenwijzer]] komt bovenaan bij de 12, dat klopt.");
+        await tipDan(l, ["Maar de minutenwijzer gaat onderweg voorbij de 12.", `Na ${uur}:59 komt ${daarna}:00, en dan begint een nieuw uur.`], opnieuw);
       } else if (x !== null) {
-        await l.zeg("Elk getal op de klok is 5 minuten.", stap === 5 ? "De minutenwijzer gaat één getal verder." : "De minutenwijzer gaat 2 getallen verder.", "Hoe laat is het dan?");
+        await tipDan(l, ["Elk getal op de klok is 5 minuten.", `De [[m:minutenwijzer]] gaat ${getallen} verder.`], opnieuw);
       } else {
-        await l.zeg("Geen zorgen.");
-        return null;
+        await tipDan(l, ["Een tip.", "Elk getal op de klok is 5 minuten."], opnieuw);
       }
       return zonder(opties, x);
     },
-    antwoord: [`${mod(van, 60)} minuten, en ${stap} erbij, is ${mod(doel, 60)}.`, `Het is ${goed}.`],
+    samenBijFout2: () => telOpDeKlok(l, k, van, stap),
+    antwoord: [],
     later: o.terug
       ? async () => {
           k.pas({ boog: null, vlag: null });
           k.zet(van);
           await l.wacht(600);
-          k.pas({ vlag: van, boog: { van, stap: 5 } });
+          k.pas({ vlag: van, boog: { van, stap: stap >= 10 && stap !== 25 ? 10 : 5 } });
           await l.zeg(`Het is ${digitaal(van)}.`, `Hoe laat is het ${stap} minuten later?`);
           await hoeLaatLater(l, k, van, opties, "Goed zo.", { stap });
           await l.wacht(500);
         }
       : undefined,
   });
+  await boogUitleg(l, k);
+  return uitslag;
 }
 
-/** De minutenwijzer zelf 5 minuten verder zetten (naar `doel`). Geeft terug of het zonder hulp lukte. */
-function vijfVerder(l: Lesgids, k: Klok, doel: number): Promise<boolean> {
+/** De minutenwijzer zelf 5 minuten verder ("Tik op het volgende getal.", "En nog 5."). Geeft terug of het zonder het handje lukte. */
+function vijfVerder(l: Lesgids, k: Klok, doel: number, kop = "Tik op het volgende getal."): Promise<boolean> {
   const getal = mod(doel, 60) / 5 || 12;
-  return minuutVerder(l, k, doel, { hint: ["Elk getal op de klok is 5 minuten.", `Tik dus op het volgende getal: de ${getal}.`], cirkelNa2: true });
+  return minuutNaar(l, k, doel, { kop, hint: [`Tik op de ${getal} op de klok.`] });
 }
 
-/** Een nieuwe begintijd: de klok springt erheen, met het vlaggetje (en de boog) vanaf daar. */
-async function nieuweTijd(l: Lesgids, k: Klok, t: number, boog: boolean) {
+/** Een nieuwe begintijd (twee plopjes): de klok springt erheen, met het vlaggetje (en de boog, per `boog` minuten een andere kleur) vanaf daar. */
+async function nieuweTijd(l: Lesgids, k: Klok, t: number, boog: number | false, vlag = true) {
   k.pas({ boog: null, vlag: null });
   k.zet(t);
-  await l.wacht(600);
-  k.pas({ vlag: t, boog: boog ? { van: t, stap: 5 } : null });
+  k.plop();
+  await l.wacht(500);
+  /* Synthesis: in het oefenblok staat er geen vlaggetje en geen boog (alleen bij uitleg en bij een tijd tussen twee getallen). */
+  k.vlagNu = vlag ? t : null;
+  k.boogNu = vlag ? boog : false;
+  if (!vlag) return;
+  /* Synthesis: eerst alleen het vlaggetje; de boog (met de '0') komt pas bij de opdracht of als de wijzer gaat (toonBoog). */
+  k.pas({ vlag: t, boog: null });
+  k.plop();
+  /* De eerste keer legt Bliepo uit wat het vlaggetje is (één keer per les); de boog legt hij uit als die er voor het eerst is (boogUitleg). */
+  if (!k.gewezen.has("vlag")) {
+    k.gewezen.add("vlag");
+    await l.zeg("Het vlaggetje laat zien waar we begonnen.");
+  }
+}
+
+/** De boog van de huidige opgave in beeld (vanaf het vlaggetje). */
+function toonBoog(k: Klok) {
+  if (k.vlagNu !== null && k.boogNu) k.pas({ boog: { van: k.vlagNu, stap: k.boogNu } });
+}
+
+/** De eerste keer dat de boog gegroeid is, zegt Bliepo wat hij betekent (één keer per les). */
+async function boogUitleg(l: Lesgids, k: Klok) {
+  if (k.vlagNu === null || !k.boogNu || k.gewezen.has("boog")) return;
+  k.gewezen.add("boog");
+  await l.zeg("De gele boog laat zien hoeveel minuten erbij komen.");
+}
+
+/**
+ * Zelf zetten (Synthesis: "It's 7:10. Show 15 minutes later."): de kop, het
+ * handje en het vinkje; de digitale klok is vaag. Na ±15 s niets doen komt de
+ * aanwijzing. 1× fout: uitleg (bij "de klok zegt 30" de valkuil van Synthesis)
+ * en wachten op de pijl; 2× fout of het handje: een ring om het goede getal.
+ */
+async function minutenZetten(l: Lesgids, k: Klok, van: number, plus: number): Promise<boolean> {
+  const doel = van + plus;
+  const getal = mod(doel, 60) / 5 || 12;
+  /* Synthesis: de kop noemt de begintijd ("It's 7:10. Show 15 minutes later."). */
+  const kop = `Het is ${digitaal(van)}. Laat ${plus} minuten later zien.`;
+  const hint = ["Tik op een getal om de [[m:minutenwijzer]] daar te zetten, of sleep hem."];
+  const open = () => k.pas({ doel: kop, actief: false, beweegbaar: "minuut", controle: true, hulpknop: true, pil: "minuut", grens: { van, tot: van + 55 }, digitaal: true, digitaalVaag: true });
+  open();
+  const taak = (poging: number) => ({ soort: "minuut", doel, poging, controle: true });
+  await l.zeg(kop);
+  k.pas({ actief: true });
+  let klaar: Promise<Klokmelding> | null = wachtKlok(l, ["controle", "hulp"], taak(1), true);
+  await wijsHandje(l, true);
+  let fouten = 0;
+  let hulp = false;
+  for (let poging = 1; ; poging++) {
+    const stop = hintNa(l, 15000, hint);
+    const g = await (klaar ?? wachtKlok(l, ["controle", "hulp"], taak(poging), false));
+    klaar = null;
+    stop();
+    haak(null);
+    k.nu = g.tijd;
+    if (g.soort === "controle" && g.tijd === doel) {
+      k.goed();
+      break;
+    }
+    /* Synthesis: tijdens de uitleg is de digitale klok weg; de wijzer kan dan niet verschuiven. */
+    k.pas({ doel: null, actief: false, controle: false, hulpknop: false, beweegbaar: null, digitaal: false });
+    if (g.soort === "controle") fouten++;
+    if (g.soort === "hulp" || fouten >= 2) {
+      hulp = true;
+      k.pas({ ring: getal, ringWijzer: "minuut", ringPuls: true, beweegbaar: "minuut", digitaal: true });
+      const begeleid = { soort: "minuut", doel, poging: 99 };
+      await l.zeg(g.soort === "hulp" ? "Geen probleem." : "Laten we het samen doen.", `Tik op de ${getal}, of sleep de [[m:minutenwijzer]] erheen.`);
+      k.pas({ actief: true });
+      let tik: Promise<Klokmelding> | null = wachtKlok(l, "gezet", begeleid, false);
+      for (;;) {
+        const t = await (tik ?? wachtKlok(l, "gezet", begeleid, false));
+        tik = null;
+        haak(null);
+        k.nu = t.tijd;
+        if (t.tijd === doel) break;
+      }
+      speelLesgeluid("wijzerKlik");
+      k.goed();
+      k.pas({ getalKleur: { n: getal, wijzer: "minuut" } });
+      break;
+    }
+    if (mod(g.tijd, 60) === plus % 60 && g.tijd !== doel) {
+      await l.zeg("Dat kiezen veel kinderen.", `Daar zegt de klok ${plus} minuten, dat klopt.`);
+      await tipDan(l, [`Maar we willen ${plus} minuten verder vanaf het begin.`, "Begin bij het vlaggetje en tel verder."], []);
+    } else {
+      await tipDan(l, [`Nu zegt de klok ${digitaal(g.tijd)}.`, "Elk getal op de klok is 5 minuten.", `${plus} minuten is ${plus / 5} getallen verder vanaf het vlaggetje.`], []);
+    }
+    open();
+    await l.zeg(kop);
+    k.pas({ actief: true });
+    klaar = wachtKlok(l, ["controle", "hulp"], taak(poging + 1), false);
+  }
+  k.pas({ actief: false, beweegbaar: null, controle: false, hulpknop: false, ring: null, ringPuls: false, pil: null, grens: null, doel: null, digitaal: true, digitaalVaag: false });
+  return !hulp && fouten === 0;
 }
 
 const minutenLater: Lesdraaiboek = {
   id: "klok-minuten-later",
   titel: "5 en 10 minuten later",
-  synthesis: "How Long It Takes · Five Minutes Later + Ten Minutes Later (groep 3-deel)",
+  indeling: "synthesis",
+  synthesis: "How Long It Takes · Five Minutes Later + Ten Minutes Later",
   kaarttekening: KaartLater,
 
   /*
-    LESSENPLAN.md T5 (alleen het begin, binnen het uur): de minutenwijzer 5
-    minuten verder zetten, een lichtboog met 0 · 5 · 10 langs de rand, "hoe
-    laat is het 5 minuten later?" met de fout 2:41, en doortellen met vijven.
-    Kiezen en zelf zetten door elkaar; samen minstens 15 opgaven. Het stukje
-    over 10 minuten (de pannenkoeken) stond er al en blijft.
+    Naar Synthesis · Five Minutes Later en Ten Minutes Later (GEDRAG-T5), na
+    elkaar in één les: eerst tellen met vijven (koekjes, doortellen, over het
+    uur, oefenen, de fout van Sam, grotere sprongen, zetten, bonus), dan tellen
+    met tienen (zelfde opbouw met 10, 20 en 30 minuten). De digitale klok
+    komt in beeld na de eerste stap (uur in de kleur van de urenwijzer, minuten
+    in die van de minutenwijzer), het vlaggetje bij de begintijd en de
+    tijdboog met 0 · 5 · 10 of 0 · 10 · 20 · 30 erbuiten.
   */
   async speel(l) {
-    const k = new Klok(l, u(2, 35), { digitaal: true }, true);
+    direct.add(l);
+    const k = new Klok(l, u(2, 35), { digitaal: false }, true);
     let fouten = 0;
-    const start = await begin(l, ["We kijken hoe laat het een paar minuten later is.", "We tellen verder met vijven."], {
+    const tel = (goed: boolean) => {
+      if (!goed) fouten++;
+    };
+    /** De samenvatting: de minuten in de digitale klok lichten op. */
+    const samenvatting = async (...zinnen: string[]) => {
+      k.pas({ digitaalLicht: true });
+      await l.zeg(...zinnen);
+      await verder(l);
+      k.pas({ digitaalLicht: false });
+    };
+
+    /* ---------- Deel 1: tellen met vijven ---------- */
+    const start = await begin(l, ["We gaan uitzoeken hoe laat het over een paar minuten is.", "We tellen verder in vijven."], {
       uitleg: ["Elk getal op de klok is 5 minuten."],
       proef: async () => {
+        k.pas({ digitaal: true });
         await nieuweTijd(l, k, u(5, 40), false);
         await l.zeg("Het is 5:40.", "Hoe laat is het 5 minuten later?");
         if (!(await proefvraag(l, ["5:41", "5:45", "5:50"], "5:45"))) return false;
@@ -2564,106 +3376,225 @@ const minutenLater: Lesdraaiboek = {
     });
 
     if (start === "leer") {
-      /* 1. De koekjes: de minutenwijzer 5 minuten verder. */
-      await nieuweTijd(l, k, u(2, 35), true);
-      await l.zeg("Het is nu 2:35.", "De koekjes van Bliepo zijn over 5 minuten klaar.", "Zet de minutenwijzer 5 minuten verder.");
-      await minuutVerder(l, k, u(2, 40), { hint: ["Elk getal op de klok is 5 minuten.", "Tik dus op het volgende getal: de 8."], cirkelNa2: true });
-      await l.zeg("De minutenwijzer schoof één getal op.", "Dat is 5 minuten.", "Om 2:40 zijn de koekjes klaar.");
+      /* 1. De koekjes: de minutenwijzer 5 minuten verder; de digitale klok komt daarna in beeld (ook na de proef nog even weg). */
+      k.pas({ digitaal: false });
+      await nieuweTijd(l, k, u(2, 35), 5);
+      await l.zeg("Het is nu 2:35, en de koekjes van Sam zijn over 5 minuten klaar.");
+      tel(await minuutNaar(l, k, u(2, 40), { kop: "Zet de minutenwijzer 5 minuten verder.", hint: ["Elk getal op de klok is 5 minuten.", "Tik dus op het volgende getal: de 8."], boog: "naTik" }));
+      /* Synthesis: de digitale klok komt meteen bij de tik; daarna pas de uitleg van de boog. */
+      k.pas({ digitaal: true });
+      await boogUitleg(l, k);
+      await l.zeg("De [[m:minutenwijzer]] ging één getal verder, en dat is 5 minuten.", "Dus om 2:40 zijn de koekjes klaar.");
       await verder(l);
 
-      /* 2. Verder tellen met vijven. */
-      await l.zeg("We tellen verder met vijven.", "Hoe laat is het 5 minuten later?");
-      if (!(await hoeLaatLater(l, k, u(2, 40), ["2:09", "2:41", "2:45", "2:50"], "Ja, goed zo.", { terug: true }))) fouten++;
-      await l.wacht(300);
+      /* 2 en 3. Verder tellen met vijven. */
+      await l.zeg("We blijven tellen in vijven.", "Hoe laat is het 5 minuten later?");
+      tel(await hoeLaatLater(l, k, u(2, 40), ["2:09", "2:41", "2:45", "2:50"], lof(l), { terug: true }));
+      await l.zeg("En hoe laat is het 5 minuten daarna?");
+      tel(await hoeLaatLater(l, k, u(2, 45), ["2:10", "2:46", "2:50", "2:55"], lof(l), { terug: true }));
+      await l.zeg("En nog eens 5 minuten?");
+      tel(await hoeLaatLater(l, k, u(2, 50), ["2:11", "2:51", "2:55", "3:00"], lof(l), { terug: true }));
+      await samenvatting("De minuten gingen van 40 naar 45, naar 50 en naar 55.", "Dat is tellen in vijven: elke 5 minuten gaat de [[m:minutenwijzer]] 5 streepjes verder.");
+
+      /* 4. Over het uur heen. */
       await l.zeg("En 5 minuten daarna?");
-      if (!(await hoeLaatLater(l, k, u(2, 45), ["2:10", "2:46", "2:50", "2:55"], "Goed.", { terug: true }))) fouten++;
-      await l.wacht(300);
-      await l.zeg("En nog 5 minuten?");
-      if (!(await hoeLaatLater(l, k, u(2, 50), ["2:11", "2:51", "2:55", "3:00"], "Dat klopt.", { terug: true }))) fouten++;
-      await l.wacht(500);
-      await l.zeg("De minuten gingen van 40 naar 45.", "Toen naar 50 en daarna naar 55.", "Steeds 5 erbij.");
-      await verder(l);
-    }
+      tel(await hoeLaatLater(l, k, u(2, 55), ["2:00", "2:56", "2:60", "3:00"], "Daar is het.", { terug: true }));
+    } else k.pas({ digitaal: true });
 
-    /* 3. Verder oefenen: kiezen en zelf zetten door elkaar. */
-    await nieuweTijd(l, k, u(3, 40), true);
+    /* 5. Oefenen. Bij een fout komt er een extra klok ("Probeer deze."). */
+    await l.zeg("We proberen er nog een paar.");
+    const extraVijf = [[u(4, 5), ["4:06", "4:10", "4:15", "4:50"]]] as const;
+    let extraN = 0;
+    const metExtra = async (goed: boolean) => {
+      tel(goed);
+      if (goed || extraN >= extraVijf.length) return;
+      const [t, opties] = extraVijf[extraN++];
+      /* Synthesis: de nieuwe klok staat er al bij "Probeer deze.". */
+      await nieuweTijd(l, k, t, false, false);
+      await l.zeg("Probeer deze.");
+      await l.zeg(`Het is nu ${digitaal(t)}.`, "Hoe laat is het 5 minuten later?");
+      tel(await hoeLaatLater(l, k, t, [...opties], lof(l), {}));
+    };
+    await nieuweTijd(l, k, u(3, 40), false, false);
     await l.zeg("Het is nu 3:40.", "Hoe laat is het 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(3, 40), ["3:09", "3:41", "3:45", "3:50"], "Goed, die had je snel!", { terug: true }))) fouten++;
-    await l.wacht(500);
-    await l.zeg("Zet de minutenwijzer nu zelf 5 minuten verder.");
-    if (!(await vijfVerder(l, k, u(3, 50)))) fouten++;
-    await l.zeg("Het is 3:50.", "Hoe laat is het 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(3, 50), ["3:11", "3:51", "3:55", "4:00"], "Ja.", { terug: true }))) fouten++;
-    await l.wacht(500);
-    await l.zeg("Van 40 naar 45, naar 50 en naar 55.", "Steeds 5 erbij.");
-    await verder(l);
+    await metExtra(await hoeLaatLater(l, k, u(3, 40), ["3:09", "3:41", "3:45", "3:50"], lof(l), { terug: true }));
+    await nieuweTijd(l, k, u(6, 3), 5);
+    await l.zeg("Het is nu 6:03.", "De minutenwijzer staat tussen twee getallen.", "Hoe laat is het 5 minuten later?");
+    tel(await hoeLaatLater(l, k, u(6, 3), ["6:04", "6:05", "6:08", "6:13"], lof(l), { terug: true }));
+    await l.zeg("En 5 minuten daarna?");
+    tel(await hoeLaatLater(l, k, u(6, 8), ["6:09", "6:10", "6:13", "6:18"], lof(l), { terug: true }));
+    await samenvatting("De minuten gingen van 3 naar 8 naar 13.", "De [[m:minutenwijzer]] gaat steeds 5 streepjes verder, ook tussen twee getallen.");
 
-    /* Zonder boog, alleen met het vlaggetje. */
-    await nieuweTijd(l, k, u(4, 10), false);
-    await l.zeg("Nu zonder boog.", "Het is 4:10.", "Hoe laat is het 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(4, 10), ["4:03", "4:11", "4:15", "4:20"], "Goed.", { terug: true }))) fouten++;
-    await l.wacht(500);
-    await l.zeg("Zet de minutenwijzer 5 minuten verder.");
-    if (!(await vijfVerder(l, k, u(4, 20)))) fouten++;
-    await l.zeg("Het is 4:20.", "En 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(4, 20), ["4:05", "4:21", "4:25", "4:30"], "Precies.", { terug: true }))) fouten++;
-    await l.wacht(500);
+    /* 6. Zonder boog. */
+    await nieuweTijd(l, k, u(1, 22), false, false);
+    await l.zeg("Het is nu 1:22.", "Hoe laat is het 5 minuten later?");
+    await metExtra(await hoeLaatLater(l, k, u(1, 22), ["1:23", "1:25", "1:27", "1:32"], lof(l), { terug: true }));
+    await nieuweTijd(l, k, u(3, 47), false, false);
+    await l.zeg("Het is 3:47.", "Hoe laat is het over 5 minuten?");
+    await metExtra(await hoeLaatLater(l, k, u(3, 47), ["3:48", "3:50", "3:52", "3:57"], lof(l), { terug: true }));
+    await nieuweTijd(l, k, u(6, 55), false, false);
+    await l.zeg("Hier is de volgende.", "Het is 6:55.", "Hoe laat is het 5 minuten later?");
+    await metExtra(await hoeLaatLater(l, k, u(6, 55), ["6:00", "6:56", "6:60", "7:00"], lof(l), { terug: true }));
 
-    await nieuweTijd(l, k, u(6, 25), false);
-    await l.zeg("Het is 6:25.", "Zet de minutenwijzer 5 minuten verder.");
-    if (!(await vijfVerder(l, k, u(6, 30)))) fouten++;
-    await l.zeg("Het is 6:30.", "Hoe laat is het 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(6, 30), ["6:07", "6:31", "6:35", "6:40"], "Klopt.", { terug: true }))) fouten++;
+    /* 7. De fout van Sam (een klein poppetje erbij, plopje). */
+    await nieuweTijd(l, k, u(7, 55), false, false);
+    k.pas({ sam: true });
+    k.plop();
     await l.wacht(500);
-
-    await nieuweTijd(l, k, u(8), false);
-    await l.zeg("Het is 8 uur.", "Hoe laat is het 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(8), ["8:01", "8:05", "8:10"], "Ja, 8:05.", { terug: true }))) fouten++;
-    await l.wacht(500);
-
-    /* Heeft Bliepo gelijk? (Synthesis: "heeft Sam gelijk?") */
-    await nieuweTijd(l, k, u(5, 20), false);
-    await l.zeg("Het is 5:20.", "Bliepo zegt: 5 minuten later is het 5:21.", "Heeft Bliepo gelijk?");
-    const gelijk = await kies(l, ["Ja", "Nee"]);
+    await l.zeg("Hier is mijn vriend Sam.", "Sam leert dit ook.");
+    await l.zeg("Het is 7:55. Sam zegt: over 5 minuten is het 7 uur 60.", "Heeft Sam gelijk?");
+    const gelijk = await kies(l, ["Ja", "Nee"], "Nee", 1, { weetniet: false });
     if (gelijk === "Nee") {
       k.goed();
-      await l.zeg("Goed gezien!", "5:21 is maar 1 minuut later.");
+      await l.zeg(lof(l));
     } else {
       fouten++;
-      await l.zeg(gelijk === null ? "Geen zorgen." : "Kijk nog eens.", "Bliepo telde maar één klein streepje.", "Dat is 1 minuut, geen 5.");
+      await l.zeg("Ik snap waarom je dat kiest.", "55 en 5 is 60, dat klopt.");
+      await tipDan(l, ["Maar een klok telt niet tot 60 minuten.", "Na 7:59 komt 8:00."], []);
     }
-    await l.zeg("Hoe laat is het dan, 5 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(5, 20), ["5:21", "5:25", "5:30"], "Ja, 5:25.", { terug: true }))) fouten++;
-    await l.wacht(500);
+    await l.zeg("Wat zegt de klok dan over 5 minuten?");
+    tel(await hoeLaatLater(l, k, u(7, 55), ["7:00", "7:56", "8:00"], lof(l), { terug: true }));
+    await l.zeg("Sam gaat het verbeteren.");
+    k.pas({ sam: false });
+    await l.wacht(400);
 
-    /* Wat net niet lukte, komt nu terug. */
-    await terugkomen(l, k);
-
-    /* 4. 10 minuten verder: twee getallen. */
-    k.pas({ boog: null, vlag: null });
-    k.zet(u(1, 15));
-    await l.wacht(600);
-    k.pas({ vlag: u(1, 15), boog: { van: u(1, 15), stap: 10 } });
-    await l.zeg("Nu ga je 10 minuten verder.", "Het is 1:15.", "De pannenkoeken van Bliepo zijn over 10 minuten klaar.");
+    /* 8. Grotere sprongen: 15 minuten, in drie keer vijf. */
+    await nieuweTijd(l, k, u(8, 20), 5);
+    await l.zeg("Nu grotere sprongen in de tijd.", "Het is 8:20, en het bad van Sam is over 15 minuten vol.");
+    /* Synthesis wacht hier op de pijl. */
     await verder(l);
-    await l.zeg("Zet de minutenwijzer 10 minuten verder.");
-    if (
-      !(await minuutVerder(l, k, u(1, 25), {
-        hint: ["Elk getal op de klok is 5 minuten.", "10 minuten is 2 getallen.", "Tik dus op de 5."],
-        tussenstap: true,
-        cirkelNa2: true,
-      }))
-    ) {
+    tel(await vijfVerder(l, k, u(8, 25)));
+    tel(await vijfVerder(l, k, u(8, 30), "En nog 5."));
+    tel(await vijfVerder(l, k, u(8, 35), "En nog 5."));
+    await l.zeg("15 minuten is drie keer vijf.", "Dan zegt de klok 8:35.");
+    await verder(l);
+
+    /* 9. 25 minuten later. */
+    await nieuweTijd(l, k, u(4, 15), 5);
+    await l.zeg("De klok zegt nu 4:15.", "Hoe laat is het 25 minuten later?");
+    tel(await hoeLaatLater(l, k, u(4, 15), ["4:20", "4:25", "4:35", "4:40"], lof(l), { stap: 25, terug: true }));
+
+    /* 10. Zelf zetten: 15 minuten later, dan nog een. */
+    await nieuweTijd(l, k, u(7, 10), 5);
+    await l.zeg("Nu zet jij er een op de klok.");
+    tel(await minutenZetten(l, k, u(7, 10), 15));
+    await l.zeg(lof(l));
+    await nieuweTijd(l, k, u(6, 45), false, false);
+    await l.zeg("Hier is er nog een.", "Het is 6:45.", "Hoe laat is het 25 minuten later?");
+    tel(await hoeLaatLater(l, k, u(6, 45), ["6:10", "6:70", "7:05", "7:10"], lof(l), { stap: 25, terug: true }));
+
+    /* 11. Alleen als alles goed ging: een lastige om mee af te sluiten (eigen geluid). */
+    if (fouten === 0) {
+      speelLesgeluid("klokDraai");
+      await nieuweTijd(l, k, u(12, 55), false);
+      await l.zeg("Je had alles goed, dus hier is een lastige om mee af te sluiten.", "Het is 12:55.", "Hoe laat is het 5 minuten later?");
+      tel(await hoeLaatLater(l, k, u(12, 55), ["12:00", "12:60", "1:00", "2:00"], lof(l), {}));
+    }
+    await l.zeg("Tel in stappen van 5.", "Zo zie je hoe laat het straks is, ook na het hele uur.");
+    await verder(l);
+
+    /* ---------- Deel 2: tellen met tienen ---------- */
+    /* Synthesis heeft twee lessen: de bonus van deel 2 hangt alleen af van de fouten in deel 2. */
+    const foutenDeel1 = fouten;
+    await weetJeHet(l, "Nu gaan we uitzoeken hoe laat het over 10, 20 of 30 minuten is.", "We tellen verder in tienen.");
+
+    /* 1. De pizza: 10 minuten, twee getallen. Het eerste getal mag (de wijzer gaat erheen), af is het bij het tweede. Synthesis: de digitale klok komt pas daarna in beeld. */
+    k.pas({ digitaal: false });
+    await nieuweTijd(l, k, u(1, 15), 10);
+    await l.zeg("Het is 1:15, en de pizza van Sam is over 10 minuten klaar.");
+    tel(
+      await minuutNaar(l, k, u(1, 25), {
+        kop: "Zet de minutenwijzer 10 minuten verder.",
+        hint: ["Elk getal op de klok is 5 minuten, en 10 minuten is twee getallen.", "Tik dus op de 5 op de klok."],
+        boog: "naTik",
+      }),
+    );
+    k.pas({ digitaal: true });
+    await l.zeg("De [[m:minutenwijzer]] ging twee getallen verder, en dat is 10 minuten.", "Dus om 1:25 is de pizza klaar.");
+    await verder(l);
+
+    /* 2 en 3. Doortellen met tienen. */
+    await nieuweTijd(l, k, u(3, 28), 10);
+    await l.zeg("Het is 3:28.", "De minutenwijzer staat tussen twee getallen.", "Hoe laat is het 10 minuten later?");
+    tel(await hoeLaatLater(l, k, u(3, 28), ["3:29", "3:33", "3:38", "3:48"], lof(l), { stap: 10, terug: true }));
+    await l.zeg("En 10 minuten daarna?");
+    tel(await hoeLaatLater(l, k, u(3, 38), ["3:39", "3:43", "3:48", "3:58"], lof(l), { stap: 10, terug: true }));
+    await samenvatting("De minuten gingen van 28 naar 38 en naar 48.", "Het laatste cijfer blijft hetzelfde, en het cijfer ervoor wordt steeds 1 groter.");
+    await l.zeg("En nog eens 10 minuten?");
+    tel(await hoeLaatLater(l, k, u(3, 48), ["3:49", "3:53", "3:58", "4:08"], lof(l), { stap: 10, terug: true }));
+
+    /* 4. Over het uur heen (de tussenvraag bij 3:68). */
+    await l.zeg("En 10 minuten daarna?");
+    tel(await hoeLaatLater(l, k, u(3, 58), ["3:08", "3:59", "3:68", "4:08"], "Daar is het.", { stap: 10, terug: true }));
+
+    /* 5. Oefenen. */
+    await l.zeg("We proberen er nog een paar.");
+    /* Synthesis: in het oefenblok geen vlaggetje (ook niet bij 6:14). */
+    await nieuweTijd(l, k, u(6, 14), 10, false);
+    await l.zeg("Het is 6:14.", "Hoe laat is het 10 minuten later?");
+    tel(await hoeLaatLater(l, k, u(6, 14), ["6:15", "6:19", "6:24", "6:34"], lof(l), { stap: 10, terug: true }));
+
+    /* 6. De fout van Sam. */
+    await nieuweTijd(l, k, u(9, 23), false, false);
+    k.pas({ sam: true });
+    k.plop();
+    await l.wacht(500);
+    await l.zeg("Het is 9:23, en Sam zegt dat het over 10 minuten 9:24 is.", "Heeft Sam gelijk?");
+    const gelijk10 = await kies(l, ["Ja", "Nee"], "Nee", 1, { weetniet: false });
+    if (gelijk10 === "Nee") {
+      k.goed();
+      await l.zeg(lof(l));
+    } else {
       fouten++;
+      await l.zeg("Ik snap waarom je dat kiest.", "Sam maakte het laatste cijfer 1 groter.");
+      await tipDan(l, ["Maar elke 10 minuten blijft het laatste cijfer hetzelfde, en wordt het cijfer ervoor 1 groter."], []);
     }
-    await l.zeg("De minutenwijzer schoof 2 getallen op.", "Dat is 10 minuten.", "Om 1:25 zijn de pannenkoeken klaar.");
+    await l.zeg("Wat zegt de klok dan over 10 minuten?");
+    tel(await hoeLaatLater(l, k, u(9, 23), ["9:24", "9:33", "9:43"], lof(l), { stap: 10, terug: true }));
+    await l.zeg("Sam gaat het verbeteren.");
+    k.pas({ sam: false });
+    await l.wacht(400);
+
+    /* 7. Twee klokken. */
+    await nieuweTijd(l, k, u(9, 32), false, false);
+    await l.zeg("Het is nu 9:32.", "Hoe laat is het 10 minuten later?");
+    tel(await hoeLaatLater(l, k, u(9, 32), ["9:33", "9:37", "9:42", "9:52"], lof(l), { stap: 10, terug: true }));
+    await nieuweTijd(l, k, u(5, 57), false, false);
+    await l.zeg("Hier is de volgende.", "Het is 5:57.", "Hoe laat is het over 10 minuten?");
+    tel(await hoeLaatLater(l, k, u(5, 57), ["5:07", "5:58", "5:67", "6:07"], lof(l), { stap: 10, terug: true }));
+
+    /* 8. Grotere sprongen: 20 minuten, in twee keer tien. */
+    await nieuweTijd(l, k, u(7, 10), 10);
+    await l.zeg("Nu grotere sprongen in de tijd.", "Het is 7:10, en de bus van Sam komt over 20 minuten.");
+    tel(await minuutNaar(l, k, u(7, 20), { kop: "Tik op het getal twee verder.", hint: ["Elk getal op de klok is 5 minuten.", "Twee getallen verder is 10 minuten.", "Tik op de 4 op de klok."] }));
+    tel(await minuutNaar(l, k, u(7, 30), { kop: "En nog 10.", hint: ["Tik op de 6 op de klok."] }));
+    await l.zeg("20 minuten is twee keer tien.", "Dan zegt de klok 7:30.");
     await verder(l);
-    await l.zeg("Na het eten speelt Bliepo 10 minuten.", "Hoe laat is het 10 minuten later?");
-    if (!(await hoeLaatLater(l, k, u(1, 25), ["1:26", "1:30", "1:35", "1:45"], "Ja, 1:35.", { stap: 10 }))) fouten++;
-    await l.wacht(500);
+
+    /* 9. 30 minuten later. */
+    await nieuweTijd(l, k, u(6, 12), 10);
+    await l.zeg("Het is 6:12.", "Hoe laat is het 30 minuten later?");
+    tel(await hoeLaatLater(l, k, u(6, 12), ["6:15", "6:27", "6:32", "6:42"], lof(l), { stap: 30, terug: true }));
+
+    /* 10. Zelf zetten: 30 minuten later, en nog een lezen. */
+    await nieuweTijd(l, k, u(5, 5), 10);
+    await l.zeg("Nu zet jij er een op de klok.");
+    tel(await minutenZetten(l, k, u(5, 5), 30));
+    await l.zeg(lof(l));
+    await nieuweTijd(l, k, u(5, 47), false, false);
+    await l.zeg("Hier is er nog een.", "De klok zegt nu 5:47.", "Hoe laat is het 30 minuten later?");
+    tel(await hoeLaatLater(l, k, u(5, 47), ["5:17", "5:77", "6:07", "6:17"], lof(l), { stap: 30, terug: true }));
+
+    /* 11. Alleen als alles goed ging: een lastige om mee af te sluiten. */
+    if (fouten === foutenDeel1) {
+      speelLesgeluid("klokDraai");
+      await nieuweTijd(l, k, u(12, 46), false);
+      await l.zeg("Je had alles goed, dus hier is een lastige om mee af te sluiten.", "Het is 12:46.", "Hoe laat is het 30 minuten later?");
+      tel(await hoeLaatLater(l, k, u(12, 46), ["12:16", "12:76", "1:16", "2:16"], lof(l), { stap: 30 }));
+    }
+    await l.zeg("Nu kun je in tienen tellen om te zien hoe laat het over een paar minuten is, ook over het hele uur heen.");
+    await verder(l);
     k.pas({ boog: null, vlag: null });
-    await l.zeg("Nu kun je verder tellen met vijven.", "En je weet: 10 minuten is 2 getallen verder.");
-    await verder(l);
 
     await kaartEinde(l, fouten, "Jij kunt mij nu les geven.");
   },
@@ -2698,7 +3629,7 @@ async function tweeNaElkaar(
     verder: true,
     fout: async (x) => {
       if (x === String(Math.abs(a - b))) {
-        await l.zeg(`Dat is het verschil tussen ${a} en ${b}.`, "Maar Bliepo deed allebei, het ene na het andere.", "We tellen ze bij elkaar.");
+        await l.zeg(`Dat is ${a} min ${b}.`, "Maar Bliepo deed allebei na elkaar.", "We tellen ze bij elkaar.");
       } else if (x === String(a) || x === String(b)) {
         await l.zeg("Dat is maar één van de twee.", "Bliepo deed daarna nog iets.", "We tellen ze bij elkaar.");
       } else if (x !== null) {
@@ -2724,7 +3655,7 @@ const samenHoeLang: Lesdraaiboek = {
   async speel(l) {
     const k = new Klok(l, u(3), { digitaal: true, uurwijzer: "flets" });
     await weetJeHet(l, "We gaan zeggen hoe lang iets duurt, in minuten.");
-    await l.zeg("Bliepo doet twee dingen, het ene na het andere.", "Het blauwe vlaggetje laat zien waar hij begint.");
+    await l.zeg("Bliepo doet twee dingen na elkaar.", "Het blauwe vlaggetje laat zien waar hij begint.");
     await verder(l);
 
     let fouten = 0;
@@ -2754,6 +3685,45 @@ const samenHoeLang: Lesdraaiboek = {
 };
 
 /* De volgorde van Synthesis: instaptoets, de lessen, de eindtoets, het spel; daarna "How Long It Takes". */
+/*
+  Het vraagteken (hulp) en het vinkje (controle) staan op de vaste plek onder
+  de zin van Bliepo, niet meer onder de klok (28 oktober 2026, besluit eigenaar).
+*/
+function metKlokknoppen(les: Lesdraaiboek): Lesdraaiboek {
+  /*
+    De vijf nagebouwde lessen (T1 t/m T5, 28 oktober 2026, zoals Synthesis): de
+    hulp is het handje, naast het vinkje; bij een opdracht die meteen
+    nagekeken wordt staat alleen het handje (`hulpknop`).
+  */
+  if (SYNTHESIS_KLOK.has(les.id)) {
+    return {
+      ...les,
+      speel: (l) =>
+        les.speel(
+          knoppenOpPlek(l, {
+            voor: BliepoKlok,
+            soorten: { hulp: "hulp", controle: "controleer" },
+            aanwijs: { klokhulp: "hulp", klokcontrole: "controleer" },
+            zichtbaar: (p) => (p.actief && p.controle ? (p.hulpknop ? ["hulp", "controle"] : ["controle"]) : p.actief && p.hulpknop ? ["hulp"] : []),
+          }),
+        ),
+    };
+  }
+  return {
+    ...les,
+    speel: (l) =>
+      les.speel(
+        knoppenOpPlek(l, {
+          voor: BliepoKlok,
+          soorten: { hulp: "weetniet", controle: "controleer" },
+          aanwijs: { klokhulp: "weetniet", klokcontrole: "controleer" },
+          zichtbaar: (p) => (p.actief && p.controle ? ["hulp", "controle"] : []),
+        }),
+      ),
+  };
+}
+const SYNTHESIS_KLOK = new Set(["klok-urenwijzer", "klok-hele-uren-zetten", "klok-halve-uren", "klok-kwart-over", "klok-minuten-later"]);
+
 export const LESSEN_KLOKKIJKEN: Lesdraaiboek[] = [
   instaptoets,
   digitaleKlok,
@@ -2766,4 +3736,4 @@ export const LESSEN_KLOKKIJKEN: Lesdraaiboek[] = [
   verslaDeWekker,
   minutenLater,
   samenHoeLang,
-];
+].map(metKlokknoppen);

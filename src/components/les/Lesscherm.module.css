@@ -82,7 +82,7 @@
   line-height: 31px;
 }
 .tekst[data-letters="groot"] .getal {
-  font-size: 22px;
+  font-size: inherit;
 }
 .tekst[data-letters="groot"] .knop {
   font-size: 20px;
@@ -101,10 +101,11 @@
     opacity: 1;
   }
 }
+/* Getallen in hetzelfde lettertype als de rest van de zin (besluit eigenaar, 28 okt 2026; was KaTeX met schreef). */
 .getal {
-  font-family: "KaTeX_Main", "Latin Modern Roman", "Cambria Math", Georgia, "Times New Roman", serif;
-  font-weight: 400;
-  font-size: 17px;
+  font-family: inherit;
+  font-weight: inherit;
+  font-size: inherit;
 }
 .tekst em {
   font-style: italic;
@@ -151,7 +152,7 @@
   text-align: center;
 }
 .som {
-  font-family: "KaTeX_Main", "Latin Modern Roman", "Cambria Math", Georgia, "Times New Roman", serif;
+  font-family: inherit;
   font-size: 19px;
   font-weight: 400;
   color: #eef0f5;
@@ -480,4 +481,109 @@ a.knop {
   .draait {
     animation-duration: 0.2s;
   }
+}
+
+/* ---------- de indeling van Synthesis (28 oktober 2026, besluit eigenaar) ----------
+   Links een kolom met de zin van Bliepo en daaronder de knoppen, zoals Synthesis;
+   het voorwerp staat in het midden van het vlak, Bliepo en de microfoonknop rechts.
+   Vlakke knoppen, geen schaduw of gloed op de tekst. */
+.synthKolom {
+  position: absolute;
+  left: 20px;
+  top: 96px;
+  width: 270px;
+  z-index: 5;
+}
+.synthKolom .tekst {
+  position: static;
+  width: 270px;
+}
+.synthKolom :global(.bliepo-tekst) {
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-size: 19px;
+  font-weight: 700;
+  line-height: 1.35;
+  text-align: left;
+  text-shadow: none;
+  text-wrap: pretty;
+  margin-bottom: 16px;
+}
+.synthKolom :global(.bliepo-tekst-nu),
+.synthKolom :global(.bliepo-tekst-nog) {
+  text-shadow: none;
+}
+.synthKolom .bediening {
+  align-items: stretch;
+  width: 270px;
+}
+.synthKolom .bediening > .bediening .knop,
+.synthKolom .bediening > div:first-child:not(.rij):not(.raster3) .knop {
+  width: 100%;
+}
+.synthKolom .knop {
+  min-height: 52px;
+  font-size: 18px;
+}
+.synthKolom .rij {
+  flex-wrap: wrap;
+}
+/* Twee of drie korte keuzes naast elkaar, als tegels (zoals Synthesis). */
+.synthKolom .rij > .knop {
+  flex: 1 1 calc(50% - 6px);
+  min-height: 64px;
+  text-align: center;
+  font-size: 22px;
+}
+/* Antwoordtegels 1–9 in een raster van 3 breed (besluit eigenaar). */
+.raster3 {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  width: 270px;
+}
+.raster3 > .knop {
+  min-width: 0;
+  min-height: 72px;
+  padding: 0;
+  text-align: center;
+  font-size: 26px;
+}
+.synthKolom [data-knop="weetniet"] {
+  width: 100%;
+}
+
+/* Nagebouwde lessen (Synthesis-indeling): knoppen in hetzelfde lettertype als de zin van Bliepo, cijfertegels groot (keurder, 28 okt 2026). */
+[data-indeling="synthesis"] .knop {
+  font-family: var(--stijl-lettertype, var(--font-grandstander), var(--font-fredoka), system-ui, sans-serif);
+  font-weight: 700;
+  font-size: 18px;
+}
+[data-indeling="synthesis"] .raster3 > .knop {
+  font-size: 32px;
+  font-weight: 700;
+}
+[data-indeling="synthesis"] .twee {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+[data-indeling="synthesis"] .twee > .knop {
+  min-width: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 10px 8px;
+  text-align: center;
+}
+/* Korte getallen (geen 1–9-rooster): drie op een rij. */
+[data-indeling="synthesis"] .rij > .knop.som {
+  min-width: 72px;
+  flex: 0 0 auto;
+  text-align: center;
+}
+/* Nagebouwde lessen: getallen in de zin van Bliepo in de kleur van de zin (de tegelkleuren horen bij de tegellessen; geel of paars was op blauw slecht leesbaar). */
+[data-indeling="synthesis"] .getal {
+  color: inherit !important;
 }

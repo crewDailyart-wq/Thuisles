@@ -14,8 +14,10 @@
 import type { Metadata } from "next";
 import { Geluidsvoorkeur } from "@/components/kind/Geluidsvoorkeur";
 import { Kindschil } from "@/components/kind/Kindschil";
+import { KnopTik } from "@/components/kind/KnopTik";
 import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { haalGeluidsvoorkeuren } from "@/lib/data/kindinstellingen";
+import { haalLesgeluidjes } from "@/lib/lesgeluiden-ouder";
 import { haalHuidigKind, haalSleutelstand } from "@/lib/data/queries";
 import { NIET_INDEXEREN } from "@/lib/seo";
 
@@ -51,6 +53,8 @@ export default async function KindLayout({
   return (
     <Kindschil kind={kind} sleutels={sleutels}>
       <Geluidsvoorkeur uitleg={geluid.uitleg} opgave={geluid.opgave} />
+      {/* Zacht tikje bij elke knop (29 okt 2026); uit als de ouder "Geluidjes in de lessen" uitzette. */}
+      <KnopTik toegestaan={haalLesgeluidjes(kind.id)} />
       {/* De gekozen stijl van de nieuwe onderdelen (stijlkiezer, /admin/stijl). */}
       <StijlVariabelen />
       {children}

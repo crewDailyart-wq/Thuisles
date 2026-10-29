@@ -58,6 +58,8 @@ export type StavenProps = {
   vinkje?: boolean;
   /** Het vraagteken: weet ik niet. */
   hulp?: boolean;
+  /** Teken het vinkje en het vraagteken in het vlak zelf (de oude plek). Standaard uit: ze staan op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   /** Elke keer dat dit getal verandert: een rustige lichtgolf (goed). */
   golf?: number;
   /* pijlen */
@@ -373,7 +375,7 @@ function PijlenBeeld({ a, b, c }: { a: number; b: number; c: number }) {
 /* ---------- het vlak ---------- */
 
 export function HoloStaven(p: StavenProps & Vlakbasis) {
-  const { modus, palet = false, paletSlot = [], actief = false, vinkje = false, hulp = false, golf = 0, pijlen = null, kaartTienen = 0, kaartEnen = 0, kolomKiezen = false, meld, schaal } = p;
+  const { modus, palet = false, paletSlot = [], actief = false, vinkje = false, hulp = false, knoppenInVlak = false, golf = 0, pijlen = null, kaartTienen = 0, kaartEnen = 0, kolomKiezen = false, meld, schaal } = p;
   const { plek, scene } = useHoloMotor<StavenScene>(schaal, maakScene());
   const vorigBij = useRef<number[]>([]);
   const groepenRef = useRef<{ x: number; y: number; nietVol: boolean }[]>([]);
@@ -447,7 +449,7 @@ export function HoloStaven(p: StavenProps & Vlakbasis) {
         </>
       )}
 
-      {(vinkje || hulp) && (
+      {knoppenInVlak && (vinkje || hulp) && (
         <div style={{ position: "absolute", left: 846, top: palet ? 420 : 300, display: "flex", flexDirection: "column", gap: 18 }}>
           {hulp && <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="hulpvlak" className={s.ikoon} disabled={!actief} onClick={() => meld({ soort: "hulp" })} />}
           {vinkje && <IkoonKnop ikoon="vink" label="Klaar" knop="klaar" kleur="blauw" className={s.ikoon} disabled={!actief} onClick={() => meld({ soort: "klaar" })} />}

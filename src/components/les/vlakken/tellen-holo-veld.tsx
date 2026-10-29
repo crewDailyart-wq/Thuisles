@@ -34,6 +34,8 @@ export type TelVeldProps = {
   licht?: number[] | null;
   actief?: boolean;
   klaarKnop?: boolean;
+  /** Teken het vinkje in het vlak zelf (de oude plek). Standaard uit: het staat op de vaste plek onder de zin van Bliepo (28 oktober 2026). */
+  knoppenInVlak?: boolean;
   golf?: number;
 };
 
@@ -156,7 +158,8 @@ function Driehoek({ x, y, omlaag }: { x: number; y: number; omlaag: boolean }) {
   );
 }
 
-export function TelVeld({ tot, rand = [], pijl = null, licht = null, actief = false, klaarKnop = false, golf = 0, meld, schaal }: TelVeldProps & Vlakbasis) {
+export function TelVeld({ tot, rand = [], pijl = null, licht = null, actief = false, klaarKnop = false,
+  knoppenInVlak = false, golf = 0, meld, schaal }: TelVeldProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<VeldScene>(schaal, maakVeldScene);
   const { y0 } = maten(tot);
 
@@ -205,7 +208,7 @@ export function TelVeld({ tot, rand = [], pijl = null, licht = null, actief = fa
           <Driehoek x={midden(pijl, y0).x} y={midden(pijl, y0).y + D / 2 + 2} omlaag={false} />
         </>
       )}
-      {klaarKnop && (
+      {knoppenInVlak && klaarKnop && (
         <div className={s.vinkje} style={{ left: 490 - 60, top: 720 - ONDER + 6 }}>
           <IkoonKnop ikoon="vink" label="Klaar" knop="vinkje" kleur="blauw" style={{ width: 120, height: 116 }} onClick={() => meld({ soort: "klaar" })} />
         </div>

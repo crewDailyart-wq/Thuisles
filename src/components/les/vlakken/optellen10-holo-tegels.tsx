@@ -96,6 +96,17 @@ export type HoloTegelProps = {
   hint?: { toren: number; n: number } | null;
   /** Het handje (hulp vragen): meldt `{ soort: "hulp" }`. */
   hulpKnop?: boolean;
+  /**
+   * Teken het handje in het vlak zelf (de oude plek). Standaard uit: het
+   * staat als vraagteken op de vaste plek onder de zin van Bliepo (28 oktober 2026).
+   */
+  knoppenInVlak?: boolean;
+  /**
+   * Uitzondering: het handje blijft in het vlak als er tegelijk een vraag met
+   * een eigen vraagteken ("Weet ik niet") of Ja/Nee op de vaste plek staat;
+   * daar kan het handje er niet naast. Zie het verslag van 28 oktober 2026.
+   */
+  hulpInVlak?: boolean;
   /** Toren `toren` draait om (de bovenste tegel komt onder). Een nieuw `nr` = nog een keer. */
   draai?: { toren: number; nr: number } | null;
   /** Een lichtgolf over toren `toren` (goed). Een nieuw `nr` = nog een keer. */
@@ -797,6 +808,8 @@ export function HoloTegelvlak({
   leegKnop = false,
   hint = null,
   hulpKnop = false,
+  knoppenInVlak = false,
+  hulpInVlak = false,
   draai = null,
   golf = null,
   hand = false,
@@ -880,7 +893,7 @@ export function HoloTegelvlak({
           <span className={s.knopwoord}>Leeg</span>
         </button>
       )}
-      {hulpKnop && (
+      {hulpKnop && (knoppenInVlak || hulpInVlak) && (
         <button
           type="button"
           className={`${s.knop} ${s.warm}`}

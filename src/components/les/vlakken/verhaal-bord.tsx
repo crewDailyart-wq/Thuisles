@@ -33,7 +33,8 @@ const krijt = Patrick_Hand({ subsets: ["latin"], weight: "400" });
 export const KRIJT_LETTER = krijt.style.fontFamily;
 
 export type Verhaalsoort = "vogel" | "bloem" | "ballon" | "lampje" | "knikker" | "koekje";
-export type Plekstaat = "aan" | "uit";
+/** "leeg" = een lege plek vanaf het begin (stippelrondje), anders dan iets dat uit is gegaan (28 okt 2026, verhaaltjessommen). */
+export type Plekstaat = "aan" | "uit" | "leeg";
 
 export type Somstuk =
   | { t: "getal"; n: number }

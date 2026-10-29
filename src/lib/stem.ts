@@ -222,10 +222,11 @@ export function zeg(zin: string): void {
     beurt += 1;
     const mijnBeurt = beurt;
     speelVanServer(zin, mijnBeurt, () => meld(false), (kapot, browser) => {
-      if ((kapot || browser) && mijnBeurt === beurt) zegMetBrowser(zin, mijnBeurt);
+      if ((kapot || browser) && mijnBeurt === beurt && !alleenServerStem) zegMetBrowser(zin, mijnBeurt);
     });
     return;
   }
+  if (alleenServerStem) return;
 
   /*
     Elke aanroep krijgt een nummer. Komt er tijdens het wachten op de
@@ -388,6 +389,12 @@ export function zegNaElkaar(
         (kapot, browser) => {
           if (gestopt || mijnBeurt !== beurt) return;
           /* Nog niet bewaard: deze ene zin met de browserstem, daarna gewoon verder (27 oktober 2026). */
+          if (alleenServerStem) {
+            /* Geen browserstem in deze les: deze zin stil (de tekst staat er), daarna weer met Ruth verder. */
+            gestart = true;
+            klok = setTimeout(() => volgende(i + 1), 900 + zinnen[i].length * 55);
+            return;
+          }
           if (browser) {
             gestart = true;
             spreekMetBrowser(zinnen[i], () => mijnBeurt === beurt && !gestopt, () => volgende(i + 1));
@@ -412,6 +419,10 @@ export function zegNaElkaar(
   return stop;
 
   function browserReeks() {
+  if (alleenServerStem) {
+    klok = setTimeout(() => opDeKlok(0), 0);
+    return;
+  }
   const kanPraten = typeof window !== "undefined" && !!window.speechSynthesis;
   if (!metGeluid || !kanPraten) {
     klok = setTimeout(() => opDeKlok(0), 0);
@@ -501,7 +512,20 @@ function serverBruikbaar(): boolean {
   return BRON === "server" && serverWerkt && typeof Audio !== "undefined";
 }
 
-const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}`;
+/*
+  De nagebouwde lessen (28 oktober 2026, besluit eigenaar): alleen de bewaarde stem
+  van Ruth, nooit de browserstem. Ontbreekt een zin, dan blijft het stil en loopt de
+  tekst gewoon door (scripts/stemlessen.mjs zorgt dat alles er is). De naam van het
+  kind gaat mee, zodat de server de zin zonder naam + het naamfragment kan geven.
+*/
+let alleenServerStem = false;
+let stemNaam = "";
+export function zetLesStem(o: { alleenServer: boolean; naam?: string }): void {
+  alleenServerStem = o.alleenServer;
+  stemNaam = (o.naam ?? "").trim();
+}
+
+const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}${stemNaam ? `&naam=${encodeURIComponent(stemNaam)}` : ""}`;
 
 /** Een zin alvast laten maken en in de browser zetten. */
 function haalAlvast(zin: string): void {

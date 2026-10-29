@@ -25,8 +25,9 @@
  * nog niet).
  */
 
-import type { Lesdraaiboek, Lesgids, Somdeel } from "../soort";
+import type { Lesdraaiboek, Lesgids, Somdeel, Vlakgebeurtenis } from "../soort";
 import { hoogte, TEGELKLEUR, vorm } from "../tegels";
+import { knoppenOpPlek, type Knopregels } from "./antwoordknoppen";
 import { HoloTegelvlak, zetIn, type HoloTegelProps, type Tegeltoren } from "../vlakken/optellen10-holo-tegels";
 import { HoloParels, zelfdeGroepen, type Parelprops } from "../vlakken/optellen10-holo-parels";
 
@@ -161,7 +162,7 @@ export class Later {
   }
   async speel(l: Lesgids) {
     if (this.lijst.length === 0) return;
-    await l.zeg("Weet je nog?", this.lijst.length === 1 ? "Er was nog één vraag." : "Er waren nog een paar vragen.", "Daar komen we nu op terug.");
+    await l.zeg("Weet je nog?", this.lijst.length === 1 ? "Er was nog één vraag." : "Er waren nog een paar vragen.", "Dat doen we nu.");
     for (const vraag of this.lijst.splice(0)) await vraag();
   }
 }
@@ -169,6 +170,18 @@ export class Later {
 /* ====================================================================== */
 /* Het tegelvlak                                                           */
 /* ====================================================================== */
+
+/**
+ * Het handje (hulp) staat als vraagteken op de vaste plek onder de zin van
+ * Bliepo (28 oktober 2026). Uitzondering: in een toets en bij Ja/Nee staat daar
+ * al een vraagteken ("Weet ik niet") met een ander gevolg; dan blijft het
+ * handje in het vlak (`hulpInVlak`).
+ */
+const TEGEL_KNOPPEN: Knopregels = {
+  voor: HoloTegelvlak,
+  soorten: { hulp: "weetniet" },
+  zichtbaar: (p) => (p.hulpKnop && !p.hulpInVlak ? ["hulp"] : []),
+};
 
 export const pas = (l: Lesgids, p: Partial<HoloTegelProps>) => l.pasVlakAan<HoloTegelProps>(p);
 
@@ -444,7 +457,7 @@ async function pakOfHulp(l: Lesgids, hand = false): Promise<number | "hulp"> {
 
 /** Assessment en Mastery Check: dezelfde zeven vragen, met andere getallen. */
 async function toetsOptellen(l0: Lesgids, soort: Toets) {
-  const l = metUitleg(l0);
+  const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
   const eind = soort === "eind";
   const vak = new Werkvlak(l);
   l.vlak(HoloTegelvlak, { torens: [], bak: [3, 4, 5, 6] });
@@ -466,7 +479,7 @@ async function toetsOptellen(l0: Lesgids, soort: Toets) {
     await l.zeg("Geen probleem.", "We kijken gewoon wat je al weet.");
   }
   /* Het handje: "ik kan dit nog niet" (zoals Synthesis in een toets). */
-  pas(l, { hulpKnop: true });
+  pas(l, { hulpKnop: true, hulpInVlak: true });
   await l.wijsAan("hulp", "Vind je een vraag te moeilijk?", "Tik dan op het handje.");
 
   /* 1. Een tegel herkennen. */
@@ -603,7 +616,7 @@ async function toetsOptellen(l0: Lesgids, soort: Toets) {
 
   /* Einde: de kaart. */
   vak.zet([]);
-  pas(l, { bak: [], som: null, hulpKnop: false });
+  pas(l, { bak: [], som: null, hulpKnop: false, hulpInVlak: false });
   const tik = l.kaart();
   await l.zeg(metNaam(l, "Goed gedaan"), "Je kunt plussommen maken tot {10}.", "Tik op de kaart om hem af te vinken.");
   await tik;
@@ -758,7 +771,7 @@ async function dubbelVraag(l: Lesgids, vak: Werkvlak, a: number, later: Later, i
     return;
   }
   if (x === null) {
-    await l.zeg("Hmm.", `Het dubbele van {${a}} is {${d}}.`, "Daar komen we later nog op terug.");
+    await l.zeg("Hmm.", `Het dubbele van {${a}} is {${d}}.`, "Dat zien we later.");
     await l.verder();
     later.bewaar(async () => {
       vak.zet([{ stukken: [a, a].reduce<number[]>((s, n) => zetIn(s, n), []) }]);
@@ -807,7 +820,7 @@ async function halveer(l: Lesgids, vak: Werkvlak, t: number, zinnen: string[], g
   if (x === null) {
     await toonAntwoord("Geen zorgen.");
     if (terug) {
-      await l.zeg("Daar komen we later nog op terug.");
+      await l.zeg("Dat zien we later.");
       later.bewaar(() => halveer(l, vak, t, [`Welk getal moet je verdubbelen om {${t}} te maken?`], ["Ja, nu weet je het!", `{${h}} en {${h}} is {${t}}.`], later, false));
     }
     await l.verder();
@@ -832,11 +845,11 @@ const dubbelen: Lesdraaiboek = {
   kaarttegels: [4, 4],
 
   async speel(l0) {
-    const l = metUitleg(l0);
+    const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
     const vak = new Werkvlak(l);
     const later = new Later();
     l.vlak(HoloTegelvlak, { torens: [], bak: [1, 2, 3, 4, 5] });
-    await l.zeg(l.naam ? `Oké, ${l.naam}.` : "Oké.", "We gaan iets nieuws leren.", "Weet je wat *dubbelen* zijn?");
+    await l.zeg(l.naam ? `Oké, ${l.naam}.` : "Oké.", "We gaan iets nieuws leren.", "Weet je wat een *dubbel* is?");
     const weet = await l.kies(["Ja", "Nee"]);
     if (weet === "Ja") await l.zeg("Mooi.", "Laat maar zien.");
     else await l.zeg("Geen probleem.", "We ontdekken het samen.");
@@ -896,7 +909,7 @@ const dubbelen: Lesdraaiboek = {
     await halveer(l, vak, 8, ["Welk getal moet je verdubbelen om {8} te maken?", "Je mag de tegels gebruiken."], ["Goed zo.", "{4} en {4} is {8}."], later);
     await halveer(l, vak, 6, ["En om {6} te maken?"], ["Precies.", "{3} en {3} is {6}."], later);
     await halveer(l, vak, 2, ["Welk getal moet je verdubbelen om {2} te maken?"], ["Ja.", "{1} en {1} is {2}."], later);
-    await halveer(l, vak, 10, ["Welk getal moet je verdubbelen om {10} te maken?"], ["Knap gedaan!", "{5} en {5} is {10}.", "Je kent de dubbelen goed."], later);
+    await halveer(l, vak, 10, ["Welk getal moet je verdubbelen om {10} te maken?"], ["Knap gedaan!", "{5} en {5} is {10}.", "Je kent de dubbele sommen goed."], later);
     await l.verder();
 
     /* Wat het kind niet wist, komt nog één keer terug. */
@@ -924,10 +937,10 @@ async function tegelBewering(l: Lesgids, vak: Werkvlak, n: number, bewering: num
   await l.zeg(zin);
   const k = stil(l.kies(opties).then((v) => ({ t: "k" as const, v })));
   if (o.handje) {
-    pas(l, { hulpKnop: true });
+    pas(l, { hulpKnop: true, hulpInVlak: true });
     const h = stil(l.wachtOpVlak("hulp").then(() => ({ t: "h" as const })));
     const r = await Promise.race([k, h]);
-    pas(l, { hulpKnop: false });
+    pas(l, { hulpKnop: false, hulpInVlak: false });
     if (r.t === "h") {
       /* De keuzeknoppen blijven staan terwijl Bliepo de tip zegt. */
       await l.wijsAan("hulp", "Tel de hokjes op de tegel.", "Klopt dat met het getal?");
@@ -962,7 +975,7 @@ async function snelleSom(l: Lesgids, vak: Werkvlak, delen: number[], totaal: num
   await l.zeg("Goed gewerkt met de tegels.", "Kijk naar de twee kanten.", "Is de som dan waar of niet waar?");
   const k2 = await l.kies(["Waar", "Niet waar"]);
   if (k2 !== null && (k2 === "Waar") === waar) {
-    await l.zeg("Dat klopt.", waar ? "De som is *waar*." : "De som is *niet waar*.", "Je hebt het bewezen!");
+    await l.zeg("Dat klopt.", waar ? "De som is *waar*." : "De som is *niet waar*.", "Dat heb je goed laten zien!");
   } else {
     await l.zeg(waar ? "Kijk, ze zijn even hoog." : echt > totaal ? "Kijk, de delen samen zijn hoger." : "Kijk, de delen samen zijn lager.", waar ? "Dus de som is *waar*." : "Dus de som is *niet waar*.");
   }
@@ -983,14 +996,18 @@ async function evenHoog(l: Lesgids, vraag: string, gelijk: boolean): Promise<boo
  */
 async function repareer(l: Lesgids, vak: Werkvlak, i: number, nodig: number, bak?: number[]) {
   let hulpAan = !!bak;
+  /* Het vraagteken staat er pas als de les erop wacht; daarom eerst wachten, dan aanwijzen. */
+  let vroeg: Promise<Vlakgebeurtenis> | null = null;
   if (hulpAan) {
     pas(l, { hulpKnop: true });
-    await l.wijsAan("hulp", "Hulp nodig?", "Tik dan op het handje.");
+    vroeg = stil(l.wachtOpVlak(["tegel", "hulp"]));
+    await l.wijsAan("weetniet", "Hulp nodig?", "Tik dan op het vraagteken.");
   }
   for (let fouten = 0; ; ) {
     let n: number;
     if (hulpAan) {
-      const p = stil(l.wachtOpVlak(["tegel", "hulp"]));
+      const p = vroeg ?? stil(l.wachtOpVlak(["tegel", "hulp"]));
+      vroeg = null;
       pas(l, { actief: true, hulpKnop: true });
       const g = await p;
       pas(l, { actief: false, hulpKnop: false });
@@ -1027,7 +1044,7 @@ const kloptDeSom: Lesdraaiboek = {
   kaarttekening: KaartKlopt,
 
   async speel(l0) {
-    const l = metUitleg(l0);
+    const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
     const vak = new Werkvlak(l);
     l.vlak(HoloTegelvlak, { torens: [], bak: [] });
     await l.zeg(l.naam ? `${l.naam}, ken je de woorden *waar* en *niet waar*?` : "Ken je de woorden *waar* en *niet waar*?");
@@ -1102,7 +1119,7 @@ const kloptDeSom: Lesdraaiboek = {
     pas(l, { bak: [2, 3, 6] });
     await l.zeg(k === "Nee" ? "We gaan het na." : "", "In de som is het samen {6}.", "Zet de {6} in het rooster.");
     await zetDelen(l, vak, 0, [6]);
-    await l.zeg("Dus {6} is het totaal.", "Zet nu de kleine delen erin.", "De {2} en de {3}.");
+    await l.zeg("Dus {6} is alles samen.", "Zet nu de kleine delen erin.", "De {2} en de {3}.");
     await zetDelen(l, vak, 1, [2, 3]);
     if (await evenHoog(l, "Zijn {2} en {3} samen {6}?", false)) await l.zeg("Goed gezien.", "Er mist een hokje.");
     else await l.zeg("Hmm, kijk goed.", "Bij {2} en {3} mist een hokje.");
@@ -1119,7 +1136,7 @@ const kloptDeSom: Lesdraaiboek = {
     await l.zeg("Hier is een nieuwe som.", "{5} plus {6} is {11}.", "Klopt dat?");
     k = await l.kies(["Ja", "Nee"]);
     pas(l, { bak: [1, 5, 6, 10] });
-    await l.zeg(k === "Ja" ? "We gaan het na met tegels." : "We gaan het na.", "Het totaal is {11}.", "Maak {11} met de {10} en de {1}.");
+    await l.zeg(k === "Ja" ? "We gaan het na met tegels." : "We gaan het na.", "Samen is het {11}.", "Maak {11} met de {10} en de {1}.");
     await zetDelen(l, vak, 0, [10, 1]);
     await l.zeg("Zet nu de {5} en de {6} erin.", "Dan zien we of ze samen {11} maken.");
     await zetDelen(l, vak, 1, [5, 6], [["Dat is er één.", "Nu de andere."]]);
@@ -1136,7 +1153,7 @@ const kloptDeSom: Lesdraaiboek = {
     await l.zeg("Nu een som met meer getallen.", "{2} plus {3} plus {4} is {8}.", "Is dat waar of niet waar?");
     await l.kies(["Waar", "Niet waar"]);
     pas(l, { bak: [2, 3, 4, 8] });
-    await l.zeg("We gaan het na.", "Zet eerst de {8} erin.", "Dat is het totaal.");
+    await l.zeg("We gaan het na.", "Zet eerst de {8} erin.", "Dat is alles samen.");
     await zetDelen(l, vak, 0, [8]);
     await l.zeg("Zet nu alle kleine delen erin.", "De {2}, de {3} en de {4}.");
     await zetDelen(l, vak, 1, [2, 3, 4], [["Goed zo.", "Ga zo door."], ["Goed.", "Nog één."]]);
@@ -1244,7 +1261,7 @@ async function opDeGrote(l: Lesgids, vak: Werkvlak, totaal: number, eerste: bool
   } else {
     /* De vraag in stukjes: het totaal, het deel dat er ligt, en dan aanvullen. Het vakje van de som licht dan even niet op. */
     pas(l, { somAan: null });
-    await l.zeg(keuze === null ? "Geen zorgen." : "Laten we er samen over nadenken.", "Wat is ons totaal?", "Kijk naar de grote tegel.");
+    await l.zeg(keuze === null ? "Geen zorgen." : "Laten we er samen over nadenken.", "Hoeveel is het samen?", "Kijk naar de grote tegel.");
     await vraagKort(l, totaal, [`Kijk, de grote tegel is een {${totaal}}.`, `Samen is het dus {${totaal}}.`]);
     await l.zeg(`Welk getal heb je op de {${totaal}} gelegd?`);
     await vraagKort(l, k, [`Je hebt de {${k}} erop gelegd.`]);
@@ -1285,7 +1302,7 @@ const ontbrekendGetal: Lesdraaiboek = {
   kaarttekening: KaartOntbrekend,
 
   async speel(l0) {
-    const l = metUitleg(l0);
+    const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
     const vak = new Werkvlak(l);
     const later = new Later();
     l.vlak(HoloTegelvlak, { torens: [{ onder: [7], stukken: [] }], bak: [] });
@@ -1301,7 +1318,7 @@ const ontbrekendGetal: Lesdraaiboek = {
         await l.verder();
       }
     } else if (x === null) {
-      await l.zeg("Het is een {7}.", "Daar komen we later nog op terug.");
+      await l.zeg("Het is een {7}.", "Dat zien we later.");
       await l.verder();
       later.bewaar(async () => {
         vak.zet([{ onder: [7], stukken: [] }]);
@@ -1406,18 +1423,26 @@ async function samenInvullen(l: Lesgids, volgorde: number[], totaal: number) {
  * (of tot `stopBij`). Een tegel die niet meer past, verschijnt even en
  * verdwijnt. Met `hulp` staan "Weet ik niet" en het handje erbij; die geven `null`.
  */
-async function vulVorm(l: Lesgids, vak: Werkvlak, totaal: number, aantal: number, o: { hulp?: boolean; stopBij?: number } = {}): Promise<number[] | null> {
+async function vulVorm(l: Lesgids, vak: Werkvlak, totaal: number, aantal: number, o: { hulp?: boolean; stopBij?: number; wijs?: string[] } = {}): Promise<number[] | null> {
   const stop = o.stopBij ?? aantal;
   if (o.hulp) pas(l, { hulpKnop: true });
+  let wijs = o.wijs;
   for (;;) {
     const stukken = vak.toren(0).stukken;
     if (stukken.length >= stop) {
       pas(l, { hulpKnop: false });
       return [...stukken];
     }
-    const tegel = stil(l.wachtOpVlak(o.hulp ? ["tegel", "hulp"] : "tegel").then((e) => (e.soort === "hulp" ? null : Number(e.n))));
+    /* Het handje is hier het vraagteken van `kies([])` op de vaste plek: allebei geven `null`. */
+    const tegel = stil(l.wachtOpVlak("tegel").then((e) => (e.soort === "hulp" ? null : Number(e.n))));
     pas(l, { actief: true });
-    const n = o.hulp ? await Promise.race([tegel, l.kies([]).then(() => null)]) : await tegel;
+    const kiesVraag = o.hulp ? stil(l.kies([]).then(() => null)) : null;
+    if (wijs && kiesVraag) {
+      const zinnen = wijs;
+      wijs = undefined;
+      await l.wijsAan("weetniet", ...zinnen);
+    }
+    const n = kiesVraag ? await Promise.race([tegel, kiesVraag]) : await tegel;
     pas(l, { actief: false });
     if (n === null) {
       pas(l, { hulpKnop: false });
@@ -1538,8 +1563,7 @@ async function vulEnSom(l: Lesgids, vak: Werkvlak, totaal: number, eerste: boole
   vak.zet([{ omtrek: totaal, stukken: [] }]);
   pas(l, { som: drieSom([], totaal), somAan: null, bak: reeks(1, Math.min(9, totaal - 2)) });
   await l.zeg(eerste ? "Zet drie tegels in deze vorm." : "Hier is een nieuwe vorm.", `Samen moeten ze {${totaal}} zijn.`);
-  if (eerste) await l.wijsAan("hulp", "Vind je het lastig?", "Tik dan op het handje.");
-  const gevuld = await vulVorm(l, vak, totaal, 3, { hulp: eerste });
+  const gevuld = await vulVorm(l, vak, totaal, 3, { hulp: eerste, wijs: eerste ? ["Vind je het lastig?", "Tik dan op het vraagteken."] : undefined });
   if (!gevuld) {
     await drieSamen(l, vak);
     return true;
@@ -1569,7 +1593,7 @@ const drieGetallen: Lesdraaiboek = {
   kaarttekening: KaartDrie,
 
   async speel(l0) {
-    const l = metUitleg(l0);
+    const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
     const vak = new Werkvlak(l);
     let gemist = 0;
     const later = new Later();
@@ -1610,7 +1634,7 @@ const drieGetallen: Lesdraaiboek = {
         pas(l, { som: drieSom(v, totaal) });
         if (!poging) {
           gemist++;
-          await l.zeg("Geen zorgen, kijk eens.", `${somWoorden(v)} is {${totaal}}.`, "Daar komen we later nog op terug.");
+          await l.zeg("Geen zorgen, kijk eens.", `${somWoorden(v)} is {${totaal}}.`, "Dat zien we later.");
           later.bewaar(async () => {
             vak.zet([{ omtrek: totaal, stukken: [] }]);
             pas(l, { som: drieSom([], totaal), bak: [] });
@@ -1740,7 +1764,7 @@ async function welkeSom(l: Lesgids, stand: Parelstand, n: number, opties: string
       stand.zet(delen);
       await l.zeg("Kijk, zo kan het wel.");
     }
-    await l.zeg("Het blijkt dat je die toch kunt maken.", "We zochten welke *niet* kan.");
+    await l.zeg("Je kunt die toch maken.", "We zochten welke *niet* kan.");
   }
   await l.verder();
   return false;
@@ -1800,7 +1824,7 @@ async function splitsHulp(l: Lesgids, stand: Parelstand) {
   await l.zeg("Hoeveel parels zijn er?");
   let k = await l.kies(["4", "5", "6", "7"]);
   if (k !== "6" && k !== null) {
-    await l.zeg("Niet helemaal.", "Misschien heb je je verteld.", "Tel nog eens.");
+    await l.zeg("Niet helemaal.", "Misschien heb je je vergist.", "Tel nog eens.");
     const fout = k;
     k = await l.kies(["4", "5", "6", "7"].filter((o) => o !== fout));
   }
@@ -1876,7 +1900,7 @@ async function splitsOefenronde(l: Lesgids, stand: Parelstand) {
   const sommen = schud(["2 + 3 + 2", "3 + 2 + 1", "2 + 2 + 2", "1 + 1 + 1 + 2"]);
   const lijst: { som: string; teken?: "goed" | "fout" }[] = sommen.map((som) => ({ som }));
   stand.zet([6], { knoppen: true, tik: "eraf", actief: false, lijst: [...lijst] });
-  await l.zeg("Nu hebben we {6} parels.", "We zoeken samen uit welke sommen kunnen.");
+  await l.zeg("Nu hebben we {6} parels.", "We zoeken samen uit welke sommen je kunt maken.");
   await l.verder();
   for (let i = 0; i < sommen.length; i++) {
     const delen = losse(sommen[i]);
@@ -1912,7 +1936,7 @@ const splitsen: Lesdraaiboek = {
   kaarttekening: KaartStippen,
 
   async speel(l0) {
-    const l = metUitleg(l0);
+    const l = metUitleg(knoppenOpPlek(l0, TEGEL_KNOPPEN));
     const stand = new Parelstand(l);
     l.vlak(HoloParels, { start: [7], sleutel: 0, getallen: true, tik: "breek" });
 
@@ -1946,7 +1970,7 @@ const splitsen: Lesdraaiboek = {
     await maakGroepen(l, stand, [2, 2, 3]);
     await l.zeg("Knap!", "Het zijn nog steeds {7} parels.");
     stand.zet([7], { tik: "eraf", knoppen: true, actief: false });
-    await l.zeg("Oké.", "Tijd voor een uitdaging.");
+    await l.zeg("Oké.", "Nu een moeilijke opdracht.");
 
     /* 2. Welke som kun je maken met 7? En met 8. */
     ps(l, { actief: true });

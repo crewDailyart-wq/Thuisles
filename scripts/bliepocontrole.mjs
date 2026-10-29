@@ -43,7 +43,8 @@ const OPDRACHTEN = [
   { naam: "lange opdracht met Godot-spel", query: "?opdracht=lang&tekst=lang&ronde=godot" },
   { naam: "praten uit (grijze microfoonknop)", query: "?praten=uit&zinnen=6" },
   /* Ook een echte opdracht en een echte les (als Testkind), met de echte onderdelen. */
-  { naam: "echte opdracht (Testkind)", pad: "/oefenen/rekenen/getallen/tellen-sprongen/oefening", kind: true },
+  /* Sinds 28 okt 2026 staan alleen de opdrachten van de groep 3-lessen op gepubliceerd (besluit eigenaar); daarom een daarvan. */
+  { naam: "echte opdracht (Testkind)", pad: "/oefenen/rekenen/optellen/optellen-tot-en-met-20/oefening?leerdoel=ade36209-c943-4f03-a664-e5b86d6ef106", kind: true },
   { naam: "echte les", pad: "/voorbeeld/les/optellen-onder-10?naam=Testkind", kind: true },
 ];
 

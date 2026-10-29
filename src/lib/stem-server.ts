@@ -48,6 +48,7 @@ import "server-only";
  * er zonder nieuwe code van stem of instelling gewisseld kan worden.
  */
 
+import { AsyncLocalStorage } from "node:async_hooks";
 import { createHash } from "node:crypto";
 import { copyFile, mkdir, readdir, readFile, rename, writeFile } from "node:fs/promises";
 import path from "node:path";
@@ -651,7 +652,50 @@ export function maakZin(zin: string, profiel: Profiel, opnieuw = false, dienst: 
  * STEMZINNEN.md (`npm run stemzinnen`) en in stem/nieuwe-zinnen.txt.
  */
 export function nieuweZinnenMetBrowser(): boolean {
+  /* Een vaste zin of een naamfragment die bewust gemaakt wordt (maakVast): dan wel met de stemdienst. */
+  if (vastToegestaan.getStore()) return false;
   return (process.env.STEM_NIEUWE_ZINNEN ?? "browser") !== "dienst";
+}
+
+/*
+  Vaste zinnen van de nagebouwde lessen (28 oktober 2026, opdracht eigenaar):
+  elke zin één keer met Ruth maken en bewaren (bestandsnaam = hash van de zin),
+  daarna kost afspelen niets. Alleen binnen `maakVast` mag de stemdienst nieuwe
+  zinnen maken; een kind dat ergens anders een nieuwe zin hoort, start niets.
+*/
+const vastToegestaan = new AsyncLocalStorage<boolean>();
+
+/** Een vaste zin maken (of de bewaarde teruggeven). Kost alleen tekens als hij er nog niet is. */
+export function maakVast(zin: string, profiel: Profiel): Promise<ZinUitkomst> {
+  return vastToegestaan.run(true, () => maakZin(zin, profiel));
+}
+
+/**
+ * De naam van een kind als los stemfragment (28 oktober 2026). Eén keer per kind
+ * gemaakt als de ouder het kind toevoegt of de naam verandert, daarna bewaard.
+ * PRIVACY REVIEW REQUIRED: de voornaam van een kind gaat naar ElevenLabs (alleen
+ * de voornaam, geen andere gegevens).
+ */
+export const naamZin = (naam: string) => `${naam.trim()}!`;
+
+export function maakNaamFragment(naam: string, profiel: Profiel): Promise<ZinUitkomst> {
+  return maakVast(naamZin(naam), profiel);
+}
+
+/** Haalt de naam uit een zin: "Knap gedaan, Sara." → "Knap gedaan." (null als de naam er niet in staat). */
+export function zonderNaam(zin: string, naam: string): string | null {
+  const n = naam.trim();
+  if (!n) return null;
+  const veilig = n.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  const re = new RegExp(`(^|[^\\p{L}])${veilig}(?=$|[^\\p{L}])`, "u");
+  if (!re.test(zin)) return null;
+  return zin
+    .replace(new RegExp(`,\\s*${veilig}(?=[.!?,])`, "u"), "")
+    .replace(new RegExp(`^${veilig},?\\s*`, "u"), "")
+    .replace(new RegExp(`\\s*${veilig}(?=[.!?,])`, "u"), "")
+    .replace(/\s+([.!?,])/g, "$1")
+    .replace(/^\s*(\p{Ll})/u, (_m, x: string) => x.toUpperCase())
+    .trim();
 }
 
 /** De zin zoals hij al met de hoofdstem (Ruth) bewaard is, of null. Maakt niets nieuws. */

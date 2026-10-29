@@ -129,7 +129,7 @@ async function vierkantSlaan(l: Lesgids): Promise<void> {
   }
 
   zet({ wijsHand: false });
-  await l.zeg("Tot je dienst!", "Zit je vast, dan mag je altijd hulp vragen.", "In de lessen doe je dat met *Weet ik niet*.");
+  await l.zeg("Ik help je graag!", "Zit je vast, dan mag je altijd hulp vragen.", "In de lessen doe je dat met *Weet ik niet*.");
   await l.zeg("O, ik ben vergeten je een hamer te geven.");
   zet({ hamer: true });
   await l.zeg("Alsjeblieft.", "Sla maar!");
@@ -190,7 +190,7 @@ export const LESSEN_ZO_WERKT_HET: Lesdraaiboek[] = [
       await l.zeg("Soms mag je kiezen.", "Tik op een knop.", "Tik daarna op het blauwe vinkje.", "Welk getal vind jij het mooist?");
       const mooi = await l.kies(["3", "5", "8"]);
       if (mooi === null) {
-        await l.zeg("Je tikte op *Weet ik niet*.", "Dat mag ook!", "Daar kom ik zo op terug.");
+        await l.zeg("Je tikte op *Weet ik niet*.", "Dat mag ook!", "Dat zien we zo.");
       } else {
         await l.zeg(`De {${mooi}}?`, "Dat is een mooi getal.", "Pas als je op het vinkje tikt, telt je keuze.");
       }
@@ -399,8 +399,8 @@ export const LESSEN_ZO_WERKT_HET: Lesdraaiboek[] = [
       const { n } = await l.wachtOpVlak<{ soort: string; n: number }>("gevoel");
       zet({ actief: false });
       if (n >= 3) await l.zeg("Mooi!", "Ik heb er ook zin in.");
-      else if (n === 2) await l.zeg("Dank je dat je het zegt.", "We gaan het rustig samen doen.");
-      else await l.zeg("Dank je dat je het zegt.", "Het is ook allemaal nieuw.", "We doen het rustig, samen.");
+      else if (n === 2) await l.zeg("Fijn dat je het zegt.", "We gaan het rustig samen doen.");
+      else await l.zeg("Fijn dat je het zegt.", "Het is ook allemaal nieuw.", "We doen het rustig, samen.");
 
       /* Einde: de kaart. */
       l.vlak(null);

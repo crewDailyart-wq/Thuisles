@@ -1,0 +1,448 @@
+/*
+  De bloementuin: verhaaltjessommen in de vlakke Bliepo-stijl (28 oktober 2026,
+  kopie van verhaal-holo-bord.module.css; palet uit bliepo-voorwerpen.ts:
+  donkerblauw #1d2b5e, petrol #127c86, koraal #f2715e, warmgeel #ffc845,
+  warmwit #fff7ea). Geen gloed, glas of doorzichtige vlakken.
+  Oorspronkelijk: verhaaltjessommen als hologrammen (27 oktober 2026). Geen bord of kader:
+  de blauwe ruimte van het lesscherm blijft zichtbaar en het Phaser-canvas is
+  doorzichtig. Tekst, som en knoppen zijn gewone HTML (echte knoppen).
+  Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* ---------- de som, bovenaan in het midden ---------- */
+
+.som {
+  position: absolute;
+  left: 300px;
+  right: 20px;
+  top: 618px;
+  height: 86px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 26px;
+  font-size: 62px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+  pointer-events: none;
+}
+.somgetal {
+  color: #ffffff;
+}
+.teken {
+  color: #fff7ea;
+}
+.vak {
+  display: grid;
+  place-items: center;
+  min-width: 82px;
+  height: 80px;
+  padding: 0 8px;
+  border: 5px solid #1d2b5e;
+  border-radius: 16px;
+  background: #fff7ea;
+  color: #1d2b5e;
+  text-shadow: none;
+}
+.smal {
+  min-width: 56px;
+}
+/* Het vakje dat nu aan de beurt is: warm oplichten. */
+.actief {
+  border-color: #ffc845;
+  outline: 3px solid #1d2b5e;
+  animation: tik 1.6s ease-in-out infinite;
+}
+
+/* ---------- het verhaal ---------- */
+
+.verhaal {
+  position: absolute;
+  left: 300px;
+  right: 40px;
+  top: 44px;
+  font-size: 32px;
+  font-weight: 700;
+  line-height: 44px;
+  text-align: center;
+  /* Netjes afbreken: geen los "nog?" op een eigen regel (keurder ronde 4). */
+  text-wrap: balance;
+}
+/* Bij het uitpluizen: alleen de tekst, groot in het midden (zoals Synthesis). */
+.midden {
+  left: 300px;
+  right: 40px;
+  top: 120px;
+  font-size: 44px;
+  line-height: 70px;
+  text-align: center;
+}
+.midden .zin {
+  margin: 8px auto;
+}
+
+.zin {
+  display: block;
+  width: fit-content;
+  max-width: 100%;
+  margin: 0 auto;
+  padding: 0 12px;
+  border: 2px solid transparent;
+  border-radius: 14px;
+  background: none;
+  color: inherit;
+  font: inherit;
+  text-align: inherit;
+  text-shadow: inherit;
+  animation: verschijn 0.3s ease-out both;
+}
+.zinTik {
+  cursor: pointer;
+  border: 3px solid #bfe6e3;
+  background: none;
+}
+.zinTik:active {
+  transform: scale(0.99);
+}
+.roze {
+  color: #ffd6cc;
+  border-color: #f2715e;
+  background: none;
+}
+.groen {
+  color: #bfe6e3;
+}
+/* "Hier staat het": een warme rand rond de zin. */
+.hint {
+  border: 4px solid #ffc845;
+}
+.vraagHint {
+  display: inline-block;
+  color: #ffc845;
+  animation: tik 1.2s ease-in-out infinite;
+}
+
+.stippel {
+  width: 70%;
+  margin: 6px 0 6px 12px;
+  border-top: 4px dashed #bfe6e3;
+}
+.midden .stippel {
+  margin: 10px auto;
+}
+
+.getal {
+  position: relative;
+  display: inline-block;
+  padding: 0 3px;
+  color: #ffeab0;
+}
+.cirkel {
+  position: absolute;
+  inset: -6px -4px;
+  width: calc(100% + 8px);
+  height: calc(100% + 12px);
+  pointer-events: none;
+  overflow: visible;
+}
+.woord {
+  display: inline-block;
+}
+.signaal {
+  color: #bfe6e3;
+}
+/* Wat je kunt aantikken: een echte knop, groot genoeg, zonder dat het een bord wordt. */
+.tikbaar {
+  margin: 0;
+  padding: 0 8px;
+  border: 0;
+  border-radius: 12px;
+  background: none;
+  box-shadow: inset 0 -5px 0 #ffc845;
+  color: inherit;
+  font: inherit;
+  text-shadow: inherit;
+  cursor: pointer;
+}
+.tikbaar.getal {
+  color: #ffeab0;
+}
+.tikbaar.signaal {
+  color: #bfe6e3;
+}
+.tikbaar:active {
+  background: #1d2b5e;
+}
+/* Zoals Synthesis (vergelijking 28 okt 2026): geen streepje onder wat je kunt aantikken; het kind zoekt zelf. */
+.tikbaar.kaal {
+  box-shadow: none;
+}
+/* En de getallen in het verhaal krijgen geen eigen kleur (Synthesis: dezelfde kleur als de tekst). */
+.getal.kaal,
+.tikbaar.getal.kaal {
+  color: inherit;
+}
+/* Geen extra ruimte rond een getal dat je niet hoeft aan te tikken ("samen 9 ." stond los). */
+.getal.kaal:not(.tikbaar) {
+  padding: 0 1px;
+}
+
+/* ---------- de voorwerpen (hologrammen in Phaser; hier alleen tikken en nummers) ---------- */
+
+.plekken {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+.plek {
+  position: absolute;
+  display: grid;
+  place-items: start center;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.plekTik {
+  pointer-events: auto;
+  cursor: pointer;
+  border-radius: 18px;
+}
+.plekTik:active {
+  outline: 4px solid #ffc845;
+}
+.nummer {
+  margin-top: -10px;
+  min-width: 40px;
+  height: 40px;
+  padding: 0 6px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  background: #1d2b5e;
+  border: 3px solid #ffc845;
+  color: #fff7ea;
+  font-size: 24px;
+  font-weight: 800;
+  animation: verschijn 0.2s ease-out both;
+}
+
+/* ---------- knoppen onderaan ---------- */
+
+.keuzes {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+  top: 616px;
+  flex-wrap: nowrap;
+}
+.keuzes button {
+  min-width: 96px;
+  height: 90px;
+  /* De keuzeknoppen vlak in de Bliepo-stijl: warmwit met een donkerblauwe rand. */
+  border: 5px solid #1d2b5e;
+  background: #fff7ea;
+  color: #1d2b5e;
+  box-shadow: 0 5px 0 #1d2b5e;
+}
+.keuzes button[class*="uit"] {
+  background: #b7bfd3;
+  color: #5b6584;
+  border-color: #5b6584;
+  box-shadow: none;
+  opacity: 1;
+}
+.keuzes button[class*="goed"] {
+  background: #127c86;
+  color: #fff7ea;
+  border-color: #1d2b5e;
+}
+/* Antwoordtegels 1 tot en met 9: negen cijferknoppen naast elkaar (kiezen, niet typen). */
+.tegels {
+  gap: 8px;
+}
+.tegels button {
+  min-width: 74px;
+  height: 90px;
+  padding: 0 6px;
+}
+.somKeuzes button {
+  font-size: 36px;
+  padding: 0 22px;
+  white-space: nowrap;
+}
+.weetniet {
+  position: absolute;
+  left: 310px;
+  top: 610px;
+}
+.klaar {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 616px;
+  display: flex;
+  justify-content: center;
+}
+.grootIkoon {
+  min-width: 96px;
+  height: 90px;
+}
+
+@keyframes verschijn {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+/* Zacht tikken (groter/kleiner) in plaats van oplichten: geen doorzichtigheid. */
+@keyframes tik {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.06);
+  }
+}
+@keyframes licht {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .zin,
+  .nummer,
+  .actief,
+  .vraagHint {
+    animation: none;
+  }
+}
+
+/* ---------- 28 oktober 2026: gedrag van Synthesis, eigen Bliepo-stijl ---------- */
+/* Geen randen of kaders om zinnen meer: kleur geeft aan wat er gebeurt (voorlezen, aangetikt, goed). */
+.zinTik,
+.roze,
+.hint {
+  border-color: transparent;
+}
+.zin {
+  transition: color 0.3s ease;
+}
+.zin span {
+  transition: color 0.3s ease;
+}
+/* De zin die Bliepo voorleest. */
+.lezen {
+  color: #ff8a80;
+}
+/* Gekozen vraagzin, of een verkeerd aangetikt woord: koraalroze. */
+.roze {
+  color: #ffa194;
+}
+/* Signaalwoorden en wat erbij hoort: mintgroen. */
+.groen,
+.signaal {
+  color: #7ee0b3;
+}
+.blauw {
+  color: #8fc4ff;
+}
+.zinTik span[data-woord] {
+  cursor: pointer;
+}
+/* De ring om een getal tekent zich (eigen vorm, zelfde moment als Synthesis). */
+.ring {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: tekenRing 0.45s ease-out forwards;
+}
+.streep {
+  stroke-dasharray: 100;
+  stroke-dashoffset: 100;
+  animation: tekenRing 0.3s ease-out 0.05s forwards;
+}
+@keyframes tekenRing {
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+/* Gebruikt (staat al in de som): het getal wordt rustiger. */
+.gebruikt {
+  opacity: 0.6;
+  transition: opacity 0.3s ease;
+}
+/* De som: losse grote tekst, geen vakjes. */
+.som {
+  gap: 34px;
+  font-size: 76px;
+  font-weight: 700;
+}
+.somvraag {
+  display: inline-block;
+  min-width: 0.6em;
+  text-align: center;
+  color: #fff7ea;
+  transition: color 0.3s ease;
+}
+.somvraag.actief {
+  animation: none;
+  outline: none;
+}
+/* Een open plek in de som (nog niets ingevuld): een korte streep, geen vakje. */
+.open {
+  display: inline-block;
+  width: 0.7em;
+  height: 0.62em;
+  border-bottom: 5px solid rgba(255, 247, 234, 0.75);
+}
+.open.smal {
+  width: 0.45em;
+}
+.stippelLijn {
+  position: absolute;
+  width: 0;
+  border-left: 3px dotted rgba(191, 230, 227, 0.7);
+  pointer-events: none;
+}
+/* Het handje in de toets (28 okt 2026, gedrag Synthesis): rond knopje rechtsboven, naast de kolom van Bliepo. */
+.handje {
+  position: absolute;
+  left: 900px;
+  top: 0;
+  width: 60px;
+  height: 60px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 4px solid #1d2b5e;
+  border-radius: 999px;
+  background: #127c86;
+  box-shadow: 0 4px 0 #1d2b5e;
+  cursor: pointer;
+  animation: verschijn 0.3s ease-out both;
+}
+.handje svg {
+  width: 38px;
+  height: 38px;
+}
+.handje:active {
+  transform: translateY(2px);
+  box-shadow: 0 2px 0 #1d2b5e;
+}

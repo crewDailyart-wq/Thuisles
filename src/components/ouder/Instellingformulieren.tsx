@@ -15,6 +15,7 @@ import {
   voegKindToe,
   wijzigInstellingen,
   wijzigKindprofiel,
+  wijzigLesgeluidjes,
   wijzigPratenMetBliepo,
 } from "@/app/ouder/acties";
 import { Knop } from "@/components/ouder/Bouwstenen";
@@ -309,6 +310,38 @@ export function PratenMetBliepo({
           ))}
         </select>
       </Label>
+      <Melding uitkomst={uitkomst} />
+      <Verstuurknop label="Opslaan" bezig={bezig} />
+    </form>
+  );
+}
+
+/**
+ * Geluidjes in de lessen (29 oktober 2026). Standaard aan. Eigen formulier: de
+ * andere formulieren blijven precies zoals ze waren. Los van de stem van Bliepo.
+ */
+export function GeluidjesInDeLessen({ kind, aan }: { kind: Kind; aan: boolean }) {
+  const [uitkomst, verstuur, bezig] = useActionState<Uitkomst, FormData>(wijzigLesgeluidjes, null);
+  return (
+    <form action={verstuur} className="flex flex-col gap-4">
+      <input type="hidden" name="kindId" value={kind.id} />
+      <label className="flex items-start gap-3 text-sm">
+        <input
+          type="checkbox"
+          name="lesgeluidjes"
+          value="aan"
+          defaultChecked={aan}
+          className="mt-0.5 size-5 accent-[#5b3fd6]"
+        />
+        <span>
+          <span className="block font-semibold">Geluidjes in de lessen</span>
+          <span className="block text-beheer-zacht">
+            Zachte geluidjes bij het tikken, bij goed en fout, en vogeltjes of bloemen aan het begin van een verhaal.
+            De stem van Bliepo blijft gewoon praten. {kind.roepnaam} kan de geluidjes ook zelf uitzetten met de knop
+            naast Pauze.
+          </span>
+        </span>
+      </label>
       <Melding uitkomst={uitkomst} />
       <Verstuurknop label="Opslaan" bezig={bezig} />
     </form>

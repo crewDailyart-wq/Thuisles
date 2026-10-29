@@ -69,3 +69,13 @@ next-env.d.ts
 
 # Schermfoto's van Synthesis, alleen als voorbeeld voor indeling/belichting (27 oktober 2026): NOOIT op GitHub of de website.
 /INSPIRATIE-FOTO'S/
+
+# Synthesis-analyse (Engelse tutorzinnen als bron; nooit op GitHub of de website)
+/SYNTHESIS-ANALYSE/
+/SCHERMEN-CONTROLE/
+/TAAL-CONTROLE/
+/VERGELIJKING/
+
+# Verslagen van het maken van de stem (28 okt 2026): horen bij de laptop, niet in Git.
+/data/stem-lessen*
+/data/controle-goed.json

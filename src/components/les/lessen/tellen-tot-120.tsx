@@ -180,7 +180,7 @@ async function welkeKleur(l: Lesgids, vakjes: Kleur[], doel: Kleur, opties: Kleu
   const m = vakjes.filter((k) => k === keuze).length;
   await l.zeg(`{${n}} *${BIJ[keuze]}* vakjes?`, "We tellen ze samen.");
   await telSamen(l, vakjes, [keuze]);
-  await l.zeg("Ah.", m === 1 ? `Er is maar {1} *${keuze}* vakje, niet {${n}}.` : `Er zijn {${m}} *${BIJ[keuze]}* vakjes, niet {${n}}.`);
+  await l.zeg("Ah.", m === 1 ? `Er is maar {1} *${BIJ[keuze]}* vakje, niet {${n}}.` : `Er zijn {${m}} *${BIJ[keuze]}* vakjes, niet {${n}}.`);
   await l.verder();
   if (naMis === "laatZien") {
     kr(l, { nummers: {} });
@@ -523,7 +523,7 @@ async function toets(l: Lesgids, o: Toetsopzet, slot: string[]): Promise<void> {
   /* 1. Hoeveel vakjes van één kleur (typen). */
   const vakjes = rooster([[o.kleur, o.aantal], ...o.rest]);
   l.vlak(Kleurrooster, { vakjes });
-  await l.zeg("We gaan tellen, tot wel {100}.", "Eerst kijken we wat je al kunt.");
+  await l.zeg("We gaan tellen, tot {100}.", "Eerst kijken we wat je al kunt.");
   await l.verder();
   await l.zeg("Kijk naar dit rooster.", `Hoeveel vakjes zijn *${o.kleur}*?`);
   const x = await l.getal();
@@ -745,7 +745,7 @@ export const kleurenTellenOud: Lesdraaiboek = {
     await l.verder();
 
     /* 7. De laatste uitdaging: 4 rood, 7 blauw, 10 groen. */
-    await l.zeg("Nog één laatste uitdaging.", "Zullen we meer kleuren gebruiken?");
+    await l.zeg("Nog één laatste opdracht.", "Zullen we meer kleuren gebruiken?");
     await l.verder();
     kr(l, { vakjes: Array(21).fill(null) });
     await l.zeg("Maak {4} *rode* vakjes.", "Maak {7} *blauwe* vakjes.", "En maak {10} *groene* vakjes.", "Kies eerst een verfpotje.");
@@ -826,7 +826,7 @@ export const tellenNa10Oud: Lesdraaiboek = {
           ? ["Dat is er één te veel.", "Rechts staat maar {1} vakje."]
           : k === "1"
             ? ["Dat is alleen het vakje rechts.", "Kijk ook naar de groep van {10}."]
-            : ["{10} is alleen de volle groep.", "Er is er nog {1} bij."],
+            : ["{10} is alleen de volle groep.", "Er komt nog {1} bij."],
       ["Een groep van {10}, en nog {1}.", "Welk getal is dit?"],
       ["Na {10} komt {11}.", "{10} en nog {1} is {11}."],
     );
@@ -867,7 +867,7 @@ export const tellenNa10Oud: Lesdraaiboek = {
     ts(l, { modus: null, rechts: 2 });
     const goed12 = await getalVraag(
       l,
-      ["Je hebt nog steeds een groep van {10}.", "Nu zijn er {2} bij.", "Welk getal heb je gemaakt?"],
+      ["Je hebt nog steeds een groep van {10}.", "Nu komen er {2} bij.", "Welk getal heb je gemaakt?"],
       ["2", "10", "12", "13"],
       "12",
       (k) =>
@@ -875,7 +875,7 @@ export const tellenNa10Oud: Lesdraaiboek = {
           ? ["Dat is er één te veel.", "Rechts staan {2} vakjes."]
           : k === "2"
             ? ["Dat zijn alleen de vakjes rechts.", "Kijk ook naar de groep van {10}."]
-            : ["{10} is alleen de volle groep.", "Er zijn er nog {2} bij."],
+            : ["{10} is alleen de volle groep.", "Er komen nog {2} bij."],
       ["Een groep van {10}, en nog {2}.", "Welk getal is dit?"],
       ["{10} en nog {2} is {12}."],
     );
@@ -939,7 +939,7 @@ export const tellenNa10Oud: Lesdraaiboek = {
     await l.verder();
 
     /* 5. Het spel: bouw het getal. */
-    await l.zeg("Je bent goed opgewarmd.", "Nu doen we een spel.", "Ik zeg een getal, jij bouwt het.");
+    await l.zeg("Je bent goed begonnen.", "Nu doen we een spel.", "Ik zeg een getal, jij bouwt het.");
     await l.verder();
     await bouw(l, 10, staat, "Tik op vakjes in het rechter rooster om ze weg te halen.");
     await bouw(l, 17, staat, "Tik op een leeg vakje om het te vullen.");
@@ -987,7 +987,7 @@ export const doortellenOud: Lesdraaiboek = {
       await l.wacht(300);
     }
     gv(l, { rand: [] });
-    await l.zeg(metNaam(l, "Je hebt het door."), "Nu gaan we doortellen met grote getallen.");
+    await l.zeg(metNaam(l, "Je snapt het."), "Nu gaan we doortellen met grote getallen.");
     await l.verder();
 
     /* 3. Welk getal staat in de rand? */
@@ -1104,7 +1104,7 @@ export const getallenTot50: Lesdraaiboek = {
     await zoekGetal(
       l,
       50,
-      ["Dit rooster ken je vast nog.", "Eerst even opwarmen.", "Tik op het getal {50}."],
+      ["Dit rooster ken je vast nog.", "Eerst even oefenen.", "Tik op het getal {50}."],
       ["Goed zo.", "Dat is het grootste getal in het rooster."],
       false,
     );

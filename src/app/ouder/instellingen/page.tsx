@@ -18,6 +18,7 @@ import {
   AccountVerwijderen,
   KindToevoegen,
   KindVerwijderen,
+  GeluidjesInDeLessen,
   KindWijzigen,
   PratenMetBliepo,
 } from "@/components/ouder/Instellingformulieren";
@@ -25,6 +26,7 @@ import { Pictogram } from "@/components/kind/Pictogram";
 import { vereisOuder } from "@/lib/auth/sessie";
 import { haalKinderen } from "@/lib/data/kinderen";
 import { haalBliepoInstellingen } from "@/lib/tutor/instellingen";
+import { haalLesgeluidjes } from "@/lib/lesgeluiden-ouder";
 import { TALEN } from "@/lib/types";
 
 export default async function InstellingenPagina() {
@@ -85,6 +87,9 @@ export default async function InstellingenPagina() {
             <KindWijzigen kind={kind} />
             <div className="mt-5 border-t border-beheer-rand-zacht pt-4">
               <PratenMetBliepo kind={kind} instellingen={haalBliepoInstellingen(kind.id)} />
+            </div>
+            <div className="mt-5 border-t border-beheer-rand-zacht pt-4">
+              <GeluidjesInDeLessen kind={kind} aan={haalLesgeluidjes(kind.id)} />
             </div>
             <details className="mt-5 border-t border-beheer-rand-zacht pt-4">
               <summary className="cursor-pointer text-sm text-beheer-zacht">

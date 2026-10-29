@@ -10,6 +10,7 @@
  */
 
 import { revalidatePath } from "next/cache";
+import { maakNaamFragment, profielVoor } from "@/lib/stem-server";
 import { redirect } from "next/navigation";
 import { bekijkKind, vereisOuder, vergeetKeuzes } from "@/lib/auth/sessie";
 import {
@@ -26,6 +27,7 @@ import {
   wijzigWeergavenaam,
 } from "@/lib/data/ouders";
 import { zetBliepoInstellingen } from "@/lib/tutor/instellingen";
+import { zetLesgeluidjes } from "@/lib/lesgeluiden-ouder";
 import type { Taal } from "@/lib/types";
 
 type Uitkomst = { fout: string } | { gelukt: string } | null;
@@ -77,6 +79,13 @@ export async function voegKindToe(
   if (fout) return { fout };
 
   maakKind(ouder.id, invoer);
+  /*
+    De naam als los stemfragment van Ruth, één keer per kind (28 oktober 2026); op de
+    achtergrond, het toevoegen wacht er niet op. Lukt het niet, dan zegt Bliepo de
+    zinnen zonder naam. PRIVACY REVIEW REQUIRED: de voornaam gaat naar ElevenLabs
+    (alleen de voornaam).
+  */
+  void maakNaamFragment(invoer.roepnaam, profielVoor(invoer.groep)).catch(() => {});
   ververs();
   return { gelukt: `${invoer.roepnaam} is toegevoegd.` };
 }
@@ -108,6 +117,8 @@ export async function wijzigKindprofiel(
   if (!wijzigKind(ouder.id, kindId, invoer)) {
     return { fout: "Dat profiel bestaat niet." };
   }
+  /* Nieuwe naam of groep: het naamfragment (als het er al is, kost dit niets). PRIVACY REVIEW REQUIRED. */
+  void maakNaamFragment(invoer.roepnaam, profielVoor(invoer.groep)).catch(() => {});
 
   ververs();
   return { gelukt: "Opgeslagen." };
@@ -191,3 +202,15 @@ export async function wijzigPratenMetBliepo(_vorige: Uitkomst, gegevens: FormDat
   return { gelukt: "Opgeslagen." };
 }
 
+/**
+ * Geluidjes in de lessen aan of uit (29 oktober 2026). Eigen formulier met
+ * alleen dit veld: er wordt niets anders meegestuurd of overschreven.
+ */
+export async function wijzigLesgeluidjes(_vorige: Uitkomst, gegevens: FormData): Promise<Uitkomst> {
+  const ouder = await vereisOuder();
+  const kindId = tekst(gegevens, "kindId");
+  if (!haalKindVanOuder(ouder.id, kindId)) return { fout: "Dat profiel bestaat niet." };
+  zetLesgeluidjes(kindId, gegevens.get("lesgeluidjes") === "aan");
+  ververs();
+  return { gelukt: "Opgeslagen." };
+}

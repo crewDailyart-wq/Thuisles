@@ -17,9 +17,11 @@ import type { Metadata, Viewport } from "next";
 import { unstable_rethrow } from "next/navigation";
 import { connection } from "next/server";
 import { Pictogram } from "@/components/kind/Pictogram";
+import { KnopTik } from "@/components/kind/KnopTik";
 import { Schil } from "@/components/zappie/Schil";
 import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { huidigKind } from "@/lib/auth/sessie";
+import { haalLesgeluidjes } from "@/lib/lesgeluiden-ouder";
 import { MERKNAAM } from "@/lib/merk";
 import { NIET_INDEXEREN } from "@/lib/seo";
 import "@/components/zappie/zappie.css";
@@ -70,6 +72,8 @@ export default async function ZappieLayout({ children }: LayoutProps<"/zappie">)
     >
       {/* De gekozen stijl van de kinderkant (stijlkiezer, /admin/stijl). */}
       <StijlVariabelen />
+      {/* Zacht tikje bij elke knop (29 okt 2026); uit als de ouder "Geluidjes in de lessen" uitzette. */}
+      <KnopTik toegestaan={kind ? haalLesgeluidjes(kind.id) : true} />
       {children}
     </Schil>
   );
