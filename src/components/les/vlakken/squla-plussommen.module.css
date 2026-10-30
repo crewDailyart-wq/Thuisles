@@ -76,6 +76,10 @@
   white-space: nowrap;
 }
 
+.smal {
+  font-size: 33px;
+}
+
 /* Het aantal onder een groepje. */
 .label,
 .rondgetal,

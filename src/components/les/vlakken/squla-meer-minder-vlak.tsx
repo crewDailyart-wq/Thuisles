@@ -66,6 +66,8 @@ export type MMProps = {
   staven?: boolean;
   hand?: boolean;
   test?: string[] | null;
+  /** Alle opgaven van de les: de plaatjes worden vooraf gebakken (één per beeld). */
+  vooraf?: MMOpgave[];
 };
 
 /** Hoeveel voorwerpen er in een groep staan. */
@@ -193,6 +195,7 @@ interface MMScene {
   zetTest(lijst: string[] | null): void;
   tik(i: number): void;
   sleepPunt(): { x: number; y: number } | null;
+  voorbereid(lijst: MMOpgave[]): void;
 }
 
 function maakScene(Phaser: PhaserModule, rustig: boolean) {
@@ -706,24 +709,66 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       return { x: r.left + st.box.x * f, y: r.top + st.box.y * f };
     }
 
-    /** Voor `npm run vloeiend`: kaarten verschijnen, een kaart schuift naar een vakje en terug. */
+    /**
+     * Voor `npm run vloeiend`: wat er nu in beeld staat verschijnt opnieuw, een
+     * kaart schuift heen en weer en er komt een lichtgolf. Zonder nieuwe
+     * plaatjes (die zijn vooraf gebakken).
+     */
     demo(ms: number) {
       const eind = performance.now() + ms;
       let k = 0;
       const stap = () => {
-        if (performance.now() > eind) return;
-        k++;
-        const g = (n: number): MMGroep => ({ soort: k % 2 ? "appel" : "ster", blokken: [{ rijen: Array.from({ length: Math.ceil(n / 5) }, (_, r) => Math.min(5, n - r * 5)), kleuren: k % 2 ? ["rood", "groen"] : ["geel"] }] });
-        this.zetOpgave({ id: `demo-${k}`, soort: "volgorde", kaarten: [g(6 + (k % 4)), g(12), g(17), g(9)] });
-        this.time.delayedCall(500, () => {
-          const st = this.stukken[0];
-          const sl = this.ind?.sloten[0];
-          if (st && sl) this.tweens.add({ targets: st.box, x: midden(sl).x, y: midden(sl).y, duration: 500, yoyo: true, ease: "Sine.easeInOut" });
-          if (st) this.time.delayedCall(700, () => this.golf(st.box.x, st.box.y, GOED));
-        });
-        this.time.delayedCall(1400, stap);
+        if (performance.now() > eind || !this.stukken.length) return;
+        const st = this.stukken[k++ % this.stukken.length];
+        this.tover(st.box);
+        this.time.delayedCall(450, () => this.tweens.add({ targets: st.box, y: st.box.y - 40, duration: 350, yoyo: true, ease: "Sine.easeInOut" }));
+        this.time.delayedCall(900, () => this.golf(st.box.x, st.box.y, GOED));
+        this.time.delayedCall(1100, stap);
       };
       stap();
+    }
+
+    /* ---------- vooraf bakken ---------- */
+
+    wachtrij: (() => void)[] = [];
+    gepland = new Set<string>();
+
+    /** Alle plaatjes van de les vooraf, één per beeld, zodat er bij een nieuwe vraag niets gebakken hoeft te worden. */
+    voorbereid(lijst: MMOpgave[]) {
+      const plan = (sl: string, f: () => void) => {
+        if (this.gepland.has(sl)) return;
+        this.gepland.add(sl);
+        this.wachtrij.push(f);
+      };
+      for (const o of lijst) {
+        const ind = mmIndeling(o);
+        for (const r of ind.sloten) plan(`slot-${r.b}x${r.h}`, () => this.slotTex(r.b, r.h));
+        if (ind.getalkaart) {
+          const g = ind.getalkaart;
+          plan(`kaart-voorbeeld-${g.b}x${g.h}`, () => this.kaartTex(g.b, g.h, "voorbeeld"));
+        }
+        const groepen = o.soort === "tel" ? [o.groep] : o.soort === "kaarten" ? [...(o.voorbeeld ? [o.voorbeeld] : []), ...o.kaarten] : o.soort === "volgorde" ? o.kaarten : [];
+        ind.vakken.forEach((vak, i) => {
+          if (vak.soort === "ding" && o.soort === "getallen") plan(`ding-${o.ding}-${vak.getal}`, () => this.dingTex(o.ding, vak.getal ?? 0));
+          if (vak.soort === "kaart" || vak.soort === "voorbeeld") plan(`kaart-${vak.soort}-${vak.b}x${vak.h}`, () => this.kaartTex(vak.b, vak.h, vak.soort));
+          const gp = vak.groep;
+          if (!gp) return;
+          for (const d of gp.dozen) plan(`doos-${Math.round(d.b)}x${Math.round(d.h)}`, () => this.doosTex(d.b, d.h));
+          for (const kleur of new Set(gp.plekken.map((q) => q.kleur))) plan(`v-${groepen[i].soort}-${kleur}`, () => this.voorwerp(groepen[i].soort, kleur));
+        });
+      }
+    }
+
+    /** Bakken alleen als er niets beweegt (geen animatie, niet aan het slepen): dan valt een iets langer beeld niet op. */
+    rustSinds = 0;
+    update(tijd: number) {
+      if (!this.wachtrij.length) return;
+      if (this.sleep || this.tweens.getTweens().length > 0) {
+        this.rustSinds = tijd;
+        return;
+      }
+      if (tijd - this.rustSinds < 250) return;
+      this.wachtrij.shift()?.();
     }
   }
   return MM as unknown as new () => import("phaser").Scene;
@@ -743,6 +788,7 @@ export function SqulaMeerMinder({
   staven = false,
   hand = false,
   test = null,
+  vooraf,
   meld,
   schaal,
 }: MMProps & Vlakbasis) {
@@ -753,6 +799,11 @@ export function SqulaMeerMinder({
   useEffect(() => {
     scene?.verbind(meld);
   }, [scene, meld]);
+
+  const voorafSleutel = vooraf ? JSON.stringify(vooraf) : "";
+  useEffect(() => {
+    if (scene && voorafSleutel && false) scene.voorbereid(JSON.parse(voorafSleutel) as MMOpgave[]);
+  }, [scene, voorafSleutel]);
 
   useEffect(() => {
     scene?.zetOpgave(sleutel ? (JSON.parse(sleutel) as MMOpgave) : null);

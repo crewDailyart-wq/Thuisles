@@ -142,8 +142,11 @@ function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
 
 function somVakken(sommen: Kaart[]): Vak[] {
   const n = sommen.length;
-  const breed = n * SOM.b + (n - 1) * SOM.gat;
-  return sommen.map((k, i) => ({ id: k.id, kaart: k, soort: "som", x: MIDDEN.x - breed / 2 + SOM.b / 2 + i * (SOM.b + SOM.gat), y: SOM.y, b: SOM.b, h: SOM.h }));
+  /* Vier kaartjes: iets smaller, zodat ze niet tot bij de microfoon van Bliepo lopen. */
+  const b = n >= 4 ? 192 : SOM.b;
+  const gat = n >= 4 ? 16 : SOM.gat;
+  const breed = n * b + (n - 1) * gat;
+  return sommen.map((k, i) => ({ id: k.id, kaart: k, soort: "som", x: MIDDEN.x - breed / 2 + b / 2 + i * (b + gat), y: SOM.y, b, h: SOM.h }));
 }
 
 const DISCO = { bal: { x: 490, y: 220 }, speakers: [70, 910], tafel: { x: 490, y: 650 } };
@@ -616,7 +619,7 @@ export function SqulaPlusVlak({
             <button
               key={v.id}
               type="button"
-              className={`${s.vak} ${s[v.soort]} ${uit.includes(v.id) ? s.uit : ""}`}
+              className={`${s.vak} ${s[v.soort]} ${v.soort === "som" && v.b < 200 ? s.smal : ""} ${uit.includes(v.id) ? s.uit : ""}`}
               style={{ left: v.x - v.b / 2, top: v.y - v.h / 2, width: v.b, height: v.h }}
               data-ding={v.id}
               aria-label={v.kaart.aria}

@@ -154,15 +154,22 @@ export function tekenDing(c: C, d: Ding) {
     return;
   }
   if (d === "krentenbol") {
-    c.fillStyle = "#e5a55a";
+    /* Een hoge, glanzende bol met een platte onderkant (geen plat koekje). */
+    c.fillStyle = "#c8792f";
     c.beginPath();
-    c.arc(m, m + 2, 28, 0, Math.PI * 2);
+    c.moveTo(m - 30, m + 20);
+    c.bezierCurveTo(m - 32, m - 34, m + 32, m - 34, m + 30, m + 20);
+    c.closePath();
     c.fill();
     c.stroke();
-    c.fillStyle = "#4a2a14";
-    for (const [x, y] of [[-14, -6], [2, -14], [14, -2], [-4, 6], [10, 14], [-14, 14]]) {
+    c.fillStyle = "rgba(255,230,180,0.55)";
+    c.beginPath();
+    c.ellipse(m - 8, m - 10, 12, 6, -0.4, 0, Math.PI * 2);
+    c.fill();
+    c.fillStyle = "#3a1d0b";
+    for (const [x, y] of [[-16, 6], [0, -6], [14, 2], [-6, 12], [8, 14], [18, 12], [-18, -4]]) {
       c.beginPath();
-      c.ellipse(m + x, m + y, 4, 3, 0.5, 0, Math.PI * 2);
+      c.ellipse(m + x, m + y, 3.5, 2.6, 0.5, 0, Math.PI * 2);
       c.fill();
     }
     return;

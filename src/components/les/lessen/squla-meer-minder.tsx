@@ -508,7 +508,7 @@ function les(d: Lesdef): Lesdraaiboek {
     async speel(l) {
       const st: Stand = { huidig: "", goed: 0, fout: 0, ronde: 0, handGezien: false, gezien: new Set() };
       st.huidig = d.start.id;
-      l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start });
+      l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start, vooraf: d.vragen.map((q, i) => opgaveVan(`${d.id}-${i + 1}`, q)) });
       await squlaBegin(l, { welkom: d.welkom, uitleg: () => d.uitleg(l, st) });
       let fouten = 0;
       for (const [i, q] of d.vragen.entries()) if (!(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;

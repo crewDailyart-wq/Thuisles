@@ -440,22 +440,16 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       });
     }
 
-    /** Voor `npm run vloeiend`: de groep van nu steeds opnieuw tevoorschijn toveren en samen tellen (met plaatjes die er al zijn). */
+    /** Voor `npm run vloeiend`: wat er nu staat steeds opnieuw tevoorschijn toveren, samen tellen en goed (zoals bij een vraag). */
     demo(ms: number) {
       const eind = performance.now() + ms;
-      const p = this.ind?.plekken.map((q) => q.p) ?? [];
-      const a = p[0] ?? { soort: "appel", kleur: "rood" };
-      const b = p.find((q) => q.soort !== a.soort || q.kleur !== a.kleur) ?? a;
-      const vormen: Telopgave[] = [
-        { id: "demo-a", vorm: "verspreid", n: 18, plaatjes: [a] },
-        { id: "demo-b", vorm: "rijen10", n: 46, plaatjes: [a, b] },
-        { id: "demo-c", vorm: "rijen5", n: 17, plaatjes: [a, b] },
-      ];
+      const nu = this.ind;
+      if (!nu) return;
       let k = 0;
       const stap = () => {
         if (performance.now() > eind) return;
-        this.zetIndeling(indeling(vormen[k++ % vormen.length]));
-        this.time.delayedCall(450, () => this.zetGeteld(10));
+        this.zetIndeling({ ...nu, id: `${nu.id}-demo-${k++}` });
+        this.time.delayedCall(450, () => this.zetGeteld(Math.min(10, nu.plekken.length)));
         this.time.delayedCall(1100, () => this.goed());
         this.time.delayedCall(1400, stap);
       };
