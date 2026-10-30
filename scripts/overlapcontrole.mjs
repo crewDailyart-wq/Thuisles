@@ -91,6 +91,15 @@ const MEET = `(() => {
     if (r.width < 4 || r.height < 4) return false;
     const cs = getComputedStyle(el);
     if (cs.visibility === "hidden" || cs.display === "none" || Number(cs.opacity) < 0.15 || cs.pointerEvents === "none") return false;
+    /*
+      Ook niet als het scherm eromheen nog onzichtbaar is (30 okt 2026). Het lesvlak staat
+      met opacity 0 en zonder schaal klaar tot het op maat is gezet; op een drukke laptop
+      duurt dat seconden, en dan stonden Pauze en "Praten met Bliepo" van dat onzichtbare,
+      nog niet geschaalde scherm als "buiten beeld" in de controle. Een kind ziet dat nooit.
+    */
+    let zicht = 1;
+    for (let o = el.parentElement; o && o !== document.body; o = o.parentElement) zicht *= Number(getComputedStyle(o).opacity);
+    if (zicht < 0.15) return false;
     /* Next.js-ontwikkelknop niet meetellen. */
     if (el.closest("nextjs-portal, [data-nextjs-toast], #__next-build-watcher")) return false;
     return true;
