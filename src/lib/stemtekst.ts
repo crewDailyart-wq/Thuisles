@@ -245,7 +245,9 @@ export function knipInZinnen(tekst: string): string[] {
   Nederlandse teksten komen "hi" en "yeah" nooit voor, dus dit verbergt geen
   echt ontbrekend woord.
 */
-const KLINKT_GELIJK: Record<string, string> = { wow: "wauw", okay: "oke", okee: "oke", ok: "oke", jaa: "ja", hooij: "hoi", hi: "hoi", yeah: "ja" };
+const KLINKT_GELIJK: Record<string, string> = { wow: "wauw", okay: "oke", okee: "oke", ok: "oke", jaa: "ja", hooij: "hoi", hi: "hoi", yeah: "ja",
+  /* Losse getallen en woordjes hoort de controle soms in een andere taal (30 oktober 2026): "zes" als "This", "twaalf" als "zwölf", "voor" als "Four". */
+  this: "zes", zwolf: "twaalf", four: "voor", no: "nul" };
 
 /** De woorden van een zin, voor de controle: kleine letters, zonder leestekens en accenten. */
 export function woordenVan(tekst: string): string[] {

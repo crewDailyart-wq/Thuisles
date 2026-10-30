@@ -32,7 +32,7 @@ import { TEGELKLEUR, hoogte, stapel, vorm } from "../tegels";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { IkoonKnop } from "../ikonen";
-import { zeg } from "@/lib/stem";
+import { keuzeStem, useKeuzesAlvast } from "../keuzestem";
 import { CEL, MIDDEN_KOLOM, OX, OY } from "./optellen20-holo-maten";
 import s from "./optellen20-holo.module.css";
 
@@ -630,12 +630,12 @@ function Keuzes({ k, meld, inVlak }: { k: HoloKeuzes; meld: Vlakbasis["meld"]; i
     setKlaar(true);
     meld({ soort: "antwoord", waarde });
   };
+  useKeuzesAlvast(k.opties.map(String));
   return (
     <div className={s.keuzerij}>
       <div className={s.opties} data-knop="keuzes">
         {k.opties.map((o) => {
           const isUit = uit.includes(o);
-          const woord = typeof o === "string" && /[a-z]/i.test(o);
           return (
             <button
               key={String(o)}
@@ -644,11 +644,12 @@ function Keuzes({ k, meld, inVlak }: { k: HoloKeuzes; meld: Vlakbasis["meld"]; i
               disabled={isUit || klaar}
               aria-pressed={gekozen === o}
               aria-label={String(o)}
+              data-keuze={isUit ? "uit" : ""}
+              {...keuzeStem(String(o))}
               onClick={() => {
                 setGekozen(o);
                 if (!inVlak) meld({ soort: "gekozen", waarde: o });
-                /* Een woord leest Bliepo voor (groep 3 leest nog niet); cijfers niet. */
-                if (woord) zeg(String(o));
+                /* Een tik kiest alleen; voorlezen via muis, lang indrukken of het luidsprekertje (30 oktober 2026). */
               }}
             >
               {o}

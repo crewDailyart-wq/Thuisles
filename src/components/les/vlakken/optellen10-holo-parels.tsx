@@ -28,6 +28,7 @@ import type { Vlakbasis } from "../soort";
 import { TEGELKLEUR } from "../tegels";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
+import { tekenParel } from "./tellen-holo-tekenen";
 import s from "./optellen10-holo.module.css";
 
 export type Parelprops = {
@@ -130,21 +131,8 @@ function maakParelScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     maak() {
-      /* Een parel: een lichte bol met een glansje; de kleur van zijn groepje komt erbij als tint. */
-      this.canvasPlaatje("parel", 52, 52, (c) => {
-        const g = c.createRadialGradient(19, 17, 2, 26, 26, 24);
-        g.addColorStop(0, "#ffffff");
-        g.addColorStop(0.45, "#eef6ff");
-        g.addColorStop(1, "#b8c6dc");
-        c.fillStyle = g;
-        c.beginPath();
-        c.arc(26, 26, 22, 0, Math.PI * 2);
-        c.fill();
-        c.fillStyle = "rgba(255,255,255,0.95)";
-        c.beginPath();
-        c.arc(19, 17, 4.5, 0, Math.PI * 2);
-        c.fill();
-      });
+      /* Een parel (dezelfde tekening als in alle lessen); de kleur van zijn groepje komt erbij als tint. */
+      this.canvasPlaatje("parel", 52, 52, (c) => tekenParel(c, 52));
       this.bak("parel", "parel-gloed", 0xffffff);
       for (let i = 1; i <= 20; i++) {
         this.canvasPlaatje(`pnr-${i}`, 40, 40, (c) => {

@@ -74,6 +74,11 @@ function beoordeel(stem: SpeechSynthesisVoice): { score: number; reden: string[]
     score += 100;
     redenen.push("vrouwelijke stem");
   }
+  /* Keuze eigenaar (30 oktober 2026): zonder Ruth-geluid praat Bliepo met de Google-stem, als het apparaat die heeft (Chrome). */
+  if (naam.includes("google")) {
+    score += 300;
+    redenen.push("Google-stem (keuze eigenaar)");
+  }
   if (MANNELIJK.some((n) => naam.includes(n))) {
     score -= 120;
     redenen.push("mannelijke stem");
@@ -188,6 +193,7 @@ let beurt = 0;
 
 function meld(bezig: boolean) {
   praatNu = bezig;
+  if (bezig) stopKeuzeStem();
   for (const f of luisteraars) f();
 }
 
@@ -518,10 +524,19 @@ function serverBruikbaar(): boolean {
   tekst gewoon door (scripts/stemlessen.mjs zorgt dat alles er is). De naam van het
   kind gaat mee, zodat de server de zin zonder naam + het naamfragment kan geven.
 */
-let alleenServerStem = false;
+/*
+  30 oktober 2026 (besluit eigenaar): eerst stond hier true (nergens de browserstem).
+  Maar in de 49 lessen die niet in Synthesis-stijl zijn, hebben nog ongeveer 2.400
+  zinnen geen stem van Ruth; die bleven stil en de les sprong door. Daarom TIJDELIJK
+  weer false: alleen voor een zin zonder Ruth-bestand leest de browser hem voor.
+  De 10 lessen in Synthesis-stijl zetten zelf alleenServer (zetLesStem): daar nooit
+  de browserstem. Zodra alle zinnen een Ruth-bestand hebben, weer op true.
+*/
+export const NOOIT_BROWSERSTEM = false;
+let alleenServerStem = NOOIT_BROWSERSTEM;
 let stemNaam = "";
 export function zetLesStem(o: { alleenServer: boolean; naam?: string }): void {
-  alleenServerStem = o.alleenServer;
+  alleenServerStem = NOOIT_BROWSERSTEM || o.alleenServer;
   stemNaam = (o.naam ?? "").trim();
 }
 
@@ -719,4 +734,108 @@ export function zegEnWacht(zinnen: string[]): Promise<void> {
   return new Promise((klaar) => {
     zegNaElkaar(zinnen, () => {}, klaar, true);
   });
+}
+
+// ---------------------------------------------------------------------------
+// Antwoordkeuzes voorlezen (30 oktober 2026, opdracht eigenaar)
+// ---------------------------------------------------------------------------
+
+/*
+  Bliepo leest de keuzes niet vooraf voor, alleen de vraag. Een keuze klinkt pas
+  als het kind erom vraagt: muis erop (300 ms), lang indrukken (tablet, telefoon),
+  toetsenbordfocus of het luidsprekertje (components/les/keuzestem.tsx). Altijd de
+  stem van Ruth (een hele keuze als bestand, of anders losse stukjes zoals "7",
+  "plus", "is"; zie app/api/stem/route.ts). Nooit de browserstem: ontbreekt het
+  bestand, dan blijft het stil.
+
+  Bliepo praat nooit door een keuze heen: praat hij nog, dan klinkt de keuze niet.
+  Begint hij te praten, dan stopt de keuze. Een nieuwe keuze stopt de vorige.
+*/
+let keuzeGeluid: HTMLAudioElement | null = null;
+let keuzeReeks = 0;
+const keuzeBuffer = new Map<string, Promise<Blob | null>>();
+
+function haalKeuze(tekst: string): Promise<Blob | null> {
+  let p = keuzeBuffer.get(tekst);
+  if (!p) {
+    p = fetch(`${adres(tekst)}&keuze=1`)
+      .then((r) => (r.ok ? r.blob() : null))
+      .catch(() => null);
+    keuzeBuffer.set(tekst, p);
+    void p.then((b) => {
+      if (!b) keuzeBuffer.delete(tekst);
+    });
+  }
+  return p;
+}
+
+export function stopKeuzeStem(): void {
+  keuzeReeks += 1;
+  if (!alleenServerStem && typeof window !== "undefined") window.speechSynthesis?.cancel();
+  keuzeGeluid?.pause();
+  keuzeGeluid = null;
+}
+
+function speelKeuze(tekst: string, reeks: number): Promise<void> {
+  return haalKeuze(tekst).then(
+    (blob) =>
+      new Promise<void>((klaar) => {
+        if (reeks !== keuzeReeks || praatNu) return klaar();
+        /*
+          Nog geen Ruth-bestand voor deze keuze: in lessen waar de browserstem mag
+          (de nieuwe Squla-lessen, en voorlopig de lessen buiten Synthesis-stijl)
+          leest de browser hem voor. Anders blijft het stil.
+        */
+        if (!blob) {
+          if (alleenServerStem || typeof window === "undefined" || !window.speechSynthesis) return klaar();
+          void stemmenGereed().then(() => {
+            if (reeks !== keuzeReeks || praatNu || !gekozen) return klaar();
+            window.speechSynthesis.cancel();
+            const u = new SpeechSynthesisUtterance(tekst);
+            u.lang = gekozen.lang ?? "nl-NL";
+            u.voice = gekozen;
+            u.rate = TEMPO;
+            u.pitch = TOONHOOGTE;
+            u.onend = u.onerror = () => klaar();
+            window.speechSynthesis.speak(u);
+          });
+          return;
+        }
+        const url = URL.createObjectURL(blob);
+        const geluid = new Audio(url);
+        keuzeGeluid = geluid;
+        geluid.onended = geluid.onerror = () => {
+          URL.revokeObjectURL(url);
+          if (keuzeGeluid === geluid) keuzeGeluid = null;
+          klaar();
+        };
+        void geluid.play().catch(() => klaar());
+      }),
+  );
+}
+
+/** Eén keuze voorlezen (stopt de vorige). Praat Bliepo nog, dan niets. */
+export function zegKeuze(tekst: string): void {
+  if (typeof window === "undefined" || praatNu || !tekst.trim()) return;
+  stopKeuzeStem();
+  void speelKeuze(tekst.trim(), keuzeReeks);
+}
+
+/** Alle keuzes één voor één (het luidsprekertje). */
+export async function zegKeuzesNaElkaar(teksten: string[]): Promise<void> {
+  if (typeof window === "undefined" || praatNu) return;
+  stopKeuzeStem();
+  const reeks = keuzeReeks;
+  teksten.forEach((t) => void haalKeuze(t.trim()));
+  for (const t of teksten) {
+    if (reeks !== keuzeReeks || praatNu) return;
+    await speelKeuze(t.trim(), reeks);
+    await new Promise((r) => setTimeout(r, 350));
+  }
+}
+
+/** Alvast ophalen, zodat de keuze meteen klinkt als het kind erom vraagt. */
+export function haalKeuzesAlvast(teksten: string[]): void {
+  if (typeof window === "undefined") return;
+  for (const t of teksten) if (t.trim()) void haalKeuze(t.trim());
 }

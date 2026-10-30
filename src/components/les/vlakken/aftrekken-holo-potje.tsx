@@ -26,7 +26,7 @@ import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
-import { AARDE, maakLantaarntje, maakVuurvliegje } from "./aftrekken-holo-teken";
+import { AARDE, maakLantaarntje, maakVuurvliegje, POT_AFTREKKEN, tekenPot } from "./aftrekken-holo-teken";
 import s from "./aftrekken-holo.module.css";
 
 export type Knopstand = "weg" | "dof" | "aan";
@@ -98,59 +98,7 @@ function maakPotjeScene(Phaser: typeof import("phaser"), rustig: boolean) {
       maakVuurvliegje(this);
       maakLantaarntje(this);
       /* Het glazen potje: deksel, hals en een bolle buik, met een paar lichtlijntjes. */
-      this.canvasPlaatje("pot", POT.b, POT.h, (c) => {
-        const buik = () => {
-          c.beginPath();
-          c.moveTo(92, 80);
-          c.quadraticCurveTo(30, 92, 30, 150);
-          c.lineTo(30, 410);
-          c.quadraticCurveTo(30, 462, 82, 462);
-          c.lineTo(318, 462);
-          c.quadraticCurveTo(370, 462, 370, 410);
-          c.lineTo(370, 150);
-          c.quadraticCurveTo(370, 92, 308, 80);
-          c.closePath();
-        };
-        buik();
-        c.fillStyle = "rgba(255,226,160,0.07)";
-        c.fill();
-        c.save();
-        buik();
-        c.clip();
-        c.strokeStyle = "rgba(255,230,170,0.06)";
-        c.lineWidth = 1;
-        for (let y = 80; y < 470; y += 7) {
-          c.beginPath();
-          c.moveTo(0, y);
-          c.lineTo(POT.b, y);
-          c.stroke();
-        }
-        c.restore();
-        buik();
-        c.strokeStyle = "#ffd36e";
-        c.lineWidth = 3.5;
-        c.stroke();
-        /* de hals */
-        c.beginPath();
-        c.roundRect(92, 50, 216, 32, 8);
-        c.fillStyle = "rgba(255,211,110,0.1)";
-        c.fill();
-        c.stroke();
-        /* het deksel */
-        c.beginPath();
-        c.roundRect(80, 22, 240, 30, 10);
-        c.fillStyle = "rgba(255,211,110,0.28)";
-        c.fill();
-        c.stroke();
-        /* glans links */
-        c.strokeStyle = "rgba(255,255,255,0.28)";
-        c.lineWidth = 5;
-        c.lineCap = "round";
-        c.beginPath();
-        c.moveTo(56, 170);
-        c.lineTo(56, 380);
-        c.stroke();
-      });
+      this.canvasPlaatje("pot", POT.b, POT.h, (c) => tekenPot(c, POT_AFTREKKEN));
       this.bak("pot", "pot-gloed", WARM);
       this.plaats("pot-gloed", POT.x, POT.y);
       /* Het lantaarntje achter de teller (het getal zelf is HTML, scherp). */

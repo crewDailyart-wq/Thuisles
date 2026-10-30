@@ -349,6 +349,46 @@ zag dat niet.
 
 ---
 
+# ⛔ HARDE REGEL 8 — OUDE LESSEN EN OPDRACHTEN OP CONCEPT NOOIT AANRAKEN
+
+**"Nieuwe lessen" zijn alle lessen die sinds 27 oktober 2026 door Claude Code
+zijn gemaakt** (besluit eigenaar, 30 oktober 2026): de 59 groep 3-lessen
+(Getallen, Splitsen, Optellen, Aftrekken, Tijd en Verhaaltjessommen),
+inclusief de 10 in Synthesis-stijl. Praat Sara over "de lessen" of "de
+opdrachten", dan bedoelt ze deze nieuwe lessen.
+
+**De lessen en opdrachten van vóór 27 oktober 2026 die op concept staan
+(ongeveer 9.680), worden NOOIT aangeraakt.** Niet bouwen, niet aanpassen,
+niet controleren, niet testen, geen stem of audio voor genereren, niet
+publiceren en niet verwijderen — tenzij Sara ze uitdrukkelijk met naam noemt.
+
+---
+
+# ⛔ HARDE REGEL 9 — EERST VRAGEN VÓÓR MEER DAN 5.000 BETAALD TEGOED
+
+**Voordat je betaald tegoed gebruikt (ElevenLabs of een andere dienst) voor
+meer dan 5.000 tegoed in één keer, vraag je eerst toestemming aan Sara**
+(besluit eigenaar, 30 oktober 2026). Geef daarbij een schatting van de
+kosten en van het tegoed dat er na afloop nog over is. Genereer nooit
+ongevraagd voor meer dan dat.
+
+## Waarom deze regel er is
+
+Op 30 oktober 2026 ging er in één nacht ruim 39.000 tegoed van ElevenLabs op
+aan zinnen voor oudere lessen, zonder dat Sara daar apart toestemming voor
+had gegeven.
+
+---
+
+# ⛔ HARDE REGEL 10 — HELPERS KRIJGEN DEZE REGELS MEE
+
+**Zet je een helper in (een subagent of een andere sessie), geef dan de harde
+regels hierboven mee in zijn opdracht**, in elk geval regel 8 en 9
+(besluit eigenaar, 30 oktober 2026). Een helper die ze niet kent, houdt zich
+er ook niet aan.
+
+---
+
 **Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
 gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
 grootte.** De bestanden staan in `public/geld/`, met de bron in

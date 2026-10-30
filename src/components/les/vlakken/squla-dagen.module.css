@@ -1,0 +1,207 @@
+/*
+  De weektrein (30 oktober 2026, les "Dagen van de week"). Maten in punten
+  van het vlak (980 × 720). Vlakke vormen, geen gloed (regel 7: licht).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  touch-action: none;
+}
+
+.rails {
+  position: absolute;
+  pointer-events: none;
+}
+
+.trein {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 980px;
+  height: 720px;
+  pointer-events: none;
+}
+
+.rijdt {
+  animation: rijIn 2.4s cubic-bezier(0.2, 0.7, 0.25, 1) both;
+}
+
+@keyframes rijIn {
+  from {
+    transform: translateX(1000px);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+
+.loc {
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Een wagon of een dagkaart: een knop zonder eigen rand of achtergrond. */
+.wagon {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  border-radius: 16px;
+  pointer-events: auto;
+  cursor: default;
+  transition: transform 0.18s ease-out, opacity 0.25s ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.wagon svg {
+  display: block;
+}
+
+.wagon:focus-visible {
+  outline: 4px solid #4b8af5;
+  outline-offset: 4px;
+}
+
+.aan {
+  cursor: pointer;
+}
+
+.aan:hover {
+  transform: translateY(-4px);
+}
+
+/* Bliepo wijst deze wagon aan: een witte rand eromheen. */
+.licht {
+  transform: translateY(-8px);
+}
+
+/* De rand om de wagon zelf (het plaatje), niet om de hele knop. */
+.licht img,
+.gekozen img {
+  filter: drop-shadow(0 0 3px #fff7ea) drop-shadow(0 0 3px #fff7ea) drop-shadow(0 0 2px #fff7ea);
+}
+
+.uit {
+  opacity: 0.25;
+}
+
+.leeg {
+  position: absolute;
+  border: 4px dashed rgba(255, 247, 234, 0.7);
+  border-radius: 16px;
+  background: rgba(255, 247, 234, 0.06);
+  pointer-events: none;
+  transition: background 0.15s ease-out;
+}
+
+.leegDoel {
+  background: rgba(255, 200, 69, 0.35);
+  border-color: #ffc845;
+}
+
+.kaart {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  border-radius: 16px;
+  cursor: pointer;
+  animation: erin 0.3s ease-out both;
+  transition: opacity 0.25s ease-out;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.kaart:disabled {
+  cursor: default;
+}
+
+.kaart:focus-visible {
+  outline: 4px solid #4b8af5;
+  outline-offset: 4px;
+}
+
+.sleepbaar {
+  cursor: grab;
+}
+
+.sleept {
+  cursor: grabbing;
+  z-index: 3;
+  transition: none;
+}
+
+.pijl {
+  position: absolute;
+  pointer-events: none;
+  animation: wip 1.2s ease-in-out infinite alternate;
+}
+
+@keyframes wip {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(8px);
+  }
+}
+
+.haak {
+  position: absolute;
+  pointer-events: none;
+  animation: erin 0.3s ease-out both;
+}
+
+@keyframes erin {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Het handje doet één keer voor hoe je sleept. */
+.handje {
+  position: absolute;
+  pointer-events: none;
+  animation: voordoen 2.2s ease-in-out 0.4s both;
+}
+
+@keyframes voordoen {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  15% {
+    opacity: 1;
+    transform: translate(0, 0);
+  }
+  75% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy));
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy));
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rijdt,
+  .pijl,
+  .kaart,
+  .haak {
+    animation: none;
+  }
+  .handje {
+    display: none;
+  }
+  .wagon,
+  .kaart {
+    transition: none;
+  }
+}

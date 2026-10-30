@@ -43,9 +43,9 @@ const OPDRACHTEN = [
   { naam: "lange opdracht met Godot-spel", query: "?opdracht=lang&tekst=lang&ronde=godot" },
   { naam: "praten uit (grijze microfoonknop)", query: "?praten=uit&zinnen=6" },
   /* Ook een echte opdracht en een echte les (als Testkind), met de echte onderdelen. */
-  /* Sinds 28 okt 2026 staan alleen de opdrachten van de groep 3-lessen op gepubliceerd (besluit eigenaar); daarom een daarvan. */
-  { naam: "echte opdracht (Testkind)", pad: "/oefenen/rekenen/optellen/optellen-tot-en-met-20/oefening?leerdoel=ade36209-c943-4f03-a664-e5b86d6ef106", kind: true },
-  { naam: "echte les", pad: "/voorbeeld/les/optellen-onder-10?naam=Testkind", kind: true },
+  /* Sinds 30 okt 2026 staan alleen de 10 nieuwe lessen op gepubliceerd (besluit eigenaar, HARDE REGEL 8); daarom een daarvan. */
+  { naam: "echte opdracht (Testkind)", pad: "/oefenen/rekenen/tijd/de-wijzerklok/oefening?leerdoel=f4b4f58b-2b96-4115-9d19-703c432b3991", kind: true },
+  { naam: "echte les", pad: "/voorbeeld/les/klok-halve-uren?naam=Testkind", kind: true },
 ];
 
 /* Het profiel "Testkind" (HARDE REGEL: testen als kind alleen met Testkind): uit de database van de laptop, of KIND=<id>. */
@@ -150,7 +150,9 @@ function fouten(m, scherm) {
     if (m.balk && m.balk.bottom > 0 && r.top < m.balk.bottom - marge && r.bottom > m.balk.top && r.right > m.balk.left && r.left < m.balk.right)
       uit.push(`${naam} valt achter de bovenbalk (bovenkant ${Math.round(r.top)}, balk tot ${Math.round(m.balk.bottom)})`);
   }
-  if (m.tekst && m.robot && m.tekst.bottom > m.robot.top + 24) uit.push("de tekst staat over Bliepo heen");
+  /* Alleen als ze ook naast elkaar overlappen: in de nieuwe lessen staan wolk en Bliepo op een staand scherm naast elkaar (30 okt 2026). */
+  const naastElkaar = m.tekst && m.robot && (m.tekst.right <= m.robot.left + 4 || m.tekst.left >= m.robot.right - 4);
+  if (m.tekst && m.robot && !naastElkaar && m.tekst.bottom > m.robot.top + 24) uit.push("de tekst staat over Bliepo heen");
   /* De zinnen mogen niet over het bord vallen. */
   const overlapt = (a, b) => a && b && a.left < b.right - 1 && a.right > b.left + 1 && a.top < b.bottom - 1 && a.bottom > b.top + 1;
   if (overlapt(m.tekst, m.bord)) uit.push("de tekst van Bliepo valt over het bord");

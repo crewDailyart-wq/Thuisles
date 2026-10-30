@@ -38,7 +38,8 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { vierKeuzes } from "../holo/keuzes";
 import { knoppenOpPlek } from "./antwoordknoppen";
 import { VergelijkenHolo, type Deel, type HoloProps, type Kant, type Kleur, type Teken, type Vak } from "../vlakken/vergelijken-holo-vlak";
-import { VAKKLEUR } from "../vlakken/vergelijken-kaarten";
+import { KLEUR_CSS } from "../vlakken/vergelijken-holo-scene";
+import { SvgPot, SvgVlieg } from "../vlakken/kaart-vuurvliegjes";
 
 type Vast = Exclude<Teken, "?">;
 
@@ -110,14 +111,19 @@ function tekenVoor(a: number, b: number): Vast {
   return a === b ? "=" : a < b ? "<" : ">";
 }
 
-/** "{5} is groter dan {4}" */
-function zin(a: number, t: Vast, b: number): string {
-  return `{${a}} ${WOORD[t]} {${b}}`;
+/** "{6}" of, met de kleur van de vuurvliegjes waar het getal over gaat, "{6:blauw}". */
+function getal(n: number, kleur?: Kleur): string {
+  return kleur ? `{${n}:${kleur}}` : `{${n}}`;
 }
 
-/** "Links zijn het er {4}, rechts {6}." (bij 1: "Links is er {1}, …") */
-function linksRechts(a: number, b: number): string {
-  return `${a === 1 ? "Links is er {1}" : `Links zijn het er {${a}}`}, rechts {${b}}.`;
+/** "{5} is groter dan {4}"; gaat het over twee potjes, dan in de kleur van hun vuurvliegjes. */
+function zin(a: number, t: Vast, b: number, kl?: Kleur, kr?: Kleur): string {
+  return `${getal(a, kl)} ${WOORD[t]} ${getal(b, kr)}`;
+}
+
+/** "Links zijn het er {4}, rechts {6}." (bij 1: "Links is er {1}, …"), in de kleur van de vuurvliegjes per potje. */
+function linksRechts(a: number, b: number, kl?: Kleur, kr?: Kleur): string {
+  return `${a === 1 ? `Links is er ${getal(1, kl)}` : `Links zijn het er ${getal(a, kl)}`}, rechts ${getal(b, kr)}.`;
 }
 
 /* ---------- het vlak bedienen ---------- */
@@ -349,8 +355,8 @@ async function grootsteGroep(
       }
       v.pas({ kader: { kant: goed, kleur }, aantallen: true });
       await l.zeg(
-        `${goed === "links" ? "Links" : "Rechts"} zijn het er {${Math.max(a, b)}}.`,
-        `Aan de andere kant {${Math.min(a, b)}}.`,
+        `${goed === "links" ? "Links" : "Rechts"} zijn het er ${getal(Math.max(a, b), goed === "links" ? kl : kr)}.`,
+        `Aan de andere kant ${getal(Math.min(a, b), goed === "links" ? kr : kl)}.`,
         kleur ? `Het ${goed === "links" ? "linker" : "rechter"} potje heeft de meeste ${BN[kleur]}.` : `De ${BN[goed === "links" ? kl : kr]} groep is de grootste.`,
       );
       await l.verder();
@@ -394,7 +400,7 @@ async function hoeveelMeer(l: Lesgids, v: V, links: Vak[], rechts: Vak[], o: { o
   v.pas({ keuzes: opties, uit: [], goedeKeuze: null, weetniet: true });
   const antwoord = async (later: boolean) => {
     v.pas({ keuzes: null, weetniet: false, aantallen: true });
-    await l.zeg(`Kijk: er ${n === 1 ? "steekt" : "steken"} {${n}} ${n === 1 ? KN[kleur] : BN[kleur]} ${vliegjes(n)} bovenuit.`, `Er ${n === 1 ? "is" : "zijn"} er {${n}} meer.`, ...(later ? ["Dat zien we later."] : []));
+    await l.zeg(`Kijk: er ${n === 1 ? "steekt" : "steken"} {${n}} ${n === 1 ? KN[kleur] : BN[kleur]} ${vliegjes(n)} bovenuit.`, `Er ${n === 1 ? "is" : "zijn"} er ${getal(n, kleur)} meer.`, ...(later ? ["Dat zien we later."] : []));
     await l.verder();
     if (later) v.later.push(async () => void (await hoeveelMeer(l, v, verspreid(a, eersteKleur(links, "blauw"), links.length / 2), verspreid(b, eersteKleur(rechts, "geel"), rechts.length / 2), { vers: true })));
   };
@@ -481,13 +487,13 @@ async function gelijkMaken(l: Lesgids, v: V, links: Vak[], rechts: Vak[], zinnen
       await l.zeg("Wat denk je?", "Zijn *deze* groepen gelijk?");
       const zijn = await kiesWoord(l, v, ["Ja", "Nee"], { weetniet: true });
       if (zijn === "Nee") await l.zeg("Klopt, ze zijn nog niet gelijk.");
-      else await l.zeg(`Kijk, links zijn het er {${start}}.`, `Rechts zijn het er {${doel}}.`, "Ze zijn nog niet gelijk.");
+      else await l.zeg(`Kijk, links zijn het er ${getal(start, "blauw")}.`, `Rechts zijn het er ${getal(doel, eersteKleur(rechts, "geel"))}.`, "Ze zijn nog niet gelijk.");
       await l.zeg("Verander de blauwe kant tot ze gelijk zijn.");
     } else {
       v.pas({ aantallen: true });
       await l.zeg(
-        linksRechts(g.links, doel),
-        g.links < doel ? `Je hebt er nog {${doel - g.links}} nodig.` : `Er ${g.links - doel === 1 ? "is" : "zijn"} er {${g.links - doel}} te veel.`,
+        linksRechts(g.links, doel, "blauw", eersteKleur(rechts, "geel")),
+        g.links < doel ? `Je hebt er nog ${getal(doel - g.links, "blauw")} nodig.` : `Er ${g.links - doel === 1 ? "is" : "zijn"} er ${getal(g.links - doel, "blauw")} te veel.`,
       );
     }
     v.pas({ tik: "links", vink: true, hand: true });
@@ -556,17 +562,23 @@ async function vulIn(l: Lesgids, v: V, a: number | null, t: Vast, b: number | nu
 
 /* ---------- kaarttekeningen ---------- */
 
-function Lijnkaart({ x, n, kleur, vol }: { x: number; n: number; kleur: string; vol: number[] }) {
+/**
+ * Een glazen potje met plekjes (2 kolommen) en vuurvliegjes, zoals in de les:
+ * hetzelfde potje en hetzelfde vuurvliegje als bij Aftrekken.
+ */
+function Potkaart({ x, y, b, rijen, kleur, vol }: { x: number; y: number; b: number; rijen: number; kleur: string; vol: number[] }) {
+  const stap = rijen > 3 ? 30 : 32;
+  const h = 22 + (rijen - 1) * stap + 22;
   return (
-    <g stroke={kleur} strokeWidth="3" fill="none" strokeLinejoin="round">
-      {Array.from({ length: n }, (_, i) => {
-        const cx = x + (i % 2) * 34;
-        const cy = 30 + Math.floor(i / 2) * 34;
-        return (
-          <g key={i} transform={`rotate(${i % 3 === 0 ? -2 : 2} ${cx + 14} ${cy + 14})`}>
-            <rect x={cx} y={cy} width="28" height="28" rx="5" />
-            {vol.includes(i) && <path d={`M${cx + 7} ${cy + 21} L${cx + 21} ${cy + 7}`} />}
-          </g>
+    <g>
+      <SvgPot x={x} y={y} b={b} h={h} />
+      {Array.from({ length: rijen * 2 }, (_, i) => {
+        const cx = x + b / 2 + ((i % 2) * 2 - 1) * b * 0.22;
+        const cy = y + 22 + Math.floor(i / 2) * stap;
+        return vol.includes(i) ? (
+          <SvgVlieg key={i} x={cx} y={cy + 3} maat={0.85} licht={kleur} rand={kleur} />
+        ) : (
+          <circle key={i} cx={cx} cy={cy} r="9" fill="none" stroke="rgba(190,235,255,0.42)" strokeWidth="1.6" strokeDasharray="3 3" />
         );
       })}
     </g>
@@ -576,8 +588,8 @@ function Lijnkaart({ x, n, kleur, vol }: { x: number; n: number; kleur: string; 
 function KaartGroepen() {
   return (
     <g>
-      <Lijnkaart x={44} n={8} kleur={VAKKLEUR.blauw} vol={[1, 3, 4, 5, 6, 7]} />
-      <Lijnkaart x={140} n={8} kleur={VAKKLEUR.oranje} vol={[3, 5, 6, 7]} />
+      <Potkaart x={30} y={44} b={80} rijen={4} kleur={KLEUR_CSS.blauw} vol={[2, 3, 4, 5, 6, 7]} />
+      <Potkaart x={134} y={44} b={80} rijen={4} kleur={KLEUR_CSS.geel} vol={[4, 5, 6, 7]} />
     </g>
   );
 }
@@ -585,9 +597,9 @@ function KaartGroepen() {
 function KaartTekens() {
   return (
     <g>
-      <Lijnkaart x={30} n={6} kleur={VAKKLEUR.blauw} vol={[3, 4, 5]} />
+      <Potkaart x={22} y={54} b={76} rijen={3} kleur={KLEUR_CSS.blauw} vol={[3, 4, 5]} />
       <polyline points="134,80 110,96 134,112" fill="none" stroke="#f3ecdf" strokeWidth="5" strokeLinecap="round" strokeLinejoin="round" />
-      <Lijnkaart x={152} n={6} kleur={VAKKLEUR.groen} vol={[0, 1, 2, 3, 4, 5]} />
+      <Potkaart x={146} y={54} b={76} rijen={3} kleur={KLEUR_CSS.groen} vol={[0, 1, 2, 3, 4, 5]} />
     </g>
   );
 }
@@ -886,7 +898,7 @@ const meerOfMinder: Lesdraaiboek = {
 async function tikVakjes(l: Lesgids, v: V, kant: Kant, n: number) {
   v.pas({ tik: kant });
   for (;;) {
-    const g = await wachtOp(l, ["vakje"], [`Tik op {${n}} lege plekjes.`]);
+    const g = await wachtOp(l, ["vakje"], [`Tik op ${getal(n, kant === "links" ? "blauw" : "geel")} lege plekjes.`]);
     if (g[kant] === n) break;
     if (g[kant] > n) {
       v.pas({ tik: null });
@@ -903,13 +915,15 @@ async function kiesTekenPotjes(l: Lesgids, v: V, li: Vak[], re: Vak[], vraag: st
   const a = tel(li);
   const b = tel(re);
   const goed = tekenVoor(a, b);
+  const kl = eersteKleur(li, "blauw");
+  const kr = eersteKleur(re, "geel");
   v.potjes(li, re, { teken: "?" });
   await l.zeg(...vraag);
   v.pas({ tekenTik: true, vink: true, weetniet: true });
   const uitleg = async (later: boolean) => {
     const rijen = li.length / 2;
-    v.potjes(onderaan(a, eersteKleur(li, "blauw"), rijen), onderaan(b, eersteKleur(re, "geel"), rijen), { teken: goed, aantallen: true, stip: goed === "=" ? null : "klein", overgang: "zak" });
-    await l.zeg(`Het hoort zo: ${zin(a, goed, b)}.`, goed === "=" ? "Ze zijn even groot." : "De kleine kant wijst naar de kleinste groep.", ...(later ? ["Dat zien we later."] : []));
+    v.potjes(onderaan(a, kl, rijen), onderaan(b, kr, rijen), { teken: goed, aantallen: true, stip: goed === "=" ? null : "klein", overgang: "zak" });
+    await l.zeg(`Het hoort zo: ${zin(a, goed, b, kl, kr)}.`, goed === "=" ? "Ze zijn even groot." : "De kleine kant wijst naar de kleinste groep.", ...(later ? ["Dat zien we later."] : []));
     await l.verder();
     if (later) v.later.push(async () => void (await kiesTekenPotjes(l, v, li, re, ["Welk teken hoort hier?"], "Goed zo.")));
   };
@@ -930,7 +944,7 @@ async function kiesTekenPotjes(l: Lesgids, v: V, li: Vak[], re: Vak[], vraag: st
     if (m.teken === goed) {
       v.pas({ tekenTik: false, vink: false, weetniet: false, stip: null, teken: goed });
       v.golf("midden");
-      await l.zeg(lof, `${zin(a, goed, b)}.`);
+      await l.zeg(lof, `${zin(a, goed, b, kl, kr)}.`);
       return poging === 0;
     }
     poging++;
@@ -944,10 +958,10 @@ async function kiesTekenPotjes(l: Lesgids, v: V, li: Vak[], re: Vak[], vraag: st
     v.pas({ vink: false });
     if (goed === "=") {
       v.pas({ aantallen: true });
-      await l.zeg(`${zin(a, fout, b)}?`, "Kijk goed: ze zijn even groot.", "Dan hoort daar het is-gelijkteken.");
+      await l.zeg(`${zin(a, fout, b, kl, kr)}?`, "Kijk goed: ze zijn even groot.", "Dan hoort daar het is-gelijkteken.");
     } else {
       v.pas({ stip: "klein", aantallen: true });
-      await l.zeg(fout === "=" ? `{${a}} en {${b}} zijn gelijk?` : "Hmm.", "De kleinste groep hoort aan de kleine kant van het teken.", "Probeer het nog eens.");
+      await l.zeg(fout === "=" ? `${getal(a, kl)} en ${getal(b, kr)} zijn gelijk?` : "Hmm.", "De kleinste groep hoort aan de kleine kant van het teken.", "Probeer het nog eens.");
     }
     v.pas({ vink: true });
   }
@@ -1003,7 +1017,7 @@ const tekens: Lesdraaiboek = {
     v.potjes(leeg(3), leeg(3), { teken: "=" });
     await l.zeg("Tik op de lege plekjes.", "Zorg dat er aan elke kant {3} vuurvliegjes zijn.");
     await tikVakjes(l, v, "links", 3);
-    await l.zeg("Top.", "Nu {3} in het andere potje.");
+    await l.zeg("Top.", "Nu {3:geel} in het andere potje.");
     await tikVakjes(l, v, "rechts", 3);
     await l.zeg("Perfect.", "Aan elke kant {3}.", "Het is-gelijkteken laat zien dat ze evenveel hebben.");
     await l.verder();
@@ -1017,16 +1031,16 @@ const tekens: Lesdraaiboek = {
     v.pas({ stip: "klein" });
     await l.zeg("Kijk naar het gele stipje.", "Dat is de kleine kant van het teken.", "Aan deze kant zet je de kleinste groep.");
     await l.verder();
-    await l.zeg("Zet hier een kleine groep neer.", "Tik op {2} lege plekjes.");
+    await l.zeg("Zet hier een kleine groep neer.", "Tik op {2:blauw} lege plekjes.");
     await tikVakjes(l, v, "links", 2);
     await l.zeg("Perfect.", "Dat is een kleine groep.");
     v.pas({ stip: "groot" });
     await l.zeg("Aan deze kant is het teken wijd open.", "Dit is de grote kant.");
     await l.verder();
-    await l.zeg("Maak hier een grotere groep dan {2}.", "Tik op {5} lege plekjes.");
+    await l.zeg("Maak hier een grotere groep dan {2:blauw}.", "Tik op {5:geel} lege plekjes.");
     await tikVakjes(l, v, "rechts", 5);
     v.pas({ aantallen: true });
-    await l.zeg("Perfect.", `Je liet zien: ${zin(2, "<", 5)}.`);
+    await l.zeg("Perfect.", `Je liet zien: ${zin(2, "<", 5, "blauw", "geel")}.`);
     await l.verder();
 
     /* 4. Groter dan. */
@@ -1034,14 +1048,14 @@ const tekens: Lesdraaiboek = {
     await l.zeg("En als laatste dit teken.", "Het heet *is groter dan*.", "Je gebruikt het als links meer is dan rechts.");
     await l.verder();
     v.pas({ stip: "groot" });
-    await l.zeg("Kijk: de stipjes staan bij de grote kant.", "Zet hier een grotere groep neer.", "Tik op {3} lege plekjes.");
+    await l.zeg("Kijk: de stipjes staan bij de grote kant.", "Zet hier een grotere groep neer.", "Tik op {3:blauw} lege plekjes.");
     v.pas({ tik: "beide" });
     for (;;) {
-      const m = await wachtOp(l, ["vakje"], ["Tik op {3} lege plekjes aan de grote kant."]);
+      const m = await wachtOp(l, ["vakje"], ["Tik op {3:blauw} lege plekjes aan de grote kant."]);
       if (m.rechts > 0) {
         v.pas({ tik: null });
         v.potjes(onderaan(m.links, "blauw", 3), leeg(3), { teken: ">", stip: "groot" });
-        await l.zeg("Ah, je tikte aan de andere kant.", "We kijken nu alleen naar de grote kant.", "Tik aan deze kant op {3} plekjes.");
+        await l.zeg("Ah, je tikte aan de andere kant.", "We kijken nu alleen naar de grote kant.", "Tik aan deze kant op {3:blauw} plekjes.");
         if (m.links === 3) break;
         v.pas({ tik: "beide" });
         continue;
@@ -1055,10 +1069,10 @@ const tekens: Lesdraaiboek = {
     }
     v.pas({ tik: null, stip: "klein" });
     v.golf("links");
-    await l.zeg("Aan de kleine kant zet je de kleinste groep.", "Tik hier op {1} plekje.");
+    await l.zeg("Aan de kleine kant zet je de kleinste groep.", "Tik hier op {1:geel} plekje.");
     await tikVakjes(l, v, "rechts", 1);
     v.pas({ aantallen: true });
-    await l.zeg("Heel goed.", `Je liet zien: ${zin(3, ">", 1)}.`);
+    await l.zeg("Heel goed.", `Je liet zien: ${zin(3, ">", 1, "blauw", "geel")}.`);
     await l.verder();
 
     /* 5. Zelf of nog eens? */
@@ -1067,13 +1081,13 @@ const tekens: Lesdraaiboek = {
     if (keuze !== "Zelf doen") {
       await l.zeg("Goed, we kijken nog één keer.");
       v.potjes(onderaan(3, "blauw", 3), onderaan(3, "geel", 3), { teken: "=", aantallen: true });
-      await l.zeg(`${zin(3, "=", 3)}.`, "Aan beide kanten evenveel.");
+      await l.zeg(`${zin(3, "=", 3, "blauw", "geel")}.`, "Aan beide kanten evenveel.");
       await l.verder();
       v.potjes(onderaan(2, "blauw", 3), onderaan(5, "geel", 3), { teken: "<", aantallen: true, stip: "klein" });
-      await l.zeg(`${zin(2, "<", 5)}.`, "De kleine kant wijst naar de kleinste groep.");
+      await l.zeg(`${zin(2, "<", 5, "blauw", "geel")}.`, "De kleine kant wijst naar de kleinste groep.");
       await l.verder();
       v.potjes(onderaan(3, "blauw", 3), onderaan(1, "geel", 3), { teken: ">", aantallen: true, stip: "klein" });
-      await l.zeg(`${zin(3, ">", 1)}.`, "De kleine kant wijst weer naar de kleinste groep.");
+      await l.zeg(`${zin(3, ">", 1, "blauw", "geel")}.`, "De kleine kant wijst weer naar de kleinste groep.");
       await l.verder();
       await l.zeg("Nu probeer je het zelf.");
     } else {
@@ -1122,7 +1136,7 @@ const tekens: Lesdraaiboek = {
           laatste = { links: m.links, rechts: m.rechts };
           v.pas({ tik: null, vink: false, aantallen: true, stip: null });
           v.golf("midden");
-          await l.zeg("Precies.", `${zin(m.links, tk, m.rechts)}.`);
+          await l.zeg("Precies.", `${zin(m.links, tk, m.rechts, "blauw", "geel")}.`);
           break;
         }
         fouten++;
@@ -1137,7 +1151,7 @@ const tekens: Lesdraaiboek = {
           /* 3× niet gelukt: Bliepo doet het voor, zodat de les niet vastloopt. */
           const [x, y] = tk === ">" ? [3, 1] : [2, rijen > 3 ? 6 : 4];
           v.potjes(onderaan(x, "blauw", rijen), onderaan(y, "geel", rijen), { teken: tk, aantallen: true, stip: "klein" });
-          await l.zeg("Ik doe het even voor.", `${zin(x, tk, y)}.`, "De kleine kant wijst naar de kleinste groep.");
+          await l.zeg("Ik doe het even voor.", `${zin(x, tk, y, "blauw", "geel")}.`, "De kleine kant wijst naar de kleinste groep.");
           await l.verder();
           laatste = { links: x, rechts: y };
           break;
@@ -1167,7 +1181,7 @@ const tekens: Lesdraaiboek = {
           await l.wacht(400);
           v.potjes(onderaan(re, "blauw", rijen), onderaan(re, "geel", rijen), { teken: "=", aantallen: true, overgang: "zak" });
           v.golf("midden");
-          await l.zeg("Bingo!", `Met {${nodig}} ${vliegjes(nodig)} erbij zijn de groepen gelijk.`);
+          await l.zeg("Bingo!", `Met ${getal(nodig, "blauw")} ${vliegjes(nodig)} erbij zijn de groepen gelijk.`);
           await l.verder();
           return;
         }
@@ -1179,13 +1193,13 @@ const tekens: Lesdraaiboek = {
         if (x === null || poging >= 2) {
           v.pas({ keuzes: null, weetniet: false });
           v.potjes(onderaan(re, "blauw", rijen), onderaan(re, "geel", rijen), { teken: "=", aantallen: true, overgang: "zak" });
-          await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", `Er ${nodig === 1 ? "moet" : "moeten"} er {${nodig}} bij.`, `{${li}} en {${nodig}} is samen {${re}}.`, ...(opnieuw ? ["Dat zien we later."] : []));
+          await l.zeg(x === null ? "Geen zorgen." : "Kijk maar.", `Er ${nodig === 1 ? "moet" : "moeten"} er ${getal(nodig, "blauw")} bij.`, `${getal(li, "blauw")} en ${getal(nodig, "blauw")} is samen ${getal(re, "blauw")}.`, ...(opnieuw ? ["Dat zien we later."] : []));
           await l.verder();
           if (opnieuw) v.later.push(() => erbij(li, re, false));
           return;
         }
         v.pas({ keuzes: null, weetniet: false });
-        await l.zeg(linksRechts(li, re), "Kijk nog eens hoeveel er links mist.");
+        await l.zeg(linksRechts(li, re, "blauw", "geel"), "Kijk nog eens hoeveel er links mist.");
         v.pas({ keuzes: opties, uit: [...uit], weetniet: true });
       }
     };

@@ -261,7 +261,7 @@ function BolIcoon() {
     <svg viewBox="0 0 52 52" aria-hidden>
       <circle cx={26} cy={26} r={23} fill="rgba(110,90,230,0.85)" stroke="#e6deff" strokeWidth={2.5} />
       {Array.from({ length: 10 }, (_, i) => (
-        <circle key={i} cx={26 + ((i % 5) - 2) * 8} cy={i < 5 ? 21 : 31} r={2.8} fill="#fff3c0" />
+        <polygon key={i} points={sterPunten(26 + ((i % 5) - 2) * 8, i < 5 ? 21 : 31, 3.8)} fill="#fff3c0" strokeLinejoin="round" />
       ))}
     </svg>
   );
@@ -339,13 +339,43 @@ export function SterMachine({ aantal, knoppen, actief = false, wissen = false, h
   );
 }
 
-/** Voor de kaart aan het eind: een lichtbol als SVG (244 × 190). */
+/** De punten van een ster met vijf punten (zelfde vorm als `sterPad`), voor SVG. */
+function sterPunten(cx: number, cy: number, r: number) {
+  return Array.from({ length: 10 }, (_, j) => {
+    const hoek = -Math.PI / 2 + (j * Math.PI) / 5;
+    const rr = j % 2 === 0 ? r : r * 0.46;
+    return `${(cx + rr * Math.cos(hoek)).toFixed(1)},${(cy + rr * Math.sin(hoek)).toFixed(1)}`;
+  }).join(" ");
+}
+
+/** Voor de kaart aan het eind: één ster als SVG (zoals `tekenSter`: licht hart, witte rand). */
+export function KaartSter({ x, y, r, kleur = "#ffd76e" }: { x: number; y: number; r: number; kleur?: string }) {
+  return <polygon points={sterPunten(x, y, r)} fill={kleur} stroke="#ffffff" strokeWidth={Math.max(1, r * 0.12)} strokeLinejoin="round" />;
+}
+
+/** Voor de kaart aan het eind: een lichtbol als SVG (244 × 190), met tien sterren zoals in de les. */
 export function KaartLichtbol({ x = 122, y = 95, r = 60 }: { x?: number; y?: number; r?: number }) {
+  const stap = r * 0.36;
   return (
     <g>
-      <circle cx={x} cy={y} r={r} fill="rgba(110,90,230,0.85)" stroke="#e6deff" strokeWidth={3} />
+      <circle cx={x} cy={y} r={r} fill="rgba(110,90,230,0.85)" stroke="#e6deff" strokeWidth={Math.max(2, r * 0.05)} />
       {Array.from({ length: 10 }, (_, i) => (
-        <circle key={i} cx={x + ((i % 5) - 2) * r * 0.34} cy={y + (i < 5 ? -1 : 1) * r * 0.22} r={r * 0.1} fill="#fff3c0" />
+        <KaartSter key={i} x={x + ((i % 5) - 2) * stap} y={y + (i < 5 ? -1 : 1) * stap * 0.62} r={r * 0.17} kleur="#ffe79a" />
+      ))}
+    </g>
+  );
+}
+
+/** Voor de kaart aan het eind: een sterrenbeeld van tien (2 × 5 sterren in een dun lichtkader), `x`/`onder` = linkerkolom, onderste rij. */
+export function KaartSterrenbeeld({ x, onder, stap = 24, aantal = 10, kleur = "#ffe79a", kader = true }: { x: number; onder: number; stap?: number; aantal?: number; kleur?: string; kader?: boolean }) {
+  const r = stap * 0.42;
+  return (
+    <g>
+      {kader && (
+        <rect x={x - stap * 0.6} y={onder - stap * 4.6} width={stap * 2.2} height={stap * 5.2} rx={stap * 0.4} fill="rgba(60,40,150,0.3)" stroke="rgba(215,205,255,0.8)" strokeWidth={2} />
+      )}
+      {Array.from({ length: aantal }, (_, i) => (
+        <KaartSter key={i} x={x + (i % 2) * stap} y={onder - Math.floor(i / 2) * stap} r={r} kleur={kleur} />
       ))}
     </g>
   );

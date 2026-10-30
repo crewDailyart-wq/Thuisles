@@ -78,4 +78,10 @@ next-env.d.ts
 
 # Verslagen van het maken van de stem (28 okt 2026): horen bij de laptop, niet in Git.
 /data/stem-lessen*
+/data/stem-ontbreekt.json
 /data/controle-goed.json
+
+# Analyse van Squla (30 okt 2026): alleen op de laptop, net als SYNTHESIS-ANALYSE.
+/SQULA-ANALYSE/
+/SQULA-OVERZICHT.md
+/SQULA-VOORTGANG.md

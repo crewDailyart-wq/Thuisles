@@ -579,7 +579,7 @@ async function spel(l: Lesgids, later: [number, number][]): Promise<void> {
     await lijnSom(l, a, b, ["Deze kwam net al.", `Wat is het verschil tussen {${a}} en {${b}}?`], { van: 0, tot: Math.max(5, a), extra: { kristallen: lampjes, lampjesTotaal: totaal } });
     await l.zeg("Ja.", `Het verschil is {${a - b}}.`);
   }
-  await l.zeg(lampjes === totaal ? "Alle lampjes branden!" : lampjes === 1 ? "Er brandt {1} lampje." : `Er branden {${lampjes}} lampjes.`);
+  await l.zeg(lampjes === totaal ? "Alle lampjes branden!" : lampjes === 1 ? "Er brandt {1:geel} lampje." : `Er branden {${lampjes}:geel} lampjes.`);
   await l.verder();
 }
 

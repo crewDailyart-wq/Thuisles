@@ -260,7 +260,8 @@ export function VerhaalBord(p: VerhaalProps & Vlakbasis) {
 
   const regels: ReactNode[] = [];
   zinnen.slice(0, zichtbaar).forEach((zin, i) => {
-    if (stippelVoor === i) regels.push(<div key={`stip-${i}`} className={s.stippel} />);
+    /* Geen stippellijn meer tussen het verhaal en de vraag (30 oktober 2026, opdracht eigenaar). */
+    void stippelVoor;
     const kleur =
       flitsZin === i || vraagZin === i ? s.roze : groeneZin === i ? s.groen : "";
     const delen = knip(zin);
@@ -329,11 +330,11 @@ export function VerhaalBord(p: VerhaalProps & Vlakbasis) {
     });
     regels.push(
       tik === "zin" ? (
-        <button key={i} type="button" className={`${s.zin} ${s.zinTik} ${kleur}`} onClick={() => meld({ soort: "zin", i })}>
+        <button key={i} type="button" className={`verhaal-zin ${s.zin} ${s.zinTik} ${kleur}`} onClick={() => meld({ soort: "zin", i })}>
           {stukken}
         </button>
       ) : (
-        <div key={i} className={`${s.zin} ${kleur}`}>
+        <div key={i} className={`verhaal-zin ${s.zin} ${kleur}`}>
           {stukken}
         </div>
       ),
@@ -357,7 +358,7 @@ export function VerhaalBord(p: VerhaalProps & Vlakbasis) {
 
   return (
     <div className={`${s.bord} ${krijt.className}`}>
-      <div className={`${s.verhaal} ${midden ? s.midden : ""}`}>{regels}</div>
+      <div className={`verhaal-tekst ${s.verhaal} ${midden ? s.midden : ""}`}>{regels}</div>
 
       {plaatjes && !midden && (
         <div className={s.plaatjes}>

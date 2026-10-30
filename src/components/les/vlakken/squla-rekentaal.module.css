@@ -1,0 +1,139 @@
+/*
+  Rekentaal in de keuken en bij de picknick (30 oktober 2026). Maten in punten
+  van het vlak (980 × 720). De voorwerpen zijn zelf de antwoordknoppen.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+}
+
+.achter {
+  position: absolute;
+  left: 0;
+  top: 0;
+  pointer-events: none;
+}
+
+/* De weegschaal kantelt rustig naar de zware kant. */
+.balk,
+.schaal {
+  transition: transform 0.9s cubic-bezier(0.35, 0.1, 0.25, 1.2);
+}
+
+.ding {
+  position: absolute;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  background: none;
+  border-radius: 22px;
+  outline: 6px solid transparent;
+  outline-offset: 6px;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+  transition:
+    left 0.45s ease,
+    top 0.45s ease,
+    outline-color 0.2s ease;
+  animation: erin 0.3s ease-out both;
+}
+
+.ding svg {
+  display: block;
+  overflow: visible;
+}
+
+.ding[data-actief="ja"] {
+  cursor: pointer;
+}
+
+.ding[data-actief="ja"]:hover {
+  transform: translateY(-3px);
+}
+
+.ding:focus-visible {
+  outline: 4px dashed #ffffff;
+}
+
+/* Bliepo wijst dit voorwerp aan: een vlakke gele ring. */
+.ding[data-markeer="ja"] {
+  outline-color: #ffc845;
+}
+
+/* Goed gekozen: een groene ring en een klein sprongetje. */
+.ding[data-goed="ja"] {
+  outline-color: #7ee0b3;
+  animation: wip 0.45s ease-out;
+}
+
+.op_weegschaal {
+  transition:
+    top 0.9s cubic-bezier(0.35, 0.1, 0.25, 1.2),
+    outline-color 0.2s ease;
+}
+
+.wiebel {
+  display: block;
+  animation: wiebel 0.5s ease-in-out;
+}
+
+.stil {
+  display: block;
+}
+
+@keyframes erin {
+  from {
+    opacity: 0;
+    transform: scale(0.85);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes wip {
+  0% {
+    transform: none;
+  }
+  40% {
+    transform: translateY(-14px);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes wiebel {
+  0%,
+  100% {
+    transform: none;
+  }
+  20% {
+    transform: translateX(-10px) rotate(-3deg);
+  }
+  45% {
+    transform: translateX(9px) rotate(3deg);
+  }
+  70% {
+    transform: translateX(-5px) rotate(-1deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ding,
+  .ding[data-goed="ja"],
+  .wiebel {
+    animation: none;
+  }
+  .ding,
+  .op_weegschaal,
+  .balk,
+  .schaal {
+    transition: none;
+  }
+  .ding[data-actief="ja"]:hover {
+    transform: none;
+  }
+}

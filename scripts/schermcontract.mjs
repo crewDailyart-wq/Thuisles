@@ -481,6 +481,14 @@ export const SCHERMCONTRACT = [
     zichtbaar: ["Gesprek met Bliepo", "Start het gesprek", "Woorden oplichten", "Tik om iets te zeggen"],
   },
   {
+    /* Kies een stijl (30 oktober 2026, opdracht eigenaar): per onderdeel varianten A t/m D, Opslaan en Bekijk als kind. */
+    naam: "Beheer: Kies een stijl",
+    pad: "/admin/kies-stijl",
+    bron: ["src/app/admin/kies-stijl/page.tsx", "src/components/beheer/KiesStijl.tsx", "src/lib/stijl-varianten.ts"],
+    /* Sinds 30 okt 2026 (opdracht eigenaar) alleen de tekst boven Bliepo; de verhaaltekst en de meerkeuzeknoppen staan er niet meer op. */
+    zichtbaar: ["Kies een stijl", "Opslaan", "Bekijk als kind", "Speel af", "Lettertype en kleur van de tekst boven Bliepo", "Hoe de tekst boven Bliepo oplicht bij voorlezen en aantikken", "Hoeveel tekst er tegelijk oplicht boven Bliepo"],
+  },
+  {
     /* Stijlkiezer (24 oktober 2026, opdracht eigenaar): lettertype, kleuren en knopvorm van de nieuwe onderdelen. */
     naam: "Beheer: Stijl",
     pad: "/admin/stijl",

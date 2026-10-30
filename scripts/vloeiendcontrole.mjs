@@ -60,6 +60,17 @@ if (existsSync(LIJSTJES)) {
     }
   }
 }
+/*
+  Alleen lessen die gepubliceerd zijn (30 oktober 2026, HARDE REGEL 8): een les op
+  concept wordt niet gemeten. Schermen die geen les zijn (het proefje), blijven.
+  De nieuwe lessen naar Squla (squla-…, sinds 30 oktober 2026) worden altijd
+  gemeten: ze staan nog niet in de database, maar zijn geen oude opdrachten.
+*/
+{
+  const { gepubliceerdeLessen } = await import("./lessenkeuze.mjs");
+  const pub = gepubliceerdeLessen();
+  if (pub) SCHERMEN.splice(0, SCHERMEN.length, ...SCHERMEN.filter((x) => { const m = /\/voorbeeld\/les\/([a-z0-9-]+)/.exec(x.pad); return !m || pub.includes(m[1]) || m[1].startsWith("squla-"); }));
+}
 /* Alleen bepaalde schermen meten: ALLEEN=<stukje van het pad>[,<nog een>] (bijvoorbeeld tijdens het bouwen). */
 if (process.env.ALLEEN) SCHERMEN.splice(0, SCHERMEN.length, ...SCHERMEN.filter((x) => process.env.ALLEEN.split(",").some((a) => x.pad.includes(a))));
 

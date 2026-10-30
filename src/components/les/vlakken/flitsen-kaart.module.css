@@ -1,3 +1,4 @@
+/* 30 oktober 2026 (opdracht eigenaar): antwoordknoppen wit met zwarte tekst, net als in het lesscherm. */
 /*
   Het flitskaartvenster (oktober 2026), naar Synthesis "Flashcards": een
   donkerpaars venster met een stapel kaarten, een invulvak, tien bolletjes
@@ -239,8 +240,8 @@
   cursor: pointer;
 }
 .rond:disabled {
-  background: #2b2f3b;
-  color: #6b7280;
+  background: rgba(255, 255, 255, 0.35);
+  color: #4b5563;
   cursor: default;
 }
 .weetniet {
@@ -248,8 +249,8 @@
   padding: 0 18px;
   border: 0;
   border-radius: 8px;
-  background: #2b2f3b;
-  color: #d6d8e1;
+  background: #ffffff;
+  color: #111111;
   font: inherit;
   font-size: 15px;
   cursor: pointer;

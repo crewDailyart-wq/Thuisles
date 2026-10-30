@@ -39,6 +39,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { huidigKind } from "@/lib/auth/sessie";
 import { verbinding } from "@/lib/db/sqlite";
 import {
+  keuzeUitStukjes,
   instellingen,
   leesMislukt,
   leesTeller,
@@ -111,6 +112,15 @@ export async function GET(request: NextRequest) {
   if (!zin || zin.length > MAX_LENGTE) return NextResponse.json({ fout: "Geen geldige zin." }, { status: 400 });
 
   const profiel = profielVoor(await groepVan(params.get("groep")));
+
+  /* Een antwoordkeuze: alleen bewaard geluid (heel, of uit losse stukjes), nooit iets nieuws (30 oktober 2026). */
+  if (params.has("keuze")) {
+    const keuze = await keuzeUitStukjes(zin, profiel);
+    if (keuze) return mp3(keuze, request);
+    void noteerNieuweZin(zin);
+    return NextResponse.json({ nietBewaard: true }, { status: 404, headers: { "Cache-Control": "no-store" } });
+  }
+
   if (!instellingen(profiel)) return NextResponse.json({ fout: "Geen stem ingesteld." }, { status: 503 });
 
   /*
@@ -155,6 +165,11 @@ export async function POST(request: NextRequest) {
   const body = await request.json().catch(() => null);
 
   /* Alleen wat vooraf klaar moet staan, en alleen wat nog ontbreekt (23 oktober 2026). */
+  /* De gedeelde zinnen (goed, fout, aanmoediging, begroeting, hulp), voor scripts/stemlessen.mjs (30 oktober 2026). */
+  if (body?.actie === "gedeeld") {
+    return NextResponse.json({ zinnen: [...new Set([...VASTE_ZINNEN, ...alleBegroetingen(), ...alleHintZinnen()])] });
+  }
+
   if (body?.actie === "vooraf") {
     return NextResponse.json(maakVooraf([...VASTE_ZINNEN, ...alleBegroetingen(), ...alleHintZinnen()], profielenVanKinderen()));
   }

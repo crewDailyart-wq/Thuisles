@@ -51,6 +51,19 @@
 | Vloeiend (regel 7) | alle 50 Phaser-schermen vloeiend; openen alleen op de echte site meetbaar |
 | Stem en geluiden aanwezig | alle zinnen en alle 29 geluidjes aanwezig |
 
+## Oude opdrachten: op concept, klaar om door Sara verwijderd te worden (30 oktober 2026)
+
+"Oude" zijn alleen de opdrachten en lessen van vóór 27 oktober 2026. Die staan op concept (al sinds 27 oktober). Alle 59 groep 3-lessen die sinds 27 oktober gemaakt zijn, staan online en op de laptop op gepubliceerd: Getallen, Splitsen, Optellen, Aftrekken, Tijd en Verhaaltjessommen, inclusief de 10 in Synthesis-stijl. Er is niets verwijderd.
+
+- **Reservekopieën:** van vóór elke statuswijziging in `backups/` (laptop `thuisles-voor-*.db`, online `online-voor-wijziging-2026-10-30-*.db`).
+
+**Wat er bij de oude opdrachten hoort (verwijder Sara zelf; Claude doet dit niet):**
+- **Database:** ongeveer 13.200 regels in de tabel `vragen` op concept (de oude opdrachten), met de leerdoelen, subdomeinen en sjablonen waar ze onder hangen.
+- **Stem (audio):** op de laptop `data/stem/` (188 MB) en online `/data/stem` (70 MB), voor een groot deel zinnen van oude opdrachten. De stem van de 59 lessen staat sinds 30 oktober in de site zelf (`public/stem`) en blijft.
+- **Afbeeldingen:** laptop `public/vragen/` (51 MB), online `/data/vragen` (52 MB).
+- **Godot-spelletjes:** laptop `public/godot/` (190 MB), online `/data/godot` (191 MB).
+- **Online opslagschijf:** stem, afbeeldingen en Godot samen ongeveer **313 MB** van de 390 MB die nu gebruikt is, plus de reservekopie `/data/reservekopie.db` (38 MB).
+
 ## Online
 
 - **Staat online** sinds 29 oktober 2026, 22:20: https://thuisles-production.up.railway.app (versie a0b4de4).

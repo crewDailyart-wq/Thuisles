@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kenney 2D: voorbeeld</title>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #0b1e5c; color: #fff; }
+  section { position: relative; padding: 26px 16px 34px; overflow: hidden; }
+  section > * { position: relative; z-index: 1; }
+  h2 { margin: 0 0 6px; font-size: 21px; }
+  p { margin: 0 0 14px; opacity: .9; max-width: 900px; line-height: 1.4; }
+  .kamer { background: url(/assets/bliepo/achtergrond-opdracht/liggend-1280.webp) center/cover; }
+  .nacht::before { content: ""; position: absolute; inset: 0; background: rgba(3, 8, 35, .72); z-index: 0; }
+  .licht::before { content: ""; position: absolute; left: 50%; top: 60%; width: 1100px; height: 460px; transform: translate(-50%, -50%);
+    background: radial-gradient(ellipse at center, rgba(255, 244, 214, .5) 0%, rgba(255, 236, 190, .22) 40%, rgba(255, 236, 190, 0) 70%); z-index: 0; }
+
+  .straat { position: relative; height: 330px; max-width: 1060px; }
+  .maan { position: absolute; right: 70px; top: 0; width: 90px; filter: drop-shadow(0 0 22px rgba(251, 233, 183, .6)); }
+  .weg { position: absolute; left: 0; right: 0; bottom: 0; height: 52px; background: #2b3352; border-top: 6px solid #4a5478; }
+  .weg::after { content: ""; position: absolute; left: 0; right: 0; top: 22px; height: 6px; background: repeating-linear-gradient(90deg, #c9cfdf 0 60px, transparent 60px 110px); opacity: .7; }
+  .huizen { position: absolute; left: 34px; bottom: 56px; display: flex; gap: 26px; align-items: flex-end; }
+  .huis { position: relative; }
+  .huis img { position: absolute; display: block; }
+  .nummer { position: absolute; z-index: 2; left: 50%; transform: translateX(-50%); bottom: 42%; min-width: 40px; padding: 1px 7px; text-align: center; border-radius: 10px;
+    background: #fff7ea; color: #1c2a4a; font-weight: 900; font-size: 22px; border: 3px solid #ffc85a; box-shadow: 0 0 16px 4px rgba(255, 200, 90, .7); }
+  .deco { position: absolute; bottom: 56px; filter: brightness(.75); }
+
+  .rij { display: flex; flex-wrap: wrap; gap: 30px 46px; align-items: flex-end; }
+  .groep { display: flex; flex-direction: column; align-items: center; gap: 8px; }
+  .samen { display: flex; gap: 16px; align-items: flex-end; min-height: 120px; }
+  .samen img { display: block; filter: drop-shadow(0 8px 6px rgba(5, 20, 70, .35)); }
+  .label { background: rgba(255, 255, 255, .92); color: #14254f; font-weight: 800; border-radius: 10px; padding: 3px 10px; font-size: 15px; }
+  .mist { background: rgba(255, 255, 255, .14); border: 2px dashed rgba(255, 255, 255, .55); border-radius: 12px; padding: 10px 14px; max-width: 900px; margin-top: 22px; line-height: 1.45; }
+</style>
+</head>
+<body>
+
+<section class="kamer nacht">
+  <h2>Huisnummers: de straat 's nachts (2D, glow in the dark)</h2>
+  <p>Platte 2D-huizen van Kenney (Background Elements). Een donkere nacht met de maan, een warme gloed om elk huis en een gloeiend bordje met het huisnummer.</p>
+  <div class="straat">
+    <img class="maan" src="/squla/2d/moon.png" alt="">
+    <img class="deco" src="/squla/2d/tree.png" alt="" style="left:-6px;width:70px">
+    <div class="huizen" id="huizen"></div>
+    <img class="deco" src="/squla/2d/bush1.png" alt="" style="left:930px;width:70px">
+    <div class="weg"></div>
+  </div>
+</section>
+
+<section class="kamer licht">
+  <h2>Rekentaal: wat Kenney in 2D heeft (overdag, gewone blauwe ruimte)</h2>
+  <p>Platte 2D-spullen van Kenney (Generic Items). Geen gloed, geen donkere achtergrond, wel zacht warm licht erachter.</p>
+  <div class="rij">
+    <div class="groep"><div class="samen"><img src="/squla/2d/item-118.png" style="width:58px" alt=""><img src="/squla/2d/item-119.png" style="width:58px" alt=""></div><div class="label">glazen</div></div>
+    <div class="groep"><div class="samen"><img src="/squla/2d/item-126.png" style="width:70px" alt=""><img src="/squla/2d/item-126.png" style="width:44px" alt=""></div><div class="label">groot en klein</div></div>
+    <div class="groep"><div class="samen"><img src="/squla/2d/item-121.png" style="width:60px" alt=""></div><div class="label">beker</div></div>
+    <div class="groep"><div class="samen"><img src="/squla/2d/item-143.png" style="width:70px" alt=""></div><div class="label">tas</div></div>
+  </div>
+  <div class="mist">
+    <b>Eten heeft Kenney niet in 2D.</b> In de 2D-pakketten zitten geen pannenkoeken, appels, broden, meloenen, aardbeien, manden, spaghetti of weegschaal.
+    Alleen in een pixelpakket (kleine blokjesplaatjes) of in 3D, en 3D wil je niet.
+  </div>
+</section>
+
+<script>
+  /* Elk huisplaatje heeft rondom 80 pixels extra ruimte voor de gloed. */
+  const SCHAAL = 0.34, RAND = 80;
+  const HUIZEN = [["house1", "6"], ["houseAlt2", "7"], ["house2", "?"], ["houseAlt1", "9"], ["house1", "10"]];
+  const rij = document.getElementById("huizen");
+  for (const [n, nr] of HUIZEN) {
+    const d = document.createElement("div"); d.className = "huis";
+    const img = new Image(); img.alt = ""; img.src = `/squla/2d/${n}.png`;
+    img.onload = () => {
+      const w = (img.naturalWidth - 2 * RAND) * SCHAAL, h = (img.naturalHeight - 2 * RAND) * SCHAAL;
+      d.style.width = w + "px"; d.style.height = h + "px";
+      img.style.width = img.naturalWidth * SCHAAL + "px"; img.style.left = -RAND * SCHAAL + "px"; img.style.bottom = -RAND * SCHAAL + "px";
+    };
+    const b = document.createElement("div"); b.className = "nummer"; b.textContent = nr;
+    d.append(img, b); rij.append(d);
+  }
+</script>
+</body>
+</html>

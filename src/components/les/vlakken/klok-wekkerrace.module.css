@@ -1,3 +1,4 @@
+/* 30 oktober 2026 (opdracht eigenaar): antwoordknoppen wit met zwarte tekst, net als in het lesscherm. */
 /*
   Versla de wekker (oktober 2026): het tempospel na de klokkenlessen.
   Het vlak is 980 × 720 punten.
@@ -58,8 +59,8 @@
   color: #ffffff;
 }
 .klaarknop {
-  background: #2b2f3b;
-  color: #d6d8e1;
+  background: #ffffff;
+  color: #111111;
 }
 .start:disabled,
 .klaarknop:disabled {
@@ -203,8 +204,8 @@
   padding: 18px 20px;
   border: 0;
   border-radius: 14px;
-  background: #2b2f3b;
-  color: #ffffff;
+  background: #ffffff;
+  color: #111111;
   font: inherit;
   font-size: 30px;
   font-weight: 700;

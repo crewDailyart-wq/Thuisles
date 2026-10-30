@@ -125,7 +125,7 @@ async function telVraag(l: Lesgids, vakjes: (Kleur | null)[], kleuren: Kleur[], 
     kr(l, { cijferMarkering: { n: x, kleur } });
     if (x === n) {
       if (samenBijGoed) {
-        await l.zeg(`{${n}}?`, "We tellen samen, vanaf {0}.");
+        await l.zeg(`{${n}:${kleur}}?`, "We tellen samen, vanaf {0}.");
         await telSamen(l, vakjes, kleuren, { cijfers: true });
         await l.zeg("Zie je wel?", "Je had het precies goed.");
         await l.verder();
@@ -149,7 +149,7 @@ async function telVraag(l: Lesgids, vakjes: (Kleur | null)[], kleuren: Kleur[], 
     } else {
       await l.zeg(`{${x}} ${x === 1 ? wat.replace(/vakjes$/, "vakje") : wat}?`, "We tellen ze samen.");
       await telSamen(l, vakjes, kleuren, { tot: x, cijfers: true });
-      await l.zeg("Ah, er zijn er nog over.", `Dus het zijn er meer dan {${x}}.`);
+      await l.zeg("Ah, er zijn er nog over.", `Dus het zijn er meer dan {${x}${kleuren.length === 1 ? `:${kleur}` : ""}}.`);
       await l.verder();
     }
     kr(l, { nummers: {}, cijferMarkering: null, fel: kleuren });
@@ -739,7 +739,7 @@ export const kleurenTellenOud: Lesdraaiboek = {
       if (n === 4) return null;
       if (n === 0) return ["Tik op de lege vakjes.", "Dan worden ze paars."];
       if (n > 4) return ["Dat zijn er te veel.", "Tik op een vakje om het weer leeg te maken."];
-      return ["Dat zijn er nog te weinig.", `Je hebt er nu {${n}}.`, "Tik op een leeg vakje."];
+      return ["Dat zijn er nog te weinig.", `Je hebt er nu {${n}:paars}.`, "Tik op een leeg vakje."];
     });
     await l.zeg("Goed zo.", "{4} *paarse* vakjes.");
     await l.verder();
@@ -760,8 +760,8 @@ export const kleurenTellenOud: Lesdraaiboek = {
         if (n !== doel) {
           return [
             `Kijk nog eens naar de *${BIJ[k]}* vakjes.`,
-            `Je hebt er nu {${n}}.`,
-            `Er moeten er {${doel}} zijn.`,
+            `Je hebt er nu {${n}:${k}}.`,
+            `Er moeten er {${doel}:${k}} zijn.`,
             n > doel ? "Tik op een vakje om het weer leeg te maken." : "Kies de verf en tik op een leeg vakje.",
           ];
         }

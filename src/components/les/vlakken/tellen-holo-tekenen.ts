@@ -136,19 +136,67 @@ export function tekenKwal(c: CanvasRenderingContext2D, kleur: string) {
 
 /* ---------- parels en plekken ---------- */
 
-/** Een parel, 64 × 64 punten (straal 27). */
-export function tekenParel(c: CanvasRenderingContext2D) {
-  const g = c.createRadialGradient(24, 22, 3, 32, 32, 29);
-  g.addColorStop(0, "#ffffff");
-  g.addColorStop(0.45, "#e9fbff");
-  g.addColorStop(1, "#8fd8ef");
+/**
+ * Een parel: rond, parelmoerwit met een zachte roze/blauwe glans, een wit
+ * glimpuntje linksboven en een iets donkerder rand. Eén tekening voor alle
+ * lessen (zelfde ding = zelfde plaatje). Standaard 64 × 64 punten (straal 27);
+ * `d` = de maat van het plaatje. Met `tint` krijgt de parel die kleur (voor
+ * parels die per getal gekleurd zijn), mét dezelfde glans en het glimpuntje.
+ */
+export function tekenParel(c: CanvasRenderingContext2D, d = 64, tint?: string) {
+  const m = d / 2;
+  const r = d * 0.42;
+  /* lijf: licht linksboven, naar de rand toe iets dieper */
+  const g = c.createRadialGradient(m - r * 0.3, m - r * 0.35, r * 0.08, m, m, r);
+  if (tint) {
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(0.4, lichter(tint, 0.6));
+    g.addColorStop(0.85, tint);
+    g.addColorStop(1, lichter(tint, 0.15));
+  } else {
+    g.addColorStop(0, "#ffffff");
+    g.addColorStop(0.4, "#f7f3f5");
+    g.addColorStop(0.8, "#e2dde8");
+    g.addColorStop(1, "#c9c3d6");
+  }
   c.fillStyle = g;
   c.beginPath();
-  c.arc(32, 32, 27, 0, Math.PI * 2);
+  c.arc(m, m, r, 0, Math.PI * 2);
   c.fill();
-  c.strokeStyle = "rgba(255,255,255,0.9)";
-  c.lineWidth = 1.5;
+  /* parelmoerglans: blauw linksonder, roze rechtsonder */
+  c.save();
+  c.beginPath();
+  c.arc(m, m, r, 0, Math.PI * 2);
+  c.clip();
+  const a = tint ? 0.22 : 0.35;
+  const blauw = c.createRadialGradient(m - r * 0.55, m + r * 0.35, 0, m - r * 0.55, m + r * 0.35, r * 0.75);
+  blauw.addColorStop(0, `rgba(160,205,255,${a})`);
+  blauw.addColorStop(1, "rgba(160,205,255,0)");
+  c.fillStyle = blauw;
+  c.fillRect(0, 0, d, d);
+  const roze = c.createRadialGradient(m + r * 0.45, m + r * 0.5, 0, m + r * 0.45, m + r * 0.5, r * 0.8);
+  roze.addColorStop(0, `rgba(255,185,215,${a})`);
+  roze.addColorStop(1, "rgba(255,185,215,0)");
+  c.fillStyle = roze;
+  c.fillRect(0, 0, d, d);
+  c.restore();
+  /* iets donkerder rand */
+  c.strokeStyle = tint ? "rgba(20,20,50,0.28)" : "rgba(110,100,140,0.45)";
+  c.lineWidth = Math.max(1, d * 0.025);
+  c.beginPath();
+  c.arc(m, m, r - c.lineWidth / 2, 0, Math.PI * 2);
   c.stroke();
+  /* glimpuntje linksboven, met een zacht randje */
+  const hx = m - r * 0.36;
+  const hy = m - r * 0.4;
+  const hg = c.createRadialGradient(hx, hy, 0, hx, hy, r * 0.32);
+  hg.addColorStop(0, "rgba(255,255,255,1)");
+  hg.addColorStop(0.45, "rgba(255,255,255,0.95)");
+  hg.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = hg;
+  c.beginPath();
+  c.arc(hx, hy, r * 0.32, 0, Math.PI * 2);
+  c.fill();
 }
 
 /** Een lege parelplek: een gestippeld rondje, 64 × 64 punten. */
@@ -169,51 +217,75 @@ export function tekenPlek(c: CanvasRenderingContext2D) {
 /* ---------- de staande schelp (tienstrook) ---------- */
 
 /**
- * Een staande, open schelp met ruimte voor 2 × 5 parels. `b` × `h` punten.
- * Bovenaan de golvende rand van een sint-jakobsschelp, binnenin zachte ribbels.
+ * Een open oesterschelp met ruimte voor 2 × 5 parels. `b` × `h` punten.
+ * 30 oktober 2026 (opdracht eigenaar: het moet op een schelp lijken, niet op een
+ * bakje of vaas): een ronde, golvende, ruwe buitenrand met groeiringen, en binnenin
+ * glanzend parelmoer (roze, lila, lichtblauw) waar de parels in liggen. De parels
+ * liggen nog op dezelfde plekken.
  */
 export function tekenSchelp(c: CanvasRenderingContext2D, b: number, h: number, kleur = "#7fe9ff") {
-  const r = 34;
-  const pad = () => {
+  const mx = b / 2;
+  const my = h / 2;
+  /* een "afgeronde rechthoek-ovaal" (superellips), met een golvende rand */
+  const vorm = (schaal: number, golf: number) => {
+    const a = (b / 2 - 4) * schaal;
+    const r = (h / 2 - 4) * schaal;
     c.beginPath();
-    const golven = 6;
-    const w = (b - 8) / golven;
-    c.moveTo(4, 30);
-    for (let i = 0; i < golven; i++) c.quadraticCurveTo(4 + w * i + w / 2, 4, 4 + w * (i + 1), 30);
-    c.lineTo(b - 4, h - r);
-    c.quadraticCurveTo(b - 4, h - 4, b - r, h - 4);
-    c.lineTo(r, h - 4);
-    c.quadraticCurveTo(4, h - 4, 4, h - r);
+    const n = 3.4;
+    for (let i = 0; i <= 160; i++) {
+      const t = (i / 160) * Math.PI * 2;
+      const ct = Math.cos(t);
+      const st = Math.sin(t);
+      const w = 1 + golf * Math.sin(t * 14) + golf * 0.6 * Math.sin(t * 5 + 1);
+      const x = mx + a * w * Math.sign(ct) * Math.pow(Math.abs(ct), 2 / n);
+      const y = my + r * w * Math.sign(st) * Math.pow(Math.abs(st), 2 / n);
+      if (i === 0) c.moveTo(x, y);
+      else c.lineTo(x, y);
+    }
     c.closePath();
   };
-  pad();
-  c.fillStyle = "rgba(10,40,95,0.5)";
+  /* de ruwe buitenkant */
+  vorm(1, 0.022);
+  c.fillStyle = "rgba(20,50,110,0.62)";
   c.fill();
   c.save();
-  pad();
+  vorm(1, 0.022);
   c.clip();
-  /* ribbels vanuit de onderkant */
-  c.strokeStyle = "rgba(190,240,255,0.08)";
+  c.strokeStyle = "rgba(190,240,255,0.16)";
   c.lineWidth = 2;
-  for (let i = 0; i <= 8; i++) {
-    c.beginPath();
-    c.moveTo(b / 2, h + 40);
-    c.lineTo((b / 8) * i, 0);
-    c.stroke();
-  }
-  /* scanlijntjes */
-  c.strokeStyle = "rgba(190,240,255,0.05)";
-  c.lineWidth = 1;
-  for (let y = 0; y < h; y += 6) {
-    c.beginPath();
-    c.moveTo(0, y);
-    c.lineTo(b, y);
+  for (let k = 0.98; k > 0.91; k -= 0.025) {
+    vorm(k, 0.02);
     c.stroke();
   }
   c.restore();
-  pad();
+  vorm(1, 0.022);
   c.strokeStyle = kleur;
   c.lineWidth = 3;
+  c.stroke();
+  /* het parelmoer binnenin */
+  vorm(0.9, 0.008);
+  const moer = c.createLinearGradient(0, 0, b, h);
+  moer.addColorStop(0, "rgba(255,200,235,0.42)");
+  moer.addColorStop(0.35, "rgba(200,180,255,0.34)");
+  moer.addColorStop(0.7, "rgba(160,230,255,0.36)");
+  moer.addColorStop(1, "rgba(255,215,240,0.4)");
+  c.fillStyle = "rgba(15,45,105,0.7)";
+  c.fill();
+  c.fillStyle = moer;
+  c.fill();
+  /* glans: een zachte lichte streep */
+  c.save();
+  vorm(0.9, 0.008);
+  c.clip();
+  const glans = c.createRadialGradient(mx - b * 0.18, h * 0.22, 4, mx - b * 0.18, h * 0.22, b * 0.6);
+  glans.addColorStop(0, "rgba(255,255,255,0.35)");
+  glans.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = glans;
+  c.fillRect(0, 0, b, h);
+  c.restore();
+  vorm(0.9, 0.008);
+  c.strokeStyle = "rgba(255,230,250,0.65)";
+  c.lineWidth = 2;
   c.stroke();
 }
 
@@ -245,7 +317,7 @@ export function tekenBubbel(c: CanvasRenderingContext2D, d: number, kleur: strin
 /* ---------- gedeeld: alles één keer maken ---------- */
 
 export function maakParels(sc: Holo) {
-  sc.canvasPlaatje("tel-parel", 64, 64, tekenParel);
+  sc.canvasPlaatje("tel-parel", 64, 64, (c) => tekenParel(c));
   sc.bak("tel-parel", "tel-parel-g", 0xbff4ff);
   sc.canvasPlaatje("tel-plek", 64, 64, tekenPlek);
 }

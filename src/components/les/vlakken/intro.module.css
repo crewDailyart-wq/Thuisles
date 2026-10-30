@@ -1,3 +1,4 @@
+/* 30 oktober 2026 (opdracht eigenaar): antwoordknoppen wit met zwarte tekst, net als in het lesscherm. */
 /*
   De vlakken van de introductielessen (oktober 2026): "Jouw instellingen"
   (naar Synthesis "Customizing the Tutor") en "Zo werkt het" (naar
@@ -231,7 +232,8 @@
   place-items: center;
   border: 3px solid transparent;
   border-radius: 50%;
-  background: #2b2f3b;
+  background: #ffffff;
+  color: #111111;
   cursor: pointer;
 }
 .gezicht:hover:not(:disabled) {
@@ -290,8 +292,8 @@
   cursor: pointer;
 }
 .rond:disabled {
-  background: #2b2f3b;
-  color: #6b7280;
+  background: rgba(255, 255, 255, 0.35);
+  color: #4b5563;
   cursor: default;
 }
 

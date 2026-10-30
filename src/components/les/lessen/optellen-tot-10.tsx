@@ -1492,7 +1492,7 @@ async function drieSamen(l: Lesgids, vak: Werkvlak) {
   pas(l, { som: drieSom([], 7), somAan: null });
   await l.zeg("Kijk nu naar de som.", "Hoeveel getallen ontbreken er?");
   x = await l.getal();
-  await l.zeg(x === 3 ? "Ja." : "Tel de vakjes met een vraagteken: het zijn er {3}.", "We zoeken dus *drie* getallen.", "Samen moeten ze {7} zijn.");
+  await l.zeg(x === 3 ? "Ja." : "Tel de vakjes met een vraagteken: het zijn er {3:wit}.", "We zoeken dus *drie* getallen.", "Samen moeten ze {7} zijn.");
   await l.verder();
 
   vak.zet([{ omtrek: 7, stukken: [] }]);

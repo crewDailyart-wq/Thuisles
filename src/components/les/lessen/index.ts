@@ -17,6 +17,14 @@ import { LESSEN_KLOKKIJKEN } from "./klokkijken";
 import { LESSEN_VERHAALTJESSOMMEN } from "./verhaaltjessommen";
 import { LESSEN_FLITSEN } from "./flitsen";
 import { LESSEN_ZO_WERKT_HET } from "./zo-werkt-het";
+/* Nieuwe lessen naar Squla (30 oktober 2026): eerst 3 voorbeelden ter beoordeling. */
+import { LESSEN_SQULA_HUISNUMMERS } from "./squla-huisnummers";
+import { LESSEN_SQULA_REKENTAAL } from "./squla-rekentaal";
+import { LESSEN_SQULA_DAGEN } from "./squla-dagen";
+import { LESSEN_SQULA_GETALLENLIJN } from "./squla-getallenlijn";
+import { LESSEN_SQULA_TELLEN } from "./squla-tellen";
+import { LESSEN_SQULA_TIJD } from "./squla-tijd";
+import { LESSEN_SQULA_MEER_MINDER } from "./squla-meer-minder";
 
 export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_ZO_WERKT_HET,
@@ -34,6 +42,13 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_TIENTALLEN,
   ...LESSEN_OPTELLEN_TOT_100,
   ...LESSEN_FLITSEN,
+  ...LESSEN_SQULA_HUISNUMMERS,
+  ...LESSEN_SQULA_REKENTAAL,
+  ...LESSEN_SQULA_DAGEN,
+  ...LESSEN_SQULA_GETALLENLIJN,
+  ...LESSEN_SQULA_TELLEN,
+  ...LESSEN_SQULA_TIJD,
+  ...LESSEN_SQULA_MEER_MINDER,
 ];
 
 export function zoekDraaiboek(id: string): Lesdraaiboek | null {

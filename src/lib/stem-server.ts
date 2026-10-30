@@ -698,8 +698,19 @@ export function zonderNaam(zin: string, naam: string): string | null {
     .trim();
 }
 
+/*
+  De audio in de site zelf (30 oktober 2026, opdracht eigenaar): public/stem, met
+  de site meegebouwd, zodat de online opslagschijf niet voller wordt. Naam = hash
+  van groepsprofiel + zin. scripts/stem-naar-site.mjs vult de map; staat een zin
+  daar niet, dan wordt nog op de schijf (data/stem) gekeken.
+*/
+const SITE_MAP = path.join(process.cwd(), "public", "stem");
+export const siteNaam = (zin: string, profiel: Profiel) => createHash("sha256").update(`${profiel}\n${zin}`).digest("hex").slice(0, 32);
+
 /** De zin zoals hij al met de hoofdstem (Ruth) bewaard is, of null. Maakt niets nieuws. */
 export async function bewaardeZin(zin: string, profiel: Profiel): Promise<Buffer | null> {
+  const inSite = await lees(path.join(SITE_MAP, `${siteNaam(zin, profiel)}.mp3`));
+  if (inSite) return inSite;
   const s = instellingen(profiel);
   if (!s) return null;
   const bewaard = await lees(zinBestand(zin, s).bestand);
@@ -1024,4 +1035,27 @@ export async function zinMetTijden(zin: string, profiel: Profiel): Promise<{ dat
   await bewaar(path.join(map, `${naam}.mp3`), mp3);
   await bewaar(path.join(map, `${naam}.json`), Buffer.from(JSON.stringify(woorden)));
   return { data: mp3, woorden };
+}
+
+/**
+ * Een antwoordkeuze (30 oktober 2026): de hele keuze als hij bewaard is
+ * ("kwart over 3"), anders achter elkaar de losse stukjes ("7", "plus", "2",
+ * "is", "9"). Ontbreekt er één stukje, dan null (en blijft het stil).
+ */
+/* Een getal dat de terugluistercontrole als cijfer niet haalde, staat als woord bewaard. */
+const ALS_WOORD: Record<string, string> = { "0": "nul" };
+const stukGeluid = async (t: string, profiel: Profiel) => (await bewaardeZin(t, profiel)) ?? (ALS_WOORD[t] ? await bewaardeZin(ALS_WOORD[t], profiel) : null);
+
+export async function keuzeUitStukjes(tekst: string, profiel: Profiel): Promise<Buffer | null> {
+  const heel = await stukGeluid(tekst, profiel);
+  if (heel) return heel;
+  const stukjes = tekst.split(/\s+/).filter(Boolean);
+  if (stukjes.length < 2) return null;
+  const delen: Buffer[] = [];
+  for (const stukje of stukjes) {
+    const deel = await stukGeluid(stukje, profiel);
+    if (!deel) return null;
+    delen.push(deel);
+  }
+  return Buffer.concat(delen);
 }

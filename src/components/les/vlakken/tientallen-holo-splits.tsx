@@ -26,7 +26,8 @@ import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { IkoonKnop } from "../ikonen";
 import { TEGELKLEUR, getalkleur, vorm } from "../tegels";
 import type { Splitsknop } from "./optellen100-splitsen";
-import { hexNaarGetal, maakSterPlaatjes, mengWit, PAARS, testHaak } from "./tientallen-holo-basis";
+import { hexNaarGetal, maakSterPlaatjes, PAARS, testHaak } from "./tientallen-holo-basis";
+import { tekenParel } from "./tellen-holo-tekenen";
 import s from "./tientallen-holo.module.css";
 
 export type { Splitsknop };
@@ -152,24 +153,13 @@ function maakScene() {
         this.bak("bel-groot", "bel-groot-u", PAARS);
         this.bak("bel", "bel-u", PAARS);
         maakSterPlaatjes(this);
-        /* Parels in elke getalkleur en wit. */
-        const parel = (sl: string, kleur: string) =>
-          this.canvasPlaatje(sl, PAREL, PAREL, (c) => {
-            const r = PAREL / 2 - 2;
-            const g = c.createRadialGradient(PAREL / 2 - r * 0.35, PAREL / 2 - r * 0.4, 1, PAREL / 2, PAREL / 2, r);
-            g.addColorStop(0, "#ffffff");
-            g.addColorStop(0.45, mengWit(kleur, 0.45));
-            g.addColorStop(1, kleur);
-            c.fillStyle = g;
-            c.beginPath();
-            c.arc(PAREL / 2, PAREL / 2, r, 0, Math.PI * 2);
-            c.fill();
-          });
+        /* Parels in elke getalkleur en wit: dezelfde parel als in alle lessen. */
+        const parel = (sl: string, kleur?: string) => this.canvasPlaatje(sl, PAREL, PAREL, (c) => tekenParel(c, PAREL, kleur));
         for (let n = 1; n <= 10; n++) {
           parel(`parel${n}`, TEGELKLEUR[n]);
           this.bak(`parel${n}`, `parel${n}-g`, hexNaarGetal(TEGELKLEUR[n]));
         }
-        parel("parel-wit", "#d8f6ff");
+        parel("parel-wit");
         this.bak("parel-wit", "parel-wit-g", OCEAAN);
         /* De parelplank van 5: twee kolommen, zoals de getaltegel. */
         const c0 = 66;

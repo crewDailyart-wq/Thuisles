@@ -25,6 +25,7 @@ import type { Boog, GetallenlijnSprongenProps } from "./getallenlijn-sprongen";
 import { holoBasis, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { maakLantaarntje, maakVuurvliegje } from "./aftrekken-holo-teken";
+import { getalkleur } from "../tegels";
 import s from "./aftrekken-holo.module.css";
 
 export type { Boog };
@@ -282,7 +283,8 @@ export function AftrekkenHoloLijn({
               left: x(n),
               top: Y + (aan ? 10 : 14),
               fontSize: aan ? 34 : 26,
-              color: aan ? "#ffd36e" : "#e6eeff",
+              /* Dezelfde kleur als het getal in de som en de tekst (30 oktober 2026, opdracht eigenaar): 5 is groen, ook hier. */
+              color: aan ? getalkleur(n) : "#e6eeff",
               opacity: twee && !aan ? 0.5 : 1,
             }}
           >

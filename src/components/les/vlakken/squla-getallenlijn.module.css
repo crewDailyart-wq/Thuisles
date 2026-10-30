@@ -1,0 +1,31 @@
+/*
+  Het vlak van de lessen "Getallenlijn" naar Squla (30 oktober 2026). Geen eigen
+  achtergrond of kader: de blauwe ruimte van het lesscherm blijft zichtbaar,
+  het Phaser-canvas is doorzichtig. Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/*
+  Een onzichtbare knop op de plek van iets wat je in de tekening kunt tikken
+  (een kaart, een beestje). Het tikken zelf gaat in Phaser; deze knop is er
+  voor het toetsenbord, een voorleesprogramma en de automatische test
+  (data-ding). Hij laat de vinger door naar de tekening.
+*/
+.ding {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 20px;
+  background: transparent;
+  pointer-events: none;
+}
+.ding:focus-visible {
+  outline: 3px solid #ffd36e;
+  outline-offset: 4px;
+}

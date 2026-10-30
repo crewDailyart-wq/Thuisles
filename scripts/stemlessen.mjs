@@ -30,7 +30,7 @@ const GROEP = 4; // groep 3 t/m 5 hebben dezelfde stem (toon "3-5")
 const RESERVE = 0.1;
 
 /* Zoals het lesscherm de zin naar de stem stuurt (Lesscherm.tsx, kaal). */
-const kaal = (z) => z.replace(/\[\[[bgrum]:([^\]]+)\]\]/g, "$1").replace(/[{}*]/g, "").replace(/−/g, " min ");
+const kaal = (z) => z.replace(/\{(\d+):[a-z]+\}/g, "{$1}").replace(/\[\[[bgrum]:([^\]]+)\]\]/g, "$1").replace(/[{}*]/g, "").replace(/−/g, " min ");
 
 function verzamel() {
   const tmp = mkdtempSync(join(tmpdir(), "stemlessen-"));
@@ -47,7 +47,48 @@ function verzamel() {
   for (const z of ["Tik op het goede getal.", "Weet je het niet? Tik dan op het vraagteken.", "Tik daarna op het vinkje.", "Tik op de pijl om verder te gaan.", "Typ het getal. Tik dan op het vinkje.", "Klaar? Tik dan op het vinkje.", "Hulp nodig? Tik dan op het handje.", "Wil je liever de les? Tik op het handje."]) alle.add(z);
   /* Het naamfragment van het testprofiel (geen echt kind). */
   alle.add("Testkind!");
+  /*
+    Losse stukjes voor de antwoordkeuzes (30 oktober 2026): de getallen 0 t/m 100
+    en de rekenwoorden. Een keuze als "7 plus 2 is 9" klinkt dan als heel bestand
+    (als hij in een les voorkomt) of anders uit deze stukjes (api/stem, keuze=1).
+  */
+  for (const f of FRAGMENTEN) alle.add(f);
   return { perLes, zinnen: [...alle] };
+}
+
+/* "0" haalde de terugluistercontrole niet (30 okt 2026) en staat als "nul" bewaard (ALS_WOORD in lib/stem-server.ts). */
+const NIET_GELUKT = new Set(["0"]);
+const FRAGMENTEN = [...Array.from({ length: 101 }, (_, i) => String(i)).filter((f) => !NIET_GELUKT.has(f)), "nul", "plus", "min", "is", "hoeveel", "en", "uur", "half", "kwart", "over", "voor", "minuten", "Ja", "Nee", "Waar", "Niet waar"];
+
+/*
+  De rest van wat Bliepo zegt (30 oktober 2026): de gedeelde zinnen van de site
+  (goed, fout, aanmoediging, begroeting, hulp) en de vaste zinnen van de andere
+  gepubliceerde lessen (uit STEMZINNEN.md, npm run stemzinnen). Die worden gemaakt
+  zolang het tegoed het toelaat (EXTRA=1), daarna de lessen.
+*/
+async function verzamelExtra(metLessen) {
+  const { zinnen: gedeeld } = await post({ actie: "gedeeld" });
+  if (!metLessen) return { gedeeld: gedeeld.filter((z) => /\p{L}/u.test(z)), lessen: [] };
+  execFileSync("node", ["scripts/stemzinnen.mjs"], { cwd: WORTEL, stdio: ["ignore", "ignore", "inherit"] });
+  const gepubliceerd = new Set(
+    execFileSync("sqlite3", [join(WORTEL, "data/thuisles.db"), `select distinct json_extract(figuur,'$.les') from vragen where figuur like '%"lesscherm"%' and status='gepubliceerd'`], { encoding: "utf8" })
+      .split("\n")
+      .filter(Boolean),
+  );
+  const lessen = [];
+  let sectie = null;
+  for (const regel of readFileSync(join(WORTEL, "STEMZINNEN.md"), "utf8").split("\n")) {
+    const kop = /^## (\S+)( \(gedeeld\))?/.exec(regel);
+    if (kop) {
+      sectie = gepubliceerd.has(kop[1]) || kop[2] ? kop[1] : null;
+      continue;
+    }
+    if (sectie && regel.startsWith("- ")) {
+      const z = kaal(regel.slice(2)).trim();
+      if (z && !z.includes("…") && /\p{L}/u.test(z)) lessen.push(z);
+    }
+  }
+  return { gedeeld: gedeeld.filter((z) => /\p{L}/u.test(z)), lessen: [...new Set(lessen)] };
 }
 
 async function post(body) {
@@ -109,8 +150,16 @@ try {
   process.exit(process.env.BEWAAK === "1" ? 0 : 1);
 }
 
-const { perLes, zinnen } = verzamel();
+const { perLes, zinnen: lesZinnen } = verzamel();
+const extra = await verzamelExtra(!!process.env.EXTRA);
+/* Verplicht (de controle faalt als hier iets ontbreekt): de 10 lessen, keuzes, stukjes en de gedeelde zinnen. */
+const zinnen = [...new Set([...lesZinnen, ...extra.gedeeld])];
 const { ontbreekt } = await post({ actie: "ontbreekt", zinnen });
+const { ontbreekt: ontbreektExtra } = extra.lessen.length ? await post({ actie: "ontbreekt", zinnen: extra.lessen.filter((z) => !zinnen.includes(z)) }) : { ontbreekt: [] };
+if (extra.lessen.length) console.log(`Andere gepubliceerde lessen: ${extra.lessen.length} vaste zinnen, nog zonder Ruth: ${ontbreektExtra.length} (schatting ${schat(ontbreektExtra)} credits).`);
+writeFileSync(join(WORTEL, "data/stem-ontbreekt.json"), JSON.stringify({ verplicht: ontbreekt, andereLessen: ontbreektExtra }, null, 1));
+/* Alle zinnen (niet alleen wat ontbreekt), voor scripts/stem-naar-site.mjs en scripts/stemcontrole.mjs. */
+if (process.env.LIJST_UIT) writeFileSync(process.env.LIJST_UIT, JSON.stringify({ verplicht: zinnen, andereLessen: extra.lessen }));
 const tekens = zinnen.reduce((n, z) => n + z.length, 0);
 console.log(`Stem voor de nagebouwde lessen: ${zinnen.length} verschillende zinnen (${tekens} tekens tekst) in ${Object.keys(perLes).length} lessen.`);
 for (const [les, lijst] of Object.entries(perLes)) console.log(`  ${les}: ${new Set(lijst.map(kaal)).size} zinnen`);
@@ -127,11 +176,20 @@ if (process.env.CONTROLE) {
 }
 
 const maak = process.env.MAAK;
-if (!maak || !ontbreekt.length) process.exit(0);
+if (!maak || !(ontbreekt.length + ontbreektExtra.length)) process.exit(0);
 
 const voor = await tegoed();
 const ruimte = Math.floor(voor.limiet * (1 - RESERVE)) - voor.gebruikt;
-const lijst = maak === "test" ? ontbreekt.filter((z) => z.split(" ").length >= 4).slice(0, 3) : ontbreekt;
+const lijst = maak === "test" ? ontbreekt.filter((z) => z.split(" ").length >= 4).slice(0, 3) : [...ontbreekt];
+/* Daarna de andere lessen, zolang het tegoed (met 10% reserve) het toelaat. */
+let overgeslagen = 0;
+if (maak !== "test") {
+  for (const z of ontbreektExtra) {
+    if (schat([...lijst, z]) <= ruimte) lijst.push(z);
+    else overgeslagen++;
+  }
+  if (overgeslagen) console.log(`Te weinig tegoed voor ${overgeslagen} zinnen van de andere lessen; die blijven voor later (data/stem-ontbreekt.json).`);
+}
 const nodig = schat(lijst);
 console.log(`\nTegoed: ${voor.gebruikt} van ${voor.limiet} gebruikt; te besteden met 10% reserve: ${ruimte}. Nodig (schatting): ${nodig}.`);
 if (nodig > ruimte) {

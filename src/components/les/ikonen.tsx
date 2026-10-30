@@ -84,7 +84,7 @@ export function IkoonKnop({
   className?: string;
 } & Omit<ButtonHTMLAttributes<HTMLButtonElement>, "children">) {
   return (
-    <button type="button" aria-label={label} data-knop={knop ?? ikoon} className={`${s.knop} ${s[kleur]} ${className}`} {...rest}>
+    <button type="button" aria-label={label} data-knop={knop ?? ikoon} data-ikoon={ikoon} className={`${s.knop} ${s[kleur]} ${className}`} {...rest}>
       <span className={s.icoon}>
         <IkoonTeken ikoon={ikoon} />
       </span>

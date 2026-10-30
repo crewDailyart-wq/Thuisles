@@ -126,14 +126,15 @@
   align-items: center;
 }
 
+/* Antwoordknoppen wit met donkerblauwe tekst (30 oktober 2026, opdracht eigenaar; eerst donkergrijs). */
 .knop {
   min-width: 96px;
   min-height: 44px;
   padding: 10px 26px;
   border: 2px solid transparent;
   border-radius: 8px;
-  background: #2b2f3b;
-  color: #d6d8e1;
+  background: #ffffff;
+  color: #111111;
   font: inherit;
   font-size: 16px;
   font-weight: 500;
@@ -141,11 +142,11 @@
   cursor: pointer;
 }
 .knop:hover {
-  background: #343949;
+  background: #eaf2ff;
 }
 .knop[aria-pressed="true"] {
-  border-color: #4b8af5;
-  background: #2f3a57;
+  border-color: #1f63e0;
+  background: #dceaff;
 }
 .breed {
   width: 226px;
@@ -158,13 +159,20 @@
   color: #eef0f5;
   white-space: nowrap;
 }
+/* Op de witte antwoordknoppen: sommen en cijfers zwart, goed leesbaar (30 oktober 2026, opdracht eigenaar). */
+.knop,
+.knop.som,
+.knop * {
+  color: #111111;
+}
 
 .vak {
   width: 110px;
   height: 64px;
-  border: 2px solid #3a4256;
+  border: 2px solid rgba(190, 240, 255, 0.75);
   border-radius: 8px;
-  background: #212838;
+  /* Doorzichtig met een lichte rand (30 oktober 2026, opdracht eigenaar; eerst bijna zwart). */
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font: inherit;
   font-size: 34px;
@@ -319,9 +327,10 @@
 .somvak {
   width: 90px;
   height: 76px;
-  border: 2px solid #3a4256;
+  border: 2px solid rgba(190, 240, 255, 0.75);
   border-radius: 6px;
-  background: #212838;
+  /* Doorzichtig met een lichte rand (30 oktober 2026, opdracht eigenaar; eerst bijna zwart). */
+  background: rgba(255, 255, 255, 0.08);
   color: #ffffff;
   font: inherit;
   font-size: 50px;

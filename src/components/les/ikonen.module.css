@@ -80,3 +80,13 @@
     box-shadow: 0 0 0 4px rgba(255, 211, 110, 0.9);
   }
 }
+
+/*
+  "Weet ik niet" (het vraagteken) staat nergens meer in beeld (30 oktober 2026, opdracht eigenaar):
+  Bliepo vraagt aan het begin of het kind hulp wil (Ja/Nee), net als Synthesis. De knop blijft in
+  de code (regel 1), maar wordt niet getoond.
+*/
+.knop[data-knop="weetniet"],
+.knop[data-ikoon="vraag"] {
+  display: none;
+}

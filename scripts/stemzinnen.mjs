@@ -23,7 +23,7 @@ const LESSEN = path.join(WORTEL, "src/components/les/lessen");
 const STEM = path.join(WORTEL, "data/stem");
 
 /** Zoals het lesscherm de zin uitspreekt: zonder opmaak ({getal}, *nadruk*). */
-const kaal = (z) => z.replace(/[{}*]/g, "").replace(/\s+/g, " ").trim();
+const kaal = (z) => z.replace(/\{(\d+):[a-z]+\}/g, "{$1}").replace(/[{}*]/g, "").replace(/\s+/g, " ").trim();
 
 /* 1. Bewaarde zinnen (de .txt naast elk geluid). */
 const bewaard = new Set();

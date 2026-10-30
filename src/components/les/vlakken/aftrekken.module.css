@@ -1,3 +1,4 @@
+/* 30 oktober 2026 (opdracht eigenaar): antwoordknoppen wit met zwarte tekst, net als in het lesscherm. */
 /* Speelvlakken van "Aftrekken tot 10": de stippenmachine en de twee torens. */
 
 .vlak {
@@ -262,8 +263,8 @@
   padding: 10px 22px;
   border: 0;
   border-radius: 8px;
-  background: #2b2f3b;
-  color: #d6d8e1;
+  background: #ffffff;
+  color: #111111;
   font: inherit;
   font-size: 16px;
   font-weight: 500;

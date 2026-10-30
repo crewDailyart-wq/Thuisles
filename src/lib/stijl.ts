@@ -14,6 +14,8 @@
  * Gedeeld door server en browser.
  */
 
+import { maakVarianten, variantCss, type Letter } from "@/lib/stijl-varianten";
+
 /**
  * De lettertypes. `familie` is de naam waaronder next/font het lettertype
  * laadt (lib/lettertypen-kind.ts). `school`: de a en de g hebben de
@@ -119,6 +121,13 @@ export type Stijl = {
    * hem uit de variabele --stijl-gloed (lib/phaser/gloed.ts).
    */
   gloed: number;
+  /*
+    De kant-en-klare varianten van /admin/kies-stijl (30 oktober 2026), alleen voor de tekst boven Bliepo: per onderdeel
+    een letter, A = zoals nu. Zie lib/stijl-varianten.ts.
+  */
+  kvBliepoTekst: Letter;
+  kvOplichten: Letter;
+  kvHoeveel: "A" | "B" | "C";
 };
 
 export const STANDAARD_STIJL: Stijl = {
@@ -140,6 +149,9 @@ export const STANDAARD_STIJL: Stijl = {
   bliepo: "normaal",
   zinnen: STANDAARD_ZINNEN,
   gloed: 0.5,
+  kvBliepoTekst: "A",
+  kvOplichten: "A",
+  kvHoeveel: "A",
 };
 
 const KLEUR = /^#[0-9a-f]{6}$/i;
@@ -172,6 +184,10 @@ export function maakStijl(ruw: unknown): Stijl {
     bliepo: uit(r.bliepo, BLIEPO_MATEN, s.bliepo),
     zinnen: typeof r.zinnen === "number" && Number.isInteger(r.zinnen) && r.zinnen >= 1 && r.zinnen <= 6 ? r.zinnen : s.zinnen,
     gloed: typeof r.gloed === "number" && r.gloed >= 0 && r.gloed <= 1 ? Math.round(r.gloed * 100) / 100 : s.gloed,
+    ...(() => {
+      const v = maakVarianten({ bliepoTekst: r.kvBliepoTekst, oplichten: r.kvOplichten, hoeveel: r.kvHoeveel });
+      return { kvBliepoTekst: v.bliepoTekst, kvOplichten: v.oplichten, kvHoeveel: v.hoeveel };
+    })(),
   };
 }
 
@@ -301,5 +317,6 @@ export function stijlCss(s: Stijl, waar = "html:root"): string {
     .map(([k, w]) => `${k}:${w};`)
     .join("");
   const schaal = s.grootte !== STANDAARD_STIJL.grootte ? `font-size:${GROOTTES[s.grootte].factor * 100}%;` : "";
-  return [v || schaal ? `${waar}{${v}${schaal}}` : "", knopRegels(s, waar), praatRegels(s, waar), zinRegels(s, waar)].join("");
+  const varianten = variantCss({ bliepoTekst: s.kvBliepoTekst, oplichten: s.kvOplichten, hoeveel: s.kvHoeveel }, waar);
+  return [v || schaal ? `${waar}{${v}${schaal}}` : "", knopRegels(s, waar), praatRegels(s, waar), zinRegels(s, waar), varianten].join("");
 }

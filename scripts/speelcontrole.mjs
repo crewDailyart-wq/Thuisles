@@ -100,11 +100,11 @@ const SNEL = `
 const STAAT = `(() => {
   const zichtbaar = (el) => { if (!el) return false; const r = el.getBoundingClientRect(); if (r.width < 4 || r.height < 4) return false; const cs = getComputedStyle(el); return cs.visibility !== "hidden" && cs.display !== "none" && Number(cs.opacity) > 0.15; };
   const tekst = [...document.querySelectorAll(".bliepo-tekst, .les-tekst p")].map((e) => e.textContent).join(" ").replace(/\\s+/g, " ").trim();
-  const knoppen = [...document.querySelectorAll("button, a[href], input, button[data-plek], [data-zin], [data-getal], [data-signaal]")]
+  const knoppen = [...document.querySelectorAll("button, a[href], input, button[data-plek], [data-zin], [data-getal], [data-signaal], [data-ding]")]
     .filter((b) => zichtbaar(b) && !b.disabled)
     .filter((b) => !b.closest("nextjs-portal"))
     .map((b) => ({ wolk: !!b.querySelector(".bliepo-tekst"), k: b.getAttribute("data-knop") || "", t: (b.getAttribute("aria-label") || b.textContent || b.tagName).trim().replace(/\\s+/g, " ").slice(0, 40), tag: b.tagName }))
-    .filter((b) => !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Houd ingedrukt|Open Next|Geluidjes aan)/i.test(b.t) && !/mic|praat/i.test(b.k));
+    .filter((b) => !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Houd ingedrukt|Open Next|Geluidjes aan|Lees de keuzes voor)/i.test(b.t) && !/mic|praat/i.test(b.k));
   return {
     tekst,
     knoppen,
@@ -135,7 +135,7 @@ async function speel(c, id) {
     const r = await c.stuur("Runtime.evaluate", { expression: e, returnByValue: true }, s).catch(() => null);
     return r && !r.exceptionDetails ? r.result?.value : null;
   };
-  const klik = (filter) => ev(`(() => { const b = [...document.querySelectorAll("button, a[href], button[data-plek], [data-zin], [data-getal], [data-signaal]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled && !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Geluidjes aan)/i.test(b.getAttribute("aria-label") || b.textContent.trim()); }).find(${filter}); if (!b) return false; b.click(); return ${process.env.DEBUG ? "b.outerHTML.slice(0, 200)" : "true"}; })()`).then((r) => { if (r && process.env.DEBUG) console.log("  tik:", r); return r; });
+  const klik = (filter) => ev(`(() => { const b = [...document.querySelectorAll("button, a[href], button[data-plek], [data-zin], [data-getal], [data-signaal], [data-ding]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled && b.getAttribute("aria-disabled") !== "true" && !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Geluidjes aan|Lees de keuzes voor)/i.test(b.getAttribute("aria-label") || b.textContent.trim()); }).find(${filter}); if (!b) return false; if (b.click) b.click(); else b.dispatchEvent(new MouseEvent("click", { bubbles: true })); return ${process.env.DEBUG ? "b.outerHTML.slice(0, 200)" : "true"}; })()`).then((r) => { if (r && process.env.DEBUG) console.log("  tik:", r); return r; });
   const fouten = new Set();
   const handmatig = new Set();
   let stappen = 0;
@@ -438,8 +438,10 @@ async function speel(c, id) {
         continue;
       }
       if (soort === "weetniet" && (await klik(`(b) => b.getAttribute("data-knop") === "weetniet"`))) continue;
-      const goed = z.antwoord != null ? String(z.antwoord) : null;
-      if (soort === "goed" && goed && (await klik(`(b) => (b.textContent || "").trim() === ${JSON.stringify(goed)}`))) continue;
+      /* Het goede antwoord van dit moment (de zin kan intussen al verder zijn dan de stand van hierboven). */
+      const nuGoed = (await ev(`window.__phaser?.antwoord ?? null`)) ?? z.antwoord;
+      const goed = nuGoed != null ? String(nuGoed) : null;
+      if (soort === "goed" && goed && (await klik(`(b) => (b.textContent || "").trim() === ${JSON.stringify(goed)} || b.getAttribute("data-ding") === ${JSON.stringify(goed)}`))) continue;
       if (soort === "fout" && goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() !== ${JSON.stringify(goed)} && b.getAttribute("data-knop") !== "weetniet"`))) continue;
       /* Anders: de eerste keuze, of een tikbaar ding in het vlak. */
       if (await klik(`(b) => b.tagName === "BUTTON" && b.hasAttribute("data-plek")`)) continue;

@@ -1,0 +1,9 @@
+[
+  { "naam": "Les Dagen van de week, level 1 (weektrein)", "pad": "/voorbeeld/les/squla-tijd-dagen-1?naam=Testkind" },
+  { "naam": "Les Dagen van de week, level 2 (weektrein)", "pad": "/voorbeeld/les/squla-tijd-dagen-2?naam=Testkind" },
+  { "naam": "Les Dagen van de week, level 3 (weektrein)", "pad": "/voorbeeld/les/squla-tijd-dagen-3?naam=Testkind" },
+  { "naam": "Les De kalender, level 1", "pad": "/voorbeeld/les/squla-tijd-kalender-1?naam=Testkind" },
+  { "naam": "Les De kalender, level 2", "pad": "/voorbeeld/les/squla-tijd-kalender-2?naam=Testkind" },
+  { "naam": "Les Tijden, level 1", "pad": "/voorbeeld/les/squla-tijd-tijden-1?naam=Testkind" },
+  { "naam": "Les Tijden, level 2", "pad": "/voorbeeld/les/squla-tijd-tijden-2?naam=Testkind" }
+]

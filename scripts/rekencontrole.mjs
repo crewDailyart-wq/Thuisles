@@ -97,9 +97,9 @@ const mod = (n, m) => ((n % m) + m) % m;
 const uurVan = (t) => Math.floor(mod(t, 720) / 60) || 12;
 const volgend = (h) => (h % 12) + 1;
 const digitaalLabel = (t) => `${uurVan(t)}:${String(mod(t, 60)).padStart(2, "0")}`;
-const schoon = (s) => String(s).replace(/[[\]_*]/g, "").replace(/[{}]/g, "");
+const schoon = (s) => String(s).replace(/\{(\d+):[a-z]+\}/g, "{$1}").replace(/[[\]_*]/g, "").replace(/[{}]/g, "");
 const getallenIn = (s) => (String(s).match(/\d+/g) || []).map(Number);
-const accoladeGetallen = (s) => [...String(s).matchAll(/\{(\d+)\}/g)].map((m) => Number(m[1]));
+const accoladeGetallen = (s) => [...String(s).matchAll(/\{(\d+)(?::[a-z]+)?\}/g)].map((m) => Number(m[1]));
 const STOP = { stop: true };
 
 /** Nederlandse tijd (label) naar minuten sinds 12 uur (modulo 12 uur); `null` als het geen tijd is. */
@@ -438,6 +438,8 @@ async function speelLes(les, tak, scenario) {
   /* Welke tijd kiest het kind, wat is goed? */
   const speler = {
     kies(ev) {
+      /* De antwoordkeuzes zoals het kind ze kan laten voorlezen (leesKeuze in Lesscherm.tsx, 30 oktober 2026). */
+      verzamel(ev.opties.map((o) => String(o).replace(/\[\[[bgrum]:([^\]]+)\]\]/g, "$1").replace(/[{}*]/g, "").replace(/−/g, " min ").replace(/\s*=\s*/g, " is ").replace(/\s*\+\s*/g, " plus ").replace(/\?/g, "hoeveel").replace(/\s+/g, " ").trim()));
       c.vraag = c.regels.slice(-5).join(" ");
       const o = orakel(ev, c);
       ev.orakel = o;

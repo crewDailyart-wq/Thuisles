@@ -279,7 +279,8 @@ async function telSamen(
         ? { cijferMarkering: { n: j + 1, kleur } }
         : {}),
     });
-    if (opties.hardop) await l.zeg(`{${j + 1}}`);
+    if (opties.hardop)
+      await l.zeg(kleuren.length === 1 ? `{${j + 1}:${kleur}}` : `{${j + 1}}`);
     else await l.wacht(480);
   }
 }
@@ -342,7 +343,10 @@ async function telVraag(
       goedGedaan = poging === 1;
       hr(l, { golf: golf() });
       if (o.samenBijGoed) {
-        await l.zeg(`{${n}}?`, "We tellen samen, vanaf {0}.");
+        await l.zeg(
+          kleuren.length === 1 ? `{${n}:${kleur}}?` : `{${n}}?`,
+          "We tellen samen, vanaf {0}.",
+        );
         await telSamen(l, vakjes, kleuren, { cijfers: true });
         await l.zeg("Zie je wel?", "Je had het precies goed.");
         await l.verder();
@@ -379,7 +383,9 @@ async function telVraag(
       await telSamen(l, vakjes, kleuren, { tot: x, cijfers: true });
       await l.zeg(
         "Ah, er zijn er nog over.",
-        `Dus het zijn er meer dan {${x}}.`,
+        kleuren.length === 1
+          ? `Dus het zijn er meer dan {${x}:${kleur}}.`
+          : `Dus het zijn er meer dan {${x}}.`,
       );
       await l.verder();
     }
@@ -829,7 +835,7 @@ export const kleurenTellen: Lesdraaiboek = {
             ];
           return [
             "Dat zijn er nog te weinig.",
-            `Je hebt er nu {${n}}.`,
+            `Je hebt er nu {${n}:${k}}.`,
             "Tik op een lege plek.",
           ];
         },
@@ -865,8 +871,8 @@ export const kleurenTellen: Lesdraaiboek = {
             if (n !== doel)
               return [
                 `Kijk nog eens naar de *${BIJ[k]}* visjes.`,
-                `Je hebt er nu {${n}}.`,
-                `Er moeten er {${doel}} zijn.`,
+                `Je hebt er nu {${n}:${k}}.`,
+                `Er moeten er {${doel}:${k}} zijn.`,
                 n > doel
                   ? "Tik op een visje om het weg te halen."
                   : "Kies de kleur en tik op een lege plek.",
@@ -1560,8 +1566,8 @@ async function kiesCijfer(
         hw(l, { gloei: o.strook });
         await l.zeg(
           o.tel === 1
-            ? "Kijk, er is {1} volle schelp."
-            : `Kijk, er zijn {${o.tel}} volle schelpen.`,
+            ? "Kijk, er is {1:roze} volle schelp."
+            : `Kijk, er zijn {${o.tel}:roze} volle schelpen.`,
         );
         hw(l, { gloei: null });
         return;
@@ -2545,7 +2551,7 @@ async function toets(l: Lesgids, o: Toetsopzet, slot: string[]): Promise<void> {
         break;
       }
       hr(l, { cijfersUit: [g.n] });
-      await l.zeg(`{${g.n}}?`, "Kijk nog eens goed.");
+      await l.zeg(`{${g.n}:${o.kleur}}?`, "Kijk nog eens goed.");
     }
     await l.wacht(400);
     hr(l, { cijfers: false, cijferMarkering: null, cijfersUit: [] });

@@ -1,0 +1,11 @@
+[
+  { "naam": "Les Getallen op hun plek (lichtslinger)", "pad": "/voorbeeld/les/squla-getallenlijn-rangschikken-1?naam=Testkind" },
+  { "naam": "Les Getallen op hun plek, moeilijker (getallenlijn)", "pad": "/voorbeeld/les/squla-getallenlijn-rangschikken-2?naam=Testkind" },
+  { "naam": "Les Getallen op hun plek, nog moeilijker (streepjes per 2)", "pad": "/voorbeeld/les/squla-getallenlijn-rangschikken-3?naam=Testkind" },
+  { "naam": "Les Floep op de getallenlijn", "pad": "/voorbeeld/les/squla-getallenlijn-kat-1?naam=Testkind" },
+  { "naam": "Les Floep op de getallenlijn, moeilijker", "pad": "/voorbeeld/les/squla-getallenlijn-kat-2?naam=Testkind" },
+  { "naam": "Les Dieren op de getallen", "pad": "/voorbeeld/les/squla-getallenlijn-dieren-1?naam=Testkind" },
+  { "naam": "Les Dieren op de getallen, moeilijker", "pad": "/voorbeeld/les/squla-getallenlijn-dieren-2?naam=Testkind" },
+  { "naam": "Les Dieren op de getallen, nog moeilijker", "pad": "/voorbeeld/les/squla-getallenlijn-dieren-3?naam=Testkind" },
+  { "naam": "Les Terugtellen tot de start (raket)", "pad": "/voorbeeld/les/squla-getallenlijn-terugtellen-1?naam=Testkind" }
+]

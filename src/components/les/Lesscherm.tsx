@@ -15,7 +15,7 @@
 
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
-import { stopPraten, zeg, zegNaElkaar, zetLesStem } from "@/lib/stem";
+import { stopPraten, zegNaElkaar, zetLesStem } from "@/lib/stem";
 import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { GeluidjesKnop } from "./GeluidjesKnop";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
@@ -31,6 +31,7 @@ import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
 import { kiesGebaar, vraagOfUitleg } from "@/lib/bliepo-gebaren";
 import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
 import { IkoonKnop, IkoonTeken } from "./ikonen";
+import { keuzeStem, useKeuzesAlvast } from "./keuzestem";
 import "@/components/oefenen/opdracht-nieuw.css";
 
 /*
@@ -120,8 +121,47 @@ const STOP = Symbol("les gestopt");
 
 /** De zin zonder de opmaaktekens, voor de stem. */
 function kaal(zin: string): string {
-  return zin.replace(/\[\[[bgrum]:([^\]]+)\]\]/g, "$1").replace(/[{}*]/g, "").replace(/−/g, " min ");
+  return zin.replace(/\{(\d+):[a-z]+\}/g, "{$1}").replace(/\[\[[bgrum]:([^\]]+)\]\]/g, "$1").replace(/[{}*]/g, "").replace(/−/g, " min ");
 }
+
+/*
+  Het getal in de kleur van het voorwerp waar het over gaat (30 oktober 2026, opdracht eigenaar):
+  "Er zijn {6} groene visjes" → de 6 groen, niet de tegelkleur van 6. Een les kan het ook zelf
+  zeggen met {6:groen}. Staat er geen kleurwoord bij, dan blijft de tegelkleur (die hoort bij de
+  tegels en stippen in die kleur).
+*/
+export const KLEURNAAM: Record<string, string> = {
+  rood: "#ff7b7b",
+  oranje: "#ffad5c",
+  geel: "#ffe066",
+  groen: "#7ee0a0",
+  blauw: "#8fc4ff",
+  paars: "#c9a2ff",
+  roze: "#ff9fd2",
+  wit: "#ffffff",
+  bruin: "#d9a066",
+};
+const KLEURWOORD: Record<string, string> = {
+  rood: "rood", rode: "rood", oranje: "oranje", geel: "geel", gele: "geel", groen: "groen", groene: "groen",
+  blauw: "blauw", blauwe: "blauw", paars: "paars", paarse: "paars", roze: "roze", wit: "wit", witte: "wit", bruin: "bruin", bruine: "bruin",
+};
+/** Zet bij elk {getal} zonder kleur de kleur van het kleurwoord dat erbij hoort: direct erna (binnen 3 woorden), of het enige kleurwoord in de zin. */
+export function kleurGetallen(zin: string): string {
+  const woorden = zin.split(/(\s+)/);
+  const kleurOp = (w: string) => KLEURWOORD[w.toLowerCase().replace(/[^a-z]/g, "")];
+  const alle = new Set(woorden.map(kleurOp).filter(Boolean));
+  return woorden
+    .map((w, i) => {
+      const m = /^\{(\d+)\}(.*)$/.exec(w);
+      if (!m) return w;
+      let k: string | undefined;
+      for (let j = i + 2, n = 0; j < woorden.length && n < 3 && !k; j += 2, n++) k = kleurOp(woorden[j]);
+      if (!k && alle.size === 1) k = [...alle][0];
+      return k ? `{${m[1]}:${k}}${m[2]}` : w;
+    })
+    .join("");
+}
+const getalKleur = (n: string, naam?: string) => (naam && KLEURNAAM[naam]) || getalkleur(Number(n));
 
 /*
   Gekleurde woorden in de zin van Bliepo (28 oktober 2026, zoals Synthesis): [[b:eerst]] blauw,
@@ -211,9 +251,10 @@ function Tegel({ n, c }: { n: number; c: number }) {
  * met de opmaak van de les (gekleurd getal, nadruk); een leesteken plakt aan
  * het woord ervoor.
  */
-function zinWoorden(zin: string): React.ReactNode[] {
+function zinWoorden(ruw: string): React.ReactNode[] {
+  const zin = kleurGetallen(ruw);
   const uit: React.ReactNode[] = [];
-  const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
+  const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)(?::([a-z]+))?\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
   let m: RegExpExecArray | null;
   let i = 0;
   while ((m = re.exec(zin))) {
@@ -229,11 +270,12 @@ function zinWoorden(zin: string): React.ReactNode[] {
       );
       continue;
     }
-    m = [m[0], m[4], m[5], m[6], m[7], m[8]] as unknown as RegExpExecArray;
+    const naam = m[5];
+    m = [m[0], m[4], m[6], m[7], m[8], m[9]] as unknown as RegExpExecArray;
     if (m[1] !== undefined)
       uit.push(
         <span key={i++}>
-          <span className={s.getal} style={{ color: getalkleur(Number(m[1])) }}>
+          <span className={s.getal} style={{ color: getalKleur(m[1], naam) }}>
             {m[1]}
           </span>
           {m[2]}
@@ -253,10 +295,11 @@ function zinWoorden(zin: string): React.ReactNode[] {
   return uit;
 }
 
-function Zin({ zin }: { zin: string }) {
+function Zin({ zin: ruw }: { zin: string }) {
+  const zin = kleurGetallen(ruw);
   const delen = useMemo(() => {
     const uit: { soort: "woord" | "getal" | "nadruk"; tekst: string; kleur?: string }[] = [];
-    const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
+    const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)(?::([a-z]+))?\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(zin))) {
       if (m[1] !== undefined) {
@@ -265,8 +308,9 @@ function Zin({ zin }: { zin: string }) {
         if (m[3]) uit.push({ soort: "woord", tekst: m[3] });
         continue;
       }
-      m = [m[0], m[4], m[5], m[6], m[7], m[8]] as unknown as RegExpExecArray;
-      if (m[1] !== undefined) uit.push({ soort: "getal", tekst: m[1] }, ...(m[2] ? [{ soort: "woord" as const, tekst: m[2] }] : []));
+      const naam = m[5];
+      m = [m[0], m[4], m[6], m[7], m[8], m[9]] as unknown as RegExpExecArray;
+      if (m[1] !== undefined) uit.push({ soort: "getal", tekst: m[1], kleur: getalKleur(m[1], naam) }, ...(m[2] ? [{ soort: "woord" as const, tekst: m[2] }] : []));
       else if (m[3] !== undefined) uit.push({ soort: "nadruk", tekst: m[3] }, ...(m[4] ? [{ soort: "woord" as const, tekst: m[4] }] : []));
       else uit.push({ soort: "woord", tekst: m[5] });
     }
@@ -281,7 +325,7 @@ function Zin({ zin }: { zin: string }) {
         const spatie = i < delen.length - 1 && !/^[.,!?:]$/.test(delen[i + 1].tekst) ? " " : "";
         if (d.soort === "getal")
           return (
-            <span key={i} className={`${s.woord} ${s.getal}`} style={{ ...vertraging, color: getalkleur(Number(d.tekst)) }}>
+            <span key={i} className={`${s.woord} ${s.getal}`} style={{ ...vertraging, color: d.kleur ?? getalkleur(Number(d.tekst)) }}>
               {d.tekst}
               {spatie}
             </span>
@@ -404,7 +448,7 @@ function Lesscherm({
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
   useEffect(() => {
-    zetLesStem({ alleenServer: les.indeling === "synthesis", naam });
+    zetLesStem({ alleenServer: les.indeling === "synthesis" && !les.browserstem, naam });
     zetLesgeluiden(les.indeling === "synthesis");
     return () => {
       zetLesStem({ alleenServer: false });
@@ -538,7 +582,12 @@ function Lesscherm({
 
     const gids: Lesgids = {
       naam,
-      zeg: (...zinnen) => spreek(zinnen.filter(Boolean)),
+      /* Nergens meer "Tik op het vinkje." (30 oktober 2026, opdracht eigenaar: in alle lessen). */
+      zeg: (...zinnen) => {
+        const z = zinnen.filter((zin) => zin && !/vinkje/i.test(zin));
+        /* Bleef er niets over, dan blijft de vorige zin van Bliepo gewoon staan. */
+        return z.length || !zinnen.length ? spreek(z) : Promise.resolve();
+      },
       wijsAan: async (knop, ...zinnen) => {
         /*
           Heeft het kind al geantwoord (de les wacht nergens meer op en de knop is weg), dan wijst Bliepo
@@ -548,7 +597,22 @@ function Lesscherm({
         if (!w.kies && !w.knoppen && !w.getal && !w.somvak && !w.verder && !zichtbaar(knop)) return;
         zet((b) => ({ ...b, aanwijs: knop }));
         try {
-          const z = zinnen.filter(Boolean);
+          /*
+            De pijl legt Bliepo niet steeds opnieuw uit (30 oktober 2026, opdracht eigenaar):
+            nieuwe kinderen krijgen dat aan het begin van de site uitgelegd. De pijl licht
+            alleen even op.
+          */
+          /* Ook "Tik daarna op het vinkje." en dergelijke niet meer (30 oktober 2026, opdracht eigenaar). */
+          /*
+            En ook niet meer "Weet je het niet? Tik dan op het vraagteken." of "Tik dan op de knop: Weet ik niet."
+            (30 oktober 2026, opdracht eigenaar; Synthesis zegt dat ook niet). De knop licht alleen even op.
+          */
+          const stil =
+            knop === "verder" ||
+            knop === "weetniet" ||
+            knop === "hulpvlak" ||
+            zinnen.some((zin) => /vinkje|weet je het niet|weet ik niet|hulp nodig|vind je het lastig|kun je dit nog niet/i.test(zin ?? ""));
+          const z = stil ? [] : zinnen.filter(Boolean);
           /* Zonder zinnen alleen aanwijzen: de vraag van Bliepo blijft dan staan (anders was zijn tekst leeg naast de keuzes). */
           const vorige = staat.zinnen;
           if (z.length) {
@@ -565,7 +629,7 @@ function Lesscherm({
       getal: () =>
         new Promise((res) => {
           zet((b) => ({ ...b, bediening: { soort: "getal" } }));
-          benoemStil([{ knop: "controleer", zin: BENOEM.getal }]);
+          /* "Typ het getal. Tik dan op het vinkje." niet meer (30 oktober 2026, opdracht eigenaar). */
           wacht.current.getal = (v) => {
             wacht.current.getal = undefined;
             pas((b) => ({ ...b, bediening: null, ...wegMetAanwijszin(b) }));
@@ -586,12 +650,14 @@ function Lesscherm({
       kies: (opties, instel) =>
         new Promise((res) => {
           zet((b) => ({ ...b, bediening: { soort: "kies", opties, instel } }));
+          /*
+            De keuzes zelf benoemt Bliepo niet meer (30 oktober 2026, opdracht eigenaar):
+            het kind laat ze voorlezen met de muis, lang indrukken of het luidsprekertje
+            (keuzestem.tsx). Het vraagteken en het vinkje noemt hij nog wel de eerste keer.
+          */
           benoemStil([
-            ...(opties.length && opties.every((o) => /^\d+$/.test(o))
-              ? [{ knop: "getaltegel", zin: BENOEM.getallen }]
-              : opties.map((o) => ({ knop: `keuze:${o}`, zin: leesKeuze(o) }))),
-            ...(opties.length && instel?.weetniet !== false ? [{ knop: "weetniet", zin: BENOEM.weetniet }] : []),
-            ...(opties.length > 1 && !instel?.direct ? [{ knop: "", zin: BENOEM.vinkje }] : []),
+            /* Ook het vraagteken noemt Bliepo niet meer (30 oktober 2026, opdracht eigenaar). */
+            /* Het vinkje noemt Bliepo niet meer (30 oktober 2026, opdracht eigenaar: onnodig). */
           ]);
           /*
             De keuzes worden niet voorgelezen (22 oktober 2026, opdracht
@@ -609,7 +675,7 @@ function Lesscherm({
       verder: () =>
         new Promise((res) => {
           zet((b) => ({ ...b, bediening: { soort: "verder" } }));
-          benoemStil([{ knop: "verder", zin: BENOEM.verder }]);
+          /* De pijl wordt niet meer benoemd (30 oktober 2026, opdracht eigenaar). */
           wacht.current.verder = () => {
             wacht.current.verder = undefined;
             speelLesgeluid("beurt");
@@ -997,6 +1063,7 @@ function Lesscherm({
   return (
     <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-staand={staand ? "ja" : undefined}>
       {nieuw && <OpdrachtDecor />}
+      {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
       {pilBoven ? pilBalk : null}
       <div
         className={s.vlak}
@@ -1320,7 +1387,7 @@ export function leesKeuze(o: string): string {
   return kaal(o).replace(/\s*=\s*/g, " is ").replace(/\s*\+\s*/g, " plus ").replace(/\?/g, "hoeveel").replace(/\s+/g, " ").trim();
 }
 
-function Keuzes({ opties, instel, synth, stil, onKlaar }: { opties: string[]; instel?: Kiesinstel; synth?: boolean; stil?: boolean; onKlaar: (v: string | null) => void }) {
+function Keuzes({ opties, instel, synth, onKlaar }: { opties: string[]; instel?: Kiesinstel; synth?: boolean; stil?: boolean; onKlaar: (v: string | null) => void }) {
   const [keuze, setKeuze] = useState<string | null>(null);
   /* Bij de indeling van Synthesis staan alleen getallen naast elkaar; woorden (Ja, Nee) onder elkaar over de hele breedte. */
   const kort = opties.every((o) => o.length <= 3) && (!synth || opties.every((o) => /^\d/.test(o)));
@@ -1330,6 +1397,7 @@ function Keuzes({ opties, instel, synth, stil, onKlaar }: { opties: string[]; in
   /* Antwoordtegels in een raster van 3 breed (zoals Synthesis), of de gewone rij/kolom. */
   const lijst = instel?.raster ? s.raster3 : kort ? s.rij : s.bediening;
   const lijstStijl = instel?.raster ? undefined : kort ? { flexWrap: "wrap" as const, width: 262 } : { opacity: 1, animation: "none" };
+  useKeuzesAlvast(opties.map(leesKeuze));
   return (
     <div className={s.bediening}>
       {/* Drie of meer woordkeuzes: twee naast elkaar (alleen bij de indeling van Synthesis, via CSS), zodat de vraag van Bliepo niet omhoog uit beeld schuift. */}
@@ -1341,11 +1409,15 @@ function Keuzes({ opties, instel, synth, stil, onKlaar }: { opties: string[]; in
             className={`${s.knop} ${/[=+−]/.test(o) || /^\d+$/.test(o) ? s.som : ""}`}
             aria-pressed={keuze === o}
             data-knop={/^\d+$/.test(o) ? "getaltegel" : `keuze:${o}`}
+            data-keuze=""
+            {...keuzeStem(leesKeuze(o))}
             onClick={() => {
               setKeuze(o);
               if (!direct) speelLesgeluid("keuze");
-              /* Een keuze met een woord leest Bliepo voor (groep 3 leest nog niet); cijfers niet (27 oktober 2026). */
-              if (!stil && /[a-z]/i.test(o)) zeg(kaal(o));
+              /*
+                Een tik kiest alleen; voorlezen gaat via muis, lang indrukken of het luidsprekertje
+                (30 oktober 2026). Tot dan las Bliepo een woordkeuze voor bij het tikken.
+              */
               if (direct) onKlaar(o);
             }}
           >

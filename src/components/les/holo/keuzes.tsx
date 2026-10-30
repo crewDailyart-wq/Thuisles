@@ -8,7 +8,7 @@
  * Bliepo het voor als het kind erop tikt.
  */
 
-import { zeg } from "@/lib/stem";
+import { keuzeStem, useKeuzesAlvast } from "../keuzestem";
 import s from "./keuzes.module.css";
 
 export function KeuzeKnoppen({
@@ -28,6 +28,7 @@ export function KeuzeKnoppen({
   kies: (o: number | string) => void;
   className?: string;
 }) {
+  useKeuzesAlvast(opties.map(String));
   return (
     <div className={`${s.rij} ${className}`} data-knop="keuzes">
       {opties.map((o) => {
@@ -40,8 +41,10 @@ export function KeuzeKnoppen({
             className={`${s.knop} ${isUit ? s.uit : ""} ${isGoed ? s.goed : ""}`}
             disabled={!actief || isUit || (goed !== undefined && goed !== null)}
             aria-label={String(o)}
+            data-keuze={isGoed ? "goed" : isUit ? "uit" : ""}
+            {...keuzeStem(String(o))}
             onClick={() => {
-              if (typeof o === "string" && /[a-z]/i.test(o)) zeg(o);
+              /* Een tik kiest alleen; voorlezen via muis, lang indrukken of het luidsprekertje (30 oktober 2026). */
               kies(o);
             }}
           >

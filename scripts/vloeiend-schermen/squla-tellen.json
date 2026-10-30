@@ -1,0 +1,17 @@
+[
+  { "naam": "Squla tellen: fruit tellen", "pad": "/voorbeeld/les/squla-tellen-fruit-1?naam=Testkind" },
+  { "naam": "Squla tellen: fruit tellen (moeilijker)", "pad": "/voorbeeld/les/squla-tellen-fruit-2?naam=Testkind" },
+  { "naam": "Squla tellen: fruit tellen (nog moeilijker)", "pad": "/voorbeeld/les/squla-tellen-fruit-3?naam=Testkind" },
+  { "naam": "Squla tellen: tellen in rijtjes", "pad": "/voorbeeld/les/squla-tellen-resultatief1-1?naam=Testkind" },
+  { "naam": "Squla tellen: tellen in rijtjes (moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief1-2?naam=Testkind" },
+  { "naam": "Squla tellen: tellen in rijtjes (nog moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief1-3?naam=Testkind" },
+  { "naam": "Squla tellen: hoeveel zie je?", "pad": "/voorbeeld/les/squla-tellen-resultatief2-1?naam=Testkind" },
+  { "naam": "Squla tellen: hoeveel zie je? (moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief2-2?naam=Testkind" },
+  { "naam": "Squla tellen: hoeveel zie je? (nog moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief2-3?naam=Testkind" },
+  { "naam": "Squla tellen: grote groepen tellen", "pad": "/voorbeeld/les/squla-tellen-resultatief3-1?naam=Testkind" },
+  { "naam": "Squla tellen: grote groepen tellen (moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief3-2?naam=Testkind" },
+  { "naam": "Squla tellen: grote groepen tellen (nog moeilijker)", "pad": "/voorbeeld/les/squla-tellen-resultatief3-3?naam=Testkind" },
+  { "naam": "Squla tellen: grote groepen tellen (heel moeilijk)", "pad": "/voorbeeld/les/squla-tellen-resultatief3-4?naam=Testkind" },
+  { "naam": "Squla tellen: de telrij", "pad": "/voorbeeld/les/squla-tellen-telrij-1?naam=Testkind" },
+  { "naam": "Squla tellen: de telrij (moeilijker)", "pad": "/voorbeeld/les/squla-tellen-telrij-2?naam=Testkind" }
+]

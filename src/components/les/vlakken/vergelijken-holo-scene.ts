@@ -19,6 +19,7 @@
  */
 
 import { holoBasis, TX, WARM, GOED, WERELDKLEUR, type PhaserModule } from "../holo/basis";
+import { maakVuurvliegje, tekenPot } from "./aftrekken-holo-teken";
 
 export type Kant = "links" | "rechts";
 export type Kleur = "blauw" | "geel" | "groen";
@@ -35,6 +36,8 @@ export const MIDDEN_X = 490;
 const POT_MIDDEN_Y = 404;
 const RAND = 16;
 const DEKSEL = 26;
+/** Hoeveel groter het vuurvliegje van Aftrekken (60 × 54) in een plekje staat. */
+const VLIEG_SCHAAL = 1.3;
 
 /** De maten van een potje met `rijen` rijen van 2 plekken. */
 export function potMaat(rijen: number) {
@@ -127,34 +130,35 @@ export function maakVergelijkScene() {
           rechts: this.vlieg.rechts.filter(Boolean).length,
         });
         const aarde = WERELDKLEUR.aarde;
-        /* Een glazen potje per maat (3 of 5 rijen), met een warm dekseltje en zachte plekjes. */
+        /* Een glazen potje per maat (3 of 5 rijen): hetzelfde potje als bij Aftrekken
+           (bolle buik, hals en deksel), met de zachte plekjes erin. */
         for (const rijen of [3, 5]) {
           const m = potMaat(rijen);
           const b = m.buitenB;
           const h = m.h + 2 * RAND + DEKSEL;
           this.canvasPlaatje(`pot-${rijen}`, b + 8, h + 8, (c) => {
             c.translate(4, 4);
-            /* deksel */
-            c.beginPath();
-            c.roundRect(b * 0.16, 0, b * 0.68, DEKSEL - 6, 9);
-            c.fillStyle = "rgba(255,211,110,0.28)";
-            c.fill();
-            c.strokeStyle = "rgba(255,221,150,0.95)";
-            c.lineWidth = 3;
-            c.stroke();
-            /* glas */
-            c.beginPath();
-            c.roundRect(0, DEKSEL, b, h - DEKSEL, 30);
-            c.fillStyle = "rgba(20,52,120,0.38)";
-            c.fill();
-            c.strokeStyle = "rgba(205,240,255,0.95)";
-            c.lineWidth = 3;
-            c.stroke();
-            /* een glimlijntje op het glas */
-            c.beginPath();
-            c.roundRect(10, DEKSEL + 18, 7, h - DEKSEL - 60, 4);
-            c.fillStyle = "rgba(255,255,255,0.16)";
-            c.fill();
+            tekenPot(c, {
+              links: 0,
+              rechts: b,
+              buikBoven: DEKSEL,
+              onder: h,
+              halsLinks: b * 0.25,
+              halsRechts: b * 0.75,
+              schouder: Math.round(b * 0.2),
+              hoek: 30,
+              halsY: 12,
+              halsH: DEKSEL - 12,
+              halsR: 5,
+              dekselLinks: b * 0.21,
+              dekselRechts: b * 0.79,
+              dekselY: 0,
+              dekselH: 13,
+              dekselR: 6,
+              glansX: 13,
+              glansVan: DEKSEL + 70,
+              glansTot: h - 60,
+            });
             /* de plekken: zachte stippellijn-rondjes */
             c.setLineDash([6, 5]);
             c.strokeStyle = "rgba(190,235,255,0.42)";
@@ -171,27 +175,11 @@ export function maakVergelijkScene() {
           });
           this.bak(`pot-${rijen}`, `pot-${rijen}-gloed`, aarde);
         }
-        /* Een vuurvliegje per kleur: een helder lijfje met twee doorschijnende vleugeltjes. */
+        /* Een vuurvliegje per kleur: hetzelfde vuurvliegje als bij Aftrekken
+           (vleugeltjes, donker kopje en lijfje); alleen het lichtje heeft de kleur. */
         for (const [naam, hex] of Object.entries(KLEUR_HEX) as [Kleur, number][]) {
           const css = KLEUR_CSS[naam];
-          this.canvasPlaatje(`vlieg-${naam}`, 72, 72, (c) => {
-            c.fillStyle = "rgba(235,248,255,0.55)";
-            c.beginPath();
-            c.ellipse(24, 22, 15, 9, -0.5, 0, Math.PI * 2);
-            c.fill();
-            c.beginPath();
-            c.ellipse(48, 22, 15, 9, 0.5, 0, Math.PI * 2);
-            c.fill();
-            const g = c.createRadialGradient(31, 36, 2, 36, 42, 23);
-            g.addColorStop(0, "#ffffff");
-            g.addColorStop(0.45, css);
-            g.addColorStop(1, css);
-            c.fillStyle = g;
-            c.beginPath();
-            c.arc(36, 42, 21, 0, Math.PI * 2);
-            c.fill();
-          });
-          this.bak(`vlieg-${naam}`, `vlieg-${naam}-gloed`, hex);
+          maakVuurvliegje(this, { sleutel: `vlieg-${naam}`, midden: css, rand: css, gloed: hex });
         }
         /* De tekens als dikke, ronde lichtlijnen; het vraagteken als groot teken. */
         for (const s of ["=", "<", ">", "?"] as Teken[]) {
@@ -296,7 +284,8 @@ export function maakVergelijkScene() {
         const g = this.pot[kant]!;
         const p = this.binnen(kant, i);
         const cel = potMaat(this.rijen ?? 3).cel;
-        const schaal = (cel / 100) * 0.92 / TX;
+        /* Het vuurvliegje (60 × 54) iets groter, zodat het lichtje het plekje vult. */
+        const schaal = (cel / 100) * 0.92 * VLIEG_SCHAAL / TX;
         const img = this.plaats(`vlieg-${kleur}-gloed`, p.x, p.y).setScale(schaal);
         g.add(img);
         if (!this.rustig) {

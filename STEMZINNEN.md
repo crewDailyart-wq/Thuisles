@@ -1,420 +1,70 @@
 # Stemzinnen: nog te maken met de gekozen stem
 
-Automatisch gemaakt met `npm run stemzinnen` (2026-10-27). Niet met de hand bewerken.
+Automatisch gemaakt met `npm run stemzinnen` (2026-10-30). Niet met de hand bewerken.
 
 Voor nu leest de browser deze zinnen voor (geen tegoed; `STEM_NIEUWE_ZINNEN=browser`).
 Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` zetten;
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 4818 zinnen, 123545 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 557 zinnen.)
+**Totaal: 4092 zinnen, 105153 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
-## aftrekken-10-stippen-weghalen (124)
+## aftrekken-10-stippen-weghalen (10)
 
-- Voor we beginnen, even een vraag.
-- Heb je al eens minsommen gemaakt?
 - Ja
-- Dit potje helpt ons.
-- Ik laat zien wat het doet.
-- Kijk, er vloog een vuurvliegje in het potje.
-- Kijk hier.
-- Dit getal zegt hoeveel vuurvliegjes er zijn.
-- Doe er nog wat vuurvliegjes bij.
-- Kijk wat er met het getal gebeurt.
-- Wat gebeurt er met het getal als er een vuurvliegje bij komt?
-- Elk vuurvliegje erbij maakt het getal hoger.
-- Dat is niet wat ik zie.
-- Ik maak het potje leeg.
-- We doen het stap voor stap.
-- Er zijn geen vuurvliegjes.
-- Het getal is nu 0.
-- Doe er één vuurvliegje bij.
-- Kijk naar het getal.
-- We hadden 0.
-- Nu hebben we er 1.
-- Het getal is hoger geworden.
-- Wordt het steeds hoger als je blijft tikken?
-- Dat gaan we zien.
-- We proberen het.
-- Doe er nog een vuurvliegje bij.
-- Kijk, nu is het 2.
-- Welke som maak je met deze knop?
-- Ja, zo simpel is het.
-- Je doet er vuurvliegjes bij.
-- Kijk goed.
-- Er komt steeds een vuurvliegje bij.
-- Dat is een plussom.
-- Er zitten nu 2 vuurvliegjes in het potje.
-- Hoeveel zijn het er als er 3 bij komen?
-- Doe ze er maar bij.
-- Hmm, 2 en 3 is samen iets $x < 5 ? "meer" : "minder" dan $x.
-- Doe er 3 vuurvliegjes bij.
-- Nu zijn er 5.
 - 2 + 3 = 5.
-- Oké, nog eentje.
-- Deze is best leuk.
-- Hoeveel is 1 + 2 + 3 + 4?
-- Knap!
-- Het is 10.
-- Dit is een lastige.
-- Ik laat het je zien.
-- Doe er eerst 1 vuurvliegje bij.
-- Nu 2 erbij.
-- Dan 3 erbij.
-- En nog 4.
-- Mooi zo.
-- Hoeveel vuurvliegjes zijn er nu?
-- Het potje helpt ook bij minsommen.
-- Hoe maak je met vuurvliegjes een minsom?
-- Dat gaan we nu doen.
-- Erbij doen is een plussom.
-- Bij een minsom gaan er vuurvliegjes weg.
-- Laat er één wegvliegen.
-- Zie je dat het minder wordt?
-- Het getal ging van 10 naar 9.
-- Bij een plussom hoort het plusteken.
-- Welk teken hoort bij een minsom?
-- Dat teken heet het minteken.
-- Kijk, dit is het.
-- Het streepje is het minteken.
-- Dat is het plusteken.
-- Dat teken is voor delen.
-- Welke van deze twee is het dan?
-- Zo schrijf je een minsom:
 - 10 − 1.
-- We begonnen met 10.
-- Er vloog er 1 weg.
-- We doen een minsom vanaf het begin.
-- Doe er 5 vuurvliegjes in.
-- Nu reken je in je hoofd.
 - Hoeveel is 5 − 2?
-- Je liet ze in je hoofd wegvliegen.
-- Er zijn 3 vuurvliegjes over.
 - Dus 5 − 2 = 3.
-- Dat klopt niet; laten we het samen doen.
-- We hebben 5 vuurvliegjes.
-- Laat er 2 wegvliegen.
-- Tel wat er over is.
-- Gebruik de wegvliegknop als dat helpt.
-- Er zitten 10 vuurvliegjes in het potje.
-- Hoeveel blijven er over als er 4 wegvliegen?
-- Laat er 4 wegvliegen.
-- Er zijn 6 vuurvliegjes over.
 - 10 − 4 = 6.
-- Ik wil je nog één belangrijk ding laten zien.
-- Daarna gaan we oefenen.
-- Nu zijn er 20 vuurvliegjes.
-- Hoeveel moeten er wegvliegen?
-- Er mogen er geen overblijven.
-- Wil jij ze laten wegvliegen?
-- Of zal ik het doen?
-- Ga je gang.
-- Daar gaan ze!
-- Elk getal min zichzelf is nul.
-- Gaan ze allemaal weg, dan blijft er niets over.
-- Je hebt het door.
-- We doen er nog een paar.
-- Gebruik het potje zoveel je wilt.
-- Deze kwam net al.
 - Hoeveel is $a − $b?
-- Ik liet er $b wegvliegen.
-- Wat overblijft, is je antwoord.
-- Ja, goed zo.
-- Er is 1 vuurvliegje over.
-- Er zijn $a - b vuurvliegjes over.
+- Ik liet er $b:geel wegvliegen.
+- Er zijn $a - b:geel vuurvliegjes over.
 - $a − $b = $a - b.
-- Daar komen we later op terug.
-- Je hebt goed minsommen gemaakt met het potje.
-- Zullen we herhalen wat je hebt geleerd?
-- Oké, daar gaan we.
-- Eerst deden we er vuurvliegjes bij.
-- Dan wordt het getal hoger.
-- Daarna lieten we er wegvliegen.
-- Dan wordt het getal lager.
-- Vliegen ze allemaal weg?
-- Dan houd je 0 over.
-- Goed gewerkt vandaag, $l.naam!
-- Goed gewerkt vandaag!
 
-## aftrekken-10-verschil (227)
+## aftrekken-10-verschil (16)
 
-- Kijk, twee lantaarnpalen.
-- Ze hebben nog geen lampjes.
-- Er ging een lampje aan.
-- Tik er nog eens op.
-- Hoeveel lampjes branden er nu?
-- Er branden 2 lampjes.
-- We doen er meer bij.
-- Tik tot er 7 lampjes branden.
-- Heel mooi.
-- De paal kan nog iets.
-- Hé, er ging een lampje uit!
-- Kun je er nog één uitdoen?
-- Nu een opdracht.
-- Geef de oranje paal evenveel lampjes als de paarse.
-- Ze mogen niet verschillen.
-- Ze hebben evenveel lampjes.
-- Met de plus gaat er een lampje aan.
-- Met de min gaat er een uit.
-- Kijk naar de getallen.
-- Kijk goed.
-- De palen hebben nog niet evenveel lampjes.
-- Ze verschillen een beetje.
-- Doe oranje lampjes uit met de min.
-- Doe er oranje lampjes bij met de plus.
-- Zo is het goed.
-- Nu hebben ze evenveel lampjes.
-- Hoeveel lampjes heeft elke paal?
-- Ja, dat klopt.
-- 5 lampjes aan elke paal.
-- Er is geen verschil.
-- Oei, er gingen lampjes uit.
-- Hebben ze nog evenveel?
-- Hmm, dat lijkt niet hetzelfde.
-- We kijken nog eens.
-- Tel de oranje lampjes.
-- Hoeveel zie je?
-- Dat klopt!
-- De oranje paal heeft 3 lampjes.
-- Ja, ze zijn verschillend.
-- 3 lampjes aan de oranje paal.
-- 5 lampjes aan de paarse paal.
 - Heb je al eens het verschil gezocht?
 - Ja
-- We leren samen iets nieuws.
-- Welke paal heeft er meer?
-- De paarse paal heeft meer lampjes.
-- Kijk nog eens.
-- Dan moeten er oranje lampjes bij.
-- Maak ze weer even veel met de plus.
-- Oké, nu iets nieuws.
-- Ik heb een schuif voor je.
-- Wat gebeurde er met de lampjes?
-- Dat is niet erg.
-- Het is een lastig idee.
-- We kijken beter wat er gebeurt als ze tegen elkaar komen.
-- Ze gingen tegen elkaar uit.
-- We kijken nog beter hoe dat gaat.
-- Maar één lampje per paal, hè?
-- Dat is niet veel licht.
-- Hoeveel lampjes heeft elke paal nu?
-- Elke paal heeft één lampje onderaan.
-- Ze zitten op dezelfde hoogte.
-- Dus komen ze tegen elkaar.
-- En dan gaan ze allebei uit.
-- Schuif de palen nu tegen elkaar.
-- Daar gaan ze!
-- Allebei een lampje op dezelfde hoogte.
-- Nu doe ik er meer aan.
-- Wat gebeurt er als ze tegen elkaar schuiven?
-- Allemaal uit
-- Misschien heb je gelijk.
-- We gaan het zien.
-- Schuif ze nu tegen elkaar.
-- Beide palen hadden 3 lampjes.
-- Ze gingen allemaal tegen elkaar uit.
-- Nu mag jij de palen maken.
-- De oranje paal krijgt 5 lampjes.
-- De paarse paal krijgt er 4.
-- Tik op het vinkje als het af is.
-- Je palen hebben $g.links en $g.rechts lampjes.
-- Oranje moet 5 zijn, paars 4.
-- Eerst een voorspelling.
-- Welke paal houdt lampjes over?
-- Oranje
-- Jij denkt oranje.
-- Paars
-- Jij denkt paars.
-- Schuif ze tegen elkaar, dan zien we het.
-- De oranje paal houdt één lampje over.
-- Bij elke paal gingen er 4 uit.
-- Maar er bleef 1 oranje lampje branden.
-- Waarom ging dat lampje niet uit?
-- De oranje paal had één lampje extra.
-- Kijk, naast het bovenste oranje lampje zat geen paars lampje.
-- Daarom bleef het branden.
-- Wat was het verschil tussen de palen?
-- Je hebt het.
-- De oranje paal had 1 lampje meer.
-- Het verschil is 1.
-- Nu 3 oranje tegen 5 paarse.
-- Schuif ze maar tegen elkaar!
-- Er blijven 2 paarse lampjes branden.
-- Nu heb ik een vraag.
-- Op welke som lijkt het verschil zoeken?
+- Je palen hebben $g.links:oranje en $g.rechts:paars lampjes.
 - Hmm, vind je het verschil met een plussom?
-- We kijken samen.
-- Hier is een paal met 1 lampje.
-- En een paal met 2.
-- Hoeveel is dat samen?
 - 1 + 2 = 3.
-- Maar voor het verschil schuiven we ze tegen elkaar.
-- Kijk naar het paarse lampje dat nog brandt.
-- Hoeveel lampjes verschillen de palen?
-- Maar samen was het 3.
-- Een plussom helpt dus niet bij het verschil.
-- Wat helpt wel om het verschil te vinden?
-- Het is een minsom.
-- Verschil is aftrekken.
-- De lampjes gaan tegen elkaar uit: je haalt ze weg.
-- Welke som helpt je het verschil te vinden?
 - Het is 5 − 3.
-- Wil je de palen tegen elkaar schuiven?
-- Of weet je het verschil al?
-- Wat is het verschil tussen 5 en 3?
 - Of: hoeveel is 5 − 3?
-- Knap dat je dat in je hoofd kon.
-- Schuif ze tegen elkaar om te kijken.
-- Er blijven 2 oranje lampjes branden.
-- Het verschil is 2.
-- Hoeveel lampjes branden er nog?
-- Hoe schrijf je dit als som?
 - 5 − 3 = 2.
-- We vergelijken de sommen met de palen.
 - 5 − 2 = 3.
-- Ik snap waarom je die koos.
-- Maar laten we het met de palen bekijken.
-- De oranje paal heeft 5 lampjes.
-- Hoeveel halen we eraf?
-- Hoeveel lampjes heeft de kleine paal?
-- De kleine paal heeft 3 lampjes.
-- We hebben 5 lampjes.
-- We halen er 3 af.
 - Dus schrijven we 5 − 3.
-- Maak de som af.
-- Tel de oranje lampjes die nog branden.
 - Er branden er nog 2. Typ de 2.
-- 5 en 3 verschillen 2.
-- Nieuwe opdracht.
-- De oranje paal krijgt 3 lampjes.
-- De paarse paal krijgt er 8.
-- Oranje moet 3 zijn, paars 8.
-- Bravo.
-- Hoeveel lampjes houdt paars dan over?
-- Hoeveel verschillen de palen?
-- We zoeken het uit.
-- Schuif ze tegen elkaar.
-- Precies zoals je zei!
-- De paarse paal houdt 5 lampjes over.
-- De paarse paal houdt lampjes over, zoals je zei!
-- Maar $gok > 5 ? "minder" : "meer" lampjes dan je dacht.
-- De paarse paal houdt lampjes over.
-- Tel de paarse lampjes die nog branden.
-- Deze palen verschillen 5.
-- Ik vraag het nog op een andere manier.
-- Welke som laat het verschil zien?
-- Je hebt helemaal gelijk.
 - 8 − 3 = 5.
-- Nu iets moeilijkers.
-- Geef de paarse paal lampjes.
-- Maak een verschil van 3.
-- Een paal met $g3.rechts en een paal met 4.
-- Prachtig.
-- Ze verschillen 3.
-- Hmm, je palen hebben 4 en $g3.rechts lampjes.
-- Schuif ze tegen elkaar om het verschil te zien.
-- Ze gingen allemaal uit.
-- Het verschil is $d.
-- Maar we zoeken een verschil van 3.
-- Natuurlijk help ik je.
-- Geef de paarse paal 3 lampjes meer dan de oranje.
-- Probeer het maar.
-- Uitstekend.
-- Een paal met 7 en een paal met 4.
-- Prachtig gedaan.
-- Je maakte twee palen met een verschil van 3.
-- Kan het ook op een andere manier?
-- Dezelfde opdracht.
-- Geef de paarse paal lampjes tot het verschil 3 is.
-- Gelukt!
-- 5 en 2 verschillen 3.
-- hulp
-- Natuurlijk, ik help je op weg.
-- Bijna, ik help je op weg.
-- Eerst maken we de palen gelijk.
-- Geef de paarse paal evenveel lampjes als de oranje.
-- Maar ze moeten 3 verschillen.
-- Doe er nog genoeg paarse lampjes bij.
-- Tel de paarse lampjes boven de oranje.
-- Dat moeten er 3 zijn.
-- Je bent er heel goed in.
-- Ik heb nog één laatste opdracht.
-- Doe je mee?
-- We proberen het samen.
-- Nu zoeken we alle palen met een verschil van 4.
-- Maak twee palen met een verschil van 4.
-- Je mag lampjes aandoen en uitdoen.
-- Probeer eens een paal met $a.
-- Geef de andere paal $a - 4.
-- Palen met $g.links en $g.rechts?
-- Bijna, maar dat is niet het goede verschil.
-- Misschien kan een paal $Math.min(10, ander) lampjes hebben?
-- Zal ik de palen leegmaken?
-- Ga maar verder.
-- Tik op het vinkje als je palen af zijn.
-- Die heb je al gevonden.
-- Zoek een andere.
-- $g.links en $g.rechts.
-- Een verschil van 4.
-- Maak nog een paar palen met een verschil van 4.
-- Vergeet niet: je kunt ook lampjes uitdoen.
-- Kijk eens naar het scorebord.
-- Beide getallen gaan steeds één omhoog.
-- Het verschil blijft 4.
-- Je hebt al heel veel gedaan.
-- Heel goed gedaan, $l.naam!
-- Heel goed gedaan!
-- Je weet nu wat het verschil is.
+- Een paal met $g3.rechts:paars en een paal met 4.
+- Hmm, je palen hebben 4 en $g3.rechts:paars lampjes.
+- Palen met $g.links:oranje en $g.rechts:paars?
+- $g.links:oranje en $g.rechts:paars.
 
-## aftrekken-tot-10 (gedeeld) (45)
+## aftrekken-tot-10 (gedeeld) (20)
 
-- Ja, goed zo.
 - $kleur(k)?
-- Probeer die nog eens.
-- Geen probleem, we leren het samen.
-- Dat leren we samen in de les.
 - $foutSom(x)?
-- Laten we nog eens kijken.
-- We gaan minsommen leren.
 - Ja
-- Laat maar zien wat je kunt.
-- We kijken eerst wat je al weet.
-- Tik erop tot er $t.vliegjes vuurvliegjes zijn.
-- Er zitten $t.vliegjes vuurvliegjes in het potje.
-- Laat er $t.weg wegvliegen.
-- We hadden $t.vliegjes vuurvliegjes.
-- Er vlogen er $t.weg weg.
-- Welke som past daarbij?
+- Tik erop tot er $t.vliegjes:geel vuurvliegjes zijn.
+- Er zitten $t.vliegjes:geel vuurvliegjes in het potje.
+- Laat er $t.weg:geel wegvliegen.
+- We hadden $t.vliegjes:geel vuurvliegjes.
+- Er vlogen er $t.weg:geel weg.
 - $kleur(goedeSom).
-- Kun je deze uitrekenen?
 - Hoeveel is $kleur(goedeSom)?
-- Juist.
 - $kleur(goedeSom) = $over.
-- Hoeveel van deze $over vuurvliegjes moeten er nog weg?
-- Er mogen er geen overblijven.
+- Hoeveel van deze $over:geel vuurvliegjes moeten er nog weg?
 - $over − $over = 0.
 - $over − $over = $x?
-- Hoeveel van deze $over vuurvliegjes moeten er weg?
-- Laat ze allemaal wegvliegen.
-- Er vlogen er $over weg.
-- Laten we op een andere manier over aftrekken nadenken.
-- Geef de paarse paal $t.paars lampjes.
-- Wat is het verschil tussen de palen?
-- Tussen $t.oranje en $t.paars?
-- Een verschil van $verschil.
-- Hoe schrijf je dat verschil als som?
-- Heel goed gezien.
+- Hoeveel van deze $over:geel vuurvliegjes moeten er weg?
+- Er vlogen er $over:geel weg.
+- Tussen $t.oranje:oranje en $t.paars:paars?
 - $kleur(goedeVerschilSom).
-- Nog een paar minsommen.
-- Bij elke som zie je de vuurvliegjes.
 - Hoeveel is $a − $b?
-- Nu nog het verschil tussen twee palen.
-- Wat is het verschil tussen $a en $b?
-- Goed gedaan, $l.naam!
-- Je kunt minsommen maken onder de 10.
-- Een paar sommen leren we nog samen in de lessen.
+- Wat is het verschil tussen $a:oranje en $b:paars?
 
-## aftrekken-zelfde-verschil (99)
+## aftrekken-zelfde-verschil (95)
 
 - Kijk, de aliens sturen blokken.
 - Een toren van 6.
@@ -442,7 +92,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat klopt, kapitein.
 - 6 en 3 hebben een verschil van 3.
 - Zie je het plusteken tussen de ruimteschepen?
-- Tik erop.
 - Wat heb je net gedaan?
 - Deze knop doet bij allebei de torens een blok erbij.
 - Hmm, kijk nog eens.
@@ -466,8 +115,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel de blokken die over zijn.
 - Hoeveel zijn het er?
 - 10 en 7 hebben ook een verschil van 3.
-- Let goed op het rondje.
-- Er staat nu een minteken.
+- Let goed op de ronde knop.
+- Er staat nu een minteken op.
 - Wat gebeurt er als je erop tikt?
 - Zullen we het uitzoeken?
 - Tik op het minteken.
@@ -481,12 +130,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja, het is nog steeds 3.
 - Het is nog steeds 3.
 - Net als bij het plusteken.
-- We doen een voorspelling.
+- We gaan raden.
 - Je tikt nog 4 keer op het minteken.
 - Wat is het verschil dan?
 - Nog steeds 3?
 - Ik denk dat je gelijk hebt.
-- We zoeken het uit.
 - Tik 4 keer.
 - $gok?
 - Ja, je wist het.
@@ -502,7 +150,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dus:
 - Dan blijft het verschil hetzelfde.
 - Dat heb je goed ontdekt.
-- Ah, je bent een niveau omhoog!
+- Ah, nu wordt het groter!
 - Nu kunnen we boven de 10 komen.
 - Je krijgt twee volle stapels van 10.
 - Kijk wat er gebeurt met het plusteken.
@@ -512,289 +160,120 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Raak.
 - Een volle stapel van 10.
 - Plus 2 losse blokken.
-- Uitstekend gedaan, kapitein $l.naam.
-- Uitstekend gedaan, kapitein.
-- Hier meldt het grondstation zich af.
+- Tot de volgende keer.
 
-## flitsen (gedeeld) (18)
+## flitsen (gedeeld) (3)
 
-- verder
-- We oefenen nog een rondje.
-- Tik op het goede getal.
 - $u.goed van de $u.van.
-- Oranje is nog een keer oefenen.
-- Groen is de race.
-- Roze is klaar.
-- Elk goed antwoord brengt $holo.pion verder.
-- Ben jij eerder bij $holo.finish dan $holo.tegenstander?
 - Je deed er $tijdTekst(r.tijd) seconden over.
 - Je beste tijd is $tijdTekst(best ?? r.tijd) seconden.
-- Groen is nog een keer racen.
-- $hoofd(holo.tegenstander) wint deze keer.
-- Je was heel dichtbij.
-- Wil je nog een keer racen?
-- Of eerst oefenen?
-- Oranje is oefenen.
-- Goed gedaan, $l.naam!
 
-## getallenlijn (gedeeld) (113)
+## getallenlijn (gedeeld) (10)
 
-- Tik op de $nodig[0].
-- Tik op de $groot en de $klein.
-- Probeer opnieuw.
-- Spring naar de $plek + richting.
-- Het vuurvliegje springt één getal tegelijk.
-- $x is het niet.
-- Tel de sprongen van $klein naar $groot.
-- Probeer het opnieuw.
-- Kijk, het vuurvliegje springt het voor.
-- Het is 1 sprong.
 - Het zijn $d sprongen.
 - Typ de $d.
-- We kijken samen hoe de lantaarntjes werken.
-- Stel, we zoeken het verschil tussen 7 en 3.
-- Tik eerst allebei de getallen aan.
-- Eerst de 7, dan de 3.
-- Makkelijk, toch?
-- Zo zetten we elke minsom klaar.
-- Nu zie je allebei de getallen.
-- Hun lantaarntjes branden.
-- En kijk, hier is het vuurvliegje.
-- Het komt als allebei de getallen klaarstaan.
-- Begin hier, bij de 3.
-- Spring steeds één getal verder.
-- Tel de sprongen mee.
-- Mooi, leuk hè?
-- Nog één ding.
-- Spring eens terug naar de 3.
-- Spring je terug naar het begin?
-- Dan gaan de boogjes weg.
-- Dat is handig als je opnieuw wilt beginnen.
-- Nu vullen we het verschil in.
-- Je telde van 3 naar 7.
-- Typ het in het vakje.
-- Dat is geen $x.
-- Het zijn 4 sprongen.
 - Typ de 4.
-- Nu weet je hoe het werkt.
-- We beginnen met op deze getallen te tikken.
-- 3 en 2.
-- Begin met de 2.
-- Hm, ze liggen dicht bij elkaar, hè?
-- We zoeken uit hoe ver ze uit elkaar liggen.
-- Het vuurvliegje helpt.
-- Laat het springen van 2 naar 3.
-- Hoe ver liggen ze uit elkaar?
-- Hoe ver sprong het vuurvliegje?
-- Ze liggen naast elkaar.
-- Ze liggen 1 uit elkaar.
-- Het sprong van 2 naar 3.
-- Dat is een sprong van 1.
-- We komen hier later nog op terug.
-- Het vuurvliegje begon op de 2.
 - En het landde op de 3.
-- Dat zijn twee getallen.
-- Kijk naar het boogje.
-- Maar we willen weten hoe ver het sprong.
-- Tik op de goede sprong.
-- Een sprong van 1.
 - Hm, dat is het nog steeds niet.
-- Hoe ver ze uit elkaar liggen, dat heet het verschil.
-- Daarom zijn de lantaarntjes zo handig.
-- Het verschil tussen 3 en 2 is 1.
-- Nu twee getallen die verder uit elkaar liggen.
-- Wat is het verschil tussen 4 en 2?
-- Tik allebei de getallen aan.
-- Deze liggen verder uit elkaar.
-- Help het vuurvliegje springen van 2 naar 4.
-- Eén getal tegelijk.
-- Ja, knap gedaan, $l.naam.
-- Ja, knap gedaan.
-- Het verschil tussen 4 en 2 is 2.
-- Ze liggen 2 uit elkaar.
-- We sprongen vooruit, van 2 naar 4.
-- Nu springt het vuurvliegje terug.
-- Wordt het verschil dan anders?
-- Geen zorgen, we kijken samen.
-- Kijk maar mee.
-- Laat het vuurvliegje terugspringen naar de 2.
-- Nee
-- Je had gelijk.
-- Het zijn nog steeds 2 sprongen.
-- Vooruit of terug: het verschil blijft 2.
-- Dus 4 en 2 hebben een verschil van 2.
-- Kun je nog zo'n paar vinden?
-- Met een verschil van 2?
-- Kijk naar deze lantaarntjes.
-- Zoek nog zo'n paar.
-- Tik twee getallen aan met een verschil van 2.
-- Dat paar hadden we al.
-- Zoek een ander paar.
-- Een perfect paar!
-- $b en $a hebben een verschil van 2!
 - Hm, niet helemaal.
-- $a en $b liggen $d uit elkaar.
-- Je krijgt nog een kans.
-- Ik help je even.
-- Kijk: van $a naar $b.
-- Dat zijn 2 sprongen.
-- Dus $a en $b hebben een verschil van 2.
-- Je bent goed bezig.
-- Wil je nog zo'n paar zoeken?
-- Je snapt nu goed hoe je het verschil vindt.
 - $groot − $klein = $x?
 - Van $klein naar $groot $d === 1 ? "is 1 sprong" :
-- Kijk, ik laat de sprongen zien.
-- Nu gaan we spelen!
-- Bij elk goed antwoord gaat er bovenaan een lampje aan.
 - Het verschil is $a - b.
-- Daar komen we straks nog op terug.
-- Alle lampjes branden!
-- Er brandt 1 lampje.
-- Er branden $lampjes lampjes.
+- Er branden $lampjes:geel lampjes.
 
-## getallenlijn-boven-de-10 (17)
+## getallenlijn-boven-de-10 (14)
 
-- Welkom terug, $l.naam.
-- Welkom terug.
 - We zoeken het verschil tussen grotere getallen.
 - We beginnen met kleine getallen.
 - Worden de getallen groter?
-- Dan blijft het idee hetzelfde.
+- Dan blijft het hetzelfde.
 - Ja, zo is het.
-- Het verschil is 3.
 - Precies!
 - Het verschil is weer 3.
 - 8 en 5 verschillen 3.
 - 18 en 15 ook.
-- De getallen zijn groter, maar het idee blijft hetzelfde.
+- De getallen zijn groter, maar het blijft hetzelfde.
 - Wauw, $l.naam.
 - Wauw.
 - Je begon met sprongen tussen kleine getallen.
 - Nu vind je het verschil ook boven de 10.
 
-## getallenlijn-doortellen (45)
+## getallenlijn-doortellen (4)
 
-- Welkom terug, $l.naam.
-- Welkom terug.
-- We leren een snellere manier om het verschil te vinden.
-- We vonden het verschil al met de lantaarntjes.
-- Stel, we zoeken het verschil tussen 8 en 5.
-- Wat kunnen we doen?
-- Optellen van 5 tot 8?
-- 5 en 8 optellen?
-- Of optellen van 0 tot 8?
-- We tellen op vanaf het kleinste getal, de 5.
-- Help het vuurvliegje springen naar de 8.
-- Eén getal tegelijk.
-- Dat klopt niet helemaal.
-- 5 en 8 optellen vertelt iets anders.
-- 5 en 8 samen is 13.
-- Tik op de 13 om het te zien.
 - Hm, zo zien we het verschil tussen 5 en 8 niet.
-- We tellen op vanaf de 5.
-- Vanaf 0 tel je alle getallen tot de 8.
-- Maar we beginnen bij de 5.
-- Daar zijn we.
 - We telden 3 sprongen tussen 5 en 8.
-- Perfect.
-- Het verschil is 3.
-- Elk getal tellen is soms het beste.
-- Vooral als je iets voor het eerst leert.
-- Maar soms weet je het zeker.
-- Hier zoeken we het verschil tussen 10 en 5.
-- Ben je zeker? Dan in één sprong.
-- Tik maar op de 10.
-- Je telt per één; dat mag.
-- Je mag ook meteen op de 10 tikken.
-- Het verschil is 5.
-- Weet je het zeker? Spring dan in één keer.
-- Anders tel je elk getal.
-- Je krijgt hetzelfde antwoord.
-- Nu jij.
-- Het vuurvliegje staat steeds op het kleinste getal.
-- Tel op tot het grootste getal.
-- Bij elk goed antwoord gaat er een lampje aan.
 - Van $b tot $a is $a - b.
 - Het verschil is $a - b.
-- Daar komen we straks nog op terug.
-- Mooi gedaan, $l.naam.
-- Je telt op vanaf het kleinste getal.
 
-## getallenlijn-sprongen-tellen (33)
+## getallenlijn-sprongen-tellen (3)
 
-- Hoi $l.naam.
-- Hoi.
-- Vandaag zoeken we het verschil tussen twee getallen.
-- Zal ik eerst laten zien hoe de lantaarntjes werken?
-- Ik help je graag.
-- Fijn.
-- Je ziet het vanzelf.
-- Je weet het nog.
-- Wil je laten zien wat je al weet?
-- Oké, laat maar zien.
-- We beginnen makkelijk.
-- Daarna wordt het wat moeilijker.
-- Goed gewerkt vandaag, $l.naam.
-- Goed gewerkt vandaag.
-- Je kunt het verschil vinden met sprongen.
-- We zoeken het verschil met de getallenlijn.
 - Ja
-- Laat maar zien wat je kunt.
-- We kijken eerst wat je al weet.
-- We beginnen.
-- Help het sterretje springen van $klein naar $groot.
-- Oh, ik zie dat je met sprongen van één begint.
-- Tik meteen op de $groot.
-- Tik op de $groot.
-- Mooie sprong.
-- Wat is het verschil tussen $groot en $klein?
-- Een verschil van $d.
 - $groot min $klein is $x?
-- Kijk nog eens goed.
 - Van $klein naar $groot $d === 1 ? "is 1 sprong" :
-- Het verschil is $d.
-- Mooi gedaan, $l.naam.
-- Je kunt het verschil vinden op de getallenlijn.
 
-## intro-instellingen (22)
+## intro-instellingen (42)
 
-- Hoi $l.naam.
-- Hoi.
+- We kennen elkaar al een beetje.
+- Maar we kunnen samen nog wat instellen.
+- De groene knop is voor je naam.
+- De oranje knop is voor de letters.
+- Wat wil je eerst doen?
+- Mogen de woorden oplichten als ik voorlees?
+- Zoals hier.
+- Tik op Aan of Uit.
+- Tik daarna op de groene knop.
 - Goed, de woorden lichten op.
 - Goed, de woorden lichten niet op.
+- Een prima keuze.
+- Wil je gewone letters, of grote letters?
+- Tik op Gewoon of Groot.
+- Dan zie je hoe het eruitziet.
 - Goed, ik gebruik grote letters.
 - Goed, de letters blijven gewoon.
 - Ik weet je naam nog niet.
 - Een grote mens kan hem invullen bij je profiel.
 - Ik noem je $l.naam.
+- Tik op Luister.
+- Dan hoor je hoe ik je naam zeg.
 - Mooi zo, $l.naam!
 - We laten het zo.
+- Dan proberen we het anders.
+- Tik op een knop en luister.
+- Kies de knop die goed klinkt.
+- Dank je.
+- Zo zeg ik je naam vanaf nu.
 - Goed, we laten het zo.
 - Een grote mens kan het later nog typen.
+- Nog twee te gaan.
+- Nog één te gaan.
 - Ik ga je helpen met leren.
 - Hoe vind je dat?
 - Tik op een gezichtje.
 - Ik heb er ook zin in.
-- Dank je dat je het zegt.
+- Fijn dat je het zegt.
 - We gaan het rustig samen doen.
 - Het is ook allemaal nieuw.
 - We doen het rustig, samen.
 - Nu staat alles goed voor jou.
 
-## intro-zo-werkt-het (20)
+## intro-zo-werkt-het (25)
 
 - Hoi $l.naam!
-- Hoi!
+- Dat merken we vanzelf.
+- Mooi, rustig aan dus.
 - Je tikte op Weet ik niet.
 - Dat mag ook!
-- Daar kom ik zo op terug.
+- Dat zien we zo.
 - De $mooi?
+- Dan lees ik ze niet voor.
+- Je kunt het later nog veranderen.
 - Fijn dat je het $p.keuze.toLowerCase() vindt.
+- Tikken mag ook.
+- Op een tablet is dat het makkelijkst.
 - Ook goed.
 - Onthoud: Weet ik niet staat altijd onder de knoppen.
 - Je koos de $k.
-- Goed geprobeerd.
+- Tik nu eens op de knop Weet ik niet.
 - Je weet nu waar het vakje staat.
 - Tik in het vakje.
 - Typ dan een 3.
@@ -805,10 +284,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu weet je hoe alles werkt.
 - Je hebt het helemaal goed gedaan.
 
-## klok-digitale-klok (29)
+## klok-digitale-klok (26)
 
 - Tik op de klok die je wilt.
-- Het maakt niet uit welke.
 - Eén minuut is een korte tijd.
 - Ongeveer zo lang als een liedje zingen.
 - Welke duurt ongeveer een minuut?
@@ -829,15 +307,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nul minuten: precies het uur.
 - Dus hoe laat is het?
 - Druk nog een keer.
-- Hoe laat is het nu?
 - Houd de knop nu ingedrukt.
 - Hij gaat steeds sneller.
 - Hij stopt vanzelf bij 12 uur.
-- Hoe laat is het op deze klok?
 - Klokken als deze heten digitale klokken.
 - En jij kunt nu elk heel uur lezen.
 
-## klok-eindtoets (19)
+## klok-eindtoets (16)
 
 - In deze lessen leer je klokkijken.
 - Op een klok met wijzers.
@@ -849,9 +325,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Mooi gedaan, $l.naam!
 - Mooi gedaan!
 - Je kunt hele en halve uren lezen en zetten.
-- Goed gewerkt, $l.naam!
-- Goed gewerkt!
-- Je miste er maar één.
 - We doen eerst een stapje terug.
 - Oefen nog even met deze lessen:
 - Oefen nog even met deze les:
@@ -859,178 +332,42 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daarna doe je de toets opnieuw.
 - Tik op de kaart om voor nu te stoppen.
 
-## klok-halve-uren (122)
+## klok-halve-uren (17)
 
-- En nu?
-- De urenwijzer staat op een vreemde plek.
-- Waar wijst zijn punt naar?
-- De punt raakt $x niet.
-- Volg de urenwijzer tot het puntje.
-- Waar komt hij uit?
-- Welk getal is hij al voorbij?
-- Ja, de 4.
-- Een klok draait met de klok mee.
-- Nu is hij op weg naar de 5.
-- De punt wijst wel die kant op.
-- Een klok draait deze kant op.
-- Geen zorgen. Een klok draait deze kant op.
-- Hij kwam eerst langs de 4.
-- Het is dus tussen 4 uur en 5 uur.
-- De minutenwijzer weet precies waar.
-- We beginnen bij een tijd die je kent.
-- De korte wijzer zegt het uur.
-- Vandaag mag jij de minutenwijzer draaien.
-- Draai hem één keer helemaal rond.
-- Tik op de 12, of sleep hem rond.
-- De minutenwijzer ging helemaal rond.
-- Wat deed de urenwijzer?
-- Ja, van de 3 naar de 4.
-- Hij bewoog wel.
-- Maar lang niet helemaal rond.
-- Hij bewoog wel een stukje.
-- We kijken nog een keer.
-- Kijk nu goed naar de urenwijzer.
-- Draai de minutenwijzer nog een keer rond.
-- De urenwijzer begon bij de 4.
-- Waar staat hij nu?
-- Eerst was het $van uur.
-- Nu is het $van + 1 uur.
-- Hoeveel tijd is er voorbij?
-- En als de minutenwijzer maar half rond gaat?
-- Kleur de helft van de klok in.
-- Tik op een getal.
-- Kijk dan naar het gekleurde stuk.
-- Dat is de helft!
-- De minutenwijzer ging half rond.
-- Een heel rondje is een uur.
-- Dit is maar een half rondje.
-- Hoeveel tijd is dat?
-- De minutenwijzer heeft wel bewogen.
-- Er is dus tijd voorbij.
-- Kijk nu naar de urenwijzer.
-- Waar staat hij?
-- op de 5
-- Om 5 uur stond hij op de 5.
-- op de 6
-- Hij is dicht bij de 6, maar staat er nog niet op.
-- Zo ver is hij nog niet.
-- Er is een half uur voorbij.
-- Het is een half uur na 5 uur.
-- De urenwijzer is op weg naar de 6.
-- Hij is al halverwege.
-- Daarom heet deze tijd half 6.
-- Half op weg naar 6 uur.
-- Bij half noemen we altijd het uur dat eraan komt.
-- Nu verstopt de minutenwijzer zich.
-- Hoe laat is het, met alleen de urenwijzer?
-- Ik snap waarom: hij is de 5 voorbij.
-- Maar bij half noemen we het uur dat eraan komt.
-- Hoe laat is het dan?
-- Hij is dicht bij de 6.
-- Maar hij is er nog niet.
-- Om 5 uur staat hij precies op de 5.
-- Deze is de 5 al voorbij.
-- Hij staat halverwege de 5 en de 6.
-- Nu snap je ook de klok van het begin.
-- Het was half 5.
-- Dit is de klok van Bliepo.
-- Bliepo wilde half 6 laten zien.
-- Maar er ging iets mis.
-- Links staat jouw klok.
-- Wat deed Bliepo fout?
-- Kijk naar elke wijzer op jouw klok.
-- Zoek dan dezelfde wijzer bij Bliepo.
-- Welke staat anders?
-- Bliepo zette hem tussen de 6 en de 7.
-- Maar half 6 komt vóór 6 uur.
-- Hij hoort tussen de 5 en de 6.
-- Bliepo zet hem goed.
-- Nu weet je hoe half werkt.
-- Een paar klokken voor jou.
-- Tussen welke getallen staat de urenwijzer?
-- Hij staat tussen de 7 en de 8.
-- Nog wat halve uren.
-- Hier is een stiekeme.
-- Kijk waar de urenwijzer staat.
-- Waar moet de minutenwijzer dan staan?
-- Bij half staat de minutenwijzer op de 6.
-- Nog een paar, om zeker te weten dat je het snapt.
-- Deze is het moeilijkst.
-- Nu zet jij allebei de wijzers.
-- Laat half 9 zien.
-- Tik op een wijzer om hem te kiezen.
-- Tik dan waar hij heen moet.
-- Laat half 5 zien.
-- Het is nu 9 uur.
-- Over een half uur is het half 10.
-- Waar staat de urenwijzer dan?
-- Draai de minutenwijzer half rond.
-- Kijk goed naar de urenwijzer.
-- Dat zei jij al!
-- Kijk, hij staat tussen de 9 en de 10.
-- Halverwege op weg naar de 10.
-- Je had ze allemaal goed.
-- Goed gewerkt.
-- Nog één om af te sluiten.
-- Hoe laat is dit?
-- Na de 12 begint de klok weer bij de 1.
-- Hij is de 12 voorbij.
-- Hij is op weg naar de 1.
-- Het is half 1.
-- Nu kun je halve uren lezen en zetten.
-- Ik snap het: de minutenwijzer staat op de 3.
-- Maar de 3 hoort bij de minutenwijzer.
-- Kijk naar de korte wijzer.
-- Deze staat op de 3.
-- Welk uur is hij net voorbij?
+- De [[u:urenwijzer]] staat op een gekke plek.
+- De [[m:minutenwijzer]] weet precies waar.
+- Vandaag mag jij de [[m:minutenwijzer]] bewegen.
+- De [[m:minutenwijzer]] ging helemaal rond.
+- Wat deed de [[u:urenwijzer]] dan?
+- De [[u:urenwijzer]] begon op de 4.
+- Nu kijken we wat er met de tijd gebeurt als de [[m:minutenwijzer]] maar een half rondje gaat.
+- Maar wat doet de [[u:urenwijzer]]?
+- De [[u:urenwijzer]] is op weg naar de $h + 1, en hij is al halverwege.
+- Nu verstopt de [[m:minutenwijzer]] zich.
+- Hoe laat is het, met alleen de [[u:urenwijzer]]?
+- Tussen welke twee getallen staat de [[u:urenwijzer]]?
+- Kijk waar de [[u:urenwijzer]] staat.
+- Waar moet de [[m:minutenwijzer]] dan wijzen?
+- Waar staat de [[u:urenwijzer]] dan?
+- Waar staat de [[u:urenwijzer]] nu?
+- De 3 is waar de [[m:minutenwijzer]] naar wijst.
 
-## klok-hele-uren-zetten (31)
+## klok-hele-uren-zetten (3)
 
-- Je kunt al een heel uur lezen.
-- Nu ga je er zelf een zetten.
-- Denk je dat je dat al kunt?
-- Tik op je antwoord, en dan op het vinkje.
-- Mooi, dan gaan we kijken.
-- De urenwijzer zegt welk uur het is.
-- De urenwijzer vertelt ons het uur.
-- Alleen die mag jij draaien.
-- Laat 5 uur zien.
-- Tik op een getal, of sleep de oranje urenwijzer.
-- Laat nu 9 uur zien.
-- Laat 12 uur zien.
-- De 12 staat helemaal bovenaan.
-- Laat 7 uur zien.
-- Waar wijst de minutenwijzer naar?
-- Ja, recht omhoog naar de 12.
-- Bij elk heel uur.
-- Op de 7 staat de urenwijzer.
-- De minutenwijzer wijst recht omhoog, naar de 12.
-- Laat 3 uur zien.
-- Nog een paar, om zeker te weten dat je het snapt.
-- Laat $uur uur zien.
-- Laat $extra uur zien.
-- Nu kun je zelf een heel uur zetten.
-- Ik snap waarom: hij is de $uur voorbij.
-- Maar bij half noemen we het uur dat eraan komt.
-- Hoe laat is het dan?
-- Hij is dicht bij de $na.
-- Maar hij is er nog niet.
-- Kijk naar de urenwijzer.
-- Waar is hij naar op weg?
+- De [[u:urenwijzer]] laat het uur zien.
+- Waar wijst de [[m:minutenwijzer]]?
+- Nu kun je de klok op elk heel uur zetten met de [[u:urenwijzer]].
 
-## klok-instaptoets (17)
+## klok-instaptoets (14)
 
 - In deze lessen leer je klokkijken.
 - Op een klok met wijzers.
 - Ja
-- We kijken eerst wat je al weet.
 - Doe maar wat je kunt.
 - Nog eentje zo.
 - Mooi gedaan, $l.naam!
 - Mooi gedaan!
 - Je kunt al hele en halve uren lezen.
-- Goed gewerkt, $l.naam!
-- Goed gewerkt!
 - In de lessen oefenen we samen verder.
 - Het is $uur uur.
 - Kijk goed naar de urenkant.
@@ -1038,152 +375,31 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De urenkant zegt $uur.
 - De minutenkant zegt: nul minuten erbij.
 
-## klok-kwart-over (75)
+## klok-kwart-over (9)
 
-- En nu?
-- Hier is een tijd die je al kent.
-- Hij is de 4 voorbij.
-- Bij half noemen we het uur dat eraan komt.
-- Hoe laat is het dan?
-- Bij 4 uur staat de minutenwijzer op de 12.
-- Deze staat op de 6.
-- We zetten de klok terug op 4 uur.
-- Kleur een kwart van de klok in.
-- Tik op een getal.
-- Kijk dan naar het gekleurde stuk.
-- Hier is een kwart.
-- Dat is de helft van de helft.
-- Met 4 kwarten is de klok vol.
-- De minutenwijzer ging een kwart rond.
-- Hoeveel tijd is er voorbij?
-- Een half uur is een half rondje.
-- Dit was maar een kwart rondje.
-- Hoeveel tijd is dat?
-- Een heel uur is een heel rondje.
-- Het is dus een kwartier na 4 uur.
-- Dat noemen we kwart over 4.
-- Bij kwart over staat de minutenwijzer altijd op dezelfde plek.
-- Naar welk getal wijst hij?
-- Op de 6 staat hij bij half.
-- Kijk naar de lange wijzer.
-- Waar wijst hij nu naar?
-- Op de 12 staat hij bij een heel uur.
-- Kijk nu naar de urenwijzer.
-- Waar staat hij?
-- Ik snap waarom.
-- Om 4 uur stond hij precies op de 4.
-- Maar er is een kwartier voorbij.
-- Dus is hij een stukje verder.
-- Waar staat hij nu?
-- Halverwege staat hij bij half 5.
-- Er is pas een kwartier voorbij.
-- Nu een paar klokken voor jou.
-- Hoe laat is dit?
-- De urenwijzer staat net na de 5.
-- Waar moet de minutenwijzer dan staan?
-- Veel kinderen kiezen die.
-- Op de 6 stopt de minutenwijzer bij half.
-- Maar deze urenwijzer heeft nog maar net bewogen.
-- Waar staat de minutenwijzer dan?
-- Maar de urenwijzer is de 5 al voorbij.
-- Nog een paar, om zeker te weten dat je het snapt.
-- Deze is het moeilijkst.
-- Nu zet jij allebei de wijzers.
-- Laat kwart over 8 zien.
-- Tik op een wijzer om hem te kiezen.
-- Tik dan waar hij heen moet.
-- Laat nu kwart over 3 zien.
-- Laat kwart over 10 zien.
-- Knap.
-- We kijken een beetje vooruit.
-- Het is nu 11 uur.
-- Waar staat de urenwijzer om kwart over 11?
-- Zet de minutenwijzer op de 3.
-- Kijk goed naar de urenwijzer.
-- Dat zei jij al!
-- Kijk, hij is een klein stukje verder.
-- Net na de 11.
-- Je had ze allemaal goed.
-- Goed gewerkt.
-- Nog één om af te sluiten.
-- Hoe laat is het op deze klok?
-- Net een stukje na de 12.
-- De urenwijzer staat net na de 12.
-- Het is kwart over 12.
-- Nu kun je kwart over lezen en zetten.
-- Tik op de $getal, in de cirkel.
-- Er zijn twee manieren om de wijzers te bewegen.
-- Je mag een wijzer ook slepen.
-- Sleep je de minutenwijzer, dan draait de urenwijzer mee.
+- De [[m:minutenwijzer]] staat op de 6, en de [[u:urenwijzer]] staat halverwege de 4 en de 5.
+- De [[m:minutenwijzer]] ging dus een kwartrondje.
+- Bij kwart over stopt de [[m:minutenwijzer]] altijd op dezelfde plek.
+- Kijk nu naar de [[u:urenwijzer]].
+- De [[u:urenwijzer]] staat een klein stukje voorbij de 5.
+- Waar moet de [[m:minutenwijzer]] dan wijzen?
+- Waar staat de [[u:urenwijzer]] om kwart over 11?
+- Waar staat de [[u:urenwijzer]]?
+- De [[u:urenwijzer]] staat een klein stukje voorbij de 8.
 
-## klok-minuten-later (57)
+## klok-minuten-later (2)
 
-- Het is 5:40.
-- Hoe laat is het 5 minuten later?
-- Het is 7:05.
-- En 5 minuten later?
-- Het is nu 2:35.
-- De koekjes van Bliepo zijn over 5 minuten klaar.
-- Zet de minutenwijzer 5 minuten verder.
-- De minutenwijzer schoof één getal op.
-- Dat is 5 minuten.
-- Om 2:40 zijn de koekjes klaar.
-- We tellen verder met vijven.
-- En 5 minuten daarna?
-- En nog 5 minuten?
-- De minuten gingen van 40 naar 45.
-- Toen naar 50 en daarna naar 55.
-- Steeds 5 erbij.
-- Het is nu 3:40.
-- Zet de minutenwijzer nu zelf 5 minuten verder.
-- Het is 3:50.
-- Van 40 naar 45, naar 50 en naar 55.
-- Nu zonder boog.
-- Het is 4:10.
-- Het is 4:20.
-- Het is 6:25.
-- Het is 6:30.
-- Het is 8 uur.
-- Het is 5:20.
-- Bliepo zegt: 5 minuten later is het 5:21.
-- Heeft Bliepo gelijk?
-- Goed gezien!
-- 5:21 is maar 1 minuut later.
-- Kijk nog eens.
-- Bliepo telde maar één klein streepje.
-- Dat is 1 minuut, geen 5.
-- Hoe laat is het dan, 5 minuten later?
-- Nu ga je 10 minuten verder.
-- Het is 1:15.
-- De pannenkoeken van Bliepo zijn over 10 minuten klaar.
-- Zet de minutenwijzer 10 minuten verder.
-- De minutenwijzer schoof 2 getallen op.
-- Dat is 10 minuten.
-- Om 1:25 zijn de pannenkoeken klaar.
-- Na het eten speelt Bliepo 10 minuten.
-- Hoe laat is het 10 minuten later?
-- Nu kun je verder tellen met vijven.
-- En je weet: 10 minuten is 2 getallen verder.
-- Hoeveel minuten was dat samen?
-- Dat is het verschil tussen $a en $b.
-- Maar Bliepo deed allebei, het ene na het andere.
-- We tellen ze bij elkaar.
-- Dat is maar één van de twee.
-- Bliepo deed daarna nog iets.
-- Kijk naar de boog.
-- Die laat zien hoe lang het samen duurde.
-- We tellen langs de boog.
-- Kijk, we tellen langs de boog in vijven.
-- Hoeveel minuten samen?
+- De [[m:minutenwijzer]] ging één getal verder, en dat is 5 minuten.
+- De [[m:minutenwijzer]] ging twee getallen verder, en dat is 10 minuten.
 
 ## klok-samen-hoe-lang (4)
 
-- Bliepo doet twee dingen, het ene na het andere.
+- Bliepo doet twee dingen na elkaar.
 - Het blauwe vlaggetje laat zien waar hij begint.
 - De laatste.
 - Nu kun je zeggen hoe lang twee dingen samen duren.
 
-## klok-tellen-in-vijven (60)
+## klok-tellen-in-vijven (59)
 
 - Kijk naar de kleine streepjes rond de klok.
 - Elk streepje is één minuut.
@@ -1192,7 +408,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja, 5 minuten.
 - 5 streepjes, dus 5 minuten.
 - Je zette hem op de 1, dat klopt.
-- Hmm, het is niet $x.
+- Hm, het is niet $x.
 - Geen zorgen, we tellen samen.
 - Maar elk paars streepje is één minuut.
 - Tel de streepjes van de 12 tot de 1.
@@ -1241,136 +457,33 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij de 12 begint het tellen opnieuw.
 - Maar hoeveel minuten waren het helemaal rond?
 - Kijk, een getallenlijn die in vijven telt.
-- Een klok is zo'n lijn, maar dan rondgebogen.
+- Een klok is zo'n lijn, maar dan in een cirkel.
 - Nu kun je op de klok tellen in vijven.
-- Goed gedaan, $l.naam!
 - 5, 10, 15 … tot 60.
 
-## klok-urenwijzer (121)
+## klok-urenwijzer (19)
 
-- En nu?
-- Weet je hoe dit heet?
-- Ja, een getallenlijn.
-- Het is nog geen klok.
-- Maar je bent me een stapje voor!
-- Dit heet een getallenlijn.
-- Tik op een van de getallen.
-- Zo kun je een getallenlijn ook oprollen!
-- Hoe noemen we dit?
-- Een klok, precies.
-- Het is nog steeds een getallenlijn.
-- Maar dan in een rondje.
-- Zo'n rondje noemen we een klok.
-- Kijk naar het hoogste punt van de klok.
-- Welk getal staat daar?
-- De $x staat niet bovenaan.
-- Kijk waar het driehoekje wijst.
-- Volg de klok rond, naar beneden.
-- Welk getal staat helemaal onderaan?
-- De $x staat niet onderaan.
-- Kijk naar de 6.
-- Welk getal komt direct na de 6?
-- Ik snap waarom je de 5 kiest.
-- Een getallenlijn lees je vaak zo.
-- De 8 komt wel na de 6.
-- Maar er zit nog een getal tussen.
-- Een klok draait deze kant op.
-- Maar een klok draait deze kant op.
-- Nu een lastige.
-- Welk getal komt direct na de 12?
-- De 13?
-- Op een getallenlijn klopt dat.
-- Maar op de klok staat geen 13.
-- Ga met de klok mee vanaf de 12.
-- Welk getal komt dan?
-- De 11 komt vóór de 12.
-- Er staan nu twee wijzers op de klok.
-- Een lange en een korte.
-- Welke telt de uren, denk je?
-- Goed gedacht!
-- Dat klinkt logisch.
-- Een uur duurt langer dan een minuut.
-- Maar op de klok is het andersom.
-- We kijken samen.
-- De lange paarse wijzer telt de minuten.
-- Hoe heet hij, denk je?
-- Een secondewijzer is heel dun.
-- Die zit niet op deze klok.
-- Deze wijzer telt de minuten.
-- En de korte oranje wijzer?
-- Hoe heet die?
-- De minutenwijzer is de lange.
-- Deze is kort.
-- Hij telt de uren.
-- Deze korte wijzer telt de uren.
-- Met de urenwijzer lees je het uur.
-- We kijken hoe hij werkt.
-- Waar wijst de urenwijzer naar?
-- Ah, ik snap het.
-- Naar de 12 wijst de minutenwijzer.
-- Volg de korte wijzer tot het puntje.
-- Volg de urenwijzer tot het puntje.
-- Waar wijst hij naar?
-- De urenwijzer draait weer.
-- Waar wijst hij nu naar?
-- Nu mag jij de urenwijzer draaien.
-- Kijk goed wat de minutenwijzer doet.
-- Zet de urenwijzer op de 2.
-- Tik op de wijzer en dan op de 2.
-- Je mag hem ook slepen.
-- Kijk eens naar de minutenwijzer.
-- Hij wijst recht omhoog, naar de 12.
-- Zet de urenwijzer nu op de 3.
-- Nu staat hij op de 3.
-- De minutenwijzer wijst nog steeds naar de 12.
-- Zet hem nu op de 6.
-- Elke keer stond de urenwijzer op een heel uur.
-- Waar wees de minutenwijzer dan?
-- Op de 6 staat nu de urenwijzer.
-- Kijk naar de lange wijzer.
-- Waar wijst die naar?
-- Bij een heel uur wijst de minutenwijzer altijd naar de 12.
-- En waar wijst de urenwijzer nu?
-- Hoe noemen we deze tijd, denk je?
-- De 4 komt na de 3.
-- De korte wijzer is nog niet bij de 4.
-- De 9 staat aan de andere kant.
-- Kijk goed waar de korte wijzer wijst.
-- Die zegt niet welk uur het is.
-- De korte wijzer zegt het uur.
-- Hoe heet deze tijd?
-- Hoe laat is het nu?
-- De 5 komt vóór de 6.
-- De 12 is van de minutenwijzer.
-- Is dit 7 uur?
-- Goed gezien!
-- Bij een heel uur wijst de minutenwijzer naar de 12.
-- Deze staat beneden, bij de 6.
-- Kijk naar de minutenwijzer.
-- Bij een heel uur wijst hij naar de 12.
-- Dus het is geen 7 uur.
-- Nu een paar klokken voor jou.
-- Welke wijzer vertelde je het uur?
-- De korte wijzer vertelt het uur.
-- Dat is de urenwijzer.
-- En deze?
-- Waar wijst de minutenwijzer naar?
-- Nog één, dan is de les klaar.
-- Je had ze allemaal goed.
-- Goed gewerkt.
-- Nog één om mee af te sluiten.
-- Hoe laat is het over een uur?
-- Ja! We kijken even.
-- 11 uur is een uur eerder.
-- We kijken even.
-- Hmm, we kijken even.
-- Geen zorgen, we kijken even.
-- De minutenwijzer ging één keer rond.
-- De urenwijzer ging van de 12 naar de 1.
-- Het is 1 uur.
-- Nu kun je het uur lezen met de urenwijzer.
+- Deze lange [[m:blauwgroene wijzer]] telt de minuten op een klok.
+- En deze korte [[u:oranje wijzer]].
+- We gebruiken de [[u:urenwijzer]] om het uur te lezen.
+- Naar welk getal wijst de [[u:urenwijzer]]?
+- Je kunt het uur lezen met de [[u:urenwijzer]].
+- Laten we kijken wat de [[m:minutenwijzer]] doet.
+- De [[m:minutenwijzer]] wijst recht omhoog, naar de 12.
+- De [[m:minutenwijzer]] wijst nog steeds recht omhoog.
+- Waar wees de [[m:minutenwijzer]] elke keer bij een nieuw uur?
+- Let deze keer goed op de [[m:minutenwijzer]].
+- Waar eindigde de [[m:minutenwijzer]]?
+- Wijst de [[m:minutenwijzer]] recht omhoog? Dan begint er een nieuw uur.
+- En waar wijst de [[u:urenwijzer]] nu?
+- De 12 is het getal van de [[m:minutenwijzer]].
+- Bij een heel uur wijst de [[m:minutenwijzer]] recht omhoog.
+- De [[u:urenwijzer]] is de 7 al voorbij, maar nog niet bij de 8.
+- De [[u:urenwijzer]] laat het uur zien.
+- Waar wijst de [[m:minutenwijzer]]?
+- Nu kun je het uur lezen met de [[u:urenwijzer]].
 
-## klok-versla-de-wekker (24)
+## klok-versla-de-wekker (23)
 
 - Hoeveel klokken kun je lezen voordat de wekker afgaat?
 - Je hebt één minuut.
@@ -1383,85 +496,29 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nog een keer, of ben je klaar?
 - Goed gespeeld, $l.naam!
 - Goed gespeeld!
-- Ik zie wat je denkt.
-- Eén klein streepje is 1 minuut.
-- Maar $stap minuten is $stap streepjes verder.
+- Kijk naar de cijfers terwijl de [[m:minutenwijzer]] draait, $per minuten per keer.
+- Dan is het dus $digitaal(doel).
+- $nu en $stap erbij is $nu + stap minuten, en je optelling klopt.
+- Na $uur:59 komt $daarna:00 op de klok, en dan begint een nieuw uur.
+- Het is $digitaal(van), en er gaan $stap minuten voorbij.
+- Onderweg zegt de klok $daarna:00.
+- Om $x komt de [[m:minutenwijzer]] bij het volgende getal, dat klopt.
+- De [[m:minutenwijzer]] komt bovenaan bij de 12, dat klopt.
 - Het is $digitaal(van).
-- Hoe laat is het dan?
-- Dat is 10 minuten later.
-- We gaan maar 5 minuten verder: één getal.
-- Dat is 5 minuten later.
-- 10 minuten is 2 getallen verder.
-- Elk getal op de klok is 5 minuten.
-- De minutenwijzer gaat één getal verder.
-- De minutenwijzer gaat 2 getallen verder.
 - Hoe laat is het $stap minuten later?
+- Tik op de $getal, of sleep de [[m:minutenwijzer]] erheen.
+- Daar zegt de klok $plus minuten, dat klopt.
 
-## klokkijken (gedeeld) (55)
+## klokkijken (gedeeld) (1)
 
-- Er is nog één vraag van net.
-- Er zijn nog een paar vragen van net.
-- Probeer het nog een keer.
-- We komen hier later op terug.
-- Denk je dat je dit al weet?
-- We lopen het toch even samen door.
-- Tik op je antwoord, en dan op het vinkje.
-- Laat maar eens zien.
-- Knap, dat kun je al!
-- Dan gaan we meteen oefenen.
-- We leren het samen.
-- Alles goed, $l.naam!
-- Alles goed!
-- Goed gewerkt, $l.naam!
-- Goed gewerkt!
-- Je miste er maar één.
-- Je hebt goed geoefend.
-- Dat was vast pech.
-- Volgende keer lukt het helemaal.
-- Tik op de $n.
-- Of sleep de oranje urenwijzer erheen.
-- Kijk, zo.
-- Dat is de $nu.
-- We willen de $uur.
-- Draai dus verder.
-- Draai dus een stukje terug.
-- Tik op de $uur.
-- Of sleep de urenwijzer erheen.
-- Tik op de $uur, in de cirkel.
-- Je zoekt de $uur.
-- Bij half staat de minutenwijzer op de 6.
-- Bij kwart over staat de minutenwijzer op de 3.
-- Half $na komt vóór $na uur.
-- De urenwijzer is nog op weg naar de $na.
-- Hij hoort tussen de $uur en de $na.
-- De urenwijzer hoort tussen de $uur en de $na.
-- De urenwijzer hoort net na de $uur.
-- Tik op de $getal.
-- Kijk dan naar het gekleurde stuk.
-- Er is nog niets gekleurd.
-- Tik op een getal.
-- Het gekleurde stuk is kleiner dan het lege stuk.
-- Het gekleurde stuk is groter dan het lege stuk.
-- Bij de helft zijn ze even groot.
-- Dit is de helft.
-- Een kwart is de helft van de helft.
-- Dit is minder dan een kwart.
-- Dit is meer dan een kwart.
-- Waar wijst de urenwijzer naar?
-- Volg de korte wijzer tot het puntje.
-- Volg de urenwijzer tot het puntje.
-- Waar wijst hij naar?
-- De korte wijzer zegt het uur.
-- De korte wijzer wijst naar de $uur.
-- Het is $uur uur.
+- Tik op de $uur, of sleep de [[u:urenwijzer]] erheen.
 
-## onder (48)
+## onder (41)
 
 - Je legde een $k bij de 10.
 - Dat is nog iets kleiner dan $a plus $b.
 - Dat is nu een beetje groter dan $a plus $b.
 - Welke tegel moet erbij om $s te maken?
-- Je hebt nog $nodig nodig.
 - Kijk, ik leg de $nodig erbij.
 - $a plus $b is $s.
 - Ik zie wat je deed.
@@ -1471,13 +528,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk naar de 10 en de tegel erbij.
 - Leg een tegel bij de 10.
 - Dan zie je het beter.
-- Hoeveel is het samen?
-- Kijk.
 - 10 plus $s - 10 is $s.
 - Dus $a plus $b is ook $s.
-- Daar komen we later op terug.
 - Zet er nog één bij.
-- $a en $b is samen $a + b.
 - Dat is niet meer dan 10.
 - Kies een grotere tegel.
 - Ik leg er een 10 onder.
@@ -1487,12 +540,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Of de 10?
 - Ja, de $a plus $b is groter.
 - Hij steekt verder uit.
-- Hmm.
 - De $a plus $b lijkt mij groter.
 - Kijk maar, hij steekt verder uit.
 - Kijk waar de vormen ophouden.
 - De $a plus $b steekt verder uit.
-- Hier is een uitdaging.
+- Hier is een moeilijke opdracht.
 - Dan is het evenveel als $a plus $b.
 - Kijk, nu zijn ze even groot.
 - Dus 10 plus $k en $a plus $b zijn evenveel.
@@ -1501,104 +553,27 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Deze keer heb ik $p plus $q gemaakt.
 - En $p plus $q?
 - Leg een tegel bij de 10 als dat helpt.
-- Nu nog één.
 - Goed bezig.
 - Nu de volgende.
 - Je kunt plussommen over de 10 maken.
 
-## optellen-100-aanvullen-tot-tiental (19)
+## optellen-100-aanvullen-tot-tiental (1)
 
-- We gaan naar het volgende ronde getal.
-- Wat moet er bij 33 om 40 te maken?
-- Weet je dat al?
 - Ja
-- Mooi, dan kijken we samen of het klopt.
-- Helemaal geen probleem.
-- We ontdekken het samen.
-- Nu doe ik er een beetje bij.
-- Nu gaan we met deze sterren rekenen.
-- $r.a plus $r.doel - r.a is $r.doel.
-- Je hebt hier echt aanleg voor, $l.naam.
-- Je hebt hier echt aanleg voor.
-- Zullen we er een paar zonder sterren doen?
-- Ik zet het voor je klaar.
-- Oké, nog één.
-- Knap gedaan, $l.naam.
-- Dit waren moeilijke vragen.
-- Dan doen we er nog twee met sterren.
-- Deze les is klaar.
 
-## optellen-100-eindtoets (40)
+## optellen-100-eindtoets (5)
 
-- Dit is de eindtoets van optellen tot 100.
-- Ken je dit al?
 - Ja
-- We kijken wat je al kunt.
-- Probeer zo vlot mogelijk te antwoorden.
-- Tik 3 keer op de knop.
-- Welk getal is dat?
-- Wat krijg je als je er 40 bij doet?
-- Hoeveel is 30 plus 40?
-- Kijk hoe ik er nu eenheden bij doe.
-- 70 plus 6.
-- Weet je welk getal dit is?
-- Nu splitsen we de 8.
-- Eén deel is 5.
-- Hoeveel is het andere deel?
-- Nog één vraag.
-- Hoeveel is 27 plus 20?
-- Echt knap gedaan, $l.naam!
-- Echt knap gedaan!
-- Je kunt plussommen tot 100 maken.
-- Je weet het bijna allemaal.
-- Goed geoefend.
-- Doe de toets later nog eens.
-- Ben je tevreden met je keuze?
-- Wat moet er bij $a om $doel te maken?
-- Tik op een groepje sterren bovenaan.
-- Dit is een groepje van 3 sterren.
 - $a plus $g is $a + g.
-- We zoeken $doel.
-- Tel de lege plekjes in de groep.
-- Tik op de $nodig.
-- We komen hier later op terug.
 - $a plus $nodig is $doel.
-- Kijk, er zijn nog lege plekjes.
-- Kijk, er gaan sterren over de groep heen.
 - $a plus $x is $a + x.
-- Kijk, ik zet de sterren erbij.
-- Hoeveel lege plekjes zie je?
-- Kijk maar.
 - Er moeten $nodig sterren bij.
 
-## optellen-100-instaptoets (24)
+## optellen-100-instaptoets (1)
 
-- Nu gaan we plussommen maken tot 100.
-- Ken je dit al?
 - Ja
-- In deze toets laat je zien wat je al kunt.
-- Probeer vlot te antwoorden.
-- Tik 3 keer op de knop.
-- Dan komen er lichtbollen van 10.
-- Je hebt 3 lichtbollen van 10.
-- Welk getal is dat?
-- Wat krijg je als je er 50 bij doet?
-- Hoeveel is 30 plus 50?
-- Als je 30 en 40 optelt, hoeveel is het dan samen?
-- Kijk, nu zijn er ook losse sterren.
-- Hoeveel is 40 plus 7?
-- Nu splitsen we de 7.
-- Eén deel is 5.
-- Hoeveel is het andere deel?
-- Je doet het echt heel goed.
-- Je kunt al plussommen tot 100 maken.
-- Je weet het allemaal.
-- Alleen ging het nog niet zo vlot.
-- Laten we je wat helpen.
-- In de lessen oefenen we dit nog meer.
-- Dank je wel.
 
-## optellen-100-over-het-tiental (81)
+## optellen-100-over-het-tiental (73)
 
 - Dit is een best lastige plussom.
 - Kun je zulke sommen snel uitrekenen?
@@ -1623,7 +598,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het getal is 17.
 - Ik zet er randen omheen.
 - Dan zie je de groepen beter.
-- Ja, zo is het beter.
 - Is een rand vol?
 - Dan heb je een groep van 10.
 - Nu gaan we er iets bij doen.
@@ -1633,7 +607,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op de groene stippen bovenaan.
 - Oké, nu heb je 2 groepen van 10.
 - En nog een beetje extra.
-- Hoeveel is het samen?
 - Hoeveel is 17 plus 5?
 - 17 plus 5 is 22.
 - Met de stippen zie je het makkelijk, hè?
@@ -1643,24 +616,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De 5 stippen zitten in 2 groepen.
 - Zie je dat?
 - Ja
-- Kijk maar.
 - We begonnen in de ene groep van 10.
 - En we eindigden in een nieuwe groep.
 - We gaan over het tiental.
 - We kunnen ook zeggen: je hebt de 5 gesplitst.
 - Weet je nog wat splitsen betekent?
 - Als we iets splitsen, breken we het in kleinere stukjes.
-- Niet helemaal.
-- Splitsen is iets in stukjes breken.
 - Kijk naar de groene stippen.
 - In welke 2 stukjes heb je de 5 gesplitst?
 - Je splitste de 5 in 3 en 2.
-- Kijk nog eens.
 - 3 stippen gingen in de groep.
 - En 2 stippen kwamen erbuiten.
 - Dus 3 en 2.
 - Je doet het echt heel goed, $l.naam.
-- Je doet het echt heel goed.
 - Nu kijken we hoe splitsen helpt bij lastige sommen.
 - We doen 17 plus 5 nog eens.
 - Maar nu niet in één keer.
@@ -1676,235 +644,27 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Toen deed je er 2 bij.
 - En dat is hetzelfde als 5 erbij doen.
 - Dus: hoeveel is 17 plus 5?
-- Natuurlijk.
 - Eerst naar 20, dan nog 2 erbij.
+- Je snapt het al.
 - Nu mag je er zelf een paar doen.
-- Je bent goed op dreef.
 - Je kunt nu over het tiental heen rekenen.
 
-## optellen-100-splitsen (96)
+## optellen-100-splitsen (2)
 
-- Weet je hoe je een getal splitst?
-- Bijvoorbeeld de 8?
-- Met deze knoppen verander je de delen.
-- Splits de 8 in twee delen.
-- Goed zo, dat kun je al.
-- Toch kijken we samen nog even naar de woorden.
-- We leren het samen, vanaf het begin.
-- Eerst kijken we naar 2 lastige woorden.
-- Het eerste woord is samenstellen.
-- Heb je dat woord al eens gehoord?
 - Ja
-- Samenstellen is als bouwen.
-- Je maakt iets groots van kleine stukjes.
-- Een voorbeeld: een parelsnoer maken.
-- Je rijgt losse parels aan een snoer.
-- Probeer het zelf maar.
-- Tik op de parels onderaan.
-- Ga maar door.
-- Zo maak je je snoer af.
-- Je hebt een snoer gemaakt met 6 parels.
-- Dat zijn 6 stukjes.
-- Tik op het snoer om het dicht te maken.
-- Prachtig.
-- Samenstellen is iets bouwen van kleine stukjes.
-- Net als jouw parelsnoer.
-- Het tweede woord is splitsen.
-- Samenstellen is stukjes bij elkaar doen.
-- Wat betekent splitsen, denk je?
-- Splitsen is iets in stukjes breken.
-- Niet helemaal.
-- Splitsen is het omgekeerde van samenstellen.
-- Je breekt iets in stukjes.
-- Bij rekenen splitsen we getallen.
-- Probeer het maar.
-- Tik op deze plank met 5 parels.
-- Je hebt de 5 gesplitst.
-- Dat gaan we vandaag doen: getallen splitsen.
-- Dit splitshuis helpt ons.
-- Begin bij deze bel onderaan.
-- Tik op de plus.
-- Mooi, er zit 1 parel in.
-- Kun je er 4 van maken?
-- Tik nu één keer op de min.
-- Je hebt van de 4 een 3 gemaakt.
-- Zag je de grote bel bovenaan?
-- Daar zitten ook 3 parels.
-- Dat is het totaal.
-- Deze bel is nog leeg.
-- Doe er 2 parels in.
-- Tik op deze plus.
-- Je hebt ook het totaal veranderd.
-- De delen 3 en 2 maken samen 5.
-- Het totaal staat altijd bovenaan.
-- Je hebt dus 2 delen en één totaal.
-- Welke som heb je gemaakt?
-- Kijk naar de delen: 3 en 2.
-- Samen is dat 5.
-- Dus 3 plus 2 is 5.
-- 3 en 2 is één manier om 5 te splitsen.
-- Kun je het ook anders?
-- We proberen het samen.
-- Verander de parels in de bellen onderaan.
-- Zorg dat het samen weer 5 is.
-- Eerst splitste je 5 in 3 en 2.
-- Hoe deed je het deze keer?
-- $a5 + $b5
-- Kijk naar de bellen.
-- $a5 en $b5.
-- Zoek 2 delen die samen 7 maken.
-- Dat werkt.
-- Je hebt 7 gesplitst in $p en $q.
-- Je krijgt het echt door.
-- We breken een getal in stukjes.
-- Weet je nog hoe dat heet?
-- Splitsen is een getal in stukjes breken.
-- Net zoals jij 7 splitste in $p en $q.
-- Het heet splitsen.
-- Zoek nog een manier om 7 te splitsen.
-- Zoek nog één manier.
-- $p en $q, goed zo.
-- Je hebt 7 nu op 3 manieren gesplitst.
-- Nog één getal, dan zijn we klaar.
-- Wil je er nog een zoals deze?
-- Of een groter getal?
-- Goed, een groter getal.
-- Goed, nog een zoals deze.
-- Splits de $g in 2 delen.
 - $p plus $q is $g.
-- Zoek een andere manier om $g te splitsen.
-- Je hebt $g op 2 manieren gesplitst.
-- Echt knap werk, $l.naam.
-- Echt knap werk.
-- Ben je klaar? Tik dan op het vinkje.
-- Weet je het niet? Tik dan op het vraagteken.
-- $a en $b is samen $a + b.
-- We zoeken $totaal.
 
-## optellen-100-tiental-plus-eenheden (67)
+## optellen-100-tiental-plus-eenheden (2)
 
-- Tik op een groepje sterren.
-- 30 is een bijzonder getal.
-- Het is een rond getal.
-- Weet je wat ronde getallen zijn?
 - Ja
-- Mooi, dan frissen we het even op.
-- Geen probleem, ik help je.
-- Het klinkt lastig, maar je kent er al een paar.
-- Een rond getal bestaat alleen uit volle groepen van 10.
-- Zoals deze: 10.
-- Ik doe er een groep bij.
-- Hm, 25.
-- Is dit een rond getal?
-- Je hebt gelijk.
-- 2 groepen van 10 en een beetje extra.
-- Dus het is geen rond getal.
-- Kijk goed.
-- De laatste groep is niet vol.
-- Dus 25 is geen rond getal.
-- En zo komen we bij 30.
-- Natuurlijk.
-- 3 groepen van 10 en niets extra.
-- Dus 30 is een rond getal.
-- Nu doen we een klein getal bij een rond getal.
-- Kies een groepje sterren om bij 30 te doen.
-- Kijk naar je sterren.
-- Hoeveel is 30 plus $n?
-- Probeer nu een groepje bij 40.
-- De $n zet ik op slot.
-- Die hadden we al.
-- Hoeveel is 40 plus $k?
-- Je doet het goed.
-- Misschien zag je al een trucje.
-- We hebben een rond getal, zoals 20.
-- We doen er een klein getal bij: 3.
-- Ik laat het nog op een andere manier zien.
-- Links staan de tientallen.
-- Rechts de eenheden.
-- Ik heb 2 tientallen gezet.
-- Samen is dat 20.
-- Nu doen we er wat bij.
-- Laat 20 plus 3 zien.
-- Tik 3 keer in de kolom van de eenheden.
-- Goed, je deed er 3 bij.
-- Welke kolom veranderde?
-- Tik erop.
-- Nu nog één.
-- Ik heb er 4 tientallen in gezet.
-- Maar 0 eenheden.
-- Dat is 40.
-- Laat nu 40 plus 5 zien.
-- Zet 5 sterren bij de eenheden.
-- Je deed een klein getal bij een rond getal.
-- Welke kolom verandert dan?
-- Als je een klein getal bij een rond getal doet, veranderen alleen de eenheden.
-- Nu nog een paar snelle vragen.
-- Geen sterren, alleen jij en ik.
-- $l.naam, je snapt het helemaal.
-- Je snapt het helemaal.
 - $a plus $b is $s.
-- Eerst de tientallen, dan de losse sterren.
-- Vergeet de groepen van 10 niet.
-- Tel de groepen van 10 nog eens.
-- Kijk.
-- De tientallen blijven: $a.
-- Er komen $b eenheden bij.
-- Alleen de eenheden veranderen.
 
-## optellen-100-tientallen-erbij (43)
+## optellen-100-tientallen-tot-100 (45)
 
-- Kijk naar de lichtbollen.
-- Welk getal maken ze samen?
-- 2 lichtbollen van 10 is 20.
-- Je hebt gelijk dat het 2 lichtbollen zijn.
-- Maar elke lichtbol heeft 10 sterren.
-- Kijk nog eens goed.
-- In elke lichtbol zitten 10 sterren.
-- Doe er nog een lichtbol van 10 bij.
-- Zie je de knop onderaan?
-- Tik erop.
-- 20 plus 10.
-- Hoeveel sterren zijn het nu samen?
-- 30 plus 20.
-- Je mag de 20 erbij doen met de machine.
-- Je doet het goed.
-- Probeer deze eens: 50 plus 30.
-- Nu heb je één lichtbol van 10.
-- We proberen iets anders.
-- Je doet er 3 sterren bij.
-- Hoeveel is het dan?
-- Goed bedacht.
-- Kijk maar mee.
-- Doe ze er zelf maar bij.
-- Tik 3 keer op de knop.
-- 10 plus 3 is 13.
-- Je hebt er nu 13.
-- Nu komt er een lichtbol van 10 bij.
-- Hoeveel is 13 plus 10?
-- Doe zelf een lichtbol van 10 erbij.
-- Kijk goed.
-- Er komt een hele lichtbol van 10 bij.
-- Niet één ster.
-- 13 plus 10 is 23.
-- Nu komt er 20 bij.
-- Hoeveel is 17 plus 20?
-- Ik geef je er nog een paar.
-- Als je er 3 goed hebt, gaan we verder.
-- De machine helpt als je hem nodig hebt.
-- Nog één goed en we zijn klaar.
-- Deze keer zet ik de machine op slot.
-- Hoeveel is $a plus $b?
-- Je doet ze allemaal goed!
-- Goed gewerkt!
-
-## optellen-100-tientallen-tot-100 (49)
-
-- Oké, $l.naam.
 - Tik op de plusknop met de 10.
 - Deze knop doet er een groepje van 10 stippen bij.
 - Hoe vaak moet je nog drukken voor 100 stippen?
 - Dat denk ik ook.
-- Kijk maar mee.
 - 10 groepjes van 10 is samen 100.
 - Maar er zit er al één in.
 - Kijk hoeveel er nog bij moeten.
@@ -1923,7 +683,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Weet je het nog?
 - Hoeveel groepjes van 10 zitten er in 100?
 - 10 groepjes van 10 is 100.
-- Kijk nog eens.
 - Eén groepje had je al.
 - Daarna kwamen er nog 9 bij.
 - Samen zijn dat 10 groepjes van 10.
@@ -1944,705 +703,104 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het is $a plus $p plus $q.
 - Je splitste de $b in $p en $q.
 - Kijk naar de stippen.
-- Hoeveel is $a plus $b?
 - $a plus $b is $a + b.
 - Eerst naar $doel.
 - Dan nog $q erbij: $a + b.
 
-## optellen-20-bij-10 (11)
+## optellen-20-eindtoets (1)
 
-- We gaan even snel oefenen.
-- We doen steeds een getal bij de 10.
-- Zet de 10 en nog een tegel in het vak.
-- Kies nu nog een tegel.
-- Een $n.
-- Zet de 10 er nu bij.
-- We stoppen hier even.
-- We oefenen dit later nog eens.
-- Foutloos gewerkt vandaag!
-- Goed gewerkt!
-- Je kunt al plussommen met 10 maken.
-
-## optellen-20-eindtoets (41)
-
-- Dit is de eindtoets: plussommen tot 20.
-- Ben je daar al best goed in?
 - Ja
-- We kijken wat je al kunt.
-- Probeer zo vlot mogelijk te antwoorden.
-- Welk getal laat deze tegel zien?
-- Het is een 10.
-- Zet er nog een tegel bij.
-- Je hebt een $n gekozen.
-- Hoeveel is 10 plus $n?
-- 10 plus $n is $10 + n.
-- Zet een nieuwe tegel bij de 10.
-- Wat is 10 plus $m?
-- 10 plus $m is $10 + m.
-- Dit is 17.
-- Wat moet er nog bij om 20 te maken?
-- De 7 heeft nog 3 nodig om 10 te worden.
-- Dus 17 en 3 is 20.
-- Hier is een 8.
-- Kies zelf een tegel om erbij te zetten.
-- Hoeveel is 8 plus $k?
-- De 8 heeft nog 2 nodig om 10 te worden.
-- Dan is 8 plus $k samen $8 + k.
-- Nog één, zonder tegels.
-- Hoeveel is 7 plus 8?
-- Dubbel 7 is 14.
-- Eén meer is 15.
-- We leren het samen.
-- We gaan meteen oefenen.
-- Knap gedaan, $l.naam!
-- Je kunt plussommen maken tot 20.
-- Je weet het, nu nog wat vlotter.
-- Je weet het bijna allemaal.
-- Je weet al veel.
-- We gaan nog wat oefenen.
-- Daarna doe je de toets nog eens.
-- Kijk, ik zet de tegels neer.
-- Nu nog even oefenen.
-- Hoeveel is $a plus $b?
-- Super gedaan.
-- Goed geoefend.
 
-## optellen-20-instaptoets (29)
+## optellen-20-instaptoets (1)
 
-- In deze lessen maak je plussommen tot 20.
-- Ben je daar al best goed in?
 - Ja
-- In deze toets laat je zien wat je al kunt.
-- Oké, ik heb een tegel neergezet.
-- Welk getal laat hij zien?
-- Het zijn 10 hokjes.
-- Het is een 10.
-- Nu doen we er iets bij.
-- Zet er nog een tegel bij.
-- Mooi, je hebt een $n gekozen.
-- Hoeveel is 10 plus $n?
-- 10 plus $n is $10 + n.
-- Nu deze.
-- Wat is 10 plus $m?
-- 10 plus $m is $10 + m.
-- Wat is 10 plus $p?
-- 10 plus $p is $10 + p.
-- We leren het samen.
-- We gaan meteen oefenen.
-- Je kunt al goed plussommen maken tot 20.
-- Je weet al veel.
-- Dank je wel.
-- We gaan dit samen oefenen.
-- Kijk, een 10 en een tegel erbij.
-- Nu nog even oefenen.
-- We doen steeds een getal bij de 10.
-- Super gedaan.
-- Goed geoefend.
 
-## optellen-onder-10 (gedeeld) (42)
+## optellen-onder-10 (gedeeld) (6)
 
-- We tellen samen.
-- Het is 1 hokje.
-- Het zijn $n hokjes.
-- Dus het is een $n.
-- Daar komen we later nog op terug.
-- Welk getal is dit?
-- Het is een $n.
-- Ik tel $n hokjes.
 - Hmm, niet helemaal.
-- Tel de hokjes maar.
-- Ja, nu klopt het.
-- Hmm, ik tel 1 hokje.
 - Hmm, ik tel $n hokjes.
-- $a en $b is samen $som.
 - Hmm, $a en $b is samen $Math.abs(x - som) <= 2 ? "iets " : ""$x < som ? "meer" : "minder" dan $x.
-- Tel nog eens.
-- Geen zorgen, we zoeken het samen uit.
-- Zet een tegel bij de $n.
-- Samen moet het $doel zijn.
-- $n en $k is samen $n + k.
-- Dat is te weinig.
-- Dat is te veel.
-- Zoek een tegel, zodat het samen $doel is.
-- Je hebt nog $nodig nodig.
-- Pak de $nodig.
-- Ik heb vakjes klaargezet.
-- Typ één van de getallen voor het eerste vakje.
-- Het maakt niet uit welke.
-- Kijk naar de tegels.
-- Typ de $p of de $q.
-- Typ nu het andere getal.
-- Het getal dat bij de $eerste kwam.
-- De andere tegel is de $ander.
 - Typ de $ander.
 - Typ tot slot wat ze samen maken.
-- Wat is $eerste en $ander samen?
-- Het zijn $totaal hokjes.
-- Typ de $totaal.
-- Je hebt een $g gekozen.
-- Maak er samen $doel van.
-- Welke tegel moet erbij?
 - $g en $h is samen $doel.
 
-## optellen-onder-10 (42)
+## optellen-tot-10 (gedeeld) (7)
 
-- Welk getal heb je gekozen?
-- Kies nog een tegel.
-- Welk getal is dit?
-- Weet je welk getal dit is?
-- Zet nu twee tegels in het rooster.
-- Je mag zelf kiezen welke.
-- Je hebt de $a en de $b gekozen.
-- Wat is het totaal?
-- Kies nu twee andere tegels.
-- De $a zet ik op slot.
-- De $a en de $b zet ik op slot.
-- Nu heb je de $c en de $d gekozen.
-- Hoeveel is het samen?
-- Kijk, drie nieuwe tegels.
-- Kies er twee.
-- Deze keer heb je de $e en de $f gekozen.
-- Je krijgt het door, $l.naam.
-- Je krijgt het door.
-- We maken het wat moeilijker.
-- Pak een nieuwe tegel.
-- Zet er een tegel bij, zodat het samen 10 is.
-- $p en $q maken samen 10.
-- Weet je hoe je dit als som schrijft?
-- Wat gebeurt er als ik de tegels omdraai?
-- Je zette de getallen naast elkaar.
-- Laten we kijken.
-- Kijk goed naar het teken.
-- We doen de tegels bij elkaar.
-- Dan hoort er een plus bij.
-- We schrijven de som samen.
-- Nu ga ik de toren omdraaien.
-- Nu ligt de $p bovenop.
-- Hoeveel is het nu samen?
-- Het is nog steeds 10.
-- De volgorde maakt niet uit.
-- Kijk, het zijn dezelfde tegels.
-- Ze liggen alleen anders.
-- Kies deze keer een andere tegel.
-- Je hebt een $m gekozen.
-- $m en $r maken ook 10.
-- Goed gedaan, $l.naam!
-- Je kunt al mooi plussommen maken.
-
-## optellen-tot-10 (gedeeld) (60)
-
-- Weet je het niet?
-- Tik dan op het vraagteken.
-- Typ het getal.
-- Tik op je antwoord.
-- Tik op de pijl.
-- Dan gaan we verder.
-- Weet je nog?
-- Er was nog één vraag.
-- Er waren nog een paar vragen.
-- Daar komen we nu op terug.
-- Wil je de tegels weghalen?
-- Tik dan op deze knop.
-- Zoek de $over[0].
 - Zoek $opsomming(over).
-- We leren het samen.
-- Begin met de les "$les".
-- Dat is heel dichtbij.
 - Hmm, niet helemaal.
-- Kijk nog eens.
-- Probeer die nog eens.
-- We stoppen de toets hier.
-- In de les "$o.les" leren we dit samen.
-- Weet je het zeker?
-- Wil je een korte toets doen?
-- Of begin je liever bij de eerste les?
-- Begin dan met de les "$LES_ONDER_10".
-- Daar leer je het stap voor stap.
-- Toets
-- Dan doen we de toets.
-- Laat maar zien wat je kunt.
-- We kijken gewoon wat je al weet.
-- Vind je een vraag te moeilijk?
-- Zie je de tegels rechts?
-- Sleep er één naar het midden.
-- Goed gekozen, de $KLEURWOORD[a] ?? "" tegel.
-- fout
-- Ja, het is een $a.
-- Zet er nog een tegel bij.
-- Dat is een $b.
-- herkansing
-- Nu klopt het
 - Dat klopt
-- $a en $b is samen $a + b.
-- Oké, nu deze.
-- Hier komt de volgende vraag.
 - $p plus $q is $p + q.
-- Zet nog een tegel in het rooster.
-- Nu gaan we verdubbelen.
-- Mooie keuze.
-- Ja, dat klopt.
-- Het dubbele van $d is $2 d.
-- Nu een lastige som.
 - $w1 plus $w2 is $wt.
 - $w1 plus $w2 is niet $wt.
-- Deze keer ligt er een 10 in het rooster.
-- Leg er een tegel bovenop.
-- Kijk wat je hebt neergelegd.
-- Het ontbrekende getal is $n.
 - Goed gedaan
-- Je kunt plussommen maken tot 10.
 
-## optellen-tot-10-drie-getallen (108)
+## optellen-tot-10-drie-getallen (8)
 
-- Nu zonder tegels.
-- Ik zet alleen de vorm neer.
-- Vul de som in.
-- Nog een.
-- Samen moet het $totaal zijn.
-- Elk getal moet minstens 1 zijn.
 - $somWoorden(poging) is $optel(poging).
-- We zoeken $totaal.
-- Probeer het nog een keer.
-- Raak!
 - $somWoorden(poging) is $totaal.
-- Geen zorgen, kijk eens.
-- $somWoorden(v) is $totaal.
-- Daar komen we later nog op terug.
-- Ja, nu lukt het!
 - $somWoorden(p!) is $totaal.
-- Kijk, zo kan het.
 - Knap gedaan
-- Sommen met drie getallen kun je al.
-- Goed gewerkt.
-- Volgende keer gaat het vast nog beter.
-- Hier is een beetje hulp, als je wilt.
-- Probeer het zelf, of tik op de pijl.
-- Dan zet ik de parels goed.
-- Welke som kun je maken met $n?
-- Welke som kun je niet maken met $n?
 - $somWoorden(losse(juist)) is samen $optel(losse(juist)).
-- Die kun je maken.
-- Die kun je niet maken.
-- Laten we het zelf bekijken.
-- Probeer $somWoorden(delen) te maken.
-- Maak $somWoorden(delen) met de parels.
-- past
-- Klopt, dat lukt niet.
 - $somWoorden(delen) is samen $s.
-- We hebben maar $n parels.
-- Dan blijven er parels over.
-- Kijk, zo kan het wel.
-- Het blijkt dat je die toch kunt maken.
-- We zochten welke niet kan.
-- Er zijn er $aantal === 2 ? "twee" : "drie".
-- Kies er eerst één.
-- Deze twee kun je maken.
-- Deze drie kun je maken.
-- Ja, die kan.
-- Nog één.
-- Kies er nog één.
-- Die kan niet.
 - $somWoorden(losse(k)) is samen $optel(losse(k)).
-- Kies een andere.
-- Je hebt ze allebei gevonden.
-- Je hebt ze alle drie gevonden.
-- Nu heb je ze allemaal.
-- Een getal splitsen kan lastig zijn.
-- We kijken er samen naar.
-- Hoeveel parels zijn er?
-- Niet helemaal.
-- Misschien heb je je verteld.
-- Tel nog eens.
-- We tellen samen.
-- Het zijn 6 parels.
-- Je hebt het.
-- 6 parels.
-- Tik op de groep parels.
-- Kijk wat er gebeurt.
-- Hebben we nog evenveel parels?
-- Nog steeds 6 parels.
-- We tellen ze.
-- Precies, 6 parels.
-- Dus nog evenveel.
-- Met deze knop gaan alle parels weer bij elkaar.
-- Tik erop.
-- Ze zijn weer samen.
-- Tik nu één keer op de parels.
-- Je hebt 6 gesplitst in 5 en 1.
-- Tik nog eens op de groep van 5.
-- Nu hebben we 4 plus 1 plus 1.
-- Nu gaan we slepen.
-- Sleep de twee losse parels naar elkaar.
-- Mooi gesleept!
-- 4 en 2.
-- Hebben we nog steeds 6 parels?
 - Ja
-- Kijk, het zijn er nog steeds 6.
-- Dit hebben we allemaal gemaakt.
-- Het blijft steeds 6.
-- Oké, $l.naam.
-- Nu ga je het zelf gebruiken.
-- Uitdaging 1.
-- Maak van de 8 allemaal losse parels.
-- Deze knop maakt alle parels los.
-- Uitdaging 2.
-- Maak 3 plus 5.
-- Uitdaging 3.
-- Maak 2 plus 1 plus 3 plus 2.
-- Hebben we nog steeds 8 parels?
-- Tel maar: het zijn er nog steeds 8.
-- Nu hebben we 6 parels.
-- We zoeken samen uit welke sommen kunnen.
-- We beginnen met de eerste som.
-- Tot slot de laatste som.
-- Nu de volgende som.
-- Ja, die kun je maken!
-- $somWoorden(delen) is samen $optel(delen).
-- Die kun je niet maken met 6.
-- Kijk, deze kan wel.
-- Zo ziet het eruit.
-- Nu is het jouw beurt.
 
-## optellen-tot-10-dubbelen (48)
+## optellen-tot-10-dubbelen (2)
 
-- Oké, $l.naam.
-- We gaan iets nieuws leren.
-- Weet je wat dubbelen zijn?
-- Laat maar zien.
-- We ontdekken het samen.
-- Zet twee dezelfde tegels in het rooster.
-- Je hebt een dubbel gemaakt.
-- Twee keer hetzelfde getal.
-- Wat is het dubbele van $a?
-- Laten we nog een dubbel maken.
-- Zet weer twee dezelfde tegels in het rooster.
-- Mooi gemaakt!
-- Wat krijg je als je $b verdubbelt?
-- Nog één dubbel.
-- Wat is het dubbele van $c?
-- Nu leg ik de tegels neer.
-- Jij zegt het dubbele.
-- Dit is $n en nog eens $n.
-- En deze?
-- Wat is het dubbele van $n?
-- Nu proberen we grotere getallen.
-- Deze les is klaar.
-- Tel de hokjes op de tegel.
-- Klopt dat met het getal?
-- $somWoorden(delen) is $totaal.
-- Is dat waar of niet waar?
-- $somWoorden(delen) is $echt.
-- De som is waar.
-- De som is niet waar.
-- Laat het me dan maar zien met de tegels.
 - Zet $opsomming(delen) naast de $totaal.
-- Goed gewerkt met de tegels.
-- Kijk naar de twee kanten.
-- Is de som dan waar of niet waar?
-- Je hebt het bewezen!
-- Kijk, ze zijn even hoog.
-- Kijk, de delen samen zijn hoger.
-- Kijk, de delen samen zijn lager.
-- Dus de som is waar.
-- Dus de som is niet waar.
-- Kijk naar de tegels.
-- Hulp nodig?
-- Zet de $nodig hier.
 - Hmm, dan zijn ze nog niet even hoog.
-- Kijk hoeveel hokjes er missen.
-- Er mist nog 1 hokje.
-- Er missen nog $nodig hokjes.
-- Pak de $nodig.
 
-## optellen-tot-10-instaptoets (16)
+## optellen-tot-10-instaptoets (3)
 
-- Twee dezelfde tegels.
-- Zet hier nog een $a neer.
-- Het dubbele van $a is $d.
-- Hmm.
-- Daar komen we later nog op terug.
-- Wat is het dubbele van $a?
-- Ja, nu weet je het!
 - $a en $a is samen $d.
-- Niet helemaal.
-- Tel de hokjes van $a en $a bij elkaar.
-- Dat is het dubbele.
 - $h en $h passen precies op de $t.
-- Het dubbele van $h is $t.
-- Net niet.
 - $x en $x is samen $2 x.
-- We zoeken $t.
 
-## optellen-tot-10-klopt-de-som (109)
+## optellen-tot-10-klopt-de-som (6)
 
-- $l.naam, ken je de woorden waar en niet waar?
-- Ken je de woorden waar en niet waar?
-- Dan eerst drie snelle vragen.
-- Alle drie goed!
-- Dan gaan we meteen naar de sommen.
-- Goed geprobeerd.
-- We oefenen het eerst samen.
-- We oefenen eerst met tegels.
-- Dit is een 1.
-- Dat is dus waar.
-- Kijk, het is één hokje.
-- En deze dan?
-- Dit is een 3, toch?
-- Dit is een 2.
-- Een 3 zeggen is dus niet waar.
-- Deze tegel is een 2.
-- Want het klopt niet.
-- Dit is een $n.
-- Kijk nog eens goed.
-- Dus het is waar.
-- Dus het is niet waar.
-- Dit kun je goed.
-- Nu iets wat een beetje lastiger is.
-- Kijk naar de som bovenaan.
-- 3 plus 2 is 6.
-- Nee
-- We gaan het na.
-- In de som is het samen 6.
-- Zet de 6 in het rooster.
-- Dus 6 is het totaal.
-- Zet nu de kleine delen erin.
-- De 2 en de 3.
-- Er mist een hokje.
 - Hmm, kijk goed.
-- Bij 2 en 3 mist een hokje.
-- Kun je er één tegel bij zetten?
-- Dan zijn ze wél even hoog.
-- Ja, zo is het beter.
-- 2 plus 3 plus 1 is 6.
-- Nu klopt de som!
-- Hier is een nieuwe som.
-- 5 plus 6 is 11.
 - Ja
-- We gaan het na met tegels.
-- Het totaal is 11.
-- Maak 11 met de 10 en de 1.
-- Zet nu de 5 en de 6 erin.
-- Dan zien we of ze samen 11 maken.
-- Deze som is dus waar.
-- Kijk, ze zijn even hoog.
-- Nu een som met meer getallen.
-- 2 plus 3 plus 4 is 8.
-- Is dat waar of niet waar?
-- Zet eerst de 8 erin.
-- Dat is het totaal.
-- Zet nu alle kleine delen erin.
-- De 2, de 3 en de 4.
-- De kant met 2, 3 en 4 is groter.
 - Hmm, ik weet het niet zo zeker.
-- Die kant ziet er een beetje groter uit.
-- Kun je één tegel bij de 8 zetten?
-- Dan zijn beide kanten gelijk.
-- Dat ziet er veel beter uit.
-- Nu zijn beide kanten even groot.
-- 2 plus 3 plus 4 is 9.
-- Nu een paar snelle sommen.
-- Nog één, en dan stoppen we.
-- Wil je er nog zo een?
-- Of iets moeilijkers, met meer getallen?
-- Deze les is klaar.
 - $a plus $n is $totaal.
-- Het ontbrekende getal was $n.
-- $a plus hoeveel is $totaal?
-- Je mag de tegels gebruiken.
-- Kijk, $a plus $x is $a + x.
-- Dichtbij, maar net niet.
-- Dat is te weinig.
-- Dat is te veel.
-- Wat moet er bij de $a om $totaal te maken?
-- Ik help je een beetje.
-- Ik heb een $a op de $totaal gelegd.
-- Tel de hokjes die je nog ziet.
-- Ik tel 1 hokje.
-- Ik tel $n hokjes.
-- Het ontbrekende getal is $n.
-- Nu leggen we er een tegel bovenop.
-- Kies een tegel voor op de $totaal.
-- Nu ligt er een $totaal.
-- Leg er weer een tegel bovenop.
-- Je hebt een som met een ontbrekend getal gemaakt.
-- Weer een som met een gat.
-- Welke som is het?
-- $k plus iets is $totaal.
-- Laten we er samen over nadenken.
-- Wat is ons totaal?
-- Kijk naar de grote tegel.
-- Welk getal heb je op de $totaal gelegd?
-- Er moet iets bij de $k.
-- Dan is het samen $totaal.
-- Zoek het ontbrekende getal.
-- Zet de tegel erbij die met $k samen $totaal maakt.
-- Hmm, dat maakt geen $totaal.
-- Wat moet er bij de $k om $totaal te maken?
 - $k en $w is samen $k + w.
-- Zoek de tegel die precies past.
-- Je hebt nog $nodig nodig.
-- Pak de $nodig.
-- Je hebt het ontbrekende getal gevonden.
 - $k plus $nodig is $totaal.
 
-## optellen-tot-10-ontbrekend-getal (71)
+## optellen-tot-10-ontbrekend-getal (11)
 
-- We beginnen met een makkelijke.
-- Welk getal is dit?
-- Je zit er een beetje naast.
 - Hmm, dat is het niet.
-- Welk getal zie je erin?
-- Het is een 7.
-- Daar komen we later nog op terug.
-- Ja, het is een 7.
-- Het zijn 7 hokjes.
-- Dus het is een 7.
-- Nu een paar sommen achter elkaar.
-- $l.naam, je doet het best goed.
-- Je doet het best goed.
-- Kies er zelf een.
-- Klaar!
-- Deze les is af.
 - $woord[i] ligt een $n.
 - Typ hem in het eerste vakje.
-- Typ hem in het volgende vakje.
-- Kijk goed: het is een $n.
 - Typ de $n.
-- Die is te groot voor de vorm.
-- Dan blijft er een gat over.
-- Zoek een tegel die precies past.
-- Dan past er geen tegel meer bij.
-- Dan passen er geen twee tegels meer bij.
-- Kies een kleinere tegel.
-- Een som met drie getallen is lastig.
-- Ik heb een nieuwe vorm neergezet.
-- Zet de tegel erin die precies past.
-- Die is te klein.
-- Die is te groot.
-- Zoek een tegel die de vorm helemaal vult.
-- Pak de 7.
-- Ja, die past precies.
-- Typ dit getal achter het is-teken.
 - Typ de 7.
-- Kijk nu naar de som.
-- Hoeveel getallen ontbreken er?
-- Tel de vakjes met een vraagteken: het zijn er 3.
-- We zoeken dus drie getallen.
-- Samen moeten ze 7 zijn.
-- Zet een tegel in de vorm.
-- Mooi zo.
-- Zet er nu precies twee bij.
-- Dan is de vorm helemaal vol.
-- Prachtig neergelegd.
-- Mooie kleuren ook!
-- Nu vullen we de som in.
 - $somWoorden(volgorde) is 7.
-- Deze keer maak ik $totaal met drie tegels.
-- Vul de som in.
-- Hij moet bij de tegels passen.
-- Hier is nog een toren.
-- Welke som hoort erbij?
 - Hmm, laten we kijken.
-- Deze getallen passen niet bij de tegels.
-- We proberen het nog een keer.
-- Geen zorgen, we doen het samen.
-- We lezen de tegels van boven naar onder.
-- Ja, je hebt het!
 - $somWoorden(g) is $totaal.
-- Zet drie tegels in deze vorm.
-- Hier is een nieuwe vorm.
-- Samen moeten ze $totaal zijn.
-- Vind je het lastig?
-- Mooi, de vorm is vol!
-- Vul nu de som in.
 - $somWoorden(h) is $totaal.
 - Hmm, die passen niet bij jouw tegels.
 - $somWoorden(volgorde) is $totaal.
 
-## optellen-tot-10-splitsen (30)
+## optellen-tot-10-splitsen (2)
 
-- Kijk naar deze 7 parels.
-- Tik erop.
-- Kijk wat er gebeurt.
-- De groep is uit elkaar gesprongen.
-- Kijk wat je er nog meer mee kunt.
-- Sleep parels naar elkaar toe.
-- Zo maak je groepjes.
-- Tik op een groepje, dan springt er een parel af.
-- Tik op de pijl als je klaar bent.
-- Met deze knop worden alle parels los.
-- En met deze gaan ze weer bij elkaar.
-- Maak 4 plus 3.
-- Maak nu 2 plus 2 plus 3.
-- Knap!
-- Het zijn nog steeds 7 parels.
-- Tijd voor een uitdaging.
-- Welke som kun je maken met 7?
-- Je mag de parels gebruiken.
-- 1 plus 3 plus 2 plus 1 is 7.
-- Nu hebben we 8 parels.
-- Welke som kun je maken met 8?
-- 1 plus 4 plus 2 plus 1 is 8.
-- Dat ziet er niet helemaal goed uit.
 - $somWoorden(losse(k2)) is samen $optel(losse(k2)).
 - $somWoorden(losse(k1)) is samen $optel(losse(k1)).
-- We hebben 7 parels.
-- We proberen het nog een keer.
-- Dat is niet 8.
-- Nu denken we andersom.
-- Je snapt hoe je een getal splitst.
 
-## optellen-tot-100 (gedeeld) (23)
+## optellen-tot-100 (gedeeld) (3)
 
 - $a plus $b is $s.
-- Kijk nog eens goed.
-- Hoeveel is $a plus $b?
-- Kijk maar.
-- We komen hier later op terug.
-- We leren het samen.
-- Laten we je wat helpen.
-- Nu gaan we samen oefenen.
-- Kijk goed naar de lichtbollen en de sterren.
-- Ben je klaar? Tik dan op het vinkje.
-- Weet je het niet? Tik dan op het vraagteken.
-- Doe in allebei de bellen iets.
-- Laten we kijken.
-- Je hebt $a en $b.
-- Dat is samen $a + b.
-- We zoeken $totaal.
-- Die hadden we al.
-- Zoek een andere manier.
-- hulp
-- Ik help je.
 - Kijk: $p en $q is samen $totaal.
-- Zoek nog eens twee delen die samen $totaal maken.
 - $x en $y is samen $totaal.
 
-## optellen-tot-20 (gedeeld) (16)
+## optellen-tot-20 (gedeeld) (3)
 
-- Kies je antwoord.
-- Weet je het niet? Tik dan op het vraagteken.
-- Tik op de pijl om verder te gaan.
 - $a plus $b is $s.
-- Ah, ik zie wat je dacht.
 - Je zette $a en $b achter elkaar.
-- Maar hoeveel hokjes zijn het samen?
-- Net een beetje ernaast.
-- Hoeveel is $a plus $b?
 - Denk aan dubbel $k.
-- De $groot heeft nog $10 - groot nodig om 10 te maken.
-- Kijk maar.
-- We tellen samen.
-- Het zijn $s hokjes.
-- Daar komen we later op terug.
-- Hoeveel is 10 plus $m?
 
-## rechts (66)
+## rechts (60)
 
 - Hier is de eerste.
 - Wat is $p plus $q?
 - En $p plus $q?
-- Kijk.
 - Ah, dat maakt $p + k.
 - Zet een tegel bij de $p, zodat het $p + 1 wordt.
 - Je hebt er nog maar 1 nodig.
@@ -2651,7 +809,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat is 5 plus 5?
 - Oké, wat is dan $p plus $p?
 - Nu 5 plus 6.
-- Je weet het antwoord vast al.
 - Maar we laten het ook zien met de tegels.
 - Zet een tegel bij de 5, zodat het 6 wordt.
 - Zet er nu een tegel bij.
@@ -2664,12 +821,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er komen drie vragen.
 - Hoe snel kun je ze doen?
 - Allemaal goed!
-- Dat waren lastige.
+- Dat waren lastige vragen.
 - Je had er $voor.goed goed.
-- Goed geprobeerd.
 - Ik heb een paar trucjes.
 - Die kunnen je echt helpen.
-- Je bent goed in dubbelen.
+- Je bent goed in dubbele sommen.
 - Die gaan we gebruiken.
 - Zet een 5 in het vak.
 - Dan maak ik hem dubbel.
@@ -2682,11 +838,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja, dubbel 6.
 - Ik weet niet of dat werkt.
 - Ik zie geen 5 in 6 plus 7.
-- Ik help je.
 - Zet de 6 in het vak.
 - Dan maken we hem dubbel.
 - $l.naam, je doet het goed.
-- Je doet het goed.
 - Nog even oefenen met de tegels.
 - Daarna zijn we klaar.
 - Zet een tegel in het vak.
@@ -2704,90 +858,234 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat zijn er meer dan eerst!
 - Weer allemaal goed!
 - En je was sneller dan eerst.
-- Deze les is klaar.
 
-## tellen-120-doortellen (49)
+## squla-dagen (gedeeld) (52)
 
-- Hoi!
-- Kijk, een veld vol bubbels met getallen.
-- Laat maar eens zien.
-- Je kunt al doortellen.
-- Goed geprobeerd.
-- We oefenen het samen.
-- Doortellen is verder tellen vanaf een getal.
-- Nu een snel spelletje.
-- Ik zeg een getal.
-- Jij zoekt het in het veld.
-- Je hebt het door.
-- Nu gaan we doortellen.
-- Je doet het heel goed.
-- Wil je het moeilijker proberen?
-- Je kunt doortellen als een kampioen.
-- $goed.
-- $k?
-- Kijk nog eens goed.
-- We gaan tellen, tot wel 50.
-- Laten we kijken wat je al weet.
-- We oefenen samen.
-- Dit gaan we samen leren.
-- Kijk naar de kwallen.
-- Hoeveel kwallen zijn $o.kleur?
-- Tik op het getal.
-- $o.aantal $BIJ[o.kleur] kwallen.
+- $Naam(x)? Niet helemaal.
+- $Naam(y)? Niet helemaal.
+- We doen het samen, stap voor stap.
+- $Naam(z)? Niet helemaal.
+- $Naam(z)? Dat is het nog niet.
+- We lopen samen langs de wagons.
+- $Naam(i).
+- $Naam(d) is de $DAGEN[d].bijvoeglijk wagon.
+- Kijk naar de hele trein.
+- Zondag is de laatste wagon.
+- Daarna begint een nieuwe week.
+- Die begint weer bij de eerste wagon.
+- Hier is $naam(d).
+- Na $naam(d) komt de wagon erachter.
+- Maandag is de eerste wagon.
+- Daarvoor was de vorige week.
+- Die eindigde met de laatste wagon.
+- Voor $naam(d) komt de wagon ervoor.
+- De lege plek is de eerste wagon.
+- Erachter staat dinsdag.
+- Welke dag komt voor dinsdag?
+- De lege plek is de laatste wagon.
+- Ervoor staat zaterdag.
+- Welke dag komt na zaterdag?
+- Kijk naar de wagons naast de lege plek.
+- Ervoor staat $naam(voor(d)).
+- Erachter staat $naam(na(d)).
+- Welke dag zit daartussen?
+- De gele pijl staat bij $naam(vandaag).
+- Dat is vandaag.
+- Gisteren is de dag ervoor.
+- Morgen is de dag erna.
+- Vandaag is maandag.
+- Dat is de laatste dag van de vorige week.
+- Kijk naar het eind van de trein.
+- Het weekend zijn de laatste twee dagen.
+- Bij allebei staat een huisje.
+- $Naam(eerste) hoort al bij het weekend.
+- Het weekend heeft twee dagen.
+- Ze staan naast elkaar, aan het eind van de trein.
+- Kijk, daar komt de weektrein.
+- Elke wagon is een dag van de week.
+- Samen zijn dat de 7 dagen van de week.
+- Ze staan altijd in deze volgorde.
+- Kun je dit al?
+- Ik leg het kort uit.
+- De week begint met maandag.
+- De week eindigt met zondag.
+- Daarna begint de week weer opnieuw.
+- Zaterdag en zondag zijn het weekend.
+- Dan is er geen school.
+- Nu jij!
+
+## squla-dagen-van-de-week (1)
+
+- Je kent de dagen van de week.
+
+## squla-huisnummers (gedeeld) (12)
+
+- We lopen samen terug.
+- We lopen samen langs de huizen.
+- Terug wordt het nummer steeds één minder.
+- Elk huis is één verder.
+- $w(x)? Niet helemaal.
+- Typ het nummer.
+- $w(x)? Dat is nog niet het goede nummer.
+- We doen het samen, stap voor stap.
+- $w(y)? Niet helemaal.
+- Dus na $w(5) komt $w(6).
+- We kunnen ook teruglopen.
+- Nu jij!
+
+## squla-huisnummers (7)
+
+- Kijk, een straat met huizen.
+- Elk huis heeft een nummer.
+- Welk nummer komt erna?
+- Kun je dit al?
+- Super, $l.naam!
+- Super!
+- Je weet welk huisnummer erna komt.
+
+## squla-rekentaal (gedeeld) (111)
+
+- We doen het samen, stap voor stap.
+- We gaan bakken in de keuken.
+- Kijk naar de pannenkoeken.
+- Deze pannenkoek is groot.
+- Deze pannenkoek is klein.
+- We leren woorden als groot en klein.
+- En vol en leeg, zwaar en licht.
+- En lang en kort.
+- Kun je dit al?
+- Fijn. Dan gaan we meteen oefenen.
+- Geen probleem. Ik laat het je zien.
+- Kijk naar de manden.
+- Deze mand is klein.
+- Deze mand is groter.
+- En deze mand is het grootst.
+- De kleine mand is het kleinst.
+- Kijk naar de glazen sap.
+- Dit glas is vol.
+- Dit glas is half vol.
+- Dit glas is leeg.
+- Er zit niets in.
+- Dit is een weegschaal.
+- De meloen is zwaar.
+- Die kant zakt naar beneden.
+- De appel is licht.
+- Die kant gaat omhoog.
+- Kijk naar de broodjes.
+- Dit broodje is lang.
+- Dit broodje is kort.
+- Nu ga jij het doen.
+- Welke pannenkoek is groter?
+- Deze pannenkoek is groter.
+- Dus deze pannenkoek is groter.
+- Welke beker is kleiner?
+- Deze beker is kleiner.
+- Deze beker is groot.
+- Deze beker is klein.
+- De kleine beker is kleiner.
+- Welk glas is vol?
+- In dit glas zit niets.
+- Dit glas zit tot de rand vol sap.
+- Vol betekent: er past niets meer bij.
+- Welk glas is leeg?
+- In dit glas zit sap.
+- Een glas zonder sap is leeg.
+- Kijk naar de weegschaal.
+- Wat is zwaarder?
+- De meloen is zwaarder.
+- Deze kant zakt naar beneden.
+- Deze kant gaat omhoog.
+- Wat naar beneden zakt, is zwaarder.
+- Kijk welke kant naar beneden zakt.
+- Wat is lichter?
+- De aardbei is lichter.
+- De zak meel zakt naar beneden.
+- Die is zwaar.
+- De aardbei gaat omhoog.
+- Die is licht.
+- Wat omhooggaat, is lichter.
+- Kijk welke kant omhooggaat.
+- Kijk naar de slierten spaghetti.
+- Welke sliert is langer?
+- Deze sliert is langer.
+- De slierten beginnen op dezelfde plek.
+- Deze sliert houdt snel op.
+- Deze sliert gaat verder door.
+- Die is dus langer.
+- Kijk waar de slierten ophouden.
+- Welke sliert is korter?
+- Deze sliert is korter.
+- Deze sliert is lang.
+- Deze sliert is kort.
+- De korte sliert is korter.
+- Welke mand is het grootst?
+- Deze mand is het grootst.
+- Welk glas is half vol?
+- Het sap komt tot de helft.
+- Het sap in dit glas komt tot de helft.
+- Kijk hoe hoog het sap komt.
+- Welke appel is het kleinst?
+- Deze appel is het kleinst.
+- Deze appel is groot.
+- Deze appel is kleiner.
+- En deze appel is het kleinst.
+- Welk broodje is het langst?
+- Dit broodje is het langst.
+- De broodjes beginnen op dezelfde plek.
+- Dit broodje is langer.
+- Dit broodje gaat het verst door.
+- Het is het langst.
+- Kijk waar de broodjes ophouden.
+- De mand is groot, maar hij is leeg.
+- De kant met de meloen zakt naar beneden.
+- Dus de meloen is zwaarder.
+- Welk broodje is het kortst?
+- Dit broodje is het kortst.
+- Dit broodje is korter.
+- Zet de appels op volgorde.
+- Van klein naar groot.
+- Tik eerst op de kleinste.
+- Klein, groter, het grootst.
+- We zoeken eerst de kleinste.
+- Dan komt deze appel.
+- Deze appel is het grootst.
+- Die komt als laatste.
+- Begin met de kleinste appel.
+- Zet de bekers op volgorde.
+- Deze beker is het kleinst.
+- Dan komt deze beker.
+- Deze beker is het grootst.
+- Begin met de kleinste beker.
+
+## squla-rekentaal (3)
+
+- Goed gewerkt in de keuken.
+- Nu gaan we picknicken in het park.
+- Je kent nu veel rekenwoorden.
+
+## tellen-120-doortellen (2)
+
 - Het zijn $o.aantal $BIJ[o.kleur] kwallen.
-- $g.n?
-- Zoek het getal $o.zoek.
-- Tik erop.
-- $o.zoek.
-- Hier staat $o.zoek.
-- $x?
-- Laten we die nog eens bekijken.
-- Je hebt goed laten zien wat je kunt.
-- Je hebt deze lessen al afgevinkt.
-- Goed gewerkt.
-- Een paar dingen oefenen we nog samen.
-- Nu nog even oefenen.
-- Jij zoekt het in het rooster.
-- Nu gaan we doortellen met grote getallen.
-- We beginnen hier.
-- Welk getal staat in de rand?
-- Ja, dat is 42.
-- Het getal heeft een 4 en een 2.
-- Welk getal is dat?
-- 42
-- Het is 42.
-- We doen er nog één in dezelfde rij.
+- $g.n:$o.kleur?
 
-## tellen-120-getallen-schrijven (60)
+## tellen-120-getallen-schrijven (45)
 
-- Hoi!
 - We gaan parels tellen.
 - En we schrijven op hoeveel het er zijn.
-- Laat maar eens zien.
 - Je kunt getallen tot 20 tellen en schrijven.
-- Goed geprobeerd.
-- We oefenen het samen.
 - Eerst tellen we, dan schrijven we het cijfer.
-- Je doet het goed.
 - Nu laat ik de puntjes weg.
 - Volg alleen de groene stip en het pijltje.
 - Volgende.
 - En nu deze.
-- Nog een.
 - We doen er nog een paar van net.
 - Weet je ze nu?
 - Hier staat $doel.
-- We komen hier later nog op terug.
 - Tik op $doel.
 - Nog een poging.
 - $doel staat in deze rij.
-- Ik help je even.
-- Welk getal staat in de rand?
 - Ja, dat is
-- $k?
-- Kijk nog eens goed.
 - Het getal heeft een $a en een $b.
-- Welk getal is dat?
 - Het is $n: een $a en een $b.
 - $k
 - Begin bij $start.
@@ -2796,10 +1094,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je begon bij $start en telde $n verder.
 - Je kwam uit op $eind.
 - Begin bij $start en tel $n verder.
-- We tellen samen.
 - Je komt uit op $eind.
 - $pijl?
-- Dat is heel dichtbij.
 - Maar het is er net één te weinig.
 - Wat was het eerste getal dat je telde?
 - Daar sta je al.
@@ -2815,137 +1111,25 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel moet je verder tellen tot $tiental?
 - Van $van naar $tiental tel je $d verder.
 - Geen zorgen, we tellen samen.
-- $x?
 - Ik denk dat je $van hebt meegeteld.
 - Je begint te tellen bij $van + 1.
 - Hmm, $x is te $x < d ? "weinig" : "veel".
 - Tel vanaf $van + 1 tot en met $tiental.
 
-## tellen-120-kleuren-tellen (68)
+## tellen-120-kleuren-tellen (7)
 
-- Hoi!
-- Kijk, een school lichtvisjes.
-- Laat maar eens zien.
-- Je kunt al visjes tellen.
-- Goed geprobeerd.
-- We oefenen het samen.
-- We tellen de visjes één voor één.
-- Tik op een visje in je lievelingskleur.
 - We tellen eerst de $BIJ[eerste] visjes.
-- Nu proberen we een grotere groep.
-- Tik op een visje in een andere kleur.
 - Oké, deze keer tellen we de $BIJ[tweede] visjes.
-- Ik maak een nieuwe school.
-- Kies nu twee kleuren.
-- Tik op een visje van elke kleur.
-- Dus deze keer nemen we $a en $b.
-- Ik schud de visjes even door elkaar.
-- We tellen de twee kleuren samen.
 - Nu de $BIJ[k1] en de $BIJ[k2] visjes samen.
-- Nu maak je het zelf.
-- Nog een keer zelf maken.
-- Tover $doel $BIJ[k] visjes.
-- Tik op een lege plek.
 - $doel $BIJ[k] visjes.
 - Maak $n $BIJ[k] visjes.
-- Tik eerst op een verfbolletje.
-- Het hele rooster is vol.
-- Echt knap!
-- Je hebt helemaal tot 10 geteld.
-- Ik help je even.
-- We komen hier later nog op terug.
-- Maak het getal $doel.
-- Ja, nu klopt het.
-- Dat is $doel.
-- Kijk, ik help je even.
-- Een volle schelp is 10.
-- En nog 1 erbij.
-- En nog $staat.rechts erbij.
-- Samen is dat $doel.
-- We zoeken het getal $doel.
-- We kijken samen.
-- In de eerste schelp liggen er 10.
-- Kijk nu naar de tweede schelp.
-- Hoeveel parels liggen daar?
-- Er ligt 1 parel.
-- Er liggen $r parels.
-- 10 en nog $r.
-- Welk getal is dat?
-- Goed, $10 + r.
-- Het is $10 + r.
-- Maar we maken het getal $doel.
-- Tik op een lege plek om er een parel te leggen.
-- Tik op een parel om hem weg te halen.
 - We tellen eerst de $BIJ[eerste] vakjes.
-- Tik op een andere kleur.
 - Oké, deze keer tellen we de $BIJ[tweede] vakjes.
-- We doen er nog één.
-- Tik op een vakje van elke kleur.
-- Ik schud het rooster even.
-- Maak 4 paarse vakjes in het rooster.
-- 4 paarse vakjes.
-- Nog één laatste uitdaging.
-- Zullen we meer kleuren gebruiken?
-- Maak 4 rode vakjes.
-- Maak 7 blauwe vakjes.
-- En maak 10 groene vakjes.
-- Kies eerst een verfpotje.
-- Je hebt het hele rooster gevuld.
 
-## tellen-120-na-tien (64)
+## tellen-120-na-tien (14)
 
-- Hoi!
-- Kijk, een schelp met plekken voor parels.
-- Laat maar eens zien.
-- Je kunt al tellen van 10 tot 20.
-- Goed geprobeerd.
-- We oefenen het samen.
-- Na 10 tellen we gewoon verder.
-- Hoeveel parels passen in deze schelp?
-- Tik op de schelp om een parel te leggen.
-- Een volle schelp is 10.
-- Een groep van 10.
-- Maar wat komt er na 10?
-- Leg een parel in de tweede schelp.
-- Weet je hoe dit getal heet?
-- Tik op een woord, dan hoor je het.
-- Heel goed, elf.
-- Dat zetten we naast de schelpen.
-- We zeggen elf.
-- Zo hebben we het gemaakt.
-- Maar we zeggen elf.
 - $k[0].toUpperCase()$k.slice(1) komt straks.
-- Dit getal heet elf.
-- Hoe heet dit getal?
-- Daar bewaren we al onze getallen.
-- Leg er nog een parel bij.
-- 10 en nog 2 is 12.
-- Ja, het getal 13.
-- Kijk, ons lijstje groeit.
-- Blijf nu tikken tot de schelpen bijna vol zijn.
-- Kijk.
-- Twee groepen van 10 is 20.
-- Je bent goed opgewarmd.
-- Nu doen we een spel.
-- Ik zeg een getal, jij bouwt het.
-- Je kunt nu tellen van 10 tot 20.
-- Kijk, er is 1 volle schelp.
-- Kijk, er zijn $o.tel volle schelpen.
-- $i
-- Er ligt geen enkele parel.
-- Het getal voor niets is nul.
-- Het is $goed.
-- We komen hier later nog op terug.
-- Ja, 0.
-- Geen enkele.
-- $goed.
-- Die kaart is $g.n.
-- Het eerste vak is voor de volle schelpen.
-- Tel de parels en zoek dan dat getal.
-- Dus er liggen $o.tel parels.
-- Tik dat getal.
-- Kijk, zo schrijf je een
-- Mooi geschreven!
+- Kijk, er zijn $o.tel:roze volle schelpen.
 - De $t staat voor $schelpen(t).
 - De $e staat voor $losse(e).
 - Samen is dat $n: $getalWoord(n).
@@ -2965,21 +1149,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Van 11 tot en met 19.
 - Je kent de tienergetallen.
 
-## tellen-120-tot-50 (31)
+## tellen-120-tot-50 (24)
 
 - We spelen snelle vingers.
 - Ik noem een getal.
 - Jij tikt erop.
 - Je kent dit rooster echt goed.
 - Zullen we nu doortellen?
-- We beginnen hier.
-- Welk getal staat in de rand?
 - Ja, dat is 45.
-- $k?
-- Kijk nog eens goed.
 - Het getal heeft een 4 en een 5.
-- Welk getal is dat?
-- 45
 - Het is 45: een 4 en een 5.
 - Goed bezig!
 - Nu vind je elk getal tot 50.
@@ -2995,22 +1173,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 20.
 - Dat is twintig.
 - Tienergetallen komen voor twintig.
-- Ik help je even.
 - De tienergetallen staan hier.
 - Tik op een van deze getallen.
 
-## tellen-holo (gedeeld) (31)
+## tellen-holo (gedeeld) (29)
 
-- Weet je het niet?
-- Tik dan op het vraagteken.
-- Weet je het niet? Tik dan op het vraagteken.
 - Die kleur hebben we al.
-- Tik op een andere kleur.
+- $j + 1:$kleur
 - $j + 1
 - Hoeveel $wat zie je?
 - We tellen ze samen.
 - Het zijn $n $wat.
-- We komen hier later nog op terug.
+- $n:$kleur?
 - $n?
 - We tellen samen, vanaf 0.
 - Zie je wel?
@@ -3020,6 +1194,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $x $een?
 - Dan heb je er te veel geteld.
 - Ah, er zijn er nog over.
+- Dus het zijn er meer dan $x:$kleur.
 - Dus het zijn er meer dan $x.
 - Tel de $wat en tik op het getal.
 - Tik op een visje van die kleur.
@@ -3033,13 +1208,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, ik maak het voor je.
 - Zo klopt het.
 
-## tellen-tot-120 (gedeeld) (90)
+## tellen-tot-120 (gedeeld) (78)
 
 - Kies deze keer een andere kleur.
 - Hoeveel $wat zie je?
 - We tellen ze samen.
 - Het zijn $n $wat.
-- $n?
+- $n:$kleur?
 - We tellen samen, vanaf 0.
 - Zie je wel?
 - Je had het precies goed.
@@ -3047,34 +1222,24 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $x $x === 1 ? wat.replace(/vakjes$/, "vakje") : wat?
 - Dan heb je er te veel geteld.
 - Ah, er zijn er nog over.
-- Dus het zijn er meer dan $x.
+- Dus het zijn er meer dan $x$kleuren.length === 1 ?
+- : "".
 - Tel de $wat en tik op het getal.
 - Er zijn $n $BIJ[doel] vakjes.
 - We tellen de $BIJ[doel] samen.
 - $n $BIJ[keuze] vakjes?
 - Ah.
-- Er is maar 1 $keuze vakje, niet $n.
+- Er is maar 1 $BIJ[keuze] vakje, niet $n.
 - Er zijn $m $BIJ[keuze] vakjes, niet $n.
 - Kijk, er zijn $n $BIJ[doel] vakjes.
-- Ik help je even.
 - Maak het getal $doel in het rooster.
-- Dat is $doel.
-- We zoeken het getal $doel.
-- We kijken samen.
 - Links zijn er 10.
 - Kijk nu naar de vakjes rechts.
 - Hoeveel zijn het er?
 - Het is er 1.
 - Het zijn er $r.
-- 10 en nog $r.
-- Welk getal is dat?
-- Goed, $10 + r.
-- Het is $10 + r.
-- Maar we maken het getal $doel.
 - Tik op een leeg vakje om het te vullen.
 - Tik op een vakje om het weg te halen.
-- $x?
-- Kijk nog eens goed.
 - Zoek het getal $doel.
 - Tik op $doel.
 - $doel staat in deze rij.
@@ -3086,10 +1251,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je begon bij $start en telde $n verder.
 - Je kwam uit op $eind.
 - Begin bij $start en tel $n verder.
-- We tellen samen.
 - Je komt uit op $eind.
 - $pijl?
-- Dat is heel dichtbij.
 - Maar het is er net één te weinig.
 - Wat was het eerste getal dat je telde?
 - Daar sta je al.
@@ -3112,11 +1275,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel vanaf hier 10 verder.
 - Op welk getal kom je?
 - $eind.
-- $k?
 - Tel 10 verder vanaf $start.
 - 10 verder staat recht eronder.
 - Het is $eind.
-- We gaan tellen, tot wel 100.
+- We gaan tellen, tot 100.
+- Eerst kijken we wat je al kunt.
 - Kijk naar dit rooster.
 - Hoeveel vakjes zijn $o.kleur?
 - $o.aantal $BIJ[o.kleur] vakjes.
@@ -3126,19 +1289,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, ik tel mee.
 - Je komt op $eind.
 
-## tientallen (gedeeld) (6)
+## tientallen (gedeeld) (1)
 
-- Weet je het niet? Tik dan op het vraagteken.
-- Kijk maar.
-- We komen hier later op terug.
 - We gaan nog even terug.
-- Er was nog één vraag.
-- Er waren nog een paar vragen.
 
-## tientallen-groepjes-van-tien (74)
+## tientallen-groepjes-van-tien (68)
 
-- Ben je klaar? Tik dan op het vinkje.
-- Wil je hulp? Tik dan op het handje.
+- Wil je hulp? Tik dan op het vraagteken.
 - Met deze knop begin je opnieuw.
 - $st.aantal
 - Kijk, dit is een sterrenmachine.
@@ -3151,7 +1308,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De lichtbollen en de losse sterren zijn omgedraaid.
 - We beginnen met 7 sterren.
 - Tik op deze knop.
-- Alsjeblieft, $sterren(7).
+- Kijk, $sterren(7).
 - Sterren zijn handig om te tellen.
 - Maar wat lees je makkelijker?
 - Het getal 7, of de sterren?
@@ -3159,7 +1316,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daarom hebben mensen cijfers bedacht.
 - Bij een paar sterren gaat dat nog.
 - Bij heel veel sterren wordt tellen lastig.
-- Oké, $l.naam.
 - Doe er eens 3 sterren bij.
 - Kijk wat er gebeurde.
 - Bij 10 kropen de sterren samen.
@@ -3175,11 +1331,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wauw, het gebeurde weer!
 - Nu wil ik 100 sterren.
 - Je mag ze één voor één erbij doen.
-- Of tik op het handje.
+- Of tik op het vraagteken.
 - Dan laat ik een makkelijkere manier zien.
-- Dit is het handje.
+- Dit is het vraagteken.
 - Dat duurt lang, hè?
-- Tik op het handje.
+- Tik op het vraagteken.
 - We doen het slim.
 - Eerst haal ik de losse sterren weg.
 - Ik zet een nieuwe knop op de machine.
@@ -3189,31 +1345,30 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 100 sterren.
 - Zo kun je steeds grotere getallen maken.
 - Speel even met de machine.
+- Tik op het vinkje als je klaar bent.
 - Je maakte $vrij.
 - Weet je nog, $doel?
 - Nu bouw jij een getal.
 - Deze keer zijn er alleen losse sterren.
 - Nog één om te oefenen.
-- Nog een.
 - Maak $doel.
 - Je hebt $x gemaakt.
-- Dat is te weinig.
-- Dat is te veel.
-- Tik $doel keer op de ster.
+- Tik $doel:geel keer op de ster.
 - Tik één keer op de lichtbol.
-- Tik $t keer op de lichtbol.
+- Tik $t:paars keer op de lichtbol.
 - Tik nu één keer op de ster.
-- Tik nu $e keer op de ster.
-- We komen hier later op terug.
+- Tik nu $e:geel keer op de ster.
 - Bij de tiende ster kwam er weer een lichtbol.
 - $doel is één lichtbol en $sterren(e) los.
 - $inBollen(doel).
-- Dat is $doel.
-- Je bouwt al flinke getallen, $l.naam.
-- Je bouwt al flinke getallen.
+- Je bouwt al grote getallen, $l.naam.
+- Je bouwt al grote getallen.
 
-## tientallen-klodders-bouwen (56)
+## tientallen-klodders-bouwen (59)
 
+- Een getal heeft plekken.
+- De eenheden.
+- En de tientallen.
 - We verzinnen er een woord voor: klodder.
 - Een klodder is een groepje stippen.
 - Je kunt je eigen getal bouwen met klodders.
@@ -3227,8 +1382,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het vinkje als je er genoeg hebt.
 - Doe er eerst minstens één stip bij.
 - Mooi, je hebt 1 stip.
-- Mooi, je hebt $e stippen.
-- Bovenaan zie je het totaal.
+- Mooi, je hebt $e:blauw stippen.
+- Bovenaan zie je hoeveel het samen is.
 - Nu we losse stippen hebben, zijn we klaar voor klodders.
 - De groene klodders zijn groepjes van 10.
 - We doen er een paar bij.
@@ -3236,16 +1391,17 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Doe er klodders bij.
 - Tik op het vinkje als je alle tientallen hebt.
 - Doe er eerst minstens één klodder bij.
+- Tik op plus bij de 10.
 - Je hebt $klodders(t) erbij gedaan.
 - Eén groepje van 10 stippen.
-- $t groepjes van elk 10 stippen.
+- $t:groen groepjes van elk 10 stippen.
 - Je bouwt een getal stukje voor stukje.
 - Klodder voor klodder.
 - Samen zijn het al $n stippen.
 - We halen $n uit elkaar.
 - Tel alleen de groene klodders.
 - Hoeveel stippen zijn dat?
-- $t 10 stippen.
+- $t 10:groen stippen.
 - Ik leg de klodders netjes neer.
 - Kijk, ik kies de groene klodders.
 - Bovenaan staat hoeveel stippen dat zijn.
@@ -3255,37 +1411,49 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zitten $t 10 stippen in de groene klodders.
 - En de losse blauwe stippen?
 - Hoeveel zijn dat er?
-- Kijk goed.
 - Er is 1 losse stip.
-- Er zijn $en losse stippen.
-- $t 10 stippen en $en === 1 ? "1 losse stip" :
-- $t 10 stippen, en geen losse.
+- Er zijn $en:blauw losse stippen.
+- $t 10:groen stippen en $en === 1 ? "1 losse stip" :
+- $t 10:groen stippen, en geen losse.
 - Samen is dat $n.
 - Zo heb je het getal uit elkaar gehaald.
 - In tientallen en eenheden.
 - Goed gedaan vandaag.
 - Ja, $n.
 - Dat is niet wat ik daar zie.
-- $tientallen(Math.floor(n / 10)) en $eenheden(n % 10).
+- $tientallen(Math.floor(n / 10), "groen") en $eenheden(n % 10, "blauw").
 - Er staat $n.
 - Tientallen of eenheden?
 - Hm, niet helemaal.
 
-## tientallen-klodders-erbij (11)
+## tientallen-klodders-erbij (24)
 
+- We gebruiken klodders om tientallen erbij te doen.
+- We beginnen klein.
+- Eerst een makkelijke plussom.
+- Hier is 32.
+- 3 tientallen en 2 eenheden.
+- Kun je er 10 bij doen, zodat het 42 wordt?
+- Tik op het vinkje als je klaar bent.
+- Heb je hulp nodig?
+- 32 plus 10 is 42.
+- Doe er nu 30 bij.
+- 42 plus 30 is 72.
+- Je snapt het al.
+- Doe je tientallen erbij?
+- Dan doe je gewoon klodders erbij.
 - In dit onderdeel bouwen we getallen met plaatswaarde.
+- Eerst kijken we wat je al kunt.
 - Maak $doel.
 - Tik in een kolom.
 - Dan komt er een staaf of een blokje.
 - Tik erop om hem weg te halen.
 - Tik op het blauwe vinkje als je klaar bent.
 - Zet eerst staven of blokjes in de kolommen.
-- $tientallen(t) en $eenheden(e).
+- $tientallen(t, "blauw") en $eenheden(e, "groen").
 - $n?
-- Kijk nog eens goed.
-- Dat is $doel.
 
-## tientallen-klodders-lezen (15)
+## tientallen-klodders-lezen (14)
 
 - Dit is de kloddermachine.
 - Een groene klodder is een groepje van 10.
@@ -3296,16 +1464,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je hebt het getal $doel gebouwd.
 - Hoeveel $woord zitten er in $doel?
 - tien
-- $doel heeft $tientallen(t).
-- $doel heeft $eenheden(e).
-- Hm.
+- $doel heeft $tientallen(t, "groen").
+- $doel heeft $eenheden(e, "blauw").
 - We maken er nog één.
-- $doel is $tientallen(t) en $eenheden(e).
+- $doel is $tientallen(t, "groen") en $eenheden(e, "blauw").
 - Je kunt getallen lezen in klodders.
 
 ## tientallen-plaatsen-in-een-som (11)
 
-- Dit is een flinke som.
+- Dit is een grote som.
 - Maar we kunnen hem samen opdelen.
 - Dus we hebben 87 min 25.
 - Je ziet vast dat de cijfers verschillende kleuren hebben.
@@ -3319,11 +1486,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## tientallen-plek-van-de-tientallen (78)
 
-- $st.enen
+- $st.enen:geel
+- We gaan leren hoe onze getallen werken.
 - Dat doen we met dit kristallen vak.
 - Doe een ster in het vak.
+- Tik maar in het vak.
 - Eén ster schrijven we met het cijfer 1.
 - Je kunt een ster ook weghalen.
+- Sleep hem uit het vak.
 - Nu zijn er geen sterren.
 - Dat schrijven we met het cijfer 0.
 - Nul betekent: hier zit niets in.
@@ -3331,7 +1501,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - We zagen al 2 cijfers: 1 en 0.
 - Doe er nu een heleboel sterren in.
 - Kijk hoe hoog het getal gaat.
-- We stoppen hier even.
 - We begonnen bij 0 en gingen tot 9.
 - Hoeveel verschillende cijfers zagen we?
 - 0 tot en met 9: dat zijn 10 cijfers.
@@ -3341,12 +1510,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daar begonnen we.
 - Dat zijn 9 cijfers.
 - En dan hebben we nog de 0.
-- Een beetje een vreemde.
+- Een beetje een rare.
 - Samen zijn dat 10 cijfers.
 - Stel, er komt nog een ster bij.
 - Hoeveel cijfers heb je dan nodig?
-- Je hebt gelijk.
-- Kijk maar.
 - Doe er nog één ster in.
 - Kijk, het vak wordt rood.
 - Voor tien is er geen eigen cijfer.
@@ -3374,32 +1541,33 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Haal er nu één ster uit.
 - Zo kun je steeds grotere getallen maken.
 - Dit is pas het begin.
-- Tik op plus bij de $w.
-- Tik op min bij de $w.
+- Tik op plus bij de $getal(w, w === 10 ? "groen" : "blauw").
+- Tik op min bij de $getal(w, w === 10 ? "groen" : "blauw").
 - Tot er $nodig staat.
 - Doe eerst wat stippen erbij.
 - Tik op de knoppen hier beneden.
 - Ik zie wat je deed.
 - Je hebt de goede delen.
 - Maar in de verkeerde volgorde.
-- $tientallen(k.st.tienen) en $eenheden(k.st.enen).
+- $tientallen(k.st.tienen, "groen") en $eenheden(k.st.enen, "blauw").
 - Dat is $n.
 - Een beetje te veel.
 - Ik zet het terug.
 - Dan proberen we het opnieuw.
 - Haal er wat weg.
 - We hebben iets meer nodig.
+- In dit onderdeel werken we met groepjes van 10.
+- Eerst kijken we wat je al kunt.
 - Kijk naar de klodders.
 - Hoeveel stippen zijn er samen?
-- $groepjes groepjes van 10.
-- Dat zijn $doel stippen.
-- $k?
-- Kijk nog eens goed.
+- $groepjes:groen groepjes van 10.
+- Dat zijn $doel:groen stippen.
 - In elke klodder zitten 10 stippen.
-- $groepjes groepjes van 10 is $doel.
+- $groepjes:groen groepjes van 10 is $doel.
 
-## tientallen-tot-99 (41)
+## tientallen-tot-99 (39)
 
+- Weet je al hoe deze machine werkt?
 - Ja, ik probeer het zelf
 - Mooi, dan gaat het vast snel.
 - Goed, we leren het samen.
@@ -3429,77 +1597,66 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja, dat denk ik ook.
 - Maak het vak van de eenheden vol.
 - Tot er 99 staat.
-- We zoeken het uit.
 - Zo ver als het gaat.
 - $90 + st.enen
 - 99.
-- Je had gelijk.
 - Kijk, nu zijn allebei de vakken vol.
 - Welk getal staat er nu?
 - Ja, 99.
 - Er staat 99.
-- $tientallen(9) en $eenheden(9).
+- $tientallen(9, "groen") en $eenheden(9, "blauw").
 - Met 2 vakken is 99 het grootste getal.
-- Goed gewerkt vandaag.
 
-## vergelijken (gedeeld) (73)
+## vergelijken (gedeeld) (65)
 
 - We gaan nog even terug naar een paar vragen van net.
 - Tik nu op de $BN[kleur] vuurvliegjes.
 - Ik tel mee.
 - Ah, dat zie ik anders.
 - Geen zorgen, we stoppen hier even mee.
-- We komen er later op terug.
-- Ja, dat klopt.
 - Dat potje heeft de meeste $BN[kleur].
 - De $BN[goed === "links" ? kl : kr] groep is de grootste.
-- $goed === "links" ? "Links" : "Rechts" zijn het er $Math.max(a, b).
-- Aan de andere kant $Math.min(a, b).
+- $goed === "links" ? "Links" : "Rechts" zijn het er $getal(Math.max(a, b), goed === "links" ? kl : kr).
+- Aan de andere kant $getal(Math.min(a, b), goed === "links" ? kr : kl).
 - Het $goed === "links" ? "linker" : "rechter" potje heeft de meeste $BN[kleur].
 - Ik haal de andere kleuren even weg.
 - Hmm, laten we samen tellen.
-- Uitstekend.
 - Kijk naar de potjes.
 - Maar weet je ook hoeveel meer?
-- Kijk: er $n === 1 ? "steekt" : "steken" $n $n === 1 ? KN[kleur] : BN[kleur] $vliegjes(n) boven uit.
-- Er $n === 1 ? "is" : "zijn" er $n meer.
-- We komen hier later op terug.
+- Kijk: er $n === 1 ? "steekt" : "steken" $n $n === 1 ? KN[kleur] : BN[kleur] $vliegjes(n) bovenuit.
+- Er $n === 1 ? "is" : "zijn" er $getal(n, kleur) meer.
 - Er $n === 1 ? "is" : "zijn" $n $n === 1 ? KN[kleur] : BN[kleur] $vliegjes(n) meer.
-- Niet helemaal.
 - $x $x === 1 ? KN[kleur] : BN[kleur] $vliegjes(x) meer?
 - Ik heb de vuurvliegjes netjes neergezet.
 - Nu vergelijk je ze makkelijker.
 - Kijk, nu staan ze netjes onderaan.
 - Kijk: zo zijn er aan elke kant $doel.
 - Dan zijn de groepen gelijk.
-- Ik help je even.
 - Weet je wat gelijk betekent?
 - Hetzelfde
 - Gelijk betekent hetzelfde.
 - Gelijke groepen hebben evenveel vuurvliegjes.
-- Wat denk je?
 - Zijn deze groepen gelijk?
 - Klopt, ze zijn nog niet gelijk.
-- Kijk, links zijn het er $start.
-- Rechts zijn het er $doel.
+- Kijk, links zijn het er $getal(start, "blauw").
+- Rechts zijn het er $getal(doel, eersteKleur(rechts, "geel")).
 - Ze zijn nog niet gelijk.
 - Verander de blauwe kant tot ze gelijk zijn.
-- Je hebt er nog $doel - g.links nodig.
-- Er $g.links - doel === 1 ? "is" : "zijn" er $g.links - doel te veel.
+- blauw
+- geel
+- Je hebt er nog $getal(doel - g.links, "blauw") nodig.
+- Er $g.links - doel === 1 ? "is" : "zijn" er $getal(g.links - doel, "blauw") te veel.
 - Bijvoorbeeld $voorbeeld.
 - $zin(a ?? voorbeeld, t, b ?? voorbeeld).
 - $zin(a ?? x, t, b ?? x).
 - $zin(a ?? x, t, b ?? x)?
 - Dat klopt niet.
 - Dat lijkt niet te kloppen.
-- Wil je een korte toets doen?
-- Of begin je liever bij de eerste les?
+- In dit onderdeel gaan we groepen en getallen vergelijken.
+- Denk je dat je hier al goed in bent?
 - Meer of minder
 - Daar oefenen we het samen.
-- Laat maar zien wat je kunt.
-- We kijken gewoon wat je al weet.
 - hand
-- Geen probleem, ik help je.
 - Dit vind je nog een beetje lastig.
 - Tik op de grootste groep.
 - De blauwe groep heeft er $gb.
@@ -3518,14 +1675,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Mooi werk!
 - Je kunt groepen en getallen vergelijken.
 
-## vergelijken-getallen (55)
+## vergelijken-getallen (52)
 
+- We gaan getallen vergelijken met tekens.
 - We herhalen wat de tekens betekenen.
 - Dit teken zie je vaak bij rekenen.
 - Weet je hoe het heet?
-- Dat is hem.
 - Het heet het is-gelijkteken.
-- plus
 - Een plusteken? Niet helemaal.
 - Een minteken? Niet helemaal.
 - Het is-gelijkteken zegt: beide kanten zijn hetzelfde.
@@ -3540,7 +1696,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk naar het gele stipje.
 - Dat is de kleine kant van het teken.
 - Die kant wijst naar het kleinste getal.
-- Perfect.
 - Nu zegt het teken: $zin(kl, "<", 5).
 - Het laatste teken heet is groter dan.
 - Je gebruikt het als het linker getal het grootste is.
@@ -3550,6 +1705,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Maak er een getal boven de 4 van.
 - Nu zegt het teken: $zin(gr, ">", 4).
 - Je snapt het al, $l.naam.
+- Je snapt het al.
 - Wil je zelf een som proberen?
 - Of de tekens nog eens bekijken?
 - Beide kanten zijn hetzelfde.
@@ -3561,32 +1717,27 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Top.
 - We beginnen meteen.
 - Dan beginnen we meteen.
-- Even checken.
+- Even kijken.
 - Wil je doorgaan met deze les?
 - Zullen we doorgaan?
-- Dan ronden we af.
-- Klinkt goed.
+- Dan stoppen we.
 - Wil je nog wat oefenen?
-- Of zullen we afronden?
+- Of zullen we stoppen?
 - Goed, nu kies jij het getal.
 - Je had er $totaal van de $totaal goed, zonder hulp.
 - Misschien moet jij de juf zijn!
-- Je hebt goed geoefend.
 - Mooi werk, $l.naam!
 - Mooi werk!
 - Je kunt getallen vergelijken met tekens.
 
-## vergelijken-meer-of-minder (30)
+## vergelijken-meer-of-minder (25)
 
 - $l.naam, dit gaat je makkelijk af.
-- Dit gaat je makkelijk af.
+- Dit kun je makkelijk.
 - De volgende wordt iets moeilijker.
-- Goed geoefend.
 - Nu komt er iets nieuws.
 - $l.naam, je doet het heel goed.
-- Je doet het heel goed.
 - We oefenen nog één ding.
-- Perfect.
 - De groepen zijn gelijk.
 - 4 vuurvliegjes aan elke kant.
 - Netjes gedaan.
@@ -3596,24 +1747,25 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Groepen vergelijken lukt je al goed.
 - Dat zijn er te veel.
 - Tik op een vuurvliegje om het weg te laten vliegen.
-- Het hoort zo: $zin(a, goed, b).
+- Het hoort zo: $zin(a, goed, b, kl, kr).
 - Ze zijn even groot.
 - De kleine kant wijst naar de kleinste groep.
-- We komen hier later op terug.
 - Tik eerst op het vraagteken.
-- $zin(a, goed, b).
-- $zin(a, fout, b)?
+- $zin(a, goed, b, kl, kr).
+- $zin(a, fout, b, kl, kr)?
 - Kijk goed: ze zijn even groot.
 - Dan hoort daar het is-gelijkteken.
-- $a en $b zijn gelijk?
-- Hmm.
+- $getal(a, kl) en $getal(b, kr) zijn gelijk?
 - De kleinste groep hoort aan de kleine kant van het teken.
 
-## vergelijken-tekens (99)
+## vergelijken-tekens (98)
 
+- Kijk eens naar deze vraagtekens.
+- Tik ze alle drie aan.
+- Er zitten belangrijke tekens achter.
+- Geef elk vraagteken een tik.
 - Blijf erop tikken.
 - Er zijn drie verschillende tekens.
-- Uitstekend.
 - Vandaag oefenen we met deze tekens.
 - Heb je ze al eens gebruikt?
 - Ja
@@ -3622,14 +1774,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dit teken zie je vaak bij rekenen.
 - Weet je hoe het heet?
 - Dit is het is-gelijkteken.
-- plus
 - Een plusteken? Niet helemaal.
 - Een minteken? Niet helemaal.
 - Tik op de lege plekjes.
 - Zorg dat er aan elke kant 3 vuurvliegjes zijn.
 - Top.
 - Nu 3 in het andere potje.
-- Perfect.
 - Aan elke kant 3.
 - Het is-gelijkteken laat zien dat ze evenveel hebben.
 - Dat was het eerste teken.
@@ -3648,7 +1798,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dit is de grote kant.
 - Maak hier een grotere groep dan 2.
 - Tik op 5 lege plekjes.
-- Je liet zien: $zin(2, "<", 5).
+- Je liet zien: $zin(2, "<", 5, "blauw", "geel").
 - En als laatste dit teken.
 - Het heet is groter dan.
 - Je gebruikt het als links meer is dan rechts.
@@ -3662,20 +1812,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op een vuurvliegje om het weg te laten vliegen.
 - Aan de kleine kant zet je de kleinste groep.
 - Tik hier op 1 plekje.
-- Je liet zien: $zin(3, ">", 1).
-- Je doet het heel goed.
+- Je liet zien: $zin(3, ">", 1, "blauw", "geel").
 - Wil je de tekens zelf gebruiken?
 - Of wil je nog wat oefenen?
 - Goed, we kijken nog één keer.
-- $zin(3, "=", 3).
+- $zin(3, "=", 3, "blauw", "geel").
 - Aan beide kanten evenveel.
-- $zin(2, "<", 5).
+- $zin(2, "<", 5, "blauw", "geel").
 - De kleine kant wijst naar de kleinste groep.
-- $zin(3, ">", 1).
+- $zin(3, ">", 1, "blauw", "geel").
 - De kleine kant wijst weer naar de kleinste groep.
 - Nu probeer je het zelf.
 - Fantastisch.
-- Laat maar zien wat je kunt.
 - $l.naam, je kent ze goed.
 - Je kent ze goed.
 - We doen het nu een beetje anders.
@@ -3683,19 +1831,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Maak weer twee groepen.
 - Zorg dat het teken klopt.
 - Tik op een leeg plekje voor een vuurvliegje.
-- $zin(m.links, tk, m.rechts).
+- $zin(m.links, tk, m.rechts, "blauw", "geel").
 - Hmm, dat past nog niet bij het teken.
 - Ik zet de getallen erbij.
 - De kleinste groep hoort aan de kleine kant.
 - Ik doe het even voor.
-- $zin(x, tk, y).
+- $zin(x, tk, y, "blauw", "geel").
 - Nu maken we de groepen gelijk.
 - Bingo!
-- Met $nodig $vliegjes(nodig) erbij zijn de groepen gelijk.
-- Kijk maar.
-- Er $nodig === 1 ? "moet" : "moeten" er $nodig bij.
-- $li en $nodig is samen $re.
-- We komen hier later op terug.
+- Met $getal(nodig, "blauw") $vliegjes(nodig) erbij zijn de groepen gelijk.
+- Er $nodig === 1 ? "moet" : "moeten" er $getal(nodig, "blauw") bij.
+- $getal(li, "blauw") en $getal(nodig, "blauw") is samen $getal(re, "blauw").
+- blauw
+- geel
 - Kijk nog eens hoeveel er links mist.
 - Mooi werk, $l.naam!
 - Mooi werk!
@@ -3711,47 +1859,120 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat lijkt niet te kloppen.
 - Kijk: het zijn dezelfde getallen.
 
-## verhaal-eindtoets (9)
+## verhaal-eindtoets (91)
 
-- Ik heb verhaaltjessommen voor je.
-- Ik lees elk verhaal voor.
-- Knap gedaan, $l.naam.
-- Je hebt lastige verhaaltjessommen opgelost.
 - $x? Niet helemaal.
-- We kijken samen.
-- $k?
 - Daar ben ik niet zo zeker van.
 - We kijken samen nog eens.
+- $geteld.length
+- $aan - 1
+- Het is $antwoord.
+- $n $n === 1 ? enkelvoud(o.ding) : o.ding?
+- Het zijn er een paar minder.
+- Het zijn er een paar meer.
+- $x $x === 1 ? enkelvoud(o.ding) : o.ding? Niet helemaal.
+- $x $x === 1 ? enkelvoud(o.ding) : o.ding? Dat is nog niet het getal dat ik tel.
+- Je hebt één getal.
+- Tik nu op het andere.
+- Ja, $v.a en $v.b.
+- Kijk, deze zin stelt de vraag.
+- Daar staat het vraagteken.
+- Maar die zin stelt geen vraag.
+- Maar ook die zin stelt geen vraag.
+- Zoek de zin met het vraagteken.
+- Tik dan op die zin.
+- Nog een hint.
+- Zoek de zin die begint met Hoeveel.
+- Tik op die zin.
+- Tik op het woord dat zegt dat dit een $v.op === "+" ? "plussom" : "minsom" is.
+- Goed gekozen.
+- Je koos dat stuk.
+- Je koos $String(g.tekst ?? "").
+- Dat is niet wat ik zoek.
+- Dat zijn niet de woorden die ik zoek.
+- Dat is niet het woord dat ik zoek.
+- Het staat in de zin met de rand.
+- Zullen we ze terug in beeld halen?
+- Welk getal zetten we [[b:eerst]]?
+- $k? Niet helemaal.
+- Dat is oké. Ik help je een beetje.
+- Kijk naar deze zin.
+- $y? Niet helemaal.
+- $String(k).replace(/(\d+)/g, "$1")? Dat is niet de som die ik zocht.
+- Precies, $v.a $v.op $v.b.
+- Jij koos de som $somTekst(String(k)).
+- Deze som past: $somTekst(goed).
+- Precies, $somTekst(goed).
+- $n $n === 1 ? enkelvoud(v.ding) : v.ding? Niet helemaal.
+- $n $n === 1 ? enkelvoud(v.ding) : v.ding? Dat is nog niet het getal dat ik tel.
+- Laten we de toets hier stoppen en met de eerste les beginnen.
+- number
+- $x? Dat is heel dichtbij.
+- $somTekst(String(x))?
+- De les $doorNaar.titel is een mooie volgende stap.
+- Er branden nog $nog lampen.
+- $Wie(l) plant er $erbij bij.
+- Het zijn er N.
+- Je krijgt
+- Je krijgt er $ant bij.
+- Er komen er $ant bij.
+- Dit verhaal is een beetje anders.
+- Denk je dat je het zelf kunt?
+- $somTekst(String(k))?
+- Het is een $plusMin.
+- Kijk naar de groene zin.
+- Precies, $goed $ding(goed).
+- Kijk, het is $goed.
+- $keuze $ding(keuze)?
+- $String(keuze) $ding(Number(keuze))? Niet helemaal.
+- Precies, $somTekst(v.goedeSom).
+- $Number(x)? Ik tel er $Number(x) > antwoord ? "minder" : "meer".
+- $Number(x)?
+- Laten we naar $v.hulpNaar ??
+- kijken.
+- Er zijn er $eind.
+- Haal de $q weg die erbij kwamen.
+- Dit is wat we in het [[b:begin]] hadden.
+- Hoeveel $v.ding zijn het?
+- We begonnen met deze $p $ding(p ?? 0).
+- Haal er een paar weg tot er nog $eind zijn.
+- Nu zijn er nog $eind.
+- Hoeveel $v.ding haalde je weg?
+- Kijk, het zijn er $antwoord.
+- We begonnen met $antwoord $ding(antwoord).
+- Er kwamen er $q bij.
+- Er zijn nu $eind $ding(eind).
+- $antwoord + $q = $eind.
+- lamp
+- Er zijn $p $ding(p ?? 0).
+- Er waren $p $ding(p ?? 0).
+- Ik doe er $antwoord uit.
+- Er gingen er $antwoord weg.
+- Kun je die nu weghalen?
+- Er branden nog $eind $ding(eind).
+- Er zijn nog $eind $ding(eind).
+- $p − $antwoord = $eind.
 
-## verhaal-grote-verhalen (44)
+## verhaal-grote-verhalen (37)
 
-- Deze verhaaltjes zijn wat lastiger.
 - Denk je dat je ze alleen kunt?
-- Dat is oké.
-- We halen dit verhaal samen uit elkaar.
+- We doen dit verhaal samen stap voor stap.
 - Denk je dat je deze al weet?
-- We halen hem samen uit elkaar.
-- Nu ben jij de baas over de som.
-- Er staan al 7 bloemen.
+- Nu bepaal jij de som.
 - Plant er nog wat bij.
-- Welke som past bij dit verhaal?
+- Tik op het vinkje als je klaar bent.
 - Er komen bloemen bij, dus het is plus.
-- Niet helemaal.
-- Er komen bloemen bij.
 - Dus de som is 7 + $plant.
-- Hoeveel bloemen zijn het nu?
-- $x bloemen? Niet helemaal.
+- $x $x === 1 ? "bloem" : "bloemen"? Niet helemaal.
 - We planten de nieuwe bloemen.
 - Plant $plant $mv(plant, "bloem", "bloemen") in de lege potjes.
-- Tel alle bloemen.
 - Hoeveel zijn het er nu?
 - Er zijn nu $samen bloemen.
-- $l.naam, wil je afronden?
-- Wil je afronden?
+- $l.naam, wil je stoppen?
+- Wil je stoppen?
 - Of nog één verhaal met knikkers?
 - Tik op een paar knikkers om ze weg te geven.
 - Eerst een vraag.
-- Welke som past bij het verhaal?
 - Precies, 16 − $weg.
 - Er gaan knikkers weg.
 - Dus de som is 16 − $weg.
@@ -3762,64 +1983,51 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel knikkers zijn er nog over?
 - knikker
 - knikkers
-- Knap gedaan, $l.naam.
-- Je kunt deze verhaaltjessommen al goed.
 - Lukt het je alleen?
-- Laten we hem samen uit elkaar halen.
+- Laten we het samen stap voor stap doen.
 - Tik op de lege plekjes.
 - Hier zweven 16 lichtjes.
 - Tik op een paar lichtjes om ze weg te laten zweven.
+- Je plantte er $geplant bij.
+- $l.naam, wil je afronden?
+- Je gaf $n $mv(n, "munt", "munten") uit.
+- Heel goed gedaan, $l.naam.
 
-## verhaal-instaptoets (5)
+## verhaal-instaptoets (3)
 
 - Ik heb een verhaaltjessom voor je.
 - Ik lees hem voor.
-- Knap gedaan, $l.naam.
-- Je hebt lastige verhaaltjessommen opgelost.
 - Je kunt verhaaltjessommen oplossen.
 
-## verhaal-kleine-verhalen (65)
+## verhaal-kleine-verhalen (49)
 
-- We gaan verhaaltjessommen maken.
-- Luister goed.
 - Heb je hulp nodig bij deze?
-- We halen het verhaal uit elkaar.
-- Dan snappen we wat er gevraagd wordt.
 - Denk je dat je het antwoord al weet?
-- We halen hem samen uit elkaar.
 - Je deed dus 5 plus 3.
 - Wissel de getallen nu eens om.
 - Krijg je dan hetzelfde antwoord?
-- Natuurlijk.
-- Bij plussen maakt de volgorde niet uit.
+- Bij plussen mag je de getallen wisselen.
 - Het antwoord blijft 8.
-- Kijk maar.
 - 3 + 5 is ook 8.
-- Nu ben jij de baas over het verhaal.
-- Laat een paar ballonnen knappen.
-- Ik lees jouw verhaal voor.
-- Wat denk je?
+- Nu bepaal jij het verhaal.
+- Tik op het vinkje als je klaar bent.
 - Kun je deze meteen oplossen?
-- Welke som past bij het verhaal?
 - Precies, 10 − $knal.
 - Wat is het antwoord?
-- Erbij past niet.
+- Erbij past hier niet.
 - Er knappen ballonnen.
 - Dan gaan er ballonnen weg.
 - Daar staat $10 + knal in.
 - Maar er waren maar 10 ballonnen.
 - Deze som past: 10 − $knal.
 - Hoeveel ballonnen zijn er nog over?
-- Raak!
 - $x? Niet helemaal.
 - Laat de ballon nog eens knappen.
 - Laat de $knal ballonnen nog eens knappen.
-- $l.naam, wil je afronden?
-- Wil je afronden?
+- $l.naam, wil je stoppen?
+- Wil je stoppen?
 - Of nog één, waarbij je zelf de som bouwt?
 - We gebruiken de bloemen weer.
-- Er staan er al 3.
-- Plant er nog een paar bij.
 - Je plantte er $plant bij.
 - We maken er een verhaaltje van.
 - Eerst een vraag.
@@ -3827,10 +2035,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel bloemen staan er nu?
 - We planten de bloemen.
 - Plant er maar $plant bij.
-- Hoeveel bloemen zijn het nu?
 - Je koos $3 + plant + $plant.
 - Maar $3 + plant is juist wat we zoeken.
-- Kijk goed naar het teken.
 - Erbij
 - Kijk, er komen bloemen bij.
 - We doen er bloemen bij.
@@ -3838,15 +2044,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel de bloemen die er stonden en die je plantte.
 - Hoeveel zijn het er nu?
 - Er staan nu $3 + plant bloemen.
-- Knap gedaan, $l.naam.
-- Je snapt de verhaaltjessommen steeds beter.
-- Denk je dat je hulp nodig hebt bij deze?
 - Laat een paar lantaarntjes uitgaan.
 - Tik op een lantaarntje om het uit te doen.
 - We gebruiken nu bloemen.
 - Tik op een leeg plekje.
+- $l.naam, wil je afronden?
+- Echt goed gedaan, $l.naam.
 
-## verhaal-meer-verhaaltjes (130)
+## verhaal-meer-verhaaltjes (77)
 
 - Precies, erbij.
 - Kijk, hier is de som.
@@ -3858,252 +2063,167 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - We doen de lampjes zelf uit.
 - Goed gedaan, $l.naam.
 - Wil je nog één verhaal over koekjes?
-- Of zullen we afronden?
-- Welke som past bij het verhaal?
+- Of zullen we stoppen?
 - 20 − 9.
-- Niet helemaal.
-- We halen hem samen uit elkaar.
-- Knap gedaan, $l.naam.
-- Je lost deze verhaaltjes vlot op.
-- Tik op het goede getal.
-- Wat denk jij?
-- $x?
-- Ah, ik zie wat je denkt.
-- Het lijkt alsof je ze hebt opgeteld.
-- Kijk maar wat er gebeurt.
-- Dat getal staat al in het verhaal.
+- Je lost deze verhaaltjes snel op.
+- controleer
+- Kies het goede antwoord.
 - $x? Niet helemaal.
-- We tellen samen.
-- We komen hier later nog op terug.
-- We oefenen nog een paar korte verhaaltjes.
-- Luister goed.
-- Deze kwam net al langs.
-- Weet je het nu?
 - Geen zorgen, we tellen samen.
-- Tik op alle getallen in het verhaal.
-- Kijk, hier staan de getallen.
 - Je hebt één getal.
 - Tik nu op het andere.
 - Ja, $v.a en $v.b.
-- Dat is een goed begin.
-- Wat moeten we uitzoeken?
 - Tik op de zin met de vraag.
 - Kijk, deze zin stelt de vraag.
 - Hij eindigt met een vraagteken.
-- Goed geprobeerd.
 - Maar dat stuk stelt de vraag niet.
 - Ik geef je een tip.
 - Zoek de zin met een vraagteken aan het eind.
 - Tik dan op die zin.
 - Is het een plussom of een minsom?
-- Kijk, hier staat het.
 - Daar staat $String(g.tekst ?? "").
 - Het staat in de zin met de rand.
 - Luister nog eens.
 - Ik vraag het anders.
 - Kijk naar de groene woorden.
 - We weten nu alles voor de som.
-- Welk getal zetten we eerst?
 - Dat mag ook.
 - Maar we volgen het verhaal.
 - $k? Niet helemaal.
-- Mooi, alles staat klaar.
-- Heel goed gedaan.
 - Kijk, nu is de som af.
-- Knap!
-- Kijk maar.
 - Zie je wel?
 - Precies, $v.a $v.op $v.b.
 - Deze som past: $v.a $v.op $v.b.
 - number
 - $x.replace(/(\d+)/g, "$1")?
-- Heel dichtbij.
-- Kijk nog eens.
-- Geen probleem, we leren het samen.
 - Kleine verhaaltjes
 - Daar doen we het stap voor stap.
-- Weet je hoe je zulke verhaaltjessommen oplost?
 - Probeer het gewoon.
 - Wil je in een toets laten zien wat je kunt?
-- Of doen we samen de lessen?
 - Daar doen we het samen.
-- Ik heb verhaaltjessommen voor je.
-- Ik lees elk verhaal voor.
 - Hoeveel lantaarntjes blijven er branden?
-- Dat is 'm.
 - Er branden er nog $nog.
 - Eerst een vraag.
 - Hoeveel bloemen plantte $wie(l) dan?
 - $Wie(l) plantte er $erbij bij.
 - Mooi werk, $l.naam.
 - Mooi werk.
-- Je hebt lastige verhaaltjessommen opgelost.
-- Dit verhaal is een beetje door elkaar.
+- Dit verhaal is een beetje anders.
 - Denk je dat je het zelf kunt?
 - $String(k).replace(/(\d+)/g, "$1")?
-- Zullen we hem samen uit elkaar halen?
-- Zulke sommen zijn in het begin lastig.
 - Eerst: komt er iets bij, of gaat er iets af?
 - Kijk naar de groene zin.
-- Denk hier goed over na.
-- Dat weten we nog niet.
-- Daarom zetten we een vraagteken.
 - Precies, $goed.
 - $keuze?
 - Dat getal hoort ergens anders.
-- Luister naar deze zin.
-- Dat getal staat niet in het verhaal.
-- Dat weten we dus nog niet.
-- Luister nog eens naar het verhaal.
-- We hebben de som gebouwd.
-- De som ziet er goed uit.
-- Maar we controleren hem even.
-- Hmm.
-- We kijken samen.
 - Dit zijn alle $eind $v.ding.
 - Haal de $q weg die erbij kwamen.
-- Zoveel waren er in het begin.
 - Hoeveel $v.ding zijn het?
 - Kijk, $p $v.ding.
 - Doe ze uit tot er nog $eind branden.
 - Nu branden er nog $eind.
 - Hoeveel heb je er uitgedaan?
 - Dus het getal is $antwoord.
-- Nu controleren we de som.
 - In het begin waren er $antwoord $v.ding.
 - Er kwamen er $q bij.
-- Kun je die er nu bij doen?
 - Er zijn nu samen $eind $v.ding.
 - Er brandden $p $v.ding.
 - Er gingen er $antwoord uit.
-- Kun je die nu uitdoen?
 - Er branden nog $eind $v.ding.
 
-## verhaal-verstopte-getallen (8)
+## verhaal-verstopte-getallen (5)
 
 - We kijken naar een nieuw verhaal.
 - Je doet het goed, $l.naam.
-- Je doet het goed.
-- Nog één.
 - Dit is het laatste verhaal.
-- Knap gedaan, $l.naam.
-- Je vindt de verstopte getallen al.
 - Nog één verhaal.
+- Echt goed gedaan, $l.naam.
 
-## verhaaltjessommen (gedeeld) (100)
+## verhaaltjessommen (gedeeld) (62)
 
 - $x? Niet helemaal.
 - Geen zorgen, we tellen samen.
-- We tellen samen.
 - Tik nu op het vinkje.
 - Ah, je hebt er $geteld.length $gedaan.
 - Dat is niet genoeg.
 - We moesten er $n $moest.
-- Tik op alle getallen in het verhaal.
-- Kijk, hier staan de getallen.
 - Je hebt één getal.
 - Tik nu op het andere.
 - Ja, $v.a en $v.b.
-- Dat is een goed begin.
-- Wat moeten we uitzoeken?
 - Tik op de zin met de vraag.
 - Kijk, deze zin stelt de vraag.
 - Hij eindigt met een vraagteken.
-- Hmm, goed geprobeerd.
+- Hm, goed geprobeerd.
 - Maar die zin stelt geen vraag.
 - Ik geef je een tip.
 - Zoek de zin die eindigt met een vraagteken.
 - Tik dan op die zin.
 - Is het een plussom of een minsom?
-- Kijk, hier staat het.
 - Ik vraag het anders.
-- Goed geprobeerd.
 - Kijk naar de groene woorden.
 - We weten nu alles voor de som.
-- Welk getal zetten we eerst?
 - Dat mag ook.
 - Maar we volgen het verhaal.
 - $k? Niet helemaal.
-- Mooi, alles staat klaar.
-- Heel goed gedaan.
 - Kijk, nu is de som af.
-- Laat maar zien.
-- Knap!
 - Zie je wel?
-- We halen hem samen uit elkaar.
 - In dit verhaal is een getal verstopt.
 - Denk je dat je het zelf kunt?
-- Welke som past bij het verhaal?
 - $k.replace(/(\d+)/g, "$1")?
-- Niet helemaal.
-- Zullen we hem samen uit elkaar halen?
-- Zulke sommen zijn in het begin lastig.
 - Eerst: komt er iets bij, of gaat er iets af?
 - Kijk naar de groene zin.
-- Denk hier goed over na.
-- Dat weten we nog niet.
-- Daarom zetten we een vraagteken.
 - Precies, $goed.
 - $keuze?
 - Dat getal hoort ergens anders.
-- Dat getal staat niet in het verhaal.
-- Dat weten we dus nog niet.
 - Kijk nog eens naar het verhaal.
-- We hebben de som gebouwd.
-- De som ziet er goed uit.
-- Maar we controleren hem even.
-- Hmm.
-- We kijken samen.
 - Dit zijn alle $eind $v.ding.
 - Haal de $q weg die erbij kwamen.
-- Zoveel waren er in het begin.
 - Hoeveel $v.ding zijn het?
 - Kijk, $p $v.ding.
-- Doe ze uit tot er nog $eind aan zijn.
-- Nu zijn er nog $eind aan.
+- Doe ze uit tot er nog $eind branden.
+- Nu branden er nog $eind.
 - Hoeveel heb je er uitgedaan?
 - Dus het getal is $antwoord.
-- Nu controleren we de som.
 - In het begin waren er $antwoord $v.ding.
 - Er kwamen er $q bij.
-- Kun je die er nu bij doen?
 - Er zijn nu samen $eind $v.ding.
 - Er waren $p $v.ding.
 - Er gingen er $antwoord uit.
-- Kun je die nu uitdoen?
-- Er zijn nog $eind $v.ding aan.
-- Wat denk jij?
-- Hoeveel lampjes blijven er aan?
-- Er zijn er nog $nog aan.
-- $x?
-- Dat is heel dichtbij.
-- Kijk nog eens.
-- Er blijven er $nog aan.
-- Weet je hoe je zulke verhaaltjessommen oplost?
+- Nu branden er nog $eind $v.ding.
+- Hoeveel lampjes blijven er branden?
+- Er branden er nog $nog.
+- Er blijven er $nog branden.
 - Probeer het gewoon.
 - Wil je in een toets laten zien wat je kunt?
-- Of doen we samen de lessen?
 - Kleine verhaaltjes
 - Daar doen we het samen.
 - Eerst een vraag.
 - Hoeveel bloemen plantte $wie(l) dan?
 - Die past niet.
-- Er komen bloemen bij.
 - Deze som past: $start + ? = $eind.
 - Hoeveel bloemen plantte $wie(l)?
 - Er kwamen $erbij bloemen bij.
 
-## zo-werkt-het (gedeeld) (7)
+## zo-werkt-het (gedeeld) (16)
 
 - Tik op de hand.
 - Die staat linksboven.
+- Ik help je graag!
+- Zit je vast, dan mag je altijd hulp vragen.
+- In de lessen doe je dat met Weet ik niet.
+- O, ik ben vergeten je een hamer te geven.
+- Alsjeblieft.
+- Sla maar!
 - Je hebt de hamer al.
 - Tik op het vierkant.
+- Ja, zo!
+- Het vierkant is in twee stukken.
+- Ben je klaar?
 - Je bent al klaar.
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (949)
+## Door de site genoteerd, buiten de lessen (2112)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -4137,23 +2257,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Alleen de tientallen veranderen.
 - Op deze kaarten komt er 10 bij.
 - Alle soorten kaarten komen door elkaar.
-- 1
-- 2
-- 3
-- 4
-- 5
-- 6
-- 7
+- Wil je hulp? Tik dan op het handje.
 - Alsjeblieft, 7 sterren.
 - Oké, Testkind.
-- 8
-- 9
-- 10
 - Hoeveel sterren hebben we nu?
 - We hadden er 7.
 - 7?
 - Daarna deden we er 3 bij.
 - Daarna telden we tot 10.
+- We komen hier later op terug.
 - Het zijn 10 sterren.
 - Er branden 17 lantaarntjes.
 - Testkind doet er 9 uit.
@@ -4183,7 +2295,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zweven 7 vuurvliegjes.
 - Tik op de plusknop rechts.
 - Tik erop tot er 9 vuurvliegjes zijn.
-- Er komen er 7 bij.
+- Tik op je antwoord, en dan op het vinkje.
 - Hoeveel vuurvliegjes zijn het nu?
 - 7 + 7 = 14.
 - Er zweven 13 lichtjes.
@@ -4209,19 +2321,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 8 + 5 = 13.
 - Er branden 12 lantaarntjes.
 - Er gaan er 4 uit.
-- Tik op de 10.
 - 12 min 4 = 8.
 - Er zweven 15 vuurvliegjes.
-- Er vliegen er 7 weg.
 - 15 min 7 = 8.
 - Knap gedaan, Testkind.
 - Er vliegen 2 weg.
-- Ja, 7 en 2.
+- We halen het verhaal uit elkaar.
 - Een 4.
 - Hoeveel is 10 plus 4?
 - We zoeken hoeveel vuurvliegjes er nog zijn.
 - Tik dan op de plus.
-- Gaat er iets af?
 - Tik dan op de min.
 - Welkom terug, Testkind.
 - Tik erop en kijk wat er gebeurt.
@@ -4231,51 +2340,39 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Moet je er dan wat bij doen?
 - Of moet je er wat weghalen?
 - Hoeveel is 10 plus 9?
+- Stel, we zoeken het verschil tussen 7 en 3.
 - Hoeveel bloemen plantte Testkind?
-- Tik op de som die past.
 - 10 plus 9 is 19.
-- Erbij doen
 - We halen er wat weg.
 - Dus het is eraf.
 - Hoeveel vuurvliegjes waren er eerst?
-- 2? Niet helemaal.
 - Tel alle paddenstoelen die gloeien.
-- En welk getal halen we eraf?
-- Dus halen we 2 eraf.
 - Er vliegen 2 vuurvliegjes weg.
 - Laat de 2 vuurvliegjes toch maar wegvliegen.
 - Tik op 2 vuurvliegjes.
-- 3? Niet helemaal.
 - Hoeveel vuurvliegjes zijn er dus nog?
 - Tel alle bloemen die bloeien.
 - Tel de vuurvliegjes die er nog zijn.
-- 4? Niet helemaal.
 - Tik dan in het rooster.
 - Of sleep hem erheen.
 - 7 min 2 = 5.
-- 10? Niet helemaal.
 - Er bloeien 5 bloemen.
 - Er gaan nog 3 knopjes open.
+- We halen hem samen uit elkaar.
 - Hoeveel is 10 plus 3?
 - Sleep hem dan naar het rooster.
 - Tel alle lichtjes.
-- Ja, 5 en 3.
-- 7? Niet helemaal.
 - We zoeken hoeveel bloemen er nu bloeien.
 - Maar er gaan geen bloemen weg.
-- 6? Niet helemaal.
 - Worden het dan meer bloemen?
 - Of minder?
 - Er gaan knopjes open.
 - Tel de lichtjes die er nog zijn.
-- Meer
 - Het worden er meer.
 - Dus het is erbij.
+- Daar komen we later op terug.
 - Het zijn 19 hokjes.
 - Er bloeiden eerst 5 bloemen.
-- Die zetten we vooraan.
-- 13? Niet helemaal.
-- En welk getal doen we erbij?
 - Tel alle vuurvliegjes.
 - Dus doen we 3 erbij.
 - Er gaan 3 knopjes open.
@@ -4285,8 +2382,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het zijn 14 hokjes.
 - Tel de lantaarntjes die nog branden.
 - Hoeveel is 10 plus 1?
+- Bij plussen maakt de volgorde niet uit.
 - Je hebt de 1 en de 2 gekozen.
-- 9? Niet helemaal.
+- Nu ben jij de baas over het verhaal.
 - 1 en 2 is samen 3.
 - 10 plus 1 is 11.
 - De 1 en de 2 zet ik op slot.
@@ -4317,7 +2415,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er staan 3 bloemen in de tuin.
 - Hoeveel is 10 plus 5?
 - Testkind plant er 3 bij.
-- Hoeveel bloemen staan er nu in de tuin?
 - Deze som past: 3 + 3.
 - Je zette 10 en 5 achter elkaar.
 - Plant er maar 3 bij.
@@ -4367,9 +2464,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat is 5 plus 6?
 - 1 plus 1 plus 6 is 8.
 - Samen moeten ze 9 zijn.
+- Laten we hem samen uit elkaar halen.
 - Wat is 7 plus 8?
 - Je had er 2 goed.
-- Ja, 17 en 9.
+- Je bent goed in dubbelen.
+- Nu ga je er zelf een zetten.
+- Denk je dat je dat al kunt?
+- Je kunt al een heel uur lezen.
 - Wat is 6 en 3 samen?
 - 6 en 3 is samen 9.
 - Tel de hokjes van allebei de 5-en.
@@ -4386,7 +2487,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er komt er één bij.
 - Dus 5 plus 6 is 11.
 - Hoeveel is 9 min 5?
-- Komt er iets bij?
 - Typ je antwoord in het vakje.
 - Plussom
 - Hoeveel vuurvliegjes zitten er nog in het potje?
@@ -4414,6 +2514,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan zijn ze even hoog.
 - Tussen 8 en 5?
 - Wat is dan 6 plus 7?
+- Het totaal is 11.
 - De oranje paal heeft 3 lampjes meer.
 - Nu de andere.
 - Het is één meer dan dubbel 6.
@@ -4431,7 +2532,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dus halen we 9 eraf.
 - Hoeveel is 7 min 3?
 - Er vliegen 9 vuurvliegjes weg.
-- Waar
 - 2 plus 7 is 9.
 - Hoeveel is 10 min 6?
 - Wat is dubbel 4?
@@ -4447,11 +2547,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 3 plus 4 is 7.
 - Dubbel 4 is 8.
 - Wat is het verschil tussen 7 en 4?
-- 10 min 1.
 - Wat is het verschil tussen 3 en 9?
 - Wat is het verschil tussen 10 en 8?
-- Hoeveel is 5 min 2?
 - Kies een tegel voor op de 7.
+- Wat is ons totaal?
 - Samen is het dus 7.
 - Dan is het samen 7.
 - Zet de tegel erbij die met 1 samen 7 maakt.
@@ -4471,6 +2570,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 3 plus 3 is 6.
 - 7 plus hoeveel is 10?
 - Kijk, 7 plus 2 is 9.
+- We komen hier later nog op terug.
 - 7 plus 3 is 10.
 - 17 min 9 = 8.
 - 4 plus 5 is 9.
@@ -4479,12 +2579,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ik heb een 3 op de 8 gelegd.
 - Er branden 20 lantaarntjes.
 - Testkind doet er 12 uit.
+- Weet je wat dubbelen zijn?
 - Bovenaan ligt een 2.
 - Daaronder ligt een 5.
 - Onderaan ligt een 3.
 - Typ de 3.
 - Kijk goed: het is een 3.
-- Ja, 20 en 12.
 - Daaronder ligt een 2.
 - Onderaan ligt een 4.
 - 2 plus 2 plus 4 is 8.
@@ -4495,8 +2595,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Typ de 1.
 - Kijk goed: het is een 1.
 - 5 plus 3 plus 1 is 9.
+- Vind je het lastig?
 - 5 en 8 optellen
+- 5 en 8 optellen vertelt iets anders.
 - Vul het verschil in het vakje in.
+- Elk getal tellen is soms het beste.
+- Ben je zeker? Dan in één sprong.
 - Hoe ver was dat?
 - Vul het verschil in.
 - Bovenaan ligt een 1.
@@ -4509,6 +2613,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daaronder ligt een 1.
 - Van 8 naar 12 zijn 4 sprongen.
 - Onderaan ligt een 6.
+- Daar komen we straks nog op terug.
 - Het verschil is 4.
 - Typ de 6.
 - Kijk goed: het is een 6.
@@ -4539,13 +2644,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat is het verschil tussen 10 en 3?
 - Van 3 tot 10 is 7.
 - Hoeveel lantaarntjes brandden er eerst?
-- 12? Niet helemaal.
 - Er brandden eerst 20 lantaarntjes.
 - Mooi gedaan, Testkind.
-- En welk getal zegt hoeveel er uitgaan?
 - Dus halen we 12 eraf.
 - Er gaan 12 lantaarntjes uit.
-- De som staat klaar.
 - Tik op 12 lantaarntjes om ze uit te doen.
 - Nu halen we er vuurvliegjes af.
 - Er branden nog 8 lantaarntjes.
@@ -4553,6 +2655,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Laat er 5 wegvliegen.
 - We hadden 9 vuurvliegjes.
 - 20 min 12 = 8.
+- Nu ben jij de baas over de som.
 - 9 min 4?
 - Er staan 7 bloemen in de tuin.
 - Testkind plant er 5 bij.
@@ -4566,10 +2669,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Spring naar de 5.
 - Er gaan lichtjes weg, dus het is min.
 - Deze som past: 16 min 3.
-- 11? Niet helemaal.
 - Laat de 3 lichtjes nog eens wegzweven.
+- Probeer opnieuw.
 - 3 plus 1 plus 4 is 8.
 - Samen moet het 6 zijn.
+- We beginnen met op deze getallen te tikken.
 - Tik nu het andere getal.
 - Goed!
 - 2 plus 1 plus 2 is 5.
@@ -4591,31 +2695,33 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het verschil is hoe ver ze uit elkaar liggen.
 - Typ dan het verschil in het vakje.
 - 8 en 6 hebben een verschil van 2!
+- De paal kan nog iets.
 - 5 en 8 liggen 3 uit elkaar.
 - Zie je de min bij de paarse paal?
-- Wil je hulp? Tik dan op het vraagteken.
 - Lager
 - Verschillend
 - Dan schuiven de palen tegen elkaar.
 - Schuif het lichtje helemaal naar de overkant.
 - Ze gingen uit
+- Eerst een voorspelling.
 - Ik
+- Je hebt het door.
 - Hoeveel is 5 min 4?
 - Minsom
 - Hoeveel is 12 min 9?
+- Dat klopt niet; laten we het samen doen.
 - Ik liet er 9 wegvliegen.
-- Het is 5 min 3.
 - 12 min 9 = 3.
 - Schuiven
 - Hoeveel is 8 min 7?
 - Hoeveel is 14 min 11?
 - Hoeveel is 9 min 3?
-- 5 min 3 = 2.
 - Ik liet er 3 wegvliegen.
 - Hoeveel is 7 min 7?
 - Hoeveel is 6 min 2?
-- 8 min 3 = 5.
 - Goed gewerkt vandaag, Testkind!
+- Stel, we zoeken het verschil tussen 8 en 5.
+- Natuurlijk, ik help je op weg.
 - Goed gekozen, de lichtgroene tegel.
 - Het is een 4.
 - Wat is 4 en 6 samen?
@@ -4653,9 +2759,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 1 en 1 passen precies op de 2.
 - Welk getal moet je verdubbelen om 10 te maken?
 - 5 en 5 passen precies op de 10.
+- Daar komen we nu op terug.
 - Welk getal moet je verdubbelen om 6 te maken?
 - 5 en 5 is samen 10.
 - Begin met de les "Optellen onder de 10".
+- Spring je terug naar het begin?
 - Dat is geen 5.
 - Goed gekozen, de gele tegel.
 - Een 2?
@@ -4696,8 +2804,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 2 en 2 is samen 4.
 - Dit is een 3.
 - Deze tegel is een 6.
-- Niet waar
 - Dit is een 7.
+- Dus 6 is het totaal.
 - Zoek de 2 en de 3.
 - Zet de 1 in het rooster.
 - Zoek de 5 en de 6.
@@ -4762,6 +2870,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat is 4 plus 2?
 - 4 plus 2 is 6.
 - 3 plus 8 is 11.
+- Dat is 'm.
 - Testkind plant er nog wat bij.
 - Nu zijn het er samen 15.
 - Ja, dat is een 10.
@@ -4770,6 +2879,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan er 8 dicht.
 - Wat is 10 plus 7?
 - Wat is 10 plus 4?
+- Tijd voor een uitdaging.
 - Juist, samen 14.
 - Een 8?
 - 10 plus 5 is 5?
@@ -4778,20 +2888,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er branden 14 lantaarntjes.
 - Testkind plant er nog 5 bij.
 - Testkind doet er 8 uit.
-- Nu zijn het er samen 9.
-- Hoeveel bloemen stonden er eerst?
+- Dit verhaal is een beetje door elkaar.
 - Tik op de woorden die zeggen dat het eraf gaat.
 - Vertel eens.
 - Er vliegen vuurvliegjes weg.
 - Er branden er nog 6.
 - Er zijn nog 5 vuurvliegjes.
-- Weten we het nog niet?
 - Er staan 6 bloemen in de tuin.
 - Nu zijn het er samen 17.
 - En hoeveel bloemen plant Testkind?
-- Precies, 5.
 - En hoeveel bloemen zijn er samen?
-- Precies, 9.
 - Testkind plantte er 11 bij.
 - Het woord uit zegt dat er minder lantaarntjes branden.
 - Precies, 7 + 3.
@@ -4810,12 +2916,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zijn er drie.
 - Tot slot: welke sommen kun je maken met 7?
 - 2 plus 3 plus 2 plus 1 is samen 8.
+- We zoeken samen uit welke sommen kunnen.
 - Maak 2 plus 2 plus 2 met de parels.
 - Wordt de tuin groter of kleiner?
 - Testkind plant er bloemen bij.
 - Groter
 - De tuin wordt groter.
-- Dat is erbij.
 - Maak 3 plus 2 plus 1 met de parels.
 - Hoeveel plus 5 is 9?
 - Maak 2 plus 3 plus 2 met de parels.
@@ -4824,21 +2930,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 1 plus 1 plus 1 plus 2 is samen 5.
 - Er zijn er twee.
 - Probeer ze uit met de parels.
-- Haal de 5 weg die erbij kwamen.
-- Dit zijn alle 9 bloemen.
 - Welke sommen kun je maken met 7?
-- Hoeveel bloemen zijn het?
-- Er kwamen er 5 bij.
-- Er zijn nu samen 9 bloemen.
 - Nu branden er nog 13.
 - Branden er dan meer of minder?
-- Minder
-- Precies, 20.
 - Hoeveel lantaarntjes gingen uit?
+- Probeer zo vlot mogelijk te antwoorden.
 - 20 min hoeveel is 13?
 - Doe ze uit tot er nog 13 branden.
 - 10 plus 5 is 14?
-- Er gingen er 7 uit.
 - Er brandden 20 lantaarntjes.
 - Hoeveel is 9 plus 6?
 - 9 plus 6 is 15.
@@ -4861,11 +2960,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De 3 plus 8?
 - Ja, de 3 plus 8 is groter.
 - Dan is het evenveel als 3 plus 8.
+- Hier is een uitdaging.
 - Dat is nu een beetje groter dan 3 plus 8.
 - Welke tegel moet erbij om 11 te maken?
 - Dus 10 plus 1 en 3 plus 8 zijn evenveel.
 - Nu heb ik 8 plus 7 gemaakt.
 - 9 en 7 hebben een verschil van 2!
+- Een perfect paar!
 - Dus 8 plus 7 is ook 15.
 - 7 min ? = 15?
 - Kijk: van 5 naar 7.
@@ -4893,7 +2994,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat is het verschil tussen 6 en 4?
 - En 9 plus 3?
 - Het verschil is 7.
-- Super!
 - Er branden 9 lampjes.
 - Goed gewerkt vandaag, Testkind.
 - 9 plus 3 is 12.
@@ -4948,7 +3048,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk getal heb ik met de sterren gemaakt?
 - 7 + 15 = ??
 - Dat zijn er al twee.
-- 5? Niet helemaal.
 - Het scorebord raakt al vol.
 - Dat zijn er al vier.
 - Je bent er bijna.
@@ -4986,14 +3085,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik erop tot er 8 vuurvliegjes zijn.
 - Laat er 3 wegvliegen.
 - We hadden 8 vuurvliegjes.
+- We tellen verder met vijven.
 - 8 + 3?
 - Hoeveel is 7 min 1?
 - Wat is het verschil tussen 3 en 6?
 - Denk je dat je het al kunt?
 - Tik op ja of nee.
+- We gaan tellen, tot wel 50.
 - We lezen de klok bij een half rondje.
-- Kun je dit al?
-- Dat heet kwart over.
 - We lezen de klok bij een kwart rondje.
 - Deze dan?
 - Hier is er weer een.
@@ -5010,12 +3109,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er staan nu 13 bloemen.
 - Er bloeien nu 13 bloemen.
 - Het zijn nu 14 vuurvliegjes.
-- 14? Niet helemaal.
-- 16? Niet helemaal.
 - Er bloeien nog 8 bloemen.
-- 8? Niet helemaal.
-- Ja, er stonden eerst 4 bloemen.
-- In het begin waren er 4 bloemen.
 - Het zijn nu 20 lichtjes.
 - Testkind doet er een paar uit.
 - Hoeveel lantaarntjes deed Testkind uit?
@@ -5023,10 +3117,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat zijn de lantaarntjes die nog branden.
 - 13?
 - Hoeveel branden er nog?
-- 15? Niet helemaal.
 - Kijk, 20 lantaarntjes.
 - Testkind doet er 2 uit.
-- Dus het getal is 7.
 - Er branden nog 13 lantaarntjes.
 - Je doet het goed, Testkind.
 - Er gloeien wat paddenstoelen.
@@ -5041,12 +3133,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - En hoeveel gloeien er nu?
 - Zoveel gloeien er nu.
 - Hoeveel plus 7 is 12?
-- Haal de 7 weg die erbij kwamen.
 - Dit zijn alle 12 paddenstoelen.
 - Hoeveel paddenstoelen zijn het?
 - Tel de paddenstoelen die er nog zijn.
-- Dus het getal is 5.
-- Er kwamen er 7 bij.
 - In het begin waren er 5 paddenstoelen.
 - Er zijn nu samen 12 paddenstoelen.
 - Ja, 10 en 2.
@@ -5054,3 +3143,1197 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan 2 lantaarntjes uit.
 - Tik op 2 lantaarntjes om ze uit te doen.
 - 10 min 2 = 8.
+- Hoeveel visjes tel je?
+- Vang de kleinste vis!
+- Hoeveel ballonnen zitten er aan elke tros?
+- Vul de ontbrekende getallen in. Tel 1 verder.
+- Tel steeds 1 verder.
+- We tellen eerst de blauwe visjes.
+- Hoeveel blauwe visjes zie je?
+- 1 blauwe visje?
+- Dus het zijn er meer dan 1.
+- Tel de blauwe visjes en tik op het getal.
+- Begin dan met de les "Kleine verhaaltjes".
+- Ja, 10 en 5.
+- Dus halen we 5 eraf.
+- Er gaan 5 lantaarntjes uit.
+- Tik op 5 lantaarntjes om ze uit te doen.
+- 10 min 5 = 5.
+- We moeten uitzoeken hoeveel vogeltjes er nog zitten als er 2 wegvliegen.
+- Er vliegen vogeltjes weg. Dat is aftrekken.
+- Maar laat de 2 vogeltjes maar wegvliegen.
+- Er staan 5 bloemen in de tuin.
+- Hoeveel bloemen zijn het nu in totaal?
+- Het zijn er 8 in totaal.
+- Maar als je de getallen omwisselt,
+- krijg je dan nog steeds hetzelfde antwoord?
+- Bij optellen maakt de volgorde niet uit.
+- Oké, bij deze mag jij de baas zijn over het verhaaltje.
+- Laten we het verhaaltje voorlezen dat jij hebt gemaakt.
+- Testkind laat er 3 knappen.
+- Voordat we de vraag beantwoorden:
+- welke som zegt wat we moeten doen?
+- Testkind plant er 4 bij.
+- Het zijn er 7 in totaal.
+- Er zijn 18 lampen aan.
+- Hoeveel lampen zijn er nog aan?
+- Wil je in een toets laten zien wat je kunt, zodat we snel verder kunnen?
+- Denk je dat je ze alleen aankunt?
+- Hoeveel lampen blijven er aan?
+- Denk je dat je het alleen kunt?
+- Dit verhaaltje is een beetje door elkaar.
+- Er blijven 9 lampen aan.
+- Dat is hem.
+- Tik dan op: Ik weet het niet.
+- Tik dan op de knop: Ik weet het niet.
+- In stukjes breken
+- In hoeveel stukjes?
+- In 5 stukjes van 1.
+- Tik op de plus.
+- Begin bij deze bel onderaan.
+- Zag je de grote bel bovenaan?
+- Tik op deze plus.
+- Deze bel is nog leeg.
+- Hoeveel parels zitten er nu in de grote bel?
+- Natuurlijk, 5.
+- Verander de parels in de bellen onderaan.
+- 1 en 4.
+- Ik heb een nieuw totaal klaargezet.
+- We gaan zoeken hoe laat het een paar minuten later is.
+- We leren de klok lezen als de minutenwijzer een kwart rondje is gegaan.
+- Er zijn 14 lampen aan.
+- Hm, je hebt 0 gemaakt.
+- Oké, Fenna.
+- 9?
+- Een beetje een vreemde.
+- Welk cijfer staat daar?
+- Kijk onder de lichtbol.
+- Die 1 zegt: hier zit één lichtbol van 10.
+- Welk cijfer zie je daar?
+- Kijk nu onder het rechter vak.
+- Er staat 0, want daar zitten geen sterren.
+- Kijk naar het grote getal rechts.
+- Er staan twee cijfers naast elkaar.
+- Kijk naar het grote getal.
+- Precies, tien.
+- Welk getal maken we nu?
+- 1 tiental en 4 eenheden.
+- Ja, 14.
+- Fenna doet er 9 uit.
+- Waar komt hij uit?
+- Een klok gaat met de klok mee, deze kant op.
+- Dan kijken we hoe de klok op die plek komt.
+- Kun je 20 vinden in dit veld?
+- Tot nu toe telde je tot 20.
+- Hier staat 20.
+- Tik op het grootste getal dat je ziet.
+- Kijk, het veld groeit.
+- Hier staat 50.
+- Tik op 39.
+- We beginnen met deze.
+- Hier staat 39.
+- Tik op 12.
+- Hier staat 12.
+- Tik op 47.
+- Hier staat 47.
+- Tik op 37.
+- 3 uur.
+- Het zijn er 2.
+- Tel de oranje lampjes maar.
+- Elke paal heeft 5 lampjes.
+- Tik op een getal.
+- Er is nog niets gekleurd.
+- Laten we nog meer halve tijden lezen.
+- Waar is hij naar op weg?
+- 37.
+- Nog een op dit niveau.
+- Tel 4 verder.
+- Begin bij 23.
+- Dit is de moeilijkste soort opgave in deze les.
+- Ben je er?
+- Begin bij 23 en tel 4 verder.
+- De urenwijzer zegt welk uur het is.
+- Kijk goed: het is een 2.
+- Onderaan ligt een 7.
+- Kijk goed: het is een 7.
+- 2 plus 1 plus 7 is 10.
+- Daaronder ligt een 4.
+- Kijk goed: het is een 4.
+- Onderaan ligt een 2.
+- Welke tegel is net zo groot als de vorm?
+- Is dit een 1?
+- Dit is een 6.
+- Dit is een 10.
+- De urenwijzer hoort tussen de 2 en de 3.
+- Nu kun je halve tijden lezen en zetten.
+- Goed gewerkt, Testkind!
+- Je begon bij 23 en telde 4 verder.
+- Je kwam uit op 27.
+- Nu zijn het er 15 in totaal.
+- welke som past bij het verhaal?
+- Voordat we hem oplossen:
+- Nu mag jij het verhaaltje maken.
+- Er staan een paar bloemen in de tuin.
+- Er komen er nog wat bij.
+- Nu zijn het er 17 in totaal.
+- moet je er dan vogeltjes bij doen?
+- Of moet je er vogeltjes weghalen?
+- Om vogeltjes weg te laten vliegen:
+- Het zijn er 7 bij.
+- Dat is aftrekken.
+- Er worden er 6 uitgegeven.
+- Je krijgt er nog wat bij.
+- 6 + 14 = ??
+- Het zijn er 8 bij.
+- Fenna plant er nog wat bij.
+- Hoeveel bloemen plantte Fenna?
+- Het zijn 7 blauwe visjes.
+- Van welke kleur zijn er 6?
+- Kijk, de groene visjes.
+- Er zijn 6 groene visjes.
+- Hoeveel plekken zijn gevuld?
+- Tik op de kaart met dat getal.
+- Tik dan hier.
+- Je mag het cijfer ook typen.
+- Die kaart is 5.
+- Dus er liggen 8 parels.
+- 8.
+- Begin bij de groene stip.
+- Volg de puntjes met je vinger.
+- Schrijf acht.
+- 10 en nog 3 is 13.
+- Of tik op de groene stip.
+- Begin bij de groene stip en volg de puntjes.
+- Dan komt er een parel bij.
+- Tik op de schelp.
+- Laten we hem samen bouwen.
+- Evenveel
+- Kijk naar de getallen naast de oranje lampjes.
+- Hoeveel kwallen zijn groen?
+- Het zijn 8 groene kwallen.
+- Zoek het getal 41.
+- Hier staat 41.
+- Het zijn er 3.
+- Tel vanaf 41 nog 7 verder.
+- 42?
+- Hoeveel rode kwallen zie je?
+- Vind je het lastig? Tik dan op het vraagteken.
+- Typ het getal dat mist.
+- Op deze kaarten staan dubbele sommen.
+- We zoeken 8.
+- 0 en 0 is samen 0.
+- Een kwart is de helft van de helft.
+- Een kwart rondje, bij elk kwart over.
+- Laten we kwart over-tijden lezen.
+- De urenwijzer staat net na de 9.
+- De urenwijzer staat net na de 7.
+- Wat zegt de klok?
+- De urenwijzer staat net na de 2.
+- De urenwijzer staat net na de 5.
+- Wat zegt hij 5 minuten later?
+- De klok zegt nu 1:22.
+- Het is 7:55, en Sam zegt dat het over 5 minuten 7:60 is.
+- Het is 8:20, en het bad van Sam is over 15 minuten.
+- Hoeveel kwallen zijn rood?
+- Het zijn 9 rode kwallen.
+- Zoek het getal 34.
+- Hier staat 34.
+- Tel vanaf 34 nog 8 verder.
+- 35?
+- Je komt op 42.
+- 3?
+- Hoeveel blauwe kwallen zie je?
+- Het zijn 7 blauwe kwallen.
+- Hoeveel groene kwallen zie je?
+- Het zijn 5 groene kwallen.
+- Typ de 5.
+- Kijk goed: het is een 5.
+- Het zijn 8 rode kwallen.
+- Tik op 27.
+- Hier staat 27.
+- Tik op 41.
+- 41.
+- Tik op 19.
+- Hier staat 19.
+- Tel 3 verder.
+- Begin bij 22.
+- Begin bij 22 en tel 3 verder.
+- Je begon bij 22 en telde 3 verder.
+- Je kwam uit op 25.
+- Begin bij 35.
+- Begin bij 35 en tel 4 verder.
+- Je bent op 40.
+- Je begon bij 35 en telde 4 verder.
+- Je kwam uit op 39.
+- 10 en nog 6 is 16.
+- Kijk ook naar de volle schelp.
+- Dat is alleen de tweede schelp.
+- 10 en nog 8 is 18.
+- Nog een paar van net.
+- Het zijn 6 groene kwallen.
+- Weet je deze nog?
+- 19.
+- Je kunt al goed tellen.
+- Hoeveel sterren zijn het samen?
+- 2 lichtbollen van 10.
+- 10 sterren en nog 10 sterren.
+- Kijk naar de sterren.
+- Hoeveel sterren zijn het?
+- We hebben een groep van 10.
+- Hoeveel groepen van 10 hebben we deze keer?
+- De groepen zijn even groot.
+- In elke groep zitten 10 sterren.
+- Je bent op 28.
+- 2 groepen van 10.
+- Tik dan op het getal.
+- Tel de blauwe visjes één voor één.
+- Maar dit stuk stelt de vraag niet.
+- Maar ook dit stuk stelt de vraag niet.
+- Want die stelt een vraag.
+- Je koos Er.
+- Welk woord zegt dat de vogeltjes weggaan?
+- Bij optellen mag je de getallen wisselen.
+- Oké, bij deze mag jij het verhaaltje bepalen.
+- We moeten uitzoeken hoeveel ballonnen er nog heel zijn als er 3 knappen.
+- Welk woord zegt dat er ballonnen weggaan?
+- Er knappen ballonnen. Dat is aftrekken.
+- Welk getal zegt hoeveel ballonnen er knappen?
+- 1 ballonnen? Niet helemaal.
+- Probeer de ballonnen die heel zijn nog eens te tellen.
+- 2 ballonnen? Dat is nog niet het getal dat ik tel.
+- We moeten uitzoeken hoeveel ballonnen er nog zijn als er 9 wegvliegen.
+- Er vliegen ballonnen weg. Dat is aftrekken.
+- Welk getal zegt hoeveel ballonnen er wegvliegen?
+- Testkind plant er 6 bij.
+- 8?
+- We moeten uitzoeken hoeveel bloemen het samen zijn.
+- Welk woord zegt dat er bloemen bijkomen?
+- Het woord bij zegt dat er bloemen bijkomen. Dat is optellen.
+- Hoeveel bloemen stonden er eerst in de tuin?
+- En welk getal tellen we erbij op?
+- Welk getal zegt hoeveel bloemen erbij komen?
+- 7 + 6 = 13.
+- Laten we het verhaaltje lezen dat jij hebt gemaakt.
+- Testkind geeft er 5 uit.
+- Heel goed gedaan, Testkind.
+- We moeten uitzoeken hoeveel lampen er nog branden als er 12 uitgaan.
+- Welk woord zegt dat er lampen uitgaan?
+- Er gaan lampen uit. Dat is aftrekken.
+- Welk getal zegt hoeveel lampen er uitgaan?
+- 12 lampen? Niet helemaal.
+- 5?
+- Hoeveel bloemen plant Testkind?
+- Ik heb 20 lampen.
+- Maar ik doe er een paar uit.
+- Tel 3 en 5 bij elkaar op.
+- Denk je dat je hem alleen kunt?
+- 20 + ? = 13?
+- 10 min 3 = 7.
+- 9 uur.
+- Het is 4:15.
+- Het is 1:15.
+- Ga door voorbij de 3, helemaal naar beneden.
+- De minutenwijzer wees steeds naar de 12.
+- Dat ging snel, Testkind.
+- Testkind plant er nog een paar bij.
+- Laten we het verhaal lezen dat jij hebt gemaakt.
+- Laten we het verhaal voorlezen dat jij hebt gemaakt.
+- 1 vogeltjes? Niet helemaal.
+- We willen weten hoeveel het er samen zijn.
+- Bloemen weghalen helpt ons niet.
+- Dat zijn de lampen die nog branden.
+- Testkind geeft me er nog 7.
+- Echt goed gedaan, Testkind.
+- 1 ballon? Niet helemaal.
+- ? min 20 = 13?
+- Dus halen we 3 eraf.
+- Er knappen 3 ballonnen.
+- Er waren eerst 10 ballonnen.
+- Een kwart is een stuk van vier gelijke stukken.
+- Moeten er dan bloemen bij, of eraf?
+- Willen we dat er meer bloemen groeien?
+- We planten er bloemen bij.
+- 1 bloem? Niet helemaal.
+- 2 bloemen? Dat is nog niet het getal dat ik tel.
+- 6 + 5 = 11.
+- 9 min 4 = 5.
+- 7 + 4 = 11.
+- 7 + 8 = 15.
+- 18 min 7 = 11.
+- 14 min 5 = 9.
+- 9 + 8 = 17.
+- 4?
+- Probeer de ballonnen die er nog zijn eens te tellen.
+- Je koos Ik.
+- Je koos in.
+- Hoeveel munten waren er eerst?
+- 16 min 5 = 11.
+- ? min 5 = 9?
+- 5 + ? = 9?
+- Er komen 5 bloemen bij.
+- Er zijn er samen 9.
+- 4 + 2 = 6.
+- 4 + 5 = 9.
+- En daar gaan we.
+- 17 ballonnen? Dat is nog niet het getal dat ik tel.
+- Ik deed er 7 uit.
+- 20 min 7 = 13.
+- We begonnen met 5 munten.
+- 5 + 7 = 12.
+- 4 + 11 = ??
+- Je koos Jij.
+- Voordat we antwoorden: welke som past bij het verhaal?
+- Er zijn nog 1 munten.
+- 12 min 5 = 7.
+- 15 min 8 = 7.
+- 8 + 7 = 15.
+- 16 min 7 = 9.
+- Hij moet naar de 12.
+- De wijzer staat op de 9.
+- Hij moet naar de 7.
+- De wijzer staat op de 4.
+- Hij moet naar de 11.
+- De wijzer staat op de 8.
+- Hij moet naar de 4.
+- De wijzer staat op de 1.
+- Hij moet naar de 3.
+- De wijzer staat op de 10.
+- Hij moet naar de 10.
+- De wijzer staat op de 6.
+- De minutenwijzer deed dus een kwart van zijn reis.
+- Draai één keer rond.
+- Snel antwoord.
+- Maar er ging een half uur voorbij, dus hij moet halverwege de 5 staan.
+- De urenwijzer is de 7 al voorbij.
+- Half 8. Dat klopt.
+- Zet de urenwijzer op de 3, en dan de minutenwijzer op de 3.
+- We willen kwart over 3.
+- Dat is 12 uur.
+- Van 2:40 naar 2:45.
+- Van 2:45 naar 2:50.
+- Van 2:50 naar 2:55.
+- Van 2:55 naar 3:00.
+- Van 3:40 naar 3:45.
+- Het is 4:05, en er gaan 5 minuten voorbij.
+- Van 6:03 naar 6:08.
+- Kijk naar de cijfers terwijl de minutenwijzer gaat, 5 minuten per keer.
+- Van 6:08 naar 6:13.
+- Van 1:22 naar 1:27.
+- Van 3:47 naar 3:52.
+- Van 6:55 naar 7:00.
+- Hij moet naar de 9.
+- Hij moet naar de 1.
+- Hij moet naar de 8.
+- De wijzer staat op de 2.
+- Hij moet naar de 6.
+- De wijzer staat op de 11.
+- Hij moet naar de 2.
+- De wijzer staat op de 7.
+- Je koos zitten.
+- 10 min 9 = 1.
+- Er zijn nog 1 ballonnen heel.
+- Of nog één verhaaltje, dat je zelf maakt?
+- Dit is dus geen 7 uur meer.
+- Je koos zijn.
+- 3 + 4 = 7.
+- 6 min 2 = 4.
+- 8 uur
+- Dat is meer dan een kwart.
+- De urenwijzer staat goed bij de 2.
+- Van 7:55 naar 8:00.
+- Van 4:15 naar 4:40.
+- Van 6:45 naar 7:10.
+- Nu kun je in vijven tellen om te zien hoe laat het over een paar minuten is, ook over het hele uur heen.
+- Van 3:28 naar 3:38.
+- Kijk naar de cijfers terwijl de minutenwijzer gaat, 10 minuten per keer.
+- Van 3:38 naar 3:48.
+- Van 3:48 naar 3:58.
+- Van 3:58 naar 4:08.
+- Van 6:14 naar 6:24.
+- Van 9:23 naar 9:33.
+- Van 9:32 naar 9:42.
+- Van 5:57 naar 6:07.
+- Van 6:12 naar 6:42.
+- Van 5:47 naar 6:17.
+- Die zin stelt de vraag.
+- Welke woorden zeggen dat er ballonnen weggaan?
+- Welke woorden zeggen dat de vogeltjes weggaan?
+- We willen kwart over 8.
+- Zet de urenwijzer op de 8, en dan de minutenwijzer op de 3.
+- Tik op de 3, of sleep de oranje urenwijzer erheen.
+- We willen half 9.
+- Zet de urenwijzer op de 8, en dan de minutenwijzer op de 6.
+- We willen half 3.
+- Zet de urenwijzer op de 2, en dan de minutenwijzer op de 6.
+- Dat is 11 uur.
+- Draai een half rondje.
+- Hij staat niet op de 9.
+- 5:41
+- 2:09
+- 2:41
+- 2:10
+- 2:46
+- 2:11
+- 2:51
+- 2:56
+- Tik op de 12 op de klok.
+- Wil je liever eerst de les? Tik dan op het handje.
+- 3:09
+- 3:41
+- 4:06
+- 4:10
+- 6:04
+- 6:05
+- 6:09
+- 6:10
+- 1:23
+- 1:25
+- 3:48
+- 3:50
+- 6:56
+- 7:00
+- 7:56
+- 4:20
+- 4:25
+- 6:70
+- 7:05
+- Tik op de 8, of sleep de oranje urenwijzer erheen.
+- 3:29
+- 3:33
+- 3:39
+- 3:43
+- 3:49
+- 3:53
+- 3:08
+- 3:59
+- 6:19
+- 9:24
+- 9:33
+- 9:37
+- 9:42
+- 5:07
+- 5:58
+- Tik op de 9 op de klok.
+- 1?
+- Tik op de 10 op de klok.
+- Dat is 9 uur.
+- Wordt de tuin dan groter of kleiner?
+- Jij plant er bloemen bij.
+- 5 bloemen?
+- Tik op de 9, of sleep de oranje urenwijzer erheen.
+- We willen kwart over 10.
+- Zet de urenwijzer op de 10, en dan de minutenwijzer op de 3.
+- Dat is 7 uur.
+- 7:06
+- 13 lampen? Niet helemaal.
+- Maar zoveel lampen doe ik niet uit.
+- 13 lampen?
+- 12 munten.
+- Het is dus later dan 7 uur.
+- Het is dus nog geen 8 uur.
+- Eén wijzer staat op de klok van Sam op een andere plek.
+- 6:24
+- 6:27
+- 5:17
+- Dus het is 10 uur.
+- De korte wijzer wijst naar de 10.
+- Tik op de 8, of draai de urenwijzer verder rond.
+- Tik op de 10, of draai de urenwijzer verder rond.
+- Nu zegt de klok 7:10.
+- Nu zegt de klok 5:05.
+- Hij staat halverwege, op weg naar de 6.
+- Het is half 6.
+- Hij is halverwege op weg naar de 6.
+- Half 10. Dat klopt.
+- Tik op de 2, of draai de urenwijzer verder rond.
+- Tik op de 3, of draai de urenwijzer verder rond.
+- Half 10. Mooi.
+- 6:32
+- 8 en 2 is samen 10.
+- Kijk goed hoe de stippen staan.
+- Kijk, ik maak een kaart.
+- We willen kwart over 2.
+- Kun je dit nog niet? Tik dan op het vraagteken.
+- Van 5 tot 8
+- Ik zie wel 3 groepen.
+- Maar elke groep heeft 10 sterren.
+- 10, 20, 30.
+- Het is 30.
+- Wat is het volgende ronde getal?
+- Tel de sterren nog eens.
+- Welk getal laten ze zien?
+- Tik op het vraagteken om te wisselen.
+- Kies het goede teken tussen de getallen.
+- Tik op het vraagteken om het teken te wisselen.
+- Weet je het niet? Tik dan op het vraagteken hier.
+- 10 en nog 10.
+- Er komt een hele groep van 10 bij.
+- Want het zijn 2 groepen van 10.
+- Ja, 20.
+- Elk goed antwoord brengt jouw stip verder.
+- Ben jij eerder bij de streep dan het lichtvisje?
+- 9 + 5?
+- Je begon met 9 en er vlogen er 5 weg.
+- Het is 9 min 5.
+- 9 min 5 = 5?
+- 4 min 4 = 8?
+- Er vlogen er 4 weg.
+- Hoeveel lampjes heeft de oranje paal meer dan de paarse?
+- 8 min 5 = 2?
+- Het verschil is een minsom.
+- Welke som past bij de palen?
+- 3 min 5 = 8?
+- Er zijn 7 vuurvliegjes.
+- Er vliegen er 3 weg.
+- 7 min 3 = 4.
+- 3 lichtbollen van 10.
+- Goed, 30 sterren.
+- Er zijn 10 vuurvliegjes.
+- Er vliegen er 6 weg.
+- 10 min 6 = 2?
+- 10 min 6 = 4.
+- Er zijn 6 vuurvliegjes.
+- 6 min 6 = 3?
+- 6 min 6 = 0.
+- Tel de lichtbollen met tientallen.
+- Elke lichtbol heeft 10 sterren.
+- 9 min 2 = 4?
+- 4 lichtbollen van 10.
+- 9 min 2 = 7.
+- Er zijn 8 vuurvliegjes.
+- 8 min 5 = 7?
+- Bij 20 komen er 1 lichtbollen van 10.
+- Dan heb je 30.
+- Hoeveel lampjes heeft de oranje paal meer?
+- 7 min 4 = 8?
+- 23.
+- 9 min 3 = 2?
+- Het verschil is 6.
+- 10 min 8 = 5?
+- Tel de lichtbollen erbij met tientallen.
+- 6 min 1 = 8?
+- 7 min 2 = 2?
+- Bij 30 komen er 2 lichtbollen van 10.
+- Dan heb je 50.
+- De tientallen blijven gelijk.
+- 30 plus 7 is 37.
+- 6 lichtbollen van 10.
+- Dat is 60.
+- 6 rode visjes?
+- Er komen hele lichtbollen van 10 bij.
+- Er zijn 8 rode visjes, niet 6.
+- Kijk, er zijn 6 groene visjes.
+- 35.
+- We tellen eerst de gele visjes.
+- Hoeveel gele visjes zie je?
+- De tientallen van 20 blijven gelijk.
+- Er komen 5 sterren bij: 25.
+- Het zijn 4 gele visjes.
+- Oké, deze keer tellen we de paarse visjes.
+- Hoeveel paarse visjes zie je?
+- Het zijn 7 paarse visjes.
+- Bij 10 komen er 3 lichtbollen van 10.
+- Dan heb je 40.
+- Nu de gele visjes.
+- Het zijn 6 gele visjes.
+- 4 lichtbollen en 7 losse sterren.
+- Dat is 47.
+- En nu de groene visjes.
+- Hoeveel groene visjes zie je?
+- Het zijn 8 groene visjes.
+- Nog één: de rode visjes.
+- Hoeveel rode visjes zie je?
+- Bij 24 komen er 2 lichtbollen van 10.
+- Dan heb je 44.
+- Het zijn 9 rode visjes.
+- Van welke kleur zijn er 9?
+- Nu doen we het een beetje anders.
+- Bij 40 komen er 1 lichtbollen van 10.
+- Er zijn 9 blauwe visjes.
+- Van welke kleur zijn er 8?
+- 8 groene visjes?
+- Hoeveel is 20 plus 10?
+- 27.
+- Er zijn 4 groene visjes, niet 8.
+- Kijk, er zijn 8 paarse visjes.
+- Van welke kleur zijn er 5?
+- Hoeveel is 30 plus 20?
+- Er zijn 5 oranje visjes.
+- Hoeveel is 20 plus 5?
+- 20 plus 5 is 25.
+- Hoeveel is 10 plus 30?
+- Kijk, 7 sterren.
+- 47.
+- Hoeveel is 24 plus 20?
+- Hoeveel is 40 plus 10?
+- Hoeveel sterren moeten erbij voor nóg een lichtbol?
+- Je telt nu met tientallen.
+- Ja, je snapt het.
+- Hoeveel lichtbollen kropen samen tot de grote bol?
+- 10, 20, 30, tot 100.
+- Hoeveel lichtbollen waren dat?
+- Tel maar mee.
+- Het waren 10 lichtbollen.
+- 10 lichtbollen worden één grote bol van 100.
+- Hoeveel grote bollen heb je dan nodig?
+- Stel, je wilt een nóg grotere bol.
+- Hoeveel sterren voor één lichtbol?
+- Hoeveel lichtbollen voor een grote bol?
+- Kijk naar wat we deden.
+- Het is steeds hetzelfde.
+- Bij 10 maak je iets nieuws.
+- Ook bij de grote bollen: 10.
+- Maar in elke lichtbol zitten 10 sterren.
+- Ja, het zijn 6 lichtbollen.
+- Het zijn 60 sterren.
+- 10, 20, 30, 40, 50, 60.
+- En dan nog 5 losse sterren: 35.
+- Maak 47.
+- Je hebt 0 gemaakt.
+- Tik 4 keer op de lichtbol.
+- Tik nu 7 keer op de ster.
+- Maak 60.
+- Tik 6 keer op de lichtbol.
+- 6 lichtbollen, en geen losse sterren.
+- Maak 13.
+- Hoger
+- Tik 13 keer op de ster.
+- 13 is één lichtbol en 3 sterren los.
+- Maak 25.
+- Tik 2 keer op de lichtbol.
+- Tik nu 5 keer op de ster.
+- Kijk naar het getal in het lantaarntje.
+- 1 + 2 + 3 + 4 = 10.
+- Het zijn er 10.
+- 2 lichtbollen en 5 losse sterren.
+- Dat is 25.
+- Hmm, kijk naar de paarse lampjes.
+- Maak 82.
+- Tik 8 keer op de lichtbol.
+- Tik nu 2 keer op de ster.
+- 8 lichtbollen en 2 losse sterren.
+- Dat is 82.
+- Ze moeten allemaal weg.
+- Dan blijven er nog vuurvliegjes over.
+- Ze moeten alle 20 wegvliegen.
+- Ik liet er 4 wegvliegen.
+- 5 min 4 = 1.
+- Ik liet er 7 wegvliegen.
+- 8 min 7 = 1.
+- Ik liet er 11 wegvliegen.
+- 14 min 11 = 3.
+- 9 min 3 = 6.
+- 7 min 7 = 0.
+- Er zijn 0 vuurvliegjes over.
+- Weet je nog, 47?
+- Ik liet er 2 wegvliegen.
+- 8 min 4?
+- Je begon met 8 en er vlogen er 3 weg.
+- Het is 8 min 3.
+- Weet je nog, 60?
+- 8 min 3 = 1?
+- Dus 8 min 3 = 5.
+- Er zitten nog 5 vuurvliegjes in het potje.
+- 5 min 5 = 4?
+- 5 min 9 = 4?
+- 6 min 2 = 2?
+- 9 min 7 = 5?
+- Er zijn 5 vuurvliegjes.
+- 5 min 5 = 6?
+- 10 min 4 = 8?
+- Er vliegen er 1 weg.
+- 7 min 1 = 1?
+- 7 min 1 = 6.
+- 8 min 6 = 7?
+- Je deed er 9,7 seconden over.
+- Je deed er 9,4 seconden over.
+- 9 min 2 = 1?
+- 10 min 7 = 4?
+- 5 min 1 = 7?
+- 6 min 3 = 1?
+- Je deed er 9,8 seconden over.
+- Hoeveel sterren zijn dat?
+- Ja, het zijn 3 lichtbollen.
+- Het zijn 30 sterren.
+- Maar elke lichtbol is 10.
+- Dat zijn de lichtbollen samen.
+- Bij 30 komen 2 lichtbollen van 10.
+- 40, 50.
+- Het is 20.
+- Bij 50 komen 3 lichtbollen van 10.
+- 60, 70, 80.
+- Er staat nu een nieuw getal.
+- Hoeveel is 30 plus 1?
+- Eén lichtbol van 10 en 7 losse sterren.
+- Dat is 17.
+- Er komen 1 eenheden bij.
+- De tientallen blijven: 30.
+- 30 plus 1 is 31.
+- De 1 mag je niet kiezen.
+- Hoeveel is 40 plus 2?
+- Doe er 2 lichtbollen van 10 bij.
+- Bij 17 komen 2 lichtbollen van 10.
+- 27, 37.
+- De tientallen blijven: 40.
+- Er komen 2 eenheden bij.
+- 40 plus 2 is 42.
+- Hoeveel tientallen heeft 23?
+- Kijk naar de pijlen.
+- En welk getal is dit?
+- Er staat twee keer een 2.
+- 2 lichtbollen van 10 en 5 losse sterren.
+- Hoeveel eenheden heeft 23?
+- En de eenheden?
+- Kijk naar het laatste cijfer van 23.
+- Hoeveel is 24 plus 10?
+- 23 heeft 3 eenheden.
+- Ze werden het getal dat we erbij deden.
+- Van 0 naar 3.
+- Doe er één lichtbol van 10 bij.
+- Bij 24 komen één lichtbol van 10.
+- Dan heb je 34.
+- Hoeveel is 18 plus 30?
+- Geen losse sterren.
+- En hoeveel eenheden zijn er?
+- Er zijn 0 eenheden.
+- De rechter kolom is leeg.
+- Bij 18 komen 3 lichtbollen van 10.
+- Dan heb je 48.
+- Links staat nog steeds 2.
+- Kijk naar de cijfers boven de kolommen.
+- Ja, het zijn 2 groepen.
+- 10 en nog 10 is 20.
+- Het zijn 20 sterren.
+- Bij 27 komen 2 lichtbollen van 10.
+- Dan heb je 47.
+- Hoeveel sterren zijn het nu?
+- Ik heb er nog een groep bij gedaan.
+- Kijk nog eens naar de kaart.
+- 10, 20, …
+- Tel de groepen met tientallen.
+- Hoeveel is 70 plus 3?
+- Probeer deze eerst.
+- Hoeveel is 31 plus 10?
+- Bij 31 komen één lichtbol van 10.
+- Dan heb je 41.
+- Hoeveel sterren zitten erin?
+- Deze groep is wat kleiner dan de andere.
+- De tientallen van 70 blijven gelijk.
+- Er komen 3 eenheden bij: 73.
+- Tel maar mee: 2, 4, 6, 8.
+- Er zitten 8 sterren in.
+- Hoeveel is 15 plus 30?
+- En 8 eenheden.
+- We hebben dus 3 tientallen.
+- Hoeveel is 70 plus 8?
+- Dan de 8 losse sterren erbij.
+- Tel eerst de groepen: 10, 20, 30.
+- Je kunt al grote getallen tellen.
+- Bij 15 komen 3 lichtbollen van 10.
+- Dan heb je 45.
+- Hoeveel sterren staan er nu?
+- 78.
+- Eén groep van 10 en nog 7.
+- Hoeveel is 22 plus 20?
+- Bij 22 komen 2 lichtbollen van 10.
+- Dan heb je 42.
+- Hoeveel is 50 plus 3?
+- Wat moet er bij 17 om 20 te maken?
+- Hoeveel is 36 plus 10?
+- Bij 36 komen één lichtbol van 10.
+- Dan heb je 46.
+- Er zijn 3 lege plekjes.
+- 53.
+- Het tiental van 10 blijft gelijk.
+- Er komen 8 eenheden bij: 18.
+- 17 plus 3 is 20.
+- Dan de losse sterren erbij.
+- Tel eerst de volle groepen.
+- Dat is 24.
+- 2 groepen van 10 en nog 4.
+- Wat moet er bij 24 om 30 te maken?
+- Er zijn 6 lege plekjes.
+- Hoeveel is 50 plus 30?
+- 24 plus 6 is 30.
+- 3 groepen van 10 en nog 2.
+- Dat is 32.
+- Wat moet er bij 32 om 40 te maken?
+- Er zijn 8 lege plekjes.
+- 32 plus 8 is 40.
+- Wat moet er bij 23 om 30 te maken?
+- We zoeken 30.
+- 23 plus 0 is 23.
+- Er moeten 7 sterren bij.
+- 23 plus 7 is 30.
+- Wat moet er bij 36 om 40 te maken?
+- We zoeken 40.
+- 36 plus 3 is 39.
+- 36 plus 4 is 40.
+- Wat moet er bij 41 om 50 te maken?
+- We zoeken 50.
+- 41 plus 5 is 46.
+- 41 plus 9 is 50.
+- Er moeten 9 sterren bij.
+- 2, 4, …
+- Tel per rijtje van twee.
+- En er komt 1 bij.
+- Nu heb je een groep van 10.
+- Na 10 komt 11.
+- 10 en nog 1 is 11.
+- tieneen
+- 23 plus 2 is 25.
+- Hier staat 37.
+- Nu komen er 2 bij.
+- Welk getal heb je gemaakt?
+- Je hebt nog steeds een groep van 10.
+- Kijk ook naar de groep van 10.
+- Een groep van 10, en nog 2.
+- We zoeken 20.
+- Dat is 6.
+- Tik op 20.
+- Wat komt er na 12?
+- 3 is alleen de tweede schelp.
+- Maar vandaag tellen we nog verder.
+- Na 12 komt 13.
+- Dat is 9.
+- Tik op 50.
+- Je hebt tot 19 geteld.
+- Weet je welk getal hierna komt?
+- Het veld gaat tot 50.
+- Dat is 39.
+- Tik op parels in de tweede schelp om ze weg te halen.
+- Maak het getal 10.
+- Dat is 12.
+- We zoeken het getal 10.
+- Er liggen 10 parels.
+- Maar we maken het getal 10.
+- En nog 0 erbij.
+- Samen is dat 10.
+- Maak het getal 17.
+- We zoeken het getal 17.
+- Tik op 22.
+- 10 en nog 0.
+- Dat is 22.
+- Het zijn 6 rode kwallen.
+- Maar we maken het getal 17.
+- En nog 7 erbij.
+- Samen is dat 17.
+- Tik parels weg of leg er een bij.
+- Maak het getal 14.
+- We zoeken het getal 14.
+- 10 en nog 7.
+- Er liggen 7 parels.
+- Maar we maken het getal 14.
+- Het is 17.
+- Het is 42: een 4 en een 2.
+- En nog 4 erbij.
+- Samen is dat 14.
+- Begin bij 42.
+- Het zijn 9 blauwe kwallen.
+- Maak het getal 12.
+- We zoeken het getal 12.
+- 10 en nog 4.
+- Er liggen 4 parels.
+- Maar we maken het getal 12.
+- Het is 14.
+- Begin bij 42 en tel 3 verder.
+- En nog 2 erbij.
+- Samen is dat 12.
+- Maak het getal 19.
+- We zoeken het getal 19.
+- Je begon bij 42 en telde 3 verder.
+- Je kwam uit op 45.
+- Het zijn 7 groene kwallen.
+- 10 en nog 2.
+- Er liggen 2 parels.
+- Tik op 14.
+- 14.
+- Maar we maken het getal 19.
+- Het is 12.
+- Kijk, nu staat er een ander getal in de rand.
+- En nog 9 erbij.
+- Samen is dat 19.
+- Het getal heeft een 2 en een 6.
+- 16?
+- Tik op 38.
+- 38.
+- Maak het getal 15.
+- Het is 26: een 2 en een 6.
+- We zoeken het getal 15.
+- Begin bij 41.
+- Begin bij 41 en tel 3 verder.
+- Tik op 26.
+- 10 en nog 9.
+- Er liggen 9 parels.
+- Je bent op 45.
+- Hier staat 26.
+- Maar we maken het getal 15.
+- Het is 19.
+- Begin bij 43.
+- En nog 5 erbij.
+- Samen is dat 15.
+- Begin bij 43 en tel 3 verder.
+- Maak het getal 11.
+- We zoeken het getal 11.
+- Je begon bij 43 en telde 3 verder.
+- Je kwam uit op 46.
+- Tel 5 verder.
+- Je begon bij 41 en telde 3 verder.
+- Begin bij 21.
+- Je kwam uit op 44.
+- Hoeveel moet je verder tellen tot 50?
+- Je staat op 44.
+- 10 en nog 5.
+- Er liggen 5 parels.
+- Begin bij 21 en tel 5 verder.
+- Maar we maken het getal 11.
+- Het is 15.
+- Tel vanaf 45 tot en met 50.
+- Hmm, 1 is te weinig.
+- Je begon bij 21 en telde 5 verder.
+- Je kwam uit op 26.
+- Samen is dat 11.
+- Maak het getal 18.
+- We zoeken het getal 18.
+- 10 en nog 1.
+- Maar we maken het getal 18.
+- Het is 11.
+- Van 44 naar 50 tel je 6 verder.
+- 10 en nog 4 is 14.
+- Eerst deze.
+- Oké, top.
+- En nog 8 erbij.
+- Samen is dat 18.
+- 10 en nog 9 is 19.
+- Het getal heeft een 3 en een 5.
+- Het is 35: een 3 en een 5.
+- We zoeken het getal 13.
+- Tel 6 verder.
+- Begin bij 28.
+- Het zijn 7 rode kwallen.
+- Begin bij 28 en tel 6 verder.
+- 10 en nog 8.
+- Er liggen 8 parels.
+- Je begon bij 28 en telde 6 verder.
+- Je kwam uit op 34.
+- Hoeveel moet je verder tellen tot 40?
+- Je staat op 34.
+- Het zijn 5 gele visjes.
+- Die kaart is 4.
+- Maak het getal 13.
+- Maar we maken het getal 13.
+- Het is 18.
+- En nog 3 erbij.
+- Samen is dat 13.
+- Maak het getal 16.
+- We zoeken het getal 16.
+- 10 en nog 3.
+- Er liggen 3 parels.
+- Maar we maken het getal 16.
+- Het is 13.
+- En nog 6 erbij.
+- Samen is dat 16.
+- Maak het getal 20.
+- We zoeken het getal 20.
+- 10 en nog 6.
+- Er liggen 6 parels.
+- Maar we maken het getal 20.
+- Het is 16.
+- En nog 10 erbij.
+- Kijk: 10 en nog 1.
+- Kijk: 10 en nog 2.
+- Kijk: 10 en nog 3.
+- Dat is 14.
+- 5 min 9?
+- Je deed er 9,9 seconden over.
+- 5 min 8 = 3?
+- De grootste paal min de kleinste paal.
+- Het is 8 min 5 = 3.
+- 7 min 3 = 2?
+- 10 min 6 = 3?
+- 6 min 6 = 2?
+- 8 min 5 = 4?
+- 7 min 4 = 4?
+- 9 min 3 = 7?
+- 10 min 8 = 1?
+- 6 min 1 = 3?
+- 7 min 2 = 6?
+- Er zijn 4 vuurvliegjes over.
+- 4 min 5 = 9?
+- Het is 9 min 5 = 4.
+- 6 min 2 = 3?
+- 9 min 7 = 2.
+- 5 min 5 = 8?
+- 10 min 4 = 1?
+- Je deed er 9,3 seconden over.
+- 7 min 1 = 3?
+- 9 min 2 = 3?
+- 10 min 7 = 6?
+- 5 min 1 = 0?
+- Je deed er 10,0 seconden over.
+- Je deed er 9,6 seconden over.
+- Je deed er 9,5 seconden over.
+- 26.
+- $a min $b = $a - b.
+- Er vlogen er $t.weg weg.
+- Hmm, je palen hebben 4 en $g3.rechts lampjes.
+- $over min $over = $x?
+- $groot min $klein = $x?
+- Tik $doel keer op de ster.
+- Tik $t keer op de lichtbol.
+- Tik nu $e keer op de ster.
+- $st.enen
+- Tik op plus bij de $w.
+- Tik op min bij de $w.
+- $tientallen(k.st.tienen) en $eenheden(k.st.enen).
+- $groepjes groepjes van 10.
+- Dat zijn $doel stippen.
+- $groepjes groepjes van 10 is $doel.
+- $goed === "links" ? "Links" : "Rechts" zijn het er $Math.max(a, b).
+- Aan de andere kant $Math.min(a, b).
+- Er $n === 1 ? "is" : "zijn" er $n meer.
+- Kijk, links zijn het er $start.
+- Rechts zijn het er $doel.
+- Je hebt er nog $doel - g.links nodig.
+- Er $g.links - doel === 1 ? "is" : "zijn" er $g.links - doel te veel.
+- $zin(a, fout, b)?
+- Je liet zien: $zin(2, "<", 5).
+- Je liet zien: $zin(3, ">", 1).
+- $zin(3, ">", 1).
+- $zin(3, "=", 3).
+- $zin(2, "<", 5).
+- $zin(m.links, tk, m.rechts).
+- $zin(x, tk, y).
+- Met $nodig $vliegjes(nodig) erbij zijn de groepen gelijk.
+- Er $nodig === 1 ? "moet" : "moeten" er $nodig bij.
+- $li en $nodig is samen $re.
+- $p min $antwoord = $eind.
+- Dus de som is 16 min $weg.
+- Precies, 16 min $weg.
+- Precies, 10 min $knal.
+- Deze som past: 10 min $knal.
+- Eerste les
+- Maar er komen geen ballonnen bij.
+- Moeten er dan ballonnen bij, of eraf?
+- Er gaan er een paar weg.
+- Tik op 9 ballonnen om ze te laten knappen.
+- 5:45
+- 5:50
+- 7:10
+- 2:45
+- 2:50
+- 2:55
+- 2:60
+- 3:45
+- 4:50
+- 6:08
+- 6:13
+- 6:18
+- 1:27
+- 1:32
+- 3:57
+- 3:52
+- 6:60
+- 101
+- Een groep van 10, en nog 1.
+- Tel de losse sterren erbij.
+- Eén lichtbol is 10.
+- Ja, 17.
+- 102
+- ÷
+- Tel de lichtbollen: 10, 20.
+- Goed zo, 25.
+- Help het sterretje springen van 8 naar 13.
+- Tik op de 13.
+- 4 min 4 = 5?
+- 8 min 5 = 8?
+- Van 0 tot 8
+- Welk huisnummer komt na 7?
+- Tel één verder dan 7.
+- 9? Dat is nog niet het goede nummer.
+- maandag
+- woensdag
+- dinsdag
+- donderdag
+- vrijdag
+- zaterdag
+- zondag
+- Maandag is de rode wagon.
+- Dinsdag is de oranje wagon.
+- Woensdag is de gele wagon.
+- Donderdag is de groene wagon.
+- Vrijdag is de blauwe wagon.
+- Zaterdag is de paarse wagon.
+- Zondag is de roze wagon.
+- Tik op de wagon van donderdag.
+- Maandag? Niet helemaal.
+- De grote pannenkoek is groter.
+- Maandag.
+- Dinsdag.
+- Woensdag.
+- Donderdag.
+- Zoek de groene wagon.
+- Ja! Na 7 komt 8.
+- Dit is de wagon van donderdag.
+- Welk huisnummer komt voor 12?
+- Ja! Voor 12 komt 11.
+- Kijk, op één bordje staat een vraagteken.
+- Welk huisnummer hoort bij het vraagteken?
+- Tik op de wagon van zaterdag.
+- Ja! 16 hoort tussen 15 en 17.
+- Dit is de wagon van zaterdag.
+- Welk huisnummer komt na 19?
+- Ja! Na 19 komt 20.
+- Er mist een huis in de straat.
+- Tik op de wagon van dinsdag.
+- Sleep het goede huis naar de lege plek.
+- Dit is de wagon van dinsdag.
+- Welke dag komt na dinsdag?
+- Na dinsdag komt woensdag.
+- Welke dag komt na vrijdag?
+- Na vrijdag komt zaterdag.
+- Welke dag komt voor vrijdag?
+- Voor vrijdag komt donderdag.
+- Welke dag komt voor woensdag?
+- Voor woensdag komt dinsdag.
+- Sleep de goede dag naar de lege plek.
+- Er mist een dag in de trein.
+- Tussen dinsdag en donderdag zit woensdag.
+- Tussen vrijdag en zondag zit zaterdag.
+- Maandag is de eerste dag van de week.
+- Welke dag was het gisteren?
+- Vandaag is het woensdag.
+- Gisteren was het dinsdag.
+- Welke dag is het morgen?
+- Vandaag is het vrijdag.
+- Morgen is het zaterdag.
+- Tik op een dag van het weekend.
+- Twee dagen samen heten het weekend.
+- Zaterdag hoort bij het weekend.
+- Tik op de andere dag van het weekend.
+- Welke dag komt na zondag?
+- Na zondag komt maandag.
+- Welke dag komt voor maandag?
+- Voor maandag komt zondag.
+- Vandaag is het maandag.
+- Gisteren was het zondag.
+- Ja! 10 hoort tussen 9 en 11.
+- Welk huisnummer komt na 25?
+- Ja! Na 25 komt 26.
+- Nu lopen we terug.
+- Welk huisnummer komt dan?
+- Ja! Voor 27 komt 26.
+- Welk huisnummer komt voor 21?
+- Ja! Voor 21 komt 20.
+- Ja! 28 hoort tussen 27 en 29.
+- Ja! 24 hoort tussen 23 en 25.
+- Welk huisnummer komt voor 30?
+- Ja! Voor 30 komt 29.
+- Welk huisnummer komt na 39?
+- Ja! Na 39 komt 40.
+- Ja! Voor 41 komt 40.
+- Ja! 47 hoort tussen 46 en 48.
+- Ja! 34 hoort tussen 33 en 35.
+- Welk huisnummer komt na 49?
+- Ja! Na 49 komt 50.
+- Ja! Voor 35 komt 34.

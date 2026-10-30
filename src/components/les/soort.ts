@@ -128,6 +128,17 @@ export type Lesdraaiboek = {
    * Zonder: de zin en de knoppen in de ballon boven Bliepo.
    */
   indeling?: "synthesis";
+  /**
+   * Nieuwe lessen naar Squla (30 oktober 2026, opdracht eigenaar): voorlopig mag de
+   * browserstem nieuwe zinnen voorlezen (nog geen Ruth-audio). Bestaande Ruth-zinnen
+   * worden gewoon gebruikt. Alle zinnen staan in STEMZINNEN.md om later met Ruth te maken.
+   */
+  browserstem?: true;
+  /**
+   * Nacht (30 oktober 2026, keuze eigenaar bij de weektrein): de blauwe ruimte
+   * wordt donker, zodat gloeiende plaatjes ("glow in the dark") goed uitkomen.
+   */
+  nacht?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

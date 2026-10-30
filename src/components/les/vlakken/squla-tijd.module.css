@@ -1,0 +1,43 @@
+/*
+  De lessen Tijd naar Squla (30 oktober 2026): het Phaser-vlak met daarover
+  onzichtbare knoppen (toetsenbord en automatische test). Alles tekent Phaser;
+  de knoppen laten de vinger en de muis door naar het canvas.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  touch-action: none;
+}
+
+.knoppen {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+.ding {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 18px;
+  background: transparent;
+  pointer-events: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ding:focus-visible {
+  outline: 4px solid #4b8af5;
+  outline-offset: 6px;
+}
+
+.verborgen {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

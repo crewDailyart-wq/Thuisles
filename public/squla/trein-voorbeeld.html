@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="nl"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Weektrein: voorbeeld</title>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #0b1e5c; color: #fff; }
+  section { position: relative; padding: 28px 16px 40px; overflow: hidden; }
+  h2 { margin: 0 0 6px; font-size: 20px; }
+  p { margin: 0 0 18px; opacity: .85; }
+  .dag { background: url(/assets/bliepo/achtergrond-opdracht/liggend-1280.webp) center/cover; }
+  .nacht { background: url(/assets/bliepo/achtergrond-opdracht/liggend-1280.webp) center/cover; }
+  .nacht::before { content: ""; position: absolute; inset: 0; background: rgba(3, 8, 35, .72); }
+  section > * { position: relative; z-index: 1; }
+  .rij { position: relative; display: flex; align-items: flex-end; gap: 8px; height: 150px; padding-left: 34px; flex-wrap: nowrap; }
+  .w { position: relative; width: 108px; height: 120px; flex: none; }
+  .l { position: relative; width: 128px; height: 120px; flex: none; }
+  .w img, .l img { position: absolute; bottom: 0; left: 0; width: 100%; }
+  .glow .w img { width: 161.3px; left: -26.7px; bottom: -26.7px; }
+  .glow .l img { width: 191.2px; left: -31.6px; bottom: -31.6px; }
+  .bord { position: absolute; left: 50%; transform: translate(-50%, -50%); background: #fff7ea; color: #1c2a4a; border: 2px solid #1c2a4a; border-radius: 7px; padding: 1px 5px; font-weight: 800; font-size: 13.5px; white-space: nowrap; }
+  .glow .bord { box-shadow: 0 0 14px 4px var(--k); border-color: var(--k); }
+</style></head>
+<body>
+<section class="dag"><h2>1. Zoals nu (Kenney, gewoon)</h2><p>Wat nu in de les staat.</p><div class="rij" id="r1"></div></section>
+<section class="nacht"><h2>2. Glow in the dark (Kenney + gloed)</h2><p>Dezelfde trein, met een gloed in de kleur van de dag. De gloed zit al in het plaatje (één keer gebakken), dus het blijft vloeiend.</p><div class="rij glow" id="r2"></div></section>
+<section class="dag"><h2>3. Glow in the dark op de gewone blauwe achtergrond</h2><p>De gloed, maar zonder donkere nacht erachter.</p><div class="rij glow" id="r3"></div></section>
+<script>
+const D = [["maandag","#ff6b5e"],["dinsdag","#ffa24a"],["woensdag","#ffe14f"],["donderdag","#63e07f"],["vrijdag","#62b8ff"],["zaterdag","#b993ff"],["zondag","#ff9fd2"]];
+for (const [id, map] of [["r1","trein"],["r2","trein-glow"],["r3","trein-glow"]]) {
+  const r = document.getElementById(id);
+  r.insertAdjacentHTML("beforeend", `<div class="l"><img src="/squla/${map}/locomotief.png" alt=""></div>`);
+  for (const [n, k] of D) r.insertAdjacentHTML("beforeend", `<div class="w" style="--k:${k}"><img src="/squla/${map}/${n}.png" alt=""><div class="bord" style="bottom:${108*163/324*0.64 - 10}px">${n}</div></div>`);
+}
+</script>
+</body></html>

@@ -26,6 +26,7 @@ import { holoBasis, WERELDKLEUR, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { KeuzeKnoppen, vierKeuzes } from "../holo/keuzes";
 import { IkoonKnop, type Ikoon } from "../ikonen";
+import { tekenVisje } from "./tellen-holo-tekenen";
 import s from "./flitsen-hologram.module.css";
 
 export type HologramProps = FlitsProps & {
@@ -153,21 +154,11 @@ function maakFlitsScene(kleur: number) {
           });
         }
         /* Race: jij bent een stip, de tegenstander een lichtvisje. */
+        /* Hetzelfde lichtvisje als in de tellessen (vin, staart, oog), verkleind tot 70 × 40. */
         this.canvasPlaatje("visje", 70, 40, (c) => {
-          c.fillStyle = "rgba(255,211,110,0.95)";
-          c.beginPath();
-          c.ellipse(32, 20, 22, 12, 0, 0, Math.PI * 2);
-          c.fill();
-          c.beginPath();
-          c.moveTo(10, 20);
-          c.lineTo(0, 8);
-          c.lineTo(0, 32);
-          c.closePath();
-          c.fill();
-          c.fillStyle = "#1b2a44";
-          c.beginPath();
-          c.arc(44, 17, 2.6, 0, Math.PI * 2);
-          c.fill();
+          c.translate(5, 0);
+          c.scale(40 / 64, 40 / 64);
+          tekenVisje(c, "#ffd36e");
         });
         this.bak("visje", "visje-gloed", WARM);
       }

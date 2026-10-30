@@ -103,7 +103,7 @@ export function BliepoTekst({
   return (
     <p
       ref={zin}
-      className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${className}`}
+      className={`bliepo-tekst ${oplichten ? "bliepo-tekst-meelezen" : ""} ${leest ? "bliepo-tekst-leest" : ""} ${className}`}
       /* Tikt het kind op de zin, dan leest Bliepo hem nog eens voor (27 oktober 2026; groep 3 leest nog niet). */
       onClick={gesproken ? () => zeg(gesproken) : undefined}
       style={gesproken ? { cursor: "pointer" } : undefined}

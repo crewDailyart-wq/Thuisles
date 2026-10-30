@@ -817,7 +817,7 @@ export function VerhaalTuin(p: VerhaalHoloProps & Vlakbasis) {
   zinnen.slice(0, zichtbaar).forEach((zin, i) => {
     /* Het verhaal krimpt tot één zin (Synthesis, 2× fout getal): de rest is even weg. */
     if (alleenZin !== null && alleenZin !== i) return;
-    if (stippelVoor === i && alleenZin === null) regels.push(<div key={`stip-${i}`} className={s.stippel} />);
+    /* Geen stippellijn meer tussen het verhaal en de vraag (30 oktober 2026, opdracht eigenaar). */
     const kleur = leesZin === i ? s.lezen : flitsZin === i || vraagZin === i ? s.roze : groeneZin === i ? s.groen : "";
     const delen = knip(zin);
     const stukken = delen.map((st, j) => {
@@ -902,11 +902,11 @@ export function VerhaalTuin(p: VerhaalHoloProps & Vlakbasis) {
     const hint = hintZin === i ? s.hint : "";
     regels.push(
       tik === "zin" ? (
-        <button key={i} type="button" className={`${s.zin} ${s.zinTik} ${kleur} ${hint}`} data-zin={i} onClick={() => meld({ soort: "zin", i })}>
+        <button key={i} type="button" className={`verhaal-zin ${leesZin === i ? "verhaal-zin-lezen" : ""} ${s.zin} ${s.zinTik} ${kleur} ${hint}`} data-zin={i} onClick={() => meld({ soort: "zin", i })}>
           {stukken}
         </button>
       ) : (
-        <div key={i} className={`${s.zin} ${kleur} ${hint}`}>
+        <div key={i} className={`verhaal-zin ${leesZin === i ? "verhaal-zin-lezen" : ""} ${s.zin} ${kleur} ${hint}`}>
           {stukken}
         </div>
       ),
@@ -947,7 +947,7 @@ export function VerhaalTuin(p: VerhaalHoloProps & Vlakbasis) {
         </div>
       )}
 
-      {regels.length > 0 && <div className={`${s.verhaal} ${midden ? s.midden : ""}`}>{regels}</div>}
+      {regels.length > 0 && <div className={`verhaal-tekst ${s.verhaal} ${midden ? s.midden : ""}`}>{regels}</div>}
 
       {/* Bloemen met lege potjes (zoals Synthesis): een verticale stippellijn rechts naast de bovenste rij. */}
       {/* Een vaste grens na zoveel voorwerpen (bij de controle: wat er in het begin was | wat erbij komt). */}
