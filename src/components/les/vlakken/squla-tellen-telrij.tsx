@@ -262,6 +262,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       this.bezig = false;
       this.o = o;
       if (!o) return;
+      this.druk(1000);
       const d = dingVan(o);
       const p = plekken(o);
       /* De grond onder de huizen: een zachte lijn van licht. */
@@ -333,6 +334,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
         this.vulling = this.maakDing(dingVan(o), n, q.x, q.y);
         this.tover(this.vulling);
       }
+      this.druk(700);
       this.golf(q.x, midY, GOED);
       /* De andere losse gaan weg. */
       this.losse.filter((l) => l.n !== n).forEach((l) => this.verdwijn(l.box));
@@ -342,6 +344,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
     fout(n: number) {
       const los = this.losse.find((l) => l.n === n);
       if (!los) return;
+      this.druk(900);
       this.schud(los.box);
       this.time.delayedCall(this.rustig ? 1 : 520, () => this.terug(los));
     }
@@ -379,6 +382,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       const o = this.o;
       const q = this.gatPlek();
       if (!aan || !o || !q || this.rustig || !this.losse.length) return;
+      this.druk(3600);
       const van = this.losse[Math.floor(this.losse.length / 2)];
       const d = dingVan(o);
       const midden = (y: number, n: number) => (d === "huis" ? y - huisHoog(n) / 2 : y);
@@ -473,10 +477,25 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       return { x: r.left + (los.box.x + v.x + v.b / 2) * f, y: r.top + (los.box.y + v.y + v.h / 2) * f };
     }
 
-    /** Alle kaartjes en bordjes van de les vooruit maken, één per keer (geen hapering later). */
+    /** Alle kaartjes en bordjes van de les vooruit maken, één per keer en alleen als er niets beweegt (geen hapering). */
+    rijKlus: (() => void)[] = [];
+    drukTot = 0;
+    druk(ms: number) {
+      this.drukTot = Math.max(this.drukTot, performance.now() + ms);
+    }
     bakVooruit(huizen: number[], kaarten: number[]) {
-      const klus = [...huizen.map((n) => () => this.bordje(n)), ...kaarten.map((n) => () => this.kaartTex(n))];
-      klus.forEach((k, i) => this.time.delayedCall(300 + i * 90, k));
+      this.rijKlus = [...huizen.map((n) => () => void this.bordje(n)), ...kaarten.map((n) => () => void this.kaartTex(n))];
+      /* Eerst rustig het welkom (en de eerste tovering); daarna in de stille stukjes. */
+      this.druk(2500);
+      this.time.addEvent({
+        delay: 120,
+        loop: true,
+        callback: () => {
+          if (!this.rijKlus.length || performance.now() < this.drukTot || this.sleep) return;
+          this.rijKlus.shift()!();
+          this.druk(120);
+        },
+      });
     }
 
     /** Voor `npm run vloeiend`: met wat er nu staat — de rij licht op en een huis schuift naar de lege plek en terug. */
@@ -485,6 +504,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       let k = 0;
       const stap = () => {
         if (performance.now() > eind || !this.o) return;
+        this.druk(1000);
         const p = plekken(this.o);
         this.zetLicht(k++ % p.rij.length);
         const q = p.rij[p.gat];

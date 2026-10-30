@@ -590,19 +590,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       return null;
     }
 
+    /** Voor de vloeiendheidscontrole: wagons lichten op zoals bij Bliepo's uitleg, met een lichtgolf. */
     demo(ms: number) {
       const eind = performance.now() + ms;
+      const lijst = [...this.wagons.values()];
       let i = 0;
-      const lijst = [...this.dingen.values()];
       const stap = () => {
-        if (performance.now() > eind) return;
-        const d = lijst[i++ % Math.max(1, lijst.length)];
-        if (d) {
-          this.golf(d.box.x, d.box.y);
-          this.schud(d.box);
-        }
-        if (this.treinGroep) this.tover(this.treinGroep);
-        this.time.delayedCall(700, stap);
+        if (performance.now() > eind || !lijst.length) return;
+        const w = lijst[i++ % lijst.length];
+        this.tweens.add({ targets: w, y: -10, duration: 160, yoyo: true, hold: 200, ease: "Cubic.easeOut" });
+        if (this.treinGroep) this.golf(this.treinGroep.x + w.x, this.treinGroep.y + w.y);
+        this.time.delayedCall(450, stap);
       };
       stap();
     }

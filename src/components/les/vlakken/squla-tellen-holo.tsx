@@ -31,7 +31,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { hexGetal, KLEUR, MAAT, teken, tekenZak, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
+import { hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
 import s from "./squla-tellen.module.css";
 
 export type { Kleurnaam, Soort };
@@ -256,13 +256,19 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       return `${sl}-g`;
     }
 
-    zakTex(getal: number) {
-      const sl = `sqt-zak-${getal}`;
-      if (!this.textures.exists(`${sl}-g`)) {
-        this.canvasPlaatje(sl, 200, 240, (c) => tekenZak(c, getal));
-        this.bak(sl, `${sl}-g`, WARM);
+    /** De zak: één keer gebakken; het getal is een los, klein plaatje erop. */
+    zakTex() {
+      if (!this.textures.exists("sqt-zak-g")) {
+        this.canvasPlaatje("sqt-zak", 200, 240, (c) => tekenZak(c));
+        this.bak("sqt-zak", "sqt-zak-g", WARM);
       }
-      return `${sl}-g`;
+      return "sqt-zak-g";
+    }
+
+    zakGetal(getal: number) {
+      const sl = `sqt-zakgetal-${getal}`;
+      this.canvasPlaatje(sl, 116, 84, (c) => tekenZakgetal(c, getal));
+      return sl;
     }
 
     stopKlokken() {
@@ -287,7 +293,9 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       const g = this.add.container(cx, cy);
       if (o.zak) {
         const z = this.add.container(o.zak.x - cx, o.zak.y - cy);
-        z.add(this.plaats(this.zakTex(o.zak.getal), 0, 0));
+        z.add(this.plaats(this.zakTex(), 0, 0));
+        /* het bordje zit in de zak op (42..158, 112..196): het midden is 37 punten onder het midden van de zak */
+        z.add(this.plaats(this.zakGetal(o.zak.getal), 0, 34));
         /* Een voorbeeldje van wat erin zit, bovenop de zak. */
         if (o.plekken[0]) z.add(this.plaats(this.tex(o.plekken[0].p), 0, -48).setScale(0.62 / TX));
         g.add(z);
@@ -299,6 +307,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         this.items.push(im);
       }
       this.groep = g;
+      this.druk(900);
       this.tover(g);
     }
 
@@ -312,6 +321,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         o.volgorde.forEach((idx, k) => this.items[idx]?.setAlpha(k < n ? 0.4 : 1));
         return;
       }
+      this.druk((n - van) * o.stap + 500);
       for (let k = van; k < n; k++) {
         const im = this.items[o.volgorde[k]];
         if (!im) continue;
@@ -339,6 +349,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     goed() {
       const g = this.groep;
       if (!g) return;
+      this.druk(800);
       this.golf(490, 380);
       if (this.rustig) return;
       const o = this.ind;
@@ -349,12 +360,14 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     fout() {
+      this.druk(500);
       if (this.groep) this.schud(this.groep);
     }
 
     /* ---------- memory ---------- */
 
     kaarten(st: Kaartstand | null) {
+      this.druk(600);
       if (!st || st.id !== this.kaartId) {
         this.kaartBoxen.forEach((b) => this.verdwijn(b));
         this.kaartBoxen = [];
@@ -403,12 +416,28 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     /**
-     * Alles wat de les nodig heeft vooruit bakken, één plaatje per keer met wat
-     * tijd ertussen: dan hapert er niets als er later een nieuwe soort verschijnt.
+     * Alles wat de les nodig heeft vooruit bakken, maar alleen als er niets
+     * beweegt (Bliepo praat, het beeld staat stil): één plaatje per keer. Een
+     * gloed bakken kost even tijd; midden in een animatie zou dat haperen.
      */
+    rij: (() => void)[] = [];
+    drukTot = 0;
+    druk(ms: number) {
+      this.drukTot = Math.max(this.drukTot, performance.now() + ms);
+    }
     bakVooruit(plaatjes: Plaatje[], zakken: number[]) {
-      const klus = [...plaatjes.map((p) => () => this.tex(p)), ...zakken.map((z) => () => this.zakTex(z))];
-      klus.forEach((k, i) => this.time.delayedCall(300 + i * 140, k));
+      this.rij = [...plaatjes.map((p) => () => this.tex(p)), ...(zakken.length ? [() => this.zakTex()] : []), ...zakken.map((z) => () => this.zakGetal(z))];
+      /* Eerst rustig het welkom (en de eerste tovering); daarna in de stille stukjes. */
+      this.druk(2500);
+      this.time.addEvent({
+        delay: 150,
+        loop: true,
+        callback: () => {
+          if (!this.rij.length || performance.now() < this.drukTot) return;
+          this.rij.shift()!();
+          this.druk(150);
+        },
+      });
     }
 
     /** Voor `npm run vloeiend`: de groep van nu steeds opnieuw tevoorschijn toveren en samen tellen (met plaatjes die er al zijn). */

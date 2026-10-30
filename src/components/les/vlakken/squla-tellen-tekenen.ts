@@ -744,10 +744,11 @@ export function teken(c: CanvasRenderingContext2D, soort: Soort, kleur: string) 
 }
 
 /**
- * Een dichte zak met een tiental erop (200 × 240 punten): een jute zak met
- * een touwtje, en op een wit bordje het getal.
+ * Een dichte zak (200 × 240 punten): een jute zak met een touwtje en een wit
+ * bordje. Het getal staat er los op (tekenZakgetal), zodat de zak zelf maar
+ * één keer gebakken hoeft te worden.
  */
-export function tekenZak(c: CanvasRenderingContext2D, getal: number) {
+export function tekenZak(c: CanvasRenderingContext2D) {
   const bruin = "#d9a866";
   /* lijf van de zak */
   c.beginPath();
@@ -788,11 +789,15 @@ export function tekenZak(c: CanvasRenderingContext2D, getal: number) {
   c.strokeStyle = "#8a5a2b";
   c.lineWidth = 3;
   c.stroke();
+}
+
+/** Het tiental op het bordje van de zak (116 × 84 punten, het midden van het bordje). */
+export function tekenZakgetal(c: CanvasRenderingContext2D, getal: number) {
   c.fillStyle = "#1d2540";
   c.font = `800 64px "Work Sans", system-ui, sans-serif`;
   c.textAlign = "center";
   c.textBaseline = "middle";
-  c.fillText(String(getal), 100, 157);
+  c.fillText(String(getal), 58, 45);
 }
 
 /** Een getal op een klein donker schijfje (samen tellen), 64 × 44 punten. */

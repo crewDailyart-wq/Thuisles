@@ -489,7 +489,11 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           .text(0, 1, String(n), { fontFamily: '"Work Sans", system-ui, sans-serif', fontSize: opVolgorde ? "34px" : "40px", fontStyle: "800", color: "#ffe27a" })
           .setOrigin(0.5)
           .setResolution(2);
-        const b = this.add.container(opVolgorde ? 0 : st.vak.b / 2 - 14, opVolgorde ? -st.vak.h / 2 - 4 : -st.vak.h / 2 + 14, [rondje, tekst]).setData("n", n);
+        /* De voorbeeldgroep staat helemaal bovenaan: daar komt het bordje binnen de hoek. */
+        const binnenHoek = st.vak.soort === "voorbeeld" ? 30 : 0;
+        const b = this.add
+          .container(opVolgorde ? 0 : st.vak.b / 2 - 14 - binnenHoek, opVolgorde ? -st.vak.h / 2 - 4 : -st.vak.h / 2 + 14 + binnenHoek, [rondje, tekst])
+          .setData("n", n);
         st.box.add(b);
         st.bordje = b;
         if (!this.rustig) {

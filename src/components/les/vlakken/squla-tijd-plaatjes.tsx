@@ -28,7 +28,7 @@
 
 import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
-import { VLAK_B, VLAK_H } from "../holo/basis";
+import { TX, VLAK_B, VLAK_H } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { bliepoBasis, PALET, RAND_DUN, blok, tekenVormen } from "./bliepo-voorwerpen";
 import { tekenTekening, tekeningMaat, zetLettertype } from "./squla-tijd-tekeningen";
@@ -163,6 +163,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     maak() {
+      this.maakGolf();
       this.input.on("pointerdown", (p: Ptr) => this.neer(p));
       this.input.on("pointermove", (p: Ptr) => this.beweeg(p));
       this.input.on("pointerup", (p: Ptr) => this.los(p));
@@ -357,6 +358,24 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           }
         }
       }
+    }
+
+    maakGolf() {
+      this.canvasPlaatje("pg-golf", 80, 80, (c) =>
+        tekenVormen(c, [
+          { d: blok(7, 7, 66, 66, 33), rand: PALET.navy, dik: 9 },
+          { d: blok(7, 7, 66, 66, 33), rand: PALET.geel, dik: 5.5 },
+        ]),
+      );
+    }
+
+    /** Goed: een vlakke gele ring die even groter wordt (als plaatje, één keer getekend: vloeiender dan een Graphics-ring). */
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    golf(x: number, y: number, _kleur?: number) {
+      if (rustig) return;
+      this.maakGolf();
+      const g = this.plaats("pg-golf", x, y).setScale(0.7 / TX).setDepth(20);
+      this.tweens.add({ targets: g, scale: 1.5 / TX, alpha: { from: 1, to: 0.2 }, duration: 340, ease: "Cubic.easeOut", onComplete: () => g.destroy() });
     }
 
     schudDing(id: string) {

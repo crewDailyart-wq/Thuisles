@@ -235,7 +235,7 @@ async function stavenLaten(l: Lesgids, getallen: number[]) {
     const tien = Math.floor(n / 10);
     const een = n % 10;
     const staven = tien === 1 ? "staaf" : "staven";
-    if (tien === 0) await l.zeg(`Bij ${w(n)} zie je ${w(een)} losse.`);
+    if (tien === 0) await l.zeg(`Bij ${w(n)} zie je geen staaf, alleen ${w(een)} losse.`);
     else if (een === 0) await l.zeg(`Bij ${w(n)} zie je ${w(tien)} ${staven}.`);
     else await l.zeg(`Bij ${w(n)} zie je ${w(tien)} ${staven} en ${w(een)} losse.`);
   }

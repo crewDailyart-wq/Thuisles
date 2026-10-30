@@ -109,7 +109,7 @@ export type MinVlakProps = {
   licht?: Licht;
   /** Stippen voor de uitleg (rijtjes van 5), met zoveel grijs. */
   stippen?: { n: number; grijs: number } | null;
-  /** Machine: wat er uit de machine komt (anders "…"). */
+  /** Machine: wat er uit de machine komt (anders "?"). */
   uitkomst?: number | null;
   verbind?: VerbindStand | null;
   bubbels?: BubbelStand | null;
@@ -159,9 +159,9 @@ function stipPlekken(n: number, y: number): Plek[] {
 }
 
 function stipY(t: Toneel | null) {
-  if (!t || t.soort === "som") return 490;
-  if (t.soort === "geld") return 620;
-  return 610;
+  if (!t || t.soort === "som") return 460;
+  if (t.soort === "geld") return 604;
+  return 586;
 }
 
 /* Bus */
@@ -173,9 +173,9 @@ function zitPlek(i: number): Plek {
   return { x: BUS_X + R.xs[i % 10], y: BUS_Y + (onder ? R.onder : R.boven) + 8 };
 }
 function buitenPlek(i: number): Plek {
-  return { x: 820 + (i % 3) * 52, y: 520 - Math.floor(i / 3) * 92 };
+  return { x: 846 + (i % 3) * 52, y: 520 - Math.floor(i / 3) * 92 };
 }
-const RONDJE: Plek = { x: 878, y: 440 };
+const RONDJE: Plek = { x: 890, y: 440 };
 const PIJL: Plek = { x: 735, y: 452 };
 
 /* Verbinden */
@@ -402,7 +402,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         g.add(this.plaats(this.tex("sqm-luister", 160, 140, tekenLuister, WERELDKLEUR.oceaan), 490, 350));
         return;
       }
-      if (t.deco === "walvis" || t.deco === "inktvis") g.add(this.plaats(this.eterTex(t.deco), 840, 600).setScale(0.75 / TX));
+      if (t.deco === "walvis" || t.deco === "inktvis") g.add(this.plaats(this.eterTex(t.deco), 790, 590).setScale(0.75 / TX));
       else g.add(this.plaats(this.dierTex(t.deco), 860, 590).setScale(1.2 / TX));
     }
 
@@ -464,7 +464,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       g.add(this.plaats(this.tex("sqm-machine", 240, 250, tekenMachine, null), MACH.machine.x, MACH.machine.y));
       g.add(this.plaats(this.tekstTex(`−${t.eraf}`, 70, "#4a3aa0", ""), MACH.machine.x, MACH.machine.y - 7));
       this.rechtsBlok = this.add.container(MACH.rechts.x, MACH.rechts.y, [this.plaats(blok, 0, 0)]);
-      this.rechtsLabel = this.plaats(this.tekstTex("…", 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
+      this.rechtsLabel = this.plaats(this.tekstTex("?", 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
       this.rechtsBlok.add(this.rechtsLabel);
       g.add(this.rechtsBlok);
     }
@@ -646,13 +646,15 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const kleur = WARM;
       if (t.soort === "zee") {
         const totaal = this.items.length;
-        const r = 50 * this.itemSchaal + 4;
+        const r = 44 * this.itemSchaal + 2;
         this.items.forEach((im, i) => {
           const isGrijs = i >= totaal - this.grijsNu;
           if (l === "alle" || (l === "over" && !isGrijs) || (l === "eraf" && isGrijs)) this.ringen.push(this.selectieRing(im.x, im.y, r, kleur));
         });
       } else if (t.soort === "bus") {
-        if (l === "over" || l === "alle") this.items.forEach((im, i) => (l === "alle" || i < this.items.length - this.grijsNu) && this.ringen.push(this.selectieRing(im.x, im.y - 4, 28, kleur)));
+        /* Op de gele bus valt een gele ring weg: blauw. */
+        const blauw = 0x2f6bff;
+        if (l === "over" || l === "alle") this.items.forEach((im, i) => (l === "alle" || i < this.items.length - this.grijsNu) && this.ringen.push(this.selectieRing(im.x, im.y - 4, 25, blauw)));
         if (l === "eraf") {
           if (t.rondje) this.ringen.push(this.selectieRing(RONDJE.x, RONDJE.y, 68, kleur));
           else this.buiten.forEach((b) => b && this.ringen.push(this.selectieRing(b.x, b.y, 44, kleur)));
@@ -707,7 +709,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const box = this.rechtsBlok;
       if (!box) return;
       this.rechtsLabel?.destroy();
-      this.rechtsLabel = this.plaats(this.tekstTex(n === null ? "…" : String(n), 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
+      this.rechtsLabel = this.plaats(this.tekstTex(n === null ? "?" : String(n), 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
       box.add(this.rechtsLabel);
       if (n !== null && !this.rustig) this.tweens.add({ targets: box, scale: 1.12, duration: 140, yoyo: true });
     }

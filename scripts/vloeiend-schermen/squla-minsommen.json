@@ -1,0 +1,66 @@
+[
+  {
+    "naam": "Squla minsommen: Minsommen in de zee",
+    "pad": "/voorbeeld/les/squla-min-zee-1?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen in de zee (moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-zee-2?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen in de zee (nog moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-zee-3?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen",
+    "pad": "/voorbeeld/les/squla-min-bus1-1?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen (moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-bus1-2?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen (nog moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-bus1-3?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen met een rondje",
+    "pad": "/voorbeeld/les/squla-min-bus2-1?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen met een rondje (moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-bus2-2?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Bussommen met een rondje (nog moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-bus2-3?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen: hoeveel over?",
+    "pad": "/voorbeeld/les/squla-min-machine-1?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen: hoeveel over? (moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-machine-2?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen: hoeveel over? (nog moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-machine-3?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Minsommen: hoeveel over? (heel moeilijk)",
+    "pad": "/voorbeeld/les/squla-min-machine-4?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Kale minsommen",
+    "pad": "/voorbeeld/les/squla-min-kaal-1?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Kale minsommen (moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-kaal-2?naam=Testkind"
+  },
+  {
+    "naam": "Squla minsommen: Kale minsommen (nog moeilijker)",
+    "pad": "/voorbeeld/les/squla-min-kaal-3?naam=Testkind"
+  }
+]

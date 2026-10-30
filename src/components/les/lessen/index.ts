@@ -25,6 +25,8 @@ import { LESSEN_SQULA_GETALLENLIJN } from "./squla-getallenlijn";
 import { LESSEN_SQULA_TELLEN } from "./squla-tellen";
 import { LESSEN_SQULA_TIJD } from "./squla-tijd";
 import { LESSEN_SQULA_MEER_MINDER } from "./squla-meer-minder";
+import { LESSEN_SQULA_MINSOMMEN } from "./squla-minsommen";
+import { LESSEN_SQULA_PLUSSOMMEN } from "./squla-plussommen";
 
 export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_ZO_WERKT_HET,
@@ -49,6 +51,8 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_TELLEN,
   ...LESSEN_SQULA_TIJD,
   ...LESSEN_SQULA_MEER_MINDER,
+  ...LESSEN_SQULA_MINSOMMEN,
+  ...LESSEN_SQULA_PLUSSOMMEN,
 ];
 
 export function zoekDraaiboek(id: string): Lesdraaiboek | null {

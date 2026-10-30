@@ -1,0 +1,158 @@
+/*
+  Plussommen naar Squla (30 oktober 2026). Geen eigen achtergrond of kader:
+  de ruimte van het lesscherm blijft zichtbaar en het Phaser-canvas is
+  doorzichtig. Getallen zijn scherpe HTML-tekst. Maten in punten van het
+  vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #1b1f33;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Iets om aan te tikken: doorzichtig, de tekening staat eronder in Phaser. */
+.vak {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  border-radius: 20px;
+  font: inherit;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.vak:disabled {
+  cursor: default;
+}
+.vak:focus-visible {
+  outline: 4px solid #ffd36e;
+  outline-offset: 6px;
+}
+.uit span {
+  opacity: 0.4;
+}
+
+/* Een kaartje met één of twee witte rondjes. */
+.kaartje {
+  font-size: 46px;
+  color: #1b1f33;
+}
+.links,
+.rechts {
+  position: absolute;
+  top: 50%;
+  transform: translate(-50%, -50%);
+}
+.links {
+  left: 27%;
+}
+.rechts {
+  left: 73%;
+}
+
+/* Een grammofoonplaat: het getal in het gekleurde midden. */
+.plaat {
+  border-radius: 50%;
+  font-size: 52px;
+  color: #ffffff;
+  text-shadow:
+    0 2px 6px rgba(4, 18, 60, 0.85),
+    0 0 2px rgba(4, 18, 60, 0.95);
+}
+
+/* Een kaartje met een som (krijtbordje). */
+.som {
+  font-size: 38px;
+  color: #ffffff;
+  white-space: nowrap;
+}
+
+/* Het aantal onder een groepje. */
+.label,
+.rondgetal,
+.busgetal,
+.telgetal,
+.stipgetal {
+  position: absolute;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-weight: 800;
+  line-height: 1;
+  transform: translate(-50%, -50%);
+  animation: plop 0.3s ease-out both;
+}
+.label {
+  min-width: 70px;
+  height: 52px;
+  padding: 0 14px;
+  border-radius: 14px;
+  background: #ffe066;
+  border: 3px solid #5b3a1e;
+  font-size: 40px;
+  color: #1b1f33;
+}
+.rondgetal {
+  width: 120px;
+  height: 120px;
+  font-size: 64px;
+  color: #ffffff;
+}
+.busgetal {
+  min-width: 80px;
+  height: 56px;
+  padding: 0 16px;
+  border-radius: 16px;
+  background: #ffe066;
+  border: 3px solid #2b2f45;
+  font-size: 40px;
+  color: #1b1f33;
+  white-space: nowrap;
+}
+.telgetal {
+  width: 64px;
+  height: 40px;
+  font-size: 34px;
+  color: #ffffff;
+  text-shadow:
+    0 2px 8px rgba(4, 18, 60, 0.95),
+    0 0 2px rgba(4, 18, 60, 0.95);
+}
+
+.stipgetal {
+  width: 46px;
+  height: 46px;
+  font-size: 26px;
+  color: #ffffff;
+  text-shadow: 0 1px 4px rgba(4, 18, 60, 0.95);
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .label,
+  .rondgetal,
+  .busgetal,
+  .telgetal,
+  .stipgetal {
+    animation: none;
+  }
+}

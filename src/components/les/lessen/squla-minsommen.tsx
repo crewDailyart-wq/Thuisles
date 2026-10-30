@@ -146,9 +146,12 @@ const overTien = (a: number, b: number) => a > 10 && b > 0 && b < a && a - b < 1
 
 /** Tip na de uitleg (zonder het antwoord). */
 function rekenTip(a: number, b: number, wat: string): string[] {
-  if (overTien(a, b)) return [`Eerst terug naar ${g(10)}.`, `Dan gaan er nog ${g(b - (a - 10))} af.`];
-  return [`Tel de ${wat} die over zijn.`];
+  if (overTien(a, b)) return [`Eerst terug naar ${g(10)}.`, b - (a - 10) === 1 ? `Dan gaat er nog ${g(1)} af.` : `Dan gaan er nog ${g(b - (a - 10))} af.`];
+  return [telZin(wat)];
 }
+
+/** "Tel de visjes die over zijn."; bij de bus: "Tel de kinderen die nog in de bus zitten." */
+const telZin = (wat: string) => (wat === "kinderen in de bus" ? "Tel de kinderen die nog in de bus zitten." : `Tel de ${wat} die over zijn.`);
 
 /**
  * Samen uitrekenen: Bliepo laat zien wat er eraf gaat (grijs), bij een som over
@@ -157,30 +160,33 @@ function rekenTip(a: number, b: number, wat: string): string[] {
  */
 async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: string, wat: string) {
   const stip = (grijs: number) => (beeld === "stippen" ? zet(l, { stippen: { n: a, grijs } }) : zet(l, { grijs }));
+  /* "Er gaan er 3 af", "Er gaat er 1 af"; bij de bus "stappen uit". */
+  const gaan = (n: number) => (beeld === "bus" ? (n === 1 ? "stapt" : "stappen") : n === 1 ? "gaat" : "gaan");
+  const af = beeld === "bus" ? "uit" : "af";
   stip(0);
   zet(l, { licht: beeld === "stippen" ? null : "alle" });
   if (beeld === "bus") await l.zeg(`Er zaten ${g(a, k)} kinderen in de bus.`);
   else if (beeld === "zee") await l.zeg(`Eerst waren er ${g(a, k)} ${wat}.`);
-  else await l.zeg(`Kijk, ${g(a, k)} stippen.`, "Voor elke stip één.");
+  else await l.zeg(`Ik zet ${g(a, k)} stippen neer.`);
   zet(l, { licht: null });
-  const af = beeld === "bus" ? "uit" : "af";
   if (b === 0) {
     await l.zeg(beeld === "bus" ? "Er stapt niemand uit." : "Er gaat niets af.");
   } else if (overTien(a, b)) {
     const r1 = a - 10;
-    await l.zeg(beeld === "bus" ? `Er stappen ${g(b, k)} kinderen uit.` : `Er gaan er ${g(b, k)} af.`, `Eerst gaan er ${g(r1, k)} ${af}.`);
+    const r2 = b - r1;
+    await l.zeg(`Er ${gaan(b)} er ${g(b, k)} ${af}.`, `Eerst ${gaan(r1)} er ${g(r1, k)} ${af}.`);
     stip(r1);
     await l.wacht(r1 * 260 + 300);
-    await l.zeg(beeld === "bus" ? `Dan zitten er nog ${g(10, k)} in.` : `Dan zijn er nog ${g(10, k)}.`, `Daarna gaan er nog ${g(b - r1, k)} ${af}.`);
+    await l.zeg(beeld === "bus" ? `Dan zitten er nog ${g(10, k)} in.` : `Dan zijn er nog ${g(10, k)}.`, `Daarna ${gaan(r2)} er nog ${g(r2, k)} ${af}.`);
     stip(b);
-    await l.wacht((b - r1) * 260 + 300);
+    await l.wacht(r2 * 260 + 300);
   } else {
-    await l.zeg(beeld === "bus" ? `Er stappen ${g(b, k)} kinderen uit.` : b === a ? `Ze gaan er alle ${g(b, k)} af.` : `Er gaan er ${g(b, k)} af.`);
+    await l.zeg(b === a && beeld !== "bus" ? `Ze gaan er alle ${g(b, k)} af.` : `Er ${gaan(b)} er ${g(b, k)} ${af}.`);
     stip(b);
     await l.wacht(Math.min(b, 10) * 260 + 300);
   }
   if (beeld !== "stippen") zet(l, { licht: "over" });
-  await l.zeg(b === a ? "Wat blijft er dan over?" : `Tel de ${wat} die over zijn.`);
+  await l.zeg(b === a ? "Wat blijft er dan over?" : telZin(wat));
 }
 
 /* ---------- de vragen zelf ---------- */

@@ -162,15 +162,22 @@ function bal(c: C, k: string) {
   c.arc(32, 32, 24, 0, Math.PI * 2);
   c.fillStyle = k;
   c.fill();
+  /* twee gebogen naden, zoals op een bal */
   c.save();
   c.clip();
-  c.fillStyle = "#ffffff";
-  c.fillRect(8, 26, 48, 12);
+  c.strokeStyle = "rgba(255,255,255,0.9)";
+  c.lineWidth = 3;
+  c.beginPath();
+  c.arc(4, 32, 20, -Math.PI / 2.6, Math.PI / 2.6);
+  c.stroke();
+  c.beginPath();
+  c.arc(60, 32, 20, Math.PI - Math.PI / 2.6, Math.PI + Math.PI / 2.6);
+  c.stroke();
   c.restore();
   c.beginPath();
   c.arc(32, 32, 24, 0, Math.PI * 2);
   rand(c, k);
-  glans(c, 23, 21, 5);
+  glans(c, 25, 21, 4);
 }
 
 function kraal(c: C, k: string) {
