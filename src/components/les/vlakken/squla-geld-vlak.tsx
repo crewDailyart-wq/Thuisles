@@ -140,6 +140,8 @@ export type Plek = { g: GeldSoort; x: number; y: number; b: number; h: number };
  * in het midden; niets overlapt. Zo groot als past (tot `maxS`).
  */
 export function legGeld(items: GeldSoort[], maxB: number, maxH: number, maxS = 1.3): { plekken: Plek[]; b: number; h: number } {
+  /* Een briefje nooit breder dan 170 punten: op elk scherm veel kleiner dan een echt briefje. */
+  if (items.some(isBriefje)) maxS = Math.min(maxS, 170 / NOOT_B);
   const noten = items.map((g, i) => ({ g, i })).filter((x) => isBriefje(x.g));
   const munten = items.map((g, i) => ({ g, i })).filter((x) => !isBriefje(x.g));
   let beste: { sc: number; pn: number; pm: number; rijen: number; W: number; H: number } | null = null;

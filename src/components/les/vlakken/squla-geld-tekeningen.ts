@@ -75,10 +75,10 @@ const springtouw: Tekening = {
   b: 160,
   h: 160,
   vormen: [
-    lijn("M 31 100 C 26 6 134 6 129 100", PALET.petrol, 7),
-    lijn("M 31 100 C 26 6 134 6 129 100", N, 2),
-    vlak(blok(19, 96, 24, 54, 11), PALET.geel, RAND),
-    vlak(blok(117, 96, 24, 54, 11), PALET.geel, RAND),
+    lijn("M 34 62 C 22 118 52 152 82 146 C 112 140 150 120 126 62", N, 11),
+    lijn("M 34 62 C 22 118 52 152 82 146 C 112 140 150 120 126 62", PALET.petrol, 6),
+    vlak("M 20 14 L 40 10 L 44 62 L 28 64 Z", PALET.geel, RAND),
+    vlak("M 120 10 L 140 14 L 132 64 L 116 62 Z", PALET.koraal, RAND),
   ],
 };
 

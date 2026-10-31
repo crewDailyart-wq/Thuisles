@@ -1042,13 +1042,13 @@ function tafereel(c: C, o: O) {
   } else if (s === "buik") {
     mens(c, 180, 276, 0.8, { ...MENSEN.jip, buik: true, armen: "buik" });
   } else if (s === "fles") {
-    mens(c, 150, 276, 0.8, MENSEN.noor);
+    mens(c, 150, 276, 0.8, MENSEN.jip);
     c.save();
     c.translate(214, 108);
     c.scale(0.55, 0.55);
     flesje(c, { v: o.v ?? "0.8" });
     c.restore();
-    vorm(c, cirkel(214, 186, 11), MENSEN.noor.huid);
+    vorm(c, cirkel(214, 186, 11), MENSEN.jip.huid);
   }
 }
 
