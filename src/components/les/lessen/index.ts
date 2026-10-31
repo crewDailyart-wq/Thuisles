@@ -27,6 +27,7 @@ import { LESSEN_SQULA_TIJD } from "./squla-tijd";
 import { LESSEN_SQULA_MEER_MINDER } from "./squla-meer-minder";
 import { LESSEN_SQULA_MINSOMMEN } from "./squla-minsommen";
 import { LESSEN_SQULA_PLUSSOMMEN } from "./squla-plussommen";
+import { LESSEN_SQULA_GELD } from "./squla-geld";
 
 export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_ZO_WERKT_HET,
@@ -53,6 +54,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_MEER_MINDER,
   ...LESSEN_SQULA_MINSOMMEN,
   ...LESSEN_SQULA_PLUSSOMMEN,
+  ...LESSEN_SQULA_GELD,
 ];
 
 export function zoekDraaiboek(id: string): Lesdraaiboek | null {

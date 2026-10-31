@@ -66,7 +66,7 @@ export type MMProps = {
   staven?: boolean;
   hand?: boolean;
   test?: string[] | null;
-  /** Alle opgaven van de les: de plaatjes worden vooraf gebakken (één per beeld). */
+  /** Alle opgaven van de les: de plaatjes worden vooraf gebakken, vóór het eerste beeld (alleen bij het begin gelezen). */
   vooraf?: MMOpgave[];
 };
 
@@ -195,10 +195,9 @@ interface MMScene {
   zetTest(lijst: string[] | null): void;
   tik(i: number): void;
   sleepPunt(): { x: number; y: number } | null;
-  voorbereid(lijst: MMOpgave[]): void;
 }
 
-function maakScene(Phaser: PhaserModule, rustig: boolean) {
+function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
   const Basis = holoBasis(Phaser, rustig);
   type Img = import("phaser").GameObjects.Image;
   type Box = import("phaser").GameObjects.Container;
@@ -266,6 +265,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         c.stroke();
       });
       this.bak("mm-een", "mm-een-g", WARM);
+      this.voorbereid(vooraf);
       this.input.on("pointerdown", (p: Ptr) => this.neer(p));
       this.input.on("pointermove", (p: Ptr) => this.beweeg(p));
       this.input.on("pointerup", () => this.los());
@@ -730,15 +730,17 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     /* ---------- vooraf bakken ---------- */
 
-    wachtrij: (() => void)[] = [];
-    gepland = new Set<string>();
-
-    /** Alle plaatjes van de les vooraf, één per beeld, zodat er bij een nieuwe vraag niets gebakken hoeft te worden. */
+    /**
+     * Alle plaatjes van de les vooraf bakken, vóór het eerste beeld (in `maak`),
+     * zodat er bij een nieuwe vraag niets gebakken hoeft te worden: geen
+     * hapering terwijl er iets verschijnt of beweegt (HARDE REGEL 7).
+     */
     voorbereid(lijst: MMOpgave[]) {
+      const gepland = new Set<string>();
       const plan = (sl: string, f: () => void) => {
-        if (this.gepland.has(sl)) return;
-        this.gepland.add(sl);
-        this.wachtrij.push(f);
+        if (gepland.has(sl)) return;
+        gepland.add(sl);
+        f();
       };
       for (const o of lijst) {
         const ind = mmIndeling(o);
@@ -757,18 +759,6 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           for (const kleur of new Set(gp.plekken.map((q) => q.kleur))) plan(`v-${groepen[i].soort}-${kleur}`, () => this.voorwerp(groepen[i].soort, kleur));
         });
       }
-    }
-
-    /** Bakken alleen als er niets beweegt (geen animatie, niet aan het slepen): dan valt een iets langer beeld niet op. */
-    rustSinds = 0;
-    update(tijd: number) {
-      if (!this.wachtrij.length) return;
-      if (this.sleep || this.tweens.getTweens().length > 0) {
-        this.rustSinds = tijd;
-        return;
-      }
-      if (tijd - this.rustSinds < 250) return;
-      this.wachtrij.shift()?.();
     }
   }
   return MM as unknown as new () => import("phaser").Scene;
@@ -792,7 +782,8 @@ export function SqulaMeerMinder({
   meld,
   schaal,
 }: MMProps & Vlakbasis) {
-  const { plek, scene } = useHoloMotor<MMScene>(schaal, maakScene, { invoer: true });
+  /* De motor maakt de scène één keer, met alle opgaven van de les (die worden vooraf gebakken). */
+  const { plek, scene } = useHoloMotor<MMScene>(schaal, (Phaser, rustig) => maakScene(Phaser, rustig, vooraf ?? []), { invoer: true });
   const sleutel = opgave ? JSON.stringify(opgave) : "";
   const ind = useMemo(() => (sleutel ? mmIndeling(JSON.parse(sleutel) as MMOpgave) : null), [sleutel]);
 
@@ -800,10 +791,6 @@ export function SqulaMeerMinder({
     scene?.verbind(meld);
   }, [scene, meld]);
 
-  const voorafSleutel = vooraf ? JSON.stringify(vooraf) : "";
-  useEffect(() => {
-    if (scene && voorafSleutel && false) scene.voorbereid(JSON.parse(voorafSleutel) as MMOpgave[]);
-  }, [scene, voorafSleutel]);
 
   useEffect(() => {
     scene?.zetOpgave(sleutel ? (JSON.parse(sleutel) as MMOpgave) : null);

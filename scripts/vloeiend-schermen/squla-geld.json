@@ -1,0 +1,8 @@
+[
+  { "naam": "Squla geld: Munten en briefjes", "pad": "/voorbeeld/les/squla-geld-geldmachine-1?naam=Testkind" },
+  { "naam": "Squla geld: Munten en briefjes (moeilijker)", "pad": "/voorbeeld/les/squla-geld-geldmachine-2?naam=Testkind" },
+  { "naam": "Squla geld: Zakgeld sparen", "pad": "/voorbeeld/les/squla-geld-zakgeld-1?naam=Testkind" },
+  { "naam": "Squla geld: Zakgeld sparen (moeilijker)", "pad": "/voorbeeld/les/squla-geld-zakgeld-2?naam=Testkind" },
+  { "naam": "Squla geld: Geld tellen", "pad": "/voorbeeld/les/squla-geld-geld-1?naam=Testkind" },
+  { "naam": "Squla geld: Geld tellen (moeilijker)", "pad": "/voorbeeld/les/squla-geld-geld-2?naam=Testkind" }
+]

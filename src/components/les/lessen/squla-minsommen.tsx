@@ -502,7 +502,8 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         zet(l, { licht: "alle" });
         await l.zeg(`Tel eerst alle ${wat}.`, "Dat getal komt vooraan in de som.");
         zet(l, { licht: "leeg" });
-        await l.zeg(`De lege ${wat} gaan eraf.`, "Tel ze.", "Dat getal komt na de min.");
+        if (v.leeg === 1) await l.zeg(`${v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat"} eraf.`, "Dat getal komt na de min.");
+        else await l.zeg(`De lege ${wat} gaan eraf.`, "Tel ze.", "Dat getal komt na de min.");
         zet(l, { licht: null });
       },
       tip: [`Vooraan staan alle ${wat}.`, `Na de min staan de lege ${wat}.`],
@@ -534,7 +535,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       await l.zeg(`Samen heb je ${g(heb)} euro.`, "Voor elke euro zet ik een stip.");
       zet(l, { stippen: { n: heb, grijs: 0 } });
       await l.wacht(heb * 25 + 400);
-      await l.zeg(`${hoofd(SPEELGOED[v.ding])} kost ${g(prijs)} euro.`, "Die gaan eraf.");
+      await l.zeg(`${hoofd(SPEELGOED[v.ding])} kost ${g(prijs)} euro.`, prijs === 1 ? "Die gaat eraf." : "Die gaan eraf.");
       zet(l, { stippen: { n: heb, grijs: prijs } });
       await l.wacht(prijs * 200 + 400);
       await l.zeg("Tel de stippen die over zijn.");
@@ -689,7 +690,7 @@ function uitlegGeld(heb: Geld[], prijs: Geld[], ding: Speelgoed) {
     await l.zeg("Voor elke euro zet ik een stip.");
     zet(l, { stippen: { n: h, grijs: p } });
     await l.wacht(p * 200 + 400);
-    await l.zeg(`Je betaalt ${g(p)} euro.`, "Die gaan eraf.", `Dan houd je ${g(h - p)} euro over.`);
+    await l.zeg(`Je betaalt ${g(p)} euro.`, p === 1 ? "Die gaat eraf." : "Die gaan eraf.", `Dan houd je ${g(h - p)} euro over.`);
     zet(l, { som: `${h} − ${p} = ${h - p}` });
     await l.zeg(`${somZin(h, p)} = ${g(h - p)}.`);
   };

@@ -149,11 +149,11 @@ function somVakken(sommen: Kaart[]): Vak[] {
   return sommen.map((k, i) => ({ id: k.id, kaart: k, soort: "som", x: MIDDEN.x - breed / 2 + b / 2 + i * (b + gat), y: SOM.y, b, h: SOM.h }));
 }
 
-const DISCO = { bal: { x: 490, y: 220 }, speakers: [70, 910], tafel: { x: 490, y: 650 } };
+const DISCO = { bal: { x: 490, y: 220 }, speakers: [66, 914], tafel: { x: 490, y: 650 } };
 
 function discoVakken(beeld: Extract<PlusBeeld, { soort: "disco" }>): Vak[] {
   if (beeld.vorm === "plaat")
-    return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "plaat", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 180, y: 470, b: 150, h: 150 }));
+    return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "plaat", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 172, y: 470, b: 150, h: 150 }));
   return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 548, b: 190, h: 112 }));
 }
 
@@ -171,11 +171,11 @@ function vakkenVan(beeld: PlusBeeld | null, sommen: Kaart[]): Vak[] {
 }
 
 /* De bus */
-const INSTAP = { x0: 712, dx: 52, voet: 650, rij: 82 };
+const INSTAP = { x0: 706, dx: 54, voet: 652, rij: 92 };
 function instapPlek(i: number) {
   const r = Math.floor(i / 5);
   const k = i % 5;
-  const sch = 1 - r * 0.07;
+  const sch = 1.15 - r * 0.08;
   return { x: INSTAP.x0 + k * INSTAP.dx + (r % 2) * 10, y: INSTAP.voet - r * INSTAP.rij, schaal: sch };
 }
 function hoofdPlek(k: number, dubbel: boolean) {
@@ -288,7 +288,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         this.plek(box, this.tex("etalage", 320, 280, tekenEtalage, WARM), 490, 420);
       } else if (beeld.soort === "disco") {
         const spk = this.tex("speaker", 140, 220, tekenLuidspreker, WERELDKLEUR.universum);
-        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470));
+        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470).setScale(0.85 / TX));
         this.bal = this.plek(box, this.tex("bal", 160, 160, tekenDiscobal, WERELDKLEUR.oceaan), DISCO.bal.x, DISCO.bal.y);
         this.plek(box, this.tex("tafel", 560, 130, tekenDraaitafel, WERELDKLEUR.universum), DISCO.tafel.x, DISCO.tafel.y);
       } else if (beeld.soort === "bus") {
@@ -300,7 +300,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         }
         /* De pijl naar de deur. */
         const pijl = this.add.graphics();
-        const van = beeld.alsGetal ? { x: RONDJE.x - 70, y: RONDJE.y - 40 } : { x: 760, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 110 };
+        const van = beeld.alsGetal ? { x: RONDJE.x - 70, y: RONDJE.y - 40 } : { x: 760, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 175 };
         const naar = { x: BUS.deur.x + BUS.deur.b + 8, y: (dubbel ? BUS.rijOnder : BUS.rijEnkel) + 40 };
         const ctrl = { x: (van.x + naar.x) / 2, y: Math.min(van.y, naar.y) - 70 };
         const pad = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(van.x - MIDDEN.x, van.y - MIDDEN.y), new Phaser.Math.Vector2(ctrl.x - MIDDEN.x, ctrl.y - MIDDEN.y), new Phaser.Math.Vector2(naar.x - MIDDEN.x, naar.y - MIDDEN.y));
@@ -329,7 +329,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         const plekken = [[220, 230], [760, 220], [170, 470], [810, 470], [330, 610], [650, 610], [300, 380], [690, 360]];
         cijfers.forEach((cf, i) => {
           const im = this.plek(box, this.tex(`cijfer-${cf}-${beeld.level}`, 80, 88, (c) => tekenCijfer(c, cf, kleur), gloed), plekken[i][0], plekken[i][1]);
-          im.setAlpha(0.75).setScale(0.8 / TX);
+          im.setAlpha(0.5).setScale(0.8 / TX);
           if (!this.rustig) this.tweens.add({ targets: im, y: im.y - 14, duration: 1400 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
         });
       }
@@ -586,7 +586,7 @@ export function SqulaPlusVlak({
     if (busLicht) busLabels.push({ k: "bus", x: 330, y: busBoven(beeld.inBus >= 10) - 34, t: beeld.inBus >= 10 ? `10 + ${beeld.inBus - 10}` : String(beeld.inBus) });
     for (let i = 0; i < busTel && i < beeld.instap; i++) {
       const q = instapPlek(i);
-      busLabels.push({ k: `t${i}`, x: q.x, y: q.y - 98 * q.schaal - 18, t: String(beeld.inBus + i + 1) });
+      busLabels.push({ k: `t${i}`, x: q.x, y: q.y - 92 * q.schaal - 18, t: String(beeld.inBus + i + 1) });
     }
   }
 

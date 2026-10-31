@@ -171,6 +171,12 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-plus-kaal-1", titel: "Plussommen uitrekenen", synthesis: "Squla groep 3 · Plussommen · Kale sommen · level 1 (alleen leerdoel)" },
   { id: "squla-plus-kaal-2", titel: "Plussommen uitrekenen (moeilijker)", synthesis: "Squla groep 3 · Plussommen · Kale sommen · level 2 (alleen leerdoel)" },
   { id: "squla-plus-kaal-3", titel: "Plussommen uitrekenen (nog moeilijker)", synthesis: "Squla groep 3 · Plussommen · Kale sommen · level 3 (alleen leerdoel)" },
+  { id: "squla-geld-geldmachine-1", titel: "Munten en briefjes", synthesis: "Squla groep 3 · Geld · De geldmachine · level 1 (alleen leerdoel)" },
+  { id: "squla-geld-geldmachine-2", titel: "Munten en briefjes (moeilijker)", synthesis: "Squla groep 3 · Geld · De geldmachine · level 2 (alleen leerdoel)" },
+  { id: "squla-geld-zakgeld-1", titel: "Zakgeld sparen", synthesis: "Squla groep 3 · Geld · Zakgeld verdienen · level 1 (alleen leerdoel)" },
+  { id: "squla-geld-zakgeld-2", titel: "Zakgeld sparen (moeilijker)", synthesis: "Squla groep 3 · Geld · Zakgeld verdienen · level 2 (alleen leerdoel)" },
+  { id: "squla-geld-geld-1", titel: "Geld tellen", synthesis: "Squla groep 3 · Geld · Geld · level 1 (alleen leerdoel)" },
+  { id: "squla-geld-geld-2", titel: "Geld tellen (moeilijker)", synthesis: "Squla groep 3 · Geld · Geld · level 2 (alleen leerdoel)" },
 ];
 
 export function zoekLesregel(id: string): Lesregel | null {

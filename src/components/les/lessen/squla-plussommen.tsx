@@ -177,9 +177,10 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
     await l.zeg(`Hier zijn ${o(groot)} oranje stippen.`, `Eerst maken we de rij vol tot ${g(10)}.`);
     rek(groot, klein, { bZicht: vul });
     await l.wacht(vul * 120 + 300);
-    await l.zeg(`${plus(groot, vul)} = ${g(10)}.`, rest === 1 ? `Van de ${bl(klein)} blauwe stippen is er nog ${bl(1)} over.` : `Van de ${bl(klein)} blauwe stippen zijn er nog ${bl(rest)} over.`);
+    await l.zeg(`${plus(groot, vul)} = ${g(10)}.`);
     rek(groot, klein);
     await l.wacht(rest * 120 + 300);
+    await l.zeg(rest === 1 ? `Van de ${bl(klein)} blauwe stippen is er nog ${bl(1)} over.` : `Van de ${bl(klein)} blauwe stippen zijn er nog ${bl(rest)} over.`);
     await l.zeg(`${g(10)} en nog ${g(rest)}: hoeveel is dat?`);
     return;
   }
@@ -620,8 +621,8 @@ function dansPlaten(getallen: number[]): Vraag {
       },
       samen: async () => {
         zet(l, { rek: { rijen: 1, a: anker, b: 0 } });
-        if (anker === 0) await l.zeg(`Kijk naar de ${g(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
-        else await l.zeg(`Kijk naar de ${g(anker)}.`, `Ik zet ${o(anker)} stippen in de rij.`);
+        if (anker === 0) await l.zeg(`Neem de ${g(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
+        else await l.zeg(`Neem de ${g(anker)}.`, `Ik zet ${o(anker)} stippen in de rij.`);
         await l.zeg("Hoeveel plekjes zijn er nog leeg?", "Tel ze maar.");
         await l.verder();
         zet(l, { rek: null });
