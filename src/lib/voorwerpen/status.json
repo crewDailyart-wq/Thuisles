@@ -1,347 +1,611 @@
 {
   "aardbei": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "appel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bakje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bakkerij": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-blauw": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-geel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-groen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-oranje": {
     "bron": "eigen",
-    "v": 3
+    "v": 4,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-paars": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ballon-rood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "banaan": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "basketbal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bed": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "beker-leeg": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "beker-vol": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "beslagkom": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bezem": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bezorgbus": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "bloem": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bloembak": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "boek": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boek-groen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boek-rood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bolletje-deeg": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bolletje-ijs": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boom": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bootje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bord": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boterham": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boterham-heel-veel-kaas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boterham-veel-kaas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "boterham-weinig-kaas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "broek": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "brood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "broodje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bruin-brood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "bus": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "citroen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "croissant": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "cupcake": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "deegkom": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "diamant": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "discobal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "doek": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "donut": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "doos": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "doos-blauw": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "doos-open": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "doos-rood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "draaitafel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ei": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "emmer": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "feesthoed": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "fiets": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "gieter": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "glas-water": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "goudstuk": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "hoepel": {
     "bron": "eigen",
-    "v": 2
+    "v": 5,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "hoorntje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "huis": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ijsje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ijsje-twee-bollen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "jas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kaars": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "kaas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kampvuur": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kers": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kistje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kledingkast": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "knikker": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "knoop": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "koekje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kom-soep": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "komeet": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kopermunt": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "kraal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "krentenbol": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "lampje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "laptop": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "luidspreker": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "maan": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "maansteen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "mand": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "mand-half": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "mand-leeg": {
     "bron": "placeholder",
@@ -350,195 +614,345 @@
   },
   "mand-vol": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "mandarijn": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "marktkraam": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "olijf": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "oude-raket": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "oven": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "oven-brood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "oven-taart": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pakje": {
     "bron": "eigen",
-    "v": 3
+    "v": 4,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "parel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "peer": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pennenbeker": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "picknickkleed": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "pingpongbal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pion": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizza-kaas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizza-olijven": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizza-salami": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizzadoos": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "pizzadoos-open": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizzaoven": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pizzapunt": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "planeet": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "planeet-ring": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "plant": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "portemonnee": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "potje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "potlood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "pruim": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "raketje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "rode-rots": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "rugtas": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "satelliet": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schaal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schaar": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schatkaart": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schatkist": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schelp": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schoen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schommel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "schoolbord": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "skateboard": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "sleutel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "slingerlampje-geel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "slingerlampje-rood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "spaarpot": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "speelblok": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "speelgoedauto": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "spies-leeg": {
     "bron": "placeholder",
@@ -547,154 +961,277 @@
   },
   "spies-twee": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "spies-vol": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "splitsmachine": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "springtouw": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "steen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ster": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "stoelenkring": {
     "bron": "eigen",
-    "v": 2
+    "v": 5,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "stokbrood": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "stuiterbal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "suikerstrooier": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "t-shirt": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "taart": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "taart-kaarsje": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "tand": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "tekendoos": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "telefoon": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "tennisbal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "tent": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "thermometer": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "tomaat": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "treintje": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "tulp": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "ufo": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "veer": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "vlaggenlijn": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "vlieger": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "voetbal": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "voetbalshirt": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "wandplank": {
     "bron": "eigen",
-    "v": 2
+    "v": 4,
+    "verbeterd": [
+      "randen",
+      "opnieuw-magnific"
+    ]
   },
   "watermeloen": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
+  },
+  "wekker": {
+    "bron": "placeholder",
+    "v": 1,
+    "h": "b3a339e0f0"
   },
   "zak": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zak-chips": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zak-meel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zandloper": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zeepbel": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zon": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zonnebloem": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   },
   "zwembad": {
     "bron": "eigen",
-    "v": 2
+    "v": 3,
+    "verbeterd": [
+      "randen"
+    ]
   }
 }

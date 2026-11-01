@@ -73,14 +73,14 @@ export const PIRAAT: Voorwerp[] = [
     naam: "oude-raket",
     titel: "Oude raket",
     groep: "ruimte",
-    onderwerp: "a big old dented grey rocket standing upright, with a small round door",
+    onderwerp: "a big old silver-grey rocket with rivets and a small round door, standing upright, slightly worn",
     schets: `<path class="r" d="M100 14 q46 40 40 140 h-80 q-6 -100 40 -140z" fill="#c3c8d4"/><circle class="r" cx="100" cy="74" r="18" fill="#8fb8d8"/><rect class="r" x="86" y="110" width="28" height="40" rx="10" fill="#8f94a6"/><path class="r" d="M60 150 l-28 34 h36z M140 150 l28 34 h-36z" fill="#8f94a6"/>`,
   },
   {
     naam: "rode-rots",
     titel: "Rode rots",
     groep: "natuur",
-    onderwerp: "a big red rock with a flat top",
+    onderwerp: "a big red-brown rock with a few crack lines and a flat top, clearly a stone",
     schets: `<path class="r" d="M20 170 l20 -80 l40 -40 h50 l36 50 l14 70z" fill="#c8533a"/><path d="M70 90 l20 30 M130 110 l-14 26" stroke="#8a3424" stroke-width="6"/>`,
   },
   {

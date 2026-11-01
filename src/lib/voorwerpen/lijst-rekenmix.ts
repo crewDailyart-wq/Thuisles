@@ -24,7 +24,7 @@ export const REKENMIX: Voorwerp[] = [
     naam: "kaars",
     titel: "Kaars",
     groep: "huis",
-    onderwerp: "one plain red pillar candle with straight sides, standing upright, unlit, front view",
+    onderwerp: "one red pillar candle with straight sides, unlit, with a short dark wick, side view",
     schets: `<rect class="r" x="70" y="40" width="60" height="140" rx="8" fill="#e8454f"/><path class="r" d="M100 40 v-16" fill="none"/>`,
   },
 ];

@@ -38,7 +38,7 @@ export const SPLITSEN: Voorwerp[] = [
     naam: "doek",
     titel: "Rode doek",
     groep: "huis",
-    onderwerp: "a red cloth lying flat with soft folds, top view",
+    onderwerp: "a soft red cloth napkin neatly folded in a square, lying flat, seen from slightly above",
     schets: `<path class="r" d="M24 40 q76 -16 152 0 q8 60 0 120 q-76 16 -152 0 q-8 -60 0 -120z" fill="#e8454f"/><path d="M60 50 q10 50 0 100 M120 48 q-8 52 4 104" stroke="#b72f3a" stroke-width="6" fill="none"/>`,
   },
   {
@@ -94,7 +94,7 @@ export const SPLITSEN: Voorwerp[] = [
     naam: "pennenbeker",
     titel: "Pennenbeker",
     groep: "huis",
-    onderwerp: "an empty round yellow pencil cup, side view",
+    onderwerp: "an empty round yellow pencil cup with a thin white stripe, side view",
     schets: `<path class="r" d="M50 60 h100 l-10 120 h-80z" fill="#ffc83b"/><ellipse class="r" cx="100" cy="60" rx="50" ry="10" fill="#ffe38a"/>`,
   },
   {

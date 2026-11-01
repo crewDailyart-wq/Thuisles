@@ -39,7 +39,7 @@ export const MINSOMMEN: Voorwerp[] = [
     naam: "bezorgbus",
     titel: "Bezorgbus",
     groep: "vervoer",
-    onderwerp: "a yellow delivery van seen from the side, with a long open empty cargo area and the driver cabin on the right, no driver",
+    onderwerp: "a modern yellow delivery van seen exactly from the side, with one very large rectangular light-blue side window covering the whole cargo area on the left two thirds, driver cabin on the right, empty, nobody inside, rounded friendly shapes",
     schets: `<rect class="r" x="8" y="56" width="148" height="92" rx="8" fill="#ffcf3f"/><rect x="18" y="66" width="128" height="64" rx="4" fill="#c99a2e"/><path class="r" d="M156 80 h22 q14 2 16 30 v38 h-38z" fill="#ffcf3f"/><path d="M162 88 h14 q8 2 10 22 h-24z" fill="#cdeaff"/><circle class="r" cx="48" cy="152" r="16" fill="#3a3f55"/><circle class="r" cx="164" cy="152" r="16" fill="#3a3f55"/>`,
   },
   /* in huis en op school */

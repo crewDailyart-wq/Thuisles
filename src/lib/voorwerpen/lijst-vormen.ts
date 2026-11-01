@@ -44,7 +44,7 @@ export const VORMEN: Voorwerp[] = [
     naam: "wandplank",
     titel: "Wandplank",
     groep: "huis",
-    onderwerp: "one empty long wooden wall shelf, front view",
+    onderwerp: "one empty long wooden wall shelf with two small metal brackets underneath, seen from the front",
     schets: `<rect ${R} x="8" y="96" width="184" height="18" rx="4" fill="#d39b62"/><path ${R} d="M34 114 V140 H54 M166 114 V140 H146" fill="none"/>`,
   },
   {
@@ -58,7 +58,7 @@ export const VORMEN: Voorwerp[] = [
     naam: "tekendoos",
     titel: "Tekendoos",
     groep: "huis",
-    onderwerp: "an open empty wooden drawing box without a lid, seen from the front and a little from above",
+    onderwerp: "an open empty wooden box with low sides, seen from the front and slightly above",
     schets: `<path ${R} d="M20 88 L40 66 H160 L180 88 Z" fill="#8a5a32"/><rect ${R} x="20" y="88" width="160" height="90" rx="6" fill="#d39b62"/>`,
   },
   /* --- de bloembak (patronen) --- */
@@ -80,7 +80,7 @@ export const VORMEN: Voorwerp[] = [
     naam: "bloembak",
     titel: "Bloembak",
     groep: "natuur",
-    onderwerp: "one long empty rectangular wooden flower box filled with brown soil, front view",
+    onderwerp: "one long empty rectangular wooden flower box filled with dark soil, front view, wide",
     schets: `<rect ${R} x="6" y="96" width="188" height="16" rx="4" fill="#7a5233"/><rect ${R} x="14" y="108" width="172" height="62" rx="6" fill="#c98a52"/>`,
   },
 ];

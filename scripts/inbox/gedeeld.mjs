@@ -66,10 +66,53 @@ export async function knipUit(bron) {
   return sharp(data, { raw: { width: W, height: H, channels: 4 } }).png().toBuffer();
 }
 
+/** Witte randjes weg en de rand 1-2 pixels inkorten (1 november 2026, zie randen.mjs). */
+export async function schoneRand(buf) {
+  const { data, info } = await sharp(buf).ensureAlpha().raw().toBuffer({ resolveWithObject: true });
+  const W = info.width, H = info.height;
+  const A = (i) => data[i * 4 + 3];
+  const buurDoorzichtig = (x, y, drempel) => {
+    for (let dy = -1; dy <= 1; dy++)
+      for (let dx = -1; dx <= 1; dx++) {
+        const nx = x + dx, ny = y + dy;
+        if (nx < 0 || ny < 0 || nx >= W || ny >= H) return true;
+        if (A(ny * W + nx) < drempel) return true;
+      }
+    return false;
+  };
+  /* 1. lichte randpixels weg (wit/lichtgrijs halo), twee rondes */
+  for (let ronde = 0; ronde < 2; ronde++) {
+    const weg = [];
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++) {
+        const i = y * W + x;
+        if (A(i) === 0 || !buurDoorzichtig(x, y, 40)) continue;
+        const r = data[i * 4], g = data[i * 4 + 1], b = data[i * 4 + 2];
+        const licht = Math.min(r, g, b);
+        const grijs = Math.max(r, g, b) - licht < 40;
+        if (licht > 185 && grijs) weg.push(i);
+      }
+    for (const i of weg) data[i * 4 + 3] = 0;
+  }
+  /* 2. rand 1 pixel inkorten (ronde 1 helemaal weg, ronde 2 half) */
+  const kort = (factor) => {
+    const nieuw = [];
+    for (let y = 0; y < H; y++)
+      for (let x = 0; x < W; x++) {
+        const i = y * W + x;
+        if (A(i) > 0 && buurDoorzichtig(x, y, 20)) nieuw.push(i);
+      }
+    for (const i of nieuw) data[i * 4 + 3] = Math.round(data[i * 4 + 3] * factor);
+  };
+  kort(0);
+  kort(0.5);
+  return sharp(data, { raw: { width: W, height: H, channels: 4 } }).png({ palette: true, quality: 92, compressionLevel: 9, effort: 10 }).toBuffer();
+}
+
 /** Uitknippen, bijsnijden, verkleinen tot MAAT en zuinig opslaan (regel 7: snel openen). */
 export async function maakVoorwerp(bron) {
   const uit = await knipUit(bron);
-  const bijgesneden = await sharp(uit).trim({ threshold: 1 }).toBuffer();
+  const bijgesneden = await sharp(await schoneRand(uit)).trim({ threshold: 1 }).toBuffer();
   const rand = Math.round(MAAT * 0.04);
   const binnen = MAAT - rand * 2;
   let buf = await sharp(bijgesneden)

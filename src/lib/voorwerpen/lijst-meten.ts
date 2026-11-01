@@ -130,7 +130,7 @@ export const METEN: Voorwerp[] = [
     naam: "pizzadoos",
     titel: "Dichte pizzadoos",
     groep: "winkel",
-    onderwerp: "a closed flat square cardboard pizza box, seen from the front",
+    onderwerp: "a closed square cardboard pizza box seen from slightly above, plain, no text",
     schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#d9a86c"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/><circle cx="100" cy="108" r="9" fill="#e2563f"/>`,
   },
   {
@@ -279,7 +279,7 @@ export const METEN: Voorwerp[] = [
     naam: "picknickkleed",
     titel: "Picknickkleed",
     groep: "huis",
-    onderwerp: "a red and white checkered picnic blanket lying flat on the ground, seen at an angle",
+    onderwerp: "a red and white checkered picnic blanket lying flat, seen from slightly above, with soft rounded corners",
     schets: `<path ${R} d="M10 170 L50 70 H150 L190 170 Z" fill="#ffd6cc"/><path d="M50 70 L30 170 M83 70 L76 170 M117 70 L124 170 M150 70 L170 170 M30 120 H170" stroke="#f2715e" stroke-width="8"/>`,
   },
   {
