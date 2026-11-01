@@ -354,14 +354,17 @@ function telles(t: Telles): Lesdraaiboek {
    Tellen met fruit (15682) — rijen van 5, kiezen uit 3 opeenvolgende getallen
    ===================================================================== */
 
-const FRUIT_WELKOM = ["Hoi!", "Kijk eens, allemaal fruit.", "Hoeveel zijn het er?", "Tel goed en kies het getal."];
+const FRUIT_WELKOM = [
+  ["Kijk eens naar al dat fruit!", "Hoeveel stuks zie je?"],
+  ["Het fruit ligt weer klaar.", "Nu gaan we verder tellen, tot {20}!"],
+];
 
 const FRUIT1: Telles = {
   id: "squla-tellen-fruit-1",
   titel: "Fruit tellen",
   oefening: "Tellen met fruit",
   level: 1,
-  welkom: FRUIT_WELKOM,
+  welkom: FRUIT_WELKOM[0],
   uitleg: [rij5(APPELS, 8, [])],
   /* Level 1: 11 t/m 17, rijen van 5, drie soorten fruit om de beurt. */
   vragen: [
@@ -390,7 +393,7 @@ const fruit2 = telles({
   titel: "Fruit tellen (moeilijker)",
   oefening: "Tellen met fruit",
   level: 2,
-  welkom: FRUIT_WELKOM,
+  welkom: FRUIT_WELKOM[1],
   uitleg: [rij5(CITROENEN, 8, [])],
   /* Level 2: 11 t/m 20, rijen van 5; twee soorten fruit om de beurt, elk oplopend. */
   vragen: [
@@ -418,7 +421,7 @@ const fruit3 = telles({
   titel: "Fruit tellen (nog moeilijker)",
   oefening: "Tellen met fruit",
   level: 3,
-  welkom: ["Hoi!", "Kijk eens, allemaal fruit.", "Nu ligt het door elkaar.", "Tel goed en kies het getal."],
+  welkom: ["Nu ligt het fruit door elkaar.", "Er zijn geen rijtjes meer, dus tel goed!"],
   uitleg: [los(BANANEN, 8, [])],
   /* Level 3: 11 t/m 20, los door elkaar, door elkaar in grootte. */
   vragen: [
@@ -458,7 +461,7 @@ const RAKETJES_STERREN = tweeSoorten("raketje", "ster");
 const BALLEN_BLOKKEN = tweeSoorten("bal", "speelblok");
 const BOOTJES_TREINTJES = tweeSoorten("bootje", "treintje");
 
-const RES1_WELKOM = ["Hoi!", "We gaan tellen hoeveel het er zijn.", "De rijen zijn om de beurt anders.", "Dat helpt bij het tellen."];
+const RES1_WELKOM = ["Kijk eens naar de rijen!", "Elke rij is anders, dat helpt je bij het tellen."];
 
 const res1a = telles({
   id: "squla-tellen-resultatief1-1",
@@ -493,7 +496,7 @@ const res1b = telles({
   titel: "Tellen in rijtjes (moeilijker)",
   oefening: "Resultatief tellen 1",
   level: 2,
-  welkom: ["Hoi!", "We gaan weer tellen.", "Nu tot {20}."],
+  welkom: ["Nu tellen we verder, tot {20}!", "Hoeveel zijn het er?"],
   uitleg: [rij5(BOOTJES_TREINTJES, 8, [])],
   /* Level 2: 11 t/m 20, rijen van 5; twee reeksen om de beurt, elk oplopend; de keuzes op volgorde. */
   vragen: [
@@ -521,7 +524,7 @@ const res1c = telles({
   titel: "Tellen in rijtjes (nog moeilijker)",
   oefening: "Resultatief tellen 1",
   level: 3,
-  welkom: ["Hoi!", "Nu staat alles door elkaar.", "Er zijn geen rijtjes meer.", "Onthoud goed wat je al geteld hebt."],
+  welkom: ["Nu staat alles door elkaar.", "Er zijn geen rijtjes meer, dus onthoud goed wat je al geteld hebt."],
   uitleg: [los(een("planeet"), 8, [])],
   /* Level 3: 11 t/m 20, los door elkaar, één kleur; elke vraag een ander ding. */
   vragen: [
@@ -560,7 +563,7 @@ const res2a = telles({
   titel: "Hoeveel zie je?",
   oefening: "Resultatief tellen 2",
   level: 1,
-  welkom: ["Hoi!", "Kijk, allemaal dingen uit de ruimte.", "Hoeveel zijn het er?", "Tel goed en kies het getal."],
+  welkom: ["Kijk, allemaal dingen uit de ruimte!", "Hoeveel zie je er?"],
   uitleg: [rij5(RAKETJES, 8, [])],
   /* Level 1: 11 t/m 15, rijen van 5, één ding in één kleur; de keuzes op volgorde. */
   vragen: [
@@ -588,7 +591,7 @@ const res2b = telles({
   titel: "Hoeveel zie je? (moeilijker)",
   oefening: "Resultatief tellen 2",
   level: 2,
-  welkom: ["Hoi!", "Nu gaan we verder tellen.", "Er komen meer rijen bij."],
+  welkom: ["De ruimte wordt voller.", "Er komen meer rijen bij."],
   uitleg: [rij5(AUTOS_BUSSEN, 8, [])],
   /* Level 2: 16 t/m 20, rijen van 5, vaak om en om een ander ding; de keuzes op volgorde. */
   vragen: [
@@ -616,7 +619,7 @@ const res2c = telles({
   titel: "Hoeveel zie je? (nog moeilijker)",
   oefening: "Resultatief tellen 2",
   level: 3,
-  welkom: ["Hoi!", "Soms staat alles door elkaar.", "Soms staat het in rijen.", "Kijk goed hoe je het beste telt."],
+  welkom: ["Soms staat alles door elkaar, soms staat het in rijen.", "Kijk goed hoe je het beste telt."],
   uitleg: [los(UFOS, 8, []), rij5(AUTOS_BUSSEN, 8, [])],
   /* Level 3: om en om weinig ufo's los door elkaar (5 t/m 13) en veel in rijen van 5 (16 t/m 20). */
   vragen: [
@@ -649,7 +652,7 @@ const res3a = telles({
   titel: "Grote groepen tellen",
   oefening: "Resultatief tellen 3",
   level: 1,
-  welkom: ["Hoi!", "Kijk, planeten en ufo's.", "Ze staan door elkaar.", "Hoeveel zijn het er?"],
+  welkom: ["Planeten en ufo's zweven door de ruimte.", "Hoeveel zijn het er?"],
   uitleg: [los(PLANETEN, 8, [])],
   /* Level 1: 5 t/m 20, alles los door elkaar; planeten en ufo's om de beurt; de keuzes niet op volgorde; aan het eind memory. */
   vragen: [
@@ -682,7 +685,7 @@ const res3b = telles({
   titel: "Grote groepen tellen (moeilijker)",
   oefening: "Resultatief tellen 3",
   level: 2,
-  welkom: ["Hoi!", "Daar zijn de planeten en ufo's weer.", "Tel goed, het worden er veel."],
+  welkom: ["De planeten en ufo's zijn terug.", "Nu zijn het er veel meer, tel goed!"],
   uitleg: [los(UFOS, 8, [])],
   /* Level 2: 7 t/m 19, alles los door elkaar; de keuzes soms ver uit elkaar; memory tussendoor. */
   vragen: [
@@ -715,7 +718,7 @@ const res3c = telles({
   titel: "Grote groepen tellen (nog moeilijker)",
   oefening: "Resultatief tellen 3",
   level: 3,
-  welkom: ["Hoi!", "Nu worden het er veel.", "Ze staan in rijen van {10}.", "Tel per rij, dat gaat sneller."],
+  welkom: ["Nu staan ze in rijen van {10}.", "Tel per rij, dat gaat sneller."],
   uitleg: [rij10(RAKETJES_STERREN, 23, [])],
   /* Level 3: 22 t/m 50, rijen van 10, om en om een ander ding; de keuzes ±1, niet op volgorde. */
   vragen: [
@@ -745,7 +748,7 @@ const res3d = telles({
   titel: "Grote groepen tellen (heel moeilijk)",
   oefening: "Resultatief tellen 3",
   level: 4,
-  welkom: ["Hoi!", "Kijk, een dichte zak.", "Op de zak staat hoeveel erin zitten.", "Tel de losse erbij."],
+  welkom: ["Kijk, een dichte zak met dingen erin!", "Op de zak staat hoeveel erin zitten.", "Tel de losse erbij."],
   uitleg: [zak(KNIKKERS, 30, 3, [])],
   /* Level 4: een zak met een tiental (40 t/m 90) en 1 t/m 9 losse; 47 t/m 98; de keuzes ±1, niet op volgorde. */
   vragen: [
@@ -899,7 +902,7 @@ const telrij1 = rijles({
   id: "squla-tellen-telrij-1",
   titel: "De telrij",
   level: 1,
-  welkom: ["Hoi!", "Kijk, een straat met huizen.", "De huisnummers staan op volgorde.", "Welk nummer komt erna?"],
+  welkom: ["Kijk, een straat vol huizen!", "De huisnummers staan op volgorde.", "Welk nummer komt erna?"],
   uitleg: async (l) => {
     await loopVoorbeeld(l, { id: "uitleg-1", soort: "na", rij: [41, 42], losse: [] }, 43, ["Elk huis is één verder.", `Dus na ${w(42)} komt ${w(43)}.`]);
     await loopVoorbeeld(l, { id: "uitleg-2", soort: "na", rij: [28, 29], losse: [] }, 30, [`Na ${w(29)} begint een nieuw tiental.`, `Dan komt ${w(30)}.`]);
@@ -929,7 +932,7 @@ const telrij2 = rijles({
   id: "squla-tellen-telrij-2",
   titel: "De telrij (moeilijker)",
   level: 2,
-  welkom: ["Hoi!", "We tellen verder, tot {100:wit}.", "En daarna tellen we terug."],
+  welkom: ["Nu tellen we verder, tot {100:wit}.", "Daarna tellen we ook terug."],
   uitleg: async (l) => {
     await loopVoorbeeld(l, { id: "uitleg-1", soort: "na", rij: [78, 79], losse: [] }, 80, [`Na ${w(79)} begint een nieuw tiental.`, `Dan komt ${w(80)}.`]);
     await l.zeg("We kunnen ook terugtellen.");

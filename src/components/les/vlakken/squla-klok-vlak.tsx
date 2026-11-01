@@ -30,7 +30,8 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, GOED, TX, WARM, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { dingSleutel, gloedVan, maatVan, RAND, tekenDing, type Ding } from "./squla-klok-tekenen";
+import { dingSleutel, gloedVan, laadKlokken, maatVan, tekenDing, type Ding } from "./squla-klok-tekenen";
+import { Klokje } from "./klok-wijzerklok";
 import s from "./squla-klok.module.css";
 
 export type { Ding };
@@ -342,8 +343,18 @@ function kiesIndeling(boven: Ding[], keuzes: Ding[], pijl: boolean) {
 /* ---------- het vlak ---------- */
 
 export function SqulaKlokVlak(p: KlokVlakProps & Vlakbasis) {
-  const { plek, scene } = useHoloMotor<KlokScene>(p.schaal, maakKlokScene);
+  const { plek, scene: motor } = useHoloMotor<KlokScene>(p.schaal, maakKlokScene);
   const vlakRef = useRef<HTMLDivElement>(null);
+  /* de wijzerklokken (plaatjes van de Synthesis-klok) moeten er zijn voordat er iets getekend wordt */
+  const [klokken, setKlokken] = useState(false);
+  useEffect(() => {
+    let weg = false;
+    void laadKlokken().then(() => !weg && setKlokken(true));
+    return () => {
+      weg = true;
+    };
+  }, []);
+  const scene = klokken ? motor : null;
   return (
     <div className={s.vlak} ref={vlakRef}>
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
@@ -773,26 +784,11 @@ function Verbind(p: Deel) {
 
 /* ---------- de kaart aan het eind ---------- */
 
-/** Op de verzamelkaart: een wijzerklok en een digitale klok die even laat zijn (244 × 190). */
+/** Op de verzamelkaart: de wijzerklok van de Synthesis-kloklessen (244 × 190), met 3 uur. */
 export function KaartKlok() {
-  const wijzer = (h: number, lang: number, dik: number) => {
-    const a = (h * Math.PI) / 180;
-    return <line x1={78} y1={95} x2={78 + Math.sin(a) * lang} y2={95 - Math.cos(a) * lang} stroke="#1d2540" strokeWidth={dik} strokeLinecap="round" />;
-  };
   return (
-    <>
-      <circle cx={78} cy={95} r={58} fill={RAND.blauw} />
-      <circle cx={78} cy={95} r={50} fill="#fffdf6" />
-      {Array.from({ length: 12 }, (_, i) => {
-        const a = (i * Math.PI) / 6;
-        return <line key={i} x1={78 + Math.sin(a) * 44} y1={95 - Math.cos(a) * 44} x2={78 + Math.sin(a) * 38} y2={95 - Math.cos(a) * 38} stroke="#1d2540" strokeWidth={2.5} />;
-      })}
-      {wijzer(90, 26, 7)}
-      {wijzer(0, 38, 3.5)}
-      <circle cx={78} cy={95} r={4} fill="#1d2540" />
-      <rect x={148} y={70} width={88} height={50} rx={12} fill={RAND.oranje} />
-      <rect x={155} y={77} width={74} height={36} rx={6} fill="#0b0f1a" />
-      <text x={192} y={103} textAnchor="middle" fontSize={22} fontWeight={800} fill="#ff5b4a">03:00</text>
-    </>
+    <g transform="translate(37, 5)">
+      <Klokje tijd={180} maat={170} />
+    </g>
   );
 }

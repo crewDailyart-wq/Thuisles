@@ -19,6 +19,43 @@
  *
  * Een les gebruikt `squlaVraag` voor elke opgave, `squlaBegin` voor het
  * welkom met "Kun je dit al?" en `squlaEind` voor de kaart aan het eind.
+ *
+ * ---------------------------------------------------------------------------
+ * HET BEGINSCHERM "Kun je dit al?" (1 november 2026, BOUWREGELS 4.1-4.3)
+ * ---------------------------------------------------------------------------
+ * Vast (in `squlaBegin`, voor alle lessen gelijk):
+ *   - de opbouw: een voorbeeld van de echte opdracht in beeld, Bliepo, en de
+ *     knoppen Ja en Nee;
+ *   - alleen de vraag "Kun je dit al?" aan het eind; verder GEEN vaste zin;
+ *   - Ja = "Mooi. Laat maar eens zien." en meteen de opgaven;
+ *     Nee = "Geen probleem. Ik leg het kort uit.", de uitleg, en "Nu jij!".
+ * Per les (verplicht, door de les zelf):
+ *   - `welkom`: een EIGEN zin over waar deze les over gaat (mag uit een paar
+ *     korte zinnen bestaan). Nooit leeg, nooit een standaardzin, nooit zelf
+ *     "Kun je dit al?". Is hij leeg of standaard, dan stopt de les tijdens
+ *     ontwikkelen met een foutmelding (en dus faalt de speelcontrole).
+ *   - `voorbeeld`: zet in het eigen vlak van de les een ECHTE opgave uit die
+ *     les in beeld, zoals het kind hem straks krijgt, maar nog zonder dat het
+ *     iets hoeft te doen (niets actief, geen keuzeknoppen). Het voorbeeld
+ *     staat er vóór en tijdens de zin en blijft staan bij Ja en Nee. Daarna
+ *     zet de eerste vraag (Ja) of de uitleg (Nee) het vlak zelf weer goed.
+ * Met `voorbeeld` staan de eigen zin en "Kun je dit al?" samen als één tekst
+ * boven Bliepo (de woorden lichten op terwijl hij praat, regel 3.7), zodat het
+ * kind bij Ja en Nee nog leest waar de les over gaat. Lessen zonder
+ * `voorbeeld` (nog niet omgezet) werken zoals vroeger; tijdens ontwikkelen
+ * staat er dan een waarschuwing in de console.
+ *
+ * Voorbeeld (klokkijken):
+ *
+ *   l.vlak<KlokVlakProps>(SqulaKlokVlak, { ...LEEG });
+ *   await squlaBegin(l, {
+ *     welkom: ["Kijk eens naar de klok!", "Weet jij hoe laat het is?"],
+ *     voorbeeld: () => opgaven[0](l, false).toon?.(),
+ *     uitleg: () => uitlegHeel(l),
+ *   });
+ *
+ * De zinnen komen in STEMZINNEN.md via `npm run stemzinnen` (dat script leest
+ * de `welkom`-zinnen uit de broncode). Zie ook de handleiding in BOUWREGELS 4.1.
  */
 
 import type { Lesgids } from "../soort";
@@ -110,12 +147,66 @@ export async function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boole
   }
 }
 
+/** Wat een les aan `squlaBegin` geeft. */
+export type SqulaBeginOpties = {
+  /** De eigen zin van deze les: waar gaat de les over? Verplicht, nooit een standaardzin. */
+  welkom: string[];
+  /** De korte uitleg na "Nee". */
+  uitleg: () => Promise<void>;
+  /**
+   * Zet een echte opgave uit deze les in het vlak, zonder dat het kind iets
+   * hoeft te doen (niets actief). Staat er vóór en tijdens de zin en bij Ja/Nee.
+   */
+  voorbeeld?: () => void;
+};
+
+/** De vraag aan het eind van het welkom: de enige vaste zin. */
+export const KUN_JE_DIT_AL = "Kun je dit al?";
+
 /**
- * Het welkom: een korte uitleg van wat we gaan doen, dan "Kun je dit al?".
+ * Zinnen die te algemeen zijn om als eigen zin te tellen (ze zeggen niet waar
+ * de les over gaat). Staat het welkom alleen uit zulke zinnen, dan is het een
+ * standaardzin.
+ */
+const STANDAARDZINNEN = [
+  /^(hoi|hallo|hee|hey)[!.,]?( \{?naam\}?)?[!.]?$/i,
+  /^(we gaan|laten we) (beginnen|oefenen|starten|rekenen)[!.]?$/i,
+  /^(daar gaan we|klaar\?|ben je er klaar voor\?|kom maar op)[!.]?$/i,
+  /^(in deze les|vandaag) (gaan we|ga je) (oefenen|rekenen)[!.]?$/i,
+  /^(goed|mooi|fijn)[!.]?$/i,
+  /^nu jij[!.]?$/i,
+];
+
+/** Klopt het welkom? Geeft de reden als het niet klopt. */
+export function welkomFout(welkom: readonly string[] | undefined): string | null {
+  const zinnen = (welkom ?? []).map((z) => (z ?? "").trim()).filter(Boolean);
+  if (!zinnen.length) return "deze les heeft geen eigen zin (welkom is leeg)";
+  if (zinnen.some((z) => /kun je dit al/i.test(z))) return `"${KUN_JE_DIT_AL}" zegt squlaBegin zelf; zet het niet in welkom`;
+  if (zinnen.every((z) => STANDAARDZINNEN.some((r) => r.test(z.replace(/[{}*]/g, ""))))) return `"${zinnen.join(" ")}" is een standaardzin; zeg waar deze les over gaat`;
+  return null;
+}
+
+/**
+ * Het beginscherm "Kun je dit al?" (zie de uitleg bovenaan dit bestand).
  * Ja = meteen oefenen; Nee = de korte uitleg (`uitleg`) en dan "Nu jij!".
  */
-export async function squlaBegin(l: Lesgids, o: { welkom: string[]; uitleg: () => Promise<void> }) {
-  await l.zeg(...o.welkom, "Kun je dit al?");
+export async function squlaBegin(l: Lesgids, o: SqulaBeginOpties) {
+  const fout = welkomFout(o.welkom);
+  if (fout) {
+    /* Tijdens ontwikkelen stopt de les (de speelcontrole ziet dat); online praat Bliepo gewoon door. */
+    if (process.env.NODE_ENV !== "production") throw new Error(`squlaBegin: ${fout} (BOUWREGELS 4.3).`);
+    console.error(`squlaBegin: ${fout} (BOUWREGELS 4.3).`);
+  }
+  const welkom = o.welkom.filter((z) => z && z.trim());
+  if (typeof window !== "undefined") window.__phaser = { ...window.__phaser, begin: { welkom, voorbeeld: !!o.voorbeeld } };
+  if (o.voorbeeld) {
+    o.voorbeeld();
+    /* De eigen zin en de vraag als één tekst: zo blijft bij Ja en Nee staan waar de les over gaat. */
+    await l.zeg([...welkom, KUN_JE_DIT_AL].join(" "));
+  } else {
+    if (process.env.NODE_ENV !== "production") console.warn("squlaBegin: deze les heeft nog geen voorbeeld in beeld (BOUWREGELS 4.1).");
+    await l.zeg(...welkom, KUN_JE_DIT_AL);
+  }
   const kan = await l.kies(["Ja", "Nee"], { weetniet: false, direct: true });
   if (kan === "Ja") {
     await l.zeg("Mooi.", "Laat maar eens zien.");

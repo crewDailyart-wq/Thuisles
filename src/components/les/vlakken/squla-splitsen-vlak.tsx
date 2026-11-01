@@ -35,17 +35,17 @@ import s from "./squla-splitsen.module.css";
 
 export type Deel =
   /** Een groepje dingen in rijen (`per` op een rij), of los door elkaar (`los` = breedte en hoogte van het gebied). */
-  | { s: "groep"; id: string; vw: string; n: number; x: number; y: number; per?: number; cel?: number; maat?: number; los?: [number, number]; verborgen?: boolean; label?: string }
+  | { s: "groep"; id: string; vw: string; n: number; x: number; y: number; per?: number; cel?: number; maat?: number; los?: [number, number]; verborgen?: boolean; label?: string; kl?: string; kleuren?: string[] }
   /** Eén ding (`maat` = breedte en hoogte in punten). */
-  | { s: "ding"; id: string; vw: string; x: number; y: number; maat: number; verborgen?: boolean }
+  | { s: "ding"; id: string; vw: string; x: number; y: number; maat: number; verborgen?: boolean; kl?: string }
   | { s: "geld"; id: string; soort: "briefje-10" | "munt-1"; x: number; y: number; maat: number }
   | { s: "tekst"; id: string; t: string; x: number; y: number; grootte?: number; kleur?: string; verborgen?: boolean }
   /** Het splitshuisje: bovenaan het totaal (onder het dak), onder twee kamers. Leeg = lege kamer. */
-  | { s: "huisje"; id: string; x: number; y: number; b?: number; top: string; links: string; rechts: string; dak?: boolean; stippen?: boolean }
+  | { s: "huisje"; id: string; x: number; y: number; b?: number; top: string; links: string; rechts: string; dak?: boolean; stippen?: boolean; kleuren?: GetalKleuren }
   /** De splitspaal: een rondje met het totaal, een lijn naar beneden en twee takken. */
-  | { s: "paal"; id: string; x: number; y: number; top: string; links: string; rechts: string }
+  | { s: "paal"; id: string; x: number; y: number; top: string; links: string; rechts: string; kleuren?: GetalKleuren }
   /** Het tienvak (eierdoos, 2 rijen van 5): `n` ballen te zien, `doek` vakjes onder een doek. */
-  | { s: "tienvak"; id: string; x: number; y: number; vw: string; n: number; doek: number }
+  | { s: "tienvak"; id: string; x: number; y: number; vw: string; n: number; doek: number; kl?: string; kl2?: string }
   /** Een staafje van `n` blokjes (links beginnend bij x). */
   | { s: "staaf"; id: string; x: number; y: number; n: number; kleur: number; blok?: number }
   /** Een rij letters: de eerste `tot` letters van het woord staan er, de rest is een streepje. */
@@ -53,6 +53,61 @@ export type Deel =
   | { s: "lijn"; id: string; x1: number; y1: number; x2: number; y2: number; goed?: boolean }
   /** Iets om op te tikken (onzichtbaar; de tekening staat eronder). */
   | { s: "tik"; id: string; x: number; y: number; b: number; h: number; aria: string };
+
+/**
+ * Gekoppelde kleuren (BOUWREGELS 2.1): elk getal in een splitsing heeft een eigen
+ * kleur (een kleurnaam uit KLEUR), en de dingen die erbij horen hebben precies
+ * die kleur.
+ */
+export type GetalKleuren = { top?: string; links?: string; rechts?: string };
+
+/** Dezelfde kleuren als de getallen in de zinnen van Bliepo (KLEURNAAM in Lesscherm.tsx). */
+export const KLEUR: Record<string, string> = {
+  rood: "#ff7b7b",
+  oranje: "#ffad5c",
+  geel: "#ffe066",
+  groen: "#7ee0a0",
+  blauw: "#8fc4ff",
+  paars: "#c9a2ff",
+  roze: "#ff9fd2",
+  wit: "#ffffff",
+};
+
+/** Een voorwerp in een andere kleur: elk gekleurd stukje krijgt de tint van `hex`, donkere randen en glans blijven. Eén keer gedaan (gebakken). */
+function kleurPixels(c: CanvasRenderingContext2D, hex: string) {
+  const cv = c.canvas;
+  const im = c.getImageData(0, 0, cv.width, cv.height);
+  const d = im.data;
+  const doel = [parseInt(hex.slice(1, 3), 16), parseInt(hex.slice(3, 5), 16), parseInt(hex.slice(5, 7), 16)];
+  const hsl = (r: number, g: number, b: number) => {
+    r /= 255; g /= 255; b /= 255;
+    const mx = Math.max(r, g, b), mn = Math.min(r, g, b), l = (mx + mn) / 2;
+    if (mx === mn) return [0, 0, l];
+    const dd = mx - mn, sat = l > 0.5 ? dd / (2 - mx - mn) : dd / (mx + mn);
+    const h = mx === r ? (g - b) / dd + (g < b ? 6 : 0) : mx === g ? (b - r) / dd + 2 : (r - g) / dd + 4;
+    return [h / 6, sat, l];
+  };
+  const rgb = (h: number, sat: number, l: number) => {
+    const q = l < 0.5 ? l * (1 + sat) : l + sat - l * sat, p = 2 * l - q;
+    const f = (t: number) => {
+      t = (t + 1) % 1;
+      return 255 * (t < 1 / 6 ? p + (q - p) * 6 * t : t < 1 / 2 ? q : t < 2 / 3 ? p + (q - p) * (2 / 3 - t) * 6 : p);
+    };
+    return [f(h + 1 / 3), f(h), f(h - 1 / 3)];
+  };
+  const [th, ts, tl] = hsl(doel[0], doel[1], doel[2]);
+  for (let i = 0; i < d.length; i += 4) {
+    if (d[i + 3] === 0) continue;
+    const [, sat, l] = hsl(d[i], d[i + 1], d[i + 2]);
+    if (l < 0.22) continue; /* donkere randen blijven */
+    if (sat < 0.25 && l < 0.55) continue; /* grijze schaduw en zwarte vlakken blijven */
+    /* gekleurd (of wit) stuk: de tint van het doel, met de lichtval van het plaatje */
+    const nl = Math.min(0.78, Math.max(0.35, tl + (l - 0.5) * 0.3));
+    const [r, g, b] = rgb(th, Math.min(1, ts * (sat < 0.25 ? 1 : 1.1)), nl);
+    d[i] = r; d[i + 1] = g; d[i + 2] = b;
+  }
+  c.putImageData(im, 0, 0);
+}
 
 export type Beeld = { id: string; delen: Deel[] };
 
@@ -115,12 +170,13 @@ export function groepPlekken(d: Extract<Deel, { s: "groep" }>) {
 const tienVak = (d: Extract<Deel, { s: "tienvak" }>, i: number) => ({ x: d.x + ((i % 5) - 2) * TIEN.cel, y: d.y + (Math.floor(i / 5) - 0.5) * TIEN.cel });
 
 /** De teksten (scherpe HTML) bij een onderdeel. */
+const kleurVan = (naam?: string) => (naam ? KLEUR[naam] : undefined);
 type Tekst = { k: string; id: string; x: number; y: number; t: string; grootte: number; kleur?: string };
 function tekstenVan(d: Deel): Tekst[] {
   if (d.s === "tekst") return [{ k: d.id, id: d.id, x: d.x, y: d.y, t: d.t, grootte: d.grootte ?? 56, kleur: d.kleur }];
   if (d.s === "groep" && d.label) {
     const p = groepPlekken(d);
-    return [{ k: `${d.id}-l`, id: d.id, x: d.x, y: p.onder + 30, t: d.label, grootte: 46 }];
+    return [{ k: `${d.id}-l`, id: d.id, x: d.x, y: p.onder + 30, t: d.label, grootte: 46, kleur: kleurVan(d.kl) }];
   }
   if (d.s === "huisje") {
     const b = d.b ?? HUIS.b;
@@ -129,17 +185,17 @@ function tekstenVan(d: Deel): Tekst[] {
     const ky = d.y + (d.stippen ? kamer * 0.3 : kamer / 2);
     const g = 52 * k;
     const lijst: Tekst[] = [
-      { k: `${d.id}-l`, id: d.id, x: d.x - b / 4, y: ky, t: d.links, grootte: g },
-      { k: `${d.id}-r`, id: d.id, x: d.x + b / 4, y: ky, t: d.rechts, grootte: g },
+      { k: `${d.id}-l`, id: d.id, x: d.x - b / 4, y: ky, t: d.links, grootte: g, kleur: kleurVan(d.kleuren?.links) },
+      { k: `${d.id}-r`, id: d.id, x: d.x + b / 4, y: ky, t: d.rechts, grootte: g, kleur: kleurVan(d.kleuren?.rechts) },
     ];
-    if (d.dak !== false) lijst.push({ k: `${d.id}-t`, id: d.id, x: d.x, y: d.y - HUIS.dak * k * 0.42, t: d.top, grootte: g * 0.92 });
+    if (d.dak !== false) lijst.push({ k: `${d.id}-t`, id: d.id, x: d.x, y: d.y - HUIS.dak * k * 0.42, t: d.top, grootte: g * 0.92, kleur: kleurVan(d.kleuren?.top) });
     return lijst.filter((t) => t.t !== "");
   }
   if (d.s === "paal")
     return [
-      { k: `${d.id}-t`, id: d.id, x: d.x, y: d.y, t: d.top, grootte: 50 },
-      { k: `${d.id}-l`, id: d.id, x: d.x - 100, y: d.y + 190, t: d.links, grootte: 54 },
-      { k: `${d.id}-r`, id: d.id, x: d.x + 100, y: d.y + 190, t: d.rechts, grootte: 54 },
+      { k: `${d.id}-t`, id: d.id, x: d.x, y: d.y, t: d.top, grootte: 50, kleur: kleurVan(d.kleuren?.top) },
+      { k: `${d.id}-l`, id: d.id, x: d.x - 100, y: d.y + 190, t: d.links, grootte: 54, kleur: kleurVan(d.kleuren?.links) },
+      { k: `${d.id}-r`, id: d.id, x: d.x + 100, y: d.y + 190, t: d.rechts, grootte: 54, kleur: kleurVan(d.kleuren?.rechts) },
     ].filter((t) => t.t !== "");
   return [];
 }
@@ -255,9 +311,13 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     /** Een voorwerp als plaatje (zonder gloed), één keer getekend. */
-    vw(naam: string) {
-      const sl = `sps-vw-${naam}`;
-      this.canvasPlaatje(sl, VW, VW, (c) => tekenVoorwerp(c, naam, 4, 4, VW - 8, VW - 8));
+    vw(naam: string, kl?: string) {
+      const hex = kl ? KLEUR[kl] : undefined;
+      const sl = hex ? `sps-vw-${naam}-${kl}` : `sps-vw-${naam}`;
+      this.canvasPlaatje(sl, VW, VW, (c) => {
+        tekenVoorwerp(c, naam, 4, 4, VW - 8, VW - 8);
+        if (hex) kleurPixels(c, hex);
+      });
       return sl;
     }
 
@@ -301,9 +361,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       for (const d of b.delen) {
         if (d.s === "groep") {
           const p = groepPlekken(d);
-          const sl = this.vw(d.vw);
-          p.plekken.forEach((q, i) => zet(sl, q.x, q.y, d.maat ?? p.cel * 0.9, d.id, `${d.id}.${i}`, d.verborgen));
-        } else if (d.s === "ding") zet(this.vw(d.vw), d.x, d.y, d.maat, d.id, d.id, d.verborgen);
+          p.plekken.forEach((q, i) => zet(this.vw(d.vw, d.kleuren?.[i] ?? d.kl), q.x, q.y, d.maat ?? p.cel * 0.9, d.id, `${d.id}.${i}`, d.verborgen));
+        } else if (d.s === "ding") zet(this.vw(d.vw, d.kl), d.x, d.y, d.maat, d.id, d.id, d.verborgen);
         else if (d.s === "geld") {
           const sl = `sps-${d.soort}`;
           const t = this.textures.get(sl).getSourceImage() as HTMLImageElement;
@@ -313,10 +372,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
             box.add(im);
           this.imgs.push({ im, id: d.id, sub: d.id, verborgen: false });
         } else if (d.s === "tienvak") {
-          const sl = this.vw(d.vw);
           for (let i = 0; i < d.n + d.doek; i++) {
             const q = tienVak(d, i);
-            zet(sl, q.x, q.y, TIEN.cel * 0.72, d.id, `${d.id}.${i}`);
+            zet(this.vw(d.vw, i < d.n ? d.kl : d.kl2), q.x, q.y, TIEN.cel * 0.72, d.id, `${d.id}.${i}`);
           }
           /* De doek: over de vakjes die je niet ziet (per rij één stuk, op maat getekend). */
           for (const rij of [0, 1]) {

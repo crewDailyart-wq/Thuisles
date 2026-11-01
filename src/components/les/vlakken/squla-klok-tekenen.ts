@@ -10,7 +10,9 @@
  * Elk "ding" heeft een vaste maat in punten; het vlak schaalt het.
  */
 
+import { createElement } from "react";
 import { tekenVoorwerp } from "../voorwerpen";
+import { Klokje } from "./klok-wijzerklok";
 
 export type Kl = "roze" | "oranje" | "blauw" | "rood" | "groen" | "paars" | "geel" | "turkoois";
 
@@ -38,8 +40,8 @@ export type Ding =
   | { t: "wijzer"; u: number; m: number; kleur: Kl; nadruk?: "uur" | "min" }
   /** Een digitale klok met deze tijd ("07:00"). */
   | { t: "digi"; tekst: string; kleur: Kl }
-  /** Een echt ding (vast plaatje); `scherm`: een digitale tijd op het schermpje. */
-  | { t: "vw"; naam: string; scherm?: string }
+  /** Een echt ding (vast plaatje); `scherm`: een wijzerklok op het schermpje (telefoon, laptop, oven). */
+  | { t: "vw"; naam: string; scherm?: { u: number; m: number } }
   /** Een tijd in woorden, groot ("6 uur"). */
   | { t: "tekst"; tekst: string }
   /** Een los teken of getal (":" "?" "!" "10"). */
@@ -86,61 +88,84 @@ export function gloedVan(d: Ding): number {
 }
 
 type C = CanvasRenderingContext2D;
-const DONKER = "#1d2540";
 const LETTER = `"Fredoka", "Work Sans", system-ui, sans-serif`;
 
-/* ---------- de wijzerklok ---------- */
+/* ---------- de wijzerklok (de klok van de Synthesis-kloklessen) ---------- */
+
+/*
+  Klokkijken, 1 november 2026 (BOUWREGELS 8.1): alleen de gewone wijzerklok, en
+  wel de klok die al in de Synthesis-kloklessen staat (`Klokje` uit
+  klok-wijzerklok.tsx: witte wijzerplaat, paarse minutenwijzer, oranje
+  urenwijzer). We maken geen nieuwe klok: die klok wordt één keer als plaatje
+  gemaakt (`laadKlokken`) en hier getekend. De wijzers lichten op met een
+  zachte pil, zoals bij Synthesis.
+*/
+
+const KLOK_RAND = 227; /* Klokje: straal 215 + 12 rand */
+const KLOK_R = 215;
+const klokBeelden = new Map<string, HTMLImageElement>();
+const klokSleutel = (u: number, m: number) => `${u % 12}:${m}`;
+
+/** De tijden die in de lessen voorkomen: hele uren, halve uren en bijna half. */
+const KLOK_MINUTEN = [0, 25, 30];
+
+let klokKlaar: Promise<void> | null = null;
+
+/** Maak (één keer) van elke klok die in de lessen voorkomt een plaatje. Wacht hierop voordat er getekend wordt. */
+export function laadKlokken(): Promise<void> {
+  if (typeof document === "undefined") return Promise.resolve();
+  if (klokKlaar) return klokKlaar;
+  klokKlaar = (async () => {
+    /* pas hier laden: alleen in de browser nodig */
+    const { flushSync } = await import("react-dom");
+    const { createRoot } = await import("react-dom/client");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    const alle: Promise<void>[] = [];
+    for (let u = 0; u < 12; u++) {
+      for (const m of KLOK_MINUTEN) {
+        flushSync(() => root.render(createElement(Klokje, { tijd: u * 60 + m, maat: 440 })));
+        const svg = host.querySelector("svg");
+        if (!svg) continue;
+        svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+        /* een plaatje kent de lettertypevariabelen van de pagina niet: vaste lettertypes */
+        const tekst = new XMLSerializer().serializeToString(svg).replace(/var\(--font-les\), /g, "");
+        const img = new Image();
+        img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(tekst)}`;
+        klokBeelden.set(klokSleutel(u, m), img);
+        alle.push(img.decode().catch(() => undefined));
+      }
+    }
+    root.unmount();
+    await Promise.all(alle);
+  })();
+  return klokKlaar;
+}
+
+/** De wijzerklok in een vak van `maat` × `maat` met het midden op (cx, cy). */
+function klokPlaatje(c: C, u: number, m: number, cx: number, cy: number, maat: number) {
+  const img = klokBeelden.get(klokSleutel(u, m));
+  if (!img || !img.complete) return;
+  c.drawImage(img, cx - maat / 2, cy - maat / 2, maat, maat);
+}
 
 function wijzerklok(c: C, d: Extract<Ding, { t: "wijzer" }>) {
-  const m = 110;
-  const R = 100;
+  klokPlaatje(c, d.u, d.m, 110, 110, 220);
+  if (!d.nadruk) return;
+  /* de zachte pil van Synthesis om de wijzer waar het nu om gaat */
+  const k = 110 / KLOK_RAND;
+  const uur = d.nadruk === "uur";
+  const hoek = uur ? ((d.u % 12) + d.m / 60) * 30 : d.m * 6;
+  const lengte = (uur ? 0.48 : 0.8) * KLOK_R * k;
+  const breed = (uur ? 0.076 : 0.046) * KLOK_R * k * 2.6;
+  c.save();
+  c.translate(110, 110);
+  c.rotate((hoek * Math.PI) / 180);
+  c.fillStyle = uur ? "rgba(222, 150, 95, 0.42)" : "rgba(160, 120, 230, 0.32)";
   c.beginPath();
-  c.arc(m, m, R, 0, Math.PI * 2);
-  c.fillStyle = RAND[d.kleur];
+  c.roundRect(-breed / 2, -(lengte + 0.05 * KLOK_R * k), breed, lengte + 0.15 * KLOK_R * k, breed / 2);
   c.fill();
-  c.beginPath();
-  c.arc(m, m, R - 11, 0, Math.PI * 2);
-  c.fillStyle = "#fffdf6";
-  c.fill();
-  /* minuutstreepjes */
-  c.strokeStyle = DONKER;
-  c.lineCap = "round";
-  for (let i = 0; i < 60; i++) {
-    const a = (i * Math.PI) / 30;
-    const lang = i % 5 === 0 ? 11 : 5;
-    c.lineWidth = i % 5 === 0 ? 3.2 : 1.8;
-    c.beginPath();
-    c.moveTo(m + Math.sin(a) * (R - 15), m - Math.cos(a) * (R - 15));
-    c.lineTo(m + Math.sin(a) * (R - 15 - lang), m - Math.cos(a) * (R - 15 - lang));
-    c.stroke();
-  }
-  /* getallen */
-  c.fillStyle = DONKER;
-  c.font = `700 22px ${LETTER}`;
-  c.textAlign = "center";
-  c.textBaseline = "middle";
-  for (let n = 1; n <= 12; n++) {
-    const a = (n * Math.PI) / 6;
-    c.fillText(String(n), m + Math.sin(a) * (R - 40), m - Math.cos(a) * (R - 40) + 1);
-  }
-  /* wijzers: de grote tot bij de streepjes, de kleine korter en dikker */
-  const wijzer = (hoek: number, lang: number, dik: number, kleur: string) => {
-    const a = (hoek * Math.PI) / 180;
-    c.strokeStyle = kleur;
-    c.lineWidth = dik;
-    c.lineCap = "round";
-    c.beginPath();
-    c.moveTo(m - Math.sin(a) * 10, m + Math.cos(a) * 10);
-    c.lineTo(m + Math.sin(a) * lang, m - Math.cos(a) * lang);
-    c.stroke();
-  };
-  const oranje = "#ff7a1a";
-  wijzer(((d.u % 12) + d.m / 60) * 30, 50, 10, d.nadruk === "uur" ? oranje : DONKER);
-  wijzer(d.m * 6, R - 24, 5, d.nadruk === "min" ? oranje : DONKER);
-  c.beginPath();
-  c.arc(m, m, 7, 0, Math.PI * 2);
-  c.fillStyle = DONKER;
-  c.fill();
+  c.restore();
 }
 
 /* ---------- de digitale cijfers (zeven streepjes) ---------- */
@@ -231,14 +256,9 @@ function digitaal(c: C, d: Extract<Ding, { t: "digi" }>) {
   klokcijfers(c, d.tekst, 140, 66, 52);
 }
 
-/** Een klein digitaal klokje op het schermpje van een voorwerp (alleen het zwarte scherm met cijfers). */
-function schermpje(c: C, tekst: string, cx: number, cy: number, b: number) {
-  const h = b * 0.42;
-  c.beginPath();
-  c.roundRect(cx - b / 2, cy - h / 2, b, h, 6);
-  c.fillStyle = "#0b0f1a";
-  c.fill();
-  klokcijfers(c, tekst, cx, cy, h * 0.62);
+/** Een kleine wijzerklok op het schermpje van een voorwerp (telefoon, laptop, oven). */
+function schermpje(c: C, t: { u: number; m: number }, cx: number, cy: number, b: number) {
+  klokPlaatje(c, t.u, t.m, cx, cy, b);
 }
 
 /* ---------- de rest ---------- */

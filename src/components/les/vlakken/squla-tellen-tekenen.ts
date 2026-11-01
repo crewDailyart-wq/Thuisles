@@ -69,7 +69,7 @@ export const VASTE_KLEUR: Record<Soort, Kleurnaam> = {
   boom: "groen",
   raketje: "rood",
   ster: "geel",
-  planeet: "blauw",
+  planeet: "paars",
   satelliet: "groen",
   ufo: "paars",
   komeet: "oranje",

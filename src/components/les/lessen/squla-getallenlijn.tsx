@@ -785,7 +785,7 @@ const rangschikken1: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "lampje", slinger: true, items: [3, 4, 5, 6, 7].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Vandaag zetten we getallen op de goede plek.", "Alle getallen tot en met {20:wit}."],
+      welkom: ["Kijk eens naar de getallenlijn!", "Zet elk getal op de goede plek, tot en met {20:wit}."],
       uitleg: () => uitlegRij(l),
     });
     const fouten = await speelOpgaven(l, RANGSCHIKKEN_1);
@@ -805,7 +805,7 @@ const rangschikken2: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 0, tot: 20, labels: [0, 10, 20] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "We zetten weer getallen op de goede plek.", "Nu staan er minder getallen bij."],
+      welkom: ["De getallen liggen weer door elkaar.", "Nu staan er minder getallen bij op de lijn."],
       uitleg: () => uitlegLijn(l, [0, 10, 20], 12),
     });
     const fouten = await speelOpgaven(l, RANGSCHIKKEN_2);
@@ -825,7 +825,7 @@ const rangschikken3: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 10, tot: 20, stap: 2, labels: [10, 20] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Nu wordt het nog moeilijker.", "Soms staan de streepjes verder uit elkaar."],
+      welkom: ["Nu staan de streepjes verder uit elkaar.", "Kun je de getallen toch op de goede plek zetten?"],
       uitleg: () => uitlegPerTwee(l),
     });
     const fouten = await speelOpgaven(l, RANGSCHIKKEN_3);
@@ -965,7 +965,7 @@ const kat1: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Kijk, een raketje.", "Het vliegt graag over de getallenlijn.", "Help je mee?"],
+      welkom: ["Kijk, een raketje vliegt over de getallenlijn!", "Help je mee?"],
       uitleg: () => uitlegRaketje(l),
     });
     const fouten = await speelOpgaven(l, KAT_1);
@@ -985,7 +985,7 @@ const kat2: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Het raketje is er weer.", "Nu staan er minder getallen op de lijn."],
+      welkom: ["Het raketje vliegt weer over de lijn.", "Nu staan er minder getallen bij."],
       uitleg: async () => {
         toon(l, { soort: "lijn", van: 8, tot: 20, labels: [10, 15, 20], raketje: { n: 13, wijs: true } });
         await l.zeg("De pijl wijst een streepje aan.", "Niet bij elk streepje staat een getal.");
@@ -1093,7 +1093,7 @@ const dieren1: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "bal" }, { voorwerp: "pakje" }, { voorwerp: "ster" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Kijk, allemaal dingen.", "Ze liggen op de getallen.", "Welk getal ligt eronder?"],
+      welkom: ["Kijk, allemaal dingen op de getallenlijn!", "Welk getal ligt eronder?"],
       uitleg: () => uitlegDier(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_1);
@@ -1113,7 +1113,7 @@ const dieren2: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "speelblok" }, { voorwerp: "speelgoedauto" }, { voorwerp: "pakje" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "De kaarten liggen door elkaar.", "Zet jij ze weer op volgorde?"],
+      welkom: ["De kaarten liggen door elkaar.", "Zet jij ze op volgorde?"],
       uitleg: () => uitlegOrden(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_2);
@@ -1133,7 +1133,7 @@ const dieren3: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ t: "10" }, { voorwerp: "bus" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "De dingen zijn terug.", "En er is een lange bus bij.", "We zoeken getallen en zetten ze op volgorde."],
+      welkom: ["De dingen zijn terug, nu met een lange bus erbij.", "Zoek de getallen en zet ze op volgorde."],
       uitleg: () => uitlegDier(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_3);
@@ -1189,7 +1189,7 @@ const terugtellen1: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "aftel", items: [7, 6, 5, 4, 3, 2, 1].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Kijk, een raket.", "Voor hij opstijgt, tellen we terug.", "Van groot naar klein."],
+      welkom: ["Kijk, de raket staat klaar om op te stijgen!", "Eerst tellen we terug, van groot naar klein."],
       uitleg: async () => {
         toon(l, { soort: "rij", ding: "aftel", items: [7, 6, 5, "…", 3, 2, 1].map((n) => ({ t: String(n) })) });
         await l.zeg("We tellen samen terug.");

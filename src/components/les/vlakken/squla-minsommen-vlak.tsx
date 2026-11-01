@@ -47,6 +47,7 @@ import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { tekenVoorwerp } from "../voorwerpen";
+import { ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
 import {
   DING,
   hexGetal,
@@ -68,11 +69,11 @@ export type { Bakje, Ding, Speelgoed };
 export type Geld = 1 | 2 | 5 | 10;
 
 export type Toneel =
-  | { soort: "ruimte"; id: string; ding: Ding; n: number; ufo?: boolean }
+  | { soort: "ruimte"; id: string; ding: Ding; n: number; /** Hoeveel er weggaan (die krijgen de kleur van dat getal). */ b?: number; ufo?: boolean }
   | { soort: "som"; id: string; deco?: Ding | "luidspreker" | null }
   | { soort: "verbind"; id: string; sommen: [number, number][]; uitkomsten: number[] }
   | { soort: "bubbels"; id: string; sommen: [number, number][] }
-  | { soort: "bus"; id: string; in: number; rondje: boolean }
+  | { soort: "bus"; id: string; in: number; /** Hoeveel er bezorgd worden (die krijgen de kleur van dat getal). */ b?: number; rondje: boolean }
   | { soort: "machine"; id: string; start: number; eraf: number }
   | { soort: "bord"; id: string }
   | { soort: "bakjes"; id: string; ding: Bakje; vol: number; leeg: number }
@@ -160,17 +161,18 @@ function stipY(t: Toneel | null) {
 /* Bus: het plaatje "bezorgbus" (vierkant) links; de pakjes liggen in de laadruimte. */
 const BUS = { x: 330, y: 380, maat: 640 };
 /** De laadruimte als deel van het (vierkante) plaatje: links, boven, breed, hoog. */
-const LAAD = { x: 0.11, y: 0.36, b: 0.58, h: 0.24 };
+const LAAD = { x: 0.13, y: 0.34, b: 0.46, h: 0.22 };
 /** Plek van pakje i in de bus: eerst de onderste rij (10), dan de bovenste; per rij 5 + 5. */
 function busPlek(i: number): Plek {
   const links = BUS.x - BUS.maat / 2 + LAAD.x * BUS.maat;
   const boven = BUS.y - BUS.maat / 2 + LAAD.y * BUS.maat;
-  const stap = (LAAD.b * BUS.maat - 14) / 10;
+  const stap = (LAAD.b * BUS.maat - 4 - 8) / 10;
   const j = i % 10;
   const rij = i < 10 ? 1 : 0;
-  return { x: links + stap / 2 + j * stap + (j >= 5 ? 14 : 0), y: boven + (LAAD.h * BUS.maat) * (rij === 1 ? 0.72 : 0.28) };
+  return { x: links + 2 + stap / 2 + j * stap + (j >= 5 ? 8 : 0), y: boven + (LAAD.h * BUS.maat) * (rij === 1 ? 0.72 : 0.28) };
 }
-const PAKJE = 40;
+/** Zo groot als kan zonder overlap: 10 naast elkaar (5 + 5) in het raam. */
+const PAKJE = 28;
 /** Bezorgd: buiten de bus op een stapeltje van 3 breed. */
 function buitenPlek(i: number): Plek {
   return { x: 806 + (i % 3) * 50, y: 470 - Math.floor(i / 3) * 46 };
@@ -327,24 +329,38 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     /* ---------- plaatjes: zonder vaste gloed; de gloed alleen voor even ---------- */
 
     /** Het voorwerp als plaatje in zijn vak (één keer getekend, op dubbele scherpte). */
-    tex(naam: string) {
+    tex(naam: string, kleur?: string) {
       const m = MAAT[naam] ?? 100;
+      if (kleur) {
+        /* Met een ring in de kleur van zijn getal (BOUWREGELS 2.1), één keer getekend. */
+        const sl = `sqm-vwk-${naam}-${kleur.slice(1)}`;
+        const r = ringRuimte(m, m);
+        this.canvasPlaatje(sl, m + 2 * r, m + 2 * r, (c) => tekenMetRing(c, m, m, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h)));
+        return sl;
+      }
       const sl = `sqm-vw-${naam}`;
       this.canvasPlaatje(sl, m, m, (c) => tekenVoorwerp(c, naam, 0, 0, m, m));
       return sl;
     }
 
+    /** Een sleutel van een item: "naam" of "naam|#kleur". */
+    texSleutel(k: string) {
+      const [naam, kleur] = k.split("|");
+      return this.tex(naam, kleur);
+    }
+
     /** Hetzelfde plaatje mét een zachte gloed (gebakken), voor het moment dat het iets betekent. */
-    texGloed(naam: string) {
-      const sl = `sqm-vw-${naam}-gloed`;
-      if (!this.textures.exists(sl)) this.bak(this.tex(naam), sl, gloedKleur(naam));
+    texGloed(k: string) {
+      const [naam, kleur] = k.split("|");
+      const sl = `sqm-vw-${naam}${kleur ? `-${kleur.slice(1)}` : ""}-gloed`;
+      if (!this.textures.exists(sl)) this.bak(this.tex(naam, kleur), sl, kleur ? hexGetal(kleur) : gloedKleur(naam));
       return sl;
     }
 
     /** Even oplichten en dan weer gewoon. */
     flits(im: Img, k: string, ms = 700) {
       if (!im.active) return;
-      const gewoon = this.tex(k);
+      const gewoon = this.texSleutel(k);
       im.setTexture(this.texGloed(k));
       this.time.delayedCall(ms, () => im.active && im.setTexture(gewoon));
     }
@@ -379,11 +395,11 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     /** Een item dat grijs kan worden en mee kan lichten. */
-    item(g: Box, k: string, x: number, y: number, schaal = 1) {
-      const im = this.plaats(this.tex(k), x, y).setScale(schaal / TX);
+    item(g: Box, k: string, x: number, y: number, schaal = 1, kleur?: string) {
+      const im = this.plaats(this.tex(k, kleur), x, y).setScale(schaal / TX);
       g.add(im);
       this.items.push(im);
-      this.itemSleutel.push(k);
+      this.itemSleutel.push(kleur ? `${k}|${kleur}` : k);
       return im;
     }
 
@@ -433,7 +449,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const { plekken, schaal } = ruimtePlekken(t.n, !!t.ufo);
       this.itemSchaal = schaal;
       plekken.forEach((p, i) => {
-        const im = this.item(g, t.ding, p.x, p.y, schaal);
+        const im = this.item(g, t.ding, p.x, p.y, schaal, ringKleur(t.b !== undefined && i >= t.n - t.b ? t.b : t.n));
         if (!this.rustig) this.tweens.add({ targets: im, y: p.y - 5, duration: 1300 + (i % 4) * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut", delay: (i * 97) % 600 });
       });
       if (t.ufo) {
@@ -457,7 +473,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         const y = KAART_L.ys[k];
         const rij: Img[] = [];
         for (let i = 0; i < a; i++) {
-          const im = this.plaats(this.tex("raketje"), KAART_L.x + ((i % 5) - 2) * 50, y - 52 + Math.floor(i / 5) * 46).setScale(0.44 / TX);
+          const im = this.plaats(this.tex("raketje", ringKleur(a)), KAART_L.x + ((i % 5) - 2) * 50, y - 52 + Math.floor(i / 5) * 46).setScale(0.44 / TX);
           g.add(im);
           rij.push(im);
         }
@@ -483,7 +499,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       g.add(this.plaats(this.tex("bezorgbus"), BUS.x, BUS.y));
       for (let i = 0; i < t.in; i++) {
         const p = busPlek(i);
-        this.item(g, "pakje", p.x, p.y);
+        this.item(g, "pakje", p.x, p.y, 1, ringKleur(t.b !== undefined && i >= t.in - t.b ? t.b : t.in));
       }
       this.itemSchaal = 1;
     }
@@ -508,9 +524,10 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     maakBakjes(g: Box, t: Extract<Toneel, { soort: "bakjes" }>) {
       bakjePlekken(t.vol + t.leeg).forEach((p, i) => {
         const vol = i < t.vol;
-        if (t.ding === "beker") this.item(g, vol ? "beker-vol" : "beker-leeg", p.x, p.y);
+        const kl = ringKleur(vol ? t.vol + t.leeg : t.leeg);
+        if (t.ding === "beker") this.item(g, vol ? "beker-vol" : "beker-leeg", p.x, p.y, 1, kl);
         else {
-          this.item(g, "bord", p.x, p.y + 10);
+          this.item(g, "bord", p.x, p.y + 10, 1, kl);
           /* Een vol bord: een koekje erop (eigen sleutel). */
           if (vol) g.add(this.plaats(this.tex("koekje"), p.x, p.y - 4));
         }
@@ -607,7 +624,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       }
       if (t.rondje) return this.busBuiten(k + 1, direct);
       const p = buitenPlek(k);
-      const pakje = this.plaats(this.tex("pakje"), p.x, p.y);
+      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? ringKleur(t.b) : undefined), p.x, p.y);
       g.add(pakje);
       this.buiten[k]?.destroy();
       this.buiten[k] = pakje;
@@ -627,9 +644,10 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         this.rondje = null;
         if (n > 0) {
           const rond = this.add.graphics();
-          rond.fillStyle(0xff5a5a, 1);
+          /* Het rondje heeft de kleur van het getal (BOUWREGELS 2.1); de tekst is donker, dat leest op elke kleur. */
+          rond.fillStyle(t.b !== undefined ? hexGetal(ringKleur(t.b)) : 0xff5a5a, 1);
           rond.fillCircle(0, 0, 56);
-          this.rondje = this.add.container(RONDJE.x, RONDJE.y, [rond, this.plaats(this.tekstTex(String(n), 64, "#ffffff", ""), 0, 0)]);
+          this.rondje = this.add.container(RONDJE.x, RONDJE.y, [rond, this.plaats(this.tekstTex(String(n), 64, t.b !== undefined ? "#10163a" : "#ffffff", ""), 0, 0)]);
           g.add(this.rondje);
           if (!direct && !this.rustig) {
             this.rondje.setScale(0.6);

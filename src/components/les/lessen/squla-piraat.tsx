@@ -147,8 +147,8 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
   const s = a + b;
   return (l, st) => {
     const beeld = metLetters(st, `samen-${vw}-${a}-${b}`, [
-      { s: "groep", id: "a", vw, n: a, x: 290, y: 320, per: 5, cel: 54, label: String(a) },
-      { s: "groep", id: "b", vw, n: b, x: 690, y: 320, per: 5, cel: 54, label: String(b) },
+      { s: "groep", id: "a", vw, n: a, x: 290, y: 320, per: 5, cel: 54, label: String(a), kl: "paars" },
+      { s: "groep", id: "b", vw, n: b, x: 690, y: 320, per: 5, cel: 54, label: String(b), kl: "oranje" },
     ]);
     return squlaVraag<number>(l, {
       toon: () => {
@@ -161,14 +161,14 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       goed: async () => {
         som(l, a, "+", b, s);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a)} + ${g(b)} = ${g(s)}.`);
+        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { licht: ["a"] });
-        await l.zeg(`Hier ${a === 1 ? "is" : "zijn"} ${aantal(a, vw)}.`);
+        await l.zeg(`Hier ${a === 1 ? "is" : "zijn"} ${g(a, "paars")} ${a === 1 ? NAAM[vw][0] : NAAM[vw][1]}.`);
         zet(l, { licht: ["b"] });
-        await l.zeg(`Daar ${b === 1 ? "is" : "zijn"} ${aantal(b, vw)}.`);
+        await l.zeg(`Daar ${b === 1 ? "is" : "zijn"} ${g(b, "oranje")} ${b === 1 ? NAAM[vw][0] : NAAM[vw][1]}.`);
         zet(l, { licht: [] });
         await plusUitleg(l, a, b);
       },
@@ -194,7 +194,7 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
       goed: async () => {
         som(l, a, "+", b, s);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a)} + ${g(b)} = ${g(s)}.`);
+        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
       },
       fout: () => foutBeeld(l, st),
       samen: () => plusUitleg(l, a, b),

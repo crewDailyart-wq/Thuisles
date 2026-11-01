@@ -44,8 +44,13 @@ import { DING } from "../vlakken/squla-minsommen-tekenen";
    Woorden
    ===================================================================== */
 
-/** Een getal in de zin, in een kleur ({6:geel}). */
-const g = (n: number, k = "wit") => `{${n}:${k}}`;
+/**
+ * Een getal in de zin: altijd in de kleur van dat getal, dus precies zoals in de som
+ * en zoals de ring om de voorwerpen (BOUWREGELS 2.1 en 2.2). `_k` blijft staan zodat
+ * de oude aanroepen niet veranderen.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+const g = (n: number, _k = "wit") => `{${n}:tegel}`;
 /** "7 − 4" in de zin (wit). */
 const somZin = (a: number, b: number, k = "wit") => `${g(a, k)} − ${g(b, k)}`;
 /** Een som als knop of in beeld. */
@@ -71,7 +76,7 @@ function ruimteVerhaal(ding: Ding, a: number, b: number, ufo?: boolean): string[
   const eerste = vul(z.waar, a, b, k);
   if (!ufo) return [eerste, vul(b === 1 ? z.wegEen : z.weg, a, b, k)];
   if (b === a) return [eerste, "De ufo neemt ze allemaal mee."];
-  if (b === 0) return [eerste, "De ufo neemt er geen één mee."];
+  if (b === 0) return [eerste, "De ufo neemt er geen enkele mee."];
   return [eerste, `De ufo neemt er ${g(b, k)} mee.`];
 }
 const hoeveelOver = (ding: Ding) => `Hoeveel ${DING[ding].veel} blijven er over?`;
@@ -150,7 +155,7 @@ const overTien = (a: number, b: number) => a > 10 && b > 0 && b < a && a - b < 1
 
 /** Tip na de uitleg (zonder het antwoord). */
 function rekenTip(a: number, b: number, wat: string): string[] {
-  if (overTien(a, b)) return [`Eerst terug naar ${g(10)}.`, b - (a - 10) === 1 ? `Dan gaat er nog ${g(1)} af.` : `Dan gaan er nog ${g(b - (a - 10))} af.`];
+  if (overTien(a, b)) return [`Eerst terug naar ${g(10)}.`, b - (a - 10) === 1 ? `Dan gaat er nog ${g(1)} weg.` : `Dan gaan er nog ${g(b - (a - 10))} weg.`];
   return [telZin(wat)];
 }
 
@@ -166,7 +171,7 @@ async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: s
   const stip = (grijs: number) => (beeld === "stippen" ? zet(l, { stippen: { n: a, grijs } }) : zet(l, { grijs }));
   /* "Er gaan er 3 af", "Er gaat er 1 af"; bij de bus "Er gaan er 3 uit". */
   const gaan = (n: number) => (n === 1 ? "gaat" : "gaan");
-  const af = beeld === "bus" ? "uit" : "af";
+  const af = beeld === "bus" ? "uit" : "weg";
   stip(0);
   zet(l, { licht: beeld === "stippen" ? null : "alle" });
   if (beeld === "bus") await l.zeg(`Eerst lagen er ${g(a, k)} pakjes in de bus.`);
@@ -174,7 +179,7 @@ async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: s
   else await l.zeg(`Ik zet ${g(a, k)} stippen neer.`);
   zet(l, { licht: null });
   if (b === 0) {
-    await l.zeg(beeld === "bus" ? "Er gaat niets uit." : "Er gaat niets af.");
+    await l.zeg(beeld === "bus" ? "Er gaat niets uit." : "Er gaat niets weg.");
   } else if (overTien(a, b)) {
     const r1 = a - 10;
     const r2 = b - r1;
@@ -185,7 +190,7 @@ async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: s
     stip(b);
     await l.wacht(r2 * 260 + 300);
   } else {
-    await l.zeg(b === a && beeld !== "bus" ? `Ze gaan er alle ${g(b, k)} af.` : `Er ${gaan(b)} er ${g(b, k)} ${af}.`);
+    await l.zeg(b === a && beeld !== "bus" ? `Ze gaan er alle ${g(b, k)} weg.` : `Er ${gaan(b)} er ${g(b, k)} ${af}.`);
     stip(b);
     await l.wacht(Math.min(b, 10) * 260 + 300);
   }
@@ -195,8 +200,8 @@ async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: s
 
 /* ---------- de vragen zelf ---------- */
 
-function ruimteToneel(st: Stand, ding: Ding, n: number, ufo?: boolean): Toneel {
-  return { soort: "ruimte", id: `ruimte-${st.nr}`, ding, n, ufo: !!ufo };
+function ruimteToneel(st: Stand, ding: Ding, n: number, ufo?: boolean, b?: number): Toneel {
+  return { soort: "ruimte", id: `ruimte-${st.nr}`, ding, n, b, ufo: !!ufo };
 }
 
 async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
@@ -208,7 +213,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     const u = v.a - v.b;
     const ding = v.ding;
     const k = ding ? DING[ding].kleur : "wit";
-    const toneel: Toneel = ding ? ruimteToneel(st, ding, v.a) : { soort: "som", id, deco: v.t === "kaal" ? (v.deco ?? null) : null };
+    const toneel: Toneel = ding ? ruimteToneel(st, ding, v.a, undefined, v.b) : { soort: "som", id, deco: v.t === "kaal" ? (v.deco ?? null) : null };
     const somInBeeld = v.t === "verhaal" ? `${v.a} − ${v.b}` : v.t === "kaal" ? `${v.a} − ${v.b} = ?` : null;
     const vraag =
       v.t === "kaal"
@@ -241,7 +246,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     const u = v.a - v.b;
     const k = DING[v.ding].kleur;
     const goed = somTekst(v.a, v.b);
-    const toneel = ruimteToneel(st, v.ding, v.a, v.ufo);
+    const toneel = ruimteToneel(st, v.ding, v.a, v.ufo, v.b);
     const verhaal = ruimteVerhaal(v.ding, v.a, v.b, v.ufo);
     return squlaVraag<string>(l, {
       toon: () => toon(l, st, toneel),
@@ -353,7 +358,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         await l.zeg(`Kijk naar ${somZin(a, b)}.`, `Daar staan ${g(a, "rood")} raketjes.`);
         hint = { kaart: laatsteFout, n: b };
         stand(false);
-        await l.zeg(`Er gaan er ${g(b, "rood")} af.`, "Tel de raketjes die over zijn.", "Zoek dat getal rechts.");
+        await l.zeg(`Er gaan er ${g(b, "rood")} weg.`, "Tel de raketjes die over zijn.", "Zoek dat getal rechts.");
       },
       tip: ["Tel de raketjes die niet grijs zijn."],
       testAntwoord: null,
@@ -393,7 +398,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         },
         fout: (i) => bubbelStand(false, { i, keer: ++st.bubbelKeer }),
         samen: async () => {
-          await l.zeg("Bij een som met uitkomst {0:wit} gaat alles eraf.", "Dan blijft er niets over.", "Je haalt er net zoveel af als er waren.", "Dan staat er twee keer hetzelfde getal.");
+          await l.zeg("Bij een som met uitkomst {0:wit} gaat alles weg.", "Dan blijft er niets over.", "Je haalt er net zoveel af als er waren.", "Dan staat er twee keer hetzelfde getal.");
         },
         tip: ["Zoek een som met twee keer hetzelfde getal."],
         testAntwoord: `b${nul.find((i) => !weg.includes(i))}`,
@@ -408,7 +413,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   /* Bussommen: de bus bezorgt pakjes (bij Squla stappen er kinderen uit). */
   if (v.t === "bus") {
     const u = v.a - v.b;
-    const toneel: Toneel = { soort: "bus", id, in: v.a, rondje: v.rondje };
+    const toneel: Toneel = { soort: "bus", id, in: v.a, b: v.b, rondje: v.rondje };
     const tip = rekenTip(v.a, v.b, "pakjes in de bus");
     let verteld = false;
     return squlaVraag<number>(l, {
@@ -506,8 +511,8 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         zet(l, { licht: "alle" });
         await l.zeg(`Tel eerst alle ${wat}.`, "Dat getal komt vooraan in de som.");
         zet(l, { licht: "leeg" });
-        if (v.leeg === 1) await l.zeg(`${v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat"} eraf.`, "Dat getal komt na de min.");
-        else await l.zeg(`De lege ${wat} gaan eraf.`, "Tel ze.", "Dat getal komt na de min.");
+        if (v.leeg === 1) await l.zeg(`${v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat"} weg.`, "Dat getal komt na de min.");
+        else await l.zeg(`De lege ${wat} gaan weg.`, "Tel ze.", "Dat getal komt na de min.");
         zet(l, { licht: null });
       },
       tip: [`Vooraan staan alle ${wat}.`, `Na de min staan de lege ${wat}.`],
@@ -539,7 +544,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       await l.zeg(`Samen heb je ${g(heb)} euro.`, "Voor elke euro zet ik een stip.");
       zet(l, { stippen: { n: heb, grijs: 0 } });
       await l.wacht(heb * 25 + 400);
-      await l.zeg(`${hoofd(SPEELGOED[v.ding])} kost ${g(prijs)} euro.`, prijs === 1 ? "Die gaat eraf." : "Die gaan eraf.");
+      await l.zeg(`${hoofd(SPEELGOED[v.ding])} kost ${g(prijs)} euro.`, prijs === 1 ? "Die gaat weg." : "Die gaan weg.");
       zet(l, { stippen: { n: heb, grijs: prijs } });
       await l.wacht(prijs * 200 + 400);
       await l.zeg("Tel de stippen die over zijn.");
@@ -625,7 +630,7 @@ function uitlegRuimte(ding: Ding, a: number, b: number) {
     const k = DING[ding].kleur;
     const veel = DING[ding].veel;
     const u = a - b;
-    toon(l, st, { soort: "ruimte", id: `uitleg-${ding}-${a}`, ding, n: a }, { som: `${a} − ${b}` });
+    toon(l, st, { soort: "ruimte", id: `uitleg-${ding}-${a}`, ding, n: a, b }, { som: `${a} − ${b}` });
     await l.zeg(...ruimteVerhaal(ding, a, b));
     if (overTien(a, b)) {
       const r1 = a - 10;
@@ -651,7 +656,7 @@ function uitlegBus(a: number, b: number, rondje: boolean) {
   return async (l: Lesgids, st: Stand) => {
     const u = a - b;
     const k = "bruin";
-    toon(l, st, { soort: "bus", id: `uitleg-bus-${a}`, in: a, rondje }, { grijs: 0 });
+    toon(l, st, { soort: "bus", id: `uitleg-bus-${a}`, in: a, b, rondje }, { grijs: 0 });
     await l.zeg(`In de bus liggen ${g(a, k)} pakjes.`, `De bus bezorgt er ${g(b, k)}.`);
     if (overTien(a, b)) {
       const r1 = a - 10;
@@ -685,11 +690,11 @@ function uitlegStippen(beeld: "bord" | "machine" | "som", a: number, b: number) 
     await l.zeg(`Ik zet ${g(a)} stippen neer.`);
     if (overTien(a, b)) {
       const r1 = a - 10;
-      await l.zeg(`Er gaan er ${g(b)} af.`, `Eerst gaan er ${g(r1)} af.`);
+      await l.zeg(`Er gaan er ${g(b)} weg.`, `Eerst gaan er ${g(r1)} weg.`);
       zet(l, { stippen: { n: a, grijs: r1 } });
       await l.wacht(r1 * 200 + 400);
-      await l.zeg(`Dan zijn er nog ${g(10)}.`, `Daarna gaan er nog ${g(b - r1)} af.`);
-    } else await l.zeg(`Er gaan er ${g(b)} af.`);
+      await l.zeg(`Dan zijn er nog ${g(10)}.`, `Daarna gaan er nog ${g(b - r1)} weg.`);
+    } else await l.zeg(`Er gaan er ${g(b)} weg.`);
     zet(l, { stippen: { n: a, grijs: b } });
     await l.wacht((overTien(a, b) ? b - (a - 10) : b) * 200 + 400);
     await l.zeg(`Er blijven ${g(u)} stippen over.`);
@@ -707,7 +712,7 @@ function uitlegBakjes(vol: number, leeg: number) {
     zet(l, { licht: "alle" });
     await l.zeg(`Eerst waren er ${g(n)} bekers vol.`);
     zet(l, { licht: "leeg" });
-    await l.zeg(`Er zijn ${g(leeg)} bekers leeg gedronken.`, "Die gaan eraf.");
+    await l.zeg(`Er zijn ${g(leeg)} bekers leeg gedronken.`, "Die gaan weg.");
     zet(l, { licht: null, som: somTekst(n, leeg) });
     await l.zeg(`De som is ${somZin(n, leeg)} = ${g(vol)}.`);
   };
@@ -724,7 +729,7 @@ function uitlegGeld(heb: Geld[], prijs: Geld[], ding: Speelgoed) {
     await l.zeg("Voor elke euro zet ik een stip.");
     zet(l, { stippen: { n: h, grijs: p } });
     await l.wacht(p * 200 + 400);
-    await l.zeg(`Je betaalt ${g(p)} euro.`, p === 1 ? "Die gaat eraf." : "Die gaan eraf.", `Dan houd je ${g(h - p)} euro over.`);
+    await l.zeg(`Je betaalt ${g(p)} euro.`, p === 1 ? "Die gaat weg." : "Die gaan weg.", `Dan houd je ${g(h - p)} euro over.`);
     zet(l, { som: `${h} − ${p} = ${h - p}` });
     await l.zeg(`${somZin(h, p)} = ${g(h - p)}.`);
   };
@@ -734,15 +739,20 @@ function uitlegGeld(heb: Geld[], prijs: Geld[], ding: Speelgoed) {
    Minsommen, onderwater (16055)
    ===================================================================== */
 
-const RUIMTE_WELKOM = ["Hoi!", "We gaan naar de ruimte.", "Er gaan dingen weg.", "Hoeveel blijven er over?", "Dat noem je ook wel aftrekken."];
+/* Een eigen beginzin per les (BOUWREGELS 4.3), passend bij wat er in beeld staat. */
+const RUIMTE_WELKOM = [
+  [`Kijk, ${g(6)} raketjes staan klaar!`, `Er vliegen er ${g(2)} weg.`, "Hoeveel raketjes blijven er over?"],
+  [`De ruimte is vol raketjes: er staan er ${g(15)}.`, `Er vliegen er ${g(3)} weg.`, `Nu rekenen we tot ${g(20)}.`],
+  [`Er staan ${g(13)} raketjes klaar en er vliegen er ${g(5)} weg.`, `Nu gaan we over de ${g(10)} heen.`, `Eerst terug naar ${g(10)}, dan de rest weg.`],
+];
 
 const ruimte1 = minles({
   id: "squla-min-ruimte-1",
   titel: "Minsommen in de ruimte",
   oefening: "Minsommen (onderwater)",
   level: 1,
-  welkom: RUIMTE_WELKOM,
-  begin: { soort: "ruimte", id: "uitleg-raketje-6", ding: "raketje", n: 6 },
+  welkom: RUIMTE_WELKOM[0],
+  begin: { soort: "ruimte", id: "uitleg-raketje-6", ding: "raketje", n: 6, b: 2 },
   uitleg: uitlegRuimte("raketje", 6, 2),
   /* Level 1: tot en met 10, eraf 1 t/m 6; verhaal, verhaal, kaal, kaal, welke som, welke som, disco, verbinden, verhaal, en daarna nog eens dezelfde soorten. */
   vragen: [
@@ -770,8 +780,8 @@ const ruimte2 = minles({
   titel: "Minsommen in de ruimte (moeilijker)",
   oefening: "Minsommen (onderwater)",
   level: 2,
-  welkom: RUIMTE_WELKOM,
-  begin: { soort: "ruimte", id: "uitleg-raketje-15", ding: "raketje", n: 15 },
+  welkom: RUIMTE_WELKOM[1],
+  begin: { soort: "ruimte", id: "uitleg-raketje-15", ding: "raketje", n: 15, b: 3 },
   uitleg: uitlegRuimte("raketje", 15, 3),
   /* Level 2: start 12 t/m 19, eraf 0 t/m 7, niet over het tiental; 3 keuzes; luistervragen, typen en bubbels erbij. */
   vragen: [
@@ -799,8 +809,8 @@ const ruimte3 = minles({
   titel: "Minsommen in de ruimte (nog moeilijker)",
   oefening: "Minsommen (onderwater)",
   level: 3,
-  welkom: ["Hoi!", "We gaan weer naar de ruimte.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest eraf."],
-  begin: { soort: "ruimte", id: "uitleg-raketje-13", ding: "raketje", n: 13 },
+  welkom: RUIMTE_WELKOM[2],
+  begin: { soort: "ruimte", id: "uitleg-raketje-13", ding: "raketje", n: 13, b: 5 },
   uitleg: uitlegRuimte("raketje", 13, 5),
   /* Level 3: start 11 t/m 19, over het tiental terug, plus "alles eraf" en "niets eraf". */
   vragen: [
@@ -827,7 +837,11 @@ const ruimte3 = minles({
    Bussommen 1 (7275) en Bussommen 2 (7276)
    ===================================================================== */
 
-const BUS_WELKOM = ["Hoi!", "Kijk, een bus vol pakjes.", "De bus bezorgt pakjes.", "Hoeveel liggen er dan nog in de bus?"];
+const BUS_WELKOM = [
+  [`In de bezorgbus liggen ${g(6)} pakjes.`, `De bus bezorgt er ${g(2)}.`, "Hoeveel pakjes liggen er dan nog in de bus?"],
+  [`De bus is bijna vol: er liggen ${g(15)} pakjes in.`, `Bij de eerste halte worden er ${g(3)} bezorgd.`, "Hoeveel pakjes blijven er in de bus?"],
+  [`Er liggen ${g(13)} pakjes in de bus.`, `Bij deze halte worden er ${g(5)} bezorgd.`, `Eerst gaan we terug naar ${g(10)}.`],
+];
 const bus = (a: number, b: number, rondje = false, keuzes?: number[]): Vraag => ({ t: "bus", a, b, rondje, keuzes });
 
 const bus11 = minles({
@@ -835,8 +849,8 @@ const bus11 = minles({
   titel: "Bussommen",
   oefening: "Bussommen 1",
   level: 1,
-  welkom: BUS_WELKOM,
-  begin: { soort: "bus", id: "uitleg-bus-6", in: 6, rondje: false },
+  welkom: BUS_WELKOM[0],
+  begin: { soort: "bus", id: "uitleg-bus-6", in: 6, b: 2, rondje: false },
   uitleg: uitlegBus(6, 2, false),
   /* Level 1 "tot 10": eerst kiezen uit 3 (startgetal en aftrekgetal als lokkers), daarna typen. */
   vragen: [bus(8, 3, false, [5, 3, 8]), bus(9, 7), bus(10, 4), bus(5, 1), bus(7, 3), bus(6, 4), bus(9, 2), bus(4, 2), bus(10, 6), bus(7, 5), bus(8, 1), bus(3, 2), bus(9, 8), bus(6, 1), bus(8, 6)],
@@ -848,8 +862,8 @@ const bus12 = minles({
   titel: "Bussommen (moeilijker)",
   oefening: "Bussommen 1",
   level: 2,
-  welkom: BUS_WELKOM,
-  begin: { soort: "bus", id: "uitleg-bus-15", in: 15, rondje: false },
+  welkom: BUS_WELKOM[1],
+  begin: { soort: "bus", id: "uitleg-bus-15", in: 15, b: 3, rondje: false },
   uitleg: uitlegBus(15, 3, false),
   /* Level 2 "tot 20": alleen typen, start 12 t/m 19, eraf 1 t/m 6, niet over het tiental. */
   vragen: [bus(16, 4), bus(18, 5), bus(19, 3), bus(14, 2), bus(17, 1), bus(15, 4), bus(13, 3), bus(18, 6), bus(12, 1), bus(19, 6), bus(16, 5), bus(14, 3), bus(15, 2), bus(17, 4), bus(13, 1)],
@@ -861,23 +875,27 @@ const bus13 = minles({
   titel: "Bussommen (nog moeilijker)",
   oefening: "Bussommen 1",
   level: 3,
-  welkom: ["Hoi!", "Weer een bus vol pakjes.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
-  begin: { soort: "bus", id: "uitleg-bus-13", in: 13, rondje: false },
+  welkom: BUS_WELKOM[2],
+  begin: { soort: "bus", id: "uitleg-bus-13", in: 13, b: 5, rondje: false },
   uitleg: uitlegBus(13, 5, false),
   /* Level 3 "over het 10-tal": alleen typen, start 12 t/m 18, eraf 4 t/m 9, uitkomst onder de 10. */
   vragen: [bus(15, 7), bus(13, 5), bus(16, 9), bus(12, 6), bus(17, 8), bus(14, 6), bus(12, 7), bus(15, 9), bus(13, 4), bus(16, 7), bus(14, 9), bus(15, 6), bus(12, 8), bus(13, 9), bus(14, 7)],
   eind: "Je rekent terug over de {10:wit}.",
 });
 
-const BUS2_WELKOM = ["Hoi!", "Kijk, een bus vol pakjes.", "Het rode rondje zegt hoeveel pakjes er bezorgd zijn.", "Hoeveel liggen er dan nog in de bus?"];
+const BUS2_WELKOM = [
+  [`De bus heeft ${g(6)} pakjes bij zich.`, "In het rondje staat hoeveel pakjes er worden bezorgd.", "Hoeveel pakjes blijven er over?"],
+  [`Er liggen ${g(15)} pakjes in de bus.`, "Het rondje laat zien hoeveel er worden bezorgd.", `We rekenen weer tot ${g(20)}.`],
+  [`Er liggen ${g(13)} pakjes in de bus.`, "Het rondje vertelt hoeveel er worden bezorgd.", `Nu gaan we over de ${g(10)} heen.`],
+];
 
 const bus21 = minles({
   id: "squla-min-bus2-1",
   titel: "Bussommen met een rondje",
   oefening: "Bussommen 2",
   level: 1,
-  welkom: BUS2_WELKOM,
-  begin: { soort: "bus", id: "uitleg-bus-6", in: 6, rondje: true },
+  welkom: BUS2_WELKOM[0],
+  begin: { soort: "bus", id: "uitleg-bus-6", in: 6, b: 2, rondje: true },
   uitleg: uitlegBus(6, 2, true),
   /* Level 1 "tot 10": eerst kiezen uit 3, één keer met de pakjes buiten, verder het rode rondje; typen. */
   vragen: [
@@ -905,8 +923,8 @@ const bus22 = minles({
   titel: "Bussommen met een rondje (moeilijker)",
   oefening: "Bussommen 2",
   level: 2,
-  welkom: BUS2_WELKOM,
-  begin: { soort: "bus", id: "uitleg-bus-15", in: 15, rondje: true },
+  welkom: BUS2_WELKOM[1],
+  begin: { soort: "bus", id: "uitleg-bus-15", in: 15, b: 3, rondje: true },
   uitleg: uitlegBus(15, 3, true),
   /* Level 2 "tot 20": alleen typen, start 12 t/m 19, eraf 1 t/m 7, niet over het tiental. */
   vragen: [bus(17, 5, true), bus(19, 4, true), bus(16, 2, true), bus(18, 3, true), bus(13, 2, true), bus(15, 1, true), bus(19, 7, true), bus(14, 4, true), bus(18, 6, true), bus(16, 3, true), bus(17, 7, true), bus(15, 2, true), bus(19, 5, true), bus(12, 1, true), bus(18, 1, true)],
@@ -918,8 +936,8 @@ const bus23 = minles({
   titel: "Bussommen met een rondje (nog moeilijker)",
   oefening: "Bussommen 2",
   level: 3,
-  welkom: ["Hoi!", "Weer een bus vol pakjes.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
-  begin: { soort: "bus", id: "uitleg-bus-13", in: 13, rondje: true },
+  welkom: BUS2_WELKOM[2],
+  begin: { soort: "bus", id: "uitleg-bus-13", in: 13, b: 5, rondje: true },
   uitleg: uitlegBus(13, 5, true),
   /* Level 3 "over het 10-tal": alleen typen, start 11 t/m 19, eraf 6 t/m 10, uitkomst onder de 10. */
   vragen: [bus(16, 8, true), bus(13, 7, true), bus(11, 6, true), bus(17, 8, true), bus(14, 9, true), bus(18, 10, true), bus(15, 7, true), bus(12, 9, true), bus(16, 9, true), bus(13, 9, true), bus(15, 8, true), bus(11, 7, true), bus(12, 7, true), bus(14, 8, true), bus(16, 7, true)],
@@ -930,7 +948,7 @@ const bus23 = minles({
    Minsommen (6919): machine, schoolbord, bekers en bordjes, geld
    ===================================================================== */
 
-const MACHINE_WELKOM = ["Hoi!", "We gaan minsommen maken.", "Er gaat iets af.", "Hoeveel heb je dan over?"];
+const MACHINE_WELKOM = ["Kijk eens naar de min-machine!", `Er gaat ${g(10)} in en de machine haalt er wat af.`, "Hoeveel komt eruit?"];
 const bord = (a: number, b: number, keuzes?: number[]): Vraag => ({ t: "bord", a, b, keuzes });
 const machine = (b: number, keuzes: number[]): Vraag => ({ t: "machine", b, keuzes });
 const disco = (a: number, b: number, keuzes: number[], luister = false): Vraag => ({ t: "disco", a, b, keuzes, luister });
@@ -971,7 +989,7 @@ const mach2 = minles({
   titel: "Minsommen: hoeveel over? (moeilijker)",
   oefening: "Minsommen",
   level: 2,
-  welkom: ["Hoi!", "Kijk, bekers en bordjes.", "Een paar zijn leeg.", "Welke som hoort erbij?"],
+  welkom: ["Hier staan bekers en bordjes.", "Een paar zijn leeg, kijk goed.", "Welke som hoort bij het plaatje?"],
   begin: { soort: "bakjes", id: "uitleg-bakjes", ding: "beker", vol: 4, leeg: 2 },
   uitleg: uitlegBakjes(4, 2),
   /* Level 2: welke som hoort bij het plaatje (volle en lege), dan de machine met 10 min 6 t/m 10; tot en met 10. */
@@ -1000,7 +1018,7 @@ const mach3 = minles({
   titel: "Minsommen: hoeveel over? (nog moeilijker)",
   oefening: "Minsommen",
   level: 3,
-  welkom: ["Hoi!", "Kijk, een schoolbord met een minsom.", "Reken hem uit.", "Je typt het antwoord zelf."],
+  welkom: ["Het schoolbord is vol minsommen.", "Reken ze uit en typ het antwoord zelf."],
   begin: { soort: "bord", id: "uitleg-bord" },
   uitleg: uitlegStippen("bord", 7, 3),
   /* Level 3: alleen het schoolbord en typen, tot en met 10. */
@@ -1015,7 +1033,7 @@ const mach4 = minles({
   titel: "Minsommen: hoeveel over? (heel moeilijk)",
   oefening: "Minsommen",
   level: 4,
-  welkom: ["Hoi!", "We gaan winkelen.", "Hoeveel geld houd je over?", "En luister goed naar de sommen."],
+  welkom: ["Er zit geld in je portemonnee.", "Je koopt iets en betaalt het.", "Hoeveel euro houd je over?"],
   begin: { soort: "geld", id: "uitleg-geld", heb: [2, 1, 1], prijs: [1], ding: "ballon" },
   uitleg: uitlegGeld([2, 1, 1], [1], "ballon"),
   /* Level 4: geld (hoeveel houd je over, tot 10 euro) en sommen die alleen gezegd worden; zelfde volgorde, drie keer. */
@@ -1043,14 +1061,18 @@ const mach4 = minles({
    Kale sommen (7277): schoolbord en typen
    ===================================================================== */
 
-const KAAL_WELKOM = ["Hoi!", "Kijk, een minsom op het bord.", "Er hoort geen verhaaltje bij.", "Reken hem uit en typ het antwoord."];
+const KAAL_WELKOM = [
+  ["Kijk eens naar het bord!", `Hoeveel is ${somZin(7, 3)}?`, "Typ het antwoord zelf."],
+  ["De minsommen op het bord worden groter.", `Hoeveel is ${somZin(16, 4)}?`, `Je begint nu hoger dan ${g(10)}.`],
+  [`Nu gaan we over de ${g(10)} heen!`, `Hoeveel is ${somZin(13, 5)}?`, `Ga eerst terug naar ${g(10)}.`],
+];
 
 const kaal1 = minles({
   id: "squla-min-kaal-1",
   titel: "Kale minsommen",
   oefening: "Kale sommen",
   level: 1,
-  welkom: KAAL_WELKOM,
+  welkom: KAAL_WELKOM[0],
   begin: { soort: "bord", id: "uitleg-bord" },
   uitleg: uitlegStippen("bord", 7, 3),
   /* Level 1 "tot 10": start 3 t/m 10, eraf 1 t/m 6. */
@@ -1063,7 +1085,7 @@ const kaal2 = minles({
   titel: "Kale minsommen (moeilijker)",
   oefening: "Kale sommen",
   level: 2,
-  welkom: KAAL_WELKOM,
+  welkom: KAAL_WELKOM[1],
   begin: { soort: "bord", id: "uitleg-bord" },
   uitleg: uitlegStippen("bord", 16, 4),
   /* Level 2 "tot 20": start 14 t/m 20, eraf 2 t/m 8, meestal binnen het tiental (één keer erover), ook van 20 af. */
@@ -1076,7 +1098,7 @@ const kaal3 = minles({
   titel: "Kale minsommen (nog moeilijker)",
   oefening: "Kale sommen",
   level: 3,
-  welkom: ["Hoi!", "Weer minsommen op het bord.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest eraf."],
+  welkom: KAAL_WELKOM[2],
   begin: { soort: "bord", id: "uitleg-bord" },
   uitleg: uitlegStippen("bord", 13, 5),
   /* Level 3 "over het 10-tal": start 11 t/m 18, eraf 6 t/m 10, uitkomst onder de 10. */

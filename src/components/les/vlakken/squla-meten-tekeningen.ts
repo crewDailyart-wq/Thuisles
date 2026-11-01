@@ -631,18 +631,23 @@ const T: Record<string, Tek> = {
   olijfschaal: {
     maat: () => ({ b: 260, h: 200 }),
     teken: (c) => {
-      for (let j = 0; j < 4; j++) for (let i = 0; i < 9 - j * 2; i++) vw(c, "olijf", 26 + j * 26 + i * 26, 100 - j * 18, 34);
+      /* Eerst de schaal, dan de olijven erop: een berg die uit de schaal komt (niet erachter). */
       vw(c, "schaal", 130, 110, 250);
+      for (let j = 0; j < 4; j++) {
+        const n = 8 - j * 2;
+        for (let i = 0; i < n; i++) vw(c, "olijf", 130 + (i - (n - 1) / 2) * 24, 84 - j * 18, 34);
+      }
     },
   },
   meel: { maat: () => ({ b: 170, h: 170 }), teken: (c) => vw(c, "zak-meel", 85, 85, 170) },
   meelberg: { maat: () => ({ b: 440, h: 310 }), teken: (c) => MEELBERG.forEach(([x, y]) => vw(c, "zak-meel", x, y, 110)) },
   boeken: {
-    maat: (o) => ({ b: 176, h: 176 + (getal(o, "n", 4) - 1) * 46 }),
+    /* Een boek is 176 breed en ongeveer 96 hoog; ze liggen op elkaar (stap 26), niet los in de lucht. */
+    maat: (o) => ({ b: 176, h: 100 + (getal(o, "n", 4) - 1) * 26 }),
     teken: (c, o) => {
       const n = getal(o, "n", 4);
-      const h = 176 + (n - 1) * 46;
-      for (let i = 0; i < n; i++) vw(c, "boek", 88 + (i % 2) * 8, h - 88 - i * 46, 176);
+      const h = 100 + (n - 1) * 26;
+      for (let i = 0; i < n; i++) vw(c, "boek", 88 + (i % 2) * 6 - 3, h - 50 - i * 26, 176);
     },
   },
   knikker: { maat: () => ({ b: 50, h: 50 }), teken: (c) => vw(c, "knikker", 25, 25, 50) },

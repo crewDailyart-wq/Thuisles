@@ -59,10 +59,12 @@ import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-te
    Woorden
    ===================================================================== */
 
-/** Een getal in de zin (wit, of in de kleur van de stippen). */
-const g = (n: number, k = "wit") => `{${n}:${k}}`;
+/** Een getal in de zin: in de kleur van dat getal (zoals in de som en bij de voorwerpen), of in de kleur van de stippen. */
+const g = (n: number, k = "tegel") => `{${n}:${k}}`;
 const o = (n: number) => g(n, "oranje");
 const bl = (n: number) => g(n, "blauw");
+/** "6 oranje stippen en 1 blauwe stip", in enkelvoud of meervoud. */
+const stippen = (x: number, y: number) => `${o(x)} ${x === 1 ? "oranje stip" : "oranje stippen"} en ${bl(y)} ${y === 1 ? "blauwe stip" : "blauwe stippen"}.`;
 const plus = (a: number, b: number) => `${g(a)} + ${g(b)}`;
 /** Een som op een kaartje of knop. */
 const somTekst = (a: number, b: number) => `${a} + ${b} = ${a + b}`;
@@ -153,7 +155,6 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
   const s = a + b;
   const rijen: 1 | 2 = s > 10 ? 2 : 1;
   const rek = (x: number, y: number, extra: Partial<Rek> = {}) => zet(l, { rek: { rijen, a: x, b: y, ...extra } });
-  const stippen = (x: number, y: number) => `${o(x)} ${x === 1 ? "oranje stip" : "oranje stippen"} en ${bl(y)} ${y === 1 ? "blauwe stip" : "blauwe stippen"}.`;
   if (a === b) {
     rek(a, b);
     await l.zeg(`Kijk: ${stippen(a, b)}`, "Twee keer hetzelfde getal: dat is een dubbelsom.");
@@ -540,7 +541,12 @@ const hoop = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, din
 /** De bakkerij: het lekkers, en de disco voor het discospel. */
 const VOORWERPEN_BAKKERIJ = ["broodje", "brood", "bruin-brood", "stokbrood", "koekje", "taart", "cupcake", "krentenbol", "croissant", "donut", ...VOORWERPEN_DISCO];
 
-const BAKKERIJ_WELKOM = ["Hoi!", "Kijk, mijn bakkerij.", "Ik bak broodjes, koekjes en taartjes.", "Jij rekent uit hoeveel het samen is."];
+/* Een eigen beginzin per les (BOUWREGELS 4.3), passend bij wat er in beeld staat. */
+const BAKKERIJ_WELKOM = [
+  [`Hier liggen ${g(3)} broodjes en daar liggen er ${g(2)}.`, "Hoeveel broodjes zijn het samen?"],
+  [`Wat een koekjes! Hier liggen er ${g(12)} en daar nog ${g(3)}.`, `Nu rekenen we met grotere getallen, tot ${g(20)}.`],
+  [`Hier staan ${g(8)} cupcakes en daar staan er nog ${g(5)}.`, `Samen komen we over de ${g(10)} heen.`, "Hoeveel cupcakes zijn het?"],
+];
 
 function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string) {
   return async (l: Lesgids, st: Stand) => {
@@ -587,7 +593,7 @@ function dansKaartje(paren: [number, number][]): Vraag {
         const [x, y] = paren[gekozen >= 0 ? gekozen : (goedIdx + 1) % paren.length];
         const s = x + y;
         zet(l, { rek: { rijen: s > 10 ? 2 : 1, a: x, b: y } });
-        await l.zeg(`Kijk naar ${g(x)} en ${g(y)}.`, `${o(x)} oranje en ${bl(y)} blauwe stippen.`);
+        await l.zeg(`Kijk naar ${g(x)} en ${g(y)}.`, stippen(x, y));
         if (s < 10) await l.zeg(10 - s === 1 ? `Er blijft ${g(1)} plekje leeg.` : `Er blijven ${g(10 - s)} plekjes leeg.`, `Dat is nog geen ${g(10)}.`);
         else await l.zeg("De rij is vol, en er zijn nog stippen over.", `Dat is meer dan ${g(10)}.`);
         await l.zeg(`Bij ${g(10)} is de rij precies vol.`);
@@ -631,7 +637,7 @@ function dansPlaten(getallen: number[]): Vraag {
       samen: async () => {
         zet(l, { rek: { rijen: 1, a: anker, b: 0 } });
         if (anker === 0) await l.zeg(`Neem de ${g(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
-        else await l.zeg(`Neem de ${g(anker)}.`, `Ik zet ${o(anker)} stippen in de rij.`);
+        else await l.zeg(`Neem de ${g(anker)}.`, anker === 1 ? `Ik zet ${o(1)} stip in de rij.` : `Ik zet ${o(anker)} stippen in de rij.`);
         await l.zeg("Hoeveel plekjes zijn er nog leeg?", "Tel ze maar.");
         await l.verder();
         zet(l, { rek: null });
@@ -643,7 +649,12 @@ function dansPlaten(getallen: number[]): Vraag {
   };
 }
 
-const DANS_WELKOM = ["Hoi!", "Welkom in de disco.", "Hier dansen de getallen.", `We zoeken getallen die samen ${g(10)} zijn.`];
+const DANS_WELKOM = [
+  ["De discobal draait en de muziek staat aan.", `Zoek de kaartjes die samen ${g(10)} zijn.`],
+  ["De platen draaien rond op de draaitafel.", `Zoek twee platen die samen ${g(10)} zijn.`],
+  ["De discobal schittert, maar let goed op!", `Sommige platen zijn bijna ${g(10)}.`, `Welke twee zijn precies ${g(10)}?`],
+  ["Het feest in de disco gaat door.", `Nu zitten sommige kaartjes dicht bij ${g(10)}.`, "Zoek steeds de twee die er precies samen zijn."],
+];
 
 function dansUitleg(kaartjes: boolean) {
   return async (l: Lesgids) => {
@@ -678,7 +689,8 @@ async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
     return;
   }
   zet(l, { busLicht: true });
-  if (a >= 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
+  if (a === 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, `Dat zijn ${g(10)} pakjes.`);
+  else if (a > 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
   else await l.zeg(a === 1 ? `In de bus ligt ${g(1)} pakje.` : `In de bus liggen ${g(a)} pakjes.`);
   zet(l, { busLos: true });
   await l.zeg(b === 1 ? `Naast de bus ligt ${g(1)} pakje.` : `Naast de bus liggen ${g(b)} pakjes.`, `We tellen verder vanaf ${g(a)}.`);
@@ -716,7 +728,14 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
   };
 }
 
-const BUS_WELKOM = ["Hoi!", "Kijk, daar komt de bezorgbus.", "Hij brengt pakjes rond.", "Er liggen al pakjes in.", "Bij de halte komen er pakjes bij.", "Jij rekent uit hoeveel pakjes er dan in de bus liggen."];
+const BUS_WELKOM: Record<string, string[]> = {
+  "1-1": [`In de bezorgbus liggen ${g(3)} pakjes.`, `Bij de halte komen er ${g(2)} bij.`, "Hoeveel pakjes liggen er dan in de bus?"],
+  "1-2": [`De bezorgbus is al goed gevuld: er liggen ${g(12)} pakjes in.`, `Bij de halte komen er nog ${g(3)} bij.`, "Nu rekenen we met meer dan tien pakjes."],
+  "1-3": [`In de bus liggen ${g(8)} pakjes en er komen er ${g(4)} bij.`, `Nu gaan we over de ${g(10)} heen.`, "Hoeveel pakjes zijn het dan?"],
+  "2-1": [`Kijk, de bus heeft ${g(4)} pakjes bij zich.`, "Het getal in het rondje zegt hoeveel pakjes er bijkomen.", "Hoeveel pakjes liggen er dan in de bus?"],
+  "2-2": [`De bus rijdt rond met ${g(12)} pakjes.`, "Het rondje laat zien hoeveel er bijkomen.", `We tellen door tot ${g(20)}.`],
+  "2-3": [`De bus is terug met ${g(8)} pakjes.`, "Het rondje vertelt wat er bijkomt.", `Soms gaan we over de ${g(10)} heen.`],
+};
 
 function busUitleg(a: number, b: number, alsGetal: boolean) {
   return async (l: Lesgids, st: Stand) => {
@@ -734,7 +753,11 @@ function busUitleg(a: number, b: number, alsGetal: boolean) {
    Kale sommen (7274)
    ===================================================================== */
 
-const KAAL_WELKOM = ["Hoi!", "We rekenen plussommen uit.", "Er staat alleen de som, zonder plaatjes.", "Plussommen uitrekenen heet ook optellen."];
+const KAAL_WELKOM = [
+  ["Kijk eens naar de plus!", `Hoeveel is ${plus(4, 3)}?`, "Typ het antwoord zelf."],
+  ["De plussommen worden groter.", `Hoeveel is ${plus(13, 5)}?`, `Het antwoord blijft onder de ${g(20)}.`],
+  [`Nu gaan we over de ${g(10)} heen!`, `Hoeveel is ${plus(7, 6)}?`, `Maak eerst een tiental, dat helpt.`],
+];
 
 function kaalUitleg(a: number, b: number, level: number) {
   return async (l: Lesgids, st: Stand) => {
@@ -796,7 +819,7 @@ const bakkerij1 = les({
   level: 1,
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
-  welkom: BAKKERIJ_WELKOM,
+  welkom: BAKKERIJ_WELKOM[0],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(3, "broodje"), hoop(2, "broodje")] },
   uitleg: bakkerijUitleg([hoop(3, "broodje"), hoop(2, "broodje")], 3, 2, "broodjes"),
   /* Level 1: tot 10. Zoals Squla: verhaaltjes, welke som, disco, verbinden, verhaaltje; daarna nog een ronde. */
@@ -809,7 +832,7 @@ const bakkerij1 = les({
     discoSom(5, 3, [9, 7, 8]),
     discoSom(6, 4, [10, 8, 9]),
     verbind([[3, 4], [5, 3], [2, 7]], [9, 7, 8]),
-    verhaal([hoop(4, "donut"), hoop(4, "donut")], 4, 4, [4, 8, 7, 0], [`Hier liggen ${g(4)} donuts.`, `Daar liggen er ook ${g(4)}.`, "Hoeveel donuts zijn het bij elkaar?"]),
+    verhaal([hoop(4, "donut"), hoop(4, "donut")], 4, 4, [4, 8, 7, 0], [`Hier liggen ${g(4)} donuts.`, `Daar liggen er ook ${g(4)}.`, "Hoeveel donuts zijn het samen?"]),
     verhaal([hoop(2, "croissant"), hoop(5, "croissant")], 2, 5, [6, 7, 8, 2], [`Ik heb ${g(2)} croissants gebakken.`, `Daarna bak ik er nog ${g(5)}.`, "Hoeveel croissants zijn het samen?"]),
     verhaal([hoop(3, "broodje"), hoop(6, "broodje")], 3, 6, [8, 9, 10, 3], [`Hier liggen ${g(3)} broodjes.`, `Daar liggen er ${g(6)}.`, "Hoeveel broodjes zijn het samen?"]),
     welkeSom([hoop(4, "taart"), hoop(5, "taart")], 4, 5, ["5 − 4 = 1", "4 + 5 = 9", "4 + 4 = 8", "5 + 5 = 10"], [`Er staan ${g(4)} taartjes.`, `Ik zet er ${g(5)} bij.`, "Welke som hoort erbij?"]),
@@ -828,7 +851,7 @@ const bakkerij2 = les({
   level: 2,
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
-  welkom: BAKKERIJ_WELKOM,
+  welkom: BAKKERIJ_WELKOM[1],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(12, "koekje"), hoop(3, "koekje")] },
   uitleg: bakkerijUitleg([hoop(12, "koekje"), hoop(3, "koekje")], 12, 3, "koekjes"),
   /* Level 2: tot 20, niet over het tiental (zoals Squla één kleine over het tiental in het verbinden). */
@@ -860,7 +883,7 @@ const bakkerij3 = les({
   level: 3,
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
-  welkom: BAKKERIJ_WELKOM,
+  welkom: BAKKERIJ_WELKOM[2],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(8, "cupcake"), hoop(5, "cupcake")] },
   uitleg: bakkerijUitleg([hoop(8, "cupcake"), hoop(5, "cupcake")], 8, 5, "cupcakes"),
   /* Level 3: tot 20 over het tiental, met dubbelsommen en één makkelijke onder de 10. */
@@ -894,7 +917,7 @@ const dansen1 = les({
   level: 1,
   kaart: KaartDisco,
   voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM,
+  welkom: DANS_WELKOM[0],
   begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
   uitleg: dansUitleg(true),
   vragen: [
@@ -924,7 +947,7 @@ const dansen2 = les({
   level: 2,
   kaart: KaartDisco,
   voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM,
+  welkom: DANS_WELKOM[1],
   begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
   uitleg: dansUitleg(false),
   vragen: [
@@ -954,7 +977,7 @@ const dansen3 = les({
   level: 3,
   kaart: KaartDisco,
   voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM,
+  welkom: DANS_WELKOM[2],
   begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
   uitleg: dansUitleg(false),
   /* Zoals Squla level 3: vaak een tweede paar dat er net naast zit (samen 9 of 11). */
@@ -985,7 +1008,7 @@ const dansen4 = les({
   level: 4,
   kaart: KaartDisco,
   voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM,
+  welkom: DANS_WELKOM[3],
   begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
   uitleg: dansUitleg(true),
   /* Zoals Squla level 4: de andere kaartjes zitten dicht bij 10 (8, 9, 11, 12). */
@@ -1020,7 +1043,7 @@ function busLes(nr: 1 | 2, level: number, titel: string, voorbeeld: [number, num
     level,
     kaart: KaartBus,
     voorwerpen: VOORWERPEN_BUS,
-    welkom: BUS_WELKOM,
+    welkom: BUS_WELKOM[`${nr}-${level}`],
     begin: { soort: "bus", id: "begin", inBus: voorbeeld[0], instap: voorbeeld[1], alsGetal },
     uitleg: busUitleg(voorbeeld[0], voorbeeld[1], alsGetal),
     vragen: sommen.map(([a, b]) => busVraag(a, b, alsGetal)),
@@ -1063,7 +1086,7 @@ function kaalLes(level: number, titel: string, voorbeeld: [number, number], somm
     level,
     kaart: KaartKaal,
     voorwerpen: [],
-    welkom: KAAL_WELKOM,
+    welkom: KAAL_WELKOM[level - 1],
     begin: { soort: "kaal", id: "begin", level },
     uitleg: kaalUitleg(voorbeeld[0], voorbeeld[1], level),
     vragen: sommen.map(([a, b]) => typSom(a, b, (id) => ({ soort: "kaal", id, level }))),

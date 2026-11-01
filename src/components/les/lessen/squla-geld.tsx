@@ -596,7 +596,7 @@ const geldmachine1: Lesdraaiboek = {
   kaarttekening: KaartSpaarpot,
   voorwerpen: ["spaarpot", "knoop"],
   async speel(l) {
-    await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], ["Hoi!", "Dit is mijn spaarpot.", "Er zitten munten en briefjes in.", "Weet jij welk geld eruit komt?"], async () => {
+    await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], ["Kijk eens naar mijn spaarpot!", "Er valt geld uit.", "Weet jij welk geld het is?"], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["m1"] }, { id: "u1", geld: ["b5"] }] });
       zet(l, { licht: ["u0"] });
       await l.zeg("Dit is een munt.", "Een munt is rond.", "Op een munt staat hoeveel hij waard is.");
@@ -662,7 +662,7 @@ const geldmachine2Opgaven: Opgave[] = [
     keuzes: [["b5", "b5"], ["b5", "m2", "m1"], ["m2", "m2", "m2", "m2"], ["b5", "m2"]],
     doel: 8,
     aantal: 2,
-    vraag: [`Het treintje kost ${e(8)} euro.`, `Waar ligt ${e(8)} euro?`],
+    vraag: ["Ik betaal met precies genoeg geld.", `Waar ligt ${e(8)} euro?`],
   }),
   kiesGeld({
     keuzes: [["b5", "b5"], ["m2", "m2", "m2", "m1"], ["b5", "m2", "m1", "m1"]],
@@ -724,7 +724,7 @@ const geldmachine2: Lesdraaiboek = {
   kaarttekening: KaartSpaarpot,
   voorwerpen: ["spaarpot", "springtouw", "bal", "speelgoedauto", "vlieger", "raketje", "bootje", "treintje", "voetbal"],
   async speel(l) {
-    await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "b5", "b10"], ["Hoi!", "Ik heb geld uit mijn spaarpot gepakt.", "Ik ga naar de speelgoedwinkel.", "Help jij me met betalen?"], async () => {
+    await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "b5", "b10"], ["Met het geld uit mijn spaarpot ga ik naar de speelgoedwinkel.", "Ik betaal met precies genoeg geld.", "Welke munten en briefjes geef ik?"], async () => {
       zet(l, { ...LEEG, groot: [speelgoed("bootje", 8)], kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
       await l.zeg(`Op het kaartje staat wat iets kost: ${e(8)} euro.`, "Je telt het geld bij elkaar.", "Begin bij het briefje.");
       await telGeld(l, "u0", ["b5", "m2", "m1"], { spreek: true, eind: false });
@@ -895,7 +895,7 @@ const zakgeld1: Lesdraaiboek = {
   kaarttekening: KaartSkateboard,
   voorwerpen: ["spaarpot", "portemonnee", "skateboard", "bezem", "gieter", "emmer", "bed", "schelp", "doos", "bord", "schoen", "jas"],
   async speel(l) {
-    await welkom(l, { groot: [tek("spaarpot"), SKATE(20)] }, ["m1", "m2", "b5", "b10", "b20"], ["Hoi!", "Jij wilt een skateboard kopen.", "Daarvoor ga je sparen.", "Voor elk klusje krijg je wat geld."], async () => {
+    await welkom(l, { groot: [tek("spaarpot"), SKATE(20)] }, ["m1", "m2", "b5", "b10", "b20"], ["Je spaart voor een skateboard.", "Voor elk klusje krijg je wat geld.", "Hoeveel heb je al?"], async () => {
       zet(l, { ...LEEG, groot: [tek("bezem"), geldDeel("s", ["m1"]), { soort: "plus" }, tek("gieter"), geldDeel("n", ["m1"])] });
       await l.zeg(`Voor het vegen krijg je ${e(1)} euro.`, `Voor de planten krijg je ook ${e(1)} euro.`, "Hoeveel is dat bij elkaar?", "Dan tel je het geld samen.");
       await telGeld(l, "s", ["m1"], { spreek: true, eind: false });
@@ -925,7 +925,7 @@ const zakgeld2Opgaven: Opgave[] = [
     vraag: ["Op het plein is een rommelmarkt.", "Daar worden oude spullen verkocht.", "Je kunt die spullen kopen.", "Is dat waar of niet waar?"],
     goedZin: ["Op een rommelmarkt kun je spullen kopen.", "Vaak zijn ze niet zo duur.", "Je gaat kijken!"],
     samen: async (l) => {
-      await l.zeg("Kijk naar de kraam.", "Er liggen spullen op.", "Die spullen zijn te koop.", "Je betaalt met munten en briefjes.");
+      await l.zeg("Kijk naar de kraam.", "Hier worden spullen verkocht.", "Die spullen zijn te koop.", "Je betaalt met munten en briefjes.");
     },
     tip: ["Kun je de spullen op de kraam kopen?"],
   }),
@@ -1021,7 +1021,7 @@ const zakgeld2Opgaven: Opgave[] = [
     keuzes: [["m2", "m1"], ["m1", "m1"], ["m1", "m1", "m1"], ["m2", "m2"]],
     doel: 3,
     aantal: 2,
-    vraag: ["Nog één vraag.", `Waar ligt ${e(3)} euro?`],
+    vraag: ["Volgende vraag.", `Waar ligt ${e(3)} euro?`],
   }),
 ];
 
@@ -1035,7 +1035,7 @@ const zakgeld2: Lesdraaiboek = {
   kaarttekening: KaartSkateboard,
   voorwerpen: ["spaarpot", "marktkraam", "bal", "boek", "knoop", "skateboard"],
   async speel(l) {
-    await welkom(l, { groot: [tek("spaarpot")] }, ["m1", "m2", "b5", "b10"], ["Hoi!", `Je hebt ${e(20)} euro gespaard.`, "Vandaag ga je naar de rommelmarkt.", "Ga je mee?"], async () => {
+    await welkom(l, { groot: [tek("spaarpot")] }, ["m1", "m2", "b5", "b10"], [`De spaarpot is vol: ${e(20)} euro!`, "Wat kun je daarmee kopen op de rommelmarkt?"], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
       await l.zeg("Op de rommelmarkt betaal je met munten en briefjes.", "Je telt het geld bij elkaar.", "Begin bij het briefje.");
       await telGeld(l, "u0", ["b5", "m2", "m1"], { spreek: true, eind: false });
@@ -1079,7 +1079,7 @@ const geld1: Lesdraaiboek = {
   kaarttekening: KaartSpaarpot,
   voorwerpen: ["spaarpot"],
   async speel(l) {
-    await welkom(l, {}, ["m1", "m2", "b5", "b10"], ["Hoi!", "Vandaag tellen we geld.", "Je trekt lijnen tussen geld dat bij elkaar hoort."], async () => {
+    await welkom(l, {}, ["m1", "m2", "b5", "b10"], ["Hier ligt geld door elkaar.", "Trek lijnen naar het geld dat bij elkaar hoort."], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
       await l.zeg("Zo tel je geld.", "Begin bij het briefje.", "Tel dan de munten erbij.");
       await telGeld(l, "u0", ["b5", "m2", "m1"], { spreek: true, eind: false });
@@ -1123,7 +1123,7 @@ const geld2: Lesdraaiboek = {
   kaarttekening: KaartSpaarpot,
   voorwerpen: ["spaarpot"],
   async speel(l) {
-    await welkom(l, {}, ["m1", "m2", "b5", "b10", "b20"], ["Hoi!", `Vandaag tellen we geld tot ${e(20)} euro.`, "Soms zijn er twee goede antwoorden.", "En soms trek je lijnen."], async () => {
+    await welkom(l, {}, ["m1", "m2", "b5", "b10", "b20"], [`Nu tellen we geld tot ${e(20)} euro.`, "Soms zijn er twee goede antwoorden.", "En soms trek je lijnen."], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b10", "b5"] }, { id: "u1", geld: ["b5", "b5", "b5"] }] });
       await l.zeg("Kijk, twee groepjes briefjes.", "Begin altijd bij het grootste briefje.");
       await telGeld(l, "u0", ["b10", "b5"], { spreek: true, eind: false });

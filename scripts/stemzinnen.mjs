@@ -84,6 +84,35 @@ for (const f of readdirSync(LESSEN).filter((f) => /\.(tsx?|ts)$/.test(f))) {
     }
     perLes.set(les, lijst);
   }
+
+  /*
+    Het welkom van het beginscherm (1 november 2026, BOUWREGELS 4.1-4.3): squlaBegin
+    zegt de eigen zin van de les en "Kun je dit al?" als één tekst. Die zinnen staan
+    niet in l.zeg(…) maar in `welkom: [...]`, een `…_WELKOM = [...]` of de laatste
+    lijst van een eigen `welkom(l, …, [...])`.
+  */
+  const reWelkom = /\bwelkom\s*:\s*\[|_WELKOM\s*=\s*\[|\bawait welkom\(l,/g;
+  while ((m = reWelkom.exec(bron))) {
+    const open = m[0].endsWith("[") ? "[" : "(";
+    const dicht = open === "[" ? "]" : ")";
+    let diep = 1;
+    let i = m.index + m[0].length;
+    for (; i < bron.length && diep > 0; i++) {
+      if (bron[i] === open) diep++;
+      else if (bron[i] === dicht) diep--;
+    }
+    const stuk = open === "[" ? `[${bron.slice(m.index + m[0].length, i)}` : bron.slice(m.index + m[0].length, i - 1);
+    /* De binnenste lijsten met alleen tekst; bij welkom(l, …) alleen lijsten met echte zinnen. */
+    const lijsten = [...stuk.matchAll(/\[((?:\s*(?:"(?:[^"\\]|\\.)*"|`(?:[^`\\]|\\.)*`)\s*,?)+)\s*\]/g)].map((x) => stringsIn(x[1]));
+    const les = ids.filter((x) => x.plek < m.index).pop()?.id ?? `${f.replace(/\.tsx?$/, "")} (gedeeld)`;
+    const lijst = perLes.get(les) ?? new Map();
+    for (const zinnen of lijsten) {
+      if (!zinnen.length || !zinnen.every((a) => /[.!?]$/.test(a.tekst.trim()) && /\s/.test(a.tekst))) continue;
+      const z = kaal([...zinnen.map((a) => a.tekst), "Kun je dit al?"].join(" "));
+      lijst.set(z, zinnen.some((a) => a.patroon));
+    }
+    perLes.set(les, lijst);
+  }
 }
 
 /* 3. Wat de site zelf noteerde. */

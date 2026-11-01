@@ -73,6 +73,8 @@ Alles hieronder geldt, tenzij er "vervangen" staat. Staat er "TWIJFEL", dan staa
 ## 4. Beginscherm "Kun je dit al?"
 
 4.1 **Het beginscherm "Kun je dit al?" laat een voorbeeld van de echte opdracht zien, met een duidelijke zin waarin staat waar de les over gaat.** De controleur keurt dit per les, en dat Ja en Nee daarna kloppen. Sara stuurt hier nog een verbetering over (nog niet ontvangen). — G:1 nov (07:38) — 1 nov
+   **Zo bouw je het (ontwerp 1 nov, uitleg bovenaan `src/components/les/lessen/squla-hulp.ts`):** vast liggen alleen de opbouw (voorbeeld in beeld, Bliepo, Ja en Nee) en de vraag "Kun je dit al?". Per les geef je aan `squlaBegin` een eigen `welkom` (nooit leeg, nooit een standaardzin; anders stopt de les tijdens ontwikkelen met een foutmelding) en een `voorbeeld` dat een echte opgave uit die les in het eigen vlak zet, zonder dat het kind iets hoeft te doen. Ja = meteen oefenen, Nee = de uitleg (gedrag van 4.2). Daarna `npm run stemzinnen`. Voorbeeld:
+   `await squlaBegin(l, { welkom: ["Kijk eens naar de klok!", "Weet jij hoe laat het is?"], voorbeeld: () => k.opgaven[0](l, false).toon?.(), uitleg: () => k.uitleg(l) });`
 4.2 **Bij de start van een les vraagt Bliepo of het kind hulp wil of de les al kent (Ja/Nee).** Ja = korte proef van 1-3 opgaven, Nee = de hele opbouw. Bij terugkomst: "Welkom terug! Opnieuw beginnen of verdergaan?". Ook geen luidsprekertje bij de keuzes. — PLAN §1d, MEM:lessen-ontwerp-voorkeuren — 27-30 okt
 
 4.3 **Aan het begin van elke les vertelt Bliepo wat het kind gaat doen, met een EIGEN zin per les** (geen vaste standaardzin), afwisselend en passend bij het onderwerp en het verhaal van die les, zodat het kind meteen snapt waar de les over gaat. Voorbeeld: "Kijk eens naar de klok! Weet jij hoe laat het is?" of "De schatkist zit vol munten. Help jij met splitsen?" (zonder mensen: geen piraten als figuur, regel 1.1). De woorden lichten op terwijl Bliepo praat (3.7). Voorlopig de browserstem, geen ElevenLabs-credits; later Ruth: elke zin staat ook in STEMZINNEN.md. Geldt voor ALLE Squla-lessen, ook de al gebouwde. De controleur keurt hierop. — G:1 nov — 1 nov
@@ -102,7 +104,7 @@ Alles hieronder geldt, tenzij er "vervangen" staat. Staat er "TWIJFEL", dan staa
 
 ## 7. Oplichten en gloed
 
-7.1 **Glow in the dark en hologram alleen waar het past; wissel per les af.** Sommige lessen met glow of hologram, andere zonder. — G:1 nov (07:38), G:30 okt (13:58) — 1 nov
+7.1 **Glow in the dark en hologram alleen waar het past; wissel per les af.** Sommige lessen met glow of hologram, andere zonder. — G:1 nov (07:38), G:30 okt (13:58) — 1 nov. (Sara zei later op 1 nov even dat hologram niet hoefde, maar trok dat meteen weer in: deze regel geldt.)
 7.2 **Voorwerpen worden door glow nooit doorzichtig of onduidelijk** (zoals eerder de doorzichtige paarse olifant). Ze blijven altijd stevig en goed te zien. — G:1 nov (07:38) — 1 nov
 7.3 **Gloed is subtiel:** een zacht, smal randje licht rond het voorwerp, geen grote lichtwolk, niet wit-uitgebeten. De sterkte is één centrale instelling (`gloed`, standaard 0,5). De lichtring bij selecteren en de lichtflits/golf bij goed zijn rustig. Alleen via `bak()` en de effecten van `holo/basis.ts`; nooit een live gloedfilter elk beeld. — G:27 okt (03:29), ONTW, B-PH — 27 okt
 7.4 **Gloed alleen op het moment dat het iets betekent** (meetellen, aanwijzen, goed); plaatjes zelf hebben geen vaste gloed. Gekozen na drie proeflessen; donkere achtergrond (nacht). — MEM:beeldstijl-zoals-synthesis, SQ — 31 okt. TWIJFEL: zie T3.
@@ -164,6 +166,23 @@ Alles hieronder geldt, tenzij er "vervangen" staat. Staat er "TWIJFEL", dan staa
 13.3 **De Bliepo-stem en tekst boven Bliepo zijn instellingen in de stijlkiezer** (/admin/stijl, geldt voor de hele kinderkant, staat in de database). — MEM:stijlkiezer — 26 okt
 13.4 **Elke les heeft een eigen openbare pagina voor ouders/Google** (SEO), het lesscherm zelf staat op noindex en heeft niet extra tekst. — G:27 okt (01:13) — 27 okt
 13.5 **Onderdelen die Sara later wil laten komen:** een nieuwe verbetering van haar over het beginscherm "Kun je dit al?" (zie 4.1). Voeg elke nieuwe verbetering van Sara direct aan dit bestand toe. — G:1 nov — 1 nov
+
+## 14. Fouten die we niet meer maken (geleerd, 1 november 2026)
+
+Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een nieuwe fout bij, zet hem hier.
+
+14.1 **Mensen weghalen = ook de zinnen nalopen.** Na het vervangen bleef "Mama heeft water met fruit" en "Wie is het zwaarst?" (bij dingen: "Wat") staan. Zoek na elke vervanging op namen, "wie", "hij/zij", "mama/papa/kind".
+14.2 **Enkelvoud/meervoud en lidwoord via een hulpfunctie, nooit los geplakt.** Fout: "1 stippen", "de kleinste ijsje", "Welke ijsje", "De één stukken", "Daarop liggen er nog 0" / "10 + 0". Gebruik een helper die het/de en enkelvoud/meervoud kent, en laat een deel weg als het 0 is.
+14.3 **Dezelfde soort vraag overal dezelfde woorden** ("zijn het samen?", niet ook "bij elkaar").
+14.4 **Zin en beeld moeten kloppen:** "Ze zijn even groot" bij twee verschillende dozen; "Er liggen spullen op" bij een lege kraam; "munten en briefjes" bij een spaarpot met alleen munten; "Nog één vraag" terwijl er drie komen; olijven áchter in plaats van in de schaal; een prijs die in het welkom anders is dan in de vraag.
+14.5 **Tekenen IN een plaatje (pakjes in de bus, klokje op een scherm) = de plek meten op het echte plaatje** en opnieuw meten als het plaatje wordt vervangen. Dingen mogen niet over de rand of over elkaar, en moeten groot genoeg zijn om te tellen.
+14.6 **Plaatjes moeten op de donkere achtergrond goed zichtbaar zijn** (een zwarte olijf viel weg) en **meervoudig kunnen voorkomen** (niet "de aarde" als planeet die je tien keer telt).
+14.7 **Hetzelfde ding = hetzelfde uiterlijk** (groene olijf los én op de pizza; dozen die "even groot" zijn = hetzelfde plaatje in twee kleuren).
+14.8 **Ingesloten wit** (hoepel, stoelspijlen, donutgat) moet doorzichtig; witte randjes nooit (1.18).
+14.9 **Een vervanging behoudt het doel** (1.21): het plantje in de klokles droeg een dagverhaal; een losse wekker niet.
+14.10 **Kleur van het getal = kleur van het voorwerp** (2.2): na het vervangen van een plaatje (planeet blauw → paars) ook de kleur in de zin aanpassen.
+14.11 **Niet alles tegelijk testen:** met te veel helpers liep de laptop vast (load 30-75) en faalden tests vals. Maximaal 3 helpers; zware controles na elkaar.
+14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
 

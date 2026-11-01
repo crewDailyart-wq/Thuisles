@@ -98,10 +98,10 @@ export function tekenSomkaart(c: C, b: number, h: number, nacht: boolean) {
   }
 }
 
-/** Een donkerblauw rondje (voor het getal van de instappers, 130 × 130). */
-export function tekenRondje(c: C) {
+/** Een donkerblauw rondje (voor het getal van de instappers, 130 × 130), met een rand in de kleur van dat getal. */
+export function tekenRondje(c: C, rand = "#ffffff") {
   c.fillStyle = "#1f3f8f";
-  c.strokeStyle = "#ffffff";
+  c.strokeStyle = rand;
   c.lineWidth = 5;
   c.beginPath();
   c.arc(65, 65, 60, 0, Math.PI * 2);

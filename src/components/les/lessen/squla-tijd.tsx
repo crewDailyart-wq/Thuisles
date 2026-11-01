@@ -365,7 +365,7 @@ const dagen1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
-    await welkomTrein(l, ["Hoi!", "Kijk, daar komt de weektrein.", "Elke wagon is een dag van de week.", "We leren de volgorde van de dagen."], async () => {
+    await welkomTrein(l, ["Daar komt de weektrein!", "Elke wagon is een dag van de week, in de goede volgorde."], async () => {
       await l.zeg("Kijk mee.");
       await zegDagen(l, 0, 6);
       zetT(l, { licht: [0] });
@@ -407,7 +407,7 @@ const dagen2: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
-    await welkomTrein(l, ["Hoi!", "Daar is de weektrein weer.", "We zoeken de dag erna en de dag ervoor."], async () => {
+    await welkomTrein(l, ["De weektrein staat weer klaar.", "Welke dag komt erna en welke dag komt ervoor?"], async () => {
       zetT(l, { licht: [2] });
       await l.zeg("Kijk naar woensdag.");
       zetT(l, { licht: [2, 3] });
@@ -619,7 +619,7 @@ const dagen3: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
-    await welkomTrein(l, ["Hoi!", "Daar is de weektrein weer.", "We zetten dagen op volgorde.", "En we rekenen met gisteren, vandaag en morgen."], async () => {
+    await welkomTrein(l, ["De weektrein rijdt weer langs.", "Zet de dagen op volgorde.", "Wat was gisteren, wat is vandaag en wat wordt morgen?"], async () => {
       await l.zeg("De dagen staan altijd in dezelfde volgorde.");
       zetT(l, { licht: [6, 0] });
       await l.zeg("Na zondag begint de week weer bij maandag.");
@@ -1131,7 +1131,7 @@ const kalender1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
-    await welkomPlaatjes(l, "maand|hoed=13", ["Hoi!", "Dit is de kalender van juni.", "Noa is bijna jarig.", "We leren welke kalenders er zijn."], async () => {
+    await welkomPlaatjes(l, "maand|hoed=13", ["Dit is de kalender van juni.", "We leren welke kalenders er zijn."], async () => {
       zetP(l, { ...LEEG_P, groot: null, kaarten: [P.ritme, P.rooster, P.maand] });
       zetP(l, { licht: ["plaatjes"] });
       await l.zeg("Op een dagkalender zie je wat je op één dag doet.");
@@ -1359,7 +1359,7 @@ const kalender2: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
-    await welkomPlaatjes(l, "maand|hoed=13", ["Hoi!", "Dit is de kalender van juni.", "Noa is jarig op {13:wit} juni.", "We gaan tellen hoe lang het nog duurt."], async () => {
+    await welkomPlaatjes(l, "maand|hoed=13", ["De kalender van juni zit weer vol dagen.", "Op {13:wit} juni staat een hoedje.", "Hoe lang duurt het nog tot die dag?"], async () => {
       zetP(l, { groot: "maand|boog=1-3" });
       await l.zeg("Elk vakje is een dag.", "Van vakje naar vakje is één nachtje slapen.", "Zie je de boogjes?", "Van {1:wit} juni naar {3:wit} juni is {2:wit} nachtjes slapen.");
       zetP(l, { groot: "maand|hoed=13" });
@@ -1608,7 +1608,7 @@ const tijden1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
-    await welkomPlaatjes(l, "kampvuur", ["Hoi!", "We leren woorden over tijd.", "Zoals eerst, straks, laat en morgen.", "Bij het kampvuur lezen we voor."], async () => {
+    await welkomPlaatjes(l, "kampvuur", ["Kijk, het kampvuur brandt!", "We leren woorden over tijd, zoals eerst, straks, laat en morgen."], async () => {
       zetP(l, { groot: null, kaarten: [DAGDEEL("ochtend"), DAGDEEL("middag"), DAGDEEL("avond"), DAGDEEL("nacht")] });
       zetP(l, { licht: ["ochtend"] });
       await l.zeg("Eerst is het ochtend.");
@@ -1865,7 +1865,7 @@ const tijden2: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
-    await welkomPlaatjes(l, "bakkerij", ["Hoi!", "Dit is de bakkerij van bakker Tim.", "We kijken wat lang duurt en wat kort duurt."], async () => {
+    await welkomPlaatjes(l, "bakkerij", ["Kijk, de bakkerij!", "Wat duurt lang en wat duurt kort?"], async () => {
       zetP(l, { groot: null, kaarten: twee({ id: "koekje", tekening: "koekje", zeg: "een koekje eten" }, { id: "slapen", tekening: "bed", zeg: "een nacht slapen" }) });
       zetP(l, { licht: ["koekje"] });
       await l.zeg("Een koekje eten duurt heel kort.");
