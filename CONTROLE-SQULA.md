@@ -1349,3 +1349,100 @@ Speeltest met GOED=1, één les tegelijk: alle 9 lessen tot het eind. Gekeurd op
 
 ### squla-tellen-telrij-2 — ronde 2 — GOEDGEKEURD
 - Opgelost: `[99, 90, 100]`.
+
+---
+
+## Getallenlijn — ronde 2 (de 4 afgekeurde lessen) — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: alle 4 tot het eind. Gekeurd t/m 14.23.
+
+### squla-getallenlijn-rangschikken-1 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - "Welk getal hoort op de puntjes?" (welkom en vragen);
+  - bij rijen die per 2 springen is de tip "Welk getal is 2 meer dan …?";
+  - de vlaggetjesvraag is overal "Bij welk getal staat het vlaggetje?".
+- Het beginscherm toont nu de lichtslinger met 3, 4, 5, …, 7 (schermfoto 002). In ronde 1 van deze controleur was het beginscherm leeg.
+- Tip (14.23, blijft): de lampjes lijken op kerstballen.
+
+### squla-getallenlijn-rangschikken-2 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - "diamanten" in plaats van "kristallen";
+  - na Nee een uitleg met dezelfde diamantenrij (7 … 11, op de puntjes 9). Dat getal komt in geen enkele vraag voor, dus er wordt niets verklapt.
+
+### squla-getallenlijn-rangschikken-3 — ronde 2 — GOEDGEKEURD
+- Opgelost: na Nee eerst dezelfde soort lijn als het voorbeeld (0–20 met 10–14, vlaggetje bij 18), daarna de lijn per 2 (vlaggetje bij 16). Geen latere vraag gebruikt 18 of 16 op zo'n lijn.
+
+### squla-getallenlijn-kat-2 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - na Nee de planeet met 8: "Welk getal komt ervoor? … Dat is 7." (`uitlegVoor`). De vragen gebruiken 15, 19 en 11, dus er wordt niets verklapt;
+  - overal "de pijl".
+
+---
+
+## Meer, minder, evenveel — ronde 2 (de 4 afgekeurde lessen) — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: **alle 4 tot het eind, ook 3-1** (32 stappen, de sleepvragen met de potjes lukken nu). Gekeurd t/m 14.23.
+
+### squla-meer-minder-evenveel1-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: "rijtjes van {5:rood}".
+
+### squla-meer-minder-evenveel2-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: de uitleg na Nee gebruikt de koekjes `[9, 11, 10]` ("11 is de meeste"). Die rij komt in geen vraag voor.
+- De kaarten hebben geen rand meer. De drie groepjes koekjes staan met duidelijke ruimte ertussen (schermfoto 021), dus je ziet goed welke groep bij elkaar hoort.
+- Tip (14.23): de koekjes zijn ±40 px en staan alleen in het midden van het scherm. Boven en onder is veel ruimte. Groter is vrolijker en beter te tellen op een telefoon.
+
+### squla-meer-minder-evenveel3-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: na `squlaBegin` staat `st.huidig = ""`. De eerste sleepvraag krijgt zijn testvolgorde, en de speelcontrole speelt de hele les.
+
+### squla-meer-minder-evenveel3-2 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - `start` en de uitleg na Nee gaan over eierdoosjes (`uitlegDozen`: 3 doosjes, "In elk doosje zitten er 6", 6, 12, 18);
+  - "doosjes van {6:wit}".
+- Beeld: 27 koekjes in rijen van 10 zijn los en goed te tellen (schermfoto 010).
+
+---
+
+## Plussommen en Minsommen — ronde 3 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd:
+- De punten uit ronde 2 nagekeken in de code (`git diff` sinds de keuring van ronde 2) en op schermfoto's.
+- Speeltest `GOED=1`, één les tegelijk: de 9 afgekeurde lessen en als steekproef min-ruimte-2, min-bus1-1 en plus-bus1-1, **alle 12 tot het eind**. Schermfoto's in `scratchpad/controle/opus-r3pm/`.
+- Ook gekeurd op 14.22 (kleur verklapt niets), de nieuwe uitwerking van 2.1 en 14.23 (kijk als een kind; bij twijfel afkeuren).
+
+Opgelost uit ronde 2:
+- bakkerij-1/2/3: de uitleg na Nee gaat over hetzelfde ding als het voorbeeld (taartjes, stokbroden, koekjes).
+- dansen-1/4: de getallen op de kaartjes (zwart op wit) zijn in de zin wit. dansen-2/3: elke plaat heeft de kleur van zijn getal, dezelfde als in de zin (schermfoto dansen-2/003: gele 3, blauwe 7). In `dansUitleg` is de 7 overal oranje en de 3 blauw.
+- min-ruimte-1: de uitleg gaat over ballonnen. min-machine-4: de uitleg gaat over het ijsje.
+- 14.22 werkt: bij min-ruimte-1 staan eerst alle 7 ballonnen in de kleur van de 7 (schermfoto 003); pas bij "weg" krijgen de 4 de kleur van de 4 en worden ze dof. Bij de bus liggen de overgebleven pakjes in de kleur van het eerste getal.
+- 2.1: ballonnen, raketjes en pakjes zijn helemaal in de kleur van hun getal; eten (taartjes, koekjes) houdt de echte kleur met een randje.
+
+### Nieuwe of overgebleven fouten
+
+- **squla-plus-bakkerij-1** — ronde 3 — AFGEKEURD
+  - 14.23: de taartjes zweven los in de lucht, zonder toonbank, plank of schaal (schermfoto 004). Voorstel: de bakkerijdingen op een toonbank of bakplaat zetten.
+  - Nog om te zetten (2.1): de getalkleuren (1 rood, 4 groen) passen niet bij roze taartjes.
+- **squla-plus-bakkerij-2** — ronde 3 — AFGEKEURD
+  - 14.21: de uitleg na Nee is 12 + 3 stokbroden (r. 890). Vraag `somBijPlaatje` met 12 + 3 cupcakes komt later in de les, dus het antwoord 15 wordt verklapt. Voorstel: 11 + 5 stokbroden (komt in de les niet voor).
+  - 14.23: zelfde als bakkerij-1 (zwevende stokbroden).
+- **squla-plus-bakkerij-3** — ronde 3 — AFGEKEURD
+  - 14.21: de uitleg is 8 + 5 koekjes (r. 922). `discoSom(8, 5)` komt later in de les. Voorstel: 9 + 3 koekjes (komt niet voor).
+  - 14.23: de koekjes zweven in twee rijen in de lucht (schermfoto 004).
+  - Nog om te zetten (2.1): bruine koekjes met een blauw randje en blauwe getallen.
+- **squla-plus-dansen-1, 2, 3, 4** — ronde 3 — AFGEKEURD
+  - Kleuren: in orde.
+  - 14.23/1.15: de kaartjes (dansen-1/003) en de platen (dansen-2/003) staan half over de paarse tafel en de draaitafel heen. De platen 8 en 7 liggen voor de draaitafel en het oranje kaartje bedekt de tafel. Het ziet eruit alsof ze voor de tafel zweven. Voorstel: de tafel met draaitafel kleiner of lager zetten, of de kaartjes/platen in een rij erboven of ernaast, zonder dat ze elkaar raken.
+- **squla-min-ruimte-1** — ronde 3 — GOEDGEKEURD (ballonnen zweven hoort erbij; groot genoeg, glans zichtbaar).
+- **squla-min-machine-4** — ronde 3 — AFGEKEURD (14.23, twijfel)
+  - Welkom: "Er zit geld in je portemonnee". In beeld zweven de munten boven een dichte portemonnee (schermfoto 003).
+  - Voorstel: de munten op of half in een open portemonnee leggen, of de zin "Je haalt het geld uit je portemonnee."
+- **Steekproef al goedgekeurde lessen:**
+  - **squla-min-ruimte-2** — AFGEKEURD (14.22/14.23): bij 14 − 3 zijn alle 14 raketjes grijs-wit (14 is "wit", want boven 10 is er geen tegelkleur), schermfoto 003. Grijs en dof is juist de kleur van "weg". Zo lijken alle raketjes al weg, en ze zien er niet vrolijk uit. Voorstel: bij getallen boven 10 een echte kleur kiezen (bijv. de kleur van het voorwerp, of een vaste kleur voor het eerste getal), en alleen wat weggaat grijs maken. Dit geldt waarschijnlijk ook voor ruimte-3 en de andere sommen boven 10.
+  - **squla-min-bus1-1 en squla-plus-bus1-1** — AFGEKEURD (14.23, groot genoeg)
+    - De pakjes in de bus zijn ±28–30 px. Ze staan in één dunne rij onderin het raam van een heel grote bus (min-bus1-1/003, plus-bus1-1/003).
+    - Je kunt ze wel tellen, maar ze zijn klein en de glans is niet te zien.
+    - Voorstel: grotere pakjes in het raam (bijv. 2 rijen van ±50 px), of de bus kleiner en de pakjes groter.
+    - Dit geldt voor alle 12 buslessen (plus en min). Die heb ik verder niet opnieuw gespeeld.
+
+**Uitslag ronde 3:**
+- GOEDGEKEURD: min-ruimte-1.
+- AFGEKEURD: plus-bakkerij-1/2/3, plus-dansen-1/2/3/4, min-machine-4; uit de steekproef ook min-ruimte-2 (grijze raketjes boven 10) en min-bus1-1/plus-bus1-1 (pakjes te klein, alle buslessen).

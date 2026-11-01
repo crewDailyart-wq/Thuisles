@@ -199,6 +199,7 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
    - vrolijk: afwisselende kleuren waar dat kan (bij tellen mag elk ding een eigen kleur, tenzij de kleur bij een getal hoort);
    - de glans (stijl B) is goed zichtbaar.
    Twijfel = afkeuren en verbeteren. Dit geldt voor ALLE lessen, ook al goedgekeurde.
+14.24 **Geen wit of grijs als getalkleur voor voorwerpen** (getallen boven 10 kregen "wit", waardoor de voorwerpen er "weg"/grijs uitzagen). Elk getal dat bij voorwerpen hoort, krijgt een echte kleur; grijs/dof betekent alleen "weg" of "fout".
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
