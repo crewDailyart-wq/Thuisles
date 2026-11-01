@@ -226,14 +226,18 @@ function parenVraag(paren: [number, number][]): Vraag {
 
 type Huis = [number, number, number];
 
+/** Ballen in een bakje: groot als het er weinig zijn; ze liggen als een bergje in het bakje (niet eronder uit). */
+const bakPer = (n: number) => (n <= 3 ? Math.max(1, n) : n <= 6 ? 3 : 4);
+const bakCel = (n: number) => (n <= 3 ? 56 : n <= 6 ? 44 : 38);
+
 /** Het beeld van de splitsmachine: twee bakjes met ballen en drie huisjes om uit te kiezen. */
 function machineBeeld(a: number, b: number, opties: Huis[], stippen: boolean): Beeld {
   const delen: Deel[] = [
     { s: "ding", id: "machine", vw: "splitsmachine", x: 490, y: 170, maat: 170 },
     { s: "ding", id: "bak-l", vw: "bakje", x: 290, y: 400, maat: 170 },
     { s: "ding", id: "bak-r", vw: "bakje", x: 690, y: 400, maat: 170 },
-    { s: "groep", id: "bl", vw: "tennisbal", n: a, x: 290, y: 410, per: 3, cel: 54, kl: KA },
-    { s: "groep", id: "br", vw: "tennisbal", n: b, x: 690, y: 410, per: 3, cel: 54, kl: KB },
+    { s: "groep", id: "bl", vw: "tennisbal", n: a, x: 290, y: 396, per: bakPer(a), cel: bakCel(a), kl: KA },
+    { s: "groep", id: "br", vw: "tennisbal", n: b, x: 690, y: 396, per: bakPer(b), cel: bakCel(b), kl: KB },
   ];
   opties.forEach(([t, x, y], i) => {
     delen.push({ s: "huisje", id: `k${i}`, x: KOLOM[i], y: 548, b: 200, top: String(t), links: String(x), rechts: String(y), stippen, kleuren: GK });
