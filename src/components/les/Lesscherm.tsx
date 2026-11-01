@@ -438,6 +438,14 @@ function Lesscherm({
     de vrije ruimte (anders werd alles heel klein).
   */
   const [staand, setStaand] = useState(false);
+  /*
+    Squla-lessen op een staand scherm (1 november 2026, keuring Plus/Min r4): het speelvlak
+    staat in het midden van de ruimte boven de ballon, niet tegen de bovenkant met een leeg
+    stuk eronder. Daarvoor meten we de schermhoogte en hoe hoog de ballon met Bliepo is.
+  */
+  const [schermHoogte, setSchermHoogte] = useState(0);
+  const [ballonHoogte, setBallonHoogte] = useState(0);
+  const staandVak = useRef<HTMLDivElement>(null);
   const [pauze, setPauze] = useState(false);
   const raster = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<null | { n: number; x: number; y: number; vanX: number; vanY: number }>(null);
@@ -461,6 +469,7 @@ function Lesscherm({
     const meet = () => {
       const rechtop = ONTWERP === "nieuw" && window.innerHeight > window.innerWidth;
       setStaand(rechtop);
+      setSchermHoogte(window.innerHeight);
       setSchaal(
         rechtop
           ? Math.min(window.innerWidth / (B - 300), (window.innerHeight * 0.52) / (H + (les.indeling === "synthesis" ? 0 : 46)))
@@ -471,6 +480,21 @@ function Lesscherm({
     window.addEventListener("resize", meet);
     return () => window.removeEventListener("resize", meet);
   }, [les.indeling]);
+
+  useEffect(() => {
+    const binnen = staandVak.current?.firstElementChild;
+    if (!staand || !binnen) return;
+    /* De ballon wordt in zijn vak uitgerekt; meet daarom wat erin staat (ballon, Bliepo, knoppen). */
+    const delen = Array.from(binnen.children);
+    const meet = () => {
+      const vakjes = delen.map((d) => d.getBoundingClientRect()).filter((r) => r.height > 0);
+      if (vakjes.length) setBallonHoogte(Math.max(...vakjes.map((r) => r.bottom)) - Math.min(...vakjes.map((r) => r.top)));
+    };
+    meet();
+    const kijker = new ResizeObserver(meet);
+    delen.forEach((d) => kijker.observe(d));
+    return () => kijker.disconnect();
+  }, [staand]);
 
   /* Het draaiboek afspelen. */
   useEffect(() => {
@@ -891,6 +915,11 @@ function Lesscherm({
   const pilBoven = nieuw && staand && les.indeling !== "synthesis" ? 46 : 0;
   /* De indeling van Synthesis (28 oktober 2026): zin en knoppen in een kolom links, Bliepo rechts zonder ballon. */
   const synth = nieuw && !staand && les.indeling === "synthesis";
+  const squlaMidden = nieuw && staand && les.synthesis.startsWith("Squla");
+  const vlakBoven =
+    squlaMidden && ballonHoogte && schermHoogte
+      ? Math.max(8, (schermHoogte - ballonHoogte - 16 - H * (schaal || 1)) / 2)
+      : 8 + pilBoven * (schaal || 1);
   /*
     Vaste plek voor de antwoordkeuzes (28 oktober 2026, besluit eigenaar):
     Ja/Nee, "Weet ik niet" en andere keuzes staan ALTIJD direct onder de zin
@@ -1026,7 +1055,7 @@ function Lesscherm({
     <div
       className={s.pil}
       style={
-        pilBoven
+        pilBoven || squlaMidden
           ? {
               /* Vast bovenaan het scherm: blijft zichtbaar als de pagina meeschuift voor het toetsenbord (29 okt 2026). */
               position: "fixed",
@@ -1065,14 +1094,14 @@ function Lesscherm({
     <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-staand={staand ? "ja" : undefined}>
       {nieuw && <OpdrachtDecor />}
       {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
-      {pilBoven ? pilBalk : null}
+      {pilBoven || squlaMidden ? pilBalk : null}
       <div
         className={s.vlak}
         style={
           staand
             ? {
                 left: `calc((100vw - ${(B - 300) * (schaal || 1)}px) / 2)`,
-                top: 8 + pilBoven * (schaal || 1),
+                top: vlakBoven,
                 transformOrigin: "0 0",
                 transform: `scale(${schaal || 1})`,
                 opacity: schaal ? 1 : 0,
@@ -1081,7 +1110,7 @@ function Lesscherm({
         }
       >
         {/* naam en pauze */}
-        {!pilBoven && pilBalk}
+        {!pilBoven && !squlaMidden && pilBalk}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
 
@@ -1264,7 +1293,7 @@ function Lesscherm({
 
       {/* Nieuw, staand scherm: de ballon met Bliepo onder het speelvlak. */}
       {nieuw && staand && (
-        <div className="les-staand" style={{ top: 16 + (H + pilBoven) * (schaal || 1) }}>
+        <div ref={staandVak} className="les-staand" style={{ top: vlakBoven + 8 + H * (schaal || 1) }}>
           <BliepoVloer
             naast={praatknop}
             gebaar={lesGebaar}
