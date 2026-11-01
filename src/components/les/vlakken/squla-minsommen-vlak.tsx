@@ -57,13 +57,17 @@ const somHex = (a: number, b: number): [string, string] => {
 import {
   DING,
   hexGetal,
+  tekenBak,
   tekenBand,
   tekenBlok,
+  tekenKlep,
+  tekenLichtje,
   tekenLuister,
   tekenMachine,
   tekenPijl,
   tekenPijlRechts,
   tekenStip,
+  tekenStuk,
   type Bakje,
   type Ding,
   type Speelgoed,
@@ -161,6 +165,8 @@ function stipPlekken(n: number, y: number): Plek[] {
 function stipY(t: Toneel | null) {
   if (!t || t.soort === "som") return 460;
   if (t.soort === "geld") return 604;
+  /* Bij de machine staat het bakje op 586; de stippen van de uitleg staan eronder. */
+  if (t.soort === "machine") return 656;
   return 586;
 }
 
@@ -206,6 +212,16 @@ const BUBBEL_PLEK: Plek[] = [
 
 /* Machine */
 const MACH = { links: { x: 140, y: 330 }, machine: { x: 490, y: 300 }, rechts: { x: 840, y: 330 }, band: 420 };
+/* De stukjes (BOUWREGELS 14.23: groot, apart te zien, vrolijk): links op de band, uit de machine in het bakje, de rest naar het vraagteken. */
+const STUK = 56;
+const STUK_ZIT = 52;
+const MACH_T0 = 700;
+/** Plek van stukje i van n links op de band: rijen van 5, de onderste rij ligt op de band. */
+const stukBand = (i: number): Plek => ({ x: 70 + (i % 5) * 56, y: 394 - Math.floor(i / 5) * 52 });
+/** Plek van uitgevallen stukje j in het bakje onder de machine. */
+const stukBak = (j: number, b: number): Plek => ({ x: 490 + ((j % 5) - (Math.min(5, b) - 1) / 2) * 50, y: 528 - Math.floor(j / 5) * 48 });
+/** Plek van stukje k van n boven het vraagteken (het goede antwoord, na het goede antwoord). */
+const stukUitkomst = (k: number, n: number): Plek => ({ x: MACH.rechts.x + ((k % 5) - (Math.min(5, n) - 1) / 2) * 56, y: 222 - Math.floor(k / 5) * 54 });
 
 /* Bakjes */
 function bakjePlekken(n: number): Plek[] {
@@ -313,6 +329,21 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     /* machine */
     rechtsLabel: Img | null = null;
     rechtsBlok: Box | null = null;
+    machDoos: Box | null = null;
+    machVoor: Box | null = null;
+    machAchter: Box | null = null;
+    machLampen: Img[] = [];
+    machBulten: Img[] = [];
+    machInn: Img[] = [];
+    machDrop: Img[] = [];
+    machRest: Img[] = [];
+    machLos: Img[] = [];
+    machUit: Img[] = [];
+    machTw: import("phaser").Tweens.Tween[] = [];
+    machKl: Klok[] = [];
+    machOff = 0;
+    machKlaar = true;
+    machUitN = -1;
     /* verbinden */
     lijnGfx: Gfx | null = null;
     kaartVisjes: Img[][] = [];
@@ -430,6 +461,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     zetToneel(t: Toneel | null) {
       this.stopKlokken();
+      this.machStop();
       const oud = this.groep;
       this.groep = null;
       this.items = [];
@@ -527,21 +559,229 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.itemSchaal = 1;
     }
 
+    /* ---------- de min-machine: alles beweegt mee met wat Bliepo zegt ---------- */
+
+    stukTex(hex: string) {
+      const sl = `sqm-stuk-${hex.slice(1)}`;
+      this.canvasPlaatje(sl, STUK, STUK, (c) => tekenStuk(c, hex, STUK));
+      return sl;
+    }
+
+    stuk(box: Box, hex: string, p: Plek, maat = STUK_ZIT) {
+      const im = this.plaats(this.stukTex(hex), p.x, p.y).setScale(maat / STUK / TX);
+      box.add(im);
+      return im;
+    }
+
+    mt(config: Record<string, unknown>) {
+      const tw = this.tweens.add(config as never);
+      this.machTw.push(tw);
+      return tw;
+    }
+
+    /** Stopt alles wat de machine bewoog (voor een ander toneel of bij het eind). */
+    machStop() {
+      this.machKl.forEach((k) => k.remove(false));
+      this.machKl = [];
+      this.machTw.forEach((tw) => tw.stop());
+      this.machTw = [];
+      [this.machInn, this.machRest, this.machLos, this.machUit].forEach((lijst) => lijst.forEach((im) => im.active && im.destroy()));
+      this.machInn = [];
+      this.machRest = [];
+      this.machLos = [];
+      this.machUit = [];
+      this.machDrop = [];
+      this.machLampen = [];
+      this.machBulten = [];
+      this.machDoos = null;
+      this.machVoor = null;
+      this.machAchter = null;
+      this.machKlaar = true;
+      this.machUitN = -1;
+    }
+
+    zetBulten(off: number) {
+      this.machBulten.forEach((im, n) => {
+        const x = 40 + 24 - 46 + n * 46 + off;
+        im.setX(x).setAlpha(x < 52 || x > 924 ? 0 : 1);
+      });
+    }
+
+    /** De machine staat stil: alle stukjes die eruit vielen liggen in het bakje, de rest is naar het vraagteken. */
+    machineEind() {
+      const t = this.toneel;
+      if (this.machKlaar || !t || t.soort !== "machine" || !this.machVoor) return;
+      this.machKl.forEach((k) => k.remove(false));
+      this.machKl = [];
+      this.machTw.forEach((tw) => tw.stop());
+      this.machTw = [];
+      [this.machInn, this.machRest, this.machLos].forEach((lijst) => lijst.forEach((im) => im.active && im.destroy()));
+      this.machInn = [];
+      this.machRest = [];
+      this.machLos = [];
+      this.machKlaar = true;
+      this.machDoos?.setPosition(MACH.machine.x, MACH.machine.y).setAngle(0).setScale(1);
+      this.machLampen.forEach((l) => l.setAlpha(0));
+      this.zetBulten(0);
+      const hexB = somHex(t.start, t.eraf)[1];
+      for (let j = 0; j < t.eraf; j++) {
+        const p = stukBak(j, t.eraf);
+        const im = this.machDrop[j];
+        if (im?.active) im.setPosition(p.x, p.y).setScale(STUK_ZIT / STUK / TX).setAlpha(1);
+        else this.machDrop[j] = this.stuk(this.machVoor, hexB, p);
+      }
+    }
+
+    startMachine(t: Extract<Toneel, { soort: "machine" }>) {
+      const a = t.start;
+      const b = t.eraf;
+      const r = a - b;
+      const [hexA, hexB] = somHex(a, b);
+      const voor = this.machVoor!;
+      const achter = this.machAchter!;
+      const box = this.machDoos!;
+      const vol = (ms: number, f: () => void) => this.machKl.push(this.time.delayedCall(ms, f));
+      /* 1. De stukjes rollen de machine in, de dichtstbijzijnde eerst, met een klein sprongetje en een rolgeluid. */
+      const volgorde = Array.from({ length: a }, (_, i) => i).sort((x, y) => (y % 5) - (x % 5) || x - y);
+      volgorde.forEach((i, n) => {
+        const im = this.machInn[i];
+        const p = stukBand(i);
+        vol(MACH_T0 + n * 130, () => {
+          if (!im.active) return;
+          speelLesgeluid("bandRol");
+          this.mt({ targets: im, y: p.y - 9, duration: 110, yoyo: true, ease: "Quad.easeOut" });
+          this.mt({ targets: im, x: 500, duration: 650, ease: "Sine.easeIn", onComplete: () => im.active && im.destroy() });
+        });
+      });
+      const aankomst = MACH_T0 + (a - 1) * 130 + 650;
+      /* De band loopt zolang de stukjes rollen. */
+      const bandTot = aankomst + 100;
+      this.mt({
+        targets: { v: 0 },
+        v: 46,
+        duration: 600,
+        repeat: Math.ceil(bandTot / 600),
+        onUpdate: (tw: import("phaser").Tweens.Tween) => this.zetBulten(Number(tw.getValue(0))),
+      });
+      /* 2. De machine slaat aan: zoemen, schudden, lampjes knipperen, stoom. */
+      const D0 = MACH_T0 + 620;
+      const stap = b > 5 ? 300 : 340;
+      const R0 = D0 + b * stap + 350;
+      const eind = R0 + r * 130 + 450;
+      vol(D0 - 300, () => speelLesgeluid("machineAan"));
+      const schudTijd = eind - (D0 - 300);
+      this.mt({ targets: box, angle: { from: -0.9, to: 0.9 }, x: MACH.machine.x + 2, duration: 75, yoyo: true, repeat: Math.round(schudTijd / 150), delay: D0 - 300, ease: "Sine.easeInOut", onComplete: () => box.setAngle(0).setX(MACH.machine.x) });
+      this.machLampen.forEach((l, i) => this.mt({ targets: l, alpha: { from: 0.1, to: 0.95 }, duration: 210, yoyo: true, repeat: Math.round(schudTijd / 420), delay: D0 - 300 + i * 120, onComplete: () => l.setAlpha(0) }));
+      this.machKl.push(
+        this.time.addEvent({
+          delay: 260,
+          repeat: Math.round(schudTijd / 260),
+          startAt: -(D0 - 300),
+          callback: () => {
+            const puf = this.plaats("sqm-licht", MACH.machine.x - 14 + Math.random() * 28, MACH.machine.y - 128).setTint(0xdbe8ff).setScale(0.8 / TX).setAlpha(0.6);
+            voor.add(puf);
+            this.machLos.push(puf);
+            this.mt({ targets: puf, y: puf.y - 70, scale: 2.2 / TX, alpha: 0, duration: 800, ease: "Sine.easeOut", onComplete: () => puf.active && puf.destroy() });
+          },
+        }),
+      );
+      /* 3. Eraf: per stukje een tik en een plop (steeds hoger, zodat je meetelt); het valt in het bakje en wipt even. */
+      for (let j = 0; j < b; j++) {
+        vol(D0 + j * stap, () => {
+          const p = stukBak(j, b);
+          const im = this.stuk(voor, hexB, { x: MACH.machine.x, y: MACH.machine.y + 108 });
+          im.setScale(0.4 / TX);
+          this.machDrop[j] = im;
+          this.mt({ targets: im, scale: STUK_ZIT / STUK / TX, duration: 160, ease: "Back.easeOut" });
+          this.mt({ targets: im, y: p.y, duration: 540, ease: "Bounce.easeOut" });
+          this.mt({ targets: im, x: p.x, duration: 380, ease: "Sine.easeOut" });
+          this.mt({ targets: box, scaleY: 1.035, scaleX: 0.99, duration: 70, yoyo: true, ease: "Quad.easeOut" });
+          for (let q = 0; q < 5; q++) {
+            const vonk = this.plaats("sqm-licht", MACH.machine.x, MACH.machine.y + 108).setTint(0xffe066).setScale(0.35 / TX);
+            voor.add(vonk);
+            this.machLos.push(vonk);
+            const hoek = -Math.PI * (0.15 + 0.7 * (q / 4));
+            this.mt({ targets: vonk, x: vonk.x + Math.cos(hoek) * 38, y: vonk.y + Math.sin(hoek) * 30 + 8, alpha: 0, duration: 330, ease: "Quad.easeOut", onComplete: () => vonk.active && vonk.destroy() });
+          }
+          speelLesgeluid("stukPlop", j);
+        });
+      }
+      /* 4. De rest komt uit de machine, rolt naar rechts en verdwijnt in het vraagteken (het getal blijft verborgen). */
+      if (r > 0) vol(R0 - 60, () => speelLesgeluid("restKlik"));
+      for (let k = 0; k < r; k++) {
+        vol(R0 + k * 130, () => {
+          const y0 = 394 - (k % 2) * 52;
+          const im = this.stuk(achter, hexA, { x: 500, y: y0 });
+          this.machRest.push(im);
+          speelLesgeluid("bandRol");
+          this.mt({ targets: im, y: y0 - 8, duration: 110, yoyo: true, ease: "Quad.easeOut" });
+          this.mt({ targets: im, x: MACH.rechts.x, duration: 820, ease: "Sine.easeInOut" });
+          this.mt({ targets: im, y: MACH.rechts.y, delay: 420, duration: 400, ease: "Sine.easeInOut", onComplete: () => im.active && im.destroy() });
+        });
+      }
+      vol(eind, () => this.machineEind());
+    }
+
     maakMachine(g: Box, t: Extract<Toneel, { soort: "machine" }>) {
-      this.canvasPlaatje("sqm-band", 900, 44, (c) => tekenBand(c, 900));
+      this.canvasPlaatje("sqm-band", 900, 44, (c) => tekenBand(c, 900, false));
       this.canvasPlaatje("sqm-blok", 130, 110, tekenBlok);
       this.canvasPlaatje("sqm-pijlR", 70, 40, tekenPijlRechts);
-      g.add(this.plaats("sqm-band", 490, MACH.band));
-      g.add(this.plaats("sqm-pijlR", 272, MACH.links.y));
-      g.add(this.plaats("sqm-pijlR", 708, MACH.rechts.y));
-      g.add(this.add.container(MACH.links.x, MACH.links.y, [this.plaats("sqm-blok", 0, 0), this.plaats(this.tekstTex(String(t.start), 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0)]));
+      this.canvasPlaatje("sqm-licht", 40, 40, (c) => tekenLichtje(c, 40));
+      this.canvasPlaatje("sqm-bak", 330, 56, (c) => tekenBak(c, 330, 56));
+      this.canvasPlaatje("sqm-klep", 84, 16, (c) => tekenKlep(c, 84, 16));
       this.canvasPlaatje("sqm-machine", 240, 250, tekenMachine);
-      g.add(this.plaats("sqm-machine", MACH.machine.x, MACH.machine.y));
-      g.add(this.plaats(this.tekstTex(`−${t.eraf}`, 70, "#4a3aa0", ""), MACH.machine.x, MACH.machine.y - 7));
+      const [hexA, hexB] = somHex(t.start, t.eraf);
+      g.add(this.plaats("sqm-band", 490, MACH.band));
+      /* De bultjes op de band lopen mee zolang de stukjes rollen. */
+      this.canvasPlaatje("sqm-bult", 16, 16, (c) => {
+        c.fillStyle = "#6b7aa6";
+        c.beginPath();
+        c.arc(8, 8, 8, 0, Math.PI * 2);
+        c.fill();
+      });
+      this.machBulten = Array.from({ length: 20 }, () => {
+        const im = this.plaats("sqm-bult", 0, 419);
+        g.add(im);
+        return im;
+      });
+      this.zetBulten(0);
+      g.add(this.plaats("sqm-pijlR", 330, 250));
+      g.add(this.plaats("sqm-pijlR", 708, MACH.rechts.y));
+      /* Links: het getal en de stukjes in de kleur van het getal, apart te tellen. */
+      const hoog = Math.ceil(t.start / 5);
+      g.add(this.plaats(this.tekstTex(String(t.start), 64, hexA, "rgba(10,20,50,0.9)"), 182, 394 - (hoog - 1) * 52 - 56));
+      const achter = this.add.container(0, 0);
+      this.machAchter = achter;
+      g.add(achter);
+      this.machInn = Array.from({ length: t.start }, (_, i) => this.stuk(achter, hexA, stukBand(i)));
+      /* De machine zelf (schudt), met lampjes die knipperen en een luikje waar de stukjes uitvallen. */
+      const doos = this.add.container(MACH.machine.x, MACH.machine.y, [
+        this.plaats("sqm-machine", 0, 0),
+        this.plaats(this.tekstTex(`−${t.eraf}`, 70, hexB, "rgba(10,20,50,0.9)"), 0, -7),
+        this.plaats("sqm-klep", 0, 108),
+      ]);
+      this.machLampen = [
+        [-62, "#ff7b7b"],
+        [-34, "#ffe066"],
+        [-6, "#7ee0a0"],
+      ].map(([x, k]) => {
+        const l = this.plaats("sqm-licht", x as number, 71).setTint(hexGetal(k as string)).setScale(1.5 / TX).setAlpha(0).setBlendMode(Phaser.BlendModes.ADD);
+        doos.add(l);
+        return l;
+      });
+      this.machDoos = doos;
+      g.add(doos);
+      const voor = this.add.container(0, 0);
+      this.machVoor = voor;
+      g.add(voor);
+      g.add(this.plaats("sqm-bak", 490, 568));
       this.rechtsBlok = this.add.container(MACH.rechts.x, MACH.rechts.y, [this.plaats("sqm-blok", 0, 0)]);
       this.rechtsLabel = this.plaats(this.tekstTex("?", 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
       this.rechtsBlok.add(this.rechtsLabel);
       g.add(this.rechtsBlok);
+      this.machKlaar = false;
+      if (this.rustig) this.machineEind();
+      else this.startMachine(t);
     }
 
     maakBakjes(g: Box, t: Extract<Toneel, { soort: "bakjes" }>) {
@@ -791,6 +1031,31 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     zetUitkomst(n: number | null) {
       const box = this.rechtsBlok;
       if (!box) return;
+      const t = this.toneel;
+      if (t?.soort === "machine") {
+        /* Het goede antwoord: de machine is klaar en de stukjes die overblijven komen tevoorschijn (een voor een). */
+        if (n === null) {
+          this.machUit.forEach((im) => im.active && im.destroy());
+          this.machUit = [];
+          this.machUitN = -1;
+        } else if (n !== this.machUitN && this.machVoor) {
+          this.machineEind();
+          this.machUit.forEach((im) => im.active && im.destroy());
+          this.machUit = [];
+          this.machUitN = n;
+          const hexA = somHex(t.start, t.eraf)[0];
+          for (let k = 0; k < n; k++) {
+            const p = stukUitkomst(k, n);
+            const im = this.stuk(this.machVoor, hexA, p);
+            this.machUit.push(im);
+            if (!this.rustig) {
+              im.setScale(0);
+              this.tweens.add({ targets: im, scale: STUK_ZIT / STUK / TX, delay: k * 70, duration: 260, ease: "Back.easeOut" });
+              this.tweens.add({ targets: im, y: p.y - 10, delay: k * 70 + 120, duration: 160, yoyo: true, ease: "Quad.easeOut" });
+            }
+          }
+        }
+      }
       this.rechtsLabel?.destroy();
       this.rechtsLabel = this.plaats(this.tekstTex(n === null ? "?" : String(n), 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
       box.add(this.rechtsLabel);

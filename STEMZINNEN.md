@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10549 zinnen, 299129 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10663 zinnen, 304727 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -1749,7 +1749,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-meer-minder-evenveel1-1 (1)
 
-- De appels liggen in rijtjes van 5. Tel de appels. Welk getal is evenveel? Kun je dit al?
+- De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het? Kun je dit al?
 
 ## squla-meer-minder-evenveel1-2 (1)
 
@@ -1761,7 +1761,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-meer-minder-evenveel2-1 (1)
 
-- We tellen eerst kralen. Tel de kralen. Welk getal is evenveel? Kun je dit al?
+- We tellen eerst kralen. Tel de kralen. Hoeveel kralen zijn het? Kun je dit al?
 
 ## squla-meer-minder-evenveel2-2 (1)
 
@@ -1773,7 +1773,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-meer-minder-evenveel3-2 (1)
 
-- Eieren liggen in doosjes van 6. Tel de eieren. Welk getal is evenveel? Kun je dit al?
+- Eieren liggen in doosjes van 6. Tel de eieren. Hoeveel eieren zijn het? Kun je dit al?
 
 ## squla-meten (gedeeld) (6)
 
@@ -1913,8 +1913,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daarna $gaan(r2) er nog $g(r2, k) $af.
 - Ze gaan er alle $g(b, k) weg.
 - Wat blijft er dan over?
-- Ja! Er blijven $g(u, k) $DING[ding].veel over.
-- Ja! $somZin(v.a, v.b, k) = $g(u, k).
+- Ja! Er blijven $gu(u) $DING[ding].veel over.
+- Ja! $somZin(v.a, v.b, k) = $gu(u).
 - Eerst waren er $g(v.a, k) $DING[v.ding].veel.
 - Dat getal komt vooraan in de som.
 - Er gaan er een paar weg.
@@ -1924,7 +1924,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan er $g(v.b, k) weg.
 - Dat getal komt na de min.
 - Wat overblijft, komt achter het is-teken.
-- Ja! $somZin(v.a, v.b) = $g(u).
+- Ja! $somZin(v.a, v.b) = $gu(u).
 - Ja! Alle sommen kloppen.
 - Kijk naar $somZin(a, b).
 - Daar staan $g(a, "rood") raketjes.
@@ -1938,15 +1938,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan staat er twee keer hetzelfde getal.
 - Je hebt ze allemaal gevonden!
 - Ja! Er ligt nog $g(1, "bruin") pakje in de bus.
-- Ja! Er liggen nog $g(u, "bruin") pakjes in de bus.
-- Ja! $somZin(10, v.b) = $g(u).
+- Ja! Er liggen nog $gu(u) pakjes in de bus.
+- Ja! $somZin(10, v.b) = $gu(u).
 - Ja! $somZin(n, v.leeg) = $g(v.vol).
 - Tel eerst alle $wat.
 - $v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat" weg.
 - De lege $wat gaan weg.
 - Tel ze.
-- Ja! $somZin(heb, prijs) = $g(u).
-- Je houdt $g(u) euro over.
+- Ja! $somZin(heb, prijs) = $gu(u).
+- Je houdt $gu(u) euro over.
 - We tellen eerst je geld.
 - Een briefje van $g(briefje) is $g(briefje) euro.
 - Samen heb je $g(heb) euro.
@@ -1957,14 +1957,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel de stippen die over zijn.
 - Eerst gaan er $g(r1, k) weg.
 - Daarna gaan er nog $g(b - r1, k) weg.
-- Er blijven $g(u, k) $veel over.
-- Dat is de minsom $somZin(a, b, k) = $g(u, k).
+- Er blijven $gu(u) $veel over.
+- Dat is de minsom $somZin(a, b, k) = $gu(u).
 - In de bus liggen $g(a, k) pakjes.
 - De bus bezorgt er $g(b, k).
 - Eerst gaan er $g(r1, k) uit.
 - Daarna gaan er nog $g(b - r1, k) uit.
 - Het rode rondje zegt hoeveel pakjes er bezorgd zijn.
-- Nu liggen er nog $g(u, k) pakjes in de bus.
+- Nu liggen er nog $gu(u) pakjes in de bus.
 
 ## squla-plussommen (gedeeld) (52)
 
@@ -3183,7 +3183,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat is meer dan $g(10).
 - Bij $g(10) is de rij precies vol.
 - Zoek het kaartje waarbij de rij precies vol is.
-- Ja! $gp(getallen[paar[0]]) en $gp(getallen[paar[1]]) is samen $g(10).
+- Ja! $g(getallen[paar[0]], kp0) en $g(getallen[paar[1]], kp1) is samen $g(10).
 - Neem de $gp(0).
 - Bij nul zijn er nog geen stippen.
 - De hele rij is nog leeg.
@@ -3246,14 +3246,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst waren er $g(n) bekers vol.
 - Er zijn $g(leeg) bekers leeg gedronken.
 - Die gaan weg.
-- De som is $somZin(n, leeg) = $g(vol).
+- De som is $somZin(n, leeg) = $gu(vol).
 
 ## uitleg-bus-13 (4)
 
 - De bus heeft $g(10) pakjes. In het rondje staat $g(7). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - De bus heeft $g(17) pakjes. In het rondje staat $g(5). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - De bus heeft $g(16) pakjes. In het rondje staat $g(8). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- Er gaat $g(10) in de min-machine en de machine haalt er $g(3) af. Hoeveel komt eruit? Kun je dit al?
+- Er gaan $g(10) blokjes in de min-machine en de machine haalt er $g(3) af. Hoeveel blokjes komen eruit? Kun je dit al?
 
 ## uitleg-geld (14)
 
@@ -3263,8 +3263,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je betaalt $g(p) euro.
 - Die gaat weg.
 - Die gaan weg.
-- Dan houd je $g(h - p) euro over.
-- $somZin(h, p) = $g(h - p).
+- Dan houd je $gu(h - p) euro over.
+- $somZin(h, p) = $gu(h - p).
 - Er zweven $g(7) ballonnen in de lucht en er vliegen er $g(4) weg. Hoeveel ballonnen blijven er over? Kun je dit al?
 - Er staan $g(14) raketjes klaar en er vliegen er $g(3) weg. Hoeveel raketjes blijven er over? Kun je dit al?
 - Nu staan er $g(13) raketjes klaar en er vliegen er $g(6) weg. Hoeveel raketjes blijven er over? Kun je dit al?
@@ -3280,7 +3280,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## uitleg-som (10)
 
-- $g(a) gaat de machine in.
+- $g(a) blokjes gaan de machine in.
 - De machine haalt er $g(b) af.
 - Kijk, $somZin(a, b).
 - Ik zet $g(a) stippen neer.
@@ -3288,8 +3288,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst gaan er $g(r1) weg.
 - Dan zijn er nog $g(10).
 - Daarna gaan er nog $g(b - r1) weg.
-- Er blijven $g(u) stippen over.
-- Dus $somZin(a, b) = $g(u).
+- Er blijven $gu(u) stippen over.
+- Dus $somZin(a, b) = $gu(u).
 
 ## uitleg-tel-dozen-18 (5)
 
@@ -3967,7 +3967,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7299)
+## Door de site genoteerd, buiten de lessen (7413)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11060,6 +11060,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk getal komt na 16, als je terugtelt?
 - Een deel ligt onder de doek.
 - Eén ligt onder de doek.
+- We tellen eerst kralen. Tel de kralen. Welk getal is evenveel? Kun je dit al?
 - Op schattenjacht tel je goudstukken en maak je plussommen. Waar liggen 14 goudstukken? Kun je dit al?
 - Bij elke ufo zet ik een streepje.
 - Waar ligt de schat?
@@ -11087,6 +11088,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Of omdat hij geen zwembroek heeft?
 - Omdat hij geen zwembroek heeft.
 - Omdat hij dan gaat roesten.
+- Eieren liggen in doosjes van 6. Tel de eieren. Welk getal is evenveel? Kun je dit al?
 - 1, 2.
 - Tel jij verder vanaf 2?
 - Plus en min staan door elkaar. 7 min 4: hoeveel sterren zijn er nog? Kun je dit al?
@@ -11116,6 +11118,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan er 7 weg.
 - Het lege bordje gaat weg.
 - Er zit geld in je portemonnee en je koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
+- De appels liggen in rijtjes van 5. Tel de appels. Welk getal is evenveel? Kun je dit al?
 - De bus heeft 12 pakjes. In het rondje staat 6. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
 - Ik leg er 2 bij.
 - Erbij is plus: 3 + 2.
@@ -11268,3 +11271,114 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Is het 20 euro, 10 euro of 50 euro?
 - 20 euro
 - Is het 1 euro, 2 euro of 50 cent?
+- We tellen verder vanaf 7.
+- Naast de bus ligt 1 pakje.
+- Eén meer dan 7: hoeveel is dat?
+- In de bus liggen 2 pakjes.
+- We tellen verder vanaf 2.
+- We tellen verder vanaf 3.
+- Eén meer dan 3: hoeveel is dat?
+- Onderin liggen twee rijen van 5: dat zijn 10 pakjes.
+- 3 en 2? Niet helemaal.
+- 3 en 6? Niet helemaal.
+- 6 en 7? Niet helemaal.
+- 7 + 7 is 14.
+- 8 is één meer dan 7.
+- Dus 7 + 8 is één meer dan 14.
+- Kijk: 7 oranje stippen en 8 blauwe stippen.
+- Hier zijn 9 oranje stippen.
+- 9 + 1 = 10.
+- Van de 3 blauwe stippen zijn er nog 2 over.
+- Kijk: 8 oranje stippen en 8 blauwe stippen.
+- Hoeveel is dan 8 + 8?
+- 6 + 6 = 12.
+- Eerst gaan er 4 weg.
+- Daarna gaan er nog 3 weg.
+- Eerst gaan er 5 weg.
+- Er gaan er 9 weg.
+- Daarna gaan er nog 5 weg.
+- Eerst gaan er 6 weg.
+- Daarna gaat er nog 1 weg.
+- De bezorgbus staat klaar bij de bakkerij. Hoe laat is het?
+- De bezorgbus vertrekt. Hoe laat is het?
+- De zon schijnt. De bus rijdt naar de eerste halte. Hoe laat is het?
+- De bus komt bij de eerste halte. Hoe laat is het?
+- De bus haalt nieuwe broodjes bij de bakkerij. Hoe laat is het?
+- De zon staat hoog. De bus brengt de broodjes weg. Hoe laat is het?
+- De bus staat weer bij de bakkerij. Hoe laat is het?
+- De bus rijdt weer weg. Hoe laat is het?
+- De bus komt bij de tweede halte. Hoe laat is het?
+- De zon staat al lager. De bus rijdt naar huis. Hoe laat is het?
+- De bus is terug bij de bakkerij. Hoe laat is het?
+- Het wordt donker. De maan komt op. Hoe laat is het?
+- Hier staat 5 uur. Welke klok hoort erbij?
+- Hier staat 12 uur. Welke klok hoort erbij?
+- Hier staat 1 uur. Welke klok hoort erbij?
+- Dit is de bakkerij. De winkel gaat om 9 uur open. Op welke klok is het 9 uur?
+- Het is nog nacht. De maan schijnt. Om 4 uur gaat de oven van de bakkerij al aan. Op welke klok is het 4 uur?
+- De bezorgbus staat al voor de deur. Hij komt broodjes halen. Maar de winkel is nog dicht. Het is pas 8 uur. Op welke klok is het 8 uur?
+- De taarten staan nog in de oven. Ze zijn om 10 uur klaar. Op welke klok is het 10 uur?
+- De bezorgbus komt terug. Nu zijn de broodjes wel klaar. Hij komt om 12 uur. Op welke klok is het 12 uur?
+- De bakkerij is dicht. We oefenen nog even. Op welke klok is het 6 uur?
+- De oven in de bakkerij gaat aan. Hoe laat is het?
+- De bezorgbus laadt de broodjes in. Hoe laat is het?
+- De bus vertrekt voor de eerste ronde. Hoe laat is het?
+- De bus komt om 10 uur bij de eerste halte. Kies de goede klok.
+- De zon schijnt fel. De bus rijdt verder. Hoe laat is het?
+- De bus is om 12 uur terug bij de bakkerij. Kies de goede klok.
+- De taarten komen uit de oven. Hoe laat is het?
+- De bus vertrekt om 2 uur voor de tweede ronde. Kies de goede klok.
+- De bus komt bij de laatste halte. Hoe laat is het?
+- De bus rijdt om 4 uur naar huis. Kies de goede klok.
+- De zon gaat bijna onder. Hoe laat is het?
+- 's Avonds om 7 uur gaat de oven uit. Kies de goede klok.
+- De bus vertrekt voor de laatste ronde. Hoe laat is het?
+- De zon staat bijna op de hoogste plek. Hoe laat is het?
+- De bus rijdt langs de eerste halte. Hoe laat is het?
+- De zon schijnt. De bus rijdt verder. Hoe laat is het?
+- De bus rijdt om 4 uur terug naar de bakkerij. Kies de goede klok.
+- De oven in de bakkerij gaat uit. Hoe laat is het?
+- Het is avond. De maan schijnt. Hoe laat is het?
+- De bakkerij gaat om 7 uur dicht. Kies de goede klok.
+- De bus vertrekt om 10 uur. Kies de goede klok.
+- Het raketje vertrekt om 4 uur. Kies de goede klok.
+- Om 8 uur gaat het lampje uit. Kies de goede klok.
+- Om 1 uur 's nachts schijnt de maan. Kies de goede klok.
+- De taart is om 5 uur klaar. Kies de goede klok.
+- Hier staat 2 uur. Welke klok hoort erbij?
+- Hier staat 9 uur. Welke klok hoort erbij?
+- Hier staat 4 uur. Welke klok hoort erbij?
+- Hier staat 11 uur. Welke klok hoort erbij?
+- Hier staat 10 uur. Welke klok hoort erbij?
+- Hier staat 6 uur. Welke klok hoort erbij?
+- Hier staat 7 uur. Welke klok hoort erbij?
+- De bus vertrekt om 8 uur. Kies de goede klok.
+- De bakkerij gaat om 5 uur dicht. Kies de goede klok.
+- Het raketje landt om 10 uur. Kies de goede klok.
+- Om 7 uur gaat het lampje uit. Kies de goede klok.
+- Om 3 uur 's nachts schijnt de maan. Kies de goede klok.
+- De taart is om 12 uur klaar. Kies de goede klok.
+- Hier staat 8 uur. Welke klok hoort erbij?
+- Hier staat half 9. Welke klok hoort erbij?
+- Hier staat half 7. Welke klok hoort erbij?
+- Hier staat half 3. Welke klok hoort erbij?
+- Hier staat half 11. Welke klok hoort erbij?
+- Hier staat half 5. Welke klok hoort erbij?
+- De school is begonnen. Kijk op de klok. Hoe laat is het over een uur?
+- Het bedje is klaar. Het is bijna bedtijd. Kijk op de klok. Hoe laat is het over een half uur?
+- De oven is aan. Kijk op de klok. Hoe laat is het over een uur?
+- De bus staat bij de halte. Kijk op de klok. Hoe laat is het over een uur?
+- Het raketje staat klaar. Kijk op de klok. Hoe laat is het over een half uur?
+- De taart is net klaar. Kijk op de klok. Hoe laat was het een uur geleden?
+- Het kampvuur brandt. Kijk op de klok. Hoe laat was het een uur geleden?
+- De voetbal ligt al een uur in het gras. Kijk op de klok. Hoe laat was het een uur geleden?
+- Het lampje gaat uit. Kijk op de klok. Hoe laat was het een uur geleden?
+- Het treintje rijdt rondjes. Kijk op de klok. Hoe laat was het een uur geleden?
+- De gieter staat klaar. Kijk op de klok. Hoe laat is het over een half uur?
+- Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit? Kun je dit al?
+- Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in.
+- Hoeveel appels zijn het?
+- Hoeveel kralen zijn het?
+- Hoeveel ballen zijn het?
+- Hoeveel ballonnen zijn het?

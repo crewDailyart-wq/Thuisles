@@ -288,7 +288,7 @@ async function eersteKeer(l: Lesgids, st: Stand, q: Vraag) {
 function vraagZin(q: Vraag): string[] {
   switch (q.t) {
     case "tel":
-      return [`Tel de ${q.v.naam}.`, q.vraagt === "evenveel" ? "Welk getal is evenveel?" : `Welk getal is ${q.vraagt}?`];
+      return [`Tel de ${q.v.naam}.`, q.vraagt === "evenveel" ? `Hoeveel ${q.v.naam} zijn het?` : `Welk getal is ${q.vraagt} dan het aantal ${q.v.naam}?`];
     case "voorbeeld":
       return [`Waar zie je ${q.wat} ${q.v.naam} dan bovenaan?`];
     case "twee":
@@ -572,7 +572,7 @@ const evenveel1_1 = les({
   titel: "Meer, minder, evenveel",
   oefening: "Meer, minder, evenveel 1",
   level: 1,
-  welkom: ["De appels liggen in rijtjes van {5:rood}.", "Tel de appels. Welk getal is evenveel?"],
+  welkom: ["De appels liggen in rijtjes van {5:rood}.", "Tel de appels. Hoeveel appels zijn het?"],
   start: { id: "start-evenveel1-1", soort: "tel", groep: r5(APPELS, 12) },
   uitleg: (l, st) => uitlegTel(l, st, APPELS, r5(APPELS, 12)),
   vragen: [
@@ -686,7 +686,7 @@ const evenveel2_1 = les({
   titel: "De meeste",
   oefening: "Meer, minder, evenveel 2",
   level: 1,
-  welkom: ["We tellen eerst kralen.", "Tel de kralen. Welk getal is evenveel?"],
+  welkom: ["We tellen eerst kralen.", "Tel de kralen. Hoeveel kralen zijn het?"],
   start: { id: "start-evenveel2-1", soort: "tel", groep: r5(KRALEN, 9) },
   uitleg: async (l, st) => {
     await uitlegTel(l, st, KRALEN, r5(KRALEN, 9));
@@ -802,7 +802,7 @@ const evenveel3_2 = les({
   titel: "Meer dan, minder dan (moeilijker)",
   oefening: "Meer, minder, evenveel 3",
   level: 2,
-  welkom: ["Eieren liggen in doosjes van {6:wit}.", "Tel de eieren. Welk getal is evenveel?"],
+  welkom: ["Eieren liggen in doosjes van {6:wit}.", "Tel de eieren. Hoeveel eieren zijn het?"],
   start: { id: "start-evenveel3-2", soort: "tel", groep: dozen(4) },
   uitleg: async (l, st) => {
     st.huidig = "";

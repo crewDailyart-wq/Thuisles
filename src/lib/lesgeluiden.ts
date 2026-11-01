@@ -36,6 +36,11 @@ export type Lesgeluid =
   | "tik" // een heel kort tikje (iets aantikken)
   | "knop" // een knop indrukken in de kindomgeving (plopje, iets duidelijker dan tik)
   | "verschijn" // plaatjes of iets anders verschijnt
+  /* Min-machine (1 november 2026; eigen klanken uit code, zacht en kort): */
+  | "bandRol" // stukjes rollen over de band de machine in (per stukje een zacht rolgeluidje)
+  | "machineAan" // de machine slaat aan en zoemt (±1,2 s)
+  | "stukPlop" // een stukje valt uit de machine in het bakje (per stukje hoger: je kunt meetellen)
+  | "restKlik" // het belletje: de rest komt uit de machine
   /* Sfeergeluidjes aan het begin van een verhaal (Synthesis: vogeltjes bij het vogelverhaal, 2,0 s, zacht). */
   | "sfeerVogels"
   | "sfeerBloemen"
@@ -340,9 +345,29 @@ function ruis(c: AudioContext, duur: number, vol: number, van: number, tot: numb
   bron.stop(start + duur + 0.02);
 }
 
-function maak(c: AudioContext, naam: Lesgeluid) {
+function maak(c: AudioContext, naam: Lesgeluid, stap = 0) {
   const t = c.currentTime + 0.01;
   switch (naam) {
+    case "bandRol":
+      ruis(c, 0.22, 0.03, 250, 700, t);
+      toon(c, { f: 150, f2: 120, duur: 0.1, vol: 0.025, type: "triangle" }, t);
+      break;
+    case "machineAan":
+      toon(c, { f: 90, f2: 150, duur: 0.5, vol: 0.05, type: "triangle" }, t);
+      toon(c, { f: 150, f2: 130, duur: 0.7, vol: 0.03, type: "triangle" }, t + 0.45);
+      toon(c, { f: 440, f2: 660, duur: 0.12, vol: 0.03 }, t + 0.1);
+      break;
+    case "stukPlop": {
+      /* Elk volgend stukje klinkt een stapje hoger, zodat het kind meetelt. */
+      const f = 520 * Math.pow(1.122, Math.min(stap, 11));
+      toon(c, { f, f2: f * 1.6, duur: 0.11, vol: 0.07 }, t);
+      toon(c, { f: f * 0.5, duur: 0.08, vol: 0.04, type: "triangle" }, t + 0.16);
+      break;
+    }
+    case "restKlik":
+      toon(c, { f: 1319, duur: 0.35, vol: 0.04 }, t);
+      toon(c, { f: 1760, duur: 0.45, vol: 0.03 }, t + 0.08);
+      break;
     case "beurt":
       ruis(c, 0.5, 0.05, 500, 1800, t);
       toon(c, { f: 880, duur: 0.25, vol: 0.03 }, t + 0.12);
@@ -455,16 +480,16 @@ function maak(c: AudioContext, naam: Lesgeluid) {
   }
 }
 
-function klink(c: AudioContext, naam: Lesgeluid) {
+function klink(c: AudioContext, naam: Lesgeluid, stap = 0) {
   try {
-    if (!speelBestand(c, naam)) maak(c, naam);
+    if (!speelBestand(c, naam)) maak(c, naam, stap);
   } catch {
     /* Een geluidje dat niet lukt, is geen fout in de les. */
   }
 }
 
 /** Speelt een lesgeluidje. Doet niets op de server, zonder geluid of vóór de eerste aanraking. */
-export function speelLesgeluid(naam: Lesgeluid): void {
+export function speelLesgeluid(naam: Lesgeluid, stap = 0): void {
   if (uit || !aan || !magKlinken()) return;
   /* Een sfeergeluidje gaat nooit door de stem heen: het wacht tot Bliepo klaar is. */
   if (naam.startsWith("sfeer") && praat) {
@@ -475,10 +500,10 @@ export function speelLesgeluid(naam: Lesgeluid): void {
   if (!c) return;
   uitgang(c);
   if (c.state !== "running") {
-    c.resume().then(() => klink(c, naam)).catch(() => {});
+    c.resume().then(() => klink(c, naam, stap)).catch(() => {});
     return;
   }
-  klink(c, naam);
+  klink(c, naam, stap);
 }
 
 /**

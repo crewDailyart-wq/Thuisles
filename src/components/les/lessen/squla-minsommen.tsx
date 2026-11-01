@@ -500,7 +500,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     const toneel: Toneel = { soort: "machine", id, start: 10, eraf: v.b };
     return squlaVraag<number>(l, {
       toon: () => toon(l, st, toneel),
-      vraag: [`${g(10)} gaat de machine in.`, `De machine haalt er ${g(v.b)} af.`, "Hoeveel komt eruit?"],
+      vraag: [`${g(10)} blokjes gaan de machine in.`, `De machine haalt er ${g(v.b)} af.`, "Hoeveel blokjes komen eruit?"],
       antwoord: () => kiesGetal(l, v.keuzes),
       isGoed: (x) => x === u,
       noem: (x) => g(x),
@@ -753,7 +753,7 @@ function uitlegStippen(beeld: "bord" | "machine" | "som", a: number, b: number) 
     stelSom(a, b);
     const toneel: Toneel = beeld === "bord" ? { soort: "bord", id: "uitleg-bord" } : beeld === "machine" ? { soort: "machine", id: "uitleg-machine", start: a, eraf: b } : { soort: "som", id: "uitleg-som" };
     toon(l, st, toneel, { som: beeld === "machine" ? null : `${a} − ${b} = ?` });
-    if (beeld === "machine") await l.zeg(`${g(a)} gaat de machine in.`, `De machine haalt er ${g(b)} af.`);
+    if (beeld === "machine") await l.zeg(`${g(a)} blokjes gaan de machine in.`, `De machine haalt er ${g(b)} af.`);
     else await l.zeg(`Kijk, ${somZin(a, b)}.`);
     zet(l, { stippen: { n: a, grijs: 0 } });
     await l.zeg(`Ik zet ${g(a)} stippen neer.`);
@@ -1019,7 +1019,7 @@ const bus23 = minles({
    Minsommen (6919): machine, schoolbord, bekers en bordjes, geld
    ===================================================================== */
 
-const MACHINE_WELKOM = [`Er gaat ${g(10)} in de min-machine en de machine haalt er ${g(3)} af.`, "Hoeveel komt eruit?"];
+const MACHINE_WELKOM = [`Er gaan ${g(10)} blokjes in de min-machine en de machine haalt er ${g(3)} af.`, "Hoeveel blokjes komen eruit?"];
 const bord = (a: number, b: number, keuzes?: number[]): Vraag => ({ t: "bord", a, b, keuzes });
 const machine = (b: number, keuzes: number[]): Vraag => ({ t: "machine", b, keuzes });
 const disco = (a: number, b: number, keuzes: number[], luister = false): Vraag => ({ t: "disco", a, b, keuzes, luister });

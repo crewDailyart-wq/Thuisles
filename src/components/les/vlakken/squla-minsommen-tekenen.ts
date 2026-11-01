@@ -72,13 +72,13 @@ export function tekenPijl(c: C) {
 
 /* ======================= machine, bord, bakjes, speelgoed ======================= */
 
-export function tekenBand(c: C, b: number) {
+export function tekenBand(c: C, b: number, bulten = true) {
   c.fillStyle = "#4a5578";
   c.beginPath();
   c.roundRect(4, 8, b - 8, 26, 13);
   c.fill();
   c.fillStyle = "#6b7aa6";
-  for (let x = 24; x < b - 20; x += 46) {
+  for (let x = 24; bulten && x < b - 20; x += 46) {
     c.beginPath();
     c.arc(x, 21, 8, 0, Math.PI * 2);
     c.fill();
@@ -87,6 +87,83 @@ export function tekenBand(c: C, b: number) {
   c.beginPath();
   c.roundRect(4, 8, b - 8, 26, 13);
   c.stroke();
+}
+
+/* Mengt een kleur (#rrggbb) met wit (f > 0) of zwart (f < 0). */
+function meng(hex: string, f: number) {
+  const n = parseInt(hex.slice(1), 16);
+  const kan = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => Math.round(f >= 0 ? v + (255 - v) * f : v * (1 + f)));
+  return `rgb(${kan[0]},${kan[1]},${kan[2]})`;
+}
+
+/**
+ * Een stukje voor de min-machine (m × m): een glimmend, afgerond blokje in de kleur van zijn getal
+ * (glansstijl B: kleurverloop, dunne rand in een donkere tint, lichtvlekje, zachte schaduw), apart te tellen.
+ */
+export function tekenStuk(c: C, hex: string, m: number) {
+  const r = m * 0.24;
+  const z = m * 0.08;
+  /* schaduw */
+  c.fillStyle = "rgba(0,0,0,0.28)";
+  c.beginPath();
+  c.ellipse(m / 2, m - z * 0.9, m * 0.36, z * 0.8, 0, 0, Math.PI * 2);
+  c.fill();
+  const gr = c.createLinearGradient(0, z, m, m - z);
+  gr.addColorStop(0, meng(hex, 0.45));
+  gr.addColorStop(0.5, hex);
+  gr.addColorStop(1, meng(hex, -0.3));
+  c.fillStyle = gr;
+  c.beginPath();
+  c.roundRect(z, z, m - 2 * z, m - 3 * z, r);
+  c.fill();
+  lijn(c, meng(hex, -0.55), 2);
+  c.stroke();
+  /* lichtvlekje */
+  c.fillStyle = "rgba(255,255,255,0.6)";
+  c.beginPath();
+  c.roundRect(m * 0.2, m * 0.17, m * 0.34, m * 0.1, m * 0.05);
+  c.fill();
+}
+
+/** Het bakje onder de machine (voorkant), w × h; de stukjes die erin vallen steken erboven uit. */
+export function tekenBak(c: C, w: number, h: number) {
+  const gr = c.createLinearGradient(0, 0, 0, h);
+  gr.addColorStop(0, "#8b9bd0");
+  gr.addColorStop(1, "#4a5885");
+  c.fillStyle = gr;
+  c.beginPath();
+  c.moveTo(2, 4);
+  c.lineTo(w - 2, 4);
+  c.lineTo(w - 22, h - 4);
+  c.lineTo(22, h - 4);
+  c.closePath();
+  c.fill();
+  lijn(c, "#2f3756", 3);
+  c.stroke();
+  c.fillStyle = "rgba(255,255,255,0.35)";
+  c.beginPath();
+  c.roundRect(12, 8, w - 24, 6, 3);
+  c.fill();
+}
+
+/** Het luikje onderaan de machine waar de stukjes uitvallen (w × h). */
+export function tekenKlep(c: C, w: number, h: number) {
+  c.fillStyle = "#2c2466";
+  c.beginPath();
+  c.roundRect(2, 2, w - 4, h - 4, h / 2);
+  c.fill();
+  lijn(c, "#4a3aa0", 2);
+  c.stroke();
+}
+
+/** Een zacht rond lichtje (lampjes, stoom, vonkjes), d × d, in wit; de kleur komt er als tint op. */
+export function tekenLichtje(c: C, d: number) {
+  const g = c.createRadialGradient(d / 2, d / 2, 0, d / 2, d / 2, d / 2);
+  g.addColorStop(0, "rgba(255,255,255,1)");
+  g.addColorStop(0.45, "rgba(255,255,255,0.55)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = g;
+  c.fillRect(0, 0, d, d);
 }
 
 /** De min-machine (240 × 250); het venster (getal) komt er los op. */
