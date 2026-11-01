@@ -1,0 +1,9 @@
+[
+  { "naam": "Les Patronen, level 1", "pad": "/voorbeeld/les/squla-vormen-patronen-1?naam=Testkind" },
+  { "naam": "Les Patronen, level 2", "pad": "/voorbeeld/les/squla-vormen-patronen-2?naam=Testkind" },
+  { "naam": "Les Opruimen (Rommelmonster level 2)", "pad": "/voorbeeld/les/squla-vormen-opruimen-1?naam=Testkind" },
+  { "naam": "Les Links, rechts, boven, onder", "pad": "/voorbeeld/les/squla-vormen-orienteren-1?naam=Testkind" },
+  { "naam": "Les Vormen en kleuren, level 1 (puzzels)", "pad": "/voorbeeld/les/squla-vormen-kleuren-1?naam=Testkind" },
+  { "naam": "Les Vormen en kleuren, level 2 (puzzels)", "pad": "/voorbeeld/les/squla-vormen-kleuren-2?naam=Testkind" },
+  { "naam": "Les Vormen en kleuren, level 3 (puzzels)", "pad": "/voorbeeld/les/squla-vormen-kleuren-3?naam=Testkind" }
+]

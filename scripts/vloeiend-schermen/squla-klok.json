@@ -1,0 +1,74 @@
+[
+  {
+    "naam": "Les De digitale klok (squla-klok-digitaal-1)",
+    "pad": "/voorbeeld/les/squla-klok-digitaal-1?naam=Testkind"
+  },
+  {
+    "naam": "Les De digitale klok (moeilijker) (squla-klok-digitaal-2)",
+    "pad": "/voorbeeld/les/squla-klok-digitaal-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Hoe laat is het? (squla-klok-hoelaat-1)",
+    "pad": "/voorbeeld/les/squla-klok-hoelaat-1?naam=Testkind"
+  },
+  {
+    "naam": "Les Hoe laat is het? (moeilijker) (squla-klok-hoelaat-2)",
+    "pad": "/voorbeeld/les/squla-klok-hoelaat-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Hoe laat is het? (nog moeilijker) (squla-klok-hoelaat-3)",
+    "pad": "/voorbeeld/les/squla-klok-hoelaat-3?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken (squla-klok-klokkijken-1)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken-1?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken (moeilijker) (squla-klok-klokkijken-2)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken (nog moeilijker) (squla-klok-klokkijken-3)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken-3?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 1 (squla-klok-klokkijken1-1)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken1-1?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 1 (moeilijker) (squla-klok-klokkijken1-2)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken1-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 1 (nog moeilijker) (squla-klok-klokkijken1-3)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken1-3?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 2 (squla-klok-klokkijken2-1)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken2-1?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 2 (moeilijker) (squla-klok-klokkijken2-2)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken2-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Klokkijken 2 (nog moeilijker) (squla-klok-klokkijken2-3)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken2-3?naam=Testkind"
+  },
+  {
+    "naam": "Les Halve uren (squla-klok-klokkijken3-1)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken3-1?naam=Testkind"
+  },
+  {
+    "naam": "Les Halve uren (moeilijker) (squla-klok-klokkijken3-2)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken3-2?naam=Testkind"
+  },
+  {
+    "naam": "Les Halve uren (nog moeilijker) (squla-klok-klokkijken3-3)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken3-3?naam=Testkind"
+  },
+  {
+    "naam": "Les Halve uren: later en eerder (squla-klok-klokkijken3-4)",
+    "pad": "/voorbeeld/les/squla-klok-klokkijken3-4?naam=Testkind"
+  }
+]

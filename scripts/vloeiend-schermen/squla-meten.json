@@ -1,0 +1,9 @@
+[
+  { "naam": "Les Pizza's vergelijken, level 1", "pad": "/voorbeeld/les/squla-meten-pizza-1?naam=Testkind" },
+  { "naam": "Les Pizza's vergelijken, level 2", "pad": "/voorbeeld/les/squla-meten-pizza-2?naam=Testkind" },
+  { "naam": "Les Pizza's vergelijken, level 3 (weegschaal)", "pad": "/voorbeeld/les/squla-meten-pizza-3?naam=Testkind" },
+  { "naam": "Les Hoeveelheden, level 1", "pad": "/voorbeeld/les/squla-meten-hoeveelheden-1?naam=Testkind" },
+  { "naam": "Les Hoeveelheden, level 2", "pad": "/voorbeeld/les/squla-meten-hoeveelheden-2?naam=Testkind" },
+  { "naam": "Les Oppervlakte, level 1", "pad": "/voorbeeld/les/squla-meten-oppervlakte-1?naam=Testkind" },
+  { "naam": "Les Oppervlakte, level 2", "pad": "/voorbeeld/les/squla-meten-oppervlakte-2?naam=Testkind" }
+]

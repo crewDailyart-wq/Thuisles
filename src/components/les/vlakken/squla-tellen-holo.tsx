@@ -9,7 +9,8 @@
  *
  * Vier manieren om de voorwerpen neer te zetten (`opgave.vorm`):
  * - `rijen5`: rijen van 5, links uitgelijnd; de rijen kunnen om en om een
- *   ander plaatje of een andere kleur hebben;
+ *   ander plaatje hebben (sinds 31 oktober 2026 vaste plaatjes uit
+ *   src/lib/voorwerpen, elk ding één kleur, gloed alleen bij meetellen en goed);
  * - `rijen10`: rijen van 10 (tot 50), ook om en om;
  * - `verspreid`: los door elkaar, nooit over elkaar heen;
  * - `zak`: een dichte zak met een tiental erop, en een paar losse.
@@ -31,7 +32,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
+import { FOTO, hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
 import s from "./squla-tellen.module.css";
 
 export type { Kleurnaam, Soort };
@@ -246,23 +247,41 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.bak("sqt-voor", "sqt-voor-g", WERELDKLEUR.neutraal);
     }
 
-    /** Het plaatje van een voorwerp, met gebakken gloed (één keer per soort en kleur). */
+    /**
+     * Het plaatje van een voorwerp (één keer per soort). Gewone lessen: het
+     * vaste voorwerp zonder gloed; de gloed komt alleen op het moment dat het
+     * iets betekent (flits). De proef "altijd" bakt er wel vast gloed omheen.
+     */
     tex(p: Plaatje) {
-      const sl = `sqt-${p.soort}-${p.kleur}`;
+      const bron = FOTO.plaatjes[p.soort] ? "f" : "v";
+      if (FOTO.gloed === "altijd") return this.texGloed(p);
+      const sl = `sqt-${bron}p-${p.soort}`;
+      this.canvasPlaatje(sl, MAAT, MAAT, (c) => teken(c, p.soort));
+      return sl;
+    }
+
+    /** Hetzelfde plaatje mét gebakken gloed (voor het oplichten). */
+    texGloed(p: Plaatje) {
+      const bron = FOTO.plaatjes[p.soort] ? "f" : "v";
+      const sl = `sqt-${bron}g-${p.soort}`;
       if (!this.textures.exists(`${sl}-g`)) {
-        this.canvasPlaatje(sl, MAAT, MAAT, (c) => teken(c, p.soort, KLEUR[p.kleur]));
+        this.canvasPlaatje(sl, MAAT, MAAT, (c) => teken(c, p.soort));
         this.bak(sl, `${sl}-g`, hexGetal(KLEUR[p.kleur]));
       }
       return `${sl}-g`;
     }
 
-    /** De zak: één keer gebakken; het getal is een los, klein plaatje erop. */
+    /** Gloed op het moment: even laten oplichten en dan weer gewoon. */
+    flits(im: Img, p: Plaatje | undefined, ms: number) {
+      if (!p || FOTO.gloed !== "moment") return;
+      im.setTexture(this.texGloed(p));
+      this.time.delayedCall(ms, () => im.active && im.setTexture(this.tex(p)));
+    }
+
+    /** De zak: één keer getekend (zonder vaste gloed); het getal is een los, klein plaatje erop. */
     zakTex() {
-      if (!this.textures.exists("sqt-zak-g")) {
-        this.canvasPlaatje("sqt-zak", 200, 240, (c) => tekenZak(c));
-        this.bak("sqt-zak", "sqt-zak-g", WARM);
-      }
-      return "sqt-zak-g";
+      this.canvasPlaatje("sqt-zak", 200, 240, (c) => tekenZak(c));
+      return "sqt-zak";
     }
 
     zakGetal(getal: number) {
@@ -326,7 +345,9 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         const im = this.items[o.volgorde[k]];
         if (!im) continue;
         const basis = o.schaal / TX;
+        const p = o.plekken[o.volgorde[k]]?.p;
         const doe = () => {
+          this.flits(im, p, 420);
           if (this.rustig) {
             im.setAlpha(0.4);
             return;
@@ -353,6 +374,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.golf(490, 380);
       if (this.rustig) return;
       const o = this.ind;
+      this.items.forEach((im, i) => this.flits(im, o?.plekken[i]?.p, 700));
       this.items.forEach((im, i) => {
         const basis = (o?.schaal ?? 1) / TX;
         this.tweens.add({ targets: im, scale: basis * 1.12, delay: i * 18, duration: 140, yoyo: true, onComplete: () => im.setScale(basis) });
@@ -426,7 +448,8 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.drukTot = Math.max(this.drukTot, performance.now() + ms);
     }
     bakVooruit(plaatjes: Plaatje[], zakken: number[]) {
-      this.rij = [...plaatjes.map((p) => () => this.tex(p)), ...(zakken.length ? [() => this.zakTex()] : []), ...zakken.map((z) => () => this.zakGetal(z))];
+      const metGloed = FOTO.gloed === "moment" ? plaatjes.map((p) => () => this.texGloed(p)) : [];
+      this.rij = [...plaatjes.map((p) => () => this.tex(p)), ...metGloed, ...(zakken.length ? [() => this.zakTex()] : []), ...zakken.map((z) => () => this.zakGetal(z))];
       /* Eerst rustig het welkom (en de eerste tovering); daarna in de stille stukjes. */
       this.druk(2500);
       this.time.addEvent({

@@ -25,6 +25,7 @@ import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord, type SqulaVraag } f
 import { SqulaTijdTrein, KaartWeektrein, dagNaam, kaartId, type DagKaart, type TreinProps } from "../vlakken/squla-tijd-trein";
 import { SqulaTijdPlaatjes, KaartKalender, KaartTijden, type PDing, type PlaatjesProps } from "../vlakken/squla-tijd-plaatjes";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { TIJD_VOORWERPEN } from "../vlakken/squla-tijd-tekeningen";
 
 /* ---------- gedeeld ---------- */
 
@@ -361,6 +362,7 @@ const dagen1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
     await welkomTrein(l, ["Hoi!", "Kijk, daar komt de weektrein.", "Elke wagon is een dag van de week.", "We leren de volgorde van de dagen."], async () => {
@@ -402,6 +404,7 @@ const dagen2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
     await welkomTrein(l, ["Hoi!", "Daar is de weektrein weer.", "We zoeken de dag erna en de dag ervoor."], async () => {
@@ -613,6 +616,7 @@ const dagen3: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 3 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartWeektrein,
   async speel(l) {
     await welkomTrein(l, ["Hoi!", "Daar is de weektrein weer.", "We zetten dagen op volgorde.", "En we rekenen met gisteren, vandaag en morgen."], async () => {
@@ -1123,6 +1127,8 @@ const kalender1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · De kalender · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
     await welkomPlaatjes(l, "maand|hoed=13", ["Hoi!", "Dit is de kalender van juni.", "Noa is bijna jarig.", "We leren welke kalenders er zijn."], async () => {
@@ -1349,6 +1355,8 @@ const kalender2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · De kalender · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
     await welkomPlaatjes(l, "maand|hoed=13", ["Hoi!", "Dit is de kalender van juni.", "Noa is jarig op {13:wit} juni.", "We gaan tellen hoe lang het nog duurt."], async () => {
@@ -1361,7 +1369,7 @@ const kalender2: Lesdraaiboek = {
   },
 };
 
-/* --- Tijden, level 1: woorden over tijd (Fien de kikker bij het kampvuur) --- */
+/* --- Tijden, level 1: woorden over tijd (voorlezen bij het kampvuur; tot 31 oktober 2026 met Fien de kikker en drie dieren) --- */
 
 const DAGDEEL = (d: string): PDing => ({ id: d, tekening: `dagdeel|d=${d}`, label: d });
 
@@ -1373,7 +1381,7 @@ const tijden1Opgaven: Opgave[] = [
         beeld: { groot: "kampvuur" },
         opties: ["donderdag", "zaterdag", "zondag"],
         goed: "zaterdag",
-        vraag: ["Fien de kikker vertelt: gisteren was er een kampvuuravond.", "Dat was op vrijdag.", "Welke dag komt na vrijdag?", "Donderdag, zaterdag of zondag?"],
+        vraag: ["Gisteren was er een kampvuuravond.", "Dat was op vrijdag.", "Welke dag komt na vrijdag?", "Donderdag, zaterdag of zondag?"],
         goedZin: ["Gisteren was het vrijdag.", "Vandaag is het zaterdag."],
         samen: async (l) => {
           zetP(l, { groot: "week|licht=4" });
@@ -1390,17 +1398,17 @@ const tijden1Opgaven: Opgave[] = [
       {
         beeld: {},
         kaarten: [
-          { id: "uil", tekening: "uil", zeg: "de uil" },
-          { id: "vos", tekening: "vos", zeg: "de vos" },
-          { id: "egel", tekening: "egel", zeg: "de egel" },
+          { id: "rood", tekening: "boekrood", zeg: "het rode boek" },
+          { id: "blauw", tekening: "boekblauw", zeg: "het blauwe boek" },
+          { id: "groen", tekening: "boekgroen", zeg: "het groene boek" },
         ],
-        goed: "uil",
-        vraag: ["Bij het kampvuur vertelden de dieren een verhaal.", "Als eerste mocht de uil vertellen.", "Wie mocht er als eerste vertellen?"],
-        goedZin: ["De uil begon.", "Hij vertelde als eerste."],
+        goed: "rood",
+        vraag: ["Bij het kampvuur lazen we drie boeken voor.", "Als eerste lazen we het rode boek.", "Welk boek lazen we als eerste?"],
+        goedZin: ["Het rode boek was eerst.", "Dat lazen we als eerste."],
         samen: async (l) => {
           await l.zeg("Als eerste betekent: vóór alle anderen.", "Luister nog eens goed naar het verhaal.");
         },
-        tip: ["Het was het dier met de grote ronde ogen.", "Wie mocht er als eerste vertellen?"],
+        tip: ["Het was het rode boek.", "Welk boek lazen we als eerste?"],
       },
       t,
     ),
@@ -1408,13 +1416,13 @@ const tijden1Opgaven: Opgave[] = [
     knopVraag(
       l,
       {
-        beeld: { groot: "uil" },
+        beeld: { groot: "boekrood" },
         opties: ["lang", "rond", "snel"],
         goed: "lang",
-        vraag: ["Het verhaal van de uil was niet kort.", "Het was juist heel erg ...", "Lang, rond of snel?"],
-        goedZin: ["Het verhaal van de uil was heel lang."],
+        vraag: ["Het rode boek was niet kort.", "Het was juist heel erg ...", "Lang, rond of snel?"],
+        goedZin: ["Het rode boek was heel lang."],
         samen: async (l) => {
-          await l.zeg("Een kort verhaal is snel voorbij.", "Dit verhaal was niet snel voorbij.", "Het duurde en duurde maar.");
+          await l.zeg("Een kort verhaal is snel voorbij.", "Dit boek was niet snel uit.", "Het duurde en duurde maar.");
         },
         tip: ["Het tegenovergestelde van kort.", "Het verhaal was juist heel erg ..."],
       },
@@ -1424,13 +1432,13 @@ const tijden1Opgaven: Opgave[] = [
     knopVraag(
       l,
       {
-        beeld: { groot: "vos" },
+        beeld: { groot: "boekblauw" },
         opties: ["groen", "kort", "zwaar"],
         goed: "kort",
-        vraag: ["Daarna vertelde de vos.", "Zijn verhaal was niet lang.", "Het was juist heel erg ...", "Groen, kort of zwaar?"],
-        goedZin: ["Het verhaal van de vos was kort.", "Het was zo voorbij."],
+        vraag: ["Daarna lazen we het blauwe boek.", "Dat was niet lang.", "Het was juist heel erg ...", "Groen, kort of zwaar?"],
+        goedZin: ["Het blauwe boek was kort.", "Het was zo uit."],
         samen: async (l) => {
-          await l.zeg("Lang en kort horen bij elkaar.", "Het verhaal van de vos was snel voorbij.");
+          await l.zeg("Lang en kort horen bij elkaar.", "Het blauwe boek was snel uit.");
         },
         tip: ["Het tegenovergestelde van lang.", "Het was juist heel erg ..."],
       },
@@ -1440,11 +1448,11 @@ const tijden1Opgaven: Opgave[] = [
     knopVraag(
       l,
       {
-        beeld: { groot: "egel" },
+        beeld: { groot: "boekgroen" },
         opties: ["straks", "gisteren", "vroeger"],
         goed: "straks",
-        vraag: ["Nu vertelt de egel.", "Fien is over een poosje aan de beurt.", "Welk woord past bij: over een poosje?", "Straks, gisteren of vroeger?"],
-        goedZin: ["Over een poosje is straks.", "Fien is straks aan de beurt."],
+        vraag: ["Toen was het groene boek nog niet aan de beurt.", "Dat kwam pas over een poosje.", "Welk woord past bij: over een poosje?", "Straks, gisteren of vroeger?"],
+        goedZin: ["Over een poosje is straks.", "Het groene boek kwam straks."],
         samen: async (l) => {
           await l.zeg("Over een poosje is nog niet nu.", "Het komt nog.", "Gisteren en vroeger zijn al voorbij.");
         },
@@ -1459,7 +1467,7 @@ const tijden1Opgaven: Opgave[] = [
         beeld: {},
         kaarten: [DAGDEEL("ochtend"), DAGDEEL("middag"), DAGDEEL("nacht")],
         goed: "nacht",
-        vraag: ["Eindelijk is Fien aan de beurt.", "Het is al laat in de avond.", "Wat komt er na de avond?"],
+        vraag: ["Eindelijk lazen we het groene boek.", "Het was al laat in de avond.", "Wat komt er na de avond?"],
         goedZin: ["Na de avond komt de nacht."],
         samen: async (l) => {
           zetP(l, { kaarten: [DAGDEEL("ochtend"), DAGDEEL("middag"), DAGDEEL("avond")], uit: [] });
@@ -1522,7 +1530,7 @@ const tijden1Opgaven: Opgave[] = [
         beeld: { groot: "dagdeel|d=nacht" },
         opties: ["laat", "kort", "straks"],
         goed: "laat",
-        vraag: ["Na het kampvuur ging Fien naar huis.", "Toen was het al heel ...", "Laat, kort of straks?"],
+        vraag: ["Na het kampvuur gingen we naar huis.", "Toen was het al heel ...", "Laat, kort of straks?"],
         goedZin: ["Het was al heel laat.", "Tijd om te slapen!"],
         samen: async (l) => {
           await l.zeg("Het was al nacht.", "Dan is het niet vroeg meer.");
@@ -1546,7 +1554,7 @@ const tijden1Opgaven: Opgave[] = [
         vraag: ["Zet op volgorde.", "Vandaag staat er al.", "Het ene kaartje is morgen.", "Het andere kaartje is gisteren."],
         goedZin: ["Gisteren, vandaag, morgen."],
         samen: async (l) => {
-          await l.zeg("Gisteren was de kampvuuravond. Die is al voorbij.", "Vandaag rust Fien uit.", "Morgen komt nog.", "Wat al voorbij is, komt eerst.");
+          await l.zeg("Gisteren was de kampvuuravond. Die is al voorbij.", "Vandaag rusten we uit.", "Morgen komt nog.", "Wat al voorbij is, komt eerst.");
         },
         tip: ["Gisteren is al voorbij.", "Zet op volgorde."],
       },
@@ -1559,8 +1567,8 @@ const tijden1Opgaven: Opgave[] = [
         beeld: { groot: "zwemmen" },
         opties: ["vrijdag", "zondag", "maandag"],
         goed: "zondag",
-        vraag: ["Morgen gaat Fien zwemmen!", "Vandaag is het zaterdag.", "Welke dag is het morgen?", "Vrijdag, zondag of maandag?"],
-        goedZin: ["Morgen is het zondag.", "Dan gaat Fien zwemmen."],
+        vraag: ["Morgen gaan we zwemmen!", "Vandaag is het zaterdag.", "Welke dag is het morgen?", "Vrijdag, zondag of maandag?"],
+        goedZin: ["Morgen is het zondag.", "Dan gaan we zwemmen."],
         samen: async (l) => {
           zetP(l, { groot: "week|licht=5" });
           await l.zeg("Zaterdag is groter. Dat is vandaag.", "Morgen is de dag erna.");
@@ -1574,7 +1582,7 @@ const tijden1Opgaven: Opgave[] = [
     knopVraag(
       l,
       {
-        beeld: { groot: "kikker" },
+        beeld: { groot: "kampvuur" },
         opties: ["donderdag", "vrijdag", "zondag"],
         goed: "vrijdag",
         vraag: ["Vandaag is het zaterdag.", "Welke dag was het gisteren?", "Donderdag, vrijdag of zondag?"],
@@ -1596,9 +1604,11 @@ const tijden1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · Tijden · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
-    await welkomPlaatjes(l, "kampvuur", ["Hoi!", "We leren woorden over tijd.", "Zoals eerst, straks, laat en morgen.", "Fien de kikker vertelt een verhaal."], async () => {
+    await welkomPlaatjes(l, "kampvuur", ["Hoi!", "We leren woorden over tijd.", "Zoals eerst, straks, laat en morgen.", "Bij het kampvuur lezen we voor."], async () => {
       zetP(l, { groot: null, kaarten: [DAGDEEL("ochtend"), DAGDEEL("middag"), DAGDEEL("avond"), DAGDEEL("nacht")] });
       zetP(l, { licht: ["ochtend"] });
       await l.zeg("Eerst is het ochtend.");
@@ -1851,6 +1861,8 @@ const tijden2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Tijd · Tijden · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
     await welkomPlaatjes(l, "bakkerij", ["Hoi!", "Dit is de bakkerij van bakker Tim.", "We kijken wat lang duurt en wat kort duurt."], async () => {

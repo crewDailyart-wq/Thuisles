@@ -201,16 +201,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       );
       this.bak("pijl", "pijl-g", WARM);
       /* Het handje dat voordoet hoe je sleept. */
-      this.canvasPlaatje("handje", 48, 56, (c) =>
-        tekenVormen(c, [
-          {
-            d: "M16 30 V8 a5 5 0 0 1 10 0 V26 V20 a5 5 0 0 1 10 0 V28 a5 5 0 0 1 9 2 V40 c0 9 -7 14 -15 14 h-4 c-6 0 -10 -3 -13 -8 L4 34 a5 5 0 0 1 8 -5 Z",
-            vul: "#fff7ea",
-            rand: "#1d2b5e",
-            dik: 3.5,
-          },
-        ]),
-      );
+      this.canvasPlaatje("handje", 48, 56, (c) => {
+        /* Een lichtje dat voordoet hoe je sleept (tot 31 oktober 2026 een handje; geen mensen, ook geen hand). */
+        const g = c.createRadialGradient(24, 28, 2, 24, 28, 22);
+        g.addColorStop(0, "rgba(255,255,255,1)");
+        g.addColorStop(0.45, "rgba(255,240,190,0.9)");
+        g.addColorStop(1, "rgba(255,211,110,0)");
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(24, 28, 22, 0, Math.PI * 2);
+        c.fill();
+      });
 
       this.input.on("pointerdown", (p: Ptr) => this.neer(p));
       this.input.on("pointermove", (p: Ptr) => this.beweeg(p));

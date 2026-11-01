@@ -1,0 +1,43 @@
+/*
+  Klokkijken naar Squla (31 oktober 2026): het Phaser-vlak met daarover
+  onzichtbare knoppen (tikken, slepen, toetsenbord en automatische test).
+  Alles wat je ziet tekent Phaser. Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ding {
+  position: absolute;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 24px;
+  background: transparent;
+  cursor: pointer;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.ding:disabled {
+  cursor: default;
+}
+
+.sleep {
+  cursor: grab;
+}
+
+.sleep:active {
+  cursor: grabbing;
+}
+
+.ding:focus-visible {
+  outline: 4px solid #7fe9ff;
+  outline-offset: 4px;
+}

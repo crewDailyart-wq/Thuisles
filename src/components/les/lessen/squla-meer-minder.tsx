@@ -36,6 +36,7 @@ import {
   type MMProps,
   type MMSoort,
 } from "../vlakken/squla-meer-minder-vlak";
+import { MM_VASTE_KLEUR, MM_VOORWERPEN } from "../vlakken/squla-meer-minder-tekenen";
 
 /* =====================================================================
    Voorwerpen
@@ -51,32 +52,35 @@ type Vw = {
   k: MMKleur;
 };
 
-const vw = (soort: MMSoort, naam: string, kleuren: MMKleur[] | "bont", k?: MMKleur): Vw => ({
-  soort,
-  naam,
-  kleuren,
-  k: k ?? (kleuren !== "bont" && kleuren.length === 1 ? kleuren[0] : "wit"),
-});
+/** Eén ding in zijn vaste kleur (31 oktober 2026: elk ding één kleur, geen om-en-om kleuren meer). */
+const vw = (soort: MMSoort, naam: string): Vw => ({ soort, naam, kleuren: [MM_VASTE_KLEUR[soort]], k: MM_VASTE_KLEUR[soort] });
 
-const APPELS = vw("appel", "appels", ["rood"]);
-const APPELS_RG = vw("appel", "appels", ["rood", "groen"]);
-const GROENE_APPELS = vw("appel", "appels", ["groen"]);
-const STERREN = vw("ster", "sterren", ["geel"]);
-const STERREN_2 = vw("ster", "sterren", ["geel", "oranje"]);
-const BLOEMEN = vw("bloem", "bloemen", ["roze"]);
-const BLOEMEN_2 = vw("bloem", "bloemen", ["roze", "paars"]);
-const VISSEN = vw("vis", "vissen", ["oranje"]);
-const VISSEN_2 = vw("vis", "vissen", ["oranje", "blauw"]);
-const BALLEN = vw("bal", "ballen", ["blauw"]);
-const BALLEN_2 = vw("bal", "ballen", ["blauw", "rood"]);
-const KRALEN = vw("kraal", "kralen", "bont");
-const KOEKJES = vw("koekje", "koekjes", ["bruin"]);
-const KOEKJES_2 = vw("koekje", "koekjes", ["bruin", "oranje"]);
-const EIEREN = vw("ei", "eieren", ["wit"]);
-const EIEREN_2 = vw("ei", "eieren", ["wit", "geel"]);
-const LIEVEHEERSBEESTJES = vw("lieveheersbeestje", "lieveheersbeestjes", ["rood", "oranje"]);
-const VLINDERS = vw("vlinder", "vlinders", ["paars", "blauw"]);
-const VLINDERS_2 = vw("vlinder", "vlinders", ["blauw", "roze"]);
+/*
+  Sinds 31 oktober 2026 heeft elk ding één vaste kleur. Waar Squla de rijen om
+  en om een andere kleur gaf, staan ze nu in één kleur (de rijen en blokjes
+  staan nog wel los van elkaar). Dieren zijn dingen geworden: de vissen
+  ballonnen, de lieveheersbeestjes aardbeien, de vlinders knikkers; de groene
+  appels zijn peren.
+*/
+const APPELS = vw("appel", "appels");
+const APPELS_RG = APPELS;
+const PEREN = vw("peer", "peren");
+const STERREN = vw("ster", "sterren");
+const STERREN_2 = STERREN;
+const BLOEMEN = vw("bloem", "bloemen");
+const BLOEMEN_2 = BLOEMEN;
+const BALLONNEN = vw("ballon", "ballonnen");
+const BALLONNEN_2 = BALLONNEN;
+const BALLEN = vw("bal", "ballen");
+const BALLEN_2 = BALLEN;
+const KRALEN = vw("kraal", "kralen");
+const KOEKJES = vw("koekje", "koekjes");
+const KOEKJES_2 = KOEKJES;
+const EIEREN = vw("ei", "eieren");
+const EIEREN_2 = EIEREN;
+const AARDBEIEN = vw("aardbei", "aardbeien");
+const KNIKKERS = vw("knikker", "knikkers");
+const KNIKKERS_2 = KNIKKERS;
 
 /* ---------- groepen ---------- */
 
@@ -88,12 +92,12 @@ const r5 = (v: Vw, n: number): MMGroep => ({ soort: v.soort, blokken: [{ rijen: 
 const r10 = (v: Vw, n: number): MMGroep => ({ soort: v.soort, blokken: [{ rijen: rijenVan(n, 10), kleuren: v.kleuren }] });
 /** Rijen van 5 en rechts een los groepje. */
 const losRechts = (v: Vw, vast: number, los: number): MMGroep => ({ soort: v.soort, blokken: [{ rijen: rijenVan(vast, 5), kleuren: v.kleuren }, { rijen: [los], kleuren: v.kleuren }] });
-/** Links 10 in de ene kleur (2 rijen van 5), rechts de rest in de andere kleur. */
-const tweeKleur = (v: Vw, links: MMKleur, rechts: MMKleur, n: number): MMGroep => ({
+/** Links 10 (2 rijen van 5), rechts de rest (sinds 31 oktober 2026 in de vaste kleur van het ding). */
+const tweeKleur = (v: Vw, _links: MMKleur, _rechts: MMKleur, n: number): MMGroep => ({
   soort: v.soort,
   blokken: [
-    { rijen: [5, 5], kleuren: [links] },
-    { rijen: rijenVan(n, 5), kleuren: [rechts] },
+    { rijen: [5, 5], kleuren: v.kleuren },
+    { rijen: rijenVan(n, 5), kleuren: v.kleuren },
   ],
 });
 /** Rijen van een andere lengte dan 5 (niet per 5 gegroepeerd). */
@@ -504,6 +508,8 @@ function les(d: Lesdef): Lesdraaiboek {
     synthesis: `Squla groep 3 · Meer, minder, evenveel · ${d.oefening} · level ${d.level} (alleen leerdoel)`,
     indeling: "synthesis",
     browserstem: true,
+    nacht: true,
+    voorwerpen: MM_VOORWERPEN,
     kaarttekening: KaartMeerMinder,
     async speel(l) {
       const st: Stand = { huidig: "", goed: 0, fout: 0, ronde: 0, handGezien: false, gezien: new Set() };
@@ -541,17 +547,17 @@ const evenveel1_1 = les({
     { t: "tel", v: STERREN, groep: r5(STERREN, 10), keuzes: [11, 10, 13], vraagt: "evenveel" },
     { t: "tel", v: BLOEMEN, groep: r5(BLOEMEN, 13), keuzes: [14, 12, 13], vraagt: "evenveel" },
     { t: "tel", v: BALLEN, groep: vrij(BALLEN, [6, 5]), keuzes: [15, 10, 11], vraagt: "evenveel" },
-    { t: "tel", v: VISSEN, groep: losRechts(VISSEN, 15, 4), keuzes: [17, 18, 19], vraagt: "evenveel" },
+    { t: "tel", v: BALLONNEN, groep: losRechts(BALLONNEN, 15, 4), keuzes: [17, 18, 19], vraagt: "evenveel" },
     { t: "tel", v: APPELS_RG, groep: tweeKleur(APPELS_RG, "groen", "rood", 8), keuzes: [12, 18, 14], vraagt: "evenveel" },
     { t: "tel", v: STERREN, groep: vrij(STERREN, [8, 4]), keuzes: [12, 13, 17], vraagt: "evenveel" },
-    { t: "tel", v: VISSEN_2, groep: tweeKleur(VISSEN_2, "blauw", "oranje", 4), keuzes: [16, 19, 14], vraagt: "evenveel" },
+    { t: "tel", v: BALLONNEN_2, groep: tweeKleur(BALLONNEN_2, "blauw", "oranje", 4), keuzes: [16, 19, 14], vraagt: "evenveel" },
     { t: "tel", v: BALLEN, groep: r5(BALLEN, 17), keuzes: [17, 16, 19], vraagt: "evenveel" },
     { t: "tel", v: APPELS, groep: r5(APPELS, 15), keuzes: [13, 20, 15], vraagt: "evenveel" },
     { t: "tel", v: BLOEMEN_2, groep: tweeKleur(BLOEMEN_2, "roze", "paars", 3), keuzes: [16, 13, 10], vraagt: "evenveel" },
     { t: "tel", v: STERREN, groep: losRechts(STERREN, 15, 3), keuzes: [16, 19, 18], vraagt: "evenveel" },
     { t: "tel", v: BLOEMEN, groep: losRechts(BLOEMEN, 10, 1), keuzes: [11, 13, 18], vraagt: "evenveel" },
     { t: "tel", v: BALLEN, groep: vrij(BALLEN, [9, 7]), keuzes: [17, 14, 16], vraagt: "evenveel" },
-    { t: "tel", v: VISSEN, groep: r5(VISSEN, 14), keuzes: [13, 19, 14], vraagt: "evenveel" },
+    { t: "tel", v: BALLONNEN, groep: r5(BALLONNEN, 14), keuzes: [13, 19, 14], vraagt: "evenveel" },
   ],
   eind: "Je weet welk getal evenveel is.",
 });
@@ -578,16 +584,16 @@ const evenveel1_2 = les({
   },
   vragen: [
     { t: "voorbeeld", v: STERREN_2, voorbeeld: 14, kaarten: [12, 17], wat: "meer" },
-    { t: "voorbeeld", v: VISSEN, voorbeeld: 18, kaarten: [20, 16], wat: "meer" },
+    { t: "voorbeeld", v: BALLONNEN, voorbeeld: 18, kaarten: [20, 16], wat: "meer" },
     { t: "voorbeeld", v: APPELS_RG, voorbeeld: 11, kaarten: [13, 9], wat: "minder" },
     { t: "voorbeeld", v: BLOEMEN, voorbeeld: 9, kaarten: [7, 11], wat: "minder" },
     { t: "voorbeeld", v: BALLEN_2, voorbeeld: 16, kaarten: [15, 19], wat: "meer" },
     { t: "rij", v: BLOEMEN, kaarten: [14, 7, 18, 10] },
-    { t: "rij", v: VISSEN_2, kaarten: [6, 15, 12, 20] },
+    { t: "rij", v: BALLONNEN_2, kaarten: [6, 15, 12, 20] },
     { t: "rij", v: STERREN, kaarten: [13, 9, 17, 8] },
     { t: "rij", v: APPELS, kaarten: [19, 11, 16, 13] },
     { t: "rij", v: BALLEN_2, kaarten: [5, 14, 10, 12] },
-    { t: "voorbeeld", v: VISSEN_2, voorbeeld: 13, kaarten: [14, 10], wat: "minder" },
+    { t: "voorbeeld", v: BALLONNEN_2, voorbeeld: 13, kaarten: [14, 10], wat: "minder" },
     { t: "voorbeeld", v: STERREN, voorbeeld: 17, kaarten: [15, 18], wat: "meer" },
     { t: "voorbeeld", v: APPELS, voorbeeld: 10, kaarten: [12, 8], wat: "minder" },
     { t: "voorbeeld", v: BLOEMEN_2, voorbeeld: 19, kaarten: [20, 17], wat: "meer" },
@@ -610,7 +616,7 @@ const evenveel1_3 = les({
   start: { id: "start-evenveel1-3", soort: "kaarten", kaarten: [r5(BLOEMEN, 7), r5(BLOEMEN, 9)] },
   uitleg: async (l, st) => {
     st.huidig = "";
-    await uitlegKaarten(l, st, BLOEMEN, [7, 9], { slot: [`${g(9, "roze")} is meer dan ${g(7, "roze")}.`, `${g(7, "roze")} is minder dan ${g(9, "roze")}.`] });
+    await uitlegKaarten(l, st, BLOEMEN, [7, 9], { slot: [`${g(9, "rood")} is meer dan ${g(7, "rood")}.`, `${g(7, "rood")} is minder dan ${g(9, "rood")}.`] });
     await uitlegTel(l, st, KRALEN, r5(KRALEN, 7));
   },
   vragen: [
@@ -675,7 +681,7 @@ const evenveel2_1 = les({
 
 /*
   Level 2: alleen drie kaarten, de vraag wisselt tussen "minste" (vaker) en
-  "meeste". Eerst rode appels, dan groene. Getallen 10 t/m 20; de kaarten
+  "meeste". Eerst appels, dan peren (tot 31 oktober 2026 groene appels). Getallen 10 t/m 20; de kaarten
   schelen meestal 1 of 2, een enkele keer meer.
 */
 const evenveel2_2 = les({
@@ -697,14 +703,14 @@ const evenveel2_2 = les({
     { t: "drie", v: APPELS, kaarten: [11, 10, 12], wat: "minder" },
     { t: "drie", v: APPELS, kaarten: [13, 15, 11], wat: "meer" },
     { t: "drie", v: APPELS, kaarten: [15, 13, 18], wat: "minder" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [17, 19, 20], wat: "meer" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [19, 18, 17], wat: "minder" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [16, 18, 17], wat: "meer" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [14, 12, 13], wat: "minder" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [11, 14, 12], wat: "meer" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [16, 18, 17], wat: "minder" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [19, 17, 18], wat: "meer" },
-    { t: "drie", v: GROENE_APPELS, kaarten: [20, 16, 18], wat: "minder" },
+    { t: "drie", v: PEREN, kaarten: [17, 19, 20], wat: "meer" },
+    { t: "drie", v: PEREN, kaarten: [19, 18, 17], wat: "minder" },
+    { t: "drie", v: PEREN, kaarten: [16, 18, 17], wat: "meer" },
+    { t: "drie", v: PEREN, kaarten: [14, 12, 13], wat: "minder" },
+    { t: "drie", v: PEREN, kaarten: [11, 14, 12], wat: "meer" },
+    { t: "drie", v: PEREN, kaarten: [16, 18, 17], wat: "minder" },
+    { t: "drie", v: PEREN, kaarten: [19, 17, 18], wat: "meer" },
+    { t: "drie", v: PEREN, kaarten: [20, 16, 18], wat: "minder" },
   ],
   eind: "Je vindt de meeste en de minste.",
 });
@@ -729,23 +735,23 @@ const evenveel3_1 = les({
   uitleg: async (l, st) => {
     st.huidig = "";
     await uitlegGetallen(l, st, "potje", [32, 18], [`Dus ${w(32)} is meer dan ${w(18)}.`]);
-    await uitlegKaarten(l, st, LIEVEHEERSBEESTJES, [8, 12], { getal: 10, slot: [`${w(12)} is meer dan ${w(10)}.`, `${w(8)} is minder dan ${w(10)}.`] });
+    await uitlegKaarten(l, st, AARDBEIEN, [8, 12], { getal: 10, slot: [`${g(12, "rood")} is meer dan ${w(10)}.`, `${g(8, "rood")} is minder dan ${w(10)}.`] });
   },
   vragen: [
     { t: "getallen", ding: "potje", getallen: [26, 8, 24], richting: "af" },
-    { t: "getal", v: LIEVEHEERSBEESTJES, getal: 15, kaarten: [14, 18], wat: "meer" },
+    { t: "getal", v: AARDBEIEN, getal: 15, kaarten: [14, 18], wat: "meer" },
     { t: "getallen", ding: "potje", getallen: [18, 48, 38], richting: "af" },
-    { t: "getal", v: VLINDERS, getal: 22, kaarten: [24, 20], wat: "meer" },
+    { t: "getal", v: KNIKKERS, getal: 22, kaarten: [24, 20], wat: "meer" },
     { t: "getallen", ding: "potje", getallen: [31, 22, 42], richting: "af" },
-    { t: "getal", v: LIEVEHEERSBEESTJES, getal: 19, kaarten: [17, 23], wat: "minder" },
+    { t: "getal", v: AARDBEIEN, getal: 19, kaarten: [17, 23], wat: "minder" },
     { t: "getallen", ding: "potje", getallen: [45, 15, 9], richting: "af" },
-    { t: "getal", v: VLINDERS, getal: 24, kaarten: [24, 19], wat: "minder" },
+    { t: "getal", v: KNIKKERS, getal: 24, kaarten: [24, 19], wat: "minder" },
     { t: "getallen", ding: "potje", getallen: [36, 15, 47], richting: "af" },
-    { t: "getal", v: LIEVEHEERSBEESTJES, getal: 14, kaarten: [19, 14], wat: "evenveel" },
+    { t: "getal", v: AARDBEIEN, getal: 14, kaarten: [19, 14], wat: "evenveel" },
     { t: "getallen", ding: "potje", getallen: [29, 9, 19], richting: "af" },
-    { t: "getal", v: VLINDERS, getal: 17, kaarten: [16, 21], wat: "meer" },
+    { t: "getal", v: KNIKKERS, getal: 17, kaarten: [16, 21], wat: "meer" },
     { t: "getallen", ding: "potje", getallen: [44, 27, 33], richting: "af" },
-    { t: "getal", v: LIEVEHEERSBEESTJES, getal: 18, kaarten: [18, 23], wat: "evenveel" },
+    { t: "getal", v: AARDBEIEN, getal: 18, kaarten: [18, 23], wat: "evenveel" },
     { t: "getallen", ding: "potje", getallen: [12, 41, 25], richting: "af" },
   ],
   eind: "Je weet wat meer dan en minder dan is.",
@@ -764,10 +770,10 @@ const evenveel3_2 = les({
   oefening: "Meer, minder, evenveel 3",
   level: 2,
   welkom: ["Hoi!", `Nu tellen we grote groepen, in rijen van ${w(10)}.`, "Welk getal is evenveel?", "Of welk getal is meer?"],
-  start: { id: "start-evenveel3-2", soort: "tel", groep: r10(VISSEN_2, 23) },
+  start: { id: "start-evenveel3-2", soort: "tel", groep: r10(BALLONNEN_2, 23) },
   uitleg: async (l, st) => {
     st.huidig = "";
-    await uitlegTel(l, st, VISSEN_2, r10(VISSEN_2, 23), "meer");
+    await uitlegTel(l, st, BALLONNEN_2, r10(BALLONNEN_2, 23), "meer");
     await uitlegGetallen(l, st, "vlieger", [27, 41], [`Dus ${w(27)} is minder dan ${w(41)}.`]);
   },
   vragen: [
@@ -779,13 +785,13 @@ const evenveel3_2 = les({
     { t: "tel", v: EIEREN_2, groep: r10(EIEREN_2, 43), keuzes: [43, 44, 33], vraagt: "evenveel" },
     { t: "getallen", ding: "vlieger", getallen: [26, 34, 31], richting: "op" },
     { t: "tel", v: BLOEMEN_2, groep: r10(BLOEMEN_2, 32), keuzes: [32, 23, 42], vraagt: "evenveel" },
-    { t: "tel", v: VISSEN_2, groep: r10(VISSEN_2, 37), keuzes: [38, 37, 36, 27], vraagt: "meer" },
+    { t: "tel", v: BALLONNEN_2, groep: r10(BALLONNEN_2, 37), keuzes: [38, 37, 36, 27], vraagt: "meer" },
     { t: "getallen", ding: "vlieger", getallen: [40, 14, 22], richting: "op" },
     { t: "tel", v: STERREN_2, groep: r10(STERREN_2, 28), keuzes: [18, 38, 28], vraagt: "evenveel" },
     { t: "getallen", ding: "vlieger", getallen: [15, 11, 13], richting: "op" },
     { t: "tel", v: BALLEN_2, groep: r10(BALLEN_2, 44), keuzes: [43, 44, 49, 45], vraagt: "minder" },
     { t: "tel", v: APPELS_RG, groep: r10(APPELS_RG, 26), keuzes: [27, 26, 36, 25], vraagt: "minder" },
-    { t: "tel", v: VLINDERS_2, groep: r10(VLINDERS_2, 19), keuzes: [19, 29, 21, 30], vraagt: "evenveel" },
+    { t: "tel", v: KNIKKERS_2, groep: r10(KNIKKERS_2, 19), keuzes: [19, 29, 21, 30], vraagt: "evenveel" },
   ],
   eind: "Je telt grote groepen en weet wat meer en minder is.",
 });

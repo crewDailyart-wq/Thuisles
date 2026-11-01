@@ -6,8 +6,9 @@
  * met één lege plek. Onderaan staan drie losse huizen of kaartjes; het kind
  * sleept het goede naar de lege plek (tikken mag ook).
  *
- * Stijl: 's nachts met gloed (nacht: true in de les). De huizen zijn de platte
- * 2D-huizen van Kenney (CC0, public/squla/huizen-2d/BRON.md) met een eigen
+ * Stijl: 's nachts (nacht: true in de les), gloed alleen als het iets
+ * betekent. De huizen zijn het vaste plaatje "huis" (src/lib/voorwerpen,
+ * sinds 31 oktober 2026; daarvoor de 2D-huizen van Kenney) met een eigen
  * bordje met het nummer; de kaartjes zijn eigen tekenwerk. Alles in Phaser
  * (HARDE REGEL 7); slepen gaat in Phaser.
  *
@@ -28,6 +29,7 @@ import { holoBasis, VLAK_B, VLAK_H, WARM, GOED, type PhaserModule } from "../hol
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { hexGetal, type Kleurnaam } from "./squla-tellen-tekenen";
+import { voorwerpTextuur } from "../voorwerpen";
 import s from "./squla-tellen.module.css";
 
 export type Rijopgave = { id: string; soort: "na" | "voor"; rij: number[]; losse: number[] };
@@ -52,16 +54,14 @@ const KAARTINKT: Record<string, string> = { blauw: "#2f63e0", paars: "#8a3fd6", 
 
 /* ---------- maten (punten van het vlak) ---------- */
 
-/* De huizen van Kenney: maat van het huis zelf; in het plaatje zit rondom 80 px gloed (dus het midden van het plaatje is het midden van het huis). */
-const HUIZEN = [
-  { sl: "house1", b: 415, h: 448 },
-  { sl: "houseAlt2", b: 482, h: 434 },
-  { sl: "houseAlt1", b: 335, h: 448 },
-  { sl: "house2", b: 562, h: 434 },
-];
-const HUIS_B = 150;
-const huisVan = (n: number) => ((n % 4) + 4) % 4;
-const huisHoog = (n: number) => (HUIZEN[huisVan(n)].h * HUIS_B) / HUIZEN[huisVan(n)].b;
+/*
+  Het huis is het vaste, vierkante plaatje "huis" (160 × 160 punten). In het
+  plaatje staat het huis op 6% boven de onderrand en is het ongeveer 82% hoog;
+  de grond van het huis is het ankerpunt.
+*/
+const HUIS_B = 160;
+const HUIS_ONDER = HUIS_B * 0.06;
+const HUIS_HOOG = HUIS_B * 0.82;
 
 const RIJ_Y = { huis: 345, kaart: 240 };
 const LOS_Y = { huis: 660, kaart: 555 };
@@ -85,9 +85,9 @@ function plekken(o: Rijopgave) {
 }
 
 /** De rechthoek waar je een ding kunt pakken (ten opzichte van zijn ankerpunt). */
-function vorm(d: Soortding, n: number) {
+function vorm(d: Soortding) {
   if (d === "kaart") return { x: -KRT.b / 2, y: -KRT.h / 2, b: KRT.b, h: KRT.h };
-  const h = huisHoog(n);
+  const h = HUIS_HOOG;
   return { x: -HUIS_B / 2, y: -h, b: HUIS_B, h };
 }
 
@@ -130,10 +130,6 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
 
     constructor() {
       super("squla-telrij");
-    }
-
-    preload() {
-      HUIZEN.forEach((h, i) => this.load.image(`sqr-huis-${i}`, `/squla/huizen-2d/${h.sl}.png`));
     }
 
     verbind(melder: (g: Vlakgebeurtenis) => void) {
@@ -179,9 +175,9 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
         c.arc(30, 30, 28, 0, Math.PI * 2);
         c.fill();
       });
-      /* De vier huisplaatjes één keer tekenen (bijna onzichtbaar), zodat ze al op de grafische kaart staan als ze echt verschijnen. */
-      const warm = HUIZEN.map((_, i) => this.add.image(-400, -400, `sqr-huis-${i}`).setAlpha(0.01).setScale(0.1));
-      this.time.delayedCall(400, () => warm.forEach((w) => w.destroy()));
+      /* Het huisplaatje één keer tekenen (bijna onzichtbaar), zodat het al op de grafische kaart staat als het echt verschijnt. */
+      const warm = this.add.image(-400, -400, voorwerpTextuur(this, "huis")).setAlpha(0.01).setScale(0.1);
+      this.time.delayedCall(400, () => warm.destroy());
       this.input.on("pointerdown", (p: Ptr) => this.neer(p));
       this.input.on("pointermove", (p: Ptr) => this.beweeg(p));
       this.input.on("pointerup", () => this.los());
@@ -235,10 +231,8 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
     /** Een huis of kaartje met nummer; het ankerpunt is de grond (huis) of het midden (kaartje). */
     maakDing(d: Soortding, n: number, x: number, y: number): Box {
       if (d === "kaart") return this.add.container(x, y, [this.plaats(this.kaartTex(n), 0, 0)]);
-      const h = HUIZEN[huisVan(n)];
-      const sc = HUIS_B / h.b;
-      const hoog = h.h * sc;
-      const beeld = this.add.image(0, -hoog / 2, `sqr-huis-${huisVan(n)}`).setScale(sc);
+      const hoog = HUIS_HOOG;
+      const beeld = this.add.image(0, HUIS_ONDER - HUIS_B / 2, voorwerpTextuur(this, "huis")).setDisplaySize(HUIS_B, HUIS_B);
       const bord = this.plaats(this.bordje(n), 0, -hoog * 0.52);
       return this.add.container(x, y, [beeld, bord]);
     }
@@ -326,7 +320,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       if (n === null || !o || !q) return;
       const los = this.losse.find((l) => l.n === n);
       this.gatDing?.setVisible(false);
-      const midY = dingVan(o) === "huis" ? q.y - huisHoog(n) / 2 : q.y;
+      const midY = dingVan(o) === "huis" ? q.y - HUIS_HOOG / 2 : q.y;
       if (los) {
         los.opGat = true;
         this.tweens.add({ targets: los.box, x: q.x, y: q.y, duration: this.rustig ? 1 : 180 });
@@ -385,18 +379,18 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       this.druk(3600);
       const van = this.losse[Math.floor(this.losse.length / 2)];
       const d = dingVan(o);
-      const midden = (y: number, n: number) => (d === "huis" ? y - huisHoog(n) / 2 : y);
-      const v = this.plaats("sqr-vinger", van.thuis.x, midden(van.thuis.y, van.n)).setDepth(20).setAlpha(0);
+      const midden = (y: number) => (d === "huis" ? y - HUIS_HOOG / 2 : y);
+      const v = this.plaats("sqr-vinger", van.thuis.x, midden(van.thuis.y)).setDepth(20).setAlpha(0);
       this.vinger = v;
       this.tweens.chain({
         targets: v,
         tweens: [
           { alpha: 1, duration: 200, delay: 500 },
-          { x: q.x, y: midden(q.y, van.n), duration: 900, ease: "Sine.easeInOut" },
+          { x: q.x, y: midden(q.y), duration: 900, ease: "Sine.easeInOut" },
           { alpha: 0, duration: 250 },
-          { x: van.thuis.x, y: midden(van.thuis.y, van.n), duration: 1 },
+          { x: van.thuis.x, y: midden(van.thuis.y), duration: 1 },
           { alpha: 1, duration: 200, delay: 300 },
-          { x: q.x, y: midden(q.y, van.n), duration: 900, ease: "Sine.easeInOut" },
+          { x: q.x, y: midden(q.y), duration: 900, ease: "Sine.easeInOut" },
           { alpha: 0, duration: 250 },
         ],
       });
@@ -428,7 +422,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       const d = dingVan(o);
       return (
         this.losse.find((l) => {
-          const v = vorm(d, l.n);
+          const v = vorm(d);
           return !l.opGat && x >= l.box.x + v.x && x <= l.box.x + v.x + v.b && y >= l.box.y + v.y && y <= l.box.y + v.y + v.h;
         }) ?? null
       );
@@ -473,7 +467,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       if (this.sleep) return { x: r.left + (this.sleep.los.box.x + this.sleep.dx) * f, y: r.top + (this.sleep.los.box.y + this.sleep.dy) * f };
       const los = this.losse.find((l) => !l.opGat);
       if (!los) return null;
-      const v = vorm(dingVan(o), los.n);
+      const v = vorm(dingVan(o));
       return { x: r.left + (los.box.x + v.x + v.b / 2) * f, y: r.top + (los.box.y + v.y + v.h / 2) * f };
     }
 
@@ -579,7 +573,7 @@ export function SqulaTelrij({ opgave, actief = false, licht = null, ingevuld = n
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
       {p &&
         knoppen.map((n, i) => {
-          const v = vorm(d, n);
+          const v = vorm(d);
           const q = p.losse[i];
           return (
             <button

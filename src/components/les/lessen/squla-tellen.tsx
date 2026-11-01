@@ -34,6 +34,7 @@ import {
   type Telopgave,
   type Telvorm,
 } from "../vlakken/squla-tellen-holo";
+import { FOTO, VASTE_KLEUR } from "../vlakken/squla-tellen-tekenen";
 import { KaartTelrij, SqulaTelrij, kaartKleur, type Rijopgave, type TelrijProps } from "../vlakken/squla-tellen-telrij";
 
 /* =====================================================================
@@ -59,51 +60,51 @@ const ENKEL: Record<Soort, [string, string]> = {
   citroen: ["citroen", "citroenen"],
   aardbei: ["aardbei", "aardbeien"],
   banaan: ["banaan", "bananen"],
-  auto: ["auto", "auto's"],
-  huisje: ["huisje", "huisjes"],
-  raket: ["raket", "raketten"],
-  bootje: ["bootje", "bootjes"],
-  bal: ["bal", "ballen"],
-  blok: ["blok", "blokken"],
-  visje: ["visje", "visjes"],
-  kwal: ["kwal", "kwallen"],
-  schildpad: ["schildpad", "schildpadden"],
-  vogel: ["vogel", "vogels"],
-  vlinder: ["vlinder", "vlinders"],
-  monster: ["monster", "monsters"],
-  spookje: ["spookje", "spookjes"],
-  knikker: ["knikker", "knikkers"],
+  speelgoedauto: ["auto", "auto's"],
+  bus: ["bus", "bussen"],
+  huis: ["huis", "huizen"],
+  boom: ["boom", "bomen"],
+  raketje: ["raketje", "raketjes"],
   ster: ["ster", "sterren"],
+  planeet: ["planeet", "planeten"],
+  satelliet: ["satelliet", "satellieten"],
+  ufo: ["ufo", "ufo's"],
+  komeet: ["komeet", "kometen"],
+  ballon: ["ballon", "ballonnen"],
+  bootje: ["bootje", "bootjes"],
+  treintje: ["treintje", "treintjes"],
+  bal: ["bal", "ballen"],
+  speelblok: ["blok", "blokken"],
+  knikker: ["knikker", "knikkers"],
 };
 
-/* Het-woorden: "elk monster", "elk los blok". */
-const HET = new Set<Soort>(["monster", "spookje", "visje", "huisje", "bootje", "blok"]);
-/** "elke appel", "elk monster". */
+/* Het-woorden: "elk huis", "elk los blok". */
+const HET = new Set<Soort>(["huis", "raketje", "bootje", "treintje", "speelblok"]);
+/** "elke appel", "elk huis". */
 const elke = (v: Voorwerp) => `${v.het ? "elk" : "elke"} ${v.een}`;
 const hoofd = (z: string) => z[0].toUpperCase() + z.slice(1);
 /** "elke losse knikker", "elk los blok". */
 const elkeLosse = (v: Voorwerp) => `${v.het ? "elk los" : "elke losse"} ${v.een}`;
 
-/** Eén soort in één kleur. */
-function een(soort: Soort, kleur: Kleurnaam): Voorwerp {
-  return { naam: ENKEL[soort][1], een: ENKEL[soort][0], het: HET.has(soort), plaatjes: [{ soort, kleur }], kleur };
+/** Het plaatje van een ding, in zijn vaste kleur. */
+const plaatje = (soort: Soort): Plaatje => ({ soort, kleur: VASTE_KLEUR[soort] });
+
+/** Eén soort (in zijn vaste kleur). */
+function een(soort: Soort): Voorwerp {
+  return { naam: ENKEL[soort][1], een: ENKEL[soort][0], het: HET.has(soort), plaatjes: [plaatje(soort)], kleur: VASTE_KLEUR[soort] };
 }
-/** Eén soort, de rijen om en om in twee kleuren. */
-function tweeKleuren(soort: Soort, a: Kleurnaam, b: Kleurnaam): Voorwerp {
-  return { naam: ENKEL[soort][1], een: ENKEL[soort][0], het: HET.has(soort), plaatjes: [{ soort, kleur: a }, { soort, kleur: b }], kleur: "wit" };
-}
-/** Twee soorten, de rijen om en om. */
-function tweeSoorten(a: Soort, ka: Kleurnaam, b: Soort, kb: Kleurnaam, naam: string): Voorwerp {
-  return { naam, een: ENKEL[a][0], het: HET.has(a), plaatjes: [{ soort: a, kleur: ka }, { soort: b, kleur: kb }], kleur: "wit" };
+/** Twee soorten, de rijen om en om: "auto's en bussen". */
+function tweeSoorten(a: Soort, b: Soort): Voorwerp {
+  return { naam: `${ENKEL[a][1]} en ${ENKEL[b][1]}`, een: ENKEL[a][0], het: HET.has(a), plaatjes: [plaatje(a), plaatje(b)], kleur: "wit" };
 }
 
 /* Fruit */
-const APPELS = een("appel", "rood");
-const PEREN = een("peer", "groen");
-const PRUIMEN = een("pruim", "paars");
-const CITROENEN = een("citroen", "geel");
-const AARDBEIEN = een("aardbei", "rood");
-const BANANEN = een("banaan", "geel");
+const APPELS = een("appel");
+const PEREN = een("peer");
+const PRUIMEN = een("pruim");
+const CITROENEN = een("citroen");
+const AARDBEIEN = een("aardbei");
+const BANANEN = een("banaan");
 
 /* =====================================================================
    Telvragen
@@ -277,7 +278,33 @@ type Telles = {
   vragen: (Telvraag | "memory")[];
   memory?: Memorykaartjes;
   eind: string;
+  /** Proef (31 oktober 2026): echte plaatjes uit /proef-plaatjes, met of zonder gloed. */
+  foto?: { gloed: "altijd" | "nooit" | "moment"; plaatjes: Partial<Record<Soort, string>> };
 };
+
+/** Laadt de echte plaatjes van een proefles (of zet ze uit voor een gewone les). */
+async function zetFotos(foto: Telles["foto"]) {
+  FOTO.plaatjes = {};
+  FOTO.gloed = foto?.gloed ?? "moment";
+  if (!foto) return;
+  await Promise.all(
+    Object.entries(foto.plaatjes).map(async ([soort, src]) => {
+      const img = new Image();
+      img.src = src!;
+      await img.decode();
+      FOTO.plaatjes[soort as Soort] = img;
+    }),
+  );
+}
+
+/** Alle vaste plaatjes die een telles tekent (het lesscherm laadt ze vooraf). */
+function voorwerpenVan(t: Telles): string[] {
+  const namen = new Set<string>();
+  for (const v of [...t.uitleg, ...t.vragen]) if (v !== "memory") for (const p of v.voorwerp.plaatjes) namen.add(p.soort);
+  for (const p of t.memory?.paren ?? []) namen.add(p.soort);
+  if ([...t.uitleg, ...t.vragen].some((v) => v !== "memory" && v.vorm === "zak")) namen.add("zak");
+  return [...namen];
+}
 
 function telles(t: Telles): Lesdraaiboek {
   return {
@@ -287,14 +314,18 @@ function telles(t: Telles): Lesdraaiboek {
     indeling: "synthesis",
     browserstem: true,
     kaarttekening: KaartTellen,
+    voorwerpen: voorwerpenVan(t),
+    /* Alle lessen in de donkere stijl (31 oktober 2026); alleen de proef "zonder glow" blijft zoals hij was. */
+    ...(t.foto?.gloed !== "nooit" ? { nacht: true as const } : {}),
     async speel(l) {
+      await zetFotos(t.foto);
       const st: Stand = { huidig: "", goed: 0, fout: 0 };
       const eerste = t.uitleg[0];
       st.huidig = `uitleg-${eerste.vorm}`;
       /* Alle plaatjes van de les, één keer (die worden vooruit gebakken). */
       const alle = new Map<string, Plaatje>();
-      for (const v of [...t.uitleg, ...t.vragen]) if (v !== "memory") for (const p of v.voorwerp.plaatjes) alle.set(`${p.soort}-${p.kleur}`, p);
-      for (const p of t.memory?.paren ?? []) alle.set(`${p.soort}-${p.kleur}`, p);
+      for (const v of [...t.uitleg, ...t.vragen]) if (v !== "memory") for (const p of v.voorwerp.plaatjes) alle.set(p.soort, p);
+      for (const p of t.memory?.paren ?? []) alle.set(p.soort, p);
       const zakken = [...new Set([...t.uitleg, ...t.vragen].flatMap((v) => (v !== "memory" && v.zak ? [v.zak] : [])))];
       l.vlak<TelVlakProps>(SqulaTelVlak, { opgave: opgaveVan(st.huidig, eerste), geteld: 0, voorraad: { plaatjes: [...alle.values()], zakken } });
       speelLesgeluid("verschijn");
@@ -325,7 +356,7 @@ function telles(t: Telles): Lesdraaiboek {
 
 const FRUIT_WELKOM = ["Hoi!", "Kijk eens, allemaal fruit.", "Hoeveel zijn het er?", "Tel goed en kies het getal."];
 
-const fruit1 = telles({
+const FRUIT1: Telles = {
   id: "squla-tellen-fruit-1",
   titel: "Fruit tellen",
   oefening: "Tellen met fruit",
@@ -351,7 +382,8 @@ const fruit1 = telles({
     rij5(PRUIMEN, 11, [9, 10, 11]),
   ],
   eind: "Je kunt fruit tellen.",
-});
+};
+const fruit1 = telles(FRUIT1);
 
 const fruit2 = telles({
   id: "squla-tellen-fruit-2",
@@ -413,14 +445,20 @@ const fruit3 = telles({
    Resultatief tellen 1 (10967)
    ===================================================================== */
 
-const AUTOS_RB = tweeKleuren("auto", "rood", "blauw");
-const AUTOS_RG = tweeKleuren("auto", "roze", "geel");
-const HUISJES = tweeKleuren("huisje", "oranje", "groen");
-const RAKETTEN = tweeKleuren("raket", "paars", "geel");
-const BALLEN_BLOKKEN = tweeSoorten("bal", "rood", "blok", "blauw", "ballen en blokken");
-const BOOTJES = tweeKleuren("bootje", "oranje", "blauw");
+/*
+  31 oktober 2026 (besluit eigenaar): geen dieren, monsters of spookjes meer,
+  en elk ding heeft één vaste kleur. Squla wisselt de rijen om en om van
+  "kleur/vorm"; hier wisselen de rijen van ding (auto's en bussen, huizen en
+  bomen …), en elk ding heeft zijn eigen kleur.
+*/
+const AUTOS_BUSSEN = tweeSoorten("speelgoedauto", "bus");
+const BUSSEN_AUTOS = tweeSoorten("bus", "speelgoedauto");
+const HUIZEN_BOMEN = tweeSoorten("huis", "boom");
+const RAKETJES_STERREN = tweeSoorten("raketje", "ster");
+const BALLEN_BLOKKEN = tweeSoorten("bal", "speelblok");
+const BOOTJES_TREINTJES = tweeSoorten("bootje", "treintje");
 
-const RES1_WELKOM = ["Hoi!", "We gaan tellen hoeveel het er zijn.", "De rijen hebben om de beurt een andere kleur.", "Dat helpt bij het tellen."];
+const RES1_WELKOM = ["Hoi!", "We gaan tellen hoeveel het er zijn.", "De rijen zijn om de beurt anders.", "Dat helpt bij het tellen."];
 
 const res1a = telles({
   id: "squla-tellen-resultatief1-1",
@@ -428,24 +466,24 @@ const res1a = telles({
   oefening: "Resultatief tellen 1",
   level: 1,
   welkom: RES1_WELKOM,
-  uitleg: [rij5(AUTOS_RB, 8, [])],
-  /* Level 1: 11 t/m 17, rijen van 5 om en om in een andere kleur; de keuzes niet op volgorde. */
+  uitleg: [rij5(AUTOS_BUSSEN, 8, [])],
+  /* Level 1: 11 t/m 17, rijen van 5, om en om een ander ding; de keuzes niet op volgorde. */
   vragen: [
-    rij5(AUTOS_RB, 13, [14, 13, 12]),
-    rij5(HUISJES, 12, [12, 14, 13]),
-    rij5(RAKETTEN, 15, [16, 15, 14]),
-    rij5(AUTOS_RG, 11, [10, 12, 11]),
-    rij5(HUISJES, 16, [17, 15, 16]),
-    rij5(RAKETTEN, 14, [15, 14, 12]),
-    rij5(AUTOS_RB, 17, [16, 17, 15]),
-    rij5(HUISJES, 13, [13, 15, 14]),
-    rij5(RAKETTEN, 16, [16, 10, 15]),
-    rij5(AUTOS_RG, 15, [14, 16, 15]),
-    rij5(HUISJES, 14, [12, 14, 13]),
-    rij5(RAKETTEN, 12, [13, 11, 12]),
-    rij5(AUTOS_RB, 16, [15, 17, 16]),
-    rij5(HUISJES, 17, [17, 15, 16]),
-    rij5(RAKETTEN, 11, [12, 11, 13]),
+    rij5(AUTOS_BUSSEN, 13, [14, 13, 12]),
+    rij5(HUIZEN_BOMEN, 12, [12, 14, 13]),
+    rij5(RAKETJES_STERREN, 15, [16, 15, 14]),
+    rij5(BUSSEN_AUTOS, 11, [10, 12, 11]),
+    rij5(HUIZEN_BOMEN, 16, [17, 15, 16]),
+    rij5(RAKETJES_STERREN, 14, [15, 14, 12]),
+    rij5(AUTOS_BUSSEN, 17, [16, 17, 15]),
+    rij5(HUIZEN_BOMEN, 13, [13, 15, 14]),
+    rij5(RAKETJES_STERREN, 16, [16, 10, 15]),
+    rij5(BUSSEN_AUTOS, 15, [14, 16, 15]),
+    rij5(HUIZEN_BOMEN, 14, [12, 14, 13]),
+    rij5(RAKETJES_STERREN, 12, [13, 11, 12]),
+    rij5(AUTOS_BUSSEN, 16, [15, 17, 16]),
+    rij5(HUIZEN_BOMEN, 17, [17, 15, 16]),
+    rij5(RAKETJES_STERREN, 11, [12, 11, 13]),
   ],
   eind: "Je kunt tellen in rijtjes.",
 });
@@ -456,23 +494,23 @@ const res1b = telles({
   oefening: "Resultatief tellen 1",
   level: 2,
   welkom: ["Hoi!", "We gaan weer tellen.", "Nu tot {20}."],
-  uitleg: [rij5(BOOTJES, 8, [])],
+  uitleg: [rij5(BOOTJES_TREINTJES, 8, [])],
   /* Level 2: 11 t/m 20, rijen van 5; twee reeksen om de beurt, elk oplopend; de keuzes op volgorde. */
   vragen: [
     rij5(BALLEN_BLOKKEN, 11, [11, 12, 13]),
-    rij5(BOOTJES, 14, [14, 15, 16]),
+    rij5(BOOTJES_TREINTJES, 14, [14, 15, 16]),
     rij5(BALLEN_BLOKKEN, 12, [11, 12, 13]),
-    rij5(BOOTJES, 15, [13, 14, 15]),
+    rij5(BOOTJES_TREINTJES, 15, [13, 14, 15]),
     rij5(BALLEN_BLOKKEN, 13, [13, 14, 15]),
-    rij5(BOOTJES, 16, [16, 17, 18]),
+    rij5(BOOTJES_TREINTJES, 16, [16, 17, 18]),
     rij5(BALLEN_BLOKKEN, 14, [12, 13, 14]),
-    rij5(BOOTJES, 17, [15, 16, 17]),
+    rij5(BOOTJES_TREINTJES, 17, [15, 16, 17]),
     rij5(BALLEN_BLOKKEN, 15, [14, 15, 16]),
-    rij5(BOOTJES, 18, [18, 19, 20]),
+    rij5(BOOTJES_TREINTJES, 18, [18, 19, 20]),
     rij5(BALLEN_BLOKKEN, 16, [15, 16, 17]),
-    rij5(BOOTJES, 19, [17, 18, 19]),
+    rij5(BOOTJES_TREINTJES, 19, [17, 18, 19]),
     rij5(BALLEN_BLOKKEN, 17, [17, 18, 19]),
-    rij5(BOOTJES, 20, [18, 19, 20]),
+    rij5(BOOTJES_TREINTJES, 20, [18, 19, 20]),
     rij5(BALLEN_BLOKKEN, 18, [16, 17, 18]),
   ],
   eind: "Je kunt tellen tot {20}.",
@@ -484,24 +522,24 @@ const res1c = telles({
   oefening: "Resultatief tellen 1",
   level: 3,
   welkom: ["Hoi!", "Nu staat alles door elkaar.", "Er zijn geen rijtjes meer.", "Onthoud goed wat je al geteld hebt."],
-  uitleg: [los(een("schildpad", "groen"), 8, [])],
-  /* Level 3: 11 t/m 20, los door elkaar, één kleur; elke vraag een ander voorwerp of dier. */
+  uitleg: [los(een("planeet"), 8, [])],
+  /* Level 3: 11 t/m 20, los door elkaar, één kleur; elke vraag een ander ding. */
   vragen: [
-    los(een("schildpad", "groen"), 14, [14, 15, 16]),
-    los(een("auto", "blauw"), 13, [11, 12, 13]),
-    los(een("huisje", "rood"), 11, [11, 12, 13]),
-    los(een("raket", "paars"), 15, [14, 15, 16]),
-    los(een("visje", "oranje"), 12, [10, 11, 12]),
-    los(een("kwal", "roze"), 18, [17, 18, 19]),
-    los(een("vogel", "geel"), 19, [17, 18, 19]),
-    los(een("vlinder", "blauw"), 20, [18, 19, 20]),
-    los(een("bootje", "rood"), 17, [17, 18, 19]),
-    los(een("monster", "groen"), 16, [15, 16, 17]),
-    los(een("bal", "oranje"), 13, [12, 13, 14]),
-    los(een("spookje", "paars"), 18, [16, 17, 18]),
-    los(een("ster", "geel"), 15, [15, 16, 17]),
-    los(een("knikker", "blauw"), 19, [18, 19, 20]),
-    los(een("blok", "rood"), 12, [11, 12, 13]),
+    los(een("planeet"), 14, [14, 15, 16]),
+    los(een("speelgoedauto"), 13, [11, 12, 13]),
+    los(een("huis"), 11, [11, 12, 13]),
+    los(een("raketje"), 15, [14, 15, 16]),
+    los(een("satelliet"), 12, [10, 11, 12]),
+    los(een("boom"), 18, [17, 18, 19]),
+    los(een("komeet"), 19, [17, 18, 19]),
+    los(een("ballon"), 20, [18, 19, 20]),
+    los(een("bootje"), 17, [17, 18, 19]),
+    los(een("ufo"), 16, [15, 16, 17]),
+    los(een("bal"), 13, [12, 13, 14]),
+    los(een("bus"), 18, [16, 17, 18]),
+    los(een("ster"), 15, [15, 16, 17]),
+    los(een("knikker"), 19, [18, 19, 20]),
+    los(een("speelblok"), 12, [11, 12, 13]),
   ],
   eind: "Je telt goed, ook als alles door elkaar staat.",
 });
@@ -510,39 +548,39 @@ const res1c = telles({
    Resultatief tellen 2 (10968)
    ===================================================================== */
 
-const VISJES = een("visje", "oranje");
-const SCHILDPADDEN = een("schildpad", "groen");
-const VOGELS = een("vogel", "geel");
-const KWALLEN = een("kwal", "roze");
-const VLINDERS = een("vlinder", "blauw");
-const RAKETTEN_PAARS = een("raket", "paars");
+/* Squla telt hier dieren; Bliepo telt dingen uit de ruimte (31 oktober 2026: liever geen dieren). */
+const RAKETJES = een("raketje");
+const STERREN = een("ster");
+const PLANETEN = een("planeet");
+const SATELLIETEN = een("satelliet");
+const UFOS = een("ufo");
 
 const res2a = telles({
   id: "squla-tellen-resultatief2-1",
   titel: "Hoeveel zie je?",
   oefening: "Resultatief tellen 2",
   level: 1,
-  welkom: ["Hoi!", "Kijk, allemaal dieren.", "Hoeveel zijn het er?", "Tel goed en kies het getal."],
-  uitleg: [rij5(VISJES, 8, [])],
-  /* Level 1: 11 t/m 15, rijen van 5, één dier in één kleur; de keuzes op volgorde. */
+  welkom: ["Hoi!", "Kijk, allemaal dingen uit de ruimte.", "Hoeveel zijn het er?", "Tel goed en kies het getal."],
+  uitleg: [rij5(RAKETJES, 8, [])],
+  /* Level 1: 11 t/m 15, rijen van 5, één ding in één kleur; de keuzes op volgorde. */
   vragen: [
-    rij5(VISJES, 13, [12, 13, 14]),
-    rij5(SCHILDPADDEN, 12, [12, 13, 14]),
-    rij5(VOGELS, 14, [13, 14, 15]),
-    rij5(KWALLEN, 11, [11, 12, 13]),
-    rij5(VLINDERS, 15, [13, 14, 15]),
-    rij5(VISJES, 12, [11, 12, 13]),
-    rij5(SCHILDPADDEN, 14, [12, 13, 14]),
-    rij5(VOGELS, 13, [13, 14, 15]),
-    rij5(KWALLEN, 15, [14, 15, 16]),
-    rij5(VLINDERS, 11, [10, 11, 12]),
-    rij5(VISJES, 14, [14, 15, 16]),
-    rij5(SCHILDPADDEN, 15, [13, 14, 15]),
-    rij5(VOGELS, 11, [11, 12, 13]),
-    rij5(KWALLEN, 13, [11, 12, 13]),
-    rij5(VLINDERS, 12, [12, 13, 14]),
+    rij5(RAKETJES, 13, [12, 13, 14]),
+    rij5(STERREN, 12, [12, 13, 14]),
+    rij5(PLANETEN, 14, [13, 14, 15]),
+    rij5(SATELLIETEN, 11, [11, 12, 13]),
+    rij5(UFOS, 15, [13, 14, 15]),
+    rij5(RAKETJES, 12, [11, 12, 13]),
+    rij5(STERREN, 14, [12, 13, 14]),
+    rij5(PLANETEN, 13, [13, 14, 15]),
+    rij5(SATELLIETEN, 15, [14, 15, 16]),
+    rij5(UFOS, 11, [10, 11, 12]),
+    rij5(RAKETJES, 14, [14, 15, 16]),
+    rij5(STERREN, 15, [13, 14, 15]),
+    rij5(PLANETEN, 11, [11, 12, 13]),
+    rij5(SATELLIETEN, 13, [11, 12, 13]),
+    rij5(UFOS, 12, [12, 13, 14]),
   ],
-  eind: "Je kunt dieren tellen.",
+  eind: "Je kunt tellen tot {15}.",
 });
 
 const res2b = telles({
@@ -551,24 +589,24 @@ const res2b = telles({
   oefening: "Resultatief tellen 2",
   level: 2,
   welkom: ["Hoi!", "Nu gaan we verder tellen.", "Er komen meer rijen bij."],
-  uitleg: [rij5(AUTOS_RB, 8, [])],
-  /* Level 2: 16 t/m 20, rijen van 5, vaak om en om een andere kleur; de keuzes op volgorde. */
+  uitleg: [rij5(AUTOS_BUSSEN, 8, [])],
+  /* Level 2: 16 t/m 20, rijen van 5, vaak om en om een ander ding; de keuzes op volgorde. */
   vragen: [
-    rij5(AUTOS_RB, 17, [16, 17, 18]),
-    rij5(HUISJES, 16, [16, 17, 18]),
-    rij5(RAKETTEN_PAARS, 18, [17, 18, 19]),
+    rij5(AUTOS_BUSSEN, 17, [16, 17, 18]),
+    rij5(HUIZEN_BOMEN, 16, [16, 17, 18]),
+    rij5(RAKETJES, 18, [17, 18, 19]),
     rij5(BALLEN_BLOKKEN, 17, [15, 16, 17]),
-    rij5(AUTOS_RG, 19, [18, 19, 20]),
-    rij5(BOOTJES, 16, [14, 15, 16]),
-    rij5(HUISJES, 20, [18, 19, 20]),
-    rij5(RAKETTEN_PAARS, 19, [17, 18, 19]),
-    rij5(AUTOS_RB, 18, [16, 17, 18]),
+    rij5(BUSSEN_AUTOS, 19, [18, 19, 20]),
+    rij5(BOOTJES_TREINTJES, 16, [14, 15, 16]),
+    rij5(HUIZEN_BOMEN, 20, [18, 19, 20]),
+    rij5(RAKETJES, 19, [17, 18, 19]),
+    rij5(AUTOS_BUSSEN, 18, [16, 17, 18]),
     rij5(BALLEN_BLOKKEN, 20, [18, 19, 20]),
-    rij5(BOOTJES, 17, [17, 18, 19]),
-    rij5(HUISJES, 18, [18, 19, 20]),
-    rij5(AUTOS_RG, 16, [16, 17, 18]),
-    rij5(RAKETTEN_PAARS, 20, [18, 19, 20]),
-    rij5(BOOTJES, 19, [17, 18, 19]),
+    rij5(BOOTJES_TREINTJES, 17, [17, 18, 19]),
+    rij5(HUIZEN_BOMEN, 18, [18, 19, 20]),
+    rij5(BUSSEN_AUTOS, 16, [16, 17, 18]),
+    rij5(RAKETJES, 20, [18, 19, 20]),
+    rij5(BOOTJES_TREINTJES, 19, [17, 18, 19]),
   ],
   eind: "Je kunt tellen tot {20}.",
 });
@@ -579,24 +617,24 @@ const res2c = telles({
   oefening: "Resultatief tellen 2",
   level: 3,
   welkom: ["Hoi!", "Soms staat alles door elkaar.", "Soms staat het in rijen.", "Kijk goed hoe je het beste telt."],
-  uitleg: [los(een("monster", "paars"), 8, []), rij5(AUTOS_RB, 8, [])],
-  /* Level 3: om en om weinig monsters los door elkaar (5 t/m 13) en veel in rijen van 5 (16 t/m 20). */
+  uitleg: [los(UFOS, 8, []), rij5(AUTOS_BUSSEN, 8, [])],
+  /* Level 3: om en om weinig ufo's los door elkaar (5 t/m 13) en veel in rijen van 5 (16 t/m 20). */
   vragen: [
-    los(een("monster", "paars"), 7, [6, 7, 8]),
-    rij5(AUTOS_RB, 17, [16, 17, 18]),
-    los(een("monster", "paars"), 9, [7, 8, 9]),
+    los(UFOS, 7, [6, 7, 8]),
+    rij5(AUTOS_BUSSEN, 17, [16, 17, 18]),
+    los(UFOS, 9, [7, 8, 9]),
     rij5(BALLEN_BLOKKEN, 16, [16, 17, 18]),
-    los(een("monster", "oranje"), 12, [10, 12, 14]),
-    rij5(HUISJES, 19, [17, 18, 19]),
-    los(een("monster", "oranje"), 8, [8, 9, 10]),
-    rij5(BOOTJES, 18, [18, 19, 20]),
-    los(een("monster", "blauw"), 6, [5, 6, 7]),
-    rij5(AUTOS_RG, 20, [18, 19, 20]),
-    los(een("monster", "blauw"), 11, [10, 11, 12]),
-    rij5(RAKETTEN_PAARS, 17, [17, 18, 19]),
-    los(een("monster", "groen"), 13, [11, 12, 13]),
-    rij5(HUISJES, 18, [16, 17, 18]),
-    los(een("monster", "groen"), 5, [5, 6, 7]),
+    los(UFOS, 12, [10, 12, 14]),
+    rij5(HUIZEN_BOMEN, 19, [17, 18, 19]),
+    los(UFOS, 8, [8, 9, 10]),
+    rij5(BOOTJES_TREINTJES, 18, [18, 19, 20]),
+    los(UFOS, 6, [5, 6, 7]),
+    rij5(BUSSEN_AUTOS, 20, [18, 19, 20]),
+    los(UFOS, 11, [10, 11, 12]),
+    rij5(RAKETJES, 17, [17, 18, 19]),
+    los(UFOS, 13, [11, 12, 13]),
+    rij5(HUIZEN_BOMEN, 18, [16, 17, 18]),
+    los(UFOS, 5, [5, 6, 7]),
   ],
   eind: "Je telt in rijen én door elkaar.",
 });
@@ -605,37 +643,36 @@ const res2c = telles({
    Resultatief tellen 3 (10969)
    ===================================================================== */
 
-const SPOOKJES = een("spookje", "wit");
-
+/* Squla telt hier spookjes en monsters; Bliepo telt planeten en ufo's (31 oktober 2026: geen gezichtjes). */
 const res3a = telles({
   id: "squla-tellen-resultatief3-1",
   titel: "Grote groepen tellen",
   oefening: "Resultatief tellen 3",
   level: 1,
-  welkom: ["Hoi!", "Kijk, spookjes en monsters.", "Ze staan door elkaar.", "Hoeveel zijn het er?"],
-  uitleg: [los(SPOOKJES, 8, [])],
-  /* Level 1: 5 t/m 20, alles los door elkaar; spookjes en monsters om de beurt; de keuzes niet op volgorde; aan het eind memory. */
+  welkom: ["Hoi!", "Kijk, planeten en ufo's.", "Ze staan door elkaar.", "Hoeveel zijn het er?"],
+  uitleg: [los(PLANETEN, 8, [])],
+  /* Level 1: 5 t/m 20, alles los door elkaar; planeten en ufo's om de beurt; de keuzes niet op volgorde; aan het eind memory. */
   vragen: [
-    los(SPOOKJES, 6, [4, 8, 6]),
-    los(een("monster", "groen"), 13, [12, 14, 13]),
-    los(SPOOKJES, 9, [10, 8, 9]),
-    los(een("monster", "groen"), 18, [19, 17, 18]),
-    los(SPOOKJES, 14, [15, 13, 14]),
-    los(een("monster", "oranje"), 10, [10, 11, 9]),
-    los(SPOOKJES, 19, [20, 18, 19]),
-    los(een("monster", "oranje"), 15, [16, 14, 15]),
-    los(SPOOKJES, 11, [11, 13, 12]),
-    los(een("monster", "roze"), 20, [19, 20, 18]),
-    los(SPOOKJES, 7, [8, 6, 7]),
-    los(een("monster", "roze"), 16, [17, 15, 16]),
-    los(SPOOKJES, 12, [13, 11, 12]),
-    los(een("monster", "paars"), 17, [16, 18, 17]),
-    los(SPOOKJES, 5, [7, 5, 6]),
+    los(PLANETEN, 6, [4, 8, 6]),
+    los(UFOS, 13, [12, 14, 13]),
+    los(PLANETEN, 9, [10, 8, 9]),
+    los(UFOS, 18, [19, 17, 18]),
+    los(PLANETEN, 14, [15, 13, 14]),
+    los(UFOS, 10, [10, 11, 9]),
+    los(PLANETEN, 19, [20, 18, 19]),
+    los(UFOS, 15, [16, 14, 15]),
+    los(PLANETEN, 11, [11, 13, 12]),
+    los(UFOS, 20, [19, 20, 18]),
+    los(PLANETEN, 7, [8, 6, 7]),
+    los(UFOS, 16, [17, 15, 16]),
+    los(PLANETEN, 12, [13, 11, 12]),
+    los(UFOS, 17, [16, 18, 17]),
+    los(PLANETEN, 5, [7, 5, 6]),
     "memory",
   ],
   memory: {
     id: "squla-tellen-resultatief3-1-memory",
-    paren: (["rood", "oranje", "groen", "blauw", "paars"] as Kleurnaam[]).map((kleur) => ({ soort: "monster" as Soort, kleur })),
+    paren: (["raketje", "ufo", "planeet", "ster", "satelliet"] as Soort[]).map(plaatje),
   },
   eind: "Je kunt grote groepen tellen.",
 });
@@ -645,30 +682,30 @@ const res3b = telles({
   titel: "Grote groepen tellen (moeilijker)",
   oefening: "Resultatief tellen 3",
   level: 2,
-  welkom: ["Hoi!", "Daar zijn de spookjes en monsters weer.", "Tel goed, ze lijken op elkaar."],
-  uitleg: [los(een("monster", "oranje"), 8, [])],
+  welkom: ["Hoi!", "Daar zijn de planeten en ufo's weer.", "Tel goed, het worden er veel."],
+  uitleg: [los(UFOS, 8, [])],
   /* Level 2: 7 t/m 19, alles los door elkaar; de keuzes soms ver uit elkaar; memory tussendoor. */
   vragen: [
-    los(SPOOKJES, 16, [16, 14, 17]),
-    los(een("monster", "oranje"), 8, [7, 9, 8]),
-    los(SPOOKJES, 12, [11, 12, 13]),
-    los(een("monster", "oranje"), 10, [10, 9, 11]),
-    los(SPOOKJES, 9, [10, 9, 8]),
-    los(een("monster", "groen"), 15, [15, 16, 14]),
-    los(SPOOKJES, 17, [17, 14, 19]),
-    los(een("monster", "groen"), 11, [12, 11, 10]),
-    los(SPOOKJES, 14, [13, 16, 14]),
-    los(een("monster", "roze"), 19, [18, 19, 17]),
+    los(PLANETEN, 16, [16, 14, 17]),
+    los(UFOS, 8, [7, 9, 8]),
+    los(PLANETEN, 12, [11, 12, 13]),
+    los(UFOS, 10, [10, 9, 11]),
+    los(PLANETEN, 9, [10, 9, 8]),
+    los(UFOS, 15, [15, 16, 14]),
+    los(PLANETEN, 17, [17, 14, 19]),
+    los(UFOS, 11, [12, 11, 10]),
+    los(PLANETEN, 14, [13, 16, 14]),
+    los(UFOS, 19, [18, 19, 17]),
     "memory",
-    los(SPOOKJES, 18, [15, 18, 19]),
-    los(een("monster", "roze"), 13, [13, 12, 14]),
-    los(SPOOKJES, 7, [9, 7, 8]),
-    los(een("monster", "paars"), 16, [17, 15, 16]),
-    los(SPOOKJES, 19, [18, 16, 19]),
+    los(PLANETEN, 18, [15, 18, 19]),
+    los(UFOS, 13, [13, 12, 14]),
+    los(PLANETEN, 7, [9, 7, 8]),
+    los(UFOS, 16, [17, 15, 16]),
+    los(PLANETEN, 19, [18, 16, 19]),
   ],
   memory: {
     id: "squla-tellen-resultatief3-2-memory",
-    paren: (["rood", "geel", "groen", "blauw", "paars"] as Kleurnaam[]).map((kleur) => ({ soort: "spookje" as Soort, kleur })),
+    paren: (["bal", "speelgoedauto", "bootje", "ballon", "treintje"] as Soort[]).map(plaatje),
   },
   eind: "Je kunt grote groepen tellen.",
 });
@@ -679,30 +716,29 @@ const res3c = telles({
   oefening: "Resultatief tellen 3",
   level: 3,
   welkom: ["Hoi!", "Nu worden het er veel.", "Ze staan in rijen van {10}.", "Tel per rij, dat gaat sneller."],
-  uitleg: [rij10(tweeKleuren("visje", "geel", "blauw"), 23, [])],
-  /* Level 3: 22 t/m 50, rijen van 10 om en om in een andere kleur of een ander dier; de keuzes ±1, niet op volgorde. */
+  uitleg: [rij10(RAKETJES_STERREN, 23, [])],
+  /* Level 3: 22 t/m 50, rijen van 10, om en om een ander ding; de keuzes ±1, niet op volgorde. */
   vragen: [
-    rij10(tweeKleuren("visje", "geel", "blauw"), 24, [23, 24, 22]),
-    rij10(tweeKleuren("kwal", "roze", "paars"), 29, [29, 28, 30]),
-    rij10(tweeKleuren("schildpad", "groen", "oranje"), 36, [35, 37, 36]),
-    rij10(tweeKleuren("vogel", "geel", "blauw"), 47, [46, 47, 37]),
-    rij10(tweeKleuren("vlinder", "paars", "oranje"), 50, [49, 50, 48]),
-    rij10(tweeSoorten("visje", "oranje", "kwal", "roze", "dieren"), 32, [31, 33, 32]),
-    rij10(tweeSoorten("schildpad", "groen", "vogel", "geel", "dieren"), 35, [35, 36, 34]),
-    rij10(tweeSoorten("vlinder", "blauw", "visje", "geel", "dieren"), 26, [27, 25, 26]),
-    rij10(tweeSoorten("kwal", "paars", "schildpad", "groen", "dieren"), 43, [42, 44, 43]),
-    rij10(tweeSoorten("vogel", "rood", "vlinder", "paars", "dieren"), 48, [49, 47, 48]),
-    rij10(tweeKleuren("visje", "oranje", "groen"), 39, [40, 38, 39]),
-    rij10(tweeSoorten("kwal", "roze", "visje", "blauw", "dieren"), 41, [41, 40, 42]),
-    rij10(tweeKleuren("schildpad", "blauw", "geel"), 28, [29, 27, 28]),
-    rij10(tweeSoorten("vlinder", "oranje", "vogel", "blauw", "dieren"), 45, [46, 44, 45]),
-    rij10(tweeKleuren("vogel", "rood", "blauw"), 33, [33, 32, 34]),
+    rij10(RAKETJES_STERREN, 24, [23, 24, 22]),
+    rij10(tweeSoorten("planeet", "komeet"), 29, [29, 28, 30]),
+    rij10(HUIZEN_BOMEN, 36, [35, 37, 36]),
+    rij10(tweeSoorten("ufo", "satelliet"), 47, [46, 47, 37]),
+    rij10(BALLEN_BLOKKEN, 50, [49, 50, 48]),
+    rij10(AUTOS_BUSSEN, 32, [31, 33, 32]),
+    rij10(BOOTJES_TREINTJES, 35, [35, 36, 34]),
+    rij10(tweeSoorten("knikker", "ballon"), 26, [27, 25, 26]),
+    rij10(tweeSoorten("ster", "planeet"), 43, [42, 44, 43]),
+    rij10(tweeSoorten("satelliet", "raketje"), 48, [49, 47, 48]),
+    rij10(BUSSEN_AUTOS, 39, [40, 38, 39]),
+    rij10(tweeSoorten("komeet", "ufo"), 41, [41, 40, 42]),
+    rij10(tweeSoorten("speelblok", "bal"), 28, [29, 27, 28]),
+    rij10(tweeSoorten("ballon", "knikker"), 45, [46, 44, 45]),
+    rij10(tweeSoorten("boom", "huis"), 33, [33, 32, 34]),
   ],
   eind: "Je kunt tellen tot {50}.",
 });
 
-const KNIKKERS = een("knikker", "blauw");
-const STERREN = een("ster", "geel");
+const KNIKKERS = een("knikker");
 
 const res3d = telles({
   id: "squla-tellen-resultatief3-4",
@@ -839,6 +875,7 @@ function rijles(t: Rijles): Lesdraaiboek {
     indeling: "synthesis",
     browserstem: true,
     kaarttekening: KaartTelrij,
+    voorwerpen: ["huis"],
     async speel(l) {
       const st: Rijstand = { huidig: "", fout: 0, hand: false };
       /* Alle huisnummers en kaartjes van de les (die worden vooruit gemaakt). */
@@ -919,7 +956,31 @@ const telrij2 = rijles({
   eind: "Je kunt verder tellen en terugtellen.",
 });
 
+/* Proef (31 oktober 2026, Sara): Fruit tellen met echte plaatjes uit Magnific, in twee stijlen. */
+const PROEF_FRUIT = { appel: "/proef-plaatjes/appel.png", peer: "/proef-plaatjes/peer.png", pruim: "/proef-plaatjes/pruim.png" };
+const proefGlow = telles({
+  ...FRUIT1,
+  id: "proef-fruit-glow",
+  titel: "Proef: Fruit tellen (glow in the dark)",
+  foto: { gloed: "altijd", plaatjes: PROEF_FRUIT },
+});
+const proefPlat = telles({
+  ...FRUIT1,
+  id: "proef-fruit-plat",
+  titel: "Proef: Fruit tellen (zonder glow)",
+  foto: { gloed: "nooit", plaatjes: PROEF_FRUIT },
+});
+const proefMoment = telles({
+  ...FRUIT1,
+  id: "proef-fruit-moment",
+  titel: "Proef: Fruit tellen (gloed alleen als het iets betekent)",
+  foto: { gloed: "moment", plaatjes: PROEF_FRUIT },
+});
+
 export const LESSEN_SQULA_TELLEN: Lesdraaiboek[] = [
+  proefGlow,
+  proefPlat,
+  proefMoment,
   fruit1,
   fruit2,
   fruit3,

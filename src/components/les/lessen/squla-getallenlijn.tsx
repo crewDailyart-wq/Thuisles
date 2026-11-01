@@ -7,8 +7,9 @@
  *
  *   16056 Getallen rangschikken t/m 20  → squla-getallenlijn-rangschikken-1/2/3
  *   16600 Getallenlijn (met een kat)     → squla-getallenlijn-kat-1/2
- *         (hier met Floep, een eigen kikker; geen figuren van Squla)
+ *         (hier met een raketje; tot 31 oktober 2026 Floep de kikker)
  *   15757 Getallenlijn met dieren        → squla-getallenlijn-dieren-1/2/3
+ *         (hier met dingen op de getallen, de olifant is een bus; geen dieren)
  *   10986 Getallenlijn (terugtellen)     → squla-getallenlijn-terugtellen-1
  *
  * Alles in Phaser, als hologram vóór de blauwe ruimte
@@ -24,7 +25,7 @@
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, type SqulaVraag } from "./squla-hulp";
 import { SqulaGetallenlijn, type Beeld, type GetallenlijnProps, type RijItem, type Rijding, type Wezen } from "../vlakken/squla-getallenlijn-vlak";
-import { DIERNAAM, type Dier } from "../vlakken/squla-getallenlijn-teken";
+import { DINGNAAM, GETALLENLIJN_VOORWERPEN, type Ding } from "../vlakken/squla-getallenlijn-teken";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 
 /* ---------- het vlak ---------- */
@@ -302,27 +303,26 @@ function tussenVraag(l: Lesgids, a: number, b: number, opties: number[]): SqulaV
   };
 }
 
-/* ---------- 5. Floep de kikker op de getallenlijn ---------- */
+/* ---------- 5. het raketje op de getallenlijn (tot 31 oktober 2026: Floep de kikker) ---------- */
 
-const FLOEP = "Floep";
-const naamVan = (z: Wezen) => (z === "kikker" ? FLOEP : z === "vlinder" ? "de vlinder" : "de slak");
+const naamVan = (z: Wezen) => (z === "raketje" ? "het raketje" : z === "ufo" ? "de ufo" : "de satelliet");
 const Naam = (z: Wezen) => {
   const n = naamVan(z);
   return n[0].toUpperCase() + n.slice(1);
 };
 
-/** Bij welk getal zit Floep? (Floep zit op het getal.) */
-function floepBij(l: Lesgids, o: { van: number; tot: number; n: number; opties: number[]; vraag?: string[] }): SqulaVraag<number> {
+/** Bij welk getal staat het raketje? */
+function raketjeBij(l: Lesgids, o: { van: number; tot: number; n: number; opties: number[]; vraag?: string[] }): SqulaVraag<number> {
   const labels = Array.from({ length: o.tot - o.van + 1 }, (_, i) => o.van + i);
   return {
-    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, labels, kikker: { n: o.n } }),
-    vraag: o.vraag ?? ["Bij welk getal zit Floep?"],
+    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, labels, raketje: { n: o.n } }),
+    vraag: o.vraag ?? ["Bij welk getal staat het raketje?"],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `Floep zit bij ${w(o.n)}.`);
+      await l.zeg("Goed zo.", `Het raketje staat bij ${w(o.n)}.`);
       await l.wacht(300);
     },
     samen: async () => {
@@ -334,7 +334,7 @@ function floepBij(l: Lesgids, o: { van: number; tot: number; n: number; opties: 
         await l.zeg(`${w(k)}.`);
       }
       licht(l, o.n - 1, o.n);
-      await l.zeg(`En na ${w(o.n - 1)} zit Floep.`);
+      await l.zeg(`En na ${w(o.n - 1)} staat het raketje.`);
       licht(l);
     },
     tip: [`Welk getal komt na ${w(o.n - 1)}?`],
@@ -346,8 +346,8 @@ function floepBij(l: Lesgids, o: { van: number; tot: number; n: number; opties: 
 function naTien(l: Lesgids, opties: number[]): SqulaVraag<number> {
   const labels = Array.from({ length: 11 }, (_, i) => i);
   return {
-    toon: () => toon(l, { soort: "lijn", van: 0, tot: 10, labels, door: true, kikker: { n: 11 } }),
-    vraag: ["Floep springt verder dan de {10:wit}.", "Welk getal komt na {10:wit}?"],
+    toon: () => toon(l, { soort: "lijn", van: 0, tot: 10, labels, door: true, raketje: { n: 11 } }),
+    vraag: ["Het raketje vliegt verder dan de {10:wit}.", "Welk getal komt na {10:wit}?"],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === 11,
     noem: (x) => w(x),
@@ -363,7 +363,7 @@ function naTien(l: Lesgids, opties: number[]): SqulaVraag<number> {
         await l.zeg(`${w(k)}.`);
       }
       licht(l, 10, 11);
-      await l.zeg("Floep zit één streepje verder.", "Welk getal komt na {10:wit}?");
+      await l.zeg("Het raketje staat één streepje verder.", "Welk getal komt na {10:wit}?");
       licht(l);
     },
     tip: ["Tel één verder dan {10:wit}."],
@@ -376,7 +376,7 @@ function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVr
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
   return {
-    toon: () => toon(l, { soort: "floep" }),
+    toon: () => toon(l, { soort: "planeet" }),
     vraag: [...verhaal, `Wat is meer: ${w(a)} of ${w(b)}?`],
     antwoord: () => kiesGetal(l, [b, a]),
     isGoed: (x) => x === groot,
@@ -401,16 +401,16 @@ function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVr
   };
 }
 
-/** Wie zit er bij …? (tik op het beestje) */
+/** Wat staat er bij …? (tik op het ding) */
 function wieZitEr(
   l: Lesgids,
-  o: { labels: number[]; n: number; wie: Wezen; kikker: number; anderen: { soort: Exclude<Wezen, "kikker">; n: number }[] },
+  o: { labels: number[]; n: number; wie: Wezen; raketje: number; anderen: { soort: Exclude<Wezen, "raketje">; n: number }[] },
 ): SqulaVraag<string> {
-  const beeld: Beeld = { soort: "lijn", van: 10, tot: 20, labels: o.labels, kikker: { n: o.kikker }, wezens: o.anderen };
+  const beeld: Beeld = { soort: "lijn", van: 10, tot: 20, labels: o.labels, raketje: { n: o.raketje }, wezens: o.anderen };
   const tip = tipStreepjes(o.labels, o.n);
   return {
     toon: () => toon(l, beeld),
-    vraag: [`Wie zit er bij ${w(o.n)}?`, "Tik erop."],
+    vraag: [`Wat staat er bij ${w(o.n)}?`, "Tik erop."],
     antwoord: async () => {
       zet(l, { actief: true });
       const g = await l.wachtOpVlak<{ soort: string; naam: Wezen }>("wezen");
@@ -421,11 +421,11 @@ function wieZitEr(
     noem: (x) => Naam(x as Wezen),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `${Naam(o.wie)} zit bij ${w(o.n)}.`);
+      await l.zeg("Goed zo.", `${Naam(o.wie)} staat bij ${w(o.n)}.`);
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, o.labels, o.n, w(o.n), 1, "is"),
-    tip: [...tip, `Wie zit er bij ${w(o.n)}?`],
+    tip: [...tip, `Wat staat er bij ${w(o.n)}?`],
     testAntwoord: o.wie,
   };
 }
@@ -462,20 +462,20 @@ function dichtstBij(l: Lesgids, doel: number, getallen: number[], wezens: Wezen[
   };
 }
 
-/** Bij welk getal zit Floep ongeveer? (een lijn met bijna geen streepjes) */
+/** Bij welk getal staat het raketje ongeveer? (een lijn met bijna geen streepjes) */
 function ongeveer(
   l: Lesgids,
   o: { van: number; tot: number; streepjes: number[]; labels: number[]; plek: number; goed: number; opties: number[]; hulp: { licht: number[]; zinnen: string[] }; tip: string[] },
 ): SqulaVraag<number> {
   return {
-    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, streepjes: o.streepjes, labels: o.labels, kikker: { n: o.plek } }),
-    vraag: ["Bij welk getal zit Floep ongeveer?"],
+    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, streepjes: o.streepjes, labels: o.labels, raketje: { n: o.plek } }),
+    vraag: ["Bij welk getal staat het raketje ongeveer?"],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.goed,
     noem: (x) => w(x),
     goed: async () => {
       golf(l, o.plek);
-      await l.zeg("Goed zo.", `Floep zit ongeveer bij ${w(o.goed)}.`);
+      await l.zeg("Goed zo.", `Het raketje staat ongeveer bij ${w(o.goed)}.`);
       await l.wacht(300);
     },
     samen: async () => {
@@ -488,10 +488,10 @@ function ongeveer(
   };
 }
 
-/** Welk getal komt voor …? (Floep op een blad met een getal) */
+/** Welk getal komt voor …? (het raketje op een planeet met een getal) */
 function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): SqulaVraag<number> {
   return {
-    toon: () => toon(l, { soort: "floep", blad: n }),
+    toon: () => toon(l, { soort: "planeet", getal: n }),
     vraag: [aanloop, `Welk getal komt voor ${w(n)}?`],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === n - 1,
@@ -514,18 +514,18 @@ function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): Squ
   };
 }
 
-/** Floep wijst een streepje aan: welk getal is het? */
-function floepWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> {
+/** Een pijl wijst een streepje aan: welk getal is het? */
+function pijlWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> {
   const labels = [10, 15, 20];
   return {
-    toon: () => toon(l, { soort: "lijn", van: 8, tot: 20, labels, kikker: { n, wijs: true } }),
-    vraag: ["Floep wijst een streepje aan.", "Welk getal hoort daarbij?"],
+    toon: () => toon(l, { soort: "lijn", van: 8, tot: 20, labels, raketje: { n, wijs: true } }),
+    vraag: ["De pijl wijst een streepje aan.", "Welk getal hoort daarbij?"],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, n, String(n));
-      await l.zeg("Goed zo.", `Floep wijst ${w(n)} aan.`);
+      await l.zeg("Goed zo.", `De pijl wijst ${w(n)} aan.`);
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, labels, n, "Het pijltje"),
@@ -534,31 +534,31 @@ function floepWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number>
   };
 }
 
-/** Bij welk getal zit de vlinder of de slak? (lijn met alleen 15 en 20) */
-function wezenGetal(l: Lesgids, o: { wie: Exclude<Wezen, "kikker">; n: number; kikker: number; ander: { soort: Exclude<Wezen, "kikker">; n: number }; opties: number[] }): SqulaVraag<number> {
+/** Bij welk getal staat de ufo of de satelliet? (lijn met alleen 15 en 20) */
+function wezenGetal(l: Lesgids, o: { wie: Exclude<Wezen, "raketje">; n: number; raketje: number; ander: { soort: Exclude<Wezen, "raketje">; n: number }; opties: number[] }): SqulaVraag<number> {
   const labels = [15, 20];
   return {
-    toon: () => toon(l, { soort: "lijn", van: 10, tot: 20, labels, kikker: { n: o.kikker }, wezens: [{ soort: o.wie, n: o.n }, o.ander] }),
-    vraag: [`Bij welk getal zit ${naamVan(o.wie)}?`],
+    toon: () => toon(l, { soort: "lijn", van: 10, tot: 20, labels, raketje: { n: o.raketje }, wezens: [{ soort: o.wie, n: o.n }, o.ander] }),
+    vraag: [`Bij welk getal staat ${naamVan(o.wie)}?`],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `${Naam(o.wie)} zit bij ${w(o.n)}.`);
+      await l.zeg("Goed zo.", `${Naam(o.wie)} staat bij ${w(o.n)}.`);
       await l.wacht(300);
     },
-    samen: () => telStreepjes(l, labels, o.n, Naam(o.wie), 1, "zit"),
+    samen: () => telStreepjes(l, labels, o.n, Naam(o.wie), 1, "staat"),
     tip: tipStreepjes(labels, o.n),
     testAntwoord: o.n,
   };
 }
 
-/** Floep helemaal aan het eind van de lijn. */
+/** Het raketje helemaal aan het eind van de lijn. */
 function aanHetEind(l: Lesgids, opties: number[]): SqulaVraag<number> {
   return {
-    toon: () => toon(l, { soort: "lijn", van: 0, tot: 20, streepjes: [0, 5, 10, 15, 20], labels: [0, 20], kikker: { n: 20 } }),
-    vraag: ["Floep springt helemaal naar het eind.", "Bij welk getal zit Floep nu?"],
+    toon: () => toon(l, { soort: "lijn", van: 0, tot: 20, streepjes: [0, 5, 10, 15, 20], labels: [0, 20], raketje: { n: 20 } }),
+    vraag: ["Het raketje vliegt helemaal naar het eind.", "Bij welk getal staat het raketje nu?"],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === 20,
     noem: (x) => w(x),
@@ -575,27 +575,27 @@ function aanHetEind(l: Lesgids, opties: number[]): SqulaVraag<number> {
       licht(l, 10, 15);
       await l.zeg("Elk streepje is {5:wit} verder.");
       licht(l);
-      await l.zeg("Floep zit op het laatste streepje.");
+      await l.zeg("Het raketje staat op het laatste streepje.");
     },
     tip: ["Tel in sprongen van {5:wit} vanaf het midden: {10:wit}, {15:wit}…"],
     testAntwoord: 20,
   };
 }
 
-/* ---------- 6. dieren op de getallen ---------- */
+/* ---------- 6. dingen op de getallen (bij Squla dieren) ---------- */
 
-/** Een dier zit op een getal: welk getal zit eronder? (kies uit 2) */
-function dierOpGetal(l: Lesgids, rij: (number | Dier)[], opties: number[]): SqulaVraag<number> {
+/** Een ding ligt op een getal: welk getal ligt eronder? (kies uit 2) */
+function dingOpGetal(l: Lesgids, rij: (number | Ding)[], opties: number[]): SqulaVraag<number> {
   const plek = rij.findIndex((p) => typeof p !== "number");
-  const dier = rij[plek] as Dier;
+  const ding = rij[plek] as Ding;
   const eerste = rij.find((p): p is number => typeof p === "number")!;
   const start = plek === 0 ? eerste - 1 : (rij[0] as number);
   const goed = start + plek;
-  const items: RijItem[] = rij.map((p) => (typeof p === "number" ? { t: String(p) } : { dier: p }));
+  const items: RijItem[] = rij.map((p) => (typeof p === "number" ? { t: String(p) } : { voorwerp: p }));
   const tussen = plek < rij.length - 1;
   return {
     toon: () => toon(l, { soort: "rij", ding: "tegel", items }),
-    vraag: [`Welk getal zit onder ${DIERNAAM[dier]}?`],
+    vraag: [`Welk getal ligt onder ${DINGNAAM[ding]}?`],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === goed,
     noem: (x) => w(x),
@@ -612,7 +612,7 @@ function dierOpGetal(l: Lesgids, rij: (number | Dier)[], opties: number[]): Squl
       }
       if (tussen) {
         licht(l, plek + 1);
-        await l.zeg(`Na ${DIERNAAM[dier]} staat ${w(goed + 1)}.`);
+        await l.zeg(`Na ${DINGNAAM[ding]} staat ${w(goed + 1)}.`);
       }
       licht(l, plek);
       await l.zeg(`Welk getal komt na ${w(goed - 1)}?`);
@@ -623,14 +623,14 @@ function dierOpGetal(l: Lesgids, rij: (number | Dier)[], opties: number[]): Squl
   };
 }
 
-/** De olifant is zo groot dat hij op twee getallen zit. */
-function olifant(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> {
+/** De bus is zo lang dat hij op twee getallen staat (bij Squla een olifant). */
+function lang(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> {
   const goed = `${a + 1} en ${a + 2}`;
   const fout = `${a - 2} en ${a - 1}`;
-  const items: RijItem[] = [{ t: String(a) }, { dier: "olifant" }];
+  const items: RijItem[] = [{ t: String(a) }, { voorwerp: "bus" }];
   return {
     toon: () => toon(l, { soort: "rij", ding: "tegel", items }),
-    vraag: ["De olifant is groot.", "Hij zit op twee getallen tegelijk.", "Welke getallen zitten onder de olifant?"],
+    vraag: ["De bus is lang.", "Hij staat op twee getallen tegelijk.", "Welke getallen liggen onder de bus?"],
     antwoord: async () => (await l.kies(goedEerst ? [goed, fout] : [fout, goed], { weetniet: false, direct: true })) ?? "",
     isGoed: (x) => x === goed,
     noem: (x) => x.replace(/(\d+)/g, "{$1:wit}"),
@@ -643,7 +643,7 @@ function olifant(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> 
       licht(l, 0);
       await l.zeg(`Hier staat ${w(a)}.`);
       licht(l, 1);
-      await l.zeg("De olifant zit erna.", "Hij zit op twee plekken.", `Welke twee getallen komen na ${w(a)}?`);
+      await l.zeg("De bus staat erna.", "Hij staat op twee plekken.", `Welke twee getallen komen na ${w(a)}?`);
       licht(l);
     },
     tip: [`Tel twee verder vanaf ${w(a)}.`],
@@ -779,6 +779,8 @@ const rangschikken1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Getallenlijn · Getallen rangschikken t/m 20 · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "lampje", slinger: true, items: [3, 4, 5, 6, 7].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
@@ -797,6 +799,8 @@ const rangschikken2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Getallenlijn · Getallen rangschikken t/m 20 · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 0, tot: 20, labels: [0, 10, 20] } });
     speelLesgeluid("verschijn");
@@ -815,6 +819,8 @@ const rangschikken3: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Getallenlijn · Getallen rangschikken t/m 20 · level 3 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 10, tot: 20, stap: 2, labels: [10, 20] } });
     speelLesgeluid("verschijn");
@@ -827,29 +833,29 @@ const rangschikken3: Lesdraaiboek = {
   },
 };
 
-/* ---- 16600 Getallenlijn met een figuur (bij ons: Floep de kikker) ---- */
+/* ---- 16600 Getallenlijn met een figuur (bij ons: het raketje) ---- */
 
 const KAT_1: Opgave[] = [
-  /* lijn 0–10: bij welk getal zit Floep? */
-  (l) => floepBij(l, { van: 0, tot: 10, n: 6, opties: [7, 5, 6] }),
-  (l) => floepBij(l, { van: 0, tot: 10, n: 2, opties: [2, 1, 4] }),
-  (l) => floepBij(l, { van: 0, tot: 10, n: 9, opties: [8, 9, 10] }),
+  /* lijn 0–10: bij welk getal staat het raketje? */
+  (l) => raketjeBij(l, { van: 0, tot: 10, n: 6, opties: [7, 5, 6] }),
+  (l) => raketjeBij(l, { van: 0, tot: 10, n: 2, opties: [2, 1, 4] }),
+  (l) => raketjeBij(l, { van: 0, tot: 10, n: 9, opties: [8, 9, 10] }),
   /* na 10 */
   (l) => naTien(l, [11, 1, 12]),
   /* wat is meer (kies uit 2) */
-  (l) => watIsMeer(l, ["Floep vangt graag vliegjes.", "Gisteren ving hij er {13:wit}.", "Vandaag ving hij er {14:wit}."], 13, 14),
+  (l) => watIsMeer(l, ["Het raketje zoekt graag sterren.", "Gisteren vond het er {13:wit}.", "Vandaag vond het er {14:wit}."], 13, 14),
   /* op volgorde, het eerste getal staat er al */
   (l) => ordenVraag(l, { vakken: [5, null, null, null], kaarten: [7, 8, 6], handje: true }),
   (l) => ordenVraag(l, { vakken: [12, null, null, null], kaarten: [14, 13, 15] }),
   /* een lange getallenlijn */
-  (l) => floepBij(l, { van: 9, tot: 20, n: 14, opties: [15, 4, 14], vraag: ["Dit is een lange getallenlijn.", "Bij welk getal zit Floep nu?"] }),
-  (l) => floepBij(l, { van: 9, tot: 20, n: 18, opties: [17, 18, 8] }),
+  (l) => raketjeBij(l, { van: 9, tot: 20, n: 14, opties: [15, 4, 14], vraag: ["Dit is een lange getallenlijn.", "Bij welk getal staat het raketje nu?"] }),
+  (l) => raketjeBij(l, { van: 9, tot: 20, n: 18, opties: [17, 18, 8] }),
   /* wie zit er bij …? */
-  (l) => wieZitEr(l, { labels: [10, 15, 20], n: 17, wie: "kikker", kikker: 17, anderen: [{ soort: "vlinder", n: 12 }, { soort: "slak", n: 19 }] }),
-  (l) => wieZitEr(l, { labels: [10, 15, 20], n: 14, wie: "vlinder", kikker: 11, anderen: [{ soort: "vlinder", n: 14 }, { soort: "slak", n: 18 }] }),
+  (l) => wieZitEr(l, { labels: [10, 15, 20], n: 17, wie: "raketje", raketje: 17, anderen: [{ soort: "ufo", n: 12 }, { soort: "satelliet", n: 19 }] }),
+  (l) => wieZitEr(l, { labels: [10, 15, 20], n: 14, wie: "ufo", raketje: 11, anderen: [{ soort: "ufo", n: 14 }, { soort: "satelliet", n: 18 }] }),
   /* welk getal ligt het dichtst bij …? */
-  (l) => dichtstBij(l, 20, [18, 8, 14], ["vlinder", "slak", "kikker"]),
-  (l) => dichtstBij(l, 10, [17, 4, 11], ["slak", "kikker", "vlinder"]),
+  (l) => dichtstBij(l, 20, [18, 8, 14], ["ufo", "satelliet", "raketje"]),
+  (l) => dichtstBij(l, 10, [17, 4, 11], ["satelliet", "raketje", "ufo"]),
   /* schatten: weinig streepjes */
   (l) =>
     ongeveer(l, {
@@ -860,7 +866,7 @@ const KAT_1: Opgave[] = [
       plek: 11,
       goed: 11,
       opties: [11, 16, 19],
-      hulp: { licht: [10], zinnen: ["Kijk, hier staat {10:wit}.", "Floep zit vlak na de {10:wit}."] },
+      hulp: { licht: [10], zinnen: ["Kijk, hier staat {10:wit}.", "Het raketje staat vlak na de {10:wit}."] },
       tip: ["Welk getal komt vlak na {10:wit}?"],
     }),
   (l) =>
@@ -872,28 +878,28 @@ const KAT_1: Opgave[] = [
       plek: 19,
       goed: 19,
       opties: [13, 19, 16],
-      hulp: { licht: [20], zinnen: ["Kijk, hier staat {20:wit}.", "Floep zit vlak voor de {20:wit}."] },
+      hulp: { licht: [20], zinnen: ["Kijk, hier staat {20:wit}.", "Het raketje staat vlak voor de {20:wit}."] },
       tip: ["Welk getal komt vlak voor {20:wit}?"],
     }),
 ];
 
 const KAT_2: Opgave[] = [
   /* welk getal komt voor …? */
-  (l) => komtVoor(l, 15, [16, 14, 13], "Floep zit op een blad met {15:wit}."),
-  /* Floep wijst een streepje aan */
-  (l) => floepWijst(l, 13, [13, 12, 3]),
-  (l) => floepWijst(l, 17, [16, 17, 7]),
-  /* bij welk getal zit de vlinder of de slak? */
-  (l) => wezenGetal(l, { wie: "vlinder", n: 12, kikker: 17, ander: { soort: "slak", n: 19 }, opties: [12, 13, 18] }),
-  (l) => wezenGetal(l, { wie: "slak", n: 18, kikker: 11, ander: { soort: "vlinder", n: 13 }, opties: [18, 17, 13] }),
+  (l) => komtVoor(l, 15, [16, 14, 13], "Het raketje landt op een planeet met {15:wit}."),
+  /* een pijl wijst een streepje aan */
+  (l) => pijlWijst(l, 13, [13, 12, 3]),
+  (l) => pijlWijst(l, 17, [16, 17, 7]),
+  /* bij welk getal staat de ufo of de satelliet? */
+  (l) => wezenGetal(l, { wie: "ufo", n: 12, raketje: 17, ander: { soort: "satelliet", n: 19 }, opties: [12, 13, 18] }),
+  (l) => wezenGetal(l, { wie: "satelliet", n: 18, raketje: 11, ander: { soort: "ufo", n: 13 }, opties: [18, 17, 13] }),
   /* op volgorde, het eerste getal staat er al */
   (l) => ordenVraag(l, { vakken: [11, null, null, null], kaarten: [13, 12, 14], handje: true }),
-  (l) => komtVoor(l, 19, [18, 20, 17], "Floep springt naar een blad met {19:wit}."),
+  (l) => komtVoor(l, 19, [18, 20, 17], "Het raketje vliegt naar een planeet met {19:wit}."),
   (l) => ordenVraag(l, { vakken: [15, null, null, null], kaarten: [17, 18, 16] }),
-  (l) => komtVoor(l, 11, [12, 10, 9], "Nu zit Floep op een blad met {11:wit}."),
+  (l) => komtVoor(l, 11, [12, 10, 9], "Nu staat het raketje op een planeet met {11:wit}."),
   /* welk getal ligt het dichtst bij …? */
-  (l) => dichtstBij(l, 16, [17, 10, 6], ["vlinder", "kikker", "slak"]),
-  (l) => dichtstBij(l, 7, [2, 8, 12], ["kikker", "slak", "vlinder"]),
+  (l) => dichtstBij(l, 16, [17, 10, 6], ["ufo", "raketje", "satelliet"]),
+  (l) => dichtstBij(l, 7, [2, 8, 12], ["raketje", "satelliet", "ufo"]),
   /* schatten */
   (l) =>
     ongeveer(l, {
@@ -904,7 +910,7 @@ const KAT_2: Opgave[] = [
       plek: 17,
       goed: 17,
       opties: [17, 12, 20],
-      hulp: { licht: [15, 20], zinnen: ["Floep zit tussen {15:wit} en {20:wit}.", "Hij zit dichter bij de {15:wit}."] },
+      hulp: { licht: [15, 20], zinnen: ["Het raketje staat tussen {15:wit} en {20:wit}.", "Het staat dichter bij de {15:wit}."] },
       tip: ["Tel vanaf de {15:wit} een klein stukje verder."],
     }),
   (l) =>
@@ -916,7 +922,7 @@ const KAT_2: Opgave[] = [
       plek: 11,
       goed: 11,
       opties: [11, 6, 16],
-      hulp: { licht: [10], zinnen: ["Precies in het midden is {10:wit}.", "Floep zit daar net na."] },
+      hulp: { licht: [10], zinnen: ["Precies in het midden is {10:wit}.", "Het raketje staat daar net na."] },
       tip: ["Welk getal komt net na {10:wit}?"],
     }),
   (l) =>
@@ -928,86 +934,90 @@ const KAT_2: Opgave[] = [
       plek: 4,
       goed: 4,
       opties: [4, 9, 14],
-      hulp: { licht: [5], zinnen: ["Dit streepje is {5:wit}.", "Het zit precies tussen {0:wit} en {10:wit}.", "Floep zit net voor de {5:wit}."] },
+      hulp: { licht: [5], zinnen: ["Dit streepje is {5:wit}.", "Het zit precies tussen {0:wit} en {10:wit}.", "Het raketje staat net voor de {5:wit}."] },
       tip: ["Welk getal komt net voor {5:wit}?"],
     }),
   /* helemaal aan het eind */
   (l) => aanHetEind(l, [10, 20, 19]),
 ];
 
-async function uitlegFloep(l: Lesgids) {
-  toon(l, { soort: "lijn", van: 0, tot: 10, labels: Array.from({ length: 11 }, (_, i) => i), kikker: { n: 3 } });
-  await l.zeg("Floep zit op de getallenlijn.", "Hij zit op een getal.", "We tellen samen.");
+async function uitlegRaketje(l: Lesgids) {
+  toon(l, { soort: "lijn", van: 0, tot: 10, labels: Array.from({ length: 11 }, (_, i) => i), raketje: { n: 3 } });
+  await l.zeg("Het raketje staat op de getallenlijn.", "Het staat bij een getal.", "We tellen samen.");
   for (const k of [0, 1, 2]) {
     licht(l, k);
     await l.zeg(`${w(k)}.`);
   }
   vul(l, 3, "3");
-  await l.zeg("Na {2:wit} komt {3:wit}.", "Floep zit bij {3:wit}.");
+  await l.zeg("Na {2:wit} komt {3:wit}.", "Het raketje staat bij {3:wit}.");
   await l.verder();
 }
 
 const kat1: Lesdraaiboek = {
   id: "squla-getallenlijn-kat-1",
-  titel: "Floep op de getallenlijn",
+  titel: "Het raketje op de getallenlijn",
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met een figuur · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
-    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "floep" } });
+    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Dit is Floep, de kikker.", "Floep springt graag over de getallenlijn.", "Help je mee?"],
-      uitleg: () => uitlegFloep(l),
+      welkom: ["Hoi!", "Kijk, een raketje.", "Het vliegt graag over de getallenlijn.", "Help je mee?"],
+      uitleg: () => uitlegRaketje(l),
     });
     const fouten = await speelOpgaven(l, KAT_1);
-    await squlaEind(l, fouten, "Je weet waar Floep zit op de getallenlijn.");
+    await squlaEind(l, fouten, "Je weet waar het raketje staat op de getallenlijn.");
   },
 };
 
 const kat2: Lesdraaiboek = {
   id: "squla-getallenlijn-kat-2",
-  titel: "Floep op de getallenlijn (moeilijker)",
+  titel: "Het raketje op de getallenlijn (moeilijker)",
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met een figuur · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
-    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "floep" } });
+    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Floep de kikker is er weer.", "Nu staan er minder getallen op de lijn."],
+      welkom: ["Hoi!", "Het raketje is er weer.", "Nu staan er minder getallen op de lijn."],
       uitleg: async () => {
-        toon(l, { soort: "lijn", van: 8, tot: 20, labels: [10, 15, 20], kikker: { n: 13, wijs: true } });
-        await l.zeg("Floep wijst een streepje aan.", "Niet bij elk streepje staat een getal.");
+        toon(l, { soort: "lijn", van: 8, tot: 20, labels: [10, 15, 20], raketje: { n: 13, wijs: true } });
+        await l.zeg("De pijl wijst een streepje aan.", "Niet bij elk streepje staat een getal.");
         await telStreepjes(l, [10, 15, 20], 13, "Het pijltje");
         vul(l, 13, "13");
-        await l.zeg("Dus Floep wijst {13:wit} aan.");
+        await l.zeg("Dus de pijl wijst {13:wit} aan.");
         await l.verder();
       },
     });
     const fouten = await speelOpgaven(l, KAT_2);
-    await squlaEind(l, fouten, "Je vindt Floep op elke getallenlijn.");
+    await squlaEind(l, fouten, "Je vindt het raketje op elke getallenlijn.");
   },
 };
 
 /* ---- 15757 Getallenlijn met dieren ---- */
 
 const DIEREN_1: Opgave[] = [
-  (l) => dierOpGetal(l, [12, "uil", 14], [13, 15]),
-  (l) => dierOpGetal(l, [15, "egel", 17], [15, 16]),
-  (l) => dierOpGetal(l, [17, 18, "schildpad"], [16, 19]),
-  (l) => dierOpGetal(l, [10, "pinguin", 12], [11, 9]),
-  (l) => dierOpGetal(l, [3, "konijn", 5], [2, 4]),
-  (l) => dierOpGetal(l, [14, "uil", 16], [15, 13]),
-  (l) => dierOpGetal(l, [11, 12, "egel"], [13, 10]),
-  (l) => dierOpGetal(l, [18, "konijn", 20], [17, 19]),
-  (l) => dierOpGetal(l, [13, "schildpad", 15], [14, 12]),
-  (l) => dierOpGetal(l, [15, 16, "pinguin"], [14, 17]),
-  (l) => dierOpGetal(l, [9, "egel", 11], [10, 8]),
-  (l) => dierOpGetal(l, [16, "uil", 18], [19, 17]),
-  (l) => dierOpGetal(l, [7, 8, "konijn"], [9, 6]),
-  (l) => dierOpGetal(l, [11, "schildpad", 13], [12, 10]),
-  (l) => dierOpGetal(l, [18, 19, "pinguin"], [17, 20]),
+  (l) => dingOpGetal(l, [12, "bal", 14], [13, 15]),
+  (l) => dingOpGetal(l, [15, "pakje", 17], [15, 16]),
+  (l) => dingOpGetal(l, [17, 18, "speelblok"], [16, 19]),
+  (l) => dingOpGetal(l, [10, "speelgoedauto", 12], [11, 9]),
+  (l) => dingOpGetal(l, [3, "ster", 5], [2, 4]),
+  (l) => dingOpGetal(l, [14, "bal", 16], [15, 13]),
+  (l) => dingOpGetal(l, [11, 12, "pakje"], [13, 10]),
+  (l) => dingOpGetal(l, [18, "ster", 20], [17, 19]),
+  (l) => dingOpGetal(l, [13, "speelblok", 15], [14, 12]),
+  (l) => dingOpGetal(l, [15, 16, "speelgoedauto"], [14, 17]),
+  (l) => dingOpGetal(l, [9, "pakje", 11], [10, 8]),
+  (l) => dingOpGetal(l, [16, "bal", 18], [19, 17]),
+  (l) => dingOpGetal(l, [7, 8, "ster"], [9, 6]),
+  (l) => dingOpGetal(l, [11, "speelblok", 13], [12, 10]),
+  (l) => dingOpGetal(l, [18, 19, "speelgoedauto"], [17, 20]),
 ];
 
 const DIEREN_2: Opgave[] = [
@@ -1029,32 +1039,32 @@ const DIEREN_2: Opgave[] = [
 ];
 
 const DIEREN_3: Opgave[] = [
-  (l) => dierOpGetal(l, [4, "uil", 6], [5, 7]),
+  (l) => dingOpGetal(l, [4, "bal", 6], [5, 7]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [16, 14, 15], hokjes: true, handje: true }),
-  (l) => dierOpGetal(l, [11, "egel", 13], [12, 14]),
+  (l) => dingOpGetal(l, [11, "pakje", 13], [12, 14]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [10, 12, 11], hokjes: true }),
-  (l) => olifant(l, 14, true),
-  (l) => dierOpGetal(l, [17, "pinguin", 19], [18, 16]),
+  (l) => lang(l, 14, true),
+  (l) => dingOpGetal(l, [17, "speelgoedauto", 19], [18, 16]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [9, 11, 10], hokjes: true }),
-  (l) => dierOpGetal(l, [13, "konijn", 15], [12, 14]),
+  (l) => dingOpGetal(l, [13, "ster", 15], [12, 14]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [19, 17, 18], hokjes: true }),
-  (l) => olifant(l, 6, false),
-  (l) => dierOpGetal(l, [15, "schildpad", 17], [16, 18]),
+  (l) => lang(l, 6, false),
+  (l) => dingOpGetal(l, [15, "speelblok", 17], [16, 18]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [13, 12, 14], hokjes: true }),
-  (l) => dierOpGetal(l, [8, "uil", 10], [7, 9]),
+  (l) => dingOpGetal(l, [8, "bal", 10], [7, 9]),
   (l) => ordenVraag(l, { vakken: [null, null, null], kaarten: [17, 15, 16], hokjes: true }),
-  (l) => olifant(l, 17, false),
+  (l) => lang(l, 17, false),
 ];
 
 async function uitlegDier(l: Lesgids) {
-  toon(l, { soort: "rij", ding: "tegel", items: [{ t: "5" }, { dier: "uil" }, { t: "7" }] });
-  await l.zeg("Kijk, de uil zit op een getal.", "We tellen samen.");
+  toon(l, { soort: "rij", ding: "tegel", items: [{ t: "5" }, { voorwerp: "bal" }, { t: "7" }] });
+  await l.zeg("Kijk, de bal ligt op een getal.", "We tellen samen.");
   licht(l, 0);
   await l.zeg("{5:wit}.");
   licht(l, 1);
   await l.zeg("Na {5:wit} komt {6:wit}.");
   vul(l, 1, "6");
-  await l.zeg("Onder de uil zit {6:wit}.");
+  await l.zeg("Onder de bal ligt {6:wit}.");
   await l.verder();
 }
 
@@ -1073,33 +1083,37 @@ async function uitlegOrden(l: Lesgids) {
 
 const dieren1: Lesdraaiboek = {
   id: "squla-getallenlijn-dieren-1",
-  titel: "Dieren op de getallen",
+  titel: "Dingen op de getallen",
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
-    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ dier: "uil" }, { dier: "egel" }, { dier: "konijn" }] } });
+    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "bal" }, { voorwerp: "pakje" }, { voorwerp: "ster" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "Kijk, allemaal dieren.", "Ze gaan op de getallen zitten.", "Welk getal zit onder het dier?"],
+      welkom: ["Hoi!", "Kijk, allemaal dingen.", "Ze liggen op de getallen.", "Welk getal ligt eronder?"],
       uitleg: () => uitlegDier(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_1);
-    await squlaEind(l, fouten, "Je weet welk getal onder elk dier zit.");
+    await squlaEind(l, fouten, "Je weet welk getal onder elk ding ligt.");
   },
 };
 
 const dieren2: Lesdraaiboek = {
   id: "squla-getallenlijn-dieren-2",
-  titel: "Dieren op de getallen (moeilijker)",
+  titel: "Dingen op de getallen (moeilijker)",
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
-    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ dier: "schildpad" }, { dier: "pinguin" }, { dier: "egel" }] } });
+    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "speelblok" }, { voorwerp: "speelgoedauto" }, { voorwerp: "pakje" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "De dieren hebben de kaarten door elkaar gegooid.", "Zet jij ze weer op volgorde?"],
+      welkom: ["Hoi!", "De kaarten liggen door elkaar.", "Zet jij ze weer op volgorde?"],
       uitleg: () => uitlegOrden(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_2);
@@ -1109,15 +1123,17 @@ const dieren2: Lesdraaiboek = {
 
 const dieren3: Lesdraaiboek = {
   id: "squla-getallenlijn-dieren-3",
-  titel: "Dieren op de getallen (nog moeilijker)",
+  titel: "Dingen op de getallen (nog moeilijker)",
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 3 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
-    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ t: "10" }, { dier: "olifant" }] } });
+    l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ t: "10" }, { voorwerp: "bus" }] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Hoi!", "De dieren zijn terug.", "En er is een heel groot dier bij.", "We zoeken getallen en zetten ze op volgorde."],
+      welkom: ["Hoi!", "De dingen zijn terug.", "En er is een lange bus bij.", "We zoeken getallen en zetten ze op volgorde."],
       uitleg: () => uitlegDier(l),
     });
     const fouten = await speelOpgaven(l, DIEREN_3);
@@ -1167,6 +1183,8 @@ const terugtellen1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn (terugtellen) · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
+  voorwerpen: GETALLENLIJN_VOORWERPEN,
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "aftel", items: [7, 6, 5, 4, 3, 2, 1].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");

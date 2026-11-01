@@ -19,6 +19,8 @@ import { LESSEN_FLITSEN } from "./flitsen";
 import { LESSEN_ZO_WERKT_HET } from "./zo-werkt-het";
 /* Nieuwe lessen naar Squla (30 oktober 2026): eerst 3 voorbeelden ter beoordeling. */
 import { LESSEN_SQULA_HUISNUMMERS } from "./squla-huisnummers";
+import { LESSEN_SQULA_SPLITSEN } from "./squla-splitsen";
+import { LESSEN_SQULA_PIRAAT } from "./squla-piraat";
 import { LESSEN_SQULA_REKENTAAL } from "./squla-rekentaal";
 import { LESSEN_SQULA_DAGEN } from "./squla-dagen";
 import { LESSEN_SQULA_GETALLENLIJN } from "./squla-getallenlijn";
@@ -29,6 +31,9 @@ import { LESSEN_SQULA_MINSOMMEN } from "./squla-minsommen";
 import { LESSEN_SQULA_PLUSSOMMEN } from "./squla-plussommen";
 import { LESSEN_SQULA_GELD } from "./squla-geld";
 import { LESSEN_SQULA_METEN } from "./squla-meten";
+import { LESSEN_SQULA_KLOK } from "./squla-klok";
+import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
+import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
 export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_ZO_WERKT_HET,
@@ -47,6 +52,8 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_OPTELLEN_TOT_100,
   ...LESSEN_FLITSEN,
   ...LESSEN_SQULA_HUISNUMMERS,
+  ...LESSEN_SQULA_SPLITSEN,
+  ...LESSEN_SQULA_PIRAAT,
   ...LESSEN_SQULA_REKENTAAL,
   ...LESSEN_SQULA_DAGEN,
   ...LESSEN_SQULA_GETALLENLIJN,
@@ -57,6 +64,9 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_PLUSSOMMEN,
   ...LESSEN_SQULA_GELD,
   ...LESSEN_SQULA_METEN,
+  ...LESSEN_SQULA_KLOK,
+  ...LESSEN_SQULA_VORMEN,
+  ...LESSEN_SQULA_REKENMIX,
 ];
 
 export function zoekDraaiboek(id: string): Lesdraaiboek | null {

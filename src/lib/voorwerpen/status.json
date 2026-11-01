@@ -1,0 +1,700 @@
+{
+  "aardbei": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "appel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bakje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bakkerij": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon-blauw": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon-geel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon-groen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon-oranje": {
+    "bron": "eigen",
+    "v": 3
+  },
+  "ballon-paars": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ballon-rood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "banaan": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "basketbal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bed": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "beker-leeg": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "beker-vol": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "beslagkom": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bezem": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bezorgbus": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bloem": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bloembak": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boek": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boek-groen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boek-rood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bolletje-deeg": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bolletje-ijs": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boom": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bootje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bord": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boterham": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boterham-heel-veel-kaas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boterham-veel-kaas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "boterham-weinig-kaas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "broek": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "brood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "broodje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bruin-brood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "bus": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "citroen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "croissant": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "cupcake": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "deegkom": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "diamant": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "discobal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "doek": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "donut": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "doos": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "doos-blauw": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "doos-open": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "doos-rood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "draaitafel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ei": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "emmer": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "feesthoed": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "fiets": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "gieter": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "glas-water": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "goudstuk": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "hoepel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "hoorntje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "huis": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ijsje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ijsje-twee-bollen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "jas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kaars": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kaas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kampvuur": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kers": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kistje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kledingkast": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "knikker": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "knoop": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "koekje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kom-soep": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "komeet": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kopermunt": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "kraal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "krentenbol": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "lampje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "laptop": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "luidspreker": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "maan": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "maansteen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "mand": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "mand-half": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "mand-leeg": {
+    "bron": "placeholder",
+    "v": 1,
+    "h": "18933bc612"
+  },
+  "mand-vol": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "mandarijn": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "marktkraam": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "olijf": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "oude-raket": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "oven": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "oven-brood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "oven-taart": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pakje": {
+    "bron": "eigen",
+    "v": 3
+  },
+  "parel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "peer": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pennenbeker": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "picknickkleed": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pingpongbal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pion": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizza-kaas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizza-olijven": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizza-salami": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizzadoos": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizzadoos-open": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizzaoven": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pizzapunt": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "planeet": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "planeet-ring": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "plant": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "portemonnee": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "potje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "potlood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "pruim": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "raketje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "rode-rots": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "rugtas": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "satelliet": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schaal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schaar": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schatkaart": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schatkist": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schelp": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schoen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schommel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "schoolbord": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "skateboard": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "sleutel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "slingerlampje-geel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "slingerlampje-rood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "spaarpot": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "speelblok": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "speelgoedauto": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "spies-leeg": {
+    "bron": "placeholder",
+    "v": 1,
+    "h": "3d7fb8a6b8"
+  },
+  "spies-twee": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "spies-vol": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "splitsmachine": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "springtouw": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "steen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ster": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "stoelenkring": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "stokbrood": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "stuiterbal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "suikerstrooier": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "t-shirt": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "taart": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "taart-kaarsje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tand": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tekendoos": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "telefoon": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tennisbal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tent": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "thermometer": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tomaat": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "treintje": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "tulp": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "ufo": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "veer": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "vlaggenlijn": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "vlieger": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "voetbal": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "voetbalshirt": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "wandplank": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "watermeloen": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zak": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zak-chips": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zak-meel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zandloper": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zeepbel": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zon": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zonnebloem": {
+    "bron": "eigen",
+    "v": 2
+  },
+  "zwembad": {
+    "bron": "eigen",
+    "v": 2
+  }
+}

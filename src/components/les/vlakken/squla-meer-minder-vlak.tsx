@@ -37,7 +37,7 @@ import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM, GOED, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { DING_B, DING_H, MM_KLEUR, MM_MAAT, mmDoos, mmHex, mmTeken, mmTekenDing, type MMDing, type MMKleur, type MMSoort } from "./squla-meer-minder-tekenen";
+import { DING_B, DING_H, MM_KLEUR, MM_MAAT, MM_VASTE_KLEUR, mmDoos, mmHex, mmTeken, mmTekenDing, type MMDing, type MMKleur, type MMSoort } from "./squla-meer-minder-tekenen";
 import s from "./squla-meer-minder.module.css";
 
 export type { MMDing, MMKleur, MMSoort };
@@ -274,12 +274,17 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
 
     /* ---------- plaatjes ---------- */
 
-    voorwerp(soort: MMSoort, kleur: string) {
-      const sl = `mm-${soort}-${kleur.slice(1)}`;
-      if (!this.textures.exists(`${sl}-g`)) {
-        this.canvasPlaatje(sl, MM_MAAT, MM_MAAT, (c) => mmTeken(c, soort, kleur));
-        this.bak(sl, `${sl}-g`, mmHex(kleur));
-      }
+    /** Het vaste plaatje van een ding, één keer per soort, zonder vaste gloed (31 oktober 2026). */
+    voorwerp(soort: MMSoort) {
+      const sl = `mm-vw-${soort}`;
+      this.canvasPlaatje(sl, MM_MAAT, MM_MAAT, (c) => mmTeken(c, soort));
+      return sl;
+    }
+
+    /** Hetzelfde plaatje mét gebakken gloed: alleen even, op het moment dat het geteld wordt. */
+    voorwerpGloed(soort: MMSoort) {
+      const sl = this.voorwerp(soort);
+      this.bak(sl, `${sl}-g`, mmHex(MM_KLEUR[MM_VASTE_KLEUR[soort]]));
       return `${sl}-g`;
     }
 
@@ -334,11 +339,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
 
     dingTex(ding: MMDing, n: number) {
       const sl = `mm-${ding}-${n}`;
-      if (!this.textures.exists(`${sl}-g`)) {
-        this.canvasPlaatje(sl, DING_B, DING_H, (c) => mmTekenDing(c, ding, n));
-        this.bak(sl, `${sl}-g`, WARM);
-      }
-      return `${sl}-g`;
+      this.canvasPlaatje(sl, DING_B, DING_H, (c) => mmTekenDing(c, ding, n));
+      return sl;
     }
 
     doosTex(b: number, h: number) {
@@ -397,7 +399,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
           }
           const sc = (gp.cel * 0.84) / MM_MAAT;
           for (const p of gp.plekken) {
-            const img = this.plaats(this.voorwerp(groep.soort, p.kleur), p.x, p.y);
+            const img = this.plaats(this.voorwerp(groep.soort), p.x, p.y).setData("soort", groep.soort);
             img.setScale(img.scaleX * sc);
             items.push(img);
             box.add(img);
@@ -417,6 +419,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
           if (t && t.vak === i && k === t.geteld - 1 && !this.rustig) {
             const sx = img.scaleX;
             this.tweens.add({ targets: img, scaleX: sx * 1.18, scaleY: sx * 1.18, duration: 110, yoyo: true, onComplete: () => img.setScale(sx) });
+            /* Gloed op het moment dat het iets betekent: het getelde ding licht even op. */
+            const soort = img.getData("soort") as MMSoort | undefined;
+            if (soort) {
+              img.setTexture(this.voorwerpGloed(soort));
+              this.time.delayedCall(420, () => img.active && img.setTexture(this.voorwerp(soort)));
+            }
           }
         });
       });
@@ -756,7 +764,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
           const gp = vak.groep;
           if (!gp) return;
           for (const d of gp.dozen) plan(`doos-${Math.round(d.b)}x${Math.round(d.h)}`, () => this.doosTex(d.b, d.h));
-          for (const kleur of new Set(gp.plekken.map((q) => q.kleur))) plan(`v-${groepen[i].soort}-${kleur}`, () => this.voorwerp(groepen[i].soort, kleur));
+          plan(`v-${groepen[i].soort}`, () => this.voorwerp(groepen[i].soort));
+          plan(`vg-${groepen[i].soort}`, () => this.voorwerpGloed(groepen[i].soort));
         });
       }
     }

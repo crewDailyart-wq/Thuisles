@@ -143,5 +143,11 @@ export type Lesdraaiboek = {
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */
   kaarttekening?: ComponentType;
+  /**
+   * Vaste plaatjes die deze les gebruikt (31 oktober 2026): namen uit
+   * src/lib/voorwerpen, bestand public/voorwerpen/<naam>.png. Het lesscherm
+   * laadt ze vóór de les begint. Zie WISSELEN.md.
+   */
+  voorwerpen?: readonly string[];
   speel(l: Lesgids): Promise<void>;
 };

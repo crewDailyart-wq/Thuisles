@@ -175,7 +175,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     kaartPlaatje(d: PDing, b: number, h: number) {
       const sl = `pk|${d.tekening ?? ""}|${d.label ?? ""}|${Math.round(b)}x${Math.round(h)}`;
       this.canvasPlaatje(sl, b, h, (c) => {
-        tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, 18), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
+        /* Een kaartje met alleen een woord is een knop; een plaatje staat los, zonder kader (31 oktober 2026). */
+        if (!d.tekening) tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, 18), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
         const woordH = d.label && d.tekening ? 46 : 0;
         if (d.tekening) {
           const m = tekeningMaat(d.tekening);
@@ -191,7 +192,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           c.font = `800 ${maat}px ${letter()}`;
           c.textAlign = "center";
           c.textBaseline = "middle";
-          c.fillStyle = PALET.navy;
+          c.fillStyle = d.tekening ? PALET.warmwit : PALET.navy;
           c.fillText(d.label, b / 2, d.tekening ? h - 32 : h / 2 + 2, b - 20);
         }
       });
@@ -402,16 +403,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         naar = ind.rechts[0] && { ...ind.rechts[0], x: ind.rechts[0].x - ind.rechts[0].b / 2 + 20 };
       }
       if (!van || !naar) return;
-      this.canvasPlaatje("handje", 48, 56, (c) =>
-        tekenVormen(c, [
-          {
-            d: "M16 30 V8 a5 5 0 0 1 10 0 V26 V20 a5 5 0 0 1 10 0 V28 a5 5 0 0 1 9 2 V40 c0 9 -7 14 -15 14 h-4 c-6 0 -10 -3 -13 -8 L4 34 a5 5 0 0 1 8 -5 Z",
-            vul: PALET.warmwit,
-            rand: PALET.navy,
-            dik: 3.5,
-          },
-        ]),
-      );
+      this.canvasPlaatje("handje", 48, 56, (c) => {
+        /* Een lichtje dat voordoet hoe je sleept (tot 31 oktober 2026 een handje; geen mensen, ook geen hand). */
+        const g = c.createRadialGradient(24, 28, 2, 24, 28, 22);
+        g.addColorStop(0, "rgba(255,255,255,1)");
+        g.addColorStop(0.45, "rgba(255,240,190,0.9)");
+        g.addColorStop(1, "rgba(255,211,110,0)");
+        c.fillStyle = g;
+        c.beginPath();
+        c.arc(24, 28, 22, 0, Math.PI * 2);
+        c.fill();
+      });
       const h = this.plaats("handje", van.x + 10, van.y + 20).setDepth(30).setAlpha(0);
       this.tweens.chain({
         targets: h,

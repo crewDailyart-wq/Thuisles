@@ -32,6 +32,7 @@ import { kiesGebaar, vraagOfUitleg } from "@/lib/bliepo-gebaren";
 import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
 import { IkoonKnop, IkoonTeken } from "./ikonen";
 import { keuzeStem, useKeuzesAlvast } from "./keuzestem";
+import { laadVoorwerpen } from "./voorwerpen";
 import "@/components/oefenen/opdracht-nieuw.css";
 
 /*
@@ -811,8 +812,8 @@ function Lesscherm({
         }),
     };
 
-    les
-      .speel(gids)
+    laadVoorwerpen(les.voorwerpen)
+      .then(() => (levend ? les.speel(gids) : undefined))
       .then(() => {
         if (!levend) return;
         pas((b) => ({ ...b, klaar: true }));

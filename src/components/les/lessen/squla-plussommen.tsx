@@ -5,11 +5,19 @@
  * dezelfde getallenreeks), met eigen getallen, eigen zinnen en eigen
  * tekeningen. De analyse staat in SQULA-ANALYSE/plussommen-*-volledig.md.
  *
- *   Plussommen (16054)        squla-plus-bakkerij-1/2/3   platte 2D: Bliepo's bakkerij
- *   Dansende sommen (15684)   squla-plus-dansen-1/2/3/4   donker met gloed: de disco
- *   Bussommen 1 (7272)        squla-plus-bus1-1/2/3       platte 2D-bus, instappers als poppetjes
- *   Bussommen 2 (7273)        squla-plus-bus2-1/2/3       platte 2D-bus, instappers als getal
- *   Kale sommen (7274)        squla-plus-kaal-1/2/3       hologram: alleen een sierplaatje
+ *   Plussommen (16054)        squla-plus-bakkerij-1/2/3   Bliepo's bakkerij
+ *   Dansende sommen (15684)   squla-plus-dansen-1/2/3/4   de disco
+ *   Bussommen 1 (7272)        squla-plus-bus1-1/2/3       bezorgbus, nieuwe pakjes in beeld
+ *   Bussommen 2 (7273)        squla-plus-bus2-1/2/3       bezorgbus, nieuwe pakjes als getal
+ *   Kale sommen (7274)        squla-plus-kaal-1/2/3       alleen een sierplaatje
+ *
+ * Stijl (besluit Sara, 31 oktober 2026): alle lessen donker (nacht), plaatjes
+ * zonder vaste gloed en zonder kaders; iets licht alleen op als Bliepo het
+ * aanwijst of meetelt, of als het antwoord goed is. Geen mensen: waar Squla
+ * kinderen in een bus laat instappen, gaan er bij Bliepo pakjes in een
+ * bezorgbus (logisch: een bus die pakjes rondbrengt krijgt bij elke halte
+ * pakjes erbij). Echte dingen zijn vaste plaatjes (src/lib/voorwerpen,
+ * `voorwerpen` per les); rekenmateriaal is in code getekend.
  *
  * Getallenreeks per level (zoals Squla): tot 10 · tot 20 zonder over het
  * tiental · over het tiental (bij de bakkerij level 3 ook dubbelsommen en
@@ -22,7 +30,7 @@
  *    eerst naar 10, "denk aan 3 + 4") zijn de basis van Bliepo's uitleg
  *    (`rekenUitleg`), in eigen woorden en in beeld: een rij van 10 (of twee
  *    rijen) met oranje en blauwe stippen. Bliepo zegt het antwoord niet voor.
- *  - Bij de bus telt Bliepo samen verder vanaf de kinderen in de bus; bij 10
+ *  - Bij de bus telt Bliepo samen verder vanaf de pakjes in de bus; bij 10
  *    of meer is het een dubbeldekker met boven een volle rij van 10.
  *  - Disco: alleen de rekenvraag, zonder tijdsdruk, zonder bonusspel of muntjes.
  *  - Getallen typen: een echt invoerveld (l.getal, HARDE REGEL 5).
@@ -44,8 +52,8 @@ import {
   type PlusBeeld,
   type PlusProps,
   type Rek,
-  type Stijl,
 } from "../vlakken/squla-plussommen-vlak";
+import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-tekenen";
 
 /* =====================================================================
    Woorden
@@ -64,7 +72,7 @@ const somAria = (a: number, b: number) => `${a} plus ${b} is ${a + b}`;
    Het vlak
    ===================================================================== */
 
-type Stand = { stijl: Stijl; huidig: string; nr: number; goed: number; fout: number; typUitgelegd: boolean };
+type Stand = { huidig: string; nr: number; goed: number; fout: number; typUitgelegd: boolean };
 type Vraag = (l: Lesgids, st: Stand) => Promise<boolean>;
 
 const zet = (l: Lesgids, p: Partial<PlusProps>) => l.pasVlakAan<PlusProps>(p);
@@ -289,7 +297,7 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
       goed: async () => {
         somBoven(l, a, b, a + b);
         goedBeeld(l, st);
-        await l.zeg(`Ja! Er komen er bij, dus het is een plussom.`, `${plus(a, b)} = ${g(a + b)}.`);
+        await l.zeg("Ja! Er komt iets bij, dus het is een plussom.", `${plus(a, b)} = ${g(a + b)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -297,7 +305,7 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
         zet(l, { licht: [0] });
         await l.zeg(`Eerst waren er ${g(a)}.`);
         zet(l, { licht: [1] });
-        await l.zeg(erbij(b), "Er komen er bij: dan is het een plussom.");
+        await l.zeg(erbij(b), "Er komt iets bij: dan is het een plussom.");
         zet(l, { licht: [] });
         await l.zeg(`Zoek de plussom met ${g(a)} en ${g(b)}.`);
       },
@@ -526,10 +534,11 @@ function typSom(a: number, b: number, beeldVan: (id: string) => PlusBeeld = (id)
 }
 
 /* Korte schrijfwijzen voor groepjes. */
-const bord = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, bak: "bord", label });
-const plaat = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, bak: "plaat", label });
-const mand = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, bak: "mand", label });
-const zak = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, bak: "zak", label });
+/** Een groepje lekkers, los in de ruimte; `label` = het aantal staat eronder op een bordje. */
+const hoop = (n: number, ding: Groep["ding"], label = false): Groep => ({ n, ding, label });
+
+/** De bakkerij: het lekkers, en de disco voor het discospel. */
+const VOORWERPEN_BAKKERIJ = ["broodje", "brood", "bruin-brood", "stokbrood", "koekje", "taart", "cupcake", "krentenbol", "croissant", "donut", ...VOORWERPEN_DISCO];
 
 const BAKKERIJ_WELKOM = ["Hoi!", "Kijk, mijn bakkerij.", "Ik bak broodjes, koekjes en taartjes.", "Jij rekent uit hoeveel het samen is."];
 
@@ -655,13 +664,13 @@ function dansUitleg(kaartjes: boolean) {
 
 function busZinnen(a: number, b: number): string[] {
   return [
-    a === 1 ? `Er zit ${g(1)} kind in de bus.` : `Er zitten ${g(a)} kinderen in de bus.`,
-    b === 1 ? `Bij de halte stapt er ${g(1)} kind in.` : `Bij de halte stappen er ${g(b)} kinderen in.`,
-    "Hoeveel kinderen zitten er nu in de bus?",
+    a === 1 ? `Er ligt ${g(1)} pakje in de bus.` : `Er liggen ${g(a)} pakjes in de bus.`,
+    b === 1 ? `Bij de halte komt er ${g(1)} pakje bij.` : `Bij de halte komen er ${g(b)} pakjes bij.`,
+    "Hoeveel pakjes liggen er nu in de bus?",
   ];
 }
 
-/** Bliepo kijkt in de bus en telt samen verder met de kinderen die instappen (het laatste telt het kind). */
+/** Bliepo kijkt in de bus en telt samen verder met de pakjes die erbij komen (het laatste telt het kind). */
 async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
   somBoven(l, a, b);
   if (b >= 10) {
@@ -669,10 +678,10 @@ async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
     return;
   }
   zet(l, { busLicht: true });
-  if (a >= 10) await l.zeg(`Boven zitten er ${g(10)}.`, a === 11 ? `Beneden zit er nog ${g(1)}.` : `Beneden zitten er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} kinderen.`);
-  else await l.zeg(a === 1 ? `In de bus zit ${g(1)} kind.` : `In de bus zitten ${g(a)} kinderen.`);
+  if (a >= 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
+  else await l.zeg(a === 1 ? `In de bus ligt ${g(1)} pakje.` : `In de bus liggen ${g(a)} pakjes.`);
   zet(l, { busLos: true });
-  await l.zeg(b === 1 ? `Bij de deur staat ${g(1)} kind.` : `Bij de deur staan ${g(b)} kinderen.`, `We tellen verder vanaf ${g(a)}.`);
+  await l.zeg(b === 1 ? `Naast de bus ligt ${g(1)} pakje.` : `Naast de bus liggen ${g(b)} pakjes.`, `We tellen verder vanaf ${g(a)}.`);
   const tot = helemaal ? b : b - 1;
   for (let i = 1; i <= tot; i++) {
     zet(l, { busTel: i });
@@ -690,24 +699,24 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
         toon(l, st, { soort: "bus", id, inBus: a, instap: b, alsGetal });
       },
       vraag: busZinnen(a, b),
-      antwoord: () => typGetal(l, st, ["Typ hoeveel kinderen er nu in de bus zitten."]),
+      antwoord: () => typGetal(l, st, ["Typ hoeveel pakjes er nu in de bus liggen."]),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
         somBoven(l, a, b, s);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`, `Er zitten nu ${g(s)} kinderen in de bus.`);
+        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`, `Er liggen nu ${g(s)} pakjes in de bus.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
       samen: () => busSamen(l, a, b),
-      tip: b >= 10 ? rekenTip(a, b) : [`Begin bij ${g(a)}.`, b === 1 ? "Tel het kind dat instapt erbij." : "Tel de kinderen die instappen erbij."],
+      tip: b >= 10 ? rekenTip(a, b) : [`Begin bij ${g(a)}.`, b === 1 ? "Tel het nieuwe pakje erbij." : "Tel de nieuwe pakjes erbij."],
       testAntwoord: s,
     });
   };
 }
 
-const BUS_WELKOM = ["Hoi!", "Kijk, daar komt de bus.", "Er zitten al kinderen in.", "Bij de halte stappen er kinderen in.", "Jij rekent uit hoeveel kinderen er dan in de bus zitten."];
+const BUS_WELKOM = ["Hoi!", "Kijk, daar komt de bezorgbus.", "Hij brengt pakjes rond.", "Er liggen al pakjes in.", "Bij de halte komen er pakjes bij.", "Jij rekent uit hoeveel pakjes er dan in de bus liggen."];
 
 function busUitleg(a: number, b: number, alsGetal: boolean) {
   return async (l: Lesgids, st: Stand) => {
@@ -715,7 +724,7 @@ function busUitleg(a: number, b: number, alsGetal: boolean) {
     await l.zeg(...busZinnen(a, b).slice(0, 2));
     await busSamen(l, a, b, true);
     somBoven(l, a, b, a + b);
-    await l.zeg(`Nu zitten er ${g(a + b)} kinderen in de bus.`, `${plus(a, b)} = ${g(a + b)}.`);
+    await l.zeg(`Nu liggen er ${g(a + b)} pakjes in de bus.`, `${plus(a, b)} = ${g(a + b)}.`);
     await l.verder();
     l.som(null);
   };
@@ -743,8 +752,9 @@ type Les = {
   titel: string;
   oefening: string;
   level: number;
-  stijl: Stijl;
   kaart: ComponentType;
+  /** Alle vaste plaatjes die deze les tekent (src/lib/voorwerpen). */
+  voorwerpen: readonly string[];
   welkom: string[];
   /** Wat er in beeld staat tijdens het welkom. */
   begin: PlusBeeld | null;
@@ -761,9 +771,11 @@ function les(t: Les): Lesdraaiboek {
     indeling: "synthesis",
     browserstem: true,
     kaarttekening: t.kaart,
+    nacht: true,
+    voorwerpen: t.voorwerpen,
     async speel(l) {
-      const st: Stand = { stijl: t.stijl, huidig: t.begin?.id ?? "", nr: 0, goed: 0, fout: 0, typUitgelegd: false };
-      l.vlak<PlusProps>(SqulaPlusVlak, { stijl: t.stijl, beeld: t.begin });
+      const st: Stand = { huidig: t.begin?.id ?? "", nr: 0, goed: 0, fout: 0, typUitgelegd: false };
+      l.vlak<PlusProps>(SqulaPlusVlak, { beeld: t.begin });
       if (t.begin) speelLesgeluid("verschijn");
       await squlaBegin(l, { welkom: t.welkom, uitleg: () => t.uitleg(l, st) });
       let fouten = 0;
@@ -772,7 +784,6 @@ function les(t: Les): Lesdraaiboek {
       await squlaEind(l, fouten, t.eind);
     },
   };
-  if (t.stijl === "nacht") boek.nacht = true;
   return boek;
 }
 
@@ -783,29 +794,29 @@ const bakkerij1 = les({
   titel: "Plussommen in de bakkerij",
   oefening: "Plussommen",
   level: 1,
-  stijl: "plat",
   kaart: KaartBakkerij,
+  voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM,
-  begin: { soort: "bakkerij", id: "begin", groepen: [bord(3, "broodje"), bord(2, "broodje")] },
-  uitleg: bakkerijUitleg([bord(3, "broodje"), bord(2, "broodje")], 3, 2, "broodjes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(3, "broodje"), hoop(2, "broodje")] },
+  uitleg: bakkerijUitleg([hoop(3, "broodje"), hoop(2, "broodje")], 3, 2, "broodjes"),
   /* Level 1: tot 10. Zoals Squla: verhaaltjes, welke som, disco, verbinden, verhaaltje; daarna nog een ronde. */
   vragen: [
-    verhaal([bord(1, "taart"), bord(4, "taart")], 1, 4, [4, 5, 6, 1], [`Op het ene bord ligt ${g(1)} taartje.`, `Op het andere bord liggen er ${g(4)}.`, "Hoeveel taartjes zijn het samen?"]),
-    verhaal([plaat(5, "broodje"), plaat(2, "bruinbrood")], 5, 2, [6, 7, 8, 3], [`Hier liggen ${g(5)} witte broodjes.`, `Daar liggen ${g(2)} bruine broodjes.`, "Hoeveel broodjes zijn het samen?"]),
-    verhaal([bord(4, "cupcake"), bord(5, "cupcake")], 4, 5, [8, 9, 10, 1], [`Er staan ${g(4)} cupcakes klaar.`, `Ik bak er nog ${g(5)} bij.`, "Hoeveel cupcakes zijn het samen?"]),
-    verhaal([mand(2, "krentenbol", true), mand(6, "krentenbol", true)], 2, 6, [7, 8, 4, 9], [`In de ene mand zitten ${g(2)} krentenbollen.`, `In de andere mand zitten er ${g(6)}.`, "Hoeveel krentenbollen zijn het samen?"]),
-    welkeSom([plaat(3, "koekje"), bord(7, "koekje")], 3, 7, ["7 − 3 = 4", "3 + 7 = 10", "3 + 3 = 6", "7 + 7 = 14"], [`Er liggen nog maar ${g(3)} koekjes.`, `Ik bak er ${g(7)} bij.`, "Welke som hoort erbij?"]),
+    verhaal([hoop(1, "taart"), hoop(4, "taart")], 1, 4, [4, 5, 6, 1], [`Hier ligt ${g(1)} taartje.`, `Daar liggen er ${g(4)}.`, "Hoeveel taartjes zijn het samen?"]),
+    verhaal([hoop(5, "brood"), hoop(2, "bruin-brood")], 5, 2, [6, 7, 8, 3], [`Hier liggen ${g(5)} witte broden.`, `Daar liggen ${g(2)} bruine broden.`, "Hoeveel broden zijn het samen?"]),
+    verhaal([hoop(4, "cupcake"), hoop(5, "cupcake")], 4, 5, [8, 9, 10, 1], [`Er staan ${g(4)} cupcakes klaar.`, `Ik bak er nog ${g(5)} bij.`, "Hoeveel cupcakes zijn het samen?"]),
+    verhaal([hoop(2, "krentenbol", true), hoop(6, "krentenbol", true)], 2, 6, [7, 8, 4, 9], [`Hier liggen ${g(2)} krentenbollen.`, `Daar liggen er ${g(6)}.`, "Hoeveel krentenbollen zijn het samen?"]),
+    welkeSom([hoop(3, "koekje"), hoop(7, "koekje")], 3, 7, ["7 − 3 = 4", "3 + 7 = 10", "3 + 3 = 6", "7 + 7 = 14"], [`Er liggen nog maar ${g(3)} koekjes.`, `Ik bak er ${g(7)} bij.`, "Welke som hoort erbij?"]),
     discoSom(5, 3, [9, 7, 8]),
     discoSom(6, 4, [10, 8, 9]),
     verbind([[3, 4], [5, 3], [2, 7]], [9, 7, 8]),
-    verhaal([zak(4, "donut"), zak(4, "donut")], 4, 4, [4, 8, 7, 0], [`In elke zak zitten ${g(4)} donuts.`, "Hoeveel donuts zijn het bij elkaar?"]),
-    verhaal([bord(2, "croissant"), bord(5, "croissant")], 2, 5, [6, 7, 8, 2], [`Ik heb ${g(2)} croissants gebakken.`, `Daarna bak ik er nog ${g(5)}.`, "Hoeveel croissants zijn het samen?"]),
-    verhaal([bord(3, "broodje"), bord(6, "broodje")], 3, 6, [8, 9, 10, 3], [`Op dit bord liggen ${g(3)} broodjes.`, `Op dat bord liggen er ${g(6)}.`, "Hoeveel broodjes zijn het samen?"]),
-    welkeSom([bord(4, "taart"), bord(5, "taart")], 4, 5, ["5 − 4 = 1", "4 + 5 = 9", "4 + 4 = 8", "5 + 5 = 10"], [`Er staan ${g(4)} taartjes.`, `Ik zet er ${g(5)} bij.`, "Welke som hoort erbij?"]),
+    verhaal([hoop(4, "donut"), hoop(4, "donut")], 4, 4, [4, 8, 7, 0], [`Hier liggen ${g(4)} donuts.`, `Daar liggen er ook ${g(4)}.`, "Hoeveel donuts zijn het bij elkaar?"]),
+    verhaal([hoop(2, "croissant"), hoop(5, "croissant")], 2, 5, [6, 7, 8, 2], [`Ik heb ${g(2)} croissants gebakken.`, `Daarna bak ik er nog ${g(5)}.`, "Hoeveel croissants zijn het samen?"]),
+    verhaal([hoop(3, "broodje"), hoop(6, "broodje")], 3, 6, [8, 9, 10, 3], [`Hier liggen ${g(3)} broodjes.`, `Daar liggen er ${g(6)}.`, "Hoeveel broodjes zijn het samen?"]),
+    welkeSom([hoop(4, "taart"), hoop(5, "taart")], 4, 5, ["5 − 4 = 1", "4 + 5 = 9", "4 + 4 = 8", "5 + 5 = 10"], [`Er staan ${g(4)} taartjes.`, `Ik zet er ${g(5)} bij.`, "Welke som hoort erbij?"]),
     discoSom(2, 6, [7, 9, 8]),
     verbind([[1, 6], [4, 2], [5, 4]], [9, 7, 6]),
-    verhaal([plaat(7, "koekje"), bord(2, "koekje")], 7, 2, [8, 9, 10, 5], [`Ik heb ${g(7)} koekjes.`, `Er komen er ${g(2)} bij.`, "Hoeveel koekjes zijn het samen?"]),
-    verhaal([zak(5, "krentenbol"), zak(5, "krentenbol")], 5, 5, [5, 10, 9, 0], [`In de ene zak zitten ${g(5)} krentenbollen.`, `In de andere zak ook ${g(5)}.`, "Hoeveel krentenbollen zijn het samen?"]),
+    verhaal([hoop(7, "koekje"), hoop(2, "koekje")], 7, 2, [8, 9, 10, 5], [`Ik heb ${g(7)} koekjes.`, `Er komen er ${g(2)} bij.`, "Hoeveel koekjes zijn het samen?"]),
+    verhaal([hoop(5, "krentenbol"), hoop(5, "krentenbol")], 5, 5, [5, 10, 9, 0], [`Hier liggen ${g(5)} krentenbollen.`, `Daar liggen er ook ${g(5)}.`, "Hoeveel krentenbollen zijn het samen?"]),
   ],
   eind: "Je kunt plussommen maken tot tien.",
 });
@@ -815,29 +826,29 @@ const bakkerij2 = les({
   titel: "Plussommen in de bakkerij (moeilijker)",
   oefening: "Plussommen",
   level: 2,
-  stijl: "plat",
   kaart: KaartBakkerij,
+  voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM,
-  begin: { soort: "bakkerij", id: "begin", groepen: [plaat(12, "koekje"), bord(3, "koekje")] },
-  uitleg: bakkerijUitleg([plaat(12, "koekje"), bord(3, "koekje")], 12, 3, "koekjes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(12, "koekje"), hoop(3, "koekje")] },
+  uitleg: bakkerijUitleg([hoop(12, "koekje"), hoop(3, "koekje")], 12, 3, "koekjes"),
   /* Level 2: tot 20, niet over het tiental (zoals Squla één kleine over het tiental in het verbinden). */
   vragen: [
-    verhaal([plaat(10, "stokbrood"), bord(3, "stokbrood")], 10, 3, [13, 7, 15, 3], [`Er liggen ${g(10)} stokbroden.`, `Ik leg er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"]),
-    verhaal([plaat(13, "krentenbol"), bord(4, "krentenbol")], 13, 4, [16, 17, 18, 13], [`Er liggen ${g(13)} krentenbollen.`, `Ik bak er ${g(4)} bij.`, "Hoeveel krentenbollen zijn het samen?"]),
-    verhaal([plaat(14, "donut"), bord(1, "donut")], 14, 1, [13, 5, 17, 15], [`Hier liggen ${g(14)} donuts.`, `Daar ligt er nog ${g(1)}.`, "Hoeveel donuts zijn het samen?"]),
-    verhaal([bord(6, "broodje"), plaat(12, "broodje")], 6, 12, [6, 17, 18, 19], [`Ik heb ${g(6)} broodjes.`, `Ik bak er ${g(12)} bij.`, "Hoeveel broodjes zijn het samen?"]),
-    verhaal([bord(5, "koekje"), plaat(14, "koekje")], 5, 14, [9, 18, 19, 17], [`Er liggen ${g(5)} koekjes.`, `Er komen er ${g(14)} bij.`, "Hoeveel koekjes zijn het samen?"]),
-    somBijPlaatje([plaat(12, "cupcake", true), bord(3, "cupcake")], [[12, 3], [13, 3], [12, 4]], 0, "cupcakes"),
-    somBijPlaatje([bord(3, "croissant"), plaat(11, "croissant", true)], [[3, 12], [3, 11], [3, 13]], 1, "croissants"),
+    verhaal([hoop(10, "stokbrood"), hoop(3, "stokbrood")], 10, 3, [13, 7, 15, 3], [`Er liggen ${g(10)} stokbroden.`, `Ik leg er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"]),
+    verhaal([hoop(13, "krentenbol"), hoop(4, "krentenbol")], 13, 4, [16, 17, 18, 13], [`Er liggen ${g(13)} krentenbollen.`, `Ik bak er ${g(4)} bij.`, "Hoeveel krentenbollen zijn het samen?"]),
+    verhaal([hoop(14, "donut"), hoop(1, "donut")], 14, 1, [13, 5, 17, 15], [`Hier liggen ${g(14)} donuts.`, `Daar ligt er nog ${g(1)}.`, "Hoeveel donuts zijn het samen?"]),
+    verhaal([hoop(6, "broodje"), hoop(12, "broodje")], 6, 12, [6, 17, 18, 19], [`Ik heb ${g(6)} broodjes.`, `Ik bak er ${g(12)} bij.`, "Hoeveel broodjes zijn het samen?"]),
+    verhaal([hoop(5, "koekje"), hoop(14, "koekje")], 5, 14, [9, 18, 19, 17], [`Er liggen ${g(5)} koekjes.`, `Er komen er ${g(14)} bij.`, "Hoeveel koekjes zijn het samen?"]),
+    somBijPlaatje([hoop(12, "cupcake", true), hoop(3, "cupcake")], [[12, 3], [13, 3], [12, 4]], 0, "cupcakes"),
+    somBijPlaatje([hoop(3, "croissant"), hoop(11, "croissant", true)], [[3, 12], [3, 11], [3, 13]], 1, "croissants"),
     discoSom(15, 3, [17, 18, 19]),
     discoSom(11, 6, [16, 17, 18]),
     verbind([[14, 2], [6, 5], [4, 13]], [17, 16, 11]),
-    verhaal([plaat(11, "taart"), bord(7, "taart")], 11, 7, [18, 4, 17, 19], [`Op de plaat staan ${g(11)} taartjes.`, `Ik zet er ${g(7)} bij.`, "Hoeveel taartjes zijn het samen?"]),
-    verhaal([plaat(16, "croissant"), bord(3, "croissant")], 16, 3, [19, 13, 18, 20], [`Er liggen ${g(16)} croissants.`, `Ik bak er ${g(3)} bij.`, "Hoeveel croissants zijn het samen?"]),
-    somBijPlaatje([plaat(13, "donut", true), bord(2, "donut")], [[13, 3], [14, 2], [13, 2]], 2, "donuts"),
+    verhaal([hoop(11, "taart"), hoop(7, "taart")], 11, 7, [18, 4, 17, 19], [`Er staan ${g(11)} taartjes.`, `Ik zet er ${g(7)} bij.`, "Hoeveel taartjes zijn het samen?"]),
+    verhaal([hoop(16, "croissant"), hoop(3, "croissant")], 16, 3, [19, 13, 18, 20], [`Er liggen ${g(16)} croissants.`, `Ik bak er ${g(3)} bij.`, "Hoeveel croissants zijn het samen?"]),
+    somBijPlaatje([hoop(13, "donut", true), hoop(2, "donut")], [[13, 3], [14, 2], [13, 2]], 2, "donuts"),
     discoSom(12, 6, [17, 18, 19]),
     verbind([[10, 5], [12, 4], [2, 17]], [19, 15, 16]),
-    verhaal([bord(3, "broodje"), plaat(15, "broodje")], 3, 15, [12, 17, 18, 19], [`Ik heb ${g(3)} broodjes.`, `Er komen er ${g(15)} bij.`, "Hoeveel broodjes zijn het samen?"]),
+    verhaal([hoop(3, "broodje"), hoop(15, "broodje")], 3, 15, [12, 17, 18, 19], [`Ik heb ${g(3)} broodjes.`, `Er komen er ${g(15)} bij.`, "Hoeveel broodjes zijn het samen?"]),
   ],
   eind: "Je kunt plussommen maken tot twintig.",
 });
@@ -847,29 +858,29 @@ const bakkerij3 = les({
   titel: "Plussommen in de bakkerij (nog moeilijker)",
   oefening: "Plussommen",
   level: 3,
-  stijl: "plat",
   kaart: KaartBakkerij,
+  voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM,
-  begin: { soort: "bakkerij", id: "begin", groepen: [plaat(8, "cupcake"), bord(5, "cupcake")] },
-  uitleg: bakkerijUitleg([plaat(8, "cupcake"), bord(5, "cupcake")], 8, 5, "cupcakes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(8, "cupcake"), hoop(5, "cupcake")] },
+  uitleg: bakkerijUitleg([hoop(8, "cupcake"), hoop(5, "cupcake")], 8, 5, "cupcakes"),
   /* Level 3: tot 20 over het tiental, met dubbelsommen en één makkelijke onder de 10. */
   vragen: [
-    verhaal([plaat(6, "koekje"), plaat(6, "koekje")], 6, 6, [11, 12, 13, 14], [`Er liggen ${g(6)} koekjes.`, `Ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"]),
-    verhaal([plaat(7, "croissant"), bord(6, "croissant")], 7, 6, [12, 13, 14, 15], [`Op de plaat liggen ${g(7)} croissants.`, `Er komen er nog ${g(6)} bij.`, "Hoeveel croissants zijn het samen?"]),
-    verhaal([plaat(8, "broodje"), bord(4, "broodje")], 8, 4, [11, 12, 13, 14], [`Er liggen ${g(8)} broodjes.`, `Ik leg er ${g(4)} bij.`, "Hoeveel broodjes zijn het samen?"]),
-    verhaal([bord(3, "donut"), bord(5, "donut")], 3, 5, [7, 8, 9, 10], [`Er liggen ${g(3)} donuts.`, `Ik bak er nog ${g(5)} bij.`, "Hoeveel donuts zijn het samen?"]),
-    verhaal([bord(8, "taart"), bord(8, "taart")], 8, 8, [14, 16, 15, 8], [`Op het ene bord staan ${g(8)} taartjes.`, `Op het andere bord staan er ook ${g(8)}.`, "Hoeveel taartjes zijn het samen?"]),
-    tweeSommen([plaat(6, "broodje"), plaat(9, "broodje")], [[6, 6], [6, 9], [9, 6], [9, 9]], [1, 2], "broodjes"),
-    tweeSommen([plaat(8, "krentenbol", true), bord(3, "krentenbol")], [[3, 8], [3, 10], [8, 3], [10, 3]], [0, 2], "krentenbollen"),
+    verhaal([hoop(6, "koekje"), hoop(6, "koekje")], 6, 6, [11, 12, 13, 14], [`Er liggen ${g(6)} koekjes.`, `Ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"]),
+    verhaal([hoop(7, "croissant"), hoop(6, "croissant")], 7, 6, [12, 13, 14, 15], [`Er liggen ${g(7)} croissants.`, `Er komen er nog ${g(6)} bij.`, "Hoeveel croissants zijn het samen?"]),
+    verhaal([hoop(8, "broodje"), hoop(4, "broodje")], 8, 4, [11, 12, 13, 14], [`Er liggen ${g(8)} broodjes.`, `Ik leg er ${g(4)} bij.`, "Hoeveel broodjes zijn het samen?"]),
+    verhaal([hoop(3, "donut"), hoop(5, "donut")], 3, 5, [7, 8, 9, 10], [`Er liggen ${g(3)} donuts.`, `Ik bak er nog ${g(5)} bij.`, "Hoeveel donuts zijn het samen?"]),
+    verhaal([hoop(8, "taart"), hoop(8, "taart")], 8, 8, [14, 16, 15, 8], [`Hier staan ${g(8)} taartjes.`, `Daar staan er ook ${g(8)}.`, "Hoeveel taartjes zijn het samen?"]),
+    tweeSommen([hoop(6, "broodje"), hoop(9, "broodje")], [[6, 6], [6, 9], [9, 6], [9, 9]], [1, 2], "broodjes"),
+    tweeSommen([hoop(8, "krentenbol", true), hoop(3, "krentenbol")], [[3, 8], [3, 10], [8, 3], [10, 3]], [0, 2], "krentenbollen"),
     discoSom(7, 4, [10, 11, 12]),
     discoSom(9, 6, [14, 15, 16]),
     typSom(9, 9),
-    verhaal([plaat(5, "cupcake"), plaat(7, "cupcake")], 5, 7, [11, 12, 13, 2], [`Er staan ${g(5)} cupcakes.`, `Ik bak er ${g(7)} bij.`, "Hoeveel cupcakes zijn het samen?"]),
-    verhaal([plaat(7, "koekje"), plaat(7, "koekje")], 7, 7, [12, 14, 15, 16], [`Op de ene plaat liggen ${g(7)} koekjes.`, `Op de andere plaat ook ${g(7)}.`, "Hoeveel koekjes zijn het samen?"]),
-    tweeSommen([bord(4, "donut"), plaat(7, "donut")], [[4, 4], [4, 7], [7, 7], [7, 4]], [1, 3], "donuts"),
+    verhaal([hoop(5, "cupcake"), hoop(7, "cupcake")], 5, 7, [11, 12, 13, 2], [`Er staan ${g(5)} cupcakes.`, `Ik bak er ${g(7)} bij.`, "Hoeveel cupcakes zijn het samen?"]),
+    verhaal([hoop(7, "koekje"), hoop(7, "koekje")], 7, 7, [12, 14, 15, 16], [`Hier liggen ${g(7)} koekjes.`, `Daar liggen er ook ${g(7)}.`, "Hoeveel koekjes zijn het samen?"]),
+    tweeSommen([hoop(4, "donut"), hoop(7, "donut")], [[4, 4], [4, 7], [7, 7], [7, 4]], [1, 3], "donuts"),
     discoSom(8, 5, [12, 13, 14]),
     typSom(8, 6),
-    verhaal([plaat(9, "croissant"), bord(4, "croissant")], 9, 4, [12, 13, 14, 15], [`Er liggen ${g(9)} croissants.`, `Ik bak er ${g(4)} bij.`, "Hoeveel croissants zijn het samen?"]),
+    verhaal([hoop(9, "croissant"), hoop(4, "croissant")], 9, 4, [12, 13, 14, 15], [`Er liggen ${g(9)} croissants.`, `Ik bak er ${g(4)} bij.`, "Hoeveel croissants zijn het samen?"]),
   ],
   eind: "Je kunt plussommen maken over het tiental.",
 });
@@ -881,8 +892,8 @@ const dansen1 = les({
   titel: "Samen 10 in de disco",
   oefening: "Dansende sommen",
   level: 1,
-  stijl: "nacht",
   kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
   welkom: DANS_WELKOM,
   begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
   uitleg: dansUitleg(true),
@@ -911,8 +922,8 @@ const dansen2 = les({
   titel: "Samen 10 in de disco (moeilijker)",
   oefening: "Dansende sommen",
   level: 2,
-  stijl: "nacht",
   kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
   welkom: DANS_WELKOM,
   begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
   uitleg: dansUitleg(false),
@@ -941,8 +952,8 @@ const dansen3 = les({
   titel: "Samen 10 in de disco (nog moeilijker)",
   oefening: "Dansende sommen",
   level: 3,
-  stijl: "nacht",
   kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
   welkom: DANS_WELKOM,
   begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
   uitleg: dansUitleg(false),
@@ -972,8 +983,8 @@ const dansen4 = les({
   titel: "Samen 10 in de disco (heel moeilijk)",
   oefening: "Dansende sommen",
   level: 4,
-  stijl: "nacht",
   kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
   welkom: DANS_WELKOM,
   begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
   uitleg: dansUitleg(true),
@@ -1007,8 +1018,8 @@ function busLes(nr: 1 | 2, level: number, titel: string, voorbeeld: [number, num
     titel,
     oefening: `Bussommen ${nr}`,
     level,
-    stijl: "plat",
     kaart: KaartBus,
+    voorwerpen: VOORWERPEN_BUS,
     welkom: BUS_WELKOM,
     begin: { soort: "bus", id: "begin", inBus: voorbeeld[0], instap: voorbeeld[1], alsGetal },
     uitleg: busUitleg(voorbeeld[0], voorbeeld[1], alsGetal),
@@ -1050,8 +1061,8 @@ function kaalLes(level: number, titel: string, voorbeeld: [number, number], somm
     titel,
     oefening: "Kale sommen",
     level,
-    stijl: "holo",
     kaart: KaartKaal,
+    voorwerpen: [],
     welkom: KAAL_WELKOM,
     begin: { soort: "kaal", id: "begin", level },
     uitleg: kaalUitleg(voorbeeld[0], voorbeeld[1], level),

@@ -1,0 +1,158 @@
+/**
+ * Voorwerpen voor de lessen "Tijd" (Squla groep 3: De kalender, Tijden).
+ * Wat al in een ander lijstbestand staat (kampvuur, bed, oven, taart, boek,
+ * bakkerij …) wordt daar vandaan gebruikt. De boeken zijn er in drie kleuren,
+ * omdat de vraag gaat over welk boek als eerste werd voorgelezen ("het rode
+ * boek"); het blauwe boek is "boek".
+ */
+import type { Voorwerp } from "./soort";
+
+export const TIJD: Voorwerp[] = [
+  {
+    naam: "feesthoed",
+    titel: "Feesthoedje",
+    groep: "feest",
+    onderwerp: "a coral party hat, a cone with yellow stripes and a yellow pompom on top",
+    schets: `<path class="r" d="M100 26 L156 172 Q100 190 44 172 Z" fill="#f2715e"/><path class="r" d="M74 104 L130 92 M62 142 L144 130" fill="none" stroke="#ffd84a"/><circle class="r" cx="100" cy="26" r="14" fill="#ffd84a"/>`,
+  },
+  {
+    naam: "thermometer",
+    titel: "Thermometer",
+    groep: "huis",
+    onderwerp: "a simple fever thermometer, white with a red bulb at the bottom, standing upright",
+    schets: `<rect class="r" x="82" y="20" width="36" height="128" rx="18" fill="#ffffff"/><rect x="93" y="70" width="14" height="80" fill="#e8453c"/><circle class="r" cx="100" cy="160" r="26" fill="#e8453c"/>`,
+  },
+  {
+    naam: "tand",
+    titel: "Tand",
+    groep: "huis",
+    onderwerp: "one clean white tooth with two roots, front view",
+    schets: `<path class="r" d="M50 50 C50 20 86 22 100 34 C114 22 150 20 150 50 C150 86 140 102 136 136 C132 172 116 178 110 152 C106 136 94 136 90 152 C84 178 68 172 64 136 C60 102 50 86 50 50 Z" fill="#ffffff"/>`,
+  },
+  {
+    naam: "boterham",
+    titel: "Boterham",
+    groep: "eten",
+    onderwerp: "one slice of bread with a little red jam on it, seen from the front",
+    schets: `<path class="r" d="M40 174 V74 C20 66 20 24 58 24 H142 C180 24 180 66 160 74 V174 Z" fill="#e9b979"/><path class="r" d="M56 156 V80 C40 74 44 44 66 44 H134 C156 44 160 74 144 80 V156 Z" fill="#fbe2b8"/><path class="r" d="M62 98 C84 84 116 110 138 94" fill="none" stroke="#e8453c"/>`,
+  },
+  {
+    naam: "suikerstrooier",
+    titel: "Suikerstrooier",
+    groep: "eten",
+    onderwerp: "a white sugar shaker with a grey metal lid with small holes",
+    schets: `<rect class="r" x="62" y="66" width="76" height="114" rx="14" fill="#ffffff"/><path class="r" d="M60 68 C60 32 140 32 140 68 Z" fill="#cfd4de"/>`,
+  },
+  {
+    naam: "kers",
+    titel: "Kers",
+    groep: "fruit",
+    onderwerp: "one red cherry with a long brown stem and one green leaf",
+    schets: `<path class="r" d="M90 100 Q96 52 134 24" fill="none" stroke="#8a5a33"/><path class="r" d="M134 24 Q160 18 166 38 Q146 48 134 24 Z" fill="#55c26f"/><circle class="r" cx="84" cy="130" r="44" fill="#e8453c"/>`,
+  },
+  {
+    naam: "oven-brood",
+    titel: "Oven met brood erin",
+    groep: "huis",
+    onderwerp: "a grey kitchen oven seen from the front, with a loaf of bread visible behind the glass door",
+    schets: `<rect class="r" x="20" y="20" width="160" height="160" rx="14" fill="#cfd4de"/><rect class="r" x="36" y="56" width="128" height="104" rx="10" fill="#3a3f5c"/><path class="r" d="M58 144 C54 100 146 100 142 144 Z" fill="#e9b979"/>`,
+  },
+  {
+    naam: "oven-taart",
+    titel: "Oven met taart erin",
+    groep: "huis",
+    onderwerp: "a grey kitchen oven seen from the front, with a round cake tin with cake batter visible behind the glass door",
+    schets: `<rect class="r" x="20" y="20" width="160" height="160" rx="14" fill="#cfd4de"/><rect class="r" x="36" y="56" width="128" height="104" rx="10" fill="#3a3f5c"/><rect class="r" x="60" y="114" width="80" height="32" fill="#f6c9a0"/>`,
+  },
+  {
+    naam: "glas-water",
+    titel: "Glas water",
+    groep: "eten",
+    onderwerp: "a clear drinking glass filled with water",
+    schets: `<path class="r" d="M56 24 H144 L130 180 H70 Z" fill="#eaf6ff"/><path d="M63 76 H137 L128 176 H72 Z" fill="#9fd8ff"/>`,
+  },
+  {
+    naam: "fiets",
+    titel: "Fiets",
+    groep: "vervoer",
+    onderwerp: "a coral children's bicycle, side view, without rider",
+    schets: `<circle class="r" cx="52" cy="136" r="34" fill="none"/><circle class="r" cx="150" cy="136" r="34" fill="none"/><path class="r" d="M52 136 L86 86 L136 86 L150 136 M86 86 L100 136 L136 86 M100 136 L52 136 M76 70 H100 M136 86 L130 62 H150" fill="none" stroke="#f2715e"/>`,
+  },
+  {
+    naam: "ei",
+    titel: "Ei",
+    groep: "eten",
+    onderwerp: "one white egg standing upright",
+    schets: `<path class="r" d="M100 22 C150 22 174 116 154 152 C138 182 62 182 46 152 C26 116 50 22 100 22 Z" fill="#fff7ea"/>`,
+  },
+  {
+    naam: "tent",
+    titel: "Tent",
+    groep: "natuur",
+    onderwerp: "a small green camping tent, front view, with the door open",
+    schets: `<path class="r" d="M16 172 L100 30 L184 172 Z" fill="#55c26f"/><path class="r" d="M100 30 L78 172 H122 Z" fill="#c9efd2"/>`,
+  },
+  {
+    naam: "beslagkom",
+    titel: "Kom met beslag",
+    groep: "huis",
+    onderwerp: "a teal mixing bowl filled with smooth yellow cake batter and a whisk in it",
+    schets: `<path class="r" d="M24 96 H176 C172 152 142 178 100 178 C58 178 28 152 24 96 Z" fill="#2a8c8c"/><path class="r" d="M40 96 C40 82 160 82 160 96 Z" fill="#ffe08a"/><path class="r" d="M124 20 L104 92" fill="none" stroke="#cfd4de"/>`,
+  },
+  {
+    naam: "taart-kaarsje",
+    titel: "Taart met een kaarsje",
+    groep: "feest",
+    onderwerp: "a round cake with white icing and one pink candle with a small flame on top, seen from the side",
+    schets: `<path class="r" d="M28 106 H172 V172 H28 Z" fill="#f6c9a0"/><path class="r" d="M28 106 C28 82 172 82 172 106 V122 H28 Z" fill="#ffffff"/><rect class="r" x="92" y="44" width="16" height="44" fill="#f594c6"/><path class="r" d="M100 14 C112 28 112 38 100 42 C88 38 88 28 100 14 Z" fill="#ff8a3d"/>`,
+  },
+  {
+    naam: "schaar",
+    titel: "Schaar",
+    groep: "huis",
+    onderwerp: "a pair of children's scissors with red handles, slightly open",
+    schets: `<path class="r" d="M70 30 L130 140 M130 30 L70 140" fill="none" stroke="#cfd4de"/><circle class="r" cx="64" cy="160" r="22" fill="none" stroke="#e8453c"/><circle class="r" cx="136" cy="160" r="22" fill="none" stroke="#e8453c"/>`,
+  },
+  {
+    naam: "zwembad",
+    titel: "Zwembad",
+    groep: "natuur",
+    onderwerp: "a small blue swimming pool with water and a silver ladder, seen from the side",
+    schets: `<rect class="r" x="16" y="96" width="168" height="84" rx="8" fill="#9fd8ff"/><path class="r" d="M16 120 Q40 106 64 120 T112 120 T160 120 T184 116" fill="none" stroke="#ffffff"/><path class="r" d="M150 60 V130 M170 60 V130 M150 80 H170 M150 104 H170" fill="none" stroke="#cfd4de"/>`,
+  },
+  {
+    naam: "boek-rood",
+    titel: "Rood boek",
+    groep: "huis",
+    onderwerp: "one closed red book lying flat, seen from the side",
+    schets: `<rect class="r" x="24" y="70" width="152" height="64" rx="8" fill="#e8453c"/><path class="r" d="M40 118 H176" fill="none"/>`,
+  },
+  {
+    naam: "boek-groen",
+    titel: "Groen boek",
+    groep: "huis",
+    onderwerp: "one closed green book lying flat, seen from the side",
+    schets: `<rect class="r" x="24" y="70" width="152" height="64" rx="8" fill="#55c26f"/><path class="r" d="M40 118 H176" fill="none"/>`,
+  },
+  {
+    naam: "stoelenkring",
+    titel: "Stoeltjes in een kring",
+    groep: "huis",
+    onderwerp: "six small empty school chairs standing in a circle, seen from above at an angle",
+    schets: `<ellipse class="r" cx="100" cy="112" rx="80" ry="44" fill="#c9efd2"/><g fill="#f2715e"><rect class="r" x="88" y="52" width="24" height="22" rx="4"/><rect class="r" x="24" y="98" width="24" height="22" rx="4"/><rect class="r" x="152" y="98" width="24" height="22" rx="4"/><rect class="r" x="52" y="140" width="24" height="22" rx="4"/><rect class="r" x="124" y="140" width="24" height="22" rx="4"/></g>`,
+  },
+  {
+    naam: "hoepel",
+    titel: "Hoepel met bal",
+    groep: "speelgoed",
+    onderwerp: "a coral gym hoop lying on the floor with a yellow ball inside it",
+    schets: `<ellipse class="r" cx="100" cy="128" rx="80" ry="40" fill="none" stroke="#f2715e"/><circle class="r" cx="100" cy="110" r="34" fill="#ffd84a"/>`,
+  },
+  {
+    naam: "schommel",
+    titel: "Schommel",
+    groep: "natuur",
+    onderwerp: "an empty wooden playground swing with a red seat, front view",
+    schets: `<path class="r" d="M24 186 L56 24 H144 L176 186" fill="none" stroke="#8a5a33"/><path class="r" d="M84 26 V130 M116 26 V130" fill="none"/><rect class="r" x="74" y="126" width="52" height="14" rx="4" fill="#f2715e"/>`,
+  },
+];

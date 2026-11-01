@@ -50,3 +50,11 @@ nationale zijde. Voor 10, 20 en 50 cent, 1 en 2 euro de huidige versie (sinds
 Briefjes van 200 en 500 euro: die waren niet gevraagd en komen in de
 oefeningen (bedragen tot 100 euro) niet voor. Daar blijft de eigen tekening
 uit `src/components/oefenen/Geld.tsx` staan.
+
+## Munten zonder achtergrond (31 oktober 2026)
+
+Op verzoek van de eigenaar (geen kader of witte achtergrond om geld) staan in
+`los/` dezelfde munten als PNG zonder het witte vierkant eromheen: het
+plaatje is bijgesneden tot de munt en buiten de cirkel doorzichtig gemaakt.
+Verder is er niets aan veranderd (niet vergroot, geen kleur of vorm anders).
+De originele bestanden hierboven blijven staan.

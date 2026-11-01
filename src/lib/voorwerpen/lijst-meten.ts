@@ -1,0 +1,292 @@
+/**
+ * Voorwerpen van de lessen Meten en maten naar Squla (31 oktober 2026):
+ * pizza's vergelijken, hoeveelheden (picknick) en oppervlakte.
+ *
+ * Dingen waarvan de vraag over de hoeveelheid erin gaat (hoe vol een beker,
+ * potje, flesje of maatbeker is), de weegschaal en de wip, en het
+ * rekenmateriaal (tafels met blaadjes, muurtjes, ruitjes, matten) blijven
+ * in code getekend: daar zit de som in.
+ */
+import type { Voorwerp } from "./soort";
+
+const R = `class="r"`;
+
+export const METEN: Voorwerp[] = [
+  /* --- eten --- */
+  {
+    naam: "pizza-kaas",
+    titel: "Pizza met kaas",
+    groep: "eten",
+    onderwerp: "a round cheese pizza seen from above, tomato sauce and melted cheese, cut into six slices",
+    schets: `<circle ${R} cx="100" cy="100" r="90" fill="#f0b15c"/><circle cx="100" cy="100" r="74" fill="#e2563f"/><circle cx="70" cy="76" r="14" fill="#ffe08a"/><circle cx="126" cy="70" r="14" fill="#ffe08a"/><circle cx="134" cy="120" r="14" fill="#ffe08a"/><circle cx="80" cy="130" r="14" fill="#ffe08a"/><circle cx="102" cy="100" r="12" fill="#ffe08a"/>`,
+  },
+  {
+    naam: "pizza-salami",
+    titel: "Pizza met salami",
+    groep: "eten",
+    onderwerp: "a round pizza with salami slices seen from above, cut into six slices",
+    schets: `<circle ${R} cx="100" cy="100" r="90" fill="#f0b15c"/><circle cx="100" cy="100" r="74" fill="#e2563f"/><circle cx="70" cy="80" r="14" fill="#ffe08a"/><circle cx="130" cy="120" r="14" fill="#ffe08a"/><circle ${R} cx="66" cy="120" r="14" fill="#b8332b"/><circle ${R} cx="122" cy="74" r="14" fill="#b8332b"/><circle ${R} cx="100" cy="104" r="14" fill="#b8332b"/><circle ${R} cx="98" cy="150" r="12" fill="#b8332b"/>`,
+  },
+  {
+    naam: "pizza-olijven",
+    titel: "Pizza met olijven",
+    groep: "eten",
+    onderwerp: "a round pizza with black olive rings seen from above, cut into six slices",
+    schets: `<circle ${R} cx="100" cy="100" r="90" fill="#f0b15c"/><circle cx="100" cy="100" r="74" fill="#e2563f"/><circle cx="72" cy="80" r="14" fill="#ffe08a"/><circle cx="130" cy="120" r="14" fill="#ffe08a"/><circle cx="64" cy="120" r="8" fill="none" stroke="#1d2340" stroke-width="6"/><circle cx="122" cy="74" r="8" fill="none" stroke="#1d2340" stroke-width="6"/><circle cx="100" cy="104" r="8" fill="none" stroke="#1d2340" stroke-width="6"/>`,
+  },
+  {
+    naam: "pizzapunt",
+    titel: "Punt pizza",
+    groep: "eten",
+    onderwerp: "one triangular slice of pizza with cheese and two salami slices, point down",
+    schets: `<path ${R} d="M100 186 L34 40 Q100 8 166 40 Z" fill="#ffe08a"/><path ${R} d="M34 40 Q100 8 166 40 L156 60 Q100 32 44 60 Z" fill="#f0b15c"/><circle ${R} cx="90" cy="84" r="14" fill="#b8332b"/><circle ${R} cx="112" cy="122" r="12" fill="#b8332b"/>`,
+  },
+  {
+    naam: "ijsje-twee-bollen",
+    titel: "IJsje met twee bolletjes",
+    groep: "eten",
+    onderwerp: "an ice cream cone with two scoops, pink and yellow, and a cherry on top",
+    schets: `<path ${R} d="M64 110 L100 192 L136 110 Z" fill="#e8b26a"/><circle ${R} cx="100" cy="100" r="36" fill="#ffe08a"/><circle ${R} cx="100" cy="58" r="34" fill="#f594c6"/><circle ${R} cx="100" cy="20" r="10" fill="#e8453c"/>`,
+  },
+  {
+    naam: "hoorntje",
+    titel: "Leeg hoorntje",
+    groep: "eten",
+    onderwerp: "an empty waffle ice cream cone, point down",
+    schets: `<path ${R} d="M50 30 L100 190 L150 30 Z" fill="#e8b26a"/><path d="M70 40 L110 150 M90 40 L120 120 M130 40 L90 150 M110 40 L80 120" stroke="#1d2340" stroke-width="3" opacity=".5"/>`,
+  },
+  {
+    naam: "bolletje-ijs",
+    titel: "Bolletje ijs",
+    groep: "eten",
+    onderwerp: "one round scoop of pink strawberry ice cream",
+    schets: `<circle ${R} cx="100" cy="100" r="80" fill="#f594c6"/><path d="M50 80 Q60 50 90 44" fill="none" stroke="#fff7ea" stroke-width="8" stroke-linecap="round"/>`,
+  },
+  {
+    naam: "bolletje-deeg",
+    titel: "Bolletje deeg",
+    groep: "eten",
+    onderwerp: "a round ball of pale pizza dough",
+    schets: `<path ${R} d="M14 160 Q8 40 100 38 Q192 40 186 160 Z" fill="#f6e3c4"/>`,
+  },
+  {
+    naam: "kaas",
+    titel: "Blok kaas",
+    groep: "eten",
+    onderwerp: "a yellow block of cheese with a few holes",
+    schets: `<path ${R} d="M14 80 L44 50 L190 50 L176 80 Z" fill="#ffe08a"/><path ${R} d="M176 80 L190 50 L190 130 L176 160 Z" fill="#e8a92a"/><rect ${R} x="14" y="80" width="162" height="80" fill="#ffc845"/><circle cx="50" cy="114" r="10" fill="#e8a92a"/><circle cx="120" cy="130" r="8" fill="#e8a92a"/><circle cx="140" cy="100" r="11" fill="#e8a92a"/>`,
+  },
+  {
+    naam: "tomaat",
+    titel: "Tomaat",
+    groep: "fruit",
+    onderwerp: "a round red tomato with a small green top",
+    schets: `<circle ${R} cx="100" cy="110" r="76" fill="#e8453c"/><path ${R} d="M70 42 L100 56 L130 42 M100 56 V24" fill="none"/>`,
+  },
+  {
+    naam: "olijf",
+    titel: "Olijf",
+    groep: "fruit",
+    onderwerp: "one green olive",
+    schets: `<ellipse ${R} cx="100" cy="100" rx="78" ry="60" fill="#6b8e3a"/><ellipse cx="120" cy="84" rx="18" ry="14" fill="#3d5a1f"/>`,
+  },
+  {
+    naam: "zak-meel",
+    titel: "Zak meel",
+    groep: "winkel",
+    onderwerp: "a white paper sack of flour, tied at the top, with a wheat ear drawn on it",
+    schets: `<path ${R} d="M50 40 Q30 120 36 180 Q100 198 164 180 Q170 120 150 40 Z" fill="#fff7ea"/><path ${R} d="M62 40 Q100 16 138 40" fill="none"/><path d="M100 160 V90" stroke="#127c86" stroke-width="6"/><ellipse cx="90" cy="104" rx="9" ry="5" fill="#ffc845"/><ellipse cx="110" cy="104" rx="9" ry="5" fill="#ffc845"/><ellipse cx="90" cy="124" rx="9" ry="5" fill="#ffc845"/><ellipse cx="110" cy="124" rx="9" ry="5" fill="#ffc845"/>`,
+  },
+  {
+    naam: "boterham-weinig-kaas",
+    titel: "Boterham met weinig kaas",
+    groep: "eten",
+    onderwerp: "a slice of bread with one small piece of cheese on it",
+    schets: `<path ${R} d="M24 186 V70 Q24 20 70 26 Q100 2 130 26 Q176 20 176 70 V186 Z" fill="#e9b877"/><path d="M40 174 V74 Q40 40 72 42 Q100 22 128 42 Q160 40 160 74 V174 Z" fill="#f8e2b8"/><rect ${R} x="80" y="96" width="40" height="34" fill="#ffc845"/>`,
+  },
+  {
+    naam: "boterham-veel-kaas",
+    titel: "Boterham met veel kaas",
+    groep: "eten",
+    onderwerp: "a slice of bread covered with four slices of cheese",
+    schets: `<path ${R} d="M24 186 V70 Q24 20 70 26 Q100 2 130 26 Q176 20 176 70 V186 Z" fill="#e9b877"/><rect ${R} x="44" y="60" width="54" height="50" fill="#ffc845"/><rect ${R} x="102" y="60" width="54" height="50" fill="#ffe08a"/><rect ${R} x="44" y="116" width="54" height="50" fill="#ffe08a"/><rect ${R} x="102" y="116" width="54" height="50" fill="#ffc845"/>`,
+  },
+  {
+    naam: "boterham-heel-veel-kaas",
+    titel: "Boterham met heel veel kaas",
+    groep: "eten",
+    onderwerp: "a slice of bread with a thick pile of many cheese slices stacked on it",
+    schets: `<path ${R} d="M24 186 V70 Q24 20 70 26 Q100 2 130 26 Q176 20 176 70 V186 Z" fill="#e9b877"/><rect ${R} x="40" y="56" width="120" height="40" fill="#ffc845"/><rect ${R} x="34" y="90" width="132" height="40" fill="#ffe08a"/><rect ${R} x="40" y="124" width="120" height="44" fill="#ffc845"/><rect ${R} x="60" y="30" width="80" height="34" fill="#ffe08a"/>`,
+  },
+  /* --- keuken, winkel en dozen --- */
+  {
+    naam: "pizzadoos-open",
+    titel: "Open pizzadoos (leeg)",
+    groep: "winkel",
+    onderwerp: "an empty open square cardboard pizza box, lid standing up behind, seen from the front at an angle",
+    schets: `<rect ${R} x="30" y="10" width="140" height="70" rx="8" fill="#e9c48f"/><rect ${R} x="10" y="70" width="180" height="120" rx="10" fill="#d9a86c"/><rect x="24" y="84" width="152" height="94" rx="6" fill="#f3dbb0"/>`,
+  },
+  {
+    naam: "pizzadoos",
+    titel: "Dichte pizzadoos",
+    groep: "winkel",
+    onderwerp: "a closed flat square cardboard pizza box, seen from the front",
+    schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#d9a86c"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/><circle cx="100" cy="108" r="9" fill="#e2563f"/>`,
+  },
+  {
+    naam: "doos-rood",
+    titel: "Rode doos",
+    groep: "winkel",
+    onderwerp: "a closed flat red cardboard box, seen from the front",
+    schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#e8453c"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/>`,
+  },
+  {
+    naam: "doos-blauw",
+    titel: "Blauwe doos",
+    groep: "winkel",
+    onderwerp: "a closed flat blue cardboard box, seen from the front",
+    schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#4b8af5"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/>`,
+  },
+  {
+    naam: "pizzaoven",
+    titel: "Pizzaoven",
+    groep: "huis",
+    onderwerp: "a round brick pizza oven with a small fire inside the opening",
+    schets: `<path ${R} d="M16 190 V100 Q16 16 100 16 Q184 16 184 100 V190 Z" fill="#c8735a"/><path ${R} d="M56 170 V120 Q56 82 100 82 Q144 82 144 120 V170 Z" fill="#3b2a2a"/><path d="M78 170 Q76 140 92 128 Q94 146 104 144 Q102 126 116 114 Q120 140 128 150 Q130 162 126 170 Z" fill="#ff9a3c"/>`,
+  },
+  {
+    naam: "schaal",
+    titel: "Lege schaal",
+    groep: "huis",
+    onderwerp: "an empty light blue bowl, seen from the side",
+    schets: `<path ${R} d="M14 80 Q20 170 100 172 Q180 170 186 80 Z" fill="#bfe6e3"/><path ${R} d="M14 80 H186" fill="none"/>`,
+  },
+  {
+    naam: "mand-half",
+    titel: "Picknickmand met een beetje fruit",
+    groep: "winkel",
+    onderwerp: "an open wicker picnic basket with a handle and two apples inside",
+    schets: `<path ${R} d="M44 80 Q100 0 156 80" fill="none"/><ellipse ${R} cx="100" cy="84" rx="84" ry="18" fill="#7a4e2b"/><circle ${R} cx="80" cy="76" r="16" fill="#e8453c"/><circle ${R} cx="118" cy="78" r="15" fill="#55c26f"/><path ${R} d="M16 86 L36 180 H164 L184 86 Z" fill="#d39b62"/>`,
+  },
+  {
+    naam: "mand-vol",
+    titel: "Volle picknickmand",
+    groep: "winkel",
+    onderwerp: "an open wicker picnic basket with a handle, completely full of fruit, bread and a bottle",
+    schets: `<path ${R} d="M44 80 Q100 0 156 80" fill="none"/><rect ${R} x="48" y="30" width="36" height="52" rx="8" fill="#fff7ea"/><rect ${R} x="120" y="24" width="18" height="50" rx="6" fill="#bfe6e3"/><circle ${R} cx="100" cy="60" r="20" fill="#e8453c"/><circle ${R} cx="140" cy="70" r="18" fill="#55c26f"/><circle ${R} cx="70" cy="74" r="16" fill="#ffc845"/><path ${R} d="M16 86 L36 180 H164 L184 86 Z" fill="#d39b62"/>`,
+  },
+  {
+    naam: "spies-leeg",
+    titel: "Leeg spiesje",
+    groep: "eten",
+    onderwerp: "a thin plain wooden stick for fruit, standing upright, nothing on it",
+    schets: `<path ${R} d="M100 10 V190" fill="none"/><path d="M100 10 V190" stroke="#e9c48f" stroke-width="4"/>`,
+  },
+  {
+    naam: "spies-twee",
+    titel: "Spiesje met twee stukjes fruit",
+    groep: "eten",
+    onderwerp: "a wooden skewer standing upright with only two pieces of fruit at the bottom: a strawberry and a grape",
+    schets: `<path ${R} d="M100 10 V190" fill="none"/><path ${R} d="M100 184 Q72 162 82 144 Q100 134 118 144 Q128 162 100 184 Z" fill="#e8453c"/><circle ${R} cx="100" cy="118" r="18" fill="#a986ec"/>`,
+  },
+  {
+    naam: "spies-vol",
+    titel: "Spiesje vol fruit",
+    groep: "eten",
+    onderwerp: "a wooden skewer standing upright, full of fruit pieces from bottom to top: strawberry, grape, melon, kiwi",
+    schets: `<path ${R} d="M100 6 V194" fill="none"/><path ${R} d="M100 188 Q72 166 82 148 Q100 138 118 148 Q128 166 100 188 Z" fill="#e8453c"/><circle ${R} cx="100" cy="122" r="18" fill="#a986ec"/><rect ${R} x="80" y="74" width="40" height="30" rx="8" fill="#ffc845"/><circle ${R} cx="100" cy="50" r="18" fill="#55c26f"/><path ${R} d="M100 30 Q78 18 86 4 Q100 0 114 4 Q122 18 100 30 Z" fill="#e8453c"/>`,
+  },
+  /* --- licht en zwaar --- */
+  {
+    naam: "steen",
+    titel: "Steen",
+    groep: "natuur",
+    onderwerp: "a grey rounded rock",
+    schets: `<path ${R} d="M16 150 Q6 90 50 60 Q100 26 156 50 Q196 76 190 128 Q184 162 110 162 Q36 166 16 150 Z" fill="#b9c0cc"/>`,
+  },
+  {
+    naam: "veer",
+    titel: "Veer",
+    groep: "natuur",
+    onderwerp: "a single light blue feather",
+    schets: `<path ${R} d="M78 190 Q60 100 100 10 Q150 80 116 156 Q102 180 78 190 Z" fill="#bfe6e3"/><path ${R} d="M78 190 Q90 100 100 10" fill="none"/>`,
+  },
+  {
+    naam: "watermeloen",
+    titel: "Watermeloen",
+    groep: "fruit",
+    onderwerp: "a whole round green watermelon with dark green stripes",
+    schets: `<ellipse ${R} cx="100" cy="100" rx="92" ry="66" fill="#55c26f"/><path d="M60 40 Q50 100 60 160 M100 34 V166 M140 40 Q150 100 140 160" stroke="#2f8a4a" stroke-width="7" fill="none"/>`,
+  },
+  {
+    naam: "boek",
+    titel: "Boek",
+    groep: "huis",
+    onderwerp: "one closed blue book lying flat, seen from the side",
+    schets: `<rect ${R} x="16" y="76" width="168" height="48" rx="6" fill="#4b8af5"/><path d="M160 84 V116" stroke="#fff7ea" stroke-width="5"/>`,
+  },
+  {
+    naam: "rugtas",
+    titel: "Rugtas",
+    groep: "speelgoed",
+    onderwerp: "a purple school backpack seen from the front",
+    schets: `<path ${R} d="M70 40 Q70 10 100 10 Q130 10 130 40" fill="none"/><rect ${R} x="40" y="34" width="120" height="156" rx="30" fill="#a986ec"/><rect ${R} x="60" y="110" width="80" height="60" rx="14" fill="#8c69d6"/>`,
+  },
+  {
+    naam: "vlieger",
+    titel: "Vlieger",
+    groep: "speelgoed",
+    onderwerp: "a diamond-shaped red kite with a short tail",
+    schets: `<path ${R} d="M100 10 L160 90 L100 170 L40 90 Z" fill="#f2715e"/><path ${R} d="M100 10 V170 M40 90 H160" fill="none"/><path ${R} d="M100 170 Q86 182 104 196" fill="none"/>`,
+  },
+  {
+    naam: "bal",
+    titel: "Rode bal",
+    groep: "speelgoed",
+    onderwerp: "a round red ball with a white stripe",
+    schets: `<circle ${R} cx="100" cy="100" r="80" fill="#e8453c"/><path d="M24 90 Q100 130 176 90" stroke="#fff7ea" stroke-width="12" fill="none"/>`,
+  },
+  {
+    naam: "speelblok",
+    titel: "Speelblok",
+    groep: "speelgoed",
+    onderwerp: "one blue wooden toy building block, a cube",
+    schets: `<rect ${R} x="30" y="30" width="140" height="140" rx="12" fill="#4b8af5"/><rect x="64" y="64" width="72" height="72" rx="8" fill="none" stroke="#fff7ea" stroke-width="6"/>`,
+  },
+  /* --- buiten en op schilderijen --- */
+  {
+    naam: "huis",
+    titel: "Huis",
+    groep: "natuur",
+    onderwerp: "a small house with a coral roof and a wooden door",
+    schets: `<rect ${R} x="40" y="92" width="120" height="96" fill="#fff7ea"/><path ${R} d="M24 100 L100 24 L176 100 Z" fill="#f2715e"/><rect ${R} x="84" y="132" width="32" height="56" fill="#d39b62"/>`,
+  },
+  {
+    naam: "boom",
+    titel: "Boom",
+    groep: "natuur",
+    onderwerp: "a round green tree with a brown trunk",
+    schets: `<rect ${R} x="86" y="110" width="28" height="80" fill="#d39b62"/><circle ${R} cx="100" cy="80" r="66" fill="#55c26f"/>`,
+  },
+  {
+    naam: "planeet-ring",
+    titel: "Planeet met ring",
+    groep: "ruimte",
+    onderwerp: "a light blue planet with a yellow ring around it",
+    schets: `<circle ${R} cx="100" cy="100" r="56" fill="#bfe6e3"/><ellipse cx="100" cy="104" rx="94" ry="24" fill="none" stroke="#ffc845" stroke-width="10"/>`,
+  },
+  {
+    naam: "picknickkleed",
+    titel: "Picknickkleed",
+    groep: "huis",
+    onderwerp: "a red and white checkered picnic blanket lying flat on the ground, seen at an angle",
+    schets: `<path ${R} d="M10 170 L50 70 H150 L190 170 Z" fill="#ffd6cc"/><path d="M50 70 L30 170 M83 70 L76 170 M117 70 L124 170 M150 70 L170 170 M30 120 H170" stroke="#f2715e" stroke-width="8"/>`,
+  },
+  {
+    naam: "bord",
+    titel: "Bord",
+    groep: "huis",
+    onderwerp: "an empty white plate seen from the side",
+    schets: `<ellipse ${R} cx="100" cy="110" rx="90" ry="22" fill="#fff7ea"/>`,
+  },
+];

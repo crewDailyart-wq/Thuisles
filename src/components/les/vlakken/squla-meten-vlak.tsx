@@ -31,9 +31,9 @@
 
 import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
-import { TX, VLAK_B, VLAK_H } from "../holo/basis";
+import { GOED, TX, VLAK_B, VLAK_H, WARM, holoBasis } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
-import { bliepoBasis, PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
+import { PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
 import { BALK_HALF, schaalVoorwerpen, tafelMiddens, tekenBalk, tekenSchaal, tekenTekening, tekenVoet, tekeningMaat, tekeningPunten, zetLettertype } from "./squla-meten-tekeningen";
 import { haalKeuzesAlvast, zegKeuze } from "@/lib/stem";
 import s from "./squla-meten.module.css";
@@ -186,9 +186,10 @@ interface MetenScene {
   speelHandje(): void;
 }
 
-type Ding = { box: Box; ring: Img; r: Rect; zeg: string; soort: "kaart" | "los" | "vast"; id: string };
+type Ding = { box: Box; plaat: Img; gloed: Img; sl: string; r: Rect; zeg: string; soort: "kaart" | "los" | "vast"; id: string };
 
-const RING = { geel: PALET.geel, groen: "#3fbf6a", rood: "#e8453c" } as const;
+/** Gloed alleen op het moment dat het iets betekent: aanwijzen (geel), goed (groen), fout (rood). */
+const RING = { geel: WARM, groen: GOED, rood: 0xff6b6b } as const;
 /** De weegschaal: hoe groot, en waar het draaipunt zit. */
 const BS = 1.45;
 const DRAAI = { x: VLAK_B / 2, y: 70 };
@@ -199,7 +200,7 @@ function letter() {
 }
 
 function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
-  const Basis = bliepoBasis(Phaser, rustig);
+  const Basis = holoBasis(Phaser, rustig);
   class Meten extends Basis implements MetenScene {
     melder: (g: Vlakgebeurtenis) => void = () => {};
     p: MetenProps | null = null;
@@ -216,6 +217,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     zakTween: import("phaser").Tweens.Tween | null = null;
     druk: { d: Ding; x0: number; y0: number; dx: number; dy: number; sleept: boolean; lang: boolean } | null = null;
     zweef: string | null = null;
+    /** De lege vakken: alleen te zien zolang er niets in staat (geen kader om een plaatje). */
+    vakBeelden: Img[] = [];
     stemKlok: ReturnType<typeof setTimeout> | undefined;
     terugKlok: ReturnType<typeof setTimeout> | undefined;
 
@@ -241,7 +244,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const { k, H } = maat;
       const sl = `mk|${d.tekening ?? ""}|${d.label ?? ""}|${Math.round(b)}x${Math.round(h)}|${k.toFixed(3)}|${Math.round(H)}`;
       this.canvasPlaatje(sl, b, h, (c) => {
-        tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, klein ? 14 : 18), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
+        /* Geen kader om een plaatje (besluit Sara, 31 oktober). Alleen een getalkaartje is een tegel. */
+        if (klein) tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, 14), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
         const woordH = WOORD_H(d);
         if (d.tekening) {
           const m = tekeningMaat(d.tekening);
@@ -256,7 +260,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         if (d.label) {
           c.textAlign = "center";
           c.textBaseline = "middle";
-          c.fillStyle = PALET.navy;
+          c.fillStyle = klein ? PALET.navy : PALET.warmwit;
           if (d.tekening) {
             const maat = d.label.length > 16 ? 21 : 26;
             c.font = `800 ${maat}px ${letter()}`;
@@ -290,15 +294,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       return sl;
     }
 
-    ringPlaatje(kleur: keyof typeof RING, b: number, h: number) {
-      const sl = `mr|${kleur}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, b + 20, h + 20, (c) =>
-        tekenVormen(c, [
-          { d: blok(5, 5, b + 10, h + 10, 22), rand: PALET.navy, dik: 10 },
-          { d: blok(5, 5, b + 10, h + 10, 22), rand: RING[kleur], dik: 6.5 },
-        ]),
-      );
-      return sl;
+    /** Dezelfde tekening met een gebakken gloed (één keer per kleur), alleen zichtbaar op het moment zelf. */
+    gloedPlaatje(sl: string, kleur: keyof typeof RING) {
+      const doel = `${sl}|g|${kleur}`;
+      this.bak(sl, doel, RING[kleur]);
+      return doel;
     }
 
     vakPlaatje(b: number, h: number) {
@@ -335,6 +335,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const o of this.alles) o.destroy();
       for (const o of this.telLaag) o.destroy();
       this.alles = [];
+      this.vakBeelden = [];
       this.telLaag = [];
       this.telSig = "";
       this.dingen.clear();
@@ -347,11 +348,13 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     nieuwDing(d: MDing, r: Rect, soort: Ding["soort"], sleutel: string, k: { k: number; H: number }, klein = false) {
       const box = this.add.container(r.x, r.y);
-      const ring = this.plaats(this.ringPlaatje("geel", r.b, r.h), 0, 0).setVisible(false);
-      box.add([ring, this.plaats(this.kaartPlaatje(d, r.b, r.h, k, klein), 0, 0)]);
+      const sl = this.kaartPlaatje(d, r.b, r.h, k, klein);
+      const gloed = this.plaats(this.gloedPlaatje(sl, "geel"), 0, 0).setVisible(false);
+      const plaat = this.plaats(sl, 0, 0);
+      box.add([gloed, plaat]);
       this.alles.push(box);
       /* Een lege `zeg`: niets voorlezen (een plaatje zonder woord; de naam zou het antwoord verklappen). */
-      const ding: Ding = { box, ring, r, zeg: d.zeg ?? d.label ?? "", soort, id: d.id };
+      const ding: Ding = { box, plaat, gloed, sl, r, zeg: d.zeg ?? d.label ?? "", soort, id: d.id };
       this.dingen.set(sleutel, ding);
       return ding;
     }
@@ -418,7 +421,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         xs.push(x);
       });
       /* De vloer waar alles op staat, en een stippellijn bij elke bovenkant. */
-      g.lineStyle(6, 0x1d2b5e, 1);
+      g.lineStyle(5, 0xbfe6ff, 0.8);
       g.lineBetween(VLAK_B / 2 - 440, lijn + 2, VLAK_B / 2 + 440, lijn + 2);
       const x0 = xs[0] - breed / 2 + 20;
       const x1 = xs[n - 1] + breed / 2 - 20;
@@ -450,7 +453,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       }
       if (p.orden) {
         const o = p.orden;
-        ind.vakken.forEach((r) => this.alles.push(this.plaats(this.vakPlaatje(r.b, r.h), r.x, r.y)));
+        this.vakBeelden = ind.vakken.map((r) => this.plaats(this.vakPlaatje(r.b, r.h), r.x, r.y));
+        this.alles.push(...this.vakBeelden);
         const r0 = ind.losse[0] ?? ind.vakken[0];
         const k = gedeeldeSchaal([...o.losse, ...(o.vastDingen ?? [])], r0.b, r0.h);
         for (const i of o.vast ?? []) {
@@ -491,8 +495,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const ind = indeling(p);
       const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.licht?.includes(id) ? "geel" : null);
       const zetRing = (d: Ding, k: keyof typeof RING | null) => {
-        if (!k) return void d.ring.setVisible(false);
-        d.ring.setTexture(this.ringPlaatje(k, d.r.b, d.r.h)).setVisible(true);
+        if (!k) return void d.gloed.setVisible(false);
+        d.gloed.setTexture(this.gloedPlaatje(d.sl, k)).setVisible(true);
       };
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
@@ -512,6 +516,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         if (d.soort === "vast") zetRing(d, null);
       }
       /* De weegschaal: zakken (eerst recht, dan langzaam naar de zware kant). */
+      if (p.orden) this.vakBeelden.forEach((v, i) => v.setVisible(p.orden!.vakken[i] === null));
       if (p.balans && this.balk) {
         const doel = p.balans.kant * 0.2;
         if (p.balans.zak !== this.zak) {

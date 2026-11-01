@@ -392,7 +392,15 @@ er ook niet aan.
 **Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
 gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
 grootte.** De bestanden staan in `public/geld/`, met de bron in
-`public/geld/BRON.md`. Niet bewerken en niet vergroten.
+`public/geld/BRON.md`. Niet vergroten. Nooit een kader of witte achtergrond
+om geld (besluit eigenaar, 31 oktober 2026): voor munten gebruik je de
+uitgeknipte versies in `public/geld/los/` (alleen de ronde munt, verder niets
+aan veranderd). De originelen blijven staan. Het woord "specimen" op de
+briefjes blijft staan: volgens besluit ECB/2013/10 (artikel 2, zoals
+vervangen door besluit (EU) 2020/2090) is een briefje op een website of in
+een app alleen rechtmatig met "SPECIMEN" schuin erover en hooguit 72 dpi
+(uitgezocht 31 oktober 2026). Weghalen mag alleen met een vrijstelling van
+De Nederlandsche Bank.
 
 ---
 

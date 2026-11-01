@@ -26,7 +26,8 @@
     "stemlessen": "node scripts/stemlessen.mjs",
     "reken": "node scripts/rekencontrole.mjs",
     "stemcontrole": "node scripts/stemcontrole.mjs",
-    "stem-naar-site": "node scripts/stem-naar-site.mjs"
+    "stem-naar-site": "node scripts/stem-naar-site.mjs",
+    "voorwerpen": "node scripts/voorwerpen.mjs"
   },
   "dependencies": {
     "@breezystack/lamejs": "^1.2.7",

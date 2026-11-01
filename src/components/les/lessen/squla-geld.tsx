@@ -5,12 +5,14 @@
  * volgorde en de getallenreeks zijn van Squla):
  *
  *   De geldmachine    level 1, 2   squla-geld-geldmachine-1/2   Bliepo's spaarpot, de speelgoedwinkel
- *   Zakgeld verdienen level 1, 2   squla-geld-zakgeld-1/2       Sam en Noor sparen voor een skateboard
+ *   Zakgeld verdienen level 1, 2   squla-geld-zakgeld-1/2       jij spaart voor een skateboard
  *   Geld              level 1, 2   squla-geld-geld-1/2          lijnen trekken en "kies er twee"
  *
- * Alle lessen in hetzelfde vlak (vlakken/squla-geld-vlak.tsx): Phaser, vlak en
- * vriendelijk zoals de huisjes; munten en briefjes zijn ALTIJD de officiële
- * afbeeldingen uit public/geld/ (ECB), nooit getekend of van Squla.
+ * Alle lessen in hetzelfde vlak (vlakken/squla-geld-vlak.tsx): Phaser, donker
+ * (`nacht`), alles los in de ruimte zonder kaders, gloed alleen op het moment
+ * dat het iets betekent (besluit Sara 31 okt). Geen mensen en geen dieren:
+ * alleen dingen. Munten en briefjes zijn ALTIJD de officiële afbeeldingen
+ * (ECB; munten uit public/geld/los/), nooit getekend of van Squla.
  *
  * Elke les volgt de opbouw van het Squla-level: dezelfde soorten vragen in
  * dezelfde volgorde (12 opgaven: de 10 van Squla en 2 van dezelfde soort erbij),
@@ -19,7 +21,7 @@
  * aan met vaste vragen). Zo heeft elke les 15 opgaven.
  *
  * Niet nagebouwd (keuze hoofdagent): de tijdsdruk en de levens van het
- * bubbelspel (hier: rustig alle goede bellen aantikken), de disco (hier: een
+ * bubbelspel (hier: rustig alle goede munten aantikken die door de ruimte zweven), de disco (hier: een
  * gewone keuze uit kaartjes), de bonusspelletjes en de schatkist. Zegt Squla bij
  * een fout "goed zo", dan doet Bliepo dat niet: de hulp is overal die van
  * squla-hulp.ts.
@@ -89,7 +91,7 @@ const LEEG: Omit<GeldProps, "nr"> = {
   groot: null,
   kaarten: [],
   kaartenActief: false,
-  bubbels: false,
+  zweven: false,
   uit: [],
   goed: [],
   fout: [],
@@ -156,8 +158,8 @@ async function telKaarten(l: Lesgids, kaarten: GKaart[], uit: string[]) {
    DE SOORTEN VRAGEN
    ===================================================================== */
 
-type Keuze = GeldSoort[] | { tekening: string; zeg: string };
-const kaartVan = (k: Keuze, i: number): GKaart => (Array.isArray(k) ? { id: `k${i}`, geld: k } : { id: `k${i}`, tekening: k.tekening, zeg: k.zeg });
+type Keuze = GeldSoort[] | { tekening: string; zeg: string; aantal?: number };
+const kaartVan = (k: Keuze, i: number): GKaart => (Array.isArray(k) ? { id: `k${i}`, geld: k } : { id: `k${i}`, tekening: k.tekening, aantal: k.aantal, zeg: k.zeg });
 const waardeVan = (k: Keuze) => (Array.isArray(k) ? som(k) : -1);
 
 type KiesOpties = {
@@ -194,7 +196,7 @@ function kiesGeld(o: KiesOpties): Opgave {
       if (o.noem) return o.noem(k);
       return k.geld ? `${Hoofd(e(som(k.geld)))} euro` : Hoofd(k.zeg ?? "Dat");
     };
-    const vraag = aantal === 2 ? [...o.vraag, "Tik op twee vakken."] : o.vraag;
+    const vraag = aantal === 2 ? [...o.vraag, "Tik op twee groepjes geld."] : o.vraag;
     const goedZin =
       o.goedZin ??
       (aantal === 2
@@ -240,13 +242,13 @@ function kiesGeld(o: KiesOpties): Opgave {
         zet(l, { fout: [], goed: [], licht: [], groot: (o.hulpGroot ?? o.groot) ?? null });
         if (o.samen) await o.samen(l, kaarten);
         else {
-          await l.zeg("We tellen het geld in elk vak.");
+          await l.zeg("We tellen elk groepje geld.");
           await telKaarten(l, kaarten, uit);
         }
         zet(l, { licht: [], geteld: null });
         naSamen = true;
       },
-      tip: o.tip ?? ["Tel het geld in elk vak.", `Waar ligt ${e(o.doel)} euro?`],
+      tip: o.tip ?? ["Tel elk groepje geld.", `Waar ligt ${e(o.doel)} euro?`],
       testAntwoord: goedIds[0],
     };
   };
@@ -311,7 +313,7 @@ function bellenVraag(o: { bellen: (GeldSoort | "knoop")[]; zoek: GeldSoort; vraa
       return b === "knoop" ? "Een knoop" : Hoofd(naam(b));
     };
     return {
-      toon: () => zet(l, { ...LEEG, nr, kaarten, bubbels: true, goed: [...gevonden] }),
+      toon: () => zet(l, { ...LEEG, nr, kaarten, zweven: true, goed: [...gevonden] }),
       vraag: o.vraag,
       antwoord: async () => {
         for (;;) {
@@ -355,7 +357,7 @@ function bellenVraag(o: { bellen: (GeldSoort | "knoop")[]; zoek: GeldSoort; vraa
   };
 }
 
-/** Lijnen trekken: links twee vakken met geld, rechts twee bedragen of twee vakken met geld. */
+/** Lijnen trekken: links twee groepjes geld, rechts twee bedragen of twee groepjes geld. */
 function verbindVraag(o: { links: [GeldSoort[], GeldSoort[]]; rechts: [GeldSoort[] | number, GeldSoort[] | number]; vraag: string[]; goedZin?: string[]; handje?: boolean }): Opgave {
   const waarde = (r: GeldSoort[] | number) => (typeof r === "number" ? r : som(r));
   const lw = o.links.map(som);
@@ -442,9 +444,9 @@ function verbindVraag(o: { links: [GeldSoort[], GeldSoort[]]; rechts: [GeldSoort
           await telGeld(l, "R1", rechts[1].geld!, { spreek: false });
         }
         zet(l, { geteld: null });
-        await l.zeg("Welke vakken horen bij elkaar?");
+        await l.zeg("Wat hoort bij elkaar?");
       },
-      tip: rechts[0].geld ? ["Tel het geld in elk vak.", "Zoek twee vakken met evenveel geld."] : ["Tel het geld in elk vak.", "Welk bedrag hoort erbij?"],
+      tip: rechts[0].geld ? ["Tel elk groepje geld.", "Zoek twee groepjes met evenveel geld."] : ["Tel elk groepje geld.", "Welk bedrag hoort erbij?"],
       testAntwoord: "L0",
     };
   };
@@ -557,7 +559,7 @@ const geldmachine1Opgaven: Opgave[] = [
   bellenVraag({
     bellen: ["m1", "m2", "m1", "c50", "knoop", "m1"],
     zoek: "m1",
-    vraag: ["Oei, er vliegen bellen door de kamer.", `In drie bellen zit een munt van ${e(1)} euro.`, `Tik op alle munten van ${e(1)} euro.`],
+    vraag: ["Oei, mijn geld zweeft door de ruimte!", `Er zweven drie munten van ${e(1)} euro.`, `Tik op alle munten van ${e(1)} euro.`],
     goedZin: ["Je vond ze alle drie.", `Een munt van ${e(1)} euro is zilver in het midden, met een gouden rand.`],
     uitleg: ["Kijk naar het midden van elke munt.", `Een munt van ${e(1)} euro is zilver in het midden.`, `En er staat een ${e(1)} op.`],
     tip: [`Zoek de munten met een ${e(1)} erop.`],
@@ -590,7 +592,9 @@ const geldmachine1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · De geldmachine · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSpaarpot,
+  voorwerpen: ["spaarpot", "knoop"],
   async speel(l) {
     await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], ["Hoi!", "Dit is mijn spaarpot.", "Er zitten munten en briefjes in.", "Weet jij welk geld eruit komt?"], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["m1"] }, { id: "u1", geld: ["b5"] }] });
@@ -625,7 +629,7 @@ const geldmachine2Opgaven: Opgave[] = [
     goedZin: [`${e(2)} en ${e(2)} en ${e(1)} is samen ${e(5)} euro.`, "Je kunt ook betalen met een briefje van {5:wit} euro."],
   }),
   kiesGeld({
-    groot: [speelgoed("autootje", 4)],
+    groot: [speelgoed("speelgoedauto", 4)],
     keuzes: [["m2", "m2"], ["m2", "m1"], ["m1", "m1", "m1", "m1"], ["m2", "m1", "m2"]],
     doel: 4,
     aantal: 2,
@@ -640,10 +644,10 @@ const geldmachine2Opgaven: Opgave[] = [
     goedZin: [`${e(5)} euro en ${e(2)} euro is samen ${e(7)} euro.`, `Je kunt ook met zeven munten van ${e(1)} euro betalen.`],
   }),
   kiesGeld({
-    groot: [speelgoed("beer", 9)],
+    groot: [speelgoed("raketje", 9)],
     keuzes: [["b5", "b5"], ["b5", "m2", "m2"], ["m2", "m2", "m2", "m2"]],
     doel: 9,
-    vraag: ["Kijk, een knuffelbeer.", `De beer kost ${e(9)} euro.`, `Waar ligt ${e(9)} euro?`],
+    vraag: ["Kijk, een speelgoedraket.", `De raket kost ${e(9)} euro.`, `Waar ligt ${e(9)} euro?`],
     goedZin: [`${e(5)} en ${e(2)} en ${e(2)} is samen ${e(9)} euro.`],
   }),
   kiesGeld({
@@ -670,7 +674,7 @@ const geldmachine2Opgaven: Opgave[] = [
     groot: [speelgoed("vlieger", 7), speelgoed("bal", 5)],
     opties: ["Ja", "Nee"],
     goed: "Nee",
-    vraag: [`Ik heb ${e(9)} euro.`, "Kan ik de vlieger en de bal allebei kopen?", "Ja of nee?"],
+    vraag: [`Ik heb ${e(9)} euro.`, "Kan ik de vlieger en de bal allebei kopen?"],
     goedZin: [`${e(7)} en ${e(5)} is samen ${e(12)} euro.`, `Ik heb maar ${e(9)} euro. Dat is te weinig.`, "Wat kan ik dan wel kopen?"],
     samen: async (l) => {
       await l.zeg(`De vlieger kost ${e(7)} euro.`, `De bal kost ${e(5)} euro.`, `Tel verder vanaf ${e(7)}: ${e(8)}, ${e(9)}, ${e(10)}, ${e(11)}, ${e(12)}.`, `Is dat meer dan ${e(9)} euro, of minder?`);
@@ -678,23 +682,23 @@ const geldmachine2Opgaven: Opgave[] = [
     tip: [`Tel de twee prijzen bij elkaar.`, `Heb ik genoeg met ${e(9)} euro?`],
   }),
   kiesGeld({
-    groot: [speelgoed("autootje", 4), { soort: "plus" }, speelgoed("springtouw", 3)],
+    groot: [speelgoed("speelgoedauto", 4), { soort: "plus" }, speelgoed("springtouw", 3)],
     keuzes: [["b5", "m2"], ["b5", "m1"], ["m2", "m2", "m2", "m2"]],
     doel: 7,
     vraag: ["Ik koop het autootje en het springtouw.", "Hoeveel kost dat samen?", "Waar ligt dat geld?"],
     goedZin: [`${e(4)} en ${e(3)} is samen ${e(7)} euro.`, `Ik had ${e(9)} euro. Dan houd ik ${e(2)} euro over.`],
     samen: async (l, kaarten) => {
       await l.zeg(`Het autootje kost ${e(4)} euro.`, `Het springtouw kost ${e(3)} euro.`, `Tel verder vanaf ${e(4)}: ${e(5)}, ${e(6)}, en nog één.`);
-      await l.zeg("Nu tellen we het geld in elk vak.");
+      await l.zeg("Nu tellen we elk groepje geld.");
       await telKaarten(l, kaarten, []);
     },
     tip: [`Tel ${e(4)} en ${e(3)} bij elkaar.`, "Waar ligt dat geld?"],
   }),
   knopVraag({
-    groot: [speelgoed("bal", 5), speelgoed("autootje", 4)],
+    groot: [speelgoed("bal", 5), speelgoed("speelgoedauto", 4)],
     opties: ["Ja", "Nee"],
     goed: "Ja",
-    vraag: [`Stel, je hebt ${e(9)} euro.`, "Kun je de bal en het autootje allebei kopen?", "Ja of nee?"],
+    vraag: [`Stel, je hebt ${e(9)} euro.`, "Kun je de bal en het autootje allebei kopen?"],
     goedZin: [`${e(5)} en ${e(4)} is samen ${e(9)} euro.`, `Je hebt precies ${e(9)} euro. Dat past precies!`],
     samen: async (l) => {
       await l.zeg(`De bal kost ${e(5)} euro.`, `Het autootje kost ${e(4)} euro.`, `Tel verder vanaf ${e(5)}: ${e(6)}, ${e(7)}, ${e(8)}, ${e(9)}.`, `Heb je genoeg met ${e(9)} euro?`);
@@ -702,10 +706,10 @@ const geldmachine2Opgaven: Opgave[] = [
     tip: ["Tel de twee prijzen bij elkaar.", `Is dat meer dan ${e(9)} euro?`],
   }),
   kiesGeld({
-    groot: [speelgoed("puzzel", 10)],
+    groot: [speelgoed("voetbal", 10)],
     keuzes: [["b5", "b5"], ["b5", "m2", "m2"], ["b10", "b5"]],
     doel: 10,
-    vraag: ["Kijk, een puzzel.", `De puzzel kost ${e(10)} euro.`, `Waar ligt ${e(10)} euro?`],
+    vraag: ["Kijk, een voetbal.", `De voetbal kost ${e(10)} euro.`, `Waar ligt ${e(10)} euro?`],
     goedZin: [`Twee briefjes van {5:wit} euro is samen ${e(10)} euro.`, "Je kunt ook betalen met een briefje van {10:rood} euro."],
   }),
 ];
@@ -716,7 +720,9 @@ const geldmachine2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · De geldmachine · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSpaarpot,
+  voorwerpen: ["spaarpot", "springtouw", "bal", "speelgoedauto", "vlieger", "raketje", "bootje", "treintje", "voetbal"],
   async speel(l) {
     await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "b5", "b10"], ["Hoi!", "Ik heb geld uit mijn spaarpot gepakt.", "Ik ga naar de speelgoedwinkel.", "Help jij me met betalen?"], async () => {
       zet(l, { ...LEEG, groot: [speelgoed("bootje", 8)], kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
@@ -731,68 +737,77 @@ const geldmachine2: Lesdraaiboek = {
 };
 
 /* =====================================================================
-   ZAKGELD VERDIENEN (Squla) → SAM EN NOOR SPAREN VOOR EEN SKATEBOARD
+   ZAKGELD VERDIENEN (Squla) → JIJ SPAART VOOR EEN SKATEBOARD
+   Geen mensen in beeld of in de zinnen (besluit Sara 31 okt): het kind zelf
+   ("je") doet de klusjes. Squla's "ze krijgen allebei 2 euro" wordt "voor elke
+   klus krijg je 2 euro" (twee klusjes): dezelfde som, en het past bij de vraag.
+   Het geld van twee mensen wordt het geld in je spaarpot en in je portemonnee.
    ===================================================================== */
 
-const SAM: GDeel = { soort: "tekening", tekening: "sam" };
-const NOOR: GDeel = { soort: "tekening", tekening: "noor" };
 const tek = (tekening: string): GDeel => ({ soort: "tekening", tekening });
 const geldDeel = (id: string, geld: GeldSoort[], kruis?: number[]): GDeel => ({ soort: "geld", id, geld, kruis });
 const SKATE = (prijs: number): GDeel => ({ soort: "tekening", tekening: "skateboard", prijs });
 
-/** Allebei evenveel verdiend: hoeveel is dat bij elkaar? */
-function allebei(o: { klus: GDeel[]; elk: GeldSoort[]; keuzes: GeldSoort[][]; vraag: string[] }): Opgave {
+/** Twee klusjes, voor elke klus evenveel: hoeveel is dat bij elkaar? */
+function tweeKlusjes(o: { klus: [string, string]; elk: GeldSoort[]; keuzes: GeldSoort[][]; vraag: string[] }): Opgave {
   const n = som(o.elk);
   return kiesGeld({
-    groot: [SAM, ...o.klus, NOOR],
-    hulpGroot: [SAM, geldDeel("s", o.elk), { soort: "plus" }, geldDeel("n", o.elk), NOOR],
+    groot: [tek(o.klus[0]), tek(o.klus[1])],
+    hulpGroot: [tek(o.klus[0]), geldDeel("s", o.elk), { soort: "plus" }, tek(o.klus[1]), geldDeel("n", o.elk)],
     keuzes: o.keuzes,
     doel: n * 2,
-    vraag: [...o.vraag, `Ze krijgen allebei ${e(n)} euro.`, "Hoeveel is dat bij elkaar?", "Waar ligt dat geld?"],
+    vraag: [...o.vraag, `Voor elke klus krijg je ${e(n)} euro.`, "Hoeveel is dat bij elkaar?", "Waar ligt dat geld?"],
     goedZin: [`${Hoofd(e(n))} euro en ${e(n)} euro is samen ${e(n * 2)} euro.`],
     samen: async (l) => {
-      await l.zeg(`Sam krijgt ${e(n)} euro.`, `Noor krijgt ook ${e(n)} euro.`, "We tellen het samen.");
+      await l.zeg(`Voor de eerste klus krijg je ${e(n)} euro.`, `Voor de tweede klus ook ${e(n)} euro.`, "We tellen het samen.");
       await telGeld(l, "s", o.elk, { spreek: true, eind: false });
       await telGeld(l, "n", o.elk, { spreek: true, eind: false, vanaf: n });
       zet(l, { geteld: null });
-      await l.zeg("In welk vak ligt evenveel geld?");
+      await l.zeg("Waar ligt evenveel geld?");
     },
     tip: [`Tel ${e(n)} en ${e(n)} bij elkaar.`, "Waar ligt dat geld?"],
   });
 }
 
-const zakgeld1Opgaven: Opgave[] = [
-  allebei({ klus: [tek("hond")], elk: ["m2"], keuzes: [["m2"], ["m2", "m2"], ["b5"]], vraag: ["Sam en Noor laten de hond van de buren uit."] }),
-  allebei({ klus: [tek("gieter"), tek("plant")], elk: ["m2", "m1"], keuzes: [["b5", "m2"], ["m2", "m2", "m1"], ["b5", "m1"]], vraag: ["Daarna geven ze de planten water."] }),
-  getalVraag({
-    groot: [SAM, geldDeel("gs", ["m2", "m2"]), NOOR, geldDeel("gn", ["b5", "m1"])],
-    opties: [11, 9, 10],
-    goed: 10,
-    vraag: ["Dit is het geld van Sam.", "En dit is het geld van Noor.", "Hoeveel euro hebben ze bij elkaar?"],
-    goedZin: [`Sam heeft ${e(4)} euro. Noor heeft ${e(6)} euro.`, `Bij elkaar is dat ${e(10)} euro.`],
+/** Het geld in je spaarpot en in je portemonnee: hoeveel is dat bij elkaar? */
+function potEnPortemonnee(o: { pot: GeldSoort[]; porte: GeldSoort[]; opties: number[]; begin: string[]; slot: string[] }): Opgave {
+  const a = som(o.pot);
+  const b = som(o.porte);
+  return getalVraag({
+    groot: [tek("spaarpot"), geldDeel("gs", o.pot), tek("portemonnee"), geldDeel("gn", o.porte)],
+    opties: o.opties,
+    goed: a + b,
+    vraag: [...o.begin, "Dit geld zit in je spaarpot.", "En dit geld zit in je portemonnee.", "Hoeveel euro heb je bij elkaar?"],
+    goedZin: [`In je spaarpot zit ${e(a)} euro. In je portemonnee ${e(b)} euro.`, `Bij elkaar is dat ${e(a + b)} euro.`, ...o.slot],
     samen: async (l) => {
-      await l.zeg("Tel eerst het geld van Sam.");
-      await telGeld(l, "gs", ["m2", "m2"], { spreek: true, eind: false });
-      await l.zeg(`Sam heeft ${e(4)} euro.`, "Tel nu verder met het geld van Noor.", "Begin bij het briefje.");
+      await l.zeg("Tel eerst het geld uit je spaarpot.");
+      await telGeld(l, "gs", o.pot, { spreek: true, eind: false });
+      await l.zeg(`Dat is ${e(a)} euro.`, "Tel nu verder met het geld uit je portemonnee.", "Begin bij het briefje.");
       zet(l, { geteld: null });
     },
-    tip: [`Begin bij ${e(4)}.`, "Tel het geld van Noor erbij."],
-  }),
+    tip: [`Begin bij ${e(a)}.`, "Tel het geld uit je portemonnee erbij."],
+  });
+}
+
+const zakgeld1Opgaven: Opgave[] = [
+  tweeKlusjes({ klus: ["bezem", "gieter"], elk: ["m2"], keuzes: [["m2"], ["m2", "m2"], ["b5"]], vraag: ["Je veegt de stoep en je geeft de planten water."] }),
+  tweeKlusjes({ klus: ["emmer", "bed"], elk: ["m2", "m1"], keuzes: [["b5", "m2"], ["m2", "m2", "m1"], ["b5", "m1"]], vraag: ["Je wast de fiets en je maakt je bed op."] }),
+  potEnPortemonnee({ pot: ["m2", "m2"], porte: ["b5", "m1"], opties: [11, 9, 10], begin: [], slot: [] }),
   kiesGeld({
     groot: [SKATE(20)],
-    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"], { tekening: "schelpen", zeg: "schelpen" }],
+    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"], { tekening: "schelp", aantal: 3, zeg: "schelpen" }],
     doel: 20,
     aantal: 2,
-    vraag: ["Kijk, dit skateboard willen Sam en Noor kopen.", `Het kost ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
+    vraag: ["Kijk, dit skateboard wil je kopen.", `Het kost ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
     goedZin: [`Twee briefjes van {10:rood} euro is samen ${e(20)} euro.`, `Vier briefjes van {5:wit} euro is ook ${e(20)} euro.`, "En met schelpen kun je niet betalen!"],
     noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Schelpen"),
   }),
   getalVraag({
-    groot: [SAM, tek("doos"), NOOR],
+    groot: [tek("doos")],
     hulpGroot: [geldDeel("oud", ["b10"]), { soort: "plus" }, geldDeel("nieuw", ["b5"])],
     opties: [15, 14, 16],
     goed: 15,
-    vraag: ["Sam en Noor ruimen de schuur op.", `Daarvoor krijgen ze samen ${e(5)} euro.`, `Ze hadden al ${e(10)} euro.`, `Hoeveel is ${e(10)} euro en ${e(5)} euro samen?`],
+    vraag: ["Je ruimt de schuur op.", `Daarvoor krijg je ${e(5)} euro.`, `Je had al ${e(10)} euro.`, `Hoeveel is ${e(10)} euro en ${e(5)} euro samen?`],
     goedZin: [`${Hoofd(e(10))} euro en ${e(5)} euro is samen ${e(15)} euro.`],
     samen: async (l) => {
       await l.zeg(`Kijk: ${e(10)} euro.`, `En er komt ${e(5)} euro bij.`, `Begin bij ${e(10)} en tel vijf verder.`, `${Hoofd(e(11))}, ${e(12)}, ${e(13)}, ${e(14)}, en nog één.`);
@@ -803,60 +818,60 @@ const zakgeld1Opgaven: Opgave[] = [
     groot: [SKATE(20), geldDeel("heb", ["b10", "b5"])],
     keuzes: [["b5"], ["b10"], ["m2"]],
     doel: 5,
-    vraag: [`Sam en Noor hebben nu ${e(15)} euro.`, `Het skateboard kost ${e(20)} euro.`, `Hoeveel moet er nog bij ${e(15)} om bij ${e(20)} te komen?`],
+    vraag: [`Je hebt nu ${e(15)} euro.`, `Het skateboard kost ${e(20)} euro.`, `Hoeveel moet er nog bij ${e(15)} om bij ${e(20)} te komen?`],
     goedZin: [`${Hoofd(e(15))} euro en ${e(5)} euro is ${e(20)} euro.`, `Er moet nog ${e(5)} euro bij.`],
     noem: (k) => Hoofd(naam(k.geld![0])),
     samen: async (l) => {
       await telGeld(l, "heb", ["b10", "b5"], { spreek: false, eind: false });
-      await l.zeg(`Ze hebben ${e(15)} euro.`, `We tellen verder tot ${e(20)}.`, `${Hoofd(e(16))}, ${e(17)}, ${e(18)}, ${e(19)}, ${e(20)}.`, "Hoeveel stapjes waren dat?");
+      await l.zeg(`Je hebt ${e(15)} euro.`, `We tellen verder tot ${e(20)}.`, `${Hoofd(e(16))}, ${e(17)}, ${e(18)}, ${e(19)}, ${e(20)}.`, "Hoeveel stapjes waren dat?");
       zet(l, { geteld: null });
     },
     tip: [`Tel verder vanaf ${e(15)} tot ${e(20)}.`],
   }),
   getalVraag({
-    groot: [tek("afwas"), geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
+    groot: [tek("bord"), geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [16, 17, 19],
     goed: 17,
-    vraag: ["Sam en Noor doen de afwas voor opa.", `Daarvoor krijgen ze ${e(2)} euro.`, "Hoeveel geld hebben ze nu?", "Kijk maar naar het plaatje."],
+    vraag: ["Je doet de afwas.", `Daarvoor krijg je ${e(2)} euro.`, "Hoeveel geld heb je nu?", "Kijk maar naar het plaatje."],
     goedZin: [`${Hoofd(e(15))} euro en ${e(2)} euro is samen ${e(17)} euro.`],
     samen: async (l) => {
-      await l.zeg("Tel eerst het geld dat ze al hadden.");
+      await l.zeg("Tel eerst het geld dat je al had.");
       await telGeld(l, "oud", ["b10", "b5"], { spreek: true, eind: false });
-      await l.zeg(`Ze hadden ${e(15)} euro.`, `Tel nu de munt van ${e(2)} euro erbij.`);
+      await l.zeg(`Je had ${e(15)} euro.`, `Tel nu de munt van ${e(2)} euro erbij.`);
       zet(l, { geteld: null });
     },
     tip: [`Begin bij ${e(15)}.`, `Tel er ${e(2)} bij.`],
   }),
   kiesGeld({
-    groot: [SAM, tek("emmer"), NOOR],
+    groot: [tek("schoen")],
     keuzes: [["b10", "b5", "m2", "m1"], ["b10", "b5", "m1"], ["b10", "b5", "m2", "m2"]],
     doel: 18,
-    vraag: ["Sam en Noor wassen de fiets van de buurvrouw.", `Ze krijgen ${e(1)} euro.`, `Ze hadden ${e(17)} euro.`, "Waar ligt het geld dat ze nu hebben?"],
+    vraag: ["Je zet alle schoenen netjes in de gang.", `Je krijgt ${e(1)} euro.`, `Je had ${e(17)} euro.`, "Waar ligt het geld dat je nu hebt?"],
     goedZin: [`${Hoofd(e(17))} euro en ${e(1)} euro is samen ${e(18)} euro.`],
   }),
   kiesGeld({
     groot: [SKATE(20), geldDeel("heb", ["b10", "b5", "m2", "m1"])],
     keuzes: [["m1"], ["m2"], ["b5"]],
     doel: 2,
-    vraag: [`Sam en Noor hebben nu ${e(18)} euro.`, `Het skateboard kost ${e(20)} euro.`, `Hoeveel moet er nog bij ${e(18)} om bij ${e(20)} te komen?`],
+    vraag: [`Je hebt nu ${e(18)} euro.`, `Het skateboard kost ${e(20)} euro.`, `Hoeveel moet er nog bij ${e(18)} om bij ${e(20)} te komen?`],
     goedZin: [`${Hoofd(e(18))} euro en ${e(2)} euro is ${e(20)} euro.`, `Er moet nog ${e(2)} euro bij.`],
     noem: (k) => Hoofd(naam(k.geld![0])),
     samen: async (l) => {
       await telGeld(l, "heb", ["b10", "b5", "m2", "m1"], { spreek: false, eind: false });
-      await l.zeg(`Ze hebben ${e(18)} euro.`, `We tellen verder tot ${e(20)}.`, `${Hoofd(e(19))}, ${e(20)}.`, "Hoeveel stapjes waren dat?");
+      await l.zeg(`Je hebt ${e(18)} euro.`, `We tellen verder tot ${e(20)}.`, `${Hoofd(e(19))}, ${e(20)}.`, "Hoeveel stapjes waren dat?");
       zet(l, { geteld: null });
     },
     tip: [`Tel verder vanaf ${e(18)} tot ${e(20)}.`],
   }),
   getalVraag({
-    groot: [SAM, tek("tas"), NOOR],
+    groot: [tek("jas")],
     hulpGroot: [geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [19, 20, 18],
     goed: 20,
-    vraag: ["Sam en Noor dragen de boodschappen voor oma.", `Oma geeft ze ${e(2)} euro.`, `Ze hadden ${e(18)} euro.`, `Hoeveel is ${e(18)} euro en ${e(2)} euro samen?`],
-    goedZin: [`${Hoofd(e(18))} euro en ${e(2)} euro is samen ${e(20)} euro.`, "Nu hebben ze genoeg voor het skateboard!"],
+    vraag: ["Je hangt alle jassen netjes op.", `Daarvoor krijg je ${e(2)} euro.`, `Je had ${e(18)} euro.`, `Hoeveel is ${e(18)} euro en ${e(2)} euro samen?`],
+    goedZin: [`${Hoofd(e(18))} euro en ${e(2)} euro is samen ${e(20)} euro.`, "Nu heb je genoeg voor het skateboard!"],
     samen: async (l) => {
-      await l.zeg(`Kijk: ze hadden ${e(18)} euro.`, `Er komt ${e(2)} euro bij.`, `Begin bij ${e(18)} en tel twee verder.`);
+      await l.zeg(`Kijk: je had ${e(18)} euro.`, `Er komt ${e(2)} euro bij.`, `Begin bij ${e(18)} en tel twee verder.`);
     },
     tip: [`Begin bij ${e(18)}.`, "Tel er twee bij."],
   }),
@@ -864,23 +879,10 @@ const zakgeld1Opgaven: Opgave[] = [
     groot: [SKATE(20)],
     keuzes: [["b20"], ["b10", "b5", "m2", "m2"], ["b10", "b5"]],
     doel: 20,
-    vraag: [`Sam en Noor hebben nu ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
-    goedZin: ["Een briefje van {20:blauw} euro is ook " + e(20) + " euro.", "Dat is net zoveel als al hun munten en briefjes samen."],
+    vraag: [`Je hebt nu ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
+    goedZin: ["Een briefje van {20:blauw} euro is ook " + e(20) + " euro.", "Dat is net zoveel als al je munten en briefjes samen."],
   }),
-  getalVraag({
-    groot: [SAM, geldDeel("gs", ["b10", "m2", "m2"]), NOOR, geldDeel("gn", ["b5", "m1"])],
-    opties: [18, 20, 19],
-    goed: 20,
-    vraag: ["Ze tellen hun geld nog één keer.", "Dit is het geld van Sam.", "En dit is het geld van Noor.", "Hoeveel euro hebben ze bij elkaar?"],
-    goedZin: [`Sam heeft ${e(14)} euro. Noor heeft ${e(6)} euro.`, `Bij elkaar is dat ${e(20)} euro.`, "Morgen gaan ze het skateboard kopen."],
-    samen: async (l) => {
-      await l.zeg("Tel eerst het geld van Sam.");
-      await telGeld(l, "gs", ["b10", "m2", "m2"], { spreek: true, eind: false });
-      await l.zeg(`Sam heeft ${e(14)} euro.`, "Tel nu verder met het geld van Noor.", "Begin bij het briefje.");
-      zet(l, { geteld: null });
-    },
-    tip: [`Begin bij ${e(14)}.`, "Tel het geld van Noor erbij."],
-  }),
+  potEnPortemonnee({ pot: ["b10", "m2", "m2"], porte: ["b5", "m1"], opties: [18, 20, 19], begin: ["Je telt je geld nog één keer."], slot: ["Morgen ga je het skateboard kopen."] }),
 ];
 
 const zakgeld1: Lesdraaiboek = {
@@ -889,11 +891,13 @@ const zakgeld1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · Zakgeld verdienen · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSkateboard,
+  voorwerpen: ["spaarpot", "portemonnee", "skateboard", "bezem", "gieter", "emmer", "bed", "schelp", "doos", "bord", "schoen", "jas"],
   async speel(l) {
-    await welkom(l, { groot: [SAM, NOOR] }, ["m1", "m2", "b5", "b10", "b20"], ["Hoi!", "Dit zijn Sam en Noor.", "Ze willen samen een skateboard kopen.", "Daarom gaan ze klusjes doen.", "Help jij ze met het geld?"], async () => {
-      zet(l, { ...LEEG, groot: [SAM, geldDeel("s", ["m1"]), { soort: "plus" }, geldDeel("n", ["m1"]), NOOR] });
-      await l.zeg(`Sam krijgt ${e(1)} euro.`, `Noor krijgt ook ${e(1)} euro.`, "Hoeveel is dat bij elkaar?", "Dan tel je het geld samen.");
+    await welkom(l, { groot: [tek("spaarpot"), SKATE(20)] }, ["m1", "m2", "b5", "b10", "b20"], ["Hoi!", "Jij wilt een skateboard kopen.", "Daarvoor ga je sparen.", "Voor elk klusje krijg je wat geld."], async () => {
+      zet(l, { ...LEEG, groot: [tek("bezem"), geldDeel("s", ["m1"]), { soort: "plus" }, tek("gieter"), geldDeel("n", ["m1"])] });
+      await l.zeg(`Voor het vegen krijg je ${e(1)} euro.`, `Voor de planten krijg je ook ${e(1)} euro.`, "Hoeveel is dat bij elkaar?", "Dan tel je het geld samen.");
       await telGeld(l, "s", ["m1"], { spreek: true, eind: false });
       await telGeld(l, "n", ["m1"], { spreek: true, eind: false, vanaf: 1 });
       await l.zeg(`Bij elkaar is dat ${e(2)} euro.`);
@@ -908,18 +912,18 @@ const zakgeld1: Lesdraaiboek = {
 
 const zakgeld2Opgaven: Opgave[] = [
   kiesGeld({
-    groot: [SAM, NOOR],
+    groot: [tek("spaarpot")],
     keuzes: [["b5", "b5", "b5"], ["b10", "b5", "m2", "m2", "m1"], ["b10", "b5", "m2"]],
     doel: 20,
-    vraag: [`Sam en Noor hebben ${e(20)} euro gespaard.`, `Waar ligt ${e(20)} euro?`],
+    vraag: [`Je hebt ${e(20)} euro gespaard.`, `Waar ligt ${e(20)} euro?`],
     goedZin: [`${Hoofd(e(10))} en ${e(5)} is ${e(15)}.`, `Met ${e(2)}, ${e(2)} en ${e(1)} erbij is het ${e(20)} euro.`],
   }),
   knopVraag({
-    groot: [tek("kraam")],
+    groot: [tek("marktkraam")],
     opties: ["Waar", "Niet waar"],
     goed: "Waar",
-    vraag: ["Op het plein is een rommelmarkt.", "Daar verkopen mensen spullen die ze niet meer nodig hebben.", "Je kunt die spullen kopen.", "Is dat waar of niet waar?"],
-    goedZin: ["Op een rommelmarkt kun je spullen kopen.", "Vaak zijn ze niet zo duur.", "Sam en Noor gaan kijken!"],
+    vraag: ["Op het plein is een rommelmarkt.", "Daar worden oude spullen verkocht.", "Je kunt die spullen kopen.", "Is dat waar of niet waar?"],
+    goedZin: ["Op een rommelmarkt kun je spullen kopen.", "Vaak zijn ze niet zo duur.", "Je gaat kijken!"],
     samen: async (l) => {
       await l.zeg("Kijk naar de kraam.", "Er liggen spullen op.", "Die spullen zijn te koop.", "Je betaalt met munten en briefjes.");
     },
@@ -939,22 +943,22 @@ const zakgeld2Opgaven: Opgave[] = [
     goedZin: [`Vier munten van ${e(1)} euro is ook ${e(4)} euro.`, `Twee munten van ${e(2)} euro kan ook.`],
   }),
   kiesGeld({
-    groot: [speelgoed("puzzel", 5)],
-    keuzes: [["m2", "m2", "m1"], { tekening: "puzzelstukjes", zeg: "puzzelstukjes" }, ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
+    groot: [speelgoed("boek", 5)],
+    keuzes: [["m2", "m2", "m1"], { tekening: "knoop", aantal: 4, zeg: "knopen" }, ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
     doel: 5,
     aantal: 2,
-    vraag: ["Noor ziet een puzzel.", `De puzzel kost ${e(5)} euro.`, `Waar ligt ${e(5)} euro?`],
-    goedZin: [`Twee munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `Vijf munten van ${e(1)} euro is ook ${e(5)} euro.`, "Met puzzelstukjes kun je niet betalen!"],
-    noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Puzzelstukjes"),
+    vraag: ["Je ziet een mooi boek.", `Het boek kost ${e(5)} euro.`, `Waar ligt ${e(5)} euro?`],
+    goedZin: [`Twee munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `Vijf munten van ${e(1)} euro is ook ${e(5)} euro.`, "Met knopen kun je niet betalen!"],
+    noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Knopen"),
   }),
   getalVraag({
-    groot: [speelgoed("bal", 4), { soort: "plus" }, speelgoed("puzzel", 5)],
+    groot: [speelgoed("bal", 4), { soort: "plus" }, speelgoed("boek", 5)],
     opties: [8, 9, 10],
     goed: 9,
-    vraag: ["Sam en Noor kopen de bal en de puzzel.", "Hoeveel kost dat samen?"],
+    vraag: ["Je koopt de bal en het boek.", "Hoeveel kost dat samen?"],
     goedZin: [`${Hoofd(e(4))} euro en ${e(5)} euro is samen ${e(9)} euro.`],
     samen: async (l) => {
-      await l.zeg(`De bal kost ${e(4)} euro.`, `De puzzel kost ${e(5)} euro.`, `Begin bij ${e(5)} en tel vier verder.`);
+      await l.zeg(`De bal kost ${e(4)} euro.`, `Het boek kost ${e(5)} euro.`, `Begin bij ${e(5)} en tel vier verder.`);
     },
     tip: [`Tel ${e(4)} en ${e(5)} bij elkaar.`],
   }),
@@ -962,23 +966,23 @@ const zakgeld2Opgaven: Opgave[] = [
     groot: [geldDeel("over", ["b10", "m1"]), geldDeel("weg", ["b5", "m2", "m2"], [0, 1, 2])],
     opties: [9, 11, 10],
     goed: 11,
-    vraag: ["Kijk naar het plaatje.", `Ze betaalden met een briefje van {5:wit} euro en twee munten van ${e(2)} euro.`, "Daar staat een kruis door.", "Hoeveel euro hebben ze nog over?"],
-    goedZin: ["Ze hebben nog een briefje van {10:rood} euro en een munt van " + e(1) + " euro.", `Dat is samen ${e(11)} euro.`, "Zou dat genoeg zijn voor een skateboard?"],
+    vraag: ["Kijk naar het plaatje.", `Je betaalde met een briefje van {5:wit} euro en twee munten van ${e(2)} euro.`, "Daar staat een kruis door.", "Hoeveel euro heb je nog over?"],
+    goedZin: ["Je hebt nog een briefje van {10:rood} euro en een munt van " + e(1) + " euro.", `Dat is samen ${e(11)} euro.`, "Zou dat genoeg zijn voor een skateboard?"],
     samen: async (l) => {
       zet(l, { licht: ["weg"] });
       await l.zeg("Dit geld is weg. Dat tellen we niet.");
       zet(l, { licht: ["over"] });
-      await l.zeg("Dit geld hebben ze nog.", "Tel het maar.");
+      await l.zeg("Dit geld heb je nog.", "Tel het maar.");
       zet(l, { licht: [] });
     },
     tip: ["Tel alleen het geld zonder kruis."],
   }),
   kiesGeld({
-    groot: [tek("kraam")],
+    groot: [tek("marktkraam")],
     keuzes: [["b5", "b5", "m1"], ["b10", "m2"], ["b10", "m1"]],
     doel: 11,
     aantal: 2,
-    vraag: [`Sam en Noor hebben nog ${e(11)} euro.`, `Waar ligt ${e(11)} euro?`],
+    vraag: [`Je hebt nog ${e(11)} euro.`, `Waar ligt ${e(11)} euro?`],
     goedZin: [`${Hoofd(e(5))} en ${e(5)} en ${e(1)} is ${e(11)} euro.`, `${Hoofd(e(10))} en ${e(1)} is ook ${e(11)} euro.`, `Je kunt ${e(11)} euro op verschillende manieren betalen.`],
   }),
   kiesGeld({
@@ -986,17 +990,17 @@ const zakgeld2Opgaven: Opgave[] = [
     keuzes: [["b10"], ["b5", "m2", "m1"], ["b5", "b5"]],
     doel: 8,
     vraag: ["Kijk, daar ligt een skateboard!", `Het kost maar ${e(8)} euro.`, `Waar ligt precies ${e(8)} euro?`],
-    goedZin: [`${Hoofd(e(5))} en ${e(2)} en ${e(1)} is samen ${e(8)} euro.`, "Maar Sam en Noor hebben alleen een briefje van {10:rood} euro en een munt van " + e(1) + " euro.", "Hoe moet dat nu?"],
+    goedZin: [`${Hoofd(e(5))} en ${e(2)} en ${e(1)} is samen ${e(8)} euro.`, "Maar jij hebt alleen een briefje van {10:rood} euro en een munt van " + e(1) + " euro.", "Hoe moet dat nu?"],
   }),
   kiesGeld({
     groot: [geldDeel("betaal", ["b10"]), { soort: "pijl" }, SKATE(8)],
     keuzes: [["m1"], ["m2"], ["b5"]],
     doel: 2,
-    vraag: ["Ze betalen met het briefje van {10:rood} euro.", `Het skateboard kost ${e(8)} euro.`, "Dan krijgen ze geld terug.", "Welke munt krijgen ze terug?"],
-    goedZin: [`Ze geven ${e(10)} euro. Het skateboard kost ${e(8)} euro.`, `${Hoofd(e(8))} en ${e(2)} is ${e(10)}.`, `Dus ze krijgen ${e(2)} euro terug.`],
+    vraag: ["Je betaalt met het briefje van {10:rood} euro.", `Het skateboard kost ${e(8)} euro.`, "Dan krijg je geld terug.", "Welk geld krijg je terug?"],
+    goedZin: [`Je geeft ${e(10)} euro. Het skateboard kost ${e(8)} euro.`, `${Hoofd(e(8))} en ${e(2)} is ${e(10)}.`, `Dus je krijgt ${e(2)} euro terug.`],
     noem: (k) => Hoofd(naam(k.geld![0])),
     samen: async (l) => {
-      await l.zeg(`Het skateboard kost ${e(8)} euro.`, `Ze geven ${e(10)} euro.`, `Tel verder van ${e(8)} tot ${e(10)}.`, `${Hoofd(e(9))}, ${e(10)}.`, "Hoeveel stapjes waren dat?");
+      await l.zeg(`Het skateboard kost ${e(8)} euro.`, `Je geeft ${e(10)} euro.`, `Tel verder van ${e(8)} tot ${e(10)}.`, `${Hoofd(e(9))}, ${e(10)}.`, "Hoeveel stapjes waren dat?");
     },
     tip: [`Tel verder van ${e(8)} tot ${e(10)}.`],
   }),
@@ -1004,8 +1008,8 @@ const zakgeld2Opgaven: Opgave[] = [
     groot: [geldDeel("had", ["m1"]), { soort: "plus" }, geldDeel("terug", ["m2"])],
     opties: [2, 4, 3],
     goed: 3,
-    vraag: [`Ze hadden nog een munt van ${e(1)} euro.`, `En ze kregen ${e(2)} euro terug.`, "Hoeveel euro hebben ze nu nog?"],
-    goedZin: [`${Hoofd(e(1))} euro en ${e(2)} euro is samen ${e(3)} euro.`, "Sam en Noor gaan blij naar huis met hun skateboard."],
+    vraag: [`Je had nog een munt van ${e(1)} euro.`, `En je kreeg ${e(2)} euro terug.`, "Hoeveel euro heb je nu nog?"],
+    goedZin: [`${Hoofd(e(1))} euro en ${e(2)} euro is samen ${e(3)} euro.`, "Je gaat blij naar huis met je skateboard."],
     samen: async (l) => {
       await telGeld(l, "had", ["m1"], { spreek: true, eind: false });
       await l.zeg("Tel nu verder met de andere munt.");
@@ -1027,9 +1031,11 @@ const zakgeld2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · Zakgeld verdienen · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSkateboard,
+  voorwerpen: ["spaarpot", "marktkraam", "bal", "boek", "knoop", "skateboard"],
   async speel(l) {
-    await welkom(l, { groot: [SAM, NOOR] }, ["m1", "m2", "b5", "b10"], ["Hoi!", `Sam en Noor hebben ${e(20)} euro gespaard.`, "Vandaag gaan ze naar de rommelmarkt.", "Ga je mee?"], async () => {
+    await welkom(l, { groot: [tek("spaarpot")] }, ["m1", "m2", "b5", "b10"], ["Hoi!", `Je hebt ${e(20)} euro gespaard.`, "Vandaag ga je naar de rommelmarkt.", "Ga je mee?"], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
       await l.zeg("Op de rommelmarkt betaal je met munten en briefjes.", "Je telt het geld bij elkaar.", "Begin bij het briefje.");
       await telGeld(l, "u0", ["b5", "m2", "m1"], { spreek: true, eind: false });
@@ -1046,7 +1052,7 @@ const zakgeld2: Lesdraaiboek = {
    ===================================================================== */
 
 const BEDRAG = ["Tel het geld.", "Welk bedrag hoort erbij?", "Trek de lijnen."];
-const EVENVEEL = ["Tel het geld.", "Zoek steeds twee vakken met evenveel geld.", "Trek de lijnen."];
+const EVENVEEL = ["Tel het geld.", "Zoek steeds twee groepjes met evenveel geld.", "Trek de lijnen."];
 
 const geld1Opgaven: Opgave[] = [
   verbindVraag({ links: [["m2", "m1"], ["m1", "m1"]], rechts: [2, 3], vraag: [...BEDRAG.slice(0, 2), "Trek een lijn van bolletje naar bolletje."], handje: true }),
@@ -1069,7 +1075,9 @@ const geld1: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · Geld · level 1 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSpaarpot,
+  voorwerpen: ["spaarpot"],
   async speel(l) {
     await welkom(l, {}, ["m1", "m2", "b5", "b10"], ["Hoi!", "Vandaag tellen we geld.", "Je trekt lijnen tussen geld dat bij elkaar hoort."], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
@@ -1111,14 +1119,16 @@ const geld2: Lesdraaiboek = {
   synthesis: "Squla groep 3 · Geld · Geld · level 2 (alleen leerdoel)",
   indeling: "synthesis",
   browserstem: true,
+  nacht: true,
   kaarttekening: KaartSpaarpot,
+  voorwerpen: ["spaarpot"],
   async speel(l) {
     await welkom(l, {}, ["m1", "m2", "b5", "b10", "b20"], ["Hoi!", `Vandaag tellen we geld tot ${e(20)} euro.`, "Soms zijn er twee goede antwoorden.", "En soms trek je lijnen."], async () => {
       zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["b10", "b5"] }, { id: "u1", geld: ["b5", "b5", "b5"] }] });
-      await l.zeg("Kijk, twee vakken met briefjes.", "Begin altijd bij het grootste briefje.");
+      await l.zeg("Kijk, twee groepjes briefjes.", "Begin altijd bij het grootste briefje.");
       await telGeld(l, "u0", ["b10", "b5"], { spreek: true, eind: false });
       await telGeld(l, "u1", ["b5", "b5", "b5"], { spreek: true, eind: false });
-      await l.zeg(`In allebei de vakken ligt ${e(15)} euro.`, "Het geld ziet er anders uit, maar het is evenveel.");
+      await l.zeg(`Allebei de groepjes zijn ${e(15)} euro.`, "Het geld ziet er anders uit, maar het is evenveel.");
       zet(l, { geteld: null });
     });
     const fouten = await speelAlles(l, geld2Opgaven, [0, 1, 6]);

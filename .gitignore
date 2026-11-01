@@ -85,3 +85,11 @@ next-env.d.ts
 /SQULA-ANALYSE/
 /SQULA-OVERZICHT.md
 /SQULA-VOORTGANG.md
+
+# Plaatjes van Sara voor "verwerk de inbox" (31 oktober 2026, zie WISSELEN.md):
+# de inbox, de verwerkte originelen en de backups blijven op de laptop.
+# De verkleinde plaatjes zelf staan in public/voorwerpen/ en gaan wel mee.
+/plaatjes-inbox/*
+!/plaatjes-inbox/LEESMIJ.md
+/plaatjes-verwerkt/
+/plaatjes-backup/

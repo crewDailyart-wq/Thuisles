@@ -5,23 +5,28 @@
  * getallenreeks), met eigen getallen, eigen zinnen en eigen tekeningen. De
  * analyse staat in SQULA-ANALYSE/minsommen-*-volledig.md.
  *
- *   Minsommen, onderwater (16055)   squla-min-zee-1/2/3        hologrammen in de zee
+ *   Minsommen, onderwater (16055)   squla-min-ruimte-1/2/3     dingen in de ruimte
  *   Bussommen 1 (7275)              squla-min-bus1-1/2/3       platte 2D-bus
  *   Bussommen 2 (7276)              squla-min-bus2-1/2/3       platte 2D-bus, rood rondje
  *   Minsommen (6919)                squla-min-machine-1/2/3/4  platte 2D: machine, bord, bakjes, geld
  *   Kale sommen (7277)              squla-min-kaal-1/2/3       platte 2D: schoolbord
  *
  * Keuzes van de hoofdagent (vooraf genoteerd):
- *  - Bij de bus klopt het beeld altijd met het verhaal: eerst zitten alle
- *    kinderen in de bus, wie uitstapt staat daarna buiten (of: een rood rondje
+ *  - Bij de bus klopt het beeld altijd met het verhaal: eerst liggen alle
+ *    pakjes in de bus, wat bezorgd is staat daarna buiten (of: een rood rondje
  *    met het getal, bij Bussommen 2); de rest blijft in de bus.
+ *  - Regels van Sara (31 oktober): geen mensen en geen dieren. De kinderen in
+ *    de bus van Squla zijn pakjes die bezorgd worden; de zeedieren zijn dingen
+ *    uit de ruimte (raketjes die wegvliegen, bellen die knappen, sterren die
+ *    vallen …) en de walvis/inktvis die eten is een ufo die er een paar
+ *    meeneemt. Stijl: nacht, geen vaste gloed, geen kaders.
  *  - Luistervragen: Bliepo zegt de keuzes en ze staan als knop.
  *  - Bubbelspel en disco: alleen de vraag (tik de sommen met uitkomst 0 aan;
  *    kies het antwoord), zonder tijdsdruk of levens, zonder bonusspel.
  *  - Geld: alleen de officiële plaatjes uit public/geld/.
  *  - Over het tiental: de uitleg van Squla bij Minsommen level 3, "eerst terug
  *    naar 10, dan de rest eraf", is de basis van Bliepo's uitleg (samen), in
- *    beeld: eerst worden de dieren (of stippen) onder de tien grijs, dan de rest.
+ *    beeld: eerst worden de dingen (of stippen) onder de tien grijs, dan de rest.
  *
  * De hulp is de vaste hulp van Bliepo (squla-hulp.ts). Squla laat bij een fout
  * alleen de som zien; Bliepo laat het in beeld zien: wat eraf gaat, wordt grijs
@@ -32,8 +37,8 @@
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
-import { KaartMinsommen, SqulaMinVlak, type Bakje, type Dier, type Eter, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
-import { DIER } from "../vlakken/squla-minsommen-tekenen";
+import { KaartMinsommen, SqulaMinVlak, type Bakje, type Ding, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
+import { DING } from "../vlakken/squla-minsommen-tekenen";
 
 /* =====================================================================
    Woorden
@@ -46,31 +51,30 @@ const somZin = (a: number, b: number, k = "wit") => `${g(a, k)} − ${g(b, k)}`;
 /** Een som als knop of in beeld. */
 const somTekst = (a: number, b: number, teken: "−" | "+" = "−") => `${a} ${teken} ${b} = ${teken === "−" ? a - b : a + b}`;
 
-/** Hoe de dieren in de zee bewegen (meervoud, enkelvoud). */
-const ZEE: Record<Dier, { waar: string; weg: string; wegEen: string }> = {
-  visje: { waar: "Er zwemmen {a} visjes in de zee.", weg: "{b} visjes zwemmen weg.", wegEen: "{b} visje zwemt weg." },
-  kwal: { waar: "Er zwemmen {a} kwallen in de zee.", weg: "{b} kwallen zwemmen weg.", wegEen: "{b} kwal zwemt weg." },
-  krab: { waar: "Er lopen {a} krabben op de bodem.", weg: "{b} krabben kruipen in het zand.", wegEen: "{b} krab kruipt in het zand." },
-  zeepaardje: { waar: "Er zwemmen {a} zeepaardjes in de zee.", weg: "{b} zeepaardjes zwemmen weg.", wegEen: "{b} zeepaardje zwemt weg." },
-  schildpad: { waar: "Er zwemmen {a} schildpadden in de zee.", weg: "{b} schildpadden zwemmen naar het strand.", wegEen: "{b} schildpad zwemt naar het strand." },
-  zeester: { waar: "Er liggen {a} zeesterren op de bodem.", weg: "{b} zeesterren kruipen weg.", wegEen: "{b} zeester kruipt weg." },
-  dolfijn: { waar: "Er zwemmen {a} dolfijnen in de zee.", weg: "{b} dolfijnen zwemmen weg.", wegEen: "{b} dolfijn zwemt weg." },
+/** Wat de dingen in de ruimte doen (meervoud, enkelvoud). */
+const RUIMTE: Record<Ding, { waar: string; weg: string; wegEen: string }> = {
+  raketje: { waar: "Er staan {a} raketjes klaar.", weg: "{b} raketjes vliegen weg.", wegEen: "{b} raketje vliegt weg." },
+  ballon: { waar: "Er zweven {a} ballonnen in de lucht.", weg: "{b} ballonnen vliegen weg.", wegEen: "{b} ballon vliegt weg." },
+  zeepbel: { waar: "Er zweven {a} bellen.", weg: "{b} bellen knappen.", wegEen: "{b} bel knapt." },
+  ufo: { waar: "Er vliegen {a} ufo's rond.", weg: "{b} ufo's vliegen weg.", wegEen: "{b} ufo vliegt weg." },
+  satelliet: { waar: "Er draaien {a} satellieten rond de aarde.", weg: "{b} satellieten vallen terug naar de aarde.", wegEen: "{b} satelliet valt terug naar de aarde." },
+  ster: { waar: "Er staan {a} sterren aan de hemel.", weg: "{b} sterren vallen naar beneden.", wegEen: "{b} ster valt naar beneden." },
+  komeet: { waar: "Er vliegen {a} kometen door de ruimte.", weg: "{b} kometen verdwijnen.", wegEen: "{b} komeet verdwijnt." },
 };
-const ETERNAAM: Record<Eter, string> = { walvis: "De walvis", inktvis: "De inktvis" };
 
 const vul = (zin: string, a: number, b: number, k: string) => zin.replace("{a}", g(a, k)).replace("{b}", g(b, k));
 
-/** Het verhaaltje in de zee: wie er zijn, wat er weggaat. */
-function zeeVerhaal(dier: Dier, a: number, b: number, eter?: Eter | null): string[] {
-  const z = ZEE[dier];
-  const k = DIER[dier].kleur;
+/** Het verhaaltje in de ruimte: wat er is, wat er weggaat (of wat de ufo meeneemt). */
+function ruimteVerhaal(ding: Ding, a: number, b: number, ufo?: boolean): string[] {
+  const z = RUIMTE[ding];
+  const k = DING[ding].kleur;
   const eerste = vul(z.waar, a, b, k);
-  if (!eter) return [eerste, vul(b === 1 ? z.wegEen : z.weg, a, b, k)];
-  if (b === a) return [eerste, `${ETERNAAM[eter]} eet ze allemaal op.`];
-  if (b === 0) return [eerste, `${ETERNAAM[eter]} eet er geen één op.`];
-  return [eerste, `${ETERNAAM[eter]} eet er ${g(b, k)} op.`];
+  if (!ufo) return [eerste, vul(b === 1 ? z.wegEen : z.weg, a, b, k)];
+  if (b === a) return [eerste, "De ufo neemt ze allemaal mee."];
+  if (b === 0) return [eerste, "De ufo neemt er geen één mee."];
+  return [eerste, `De ufo neemt er ${g(b, k)} mee.`];
 }
-const hoeveelOver = (dier: Dier) => `Hoeveel ${DIER[dier].veel} blijven er over?`;
+const hoeveelOver = (ding: Ding) => `Hoeveel ${DING[ding].veel} blijven er over?`;
 
 const SPEELGOED: Record<Speelgoed, string> = { ijsje: "het ijsje", bal: "de bal", boek: "het boek", ballon: "de ballon", vlieger: "de vlieger" };
 const BAKJE: Record<Bakje, { veel: string }> = { beker: { veel: "bekers" }, bordje: { veel: "bordjes" } };
@@ -84,12 +88,12 @@ type SomKeuze = [number, number, ("−" | "+")?];
 
 type Vraag =
   /* Minsommen (onderwater) */
-  | { t: "verhaal"; dier: Dier; a: number; b: number; keuzes: number[]; eter?: Eter }
-  | { t: "kaal"; dier?: Dier; deco?: Dier | Eter; a: number; b: number; keuzes: number[] }
-  | { t: "welke"; dier: Dier; a: number; b: number; eter?: Eter; keuzes: SomKeuze[] }
+  | { t: "verhaal"; ding: Ding; a: number; b: number; keuzes: number[] }
+  | { t: "kaal"; ding?: Ding; deco?: Ding; a: number; b: number; keuzes: number[] }
+  | { t: "welke"; ding: Ding; a: number; b: number; ufo?: boolean; keuzes: SomKeuze[] }
   | { t: "disco"; a: number; b: number; keuzes: number[]; luister?: boolean }
-  | { t: "luister"; dier: Dier; a: number; b: number; keuzes: number[] }
-  | { t: "typen"; a: number; b: number; deco?: Dier | Eter }
+  | { t: "luister"; ding: Ding; a: number; b: number; keuzes: number[] }
+  | { t: "typen"; a: number; b: number; deco?: Ding }
   | { t: "verbind"; sommen: [number, number][]; uitkomsten: number[] }
   | { t: "bubbels"; sommen: [number, number][] }
   /* Bussommen */
@@ -139,7 +143,7 @@ async function typGetal(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
 
 /* ---------- Bliepo's uitleg in beeld: wat eraf gaat wordt grijs ---------- */
 
-type Beeld = "zee" | "bus" | "stippen";
+type Beeld = "ruimte" | "bus" | "stippen";
 
 /** Over het tiental terug (12 − 4, 15 − 8): eerst terug naar 10, dan de rest. */
 const overTien = (a: number, b: number) => a > 10 && b > 0 && b < a && a - b < 10;
@@ -150,8 +154,8 @@ function rekenTip(a: number, b: number, wat: string): string[] {
   return [telZin(wat)];
 }
 
-/** "Tel de visjes die over zijn."; bij de bus: "Tel de kinderen die nog in de bus zitten." */
-const telZin = (wat: string) => (wat === "kinderen in de bus" ? "Tel de kinderen die nog in de bus zitten." : `Tel de ${wat} die over zijn.`);
+/** "Tel de raketjes die over zijn."; bij de bus: "Tel de pakjes die nog in de bus liggen." */
+const telZin = (wat: string) => (wat === "pakjes in de bus" ? "Tel de pakjes die nog in de bus liggen." : `Tel de ${wat} die over zijn.`);
 
 /**
  * Samen uitrekenen: Bliepo laat zien wat er eraf gaat (grijs), bij een som over
@@ -160,24 +164,24 @@ const telZin = (wat: string) => (wat === "kinderen in de bus" ? "Tel de kinderen
  */
 async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: string, wat: string) {
   const stip = (grijs: number) => (beeld === "stippen" ? zet(l, { stippen: { n: a, grijs } }) : zet(l, { grijs }));
-  /* "Er gaan er 3 af", "Er gaat er 1 af"; bij de bus "stappen uit". */
-  const gaan = (n: number) => (beeld === "bus" ? (n === 1 ? "stapt" : "stappen") : n === 1 ? "gaat" : "gaan");
+  /* "Er gaan er 3 af", "Er gaat er 1 af"; bij de bus "Er gaan er 3 uit". */
+  const gaan = (n: number) => (n === 1 ? "gaat" : "gaan");
   const af = beeld === "bus" ? "uit" : "af";
   stip(0);
   zet(l, { licht: beeld === "stippen" ? null : "alle" });
-  if (beeld === "bus") await l.zeg(`Er zaten ${g(a, k)} kinderen in de bus.`);
-  else if (beeld === "zee") await l.zeg(`Eerst waren er ${g(a, k)} ${wat}.`);
+  if (beeld === "bus") await l.zeg(`Eerst lagen er ${g(a, k)} pakjes in de bus.`);
+  else if (beeld === "ruimte") await l.zeg(`Eerst waren er ${g(a, k)} ${wat}.`);
   else await l.zeg(`Ik zet ${g(a, k)} stippen neer.`);
   zet(l, { licht: null });
   if (b === 0) {
-    await l.zeg(beeld === "bus" ? "Er stapt niemand uit." : "Er gaat niets af.");
+    await l.zeg(beeld === "bus" ? "Er gaat niets uit." : "Er gaat niets af.");
   } else if (overTien(a, b)) {
     const r1 = a - 10;
     const r2 = b - r1;
     await l.zeg(`Er ${gaan(b)} er ${g(b, k)} ${af}.`, `Eerst ${gaan(r1)} er ${g(r1, k)} ${af}.`);
     stip(r1);
     await l.wacht(r1 * 260 + 300);
-    await l.zeg(beeld === "bus" ? `Dan zitten er nog ${g(10, k)} in.` : `Dan zijn er nog ${g(10, k)}.`, `Daarna ${gaan(r2)} er nog ${g(r2, k)} ${af}.`);
+    await l.zeg(beeld === "bus" ? `Dan liggen er nog ${g(10, k)} in.` : `Dan zijn er nog ${g(10, k)}.`, `Daarna ${gaan(r2)} er nog ${g(r2, k)} ${af}.`);
     stip(b);
     await l.wacht(r2 * 260 + 300);
   } else {
@@ -191,28 +195,28 @@ async function samenRekenen(l: Lesgids, a: number, b: number, beeld: Beeld, k: s
 
 /* ---------- de vragen zelf ---------- */
 
-function zeeToneel(st: Stand, dier: Dier, n: number, eter?: Eter | null): Toneel {
-  return { soort: "zee", id: `zee-${st.nr}`, dier, n, eter: eter ?? null };
+function ruimteToneel(st: Stand, ding: Ding, n: number, ufo?: boolean): Toneel {
+  return { soort: "ruimte", id: `ruimte-${st.nr}`, ding, n, ufo: !!ufo };
 }
 
 async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   st.nr++;
   const id = `v${st.nr}`;
 
-  /* Verhaaltje in de zee (met de som in het plaatje), of een kale som naast de dieren. */
+  /* Verhaaltje in de ruimte (met de som in het plaatje), of een kale som naast de dingen. */
   if (v.t === "verhaal" || v.t === "kaal" || v.t === "luister") {
     const u = v.a - v.b;
-    const dier = v.dier;
-    const k = dier ? DIER[dier].kleur : "wit";
-    const toneel: Toneel = dier ? zeeToneel(st, dier, v.a) : { soort: "som", id, deco: v.t === "kaal" ? (v.deco ?? null) : null };
+    const ding = v.ding;
+    const k = ding ? DING[ding].kleur : "wit";
+    const toneel: Toneel = ding ? ruimteToneel(st, ding, v.a) : { soort: "som", id, deco: v.t === "kaal" ? (v.deco ?? null) : null };
     const somInBeeld = v.t === "verhaal" ? `${v.a} − ${v.b}` : v.t === "kaal" ? `${v.a} − ${v.b} = ?` : null;
     const vraag =
       v.t === "kaal"
         ? [`Hoeveel is ${somZin(v.a, v.b)}?`]
         : v.t === "verhaal"
-          ? [...zeeVerhaal(v.dier, v.a, v.b), hoeveelOver(v.dier)]
-          : [...zeeVerhaal(v.dier, v.a, v.b), hoeveelOver(v.dier), `Is het ${v.keuzes.slice(0, -1).map((n) => g(n, k)).join(", ")} of ${g(v.keuzes[v.keuzes.length - 1], k)}?`];
-    const wat = dier ? DIER[dier].veel : "stippen";
+          ? [...ruimteVerhaal(v.ding, v.a, v.b), hoeveelOver(v.ding)]
+          : [...ruimteVerhaal(v.ding, v.a, v.b), hoeveelOver(v.ding), `Is het ${v.keuzes.slice(0, -1).map((n) => g(n, k)).join(", ")} of ${g(v.keuzes[v.keuzes.length - 1], k)}?`];
+    const wat = ding ? DING[ding].veel : "stippen";
     return squlaVraag<number>(l, {
       toon: () => toon(l, st, toneel, { som: somInBeeld }),
       vraag,
@@ -221,12 +225,12 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x, k),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}`, grijs: v.b });
-        if (dier && v.t !== "kaal") await l.zeg(`Ja! Er blijven ${g(u, k)} ${DIER[dier].veel} over.`);
+        if (ding && v.t !== "kaal") await l.zeg(`Ja! Er blijven ${g(u, k)} ${DING[ding].veel} over.`);
         else await l.zeg(`Ja! ${somZin(v.a, v.b, k)} = ${g(u, k)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
-      samen: () => samenRekenen(l, v.a, v.b, dier ? "zee" : "stippen", k, wat),
+      samen: () => samenRekenen(l, v.a, v.b, ding ? "ruimte" : "stippen", k, wat),
       tip: rekenTip(v.a, v.b, wat),
       testAntwoord: u,
     });
@@ -235,13 +239,13 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   /* Welke som hoort bij het verhaaltje? */
   if (v.t === "welke") {
     const u = v.a - v.b;
-    const k = DIER[v.dier].kleur;
+    const k = DING[v.ding].kleur;
     const goed = somTekst(v.a, v.b);
-    const toneel = zeeToneel(st, v.dier, v.a, v.eter);
-    const verhaal = zeeVerhaal(v.dier, v.a, v.b, v.eter);
+    const toneel = ruimteToneel(st, v.ding, v.a, v.ufo);
+    const verhaal = ruimteVerhaal(v.ding, v.a, v.b, v.ufo);
     return squlaVraag<string>(l, {
       toon: () => toon(l, st, toneel),
-      vraag: [...verhaal, hoeveelOver(v.dier), "Welke som hoort hierbij?"],
+      vraag: [...verhaal, hoeveelOver(v.ding), "Welke som hoort hierbij?"],
       antwoord: async () => (await l.kies(v.keuzes.map(([a, b, t]) => somTekst(a, b, t)), { weetniet: false, direct: true })) ?? "",
       isGoed: (x) => x === goed,
       noem: (x) => x,
@@ -253,7 +257,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { grijs: 0, licht: "alle" });
-        await l.zeg(`Eerst waren er ${g(v.a, k)} ${DIER[v.dier].veel}.`, "Dat getal komt vooraan in de som.");
+        await l.zeg(`Eerst waren er ${g(v.a, k)} ${DING[v.ding].veel}.`, "Dat getal komt vooraan in de som.");
         zet(l, { licht: null, grijs: v.b });
         if (v.keuzes.some(([, , t]) => t === "+")) await l.zeg("Er gaan er een paar weg.", "Dus het is een minsom.");
         await l.wacht(Math.min(v.b, 10) * 260 + 300);
@@ -272,7 +276,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   if (v.t === "disco" || v.t === "typen") {
     const u = v.a - v.b;
     const luister = v.t === "disco" && v.luister;
-    const toneel: Toneel = { soort: "som", id, deco: luister ? "luister" : v.t === "typen" ? (v.deco ?? null) : null };
+    const toneel: Toneel = { soort: "som", id, deco: luister ? "luidspreker" : v.t === "typen" ? (v.deco ?? null) : null };
     const somInBeeld = luister ? null : `${v.a} − ${v.b} = ?`;
     const tip = rekenTip(v.a, v.b, "stippen");
     return squlaVraag<number>(l, {
@@ -296,13 +300,13 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     });
   }
 
-  /* Verbinden: drie sommen met visjes, drie antwoorden. */
+  /* Verbinden: drie sommen met raketjes, drie antwoorden. */
   if (v.t === "verbind") {
     const correct = v.sommen.map(([a, b]) => v.uitkomsten.indexOf(a - b));
     const toneel: Toneel = { soort: "verbind", id, sommen: v.sommen, uitkomsten: v.uitkomsten };
     let vast: (number | null)[] = [null, null, null];
     let laatsteFout = 0;
-    /* De hulp van Bliepo: op één kaartje worden visjes grijs (blijft staan tot het goed is). */
+    /* De hulp van Bliepo: bij één som worden raketjes grijs (blijft staan tot het goed is). */
     let hint: { kaart: number; n: number } | null = null;
     const stand = (actief: boolean, goed = false) => zet(l, { verbind: { actief, vast, keer: st.verbindKeer, goed, kaartGrijs: hint } });
     return squlaVraag<(number | null)[]>(l, {
@@ -346,12 +350,12 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         const [a, b] = v.sommen[laatsteFout];
         hint = null;
         stand(false);
-        await l.zeg(`Kijk naar ${somZin(a, b)}.`, `Op dat kaartje zwemmen ${g(a, "geel")} visjes.`);
+        await l.zeg(`Kijk naar ${somZin(a, b)}.`, `Daar staan ${g(a, "rood")} raketjes.`);
         hint = { kaart: laatsteFout, n: b };
         stand(false);
-        await l.zeg(`Er gaan er ${g(b, "geel")} af.`, "Tel de visjes die over zijn.", "Zoek dat getal rechts.");
+        await l.zeg(`Er gaan er ${g(b, "rood")} af.`, "Tel de raketjes die over zijn.", "Zoek dat getal rechts.");
       },
-      tip: ["Tel de visjes die niet grijs zijn."],
+      tip: ["Tel de raketjes die niet grijs zijn."],
       testAntwoord: null,
     });
   }
@@ -401,18 +405,18 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     return allesGoed;
   }
 
-  /* Bussommen: kinderen stappen uit. */
+  /* Bussommen: de bus bezorgt pakjes (bij Squla stappen er kinderen uit). */
   if (v.t === "bus") {
     const u = v.a - v.b;
     const toneel: Toneel = { soort: "bus", id, in: v.a, rondje: v.rondje };
-    const tip = rekenTip(v.a, v.b, "kinderen in de bus");
+    const tip = rekenTip(v.a, v.b, "pakjes in de bus");
     let verteld = false;
     return squlaVraag<number>(l, {
       toon: () => {
         const nieuw = st.huidig !== id;
         toon(l, st, toneel, { grijs: nieuw ? 0 : v.b });
       },
-      vraag: [`Er zitten ${g(v.a, "geel")} kinderen in de bus.`, v.b === 1 ? `${g(1, "geel")} kind stapt uit.` : `${g(v.b, "geel")} kinderen stappen uit.`, "Hoeveel kinderen zitten er nu in de bus?", ...(v.keuzes ? [] : ["Typ het getal."])],
+      vraag: [`In de bus liggen ${g(v.a, "bruin")} pakjes.`, `De bus bezorgt er ${g(v.b, "bruin")}.`, "Hoeveel pakjes liggen er nu nog in de bus?", ...(v.keuzes ? [] : ["Typ het getal."])],
       antwoord: async () => {
         /* Het beeld volgt het verhaal: eerst zitten ze er allemaal in, dan stappen ze uit. */
         if (!verteld) {
@@ -422,14 +426,14 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         return v.keuzes ? kiesGetal(l, v.keuzes) : typGetal(l, st, tip);
       },
       isGoed: (x) => x === u,
-      noem: (x) => g(x, "geel"),
+      noem: (x) => g(x, "bruin"),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}`, grijs: v.b });
-        await l.zeg(u === 1 ? `Ja! Er zit nog ${g(1, "geel")} kind in de bus.` : `Ja! Er zitten nog ${g(u, "geel")} kinderen in de bus.`);
+        await l.zeg(u === 1 ? `Ja! Er ligt nog ${g(1, "bruin")} pakje in de bus.` : `Ja! Er liggen nog ${g(u, "bruin")} pakjes in de bus.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
-      samen: () => samenRekenen(l, v.a, v.b, "bus", "geel", "kinderen in de bus"),
+      samen: () => samenRekenen(l, v.a, v.b, "bus", "bruin", "pakjes in de bus"),
       tip,
       testAntwoord: u,
     });
@@ -562,12 +566,42 @@ type MinLes = {
   eind: string;
 };
 
+/** Welke vaste plaatjes (voorwerpen) een toneel tekent. */
+function voorwerpenVanToneel(t: Toneel): string[] {
+  if (t.soort === "ruimte") return t.ufo ? [t.ding, "ufo"] : [t.ding];
+  if (t.soort === "som") return t.deco && t.deco !== "luidspreker" ? [t.deco] : [];
+  if (t.soort === "verbind") return ["raketje"];
+  if (t.soort === "bubbels") return ["zeepbel"];
+  if (t.soort === "bus") return ["bezorgbus", "pakje"];
+  if (t.soort === "bord") return ["schoolbord"];
+  if (t.soort === "bakjes") return t.ding === "beker" ? ["beker-vol", "beker-leeg"] : ["bord", "koekje"];
+  if (t.soort === "geld") return ["portemonnee", t.ding];
+  return [];
+}
+
+/** Welke vaste plaatjes een vraag tekent (voor `voorwerpen` in het draaiboek). */
+function voorwerpenVanVraag(v: Vraag): string[] {
+  if (v.t === "verhaal" || v.t === "luister") return [v.ding];
+  if (v.t === "kaal") return v.ding ? [v.ding] : v.deco ? [v.deco] : [];
+  if (v.t === "welke") return v.ufo ? [v.ding, "ufo"] : [v.ding];
+  if (v.t === "typen") return v.deco ? [v.deco] : [];
+  if (v.t === "verbind") return ["raketje"];
+  if (v.t === "bubbels") return ["zeepbel"];
+  if (v.t === "bus") return ["bezorgbus", "pakje"];
+  if (v.t === "bord") return ["schoolbord"];
+  if (v.t === "bakjes") return v.ding === "beker" ? ["beker-vol", "beker-leeg"] : ["bord", "koekje"];
+  if (v.t === "geld") return ["portemonnee", v.ding];
+  return [];
+}
+
 function minles(m: MinLes): Lesdraaiboek {
   return {
+    voorwerpen: [...new Set([...voorwerpenVanToneel(m.begin), ...m.vragen.flatMap(voorwerpenVanVraag)])],
     id: m.id,
     titel: m.titel,
     synthesis: `Squla groep 3 · Minsommen · ${m.oefening} · level ${m.level} (alleen leerdoel)`,
     indeling: "synthesis",
+    nacht: true,
     browserstem: true,
     kaarttekening: KaartMinsommen,
     async speel(l) {
@@ -585,14 +619,14 @@ function minles(m: MinLes): Lesdraaiboek {
 
 /* ---------- de korte uitleg (bij "Kun je dit al?" → Nee) ---------- */
 
-/** In de zee: dieren, een paar zwemmen weg (grijs), tel wat er over is. */
-function uitlegZee(dier: Dier, a: number, b: number) {
+/** In de ruimte: dingen, een paar gaan weg (grijs), tel wat er over is. */
+function uitlegRuimte(ding: Ding, a: number, b: number) {
   return async (l: Lesgids, st: Stand) => {
-    const k = DIER[dier].kleur;
-    const veel = DIER[dier].veel;
+    const k = DING[ding].kleur;
+    const veel = DING[ding].veel;
     const u = a - b;
-    toon(l, st, { soort: "zee", id: `uitleg-${dier}-${a}`, dier, n: a }, { som: `${a} − ${b}` });
-    await l.zeg(...zeeVerhaal(dier, a, b));
+    toon(l, st, { soort: "ruimte", id: `uitleg-${ding}-${a}`, ding, n: a }, { som: `${a} − ${b}` });
+    await l.zeg(...ruimteVerhaal(ding, a, b));
     if (overTien(a, b)) {
       const r1 = a - 10;
       await l.zeg(`Eerst gaan er ${g(r1, k)} weg.`);
@@ -612,30 +646,30 @@ function uitlegZee(dier: Dier, a: number, b: number) {
   };
 }
 
-/** De bus: alle kinderen zitten erin, een paar stappen uit. */
+/** De bus: alle pakjes liggen erin, de bus bezorgt er een paar. */
 function uitlegBus(a: number, b: number, rondje: boolean) {
   return async (l: Lesgids, st: Stand) => {
     const u = a - b;
+    const k = "bruin";
     toon(l, st, { soort: "bus", id: `uitleg-bus-${a}`, in: a, rondje }, { grijs: 0 });
-    await l.zeg(`Er zitten ${g(a, "geel")} kinderen in de bus.`);
+    await l.zeg(`In de bus liggen ${g(a, k)} pakjes.`, `De bus bezorgt er ${g(b, k)}.`);
     if (overTien(a, b)) {
       const r1 = a - 10;
-      await l.zeg(`Er stappen ${g(b, "geel")} kinderen uit.`, `Eerst stappen er ${g(r1, "geel")} uit.`);
+      await l.zeg(`Eerst gaan er ${g(r1, k)} uit.`);
       zet(l, { grijs: r1 });
       await l.wacht(r1 * 260 + 300);
-      await l.zeg(`Dan zitten er nog ${g(10, "geel")} in.`, `Daarna stappen er nog ${g(b - r1, "geel")} uit.`);
+      await l.zeg(`Dan liggen er nog ${g(10, k)} in.`, `Daarna gaan er nog ${g(b - r1, k)} uit.`);
       zet(l, { grijs: b });
       await l.wacht((b - r1) * 260 + 300);
     } else {
-      await l.zeg(`${g(b, "geel")} kinderen stappen uit.`);
       zet(l, { grijs: b });
       await l.wacht(b * 260 + 300);
     }
-    if (rondje) await l.zeg("Het rode rondje zegt hoeveel kinderen er uitstappen.");
+    if (rondje) await l.zeg("Het rode rondje zegt hoeveel pakjes er bezorgd zijn.");
     zet(l, { licht: "over" });
-    await l.zeg(`Nu zitten er nog ${g(u, "geel")} kinderen in de bus.`);
+    await l.zeg(`Nu liggen er nog ${g(u, k)} pakjes in de bus.`);
     zet(l, { licht: null, som: `${a} − ${b} = ${u}` });
-    await l.zeg(`Dat is de minsom ${somZin(a, b, "geel")} = ${g(u, "geel")}.`);
+    await l.zeg(`Dat is de minsom ${somZin(a, b, k)} = ${g(u, k)}.`);
   };
 }
 
@@ -700,91 +734,91 @@ function uitlegGeld(heb: Geld[], prijs: Geld[], ding: Speelgoed) {
    Minsommen, onderwater (16055)
    ===================================================================== */
 
-const ZEE_WELKOM = ["Hoi!", "We gaan naar de zee.", "Er zwemmen dieren weg.", "Hoeveel blijven er over?", "Dat noem je ook wel aftrekken."];
+const RUIMTE_WELKOM = ["Hoi!", "We gaan naar de ruimte.", "Er gaan dingen weg.", "Hoeveel blijven er over?", "Dat noem je ook wel aftrekken."];
 
-const zee1 = minles({
-  id: "squla-min-zee-1",
-  titel: "Minsommen in de zee",
+const ruimte1 = minles({
+  id: "squla-min-ruimte-1",
+  titel: "Minsommen in de ruimte",
   oefening: "Minsommen (onderwater)",
   level: 1,
-  welkom: ZEE_WELKOM,
-  begin: { soort: "zee", id: "uitleg-visje-6", dier: "visje", n: 6 },
-  uitleg: uitlegZee("visje", 6, 2),
+  welkom: RUIMTE_WELKOM,
+  begin: { soort: "ruimte", id: "uitleg-raketje-6", ding: "raketje", n: 6 },
+  uitleg: uitlegRuimte("raketje", 6, 2),
   /* Level 1: tot en met 10, eraf 1 t/m 6; verhaal, verhaal, kaal, kaal, welke som, welke som, disco, verbinden, verhaal, en daarna nog eens dezelfde soorten. */
   vragen: [
-    { t: "verhaal", dier: "kwal", a: 7, b: 4, keuzes: [3, 2, 4, 11] },
-    { t: "verhaal", dier: "krab", a: 9, b: 5, keuzes: [5, 4, 14, 3] },
-    { t: "kaal", dier: "dolfijn", a: 8, b: 3, keuzes: [6, 5, 11, 4] },
-    { t: "kaal", deco: "walvis", a: 10, b: 6, keuzes: [4, 3, 16, 5] },
-    { t: "welke", dier: "zeester", a: 8, b: 3, eter: "inktvis", keuzes: [[5, 3], [8, 3], [8, 2], [5, 2]] },
-    { t: "welke", dier: "schildpad", a: 9, b: 2, keuzes: [[9, 3], [7, 2], [9, 2], [7, 3]] },
+    { t: "verhaal", ding: "ballon", a: 7, b: 4, keuzes: [3, 2, 4, 11] },
+    { t: "verhaal", ding: "zeepbel", a: 9, b: 5, keuzes: [5, 4, 14, 3] },
+    { t: "kaal", ding: "komeet", a: 8, b: 3, keuzes: [6, 5, 11, 4] },
+    { t: "kaal", deco: "komeet", a: 10, b: 6, keuzes: [4, 3, 16, 5] },
+    { t: "welke", ding: "ster", a: 8, b: 3, ufo: true, keuzes: [[5, 3], [8, 3], [8, 2], [5, 2]] },
+    { t: "welke", ding: "satelliet", a: 9, b: 2, keuzes: [[9, 3], [7, 2], [9, 2], [7, 3]] },
     { t: "disco", a: 7, b: 5, keuzes: [2, 5, 3] },
     { t: "verbind", sommen: [[6, 5], [9, 6], [8, 4]], uitkomsten: [4, 1, 3] },
-    { t: "verhaal", dier: "zeepaardje", a: 6, b: 1, keuzes: [4, 5, 7, 6] },
-    { t: "verhaal", dier: "visje", a: 10, b: 3, keuzes: [7, 13, 6, 8] },
-    { t: "kaal", dier: "krab", a: 9, b: 4, keuzes: [5, 13, 4, 6] },
-    { t: "welke", dier: "dolfijn", a: 7, b: 4, keuzes: [[6, 4], [7, 4], [7, 3], [4, 3]] },
+    { t: "verhaal", ding: "ufo", a: 6, b: 1, keuzes: [4, 5, 7, 6] },
+    { t: "verhaal", ding: "raketje", a: 10, b: 3, keuzes: [7, 13, 6, 8] },
+    { t: "kaal", ding: "zeepbel", a: 9, b: 4, keuzes: [5, 13, 4, 6] },
+    { t: "welke", ding: "komeet", a: 7, b: 4, keuzes: [[6, 4], [7, 4], [7, 3], [4, 3]] },
     { t: "disco", a: 10, b: 2, keuzes: [8, 7, 9] },
-    { t: "kaal", dier: "zeepaardje", a: 5, b: 3, keuzes: [3, 2, 8, 1] },
-    { t: "verhaal", dier: "kwal", a: 8, b: 6, keuzes: [2, 14, 3, 1] },
+    { t: "kaal", ding: "ufo", a: 5, b: 3, keuzes: [3, 2, 8, 1] },
+    { t: "verhaal", ding: "ballon", a: 8, b: 6, keuzes: [2, 14, 3, 1] },
   ],
   eind: "Je kunt minsommen maken tot {10:wit}.",
 });
 
-const zee2 = minles({
-  id: "squla-min-zee-2",
-  titel: "Minsommen in de zee (moeilijker)",
+const ruimte2 = minles({
+  id: "squla-min-ruimte-2",
+  titel: "Minsommen in de ruimte (moeilijker)",
   oefening: "Minsommen (onderwater)",
   level: 2,
-  welkom: ZEE_WELKOM,
-  begin: { soort: "zee", id: "uitleg-visje-15", dier: "visje", n: 15 },
-  uitleg: uitlegZee("visje", 15, 3),
+  welkom: RUIMTE_WELKOM,
+  begin: { soort: "ruimte", id: "uitleg-raketje-15", ding: "raketje", n: 15 },
+  uitleg: uitlegRuimte("raketje", 15, 3),
   /* Level 2: start 12 t/m 19, eraf 0 t/m 7, niet over het tiental; 3 keuzes; luistervragen, typen en bubbels erbij. */
   vragen: [
-    { t: "verhaal", dier: "visje", a: 14, b: 3, keuzes: [11, 12, 10] },
-    { t: "welke", dier: "zeepaardje", a: 16, b: 3, keuzes: [[13, 3], [16, 3], [16, 3, "+"]] },
-    { t: "verhaal", dier: "krab", a: 19, b: 6, keuzes: [13, 14, 11] },
-    { t: "luister", dier: "kwal", a: 15, b: 1, keuzes: [16, 14, 13] },
-    { t: "luister", dier: "zeester", a: 17, b: 5, keuzes: [12, 11, 13] },
-    { t: "welke", dier: "visje", a: 18, b: 5, eter: "walvis", keuzes: [[18, 5], [18, 6], [18, 2]] },
-    { t: "welke", dier: "krab", a: 14, b: 2, eter: "inktvis", keuzes: [[14, 2], [14, 1], [12, 2], [13, 2]] },
+    { t: "verhaal", ding: "raketje", a: 14, b: 3, keuzes: [11, 12, 10] },
+    { t: "welke", ding: "ufo", a: 16, b: 3, keuzes: [[13, 3], [16, 3], [16, 3, "+"]] },
+    { t: "verhaal", ding: "zeepbel", a: 19, b: 6, keuzes: [13, 14, 11] },
+    { t: "luister", ding: "ballon", a: 15, b: 1, keuzes: [16, 14, 13] },
+    { t: "luister", ding: "ster", a: 17, b: 5, keuzes: [12, 11, 13] },
+    { t: "welke", ding: "ster", a: 18, b: 5, ufo: true, keuzes: [[18, 5], [18, 6], [18, 2]] },
+    { t: "welke", ding: "satelliet", a: 14, b: 2, ufo: true, keuzes: [[14, 2], [14, 1], [12, 2], [13, 2]] },
     { t: "disco", a: 17, b: 4, keuzes: [13, 14, 11] },
-    { t: "typen", a: 19, b: 7, deco: "schildpad" },
+    { t: "typen", a: 19, b: 7, deco: "satelliet" },
     { t: "bubbels", sommen: [[17, 17], [9, 8], [6, 6], [14, 4], [13, 13], [15, 0]] },
-    { t: "verhaal", dier: "schildpad", a: 15, b: 2, keuzes: [13, 12, 17] },
-    { t: "welke", dier: "dolfijn", a: 13, b: 2, keuzes: [[13, 2, "+"], [11, 2], [13, 2]] },
-    { t: "luister", dier: "visje", a: 18, b: 4, keuzes: [14, 15, 12] },
+    { t: "verhaal", ding: "satelliet", a: 15, b: 2, keuzes: [13, 12, 17] },
+    { t: "welke", ding: "komeet", a: 13, b: 2, keuzes: [[13, 2, "+"], [11, 2], [13, 2]] },
+    { t: "luister", ding: "raketje", a: 18, b: 4, keuzes: [14, 15, 12] },
     { t: "disco", a: 16, b: 5, keuzes: [10, 11, 12] },
-    { t: "typen", a: 17, b: 6, deco: "dolfijn" },
+    { t: "typen", a: 17, b: 6, deco: "raketje" },
   ],
   eind: "Je kunt minsommen maken tot {20:wit}.",
 });
 
-const zee3 = minles({
-  id: "squla-min-zee-3",
-  titel: "Minsommen in de zee (nog moeilijker)",
+const ruimte3 = minles({
+  id: "squla-min-ruimte-3",
+  titel: "Minsommen in de ruimte (nog moeilijker)",
   oefening: "Minsommen (onderwater)",
   level: 3,
-  welkom: ["Hoi!", "We gaan weer naar de zee.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest eraf."],
-  begin: { soort: "zee", id: "uitleg-visje-13", dier: "visje", n: 13 },
-  uitleg: uitlegZee("visje", 13, 5),
+  welkom: ["Hoi!", "We gaan weer naar de ruimte.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest eraf."],
+  begin: { soort: "ruimte", id: "uitleg-raketje-13", ding: "raketje", n: 13 },
+  uitleg: uitlegRuimte("raketje", 13, 5),
   /* Level 3: start 11 t/m 19, over het tiental terug, plus "alles eraf" en "niets eraf". */
   vragen: [
-    { t: "verhaal", dier: "visje", a: 13, b: 6, keuzes: [7, 19, 8, 6] },
-    { t: "verhaal", dier: "kwal", a: 15, b: 7, keuzes: [9, 8, 7, 6] },
-    { t: "verhaal", dier: "krab", a: 12, b: 5, keuzes: [8, 17, 7, 6] },
-    { t: "verhaal", dier: "visje", a: 17, b: 8, keuzes: [10, 9, 8, 11] },
-    { t: "verhaal", dier: "zeepaardje", a: 14, b: 6, keuzes: [9, 8, 20, 7] },
-    { t: "welke", dier: "visje", a: 16, b: 16, eter: "walvis", keuzes: [[16, 0], [16, 16], [16, 6], [16, 1]] },
-    { t: "welke", dier: "kwal", a: 18, b: 0, eter: "inktvis", keuzes: [[18, 18], [18, 0], [18, 8], [18, 10]] },
+    { t: "verhaal", ding: "raketje", a: 13, b: 6, keuzes: [7, 19, 8, 6] },
+    { t: "verhaal", ding: "ballon", a: 15, b: 7, keuzes: [9, 8, 7, 6] },
+    { t: "verhaal", ding: "zeepbel", a: 12, b: 5, keuzes: [8, 17, 7, 6] },
+    { t: "verhaal", ding: "raketje", a: 17, b: 8, keuzes: [10, 9, 8, 11] },
+    { t: "verhaal", ding: "ufo", a: 14, b: 6, keuzes: [9, 8, 20, 7] },
+    { t: "welke", ding: "ster", a: 16, b: 16, ufo: true, keuzes: [[16, 0], [16, 16], [16, 6], [16, 1]] },
+    { t: "welke", ding: "satelliet", a: 18, b: 0, ufo: true, keuzes: [[18, 18], [18, 0], [18, 8], [18, 10]] },
     { t: "disco", a: 12, b: 8, keuzes: [4, 5, 3] },
     { t: "disco", a: 17, b: 9, keuzes: [9, 8, 7] },
     { t: "typen", a: 14, b: 9 },
-    { t: "verhaal", dier: "schildpad", a: 11, b: 3, keuzes: [8, 14, 9, 7] },
-    { t: "welke", dier: "krab", a: 13, b: 4, eter: "inktvis", keuzes: [[13, 3], [13, 4], [12, 4], [9, 4]] },
+    { t: "verhaal", ding: "satelliet", a: 11, b: 3, keuzes: [8, 14, 9, 7] },
+    { t: "welke", ding: "ster", a: 13, b: 4, ufo: true, keuzes: [[13, 3], [13, 4], [12, 4], [9, 4]] },
     { t: "disco", a: 15, b: 9, keuzes: [5, 7, 6] },
     { t: "typen", a: 16, b: 7 },
-    { t: "verhaal", dier: "dolfijn", a: 16, b: 8, keuzes: [9, 8, 7, 6] },
+    { t: "verhaal", ding: "komeet", a: 16, b: 8, keuzes: [9, 8, 7, 6] },
   ],
   eind: "Je rekent terug over de {10:wit}.",
 });
@@ -793,7 +827,7 @@ const zee3 = minles({
    Bussommen 1 (7275) en Bussommen 2 (7276)
    ===================================================================== */
 
-const BUS_WELKOM = ["Hoi!", "Kijk, een bus vol kinderen.", "Er stappen kinderen uit.", "Hoeveel zitten er dan nog in de bus?"];
+const BUS_WELKOM = ["Hoi!", "Kijk, een bus vol pakjes.", "De bus bezorgt pakjes.", "Hoeveel liggen er dan nog in de bus?"];
 const bus = (a: number, b: number, rondje = false, keuzes?: number[]): Vraag => ({ t: "bus", a, b, rondje, keuzes });
 
 const bus11 = minles({
@@ -827,7 +861,7 @@ const bus13 = minles({
   titel: "Bussommen (nog moeilijker)",
   oefening: "Bussommen 1",
   level: 3,
-  welkom: ["Hoi!", "Weer een bus vol kinderen.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
+  welkom: ["Hoi!", "Weer een bus vol pakjes.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
   begin: { soort: "bus", id: "uitleg-bus-13", in: 13, rondje: false },
   uitleg: uitlegBus(13, 5, false),
   /* Level 3 "over het 10-tal": alleen typen, start 12 t/m 18, eraf 4 t/m 9, uitkomst onder de 10. */
@@ -835,7 +869,7 @@ const bus13 = minles({
   eind: "Je rekent terug over de {10:wit}.",
 });
 
-const BUS2_WELKOM = ["Hoi!", "Kijk, een bus vol kinderen.", "Het rode rondje zegt hoeveel er uitstappen.", "Hoeveel zitten er dan nog in de bus?"];
+const BUS2_WELKOM = ["Hoi!", "Kijk, een bus vol pakjes.", "Het rode rondje zegt hoeveel pakjes er bezorgd zijn.", "Hoeveel liggen er dan nog in de bus?"];
 
 const bus21 = minles({
   id: "squla-min-bus2-1",
@@ -845,7 +879,7 @@ const bus21 = minles({
   welkom: BUS2_WELKOM,
   begin: { soort: "bus", id: "uitleg-bus-6", in: 6, rondje: true },
   uitleg: uitlegBus(6, 2, true),
-  /* Level 1 "tot 10": eerst kiezen uit 3, één keer met kinderen buiten, verder het rode rondje; typen. */
+  /* Level 1 "tot 10": eerst kiezen uit 3, één keer met de pakjes buiten, verder het rode rondje; typen. */
   vragen: [
     bus(10, 7, true, [3, 7, 10]),
     bus(7, 4, false),
@@ -884,7 +918,7 @@ const bus23 = minles({
   titel: "Bussommen met een rondje (nog moeilijker)",
   oefening: "Bussommen 2",
   level: 3,
-  welkom: ["Hoi!", "Weer een bus vol kinderen.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
+  welkom: ["Hoi!", "Weer een bus vol pakjes.", "Nu gaan we over de {10:wit} heen.", "Eerst terug naar {10:wit}, dan de rest."],
   begin: { soort: "bus", id: "uitleg-bus-13", in: 13, rondje: true },
   uitleg: uitlegBus(13, 5, true),
   /* Level 3 "over het 10-tal": alleen typen, start 11 t/m 19, eraf 6 t/m 10, uitkomst onder de 10. */
@@ -1050,4 +1084,4 @@ const kaal3 = minles({
   eind: "Je rekent terug over de {10:wit}.",
 });
 
-export const LESSEN_SQULA_MINSOMMEN: Lesdraaiboek[] = [zee1, zee2, zee3, bus11, bus12, bus13, bus21, bus22, bus23, mach1, mach2, mach3, mach4, kaal1, kaal2, kaal3];
+export const LESSEN_SQULA_MINSOMMEN: Lesdraaiboek[] = [ruimte1, ruimte2, ruimte3, bus11, bus12, bus13, bus21, bus22, bus23, mach1, mach2, mach3, mach4, kaal1, kaal2, kaal3];

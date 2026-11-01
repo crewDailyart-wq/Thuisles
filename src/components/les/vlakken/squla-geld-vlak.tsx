@@ -2,50 +2,56 @@
 
 /**
  * Het speelvlak van de lessen Geld naar Squla (31 oktober 2026), in Phaser
- * (HARDE REGEL 7), in de vlakke, vriendelijke stijl van Bliepo
- * (bliepo-voorwerpen.ts: geen gloed).
+ * (HARDE REGEL 7), in de stijl van Synthesis (besluit Sara 31 okt): donkere
+ * ruimte (de les staat op `nacht`), alles staat LOS in de ruimte, zonder
+ * kaders, kaartjes of vakken eromheen. Gloed alleen op het moment dat het iets
+ * betekent: Bliepo telt mee of wijst aan (warm), goed (groen), fout (rood).
+ * De gloed wordt één keer gebakken (holo/basis.ts `bak`), nooit elk beeld.
  *
- * MUNTEN EN BRIEFJES zijn altijd de officiële afbeeldingen uit public/geld/
- * (ECB; zie BRON.md daar): niet bewerkt, niet vergroot, nooit op ware grootte.
- * Een munt wordt rond afgesneden (zoals in oefenen/Geld.tsx), zodat het witte
- * vlak eromheen niet als vierkant in beeld staat. Alleen wat nodig is wordt
- * geladen, en pas als het vlak al in beeld staat.
+ * MUNTEN EN BRIEFJES zijn altijd de officiële afbeeldingen (ECB; zie
+ * public/geld/BRON.md): munten uit public/geld/los/ (alleen de ronde munt),
+ * briefjes de specimen-briefjes zoals ze zijn, zonder rand of kader. Niet
+ * vergroot, nooit op ware grootte (een briefje is hooguit 170 punten breed).
+ *
+ * Andere dingen (spaarpot, speelgoed, klusjes) zijn vaste voorwerpen
+ * (src/lib/voorwerpen, public/voorwerpen/<naam>.png; zie WISSELEN.md). Het
+ * lesscherm laadt ze vooraf via `voorwerpen` in het draaiboek; dit vlak tekent
+ * ze met tekenVoorwerp. Nooit een eigen getekende versie van een ding.
  *
  * Wat het draaiboek zet:
- * - `groot`: bovenaan een tafereel uit delen naast elkaar: een tekening (met of
- *   zonder prijskaartje), geld (met of zonder kruisje erdoor), een pijl, een plus;
- * - `kaarten`: kaartjes om aan te tikken, met geld, een tekening of een woord;
- *   `bubbels`: de kaartjes zijn bellen die zacht dobberen;
- *   `uit` (vaag), `goed` (groene rand), `fout` (rode rand), `licht` (gele rand);
- * - `verbind`: twee vakken links en twee rechts met een bolletje; het kind
- *   trekt een lijn (of tikt het ene en dan het andere vak);
- * - `geteld`: Bliepo telt het geld in een kaartje of deel: een gele ring om
- *   wat hij nu telt en bovenaan het bedrag tot nu toe.
+ * - `groot`: bovenaan een tafereel uit delen naast elkaar: een ding (met of
+ *   zonder prijsbordje), geld (met of zonder kruis erdoor), een pijl, een plus;
+ * - `kaarten`: dingen om aan te tikken: een groepje geld, of een ding (`aantal`
+ *   keer); `zweven` = ze dobberen zacht door de ruimte;
+ *   `uit` (vaag), `goed` (groene gloed), `fout` (rode gloed), `licht` (warme gloed);
+ * - `verbind`: links twee groepjes geld, rechts twee bedragen of groepjes, elk
+ *   met een bolletje; het kind trekt een lijn (of tikt het ene en dan het andere);
+ * - `geteld`: Bliepo telt het geld: wat hij telt licht op, en erboven staat
+ *   het bedrag tot nu toe.
  *
  * Meldingen: `kaart` {id}, `links` {id}, `rechts` {id}, `lijn` {links, rechts}.
  *
  * Voor het toetsenbord en de automatische test ligt over elk tikbaar ding een
- * onzichtbare knop (`data-ding`), die precies hetzelfde meldt. Kaartjes met
- * geld worden NIET voorgelezen (dat zou het antwoord verklappen); kaartjes met
- * een tekening of woord wel, als ze een `zeg` hebben.
+ * onzichtbare knop (`data-ding`), die precies hetzelfde meldt. Geld wordt NIET
+ * voorgelezen (dat zou het antwoord verklappen); dingen wel, als ze een `zeg` hebben.
  */
 
 import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
-import { TX, VLAK_B, VLAK_H } from "../holo/basis";
+import { GOED, holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
-import { bliepoBasis, PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
-import { TEKENINGEN } from "./squla-geld-tekeningen";
+import { PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
+import { tekenVoorwerp, voorwerpUrl } from "../voorwerpen";
 import { WAARDE, isBriefje, type GeldSoort } from "./squla-geld-soorten";
 import { haalKeuzesAlvast, zegKeuze } from "@/lib/stem";
 import s from "./squla-geld.module.css";
 
-/* ---------- het geld ---------- */
+/* ---------- het geld en de plaatjes ---------- */
 
 const BESTAND: Record<GeldSoort, string> = {
-  c50: "/geld/munt-50-cent.jpg",
-  m1: "/geld/munt-1-euro.jpg",
-  m2: "/geld/munt-2-euro.jpg",
+  c50: "/geld/los/munt-50-cent.png",
+  m1: "/geld/los/munt-1-euro.png",
+  m2: "/geld/los/munt-2-euro.png",
   b5: "/geld/briefje-5-euro.jpg",
   b10: "/geld/briefje-10-euro.jpg",
   b20: "/geld/briefje-20-euro.jpg",
@@ -53,35 +59,42 @@ const BESTAND: Record<GeldSoort, string> = {
   b100: "/geld/briefje-100-euro.jpg",
 };
 
-const BEELD = new Map<GeldSoort, HTMLImageElement>();
-const LADEN = new Map<GeldSoort, Promise<void>>();
+/** Geladen afbeeldingen: geld op zijn soort, proefplaatjes als "p:<sleutel>" (null = er is (nog) geen PNG). */
+const BEELD = new Map<string, HTMLImageElement | null>();
+const LADEN = new Map<string, Promise<void>>();
+
+function laad(sleutel: string, pad: string): Promise<void> {
+  let p = LADEN.get(sleutel);
+  if (!p) {
+    p = new Promise<void>((klaar) => {
+      const img = new Image();
+      img.decoding = "async";
+      img.onload = () => {
+        BEELD.set(sleutel, img);
+        klaar();
+      };
+      img.onerror = () => {
+        BEELD.set(sleutel, null);
+        klaar();
+      };
+      img.src = pad;
+    });
+    LADEN.set(sleutel, p);
+  }
+  return p;
+}
 
 /** De officiële afbeeldingen laden (elk één keer). */
 export function laadGeld(soorten: GeldSoort[]): Promise<void> {
-  return Promise.all(
-    [...new Set(soorten)].map((g) => {
-      let p = LADEN.get(g);
-      if (!p) {
-        p = new Promise<void>((klaar) => {
-          const img = new Image();
-          img.decoding = "async";
-          img.onload = () => {
-            BEELD.set(g, img);
-            klaar();
-          };
-          img.onerror = () => klaar();
-          img.src = BESTAND[g];
-        });
-        LADEN.set(g, p);
-      }
-      return p;
-    }),
-  ).then(() => undefined);
+  return Promise.all([...new Set(soorten)].map((g) => laad(g, BESTAND[g]))).then(() => undefined);
 }
+
+/** De maat waarin een voorwerp getekend wordt (de plaatjes zijn vierkant). */
+const DING = { b: 170, h: 170 };
 
 /* ---------- wat het draaiboek zet ---------- */
 
-export type GKaart = { id: string; geld?: GeldSoort[]; tekening?: string; label?: string; zeg?: string };
+export type GKaart = { id: string; geld?: GeldSoort[]; tekening?: string; aantal?: number; label?: string; zeg?: string };
 
 export type GDeel =
   | { soort: "tekening"; id?: string; tekening: string; prijs?: number }
@@ -106,7 +119,8 @@ export type GeldProps = {
   groot?: GDeel[] | null;
   kaarten?: GKaart[];
   kaartenActief?: boolean;
-  bubbels?: boolean;
+  /** De dingen zweven los door de ruimte en dobberen zacht (de munten om aan te tikken). */
+  zweven?: boolean;
   uit?: string[];
   goed?: string[];
   fout?: string[];
@@ -185,7 +199,7 @@ export function rij(n: number, b: number, tussen: number, y: number, h: number):
 
 /** Hoeveel groter geld in het tafereel bovenaan staat dan zijn basismaat. */
 const GROOT_GELD = 1.3;
-const PRIJS_B = 104;
+const PRIJS_B = 124;
 const PRIJS_H = 58;
 
 type GrootPlek = { deel: GDeel; r: Rect; k: number; id: string };
@@ -193,10 +207,8 @@ type Indeling = { groot: GrootPlek[]; kaarten: Rect[]; links: Rect[]; rechts: Re
 
 function deelMaat(d: GDeel): { b: number; h: number } {
   if (d.soort === "tekening") {
-    const t = TEKENINGEN[d.tekening];
-    const b = t?.b ?? 120;
-    const h = t?.h ?? 120;
-    return d.prijs != null ? { b: b + PRIJS_B * 0.8, h: Math.max(h, PRIJS_H) } : { b, h };
+    const { b, h } = DING;
+    return d.prijs != null ? { b: b + PRIJS_B * 0.8 + 10, h: Math.max(h, PRIJS_H) } : { b, h };
   }
   if (d.soort === "geld") {
     /* Geld in het tafereel iets groter dan in een kaartje: het is het onderwerp van de vraag. */
@@ -211,7 +223,7 @@ export function indeling(p: GeldProps): Indeling {
   const metGroot = !!p.groot?.length && !p.verbind;
   let kaarten: Rect[] = [];
   let onder = 700;
-  if (n && p.bubbels) {
+  if (n && p.zweven) {
     const xs = [190, 490, 790];
     const dx = [-14, 18, -6, 10, -18, 14];
     const dy = [-8, 26, -18, 18, -10, 24];
@@ -275,16 +287,19 @@ interface GeldScene {
   speelHandje(): void;
 }
 
-type Soort = "kaart" | "links" | "rechts" | "groot";
-type Ding = { box: Box; ring: Img; r: Rect; rond: boolean; zeg: string | null; soort: Soort; id: string; plekken: Plek[]; geldBeelden: Img[] };
+type Gloed = "warm" | "goed" | "fout";
+const GLOEDKLEUR: Record<Gloed, number> = { warm: WARM, goed: GOED, fout: 0xff7b7b };
+const LIJNKLEUR: Record<Gloed | "leeg", number> = { warm: 0xffd36e, goed: 0x8ff0c0, fout: 0xff7b7b, leeg: 0xbfe6ff };
 
-const RING = { geel: PALET.geel, groen: "#3fbf6a", rood: "#e8453c" } as const;
-const BEL = "#dff3ff";
+/** Eén plaatje in een ding (een munt, een briefje, een speelgoedje), met zijn gloed (alleen als hij aan is). */
+type Stuk = { im: Img; tex: string; gloed: Img | null; kleur: Gloed | null };
+type Soort = "kaart" | "links" | "rechts" | "groot";
+type Ding = { box: Box; r: Rect; zeg: string | null; soort: Soort; id: string; plekken: Plek[]; stukken: Stuk[]; geldStukken: Stuk[] };
 
 let LETTER = "system-ui, sans-serif";
 
 function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
-  const Basis = bliepoBasis(Phaser, rustig);
+  const Basis = holoBasis(Phaser, rustig);
   class Geld extends Basis implements GeldScene {
     melder: (g: Vlakgebeurtenis) => void = () => {};
     p: GeldProps | null = null;
@@ -295,7 +310,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     alles: import("phaser").GameObjects.GameObject[] = [];
     lijnen: import("phaser").GameObjects.Graphics | null = null;
     trek: import("phaser").GameObjects.Graphics | null = null;
-    telRing: Img | null = null;
+    telStuk: Stuk | null = null;
     telBadge: Img | null = null;
     druk: { d: Ding; x0: number; y0: number; sleept: boolean; lang: boolean } | null = null;
     zweef: string | null = null;
@@ -318,73 +333,38 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     /* ---------- plaatjes ---------- */
 
-    /** Een munt of briefje, één keer klaargezet (verkleind, nooit vergroot). */
+    /** Een munt of briefje, één keer klaargezet (verkleind, nooit vergroot), zonder rand of kader. */
     geldPlaatje(g: GeldSoort) {
       const sl = `geld|${g}`;
       if (this.textures.exists(sl)) return sl;
-      const img = BEELD.get(g);
+      const img = BEELD.get(g) ?? null;
       const brief = isBriefje(g);
-      const verh = img && brief ? img.naturalWidth / img.naturalHeight : 1.9;
+      const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
       const b = brief ? 260 : 140;
-      const h = brief ? Math.round(b / verh) : 140;
+      const h = Math.round(b / verh);
       this.canvasPlaatje(sl, b, h, (c) => {
-        c.save();
-        c.beginPath();
-        if (brief) c.roundRect(1, 1, b - 2, h - 2, 6);
-        else c.arc(b / 2, h / 2, b / 2 - 2, 0, Math.PI * 2);
-        c.clip();
         if (img) c.drawImage(img, 0, 0, b, h);
-        else {
-          c.fillStyle = "#d9dde6";
-          c.fillRect(0, 0, b, h);
-        }
-        c.restore();
-        c.strokeStyle = PALET.navy;
-        c.lineWidth = 2.5;
-        c.beginPath();
-        if (brief) c.roundRect(1.5, 1.5, b - 3, h - 3, 6);
-        else c.arc(b / 2, h / 2, b / 2 - 2, 0, Math.PI * 2);
-        c.stroke();
       });
       return sl;
     }
 
-    tekeningOp(c: CanvasRenderingContext2D, sl: string, x: number, y: number, b: number, h: number) {
-      const t = TEKENINGEN[sl];
-      if (!t) return;
-      const k = Math.min(b / t.b, h / t.h);
-      c.save();
-      c.translate(x + (b - t.b * k) / 2, y + (h - t.h * k) / 2);
-      c.scale(k, k);
-      tekenVormen(c, t.vormen);
-      c.restore();
-    }
-
-    kaartPlaatje(d: GKaart, b: number, h: number, bel: boolean) {
-      const sl = `gk|${bel ? "bel" : "kaart"}|${d.tekening ?? ""}|${d.label ?? ""}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, b, h, (c) => {
-        if (bel) {
-          tekenVormen(c, [{ d: cirkel(b / 2, h / 2, b / 2 - 4), vul: BEL, rand: PALET.navy, dik: 4 }]);
-          tekenVormen(c, [{ d: `M ${b * 0.22} ${h * 0.36} A ${b * 0.34} ${h * 0.34} 0 0 1 ${b * 0.42} ${h * 0.16}`, rand: "#ffffff", dik: 7 }]);
-        } else tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, 18), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
-        if (d.tekening) {
-          const m = bel ? b * 0.2 : 22;
-          this.tekeningOp(c, d.tekening, m, m, b - m * 2, h - m * 2);
-        }
-        if (d.label) {
-          c.font = `800 ${d.label.length > 6 ? 40 : 54}px ${LETTER}`;
-          c.textAlign = "center";
-          c.textBaseline = "middle";
-          c.fillStyle = PALET.navy;
-          c.fillText(d.label, b / 2, h / 2 + 2, b - 24);
-        }
-      });
+    /** Een voorwerp (vast plaatje uit public/voorwerpen), één keer op dubbele scherpte in een textuur. */
+    dingPlaatje(naam: string) {
+      const sl = `ding|${naam}`;
+      if (this.textures.exists(sl)) return sl;
+      this.canvasPlaatje(sl, DING.b, DING.h, (c) => tekenVoorwerp(c, naam, 0, 0, DING.b, DING.h));
       return sl;
     }
 
-    grootPlaatje(sleutel: string, b: number, h: number) {
-      const sl = `gg|${sleutel}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, Math.ceil(b), Math.ceil(h), (c) => this.tekeningOp(c, sleutel, 0, 0, b, h));
+    tekstPlaatje(tekst: string) {
+      const sl = `gtk|${tekst}`;
+      this.canvasPlaatje(sl, 220, 110, (c) => {
+        c.font = `800 72px ${LETTER}`;
+        c.textAlign = "center";
+        c.textBaseline = "middle";
+        c.fillStyle = "#ffffff";
+        c.fillText(tekst, 110, 58, 210);
+      });
       return sl;
     }
 
@@ -399,7 +379,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         c.textAlign = "center";
         c.textBaseline = "middle";
         c.fillStyle = PALET.navy;
-        c.fillText(`€ ${prijs}`, 62, PRIJS_H / 2 + 2);
+        c.fillText(`€ ${prijs}`, (30 + PRIJS_B - 4) / 2, PRIJS_H / 2 + 2, PRIJS_B - 38);
       });
       return sl;
     }
@@ -411,17 +391,6 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           soort === "pijl"
             ? { d: "M 6 22 H 50 V 8 L 80 30 L 50 52 V 38 H 6 Z", vul: PALET.warmwit, rand: PALET.navy, dik: 3.5 }
             : { d: "M 34 10 H 50 V 22 H 62 V 38 H 50 V 50 H 34 V 38 H 22 V 22 H 34 Z", vul: PALET.warmwit, rand: PALET.navy, dik: 3.5 },
-        ]),
-      );
-      return sl;
-    }
-
-    ringPlaatje(kleur: keyof typeof RING, b: number, h: number, rond: boolean) {
-      const sl = `gr|${kleur}|${rond ? "o" : "k"}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, b + 20, h + 20, (c) =>
-        tekenVormen(c, [
-          { d: rond ? cirkel(b / 2 + 10, h / 2 + 10, b / 2 + 4) : blok(5, 5, b + 10, h + 10, 22), rand: PALET.navy, dik: 10 },
-          { d: rond ? cirkel(b / 2 + 10, h / 2 + 10, b / 2 + 4) : blok(5, 5, b + 10, h + 10, 22), rand: RING[kleur], dik: 6.5 },
         ]),
       );
       return sl;
@@ -446,10 +415,28 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.canvasPlaatje(sl, 100, 100, (c) =>
         tekenVormen(c, [
           { d: "M 14 14 L 86 86 M 86 14 L 14 86", rand: PALET.navy, dik: 15 },
-          { d: "M 14 14 L 86 86 M 86 14 L 14 86", rand: RING.rood, dik: 9 },
+          { d: "M 14 14 L 86 86 M 86 14 L 14 86", rand: "#e8453c", dik: 9 },
         ]),
       );
       return sl;
+    }
+
+    /* ---------- gloed op het moment ---------- */
+
+    /** Zet de gloed van een stuk aan (in een kleur) of uit. De gloed is één keer gebakken. */
+    zetGloed(st: Stuk, kleur: Gloed | null) {
+      if (st.kleur === kleur) return;
+      st.kleur = kleur;
+      if (!kleur) return void st.gloed?.setVisible(false);
+      const doel = `${st.tex}|g|${kleur}`;
+      this.bak(st.tex, doel, GLOEDKLEUR[kleur]);
+      if (!st.gloed) {
+        st.gloed = this.add.image(st.im.x, st.im.y, doel);
+        const box = st.im.parentContainer;
+        if (box) box.addAt(st.gloed, box.getIndex(st.im));
+      } else st.gloed.setTexture(doel);
+      /* Zelfde schaal als het plaatje: de gebakken gloed is groter (de rand eromheen), het midden valt samen. */
+      st.gloed.setScale(st.im.scaleX, st.im.scaleY).setVisible(true);
     }
 
     /* ---------- opbouwen ---------- */
@@ -460,40 +447,59 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.dingen.clear();
       this.lijnen = null;
       this.trek = null;
-      this.telRing = null;
+      this.telStuk = null;
       this.telBadge = null;
       this.druk = null;
+    }
+
+    stuk(box: Box, tex: string, x: number, y: number, b: number, h: number): Stuk {
+      const im = this.add.image(x, y, tex).setDisplaySize(b, h);
+      box.add(im);
+      return { im, tex, gloed: null, kleur: null };
     }
 
     /** Geld in een container leggen (binnen b × h rond het midden). */
     legInBox(box: Box, geld: GeldSoort[], b: number, h: number, maxS: number, kruis: number[] = []) {
       const l = legGeld(geld, b, h, maxS);
-      const beelden: Img[] = [];
+      const stukken: Stuk[] = [];
       l.plekken.forEach((pl, i) => {
-        const im = this.add.image(pl.x, pl.y, this.geldPlaatje(pl.g)).setDisplaySize(pl.b, pl.h);
-        box.add(im);
-        beelden.push(im);
+        stukken.push(this.stuk(box, this.geldPlaatje(pl.g), pl.x, pl.y, pl.b, pl.h));
         if (kruis.includes(i)) {
           const m = Math.min(pl.b, pl.h) * 0.9;
           box.add(this.add.image(pl.x, pl.y, this.kruisPlaatje()).setDisplaySize(m, m));
         }
       });
-      return { plekken: l.plekken, beelden };
+      return { plekken: l.plekken, stukken };
     }
 
-    nieuwDing(d: GKaart, r: Rect, soort: Soort, sleutel: string, bel: boolean) {
+    /** Een ding `aantal` keer, in een rooster (hoogstens 3 naast elkaar), passend in b × h. */
+    legDingen(box: Box, naam: string, aantal: number, b: number, h: number, maxK: number): Stuk[] {
+      const t = DING;
+      const tussen = 10;
+      const kol = Math.min(3, Math.ceil(Math.sqrt(aantal)));
+      const rijen = Math.ceil(aantal / kol);
+      const k = Math.min(maxK, (b - tussen * (kol - 1)) / (t.b * kol), (h - tussen * (rijen - 1)) / (t.h * rijen));
+      const breed = t.b * k * kol + tussen * (kol - 1);
+      const hoog = t.h * k * rijen + tussen * (rijen - 1);
+      const tex = this.dingPlaatje(naam);
+      return Array.from({ length: aantal }, (_, i) =>
+        this.stuk(box, tex, -breed / 2 + (t.b * k) / 2 + (i % kol) * (t.b * k + tussen), -hoog / 2 + (t.h * k) / 2 + Math.floor(i / kol) * (t.h * k + tussen), t.b * k, t.h * k),
+      );
+    }
+
+    nieuwDing(d: GKaart, r: Rect, soort: Soort, zweeft: boolean) {
       const box = this.add.container(r.x, r.y);
-      const ring = this.plaats(this.ringPlaatje("geel", r.b, r.h, bel), 0, 0).setVisible(false);
-      box.add([ring, this.plaats(this.kaartPlaatje(d, r.b, r.h, bel), 0, 0)]);
       let plekken: Plek[] = [];
-      let geldBeelden: Img[] = [];
+      let stukken: Stuk[] = [];
+      let geldStukken: Stuk[] = [];
       if (d.geld?.length) {
-        const m = bel ? r.b * 0.24 : 26;
-        ({ plekken, beelden: geldBeelden } = this.legInBox(box, d.geld, r.b - m * 2, r.h - m * 2, 1.45));
-      }
+        ({ plekken, stukken: geldStukken } = this.legInBox(box, d.geld, r.b - 40, r.h - 40, zweeft ? 1.6 : 1.45));
+        stukken = geldStukken;
+      } else if (d.tekening) stukken = this.legDingen(box, d.tekening, d.aantal ?? 1, r.b - 30, r.h - 30, 1.2);
+      else if (d.label) stukken = [this.stuk(box, this.tekstPlaatje(d.label), 0, 0, 220, 110)];
       this.alles.push(box);
-      const ding: Ding = { box, ring, r, rond: bel, zeg: d.zeg ?? null, soort, id: d.id, plekken, geldBeelden };
-      this.dingen.set(sleutel, ding);
+      const ding: Ding = { box, r, zeg: d.zeg ?? null, soort, id: d.id, plekken, stukken, geldStukken };
+      this.dingen.set(d.id, ding);
       return ding;
     }
 
@@ -506,39 +512,37 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         this.alles.push(box);
         const d = g.deel;
         if (d.soort === "tekening") {
-          const t = TEKENINGEN[d.tekening];
-          const tb = (t?.b ?? 120) * g.k;
-          const th = (t?.h ?? 120) * g.k;
+          const tb = DING.b * g.k;
+          const th = DING.h * g.k;
           const links = -g.r.b / 2;
-          box.add(this.plaats(this.grootPlaatje(d.tekening, tb, th), links + tb / 2, 0));
+          const st = this.stuk(box, this.dingPlaatje(d.tekening), links + tb / 2, 0, tb, th);
           if (d.prijs != null) {
-            box.add(this.plaats(this.prijsPlaatje(d.prijs), links + tb + (PRIJS_B * 0.8 * g.k) / 2, -th / 2 + (PRIJS_H * g.k) / 2).setScale((g.k * 0.8) / TX));
+            box.add(this.plaats(this.prijsPlaatje(d.prijs), links + tb + 10 * g.k + (PRIJS_B * 0.8 * g.k) / 2, -th / 2 + (PRIJS_H * g.k) / 2).setScale((g.k * 0.8) / TX));
           }
+          this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken: [], stukken: [st], geldStukken: [] });
         } else if (d.soort === "geld") {
-          const ring = this.plaats(this.ringPlaatje("geel", g.r.b + 20, g.r.h + 20, false), 0, 0).setVisible(false);
-          box.add(ring);
-          const { plekken, beelden } = this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
-          this.dingen.set(g.id, { box, ring, r: g.r, rond: false, zeg: null, soort: "groot", id: g.id, plekken, geldBeelden: beelden });
+          const { plekken, stukken } = this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
+          this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken, stukken, geldStukken: stukken });
         } else box.add(this.plaats(this.tekenPlaatje(d.soort), 0, 0).setScale(g.k / TX));
         nieuw.push(box);
       }
       (p.kaarten ?? []).forEach((d, i) => {
-        const ding = this.nieuwDing(d, ind.kaarten[i], "kaart", d.id, !!p.bubbels);
+        const ding = this.nieuwDing(d, ind.kaarten[i], "kaart", !!p.zweven);
         nieuw.push(ding.box);
-        if (p.bubbels && !rustig) this.tweens.add({ targets: ding.box, y: ding.r.y - 10, duration: 1500 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut", delay: i * 120 });
+        if (p.zweven && !rustig) this.tweens.add({ targets: ding.box, y: ding.r.y - 12, duration: 1500 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut", delay: i * 120 });
       });
       if (p.verbind) {
         this.lijnen = this.add.graphics().setDepth(4);
         this.alles.push(this.lijnen);
-        p.verbind.links.forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.links[i], "links", d.id, false).box));
-        p.verbind.rechts.forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.rechts[i], "rechts", d.id, false).box));
+        p.verbind.links.forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.links[i], "links", false).box));
+        p.verbind.rechts.forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.rechts[i], "rechts", false).box));
         this.trek = this.add.graphics().setDepth(5);
         this.alles.push(this.trek);
       }
       if (verschijn) nieuw.forEach((b, i) => this.tover(b, { vertraging: i * 70 }));
     }
 
-    nodig(p: GeldProps): GeldSoort[] {
+    nodigGeld(p: GeldProps): GeldSoort[] {
       const lijst: GeldSoort[] = [];
       for (const d of p.groot ?? []) if (d.soort === "geld") lijst.push(...d.geld);
       for (const k of [...(p.kaarten ?? []), ...(p.verbind?.links ?? []), ...(p.verbind?.rechts ?? [])]) lijst.push(...(k.geld ?? []));
@@ -551,17 +555,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const sig = JSON.stringify([
         p.nr,
         p.groot ?? null,
-        (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.label]),
-        !!p.bubbels,
+        (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.aantal, k.label]),
+        !!p.zweven,
         p.verbind ? [p.verbind.links.map((k) => [k.id, k.geld, k.label]), p.verbind.rechts.map((k) => [k.id, k.geld, k.label])] : null,
       ]);
       if (sig !== this.sig) {
-        const ontbreekt = this.nodig(p).filter((g) => !BEELD.has(g) && !LADEN.has(g));
-        const nogBezig = this.nodig(p).some((g) => !BEELD.has(g));
-        if (nogBezig || ontbreekt.length) {
+        const geld = this.nodigGeld(p);
+        const klaar = geld.every((g) => BEELD.has(g));
+        if (!klaar) {
           /* Eerst de afbeeldingen; daarna pas opbouwen (als er intussen niets anders gevraagd is). */
           this.wacht = sig;
-          void laadGeld(this.nodig(p)).then(() => {
+          void laadGeld(geld).then(() => {
             if (this.wacht !== sig || !this.sys?.isActive()) return;
             this.wacht = "";
             this.bouw(this.p!, this.p!.nr !== this.nr);
@@ -580,24 +584,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     pasToe(p: GeldProps) {
-      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.licht?.includes(id) ? "geel" : null);
-      const zetRing = (d: Ding, k: keyof typeof RING | null) => {
-        if (!k) return void d.ring.setVisible(false);
-        const b = d.soort === "groot" ? d.r.b + 20 : d.r.b;
-        const h = d.soort === "groot" ? d.r.h + 20 : d.r.h;
-        d.ring.setTexture(this.ringPlaatje(k, b, h, d.rond)).setVisible(true);
-      };
+      const kleur = (id: string): Gloed | null => (p.goed?.includes(id) ? "goed" : p.fout?.includes(id) ? "fout" : p.licht?.includes(id) ? "warm" : null);
       const v = p.verbind;
+      const lijnKleur = (d: Ding): Gloed | null => {
+        if (!v) return null;
+        const lijn = v.lijnen.find(([a, b]) => (d.soort === "links" ? a : b) === d.id);
+        return lijn && v.goed.includes(lijn[0]) ? "goed" : lijn && v.fout.includes(lijn[0]) ? "fout" : v.gekozen === d.id ? "warm" : kleur(d.id);
+      };
       for (const d of this.dingen.values()) {
-        if (d.soort === "kaart" || d.soort === "groot") {
-          zetRing(d, kleur(d.id));
-          if (d.soort === "kaart") d.box.setAlpha(p.uit?.includes(d.id) ? 0.35 : 1);
-        }
-        if (v && (d.soort === "links" || d.soort === "rechts")) {
-          const lijn = v.lijnen.find(([a, b]) => (d.soort === "links" ? a : b) === d.id);
-          const k: keyof typeof RING | null = lijn && v.goed.includes(lijn[0]) ? "groen" : lijn && v.fout.includes(lijn[0]) ? "rood" : v.gekozen === d.id ? "geel" : kleur(d.id);
-          zetRing(d, k);
-        }
+        const k = d.soort === "links" || d.soort === "rechts" ? lijnKleur(d) : kleur(d.id);
+        for (const st of d.stukken) this.zetGloed(st, k);
+        if (d.soort === "kaart") d.box.setAlpha(p.uit?.includes(d.id) ? 0.35 : 1);
       }
       if (this.lijnen && v) {
         const g = this.lijnen;
@@ -606,34 +603,39 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           const a = this.dingen.get(l);
           const b = this.dingen.get(r);
           if (!a || !b) continue;
-          const k = v.goed.includes(l) ? 0x3fbf6a : v.fout.includes(l) ? 0xe8453c : 0xffc845;
+          const k = v.goed.includes(l) ? LIJNKLEUR.goed : v.fout.includes(l) ? LIJNKLEUR.fout : LIJNKLEUR.warm;
           const p1 = bolLinks(a.r);
           const p2 = bolRechts(b.r);
-          g.lineStyle(12, 0x1d2b5e, 1);
-          g.lineBetween(p1.x, p1.y, p2.x, p2.y);
           g.lineStyle(7, k, 1);
           g.lineBetween(p1.x, p1.y, p2.x, p2.y);
         }
-        /* De bolletjes: wit als er nog geen lijn is, in de kleur van de lijn als die er wel is. */
+        /* De bolletjes: licht als er nog geen lijn is, in de kleur van de lijn als die er wel is. */
         for (const d of this.dingen.values()) {
           if (d.soort !== "links" && d.soort !== "rechts") continue;
           const pt = d.soort === "links" ? bolLinks(d.r) : bolRechts(d.r);
           const lijn = v.lijnen.find(([a, b]) => (d.soort === "links" ? a : b) === d.id);
-          const k = !lijn ? 0xfff7ea : v.goed.includes(lijn[0]) ? 0x3fbf6a : v.fout.includes(lijn[0]) ? 0xe8453c : 0xffc845;
-          g.fillStyle(0x1d2b5e, 1);
-          g.fillCircle(pt.x, pt.y, 15);
+          const k = !lijn ? LIJNKLEUR.leeg : v.goed.includes(lijn[0]) ? LIJNKLEUR.goed : v.fout.includes(lijn[0]) ? LIJNKLEUR.fout : LIJNKLEUR.warm;
           g.fillStyle(k, 1);
-          g.fillCircle(pt.x, pt.y, 10.5);
+          g.fillCircle(pt.x, pt.y, 12);
+          g.fillStyle(0x0b1440, 1);
+          g.fillCircle(pt.x, pt.y, 5);
         }
       }
       this.zetGeteld(p);
     }
 
-    /** Bliepo telt: een ring om wat hij nu telt, en bovenaan het bedrag tot nu toe. */
+    /** Bliepo telt: wat hij nu telt licht op, en erboven staat het bedrag tot nu toe. */
     zetGeteld(p: GeldProps) {
-      this.telRing?.destroy();
+      if (this.telStuk && !this.telStuk.im.active) this.telStuk = null;
+      if (this.telStuk) {
+        /* Terug naar de gloed van het ding zelf (meestal geen). */
+        const st = this.telStuk;
+        const ding = [...this.dingen.values()].find((d) => d.stukken.includes(st));
+        st.kleur = st.kleur === "warm" ? "goed" : st.kleur;
+        this.zetGloed(st, ding ? (p.goed?.includes(ding.id) ? "goed" : p.fout?.includes(ding.id) ? "fout" : p.licht?.includes(ding.id) ? "warm" : null) : null);
+        this.telStuk = null;
+      }
       this.telBadge?.destroy();
-      this.telRing = null;
       this.telBadge = null;
       const t = p.geteld;
       if (!t) return;
@@ -641,18 +643,16 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (!d || !d.plekken.length) return;
       const tot = Math.max(0, Math.min(t.tot, d.plekken.length));
       const som = (t.vanaf ?? 0) + d.plekken.slice(0, tot).reduce((a, pl) => a + WAARDE[pl.g], 0);
-      if (tot > 0 && tot <= d.plekken.length && t.tot <= d.plekken.length) {
-        const pl = d.plekken[tot - 1];
-        const rond = !isBriefje(pl.g);
-        const sl = this.ringPlaatje("geel", pl.b + 6, pl.h + 6, rond);
-        this.telRing = this.plaats(sl, d.box.x + pl.x, d.box.y + pl.y).setDepth(8);
-        this.alles.push(this.telRing);
+      if (tot > 0 && t.tot <= d.plekken.length) {
+        this.telStuk = d.geldStukken[tot - 1];
+        this.telStuk.kleur = null;
+        this.zetGloed(this.telStuk, "warm");
       }
       if (tot > 0) {
         const tekst = `€ ${som}`;
-        const boven = d.soort === "groot" ? d.r.y - d.r.h / 2 - 22 : d.box.y - d.r.h / 2 - 4;
-        /* Geen plek boven het geld (bovenaan in beeld): dan eronder. */
-        const y = boven >= 30 ? boven : d.r.y + d.r.h / 2 + 22;
+        const geldH = Math.max(...d.plekken.map((pl) => Math.abs(pl.y) + pl.h / 2));
+        const boven = d.box.y - geldH - 34;
+        const y = boven >= 30 ? boven : d.box.y + geldH + 34;
         this.telBadge = this.plaats(this.badgePlaatje(tekst), d.box.x, y).setDepth(9);
         this.alles.push(this.telBadge);
       }
@@ -698,7 +698,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
             ease: "Sine.easeInOut",
             onUpdate: () => {
               spoor.clear();
-              spoor.lineStyle(6, 0xffc845, 0.9);
+              spoor.lineStyle(6, 0xffd36e, 0.9);
               spoor.lineBetween(van.x, van.y, h.x - 10, h.y - 22);
             },
           },
@@ -734,9 +734,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     raakt(d: Ding, x: number, y: number, marge: number) {
-      if (d.rond) return Math.hypot(x - d.box.x, y - d.box.y) <= d.r.b / 2 + marge;
       if (binnen({ ...d.r, x: d.box.x, y: d.box.y }, x, y, marge)) return true;
-      /* Het bolletje van een verbind-vak hoort er ook bij. */
+      /* Het bolletje van een verbind-groepje hoort er ook bij. */
       if (d.soort === "links" || d.soort === "rechts") {
         const pt = d.soort === "links" ? bolLinks(d.r) : bolRechts(d.r);
         return Math.hypot(x - pt.x, y - pt.y) <= 34;
@@ -798,9 +797,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (druk.d.soort === "links" || druk.d.soort === "rechts") {
         const pt = druk.d.soort === "links" ? bolLinks(druk.d.r) : bolRechts(druk.d.r);
         this.trek.clear();
-        this.trek.lineStyle(12, 0x1d2b5e, 1);
-        this.trek.lineBetween(pt.x, pt.y, w.x, w.y);
-        this.trek.lineStyle(7, 0xffc845, 1);
+        this.trek.lineStyle(7, LIJNKLEUR.warm, 1);
         this.trek.lineBetween(pt.x, pt.y, w.x, w.y);
       }
     }
@@ -825,6 +822,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       }
     }
 
+    /** Voor `npm run vloeiend`: om de beurt licht iets op (gloed op het moment), met een golf. */
     demo(ms: number) {
       const eind = performance.now() + ms;
       const lijst = [...this.dingen.values()];
@@ -833,6 +831,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         if (performance.now() > eind) return;
         const d = lijst[i++ % Math.max(1, lijst.length)];
         if (d) {
+          for (const st of d.stukken) this.zetGloed(st, "warm");
+          this.time.delayedCall(400, () => d.stukken.forEach((st) => st.im.active && this.zetGloed(st, null)));
           this.golf(d.box.x, d.box.y);
           this.schud(d.box);
         } else this.golf(VLAK_B / 2, VLAK_H / 2);
@@ -866,8 +866,8 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, bubbels, uit, goed, fout, licht, verbind, geteld, vooraf } = props;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, bubbels, uit, goed, fout, licht, verbind, geteld, vooraf });
+  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf } = props;
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -935,26 +935,20 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   );
 }
 
-/** De tekening op de kaart aan het eind (244 × 190): een spaarpot. */
+/** De tekening op de kaart aan het eind (244 × 190): het voorwerp spaarpot. */
 export function KaartSpaarpot() {
-  const t = TEKENINGEN.spaarpot;
   return (
-    <svg viewBox={`-20 -10 ${t.b + 40} ${t.h + 20}`} width={244} height={190} aria-hidden="true">
-      {t.vormen.map((v, i) => (
-        <path key={i} d={v.d} fill={v.vul ?? "none"} stroke={v.rand ?? "none"} strokeWidth={v.rand ? (v.dik ?? 6) : 0} strokeLinejoin="round" strokeLinecap="round" />
-      ))}
+    <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
+      <image href={voorwerpUrl("spaarpot")} x={32} y={5} width={180} height={180} />
     </svg>
   );
 }
 
-/** De tekening op de kaart aan het eind (244 × 190): het skateboard van Sam en Noor. */
+/** De tekening op de kaart aan het eind (244 × 190): het voorwerp skateboard. */
 export function KaartSkateboard() {
-  const t = TEKENINGEN.skateboard;
   return (
-    <svg viewBox={`-20 -50 ${t.b + 40} ${t.h + 100}`} width={244} height={190} aria-hidden="true">
-      {t.vormen.map((v, i) => (
-        <path key={i} d={v.d} fill={v.vul ?? "none"} stroke={v.rand ?? "none"} strokeWidth={v.rand ? (v.dik ?? 6) : 0} strokeLinejoin="round" strokeLinecap="round" />
-      ))}
+    <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
+      <image href={voorwerpUrl("skateboard")} x={32} y={5} width={180} height={180} />
     </svg>
   );
 }

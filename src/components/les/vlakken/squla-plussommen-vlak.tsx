@@ -11,9 +11,9 @@
  * - `etalage`: alleen een taart als versiering (bij "typ het antwoord");
  * - `disco`: discobal, luidsprekers en een draaitafel met 3 kaartjes (één of
  *   twee getallen) of 4 grammofoonplaten met een getal, om aan te tikken;
- * - `bus`: een bus met kinderen achter de ramen (bij 10 of meer: een
- *   dubbeldekker, de bovenste rij vol = 10) en de kinderen die instappen,
- *   als poppetjes of als getal in een rondje;
+ * - `bus`: een bezorgbus met pakjes in de laadruimte (rijen van 10; bij meer
+ *   dan 10 een tweede rij bovenop) en de pakjes die erbij komen, als plaatjes
+ *   of als getal in een rondje (geen mensen, besluit Sara 31 oktober 2026);
  * - `kaal`: een sierplaatje (plusteken met cijfers), zonder telhulp;
  * - `verbind`: 3 sommen links en 3 antwoorden rechts; lijnen ertussen.
  * `sommen`: kaartjes met een som onderaan, om aan te tikken.
@@ -24,53 +24,45 @@
  * `busLos`, en de tellers `goed` (lichtgolf, bij disco ook de spots) en
  * `fout` (zacht schudden). Tikken meldt `{ soort: "tik", id }`.
  *
- * Stijl: `plat` (vriendelijke platte tekeningen, geen gloed), `nacht` (donker,
- * met gebakken gloed) of `holo` (hologram, gebakken gloed).
+ * Stijl (besluit Sara, 31 oktober 2026): voor alle lessen hetzelfde, donker
+ * (`nacht: true`), plaatjes zonder vaste gloed en zonder kaders eromheen. Een
+ * plaatje licht alleen op als het iets betekent: Bliepo wijst het aan of telt
+ * het mee, het kind kiest het, of het antwoord is goed. Elk ding heeft één
+ * sleutel (squla-plussommen-tekenen.ts, PLUS_FOTOS), zodat het later door een
+ * echt plaatje te vervangen is. Geen mensen: bij de bus zijn het pakjes.
  */
 
 import { useEffect, useMemo } from "react";
 import type { Vlakbasis } from "../soort";
-import { holoBasis, TX, WARM, GOED, WERELDKLEUR, type PhaserModule } from "../holo/basis";
+import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import {
-  BUS,
-  BUS_PLAATJE,
-  DING,
   KLEUREN_DISCO,
-  busBoven,
-  hex,
   rekMaat,
   rekVakje,
-  ruitX,
-  tekenBak,
   tekenBundel,
-  tekenBus,
   tekenCijfer,
-  tekenDing,
-  tekenDiscobal,
-  tekenDraaitafel,
-  tekenEtalage,
-  tekenHoofd,
   tekenKaartje,
-  tekenKind,
-  tekenLuidspreker,
   tekenPlaat,
   tekenPlus,
   tekenRek,
   tekenRondje,
   tekenSomkaart,
   tekenStip,
-  type Bak,
-  type Ding,
 } from "./squla-plussommen-tekenen";
+import { tekenVoorwerp } from "../voorwerpen";
 import s from "./squla-plussommen.module.css";
 
-export type { Bak, Ding };
+/** Het lekkers van de bakkerij: vaste plaatjes uit src/lib/voorwerpen. */
+export type Ding = "broodje" | "brood" | "bruin-brood" | "stokbrood" | "koekje" | "taart" | "cupcake" | "krentenbol" | "croissant" | "donut";
+/** Een voorwerp is DING × DING punten. */
+const DING = 72;
 
 /* ---------- soorten ---------- */
 
-export type Groep = { n: number; ding: Ding; bak: Bak; label?: boolean };
+/** Een groepje lekkers, los in de ruimte (zonder bord, mand of plaat: geen kaders). */
+export type Groep = { n: number; ding: Ding; label?: boolean };
 /** Iets om aan te tikken. `tekst`: één of twee getallen, of een som. */
 export type Kaart = { id: string; tekst: string[]; aria: string };
 
@@ -84,10 +76,8 @@ export type PlusBeeld =
 
 export type Rek = { rijen: 1 | 2; a: number; b: number; bZicht?: number; labels?: { k: number; t: string }[]; vol?: boolean };
 export type Lijn = { van: string; naar: string; stand: "nu" | "goed" | "fout" };
-export type Stijl = "plat" | "nacht" | "holo";
 
 export type PlusProps = {
-  stijl: Stijl;
   beeld: PlusBeeld | null;
   sommen?: Kaart[];
   actief?: boolean;
@@ -119,13 +109,15 @@ function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
   const maten = groepen.map((g) => {
     const kol = Math.max(1, Math.min(5, g.n));
     const rij = Math.ceil(g.n / 5);
-    const pad = g.bak === "bord" ? 26 : 20;
-    const boven = g.bak === "mand" ? 34 : g.bak === "zak" ? 30 : 0;
+    const pad = 16;
+    const boven = 0;
     const b = Math.max(150, kol * cel + 2 * pad);
     const h = rij * cel + 2 * pad + boven;
     return { kol, rij, pad, boven, b, h };
   });
-  const gat = 70;
+  const gat = 110;
+  /* De bordjes met het aantal staan allemaal op dezelfde hoogte. */
+  const hoogst = Math.max(...maten.map((m) => m.h));
   const breed = maten.reduce((t, m) => t + m.b, 0) + gat * (groepen.length - 1);
   const cy = metSommen ? 330 : 390;
   let x = MIDDEN.x - breed / 2;
@@ -136,7 +128,7 @@ function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
     const top = cy - m.h / 2 + m.boven + m.pad;
     const items = Array.from({ length: g.n }, (_, k) => ({ x: links + ((k % 5) + 0.5) * cel, y: top + (Math.floor(k / 5) + 0.5) * cel }));
     x += m.b + gat;
-    return { box, items, schaal: cel / (DING + 6), label: g.label ? { x: box.x, y: cy + m.h / 2 + 34 } : null };
+    return { box, items, schaal: cel / (DING + 6), label: g.label ? { x: box.x, y: cy + hoogst / 2 + 34 } : null };
   });
 }
 
@@ -149,7 +141,7 @@ function somVakken(sommen: Kaart[]): Vak[] {
   return sommen.map((k, i) => ({ id: k.id, kaart: k, soort: "som", x: MIDDEN.x - breed / 2 + b / 2 + i * (b + gat), y: SOM.y, b, h: SOM.h }));
 }
 
-const DISCO = { bal: { x: 490, y: 220 }, speakers: [66, 914], tafel: { x: 490, y: 650 } };
+const DISCO = { bal: { x: 490, y: 220 }, speakers: [66, 914], tafel: { x: 490, y: 600 } };
 
 function discoVakken(beeld: Extract<PlusBeeld, { soort: "disco" }>): Vak[] {
   if (beeld.vorm === "plaat")
@@ -170,20 +162,28 @@ function vakkenVan(beeld: PlusBeeld | null, sommen: Kaart[]): Vak[] {
   return v;
 }
 
-/* De bus */
-const INSTAP = { x0: 706, dx: 54, voet: 652, rij: 92 };
+/* De bezorgbus (vast plaatje "bezorgbus", vierkant getekend). Het grote
+   zijraam van de laadruimte ligt in het plaatje ongeveer tussen x 27–116 en
+   y 78–116 (van 200). De pakjes staan op de bodem daarvan, in rijen van 10
+   (5 + 5); bij meer dan 10 staat er een tweede rij bovenop. Wordt het
+   plaatje vervangen, dan blijven de pakjes binnen dat raam. */
+const BUSVAK = { x: 10, y: 80, s: 680 };
+const busF = BUSVAK.s / 200;
+const LAAD = { x0: BUSVAK.x + 27 * busF, x1: BUSVAK.x + 116 * busF, top: BUSVAK.y + 78 * busF, bodem: BUSVAK.y + 116 * busF };
+const PAKJE = 29;
+const INSTAP = { x0: 700, dx: 50, voet: 652, rij: 64 };
 function instapPlek(i: number) {
   const r = Math.floor(i / 5);
   const k = i % 5;
-  const sch = 1.15 - r * 0.08;
+  const sch = 1 - r * 0.06;
   return { x: INSTAP.x0 + k * INSTAP.dx + (r % 2) * 10, y: INSTAP.voet - r * INSTAP.rij, schaal: sch };
 }
-function hoofdPlek(k: number, dubbel: boolean) {
-  const rijTop = dubbel ? (k < 10 ? BUS.rijBoven : BUS.rijOnder) : BUS.rijEnkel;
-  const i = dubbel ? k % 10 : k;
-  return { x: ruitX(i), y: rijTop + BUS.ruit.h - 25 };
+function pakjePlek(k: number) {
+  const i = k % 10;
+  const rij = Math.floor(k / 10);
+  return { x: LAAD.x0 + 4 + PAKJE / 2 + i * 29 + (i >= 5 ? 9 : 0), y: LAAD.bodem - PAKJE / 2 - 4 - rij * (PAKJE + 3) };
 }
-const RONDJE = { x: 820, y: 520 };
+const RONDJE = { x: 830, y: 540 };
 
 /* ---------- de scène ---------- */
 
@@ -194,17 +194,21 @@ type Staat = {
   lijnen: Lijn[];
   licht: number[];
   busLicht: boolean;
+  busTel: number;
   dim: boolean;
 };
 
 interface PlusScene {
-  zetBeeld(beeld: PlusBeeld | null, sommen: Kaart[], stijl: Stijl): void;
+  zetBeeld(beeld: PlusBeeld | null, sommen: Kaart[]): void;
   zetStaat(st: Staat): void;
-  zetRek(rek: Rek | null, stijl: Stijl): void;
+  zetRek(rek: Rek | null): void;
   zetBus(los: boolean): void;
   goed(): void;
   fout(): void;
 }
+
+/** Gloed alleen op het moment dat het iets betekent (besluit Sara, 31 oktober 2026). */
+const LICHT = WARM;
 
 function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
   const Basis = holoBasis(Phaser, rustig);
@@ -213,14 +217,15 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
   type Gfx = import("phaser").GameObjects.Graphics;
 
   class Plus extends Basis implements PlusScene {
-    stijl: Stijl = "plat";
     hoofd: Box | null = null;
     sleutel = "";
     beeld: PlusBeeld | null = null;
     vakken: Vak[] = [];
     vakImg = new Map<string, Img>();
     groepen: GroepPlek[] = [];
-    markering: Gfx | null = null;
+    groepImg: Img[][] = [];
+    busImg: Img[] = [];
+    instapImg: Img[] = [];
     lijnLaag: Gfx | null = null;
     rekBox: Box | null = null;
     rekSleutel = "";
@@ -229,87 +234,122 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
     instappers: Box | null = null;
     rondje: Img | null = null;
     bal: Img | null = null;
-    staat: Staat = { gekozen: [], uit: [], goedIds: [], lijnen: [], licht: [], busLicht: false, dim: false };
+    flitsTot = 0;
+    zweven: import("phaser").Tweens.Tween[] = [];
+    staat: Staat = { gekozen: [], uit: [], goedIds: [], lijnen: [], licht: [], busLicht: false, busTel: 0, dim: false };
 
     constructor() {
       super("squla-plussommen");
     }
 
     maak() {
-      this.markering = this.add.graphics().setDepth(5);
       this.lijnLaag = this.add.graphics().setDepth(4);
     }
 
-    /** Een plaatje: één keer tekenen, en in nacht of holo ook de gloed bakken. */
-    tex(sl: string, b: number, h: number, teken: (c: CanvasRenderingContext2D) => void, gloed: number = WERELDKLEUR.neutraal) {
+    /** Een plaatje zonder gloed: één keer tekenen. */
+    tex(sl: string, b: number, h: number, teken: (c: CanvasRenderingContext2D) => void) {
       const naam = `sqp-${sl}`;
       this.canvasPlaatje(naam, b, h, teken);
-      if (this.stijl === "plat") return naam;
-      this.bak(naam, `${naam}-g`, gloed);
-      return `${naam}-g`;
+      return naam;
+    }
+
+    /** Een vast plaatje (src/lib/voorwerpen) op maat b × h, zonder gloed. */
+    vw(naam: string, b: number, h: number) {
+      return this.tex(`vw-${naam}-${b}x${h}`, b, h, (c) => tekenVoorwerp(c, naam, 0, 0, b, h));
+    }
+
+    /** Hetzelfde plaatje mét gloed (één keer gebakken), voor het moment dat het oplicht. */
+    texG(basis: string, kleur: number) {
+      const naam = `${basis}-g${kleur.toString(16)}`;
+      this.bak(basis, naam, kleur);
+      return naam;
+    }
+
+    /** Licht aan of uit op een plaatje. */
+    gloei(im: Img, kleur: number | null) {
+      const basis = im.getData("basis") as string | undefined;
+      if (!basis || !im.active) return;
+      const doel = kleur === null ? basis : this.texG(basis, kleur);
+      if (im.texture.key !== doel) im.setTexture(doel);
     }
 
     plek(box: Box, sl: string, x: number, y: number) {
       const im = this.plaats(sl, x - MIDDEN.x, y - MIDDEN.y);
+      im.setData("basis", sl);
       box.add(im);
       return im;
     }
 
-    zetBeeld(beeld: PlusBeeld | null, sommen: Kaart[], stijl: Stijl) {
+    /** De gloed-plaatjes van dit beeld alvast bakken, één per keer (geen hapering later). */
+    bakVooruit(imgs: Img[]) {
+      const sleutels = [...new Set(imgs.map((im) => im.getData("basis") as string))];
+      sleutels.forEach((sl, i) => {
+        this.time.delayedCall(250 + i * 90, () => {
+          this.texG(sl, LICHT);
+          this.texG(sl, GOED);
+        });
+      });
+    }
+
+    zetBeeld(beeld: PlusBeeld | null, sommen: Kaart[]) {
       const sleutel = beeld ? `${beeld.id}|${sommen.map((k) => k.id).join(",")}` : "";
       if (sleutel === this.sleutel) return;
       this.sleutel = sleutel;
-      this.stijl = stijl;
+      /* De zwevende cijfers van het vorige beeld stoppen (die tweens lopen anders eindeloos door). */
+      this.zweven.forEach((tw) => tw.remove());
+      this.zweven = [];
       if (this.hoofd) this.verdwijn(this.hoofd);
       this.hoofd = null;
       this.vakImg.clear();
       this.groepen = [];
+      this.groepImg = [];
+      this.busImg = [];
+      this.instapImg = [];
       this.instappers = null;
       this.rondje = null;
       this.bal = null;
       this.beeld = beeld;
-      this.markering?.clear();
       this.lijnLaag?.clear();
       if (!beeld) return;
       const box = this.add.container(MIDDEN.x, MIDDEN.y);
       this.hoofd = box;
-      const nacht = stijl === "nacht";
 
       if (beeld.soort === "bakkerij") {
+        /* Los in de ruimte: geen bord, mand of plaat eromheen. */
         this.groepen = bakkerijIndeling(beeld.groepen, sommen.length > 0);
         beeld.groepen.forEach((g, i) => {
           const p = this.groepen[i];
-          const sl = this.tex(`bak-${g.bak}-${p.box.b}-${p.box.h}`, p.box.b, p.box.h, (c) => tekenBak(c, g.bak, p.box.b, p.box.h), WARM);
-          this.plek(box, sl, p.box.x, p.box.y);
-          const ding = this.tex(`ding-${g.ding}`, DING, DING, (c) => tekenDing(c, g.ding), WARM);
-          for (const q of p.items) this.plek(box, ding, q.x, q.y).setScale(p.schaal / TX);
+          const ding = this.vw(g.ding, DING, DING);
+          this.groepImg.push(p.items.map((q) => this.plek(box, ding, q.x, q.y).setScale(p.schaal / TX)));
         });
       } else if (beeld.soort === "etalage") {
-        this.plek(box, this.tex("etalage", 320, 280, tekenEtalage, WARM), 490, 420);
+        this.plek(box, this.vw("taart", 300, 300), 490, 420);
       } else if (beeld.soort === "disco") {
-        const spk = this.tex("speaker", 140, 220, tekenLuidspreker, WERELDKLEUR.universum);
-        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470).setScale(0.85 / TX));
-        this.bal = this.plek(box, this.tex("bal", 160, 160, tekenDiscobal, WERELDKLEUR.oceaan), DISCO.bal.x, DISCO.bal.y);
-        this.plek(box, this.tex("tafel", 560, 130, tekenDraaitafel, WERELDKLEUR.universum), DISCO.tafel.x, DISCO.tafel.y);
+        const spk = this.vw("luidspreker", 120, 220);
+        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470));
+        this.bal = this.plek(box, this.vw("discobal", 170, 170), DISCO.bal.x, DISCO.bal.y);
+        this.plek(box, this.vw("draaitafel", 260, 260), DISCO.tafel.x, DISCO.tafel.y);
+        /* De lichtbundels van de spots alvast tekenen (anders hapert het eerste goede antwoord). */
+        KLEUREN_DISCO.slice(0, 4).forEach((k, i) => this.time.delayedCall(300 + i * 80, () => this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k))));
       } else if (beeld.soort === "bus") {
-        const dubbel = beeld.inBus >= 10;
-        this.plek(box, this.tex(`bus-${dubbel ? 2 : 1}`, BUS_PLAATJE.b, BUS_PLAATJE.h, (c) => tekenBus(c, dubbel), WARM), BUS_PLAATJE.x0 + BUS_PLAATJE.b / 2, BUS_PLAATJE.y0 + BUS_PLAATJE.h / 2);
+        this.plek(box, this.vw("bezorgbus", BUSVAK.s, BUSVAK.s), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2);
+        const pakje = this.vw("pakje", PAKJE, PAKJE);
         for (let k = 0; k < beeld.inBus; k++) {
-          const q = hoofdPlek(k, dubbel);
-          this.plek(box, this.tex(`hoofd-${k % 7}`, 40, 50, (c) => tekenHoofd(c, k), WARM), q.x, q.y);
+          const q = pakjePlek(k);
+          this.busImg.push(this.plek(box, pakje, q.x, q.y));
         }
-        /* De pijl naar de deur. */
+        /* De pijl naar de laadruimte. */
         const pijl = this.add.graphics();
-        const van = beeld.alsGetal ? { x: RONDJE.x - 70, y: RONDJE.y - 40 } : { x: 760, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 175 };
-        const naar = { x: BUS.deur.x + BUS.deur.b + 8, y: (dubbel ? BUS.rijOnder : BUS.rijEnkel) + 40 };
+        const van = beeld.alsGetal ? { x: RONDJE.x - 40, y: RONDJE.y - 70 } : { x: 800, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 90 };
+        const naar = { x: LAAD.x1 - 20, y: LAAD.top - 6 };
         const ctrl = { x: (van.x + naar.x) / 2, y: Math.min(van.y, naar.y) - 70 };
         const pad = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(van.x - MIDDEN.x, van.y - MIDDEN.y), new Phaser.Math.Vector2(ctrl.x - MIDDEN.x, ctrl.y - MIDDEN.y), new Phaser.Math.Vector2(naar.x - MIDDEN.x, naar.y - MIDDEN.y));
-        pijl.lineStyle(9, 0x2f6fe0, 1);
+        pijl.lineStyle(9, 0x5aa8ff, 1);
         pad.draw(pijl, 24);
         const eind = pad.getPoint(1);
         const voor = pad.getPoint(0.9);
         const hoek = Math.atan2(eind.y - voor.y, eind.x - voor.x);
-        pijl.fillStyle(0x2f6fe0, 1);
+        pijl.fillStyle(0x5aa8ff, 1);
         pijl.fillTriangle(
           eind.x + Math.cos(hoek) * 14,
           eind.y + Math.sin(hoek) * 14,
@@ -319,48 +359,52 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
           eind.y + Math.sin(hoek - 2.4) * 22,
         );
         box.add(pijl);
-        if (beeld.alsGetal) this.rondje = this.plek(box, this.tex("rondje", 130, 130, tekenRondje, WARM), RONDJE.x, RONDJE.y);
+        if (beeld.alsGetal) this.rondje = this.plek(box, this.tex("rondje", 130, 130, tekenRondje), RONDJE.x, RONDJE.y);
         else this.instappers = this.maakInstappers(box, beeld.instap);
       } else if (beeld.soort === "kaal") {
         const kleur = ["#7fe9ff", "#ffd36e", "#c9b6ff"][(beeld.level - 1) % 3];
-        const gloed = [WERELDKLEUR.oceaan, WERELDKLEUR.aarde, WERELDKLEUR.universum][(beeld.level - 1) % 3];
-        this.plek(box, this.tex(`plus-${beeld.level}`, 200, 200, (c) => tekenPlus(c, kleur), gloed), 490, 410);
+        this.plek(box, this.tex(`plus-${beeld.level}`, 200, 200, (c) => tekenPlus(c, kleur)), 490, 410);
         const cijfers = ["3", "7", "1", "9", "5", "2", "8", "4"];
         const plekken = [[220, 230], [760, 220], [170, 470], [810, 470], [330, 610], [650, 610], [300, 380], [690, 360]];
         cijfers.forEach((cf, i) => {
-          const im = this.plek(box, this.tex(`cijfer-${cf}-${beeld.level}`, 80, 88, (c) => tekenCijfer(c, cf, kleur), gloed), plekken[i][0], plekken[i][1]);
-          im.setAlpha(0.5).setScale(0.8 / TX);
-          if (!this.rustig) this.tweens.add({ targets: im, y: im.y - 14, duration: 1400 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+          const im = this.plek(box, this.tex(`cijfer-${cf}-${beeld.level}`, 80, 88, (c) => tekenCijfer(c, cf, kleur)), plekken[i][0], plekken[i][1]);
+          im.setAlpha(0.45).setScale(0.8 / TX);
+          if (!this.rustig) this.zweven.push(this.tweens.add({ targets: im, y: im.y - 14, duration: 1400 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" }));
         });
       }
 
-      /* De kaartjes, platen en sommen om aan te tikken. */
+      /* De kaartjes, platen en sommen om aan te tikken (rekenmateriaal: een getal op een kaartje). */
       this.vakken = vakkenVan(beeld, sommen);
       this.vakken.forEach((v, i) => {
         let sl: string;
         if (v.soort === "plaat") {
           const kleur = KLEUREN_DISCO[i % KLEUREN_DISCO.length];
-          sl = this.tex(`plaat-${i % KLEUREN_DISCO.length}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur), hex(kleur));
+          sl = this.tex(`plaat-${i % KLEUREN_DISCO.length}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
         } else if (v.soort === "kaartje") {
           const kleur = KLEUREN_DISCO[(i * 2 + 1) % KLEUREN_DISCO.length];
           const n = v.kaart.tekst.length;
-          sl = this.tex(`kaartje-${n}-${kleur}`, v.b, v.h, (c) => tekenKaartje(c, v.b, v.h, kleur, n), hex(kleur));
-        } else sl = this.tex(`som-${v.b}-${v.h}-${nacht ? 1 : 0}`, v.b, v.h, (c) => tekenSomkaart(c, v.b, v.h, nacht), WARM);
+          sl = this.tex(`kaartje-${n}-${kleur}`, v.b, v.h, (c) => tekenKaartje(c, v.b, v.h, kleur, n));
+        } else sl = this.tex(`som-${v.b}-${v.h}`, v.b, v.h, (c) => tekenSomkaart(c, v.b, v.h, true));
         this.vakImg.set(v.id, this.plek(box, sl, v.x, v.y));
       });
 
       this.tover(box);
+      this.bakVooruit([...this.groepImg.flat(), ...this.busImg, ...this.instapImg, ...this.vakImg.values()]);
       this.tekenStaat();
     }
 
     maakInstappers(box: Box, n: number) {
       const groep = this.add.container(0, 0);
+      this.instapImg = [];
       /* Achterste rij eerst, dan staan de voorste ervoor. */
       for (let i = n - 1; i >= 0; i--) {
         const q = instapPlek(i);
-        const im = this.plaats(this.tex(`kind-${i % 7}`, 44, 90, (c) => tekenKind(c, i + 3), WARM), q.x - MIDDEN.x, q.y - MIDDEN.y).setOrigin(0.5, 1);
+        const sl = this.vw("pakje", 46, 46);
+        const im = this.plaats(sl, q.x - MIDDEN.x, q.y - MIDDEN.y).setOrigin(0.5, 1);
+        im.setData("basis", sl);
         im.setScale(q.schaal / TX);
         groep.add(im);
+        this.instapImg[i] = im;
       }
       box.add(groep);
       return groep;
@@ -373,9 +417,11 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         this.rondje?.setVisible(false);
         this.instappers = this.maakInstappers(this.hoofd, b.instap);
         this.tover(this.instappers);
+        this.tekenStaat();
       } else if (!los && this.instappers) {
         this.instappers.destroy();
         this.instappers = null;
+        this.instapImg = [];
         this.rondje?.setVisible(true);
       }
     }
@@ -385,59 +431,28 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.tekenStaat();
     }
 
+    /** Wat er nu oplicht: wat Bliepo aanwijst of meetelt, wat gekozen is, wat goed is. Verder geen gloed. */
     tekenStaat() {
       const st = this.staat;
-      const m = this.markering;
-      if (!m) return;
-      m.clear();
-      for (const [id, im] of this.vakImg) im.setAlpha(st.uit.includes(id) ? 0.35 : 1);
+      const flits = performance.now() < this.flitsTot;
+      for (const [id, im] of this.vakImg) {
+        im.setAlpha(st.uit.includes(id) ? 0.35 : 1);
+        this.gloei(im, st.goedIds.includes(id) ? GOED : st.gekozen.includes(id) ? LICHT : null);
+      }
+      this.groepImg.forEach((items, g) => items.forEach((im) => this.gloei(im, flits ? GOED : st.licht.includes(g) ? LICHT : null)));
+      this.busImg.forEach((im) => this.gloei(im, flits ? GOED : st.busLicht ? LICHT : null));
+      this.instapImg.forEach((im, i) => im && this.gloei(im, flits ? GOED : i < st.busTel ? LICHT : null));
       if (this.hoofd) this.hoofd.setAlpha(st.dim ? 0.12 : 1);
-      if (st.dim) {
-        this.lijnLaag?.clear();
-        return;
-      }
-      const rand = (r: Rect, kleur: number, dik = 7, rond = 22) => {
-        m.lineStyle(dik, kleur, 1);
-        m.strokeRoundedRect(r.x - r.b / 2 - 8, r.y - r.h / 2 - 8, r.b + 16, r.h + 16, rond);
-      };
-      for (const v of this.vakken) {
-        if (st.goedIds.includes(v.id)) {
-          if (v.soort === "plaat") {
-            m.lineStyle(8, GOED, 1);
-            m.strokeCircle(v.x, v.y, v.b / 2 + 8);
-          } else rand(v, GOED);
-        } else if (st.gekozen.includes(v.id)) {
-          if (v.soort === "plaat") {
-            m.lineStyle(8, WARM, 1);
-            m.strokeCircle(v.x, v.y, v.b / 2 + 8);
-          } else rand(v, WARM);
-        }
-      }
-      for (const g of st.licht) {
-        const p = this.groepen[g];
-        if (p) rand(p.box, WARM, 6, 30);
-      }
-      const b = this.beeld;
-      if (st.busLicht && b?.soort === "bus") {
-        const dubbel = b.inBus >= 10;
-        const rijen = dubbel ? [{ y: BUS.rijBoven, n: 10 }, { y: BUS.rijOnder, n: b.inBus - 10 }] : [{ y: BUS.rijEnkel, n: b.inBus }];
-        m.lineStyle(6, WARM, 1);
-        for (const r of rijen) {
-          if (r.n <= 0) continue;
-          const x0 = ruitX(0) - BUS.ruit.b / 2 - 6;
-          const x1 = ruitX(r.n - 1) + BUS.ruit.b / 2 + 6;
-          m.strokeRoundedRect(x0, r.y - 6, x1 - x0, BUS.ruit.h + 12, 12);
-        }
-      }
       /* De lijnen tussen sommen en antwoorden. */
       const l = this.lijnLaag;
       if (!l) return;
       l.clear();
+      if (st.dim) return;
       for (const ln of st.lijnen) {
         const a = this.vakken.find((v) => v.id === ln.van);
         const z = this.vakken.find((v) => v.id === ln.naar);
         if (!a || !z) continue;
-        const kleur = ln.stand === "goed" ? GOED : ln.stand === "fout" ? 0xff7b7b : this.stijl === "plat" ? 0x2b2f45 : 0xffffff;
+        const kleur = ln.stand === "goed" ? GOED : ln.stand === "fout" ? 0xff7b7b : 0xffffff;
         l.lineStyle(8, kleur, 1);
         l.lineBetween(a.x + a.b / 2, a.y, z.x - z.b / 2, z.y);
         l.fillStyle(kleur, 1);
@@ -446,8 +461,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       }
     }
 
-    zetRek(rek: Rek | null, stijl: Stijl) {
-      this.stijl = stijl;
+    zetRek(rek: Rek | null) {
       const sleutel = rek ? `${rek.rijen}|${rek.a}|${rek.b}` : "";
       if (sleutel !== this.rekSleutel) {
         this.rekSleutel = sleutel;
@@ -458,12 +472,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         if (!rek) return;
         const maat = rekMaat(rek.rijen);
         const box = this.add.container(MIDDEN.x, MIDDEN.y).setDepth(8);
-        box.add(this.plaats(this.tex(`rek-${rek.rijen}`, maat.b, maat.h, (c) => tekenRek(c, rek.rijen, stijl !== "plat"), WERELDKLEUR.neutraal), 0, 0));
-        const oranje = this.tex("stip-oranje", 50, 50, (c) => tekenStip(c, "#ffad5c"), 0xffad5c);
-        const blauw = this.tex("stip-blauw", 50, 50, (c) => tekenStip(c, "#5aa8ff"), 0x8fc4ff);
+        box.add(this.plaats(this.tex(`rek-${rek.rijen}`, maat.b, maat.h, (c) => tekenRek(c, rek.rijen, true)), 0, 0));
+        const oranje = this.tex("stip-oranje", 50, 50, (c) => tekenStip(c, "#ffad5c"));
+        const blauw = this.tex("stip-blauw", 50, 50, (c) => tekenStip(c, "#5aa8ff"));
         for (let k = 0; k < rek.a + rek.b && k < rek.rijen * 10; k++) {
           const q = rekVakje(k, rek.rijen);
           const im = this.plaats(k < rek.a ? oranje : blauw, q.x, q.y);
+          im.setData("basis", k < rek.a ? oranje : blauw);
           if (k >= rek.a) im.setVisible(false);
           box.add(im);
           this.rekStippen.push(im);
@@ -477,6 +492,9 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         const aan = k < zicht;
         if (aan && !im.visible) {
           im.setVisible(true);
+          /* Een stip die erbij komt, licht even op. */
+          this.gloei(im, LICHT);
+          this.time.delayedCall(700, () => this.gloei(im, null));
           if (!this.rustig) {
             const sch = 1 / TX;
             im.setScale(sch * 0.3);
@@ -490,10 +508,14 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
     goed() {
       const b = this.beeld;
       this.golf(MIDDEN.x, MIDDEN.y);
+      /* Goed: alles van de vraag licht even op. */
+      this.flitsTot = performance.now() + 900;
+      this.tekenStaat();
+      this.time.delayedCall(950, () => this.tekenStaat());
       if (this.rustig || b?.soort !== "disco") return;
       /* De spots gaan aan en de discobal draait even. */
       KLEUREN_DISCO.slice(0, 4).forEach((k, i) => {
-        const bundel = this.plaats(this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k), hex(k)), DISCO.bal.x, DISCO.bal.y).setOrigin(0.5, 0);
+        const bundel = this.plaats(this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k)), DISCO.bal.x, DISCO.bal.y).setOrigin(0.5, 0);
         bundel.setAngle(-50 + i * 33).setAlpha(0).setDepth(3);
         this.tweens.add({ targets: bundel, alpha: 0.9, angle: bundel.angle + 22, duration: 600, yoyo: true, repeat: 1, onComplete: () => bundel.destroy() });
       });
@@ -508,13 +530,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
     demo(ms: number) {
       const eind = performance.now() + ms;
       const beeld = this.beeld;
-      const sommen = this.vakken.filter((v) => v.soort === "som" && !(beeld?.soort === "verbind")).map((v) => v.kaart);
+      const sommen = beeld?.soort === "verbind" ? [] : this.vakken.filter((v) => v.soort === "som").map((v) => v.kaart);
       let k = 0;
       const stap = () => {
         if (performance.now() > eind) return;
         if (beeld) {
           this.sleutel = "";
-          this.zetBeeld({ ...beeld, id: `${beeld.id}-demo-${k++}` } as PlusBeeld, sommen, this.stijl);
+          this.zetBeeld({ ...beeld, id: `${beeld.id}-demo-${k++}` } as PlusBeeld, sommen);
         }
         this.time.delayedCall(420, () => this.goed());
         this.time.delayedCall(900, stap);
@@ -528,7 +550,6 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
 /* ---------- het vlak ---------- */
 
 export function SqulaPlusVlak({
-  stijl,
   beeld,
   sommen = [],
   actief = false,
@@ -552,19 +573,19 @@ export function SqulaPlusVlak({
   const vakken = useMemo(() => vakkenVan(JSON.parse(beeldSleutel) as PlusBeeld | null, JSON.parse(sommenSleutel) as Kaart[]), [beeldSleutel, sommenSleutel]);
 
   useEffect(() => {
-    scene?.zetBeeld(JSON.parse(beeldSleutel) as PlusBeeld | null, JSON.parse(sommenSleutel) as Kaart[], stijl);
-  }, [scene, beeldSleutel, sommenSleutel, stijl]);
+    scene?.zetBeeld(JSON.parse(beeldSleutel) as PlusBeeld | null, JSON.parse(sommenSleutel) as Kaart[]);
+  }, [scene, beeldSleutel, sommenSleutel]);
 
   const dim = Boolean(rek);
-  const staatSleutel = JSON.stringify({ gekozen, uit, goedIds, lijnen, licht, busLicht, dim });
+  const staatSleutel = JSON.stringify({ gekozen, uit, goedIds, lijnen, licht, busLicht, busTel, dim });
   useEffect(() => {
     scene?.zetStaat(JSON.parse(staatSleutel) as Staat);
   }, [scene, staatSleutel, beeldSleutel]);
 
   const rekSleutel = JSON.stringify(rek);
   useEffect(() => {
-    scene?.zetRek(JSON.parse(rekSleutel) as Rek | null, stijl);
-  }, [scene, rekSleutel, stijl]);
+    scene?.zetRek(JSON.parse(rekSleutel) as Rek | null);
+  }, [scene, rekSleutel]);
 
   useEffect(() => {
     scene?.zetBus(busLos);
@@ -577,21 +598,20 @@ export function SqulaPlusVlak({
     if (scene && fout > 0) scene.fout();
   }, [scene, fout]);
 
-  const nacht = stijl !== "plat";
   const groepen = beeld?.soort === "bakkerij" ? bakkerijIndeling(beeld.groepen, sommen.length > 0) : [];
 
   /* Getallen bij de bus: in de bus (bij het samen tellen) en boven elk geteld kind. */
   const busLabels: { k: string; x: number; y: number; t: string }[] = [];
   if (beeld?.soort === "bus") {
-    if (busLicht) busLabels.push({ k: "bus", x: 330, y: busBoven(beeld.inBus >= 10) - 34, t: beeld.inBus >= 10 ? `10 + ${beeld.inBus - 10}` : String(beeld.inBus) });
+    if (busLicht) busLabels.push({ k: "bus", x: (LAAD.x0 + LAAD.x1) / 2, y: LAAD.top - 40, t: beeld.inBus >= 10 ? `10 + ${beeld.inBus - 10}` : String(beeld.inBus) });
     for (let i = 0; i < busTel && i < beeld.instap; i++) {
       const q = instapPlek(i);
-      busLabels.push({ k: `t${i}`, x: q.x, y: q.y - 92 * q.schaal - 18, t: String(beeld.inBus + i + 1) });
+      busLabels.push({ k: `t${i}`, x: q.x, y: q.y - 50 * q.schaal - 20, t: String(beeld.inBus + i + 1) });
     }
   }
 
   return (
-    <div className={`${s.vlak} ${nacht ? s.nacht : ""}`}>
+    <div className={s.vlak}>
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
       {!dim &&
         groepen.map((g, i) =>
@@ -653,17 +673,24 @@ export function SqulaPlusVlak({
   );
 }
 
-/* ---------- tekeningen voor de kaart aan het eind (244 × 190) ---------- */
+/* ---------- tekeningen voor de kaart aan het eind (244 × 190): rekenmateriaal, geen plaatjes ---------- */
+
+function Stippen({ a, b, y }: { a: number; b: number; y: number }) {
+  return (
+    <>
+      {Array.from({ length: a + b }, (_, i) => (
+        <circle key={i} cx={58 + i * 32 + (i >= 5 ? 8 : 0)} cy={y} r={12} fill={i < a ? "#ffad5c" : "#5aa8ff"} stroke="#ffffff" strokeWidth={2.5} />
+      ))}
+    </>
+  );
+}
 
 export function KaartBakkerij() {
   return (
     <>
-      <ellipse cx={122} cy={130} rx={100} ry={34} fill="#ffffff" stroke="#9db4c8" strokeWidth={4} />
-      {[70, 122, 174].map((x) => (
-        <ellipse key={x} cx={x} cy={112} rx={26} ry={18} fill="#f2c27b" stroke="#5b3a1e" strokeWidth={3} />
-      ))}
-      <text x={122} y={58} textAnchor="middle" fontSize={44} fontWeight={800} fill="#ffffff">
-        +
+      <Stippen a={3} b={2} y={120} />
+      <text x={122} y={70} textAnchor="middle" fontSize={40} fontWeight={800} fill="#ffffff">
+        3 + 2
       </text>
     </>
   );
@@ -672,12 +699,9 @@ export function KaartBakkerij() {
 export function KaartDisco() {
   return (
     <>
-      <circle cx={122} cy={70} r={46} fill="#c8d3e6" stroke="#5d6a86" strokeWidth={4} />
-      {[-24, 0, 24].map((d) => (
-        <line key={d} x1={86} y1={70 + d} x2={158} y2={70 + d} stroke="#8fa0c8" strokeWidth={3} />
-      ))}
-      <rect x={42} y={130} width={160} height={40} rx={12} fill="#8a5cf0" stroke="#1b1f33" strokeWidth={4} />
-      <text x={122} y={160} textAnchor="middle" fontSize={26} fontWeight={800} fill="#ffffff">
+      <Stippen a={5} b={0} y={104} />
+      <Stippen a={2} b={3} y={140} />
+      <text x={122} y={64} textAnchor="middle" fontSize={40} fontWeight={800} fill="#ffffff">
         10
       </text>
     </>
@@ -687,13 +711,10 @@ export function KaartDisco() {
 export function KaartBus() {
   return (
     <>
-      <rect x={26} y={50} width={192} height={96} rx={18} fill="#e8483f" stroke="#2b2f45" strokeWidth={5} />
-      {[0, 1, 2, 3].map((i) => (
-        <rect key={i} x={40 + i * 36} y={64} width={28} height={32} rx={6} fill="#cfefff" stroke="#2b2f45" strokeWidth={3} />
-      ))}
-      <rect x={186} y={64} width={22} height={70} rx={5} fill="#cfefff" stroke="#2b2f45" strokeWidth={3} />
-      <circle cx={70} cy={150} r={20} fill="#2b2f45" />
-      <circle cx={174} cy={150} r={20} fill="#2b2f45" />
+      <Stippen a={4} b={2} y={120} />
+      <text x={122} y={70} textAnchor="middle" fontSize={40} fontWeight={800} fill="#ffffff">
+        4 + 2
+      </text>
     </>
   );
 }

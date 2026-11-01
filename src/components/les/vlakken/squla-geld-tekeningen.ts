@@ -1,9 +1,11 @@
 /**
  * Tekeningen voor de lessen Geld naar Squla (31 oktober 2026): de spaarpot,
- * speelgoed met een prijskaartje, Sam en Noor, hun klusjes en de rommelmarkt.
- * Eigen werk, vlak en vriendelijk in de stijl van bliepo-voorwerpen.ts
- * (donkerblauwe rand, petrol, koraal, warmgeel, warmwit); geen plaatjes van
- * buiten, geen AI, geen emoji, niets van Squla.
+ * de portemonnee, speelgoed, de klusjes en de marktkraam. Alleen DINGEN:
+ * geen mensen, geen dieren, niets met een gezichtje (besluit Sara 31 okt).
+ * Dit zijn simpele placeholders, eigen werk in code; geen AI, geen emoji,
+ * niets van Squla. Elk ding heeft één sleutel (de naam uit
+ * public/proef-plaatjes/zinnen.html): staat er later een
+ * public/proef-plaatjes/<sleutel>.png, dan gebruikt het vlak die PNG.
  *
  * Munten en briefjes zijn hier NOOIT getekend: die komen altijd uit de
  * officiële afbeeldingen in public/geld/ (zie BRON.md daar).
@@ -17,15 +19,10 @@ import { PALET, RAND, RAND_DUN, blok, cirkel, type Vorm } from "./bliepo-voorwer
 
 const N: string = PALET.navy;
 const ROZE = "#f9bfd3";
-const ROZE_DONKER = "#f08fb0";
 const HOUT = "#d79a62";
 const HOUT_LICHT = "#efc796";
 const HOUT_DONKER = "#8a5a33";
 const GROEN = "#55c26f";
-const HUID_1 = "#f3cba8";
-const HUID_2 = "#b8825d";
-const HAAR_1 = "#8a5a33";
-const HAAR_2 = "#3a2a22";
 const LUCHT = "#9fd8ff";
 
 const ovaal = (x: number, y: number, rx: number, ry: number) => `M ${x - rx} ${y} a ${rx} ${ry} 0 1 0 ${2 * rx} 0 a ${rx} ${ry} 0 1 0 ${-2 * rx} 0 Z`;
@@ -34,28 +31,6 @@ const vlak = (d: string, vul: string, dik = RAND_DUN): Vorm => ({ d, vul, rand: 
 
 export type Tekening = { b: number; h: number; vormen: Vorm[] };
 
-/* ---------- de spaarpot (een varken) ---------- */
-
-const spaarpot: Tekening = {
-  b: 230,
-  h: 190,
-  vormen: [
-    vlak(blok(54, 136, 26, 38, 10), ROZE_DONKER),
-    vlak(blok(138, 136, 26, 38, 10), ROZE_DONKER),
-    lijn("M 30 98 C 12 96 10 76 22 74 C 32 72 32 88 20 90"),
-    vlak("M 146 56 L 160 22 L 180 62 Z", ROZE_DONKER),
-    vlak(ovaal(108, 104, 84, 62), ROZE, RAND),
-    vlak(blok(76, 152, 26, 26, 10), ROZE_DONKER),
-    vlak(blok(116, 152, 26, 26, 10), ROZE_DONKER),
-    vlak(ovaal(196, 110, 18, 22), ROZE_DONKER, RAND),
-    { d: ovaal(191, 104, 3.5, 5), vul: N },
-    { d: ovaal(202, 104, 3.5, 5), vul: N },
-    { d: cirkel(164, 88, 6.5), vul: N },
-    lijn("M 150 128 Q 160 134 170 128"),
-    { d: blok(84, 44, 46, 10, 5), vul: N },
-    lijn("M 62 78 Q 70 66 84 62", PALET.warmwit, 5),
-  ],
-};
 
 /* ---------- speelgoed (ontwerpvak 160 × 160) ---------- */
 
@@ -82,7 +57,7 @@ const springtouw: Tekening = {
   ],
 };
 
-const autootje: Tekening = {
+const speelgoedauto: Tekening = {
   b: 160,
   h: 160,
   vormen: [
@@ -110,29 +85,6 @@ const vlieger: Tekening = {
   ],
 };
 
-const beer: Tekening = {
-  b: 160,
-  h: 170,
-  vormen: [
-    vlak(cirkel(52, 30, 15), HOUT),
-    vlak(cirkel(108, 30, 15), HOUT),
-    { d: cirkel(52, 30, 7), vul: HOUT_LICHT },
-    { d: cirkel(108, 30, 7), vul: HOUT_LICHT },
-    vlak(ovaal(80, 122, 42, 42), HOUT, RAND),
-    vlak(ovaal(80, 128, 22, 24), HOUT_LICHT),
-    vlak(ovaal(38, 112, 13, 22), HOUT),
-    vlak(ovaal(122, 112, 13, 22), HOUT),
-    vlak(ovaal(56, 160, 18, 10), HOUT),
-    vlak(ovaal(104, 160, 18, 10), HOUT),
-    vlak(cirkel(80, 58, 36), HOUT, RAND),
-    vlak(ovaal(80, 70, 16, 12), HOUT_LICHT),
-    { d: ovaal(80, 64, 6, 4.5), vul: N },
-    lijn("M 80 68 V 74 M 72 76 Q 80 82 88 76"),
-    { d: cirkel(66, 50, 4.5), vul: N },
-    { d: cirkel(94, 50, 4.5), vul: N },
-    lijn("M 62 96 L 80 104 L 98 96", PALET.koraal, 6),
-  ],
-};
 
 const bootje: Tekening = {
   b: 160,
@@ -166,21 +118,6 @@ const treintje: Tekening = {
   ],
 };
 
-const puzzel: Tekening = {
-  b: 160,
-  h: 150,
-  vormen: [
-    vlak(blok(12, 18, 136, 116, 12), PALET.warmwit, RAND),
-    vlak(blok(26, 32, 52, 42, 4), PALET.koraal),
-    vlak(blok(82, 32, 52, 42, 4), PALET.geel),
-    vlak(blok(26, 78, 52, 42, 4), PALET.petrol),
-    vlak(blok(82, 78, 52, 42, 4), ROZE),
-    vlak(cirkel(80, 53, 8), PALET.koraal, 2.5),
-    vlak(cirkel(52, 76, 8), PALET.petrol, 2.5),
-    vlak(cirkel(108, 76, 8), PALET.geel, 2.5),
-    vlak(cirkel(80, 99, 8), ROZE, 2.5),
-  ],
-};
 
 const skateboard: Tekening = {
   b: 210,
@@ -199,24 +136,6 @@ const skateboard: Tekening = {
 
 /* ---------- geen geld (om mee te grappen) ---------- */
 
-const schelpen: Tekening = {
-  b: 180,
-  h: 120,
-  vormen: [
-    ...[
-      [44, 70, PALET.warmwit],
-      [94, 52, PALET.koraalLicht],
-      [140, 76, PALET.geelLicht],
-    ].flatMap(([x, y, k]) => {
-      const cx = x as number;
-      const cy = y as number;
-      return [
-        vlak(`M ${cx - 30} ${cy + 4} Q ${cx - 32} ${cy - 30} ${cx} ${cy - 32} Q ${cx + 32} ${cy - 30} ${cx + 30} ${cy + 4} L ${cx + 8} ${cy + 22} H ${cx - 8} Z`, k as string),
-        lijn(`M ${cx} ${cy + 20} V ${cy - 28} M ${cx - 6} ${cy + 20} L ${cx - 20} ${cy - 22} M ${cx + 6} ${cy + 20} L ${cx + 20} ${cy - 22}`, N, 2.5),
-      ];
-    }),
-  ],
-};
 
 const knoop: Tekening = {
   b: 120,
@@ -231,64 +150,9 @@ const knoop: Tekening = {
   ],
 };
 
-const puzzelstukjes: Tekening = {
-  b: 180,
-  h: 120,
-  vormen: [
-    ...[
-      [20, 18, PALET.koraal],
-      [96, 14, PALET.geel],
-      [26, 66, PALET.petrol],
-      [104, 64, ROZE],
-    ].flatMap(([x, y, k]) => {
-      const a = x as number;
-      const b = y as number;
-      return [vlak(`M ${a} ${b} H ${a + 18} a 8 8 0 1 1 16 0 H ${a + 52} V ${b + 36} H ${a} Z`, k as string)];
-    }),
-  ],
-};
-
-/* ---------- Sam en Noor (ontwerpvak 130 × 180) ---------- */
-
-function kind(huid: string, haar: string, shirt: string, staartjes: boolean): Tekening {
-  return {
-    b: 130,
-    h: 180,
-    vormen: [
-      ...(staartjes ? [vlak(ovaal(26, 60, 13, 18), haar), vlak(ovaal(104, 60, 13, 18), haar)] : []),
-      vlak("M 22 180 V 132 Q 22 100 65 100 Q 108 100 108 132 V 180 Z", shirt, RAND),
-      vlak(cirkel(65, 58, 34), huid, RAND),
-      vlak(staartjes ? "M 31 56 Q 30 22 65 22 Q 100 22 99 56 Q 92 38 65 38 Q 38 38 31 56 Z" : "M 31 54 Q 28 20 65 20 Q 102 20 99 54 Q 88 34 70 40 Q 50 30 31 54 Z", haar),
-      { d: cirkel(53, 60, 4.5), vul: N },
-      { d: cirkel(77, 60, 4.5), vul: N },
-      lijn("M 53 74 Q 65 84 77 74"),
-    ],
-  };
-}
-
-const sam = kind(HUID_1, HAAR_1, PALET.petrol, false);
-const noor = kind(HUID_2, HAAR_2, PALET.koraal, true);
 
 /* ---------- klusjes (ontwerpvak 160 × 160) ---------- */
 
-const hond: Tekening = {
-  b: 170,
-  h: 150,
-  vormen: [
-    lijn("M 34 72 Q 14 60 22 36", N, RAND),
-    vlak(blok(40, 108, 14, 32, 6), HOUT),
-    vlak(blok(104, 108, 14, 32, 6), HOUT),
-    vlak(blok(26, 62, 100, 54, 26), HOUT, RAND),
-    vlak(blok(56, 108, 14, 32, 6), HOUT),
-    vlak(blok(88, 108, 14, 32, 6), HOUT),
-    vlak(cirkel(126, 56, 28), HOUT, RAND),
-    vlak("M 112 34 Q 98 44 104 72 Q 114 66 118 40 Z", HOUT_DONKER),
-    { d: cirkel(132, 50, 4.5), vul: N },
-    { d: ovaal(152, 60, 6, 5), vul: N },
-    lijn("M 130 82 L 146 84", PALET.koraal, 6),
-    lijn("M 146 84 Q 166 110 160 140", PALET.petrol, 4),
-  ],
-};
 
 const gieter: Tekening = {
   b: 170,
@@ -306,19 +170,6 @@ const gieter: Tekening = {
   ],
 };
 
-const afwas: Tekening = {
-  b: 170,
-  h: 150,
-  vormen: [
-    vlak(cirkel(70, 82, 54), PALET.warmwit, RAND),
-    { d: cirkel(70, 82, 34), rand: PALET.petrolLicht, dik: 4 },
-    vlak(blok(108, 22, 52, 34, 8), PALET.geel, RAND),
-    lijn("M 108 44 H 160", GROEN, 6),
-    vlak(cirkel(126, 82, 10), LUCHT, 2.5),
-    vlak(cirkel(146, 70, 7), LUCHT, 2.5),
-    vlak(cirkel(140, 100, 6), LUCHT, 2.5),
-  ],
-};
 
 const doos: Tekening = {
   b: 170,
@@ -344,21 +195,10 @@ const emmer: Tekening = {
   ],
 };
 
-const tas: Tekening = {
-  b: 170,
-  h: 150,
-  vormen: [
-    vlak(blok(46, 22, 20, 52, 9), PALET.geel),
-    vlak(ovaal(104, 40, 18, 22), GROEN),
-    lijn("M 54 64 Q 54 30 85 30 Q 116 30 116 64", N, RAND),
-    vlak("M 30 58 H 140 L 130 144 H 40 Z", PALET.koraal, RAND),
-    lijn("M 60 96 H 110", PALET.koraalLicht, 6),
-  ],
-};
 
 /* ---------- de rommelmarkt: een kraam (ontwerpvak 260 × 200) ---------- */
 
-const kraam: Tekening = {
+const marktkraam: Tekening = {
   b: 260,
   h: 200,
   vormen: [
@@ -396,28 +236,145 @@ const plant: Tekening = {
   ],
 };
 
+/* ---------- geld bewaren ---------- */
+
+/** Een ronde glazen pot met een gleuf in het deksel. */
+const spaarpot: Tekening = {
+  b: 180,
+  h: 200,
+  vormen: [
+    vlak("M 34 60 Q 14 80 14 120 Q 14 190 90 192 Q 166 190 166 120 Q 166 80 146 60 Z", "#cfeaf7", RAND),
+    lijn("M 34 100 Q 30 150 52 170", "#ffffff", 7),
+    vlak(blok(28, 34, 124, 30, 10), PALET.koraal, RAND),
+    { d: blok(66, 44, 48, 9, 4.5), vul: N },
+  ],
+};
+
+const portemonnee: Tekening = {
+  b: 180,
+  h: 140,
+  vormen: [
+    vlak(blok(12, 30, 156, 100, 18), PALET.koraal, RAND),
+    vlak("M 12 52 Q 12 30 34 30 H 146 Q 168 30 168 52 V 72 H 12 Z", "#d95a49"),
+    vlak(blok(118, 58, 40, 30, 10), PALET.geel),
+    { d: cirkel(138, 73, 5), vul: N },
+  ],
+};
+
+/* ---------- meer speelgoed ---------- */
+
+const raketje: Tekening = {
+  b: 140,
+  h: 180,
+  vormen: [
+    vlak("M 44 120 L 22 160 L 50 150 Z", PALET.koraal),
+    vlak("M 96 120 L 118 160 L 90 150 Z", PALET.koraal),
+    vlak("M 70 10 C 100 34 104 90 96 150 H 44 C 36 90 40 34 70 10 Z", PALET.warmwit, RAND),
+    vlak("M 70 10 C 86 22 94 40 97 56 H 43 C 46 40 54 22 70 10 Z", PALET.koraal),
+    vlak(cirkel(70, 86, 15), LUCHT),
+    vlak("M 56 150 L 70 176 L 84 150 Z", PALET.geel, 2.5),
+  ],
+};
+
+const voetbal: Tekening = {
+  b: 150,
+  h: 150,
+  vormen: [
+    vlak(cirkel(75, 75, 62), "#ffffff", RAND),
+    { d: "M 75 52 L 97 68 L 89 94 H 61 L 53 68 Z", vul: N },
+    lijn("M 75 52 V 16 M 97 68 L 132 56 M 89 94 L 110 124 M 61 94 L 40 124 M 53 68 L 18 56", N, 3),
+  ],
+};
+
+const boek: Tekening = {
+  b: 160,
+  h: 140,
+  vormen: [
+    vlak(blok(22, 14, 116, 112, 8), "#4b7be0", RAND),
+    vlak(blok(22, 14, 18, 112, 6), "#3560c0"),
+    lijn("M 136 20 V 122", PALET.warmwit, 5),
+  ],
+};
+
+const schelp: Tekening = {
+  b: 100,
+  h: 90,
+  vormen: [
+    vlak("M 16 54 Q 14 12 50 10 Q 86 12 84 54 L 60 76 H 40 Z", PALET.koraalLicht),
+    lijn("M 50 74 V 16 M 43 74 L 28 20 M 57 74 L 72 20", N, 2.5),
+  ],
+};
+
+/* ---------- meer klusjes ---------- */
+
+const bezem: Tekening = {
+  b: 120,
+  h: 190,
+  vormen: [
+    lijn("M 60 10 V 122", HOUT_DONKER, 9),
+    vlak("M 40 120 H 80 L 100 182 H 20 Z", PALET.geel, RAND),
+    lijn("M 40 150 L 36 180 M 60 150 V 180 M 80 150 L 84 180", N, 2.5),
+  ],
+};
+
+const bord: Tekening = {
+  b: 150,
+  h: 150,
+  vormen: [vlak(cirkel(75, 75, 64), PALET.warmwit, RAND), { d: cirkel(75, 75, 40), rand: PALET.petrolLicht, dik: 5 }],
+};
+
+const bed: Tekening = {
+  b: 200,
+  h: 140,
+  vormen: [
+    vlak(blok(14, 20, 22, 110, 6), HOUT, RAND),
+    vlak(blok(164, 56, 22, 74, 6), HOUT, RAND),
+    vlak(blok(30, 66, 140, 40, 8), "#4b7be0", RAND),
+    vlak(blok(38, 46, 50, 24, 10), PALET.warmwit),
+  ],
+};
+
+const jas: Tekening = {
+  b: 150,
+  h: 170,
+  vormen: [
+    vlak("M 52 16 L 20 40 L 10 110 L 32 112 L 38 64 V 158 H 112 V 64 L 118 112 L 140 110 L 130 40 L 98 16 Q 75 34 52 16 Z", PALET.petrol, RAND),
+    lijn("M 75 30 V 156", N, 3),
+    { d: cirkel(86, 70, 4), vul: PALET.geel },
+    { d: cirkel(86, 100, 4), vul: PALET.geel },
+  ],
+};
+
+const schoen: Tekening = {
+  b: 170,
+  h: 110,
+  vormen: [vlak("M 20 20 H 70 L 82 52 Q 150 58 156 84 V 96 H 20 Z", PALET.koraal, RAND), lijn("M 20 84 H 156", PALET.warmwit, 5), lijn("M 56 30 L 74 40 M 54 44 L 76 52", PALET.warmwit, 3)],
+};
+
+/** Elke sleutel: dezelfde naam als in public/proef-plaatjes/zinnen.html. */
 export const TEKENINGEN: Record<string, Tekening> = {
   spaarpot,
+  portemonnee,
+  skateboard,
   bal,
+  voetbal,
   springtouw,
-  autootje,
+  speelgoedauto,
   vlieger,
-  beer,
   bootje,
   treintje,
-  puzzel,
-  skateboard,
-  schelpen,
+  raketje,
+  boek,
   knoop,
-  puzzelstukjes,
-  sam,
-  noor,
-  hond,
+  schelp,
+  bezem,
   gieter,
-  afwas,
-  doos,
-  emmer,
-  tas,
-  kraam,
   plant,
+  emmer,
+  doos,
+  bord,
+  bed,
+  jas,
+  schoen,
+  marktkraam,
 };

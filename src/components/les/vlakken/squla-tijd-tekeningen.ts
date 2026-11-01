@@ -11,17 +11,14 @@
  */
 
 import { PALET, RAND, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
+import { tekenVoorwerp } from "../voorwerpen";
 
 const N: string = PALET.navy;
 const GROEN = "#55c26f";
-const GROEN_LICHT = "#c9efd2";
 const LUCHT = "#9fd8ff";
-const HOUT = "#c98b55";
-const HOUT_DONKER = "#8a5a33";
 const GRIJS = "#cfd4de";
 const ROOD = "#e8453c";
 const PAARS = "#a986ec";
-const ROZE = "#f594c6";
 
 let LETTER = "system-ui, sans-serif";
 /** Het lettertype van de les (voor tekst in de tekeningen). */
@@ -51,98 +48,34 @@ export const dagVanDatum = (n: number) => (MAAND.start + n - 1) % 7;
 
 /* ---------- kleine voorwerpen (ontwerpvak 120 × 120) ---------- */
 
-function feesthoed(c: C) {
-  v(c, "M 60 10 L 96 104 Q 60 118 24 104 Z", PALET.koraal, RAND);
-  v(c, "M 42 60 L 78 52 M 34 84 L 88 76", undefined, RAND_DUN, PALET.geel);
-  v(c, cirkel(60, 12, 9), PALET.geel);
-  v(c, cirkel(52, 40, 4), PALET.warmwit, 2);
-  v(c, cirkel(70, 96, 4), PALET.warmwit, 2);
+/** Een vinkje (waar) of een kruisje (niet waar) op een rondje: een teken, geen ding (ontwerpvak 120 × 120). */
+function waarTeken(c: C, waar: boolean) {
+  v(c, cirkel(60, 60, 50), waar ? GROEN : ROOD, RAND);
+  v(c, waar ? "M 36 62 L 54 80 L 86 40" : "M 40 40 L 80 80 M 80 40 L 40 80", undefined, 12, PALET.warmwit);
 }
 
-function ballon(c: C) {
-  v(c, "M 60 92 Q 54 104 62 114 Q 68 122 58 130", undefined, 3);
-  v(c, "M 60 92 C 24 80 22 18 60 14 C 98 18 96 80 60 92 Z", ROOD, RAND);
-  v(c, "M 54 92 L 66 92 L 60 100 Z", ROOD, 3);
-  v(c, "M 44 34 Q 48 26 56 24", undefined, 4, PALET.warmwit);
-}
-
-function thermometer(c: C) {
-  v(c, blok(48, 10, 24, 80, 12), PALET.warmwit, RAND);
-  v(c, cirkel(60, 96, 18), ROOD, RAND);
-  v(c, blok(55, 40, 10, 50, 5), ROOD, 0, undefined);
-  for (let i = 0; i < 4; i++) v(c, `M 72 ${24 + i * 14} h 10`, undefined, 3);
-}
-
-function tand(c: C) {
-  v(c, "M 30 30 C 30 10 52 12 60 20 C 68 12 90 10 90 30 C 90 52 84 62 82 82 C 80 104 70 108 66 92 C 64 82 56 82 54 92 C 50 108 40 104 38 82 C 36 62 30 52 30 30 Z", PALET.warmwit, RAND);
-  v(c, "M 42 30 Q 46 22 54 24", undefined, 3, PALET.petrolLicht);
-}
-
-function duim(c: C, op: boolean) {
-  c.save();
-  if (!op) {
-    c.translate(120, 120);
-    c.rotate(Math.PI);
-  }
-  v(c, "M 34 58 h 18 v 46 h -18 Z", PALET.petrol, RAND);
-  v(c, "M 52 60 L 66 24 C 70 14 84 16 82 30 L 78 52 H 98 C 108 52 110 62 104 68 C 110 72 108 82 101 84 C 106 89 103 98 96 99 C 99 104 95 110 88 110 H 52 Z", PALET.geel, RAND);
-  v(c, "M 80 68 H 102 M 80 84 H 99 M 80 99 H 94", undefined, 3);
-  c.restore();
-}
+/** Een vast plaatje (src/lib/voorwerpen) in een ontwerpvak. */
+const vw = (naam: string, b = 120, h = 120) => (c: C) => tekenVoorwerp(c, naam, 0, 0, b, h);
+const feesthoed = vw("feesthoed", 120, 130);
 
 /* Activiteiten op school (dagritme en dagkalender). */
-function kring(c: C) {
-  v(c, "M 14 82 a 46 22 0 1 0 92 0 a 46 22 0 1 0 -92 0 Z", PALET.petrolLicht, RAND_DUN);
-  const plekken: [number, number, string][] = [
-    [60, 50, PALET.koraal],
-    [24, 66, PALET.geel],
-    [96, 66, GROEN],
-    [36, 96, PAARS],
-    [84, 96, LUCHT],
-  ];
-  for (const [x, y, k] of plekken) {
-    v(c, blok(x - 11, y, 22, 18, 8), k, 3);
-    v(c, cirkel(x, y - 6, 10), PALET.warmwit, 3);
-  }
-}
-
 function rekenen(c: C) {
   v(c, blok(18, 14, 84, 96, 8), PALET.warmwit, RAND);
   tekst(c, "1+2", 60, 46, 30, N);
   tekst(c, "3+1", 60, 84, 30, PALET.petrol);
 }
 
-function gym(c: C) {
-  v(c, "M 18 70 a 42 42 0 1 0 84 0 a 42 42 0 1 0 -84 0 Z", undefined, 8, PALET.koraal);
-  v(c, cirkel(60, 70, 22), PALET.geel, RAND);
-  v(c, "M 40 66 Q 60 56 80 66 M 44 82 Q 60 90 76 82", undefined, 3);
-}
-
-function buiten(c: C) {
-  v(c, "M 14 112 L 34 14 L 86 14 L 106 112", undefined, RAND, HOUT_DONKER);
-  v(c, "M 30 14 H 90", undefined, RAND, HOUT_DONKER);
-  v(c, "M 48 16 V 78 M 72 16 V 78", undefined, 3);
-  v(c, blok(40, 76, 40, 10, 4), PALET.koraal, 3);
-}
-
-function eten(c: C) {
-  v(c, "M 60 36 C 40 22 16 34 20 62 C 24 92 46 106 60 98 C 74 106 96 92 100 62 C 104 34 80 22 60 36 Z", ROOD, RAND);
-  v(c, "M 60 36 Q 58 22 64 14", undefined, 4, HOUT_DONKER);
-  v(c, "M 64 22 Q 78 10 88 20 Q 76 30 64 22 Z", GROEN, 3);
-}
-
-function lezen(c: C) {
-  v(c, "M 60 30 C 46 20 24 20 10 26 V 96 C 24 90 46 90 60 100 Z", PALET.petrolLicht, RAND_DUN);
-  v(c, "M 60 30 C 74 20 96 20 110 26 V 96 C 96 90 74 90 60 100 Z", PALET.petrolLicht, RAND_DUN);
-  v(c, "M 22 44 h 26 M 22 58 h 26 M 22 72 h 26 M 72 44 h 26 M 72 58 h 26 M 72 72 h 26", undefined, 3);
-}
-
-function fruit(c: C) {
-  v(c, "M 26 34 C 20 70 44 104 92 96 C 96 92 94 88 90 88 C 54 90 40 64 40 34 Z", PALET.geel, RAND);
-  v(c, "M 30 28 L 38 30", undefined, 5, HOUT_DONKER);
-  v(c, cirkel(80, 50, 20), ROOD, RAND);
-  v(c, "M 80 30 Q 82 22 88 18", undefined, 3, HOUT_DONKER);
-}
+/*
+  Sinds 31 oktober 2026 zijn de activiteiten vaste plaatjes (geen mensen: de
+  kring is een kring van lege stoeltjes). Alleen "rekenen" blijft in code: dat
+  is een blaadje met sommen.
+*/
+const kring = vw("stoelenkring");
+const gym = vw("hoepel");
+const buiten = vw("schommel");
+const eten = vw("boterham");
+const lezen = vw("boek");
+const fruit = vw("banaan");
 
 const ACTIVITEIT: Record<string, (c: C) => void> = { kring, rekenen, gym, buiten, eten, lezen, fruit };
 export const ACTIVITEITNAAM: Record<string, string> = {
@@ -442,211 +375,6 @@ function dagdeel(c: C, d: string) {
   v(c, blok(6, 6, 168, 128, 14), undefined, RAND);
 }
 
-function uil(c: C) {
-  v(c, "M 30 110 C 18 70 26 26 60 22 C 94 26 102 70 90 110 Z", HOUT, RAND);
-  v(c, "M 34 26 L 38 8 L 50 22 M 86 26 L 82 8 L 70 22", HOUT, RAND_DUN);
-  v(c, "M 42 76 C 46 100 74 100 78 76 C 74 66 46 66 42 76 Z", PALET.koraalLicht, 3);
-  v(c, cirkel(46, 50, 14), PALET.warmwit, 3);
-  v(c, cirkel(74, 50, 14), PALET.warmwit, 3);
-  v(c, cirkel(46, 50, 6), N, 0);
-  v(c, cirkel(74, 50, 6), N, 0);
-  v(c, "M 54 62 L 60 72 L 66 62 Z", PALET.geel, 2.5);
-}
-
-function vos(c: C) {
-  v(c, "M 24 22 L 40 54 L 80 54 L 96 22 L 70 40 L 50 40 Z", PALET.koraal, RAND);
-  v(c, "M 20 52 C 22 30 98 30 100 52 C 98 76 76 100 60 108 C 44 100 22 76 20 52 Z", "#f28a3d", RAND);
-  v(c, "M 36 70 C 46 92 74 92 84 70 C 74 82 46 82 36 70 Z", PALET.warmwit, 3);
-  v(c, cirkel(44, 56, 5), N, 0);
-  v(c, cirkel(76, 56, 5), N, 0);
-  v(c, cirkel(60, 98, 6), N, 0);
-}
-
-function egel(c: C) {
-  v(c, "M 14 92 L 20 60 L 10 46 L 30 40 L 28 20 L 48 30 L 60 12 L 70 30 L 90 22 L 88 42 L 108 48 L 98 62 L 106 92 Z", HOUT_DONKER, RAND);
-  v(c, "M 30 96 C 30 70 90 70 90 96 Z", "#f0d1a8", RAND_DUN);
-  v(c, "M 44 66 C 52 52 68 52 76 66 L 60 74 Z", "#f0d1a8", 3);
-  v(c, cirkel(52, 62, 4), N, 0);
-  v(c, cirkel(68, 62, 4), N, 0);
-  v(c, cirkel(60, 72, 5), N, 0);
-}
-
-function kikker(c: C) {
-  v(c, "M 18 72 C 18 40 102 40 102 72 C 102 104 18 104 18 72 Z", GROEN, RAND);
-  v(c, cirkel(38, 40, 16), GROEN, RAND);
-  v(c, cirkel(82, 40, 16), GROEN, RAND);
-  v(c, cirkel(38, 40, 8), PALET.warmwit, 2.5);
-  v(c, cirkel(82, 40, 8), PALET.warmwit, 2.5);
-  v(c, cirkel(39, 41, 4), N, 0);
-  v(c, cirkel(83, 41, 4), N, 0);
-  v(c, "M 40 78 Q 60 92 80 78", undefined, 4);
-}
-
-function kampvuur(c: C) {
-  v(c, "M 40 200 L 280 160 M 40 160 L 280 200", undefined, 22, HOUT_DONKER);
-  v(c, "M 40 200 L 280 160 M 40 160 L 280 200", undefined, 14, HOUT);
-  v(c, "M 160 30 C 210 80 240 120 220 160 C 205 186 115 186 100 160 C 80 120 110 80 130 60 C 132 90 146 100 152 96 C 150 70 150 50 160 30 Z", "#ff8a3d", RAND);
-  v(c, "M 160 90 C 190 120 196 150 180 166 C 170 176 150 176 140 166 C 128 150 138 124 150 110 C 154 126 162 128 164 124 C 162 112 160 100 160 90 Z", PALET.geel, 3);
-}
-
-/* De bakkerij en wat er gebeurt. */
-function bed(c: C) {
-  v(c, "M 10 98 V 30 M 110 98 V 58", undefined, RAND, HOUT_DONKER);
-  v(c, blok(10, 62, 100, 26, 6), PALET.petrolLicht, RAND);
-  v(c, blok(14, 48, 30, 18, 8), PALET.warmwit, 3);
-  v(c, "M 44 62 C 50 46 104 46 110 62 Z", PALET.koraal, RAND_DUN);
-  tekst(c, "z", 76, 22, 22, N);
-  tekst(c, "z", 92, 10, 16, N);
-}
-
-function boterham(c: C) {
-  v(c, "M 22 104 V 44 C 10 40 10 14 34 14 H 86 C 110 14 110 40 98 44 V 104 Z", "#e9b979", RAND);
-  v(c, "M 32 94 V 48 C 22 44 24 26 38 26 H 82 C 96 26 98 44 88 48 V 94 Z", "#fbe2b8", 3);
-  v(c, "M 36 58 C 50 50 70 66 84 56", undefined, 5, ROOD);
-}
-
-function bakkerij(c: C) {
-  v(c, blok(14, 40, 92, 72, 4), PALET.warmwit, RAND);
-  v(c, "M 8 40 L 20 18 H 100 L 112 40 Z", PALET.koraal, RAND);
-  v(c, "M 32 18 L 26 40 M 52 18 L 50 40 M 68 18 L 70 40 M 88 18 L 94 40", undefined, 3);
-  v(c, blok(24, 60, 34, 52, 3), PALET.petrol, 3);
-  v(c, blok(66, 58, 32, 26, 3), LUCHT, 3);
-  v(c, "M 70 78 C 72 68 92 68 94 78 Z", "#e9b979", 2.5);
-}
-
-function schoen(c: C) {
-  v(c, "M 14 92 V 44 C 30 40 40 44 46 54 L 70 66 C 98 70 108 78 108 92 Z", PALET.koraal, RAND);
-  v(c, "M 14 92 H 108 V 102 H 14 Z", N, 3);
-  v(c, "M 46 56 l 10 -6 M 54 60 l 10 -6", undefined, 3, PALET.warmwit);
-}
-
-function deegkom(c: C) {
-  v(c, "M 26 58 C 26 50 94 50 94 58 C 92 78 82 96 60 96 C 38 96 28 78 26 58 Z", "#f0d1a8", RAND_DUN);
-  v(c, "M 14 58 H 106 C 104 92 86 108 60 108 C 34 108 16 92 14 58 Z", PALET.petrol, RAND);
-  v(c, "M 70 14 L 82 54", undefined, 6, HOUT);
-}
-
-function strooibus(c: C) {
-  v(c, blok(38, 40, 44, 66, 8), PALET.warmwit, RAND);
-  v(c, "M 36 40 C 36 22 84 22 84 40 Z", GRIJS, RAND);
-  for (const [x, y] of [[50, 32], [60, 30], [70, 32]]) v(c, cirkel(x, y, 2), N, 0);
-  for (const [x, y] of [[20, 20], [28, 12], [92, 16], [100, 26], [96, 8]]) v(c, cirkel(x, y, 3), PALET.warmwit, 1.5);
-}
-
-function taart(c: C) {
-  v(c, "M 16 64 H 104 V 104 H 16 Z", "#f6c9a0", RAND);
-  v(c, "M 16 64 C 16 48 104 48 104 64 C 104 76 96 70 90 76 C 84 82 76 70 66 76 C 58 82 50 70 42 76 C 34 82 28 70 16 76 Z", PALET.warmwit, RAND_DUN);
-  v(c, "M 16 88 H 104", undefined, 3, PALET.koraal);
-}
-
-function kers(c: C) {
-  v(c, "M 54 60 Q 58 30 80 14", undefined, 4, HOUT_DONKER);
-  v(c, "M 80 14 Q 96 10 100 22 Q 88 28 80 14 Z", GROEN, 2.5);
-  v(c, cirkel(52, 80, 24), ROOD, RAND);
-  v(c, "M 40 72 Q 44 64 52 64", undefined, 4, PALET.warmwit);
-}
-
-function oven(c: C, inhoud?: string) {
-  v(c, blok(12, 12, 96, 96, 8), GRIJS, RAND);
-  v(c, blok(22, 34, 76, 62, 6), "#3a3f5c", RAND_DUN);
-  for (const x of [32, 52, 72, 92]) v(c, cirkel(x - 4, 23, 4), N, 0);
-  if (inhoud === "brood") v(c, "M 32 86 C 30 60 90 60 88 86 Z", "#e9b979", 3);
-  if (inhoud === "taart") v(c, "M 34 88 V 70 H 86 V 88 Z", "#f6c9a0", 3);
-  v(c, "M 30 42 H 90", undefined, 3, "#ff8a3d");
-}
-
-function koekje(c: C) {
-  v(c, cirkel(60, 60, 40), "#e9b979", RAND);
-  for (const [x, y] of [[44, 46], [70, 40], [58, 66], [80, 70], [40, 76]]) v(c, cirkel(x, y, 5), HOUT_DONKER, 0);
-}
-
-function sleutel(c: C) {
-  v(c, cirkel(36, 60, 22), PALET.geel, RAND);
-  v(c, cirkel(36, 60, 8), PALET.warmwit, 3);
-  v(c, "M 58 54 H 108 V 66 H 98 V 78 H 88 V 66 H 78 V 74 H 68 V 66 H 58 Z", PALET.geel, RAND_DUN);
-}
-
-function bezem(c: C) {
-  v(c, "M 88 10 L 52 70", undefined, 7, HOUT_DONKER);
-  v(c, "M 40 62 L 66 78 L 54 112 L 14 92 Z", PALET.geel, RAND);
-  v(c, "M 26 96 L 42 72 M 38 102 L 52 76 M 48 108 L 60 82", undefined, 2.5);
-}
-
-function glas(c: C) {
-  v(c, "M 34 14 H 86 L 78 108 H 42 Z", PALET.warmwit, RAND);
-  v(c, "M 38 46 H 82 L 77 104 H 43 Z", LUCHT, 0, undefined);
-  v(c, "M 34 14 H 86 L 78 108 H 42 Z", undefined, RAND);
-}
-
-function fiets(c: C) {
-  v(c, cirkel(30, 80, 22), undefined, RAND);
-  v(c, cirkel(90, 80, 22), undefined, RAND);
-  v(c, "M 30 80 L 52 50 L 82 50 L 90 80 M 52 50 L 60 80 L 82 50 M 60 80 L 30 80", undefined, RAND_DUN, PALET.koraal);
-  v(c, "M 46 40 H 60 M 82 50 L 78 36 H 90", undefined, 4);
-}
-
-function ei(c: C) {
-  v(c, "M 60 14 C 90 14 104 70 92 92 C 82 110 38 110 28 92 C 16 70 30 14 60 14 Z", PALET.warmwit, RAND);
-  v(c, "M 44 40 Q 48 30 56 28", undefined, 3, GRIJS);
-}
-
-function jas(c: C) {
-  v(c, "M 40 16 L 22 26 L 10 70 L 26 74 L 30 56 V 108 H 90 V 56 L 94 74 L 110 70 L 98 26 L 80 16 C 72 28 48 28 40 16 Z", PALET.petrol, RAND);
-  v(c, "M 60 26 V 108", undefined, 3);
-  for (const y of [48, 66, 84]) v(c, cirkel(66, y, 3), PALET.geel, 1.5);
-}
-
-function brood(c: C) {
-  v(c, "M 12 84 C 8 40 112 40 108 84 C 108 96 12 96 12 84 Z", "#e9b979", RAND);
-  v(c, "M 34 58 L 44 74 M 56 54 L 66 72 M 78 56 L 88 72", undefined, 3, HOUT_DONKER);
-}
-
-function tent(c: C) {
-  v(c, "M 10 104 L 60 18 L 110 104 Z", GROEN, RAND);
-  v(c, "M 60 18 L 46 104 H 74 Z", GROEN_LICHT, RAND_DUN);
-  v(c, "M 4 104 H 116", undefined, RAND);
-}
-
-function bord(c: C) {
-  v(c, cirkel(60, 64, 44), PALET.warmwit, RAND);
-  v(c, cirkel(60, 64, 28), undefined, 3, GRIJS);
-  for (const [x, y] of [[96, 22], [106, 34], [88, 12]]) v(c, cirkel(x, y, 6), LUCHT, 2);
-}
-
-function beslag(c: C) {
-  deegkom(c);
-  v(c, "M 74 10 C 64 30 80 44 72 56 M 84 12 C 78 30 90 44 80 56", undefined, 3, GRIJS);
-}
-
-function taartKaars(c: C) {
-  taart(c);
-  v(c, blok(56, 26, 8, 26, 2), ROZE, 2.5);
-  v(c, "M 60 8 C 66 16 66 22 60 24 C 54 22 54 16 60 8 Z", "#ff8a3d", 2);
-}
-
-function schaar(c: C) {
-  v(c, "M 40 20 L 78 86 M 80 20 L 42 86", undefined, 7, GRIJS);
-  v(c, "M 40 20 L 78 86 M 80 20 L 42 86", undefined, RAND_DUN);
-  v(c, cirkel(36, 94, 14), PALET.koraal, RAND);
-  v(c, cirkel(84, 94, 14), PALET.koraal, RAND);
-  v(c, cirkel(60, 58, 4), N, 0);
-}
-
-function zwemmen(c: C) {
-  v(c, "M 6 60 Q 21 48 36 60 T 66 60 T 96 60 T 114 56 V 110 H 6 Z", LUCHT, RAND_DUN);
-  v(c, "M 6 84 Q 21 72 36 84 T 66 84 T 96 84 T 114 80", undefined, RAND_DUN, PALET.warmwit);
-  v(c, cirkel(60, 34, 18), PALET.koraal, RAND);
-  v(c, "M 44 30 H 76", undefined, 4, PALET.warmwit);
-}
-
-function huis(c: C) {
-  v(c, blok(22, 52, 76, 58, 4), PALET.warmwit, RAND);
-  v(c, "M 12 56 L 60 14 L 108 56 Z", PALET.koraal, RAND);
-  v(c, blok(50, 76, 22, 34, 3), PALET.petrol, 3);
-  v(c, blok(30, 64, 14, 14, 2), PALET.geel, 2.5);
-  v(c, blok(78, 64, 14, 14, 2), PALET.geel, 2.5);
-}
-
 function vraagteken(c: C) {
   v(c, cirkel(60, 60, 52), PALET.geel, RAND);
   v(c, "M 42 46 C 42 26 78 24 78 44 C 78 58 60 58 60 72", undefined, 10);
@@ -668,17 +396,58 @@ function week(c: C, o: Record<string, string>) {
   }
 }
 
+/** Alle vaste plaatjes die deze tekeningen gebruiken: elke Tijd-les laadt ze vooraf. */
+export const TIJD_VOORWERPEN = [
+  "feesthoed",
+  "stoelenkring",
+  "hoepel",
+  "schommel",
+  "banaan",
+  "bakkerij",
+  "ballon",
+  "bed",
+  "beslagkom",
+  "bezem",
+  "boek",
+  "boek-groen",
+  "boek-rood",
+  "bord",
+  "boterham",
+  "brood",
+  "deegkom",
+  "ei",
+  "fiets",
+  "glas-water",
+  "huis",
+  "jas",
+  "kampvuur",
+  "kers",
+  "koekje",
+  "oven-brood",
+  "oven-taart",
+  "schaar",
+  "schoen",
+  "sleutel",
+  "suikerstrooier",
+  "taart",
+  "taart-kaarsje",
+  "tand",
+  "tent",
+  "thermometer",
+  "zwembad",
+];
+
 /* ---------- het register ---------- */
 
 type Tekening = { b: number; h: number; teken: (c: C, o: Record<string, string>) => void };
 
 const ENKEL: Record<string, Tekening> = {
   feesthoed: { b: 120, h: 130, teken: feesthoed },
-  ballon: { b: 120, h: 134, teken: ballon },
-  thermometer: { b: 120, h: 120, teken: thermometer },
-  tand: { b: 120, h: 120, teken: tand },
-  duimop: { b: 120, h: 120, teken: (c) => duim(c, true) },
-  duimneer: { b: 120, h: 120, teken: (c) => duim(c, false) },
+  ballon: { b: 120, h: 134, teken: vw("ballon", 120, 134) },
+  thermometer: { b: 120, h: 120, teken: vw("thermometer", 120, 120) },
+  tand: { b: 120, h: 120, teken: vw("tand", 120, 120) },
+  duimop: { b: 120, h: 120, teken: (c) => waarTeken(c, true) },
+  duimneer: { b: 120, h: 120, teken: (c) => waarTeken(c, false) },
   klok: {
     b: 160,
     h: 160,
@@ -696,37 +465,36 @@ const ENKEL: Record<string, Tekening> = {
   maandklein: { b: 200, h: 170, teken: maandKlein },
   weekblad: { b: 190, h: 230, teken: weekblad },
   jaar: { b: 240, h: 220, teken: jaar },
-  uil: { b: 120, h: 120, teken: uil },
-  vos: { b: 120, h: 120, teken: vos },
-  egel: { b: 120, h: 120, teken: egel },
-  kikker: { b: 120, h: 120, teken: kikker },
-  kampvuur: { b: 320, h: 220, teken: kampvuur },
-  bed: { b: 120, h: 110, teken: bed },
-  boterham: { b: 120, h: 120, teken: boterham },
-  bakkerij: { b: 120, h: 120, teken: bakkerij },
-  schoen: { b: 120, h: 112, teken: schoen },
-  deegkom: { b: 120, h: 120, teken: deegkom },
-  strooibus: { b: 120, h: 120, teken: strooibus },
-  taart: { b: 120, h: 112, teken: taart },
-  kers: { b: 120, h: 112, teken: kers },
-  oven: { b: 120, h: 120, teken: (c) => oven(c, "brood") },
-  koekje: { b: 120, h: 120, teken: koekje },
-  sleutel: { b: 120, h: 120, teken: sleutel },
-  bezem: { b: 120, h: 120, teken: bezem },
-  glas: { b: 120, h: 120, teken: glas },
-  fiets: { b: 120, h: 110, teken: fiets },
-  ei: { b: 120, h: 120, teken: ei },
-  jas: { b: 120, h: 120, teken: jas },
-  brood: { b: 120, h: 100, teken: brood },
-  tent: { b: 120, h: 112, teken: tent },
-  bord: { b: 120, h: 112, teken: bord },
-  beslag: { b: 120, h: 120, teken: beslag },
-  taartoven: { b: 120, h: 120, teken: (c) => oven(c, "taart") },
-  taartkaars: { b: 120, h: 112, teken: taartKaars },
-  schaar: { b: 120, h: 112, teken: schaar },
+  kampvuur: { b: 320, h: 220, teken: vw("kampvuur", 320, 220) },
+  bed: { b: 120, h: 110, teken: vw("bed", 120, 110) },
+  boterham: { b: 120, h: 120, teken: vw("boterham", 120, 120) },
+  bakkerij: { b: 120, h: 120, teken: vw("bakkerij", 120, 120) },
+  schoen: { b: 120, h: 112, teken: vw("schoen", 120, 112) },
+  deegkom: { b: 120, h: 120, teken: vw("deegkom", 120, 120) },
+  strooibus: { b: 120, h: 120, teken: vw("suikerstrooier", 120, 120) },
+  taart: { b: 120, h: 112, teken: vw("taart", 120, 112) },
+  kers: { b: 120, h: 112, teken: vw("kers", 120, 112) },
+  oven: { b: 120, h: 120, teken: vw("oven-brood", 120, 120) },
+  koekje: { b: 120, h: 120, teken: vw("koekje", 120, 120) },
+  sleutel: { b: 120, h: 120, teken: vw("sleutel", 120, 120) },
+  bezem: { b: 120, h: 120, teken: vw("bezem", 120, 120) },
+  glas: { b: 120, h: 120, teken: vw("glas-water", 120, 120) },
+  fiets: { b: 120, h: 110, teken: vw("fiets", 120, 110) },
+  ei: { b: 120, h: 120, teken: vw("ei", 120, 120) },
+  jas: { b: 120, h: 120, teken: vw("jas", 120, 120) },
+  brood: { b: 120, h: 100, teken: vw("brood", 120, 100) },
+  tent: { b: 120, h: 112, teken: vw("tent", 120, 112) },
+  bord: { b: 120, h: 112, teken: vw("bord", 120, 112) },
+  beslag: { b: 120, h: 120, teken: vw("beslagkom", 120, 120) },
+  taartoven: { b: 120, h: 120, teken: vw("oven-taart", 120, 120) },
+  taartkaars: { b: 120, h: 112, teken: vw("taart-kaarsje", 120, 112) },
+  schaar: { b: 120, h: 112, teken: vw("schaar", 120, 112) },
   vraag: { b: 120, h: 120, teken: vraagteken },
-  zwemmen: { b: 120, h: 112, teken: zwemmen },
-  huis: { b: 120, h: 112, teken: huis },
+  zwemmen: { b: 120, h: 112, teken: vw("zwembad", 120, 112) },
+  huis: { b: 120, h: 112, teken: vw("huis", 120, 112) },
+  boekrood: { b: 120, h: 120, teken: vw("boek-rood") },
+  boekblauw: { b: 120, h: 120, teken: vw("boek") },
+  boekgroen: { b: 120, h: 120, teken: vw("boek-groen") },
 };
 
 const MET_OPTIES: Record<string, Tekening> = {

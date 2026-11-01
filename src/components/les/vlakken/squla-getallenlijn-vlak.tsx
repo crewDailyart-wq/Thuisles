@@ -7,19 +7,24 @@
  * blauwe ruimte (holo/basis.ts, HARDE REGEL 7), met vijf soorten beeld:
  *
  *   rij      een rij dingen met getallen (een lichtslinger, planeetjes,
- *            kristallen, sterren, aftellichtjes bij een raket, of tegels met
- *            een dier op een lege plek); één plek is leeg, "…" of "?";
+ *            diamanten, sterren, aftellichtjes bij een raket, of tegels met
+ *            een ding op een lege plek); één plek is leeg, "…" of "?";
  *   lijn     een getallenlijn (van–tot, streepjes per 1 of 2, of alleen een
  *            paar), met getallen waar ze gegeven zijn, een vlaggetje met "?",
- *            en Floep de kikker of andere beestjes op de lijn;
+ *            en het raketje, een ufo of een satelliet op de lijn;
  *   orden    lege vakken (soms één al gevuld) en kaarten om er op volgorde in
  *            te slepen of te tikken;
- *   bordjes  drie bordjes met een getal, met een beestje erbij;
- *   floep    Floep de kikker op een blad, eventueel met een getal.
+ *   bordjes  drie bordjes met een getal, met een raketje, ufo of satelliet erbij;
+ *   planeet  het raketje op een planeet, eventueel met een getal.
+ *
+ * Sinds 31 oktober 2026 (besluit eigenaar) zijn alle echte dingen vaste
+ * plaatjes (src/lib/voorwerpen) zonder vaste gloed, en geen dieren meer:
+ * Floep de kikker is het raketje, de vlinder een ufo, de slak een satelliet,
+ * de dieren op de getallen zijn dingen (de olifant een lange bus).
  *
  * Meldingen:
  *   - `orden` (volgorde): alle vakken zijn vol (pas dan wordt nagekeken);
- *   - `wezen` (naam): het kind tikt op een beestje op de lijn (als `actief`).
+ *   - `wezen` (naam): het kind tikt op een ding op de lijn (als `actief`).
  *
  * Elk ding om op te tikken heeft ook een onzichtbare knop met `data-ding`
  * (toetsenbord, voorleesprogramma en de automatische test).
@@ -29,7 +34,9 @@ import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
-import { maakPlaatjes, type Dier } from "./squla-getallenlijn-teken";
+import { maakPlaatjes, opGetal, type Ding, type Wezen } from "./squla-getallenlijn-teken";
+
+export type { Wezen };
 import s from "./squla-getallenlijn.module.css";
 
 /* ---------- wat er in beeld kan staan ---------- */
@@ -40,10 +47,9 @@ export type RijItem = {
   t?: string;
   /** Dit ding heeft een andere kleur (het rode lampje). */
   rood?: boolean;
-  /** Een dier op deze plek, in plaats van het ding (de olifant neemt twee plekken). */
-  dier?: Dier;
+  /** Een ding op deze plek, op een lege tegel (de bus neemt twee plekken). */
+  voorwerp?: Ding;
 };
-export type Wezen = "kikker" | "vlinder" | "slak";
 
 export type Beeld =
   | { soort: "leeg" }
@@ -70,14 +76,14 @@ export type Beeld =
       door?: boolean;
       /** Een vlaggetje met tekst ("?" of "") bij een getal. */
       vlag?: { n: number; t: string };
-      /** Floep de kikker op de lijn (n mag een kommagetal zijn: ergens tussenin); `wijs` = Floep wijst het aan met een pijl. */
-      kikker?: { n: number; wijs?: boolean };
-      /** Andere beestjes op de lijn. */
-      wezens?: { soort: Exclude<Wezen, "kikker">; n: number }[];
+      /** Het raketje op de lijn (n mag een kommagetal zijn: ergens tussenin); `wijs` = alleen een pijl wijst het streepje aan. */
+      raketje?: { n: number; wijs?: boolean };
+      /** Andere dingen op de lijn. */
+      wezens?: { soort: Exclude<Wezen, "raketje">; n: number }[];
     }
   | { soort: "orden"; vakken: (number | null)[]; kaarten: number[]; hokjes?: boolean }
   | { soort: "bordjes"; getallen: number[]; wezens: Wezen[] }
-  | { soort: "floep"; blad?: number | null };
+  | { soort: "planeet"; getal?: number | null };
 
 export type GetallenlijnProps = {
   beeld: Beeld;
@@ -104,7 +110,7 @@ const KAART_Y = 480;
 const BORD_Y = 290;
 
 export function rijMaten(items: RijItem[], ding: Rijding) {
-  const eenheden = items.map((it) => (it.dier === "olifant" ? 2 : 1));
+  const eenheden = items.map((it) => (it.voorwerp === "bus" ? 2 : 1));
   const totaal = eenheden.reduce((a, b) => a + b, 0);
   const raket = ding === "aftel";
   const ruimte = raket ? 740 : 860;
@@ -131,11 +137,10 @@ export const vakX = (i: number, k: number) => VLAK_B / 2 + (i - (k - 1) / 2) * 1
 export const kaartX = (i: number, k: number) => VLAK_B / 2 + (i - (k - 1) / 2) * 150;
 const bordX = (i: number, k: number) => VLAK_B / 2 + (i - (k - 1) / 2) * 250;
 
-/** Waar een beestje op de lijn staat (midden van het plaatje) en hoe groot. */
+/** Waar een ding op de lijn staat (midden van het plaatje) en hoe groot. */
 function wezenPlek(soort: Wezen, x: number) {
-  if (soort === "kikker") return { x, y: LIJN_Y - 52, b: 120, h: 110 };
-  if (soort === "vlinder") return { x, y: LIJN_Y - 44, b: 96, h: 88 };
-  return { x, y: LIJN_Y - 32, b: 104, h: 78 };
+  if (soort === "raketje") return { x, y: LIJN_Y - 62, b: 110, h: 110 };
+  return { x, y: LIJN_Y - 52, b: 96, h: 96 };
 }
 
 /* ---------- de scène ---------- */
@@ -278,7 +283,7 @@ function maakScene(letter: () => string) {
         else if (b.soort === "lijn") this.bouwLijn(b);
         else if (b.soort === "orden") this.bouwOrden(b);
         else if (b.soort === "bordjes") this.bouwBordjes(b);
-        else if (b.soort === "floep") this.bouwFloep(b);
+        else if (b.soort === "planeet") this.bouwPlaneet(b);
       }
 
       bouwRij(b: Extract<Beeld, { soort: "rij" }>) {
@@ -300,11 +305,11 @@ function maakScene(letter: () => string) {
         }
         b.items.forEach((it, i) => {
           const c = this.bewaar(this.add.container(xs[i], y));
-          if (it.dier) {
-            /* Het dier zit op een lege tegel (de olifant op twee). */
-            const tegels = it.dier === "olifant" ? [-sp / 2, sp / 2] : [0];
+          if (it.voorwerp) {
+            /* Het ding staat op een lege tegel (de bus op twee). */
+            const tegels = it.voorwerp === "bus" ? [-sp / 2, sp / 2] : [0];
             for (const dx of tegels) c.add(this.plaats("tegel-g", dx, 0).setScale(schaal / TX).setAlpha(0.5));
-            const im = this.plaats(`${it.dier}-g`, 0, -14).setScale((it.dier === "olifant" ? 1.05 : 1.15) / TX);
+            const im = this.plaats(opGetal(it.voorwerp), 0, -14).setScale((it.voorwerp === "bus" ? 1.05 : 1.15) / TX);
             c.add(im);
           } else {
             const plaatje = b.ding === "aftel" ? "lampje" : b.ding;
@@ -312,7 +317,7 @@ function maakScene(letter: () => string) {
             c.add(im);
             if (it.t) {
               const onder = b.onder ?? false;
-              const ty = onder ? 60 * schaal + 34 : b.ding === "lampje" || b.ding === "aftel" ? 8 * schaal : b.ding === "kristal" ? 4 * schaal : b.ding === "ster" ? 6 * schaal : 0;
+              const ty = onder ? 60 * schaal + 34 : b.ding === "lampje" || b.ding === "aftel" ? 20 * schaal : b.ding === "kristal" ? 4 * schaal : b.ding === "ster" ? 6 * schaal : 0;
               const t = this.tekst(0, ty, it.t, onder ? 44 : Math.max(36, 50 * schaal), it.t === "?" ? "#ffe066" : "#ffffff");
               c.add(t);
               this.rijTekst.set(i, t);
@@ -343,7 +348,7 @@ function maakScene(letter: () => string) {
             g.lineBetween(x(b.tot + k), Y - 11, x(b.tot + k), Y + 11);
           }
         }
-        const verborgen = b.kikker && !b.kikker.wijs && Number.isInteger(b.kikker.n) ? b.kikker.n : null;
+        const verborgen = b.raketje && !b.raketje.wijs && Number.isInteger(b.raketje.n) ? b.raketje.n : null;
         const grootte = Math.min(40, Math.max(30, eenheid * 0.78));
         for (const n of b.labels) {
           if (n === verborgen) continue;
@@ -365,16 +370,14 @@ function maakScene(letter: () => string) {
           this.wezens.push({ naam: w.soort, ...p });
           this.tover(im, { vertraging: 80 });
         }
-        if (b.kikker) {
-          if (b.kikker.wijs) {
-            const k = this.bewaar(this.plaats("kikker-g", x(b.kikker.n) + 78, Y + 150).setScale(0.85 / TX));
-            this.tover(k);
-            const pijl = this.bewaar(this.plaats("pijl", x(b.kikker.n), Y + 62).setScale(1 / TX));
+        if (b.raketje) {
+          if (b.raketje.wijs) {
+            const pijl = this.bewaar(this.plaats("pijl", x(b.raketje.n), Y + 62).setScale(1 / TX));
             this.tover(pijl, { vertraging: 160 });
           } else {
-            const p = wezenPlek("kikker", x(b.kikker.n));
-            const k = this.bewaar(this.plaats("kikker-g", p.x, p.y).setScale(0.92 / TX));
-            this.wezens.push({ naam: "kikker", ...p });
+            const p = wezenPlek("raketje", x(b.raketje.n));
+            const k = this.bewaar(this.plaats("raketje-g", p.x, p.y).setScale(0.92 / TX));
+            this.wezens.push({ naam: "raketje", ...p });
             this.tover(k, { vertraging: 120 });
           }
         }
@@ -416,14 +419,14 @@ function maakScene(letter: () => string) {
         });
       }
 
-      bouwFloep(b: Extract<Beeld, { soort: "floep" }>) {
-        const blad = this.bewaar(this.plaats("blad-g", 480, 470).setScale(1.6 / TX));
-        this.tover(blad);
-        if (b.blad !== undefined && b.blad !== null) {
-          const t = this.bewaar(this.tekst(400, 478, String(b.blad), 56));
+      bouwPlaneet(b: Extract<Beeld, { soort: "planeet" }>) {
+        const planeet = this.bewaar(this.plaats("planeet-groot-g", 480, 480));
+        this.tover(planeet);
+        if (b.getal !== undefined && b.getal !== null) {
+          const t = this.bewaar(this.tekst(480, 490, String(b.getal), 64));
           this.tover(t, { vertraging: 120 });
         }
-        const k = this.bewaar(this.plaats("kikker-g", b.blad != null ? 545 : 480, 400).setScale(1.25 / TX));
+        const k = this.bewaar(this.plaats("raketje-g", 480, 300).setScale(1.25 / TX));
         this.tover(k, { vertraging: 200 });
       }
 
@@ -441,8 +444,8 @@ function maakScene(letter: () => string) {
           const { xs, schaal, y } = rijMaten(b.items, b.ding);
           const it = b.items[op];
           if (!it || xs[op] === undefined) return;
-          const ty = it.dier ? y - (it.dier === "olifant" ? 108 : 104) : b.onder ? y + 60 * schaal + 34 : y;
-          const tekst = this.bewaar(this.tekst(xs[op], ty, t, it.dier ? 50 : 46, groen));
+          const ty = it.voorwerp ? y - (it.voorwerp === "bus" ? 108 : 104) : b.onder ? y + 60 * schaal + 34 : y;
+          const tekst = this.bewaar(this.tekst(xs[op], ty, t, it.voorwerp ? 50 : 46, groen));
           this.rijTekst.set(op, tekst);
           this.tover(tekst);
         } else if (b?.soort === "lijn") {
@@ -718,10 +721,10 @@ export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, a
   }
   if (actief && beeld.soort === "lijn") {
     const { x } = lijnMaten(beeld.van, beeld.tot, beeld.door);
-    const lijst: { soort: Wezen; n: number }[] = [...(beeld.wezens ?? []), ...(beeld.kikker && !beeld.kikker.wijs ? [{ soort: "kikker" as const, n: beeld.kikker.n }] : [])];
+    const lijst: { soort: Wezen; n: number }[] = [...(beeld.wezens ?? []), ...(beeld.raketje && !beeld.raketje.wijs ? [{ soort: "raketje" as const, n: beeld.raketje.n }] : [])];
     for (const w of lijst) {
       const p = wezenPlek(w.soort, x(w.n));
-      knoppen.push({ ding: w.soort, label: w.soort === "kikker" ? "Floep de kikker" : w.soort === "vlinder" ? "De vlinder" : "De slak", ...p, tik: () => meld({ soort: "wezen", naam: w.soort }) });
+      knoppen.push({ ding: w.soort, label: w.soort === "raketje" ? "Het raketje" : w.soort === "ufo" ? "De ufo" : "De satelliet", ...p, tik: () => meld({ soort: "wezen", naam: w.soort }) });
     }
   }
 
