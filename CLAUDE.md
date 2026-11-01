@@ -7,6 +7,12 @@ alleen wat er gebeurd is en wat dat voor de site betekent.
 
 ---
 
+# ⛔ LEES ALTIJD EERST BOUWREGELS.md
+
+Lees altijd eerst BOUWREGELS.md. Elke helper moet het lezen voordat hij bouwt. De controleur keurt elke les op ALLE regels uit BOUWREGELS.md. (Besluit eigenaar, 1 november 2026; een nieuwe verbetering van Sara komt daar direct bij.)
+
+---
+
 # ⛔ HARDE REGEL 1 — NIETS WAT AL BESTAAT MAG VERDWIJNEN
 
 Geldt voor de HELE website: kinderkant, ouderomgeving, beheeromgeving, alles.

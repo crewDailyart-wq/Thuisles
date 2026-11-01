@@ -99,9 +99,9 @@ if (fase === "na") {
     const doel = path.join(MAP, "vergelijk", path.basename(f));
     await sharp({ create: { width: a.width + b.width + 20, height: Math.max(a.height, b.height), channels: 3, background: "#ff00aa" } })
       .composite([{ input: voor, left: 0, top: 0 }, { input: f, left: a.width + 20, top: 0 }])
-      .resize({ width: 1600, withoutEnlargement: true })
       .png()
-      .toFile(doel);
+      .toBuffer()
+      .then((buf) => sharp(buf).resize({ width: 1600, withoutEnlargement: true }).toFile(doel));
     console.log(doel);
   }
 } else gemaakt.forEach((f) => console.log(f));

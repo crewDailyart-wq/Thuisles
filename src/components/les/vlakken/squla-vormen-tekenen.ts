@@ -102,6 +102,100 @@ function sterPad(c: CanvasRenderingContext2D, x: number, y: number, R: number, r
 }
 
 /**
+ * PROEF glans (1 november 2026, vraag Sara): platte vormen met een zacht
+ * kleurverloop, een glimmend lichtvlekje en een zachte schaduw eronder, zodat
+ * ze meer diepte krijgen. Staat alleen aan in de les squla-vormen-kleuren-2
+ * (die zet hem aan bij het begin en weer uit aan het eind). Wordt één keer in
+ * een plaatje gebakken, dus kost niets aan snelheid. Oude versie: plaatjes-backup/proef-glans/.
+ */
+export const VORMSTIJL = { glans: false };
+
+const PLATTE = new Set<VormNaam>(["cirkel", "vierkant", "rechthoek", "driehoek", "ster", "zeshoek"]);
+
+/** De omtrek van een platte vorm, als Path2D (voor vullen, rand en het lichtvlekje binnen de vorm). */
+function plattePad(vorm: VormNaam, m: number): Path2D {
+  const p = new Path2D();
+  const x = m / 2;
+  const y = m / 2;
+  const r = (x0: number, y0: number, b: number, h: number, k: number) => p.roundRect(x0, y0, b, h, k);
+  switch (vorm) {
+    case "cirkel":
+      p.arc(x, y, m * 0.42, 0, Math.PI * 2);
+      break;
+    case "vierkant":
+      r(m * 0.11, m * 0.09, m * 0.78, m * 0.78, m * 0.05);
+      break;
+    case "rechthoek":
+      r(m * 0.25, m * 0.05, m * 0.5, m * 0.84, m * 0.05);
+      break;
+    case "driehoek":
+      p.moveTo(x, m * 0.08);
+      p.lineTo(m * 0.93, m * 0.84);
+      p.lineTo(m * 0.07, m * 0.84);
+      p.closePath();
+      break;
+    case "ster":
+      for (let i = 0; i < 10; i++) {
+        const a = -Math.PI / 2 + (i * Math.PI) / 5;
+        const s = i % 2 ? m * 0.2 : m * 0.46;
+        if (i) p.lineTo(x + s * Math.cos(a), y + m * 0.02 + s * Math.sin(a));
+        else p.moveTo(x + s * Math.cos(a), y + m * 0.02 + s * Math.sin(a));
+      }
+      p.closePath();
+      break;
+    default:
+      for (let i = 0; i < 6; i++) {
+        const a = (Math.PI / 3) * i;
+        if (i) p.lineTo(x + m * 0.45 * Math.cos(a), y + m * 0.45 * Math.sin(a));
+        else p.moveTo(x + m * 0.45 * Math.cos(a), y + m * 0.45 * Math.sin(a));
+      }
+      p.closePath();
+  }
+  return p;
+}
+
+function tekenGlansVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number, hex: string, dik: number) {
+  const pad = plattePad(vorm, m);
+  /* zachte schaduw eronder */
+  const sch = c.createRadialGradient(m / 2, m * 0.93, 0, m / 2, m * 0.93, m * 0.36);
+  sch.addColorStop(0, "rgba(0,0,20,0.42)");
+  sch.addColorStop(1, "rgba(0,0,20,0)");
+  c.save();
+  c.translate(m / 2, m * 0.93);
+  c.scale(1, 0.16);
+  c.translate(-m / 2, -m * 0.93);
+  c.fillStyle = sch;
+  c.fillRect(0, m * 0.5, m, m * 0.86);
+  c.restore();
+  /* zacht kleurverloop: licht linksboven, donkerder rechtsonder */
+  const g = c.createLinearGradient(m * 0.2, m * 0.08, m * 0.8, m * 0.92);
+  g.addColorStop(0, tint(hex, 0.38));
+  g.addColorStop(0.5, hex);
+  g.addColorStop(1, tint(hex, -0.24));
+  c.fillStyle = g;
+  c.fill(pad);
+  /* glimmend lichtvlekje, binnen de vorm */
+  c.save();
+  c.clip(pad);
+  const lx = vorm === "rechthoek" ? m * 0.38 : vorm === "driehoek" ? m * 0.42 : m * 0.32;
+  const ly = vorm === "driehoek" ? m * 0.38 : vorm === "ster" ? m * 0.36 : m * 0.27;
+  const vlek = c.createRadialGradient(lx, ly, 0, lx, ly, m * 0.2);
+  vlek.addColorStop(0, "rgba(255,255,255,0.85)");
+  vlek.addColorStop(0.35, "rgba(255,255,255,0.35)");
+  vlek.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = vlek;
+  c.beginPath();
+  c.ellipse(lx, ly, m * 0.2, m * 0.13, -0.6, 0, Math.PI * 2);
+  c.fill();
+  c.restore();
+  /* één donkere rand */
+  c.lineJoin = "round";
+  c.strokeStyle = RAND_KLEUR;
+  c.lineWidth = dik;
+  c.stroke(pad);
+}
+
+/**
  * Een vorm in het vak (0, 0)–(m, m). `kleur` null = lege plek (stippellijn).
  * `draai` (alleen de halve ring): 0 = open aan de onderkant, 1 = open links,
  * 2 = open boven, 3 = open rechts.
@@ -111,6 +205,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
   const y = m / 2;
   const hex = kleur ? KLEUR[kleur] : null;
   const dik = Math.max(3, m / 40);
+  if (VORMSTIJL.glans && hex && PLATTE.has(vorm)) return tekenGlansVorm(c, vorm, m, hex, dik);
   switch (vorm) {
     case "cirkel":
       c.beginPath();

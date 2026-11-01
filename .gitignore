@@ -93,3 +93,6 @@ next-env.d.ts
 !/plaatjes-inbox/LEESMIJ.md
 /plaatjes-verwerkt/
 /plaatjes-backup/
+
+# Overzicht Squla-lessen (schermfoto's), alleen op de laptop (1 november 2026).
+/public/squla-overzicht/

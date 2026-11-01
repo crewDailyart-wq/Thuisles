@@ -32,7 +32,7 @@ import { GOED, TX, VLAK_B, VLAK_H, WARM, holoBasis, type PhaserModule } from "..
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { tekenVoorwerp, voorwerpBeeld } from "../voorwerpen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { blokkenMaat, tekenBlokken, tekenHuis, tekenKraal, tekenPijl, tekenPuzzel, tekenVeld, tekenVorm, type Kleur, type PuzzelPlaatje, type Veldsoort, type VormNaam, type Zicht } from "./squla-vormen-tekenen";
+import { blokkenMaat, tekenBlokken, tekenHuis, tekenKraal, tekenPijl, tekenPuzzel, tekenVeld, tekenVorm, VORMSTIJL, type Kleur, type PuzzelPlaatje, type Veldsoort, type VormNaam, type Zicht } from "./squla-vormen-tekenen";
 import s from "./squla-vormen.module.css";
 
 export type Deel =
@@ -106,7 +106,7 @@ function sleutelVan(d: Deel): string {
   void x;
   void y;
   void groep;
-  return `sv|${JSON.stringify(rest)}`;
+  return `sv|${VORMSTIJL.glans ? "glans|" : ""}${JSON.stringify(rest)}`;
 }
 
 function teken(c: CanvasRenderingContext2D, d: Deel) {
