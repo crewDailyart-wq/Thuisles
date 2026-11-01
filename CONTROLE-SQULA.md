@@ -1169,3 +1169,38 @@ Bij 7 − 4 (min-ruimte-1/003) hebben maar **3** ballonnen de blauwe kleur van d
 **Uitslag Plussommen en Minsommen ronde 2:**
 - GOEDGEKEURD: plus-bus1-1..bus2-3 (6), plus-kaal-1..3, min-ruimte-2/3, min-bus1-1..bus2-3 (6), min-machine-1..3, min-kaal-1..3.
 - AFGEKEURD: plus-bakkerij-1/2/3, plus-dansen-1/2/3/4, min-ruimte-1, min-machine-4.
+
+---
+
+## Piratenschat — ronde 3 en splits-delen-1 — ronde 3 — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: alle 4 lessen tot het eind. Gekeurd op alle regels t/m 14.22 en op de nieuwe uitwerking van 2.1.
+
+### squla-piraat-1 — ronde 3 — GOEDGEKEURD
+- Opgelost:
+  - De kale sommen hebben overal dezelfde kleuren: in de som 3 paars, 4 oranje, ? geel (schermfoto 028), en in de zin "Hoeveel is 3 + 4?" ook 3 paars en 4 oranje. Ook in `goed`, `plusUitleg` en `plusTip`.
+  - Na Nee telt Bliepo eerst de 14 goudstukken in rijen van 5 (het voorbeeld) en daarna de diamanten.
+  - "Waar zijn het er {14}?" en de tips zijn nu goudstuk-geel.
+- Tip: de uitleg na Nee zegt "Samen zijn het er 14." Dat is het antwoord van het voorbeeld zelf. Dat mag (het voorbeeld is de eerste vraag), maar zo krijgt het kind het antwoord van vraag 1 al te horen.
+
+### squla-piraat-2 — ronde 3 — GOEDGEKEURD
+- Opgelost: de uitleg na Nee zegt alle getallen in sterren-geel, en `noem` in `minVraag` is nu `gv(x, vw)`.
+
+### squla-piraat-3 — ronde 3 — AFGEKEURD
+- Opgelost: na Nee komt eerst de sterren-minsom 7 − 4 van het voorbeeld.
+- **FOUT (2.1/14.20), in het tweede deel van de uitleg na Nee** (`squla-piraat.tsx`, `level3.uitleg`):
+  - `som(l, st, 8, "+", 5)` en `som(l, st, 8, "+", 5, 13)` gebruiken nog de tegelkleuren.
+  - `plusUitleg` zegt 8 paars en 5 oranje.
+  - De slotzin `` `${g(8)} + ${g(5)} = ${g(13)}.` `` is helemaal wit.
+  - Zo staan er drie verschillende kleuren voor dezelfde som.
+  - Voorstel: `som(l, st, 8, "+", 5, …, "paars", "oranje", "wit")`, en in de zin `g(8, "paars")` en `g(5, "oranje")`.
+- Tip (14.22): in de uitleg zijn de 4 sterren die weggaan al grijs vóór "Kijk: 7 sterren." (`toon(..., { uit: [...] })`). Mooier is ze eerst geel te laten en pas bij "Er gaan er 4 weg" grijs te maken.
+
+### squla-splits-delen-1 — ronde 3 — AFGEKEURD
+- Deels opgelost: de potloden staan nu in de beker, met de gummetjes boven de rand.
+- **Nog FOUT (14.5/14.17):** op schermfoto 028 (vergroot) zijn de bundels van 5 en 6 potloden breder dan de beker. Aan beide kanten steken de groene potloden met hun punt naast de beker uit. Bij 4 net niet.
+  - `beker-leeg` is ondoorzichtig, dus de potloden lijken áchter het glas te staan in plaats van erin.
+  - Voorstel:
+    - `cel` zo kiezen dat het grootste aantal (6) binnen de opening van de beker past (de opening meten op `beker-leeg.png`);
+    - de potloden korter maken (`maat`), zodat er onder de rand niets uitsteekt;
+    - of een smallere of doorzichtige pennenbeker gebruiken.

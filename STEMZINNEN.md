@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10527 zinnen, 298440 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10536 zinnen, 298675 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -253,7 +253,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! $g(a, "paars") + $g(b, "oranje") = $g(s).
 - Een plus: er komt bij.
 - Een min: er gaat af.
-- $g(8) + $g(5) = $g(13).
+- $g(8, "paars") + $g(5, "oranje") = $g(13, "wit").
 - De letters zeggen: naast de oude raket!
 - Daar staat een kist.
 - De sleutel past!
@@ -3966,7 +3966,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7278)
+## Door de site genoteerd, buiten de lessen (7287)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11246,3 +11246,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Meer dan 3 is 4 of nog meer.
 - Hier zijn het er 2.
 - Rood? Niet helemaal.
+- 2 ballonnen vliegen weg.
+- Er zweven 6 ballonnen in de lucht.
+- Er blijven 4 ballonnen over.
+- Hier liggen 12 stokbroden.
+- Erbij is plus: 12 + 3.
+- Kijk naar de 2 en de 3.
+- 12 is 10 en nog 2.
+- 12 + 3 = 15.
+- Het ijsje kost 1 euro.
