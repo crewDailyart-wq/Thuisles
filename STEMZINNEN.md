@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10419 zinnen, 293509 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10527 zinnen, 298440 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -250,7 +250,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## deco (10)
 
-- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s, "tegel").
+- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s).
 - Een plus: er komt bij.
 - Een min: er gaat af.
 - $g(8) + $g(5) = $g(13).
@@ -294,6 +294,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $u.goed van de $u.van.
 - Je deed er $tijdTekst(r.tijd) seconden over.
 - Je beste tijd is $tijdTekst(best ?? r.tijd) seconden.
+
+## g (5)
+
+- Kijk, goudstukken in rijen.
+- In elke rij liggen er $gv(5, "goudstuk").
+- $gv(5, "goudstuk"), $gv(10, "goudstuk").
+- Dan nog een paar los.
+- Samen zijn het er $gv(14, "goudstuk").
 
 ## getallenlijn (gedeeld) (10)
 
@@ -754,7 +762,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een middag is een stuk van één dag.
 - Een week is zeven dagen.
 
-## m (15)
+## m (18)
 
 - Ja! $gv(a, vw) − $gv(b, vw) = $gv(s, vw).
 - Eerst waren er $aantal(a, vw).
@@ -763,13 +771,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Die zijn grijs.
 - Tel de dingen die nog fel zijn.
 - Kijk: $aantal(5, "ster").
-- Er gaan er $g(2) weg: die worden grijs.
-- Er zijn er nog $g(3).
-- $g(5) − $g(2) = $g(3).
+- Er gaan er $gv(2, "ster") weg: die worden grijs.
+- Er zijn er nog $gv(3, "ster").
+- $gv(5, "ster") − $gv(2, "ster") = $gv(3, "ster").
 - De letters zeggen: in de grote krater!
 - Kijk, daar ligt een maansteen met een sleutel ernaast.
 - Waar past die sleutel op?
 - Dat zoeken we de volgende keer.
+- Kijk: $aantal(7, "ster").
+- Er gaan er $gv(4, "ster") weg: die worden grijs.
+- $gv(7, "ster") − $gv(4, "ster") = $gv(3, "ster").
 - Plus en min staan door elkaar. $gv(7, "ster") − $gv(4, "ster"): hoeveel sterren zijn er nog? Kun je dit al?
 
 ## maand (3)
@@ -1176,7 +1187,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op de klok staan geen dagen.
 - Op deze kalender staat geen gym.
 - Op deze kalender staan de dagen van de week.
-- Zoek de dagen met de bal.
+- Zoek de dagen met de hoepel.
 - Kijk naar de plaatjes bovenaan.
 - Begin links.
 - Welk plaatje hangt daar?
@@ -1189,7 +1200,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel de boogjes tot het feesthoedje.
 - Vandaag is het rode vak: 9 juni.
 - Morgen is het vakje erna, rechts ernaast.
-- In de droom is het rode vak 12 juni.
+- Stel je voor: het rode vak is 12 juni.
 - Het feesthoedje staat in het vakje ernaast.
 - Hoeveel nachtjes slapen is dat?
 - Vandaag is het rode vak: 10 juni.
@@ -1227,23 +1238,23 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## som-u (17)
 
-- $g(a) is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
-- $g(b) is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
+- $g(a, "paars") is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
+- $g(b, "oranje") is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
 - Hoeveel tientallen zijn het samen?
-- Begin bij $g(groot).
-- Eerst maak je $g(10): $g(groot) + $g(10 - groot) = $g(10).
-- Van de $g(klein) $klein - (10 - groot) === 1 ? "is" : "zijn" er dan nog $g(klein - (10 - groot)) over.
+- Begin bij $g(groot, kg).
+- Eerst maak je $g(10): $g(groot, kg) + $g(10 - groot) = $g(10).
+- Van de $g(klein, kk) $klein - (10 - groot) === 1 ? "is" : "zijn" er dan nog $g(klein - (10 - groot)) over.
 - $g(10) en nog $g(klein - (10 - groot)): hoeveel is dat?
-- $g(groot) is $g(10) en $g(e).
-- Reken eerst $g(e) + $g(klein).
+- $g(groot, kg) is $g(10) en $g(e).
+- Reken eerst $g(e) + $g(klein, kk).
 - Dan komt de $g(10) er nog bij.
-- Tel dan $g(klein) verder.
+- Tel dan $g(klein, kk) verder.
 - Dat mag op je vingers.
 - Ja! Hier liggen $aantal(doel, "goudstuk").
 - Tel de goudstukken per rij.
-- Een volle rij is $g(5).
+- Een volle rij is $gv(5, "goudstuk").
 - Tel ze één voor één.
-- Waar zijn het er $g(doel)?
+- Waar zijn het er $gv(doel, "goudstuk")?
 
 ## squla-dagen (gedeeld) (52)
 
@@ -1648,7 +1659,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-klok-klokkijken1-1 (1)
 
-- Je vergelijkt klokken met elkaar. Op welke klok is het 2 uur? Kun je dit al?
+- Je vergelijkt klokken met elkaar. Op welke klok is het 11 uur? Kun je dit al?
 
 ## squla-klok-klokkijken1-2 (1)
 
@@ -1887,7 +1898,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Er zit geld in je portemonnee en je koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
 
-## squla-minsommen (gedeeld) (66)
+## squla-minsommen (gedeeld) (65)
 
 - Eerst lagen er $g(a, k) pakjes in de bus.
 - Eerst waren er $g(a, k) $wat.
@@ -1908,7 +1919,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat getal komt vooraan in de som.
 - Er gaan er een paar weg.
 - Dus het is een minsom.
-- Er gaat er niet één weg.
 - Dus na de min komt $g(0, k).
 - Ze gaan alle $g(v.b, k) weg.
 - Er gaan er $g(v.b, k) weg.
@@ -2013,15 +2023,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix (gedeeld) (74)
 
-- $g(n, k).
+- $g(n, kn).
 - $reeks.join(", ").
 - We tellen in sprongen van twee.
 - We tellen samen, rij voor rij.
 - druk
 - We tellen alleen de $q.v.meer.
 - Tel maar mee.
-- Het zijn er $g(tot, k).
-- Tel jij verder vanaf $g(tot, k)?
+- Het zijn er $g(tot, kTot).
+- Tel jij verder vanaf $g(tot, kBegin)?
 - We kijken samen naar de vormen.
 - Kijk nu weer naar $q.zin.
 - We kijken van links naar rechts.
@@ -2059,8 +2069,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst kijken we naar de kleur.
 - Deze is $k.
 - Dan kijken we naar de vorm.
-- Bovenaan staan er altijd $g(5, "geel").
-- Tel onderaan verder vanaf $g(5, "geel").
+- Bovenaan staan er altijd $g(5, GROEP_A).
+- Tel onderaan verder vanaf $g(5, GROEP_A).
 - $g(gr.n, k).
 - Zoek nu bij elk groepje hetzelfde getal.
 - Zoek nu de groepjes met hetzelfde getal.
@@ -2069,12 +2079,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Net voor $w(q.n) staat het getal links ervan.
 - Na $w(q.n) komt het getal rechts ervan.
 - Dat is $w(doel).
-- Er zijn $g(q.tot, k) $q.v.meer in totaal.
+- Er zijn $g(q.tot, "wit") $q.v.meer in totaal.
 - Buiten zie je er een paar. Tel maar mee.
-- Buiten liggen er $g(q.buiten, k).
+- Buiten liggen er $g(q.buiten, GROEP_A).
 - De rest zit $waarin.
-- Tel verder van $g(q.buiten, k) tot $g(q.tot, k).
-- Dat zijn er $g(binnen, k).
+- Tel verder van $g(q.buiten, GROEP_A) tot $g(q.tot, "wit").
+- Dat zijn er $g(binnen, GROEP_B).
 - Meer dan $g(q.n, k) is $g(q.n + 1, k) of nog meer.
 - Precies $g(q.n, k) is niet meer dan $g(q.n, k).
 - Minder dan $g(q.n, k) is $g(q.n - 1, k) of nog minder.
@@ -2094,7 +2104,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix-mix1-2 (1)
 
-- Kijk naar de tent. Welke vorm lijkt erop? Kun je dit al?
+- Kijk naar de zon. Welke vorm lijkt erop? Kun je dit al?
 
 ## squla-rekenmix-mix1-3 (1)
 
@@ -2114,7 +2124,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix-mix2-3 (1)
 
-- Hier zie je kleuren en vormen. Waar zie je een rode cirkel? Kun je dit al?
+- Hier zie je kleuren en vormen. Waar zie je een paarse driehoek? Kun je dit al?
 
 ## squla-rekenmix-mix2-4 (1)
 
@@ -2122,7 +2132,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix-mix3-1 (1)
 
-- Drie ballen zijn niet even groot. Zet ze op volgorde, van klein naar groot. Kun je dit al?
+- Drie ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst. Kun je dit al?
 
 ## squla-rekenmix-mix3-2 (1)
 
@@ -2130,7 +2140,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix-mix3-3 (1)
 
-- We zoeken getallen die naast elkaar staan. Welk getal komt net voor $w(7)? Kun je dit al?
+- We zoeken getallen die naast elkaar staan. Welk getal komt net voor $w(5)? Kun je dit al?
 
 ## squla-rekenmix-mix3-4 (1)
 
@@ -2150,7 +2160,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-rekenmix-mix4-4 (1)
 
-- Drie groepjes raketjes in de ruimte. Waar zie je meer dan $g(5, "rood") raketjes? Kun je dit al?
+- Drie groepjes raketjes in de ruimte. Waar zie je meer dan $g(4, "rood") raketjes? Kun je dit al?
 
 ## squla-rekentaal (gedeeld) (111)
 
@@ -2495,8 +2505,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - ma is maandag, di is dinsdag.
 - De pijl wijst naar wo.
 
-## squla-tijd-kalender-2 (7)
+## squla-tijd-kalender-2 (10)
 
+- Kijk, het rode vak.
+- Daar staat een getal: 5.
+- Dat is 5 juni.
 - Elk vakje is een dag.
 - Van vakje naar vakje is één nachtje slapen.
 - Zie je de boogjes?
@@ -2505,8 +2518,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Vrijdag is groter.
 - Welke dag staat erna?
 
-## squla-tijd-tijden-1 (7)
+## squla-tijd-tijden-1 (11)
 
+- Stel, gisteren was het woensdag.
+- Welke dag komt na woensdag?
+- Na woensdag komt donderdag.
+- Dus vandaag is het donderdag.
 - Eerst is het ochtend.
 - Dan is het middag.
 - Dan is het avond.
@@ -3157,8 +3174,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hier liggen $g(a) $wat.
 - Ik leg er $g(b) bij.
 - Erbij is plus: $plus(a, b).
-- Ja! $g(paren[goedIdx][0]) en $g(paren[goedIdx][1]) is samen $g(10).
-- Kijk naar $g(x) en $g(y).
+- Ja! $wk(paren[goedIdx][0]) en $wk(paren[goedIdx][1]) is samen $g(10).
+- Kijk naar $wk(x) en $wk(y).
 - Er blijft $g(1) plekje leeg.
 - Er blijven $g(10 - s) plekjes leeg.
 - Dat is nog geen $g(10).
@@ -3166,11 +3183,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat is meer dan $g(10).
 - Bij $g(10) is de rij precies vol.
 - Zoek het kaartje waarbij de rij precies vol is.
-- Ja! $g(getallen[paar[0]]) en $g(getallen[paar[1]]) is samen $g(10).
-- Neem de $g(0).
+- Ja! $gp(getallen[paar[0]]) en $gp(getallen[paar[1]]) is samen $g(10).
+- Neem de $gp(0).
 - Bij nul zijn er nog geen stippen.
 - De hele rij is nog leeg.
-- Neem de $g(anker).
+- Neem de $gp(anker).
 - Ik zet $o(1) stip in de rij.
 - Ik zet $o(anker) stippen in de rij.
 - Hoeveel plekjes zijn er nog leeg?
@@ -3178,8 +3195,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Zoek het getal dat de rij vol maakt.
 - Kijk, een rij van tien plekjes.
 - Er staan $o(7) oranje stippen in.
-- Er zijn nog $g(3) plekjes leeg.
-- $g(7) en $g(3) is samen $g(10).
+- Er zijn nog $bl(3) plekjes leeg.
+- $o(7) en $bl(3) is samen $g(10).
 - Nu is de rij precies vol.
 - Zoek steeds het kaartje dat samen $g(10) is.
 - Zoek steeds twee getallen die samen $g(10) zijn.
@@ -3949,7 +3966,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7184)
+## Door de site genoteerd, buiten de lessen (7278)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -6351,7 +6368,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welke dag komt meteen na donderdag?
 - Na donderdag komt vrijdag.
 - Welke dag komt meteen na woensdag?
-- Na woensdag komt donderdag.
 - Welke dag komt meteen na zaterdag?
 - Na zaterdag komt zondag.
 - Welke dag komt meteen na zondag?
@@ -6988,6 +7004,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nee? Niet helemaal.
 - Nacht? Niet helemaal.
 - Ochtend? Niet helemaal.
+- In de droom is het rode vak 12 juni.
 - Het is 9 uur? Niet helemaal.
 - 80? Niet helemaal.
 - 72? Niet helemaal.
@@ -10915,6 +10932,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij 10 uur staat de grote wijzer op de 12.
 - De weektrein heeft zeven wagons. Wat is de eerste dag van de week? Kun je dit al?
 - Elke wagon in de trein is een dag. Welke dag komt meteen na dinsdag? Kun je dit al?
+- Je vergelijkt klokken met elkaar. Op welke klok is het 2 uur? Kun je dit al?
 - Vier dagen liggen door elkaar. Zet de vier dagen op de goede volgorde. Kun je dit al?
 - Je kunt tellen hoe groot een tafel of een muur is.
 - Een klok, een kalender en plaatjes. Waar zie je wat de klas vandaag gaat doen? Kun je dit al?
@@ -11135,3 +11153,96 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je kunt plussommen maken, ook met tientallen.
 - Kijk, de gele pijl staat bij dinsdag.
 - In de bus liggen 8 pakjes en er worden er 3 bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Sommige platen zijn bijna 10. Welke twee zijn precies 10? Kun je dit al?
+- Kijk naar de tent. Welke vorm lijkt erop? Kun je dit al?
+- Hier zie je kleuren en vormen. Waar zie je een rode cirkel? Kun je dit al?
+- Drie ballen zijn niet even groot. Zet ze op volgorde, van klein naar groot. Kun je dit al?
+- We zoeken getallen die naast elkaar staan. Welk getal komt net voor 7? Kun je dit al?
+- Hier zijn 9 appels.
+- Drie groepjes sterren in de ruimte. Waar zie je 6 sterren? Kun je dit al?
+- Drie groepjes raketjes in de ruimte. Waar zie je meer dan 5 raketjes? Kun je dit al?
+- In de bus liggen 16 pakjes en er worden er 4 bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Liggend in het gras
+- Hoog in een flat
+- Er liggen 10 stokbroden en er komen er 3 bij. Hoeveel stokbroden zijn het samen? Kun je dit al?
+- In de bus liggen 2 pakjes en er komt er 1 bij. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
+- In de bus liggen 12 pakjes en er komen er 5 bij. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
+- In de bus liggen 8 pakjes en er komen er 5 bij. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
+- De bus heeft 4 pakjes. In het rondje staat 3. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
+- De bus heeft 6 pakjes. In het rondje staat 13. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
+- De platen draaien rond op de draaitafel. Welke twee getallen zijn samen 10? Kun je dit al?
+- Sommige kaartjes zitten dicht bij 10. Welk kaartje is samen 10? Kun je dit al?
+- Kijk naar de doos.
+- Ja! De doos lijkt op een vierkant.
+- Welk getal is 2 meer dan 12?
+- De plussommen worden groter. Hoeveel is 10 + 7? Kun je dit al?
+- Nu gaan we over de 10 heen. Hoeveel is 7 + 7? Kun je dit al?
+- 7 uur? Niet helemaal.
+- Ja! Klein, kleiner, kleinst.
+- Ja! Dik, dikker, dikst.
+- Ja! Groot, groter, grootst.
+- Ja! Dun, dunner, dunst.
+- Ja! Laag, lager, laagst.
+- Eronder liggen 5 paarse blokjes.
+- Eronder liggen 10 paarse blokjes.
+- We zoeken getallen die naast elkaar staan. Welk getal komt net voor 5? Kun je dit al?
+- In de bus liggen 15 pakjes en er worden er 7 bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- De bus heeft 17 pakjes. In het rondje staat 5. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- De bus heeft 16 pakjes. In het rondje staat 8. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Drie groepjes raketjes in de ruimte. Waar zie je meer dan 4 raketjes? Kun je dit al?
+- De minsommen op het bord worden groter. Hoeveel is 20 min 4? Kun je dit al?
+- Kijk: klein, kleiner, kleinst.
+- Kleinst is de allerkleinste.
+- Op het eerste plekje komt klein.
+- Precies 4 is niet meer dan 4.
+- Meer dan 4 is 5 of nog meer.
+- Hier zijn het er 3.
+- Dat is meer dan 4.
+- De middelste ballon is geel.
+- Nu gaan we over de 10 heen. Hoeveel is 16 min 9? Kun je dit al?
+- Er gaat 10 in de min-machine en de machine haalt er 3 af. Hoeveel komt eruit? Kun je dit al?
+- Het schoolbord is vol minsommen. Hoeveel is 7 min 4? Kun je dit al?
+- Er staan 14 raketjes klaar en er vliegen er 3 weg. Hoeveel raketjes blijven er over? Kun je dit al?
+- Nu staan er 13 raketjes klaar en er vliegen er 6 weg. Hoeveel raketjes blijven er over? Kun je dit al?
+- Kun je op de kalender tellen hoeveel nachtjes het nog duurt tot het feest?
+- Het groene boek kwam pas later.
+- Een driehoek? Niet helemaal.
+- En drie rechte kanten.
+- Kijk nu weer naar de mandarijn.
+- Een vierkant? Niet helemaal.
+- Kijk nu weer naar de telefoon.
+- Een rechthoek? Niet helemaal.
+- Kijk nu weer naar de vlaggetjes.
+- Kijk nu weer naar het stuk pizza.
+- In de doos? Niet helemaal.
+- Voor de doos? Niet helemaal.
+- Op de doos? Niet helemaal.
+- Op: de bal ligt bovenop de doos.
+- Voor: de bal ligt vooraan. Je ziet de hele bal.
+- Achter: de doos staat ervoor. Je ziet maar een stukje bal.
+- Een rood vierkant? Niet helemaal.
+- Een blauwe driehoek? Niet helemaal.
+- Deze is blauw.
+- Deze is groen.
+- De auto? Niet helemaal.
+- Tweede.
+- Welke komt daarna, als derde?
+- De planeet? Niet helemaal.
+- De komeet? Niet helemaal.
+- Het skateboard? Niet helemaal.
+- Hier staat 6.
+- Na 6 komt het getal rechts ervan.
+- Hier staat 8.
+- Net voor 8 staat het getal links ervan.
+- Hier staat 10.
+- Net voor 10 staat het getal links ervan.
+- 1, 2, 3, 4.
+- We tellen alleen de ufo's.
+- 1, 2, 3.
+- Tel jij verder vanaf 3?
+- Precies 6 is niet minder dan 6.
+- Minder dan 6 is 5 of nog minder.
+- Precies 3 is niet meer dan 3.
+- Meer dan 3 is 4 of nog meer.
+- Hier zijn het er 2.
+- Rood? Niet helemaal.
