@@ -1255,7 +1255,7 @@ const patronen2 = les({
   kaart: KaartPatronen,
   voorwerpen: ["zon", "maan", "ster", "planeet", "bal", "speelblok", "potlood", "boek", "bloembak", "zonnebloem", "tulp", "bloem"],
   begin: { id: "uitleg", delen: blokRooster(UITLEG_ROOSTER, 120) },
-  welkom: ["Nu staan de kralen in rijen onder elkaar.", "Hoe ziet de onderste rij eruit?"],
+  welkom: ["Nu staan de blokjes in rijen onder elkaar.", "Hoe ziet de onderste rij eruit?"],
   uitleg: async (l, st) => {
     toon(l, st, "uitleg", { beeld: { id: "uitleg", delen: blokRooster(UITLEG_ROOSTER, 120) } });
     zet(l, { licht: ["b-0-0", "b-0-1", "b-0-2"] });
