@@ -192,6 +192,13 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
 14.20 **Elk getal in een zin krijgt bewust een kleur:** de kleur van zijn voorwerp, of {n:wit} als het nergens bij hoort. Een getal zonder kleur krijgt in het lesscherm de standaard getalkleur (5 groen, 10 roze) en dat klopt dan niet met het beeld.
 14.21 **De uitleg na Nee gaat over het voorbeeld van het beginscherm** en verklapt geen latere vraag.
 14.22 **Kleur mag het antwoord niet verklappen.** Bij a − b staan eerst alle a dingen in de kleur van a; pas bij "weg" worden de b dingen grijs/dof (of krijgen de kleur van b en gaan weg). Getallen in de zin hebben dezelfde kleur als het getal op het kaartje of de plaat in beeld.
+14.23 **Een plaatje moet er natuurlijk, duidelijk en leuk uitzien voor een kind van 6** (Sara, 1 nov, over de potloden "raar bovenop de bekers, onduidelijk, geen leuke potloden"). Controleer op elke schermfoto:
+   - dingen die IN iets horen, staan er echt in (potloden in een beker, pakjes in de bus, bloemen in de bak); dingen die OP iets horen, staan er echt op (boeken op een plank); niets zweeft, niets ligt als een blok op een rand, niets steekt raar uit;
+   - elk ding is apart te zien en te tellen (niet tegen elkaar geplakt, niet half verstopt), ook bij het grootste aantal in de les;
+   - groot genoeg: gebruik de ruimte op het scherm, niet alles klein in het midden;
+   - vrolijk: afwisselende kleuren waar dat kan (bij tellen mag elk ding een eigen kleur, tenzij de kleur bij een getal hoort);
+   - de glans (stijl B) is goed zichtbaar.
+   Twijfel = afkeuren en verbeteren. Dit geldt voor ALLE lessen, ook al goedgekeurde.
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
