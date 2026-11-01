@@ -28,7 +28,8 @@ export type Vlakbasis = { meld: (g: Vlakgebeurtenis) => void; schaal: number; me
 export type Vlak<P = any> = ComponentType<P & Vlakbasis>;
 
 export type Somdeel =
-  | { t: "getal"; n: number }
+  /** `kleur`: een eigen kleur (hex) in plaats van de tegelkleur van het getal. */
+  | { t: "getal"; n: number; kleur?: string }
   | { t: "teken"; s: string }
   | { t: "vak"; waarde?: string };
 

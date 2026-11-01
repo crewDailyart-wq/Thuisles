@@ -1115,7 +1115,7 @@ function Lesscherm({
           <div className={s.sombalk}>
             {beeld.som.map((d, i) =>
               d.t === "getal" ? (
-                <span key={i} style={{ color: getalkleur(d.n) }}>
+                <span key={i} style={{ color: d.kleur ?? getalkleur(d.n) }}>
                   {d.n}
                 </span>
               ) : d.t === "teken" ? (

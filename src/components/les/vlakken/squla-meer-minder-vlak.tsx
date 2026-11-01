@@ -155,10 +155,11 @@ export function mmIndeling(o: MMOpgave): MMIndeling {
       kaarten = rij(n, 400, 560, 80, 60);
       maxCel = 68;
     } else {
-      kaarten = rij(n, 290, 480, 120, 25);
-      maxCel = 52;
+      /* Drie groepen naast elkaar: zo breed als het vlak toelaat (er is geen kaart met rand meer om rekening mee te houden), zodat de voorwerpen groot genoeg zijn om te tellen. */
+      kaarten = rij(n, 300, 480, 120, 14);
+      maxCel = 64;
     }
-    kaarten.forEach((k, i) => vakken.push({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, 0.86), maxCel) }));
+    kaarten.forEach((k, i) => vakken.push({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, n === 3 && !o.voorbeeld && o.getal === undefined ? 0.92 : 0.86), maxCel) }));
     return { vakken, sloten: [], getalkaart };
   }
   if (o.soort === "volgorde") {
@@ -398,7 +399,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
             const doos = this.add.image(d.x + d.b / 2, d.y + d.h / 2, this.doosTex(d.b, d.h)).setScale(1 / TX);
             box.add(doos);
           }
-          const sc = (gp.cel * 0.84) / MM_MAAT;
+          const sc = (gp.cel * 0.9) / MM_MAAT;
           for (const p of gp.plekken) {
             const img = this.plaats(this.voorwerp(groep.soort), p.x, p.y).setData("soort", groep.soort);
             img.setScale(img.scaleX * sc);

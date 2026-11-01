@@ -20,8 +20,31 @@ import { TX } from "../holo/basis";
 
 type C = CanvasRenderingContext2D;
 
-/** De kleur van een getal, zoals in de som en in Bliepo's zin (boven de 10: wit). */
-export const ringKleur = (n: number) => getalkleur(n);
+/** De kleurnamen van Bliepo's zin ({14:blauw}) met hun kleur; dezelfde als KLEURNAAM in Lesscherm.tsx. */
+export const KLEURHEX: Record<string, string> = {
+  rood: "#ff7b7b",
+  oranje: "#ffad5c",
+  geel: "#ffe066",
+  groen: "#7ee0a0",
+  blauw: "#8fc4ff",
+  paars: "#c9a2ff",
+  roze: "#ff9fd2",
+  wit: "#ffffff",
+  bruin: "#d9a066",
+};
+
+/**
+ * Getallen boven de 10 hebben in de tegels geen kleur (wit), maar wit is in de Squla-lessen de kleur van "weg" en
+ * van een voorwerp zonder kleur (BOUWREGELS 14.22/14.23). Daarom krijgt elk getal van 11 t/m 20 hier een ECHTE kleur
+ * (geen wit, geen grijs): in de som, in de zin en op de voorwerpen.
+ */
+const BOVEN_TIEN = ["oranje", "roze", "paars", "blauw", "groen", "rood", "oranje", "paars", "roze", "blauw"];
+
+/** De kleurnaam voor Bliepo's zin bij een getal boven de 10; anders undefined (dan geldt de tegelkleur). */
+export const getalNaam = (n: number): string | undefined => (n > 10 ? BOVEN_TIEN[(n - 11) % BOVEN_TIEN.length] : undefined);
+
+/** De kleur van een getal, zoals in de som en in Bliepo's zin (boven de 10: een echte kleur, zie getalNaam). */
+export const ringKleur = (n: number) => (n > 10 ? KLEURHEX[getalNaam(n)!] : getalkleur(n));
 
 /** De ruimte rond het voorwerp voor de ring, in punten. */
 export const ringRuimte = (b: number, h: number) => Math.max(5, Math.round(Math.min(b, h) * 0.14));
