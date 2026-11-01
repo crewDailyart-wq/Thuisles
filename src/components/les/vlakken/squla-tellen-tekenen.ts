@@ -65,7 +65,7 @@ export const VASTE_KLEUR: Record<Soort, Kleurnaam> = {
   banaan: "geel",
   speelgoedauto: "rood",
   bus: "geel",
-  huis: "oranje",
+  huis: "blauw",
   boom: "groen",
   raketje: "rood",
   ster: "geel",

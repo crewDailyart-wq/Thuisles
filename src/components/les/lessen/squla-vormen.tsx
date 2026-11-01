@@ -425,7 +425,7 @@ function pijlVraag(id: string, eenheid: string[], lengte: number, gat: number, k
     samen: async (l) => {
       await toonPatroon(l, eenheid.map(ding), (i) => `r-${i}`, lengte);
       zet(l, { licht: ["pijl"] });
-      await l.zeg("Kijk wat er vóór de pijl staat.", "Wat komt daar in het patroon na?");
+      await l.zeg("Kijk wat er vóór de pijl staat.", "Wat komt daarna in het patroon?");
     },
     tip: ["Kijk naar het patroon.", "Wat komt er steeds na elkaar?"],
   });
@@ -633,7 +633,7 @@ function dingRoosterVraag(id: string, rijen: (string | null)[][], pijl: [number,
       zet(l, { licht: ids(1) });
       await l.zeg("In de volgende rij komt hetzelfde terug.", "Maar de rij begint ergens anders.");
       zet(l, { licht: [] });
-      await l.zeg("Wat komt er in het patroon na het laatste ding?");
+      await l.zeg(...(pijl ? ["Kijk naar de plek bij de pijl.", "Ga in het patroon verder vanaf het laatste ding dat er al ligt."] : ["Wat komt er in het patroon na het laatste ding?"]));
     },
     tip: ["Kijk naar de volgorde in de bovenste rij.", "Die komt steeds terug."],
   });
@@ -735,11 +735,11 @@ function bloembakVraag(id: string, rij: string[], goed: [string, string], keuzes
   const n = rij.length + 2;
   const tussen = 92;
   const y = 250;
-  const delen: Deel[] = [{ s: "vw", id: "bak", naam: "bloembak", x: 490, y: y + 50, maat: 820, hoog: 240, rek: true }];
-  const bloemen: Deel[] = rij.map((naam, i): Deel => ({ s: "vw", id: `r-${i}`, naam, x: rijX(n, i, tussen), y: y + 28, maat: 104 }));
-  const leeg: Deel[] = [0, 1].map((k): Deel => ({ s: "vorm", id: `leeg-${k}`, x: rijX(n, rij.length + k, tussen), y: y, maat: 74, vorm: "cirkel", kleur: null }));
-  /* de bloemen staan achter de rand van de bak */
-  delen.unshift(...bloemen, ...leeg);
+  const delen: Deel[] = [{ s: "vw", id: "bak", naam: "bloembak", x: 490, y: y + 50, maat: 820, hoog: 290 }];
+  const bloemen: Deel[] = rij.map((naam, i): Deel => ({ s: "vw", id: `r-${i}`, naam, x: rijX(n, i, tussen), y: y - 62, maat: 104 }));
+  const leeg: Deel[] = [0, 1].map((k): Deel => ({ s: "vorm", id: `leeg-${k}`, x: rijX(n, rij.length + k, tussen), y: y - 62, maat: 74, vorm: "cirkel", kleur: null }));
+  /* de bak eerst, dan de bloemen met hun steel in de aarde (niet erachter) */
+  delen.push(...bloemen, ...leeg);
   const ks = plaatsKeuzes(
     keuzes.map(([a, b], i): Keuze => ({
       id: `p${i}`,
@@ -803,14 +803,14 @@ function opGrond(id: string, items: string[], maat = 112): Deel[] {
 function opPlank(id: string, items: string[], maten?: number[]): Deel[] {
   const plankMaat = 300;
   const plankY = 60;
-  /* in de tekening van de plank (200 × 200) begint de plank bij y = 96 */
-  const plankTop = plankY - plankMaat / 2 + (plankMaat * 96) / 200;
+  /* het nieuwe plaatje wandplank.png is 512 × 107: breed 300, dus 63 hoog; de bovenkant ligt op y = plankY − 31 (BOUWREGELS 14.17) */
+  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + 8;
   const ms = (maten ?? items.map(() => Math.min(80, (264 - 6 * (items.length - 1)) / items.length))).map((m, i) => m_(items[i], m));
   const breed = ms.reduce((a, b) => a + b, 0) + (ms.length - 1) * 6;
   let x = -breed / 2;
   const dingen: Deel[] = items.map((naam, i): Deel => {
     const m = ms[i];
-    const d: Deel = { s: "vw", id: `${id}-${i}`, groep: id, naam, x: x + m / 2, y: plankTop - m * 0.42, maat: m };
+    const d: Deel = { s: "vw", id: `${id}-${i}`, groep: id, naam, x: x + m / 2, y: plankTop - m * 0.45, maat: m };
     x += m + 6;
     return d;
   });
@@ -891,7 +891,14 @@ function plekVraag(id: string, zin: string, scenes: [Deel[], string][], goed: nu
 
 /** "Op welk plaatje staan de … van klein naar groot?" */
 function volgordeVraag(id: string, naam: string, plank: boolean, rijen: number[][], goed: number): Vraag {
-  const zeg = (m: number[]) => (m.every((x) => x === m[0]) ? `Hier zijn ze allemaal even groot.` : `Hier staan ze door elkaar.`);
+  const zeg = (m: number[]) =>
+    m.every((x) => x === m[0])
+      ? `Hier zijn ze allemaal even groot.`
+      : m.every((x, i) => i === 0 || x > m[i - 1])
+        ? `Hier staan ze van klein naar groot.`
+        : m.every((x, i) => i === 0 || x < m[i - 1])
+          ? `Hier staan ze van groot naar klein.`
+          : `Hier staan ze door elkaar.`;
   const sc: Scene[] = rijen.map((m, i) => ({ id: `s${i}`, delen: opRij(`s${i}`, naam, m, plank), zeg: zeg(m) }));
   return sceneVraag(
     id,
@@ -1041,7 +1048,7 @@ function plekWoordVraag(o: { id: string; veld: "gras" | "stad"; ding: string; di
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
-        await l.zeg(`Kijk waar ${wie} ligt.`, "Ligt het bovenaan, onderaan of in het midden?", "En aan welke kant: links of rechts?");
+        await l.zeg(`Kijk waar ${wie} ligt.`, "Ligt dat bovenaan, onderaan of in het midden?", "En aan welke kant: links of rechts?");
         zet(l, { licht: [] });
       },
       tip: ["Kijk eerst: boven of onder?", "Dan: links of rechts?"],
@@ -1070,7 +1077,7 @@ function welkDingVraag(id: string, dingen: Record<string, string>, vraagPlek: st
       await l.zeg(`In het midden ligt ${deDing(dingen["in het midden"])}.`);
       const [hor, ver] = vraagPlek.includes("links") ? ["links", vraagPlek.includes("boven") ? "boven" : "onder"] : ["rechts", vraagPlek.includes("boven") ? "boven" : "onder"];
       zet(l, { licht: [] });
-      await l.zeg(`Ga nu naar ${hor}.`, `En dan naar ${ver}.`, "Wat ligt daar?");
+      await l.zeg(`Ga nu naar ${hor}.`, `En dan naar ${ver === "onder" ? "beneden" : ver}.`, "Wat ligt daar?");
     },
     tip: ["Kijk eerst naar links of rechts.", "Dan naar boven of onder."],
   });
@@ -1094,7 +1101,7 @@ function ballonVraag(id: string, kleuren: Kleur[], kant: "rechts" | "links", keu
       zet(l, { licht: [kant === "rechts" ? "bl-0" : `bl-${kleuren.length - 1}`] });
       await l.zeg(`Kijk: dit is de ballon helemaal ${kant === "rechts" ? "links" : "rechts"}.`, `Hij is ${kw(ander)}.`, `Helemaal ${kant} is de andere kant.`);
     },
-    tip: [`Kijk naar de ballon helemaal aan de ${kant}kant.`],
+    tip: [`Kijk naar de ballon helemaal aan de ${kant === "rechts" ? "rechter" : "linker"}kant.`],
   });
 }
 
@@ -1139,7 +1146,7 @@ function huisVraag(id: string, volgorde: Zicht[], goed: Zicht, vraag: string[], 
         [["voren"], "Recht van voren zie je de muur en het dak."],
         [["onder"], "Van onderaf zie je vooral de muur, en bijna geen dak."],
       ]);
-      await l.zeg("Waar kijk je hier vandaan?");
+      await l.zeg("Welk huisje past erbij?");
     },
     tip: ["Denk na: kijk je van boven, van voren of van onder?"],
   });
@@ -1477,7 +1484,7 @@ const orienteren = les({
         { s: "vw", id: "bal", naam: "bal", x: 600, y: 470, maat: 70 },
       ],
       ["Dit is een hinkelbaan met een bal.", "Je ziet hem van bovenaf.", "Waar ben jij als je dit ziet?"],
-      ["Op een bankje in het park", "Hoog in een flat, bij het raam", "Op de stoep"],
+      ["Op een bankje in het park", "Hoog in een flat, bij het raam", "Liggend in het gras"],
       "Hoog in een flat, bij het raam",
       "Je kijkt van hoog naar beneden.",
       ["Kijk: je ziet de hinkelbaan van bovenaf.", "Je kijkt er dus van hoog naar beneden.", "Waar kun je hoog zijn?"],
@@ -1490,10 +1497,10 @@ const orienteren = les({
         { s: "vw", id: "boom", naam: "boom", x: 490, y: 300, maat: 280 },
       ],
       ["Je maakt een foto van een boom.", "Je ziet de boom recht van voren.", "Waar houd je de camera?"],
-      ["Laag bij de grond", "Hoog boven je hoofd", "Voor je gezicht"],
+      ["Laag bij de grond", "Hoog in een flat", "Voor je gezicht"],
       "Voor je gezicht",
       "Dan zie je de boom recht van voren.",
-      ["Stel je voor: je houdt de camera heel hoog.", "Dan zie je de boom van boven.", "Houd je hem laag bij de grond?", "Dan zie je de boom van onder.", "Hier zie je hem recht van voren."],
+      ["Stel je voor: je staat hoog in een flat.", "Dan zie je de boom van boven.", "Houd je de camera laag bij de grond?", "Dan zie je de boom van onder.", "Hier zie je hem recht van voren."],
       ["Waar zie je de boom recht van voren?"],
     ),
     huisVraag("or-11", ["voren", "boven", "onder"], "boven", ["Bliepo vliegt hoog boven het huis.", "Hoe ziet hij het huis?"], "Van bovenaf zie je vooral het dak."),

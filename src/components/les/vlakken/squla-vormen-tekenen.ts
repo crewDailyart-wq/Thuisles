@@ -204,6 +204,41 @@ function tekenGlansVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number, 
 }
 
 /**
+ * Glansstijl B voor de ruimtelijke vormen (bol, cilinder, kegel, kubus, piramide): zacht kleurverloop (licht
+ * linksboven, donkerder rechtsonder), een zachte vaste gloed in de eigen kleur en één dunne rand in een
+ * donkere tint van de eigen kleur (BOUWREGELS 7.7). Eén keer gebakken in het plaatje.
+ */
+function vulGlans(c: CanvasRenderingContext2D, kleur: string, dik: number, m: number) {
+  c.lineJoin = "round";
+  c.lineCap = "round";
+  const g = c.createLinearGradient(m * 0.2, m * 0.08, m * 0.8, m * 0.92);
+  g.addColorStop(0, tint(hexVan(kleur), 0.3));
+  g.addColorStop(0.5, kleur);
+  g.addColorStop(1, tint(hexVan(kleur), -0.22));
+  if (VORMSTIJL.gloed) {
+    c.save();
+    c.shadowColor = tint(hexVan(kleur), 0.25);
+    c.shadowBlur = m * 0.07;
+    c.fillStyle = kleur;
+    c.fill();
+    c.restore();
+  }
+  c.fillStyle = g;
+  c.fill();
+  c.strokeStyle = tint(hexVan(kleur), -0.45);
+  c.lineWidth = Math.max(1.5, dik * 0.45);
+  c.stroke();
+}
+
+/** `tint` rekent met #rrggbb; een kleur als "rgb(…)" (al gemengd) wordt eerst teruggezet. */
+function hexVan(k: string): string {
+  if (k.startsWith("#")) return k;
+  const m = /rgb\((\d+),(\d+),(\d+)\)/.exec(k);
+  if (!m) return "#cccccc";
+  return "#" + [m[1], m[2], m[3]].map((v) => Number(v).toString(16).padStart(2, "0")).join("");
+}
+
+/**
  * Een vorm in het vak (0, 0)–(m, m). `kleur` null = lege plek (stippellijn).
  * `draai` (alleen de halve ring): 0 = open aan de onderkant, 1 = open links,
  * 2 = open boven, 3 = open rechts.
@@ -272,7 +307,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       const k = hex ?? "#cccccc";
       c.beginPath();
       c.arc(x, y, m * 0.42, 0, Math.PI * 2);
-      vulRand(c, k, dik);
+      vulGlans(c, k, dik, m);
       c.beginPath();
       c.ellipse(x, y, m * 0.4, m * 0.12, 0, 0, Math.PI);
       c.strokeStyle = tint(k, -0.3);
@@ -297,10 +332,10 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       c.ellipse((l + r) / 2, onder, (r - l) / 2, ry, 0, Math.PI, 0, true);
       c.lineTo(r, top);
       c.closePath();
-      vulRand(c, k, dik);
+      vulGlans(c, k, dik, m);
       c.beginPath();
       c.ellipse((l + r) / 2, top, (r - l) / 2, ry, 0, 0, Math.PI * 2);
-      vulRand(c, tint(k, 0.35), dik);
+      vulGlans(c, tint(k, 0.35), dik, m);
       return;
     }
     case "kegel": {
@@ -311,7 +346,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       c.lineTo(m * 0.84, m * 0.8);
       c.ellipse(x, m * 0.8, m * 0.34, ry, 0, 0, Math.PI);
       c.closePath();
-      vulRand(c, k, dik);
+      vulGlans(c, k, dik, m);
       c.beginPath();
       c.ellipse(x, m * 0.8, m * 0.34, ry, 0, Math.PI, Math.PI * 2);
       c.strokeStyle = tint(k, -0.35);
@@ -329,7 +364,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       /* voorkant */
       c.beginPath();
       c.rect(x0, y0, z, z);
-      vulRand(c, k, dik);
+      vulGlans(c, k, dik, m);
       /* bovenkant */
       c.beginPath();
       c.moveTo(x0, y0);
@@ -337,7 +372,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       c.lineTo(x0 + dx + z, y0 - dy);
       c.lineTo(x0 + z, y0);
       c.closePath();
-      vulRand(c, tint(k, 0.35), dik);
+      vulGlans(c, tint(k, 0.35), dik, m);
       /* zijkant */
       c.beginPath();
       c.moveTo(x0 + z, y0);
@@ -345,7 +380,7 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       c.lineTo(x0 + z + dx, y0 - dy + z);
       c.lineTo(x0 + z, y0 + z);
       c.closePath();
-      vulRand(c, tint(k, -0.25), dik);
+      vulGlans(c, tint(k, -0.25), dik, m);
       return;
     }
     case "piramide": {
@@ -359,13 +394,13 @@ export function tekenVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number
       c.lineTo(l.x, l.y);
       c.lineTo(mid.x, mid.y);
       c.closePath();
-      vulRand(c, k, dik);
+      vulGlans(c, k, dik, m);
       c.beginPath();
       c.moveTo(top.x, top.y);
       c.lineTo(mid.x, mid.y);
       c.lineTo(r.x, r.y);
       c.closePath();
-      vulRand(c, tint(k, -0.25), dik);
+      vulGlans(c, tint(k, -0.25), dik, m);
       return;
     }
   }

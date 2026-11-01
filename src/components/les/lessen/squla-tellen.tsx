@@ -209,7 +209,9 @@ function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
     samen: () => samenTellen(l, v),
     tip:
       v.vorm === "zak"
-        ? [`Begin bij ${gk((v.zak ?? 0) + bliepoTelt(v), k)}.`, `Tel de losse ${v.voorwerp.naam} erbij.`]
+        ? bliepoTelt(v) === 0
+          ? [`Begin bij ${gk(v.zak ?? 0, k)}.`, `Tel de losse ${v.n === 1 ? v.voorwerp.een : v.voorwerp.naam} erbij.`]
+          : [`Begin bij ${gk((v.zak ?? 0) + bliepoTelt(v), k)}.`, `Tel de andere losse ${v.voorwerp.naam} erbij.`]
         : [`Begin bij ${gk(bliepoTelt(v), k)}.`, "Tel de rest één voor één."],
     testAntwoord: goed,
   });
@@ -254,15 +256,15 @@ async function uitlegTellen(l: Lesgids, v: Telvraag, st: Stand) {
 
 /* ---------- memory (tussendoortje bij Resultatief tellen 3) ---------- */
 
-async function memory(l: Lesgids, m: Memorykaartjes, st: Stand) {
+async function memory(l: Lesgids, m: Memorykaartjes, st: Stand, laatste = false) {
   st.huidig = "";
   zetTel(l, { opgave: null, geteld: 0, zakLicht: false, memory: m });
   speelLesgeluid("verschijn");
-  await l.zeg("Even een spelletje tussendoor!", "Kijk goed waar de plaatjes staan.");
+  await l.zeg(laatste ? "Nog een spelletje!" : "Even een spelletje tussendoor!", "Kijk goed waar de plaatjes staan.");
   await l.zeg("Zoek steeds twee dezelfde.", "Tik op twee kaartjes.");
   await l.wachtOpVlak("memoryKlaar");
   zetTel(l, { memory: null });
-  await l.zeg("Goed gedaan!", "Je hebt ze allemaal gevonden.", "We gaan weer tellen.");
+  await l.zeg("Goed gedaan!", "Je hebt ze allemaal gevonden.", ...(laatste ? [] : ["We gaan weer tellen."]));
 }
 
 /* ---------- een hele telles ---------- */
@@ -353,7 +355,7 @@ function telles(t: Telles): Lesdraaiboek {
       let nr = 0;
       for (const v of t.vragen) {
         if (v === "memory") {
-          if (t.memory) await memory(l, t.memory, st);
+          if (t.memory) await memory(l, t.memory, st, v === t.vragen[t.vragen.length - 1]);
           continue;
         }
         nr++;
@@ -371,7 +373,7 @@ function telles(t: Telles): Lesdraaiboek {
 /* Het welkom van de lessen fruit-1 en fruit-2. (De oude zin van fruit-1 staat nu bij de proeflessen.) */
 const FRUIT_WELKOM = [
   ["De appels liggen netjes in rijtjes.", "Hoeveel appels zie je?"],
-  ["De citroenen liggen weer in rijen van {5}.", "Hoeveel citroenen zie je?"],
+  ["De citroenen liggen weer in rijen van {5:geel}.", "Hoeveel citroenen zie je?"],
 ];
 
 const FRUIT1: Telles = {
@@ -512,7 +514,7 @@ const res1b = telles({
   oefening: "Resultatief tellen 1",
   level: 2,
   welkom: ["We tellen verder, tot {20}.", "Hoeveel ballen en blokken zie je?"],
-  uitleg: [rij5(BOOTJES_TREINTJES, 8, [])],
+  uitleg: [rij5(BALLEN_BLOKKEN, 8, [])],
   /* Level 2: 11 t/m 20, rijen van 5; twee reeksen om de beurt, elk oplopend; de keuzes op volgorde. */
   vragen: [
     rij5(BALLEN_BLOKKEN, 11, [11, 12, 13]),
@@ -700,8 +702,8 @@ const res3b = telles({
   titel: "Grote groepen tellen (moeilijker)",
   oefening: "Resultatief tellen 3",
   level: 2,
-  welkom: ["Nu zijn er veel meer planeten.", "Hoeveel planeten zie je?"],
-  uitleg: [los(UFOS, 8, [])],
+  welkom: ["Weer planeten en ufo's, door elkaar.", "Hoeveel planeten zie je?"],
+  uitleg: [los(PLANETEN, 8, [])],
   /* Level 2: 7 t/m 19, alles los door elkaar; de keuzes soms ver uit elkaar; memory tussendoor. */
   vragen: [
     los(PLANETEN, 16, [16, 14, 17]),
@@ -763,7 +765,7 @@ const res3d = telles({
   titel: "Grote groepen tellen (heel moeilijk)",
   oefening: "Resultatief tellen 3",
   level: 4,
-  welkom: ["Op de zak staat {40}: zoveel knikkers zitten erin.", "Hoeveel knikkers zijn het samen?"],
+  welkom: ["Op de zak staat {40:blauw}: zoveel knikkers zitten erin.", "Hoeveel knikkers zijn het samen?"],
   uitleg: [zak(KNIKKERS, 30, 3, [])],
   /* Level 4: een zak met een tiental (40 t/m 90) en 1 t/m 9 losse; 47 t/m 98; de keuzes ±1, niet op volgorde. */
   vragen: [
@@ -938,21 +940,21 @@ const telrij1 = rijles({
   },
   /* Level 1: wat komt erna? 18 t/m 50, vaak over een tiental; afleiders: het getal ervoor, 2 verder, een tiental ernaast, omgedraaide cijfers. */
   vragen: [
-    na(33, [32, 35, 53]),
+    na(33, [32, 35, 43]),
     na(41, [44, 43, 40]),
     na(26, [28, 29, 25]),
-    na(36, [83, 38, 35]),
+    na(36, [38, 35, 47]),
     na(28, [30, 40, 27]),
     na(18, [21, 17, 20]),
     na(38, [41, 40, 30]),
-    na(43, [54, 45, 42]),
+    na(43, [45, 42, 34]),
     na(39, [14, 41, 38]),
     na(22, [25, 42, 24]),
     na(47, [49, 46, 50]),
     na(29, [13, 32, 31]),
     na(19, [12, 21, 18]),
-    na(45, [74, 47, 44]),
-    na(48, [40, 51, 50]),
+    na(45, [47, 44, 36]),
+    na(48, [40, 47, 50]),
   ],
   eind: "Je weet welk nummer erna komt.",
 });
@@ -973,7 +975,7 @@ const telrij2 = rijles({
     na(86, [98, 88, 89]),
     na(88, [80, 91, 90]),
     na(69, [71, 72, 80]),
-    na(98, [101, 90, 100]),
+    na(98, [99, 90, 100]),
     na(78, [70, 80, 81]),
     na(59, [61, 16, 62]),
     na(96, [89, 98, 99]),

@@ -194,6 +194,7 @@ interface MMScene {
   hand(aan: boolean): void;
   zetTest(lijst: string[] | null): void;
   tik(i: number): void;
+  lichtOp(vak: number): void;
   sleepPunt(): { x: number; y: number } | null;
 }
 
@@ -390,7 +391,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
         const items: Img[] = [];
         if (vak.soort === "ding") box.add(this.plaats(this.dingTex((o as { ding: MMDing }).ding, vak.getal ?? 0), 0, 0));
         else {
-          if (vak.soort !== "groep") box.add(this.plaats(this.kaartTex(vak.b, vak.h, vak.soort), 0, 0));
+          /* Geen kaart of rand om de voorwerpen (BOUWREGELS 1.4): ze staan los; het tikvlak blijft even groot. */
           const gp = vak.groep!;
           const groep = groepen[i];
           for (const d of gp.dozen) {
@@ -435,24 +436,41 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       if (aan) this.bezig = false;
     }
 
+    /** De voorwerpen van één kaart lichten op in `kleur` (gebakken gloed); `ms` = daarna weer gewoon. */
+    lichtOpKaart(st: Stuk, kleur: number | null, ms = 0) {
+      for (const img of st.items) {
+        const soort = img.getData("soort") as MMSoort | undefined;
+        if (!soort || !img.active) continue;
+        const sl = this.voorwerp(soort);
+        let doel = sl;
+        if (kleur !== null) {
+          doel = `${sl}-g${kleur.toString(16)}`;
+          this.bak(sl, doel, kleur);
+        }
+        img.setTexture(doel);
+      }
+      if (kleur !== null && ms > 0) this.time.delayedCall(ms, () => this.lichtOpKaart(st, null));
+    }
+
+    /** Goed of fout: de voorwerpen lichten op (geen rand om de kaart). */
     rand(st: Stuk, kleur: number) {
       st.mark?.destroy();
-      const g = this.add.graphics();
-      g.lineStyle(7, kleur, 0.95);
-      g.strokeRoundedRect(-st.vak.b / 2 - 6, -st.vak.h / 2 - 6, st.vak.b + 12, st.vak.h + 12, 26);
-      st.box.add(g);
-      st.mark = g;
-      /* Het bordje met het getal blijft boven de rand. */
-      if (st.bordje) st.box.bringToTop(st.bordje);
+      st.mark = null;
+      this.lichtOpKaart(st, kleur);
+    }
+
+    /** Tikken op een kaart: even oplichten. */
+    lichtOp(vak: number) {
+      const st = this.kaartStuk(vak);
+      if (st) this.lichtOpKaart(st, WARM, 450);
     }
 
     goed(vak: number) {
       const lijst = vak < 0 ? this.stukken.filter((st) => st.plek !== null) : [this.kaartStuk(vak)].filter((st): st is Stuk => !!st);
       lijst.forEach((st, k) => {
-        this.time.delayedCall(this.rustig ? 0 : k * 160, () => {
-          this.rand(st, GOED);
-          this.golf(st.box.x, st.box.y, GOED);
-        });
+        /* De voorwerpen lichten meteen op (zoals bij fout); de lichtgolf volgt per kaart. */
+        this.rand(st, GOED);
+        this.time.delayedCall(this.rustig ? 0 : k * 160, () => this.golf(st.box.x, st.box.y, GOED));
       });
     }
 
@@ -472,6 +490,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       for (const st of this.stukken) {
         st.mark?.destroy();
         st.mark = null;
+        this.lichtOpKaart(st, null);
       }
     }
 
@@ -888,6 +907,7 @@ export function SqulaMeerMinder({
           onClick={() => {
             if (!actief) return;
             speelLesgeluid("tik");
+            scene?.lichtOp(k);
             meld({ soort: "kaart", vak: k });
           }}
         />

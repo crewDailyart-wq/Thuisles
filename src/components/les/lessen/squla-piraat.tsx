@@ -24,6 +24,7 @@
 
 import type { Lesgids } from "../soort";
 import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, les, squlaVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
+import { getalkleur } from "../tegels";
 import { KaartSchat, type Beeld, type Deel } from "../vlakken/squla-splitsen-vlak";
 
 /* =====================================================================
@@ -65,8 +66,25 @@ async function nieuweLetter(l: Lesgids, st: Stand) {
   else await l.wacht(500);
 }
 
-function som(l: Lesgids, a: number, teken: "+" | "−", b: number, uitkomst?: number) {
-  l.som([{ t: "getal", n: a }, { t: "teken", s: teken }, { t: "getal", n: b }, { t: "teken", s: "=" }, { t: "vak", waarde: uitkomst === undefined ? undefined : String(uitkomst) }]);
+/** De kleuren van de som bovenaan: elk getal heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1); "tegel" = de kleur van het getal zelf (kale sommen). */
+const SK: Record<string, string> = { paars: "#c9a2ff", oranje: "#ffad5c", geel: "#ffe066", blauw: "#8fc4ff", wit: "#ffffff" };
+const somKleur = (n: number, k: string) => (k === "tegel" ? getalkleur(n) : (SK[k] ?? "#ffffff"));
+
+/** De som bovenaan, als tekst in het vlak (de som van het lesscherm kan geen kleur per voorwerp). */
+function som(l: Lesgids, st: Stand, a: number, teken: "+" | "−", b: number, uitkomst?: number, ka = "tegel", kb = ka, ku = "wit") {
+  const basis = LAATSTE.get(st);
+  if (!basis) return;
+  const y = 70;
+  const delen: Deel[] = [
+    { s: "tekst", id: "som-a", t: String(a), x: 330, y, grootte: 56, kleur: somKleur(a, ka) },
+    { s: "tekst", id: "som-t", t: teken, x: 410, y, grootte: 56, kleur: "#c3c7d0" },
+    { s: "tekst", id: "som-b", t: String(b), x: 490, y, grootte: 56, kleur: somKleur(b, kb) },
+    { s: "tekst", id: "som-i", t: "=", x: 570, y, grootte: 56, kleur: "#c3c7d0" },
+    { s: "tekst", id: "som-u", t: uitkomst === undefined ? "?" : String(uitkomst), x: 650, y, grootte: 56, kleur: uitkomst === undefined ? undefined : somKleur(uitkomst, ku) },
+  ];
+  const nieuw: Beeld = { ...basis, delen: [...basis.delen.filter((d) => !d.id.startsWith("som-")), ...delen] };
+  LAATSTE.set(st, nieuw);
+  zet(l, { beeld: nieuw });
 }
 
 /* =====================================================================
@@ -161,7 +179,7 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
-        som(l, a, "+", b, s);
+        som(l, st, a, "+", b, s, "paars", "oranje", "wit");
         goedBeeld(l, st);
         await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
       },
@@ -187,14 +205,14 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
     const beeld = metLetters(st, `kaal-${a}-${b}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 370, maat: 230 }]);
     return squlaVraag<number>(l, {
       toon: () => {
-        if (toon(l, st, beeld)) som(l, a, "+", b);
+        if (toon(l, st, beeld)) som(l, st, a, "+", b);
       },
       vraag: [`Hoeveel is ${g(a, "tegel")} + ${g(b, "tegel")}?`],
       antwoord: () => kiesGetal(l, keuzes),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
-        som(l, a, "+", b, s);
+        som(l, st, a, "+", b, s);
         goedBeeld(l, st);
         await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s, "tegel")}.`);
       },
@@ -215,14 +233,14 @@ function minVraag(vw: string, a: number, b: number, keuzes: number[], zinnen?: s
     const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62 }]);
     return squlaVraag<number>(l, {
       toon: () => {
-        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, a, "−", b);
+        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit");
       },
       vraag: zinnen ?? [`Hoeveel ${NAAM[vw][1]} zijn er nog?`],
       antwoord: () => kiesGetal(l, keuzes),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
-        som(l, a, "−", b, s);
+        som(l, st, a, "−", b, s, KL[vw] ?? "wit");
         goedBeeld(l, st, { goedIds: blijft });
         await l.zeg(`Ja! ${gv(a, vw)} − ${gv(b, vw)} = ${gv(s, vw)}.`);
       },
@@ -488,10 +506,10 @@ const level3 = maak({
   verhaal: ["We hebben een sleutel gevonden.", "Waar past hij op?"],
   uitleg: async (l, st) => {
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
-    som(l, 8, "+", 5);
+    som(l, st, 8, "+", 5);
     await l.zeg("Kijk goed naar het teken.", "Een plus: er komt bij.", "Een min: er gaat af.");
     await plusUitleg(l, 8, 5);
-    som(l, 8, "+", 5, 13);
+    som(l, st, 8, "+", 5, 13);
     await l.zeg(`${g(8)} + ${g(5)} = ${g(13)}.`);
     await l.verder();
     l.som(null);

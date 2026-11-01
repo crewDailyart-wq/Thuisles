@@ -459,6 +459,24 @@ async function uitlegTel(l: Lesgids, st: Stand, v: Vw, groep: MMGroep, extra?: W
   await l.wacht(400);
 }
 
+/** Eierdoosjes samen tellen (het voorbeeld van Meer dan, minder dan 2): in elk doosje zitten er 6. */
+async function uitlegDozen(l: Lesgids, st: Stand) {
+  const groep = dozen(3);
+  toonOpgave(l, st, "uitleg-tel-dozen-18", { id: "uitleg-tel-dozen-18", soort: "tel", groep });
+  await l.wacht(700);
+  await l.zeg("Eieren liggen in doosjes.", `In elk doosje zitten er ${g(6, EIEREN.k)}.`);
+  for (let r = 1; r <= 3; r++) {
+    for (let k = (r - 1) * 6; k < r * 6; k++) {
+      zet(l, { tel: { vak: 0, geteld: k + 1 } });
+      await l.wacht(110);
+    }
+    await l.zeg(`${g(r * 6, EIEREN.k)}.`);
+  }
+  await l.zeg(`Het zijn er ${g(18, EIEREN.k)}.`, `Dus ${g(18, EIEREN.k)} is evenveel.`);
+  zet(l, { tel: null });
+  await l.wacht(400);
+}
+
 /** Groepjes naast elkaar: elke kaart tellen, dan zeggen wat meer en wat minder is. */
 async function uitlegKaarten(l: Lesgids, st: Stand, v: Vw, aantallen: number[], o: { voorbeeld?: number; getal?: number; slot?: string[] }) {
   const id = `uitleg-kaarten-${v.soort}-${aantallen.join("-")}-${o.voorbeeld ?? ""}-${o.getal ?? ""}`;
@@ -554,7 +572,7 @@ const evenveel1_1 = les({
   titel: "Meer, minder, evenveel",
   oefening: "Meer, minder, evenveel 1",
   level: 1,
-  welkom: ["De appels liggen in rijtjes van {5}.", "Tel de appels. Welk getal is evenveel?"],
+  welkom: ["De appels liggen in rijtjes van {5:rood}.", "Tel de appels. Welk getal is evenveel?"],
   start: { id: "start-evenveel1-1", soort: "tel", groep: r5(APPELS, 12) },
   uitleg: (l, st) => uitlegTel(l, st, APPELS, r5(APPELS, 12)),
   vragen: [
@@ -672,7 +690,7 @@ const evenveel2_1 = les({
   start: { id: "start-evenveel2-1", soort: "tel", groep: r5(KRALEN, 9) },
   uitleg: async (l, st) => {
     await uitlegTel(l, st, KRALEN, r5(KRALEN, 9));
-    await uitlegKaarten(l, st, KOEKJES, [11, 13, 12], { slot: [`${g(13, "bruin")} is de meeste.`] });
+    await uitlegKaarten(l, st, KOEKJES, [9, 11, 10], { slot: [`${g(11, "bruin")} is de meeste.`] });
   },
   vragen: [
     { t: "tel", v: KRALEN, groep: r5(KRALEN, 9), keuzes: [9, 10, 11], vraagt: "evenveel" },
@@ -784,11 +802,11 @@ const evenveel3_2 = les({
   titel: "Meer dan, minder dan (moeilijker)",
   oefening: "Meer, minder, evenveel 3",
   level: 2,
-  welkom: ["Eieren liggen in doosjes van {6}.", "Tel de eieren. Welk getal is evenveel?"],
-  start: { id: "start-evenveel3-2", soort: "tel", groep: r10(BALLONNEN_2, 23) },
+  welkom: ["Eieren liggen in doosjes van {6:wit}.", "Tel de eieren. Welk getal is evenveel?"],
+  start: { id: "start-evenveel3-2", soort: "tel", groep: dozen(4) },
   uitleg: async (l, st) => {
     st.huidig = "";
-    await uitlegTel(l, st, BALLONNEN_2, r10(BALLONNEN_2, 23), "meer");
+    await uitlegDozen(l, st);
     await uitlegGetallen(l, st, "vlieger", [27, 41], [`Dus ${w(27)} is minder dan ${w(41)}.`]);
   },
   vragen: [

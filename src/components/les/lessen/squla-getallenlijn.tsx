@@ -217,7 +217,7 @@ function ordenVraag(l: Lesgids, v: OrdenVraag): SqulaVraag<number[]> {
   const vast = v.vakken.findIndex((n) => n !== null);
   const stap = alles[1] - alles[0];
   const kleinste = Math.min(...v.kaarten);
-  const tip = vast === 0 ? [`Welk getal komt na ${w(v.vakken[0]!)}?`] : ["Begin met het kleinste getal."];
+  const tip = vast === 0 ? [stap > 1 ? `Welk getal is ${w(stap)} meer dan ${w(v.vakken[0]!)}?` : `Welk getal komt na ${w(v.vakken[0]!)}?`] : ["Begin met het kleinste getal."];
   let eerste = true;
   /* Liggen de kaarten nog van de vorige poging in de vakken, dan eerst terug (nieuwe ronde). */
   let vers = false;
@@ -528,7 +528,7 @@ function pijlWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> 
       await l.zeg("Goed zo.", `De pijl wijst ${w(n)} aan.`);
       await l.wacht(300);
     },
-    samen: () => telStreepjes(l, labels, n, "Het pijltje"),
+    samen: () => telStreepjes(l, labels, n, "De pijl"),
     tip: tipStreepjes(labels, n),
     testAntwoord: n,
   };
@@ -669,9 +669,9 @@ async function speelOpgaven(l: Lesgids, opgaven: Opgave[]) {
 
 const RANGSCHIKKEN_1: Opgave[] = [
   /* een lichtslinger met één lege plek: kies uit 3 */
-  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [3, 4, 5, "…", 7], start: 3, gat: 3, opties: [8, 6, 2], vraag: ["Welk getal hoort op het lege lampje?"] }),
-  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [11, 12, "…", 14, 15], start: 11, gat: 2, opties: [13, 10, 3], vraag: ["Welk getal hoort op het lege lampje?"] }),
-  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [16, 17, 18, "…", 20], start: 16, gat: 3, opties: [15, 19, 9], vraag: ["Welk getal hoort op het lege lampje?"] }),
+  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [3, 4, 5, "…", 7], start: 3, gat: 3, opties: [8, 6, 2], vraag: ["Welk getal hoort op de puntjes?"] }),
+  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [11, 12, "…", 14, 15], start: 11, gat: 2, opties: [13, 10, 3], vraag: ["Welk getal hoort op de puntjes?"] }),
+  (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [16, 17, 18, "…", 20], start: 16, gat: 3, opties: [15, 19, 9], vraag: ["Welk getal hoort op de puntjes?"] }),
   /* planeetjes: één zonder getal, en een vraagteken */
   (l) => rijVraag(l, { ding: "planeet", rij: [4, 5, 6, "-", "?"], start: 4, gat: 4, opties: [7, 9, 8], vraag: ["Welk getal hoort bij het vraagteken?"] }),
   (l) => rijVraag(l, { ding: "planeet", rij: [12, 13, "-", "?", "-"], start: 12, gat: 3, opties: [15, 17, 11], vraag: ["Welk getal hoort bij het vraagteken?"] }),
@@ -691,7 +691,7 @@ const RANGSCHIKKEN_1: Opgave[] = [
 ];
 
 const RANGSCHIKKEN_2: Opgave[] = [
-  /* kristallen, getallen eronder, de puntjes in het midden */
+  /* diamanten, getallen eronder, de puntjes in het midden */
   (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [2, "-", "…", "-", 6], start: 2, gat: 2, opties: [3, 4, 5], vraag: ["Welk getal hoort op de puntjes?"] }),
   (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [10, "-", "…", "-", 14], start: 10, gat: 2, opties: [12, 13, 11], vraag: ["Welk getal hoort op de puntjes?"] }),
   (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [15, "-", "…", "-", 19], start: 15, gat: 2, opties: [16, 18, 17], vraag: ["Welk getal hoort op de puntjes?"] }),
@@ -704,10 +704,10 @@ const RANGSCHIKKEN_2: Opgave[] = [
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [10, 11, "-", "-", "-", "-", "-"], start: 10, gat: 4, rood: true, opties: [12, 13, 14, 15], vraag: ["Welk getal hoort bij het rode lampje?"] }),
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [13, 14, "-", "-", "-", "-", "-"], start: 13, gat: 6, rood: true, opties: [17, 18, 19, 20], vraag: ["Welk getal hoort bij het rode lampje?"] }),
   /* getallenlijn met alleen 0, 10 en 20 */
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 18, opties: [8, 18, 15], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 12, opties: [2, 12, 16], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 3, opties: [3, 13, 6], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 14, opties: [4, 14, 17], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 18, opties: [8, 18, 15], vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 12, opties: [2, 12, 16], vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 3, opties: [3, 13, 6], vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 20], n: 14, opties: [4, 14, 17], vraag: ["Bij welk getal staat het vlaggetje?"] }),
   /* op volgorde in sprongen van 5; het vaste getal staat niet vooraan */
   (l) => ordenVraag(l, { vakken: [null, null, 10, null, null], kaarten: [20, 5, 15, 0], handje: true }),
   (l) => ordenVraag(l, { vakken: [null, null, null, 15, null], kaarten: [10, 0, 20, 5] }),
@@ -715,20 +715,20 @@ const RANGSCHIKKEN_2: Opgave[] = [
 
 const RANGSCHIKKEN_3: Opgave[] = [
   /* getallenlijn 0–20 met een rijtje getallen erbij */
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 11, 12, 13, 14, 20], n: 15, opties: [15, 16, 5], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 15, 16, 17, 18, 19, 20], n: 14, opties: [14, 13, 4], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 10, 11, 12, 13, 14, 20], n: 15, opties: [15, 16, 5], vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 15, 16, 17, 18, 19, 20], n: 14, opties: [14, 13, 4], vraag: ["Bij welk getal staat het vlaggetje?"] }),
   /* getallenlijn 10–20 met streepjes per 2 */
-  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 14, opties: [4, 14, 15], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 14, opties: [4, 14, 15], vraag: ["Bij welk getal staat het vlaggetje?"] }),
   /* op volgorde, zonder vast getal */
   (l) => ordenVraag(l, { vakken: [null, null, null, null], kaarten: [7, 5, 6, 4], handje: true }),
   (l) => ordenVraag(l, { vakken: [null, null, null, null], kaarten: [16, 18, 17, 19] }),
   (l) => ordenVraag(l, { vakken: [null, null, null, null], kaarten: [13, 11, 10, 12] }),
   /* streepjes per 2: het vlaggetje staat ertussen, of op een streepje */
-  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 17, opties: [17, 7, 19], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 12, opties: [12, 13, 2], vraag: ["Welk getal hoort bij het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 17, opties: [17, 7, 19], vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 10, tot: 20, stap: 2, labels: [10, 20], n: 12, opties: [12, 13, 2], vraag: ["Bij welk getal staat het vlaggetje?"] }),
   /* getallenlijn met om en om een getal: typen */
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 6, 8, 10, 12, 14, 20], n: 3, vraag: ["Welk getal hoort bij het vlaggetje?"] }),
-  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 5, 7, 9, 11, 13, 20], n: 16, vraag: ["Welk getal hoort bij het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 6, 8, 10, 12, 14, 20], n: 3, vraag: ["Bij welk getal staat het vlaggetje?"] }),
+  (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 5, 7, 9, 11, 13, 20], n: 16, vraag: ["Bij welk getal staat het vlaggetje?"] }),
   /* groter dan … en kleiner dan … */
   (l) => tussenVraag(l, 3, 7, [6, 2, 8]),
   (l) => tussenVraag(l, 10, 14, [15, 12, 9]),
@@ -752,6 +752,31 @@ async function uitlegRij(l: Lesgids) {
   await l.verder();
 }
 
+/** Uitleg bij de diamanten met puntjes (het voorbeeld van level 2): dezelfde soort rij, andere getallen. */
+async function uitlegDiamant(l: Lesgids) {
+  toon(l, { soort: "rij", ding: "kristal", onder: true, items: [{ t: "7" }, { t: "" }, { t: "…" }, { t: "" }, { t: "11" }] });
+  await l.zeg("Kijk, diamanten met getallen eronder.", "Op één diamant staan puntjes.");
+  licht(l, 0);
+  await l.zeg("Links staat {7:wit}.");
+  licht(l, 4);
+  await l.zeg("Rechts staat {11:wit}.", "Elke diamant is één verder.");
+  licht(l, 0);
+  await l.zeg("{7:wit}.");
+  licht(l, 1);
+  await l.zeg("{8:wit}.");
+  licht(l, 2);
+  await l.zeg("Wat komt hierna?");
+  vul(l, 2, "9");
+  await l.zeg("Op de puntjes hoort {9:wit}.");
+  await l.verder();
+}
+/** Uitleg bij de planeet (het voorbeeld van kat-2): welk getal komt ervoor? */
+async function uitlegVoor(l: Lesgids) {
+  toon(l, { soort: "planeet", getal: 8 });
+  await l.zeg("Het raketje landt op een planeet met {8:wit}.", "Welk getal komt ervoor?", "Dat is één terug.");
+  await l.zeg("Tel één terug vanaf {8:wit}.", "Dat is {7:wit}.");
+  await l.verder();
+}
 async function uitlegLijn(l: Lesgids, labels: number[], n: number) {
   toon(l, { soort: "lijn", van: 0, tot: 20, labels, vlag: { n, t: "?" } });
   await l.zeg("Dit is een getallenlijn.", "Elk streepje is één verder.");
@@ -785,7 +810,7 @@ const rangschikken1: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "lampje", slinger: true, items: [3, 4, 5, 6, 7].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Een lichtslinger heeft lampjes met getallen.", "Welk getal hoort op het lege lampje?"],
+      welkom: ["Een lichtslinger heeft lampjes met getallen.", "Welk getal hoort op de puntjes?"],
       voorbeeld: () => (RANGSCHIKKEN_1[0](l) as SqulaVraag<unknown>).toon?.(),
       uitleg: () => uitlegRij(l),
     });
@@ -806,9 +831,9 @@ const rangschikken2: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 0, tot: 20, labels: [0, 10, 20] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["De kristallen hebben getallen eronder.", "Welk getal hoort op de puntjes?"],
+      welkom: ["De diamanten hebben getallen eronder.", "Welk getal hoort op de puntjes?"],
       voorbeeld: () => (RANGSCHIKKEN_2[0](l) as SqulaVraag<unknown>).toon?.(),
-      uitleg: () => uitlegLijn(l, [0, 10, 20], 12),
+      uitleg: () => uitlegDiamant(l),
     });
     const fouten = await speelOpgaven(l, RANGSCHIKKEN_2);
     await squlaEind(l, fouten, "Je vindt getallen ook als er weinig staan.");
@@ -827,9 +852,12 @@ const rangschikken3: Lesdraaiboek = {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 10, tot: 20, stap: 2, labels: [10, 20] } });
     speelLesgeluid("verschijn");
     await squlaBegin(l, {
-      welkom: ["Op de getallenlijn staan niet alle getallen.", "Welk getal hoort bij het vlaggetje?"],
+      welkom: ["Op de getallenlijn staan niet alle getallen.", "Bij welk getal staat het vlaggetje?"],
       voorbeeld: () => (RANGSCHIKKEN_3[0](l) as SqulaVraag<unknown>).toon?.(),
-      uitleg: () => uitlegPerTwee(l),
+      uitleg: async () => {
+        await uitlegLijn(l, [0, 10, 11, 12, 13, 14, 20], 18);
+        await uitlegPerTwee(l);
+      },
     });
     const fouten = await speelOpgaven(l, RANGSCHIKKEN_3);
     await squlaEind(l, fouten, "Je kent de getallenlijn tot {20:wit} goed.");
@@ -991,14 +1019,7 @@ const kat2: Lesdraaiboek = {
     await squlaBegin(l, {
       welkom: [`Het raketje landt op een planeet met ${w(15)}.`, `Welk getal komt voor ${w(15)}?`],
       voorbeeld: () => (KAT_2[0](l) as SqulaVraag<unknown>).toon?.(),
-      uitleg: async () => {
-        toon(l, { soort: "lijn", van: 8, tot: 20, labels: [10, 15, 20], raketje: { n: 13, wijs: true } });
-        await l.zeg("De pijl wijst een streepje aan.", "Niet bij elk streepje staat een getal.");
-        await telStreepjes(l, [10, 15, 20], 13, "Het pijltje");
-        vul(l, 13, "13");
-        await l.zeg("Dus de pijl wijst {13:wit} aan.");
-        await l.verder();
-      },
+      uitleg: () => uitlegVoor(l),
     });
     const fouten = await speelOpgaven(l, KAT_2);
     await squlaEind(l, fouten, "Je vindt het raketje op elke getallenlijn.");

@@ -389,6 +389,21 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       return sl;
     }
 
+    /** Een som als losse stukjes, elk getal in zijn eigen kleur (BOUWREGELS 2.1): "7 − 4 =" of "7 − 4". */
+    somRij(x: number, y: number, a: number, b: number, grootte: number, metIs: boolean) {
+      const delen: [string, string][] = [[String(a), ringKleur(a)], [" − ", "#ffffff"], [String(b), ringKleur(b)], ...(metIs ? ([[" =", "#ffffff"]] as [string, string][]) : [])];
+      const meet = document.createElement("canvas").getContext("2d")!;
+      meet.font = `800 ${grootte}px ${this.letter}`;
+      const br = delen.map(([t]) => meet.measureText(t).width);
+      const tot = br.reduce((u, w) => u + w, 0);
+      let cx = x - tot / 2;
+      return delen.map(([t, k], i) => {
+        const im = this.plaats(this.tekstTex(t, grootte, k), cx + br[i] / 2, y).setScale(1 / TX);
+        cx += br[i];
+        return im;
+      });
+    }
+
     stopKlokken() {
       this.klokken.forEach((k) => k.remove(false));
       this.klokken = [];
@@ -478,7 +493,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           rij.push(im);
         }
         this.kaartVisjes.push(rij);
-        g.add(this.plaats(this.tekstTex(`${a} − ${b} =`, 44), KAART_L.x, y + 58).setScale(1 / TX));
+        this.somRij(KAART_L.x, y + 58, a, b, 44, true).forEach((im) => g.add(im));
       });
       t.uitkomsten.forEach((u, j) => g.add(this.plaats(this.tekstTex(String(u), 72), KAART_R.x, KAART_L.ys[j]).setScale(1 / TX)));
       this.lijnGfx = this.add.graphics();
@@ -488,7 +503,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     maakBubbels(g: Box, t: Extract<Toneel, { soort: "bubbels" }>) {
       t.sommen.forEach(([a, b], i) => {
         const p = BUBBEL_PLEK[i];
-        const box = this.add.container(p.x, p.y, [this.plaats(this.tex("zeepbel"), 0, 0).setScale(BUBBEL_D / 100 / TX), this.plaats(this.tekstTex(`${a} − ${b}`, 46), 0, 0).setScale(1 / TX)]);
+        const box = this.add.container(p.x, p.y, [this.plaats(this.tex("zeepbel"), 0, 0).setScale(BUBBEL_D / 100 / TX), ...this.somRij(0, 0, a, b, 46, false)]);
         if (!this.rustig) this.tweens.add({ targets: box, y: p.y - 9, duration: 1500 + i * 180, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
         g.add(box);
         this.bubbelBoxen.push(box);
@@ -867,6 +882,11 @@ function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord"
         d === "?" ? (
           <span key={i} className={s.vak}>
             ?
+          </span>
+        ) : /^\d+$/.test(d) ? (
+          /* Elk getal in de som heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1), met een dunne donkere rand voor de leesbaarheid. */
+          <span key={i} style={{ color: ringKleur(Number(d)), WebkitTextStroke: "2px #0b1028", paintOrder: "stroke fill" }}>
+            {d}
           </span>
         ) : (
           <span key={i}>{d}</span>

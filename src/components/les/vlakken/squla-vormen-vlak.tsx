@@ -494,7 +494,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     zetPuzzelTest() {
       if (!this.puzzel) return;
       const los = this.stukken.find((x) => !x.vast);
-      const antwoord = !this.pzBezig || !los ? null : this.gekozen !== null ? `plek-${this.gekozen}` : `stuk-${los.i}`;
+      const antwoord = !this.pzBezig || !los ? null : this.gekozen !== null ? `plek-${this.plekVan(this.stukken[this.gekozen])}` : `stuk-${los.i}`;
       window.__phaser = { ...window.__phaser, antwoord };
     }
 
@@ -510,8 +510,25 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     /** Leg een stukje neer op (x, y). Op zijn eigen plek klikt het vast; anders blijft het los liggen. */
+    /** Stukjes die er precies hetzelfde uitzien mogen van plek wisselen (BOUWREGELS 14.18): ze tellen op elke gelijke plek goed. */
+    wissel(st: Stuk, t: Stuk) {
+      [st.thuis, t.thuis] = [t.thuis, st.thuis];
+    }
+
+    /** Het nummer van de plek op het bord waar dit stukje nu thuishoort. */
+    plekVan(st: Stuk) {
+      const n = this.puzzel!.n;
+      for (let j = 0; j < n * n; j++) {
+        const p = bordPlek(n, j);
+        if (Math.abs(p.x - st.thuis.x) < 1 && Math.abs(p.y - st.thuis.y) < 1) return j;
+      }
+      return st.i;
+    }
+
     legStuk(st: Stuk, x: number, y: number, metTween: boolean) {
       const w = BORD.S / this.puzzel!.n;
+      const gelijk = this.stukken.find((t) => t !== st && !t.vast && t.sl === st.sl && Math.hypot(x - t.thuis.x, y - t.thuis.y) < w * 0.32);
+      if (gelijk && Math.hypot(x - st.thuis.x, y - st.thuis.y) >= w * 0.32) this.wissel(st, gelijk);
       const opBord = Math.abs(x - BORD.x) < BORD.S / 2 && Math.abs(y - BORD.y) < BORD.S / 2;
       if (Math.hypot(x - st.thuis.x, y - st.thuis.y) < w * 0.32) {
         st.vast = true;
@@ -569,7 +586,11 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const st = this.stukken[this.gekozen];
       const plek = bordPlek(this.puzzel!.n, j);
       if (this.stukken.some((x) => x.vast && x.i === j)) return;
-      if (j === st.i) return this.legStuk(st, plek.x, plek.y, true);
+      const doel = this.stukken.find((t) => this.plekVan(t) === j);
+      if (doel && (doel === st || (!doel.vast && doel.sl === st.sl))) {
+        if (doel !== st) this.wissel(st, doel);
+        return this.legStuk(st, plek.x, plek.y, true);
+      }
       /* verkeerde plek: het stukje blijft gekozen en schudt even */
       this.schud(st.img);
       this.melder({ soort: "puzzelMis" });
