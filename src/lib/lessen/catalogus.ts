@@ -213,7 +213,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-klok-klokkijken2-1", titel: "Klokkijken 2", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 2 · level 1 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken2-2", titel: "Klokkijken 2 (moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 2 · level 2 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken2-3", titel: "Klokkijken 2 (nog moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 2 · level 3 (alleen leerdoel)" },
-  { id: "squla-klok-klokkijken3-1", titel: "Halve uren", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 1 (alleen leerdoel)" },
+  { id: "squla-klok-klokkijken3-1", titel: "Halve uren lezen", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 1 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken3-2", titel: "Halve uren (moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 2 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken3-3", titel: "Halve uren (nog moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 3 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken3-4", titel: "Halve uren: later en eerder", synthesis: "Squla groep 3 · Klokkijken · Klokkijken 3 · level 4 (alleen leerdoel)" },

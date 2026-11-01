@@ -736,7 +736,7 @@ const geldmachine2: Lesdraaiboek = {
   voorwerpen: ["spaarpot", "springtouw", "bal", "speelgoedauto", "vlieger", "raketje", "bootje", "treintje", "voetbal"],
   async speel(l) {
     await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "b5", "b10"], [`In de speelgoedwinkel kost het springtouw ${e(3)} euro.`, `Waar ligt ${e(3)} euro?`], async () => {
-      zet(l, { ...LEEG, groot: [speelgoed("bootje", 8)], kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
+      zet(l, { ...LEEG, groot: [speelgoed("treintje", 8)], kaarten: [{ id: "u0", geld: ["b5", "m2", "m1"] }] });
       await l.zeg(`Op het kaartje staat wat iets kost: ${e(8)} euro.`, "Je telt het geld bij elkaar.", "Begin bij het briefje.");
       await telGeld(l, "u0", ["b5", "m2", "m1"], { spreek: true, eind: false });
       await l.zeg(`Samen is dit ${e(8)} euro.`, "Dat is precies genoeg.");

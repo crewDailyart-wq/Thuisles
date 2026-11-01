@@ -546,3 +546,121 @@ Alle 7 lessen opnieuw gestart (GOED=1). Op de schermfoto's van het beginscherm s
 - **oppervlakte-2:** "De tafel ligt vol blaadjes papier. Hoe groot is de tafel?" In beeld de tafel van 6×3.
 
 De oude opmerkingen over het beginscherm zijn daarmee opgelost: "Wat een pizza's" bij één pizza, de "tafel met tegels", "weer mee naar het park" en de stroeve zin bij pizza-2. Ja en Nee staan op de vaste plek. Na Ja komt de eerste vraag; na Nee begint de uitleg met zijn eigen beeld (`welkom`, r. 95–109). **Alle 7 Meten-lessen blijven GOEDGEKEURD**, ook op 4.1/4.3.
+
+#### Aanvulling Geld ronde 2: nieuw beginscherm (4.1/4.3) en herkeuring, 2026-11-01
+Alle 6 lessen opnieuw gestart (GOED=1). Bij elke les staat de echte eerste vraag als voorbeeld in beeld, met een eigen zin die erbij past:
+- **geldmachine-1:** "Er valt geld uit de spaarpot. Waar zie je een munt van 1 euro?"
+- **geldmachine-2:** "In de speelgoedwinkel kost het springtouw 3 euro. Waar ligt 3 euro?" In beeld het springtouw met het prijsbordje € 3 en het geld.
+- **zakgeld-1:** "Voor elk klusje krijg je 2 euro. Hoeveel is dat bij elkaar?" In beeld de bezem, de gieter en het geld.
+- **zakgeld-2:** "Je hebt 20 euro gespaard. Waar ligt 20 euro?"
+- **geld-1:** "Twee groepjes geld en twee bedragen. Welk bedrag hoort bij welk geld?"
+- **geld-2:** "Nu tellen we geld tot 20 euro. Waar ligt 12 euro?"
+
+Ja en Nee staan op de vaste plek.
+
+**geldmachine-2 is nu opgelost:** de korte uitleg na Nee gebruikt het treintje van € 8 (r. 739–743), en het bootje kost overal € 6. Er is geen tegenspraak meer.
+
+De schermfoto's zijn gemaakt terwijl het geld nog verschijnt (hologramstraal), dus de munten en briefjes staan er nog half plat. Daar keur ik niet op af.
+
+**Uitslag Geld ronde 2:** alle 6 lessen **GOEDGEKEURD** (geldmachine-1, geldmachine-2, zakgeld-1, zakgeld-2, geld-1, geld-2).
+
+---
+
+## Tellen — ronde 1 — 2026-11-01
+
+Zo gekeurd:
+- Broncode van alle 15 lessen door een helper (Opus) gekeurd op alle regels, ook 4.1/4.3 en hoofdstuk 14.
+- Speeltest zonder GOED (fout + hulp): fruit-1, resultatief1-1, resultatief2-2, resultatief3-1 en telrij-1 **tot het eind**, niets vastgelopen.
+- De proef-fruit-lessen zijn niet gekeurd.
+
+In orde:
+- Geen mensen, dieren of gezichtjes. Visjes, monsters en spookjes zijn weg, ook uit de zinnen.
+- De woorden passen bij de plaatjes. De planeet is de paarse fantasieplaneet, dus tien keer tellen kan.
+- Alle vragen nagerekend; telkens precies één goed antwoord.
+- Telrij tot ±100 volgt Squla.
+- Het voorbeeld op het beginscherm is de echte eerste vraag. Ja en Nee werken.
+
+Let op: een getal zonder kleur (`{5}`) krijgt in Lesscherm.tsx r. 165 de tegelkleur van dat getal (5 groen, 10 roze), niet wit. Daar komen de kleurfouten hieronder vandaan.
+
+### squla-tellen-fruit-1, fruit-3, resultatief1-1, resultatief2-1, resultatief2-2, resultatief2-3 — ronde 1 — GOEDGEKEURD
+- Tip resultatief2-2 (r. 607): "Nu zijn het meer auto's en bussen.", terwijl er in level 1 geen auto's en bussen waren.
+
+### squla-tellen-fruit-2 — ronde 1 — AFGEKEURD
+- **2.2:** r. 372 "De citroenen liggen weer in rijen van {5}." De 5 wordt groen, de citroenen zijn geel. Voorstel: `{5:geel}`.
+
+### squla-tellen-resultatief1-2 — ronde 1 — AFGEKEURD
+- **4.1/14.13:** het welkom en het voorbeeld gaan over ballen en blokken (r. 512–513), maar na Nee toont de uitleg bootjes en treintjes. Voorstel: `uitleg: [rij5(BALLEN_BLOKKEN, 8, [])]`.
+
+### squla-tellen-resultatief1-3 — ronde 1 — AFGEKEURD
+- **2.2:** r. 546 telt huizen met een oranje getal (`huis: "oranje"`, tekenen.ts r. 68), maar `huis.png` is turquoise met een koraalrood dak. Voorstel: blauw, of een ander ding.
+
+### squla-tellen-resultatief3-1 — ronde 1 — AFGEKEURD
+- **14.4:** memory is het laatste onderdeel. Bliepo zegt "Even een spelletje tussendoor!" en daarna "We gaan weer tellen.", maar dan komt meteen de eindkaart (r. 687, r. 261/265). Voorstel: bij het laatste onderdeel andere zinnen ("Nog een spelletje!" … "Goed gedaan!").
+
+### squla-tellen-resultatief3-2 — ronde 1 — AFGEKEURD
+- **14.4:** r. 701 "Nu zijn er veel meer planeten.", maar level 2 (7–19) heeft niet meer planeten dan level 1 (5–20). Voorstel: "Weer planeten en ufo's, door elkaar."
+- **4.1/14.13:** r. 702, het voorbeeld gaat over planeten, maar de uitleg na Nee over ufo's. Voorstel: `uitleg: [los(PLANETEN, 8, [])]`.
+
+### squla-tellen-resultatief3-3 — ronde 1 — AFGEKEURD
+- **2.2:** r. 734 "Raketjes en sterren staan in rijen van {10}." De 10 wordt roze. Bij twee soorten is de les verder overal wit. Voorstel: `{10:wit}`.
+
+### squla-tellen-resultatief3-4 — ronde 1 — AFGEKEURD
+- **2.2:** r. 764 "Op de zak staat {40}" is wit, maar in de hulp is hetzelfde getal blauw (knikkers). Voorstel: `{40:blauw}`.
+- **Hulp stuurt naar fout:** r. 212, de tip "Begin bij {41}. Tel de losse knikkers erbij." De eerste losse knikker zit al in de 41, dus wie álle losse knikkers erbij telt, komt één te hoog uit (49 in plaats van 47). Voorstel: "Begin bij {41}. Tel de andere losse knikkers erbij."
+- **14.2:** r. 772 `zak(KNIKKERS, 70, 1, …)`: "Tel de losse knikkers erbij", terwijl er maar één ligt. Voorstel: enkelvoud via de helper.
+- Nakijken op een schermfoto: `squla-tellen-holo.tsx` r. 319 tekent een "voorbeeldje" bovenop de zak. Dat ding kan meegeteld worden.
+
+### squla-tellen-telrij-1 — ronde 1 — AFGEKEURD
+- **14.14 (keuzes binnen het bereik):** level 1 gaat van 18 tot 50, maar de afleiders 53 (r. 937), 83 (r. 940), 54 (r. 944) en 74 (r. 950) liggen erboven. Voorstel: tiental-ernaast-afleiders binnen 50.
+
+### squla-tellen-telrij-2 — ronde 1 — AFGEKEURD
+- **14.14:** r. 972 `na(98, [101, 90, 100])`: 101 ligt boven het einde van de les (100). Voorstel: `[99, 90, 100]`.
+
+**Vraag aan Sara (niet afgekeurd):** resultatief1-1/1-2, 2-2, 2-3 en 3-3 zetten om en om rijen van twee verschillende dingen ("Hoeveel auto's en bussen zie je?"). Regel 1.10 zegt "één soort voorwerp per opdracht"; Squla gebruikt hier hetzelfde ding in twee kleuren. Wil Sara dat zo houden?
+
+Tips:
+- `treintje: "groen"` terwijl het plaatje petrol is.
+- "In de zak zitten 50 sterren" is vreemd (knikkers passen beter).
+- "Elke losse knikker is er één meer." is stroef.
+
+---
+
+## Getallenlijn — ronde 1 — 2026-11-01
+
+Zo gekeurd:
+- Broncode van alle 9 lessen door een helper (Opus) gekeurd.
+- Speeltest zonder GOED: rangschikken-1, kat-1, dieren-1 en terugtellen-1 **tot het eind**, niets vastgelopen.
+
+In orde:
+- Alle getallen 0–20.
+- Telkens precies één goed antwoord.
+- Geen katten, dieren of mensen meer in beeld of zinnen.
+- **De voorwerpen zijn niet doorzichtig** (`tover()` eindigt op alpha 1; alleen het rekenmateriaal is doorschijnend): 7.2 in orde.
+- Het voorbeeld op het beginscherm is de echte eerste opgave.
+
+Gemeld maar niet bevestigd: de helper zag in de code dat de typvragen (via `l.getal()` / `Getalvak`) een knop "Weet ik niet" krijgen. Op de schermfoto van rangschikken-1 (021) staat bij het typvak alleen het vak en het vinkje, geen "Weet ik niet". Niet afgekeurd. Wel nakijken of de `null`-tak in `typGetal` (r. 57–64) nog nodig is.
+
+### squla-getallenlijn-rangschikken-1 — ronde 1 — AFGEKEURD
+- **Hulp stuurt naar fout:** r. 220 "Welk getal komt na {2}?" bij rijen die per 2 springen (r. 688–690, kaarten 4/6/8/10). Het kind zoekt 3, maar die kaart is er niet. Voorstel bij `stap > 1`: "Welk getal is {2} meer dan {2}?"
+- **3.12/14.4:** "Welk getal hoort op het lege lampje?" (r. 672–674, welkom r. 788), terwijl er puntjes op staan. Bliepo zegt zelf "Op één lampje staan puntjes." Voorstel: "Welk getal hoort op de puntjes?"
+- **14.3:** "Bij welk getal staat het vlaggetje?" (r. 680–682) tegenover "Welk getal hoort bij het vlaggetje?" in level 2/3. Kies er één.
+
+### squla-getallenlijn-rangschikken-2 — ronde 1 — AFGEKEURD
+- **4.1/14.13:** het voorbeeld gaat over diamanten met puntjes, de uitleg na Nee (r. 811) over een getallenlijn met een vlaggetje. Die uitleg verklapt ook vraag 11 (vlaggetje bij 12). Voorstel: een uitleg met dezelfde diamantenrij.
+
+### squla-getallenlijn-rangschikken-3 — ronde 1 — AFGEKEURD
+- **4.1/14.13:** het voorbeeld is een lijn 0–20 per 1 met het vlaggetje bij 15, de uitleg (r. 832, `uitlegPerTwee`) een lijn 10–20 per 2. Voorstel: hetzelfde soort lijn, zonder een latere vraag te verklappen.
+
+### squla-getallenlijn-kat-1, dieren-1, dieren-2, dieren-3, terugtellen-1 — ronde 1 — GOEDGEKEURD
+
+### squla-getallenlijn-kat-2 — ronde 1 — AFGEKEURD
+- **4.1/14.13:** het welkom en voorbeeld gaan over "de planeet met 15, welk getal komt voor 15?", de uitleg (r. 994–1001) over een pijl bij streepje 13. Dat is precies vraag 2 (r. 893), dus de uitleg verklapt die. Voorstel: de uitleg met de planeet en een ander getal.
+- **3.12/14.3:** "De pijl" (r. 522) en "Het pijltje" (r. 531, 997) door elkaar. Voorstel: overal "de pijl".
+
+Tips:
+- "kristallen" (r. 809) bij het plaatje `diamant`; "diamanten" past beter.
+- "De raket" (terugtellen) en "het raketje" (kat) voor hetzelfde plaatje.
+- "zit tussen" en "ligt tussen" door elkaar.
+- De ufo, satelliet en het raketje bij `dichtstBij` hebben geen rol.
+- Bij watIsMeer (r. 849) praat de zin over sterren die niet in beeld staan.
+- `slingerlampje-geel` lijkt eerder een kerstbal.

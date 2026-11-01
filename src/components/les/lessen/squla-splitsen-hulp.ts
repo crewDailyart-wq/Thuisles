@@ -97,7 +97,7 @@ export async function typGetal(l: Lesgids, st: Stand): Promise<number> {
   const p = l.getal();
   if (!st.typUitgelegd) {
     st.typUitgelegd = true;
-    await l.wijsAan("controleer", "Typ het getal.", "Tik dan op het vinkje.");
+    await l.wijsAan("controleer", "Typ het getal.");
   }
   let x = await p;
   while (x === null) x = await l.getal();
@@ -114,9 +114,9 @@ export function staafBeeld(id: string, totaal: number, deel: number): Beeld {
       { s: "tekst", id: "st-t", t: String(totaal), x: x0 - 50, y: 280, grootte: 54 },
       { s: "staaf", id: "st-a", x: x0, y: 280, n: deel, kleur: 0xdcecff, blok },
       { s: "staaf", id: "st-b", x: x0 + deel * blok, y: 280, n: totaal - deel, kleur: 0xdcecff, blok },
-      { s: "tekst", id: "st-d", t: String(deel), x: x0 - 50, y: 380, grootte: 54, kleur: "#ffad5c" },
-      { s: "staaf", id: "st-o", x: x0, y: 380, n: deel, kleur: 0xffad5c, blok },
-      { s: "tekst", id: "st-v", t: "?", x: x0 + deel * blok + ((totaal - deel) * blok) / 2, y: 380, grootte: 54 },
+      { s: "tekst", id: "st-d", t: String(deel), x: x0 - 50, y: 380, grootte: 54, kleur: "#c9a2ff" },
+      { s: "staaf", id: "st-o", x: x0, y: 380, n: deel, kleur: 0xc9a2ff, blok },
+      { s: "tekst", id: "st-v", t: "?", x: x0 + deel * blok + ((totaal - deel) * blok) / 2, y: 380, grootte: 54, kleur: "#ffad5c" },
     ],
   };
 }
@@ -138,6 +138,8 @@ export type LesOpties = {
    */
   voorbeeld?: (l: Lesgids, st: Stand) => void;
   uitleg: (l: Lesgids, st: Stand) => Promise<void>;
+  /** Na het beginscherm en vóór de eerste vraag (bijvoorbeeld een stukje verhaal). */
+  naBegin?: (l: Lesgids, st: Stand) => Promise<void>;
   vragen: Vraag[];
   /** Bij de start, vóór het welkom (bijvoorbeeld het verhaal klaarzetten). */
   start?: (l: Lesgids, st: Stand) => void;
@@ -173,6 +175,7 @@ export function les(t: LesOpties): Lesdraaiboek {
         st.huidig = "";
         l.som(null);
       }
+      await t.naBegin?.(l, st);
       let fouten = 0;
       for (const v of t.vragen) {
         if (!(await v(l, st))) fouten++;

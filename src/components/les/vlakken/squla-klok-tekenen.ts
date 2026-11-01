@@ -31,7 +31,7 @@ export const RAND: Record<Kl, string> = {
 export const SCHERM: Record<string, { x: number; y: number; b: number }> = {
   /* gemeten op de plaatjes van Sara (31 oktober 2026); een ander plaatje = deze maten opnieuw nakijken */
   telefoon: { x: 0.5, y: 0.5, b: 0.36 },
-  laptop: { x: 0.5, y: 0.41, b: 0.5 },
+  laptop: { x: 0.5, y: 0.41, b: 0.34 },
   oven: { x: 0.504, y: 0.15, b: 0.27 },
 };
 

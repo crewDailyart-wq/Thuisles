@@ -189,6 +189,8 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
 14.17 **Een nieuw of vervangen plaatje = alles wat erop/erin getekend wordt opnieuw nakijken** (boeken zweefden boven de nieuwe wandplank; potloden werden óp een pennenbeker getekend die al vol zat; bloemen achter de bloembak).
 14.18 **Puzzelstukjes die er hetzelfde uitzien, moeten op elke gelijke plek goed tellen.**
 14.19 **Verhaal en beeld blijven samen kloppen na inkorten:** haal je het verhaalbegin weg (schatkaart), dan mag een latere zin ("De sleutel past!") er niet meer naar verwijzen.
+14.20 **Elk getal in een zin krijgt bewust een kleur:** de kleur van zijn voorwerp, of {n:wit} als het nergens bij hoort. Een getal zonder kleur krijgt in het lesscherm de standaard getalkleur (5 groen, 10 roze) en dat klopt dan niet met het beeld.
+14.21 **De uitleg na Nee gaat over het voorbeeld van het beginscherm** en verklapt geen latere vraag.
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---

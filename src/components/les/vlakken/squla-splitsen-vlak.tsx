@@ -228,7 +228,7 @@ function tekenLijnen(gr: import("phaser").GameObjects.Graphics, delen: Deel[], k
           for (let i = 0; i < n; i++) {
             const rij = Math.floor(i / 5);
             const inRij = rij === Math.floor((n - 1) / 5) ? n - rij * 5 : per;
-            gr.fillStyle(kant < 0 ? 0xffad5c : 0x8fc4ff, 1);
+            gr.fillStyle(kant < 0 ? 0xc9a2ff : 0xffad5c, 1); /* links paars, rechts oranje (BOUWREGELS 2.1) */
             gr.fillCircle(cx + ((i % 5) - (inRij - 1) / 2) * r * 2.6, d.y + kamer * 0.66 + rij * r * 2.6, r);
           }
         }
@@ -535,8 +535,8 @@ export function KaartSplitsen() {
       <rect x={62} y={70} width={120} height={70} fill="none" stroke="#ffffff" strokeWidth={5} />
       <line x1={122} y1={70} x2={122} y2={140} stroke="#ffffff" strokeWidth={5} />
       <text x={122} y={64} textAnchor="middle" fontSize={26} fontWeight={800} fill="#ffd36e">7</text>
-      <text x={92} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#ffad5c">4</text>
-      <text x={152} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#8fc4ff">3</text>
+      <text x={92} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#c9a2ff">4</text>
+      <text x={152} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#ffad5c">3</text>
     </>
   );
 }

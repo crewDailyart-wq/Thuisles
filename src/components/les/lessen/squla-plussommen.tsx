@@ -121,7 +121,7 @@ async function typGetal(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
   const p = l.getal();
   if (!st.typUitgelegd) {
     st.typUitgelegd = true;
-    await l.wijsAan("controleer", "Typ het getal.", "Tik dan op het vinkje.");
+    await l.wijsAan("controleer", "Typ het getal.");
   }
   let x = await p;
   while (x === null) {
