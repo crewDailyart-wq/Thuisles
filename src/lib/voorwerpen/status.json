@@ -423,11 +423,11 @@
   },
   "hoepel": {
     "bron": "eigen",
-    "v": 7,
+    "v": 8,
     "verbeterd": [
       "randen",
       "opnieuw-magnific",
-      "controleur-ronde1"
+      "controleur-ronde2"
     ]
   },
   "hoorntje": {
@@ -779,11 +779,11 @@
   },
   "planeet": {
     "bron": "eigen",
-    "v": 4,
+    "v": 5,
     "verbeterd": [
       "randen",
       "opnieuw-magnific",
-      "controleur-ronde1"
+      "controleur-ronde2"
     ]
   },
   "planeet-ring": {

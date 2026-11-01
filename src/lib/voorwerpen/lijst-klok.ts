@@ -35,13 +35,6 @@ export const KLOK: Voorwerp[] = [
     schets: `<rect class="r" x="30" y="24" width="140" height="152" rx="10" fill="#f1f2f5"/><rect x="66" y="34" width="68" height="26" rx="4" fill="#0b0f1a"/><rect class="r" x="46" y="72" width="108" height="88" rx="8" fill="#ffb066"/><path class="r" d="M60 72 h80" fill="none"/>`,
   },
   {
-    naam: "wekker",
-    titel: "Wekker",
-    groep: "huis",
-    onderwerp: "a round wake-up clock with two small bells on top, standing on two little feet, blank white dial with no numbers and no pointers",
-    schets: `<circle class="r" cx="100" cy="106" r="62" fill="#ffd36e"/><circle cx="100" cy="106" r="48" fill="#ffffff"/><circle class="r" cx="62" cy="48" r="16" fill="#ef4f5a"/><circle class="r" cx="138" cy="48" r="16" fill="#ef4f5a"/><path d="M64 164 l-10 16 M136 164 l10 16" stroke="#7a5b2e" stroke-width="8" stroke-linecap="round"/>`,
-  },
-  {
     naam: "zandloper",
     titel: "Zandloper",
     groep: "huis",

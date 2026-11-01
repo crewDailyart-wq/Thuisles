@@ -14,7 +14,7 @@ Bij een dier (zo min mogelijk dieren):
 - Zelf maken kan ook: zet het plaatje in `plaatjes-inbox/` en zeg "verwerk de inbox" (zie WISSELEN.md).
 - De nummers kunnen opschuiven als er plaatjes bij komen.
 
-Gegenereerd: 172 van 174.
+Gegenereerd: 172 van 173.
 
 ## Fruit en groente
 
@@ -562,7 +562,7 @@ a small orange comet with a short yellow tail going up to the right, simple flat
 
 ### 68. Maan — `maan.png` — ✅ gegenereerd
 
-Lessen: De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: plus en min (`squla-piraat-3`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
+Lessen: De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: plus en min (`squla-piraat-3`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
 ```
 a yellow crescent moon, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -589,7 +589,7 @@ a big old silver-grey rocket with rivets and a small round door, standing uprigh
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: plus en min (`squla-piraat-3`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Rekenmix 4 (`squla-rekenmix-mix4-1`), Rekenmix 4 (nog moeilijker) (`squla-rekenmix-mix4-3`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (`squla-tellen-resultatief2-1`), Grote groepen tellen (`squla-tellen-resultatief3-1`), Grote groepen tellen (moeilijker) (`squla-tellen-resultatief3-2`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
 ```
-a small round planet with blue oceans and green land and a few white clouds, clearly a planet, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a small round purple planet with a few lighter stripes and two small craters, a fantasy planet, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 72. Planeet met ring — `planeet-ring.png` — ✅ gegenereerd
@@ -636,7 +636,7 @@ a small purple flying saucer with a clear empty glass dome and colored lights, s
 
 ### 77. Bezorgbus — `bezorgbus.png` — ✅ gegenereerd
 
-Lessen: Bussommen (`squla-min-bus1-1`), Bussommen (moeilijker) (`squla-min-bus1-2`), Bussommen (nog moeilijker) (`squla-min-bus1-3`), Bussommen met een rondje (`squla-min-bus2-1`), Bussommen met een rondje (moeilijker) (`squla-min-bus2-2`), Bussommen met een rondje (nog moeilijker) (`squla-min-bus2-3`), Bussommen (`squla-plus-bus1-1`), Bussommen (moeilijker) (`squla-plus-bus1-2`), Bussommen (nog moeilijker) (`squla-plus-bus1-3`), Bussommen met een getal (`squla-plus-bus2-1`), Bussommen met een getal (moeilijker) (`squla-plus-bus2-2`), Bussommen met een getal (nog moeilijker) (`squla-plus-bus2-3`)
+Lessen: Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Bussommen (`squla-min-bus1-1`), Bussommen (moeilijker) (`squla-min-bus1-2`), Bussommen (nog moeilijker) (`squla-min-bus1-3`), Bussommen met een rondje (`squla-min-bus2-1`), Bussommen met een rondje (moeilijker) (`squla-min-bus2-2`), Bussommen met een rondje (nog moeilijker) (`squla-min-bus2-3`), Bussommen (`squla-plus-bus1-1`), Bussommen (moeilijker) (`squla-plus-bus1-2`), Bussommen (nog moeilijker) (`squla-plus-bus1-3`), Bussommen met een getal (`squla-plus-bus2-1`), Bussommen met een getal (moeilijker) (`squla-plus-bus2-2`), Bussommen met een getal (nog moeilijker) (`squla-plus-bus2-3`)
 
 ```
 a modern yellow delivery van seen exactly from the side, with one very large rectangular light-blue side window covering the whole cargo area on the left two thirds, driver cabin on the right, empty, nobody inside, rounded friendly shapes, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -644,7 +644,7 @@ a modern yellow delivery van seen exactly from the side, with one very large rec
 
 ### 78. Bus — `bus.png` — ✅ gegenereerd
 
-Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
+Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
 
 ```
 a modern yellow city bus seen exactly from the side, with a row of large light-blue windows and two black wheels, rounded friendly shapes, nobody inside, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -670,7 +670,7 @@ an empty light blue plastic bowl, side view, simple flat illustration for a chil
 
 ### 81. Bed — `bed.png` — ✅ gegenereerd
 
-Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
+Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
 ```
 a single bed with a blue blanket and a white pillow, side view, empty, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -718,7 +718,7 @@ a light blue bucket with white soap foam on top, simple flat illustration for a 
 
 ### 87. Gieter — `gieter.png` — ✅ gegenereerd
 
-Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`)
+Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
 
 ```
 a teal watering can, side view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -838,7 +838,7 @@ a black smartphone seen from the front, standing upright, with a large empty dar
 
 ### 102. Oven — `oven.png` — ✅ gegenereerd
 
-Lessen: De klok en de tijd (`squla-klok-digitaal-1`), De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
+Lessen: De klok en de tijd (`squla-klok-digitaal-1`), De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
 
 ```
 a white kitchen oven seen from the front, with a glass door and a small empty black display panel above the door, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -942,7 +942,7 @@ one red sneaker with white sole, side view, simple flat illustration for a child
 
 ### 115. Schoolbord — `schoolbord.png` — ✅ gegenereerd
 
-Lessen: Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Minsommen: hoeveel over? (`squla-min-machine-1`), Minsommen: hoeveel over? (nog moeilijker) (`squla-min-machine-3`), Kale minsommen (`squla-min-kaal-1`), Kale minsommen (moeilijker) (`squla-min-kaal-2`), Kale minsommen (nog moeilijker) (`squla-min-kaal-3`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
+Lessen: Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Minsommen: hoeveel over? (`squla-min-machine-1`), Minsommen: hoeveel over? (nog moeilijker) (`squla-min-machine-3`), Kale minsommen (`squla-min-kaal-1`), Kale minsommen (moeilijker) (`squla-min-kaal-2`), Kale minsommen (nog moeilijker) (`squla-min-kaal-3`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
 
 ```
 an empty dark green school chalkboard with a wooden frame and a small chalk tray at the bottom, front view, completely empty, no writing, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -1020,17 +1020,9 @@ Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Opruimen (`squla-vorm
 one empty long wooden wall shelf with two small metal brackets underneath, seen from the front, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 125. Wekker — `wekker.png` — ⬜ nog niet
+### 125. Zandloper — `zandloper.png` — ✅ gegenereerd
 
-Lessen: Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
-
-```
-a round wake-up clock with two small bells on top, standing on two little feet, blank white dial with no numbers and no pointers, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
-```
-
-### 126. Zandloper — `zandloper.png` — ✅ gegenereerd
-
-Lessen: De klok en de tijd (`squla-klok-digitaal-1`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
+Lessen: De klok en de tijd (`squla-klok-digitaal-1`)
 
 ```
 a wooden hourglass with yellow sand, standing upright, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -1038,15 +1030,15 @@ a wooden hourglass with yellow sand, standing upright, simple flat illustration 
 
 ## Winkel, zakken en dozen
 
-### 127. Bakkerij — `bakkerij.png` — ✅ gegenereerd
+### 126. Bakkerij — `bakkerij.png` — ✅ gegenereerd
 
-Lessen: De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
+Lessen: De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
 ```
 a small bakery shop building seen from the front, with a striped awning, a big window and a door, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 128. Blauwe doos — `doos-blauw.png` — ✅ gegenereerd
+### 127. Blauwe doos — `doos-blauw.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1054,7 +1046,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 one closed square blue cardboard box, seen from the front and slightly above (same box as doos-rood, other color), simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 129. Diamant — `diamant.png` — ✅ gegenereerd
+### 128. Diamant — `diamant.png` — ✅ gegenereerd
 
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (`squla-piraat-2`), Schattenjacht: plus en min (`squla-piraat-3`)
 
@@ -1062,7 +1054,7 @@ Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op 
 a light blue cut diamond gemstone, side view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 130. Dichte pizzadoos — `pizzadoos.png` — ✅ gegenereerd
+### 129. Dichte pizzadoos — `pizzadoos.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
 
@@ -1070,7 +1062,7 @@ Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
 a closed square cardboard pizza box seen from slightly above, plain, no text, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 131. Dichte zak — `zak.png` — ✅ gegenereerd
+### 130. Dichte zak — `zak.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 3 (heel moeilijk) (`squla-rekenmix-mix3-4`), Splitsen tot 10 (`squla-splits-splitsen1-1`), Grote groepen tellen (heel moeilijk) (`squla-tellen-resultatief3-4`)
 
@@ -1078,7 +1070,7 @@ Lessen: Rekenmix 3 (heel moeilijk) (`squla-rekenmix-mix3-4`), Splitsen tot 10 (`
 a closed brown burlap sack tied with a rope at the top, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 132. Doos — `doos.png` — ✅ gegenereerd
+### 131. Doos — `doos.png` — ✅ gegenereerd
 
 Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Rekenmix 2 (moeilijker) (`squla-rekenmix-mix2-2`), Rekenmix 3 (heel moeilijk) (`squla-rekenmix-mix3-4`), Opruimen (`squla-vormen-opruimen-1`)
 
@@ -1086,7 +1078,7 @@ Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Rekenmix 2 (moeilijker) (`squla
 one closed cardboard box, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 133. Goudstuk — `goudstuk.png` — ✅ gegenereerd
+### 132. Goudstuk — `goudstuk.png` — ✅ gegenereerd
 
 Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (`squla-piraat-2`), Schattenjacht: plus en min (`squla-piraat-3`)
 
@@ -1094,7 +1086,7 @@ Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (
 a round shiny gold coin with a star stamped on it, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 134. Kopermunt — `kopermunt.png` — ✅ gegenereerd
+### 133. Kopermunt — `kopermunt.png` — ✅ gegenereerd
 
 Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (`squla-piraat-2`), Schattenjacht: plus en min (`squla-piraat-3`)
 
@@ -1102,7 +1094,7 @@ Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (
 a round copper coin with a simple ring pattern, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 135. Mand — `mand.png` — ✅ gegenereerd
+### 134. Mand — `mand.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Opruimen (`squla-vormen-opruimen-1`)
 
@@ -1110,7 +1102,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 an empty brown woven basket with a handle, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 136. Marktkraam — `marktkraam.png` — ✅ gegenereerd
+### 135. Marktkraam — `marktkraam.png` — ✅ gegenereerd
 
 Lessen: Zakgeld sparen (moeilijker) (`squla-geld-zakgeld-2`)
 
@@ -1118,7 +1110,7 @@ Lessen: Zakgeld sparen (moeilijker) (`squla-geld-zakgeld-2`)
 one market stall with a red and white striped roof, empty, nobody there, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 137. Open doos — `doos-open.png` — ✅ gegenereerd
+### 136. Open doos — `doos-open.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 2 (moeilijker) (`squla-rekenmix-mix2-2`)
 
@@ -1126,7 +1118,7 @@ Lessen: Rekenmix 2 (moeilijker) (`squla-rekenmix-mix2-2`)
 one empty open cardboard box with the top flaps folded outward, front view, seen slightly from above, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 138. Open pizzadoos (leeg) — `pizzadoos-open.png` — ✅ gegenereerd
+### 137. Open pizzadoos (leeg) — `pizzadoos-open.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1134,7 +1126,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 an empty open square cardboard pizza box, lid standing up behind, seen from the front at an angle, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 139. Pakje — `pakje.png` — ✅ gegenereerd
+### 138. Pakje — `pakje.png` — ✅ gegenereerd
 
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), Bussommen (`squla-min-bus1-1`), Bussommen (moeilijker) (`squla-min-bus1-2`), Bussommen (nog moeilijker) (`squla-min-bus1-3`), Bussommen met een rondje (`squla-min-bus2-1`), Bussommen met een rondje (moeilijker) (`squla-min-bus2-2`), Bussommen met een rondje (nog moeilijker) (`squla-min-bus2-3`), Bussommen (`squla-plus-bus1-1`), Bussommen (moeilijker) (`squla-plus-bus1-2`), Bussommen (nog moeilijker) (`squla-plus-bus1-3`), Bussommen met een getal (`squla-plus-bus2-1`), Bussommen met een getal (moeilijker) (`squla-plus-bus2-2`), Bussommen met een getal (nog moeilijker) (`squla-plus-bus2-3`)
 
@@ -1142,7 +1134,7 @@ Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op 
 a small brown cardboard parcel tied with a red ribbon and a bow on top, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 140. Picknickmand met een beetje fruit — `mand-half.png` — ✅ gegenereerd
+### 139. Picknickmand met een beetje fruit — `mand-half.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1150,7 +1142,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 an open wicker picnic basket with a handle and two apples inside, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 141. Portemonnee — `portemonnee.png` — ✅ gegenereerd
+### 140. Portemonnee — `portemonnee.png` — ✅ gegenereerd
 
 Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Minsommen: hoeveel over? (heel moeilijk) (`squla-min-machine-4`)
 
@@ -1158,7 +1150,7 @@ Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`), Minsommen: hoeveel over? (heel 
 a closed brown wallet with a round golden clasp, front view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 142. Rode doos — `doos-rood.png` — ✅ gegenereerd
+### 141. Rode doos — `doos-rood.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1166,7 +1158,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 one closed square red cardboard box, seen from the front and slightly above, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 143. Volle picknickmand — `mand-vol.png` — ✅ gegenereerd
+### 142. Volle picknickmand — `mand-vol.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1174,7 +1166,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 an open wicker picnic basket with a handle, completely full of fruit, bread and a bottle, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 144. Zak meel — `zak-meel.png` — ✅ gegenereerd
+### 143. Zak meel — `zak-meel.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1184,7 +1176,7 @@ a white paper sack of flour, tied at the top, with a wheat ear drawn on it, simp
 
 ## Feest
 
-### 145. Ballon — `ballon.png` — ✅ gegenereerd
+### 144. Ballon — `ballon.png` — ✅ gegenereerd
 
 Lessen: Meer, minder, evenveel (`squla-meer-minder-evenveel1-1`), Meer, minder, evenveel (moeilijker) (`squla-meer-minder-evenveel1-2`), Meer, minder, evenveel (nog moeilijker) (`squla-meer-minder-evenveel1-3`), De meeste (`squla-meer-minder-evenveel2-1`), De meeste (moeilijker) (`squla-meer-minder-evenveel2-2`), Meer dan, minder dan (`squla-meer-minder-evenveel3-1`), Meer dan, minder dan (moeilijker) (`squla-meer-minder-evenveel3-2`), Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Minsommen in de ruimte (`squla-min-ruimte-1`), Minsommen in de ruimte (moeilijker) (`squla-min-ruimte-2`), Minsommen in de ruimte (nog moeilijker) (`squla-min-ruimte-3`), Minsommen: hoeveel over? (heel moeilijk) (`squla-min-machine-4`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Grote groepen tellen (moeilijker) (`squla-tellen-resultatief3-2`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1192,7 +1184,7 @@ Lessen: Meer, minder, evenveel (`squla-meer-minder-evenveel1-1`), Meer, minder, 
 a pink party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 146. Blauwe ballon — `ballon-blauw.png` — ✅ gegenereerd
+### 145. Blauwe ballon — `ballon-blauw.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1200,7 +1192,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 a blue party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 147. Discobal — `discobal.png` — ✅ gegenereerd
+### 146. Discobal — `discobal.png` — ✅ gegenereerd
 
 Lessen: Plussommen in de bakkerij (`squla-plus-bakkerij-1`), Plussommen in de bakkerij (moeilijker) (`squla-plus-bakkerij-2`), Plussommen in de bakkerij (nog moeilijker) (`squla-plus-bakkerij-3`), Samen 10 in de disco (`squla-plus-dansen-1`), Samen 10 in de disco (moeilijker) (`squla-plus-dansen-2`), Samen 10 in de disco (nog moeilijker) (`squla-plus-dansen-3`), Samen 10 in de disco (heel moeilijk) (`squla-plus-dansen-4`)
 
@@ -1208,7 +1200,7 @@ Lessen: Plussommen in de bakkerij (`squla-plus-bakkerij-1`), Plussommen in de ba
 a silver mirror disco ball with small square mirror tiles, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 148. Feesthoedje — `feesthoed.png` — ✅ gegenereerd
+### 147. Feesthoedje — `feesthoed.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1216,7 +1208,7 @@ Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Dagen van de week (`s
 a coral party hat, a cone with yellow stripes and a yellow pompom on top, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 149. Geel lampje van een lichtslinger — `slingerlampje-geel.png` — ✅ gegenereerd
+### 148. Geel lampje van een lichtslinger — `slingerlampje-geel.png` — ✅ gegenereerd
 
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`)
 
@@ -1224,7 +1216,7 @@ Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op 
 one round yellow light bulb from a string of party lights, with a small grey cap on top, hanging down, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 150. Gele ballon — `ballon-geel.png` — ✅ gegenereerd
+### 149. Gele ballon — `ballon-geel.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1232,7 +1224,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 a yellow party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 151. Groene ballon — `ballon-groen.png` — ✅ gegenereerd
+### 150. Groene ballon — `ballon-groen.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1240,7 +1232,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 a green party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 152. Oranje ballon — `ballon-oranje.png` — ✅ gegenereerd
+### 151. Oranje ballon — `ballon-oranje.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1248,7 +1240,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 an orange party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 153. Paarse ballon — `ballon-paars.png` — ✅ gegenereerd
+### 152. Paarse ballon — `ballon-paars.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1256,7 +1248,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 a purple party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 154. Rode ballon — `ballon-rood.png` — ✅ gegenereerd
+### 153. Rode ballon — `ballon-rood.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`), Vormen en kleuren (`squla-vormen-kleuren-1`)
 
@@ -1264,7 +1256,7 @@ Lessen: Rekenmix 4 (heel moeilijk) (`squla-rekenmix-mix4-4`), Links, rechts, bov
 a red party balloon with a short curly string, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 155. Rood lampje van een lichtslinger — `slingerlampje-rood.png` — ✅ gegenereerd
+### 154. Rood lampje van een lichtslinger — `slingerlampje-rood.png` — ✅ gegenereerd
 
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`)
 
@@ -1272,7 +1264,7 @@ Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op 
 one round red light bulb from a string of party lights, with a small grey cap on top, hanging down, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 156. Slinger met vlaggetjes — `vlaggenlijn.png` — ✅ gegenereerd
+### 155. Slinger met vlaggetjes — `vlaggenlijn.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
 
@@ -1280,7 +1272,7 @@ Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`)
 a short string of party bunting with five small triangular flags in different colors, hanging in a gentle curve, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 157. Taart met een kaarsje — `taart-kaarsje.png` — ✅ gegenereerd
+### 156. Taart met een kaarsje — `taart-kaarsje.png` — ✅ gegenereerd
 
 Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1290,7 +1282,7 @@ a round birthday cake with pink icing drips and one lit candle on top, seen from
 
 ## Natuur en buiten
 
-### 158. Bloem — `bloem.png` — ✅ gegenereerd
+### 157. Bloem — `bloem.png` — ✅ gegenereerd
 
 Lessen: Meer, minder, evenveel (`squla-meer-minder-evenveel1-1`), Meer, minder, evenveel (moeilijker) (`squla-meer-minder-evenveel1-2`), Meer, minder, evenveel (nog moeilijker) (`squla-meer-minder-evenveel1-3`), De meeste (`squla-meer-minder-evenveel2-1`), De meeste (moeilijker) (`squla-meer-minder-evenveel2-2`), Meer dan, minder dan (`squla-meer-minder-evenveel3-1`), Meer dan, minder dan (moeilijker) (`squla-meer-minder-evenveel3-2`), Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Rekenmix 1 (`squla-rekenmix-mix1-1`), Rekenmix 1 (heel moeilijk) (`squla-rekenmix-mix1-4`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
@@ -1298,7 +1290,7 @@ Lessen: Meer, minder, evenveel (`squla-meer-minder-evenveel1-1`), Meer, minder, 
 a single open red flower with a yellow centre on a green stem, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 159. Bloembak — `bloembak.png` — ✅ gegenereerd
+### 158. Bloembak — `bloembak.png` — ✅ gegenereerd
 
 Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
@@ -1306,7 +1298,7 @@ Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 one long empty rectangular wooden flower box filled with dark soil, front view, wide, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 160. Boom — `boom.png` — ✅ gegenereerd
+### 159. Boom — `boom.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Rekenmix 3 (`squla-rekenmix-mix3-1`), Rekenmix 4 (nog moeilijker) (`squla-rekenmix-mix4-3`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
 
@@ -1314,7 +1306,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 a round green tree with a brown trunk, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 161. Huis — `huis.png` — ✅ gegenereerd
+### 160. Huis — `huis.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Rekenmix 3 (`squla-rekenmix-mix3-1`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), De telrij (`squla-tellen-telrij-1`), De telrij (moeilijker) (`squla-tellen-telrij-2`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1322,7 +1314,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 a small house with a coral roof and a wooden door, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 162. Kampvuur — `kampvuur.png` — ✅ gegenereerd
+### 161. Kampvuur — `kampvuur.png` — ✅ gegenereerd
 
 Lessen: Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1330,7 +1322,7 @@ Lessen: Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Dagen van de w
 a small campfire with orange flames on crossed wooden logs, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 163. Parel — `parel.png` — ✅ gegenereerd
+### 162. Parel — `parel.png` — ✅ gegenereerd
 
 Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (`squla-piraat-2`), Schattenjacht: plus en min (`squla-piraat-3`)
 
@@ -1338,7 +1330,7 @@ Lessen: Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: minsommen (
 a single round white pearl with a soft shine, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 164. Plantje in een pot — `plant.png` — ✅ gegenereerd
+### 163. Plantje in een pot — `plant.png` — ✅ gegenereerd
 
 Lessen: _nog in geen enkele les_
 
@@ -1346,7 +1338,7 @@ Lessen: _nog in geen enkele les_
 a small green plant with a few leaves in an orange flower pot, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 165. Rode rots — `rode-rots.png` — ✅ gegenereerd
+### 164. Rode rots — `rode-rots.png` — ✅ gegenereerd
 
 Lessen: Schattenjacht: plussommen (`squla-piraat-1`)
 
@@ -1354,7 +1346,7 @@ Lessen: Schattenjacht: plussommen (`squla-piraat-1`)
 a big red-brown rock with a few crack lines and a flat top, clearly a stone, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 166. Schelp — `schelp.png` — ✅ gegenereerd
+### 165. Schelp — `schelp.png` — ✅ gegenereerd
 
 Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`)
 
@@ -1362,7 +1354,7 @@ Lessen: Zakgeld sparen (`squla-geld-zakgeld-1`)
 a light pink scallop seashell, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 167. Schommel — `schommel.png` — ✅ gegenereerd
+### 166. Schommel — `schommel.png` — ✅ gegenereerd
 
 Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1370,7 +1362,7 @@ Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker)
 an empty wooden playground swing with a red seat, front view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 168. Steen — `steen.png` — ✅ gegenereerd
+### 167. Steen — `steen.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1378,7 +1370,7 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 a grey rounded rock, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 169. Tent — `tent.png` — ✅ gegenereerd
+### 168. Tent — `tent.png` — ✅ gegenereerd
 
 Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
@@ -1386,7 +1378,7 @@ Lessen: Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Dagen van de week (`s
 a small green camping tent, front view, with the door open, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 170. Tulp — `tulp.png` — ✅ gegenereerd
+### 169. Tulp — `tulp.png` — ✅ gegenereerd
 
 Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
@@ -1394,7 +1386,7 @@ Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 a single pink tulip on a green stem with one leaf, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 171. Veer — `veer.png` — ✅ gegenereerd
+### 170. Veer — `veer.png` — ✅ gegenereerd
 
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
@@ -1402,15 +1394,15 @@ Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeili
 a single light blue feather, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 172. Zon — `zon.png` — ✅ gegenereerd
+### 171. Zon — `zon.png` — ✅ gegenereerd
 
-Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
+Lessen: Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
 ```
 a bright yellow sun with short straight rays, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 173. Zonnebloem — `zonnebloem.png` — ✅ gegenereerd
+### 172. Zonnebloem — `zonnebloem.png` — ✅ gegenereerd
 
 Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
@@ -1418,7 +1410,7 @@ Lessen: Patronen (moeilijker) (`squla-vormen-patronen-2`)
 a single yellow sunflower with a brown centre on a green stem, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
-### 174. Zwembad — `zwembad.png` — ✅ gegenereerd
+### 173. Zwembad — `zwembad.png` — ✅ gegenereerd
 
 Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
