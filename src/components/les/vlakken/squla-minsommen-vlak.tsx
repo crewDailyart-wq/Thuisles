@@ -47,7 +47,13 @@ import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
-import { ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
+import { KLEURHEX, ringRuimte, somKleuren, tekenMetRing } from "./squla-getalring";
+
+/** De twee kleuren (hex) van de som a − b: het eerste getal en wat overblijft, en het tweede getal en wat weggaat (BOUWREGELS 2.1, 14.24). */
+const somHex = (a: number, b: number): [string, string] => {
+  const [ka, kb] = somKleuren(a, b);
+  return [KLEURHEX[ka], KLEURHEX[kb]];
+};
 import {
   DING,
   hexGetal,
@@ -175,7 +181,7 @@ function busPlek(i: number, n: number): Plek {
 }
 /** Bezorgd: buiten de bus op een stapeltje van 3 breed. */
 function buitenPlek(i: number): Plek {
-  return { x: 806 + (i % 3) * 50, y: 470 - Math.floor(i / 3) * 46 };
+  return { x: 790 + (i % 3) * 62, y: 484 - Math.floor(i / 3) * 58 };
 }
 const RONDJE: Plek = { x: 860, y: 400 };
 const PIJL: Plek = { x: 700, y: 400 };
@@ -392,7 +398,8 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     /** Een som als losse stukjes, elk getal in zijn eigen kleur (BOUWREGELS 2.1): "7 − 4 =" of "7 − 4". */
     somRij(x: number, y: number, a: number, b: number, grootte: number, metIs: boolean) {
-      const delen: [string, string][] = [[String(a), ringKleur(a)], [" − ", "#ffffff"], [String(b), ringKleur(b)], ...(metIs ? ([[" =", "#ffffff"]] as [string, string][]) : [])];
+      const [hexA, hexB] = somHex(a, b);
+      const delen: [string, string][] = [[String(a), hexA], [" − ", "#ffffff"], [String(b), hexB], ...(metIs ? ([[" =", "#ffffff"]] as [string, string][]) : [])];
       const meet = document.createElement("canvas").getContext("2d")!;
       meet.font = `800 ${grootte}px ${this.letter}`;
       const br = delen.map(([t]) => meet.measureText(t).width);
@@ -465,7 +472,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const { plekken, schaal } = ruimtePlekken(t.n, !!t.ufo);
       this.itemSchaal = schaal;
       plekken.forEach((p, i) => {
-        const im = this.item(g, t.ding, p.x, p.y, schaal, ringKleur(t.n));
+        const im = this.item(g, t.ding, p.x, p.y, schaal, somHex(t.n, t.b ?? 0)[0]);
         if (!this.rustig) this.tweens.add({ targets: im, y: p.y - 5, duration: 1300 + (i % 4) * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut", delay: (i * 97) % 600 });
       });
       if (t.ufo) {
@@ -489,7 +496,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         const y = KAART_L.ys[k];
         const rij: Img[] = [];
         for (let i = 0; i < a; i++) {
-          const im = this.plaats(this.tex("raketje", ringKleur(a)), KAART_L.x + ((i % 5) - 2) * 50, y - 52 + Math.floor(i / 5) * 46).setScale(0.44 / TX);
+          const im = this.plaats(this.tex("raketje", somHex(a, b)[0]), KAART_L.x + ((i % 5) - 2) * 50, y - 52 + Math.floor(i / 5) * 46).setScale(0.44 / TX);
           g.add(im);
           rij.push(im);
         }
@@ -515,7 +522,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       g.add(this.plaats(this.tex("bezorgbus"), BUS.x, BUS.y));
       for (let i = 0; i < t.in; i++) {
         const p = busPlek(i, t.in);
-        this.item(g, "pakje", p.x, p.y, busMaat(t.in) / PAKJE, ringKleur(t.in));
+        this.item(g, "pakje", p.x, p.y, (busMaat(t.in) * 0.9) / PAKJE, somHex(t.in, t.b ?? 0)[0]);
       }
       this.itemSchaal = 1;
     }
@@ -538,9 +545,28 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     maakBakjes(g: Box, t: Extract<Toneel, { soort: "bakjes" }>) {
+      /* Een houten plank onder elke rij, zodat de bekers erop staan en niet zweven (BOUWREGELS 14.23); geen kader. */
+      this.canvasPlaatje("sqm-plank", 720, 34, (c) => {
+        const blad = c.createLinearGradient(0, 0, 0, 34);
+        blad.addColorStop(0, "#e0b070");
+        blad.addColorStop(0.45, "#c68a4a");
+        blad.addColorStop(0.5, "#9a6330");
+        blad.addColorStop(1, "#734517");
+        c.fillStyle = blad;
+        c.beginPath();
+        c.roundRect(0, 0, 720, 34, 6);
+        c.fill();
+        c.fillStyle = "rgba(255,236,200,0.5)";
+        c.fillRect(6, 2, 708, 3);
+      });
+      const kolommen = Math.min(5, t.vol + t.leeg);
+      const rijenN = Math.ceil((t.vol + t.leeg) / 5);
+      const y0 = 380 - ((rijenN - 1) * 150) / 2;
+      for (let r = 0; r < rijenN; r++) g.add(this.plaats("sqm-plank", 490, y0 + r * 150 + 66).setScale(((Math.max(3, kolommen) * 132 + 40) / 720) / TX, 1 / TX));
       bakjePlekken(t.vol + t.leeg).forEach((p, i) => {
         const vol = i < t.vol;
-        const kl = ringKleur(vol ? t.vol + t.leeg : t.leeg);
+        const [hxV, hxL] = somHex(t.vol + t.leeg, t.leeg);
+        const kl = vol ? hxV : hxL;
         if (t.ding === "beker") this.item(g, vol ? "beker-vol" : "beker-leeg", p.x, p.y, 1, kl);
         else {
           this.item(g, "bord", p.x, p.y + 10, 1, kl);
@@ -605,7 +631,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           const oud = this.itemSleutel[idx];
           const [naam] = oud.split("|");
           if (aan) {
-            if (t.b !== undefined) im.setTexture(this.tex(naam, ringKleur(t.b)));
+            if (t.b !== undefined) im.setTexture(this.tex(naam, somHex(t.n, t.b)[1]));
             else im.setTint(0x8a96a8);
             if (direct || this.rustig) im.setAlpha(0.35);
             else this.tweens.add({ targets: im, alpha: 0.35, duration: 220 });
@@ -648,7 +674,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       }
       if (t.rondje) return this.busBuiten(k + 1, direct);
       const p = buitenPlek(k);
-      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? ringKleur(t.b) : undefined), p.x, p.y).setScale(46 / PAKJE / TX);
+      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? somHex(t.in, t.b)[1] : undefined), p.x, p.y).setScale(54 / PAKJE / TX);
       g.add(pakje);
       this.buiten[k]?.destroy();
       this.buiten[k] = pakje;
@@ -669,7 +695,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         if (n > 0) {
           const rond = this.add.graphics();
           /* Het rondje heeft de kleur van het getal (BOUWREGELS 2.1); de tekst is donker, dat leest op elke kleur. */
-          rond.fillStyle(t.b !== undefined ? hexGetal(ringKleur(t.b)) : 0xff5a5a, 1);
+          rond.fillStyle(t.b !== undefined ? hexGetal(somHex(t.in, t.b)[1]) : 0xff5a5a, 1);
           rond.fillCircle(0, 0, 56);
           this.rondje = this.add.container(RONDJE.x, RONDJE.y, [rond, this.plaats(this.tekstTex(String(n), 64, t.b !== undefined ? "#10163a" : "#ffffff", ""), 0, 0)]);
           g.add(this.rondje);
@@ -885,6 +911,10 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 /** De som als tekst: "?" wordt een oplichtend vakje. */
 function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord" }) {
   const delen = tekst.split(" ");
+  /* De getallen van de som in volgorde: het eerste en wat overblijft in de ene kleur, het tweede in een duidelijk andere. */
+  const getallen = delen.filter((d) => /^\d+$/.test(d)).map(Number);
+  const [hexA, hexB] = getallen.length >= 2 ? somHex(getallen[0], getallen[1]) : [KLEURHEX[somKleuren(getallen[0] ?? 0, 0)[0]], ""];
+  let nr = 0;
   return (
     <div className={`${s.som} ${plek === "boven" ? s.somBoven : plek === "midden" ? s.somMidden : s.somBord}`} aria-hidden>
       {delen.map((d, i) =>
@@ -894,7 +924,7 @@ function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord"
           </span>
         ) : /^\d+$/.test(d) ? (
           /* Elk getal in de som heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1), met een dunne donkere rand voor de leesbaarheid. */
-          <span key={i} style={{ color: ringKleur(Number(d)), WebkitTextStroke: "2px #0b1028", paintOrder: "stroke fill" }}>
+          <span key={i} style={{ color: nr++ === 1 ? hexB : hexA, WebkitTextStroke: "2px #0b1028", paintOrder: "stroke fill" }}>
             {d}
           </span>
         ) : (

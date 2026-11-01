@@ -54,39 +54,77 @@ import {
   type Rek,
 } from "../vlakken/squla-plussommen-vlak";
 import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-tekenen";
-import { etenKleuren, getalNaam, KLEURHEX, ringKleur } from "../vlakken/squla-getalring";
+import { basisNaam, etenKleuren, KLEURHEX, somKleuren } from "../vlakken/squla-getalring";
 
 /* =====================================================================
    Woorden
    ===================================================================== */
 
-/** Een getal in de zin: in de kleur van dat getal (zoals in de som en bij de voorwerpen), of in de kleur van de stippen. */
 /**
- * Bij eten (de bakkerij) heeft elk groepje een kleur die bij het lekkers past (BOUWREGELS 2.1); `eet` is die kleur per
- * getal van het beeld dat nu staat. Getallen boven de 10 krijgen een echte kleur (geen wit, zie getalNaam).
+ * De kleuren van de som die nu in beeld staat (BOUWREGELS 2.1, 14.24): `somKleuren` geeft de twee getallen altijd twee
+ * duidelijk verschillende kleuren (ook bij 7 + 7); bij eten (de bakkerij) heeft elk groepje een kleur die bij het
+ * lekkers past. Het totaal is wit. De som bovenaan, de zin, de voorwerpen en de platen gebruiken allemaal deze kleuren.
  */
-let eet: Record<number, string> | null = null;
+let kpaar: { a: number; b: number; ka: string; kb: string } | null = null;
+/** Bij twee gelijke getallen (7 + 7) krijgt de eerste keer dat het getal in een zin staat de ene kleur, de tweede keer de andere. */
+let teller = 0;
+
+function stelPaar(a: number, b: number) {
+  teller = 0;
+  if (kpaar && kpaar.a === a && kpaar.b === b) return;
+  const [ka, kb] = somKleuren(a, b);
+  kpaar = { a, b, ka, kb };
+}
+/** De kleuren van a en b in de som die nu staat. */
+const kleurPaar = (a: number, b: number): [string, string] => (kpaar && kpaar.a === a && kpaar.b === b ? [kpaar.ka, kpaar.kb] : somKleuren(a, b));
+
+/** Een getal in de zin: in de kleur die het in de som en op de voorwerpen heeft (`k` = een eigen kleurnaam). */
 const g = (n: number, k = "tegel") => {
-  const naam = k === "tegel" ? (eet?.[n] ?? getalNaam(n) ?? "tegel") : k;
+  if (k !== "tegel") return `{${n}:${k}}`;
+  let naam = basisNaam(n);
+  if (kpaar) {
+    if (n === kpaar.a && n === kpaar.b) naam = teller++ % 2 === 0 ? kpaar.ka : kpaar.kb;
+    else if (n === kpaar.a) naam = kpaar.ka;
+    else if (n === kpaar.b) naam = kpaar.kb;
+    else if (n === kpaar.a + kpaar.b) naam = "wit";
+  }
   return `{${n}:${naam}}`;
 };
-/** Zinnen die al klaar zijn (voor het beeld er staat): de getallen van de groepjes krijgen hun lekkers-kleur. */
+/** Zinnen die al klaar zijn (voor het beeld er staat): de getallen van de twee groepjes krijgen hun kleur, op volgorde bij gelijke getallen. */
 function kleurZin<T extends string | string[]>(groepen: Groep[], zin: T): T {
-  const nm = etenKleuren(groepen);
-  const kaart = new Map<number, string>();
-  groepen.forEach((gr, i) => !kaart.has(gr.n) && kaart.set(gr.n, nm[i]));
-  const doe = (z: string) => z.replace(/\{(\d+):([a-z]+)\}/g, (t, n, k) => (kaart.has(+n) && (k === "tegel" || k === getalNaam(+n)) ? `{${n}:${kaart.get(+n)}}` : t));
+  if (groepen.length < 2) return zin;
+  const [ka, kb] = etenKleuren(groepen);
+  const a = groepen[0].n;
+  const b = groepen[1].n;
+  let ua = false;
+  let ub = false;
+  const doe = (z: string) =>
+    z.replace(/\{(\d+):([a-z]+)\}/g, (t, n, k) => {
+      const v = +n;
+      if (!(k === "tegel" || k === basisNaam(v))) return t;
+      if (a === b && v === a) {
+        if (!ua) return (ua = true), `{${n}:${ka}}`;
+        if (!ub) return (ub = true), `{${n}:${kb}}`;
+        return t;
+      }
+      if (v === a) return `{${n}:${ka}}`;
+      if (v === b) return `{${n}:${kb}}`;
+      return t;
+    });
   return (Array.isArray(zin) ? zin.map(doe) : doe(zin as string)) as T;
 }
 const o = (n: number) => g(n, "oranje");
 /** Een getal op een kaartje (zwart op wit): in de zin wit, zodat de kleur in de zin niets belooft wat er niet staat (BOUWREGELS 2.1). */
 const wk = (n: number) => g(n, "wit");
-/** Een getal op een plaat: de plaat heeft de tegelkleur van zijn getal (1 t/m 10), dus de zin ook; 0 en hoger dan 10 zijn wit. */
+/** Een getal op een plaat: de plaat heeft dezelfde kleur als in de zin; 0 is wit. */
 const gp = (n: number) => (n >= 1 ? g(n) : wk(n));
 const bl = (n: number) => g(n, "blauw");
 /** "6 oranje stippen en 1 blauwe stip", in enkelvoud of meervoud. */
 const stippen = (x: number, y: number) => `${o(x)} ${x === 1 ? "oranje stip" : "oranje stippen"} en ${bl(y)} ${y === 1 ? "blauwe stip" : "blauwe stippen"}.`;
-const plus = (a: number, b: number) => `${g(a)} + ${g(b)}`;
+const plus = (a: number, b: number) => {
+  const [ka, kb] = kleurPaar(a, b);
+  return `${g(a, ka)} + ${g(b, kb)}`;
+};
 /** Een som op een kaartje of knop. */
 const somTekst = (a: number, b: number) => `${a} + ${b} = ${a + b}`;
 const somAria = (a: number, b: number) => `${a} plus ${b} is ${a + b}`;
@@ -113,17 +151,17 @@ function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
 }
 
 const zet = (l: Lesgids, p: Partial<PlusProps>) => l.pasVlakAan<PlusProps>(p);
-const LEEG: Partial<PlusProps> = { sommen: [], actief: false, gekozen: [], uit: [], goedIds: [], lijnen: [], licht: [], rek: null, busLicht: false, busTel: 0, busLos: false };
+const LEEG: Partial<PlusProps> = { sommen: [], actief: false, gekozen: [], uit: [], goedIds: [], lijnen: [], licht: [], rek: null, busLicht: false, busTel: 0, busLos: false, busIn: false };
 
 /** Een nieuw beeld (Bliepo tovert het tevoorschijn). Hetzelfde beeld (nog een keer, na de uitleg): alles blijft staan. */
 function toon(l: Lesgids, st: Stand, beeld: PlusBeeld, extra: Partial<PlusProps> = {}): boolean {
   if (st.huidig === beeld.id) return false;
   st.huidig = beeld.id;
-  eet = null;
-  if (beeld.soort === "bakkerij") {
-    const nm = etenKleuren(beeld.groepen);
-    eet = {};
-    beeld.groepen.forEach((gr, i) => !(gr.n in eet!) && (eet![gr.n] = nm[i]));
+  teller = 0;
+  kpaar = null;
+  if (beeld.soort === "bakkerij" && beeld.groepen.length === 2) {
+    const [ka, kb] = etenKleuren(beeld.groepen);
+    kpaar = { a: beeld.groepen[0].n, b: beeld.groepen[1].n, ka, kb };
   }
   l.som(null);
   zet(l, { ...LEEG, beeld, ...extra });
@@ -133,9 +171,10 @@ function toon(l: Lesgids, st: Stand, beeld: PlusBeeld, extra: Partial<PlusProps>
 
 /** De som bovenaan: a + b = ▢ (met het antwoord als het er al is). */
 function somBoven(l: Lesgids, a: number, b: number, uitkomst?: number) {
-  /* Elk getal in de kleur van zijn groepje lekkers, of van de tegel / de echte kleur boven de 10 (BOUWREGELS 2.1, 14.22). */
-  const kl = (n: number) => (eet?.[n] ? KLEURHEX[eet[n]] : n > 10 ? ringKleur(n) : undefined);
-  l.som([{ t: "getal", n: a, kleur: kl(a) }, { t: "teken", s: "+" }, { t: "getal", n: b, kleur: kl(b) }, { t: "teken", s: "=" }, { t: "vak", waarde: uitkomst === undefined ? undefined : String(uitkomst), kleur: uitkomst !== undefined && uitkomst > 10 ? ringKleur(uitkomst) : undefined }]);
+  stelPaar(a, b);
+  const [ka, kb] = kleurPaar(a, b);
+  /* De twee getallen elk in hun eigen kleur, het totaal wit (BOUWREGELS 2.1, 14.22). */
+  l.som([{ t: "getal", n: a, kleur: KLEURHEX[ka] }, { t: "teken", s: "+" }, { t: "getal", n: b, kleur: KLEURHEX[kb] }, { t: "teken", s: "=" }, { t: "vak", waarde: uitkomst === undefined ? undefined : String(uitkomst), kleur: "#ffffff" }]);
 }
 
 const goedBeeld = (l: Lesgids, st: Stand, extra: Partial<PlusProps> = {}) => zet(l, { goed: ++st.goed, licht: [], busLicht: false, rek: null, actief: false, ...extra });
@@ -195,6 +234,7 @@ async function kiesTwee(l: Lesgids, goedIds: string[]): Promise<[string, string]
  * de 10". Bliepo zegt het antwoord niet; het laatste stapje doet het kind.
  */
 async function rekenUitleg(l: Lesgids, a: number, b: number) {
+  stelPaar(a, b);
   const s = a + b;
   const rijen: 1 | 2 = s > 10 ? 2 : 1;
   const rek = (x: number, y: number, extra: Partial<Rek> = {}) => zet(l, { rek: { rijen, a: x, b: y, ...extra } });
@@ -656,9 +696,12 @@ function dansKaartje(paren: [number, number][]): Vraag {
 function dansPlaten(getallen: number[]): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
-    const kaarten: Kaart[] = getallen.map((n, i) => ({ id: `p${i}`, tekst: [String(n)], aria: String(n) }));
     let paar: [number, number] = [0, 1];
     for (let i = 0; i < getallen.length; i++) for (let j = i + 1; j < getallen.length; j++) if (getallen[i] + getallen[j] === 10) paar = [i, j];
+    /* De twee platen die samen 10 zijn hebben twee duidelijk verschillende kleuren (ook bij 5 + 5); de zin heeft dezelfde. */
+    stelPaar(getallen[paar[0]], getallen[paar[1]]);
+    const [kp0, kp1] = kleurPaar(getallen[paar[0]], getallen[paar[1]]);
+    const kaarten: Kaart[] = getallen.map((n, i) => ({ id: `p${i}`, tekst: [String(n)], aria: String(n), kleur: KLEURHEX[i === paar[0] ? kp0 : i === paar[1] ? kp1 : basisNaam(n)] }));
     const goedIds = paar.map((i) => `p${i}`);
     const anker = Math.min(getallen[paar[0]], getallen[paar[1]]);
     const waarden = (x: [string, string]) => x.map((i) => getallen[Number(i.slice(1))]);
@@ -672,7 +715,7 @@ function dansPlaten(getallen: number[]): Vraag {
       noem: (x) => `${gp(waarden(x)[0])} en ${gp(waarden(x)[1])}`,
       goed: async () => {
         goedBeeld(l, st, { gekozen: [], goedIds });
-        await l.zeg(`Ja! ${gp(getallen[paar[0]])} en ${gp(getallen[paar[1]])} is samen ${g(10)}.`);
+        await l.zeg(`Ja! ${g(getallen[paar[0]], kp0)} en ${g(getallen[paar[1]], kp1)} is samen ${g(10)}.`);
         await l.wacht(900);
       },
       fout: () => {
@@ -762,6 +805,9 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
       goed: async () => {
         somBoven(l, a, b, s);
         goedBeeld(l, st);
+        /* De nieuwe pakjes gaan echt de bus in, vóór Bliepo zegt dat ze erin liggen. */
+        zet(l, { busIn: true });
+        await l.wacht(1300);
         await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`, `Er liggen nu ${g(s)} pakjes in de bus.`);
         await l.wacht(400);
       },
@@ -788,6 +834,8 @@ function busUitleg(a: number, b: number, alsGetal: boolean) {
     await l.zeg(...busZinnen(a, b).slice(0, 2));
     await busSamen(l, a, b, true);
     somBoven(l, a, b, a + b);
+    zet(l, { busIn: true });
+    await l.wacht(1300);
     await l.zeg(`Nu liggen er ${g(a + b)} pakjes in de bus.`, `${plus(a, b)} = ${g(a + b)}.`);
     await l.verder();
     l.som(null);

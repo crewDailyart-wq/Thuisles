@@ -115,7 +115,10 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
       const kh = Math.min(440, Math.max(...keuzes.map((k) => k.h)));
       const xs = naastElkaar(keuzes.length, 320);
       const kb = Math.min(...xs.map((_, i) => (i ? xs[i] - xs[i - 1] : VLAK_B / keuzes.length))) - 16;
-      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[i], VLAK_H - 28 - kh / 2, kb, kh)));
+      /* Groepjes (meerdere voorwerpen) staan hoger, midden in beeld, niet geperst onderaan (BOUWREGELS 14.23). */
+      const groepen = keuzes.some((k) => k.stukken.length > 1);
+      const cy = groepen ? Math.min(VLAK_H - 28 - kh / 2, 450) : VLAK_H - 28 - kh / 2;
+      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[i], cy, kb, kh)));
     } else if (o.boven) delen.b = past(o.boven, VLAK_B / 2, VLAK_H / 2, 920, 660);
     else {
       const xs = naastElkaar(keuzes.length, 320);

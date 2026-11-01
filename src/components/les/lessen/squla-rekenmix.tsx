@@ -196,10 +196,14 @@ function tweeGroepen(naam: string, a: number, b: number, cel = 110): Groep {
 function kaartGroep(naam: string, lengtes: number[], cel = 46): Groep {
   const kol = Math.max(...lengtes);
   const b = kol * cel;
-  const h = lengtes.length * cel;
+  /* Smalle dingen (een raketje, een potlood) zijn hoger dan breed: ze krijgen een hogere rij, anders worden het streepjes (BOUWREGELS 14.23). */
+  const smal = naam === "raketje" || naam === "potlood";
+  const stap = smal ? cel * 1.4 : cel;
+  const m = smal ? cel * 1.5 : cel * 0.86;
+  const h = lengtes.length * stap;
   const stukken: RMStuk[] = [];
   lengtes.forEach((len, r) => {
-    for (let i = 0; i < len; i++) stukken.push(ding(naam, -b / 2 + (i + 0.5) * cel, -h / 2 + (r + 0.5) * cel, cel * 0.86));
+    for (let i = 0; i < len; i++) stukken.push(ding(naam, -b / 2 + (i + 0.5) * cel, -h / 2 + (r + 0.5) * stap, m));
   });
   const n = stukken.length;
   return { tek: { stukken, b: b + 16, h: h + 16 }, stappen: [{ idx: stukken.map((_, i) => i), lx: 0, ly: -h / 2 - 34 }], n };

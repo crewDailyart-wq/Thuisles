@@ -39,7 +39,7 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, type SqulaVraag } from "./squla-hulp";
 import { KaartMinsommen, SqulaMinVlak, type Bakje, type Ding, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
 import { DING } from "../vlakken/squla-minsommen-tekenen";
-import { getalNaam } from "../vlakken/squla-getalring";
+import { basisNaam, somKleuren } from "../vlakken/squla-getalring";
 
 /* =====================================================================
    Woorden
@@ -50,9 +50,32 @@ import { getalNaam } from "../vlakken/squla-getalring";
  * en zoals de ring om de voorwerpen (BOUWREGELS 2.1 en 2.2). `_k` blijft staan zodat
  * de oude aanroepen niet veranderen.
  */
-/* Boven de 10 hebben de tegels geen kleur (wit = "weg"): daar een echte kleur, dezelfde als op de voorwerpen (BOUWREGELS 14.22). */
+/*
+ * De kleuren van de som die nu in beeld staat (BOUWREGELS 2.1, 14.22, 14.24): `somKleuren` geeft de twee getallen altijd
+ * twee duidelijk verschillende kleuren (ook bij 10 − 10 en 14 − 7); het eerste getal en wat overblijft hebben de ene
+ * kleur, het tweede getal en wat weggaat de andere. Dezelfde kleuren staan in de som, in de zin en op de voorwerpen.
+ */
+let kp: { a: number; b: number; ka: string; kb: string } | null = null;
+/** Bij twee gelijke getallen (10 − 10) krijgt de eerste keer dat het getal in een zin staat de ene kleur, de tweede keer de andere. */
+let tl = 0;
+function stelSom(a: number, b: number) {
+  tl = 0;
+  if (kp && kp.a === a && kp.b === b) return;
+  const [ka, kb] = somKleuren(a, b);
+  kp = { a, b, ka, kb };
+}
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const g = (n: number, _k = "wit") => `{${n}:${getalNaam(n) ?? "tegel"}}`;
+const g = (n: number, _k = "wit") => {
+  let naam = basisNaam(n);
+  if (kp) {
+    if (n === kp.a && n === kp.b) naam = tl++ % 2 === 0 ? kp.ka : kp.kb;
+    else if (n === kp.a) naam = kp.ka;
+    else if (n === kp.b) naam = kp.kb;
+  }
+  return `{${n}:${naam}}`;
+};
+/** Wat overblijft (de uitkomst) heeft de kleur van het eerste getal. */
+const gu = (n: number) => `{${n}:${kp ? kp.ka : basisNaam(n)}}`;
 /** "7 − 4" in de zin (wit). */
 const somZin = (a: number, b: number, k = "wit") => `${g(a, k)} − ${g(b, k)}`;
 /** Een som als knop of in beeld. */
@@ -220,8 +243,19 @@ function ruimteToneel(st: Stand, ding: Ding, n: number, ufo?: boolean, b?: numbe
   return { soort: "ruimte", id: `ruimte-${st.nr}`, ding, n, b, ufo: !!ufo };
 }
 
+/** De twee getallen van de som die bij deze vraag in beeld staat (voor de kleuren). */
+function somVan(v: Vraag): [number, number] | null {
+  if (v.t === "geld") return [v.heb.reduce((t, x) => t + x, 0), v.prijs.reduce((t, x) => t + x, 0)];
+  if (v.t === "bakjes") return [v.vol + v.leeg, v.leeg];
+  if (v.t === "machine") return [10, v.b];
+  if (v.t === "verbind" || v.t === "bubbels") return null;
+  return [v.a, v.b];
+}
+
 async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   st.nr++;
+  const sv = somVan(v);
+  if (sv) stelSom(sv[0], sv[1]);
   const id = `v${st.nr}`;
 
   /* Verhaaltje in de ruimte (met de som in het plaatje), of een kale som naast de dingen. */
@@ -246,8 +280,8 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x, k),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}`, grijs: v.b });
-        if (ding && v.t !== "kaal") await l.zeg(`Ja! Er blijven ${g(u, k)} ${DING[ding].veel} over.`);
-        else await l.zeg(`Ja! ${somZin(v.a, v.b, k)} = ${g(u, k)}.`);
+        if (ding && v.t !== "kaal") await l.zeg(`Ja! Er blijven ${gu(u)} ${DING[ding].veel} over.`);
+        else await l.zeg(`Ja! ${somZin(v.a, v.b, k)} = ${gu(u)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -272,7 +306,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => x,
       goed: async () => {
         goedBeeld(l, st, { som: goed, grijs: v.b });
-        await l.zeg(`Ja! ${somZin(v.a, v.b, k)} = ${g(u, k)}.`);
+        await l.zeg(`Ja! ${somZin(v.a, v.b, k)} = ${gu(u)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -308,7 +342,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}` });
-        await l.zeg(`Ja! ${somZin(v.a, v.b)} = ${g(u)}.`);
+        await l.zeg(`Ja! ${somZin(v.a, v.b)} = ${gu(u)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -450,7 +484,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x, "bruin"),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}`, grijs: v.b });
-        await l.zeg(u === 1 ? `Ja! Er ligt nog ${g(1, "bruin")} pakje in de bus.` : `Ja! Er liggen nog ${g(u, "bruin")} pakjes in de bus.`);
+        await l.zeg(u === 1 ? `Ja! Er ligt nog ${g(1, "bruin")} pakje in de bus.` : `Ja! Er liggen nog ${gu(u)} pakjes in de bus.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -472,7 +506,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { uitkomst: u, som: `10 − ${v.b} = ${u}` });
-        await l.zeg(`Ja! ${somZin(10, v.b)} = ${g(u)}.`);
+        await l.zeg(`Ja! ${somZin(10, v.b)} = ${gu(u)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -495,7 +529,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}` });
-        await l.zeg(`Ja! ${somZin(v.a, v.b)} = ${g(u)}.`);
+        await l.zeg(`Ja! ${somZin(v.a, v.b)} = ${gu(u)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -549,7 +583,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     noem: (x) => `${g(x)} euro`,
     goed: async () => {
       goedBeeld(l, st, { som: `${heb} − ${prijs} = ${u}` });
-      await l.zeg(`Ja! ${somZin(heb, prijs)} = ${g(u)}.`, `Je houdt ${g(u)} euro over.`);
+      await l.zeg(`Ja! ${somZin(heb, prijs)} = ${gu(u)}.`, `Je houdt ${gu(u)} euro over.`);
       await l.wacht(400);
     },
     fout: () => foutBeeld(l, st),
@@ -662,6 +696,7 @@ function uitlegRuimte(ding: Ding, a: number, b: number) {
     const k = DING[ding].kleur;
     const veel = DING[ding].veel;
     const u = a - b;
+    stelSom(a, b);
     toon(l, st, { soort: "ruimte", id: `uitleg-${ding}-${a}`, ding, n: a, b }, { som: `${a} − ${b}` });
     await l.zeg(...ruimteVerhaal(ding, a, b));
     if (overTien(a, b)) {
@@ -677,9 +712,9 @@ function uitlegRuimte(ding: Ding, a: number, b: number) {
       await l.wacht(b * 260 + 300);
     }
     zet(l, { licht: "over" });
-    await l.zeg(`Er blijven ${g(u, k)} ${veel} over.`);
+    await l.zeg(`Er blijven ${gu(u)} ${veel} over.`);
     zet(l, { licht: null, som: `${a} − ${b} = ${u}` });
-    await l.zeg(`Dat is de minsom ${somZin(a, b, k)} = ${g(u, k)}.`);
+    await l.zeg(`Dat is de minsom ${somZin(a, b, k)} = ${gu(u)}.`);
   };
 }
 
@@ -688,6 +723,7 @@ function uitlegBus(a: number, b: number, rondje: boolean) {
   return async (l: Lesgids, st: Stand) => {
     const u = a - b;
     const k = "bruin";
+    stelSom(a, b);
     toon(l, st, { soort: "bus", id: `uitleg-bus-${a}`, in: a, b, rondje }, { grijs: 0 });
     await l.zeg(`In de bus liggen ${g(a, k)} pakjes.`, `De bus bezorgt er ${g(b, k)}.`);
     if (overTien(a, b)) {
@@ -704,9 +740,9 @@ function uitlegBus(a: number, b: number, rondje: boolean) {
     }
     if (rondje) await l.zeg("Het rode rondje zegt hoeveel pakjes er bezorgd zijn.");
     zet(l, { licht: "over" });
-    await l.zeg(`Nu liggen er nog ${g(u, k)} pakjes in de bus.`);
+    await l.zeg(`Nu liggen er nog ${gu(u)} pakjes in de bus.`);
     zet(l, { licht: null, som: `${a} − ${b} = ${u}` });
-    await l.zeg(`Dat is de minsom ${somZin(a, b, k)} = ${g(u, k)}.`);
+    await l.zeg(`Dat is de minsom ${somZin(a, b, k)} = ${gu(u)}.`);
   };
 }
 
@@ -714,6 +750,7 @@ function uitlegBus(a: number, b: number, rondje: boolean) {
 function uitlegStippen(beeld: "bord" | "machine" | "som", a: number, b: number) {
   return async (l: Lesgids, st: Stand) => {
     const u = a - b;
+    stelSom(a, b);
     const toneel: Toneel = beeld === "bord" ? { soort: "bord", id: "uitleg-bord" } : beeld === "machine" ? { soort: "machine", id: "uitleg-machine", start: a, eraf: b } : { soort: "som", id: "uitleg-som" };
     toon(l, st, toneel, { som: beeld === "machine" ? null : `${a} − ${b} = ?` });
     if (beeld === "machine") await l.zeg(`${g(a)} gaat de machine in.`, `De machine haalt er ${g(b)} af.`);
@@ -729,9 +766,9 @@ function uitlegStippen(beeld: "bord" | "machine" | "som", a: number, b: number) 
     } else await l.zeg(`Er gaan er ${g(b)} weg.`);
     zet(l, { stippen: { n: a, grijs: b } });
     await l.wacht((overTien(a, b) ? b - (a - 10) : b) * 200 + 400);
-    await l.zeg(`Er blijven ${g(u)} stippen over.`);
+    await l.zeg(`Er blijven ${gu(u)} stippen over.`);
     zet(l, beeld === "machine" ? { uitkomst: u, som: `${a} − ${b} = ${u}` } : { som: `${a} − ${b} = ${u}` });
-    await l.zeg(`Dus ${somZin(a, b)} = ${g(u)}.`);
+    await l.zeg(`Dus ${somZin(a, b)} = ${gu(u)}.`);
   };
 }
 
@@ -739,6 +776,7 @@ function uitlegStippen(beeld: "bord" | "machine" | "som", a: number, b: number) 
 function uitlegBakjes(vol: number, leeg: number) {
   return async (l: Lesgids, st: Stand) => {
     const n = vol + leeg;
+    stelSom(n, leeg);
     toon(l, st, { soort: "bakjes", id: "uitleg-bakjes", ding: "beker", vol, leeg });
     await l.zeg("Kijk, bekers met limonade.", "Een paar zijn al leeg.");
     zet(l, { licht: "alle" });
@@ -746,7 +784,7 @@ function uitlegBakjes(vol: number, leeg: number) {
     zet(l, { licht: "leeg" });
     await l.zeg(`Er zijn ${g(leeg)} bekers leeg gedronken.`, "Die gaan weg.");
     zet(l, { licht: null, som: somTekst(n, leeg) });
-    await l.zeg(`De som is ${somZin(n, leeg)} = ${g(vol)}.`);
+    await l.zeg(`De som is ${somZin(n, leeg)} = ${gu(vol)}.`);
   };
 }
 
@@ -755,15 +793,16 @@ function uitlegGeld(heb: Geld[], prijs: Geld[], ding: Speelgoed) {
   return async (l: Lesgids, st: Stand) => {
     const h = heb.reduce((t, x) => t + x, 0);
     const p = prijs.reduce((t, x) => t + x, 0);
+    stelSom(h, p);
     toon(l, st, { soort: "geld", id: "uitleg-geld", heb, prijs, ding });
     await l.zeg(`Kijk, je hebt ${g(h)} euro.`, `${hoofd(SPEELGOED[ding])} kost ${g(p)} euro.`);
     zet(l, { stippen: { n: h, grijs: 0 } });
     await l.zeg("Voor elke euro zet ik een stip.");
     zet(l, { stippen: { n: h, grijs: p } });
     await l.wacht(p * 200 + 400);
-    await l.zeg(`Je betaalt ${g(p)} euro.`, p === 1 ? "Die gaat weg." : "Die gaan weg.", `Dan houd je ${g(h - p)} euro over.`);
+    await l.zeg(`Je betaalt ${g(p)} euro.`, p === 1 ? "Die gaat weg." : "Die gaan weg.", `Dan houd je ${gu(h - p)} euro over.`);
     zet(l, { som: `${h} − ${p} = ${h - p}` });
-    await l.zeg(`${somZin(h, p)} = ${g(h - p)}.`);
+    await l.zeg(`${somZin(h, p)} = ${gu(h - p)}.`);
   };
 }
 

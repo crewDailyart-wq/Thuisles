@@ -52,7 +52,7 @@ import {
   tekenStip,
 } from "./squla-plussommen-tekenen";
 import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
-import { etenKleuren, KLEURHEX, ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
+import { etenKleuren, KLEURHEX, ringKleur, ringRuimte, somKleuren, tekenMetRing } from "./squla-getalring";
 import s from "./squla-plussommen.module.css";
 
 /** Het lekkers van de bakkerij: vaste plaatjes uit src/lib/voorwerpen. */
@@ -65,7 +65,7 @@ const DING = 72;
 /** Een groepje lekkers, los in de ruimte (zonder bord, mand of plaat: geen kaders). */
 export type Groep = { n: number; ding: Ding; label?: boolean };
 /** Iets om aan te tikken. `tekst`: één of twee getallen, of een som. */
-export type Kaart = { id: string; tekst: string[]; aria: string };
+export type Kaart = { id: string; tekst: string[]; aria: string; /** Een eigen kleur (hex) voor het midden van een plaat. */ kleur?: string };
 
 export type PlusBeeld =
   | { soort: "bakkerij"; id: string; groepen: Groep[] }
@@ -91,6 +91,8 @@ export type PlusProps = {
   busLicht?: boolean;
   busTel?: number;
   busLos?: boolean;
+  /** De nieuwe pakjes gaan de bus in (met een korte verplaatsing): daarna liggen ze er echt in. */
+  busIn?: boolean;
   goed?: number;
   fout?: number;
 };
@@ -210,6 +212,7 @@ interface PlusScene {
   zetStaat(st: Staat): void;
   zetRek(rek: Rek | null): void;
   zetBus(los: boolean): void;
+  zetBusIn(aan: boolean): void;
   goed(): void;
   fout(): void;
 }
@@ -231,6 +234,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
     vakImg = new Map<string, Img>();
     groepen: GroepPlek[] = [];
     groepImg: Img[][] = [];
+    busInNu = false;
     busImg: Img[] = [];
     instapImg: Img[] = [];
     lijnLaag: Gfx | null = null;
@@ -317,6 +321,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.groepImg = [];
       this.busImg = [];
       this.instapImg = [];
+      this.busInNu = false;
       this.instappers = null;
       this.rondje = null;
       this.bal = null;
@@ -351,7 +356,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       } else if (beeld.soort === "bus") {
         this.plek(box, this.vw("bezorgbus", BUSVAK.s, BUSVAK.s), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2);
         const maat = busMaat(beeld.inBus);
-        const pakje = this.vwK("pakje", maat, maat, ringKleur(beeld.inBus));
+        const pakje = this.vwK("pakje", maat * 0.9, maat * 0.9, KLEURHEX[somKleuren(beeld.inBus, beeld.instap)[0]]);
         for (let k = 0; k < beeld.inBus; k++) {
           const q = pakjePlek(k, beeld.inBus);
           this.busImg.push(this.plek(box, pakje, q.x, q.y));
@@ -377,8 +382,8 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
           eind.y + Math.sin(hoek - 2.4) * 22,
         );
         box.add(pijl);
-        if (beeld.alsGetal) this.rondje = this.plek(box, this.tex(`rondje-${ringKleur(beeld.instap).slice(1)}`, 130, 130, (c) => tekenRondje(c, ringKleur(beeld.instap))), RONDJE.x, RONDJE.y);
-        else this.instappers = this.maakInstappers(box, beeld.instap);
+        if (beeld.alsGetal) this.rondje = this.plek(box, this.tex(`rondje-${KLEURHEX[somKleuren(beeld.inBus, beeld.instap)[1]].slice(1)}`, 130, 130, (c) => tekenRondje(c, KLEURHEX[somKleuren(beeld.inBus, beeld.instap)[1]])), RONDJE.x, RONDJE.y);
+        else this.instappers = this.maakInstappers(box, beeld.instap, beeld.inBus);
       } else if (beeld.soort === "kaal") {
         const kleur = ["#7fe9ff", "#ffd36e", "#c9b6ff"][(beeld.level - 1) % 3];
         this.plek(box, this.tex(`plus-${beeld.level}`, 200, 200, (c) => tekenPlus(c, kleur)), 490, 410);
@@ -398,7 +403,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         if (v.soort === "plaat") {
           /* Het midden van de plaat heeft de kleur van zijn getal (dezelfde als in de zin van Bliepo, BOUWREGELS 2.1); 0 krijgt een rustige grijsblauwe kleur. */
           const n = Number(v.kaart.tekst[0]);
-          const kleur = n >= 1 ? ringKleur(n) : "#6d7699";
+          const kleur = v.kaart.kleur ?? (n >= 1 ? ringKleur(n) : "#6d7699");
           sl = this.tex(`plaat-${kleur.slice(1)}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
         } else if (v.soort === "kaartje") {
           const kleur = KLEUREN_DISCO[(i * 2 + 1) % KLEUREN_DISCO.length];
@@ -413,13 +418,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.tekenStaat();
     }
 
-    maakInstappers(box: Box, n: number) {
+    maakInstappers(box: Box, n: number, inBus: number) {
       const groep = this.add.container(0, 0);
       this.instapImg = [];
       /* Achterste rij eerst, dan staan de voorste ervoor. */
       for (let i = n - 1; i >= 0; i--) {
         const q = instapPlek(i);
-        const sl = this.vwK("pakje", 46, 46, ringKleur(n));
+        const sl = this.vwK("pakje", 46, 46, KLEURHEX[somKleuren(inBus, n)[1]]);
         const im = this.plaats(sl, q.x - MIDDEN.x, q.y - MIDDEN.y).setOrigin(0.5, 1);
         im.setData("basis", sl);
         im.setScale(q.schaal / TX);
@@ -430,12 +435,36 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       return groep;
     }
 
+    /** De pakjes die erbij komen gaan de bus in (of komen weer naast de bus staan); alle pakjes passen zich aan het totaal aan. */
+    zetBusIn(aan: boolean) {
+      const b = this.beeld;
+      if (!b || b.soort !== "bus" || !this.instappers || aan === this.busInNu) return;
+      this.busInNu = aan;
+      const tot = b.inBus + b.instap;
+      const mBus = busMaat(b.inBus);
+      const mTot = busMaat(tot);
+      const duur = this.rustig ? 1 : 650;
+      this.busImg.forEach((im, k) => {
+        const p = aan ? pakjePlek(k, tot) : pakjePlek(k, b.inBus);
+        const f = (aan ? mTot : mBus) / mBus / TX;
+        this.tweens.add({ targets: im, x: p.x - MIDDEN.x, y: p.y - MIDDEN.y, scaleX: f, scaleY: f, duration: duur, ease: "Cubic.easeInOut" });
+      });
+      this.instapImg.forEach((im, i) => {
+        if (!im) return;
+        const p = aan ? pakjePlek(b.inBus + i, tot) : instapPlek(i);
+        const sch = aan ? (mTot * 0.9) / 46 : instapPlek(i).schaal;
+        /* In de bus staat het pakje op zijn middelpunt, naast de bus op zijn onderkant. */
+        const y = aan ? p.y - MIDDEN.y + mTot / 2 : p.y - MIDDEN.y;
+        this.tweens.add({ targets: im, x: p.x - MIDDEN.x, y, scaleX: sch / TX, scaleY: sch / TX, duration: duur, delay: this.rustig ? 0 : i * 90, ease: "Cubic.easeInOut" });
+      });
+    }
+
     zetBus(los: boolean) {
       const b = this.beeld;
       if (!b || b.soort !== "bus" || !b.alsGetal || !this.hoofd) return;
       if (los && !this.instappers) {
         this.rondje?.setVisible(false);
-        this.instappers = this.maakInstappers(this.hoofd, b.instap);
+        this.instappers = this.maakInstappers(this.hoofd, b.instap, b.inBus);
         this.tover(this.instappers);
         this.tekenStaat();
       } else if (!los && this.instappers) {
@@ -582,6 +611,7 @@ export function SqulaPlusVlak({
   busLicht = false,
   busTel = 0,
   busLos = false,
+  busIn = false,
   goed = 0,
   fout = 0,
   meld,
@@ -612,6 +642,10 @@ export function SqulaPlusVlak({
   }, [scene, busLos, beeldSleutel]);
 
   useEffect(() => {
+    scene?.zetBusIn(busIn);
+  }, [scene, busIn, beeldSleutel]);
+
+  useEffect(() => {
     if (scene && goed > 0) scene.goed();
   }, [scene, goed]);
   useEffect(() => {
@@ -636,7 +670,7 @@ export function SqulaPlusVlak({
       {!dim &&
         groepen.map((g, i) =>
           g.label && beeld?.soort === "bakkerij" ? (
-            <div key={`l${i}`} className={s.label} style={{ left: g.label.x, top: g.label.y, color: ringKleur(beeld.groepen[i].n) }} aria-hidden>
+            <div key={`l${i}`} className={s.label} style={{ left: g.label.x, top: g.label.y, color: KLEURHEX[etenKleuren(beeld.groepen)[i]] }} aria-hidden>
               {beeld.groepen[i].n}
             </div>
           ) : null,
