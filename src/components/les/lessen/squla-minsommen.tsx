@@ -281,7 +281,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
         if (v.keuzes.some(([, , t]) => t === "+")) await l.zeg("Er gaan er een paar weg.", "Dus het is een minsom.");
         await l.wacht(Math.min(v.b, 10) * 260 + 300);
         zet(l, { licht: "eraf" });
-        if (v.b === 0) await l.zeg("Er gaat er niet één weg.", `Dus na de min komt ${g(0, k)}.`);
+        if (v.b === 0) await l.zeg("Er gaat niets weg.", `Dus na de min komt ${g(0, k)}.`);
         else await l.zeg(v.b === v.a ? `Ze gaan alle ${g(v.b, k)} weg.` : `Er gaan er ${g(v.b, k)} weg.`, "Dat getal komt na de min.");
         zet(l, { licht: "over" });
         await l.zeg("Wat overblijft, komt achter het is-teken.");
@@ -782,8 +782,8 @@ const ruimte1 = minles({
   oefening: "Minsommen (onderwater)",
   level: 1,
   welkom: RUIMTE_WELKOM[0],
-  begin: { soort: "ruimte", id: "uitleg-raketje-6", ding: "raketje", n: 6, b: 2 },
-  uitleg: uitlegRuimte("raketje", 6, 2),
+  begin: { soort: "ruimte", id: "uitleg-ballon-6", ding: "ballon", n: 6, b: 2 },
+  uitleg: uitlegRuimte("ballon", 6, 2),
   /* Level 1: tot en met 10, eraf 1 t/m 6; verhaal, verhaal, kaal, kaal, welke som, welke som, disco, verbinden, verhaal, en daarna nog eens dezelfde soorten. */
   vragen: [
     { t: "verhaal", ding: "ballon", a: 7, b: 4, keuzes: [3, 2, 4, 11] },
@@ -1064,8 +1064,8 @@ const mach4 = minles({
   oefening: "Minsommen",
   level: 4,
   welkom: ["Er zit geld in je portemonnee en je koopt een ijsje.", "Hoeveel euro houd je over?"],
-  begin: { soort: "geld", id: "uitleg-geld", heb: [2, 1, 1], prijs: [1], ding: "ballon" },
-  uitleg: uitlegGeld([2, 1, 1], [1], "ballon"),
+  begin: { soort: "geld", id: "uitleg-geld", heb: [2, 1, 1], prijs: [1], ding: "ijsje" },
+  uitleg: uitlegGeld([2, 1, 1], [1], "ijsje"),
   /* Level 4: geld (hoeveel houd je over, tot 10 euro) en sommen die alleen gezegd worden; zelfde volgorde, drie keer. */
   vragen: [
     geld([2, 2, 1, 1], [2], "ijsje", [3, 4, 5]),

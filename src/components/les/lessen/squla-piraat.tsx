@@ -134,7 +134,7 @@ function telVraag(doel: number, opties: { n: number; per: number }[]): Vraag {
   return (l, st) => {
     const delen: Deel[] = [];
     opties.forEach((o, i) => {
-      delen.push({ s: "groep", id: `k${i}`, vw: "goudstuk", n: o.n, x: KOLOM[i], y: 360, per: o.per, cel: 48 });
+      delen.push({ s: "groep", id: `k${i}`, vw: "goudstuk", n: o.n, x: KOLOM[i], y: 360, per: o.per, cel: 48, kl: "geel" });
       delen.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 360, b: 270, h: 240, aria: `${o.n} goudstukken` });
     });
     const beeld = metLetters(st, `tel-${doel}`, delen);
@@ -235,7 +235,7 @@ function minVraag(vw: string, a: number, b: number, keuzes: number[], zinnen?: s
   const weg = Array.from({ length: b }, (_, i) => `m.${a - b + i}`);
   const blijft = Array.from({ length: s }, (_, i) => `m.${i}`);
   return (l, st) => {
-    const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62 }]);
+    const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62, ...(KL[vw] && KL[vw] !== "wit" ? { kl: KL[vw] } : {}) }]);
     return squlaVraag<number>(l, {
       toon: () => {
         if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");

@@ -46,7 +46,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
 import { ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
 import {
   DING,
@@ -335,7 +335,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         /* Met een ring in de kleur van zijn getal (BOUWREGELS 2.1), één keer getekend. */
         const sl = `sqm-vwk-${naam}-${kleur.slice(1)}`;
         const r = ringRuimte(m, m);
-        this.canvasPlaatje(sl, m + 2 * r, m + 2 * r, (c) => tekenMetRing(c, m, m, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h)));
+        this.canvasPlaatje(sl, m + 2 * r, m + 2 * r, (c) => tekenMetRing(c, m, m, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h), voorwerpKleurbaar(naam)));
         return sl;
       }
       const sl = `sqm-vw-${naam}`;
@@ -464,7 +464,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const { plekken, schaal } = ruimtePlekken(t.n, !!t.ufo);
       this.itemSchaal = schaal;
       plekken.forEach((p, i) => {
-        const im = this.item(g, t.ding, p.x, p.y, schaal, ringKleur(t.b !== undefined && i >= t.n - t.b ? t.b : t.n));
+        const im = this.item(g, t.ding, p.x, p.y, schaal, ringKleur(t.n));
         if (!this.rustig) this.tweens.add({ targets: im, y: p.y - 5, duration: 1300 + (i % 4) * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut", delay: (i * 97) % 600 });
       });
       if (t.ufo) {
@@ -514,7 +514,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       g.add(this.plaats(this.tex("bezorgbus"), BUS.x, BUS.y));
       for (let i = 0; i < t.in; i++) {
         const p = busPlek(i);
-        this.item(g, "pakje", p.x, p.y, 1, ringKleur(t.b !== undefined && i >= t.in - t.b ? t.b : t.in));
+        this.item(g, "pakje", p.x, p.y, 1, ringKleur(t.in));
       }
       this.itemSchaal = 1;
     }
@@ -599,11 +599,19 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         const im = this.items[idx];
         if (!im) return;
         if (t.soort === "ruimte") {
+          /* Eerst staan ALLE dingen in de kleur van het eerste getal (BOUWREGELS 2.1); wat weggaat krijgt op dat moment
+             de kleur van het tweede getal en wordt dof. Wat overblijft houdt de kleur van het eerste getal. */
+          const oud = this.itemSleutel[idx];
+          const [naam] = oud.split("|");
           if (aan) {
-            im.setTint(0x8a96a8);
+            if (t.b !== undefined) im.setTexture(this.tex(naam, ringKleur(t.b)));
+            else im.setTint(0x8a96a8);
             if (direct || this.rustig) im.setAlpha(0.35);
             else this.tweens.add({ targets: im, alpha: 0.35, duration: 220 });
-          } else im.clearTint().setAlpha(1);
+          } else {
+            im.clearTint().setAlpha(1);
+            im.setTexture(this.texSleutel(oud));
+          }
           return;
         }
         /* bus: het pakje gaat de bus uit (of komt terug bij opnieuw) */

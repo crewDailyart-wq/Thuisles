@@ -145,6 +145,15 @@ async function speel(c, id) {
   try {
     await c.stuur("Page.enable", {}, s);
     await c.stuur("Network.enable", {}, s);
+    /* CONSOLE=1: fouten van de pagina meteen tonen (voor het zoeken naar de oorzaak van een vastgelopen les). */
+    if (process.env.CONSOLE) {
+      await c.stuur("Runtime.enable", {}, s);
+      c.op((m) => {
+        if (m.sessionId !== s) return;
+        if (m.method === "Runtime.exceptionThrown") console.log("  FOUT:", (m.params.exceptionDetails.exception?.description || m.params.exceptionDetails.text || "").split("\n").slice(0, 3).join(" | "));
+        if (m.method === "Runtime.consoleAPICalled" && m.params.type === "error") console.log("  console.error:", m.params.args.map((x) => x.value ?? x.description ?? "").join(" ").slice(0, 300));
+      });
+    }
     if (process.env.WW) await c.stuur("Network.setExtraHTTPHeaders", { headers: kop }, s);
     await c.stuur("Emulation.setDeviceMetricsOverride", { width: APPARAAT.b, height: APPARAAT.h, deviceScaleFactor: 1, mobile: APPARAAT.mobiel }, s);
     /*
@@ -452,6 +461,7 @@ async function speel(c, id) {
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
     }
     if (process.env.DEBUG) console.log("  eindstand:", JSON.stringify(await ev(STAAT)).slice(0, 900));
+    if (process.env.DEBUG) console.log("  phaser:", JSON.stringify(await ev(`JSON.stringify(window.__phaser ?? null)`)).slice(0, 600));
     /* Nog steeds nieuwe zinnen, maar niet op tijd klaar: de speler is te dom of de les te lang (geen fout, wel zelf nakijken). */
     if (!einde && !handmatig.size && !fouten.size && zinnen.size > 40) handmatig.add(`niet binnen ${MAX_MS / 60000} minuten uitgespeeld, maar de les liep wel door (${zinnen.size} verschillende zinnen; laatste: "${vorigeTekst.slice(0, 60)}")`);
     else if (!einde && !handmatig.size && ![...fouten].some((f) => f.startsWith("langer dan"))) fouten.add(`niet tot het eind gekomen binnen ${MAX_MS / 60000} minuten (laatste zin: "${vorigeTekst.slice(0, 70)}")`);

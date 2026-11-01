@@ -196,7 +196,7 @@ interface VormenScene {
   hint(): void;
 }
 
-type Stuk = { img: Img; i: number; vast: boolean; thuis: { x: number; y: number }; sl: string };
+type Stuk = { img: Img; i: number; vast: boolean; thuis: { x: number; y: number }; sl: string; /** Een afdruk van wat er op het stukje staat: stukjes met dezelfde afdruk zien er hetzelfde uit. */ gelijk: string };
 type Kraal = { img: Img; id: string; kleur: Kleur; thuis: { x: number; y: number }; plek: number | null; sl: string };
 
 function maakScene(Phaser: PhaserModule, rustig: boolean) {
@@ -463,7 +463,17 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         });
         const thuis = bordPlek(n, i);
         const img = this.plaats(sl, thuis.x, thuis.y).setDepth(5);
-        this.stukken.push({ img, i, vast: false, thuis: { x: thuis.x, y: thuis.y }, sl });
+        /* De afdruk van dit stukje (alleen wat erop staat), zodat gelijke stukjes elkaars plek mogen innemen (BOUWREGELS 14.18). */
+        let gelijk = `eigen-${i}`;
+        try {
+          const px = bronCanvas.getContext("2d")!.getImageData(Math.round(sx * TX), Math.round(sy * TX), Math.round(w * TX), Math.round(w * TX)).data;
+          let h = 2166136261;
+          for (let k = 0; k < px.length; k += 28) h = Math.imul(h ^ px[k], 16777619) ^ px[k + 1] ^ (px[k + 2] << 8) ^ (px[k + 3] << 16);
+          gelijk = `p${h}`;
+        } catch {
+          /* geen pixels te lezen: dan geldt het stukje alleen op zijn eigen plek */
+        }
+        this.stukken.push({ img, i, vast: false, thuis: { x: thuis.x, y: thuis.y }, sl, gelijk });
       }
       /* eerst even het hele plaatje, dan vallen de stukjes uit elkaar */
       const heel = this.plaats(bron, BORD.x, BORD.y).setDepth(4);
@@ -527,7 +537,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     legStuk(st: Stuk, x: number, y: number, metTween: boolean) {
       const w = BORD.S / this.puzzel!.n;
-      const gelijk = this.stukken.find((t) => t !== st && !t.vast && t.sl === st.sl && Math.hypot(x - t.thuis.x, y - t.thuis.y) < w * 0.32);
+      const gelijk = this.stukken.find((t) => t !== st && !t.vast && t.gelijk === st.gelijk && Math.hypot(x - t.thuis.x, y - t.thuis.y) < w * 0.32);
       if (gelijk && Math.hypot(x - st.thuis.x, y - st.thuis.y) >= w * 0.32) this.wissel(st, gelijk);
       const opBord = Math.abs(x - BORD.x) < BORD.S / 2 && Math.abs(y - BORD.y) < BORD.S / 2;
       if (Math.hypot(x - st.thuis.x, y - st.thuis.y) < w * 0.32) {
@@ -576,7 +586,11 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     tikStuk(i: number) {
       if (!this.pzBezig) return;
       const st = this.stukken[i];
-      if (!st || st.vast) return;
+      if (!st || st.vast) {
+        /* een tik op een stukje dat al vastzit: het testantwoord opnieuw zetten (anders blijft een oud antwoord staan) */
+        this.zetPuzzelTest();
+        return;
+      }
       speelLesgeluid("tik");
       this.kies(this.gekozen === i ? null : i);
     }
@@ -587,7 +601,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const plek = bordPlek(this.puzzel!.n, j);
       if (this.stukken.some((x) => x.vast && this.plekVan(x) === j)) return;
       const doel = this.stukken.find((t) => this.plekVan(t) === j);
-      if (doel && (doel === st || (!doel.vast && doel.sl === st.sl))) {
+      if (doel && (doel === st || (!doel.vast && doel.gelijk === st.gelijk))) {
         if (doel !== st) this.wissel(st, doel);
         return this.legStuk(st, plek.x, plek.y, true);
       }

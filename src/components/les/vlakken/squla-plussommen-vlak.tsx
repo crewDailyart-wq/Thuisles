@@ -51,7 +51,7 @@ import {
   tekenSomkaart,
   tekenStip,
 } from "./squla-plussommen-tekenen";
-import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
 import { ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
 import s from "./squla-plussommen.module.css";
 
@@ -263,7 +263,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
 
     /** Een vast plaatje met een ring in de kleur van zijn getal (één keer getekend). */
     vwK(naam: string, b: number, h: number, kleur: string) {
-      return this.tex(`vwk-${naam}-${b}x${h}-${kleur.slice(1)}`, b + 2 * ringRuimte(b, h), h + 2 * ringRuimte(b, h), (c) => tekenMetRing(c, b, h, kleur, (cc, x, y, bb, hh) => tekenVoorwerp(cc, naam, x, y, bb, hh)));
+      return this.tex(`vwk-${naam}-${b}x${h}-${kleur.slice(1)}`, b + 2 * ringRuimte(b, h), h + 2 * ringRuimte(b, h), (c) => tekenMetRing(c, b, h, kleur, (cc, x, y, bb, hh) => tekenVoorwerp(cc, naam, x, y, bb, hh), voorwerpKleurbaar(naam)));
     }
 
     /** Hetzelfde plaatje mét gloed (één keer gebakken), voor het moment dat het oplicht. */
@@ -386,8 +386,10 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.vakken.forEach((v, i) => {
         let sl: string;
         if (v.soort === "plaat") {
-          const kleur = KLEUREN_DISCO[i % KLEUREN_DISCO.length];
-          sl = this.tex(`plaat-${i % KLEUREN_DISCO.length}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
+          /* Het midden van de plaat heeft de kleur van zijn getal (dezelfde als in de zin van Bliepo, BOUWREGELS 2.1); 0 krijgt een rustige grijsblauwe kleur. */
+          const n = Number(v.kaart.tekst[0]);
+          const kleur = n >= 1 && n <= 10 ? ringKleur(n) : "#6d7699";
+          sl = this.tex(`plaat-${kleur.slice(1)}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
         } else if (v.soort === "kaartje") {
           const kleur = KLEUREN_DISCO[(i * 2 + 1) % KLEUREN_DISCO.length];
           const n = v.kaart.tekst.length;

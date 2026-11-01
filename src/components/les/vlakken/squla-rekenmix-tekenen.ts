@@ -9,7 +9,7 @@
  * Geen live filters (HARDE REGEL 7): de scène tekent elk plaatje één keer.
  */
 
-import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
 import { tekenVorm as tekenGlansVorm, type Kleur as VormKleur } from "./squla-vormen-tekenen";
 import { tekenMetRing, ringRuimte } from "./squla-getalring";
 
@@ -108,7 +108,7 @@ export const RING_BINNEN = 140;
 export const RING_MAAT = RING_BINNEN + 2 * ringRuimte(RING_BINNEN, RING_BINNEN);
 
 export function tekenDingMetRing(c: C, naam: string, kleur: string) {
-  tekenMetRing(c, RING_BINNEN, RING_BINNEN, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h));
+  tekenMetRing(c, RING_BINNEN, RING_BINNEN, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h), voorwerpKleurbaar(naam));
 }
 
 /** De kleuren van de getallen in het beeld, dezelfde als in de zin van Bliepo (Lesscherm KLEURNAAM). */

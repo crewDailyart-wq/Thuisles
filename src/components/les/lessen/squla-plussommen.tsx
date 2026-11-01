@@ -62,6 +62,10 @@ import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-te
 /** Een getal in de zin: in de kleur van dat getal (zoals in de som en bij de voorwerpen), of in de kleur van de stippen. */
 const g = (n: number, k = "tegel") => `{${n}:${k}}`;
 const o = (n: number) => g(n, "oranje");
+/** Een getal op een kaartje (zwart op wit): in de zin wit, zodat de kleur in de zin niets belooft wat er niet staat (BOUWREGELS 2.1). */
+const wk = (n: number) => g(n, "wit");
+/** Een getal op een plaat: de plaat heeft de tegelkleur van zijn getal (1 t/m 10), dus de zin ook; 0 en hoger dan 10 zijn wit. */
+const gp = (n: number) => (n >= 1 && n <= 10 ? g(n) : wk(n));
 const bl = (n: number) => g(n, "blauw");
 /** "6 oranje stippen en 1 blauwe stip", in enkelvoud of meervoud. */
 const stippen = (x: number, y: number) => `${o(x)} ${x === 1 ? "oranje stip" : "oranje stippen"} en ${bl(y)} ${y === 1 ? "blauwe stip" : "blauwe stippen"}.`;
@@ -593,10 +597,10 @@ function dansKaartje(paren: [number, number][]): Vraag {
       vraag: [`Welk kaartje is samen ${g(10)}?`],
       antwoord: async () => Number((await tik(l)).slice(1)),
       isGoed: (i) => i === goedIdx,
-      noem: (i) => `${g(paren[i][0])} en ${g(paren[i][1])}`,
+      noem: (i) => `${wk(paren[i][0])} en ${wk(paren[i][1])}`,
       goed: async () => {
         goedBeeld(l, st, { goedIds: [`k${goedIdx}`] });
-        await l.zeg(`Ja! ${g(paren[goedIdx][0])} en ${g(paren[goedIdx][1])} is samen ${g(10)}.`);
+        await l.zeg(`Ja! ${wk(paren[goedIdx][0])} en ${wk(paren[goedIdx][1])} is samen ${g(10)}.`);
         await l.wacht(900);
       },
       fout: (i) => {
@@ -607,7 +611,7 @@ function dansKaartje(paren: [number, number][]): Vraag {
         const [x, y] = paren[gekozen >= 0 ? gekozen : (goedIdx + 1) % paren.length];
         const s = x + y;
         zet(l, { rek: { rijen: s > 10 ? 2 : 1, a: x, b: y } });
-        await l.zeg(`Kijk naar ${g(x)} en ${g(y)}.`, stippen(x, y));
+        await l.zeg(`Kijk naar ${wk(x)} en ${wk(y)}.`, stippen(x, y));
         if (s < 10) await l.zeg(10 - s === 1 ? `Er blijft ${g(1)} plekje leeg.` : `Er blijven ${g(10 - s)} plekjes leeg.`, `Dat is nog geen ${g(10)}.`);
         else await l.zeg("De rij is vol, en er zijn nog stippen over.", `Dat is meer dan ${g(10)}.`);
         await l.zeg(`Bij ${g(10)} is de rij precies vol.`);
@@ -638,10 +642,10 @@ function dansPlaten(getallen: number[]): Vraag {
       vraag: [`Tik op twee getallen die samen ${g(10)} zijn.`],
       antwoord: () => kiesTwee(l, goedIds),
       isGoed: (x) => waarden(x)[0] + waarden(x)[1] === 10,
-      noem: (x) => `${g(waarden(x)[0])} en ${g(waarden(x)[1])}`,
+      noem: (x) => `${gp(waarden(x)[0])} en ${gp(waarden(x)[1])}`,
       goed: async () => {
         goedBeeld(l, st, { gekozen: [], goedIds });
-        await l.zeg(`Ja! ${g(getallen[paar[0]])} en ${g(getallen[paar[1]])} is samen ${g(10)}.`);
+        await l.zeg(`Ja! ${gp(getallen[paar[0]])} en ${gp(getallen[paar[1]])} is samen ${g(10)}.`);
         await l.wacht(900);
       },
       fout: () => {
@@ -650,14 +654,14 @@ function dansPlaten(getallen: number[]): Vraag {
       },
       samen: async () => {
         zet(l, { rek: { rijen: 1, a: anker, b: 0 } });
-        if (anker === 0) await l.zeg(`Neem de ${g(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
-        else await l.zeg(`Neem de ${g(anker)}.`, anker === 1 ? `Ik zet ${o(1)} stip in de rij.` : `Ik zet ${o(anker)} stippen in de rij.`);
+        if (anker === 0) await l.zeg(`Neem de ${gp(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
+        else await l.zeg(`Neem de ${gp(anker)}.`, anker === 1 ? `Ik zet ${o(1)} stip in de rij.` : `Ik zet ${o(anker)} stippen in de rij.`);
         await l.zeg("Hoeveel plekjes zijn er nog leeg?", "Tel ze maar.");
         await l.verder();
         zet(l, { rek: null });
         await l.zeg("Zoek het getal dat de rij vol maakt.");
       },
-      tip: [`Welk getal maakt samen met ${g(anker)} precies ${g(10)}?`],
+      tip: [`Welk getal maakt samen met ${gp(anker)} precies ${g(10)}?`],
       testAntwoord: goedIds[0],
     });
   };
@@ -673,10 +677,10 @@ const DANS_WELKOM = [
 function dansUitleg(kaartjes: boolean) {
   return async (l: Lesgids) => {
     zet(l, { rek: { rijen: 1, a: 7, b: 3, bZicht: 0 } });
-    await l.zeg("Kijk, een rij van tien plekjes.", `Er staan ${o(7)} oranje stippen in.`, `Er zijn nog ${g(3)} plekjes leeg.`);
+    await l.zeg("Kijk, een rij van tien plekjes.", `Er staan ${o(7)} oranje stippen in.`, `Er zijn nog ${bl(3)} plekjes leeg.`);
     zet(l, { rek: { rijen: 1, a: 7, b: 3 } });
     await l.wacht(700);
-    await l.zeg(`${g(7)} en ${g(3)} is samen ${g(10)}.`, "Nu is de rij precies vol.");
+    await l.zeg(`${o(7)} en ${bl(3)} is samen ${g(10)}.`, "Nu is de rij precies vol.");
     await l.verder();
     zet(l, { rek: null });
     await l.zeg(kaartjes ? `Zoek steeds het kaartje dat samen ${g(10)} is.` : `Zoek steeds twee getallen die samen ${g(10)} zijn.`);
@@ -850,8 +854,8 @@ const bakkerij1 = les({
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[0],
-  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(3, "broodje"), hoop(2, "broodje")] },
-  uitleg: bakkerijUitleg([hoop(3, "broodje"), hoop(2, "broodje")], 3, 2, "broodjes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(1, "taart"), hoop(4, "taart")] },
+  uitleg: bakkerijUitleg([hoop(3, "taart"), hoop(2, "taart")], 3, 2, "taartjes"),
   /* Level 1: tot 10. Zoals Squla: verhaaltjes, welke som, disco, verbinden, verhaaltje; daarna nog een ronde. */
   vragen: [
     verhaal([hoop(1, "taart"), hoop(4, "taart")], 1, 4, [4, 5, 6, 1], [`Hier ligt ${g(1)} taartje.`, `Daar liggen er ${g(4)}.`, "Hoeveel taartjes zijn het samen?"]),
@@ -882,8 +886,8 @@ const bakkerij2 = les({
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[1],
-  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(12, "koekje"), hoop(3, "koekje")] },
-  uitleg: bakkerijUitleg([hoop(12, "koekje"), hoop(3, "koekje")], 12, 3, "koekjes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(10, "stokbrood"), hoop(3, "stokbrood")] },
+  uitleg: bakkerijUitleg([hoop(12, "stokbrood"), hoop(3, "stokbrood")], 12, 3, "stokbroden"),
   /* Level 2: tot 20, niet over het tiental (zoals Squla één kleine over het tiental in het verbinden). */
   vragen: [
     verhaal([hoop(10, "stokbrood"), hoop(3, "stokbrood")], 10, 3, [13, 7, 15, 3], [`Er liggen ${g(10)} stokbroden.`, `Ik leg er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"]),
@@ -914,8 +918,8 @@ const bakkerij3 = les({
   kaart: KaartBakkerij,
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[2],
-  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(8, "cupcake"), hoop(5, "cupcake")] },
-  uitleg: bakkerijUitleg([hoop(8, "cupcake"), hoop(5, "cupcake")], 8, 5, "cupcakes"),
+  begin: { soort: "bakkerij", id: "begin", groepen: [hoop(6, "koekje"), hoop(6, "koekje")] },
+  uitleg: bakkerijUitleg([hoop(8, "koekje"), hoop(5, "koekje")], 8, 5, "koekjes"),
   /* Level 3: tot 20 over het tiental, met dubbelsommen en één makkelijke onder de 10. */
   vragen: [
     verhaal([hoop(6, "koekje"), hoop(6, "koekje")], 6, 6, [11, 12, 13, 14], [`Er liggen ${g(6)} koekjes.`, `Ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"]),
