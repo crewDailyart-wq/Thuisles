@@ -347,6 +347,8 @@ function telles(t: Telles): Lesdraaiboek {
               },
             }),
       });
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       let fouten = 0;
       let nr = 0;
       for (const v of t.vragen) {
@@ -911,6 +913,8 @@ function rijles(t: Rijles): Lesdraaiboek {
           zetRij(l, { opgave: { ...t.vragen[0].opgave, id: st.huidig }, actief: false, licht: null, ingevuld: null, fout: null, hand: false });
         },
       });
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       let fouten = 0;
       let nr = 0;
       for (const v of t.vragen) {

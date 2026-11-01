@@ -829,6 +829,8 @@ function les(t: Les): Lesdraaiboek {
           st.nr = 0;
         },
       });
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       let fouten = 0;
       for (const v of t.vragen) if (!(await v(l, st))) fouten++;
       l.som(null);

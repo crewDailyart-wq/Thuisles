@@ -664,3 +664,87 @@ Tips:
 - De ufo, satelliet en het raketje bij `dichtstBij` hebben geen rol.
 - Bij watIsMeer (r. 849) praat de zin over sterren die niet in beeld staan.
 - `slingerlampje-geel` lijkt eerder een kerstbal.
+
+---
+
+## Meer, minder, evenveel — ronde 1 — 2026-11-01
+
+Zo gekeurd:
+- Broncode `squla-meer-minder.tsx` (alle 105 vragen nagerekend), het vlak en de tekeningen, op alle regels van BOUWREGELS.md, ook 4.1/4.3, 14.20 en 14.21.
+- Speeltest met GOED=1, één les tegelijk, met schermfoto's: 6 van de 7 lessen tot het eind. 3-1 bleef staan bij de eerste sleepvraag (zie hieronder).
+- Nee-pad zelf nagelopen bij 3-2 (`nee.mjs`), de andere op de code.
+- Plaatjes (appel, peer, ster, bloem, ballon, bal, kraal, koekje, ei, aardbei, knikker, potje, vlieger) bekeken op #0b1028 en in de les: glans B, geen witte randjes, geen gezichten, goed te zien op de donkere achtergrond. In orde.
+
+In orde bij alle lessen:
+- Elke vraag heeft precies één goed antwoord. Ook bij "meer"/"minder" met vier keuzes (3-2: 37 → alleen 38 is meer; 44 en 26 → alleen 43 en 25 zijn minder).
+- testAntwoord klopt.
+- Het aantal getekende dingen klopt met het antwoord. Nageteld: 16 appels, 19 ballonnen (15 + 4), 13 bloemen (10 + 3), 17 kralen, 4 doosjes = 24 eieren.
+- De getallen volgen Squla (tot 20, en in level 3 tot 49 zoals Squla).
+- Geen mensen, geen dieren: de vissen, lieveheersbeestjes en vlinders zijn ballonnen, aardbeien en knikkers geworden. Er blijft geen "wie", "hij" of naam over.
+- Elke les heeft 15 vragen en een eigen beginzin. Het voorbeeld is de echte eerste vraag.
+- Na Ja komt de eerste vraag schoon in beeld.
+
+### squla-meer-minder-evenveel1-1 — ronde 1 — AFGEKEURD (2026-11-01 13:25)
+- Rekenen: in orde.
+- Plaatje: in orde.
+- Taal/kleur: FOUT (14.20). r. 555 `"De appels liggen in rijtjes van {5}."`: de 5 heeft geen kleur. Voorstel: `{5:rood}`, de kleur van de appels.
+- Beginscherm: in orde. Tip (14.21): na Nee telt Bliepo 12 appels (r. 557), terwijl in het voorbeeld 16 appels staan. Het is wel dezelfde soort vraag met hetzelfde ding, en zo verklapt hij de 16 niet. Daarom keur ik er niet op af.
+- Spelen: tot het eind.
+
+### squla-meer-minder-evenveel1-2 — ronde 1 — GOEDGEKEURD (2026-11-01 13:25)
+- Rekenen, plaatje en taal: in orde. De kleur in de uitleg is `geel` (sterren): in orde.
+- Spelen: tot het eind, ook de sleepvragen "op volgorde".
+- Tip: na Nee staan er 8 sterren, met 6 en 10 op de kaarten; het voorbeeld heeft 14 met 12 en 17. Zelfde soort vraag, dus goed.
+
+### squla-meer-minder-evenveel1-3 — ronde 1 — GOEDGEKEURD (2026-11-01 13:25)
+- Rekenen, plaatje en taal: in orde. De bloemen zijn rood en de getallen in de uitleg ook.
+- Spelen: tot het eind.
+- Tip: Squla telt hier kralen in allemaal verschillende kleuren. Bij ons zijn alle kralen paars (één vaste kleur per ding). Dat is een bewuste keuze en geen fout.
+
+### squla-meer-minder-evenveel2-1 — ronde 1 — AFGEKEURD (2026-11-01 13:25)
+- Rekenen: in orde.
+- Beginscherm: FOUT (14.21, de uitleg verklapt een latere vraag). Na Nee legt Bliepo de koekjes `[11, 13, 12]` uit en zegt "13 is de meeste." (r. 673). Dat is precies vraag 9 (r. 684). Voorstel: andere getallen die nergens in de les staan, bijvoorbeeld `[9, 11, 10]` met `"${g(11, "bruin")} is de meeste."`.
+- Taal: in orde. Tip: "We tellen eerst kralen. Tel de kralen." Daarin staat twee keer "kralen".
+- Spelen: tot het eind.
+
+### squla-meer-minder-evenveel2-2 — ronde 1 — GOEDGEKEURD (2026-11-01 13:25)
+- Rekenen, plaatje en taal: in orde. Spelen: tot het eind.
+- Tips:
+  - "Drie kaarten met appels." (r. 705) is geen hele zin. Beter: "Hier liggen drie kaarten met appels."
+  - Vraag 10 en 13 hebben dezelfde kaarten `[16, 18, 17]`, één keer met "meeste" en één keer met "minste".
+
+### squla-meer-minder-evenveel3-1 — ronde 1 — AFGEKEURD (2026-11-01 13:25)
+- Rekenen: in orde. Potjes van meer naar minder en de getalvragen meer dan, minder dan en evenveel als hebben elk één goed antwoord.
+- Spelen: FOUT (5.7). De speelcontrole bleef 145 stappen hangen bij de eerste vraag "Van meer naar minder." (de potjes 26, 8, 24).
+  - Oorzaak: het voorbeeld (r. 526–530) zet vraag 1 al in beeld, maar zonder de goede volgorde (`test`). Na Ja tekent `toonOpgave` die vraag niet opnieuw, omdat `st.huidig` al gelijk is (r. 178). Daardoor krijgt de vraag zijn `test` nooit.
+  - Bij 3-2 werken de vliegers wel, omdat die niet de eerste vraag zijn.
+  - Een kind kan waarschijnlijk wel slepen, want `actief` wordt in `zetOpVolgorde` gezet. Maar de controle die vóór het online zetten draait, komt er niet door.
+  - Voorstel: in `les()` direct na `await squlaBegin(...)` `st.huidig = "";` zetten, zoals de handleiding van het beginscherm voorschrijft. Dan tekent de eerste vraag zich opnieuw, met `test`. Daarna opnieuw spelen.
+- Slepen (op de code beoordeeld): slepen naar het dichtstbijzijnde vakje werkt. Laat je los naast een vakje, dan gaat het ding terug. Tikken legt het ding in het eerste lege vakje, en tikken in een vakje haalt het terug. Het lichtje doet het één keer voor. In orde.
+- Beginscherm: de potjes komen in beeld en na Nee gaat de uitleg over potjes (staven): in orde. Tip: "Drie potjes met een getal." is geen hele zin.
+- Tip (3.13): bij getallen is "van groot naar klein" natuurlijker dan "van meer naar minder".
+
+### squla-meer-minder-evenveel3-2 — ronde 1 — AFGEKEURD (2026-11-01 13:25)
+- Rekenen: in orde.
+- Beginscherm: FOUT (14.21 en 4.1).
+  - Het voorbeeld en het welkom gaan over eieren in doosjes van 6 (schermfoto: 4 doosjes).
+  - Na Nee telt Bliepo 23 ballonnen in rijen van 10 en daarna vliegers (r. 787–791). Over eieren en doosjes zegt hij niets (zelf nagelopen, `controle/nee32/`).
+  - Ook `start` (r. 786) is een groep ballonnen, die even in beeld flitst.
+  - Voorstel: de uitleg met eierdoosjes, bijvoorbeeld `dozen(3)` = 18: "In elk doosje zitten er 6", 6, 12, 18. Daarna eventueel de vliegers. Zet `start` op de doosjes.
+- Kleur: FOUT (14.20). r. 785 `"Eieren liggen in doosjes van {6}."` heeft geen kleur. Voorstel: `{6:wit}`; de eieren zijn wit.
+- Tip: "Tel de ballonnen. Welk getal is meer?" Duidelijker is "Welk getal is meer dan het aantal ballonnen?" Bliepo zegt wel eerst "Let op, nu vraag ik iets anders."
+- Spelen: tot het eind.
+
+### Algemeen (alle Squla-lessen, niet alleen deze)
+1. **Getalkleuren zijn in beeld nooit te zien (2.2/14.20).** `src/components/les/Lesscherm.module.css` r. 595–598 bevat:
+   - `[data-indeling="synthesis"] .getal { color: inherit !important; }`
+   - Elke Squla-les gebruikt `indeling: "synthesis"`. Daardoor is elk getal in de zin boven Bliepo wit, ook `{12:rood}`.
+   - Gezien op schermfoto's: squla-tellen-fruit-1 "Ja! Het zijn er 12." heeft een witte 12 (zou rood zijn). squla-min-bus1-1 "nog 5 pakjes" heeft een witte 5 (zou bruin zijn).
+   - Al het kleurwerk van 2.2, 14.10, 14.16 en 14.20 in de lessen werkt dus niet in beeld.
+   - Deze regel staat er met een reden (28 okt: geel en paars waren slecht leesbaar op blauw) en zit in een gedeeld bestand. Weghalen of aanpassen mag alleen met toestemming van Sara (regel 3). Een idee om voor te leggen: alleen getallen met een eigen kleurwoord (`{n:kleur}`) hun kleur laten houden.
+2. **Kaarten om de groepjes (1.4, twijfel).** In 1-2, 1-3, 2-1, 2-2 en 3-1 staan de voorwerpen op grote hologramkaarten met een lichte rand. Regel 1.4 zegt "geen kaders of kaartjes om voorwerpen, ook al heeft Squla ze". Hier is de kaart wel het ding waarop het kind tikt. Ik keur er niet op af, maar Sara moet beslissen.
+3. Tip: de getallen op de bordjes in de scène zijn geel, en bij samen tellen staat de "10" naast roze ballonnen ook in geel. De kleur van het voorwerp past beter bij 2.2.
+
+**Uitslag Meer, minder, evenveel ronde 1:**
+- GOEDGEKEURD: 1-2, 1-3, 2-2.
+- AFGEKEURD: 1-1, 2-1, 3-1, 3-2.

@@ -596,3 +596,12 @@ a.knop {
 [data-indeling="synthesis"] .getal {
   color: inherit !important;
 }
+/* Squla-lessen (1 november 2026, besluit eigenaar): een getal met een eigen kleur ({6:paars}) houdt
+   die kleur, zodat het bij zijn voorwerpen hoort (BOUWREGELS 2.1/2.2). Met een dunne donkere rand,
+   zodat ook geel en paars op blauw goed leesbaar zijn. Getallen zonder eigen kleur blijven wit.
+   De oudere Synthesis-lessen veranderen niet. */
+[data-indeling="synthesis"][data-squla] .getal[data-eigen] {
+  color: var(--getalkleur) !important;
+  -webkit-text-stroke: 1.5px #0b1028;
+  paint-order: stroke fill;
+}

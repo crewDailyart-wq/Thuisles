@@ -530,6 +530,8 @@ function les(d: Lesdef): Lesdraaiboek {
         },
       });
       let fouten = 0;
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       for (const [i, q] of d.vragen.entries()) if (!(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
       zet(l, { opgave: null });
       await squlaEind(l, fouten, d.eind);

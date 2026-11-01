@@ -642,6 +642,8 @@ function minles(m: MinLes): Lesdraaiboek {
           st.nr = 0;
         },
       });
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       let fouten = 0;
       for (const v of m.vragen) if (!(await speelVraag(l, v, st))) fouten++;
       zet(l, { toneel: null, ...LEEG, verbind: null, bubbels: null });

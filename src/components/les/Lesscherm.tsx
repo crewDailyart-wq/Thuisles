@@ -276,7 +276,7 @@ function zinWoorden(ruw: string): React.ReactNode[] {
     if (m[1] !== undefined)
       uit.push(
         <span key={i++}>
-          <span className={s.getal} style={{ color: getalKleur(m[1], naam) }}>
+          <span className={s.getal} data-eigen={naam ? "" : undefined} style={{ color: getalKleur(m[1], naam), ["--getalkleur" as string]: getalKleur(m[1], naam) }}>
             {m[1]}
           </span>
           {m[2]}
@@ -299,7 +299,7 @@ function zinWoorden(ruw: string): React.ReactNode[] {
 function Zin({ zin: ruw }: { zin: string }) {
   const zin = kleurGetallen(ruw);
   const delen = useMemo(() => {
-    const uit: { soort: "woord" | "getal" | "nadruk"; tekst: string; kleur?: string }[] = [];
+    const uit: { soort: "woord" | "getal" | "nadruk"; tekst: string; kleur?: string; eigen?: boolean }[] = [];
     const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)(?::([a-z]+))?\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
     let m: RegExpExecArray | null;
     while ((m = re.exec(zin))) {
@@ -311,7 +311,7 @@ function Zin({ zin: ruw }: { zin: string }) {
       }
       const naam = m[5];
       m = [m[0], m[4], m[6], m[7], m[8], m[9]] as unknown as RegExpExecArray;
-      if (m[1] !== undefined) uit.push({ soort: "getal", tekst: m[1], kleur: getalKleur(m[1], naam) }, ...(m[2] ? [{ soort: "woord" as const, tekst: m[2] }] : []));
+      if (m[1] !== undefined) uit.push({ soort: "getal", tekst: m[1], kleur: getalKleur(m[1], naam), eigen: Boolean(naam) }, ...(m[2] ? [{ soort: "woord" as const, tekst: m[2] }] : []));
       else if (m[3] !== undefined) uit.push({ soort: "nadruk", tekst: m[3] }, ...(m[4] ? [{ soort: "woord" as const, tekst: m[4] }] : []));
       else uit.push({ soort: "woord", tekst: m[5] });
     }
@@ -326,7 +326,7 @@ function Zin({ zin: ruw }: { zin: string }) {
         const spatie = i < delen.length - 1 && !/^[.,!?:]$/.test(delen[i + 1].tekst) ? " " : "";
         if (d.soort === "getal")
           return (
-            <span key={i} className={`${s.woord} ${s.getal}`} style={{ ...vertraging, color: d.kleur ?? getalkleur(Number(d.tekst)) }}>
+            <span key={i} className={`${s.woord} ${s.getal}`} data-eigen={d.eigen ? "" : undefined} style={{ ...vertraging, color: d.kleur ?? getalkleur(Number(d.tekst)), ["--getalkleur" as string]: d.kleur ?? getalkleur(Number(d.tekst)) }}>
               {d.tekst}
               {spatie}
             </span>
@@ -1062,7 +1062,7 @@ function Lesscherm({
   );
 
   return (
-    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-staand={staand ? "ja" : undefined}>
+    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-staand={staand ? "ja" : undefined}>
       {nieuw && <OpdrachtDecor />}
       {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
       {pilBoven ? pilBalk : null}

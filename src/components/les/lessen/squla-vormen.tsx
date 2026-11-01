@@ -247,14 +247,19 @@ function les(t: LesOpties): Lesdraaiboek {
         uitleg: () => t.uitleg(l, st),
         /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
         voorbeeld: () => {
+          /* De uitleg-vlaggen horen bij de echte eerste vraag, niet bij het voorbeeld. */
+          const { tikUitgelegd, sleepUitgelegd, hint } = st;
           voorbeeldAan = true;
           try {
             void t.vragen[0](l, st).catch(() => {});
           } finally {
             voorbeeldAan = false;
           }
+          Object.assign(st, { tikUitgelegd, sleepUitgelegd, hint });
         },
       });
+      /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
+      st.huidig = "";
       let fouten = 0;
       for (const v of t.vragen) if (!(await v(l, st))) fouten++;
       zet(l, { ...LEEG, beeld: null, ketting: null, puzzel: null });
@@ -1541,7 +1546,7 @@ const kleuren1 = les({
   kaart: KaartPuzzel,
   voorwerpen: [...new Set(Object.values(PUZZEL_VOORWERPEN).flat())],
   begin: { id: "begin", delen: (["rood", "oranje", "geel", "groen", "blauw", "paars"] as Kleur[]).map((k, i): Deel => ({ s: "vorm", id: `v-${i}`, x: rijX(6, i, 130), y: 330, maat: 110, vorm: "vierkant", kleur: k })) },
-  welkom: ["Een kleurrijk plaatje valt in vier stukjes.", "Maak de puzzel."],
+  welkom: ["Een kleurrijk plaatje valt in zestien stukjes.", "Maak de puzzel."],
   uitleg: (l) => PUZZEL_UITLEG(l),
   /* Zoals Squla level 1 (16, 9 en 4 stukjes), steeds opnieuw met een ander kleurenplaatje. */
   vragen: kleurPuzzels.map(([nr, n], i) => puzzelVraag(`k1-${i + 1}`, { soort: "kleur", nr }, n)),
