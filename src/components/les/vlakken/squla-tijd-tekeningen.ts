@@ -289,7 +289,7 @@ function lijst(c: C, o: Record<string, string>) {
   }
 }
 
-/** Een verjaardagskalender als lijst, groot (ontwerpvak 420 × 380). */
+/** Een feestkalender als lijst, groot (ontwerpvak 420 × 380). */
 function verjaardagGroot(c: C, o: Record<string, string>) {
   const naam = o.maand ?? "juni";
   const dagen = Number(o.dagen ?? 30);
@@ -330,10 +330,10 @@ function boekNaam(c: C, o: Record<string, string>) {
   v(c, blok(24, 12, 122, 176, 10), PAARS, RAND);
   v(c, "M 38 12 V 188", undefined, 3);
   v(c, blok(54, 60, 78, 40, 6), PALET.warmwit, 3);
-  tekst(c, o.naam ?? "Ravi", 93, 81, 20, N);
+  tekst(c, o.naam ?? "boek", 93, 81, 20, N);
 }
 
-/** Een gedachtewolk: Noa droomt van een stukje kalender (ontwerpvak 420 × 260). */
+/** Een gedachtewolk met een stukje kalender erin (ontwerpvak 420 × 260). */
 function droom(c: C, o: Record<string, string>) {
   v(c, "M 70 216 a 16 12 0 1 0 32 0 a 16 12 0 1 0 -32 0 Z M 34 244 a 10 8 0 1 0 20 0 a 10 8 0 1 0 -20 0 Z", PALET.warmwit, 3);
   v(c, "M 110 190 C 40 200 30 120 84 110 C 76 50 160 30 190 66 C 220 20 320 30 320 86 C 390 86 400 170 340 184 C 330 220 250 222 230 196 C 200 226 130 220 110 190 Z", PALET.warmwit, RAND);
@@ -342,8 +342,6 @@ function droom(c: C, o: Record<string, string>) {
   c.scale(0.72, 0.72);
   stukje(c, o);
   c.restore();
-  tekst(c, "z", 380, 40, 30, PALET.warmwit);
-  tekst(c, "z", 400, 14, 22, PALET.warmwit);
 }
 
 /* ---------- Tijden: dagdelen, dieren, de bakkerij ---------- */

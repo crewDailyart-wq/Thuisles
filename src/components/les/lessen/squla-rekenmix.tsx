@@ -1299,6 +1299,13 @@ function les(d: Lesdef): Lesdraaiboek {
       l.vlak<RMProps>(SqulaRekenmix, { opgave: eerste, namen: namenIn(opgaven), vooraf: opgaven });
       await squlaBegin(l, {
         welkom: d.welkom,
+        /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
+        voorbeeld: () => {
+          st.huidig = "";
+          toonOpgave(l, st, eerste, null);
+          /* De eerste vraag zet zijn opgave daarna nog eens, mét de test (zelfde beeld). */
+          st.huidig = "";
+        },
         uitleg: async () => {
           for (const [i, q] of d.voorbeeld.entries()) await legUit(l, st, `${d.id}-vb${i + 1}`, q);
         },
@@ -1326,7 +1333,7 @@ const mix1_1 = les({
   titel: "Rekenmix 1",
   oefening: "Rekenmix 1",
   level: 1,
-  welkom: ["Tel goed wat je ziet!", "Kies het goede getal."],
+  welkom: ["Er liggen appels door elkaar.", "Tel de appels. Hoeveel zijn het er?"],
   voorbeeld: [{ t: "tel", v: KNIKKER, gr: rijen("knikker", [3, 3]), keuzes: [6, 5, 7], soort: "tel" }],
   vragen: [
     { t: "tel", v: APPEL, gr: los([{ naam: "appel", n: 7 }], 11), keuzes: [8, 6, 7], soort: "tel" },
@@ -1361,7 +1368,7 @@ const mix1_2 = les({
   titel: "Rekenmix 1 (moeilijker)",
   oefening: "Rekenmix 1",
   level: 2,
-  welkom: ["Bovenaan zie je een ding.", "Welke vorm lijkt erop?"],
+  welkom: ["Kijk naar de tent.", "Welke vorm lijkt erop?"],
   voorbeeld: [{ t: "vorm", naam: "zon", zin: "de zon", vorm: "cirkel", keuzes: ["vierkant", "cirkel", "driehoek"] }],
   vragen: [
     { t: "vorm", naam: "tent", zin: "de tent", vorm: "driehoek", keuzes: ["cirkel", "driehoek", "vierkant"] },
@@ -1394,7 +1401,7 @@ const mix1_3 = les({
   titel: "Rekenmix 1 (nog moeilijker)",
   oefening: "Rekenmix 1",
   level: 3,
-  welkom: ["Drie dingen staan in een rij.", "Wat staat links, rechts of in het midden?"],
+  welkom: ["Drie dingen staan in een rij.", "Wat staat er rechts?"],
   voorbeeld: [{ t: "plaats", rij: ["bus", "fiets", "bootje"], keuzes: ["fiets", "bootje", "bus"], wat: "links" }],
   vragen: [
     { t: "plaats", rij: ["fiets", "speelgoedauto", "bus"], keuzes: ["speelgoedauto", "bus", "fiets"], wat: "rechts" },
@@ -1427,7 +1434,7 @@ const mix1_4 = les({
   titel: "Rekenmix 1 (heel moeilijk)",
   oefening: "Rekenmix 1",
   level: 4,
-  welkom: ["Drie groepjes staan naast elkaar.", "Zet ze op volgorde: van meer naar minder, of van minder naar meer."],
+  welkom: ["Hier liggen koekjes.", "Zet ze op volgorde, van meer naar minder."],
   voorbeeld: [{ t: "ordenAantal", v: APPEL, aantallen: [2, 6, 4], richting: "af" }],
   vragen: [
     { t: "ordenAantal", v: KOEKJE, aantallen: [3, 8, 5], richting: "af" },
@@ -1465,7 +1472,7 @@ const mix2_1 = les({
   titel: "Rekenmix 2",
   oefening: "Rekenmix 2",
   level: 1,
-  welkom: ["Kijk eens naar de boterhammen met kaas!", "Waar zit meer kaas op en waar minder?"],
+  welkom: ["Kijk naar de boterham bovenaan.", "Op welke boterham zit meer kaas?"],
   voorbeeld: [{ t: "hoeveel", ding: "boterham", keuzes: [1, 0, 2], wat: "minder" }],
   vragen: [
     { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "meer" },
@@ -1530,7 +1537,7 @@ const mix2_3 = les({
   titel: "Rekenmix 2 (nog moeilijker)",
   oefening: "Rekenmix 2",
   level: 3,
-  welkom: ["Zoek de kleur en de vorm.", "En tel de blokjes."],
+  welkom: ["Hier zie je kleuren en vormen.", "Waar zie je een rode cirkel?"],
   voorbeeld: [
     { t: "kleurvorm", kleur: "geel", vorm: "cirkel", keuzes: [["geel", "cirkel"], ["geel", "vierkant"], ["rood", "cirkel"]] },
     { t: "blokjes", n: 8, keuzes: [7, 8, 9] },
@@ -1569,7 +1576,7 @@ const mix2_4 = les({
   titel: "Rekenmix 2 (heel moeilijk)",
   oefening: "Rekenmix 2",
   level: 4,
-  welkom: ["Links staan groepjes.", "Wat hoort bij elkaar? Trek een lijn."],
+  welkom: ["Links staan groepjes ballen.", "Verbind elk groepje met het goede getal."],
   voorbeeld: [{ t: "verbind", links: [r5("bal", [5]), r5("bal", [3, 3]), r5("bal", [4])], rechts: [4, 5, 6], vl: BAL }],
   vragen: [
     { t: "verbind", links: [r5("bal", [3, 3]), r5("bal", [5, 2]), r5("bal", [5])], rechts: [7, 5, 6], vl: BAL },
@@ -1608,7 +1615,7 @@ const mix3_1 = les({
   titel: "Rekenmix 3",
   oefening: "Rekenmix 3",
   level: 1,
-  welkom: ["Klein, kleiner, kleinst!", "Zet de plaatjes op volgorde."],
+  welkom: ["Drie ballen zijn niet even groot.", "Zet ze op volgorde, van klein naar groot."],
   voorbeeld: [{ t: "ordenMaat", woord: "groot", naam: "boom", maten: [0.75, 0.45, 1] }],
   vragen: [
     { t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.62, 1, 0.38] },
@@ -1643,7 +1650,7 @@ const mix3_2 = les({
   titel: "Rekenmix 3 (moeilijker)",
   oefening: "Rekenmix 3",
   level: 2,
-  welkom: ["Vijf dingen staan in een rij.", "Wat staat als eerste en wat als laatste?"],
+  welkom: ["Vijf dingen staan in een rij.", "Wat staat als eerste in de rij?"],
   voorbeeld: [{ t: "rang", rij: RIJ_A, keuzes: ["bus", "fiets", "bootje", "speelgoedauto", "treintje"], plek: 1 }],
   vragen: [
     { t: "rang", rij: RIJ_A, keuzes: ["bootje", "bus", "fiets", "treintje", "speelgoedauto"], plek: 0 },
@@ -1676,7 +1683,7 @@ const mix3_3 = les({
   titel: "Rekenmix 3 (nog moeilijker)",
   oefening: "Rekenmix 3",
   level: 3,
-  welkom: ["Welk getal komt ervoor?", "En welk getal komt erna?"],
+  welkom: ["We zoeken getallen die naast elkaar staan.", `Welk getal komt net voor ${w(7)}?`],
   voorbeeld: [{ t: "buur", n: 5, richting: "na", keuzes: [4, 6, 7] }],
   vragen: [
     { t: "buur", n: 7, richting: "voor", keuzes: [8, 6, 5] },
@@ -1710,7 +1717,7 @@ const mix3_4 = les({
   titel: "Rekenmix 3 (heel moeilijk)",
   oefening: "Rekenmix 3",
   level: 4,
-  welkom: ["Een paar ballen zitten in de doos.", "Hoeveel zitten erin?"],
+  welkom: [`Er zijn ${g(6, "rood")} ballen.`, "Hoeveel zitten er in de doos?"],
   voorbeeld: [{ t: "splits", v: BAL, houder: "doos", tot: 5, buiten: 4, keuzes: [1, 2, 3] }],
   vragen: [
     { t: "splits", v: BAL, houder: "doos", tot: 6, buiten: 2, keuzes: [4, 5, 3] },
@@ -1748,7 +1755,7 @@ const mix4_1 = les({
   titel: "Rekenmix 4",
   oefening: "Rekenmix 4",
   level: 1,
-  welkom: ["Kijk, de ruimte staat vol!", "Tel goed en kies het goede getal."],
+  welkom: ["De ruimte staat vol raketjes, sterren en planeten.", "Tel alleen de raketjes."],
   voorbeeld: [{ t: "tel", v: BAL, gr: tweeGroepen("bal", 2, 3), keuzes: [5, 4, 6], soort: "samen", delen: [2, 3] }],
   vragen: [
     { t: "tel", v: RAKET, gr: los([{ naam: "raketje", n: 8 }, { naam: "ster", n: 4 }, { naam: "planeet", n: 2 }], 61, 820, 580, 120), keuzes: [10, 8, 9], soort: "druk" },
@@ -1783,7 +1790,7 @@ const mix4_2 = les({
   titel: "Rekenmix 4 (moeilijker)",
   oefening: "Rekenmix 4",
   level: 2,
-  welkom: ["Zet de dingen op volgorde.", "Sleep ze naar de plekjes."],
+  welkom: [`We tellen verder vanaf ${w(10)}.`, "Zet de getallen op hun plek."],
   voorbeeld: [{ t: "ordenGetal", getallen: [8, 6, 7], vast: 5, richting: "op" }],
   vragen: [
     { t: "ordenGetal", getallen: [12, 14, 11, 13], vast: 10, richting: "op" },
@@ -1821,7 +1828,7 @@ const mix4_3 = les({
   titel: "Rekenmix 4 (nog moeilijker)",
   oefening: "Rekenmix 4",
   level: 3,
-  welkom: ["Drie groepjes in de ruimte.", "Waar zie je het aantal dat ik noem?"],
+  welkom: ["Drie groepjes sterren in de ruimte.", `Waar zie je ${g(6, "geel")} sterren?`],
   voorbeeld: [{ t: "welke", v: STER, groepen: [kv("ster", 3, 81), kv("ster", 5, 83), kv("ster", 4, 85)], vraagt: "is", n: 4 }],
   vragen: [
     { t: "welke", v: STER, groepen: [kv("ster", 6, 87), kv("ster", 8, 89), kv("ster", 5, 91)], vraagt: "is", n: 6 },
@@ -1854,7 +1861,7 @@ const mix4_4 = les({
   titel: "Rekenmix 4 (heel moeilijk)",
   oefening: "Rekenmix 4",
   level: 4,
-  welkom: ["Meer dan, minder dan en evenveel.", "En welke kleur staat waar in de rij?"],
+  welkom: ["Drie groepjes raketjes in de ruimte.", `Waar zie je meer dan ${g(5, "rood")} raketjes?`],
   voorbeeld: [
     { t: "welke", v: BAL, groepen: [kr("bal", [3]), kr("bal", [4]), kr("bal", [2])], vraagt: "meer", n: 3 },
     { t: "kleurrij", rij: ["rood", "groen", "geel", "blauw", "paars"], wat: "middelste", keuzes: ["geel", "rood", "blauw"] },

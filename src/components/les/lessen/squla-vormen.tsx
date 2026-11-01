@@ -36,7 +36,7 @@
 import type { ComponentType } from "react";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord } from "./squla-hulp";
+import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
 import { KaartOpruimen, KaartOrienteren, KaartPatronen, KaartPuzzel, SqulaVormenVlak, type Beeld, type Deel, type Ketting, type Puzzel, type VormenProps } from "../vlakken/squla-vormen-vlak";
 import { KLEURWOORD, PUZZEL_VOORWERPEN, type Kleur, type Platvorm, type PuzzelPlaatje, type Ruimtevorm, type VormNaam, type Zicht } from "../vlakken/squla-vormen-tekenen";
 
@@ -199,6 +199,20 @@ async function wijs(l: Lesgids, stappen: [string[], string][]) {
 
 /* ---------- een les ---------- */
 
+/**
+ * Het beginscherm ("Kun je dit al?") laat de EERSTE vraag van de les zien, zonder dat het
+ * kind iets hoeft te doen: tijdens het voorbeeld zet `squlaVraag` alleen het beeld neer
+ * (geen vraag, geen antwoord). Zo blijft het voorbeeld altijd gelijk aan de eerste vraag.
+ */
+let voorbeeldAan = false;
+function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
+  if (voorbeeldAan) {
+    v.toon?.();
+    return Promise.resolve(true);
+  }
+  return echteSqulaVraag(l, v);
+}
+
 type LesOpties = {
   id: string;
   titel: string;
@@ -228,7 +242,19 @@ function les(t: LesOpties): Lesdraaiboek {
       const st: Stand = { huidig: t.begin?.id ?? "", goed: 0, fout: 0, hint: 0, tikUitgelegd: false, sleepUitgelegd: false };
       l.vlak<VormenProps>(SqulaVormenVlak, { beeld: t.begin ?? null });
       if (t.begin) speelLesgeluid("verschijn");
-      await squlaBegin(l, { welkom: t.welkom, uitleg: () => t.uitleg(l, st) });
+      await squlaBegin(l, {
+        welkom: t.welkom,
+        uitleg: () => t.uitleg(l, st),
+        /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
+        voorbeeld: () => {
+          voorbeeldAan = true;
+          try {
+            void t.vragen[0](l, st).catch(() => {});
+          } finally {
+            voorbeeldAan = false;
+          }
+        },
+      });
       let fouten = 0;
       for (const v of t.vragen) if (!(await v(l, st))) fouten++;
       zet(l, { ...LEEG, beeld: null, ketting: null, puzzel: null });
@@ -1148,7 +1174,7 @@ const patronen1 = les({
   kaart: KaartPatronen,
   voorwerpen: ["appel", "banaan", "peer", "mandarijn", "bal", "speelblok", "potlood", "boek"],
   begin: { id: "uitleg", delen: kralenRij(herhaal<Kleur>(["blauw", "geel"], 6)) },
-  welkom: ["Kijk goed naar de rij vormen.", "Ze komen steeds in dezelfde volgorde terug: dat is een patroon."],
+  welkom: ["De kralen komen steeds in dezelfde volgorde terug.", "Welke kraal komt na de rode kraal?"],
   uitleg: async (l, st) => {
     toon(l, st, "uitleg", { beeld: { id: "uitleg", delen: kralenRij(herhaal<Kleur>(["blauw", "geel"], 6)) } });
     zet(l, { licht: ["r-0", "r-1"] });
@@ -1217,7 +1243,7 @@ const patronen2 = les({
   kaart: KaartPatronen,
   voorwerpen: ["zon", "maan", "ster", "planeet", "bal", "speelblok", "potlood", "boek", "bloembak", "zonnebloem", "tulp", "bloem"],
   begin: { id: "uitleg", delen: blokRooster(UITLEG_ROOSTER, 120) },
-  welkom: ["Nu staan de patronen in rijen onder elkaar.", "Soms is het patroon gespiegeld of gedraaid."],
+  welkom: ["Nu staan de kralen in rijen onder elkaar.", "Hoe ziet de onderste rij eruit?"],
   uitleg: async (l, st) => {
     toon(l, st, "uitleg", { beeld: { id: "uitleg", delen: blokRooster(UITLEG_ROOSTER, 120) } });
     zet(l, { licht: ["b-0-0", "b-0-1", "b-0-2"] });
@@ -1299,7 +1325,7 @@ const opruimen = les({
   kaart: KaartOpruimen,
   voorwerpen: ["broek", "t-shirt", "schoen", "jas", "bal", "speelgoedauto", "speelblok", "boek", "potlood", "wandplank", "kledingkast", "tekendoos", "mand", "doos"],
   begin: OPRUIM_UITLEG,
-  welkom: ["Wat een rommeltje! Alles ligt door elkaar.", "Zet alles netjes soort bij soort op zijn eigen plek."],
+  welkom: ["Er ligt veel door elkaar.", "Op welk plaatje zie je alleen broeken?"],
   uitleg: async (l, st) => {
     toon(l, st, "uitleg", { beeld: OPRUIM_UITLEG });
     zet(l, { licht: ["a"] });
@@ -1421,7 +1447,7 @@ const orienteren = les({
   kaart: KaartOrienteren,
   voorwerpen: ["bal", "bus", "vlieger", "skateboard", "speelgoedauto", "boek", "speelblok", "ballon", "ballon-geel", "ballon-oranje", "ballon-paars", "ballon-blauw", "ballon-groen", "ballon-rood", "boom"],
   begin: ORIENT_UITLEG,
-  welkom: ["Kijk goed waar alles staat.", "Links, rechts, boven, onder, in het midden.", "En we kijken ook van boven, van voren en van onder."],
+  welkom: ["Een bal ligt op een grasveld.", "Waar ligt de bal?"],
   uitleg: async (l, st) => {
     toon(l, st, "uitleg", { beeld: ORIENT_UITLEG });
     zet(l, { licht: ["ding"] });
@@ -1515,7 +1541,7 @@ const kleuren1 = les({
   kaart: KaartPuzzel,
   voorwerpen: [...new Set(Object.values(PUZZEL_VOORWERPEN).flat())],
   begin: { id: "begin", delen: (["rood", "oranje", "geel", "groen", "blauw", "paars"] as Kleur[]).map((k, i): Deel => ({ s: "vorm", id: `v-${i}`, x: rijX(6, i, 130), y: 330, maat: 110, vorm: "vierkant", kleur: k })) },
-  welkom: ["Kijk eens naar de kleurrijke puzzel!", "Welk stukje past waar?"],
+  welkom: ["Een kleurrijk plaatje valt in vier stukjes.", "Maak de puzzel."],
   uitleg: (l) => PUZZEL_UITLEG(l),
   /* Zoals Squla level 1 (16, 9 en 4 stukjes), steeds opnieuw met een ander kleurenplaatje. */
   vragen: kleurPuzzels.map(([nr, n], i) => puzzelVraag(`k1-${i + 1}`, { soort: "kleur", nr }, n)),
@@ -1546,7 +1572,7 @@ const kleuren2 = les({
   kaart: KaartPuzzel,
   voorwerpen: [],
   begin: { id: "begin", delen: PLAT[0].map(([v, k], i): Deel => ({ s: "vorm", id: `v-${i}`, x: rijX(5, i, 160), y: 330, maat: 140, vorm: v, kleur: k })) },
-  welkom: ["De puzzel heeft nu platte vormen.", "Kijk goed welk stukje past."],
+  welkom: ["Een blauwe cirkel valt in stukjes.", "Maak de puzzel."],
   uitleg: (l) => PUZZEL_UITLEG(l),
   vragen: vormPuzzels("k2", PLAT),
   eind: "Je kunt puzzelen met platte vormen.",
@@ -1561,7 +1587,7 @@ const kleuren3 = les({
   kaart: KaartPuzzel,
   voorwerpen: [],
   begin: { id: "begin", delen: RUIMTE[0].map(([v, k], i): Deel => ({ s: "vorm", id: `v-${i}`, x: rijX(5, i, 160), y: 330, maat: 140, vorm: v, kleur: k })) },
-  welkom: ["De puzzel heeft nu vormen die je kunt vastpakken.", "Zoals een bal of een blok."],
+  welkom: ["Een rode bol valt in stukjes.", "Maak de puzzel."],
   uitleg: (l) => PUZZEL_UITLEG(l),
   vragen: vormPuzzels("k3", RUIMTE),
   eind: "Je kunt puzzelen met ruimtelijke vormen.",

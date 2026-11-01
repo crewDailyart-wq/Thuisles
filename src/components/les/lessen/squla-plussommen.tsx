@@ -39,7 +39,7 @@
 import type { ComponentType } from "react";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord } from "./squla-hulp";
+import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
 import {
   KaartBakkerij,
   KaartBus,
@@ -76,6 +76,20 @@ const somAria = (a: number, b: number) => `${a} plus ${b} is ${a + b}`;
 
 type Stand = { huidig: string; nr: number; goed: number; fout: number; typUitgelegd: boolean };
 type Vraag = (l: Lesgids, st: Stand) => Promise<boolean>;
+
+/**
+ * Het beginscherm ("Kun je dit al?") laat de EERSTE vraag van de les zien, zonder dat het
+ * kind iets hoeft te doen: tijdens het voorbeeld zet `squlaVraag` alleen het beeld neer
+ * (geen vraag, geen antwoord). Zo blijft het voorbeeld altijd gelijk aan de eerste vraag.
+ */
+let voorbeeldAan = false;
+function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
+  if (voorbeeldAan) {
+    v.toon?.();
+    return Promise.resolve(true);
+  }
+  return echteSqulaVraag(l, v);
+}
 
 const zet = (l: Lesgids, p: Partial<PlusProps>) => l.pasVlakAan<PlusProps>(p);
 const LEEG: Partial<PlusProps> = { sommen: [], actief: false, gekozen: [], uit: [], goedIds: [], lijnen: [], licht: [], rek: null, busLicht: false, busTel: 0, busLos: false };
@@ -543,9 +557,9 @@ const VOORWERPEN_BAKKERIJ = ["broodje", "brood", "bruin-brood", "stokbrood", "ko
 
 /* Een eigen beginzin per les (BOUWREGELS 4.3), passend bij wat er in beeld staat. */
 const BAKKERIJ_WELKOM = [
-  [`Hier liggen ${g(3)} broodjes en daar liggen er ${g(2)}.`, "Hoeveel broodjes zijn het samen?"],
-  [`Wat een koekjes! Hier liggen er ${g(12)} en daar nog ${g(3)}.`, `Nu rekenen we met grotere getallen, tot ${g(20)}.`],
-  [`Hier staan ${g(8)} cupcakes en daar staan er nog ${g(5)}.`, `Samen komen we over de ${g(10)} heen.`, "Hoeveel cupcakes zijn het?"],
+  ["In de bakkerij liggen taartjes.", "Hoeveel taartjes zijn het samen?"],
+  [`Er liggen ${g(10)} stokbroden en er komen er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"],
+  [`Er liggen ${g(6)} koekjes en ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"],
 ];
 
 function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string) {
@@ -650,10 +664,10 @@ function dansPlaten(getallen: number[]): Vraag {
 }
 
 const DANS_WELKOM = [
-  ["De discobal draait en de muziek staat aan.", `Zoek de kaartjes die samen ${g(10)} zijn.`],
-  ["De platen draaien rond op de draaitafel.", `Zoek twee platen die samen ${g(10)} zijn.`],
-  ["De discobal schittert, maar let goed op!", `Sommige platen zijn bijna ${g(10)}.`, `Welke twee zijn precies ${g(10)}?`],
-  ["Het feest in de disco gaat door.", `Nu zitten sommige kaartjes dicht bij ${g(10)}.`, "Zoek steeds de twee die er precies samen zijn."],
+  ["Op de kaartjes staan twee getallen.", `Welk kaartje is samen ${g(10)}?`],
+  ["De platen draaien rond op de draaitafel.", `Welke twee getallen zijn samen ${g(10)}?`],
+  [`Sommige platen zijn bijna ${g(10)}.`, `Welke twee zijn precies ${g(10)}?`],
+  [`Sommige kaartjes zitten dicht bij ${g(10)}.`, `Welk kaartje is samen ${g(10)}?`],
 ];
 
 function dansUitleg(kaartjes: boolean) {
@@ -729,12 +743,12 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
 }
 
 const BUS_WELKOM: Record<string, string[]> = {
-  "1-1": [`In de bezorgbus liggen ${g(3)} pakjes.`, `Bij de halte komen er ${g(2)} bij.`, "Hoeveel pakjes liggen er dan in de bus?"],
-  "1-2": [`De bezorgbus is al goed gevuld: er liggen ${g(12)} pakjes in.`, `Bij de halte komen er nog ${g(3)} bij.`, "Nu rekenen we met meer dan tien pakjes."],
-  "1-3": [`In de bus liggen ${g(8)} pakjes en er komen er ${g(4)} bij.`, `Nu gaan we over de ${g(10)} heen.`, "Hoeveel pakjes zijn het dan?"],
-  "2-1": [`Kijk, de bus heeft ${g(4)} pakjes bij zich.`, "Het getal in het rondje zegt hoeveel pakjes er bijkomen.", "Hoeveel pakjes liggen er dan in de bus?"],
-  "2-2": [`De bus rijdt rond met ${g(12)} pakjes.`, "Het rondje laat zien hoeveel er bijkomen.", `We tellen door tot ${g(20)}.`],
-  "2-3": [`De bus is terug met ${g(8)} pakjes.`, "Het rondje vertelt wat er bijkomt.", `Soms gaan we over de ${g(10)} heen.`],
+  "1-1": [`In de bus liggen ${g(2)} pakjes en er komt er ${g(1)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "1-2": [`In de bus liggen ${g(12)} pakjes en er komen er ${g(5)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "1-3": [`In de bus liggen ${g(8)} pakjes en er komen er ${g(5)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-1": [`De bus heeft ${g(4)} pakjes. In het rondje staat ${g(3)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-2": [`De bus heeft ${g(12)} pakjes. In het rondje staat ${g(6)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-3": [`De bus heeft ${g(6)} pakjes. In het rondje staat ${g(13)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
 };
 
 function busUitleg(a: number, b: number, alsGetal: boolean) {
@@ -754,9 +768,9 @@ function busUitleg(a: number, b: number, alsGetal: boolean) {
    ===================================================================== */
 
 const KAAL_WELKOM = [
-  ["Kijk eens naar de plus!", `Hoeveel is ${plus(4, 3)}?`, "Typ het antwoord zelf."],
-  ["De plussommen worden groter.", `Hoeveel is ${plus(13, 5)}?`, `Het antwoord blijft onder de ${g(20)}.`],
-  [`Nu gaan we over de ${g(10)} heen!`, `Hoeveel is ${plus(7, 6)}?`, `Maak eerst een tiental, dat helpt.`],
+  ["Hier staat een plussom.", `Hoeveel is ${plus(3, 4)}?`],
+  ["De plussommen worden groter.", `Hoeveel is ${plus(10, 7)}?`],
+  [`Nu gaan we over de ${g(10)} heen.`, `Hoeveel is ${plus(7, 7)}?`],
 ];
 
 function kaalUitleg(a: number, b: number, level: number) {
@@ -800,7 +814,21 @@ function les(t: Les): Lesdraaiboek {
       const st: Stand = { huidig: t.begin?.id ?? "", nr: 0, goed: 0, fout: 0, typUitgelegd: false };
       l.vlak<PlusProps>(SqulaPlusVlak, { beeld: t.begin });
       if (t.begin) speelLesgeluid("verschijn");
-      await squlaBegin(l, { welkom: t.welkom, uitleg: () => t.uitleg(l, st) });
+      await squlaBegin(l, {
+        welkom: t.welkom,
+        uitleg: () => t.uitleg(l, st),
+        /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
+        voorbeeld: () => {
+          voorbeeldAan = true;
+          try {
+            void t.vragen[0](l, st).catch(() => {});
+          } finally {
+            voorbeeldAan = false;
+          }
+          /* De echte eerste vraag krijgt weer dezelfde naam (v1), dus het beeld blijft staan. */
+          st.nr = 0;
+        },
+      });
       let fouten = 0;
       for (const v of t.vragen) if (!(await v(l, st))) fouten++;
       l.som(null);

@@ -515,7 +515,20 @@ function les(d: Lesdef): Lesdraaiboek {
       const st: Stand = { huidig: "", goed: 0, fout: 0, ronde: 0, handGezien: false, gezien: new Set() };
       st.huidig = d.start.id;
       l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start, vooraf: d.vragen.map((q, i) => opgaveVan(`${d.id}-${i + 1}`, q)) });
-      await squlaBegin(l, { welkom: d.welkom, uitleg: () => d.uitleg(l, st) });
+      await squlaBegin(l, {
+        welkom: d.welkom,
+        uitleg: async () => {
+          /* De uitleg zet zijn eigen beeld neer: de eerste vraag moet daarna zijn beeld weer opnieuw tekenen. */
+          st.huidig = "";
+          await d.uitleg(l, st);
+        },
+        /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
+        voorbeeld: () => {
+          st.huidig = "";
+          const id = `${d.id}-1`;
+          toonOpgave(l, st, id, opgaveVan(id, d.vragen[0]));
+        },
+      });
       let fouten = 0;
       for (const [i, q] of d.vragen.entries()) if (!(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
       zet(l, { opgave: null });
@@ -539,7 +552,7 @@ const evenveel1_1 = les({
   titel: "Meer, minder, evenveel",
   oefening: "Meer, minder, evenveel 1",
   level: 1,
-  welkom: ["Kijk eens naar de kralen!", "Welk getal is evenveel?"],
+  welkom: ["De appels liggen in rijtjes van {5}.", "Tel de appels. Welk getal is evenveel?"],
   start: { id: "start-evenveel1-1", soort: "tel", groep: r5(APPELS, 12) },
   uitleg: (l, st) => uitlegTel(l, st, APPELS, r5(APPELS, 12)),
   vragen: [
@@ -573,7 +586,7 @@ const evenveel1_2 = les({
   titel: "Meer, minder, evenveel (moeilijker)",
   oefening: "Meer, minder, evenveel 1",
   level: 2,
-  welkom: ["Bovenaan staat een groep.", "Waar zie je meer en waar zie je minder?"],
+  welkom: ["Bovenaan staat een groep sterren.", "Waar zie je meer sterren dan bovenaan?"],
   start: { id: "start-evenveel1-2", soort: "kaarten", voorbeeld: r5(STERREN, 8), kaarten: [r5(STERREN, 6), r5(STERREN, 10)] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -612,7 +625,7 @@ const evenveel1_3 = les({
   titel: "Meer, minder, evenveel (nog moeilijker)",
   oefening: "Meer, minder, evenveel 1",
   level: 3,
-  welkom: ["Kijk, twee kaarten met kralen!", "Op welke kaart zijn er meer?"],
+  welkom: ["Hier staan twee kaarten met bloemen.", "Op welke kaart zijn er meer bloemen?"],
   start: { id: "start-evenveel1-3", soort: "kaarten", kaarten: [r5(BLOEMEN, 7), r5(BLOEMEN, 9)] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -653,7 +666,7 @@ const evenveel2_1 = les({
   titel: "De meeste",
   oefening: "Meer, minder, evenveel 2",
   level: 1,
-  welkom: ["Eerst tellen we kralen.", "Daarna zoek je waar de meeste koekjes liggen."],
+  welkom: ["We tellen eerst kralen.", "Tel de kralen. Welk getal is evenveel?"],
   start: { id: "start-evenveel2-1", soort: "tel", groep: r5(KRALEN, 9) },
   uitleg: async (l, st) => {
     await uitlegTel(l, st, KRALEN, r5(KRALEN, 9));
@@ -689,7 +702,7 @@ const evenveel2_2 = les({
   titel: "De meeste (moeilijker)",
   oefening: "Meer, minder, evenveel 2",
   level: 2,
-  welkom: ["Drie kaarten met appels.", "Waar liggen de minste en waar de meeste?", "Luister goed wat ik vraag!"],
+  welkom: ["Drie kaarten met appels.", "Waar liggen de minste appels?"],
   start: { id: "start-evenveel2-2", soort: "kaarten", kaarten: [r5(APPELS, 12), r5(APPELS, 10), r5(APPELS, 11)] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -730,7 +743,7 @@ const evenveel3_1 = les({
   titel: "Meer dan, minder dan",
   oefening: "Meer, minder, evenveel 3",
   level: 1,
-  welkom: ["De getallen staan door elkaar.", "Zet ze op volgorde en zoek meer dan, minder dan en evenveel."],
+  welkom: ["Drie potjes met een getal.", "Zet de potjes op volgorde, van meer naar minder."],
   start: { id: "start-evenveel3-1", soort: "getallen", ding: "potje", getallen: [32, 18] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -769,7 +782,7 @@ const evenveel3_2 = les({
   titel: "Meer dan, minder dan (moeilijker)",
   oefening: "Meer, minder, evenveel 3",
   level: 2,
-  welkom: [`Nu tellen we grote groepen, in rijen van ${w(10)}.`, "Welk getal is evenveel of meer?"],
+  welkom: ["Eieren liggen in doosjes van {6}.", "Tel de eieren. Welk getal is evenveel?"],
   start: { id: "start-evenveel3-2", soort: "tel", groep: r10(BALLONNEN_2, 23) },
   uitleg: async (l, st) => {
     st.huidig = "";
