@@ -863,3 +863,228 @@ Opgelost uit ronde 1:
 **Uitslag ronde 2:**
 - GOEDGEKEURD: alle 18 kloklessen, splitsen1-1, 1-2, 2-1, 2-2.
 - AFGEKEURD: splits-delen-1, piraat-1, piraat-2, piraat-3.
+
+
+---
+
+## Rekenmix — ronde 1 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd:
+- Broncode `src/components/les/lessen/squla-rekenmix.tsx` (alle 240 vragen en 18 voorbeelden zelf nagerekend) en het vlak `src/components/les/vlakken/squla-rekenmix-vlak.tsx`, op alle regels van BOUWREGELS.md, ook 1.21, 2.1/2.2, 4.1/4.3 en hoofdstuk 14.
+- Analyses `SQULA-ANALYSE/rekenmix-*-volledig.md`: opbouw, volgorde van de vraagsoorten en getallenreeksen volgen Squla per level.
+- Speeltest `GOED=1`, één les tegelijk, alle 16 lessen **tot het eind**, niets vastgelopen. Schermfoto's in `scratchpad/controle/opus-rm/`. Het Nee-pad zelf nagelopen bij mix1-1 (`scratchpad/controle/opus-nee/mix1-1`).
+- Alle gebruikte plaatjes bekeken op #0b1028 (vel in `scratchpad/controle/opus-vel/`) en in de les op de schermfoto's.
+
+Wat overal klopt:
+- Elke som, elk goed antwoord en elk testAntwoord. Elke vraag heeft precies één goed antwoord; afleiders zijn echte kinderfouten (1 meer, 1 minder). Getekende aantallen = het getal in de vraag.
+- Geen krokodil, kikker, ander dier of mens; geen gezichten. De vervangingen houden hun rol (1.21): pakjes/ballen/knikkers tellen, bal en doos voor in/op/voor, boterham met kaas voor meer/minder, bal in een doos en knikkers in een zak voor splitsen.
+- Getalkleuren (2.2/14.20) passen bij de voorwerpen: appel/bal/auto/bloem/aardbei/raketje rood, potlood/boom/satelliet groen, knikker/knoop blauw, ster/blokje geel, kraal/planeet/ufo paars, koekje bruin. (De planeet is nu ook in de code paars.)
+- Eigen welkomzin per les, alle 16 verschillend en in STEMZINNEN.md (4.3). Het voorbeeld op het beginscherm is de echte eerste vraag (4.1). Ja gaat meteen naar een schone eerste vraag.
+- Geen kaders of kaarten met rand om de voorwerpen (1.4); plekjes zijn lichtvlakken op de vloer. Plaatjes in glansstijl B, scherp, geen witte randjes.
+- 15 vragen per les, invoerveld met cijfers bij de typvragen (geen schermtoetsenbord).
+
+### Algemene punten (gelden voor meer lessen)
+
+**R1 (4.1/14.13/14.21) — de uitleg na Nee gaat over iets anders dan het voorbeeld.** In `les()` (r. 1300–1312) toont het beginscherm de eerste vraag (`opgaven[0]`), maar na Nee speelt `legUit` de aparte `voorbeeld`-vraag uit de lesdefinitie. Waar die een ander voorwerp of een andere vraag heeft, ziet het kind na Nee opeens iets anders dan op het beginscherm. Zelf nagelopen bij mix1-1: beginscherm = 7 appels door elkaar, na Nee telt Bliepo 6 blauwe knikkers in twee rijen. Per les staat hieronder of dat zo is.
+- Voorstel (één plek, voor alle 16): laat het beginscherm het eerste `voorbeeld` tonen in plaats van `opgaven[0]` (`toonOpgave(l, st, aanpak(l, st, \`${d.id}-vb1\`, d.voorbeeld[0]).o, null)`, daarna `st.huidig = ""`) en pas de welkomzin daarop aan. Dan gaat de uitleg vanzelf over het voorbeeld en verklapt hij vraag 1 niet. Of andersom: maak elk `voorbeeld` van hetzelfde voorwerp en dezelfde soort vraag als vraag 1, met andere getallen die nergens in de les staan.
+
+**R2 (5.3) — rood bij een fout in Verbinden.** `squla-rekenmix-vlak.tsx` r. 684: `g.lineStyle(7, goed[l] ? GOED : 0xff7b8b, 1)`. Een foute lijn wordt 0,9 s roze-rood. Regel 5.3: bij een fout geen rood. Voorstel: foute lijn grijs en dof (bijv. `0x8a94b8`, alpha 0,6) en dan laten verdwijnen. Raakt alleen mix2-4.
+
+**R3 (7.7/1.9) — de vormen zijn vlak, zonder glans.** In mix1-2 (keuzes cirkel/driehoek/vierkant/rechthoek, lichtblauw) en mix2-3 (rode/gele/blauwe/groene vormen) zijn de vormen platte kleurvlakken met een donkere rand: geen verloop, geen lichtvlekje, geen schaduw. Dat wijkt af van glansstijl B en van dezelfde vormen in squla-vormen-kleuren-2 (VORMSTIJL in `squla-vormen-tekenen.ts`). Schermfoto's mix1-2/006, mix2-3/005. Voorstel: de vormen in `texVorm` tekenen met VORMSTIJL (zelfde vorm = zelfde uiterlijk).
+
+**R4 (plaatje `kaars`) — lijkt op een stuk vuurwerk.** Een rode cilinder met een gebogen grijs lontje, zonder vlammetje of was (schermfoto mix3-1/008). Op de donkere achtergrond lijkt het een rotje of dynamiet, en Squla's vuurpijl en lucifers waren juist bewust weggehaald (regel 1.8/1.20). Gebruikt in mix3-1 (dik/dun) en mix4-2 (van dik naar dun). Beter: een kaars die je meteen herkent (licht van kleur, met een klein vlammetje of een druppel was), in glansstijl B; of in deze vragen een ander ding dat dik en dun kan zijn (potlood, boom).
+
+Tips (geen afkeuring):
+- De plekjes en lichtvlakken onder keuzes hebben een gestippelde rand. Dat staat nergens als verboden voor Squla, maar 1.11 noemt "gestippelde potjes" als iets wat een kind niet snapt. Sara laten kijken.
+- De getallen die Bliepo bij het samen tellen in de tekening zet (labels) zijn altijd geel, ook bij blauwe knikkers (Nee-pad mix1-1). Tip 2.2: de kleur van het voorwerp.
+- 2.1 (twijfel voor Sara): bij "samen" (mix4-1), splitsen (mix3-4) en blokjes (mix2-3) zegt Bliepo een somzin ("3 en 1 is samen 4"), maar beide groepjes hebben dezelfde kleur. Het zijn geen sommen met een plusteken; ik keur er niet op af.
+- 3.5 (twijfel voor Sara): in mix2-2 leest Bliepo de drie woordkeuzes vooraf voor ("Op de doos, achter de doos of in de doos?"). Regel 3.5 zegt "keuzes niet vooraf voorlezen", maar het zijn woorden en een kind van groep 3 leest nog niet. Ik keur er niet op af.
+
+### squla-rekenmix-mix1-1 — Rekenmix 1 — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (15 telvragen, 5 t/m 12, zoals Squla level 1).
+- Plaatje: in orde (appels, ballen, potloden, auto's, bloemen, knikkers, sterren).
+- Taal: in orde.
+- Beginscherm: FOUT (R1). Welkom en voorbeeld gaan over appels door elkaar (r. 1336); na Nee telt Bliepo knikkers in twee rijen (r. 1337). Voorstel: `voorbeeld: [{ t: "tel", v: APPEL, gr: los([{ naam: "appel", n: 6 }], 5), keuzes: [6, 5, 7], soort: "tel" }]` (6 appels komt nergens als vraag voor).
+- Spelen: tot het eind, 16 stappen.
+
+### squla-rekenmix-mix1-2 — Rekenmix 1 (moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen/inhoud: FOUT (11.1, geen dubbele vragen). Vraag 6 en vraag 14 zijn dezelfde: `{ naam: "pizzadoos", zin: "de pizzadoos", vorm: "vierkant" }` (r. 1379 en r. 1387), alleen de keuzes staan anders. Voorstel: maak vraag 14 een ander vierkant ding, bijvoorbeeld `doos` ("de doos", vierkant).
+- Plaatje: FOUT (R3, vlakke vormen). Tip: `pizzadoos` staat schuin in perspectief en lijkt eerder een ruit dan een vierkant (schermfoto 014); van boven gezien is duidelijker.
+- Beginscherm: FOUT (R1). Welkom en voorbeeld: de tent; na Nee: de zon (r. 1372). Voorstel: R1 (beginscherm met de zon en "Kijk naar de zon. Welke vorm lijkt erop?"), want een uitleg met de tent verklapt vraag 1.
+- Taal: in orde.
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix1-3 — Rekenmix 1 (nog moeilijker) — ronde 1 — GOEDGEKEURD (2026-11-01)
+- Rekenen: in orde (elke keer precies één goed plaatje, ook als een keuze niet in de rij staat).
+- Plaatje: in orde (voertuigen, ruimtedingen, speelgoed).
+- Taal: in orde. Tip: "In het midden staat hij tussen de andere twee in." (r. 596): "hij" past niet bij "het skateboard"; beter "Wat in het midden staat, heeft links en rechts iets naast zich."
+- Beginscherm: in orde; voorbeeld en uitleg gaan allebei over voertuigen in een rij.
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix1-4 — Rekenmix 1 (heel moeilijk) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (richting en volgorde zoals Squla: 3× meer→minder, 2× minder→meer).
+- Beginscherm: FOUT (R1). Welkom en voorbeeld: koekjes (r. 1437); na Nee: appels (r. 1438). Voorstel: `voorbeeld: [{ t: "ordenAantal", v: KOEKJE, aantallen: [2, 6, 4], richting: "af" }]`.
+- Taal: FOUT (14.2). De namen van de groepjes (r. 675, `` `${n} ${q.v.meer}` ``, voorgelezen door een voorleesprogramma) worden "1 knikkers", "1 ballen", "1 koekjes", "1 appels" (vragen 2, 7, 9, 14; schermenlijst 008, 015, 017, 022). Voorstel: enkelvoud bij 1 (`n === 1 ? q.v.naam-woord : q.v.meer`; voor "speelgoedauto" de spreeknaam "auto").
+- Tip: "De meeste komt vooraan." → "Het groepje met de meeste komt vooraan."
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix2-1 — Rekenmix 2 — ronde 1 — GOEDGEKEURD (2026-11-01)
+- Rekenen: in orde (meer, meeste, minder, minste, evenveel; steeds één goed plaatje).
+- Plaatje: in orde (boterham met weinig/veel/heel veel kaas, spiesjes). Tip: `spies-leeg` is een dun stokje dat bijna wegvalt.
+- Taal: in orde ("Op welk spiesje zit het meeste fruit?", "Op welke boterham zit de meeste kaas?" kloppen).
+- Beginscherm: in orde (boterham, uitleg ook met boterham). Tip (14.21): de uitleg (`minder`, keuzes `[1, 0, 2]`) is precies vraag 3; neem `[2, 1, 0]`.
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix2-2 — Rekenmix 2 (moeilijker) — ronde 1 — GOEDGEKEURD (2026-11-01)
+- Rekenen: in orde. Plaatje: in orde; bal in, op, voor, naast en achter de doos is op de schermfoto's goed te zien (002, 006, 012).
+- Taal: in orde. Tip: zie 3.5 bij de algemene punten.
+- Beginscherm: in orde (bal en doos, uitleg ook).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix2-3 — Rekenmix 2 (nog moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (blokjes 5 + rest, 6 t/m 10; kleur + vorm steeds één goed).
+- Plaatje: FOUT (R3, vlakke vormen, schermfoto 005).
+- Beginscherm: FOUT (14.21). De uitleg gebruikt de gele cirkel tussen geel/rood (r. 1542); vraag 10 (r. 1555) is bijna dezelfde vraag met hetzelfde antwoord. Voorstel: een kleur die nergens gevraagd wordt, bijvoorbeeld `{ kleur: "paars", vorm: "driehoek", keuzes: [["paars","driehoek"],["paars","vierkant"],["oranje","driehoek"]] }` en welkom/voorbeeld via R1.
+- Taal: in orde ("een geel vierkant", "een gele driehoek" kloppen).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix2-4 — Rekenmix 2 (heel moeilijk) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (alle 15 verbindingen nagerekend, 4 t/m 10).
+- Fout-weergave: FOUT (R2, foute lijn rood).
+- Plaatje: in orde (schermfoto 003). Taal: in orde.
+- Beginscherm: in orde (ballen met getallen, uitleg ook).
+- Spelen: tot het eind (91 stappen).
+
+### squla-rekenmix-mix3-1 — Rekenmix 3 — ronde 1 — AFGEKEURD (2026-11-01)
+- Beginscherm: FOUT (14.4/14.13). r. 1618: "Zet ze op volgorde, van klein naar groot." Maar vraag 1 (het voorbeeld) is "klein, kleiner, kleinst": de grootste bal hoort vooraan, de kleinste achteraan. Wie het welkom volgt, legt hem verkeerd. Daarna legt Bliepo na Nee bomen uit met "groot, groter, grootst" (r. 1619): ander ding en andere volgorde. Voorstel: welkom "Drie ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst." en een uitleg met ballen (R1).
+- Taal: FOUT. r. 724: `` `Ja! ${woorden.map(Hoofd).join(", ")}.` `` geeft "Ja! Klein, Kleiner, Kleinst." (hoofdletters midden in de zin). Voorstel: `Hoofd(woorden.join(", "))`.
+- Plaatje: FOUT (R4, `kaars`). Tip: de blokken in de torens (laag, lager, laagst) staan met een kier boven elkaar (schermfoto 017); laten aansluiten (14.17).
+- Rekenen: in orde (volgorde volgt de woorden, zoals Squla).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix3-2 — Rekenmix 3 (moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (5 keuzes, steeds de hele rij).
+- Beginscherm: FOUT (14.21). Na Nee telt Bliepo de hele rij RIJ_A af (eerste … laatste, r. 1654, `alles`); vraag 2 t/m 5 gaan over precies die rij, en de uitleg (plek 1) is gelijk aan vraag 3. Voorstel: voor de uitleg een rij in een andere volgorde die niet in de les staat, bijvoorbeeld `["bus", "bootje", "fiets", "treintje", "speelgoedauto"]`.
+- Plaatje: in orde. Tip: de voertuigen kijken verschillende kanten op (auto naar links, fiets naar rechts); "vooraan" en "achteraan" zijn dan minder duidelijk.
+- Taal: in orde.
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix3-3 — Rekenmix 3 (nog moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (voor/na 5 t/m 10, typvragen met invoerveld, schermfoto 012).
+- Beginscherm: FOUT (14.13/14.21). Welkom en voorbeeld: "Welk getal komt net voor 7?"; na Nee: "na 5" (r. 1687). Dat is een andere richting, en het is vraag 4 (r. 1692, na 5 = 6). Voorstel: uitleg "net voor 5" (antwoord 4, komt in de les niet voor) met `keuzes: [4, 6, 3]`.
+- Taal: tip (14.3): "Welk getal komt net voor 7?" naast "Welk getal komt na 9?"; overal hetzelfde ("net na").
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix3-4 — Rekenmix 3 (heel moeilijk) — ronde 1 — GOEDGEKEURD (2026-11-01)
+- Rekenen: in orde (alle 15 splitsingen en het voorbeeld 5 = 4 + 1).
+- Plaatje: in orde (splitsbeen, doos, zak, ballen en knikkers).
+- Taal: in orde ("Er zijn 6 ballen. Hoeveel zitten er in de doos?").
+- Beginscherm: in orde (ballen en doos, uitleg ook; verklapt geen vraag).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix4-1 — Rekenmix 4 — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (tellen in een druk plaatje telt alleen de eerste soort; samen 2 t/m 9).
+- Beginscherm: FOUT (R1). Welkom en voorbeeld: "Tel alleen de raketjes" in een druk ruimteplaatje (r. 1758); na Nee: 2 + 3 ballen samen (r. 1759), een andere soort vraag met een ander ding. Voorstel: uitleg met een druk plaatje, bijvoorbeeld `los([{ naam: "raketje", n: 7 }, { naam: "ster", n: 3 }, { naam: "planeet", n: 2 }], 75, 820, 580, 120)`, `soort: "druk"`.
+- Plaatje en taal: in orde.
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix4-2 — Rekenmix 4 (moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (verder tellen 10–16, groepjes, raketjes van hoog naar laag, dik naar dun, eerst/dan).
+- Plaatje: FOUT (R4, `kaars` bij "van dik naar dun", r. 1809). Tip: in `ijsje-twee-bollen` zit het nieuwe bolletje onder het eerste, niet erop ("Dan nog een bolletje erbij").
+- Taal: in orde. Beginscherm: in orde (verder tellen, uitleg vanaf 5).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix4-3 — Rekenmix 4 (nog moeilijker) — ronde 1 — GOEDGEKEURD (2026-11-01)
+- Rekenen: in orde (precies één groep met het gevraagde aantal, 4 t/m 10).
+- Plaatje, taal en beginscherm: in orde (sterren, uitleg met 4 sterren, komt in de les niet voor).
+- Spelen: tot het eind.
+
+### squla-rekenmix-mix4-4 — Rekenmix 4 (heel moeilijk) — ronde 1 — AFGEKEURD (2026-11-01)
+- Rekenen: in orde (meer dan, minder dan, evenveel, laatste/middelste ballon; steeds één goed).
+- Beginscherm: FOUT (R1 en 14.21). Welkom en voorbeeld: raketjes, "meer dan 5" (r. 1864); na Nee: ballen `[3], [4], [2]` meer dan 3 (r. 1866). Dat is een ander ding en precies vraag 6 (r. 1875, ballen `[3], [2], [4]`). Voorstel: uitleg met raketjes en een getal dat niet gevraagd wordt, bijvoorbeeld `kr("raketje",[4]), kr("raketje",[3]), kr("raketje",[5])`, meer dan 4.
+- Plaatje en taal: in orde.
+- Spelen: tot het eind.
+
+**Uitslag Rekenmix ronde 1:**
+- GOEDGEKEURD: mix1-3, mix2-1, mix2-2, mix3-4, mix4-3.
+- AFGEKEURD: mix1-1, mix1-2, mix1-4, mix2-3, mix2-4, mix3-1, mix3-2, mix3-3, mix4-1, mix4-2, mix4-4.
+
+---
+
+## Tijd — ronde 1 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd:
+- Broncode `src/components/les/lessen/squla-tijd.tsx` (alle vragen, verhaaltjes, uitleg en hulp), de vlakken `squla-tijd-trein.tsx` en `squla-tijd-plaatjes.tsx` en `squla-tijd-tekeningen.ts`, op alle regels van BOUWREGELS.md.
+- Analyses `SQULA-ANALYSE/tijd-*-volledig.md`: opbouw en volgorde volgen Squla (ook de drie vragen die aan het eind terugkomen).
+- Speeltest `GOED=1`, één les tegelijk: alle 7 lessen **tot het eind**, niets vastgelopen. Schermfoto's in `scratchpad/controle/opus-tijd/`.
+- Extra gezocht op resten van mensen: geen Noa, Sam, Tim, bakker, mama/papa, juf, "hij/zij" of "wie" meer in de zinnen. Alleen nog "we" (Bliepo en het kind) en "je": dat klopt.
+
+Wat overal klopt:
+- Alle antwoorden en testAntwoorden. De kalender is juni met 1 juni op dinsdag: 9 juni = woensdag, 8 en 13 in dezelfde rij, de boogjes 9→13 = 4, 10→13 = 3, 11→13 = 2, "morgen = rechts ernaast" klopt overal (nagerekend in `plekInMaand`).
+- De verhaaltjes in dagen-3 kloppen allemaal: zwembad (di → do), kapperszaak (wo → vr), kamp (do + 3 nachtjes = zo), huis geschilderd (gisteren vanaf zo = za), taart in de oven (za → vr feest → do), slaapfeest (ma + 2 nachtjes = wo). Plaatjes passen erbij (zwembad, schaar, tent, huis, taart, bed).
+- De bakkerij in tijden-2 werkt zonder bakker: "In de bakkerij wordt deeg gemaakt", "de deur van het slot doen", "de hele winkel vegen". De feestkalender vervangt de verjaardagskalender logisch (het woord "feest" bij een datum, een feesthoedje op 13 juni).
+- Elke les 12 vragen + 3 die terugkomen = 15. Eigen welkomzin per les, in STEMZINNEN.md. Het voorbeeld op het beginscherm is de eerste vraag.
+- Geen mensen of gezichten. Het handje is een lichtje.
+
+### Algemeen punt T1 (5.3) — rood bij een fout, in alle 7 lessen
+- `squla-tijd-plaatjes.tsx` r. 139 `RING = { …, rood: "#e8453c" }` en r. 313/330: een fout gekozen kaartje of een fout gelegd kaartje krijgt een rode rand.
+- `squla-tijd-trein.tsx` r. 222–234 en r. 435: een foute dagkaart krijgt een rode rand (`#ff7a6e`).
+- Regel 5.3: bij een fout geen rood; het verkeerde kaartje wordt grijs of verdwijnt. Voorstel: bij fout geen rand, alleen `uit` (dof, 0,35) en het schudden dat er al is; bij ordenen een fout vak gewoon leeg laten teruggaan.
+- Daarom zijn alle 7 lessen afgekeurd, ook als er verder niets mis is.
+
+Tips (alle lessen):
+- 3.5 (twijfel voor Sara): bij woordkeuzes leest Bliepo de keuzes vooraf voor ("Donderdag, zaterdag of zondag?"). Dat is bewust (kop van het bestand: groep 3 leest nog niet), maar regel 3.5 zegt het anders.
+- "Tikken mag ook." staat bij de eerste sleepvraag; dat is uitleg over hoe je iets doet, geen knop. Geen afkeuring.
+
+### squla-tijd-dagen-1 — Dagen van de week — ronde 1 — AFGEKEURD (alleen T1) (2026-11-01)
+- Rekenen, plaatje (weektrein), taal, beginscherm: in orde.
+- Tip (14.21): de uitleg na Nee zegt al dat maandag de eerste, zondag de laatste en zaterdag/zondag het weekend is (vraag 1, 2 en 4). Dat is lesstof, daarom geen afkeuring.
+- Spelen: tot het eind.
+
+### squla-tijd-dagen-2 — Dagen van de week (moeilijker) — ronde 1 — AFGEKEURD (alleen T1) (2026-11-01)
+- Rekenen, taal, beginscherm (na dinsdag, uitleg met woensdag/donderdag): in orde.
+- Tip (14.21): "Na zondag begint de week weer met maandag." (r. 438) is het antwoord van vraag 4.
+- Spelen: tot het eind.
+
+### squla-tijd-dagen-3 — Dagen van de week (nog moeilijker) — ronde 1 — AFGEKEURD (alleen T1) (2026-11-01)
+- Rekenen en verhaaltjes: in orde (zie boven).
+- Taal: in orde. Tip: "Het bed staat klaar." (r. 611) staat er twee dagen te vroeg; beter "Over 2 nachtjes is er een slaapfeest." zonder die zin.
+- Spelen: tot het eind.
+
+### squla-tijd-kalender-1 — De kalender — ronde 1 — AFGEKEURD (2026-11-01)
+- Zin en beeld: FOUT (14.4). Bij de weekkalender (vraag 4) is gym een **hoepel** (`activiteit gym = hoepel`, `squla-tijd-tekeningen.ts` r. 74), maar Bliepo zegt "Zoek de dagen met de bal." (r. 903) en de tip "Op welke kalender zie je een bal?" (r. 905). Schermfoto 012: alleen ringen. Voorstel: "Zoek de dagen met de hoepel." / "Op welke kalender zie je een hoepel?".
+- Taal: FOUT (14.1, rest van een mens). r. 1036: "Is er dan koorts, is er een feest, of is het de tandarts?" (was "Eefje is ziek / jarig / naar de tandarts"). "Is er dan koorts" is geen natuurlijk Nederlands. Voorstel: "Is het dan een feest? Of moet je naar de tandarts? Of ben je ziek?" en de keuzes "ziek / feest / tandarts".
+- T1 (rood bij fout).
+- Rekenen: in orde (8 in het rode vak, 13 bij het hoedje, 30 dagen, 12 maanden). De ballon als afleider bij "welk getal" komt van Squla.
+- Beginscherm: in orde (klok, kalender, plaatjes; uitleg over dag-, week- en maandkalender).
+- Spelen: tot het eind.
+
+### squla-tijd-kalender-2 — De kalender (moeilijker) — ronde 1 — AFGEKEURD (2026-11-01)
+- Beginscherm: FOUT (14.13). Welkom en voorbeeld: "Op de kalender van juni staat een rood vak. Welk getal staat daar?" Na Nee (r. 1384–1388) gaat de uitleg over boogjes van 1 naar 3 juni; over het rode vak en het getal erin zegt Bliepo niets. Voorstel: eerst "Kijk, het rode vak. Daar staat een getal: {5:rood}. Dat is 5 juni." (met `rood=5`, komt niet in de les voor), daarna eventueel de boogjes.
+- Taal: FOUT (14.1). r. 1267: "Kun je op de kalender tellen hoeveel nachtjes het nog duurt?" Tot wát? Bij Squla stond er "tot ik jarig ben". Voorstel: "…hoeveel nachtjes het nog duurt tot het feest?".
+- Taal: FOUT (14.1/14.19). r. 1318: "In de droom is het rode vak 12 juni." Er droomt niemand meer: de vraag zegt "Stel je voor dat het al 12 juni is." Voorstel: "Stel je voor: het rode vak is 12 juni." Tip: de gedachtewolk zonder iemand die denkt (`droom`, schermfoto 027) mag blijven als "stel je voor"-wolk.
+- Plaatje: FOUT (1.15). Bij "Volg de rode pijl naar boven" (vraag 3, `maand|pijl=9`) loopt de pijl dwars over het getal 2 (schermfoto 010). Voorstel: de pijl laten stoppen onder rij 1 en de kolomkop "wo" laten oplichten, of de pijl naast de getallen langs laten lopen (`squla-tijd-tekeningen.ts` r. 162).
+- T1 (rood bij fout).
+- Rekenen: in orde.
+- Spelen: tot het eind.
+
+### squla-tijd-tijden-1 — Tijden — ronde 1 — AFGEKEURD (2026-11-01)
+- Beginscherm: FOUT (14.13). Welkom en voorbeeld: kampvuur op vrijdag, "Welke dag komt na vrijdag?". Na Nee (r. 1633–1645) legt Bliepo ochtend/middag/avond/nacht en gisteren/vandaag/morgen uit; over de dagen van de week en "na vrijdag" niets. Voorstel: begin de uitleg met "Gisteren was het vrijdag. Na vrijdag komt zaterdag. Dus vandaag is het zaterdag." (of kies een andere dag), daarna de rest.
+- Taal: FOUT. r. 1477: "Het groene boek kwam straks." ("straks" kan niet in de verleden tijd). Voorstel: "Het groene boek kwam pas later."
+- Plaatje: FOUT (1.4). De dagdelen (`dagdeel` in `squla-tijd-tekeningen.ts` r. 349–372) zijn plaatjes in een kader met een dikke donkere rand en ronde hoeken (schermfoto 013). Voorstel: de lucht zonder kader, of alleen zon/maan/sterren los in glansstijl.
+- T1 (rood bij fout).
+- Rekenen: in orde (zaterdag, rode boek, lang, kort, straks, nacht, middag, laat, gisteren-vandaag-morgen, zondag, vrijdag).
+- Tip: de tip bij "Welk boek lazen we als eerste?" is "Het was het rode boek." (r. 1433): dat is het antwoord.
+- Spelen: tot het eind.
+
+### squla-tijd-tijden-2 — Tijden (moeilijker) — ronde 1 — AFGEKEURD (alleen T1) (2026-11-01)
+- Rekenen: in orde (steeds het logische antwoord).
+- Plaatje: in orde (bed, schoen, bakkerij, deegkom, strooier, taart, kers, oven, ei, bezem, sleutel, glas, jas).
+- Taal: in orde. Tips: "Wat duurt het langst? De rondleiding, of een broodje krijgen?" (r. 1790): bij twee dingen "langer". "Er is een bezoek aan de bakkerij!" en "de hele dag werken" zeggen niet wie; het klopt nog, maar "Je gaat op bezoek in de bakkerij" is duidelijker.
+- Beginscherm: in orde (boterham en nacht slapen; uitleg met koekje en nacht slapen).
+- Spelen: tot het eind.
+
+**Uitslag Tijd ronde 1:**
+- GOEDGEKEURD: geen.
+- AFGEKEURD alleen op T1 (rood bij fout): dagen-1, dagen-2, dagen-3, tijden-2.
+- AFGEKEURD met meer punten: kalender-1, kalender-2, tijden-1.

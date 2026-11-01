@@ -467,10 +467,11 @@
   },
   "kaars": {
     "bron": "eigen",
-    "v": 4,
+    "v": 5,
     "verbeterd": [
       "randen",
-      "opnieuw-magnific"
+      "opnieuw-magnific",
+      "controleur-rekenmix"
     ]
   },
   "kaas": {

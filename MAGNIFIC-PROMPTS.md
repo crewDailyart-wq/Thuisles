@@ -294,7 +294,7 @@ a thin plain wooden stick for fruit, standing upright, nothing on it, simple fla
 
 ### 35. Lege beker — `beker-leeg.png` — ✅ gegenereerd
 
-Lessen: Minsommen: hoeveel over? (moeilijker) (`squla-min-machine-2`)
+Lessen: Minsommen: hoeveel over? (moeilijker) (`squla-min-machine-2`), Eerlijk verdelen (`squla-splits-delen-1`)
 
 ```
 an empty clear drinking glass, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -636,7 +636,7 @@ a small purple flying saucer with a clear empty glass dome and colored lights, s
 
 ### 77. Bezorgbus — `bezorgbus.png` — ✅ gegenereerd
 
-Lessen: Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Bussommen (`squla-min-bus1-1`), Bussommen (moeilijker) (`squla-min-bus1-2`), Bussommen (nog moeilijker) (`squla-min-bus1-3`), Bussommen met een rondje (`squla-min-bus2-1`), Bussommen met een rondje (moeilijker) (`squla-min-bus2-2`), Bussommen met een rondje (nog moeilijker) (`squla-min-bus2-3`), Bussommen (`squla-plus-bus1-1`), Bussommen (moeilijker) (`squla-plus-bus1-2`), Bussommen (nog moeilijker) (`squla-plus-bus1-3`), Bussommen met een getal (`squla-plus-bus2-1`), Bussommen met een getal (moeilijker) (`squla-plus-bus2-2`), Bussommen met een getal (nog moeilijker) (`squla-plus-bus2-3`)
+Lessen: De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Hoe laat is het? (`squla-klok-hoelaat-1`), Hoe laat is het? (moeilijker) (`squla-klok-hoelaat-2`), Hoe laat is het? (nog moeilijker) (`squla-klok-hoelaat-3`), Bussommen (`squla-min-bus1-1`), Bussommen (moeilijker) (`squla-min-bus1-2`), Bussommen (nog moeilijker) (`squla-min-bus1-3`), Bussommen met een rondje (`squla-min-bus2-1`), Bussommen met een rondje (moeilijker) (`squla-min-bus2-2`), Bussommen met een rondje (nog moeilijker) (`squla-min-bus2-3`), Bussommen (`squla-plus-bus1-1`), Bussommen (moeilijker) (`squla-plus-bus1-2`), Bussommen (nog moeilijker) (`squla-plus-bus1-3`), Bussommen met een getal (`squla-plus-bus2-1`), Bussommen met een getal (moeilijker) (`squla-plus-bus2-2`), Bussommen met een getal (nog moeilijker) (`squla-plus-bus2-3`)
 
 ```
 a modern yellow delivery van seen exactly from the side, with one very large rectangular light-blue side window covering the whole cargo area on the left two thirds, driver cabin on the right, empty, nobody inside, rounded friendly shapes, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -644,7 +644,7 @@ a modern yellow delivery van seen exactly from the side, with one very large rec
 
 ### 78. Bus — `bus.png` — ✅ gegenereerd
 
-Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), De klok en de tijd (moeilijker) (`squla-klok-digitaal-2`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
+Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Tellen in rijtjes (`squla-tellen-resultatief1-1`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (moeilijker) (`squla-tellen-resultatief2-2`), Hoeveel zie je? (nog moeilijker) (`squla-tellen-resultatief2-3`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
 
 ```
 a modern yellow city bus seen exactly from the side, with a row of large light-blue windows and two black wheels, rounded friendly shapes, nobody inside, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
@@ -745,7 +745,7 @@ a teal coat with yellow buttons, front view, simple flat illustration for a chil
 Lessen: Rekenmix 3 (`squla-rekenmix-mix3-1`), Rekenmix 4 (moeilijker) (`squla-rekenmix-mix4-2`)
 
 ```
-one red pillar candle with straight sides, unlit, with a short dark wick, side view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one cream-white pillar candle with a small lit yellow flame on top, side view, clearly a candle, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 91. Kistje — `kistje.png` — ✅ gegenereerd
@@ -782,7 +782,7 @@ a teal mixing bowl filled with smooth yellow cake batter and a whisk in it, simp
 
 ### 95. Lampje — `lampje.png` — ✅ gegenereerd
 
-Lessen: Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
+Lessen: De klok en de tijd (`squla-klok-digitaal-1`), Halve uren: later en eerder (`squla-klok-klokkijken3-4`)
 
 ```
 a small desk lamp with a yellow lampshade, switched on, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.

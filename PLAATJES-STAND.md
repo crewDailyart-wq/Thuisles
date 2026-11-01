@@ -91,7 +91,7 @@ Gemaakt door `npm run voorwerpen`. 172 vervangen, 1 nog open.
 - ✅ 87. Gieter — `gieter.png` (versie 3)
 - ✅ 88. Groen boek — `boek-groen.png` (versie 3)
 - ✅ 89. Jas — `jas.png` (versie 3)
-- ✅ 90. Kaars — `kaars.png` (versie 4)
+- ✅ 90. Kaars — `kaars.png` (versie 5)
 - ✅ 91. Kistje — `kistje.png` (versie 3)
 - ✅ 92. Kledingkast — `kledingkast.png` (versie 3)
 - ✅ 93. Knoop — `knoop.png` (versie 3)
