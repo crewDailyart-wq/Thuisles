@@ -484,7 +484,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => g(x, "bruin"),
       goed: async () => {
         goedBeeld(l, st, { som: `${v.a} − ${v.b} = ${u}`, grijs: v.b });
-        await l.zeg(u === 1 ? `Ja! Er ligt nog ${g(1, "bruin")} pakje in de bus.` : `Ja! Er liggen nog ${gu(u)} pakjes in de bus.`);
+        await l.zeg(u === 1 ? `Ja! Er ligt nog ${gu(1)} pakje in de bus.` : `Ja! Er liggen nog ${gu(u)} pakjes in de bus.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -553,7 +553,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       noem: (x) => x,
       goed: async () => {
         goedBeeld(l, st, { som: goed });
-        await l.zeg(`Ja! ${somZin(n, v.leeg)} = ${g(v.vol)}.`);
+        await l.zeg(`Ja! ${somZin(n, v.leeg)} = ${gu(v.vol)}.`);
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),

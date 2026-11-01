@@ -111,6 +111,63 @@ function kleurPixels(c: CanvasRenderingContext2D, hex: string) {
   c.putImageData(im, 0, 0);
 }
 
+/** Een tint van een kleur: `f` < 1 donkerder, > 1 lichter (naar wit). */
+function tint(hex: string, f: number) {
+  const v = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16));
+  const w = v.map((x) => Math.round(f <= 1 ? x * f : x + (255 - x) * (f - 1)));
+  return `rgb(${w[0]},${w[1]},${w[2]})`;
+}
+
+/**
+ * Een muntje in glansstijl B (BOUWREGELS 7.7): zacht verloop (licht linksboven, donkerder rechtsonder), een
+ * glimmend lichtvlekje, een dunne rand in een donkere tint van de eigen kleur, een ring en een zachte gloed.
+ * Zonder kleur is het koper. Eén keer getekend (gebakken in een plaatje).
+ */
+function tekenMunt(c: CanvasRenderingContext2D, x: number, y: number, b: number, hex = "#d1814a") {
+  const r = b / 2 - 5;
+  const cx = x + b / 2;
+  const cy = y + b / 2;
+  c.save();
+  /* zachte gloed in de eigen kleur */
+  c.shadowColor = hex;
+  c.shadowBlur = b * 0.09;
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI * 2);
+  c.fillStyle = hex;
+  c.fill();
+  c.restore();
+  /* het verloop */
+  const gr = c.createRadialGradient(cx - r * 0.4, cy - r * 0.45, r * 0.1, cx, cy, r * 1.05);
+  gr.addColorStop(0, tint(hex, 1.45));
+  gr.addColorStop(0.55, tint(hex, 1));
+  gr.addColorStop(1, tint(hex, 0.72));
+  c.beginPath();
+  c.arc(cx, cy, r, 0, Math.PI * 2);
+  c.fillStyle = gr;
+  c.fill();
+  c.lineWidth = Math.max(1.5, b * 0.022);
+  c.strokeStyle = tint(hex, 0.45);
+  c.stroke();
+  /* de ring in het muntje */
+  c.beginPath();
+  c.arc(cx, cy, r * 0.66, 0, Math.PI * 2);
+  c.lineWidth = Math.max(2, b * 0.05);
+  c.strokeStyle = tint(hex, 0.62);
+  c.stroke();
+  c.beginPath();
+  c.arc(cx, cy, r * 0.66 + c.lineWidth * 0.5 + 1, 0, Math.PI * 2);
+  c.lineWidth = 1;
+  c.strokeStyle = tint(hex, 1.3);
+  c.stroke();
+  /* het lichtvlekje */
+  c.beginPath();
+  c.arc(cx, cy, r * 0.82, Math.PI * 1.08, Math.PI * 1.5);
+  c.lineWidth = Math.max(2, b * 0.05);
+  c.lineCap = "round";
+  c.strokeStyle = "rgba(255,255,255,0.75)";
+  c.stroke();
+}
+
 export type Beeld = { id: string; delen: Deel[] };
 
 /** De maat van de tekening van een beker met potloden (punten). */
@@ -320,8 +377,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const hex = kl ? KLEUR[kl] : undefined;
       const sl = hex ? `sps-vw-${naam}-${kl}` : `sps-vw-${naam}`;
       this.canvasPlaatje(sl, VW, VW, (c) => {
-        tekenVoorwerp(c, naam, 4, 4, VW - 8, VW - 8);
-        if (hex) kleurPixels(c, hex);
+        /* het kopermuntje is een gewone schijf: eigen getekend met glans (ook in een andere kleur) */
+        if (naam === "kopermunt") tekenMunt(c, 4, 4, VW - 8, hex);
+        else {
+          tekenVoorwerp(c, naam, 4, 4, VW - 8, VW - 8);
+          if (hex) kleurPixels(c, hex);
+        }
       });
       return sl;
     }

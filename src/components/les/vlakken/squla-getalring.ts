@@ -147,7 +147,7 @@ const EET_KLEUR: Record<string, [string, string]> = {
   taart: ["roze", "geel"],
   cupcake: ["roze", "paars"],
   donut: ["roze", "geel"],
-  croissant: ["oranje", "geel"],
+  croissant: ["blauw", "roze"],
   stokbrood: ["bruin", "geel"],
   brood: ["bruin", "geel"],
   "bruin-brood": ["bruin", "oranje"],

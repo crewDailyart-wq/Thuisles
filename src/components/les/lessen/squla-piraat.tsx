@@ -25,6 +25,7 @@
 import type { Lesgids } from "../soort";
 import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, les, squlaVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import { getalkleur } from "../tegels";
+import { kiesAnder, KLEURHEX } from "../vlakken/squla-getalring";
 import { KaartSchat, type Beeld, type Deel } from "../vlakken/squla-splitsen-vlak";
 
 /* =====================================================================
@@ -45,6 +46,8 @@ const KL: Record<string, string> = { goudstuk: "geel", diamant: "blauw", parel: 
 /** Voorwerpen die al in hun eigen kleur kloppen (gouden en koperen munten, geel sterretje en sleutel): die krijgen hun glans en kleur van het plaatje zelf, niet een egale tint. */
 const NATUURLIJK = new Set(["goudstuk", "kopermunt", "ster", "sleutel"]);
 const gv = (n: number, vw: string) => g(n, KL[vw] ?? "wit");
+/** Het getal dat weggaat (b) in een minsom: een duidelijk andere kleur dan het voorwerp (BOUWREGELS 2.1). */
+const gb = (n: number, vw: string) => g(n, kiesAnder(KL[vw] ?? "wit"));
 const aantal = (n: number, vw: string) => `${gv(n, vw)} ${n === 1 ? NAAM[vw][0] : NAAM[vw][1]}`;
 const KOLOM = [200, 490, 780];
 
@@ -69,7 +72,7 @@ async function nieuweLetter(l: Lesgids, st: Stand) {
 }
 
 /** De kleuren van de som bovenaan: elk getal heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1); "tegel" = de kleur van het getal zelf (kale sommen). */
-const SK: Record<string, string> = { paars: "#c9a2ff", oranje: "#ffad5c", geel: "#ffe066", blauw: "#8fc4ff", wit: "#ffffff" };
+const SK: Record<string, string> = KLEURHEX;
 const somKleur = (n: number, k: string) => (k === "tegel" ? getalkleur(n) : (SK[k] ?? "#ffffff"));
 
 /** De som bovenaan, als tekst in het vlak (de som van het lesscherm kan geen kleur per voorwerp). */
@@ -240,22 +243,22 @@ function minVraag(vw: string, a: number, b: number, keuzes: number[], zinnen?: s
     const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62, ...(KL[vw] && KL[vw] !== "wit" && !NATUURLIJK.has(vw) ? { kl: KL[vw] } : {}) }]);
     return squlaVraag<number>(l, {
       toon: () => {
-        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");
+        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit", kiesAnder(KL[vw] ?? "wit"), KL[vw] ?? "wit");
       },
       vraag: zinnen ?? [`Hoeveel ${NAAM[vw][1]} zijn er nog?`],
       antwoord: () => kiesGetal(l, keuzes),
       isGoed: (x) => x === s,
       noem: (x) => gv(x, vw),
       goed: async () => {
-        som(l, st, a, "−", b, s, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");
+        som(l, st, a, "−", b, s, KL[vw] ?? "wit", kiesAnder(KL[vw] ?? "wit"), KL[vw] ?? "wit");
         goedBeeld(l, st, { goedIds: blijft });
-        await l.zeg(`Ja! ${gv(a, vw)} − ${gv(b, vw)} = ${gv(s, vw)}.`);
+        await l.zeg(`Ja! ${gv(a, vw)} − ${gb(b, vw)} = ${gv(s, vw)}.`);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         await l.zeg(`Eerst waren er ${aantal(a, vw)}.`);
         zet(l, { licht: weg });
-        await l.zeg(`Er ${b === 1 ? "gaat" : "gaan"} er ${gv(b, vw)} weg.`, b === 1 ? "Die is grijs." : "Die zijn grijs.");
+        await l.zeg(`Er ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`, b === 1 ? "Die is grijs." : "Die zijn grijs.");
         zet(l, { licht: blijft });
         await l.zeg("Tel de dingen die nog fel zijn.");
       },
@@ -450,7 +453,7 @@ const level1 = maak({
   eind: "Je kunt plussommen maken, ook met tientallen.",
 });
 
-const EERSTE2 = minVraag("ster", 6, 1, [4, 5, 6], [`Ik heb ${aantal(6, "ster")} in mijn tas.`, `Er valt er ${gv(1, "ster")} uit.`, "Hoeveel sterren heb ik nog?"]);
+const EERSTE2 = minVraag("ster", 6, 1, [4, 5, 6], [`Ik heb ${aantal(6, "ster")} in mijn tas.`, `Er valt er ${gb(1, "ster")} uit.`, "Hoeveel sterren heb ik nog?"]);
 
 const level2 = maak({
   level: 2,
@@ -474,11 +477,11 @@ const level2 = maak({
   /* Zoals Squla level 2: eerst verhaaltjes, een raadsel, dan minsommen met een plaatje. Begin 5–11, eraf 1–5. */
   vragen: [
     EERSTE2,
-    minVraag("diamant", 7, 3, [3, 4, 5], [`Ik vind ${aantal(7, "diamant")}.`, `Er rollen er ${gv(3, "diamant")} weg.`, "Hoeveel diamanten heb ik nog?"]),
-    minVraag("goudstuk", 9, 4, [4, 5, 6], [`Ik heb ${aantal(9, "goudstuk")}.`, `Ik betaal er ${gv(4, "goudstuk")} voor een kompas.`, "Hoeveel goudstukken heb ik nog?"]),
-    minVraag("parel", 10, 2, [7, 8, 9], [`Ik heb ${aantal(10, "parel")}.`, `Ik verlies er ${gv(2, "parel")}.`, "Hoeveel parels heb ik nog?"]),
-    minVraag("maansteen", 8, 3, [4, 5, 6], [`Er liggen ${aantal(8, "maansteen")}.`, `Ik stop er ${gv(3, "maansteen")} in mijn tas.`, "Hoeveel maanstenen liggen er nog?"]),
-    minVraag("kopermunt", 11, 4, [6, 7, 8], [`Ik heb ${aantal(11, "kopermunt")}.`, `Ik geef er ${gv(4, "kopermunt")} weg.`, "Hoeveel kopermunten heb ik nog?"]),
+    minVraag("diamant", 7, 3, [3, 4, 5], [`Ik vind ${aantal(7, "diamant")}.`, `Er rollen er ${gb(3, "diamant")} weg.`, "Hoeveel diamanten heb ik nog?"]),
+    minVraag("goudstuk", 9, 4, [4, 5, 6], [`Ik heb ${aantal(9, "goudstuk")}.`, `Ik betaal er ${gb(4, "goudstuk")} voor een kompas.`, "Hoeveel goudstukken heb ik nog?"]),
+    minVraag("parel", 10, 2, [7, 8, 9], [`Ik heb ${aantal(10, "parel")}.`, `Ik verlies er ${gb(2, "parel")}.`, "Hoeveel parels heb ik nog?"]),
+    minVraag("maansteen", 8, 3, [4, 5, 6], [`Er liggen ${aantal(8, "maansteen")}.`, `Ik stop er ${gb(3, "maansteen")} in mijn tas.`, "Hoeveel maanstenen liggen er nog?"]),
+    minVraag("kopermunt", 11, 4, [6, 7, 8], [`Ik heb ${aantal(11, "kopermunt")}.`, `Ik geef er ${gb(4, "kopermunt")} weg.`, "Hoeveel kopermunten heb ik nog?"]),
     raadselTekst(
       ["Nu een raadsel!", "Waarom gaat een robot nooit zwemmen?", "Is het omdat hij dan gaat roesten?", "Of omdat hij geen zwembroek heeft?"],
       ["Omdat hij dan gaat roesten.", "Omdat hij geen zwembroek heeft."],
@@ -505,7 +508,7 @@ const level2 = maak({
   eind: "Je kunt minsommen maken.",
 });
 
-const EERSTE3 = minVraag("ster", 7, 4, [2, 3, 4], [`${gv(7, "ster")} − ${gv(4, "ster")}: hoeveel sterren zijn er nog?`], true);
+const EERSTE3 = minVraag("ster", 7, 4, [2, 3, 4], [`${gv(7, "ster")} − ${gb(4, "ster")}: hoeveel sterren zijn er nog?`], true);
 
 const level3 = maak({
   level: 3,
@@ -513,19 +516,19 @@ const level3 = maak({
   woord: "naast de oude raket",
   voorwerpen: ["sleutel", "schatkaart", "ster", "goudstuk", "diamant", "parel", "maansteen", "kopermunt", "planeet", "maan", "raketje", "komeet", "oude-raket", "schatkist"],
   begin: [{ vw: "schatkaart", x: 330, maat: 280 }, { vw: "sleutel", x: 690, maat: 200 }],
-  welkom: ["Plus en min staan door elkaar.", `${gv(7, "ster")} − ${gv(4, "ster")}: hoeveel sterren zijn er nog?`],
+  welkom: ["Plus en min staan door elkaar.", `${gv(7, "ster")} − ${gb(4, "ster")}: hoeveel sterren zijn er nog?`],
   voorbeeld: EERSTE3,
   verhaal: ["We hebben een sleutel gevonden.", "Waar past hij op?"],
   uitleg: async (l, st) => {
     /* Eerst het voorbeeld van het beginscherm: de minsom 7 − 4 met sterren. */
     toon(l, st, metLetters(st, "voorbeeld-min", [{ s: "groep", id: "m", vw: "ster", n: 7, x: 490, y: 360, per: 5, cel: 62 }]));
-    som(l, st, 7, "−", 4, undefined, "geel", "geel", "geel");
+    som(l, st, 7, "−", 4, undefined, "geel", kiesAnder("geel"), "geel");
     await l.zeg(`Kijk: ${aantal(7, "ster")}.`);
     /* pas bij "weg" grijs (BOUWREGELS 14.22: de kleur verklapt het antwoord niet vooraf) */
     zet(l, { licht: ["m.3", "m.4", "m.5", "m.6"], uit: ["m.3", "m.4", "m.5", "m.6"] });
-    await l.zeg(`Er gaan er ${gv(4, "ster")} weg: die worden grijs.`);
+    await l.zeg(`Er gaan er ${gb(4, "ster")} weg: die worden grijs.`);
     zet(l, { licht: ["m.0", "m.1", "m.2"] });
-    await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(7, "ster")} − ${gv(4, "ster")} = ${gv(3, "ster")}.`);
+    await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(7, "ster")} − ${gb(4, "ster")} = ${gv(3, "ster")}.`);
     zet(l, { licht: [] });
     await l.verder();
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
@@ -541,7 +544,7 @@ const level3 = maak({
   vragen: [
     EERSTE3,
     kaalPlus(7, 6, [12, 13, 14], "planeet"),
-    minVraag("goudstuk", 14, 6, [7, 8, 9], [`${gv(14, "goudstuk")} − ${gv(6, "goudstuk")}: hoeveel goudstukken zijn er nog?`], true),
+    minVraag("goudstuk", 14, 6, [7, 8, 9], [`${gv(14, "goudstuk")} − ${gb(6, "goudstuk")}: hoeveel goudstukken zijn er nog?`], true),
     kaalPlus(13, 7, [10, 19, 20], "raketje"),
     raadselTekst(
       ["Nu een raadsel!", "Welke vrucht hoort in de ruimte?", "Is het de maan-darijn?", "Of de banaan?"],
@@ -552,16 +555,16 @@ const level3 = maak({
       ["Welk woord lijkt op maan?"],
       "maan",
     ),
-    minVraag("diamant", 12, 5, [6, 7, 8], [`${gv(12, "diamant")} − ${gv(5, "diamant")}: hoeveel diamanten zijn er nog?`], true),
-    minVraag("parel", 16, 5, [10, 11, 12], [`${gv(16, "parel")} − ${gv(5, "parel")}: hoeveel parels zijn er nog?`], true),
+    minVraag("diamant", 12, 5, [6, 7, 8], [`${gv(12, "diamant")} − ${gb(5, "diamant")}: hoeveel diamanten zijn er nog?`], true),
+    minVraag("parel", 16, 5, [10, 11, 12], [`${gv(16, "parel")} − ${gb(5, "parel")}: hoeveel parels zijn er nog?`], true),
     kaalPlus(8, 8, [15, 16, 17], "komeet"),
-    minVraag("sleutel", 11, 3, [7, 8, 9], [`${gv(11, "sleutel")} − ${gv(3, "sleutel")}: hoeveel sleutels zijn er nog?`], true),
+    minVraag("sleutel", 11, 3, [7, 8, 9], [`${gv(11, "sleutel")} − ${gb(3, "sleutel")}: hoeveel sleutels zijn er nog?`], true),
     kaalPlus(6, 5, [10, 11, 12], "maan"),
-    minVraag("maansteen", 15, 7, [7, 8, 9], [`${gv(15, "maansteen")} − ${gv(7, "maansteen")}: hoeveel maanstenen zijn er nog?`], true),
+    minVraag("maansteen", 15, 7, [7, 8, 9], [`${gv(15, "maansteen")} − ${gb(7, "maansteen")}: hoeveel maanstenen zijn er nog?`], true),
     kaalPlus(9, 8, [16, 17, 18], "planeet"),
-    minVraag("kopermunt", 13, 4, [8, 9, 10], [`${gv(13, "kopermunt")} − ${gv(4, "kopermunt")}: hoeveel kopermunten zijn er nog?`], true),
+    minVraag("kopermunt", 13, 4, [8, 9, 10], [`${gv(13, "kopermunt")} − ${gb(4, "kopermunt")}: hoeveel kopermunten zijn er nog?`], true),
     kaalPlus(15, 4, [18, 19, 20], "raketje"),
-    minVraag("ster", 18, 8, [9, 10, 11], [`${gv(18, "ster")} − ${gv(8, "ster")}: hoeveel sterren zijn er nog?`], true),
+    minVraag("ster", 18, 8, [9, 10, 11], [`${gv(18, "ster")} − ${gb(8, "ster")}: hoeveel sterren zijn er nog?`], true),
     kaalPlus(5, 8, [12, 13, 14], "komeet"),
   ],
   slot: async (l, st) => {

@@ -106,14 +106,17 @@ type GroepPlek = { box: Rect; items: { x: number; y: number }[]; schaal: number;
 const MIDDEN = { x: 490, y: 400 };
 const SOM = { b: 220, h: 84, y: 632, gat: 22 };
 
+/** Hoeveel er in een rij liggen: croissants zijn breed, dus 4 per rij (groter en los van elkaar, BOUWREGELS 14.23). */
+const perRij = (g: Groep) => (g.ding === "croissant" ? 4 : 5);
+
 function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
   /* Zo groot als past (BOUWREGELS 14.23): breed genoeg voor alle groepjes naast elkaar, en niet te hoog. */
-  const sumKol = groepen.reduce((t, g) => t + Math.max(1, Math.min(5, g.n)), 0);
-  const maxRij = Math.max(...groepen.map((g) => Math.ceil(g.n / 5)));
+  const sumKol = groepen.reduce((t, g) => t + Math.max(1, Math.min(perRij(g), g.n)), 0);
+  const maxRij = Math.max(...groepen.map((g) => Math.ceil(g.n / perRij(g))));
   const cel = Math.max(46, Math.min(100, (900 - 110 * (groepen.length - 1) - 32 * groepen.length) / sumKol, 300 / maxRij));
   const maten = groepen.map((g) => {
-    const kol = Math.max(1, Math.min(5, g.n));
-    const rij = Math.ceil(g.n / 5);
+    const kol = Math.max(1, Math.min(perRij(g), g.n));
+    const rij = Math.ceil(g.n / perRij(g));
     const pad = 16;
     const boven = 0;
     const b = Math.max(150, kol * cel + 2 * pad);
@@ -131,9 +134,10 @@ function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
     const box = { x: x + m.b / 2, y: cy, b: m.b, h: m.h };
     const links = x + (m.b - m.kol * cel) / 2;
     const top = cy - m.h / 2 + m.boven + m.pad;
-    const items = Array.from({ length: g.n }, (_, k) => ({ x: links + ((k % 5) + 0.5) * cel, y: top + (Math.floor(k / 5) + 0.5) * cel }));
+    const pr = perRij(g);
+    const items = Array.from({ length: g.n }, (_, k) => ({ x: links + ((k % pr) + 0.5) * cel, y: top + (Math.floor(k / pr) + 0.5) * cel }));
     x += m.b + gat;
-    return { box, items, schaal: cel / (DING + 6), label: g.label ? { x: box.x, y: cy + hoogst / 2 + 34 } : null };
+    return { box, items, schaal: (cel / (DING + 6)) * (g.ding === "croissant" ? 0.97 : 1), label: g.label ? { x: box.x, y: cy + hoogst / 2 + 34 } : null };
   });
 }
 

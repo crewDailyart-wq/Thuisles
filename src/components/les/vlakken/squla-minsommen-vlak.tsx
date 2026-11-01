@@ -1189,7 +1189,7 @@ function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord"
           </span>
         ) : /^\d+$/.test(d) ? (
           /* Elk getal in de som heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1), met een dunne donkere rand voor de leesbaarheid. */
-          <span key={i} style={{ color: nr++ === 1 ? hexB : hexA, WebkitTextStroke: "2px #0b1028", paintOrder: "stroke fill" }}>
+          <span key={i} style={{ color: nr++ === 1 ? hexB : hexA, WebkitTextStroke: plek === "bord" ? "5px #0b1028" : "2px #0b1028", paintOrder: "stroke fill" }}>
             {d}
           </span>
         ) : (
