@@ -1471,3 +1471,178 @@ Speeltest met GOED=1, één les tegelijk: alle 5 lessen tot het eind. res3-4 faa
 ### squla-tellen-resultatief3-4 — ronde 3 — GOEDGEKEURD
 - Het voorbeeldje staat nu als klein plaatje op het bordje, naast het getal ("70 🍎", schermfoto 015). Er ligt niets meer op het touwtje van de zak dat meegeteld kan worden.
 - 70 + 5 losse appels = 75: klopt.
+
+---
+
+## Visuele ronde 14.23 — 2026-11-01
+
+Alleen gekeurd op het beeld: 14.23 "kijk als een kind" en 14.24. Per les gespeeld met GOED=1, één les tegelijk, en de schermfoto's bekeken (vellen per les, twijfelgevallen groot). Alle 19 lessen hieronder liepen tot het eind.
+
+### Meten
+
+#### squla-meten-pizza-1 — AFGEKEURD
+- **Pizza in de doos (schermfoto 007, "Deze pizza vult bijna de hele doos."):**
+  - De grote pizza ligt niet ín de doos. Hij staat rechtop vóór de doos en steekt over de voorrand naar buiten.
+  - De kleine pizza staat als een rondje op de bodem.
+  - Voorstel: de pizza als platte ovaal (van schuin boven) in de bak van de doos tekenen, binnen de randen. Of de doos van bovenaf tekenen, met de pizza erin.
+- Verder in orde: de pizza's naast elkaar en de ijsjes van klein naar groot zijn groot genoeg.
+
+#### squla-meten-pizza-2 — GOED
+- De pizzapunten zijn groot en los te tellen. De ijsjes met bolletjes staan goed op elkaar.
+
+#### squla-meten-pizza-3 — GOED
+- Deeg, kaas, tomaten, zak meel en dozen liggen óp de schalen van de weegschaal. De olijven liggen in de schaal.
+
+#### squla-meten-hoeveelheden-1 — AFGEKEURD
+- **"vol, voller, volst" (schermfoto 015):**
+  - In de drie schalen zie je bijna niets. De tomaten zitten achter de rand.
+  - De middelste schaal lijkt leeg, en in de rechter zie je alleen een paar topjes.
+  - Een kind kan zo niet zien welke schaal het volst is (half verstopt).
+  - Voorstel: de inhoud bóven de rand laten uitkomen, als een berg die steeds hoger wordt. Of de schaal doorzichtig, zodat je de inhoud ziet.
+- In orde: de manden, de fruitstokjes, de potjes jam en de flesjes.
+
+#### squla-meten-hoeveelheden-2 — GOED
+- De wip met bal en blok (±60 px) is duidelijk. De tas, de voetbal, de veer en de steen zijn groot en vrolijk.
+- Tip: het springtouw, de vlieger en de voetbal zweven naast de tas.
+
+#### squla-meten-oppervlakte-1, oppervlakte-2 — GOED
+- De schilderijen hangen aan de muur. De blaadjes en tegels liggen netjes op de tafel. Alles is groot genoeg.
+
+### Geld
+
+#### squla-geld-geldmachine-1 — AFGEKEURD
+- **Overlap (schermfoto 013, en ook 020):** bij "Is het een briefje van 100 euro, een munt van 1 euro, of een briefje van 10 euro?" staan drie brede woordknoppen.
+  - Daardoor zakt de herhaal-knop (rond pijltje) óp het hoofd van Bliepo.
+  - De bovenste regel van de vraag raakt de balk met Pauze/Testkind.
+  - Voorstel: een kortere vraag ("Wat valt er uit de spaarpot?") en kortere knoppen ("100 euro", "1 euro", "10 euro"), of de knoppen op één rij.
+
+#### squla-geld-geldmachine-2, zakgeld-1, zakgeld-2, geld-1, geld-2 — GOED
+- Het geld is klein, maar dat moet volgens de regel (niet vergroten, 72 dpi). Munten en briefjes liggen los en zijn te tellen.
+- De spaarpot heeft munten erin. Het bordje bij "de afwas" is logisch.
+
+### Splitsen
+
+#### squla-splits-splitsen1-1 — AFGEKEURD
+- **Te klein (schermfoto 002):**
+  - De pionnen zijn ±25 × 40 px in een huisje van ±600 px breed. Het huisje is bijna leeg.
+  - De voetballen in het zak-huisje zijn ±20 px.
+  - Op een telefoon worden ze heel klein.
+  - Voorstel: pionnen en ballen in het huisje en eronder ±2× zo groot. Er is ruimte genoeg.
+- In orde: het tienvak met de doek over de ballen.
+
+#### squla-splits-splitsen1-2 — AFGEKEURD
+- **Te klein:**
+  - de ballen in de bakjes van de machine zijn ±12 px;
+  - de shirts en ballen onder de splitspaal zijn ±20 px (vellen 002–010).
+  - Voorstel: ±2× zo groot.
+
+#### squla-splits-splitsen2-1, splitsen2-2 — GOED
+- Huisjes, getallen en sommen zijn groot en duidelijk. Er is niets geteld in kleine plaatjes.
+
+### Piratenschat
+
+#### squla-piraat-1 — AFGEKEURD
+- **Goudstukken (schermfoto 002):** de 12, 14 en 15 goudstukken zijn platte gele rondjes zonder glans en zonder randje. Het lijken stippen, geen munten. Hetzelfde geldt voor de kopermunten (12 paars, 6 oranje, schermfoto in vel). Voorstel: het plaatje `goudstuk` of `kopermunt` gebruiken, met glans B.
+
+#### squla-piraat-2 — AFGEKEURD
+- **14.24, grijs dat geen "weg" betekent (schermfoto 016):**
+  - De maanstenen zijn van zichzelf grijs.
+  - De maanstenen die weggaan zijn ook grijs, alleen iets donkerder.
+  - Een kind ziet het verschil tussen "een grijze steen" en "weg" bijna niet.
+  - Voorstel: de maanstenen in een echte kleur (bijvoorbeeld een lichtgevende blauwe of paarse maansteen), of wat weggaat doorstrepen of laten vervagen tot bijna niets.
+- In orde: sterren, diamanten, goudstukken en kopermunten, met weg = dof.
+
+#### squla-piraat-3 — al gekeurd in de laatste ronde (GOED).
+
+### Klokkijken (18 lessen) — visuele ronde — GOED
+- Alle 18 lessen liepen tot het eind (GOED=1, één tegelijk).
+- De wijzerklokken zijn groot en duidelijk: de kleine wijzer oranje, de grote paars.
+- De bezorgbus, bakkerij, oven, zon, maan, taart, kampvuur, treintje, schoolbord en het deegkommetje staan los naast de klok en zijn groot en vrolijk, met glans.
+- De klokjes op de telefoon en laptop passen in het scherm. Niets overlapt.
+- Tip: op één schermfoto van klokkijken3-4 staat de volgende zin ("De bus staat bij de halte.") al gedimd klaar terwijl de oven nog in beeld is. Dat is een overgang van een fractie van een seconde, geen fout in de les.
+
+---
+
+## Rekenmix ronde 3, Tijd ronde 3, Plus/Min ronde 4 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd:
+- Speeltest `GOED=1`, één les tegelijk, laptop (1440 × 900): Rekenmix mix1-4, 3-1, 4-1, 4-2, 4-3, 4-4, Tijd tijden-1 en **alle 32 Plus/Min-lessen**, allemaal **tot het eind**.
+- Tablet (820 × 1180), steekproef van elk soort beeld: mix4-3, tijden-1, plus-bakkerij-3, plus-dansen-2, plus-bus2-2, min-ruimte-2, min-bus1-1, min-machine-4, min-kaal-1, ook allemaal tot het eind.
+- Schermfoto's in `scratchpad/controle/opus-r4b/` (en `opus-r4/` voor mix4-3 tablet).
+- Gekeurd op 14.21–14.24 (kijk als een kind, geen grijs/wit als getalkleur), en op 2.1: de twee getallen van een som hebben altijd verschillende kleuren.
+- Alle sommen in `squla-plussommen.tsx` en `squla-minsommen.tsx` zijn met een script nagelopen op hun kleur (tegelkleur 1–10, `getalNaam` voor 11–20, `etenKleuren` in de bakkerij).
+
+### Rekenmix ronde 3
+- **mix1-4** — GOEDGEKEURD: de koekjes zijn groot (±70 px) en apart telbaar (002).
+- **mix3-1** — GOEDGEKEURD: de blokken van de torens sluiten op elkaar aan (015).
+- **mix4-1** — GOEDGEKEURD: de appels houden hun echte kleur, met een rood en een groen randje (fruitkleuren, 2.1).
+- **mix4-2** — GOEDGEKEURD: de potloden zijn groot en apart te tellen (007).
+- **mix4-3** — AFGEKEURD (14.23):
+  - De raketjes zijn een smal plaatje. Met `kr` (cel 57) zijn ze op de laptop maar ±25 × 50 px (schermfoto 012).
+  - Op de tablet staat alles in het bovenste derde deel, met nog kleinere raketjes en een lege onderkant (`opus-r4`, tablet 015).
+  - De bomen zijn nu wel goed (3 + 2, ±50 px).
+  - Voorstel: raketjes groter tekenen dan ronde dingen (bijv. m × 1,5), of in groepjes van 2 rijen met meer ruimte.
+- **mix4-4** — AFGEKEURD (14.23): bij "meer dan / minder dan" staan de raketjes nog ±40 px klein en onderaan geperst, het zesde raketje op het plekje (schermfoto 002). Dit is niet veranderd. Voorstel: zie mix4-3, en de groepjes hoger in beeld.
+
+### Tijd ronde 3
+- **tijden-1** — GOEDGEKEURD: zon, zon en maan met sterren hebben nu glans, zachte gloed en een dunne rand (011). Tip: de heuvel bij "ochtend" is nog plat groen.
+
+### Plus/Min ronde 4
+
+Opgelost:
+- **Bus:** de pakjes zijn groot (±55 px) en liggen in rijen van 5, met het restje erbovenop, in het raam (plus-bus1-2/002, min-bus1-3/003). De pakjes die instappen of bezorgd worden, staan in hun eigen kleur ernaast.
+- **Getallen boven 10** hebben echte kleuren, geen grijs meer: min-ruimte-2 heeft 14 blauwe raketjes (004), 14.24 in orde.
+- **Bakkerij:** taartjes, cupcakes en koekjes liggen op een houten toonbank (bakkerij-1/005, bakkerij-3/004). De uitleg na Nee verklapt niets meer (11 + 5 stokbroden, 9 + 3 koekjes).
+- **Disco:** de kaartjes en platen staan los in een rij, de tafel met draaitafel staat eronder en wordt niet bedekt (dansen-1/003, dansen-2/001).
+- **min-machine-4:** "Je haalt geld uit je portemonnee en koopt een ijsje." De munten liggen naast de portemonnee (004).
+
+#### FOUT 1 (2.1): twee getallen van een som in dezelfde kleur
+Kleuren komen nu alleen uit het getal zelf (`ringKleur`, `getalNaam`, `etenKleuren`). Daardoor krijgen twee getallen soms dezelfde kleur. Op schermfoto plus-bus1-3/006 zijn bij 7 + 7 = 14 alle drie de getallen en alle 14 pakjes blauw. Per les, de sommen met **dezelfde kleur**:
+- plus-bakkerij-1: 4 + 4, 5 + 5 (`etenKleuren` geeft bij gelijke aantallen bewust dezelfde kleur, r. 140 in `squla-getalring.ts`).
+- plus-bakkerij-3: 6 + 6 (schermfoto 004: twee keer dezelfde kleur), 7 + 7, 8 + 8, 9 + 9.
+- plus-dansen-2/3: twee platen met 5 (5 + 5, allebei groen; dansen-2 schermlijst 008).
+- plus-bus1-1: 2 + 2.
+- plus-bus1-2: 11 + 2 en 17 + 2 (allebei oranje).
+- plus-bus1-3: 7 + 7, 8 + 8, 6 + 6.
+- plus-bus2-1: 3 + 3, 2 + 2.
+- plus-bus2-2: 17 + 2 (oranje), 15 + 5 (groen).
+- plus-bus2-3: 8 + 8, 7 + 7, 9 + 9.
+- plus-kaal-1: 3 + 3, 4 + 4, 5 + 5.
+- plus-kaal-2: 15 + 5 (groen).
+- plus-kaal-3: 7 + 7, 6 + 6, 8 + 8.
+- min-ruimte-3: 16 − 16 (keuze bij "welke som", r. 854).
+- min-bus1-3: 14 − 7 (blauw).
+- min-machine-2: 10 − 10.
+- min-kaal-2: 14 − 7 (blauw), 18 − 8 (paars).
+- min-kaal-3: 13 − 8 (paars).
+
+Sommen waar de kleuren **erg op elkaar lijken** (zelfde kleurfamilie; ter beoordeling):
+- 15 + 4 / 15 − 4 (groen/lichtgroen), 14 − 6 en 20 − 6 (blauw/lichtblauw), 13 − 9 en 12 − 9 (paars of roze/magenta).
+- 4 + 5, 5 − 4 (lichtgroen/groen), 7 + 6, 7 − 6 (blauw/lichtblauw), 8 + 9, 9 − 8 (paars/magenta).
+- Ze staan in plus-bakkerij-1/3, bus1-2/1-3, bus2-1/2-3, kaal-1/3, min-bus1-1/1-2/1-3/2-1/2-3, min-kaal-1/2/3, min-machine-2/3 en min-ruimte-3.
+
+Voorstel: één functie die bij een som de kleur van het tweede getal kiest als die gelijk is aan (of lijkt op) die van het eerste. Bijvoorbeeld een vaste reservekleur die niet in de som voorkomt. Die functie overal gebruiken: in de som, in de zin en op de voorwerpen. Ook `etenKleuren` bij gelijke aantallen.
+
+#### FOUT 2 (14.4/14.23): bus 1, de nieuwe pakjes blijven buiten de bus
+Bij plus-bus1-1/1-2/1-3 zegt Bliepo na het goede antwoord "Er liggen nu 12 pakjes in de bus.", maar de 7 nieuwe pakjes staan nog naast de bus en er liggen er 5 in (bus1-3/008, ook 006). Zin en beeld kloppen niet. Voorstel: bij goed de instappers de bus in laten gaan (of de zin pas zeggen als ze erin liggen). Bij bus 2 (rondje met een getal) is dit geen probleem.
+
+#### FOUT 3 (14.23): bekers zweven
+min-machine-2, "Welke som hoort bij het plaatje?": de vijf bekers (3 vol, 2 leeg) zweven midden in de lucht, zonder tafel of plank (002). Voorstel: de bekers op een tafel of plank zetten, zoals de toonbank in de bakkerij.
+
+#### FOUT 4 (14.23): tablet
+Op de tablet (820 × 1180) staat het Phaser-beeld in het bovenste ±40 % en is de onderste helft leeg.
+- plus-bakkerij-3: de croissants zijn klein (±60 px) en liggen tegen elkaar aan (004).
+- min-bus1-1: de 5 pakjes in de bus liggen tegen elkaar, en de 3 bezorgde pakjes zweven in de lucht naast de bus (002).
+- mix4-3: zie boven.
+- Disco, ruimte, machine-4 en kaal zien er op de tablet wel goed uit.
+- Voorstel: op een staand scherm het vlak groter maken of naar beneden laten doorlopen, en de dingen groter, met ruimte ertussen.
+
+### Uitslag per les (Plus/Min ronde 4)
+Eindoordeel = laptop én tablet.
+- **GOEDGEKEURD (8):** min-ruimte-1, min-ruimte-2, min-machine-1, min-machine-3, min-machine-4, min-kaal-1, plus-dansen-1, plus-dansen-4. (Disco, ruimte, machine en kaal zijn op de tablet in orde.)
+- **AFGEKEURD alleen op fout 4 (tablet; op de laptop in orde):** plus-bakkerij-2, min-bus1-1, min-bus1-2, min-bus2-1, min-bus2-2, min-bus2-3.
+- **AFGEKEURD op fout 1 (2.1, zelfde kleur):** plus-dansen-2, plus-dansen-3, plus-bus2-1, plus-bus2-2, plus-bus2-3, plus-kaal-1, plus-kaal-2, plus-kaal-3, min-ruimte-3, min-kaal-2, min-kaal-3.
+- **AFGEKEURD op fout 1 en fout 4:** plus-bakkerij-1, plus-bakkerij-3, min-bus1-3.
+- **AFGEKEURD op fout 1 en fout 2:** plus-bus1-1, plus-bus1-2, plus-bus1-3.
+- **AFGEKEURD op fout 1 en fout 3:** min-machine-2.
+(De "lijkt"-paren uit fout 1 staan erbij ter beoordeling; daarop is niets afgekeurd.)
