@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10537 zinnen, 298764 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10549 zinnen, 299129 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -1896,7 +1896,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-min-machine-4 (1)
 
-- Er zit geld in je portemonnee en je koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
+- Je haalt geld uit je portemonnee en koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
 
 ## squla-minsommen (gedeeld) (65)
 
@@ -3169,7 +3169,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Allebei de groepjes zijn $e(15) euro.
 - Het geld ziet er anders uit, maar het is evenveel.
 
-## uitleg (62)
+## uitleg (63)
 
 - Hier liggen $g(a) $wat.
 - Ik leg er $g(b) bij.
@@ -3200,8 +3200,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu is de rij precies vol.
 - Zoek steeds het kaartje dat samen $g(10) is.
 - Zoek steeds twee getallen die samen $g(10) zijn.
-- Onderin ligt een rij van $g(10).
+- Onderin liggen twee rijen van $g(5).
 - Dat zijn $g(10) pakjes.
+- Onderin liggen twee rijen van $g(5): dat zijn $g(10) pakjes.
 - Daarop ligt er nog $g(1).
 - Daarop liggen er nog $g(a - 10).
 - Samen zijn dat $g(a) pakjes.
@@ -3966,7 +3967,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7288)
+## Door de site genoteerd, buiten de lessen (7299)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11114,6 +11115,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan er 8 weg.
 - Er gaan er 7 weg.
 - Het lege bordje gaat weg.
+- Er zit geld in je portemonnee en je koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
 - De bus heeft 12 pakjes. In het rondje staat 6. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
 - Ik leg er 2 bij.
 - Erbij is plus: 3 + 2.
@@ -11256,3 +11258,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 12 is 10 en nog 2.
 - 12 + 3 = 15.
 - Het ijsje kost 1 euro.
+- Is het 100 euro, 1 euro of 10 euro?
+- 1 euro
+- 100 euro
+- Is het 1 euro, een knoop of 2 euro?
+- Is het 5 euro, 50 euro of 50 cent?
+- 50 euro
+- 50 cent
+- Is het 20 euro, 10 euro of 50 euro?
+- 20 euro
+- Is het 1 euro, 2 euro of 50 cent?
