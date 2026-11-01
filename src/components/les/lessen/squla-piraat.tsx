@@ -516,21 +516,22 @@ const level3 = maak({
   verhaal: ["We hebben een sleutel gevonden.", "Waar past hij op?"],
   uitleg: async (l, st) => {
     /* Eerst het voorbeeld van het beginscherm: de minsom 7 − 4 met sterren. */
-    toon(l, st, metLetters(st, "voorbeeld-min", [{ s: "groep", id: "m", vw: "ster", n: 7, x: 490, y: 360, per: 5, cel: 62 }]), { uit: ["m.3", "m.4", "m.5", "m.6"] });
+    toon(l, st, metLetters(st, "voorbeeld-min", [{ s: "groep", id: "m", vw: "ster", n: 7, x: 490, y: 360, per: 5, cel: 62 }]));
     som(l, st, 7, "−", 4, undefined, "geel", "geel", "geel");
     await l.zeg(`Kijk: ${aantal(7, "ster")}.`);
-    zet(l, { licht: ["m.3", "m.4", "m.5", "m.6"] });
+    /* pas bij "weg" grijs (BOUWREGELS 14.22: de kleur verklapt het antwoord niet vooraf) */
+    zet(l, { licht: ["m.3", "m.4", "m.5", "m.6"], uit: ["m.3", "m.4", "m.5", "m.6"] });
     await l.zeg(`Er gaan er ${gv(4, "ster")} weg: die worden grijs.`);
     zet(l, { licht: ["m.0", "m.1", "m.2"] });
     await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(7, "ster")} − ${gv(4, "ster")} = ${gv(3, "ster")}.`);
     zet(l, { licht: [] });
     await l.verder();
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
-    som(l, st, 8, "+", 5);
+    som(l, st, 8, "+", 5, undefined, "paars", "oranje", "wit");
     await l.zeg("Kijk goed naar het teken.", "Een plus: er komt bij.", "Een min: er gaat af.");
     await plusUitleg(l, 8, 5);
-    som(l, st, 8, "+", 5, 13);
-    await l.zeg(`${g(8)} + ${g(5)} = ${g(13)}.`);
+    som(l, st, 8, "+", 5, 13, "paars", "oranje", "wit");
+    await l.zeg(`${g(8, "paars")} + ${g(5, "oranje")} = ${g(13, "wit")}.`);
     await l.verder();
     l.som(null);
   },
