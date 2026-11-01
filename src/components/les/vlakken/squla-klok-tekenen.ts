@@ -142,8 +142,8 @@ export function laadKlokken(): Promise<void> {
   return klokKlaar;
 }
 
-/** De wijzerklok in een vak van `maat` × `maat` met het midden op (cx, cy). */
-function klokPlaatje(c: C, u: number, m: number, cx: number, cy: number, maat: number) {
+/** De wijzerklok in een vak van `maat` × `maat` met het midden op (cx, cy). Ook gebruikt in andere lessen (Tijd): overal dezelfde Synthesis-klok (BOUWREGELS 8.1/8.2). */
+export function klokPlaatje(c: C, u: number, m: number, cx: number, cy: number, maat: number) {
   const img = klokBeelden.get(klokSleutel(u, m));
   if (!img || !img.complete) return;
   c.drawImage(img, cx - maat / 2, cy - maat / 2, maat, maat);

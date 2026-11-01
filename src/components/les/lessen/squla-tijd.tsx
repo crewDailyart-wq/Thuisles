@@ -20,6 +20,7 @@
  * woorden zijn; kaartjes en knoppen lezen hun naam voor bij aanwijzen.
  */
 
+import { laadKlokken } from "../vlakken/squla-klok-tekenen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
 import { SqulaTijdTrein, KaartWeektrein, dagNaam, kaartId, type DagKaart, type TreinProps } from "../vlakken/squla-tijd-trein";
@@ -1153,6 +1154,7 @@ const kalender1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
+    await laadKlokken(); /* de Synthesis-klok op het plaatje "klok" */
     await welkomPlaatjes(l, "maand|hoed=13", ["Een klok, een kalender en plaatjes.", "Waar zie je wat er vandaag gaat gebeuren?"], async () => {
       zetP(l, { ...LEEG_P, groot: null, kaarten: [P.ritme, P.rooster, P.maand] });
       zetP(l, { licht: ["plaatjes"] });

@@ -27,6 +27,8 @@ export function zetLettertype(f: string) {
   if (f) LETTER = f;
 }
 
+import { klokPlaatje } from "./squla-klok-tekenen";
+
 type C = CanvasRenderingContext2D;
 
 const v = (c: C, d: string, vul?: string, dik = RAND_DUN, rand: string | undefined = N) => tekenVormen(c, [{ d, vul, rand, dik }]);
@@ -448,20 +450,8 @@ const ENKEL: Record<string, Tekening> = {
   tand: { b: 120, h: 120, teken: vw("tand", 120, 120) },
   duimop: { b: 120, h: 120, teken: (c) => waarTeken(c, true) },
   duimneer: { b: 120, h: 120, teken: (c) => waarTeken(c, false) },
-  klok: {
-    b: 160,
-    h: 160,
-    teken: (c) => {
-      v(c, cirkel(80, 80, 70), PALET.warmwit, RAND);
-      for (let i = 0; i < 12; i++) {
-        const a = (i / 12) * Math.PI * 2;
-        v(c, `M ${80 + Math.sin(a) * 56} ${80 - Math.cos(a) * 56} L ${80 + Math.sin(a) * 64} ${80 - Math.cos(a) * 64}`, undefined, i % 3 === 0 ? 5 : 3);
-      }
-      v(c, "M 80 80 L 112 80", undefined, 8);
-      v(c, "M 80 80 L 80 28", undefined, 5);
-      v(c, cirkel(80, 80, 6), N, 0);
-    },
-  },
+  /* Dezelfde wijzerklok als in de Synthesis- en klokkijklessen (BOUWREGELS 8.1/8.2), op 3 uur. De les wacht eerst op laadKlokken(). */
+  klok: { b: 160, h: 160, teken: (c) => klokPlaatje(c, 3, 0, 80, 80, 160) },
   maandklein: { b: 200, h: 170, teken: maandKlein },
   weekblad: { b: 190, h: 230, teken: weekblad },
   jaar: { b: 240, h: 220, teken: jaar },
