@@ -482,18 +482,30 @@ function Lesscherm({
   }, [les.indeling]);
 
   useEffect(() => {
-    const binnen = staandVak.current?.firstElementChild;
-    if (!staand || !binnen) return;
-    /* De ballon wordt in zijn vak uitgerekt; meet daarom wat erin staat (ballon, Bliepo, knoppen). */
-    const delen = Array.from(binnen.children);
+    const vak = staandVak.current;
+    if (!staand || !vak) return;
+    /* De ballon wordt in zijn vak uitgerekt; meet daarom wat erin staat (ballon, Bliepo, knoppen), elke keer opnieuw. */
     const meet = () => {
-      const vakjes = delen.map((d) => d.getBoundingClientRect()).filter((r) => r.height > 0);
-      if (vakjes.length) setBallonHoogte(Math.max(...vakjes.map((r) => r.bottom)) - Math.min(...vakjes.map((r) => r.top)));
+      const binnen = vak.firstElementChild;
+      if (!binnen) return;
+      const vakjes = Array.from(binnen.children)
+        .map((d) => d.getBoundingClientRect())
+        .filter((r) => r.height > 0);
+      /* Alleen groter worden: anders springt het speelvlak bij elke zin op en neer (keuring r5, fout C). */
+      if (vakjes.length) {
+        const h = Math.max(...vakjes.map((r) => r.bottom)) - Math.min(...vakjes.map((r) => r.top));
+        setBallonHoogte((oud) => (h > oud ? h : oud));
+      }
     };
     meet();
     const kijker = new ResizeObserver(meet);
-    delen.forEach((d) => kijker.observe(d));
-    return () => kijker.disconnect();
+    kijker.observe(vak);
+    const wijziging = new MutationObserver(meet);
+    wijziging.observe(vak, { childList: true, subtree: true, characterData: true });
+    return () => {
+      kijker.disconnect();
+      wijziging.disconnect();
+    };
   }, [staand]);
 
   /* Het draaiboek afspelen. */
