@@ -1446,3 +1446,28 @@ Opgelost uit ronde 2:
 **Uitslag ronde 3:**
 - GOEDGEKEURD: min-ruimte-1.
 - AFGEKEURD: plus-bakkerij-1/2/3, plus-dansen-1/2/3/4, min-machine-4; uit de steekproef ook min-ruimte-2 (grijze raketjes boven 10) en min-bus1-1/plus-bus1-1 (pakjes te klein, alle buslessen).
+
+---
+
+## Laatste nakijkronde — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: alle 5 lessen tot het eind. res3-4 faalde de eerste keer ("5 seconden niets te tikken", de laptop was druk) en liep de tweede keer goed tot het eind. Gekeurd t/m 14.23, vooral op het beeld.
+
+### squla-piraat-3 — ronde 4 — GOEDGEKEURD
+- In de uitleg na Nee staat 8 + 5 overal in dezelfde kleuren: in de som bovenaan, in `plusUitleg` en in de slotzin 8 paars, 5 oranje, 13 wit.
+- De 4 sterren blijven eerst geel en worden pas bij "Er gaan er 4 weg" grijs (14.22).
+
+### squla-splits-delen-1 — ronde 4 — GOEDGEKEURD
+- Beeld (schermfoto 028): de potloden zijn rood, geel, blauw, groen, paars en roze. Ze staan uitgewaaierd ín een turquoise beker en steken er half bovenuit.
+- Bij 4, 5 en 6 per beker is elk potlood apart te zien en te tellen. Niets steekt opzij uit en niets zweeft. Het is vrolijk en duidelijk, met glans op de beker. "In elke beker staan 3 potloden" klopt nu met het beeld.
+
+### squla-vormen-patronen-2 — ronde 3 — GOEDGEKEURD
+- Het welkom zegt nu "Nu staan de blokjes in rijen onder elkaar." Dat klopt met het rooster van blokjes.
+
+### squla-tellen-resultatief1-3 — ronde 3 — GOEDGEKEURD
+- De bussen zijn nu ±105 × 40 px (eerst 80 × 30) en de satellieten ±108 × 60. Ze staan los over het hele vlak verdeeld en zijn apart te tellen (schermfoto's 032 en 013).
+- Tip: op een telefoon blijven de bussen smal. Nog iets groter mag.
+
+### squla-tellen-resultatief3-4 — ronde 3 — GOEDGEKEURD
+- Het voorbeeldje staat nu als klein plaatje op het bordje, naast het getal ("70 🍎", schermfoto 015). Er ligt niets meer op het touwtje van de zak dat meegeteld kan worden.
+- 70 + 5 losse appels = 75: klopt.
