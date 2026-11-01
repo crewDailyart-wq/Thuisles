@@ -1153,7 +1153,7 @@ const kalender1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
-    await welkomPlaatjes(l, "maand|hoed=13", ["Een klok, een kalender en plaatjes.", "Waar zie je wat de klas vandaag gaat doen?"], async () => {
+    await welkomPlaatjes(l, "maand|hoed=13", ["Een klok, een kalender en plaatjes.", "Waar zie je wat er vandaag gaat gebeuren?"], async () => {
       zetP(l, { ...LEEG_P, groot: null, kaarten: [P.ritme, P.rooster, P.maand] });
       zetP(l, { licht: ["plaatjes"] });
       await l.zeg("Op een dagkalender zie je wat je op één dag doet.");

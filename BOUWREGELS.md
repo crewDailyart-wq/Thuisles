@@ -137,7 +137,7 @@ Alles hieronder geldt, tenzij er "vervangen" staat. Staat er "TWIJFEL", dan staa
 11.1 **Minimaal 15 vragen per les/oefening**, met verschillende vraagsoorten, oplopend in moeilijkheid, geen dubbele. Heeft de bron minder dan 15 vragen: eerst alle stappen van de bron, daarna extra vragen van dezelfde soort met andere getallen en voorwerpen. — BESL 2 en 5, G:28 okt (01:42), G:10 okt, MEM:vragen-per-sessie-15 — 28 okt
 11.2 **Elke vraag heeft precies één goed antwoord, alle getallen binnen het bereik.** Meerkeuze: 3 of 4 keuzes, van dezelfde soort als het antwoord, de foute keuzes zijn echte kinderfouten (één ernaast, tien ernaast, verkeerde bewerking, cijfers omgedraaid). Groep 3 nooit boven 20. — ONTW, G:10 okt (21:58) — okt 2026
 11.3 **Werk per groep.** Nu alleen groep 3; nooit groep 4 meenemen, ook niet als een tekst "groep 3 en 4" noemt. Eerst vragen. — MEM:werk-per-groep, G:10 okt (22:35) — 11 okt
-11.4 **Groep 3 = tellen en rekenen tot 20** (hele en halve uren). Tellen tot 100 hoort bij groep 4. — MEM:lessen-groep3-stand, G:10 okt (23:01), G:30 okt (13:54) — 11 okt
+11.4 **Groep 3 = tellen en rekenen tot 20** (hele en halve uren). Tellen tot 100 hoort bij groep 4. — MEM:lessen-groep3-stand, G:10 okt (23:01), G:30 okt (13:54) — 11 okt Uitzondering: bij de Squla-lessen volgt de getallenreeks Squla (11.5); Squla's telrij (10977) gaat in groep 3 tot ± 80, dus die les ook.
 11.5 **Bij Squla-lessen: de getallenreeksen en leerdoelen van Squla volgen** (gaat Squla tot 20, dan gaat de les tot 20). Alle vragen, teksten, getallen, afbeeldingen en geluiden zelf schrijven; niets van Squla kopiëren; wat niet gezien is niet bouwen (lijst NIET GEZIEN IN SQULA). Bij twijfel LEGAL REVIEW REQUIRED. — G:30 okt (13:58, 14:09) — 30 okt
 11.6 **Na afronden een moeilijkere variant eronder (2 of 3 levels, zoals Squla),** op onze eigen manier. — G:30 okt (13:52-13:54) — 30 okt. TWIJFEL: zie T8.
 11.7 **Bij Synthesis-lessen is Synthesis de enige bron** voor opbouw, vraagsoorten, volgorde, aantallen en manier van helpen; didactiek en rekenmaterialen precies zoals daar. Wijk niet af zonder het eerst te vragen. — G:27 okt (01:13), G:28 okt (20:48) — 27-28 okt
@@ -182,6 +182,13 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
 14.9 **Een vervanging behoudt het doel** (1.21): het plantje in de klokles droeg een dagverhaal; een losse wekker niet.
 14.10 **Kleur van het getal = kleur van het voorwerp** (2.2): na het vervangen van een plaatje (planeet blauw → paars) ook de kleur in de zin aanpassen.
 14.11 **Niet alles tegelijk testen:** met te veel helpers liep de laptop vast (load 30-75) en faalden tests vals. Maximaal 3 helpers; zware controles na elkaar.
+14.13 **Het welkom moet kloppen met het voorbeeld** (welkom zei "half 4", het voorbeeld liet half 3 zien). En na Nee legt Bliepo uit wat er in het voorbeeld staat, niet iets anders.
+14.14 **Antwoordkeuzes blijven binnen het bereik van het level** (geen 21, 26, 28 of 40 als de les tot 20 gaat).
+14.15 **Nooit "Tik op het vinkje" of andere knop-uitleg** (3.15); zoek ook in de hulpteksten.
+14.16 **Kleur van getallen ook bij de klok:** het uur (kleine wijzer) in de kleur van de kleine wijzer, minuten in de kleur van de grote wijzer; in de hulp en uitleg na Nee net zo gekleurd als in de vraag.
+14.17 **Een nieuw of vervangen plaatje = alles wat erop/erin getekend wordt opnieuw nakijken** (boeken zweefden boven de nieuwe wandplank; potloden werden óp een pennenbeker getekend die al vol zat; bloemen achter de bloembak).
+14.18 **Puzzelstukjes die er hetzelfde uitzien, moeten op elke gelijke plek goed tellen.**
+14.19 **Verhaal en beeld blijven samen kloppen na inkorten:** haal je het verhaalbegin weg (schatkaart), dan mag een latere zin ("De sleutel past!") er niet meer naar verwijzen.
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
