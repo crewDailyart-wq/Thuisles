@@ -7,8 +7,33 @@
 import type { ComponentType } from "react";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { squlaBegin, squlaEind, zetTestAntwoord } from "./squla-hulp";
+import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
 import { SqulaSplitsVlak, type Beeld, type SplitsProps } from "../vlakken/squla-splitsen-vlak";
+
+/**
+ * Het beginscherm ("Kun je dit al?") laat de EERSTE vraag van de les zien,
+ * zonder dat het kind iets hoeft te doen. `voorbeeldVan(vraag)` draait die
+ * vraag, maar `squlaVraag` zet dan alleen het beeld neer (geen vraag, geen
+ * antwoord). Zo blijft het voorbeeld altijd gelijk aan de echte eerste vraag.
+ */
+let voorbeeldAan = false;
+export function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
+  if (voorbeeldAan) {
+    v.toon?.();
+    return Promise.resolve(true);
+  }
+  return echteSqulaVraag(l, v);
+}
+export function voorbeeldVan(vraag: Vraag): (l: Lesgids, st: Stand) => void {
+  return (l, st) => {
+    voorbeeldAan = true;
+    try {
+      void vraag(l, st).catch(() => {});
+    } finally {
+      voorbeeldAan = false;
+    }
+  };
+}
 
 /** Een getal in de zin (wit, of in een kleur). */
 export const g = (n: number, k = "wit") => `{${n}:${k}}`;

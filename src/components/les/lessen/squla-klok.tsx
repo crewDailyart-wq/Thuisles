@@ -703,6 +703,7 @@ async function uitlegRekenen(l: Lesgids) {
   zet(l, { boven: [W(H(4), "groen")], licht: [] });
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- bewaard, niet meer gebruikt in het beginscherm
 const WELKOM_VINK = ["Klopt het? Tik dan op het vinkje.", "Klopt het niet? Tik dan op het kruisje."];
 
 /* =====================================================================
@@ -717,7 +718,8 @@ const digitaal1 = klokles({
   level: 1,
   voorwerpen: ["oven", "zandloper", "telefoon", "laptop"],
   start: W(U(12), "groen"),
-  welkom: ["Kijk eens naar de klok!", "Weet jij hoe laat het is?", "Een klok heeft wijzers en getallen."],
+  welkom: ["Een klok heeft twee wijzers en getallen.", "Waar zie je nog meer zo'n klok?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     (l, terug) =>
@@ -785,7 +787,8 @@ const digitaal2 = klokles({
   level: 2,
   voorwerpen: ["bakkerij", "maan", "deegkom", "oven", "bus", "taart"],
   start: V("bakkerij"),
-  welkom: ["In de bakkerij gebeurt alles op tijd.", "De oven, het deeg en de bus: ze letten op de klok.", "Zoek steeds de goede klok."],
+  welkom: ["De bakkerij gaat op een vaste tijd open.", "Op welke klok is het zover?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     kiesKlok(U(9), [U(3), U(9), U(6)], { boven: [V("bakkerij")], zin: ["Dit is de bakkerij.", "De winkel gaat om {9} uur open.", "Op welke klok is het {9} uur?"], goedZin: ["Het is {9} uur.", "De kleine wijzer wijst naar de {9}."] }),
@@ -893,7 +896,8 @@ const hoelaat2 = klokles({
   level: 2,
   voorwerpen: ["oven", "bezorgbus", "zon", "bakkerij"],
   start: V("bakkerij"),
-  welkom: ["De bezorgbus heeft een drukke dag.", "De bakkerij en de bus letten op de klok.", "Jij ook?"],
+  welkom: ["In de bakkerij gaat de oven vroeg aan.", "Hoe laat is het op de klok?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     leesKlok(U(6), [U(6), U(7), U(9)], { ding: "oven", zin: ["De oven in de bakkerij gaat aan.", "Hoe laat is het?"] }),
@@ -920,7 +924,8 @@ const hoelaat3 = klokles({
   level: 3,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij", "oven"],
   start: V("bezorgbus"),
-  welkom: ["De bezorgbus rijdt de laatste ronde van de dag.", "Kijk steeds goed op de klok."],
+  welkom: ["De bezorgbus rijdt de laatste ronde van de dag.", "Lees de klok: hoe laat is het nu?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     leesKlok(U(10), [U(9), U(10), U(11)], { ding: "bezorgbus", zin: ["De bus vertrekt voor de laatste ronde.", "Hoe laat is het?"] }),
@@ -982,7 +987,8 @@ const klokkijken1 = klokles({
   level: 1,
   voorwerpen: [],
   start: W(U(12), "blauw"),
-  welkom: ["Ik zeg hoe laat het is.", "Klopt dat met de klok?", ...WELKOM_VINK],
+  welkom: ["Ik zeg hoe laat het is.", "Klopt dat met de klok?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     goedFout(U(4), U(4)),
@@ -1010,7 +1016,8 @@ const klokkijken2 = klokles({
   noot: "level 2 is bij Squla een uitlegfilmpje",
   voorwerpen: [],
   start: W(U(12), "oranje"),
-  welkom: ["Welke klok hoort bij de tijd?", "Dat zoeken we vandaag uit."],
+  welkom: ["Er staan twee klokken.", "Op welke klok is het {2} uur?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     kiesKlok(U(2), [U(7), U(2)]),
@@ -1037,7 +1044,8 @@ const klokkijken3 = klokles({
   level: 4,
   voorwerpen: [],
   start: W(U(12), "groen"),
-  welkom: ["De kleine wijzer vertelt het uur.", "Kun jij hem lezen?"],
+  welkom: ["De kleine wijzer vertelt het uur.", "Hoe laat is het op deze klok?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     leesKlok(U(9), [U(9), U(8), U(3)]),
@@ -1093,7 +1101,8 @@ const klokkijken1a = klokles({
   level: 1,
   voorwerpen: [],
   start: W(U(3), "paars"),
-  welkom: ["Zijn deze klokken even laat?", "We vergelijken klokken met elkaar."],
+  welkom: ["Je vergelijkt klokken met elkaar.", "Op welke klok is het {2} uur?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     kiesKlok(U(2), [U(7), U(2)]),
@@ -1120,7 +1129,8 @@ const klokkijken1b = klokles({
   level: 2,
   voorwerpen: [],
   start: W(U(6), "rood"),
-  welkom: ["Soms klopt een tijd en soms niet.", ...WELKOM_VINK, "En soms zoek je zelf de goede klok."],
+  welkom: ["Soms klopt de tijd bij de klok, soms niet.", "Kijk goed naar de kleine wijzer."],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     goedFout(U(3), U(3)),
@@ -1147,7 +1157,8 @@ const klokkijken1c = klokles({
   level: 3,
   voorwerpen: [],
   start: W(U(9), "turkoois"),
-  welkom: ["Sommige klokken lijken op elkaar.", "Kijk goed waar de kleine wijzer naar wijst."],
+  welkom: ["Sommige klokken lijken op elkaar.", "Op welke klok is het {11} uur?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     kiesKlok(U(11), [U(11), U(1), U(9)]),
@@ -1178,7 +1189,8 @@ const klokkijken2a = klokles({
   level: 1,
   voorwerpen: [],
   start: W(U(9), "blauw"),
-  welkom: ["Een klok en een tijd in woorden.", "Horen ze bij elkaar?", "Dat oefenen we vandaag."],
+  welkom: ["Een klok en een tijd horen bij elkaar.", "Welke klok hoort bij {9} uur?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     tijdNaarKlok(U(9), [U(9), U(8), U(7)], null),
@@ -1205,7 +1217,8 @@ const klokkijken2b = klokles({
   level: 2,
   voorwerpen: [],
   start: W(U(3), "oranje"),
-  welkom: ["Zoek de klok die bij de tijd past.", "Soms hoort er een verhaaltje bij.", "Dat doen we nu."],
+  welkom: ["Hier staat een tijd in woorden.", "Zoek de klok die erbij past."],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     tijdNaarKlok(U(8), [U(8), U(9)], ["De bus vertrekt om {8} uur."]),
@@ -1232,7 +1245,8 @@ const klokkijken2c = klokles({
   level: 3,
   voorwerpen: [],
   start: W(U(12), "paars"),
-  welkom: ["De tijden liggen dicht bij elkaar.", "Kijk dus heel goed naar de wijzers."],
+  welkom: ["De tijden liggen dicht bij elkaar.", "Welke klok hoort bij {6} uur?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     tijdNaarKlok(U(6), [U(6), U(8), U(5)], null),
@@ -1263,7 +1277,8 @@ const halfuur1 = klokles({
   level: 1,
   voorwerpen: [],
   start: W(H(5), "oranje"),
-  welkom: ["Vandaag kijken we naar halve uren.", "Bij half staat de grote wijzer op de {6}."],
+  welkom: ["Bij half staat de grote wijzer op de {6}.", "Op welke klok is het half {4}?"],
+  voorbeeld: 0,
   uitleg: uitlegHalf,
   opgaven: [
     kiesKlok(H(3), [H(3), H(10)]),
@@ -1290,7 +1305,8 @@ const halfuur2 = klokles({
   level: 2,
   voorwerpen: [],
   start: W(H(9), "groen"),
-  welkom: ["Half drie, half vijf, half acht.", "Aan het eind komt er iets nieuws: bijna half."],
+  welkom: ["We oefenen halve uren en bijna half.", "Welke klok hoort bij half {10}?"],
+  voorbeeld: 0,
   uitleg: uitlegHalf,
   opgaven: [
     tijdNaarKlok(H(9), [H(9), H(11)], null),
@@ -1320,7 +1336,8 @@ const halfuur3 = klokles({
   level: 3,
   voorwerpen: [],
   start: W(U(6), "paars"),
-  welkom: ["Hele en halve uren door elkaar.", "En je zet klokken op volgorde."],
+  welkom: ["Hele en halve uren staan door elkaar.", "Op welke klok is het {6} uur?"],
+  voorbeeld: 0,
   uitleg: async (l) => {
     await uitlegHeel(l);
     await uitlegHalf(l);
@@ -1353,7 +1370,8 @@ const halfuur4 = klokles({
   level: 4,
   voorwerpen: ["schoolbord", "bed", "oven", "bus", "raketje", "taart", "kampvuur", "voetbal", "lampje", "treintje", "gieter"],
   start: W(U(2), "groen"),
-  welkom: ["Hoe laat is het straks?", "En hoe laat was het net?", "Vandaag rekenen we met de klok."],
+  welkom: ["De klok bij het schoolbord wijst {9} uur.", "Hoe laat is het over een uur?"],
+  voorbeeld: 0,
   uitleg: uitlegRekenen,
   opgaven: [
     reken("schoolbord", U(9), "uur later", [U(10), U(11), U(8)], "De school is begonnen."),

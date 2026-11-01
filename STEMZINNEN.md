@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 9863 zinnen, 275520 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10154 zinnen, 283845 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -181,7 +181,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Onder de rots ligt een kistje.
 - Er zit een nieuwe schatkaart in!
 - Die zoeken we de volgende keer.
-- We hebben een nieuwe schatkaart. Bij elke vraag krijg je weer een letter. Nu gaan we minsommen maken. Kun je dit al?
+- Bliepo heeft $aantal(6, "ster") in zijn tas. Er valt er $g(1) uit. Hoeveel sterren heeft hij nog? Kun je dit al?
 
 ## bak (8)
 
@@ -200,11 +200,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het staat in dezelfde rij als het rode vak.
 - Kijk welk getal ernaast staat.
 
-## begin (6)
+## begin (3)
 
-- In elk bakje liggen $aantal(3, "knikker").
-- $g(3) + $g(3) = $g(6).
-- Knikkers eerlijk verdelen over bakjes. Eerlijk is: in elk bakje evenveel. Kun je dit al?
 - Kijk eens naar de kleurrijke puzzel! Welk stukje past waar? Kun je dit al?
 - De puzzel heeft nu platte vormen. Kijk goed welk stukje past. Kun je dit al?
 - De puzzel heeft nu vormen die je kunt vastpakken. Zoals een bal of een blok. Kun je dit al?
@@ -262,7 +259,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De sleutel past!
 - De kist zit vol glimmende sterren.
 - We hebben de schat gevonden!
-- Kijk, een schatkaart! Waar ligt de schat? Dat weten we nog niet. Bij elke vraag krijg je een letter. Samen zeggen de letters waar de schat ligt. We gaan plussommen maken. Kun je dit al?
+- Bij de schattenjacht tel je goudstukken. Waar liggen $aantal(14, "goudstuk")? Kun je dit al?
 
 ## ding (5)
 
@@ -384,7 +381,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je kijkt naar de plaatjes van links naar rechts.
 - Het eerste plaatje hangt helemaal links.
 
-## h (31)
+## h (23)
 
 - $g(tot) kun je splitsen in $g(eerst) en $g(dan).
 - Kijk: een briefje van $g(10) euro.
@@ -409,14 +406,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er staan $g(t), $g(a) en $g(b) in.
 - Maak met die drie getallen een som.
 - Zoek die som.
-- En $g(3) munten van één euro.
-- Samen is dat $g(13) euro.
-- $g(13) kun je splitsen in $g(10) en $g(3).
-- Kijk: bovenaan staat $g(12).
-- Onder staan $g(10) en $g(2).
-- De som is: $g(12) = $g(10) + $g(2).
-- Een briefje van tien en een paar munten. Een getal boven de $g(10) is $g(10) en nog wat. Zo splitsen we tot twintig. Kun je dit al?
-- Bij elk huisje hoort een som. Het getal bovenaan komt vooraan. Maak jij de goede som? Kun je dit al?
 
 ## h-m (4)
 
@@ -751,9 +740,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Na vier keer draaien begint het opnieuw.
 - Welke kwam er na de eerste?
 
-## letters (18)
+## letters (20)
 
 - Kijk, de eerste letter!
+- Bij elke vraag krijg je een letter.
+- Samen zeggen de letters waar de schat ligt.
 - $g(a) is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
 - $g(b) is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
 - Hoeveel tientallen zijn het samen?
@@ -795,7 +786,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daar ligt een sleutel.
 - Waar past die sleutel op?
 - Dat zoeken we de volgende keer.
-- We hebben een sleutel gevonden. Waar past hij op? Bij elke vraag krijg je weer een letter. Nu gaan we plussommen en minsommen door elkaar maken. Kun je dit al?
+- Plus en min staan door elkaar. $g(7) − $g(4): hoeveel sterren zie je nog? Kun je dit al?
 
 ## maand (3)
 
@@ -1117,6 +1108,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Onder de pijl staat $namen(rooster.slice(1).map((r) => kw(r[pijlKol]!))).
 - Welke kleur komt er in de volgorde vóór $kw(rooster[1][pijlKol]!)?
 
+## proef-fruit-glow (1)
+
+- Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
+
+## proef-fruit-moment (1)
+
+- Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
+
+## proef-fruit-plat (1)
+
+- Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
+
 ## rechts (60)
 
 - Hier is de eerste.
@@ -1310,19 +1313,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-geld-geld-1 (1)
 
-- Hier ligt geld door elkaar. Trek lijnen naar het geld dat bij elkaar hoort. Kun je dit al?
+- Twee groepjes geld en twee bedragen. Welk bedrag hoort bij welk geld? Kun je dit al?
 
 ## squla-geld-geld-2 (1)
 
-- Nu tellen we geld tot $e(20) euro. Soms zijn er twee goede antwoorden. En soms trek je lijnen. Kun je dit al?
+- Nu tellen we geld tot $e(20) euro. Waar ligt $e(12) euro? Kun je dit al?
 
 ## squla-geld-geldmachine-1 (1)
 
-- Kijk eens naar mijn spaarpot! Er valt geld uit. Weet jij welk geld het is? Kun je dit al?
+- Er valt geld uit de spaarpot. Waar zie je een munt van $e(1) euro? Kun je dit al?
 
 ## squla-geld-geldmachine-2 (1)
 
-- Met het geld uit mijn spaarpot ga ik naar de speelgoedwinkel. Ik betaal met precies genoeg geld. Welke munten en briefjes geef ik? Kun je dit al?
+- In de speelgoedwinkel kost het springtouw $e(3) euro. Waar ligt $e(3) euro? Kun je dit al?
 
 ## squla-geld-zakgeld-1 (22)
 
@@ -1347,11 +1350,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $Hoofd(e(9)), $e(10).
 - Hoeveel stapjes waren dat?
 - Tel nu verder met de andere munt.
-- Je spaart voor een skateboard. Voor elk klusje krijg je wat geld. Hoeveel heb je al? Kun je dit al?
+- Voor elk klusje krijg je $e(2) euro. Hoeveel is dat bij elkaar? Kun je dit al?
 
 ## squla-geld-zakgeld-2 (1)
 
-- De spaarpot is vol: $e(20) euro! Wat kun je daarmee kopen op de rommelmarkt? Kun je dit al?
+- Je hebt $e(20) euro gespaard. Waar ligt $e(20) euro? Kun je dit al?
 
 ## squla-getallenlijn (gedeeld) (85)
 
@@ -1443,19 +1446,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-getallenlijn-dieren-1 (1)
 
-- Kijk, allemaal dingen op de getallenlijn! Welk getal ligt eronder? Kun je dit al?
+- Een ding ligt tussen twee getallen. Welk getal ligt onder de bal? Kun je dit al?
 
 ## squla-getallenlijn-dieren-2 (1)
 
-- De kaarten liggen door elkaar. Zet jij ze op volgorde? Kun je dit al?
+- Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot. Kun je dit al?
 
 ## squla-getallenlijn-dieren-3 (1)
 
-- De dingen zijn terug, nu met een lange bus erbij. Zoek de getallen en zet ze op volgorde. Kun je dit al?
+- Nu ligt de bal tussen $w(4) en $w(6). Welk getal ligt onder de bal? Kun je dit al?
 
 ## squla-getallenlijn-kat-1 (1)
 
-- Kijk, een raketje vliegt over de getallenlijn! Help je mee? Kun je dit al?
+- Het raketje vliegt over de getallenlijn. Bij welk getal staat het raketje? Kun je dit al?
 
 ## squla-getallenlijn-kat-2 (13)
 
@@ -1471,15 +1474,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het kleinste getal komt vooraan: 1.
 - Dan 2.
 - En dan 3.
-- Het raketje vliegt weer over de lijn. Nu staan er minder getallen bij. Kun je dit al?
+- Het raketje landt op een planeet met $w(15). Welk getal komt voor $w(15)? Kun je dit al?
 
 ## squla-getallenlijn-rangschikken-1 (1)
 
-- Kijk eens naar de getallenlijn! Zet elk getal op de goede plek, tot en met 20. Kun je dit al?
+- Een lichtslinger heeft lampjes met getallen. Welk getal hoort op het lege lampje? Kun je dit al?
 
 ## squla-getallenlijn-rangschikken-2 (1)
 
-- De getallen liggen weer door elkaar. Nu staan er minder getallen bij op de lijn. Kun je dit al?
+- De kristallen hebben getallen eronder. Welk getal hoort op de puntjes? Kun je dit al?
 
 ## squla-getallenlijn-rangschikken-3 (6)
 
@@ -1488,7 +1491,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $w(k).
 - Na 2 komt 3.
 - Het raketje staat bij 3.
-- Nu staan de streepjes verder uit elkaar. Kun je de getallen toch op de goede plek zetten? Kun je dit al?
+- Op de getallenlijn staan niet alle getallen. Welk getal hoort bij het vlaggetje? Kun je dit al?
 
 ## squla-getallenlijn-terugtellen-1 (5)
 
@@ -1496,7 +1499,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $w(7 - i).
 - Na 5 komt 4.
 - Terug wordt het getal steeds één minder.
-- Kijk, de raket staat klaar om op te stijgen! Eerst tellen we terug, van groot naar klein. Kun je dit al?
+- De raket telt af, van groot naar klein. Welk getal hoort op de puntjes? Kun je dit al?
 
 ## squla-huisnummers (gedeeld) (12)
 
@@ -1591,13 +1594,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een klok met wijzers is rond.
 - Er staan getallen op, en er zijn twee wijzers.
 - Waar zie je een rondje met twee wijzers?
-- Kijk eens naar de klok! Weet jij hoe laat het is? Een klok heeft wijzers en getallen. Kun je dit al?
+- Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok? Kun je dit al?
 
 ## squla-klok-digitaal-2 (3)
 
 - De klok zegt niet hoeveel broodjes er zijn.
 - De klok zegt hoe laat het is.
-- In de bakkerij gebeurt alles op tijd. De oven, het deeg en de bus: ze letten op de klok. Zoek steeds de goede klok. Kun je dit al?
+- De bakkerij gaat op een vaste tijd open. Op welke klok is het zover? Kun je dit al?
 
 ## squla-klok-hoelaat-1 (1)
 
@@ -1605,7 +1608,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-klok-hoelaat-2 (1)
 
-- De bezorgbus heeft een drukke dag. De bakkerij en de bus letten op de klok. Jij ook? Kun je dit al?
+- In de bakkerij gaat de oven vroeg aan. Hoe laat is het op de klok? Kun je dit al?
 
 ## squla-klok-hoelaat-3 (5)
 
@@ -1613,51 +1616,59 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De zon zie je overdag.
 - Een bus rijdt rond.
 - In de bakkerij staat de oven.
-- De bezorgbus rijdt de laatste ronde van de dag. Kijk steeds goed op de klok. Kun je dit al?
+- De bezorgbus rijdt de laatste ronde van de dag. Lees de klok: hoe laat is het nu? Kun je dit al?
+
+## squla-klok-klokkijken-1 (1)
+
+- Ik zeg hoe laat het is. Klopt dat met de klok? Kun je dit al?
 
 ## squla-klok-klokkijken-2 (1)
 
-- Welke klok hoort bij de tijd? Dat zoeken we vandaag uit. Kun je dit al?
+- Er staan twee klokken. Op welke klok is het 2 uur? Kun je dit al?
 
 ## squla-klok-klokkijken-3 (1)
 
-- De kleine wijzer vertelt het uur. Kun jij hem lezen? Kun je dit al?
+- De kleine wijzer vertelt het uur. Hoe laat is het op deze klok? Kun je dit al?
 
 ## squla-klok-klokkijken1-1 (1)
 
-- Zijn deze klokken even laat? We vergelijken klokken met elkaar. Kun je dit al?
+- Je vergelijkt klokken met elkaar. Op welke klok is het 2 uur? Kun je dit al?
+
+## squla-klok-klokkijken1-2 (1)
+
+- Soms klopt de tijd bij de klok, soms niet. Kijk goed naar de kleine wijzer. Kun je dit al?
 
 ## squla-klok-klokkijken1-3 (1)
 
-- Sommige klokken lijken op elkaar. Kijk goed waar de kleine wijzer naar wijst. Kun je dit al?
+- Sommige klokken lijken op elkaar. Op welke klok is het 11 uur? Kun je dit al?
 
 ## squla-klok-klokkijken2-1 (1)
 
-- Een klok en een tijd in woorden. Horen ze bij elkaar? Dat oefenen we vandaag. Kun je dit al?
+- Een klok en een tijd horen bij elkaar. Welke klok hoort bij 9 uur? Kun je dit al?
 
 ## squla-klok-klokkijken2-2 (1)
 
-- Zoek de klok die bij de tijd past. Soms hoort er een verhaaltje bij. Dat doen we nu. Kun je dit al?
+- Hier staat een tijd in woorden. Zoek de klok die erbij past. Kun je dit al?
 
 ## squla-klok-klokkijken2-3 (1)
 
-- De tijden liggen dicht bij elkaar. Kijk dus heel goed naar de wijzers. Kun je dit al?
+- De tijden liggen dicht bij elkaar. Welke klok hoort bij 6 uur? Kun je dit al?
 
 ## squla-klok-klokkijken3-1 (1)
 
-- Vandaag kijken we naar halve uren. Bij half staat de grote wijzer op de 6. Kun je dit al?
+- Bij half staat de grote wijzer op de 6. Op welke klok is het half 4? Kun je dit al?
 
 ## squla-klok-klokkijken3-2 (1)
 
-- Half drie, half vijf, half acht. Aan het eind komt er iets nieuws: bijna half. Kun je dit al?
+- We oefenen halve uren en bijna half. Welke klok hoort bij half 10? Kun je dit al?
 
 ## squla-klok-klokkijken3-3 (1)
 
-- Hele en halve uren door elkaar. En je zet klokken op volgorde. Kun je dit al?
+- Hele en halve uren staan door elkaar. Op welke klok is het 6 uur? Kun je dit al?
 
 ## squla-klok-klokkijken3-4 (1)
 
-- Hoe laat is het straks? En hoe laat was het net? Vandaag rekenen we met de klok. Kun je dit al?
+- De klok bij het schoolbord wijst 9 uur. Hoe laat is het over een uur? Kun je dit al?
 
 ## squla-meer-minder (gedeeld) (47)
 
@@ -1754,7 +1765,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ik zet ze naast elkaar.
 - De kleine maatbekers zijn een halve liter.
 - Waar komt het water net zo hoog als bij de grote?
-- De picknickmand staat klaar in het park. Wat is leeg, wat is vol, wat is veel en wat is weinig? Kun je dit al?
+- We pakken een mand voor de picknick. Welke mand is leeg? Kun je dit al?
 
 ## squla-meten-hoeveelheden-2 (20)
 
@@ -1777,7 +1788,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $i:wit
 - Tel jij de stukken van mat 2?
 - Zijn het er meer, minder of net zoveel?
-- De picknickmand is weer mee naar het park. Welke spullen zijn zwaar en welke zijn licht? Kun je dit al?
+- De picknickmand zit vol. Is de mand kort, zwaar of dun? Kun je dit al?
 
 ## squla-meten-oppervlakte-1 (11)
 
@@ -1791,7 +1802,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $eenGroot is net zo groot als twee $ka.
 - Er passen dus minder $kb $ding op.
 - Tel nu zelf verder.
-- Kijk eens naar de tafel met tegels! Wat is groter, wat is kleiner en wat is even groot? Kun je dit al?
+- Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein? Kun je dit al?
 
 ## squla-meten-oppervlakte-2 (8)
 
@@ -1802,7 +1813,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $i:blauw
 - De blauwe blaadjes zijn groter.
 - Daarom passen er minder op.
-- Hoeveel blaadjes papier passen er op de tafel? En hoeveel tegels passen er op de muur? Kun je dit al?
+- De tafel ligt vol blaadjes papier. Hoe groot is de tafel? Kun je dit al?
 
 ## squla-meten-pizza-1 (17)
 
@@ -1822,7 +1833,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat ijsje heeft $n:roze bolletjes.
 - Eén minder betekent: er gaat er één af.
 - Tel terug vanaf $n:roze.
-- Wat een pizza's! Ze zijn niet even groot. Welke is de grootste en welke is de kleinste? Kun je dit al?
+- Deze pizza's zijn niet even groot. Welke pizza is het grootst? Kun je dit al?
 
 ## squla-meten-pizza-2 (13)
 
@@ -1838,7 +1849,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Wat zwaar is, gaat omlaag.
 - Wat licht is, blijft boven.
 - Hoeveel heb je nodig om net zo zwaar te zijn als $o.naam?
-- De pizza's zijn in stukken gesneden. Waar liggen meer stukken, één stuk meer of één stuk minder? Kun je dit al?
+- De pizza is in stukken gesneden. Hoeveel stukken pizza zie je? Kun je dit al?
 
 ## squla-meten-pizza-3 (5)
 
@@ -1846,7 +1857,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst hangt hij recht.
 - Dan zakt de zware kant naar beneden.
 - De kaas is zwaar. De tomaat is licht.
-- Kijk, de weegschaal in de pizzabakkerij! Wat is zwaar en wat is licht? Kun je dit al?
+- Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Kun je dit al?
 
 ## squla-min-machine-2 (1)
 
@@ -2245,6 +2256,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu gaan we picknicken in het park.
 - Je kent nu veel rekenwoorden.
 
+## squla-splits-delen-1 (3)
+
+- In elk bakje liggen $aantal(3, "knikker").
+- $g(3) + $g(3) = $g(6).
+- Verdeel de knikkers eerlijk over twee bakjes. Hoeveel komen er in elk bakje? Kun je dit al?
+
 ## squla-splits-splitsen1-1 (5)
 
 - Kijk: samen zijn het $aantal(5, "pion").
@@ -2259,7 +2276,22 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bovenaan staat $g(7).
 - Onder staan $g(4) en $g(3).
 - $g(7) kun je splitsen in $g(4) en $g(3).
-- De splitsmachine verdeelt ballen over twee bakjes. Zoek jij de splitsing die erbij hoort? Ook leer je de splitspaal. Kun je dit al?
+- De splitsmachine verdeelt ballen over twee bakjes. Welk huisje hoort bij deze ballen? Kun je dit al?
+
+## squla-splits-splitsen2-1 (5)
+
+- Kijk: een briefje van $g(10) euro.
+- En $g(3) munten van één euro.
+- Samen is dat $g(13) euro.
+- $g(13) kun je splitsen in $g(10) en $g(3).
+- Een briefje van tien en vier munten. Welk getal mist er nog in het huisje? Kun je dit al?
+
+## squla-splits-splitsen2-2 (4)
+
+- Kijk: bovenaan staat $g(12).
+- Onder staan $g(10) en $g(2).
+- De som is: $g(12) = $g(10) + $g(2).
+- Bij elk huisje hoort een som. Welke som past bij dit huisje? Kun je dit al?
 
 ## squla-tellen (gedeeld) (26)
 
@@ -2287,45 +2319,45 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op twee kaartjes.
 - Je hebt ze allemaal gevonden.
 - We gaan weer tellen.
-- Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
-- Het fruit ligt weer klaar. Nu gaan we verder tellen, tot 20! Kun je dit al?
+- De appels liggen netjes in rijtjes. Hoeveel appels zie je? Kun je dit al?
+- De citroenen liggen weer in rijen van 5. Hoeveel citroenen zie je? Kun je dit al?
 
 ## squla-tellen-fruit-3 (2)
 
-- Nu ligt het fruit door elkaar. Er zijn geen rijtjes meer, dus tel goed! Kun je dit al?
-- Kijk eens naar de rijen! Elke rij is anders, dat helpt je bij het tellen. Kun je dit al?
+- Nu liggen de bananen door elkaar. Hoeveel bananen zie je? Kun je dit al?
+- Auto's en bussen staan om en om in rijen. Hoeveel auto's en bussen zie je? Kun je dit al?
 
 ## squla-tellen-resultatief1-2 (1)
 
-- Nu tellen we verder, tot 20! Hoeveel zijn het er? Kun je dit al?
+- We tellen verder, tot 20. Hoeveel ballen en blokken zie je? Kun je dit al?
 
 ## squla-tellen-resultatief1-3 (1)
 
-- Nu staat alles door elkaar. Er zijn geen rijtjes meer, dus onthoud goed wat je al geteld hebt. Kun je dit al?
+- De planeten staan door elkaar. Hoeveel planeten zie je? Kun je dit al?
 
 ## squla-tellen-resultatief2-1 (1)
 
-- Kijk, allemaal dingen uit de ruimte! Hoeveel zie je er? Kun je dit al?
+- De raketjes staan in rijen. Hoeveel raketjes zie je? Kun je dit al?
 
 ## squla-tellen-resultatief2-2 (1)
 
-- De ruimte wordt voller. Er komen meer rijen bij. Kun je dit al?
+- Nu zijn het meer auto's en bussen. Hoeveel auto's en bussen zie je? Kun je dit al?
 
 ## squla-tellen-resultatief2-3 (1)
 
-- Soms staat alles door elkaar, soms staat het in rijen. Kijk goed hoe je het beste telt. Kun je dit al?
+- De ufo's zweven door elkaar. Hoeveel ufo's zie je? Kun je dit al?
 
 ## squla-tellen-resultatief3-1 (1)
 
-- Planeten en ufo's zweven door de ruimte. Hoeveel zijn het er? Kun je dit al?
+- De planeten zweven door de ruimte. Hoeveel planeten zie je? Kun je dit al?
 
 ## squla-tellen-resultatief3-2 (1)
 
-- De planeten en ufo's zijn terug. Nu zijn het er veel meer, tel goed! Kun je dit al?
+- Nu zijn er veel meer planeten. Hoeveel planeten zie je? Kun je dit al?
 
 ## squla-tellen-resultatief3-3 (1)
 
-- Nu staan ze in rijen van 10. Tel per rij, dat gaat sneller. Kun je dit al?
+- Raketjes en sterren staan in rijen van 10. Hoeveel raketjes en sterren zie je? Kun je dit al?
 
 ## squla-tellen-resultatief3-4 (11)
 
@@ -2339,15 +2371,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $kc(o.rij[i]).
 - Terug wordt het steeds één minder.
 - $isNa ? w(o.rij[i]) : kc(o.rij[i]).
-- Kijk, een dichte zak met dingen erin! Op de zak staat hoeveel erin zitten. Tel de losse erbij. Kun je dit al?
+- Op de zak staat 40: zoveel knikkers zitten erin. Hoeveel knikkers zijn het samen? Kun je dit al?
 
 ## squla-tellen-telrij-1 (1)
 
-- Kijk, een straat vol huizen! De huisnummers staan op volgorde. Welk nummer komt erna? Kun je dit al?
+- De huizen in de straat staan op volgorde. Welk huisnummer komt na $w(34)? Kun je dit al?
 
 ## squla-tellen-telrij-2 (1)
 
-- Nu tellen we verder, tot 100. Daarna tellen we ook terug. Kun je dit al?
+- Nu tellen we verder, tot 100. Welk huisnummer komt na $w(69)? Kun je dit al?
 
 ## squla-tijd (gedeeld) (26)
 
@@ -3887,7 +3919,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (6660)
+## Door de site genoteerd, buiten de lessen (6943)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -9132,8 +9164,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 6 ufo's vliegen weg.
 - Er vliegen 14 ufo's rond.
 - Waar ligt de schat? Dat weten we nog niet.
-- Bij elke vraag krijg je een letter.
-- Samen zeggen de letters waar de schat ligt.
 - Ja! Er blijven 8 ufo's over.
 - De ufo neemt ze allemaal mee.
 - Er staan 16 sterren aan de hemel.
@@ -10549,3 +10579,288 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het fruit ligt weer klaar.
 - Er zijn geen rijtjes meer, dus tel goed!
 - Nu ligt het fruit door elkaar.
+- Kijk eens naar de rijen!
+- Elke rij is anders, dat helpt je bij het tellen.
+- Nu tellen we verder, tot 20!
+- Er zijn geen rijtjes meer, dus onthoud goed wat je al geteld hebt.
+- Hoeveel zie je er?
+- Kijk, allemaal dingen uit de ruimte!
+- De ruimte wordt voller.
+- Soms staat alles door elkaar, soms staat het in rijen.
+- Nu zijn het er veel meer, tel goed!
+- De planeten en ufo's zijn terug.
+- Nu staan ze in rijen van 10.
+- Kijk, een dichte zak met dingen erin!
+- Hoeveel knikkers en ballonnen zie je?
+- Hoeveel sterren en planeten zie je?
+- Hoeveel satellieten en raketjes zie je?
+- Kijk, een straat vol huizen!
+- Nu tellen we verder, tot 100.
+- Daarna tellen we ook terug.
+- Zet elk getal op de goede plek, tot en met 20.
+- Kijk eens naar de getallenlijn!
+- Nu staan er minder getallen bij op de lijn.
+- De getallen liggen weer door elkaar.
+- Één tomaat? Niet helemaal.
+- Kun je de getallen toch op de goede plek zetten?
+- Nu staan de streepjes verder uit elkaar.
+- Kijk, een raketje vliegt over de getallenlijn!
+- Wat weegt dan het meest?
+- Wat staat er bij 17?
+- Wat staat er bij 14?
+- De ufo staat bij 14.
+- Het raketje staat ongeveer bij 19.
+- Je weet waar het raketje staat op de getallenlijn.
+- Bij het verhaaltje hoort een tijd. Zoek de klok die erbij past. Kun je dit al?
+- Het raketje vliegt weer over de lijn.
+- Kijk, allemaal dingen op de getallenlijn!
+- Het raketje vliegt naar een planeet met 19.
+- Nu staat het raketje op een planeet met 11.
+- Je weet welk getal onder elk ding ligt.
+- Zet jij ze op volgorde?
+- Zoek de getallen en zet ze op volgorde.
+- De dingen zijn terug, nu met een lange bus erbij.
+- Eerst tellen we terug, van groot naar klein.
+- Kijk, de raket staat klaar om op te stijgen!
+- Je zet getallen goed op volgorde.
+- Elke wagon is een dag van de week, in de goede volgorde.
+- Daar komt de weektrein!
+- 4 euro? Niet helemaal.
+- Hier ligt 5 euro.
+- Welke dag komt erna en welke dag komt ervoor?
+- De weektrein staat weer klaar.
+- De bus komt om 10 uur bij de eerste halte.
+- Zet de dagen op volgorde.
+- Wat was gisteren, wat is vandaag en wat wordt morgen?
+- De weektrein rijdt weer langs.
+- Hier ligt 9 euro.
+- Je kunt rekenen met de dagen van de week.
+- Op 13 juni staat een hoedje.
+- Hoe lang duurt het nog tot die dag?
+- De kalender van juni zit weer vol dagen.
+- We leren woorden over tijd, zoals eerst, straks, laat en morgen.
+- Kijk, het kampvuur brandt!
+- Kijk, de bakkerij!
+- Wat duurt lang en wat duurt kort?
+- Een munt van 1 euro? Niet helemaal.
+- Een briefje van 20 euro? Niet helemaal.
+- Kijk, dit zijn munten.
+- Er staat een grote 2 op.
+- Hij is goud in het midden, met een zilveren rand.
+- Een munt van 2 euro is ook rond.
+- Kijk eens naar de kralen!
+- Een munt van 2 euro? Niet helemaal.
+- Waar zie je meer en waar zie je minder?
+- Een briefje van 100 euro? Niet helemaal.
+- Kijk, dit zijn briefjes.
+- Op een briefje van 10 euro staat 10.
+- Op welke kaart zijn er meer?
+- Kijk, twee kaarten met kralen!
+- Daarna zoek je waar de meeste koekjes liggen.
+- Waar liggen de minste en waar de meeste?
+- Zet ze op volgorde en zoek meer dan, minder dan en evenveel.
+- De getallen staan door elkaar.
+- Welk getal is evenveel of meer?
+- 10 = 4 + 6? Niet helemaal.
+- Onder staan 10 en 6.
+- Bovenaan staat 16.
+- Tel goed wat je ziet!
+- 7 = 3 + 4? Niet helemaal.
+- Ja! De bus staat rechts.
+- Kijk naar het schoolbord.
+- Ja! De trein staat links.
+- Ja! Het schoolbord lijkt op een rechthoek.
+- Kijk naar het stuk pizza.
+- Ja! Het stuk pizza lijkt op een driehoek.
+- Kijk naar de knoop.
+- Ja! De auto staat rechts.
+- Ja! De knoop lijkt op een cirkel.
+- Kijk naar het blok.
+- Onder staan 7 en 2.
+- Bovenaan staat 9.
+- Ja! Het skateboard staat links.
+- Ja! Het blok lijkt op een vierkant.
+- Kijk naar de telefoon.
+- Ja! De telefoon lijkt op een rechthoek.
+- Kijk naar het feesthoedje.
+- Ja! Het feesthoedje lijkt op een driehoek.
+- Kijk naar het koekje.
+- Ja! Het koekje lijkt op een cirkel.
+- Kijk naar het boek.
+- Ja! Het boek lijkt op een rechthoek.
+- Jij ziet de vormen overal.
+- Drie groepjes staan naast elkaar.
+- Waar zit meer kaas op en waar minder?
+- Kijk eens naar de boterhammen met kaas!
+- Ja! Daar zit evenveel kaas op als bovenaan.
+- Op welke boterham zit de meeste kaas?
+- Ja! Daar zit de meeste kaas op.
+- Bovenaan staat 7.
+- Onder staan 4 en 3.
+- Op welke boterham zit de minste kaas?
+- Ja! Daar zit de minste kaas op.
+- Jij ziet waar meer en minder is.
+- Ja! 7, 9, 10.
+- Jij zet groepjes op volgorde.
+- En tel de blokjes.
+- Zoek de kleur en de vorm.
+- De bal ligt vooraan. Je ziet de hele bal.
+- Ja! De bal ligt voor de doos.
+- In de doos, naast de doos of achter de doos?
+- De bal ligt ernaast, op de grond.
+- Ja! De bal ligt naast de doos.
+- Voor de doos, achter de doos of op de doos?
+- In elk bakje liggen 3 knikkers.
+- De doos staat ervoor. Je ziet maar een stukje bal.
+- Ja! De bal ligt achter de doos.
+- In de doos, naast de doos of op de doos?
+- Achter de doos, in de doos of naast de doos?
+- Op de doos, in de doos of achter de doos?
+- Voor de doos, op de doos of naast de doos?
+- Waar zie je 6 blokjes?
+- Voor de doos, achter de doos of in de doos?
+- Ja! 5 en 1 is 6.
+- Waar zie je een rode driehoek?
+- Naast de doos, voor de doos of in de doos?
+- Hij is rood en heeft drie hoeken.
+- Ja! Een rode driehoek.
+- Waar zie je 10 blokjes?
+- Op de doos, voor de doos of achter de doos?
+- Ja! 5 en 5 is 10.
+- Waar zie je een gele cirkel?
+- Hij is geel en helemaal rond.
+- Ja! Een gele cirkel.
+- Achter de doos, voor de doos of naast de doos?
+- Waar zie je een blauw vierkant?
+- Het is blauw en alle kanten zijn even lang.
+- Ja! Een blauw vierkant.
+- Waar zie je 8 blokjes?
+- Achter de doos, op de doos of voor de doos?
+- Ja! 5 en 3 is 8.
+- Waar zie je een groene rechthoek?
+- Jij weet waar de bal ligt.
+- Hij is groen, met twee lange en twee korte kanten.
+- Ja! Een groene rechthoek.
+- Waar zie je een rode rechthoek?
+- Ja! Een rode rechthoek.
+- Hij is rood, met twee lange en twee korte kanten.
+- Jij kent je kleuren en vormen.
+- Klein, kleiner, kleinst!
+- Op de schatkaart ligt een schat verstopt. Waar liggen 14 goudstukken? Kun je dit al?
+- Jij zet alles op volgorde.
+- Wat staat als eerste en wat als laatste?
+- Jij weet wat bij elkaar hoort.
+- Ja! De ufo staat als tweede.
+- Ja! De komeet staat als laatste.
+- Ja! Het raketje staat als eerste.
+- Ja! De planeet staat als vierde.
+- Welk getal komt net voor 9?
+- Ja! De satelliet staat als derde.
+- Ja! 8 komt net voor 9.
+- Welk getal komt na 6?
+- Bliepo heeft 6 sterren in zijn tas. Er valt er 1 uit. Hoeveel sterren heeft hij nog? Kun je dit al?
+- Ja! De pion staat als vierde.
+- Ja! Na 6 komt 7.
+- Welk getal komt net voor 10?
+- Ja! De bal staat als eerste.
+- Ja! 9 komt net voor 10.
+- Welk getal komt na 7?
+- Hier zijn 7 sterren.
+- Ja! Het skateboard staat als laatste.
+- Ja! De ballon staat als derde.
+- Hier zijn 6 knikkers.
+- Ja! De vlieger staat als tweede.
+- Jij weet wat eerste en laatste is.
+- Welk getal komt na 8?
+- Ja! Na 8 komt 9.
+- Hier zijn 10 ballen.
+- Jij weet welk getal ervoor en erna komt.
+- De maan? Niet helemaal.
+- Tel goed en kies het goede getal.
+- Kijk, de ruimte staat vol!
+- Er zijn 9 knikkers.
+- Ja! 4 en 3 is samen 7.
+- Ja! 2 en 7 is samen 9.
+- Er zijn 10 ballen.
+- Er zijn 7 knikkers.
+- Ja! 2 en 5 is samen 7.
+- Ja! 7 en 1 is samen 8.
+- Er zijn 6 knikkers.
+- Ja! 5 en 1 is samen 6.
+- Tel de aardbeien.
+- Er zijn 5 knikkers.
+- Tel de raketjes.
+- Ja! 1 en 4 is samen 5.
+- Ja! 5 en 4 is samen 9.
+- Ja! 2 en 2 is samen 4.
+- Ja! 4 en 4 is samen 8.
+- Plus en min staan door elkaar. 7 min 4: hoeveel sterren zie je nog? Kun je dit al?
+- Jij weet hoeveel er verstopt zijn.
+- Tel alleen de satellieten.
+- Zet de dingen op volgorde.
+- Ja! Het zijn er 4.
+- Jij telt alles in de ruimte.
+- Drie groepjes in de ruimte.
+- Eerst maak je 10: 7 + 3 = 10.
+- Van de 6 zijn er dan nog 3 over.
+- Begin bij 7.
+- 12 uur? Niet helemaal.
+- Waar zie je 6 bomen?
+- Waar zie je 5 appels?
+- Waar zie je 10 ballen?
+- Ja! 11, 12, 13, 14, 15.
+- Waar zie je 8 aardbeien?
+- Eerst waren er 12 diamanten.
+- Er gaan er 5 weg.
+- Waar zie je 4 bomen?
+- Ja! 9, 10, 11.
+- Waar zie je 9 kralen?
+- Waar zie je 7 raketjes?
+- Waar zie je 9 knikkers?
+- Ja! 15, 14, 13.
+- Jij vindt elk aantal.
+- Eerst maak je deeg in een kom.
+- Dan bakt het brood in de oven.
+- En dan is het brood klaar.
+- Ja! 12, 13, 14, 15, 16.
+- Ja! 8, 9, 11.
+- Ja! 14, 13, 12.
+- Waar zie je minder dan 4 knikkers?
+- Dat is minder dan 4.
+- Ja! Hier zijn er 3.
+- Waar zie je evenveel sterren?
+- Tel de sterren bovenaan.
+- Eerst heb je een leeg hoorntje.
+- Dan komt er een bolletje ijs op.
+- En dan nog een bolletje erbij.
+- Ja! Hier zijn er ook 5.
+- Ja! De laatste ballon is oranje.
+- Ja! De middelste ballon is groen.
+- Waar zie je meer dan 6 appels?
+- Jij zet alles in de goede volgorde.
+- Dat is meer dan 6.
+- Waar zie je minder dan 7 raketjes?
+- Dat is minder dan 7.
+- Waar zie je evenveel ballen?
+- Tel de ballen bovenaan.
+- Ja! Hier zijn er ook 8.
+- Ja! De laatste ballon is geel.
+- Ja! De middelste ballon is rood.
+- Jij weet wat meer dan en minder dan is.
+- Kijk: 5 sterren.
+- Er gaan er 2 weg: die worden grijs.
+- Er zijn er nog 3.
+- Een lange wijzer en een korte wijzer.
+- Hoeveel wijzers zijn dat samen?
+- We tellen de wijzers.
+- Hier wijst de kleine wijzer naar de 6.
+- Hier wijst de kleine wijzer naar de 5.
+- Hier wijst de kleine wijzer naar de 12.
+- En de kleine wijzer wijst naar de 5.
+- Bij 5 uur staat de grote wijzer op de 12.
+- Kijk naar het klokje.
+- Dan naar de kleine wijzer.
+- Hier wijst de kleine wijzer naar de 4.
+- Hier wijst de kleine wijzer naar de 9.
+- Bij 4 uur staat de grote wijzer op de 12.
+- En de kleine wijzer wijst naar de 4.

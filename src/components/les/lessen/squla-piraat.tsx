@@ -23,8 +23,7 @@
  */
 
 import type { Lesgids } from "../soort";
-import { squlaVraag } from "./squla-hulp";
-import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, les, tik, toon, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
+import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, les, squlaVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import { KaartSchat, type Beeld, type Deel } from "../vlakken/squla-splitsen-vlak";
 
 /* =====================================================================
@@ -59,7 +58,7 @@ async function nieuweLetter(l: Lesgids, st: Stand) {
   st.letters++;
   const b = LAATSTE.get(st);
   if (b) zet(l, { beeld: { ...b, delen: [...b.delen.filter((d) => d.s !== "letters"), letters(st)] } });
-  if (st.letters === 1) await l.zeg("Kijk, de eerste letter!");
+  if (st.letters === 1) await l.zeg("Kijk, de eerste letter!", "Bij elke vraag krijg je een letter.", "Samen zeggen de letters waar de schat ligt.");
   else await l.wacht(500);
 }
 
@@ -314,6 +313,8 @@ function maak(o: {
   voorwerpen: string[];
   begin: { vw: string; x: number; maat: number }[];
   welkom: string[];
+  /** De eerste vraag van de les: die staat als voorbeeld op het beginscherm. */
+  voorbeeld: Vraag;
   uitleg: (l: Lesgids, st: Stand) => Promise<void>;
   vragen: Vraag[];
   slot: (l: Lesgids, st: Stand) => Promise<void>;
@@ -336,6 +337,7 @@ function maak(o: {
       toon(l, st, verhaalBeeld(st, `start-${o.level}`, o.begin));
     },
     welkom: o.welkom,
+    voorbeeld: voorbeeldVan(o.voorbeeld),
     uitleg: o.uitleg,
     vragen: o.vragen,
     naVraag: nieuweLetter,
@@ -348,13 +350,16 @@ function maak(o: {
    De lessen
    ===================================================================== */
 
+const EERSTE1 = telVraag(14, [{ n: 12, per: 4 }, { n: 14, per: 5 }, { n: 15, per: 5 }]);
+
 const level1 = maak({
   level: 1,
   titel: "Schattenjacht: plussommen",
   woord: "onder de rode rots",
   voorwerpen: ["schatkaart", "goudstuk", "diamant", "parel", "kopermunt", "maansteen", "sleutel", "zak-chips", "kom-soep", "planeet", "maan", "raketje", "komeet", "rode-rots", "kistje"],
   begin: [{ vw: "schatkaart", x: 490, maat: 320 }],
-  welkom: ["Kijk, een schatkaart!", "Waar ligt de schat? Dat weten we nog niet.", "Bij elke vraag krijg je een letter.", "Samen zeggen de letters waar de schat ligt.", "We gaan plussommen maken."],
+  welkom: ["Bij de schattenjacht tel je goudstukken.", `Waar liggen ${aantal(14, "goudstuk")}?`],
+  voorbeeld: EERSTE1,
   uitleg: async (l, st) => {
     toon(l, st, metLetters(st, "voorbeeld", [
       { s: "groep", id: "a", vw: "diamant", n: 3, x: 290, y: 320, per: 5, cel: 54, label: "3" },
@@ -371,7 +376,7 @@ const level1 = maak({
   },
   /* Zoals Squla level 1: eerst tellen, dan "hoeveel samen" met plaatjes, een raadsel, dan kale sommen (tot 20, en tientallen). */
   vragen: [
-    telVraag(14, [{ n: 12, per: 4 }, { n: 14, per: 5 }, { n: 15, per: 5 }]),
+    EERSTE1,
     telVraag(11, [{ n: 11, per: 5 }, { n: 10, per: 5 }, { n: 12, per: 4 }]),
     samenVraag("diamant", 4, 2, [5, 6, 7]),
     samenVraag("parel", 7, 5, [11, 12, 13]),
@@ -405,13 +410,16 @@ const level1 = maak({
   eind: "Je kunt plussommen maken tot twintig.",
 });
 
+const EERSTE2 = minVraag("ster", 6, 1, [4, 5, 6], [`Bliepo heeft ${aantal(6, "ster")} in zijn tas.`, `Er valt er ${g(1)} uit.`, "Hoeveel sterren heeft hij nog?"]);
+
 const level2 = maak({
   level: 2,
   titel: "Schattenjacht: minsommen",
   woord: "in de grote krater",
   voorwerpen: ["schatkaart", "ster", "diamant", "goudstuk", "parel", "maansteen", "kopermunt", "sleutel", "komeet", "kistje"],
   begin: [{ vw: "schatkaart", x: 490, maat: 320 }],
-  welkom: ["We hebben een nieuwe schatkaart.", "Bij elke vraag krijg je weer een letter.", "Nu gaan we minsommen maken."],
+  welkom: [`Bliepo heeft ${aantal(6, "ster")} in zijn tas.`, `Er valt er ${g(1)} uit. Hoeveel sterren heeft hij nog?`],
+  voorbeeld: EERSTE2,
   uitleg: async (l, st) => {
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "groep", id: "m", vw: "ster", n: 5, x: 490, y: 360, per: 5, cel: 62 }]));
     await l.zeg(`Kijk: ${aantal(5, "ster")}.`);
@@ -424,7 +432,7 @@ const level2 = maak({
   },
   /* Zoals Squla level 2: eerst verhaaltjes, een raadsel, dan minsommen met een plaatje. Begin 5–11, eraf 1–5. */
   vragen: [
-    minVraag("ster", 6, 1, [4, 5, 6], [`Bliepo heeft ${aantal(6, "ster")} in zijn tas.`, `Er valt er ${g(1)} uit.`, "Hoeveel sterren heeft hij nog?"]),
+    EERSTE2,
     minVraag("diamant", 7, 3, [3, 4, 5], [`Bliepo vindt ${aantal(7, "diamant")}.`, `Er rollen er ${g(3)} weg.`, "Hoeveel diamanten heeft hij nog?"]),
     minVraag("goudstuk", 9, 4, [4, 5, 6], [`Bliepo heeft ${aantal(9, "goudstuk")}.`, `Hij betaalt er ${g(4)} voor een kompas.`, "Hoeveel goudstukken heeft hij nog?"]),
     minVraag("parel", 10, 2, [7, 8, 9], [`Bliepo heeft ${aantal(10, "parel")}.`, `Hij verliest er ${g(2)}.`, "Hoeveel parels heeft hij nog?"]),
@@ -456,13 +464,16 @@ const level2 = maak({
   eind: "Je kunt minsommen maken.",
 });
 
+const EERSTE3 = minVraag("ster", 7, 4, [2, 3, 4], [`${g(7)} − ${g(4)}: hoeveel sterren zie je nog?`], true);
+
 const level3 = maak({
   level: 3,
   titel: "Schattenjacht: plus en min",
   woord: "naast de oude raket",
   voorwerpen: ["sleutel", "schatkaart", "ster", "goudstuk", "diamant", "parel", "maansteen", "kopermunt", "planeet", "maan", "raketje", "komeet", "oude-raket", "schatkist"],
   begin: [{ vw: "schatkaart", x: 330, maat: 280 }, { vw: "sleutel", x: 690, maat: 200 }],
-  welkom: ["We hebben een sleutel gevonden.", "Waar past hij op?", "Bij elke vraag krijg je weer een letter.", "Nu gaan we plussommen en minsommen door elkaar maken."],
+  welkom: ["Plus en min staan door elkaar.", `${g(7)} − ${g(4)}: hoeveel sterren zie je nog?`],
+  voorbeeld: EERSTE3,
   uitleg: async (l, st) => {
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
     som(l, 8, "+", 5);
@@ -475,7 +486,7 @@ const level3 = maak({
   },
   /* Zoals Squla level 3: plus en min door elkaar tot 20, ook over het tiental, en een raadsel. */
   vragen: [
-    minVraag("ster", 7, 4, [2, 3, 4], [`${g(7)} − ${g(4)}: hoeveel sterren zie je nog?`], true),
+    EERSTE3,
     kaalPlus(7, 6, [12, 13, 14], "planeet"),
     minVraag("goudstuk", 14, 6, [7, 8, 9], [`${g(14)} − ${g(6)}: hoeveel goudstukken zie je nog?`], true),
     kaalPlus(13, 7, [19, 20, 21], "raketje"),

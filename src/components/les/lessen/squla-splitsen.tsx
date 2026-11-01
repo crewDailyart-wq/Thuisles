@@ -24,8 +24,7 @@
  */
 
 import type { Lesgids } from "../soort";
-import { squlaVraag } from "./squla-hulp";
-import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, kiesTwee, les, staafBeeld, tik, toon, typGetal, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
+import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, kiesTwee, les, squlaVraag, staafBeeld, tik, toon, typGetal, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import { KaartDelen, KaartSplitsen, type Beeld, type Deel } from "../vlakken/squla-splitsen-vlak";
 
 /* =====================================================================
@@ -781,6 +780,8 @@ const splitsen1a = les({
 
 /* ---------- Splitsen 1, level 2 ---------- */
 
+const S1B_BEGIN = paalBeeld("begin", 7, 4, "3", []);
+
 const splitsen1b = les({
   id: "squla-splits-splitsen1-2",
   titel: "Splitsen tot 10 (moeilijker)",
@@ -789,9 +790,12 @@ const splitsen1b = les({
   level: 2,
   kaart: KaartSplitsen,
   voorwerpen: ["splitsmachine", "bakje", "tennisbal", "voetbalshirt", "voetbal", "basketbal"],
-  begin: paalBeeld("begin", 7, 4, "3", []),
-  welkom: ["De splitsmachine verdeelt ballen over twee bakjes.", "Zoek jij de splitsing die erbij hoort?", "Ook leer je de splitspaal."],
-  uitleg: async (l) => {
+  begin: S1B_BEGIN,
+  welkom: ["De splitsmachine verdeelt ballen over twee bakjes.", "Welk huisje hoort bij deze ballen?"],
+  /* Het voorbeeld is de eerste vraag hieronder. */
+  voorbeeld: voorbeeldVan(machineVraag(2, 4, [[5, 2, 3], [6, 2, 4], [6, 3, 3]], true)),
+  uitleg: async (l, st) => {
+    toon(l, st, S1B_BEGIN);
     zet(l, { licht: ["paal"] });
     await l.zeg(`Dit is een splitspaal.`, `Bovenaan staat ${g(7)}.`, `Onder staan ${g(4)} en ${g(3)}.`, `${g(7)} kun je splitsen in ${g(4)} en ${g(3)}.`);
     zet(l, { licht: [] });
@@ -820,6 +824,8 @@ const splitsen1b = les({
 
 /* ---------- Splitsen 2, level 1 ---------- */
 
+const S2A_BEGIN: Beeld = { id: "begin", delen: [...geldDelen(3), { s: "huisje", id: "h", x: 490, y: 390, b: 360, top: "13", links: "10", rechts: "3" }] };
+
 const splitsen2a = les({
   id: "squla-splits-splitsen2-1",
   titel: "Splitsen tot 20",
@@ -828,9 +834,12 @@ const splitsen2a = les({
   level: 1,
   kaart: KaartSplitsen,
   voorwerpen: [],
-  begin: { id: "begin", delen: [...geldDelen(3), { s: "huisje", id: "h", x: 490, y: 390, b: 360, top: "13", links: "10", rechts: "3" }] },
-  welkom: ["Een briefje van tien en een paar munten.", `Een getal boven de ${g(10)} is ${g(10)} en nog wat.`, "Zo splitsen we tot twintig."],
-  uitleg: async (l) => {
+  begin: S2A_BEGIN,
+  welkom: ["Een briefje van tien en vier munten.", "Welk getal mist er nog in het huisje?"],
+  /* Het voorbeeld is de eerste vraag hieronder. */
+  voorbeeld: voorbeeldVan(huisGetal(14, 10, null, [4, 10, 14], true)),
+  uitleg: async (l, st) => {
+    toon(l, st, S2A_BEGIN);
     zet(l, { licht: ["briefje"] });
     await l.zeg(`Kijk: een briefje van ${g(10)} euro.`);
     zet(l, { licht: ["munten"] });
@@ -863,6 +872,8 @@ const splitsen2a = les({
 
 /* ---------- Splitsen 2, level 2 ---------- */
 
+const S2B_BEGIN: Beeld = { id: "begin", delen: [{ s: "huisje", id: "h", x: 490, y: 390, b: 360, top: "12", links: "10", rechts: "2" }] };
+
 const splitsen2b = les({
   id: "squla-splits-splitsen2-2",
   titel: "Splitsen tot 20 (moeilijker)",
@@ -871,9 +882,12 @@ const splitsen2b = les({
   level: 2,
   kaart: KaartSplitsen,
   voorwerpen: [],
-  begin: { id: "begin", delen: [{ s: "huisje", id: "h", x: 490, y: 390, b: 360, top: "12", links: "10", rechts: "2" }] },
-  welkom: ["Bij elk huisje hoort een som.", "Het getal bovenaan komt vooraan.", "Maak jij de goede som?"],
-  uitleg: async (l) => {
+  begin: S2B_BEGIN,
+  welkom: ["Bij elk huisje hoort een som.", "Welke som past bij dit huisje?"],
+  /* Het voorbeeld is de eerste vraag hieronder. */
+  voorbeeld: voorbeeldVan(huisSom(13, 10, 3, ["10 = 7 + 3", "13 = 10 + 3", "16 = 13 + 3"], true)),
+  uitleg: async (l, st) => {
+    toon(l, st, S2B_BEGIN);
     zet(l, { licht: ["h"] });
     await l.zeg(`Kijk: bovenaan staat ${g(12)}.`, `Onder staan ${g(10)} en ${g(2)}.`, `De som is: ${g(12)} = ${g(10)} + ${g(2)}.`);
     zet(l, { licht: [] });
@@ -902,6 +916,8 @@ const splitsen2b = les({
 
 /* ---------- Delen ---------- */
 
+const DELEN_BEGIN: Beeld = { id: "begin", delen: verdeelDelen(6, 2, "knikker", { vorm: "rijen", per: 3 }) };
+
 const delen = les({
   id: "squla-splits-delen-1",
   titel: "Eerlijk verdelen",
@@ -910,9 +926,12 @@ const delen = les({
   level: 1,
   kaart: KaartDelen,
   voorwerpen: ["knikker", "stuiterbal", "bakje", "potlood", "pennenbeker"],
-  begin: { id: "begin", delen: verdeelDelen(6, 2, "knikker", { vorm: "rijen", per: 3 }) },
-  welkom: ["Knikkers eerlijk verdelen over bakjes.", "Eerlijk is: in elk bakje evenveel."],
-  uitleg: async (l) => {
+  begin: DELEN_BEGIN,
+  welkom: ["Verdeel de knikkers eerlijk over twee bakjes.", "Hoeveel komen er in elk bakje?"],
+  /* Het voorbeeld is de eerste vraag hieronder. */
+  voorbeeld: voorbeeldVan(delenVraag(8, 2, "knikker", { vorm: "rijen", per: 4 }, { soort: "plaatje", opties: [2, 4, 3] })),
+  uitleg: async (l, st) => {
+    toon(l, st, DELEN_BEGIN);
     await verdeel(l, 6, 2, "knikker", { vorm: "rijen", per: 3 });
     await l.zeg(`In elk bakje liggen ${aantal(3, "knikker")}.`, `${g(3)} + ${g(3)} = ${g(6)}.`);
     await l.verder();
