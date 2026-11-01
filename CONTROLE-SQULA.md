@@ -1088,3 +1088,84 @@ Tips (alle lessen):
 - GOEDGEKEURD: geen.
 - AFGEKEURD alleen op T1 (rood bij fout): dagen-1, dagen-2, dagen-3, tijden-2.
 - AFGEKEURD met meer punten: kalender-1, kalender-2, tijden-1.
+
+---
+
+## Plussommen en Minsommen — ronde 2 — 2026-11-01
+
+Zo gekeurd:
+- Elk punt uit ronde 1 is nagekeken in de code en op schermfoto's.
+- Speeltest met GOED=1, één les tegelijk: **alle 32 lessen tot het eind**, niets vastgelopen.
+- De bus is ook bekeken op telefoonformaat (390 × 844, beginscherm bus1-2).
+- Gekeurd op alle regels, ook 4.1/4.3 en hoofdstuk 14 t/m 14.21.
+
+Opgelost uit ronde 1:
+- **Pakjes in de bus:** ze liggen netjes in de laadruimte, in een rij van 10 met daarop de rest (plus-bus1-2/002, min-bus1-1/005).
+- Er staat geen "10 + 0" meer; bij precies 10 zegt Bliepo "Onderin ligt een rij van 10."
+- "Hoeveel donuts zijn het samen?" in plaats van "bij elkaar".
+- Enkel- en meervoud bij de stippen via `stippen()`: "1 blauwe stip".
+- "Tik dan op het vinkje" is weg (`typGetal` zegt alleen "Typ het getal.").
+- "eraf" is "weg" geworden (bij de bus "uit"). "De ufo neemt er geen één mee" is weg.
+- **Gekoppelde kleuren:** in de som bovenaan, in de zin en in de gloed van de voorwerpen dezelfde kleur. Bijvoorbeeld bakkerij-1/005: 1 rood met een rode gloed om het taartje, 4 groen met een groene gloed om de vier taartjes, 5 groen in de som en in de zin. Zo ook bij de bus en bij min-ruimte.
+- Elke les heeft een eigen beginzin, en het voorbeeld is de echte eerste vraag. Na Ja komt de eerste vraag schoon in beeld.
+
+**Pakjes in de bus (gevraagd):**
+- Op de laptop is een pakje ±34 px en goed te tellen.
+- Op de telefoon is het ±11 px. Je ziet nog wel de rij van 10 met 2 erop, maar losse pakjes tellen is lastig.
+- Het aantal staat altijd in de zin en in de som, dus het kind hoeft niet te tellen. Ik keur er niet op af.
+- Tip: op de telefoon de bus en de pakjes groter.
+
+### Plussommen
+
+#### squla-plus-bakkerij-1 — ronde 2 — AFGEKEURD
+- **FOUT (14.21, al gemeld):** het welkom en het voorbeeld gaan over taartjes (1 + 4). Na Nee begint Bliepo met "Hier liggen 3 broodjes." (r. 854, `bakkerijUitleg([hoop(3, "broodje"), hoop(2, "broodje")], 3, 2, "broodjes")`). Voorstel: dezelfde uitleg met taartjes, bijvoorbeeld `hoop(3, "taart"), hoop(2, "taart")` en "taartjes".
+
+#### squla-plus-bakkerij-2 — ronde 2 — AFGEKEURD
+- **FOUT (14.21):** het welkom en het voorbeeld gaan over stokbroden (10 + 3), maar na Nee gaat het over koekjes (r. 886). Voorstel: de uitleg met stokbroden.
+
+#### squla-plus-bakkerij-3 — ronde 2 — AFGEKEURD
+- **FOUT (14.21):** het welkom en het voorbeeld gaan over koekjes (6 + 6), maar na Nee gaat het over cupcakes (r. 918). Voorstel: de uitleg met koekjes, bijvoorbeeld 8 + 5 koekjes.
+
+#### squla-plus-dansen-1 en dansen-4 — ronde 2 — AFGEKEURD
+- **FOUT (2.1/14.20):** in beeld staan de getallen zwart op witte rondjes, op een blauw, oranje of groen kaartje. Bliepo zegt ze in tegelkleuren. Op schermfoto dansen-1/005 zegt hij "Ja! 7 en 3 is samen 10." met een blauwe 7, een gele 3 en een rode 10. Die kleuren staan nergens in beeld.
+  - Voorstel: de getallen in de zin `{n:wit}`, of de cijfers op de kaartjes in dezelfde kleur als in de zin.
+- In `dansUitleg` (r. 676–679) is de 7 eerst oranje ("7 oranje stippen") en een zin later blauw ("7 en 3 is samen 10"). Maak er één kleur van: oranje, de kleur van de stippen.
+
+#### squla-plus-dansen-2 en dansen-3 — ronde 2 — AFGEKEURD
+- **FOUT (2.1/14.20):** op de platen staan gekleurde getallen: 3 roze, 8 paars, 7 turkoois, 5 oranje (schermfoto dansen-2/005). Bliepo zegt "3 en 7 is samen 10" met een gele 3 en een blauwe 7.
+  - Voorstel: de plaatkleur gebruiken in de zin, of de platen in de tegelkleur van hun getal kleuren.
+- `dansUitleg`: zelfde punt als hierboven.
+
+#### squla-plus-bus1-1, bus1-2, bus1-3, bus2-1, bus2-2, bus2-3 — ronde 2 — GOEDGEKEURD
+- Tip: zie "Pakjes in de bus" (telefoon).
+- Tip: het welkom en de uitleg na Nee hebben andere getallen (welkom 12 + 5, uitleg 12 + 3). Wel hetzelfde beeld, dus goed.
+
+#### squla-plus-kaal-1, kaal-2, kaal-3 — ronde 2 — GOEDGEKEURD
+
+### Minsommen
+
+#### squla-min-ruimte-1 — ronde 2 — AFGEKEURD
+- **FOUT (14.21):** het welkom en het voorbeeld gaan over ballonnen (7 − 4), maar na Nee gaat het over raketjes (r. 786, `uitlegRuimte("raketje", 6, 2)`). Voorstel: `uitlegRuimte("ballon", …)`.
+
+#### squla-min-ruimte-2, ruimte-3 — ronde 2 — GOEDGEKEURD
+- Tip (blijft uit ronde 1): r. 284 "Er gaat er niet één weg." Beter: "Er gaat niets weg." (zoals r. 196 al zegt).
+
+#### squla-min-bus1-1, bus1-2, bus1-3, bus2-1, bus2-2, bus2-3 — ronde 2 — GOEDGEKEURD
+- De pakjes liggen in de bus (min-bus1-1/005).
+
+#### squla-min-machine-1, machine-2, machine-3 — ronde 2 — GOEDGEKEURD
+
+#### squla-min-machine-4 — ronde 2 — AFGEKEURD
+- **FOUT (14.21):** het welkom ("je koopt een ijsje") en het voorbeeld gaan over een ijsje, maar na Nee koopt Bliepo een ballon (r. 1067–1068). Voorstel: de uitleg met het ijsje, dus `uitlegGeld([2, 1, 1], [1], "ijsje")`, en `begin` ook.
+
+#### squla-min-kaal-1, kaal-2, kaal-3 — ronde 2 — GOEDGEKEURD
+
+### Vraag voor Sara (geen afkeuring): de kleuren bij minsommen
+Bij 7 − 4 (min-ruimte-1/003) hebben maar **3** ballonnen de blauwe kleur van de 7, en 4 de groene kleur van de 4. Bij de bus (8 − 3) zijn de 5 overgebleven pakjes paars (de kleur van de 8) en de 3 bezorgde geel.
+- Regel 2.1 zegt: de voorwerpen bij een getal hebben de kleur van dat getal. Bij een minsom horen bij de 7 alle 7 ballonnen.
+- Nu verklapt de kleur het antwoord al vóór het kind telt: tel de blauwe, dat zijn er 3.
+- Voorstel om voor te leggen: eerst alle 7 in de kleur van de 7, en pas bij "weg" de 4 in de kleur van de 4 of grijs maken.
+
+**Uitslag Plussommen en Minsommen ronde 2:**
+- GOEDGEKEURD: plus-bus1-1..bus2-3 (6), plus-kaal-1..3, min-ruimte-2/3, min-bus1-1..bus2-3 (6), min-machine-1..3, min-kaal-1..3.
+- AFGEKEURD: plus-bakkerij-1/2/3, plus-dansen-1/2/3/4, min-ruimte-1, min-machine-4.

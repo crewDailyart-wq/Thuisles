@@ -191,6 +191,7 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
 14.19 **Verhaal en beeld blijven samen kloppen na inkorten:** haal je het verhaalbegin weg (schatkaart), dan mag een latere zin ("De sleutel past!") er niet meer naar verwijzen.
 14.20 **Elk getal in een zin krijgt bewust een kleur:** de kleur van zijn voorwerp, of {n:wit} als het nergens bij hoort. Een getal zonder kleur krijgt in het lesscherm de standaard getalkleur (5 groen, 10 roze) en dat klopt dan niet met het beeld.
 14.21 **De uitleg na Nee gaat over het voorbeeld van het beginscherm** en verklapt geen latere vraag.
+14.22 **Kleur mag het antwoord niet verklappen.** Bij a − b staan eerst alle a dingen in de kleur van a; pas bij "weg" worden de b dingen grijs/dof (of krijgen de kleur van b en gaan weg). Getallen in de zin hebben dezelfde kleur als het getal op het kaartje of de plaat in beeld.
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
