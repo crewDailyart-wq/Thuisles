@@ -38,6 +38,8 @@ export type Deel =
   | { s: "groep"; id: string; vw: string; n: number; x: number; y: number; per?: number; cel?: number; maat?: number; los?: [number, number]; verborgen?: boolean; label?: string; kl?: string; kleuren?: string[] }
   /** Eén ding (`maat` = breedte en hoogte in punten). */
   | { s: "ding"; id: string; vw: string; x: number; y: number; maat: number; verborgen?: boolean; kl?: string }
+  /** Een beker met `n` potloden erin (gekleurd, licht uitgewaaierd, onderkant in de beker, bovenkant eruit); `x, y` = het midden van de tekening. */
+  | { s: "potloden"; id: string; n: number; x: number; y: number }
   | { s: "geld"; id: string; soort: "briefje-10" | "munt-1"; x: number; y: number; maat: number }
   | { s: "tekst"; id: string; t: string; x: number; y: number; grootte?: number; kleur?: string; verborgen?: boolean }
   /** Het splitshuisje: bovenaan het totaal (onder het dak), onder twee kamers. Leeg = lege kamer. */
@@ -110,6 +112,9 @@ function kleurPixels(c: CanvasRenderingContext2D, hex: string) {
 }
 
 export type Beeld = { id: string; delen: Deel[] };
+
+/** De maat van de tekening van een beker met potloden (punten). */
+const POT = { b: 190, h: 226 };
 
 export type SplitsProps = {
   beeld: Beeld | null;
@@ -321,6 +326,67 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       return sl;
     }
 
+    /** Een voorwerp in een eigen kleur op een los canvas (voor samengestelde tekeningen). */
+    gekleurd(naam: string, b: number, h: number, hex?: string) {
+      const cv = document.createElement("canvas");
+      cv.width = Math.ceil(b * TX);
+      cv.height = Math.ceil(h * TX);
+      const c = cv.getContext("2d")!;
+      c.scale(TX, TX);
+      tekenVoorwerp(c, naam, 0, 0, b, h);
+      if (hex) kleurPixels(c, hex);
+      return cv;
+    }
+
+    /** De beker met potloden: eerst de beker, dan de potloden (alleen boven de rand), dan de voorkant van de beker er weer overheen. */
+    potlodenTex(n: number) {
+      const sl = `sps-potloden-${n}`;
+      if (this.textures.exists(sl)) return sl;
+      /* vrolijke, volle kleuren (geen zachte pasteltinten, anders zie je de glans niet) */
+      const kleuren = ["#e8394a", "#ffc21a", "#2f7cf0", "#2fb35a", "#9a4fe6", "#f0509c"];
+      const cupB = 96;
+      const cupH = 130;
+      const beker = this.gekleurd("beker-leeg", cupB, cupH, "#1fb5b0");
+      const potB = 34;
+      const potH = 118;
+      const pot = kleuren.map((k) => this.gekleurd("potlood", potB, potH, k));
+      this.canvasPlaatje(sl, POT.b, POT.h, (c) => {
+        const cupX = (POT.b - cupB) / 2;
+        const cupY = POT.h - cupH;
+        const rimY = cupY + cupH * 0.1;
+        c.drawImage(beker, cupX, cupY, cupB, cupH);
+        c.save();
+        c.beginPath();
+        c.rect(0, 0, POT.b, rimY + 4);
+        c.clip();
+        /* de potloden waaieren uit: van links schuin naar rechts schuin; de buitenste eerst */
+        const hoek = (i: number) => (n === 1 ? 0 : ((i / (n - 1)) * 2 - 1) * 0.5);
+        const volgorde = [...Array(n).keys()].sort((a, b) => Math.abs(hoek(b)) - Math.abs(hoek(a)));
+        for (const i of volgorde) {
+          const a = hoek(i);
+          c.save();
+          c.translate(POT.b / 2 + a * 30, rimY + 16);
+          c.rotate(a);
+          c.drawImage(pot[i % pot.length], -potB / 2, -potH, potB, potH);
+          c.restore();
+        }
+        c.restore();
+        /* de voorwand van de beker voor de onderkant van de potloden */
+        c.save();
+        c.beginPath();
+        c.rect(0, rimY + 4, POT.b, POT.h);
+        c.clip();
+        c.drawImage(beker, cupX, cupY, cupB, cupH);
+        c.restore();
+        /* een glimmend lichtstreepje op de beker (glans B) */
+        c.fillStyle = "rgba(255,255,255,0.45)";
+        c.beginPath();
+        c.roundRect(cupX + 14, cupY + 30, 9, cupH - 70, 5);
+        c.fill();
+      });
+      return sl;
+    }
+
     /** Hetzelfde plaatje mét gloed (één keer gebakken), voor het moment dat het oplicht. */
     texG(basis: string, kleur: number) {
       const naam = `${basis}-g${kleur.toString(16)}`;
@@ -363,6 +429,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           const p = groepPlekken(d);
           p.plekken.forEach((q, i) => zet(this.vw(d.vw, d.kleuren?.[i] ?? d.kl), q.x, q.y, d.maat ?? p.cel * 0.9, d.id, `${d.id}.${i}`, d.verborgen));
         } else if (d.s === "ding") zet(this.vw(d.vw, d.kl), d.x, d.y, d.maat, d.id, d.id, d.verborgen);
+        else if (d.s === "potloden") zet(this.potlodenTex(d.n), d.x, d.y, POT.b, d.id, d.id);
         else if (d.s === "geld") {
           const sl = `sps-${d.soort}`;
           const t = this.textures.get(sl).getSourceImage() as HTMLImageElement;

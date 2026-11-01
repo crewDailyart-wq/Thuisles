@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10536 zinnen, 298675 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10537 zinnen, 298764 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -3232,7 +3232,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - In de rij eronder schuift alles één plekje op.
 - Van boven naar beneden staat elke kleur één keer.
 - De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal? Kun je dit al?
-- Nu staan de kralen in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
+- Nu staan de blokjes in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
 
 ## uitleg-1 (1)
 
@@ -3966,7 +3966,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7287)
+## Door de site genoteerd, buiten de lessen (7288)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11152,6 +11152,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren? Kun je dit al?
 - Je kunt plussommen maken, ook met tientallen.
 - Kijk, de gele pijl staat bij dinsdag.
+- Nu staan de kralen in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
 - In de bus liggen 8 pakjes en er worden er 3 bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - Sommige platen zijn bijna 10. Welke twee zijn precies 10? Kun je dit al?
 - Kijk naar de tent. Welke vorm lijkt erop? Kun je dit al?

@@ -135,10 +135,11 @@ export function tekenZak(c: CanvasRenderingContext2D) {
 /** Het tiental op het bordje van de zak (116 × 84 punten, het midden van het bordje). */
 export function tekenZakgetal(c: CanvasRenderingContext2D, getal: number) {
   c.fillStyle = "#1d2540";
-  c.font = `800 64px "Work Sans", system-ui, sans-serif`;
+  c.font = `800 58px "Work Sans", system-ui, sans-serif`;
   c.textAlign = "center";
   c.textBaseline = "middle";
-  c.fillText(String(getal), 58, 45);
+  /* iets naar links: rechts is plek voor het knikkertje ("hierin zitten knikkers") */
+  c.fillText(String(getal), 42, 45);
 }
 
 /** Een getal op een klein donker schijfje (samen tellen), 64 × 44 punten. */

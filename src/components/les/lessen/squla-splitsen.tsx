@@ -687,17 +687,16 @@ function delenVraag(n: number, k: number, vw: string, bron: Bron, vorm: Antwoord
 /** Potloden in bekers: in welke rij zijn ze eerlijk verdeeld? */
 function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
   const m = n / k;
-  const Y = [190, 365, 540];
+  /* Rijen op 3 hoogtes; elke beker is 190 breed en 226 hoog (beker met uitgewaaierde, gekleurde potloden: BOUWREGELS 7.7 glans B). */
+  const Y = [124, 356, 588];
   return (l, st) => {
     const delen: Deel[] = [];
     rijen.forEach((p, r) => {
       for (let j = 0; j < k; j++) {
-        const x = 490 + (j - (k - 1) / 2) * 150;
-        /* De potloden staan IN de lege beker (eerst de potloden, dan de beker ervoor): de gommetjes steken boven de rand uit, zodat je ze kunt tellen. */
-        delen.push({ s: "groep", id: `r${r}`, vw: "potlood", n: p, x, y: Y[r] - 58, per: 6, cel: p > 4 ? 11 : 14, maat: 100 });
-        delen.push({ s: "ding", id: `r${r}`, vw: "beker-leeg", x, y: Y[r] + 12, maat: 128 });
+        const x = 490 + (j - (k - 1) / 2) * 200;
+        delen.push({ s: "potloden", id: `r${r}`, n: p, x, y: Y[r] });
       }
-      delen.push({ s: "tik", id: `r${r}`, x: 490, y: Y[r] + 4, b: Math.max(300, k * 150), h: 150, aria: `${p} potloden per beker` });
+      delen.push({ s: "tik", id: `r${r}`, x: 490, y: Y[r], b: Math.max(300, k * 200), h: 214, aria: `${p} potloden per beker` });
     });
     const goedId = `r${rijen.indexOf(m)}`;
     const beeld: Beeld = { id: `potlood-${n}-${k}`, delen };

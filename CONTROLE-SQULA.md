@@ -1204,3 +1204,148 @@ Speeltest met GOED=1, één les tegelijk: alle 4 lessen tot het eind. Gekeurd op
     - `cel` zo kiezen dat het grootste aantal (6) binnen de opening van de beker past (de opening meten op `beker-leeg.png`);
     - de potloden korter maken (`maat`), zodat er onder de rand niets uitsteekt;
     - of een smallere of doorzichtige pennenbeker gebruiken.
+
+---
+
+## Vormen en figuren — ronde 2 — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: **alle 7 lessen tot het eind**. Gekeurd op alle regels, nu ook op 4.1/4.3 (beginscherm) en 14.21.
+
+Opgelost uit ronde 1:
+- **Gelijke puzzelstukjes** mogen nu van plek wisselen (`gelijk`-afdruk in `squla-vormen-vlak.tsx` r. 466–541, regel 14.18). Dat geldt voor p2-15, kleuren-1, -2 en -3.
+- **Bloembak:** de bloemen staan zichtbaar ín de bak, en de bak heeft glans (patronen-2/031). Het patroon klopt: zonnebloem, tulp, zonnebloem, rode bloem → zonnebloem, rode bloem.
+- **Wandplank:** de bal, het autootje, het blok en het boek staan óp de plank (opruimen-1/007).
+- o-15: de zin hangt af van de volgorde ("Hier staan ze door elkaar" alleen als dat ook zo is).
+- **Oriënteren:**
+  - "linkerkant/rechterkant", "naar beneden" en "Welk huisje past erbij?" zijn verbeterd.
+  - De boomvraag gaat nu over "recht van voren".
+- "Wat komt daar in het patroon na?" is weg.
+- **Glans 7.7:** de ruimtelijke vormen hebben nu glans en een dunne rand (kleuren-3/001: rode bol).
+- **Beginscherm:** elke les toont de echte eerste vraag met een eigen zin. De uitleg na Nee past bij het voorbeeld (de kralenrij, het rooster, soort bij soort, het grasveld, en bij de puzzels uitleg over het voorbeeld zelf).
+
+### squla-vormen-patronen-1 — ronde 2 — GOEDGEKEURD
+- "Welke kraal komt na de rode kraal?" met de rij rood, groen, blauw, rood, groen, blauw, rood en een lege plek (schermfoto 001). Klopt.
+- Tip: "Tik op je antwoord." komt bij elke vraag terug. Dat is geen knop-uitleg, maar wel overbodig (3.15).
+
+### squla-vormen-patronen-2 — ronde 2 — AFGEKEURD
+- **FOUT (3.12/14.4):** het welkom zegt "Nu staan de kralen in rijen onder elkaar." (`squla-vormen.tsx` r. 1258). In het voorbeeld en in de uitleg staan vierkante blokjes in een rooster, geen kralen (schermfoto 002). Voorstel: "Nu staan de blokjes in rijen onder elkaar."
+
+### squla-vormen-opruimen-1 — ronde 2 — GOEDGEKEURD
+
+### squla-vormen-orienteren-1 — ronde 2 — GOEDGEKEURD
+
+### squla-vormen-kleuren-1, kleuren-2, kleuren-3 — ronde 2 — GOEDGEKEURD
+- Tip (4.1, "niets actief"): op het beginscherm staan de onzichtbare knoppen "stukje 1 … plek 16" al in de pagina. `tikStuk` doet dan niets (`pzBezig`), dus het kind merkt het niet. Netter is ze pas te tonen als de puzzel actief is, zoals bij de kralen.
+- Tip: de speelcontrole had per les ±540 tikken nodig. Dat komt door de gelijke stukjes en is geen fout.
+
+---
+
+## Rekenmix — ronde 2 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd:
+- Elk punt uit ronde 1 nagekeken in de code (`git diff` sinds ronde 1) en op schermfoto's.
+- Speeltest `GOED=1`, één les tegelijk: **alle 16 lessen tot het eind**. Schermfoto's in `scratchpad/controle/r2/`. Nee-pad zelf nagelopen bij mix3-1.
+- Ook gekeurd op de nieuwe regels 14.22 (kleur verklapt niets), 2.1 (hele voorwerp in de getalkleur, fruit/eten met randje) en 14.23 (kijk als een kind).
+
+Opgelost uit ronde 1:
+- **R1:** in mix1-1, 1-2, 1-4, 2-3, 3-1, 3-2, 3-3, 4-1 en 4-4 toont het beginscherm nu het voorbeeld (`beginMetVoorbeeld`), met een welkomzin die erbij past. De uitleg na Nee gaat over precies dat beeld en verklapt geen latere vraag (6 appels, de zon, koekjes, paarse driehoek, ballen klein-kleiner-kleinst, een andere rij voertuigen, net voor 5, 7 raketjes, meer dan 4 raketjes). Na Ja komt vraag 1 schoon in beeld (mix1-1/004: 7 appels).
+- **R2:** een foute lijn bij Verbinden is grijs en dof, niet rood.
+- **R3:** de vormen hebben glansstijl B, net als in de vormenlessen (mix1-2/002, mix2-3/002).
+- **R4:** `kaars` is een lichte kaars met een vlammetje; geen vuurwerk meer (mix3-1/008).
+- mix1-2: vraag 14 is nu "de doos" (geen dubbele vraag meer).
+- mix1-4: "1 knikker", "1 bal", "1 koekje", "1 appel".
+- mix3-1: welkom "Zet ze op volgorde: klein, kleiner, kleinst." en "Ja! Klein, kleiner, kleinst." zonder hoofdletters midden in de zin.
+- mix2-2: de woordkeuzes worden niet meer vooraf voorgelezen.
+- 2.1: bij "samen", splitsen en de blokjes hebben de twee groepjes elk een eigen kleur (paars en oranje) in beeld, in de zin en in het splitsbeen; het totaal is wit. De kleur verklapt niets (14.22): bij splitsen staat de doos in oranje, de verstopte ballen zie je niet.
+
+### Algemeen punt R5 (14.23) — groepjes te klein en onderaan geperst
+Bij "op volgorde" en "welke groep" zijn de voorwerpen ±25–40 px groot en staan ze allemaal onderaan, terwijl het midden van het scherm leeg is:
+- mix1-4/007 (knikkers ±38 px), mix4-2/007 (potloden, dunne streepjes van ±35 px), mix4-3/006 (bomen ±30 px), mix4-4/002 (raketjes ±40 px; het zesde raketje van het middelste groepje hangt op het plekje).
+- Een kind van 6 telt dat lastig, en het ziet er niet vrolijk uit. Bij twijfel afkeuren (14.23).
+- Voorstel: `kaartGroep(..., 44)` in `ordenAantal` (r. ±690) en `kr`/`bomen` (cel 60/50) en `r5` groter maken (±70–80), en de kaarten hoger in het vlak zetten zodat de ruimte gebruikt wordt.
+
+### Nog om te zetten (2.1, besluit Sara; geen afkeuring)
+- mix4-1, vragen 5 en 14: appels (fruit) houden hun rode kleur met een paars/oranje randje, en de getallen zijn paars en oranje. Volgens de uitwerking kiest de les bij fruit een getalkleur die bij het fruit past.
+- Ballen, knikkers en de doos zijn al helemaal in de getalkleur.
+
+### Uitslag per les
+- **squla-rekenmix-mix1-1** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix1-2** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix1-3** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix1-4** — ronde 2 — AFGEKEURD: R5 (knikkers, sterren, aardbeien enz. te klein onderaan).
+- **squla-rekenmix-mix2-1** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix2-2** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix2-3** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix2-4** — ronde 2 — GOEDGEKEURD (groepjes in rijen, het hele scherm gebruikt)
+- **squla-rekenmix-mix3-1** — ronde 2 — AFGEKEURD: 14.23, bij "laag, lager, laagst" staan de blokken van de torens met een kier boven elkaar: ze zweven (schermfoto 018). Voorstel: in `maatKaart` (woord "laag") de stap zo kiezen dat de blokjes op het echte plaatje elkaar raken, en de blokken groter. Tip: in de uitleg na Nee blijven de ballen onder de plekjes liggen terwijl Bliepo zegt "De kleinste staat achteraan"; mooier is ze op hun plek te zetten.
+- **squla-rekenmix-mix3-2** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix3-3** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix3-4** — ronde 2 — GOEDGEKEURD
+- **squla-rekenmix-mix4-1** — ronde 2 — GOEDGEKEURD (appels: nog om te zetten, zie boven)
+- **squla-rekenmix-mix4-2** — ronde 2 — AFGEKEURD: R5 (potloden, knikkers en sterren bij "van minder naar meer").
+- **squla-rekenmix-mix4-3** — ronde 2 — AFGEKEURD: R5 (bomen, en de groepjes in rijen).
+- **squla-rekenmix-mix4-4** — ronde 2 — AFGEKEURD: R5 (raketjes, sterren, knikkers, ballen bij meer dan / minder dan).
+
+---
+
+## Tijd — ronde 2 — 2026-11-01 (controleur Opus)
+
+Zo gekeurd: elk punt uit ronde 1 in de code en op schermfoto's; speeltest `GOED=1`, **alle 7 lessen tot het eind**; ook op 14.22, 14.23.
+
+Opgelost uit ronde 1:
+- **T1:** geen rode rand meer bij een fout. Een fout kaartje wordt dof en schudt (trein en plaatjes), een fout gelegd kaartje wordt dof.
+- kalender-1: "Zoek de dagen met de hoepel." en de tip met de hoepel. De zin met "koorts" wordt niet meer gezegd; de keuzes ziek/feest/tandarts staan als plaatjes met een woord.
+- kalender-2: de uitleg begint met het rode vak ("Daar staat een getal: 5. Dat is 5 juni."); "…tot het feest?"; "Stel je voor: het rode vak is 12 juni."; de pijl loopt links langs de kolom en niet meer over de 2 (schermfoto 010).
+- tijden-1: de uitleg begint met "Stel, gisteren was het woensdag. Na woensdag komt donderdag."; "Het groene boek kwam pas later."; de dagdelen staan los, zonder kader (schermfoto 015).
+- Bliepo leest de woordkeuzes niet meer vooraf voor.
+
+### Uitslag per les
+- **squla-tijd-dagen-1, dagen-2, dagen-3** — ronde 2 — GOEDGEKEURD
+- **squla-tijd-kalender-1** — ronde 2 — GOEDGEKEURD
+- **squla-tijd-kalender-2** — ronde 2 — GOEDGEKEURD
+- **squla-tijd-tijden-1** — ronde 2 — AFGEKEURD (14.23/7.7, twijfel = afkeuren): de dagdelen (zon laag achter een heuvel, zon, zon met roze strepen, maan met sterren) zijn platte tekeningen zonder glans, verloop of schaduw, terwijl alle andere plaatjes in de les glansstijl B hebben (kampvuur, boeken). Voorstel: zon en maan in glansstijl B (verloop, lichtvlekje, dunne rand, zachte gloed), zoals de vormen.
+- **squla-tijd-tijden-2** — ronde 2 — GOEDGEKEURD
+
+---
+
+## Tellen — ronde 2 (de 9 afgekeurde lessen) — 2026-11-01
+
+Speeltest met GOED=1, één les tegelijk: alle 9 lessen tot het eind. Gekeurd op alle regels t/m 14.23 ("kijk als een kind"), op de schermfoto's.
+
+### squla-tellen-fruit-2 — ronde 2 — GOEDGEKEURD
+- Opgelost: "rijen van {5:geel}".
+
+### squla-tellen-resultatief1-2 — ronde 2 — GOEDGEKEURD
+- Opgelost: de uitleg na Nee gaat over ballen en blokken, net als het voorbeeld.
+- Tip (14.20): "We tellen verder, tot {20}." heeft geen kleur. Het wordt wit getoond en dat klopt, maar schrijf het bewust als `{20:wit}`.
+
+### squla-tellen-resultatief1-3 — ronde 2 — AFGEKEURD
+- Opgelost: het huis is nu `blauw` (het plaatje is turquoise). In orde.
+- **FOUT (14.23, groot genoeg):** bij "Hoeveel bussen zie je?" (schermfoto 030) zijn de 18 bussen maar ±80 × 30 px.
+  - Oorzaak: brede plaatjes worden in een vierkant vak van 96 geperst (`teken` in `squla-tellen-tekenen.ts`). Ze staan los, maar ze zijn smalle streepjes in een groot leeg vlak. Op een telefoon worden ze ±30 × 11 px.
+  - Hetzelfde geldt voor de satellieten (schermfoto 014 in ronde 1).
+  - Voorstel: brede dingen (bus, satelliet, auto) bij `verspreid` groter tekenen, zodat ze op de breedte de ruimte krijgen, of minder gestapeld en groter verspreiden.
+- De huizen (schermfoto 008) zijn groot genoeg en goed te tellen.
+
+### squla-tellen-resultatief3-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: als memory het laatste onderdeel is, zegt Bliepo "Nog een spelletje!" en niet meer "We gaan weer tellen."
+
+### squla-tellen-resultatief3-2 — ronde 2 — GOEDGEKEURD
+- Opgelost: het welkom is "Weer planeten en ufo's, door elkaar." en de uitleg gaat over planeten.
+
+### squla-tellen-resultatief3-3 — ronde 2 — GOEDGEKEURD
+- Niet aangepast, maar nu wel goed in beeld: r. 738 `"…in rijen van {10}."`. Getallen zonder eigen kleur worden sinds de kleuraanpassing wit getoond, en dat werd in ronde 1 gevraagd. Tip: schrijf het bewust als `{10:wit}` (14.20).
+
+### squla-tellen-resultatief3-4 — ronde 2 — AFGEKEURD
+- Opgelost:
+  - het welkom zegt `{40:blauw}`;
+  - de tip is nu "Begin bij 41. Tel de andere losse knikkers erbij.", of bij één knikker "Tel de losse knikker erbij".
+- **FOUT (14.23, er ligt iets op de rand / kan meegeteld worden):** bovenop de dichte zak ligt een knikker op het touwtje (schermfoto 005, `squla-tellen-holo.tsx` r. 319, "een voorbeeldje"). Een kind ziet een losse knikker op de zak en telt hem mee (48 in plaats van 47). Hij ligt er ook vreemd, als een balletje op de knoop.
+  - Voorstel: het voorbeeldje weghalen, of het als plaatje op het bordje van de zak zetten (naast de 40).
+  - Let op regel 3: het voorbeeldje weghalen is een keuze voor Sara of main, niet voor de bouwer alleen.
+
+### squla-tellen-telrij-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: alle afleiders liggen nu binnen 18–50 (bijvoorbeeld 43, 47, 34, 36).
+
+### squla-tellen-telrij-2 — ronde 2 — GOEDGEKEURD
+- Opgelost: `[99, 90, 100]`.

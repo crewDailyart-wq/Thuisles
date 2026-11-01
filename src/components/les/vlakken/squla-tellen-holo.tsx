@@ -32,6 +32,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { voorwerpBeeld } from "../voorwerpen";
 import { FOTO, hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
 import s from "./squla-tellen.module.css";
 
@@ -315,19 +316,35 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         z.add(this.plaats(this.zakTex(), 0, 0));
         /* het bordje zit in de zak op (42..158, 112..196): het midden is 37 punten onder het midden van de zak */
         z.add(this.plaats(this.zakGetal(o.zak.getal), 0, 34));
-        /* Een voorbeeldje van wat erin zit, bovenop de zak. */
-        if (o.plekken[0]) z.add(this.plaats(this.tex(o.plekken[0].p), 0, -48).setScale(0.62 / TX));
+        /* Een voorbeeldje van wat erin zit, klein op het bordje naast het getal (niet op het touwtje: dan telt een kind hem mee). */
+        if (o.plekken[0]) z.add(this.plaats(this.tex(o.plekken[0].p), 42, 34).setScale(0.38 / TX));
         g.add(z);
         this.zakBox = z;
       }
       for (const pl of o.plekken) {
-        const im = this.plaats(this.tex(pl.p), pl.x - cx, pl.y - cy).setScale(o.schaal / TX);
+        /* Brede dingen (bus, satelliet) passen in het vierkante vak maar klein: ze mogen breder, zolang ze elkaar niet raken (BOUWREGELS 14.23). */
+        const sc = (o.schaal * this.breedFactor(pl.p.soort, o)) / TX;
+        const im = this.plaats(this.tex(pl.p), pl.x - cx, pl.y - cy).setScale(sc).setData("sc", sc);
         g.add(im);
         this.items.push(im);
       }
       this.groep = g;
       this.druk(900);
       this.tover(g);
+    }
+
+    /** Hoeveel groter een breed plaatje getekend mag worden (1 voor gewone, vierkante dingen). */
+    breedFactor(soort: Soort, o: Indeling) {
+      let r = 1;
+      try {
+        const b = voorwerpBeeld(soort);
+        r = b.naturalWidth / Math.max(1, b.naturalHeight);
+      } catch {
+        return 1;
+      }
+      if (r < 1.5) return 1;
+      const cel = o.vorm === "rijen5" ? 122 : o.vorm === "rijen10" ? 84 : 110;
+      return Math.max(1, Math.min(1.45, (cel * 0.92) / (84 * o.schaal)));
     }
 
     zetGeteld(n: number) {
@@ -344,7 +361,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       for (let k = van; k < n; k++) {
         const im = this.items[o.volgorde[k]];
         if (!im) continue;
-        const basis = o.schaal / TX;
+        const basis = (im.getData("sc") as number | undefined) ?? o.schaal / TX;
         const p = o.plekken[o.volgorde[k]]?.p;
         const doe = () => {
           this.flits(im, p, 420);
@@ -376,7 +393,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       const o = this.ind;
       this.items.forEach((im, i) => this.flits(im, o?.plekken[i]?.p, 700));
       this.items.forEach((im, i) => {
-        const basis = (o?.schaal ?? 1) / TX;
+        const basis = (im.getData("sc") as number | undefined) ?? (o?.schaal ?? 1) / TX;
         this.tweens.add({ targets: im, scale: basis * 1.12, delay: i * 18, duration: 140, yoyo: true, onComplete: () => im.setScale(basis) });
       });
     }
