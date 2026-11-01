@@ -748,3 +748,118 @@ In orde bij alle lessen:
 **Uitslag Meer, minder, evenveel ronde 1:**
 - GOEDGEKEURD: 1-2, 1-3, 2-2.
 - AFGEKEURD: 1-1, 2-1, 3-1, 3-2.
+
+---
+
+## Klokkijken, Splitsen en Piratenschat — ronde 2 — 2026-11-01
+
+Zo gekeurd:
+- Elk punt uit ronde 1 is nagekeken in de code en, waar het in beeld komt, op schermfoto's.
+- Speeltest met GOED=1, één les tegelijk: 25 van de 26 lessen liepen tot het eind. Klokkijken3-3 stopte bij een sleepvraag (zie die les).
+- Gekeurd op alle regels, ook hoofdstuk 14 t/m 14.21.
+- **Gekleurde getallen in de zin werken nu.** Op de schermfoto's hebben ze de kleur van hun voorwerp, met een donkere rand:
+  - klok: het uur oranje, de 6 en de 12 van de grote wijzer paars (klokkijken3-1/002);
+  - splitsen: 2 paars en 4 oranje, net als de bolletjes in de bakjes en de stippen in de huisjes (splitsen1-2/005);
+  - piraat-2: 6 − 1 = 5 in het geel van de sterren, zowel in de som als in de zin (piraat-2/005).
+
+### Klokkijken (18 lessen)
+
+Opgelost uit ronde 1:
+- A1: het uur is overal `{n:oranje}` (kleine wijzer) en de 6 en de 12 zijn `{n:paars}` (grote wijzer). Dat geldt in `spreek`, `regel`, `waarKlein`, de uitleg na Nee en de rekenzinnen.
+- digitaal-1: het goede antwoord is nu de telefoon met een klokje. Het klokje past op het scherm van de telefoon en van de laptop (schermfoto's 004 en 015). "Wat zie je bovenop?" is weg.
+- digitaal-2: overal `bezorgbus`; "Tot de volgende keer!" midden in de les is vervangen door "De bus rijdt weg met de broodjes."
+- hoelaat-1: "De zon staat hoog. De bus brengt de broodjes weg."; "langs de winkels".
+- hoelaat-3: de vragen staan in de volgorde van de dag (10 → 8 uur); "Waar worden de broodjes gebakken?"; geen "Tot de volgende keer" meer.
+- klokkijken3-1: het welkom zegt half 3, en het voorbeeld is half 3. De titel is "Halve uren lezen".
+- klokkijken3-2: het welkom zegt half 9, en het voorbeeld is half 9.
+- klokkijken3-4: "staat op 9 uur" en "De voetbal ligt al een uur in het gras." De plantjes zijn weg: het is nu "De gieter staat klaar."
+- "Tik op het vinkje / het kruisje" wordt niet meer gezegd. `WELKOM_VINK` staat nog in de code, maar wordt niet gebruikt.
+
+#### squla-klok-digitaal-1 — ronde 2 — GOEDGEKEURD
+- Tip (14.20): r. 772 `{12}`, `{1}` (getallen op de wijzerplaat) zonder kleur. Ze worden in beeld wit, dus het klopt, maar schrijf ze bewust als `{12:wit}`.
+- Tip (14.21): na Nee legt Bliepo uit hoe je een heel uur leest (klok op 3 uur). Het voorbeeld vraagt "Waar zie je ook zo'n klok?" De uitleg ("Dit is een wijzerklok…") helpt daar wel bij.
+
+#### squla-klok-digitaal-2 — ronde 2 — GOEDGEKEURD
+- Tip (blijft): "De bakkerij is dicht." (r. 832) komt vóór de koekjes die om 1 uur de oven in gaan.
+
+#### squla-klok-hoelaat-1, hoelaat-2, hoelaat-3 — ronde 2 — GOEDGEKEURD
+- Tip hoelaat-3: "laatste ronde van de dag" begint al om 10 uur 's ochtends.
+
+#### squla-klok-klokkijken-1, -2, -3, klokkijken1-1, 1-2, 1-3, klokkijken2-1, 2-2, 2-3, klokkijken3-1, 3-2, 3-4 — ronde 2 — GOEDGEKEURD
+- Tip: klokkijken-2 en klokkijken1-1 hebben nog steeds hetzelfde voorbeeld (`kiesKlok(U(2), [U(7), U(2)])`). De welkomzinnen zijn nu wel verschillend.
+- Tip: de titels "Halve uren (moeilijker)" en "(nog moeilijker)" passen niet bij "Halve uren lezen". Beter: "Halve uren lezen (moeilijker)".
+
+#### squla-klok-klokkijken3-3 — ronde 2 — GOEDGEKEURD (met aandachtspunt)
+- Rekenen en beeld kloppen: de reeks half 6, 6 uur, half 7, 7 uur (schermfoto 022).
+- Spelen: de speelcontrole kwam door de eerste sleepvraag, maar stopte bij de tweede ("alleen in de tekening te doen"). `sleepVraag` heeft `testAntwoord: null` (r. 458), dus de automatische speler kan niet goed slepen. Het slepen zelf en de code zien er goed uit; ik keur er niet op af.
+  - Advies: geef `sleepVraag` een testantwoord, zodat de controle vóór het online zetten (5.7) deze les helemaal kan spelen.
+
+### Splitsen (5 lessen)
+
+#### squla-splits-splitsen1-1 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - De uitleg na Nee zegt "2 pionnen paars, 3 oranje" en "5 kun je splitsen in 2 en 3", in dezelfde kleuren.
+  - Bij het tienvak: "Eén ligt onder de doek." of "Een deel ligt onder de doek.", en bij één bal: "Kijk naar de oranje pingpongbal die eronder ligt."
+
+#### squla-splits-splitsen1-2 — ronde 2 — GOEDGEKEURD
+- Opgelost:
+  - De stippen in de huisjes zijn paars en oranje, net als de getallen en de ballen in de bakjes (schermfoto 005).
+  - Na Nee gaat de uitleg eerst over het voorbeeld (machine, bakjes, huisje) en daarna over de splitspaal.
+  - "Onder staan de twee bakjes" is weg.
+
+#### squla-splits-splitsen2-1 — ronde 2 — GOEDGEKEURD
+- Opgelost: de keuzes zijn nu `[6, 10, 16]`, `[8, 18, 9]` en `[1, 10, 11]`. Er is geen getal boven 20 meer.
+- Tip: "Een briefje van tien en vier munten." is geen hele zin.
+
+#### squla-splits-splitsen2-2 — ronde 2 — GOEDGEKEURD
+- Opgelost: "21 = 14 + 7" is weg.
+
+#### squla-splits-delen-1 — ronde 2 — AFGEKEURD
+- Opgelost:
+  - "Tik dan op het vinkje" is weg uit `typGetal` (squla-splitsen-hulp.ts r. 95–104). In plus- en minsommen ook.
+  - In de antwoordplaatjes liggen de knikkers en stuiterballen nu in of op het bakje (schermfoto 008).
+- **Nieuw, FOUT (14.4/14.5/14.17):** de potloden zweven nu in een rij bóven een leeg glas (`beker-leeg`), maar Bliepo zegt:
+  - "Ze staan in 4 bekers." (r. 708);
+  - "Ja! In elke beker staan 3 potloden." (r. 714).
+  
+  Op schermfoto delen-1/025 staat geen enkel potlood in een beker. Daarbij lijkt `beker-leeg` op een waterglas.
+  - Voorstel: de potloden ín de beker tekenen, met de punten boven de rand (de plek meten op `beker-leeg.png`). Of de zin aanpassen ("Bij elke beker liggen …").
+
+### Piratenschat (3 lessen)
+
+Opgelost uit ronde 1:
+- Het verhaalbegin is terug (`naBegin`): "Kijk, een schatkaart!" (level 1), "We hebben een nieuwe schatkaart." (level 2), "We hebben een sleutel gevonden. Waar past hij op?" (level 3). Daardoor klopt "De sleutel past!" weer.
+- "Bij de rots ligt een kistje."; "Is het omdat hij dan gaat roesten? Of omdat hij geen zwembroek heeft?"; "Kijk, daar ligt een maansteen met een sleutel ernaast."
+- Piraat-3: de keuzes `[10, 19, 20]`, en overal "hoeveel … zijn er nog?".
+- Welkom piraat-1 noemt de plussommen, welkom piraat-2 noemt min.
+- De getallen bij voorwerpen staan in `aantal()`/`gv()` in de kleur van het voorwerp (goudstuk geel enzovoort).
+- Piraat-1 10 + 20: volgens afspraak niet afgekeurd.
+
+#### squla-piraat-1 — ronde 2 — AFGEKEURD
+- **FOUT (2.1/14.20), de kleuren in de som en in de zin verschillen bij de kale plussommen** (`kaalPlus`, r. 202–225):
+  - De som bovenaan krijgt de tegelkleuren (`som(l, st, a, "+", b)` met `ka = "tegel"`): op schermfoto piraat-1/030 is de 3 geel, de 4 groen en de 7 wit.
+  - Bliepo zegt "Ja! 3 + 4 = 7." met een paarse 3, een oranje 4 en een blauwe 7 (r. 217: `g(a,"paars")`, `g(b,"oranje")`, `g(s,"tegel")`).
+  - De vraag (r. 210) gebruikt weer de tegelkleuren, en de hulp (`plusUitleg`/`plusTip`) is helemaal wit.
+  - Voorstel: één vaste set kleuren per som. Bijvoorbeeld in `toon` en `goed` `som(l, st, a, "+", b, …, "paars", "oranje", "wit")`, en in de vraag, het antwoord, `plusUitleg` en `plusTip` `g(a,"paars")`, `g(b,"oranje")`, `g(s)`.
+  - Dit geldt voor 7 vragen in piraat-1 en 7 in piraat-3.
+- **FOUT (14.21/4.1, staat er nog uit ronde 1):** het voorbeeld is "Waar liggen 14 goudstukken?" (tellen), maar na Nee legt Bliepo 3 + 2 diamanten uit (r. 391–404). Voorstel: eerst kort de goudstukken in rijen van 5 tellen (het voorbeeld), en daarna eventueel de plussom.
+- Kleine 14.20-punten:
+  - r. 157 "Waar zijn het er {14}?" en de tip r. 151/159 ("{5}", "{10}") gaan over goudstukken, maar zijn wit. Gebruik `gv(…, "goudstuk")`.
+  - Tip: op het beginscherm (schermfoto 002) waren de goudstukken nog aan het verschijnen (lichtstraal).
+
+#### squla-piraat-2 — ronde 2 — AFGEKEURD
+- Rekenen, verhaal, taal en de minsom-kleuren (geel = sterren) zijn in orde (schermfoto 005).
+- **FOUT (14.20):**
+  - In de uitleg na Nee gaan de getallen over sterren, maar ze zijn wit (r. 456 `g(2)`, r. 458 `g(3)`, `g(5)`, `g(2)`, `g(3)`). Direct ervoor staat "Kijk: 5 sterren" wel geel. Voorstel: `gv(…, "ster")`.
+  - Hetzelfde bij een fout antwoord: `noem: (x) => g(x)` in `minVraag` (r. 240) zegt een wit getal, terwijl `goed` hetzelfde getal geel zegt. Voorstel: `noem: (x) => gv(x, vw)`.
+
+#### squla-piraat-3 — ronde 2 — AFGEKEURD
+- **FOUT (2.1/14.20):** dezelfde kleurfout bij `kaalPlus` als in piraat-1. Op schermfoto piraat-3/017 staat in de som een witte 13 en een blauwe 7, en in de zin een paarse 13 en een oranje 7.
+- **FOUT (14.21/4.1):** het voorbeeld is de minsom "7 − 4: hoeveel sterren zijn er nog?" Na Nee legt Bliepo de plussom 8 + 5 uit, met een planeet (r. 507–516). Over het voorbeeld zegt hij niets.
+  - Ook daar zijn de kleuren verschillend: de som bovenaan heeft tegelkleuren, de zin is wit.
+  - Voorstel: de uitleg met de sterren-minsom van het voorbeeld (grijs wat eraf gaat, zoals in piraat-2), en daarna kort het teken (plus of min).
+- Verder `minVraag` `noem` wit, zoals bij piraat-2.
+
+**Uitslag ronde 2:**
+- GOEDGEKEURD: alle 18 kloklessen, splitsen1-1, 1-2, 2-1, 2-2.
+- AFGEKEURD: splits-delen-1, piraat-1, piraat-2, piraat-3.
