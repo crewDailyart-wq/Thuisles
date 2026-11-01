@@ -31,7 +31,7 @@ export const METEN: Voorwerp[] = [
     naam: "pizza-olijven",
     titel: "Pizza met olijven",
     groep: "eten",
-    onderwerp: "a round pizza with black olive rings seen from above, cut into six slices",
+    onderwerp: "a round pizza with slices of green olives seen from above, cut into six slices",
     schets: `<circle ${R} cx="100" cy="100" r="90" fill="#f0b15c"/><circle cx="100" cy="100" r="74" fill="#e2563f"/><circle cx="72" cy="80" r="14" fill="#ffe08a"/><circle cx="130" cy="120" r="14" fill="#ffe08a"/><circle cx="64" cy="120" r="8" fill="none" stroke="#1d2340" stroke-width="6"/><circle cx="122" cy="74" r="8" fill="none" stroke="#1d2340" stroke-width="6"/><circle cx="100" cy="104" r="8" fill="none" stroke="#1d2340" stroke-width="6"/>`,
   },
   {
@@ -87,7 +87,7 @@ export const METEN: Voorwerp[] = [
     naam: "olijf",
     titel: "Olijf",
     groep: "fruit",
-    onderwerp: "one green olive",
+    onderwerp: "one green olive, oval, shiny",
     schets: `<ellipse ${R} cx="100" cy="100" rx="78" ry="60" fill="#6b8e3a"/><ellipse cx="120" cy="84" rx="18" ry="14" fill="#3d5a1f"/>`,
   },
   {
@@ -137,14 +137,14 @@ export const METEN: Voorwerp[] = [
     naam: "doos-rood",
     titel: "Rode doos",
     groep: "winkel",
-    onderwerp: "a closed flat red cardboard box, seen from the front",
+    onderwerp: "one closed square red cardboard box, seen from the front and slightly above",
     schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#e8453c"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/>`,
   },
   {
     naam: "doos-blauw",
     titel: "Blauwe doos",
     groep: "winkel",
-    onderwerp: "a closed flat blue cardboard box, seen from the front",
+    onderwerp: "one closed square blue cardboard box, seen from the front and slightly above (same box as doos-rood, other color)",
     schets: `<rect ${R} x="10" y="74" width="180" height="52" rx="8" fill="#4b8af5"/><path d="M20 90 H180" stroke="#1d2340" stroke-width="4"/>`,
   },
   {
@@ -222,7 +222,7 @@ export const METEN: Voorwerp[] = [
     naam: "boek",
     titel: "Boek",
     groep: "huis",
-    onderwerp: "one closed blue book lying flat, seen from the side",
+    onderwerp: "one closed blue hardcover book lying flat, seen from slightly above and the side so the cover and the pages are visible",
     schets: `<rect ${R} x="16" y="76" width="168" height="48" rx="6" fill="#4b8af5"/><path d="M160 84 V116" stroke="#fff7ea" stroke-width="5"/>`,
   },
   {

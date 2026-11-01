@@ -87,7 +87,7 @@ export const PIRAAT: Voorwerp[] = [
     naam: "planeet",
     titel: "Planeet",
     groep: "ruimte",
-    onderwerp: "a small round blue planet with a few light spots",
+    onderwerp: "a small round planet with blue oceans and green land and a few white clouds, clearly a planet",
     schets: `<circle class="r" cx="100" cy="100" r="66" fill="#4f8fe8"/><circle cx="76" cy="80" r="14" fill="#9fc6ff"/><circle cx="128" cy="124" r="10" fill="#9fc6ff"/>`,
   },
   {

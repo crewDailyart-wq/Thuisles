@@ -46,7 +46,7 @@ export const PLUSSOMMEN: Voorwerp[] = [
     naam: "krentenbol",
     titel: "Krentenbol",
     groep: "eten",
-    onderwerp: "a round shiny brown currant bun with dark raisins, flat bottom, seen from the side",
+    onderwerp: "a round shiny light-brown bread bun with a few dark raisins on top, seen from the side",
     schets: `<path class="r" d="M28 150 C24 30 176 30 172 150 Z" fill="#c8792f"/><ellipse cx="62" cy="120" rx="8" ry="6" fill="#3a1d0b"/><ellipse cx="100" cy="88" rx="8" ry="6" fill="#3a1d0b"/><ellipse cx="136" cy="112" rx="8" ry="6" fill="#3a1d0b"/><ellipse cx="88" cy="132" rx="8" ry="6" fill="#3a1d0b"/><ellipse cx="124" cy="140" rx="8" ry="6" fill="#3a1d0b"/>`,
   },
   {

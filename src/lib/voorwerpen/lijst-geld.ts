@@ -13,7 +13,7 @@ export const GELD: Voorwerp[] = [
     naam: "spaarpot",
     titel: "Spaarpot (glazen pot)",
     groep: "huis",
-    onderwerp: "a round glass money jar with a red lid that has a coin slot, empty",
+    onderwerp: "a round glass money jar with a red lid that has a coin slot, with a few gold coins inside at the bottom",
     schets: `<path class="r" d="M58 70 q-30 24 -30 64 q0 54 72 54 q72 0 72 -54 q0 -40 -30 -64z" fill="#cfeaf7"/><rect class="r" x="46" y="40" width="108" height="32" rx="10" fill="#f2715e"/><rect x="78" y="50" width="44" height="9" rx="4" fill="#1d2340"/>`,
   },
   {

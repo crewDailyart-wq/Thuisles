@@ -157,9 +157,11 @@
   },
   "boek": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "boek-groen": {
@@ -341,9 +343,10 @@
   },
   "doos-blauw": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "van-doos-rood-gemaakt"
     ]
   },
   "doos-open": {
@@ -355,9 +358,11 @@
   },
   "doos-rood": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "draaitafel": {
@@ -418,10 +423,11 @@
   },
   "hoepel": {
     "bron": "eigen",
-    "v": 5,
+    "v": 7,
     "verbeterd": [
       "randen",
-      "opnieuw-magnific"
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "hoorntje": {
@@ -553,9 +559,11 @@
   },
   "krentenbol": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "lampje": {
@@ -635,9 +643,10 @@
   },
   "olijf": {
     "bron": "eigen",
-    "v": 3,
+    "v": 5,
     "verbeterd": [
-      "randen"
+      "randen",
+      "groen-gehouden"
     ]
   },
   "oude-raket": {
@@ -692,10 +701,11 @@
   },
   "pennenbeker": {
     "bron": "eigen",
-    "v": 4,
+    "v": 5,
     "verbeterd": [
       "randen",
-      "opnieuw-magnific"
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "picknickkleed": {
@@ -729,10 +739,7 @@
   },
   "pizza-olijven": {
     "bron": "eigen",
-    "v": 3,
-    "verbeterd": [
-      "randen"
-    ]
+    "v": 4
   },
   "pizza-salami": {
     "bron": "eigen",
@@ -772,9 +779,11 @@
   },
   "planeet": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "planeet-ring": {
@@ -935,9 +944,11 @@
   },
   "spaarpot": {
     "bron": "eigen",
-    "v": 3,
+    "v": 4,
     "verbeterd": [
-      "randen"
+      "randen",
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "speelblok": {
@@ -1003,10 +1014,11 @@
   },
   "stoelenkring": {
     "bron": "eigen",
-    "v": 5,
+    "v": 7,
     "verbeterd": [
       "randen",
-      "opnieuw-magnific"
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "stokbrood": {
@@ -1061,10 +1073,11 @@
   },
   "tekendoos": {
     "bron": "eigen",
-    "v": 4,
+    "v": 5,
     "verbeterd": [
       "randen",
-      "opnieuw-magnific"
+      "opnieuw-magnific",
+      "controleur-ronde1"
     ]
   },
   "telefoon": {

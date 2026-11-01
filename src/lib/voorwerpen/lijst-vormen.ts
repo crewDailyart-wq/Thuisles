@@ -58,7 +58,7 @@ export const VORMEN: Voorwerp[] = [
     naam: "tekendoos",
     titel: "Tekendoos",
     groep: "huis",
-    onderwerp: "an open empty wooden box with low sides, seen from the front and slightly above",
+    onderwerp: "an open box of colored pencils, the pencils lying in a row inside, seen from the front and slightly above",
     schets: `<path ${R} d="M20 88 L40 66 H160 L180 88 Z" fill="#8a5a32"/><rect ${R} x="20" y="88" width="160" height="90" rx="6" fill="#d39b62"/>`,
   },
   /* --- de bloembak (patronen) --- */

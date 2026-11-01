@@ -71,7 +71,7 @@ an orange tangerine with one small green leaf, simple flat illustration for a ch
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
 ```
-one green olive, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one green olive, oval, shiny, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 8. Peer — `peer.png` — ✅ gegenereerd
@@ -273,7 +273,7 @@ a bowl of orange tomato soup, side view, simple flat illustration for a children
 Lessen: Plussommen in de bakkerij (`squla-plus-bakkerij-1`), Plussommen in de bakkerij (moeilijker) (`squla-plus-bakkerij-2`), Plussommen in de bakkerij (nog moeilijker) (`squla-plus-bakkerij-3`)
 
 ```
-a round shiny brown currant bun with dark raisins, flat bottom, seen from the side, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a round shiny light-brown bread bun with a few dark raisins on top, seen from the side, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 33. Leeg hoorntje — `hoorntje.png` — ✅ gegenereerd
@@ -313,7 +313,7 @@ a round cheese pizza seen from above, tomato sauce and melted cheese, cut into s
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
 ```
-a round pizza with black olive rings seen from above, cut into six slices, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a round pizza with slices of green olives seen from above, cut into six slices, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 38. Pizza met salami — `pizza-salami.png` — ✅ gegenereerd
@@ -403,7 +403,7 @@ an orange basketball with black lines, simple flat illustration for a children's
 Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
 ```
-a coral gymnastics hoop standing upright with a small yellow ball on the floor next to it, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one coral gymnastics hoop standing upright, a simple clean round ring, nothing else, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 49. Knikker — `knikker.png` — ✅ gegenereerd
@@ -589,7 +589,7 @@ a big old silver-grey rocket with rivets and a small round door, standing uprigh
 Lessen: Getallen op hun plek (`squla-getallenlijn-rangschikken-1`), Getallen op hun plek (moeilijker) (`squla-getallenlijn-rangschikken-2`), Getallen op hun plek (nog moeilijker) (`squla-getallenlijn-rangschikken-3`), Het raketje op de getallenlijn (`squla-getallenlijn-kat-1`), Het raketje op de getallenlijn (moeilijker) (`squla-getallenlijn-kat-2`), Dingen op de getallen (`squla-getallenlijn-dieren-1`), Dingen op de getallen (moeilijker) (`squla-getallenlijn-dieren-2`), Dingen op de getallen (nog moeilijker) (`squla-getallenlijn-dieren-3`), Terugtellen tot de start (`squla-getallenlijn-terugtellen-1`), Schattenjacht: plussommen (`squla-piraat-1`), Schattenjacht: plus en min (`squla-piraat-3`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Rekenmix 1 (nog moeilijker) (`squla-rekenmix-mix1-3`), Rekenmix 3 (moeilijker) (`squla-rekenmix-mix3-2`), Rekenmix 4 (`squla-rekenmix-mix4-1`), Rekenmix 4 (nog moeilijker) (`squla-rekenmix-mix4-3`), Tellen in rijtjes (nog moeilijker) (`squla-tellen-resultatief1-3`), Hoeveel zie je? (`squla-tellen-resultatief2-1`), Grote groepen tellen (`squla-tellen-resultatief3-1`), Grote groepen tellen (moeilijker) (`squla-tellen-resultatief3-2`), Grote groepen tellen (nog moeilijker) (`squla-tellen-resultatief3-3`), Patronen (moeilijker) (`squla-vormen-patronen-2`)
 
 ```
-a small round blue planet with a few light spots, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a small round planet with blue oceans and green land and a few white clouds, clearly a planet, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 72. Planeet met ring — `planeet-ring.png` — ✅ gegenereerd
@@ -689,7 +689,7 @@ a broom with a wooden stick and yellow bristles, simple flat illustration for a 
 Lessen: Zakgeld sparen (moeilijker) (`squla-geld-zakgeld-2`), Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`), Minsommen: hoeveel over? (heel moeilijk) (`squla-min-machine-4`), Rekenmix 1 (moeilijker) (`squla-rekenmix-mix1-2`), Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`), Patronen (`squla-vormen-patronen-1`), Patronen (moeilijker) (`squla-vormen-patronen-2`), Opruimen (`squla-vormen-opruimen-1`), Links, rechts, boven, onder (`squla-vormen-orienteren-1`)
 
 ```
-one closed blue book lying flat, seen from the side, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one closed blue hardcover book lying flat, seen from slightly above and the side so the cover and the pages are visible, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 84. Bord — `bord.png` — ✅ gegenereerd
@@ -865,7 +865,7 @@ a grey kitchen oven seen from the front, with a round cake tin with cake batter 
 Lessen: Eerlijk verdelen (`squla-splits-delen-1`)
 
 ```
-an empty round yellow pencil cup with a thin white stripe, side view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a round yellow pencil cup filled with a few colored pencils and pens sticking out of the top, side view, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 106. Picknickkleed — `picknickkleed.png` — ✅ gegenereerd
@@ -961,7 +961,7 @@ an old golden key, lying sideways, simple flat illustration for a children's mat
 Lessen: Munten en briefjes (`squla-geld-geldmachine-1`), Munten en briefjes (moeilijker) (`squla-geld-geldmachine-2`), Zakgeld sparen (`squla-geld-zakgeld-1`), Zakgeld sparen (moeilijker) (`squla-geld-zakgeld-2`), Geld tellen (`squla-geld-geld-1`), Geld tellen (moeilijker) (`squla-geld-geld-2`)
 
 ```
-a round glass money jar with a red lid that has a coin slot, empty, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+a round glass money jar with a red lid that has a coin slot, with a few gold coins inside at the bottom, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 118. Splitsmachine — `splitsmachine.png` — ✅ gegenereerd
@@ -977,7 +977,7 @@ a simple box-shaped toy machine with a funnel on top and two chutes at the botto
 Lessen: Dagen van de week (`squla-tijd-dagen-1`), Dagen van de week (moeilijker) (`squla-tijd-dagen-2`), Dagen van de week (nog moeilijker) (`squla-tijd-dagen-3`), De kalender (`squla-tijd-kalender-1`), De kalender (moeilijker) (`squla-tijd-kalender-2`), Tijden (`squla-tijd-tijden-1`), Tijden (moeilijker) (`squla-tijd-tijden-2`)
 
 ```
-four small empty colorful school chairs standing in a half circle, seen from the front, large and clear, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+six small empty colorful school chairs arranged in a circle, all facing the middle, seen from above at an angle, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 120. T-shirt — `t-shirt.png` — ✅ gegenereerd
@@ -1001,7 +1001,7 @@ one clean white tooth with two roots, front view, simple flat illustration for a
 Lessen: Opruimen (`squla-vormen-opruimen-1`)
 
 ```
-an open empty wooden box with low sides, seen from the front and slightly above, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+an open box of colored pencils, the pencils lying in a row inside, seen from the front and slightly above, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 123. Thermometer — `thermometer.png` — ✅ gegenereerd
@@ -1051,7 +1051,7 @@ a small bakery shop building seen from the front, with a striped awning, a big w
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
 ```
-a closed flat blue cardboard box, seen from the front, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one closed square blue cardboard box, seen from the front and slightly above (same box as doos-rood, other color), simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 129. Diamant — `diamant.png` — ✅ gegenereerd
@@ -1163,7 +1163,7 @@ a closed brown wallet with a round golden clasp, front view, simple flat illustr
 Lessen: Pizza's vergelijken (`squla-meten-pizza-1`), Pizza's vergelijken (moeilijker) (`squla-meten-pizza-2`), Pizza's vergelijken (nog moeilijker) (`squla-meten-pizza-3`), Vol, leeg, zwaar en licht (`squla-meten-hoeveelheden-1`), Vol, leeg, zwaar en licht (moeilijker) (`squla-meten-hoeveelheden-2`), Hoe groot is het? (`squla-meten-oppervlakte-1`), Hoe groot is het? (moeilijker) (`squla-meten-oppervlakte-2`)
 
 ```
-a closed flat red cardboard box, seen from the front, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
+one closed square red cardboard box, seen from the front and slightly above, simple flat illustration for a children's math app: solid flat colors, one soft highlight, thin dark outline, minimal details, no gradients, no shadow, no face, no eyes, no text. Single object centered on a plain pure white background.
 ```
 
 ### 143. Volle picknickmand — `mand-vol.png` — ✅ gegenereerd

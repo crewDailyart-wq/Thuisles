@@ -94,7 +94,7 @@ export const SPLITSEN: Voorwerp[] = [
     naam: "pennenbeker",
     titel: "Pennenbeker",
     groep: "huis",
-    onderwerp: "an empty round yellow pencil cup with a thin white stripe, side view",
+    onderwerp: "a round yellow pencil cup filled with a few colored pencils and pens sticking out of the top, side view",
     schets: `<path class="r" d="M50 60 h100 l-10 120 h-80z" fill="#ffc83b"/><ellipse class="r" cx="100" cy="60" rx="50" ry="10" fill="#ffe38a"/>`,
   },
   {

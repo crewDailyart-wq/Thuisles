@@ -138,14 +138,14 @@ export const TIJD: Voorwerp[] = [
     naam: "stoelenkring",
     titel: "Stoeltjes in een kring",
     groep: "huis",
-    onderwerp: "four small empty colorful school chairs standing in a half circle, seen from the front, large and clear",
+    onderwerp: "six small empty colorful school chairs arranged in a circle, all facing the middle, seen from above at an angle",
     schets: `<ellipse class="r" cx="100" cy="112" rx="80" ry="44" fill="#c9efd2"/><g fill="#f2715e"><rect class="r" x="88" y="52" width="24" height="22" rx="4"/><rect class="r" x="24" y="98" width="24" height="22" rx="4"/><rect class="r" x="152" y="98" width="24" height="22" rx="4"/><rect class="r" x="52" y="140" width="24" height="22" rx="4"/><rect class="r" x="124" y="140" width="24" height="22" rx="4"/></g>`,
   },
   {
     naam: "hoepel",
     titel: "Hoepel met bal",
     groep: "speelgoed",
-    onderwerp: "a coral gymnastics hoop standing upright with a small yellow ball on the floor next to it",
+    onderwerp: "one coral gymnastics hoop standing upright, a simple clean round ring, nothing else",
     schets: `<ellipse class="r" cx="100" cy="128" rx="80" ry="40" fill="none" stroke="#f2715e"/><circle class="r" cx="100" cy="110" r="34" fill="#ffd84a"/>`,
   },
   {
