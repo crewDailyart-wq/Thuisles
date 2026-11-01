@@ -9,11 +9,11 @@
  * Wat het draaiboek zet:
  * - `groot`: een tekening bovenaan (een kalender, een tafereel);
  * - `kaarten`: kaartjes om aan te tikken (een plaatje, met of zonder woord);
- *   `uit` (vaag: al fout gekozen), `goed` (groene rand), `fout` (rode rand),
+ *   `uit` (vaag: al fout gekozen), `goed` (groene rand), `fout` (dof en schudden, geen rode rand),
  *   `licht` (gele rand: Bliepo wijst het aan);
  * - `orden`: lege vakken op een rij en losse kaartjes eronder, om op volgorde
  *   te slepen (of aan te tikken: dan gaat het naar het eerste lege vak);
- *   `vast` = vakken die al gevuld zijn; `uitslag` per vak groen of rood;
+ *   `vast` = vakken die al gevuld zijn; `uitslag` per vak goed (groen) of niet goed (dof);
  * - `verbind`: plaatjes links en woorden rechts; het kind trekt een lijn (of
  *   tikt links en dan rechts).
  *
@@ -310,7 +310,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     pasToe(p: PlaatjesProps) {
       const ind = indeling(p);
-      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.licht?.includes(id) ? "geel" : null);
+      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.licht?.includes(id) ? "geel" : null);
       const zetRing = (d: Ding, k: keyof typeof RING | null) => {
         if (!k) return void d.ring.setVisible(false);
         d.ring.setTexture(this.ringPlaatje(k, d.r.b, d.r.h)).setVisible(true);
@@ -318,7 +318,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
           zetRing(d, kleur(d.id));
-          d.box.setAlpha(p.uit?.includes(d.id) ? 0.35 : 1);
+          /* Bij een fout geen rode rand (BOUWREGELS 5.3): het kaartje wordt dof en schudt. */
+          d.box.setAlpha(p.uit?.includes(d.id) || p.fout?.includes(d.id) ? 0.35 : 1);
         }
         if (d.soort === "los" && p.orden) {
           const vak = p.orden.vakken.indexOf(d.id);
@@ -327,7 +328,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
             this.tweens.add({ targets: d.box, x: doel.x, y: doel.y, duration: rustig ? 1 : 220, ease: "Cubic.easeOut" });
           }
           const u = vak >= 0 ? p.orden.uitslag?.[vak] : null;
-          zetRing(d, u === true ? "groen" : u === false ? "rood" : kleur(d.id));
+          /* Niet goed gelegd: geen rode rand, het kaartje wordt dof (BOUWREGELS 5.3). */
+          zetRing(d, u === true ? "groen" : u === false ? null : kleur(d.id));
+          d.box.setAlpha(u === false ? 0.35 : 1);
           d.box.setDepth(vak >= 0 ? 1 : 2);
         }
         if (d.soort === "vast") zetRing(d, null);

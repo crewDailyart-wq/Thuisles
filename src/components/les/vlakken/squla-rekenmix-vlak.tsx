@@ -20,7 +20,7 @@
  *   Het kind trekt een lijn van stip naar stip (of tikt links en dan rechts).
  *   Liggen er drie lijnen: `{ soort: "verbind", paren }` (per links het
  *   nummer rechts). `uitslag` kleurt ze: goed blijft groen liggen, fout wordt
- *   rood en verdwijnt.
+ *   grijs en dof (geen rood) en verdwijnt.
  *
  * Wat het draaiboek verder zet: `licht` (in één tekening lichten deze stukken
  * op en de rest wordt dof: samen tellen), `labels` (getallen of woordjes bij
@@ -38,7 +38,7 @@ import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { RM_MAAT, rmHex, tekenDing, tekenTegel, tekenVorm, type RMKleur, type RMVorm } from "./squla-rekenmix-tekenen";
+import { RM_MAAT, RING_MAAT, RING_BINNEN, rmHex, tekenDing, tekenDingMetRing, tekenTegel, tekenVorm, type RMKleur, type RMVorm } from "./squla-rekenmix-tekenen";
 import s from "./squla-rekenmix.module.css";
 
 export type { RMKleur, RMVorm };
@@ -47,11 +47,11 @@ export type { RMKleur, RMVorm };
 
 export type RMStuk =
   /** Een voorwerp (vast plaatje) in een vak van m × m; sx/sy rekken het op (dik, hoog); `snij` = welk deel van boven zichtbaar is. */
-  | { t: "vw"; naam: string; x: number; y: number; m: number; sx?: number; sy?: number; snij?: number }
+  | { t: "vw"; naam: string; x: number; y: number; m: number; sx?: number; sy?: number; snij?: number; ring?: string }
   | { t: "vorm"; vorm: RMVorm; kleur: RMKleur; x: number; y: number; m: number }
   | { t: "tegel"; n: number; x: number; y: number; m: number }
   /** Een rondje met een getal of een vraagteken (het splitsbeen). */
-  | { t: "rondje"; tekst: string; x: number; y: number; r: number; licht?: boolean }
+  | { t: "rondje"; tekst: string; x: number; y: number; r: number; licht?: boolean; kleur?: string }
   | { t: "lijn"; x1: number; y1: number; x2: number; y2: number };
 
 export type RMTekening = { stukken: RMStuk[]; b: number; h: number };
@@ -61,7 +61,7 @@ export type RMOpgave =
   | { id: string; soort: "volgorde"; kaarten: RMTekening[]; vast?: RMTekening[]; namen?: string[] }
   | { id: string; soort: "verbind"; links: RMTekening[]; rechts: RMTekening[] };
 
-export type RMLabel = { deel: string; x: number; y: number; tekst: string; klein?: boolean };
+export type RMLabel = { deel: string; x: number; y: number; tekst: string; klein?: boolean; kleur?: string };
 
 export type RMProps = {
   opgave: RMOpgave | null;
@@ -270,9 +270,11 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
 
     /* ---------- plaatjes (één keer getekend; de gloed één keer gebakken) ---------- */
 
-    texVw(naam: string, gloed = false) {
-      const sl = `rm-v-${naam}`;
-      this.canvasPlaatje(sl, RM_MAAT, RM_MAAT, (c) => tekenDing(c, naam, RM_MAAT));
+    texVw(naam: string, gloed = false, ring?: string) {
+      /* Met `ring`: het voorwerp met een randje in de kleur van zijn groepje (BOUWREGELS 2.1). */
+      const sl = ring ? `rm-v-${naam}-ring-${ring.slice(1)}` : `rm-v-${naam}`;
+      if (ring) this.canvasPlaatje(sl, RING_MAAT, RING_MAAT, (c) => tekenDingMetRing(c, naam, ring));
+      else this.canvasPlaatje(sl, RM_MAAT, RM_MAAT, (c) => tekenDing(c, naam, RM_MAAT));
       if (gloed) this.bak(sl, `${sl}-g`, WARM);
       return sl;
     }
@@ -299,7 +301,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
           for (const st of t.stukken) {
             if (st.t === "vorm") this.texVorm(st.vorm, st.kleur, true);
             else if (st.t === "tegel") this.texTegel(st.n, true);
-            else if (st.t === "vw") this.texVw(st.naam, true);
+            else if (st.t === "vw") this.texVw(st.naam, true, st.ring);
           }
     }
 
@@ -323,10 +325,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
           const g = this.add.graphics();
           g.fillStyle(st.licht ? 0x3a2f6e : 0x1d2a66, 1);
           g.fillCircle(st.x, st.y, st.r);
-          g.lineStyle(5, st.licht ? 0xffe27a : 0x9fe9ff, 1);
+          g.lineStyle(5, st.kleur ? parseInt(st.kleur.slice(1), 16) : st.licht ? 0xffe27a : 0x9fe9ff, 1);
           g.strokeCircle(st.x, st.y, st.r);
           const tx = this.add
-            .text(st.x, st.y + 1, st.tekst, { fontFamily: '"Work Sans", system-ui, sans-serif', fontSize: `${Math.round(st.r * 1.15)}px`, fontStyle: "800", color: st.licht ? "#ffe27a" : "#ffffff" })
+            .text(st.x, st.y + 1, st.tekst, { fontFamily: '"Work Sans", system-ui, sans-serif', fontSize: `${Math.round(st.r * 1.15)}px`, fontStyle: "800", color: st.kleur ?? (st.licht ? "#ffe27a" : "#ffffff") })
             .setOrigin(0.5)
             .setResolution(2);
           box.add([g, tx]);
@@ -334,10 +336,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
           tex.push(null);
           continue;
         }
-        const sl = st.t === "vw" ? this.texVw(st.naam) : st.t === "vorm" ? this.texVorm(st.vorm, st.kleur) : this.texTegel(st.n);
-        const basis = st.t === "tegel" ? 120 : RM_MAAT;
+        const sl = st.t === "vw" ? this.texVw(st.naam, false, st.ring) : st.t === "vorm" ? this.texVorm(st.vorm, st.kleur) : this.texTegel(st.n);
+        const ring = st.t === "vw" && !!st.ring;
+        const basis = st.t === "tegel" ? 120 : ring ? RING_MAAT : RM_MAAT;
         const img = this.add.image(st.x, st.y, sl);
-        const sc = st.m / basis / TX;
+        /* Met ring is het plaatje groter dan het voorwerp: het voorwerp zelf houdt dezelfde maat. */
+        const sc = (ring ? (st.m * RING_MAAT) / RING_BINNEN : st.m) / basis / TX;
         const sx = st.t === "vw" ? (st.sx ?? 1) : 1;
         const sy = st.t === "vw" ? (st.sy ?? 1) : 1;
         img.setScale(sc * sx, sc * sy);
@@ -681,7 +685,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
       for (const [l, r] of this.lijnen) {
         const a = ind.stippen[`l${l}`];
         const b = ind.stippen[`r${r}`];
-        g.lineStyle(7, goed[l] ? GOED : 0xff7b8b, 1);
+        /* Een foute lijn wordt grijs en dof, niet rood (BOUWREGELS 5.3). */
+        g.lineStyle(7, goed[l] ? GOED : 0x8a94b8, goed[l] ? 1 : 0.6);
         g.lineBetween(a.x, a.y, b.x, b.y);
         if (goed[l]) this.golf((a.x + b.x) / 2, (a.y + b.y) / 2, GOED);
       }
@@ -970,7 +975,7 @@ export function SqulaRekenmix({
           const p = lb.deel[0] === "s" ? ind.sloten[Number(lb.deel.slice(1))] : ind.delen[lb.deel];
           if (!p) return null;
           return (
-            <div key={`${lb.deel}-${i}-${lb.tekst}`} className={lb.klein ? s.labelKlein : s.label} style={{ left: p.x + lb.x * p.f, top: p.y + lb.y * p.f }}>
+            <div key={`${lb.deel}-${i}-${lb.tekst}`} className={lb.klein ? s.labelKlein : s.label} style={{ left: p.x + lb.x * p.f, top: p.y + lb.y * p.f, ...(lb.kleur ? { color: lb.kleur } : {}) }}>
               {lb.tekst}
             </div>
           );

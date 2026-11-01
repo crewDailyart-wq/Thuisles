@@ -95,28 +95,33 @@ function som(l: Lesgids, st: Stand, a: number, teken: "+" | "−", b: number, ui
 async function plusUitleg(l: Lesgids, a: number, b: number) {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
+  /* dezelfde kleuren als de som: het eerste getal paars, het tweede oranje */
+  const kg = a >= b ? "paars" : "oranje";
+  const kk = a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) {
-    await l.zeg(`${g(a)} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b)} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, "Hoeveel tientallen zijn het samen?");
+    await l.zeg(`${g(a, "paars")} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b, "oranje")} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, "Hoeveel tientallen zijn het samen?");
     return;
   }
   if (groot < 10 && a + b > 10) {
-    await l.zeg(`Begin bij ${g(groot)}.`, `Eerst maak je ${g(10)}: ${g(groot)} + ${g(10 - groot)} = ${g(10)}.`, `Van de ${g(klein)} ${klein - (10 - groot) === 1 ? "is" : "zijn"} er dan nog ${g(klein - (10 - groot))} over.`, `${g(10)} en nog ${g(klein - (10 - groot))}: hoeveel is dat?`);
+    await l.zeg(`Begin bij ${g(groot, kg)}.`, `Eerst maak je ${g(10)}: ${g(groot, kg)} + ${g(10 - groot)} = ${g(10)}.`, `Van de ${g(klein, kk)} ${klein - (10 - groot) === 1 ? "is" : "zijn"} er dan nog ${g(klein - (10 - groot))} over.`, `${g(10)} en nog ${g(klein - (10 - groot))}: hoeveel is dat?`);
     return;
   }
   if (groot > 10 && groot < 20) {
     const e = groot - 10;
-    await l.zeg(`${g(groot)} is ${g(10)} en ${g(e)}.`, `Reken eerst ${g(e)} + ${g(klein)}.`, `Dan komt de ${g(10)} er nog bij.`);
+    await l.zeg(`${g(groot, kg)} is ${g(10)} en ${g(e)}.`, `Reken eerst ${g(e)} + ${g(klein, kk)}.`, `Dan komt de ${g(10)} er nog bij.`);
     return;
   }
-  await l.zeg(`Begin bij ${g(groot)}.`, `Tel dan ${g(klein)} verder.`, "Dat mag op je vingers.");
+  await l.zeg(`Begin bij ${g(groot, kg)}.`, `Tel dan ${g(klein, kk)} verder.`, "Dat mag op je vingers.");
 }
 
 function plusTip(a: number, b: number): string[] {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
+  const kg = a >= b ? "paars" : "oranje";
+  const kk = a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) return ["Tel de tientallen bij elkaar."];
   if (groot < 10 && a + b > 10) return [`Eerst naar ${g(10)}.`, "Dan de rest erbij."];
-  return [`Begin bij ${g(groot)}.`, `Tel ${g(klein)} verder.`];
+  return [`Begin bij ${g(groot, kg)}.`, `Tel ${g(klein, kk)} verder.`];
 }
 
 /* =====================================================================
@@ -148,15 +153,15 @@ function telVraag(doel: number, opties: { n: number; per: number }[]): Vraag {
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
-        await l.zeg("Tel de goudstukken per rij.", goed.per === 5 ? `Een volle rij is ${g(5)}.` : "Tel ze één voor één.");
+        await l.zeg("Tel de goudstukken per rij.", goed.per === 5 ? `Een volle rij is ${gv(5, "goudstuk")}.` : "Tel ze één voor één.");
         for (let i = 0; i < opties.length; i++) {
           zet(l, { licht: [`k${i}`] });
           await l.wacht(1400);
         }
         zet(l, { licht: [] });
-        await l.zeg(`Waar zijn het er ${g(doel)}?`);
+        await l.zeg(`Waar zijn het er ${gv(doel, "goudstuk")}?`);
       },
-      tip: [`Rijen van ${g(5)} tel je snel: ${g(5)}, ${g(10)}, en dan verder.`],
+      tip: [`Rijen van ${gv(5, "goudstuk")} tel je snel: ${gv(5, "goudstuk")}, ${gv(10, "goudstuk")}, en dan verder.`],
       testAntwoord: goedId,
     });
   };
@@ -205,16 +210,16 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
     const beeld = metLetters(st, `kaal-${a}-${b}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 370, maat: 230 }]);
     return squlaVraag<number>(l, {
       toon: () => {
-        if (toon(l, st, beeld)) som(l, st, a, "+", b);
+        if (toon(l, st, beeld)) som(l, st, a, "+", b, undefined, "paars", "oranje", "wit");
       },
-      vraag: [`Hoeveel is ${g(a, "tegel")} + ${g(b, "tegel")}?`],
+      vraag: [`Hoeveel is ${g(a, "paars")} + ${g(b, "oranje")}?`],
       antwoord: () => kiesGetal(l, keuzes),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
-        som(l, st, a, "+", b, s);
+        som(l, st, a, "+", b, s, "paars", "oranje", "wit");
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s, "tegel")}.`);
+        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
       },
       fout: () => foutBeeld(l, st),
       samen: () => plusUitleg(l, a, b),
@@ -233,14 +238,14 @@ function minVraag(vw: string, a: number, b: number, keuzes: number[], zinnen?: s
     const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62 }]);
     return squlaVraag<number>(l, {
       toon: () => {
-        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit");
+        if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");
       },
       vraag: zinnen ?? [`Hoeveel ${NAAM[vw][1]} zijn er nog?`],
       antwoord: () => kiesGetal(l, keuzes),
       isGoed: (x) => x === s,
-      noem: (x) => g(x),
+      noem: (x) => gv(x, vw),
       goed: async () => {
-        som(l, st, a, "−", b, s, KL[vw] ?? "wit");
+        som(l, st, a, "−", b, s, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");
         goedBeeld(l, st, { goedIds: blijft });
         await l.zeg(`Ja! ${gv(a, vw)} − ${gv(b, vw)} = ${gv(s, vw)}.`);
       },
@@ -389,6 +394,11 @@ const level1 = maak({
   voorbeeld: EERSTE1,
   verhaal: ["Kijk, een schatkaart!", "Waar ligt de schat?", "De letters op de kaart zeggen het."],
   uitleg: async (l, st) => {
+    /* Eerst het voorbeeld van het beginscherm: 14 goudstukken tellen in rijen van 5. */
+    toon(l, st, metLetters(st, "voorbeeld-tellen", [{ s: "groep", id: "g", vw: "goudstuk", n: 14, x: 490, y: 360, per: 5, cel: 54 }]));
+    await l.zeg("Kijk, goudstukken in rijen.", `In elke rij liggen er ${gv(5, "goudstuk")}.`);
+    await l.zeg(`${gv(5, "goudstuk")}, ${gv(10, "goudstuk")}.`, "Dan nog een paar los.", `Samen zijn het er ${gv(14, "goudstuk")}.`);
+    await l.verder();
     toon(l, st, metLetters(st, "voorbeeld", [
       { s: "groep", id: "a", vw: "diamant", n: 3, x: 290, y: 320, per: 5, cel: 54, label: "3", kl: "paars" },
       { s: "groep", id: "b", vw: "diamant", n: 2, x: 690, y: 320, per: 5, cel: 54, label: "2", kl: "oranje" },
@@ -453,9 +463,9 @@ const level2 = maak({
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "groep", id: "m", vw: "ster", n: 5, x: 490, y: 360, per: 5, cel: 62 }]));
     await l.zeg(`Kijk: ${aantal(5, "ster")}.`);
     zet(l, { uit: ["m.3", "m.4"], licht: ["m.3", "m.4"] });
-    await l.zeg(`Er gaan er ${g(2)} weg: die worden grijs.`);
+    await l.zeg(`Er gaan er ${gv(2, "ster")} weg: die worden grijs.`);
     zet(l, { licht: ["m.0", "m.1", "m.2"] });
-    await l.zeg(`Er zijn er nog ${g(3)}.`, `${g(5)} − ${g(2)} = ${g(3)}.`);
+    await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(5, "ster")} − ${gv(2, "ster")} = ${gv(3, "ster")}.`);
     zet(l, { licht: [] });
     await l.verder();
   },
@@ -505,6 +515,16 @@ const level3 = maak({
   voorbeeld: EERSTE3,
   verhaal: ["We hebben een sleutel gevonden.", "Waar past hij op?"],
   uitleg: async (l, st) => {
+    /* Eerst het voorbeeld van het beginscherm: de minsom 7 − 4 met sterren. */
+    toon(l, st, metLetters(st, "voorbeeld-min", [{ s: "groep", id: "m", vw: "ster", n: 7, x: 490, y: 360, per: 5, cel: 62 }]), { uit: ["m.3", "m.4", "m.5", "m.6"] });
+    som(l, st, 7, "−", 4, undefined, "geel", "geel", "geel");
+    await l.zeg(`Kijk: ${aantal(7, "ster")}.`);
+    zet(l, { licht: ["m.3", "m.4", "m.5", "m.6"] });
+    await l.zeg(`Er gaan er ${gv(4, "ster")} weg: die worden grijs.`);
+    zet(l, { licht: ["m.0", "m.1", "m.2"] });
+    await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(7, "ster")} − ${gv(4, "ster")} = ${gv(3, "ster")}.`);
+    zet(l, { licht: [] });
+    await l.verder();
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
     som(l, st, 8, "+", 5);
     await l.zeg("Kijk goed naar het teken.", "Een plus: er komt bij.", "Een min: er gaat af.");

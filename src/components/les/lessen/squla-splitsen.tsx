@@ -693,9 +693,9 @@ function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
     rijen.forEach((p, r) => {
       for (let j = 0; j < k; j++) {
         const x = 490 + (j - (k - 1) / 2) * 150;
-        /* De potloden liggen in een rij boven de lege beker, zodat je ze kunt tellen (de pennenbeker had er zelf al vijf). */
-        delen.push({ s: "groep", id: `r${r}`, vw: "potlood", n: p, x, y: Y[r] - 46, per: 6, cel: 24, maat: 44 });
-        delen.push({ s: "ding", id: `r${r}`, vw: "beker-leeg", x, y: Y[r] + 22, maat: 84 });
+        /* De potloden staan IN de lege beker (eerst de potloden, dan de beker ervoor): de gommetjes steken boven de rand uit, zodat je ze kunt tellen. */
+        delen.push({ s: "groep", id: `r${r}`, vw: "potlood", n: p, x, y: Y[r] - 26, per: 6, cel: 15, maat: 92 });
+        delen.push({ s: "ding", id: `r${r}`, vw: "beker-leeg", x, y: Y[r] + 12, maat: 128 });
       }
       delen.push({ s: "tik", id: `r${r}`, x: 490, y: Y[r] + 4, b: Math.max(300, k * 150), h: 150, aria: `${p} potloden per beker` });
     });

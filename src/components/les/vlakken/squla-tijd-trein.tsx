@@ -432,8 +432,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       };
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
-          rand(p.goed?.includes(d.id) ? "groen" : p.fout?.includes(d.id) ? "rood" : p.kaartLicht?.includes(d.id) ? "geel" : null, d);
-          d.box.setAlpha(p.uit?.includes(d.id) ? 0.25 : 1);
+          /* Bij een fout geen rode rand (BOUWREGELS 5.3): het kaartje wordt dof en schudt. */
+          rand(p.goed?.includes(d.id) ? "groen" : p.kaartLicht?.includes(d.id) ? "geel" : null, d);
+          d.box.setAlpha(p.uit?.includes(d.id) || p.fout?.includes(d.id) ? 0.25 : 1);
         } else if (p.orden) {
           const vak = p.orden.vakken.findIndex((x) => x !== null && dagNaam(x) === d.id);
           const doel = vak >= 0 ? ind.vakken[vak] : d.r;

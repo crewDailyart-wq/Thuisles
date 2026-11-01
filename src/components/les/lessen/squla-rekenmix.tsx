@@ -25,6 +25,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
+import { LABELKLEUR } from "../vlakken/squla-rekenmix-tekenen";
 import { KaartRekenmix, SqulaRekenmix, type RMKleur, type RMLabel, type RMOpgave, type RMProps, type RMStuk, type RMTekening, type RMVorm } from "../vlakken/squla-rekenmix-vlak";
 
 /* =====================================================================
@@ -51,6 +52,9 @@ const BOOM = vw("boom", "bomen", "groen");
 const UFO = vw("ufo", "ufo's", "paars");
 const SATELLIET = vw("satelliet", "satellieten", "groen");
 const KNOOP = vw("knoop", "knopen", "blauw");
+
+/** "1 knikker" en "3 knikkers" (BOUWREGELS 14.2): bij één het enkelvoud. */
+const aantalNaam = (n: number, v: Vw) => (n === 1 ? `1 ${v.naam === "speelgoedauto" ? "auto" : v.naam}` : `${n} ${v.meer}`);
 
 /** Hoe Bliepo een ding noemt: "de fiets" en "De fiets". */
 const NAAM: Record<string, string> = {
@@ -81,7 +85,12 @@ const w = (n: number) => g(n, "wit");
 
 /** Een groep om te tellen, met de telstappen (per stap welke stukken, en waar het getal komt). */
 type Stap = { idx: number[]; lx: number; ly: number };
-type Groep = { tek: RMTekening; stappen: Stap[]; n: number };
+/** `kleuren`: per telstap de kleur (naam) van het groepje waar die stap bij hoort (BOUWREGELS 2.1); zonder: de kleur van het voorwerp. */
+type Groep = { tek: RMTekening; stappen: Stap[]; n: number; kleuren?: string[] };
+
+/** De twee groepjes bij "samen" en splitsen: elk hun eigen kleur, in de zin, in de getallen en als ring om de voorwerpen. */
+const GROEP_A = "paars";
+const GROEP_B = "oranje";
 
 const ding = (naam: string, x: number, y: number, m: number, extra: Partial<Extract<RMStuk, { t: "vw" }>> = {}): RMStuk => ({ t: "vw", naam, x, y, m, ...extra });
 
@@ -159,10 +168,11 @@ function los(soorten: { naam: string; n: number }[], zaad: number, b = 760, h = 
   return { tek: { stukken, b, h: h + 40 }, stappen, n: doel.length };
 }
 
-/** Twee groepjes: boven en onder (samen tellen). */
+/** Twee groepjes: boven en onder (samen tellen), elk met een eigen kleur. */
 function tweeGroepen(naam: string, a: number, b: number, cel = 110): Groep {
   const stukken: RMStuk[] = [];
   const stappen: Stap[] = [];
+  const kleuren: string[] = [];
   const kol = Math.max(a, b);
   const breed = kol * cel;
   [a, b].forEach((n, r) => {
@@ -170,10 +180,11 @@ function tweeGroepen(naam: string, a: number, b: number, cel = 110): Groep {
     for (let i = 0; i < n; i++) {
       const x = -breed / 2 + (i + 0.5) * cel;
       stappen.push({ idx: [stukken.length], lx: x, ly: y - cel * 0.6 });
-      stukken.push(ding(naam, x, y, cel * 0.84));
+      kleuren.push(r === 0 ? GROEP_A : GROEP_B);
+      stukken.push(ding(naam, x, y, cel * 0.84, { ring: LABELKLEUR[r === 0 ? GROEP_A : GROEP_B] }));
     }
   });
-  return { tek: { stukken, b: breed + 40, h: cel * 3 }, stappen, n: a + b };
+  return { tek: { stukken, b: breed + 40, h: cel * 3 }, stappen, n: a + b, kleuren };
 }
 
 /** Een kaartje met een groep in rijen van 5 (voor op volgorde, verbinden en "welke kaart"). */
@@ -272,15 +283,17 @@ async function telMee(l: Lesgids, st: Stand, deel: string, gr: Groep, k: string,
   const reeks: string[] = [];
   for (let s = 0; s < tot; s++) {
     const stap = gr.stappen[s];
+    /* Het getal heeft de kleur van het groepje waar de stap bij hoort, anders van het voorwerp (BOUWREGELS 2.1 en 2.2). */
+    const kn = gr.kleuren?.[s] ?? k;
     aan.push(...stap.idx);
     n += stap.idx.length;
-    labels.push({ deel, x: stap.lx, y: stap.ly, tekst: String(n), klein: stap.idx.length === 1 });
+    labels.push({ deel, x: stap.lx, y: stap.ly, tekst: String(n), klein: stap.idx.length === 1, kleur: LABELKLEUR[kn] });
     zet(l, { licht: { deel, aan: [...aan] } });
     zetLabels(l, st, labels);
     if (losse) {
-      reeks.push(g(n, k));
+      reeks.push(g(n, kn));
       await l.wacht(320);
-    } else await l.zeg(`${g(n, k)}.`);
+    } else await l.zeg(`${g(n, kn)}.`);
   }
   if (losse && reeks.length) await l.zeg(`${reeks.join(", ")}.`);
   return n;
@@ -293,7 +306,7 @@ async function kaartenTellen(l: Lesgids, st: Stand, delen: string[], groepen: Gr
     const gr = groepen[i];
     zet(l, { licht: { deel: delen[i], aan: gr.stappen[0].idx } });
     await l.wacht(350);
-    labels.push({ deel: delen[i], x: gr.stappen[0].lx, y: gr.stappen[0].ly, tekst: String(gr.n) });
+    labels.push({ deel: delen[i], x: gr.stappen[0].lx, y: gr.stappen[0].ly, tekst: String(gr.n), kleur: LABELKLEUR[k] });
     zetLabels(l, st, labels);
     await l.zeg(zin(gr.n, i));
   }
@@ -484,9 +497,9 @@ function splitsTekening(v: Vw, houder: "doos" | "zak", tot: number, buiten: numb
     { t: "lijn", x1: -270, y1: -200, x2: -350, y2: -90 },
     { t: "lijn", x1: -270, y1: -200, x2: -190, y2: -90 },
     { t: "rondje", tekst: String(tot), x: -270, y: -200, r: 46 },
-    { t: "rondje", tekst: String(buiten), x: -350, y: -90, r: 40 },
-    { t: "rondje", tekst: "?", x: -190, y: -90, r: 40, licht: true },
-    ding(houder, 230, 110, 280),
+    { t: "rondje", tekst: String(buiten), x: -350, y: -90, r: 40, kleur: LABELKLEUR[GROEP_A] },
+    { t: "rondje", tekst: "?", x: -190, y: -90, r: 40, licht: true, kleur: LABELKLEUR[GROEP_B] },
+    ding(houder, 230, 110, 280, { ring: LABELKLEUR[GROEP_B] }),
   ];
   const stappen: Stap[] = [];
   const cel = 84;
@@ -496,10 +509,10 @@ function splitsTekening(v: Vw, houder: "doos" | "zak", tot: number, buiten: numb
       const x = -400 + (i + 0.5) * cel;
       const y = 150 + (r - (lengtes.length - 1) / 2) * cel;
       stappen.push({ idx: [stukken.length], lx: x, ly: y - cel * 0.58 });
-      stukken.push(ding(v.naam, x, y, cel * 0.84));
+      stukken.push(ding(v.naam, x, y, cel * 0.84, { ring: LABELKLEUR[GROEP_A] }));
     }
   });
-  return { tek: { stukken, b: 900, h: 560 }, stappen, n: buiten };
+  return { tek: { stukken, b: 900, h: 560 }, stappen, n: buiten, kleuren: stappen.map(() => GROEP_A) };
 }
 
 /* ---------- getallen voor en na ---------- */
@@ -533,6 +546,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     /* Waar Bliepo stopt met samen tellen: bij rijen en sprongen voor de laatste stap, bij losse dingen voor de laatste twee. */
     const stop = rijtjes || sprongen ? Math.max(1, q.gr.stappen.length - 1) : Math.max(1, q.gr.stappen.length - 2);
     const begin = q.gr.stappen.slice(0, stop).reduce((t, s) => t + s.idx.length, 0);
+    /* Bij twee groepjes samen: elk groepje zijn eigen kleur, het totaal wit (BOUWREGELS 2.1). */
+    const kBegin = q.gr.kleuren?.[stop - 1] ?? k;
+    const kTot = q.gr.kleuren ? "wit" : k;
     return {
       o,
       soort: `tel-${q.soort}`,
@@ -540,18 +556,18 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       vraag,
       antwoord: kiesGetal(q.keuzes),
       isGoed: (x) => x === n,
-      noem: (x) => g(x as number, k),
+      noem: (x) => g(x as number, kTot),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer }, licht: null }),
-      goedZin: q.soort === "samen" && q.delen ? [`Ja! ${g(q.delen[0], k)} en ${g(q.delen[1], k)} is samen ${g(n, k)}.`] : [`Ja! Het zijn er ${g(n, k)}.`],
+      goedZin: q.soort === "samen" && q.delen ? [`Ja! ${g(q.delen[0], GROEP_A)} en ${g(q.delen[1], GROEP_B)} is samen ${g(n, "wit")}.`] : [`Ja! Het zijn er ${g(n, k)}.`],
       samen: async (alles) => {
         if (sprongen) await l.zeg("We tellen in sprongen van twee.");
         else if (rijtjes) await l.zeg("We tellen samen, rij voor rij.");
         else await l.zeg(q.soort === "druk" ? `We tellen alleen de ${q.v.meer}.` : "Tel maar mee.");
         const tot = await telMee(l, st, "b", q.gr, k, alles ? q.gr.stappen.length : stop);
-        if (alles) await l.zeg(`Het zijn er ${g(tot, k)}.`);
-        else await l.zeg(`Tel jij verder vanaf ${g(tot, k)}?`);
+        if (alles) await l.zeg(`Het zijn er ${g(tot, kTot)}.`);
+        else await l.zeg(`Tel jij verder vanaf ${g(tot, kBegin)}?`);
       },
-      tip: sprongen ? [`Begin bij ${g(begin, k)}.`, "Tel er steeds twee bij."] : [`Begin bij ${g(begin, k)}.`, "Tel de rest één voor één."],
+      tip: sprongen ? [`Begin bij ${g(begin, kBegin)}.`, "Tel er steeds twee bij."] : [`Begin bij ${g(begin, kBegin)}.`, "Tel de rest één voor één."],
       testAntwoord: n,
     };
   }
@@ -672,7 +688,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   /* ---------- groepjes op volgorde ---------- */
   if (q.t === "ordenAantal") {
     const groepen = q.aantallen.map((n) => kaartGroep(q.v.naam, rijenVan5(n), 44));
-    const o: RMOpgave = { id, soort: "volgorde", kaarten: groepen.map((x) => x.tek), namen: q.aantallen.map((n) => `${n} ${q.v.meer}`) };
+    const o: RMOpgave = { id, soort: "volgorde", kaarten: groepen.map((x) => x.tek), namen: q.aantallen.map((n) => aantalNaam(n, q.v)) };
     const goed = q.aantallen.map((n, i) => ({ n, i })).sort((a, b) => (q.richting === "op" ? a.n - b.n : b.n - a.n)).map((x) => x.i);
     const k = q.v.k;
     const rij = goed.map((i) => g(q.aantallen[i], k)).join(", ");
@@ -721,7 +737,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         zet(l, { goed: { deel: "*", keer: ++st.keer } });
         zetLabels(l, st, slotLabels());
       },
-      goedZin: dikDun ? ["Ja! Van dik naar dun.", "De dunste staat achteraan."] : [`Ja! ${woorden.map(Hoofd).join(", ")}.`, `De ${ALLER[q.woord].replace("aller", "")} staat achteraan.`],
+      goedZin: dikDun ? ["Ja! Van dik naar dun.", "De dunste staat achteraan."] : [`Ja! ${Hoofd(woorden.join(", "))}.`, `De ${ALLER[q.woord].replace("aller", "")} staat achteraan.`],
       fout: (x) => zet(l, { plekGoed: (x as number[]).map((i, p) => i === goed[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
@@ -878,7 +894,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       soort: "waar",
       eerste: [],
-      vraag: ["Waar ligt de bal?", `${Hoofd(opties[0])}, ${opties[1]} of ${opties[2]}?`],
+      vraag: ["Waar ligt de bal?"],
       antwoord: async () => await l.kies(opties.map(Hoofd), { weetniet: false, direct: true }),
       isGoed: (x) => x === Hoofd(PLEKZIN[q.plek]),
       noem: (x) => String(x),
@@ -940,7 +956,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       const stukken: RMStuk[] = [];
       for (let r = 0; r < 2; r++) {
         const len = r === 0 ? 5 : n - 5;
-        for (let i = 0; i < len; i++) stukken.push({ t: "vorm", vorm: "blokje", kleur: "geel", x: -2.5 * cel + (i + 0.5) * cel - 30, y: (r - 0.5) * cel * 1.1, m: cel * 0.9 });
+        for (let i = 0; i < len; i++) stukken.push({ t: "vorm", vorm: "blokje", kleur: r === 0 ? GROEP_A : GROEP_B, x: -2.5 * cel + (i + 0.5) * cel - 30, y: (r - 0.5) * cel * 1.1, m: cel * 0.9 });
       }
       return { stukken, b: 5 * cel + 140, h: 2 * cel * 1.1 + 20 };
     };
@@ -950,31 +966,31 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       soort: "blokjes",
       eerste: ["Tik op de goede groep."],
-      vraag: [`Waar zie je ${g(q.n, "geel")} blokjes?`],
+      vraag: [`Waar zie je ${g(q.n, "wit")} blokjes?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: () => "Deze",
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
-      goedZin: [`Ja! ${g(5, "geel")} en ${g(q.n - 5, "geel")} is ${g(q.n, "geel")}.`],
+      goedZin: [`Ja! ${g(5, GROEP_A)} en ${g(q.n - 5, GROEP_B)} is ${g(q.n, "wit")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
-        await l.zeg(`Bovenaan staan er altijd ${g(5, "geel")}.`);
+        await l.zeg(`Bovenaan staan er altijd ${g(5, GROEP_A)}.`);
         zetLabels(
           l,
           st,
-          q.keuzes.map((_, i) => ({ deel: `k${i}`, x: 2.5 * cel - 30 + 44, y: -0.55 * cel, tekst: "5", klein: true })),
+          q.keuzes.map((_, i) => ({ deel: `k${i}`, x: 2.5 * cel - 30 + 44, y: -0.55 * cel, tekst: "5", klein: true, kleur: LABELKLEUR[GROEP_A] })),
         );
         await l.wacht(400);
-        await l.zeg(`Tel onderaan verder vanaf ${g(5, "geel")}.`);
+        await l.zeg(`Tel onderaan verder vanaf ${g(5, GROEP_A)}.`);
         if (alles) {
           const gi = goedI;
           const onder = q.n - 5;
-          const reeks = Array.from({ length: onder }, (_, j) => g(6 + j, "geel"));
+          const reeks = Array.from({ length: onder }, (_, j) => g(6 + j, GROEP_B));
           zet(l, { licht: { deel: `k${gi}`, aan: Array.from({ length: onder }, (_, j) => 5 + j) } });
           await l.zeg(`${reeks.join(", ")}.`);
         }
       },
-      tip: [`Begin bij ${g(5, "geel")}.`, "Tel onderaan verder."],
+      tip: [`Begin bij ${g(5, GROEP_A)}.`, "Tel onderaan verder."],
       testAntwoord: `keuze-${goedI}`,
     };
   }
@@ -1004,7 +1020,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         const tel = async (deel: string, gr: Groep, k: string, rechtsKant: boolean) => {
           zet(l, { licht: { deel, aan: gr.stappen[0].idx } });
           await l.wacht(350);
-          labels.push({ deel, x: rechtsKant ? gr.tek.b / 2 + 34 : -gr.tek.b / 2 - 34, y: 0, tekst: String(gr.n) });
+          labels.push({ deel, x: rechtsKant ? gr.tek.b / 2 + 34 : -gr.tek.b / 2 - 34, y: 0, tekst: String(gr.n), kleur: LABELKLEUR[k] });
           zetLabels(l, st, labels);
           await l.zeg(`${g(gr.n, k)}.`);
         };
@@ -1067,23 +1083,23 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       soort: "splits",
       eerste: [],
-      vraag: [`Er zijn ${g(q.tot, k)} ${q.v.meer}.`, `Hoeveel zitten er ${waarin}?`],
+      vraag: [`Er zijn ${g(q.tot, "wit")} ${q.v.meer}.`, `Hoeveel zitten er ${waarin}?`],
       antwoord: kiesGetal(q.keuzes),
       isGoed: (x) => x === binnen,
-      noem: (x) => g(x as number, k),
+      noem: (x) => g(x as number, GROEP_B),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer } }),
-      goedZin: [`Ja! ${g(q.buiten, k)} en ${g(binnen, k)} is samen ${g(q.tot, k)}.`],
+      goedZin: [`Ja! ${g(q.buiten, GROEP_A)} en ${g(binnen, GROEP_B)} is samen ${g(q.tot, "wit")}.`],
       samen: async (alles) => {
-        await l.zeg(`Er zijn ${g(q.tot, k)} ${q.v.meer} in totaal.`, "Buiten zie je er een paar. Tel maar mee.");
+        await l.zeg(`Er zijn ${g(q.tot, "wit")} ${q.v.meer} in totaal.`, "Buiten zie je er een paar. Tel maar mee.");
         await telMee(l, st, "b", gr, k);
         zet(l, { licht: null });
-        await l.zeg(`Buiten liggen er ${g(q.buiten, k)}.`, `De rest zit ${waarin}.`, `Tel verder van ${g(q.buiten, k)} tot ${g(q.tot, k)}.`);
+        await l.zeg(`Buiten liggen er ${g(q.buiten, GROEP_A)}.`, `De rest zit ${waarin}.`, `Tel verder van ${g(q.buiten, GROEP_A)} tot ${g(q.tot, "wit")}.`);
         if (alles) {
-          const reeks = Array.from({ length: binnen }, (_, j) => g(q.buiten + 1 + j, k));
-          await l.zeg(`${reeks.join(", ")}.`, `Dat zijn er ${g(binnen, k)}.`);
+          const reeks = Array.from({ length: binnen }, (_, j) => g(q.buiten + 1 + j, GROEP_B));
+          await l.zeg(`${reeks.join(", ")}.`, `Dat zijn er ${g(binnen, GROEP_B)}.`);
         }
       },
-      tip: [`Begin bij ${g(q.buiten, k)} en tel door tot ${g(q.tot, k)}.`, "Hoeveel tel je erbij?"],
+      tip: [`Begin bij ${g(q.buiten, GROEP_A)} en tel door tot ${g(q.tot, "wit")}.`, "Hoeveel tel je erbij?"],
       testAntwoord: binnen,
     };
   }
@@ -1092,7 +1108,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   if (q.t === "welke") {
     const voorbeeld = q.vraagt === "evenveel" ? q.voorbeeld : undefined;
     const hint = q.vraagt === "meer" || q.vraagt === "minder" ? eenDing(q.v.naam, 150) : undefined;
-    const o: RMOpgave = { id, soort: "kijk", boven: voorbeeld?.tek ?? hint, keuzes: q.groepen.map((x) => x.tek), namen: q.groepen.map((x) => `${x.n} ${q.v.meer}`) };
+    const o: RMOpgave = { id, soort: "kijk", boven: voorbeeld?.tek ?? hint, keuzes: q.groepen.map((x) => x.tek), namen: q.groepen.map((x) => aantalNaam(x.n, q.v)) };
     const goedI = q.groepen.findIndex((x) => (q.vraagt === "meer" ? x.n > q.n : q.vraagt === "minder" ? x.n < q.n : x.n === q.n));
     const k = q.v.k;
     const m = q.groepen[goedI].n;
@@ -1251,6 +1267,12 @@ type Lesdef = {
   welkom: string[];
   /** Het voorbeeld bij de korte uitleg (een eigen vraag, niet een van de 15). */
   voorbeeld: Vraag[];
+  /**
+   * Het beginscherm laat het EERSTE voorbeeld zien in plaats van vraag 1 (BOUWREGELS 4.1, 14.13, 14.21): dan gaat
+   * de uitleg na Nee over precies wat in beeld staat, en verklapt hij geen latere vraag. De welkomzin gaat
+   * dan over dat voorbeeld.
+   */
+  beginMetVoorbeeld?: boolean;
   vragen: Vraag[];
   eind: string;
 };
@@ -1294,12 +1316,13 @@ function les(d: Lesdef): Lesdraaiboek {
     kaarttekening: KaartRekenmix,
     async speel(l) {
       const st: Stand = { huidig: "", keer: 0, ronde: 0, handGezien: false, verbindGezien: false, gezien: new Set(), labels: [] };
-      const eerste = opgaven[0];
+      /* De opgaven staan op volgorde: eerst de 15 vragen, dan de voorbeelden. */
+      const eerste = d.beginMetVoorbeeld ? opgaven[d.vragen.length] : opgaven[0];
       /* st.huidig blijft leeg: de eerste vraag zet zijn opgave dan nog eens, mét de test (zelfde beeld). */
       l.vlak<RMProps>(SqulaRekenmix, { opgave: eerste, namen: namenIn(opgaven), vooraf: opgaven });
       await squlaBegin(l, {
         welkom: d.welkom,
-        /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
+        /* Het beginscherm laat de eerste vraag van de les zien, of het eerste voorbeeld (BOUWREGELS 4.1). */
         voorbeeld: () => {
           st.huidig = "";
           toonOpgave(l, st, eerste, null);
@@ -1334,7 +1357,9 @@ const mix1_1 = les({
   oefening: "Rekenmix 1",
   level: 1,
   welkom: ["Er liggen appels door elkaar.", "Tel de appels. Hoeveel zijn het er?"],
-  voorbeeld: [{ t: "tel", v: KNIKKER, gr: rijen("knikker", [3, 3]), keuzes: [6, 5, 7], soort: "tel" }],
+  beginMetVoorbeeld: true,
+  /* 6 appels door elkaar: dezelfde soort vraag als vraag 1, met een aantal dat in de les niet voorkomt. */
+  voorbeeld: [{ t: "tel", v: APPEL, gr: los([{ naam: "appel", n: 6 }], 5), keuzes: [6, 5, 7], soort: "tel" }],
   vragen: [
     { t: "tel", v: APPEL, gr: los([{ naam: "appel", n: 7 }], 11), keuzes: [8, 6, 7], soort: "tel" },
     { t: "tel", v: BAL, gr: rijen("bal", [4, 4, 2]), keuzes: [10, 11, 9], soort: "tel" },
@@ -1368,7 +1393,8 @@ const mix1_2 = les({
   titel: "Rekenmix 1 (moeilijker)",
   oefening: "Rekenmix 1",
   level: 2,
-  welkom: ["Kijk naar de tent.", "Welke vorm lijkt erop?"],
+  welkom: ["Kijk naar de zon.", "Welke vorm lijkt erop?"],
+  beginMetVoorbeeld: true,
   voorbeeld: [{ t: "vorm", naam: "zon", zin: "de zon", vorm: "cirkel", keuzes: ["vierkant", "cirkel", "driehoek"] }],
   vragen: [
     { t: "vorm", naam: "tent", zin: "de tent", vorm: "driehoek", keuzes: ["cirkel", "driehoek", "vierkant"] },
@@ -1384,7 +1410,7 @@ const mix1_2 = les({
     { t: "vorm", naam: "telefoon", zin: "de telefoon", vorm: "rechthoek", keuzes: ["vierkant", "rechthoek", "cirkel"] },
     { t: "vorm", naam: "feesthoed", zin: "het feesthoedje", vorm: "driehoek", keuzes: ["driehoek", "cirkel", "rechthoek"] },
     { t: "vorm", naam: "koekje", zin: "het koekje", vorm: "cirkel", keuzes: ["rechthoek", "cirkel", "driehoek"] },
-    { t: "vorm", naam: "pizzadoos", zin: "de pizzadoos", vorm: "vierkant", keuzes: ["cirkel", "driehoek", "vierkant"] },
+    { t: "vorm", naam: "doos", zin: "de doos", vorm: "vierkant", keuzes: ["cirkel", "driehoek", "vierkant"] },
     { t: "vorm", naam: "boek", zin: "het boek", vorm: "rechthoek", keuzes: ["driehoek", "rechthoek", "cirkel"] },
   ],
   eind: "Jij ziet de vormen overal.",
@@ -1435,7 +1461,8 @@ const mix1_4 = les({
   oefening: "Rekenmix 1",
   level: 4,
   welkom: ["Hier liggen koekjes.", "Zet ze op volgorde, van meer naar minder."],
-  voorbeeld: [{ t: "ordenAantal", v: APPEL, aantallen: [2, 6, 4], richting: "af" }],
+  beginMetVoorbeeld: true,
+  voorbeeld: [{ t: "ordenAantal", v: KOEKJE, aantallen: [2, 6, 4], richting: "af" }],
   vragen: [
     { t: "ordenAantal", v: KOEKJE, aantallen: [3, 8, 5], richting: "af" },
     { t: "ordenAantal", v: KNIKKER, aantallen: [4, 1, 7], richting: "af" },
@@ -1537,9 +1564,11 @@ const mix2_3 = les({
   titel: "Rekenmix 2 (nog moeilijker)",
   oefening: "Rekenmix 2",
   level: 3,
-  welkom: ["Hier zie je kleuren en vormen.", "Waar zie je een rode cirkel?"],
+  welkom: ["Hier zie je kleuren en vormen.", "Waar zie je een paarse driehoek?"],
+  beginMetVoorbeeld: true,
   voorbeeld: [
-    { t: "kleurvorm", kleur: "geel", vorm: "cirkel", keuzes: [["geel", "cirkel"], ["geel", "vierkant"], ["rood", "cirkel"]] },
+    /* Paars komt in de vragen niet voor: het voorbeeld verklapt niets. */
+    { t: "kleurvorm", kleur: "paars", vorm: "driehoek", keuzes: [["paars", "driehoek"], ["paars", "vierkant"], ["oranje", "driehoek"]] },
     { t: "blokjes", n: 8, keuzes: [7, 8, 9] },
   ],
   vragen: [
@@ -1615,8 +1644,9 @@ const mix3_1 = les({
   titel: "Rekenmix 3",
   oefening: "Rekenmix 3",
   level: 1,
-  welkom: ["Drie ballen zijn niet even groot.", "Zet ze op volgorde, van klein naar groot."],
-  voorbeeld: [{ t: "ordenMaat", woord: "groot", naam: "boom", maten: [0.75, 0.45, 1] }],
+  welkom: ["Drie ballen zijn niet even groot.", "Zet ze op volgorde: klein, kleiner, kleinst."],
+  beginMetVoorbeeld: true,
+  voorbeeld: [{ t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.82, 0.46, 1] }],
   vragen: [
     { t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.62, 1, 0.38] },
     { t: "ordenMaat", woord: "dik", naam: "kaars", maten: [1.4, 0.55, 0.95] },
@@ -1651,7 +1681,9 @@ const mix3_2 = les({
   oefening: "Rekenmix 3",
   level: 2,
   welkom: ["Vijf dingen staan in een rij.", "Wat staat als eerste in de rij?"],
-  voorbeeld: [{ t: "rang", rij: RIJ_A, keuzes: ["bus", "fiets", "bootje", "speelgoedauto", "treintje"], plek: 1 }],
+  beginMetVoorbeeld: true,
+  /* Een rij in een andere volgorde dan in de vragen, en de eerste van de rij zoals de welkomzin vraagt. */
+  voorbeeld: [{ t: "rang", rij: ["bus", "bootje", "fiets", "treintje", "speelgoedauto"], keuzes: ["fiets", "treintje", "bus", "speelgoedauto", "bootje"], plek: 0 }],
   vragen: [
     { t: "rang", rij: RIJ_A, keuzes: ["bootje", "bus", "fiets", "treintje", "speelgoedauto"], plek: 0 },
     { t: "rang", rij: RIJ_A, keuzes: ["speelgoedauto", "treintje", "bootje", "bus", "fiets"], plek: 2 },
@@ -1683,8 +1715,10 @@ const mix3_3 = les({
   titel: "Rekenmix 3 (nog moeilijker)",
   oefening: "Rekenmix 3",
   level: 3,
-  welkom: ["We zoeken getallen die naast elkaar staan.", `Welk getal komt net voor ${w(7)}?`],
-  voorbeeld: [{ t: "buur", n: 5, richting: "na", keuzes: [4, 6, 7] }],
+  welkom: ["We zoeken getallen die naast elkaar staan.", `Welk getal komt net voor ${w(5)}?`],
+  beginMetVoorbeeld: true,
+  /* Net voor 5 (antwoord 4) komt in de vragen niet voor. */
+  voorbeeld: [{ t: "buur", n: 5, richting: "voor", keuzes: [4, 6, 3] }],
   vragen: [
     { t: "buur", n: 7, richting: "voor", keuzes: [8, 6, 5] },
     { t: "buur", n: 9, richting: "na", keuzes: [10, 8, 7] },
@@ -1756,7 +1790,9 @@ const mix4_1 = les({
   oefening: "Rekenmix 4",
   level: 1,
   welkom: ["De ruimte staat vol raketjes, sterren en planeten.", "Tel alleen de raketjes."],
-  voorbeeld: [{ t: "tel", v: BAL, gr: tweeGroepen("bal", 2, 3), keuzes: [5, 4, 6], soort: "samen", delen: [2, 3] }],
+  beginMetVoorbeeld: true,
+  /* Een druk plaatje zoals vraag 1, met 7 raketjes (in de vragen komen 8 voor). */
+  voorbeeld: [{ t: "tel", v: RAKET, gr: los([{ naam: "raketje", n: 7 }, { naam: "ster", n: 3 }, { naam: "planeet", n: 2 }], 75, 820, 580, 120), keuzes: [7, 6, 8], soort: "druk" }],
   vragen: [
     { t: "tel", v: RAKET, gr: los([{ naam: "raketje", n: 8 }, { naam: "ster", n: 4 }, { naam: "planeet", n: 2 }], 61, 820, 580, 120), keuzes: [10, 8, 9], soort: "druk" },
     { t: "tel", v: KNOOP, gr: los([{ naam: "knoop", n: 6 }], 63, 620, 460, 130), keuzes: [5, 7, 6], soort: "tel" },
@@ -1861,9 +1897,10 @@ const mix4_4 = les({
   titel: "Rekenmix 4 (heel moeilijk)",
   oefening: "Rekenmix 4",
   level: 4,
-  welkom: ["Drie groepjes raketjes in de ruimte.", `Waar zie je meer dan ${g(5, "rood")} raketjes?`],
+  welkom: ["Drie groepjes raketjes in de ruimte.", `Waar zie je meer dan ${g(4, "rood")} raketjes?`],
+  beginMetVoorbeeld: true,
   voorbeeld: [
-    { t: "welke", v: BAL, groepen: [kr("bal", [3]), kr("bal", [4]), kr("bal", [2])], vraagt: "meer", n: 3 },
+    { t: "welke", v: RAKET, groepen: [kr("raketje", [4]), kr("raketje", [3]), kr("raketje", [5])], vraagt: "meer", n: 4 },
     { t: "kleurrij", rij: ["rood", "groen", "geel", "blauw", "paars"], wat: "middelste", keuzes: ["geel", "rood", "blauw"] },
   ],
   vragen: [

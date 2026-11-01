@@ -7,6 +7,12 @@
  * Eén keer getekend (de aanroeper bewaart het in een textuur), nooit elk
  * beeld opnieuw. Het voorwerp zelf wordt er stevig bovenop getekend en is
  * dus nooit doorzichtig of onduidelijk (BOUWREGELS 7.2). De ring is een vast randje in de kleur van het getal.
+ *
+ * `heel` (1 november 2026, besluit Sara): bij speelgoed en dingen krijgt het HELE
+ * voorwerp de kleur van zijn getal (de schaduw en glans blijven, alleen de
+ * kleur verandert), zonder ring. Bij fruit en eten blijft de echte kleur en de
+ * ring; daar kiest de les een getalkleur die bij het fruit past. Of een
+ * voorwerp heel gekleurd mag worden: `voorwerpKleurbaar(naam)`.
  */
 
 import { getalkleur } from "../tegels";
@@ -24,10 +30,33 @@ export const ringRuimte = (b: number, h: number) => Math.max(5, Math.round(Math.
  * Tekent het voorwerp (`teken` krijgt x, y, b, h van het vak waar het in past)
  * met een ring in `kleur`. De tekening is (b + 2·ruimte) × (h + 2·ruimte).
  */
-export function tekenMetRing(c: C, b: number, h: number, kleur: string, teken: (c: C, x: number, y: number, b: number, h: number) => void) {
+export function tekenMetRing(c: C, b: number, h: number, kleur: string, teken: (c: C, x: number, y: number, b: number, h: number) => void, heel = false) {
   const m = ringRuimte(b, h);
   const W = b + 2 * m;
   const H = h + 2 * m;
+
+  if (heel) {
+    /* Het hele voorwerp in de kleur van het getal: de kleur wordt vervangen, licht en donker (glans, rand) blijven. */
+    const laag = document.createElement("canvas");
+    laag.width = Math.ceil(W * TX);
+    laag.height = Math.ceil(H * TX);
+    const l = laag.getContext("2d")!;
+    l.scale(TX, TX);
+    teken(l, m, m, b, h);
+    l.globalCompositeOperation = "color";
+    l.fillStyle = kleur;
+    l.fillRect(0, 0, W, H);
+    l.globalCompositeOperation = "destination-in";
+    teken(l, m, m, b, h);
+    /* een zachte gloed in dezelfde kleur, dan het gekleurde voorwerp vol erop */
+    c.save();
+    c.shadowColor = kleur;
+    c.shadowBlur = m * 0.8 * TX;
+    c.drawImage(laag, 0, 0, W, H);
+    c.restore();
+    c.drawImage(laag, 0, 0, W, H);
+    return;
+  }
 
   /* Het voorwerp als egale vlek in de kleur van het getal. */
   const vlek = document.createElement("canvas");

@@ -9,6 +9,15 @@
  * niet in die lijst staat, geeft een duidelijke fout: dan klopt de lijst niet.
  */
 import status from "@/lib/voorwerpen/status.json";
+import { VOORWERPEN } from "@/lib/voorwerpen";
+
+/**
+ * Mag dit voorwerp helemaal in de kleur van zijn getal (Sara, 1 november 2026)?
+ * Ja bij speelgoed en dingen; nee bij fruit en eten (een blauwe appel klopt niet):
+ * daar blijft de echte kleur en kiest de les een getalkleur die bij het fruit past.
+ */
+const ETEN = new Set(VOORWERPEN.filter((v) => v.groep === "fruit" || v.groep === "eten").map((v) => v.naam));
+export const voorwerpKleurbaar = (naam: string) => !ETEN.has(naam);
 
 type Status = Record<string, { bron: "placeholder" | "eigen"; v: number }>;
 

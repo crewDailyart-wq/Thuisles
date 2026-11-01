@@ -15,6 +15,7 @@ import { tekenVoorwerp } from "../voorwerpen";
 
 const N: string = PALET.navy;
 const GROEN = "#55c26f";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars -- bewaard: de lucht van het oude dagdeel-plaatje
 const LUCHT = "#9fd8ff";
 const GRIJS = "#cfd4de";
 const ROOD = "#e8453c";
@@ -161,7 +162,8 @@ function maand(c: C, o: Record<string, string>) {
   }
   if (pijl) {
     const { kol, rij } = plekInMaand(pijl);
-    const x = x0 + kol * cb + cb / 2;
+    /* De pijl loopt langs de linkerkant van het vakje omhoog, zodat hij niet over een getal in de kolom loopt (BOUWREGELS 1.15). */
+    const x = x0 + kol * cb + 14;
     const yv = y0 + rij * ch + 8;
     v(c, `M ${x} ${yv} V ${kopY + 16}`, undefined, 5, ROOD);
     v(c, `M ${x - 10} ${kopY + 28} L ${x} ${kopY + 12} L ${x + 10} ${kopY + 28} Z`, ROOD, 2, ROOD);
@@ -346,31 +348,31 @@ function droom(c: C, o: Record<string, string>) {
 
 /* ---------- Tijden: dagdelen, dieren, de bakkerij ---------- */
 
+/**
+ * Een dagdeel (ontwerpvak 180 × 140): GEEN kader en geen lucht-vlak (BOUWREGELS 1.4), alleen wat erbij hoort,
+ * los in beeld: de zon laag achter een heuvel (ochtend), de zon hoog met stralen (middag), de zon die ondergaat met
+ * roze wolkenstrepen (avond), de maan met sterren (nacht).
+ */
 function dagdeel(c: C, d: string) {
-  const lucht = d === "ochtend" ? "#ffe8a8" : d === "middag" ? LUCHT : d === "avond" ? "#b98ad6" : "#26306b";
-  c.save();
-  c.beginPath();
-  c.roundRect(6, 6, 168, 128, 14);
-  c.clip();
-  c.fillStyle = lucht;
-  c.fillRect(0, 0, 180, 140);
-  if (d === "ochtend") v(c, cirkel(46, 96, 22), "#ffb23f", 3);
+  const heuvel = (kleur: string) => v(c, "M 24 124 Q 90 66 156 124 Z", kleur, 3);
+  if (d === "ochtend") {
+    v(c, cirkel(90, 86, 34), "#ffb23f", 3);
+    v(c, "M 90 34 v 10 M 48 52 l 7 7 M 132 52 l -7 7 M 36 86 h 10 M 144 86 h -10", undefined, 5, "#ffb23f");
+    heuvel(GROEN);
+  }
   if (d === "middag") {
-    v(c, cirkel(90, 42, 22), PALET.geel, 3);
-    v(c, "M 90 8 v 6 M 90 70 v 6 M 56 42 h 6 M 118 42 h 6", undefined, 3);
+    v(c, cirkel(90, 70, 34), PALET.geel, 3);
+    v(c, "M 90 14 v 12 M 90 114 v 12 M 34 70 h 12 M 134 70 h 12 M 50 30 l 8 8 M 130 30 l -8 8 M 50 110 l 8 -8 M 130 110 l -8 -8", undefined, 5, PALET.geel);
   }
   if (d === "avond") {
-    v(c, cirkel(130, 104, 24), "#ff8a3d", 3);
-    c.fillStyle = "#e58bb5";
-    c.fillRect(0, 70, 180, 14);
+    v(c, "M 30 30 H 150 M 46 50 H 134", undefined, 8, "#e58bb5");
+    v(c, cirkel(90, 90, 34), "#ff8a3d", 3);
+    heuvel("#2f6a4a");
   }
   if (d === "nacht") {
-    v(c, "M 120 22 a 24 24 0 1 0 22 38 a 20 20 0 1 1 -22 -38 Z", PALET.geelLicht, 3);
-    for (const [x, y] of [[30, 30], [62, 54], [44, 80], [92, 24]]) v(c, `M ${x} ${y - 6} V ${y + 6} M ${x - 6} ${y} H ${x + 6}`, undefined, 3, PALET.warmwit);
+    v(c, "M 100 22 a 38 38 0 1 0 38 58 a 32 32 0 1 1 -38 -58 Z", PALET.geelLicht, 3);
+    for (const [x, y] of [[34, 36], [60, 92], [150, 28], [140, 110], [30, 112]]) v(c, `M ${x} ${y - 7} V ${y + 7} M ${x - 7} ${y} H ${x + 7}`, undefined, 4, PALET.geelLicht);
   }
-  v(c, "M 0 112 Q 60 96 110 108 T 180 104 V 140 H 0 Z", d === "nacht" ? "#2f6a4a" : GROEN, 3);
-  c.restore();
-  v(c, blok(6, 6, 168, 128, 14), undefined, RAND);
 }
 
 function vraagteken(c: C) {

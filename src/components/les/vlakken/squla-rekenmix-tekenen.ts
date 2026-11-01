@@ -10,6 +10,8 @@
  */
 
 import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVorm as tekenGlansVorm, type Kleur as VormKleur } from "./squla-vormen-tekenen";
+import { tekenMetRing, ringRuimte } from "./squla-getalring";
 
 export type RMKleur = "rood" | "oranje" | "geel" | "groen" | "blauw" | "paars" | "roze" | "wit" | "licht";
 
@@ -37,8 +39,22 @@ type C = CanvasRenderingContext2D;
 /** De maat (in punten) waarin vormen en voorwerpen één keer getekend worden. */
 export const RM_MAAT = 160;
 
-/** Een platte vorm, gecentreerd in een vak van m × m. */
+/** Welke kleur van de vormenlessen (glansstijl B) bij welke Rekenmix-kleur hoort. */
+const GLANSKLEUR: Partial<Record<RMKleur, VormKleur>> = {
+  rood: "rood", oranje: "oranje", geel: "geel", groen: "groen", blauw: "blauw", paars: "paars", roze: "roze", licht: "lichtblauw",
+};
+
+/**
+ * Een vorm, gecentreerd in een vak van m × m. De vier platte vormen krijgen
+ * glansstijl B, precies zoals in de vormenlessen (BOUWREGELS 7.7: zelfde vorm =
+ * zelfde uiterlijk); het blokje en de vlek blijven zoals ze waren.
+ */
 export function tekenVorm(c: C, vorm: RMVorm, kleur: RMKleur, m: number) {
+  const glans = GLANSKLEUR[kleur];
+  if (glans && (vorm === "cirkel" || vorm === "driehoek" || vorm === "vierkant" || vorm === "rechthoek")) {
+    tekenGlansVorm(c, vorm, m, glans, 0);
+    return;
+  }
   const k = RM_KLEUR[kleur];
   const mid = m / 2;
   c.lineJoin = "round";
@@ -82,3 +98,28 @@ export function tekenTegel(c: C, n: number, m: number) {
 export function tekenDing(c: C, naam: string, m: number) {
   tekenVoorwerp(c, naam, m * 0.03, m * 0.03, m * 0.94, m * 0.94);
 }
+
+/**
+ * Een voorwerp met een ring in de kleur van zijn groepje (BOUWREGELS 2.1): bij
+ * "samen" en splitsen hebben de twee groepjes elk hun eigen kleur. Het voorwerp
+ * zelf is RING_BINNEN groot; met de ring eromheen is het plaatje RING_MAAT.
+ */
+export const RING_BINNEN = 140;
+export const RING_MAAT = RING_BINNEN + 2 * ringRuimte(RING_BINNEN, RING_BINNEN);
+
+export function tekenDingMetRing(c: C, naam: string, kleur: string) {
+  tekenMetRing(c, RING_BINNEN, RING_BINNEN, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h));
+}
+
+/** De kleuren van de getallen in het beeld, dezelfde als in de zin van Bliepo (Lesscherm KLEURNAAM). */
+export const LABELKLEUR: Record<string, string> = {
+  rood: "#ff7b7b",
+  oranje: "#ffad5c",
+  geel: "#ffe066",
+  groen: "#7ee0a0",
+  blauw: "#8fc4ff",
+  paars: "#c9a2ff",
+  roze: "#ff9fd2",
+  wit: "#ffffff",
+  bruin: "#d9a066",
+};

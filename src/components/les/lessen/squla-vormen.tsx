@@ -804,7 +804,7 @@ function opPlank(id: string, items: string[], maten?: number[]): Deel[] {
   const plankMaat = 300;
   const plankY = 60;
   /* het nieuwe plaatje wandplank.png is 512 × 107: breed 300, dus 63 hoog; de bovenkant ligt op y = plankY − 31 (BOUWREGELS 14.17) */
-  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + 8;
+  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + 19;
   const ms = (maten ?? items.map(() => Math.min(80, (264 - 6 * (items.length - 1)) / items.length))).map((m, i) => m_(items[i], m));
   const breed = ms.reduce((a, b) => a + b, 0) + (ms.length - 1) * 6;
   let x = -breed / 2;

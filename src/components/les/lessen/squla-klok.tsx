@@ -1101,11 +1101,11 @@ const klokkijken1a = klokles({
   level: 1,
   voorwerpen: [],
   start: W(U(3), "paars"),
-  welkom: ["Je vergelijkt klokken met elkaar.", "Op welke klok is het {2:oranje} uur?"],
+  welkom: ["Je vergelijkt klokken met elkaar.", "Op welke klok is het {11:oranje} uur?"],
   voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
-    kiesKlok(U(2), [U(7), U(2)]),
+    kiesKlok(U(11), [U(6), U(11)]),
     memoryKlokken([5, 11, 8]),
     verbindKlokken([4, 12, 2, 10], [0, 1, 2, 3]),
     kiesKlok(U(3), [U(3), U(10)]),
@@ -1300,7 +1300,7 @@ const halfuur1 = klokles({
 
 const halfuur2 = klokles({
   id: "squla-klok-klokkijken3-2",
-  titel: "Halve uren (moeilijker)",
+  titel: "Halve uren lezen (moeilijker)",
   oefening: "Klokkijken 3",
   level: 2,
   voorwerpen: [],
@@ -1331,7 +1331,7 @@ const halfuur2 = klokles({
 
 const halfuur3 = klokles({
   id: "squla-klok-klokkijken3-3",
-  titel: "Halve uren (nog moeilijker)",
+  titel: "Halve uren lezen (nog moeilijker)",
   oefening: "Klokkijken 3",
   level: 3,
   voorwerpen: [],

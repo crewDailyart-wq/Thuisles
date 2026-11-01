@@ -585,7 +585,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (!this.pzBezig || this.gekozen === null) return;
       const st = this.stukken[this.gekozen];
       const plek = bordPlek(this.puzzel!.n, j);
-      if (this.stukken.some((x) => x.vast && x.i === j)) return;
+      if (this.stukken.some((x) => x.vast && this.plekVan(x) === j)) return;
       const doel = this.stukken.find((t) => this.plekVan(t) === j);
       if (doel && (doel === st || (!doel.vast && doel.sl === st.sl))) {
         if (doel !== st) this.wissel(st, doel);
