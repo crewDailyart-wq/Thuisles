@@ -597,11 +597,16 @@ function later(a: T, b: T): Opgave {
    de les zelf
    ===================================================================== */
 
+/** Verhaal en vraag samen in beeld (BOUWREGELS 14.25): anders valt het verhaal weg en blijft alleen het ding over. */
+function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
+  return v.vraag.length > 1 ? { ...v, vraag: [v.vraag.join(" ")] } : v;
+}
+
 async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Promise<number> {
   let fouten = 0;
   const mis: number[] = [];
   for (let i = 0; i < opgaven.length; i++) {
-    if (!(await squlaVraag(l, opgaven[i](l, false)))) {
+    if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, false))))) {
       fouten++;
       mis.push(i);
     }
@@ -610,7 +615,7 @@ async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Pro
   const terug = [...mis.slice(0, 3), ...reserve.filter((i) => !mis.includes(i))].slice(0, Math.max(nodig, Math.min(3, mis.length)));
   if (terug.length) {
     await l.zeg(terug.length === 1 ? "Nu komt er nog één vraag van net terug." : `Nu komen er nog ${terug.length === 2 ? "twee" : "drie"} vragen van net terug.`);
-    for (const i of terug) if (!(await squlaVraag(l, opgaven[i](l, true)))) fouten++;
+    for (const i of terug) if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, true))))) fouten++;
   }
   return fouten;
 }

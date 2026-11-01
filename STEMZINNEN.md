@@ -7,12 +7,18 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10663 zinnen, 304727 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 10751 zinnen, 311600 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
 - Zoek op de kalender het vak met de rode rand.
 - Kijk goed welk getal erin staat.
+
+## 20 (3)
+
+- Zoek het vakje met het feesthoedje.
+- Het staat in dezelfde rij als het rode vak.
+- Kijk welk getal ernaast staat.
 
 ## aftrekken-10-stippen-weghalen (10)
 
@@ -193,12 +199,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Zoek twee plaatjes met hetzelfde soort ding.
 - En deze twee zijn allebei $soortNaam[soortVan(laatste[0])].
 - Alles ligt weer soort bij soort.
-
-## ballon (3)
-
-- Zoek het vakje met het feesthoedje.
-- Het staat in dezelfde rij als het rode vak.
-- Kijk welk getal ernaast staat.
 
 ## begin (3)
 
@@ -764,9 +764,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## m (18)
 
-- Ja! $gv(a, vw) − $gv(b, vw) = $gv(s, vw).
+- Ja! $gv(a, vw) − $gb(b, vw) = $gv(s, vw).
 - Eerst waren er $aantal(a, vw).
-- Er $b === 1 ? "gaat" : "gaan" er $gv(b, vw) weg.
+- Er $b === 1 ? "gaat" : "gaan" er $gb(b, vw) weg.
 - Die is grijs.
 - Die zijn grijs.
 - Tel de dingen die nog fel zijn.
@@ -779,9 +779,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Waar past die sleutel op?
 - Dat zoeken we de volgende keer.
 - Kijk: $aantal(7, "ster").
-- Er gaan er $gv(4, "ster") weg: die worden grijs.
-- $gv(7, "ster") − $gv(4, "ster") = $gv(3, "ster").
-- Plus en min staan door elkaar. $gv(7, "ster") − $gv(4, "ster"): hoeveel sterren zijn er nog? Kun je dit al?
+- Er gaan er $gb(4, "ster") weg: die worden grijs.
+- $gv(7, "ster") − $gb(4, "ster") = $gv(3, "ster").
+- Plus en min staan door elkaar. $gv(7, "ster") − $gb(4, "ster"): hoeveel sterren zijn er nog? Kun je dit al?
 
 ## maand (3)
 
@@ -1937,10 +1937,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je haalt er net zoveel af als er waren.
 - Dan staat er twee keer hetzelfde getal.
 - Je hebt ze allemaal gevonden!
-- Ja! Er ligt nog $g(1, "bruin") pakje in de bus.
+- Ja! Er ligt nog $gu(1) pakje in de bus.
 - Ja! Er liggen nog $gu(u) pakjes in de bus.
 - Ja! $somZin(10, v.b) = $gu(u).
-- Ja! $somZin(n, v.leeg) = $g(v.vol).
+- Ja! $somZin(n, v.leeg) = $gu(v.vol).
 - Tel eerst alle $wat.
 - $v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat" weg.
 - De lege $wat gaan weg.
@@ -3967,7 +3967,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7413)
+## Door de site genoteerd, buiten de lessen (7501)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11382,3 +11382,91 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel kralen zijn het?
 - Hoeveel ballen zijn het?
 - Hoeveel ballonnen zijn het?
+- Er staan 7 oranje stippen in.
+- Er zijn nog 3 plekjes leeg.
+- 7 en 3 is samen 10.
+- Zoek steeds twee getallen die samen 10 zijn.
+- Het is een nieuwe dag. Waar zie je wat er vandaag gaat gebeuren?
+- Op de plaatjes zie je wat er vandaag gebeurt. Wat gebeurt er als eerste?
+- Vandaag is er gym. Dat is ook op donderdag. En op vrijdag! Op welke kalender zie je dat?
+- Kijk naar de kalender. Op deze kalender zie je welke dag het is. Is dat waar of niet waar?
+- Op deze kalender staan 30 vakjes met een getal. Wat betekent 1 vakje?
+- Op de kalender is één vak rood. Welk getal staat in het rode vak?
+- Zie je het feesthoedje op de kalender? Welk getal staat in dat vakje?
+- Allemaal kalenders! Welk woord hoort erbij? De woorden zijn: dagkalender, maandkalender en weekkalender. Trek de lijnen.
+- Een jaarkalender is een kalender van een heel jaar. Daar staan alle maanden op. Waar zie je een jaarkalender?
+- Kijk naar het vakje met het feesthoedje. Wat is er op 13 juni?
+- Zie je het rode vak op de kalender? Welk getal staat daar?
+- Op de kalender zie je ook welke dag het is. Volg de rode pijl naar boven. Welke dag is het vandaag?
+- Dit is de dagkalender van vandaag. Je ziet wat er vandaag allemaal gebeurt. Zet de kaartjes in dezelfde volgorde. Sleep een kaartje naar een leeg vak. Tikken mag ook.
+- Dit is een feestkalender. Bij welk getal staat het woord feest?
+- Vandaag is het 9 juni. Kun je op de kalender tellen hoeveel nachtjes het nog duurt tot het feest? Ja of nee?
+- Tel de boogjes. Dan weet je over hoeveel nachtjes het feest is. Hoeveel boogjes zijn het?
+- De nacht gaat voorbij. Dan is het snel morgen. Welke datum is het morgen?
+- Stel je voor dat het al 12 juni is. Over hoeveel nachtjes is het feest dan?
+- Nu is het echt morgen: 10 juni. Het feest komt steeds dichterbij! Hoeveel nachtjes nog?
+- Vandaag is het 10 juni. Welke datum is het morgen?
+- Dit is de dagkalender van vandaag. Je ziet wat er vandaag allemaal gebeurt. Zet de kaartjes in dezelfde volgorde.
+- Nu is het 11 juni. Hoeveel nachtjes nog tot het feest?
+- Kijk eens. Dit is een klok met wijzers. Waar zie je ook zo'n klok?
+- Het deeg voor de broodjes is klaar. Kijk op de klok. Hoe laat is het?
+- De broodjes gaan om 6 uur de oven in. Om 7 uur zijn ze klaar. Hoe lang staan de broodjes in de oven?
+- Op een laptop staat ook een klok. Hoe laat is het?
+- Wat hoort bij elkaar? Kijk goed, straks gaan de bolletjes dicht. Zoek een klok en de tijd die erbij past.
+- Wat hoort bij elkaar? Tik op een klok. Tik dan op de tijd die erbij hoort.
+- De taarten zijn heel lekker. Ze zijn snel op. Kijk op de klok. Hoe laat zijn de taarten op?
+- Op een telefoon staat ook een klok. Hoe laat is het?
+- Kijk op de klok. Hoe laat is het?
+- De koekjes gaan om 1 uur de oven in. Om 2 uur zijn ze klaar. Hoe lang staan de koekjes in de oven?
+- Kijk naar de klok. Het is 4 uur. Goed of fout?
+- Kijk naar de klok. Het is 10 uur. Goed of fout?
+- De bus rijdt overdag. Op welk plaatje is het dag?
+- Kijk naar de klok. Het is 5 uur. Goed of fout?
+- Kijk naar de klok. Het is 9 uur. Goed of fout?
+- Kijk naar de klok. Het is 1 uur. Goed of fout?
+- De broodjes worden vers gebakken. Waar worden de broodjes gebakken?
+- Kijk naar de klok. Het is 8 uur. Goed of fout?
+- Kijk naar de klok. Het is 6 uur. Goed of fout?
+- Kijk naar de klok. Het is 2 uur. Goed of fout?
+- Kijk naar de klok. Het is 7 uur. Goed of fout?
+- Op welke klokken is het even laat? Kijk goed, straks gaan de bolletjes dicht. Zoek steeds twee klokken die even laat zijn.
+- Kijk naar de klok. Het is 3 uur. Goed of fout?
+- Op welke klokken is het even laat? Tik op een klok links. Tik dan op de klok rechts die even laat is.
+- Kijk naar de klok. Het is 12 uur. Goed of fout?
+- Kijk naar de klok. Het is half 2. Goed of fout?
+- Kijk naar de klok. Het is half 4. Goed of fout?
+- Kijk naar de klok. Het is half 6. Goed of fout?
+- Kijk naar de klok. Het is half 7. Goed of fout?
+- Kijk naar de klok. Het is half 12. Goed of fout?
+- Kijk naar de klok. Het is half 1. Goed of fout?
+- Zet de klokken op volgorde. Van vroeg naar laat.
+- Het is heel vroeg in de ochtend. Eerst eet je een boterham. Wat duurt langer: een boterham eten of een nacht slapen?
+- Je loopt naar de bakkerij. Dat is vlakbij. In de bakkerij is het de hele dag druk. Wat duurt langer: naar de bakkerij lopen of de hele dag werken?
+- In de bakkerij wordt deeg gemaakt voor het brood. Daarna wordt er suiker op de koeken gestrooid. Wat duurt kort?
+- Nu gaat het brood de oven in. Daarna is er een koekje om te eten. Wat duurt ongeveer een uur?
+- Straks gaat de bakkerij open. Eerst gaat de deur van het slot. En de hele winkel wordt geveegd. Wat duurt korter?
+- Er is een bezoek aan de bakkerij! Eerst is er een rondleiding door de hele bakkerij. Daarna is er een broodje. Wat duurt het langst?
+- Oh nee, er is een taart gevallen! Er moet een nieuwe komen. Zet de klusjes op volgorde. Sleep een kaartje naar een leeg vak. Tikken mag ook.
+- Het is bijna lunchtijd. Eerst een glas water. Vanmiddag worden er honderd broodjes gebakken. Wat duurt ongeveer een minuut?
+- In de bakkerij worden de hele middag broodjes gebakken. Wat duurt langer dan een hele middag?
+- De dag zit erop. Eerst gaat de jas aan. Thuis wordt de hele keuken geveegd. Wat duurt ongeveer een minuut?
+- Zet de vier dagen op de goede volgorde. Sleep een kaart naar een leeg vak. Tikken mag ook.
+- Gisteren was er een kampvuuravond. Dat was op vrijdag. Welke dag komt na vrijdag?
+- Bij het kampvuur lazen we drie boeken voor. Als eerste lazen we het rode boek. Welk boek lazen we als eerste?
+- Het rode boek was niet kort. Het was juist heel erg ...
+- In het weekend ga je niet naar school. Hoeveel dagen heeft het weekend?
+- Daarna lazen we het blauwe boek. Dat was niet lang. Het was juist heel erg ...
+- Toen was het groene boek nog niet aan de beurt. Dat kwam pas over een poosje. Welk woord past bij: over een poosje?
+- Let op! Nu zoeken we de dag ervoor. Welke dag komt vlak voor woensdag?
+- Eindelijk lazen we het groene boek. Het was al laat in de avond. Wat komt er na de avond?
+- Zet op volgorde: ochtend, middag, avond, nacht. Sleep een kaartje naar een leeg vak. Tikken mag ook.
+- Na het kampvuur gingen we naar huis. Toen was het al heel ...
+- Vandaag is het dinsdag. Morgen is het zwembad dicht. De dag daarna gaat het zwembad open. Op welke dag gaat het zwembad open?
+- Zet op volgorde. Vandaag staat er al. Het ene kaartje is morgen. Het andere kaartje is gisteren.
+- Vandaag is het woensdag. Morgen is de kapperszaak dicht. De dag daarna gaat de kapperszaak open. Op welke dag gaat de kapperszaak open?
+- Morgen gaan we zwemmen! Vandaag is het zaterdag. Welke dag is het morgen?
+- Vandaag is het donderdag. Over 3 nachtjes begint het kamp. Op welke dag begint het kamp?
+- Vandaag is het zaterdag. Welke dag was het gisteren?
+- Vandaag is het zondag. Gisteren werd het huis geschilderd. Op welke dag werd het huis geschilderd?
+- Vandaag is het zaterdag. Gisteren was het feest. De dag daarvoor stond de taart in de oven. Op welke dag stond de taart in de oven?
+- Vandaag is het maandag. Het bed staat klaar. Over 2 nachtjes is het slaapfeest. Op welke dag is het slaapfeest?

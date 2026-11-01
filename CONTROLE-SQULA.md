@@ -1646,3 +1646,75 @@ Eindoordeel = laptop én tablet.
 - **AFGEKEURD op fout 1 en fout 2:** plus-bus1-1, plus-bus1-2, plus-bus1-3.
 - **AFGEKEURD op fout 1 en fout 3:** min-machine-2.
 (De "lijkt"-paren uit fout 1 staan erbij ter beoordeling; daarop is niets afgekeurd.)
+
+---
+
+## Plus/Min ronde 5, Rekenmix mix4-3/4-4, nakeuring visuele ronde, Klokkijken (14.25), kalender-1, staand scherm — 2026-11-02 (controleur Opus)
+
+Zo gekeurd:
+- Speeltest `GOED=1`, `ALLES=1`, laptop (1440 × 900): alle 32 Plus/Min-lessen, mix4-3, mix4-4, kalender-1, alle 18 kloklessen en de 7 afgekeurde lessen uit de visuele ronde. Alle 60 **tot het eind**, 0 fouten.
+- Tablet (820 × 1180): plus-bakkerij-2/3, plus-bus1-1, min-bus1-1/1-3/2-2, min-machine-2, mix4-3, mix4-4, klok-hoelaat-1, kalender-1, plus-dansen-2, meten-pizza-1, piraat-2. Alle 14 tot het eind.
+- Telefoon (390 × 844), alleen voor het staande scherm: plus-bakkerij-3, min-bus1-3, klok-hoelaat-1, mix4-4. Alle 4 tot het eind.
+- Schermfoto's in `scratchpad/controle/r5-laptop/`, `r5-tablet/`, `r5-tel/`.
+
+### Wat is opgelost
+- **Fout 1 (2.1, zelfde kleur):** opgelost met `somKleuren`. 7 + 7 is blauw/oranje met 7 blauwe en 7 oranje pakjes in de bus (plus-bus1-3/006). 4 + 4 donuts roze/geel (bakkerij-1/026), 5 + 5 krentenbollen bruin/paars (041), twee platen met 5 groen/blauw (dansen-2/009), 8 + 8 paars/blauw, 12 + 8 roze/blauw, 14 − 7 blauw/oranje.
+- **Fout 2 (bus 1):** de nieuwe pakjes liggen in de bus als Bliepo "Er liggen nu 14 pakjes in de bus." zegt (plus-bus1-3/006).
+- **Fout 3 (bekers):** de bekers en bordjes staan op een houten plank (min-machine-2).
+- **Fout 4 (tablet):** het speelvlak staat nu in het midden, niet meer tegen de bovenkant. Bus, disco, machine, bord en Rekenmix zien er op de tablet goed uit.
+- **mix4-3:** de raketjes zijn ±45 × 75 px (laptop) en ±35 × 60 px (tablet), los en telbaar (037).
+- **mix4-4:** de raketjes bij "meer dan / minder dan" zijn groot en staan midden in beeld (004).
+- **pizza-1:** de pizza ligt plat ín de open doos (tablet 009).
+- **hoeveelheden-1:** de tomaten liggen als een bergje bovenop de schaal; vol, voller, volst is goed te zien (017).
+- **geldmachine-1:** korte knoppen ("100 euro", "1 euro", "10 euro"); niets overlapt meer (013).
+- **splitsen1-1:** pionnen ±40 px, voetballen ±35 px. **splitsen1-2:** ballen in de bakjes ±45 px, shirts en ballen ±55 px.
+- **piraat-1:** de goudstukken zijn echte munten met een ster en glans (004).
+- **piraat-2:** de maanstenen zijn paars; wat weggaat is dof (tablet 041).
+- **14.25 bij de klok:** in `kiesKlok` en `leesKlok` staan verhaal en vraag samen in beeld ("De bezorgbus vertrekt. Hoe laat is het?"). In hoelaat-1/2/3 en digitaal-1 snap je elk ding uit de zin.
+- **kalender-1:** de klok is de Synthesis-wijzerklok (014).
+
+### Nieuwe of overgebleven fouten
+
+#### FOUT A (2.1/2.2): getal in de zin heeft een andere kleur dan in de som
+- **min-machine-2**, "Welke som hoort bij het plaatje?", bij goed: in de som is de 8 van 10 − 2 = 8 roze, in de zin "Ja! 10 − 2 = 8." is de 8 paars (tablet 011). Oorzaak: `squla-minsommen.tsx` r. 556 gebruikt `g(v.vol)` in plaats van `gu(...)`, zoals de andere goedzinnen.
+- **min-bus1-1 en min-bus2-1**, bij uitkomst 1 (3 − 2, 9 − 8, 5 − 4, 7 − 6): in de som en op het pakje is de 1 geel/de kleur van het eerste getal, in de zin "Er ligt nog 1 pakje in de bus." rood (tablet min-bus1-1/012). Oorzaak: r. 487 `g(1, "bruin")`; de tweede waarde doet in deze `g` niets, dus wordt het de tegelkleur. Voorstel: `gu(1)`.
+
+#### FOUT B (14.23): croissants op tablet en telefoon
+plus-bakkerij-3: de croissants zijn op de tablet ±55 px en raken elkaar (tablet 007), op de telefoon ±27 px. Daarbij lijken oranje (7) en geel (6) op oranje croissants erg op elkaar. Op de laptop in orde. Voorstel: croissants iets kleiner tekenen met ruimte ertussen, of in rijen van 4; en voor croissants een tweede kleur die duidelijk anders is dan oranje (bijv. blauw of paars, zoals bij de krentenbollen).
+
+#### FOUT C (staand scherm): het speelvlak springt op en neer
+`Lesscherm.tsx`: `vlakBoven` hangt af van de gemeten hoogte van de ballon. Die verandert bij elke zin (knoppen erbij of eraf, één of drie regels). Daardoor springt het hele speelvlak bij elke stap omhoog of omlaag: op de telefoon ±35 px (plus-bakkerij-3 005 → 006; klok-hoelaat-1 001–005), op de tablet ±8 px. Voor een kind lijkt het alsof de tekening steeds verschuift. Voorstel: de grootste ballonhoogte van de les onthouden (alleen groter laten worden), of een vaste ruimte voor ballon + knoppen nemen.
+
+#### FOUT D (14.25): verhaal valt weg buiten `kiesKlok`/`leesKlok`
+Het vraagblok laat bij de andere vraagsoorten nog alleen de laatste zin staan.
+- **klok-digitaal-2**, deegkom (r. 797–811, `knopVraag`): in beeld staan een deegkom en een klok met alleen "Hoe laat is het?" (009). Waarom de kom er staat, zegt alleen de weggevallen zin "Het deeg voor de broodjes is klaar." Voorstel: dezelfde oplossing als in `kiesKlok` (zinnen samenvoegen), ook in `knopVraag`.
+- **kalender-1**, r. 976: in beeld alleen "Welk getal staat in dat vakje?". Met "dat vakje" is het feesthoedje bedoeld, maar die zin is weg. Er staat ook een roze ballon als keuze die nergens wordt uitgelegd (laptop 024).
+
+#### FOUT E (kalender-1): twee verschillende weekkalenders in één les
+Bij "Op welke kalender zie je dat?" is de weekkalender een rooster ma–vr met gym (014). Bij "Trek de lijnen" is de weekkalender een kaartje met een grote **23** bovenaan en ma–zo 7–13 eronder (026). Een kind van groep 3 leest "23" als een datum: dat lijkt een dagkalender (scheurkalender). Het rijtje plaatjes heet daar juist "dagkalender". Voorstel: overal hetzelfde rooster als weekkalender gebruiken, of op het kaartje "week 23" zetten.
+
+#### FOUT F (2.1): piraat-2, alle getallen van de minsom in één kleur
+11 − 5 = 6: alle drie paars, 6 − 1 = 5: alle drie geel, 7 − 3 = 4: alle drie blauw (tablet 041). Volgens 2.1 heeft elk getal van de som een eigen kleur, met het tweede getal in de kleur van wat weggaat. Dit is niet nieuw (in de visuele ronde is alleen naar 14.23/14.24 gekeken). Vermoedelijk geldt het ook voor piraat-3. Voorstel: `somKleuren` ook in de piratenlessen gebruiken.
+
+#### FOUT G (14.23): piraat-1, kopermunten nog plat
+De goudstukken zijn goed. De kopermunten (12 paars, 6 oranje) zijn nog effen schijfjes met alleen een vaag randje, zonder glans (017). Ze lijken op fiches, niet op munten. Voorstel: hetzelfde muntplaatje als het goudstuk, gekleurd, met glans B.
+
+### Tips (geen afkeur)
+- Tablet, bussen: de pakjes in de bus zijn ±25 px met maar 2 px ruimte (min-bus2-2/009). Telbaar, maar krap.
+- min-kaal-2: groene getallen (15) op het groene schoolbord hebben weinig contrast (013, 018).
+- plus-bakkerij-1: bruine krentenbollen met een bruine rand op de houten toonbank vallen weg (041).
+- geldmachine-1: de vraag breekt af als "100 euro, 1 / euro of 10 euro?".
+- hoeveelheden-1: in beeld staat alleen "vol, voller, volst." (FOUT D, maar de opdracht is wel duidelijk door de lege vakken).
+- Rekenmix en ruimte: het grijs worden gaat één voor één (260 ms per ding). Met de versnelde stem in de test was de zin al klaar voor het beeld; met de echte stem loopt het gelijk.
+
+### Uitslag per les
+- **Plus — GOEDGEKEURD (15):** bakkerij-1, bakkerij-2, dansen-1, dansen-2, dansen-3, dansen-4, bus1-1, bus1-2, bus1-3, bus2-1, bus2-2, bus2-3, kaal-1, kaal-2, kaal-3.
+- **Plus — AFGEKEURD (1):** bakkerij-3 (FOUT B).
+- **Min — GOEDGEKEURD (13):** ruimte-1, ruimte-2, ruimte-3, bus1-2, bus1-3, bus2-2, bus2-3, machine-1, machine-3, machine-4, kaal-1, kaal-2, kaal-3.
+- **Min — AFGEKEURD (3):** bus1-1, bus2-1, machine-2 (FOUT A).
+- **Rekenmix — GOEDGEKEURD:** mix4-3, mix4-4.
+- **Visuele ronde — GOEDGEKEURD:** meten-pizza-1, meten-hoeveelheden-1, geld-geldmachine-1, splits-splitsen1-1, splits-splitsen1-2.
+- **Visuele ronde — AFGEKEURD:** piraat-1 (FOUT G), piraat-2 (14.24 nu goed; afgekeurd op FOUT F, 2.1).
+- **Klokkijken — GOEDGEKEURD (17):** alle kloklessen behalve digitaal-2. **AFGEKEURD (1):** digitaal-2 (FOUT D).
+- **kalender-1 — AFGEKEURD** (FOUT D en E). De klok zelf is goed.
+- **Staand scherm (Lesscherm) — AFGEKEURD** (FOUT C). Het midden zetten werkt, maar het vlak springt. Dit geldt voor alle Squla-lessen op tablet en telefoon. De lessen hierboven zijn gekeurd met dit springen als losse fout.

@@ -91,12 +91,11 @@ export const ACTIVITEITNAAM: Record<string, string> = {
   fruit: "fruit eten",
 };
 
-/** Een activiteit op een wit kaartje (ontwerpvak 120 × 120). */
+/** Een activiteit als los plaatje, zonder kaartje of kader eromheen (BOUWREGELS 1.4; ontwerpvak 120 × 120). */
 function activiteitKaartje(c: C, a: string) {
-  v(c, blok(4, 4, 112, 112, 14), PALET.warmwit, RAND_DUN);
   c.save();
-  c.translate(14, 14);
-  c.scale(92 / 120, 92 / 120);
+  c.translate(4, 4);
+  c.scale(112 / 120, 112 / 120);
   ACTIVITEIT[a]?.(c);
   c.restore();
 }
@@ -243,36 +242,34 @@ function dagkalender(c: C, o: Record<string, string>) {
   });
 }
 
-/** Een weekrooster maandag tot en met vrijdag, met gym op sommige dagen (ontwerpvak 360 × 190). */
-function rooster(c: C, o: Record<string, string>) {
+/**
+ * De weekkalender (ontwerpvak 330 × 142): zeven dagen in een rij, met het getal eronder (de week van 7 tot en met 13 juni, dus
+ * dezelfde dagen als de maandkalender) en een hoepel bij de dagen met gym. Eén kalender voor de hele les (Sara, 2 nov).
+ */
+function weekKalender(c: C, o: Record<string, string>) {
   const gymDagen = (o.gym ?? "1,3,4").split(",").map(Number);
-  papier(c, 360, 190, PALET.petrol, 0);
-  const cb = (360 - 32) / 5;
-  ["ma", "di", "wo", "do", "vr"].forEach((k, i) => {
-    const x = 16 + i * cb;
-    tekst(c, k, x + cb / 2, 34, 22, N);
-    if (i > 0) v(c, `M ${x} 16 V 174`, undefined, 2, GRIJS);
+  const b = 330;
+  papier(c, b, 142, PALET.petrol, 30);
+  tekst(c, "juni", b / 2, 25, 22, PALET.warmwit);
+  const cb = (b - 24) / 7;
+  KOP.forEach((k, i) => {
+    const x = 12 + i * cb;
+    tekst(c, k, x + cb / 2, 50, 18, i >= 5 ? PALET.koraal : N);
+    tekst(c, String(7 + i), x + cb / 2, 75, 22, i >= 5 ? PALET.koraal : N, 800);
+    if (i > 0) v(c, `M ${x} 40 V 130`, undefined, 1.5, GRIJS);
     if (gymDagen.includes(i)) {
       c.save();
-      c.translate(x + 6, 60);
-      c.scale((cb - 12) / 120, (cb - 12) / 120);
+      c.translate(x + 1, 88);
+      c.scale((cb - 2) / 120, (cb - 2) / 120);
       activiteitKaartje(c, "gym");
       c.restore();
     }
   });
-  v(c, "M 16 54 H 344", undefined, 2, GRIJS);
+  v(c, "M 12 88 H 318", undefined, 1.5, GRIJS);
 }
 
-/** Een weekkalender: één blad voor één week (ontwerpvak 190 × 230). */
-function weekblad(c: C) {
-  papier(c, 190, 230, PALET.petrol, 52);
-  tekst(c, "23", 95, 36, 36, PALET.warmwit);
-  KOP.forEach((k, i) => {
-    tekst(c, k, 46, 82 + i * 21, 15, i >= 5 ? PALET.koraal : N, 700);
-    tekst(c, String(7 + i), 132, 82 + i * 21, 15, N, 700);
-    if (i < 6) v(c, `M 24 ${92 + i * 21} H 166`, undefined, 1, GRIJS);
-  });
-}
+const rooster = weekKalender;
+const weekblad = (c: C) => weekKalender(c, {});
 
 /** Een maand als lijst (ontwerpvak 200 × 230): de getallen in drie kolommen; eventueel een naam bij een datum. */
 function lijst(c: C, o: Record<string, string>) {
@@ -453,7 +450,7 @@ const ENKEL: Record<string, Tekening> = {
   /* Dezelfde wijzerklok als in de Synthesis- en klokkijklessen (BOUWREGELS 8.1/8.2), op 3 uur. De les wacht eerst op laadKlokken(). */
   klok: { b: 160, h: 160, teken: (c) => klokPlaatje(c, 3, 0, 80, 80, 160) },
   maandklein: { b: 200, h: 170, teken: maandKlein },
-  weekblad: { b: 190, h: 230, teken: weekblad },
+  weekblad: { b: 330, h: 142, teken: weekblad },
   jaar: { b: 240, h: 220, teken: jaar },
   kampvuur: { b: 320, h: 220, teken: vw("kampvuur", 320, 220) },
   bed: { b: 120, h: 110, teken: vw("bed", 120, 110) },
@@ -492,7 +489,7 @@ const MET_OPTIES: Record<string, Tekening> = {
   stukje: { b: 360, h: 150, teken: stukje },
   dagritme: { b: 380, h: 150, teken: dagritme },
   dagkalender: { b: 150, h: 330, teken: dagkalender },
-  rooster: { b: 360, h: 190, teken: rooster },
+  rooster: { b: 330, h: 142, teken: rooster },
   lijst: { b: 200, h: 230, teken: lijst },
   verjaardag: { b: 420, h: 380, teken: verjaardagGroot },
   boeknaam: { b: 170, h: 200, teken: boekNaam },

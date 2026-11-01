@@ -39,6 +39,11 @@ const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), li
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Opgave = (l: Lesgids, terug: boolean) => SqulaVraag<any>;
 
+/** Verhaal en vraag samen in beeld (BOUWREGELS 14.25): anders valt het verhaal weg en blijft alleen het ding over. */
+function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
+  return v.vraag.length > 1 ? { ...v, vraag: [v.vraag.join(" ")] } : v;
+}
+
 /**
  * Alle opgaven, en dan drie vragen die terugkomen: eerst de vragen die niet
  * meteen goed waren (zoals Squla), aangevuld met vaste vragen (`reserve`).
@@ -48,14 +53,14 @@ async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Pro
   let fouten = 0;
   const mis: number[] = [];
   for (let i = 0; i < opgaven.length; i++) {
-    if (!(await squlaVraag(l, opgaven[i](l, false)))) {
+    if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, false))))) {
       fouten++;
       mis.push(i);
     }
   }
   const terug = [...mis, ...reserve.filter((i) => !mis.includes(i))].slice(0, 3);
   await l.zeg("Nu komen er nog drie vragen van net terug.");
-  for (const i of terug) if (!(await squlaVraag(l, opgaven[i](l, true)))) fouten++;
+  for (const i of terug) if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, true))))) fouten++;
   return fouten;
 }
 
@@ -949,7 +954,7 @@ const kalender1Opgaven: Opgave[] = [
         beeld: { groot: MAAND_L1 },
         kaarten: [
           { id: "8", label: "8" },
-          { id: "ballon", tekening: "ballon", zeg: "de ballon" },
+          { id: "20", label: "20" },
           { id: "13", label: "13" },
         ],
         goed: "8",
@@ -970,7 +975,7 @@ const kalender1Opgaven: Opgave[] = [
         kaarten: [
           { id: "13", label: "13" },
           { id: "8", label: "8" },
-          { id: "ballon", tekening: "ballon", zeg: "de ballon" },
+          { id: "20", label: "20" },
         ],
         goed: "13",
         vraag: ["Zie je het feesthoedje op de kalender?", "Welk getal staat in dat vakje?"],
