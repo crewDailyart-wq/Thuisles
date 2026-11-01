@@ -38,7 +38,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord } from "./squla-hulp";
 import { KaartOpruimen, KaartOrienteren, KaartPatronen, KaartPuzzel, SqulaVormenVlak, type Beeld, type Deel, type Ketting, type Puzzel, type VormenProps } from "../vlakken/squla-vormen-vlak";
-import { KLEURWOORD, PUZZEL_VOORWERPEN, VORMSTIJL, type Kleur, type Platvorm, type PuzzelPlaatje, type Ruimtevorm, type VormNaam, type Zicht } from "../vlakken/squla-vormen-tekenen";
+import { KLEURWOORD, PUZZEL_VOORWERPEN, type Kleur, type Platvorm, type PuzzelPlaatje, type Ruimtevorm, type VormNaam, type Zicht } from "../vlakken/squla-vormen-tekenen";
 
 /* =====================================================================
    Gedeeld
@@ -1538,7 +1538,7 @@ const STUKJES = [2, 2, 3, 3, 4];
 const vormPuzzels = (pre: string, rondes: [VormNaam, Kleur][][]) =>
   rondes.flatMap((ronde, r) => ronde.map(([vorm, kleur], i) => puzzelVraag(`${pre}-${r * 5 + i + 1}`, { soort: "vorm", vorm, kleur }, STUKJES[i], { goedZin: [`Het is een ${VORM[vorm][1]}.`] })));
 
-const kleuren2Basis = les({
+const kleuren2 = les({
   id: "squla-vormen-kleuren-2",
   titel: "Vormen en kleuren (moeilijker)",
   oefening: "Vormen en kleuren",
@@ -1551,18 +1551,7 @@ const kleuren2Basis = les({
   vragen: vormPuzzels("k2", PLAT),
   eind: "Je kunt puzzelen met platte vormen.",
 });
-/* PROEF glans (1 november 2026): alleen in deze les, zie VORMSTIJL in squla-vormen-tekenen.ts. */
-const kleuren2: Lesdraaiboek = {
-  ...kleuren2Basis,
-  async speel(l) {
-    VORMSTIJL.glans = true;
-    try {
-      await kleuren2Basis.speel(l);
-    } finally {
-      VORMSTIJL.glans = false;
-    }
-  },
-};
+
 
 const kleuren3 = les({
   id: "squla-vormen-kleuren-3",

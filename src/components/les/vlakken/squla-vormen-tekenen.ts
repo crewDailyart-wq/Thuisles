@@ -102,13 +102,12 @@ function sterPad(c: CanvasRenderingContext2D, x: number, y: number, R: number, r
 }
 
 /**
- * PROEF glans (1 november 2026, vraag Sara): platte vormen met een zacht
+ * Glansstijl B (1 november 2026, goedgekeurd door Sara na de proef in squla-vormen-kleuren-2): platte vormen met een zacht
  * kleurverloop, een glimmend lichtvlekje en een zachte schaduw eronder, zodat
- * ze meer diepte krijgen. Staat alleen aan in de les squla-vormen-kleuren-2
- * (die zet hem aan bij het begin en weer uit aan het eind). Wordt één keer in
+ * ze meer diepte krijgen, met een dunne rand en een zachte vaste gloed. Geldt voor alle vormenlessen. Wordt één keer in
  * een plaatje gebakken, dus kost niets aan snelheid. Oude versie: plaatjes-backup/proef-glans/.
  */
-export const VORMSTIJL = { glans: false };
+export const VORMSTIJL = { glans: true, gloed: true };
 
 const PLATTE = new Set<VormNaam>(["cirkel", "vierkant", "rechthoek", "driehoek", "ster", "zeshoek"]);
 
@@ -173,6 +172,15 @@ function tekenGlansVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number, 
   g.addColorStop(0.5, hex);
   g.addColorStop(1, tint(hex, -0.24));
   c.fillStyle = g;
+  if (VORMSTIJL.gloed) {
+    /* zachte vaste gloed in de eigen kleur (één keer gebakken); de vorm zelf blijft vol en stevig */
+    c.save();
+    c.shadowColor = tint(hex, 0.25);
+    c.shadowBlur = m * 0.09;
+    c.fill(pad);
+    c.fill(pad);
+    c.restore();
+  }
   c.fill(pad);
   /* glimmend lichtvlekje, binnen de vorm */
   c.save();
@@ -188,10 +196,10 @@ function tekenGlansVorm(c: CanvasRenderingContext2D, vorm: VormNaam, m: number, 
   c.ellipse(lx, ly, m * 0.2, m * 0.13, -0.6, 0, Math.PI * 2);
   c.fill();
   c.restore();
-  /* één donkere rand */
+  /* één dunne rand in een donkere tint van de eigen kleur (Sara 1 nov: de dikke donkere rand was te dik) */
   c.lineJoin = "round";
-  c.strokeStyle = RAND_KLEUR;
-  c.lineWidth = dik;
+  c.strokeStyle = tint(hex, -0.45);
+  c.lineWidth = Math.max(1.5, dik * 0.45);
   c.stroke(pad);
 }
 

@@ -49,18 +49,113 @@ export function voorwerpBeeld(naam: string): HTMLImageElement {
   return img;
 }
 
-/** Tekent het voorwerp passend (zonder vervormen) en gecentreerd in het vak x, y, b, h. */
+/*
+ * Glansstijl B (Sara, 1 november 2026: "ik vind de glans perfect", "ik vind B
+ * beter"): over elk plaatje een zacht kleurverloop met een glimmend
+ * lichtvlekje, een zachte schaduw eronder en een zachte vaste gloed in de
+ * eigen kleur. Eén keer per plaatje uitgerekend (canvas in een cache), dus
+ * geen kosten per beeld (regel 7). Even groot als het plaatje zelf: alles
+ * past in de lege rand die elk plaatje al heeft, dus wat een les IN een
+ * plaatje tekent (pakjes in de bus, het klokje op het scherm) blijft precies
+ * op zijn plek. Het voorwerp blijft vol en stevig: alleen de rand eromheen
+ * gloeit, er wordt niets doorzichtig.
+ */
+const glansCache = new Map<string, HTMLCanvasElement>();
+
+function glansBeeld(naam: string): HTMLCanvasElement | HTMLImageElement {
+  const klaar = glansCache.get(naam);
+  if (klaar) return klaar;
+  const img = voorwerpBeeld(naam);
+  const W = img.naturalWidth;
+  const H = img.naturalHeight;
+  const doek = document.createElement("canvas");
+  doek.width = W;
+  doek.height = H;
+  const c = doek.getContext("2d");
+  if (!c) return img;
+  /* het voorwerp zelf: waar staat het, en wat is zijn kleur gemiddeld? */
+  c.drawImage(img, 0, 0);
+  let data: Uint8ClampedArray;
+  try {
+    data = c.getImageData(0, 0, W, H).data;
+  } catch {
+    return img;
+  }
+  let x0 = W, y0 = H, x1 = 0, y1 = 0, r = 0, g = 0, b = 0, n = 0;
+  for (let y = 0; y < H; y += 2)
+    for (let x = 0; x < W; x += 2) {
+      const i = (y * W + x) * 4;
+      if (data[i + 3] < 128) continue;
+      x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y);
+      r += data[i]; g += data[i + 1]; b += data[i + 2]; n++;
+    }
+  if (!n) return img;
+  const bw = x1 - x0, bh = y1 - y0;
+  const kleur = (f: number, a: number) => `rgba(${[r, g, b].map((v) => Math.round(v / n + (255 - v / n) * f)).join(",")},${a})`;
+  c.clearRect(0, 0, W, H);
+  const marge = Math.max(4, Math.min(x0, y0, W - x1, H - y1));
+  /* zachte schaduw eronder, binnen de lege rand */
+  c.save();
+  const sy = Math.min(H - marge * 0.45, y1 + marge * 0.35);
+  c.translate(x0 + bw / 2, sy);
+  c.scale(1, 0.14);
+  const sch = c.createRadialGradient(0, 0, 0, 0, 0, bw * 0.42);
+  sch.addColorStop(0, "rgba(0,0,20,0.4)");
+  sch.addColorStop(1, "rgba(0,0,20,0)");
+  c.fillStyle = sch;
+  c.beginPath();
+  c.arc(0, 0, bw * 0.42, 0, Math.PI * 2);
+  c.fill();
+  c.restore();
+  /* zachte vaste gloed in de eigen kleur */
+  c.save();
+  c.shadowColor = kleur(0.3, 0.9);
+  c.shadowBlur = marge * 0.8;
+  c.drawImage(img, 0, 0);
+  c.drawImage(img, 0, 0);
+  c.restore();
+  /* het plaatje zelf, vol, met glans en verloop alleen op het voorwerp (source-atop): licht linksboven, iets donkerder rechtsonder */
+  const laag = document.createElement("canvas");
+  laag.width = W;
+  laag.height = H;
+  const l = laag.getContext("2d");
+  if (!l) return img;
+  l.drawImage(img, 0, 0);
+  l.globalCompositeOperation = "source-atop";
+  const verloop = l.createLinearGradient(x0, y0, x1, y1);
+  verloop.addColorStop(0, "rgba(255,255,255,0.18)");
+  verloop.addColorStop(0.5, "rgba(255,255,255,0)");
+  verloop.addColorStop(1, "rgba(0,0,30,0.18)");
+  l.fillStyle = verloop;
+  l.fillRect(0, 0, W, H);
+  const lx = x0 + bw * 0.3, ly = y0 + bh * 0.24, lr = Math.min(bw, bh) * 0.16;
+  const vlek = l.createRadialGradient(lx, ly, 0, lx, ly, lr);
+  vlek.addColorStop(0, "rgba(255,255,255,0.45)");
+  vlek.addColorStop(0.4, "rgba(255,255,255,0.2)");
+  vlek.addColorStop(1, "rgba(255,255,255,0)");
+  l.fillStyle = vlek;
+  l.fillRect(0, 0, W, H);
+  c.drawImage(laag, 0, 0);
+  glansCache.set(naam, doek);
+  return doek;
+}
+
+/** Tekent het voorwerp passend (zonder vervormen) en gecentreerd in het vak x, y, b, h, in glansstijl B. */
 export function tekenVoorwerp(c: CanvasRenderingContext2D, naam: string, x: number, y: number, b: number, h: number) {
   const img = voorwerpBeeld(naam);
   const f = Math.min(b / img.naturalWidth, h / img.naturalHeight);
   const w = img.naturalWidth * f;
   const hh = img.naturalHeight * f;
-  c.drawImage(img, x + (b - w) / 2, y + (h - hh) / 2, w, hh);
+  c.drawImage(glansBeeld(naam), x + (b - w) / 2, y + (h - hh) / 2, w, hh);
 }
 
 /** Phaser: de sleutel van een textuur met dit plaatje (één keer toegevoegd per scène). */
-export function voorwerpTextuur(scene: { textures: { exists(k: string): boolean; addImage(k: string, i: HTMLImageElement): unknown } }, naam: string): string {
+export function voorwerpTextuur(scene: { textures: { exists(k: string): boolean; addImage(k: string, i: HTMLImageElement): unknown; addCanvas(k: string, c: HTMLCanvasElement): unknown } }, naam: string): string {
   const sleutel = `vw-${naam}`;
-  if (!scene.textures.exists(sleutel)) scene.textures.addImage(sleutel, voorwerpBeeld(naam));
+  if (!scene.textures.exists(sleutel)) {
+    const beeld = glansBeeld(naam);
+    if (beeld instanceof HTMLCanvasElement) scene.textures.addCanvas(sleutel, beeld);
+    else scene.textures.addImage(sleutel, beeld);
+  }
   return sleutel;
 }

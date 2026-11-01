@@ -106,7 +106,7 @@ function sleutelVan(d: Deel): string {
   void x;
   void y;
   void groep;
-  return `sv|${VORMSTIJL.glans ? "glans|" : ""}${JSON.stringify(rest)}`;
+  return `sv|${VORMSTIJL.glans ? "glans|" : ""}${VORMSTIJL.gloed ? "gloed|" : ""}${JSON.stringify(rest)}`;
 }
 
 function teken(c: CanvasRenderingContext2D, d: Deel) {
