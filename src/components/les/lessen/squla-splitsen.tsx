@@ -734,6 +734,8 @@ const ONDERWERP = "Splitsen";
 /* ---------- Splitsen 1, level 1 ---------- */
 
 const S1_BEGIN = huisBeeld("begin", 5, 2, true, "pion", false, []);
+/** De keuzes bij de eerste vraag van Splitsen 1 level 1 (ook het voorbeeld op het beginscherm). */
+const S1_EERSTE: Optie[] = [{ n: 3, vw: "pion" }, { n: 2, vw: "pion" }, { n: 4, vw: "pion" }];
 
 const splitsen1a = les({
   id: "squla-splits-splitsen1-1",
@@ -744,7 +746,9 @@ const splitsen1a = les({
   kaart: KaartSplitsen,
   voorwerpen: ["pion", "voetbal", "zak", "pingpongbal", "doek", "tennisbal"],
   begin: S1_BEGIN,
-  welkom: ["Een huisje met pionnen: een deel staat links, een deel rechts.", "Hoeveel staan er aan de andere kant?", "Splitsen is een getal in twee stukken verdelen."],
+  welkom: ["Splitsen is een getal in twee stukken verdelen.", "Hoeveel pionnen staan er aan de andere kant?"],
+  /* Het voorbeeld is de eerste vraag hieronder: het huisje met 5 pionnen, 2 aan de ene kant. */
+  voorbeeld: (l, st) => toon(l, st, huisBeeld("huis-5-2-pion-false", 5, 2, true, "pion", false, S1_EERSTE)),
   uitleg: async (l) => {
     zet(l, { licht: ["top"] });
     await l.zeg(`Kijk: samen zijn het ${aantal(5, "pion")}.`);
@@ -756,7 +760,7 @@ const splitsen1a = les({
   },
   /* Zoals Squla level 1: het huisje met pionnen, de zak, paren maken, het tienvak. Totaal 4–10, het gevraagde deel 1–7. */
   vragen: [
-    huisVraag(5, 2, [{ n: 3, vw: "pion" }, { n: 2, vw: "pion" }, { n: 4, vw: "pion" }]),
+    huisVraag(5, 2, S1_EERSTE),
     huisVraag(9, 6, [{ n: 4, vw: "pion" }, { n: 3, vw: "pion" }, { n: 3, vw: "voetbal" }]),
     huisVraag(7, 3, [{ n: 5, vw: "pion" }, { n: 3, vw: "pion" }, { n: 4, vw: "pion" }]),
     huisVraag(6, 4, [{ n: 2, vw: "pion" }, { n: 4, vw: "pion" }, { n: 3, vw: "pion" }]),

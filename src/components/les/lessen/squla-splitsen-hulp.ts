@@ -106,6 +106,12 @@ export type LesOpties = {
   voorwerpen: string[];
   begin: Beeld | null;
   welkom: string[];
+  /**
+   * Het beginscherm (BOUWREGELS 4.1, squla-hulp.ts): zet een echte opgave uit
+   * deze les in beeld, nog zonder dat het kind iets hoeft te doen. Daarna
+   * tekent de eerste vraag (Ja) of de uitleg (Nee) het vlak opnieuw.
+   */
+  voorbeeld?: (l: Lesgids, st: Stand) => void;
   uitleg: (l: Lesgids, st: Stand) => Promise<void>;
   vragen: Vraag[];
   /** Bij de start, vóór het welkom (bijvoorbeeld het verhaal klaarzetten). */
@@ -131,7 +137,17 @@ export function les(t: LesOpties): Lesdraaiboek {
       l.vlak<SplitsProps>(SqulaSplitsVlak, { beeld: t.begin });
       if (t.begin) speelLesgeluid("verschijn");
       t.start?.(l, st);
-      await squlaBegin(l, { welkom: t.welkom, uitleg: () => t.uitleg(l, st) });
+      const vb = t.voorbeeld;
+      await squlaBegin(l, {
+        welkom: t.welkom,
+        uitleg: () => t.uitleg(l, st),
+        ...(vb ? { voorbeeld: () => vb(l, st) } : {}),
+      });
+      /* Na het voorbeeld zet de eerste vraag zijn beeld weer schoon neer (niets van de uitleg blijft staan). */
+      if (vb) {
+        st.huidig = "";
+        l.som(null);
+      }
       let fouten = 0;
       for (const v of t.vragen) {
         if (!(await v(l, st))) fouten++;

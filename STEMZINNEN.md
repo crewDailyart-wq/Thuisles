@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 9817 zinnen, 274056 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 9863 zinnen, 275520 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -1601,7 +1601,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## squla-klok-hoelaat-1 (1)
 
-- De bezorgbus rijdt een hele dag. Op vaste tijden gebeurt er iets. Lees jij steeds de klok? Kun je dit al?
+- De bezorgbus rijdt de hele dag langs de haltes. Kijk steeds op de klok: hoe laat is het? Kun je dit al?
 
 ## squla-klok-hoelaat-2 (1)
 
@@ -2251,7 +2251,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $aantal(2, "pion") staan aan de ene kant.
 - $aantal(3, "pion") staan aan de andere kant.
 - $g(5) kun je splitsen in $g(2) en $g(3).
-- Een huisje met pionnen: een deel staat links, een deel rechts. Hoeveel staan er aan de andere kant? Splitsen is een getal in twee stukken verdelen. Kun je dit al?
+- Splitsen is een getal in twee stukken verdelen. Hoeveel pionnen staan er aan de andere kant? Kun je dit al?
 
 ## squla-splits-splitsen1-2 (5)
 
@@ -3887,7 +3887,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (6614)
+## Door de site genoteerd, buiten de lessen (6660)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -10503,3 +10503,49 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Trek lijnen naar het geld dat bij elkaar hoort.
 - Hier ligt geld door elkaar.
 - Knikkers eerlijk verdelen over bakjes.
+- Nu tellen we geld tot 20 euro.
+- Volgende vraag.
+- Ja! 11 min 5 = 6.
+- Ze komen steeds in dezelfde volgorde terug: dat is een patroon.
+- Kijk goed naar de rij vormen.
+- Soms is het patroon gespiegeld of gedraaid.
+- Nu staan de patronen in rijen onder elkaar.
+- Zet alles netjes soort bij soort op zijn eigen plek.
+- Wat een rommeltje! Alles ligt door elkaar.
+- Links, rechts, boven, onder, in het midden.
+- En we kijken ook van boven, van voren en van onder.
+- Kijk goed waar alles staat.
+- Welk stukje past waar?
+- Kijk eens naar de kleurrijke puzzel!
+- Kijk goed welk stukje past.
+- De puzzel heeft nu platte vormen.
+- Zoals een bal of een blok.
+- De puzzel heeft nu vormen die je kunt vastpakken.
+- Je kunt puzzelen met ruimtelijke vormen.
+- 1 uur? Niet helemaal.
+- 6 pionnen staan al aan de ene kant.
+- 6 uur? Niet helemaal.
+- Eerst terug naar 10, dan de rest weg.
+- De ufo neemt er geen enkele mee.
+- Deze 9 pingpongballen kun je zien.
+- In de doos passen er 10: twee rijen van 5.
+- 5 uur? Niet helemaal.
+- De vlieger? Niet helemaal.
+- Blauw? Niet helemaal.
+- Hij is blauw.
+- Helemaal links is de andere kant.
+- Kijk: dit is de ballon helemaal rechts.
+- Kijk: samen zijn het 5 pionnen.
+- 3 pionnen staan aan de andere kant.
+- De lange wijzer is de grote wijzer.
+- Bij een heel uur staat hij op de 12.
+- Dit is een wijzerklok.
+- 11 uur? Niet helemaal.
+- Kijk naar de kleine wijzer. Naar welk getal wijst hij?
+- Hier staan 8 cupcakes en daar staan er nog 5.
+- Hoeveel stuks zie je?
+- Kijk eens naar al dat fruit!
+- Nu gaan we verder tellen, tot 20!
+- Het fruit ligt weer klaar.
+- Er zijn geen rijtjes meer, dus tel goed!
+- Nu ligt het fruit door elkaar.

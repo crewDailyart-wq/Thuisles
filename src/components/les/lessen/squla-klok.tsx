@@ -624,6 +624,11 @@ type Klokles = {
   voorwerpen: string[];
   start: Ding;
   welkom: string[];
+  /**
+   * Het beginscherm (BOUWREGELS 4.1): welke opgave als voorbeeld in beeld staat bij
+   * "Kun je dit al?" (index in `opgaven`). Zonder: alleen `start`.
+   */
+  voorbeeld?: number;
   uitleg: (l: Lesgids) => Promise<void>;
   /** Een verhaalzin na het welkom (zoals Squla's verhaalscherm). */
   verhaal?: string[];
@@ -647,7 +652,19 @@ function klokles(k: Klokles): Lesdraaiboek {
       kleurTeller = 0;
       l.vlak<KlokVlakProps>(SqulaKlokVlak, { ...LEEG, sleutel: nieuw(), boven: [k.start] });
       speelLesgeluid("verschijn");
-      await squlaBegin(l, { welkom: k.welkom, uitleg: () => k.uitleg(l) });
+      await squlaBegin(l, {
+        welkom: k.welkom,
+        uitleg: () => k.uitleg(l),
+        ...(k.voorbeeld !== undefined
+          ? {
+              voorbeeld: () => {
+                k.opgaven[k.voorbeeld!](l, false).toon?.();
+                /* De eerste vraag krijgt dezelfde kleur als het voorbeeld. */
+                kleurTeller = 0;
+              },
+            }
+          : {}),
+      });
       if (k.verhaal) await l.zeg(...k.verhaal);
       const fouten = await speelAlles(l, k.opgaven, k.reserve);
       if (k.eindZin) await l.zeg(...k.eindZin);
@@ -848,7 +865,8 @@ const hoelaat1 = klokles({
   level: 1,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij"],
   start: V("bezorgbus"),
-  welkom: ["De bezorgbus rijdt een hele dag.", "Op vaste tijden gebeurt er iets.", "Lees jij steeds de klok?"],
+  welkom: ["De bezorgbus rijdt de hele dag langs de haltes.", "Kijk steeds op de klok: hoe laat is het?"],
+  voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [
     leesKlok(U(7), [U(7), U(11), U(6)], { ding: "bezorgbus", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"], weetje: ["Vroeg in de ochtend begint de dag."] }),
