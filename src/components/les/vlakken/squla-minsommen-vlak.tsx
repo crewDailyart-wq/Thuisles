@@ -664,7 +664,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         onUpdate: (tw: import("phaser").Tweens.Tween) => this.zetBulten(Number(tw.getValue(0))),
       });
       /* 2. De machine slaat aan: zoemen, schudden, lampjes knipperen, stoom. */
-      const D0 = MACH_T0 + 620;
+      const D0 = aankomst - 150;
       const stap = b > 5 ? 300 : 340;
       const R0 = D0 + b * stap + 350;
       const eind = R0 + r * 130 + 450;
@@ -757,7 +757,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       /* De machine zelf (schudt), met lampjes die knipperen en een luikje waar de stukjes uitvallen. */
       const doos = this.add.container(MACH.machine.x, MACH.machine.y, [
         this.plaats("sqm-machine", 0, 0),
-        this.plaats(this.tekstTex(`−${t.eraf}`, 70, hexB, "rgba(10,20,50,0.9)"), 0, -7),
+        this.plaats(this.tekstTex(`− ${t.eraf}`, 64, hexB, "rgba(10,20,50,0.9)"), 0, -7),
         this.plaats("sqm-klep", 0, 108),
       ]);
       this.machLampen = [
@@ -774,7 +774,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const voor = this.add.container(0, 0);
       this.machVoor = voor;
       g.add(voor);
-      g.add(this.plaats("sqm-bak", 490, 568));
+      g.add(this.plaats("sqm-bak", 490, 562));
       this.rechtsBlok = this.add.container(MACH.rechts.x, MACH.rechts.y, [this.plaats("sqm-blok", 0, 0)]);
       this.rechtsLabel = this.plaats(this.tekstTex("?", 64, "#ffffff", "rgba(150,70,10,0.7)"), 0, 0);
       this.rechtsBlok.add(this.rechtsLabel);
