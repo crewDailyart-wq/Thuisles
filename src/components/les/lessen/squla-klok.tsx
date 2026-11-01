@@ -262,7 +262,8 @@ function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zel
         boven: o.boven,
         keuzes,
         goed,
-        vraag: o.zin ?? [`Op welke klok is het ${spreek(doel)}?`],
+        /* Verhaal en vraag samen in beeld, anders staat er een bus of oven naast de klok zonder uitleg (Sara, 1 nov). */
+        vraag: o.zin ? [o.zin.join(" ")] : [`Op welke klok is het ${spreek(doel)}?`],
         goedZin: o.goedZin ?? [`Op deze klok is het ${spreek(doel)}.`],
         noem: noemKlok,
         samen: (l, k) => samenKlokken(l, doel, k.keuzes, k.boven),
@@ -285,7 +286,7 @@ function leesKlok(t: T, opties: T[], o: { ding?: string; zin?: string[]; weetje?
         boven,
         opties: opties.map(woord),
         goed: woord(t),
-        vraag: o.zin ?? ["Hoe laat is het?"],
+        vraag: o.zin ? [o.zin.join(" ")] : ["Hoe laat is het?"],
         goedZin: [`Het is ${spreek(t)}.`, ...(o.weetje ?? [])],
         samen: (l, b) => samenLees(l, t, b, i),
         tip: t.m === 0 ? ["Kijk naar de kleine wijzer. Naar welk getal wijst hij?"] : ["Noem het getal waar de kleine wijzer naartoe gaat."],

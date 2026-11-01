@@ -201,6 +201,7 @@ Elke helper leest dit vóór hij bouwt; de controleur keurt erop. Komt er een ni
    Twijfel = afkeuren en verbeteren. Dit geldt voor ALLE lessen, ook al goedgekeurde.
    GOED VOORBEELD (Sara: "dit ziet er 10000x beter uit"): de potloden in squla-splits-delen-1 — vrolijk gekleurd, uitgewaaierd, echt ín een gekleurde beker, groot, elk potlood apart telbaar. FOUT VOORBEELD (eerder): allemaal groene potloden als blok bovenop een witte beker, half verstopt en klein.
 14.24 **Geen wit of grijs als getalkleur voor voorwerpen** (getallen boven 10 kregen "wit", waardoor de voorwerpen er "weg"/grijs uitzagen). Elk getal dat bij voorwerpen hoort, krijgt een echte kleur; grijs/dof betekent alleen "weg" of "fout".
+14.25 **Elk ding in beeld moet te snappen zijn uit de zin die er staat** (Sara, 1 november 2026: "Waarom zit hier de auto naast de klok, ik snap het niet"). In klok-hoelaat-1 zei Bliepo eerst "De bezorgbus staat klaar bij de bakkerij" en bleef daarna alleen "Hoe laat is het?" in beeld: een bus naast een klok zonder uitleg. Verhaal en vraag staan daarom samen in beeld (één zin-blok), of het ding gaat weg. Controleur: kijk bij elke vraag of de zin die in beeld blijft staan uitlegt waarom elk ding er staat.
 14.12 **Geen digitale klok en geen eigen klok** bij klokkijken: de Synthesis-wijzerklok hergebruiken (8.1).
 
 ---
