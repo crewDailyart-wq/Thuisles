@@ -39,6 +39,7 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, type SqulaVraag } from "./squla-hulp";
 import { KaartMinsommen, SqulaMinVlak, type Bakje, type Ding, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
 import { DING } from "../vlakken/squla-minsommen-tekenen";
+import { getalNaam } from "../vlakken/squla-getalring";
 
 /* =====================================================================
    Woorden
@@ -49,8 +50,9 @@ import { DING } from "../vlakken/squla-minsommen-tekenen";
  * en zoals de ring om de voorwerpen (BOUWREGELS 2.1 en 2.2). `_k` blijft staan zodat
  * de oude aanroepen niet veranderen.
  */
+/* Boven de 10 hebben de tegels geen kleur (wit = "weg"): daar een echte kleur, dezelfde als op de voorwerpen (BOUWREGELS 14.22). */
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-const g = (n: number, _k = "wit") => `{${n}:tegel}`;
+const g = (n: number, _k = "wit") => `{${n}:${getalNaam(n) ?? "tegel"}}`;
 /** "7 − 4" in de zin (wit). */
 const somZin = (a: number, b: number, k = "wit") => `${g(a, k)} − ${g(b, k)}`;
 /** Een som als knop of in beeld. */
@@ -1063,7 +1065,7 @@ const mach4 = minles({
   titel: "Minsommen: hoeveel over? (heel moeilijk)",
   oefening: "Minsommen",
   level: 4,
-  welkom: ["Er zit geld in je portemonnee en je koopt een ijsje.", "Hoeveel euro houd je over?"],
+  welkom: ["Je haalt geld uit je portemonnee en koopt een ijsje.", "Hoeveel euro houd je over?"],
   begin: { soort: "geld", id: "uitleg-geld", heb: [2, 1, 1], prijs: [1], ding: "ijsje" },
   uitleg: uitlegGeld([2, 1, 1], [1], "ijsje"),
   /* Level 4: geld (hoeveel houd je over, tot 10 euro) en sommen die alleen gezegd worden; zelfde volgorde, drie keer. */

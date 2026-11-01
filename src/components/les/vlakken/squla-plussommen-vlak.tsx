@@ -41,7 +41,7 @@ import {
   KLEUREN_DISCO,
   rekMaat,
   rekVakje,
-  tekenBundel,
+  tekenBundel, tekenToonbank,
   tekenCijfer,
   tekenKaartje,
   tekenPlaat,
@@ -52,7 +52,7 @@ import {
   tekenStip,
 } from "./squla-plussommen-tekenen";
 import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
-import { ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
+import { etenKleuren, KLEURHEX, ringKleur, ringRuimte, tekenMetRing } from "./squla-getalring";
 import s from "./squla-plussommen.module.css";
 
 /** Het lekkers van de bakkerij: vaste plaatjes uit src/lib/voorwerpen. */
@@ -105,8 +105,10 @@ const MIDDEN = { x: 490, y: 400 };
 const SOM = { b: 220, h: 84, y: 632, gat: 22 };
 
 function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
-  const groot = Math.max(...groepen.map((g) => g.n)) > 10;
-  const cel = groot ? 60 : 72;
+  /* Zo groot als past (BOUWREGELS 14.23): breed genoeg voor alle groepjes naast elkaar, en niet te hoog. */
+  const sumKol = groepen.reduce((t, g) => t + Math.max(1, Math.min(5, g.n)), 0);
+  const maxRij = Math.max(...groepen.map((g) => Math.ceil(g.n / 5)));
+  const cel = Math.max(46, Math.min(100, (900 - 110 * (groepen.length - 1) - 32 * groepen.length) / sumKol, 300 / maxRij));
   const maten = groepen.map((g) => {
     const kol = Math.max(1, Math.min(5, g.n));
     const rij = Math.ceil(g.n / 5);
@@ -142,12 +144,12 @@ function somVakken(sommen: Kaart[]): Vak[] {
   return sommen.map((k, i) => ({ id: k.id, kaart: k, soort: "som", x: MIDDEN.x - breed / 2 + b / 2 + i * (b + gat), y: SOM.y, b, h: SOM.h }));
 }
 
-const DISCO = { bal: { x: 490, y: 220 }, speakers: [66, 914], tafel: { x: 490, y: 600 } };
+const DISCO = { bal: { x: 490, y: 220 }, speakers: [66, 914], tafel: { x: 490, y: 622 } };
 
 function discoVakken(beeld: Extract<PlusBeeld, { soort: "disco" }>): Vak[] {
   if (beeld.vorm === "plaat")
-    return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "plaat", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 172, y: 470, b: 150, h: 150 }));
-  return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 548, b: 190, h: 112 }));
+    return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "plaat", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 172, y: 420, b: 150, h: 150 }));
+  return beeld.kaarten.map((k, i) => ({ id: k.id, kaart: k, soort: "kaartje", x: 490 + (i - (beeld.kaarten.length - 1) / 2) * 220, y: 420, b: 190, h: 112 }));
 }
 
 function verbindVakken(beeld: Extract<PlusBeeld, { soort: "verbind" }>): Vak[] {
@@ -172,8 +174,11 @@ const BUSVAK = { x: 10, y: 80, s: 680 };
 const busF = BUSVAK.s / 200;
 /* Het lichtblauwe zijraam van de bezorgbus (nieuw plaatje): x 26–118, y 68–112 in het vierkante vak van 200. */
 const LAAD = { x0: BUSVAK.x + 26 * busF, x1: BUSVAK.x + 118 * busF, top: BUSVAK.y + 68 * busF, bodem: BUSVAK.y + 112 * busF };
-/** Zo groot als kan zonder overlap: 10 naast elkaar (5 + 5) in het raam van 313 punten. */
-const PAKJE = 30;
+/**
+ * De pakjes in de bus (BOUWREGELS 14.23): rijen van 5 in het raam, zoals een tienrek (10 = twee rijen van 5), zo groot
+ * als past: tot 10 pakjes ±62 punten, daarboven kleiner omdat er meer rijen in het raam moeten.
+ */
+const busMaat = (n: number) => Math.min(62, (LAAD.bodem - LAAD.top) / Math.max(1, Math.ceil(n / 5)));
 const INSTAP = { x0: 700, dx: 50, voet: 652, rij: 64 };
 function instapPlek(i: number) {
   const r = Math.floor(i / 5);
@@ -181,10 +186,9 @@ function instapPlek(i: number) {
   const sch = 1 - r * 0.06;
   return { x: INSTAP.x0 + k * INSTAP.dx + (r % 2) * 10, y: INSTAP.voet - r * INSTAP.rij, schaal: sch };
 }
-function pakjePlek(k: number) {
-  const i = k % 10;
-  const rij = Math.floor(k / 10);
-  return { x: LAAD.x0 + 2 + PAKJE / 2 + i * PAKJE + (i >= 5 ? 8 : 0), y: LAAD.bodem - PAKJE / 2 - 4 - rij * (PAKJE + 3) };
+function pakjePlek(k: number, n: number) {
+  const m = busMaat(n);
+  return { x: (LAAD.x0 + LAAD.x1) / 2 + ((k % 5) - 2) * m, y: LAAD.bodem - m / 2 - 2 - Math.floor(k / 5) * m };
 }
 const RONDJE = { x: 830, y: 540 };
 
@@ -325,9 +329,14 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       if (beeld.soort === "bakkerij") {
         /* Los in de ruimte: geen bord, mand of plaat eromheen. */
         this.groepen = bakkerijIndeling(beeld.groepen, sommen.length > 0);
+        /* Een toonbank onder het lekkers, zodat niets zweeft (geen kader: een houten blad in perspectief). */
+        const bovenT = Math.min(...this.groepen.map((p) => p.box.y - p.box.h / 2)) - 26;
+        const onderT = Math.max(...this.groepen.map((p) => p.box.y + p.box.h / 2)) + 44;
+        const hT = Math.round(onderT - bovenT);
+        this.plek(box, this.tex(`toonbank-${hT}`, 940, hT, (c) => tekenToonbank(c, 940, hT)), 490, bovenT + hT / 2).setDepth(-3);
         beeld.groepen.forEach((g, i) => {
           const p = this.groepen[i];
-          const ding = this.vwK(g.ding, DING, DING, ringKleur(g.n));
+          const ding = this.vwK(g.ding, DING, DING, KLEURHEX[etenKleuren(beeld.groepen)[i]] ?? ringKleur(g.n));
           this.groepImg.push(p.items.map((q) => this.plek(box, ding, q.x, q.y).setScale(p.schaal / TX)));
         });
       } else if (beeld.soort === "etalage") {
@@ -336,14 +345,15 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         const spk = this.vw("luidspreker", 120, 220);
         DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470));
         this.bal = this.plek(box, this.vw("discobal", 170, 170), DISCO.bal.x, DISCO.bal.y);
-        this.plek(box, this.vw("draaitafel", 260, 260), DISCO.tafel.x, DISCO.tafel.y);
+        this.plek(box, this.vw("draaitafel", 190, 190), DISCO.tafel.x, DISCO.tafel.y);
         /* De lichtbundels van de spots alvast tekenen (anders hapert het eerste goede antwoord). */
         KLEUREN_DISCO.slice(0, 4).forEach((k, i) => this.time.delayedCall(300 + i * 80, () => this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k))));
       } else if (beeld.soort === "bus") {
         this.plek(box, this.vw("bezorgbus", BUSVAK.s, BUSVAK.s), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2);
-        const pakje = this.vwK("pakje", PAKJE, PAKJE, ringKleur(beeld.inBus));
+        const maat = busMaat(beeld.inBus);
+        const pakje = this.vwK("pakje", maat, maat, ringKleur(beeld.inBus));
         for (let k = 0; k < beeld.inBus; k++) {
-          const q = pakjePlek(k);
+          const q = pakjePlek(k, beeld.inBus);
           this.busImg.push(this.plek(box, pakje, q.x, q.y));
         }
         /* De pijl naar de laadruimte. */
@@ -388,7 +398,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         if (v.soort === "plaat") {
           /* Het midden van de plaat heeft de kleur van zijn getal (dezelfde als in de zin van Bliepo, BOUWREGELS 2.1); 0 krijgt een rustige grijsblauwe kleur. */
           const n = Number(v.kaart.tekst[0]);
-          const kleur = n >= 1 && n <= 10 ? ringKleur(n) : "#6d7699";
+          const kleur = n >= 1 ? ringKleur(n) : "#6d7699";
           sl = this.tex(`plaat-${kleur.slice(1)}`, v.b, v.h, (c) => tekenPlaat(c, v.b, kleur));
         } else if (v.soort === "kaartje") {
           const kleur = KLEUREN_DISCO[(i * 2 + 1) % KLEUREN_DISCO.length];

@@ -31,7 +31,7 @@ export type Somdeel =
   /** `kleur`: een eigen kleur (hex) in plaats van de tegelkleur van het getal. */
   | { t: "getal"; n: number; kleur?: string }
   | { t: "teken"; s: string }
-  | { t: "vak"; waarde?: string };
+  | { t: "vak"; waarde?: string; kleur?: string };
 
 export type Kiesinstel = { direct?: boolean; weetniet?: string | false; raster?: boolean };
 

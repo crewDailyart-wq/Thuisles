@@ -191,3 +191,43 @@ export function tekenCijfer(c: C, cijfer: string, kleur: string) {
 export function hex(k: string) {
   return parseInt(k.slice(1), 16);
 }
+
+/**
+ * Een toonbank in de bakkerij (b × h): een houten blad in perspectief met een voorkant, zonder rand of kader. Het
+ * lekkers staat erop, zodat niets zweeft (BOUWREGELS 14.23). Eén keer getekend.
+ */
+export function tekenToonbank(c: C, b: number, h: number) {
+  const voor = Math.min(30, h * 0.14);
+  const inzet = b * 0.07;
+  const rand = h - voor;
+  const blad = c.createLinearGradient(0, 0, 0, rand);
+  blad.addColorStop(0, "#d9a566");
+  blad.addColorStop(1, "#b97a3e");
+  c.fillStyle = blad;
+  c.beginPath();
+  c.moveTo(inzet, 0);
+  c.lineTo(b - inzet, 0);
+  c.lineTo(b, rand);
+  c.lineTo(0, rand);
+  c.closePath();
+  c.fill();
+  /* planken */
+  c.strokeStyle = "rgba(110,68,28,0.35)";
+  c.lineWidth = 2;
+  for (let i = 1; i < 6; i++) {
+    const t = i / 6;
+    c.beginPath();
+    c.moveTo(inzet + (b - 2 * inzet) * t, 0);
+    c.lineTo(b * t, rand);
+    c.stroke();
+  }
+  /* de voorkant */
+  const vk = c.createLinearGradient(0, rand, 0, h);
+  vk.addColorStop(0, "#8d5a2b");
+  vk.addColorStop(1, "#6e421d");
+  c.fillStyle = vk;
+  c.fillRect(0, rand, b, voor);
+  /* een lichte rand voorop, zodat het blad glimt */
+  c.fillStyle = "rgba(255,236,200,0.55)";
+  c.fillRect(0, rand - 3, b, 3);
+}

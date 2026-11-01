@@ -354,24 +354,21 @@ function droom(c: C, o: Record<string, string>) {
  * roze wolkenstrepen (avond), de maan met sterren (nacht).
  */
 function dagdeel(c: C, d: string) {
-  const heuvel = (kleur: string) => v(c, "M 24 124 Q 90 66 156 124 Z", kleur, 3);
+  /* Zon, maan en ster zijn de vaste plaatjes in glansstijl B (BOUWREGELS 7.7, 14.23); de heuvel en de wolkenstrepen eromheen zijn zacht gekleurd. */
+  const heuvel = (kleur: string) => v(c, "M 14 128 Q 90 62 166 128 Z", kleur, 3);
   if (d === "ochtend") {
-    v(c, cirkel(90, 86, 34), "#ffb23f", 3);
-    v(c, "M 90 34 v 10 M 48 52 l 7 7 M 132 52 l -7 7 M 36 86 h 10 M 144 86 h -10", undefined, 5, "#ffb23f");
+    tekenVoorwerp(c, "zon", 40, 22, 100, 100);
     heuvel(GROEN);
   }
-  if (d === "middag") {
-    v(c, cirkel(90, 70, 34), PALET.geel, 3);
-    v(c, "M 90 14 v 12 M 90 114 v 12 M 34 70 h 12 M 134 70 h 12 M 50 30 l 8 8 M 130 30 l -8 8 M 50 110 l 8 -8 M 130 110 l -8 -8", undefined, 5, PALET.geel);
-  }
+  if (d === "middag") tekenVoorwerp(c, "zon", 25, 8, 130, 130);
   if (d === "avond") {
-    v(c, "M 30 30 H 150 M 46 50 H 134", undefined, 8, "#e58bb5");
-    v(c, cirkel(90, 90, 34), "#ff8a3d", 3);
+    v(c, "M 24 22 H 156 M 42 44 H 138", undefined, 9, "#e58bb5");
+    tekenVoorwerp(c, "zon", 48, 38, 84, 84);
     heuvel("#2f6a4a");
   }
   if (d === "nacht") {
-    v(c, "M 100 22 a 38 38 0 1 0 38 58 a 32 32 0 1 1 -38 -58 Z", PALET.geelLicht, 3);
-    for (const [x, y] of [[34, 36], [60, 92], [150, 28], [140, 110], [30, 112]]) v(c, `M ${x} ${y - 7} V ${y + 7} M ${x - 7} ${y} H ${x + 7}`, undefined, 4, PALET.geelLicht);
+    tekenVoorwerp(c, "maan", 44, 14, 96, 96);
+    for (const [x, y, m] of [[8, 14, 34], [140, 6, 30], [10, 92, 30], [144, 90, 36], [78, 106, 26]]) tekenVoorwerp(c, "ster", x, y, m, m);
   }
 }
 
@@ -398,6 +395,9 @@ function week(c: C, o: Record<string, string>) {
 
 /** Alle vaste plaatjes die deze tekeningen gebruiken: elke Tijd-les laadt ze vooraf. */
 export const TIJD_VOORWERPEN = [
+  "zon",
+  "maan",
+  "ster",
   "feesthoed",
   "stoelenkring",
   "hoepel",

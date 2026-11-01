@@ -1128,7 +1128,7 @@ function Lesscherm({
                 <span
                   key={i}
                   className={s.somvak}
-                  style={{ display: "grid", placeItems: "center", color: d.waarde ? getalkleur(Number(d.waarde)) : undefined }}
+                  style={{ display: "grid", placeItems: "center", color: d.waarde ? (d.kleur ?? getalkleur(Number(d.waarde))) : undefined }}
                 >
                   {d.waarde ?? ""}
                 </span>

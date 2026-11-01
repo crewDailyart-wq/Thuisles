@@ -112,7 +112,7 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
     if (o.boven && keuzes.length) {
       const bh = Math.min(o.boven.h, 330);
       delen.b = past(o.boven, VLAK_B / 2, 24 + bh / 2, 900, 330);
-      const kh = Math.min(300, Math.max(...keuzes.map((k) => k.h)));
+      const kh = Math.min(440, Math.max(...keuzes.map((k) => k.h)));
       const xs = naastElkaar(keuzes.length, 320);
       const kb = Math.min(...xs.map((_, i) => (i ? xs[i] - xs[i - 1] : VLAK_B / keuzes.length))) - 16;
       keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[i], VLAK_H - 28 - kh / 2, kb, kh)));
@@ -129,7 +129,7 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
     const n = vast.length + o.kaarten.length;
     const sb = Math.min(250, (920 - (n - 1) * 16) / n);
     const xs = naastElkaar(n, sb + 16);
-    const sh = 250;
+    const sh = 290;
     const sloten = xs.map((x) => ({ x, y: 40 + sh / 2, b: sb, h: sh, f: 1 }));
     vast.forEach((t, i) => {
       const p = past(t, xs[i], sloten[i].y, sb, sh);

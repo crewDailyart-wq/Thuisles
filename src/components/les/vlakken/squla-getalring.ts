@@ -111,3 +111,31 @@ export function tekenMetRing(c: C, b: number, h: number, kleur: string, teken: (
   /* Het voorwerp zelf, vol en stevig. */
   teken(c, m, m, b, h);
 }
+
+/**
+ * Bij eten (de bakkerij) blijft het lekkers zelf in zijn echte kleur en krijgt het alleen een randje (BOUWREGELS 2.1,
+ * besluit Sara). Daarom krijgt elk groepje een getalkleur die bij het lekkers past (taartjes roze, koekjes bruin), in
+ * de som, in de zin en als randje. [eerste groepje, tweede groepje als het hetzelfde soort lekkers is].
+ */
+const EET_KLEUR: Record<string, [string, string]> = {
+  taart: ["roze", "geel"],
+  cupcake: ["roze", "paars"],
+  donut: ["roze", "geel"],
+  croissant: ["oranje", "geel"],
+  stokbrood: ["bruin", "geel"],
+  brood: ["bruin", "geel"],
+  "bruin-brood": ["bruin", "oranje"],
+  broodje: ["bruin", "geel"],
+  koekje: ["bruin", "geel"],
+  krentenbol: ["bruin", "paars"],
+};
+
+/** De kleurnaam per groepje lekkers. Zijn de twee groepjes even groot (4 + 4), dan hebben ze dezelfde kleur. */
+export function etenKleuren(groepen: { n: number; ding: string }[]): string[] {
+  const kies = (ding: string, i: 0 | 1) => (EET_KLEUR[ding] ?? ["oranje", "geel"])[i];
+  const a = kies(groepen[0].ding, 0);
+  if (groepen.length < 2) return [a];
+  const eerste = kies(groepen[1].ding, 0);
+  const b = groepen[1].ding === groepen[0].ding || eerste === a ? kies(groepen[1].ding, 1) : eerste;
+  return [a, groepen[0].n === groepen[1].n ? a : b];
+}

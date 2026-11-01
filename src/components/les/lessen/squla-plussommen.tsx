@@ -54,18 +54,35 @@ import {
   type Rek,
 } from "../vlakken/squla-plussommen-vlak";
 import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-tekenen";
+import { etenKleuren, getalNaam, KLEURHEX, ringKleur } from "../vlakken/squla-getalring";
 
 /* =====================================================================
    Woorden
    ===================================================================== */
 
 /** Een getal in de zin: in de kleur van dat getal (zoals in de som en bij de voorwerpen), of in de kleur van de stippen. */
-const g = (n: number, k = "tegel") => `{${n}:${k}}`;
+/**
+ * Bij eten (de bakkerij) heeft elk groepje een kleur die bij het lekkers past (BOUWREGELS 2.1); `eet` is die kleur per
+ * getal van het beeld dat nu staat. Getallen boven de 10 krijgen een echte kleur (geen wit, zie getalNaam).
+ */
+let eet: Record<number, string> | null = null;
+const g = (n: number, k = "tegel") => {
+  const naam = k === "tegel" ? (eet?.[n] ?? getalNaam(n) ?? "tegel") : k;
+  return `{${n}:${naam}}`;
+};
+/** Zinnen die al klaar zijn (voor het beeld er staat): de getallen van de groepjes krijgen hun lekkers-kleur. */
+function kleurZin<T extends string | string[]>(groepen: Groep[], zin: T): T {
+  const nm = etenKleuren(groepen);
+  const kaart = new Map<number, string>();
+  groepen.forEach((gr, i) => !kaart.has(gr.n) && kaart.set(gr.n, nm[i]));
+  const doe = (z: string) => z.replace(/\{(\d+):([a-z]+)\}/g, (t, n, k) => (kaart.has(+n) && (k === "tegel" || k === getalNaam(+n)) ? `{${n}:${kaart.get(+n)}}` : t));
+  return (Array.isArray(zin) ? zin.map(doe) : doe(zin as string)) as T;
+}
 const o = (n: number) => g(n, "oranje");
 /** Een getal op een kaartje (zwart op wit): in de zin wit, zodat de kleur in de zin niets belooft wat er niet staat (BOUWREGELS 2.1). */
 const wk = (n: number) => g(n, "wit");
 /** Een getal op een plaat: de plaat heeft de tegelkleur van zijn getal (1 t/m 10), dus de zin ook; 0 en hoger dan 10 zijn wit. */
-const gp = (n: number) => (n >= 1 && n <= 10 ? g(n) : wk(n));
+const gp = (n: number) => (n >= 1 ? g(n) : wk(n));
 const bl = (n: number) => g(n, "blauw");
 /** "6 oranje stippen en 1 blauwe stip", in enkelvoud of meervoud. */
 const stippen = (x: number, y: number) => `${o(x)} ${x === 1 ? "oranje stip" : "oranje stippen"} en ${bl(y)} ${y === 1 ? "blauwe stip" : "blauwe stippen"}.`;
@@ -102,6 +119,12 @@ const LEEG: Partial<PlusProps> = { sommen: [], actief: false, gekozen: [], uit: 
 function toon(l: Lesgids, st: Stand, beeld: PlusBeeld, extra: Partial<PlusProps> = {}): boolean {
   if (st.huidig === beeld.id) return false;
   st.huidig = beeld.id;
+  eet = null;
+  if (beeld.soort === "bakkerij") {
+    const nm = etenKleuren(beeld.groepen);
+    eet = {};
+    beeld.groepen.forEach((gr, i) => !(gr.n in eet!) && (eet![gr.n] = nm[i]));
+  }
   l.som(null);
   zet(l, { ...LEEG, beeld, ...extra });
   speelLesgeluid("verschijn");
@@ -110,7 +133,9 @@ function toon(l: Lesgids, st: Stand, beeld: PlusBeeld, extra: Partial<PlusProps>
 
 /** De som bovenaan: a + b = ▢ (met het antwoord als het er al is). */
 function somBoven(l: Lesgids, a: number, b: number, uitkomst?: number) {
-  l.som([{ t: "getal", n: a }, { t: "teken", s: "+" }, { t: "getal", n: b }, { t: "teken", s: "=" }, { t: "vak", waarde: uitkomst === undefined ? undefined : String(uitkomst) }]);
+  /* Elk getal in de kleur van zijn groepje lekkers, of van de tegel / de echte kleur boven de 10 (BOUWREGELS 2.1, 14.22). */
+  const kl = (n: number) => (eet?.[n] ? KLEURHEX[eet[n]] : n > 10 ? ringKleur(n) : undefined);
+  l.som([{ t: "getal", n: a, kleur: kl(a) }, { t: "teken", s: "+" }, { t: "getal", n: b, kleur: kl(b) }, { t: "teken", s: "=" }, { t: "vak", waarde: uitkomst === undefined ? undefined : String(uitkomst), kleur: uitkomst !== undefined && uitkomst > 10 ? ringKleur(uitkomst) : undefined }]);
 }
 
 const goedBeeld = (l: Lesgids, st: Stand, extra: Partial<PlusProps> = {}) => zet(l, { goed: ++st.goed, licht: [], busLicht: false, rek: null, actief: false, ...extra });
@@ -266,6 +291,7 @@ const erbij = (n: number) => (n === 1 ? `Daar komt er ${g(1)} bij.` : `Daar kome
 
 /** (A) Een verhaaltje met een tekening en de som bovenaan; kies het antwoord uit 4. */
 function verhaal(groepen: Groep[], a: number, b: number, keuzes: number[], zinnen: string[]): Vraag {
+  zinnen = kleurZin(groepen, zinnen);
   return (l, st) => {
     const id = `v${++st.nr}`;
     const s = a + b;
@@ -302,6 +328,7 @@ function verhaal(groepen: Groep[], a: number, b: number, keuzes: number[], zinne
 
 /** (B) Een verhaaltje met een tekening; welke som hoort erbij? Kies uit 4 sommen. */
 function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinnen: string[]): Vraag {
+  zinnen = kleurZin(groepen, zinnen);
   return (l, st) => {
     const id = `v${++st.nr}`;
     const goed = somTekst(a, b);
@@ -707,8 +734,8 @@ async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
     return;
   }
   zet(l, { busLicht: true });
-  if (a === 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, `Dat zijn ${g(10)} pakjes.`);
-  else if (a > 10) await l.zeg(`Onderin ligt een rij van ${g(10)}.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
+  if (a === 10) await l.zeg(`Onderin liggen twee rijen van ${g(5)}.`, `Dat zijn ${g(10)} pakjes.`);
+  else if (a > 10) await l.zeg(`Onderin liggen twee rijen van ${g(5)}: dat zijn ${g(10)} pakjes.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
   else await l.zeg(a === 1 ? `In de bus ligt ${g(1)} pakje.` : `In de bus liggen ${g(a)} pakjes.`);
   zet(l, { busLos: true });
   await l.zeg(b === 1 ? `Naast de bus ligt ${g(1)} pakje.` : `Naast de bus liggen ${g(b)} pakjes.`, `We tellen verder vanaf ${g(a)}.`);
@@ -819,7 +846,7 @@ function les(t: Les): Lesdraaiboek {
       l.vlak<PlusProps>(SqulaPlusVlak, { beeld: t.begin });
       if (t.begin) speelLesgeluid("verschijn");
       await squlaBegin(l, {
-        welkom: t.welkom,
+        welkom: t.begin?.soort === "bakkerij" ? kleurZin(t.begin.groepen, t.welkom) : t.welkom,
         uitleg: () => t.uitleg(l, st),
         /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
         voorbeeld: () => {
@@ -887,7 +914,7 @@ const bakkerij2 = les({
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[1],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(10, "stokbrood"), hoop(3, "stokbrood")] },
-  uitleg: bakkerijUitleg([hoop(12, "stokbrood"), hoop(3, "stokbrood")], 12, 3, "stokbroden"),
+  uitleg: bakkerijUitleg([hoop(11, "stokbrood"), hoop(5, "stokbrood")], 11, 5, "stokbroden"),
   /* Level 2: tot 20, niet over het tiental (zoals Squla één kleine over het tiental in het verbinden). */
   vragen: [
     verhaal([hoop(10, "stokbrood"), hoop(3, "stokbrood")], 10, 3, [13, 7, 15, 3], [`Er liggen ${g(10)} stokbroden.`, `Ik leg er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"]),
@@ -919,7 +946,7 @@ const bakkerij3 = les({
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[2],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(6, "koekje"), hoop(6, "koekje")] },
-  uitleg: bakkerijUitleg([hoop(8, "koekje"), hoop(5, "koekje")], 8, 5, "koekjes"),
+  uitleg: bakkerijUitleg([hoop(9, "koekje"), hoop(3, "koekje")], 9, 3, "koekjes"),
   /* Level 3: tot 20 over het tiental, met dubbelsommen en één makkelijke onder de 10. */
   vragen: [
     verhaal([hoop(6, "koekje"), hoop(6, "koekje")], 6, 6, [11, 12, 13, 14], [`Er liggen ${g(6)} koekjes.`, `Ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"]),

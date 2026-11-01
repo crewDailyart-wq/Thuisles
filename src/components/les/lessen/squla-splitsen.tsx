@@ -63,19 +63,22 @@ type Optie = { n: number; vw: string };
 /** De plekken van het grote huisje met dingen erin. */
 const GROOT = { x: 490, y: 330, b: 520, kamerY: 430, links: 360, rechts: 620 };
 
+/** Hoe groot de dingen in een kamer van het grote huisje zijn: groot als het er weinig zijn, kleiner als het er veel zijn (drie naast elkaar, tot drie rijen). */
+const kamerCel = (n: number) => (n <= 3 ? 84 : n <= 6 ? 78 : 64);
+
 function huisBeeld(id: string, tot: number, deel: number, links: boolean, vw: string, zak: boolean, opties: Optie[]): Beeld {
   const rest = tot - deel;
   const bekend = links ? GROOT.links : GROOT.rechts;
   const ander = links ? GROOT.rechts : GROOT.links;
   const delen: Deel[] = [
     { s: "huisje", id: "huis", x: GROOT.x, y: GROOT.y, b: GROOT.b, top: "", links: "", rechts: "" },
-    { s: "groep", id: "top", vw, n: tot, x: GROOT.x, y: 280, per: 5, cel: 46, kleuren: Array.from({ length: tot }, (_, i) => (i < deel ? KA : KB)) },
-    { s: "groep", id: "deel", vw, n: deel, x: bekend, y: GROOT.kamerY, per: 4, cel: 54, kl: KA },
-    { s: "groep", id: "in", vw, n: rest, x: ander, y: GROOT.kamerY, per: 4, cel: 54, verborgen: true, kl: KB },
+    { s: "groep", id: "top", vw, n: tot, x: GROOT.x, y: 272, per: 5, cel: 54, kleuren: Array.from({ length: tot }, (_, i) => (i < deel ? KA : KB)) },
+    { s: "groep", id: "deel", vw, n: deel, x: bekend, y: GROOT.kamerY, per: 3, cel: kamerCel(deel), kl: KA },
+    { s: "groep", id: "in", vw, n: rest, x: ander, y: GROOT.kamerY, per: 3, cel: kamerCel(rest), verborgen: true, kl: KB },
   ];
   if (zak) delen.push({ s: "ding", id: "zak", vw: "zak", x: ander, y: GROOT.kamerY, maat: 150 });
   opties.forEach((o, i) => {
-    delen.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 628, per: 5, cel: 50, kl: KB });
+    delen.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 628, per: 3, cel: 70, kl: KB });
     delen.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 628, b: 250, h: 120, aria: `${o.n}` });
   });
   return { id, delen };
@@ -229,8 +232,8 @@ function machineBeeld(a: number, b: number, opties: Huis[], stippen: boolean): B
     { s: "ding", id: "machine", vw: "splitsmachine", x: 490, y: 170, maat: 170 },
     { s: "ding", id: "bak-l", vw: "bakje", x: 290, y: 400, maat: 170 },
     { s: "ding", id: "bak-r", vw: "bakje", x: 690, y: 400, maat: 170 },
-    { s: "groep", id: "bl", vw: "tennisbal", n: a, x: 290, y: 410, per: 5, cel: 32, kl: KA },
-    { s: "groep", id: "br", vw: "tennisbal", n: b, x: 690, y: 410, per: 5, cel: 32, kl: KB },
+    { s: "groep", id: "bl", vw: "tennisbal", n: a, x: 290, y: 410, per: 3, cel: 54, kl: KA },
+    { s: "groep", id: "br", vw: "tennisbal", n: b, x: 690, y: 410, per: 3, cel: 54, kl: KB },
   ];
   opties.forEach(([t, x, y], i) => {
     delen.push({ s: "huisje", id: `k${i}`, x: KOLOM[i], y: 548, b: 200, top: String(t), links: String(x), rechts: String(y), stippen, kleuren: GK });
@@ -287,9 +290,9 @@ function shirtVraag(tot: number, a: number, opties: Optie[]): Vraag {
   const rest = tot - a;
   const goedId = `k${opties.findIndex((x) => x.n === rest && x.vw === "voetbalshirt")}`;
   return (l, st) => {
-    const extra: Deel[] = [{ s: "groep", id: "sl", vw: "voetbalshirt", n: a, x: 390, y: 425, per: 4, cel: 54, kl: KA }];
+    const extra: Deel[] = [{ s: "groep", id: "sl", vw: "voetbalshirt", n: a, x: 390, y: 425, per: 4, cel: 70, kl: KA }];
     opties.forEach((o, i) => {
-      extra.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 590, per: 5, cel: 40, label: String(o.n), kl: KB });
+      extra.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 590, per: 3, cel: 66, label: String(o.n), kl: KB });
       extra.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 604, b: 240, h: 150, aria: `${o.n}` });
     });
     const id = `shirt-${tot}-${a}`;
@@ -341,8 +344,8 @@ function paalVraag(tot: number, a: number, keuzes: number[], ballen: boolean): V
   return (l, st) => {
     const extra: Deel[] = ballen
       ? [
-          { s: "groep", id: "gl", vw: "basketbal", n: a, x: 170, y: 330, per: 5, cel: 50, kl: KA },
-          { s: "groep", id: "gr", vw: "basketbal", n: rest, x: 810, y: 330, per: 5, cel: 50, kl: KB },
+          { s: "groep", id: "gl", vw: "basketbal", n: a, x: 170, y: 330, per: 4, cel: 66, kl: KA },
+          { s: "groep", id: "gr", vw: "basketbal", n: rest, x: 810, y: 330, per: 4, cel: 66, kl: KB },
         ]
       : [];
     const id = `paal-${tot}-${a}-${ballen}`;

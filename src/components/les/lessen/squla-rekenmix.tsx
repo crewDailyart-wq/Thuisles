@@ -26,6 +26,7 @@
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
 import { LABELKLEUR } from "../vlakken/squla-rekenmix-tekenen";
+import { voorwerpKleurbaar } from "../voorwerpen";
 import { KaartRekenmix, SqulaRekenmix, type RMKleur, type RMLabel, type RMOpgave, type RMProps, type RMStuk, type RMTekening, type RMVorm } from "../vlakken/squla-rekenmix-vlak";
 
 /* =====================================================================
@@ -87,6 +88,9 @@ const w = (n: number) => g(n, "wit");
 type Stap = { idx: number[]; lx: number; ly: number };
 /** `kleuren`: per telstap de kleur (naam) van het groepje waar die stap bij hoort (BOUWREGELS 2.1); zonder: de kleur van het voorwerp. */
 type Groep = { tek: RMTekening; stappen: Stap[]; n: number; kleuren?: string[] };
+
+/** Speelgoed en dingen worden helemaal paars en oranje; fruit en eten houden hun echte kleur en krijgen een getalkleur die erbij past (rode en groene appels). */
+const groepKleuren = (naam: string): [string, string] => (voorwerpKleurbaar(naam) ? [GROEP_A, GROEP_B] : ["rood", "groen"]);
 
 /** De twee groepjes bij "samen" en splitsen: elk hun eigen kleur, in de zin, in de getallen en als ring om de voorwerpen. */
 const GROEP_A = "paars";
@@ -180,8 +184,9 @@ function tweeGroepen(naam: string, a: number, b: number, cel = 110): Groep {
     for (let i = 0; i < n; i++) {
       const x = -breed / 2 + (i + 0.5) * cel;
       stappen.push({ idx: [stukken.length], lx: x, ly: y - cel * 0.6 });
-      kleuren.push(r === 0 ? GROEP_A : GROEP_B);
-      stukken.push(ding(naam, x, y, cel * 0.84, { ring: LABELKLEUR[r === 0 ? GROEP_A : GROEP_B] }));
+      const kn = groepKleuren(naam)[r];
+      kleuren.push(kn);
+      stukken.push(ding(naam, x, y, cel * 0.84, { ring: LABELKLEUR[kn] }));
     }
   });
   return { tek: { stukken, b: breed + 40, h: cel * 3 }, stappen, n: a + b, kleuren };
@@ -198,6 +203,44 @@ function kaartGroep(naam: string, lengtes: number[], cel = 46): Groep {
   });
   const n = stukken.length;
   return { tek: { stukken, b: b + 16, h: h + 16 }, stappen: [{ idx: stukken.map((_, i) => i), lx: 0, ly: -h / 2 - 34 }], n };
+}
+
+/**
+ * Een groepje dat het kaartje goed vult (BOUWREGELS 14.23: groot genoeg, de ruimte gebruikt): een rooster dat bij het
+ * aantal past, met zo groot mogelijke voorwerpen. Potloden staan rechtop in twee rijen, zoals ze in een beker staan
+ * (een potlood is lang en smal; in een vierkant vakje werd het een streepje).
+ */
+function kaartRaster(naam: string, n: number, maxB = 244, maxH = 284, maxCel = 88): Groep {
+  const stukken: RMStuk[] = [];
+  let b: number;
+  let h: number;
+  if (naam === "potlood") {
+    const kol = Math.ceil(n / 2);
+    const rijen = n > kol ? 2 : 1;
+    const bw = Math.min(46, maxB / kol);
+    const m = Math.min(140, maxH / rijen);
+    for (let i = 0; i < n; i++) {
+      const r = Math.floor(i / kol);
+      const k = i % kol;
+      const inRij = r === 0 ? Math.min(kol, n) : n - kol;
+      stukken.push(ding(naam, (k - (inRij - 1) / 2) * bw, (r - (rijen - 1) / 2) * m * 0.96, m));
+    }
+    b = kol * bw + 16;
+    h = rijen * m * 0.96 + 16;
+  } else {
+    const kol = Math.min(n, Math.ceil(Math.sqrt(n * 1.2)));
+    const rijen = Math.ceil(n / kol);
+    const cel = Math.min(maxCel, maxB / kol, maxH / rijen);
+    for (let i = 0; i < n; i++) {
+      const r = Math.floor(i / kol);
+      const k = i % kol;
+      const inRij = r === rijen - 1 ? n - kol * (rijen - 1) : kol;
+      stukken.push(ding(naam, (k - (inRij - 1) / 2) * cel, (r - (rijen - 1) / 2) * cel, cel * 0.9));
+    }
+    b = kol * cel + 16;
+    h = rijen * cel + 16;
+  }
+  return { tek: { stukken, b, h }, stappen: [{ idx: stukken.map((_, i) => i), lx: 0, ly: -h / 2 - 34 }], n };
 }
 
 /** Een kaartje met een losse groep (door elkaar). */
@@ -442,9 +485,12 @@ function maatKaart(woord: Maatwoord, naam: string, maat: number): RMTekening {
   const B = 230;
   const H = 250;
   if (woord === "laag") {
-    const m = 54;
-    const stukken = Array.from({ length: maat }, (_, k) => ding(naam, 0, H / 2 - 8 - m / 2 - k * (m - 4), m));
-    return { stukken, b: B, h: H };
+    /* De blokken staan echt op elkaar (BOUWREGELS 14.23): elk blok staat met zijn onderkant op de voorkant van het blok eronder. */
+    const m = 88;
+    const stap = m * 0.58;
+    const Hl = H + 40;
+    const stukken = Array.from({ length: maat }, (_, k) => ding(naam, 0, Hl / 2 - 8 - m * 0.43 - k * stap, m));
+    return { stukken, b: B, h: Hl };
   }
   if (woord === "dik" || woord === "dun" || woord === "dikdun") return { stukken: [ding(naam, 0, 6, 220, { sx: maat })], b: B, h: H };
   const m = 230 * maat;
@@ -558,7 +604,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       isGoed: (x) => x === n,
       noem: (x) => g(x as number, kTot),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer }, licht: null }),
-      goedZin: q.soort === "samen" && q.delen ? [`Ja! ${g(q.delen[0], GROEP_A)} en ${g(q.delen[1], GROEP_B)} is samen ${g(n, "wit")}.`] : [`Ja! Het zijn er ${g(n, k)}.`],
+      goedZin: q.soort === "samen" && q.delen ? [`Ja! ${g(q.delen[0], q.gr.kleuren?.[0] ?? GROEP_A)} en ${g(q.delen[1], q.gr.kleuren?.[q.gr.kleuren.length - 1] ?? GROEP_B)} is samen ${g(n, "wit")}.`] : [`Ja! Het zijn er ${g(n, k)}.`],
       samen: async (alles) => {
         if (sprongen) await l.zeg("We tellen in sprongen van twee.");
         else if (rijtjes) await l.zeg("We tellen samen, rij voor rij.");
@@ -687,7 +733,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
 
   /* ---------- groepjes op volgorde ---------- */
   if (q.t === "ordenAantal") {
-    const groepen = q.aantallen.map((n) => kaartGroep(q.v.naam, rijenVan5(n), 44));
+    const groepen = q.aantallen.map((n) => kaartRaster(q.v.naam, n));
     const o: RMOpgave = { id, soort: "volgorde", kaarten: groepen.map((x) => x.tek), namen: q.aantallen.map((n) => aantalNaam(n, q.v)) };
     const goed = q.aantallen.map((n, i) => ({ n, i })).sort((a, b) => (q.richting === "op" ? a.n - b.n : b.n - a.n)).map((x) => x.i);
     const k = q.v.k;
@@ -1855,10 +1901,10 @@ const mix4_2 = les({
   Squla: egels, kikkers, bomen, helmen, vuurpijlen; wij sterren, bomen,
   ballen, raketjes, planeten, knikkers, appels, aardbeien en kralen.
 */
-const kr = (naam: string, lengtes: number[]) => kaartGroep(naam, lengtes, 60);
+const kr = (naam: string, lengtes: number[]) => kaartGroep(naam, lengtes, 57);
 /* Los door elkaar, maar compact: zo blijft er ruimte tussen de groepjes en zie je welke dingen bij elkaar horen. */
-const kv = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, 230, 280, 66);
-const bomen = (n: number) => kaartGroep("boom", [n], 50);
+const kv = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, 262, 330, 78);
+const bomen = (n: number) => kaartRaster("boom", n, 290, 330, 90);
 const mix4_3 = les({
   id: "squla-rekenmix-mix4-3",
   titel: "Rekenmix 4 (nog moeilijker)",

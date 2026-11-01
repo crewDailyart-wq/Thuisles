@@ -41,7 +41,9 @@ const NAAM: Record<string, [string, string]> = {
   ster: ["ster", "sterren"],
 };
 /** De kleur van een getal is de kleur van het voorwerp waar het over gaat (BOUWREGELS 2.2). */
-const KL: Record<string, string> = { goudstuk: "geel", diamant: "blauw", parel: "wit", kopermunt: "oranje", maansteen: "wit", sleutel: "geel", ster: "geel" };
+const KL: Record<string, string> = { goudstuk: "geel", diamant: "blauw", parel: "wit", kopermunt: "oranje", maansteen: "paars", sleutel: "geel", ster: "geel" };
+/** Voorwerpen die al in hun eigen kleur kloppen (gouden en koperen munten, geel sterretje en sleutel): die krijgen hun glans en kleur van het plaatje zelf, niet een egale tint. */
+const NATUURLIJK = new Set(["goudstuk", "kopermunt", "ster", "sleutel"]);
 const gv = (n: number, vw: string) => g(n, KL[vw] ?? "wit");
 const aantal = (n: number, vw: string) => `${gv(n, vw)} ${n === 1 ? NAAM[vw][0] : NAAM[vw][1]}`;
 const KOLOM = [200, 490, 780];
@@ -134,7 +136,7 @@ function telVraag(doel: number, opties: { n: number; per: number }[]): Vraag {
   return (l, st) => {
     const delen: Deel[] = [];
     opties.forEach((o, i) => {
-      delen.push({ s: "groep", id: `k${i}`, vw: "goudstuk", n: o.n, x: KOLOM[i], y: 360, per: o.per, cel: 48, kl: "geel" });
+      delen.push({ s: "groep", id: `k${i}`, vw: "goudstuk", n: o.n, x: KOLOM[i], y: 360, per: o.per, cel: 48 });
       delen.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 360, b: 270, h: 240, aria: `${o.n} goudstukken` });
     });
     const beeld = metLetters(st, `tel-${doel}`, delen);
@@ -235,7 +237,7 @@ function minVraag(vw: string, a: number, b: number, keuzes: number[], zinnen?: s
   const weg = Array.from({ length: b }, (_, i) => `m.${a - b + i}`);
   const blijft = Array.from({ length: s }, (_, i) => `m.${i}`);
   return (l, st) => {
-    const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62, ...(KL[vw] && KL[vw] !== "wit" ? { kl: KL[vw] } : {}) }]);
+    const beeld = metLetters(st, `min-${vw}-${a}-${b}`, [{ s: "groep", id: "m", vw, n: a, x: 490, y: 360, per: 5, cel: 62, ...(KL[vw] && KL[vw] !== "wit" && !NATUURLIJK.has(vw) ? { kl: KL[vw] } : {}) }]);
     return squlaVraag<number>(l, {
       toon: () => {
         if (toon(l, st, beeld, { uit: weg }) && metSom) som(l, st, a, "−", b, undefined, KL[vw] ?? "wit", KL[vw] ?? "wit", KL[vw] ?? "wit");

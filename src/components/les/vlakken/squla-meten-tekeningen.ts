@@ -107,7 +107,12 @@ function ijsje(c: C, o: O) {
 function pizzadoos(c: C, o: O) {
   const p = getal(o, "p", 1);
   vw(c, "pizzadoos-open", 120, 125, 250);
-  vw(c, "pizza-kaas", 120, 172, 132 * p);
+  /* De pizza ligt plat IN de doos: de bodem van de doos (het plaatje is 512 × 470) heeft zijn midden op ± (134, 179); van schuin boven gezien is de ronde pizza een platte ovaal, binnen de randen. */
+  c.save();
+  c.translate(134, 179);
+  c.scale(1, 0.52);
+  vw(c, "pizza-kaas", 0, 0, 118 * p);
+  c.restore();
 }
 
 const MEELBERG: [number, number][] = [];
@@ -177,13 +182,14 @@ function flesje(c: C, o: O) {
 /** Een schaal met tomaten: `n` tomaten erop. */
 function schaal(c: C, o: O) {
   const n = getal(o, "n", 4);
-  const r = 17;
+  const r = 15;
   const rijen: number[] = n <= 4 ? [n] : n <= 7 ? [4, n - 4] : [5, 4, n - 9 > 0 ? n - 9 : 0].filter((x) => x > 0);
+  /* Eerst de schaal, dan de tomaten als een bergje dat boven de rand uitkomt (niet erachter): zo zie je vol, voller en volst (14.23). */
+  vw(c, "schaal", 110, 106, 220);
   rijen.forEach((aantal, j) => {
     const breed = aantal * r * 2;
-    for (let i = 0; i < aantal; i++) vw(c, "tomaat", 110 - breed / 2 + r + i * r * 2, 92 - j * 28, r * 2.4);
+    for (let i = 0; i < aantal; i++) vw(c, "tomaat", 110 - breed / 2 + r + i * r * 2, 66 - j * 21, r * 2.4);
   });
-  vw(c, "schaal", 110, 106, 220);
 }
 
 /** Een maatbeker van 1 liter of een halve liter (even breed; de halve is half zo hoog). */

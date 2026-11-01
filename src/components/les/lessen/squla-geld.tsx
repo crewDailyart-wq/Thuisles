@@ -64,7 +64,8 @@ function naam(g: GeldSoort) {
 }
 /** Hetzelfde als woord op een knop (zonder kleurtekens). */
 function knopNaam(g: GeldSoort) {
-  return g === "c50" ? "munt van 50 cent" : isBriefje(g) ? `briefje van ${WAARDE[g]} euro` : `munt van ${WAARDE[g]} euro`;
+  /* kort, zodat drie knoppen op één rij passen (14.23): het bedrag is al uniek voor munt of briefje */
+  return g === "c50" ? "50 cent" : `${WAARDE[g]} euro`;
 }
 
 const TELWOORD = ["", "een", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen", "tien"];
@@ -518,13 +519,11 @@ function waarZie(g: GeldSoort, keuzes: GeldSoort[], begin: string[], goedZin: st
 /** Wat is dit? Een munt of briefje bij de spaarpot, en drie woorden om uit te kiezen. */
 function watIsDit(o: { beeld: GDeel[]; opties: (GeldSoort | "knoop")[]; goed: GeldSoort; vraag: string[]; goedZin: string[]; samen: string[]; tip: string[] }): Opgave {
   const woord = (x: GeldSoort | "knoop") => (x === "knoop" ? "knoop" : knopNaam(x));
-  const zeg = (x: GeldSoort | "knoop") => (x === "knoop" ? "een knoop" : naam(x));
-  const keuzes = o.opties.map(zeg);
   return knopVraag({
     groot: o.beeld,
     opties: o.opties.map(woord),
     goed: woord(o.goed),
-    vraag: [...o.vraag, `Is het ${keuzes.slice(0, -1).join(", ")}, of ${keuzes[keuzes.length - 1]}?`],
+    vraag: [...o.vraag, `Is het ${o.opties.map((x) => (x === "knoop" ? "een knoop" : knopNaam(x))).slice(0, -1).join(", ")} of ${o.opties.map((x) => (x === "knoop" ? "een knoop" : knopNaam(x)))[o.opties.length - 1]}?`],
     goedZin: o.goedZin,
     samen: async (l) => {
       zet(l, { licht: ["geld"] });

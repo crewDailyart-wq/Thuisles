@@ -162,17 +162,17 @@ function stipY(t: Toneel | null) {
 const BUS = { x: 330, y: 380, maat: 640 };
 /** De laadruimte als deel van het (vierkante) plaatje: links, boven, breed, hoog. */
 const LAAD = { x: 0.13, y: 0.34, b: 0.46, h: 0.22 };
-/** Plek van pakje i in de bus: eerst de onderste rij (10), dan de bovenste; per rij 5 + 5. */
-function busPlek(i: number): Plek {
+/** Het pakje is als plaatje PAKJE groot; in de bus krijgt het zijn maat uit busMaat (BOUWREGELS 14.23). */
+const PAKJE = 56;
+/** Zo groot als past in het raam, in rijen van 5 zoals een tienrek (10 = twee rijen van 5): tot 10 pakjes ±58, meer pakjes kleiner. */
+const busMaat = (n: number) => Math.min(58, (LAAD.h * BUS.maat) / Math.max(1, Math.ceil(n / 5)));
+/** Plek van pakje i van n in de bus: rijen van 5, de onderste rij eerst. */
+function busPlek(i: number, n: number): Plek {
+  const m = busMaat(n);
   const links = BUS.x - BUS.maat / 2 + LAAD.x * BUS.maat;
   const boven = BUS.y - BUS.maat / 2 + LAAD.y * BUS.maat;
-  const stap = (LAAD.b * BUS.maat - 4 - 8) / 10;
-  const j = i % 10;
-  const rij = i < 10 ? 1 : 0;
-  return { x: links + 2 + stap / 2 + j * stap + (j >= 5 ? 8 : 0), y: boven + (LAAD.h * BUS.maat) * (rij === 1 ? 0.72 : 0.28) };
+  return { x: links + (LAAD.b * BUS.maat) / 2 + ((i % 5) - 2) * m, y: boven + LAAD.h * BUS.maat - m / 2 - 2 - Math.floor(i / 5) * m };
 }
-/** Zo groot als kan zonder overlap: 10 naast elkaar (5 + 5) in het raam. */
-const PAKJE = 28;
 /** Bezorgd: buiten de bus op een stapeltje van 3 breed. */
 function buitenPlek(i: number): Plek {
   return { x: 806 + (i % 3) * 50, y: 470 - Math.floor(i / 3) * 46 };
@@ -222,7 +222,8 @@ function geldRij(lijst: Geld[], cx: number, y: number): Plek[] {
     return p;
   });
 }
-const GELD = { heb: { x: 260, y: 270 }, beurs: { x: 260, y: 420 }, ding: { x: 730, y: 260 }, prijs: { x: 730, y: 440 } };
+/* Het geld ligt vóór de portemonnee (eruit gehaald), niet in de lucht erboven (BOUWREGELS 14.23). */
+const GELD = { heb: { x: 260, y: 560 }, beurs: { x: 260, y: 400 }, ding: { x: 730, y: 260 }, prijs: { x: 730, y: 440 } };
 
 /* ---------- de plaatjes: vaste voorwerpen ---------- */
 
@@ -513,8 +514,8 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     maakBus(g: Box, t: Extract<Toneel, { soort: "bus" }>) {
       g.add(this.plaats(this.tex("bezorgbus"), BUS.x, BUS.y));
       for (let i = 0; i < t.in; i++) {
-        const p = busPlek(i);
-        this.item(g, "pakje", p.x, p.y, 1, ringKleur(t.in));
+        const p = busPlek(i, t.in);
+        this.item(g, "pakje", p.x, p.y, busMaat(t.in) / PAKJE, ringKleur(t.in));
       }
       this.itemSchaal = 1;
     }
@@ -647,7 +648,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       }
       if (t.rondje) return this.busBuiten(k + 1, direct);
       const p = buitenPlek(k);
-      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? ringKleur(t.b) : undefined), p.x, p.y);
+      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? ringKleur(t.b) : undefined), p.x, p.y).setScale(46 / PAKJE / TX);
       g.add(pakje);
       this.buiten[k]?.destroy();
       this.buiten[k] = pakje;
