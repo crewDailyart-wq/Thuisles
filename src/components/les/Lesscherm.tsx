@@ -988,6 +988,7 @@ function Lesscherm({
                 <BliepoTekst
                   key={`${beeld.zichtbaar}-${beeld.zinnen[beeld.zichtbaar - 1]}`}
                   woorden={zinWoorden(beeld.zinnen[beeld.zichtbaar - 1])}
+                  regelNaZin={vraagBoven}
                   gesproken={metUitspraak(kaal(beeld.zinnen[beeld.zichtbaar - 1]), naam, voorkeuren ?? leesVoorkeuren())}
                 />
               )

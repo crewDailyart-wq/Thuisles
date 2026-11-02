@@ -58,10 +58,13 @@ export function BliepoTekst({
   woorden,
   gesproken,
   className = "",
+  regelNaZin = false,
 }: {
   woorden: React.ReactNode[];
   gesproken?: string | null;
   className?: string;
+  /** Elke zin van het blok op een eigen regel (alleen lessen met `vraagBoven`). */
+  regelNaZin?: boolean;
 }) {
   const oplichten = useOplichten();
   const nu = useWoordNu(oplichten ? gesproken : null);
@@ -115,6 +118,7 @@ export function BliepoTekst({
           <span key={i} className={`bliepo-tekst-woord${soort}`}>
             {w}
             {i < woorden.length - 1 ? " " : ""}
+            {regelNaZin && i < woorden.length - 1 && typeof w === "string" && /[.!]$/.test(w) ? <br /> : null}
           </span>
         );
       })}
