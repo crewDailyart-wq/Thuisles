@@ -46,7 +46,7 @@
     "uitleg": "Telt terug in een aftelrij van de raket en kiest het getal dat ontbreekt.",
     "hulpmiddel": "de aftelrij van de raket",
     "zin1": "Net als een raket die opstijgt, tel je terug en kies je welk getal ontbreekt.",
-    "zin2": "Is dit nieuw voor je?",
+    "zin2": "Kun je zelf al terugtellen?",
     "huidig": "De raket telt af, van groot naar klein. Welk getal hoort op de puntjes?"
   },
   {
@@ -75,8 +75,8 @@
     "titel": "Meer, minder, evenveel",
     "uitleg": "Telt een groep appels (of sterren, bloemen, ballen) en kiest uit drie getallen het getal dat evenveel is.",
     "hulpmiddel": null,
-    "zin1": "Eerst tellen we groepen appels en andere dingen, daarna kies je welk getal evenveel is.",
-    "zin2": "Heb je dit al vaker gedaan?",
+    "zin1": "We tellen eerst groepen appels en andere dingen en kiezen dan het getal dat erbij past.",
+    "zin2": "Kun je al goed tellen?",
     "huidig": "De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het?"
   },
   {
@@ -105,7 +105,7 @@
     "titel": "Hoe groot is het?",
     "uitleg": "Vergelijkt schilderijen, tafels en muurtjes, telt blaadjes en hokjes en kiest wat groot of klein is of even groot.",
     "hulpmiddel": null,
-    "zin1": "Stap voor stap ontdek je hoe groot iets is door hokjes en blaadjes te tellen.",
+    "zin1": "Je kijkt welk ding groot of klein is en telt hokjes om het te meten.",
     "zin2": "Weet jij hoe dit werkt?",
     "huidig": "Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein?"
   },
@@ -115,8 +115,8 @@
     "titel": "Munten en briefjes",
     "uitleg": "Herkent munten en briefjes en tikt op het geld dat bij de vraag past.",
     "hulpmiddel": "munten en briefjes",
-    "zin1": "Dadelijk tik je op de munten en briefjes die bij de vraag horen.",
-    "zin2": "Durf je dit al aan?",
+    "zin1": "Dadelijk zie je munten en briefjes en tik je op het geld dat in de vraag staat.",
+    "zin2": "Ken je al alle munten en briefjes?",
     "huidig": "Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen."
   },
   {
@@ -135,8 +135,8 @@
     "titel": "Patronen",
     "uitleg": "Maakt patronen van gekleurde kralen af (welke kraal komt daarna), maakt een ketting langer en zoekt wat bij de pijl hoort.",
     "hulpmiddel": "kralen",
-    "zin1": "Allereerst maken we patronen van kralen af: je kiest welke kraal er daarna komt.",
-    "zin2": "Is dit iets wat je al kunt?",
+    "zin1": "Met kralen maken we een patroon af: je kiest welke kraal er daarna komt.",
+    "zin2": "Weet je al wat een patroon is?",
     "huidig": "De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?"
   },
   {
@@ -195,7 +195,7 @@
     "titel": "Rekenmix 3 (moeilijker)",
     "uitleg": "Kijkt naar een rij van vijf dingen en kiest welk ding op een bepaalde plek staat (eerste, tweede, derde, vierde of vijfde).",
     "hulpmiddel": null,
-    "zin1": "Je kijkt naar een rij en kiest welk ding eerste, tweede of derde staat.",
+    "zin1": "Je kijkt naar een rij en kiest welk ding op de eerste, tweede of derde plek staat.",
     "zin2": "Snap je dit al?",
     "huidig": "Vijf dingen staan in een rij. Wat staat als eerste in de rij?"
   },
@@ -215,8 +215,8 @@
     "titel": "De kalender",
     "uitleg": "Kijkt naar de dagkalender, weekkalender en maandkalender en kiest welke kalender past en welk getal in een vakje staat.",
     "hulpmiddel": "de kalender",
-    "zin1": "Bij de kalender ga je ontdekken wat een dag-, week- en maandkalender laat zien.",
-    "zin2": "Doe je dit al vaak?",
+    "zin1": "Met de kalender zoek je welke kalender bij de vraag past en welk getal in een vakje staat.",
+    "zin2": "Lees jij al weleens op een kalender?",
     "huidig": "Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren?"
   },
   {
@@ -246,7 +246,7 @@
     "uitleg": "Ziet blokjes in de min-machine die er een paar afhaalt (en later sommen op een bord en bij de disco) en kiest uit drie getallen hoeveel er overblijven.",
     "hulpmiddel": "de min-machine",
     "zin1": "Met de min-machine ga je aftrekken: jij kiest hoeveel blokjes er overblijven.",
-    "zin2": "Kun je dit al een beetje?",
+    "zin2": "Heb je al eens min gerekend?",
     "huidig": "Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit?"
   },
   {
@@ -265,8 +265,8 @@
     "titel": "Dagen van de week",
     "uitleg": "Tikt op de goede wagon van de weektrein en kiest welke dag erna, ervoor, gisteren, morgen of in het weekend komt.",
     "hulpmiddel": "de weektrein",
-    "zin1": "Aan boord van de weektrein zoek je dagen en wat ervoor of erna komt.",
-    "zin2": "Weet je dit al?",
+    "zin1": "Aan boord van de weektrein tik je de dag aan die ervoor of erna komt.",
+    "zin2": "Ken je de dagen van de week al?",
     "huidig": "Hoi! Kijk, daar komt de weektrein. Elke wagon is een dag van de week. Samen zijn dat de 7 dagen van de week. Ze staan altijd in deze volgorde. Kun je dit al?"
   },
   {
@@ -276,7 +276,7 @@
     "uitleg": "Kijkt naar een straat met huizen en kiest, typt of sleept het huisnummer dat erna komt.",
     "hulpmiddel": "de straat met huizen",
     "zin1": "Op een straat met huizen zoek je welk huisnummer er daarna komt.",
-    "zin2": "Heb je dit al eens gezien?",
+    "zin2": "Weet je al hoe huisnummers werken?",
     "huidig": "Hoi! Kijk, een straat met huizen. Elk huis heeft een nummer. Welk nummer komt erna? Kun je dit al?"
   },
   {
@@ -285,8 +285,8 @@
     "titel": "De klok en de tijd",
     "uitleg": "Telt de wijzers en getallen op een klok, zoekt waar nog meer een klok staat, leest de klok af en zoekt klok en tijd bij elkaar.",
     "hulpmiddel": "de klok",
-    "zin1": "Als eerste bekijk je de klok met zijn wijzers en lees je de tijd af.",
-    "zin2": "Kun je dit al goed?",
+    "zin1": "Nu kijk je naar de wijzers van de klok en zoek je waar nog meer een klok staat.",
+    "zin2": "Weet je al hoe een klok werkt?",
     "huidig": "Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok?"
   },
   {
@@ -296,7 +296,7 @@
     "uitleg": "Telt fruit (bananen, appels, peren e.d., 11 tot 20) dat door elkaar ligt en kiest uit drie getallen hoeveel het er zijn.",
     "hulpmiddel": null,
     "zin1": "Het fruit ligt nu door elkaar: tel het en kies het goede getal.",
-    "zin2": "Lukt het je al om dit te doen?",
+    "zin2": "Kun jij fruit tellen als het door elkaar ligt?",
     "huidig": "Nu liggen de bananen door elkaar. Hoeveel bananen zie je?"
   }
 ]

@@ -44,7 +44,7 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Link: /voorbeeld/les/squla-getallenlijn-terugtellen-1?naam=Testkind
 - Wat het kind doet: Telt terug in een aftelrij van de raket en kiest het getal dat ontbreekt. Hulpmiddel: de aftelrij van de raket.
 - **Zin 1:** Net als een raket die opstijgt, tel je terug en kies je welk getal ontbreekt.
-- **Zin 2:** Is dit nieuw voor je?
+- **Zin 2:** Kun je zelf al terugtellen?
 - Nu in de les: De raket telt af, van groot naar klein. Welk getal hoort op de puntjes?
 
 ## 6. Hoe laat is het?
@@ -70,8 +70,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-meer-minder-evenveel1-1` (onderwerp: Meer, minder, evenveel)
 - Link: /voorbeeld/les/squla-meer-minder-evenveel1-1?naam=Testkind
 - Wat het kind doet: Telt een groep appels (of sterren, bloemen, ballen) en kiest uit drie getallen het getal dat evenveel is.
-- **Zin 1:** Eerst tellen we groepen appels en andere dingen, daarna kies je welk getal evenveel is.
-- **Zin 2:** Heb je dit al vaker gedaan?
+- **Zin 1:** We tellen eerst groepen appels en andere dingen en kiezen dan het getal dat erbij past.
+- **Zin 2:** Kun je al goed tellen?
 - Nu in de les: De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het?
 
 ## 9. Meer dan, minder dan
@@ -97,7 +97,7 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-meten-oppervlakte-1` (onderwerp: Meten)
 - Link: /voorbeeld/les/squla-meten-oppervlakte-1?naam=Testkind
 - Wat het kind doet: Vergelijkt schilderijen, tafels en muurtjes, telt blaadjes en hokjes en kiest wat groot of klein is of even groot.
-- **Zin 1:** Stap voor stap ontdek je hoe groot iets is door hokjes en blaadjes te tellen.
+- **Zin 1:** Je kijkt welk ding groot of klein is en telt hokjes om het te meten.
 - **Zin 2:** Weet jij hoe dit werkt?
 - Nu in de les: Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein?
 
@@ -106,8 +106,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-geld-geldmachine-1` (onderwerp: Geld)
 - Link: /voorbeeld/les/squla-geld-geldmachine-1?naam=Testkind
 - Wat het kind doet: Herkent munten en briefjes en tikt op het geld dat bij de vraag past. Hulpmiddel: munten en briefjes.
-- **Zin 1:** Dadelijk tik je op de munten en briefjes die bij de vraag horen.
-- **Zin 2:** Durf je dit al aan?
+- **Zin 1:** Dadelijk zie je munten en briefjes en tik je op het geld dat in de vraag staat.
+- **Zin 2:** Ken je al alle munten en briefjes?
 - Nu in de les: Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen.
 
 ## 13. Zakgeld sparen
@@ -124,8 +124,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-vormen-patronen-1` (onderwerp: Vormen)
 - Link: /voorbeeld/les/squla-vormen-patronen-1?naam=Testkind
 - Wat het kind doet: Maakt patronen van gekleurde kralen af (welke kraal komt daarna), maakt een ketting langer en zoekt wat bij de pijl hoort. Hulpmiddel: kralen.
-- **Zin 1:** Allereerst maken we patronen van kralen af: je kiest welke kraal er daarna komt.
-- **Zin 2:** Is dit iets wat je al kunt?
+- **Zin 1:** Met kralen maken we een patroon af: je kiest welke kraal er daarna komt.
+- **Zin 2:** Weet je al wat een patroon is?
 - Nu in de les: De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?
 
 ## 15. Vormen en kleuren
@@ -178,7 +178,7 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-rekenmix-mix3-2` (onderwerp: Rekenmix)
 - Link: /voorbeeld/les/squla-rekenmix-mix3-2?naam=Testkind
 - Wat het kind doet: Kijkt naar een rij van vijf dingen en kiest welk ding op een bepaalde plek staat (eerste, tweede, derde, vierde of vijfde).
-- **Zin 1:** Je kijkt naar een rij en kiest welk ding eerste, tweede of derde staat.
+- **Zin 1:** Je kijkt naar een rij en kiest welk ding op de eerste, tweede of derde plek staat.
 - **Zin 2:** Snap je dit al?
 - Nu in de les: Vijf dingen staan in een rij. Wat staat als eerste in de rij?
 
@@ -196,8 +196,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-tijd-kalender-1` (onderwerp: Tijd)
 - Link: /voorbeeld/les/squla-tijd-kalender-1?naam=Testkind
 - Wat het kind doet: Kijkt naar de dagkalender, weekkalender en maandkalender en kiest welke kalender past en welk getal in een vakje staat. Hulpmiddel: de kalender.
-- **Zin 1:** Bij de kalender ga je ontdekken wat een dag-, week- en maandkalender laat zien.
-- **Zin 2:** Doe je dit al vaak?
+- **Zin 1:** Met de kalender zoek je welke kalender bij de vraag past en welk getal in een vakje staat.
+- **Zin 2:** Lees jij al weleens op een kalender?
 - Nu in de les: Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren?
 
 ## 23. Plussommen in de bakkerij
@@ -224,7 +224,7 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Link: /voorbeeld/les/squla-min-machine-1?naam=Testkind
 - Wat het kind doet: Ziet blokjes in de min-machine die er een paar afhaalt (en later sommen op een bord en bij de disco) en kiest uit drie getallen hoeveel er overblijven. Hulpmiddel: de min-machine.
 - **Zin 1:** Met de min-machine ga je aftrekken: jij kiest hoeveel blokjes er overblijven.
-- **Zin 2:** Kun je dit al een beetje?
+- **Zin 2:** Heb je al eens min gerekend?
 - Nu in de les: Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit?
 
 ## 26. Minsommen in de ruimte
@@ -241,8 +241,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-dagen-van-de-week` (onderwerp: Tijd)
 - Link: /voorbeeld/les/squla-dagen-van-de-week?naam=Testkind
 - Wat het kind doet: Tikt op de goede wagon van de weektrein en kiest welke dag erna, ervoor, gisteren, morgen of in het weekend komt. Hulpmiddel: de weektrein.
-- **Zin 1:** Aan boord van de weektrein zoek je dagen en wat ervoor of erna komt.
-- **Zin 2:** Weet je dit al?
+- **Zin 1:** Aan boord van de weektrein tik je de dag aan die ervoor of erna komt.
+- **Zin 2:** Ken je de dagen van de week al?
 - Nu in de les: Hoi! Kijk, daar komt de weektrein. Elke wagon is een dag van de week. Samen zijn dat de 7 dagen van de week. Ze staan altijd in deze volgorde. Kun je dit al?
 
 ## 28. Huisnummers: wat komt erna?
@@ -251,7 +251,7 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Link: /voorbeeld/les/squla-huisnummers?naam=Testkind
 - Wat het kind doet: Kijkt naar een straat met huizen en kiest, typt of sleept het huisnummer dat erna komt. Hulpmiddel: de straat met huizen.
 - **Zin 1:** Op een straat met huizen zoek je welk huisnummer er daarna komt.
-- **Zin 2:** Heb je dit al eens gezien?
+- **Zin 2:** Weet je al hoe huisnummers werken?
 - Nu in de les: Hoi! Kijk, een straat met huizen. Elk huis heeft een nummer. Welk nummer komt erna? Kun je dit al?
 
 ## 29. De klok en de tijd
@@ -259,8 +259,8 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Les: `squla-klok-digitaal-1` (onderwerp: Klok)
 - Link: /voorbeeld/les/squla-klok-digitaal-1?naam=Testkind
 - Wat het kind doet: Telt de wijzers en getallen op een klok, zoekt waar nog meer een klok staat, leest de klok af en zoekt klok en tijd bij elkaar. Hulpmiddel: de klok.
-- **Zin 1:** Als eerste bekijk je de klok met zijn wijzers en lees je de tijd af.
-- **Zin 2:** Kun je dit al goed?
+- **Zin 1:** Nu kijk je naar de wijzers van de klok en zoek je waar nog meer een klok staat.
+- **Zin 2:** Weet je al hoe een klok werkt?
 - Nu in de les: Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok?
 
 ## 30. Fruit tellen (nog moeilijker)
@@ -269,6 +269,6 @@ Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 
 - Link: /voorbeeld/les/squla-tellen-fruit-3?naam=Testkind
 - Wat het kind doet: Telt fruit (bananen, appels, peren e.d., 11 tot 20) dat door elkaar ligt en kiest uit drie getallen hoeveel het er zijn.
 - **Zin 1:** Het fruit ligt nu door elkaar: tel het en kies het goede getal.
-- **Zin 2:** Lukt het je al om dit te doen?
+- **Zin 2:** Kun jij fruit tellen als het door elkaar ligt?
 - Nu in de les: Nu liggen de bananen door elkaar. Hoeveel bananen zie je?
 

@@ -1797,3 +1797,42 @@ Voorstel: op staand scherm het speelvlak niet alleen op de breedte schalen: de b
 6. **Kloklessen — GOEDGEKEURD (18)**, ook digitaal-2. **Tijd:** dagen-1, dagen-2, dagen-3, kalender-2 **GOEDGEKEURD**; tijden-1 en tijden-2 **AFGEKEURD** (FOUT K); kalender-1 **AFGEKEURD** (FOUT L en M; de kalender zelf klopt).
 7. **Groene kaders bij verbinden/goed in Tijd — AFGEKEURD** (FOUT L). Ring om de klok — goed.
 8. **min-machine-1 t/m 4 — AFGEKEURD:** FOUT I (uitleg na Nee andere som), FOUT H (gele stippen), machine-4 ook FOUT J. Beweging, telbaarheid op tablet, kleuren van som en blokjes, woord "blokjes" en de geluiden zijn in orde.
+
+## Beginzinnen — 30 lessen — 2026-11-03 (controleur Sonnet)
+
+Werkwijze: BEGINZINNEN.md en lijst.json zijn gelijk (30 lessen, geen lege zinnen). Ik heb NIET alle 30 lessen doorgespeeld: ik keek naar de schermfoto's van de eerste vraag (admin-pagina, en los geldmachine, digitaal-1, piraat-2) en naar de beschrijving "wat het kind doet". Zin 1 is dus getoetst aan de eerste vraag en die beschrijving, niet aan elke latere opgave.
+
+Overkoepelend: (1) Zin 2 begint te vaak met "Heb je dit al ..." (#3, 8, 15, 17, 23, 28) en met "Kun/Ken je dit al ..." (#1, 6, 16, 18, 25, 29); #3/#8/#28 en #18/#25 zijn bijna gelijk. (2) "Is dit nieuw voor je?" (#5) draait Ja/Nee om (Ja = nieuw, terwijl Ja = "ken ik al" hoort te zijn). (3) "ontdek(ken)" staat in #11, #17, #22. (4) Vier lessen beginnen met "Je ..." (#4, 7, 10, 20). (5) Tellen-lessen #1, #19, #30 (en #8) lijken inhoudelijk sterk op elkaar; de zinnen verschillen maar weinig.
+
+1. squla-tellen-fruit-1 — GOEDGEKEURD
+2. squla-tellen-resultatief2-1 — GOEDGEKEURD
+3. squla-getallenlijn-rangschikken-1 — GOEDGEKEURD (tip: "rijen getallen" is stijf; beter "Nu gaan we met de getallenlijn zoeken welk getal er ontbreekt en zetten we kaartjes op volgorde.")
+4. squla-getallenlijn-dieren-2 — GOEDGEKEURD
+5. squla-getallenlijn-terugtellen-1 — AFGEKEURD: zin 2 "Is dit nieuw voor je?" draait Ja/Nee om. VOORSTEL zin 2: "Kun je zelf al terugtellen?"
+6. squla-klok-hoelaat-1 — GOEDGEKEURD
+7. squla-klok-klokkijken2-1 — GOEDGEKEURD (zin 2 "Lukt dit je al?" lijkt op #30; zie daar)
+8. squla-meer-minder-evenveel1-1 — AFGEKEURD: zin 1 "welk getal evenveel is" is onduidelijk; les lijkt op fruit-1; zin 2 bijna gelijk aan #3. VOORSTEL zin 1: "We tellen eerst groepen appels en andere dingen en kiezen dan het getal dat erbij past." zin 2: "Kun je al goed tellen?"
+9. squla-meer-minder-evenveel3-1 — GOEDGEKEURD (tip zin 1: "...en tik je het getal dat meer of minder is.")
+10. squla-meten-pizza-1 — GOEDGEKEURD
+11. squla-meten-oppervlakte-1 — AFGEKEURD: "Stap voor stap ontdek je" is abstract en "ontdek" komt 3x voor. VOORSTEL zin 1: "Je kijkt welk ding groot of klein is en telt hokjes om het te meten."
+12. squla-geld-geldmachine-1 — AFGEKEURD: zin 1 "die bij de vraag horen" is vaag (foto: "Waar zie je een munt van 1 euro?"); zin 2 "Durf je dit al aan?" past niet bij geld (klinkt eng). VOORSTEL zin 1: "Dadelijk zie je munten en briefjes en tik je op het geld dat in de vraag staat." zin 2: "Ken je al alle munten en briefjes?"
+13. squla-geld-zakgeld-1 — GOEDGEKEURD
+14. squla-vormen-patronen-1 — AFGEKEURD: "Allereerst" is moeilijk; zin 2 te lang. VOORSTEL zin 1: "Met kralen maken we een patroon af: je kiest welke kraal er daarna komt." zin 2: "Weet je al wat een patroon is?"
+15. squla-vormen-kleuren-1 — GOEDGEKEURD
+16. squla-splits-splitsen1-1 — GOEDGEKEURD
+17. squla-splits-delen-1 — GOEDGEKEURD
+18. squla-piraat-2 — GOEDGEKEURD (klopt met foto: kind sleept sterren naar het vak)
+19. squla-rekenmix-mix1-1 — GOEDGEKEURD
+20. squla-rekenmix-mix3-2 — AFGEKEURD: "welk ding eerste, tweede of derde staat" is geen goed Nederlands; "ding" vaag. VOORSTEL zin 1: "Je kijkt naar een rij en kiest welk ding op de eerste, tweede of derde plek staat."
+21. squla-tijd-dagen-1 — GOEDGEKEURD (let op: lijkt op #27, zelfde weektrein)
+22. squla-tijd-kalender-1 — AFGEKEURD: "dag-, week- en maandkalender" is lastig voor te lezen en te lang; "ontdekken"; zin 2 "Doe je dit al vaak?" is geen "kun je dit al". VOORSTEL zin 1: "Met de kalender zoek je welke kalender bij de vraag past en welk getal in een vakje staat." zin 2: "Lees jij al weleens op een kalender?"
+23. squla-plus-bakkerij-1 — GOEDGEKEURD (tip: "het antwoord" in plaats van "de uitkomst")
+24. squla-plus-bus1-1 — GOEDGEKEURD (typt: klopt)
+25. squla-min-machine-1 — AFGEKEURD: alleen zin 2 "Kun je dit al een beetje?" is bijna gelijk aan #18. VOORSTEL zin 2: "Heb je al eens min gerekend?"
+26. squla-min-ruimte-1 — GOEDGEKEURD
+27. squla-dagen-van-de-week — AFGEKEURD: lijkt te veel op #21 (zelfde weektrein, zelfde titel); "zoek je dagen" vaag. VOORSTEL zin 1: "Aan boord van de weektrein tik je de dag aan die ervoor of erna komt." zin 2: "Ken je de dagen van de week al?"
+28. squla-huisnummers — AFGEKEURD: alleen zin 2 "Heb je dit al eens gezien?" (bijna #3, en vraagt niet of je het kunt). VOORSTEL zin 2: "Weet je al hoe huisnummers werken?"
+29. squla-klok-digitaal-1 — AFGEKEURD: zin 2 "Kun je dit al goed?" lijkt op #6 en #16; zin 1 "met zijn wijzers" (beter "de wijzers") en de eerste vraag is juist "waar zie je ook zo'n klok?". VOORSTEL zin 1: "Nu kijk je naar de wijzers van de klok en zoek je waar nog meer een klok staat." zin 2: "Weet je al hoe een klok werkt?"
+30. squla-tellen-fruit-3 — AFGEKEURD: alleen zin 2 "Lukt het je al om dit te doen?" is lang en lijkt op #7. VOORSTEL zin 2: "Kun jij fruit tellen als het door elkaar ligt?"
+
+Pagina /admin/beginzinnen: bevat per les naam met link (/voorbeeld/les/<id>?naam=Testkind, 200), schermfoto (alle 30 jpg's aanwezig, foto klopt met de les voor de 12 die ik bekeek), uitleg, zin 1, zin 2 en de huidige zin. Op laptop duidelijk en goed leesbaar, gegroepeerd per onderwerp. Punt: in een smal venster (390 px, headless) lijkt de tekst rechts afgesneden; de vaste zijbalk en de kaarten (min. 380 px) passen niet netjes. Op een echte telefoon nog even nakijken; op tablet (breed genoeg) is dit waarschijnlijk geen probleem.
