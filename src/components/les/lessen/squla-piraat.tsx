@@ -177,8 +177,8 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
   const s = a + b;
   return (l, st) => {
     const beeld = metLetters(st, `samen-${vw}-${a}-${b}`, [
-      { s: "groep", id: "a", vw, n: a, x: 290, y: 320, per: 5, cel: 54, label: String(a), kl: "paars" },
-      { s: "groep", id: "b", vw, n: b, x: 690, y: 320, per: 5, cel: 54, label: String(b), kl: "oranje" },
+      { s: "groep", id: "a", vw, n: a, x: 290, y: 320, per: 5, cel: 66, label: String(a), kl: "paars" },
+      { s: "groep", id: "b", vw, n: b, x: 690, y: 320, per: 5, cel: 66, label: String(b), kl: "oranje" },
     ]);
     return squlaVraag<number>(l, {
       toon: () => {

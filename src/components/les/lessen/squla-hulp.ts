@@ -90,9 +90,18 @@ export function zetTestAntwoord(waarde: string | number | null | undefined) {
   window.__phaser = { ...window.__phaser, antwoord: waarde ?? null };
 }
 
+/**
+ * Verhaal en vraag samen in beeld (BOUWREGELS 14.25): Bliepo zegt de zinnen als één blok, zodat het verhaal niet
+ * wegvalt en er niet alleen "Hoeveel euro houd je over?" of "Typ het getal." naast het plaatje blijft staan.
+ * Geldt voor alle Squla-lessen; een vraag van één zin blijft zoals hij was.
+ */
+export function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
+  return v.vraag.length > 1 ? { ...v, vraag: [v.vraag.join(" ")] } : v;
+}
+
 async function vraagStellen<T>(v: SqulaVraag<T>, l: Lesgids) {
   zetTestAntwoord(v.testAntwoord);
-  await l.zeg(...v.vraag);
+  await l.zeg(...alsEenBlok(v).vraag);
 }
 
 /** Eén opgave met de hulp van Bliepo. Geeft `true` als hij meteen goed was. */

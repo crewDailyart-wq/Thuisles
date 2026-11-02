@@ -1718,3 +1718,82 @@ De goudstukken zijn goed. De kopermunten (12 paars, 6 oranje) zijn nog effen sch
 - **Klokkijken — GOEDGEKEURD (17):** alle kloklessen behalve digitaal-2. **AFGEKEURD (1):** digitaal-2 (FOUT D).
 - **kalender-1 — AFGEKEURD** (FOUT D en E). De klok zelf is goed.
 - **Staand scherm (Lesscherm) — AFGEKEURD** (FOUT C). Het midden zetten werkt, maar het vlak springt. Dit geldt voor alle Squla-lessen op tablet en telefoon. De lessen hierboven zijn gekeurd met dit springen als losse fout.
+
+## Ronde 6 — 2026-11-02 (controleur Opus)
+
+Zo gekeurd (één speelcontrole tegelijk, schermfoto's in `scratchpad/controle/r6/`):
+- Tablet (820 × 1180), afwisselend goed/fout/hulp: min-machine-1 t/m 4, min-bus1-1, min-bus1-2, min-bus2-1, min-bus2-2, plus-bakkerij-3, plus-bus1-3, piraat-1/2/3, min-kaal-2, klok-hoelaat-1. Alle 15 tot het eind (`r6/tablet/`).
+- Telefoon (390 × 844): kalender-1, klok-digitaal-2, tijden-2, dagen-3, min-bus1-2, min-bus2-2, plus-bakkerij-3, plus-bus1-3, klok-hoelaat-1, min-machine-1. Alle 10 tot het eind (`r6/tel/`).
+- Laptop (1440 × 900), `GOED=1`: alle 18 kloklessen en alle 7 Tijd-lessen. Alle 25 tot het eind (`r6/laptop/`).
+- Bewegende min-machine: losse reeks van 36 beelden om de 250 ms (`r6/burst-m1/`). Geluiden in de code nagekeken.
+
+### Wat is opgelost
+- **Fout A (kleur antwoord in zin):** min-machine-2 "Ja! 10 − 2 = 8." 8 roze in som en zin (tablet 017); min-bus2-1 "Er ligt nog 1 pakje in de bus." 1 roze in som en zin (008); min-bus1-1 5 paars in som en zin (004). Goed.
+- **Croissants (plus-bakkerij-3):** blauw en roze, 4 per rij, los van elkaar. Tablet ±70 px (007), telefoon ±33 px (010). Telbaar en goed te onderscheiden.
+- **piraat-1:** de kopermunten hebben nu verloop, ring, lichtvlekje en een dun randje; ze lijken op munten (tablet 019, ±34 px).
+- **piraat-2 en piraat-3:** elke minsom heeft nu twee kleuren: a en uitkomst in de kleur van het voorwerp, het getal dat weggaat in een andere kleur (7 − 3 = 4 blauw/oranje/blauw, 14 − 6 = 8 geel/blauw/geel, 12 − 5 = 7 blauw/oranje/blauw). Wat weggaat wordt dof. Zin en som zelfde kleuren.
+- **min-kaal-2:** de groene getallen op het groene bord hebben nu een dikke donkere rand en zijn goed leesbaar (tablet 003, 013).
+- **Fout C (springen):** het speelvlak blijft tussen de zinnen op dezelfde plek: telefoon min-bus1-2 bus op y ±240 in 002–004 en 006–011, klok-hoelaat-1 ±245 in 004–012; tablet ±5 px. Eén keer een klein stapje bij de eerste vraag, daarna stil. Alleen als het typvak de aandacht krijgt, schuift alles ±55 px omhoog (telefoon 005): dat is de bedoelde schuif voor het toetsenbord (regel 5).
+- **Fout D (14.25) in klok en tijd:** in alle 25 lessen staan verhaal en vraag samen in beeld. Steekproef van alle vraagsoorten (kiesKlok, leesKlok, knopVraag, verbind, memory, tijdRekenen, plaatjesVraag, ordenen): elk ding in beeld wordt in de zin genoemd (deegkom: "Het deeg voor de broodjes is klaar…", taart, oven, laptop, telefoon, schoen en bakkerij, glas/brood, jas/bezem). Op de telefoon passen ook de langste zinnen (8–9 regels, digitaal-2/024, tijden-2/006, dagen-3/067); niets valt weg en het vlak schuift niet weg.
+- **kalender-1:** één weekkalender (juni, ma–zo 7–13, hoepels op di, do, vr) in alle vragen; "20" in plaats van de ballon; de witte kaartjes om de dagplaatjes zijn weg. De kalender klopt met de vragen: 1 juni is dinsdag, 8 juni (rood) is dinsdag, "Vandaag is er gym. Dat is ook op donderdag. En op vrijdag!" past bij hoepels onder 8, 10 en 11; 13 juni (feesthoedje) is zondag; kalender-2 "woensdag 9 juni" klopt ook.
+- **Machinegeluiden (code):** `bandRol` (vol 0,025–0,03, 0,22 s), `machineAan` (0,03–0,05, ±1,2 s), `stukPlop` (0,04–0,07, 0,25 s, om de 300–340 ms, dus nooit over elkaar), `restKlik` (0,03–0,04, 0,5 s). Alles gaat via `speelLesgeluid` → zwijgt als de geluidjes-knop uit staat (`magKlinken`/`leesKind`) of de ouder ze uitzet, en wordt 0,2 zo zacht zolang Bliepo praat. Alleen de rolgeluidjes overlappen elkaar kort (om de 130 ms een geluid van 220 ms); dat klinkt als één doorlopend rollen. In orde.
+- **Machine-animatie:** blokjes rollen de machine in, schudden, 3 gele blokjes vallen één voor één in het bakje, de rest rolt het vraagteken in (burst t00–t13). Duidelijk en rustig. Kleuren kloppen: 10 roze blokjes, −3 geel, 3 gele blokjes in het bakje.
+
+### Nieuwe of overgebleven fouten
+
+#### FOUT H (2.1/2.2): stippen in de hulp en uitleg zijn altijd geel
+In de hulp ("Ik zet 10 stippen neer.") en in de uitleg na Nee zijn alle stippen geel, terwijl het getal in de zin en de som een eigen kleur heeft: 10 roze, 19 roze, 7 blauw (tablet machine-1/010, machine-3/011, machine-4/010, kaal-2/010). Dezelfde fout is eerder bij splitsen afgekeurd (stippen moeten de kleur van hun getal hebben). Bestand: `src/components/les/lessen/squla-minsommen.tsx` r. 218 en 758–769 (`zet(l, { stippen })`) en het tekenen van de stippen in `src/components/les/vlakken/squla-minsommen-vlak.tsx`. Voorstel: stippen in de kleur van het eerste getal (`somHex(a, b)[0]`), weg = grijs zoals nu.
+
+#### FOUT I (14.21/14.13): de uitleg na Nee gaat over een andere som dan het voorbeeld
+In alle Min-lessen laat het beginscherm de eerste vraag zien (`voorbeeld: speelVraag(m.vragen[0])`), maar de uitleg na Nee gebruikt vaste andere getallen:
+- machine-1: voorbeeld en welkom 10 − 3, uitleg 10 − 2 (`uitlegStippen("machine", 10, 2)`, r. 1034);
+- machine-2: voorbeeld 3 vol + 2 leeg, uitleg 4 vol + 2 leeg (r. 1065);
+- machine-3: voorbeeld 7 − 4, uitleg 7 − 3;
+- machine-4: voorbeeld 6 euro − 2, uitleg 4 euro − 1 (r. 1109);
+- ook bus1-1 (8 − 3 / 6 − 2), bus1-2 (16 − 4 / 15 − 3), bus1-3 (15 − 7 / 13 − 5), bus2-1 (10 − 7 / 6 − 2), bus2-2 (17 − 5 / 15 − 3), bus2-3 (16 − 8 / 13 − 5).
+Voorstel: de uitleg maken uit `m.vragen[0]` (zelfde getallen als welkom en voorbeeld), of de vaste getallen gelijkzetten. Ook Plus-lessen even nalopen.
+
+#### FOUT J (14.25) in de Min-lessen: verhaal en vraag vallen weg
+In `squla-minsommen.tsx` blijft alleen de laatste zin in beeld:
+- bus (r. 474): bij typvragen staat alleen "Typ het getal." naast de bus met pakjes (tablet min-bus1-2/003, telefoon 003). Ook de vraag "Hoeveel pakjes liggen er nu nog in de bus?" staat dan niet in beeld.
+- geld (r. 580, machine-4): alleen "Hoeveel euro houd je over?" naast portemonnee, munten en ijsje (tablet 003). Dat je het ijsje koopt, staat er niet.
+Voorstel: dezelfde `alsEenBlok` als in klok/tijd, het liefst centraal in `squlaVraag` (`squla-hulp.ts`), zodat het voor alle Squla-lessen geldt.
+
+#### FOUT K (1.15): lange zin-blokken lopen op de laptop over de pauzebalk
+Door `alsEenBlok` is het zin-blok op de laptop soms zo hoog dat het over de knoppen Pauze, geluidjes en "Testkind" valt, en de knop "Nog eens horen" over Bliepo's antenne:
+- tijden-2, "Er is een bezoek aan de bakkerij! … Wat duurt het langst?" met twee brede antwoordknoppen (laptop 017);
+- tijden-1, "Toen was het groene boek nog niet aan de beurt. … over een poosje?" met drie knoppen (laptop 010).
+Andere lange zinnen (digitaal-2, dagen-3, kalender-1/2) passen net. Op tablet en telefoon is het in orde. Bestand: `src/components/les/Lesscherm.tsx` (ballon rechts op de liggende indeling). Voorstel: de ballon nooit hoger laten beginnen dan onder de pauzebalk (±110 px) en bij meer dan 6 regels de tekstkolom breder of de letter iets kleiner maken; de knop "Nog eens horen" nooit over Bliepo.
+
+#### FOUT L (1.4): rechthoekige groene kaders bij "goed" en bij "Trek de lijnen" (squla-tijd-plaatjes.tsx)
+- Bij goed krijgt het gekozen plaatje een groene rechthoek (`zetRing` "groen", r. 210–217 en 313–340). Bij de nieuwe weekkalender is die rechthoek veel groter dan de kalender zelf (de maat is nog die van het oude rooster 360 × 190): een groen kader om lege ruimte (laptop kalender-1/010, 011; telefoon 016).
+- Bij "Trek de lijnen" krijgen alle verbonden plaatjes én woorden een blijvend groen kader (laptop kalender-1/024).
+Dit is een kader om plaatjes en voorwerpen, en dat mag niet (1.4, "absoluut, ook al heeft Squla ze"; ook "geen hologramkaarten met rand", 1 nov). Besluit: **afgekeurd**. Voorstel: bij goed een korte groene lichtflits of zachte gloed in de vorm van het plaatje zelf (7.6, gebakken), die weer weggaat; bij verbinden alleen de groene lijn en een kleine groene stip/vinkje aan het eind van de lijn, zonder rechthoek. De woordknoppen (wit met donkere rand) mogen blijven: dat zijn antwoordknoppen (2.3).
+De ronde ring om een klok in squla-klok.tsx (digitaal-1/025) volgt de vorm van de klok en is de lichtring van 7.6: die keur ik **goed**.
+
+#### FOUT M (14.23): weekkalender te klein, op de telefoon onleesbaar
+- Laptop: de weekkalender is ±265 × 95 px, de hoepels ±20 px, de getallen ±12 px (kalender-1/009, 022). Naast de maandkalender (±230 × 190) valt hij weg. Een kind ziet de hoepels nauwelijks.
+- Telefoon: ±95 × 38 px, hoepels ±10 px, de dagen zijn niet te lezen (kalender-1/011, 028). De dagplaatjes (kring, rekenen, buiten, gym) zijn op de telefoon ±18 px.
+Bestand: `src/components/les/vlakken/squla-tijd-tekeningen.ts` (`weekKalender`, ontwerpvak 330 × 142) en de kaartmaat in `squla-tijd-plaatjes.tsx`. Voorstel: weekkalender in beeld minstens ±450 px breed op de laptop, hoepels minstens ±40 px; op de telefoon de drie kaarten onder elkaar zetten (er is veel lege ruimte tussen beeld en tekst), zodat elke kaart de hele breedte krijgt.
+
+#### FOUT N (14.23/14.5): pakjes in de bus op de telefoon niet te tellen
+- Tablet: pakjes ±25 px met ±5 px ruimte (min-bus2-2/010, plus-bus1-3/014). Telbaar, maar klein; de bus gebruikt maar ±60 % van de breedte.
+- Telefoon: pakjes ±12 px met ±2 px ruimte, 16–19 stuks in een raampje van ±95 px (min-bus1-2/010). Dit kan een kind van 6 niet tellen, ook niet met de telringetjes.
+Voorstel: op staand scherm het speelvlak niet alleen op de breedte schalen: de bus groter (hele breedte) en de pakjes in minder kolommen, of op de telefoon de pakjes groter naast/onder de bus tellen. Dit hangt samen met T7 (telefoonindeling, nog twijfel): vraag Sara of de telefoon nu al moet kloppen. Hetzelfde zie je bij dagen-3 op de telefoon: de woorden op de wagons zijn ±6 px (067).
+
+### Tips (geen afkeur)
+- min-machine-1/2 op tablet en telefoon: bij "Ja!" springen de restblokjes even uit het vraagteken en raken de rechterrand van het scherm (tablet 016, telefoon 003). Kort, maar netter als ze binnen beeld blijven.
+- plus-bakkerij-3: het croissantje linksboven steekt een paar pixels over de rand van de toonbank (tablet 007).
+- Antwoordknoppen met tijden staan op tablet en telefoon in een smalle kolom van 2 + 1 (hoelaat-1 tablet 003). Eén rij zou rustiger zijn.
+- piraat-1: kopermunten ±34 px op de tablet terwijl er veel ruimte is; mogen groter.
+- 9 regels tekst op de telefoon (tijden-2/006) is veel voor een kind; Bliepo leest het voor, dus het werkt wel.
+
+### Uitslag per punt
+1. **Fout A — GOEDGEKEURD:** min-machine-2, min-bus1-1, min-bus2-1 (de kleur zelf). min-bus1-1 en min-bus2-1 blijven wel afgekeurd op FOUT I en J.
+2. **plus-bakkerij-3 — GOEDGEKEURD.** Pakjes in de bus (min-bus2-2, plus-bus1-3): tablet telbaar maar krap; telefoon **AFGEKEURD** (FOUT N).
+3. **piraat-1, piraat-2, piraat-3 — GOEDGEKEURD.**
+4. **min-kaal-2 — GOEDGEKEURD** op contrast (stippen in de hulp: FOUT H).
+5. **Fout C — GOEDGEKEURD** (telefoon en tablet).
+6. **Kloklessen — GOEDGEKEURD (18)**, ook digitaal-2. **Tijd:** dagen-1, dagen-2, dagen-3, kalender-2 **GOEDGEKEURD**; tijden-1 en tijden-2 **AFGEKEURD** (FOUT K); kalender-1 **AFGEKEURD** (FOUT L en M; de kalender zelf klopt).
+7. **Groene kaders bij verbinden/goed in Tijd — AFGEKEURD** (FOUT L). Ring om de klok — goed.
+8. **min-machine-1 t/m 4 — AFGEKEURD:** FOUT I (uitleg na Nee andere som), FOUT H (gele stippen), machine-4 ook FOUT J. Beweging, telbaarheid op tablet, kleuren van som en blokjes, woord "blokjes" en de geluiden zijn in orde.

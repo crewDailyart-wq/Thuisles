@@ -433,6 +433,8 @@ async function speel(c, id) {
       laatsteTik = Date.now();
       const soort = process.env.GOED ? "goed" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 3 ? "weetniet" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 5 ? "fout" : "goed";
       if (await canvasStap(z, soort)) continue;
+      /* NEE=1: bij "Kun je dit al?" op Nee tikken, om de uitleg te zien (alleen dan; anders gaat het kind door met Ja). */
+      if (process.env.NEE && (await klik(`(b) => (b.textContent || "").trim() === "Nee"`))) continue;
       /* Afwisselend: meestal goed, soms "weet ik niet", soms fout. */
       if (await klik(`(b) => b.getAttribute("data-knop") === "verder"`)) continue;
       /* HULP=1: bij "weet ik niet" op het handje tikken (als dat er staat), om de hulpstappen te zien. */

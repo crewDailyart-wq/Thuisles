@@ -137,7 +137,7 @@ function bakkerijIndeling(groepen: Groep[], metSommen: boolean): GroepPlek[] {
     const pr = perRij(g);
     const items = Array.from({ length: g.n }, (_, k) => ({ x: links + ((k % pr) + 0.5) * cel, y: top + (Math.floor(k / pr) + 0.5) * cel }));
     x += m.b + gat;
-    return { box, items, schaal: (cel / (DING + 6)) * (g.ding === "croissant" ? 0.97 : 1), label: g.label ? { x: box.x, y: cy + hoogst / 2 + 34 } : null };
+    return { box, items, schaal: (cel / (DING + 6)) * (g.ding === "croissant" ? 0.9 : 1), label: g.label ? { x: box.x, y: cy + hoogst / 2 + 34 } : null };
   });
 }
 
@@ -176,27 +176,72 @@ function vakkenVan(beeld: PlusBeeld | null, sommen: Kaart[]): Vak[] {
    y 78–116 (van 200). De pakjes staan op de bodem daarvan, in rijen van 10
    (5 + 5); bij meer dan 10 staat er een tweede rij bovenop. Wordt het
    plaatje vervangen, dan blijven de pakjes binnen dat raam. */
-const BUSVAK = { x: 10, y: 80, s: 680 };
-const busF = BUSVAK.s / 200;
+/*
+ * Op een staand scherm (telefoon, tablet rechtop) is het vlak maar zo breed als het scherm: een pakje van 62 punten
+ * wordt dan ±25 pixels en op de telefoon ±12 pixels: niet te tellen (BOUWREGELS 14.23). Daarom staat de bus dan veel
+ * groter in het vlak: het raam vult bijna de hele breedte (de voorkant en achterkant vallen er een beetje buiten),
+ * en wat erbij komt, staat in een rij onder de bus. `stelBus` kiest de indeling (vóór het tekenen).
+ */
+type BusIndeling = {
+  busvak: { x: number; y: number; s: number };
+  instap: { x0: number; dx: number; voet: number; rij: number; per: number; groot: number };
+  rondje: { x: number; y: number };
+  maxPakje: number;
+  staand: boolean;
+};
+const BUS_LIGGEND: BusIndeling = { busvak: { x: 10, y: 80, s: 680 }, instap: { x0: 700, dx: 50, voet: 652, rij: 64, per: 5, groot: 1 }, rondje: { x: 830, y: 540 }, maxPakje: 62, staand: false };
+const BUS_STAAND: BusIndeling = { busvak: { x: -122, y: -262, s: 1250 }, instap: { x0: 90, dx: 80, voet: 706, rij: 72, per: 10, groot: 1.5 }, rondje: { x: 640, y: 644 }, maxPakje: 96, staand: true };
+const BUSVAK_BASIS = 680;
+let BUSVAK = BUS_LIGGEND.busvak;
+let busF = BUSVAK.s / 200;
 /* Het lichtblauwe zijraam van de bezorgbus (nieuw plaatje): x 26–118, y 68–112 in het vierkante vak van 200. */
-const LAAD = { x0: BUSVAK.x + 26 * busF, x1: BUSVAK.x + 118 * busF, top: BUSVAK.y + 68 * busF, bodem: BUSVAK.y + 112 * busF };
+let LAAD = { x0: BUSVAK.x + 26 * busF, x1: BUSVAK.x + 118 * busF, top: BUSVAK.y + 68 * busF, bodem: BUSVAK.y + 112 * busF };
+let INSTAP = BUS_LIGGEND.instap;
+let RONDJE = BUS_LIGGEND.rondje;
+let BUS_IND = BUS_LIGGEND;
+function stelBus(staand: boolean) {
+  const ind = staand ? BUS_STAAND : BUS_LIGGEND;
+  if (ind === BUS_IND) return;
+  BUS_IND = ind;
+  BUSVAK = ind.busvak;
+  busF = BUSVAK.s / 200;
+  LAAD = { x0: BUSVAK.x + 26 * busF, x1: BUSVAK.x + 118 * busF, top: BUSVAK.y + 68 * busF, bodem: BUSVAK.y + 112 * busF };
+  INSTAP = ind.instap;
+  RONDJE = ind.rondje;
+}
+/**
+ * Het aantal pakjes naast elkaar: tot 10 (en op een liggend scherm altijd) rijen van 5, zoals een tienrek (10 = twee
+ * rijen van 5). Staand en meer dan 10: zoveel kolommen (5 t/m 8) dat de pakjes zo groot mogelijk worden.
+ */
+function busKol(n: number): number {
+  if (!BUS_IND.staand || n <= 10) return 5;
+  let beste = 5;
+  let bestM = 0;
+  for (let c = 5; c <= 8; c++) {
+    const m = Math.min(BUS_IND.maxPakje, (LAAD.x1 - LAAD.x0) / c, (LAAD.bodem - LAAD.top) / Math.ceil(n / c));
+    if (m > bestM + 1) {
+      bestM = m;
+      beste = c;
+    }
+  }
+  return beste;
+}
 /**
  * De pakjes in de bus (BOUWREGELS 14.23): rijen van 5 in het raam, zoals een tienrek (10 = twee rijen van 5), zo groot
- * als past: tot 10 pakjes ±62 punten, daarboven kleiner omdat er meer rijen in het raam moeten.
+ * als past: tot 10 pakjes ±62 punten (staand ±96), daarboven kleiner omdat er meer rijen in het raam moeten.
  */
-const busMaat = (n: number) => Math.min(62, (LAAD.bodem - LAAD.top) / Math.max(1, Math.ceil(n / 5)));
-const INSTAP = { x0: 700, dx: 50, voet: 652, rij: 64 };
+const busMaat = (n: number) => Math.min(BUS_IND.maxPakje, (LAAD.x1 - LAAD.x0) / busKol(n), (LAAD.bodem - LAAD.top) / Math.max(1, Math.ceil(n / busKol(n))));
 function instapPlek(i: number) {
-  const r = Math.floor(i / 5);
-  const k = i % 5;
-  const sch = 1 - r * 0.06;
+  const r = Math.floor(i / INSTAP.per);
+  const k = i % INSTAP.per;
+  const sch = (1 - r * 0.06) * INSTAP.groot;
   return { x: INSTAP.x0 + k * INSTAP.dx + (r % 2) * 10, y: INSTAP.voet - r * INSTAP.rij, schaal: sch };
 }
 function pakjePlek(k: number, n: number) {
   const m = busMaat(n);
-  return { x: (LAAD.x0 + LAAD.x1) / 2 + ((k % 5) - 2) * m, y: LAAD.bodem - m / 2 - 2 - Math.floor(k / 5) * m };
+  const c = busKol(n);
+  return { x: (LAAD.x0 + LAAD.x1) / 2 + ((k % c) - (c - 1) / 2) * m, y: LAAD.bodem - m / 2 - 2 - Math.floor(k / c) * m };
 }
-const RONDJE = { x: 830, y: 540 };
 
 /* ---------- de scène ---------- */
 
@@ -358,7 +403,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         /* De lichtbundels van de spots alvast tekenen (anders hapert het eerste goede antwoord). */
         KLEUREN_DISCO.slice(0, 4).forEach((k, i) => this.time.delayedCall(300 + i * 80, () => this.tex(`bundel-${i}`, 60, 300, (c) => tekenBundel(c, k))));
       } else if (beeld.soort === "bus") {
-        this.plek(box, this.vw("bezorgbus", BUSVAK.s, BUSVAK.s), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2);
+        this.plek(box, this.vw("bezorgbus", BUSVAK_BASIS, BUSVAK_BASIS), BUSVAK.x + BUSVAK.s / 2, BUSVAK.y + BUSVAK.s / 2).setScale(BUSVAK.s / BUSVAK_BASIS / TX);
         const maat = busMaat(beeld.inBus);
         const pakje = this.vwK("pakje", maat * 0.9, maat * 0.9, KLEURHEX[somKleuren(beeld.inBus, beeld.instap)[0]]);
         for (let k = 0; k < beeld.inBus; k++) {
@@ -367,9 +412,15 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         }
         /* De pijl naar de laadruimte. */
         const pijl = this.add.graphics();
-        const van = beeld.alsGetal ? { x: RONDJE.x - 40, y: RONDJE.y - 70 } : { x: 800, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 90 };
-        const naar = { x: LAAD.x1 - 20, y: LAAD.top - 6 };
-        const ctrl = { x: (van.x + naar.x) / 2, y: Math.min(van.y, naar.y) - 70 };
+        const staand = BUS_IND.staand;
+        const van = staand
+          ? { x: beeld.alsGetal ? RONDJE.x : instapPlek(Math.max(0, beeld.instap - 1)).x, y: (beeld.alsGetal ? RONDJE.y : instapPlek(0).y - INSTAP.groot * 50) - 68 }
+          : beeld.alsGetal
+            ? { x: RONDJE.x - 40, y: RONDJE.y - 70 }
+            : { x: 800, y: instapPlek(Math.max(0, beeld.instap - 1)).y - 90 };
+        /* Staand: van onder de bus omhoog, het raam in. */
+        const naar = staand ? { x: (LAAD.x0 + LAAD.x1) / 2 + 150, y: LAAD.bodem + 24 } : { x: LAAD.x1 - 20, y: LAAD.top - 6 };
+        const ctrl = staand ? { x: (van.x + naar.x) / 2 - 90, y: (van.y + naar.y) / 2 } : { x: (van.x + naar.x) / 2, y: Math.min(van.y, naar.y) - 70 };
         const pad = new Phaser.Curves.QuadraticBezier(new Phaser.Math.Vector2(van.x - MIDDEN.x, van.y - MIDDEN.y), new Phaser.Math.Vector2(ctrl.x - MIDDEN.x, ctrl.y - MIDDEN.y), new Phaser.Math.Vector2(naar.x - MIDDEN.x, naar.y - MIDDEN.y));
         pijl.lineStyle(9, 0x5aa8ff, 1);
         pad.draw(pijl, 24);
@@ -622,13 +673,17 @@ export function SqulaPlusVlak({
   schaal,
 }: PlusProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<PlusScene>(schaal, maakPlusScene, { invoer: false });
+  /* Een staand scherm (of een heel klein vlak): de bus staat dan groter in het vlak (zie BUS_STAAND). */
+  const staand = typeof window !== "undefined" && (window.innerHeight > window.innerWidth || schaal < 0.5);
+  stelBus(staand);
   const sommenSleutel = JSON.stringify(sommen);
   const beeldSleutel = JSON.stringify(beeld);
   const vakken = useMemo(() => vakkenVan(JSON.parse(beeldSleutel) as PlusBeeld | null, JSON.parse(sommenSleutel) as Kaart[]), [beeldSleutel, sommenSleutel]);
 
   useEffect(() => {
+    stelBus(staand);
     scene?.zetBeeld(JSON.parse(beeldSleutel) as PlusBeeld | null, JSON.parse(sommenSleutel) as Kaart[]);
-  }, [scene, beeldSleutel, sommenSleutel]);
+  }, [scene, beeldSleutel, sommenSleutel, staand]);
 
   const dim = Boolean(rek);
   const staatSleutel = JSON.stringify({ gekozen, uit, goedIds, lijnen, licht, busLicht, busTel, dim });

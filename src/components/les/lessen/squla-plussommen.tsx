@@ -633,12 +633,12 @@ const BAKKERIJ_WELKOM = [
   [`Er liggen ${g(6)} koekjes en ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"],
 ];
 
-function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string) {
+function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string, een: string) {
   return async (l: Lesgids, st: Stand) => {
     toon(l, st, { soort: "bakkerij", id: "uitleg", groepen });
     somBoven(l, a, b);
     zet(l, { licht: [0] });
-    await l.zeg(`Hier liggen ${g(a)} ${wat}.`);
+    await l.zeg(a === 1 ? `Hier ligt ${g(1)} ${een}.` : `Hier liggen ${g(a)} ${wat}.`);
     zet(l, { licht: [1] });
     await l.zeg(`Ik leg er ${g(b)} bij.`, `Erbij is plus: ${plus(a, b)}.`);
     zet(l, { licht: [] });
@@ -744,13 +744,26 @@ const DANS_WELKOM = [
   [`Sommige kaartjes zitten dicht bij ${g(10)}.`, `Welk kaartje is samen ${g(10)}?`],
 ];
 
-function dansUitleg(kaartjes: boolean) {
+/** Het paar dat samen 10 is in de eerste vraag van de les: het voorbeeld van het beginscherm en de uitleg (BOUWREGELS 14.21). */
+function dansPaar(eerste: number[] | number[][]): [number, number] {
+  if (Array.isArray(eerste[0])) {
+    const p = (eerste as number[][]).find(([x, y]) => x + y === 10) ?? [7, 3];
+    return [p[0], p[1]];
+  }
+  const n = eerste as number[];
+  let paar: [number, number] = [7, 3];
+  for (let i = 0; i < n.length; i++) for (let j = i + 1; j < n.length; j++) if (n[i] + n[j] === 10) paar = [n[i], n[j]];
+  return paar;
+}
+
+function dansUitleg(kaartjes: boolean, eerste: number[] | number[][]) {
+  const [a, b] = dansPaar(eerste);
   return async (l: Lesgids) => {
-    zet(l, { rek: { rijen: 1, a: 7, b: 3, bZicht: 0 } });
-    await l.zeg("Kijk, een rij van tien plekjes.", `Er staan ${o(7)} oranje stippen in.`, `Er zijn nog ${bl(3)} plekjes leeg.`);
-    zet(l, { rek: { rijen: 1, a: 7, b: 3 } });
+    zet(l, { rek: { rijen: 1, a, b, bZicht: 0 } });
+    await l.zeg("Kijk, een rij van tien plekjes.", `Er ${a === 1 ? "staat" : "staan"} ${o(a)} ${a === 1 ? "oranje stip" : "oranje stippen"} in.`, b === 1 ? `Er is nog ${bl(1)} plekje leeg.` : `Er zijn nog ${bl(b)} plekjes leeg.`);
+    zet(l, { rek: { rijen: 1, a, b } });
     await l.wacht(700);
-    await l.zeg(`${o(7)} en ${bl(3)} is samen ${g(10)}.`, "Nu is de rij precies vol.");
+    await l.zeg(`${o(a)} en ${bl(b)} is samen ${g(10)}.`, "Nu is de rij precies vol.");
     await l.verder();
     zet(l, { rek: null });
     await l.zeg(kaartjes ? `Zoek steeds het kaartje dat samen ${g(10)} is.` : `Zoek steeds twee getallen die samen ${g(10)} zijn.`);
@@ -930,7 +943,7 @@ const bakkerij1 = les({
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[0],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(1, "taart"), hoop(4, "taart")] },
-  uitleg: bakkerijUitleg([hoop(3, "taart"), hoop(2, "taart")], 3, 2, "taartjes"),
+  uitleg: bakkerijUitleg([hoop(1, "taart"), hoop(4, "taart")], 1, 4, "taartjes", "taartje"),
   /* Level 1: tot 10. Zoals Squla: verhaaltjes, welke som, disco, verbinden, verhaaltje; daarna nog een ronde. */
   vragen: [
     verhaal([hoop(1, "taart"), hoop(4, "taart")], 1, 4, [4, 5, 6, 1], [`Hier ligt ${g(1)} taartje.`, `Daar liggen er ${g(4)}.`, "Hoeveel taartjes zijn het samen?"]),
@@ -962,7 +975,7 @@ const bakkerij2 = les({
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[1],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(10, "stokbrood"), hoop(3, "stokbrood")] },
-  uitleg: bakkerijUitleg([hoop(11, "stokbrood"), hoop(5, "stokbrood")], 11, 5, "stokbroden"),
+  uitleg: bakkerijUitleg([hoop(10, "stokbrood"), hoop(3, "stokbrood")], 10, 3, "stokbroden", "stokbrood"),
   /* Level 2: tot 20, niet over het tiental (zoals Squla één kleine over het tiental in het verbinden). */
   vragen: [
     verhaal([hoop(10, "stokbrood"), hoop(3, "stokbrood")], 10, 3, [13, 7, 15, 3], [`Er liggen ${g(10)} stokbroden.`, `Ik leg er ${g(3)} bij.`, "Hoeveel stokbroden zijn het samen?"]),
@@ -994,7 +1007,7 @@ const bakkerij3 = les({
   voorwerpen: VOORWERPEN_BAKKERIJ,
   welkom: BAKKERIJ_WELKOM[2],
   begin: { soort: "bakkerij", id: "begin", groepen: [hoop(6, "koekje"), hoop(6, "koekje")] },
-  uitleg: bakkerijUitleg([hoop(9, "koekje"), hoop(3, "koekje")], 9, 3, "koekjes"),
+  uitleg: bakkerijUitleg([hoop(6, "koekje"), hoop(6, "koekje")], 6, 6, "koekjes", "koekje"),
   /* Level 3: tot 20 over het tiental, met dubbelsommen en één makkelijke onder de 10. */
   vragen: [
     verhaal([hoop(6, "koekje"), hoop(6, "koekje")], 6, 6, [11, 12, 13, 14], [`Er liggen ${g(6)} koekjes.`, `Ik bak er nog ${g(6)} bij.`, "Hoeveel koekjes zijn het samen?"]),
@@ -1019,17 +1032,7 @@ const bakkerij3 = les({
 
 /* ---------- Dansende sommen: samen 10 ---------- */
 
-const dansen1 = les({
-  id: "squla-plus-dansen-1",
-  titel: "Samen 10 in de disco",
-  oefening: "Dansende sommen",
-  level: 1,
-  kaart: KaartDisco,
-  voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM[0],
-  begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
-  uitleg: dansUitleg(true),
-  vragen: [
+const DANS_VRAGEN_1: number[][][] = [
     [[7, 3], [5, 2], [6, 5]],
     [[4, 4], [9, 1], [3, 2]],
     [[6, 2], [2, 5], [4, 6]],
@@ -1045,21 +1048,22 @@ const dansen1 = les({
     [[2, 7], [5, 5], [6, 1]],
     [[1, 5], [3, 4], [2, 8]],
     [[6, 4], [7, 2], [5, 3]],
-  ].map((p) => dansKaartje(p as [number, number][])),
+  ];
+const dansen1 = les({
+  id: "squla-plus-dansen-1",
+  titel: "Samen 10 in de disco",
+  oefening: "Dansende sommen",
+  level: 1,
+  kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
+  welkom: DANS_WELKOM[0],
+  begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
+  uitleg: dansUitleg(true, DANS_VRAGEN_1[0]),
+  vragen: DANS_VRAGEN_1.map((p) => dansKaartje(p as [number, number][])),
   eind: `Je weet welke getallen samen ${g(10)} zijn.`,
 });
 
-const dansen2 = les({
-  id: "squla-plus-dansen-2",
-  titel: "Samen 10 in de disco (moeilijker)",
-  oefening: "Dansende sommen",
-  level: 2,
-  kaart: KaartDisco,
-  voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM[1],
-  begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
-  uitleg: dansUitleg(false),
-  vragen: [
+const DANS_VRAGEN_2: number[][] = [
     [3, 8, 7, 5],
     [9, 4, 1, 7],
     [2, 6, 9, 8],
@@ -1075,22 +1079,22 @@ const dansen2 = les({
     [3, 7, 9, 2],
     [1, 8, 6, 9],
     [0, 10, 2, 7],
-  ].map(dansPlaten),
+  ];
+const dansen2 = les({
+  id: "squla-plus-dansen-2",
+  titel: "Samen 10 in de disco (moeilijker)",
+  oefening: "Dansende sommen",
+  level: 2,
+  kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
+  welkom: DANS_WELKOM[1],
+  begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
+  uitleg: dansUitleg(false, DANS_VRAGEN_2[0]),
+  vragen: DANS_VRAGEN_2.map(dansPlaten),
   eind: `Je weet welke getallen samen ${g(10)} zijn.`,
 });
 
-const dansen3 = les({
-  id: "squla-plus-dansen-3",
-  titel: "Samen 10 in de disco (nog moeilijker)",
-  oefening: "Dansende sommen",
-  level: 3,
-  kaart: KaartDisco,
-  voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM[2],
-  begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
-  uitleg: dansUitleg(false),
-  /* Zoals Squla level 3: vaak een tweede paar dat er net naast zit (samen 9 of 11). */
-  vragen: [
+const DANS_VRAGEN_3: number[][] = [
     [9, 8, 1, 3],
     [4, 5, 6, 7],
     [3, 2, 8, 9],
@@ -1106,22 +1110,23 @@ const dansen3 = les({
     [6, 7, 3, 5],
     [2, 9, 8, 7],
     [0, 9, 10, 2],
-  ].map(dansPlaten),
+  ];
+const dansen3 = les({
+  id: "squla-plus-dansen-3",
+  titel: "Samen 10 in de disco (nog moeilijker)",
+  oefening: "Dansende sommen",
+  level: 3,
+  kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
+  welkom: DANS_WELKOM[2],
+  begin: { soort: "disco", id: "begin", vorm: "plaat", kaarten: [] },
+  uitleg: dansUitleg(false, DANS_VRAGEN_3[0]),
+  /* Zoals Squla level 3: vaak een tweede paar dat er net naast zit (samen 9 of 11). */
+  vragen: DANS_VRAGEN_3.map(dansPlaten),
   eind: `Je weet welke getallen samen ${g(10)} zijn.`,
 });
 
-const dansen4 = les({
-  id: "squla-plus-dansen-4",
-  titel: "Samen 10 in de disco (heel moeilijk)",
-  oefening: "Dansende sommen",
-  level: 4,
-  kaart: KaartDisco,
-  voorwerpen: VOORWERPEN_DISCO,
-  welkom: DANS_WELKOM[3],
-  begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
-  uitleg: dansUitleg(true),
-  /* Zoals Squla level 4: de andere kaartjes zitten dicht bij 10 (8, 9, 11, 12). */
-  vragen: [
+const DANS_VRAGEN_4: number[][][] = [
     [[6, 3], [2, 8], [7, 4]],
     [[4, 5], [8, 3], [3, 7]],
     [[9, 1], [7, 1], [5, 6]],
@@ -1137,13 +1142,27 @@ const dansen4 = les({
     [[9, 1], [8, 3], [7, 1]],
     [[6, 2], [2, 8], [9, 2]],
     [[3, 6], [7, 5], [3, 7]],
-  ].map((p) => dansKaartje(p as [number, number][])),
+  ];
+const dansen4 = les({
+  id: "squla-plus-dansen-4",
+  titel: "Samen 10 in de disco (heel moeilijk)",
+  oefening: "Dansende sommen",
+  level: 4,
+  kaart: KaartDisco,
+  voorwerpen: VOORWERPEN_DISCO,
+  welkom: DANS_WELKOM[3],
+  begin: { soort: "disco", id: "begin", vorm: "kaartje", kaarten: [] },
+  uitleg: dansUitleg(true, DANS_VRAGEN_4[0]),
+  /* Zoals Squla level 4: de andere kaartjes zitten dicht bij 10 (8, 9, 11, 12). */
+  vragen: DANS_VRAGEN_4.map((p) => dansKaartje(p as [number, number][])),
   eind: `Je weet welke getallen samen ${g(10)} zijn.`,
 });
 
 /* ---------- Bussommen 1 (instappers als poppetjes) en 2 (instappers als getal) ---------- */
 
-function busLes(nr: 1 | 2, level: number, titel: string, voorbeeld: [number, number], sommen: [number, number][]) {
+function busLes(nr: 1 | 2, level: number, titel: string, sommen: [number, number][]) {
+  /* Het beginscherm en de uitleg na "Nee" gaan over de eerste vraag van de les (BOUWREGELS 14.21). */
+  const voorbeeld = sommen[0];
   const alsGetal = nr === 2;
   return les({
     id: `squla-plus-bus${nr}-${level}`,
@@ -1161,33 +1180,35 @@ function busLes(nr: 1 | 2, level: number, titel: string, voorbeeld: [number, num
 }
 
 /* Level 1: uitkomst tot 10, meestal 1 tot 3 instappers (één keer 6). */
-const bus1a = busLes(1, 1, "Bussommen", [3, 2], [
+const bus1a = busLes(1, 1, "Bussommen", [
   [2, 1], [4, 2], [6, 1], [2, 3], [6, 2], [7, 1], [5, 3], [8, 2], [3, 6], [2, 2], [4, 3], [9, 1], [5, 2], [3, 1], [6, 3],
 ]);
 /* Level 2: in de bus 10–17, 1–7 instappers, tot 20 zonder over het tiental. */
-const bus1b = busLes(1, 2, "Bussommen (moeilijker)", [12, 3], [
+const bus1b = busLes(1, 2, "Bussommen (moeilijker)", [
   [12, 5], [11, 2], [14, 2], [13, 5], [16, 4], [15, 2], [10, 6], [12, 7], [11, 5], [14, 4], [17, 2], [13, 3], [10, 7], [15, 4], [16, 3],
 ]);
 /* Level 3: beide getallen 5–9, altijd over het tiental (uitkomst 11–17). */
-const bus1c = busLes(1, 3, "Bussommen (nog moeilijker)", [8, 4], [
+const bus1c = busLes(1, 3, "Bussommen (nog moeilijker)", [
   [8, 5], [7, 7], [9, 5], [6, 7], [8, 8], [5, 7], [9, 6], [7, 8], [6, 6], [9, 8], [5, 6], [8, 6], [6, 9], [7, 9], [5, 8],
 ]);
 /* Bussommen 2, level 1: uitkomst tot 10, 1–8 instappers. */
-const bus2a = busLes(2, 1, "Bussommen met een getal", [4, 2], [
+const bus2a = busLes(2, 1, "Bussommen met een getal", [
   [4, 3], [1, 8], [3, 3], [6, 1], [5, 4], [2, 6], [7, 3], [4, 5], [1, 7], [6, 3], [2, 2], [8, 2], [3, 5], [5, 1], [2, 7],
 ]);
 /* Level 2: in de bus 10–18, 1–8 instappers, uitkomst 14–20 zonder over het tiental. */
-const bus2b = busLes(2, 2, "Bussommen met een getal (moeilijker)", [12, 3], [
+const bus2b = busLes(2, 2, "Bussommen met een getal (moeilijker)", [
   [12, 6], [10, 7], [13, 2], [15, 3], [17, 2], [11, 5], [14, 5], [10, 4], [16, 2], [12, 8], [18, 1], [13, 6], [11, 3], [15, 5], [14, 2],
 ]);
 /* Level 3: in de bus 2–9, 4–9 instappers en één keer een instapper boven de 10; bijna altijd over het tiental. */
-const bus2c = busLes(2, 3, "Bussommen met een getal (nog moeilijker)", [8, 4], [
+const bus2c = busLes(2, 3, "Bussommen met een getal (nog moeilijker)", [
   [6, 13], [7, 6], [8, 8], [3, 9], [9, 7], [6, 5], [4, 8], [8, 6], [9, 4], [5, 9], [7, 7], [2, 9], [8, 5], [9, 9], [7, 4],
 ]);
 
 /* ---------- Kale sommen ---------- */
 
-function kaalLes(level: number, titel: string, voorbeeld: [number, number], sommen: [number, number][]) {
+function kaalLes(level: number, titel: string, sommen: [number, number][]) {
+  /* Het beginscherm en de uitleg na "Nee" gaan over de eerste vraag van de les (BOUWREGELS 14.21). */
+  const voorbeeld = sommen[0];
   return les({
     id: `squla-plus-kaal-${level}`,
     titel,
@@ -1204,15 +1225,15 @@ function kaalLes(level: number, titel: string, voorbeeld: [number, number], somm
 }
 
 /* Level 1: beide getallen 1–6, uitkomst tot 10. */
-const kaal1 = kaalLes(1, "Plussommen uitrekenen", [4, 3], [
+const kaal1 = kaalLes(1, "Plussommen uitrekenen", [
   [3, 4], [6, 2], [1, 5], [3, 3], [4, 1], [5, 4], [2, 5], [6, 4], [1, 3], [4, 4], [3, 5], [2, 1], [5, 5], [6, 3], [3, 2],
 ]);
 /* Level 2: 10–17 plus 1–9, tot 20 zonder over het tiental. */
-const kaal2 = kaalLes(2, "Plussommen uitrekenen (moeilijker)", [13, 5], [
+const kaal2 = kaalLes(2, "Plussommen uitrekenen (moeilijker)", [
   [10, 7], [13, 6], [15, 3], [12, 4], [11, 8], [16, 4], [14, 2], [10, 5], [17, 1], [12, 7], [13, 3], [11, 6], [15, 5], [14, 4], [16, 2],
 ]);
 /* Level 3: beide getallen 3–9, altijd over het tiental; veel dubbelsommen, bijna-dubbel en sommen met 9. */
-const kaal3 = kaalLes(3, "Plussommen uitrekenen (nog moeilijker)", [7, 6], [
+const kaal3 = kaalLes(3, "Plussommen uitrekenen (nog moeilijker)", [
   [7, 7], [7, 8], [6, 5], [8, 9], [5, 7], [9, 3], [6, 6], [4, 7], [9, 6], [8, 5], [9, 4], [6, 8], [3, 9], [8, 8], [7, 9],
 ]);
 

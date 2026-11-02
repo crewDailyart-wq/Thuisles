@@ -1380,7 +1380,9 @@ function les(d: Lesdef): Lesdraaiboek {
           st.huidig = "";
         },
         uitleg: async () => {
-          for (const [i, q] of d.voorbeeld.entries()) await legUit(l, st, `${d.id}-vb${i + 1}`, q);
+          if (d.beginMetVoorbeeld) for (const [i, q] of d.voorbeeld.entries()) await legUit(l, st, `${d.id}-vb${i + 1}`, q);
+          /* Staat er bij het beginscherm de eerste vraag, dan gaat de uitleg over diezelfde vraag (BOUWREGELS 14.21). */
+          else await legUit(l, st, `${d.id}-u1`, d.vragen[0]);
         },
       });
       let fouten = 0;

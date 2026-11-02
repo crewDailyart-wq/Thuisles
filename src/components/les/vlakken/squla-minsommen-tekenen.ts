@@ -40,16 +40,19 @@ function lijn(c: C, kleur: string, breed: number) {
   c.lineCap = "round";
 }
 
-/** Een stip voor de uitleg van Bliepo (rond, warm geel). */
-export function tekenStip(c: C, d: number) {
-  const g = c.createRadialGradient(d * 0.38, d * 0.35, 1, d / 2, d / 2, d / 2 - 2);
-  g.addColorStop(0, "#fff6c4");
-  g.addColorStop(1, "#ffc93d");
-  c.fillStyle = g;
+/** Een stip voor de uitleg van Bliepo (rond); `kleur` = de kleur van het getal (BOUWREGELS 2.1), zonder kleur warm geel. */
+export function tekenStip(c: C, d: number, kleur?: string) {
+  c.fillStyle = kleur ?? "#ffc93d";
   c.beginPath();
   c.arc(d / 2, d / 2, d / 2 - 3, 0, Math.PI * 2);
   c.fill();
-  lijn(c, "#e8962a", 2.5);
+  /* een lichtvlekje links boven, dan een dun donker randje */
+  const g = c.createRadialGradient(d * 0.38, d * 0.35, 1, d / 2, d / 2, d / 2 - 2);
+  g.addColorStop(0, "rgba(255,255,255,0.7)");
+  g.addColorStop(1, "rgba(255,255,255,0)");
+  c.fillStyle = g;
+  c.fill();
+  lijn(c, kleur ? "rgba(20,30,50,0.35)" : "#e8962a", 2.5);
   c.stroke();
 }
 

@@ -1,13 +1,13 @@
 # Stemzinnen: nog te maken met de gekozen stem
 
-Automatisch gemaakt met `npm run stemzinnen` (2026-11-01). Niet met de hand bewerken.
+Automatisch gemaakt met `npm run stemzinnen` (2026-11-02). Niet met de hand bewerken.
 
 Voor nu leest de browser deze zinnen voor (geen tegoed; `STEM_NIEUWE_ZINNEN=browser`).
 Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` zetten;
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 10751 zinnen, 311600 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 11191 zinnen, 338568 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -1886,6 +1886,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De kaas is zwaar. De tomaat is licht.
 - Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Kun je dit al?
 
+## squla-min-bus1-3 (3)
+
+- De bus heeft $g(10) pakjes. In het rondje staat $g(7). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- De bus heeft $g(17) pakjes. In het rondje staat $g(5). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- De bus heeft $g(16) pakjes. In het rondje staat $g(8). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+
+## squla-min-bus2-3 (1)
+
+- Er gaan $g(10) blokjes in de min-machine en de machine haalt er $g(3) af. Hoeveel blokjes komen eruit? Kun je dit al?
+
 ## squla-min-machine-2 (1)
 
 - Hier staan bekers en een paar zijn leeg. Welke som hoort bij het plaatje? Kun je dit al?
@@ -1894,9 +1904,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Het schoolbord is vol minsommen. Hoeveel is $somZin(7, 4)? Kun je dit al?
 
-## squla-min-machine-4 (1)
+## squla-min-machine-4 (4)
 
 - Je haalt geld uit je portemonnee en koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
+- Hier staat een minsom op het bord. Hoeveel is $somZin(8, 3)? Kun je dit al?
+- De minsommen op het bord worden groter. Hoeveel is $somZin(20, 4)? Kun je dit al?
+- Nu gaan we over de $g(10) heen. Hoeveel is $somZin(16, 9)? Kun je dit al?
+
+## squla-min-ruimte-3 (3)
+
+- In de bus liggen $g(8) pakjes en er worden er $g(3) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- In de bus liggen $g(16) pakjes en er worden er $g(4) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- In de bus liggen $g(15) pakjes en er worden er $g(7) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 
 ## squla-minsommen (gedeeld) (65)
 
@@ -3169,8 +3188,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Allebei de groepjes zijn $e(15) euro.
 - Het geld ziet er anders uit, maar het is evenveel.
 
-## uitleg (63)
+## uitleg (65)
 
+- Hier ligt $g(1) $een.
 - Hier liggen $g(a) $wat.
 - Ik leg er $g(b) bij.
 - Erbij is plus: $plus(a, b).
@@ -3194,9 +3214,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel ze maar.
 - Zoek het getal dat de rij vol maakt.
 - Kijk, een rij van tien plekjes.
-- Er staan $o(7) oranje stippen in.
-- Er zijn nog $bl(3) plekjes leeg.
-- $o(7) en $bl(3) is samen $g(10).
+- Er $a === 1 ? "staat" : "staan" $o(a) $a === 1 ? "oranje stip" : "oranje stippen" in.
+- Er is nog $bl(1) plekje leeg.
+- Er zijn nog $bl(b) plekjes leeg.
+- $o(a) en $bl(b) is samen $g(10).
 - Nu is de rij precies vol.
 - Zoek steeds het kaartje dat samen $g(10) is.
 - Zoek steeds twee getallen die samen $g(10) zijn.
@@ -3239,23 +3260,20 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - We kunnen ook terugtellen.
 
-## uitleg-bakjes (6)
+## uitleg-bakjes (10)
 
+- beker
 - Kijk, bekers met limonade.
+- Kijk, bordjes met koekjes.
 - Een paar zijn al leeg.
 - Eerst waren er $g(n) bekers vol.
+- Eerst waren er $g(n) bordjes met koekjes.
 - Er zijn $g(leeg) bekers leeg gedronken.
+- Er zijn $g(leeg) bordjes leeg.
 - Die gaan weg.
 - De som is $somZin(n, leeg) = $gu(vol).
 
-## uitleg-bus-13 (4)
-
-- De bus heeft $g(10) pakjes. In het rondje staat $g(7). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- De bus heeft $g(17) pakjes. In het rondje staat $g(5). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- De bus heeft $g(16) pakjes. In het rondje staat $g(8). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- Er gaan $g(10) blokjes in de min-machine en de machine haalt er $g(3) af. Hoeveel blokjes komen eruit? Kun je dit al?
-
-## uitleg-geld (14)
+## uitleg-geld (11)
 
 - Kijk, je hebt $g(h) euro.
 - $hoofd(SPEELGOED[ding]) kost $g(p) euro.
@@ -3268,15 +3286,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zweven $g(7) ballonnen in de lucht en er vliegen er $g(4) weg. Hoeveel ballonnen blijven er over? Kun je dit al?
 - Er staan $g(14) raketjes klaar en er vliegen er $g(3) weg. Hoeveel raketjes blijven er over? Kun je dit al?
 - Nu staan er $g(13) raketjes klaar en er vliegen er $g(6) weg. Hoeveel raketjes blijven er over? Kun je dit al?
-- Hier staat een minsom op het bord. Hoeveel is $somZin(8, 3)? Kun je dit al?
-- De minsommen op het bord worden groter. Hoeveel is $somZin(20, 4)? Kun je dit al?
-- Nu gaan we over de $g(10) heen. Hoeveel is $somZin(16, 9)? Kun je dit al?
-
-## uitleg-raketje-13 (3)
-
-- In de bus liggen $g(8) pakjes en er worden er $g(3) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- In de bus liggen $g(16) pakjes en er worden er $g(4) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
-- In de bus liggen $g(15) pakjes en er worden er $g(7) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 
 ## uitleg-som (10)
 
@@ -3967,7 +3976,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7501)
+## Door de site genoteerd, buiten de lessen (7935)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -11470,3 +11479,437 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Vandaag is het zondag. Gisteren werd het huis geschilderd. Op welke dag werd het huis geschilderd?
 - Vandaag is het zaterdag. Gisteren was het feest. De dag daarvoor stond de taart in de oven. Op welke dag stond de taart in de oven?
 - Vandaag is het maandag. Het bed staat klaar. Over 2 nachtjes is het slaapfeest. Op welke dag is het slaapfeest?
+- Er gaan er 6 weg.
+- Eerst lagen er 7 pakjes in de bus.
+- Eerst lagen er 16 pakjes in de bus.
+- Eerst lagen er 12 pakjes in de bus.
+- We tellen verder vanaf 9.
+- Naast de bus liggen 9 pakjes.
+- Nu liggen er nog 5 pakjes in de bus.
+- Dat is de minsom 8 min 3 = 5.
+- Er blijven 7 stippen over.
+- Dus 10 min 3 = 7.
+- In de bus liggen 8 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus?
+- 10 blokjes gaan de machine in. De machine haalt er 3 af. Hoeveel blokjes komen eruit?
+- In de bus liggen 9 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- 10 blokjes gaan de machine in. De machine haalt er 5 af. Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in. De machine haalt er 1 af. Hoeveel blokjes komen eruit?
+- In de bus liggen 10 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- 10 blokjes gaan de machine in. De machine haalt er 4 af. Hoeveel blokjes komen eruit?
+- In de bus liggen 5 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 7 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- 10 blokjes gaan de machine in. De machine haalt er 2 af. Hoeveel blokjes komen eruit?
+- In de bus liggen 6 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 9 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 4 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 10 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 7 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 8 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 3 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 9 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 6 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 8 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Nu liggen er nog 12 pakjes in de bus.
+- Dat is de minsom 16 min 4 = 12.
+- In de bus liggen 16 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 18 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 19 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 14 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 17 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 15 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 18 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 12 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 19 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 14 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 15 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 17 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 17 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 19 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 18 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 15 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 19 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 14 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 17 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 19 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 18 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Kijk goed naar het plaatje. Maak de puzzel. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.
+- Naast de bus liggen 3 pakjes.
+- Nu liggen er 15 pakjes in de bus.
+- Er liggen 12 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- 8 + 4 = 12.
+- Nu liggen er 12 pakjes in de bus.
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 13 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 11 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 14 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 8 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 13 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 3 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 16 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 15 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 10 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 4 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 12 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 8 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 11 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 14 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 17 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 13 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 2 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 10 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 8 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 15 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 16 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Kijk: 7 oranje stippen en 7 blauwe stippen.
+- Hoeveel is dan 7 + 7?
+- 10 en nog 7: hoeveel is dat?
+- Er komen 7 blauwe stippen bij.
+- Begin bij het grootste getal: 13.
+- 10 oranje stippen: de bovenste rij is vol.
+- Dus 3 + 4 is één meer dan 6.
+- Kijk: 3 oranje stippen en 4 blauwe stippen.
+- Kijk naar de 3 en de 6.
+- 3 + 6 = 9.
+- 13 is 10 en nog 3.
+- 10 + 7 = 17.
+- 6 + 13 = 19.
+- Nu liggen er 19 pakjes in de bus.
+- Reken uit. Hoeveel is 7 + 7?
+- Reken uit. Hoeveel is 10 + 7?
+- Reken uit. Hoeveel is 3 + 4?
+- Reken uit. Hoeveel is 7 + 8?
+- Reken uit. Hoeveel is 13 + 6?
+- Reken uit. Hoeveel is 6 + 2?
+- Reken uit. Hoeveel is 6 + 5?
+- Reken uit. Hoeveel is 15 + 3?
+- Reken uit. Hoeveel is 1 + 5?
+- Reken uit. Hoeveel is 8 + 9?
+- Reken uit. Hoeveel is 12 + 4?
+- Reken uit. Hoeveel is 3 + 3?
+- Reken uit. Hoeveel is 11 + 8?
+- Reken uit. Hoeveel is 5 + 7?
+- Reken uit. Hoeveel is 4 + 1?
+- Reken uit. Hoeveel is 16 + 4?
+- Reken uit. Hoeveel is 9 + 3?
+- Reken uit. Hoeveel is 14 + 2?
+- Reken uit. Hoeveel is 5 + 4?
+- Reken uit. Hoeveel is 6 + 6?
+- Reken uit. Hoeveel is 10 + 5?
+- Reken uit. Hoeveel is 2 + 5?
+- Reken uit. Hoeveel is 4 + 7?
+- Reken uit. Hoeveel is 17 + 1?
+- Reken uit. Hoeveel is 6 + 4?
+- Reken uit. Hoeveel is 12 + 7?
+- Reken uit. Hoeveel is 9 + 6?
+- Reken uit. Hoeveel is 1 + 3?
+- Reken uit. Hoeveel is 13 + 3?
+- Reken uit. Hoeveel is 8 + 5?
+- Reken uit. Hoeveel is 4 + 4?
+- Reken uit. Hoeveel is 11 + 6?
+- Reken uit. Hoeveel is 9 + 4?
+- Reken uit. Hoeveel is 3 + 5?
+- Reken uit. Hoeveel is 15 + 5?
+- Reken uit. Hoeveel is 6 + 8?
+- Reken uit. Hoeveel is 2 + 1?
+- Reken uit. Hoeveel is 14 + 4?
+- Reken uit. Hoeveel is 3 + 9?
+- Reken uit. Hoeveel is 16 + 2?
+- Reken uit. Hoeveel is 5 + 5?
+- Reken uit. Hoeveel is 8 + 8?
+- Reken uit. Hoeveel is 6 + 3?
+- Reken uit. Hoeveel is 7 + 9?
+- Reken uit. Hoeveel is 3 + 2?
+- Hier liggen 10 stokbroden.
+- Erbij is plus: 1 + 4.
+- Erbij is plus: 10 + 3.
+- 1 + 4 = 5.
+- Hier ligt 1 taartje. Daar liggen er 4. Hoeveel taartjes zijn het samen?
+- Hier liggen 5 witte broden. Daar liggen 2 bruine broden. Hoeveel broden zijn het samen?
+- Er liggen 10 stokbroden. Ik leg er 3 bij. Hoeveel stokbroden zijn het samen?
+- Er staan 4 cupcakes klaar. Ik bak er nog 5 bij. Hoeveel cupcakes zijn het samen?
+- Er liggen 13 krentenbollen. Ik bak er 4 bij. Hoeveel krentenbollen zijn het samen?
+- Hier liggen 2 krentenbollen. Daar liggen er 6. Hoeveel krentenbollen zijn het samen?
+- Hier liggen 14 donuts. Daar ligt er nog 1. Hoeveel donuts zijn het samen?
+- Er liggen nog maar 3 koekjes. Ik bak er 7 bij. Welke som hoort erbij?
+- Ik heb 6 broodjes. Ik bak er 12 bij. Hoeveel broodjes zijn het samen?
+- Er liggen 5 koekjes. Er komen er 14 bij. Hoeveel koekjes zijn het samen?
+- Hoeveel cupcakes zijn het samen? Welke som past erbij?
+- Welk antwoord hoort bij welke som? Tik op een som en dan op het antwoord.
+- Hoeveel croissants zijn het samen? Welke som past erbij?
+- Hier liggen 4 donuts. Daar liggen er ook 4. Hoeveel donuts zijn het samen?
+- Ik heb 2 croissants gebakken. Daarna bak ik er nog 5. Hoeveel croissants zijn het samen?
+- Hier liggen 3 broodjes. Daar liggen er 6. Hoeveel broodjes zijn het samen?
+- Er staan 4 taartjes. Ik zet er 5 bij. Welke som hoort erbij?
+- Er staan 11 taartjes. Ik zet er 7 bij. Hoeveel taartjes zijn het samen?
+- Er liggen 16 croissants. Ik bak er 3 bij. Hoeveel croissants zijn het samen?
+- Hoeveel donuts zijn het samen? Welke som past erbij?
+- Ik heb 7 koekjes. Er komen er 2 bij. Hoeveel koekjes zijn het samen?
+- Hier liggen 5 krentenbollen. Daar liggen er ook 5. Hoeveel krentenbollen zijn het samen?
+- Ik heb 3 broodjes. Er komen er 15 bij. Hoeveel broodjes zijn het samen?
+- Hier liggen 6 koekjes.
+- Erbij is plus: 6 + 6.
+- Ik leg er 6 bij.
+- Kijk: 6 oranje stippen en 6 blauwe stippen.
+- Hoeveel is dan 6 + 6?
+- Er liggen 6 koekjes. Ik bak er nog 6 bij. Hoeveel koekjes zijn het samen?
+- Er liggen 7 croissants. Er komen er nog 6 bij. Hoeveel croissants zijn het samen?
+- 2 + 1 = 3.
+- Nu liggen er 3 pakjes in de bus.
+- Er liggen 8 broodjes. Ik leg er 4 bij. Hoeveel broodjes zijn het samen?
+- Er liggen 2 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 3 donuts. Ik bak er nog 5 bij. Hoeveel donuts zijn het samen?
+- Hier staan 8 taartjes. Daar staan er ook 8. Hoeveel taartjes zijn het samen?
+- Tel de broodjes bij elkaar op. Welke twee sommen passen erbij? Tik op twee sommen.
+- Er liggen 4 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Tel de krentenbollen bij elkaar op. Welke twee sommen passen erbij? Tik op twee sommen.
+- Er liggen 2 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Reken uit. Hoeveel is 9 + 9?
+- Er liggen 7 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er staan 5 cupcakes. Ik bak er 7 bij. Hoeveel cupcakes zijn het samen?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Hier liggen 7 koekjes. Daar liggen er ook 7. Hoeveel koekjes zijn het samen?
+- Tel de donuts bij elkaar op. Welke twee sommen passen erbij? Tik op twee sommen.
+- Er liggen 8 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 3 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Reken uit. Hoeveel is 8 + 6?
+- Er liggen 9 croissants. Ik bak er 4 bij. Hoeveel croissants zijn het samen?
+- Er liggen 2 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 3 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- 12 + 5 = 17.
+- Nu liggen er 17 pakjes in de bus.
+- Nu liggen er 13 pakjes in de bus.
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 9 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 6 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 9 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 4 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Eerst waren er 5 bekers vol.
+- Er zijn 2 bekers leeg gedronken.
+- De som is 5 min 2 = 3.
+- Kijk naar de bekers. Welke som hoort bij het plaatje?
+- Kijk naar de bordjes. Welke som hoort bij het plaatje?
+- 10 blokjes gaan de machine in. De machine haalt er 8 af. Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in. De machine haalt er 6 af. Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in. De machine haalt er 10 af. Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in. De machine haalt er 9 af. Hoeveel blokjes komen eruit?
+- 10 blokjes gaan de machine in. De machine haalt er 7 af. Hoeveel blokjes komen eruit?
+- Kijk, 7 min 4.
+- Het ijsje kost 2 euro.
+- Kijk, je hebt 6 euro.
+- Dan houd je 4 euro over.
+- Je betaalt 2 euro.
+- Er blijven 3 stippen over.
+- Dus 7 min 4 = 3.
+- Kijk naar je geld. Je koopt het ijsje. Hoeveel euro houd je over?
+- Hoeveel is 7 min 4? Typ het getal.
+- Luister goed. Hoeveel is 7 min 2?
+- Hoeveel is 10 min 6? Typ het getal.
+- Kijk naar je geld. Je koopt de bal. Hoeveel euro houd je over?
+- Hoeveel is 9 min 3? Typ het getal.
+- Kijk naar je geld. Je koopt de vlieger. Hoeveel euro houd je over?
+- Hoeveel is 6 min 5? Typ het getal.
+- Luister goed. Hoeveel is 9 min 7?
+- Hoeveel is 5 min 4? Typ het getal.
+- Kijk naar je geld. Je koopt het boek. Hoeveel euro houd je over?
+- Hoeveel is 10 min 5? Typ het getal.
+- Luister goed. Hoeveel is 10 min 4?
+- Hoeveel is 7 min 6? Typ het getal.
+- Hoeveel is 6 min 3? Typ het getal.
+- Kijk naar je geld. Je koopt de ballon. Hoeveel euro houd je over?
+- Hoeveel is 9 min 5? Typ het getal.
+- Hoeveel is 7 min 3? Typ het getal.
+- Luister goed. Hoeveel is 8 min 5?
+- Hoeveel is 6 min 4? Typ het getal.
+- Hoeveel is 7 min 5? Typ het getal.
+- Luister goed. Hoeveel is 6 min 5?
+- Hoeveel is 9 min 7? Typ het getal.
+- Hoeveel is 8 min 2? Typ het getal.
+- Hoeveel is 10 min 7? Typ het getal.
+- Luister goed. Hoeveel is 9 min 3?
+- De onderste rij is nog leeg. Hoe ziet de onderste rij eruit? Tik op je antwoord.
+- De onderste rij is nog leeg. Hoe ziet de onderste rij eruit?
+- Geel, rood, blauw? Niet helemaal.
+- Help je mee opruimen? Op welk plaatje zie je alleen broeken? Tik op je antwoord.
+- Het speelgoed hoort op de plank, naast het boek. Op welk plaatje is dat goed?
+- De potloden horen in de tekendoos. Op welk plaatje is dat goed?
+- Wat hoort bij elkaar? Tik op twee plaatjes die bij elkaar horen.
+- Dat zijn allebei boeken.
+- Nu zetten we alles netjes neer. Op welk plaatje staan de boeken van klein naar groot?
+- Help je mee opruimen? Op welk plaatje zie je alleen schoenen?
+- Nu liggen er nog 3 pakjes in de bus.
+- Dat is de minsom 10 min 7 = 3.
+- In de bus liggen 10 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus?
+- In de bus liggen 7 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 8 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 5 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 9 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 4 pakjes. De bus bezorgt er 1. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 8 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 7 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 9 pakjes. De bus bezorgt er 3. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 5 pakjes. De bus bezorgt er 2. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 10 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Kijk, 20 min 4.
+- Er blijven 16 stippen over.
+- Dus 20 min 4 = 16.
+- Hoeveel is 20 min 4? Typ het getal.
+- Er blijven 7 raketjes over.
+- Hoeveel is 19 min 5? Typ het getal.
+- Dat is de minsom 13 min 6 = 7.
+- Er staan 13 raketjes klaar. 6 raketjes vliegen weg. Hoeveel raketjes blijven er over?
+- Hoeveel is 17 min 6? Typ het getal.
+- Er zweven 15 ballonnen in de lucht. 7 ballonnen vliegen weg. Hoeveel ballonnen blijven er over?
+- Hoeveel is 18 min 3? Typ het getal.
+- Er zweven 12 bellen. 5 bellen knappen. Hoeveel bellen blijven er over?
+- Hoeveel is 16 min 2? Typ het getal.
+- Er staan 17 raketjes klaar. 8 raketjes vliegen weg. Hoeveel raketjes blijven er over?
+- Hoeveel is 14 min 7? Typ het getal.
+- Er vliegen 14 ufo's rond. 6 ufo's vliegen weg. Hoeveel ufo's blijven er over?
+- Hoeveel is 20 min 6? Typ het getal.
+- Er staan 16 sterren aan de hemel. De ufo neemt ze allemaal mee. Hoeveel sterren blijven er over? Welke som hoort hierbij?
+- Hoeveel is 16 min 6? Typ het getal.
+- Er draaien 18 satellieten rond de aarde. De ufo neemt er geen enkele mee. Hoeveel satellieten blijven er over? Welke som hoort hierbij?
+- Hoeveel is 15 min 3? Typ het getal.
+- Hoeveel is 18 min 8? Typ het getal.
+- Hoeveel is 19 min 2? Typ het getal.
+- Hoeveel is 14 min 9? Typ het getal.
+- Er draaien 11 satellieten rond de aarde. 3 satellieten vallen terug naar de aarde. Hoeveel satellieten blijven er over?
+- Hoeveel is 20 min 8? Typ het getal.
+- Er staan 13 sterren aan de hemel. De ufo neemt er 4 mee. Hoeveel sterren blijven er over? Welke som hoort hierbij?
+- Hoeveel is 17 min 4? Typ het getal.
+- Hoeveel is 15 min 4? Typ het getal.
+- Hoeveel is 16 min 7? Typ het getal.
+- Hoeveel is 18 min 7? Typ het getal.
+- Er vliegen 16 kometen door de ruimte. 8 kometen verdwijnen. Hoeveel kometen blijven er over?
+- Waar liggen 14 goudstukken? Tik op het goede plaatje.
+- Waar liggen 11 goudstukken? Tik op het goede plaatje.
+- Nu een raadsel! Wat eet een robot het liefst? Een zak chips, of een kom soep? Tik op het goede plaatje.
+- Vandaag eten we pizza. Welke pizza is het grootst? Tik op de pizza.
+- Deze pizza is nog te klein. Welke pizza is groter?
+- De pizza's zitten in een doos. De dozen zijn even groot. Welke pizza is nu het grootst?
+- Zet de pizza's op volgorde. Van klein naar groot. Sleep een plaatje naar een leeg vak. Tikken mag ook.
+- Na de pizza is er een ijsje. Welk ijsje is het kleinst?
+- Nu twee pizza's met salami. Welke pizza is het grootst?
+- Dit ijsje is nog te klein. Welk ijsje is groter?
+- Weer twee dozen. Welke pizza is het grootst?
+- Zet de ijsjes op volgorde. Van klein naar groot.
+- Je veegt de stoep en je geeft de planten water. Voor elke klus krijg je 2 euro. Hoeveel is dat bij elkaar? Waar ligt dat geld?
+- Je wast de fiets en je maakt je bed op. Voor elke klus krijg je 3 euro. Hoeveel is dat bij elkaar? Waar ligt dat geld?
+- Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op je antwoord.
+- Twee pizza's met olijven. Welke pizza is het kleinst?
+- Dit geld zit in je spaarpot. En dit geld zit in je portemonnee. Hoeveel euro heb je bij elkaar?
+- Kijk naar de ketting. Welke kraal komt na de roze kraal?
+- Kijk naar de pizza's in de dozen. Zet ze op volgorde. Van klein naar groot.
+- Kijk naar de ketting. Welke kraal komt na de oranje kraal?
+- Kijk, dit skateboard wil je kopen. Het kost 20 euro. Waar ligt 20 euro? Tik op twee groepjes geld.
+- Kijk naar de ketting. Welke kraal komt nu?
+- Nog meer pizza! Welke pizza is groter?
+- Je ruimt de schuur op. Daarvoor krijg je 5 euro. Je had al 10 euro. Hoeveel is 10 euro en 5 euro samen?
+- Er is een lege plek in de ketting. Welke kraal hoort op de lege plek?
+- Je hebt nu 15 euro. Het skateboard kost 20 euro. Hoeveel moet er nog bij 15 om bij 20 te komen?
+- Zet de pizza's op volgorde. Van klein naar groot.
+- Maak de ketting langer. Kijk goed naar het patroon. Sleep de kralen naar de lege plekken.
+- Je doet de afwas. Daarvoor krijg je 2 euro. Hoeveel geld heb je nu? Kijk maar naar het plaatje.
+- Maak de ketting langer. Kijk goed naar het patroon.
+- Je zet alle schoenen netjes in de gang. Je krijgt 1 euro. Je had 17 euro. Waar ligt het geld dat je nu hebt?
+- Tel de appels. Hoeveel appels zijn het?
+- Je hebt nu 18 euro. Het skateboard kost 20 euro. Hoeveel moet er nog bij 18 om bij 20 te komen?
+- Tel de sterren. Hoeveel sterren zijn het?
+- Er is iets weg. Wat hoort bij de pijl?
+- Tel de bloemen. Hoeveel bloemen zijn het?
+- Je hangt alle jassen netjes op. Daarvoor krijg je 2 euro. Je had 18 euro. Hoeveel is 18 euro en 2 euro samen?
+- Tel de ballen. Hoeveel ballen zijn het?
+- Tel de ballonnen. Hoeveel ballonnen zijn het?
+- Je hebt nu 20 euro. Waar ligt 20 euro?
+- Kijk naar de vormen. Welke vorm komt nu?
+- Je telt je geld nog één keer. Dit geld zit in je spaarpot. En dit geld zit in je portemonnee. Hoeveel euro heb je bij elkaar?
+- Nu een puzzel. Kijk goed naar het patroon. Maak de puzzel.
+- Er staan 9 oranje stippen in.
+- Er is nog 1 plekje leeg.
+- 9 en 1 is samen 10.
+- De zon lijkt op een cirkel.
+- Kijk naar de tent. Welke vorm lijkt erop?
+- Kijk naar de mandarijn. Welke vorm lijkt erop?
+- Kijk naar de plank. Welke vorm lijkt erop?
+- Kijk naar de vlaggetjes. Welke vorm lijkt erop?
+- Kijk naar de planeet. Welke vorm lijkt erop?
+- Kijk naar de pizzadoos. Welke vorm lijkt erop?
+- Kijk naar het schoolbord. Welke vorm lijkt erop?
+- Kijk naar het stuk pizza. Welke vorm lijkt erop?
+- Kijk naar de knoop. Welke vorm lijkt erop?
+- Kijk naar het blok. Welke vorm lijkt erop?
+- Kijk naar de telefoon. Welke vorm lijkt erop?
+- Kijk naar het feesthoedje. Welke vorm lijkt erop?
+- Kijk naar het koekje. Welke vorm lijkt erop?
+- Kijk naar de doos. Welke vorm lijkt erop?
+- Kijk naar het boek. Welke vorm lijkt erop?
+- Er zijn 6 ballen in totaal.
+- Kijk eerst naar de boterham bovenaan.
+- De fiets staat links.
+- Meer kaas: je ziet méér kaas dan bovenaan.
+- De auto staat in het midden.
+- De bus staat rechts.
+- Tel verder van 2 tot 6.
+- Buiten liggen er 2.
+- Dat zijn er 4.
+- 3, 4, 5, 6.
+- 2 en 4 is samen 6.
+- Kijk naar de rij. Wat staat er rechts?
+- Daar zit meer kaas op dan bovenaan.
+- Er zijn 6 ballen. Hoeveel zitten er in de doos?
+- Kijk naar de boterham bovenaan. Op welke boterham zit meer kaas?
+- Kijk naar de rij. Wat staat er links?
+- Er zijn 5 ballen. Hoeveel zitten er in de doos?
+- Kijk naar de rij. Wat staat er in het midden?
+- Er zijn 8 ballen. Hoeveel zitten er in de doos?
+- Kijk naar de boterham bovenaan. Op welke boterham zit minder kaas?
+- Er zijn 10 knikkers. Hoeveel zitten er in de zak?
+- Er zijn 9 knikkers. Hoeveel zitten er in de zak?
+- Kijk naar de boterham bovenaan. Op welke boterham zit evenveel kaas?
+- Er zijn 7 ballen. Hoeveel zitten er in de doos?
+- Er zijn 9 ballen. Hoeveel zitten er in de doos?
+- Er zijn 10 ballen. Hoeveel zitten er in de doos?
+- Er zijn 7 knikkers. Hoeveel zitten er in de zak?
+- Er zijn 8 knikkers. Hoeveel zitten er in de zak?
+- Er zijn 6 knikkers. Hoeveel zitten er in de zak?
+- Er zijn 5 knikkers. Hoeveel zitten er in de zak?
+- Na 10 komt het getal dat één meer is.
+- Op het eerste plekje staat 10.
+- 10, 11, 12, 13, 14.
+- We tellen verder vanaf 10. Zet de getallen op hun plek.
+- Hier zijn er 6.
+- Hier liggen potloden. Zet ze op volgorde, van minder naar meer.
+- Kijk naar de getallen. Zet ze op volgorde, van hoog naar laag.
+- Alles hoort bij elkaar.
+- Wat hoort bij elkaar? Verbind elk groepje met het goede getal.
+- Wat hoort bij elkaar? Verbind de groepjes die evenveel zijn.
+- Wat gebeurt eerst? En wat daarna? Zet de plaatjes op volgorde.
+- We tellen verder vanaf 11. Zet de getallen op hun plek.
+- Hier liggen knikkers. Zet ze op volgorde, van minder naar meer.
+- We tellen verder vanaf 12. Zet de getallen op hun plek.
+- Hier liggen sterren. Zet ze op volgorde, van minder naar meer.

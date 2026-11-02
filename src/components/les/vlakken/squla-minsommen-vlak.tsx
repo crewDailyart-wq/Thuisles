@@ -112,7 +112,7 @@ export type MinVlakProps = {
   grijs?: number;
   licht?: Licht;
   /** Stippen voor de uitleg (rijtjes van 5), met zoveel grijs. */
-  stippen?: { n: number; grijs: number } | null;
+  stippen?: { n: number; grijs: number; kleur?: string } | null;
   /** Machine: wat er uit de machine komt (anders "?"). */
   uitkomst?: number | null;
   verbind?: VerbindStand | null;
@@ -150,11 +150,11 @@ function ruimtePlekken(n: number, metUfo: boolean): { plekken: Plek[]; schaal: n
 const UFO_PLEK: Plek = { x: 830, y: 300 };
 
 /** Stippen: rijtjes van 5, tien per blok; meer dan tien: tweede blok ernaast. */
-function stipPlekken(n: number, y: number): Plek[] {
+function stipPlekken(n: number, y: number, cx = 490): Plek[] {
   const cel = 46;
   const blokB = 5 * cel;
   const totaal = n > 10 ? blokB * 2 + 40 : blokB;
-  const x0 = 490 - totaal / 2 + cel / 2;
+  const x0 = cx - totaal / 2 + cel / 2;
   return Array.from({ length: n }, (_, i) => {
     const blok = Math.floor(i / 10);
     const j = i % 10;
@@ -171,26 +171,76 @@ function stipY(t: Toneel | null) {
 }
 
 /* Bus: het plaatje "bezorgbus" (vierkant) links; de pakjes liggen in de laadruimte. */
-const BUS = { x: 330, y: 380, maat: 640 };
+type BusLay = {
+  bus: { x: number; y: number; maat: number };
+  /** Zo groot hooguit (punten) is een pakje in de bus. */
+  maxPakje: number;
+  buiten: (i: number) => Plek;
+  /** Zo groot (punten) staat een bezorgd pakje buiten de bus. */
+  buitenMaat: number;
+  rondje: Plek;
+  /** De pijl "naar buiten"; staand staat hij anders bij het rode rondje dan bij de pakjes buiten. */
+  pijl: (rondje: boolean) => Plek;
+};
+const BUS_LIGGEND: BusLay = {
+  bus: { x: 330, y: 380, maat: 640 },
+  maxPakje: 58,
+  /* Bezorgd: buiten de bus op een stapeltje van 3 breed. */
+  buiten: (i) => ({ x: 790 + (i % 3) * 62, y: 484 - Math.floor(i / 3) * 58 }),
+  buitenMaat: 54,
+  rondje: { x: 860, y: 400 },
+  pijl: () => ({ x: 700, y: 400 }),
+};
+/*
+ * Op een staand scherm (telefoon, tablet rechtop) is het vlak maar zo breed als het scherm, dus 980 punten worden
+ * ±390 pixels en een pakje van 58 punten wordt 23 pixels: niet te tellen (BOUWREGELS 14.23). Daarom staat de bus dan
+ * veel groter in het vlak: het raam vult bijna de hele breedte (de achterkant van de bus valt er een beetje buiten),
+ * en wat bezorgd is, staat in een rij onder de bus.
+ */
+const BUS_STAAND: BusLay = {
+  bus: { x: 490, y: 356, maat: 1250 },
+  maxPakje: 96,
+  buiten: (i) => ({ x: 96 + i * 76, y: 668 }),
+  buitenMaat: 70,
+  rondje: { x: 700, y: 652 },
+  pijl: (rondje) => (rondje ? { x: 540, y: 646 } : { x: 900, y: 646 }),
+};
+let BL: BusLay = BUS_LIGGEND;
+const BUS = BUS_LIGGEND.bus;
 /** De laadruimte als deel van het (vierkante) plaatje: links, boven, breed, hoog. */
 const LAAD = { x: 0.13, y: 0.34, b: 0.46, h: 0.22 };
 /** Het pakje is als plaatje PAKJE groot; in de bus krijgt het zijn maat uit busMaat (BOUWREGELS 14.23). */
 const PAKJE = 56;
-/** Zo groot als past in het raam, in rijen van 5 zoals een tienrek (10 = twee rijen van 5): tot 10 pakjes ±58, meer pakjes kleiner. */
-const busMaat = (n: number) => Math.min(58, (LAAD.h * BUS.maat) / Math.max(1, Math.ceil(n / 5)));
-/** Plek van pakje i van n in de bus: rijen van 5, de onderste rij eerst. */
+/**
+ * Het aantal pakjes naast elkaar: tot 10 (en op een liggend scherm altijd) rijen van 5, zoals een tienrek (10 = twee
+ * rijen van 5). Staand en meer dan 10: zoveel kolommen (5 t/m 8) dat de pakjes zo groot mogelijk worden.
+ */
+function busKol(n: number): number {
+  if (BL === BUS_LIGGEND || n <= 10) return 5;
+  const b = LAAD.b * BL.bus.maat;
+  const h = LAAD.h * BL.bus.maat;
+  let beste = 5;
+  let bestM = 0;
+  for (let c = 5; c <= 8; c++) {
+    const m = Math.min(BL.maxPakje, b / c, h / Math.ceil(n / c));
+    if (m > bestM + 1) {
+      bestM = m;
+      beste = c;
+    }
+  }
+  return beste;
+}
+/** Zo groot als past in het raam: tot 10 pakjes ±58 (staand ±96), meer pakjes kleiner. */
+const busMaat = (n: number) => Math.min(BL.maxPakje, (LAAD.b * BL.bus.maat) / busKol(n), (LAAD.h * BL.bus.maat) / Math.max(1, Math.ceil(n / busKol(n))));
+/** Plek van pakje i van n in de bus: de onderste rij eerst. */
 function busPlek(i: number, n: number): Plek {
   const m = busMaat(n);
-  const links = BUS.x - BUS.maat / 2 + LAAD.x * BUS.maat;
-  const boven = BUS.y - BUS.maat / 2 + LAAD.y * BUS.maat;
-  return { x: links + (LAAD.b * BUS.maat) / 2 + ((i % 5) - 2) * m, y: boven + LAAD.h * BUS.maat - m / 2 - 2 - Math.floor(i / 5) * m };
+  const c = busKol(n);
+  const links = BL.bus.x - BL.bus.maat / 2 + LAAD.x * BL.bus.maat;
+  const boven = BL.bus.y - BL.bus.maat / 2 + LAAD.y * BL.bus.maat;
+  return { x: links + (LAAD.b * BL.bus.maat) / 2 + ((i % c) - (c - 1) / 2) * m, y: boven + LAAD.h * BL.bus.maat - m / 2 - 2 - Math.floor(i / c) * m };
 }
-/** Bezorgd: buiten de bus op een stapeltje van 3 breed. */
-function buitenPlek(i: number): Plek {
-  return { x: 790 + (i % 3) * 62, y: 484 - Math.floor(i / 3) * 58 };
-}
-const RONDJE: Plek = { x: 860, y: 400 };
-const PIJL: Plek = { x: 700, y: 400 };
+const buitenPlek = (i: number): Plek => BL.buiten(i);
 
 /* Verbinden (geen kaartjes: de raketjes en de som staan los) */
 const KAART_L = { x: 250, b: 300, h: 190, ys: [140, 360, 580] };
@@ -221,7 +271,8 @@ const stukBand = (i: number): Plek => ({ x: 70 + (i % 5) * 56, y: 394 - Math.flo
 /** Plek van uitgevallen stukje j in het bakje onder de machine. */
 const stukBak = (j: number, b: number): Plek => ({ x: 490 + ((j % 5) - (Math.min(5, b) - 1) / 2) * 50, y: 528 - Math.floor(j / 5) * 48 });
 /** Plek van stukje k van n boven het vraagteken (het goede antwoord, na het goede antwoord). */
-const stukUitkomst = (k: number, n: number): Plek => ({ x: MACH.rechts.x + ((k % 5) - (Math.min(5, n) - 1) / 2) * 56, y: 222 - Math.floor(k / 5) * 54 });
+/* Een rij van 5 past niet rond het vraagteken zonder de rechterrand van het scherm te raken: iets naar links (BOUWREGELS 14.23). */
+const stukUitkomst = (k: number, n: number): Plek => ({ x: MACH.rechts.x - 24 + ((k % 5) - (Math.min(5, n) - 1) / 2) * 56, y: 222 - Math.floor(k / 5) * 54 });
 
 /* Bakjes */
 function bakjePlekken(n: number): Plek[] {
@@ -285,9 +336,10 @@ function gloedKleur(naam: string) {
 interface MinScene {
   zetLetter(f: string): void;
   zetToneel(t: Toneel | null): void;
+  zetStaand(staand: boolean): void;
   zetGrijs(n: number): void;
   zetLicht(l: Licht): void;
-  zetStippen(st: { n: number; grijs: number } | null): void;
+  zetStippen(st: { n: number; grijs: number; kleur?: string } | null): void;
   zetUitkomst(n: number | null): void;
   zetLijnen(lijnen: (number | null)[], gekozen: { kant: "l" | "r"; i: number } | null, goed: boolean): void;
   zetKaartGrijs(g: { kaart: number; n: number } | null): void;
@@ -325,6 +377,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     stipBox: Box | null = null;
     stipItems: Img[] = [];
     stipN = 0;
+    stipKleur = "";
     stipGrijsNu = 0;
     /* machine */
     rechtsLabel: Img | null = null;
@@ -459,6 +512,11 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     /* ---------- een nieuw toneel ---------- */
 
+    /** Staand scherm: de bus staat groter in het vlak (zie BUS_STAAND). Vóór `zetToneel` aanroepen. */
+    zetStaand(staand: boolean) {
+      BL = staand ? BUS_STAAND : BUS_LIGGEND;
+    }
+
     zetToneel(t: Toneel | null) {
       this.stopKlokken();
       this.machStop();
@@ -551,7 +609,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     maakBus(g: Box, t: Extract<Toneel, { soort: "bus" }>) {
-      g.add(this.plaats(this.tex("bezorgbus"), BUS.x, BUS.y));
+      g.add(this.plaats(this.tex("bezorgbus"), BL.bus.x, BL.bus.y).setScale(BL.bus.maat / BUS.maat / TX));
       for (let i = 0; i < t.in; i++) {
         const p = busPlek(i, t.in);
         this.item(g, "pakje", p.x, p.y, (busMaat(t.in) * 0.9) / PAKJE, somHex(t.in, t.b ?? 0)[0]);
@@ -902,6 +960,12 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.klokken.push(this.time.delayedCall((n - van) * 260 + 60, () => this.zetLicht(this.lichtNu)));
     }
 
+    /** De pijl "naar buiten" van de bus, op zijn plek. */
+    busPijl() {
+      const p = BL.pijl(!!(this.toneel?.soort === "bus" && this.toneel.rondje));
+      return this.plaats("sqm-pijl", p.x, p.y);
+    }
+
     /** Bus: pakje `k` (van achteren af geteld) staat nu buiten. */
     uitstappen(k: number, direct: boolean) {
       const t = this.toneel;
@@ -909,12 +973,12 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       if (!t || t.soort !== "bus" || !g) return;
       if (!this.pijl) {
         this.canvasPlaatje("sqm-pijl", 130, 110, tekenPijl);
-        this.pijl = this.plaats("sqm-pijl", PIJL.x, PIJL.y);
+        this.pijl = this.busPijl();
         g.add(this.pijl);
       }
       if (t.rondje) return this.busBuiten(k + 1, direct);
       const p = buitenPlek(k);
-      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? somHex(t.in, t.b)[1] : undefined), p.x, p.y).setScale(54 / PAKJE / TX);
+      const pakje = this.plaats(this.tex("pakje", t.b !== undefined ? somHex(t.in, t.b)[1] : undefined), p.x, p.y).setScale(BL.buitenMaat / PAKJE / TX);
       g.add(pakje);
       this.buiten[k]?.destroy();
       this.buiten[k] = pakje;
@@ -937,7 +1001,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           /* Het rondje heeft de kleur van het getal (BOUWREGELS 2.1); de tekst is donker, dat leest op elke kleur. */
           rond.fillStyle(t.b !== undefined ? hexGetal(somHex(t.in, t.b)[1]) : 0xff5a5a, 1);
           rond.fillCircle(0, 0, 56);
-          this.rondje = this.add.container(RONDJE.x, RONDJE.y, [rond, this.plaats(this.tekstTex(String(n), 64, t.b !== undefined ? "#10163a" : "#ffffff", ""), 0, 0)]);
+          this.rondje = this.add.container(BL.rondje.x, BL.rondje.y, [rond, this.plaats(this.tekstTex(String(n), 64, t.b !== undefined ? "#10163a" : "#ffffff", ""), 0, 0)]);
           g.add(this.rondje);
           if (!direct && !this.rustig) {
             this.rondje.setScale(0.6);
@@ -954,7 +1018,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         this.pijl = null;
       } else if (!this.pijl) {
         this.canvasPlaatje("sqm-pijl", 130, 110, tekenPijl);
-        this.pijl = this.plaats("sqm-pijl", PIJL.x, PIJL.y);
+        this.pijl = this.busPijl();
         g.add(this.pijl);
       }
     }
@@ -979,7 +1043,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         const blauw = 0x2f6bff;
         if (l === "over" || l === "alle") this.items.forEach((im, i) => (l === "alle" || i < this.items.length - this.grijsNu) && this.ringen.push(this.selectieRing(im.x, im.y, 25, blauw)));
         if (l === "eraf") {
-          if (t.rondje) this.ringen.push(this.selectieRing(RONDJE.x, RONDJE.y, 68, kleur));
+          if (t.rondje) this.ringen.push(this.selectieRing(BL.rondje.x, BL.rondje.y, 68, kleur));
           else this.buiten.forEach((b) => b && this.ringen.push(this.selectieRing(b.x, b.y, 28, kleur)));
         }
       } else if (t.soort === "bakjes") {
@@ -991,8 +1055,8 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     /* ---------- stippen (de uitleg van Bliepo) ---------- */
 
-    zetStippen(st: { n: number; grijs: number } | null) {
-      if (!st || st.n !== this.stipN) {
+    zetStippen(st: { n: number; grijs: number; kleur?: string } | null) {
+      if (!st || st.n !== this.stipN || (st.kleur ?? "") !== this.stipKleur) {
         this.stipBox?.destroy();
         this.stipBox = null;
         this.stipItems = [];
@@ -1000,9 +1064,13 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         this.stipGrijsNu = 0;
         if (!st) return;
         this.stipN = st.n;
+        this.stipKleur = st.kleur ?? "";
+        /* De stippen hebben de kleur van het eerste getal (BOUWREGELS 2.1); wat weggaat wordt grijs. */
+        const naam = st.kleur ? `sqm-stip-${st.kleur.slice(1)}` : "sqm-stip";
+        if (st.kleur) this.canvasPlaatje(naam, 40, 40, (c) => tekenStip(c, 40, st.kleur));
         const box = this.add.container(0, 0);
-        stipPlekken(st.n, stipY(this.toneel)).forEach((p, i) => {
-          const im = this.plaats("sqm-stip", p.x, p.y);
+        stipPlekken(st.n, stipY(this.toneel), this.toneel?.soort === "geld" ? 720 : 490).forEach((p, i) => {
+          const im = this.plaats(naam, p.x, p.y);
           box.add(im);
           this.stipItems.push(im);
           if (!this.rustig) {
@@ -1217,22 +1285,26 @@ export function SqulaMinVlak({
   const { plek, scene } = useHoloMotor<MinScene>(schaal, maakMinScene);
   const letterPlek = useRef<HTMLDivElement>(null);
   const sleutel = toneel ? JSON.stringify(toneel) : "";
+  /* Een staand scherm (of een heel klein vlak): de bus staat dan groter in het vlak. */
+  const staand = typeof window !== "undefined" && (window.innerHeight > window.innerWidth || schaal < 0.5);
   const t = useMemo(() => (sleutel ? (JSON.parse(sleutel) as Toneel) : null), [sleutel]);
 
   useEffect(() => {
     if (!scene) return;
     if (letterPlek.current) scene.zetLetter(getComputedStyle(letterPlek.current).fontFamily);
+    scene.zetStaand(staand);
     scene.zetToneel(t);
-  }, [scene, t]);
+  }, [scene, t, staand]);
   useEffect(() => {
     scene?.zetGrijs(grijs);
   }, [scene, t, grijs]);
   useEffect(() => {
     scene?.zetLicht(licht);
   }, [scene, t, licht]);
-  const stipSleutel = stippen ? `${stippen.n}-${stippen.grijs}` : "";
+  const stipSleutel = stippen ? `${stippen.n}-${stippen.grijs}-${stippen.kleur ?? ""}` : "";
   useEffect(() => {
-    scene?.zetStippen(stipSleutel ? { n: Number(stipSleutel.split("-")[0]), grijs: Number(stipSleutel.split("-")[1]) } : null);
+    const [n, gr, kl] = stipSleutel.split("-");
+    scene?.zetStippen(stipSleutel ? { n: Number(n), grijs: Number(gr), kleur: kl || undefined } : null);
   }, [scene, t, stipSleutel]);
   useEffect(() => {
     scene?.zetUitkomst(uitkomst);
