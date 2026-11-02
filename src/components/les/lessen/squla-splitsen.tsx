@@ -1087,7 +1087,7 @@ function s1PaalVraag(tot: number, a: number, keuzes: number[], ballen: boolean):
  */
 function s1MachineOpbouw(a: number, b: number, opties: Huis[], stippen: boolean) {
   const tot = a + b;
-  const [HX, HY, HB] = [490, 215, 440];
+  const [HX, HY, HB] = [490, 300, 380];
   const f = HB / 240;
   const kamerH = 92 * f;
   const kx = [HX - HB / 4, HX + HB / 4];
@@ -1108,10 +1108,11 @@ function s1MachineOpbouw(a: number, b: number, opties: Huis[], stippen: boolean)
       n: tot,
       vast: true,
       kleuren: [...Array(a).fill(KA), ...Array(b).fill(KB)] as string[],
-      tray: { x: HX, y: tot <= 5 ? 148 : 128, per: 5, dia: 46, stap: 54 },
+      tray: { x: HX, y: 100, per: 10, dia: 44, stap: 0 },
+      deco: { vw: "splitsmachine", x: HX, y: 92, maat: 170 },
       zones: [
-        { id: "l", x: kx[0], y: ky, b: HB / 2 - 14, h: kamerH - 14, kl: KA, per: 3, dia: 56 },
-        { id: "r", x: kx[1], y: ky, b: HB / 2 - 14, h: kamerH - 14, kl: KB, per: 3, dia: 56 },
+        { id: "l", x: kx[0], y: ky, b: HB / 2 - 14, h: kamerH - 14, kl: KA, per: 3, dia: 52 },
+        { id: "r", x: kx[1], y: ky, b: HB / 2 - 14, h: kamerH - 14, kl: KB, per: 3, dia: 52 },
         ...opties.map((_, i) => ({ id: `v${i}`, x: KOLOM[i], y: 566, b: 238, h: 178, per: 1, dia: 1 })),
       ],
       oplossing: [a, b],
@@ -1141,7 +1142,7 @@ function s1MachineVraag(a: number, b: number, opties: Huis[], stippen: boolean):
           }
         })().catch(() => {});
       },
-      vraag: ["De ballen vallen in het huisje.", "Welk huisje past erbij?", "Tik op het goede huisje."],
+      vraag: ["De ballen gaan door de machine en vallen in het huisje.", "Welk huisje past erbij?", "Tik op het goede huisje."],
       antwoord: async () => {
         await anim;
         return tik(l);
@@ -1364,7 +1365,7 @@ const splitsen1b = les({
   kaart: KaartSplitsen,
   voorwerpen: ["splitsmachine", "bakje", "tennisbal", "voetbalshirt", "voetbal", "basketbal"],
   begin: S1B_BEGIN,
-  welkom: ["Kijk, de ballen vallen in het huisje.", "Welk huisje past erbij?"],
+  welkom: ["De ballen gaan door de splitsmachine.", "Welk huisje past erbij?"],
   /* Het voorbeeld is de eerste vraag hieronder (de machine heeft de ballen al verdeeld). */
   voorbeeld: voorbeeldVan(s1MachineVraag(2, 4, [[5, 2, 3], [6, 2, 4], [6, 3, 3]], true)),
   uitleg: async (l, st) => {

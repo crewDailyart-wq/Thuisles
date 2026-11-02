@@ -97,14 +97,14 @@ function som(l: Lesgids, st: Stand, a: number, teken: "+" | "−", b: number, ui
    ===================================================================== */
 
 /** Plus: verder tellen vanaf het grootste getal, of eerst naar 10, of tientallen. */
-async function plusUitleg(l: Lesgids, a: number, b: number) {
+async function plusUitleg(l: Lesgids, a: number, b: number, kleur = true) {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
   /* dezelfde kleuren als de som: het eerste getal paars, het tweede oranje */
-  const kg = a >= b ? "paars" : "oranje";
-  const kk = a >= b ? "oranje" : "paars";
+  const kg = !kleur ? "wit" : a >= b ? "paars" : "oranje";
+  const kk = !kleur ? "wit" : a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) {
-    await l.zeg(`${g(a, "paars")} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b, "oranje")} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, "Hoeveel tientallen zijn het samen?");
+    await l.zeg(`${g(a, kleur ? "paars" : "wit")} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b, kleur ? "oranje" : "wit")} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, "Hoeveel tientallen zijn het samen?");
     return;
   }
   if (groot < 10 && a + b > 10) {
@@ -119,11 +119,11 @@ async function plusUitleg(l: Lesgids, a: number, b: number) {
   await l.zeg(`Begin bij ${g(groot, kg)}.`, `Tel dan ${g(klein, kk)} verder.`, "Dat mag op je vingers.");
 }
 
-function plusTip(a: number, b: number): string[] {
+function plusTip(a: number, b: number, kleur = true): string[] {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
-  const kg = a >= b ? "paars" : "oranje";
-  const kk = a >= b ? "oranje" : "paars";
+  const kg = !kleur ? "wit" : a >= b ? "paars" : "oranje";
+  const kk = !kleur ? "wit" : a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) return ["Tel de tientallen bij elkaar."];
   if (groot < 10 && a + b > 10) return [`Eerst naar ${g(10)}.`, "Dan de rest erbij."];
   return [`Begin bij ${g(groot, kg)}.`, `Tel ${g(klein, kk)} verder.`];
@@ -157,7 +157,7 @@ function pzDingen(vw: string, n: number, doel: number, fout: number, leeg: strin
     restWeg,
     n,
     tray: { x: 490, y: 160, per: n > 10 ? Math.ceil(n / 2) : n, dia: n <= 8 ? 84 : n <= 12 ? 72 : 58 },
-    zones: [{ id: "vak", x: 490, y: 440, b: 480, h: 250, kl: kl === "geel" ? "oranje" : kl, per: 5, dia: doel <= 5 ? 82 : doel <= 10 ? 68 : 58, leeg }],
+    zones: [{ id: "vak", x: 490, y: 440, b: 480, h: 250, per: 5, dia: doel <= 5 ? 82 : doel <= 10 ? 68 : 58, leeg }],
     oplossing: [doel],
     fout: [fout],
     route: pzRij(doel).map((i): [number, number] => [i, 0]),
@@ -220,9 +220,6 @@ async function pzWachtTegel(l: Lesgids, keuzes: number[]): Promise<number> {
     }
   }
 }
-
-/** De kleur van een antwoordtegel (zo heet het getal ook in Bliepo's zin). */
-const pzTegelKleur = (keuzes: number[], n: number) => PZ_TEGEL[Math.max(0, keuzes.indexOf(n)) % PZ_TEGEL.length].naam;
 
 /** De som op een eigen hoogte, nog zonder uitkomst: het antwoord ligt straks als tegel in het vak ernaast. */
 function pzSom(l: Lesgids, st: Stand, a: number, teken: "+" | "−", b: number, ka: string, kb: string, y: number) {
@@ -292,10 +289,10 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       vraag: [`Hoeveel ${NAAM[vw][1]} zijn dit samen?`, "Sleep het goede getal naar het vak."],
       antwoord: () => pzWachtTegel(l, keuzes),
       isGoed: (x) => x === s,
-      noem: (x) => g(x, pzTegelKleur(keuzes, x)),
+      noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s, pzTegelKleur(keuzes, s))}.`);
+        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
@@ -320,20 +317,20 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
-        pzSom(l, st, a, "+", b, "paars", "oranje", 470);
+        pzSom(l, st, a, "+", b, "wit", "wit", 470);
         zet(l, { s2: pzTegels(keuzes, s, 470), actief: false });
       },
-      vraag: [`Hoeveel is ${g(a, "paars")} + ${g(b, "oranje")}?`, "Sleep het goede getal naar het vak."],
+      vraag: [`Hoeveel is ${g(a)} + ${g(b)}?`, "Sleep het goede getal naar het vak."],
       antwoord: () => pzWachtTegel(l, keuzes),
       isGoed: (x) => x === s,
-      noem: (x) => g(x, pzTegelKleur(keuzes, x)),
+      noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s, pzTegelKleur(keuzes, s))}.`);
+        await l.zeg(`Ja! ${g(a)} + ${g(b)} = ${g(s)}.`);
       },
       fout: () => foutBeeld(l, st),
-      samen: () => plusUitleg(l, a, b),
-      tip: plusTip(a, b),
+      samen: () => plusUitleg(l, a, b, false),
+      tip: plusTip(a, b, false),
       testAntwoord: null,
     });
   };
@@ -644,11 +641,11 @@ const level3 = maak({
     zet(l, { licht: [] });
     await l.verder();
     toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
-    som(l, st, 8, "+", 5, undefined, "paars", "oranje", "wit");
+    som(l, st, 8, "+", 5, undefined, "wit", "wit", "wit");
     await l.zeg("Kijk goed naar het teken.", "Een plus: er komt bij.", "Een min: er gaat af.");
-    await plusUitleg(l, 8, 5);
-    som(l, st, 8, "+", 5, 13, "paars", "oranje", "wit");
-    await l.zeg(`${g(8, "paars")} + ${g(5, "oranje")} = ${g(13, "wit")}.`);
+    await plusUitleg(l, 8, 5, false);
+    som(l, st, 8, "+", 5, 13, "wit", "wit", "wit");
+    await l.zeg(`${g(8)} + ${g(5)} = ${g(13)}.`);
     await l.verder();
     l.som(null);
   },

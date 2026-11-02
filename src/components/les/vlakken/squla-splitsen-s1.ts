@@ -57,6 +57,8 @@ export type S1Spec = {
   fout: number[];
   /** Hoe de uitleg het doet: [ding of tegel, vak]. */
   route: [number, number][];
+  /** Een voorwerp (de splitsmachine) dat boven de dingen staat: de dingen komen er onderuit; het schudt bij elke stap van `auto`. */
+  deco?: { vw: string; x: number; y: number; maat: number };
   /** Alleen kijken: de dingen kunnen niet gepakt worden (de ballen vallen zelf). */
   vast?: boolean;
   /** Tegels die alvast getekend worden (één per beeld, zodat het volgende spel niet hapert). */
@@ -84,6 +86,7 @@ export function maakS1(sc: Holo, dep: Dep) {
   type Gfx = import("phaser").GameObjects.Graphics;
   type Ptr = import("phaser").Input.Pointer;
   type Txt = import("phaser").GameObjects.Text;
+  type Img = import("phaser").GameObjects.Image;
 
   type Staat = {
     sleutel: string;
@@ -92,6 +95,7 @@ export function maakS1(sc: Holo, dep: Dep) {
     inhoud: number[][];
     box: Box;
     laagDing: Box;
+    deco: Img | null;
     laagSleep: Box;
     licht: Gfx[];
     groen: Gfx[];
@@ -218,9 +222,10 @@ export function maakS1(sc: Holo, dep: Dep) {
     const box = sc.add.container(0, 0);
     const laagVak = sc.add.container(0, 0);
     const laagDing = sc.add.container(0, 0);
+    const laagDeco = sc.add.container(0, 0);
     const laagSleep = sc.add.container(0, 0);
     box.setDepth(10);
-    box.add([laagVak, laagDing, laagSleep]);
+    box.add([laagVak, laagDing, laagDeco, laagSleep]);
 
     const licht: Gfx[] = [];
     const groen: Gfx[] = [];
@@ -277,7 +282,15 @@ export function maakS1(sc: Holo, dep: Dep) {
       box.setAlpha(0);
       sc.tweens.add({ targets: box, alpha: 1, duration: 260 });
     }
-    const staat: S1Staat = { sleutel, spec, dingen, inhoud: spec.zones.map(() => []), box, laagDing, laagSleep, licht, groen, leeg };
+    let deco: Img | null = null;
+    if (spec.deco) {
+      const sl = `sps-s1-deco-${spec.deco.vw}`;
+      sc.canvasPlaatje(sl, 192, 192, (c) => tekenVoorwerp(c, spec.deco!.vw, 0, 0, 192, 192));
+      deco = sc.plaats(sl, spec.deco.x, spec.deco.y);
+      deco.setDisplaySize(spec.deco.maat, spec.deco.maat);
+      laagDeco.add(deco);
+    }
+    const staat: S1Staat = { sleutel, spec, dingen, inhoud: spec.zones.map(() => []), deco, box, laagDing, laagSleep, licht, groen, leeg };
     st = staat;
 
     /* Zacht wiebelen van wat in het hoopje ligt, en af en toe een glinstering (één keer per beeld bijgewerkt, geen filters). */
@@ -333,10 +346,10 @@ export function maakS1(sc: Holo, dep: Dep) {
   }
 
   /** Alles op zijn plek zetten (glijdend): het hoopje boven, de dingen in hun vak. */
-  function legHerein(snel = false) {
+  function legHerein(snel = false, duur = 190) {
     if (!st) return;
     const s = st;
-    const dur = snel || sc.rustig ? 1 : 190;
+    const dur = snel || sc.rustig ? 1 : duur;
     const zet = (d: Ding, x: number, y: number, dia: number) => {
       sc.tweens.killTweensOf(d.im);
       const stuit = s.dingen[neerIdx] === d && !snel && !sc.rustig;
@@ -542,7 +555,16 @@ export function maakS1(sc: Holo, dep: Dep) {
     s.dingen.forEach((d) => (d.zone = -1));
     s.spec.route.slice(0, t).forEach(([i, j]) => plaats(i, j));
     if (t > 0) speelLesgeluid("s1Leg", t - 1);
-    legHerein();
+    if (s.deco && t > 0) {
+      if (t === 1) speelLesgeluid("machineAan");
+      if (!sc.rustig) {
+        sc.tweens.killTweensOf(s.deco);
+        const d0 = s.spec.deco!.maat;
+        s.deco.setAngle(0).setDisplaySize(d0, d0);
+        sc.tweens.add({ targets: s.deco, angle: { from: -3, to: 3 }, displayHeight: d0 * 1.05, duration: 90, yoyo: true, repeat: 1, onComplete: () => s.deco?.setAngle(0).setDisplaySize(d0, d0) });
+      }
+    }
+    legHerein(false, s.deco ? 380 : 190);
   }
 
   /** De volgende sleepbeweging voor de automatische test. `doel` = oplossing (goed) of fout. */
