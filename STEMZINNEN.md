@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 11191 zinnen, 338568 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 11699 zinnen, 371718 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -173,9 +173,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Plus 2 losse blokken.
 - Tot de volgende keer.
 
-## b (13)
+## b (25)
 
-- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s).
+- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s, pzTegelKleur(keuzes, s)).
 - Hier $a === 1 ? "is" : "zijn" $g(a, "paars") $a === 1 ? NAAM[vw][0] : NAAM[vw][1].
 - Daar $b === 1 ? "is" : "zijn" $g(b, "oranje") $b === 1 ? NAAM[vw][0] : NAAM[vw][1].
 - Hier liggen $g(3, "paars") diamanten.
@@ -187,7 +187,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij de rots ligt een kistje.
 - Er zit een nieuwe schatkaart in!
 - Die zoeken we de volgende keer.
-- Nu reken je met min: er gaat iets af. Ik heb $aantal(6, "ster") in mijn tas en er valt er $gv(1, "ster") uit. Kun je dit al?
+- Nu reken je met min: er gaat iets af. Ik heb $aantal(6, "ster") in mijn tas en er valt er $gv(1, "ster") uit. Sleep de sterren die er nog zijn naar het vak. Kun je dit al?
+- Ja! In de zak $rest === 1 ? "zit" : "zitten" $aantal(rest, vw, KB).
+- $g(tot) kun je splitsen in $g(deel, KA) en $g(rest, KB).
+- Kijk: er zijn $aantal(tot, vw).
+- $aantal(deel, vw, KA) $deel === 1 ? "gaat" : "gaan" naar het paarse vak.
+- De andere $b.w gaan in de zak.
+- De andere gaan naar het oranje vak.
+- Tel ze maar.
+- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
+- Bovenaan de splitspaal staat $g(tot).
+- Dat zijn $aantal(tot, "voetbalshirt").
+- $aantal(a, "voetbalshirt", KA) $a === 1 ? "is" : "zijn" paars.
+- De andere shirts zijn oranje.
 
 ## bak (8)
 
@@ -235,22 +247,23 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel zijn het samen?
 - Zoek het huisje met die drie getallen.
 
-## bron (10)
+## bron (4)
 
 - We verdelen de $NAAM[vw][1] één voor één.
 - Elk bakje krijgt er steeds één bij.
 - Alles is verdeeld.
 - Tel wat er in één bakje ligt.
-- Ja! Elk bakje krijgt $aantal(m, vw).
-- $herhaal(m, k) = $g(n).
-- Ja! In elke beker staan $aantal(m, "potlood").
-- We zoeken $g(n) potloden.
-- Tel in elke rij alle potloden.
-- In welke rij zijn het er $g(n)?
 
-## deco (10)
+## deco (17)
 
-- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s).
+- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s, pzTegelKleur(keuzes, s)).
+- Ja! $gv(a, vw) − $gb(b, vw) = $gv(s, vw).
+- Eerst waren er $aantal(a, vw).
+- Er $b === 1 ? "gaat" : "gaan" er $gb(b, vw) weg.
+- Die telt niet meer mee.
+- Die tellen niet meer mee.
+- De andere leg ik in het vak.
+- Er zijn er nog $gv(s, vw).
 - Een plus: er komt bij.
 - Een min: er gaat af.
 - $g(8, "paars") + $g(5, "oranje") = $g(13, "wit").
@@ -259,7 +272,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De sleutel past!
 - De kist zit vol glimmende sterren.
 - We hebben de schat gevonden!
-- Op schattenjacht tel je goudstukken en maak je plussommen. Waar liggen $aantal(14, "goudstuk")? Kun je dit al?
+- Op schattenjacht tel je goudstukken en maak je plussommen. Sleep $aantal(14, "goudstuk") naar het vak. Kun je dit al?
 
 ## ding (5)
 
@@ -302,6 +315,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $gv(5, "goudstuk"), $gv(10, "goudstuk").
 - Dan nog een paar los.
 - Samen zijn het er $gv(14, "goudstuk").
+
+## gat (1)
+
+- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
 
 ## getallenlijn (gedeeld) (10)
 
@@ -390,32 +407,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je kijkt naar de plaatjes van links naar rechts.
 - Het eerste plaatje hangt helemaal links.
 
-## h (23)
-
-- $g(tot) kun je splitsen in $g(eerst) en $g(dan).
-- Kijk: een briefje van $g(10) euro.
-- En munten van één euro.
-- Samen is dat $g(tot) euro.
-- Hoeveel munten zijn er bij de 10? Tel ze maar.
-- $g(tot) kun je splitsen in $g(10) en $g(tien).
-- En ook in $g(tien) en $g(10).
-- Zoek de huisjes met $g(10) en dat getal.
-- Het getal mag links of rechts staan.
-- $g(tot) kun je splitsen in $g(a) en $g(b).
-- $g(tot) = $g(a) + $g(b).
-- Bovenaan staat $g(tot).
-- Dat getal komt vooraan in de som.
-- Onder staan $g(a) en $g(b).
-- Die komen erachter, met een plus ertussen.
-- Zoek de som met die drie getallen.
-- En $g(tot) = $g(b) + $g(a).
-- Die mogen in allebei de volgordes.
-- Ja! $g(tt) = $g(aa) + $g(bb).
-- Kijk naar dit huisje.
-- Er staan $g(t), $g(a) en $g(b) in.
-- Maak met die drie getallen een som.
-- Zoek die som.
-
 ## h-m (4)
 
 - Kijk naar de vlakken die tegenover elkaar liggen.
@@ -495,6 +486,47 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je hebt de $a in het vak gezet.
 - Nu weet je hoe alles werkt.
 - Je hebt het helemaal goed gedaan.
+
+## k (20)
+
+- $g(tot) kun je splitsen in $g(eerst) en $g(dan).
+- Kijk: een briefje van $g(10) euro.
+- En munten van één euro.
+- Samen is dat $g(tot) euro.
+- Hoeveel munten zijn er bij de 10? Tel ze maar.
+- $g(tot) kun je splitsen in $g(a) en $g(b).
+- $g(tot) = $g(a) + $g(b).
+- Bovenaan staat $g(tot).
+- Dat getal komt vooraan in de som.
+- Onder staan $g(a) en $g(b).
+- Die komen erachter, met een plus ertussen.
+- Zoek de som met die drie getallen.
+- Ja! Elk bakje krijgt $aantal(m, vw).
+- $herhaal(m, k) = $g(n).
+- We verdelen de $NAAM[s.vw ?? "knikker"][1] één voor één.
+- Elk bakje krijgt er steeds één bij.
+- Ja! Elk bakje krijgt evenveel $NAAM[vw][1].
+- $somBakjes(eerlijk) = $g(n).
+- Alles is verdeeld.
+- Tel wat er in één bakje ligt.
+
+## k1 (15)
+
+- $g(tot) kun je splitsen in $g(10) en $g(tien).
+- En ook in $g(tien) en $g(10).
+- Zoek de getallen $g(10) en $g(tien).
+- Het mag links of rechts.
+- $g(tot) = $g(a) + $g(b).
+- En $g(tot) = $g(b) + $g(a).
+- Bovenaan staat $g(tot).
+- Dat getal komt vooraan in de som.
+- Onder staan $g(a) en $g(b).
+- Die mogen in allebei de volgordes.
+- Ja! $g(tt) = $g(aa) + $g(bb).
+- Kijk naar dit huisje.
+- Er staan $g(t), $g(a) en $g(b) in.
+- Maak met die drie getallen een som.
+- Zoek die som.
 
 ## kers (2)
 
@@ -762,26 +794,22 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een middag is een stuk van één dag.
 - Een week is zeven dagen.
 
-## m (18)
+## m (14)
 
-- Ja! $gv(a, vw) − $gb(b, vw) = $gv(s, vw).
-- Eerst waren er $aantal(a, vw).
-- Er $b === 1 ? "gaat" : "gaan" er $gb(b, vw) weg.
-- Die is grijs.
-- Die zijn grijs.
-- Tel de dingen die nog fel zijn.
-- Kijk: $aantal(5, "ster").
-- Er gaan er $gv(2, "ster") weg: die worden grijs.
-- Er zijn er nog $gv(3, "ster").
-- $gv(5, "ster") − $gv(2, "ster") = $gv(3, "ster").
+- Kijk: $aantal(6, "ster") in mijn tas.
+- Er valt er $gb(1, "ster") uit: die wordt grijs.
+- Er zijn er nog $gv(5, "ster").
+- $gv(6, "ster") − $gb(1, "ster") = $gv(5, "ster").
+- Die sleep je naar het vak.
 - De letters zeggen: in de grote krater!
 - Kijk, daar ligt een maansteen met een sleutel ernaast.
 - Waar past die sleutel op?
 - Dat zoeken we de volgende keer.
 - Kijk: $aantal(7, "ster").
 - Er gaan er $gb(4, "ster") weg: die worden grijs.
+- Er zijn er nog $gv(3, "ster").
 - $gv(7, "ster") − $gb(4, "ster") = $gv(3, "ster").
-- Plus en min staan door elkaar. $gv(7, "ster") − $gb(4, "ster"): hoeveel sterren zijn er nog? Kun je dit al?
+- Plus en min staan door elkaar. $gv(7, "ster") − $gb(4, "ster"). Sleep de sterren die er nog zijn naar het vak. Kun je dit al?
 
 ## maand (3)
 
@@ -789,7 +817,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Zoek de kalender met de meeste blokjes.
 - Elk blokje is een maand.
 
-## onder (41)
+## onder (47)
 
 - Je legde een $k bij de 10.
 - Dat is nog iets kleiner dan $a plus $b.
@@ -832,6 +860,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Goed bezig.
 - Nu de volgende.
 - Je kunt plussommen over de 10 maken.
+- $g(10) kun je splitsen in $g(zicht, KA) en $g(rest, KB).
+- Deze $aantal(zicht, "pingpongbal", KA) kun je zien.
+- In de doos passen er $g(10): twee rijen van $g(5).
+- Ik til de doek even op.
+- Kijk naar de oranje pingpongbal die eronder ligt.
+- Tel de oranje pingpongballen die eronder liggen.
 
 ## optellen-100-aanvullen-tot-tiental (1)
 
@@ -1117,6 +1151,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
 
+## r (9)
+
+- Ja! $aantal(a, "tennisbal", KA) en $aantal(b, "tennisbal", KB).
+- $g(tot) kun je splitsen in $g(a, KA) en $g(b, KB).
+- Tel de ballen in dit vak.
+- Tel nu de ballen in dat vak.
+- Hoeveel zijn het samen?
+- Zoek het huisje met die drie getallen.
+- $g(t) is $g(d, KA) en $g(t - d, KB).
+- Kijk naar dit huisje: $g(paren[h][0]) is $g(paren[h][1], KA) en nog hoeveel?
+- Tel de ballen in elk lege stuk.
+
 ## rechts (60)
 
 - Hier is de eerste.
@@ -1236,7 +1282,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij een rondleiding loop je overal langs.
 - Een broodje krijgen is zo gebeurd.
 
-## som-u (17)
+## som-i (5)
+
+- Ja! Hier liggen $aantal(doel, "goudstuk").
+- Ik leg de goudstukken één voor één in het vak.
+- Tel maar mee.
+- Kijk: rijen van vijf.
+- Samen zijn het er $gv(doel, "goudstuk").
+
+## som-u (12)
 
 - $g(a, "paars") is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
 - $g(b, "oranje") is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
@@ -1250,11 +1304,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan komt de $g(10) er nog bij.
 - Tel dan $g(klein, kk) verder.
 - Dat mag op je vingers.
-- Ja! Hier liggen $aantal(doel, "goudstuk").
-- Tel de goudstukken per rij.
-- Een volle rij is $gv(5, "goudstuk").
-- Tel ze één voor één.
-- Waar zijn het er $gv(doel, "goudstuk")?
 
 ## squla-dagen (gedeeld) (52)
 
@@ -1336,9 +1385,24 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Nu tellen we geld tot $e(20) euro. Waar ligt $e(12) euro? Kun je dit al?
 
-## squla-geld-geldmachine-1 (1)
+## squla-geld-geldmachine-1 (16)
 
-- Er valt geld uit de spaarpot. Waar zie je een munt van $e(1) euro? Kun je dit al?
+- Dit is een munt van $e(1) euro.
+- Een munt is rond.
+- Er staat een $e(1) op. Zo weet je hoeveel hij waard is.
+- Hij is zilver in het midden, met een gouden rand.
+- Een briefje is van papier. Dat is geen munt.
+- De vlieger kost $e(7) euro.
+- De bal kost $e(5) euro.
+- Tel verder vanaf $e(7): $e(8), $e(9), $e(10), $e(11), $e(12).
+- Is dat meer dan $e(9) euro, of minder?
+- Het autootje kost $e(4) euro.
+- Het springtouw kost $e(3) euro.
+- Tel verder vanaf $e(4): $e(5), $e(6), en nog één.
+- Nu tellen we elk groepje geld.
+- Tel verder vanaf $e(5): $e(6), $e(7), $e(8), $e(9).
+- Heb je genoeg met $e(9) euro?
+- Kijk, een munt van $e(1) euro. Vandaag leer je munten en briefjes herkennen. Kun je dit al?
 
 ## squla-geld-geldmachine-2 (1)
 
@@ -2301,24 +2365,25 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu gaan we picknicken in het park.
 - Je kent nu veel rekenwoorden.
 
-## squla-splits-delen-1 (3)
+## squla-splits-delen-1 (4)
 
-- In elk bakje liggen $aantal(3, "knikker").
-- $g(3) + $g(3) = $g(6).
-- Verdeel de knikkers eerlijk over twee bakjes. Hoeveel komen er in elk bakje? Kun je dit al?
+- Alles is verdeeld.
+- In elk bakje liggen evenveel knikkers.
+- $somBakjes([4, 4]) = $g(8).
+- Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen? Kun je dit al?
 
 ## squla-splits-splitsen1-1 (5)
 
-- Kijk: samen zijn het $aantal(5, "pion").
-- $aantal(2, "pion", KA) staan aan de ene kant.
-- $aantal(3, "pion", KB) staan aan de andere kant.
+- Kijk: er zijn $aantal(5, "pion").
+- $aantal(2, "pion", KA) staan in het paarse vak.
+- $aantal(3, "pion", KB) staan in het oranje vak.
 - $g(5) kun je splitsen in $g(2, KA) en $g(3, KB).
-- Splitsen is een getal in twee stukken verdelen. Hoeveel pionnen staan er aan de andere kant? Kun je dit al?
+- Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen? Kun je dit al?
 
 ## squla-splits-splitsen1-2 (10)
 
-- In dit bakje liggen $aantal(2, "tennisbal", KA).
-- In dat bakje liggen $aantal(4, "tennisbal", KB).
+- In dit vak liggen $aantal(2, "tennisbal", KA).
+- In dat vak liggen $aantal(4, "tennisbal", KB).
 - Samen zijn dat $g(6) ballen.
 - $g(6) kun je splitsen in $g(2, KA) en $g(4, KB).
 - Zoek het huisje met die getallen.
@@ -2326,7 +2391,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bovenaan staat $g(7).
 - Onder staan $g(4, KA) en $g(3, KB).
 - $g(7) kun je splitsen in $g(4, KA) en $g(3, KB).
-- De splitsmachine verdeelt ballen over twee bakjes. Welk huisje hoort bij deze ballen? Kun je dit al?
+- Kijk, de ballen vallen in het huisje. Welk huisje past erbij? Kun je dit al?
 
 ## squla-splits-splitsen2-1 (5)
 
@@ -2565,6 +2630,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - En hij ligt aan de linkerkant.
 - Hij ligt dus linksboven.
 - Een bal ligt op een grasveld. Waar ligt de bal? Kun je dit al?
+
+## ster (5)
+
+- Ja! In elke beker staan $aantal(m, "potlood").
+- $herhaal(m, k) = $g(n).
+- We zoeken $g(n) potloden.
+- Tel in elke rij alle potloden.
+- In welke rij zijn het er $g(n)?
 
 ## suiker (2)
 
@@ -3165,24 +3238,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel dan de munten erbij.
 - Samen is het $e(8) euro.
 
-## u1 (20)
+## u1 (4)
 
-- Dit is een munt.
-- Een munt is rond.
-- Op een munt staat hoeveel hij waard is.
-- Dit is een briefje.
-- Een briefje is een rechthoek van papier.
-- Op een briefje staat ook hoeveel het waard is.
-- De vlieger kost $e(7) euro.
-- De bal kost $e(5) euro.
-- Tel verder vanaf $e(7): $e(8), $e(9), $e(10), $e(11), $e(12).
-- Is dat meer dan $e(9) euro, of minder?
-- Het autootje kost $e(4) euro.
-- Het springtouw kost $e(3) euro.
-- Tel verder vanaf $e(4): $e(5), $e(6), en nog één.
-- Nu tellen we elk groepje geld.
-- Tel verder vanaf $e(5): $e(6), $e(7), $e(8), $e(9).
-- Heb je genoeg met $e(9) euro?
 - Kijk, twee groepjes briefjes.
 - Begin altijd bij het grootste briefje.
 - Allebei de groepjes zijn $e(15) euro.
@@ -3976,7 +4033,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (7935)
+## Door de site genoteerd, buiten de lessen (8401)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -10315,11 +10372,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk naar de dag rechts van vrijdag.
 - Donderdag? Dat is het nog niet.
 - Eerst waren er 6 sterren.
+- Die is grijs.
 - Er gaat er 1 weg.
+- Tel de dingen die nog fel zijn.
 - Tel alleen wat niet grijs is.
 - 4? Dat is het nog niet.
 - Hier ligt 19 euro.
 - Eerst waren er 7 sterren.
+- Die zijn grijs.
 - Er gaan er 4 weg.
 - 2? Dat is het nog niet.
 - Nu liggen er nog 4 pakjes in de bus.
@@ -10620,6 +10680,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De puzzel heeft nu platte vormen.
 - Zoals een bal of een blok.
 - De puzzel heeft nu vormen die je kunt vastpakken.
+- Splitsen is een getal in twee stukken verdelen. Hoeveel pionnen staan er aan de andere kant? Kun je dit al?
 - Je kunt puzzelen met ruimtelijke vormen.
 - 1 uur? Niet helemaal.
 - 6 pionnen staan al aan de ene kant.
@@ -10711,6 +10772,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De kalender van juni zit weer vol dagen.
 - We leren woorden over tijd, zoals eerst, straks, laat en morgen.
 - Kijk, het kampvuur brandt!
+- De splitsmachine verdeelt ballen over twee bakjes. Welk huisje hoort bij deze ballen? Kun je dit al?
 - Kijk, de bakkerij!
 - Wat duurt lang en wat duurt kort?
 - Een munt van 1 euro? Niet helemaal.
@@ -10725,9 +10787,11 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een briefje van 100 euro? Niet helemaal.
 - Kijk, dit zijn briefjes.
 - Op een briefje van 10 euro staat 10.
+- Een briefje is een rechthoek van papier.
 - Op welke kaart zijn er meer?
 - Kijk, twee kaarten met kralen!
 - Daarna zoek je waar de meeste koekjes liggen.
+- Verdeel de knikkers eerlijk over twee bakjes. Hoeveel komen er in elk bakje? Kun je dit al?
 - Waar liggen de minste en waar de meeste?
 - Zet ze op volgorde en zoek meer dan, minder dan en evenveel.
 - De getallen staan door elkaar.
@@ -11913,3 +11977,462 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hier liggen knikkers. Zet ze op volgorde, van minder naar meer.
 - We tellen verder vanaf 12. Zet de getallen op hun plek.
 - Hier liggen sterren. Zet ze op volgorde, van minder naar meer.
+- Kijk, 16 min 9.
+- Eerst gaan er 6 uit.
+- Er blijven 3 ballonnen over.
+- Dat is de minsom 7 min 4 = 3.
+- Dat is de minsom 17 min 5 = 12.
+- Er zweven 7 ballonnen in de lucht. 4 ballonnen vliegen weg. Hoeveel ballonnen blijven er over?
+- Nu liggen er nog 8 pakjes in de bus.
+- Dus 16 min 9 = 7.
+- Dat is de minsom 16 min 8 = 8.
+- Hoeveel is 16 min 9? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Er zweven 9 bellen. 5 bellen knappen. Hoeveel bellen blijven er over?
+- Hoeveel is 12 min 7? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 14 min 8? Typ het getal.
+- In de bus liggen 11 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 11 min 6? Typ het getal.
+- Er staan 8 sterren aan de hemel. De ufo neemt er 3 mee. Hoeveel sterren blijven er over? Welke som hoort hierbij?
+- In de bus liggen 17 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 17 min 9? Typ het getal.
+- Er draaien 9 satellieten rond de aarde. 2 satellieten vallen terug naar de aarde. Hoeveel satellieten blijven er over? Welke som hoort hierbij?
+- In de bus liggen 14 pakjes. De bus bezorgt er 9. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 13 min 8? Typ het getal.
+- In de bus liggen 18 pakjes. De bus bezorgt er 10. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 15 min 9? Typ het getal.
+- Verbind elke som met het goede antwoord. Tik op een som en dan op het antwoord.
+- In de bus liggen 15 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 12 min 6? Typ het getal.
+- In de bus liggen 12 pakjes. De bus bezorgt er 9. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Er vliegen 6 ufo's rond. 1 ufo vliegt weg. Hoeveel ufo's blijven er over?
+- Hoeveel is 16 min 10? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 9. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Er staan 10 raketjes klaar. 3 raketjes vliegen weg. Hoeveel raketjes blijven er over?
+- Hoeveel is 11 min 8? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 9. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 14 min 6? Typ het getal.
+- Er vliegen 7 kometen door de ruimte. 4 kometen verdwijnen. Hoeveel kometen blijven er over? Welke som hoort hierbij?
+- In de bus liggen 15 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 13 min 9? Typ het getal.
+- In de bus liggen 11 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 12 min 9? Typ het getal.
+- In de bus liggen 12 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Er zweven 8 ballonnen in de lucht. 6 ballonnen vliegen weg. Hoeveel ballonnen blijven er over?
+- In de bus liggen 14 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Hoeveel is 11 min 7? Typ het getal.
+- In de bus liggen 16 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Er blijven 11 raketjes over.
+- Dat is de minsom 14 min 3 = 11.
+- Er staan 14 raketjes klaar. 3 raketjes vliegen weg. Hoeveel raketjes blijven er over?
+- Er vliegen 16 ufo's rond. 3 ufo's vliegen weg. Hoeveel ufo's blijven er over? Welke som hoort hierbij?
+- Er zweven 19 bellen. 6 bellen knappen. Hoeveel bellen blijven er over?
+- Er zweven 15 ballonnen in de lucht. 1 ballon vliegt weg. Hoeveel ballonnen blijven er over? Is het 16, 14 of 13?
+- Er staan 17 sterren aan de hemel. 5 sterren vallen naar beneden. Hoeveel sterren blijven er over? Is het 12, 11 of 13?
+- Er staan 18 sterren aan de hemel. De ufo neemt er 5 mee. Hoeveel sterren blijven er over? Welke som hoort hierbij?
+- Er draaien 14 satellieten rond de aarde. De ufo neemt er 2 mee. Hoeveel satellieten blijven er over? Welke som hoort hierbij?
+- Hoeveel is 19 min 7? Typ het getal.
+- Tik op de sommen waar 0 uitkomt. Er zijn er 3.
+- Er zijn er nog 2. Tik op een som waar 0 uitkomt.
+- Er is er nog één. Tik op een som waar 0 uitkomt.
+- Er draaien 15 satellieten rond de aarde. 2 satellieten vallen terug naar de aarde. Hoeveel satellieten blijven er over?
+- Er vliegen 13 kometen door de ruimte. 2 kometen verdwijnen. Hoeveel kometen blijven er over? Welke som hoort hierbij?
+- Er staan 18 raketjes klaar. 4 raketjes vliegen weg. Hoeveel raketjes blijven er over? Is het 14, 15 of 12?
+- Eerst gaan er 5 uit.
+- Dat is de minsom 15 min 7 = 8.
+- In de bus liggen 13 pakjes. De bus bezorgt er 5. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 12 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 14 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 15 pakjes. De bus bezorgt er 9. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 13 pakjes. De bus bezorgt er 4. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 15 pakjes. De bus bezorgt er 6. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 12 pakjes. De bus bezorgt er 8. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- In de bus liggen 14 pakjes. De bus bezorgt er 7. Hoeveel pakjes liggen er nu nog in de bus? Typ het getal.
+- Kijk, 8 min 3.
+- Er blijven 5 stippen over.
+- Hoeveel is 8 min 3? Typ het getal.
+- Hoeveel is 6 min 2? Typ het getal.
+- Hoeveel is 9 min 6? Typ het getal.
+- Hoeveel is 10 min 4? Typ het getal.
+- Hoeveel is 4 min 1? Typ het getal.
+- Hoeveel is 10 min 3? Typ het getal.
+- Hoeveel is 3 min 2? Typ het getal.
+- Hoeveel is 9 min 1? Typ het getal.
+- Hoeveel is 5 min 2? Typ het getal.
+- Hoeveel is 8 min 4? Typ het getal.
+- Hoeveel is 10 min 2? Typ het getal.
+- Hoeveel is 9 min 4? Typ het getal.
+- Nu liggen er 7 pakjes in de bus.
+- Er ligt 1 pakje in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Naast de bus liggen 6 pakjes.
+- Er liggen 3 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 2 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- 12 + 6 = 18.
+- Nu liggen er 18 pakjes in de bus.
+- Er liggen 7 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 12 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 4 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er ligt 1 pakje in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 13 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 15 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 3 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 14 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 5 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 10 pakjes in de bus. Bij de halte komen er 4 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 2 pakjes in de bus. Bij de halte komen er 7 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 16 pakjes in de bus. Bij de halte komen er 2 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 12 pakjes in de bus. Bij de halte komen er 8 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 18 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 13 pakjes in de bus. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 11 pakjes in de bus. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Er liggen 15 pakjes in de bus. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?
+- Zoek steeds het kaartje dat samen 10 is.
+- Er staan 3 oranje stippen in.
+- Er zijn nog 7 plekjes leeg.
+- Er staan 2 oranje stippen in.
+- Er zijn nog 8 plekjes leeg.
+- 2 en 8 is samen 10.
+- 1, 2, 3, 4, 5, 6.
+- Tel de appels. Hoeveel zijn het er?
+- Tel de ballen. Hoeveel zijn het er?
+- Tel de potloden. Hoeveel zijn het er?
+- Tel de auto's. Hoeveel zijn het er?
+- Tel de bloemen. Hoeveel zijn het er?
+- Tel de knikkers. Hoeveel zijn het er?
+- Tel de sterren. Hoeveel zijn het er?
+- 6, 4, 2.
+- Hier liggen koekjes. Zet ze op volgorde, van meer naar minder.
+- In: de bal zit binnen in de doos. Je ziet alleen de bovenkant.
+- De bal ligt in de doos.
+- Hier liggen knikkers. Zet ze op volgorde, van meer naar minder.
+- Hier liggen sterren. Zet ze op volgorde, van meer naar minder.
+- Hier liggen aardbeien. Zet ze op volgorde, van minder naar meer.
+- Hier liggen kralen. Zet ze op volgorde, van minder naar meer.
+- Hier liggen appels. Zet ze op volgorde, van meer naar minder.
+- Hier liggen ballen. Zet ze op volgorde, van meer naar minder.
+- Hier liggen bloemen. Zet ze op volgorde, van meer naar minder.
+- Hier liggen koekjes. Zet ze op volgorde, van minder naar meer.
+- Hier liggen aardbeien. Zet ze op volgorde, van meer naar minder.
+- Hier liggen kralen. Zet ze op volgorde, van meer naar minder.
+- Hier liggen appels. Zet ze op volgorde, van minder naar meer.
+- Deze is paars.
+- Deze is oranje.
+- Hij is paars en heeft drie hoeken.
+- Een paarse driehoek.
+- Hier liggen ballen. Zet ze op volgorde, van minder naar meer.
+- 5 en 3 is 8.
+- Derde.
+- Vierde.
+- Laatste.
+- De bus staat als eerste.
+- Net voor 5 staat het getal links ervan.
+- 4 komt net voor 5.
+- Hier zijn 5 appels. Welk getal komt na 5? Typ het getal.
+- Hier zijn 8 ballen. Welk getal komt net voor 8? Typ het getal.
+- Hier zijn 7 sterren. Welk getal komt na 7? Typ het getal.
+- Hier zijn 6 knikkers. Welk getal komt net voor 6? Typ het getal.
+- We tellen alleen de raketjes.
+- Hier zijn 9 appels. Welk getal komt na 9? Typ het getal.
+- 1, 2, 3, 4, 5, 6, 7.
+- Hier zijn 10 ballen. Welk getal komt net voor 10? Typ het getal.
+- Tel alleen de raketjes. Hoeveel zijn het er?
+- Tel de knopen. Hoeveel zijn het er?
+- Tel de planeten. Hoeveel zijn het er?
+- Tel alleen de ufo's. Hoeveel zijn het er?
+- Tel de aardbeien. Hoeveel zijn het er?
+- Tel de raketjes. Hoeveel zijn het er?
+- Tel alleen de satellieten. Hoeveel zijn het er?
+- Tel de kralen. Hoeveel zijn het er?
+- Tel de appels bovenaan. Waar zie je evenveel appels?
+- Kijk naar de rij ballonnen. Welke kleur heeft de laatste ballon?
+- Kijk naar de rij ballonnen. Welke kleur heeft de middelste ballon?
+- Tel de sterren bovenaan. Waar zie je evenveel sterren?
+- Tel de ballen bovenaan. Waar zie je evenveel ballen?
+- Zet de potjes op volgorde. Van meer naar minder.
+- We pakken een mand voor de picknick. Er zit nog niets in. Welke mand is leeg? Tik op de mand.
+- Hier zijn fruitstokjes. Op welk stokje zit veel fruit?
+- Hier zijn broodjes met kaas. Op welk broodje zit weinig kaas?
+- Zet de getallen op volgorde. Van klein naar groot.
+- Er is sap voor de picknick. Welke beker is vol?
+- We nemen jam mee. In welk potje zit de meeste jam?
+- Er is water met een rietje. De middelste beker staat er al. Zet de bekers op volgorde. Van minder naar meer water. Sleep een plaatje naar een leeg vak. Tikken mag ook.
+- Tel het geld. Welk bedrag hoort erbij? Trek een lijn van bolletje naar bolletje.
+- Er gaan tomaten in de schalen. Zet ze op volgorde: vol, voller, volst.
+- Tel het geld. Welk bedrag hoort erbij? Trek de lijnen.
+- Kijk naar het flesje bovenaan. In welk flesje zit evenveel water?
+- Kijk naar de stukken pizza bovenaan. Welk plaatje is één meer?
+- Tijd voor een toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft één bolletje minder?
+- Alles zit nu in de mand. De mand is niet meer leeg. Wat is het tegenovergestelde van leeg? Meer, vol of evenveel?
+- Kijk naar de beker bovenaan. In welke beker hieronder zit evenveel sap?
+- Tel het geld. Zoek steeds twee groepjes met evenveel geld. Trek de lijnen.
+- Zet de bekers op volgorde. Van minder naar meer sap.
+- Nog een toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft één bolletje minder?
+- Het laatste toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft één bolletje minder?
+- Er is water met een rietje. De middelste beker staat er al. Zet de bekers op volgorde. Van minder naar meer water.
+- Je hebt 20 euro gespaard. Waar ligt 20 euro?
+- Op het plein is een rommelmarkt. Daar worden oude spullen verkocht. Je kunt die spullen kopen. Is dat waar of niet waar?
+- Op de rommelmarkt ligt een bal. De bal kost 4 euro. Waar ligt 4 euro?
+- Kijk goed naar het plaatje. Maak de puzzel.
+- Je ziet een mooi boek. Het boek kost 5 euro. Waar ligt 5 euro? Tik op twee groepjes geld.
+- Je koopt de bal en het boek. Hoeveel kost dat samen?
+- Kijk naar het plaatje. Je betaalde met een briefje van 5 euro en twee munten van 2 euro. Daar staat een kruis door. Hoeveel euro heb je nog over?
+- Je hebt nog 11 euro. Waar ligt 11 euro? Tik op twee groepjes geld.
+- Kijk, daar ligt een skateboard! Het kost maar 8 euro. Waar ligt precies 8 euro?
+- Je betaalt met het briefje van 10 euro. Het skateboard kost 8 euro. Dan krijg je geld terug. Welk geld krijg je terug?
+- Je had nog een munt van 1 euro. En je kreeg 2 euro terug. Hoeveel euro heb je nu nog?
+- Volgende vraag. Waar ligt 3 euro? Tik op twee groepjes geld.
+- Er zijn 5 pionnen. 2 pionnen staan aan de ene kant. Hoeveel pionnen staan er aan de andere kant? Tik op het goede plaatje.
+- Er zijn 9 pionnen. 6 pionnen staan aan de ene kant. Hoeveel pionnen staan er aan de andere kant? Tik op het goede plaatje.
+- Er zijn 7 pionnen. 3 pionnen staan aan de ene kant. Hoeveel pionnen staan er aan de andere kant? Tik op het goede plaatje.
+- Er zijn 6 pionnen. 4 pionnen staan aan de ene kant. Hoeveel pionnen staan er aan de andere kant? Tik op het goede plaatje.
+- Er zijn 8 knikkers. Verdeel ze eerlijk over de 2 bakjes. Hoeveel knikkers komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 12 knikkers. Verdeel ze eerlijk over de 3 bakjes. Hoeveel knikkers komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 10 pionnen. 8 pionnen staan aan de ene kant. Hoeveel pionnen staan er aan de andere kant? Tik op het goede plaatje.
+- Er zijn 10 stuiterballen. Verdeel ze eerlijk over de 2 bakjes. Hoeveel stuiterballen komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 15 stuiterballen. Verdeel ze eerlijk over de 5 bakjes. Hoeveel stuiterballen komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 7 ballen. Er liggen 4 ballen naast de zak. Hoeveel ballen zitten er in de zak? Tik op het goede plaatje.
+- Er zijn 10 stuiterballen. Verdeel ze eerlijk over de 5 bakjes. Hoeveel stuiterballen komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 6 ballen. Er liggen 5 ballen naast de zak. Hoeveel ballen zitten er in de zak? Tik op het goede plaatje.
+- Er zijn 16 knikkers. Verdeel ze eerlijk over de 4 bakjes. Hoeveel knikkers komen er in elk bakje?
+- Er zijn 9 ballen. Er liggen 6 ballen naast de zak. Hoeveel ballen zitten er in de zak? Tik op het goede plaatje.
+- Er zijn 10 knikkers. Verdeel ze eerlijk over de 2 bakjes. Hoeveel knikkers komen er in elk bakje?
+- Er zijn 8 ballen. Er liggen 3 ballen naast de zak. Hoeveel ballen zitten er in de zak? Tik op het goede plaatje.
+- Er zijn 8 stuiterballen. Verdeel ze eerlijk over de 2 bakjes. Hoeveel stuiterballen komen er in elk bakje?
+- Welke twee horen bij elkaar? Tik op een huisje. Tik dan op de ballen die erbij horen.
+- Er zijn 9 stuiterballen. Verdeel ze eerlijk over de 3 bakjes. Hoeveel stuiterballen komen er in elk bakje?
+- Er zijn 16 knikkers. Verdeel ze eerlijk over de 4 bakjes. Hoeveel knikkers komen er in elk bakje? Tik op het goede plaatje.
+- Er zijn 12 stuiterballen. Verdeel ze eerlijk over de 3 bakjes. Hoeveel stuiterballen komen er in elk bakje? Tik op het goede plaatje.
+- In de doos liggen 10 pingpongballen. Een deel ligt onder de doek. Hoeveel pingpongballen liggen er onder de doek?
+- Er zijn 6 stuiterballen. Verdeel ze eerlijk over de 3 bakjes. Hoeveel stuiterballen komen er in elk bakje? Tik op het goede plaatje.
+- Waar zijn 12 potloden eerlijk verdeeld? Ze staan in 4 bekers. Tik op de goede rij.
+- In de doos liggen 10 pingpongballen. Eén ligt onder de doek. Hoeveel pingpongballen liggen er onder de doek?
+- Waar zijn 10 potloden eerlijk verdeeld? Ze staan in 2 bekers. Tik op de goede rij.
+- Er zijn 15 knikkers. Verdeel ze eerlijk over de 3 bakjes. Hoeveel knikkers komen er in elk bakje?
+- Ik heb 6 sterren in mijn tas. Er valt er 1 uit. Hoeveel sterren heb ik nog?
+- Ik vind 7 diamanten. Er rollen er 3 weg. Hoeveel diamanten heb ik nog?
+- Ik heb 9 goudstukken. Ik betaal er 4 voor een kompas. Hoeveel goudstukken heb ik nog?
+- Ik heb 10 parels. Ik verlies er 2. Hoeveel parels heb ik nog?
+- Er liggen 8 maanstenen. Ik stop er 3 in mijn tas. Hoeveel maanstenen liggen er nog?
+- Ik heb 11 kopermunten. Ik geef er 4 weg. Hoeveel kopermunten heb ik nog?
+- Nu een raadsel! Waarom gaat een robot nooit zwemmen? Is het omdat hij dan gaat roesten? Of omdat hij geen zwembroek heeft?
+- Tel de kralen. Hoeveel kralen zijn het?
+- Het raketje vliegt verder dan de 10. Welk getal komt na 10?
+- Het raketje zoekt graag sterren. Gisteren vond het er 13. Vandaag vond het er 14. Wat is meer: 13 of 14?
+- Kijk naar de schilderijen op de muur. Wat klopt er? Kies er twee.
+- Ik schud mijn spaarpot. Er valt een munt van 1 euro uit. Waar zie je een munt van 1 euro?
+- Dit is een lange getallenlijn. Bij welk getal staat het raketje nu?
+- Ik schud nog een keer. Kijk, een munt van 2 euro! Waar zie je een munt van 2 euro?
+- Wat staat er bij 17? Tik erop.
+- Nu valt er een briefje uit. Een briefje van 5 euro. Waar zie je een briefje van 5 euro?
+- Hier zijn vier tafels met borden. Zet de tafels op volgorde. Van klein naar groot. Sleep een plaatje naar een leeg vak. Tikken mag ook.
+- Wat staat er bij 14? Tik erop.
+- Kijk wat er nu uit mijn spaarpot valt. Wat is dit? Is het 100 euro, 1 euro of 10 euro?
+- Zet de muurtjes op volgorde. Van smal naar breed.
+- Nog één keer schudden. Er valt een briefje van 20 euro uit. Waar zie je een briefje van 20 euro?
+- Hier liggen twee kaartjes papier. Kaartje 2 ligt op zijn kant. Wat klopt? Zijn ze even groot, of niet even groot?
+- Nu stop ik het geld weer terug in mijn spaarpot. Eerst deze munt. Wat is het? Is het 1 euro, een knoop of 2 euro?
+- Kijk naar de blauwe en de gele vorm. Wat klopt er? Kies er twee.
+- Dan dit briefje. Wat is het? Is het 5 euro, 50 euro of 50 cent?
+- Kijk naar het grasveld. Waar ligt de bal?
+- Oei, mijn geld zweeft door de ruimte! Er zweven drie munten van 1 euro. Tik op alle munten van 1 euro.
+- Kijk naar de twee speelmatten. Ze zijn gemaakt van puzzelstukken. Wat klopt? Zijn ze even groot? Is mat 1 groter? Of is mat 2 groter?
+- De bus moet naar de rode stip. Waar ligt de stip?
+- Ik stop nog een briefje terug. Het is rood. Waar zie je een briefje van 10 euro?
+- Weer twee speelmatten. Wat klopt? Zijn ze even groot? Is mat 1 groter? Of is mat 2 groter?
+- Op het grasveld liggen vijf dingen. Wat ligt er linksonder? Tik op je antwoord.
+- Op het grasveld liggen vijf dingen. Wat ligt er rechtsboven?
+- Het laatste briefje gaat terug. Wat is het? Is het 20 euro, 10 euro of 50 euro?
+- Op de tafel liggen blaadjes papier. Ze bedekken de hele tafel. Hoe groot is de tafel? Tel de blaadjes en typ het getal.
+- Welke kleur heeft de ballon helemaal rechts? Tik op de kleur.
+- Oh, er lag nog een munt op tafel. Wat is het? Is het 1 euro, 2 euro of 50 cent?
+- Weer een tafel vol blaadjes. Hoe groot is de tafel? Tel de blaadjes en typ het getal.
+- Welke kleur heeft de ballon helemaal links? Tik op de kleur.
+- Ik pak nog drie briefjes uit mijn spaarpot. Waar zie je een briefje van 5 euro?
+- De bus moet naar de rode stip. Maak de zin af. De stip ligt …
+- Nog meer muurtjes. Zet ze op volgorde. Van smal naar breed.
+- Dit is een hinkelbaan met een bal. Je ziet hem van bovenaf. Waar ben jij als je dit ziet?
+- Je maakt een foto van een boom. Je ziet de boom recht van voren. Waar houd je de camera?
+- Bliepo vliegt hoog boven het huis. Hoe ziet hij het huis?
+- Je ligt in het gras voor het huis. Je kijkt omhoog. Hoe zie je het huis?
+- Je staat recht voor het huis. Hoe zie je het huis?
+- Bliepo heeft met blokken gebouwd. Hij kijkt er recht van boven op. Wat ziet hij dan?
+- Splits het getal 14. Welk getal mist er nog?
+- Splits het getal 17. Welk getal mist er nog?
+- Splits het getal 11. Welk getal mist er nog?
+- Splits het getal 15. Welk getal mist er nog?
+- Splits het getal 16. Welk getal mist er nog?
+- Splits het getal 12. Welk getal mist er nog?
+- Splits het getal 18. Welk getal mist er nog?
+- Hoe kun je 15 splitsen? Er zijn twee goede huisjes. Tik op allebei.
+- Hoe kun je 13 splitsen? Er zijn twee goede huisjes. Tik op allebei.
+- Hoe kun je 19 splitsen? Er zijn twee goede huisjes. Tik op allebei.
+- Splits het getal 10. Welk getal mist er nog?
+- Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen. Kun je dit al?
+- Hier ligt wat geld. Waar zie je een munt van 1 euro?
+- Kijk, nog meer geld. Waar zie je een munt van 2 euro?
+- Kijk, weer ander geld. Waar zie je een briefje van 5 euro?
+- Kijk goed naar dit geld. Wat is dit? Is het 100 euro, 1 euro of 10 euro?
+- Kijk, weer ander geld. Waar zie je een briefje van 20 euro?
+- Kijk goed naar deze munt. Wat is het? Is het 1 euro, een knoop of 2 euro?
+- Kijk nu naar dit geld. Wat is het? Is het 5 euro, 50 euro of 50 cent?
+- Oei, het geld zweeft door de ruimte! Er zweven drie munten van 1 euro. Tik op alle munten van 1 euro.
+- Hier liggen weer drie briefjes. Waar zie je een briefje van 10 euro?
+- Er staat een 10 op.
+- Kijk, nog een briefje. Wat is het? Is het 20 euro, 10 euro of 50 euro?
+- Er staat een 20 op.
+- Kijk, nog een munt. Wat is het? Is het 1 euro, 2 euro of 50 cent?
+- Hier liggen nog drie briefjes. Waar zie je een briefje van 5 euro?
+- Er staat een 1 op. Zo weet je hoeveel hij waard is.
+- Dit is een munt van 1 euro.
+- Er zijn 8 knikkers. Sleep ze eerlijk over de 2 bakjes.
+- Ja! Elk bakje krijgt evenveel knikkers.
+- Er zijn 12 knikkers. Sleep ze eerlijk over de 3 bakjes.
+- Er zijn 10 knikkers. Sleep ze eerlijk over de 2 bakjes.
+- Er zijn 15 knikkers. Sleep ze eerlijk over de 5 bakjes.
+- Er zijn 10 knikkers. Sleep ze eerlijk over de 5 bakjes.
+- Er zijn 16 knikkers. Sleep ze eerlijk over de 4 bakjes.
+- Er zijn 6 knikkers. Sleep ze eerlijk over de 3 bakjes.
+- Kijk naar het huisje. Welke som past erbij?
+- Kijk naar het huisje. Welke sommen passen erbij? Er zijn er twee goed. Tik op allebei.
+- Welk huisje hoort bij welke som? Tik op een huisje. Tik dan op de som die erbij hoort.
+- 100 euro? Niet helemaal.
+- Is het rond? Nee, het is een rechthoek.
+- Dus het is een briefje.
+- Kijk naar het getal: een 1 en een 0.
+- Een briefje van 10 euro? Niet helemaal.
+- Op een briefje van 5 euro staat een 5.
+- Het is grijs.
+- Deze pizza is groot.
+- Deze pizza is klein.
+- Splits het getal 14. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splits het getal 17. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splits het getal 11. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splits het getal 15. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splits het getal 16. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splits het getal 12. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Er zijn 5 pionnen. Sleep 2 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
+- Splits het getal 18. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Er zijn 9 pionnen. Sleep 6 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
+- Hoe kun je 15 splitsen? Sleep twee getallen in het huisje, zodat het klopt.
+- Hoe kun je 13 splitsen? Sleep twee getallen in het huisje, zodat het klopt.
+- Er zijn 7 pionnen. Sleep 3 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
+- Hoe kun je 19 splitsen? Sleep twee getallen in het huisje, zodat het klopt.
+- Er zijn 6 pionnen. Sleep 4 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
+- Splits het getal 10. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Er zijn 10 pionnen. Sleep 8 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
+- Er zijn 7 ballen. Sleep 4 ballen naar het paarse vak naast de zak. De andere ballen sleep je in de zak.
+- Er zijn 6 ballen. Sleep 5 ballen naar het paarse vak naast de zak. De andere ballen sleep je in de zak.
+- Er zijn 9 ballen. Sleep 6 ballen naar het paarse vak naast de zak. De andere ballen sleep je in de zak.
+- Er zijn 8 ballen. Sleep 3 ballen naar het paarse vak naast de zak. De andere ballen sleep je in de zak.
+- Kijk naar het huisje. Welke som past erbij? Sleep de som onder het huisje.
+- Elk huisje heeft nog een leeg stuk. Sleep de ballen die er nog bij horen in het lege stuk.
+- 5 is 1 en 4.
+- 6 is 4 en 2.
+- 8 is 5 en 3.
+- In de doos liggen 10 pingpongballen. Je ziet er 7. De andere liggen onder de doek. Leg die ballen in het vak.
+- Kijk naar het huisje. Welke sommen passen erbij? Er zijn er twee goed. Sleep ze onder het huisje.
+- In de doos liggen 10 pingpongballen. Je ziet er 9. De andere liggen onder de doek. Leg die ballen in het vak.
+- In de doos liggen 10 pingpongballen. Je ziet er 4. De andere liggen onder de doek. Leg die ballen in het vak.
+- In de doos liggen 10 pingpongballen. Je ziet er 5. De andere liggen onder de doek. Leg die ballen in het vak.
+- In de doos liggen 10 pingpongballen. Je ziet er 3. De andere liggen onder de doek. Leg die ballen in het vak.
+- Welk huisje hoort bij welke som? Sleep elke som naar zijn huisje.
+- De splitsmachine verdeelt ballen over twee bakjes. Kun jij het huisje invullen? Kun je dit al?
+- De machine verdeelt de ballen over twee bakjes. Welke splitsing hoort erbij? Sleep de getallen in het huisje.
+- Er zijn 6 shirts. Sleep 2 shirts naar het paarse vak. De andere shirts sleep je naar het oranje vak.
+- Er zijn 8 shirts. Sleep 5 shirts naar het paarse vak. De andere shirts sleep je naar het oranje vak.
+- Er zijn 9 shirts. Sleep 3 shirts naar het paarse vak. De andere shirts sleep je naar het oranje vak.
+- Er zijn 5 shirts. Sleep 4 shirts naar het paarse vak. De andere shirts sleep je naar het oranje vak.
+- Er zijn 16 knikkers. Verdeel ze eerlijk over de 4 bakjes. Hoeveel knikkers komen er in elk bakje? Sleep het goede getal naar het vak.
+- Er zijn 10 knikkers. Verdeel ze eerlijk over de 2 bakjes. Hoeveel knikkers komen er in elk bakje? Sleep het goede getal naar het vak.
+- Kijk naar de ballen en de splitspaal. Welk getal mist er nog? Sleep het naar het vraagteken.
+- Er zijn 8 stuiterballen. Sleep ze eerlijk over de 2 bakjes.
+- Ja! Elk bakje krijgt evenveel stuiterballen.
+- Er zijn 9 stuiterballen. Sleep ze eerlijk over de 3 bakjes.
+- Kijk naar de splitspaal. Welk getal mist er nog? Sleep het naar het vraagteken.
+- Op schattenjacht tel je goudstukken en maak je plussommen. Sleep 14 goudstukken naar het vak. Kun je dit al?
+- Waar zijn 12 potloden eerlijk verdeeld? Ze staan in 4 bekers. Sleep de ster naar de goede rij.
+- Waar zijn 10 potloden eerlijk verdeeld? Ze staan in 2 bekers. Sleep de ster naar de goede rij.
+- Er zijn 15 knikkers. Verdeel ze eerlijk over de 3 bakjes. Hoeveel knikkers komen er in elk bakje? Sleep het goede getal naar het vak.
+- Sleep 14 goudstukken naar het vak.
+- Sleep 11 goudstukken naar het vak.
+- Hoeveel diamanten zijn dit samen? Sleep het goede getal naar het vak.
+- Hoeveel parels zijn dit samen? Sleep het goede getal naar het vak.
+- Hoeveel kopermunten zijn dit samen? Sleep het goede getal naar het vak.
+- Hoeveel maanstenen zijn dit samen? Sleep het goede getal naar het vak.
+- Hoeveel sleutels zijn dit samen? Sleep het goede getal naar het vak.
+- Hoeveel is 3 + 4? Sleep het goede getal naar het vak.
+- Hoeveel is 8 + 2? Sleep het goede getal naar het vak.
+- Hoeveel is 7 + 4? Sleep het goede getal naar het vak.
+- Hoeveel is 6 + 6? Sleep het goede getal naar het vak.
+- Hoeveel is 10 + 10? Sleep het goede getal naar het vak.
+- Hoeveel is 9 + 5? Sleep het goede getal naar het vak.
+- Hoeveel is 10 + 20? Sleep het goede getal naar het vak.
+- Nu reken je met min: er gaat iets af. Ik heb 6 sterren in mijn tas en er valt er 1 uit. Sleep de sterren die er nog zijn naar het vak. Kun je dit al?
+- Ik heb 6 sterren in mijn tas. Er valt er 1 uit. Sleep de sterren die er nog zijn naar het vak.
+- Ik vind 7 diamanten. Er rollen er 3 weg. Sleep de diamanten die er nog zijn naar het vak.
+- Ik heb 9 goudstukken. Ik betaal er 4 voor een kompas. Sleep de goudstukken die er nog zijn naar het vak.
+- Ik heb 10 parels. Ik verlies er 2. Sleep de parels die er nog zijn naar het vak.
+- Er liggen 8 maanstenen. Ik stop er 3 in mijn tas. Sleep de maanstenen die er nog zijn naar het vak.
+- Ik heb 11 kopermunten. Ik geef er 4 weg. Sleep de kopermunten die er nog zijn naar het vak.
+- Er zijn 7 sterren. Er gaan er 2 weg. Sleep de sterren die er nog zijn naar het vak.
+- Er zijn 9 sleutels. Er gaan er 5 weg. Sleep de sleutels die er nog zijn naar het vak.
+- Er zijn 6 diamanten. Er gaan er 4 weg. Sleep de diamanten die er nog zijn naar het vak.
+- Er zijn 10 goudstukken. Er gaan er 4 weg. Sleep de goudstukken die er nog zijn naar het vak.
+- Er zijn 8 parels. Er gaat er 1 weg. Sleep de parels die er nog zijn naar het vak.
+- Er zijn 11 maanstenen. Er gaan er 5 weg. Sleep de maanstenen die er nog zijn naar het vak.
+- Er zijn 5 kopermunten. Er gaan er 2 weg. Sleep de kopermunten die er nog zijn naar het vak.
+- Er zijn 10 sterren. Er gaan er 3 weg. Sleep de sterren die er nog zijn naar het vak.
+- Plus en min staan door elkaar. 7 min 4. Sleep de sterren die er nog zijn naar het vak. Kun je dit al?
+- 7 min 4. Sleep de sterren die er nog zijn naar het vak.
+- Hoeveel is 7 + 6? Sleep het goede getal naar het vak.
+- 14 min 6. Sleep de goudstukken die er nog zijn naar het vak.
+- Hoeveel is 13 + 7? Sleep het goede getal naar het vak.
+- Nu een raadsel! Welke vrucht hoort in de ruimte? Is het de maan-darijn? Of de banaan?
+- 12 min 5. Sleep de diamanten die er nog zijn naar het vak.
+- 16 min 5. Sleep de parels die er nog zijn naar het vak.
+- Hoeveel is 8 + 8? Sleep het goede getal naar het vak.
+- 11 min 3. Sleep de sleutels die er nog zijn naar het vak.
+- Hoeveel is 6 + 5? Sleep het goede getal naar het vak.
+- 15 min 7. Sleep de maanstenen die er nog zijn naar het vak.
+- Hoeveel is 9 + 8? Sleep het goede getal naar het vak.
+- 13 min 4. Sleep de kopermunten die er nog zijn naar het vak.
+- Samen is dat 13 euro.
+- En 3 munten van één euro.
+- Hoeveel is 15 + 4? Sleep het goede getal naar het vak.
+- 18 min 8. Sleep de sterren die er nog zijn naar het vak.
+- Hoeveel is 5 + 8? Sleep het goede getal naar het vak.
+- Kijk: er zijn 5 pionnen.
+- 2 pionnen staan in het paarse vak.
+- 3 pionnen staan in het oranje vak.
+- In elke rij liggen er 5.
+- Samen zijn het er 14.
+- 5, 10.
+- Hier liggen 3 diamanten.
+- Daar liggen er 2.
+- Samen zijn het er 5.
+- 6 goudstukken? Niet helemaal.
+- Omdat hij geen zwembroek heeft.? Niet helemaal.
+- 8 parels? Niet helemaal.
+- In dit bakje liggen 2 ballen.
+- In dat bakje liggen 4 ballen.
+- Zo vul je het huisje.
+- Samen zijn dat 6 ballen.
+- De som is: 12 = 10 + 2.
+- Onder staan 10 en 2.
+- Kijk: bovenaan staat 12.
+- 5 diamanten? Niet helemaal.
+- 8 kopermunten? Niet helemaal.
+- 3 diamanten? Niet helemaal.
+- 4 kopermunten? Niet helemaal.
+- 6 sterren? Niet helemaal.
+- 6 maanstenen? Niet helemaal.
+- 5 sleutels? Niet helemaal.
+- 7 maanstenen? Niet helemaal.
+- Er zijn er nog 5.
+- De ballen vallen in het huisje. Welk huisje past erbij? Tik op het goede huisje.
+- In dit vak liggen 2 ballen.
+- In dat vak liggen 4 ballen.
+- Kijk naar de ballen en de splitspaal. Welk getal mist er nog? Sleep het naar de lege plek.
+- Kijk naar de splitspaal. Welk getal mist er nog? Sleep het naar de lege plek.
