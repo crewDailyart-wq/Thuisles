@@ -160,6 +160,8 @@ export async function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boole
 export type SqulaBeginOpties = {
   /** De eigen zin van deze les: waar gaat de les over? Verplicht, nooit een standaardzin. */
   welkom: string[];
+  /** Zin 2 van het beginscherm (BOUWREGELS 4.4): vraagt of het kind dit al kan, per les anders. Zonder: "Kun je dit al?". */
+  vraag?: string;
   /** De korte uitleg na "Nee". */
   uitleg: () => Promise<void>;
   /**
@@ -211,10 +213,10 @@ export async function squlaBegin(l: Lesgids, o: SqulaBeginOpties) {
   if (o.voorbeeld) {
     o.voorbeeld();
     /* De eigen zin en de vraag als één tekst: zo blijft bij Ja en Nee staan waar de les over gaat. */
-    await l.zeg([...welkom, KUN_JE_DIT_AL].join(" "));
+    await l.zeg([...welkom, o.vraag ?? KUN_JE_DIT_AL].join(" "));
   } else {
     if (process.env.NODE_ENV !== "production") console.warn("squlaBegin: deze les heeft nog geen voorbeeld in beeld (BOUWREGELS 4.1).");
-    await l.zeg(...welkom, KUN_JE_DIT_AL);
+    await l.zeg(...welkom, o.vraag ?? KUN_JE_DIT_AL);
   }
   const kan = await l.kies(["Ja", "Nee"], { weetniet: false, direct: true });
   if (kan === "Ja") {

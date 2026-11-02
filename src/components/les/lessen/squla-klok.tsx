@@ -630,6 +630,8 @@ type Klokles = {
   voorwerpen: string[];
   start: Ding;
   welkom: string[];
+  /** Zin 2 van het beginscherm (BOUWREGELS 4.4). */
+  vraag?: string;
   /**
    * Het beginscherm (BOUWREGELS 4.1): welke opgave als voorbeeld in beeld staat bij
    * "Kun je dit al?" (index in `opgaven`). Zonder: alleen `start`.
@@ -660,6 +662,7 @@ function klokles(k: Klokles): Lesdraaiboek {
       speelLesgeluid("verschijn");
       await squlaBegin(l, {
         welkom: k.welkom,
+        ...(k.vraag ? { vraag: k.vraag } : {}),
         uitleg: () => k.uitleg(l),
         ...(k.voorbeeld !== undefined
           ? {
@@ -874,7 +877,8 @@ const hoelaat1 = klokles({
   level: 1,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij"],
   start: V("bezorgbus"),
-  welkom: ["De bezorgbus rijdt de hele dag langs de winkels.", "Kijk steeds op de klok: hoe laat is het?"],
+  welkom: ["Op de klok lees je de hele uren af en kies je hoe laat het is."],
+  vraag: "Kun jij dit al?",
   voorbeeld: 0,
   uitleg: uitlegHeel,
   opgaven: [

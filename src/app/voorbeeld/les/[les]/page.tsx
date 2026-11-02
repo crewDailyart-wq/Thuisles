@@ -2,13 +2,23 @@ import { StijlVariabelen } from "@/components/StijlVariabelen";
 import { MERKNAAM } from "@/lib/merk";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { Work_Sans } from "next/font/google";
+import { Work_Sans, Figtree } from "next/font/google";
+import "./letterproef.css";
 import { zoekDraaiboek } from "@/components/les/lessen";
 import { LesVoorbeeld } from "./LesVoorbeeld";
 import { zoekLesregel } from "@/lib/lessen/catalogus";
 import { lesAdres, zoekSeoLesOpId } from "@/lib/seo/lessen-groep3";
 
 const letter = Work_Sans({ subsets: ["latin"], weight: ["400", "500", "700", "800"], variable: "--font-les" });
+
+/*
+  Letterproef (2 november 2026): Synthesis gebruikt Work Sans. Wij proberen voor
+  de lessen in LETTERPROEF_LESSEN bewust een ander, vrij lettertype dat er dicht
+  bij zit: Figtree (SIL OFL 1.1, Google Fonts). Alle andere lessen blijven
+  precies zoals ze waren tot Sara akkoord geeft. Zie letterproef.css.
+*/
+const LETTERPROEF_LESSEN = ["squla-tellen-fruit-1"];
+const proefLetter = Figtree({ subsets: ["latin"], weight: ["400", "500", "600", "700", "800"], variable: "--font-figtree" });
 
 /*
   Alleen onzichtbare dingen in de kop (LESSENPLAN.md § 6): een nette titel in
@@ -37,9 +47,10 @@ export default async function Pagina({
   const { les } = await params;
   const { naam } = await searchParams;
   if (!zoekDraaiboek(les)) notFound();
+  const proef = LETTERPROEF_LESSEN.includes(les);
   return (
     /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
-    <div className={letter.variable} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
+    <div className={proef ? `${letter.variable} ${proefLetter.variable}` : letter.variable} data-lettertype={proef ? "figtree" : undefined} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
       <StijlVariabelen />
       <LesVoorbeeld id={les} naam={naam ?? ""} />
     </div>

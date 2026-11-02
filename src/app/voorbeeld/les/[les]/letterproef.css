@@ -1,0 +1,11 @@
+/*
+  Letterproef (2 november 2026): alleen voor lessen met data-lettertype="figtree"
+  (lijst LETTERPROEF_LESSEN in page.tsx). Figtree vervangt het lettertype van
+  alle tekst in die les: zinnen van Bliepo, vragen, knoppen en getallen.
+  Gewicht blijft zoals de les het zet (zinnen 700, nadruk 800).
+  Eigen variabele; --stijl-lettertype (stijlkiezer) blijft ongemoeid.
+*/
+[data-lettertype="figtree"],
+[data-lettertype="figtree"] * {
+  font-family: var(--font-figtree), "Figtree", system-ui, sans-serif !important;
+}

@@ -96,3 +96,12 @@ Terugzetten kan met één regel in het draaiboek:
 ## Geld (squla-geld-*)
 
 LEGAL REVIEW REQUIRED voor geldafbeeldingen: de munten en briefjes in de geldlessen zijn officiële ECB-afbeeldingen (briefjes als SPECIMEN, 72 dpi; munten gemeenschappelijke zijde, uitgeknipt in `public/geld/los/`). Volgens besluit ECB/2013/10 (artikel 2, vervangen door besluit (EU) 2020/2090) mag dat op een website of in een app alleen zo; het woord "specimen" moet op de briefjes blijven staan. Zie CLAUDE.md en `public/geld/BRON.md`.
+
+## Lettertype lessen
+
+- Naam: Figtree (Erik D. Kennedy), variabel lettertype, gewichten 400-800.
+- Bron: Google Fonts, https://fonts.google.com/specimen/Figtree (geladen via `next/font/google`; Next downloadt het van Google en host het zelf).
+- Licentie: SIL Open Font License 1.1 (vrij te gebruiken, ook commercieel).
+- Datum: 2 november 2026.
+- Waar gebruikt: alleen in lessen uit `LETTERPROEF_LESSEN` in `src/app/voorbeeld/les/[les]/page.tsx` (nu alleen `squla-tellen-fruit-1`), via `src/app/voorbeeld/les/[les]/letterproef.css`: zinnen van Bliepo, vragen, knoppen en getallen. Wacht op akkoord van Sara voor alle lessen.
+- Synthesis gebruikt Work Sans (gewicht 700 voor zinnen, 800 voor nadruk). Wij kozen bewust een ander, vrij lettertype dat er dichtbij zit, zodat het niet precies hetzelfde is.
