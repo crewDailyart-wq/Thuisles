@@ -77,6 +77,8 @@ export function rij(n: number, b: number, tussen: number, y: number, h: number):
   return Array.from({ length: n }, (_, i) => ({ x: x0 + i * (b + tussen), y, b, h }));
 }
 
+const isWeek = (d: PDing) => /^(rooster|weekblad)(\||$)/.test(d.tekening ?? "");
+
 type Indeling = { groot: (Rect & { k: number }) | null; kaarten: Rect[]; vakken: Rect[]; losse: Rect[]; links: Rect[]; rechts: Rect[] };
 
 export function indeling(p: PlaatjesProps): Indeling {
@@ -96,6 +98,14 @@ export function indeling(p: PlaatjesProps): Indeling {
     if (groot) {
       const [b, h] = n === 1 ? [260, 230] : n === 2 ? [270, 240] : n === 3 ? [250, 236] : [205, 210];
       kaarten = rij(n, b, 40, 562, h);
+    } else if (n >= 2 && p.kaarten!.some(isWeek)) {
+      /* De weekkalender is breed en heeft kleine hoepels: hij krijgt een eigen rij over bijna de hele breedte, de andere kaartjes staan eronder (2 nov 2026, keuring r6: te klein, op de telefoon onleesbaar). */
+      const wi = p.kaarten!.findIndex(isWeek);
+      const rest = n - 1;
+      const onder = rij(rest, rest === 1 ? 380 : 290, 40, 520, 300);
+      const boven: Rect = { x: VLAK_B / 2, y: 170, b: 900, h: 300 };
+      let o = 0;
+      kaarten = p.kaarten!.map((_, i) => (i === wi ? boven : onder[o++]));
     } else {
       const [b, h] = n === 2 ? [320, 320] : n === 3 ? [280, 300] : [210, 260];
       kaarten = rij(n, b, 44, 370, h);
@@ -112,7 +122,7 @@ export function indeling(p: PlaatjesProps): Indeling {
   let links: Rect[] = [];
   let rechts: Rect[] = [];
   if (verbind) {
-    links = verbind.links.map((_, i) => ({ x: 250, y: 130 + i * 230, b: 250, h: 200 }));
+    links = verbind.links.map((_, i) => ({ x: 215, y: 130 + i * 230, b: 380, h: 205 }));
     rechts = verbind.rechts.map((_, i) => ({ x: 730, y: 130 + i * 230, b: 270, h: 104 }));
   }
   return { groot, kaarten, vakken, losse, links, rechts };
@@ -134,7 +144,7 @@ interface PlaatjesScene {
   speelHandje(): void;
 }
 
-type Ding = { box: Box; ring: Img; r: Rect; zeg: string; soort: "kaart" | "los" | "vast" | "links" | "rechts"; id: string };
+type Ding = { box: Box; ring: Img; r: Rect; d: PDing; kleur: keyof typeof RING | null; zeg: string; soort: "kaart" | "los" | "vast" | "links" | "rechts"; id: string };
 
 const RING = { geel: PALET.geel, groen: "#3fbf6a", rood: "#e8453c" } as const;
 
@@ -174,7 +184,12 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     kaartPlaatje(d: PDing, b: number, h: number) {
       const sl = `pk|${d.tekening ?? ""}|${d.label ?? ""}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, b, h, (c) => {
+      this.canvasPlaatje(sl, b, h, (c) => this.tekenKaart(c, d, b, h));
+      return sl;
+    }
+
+    tekenKaart(c: CanvasRenderingContext2D, d: PDing, b: number, h: number) {
+      {
         /* Een kaartje met alleen een woord is een knop; een plaatje staat los, zonder kader (31 oktober 2026). */
         if (!d.tekening) tekenVormen(c, [{ d: blok(3, 3, b - 6, h - 6, 18), vul: PALET.warmwit, rand: PALET.navy, dik: 4 }]);
         const woordH = d.label && d.tekening ? 46 : 0;
@@ -195,8 +210,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           c.fillStyle = d.tekening ? PALET.warmwit : PALET.navy;
           c.fillText(d.label, b / 2, d.tekening ? h - 32 : h / 2 + 2, b - 20);
         }
-      });
-      return sl;
+      }
     }
 
     grootPlaatje(sleutel: string, k: number) {
@@ -209,14 +223,26 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       return sl;
     }
 
-    ringPlaatje(kleur: keyof typeof RING, b: number, h: number) {
-      const sl = `pr|${kleur}|${Math.round(b)}x${Math.round(h)}`;
-      this.canvasPlaatje(sl, b + 20, h + 20, (c) =>
-        tekenVormen(c, [
-          { d: blok(5, 5, b + 10, h + 10, 22), rand: PALET.navy, dik: 10 },
-          { d: blok(5, 5, b + 10, h + 10, 22), rand: RING[kleur], dik: 6.5 },
-        ]),
-      );
+    /**
+     * Een zachte gloed in de VORM van het plaatje zelf (geen rechthoek, BOUWREGELS 1.4): het plaatje wordt één keer
+     * getekend, alleen de schaduw ervan blijft over (in `kleur`), en dat wordt als plaatje bewaard.
+     */
+    ringPlaatje(kleur: keyof typeof RING, d: PDing, b: number, h: number) {
+      const sl = `pr|${kleur}|${d.tekening ?? ""}|${d.label ?? ""}|${Math.round(b)}x${Math.round(h)}`;
+      const P = 26;
+      this.canvasPlaatje(sl, b + 2 * P, h + 2 * P, (c) => {
+        const losPx = document.createElement("canvas");
+        losPx.width = Math.ceil(b * TX);
+        losPx.height = Math.ceil(h * TX);
+        const lc = losPx.getContext("2d")!;
+        lc.scale(TX, TX);
+        this.tekenKaart(lc, d, b, h);
+        const ver = 3000;
+        c.shadowColor = RING[kleur];
+        c.shadowBlur = 16 * TX;
+        c.shadowOffsetX = ver;
+        for (let i = 0; i < 3; i++) c.drawImage(losPx, P - ver / TX, P, b, h);
+      });
       return sl;
     }
 
@@ -248,10 +274,10 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     nieuwDing(d: PDing, r: Rect, soort: Ding["soort"], sleutel: string) {
       const box = this.add.container(r.x, r.y);
-      const ring = this.plaats(this.ringPlaatje("geel", r.b, r.h), 0, 0).setVisible(false);
+      const ring = this.plaats("pg-golf", 0, 0).setVisible(false);
       box.add([ring, this.plaats(this.kaartPlaatje(d, r.b, r.h), 0, 0)]);
       this.alles.push(box);
-      const ding: Ding = { box, ring, r, zeg: d.zeg ?? d.label ?? d.id, soort, id: d.id };
+      const ding: Ding = { box, ring, r, d, kleur: null, zeg: d.zeg ?? d.label ?? d.id, soort, id: d.id };
       this.dingen.set(sleutel, ding);
       return ding;
     }
@@ -311,9 +337,14 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     pasToe(p: PlaatjesProps) {
       const ind = indeling(p);
       const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.licht?.includes(id) ? "geel" : null);
+      /* Een gloed in de vorm van het plaatje; bij goed een korte gloed die weer weggaat (geen blijvend kader, BOUWREGELS 1.4). */
       const zetRing = (d: Ding, k: keyof typeof RING | null) => {
+        if (d.kleur === k) return;
+        d.kleur = k;
+        this.tweens.killTweensOf(d.ring);
         if (!k) return void d.ring.setVisible(false);
-        d.ring.setTexture(this.ringPlaatje(k, d.r.b, d.r.h)).setVisible(true);
+        d.ring.setTexture(this.ringPlaatje(k, d.d, d.r.b, d.r.h)).setVisible(true).setAlpha(1);
+        if (k === "groen") this.tweens.add({ targets: d.ring, alpha: 0, delay: 900, duration: 600, onComplete: () => d.ring.setVisible(false) });
       };
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
@@ -334,10 +365,10 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           d.box.setDepth(vak >= 0 ? 1 : 2);
         }
         if (d.soort === "vast") zetRing(d, null);
-        if (d.soort === "links" && p.verbind) zetRing(d, p.verbind.vast.includes(d.id) ? "groen" : p.verbind.gekozen === d.id ? "geel" : kleur(d.id));
+        if (d.soort === "links" && p.verbind) zetRing(d, p.verbind.vast.includes(d.id) ? null : p.verbind.gekozen === d.id ? "geel" : kleur(d.id));
         if (d.soort === "rechts" && p.verbind) {
           const vast = p.verbind.lijnen.some(([l, r]) => r === d.id && p.verbind!.vast.includes(l));
-          zetRing(d, vast ? "groen" : kleur(d.id));
+          zetRing(d, vast ? null : kleur(d.id));
         }
       }
       if (this.lijnen && p.verbind) {

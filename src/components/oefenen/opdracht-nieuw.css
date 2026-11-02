@@ -1165,3 +1165,18 @@
   order: -1;
   margin: 0;
 }
+
+/* Squla-lessen op de laptop (keuring r6, regel 1.15): een lange zin in de rechterkolom met een kleinere letter en een kleinere Bliepo,
+   zodat de zin niet over de knoppen Pauze/geluid/naam valt en "Nog eens horen" niet over Bliepo ligt. */
+[data-squla][data-zinlengte="lang"] .bliepo-vloer[data-plek="kolom"] .bliepo-tekst {
+  font-size: calc(25px * var(--stijl-schaal, 1));
+}
+[data-squla][data-zinlengte="zeerlang"] .bliepo-vloer[data-plek="kolom"] .bliepo-tekst {
+  font-size: calc(21px * var(--stijl-schaal, 1));
+}
+[data-squla]:is([data-zinlengte="lang"], [data-zinlengte="zeerlang"]) .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot,
+[data-squla]:is([data-zinlengte="lang"], [data-zinlengte="zeerlang"]) .bliepo-vloer[data-plek="kolom"]:has([class*="bediening"] button:nth-child(3)) .bliepo-vloer-robot {
+  width: 160px;
+  height: 200px;
+  margin-top: 30px;
+}

@@ -965,6 +965,9 @@ function Lesscherm({
       })}
     />
   );
+  /* Squla-lessen: een lange zin in de rechterkolom (laptop) krijgt een kleinere letter en een kleinere Bliepo, zodat niets over de knoppen bovenin of over Bliepo valt (keuring r6, regel 1.15). */
+  const huidigeZin = beeld.zichtbaar > 0 ? kaal(beeld.zinnen[beeld.zichtbaar - 1] ?? "") : "";
+  const zinLengte = huidigeZin.length > 150 ? "zeerlang" : huidigeZin.length > 100 ? "lang" : "kort";
   /* De zin en de knoppen; bij de indeling van Synthesis apart: de zin boven Bliepo, de knoppen in de kolom links (28 oktober 2026). */
   const maakTekstblok = (deel: "alles" | "zin" | "knoppen") => (
         <div
@@ -1103,7 +1106,7 @@ function Lesscherm({
   );
 
   return (
-    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-staand={staand ? "ja" : undefined}>
+    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-zinlengte={les.synthesis.startsWith("Squla") ? zinLengte : undefined} data-staand={staand ? "ja" : undefined}>
       {nieuw && <OpdrachtDecor />}
       {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
       {pilBoven || squlaMidden ? pilBalk : null}

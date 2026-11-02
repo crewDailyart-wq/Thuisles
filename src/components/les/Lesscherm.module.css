@@ -605,3 +605,12 @@ a.knop {
   -webkit-text-stroke: 1.5px #0b1028;
   paint-order: stroke fill;
 }
+
+/* Squla-lessen op een staand scherm dat breed genoeg is (tablet): drie of vier woordkeuzes in één rij in plaats van 2 + 1 (keuring r6, tip). */
+@media (min-width: 600px) {
+  [data-squla][data-staand] .twee:not(:has(> .knop:nth-child(5))) {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: minmax(0, 1fr);
+  }
+}
