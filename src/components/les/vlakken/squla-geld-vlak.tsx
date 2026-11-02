@@ -134,6 +134,12 @@ export type GeldProps = {
   handje?: number;
   /** Geld dat de les straks nodig heeft: alvast laden. */
   vooraf?: GeldSoort[];
+  /**
+   * Opt-in (2 november 2026, proef geldmachine-1): de keuzes liggen naast elkaar, even groot, op een
+   * half doorzichtig zacht vlak (zonder rand), onder de vraag die bovenaan in het midden staat.
+   * Zonder: alles zoals het was.
+   */
+  paneel?: boolean;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -218,12 +224,23 @@ function deelMaat(d: GDeel): { b: number; h: number } {
   return d.soort === "pijl" ? { b: 84, h: 60 } : { b: 56, h: 56 };
 }
 
+/** Het zachte vlak onder de keuzes (opt-in `paneel`): midden en maat. */
+const PANEEL_Y = 450;
+const PANEEL_CEL_H = 210;
+const PANEEL_RAND = 28;
+
 export function indeling(p: GeldProps): Indeling {
   const n = p.kaarten?.length ?? 0;
   const metGroot = !!p.groot?.length && !p.verbind;
   let kaarten: Rect[] = [];
   let onder = 700;
-  if (n && p.zweven) {
+  let boven = 14;
+  if (n && p.paneel && !p.verbind) {
+    /* Alle keuzes even groot, netjes op één rij, dicht bij elkaar, in het midden van het vlak. */
+    const tussen = 20;
+    const b = Math.min(250, (860 - tussen * (n - 1)) / n);
+    kaarten = rij(n, b, tussen, PANEEL_Y, PANEEL_CEL_H);
+  } else if (n && p.zweven) {
     const xs = [190, 490, 790];
     const dx = [-14, 18, -6, 10, -18, 14];
     const dy = [-8, 26, -18, 18, -10, 24];
@@ -243,11 +260,15 @@ export function indeling(p: GeldProps): Indeling {
   }
   const groot: GrootPlek[] = [];
   if (metGroot && p.groot) {
+    if (p.paneel) {
+      boven = 270;
+      onder = 690;
+    }
     const maten = p.groot.map(deelMaat);
     const tussen = 30;
     const somB = maten.reduce((a, m) => a + m.b, 0) + tussen * (maten.length - 1);
     const maxH = Math.max(...maten.map((m) => m.h));
-    const top = 14;
+    const top = boven;
     const kMax = p.groot.some((d) => d.soort === "geld") ? 1.3 : 1.7;
     const k = Math.min(kMax, 920 / somB, (onder - top) / maxH);
     let x = VLAK_B / 2 - (somB * k) / 2;
@@ -335,12 +356,14 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     /** Een munt of briefje, één keer klaargezet (verkleind, nooit vergroot), zonder rand of kader. */
     geldPlaatje(g: GeldSoort) {
-      const sl = `geld|${g}`;
+      /* In het paneel staan munten groter (tot 160 punten): daarvoor een scherper plaatje (de bron is 530 px). */
+      const groter = !!this.p?.paneel && !isBriefje(g);
+      const sl = groter ? `geld|${g}|L` : `geld|${g}`;
       if (this.textures.exists(sl)) return sl;
       const img = BEELD.get(g) ?? null;
       const brief = isBriefje(g);
       const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
-      const b = brief ? 260 : 140;
+      const b = brief ? 260 : groter ? 320 : 140;
       const h = Math.round(b / verh);
       this.canvasPlaatje(sl, b, h, (c) => {
         if (img) c.drawImage(img, 0, 0, b, h);
@@ -472,6 +495,20 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       return { plekken: l.plekken, stukken };
     }
 
+    /**
+     * Eén munt of briefje (opt-in `paneel`): een briefje `u` punten breed (nooit breder dan 170), een munt
+     * `munt` × de maat van zijn soort. Zo zijn alle keuzes even groot, ook munten naast briefjes.
+     */
+    legEen(box: Box, g: GeldSoort, u: number, munt: number) {
+      const brief = isBriefje(g);
+      const img = BEELD.get(g) ?? null;
+      const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
+      const b = brief ? Math.min(u, 170) : munt * muntMaat(g);
+      const h = brief ? b / verh : b;
+      const pl: Plek = { g, x: 0, y: 0, b, h };
+      return { plekken: [pl], stukken: [this.stuk(box, this.geldPlaatje(g), 0, 0, b, h)] };
+    }
+
     /** Een ding `aantal` keer, in een rooster (hoogstens 3 naast elkaar), passend in b × h. */
     legDingen(box: Box, naam: string, aantal: number, b: number, h: number, maxK: number): Stuk[] {
       const t = DING;
@@ -492,7 +529,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       let plekken: Plek[] = [];
       let stukken: Stuk[] = [];
       let geldStukken: Stuk[] = [];
-      if (d.geld?.length) {
+      if (d.geld?.length === 1 && this.p?.paneel) {
+        const u = Math.min(170, r.b - 30);
+        ({ plekken, stukken: geldStukken } = this.legEen(box, d.geld[0], u, u * 0.66));
+        stukken = geldStukken;
+      } else if (d.geld?.length) {
         ({ plekken, stukken: geldStukken } = this.legInBox(box, d.geld, r.b - 40, r.h - 40, zweeft ? 1.6 : 1.45));
         stukken = geldStukken;
       } else if (d.tekening) stukken = this.legDingen(box, d.tekening, d.aantal ?? 1, r.b - 30, r.h - 30, 1.2);
@@ -507,6 +548,25 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.leeg();
       const ind = indeling(p);
       const nieuw: Box[] = [];
+      if (p.paneel && ind.kaarten.length && !p.verbind) {
+        /* Het zachte, half doorzichtige vlak onder de keuzes: zonder rand, één keer getekend. */
+        const eerste = ind.kaarten[0];
+        const laatste = ind.kaarten[ind.kaarten.length - 1];
+        const x0 = eerste.x - eerste.b / 2 - PANEEL_RAND;
+        const b = laatste.x + laatste.b / 2 + PANEEL_RAND - x0;
+        const h = eerste.h + PANEEL_RAND * 2 - 16;
+        const y0 = eerste.y - h / 2;
+        const vlak = this.add.graphics().setDepth(-1);
+        vlak.fillStyle(0xbcd8ff, 0.06);
+        vlak.fillRoundedRect(x0 - 10, y0 - 10, b + 20, h + 20, 52);
+        vlak.fillStyle(0xcfe3ff, 0.13);
+        vlak.fillRoundedRect(x0, y0, b, h, 44);
+        this.alles.push(vlak);
+        if (verschijn) {
+          vlak.setAlpha(0);
+          this.tweens.add({ targets: vlak, alpha: 1, duration: 350 });
+        }
+      }
       for (const g of ind.groot) {
         const box = this.add.container(g.r.x, g.r.y);
         this.alles.push(box);
@@ -521,7 +581,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           }
           this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken: [], stukken: [st], geldStukken: [] });
         } else if (d.soort === "geld") {
-          const { plekken, stukken } = this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
+          /* Paneel: één munt of briefje groot in het midden (het voorbeeld, of de vraag "Wat is dit?"). */
+          const { plekken, stukken } = p.paneel && d.geld.length === 1 ? this.legEen(box, d.geld[0], 170, 150) : this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
           this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken, stukken, geldStukken: stukken });
         } else box.add(this.plaats(this.tekenPlaatje(d.soort), 0, 0).setScale(g.k / TX));
         nieuw.push(box);
@@ -557,6 +618,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         p.groot ?? null,
         (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.aantal, k.label]),
         !!p.zweven,
+        !!p.paneel,
         p.verbind ? [p.verbind.links.map((k) => [k.id, k.geld, k.label]), p.verbind.rechts.map((k) => [k.id, k.geld, k.label])] : null,
       ]);
       if (sig !== this.sig) {
@@ -866,8 +928,8 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf } = props;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf });
+  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel } = props;
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -940,6 +1002,17 @@ export function KaartSpaarpot() {
   return (
     <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
       <image href={voorwerpUrl("spaarpot")} x={32} y={5} width={180} height={180} />
+    </svg>
+  );
+}
+
+/** De kaart aan het eind van de les Munten en briefjes (244 × 190): een echte munt en een echt briefje (specimen). */
+export function KaartMuntBriefje() {
+  return (
+    <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
+      <image href={BESTAND.m2} x={14} y={46} width={96} height={96} />
+      <image href={BESTAND.b5} x={116} y={52} width={118} height={60} />
+      <image href={BESTAND.m1} x={150} y={116} width={70} height={70} />
     </svg>
   );
 }

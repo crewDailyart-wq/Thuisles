@@ -614,3 +614,56 @@ a.knop {
     grid-auto-columns: minmax(0, 1fr);
   }
 }
+
+/* ---------- opt-in `vraagBoven` (2 november 2026, proef geldmachine-1) ----------
+   De zin van Bliepo en de keuzeknoppen bovenaan in het midden van het speelvlak (stage x 0 tot 980).
+   Alleen lessen die `vraagBoven` aanzetten; alle andere lessen blijven zoals ze waren. */
+.vraagBoven {
+  position: absolute;
+  left: 320px;
+  top: 34px;
+  width: 940px;
+  z-index: 6;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.vraagBoven .tekst {
+  position: static;
+  width: 100%;
+  left: auto;
+  top: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 14px;
+  font-size: inherit;
+}
+.vraagBoven .tekst :global(.bliepo-tekst) {
+  font-size: calc(36px * var(--stijl-schaal, 1));
+  text-shadow: none;
+}
+.vraagBoven .bediening {
+  align-items: center;
+  margin-top: 0;
+}
+.vraagBoven .rij {
+  justify-content: center;
+  width: auto !important;
+}
+.vraagBoven .twee.twee {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 16px;
+  width: auto;
+}
+.vraagBoven .knop {
+  min-width: 150px;
+  min-height: 60px;
+  padding: 10px 30px;
+  font-size: 26px;
+  font-weight: 700;
+  text-align: center;
+}

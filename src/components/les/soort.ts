@@ -140,6 +140,12 @@ export type Lesdraaiboek = {
    * wordt donker, zodat gloeiende plaatjes ("glow in the dark") goed uitkomen.
    */
   nacht?: true;
+  /**
+   * Opt-in (2 november 2026, proef geldmachine-1): de zin en de keuzeknoppen van Bliepo staan
+   * BOVENAAN IN HET MIDDEN van het speelvlak in plaats van in de kolom bij Bliepo. Zonder: alles
+   * blijft zoals het was. Bliepo zelf blijft op zijn plek.
+   */
+  vraagBoven?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

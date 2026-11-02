@@ -4,7 +4,7 @@
  * tekeningen en andere bedragen (alleen het leerdoel, de soorten vragen, de
  * volgorde en de getallenreeks zijn van Squla):
  *
- *   De geldmachine    level 1, 2   squla-geld-geldmachine-1/2   Bliepo's spaarpot, de speelgoedwinkel
+ *   De geldmachine    level 1, 2   squla-geld-geldmachine-1/2   munten en briefjes herkennen (level 1, zonder spaarpot), de speelgoedwinkel
  *   Zakgeld verdienen level 1, 2   squla-geld-zakgeld-1/2       jij spaart voor een skateboard
  *   Geld              level 1, 2   squla-geld-geld-1/2          lijnen trekken en "kies er twee"
  *
@@ -33,7 +33,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
-import { SqulaGeldVlak, KaartSpaarpot, KaartSkateboard, type GDeel, type GeldProps, type GKaart } from "../vlakken/squla-geld-vlak";
+import { SqulaGeldVlak, KaartSpaarpot, KaartMuntBriefje, KaartSkateboard, type GDeel, type GeldProps, type GKaart } from "../vlakken/squla-geld-vlak";
 import { WAARDE, isBriefje, type GeldSoort } from "../vlakken/squla-geld-soorten";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 
@@ -477,8 +477,8 @@ async function welkom(l: Lesgids, beeld: Partial<GeldProps>, vooraf: GeldSoort[]
    ===================================================================== */
 
 const SPAARPOT: GDeel = { soort: "tekening", tekening: "spaarpot" };
-const eruit = (g: GeldSoort): GDeel[] => [SPAARPOT, { soort: "pijl" }, { soort: "geld", id: "geld", geld: [g] }];
-const erin = (g: GeldSoort): GDeel[] => [{ soort: "geld", id: "geld", geld: [g] }, { soort: "pijl" }, SPAARPOT];
+/** Eén munt of briefje groot in het midden (level 1, vraag "Wat is dit?" en het voorbeeld). */
+const eentje = (g: GeldSoort): GDeel[] => [{ soort: "geld", id: "geld", geld: [g] }];
 
 /** Wat Bliepo over een munt of briefje vertelt (op basis van de uitleg van Squla, in eigen woorden). */
 const OVER: Record<GeldSoort, string[]> = {
@@ -497,7 +497,6 @@ function waarZie(g: GeldSoort, keuzes: GeldSoort[], begin: string[], goedZin: st
   klopt(keuzes.filter((k) => k === g).length === 1, `waar zie je ${g}`);
   const munt = !isBriefje(g);
   return kiesGeld({
-      groot: [SPAARPOT],
       keuzes: keuzes.map((k) => [k]),
       doel: WAARDE[g],
       vraag: [...begin, `Waar zie je ${naam(g)}?`],
@@ -516,7 +515,7 @@ function waarZie(g: GeldSoort, keuzes: GeldSoort[], begin: string[], goedZin: st
   });
 }
 
-/** Wat is dit? Een munt of briefje bij de spaarpot, en drie woorden om uit te kiezen. */
+/** Wat is dit? Een munt of briefje, groot in beeld, en drie woorden om uit te kiezen. */
 function watIsDit(o: { beeld: GDeel[]; opties: (GeldSoort | "knoop")[]; goed: GeldSoort; vraag: string[]; goedZin: string[]; samen: string[]; tip: string[] }): Opgave {
   const woord = (x: GeldSoort | "knoop") => (x === "knoop" ? "knoop" : knopNaam(x));
   return knopVraag({
@@ -535,33 +534,33 @@ function watIsDit(o: { beeld: GDeel[]; opties: (GeldSoort | "knoop")[]; goed: Ge
 }
 
 const geldmachine1Opgaven: Opgave[] = [
-  waarZie("m1", ["m2", "b5", "m1"], ["Ik schud mijn spaarpot.", `Er valt een munt van ${e(1)} euro uit.`], ["Een munt is rond.", `Op deze munt staat een ${e(1)}.`]),
-  waarZie("m2", ["m1", "m2", "b20"], ["Ik schud nog een keer.", `Kijk, een munt van ${e(2)} euro!`], ["Deze munt is goud in het midden.", "De rand is zilver.", `En er staat een ${e(2)} op.`]),
-  waarZie("b5", ["b50", "c50", "b5"], ["Nu valt er een briefje uit.", "Een briefje van {5:wit} euro."], ["Een briefje is een rechthoek.", "Een briefje heet ook wel een biljet.", "Op dit briefje staat een {5:wit}."]),
+  waarZie("m1", ["m2", "b5", "m1"], ["Hier ligt wat geld."], ["Een munt is rond.", `Op deze munt staat een ${e(1)}.`]),
+  waarZie("m2", ["m1", "m2", "b20"], ["Kijk, nog meer geld."], ["Deze munt is goud in het midden.", "De rand is zilver.", `En er staat een ${e(2)} op.`]),
+  waarZie("b5", ["b50", "c50", "b5"], ["Kijk, weer ander geld."], ["Een briefje is een rechthoek.", "Een briefje heet ook wel een biljet.", "Op dit briefje staat een {5:wit}."]),
   watIsDit({
-    beeld: eruit("b10"),
+    beeld: eentje("b10"),
     opties: ["b100", "m1", "b10"],
     goed: "b10",
-    vraag: ["Kijk wat er nu uit mijn spaarpot valt.", "Wat is dit?"],
+    vraag: ["Kijk goed naar dit geld.", "Wat is dit?"],
     goedZin: ["Op het briefje staat {10:rood}.", "Het briefje van {10:rood} euro is rood."],
     samen: ["Kijk goed.", "Is het rond? Nee, het is een rechthoek.", "Dus het is een briefje.", "Kijk naar het getal: een {1:rood} en een {0:rood}."],
     tip: ["Een munt is rond. Een briefje is een rechthoek.", "Kijk naar het getal op het briefje."],
   }),
-  waarZie("b20", ["b10", "m2", "b20"], ["Nog één keer schudden.", "Er valt een briefje van {20:blauw} euro uit."], ["Het briefje van {20:blauw} euro is blauw.", "Er staat {20:blauw} op."]),
+  waarZie("b20", ["b10", "m2", "b20"], ["Kijk, weer ander geld."], ["Het briefje van {20:blauw} euro is blauw.", "Er staat {20:blauw} op."]),
   watIsDit({
-    beeld: erin("m1"),
+    beeld: eentje("m1"),
     opties: ["m1", "knoop", "m2"],
     goed: "m1",
-    vraag: ["Nu stop ik het geld weer terug in mijn spaarpot.", "Eerst deze munt.", "Wat is het?"],
+    vraag: ["Kijk goed naar deze munt.", "Wat is het?"],
     goedZin: [`Een munt van ${e(1)} euro is zilver in het midden.`, "De rand is goud."],
     samen: ["Een knoop heeft gaatjes. Dit is geen knoop.", "Het is een munt.", `Een munt van ${e(2)} euro is goud in het midden.`, `Een munt van ${e(1)} euro is zilver in het midden.`, "Hoe ziet het midden van deze munt eruit?"],
     tip: ["Kijk naar het getal op de munt."],
   }),
   watIsDit({
-    beeld: erin("b5"),
+    beeld: eentje("b5"),
     opties: ["b5", "b50", "c50"],
     goed: "b5",
-    vraag: ["Dan dit briefje.", "Wat is het?"],
+    vraag: ["Kijk nu naar dit geld.", "Wat is het?"],
     goedZin: ["Het briefje van {5:wit} euro is grijs.", "Er staat een {5:wit} op."],
     samen: ["Is het rond? Nee.", "Het is een briefje, dus het is geen munt.", "Kijk welk getal erop staat.", "Staat er een {5:wit}, of een {5:oranje} en een {0:oranje}?"],
     tip: ["Kijk naar het getal op het briefje."],
@@ -569,31 +568,31 @@ const geldmachine1Opgaven: Opgave[] = [
   bellenVraag({
     bellen: ["m1", "m2", "m1", "c50", "knoop", "m1"],
     zoek: "m1",
-    vraag: ["Oei, mijn geld zweeft door de ruimte!", `Er zweven drie munten van ${e(1)} euro.`, `Tik op alle munten van ${e(1)} euro.`],
+    vraag: ["Oei, het geld zweeft door de ruimte!", `Er zweven drie munten van ${e(1)} euro.`, `Tik op alle munten van ${e(1)} euro.`],
     goedZin: ["Je vond ze alle drie.", `Een munt van ${e(1)} euro is zilver in het midden, met een gouden rand.`],
     uitleg: ["Kijk naar het midden van elke munt.", `Een munt van ${e(1)} euro is zilver in het midden.`, `En er staat een ${e(1)} op.`],
     tip: [`Zoek de munten met een ${e(1)} erop.`],
   }),
-  waarZie("b10", ["b20", "b100", "b10"], ["Ik stop nog een briefje terug.", "Het is rood."], ["Het briefje van {10:rood} euro is rood.", "Nog één briefje, dan is alles terug."]),
+  waarZie("b10", ["b20", "b100", "b10"], ["Hier liggen weer drie briefjes."], ["Het briefje van {10:rood} euro is rood.", "Er staat een {10:rood} op."]),
   watIsDit({
-    beeld: erin("b20"),
+    beeld: eentje("b20"),
     opties: ["b20", "b10", "b50"],
     goed: "b20",
-    vraag: ["Het laatste briefje gaat terug.", "Wat is het?"],
-    goedZin: ["Het briefje van {20:blauw} euro is blauw.", "Alles zit weer in mijn spaarpot."],
+    vraag: ["Kijk, nog een briefje.", "Wat is het?"],
+    goedZin: ["Het briefje van {20:blauw} euro is blauw.", "Er staat een {20:blauw} op."],
     samen: ["Kijk naar de kleur.", "Het briefje van {10:rood} euro is rood.", "Het briefje van {50:oranje} euro is oranje.", "Welke kleur heeft dit briefje? En welk getal staat erop?"],
     tip: ["Kijk naar het getal op het briefje."],
   }),
   watIsDit({
-    beeld: erin("m2"),
+    beeld: eentje("m2"),
     opties: ["m1", "m2", "c50"],
     goed: "m2",
-    vraag: ["Oh, er lag nog een munt op tafel.", "Wat is het?"],
+    vraag: ["Kijk, nog een munt.", "Wat is het?"],
     goedZin: ["Goud in het midden, zilver aan de rand.", `Dat is een munt van ${e(2)} euro.`],
     samen: ["Kijk naar het midden van de munt.", `Een munt van ${e(1)} euro is zilver in het midden.`, `Een munt van ${e(2)} euro is goud in het midden.`, "Kijk ook naar het getal."],
     tip: ["Kijk naar het getal op de munt."],
   }),
-  waarZie("b5", ["b10", "b5", "b20"], ["Ik pak nog drie briefjes uit mijn spaarpot."], ["Het briefje van {5:wit} euro is grijs.", "Er staat een {5:wit} op."]),
+  waarZie("b5", ["b10", "b5", "b20"], ["Hier liggen nog drie briefjes."], ["Het briefje van {5:wit} euro is grijs.", "Er staat een {5:wit} op."]),
 ];
 
 const geldmachine1: Lesdraaiboek = {
@@ -603,17 +602,27 @@ const geldmachine1: Lesdraaiboek = {
   indeling: "synthesis",
   browserstem: true,
   nacht: true,
-  kaarttekening: KaartSpaarpot,
-  voorwerpen: ["spaarpot", "knoop"],
+  /* Proef (2 nov 2026): vraag bovenaan in het midden, keuzes naast elkaar op een zacht vlak; alleen deze les. */
+  vraagBoven: true,
+  kaarttekening: KaartMuntBriefje,
+  voorwerpen: ["knoop"],
   async speel(l) {
-    await welkom(l, { groot: [SPAARPOT] }, ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], ["Er valt geld uit de spaarpot.", `Waar zie je een munt van ${e(1)} euro?`], async () => {
-      zet(l, { ...LEEG, kaarten: [{ id: "u0", geld: ["m1"] }, { id: "u1", geld: ["b5"] }] });
-      zet(l, { licht: ["u0"] });
-      await l.zeg("Dit is een munt.", "Een munt is rond.", "Op een munt staat hoeveel hij waard is.");
-      zet(l, { licht: ["u1"] });
-      await l.zeg("Dit is een briefje.", "Een briefje is een rechthoek van papier.", "Op een briefje staat ook hoeveel het waard is.");
-      zet(l, { licht: [] });
-    }, geldmachine1Opgaven[0]);
+    /* Beginscherm: alleen het voorbeeld (de munt van 1 euro) en Bliepo's zin met Ja en Nee. Geen keuzes om op te tikken. */
+    const voorbeeld = { ...LEEG, groot: eentje("m1") };
+    l.vlak<GeldProps>(SqulaGeldVlak, { ...LEEG, nr: volgend(), vooraf: ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], paneel: true, groot: eentje("m1") });
+    speelLesgeluid("verschijn");
+    await l.wacht(500);
+    await squlaBegin(l, {
+      welkom: [`Kijk, een munt van ${e(1)} euro.`, "Vandaag leer je munten en briefjes herkennen."],
+      voorbeeld: () => zet(l, voorbeeld),
+      /* Na "Nee": de uitleg gaat over hetzelfde voorbeeld, de munt van 1 euro. */
+      uitleg: async () => {
+        zet(l, { ...voorbeeld, licht: ["geld"] });
+        await l.zeg(`Dit is een munt van ${e(1)} euro.`, "Een munt is rond.", `Er staat een ${e(1)} op. Zo weet je hoeveel hij waard is.`, "Hij is zilver in het midden, met een gouden rand.");
+        zet(l, { licht: [] });
+        await l.zeg("Een briefje is van papier. Dat is geen munt.");
+      },
+    });
     const fouten = await speelAlles(l, geldmachine1Opgaven, [0, 3, 4]);
     await squlaEind(l, fouten, "Je kent de munten en de briefjes.");
   },

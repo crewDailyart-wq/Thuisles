@@ -928,6 +928,8 @@ function Lesscherm({
   /* De indeling van Synthesis (28 oktober 2026): zin en knoppen in een kolom links, Bliepo rechts zonder ballon. */
   const synth = nieuw && !staand && les.indeling === "synthesis";
   const squlaMidden = nieuw && staand && les.synthesis.startsWith("Squla");
+  /* Opt-in per les (proef geldmachine-1): zin en keuzes bovenaan in het midden van het speelvlak, niet in de kolom bij Bliepo. */
+  const vraagBoven = nieuw && !!les.vraagBoven;
   const vlakBoven =
     squlaMidden && ballonHoogte && schermHoogte
       ? Math.max(8, (schermHoogte - ballonHoogte - 16 - H * (schaal || 1)) / 2)
@@ -1148,12 +1150,13 @@ function Lesscherm({
                 : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
             }
           >
-            {tegelsLinks ? maakTekstblok("zin") : tekstblok}
+            {vraagBoven ? null : tegelsLinks ? maakTekstblok("zin") : tekstblok}
           </BliepoVloer>
         )}
 
         {/* Nieuw: het speelvlak schuift 300 naar links (de rechterkolom is voor Bliepo). */}
         <div className={nieuw ? "les-inhoud" : undefined} style={nieuw ? undefined : { display: "contents" }}>
+        {vraagBoven && <div className={s.vraagBoven} data-vraag-boven="">{tekstblok}</div>}
         {/* de som bovenaan */}
         {beeld.som && !beeld.kaart && (
           <div className={s.sombalk}>
@@ -1318,7 +1321,7 @@ function Lesscherm({
                 : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
             }
           >
-            {tekstblok}
+            {vraagBoven ? null : tekstblok}
           </BliepoVloer>
         </div>
       )}

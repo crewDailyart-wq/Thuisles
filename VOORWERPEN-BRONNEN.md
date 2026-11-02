@@ -92,3 +92,7 @@ De oude versies blijven staan, volgens regel 1:
 Terugzetten kan met één regel in het draaiboek:
 - in `lessen/klokkijken.tsx`: `BliepoKlok` weer `Sterrenklok`;
 - in `lessen/verhaaltjessommen.tsx`: `VerhaalTuin` weer `VerhaalHolo`.
+
+## Geld (squla-geld-*)
+
+LEGAL REVIEW REQUIRED voor geldafbeeldingen: de munten en briefjes in de geldlessen zijn officiële ECB-afbeeldingen (briefjes als SPECIMEN, 72 dpi; munten gemeenschappelijke zijde, uitgeknipt in `public/geld/los/`). Volgens besluit ECB/2013/10 (artikel 2, vervangen door besluit (EU) 2020/2090) mag dat op een website of in een app alleen zo; het woord "specimen" moet op de briefjes blijven staan. Zie CLAUDE.md en `public/geld/BRON.md`.
