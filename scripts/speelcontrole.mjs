@@ -231,7 +231,26 @@ async function speel(c, id) {
       return null;
     };
     const canvasStap = async (z, soort) => {
+      /* Splitsen 1 (s1): dingen of tegels naar vakken slepen; het vlak zegt zelf wat de volgende sleep is. */
+      {
+        let gedaan = false;
+        for (let k = 0; k < 40; k++) {
+          const stap = await ev(`window.__phaser?.s1Stap?.(${JSON.stringify(soort === "fout" ? "fout" : "goed")}) ?? null`);
+          if (!stap) break;
+          await sleep(stap.van, stap.naar);
+          await wacht(150);
+          gedaan = true;
+        }
+        if (gedaan) return true;
+      }
       /* Knikkers over bakjes slepen (squla-splits-delen-1): goed = om en om over de bakjes, fout = alles in het eerste bakje. */
+      /* Tegels, sommen of een ster slepen naar een vak (Splitsen 2 en Delen, s2): het scherm zegt zelf wat de eerstvolgende sleep is. */
+      const s2 = await ev(`window.__phaser?.s2Stap?.(${JSON.stringify(soort)}) ?? null`);
+      if (s2) {
+        await sleep(s2.van, s2.naar);
+        await wacht(150);
+        return true;
+      }
       const verdeel = await ev(`window.__phaser?.sleepKlaar?.() ?? null`);
       if (verdeel?.los?.length) {
         const k = verdeel.bakken.length;

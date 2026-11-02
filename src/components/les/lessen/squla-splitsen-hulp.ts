@@ -42,7 +42,7 @@ export type Stand = { huidig: string; goed: number; fout: number; typUitgelegd: 
 export type Vraag = (l: Lesgids, st: Stand) => Promise<boolean>;
 
 export const zet = (l: Lesgids, p: Partial<SplitsProps>) => l.pasVlakAan<SplitsProps>(p);
-export const LEEG: Partial<SplitsProps> = { licht: [], goedIds: [], uit: [], toon: [], actief: false, sleep: null };
+export const LEEG: Partial<SplitsProps> = { licht: [], goedIds: [], uit: [], toon: [], actief: false, sleep: null, s1: null, s2: null };
 
 /** Een nieuw beeld (Bliepo tovert het tevoorschijn). Hetzelfde beeld (nog een keer, na de uitleg): alles blijft staan. */
 export function toon(l: Lesgids, st: Stand, beeld: Beeld, extra: Partial<SplitsProps> = {}): boolean {

@@ -29,7 +29,11 @@ import { holoBasis, TX, WARM, GOED, VLAK_B, VLAK_H, type PhaserModule } from "..
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { tekenVoorwerp, voorwerpBeeld } from "../voorwerpen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { maakS1, type S1Motor, type S1Spec } from "./squla-splitsen-s1";
+import { S2Laag, type S2, type S2Leg } from "./squla-splitsen2-sleep";
 import s from "./squla-splitsen.module.css";
+
+export type { S1Spec, S1Stand, S1Zone } from "./squla-splitsen-s1";
 
 /* ---------- soorten ---------- */
 
@@ -178,7 +182,7 @@ const POT = { b: 190, h: 226 };
  * verdeelt, op een zacht, half doorzichtig vlak. `nr` verandert = opnieuw beginnen (alles weer boven);
  * `auto` = zoveel knikkers rollen vanzelf één voor één over de bakjes (uitleg van Bliepo).
  */
-export type Sleep = { n: number; k: number; nr: number; auto?: number };
+export type Sleep = { n: number; k: number; nr: number; auto?: number; /** Welk voorwerp (standaard de knikker). */ vw?: string };
 
 /** De kleurnamen van de bakjes (zelfde kleuren als de getallen in de zin, BOUWREGELS 2.1). */
 export const SLEEP_BAKKLEUR = ["paars", "oranje", "groen", "roze", "blauw"];
@@ -186,6 +190,10 @@ export const SLEEP_BAKKLEUR = ["paars", "oranje", "groen", "roze", "blauw"];
 export type SplitsProps = {
   beeld: Beeld | null;
   sleep?: Sleep | null;
+  /** Splitsen 1: dingen of tegels slepen naar vakken (squla-splitsen-s1.ts). */
+  s1?: S1Spec | null;
+  /** Splitsen 2 en Delen: tegels, sommen of een ster slepen naar vakken (squla-splitsen2-sleep.ts). */
+  s2?: S2 | null;
   licht?: string[];
   goedIds?: string[];
   uit?: string[];
@@ -361,6 +369,8 @@ const BAK_GRENS = 250;
 interface SplitsScene {
   zetBeeld(b: Beeld | null): void;
   zetSleep(s: Sleep | null, actief: boolean): void;
+  zetS1(s: S1Spec | null, actief: boolean): void;
+  zetS2(s: S2 | null, actief: boolean): void;
   verbind(meld: (g: Vlakgebeurtenis) => void): void;
   zetStaat(st: Staat): void;
   goed(): void;
@@ -405,6 +415,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     melder: (g: Vlakgebeurtenis) => void = () => {};
     sl: SleepStaat | null = null;
     slActief = false;
+    s1m: S1Motor | null = null;
+    s2L = new S2Laag(this as never, (p) => this.waar(p), () => (g: S2Leg) => this.melder(g));
     slDruk: { i: number; x0: number; y0: number; dx: number; dy: number; sleept: boolean } | null = null;
 
     constructor() {
@@ -418,6 +430,14 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     maak() {
       this.input.on("pointerdown", (p: Ptr) => this.slNeer(p));
       this.input.on("pointermove", (p: Ptr) => this.slBeweeg(p));
+      this.input.on("pointerdown", (p: Ptr) => this.s2L.neer(p));
+      this.input.on("pointermove", (p: Ptr) => this.s2L.beweeg(p));
+      this.input.on("pointerup", (p: Ptr) => this.s2L.los(p));
+      this.input.on("pointerupoutside", (p: Ptr) => this.s2L.los(p));
+      this.input.on("pointerdown", (p: Ptr) => this.s1m?.neer(p));
+      this.input.on("pointermove", (p: Ptr) => this.s1m?.beweeg(p));
+      this.input.on("pointerup", (p: Ptr) => this.s1m?.los(p));
+      this.input.on("pointerupoutside", (p: Ptr) => this.s1m?.los(p));
       this.input.on("pointerup", (p: Ptr) => this.slLos(p));
       this.input.on("pointerupoutside", (p: Ptr) => this.slLos(p));
     }
@@ -613,10 +633,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     /* ---------- zelf slepen: knikkers over bakjes ---------- */
 
     /** Een knikker in een eigen kleur: het plaatje van de knikker, één keer gekleurd (gebakken). */
-    knikTex(hex: string) {
-      const sl = `sps-kn-${hex}`;
+    knikTex(hex: string, vw = "knikker") {
+      const sl = `sps-kn-${vw}-${hex}`;
       this.canvasPlaatje(sl, VW, VW, (c) => {
-        tekenVoorwerp(c, "knikker", 4, 4, VW - 8, VW - 8);
+        tekenVoorwerp(c, vw, 4, 4, VW - 8, VW - 8);
         kleurPixels(c, hex);
       });
       return sl;
@@ -662,6 +682,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (!st) return;
       if (this.rustig) st.box.destroy();
       else this.tweens.add({ targets: st.box, alpha: 0, duration: 140, onComplete: () => st.box.destroy() });
+    }
+
+    zetS2(sp: S2 | null, actief: boolean) {
+      this.s2L.zet(sp, actief);
+    }
+
+    zetS1(sp: S1Spec | null, actief: boolean) {
+      this.s1m ??= maakS1(this, { KLEUR, kleurPixels, meld: () => this.melder });
+      this.s1m.zet(sp, actief);
     }
 
     zetSleep(s: Sleep | null, actief: boolean) {
@@ -736,7 +765,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           x: 490 + (col - (inRij - 1) / 2) * trayDia * 1.2,
           y: KNIK_BOVEN + rij * trayDia * 1.22 + Math.sin(i * 2.3) * 7,
         };
-        const im = this.plaats(this.knikTex(hex), thuis.x, thuis.y);
+        const im = this.plaats(this.knikTex(hex, s.vw), thuis.x, thuis.y);
         im.setDisplaySize(trayDia, trayDia);
         laagKnik.add(im);
         kn.push({ im, thuis, bak: -1, hex });
@@ -965,6 +994,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     goed() {
+      this.s1m?.goed();
+      this.s2L.goed();
       this.slGoed();
       this.golf(MIDDEN.x, MIDDEN.y);
       this.flitsTot = performance.now() + 900;
@@ -973,12 +1004,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     fout() {
+      this.s1m?.fout();
+      this.s2L.fout();
       if (this.hoofd) this.schud(this.hoofd);
       if (this.sl) this.schud(this.sl.box);
     }
 
     /** Voor `npm run vloeiend`: het beeld van nu steeds opnieuw tevoorschijn toveren, met de lichtgolf. */
     demo(ms: number) {
+      if (this.s1m?.demo(ms)) return;
       const eind = performance.now() + ms;
       if (this.sl) {
         /* Met knikkers: ze rollen steeds één voor één over de bakjes en weer terug. */
@@ -1008,7 +1042,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaSplitsVlak({ beeld, sleep = null, licht = [], goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
+export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, licht = [], goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
   /* Het canvas neemt alleen muis en vinger aan zolang er knikkers te slepen zijn; anders gaat alles erdoorheen naar de knoppen. */
   const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
@@ -1024,6 +1058,18 @@ export function SqulaSplitsVlak({ beeld, sleep = null, licht = [], goedIds = [],
     scene?.zetSleep(sl, ac);
     plek.current?.style.setProperty("pointer-events", sl ? "auto" : "none");
   }, [scene, sleepSleutel, plek]);
+  const s1Sleutel = JSON.stringify({ s1, actief });
+  useEffect(() => {
+    const { s1: sp, actief: ac } = JSON.parse(s1Sleutel) as { s1: S1Spec | null; actief: boolean };
+    scene?.zetS1(sp, ac);
+    if (sp) plek.current?.style.setProperty("pointer-events", "auto");
+  }, [scene, s1Sleutel, plek]);
+  const s2Sleutel = JSON.stringify({ s2, actief });
+  useEffect(() => {
+    const { s2: sp, actief: ac } = JSON.parse(s2Sleutel) as { s2: S2 | null; actief: boolean };
+    scene?.zetS2(sp, ac);
+    if (sp) plek.current?.style.setProperty("pointer-events", "auto");
+  }, [scene, s2Sleutel, plek]);
   const beeldSleutel = JSON.stringify(beeld);
   useEffect(() => {
     scene?.zetBeeld(JSON.parse(beeldSleutel) as Beeld | null);

@@ -41,6 +41,17 @@ export type Lesgeluid =
   | "machineAan" // de machine slaat aan en zoemt (±1,2 s)
   | "stukPlop" // een stukje valt uit de machine in het bakje (per stukje hoger: je kunt meetellen)
   | "restKlik" // het belletje: de rest komt uit de machine
+  /* Splits-lessen met slepen (2 november 2026, s2; eigen klanken uit code, zacht en kort): */
+  | "s2Pak" // een voorwerp oppakken
+  | "s2Leg" // een voorwerp neerleggen (per voorwerp hoger: je kunt meetellen)
+  | "s2Terug" // een voorwerp glijdt terug
+  | "s2Vonk" // glinstertjes bij goed
+  /* Splitsen 1 met slepen (2 november 2026, s1; eigen klanken uit code, zacht en kort): */
+  | "s1Pak" // een ding of tegel oppakken
+  | "s1Leg" // neerleggen in een vak (per ding hoger: je kunt meetellen)
+  | "s1Terug" // een ding glijdt terug naar het hoopje
+  | "s1Vonk" // glinsterend belletje bij goed
+  | "s1Klaar" // klein vrolijk loopje als alles ligt
   /* Sfeergeluidjes aan het begin van een verhaal (Synthesis: vogeltjes bij het vogelverhaal, 2,0 s, zacht). */
   | "sfeerVogels"
   | "sfeerBloemen"
@@ -364,6 +375,41 @@ function maak(c: AudioContext, naam: Lesgeluid, stap = 0) {
       toon(c, { f: f * 0.5, duur: 0.08, vol: 0.04, type: "triangle" }, t + 0.16);
       break;
     }
+    case "s2Pak":
+      toon(c, { f: 700, f2: 980, duur: 0.07, vol: 0.045, type: "triangle" }, t);
+      break;
+    case "s2Leg": {
+      const f = 440 * Math.pow(1.122, Math.min(stap, 11));
+      toon(c, { f, f2: f * 0.8, duur: 0.1, vol: 0.07 }, t);
+      toon(c, { f: f * 2, duur: 0.12, vol: 0.025 }, t + 0.05);
+      break;
+    }
+    case "s2Terug":
+      ruis(c, 0.18, 0.025, 1400, 500, t);
+      toon(c, { f: 520, f2: 380, duur: 0.1, vol: 0.03, type: "triangle" }, t);
+      break;
+    case "s2Vonk":
+      [1568, 1976, 2349, 2637].forEach((f, i) => toon(c, { f, duur: 0.22, vol: 0.02 }, t + i * 0.07));
+      break;
+    case "s1Pak":
+      toon(c, { f: 620, f2: 900, duur: 0.06, vol: 0.04, type: "triangle" }, t);
+      break;
+    case "s1Leg": {
+      const f = 392 * Math.pow(1.122, Math.min(stap, 12));
+      toon(c, { f, f2: f * 0.78, duur: 0.1, vol: 0.07 }, t);
+      toon(c, { f: f * 1.5, duur: 0.1, vol: 0.025, type: "triangle" }, t + 0.06);
+      break;
+    }
+    case "s1Terug":
+      ruis(c, 0.16, 0.022, 1500, 600, t);
+      toon(c, { f: 500, f2: 360, duur: 0.09, vol: 0.028, type: "triangle" }, t);
+      break;
+    case "s1Vonk":
+      [1760, 2217, 2637, 3136].forEach((f, i) => toon(c, { f, duur: 0.2, vol: 0.016 }, t + i * 0.06));
+      break;
+    case "s1Klaar":
+      [659, 784, 988].forEach((f, i) => toon(c, { f, duur: 0.14, vol: 0.03, type: "triangle" }, t + i * 0.07));
+      break;
     case "restKlik":
       toon(c, { f: 1319, duur: 0.35, vol: 0.04 }, t);
       toon(c, { f: 1760, duur: 0.45, vol: 0.03 }, t + 0.08);
