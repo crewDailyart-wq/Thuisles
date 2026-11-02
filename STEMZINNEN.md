@@ -7,7 +7,7 @@ Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` ze
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 11699 zinnen, 371718 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 11708 zinnen, 371928 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -4033,7 +4033,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (8401)
+## Door de site genoteerd, buiten de lessen (8410)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -12436,3 +12436,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - In dat vak liggen 4 ballen.
 - Kijk naar de ballen en de splitspaal. Welk getal mist er nog? Sleep het naar de lege plek.
 - Kijk naar de splitspaal. Welk getal mist er nog? Sleep het naar de lege plek.
+- Kijk: 6 sterren in mijn tas.
+- Er valt er 1 uit: die wordt grijs.
+- 6 min 1 = 5.
+- Kijk: 7 sterren.
+- Er gaan er 4 weg: die worden grijs.
+- 7 min 4 = 3.
+- Eerst maak je 10: 8 + 2 = 10.
+- Van de 5 zijn er dan nog 3 over.
+- Begin bij 8.
