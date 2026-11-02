@@ -55,7 +55,7 @@ export default function Beginzinnen() {
             .filter((l) => (l.onderwerp ?? "Overig") === o)
             .map((l) => (
               <article key={l.id} className="mt-4 rounded-lg border border-black/10 bg-white p-3 sm:p-4" style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
-                <div style={{ flex: "1 1 380px", minWidth: 0 }}>
+                <div style={{ flex: "1 1 260px", minWidth: 0 }}>
                   {heeftFoto(l.id) ? (
                     // eslint-disable-next-line @next/next/no-img-element
                     <img src={`/beginzinnen/${l.id}.jpg`} alt={`Eerste vraag van ${l.titel ?? l.id}`} loading="lazy" className="w-full rounded border border-black/10" style={{ aspectRatio: "1280 / 800", objectFit: "cover" }} />
@@ -65,7 +65,7 @@ export default function Beginzinnen() {
                     </div>
                   )}
                 </div>
-                <div style={{ flex: "1 1 320px", minWidth: 0 }}>
+                <div style={{ flex: "1 1 260px", minWidth: 0 }}>
                   <h3 className="text-base font-semibold">
                     <a href={`/voorbeeld/les/${l.id}?naam=Testkind`} target="_blank" rel="noreferrer" className="underline" style={{ color: "#0b4fb3" }}>
                       {l.titel ?? l.id}
