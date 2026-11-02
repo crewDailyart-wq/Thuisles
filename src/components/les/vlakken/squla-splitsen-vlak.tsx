@@ -23,9 +23,9 @@
  * met `s: "tik"` meldt `{ soort: "tik", id }`.
  */
 
-import { useEffect } from "react";
-import type { Vlakbasis } from "../soort";
-import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
+import { useEffect, useRef } from "react";
+import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
+import { holoBasis, TX, WARM, GOED, VLAK_B, VLAK_H, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { tekenVoorwerp, voorwerpBeeld } from "../voorwerpen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
@@ -173,8 +173,19 @@ export type Beeld = { id: string; delen: Deel[] };
 /** De maat van de tekening van een beker met potloden (punten). */
 const POT = { b: 190, h: 226 };
 
+/**
+ * Zelf slepen (2 november 2026, proef squla-splits-delen-1): `n` knikkers die het kind over `k` bakjes
+ * verdeelt, op een zacht, half doorzichtig vlak. `nr` verandert = opnieuw beginnen (alles weer boven);
+ * `auto` = zoveel knikkers rollen vanzelf één voor één over de bakjes (uitleg van Bliepo).
+ */
+export type Sleep = { n: number; k: number; nr: number; auto?: number };
+
+/** De kleurnamen van de bakjes (zelfde kleuren als de getallen in de zin, BOUWREGELS 2.1). */
+export const SLEEP_BAKKLEUR = ["paars", "oranje", "groen", "roze", "blauw"];
+
 export type SplitsProps = {
   beeld: Beeld | null;
+  sleep?: Sleep | null;
   licht?: string[];
   goedIds?: string[];
   uit?: string[];
@@ -341,8 +352,16 @@ const phaserSleutel = (b: Beeld | null) => (b ? `${b.id}|${JSON.stringify(b.dele
 
 type Staat = { licht: string[]; goedIds: string[]; uit: string[]; toon: string[] };
 
+/** Vrolijke, volle kleuren voor de knikkers (afwisselend, zodat elke knikker apart te zien is). */
+const KNIKKERS = ["#ff3b5c", "#ff9a1f", "#ffd21f", "#2fd16b", "#2e9bff", "#a35cff", "#ff4fb0", "#18c8c8"];
+const KNIK_BOVEN = 120;
+const BAK_BODEM = 566;
+const BAK_GRENS = 250;
+
 interface SplitsScene {
   zetBeeld(b: Beeld | null): void;
+  zetSleep(s: Sleep | null, actief: boolean): void;
+  verbind(meld: (g: Vlakgebeurtenis) => void): void;
   zetStaat(st: Staat): void;
   goed(): void;
   fout(): void;
@@ -353,6 +372,27 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
   type Img = import("phaser").GameObjects.Image;
   type Box = import("phaser").GameObjects.Container;
   type Gfx = import("phaser").GameObjects.Graphics;
+  type Ptr = import("phaser").Input.Pointer;
+  type Knik = { im: Img; thuis: { x: number; y: number }; bak: number; hex: string };
+  type SleepStaat = {
+    sleutel: string;
+    n: number;
+    k: number;
+    cel: number;
+    W: number;
+    H: number;
+    bakX: number[];
+    top: number;
+    dia: number;
+    trayDia: number;
+    kn: Knik[];
+    inhoud: number[][];
+    box: Box;
+    laagKnik: Box;
+    laagSleep: Box;
+    groen: Gfx;
+    laatsteAuto: number | undefined;
+  };
 
   class Splits extends Basis implements SplitsScene {
     hoofd: Box | null = null;
@@ -362,9 +402,24 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     imgs: { im: Img; id: string; sub: string; verborgen: boolean }[] = [];
     flitsTot = 0;
     staat: Staat = { licht: [], goedIds: [], uit: [], toon: [] };
+    melder: (g: Vlakgebeurtenis) => void = () => {};
+    sl: SleepStaat | null = null;
+    slActief = false;
+    slDruk: { i: number; x0: number; y0: number; dx: number; dy: number; sleept: boolean } | null = null;
 
     constructor() {
       super("squla-splitsen");
+    }
+
+    verbind(meld: (g: Vlakgebeurtenis) => void) {
+      this.melder = meld;
+    }
+
+    maak() {
+      this.input.on("pointerdown", (p: Ptr) => this.slNeer(p));
+      this.input.on("pointermove", (p: Ptr) => this.slBeweeg(p));
+      this.input.on("pointerup", (p: Ptr) => this.slLos(p));
+      this.input.on("pointerupoutside", (p: Ptr) => this.slLos(p));
     }
 
     preload() {
@@ -518,7 +573,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           }
         }
       }
-      this.tover(box);
+      if (b.delen.length) this.tover(box);
       /* De gloed-plaatjes alvast bakken, één per keer (geen hapering later). */
       const sleutels = [...new Set(this.imgs.map((x) => x.im.getData("basis") as string))];
       sleutels.forEach((sl, i) =>
@@ -554,7 +609,363 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (this.lijnen && this.beeld) tekenLijnen(this.lijnen, this.beeld.delen, (id) => (st.uit.includes(id) ? 0x56607a : kleur(id)));
     }
 
+
+    /* ---------- zelf slepen: knikkers over bakjes ---------- */
+
+    /** Een knikker in een eigen kleur: het plaatje van de knikker, één keer gekleurd (gebakken). */
+    knikTex(hex: string) {
+      const sl = `sps-kn-${hex}`;
+      this.canvasPlaatje(sl, VW, VW, (c) => {
+        tekenVoorwerp(c, "knikker", 4, 4, VW - 8, VW - 8);
+        kleurPixels(c, hex);
+      });
+      return sl;
+    }
+
+    /** Het bakje in een eigen kleur: heel (achter de knikkers) of alleen de voorkant (voor de knikkers, zodat ze erin liggen). De kleur gaat over het plaatje heen; rand en glans blijven. */
+    bakTex(hex: string, W: number, H: number, voor: boolean) {
+      const sl = `sps-bak-${hex}-${W}-${voor ? "v" : "a"}`;
+      this.canvasPlaatje(sl, W, H, (c) => {
+        const laag = document.createElement("canvas");
+        laag.width = Math.ceil(W * TX);
+        laag.height = Math.ceil(H * TX);
+        const l = laag.getContext("2d")!;
+        l.scale(TX, TX);
+        tekenVoorwerp(l, "bakje", 0, 0, W, H);
+        const vorm = document.createElement("canvas");
+        vorm.width = laag.width;
+        vorm.height = laag.height;
+        vorm.getContext("2d")!.drawImage(laag, 0, 0);
+        l.globalCompositeOperation = "color";
+        l.fillStyle = hex;
+        l.fillRect(0, 0, W, H);
+        l.globalCompositeOperation = "destination-in";
+        l.setTransform(1, 0, 0, 1, 0, 0);
+        l.drawImage(vorm, 0, 0);
+        c.drawImage(laag, 0, 0, W, H);
+        if (voor) c.clearRect(0, 0, W, H * 0.3);
+      });
+      return sl;
+    }
+
+    slWeg() {
+      const st = this.sl;
+      this.sl = null;
+      this.slDruk = null;
+      this.input.setDefaultCursor("default");
+      if (typeof window !== "undefined" && window.__phaser) {
+        const w = { ...window.__phaser };
+        delete w.sleepKlaar;
+        delete w.sleepPunt;
+        window.__phaser = w;
+      }
+      if (!st) return;
+      if (this.rustig) st.box.destroy();
+      else this.tweens.add({ targets: st.box, alpha: 0, duration: 140, onComplete: () => st.box.destroy() });
+    }
+
+    zetSleep(s: Sleep | null, actief: boolean) {
+      this.slActief = actief;
+      if (!s) {
+        if (this.sl) this.slWeg();
+        return;
+      }
+      const sleutel = `${s.n}-${s.k}-${s.nr}`;
+      if (!this.sl || this.sl.sleutel !== sleutel) {
+        this.slWeg();
+        this.slBouw(s, sleutel);
+      }
+      if (this.sl && s.auto !== undefined && s.auto !== this.sl.laatsteAuto) this.slAuto(s.auto);
+    }
+
+    /** Op het scherm (pixels van de pagina) waar een punt van het vlak ligt. */
+    slScherm(x: number, y: number) {
+      const r = this.game.canvas.getBoundingClientRect();
+      return { x: r.left + (x * r.width) / VLAK_B, y: r.top + (y * r.height) / VLAK_H };
+    }
+
+    slBouw(s: Sleep, sleutel: string) {
+      const { n, k } = s;
+      const cel = Math.min(280, 880 / k);
+      const W = Math.round(cel * 0.9);
+      const bak = voorwerpBeeld("bakje");
+      const H = Math.round((W * bak.naturalHeight) / bak.naturalWidth);
+      const bakX = Array.from({ length: k }, (_, j) => 490 + (j - (k - 1) / 2) * cel);
+      const top = BAK_BODEM - H;
+      const dia = Math.min(56, W * 0.3);
+      const trayDia = n <= 10 ? 66 : 58;
+      const box = this.add.container(0, 0);
+      const achter = this.add.container(0, 0);
+      const laagKnik = this.add.container(0, 0);
+      const voor = this.add.container(0, 0);
+      const laagSleep = this.add.container(0, 0);
+      box.add([achter, laagKnik, voor, laagSleep]);
+
+      /* Het zachte, half doorzichtige vlak onder de bakjes: zonder rand, één keer getekend. */
+      const px = 490 - (k * cel) / 2 - 34;
+      const pb = k * cel + 68;
+      const py = 300;
+      const ph = 300;
+      const vlak = this.add.graphics();
+      vlak.fillStyle(0xbcd8ff, 0.06);
+      vlak.fillRoundedRect(px - 10, py - 10, pb + 20, ph + 20, 52);
+      vlak.fillStyle(0xcfe3ff, 0.13);
+      vlak.fillRoundedRect(px, py, pb, ph, 44);
+      achter.add(vlak);
+      const groen = this.add.graphics().setAlpha(0);
+      groen.fillStyle(0x8ff0c0, 0.4);
+      groen.fillRoundedRect(px, py, pb, ph, 44);
+      achter.add(groen);
+
+      bakX.forEach((x, j) => {
+        const hex = KLEUR[SLEEP_BAKKLEUR[j % SLEEP_BAKKLEUR.length]];
+        achter.add(this.plaats(this.bakTex(hex, W, H, false), x, top + H / 2));
+        voor.add(this.plaats(this.bakTex(hex, W, H, true), x, top + H / 2));
+      });
+
+      /* De knikkers boven, los door elkaar in (hooguit) twee rijen. */
+      const rijen = n > 8 ? 2 : 1;
+      const perRij = Math.ceil(n / rijen);
+      const kn: Knik[] = [];
+      for (let i = 0; i < n; i++) {
+        const rij = Math.floor(i / perRij);
+        const inRij = Math.min(perRij, n - rij * perRij);
+        const col = i % perRij;
+        const hex = KNIKKERS[(i * 3) % KNIKKERS.length];
+        const thuis = {
+          x: 490 + (col - (inRij - 1) / 2) * trayDia * 1.2,
+          y: KNIK_BOVEN + rij * trayDia * 1.22 + Math.sin(i * 2.3) * 7,
+        };
+        const im = this.plaats(this.knikTex(hex), thuis.x, thuis.y);
+        im.setDisplaySize(trayDia, trayDia);
+        laagKnik.add(im);
+        kn.push({ im, thuis, bak: -1, hex });
+        if (!this.rustig) {
+          im.setAlpha(0).setScale(0.2 / TX);
+          this.tweens.add({ targets: im, alpha: 1, displayWidth: trayDia, displayHeight: trayDia, delay: 40 + i * 35, duration: 260, ease: "Back.easeOut" });
+        }
+      }
+      if (!this.rustig) {
+        box.setAlpha(0);
+        this.tweens.add({ targets: box, alpha: 1, duration: 260 });
+      }
+      this.sl = { sleutel, n, k, cel, W, H, bakX, top, dia, trayDia, kn, inhoud: Array.from({ length: k }, () => []), box, laagKnik, laagSleep, groen, laatsteAuto: undefined };
+
+      /* Voor de automatische test en de vloeiendheidscontrole: waar je de knikkers kunt pakken en neerleggen (pixels van de pagina). */
+      window.__phaser = {
+        ...window.__phaser,
+        sleepKlaar: () => {
+          const st = this.sl;
+          if (!st || !this.slActief) return null;
+          return {
+            los: st.kn.filter((q) => q.bak === -1).map((q) => this.slScherm(q.im.x, q.im.y)),
+            bakken: st.bakX.map((x) => this.slScherm(x, st.top + st.H * 0.5)),
+          };
+        },
+        sleepPunt: () => {
+          const q = this.sl?.kn.find((m) => m.bak === -1) ?? this.sl?.kn[0];
+          return this.slScherm(q?.im.x ?? 490, q?.im.y ?? KNIK_BOVEN);
+        },
+      };
+    }
+
+    /** Waar een knikker in een bakje ligt: een stapeltje, onderaan eerst, de onderste rij half achter de rand. */
+    slBakPlek(st: SleepStaat, j: number, idx: number) {
+      const c = st.inhoud[j].length;
+      const perRij = c <= 3 ? Math.max(1, c) : c <= 8 ? 3 : 4;
+      const rij = Math.floor(idx / perRij);
+      const inRij = Math.min(perRij, c - rij * perRij);
+      const col = idx % perRij;
+      return { x: st.bakX[j] + (col - (inRij - 1) / 2) * st.dia * 1.04, y: st.top + st.H * 0.2 - rij * st.dia * 0.8, rij };
+    }
+
+    /** Alles op zijn plek zetten (glijdend): de knikkers boven, de knikkers in hun bakje. */
+    slLegHerein(snel = false) {
+      const st = this.sl;
+      if (!st) return;
+      const dur = snel || this.rustig ? 1 : 190;
+      const zet = (q: Knik, x: number, y: number, d: number) => {
+        this.tweens.killTweensOf(q.im);
+        this.tweens.add({ targets: q.im, x, y, displayWidth: d, displayHeight: d, duration: dur, ease: "Cubic.easeOut" });
+      };
+      st.kn.forEach((q) => {
+        if (q.bak === -1) zet(q, q.thuis.x, q.thuis.y, st.trayDia);
+      });
+      const volgorde: { im: Img; z: number }[] = [];
+      st.inhoud.forEach((lijst, j) =>
+        lijst.forEach((i, idx) => {
+          const p = this.slBakPlek(st, j, idx);
+          zet(st.kn[i], p.x, p.y, st.dia);
+          volgorde.push({ im: st.kn[i].im, z: -p.rij });
+        }),
+      );
+      /* Hogere rijen achter, lagere rijen ervoor. */
+      volgorde.sort((a, b) => a.z - b.z).forEach((v) => st.laagKnik.bringToTop(v.im));
+    }
+
+    slStand() {
+      const st = this.sl;
+      if (!st) return;
+      const tel = st.inhoud.map((l) => l.length);
+      this.melder({ soort: "stand", tel, los: st.n - tel.reduce((a, b) => a + b, 0) });
+    }
+
+    /** Zet knikker `i` in bakje `j` (of terug naar boven bij -1). */
+    slPlaats(i: number, j: number) {
+      const st = this.sl;
+      if (!st) return;
+      st.inhoud.forEach((l) => {
+        const x = l.indexOf(i);
+        if (x >= 0) l.splice(x, 1);
+      });
+      st.kn[i].bak = j;
+      if (j >= 0) st.inhoud[j].push(i);
+      st.laagKnik.add(st.kn[i].im);
+    }
+
+    /** De eerste `t` knikkers rollen één voor één over de bakjes (uitleg), de rest ligt boven. */
+    slAuto(t: number) {
+      const st = this.sl;
+      if (!st) return;
+      st.laatsteAuto = t;
+      st.inhoud.forEach((l) => (l.length = 0));
+      st.kn.forEach((q, i) => {
+        q.bak = i < t ? i % st.k : -1;
+        if (i < t) st.inhoud[i % st.k].push(i);
+        st.laagKnik.add(q.im);
+      });
+      if (t > 0) speelLesgeluid("stukPlop", t - 1);
+      this.slLegHerein();
+    }
+
+    waar(p: Ptr): { x: number; y: number } {
+      const e = p.event as MouseEvent | TouchEvent | undefined;
+      let cx: number | undefined;
+      let cy: number | undefined;
+      if (e && "changedTouches" in e && e.changedTouches.length > 0) {
+        const t = [...e.changedTouches].find((x) => x.identifier === p.identifier) ?? e.changedTouches[0];
+        cx = t.clientX;
+        cy = t.clientY;
+      } else if (e && "clientX" in e) {
+        cx = e.clientX;
+        cy = e.clientY;
+      }
+      if (cx === undefined || cy === undefined) return { x: p.worldX, y: p.worldY };
+      const r = this.game.canvas.getBoundingClientRect();
+      return { x: ((cx - r.left) * VLAK_B) / r.width, y: ((cy - r.top) * VLAK_H) / r.height };
+    }
+
+    /** Welke knikker ligt hier (de dichtstbijzijnde onder je vinger)? */
+    slRaak(x: number, y: number) {
+      const st = this.sl;
+      if (!st) return -1;
+      let best = -1;
+      let bd = 1e9;
+      st.kn.forEach((q, i) => {
+        if (q.bak === -2) return;
+        const d = Math.hypot(q.im.x - x, q.im.y - y);
+        const r = (q.bak === -1 ? st.trayDia : st.dia) / 2 + 10;
+        if (d <= r && d < bd) {
+          bd = d;
+          best = i;
+        }
+      });
+      return best;
+    }
+
+    slNeer(p: Ptr) {
+      if (!this.sl || !this.slActief) return;
+      const w = this.waar(p);
+      const i = this.slRaak(w.x, w.y);
+      if (i < 0) return;
+      const im = this.sl.kn[i].im;
+      this.slDruk = { i, x0: w.x, y0: w.y, dx: im.x - w.x, dy: im.y - w.y, sleept: false };
+    }
+
+    slBeweeg(p: Ptr) {
+      const st = this.sl;
+      if (!st) return;
+      const w = this.waar(p);
+      const d = this.slDruk;
+      if (!d) {
+        if (!p.isDown) this.input.setDefaultCursor(this.slActief && this.slRaak(w.x, w.y) >= 0 ? "grab" : "default");
+        return;
+      }
+      if (!d.sleept && Math.hypot(w.x - d.x0, w.y - d.y0) > 9) {
+        /* Pakken: de knikker komt los van zijn plek en hangt onder de vinger. */
+        d.sleept = true;
+        this.input.setDefaultCursor("grabbing");
+        const q = st.kn[d.i];
+        this.slPlaats(d.i, -2);
+        st.laagSleep.add(q.im);
+        this.tweens.killTweensOf(q.im);
+        const g = st.trayDia * 1.12;
+        q.im.setDisplaySize(g, g);
+        speelLesgeluid("tik");
+        this.slLegHerein();
+        this.slStand();
+      }
+      if (d.sleept) st.kn[d.i].im.setPosition(w.x + d.dx, w.y + d.dy);
+    }
+
+    slLos(p: Ptr) {
+      const st = this.sl;
+      const d = this.slDruk;
+      this.slDruk = null;
+      this.input.setDefaultCursor("default");
+      if (!st || !d) return;
+      const q = st.kn[d.i];
+      if (!d.sleept) {
+        /* Tikken werkt ook: boven = naar het bakje met de minste knikkers, in een bakje = terug naar boven. */
+        if (!this.slActief) return;
+        if (q.bak === -1) {
+          let j = 0;
+          st.inhoud.forEach((l, x) => {
+            if (l.length < st.inhoud[j].length) j = x;
+          });
+          this.slPlaats(d.i, j);
+          speelLesgeluid("stukPlop", st.inhoud.reduce((a, l) => a + l.length, 0) - 1);
+        } else {
+          this.slPlaats(d.i, -1);
+          speelLesgeluid("tik");
+        }
+        this.slLegHerein();
+        this.slStand();
+        return;
+      }
+      /* Loslaten: boven (of ver weg) = terug naar boven; anders glijdt de knikker naar het dichtstbijzijnde bakje. */
+      const w = this.waar(p);
+      const x = w.x + d.dx;
+      const y = w.y + d.dy;
+      let j = -1;
+      if (y >= BAK_GRENS) {
+        let bd = 1e9;
+        st.bakX.forEach((bx, b) => {
+          const dd = Math.abs(bx - x);
+          if (dd < bd) {
+            bd = dd;
+            j = b;
+          }
+        });
+      }
+      this.slPlaats(d.i, j);
+      speelLesgeluid(j >= 0 ? "stukPlop" : "tik", Math.max(0, st.inhoud.reduce((a, l) => a + l.length, 0) - 1));
+      this.slLegHerein();
+      this.slStand();
+    }
+
+    /** Goed: lichtgolf boven elk bakje, de knikkers huppelen even, het vlak kleurt zacht groen. */
+    slGoed() {
+      const st = this.sl;
+      if (!st) return;
+      st.bakX.forEach((x) => this.golf(x, st.top + st.H * 0.4));
+      if (this.rustig) return;
+      st.kn.forEach((q, i) => this.tweens.add({ targets: q.im, y: q.im.y - 14, duration: 150, delay: i * 30, yoyo: true, ease: "Sine.easeOut" }));
+      this.tweens.add({ targets: st.groen, alpha: 1, duration: 200, yoyo: true, hold: 500 });
+    }
+
     goed() {
+      this.slGoed();
       this.golf(MIDDEN.x, MIDDEN.y);
       this.flitsTot = performance.now() + 900;
       this.tekenStaat();
@@ -563,11 +974,24 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
     fout() {
       if (this.hoofd) this.schud(this.hoofd);
+      if (this.sl) this.schud(this.sl.box);
     }
 
     /** Voor `npm run vloeiend`: het beeld van nu steeds opnieuw tevoorschijn toveren, met de lichtgolf. */
     demo(ms: number) {
       const eind = performance.now() + ms;
+      if (this.sl) {
+        /* Met knikkers: ze rollen steeds één voor één over de bakjes en weer terug. */
+        let t = 0;
+        const rol = () => {
+          if (performance.now() > eind || !this.sl) return;
+          this.slAuto(t++ % (this.sl.n + 1));
+          if (t % (this.sl.n + 1) === 0) this.goed();
+          this.time.delayedCall(240, rol);
+        };
+        rol();
+        return;
+      }
       const b = this.beeld;
       let k = 0;
       const stap = () => {
@@ -584,8 +1008,22 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaSplitsVlak({ beeld, licht = [], goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
-  const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene, { invoer: false });
+export function SqulaSplitsVlak({ beeld, sleep = null, licht = [], goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
+  /* Het canvas neemt alleen muis en vinger aan zolang er knikkers te slepen zijn; anders gaat alles erdoorheen naar de knoppen. */
+  const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene, { invoer: true });
+  const meldRef = useRef(meld);
+  useEffect(() => {
+    meldRef.current = meld;
+  }, [meld]);
+  useEffect(() => {
+    scene?.verbind((g) => meldRef.current(g));
+  }, [scene]);
+  const sleepSleutel = JSON.stringify({ sleep, actief });
+  useEffect(() => {
+    const { sleep: sl, actief: ac } = JSON.parse(sleepSleutel) as { sleep: Sleep | null; actief: boolean };
+    scene?.zetSleep(sl, ac);
+    plek.current?.style.setProperty("pointer-events", sl ? "auto" : "none");
+  }, [scene, sleepSleutel, plek]);
   const beeldSleutel = JSON.stringify(beeld);
   useEffect(() => {
     scene?.zetBeeld(JSON.parse(beeldSleutel) as Beeld | null);
@@ -610,7 +1048,7 @@ export function SqulaSplitsVlak({ beeld, licht = [], goedIds = [], uit = [], too
 
   return (
     <div className={s.vlak}>
-      <div ref={plek} style={HOLO_CANVAS} aria-hidden />
+      <div ref={plek} style={{ ...HOLO_CANVAS, touchAction: "none" }} aria-hidden />
       {teksten.map((t) => (
         <div
           key={`${beeld?.id}-${t.k}`}

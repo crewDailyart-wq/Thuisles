@@ -128,6 +128,7 @@ function ontbreekt(z) {
   return fouten;
 }
 
+let naTeller = 0;
 async function speel(c, id) {
   const { targetId } = await c.stuur("Target.createTarget", { url: "about:blank" });
   const { sessionId: s } = await c.stuur("Target.attachToTarget", { targetId, flatten: true });
@@ -135,7 +136,18 @@ async function speel(c, id) {
     const r = await c.stuur("Runtime.evaluate", { expression: e, returnByValue: true }, s).catch(() => null);
     return r && !r.exceptionDetails ? r.result?.value : null;
   };
-  const klik = (filter) => ev(`(() => { const b = [...document.querySelectorAll("button, a[href], button[data-plek], [data-zin], [data-getal], [data-signaal], [data-ding]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled && b.getAttribute("aria-disabled") !== "true" && !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Geluidjes aan|Lees de keuzes voor)/i.test(b.getAttribute("aria-label") || b.textContent.trim()); }).find(${filter}); if (!b) return false; if (b.click) b.click(); else b.dispatchEvent(new MouseEvent("click", { bubbles: true })); return ${process.env.DEBUG ? "b.outerHTML.slice(0, 200)" : "true"}; })()`).then((r) => { if (r && process.env.DEBUG) console.log("  tik:", r); return r; });
+  const klik = (filter) => ev(`(() => { const b = [...document.querySelectorAll("button, a[href], button[data-plek], [data-zin], [data-getal], [data-signaal], [data-ding]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled && b.getAttribute("aria-disabled") !== "true" && !/^(Pauze|Nog eens horen|Stem van Bliepo|Praten met Bliepo|Geluidjes aan|Lees de keuzes voor)/i.test(b.getAttribute("aria-label") || b.textContent.trim()); }).find(${filter}); if (!b) return false; if (b.click) b.click(); else b.dispatchEvent(new MouseEvent("click", { bubbles: true })); return ${process.env.DEBUG ? "b.outerHTML.slice(0, 200)" : "true"}; })()`).then(async (r) => {
+    if (r && process.env.DEBUG) console.log("  tik:", r);
+    /* NAKLIK=ms: kort na elke tik een schermfoto (om de gloed van goed/fout te zien); alleen met SCHERMFOTO. */
+    if (r && FOTOMAP && process.env.NAKLIK) {
+      await wacht(Number(process.env.NAKLIK));
+      const { data } = await c.stuur("Page.captureScreenshot", { format: "jpeg", quality: 80 }, s);
+      mkdirSync(join(FOTOMAP, id), { recursive: true });
+      const nr = String(++naTeller).padStart(3, "0");
+      writeFileSync(join(FOTOMAP, id, `na-${nr}.jpg`), Buffer.from(data, "base64"));
+    }
+    return r;
+  });
   const fouten = new Set();
   const handmatig = new Set();
   let stappen = 0;
@@ -219,6 +231,18 @@ async function speel(c, id) {
       return null;
     };
     const canvasStap = async (z, soort) => {
+      /* Knikkers over bakjes slepen (squla-splits-delen-1): goed = om en om over de bakjes, fout = alles in het eerste bakje. */
+      const verdeel = await ev(`window.__phaser?.sleepKlaar?.() ?? null`);
+      if (verdeel?.los?.length) {
+        const k = verdeel.bakken.length;
+        for (let i = 0; i < verdeel.los.length; i++) {
+          const nu = await ev(`window.__phaser?.sleepKlaar?.() ?? null`);
+          if (!nu?.los?.length) break;
+          await sleep(nu.los[0], nu.bakken[soort === "fout" ? 0 : i % k]);
+          await wacht(120);
+        }
+        return true;
+      }
       if (soort === "weetniet") return false;
       const taakNr = await ev(`window.__phaser?.klokTaak?.n ?? ""`);
       const sleutel = z.tekst + "|" + taakNr;

@@ -36,7 +36,7 @@
  * voorgelezen (dat zou het antwoord verklappen); dingen wel, als ze een `zeg` hebben.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { GOED, holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
@@ -140,6 +140,8 @@ export type GeldProps = {
    * Zonder: alles zoals het was.
    */
   paneel?: boolean;
+  /** Bij `paneel`: waar het midden van het scherm in het vlak ligt (laptop 640, staand scherm 490); het vlak zelf is 980 breed. */
+  midden?: number;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -197,9 +199,9 @@ export function legGeld(items: GeldSoort[], maxB: number, maxH: number, maxS = 1
 
 /* ---------- waar staat wat (punten van het vlak, 980 × 720) ---------- */
 
-export function rij(n: number, b: number, tussen: number, y: number, h: number): Rect[] {
+export function rij(n: number, b: number, tussen: number, y: number, h: number, midden = VLAK_B / 2): Rect[] {
   const breed = n * b + (n - 1) * tussen;
-  const x0 = (VLAK_B - breed) / 2 + b / 2;
+  const x0 = midden - breed / 2 + b / 2;
   return Array.from({ length: n }, (_, i) => ({ x: x0 + i * (b + tussen), y, b, h }));
 }
 
@@ -225,9 +227,8 @@ function deelMaat(d: GDeel): { b: number; h: number } {
 }
 
 /** Het zachte vlak onder de keuzes (opt-in `paneel`): midden en maat. */
-const PANEEL_Y = 450;
+const PANEEL_Y = 318;
 const PANEEL_CEL_H = 210;
-const PANEEL_RAND = 28;
 
 export function indeling(p: GeldProps): Indeling {
   const n = p.kaarten?.length ?? 0;
@@ -237,9 +238,10 @@ export function indeling(p: GeldProps): Indeling {
   let boven = 14;
   if (n && p.paneel && !p.verbind) {
     /* Alle keuzes even groot, netjes op één rij, dicht bij elkaar, in het midden van het vlak. */
-    const tussen = 20;
-    const b = Math.min(250, (860 - tussen * (n - 1)) / n);
-    kaarten = rij(n, b, tussen, PANEEL_Y, PANEEL_CEL_H);
+    const tussen = 16;
+    const m = p.midden ?? VLAK_B / 2;
+    const b = Math.min(240, (2 * Math.min(m, VLAK_B - m) - 30 - tussen * (n - 1)) / n);
+    kaarten = rij(n, b, tussen, PANEEL_Y, PANEEL_CEL_H, m);
   } else if (n && p.zweven) {
     const xs = [190, 490, 790];
     const dx = [-14, 18, -6, 10, -18, 14];
@@ -271,7 +273,7 @@ export function indeling(p: GeldProps): Indeling {
     const top = boven;
     const kMax = p.groot.some((d) => d.soort === "geld") ? 1.3 : 1.7;
     const k = Math.min(kMax, 920 / somB, (onder - top) / maxH);
-    let x = VLAK_B / 2 - (somB * k) / 2;
+    let x = (p.paneel ? (p.midden ?? VLAK_B / 2) : VLAK_B / 2) - (somB * k) / 2;
     const yMidden = top + (onder - top) / 2;
     p.groot.forEach((d, i) => {
       const m = maten[i];
@@ -315,7 +317,9 @@ const LIJNKLEUR: Record<Gloed | "leeg", number> = { warm: 0xffd36e, goed: 0x8ff0
 /** Eén plaatje in een ding (een munt, een briefje, een speelgoedje), met zijn gloed (alleen als hij aan is). */
 type Stuk = { im: Img; tex: string; gloed: Img | null; kleur: Gloed | null };
 type Soort = "kaart" | "links" | "rechts" | "groot";
-type Ding = { box: Box; r: Rect; zeg: string | null; soort: Soort; id: string; plekken: Plek[]; stukken: Stuk[]; geldStukken: Stuk[] };
+/** Het eigen vak van een keuze (opt-in `paneel`): zacht, half doorzichtig, met ronde hoeken; bij goed/fout licht het hele vak op. */
+type Vak = { im: Img; gloed: Img | null; kleur: Gloed | null; sl: string };
+type Ding = { box: Box; r: Rect; zeg: string | null; soort: Soort; id: string; plekken: Plek[]; stukken: Stuk[]; geldStukken: Stuk[]; vak?: Vak };
 
 let LETTER = "system-ui, sans-serif";
 
@@ -444,6 +448,42 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       return sl;
     }
 
+    /* ---------- het vak van een keuze ---------- */
+
+    /** Een afgerond vak (één keer getekend): zacht en half doorzichtig; met kleur als goed of fout. */
+    vakPlaatje(b: number, h: number, kleur: Gloed | null) {
+      const sl = `vak|${Math.round(b)}|${Math.round(h)}|${kleur ?? "leeg"}`;
+      const vul = kleur === "goed" ? "rgba(143,240,192,0.34)" : kleur === "fout" ? "rgba(255,123,123,0.34)" : kleur === "warm" ? "rgba(255,211,110,0.30)" : "rgba(207,227,255,0.15)";
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.fillStyle = vul;
+        c.beginPath();
+        c.roundRect(0, 0, b, h, 38);
+        c.fill();
+      });
+      return sl;
+    }
+
+    /** Het hele vak licht op (een gloed in de vorm van het vak, één keer gebakken) of is weer gewoon. */
+    zetVak(d: Ding, kleur: Gloed | null) {
+      const v = d.vak;
+      if (!v || v.kleur === kleur) return;
+      v.kleur = kleur;
+      if (!kleur) {
+        v.gloed?.setVisible(false);
+        v.im.setVisible(true);
+        return;
+      }
+      const bron = this.vakPlaatje(d.r.b, d.r.h, kleur);
+      const doel = `${bron}|g`;
+      this.bak(bron, doel, GLOEDKLEUR[kleur]);
+      if (!v.gloed) {
+        v.gloed = this.add.image(v.im.x, v.im.y, doel);
+        d.box.addAt(v.gloed, 0);
+      } else v.gloed.setTexture(doel);
+      v.gloed.setScale(v.im.scaleX, v.im.scaleY).setVisible(true);
+      v.im.setVisible(false);
+    }
+
     /* ---------- gloed op het moment ---------- */
 
     /** Zet de gloed van een stuk aan (in een kleur) of uit. De gloed is één keer gebakken. */
@@ -539,7 +579,14 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       } else if (d.tekening) stukken = this.legDingen(box, d.tekening, d.aantal ?? 1, r.b - 30, r.h - 30, 1.2);
       else if (d.label) stukken = [this.stuk(box, this.tekstPlaatje(d.label), 0, 0, 220, 110)];
       this.alles.push(box);
-      const ding: Ding = { box, r, zeg: d.zeg ?? null, soort, id: d.id, plekken, stukken, geldStukken };
+      let vak: Vak | undefined;
+      if (this.p?.paneel && soort === "kaart") {
+        const sl = this.vakPlaatje(r.b, r.h, null);
+        const im = this.add.image(0, 0, sl).setScale(1 / TX);
+        box.addAt(im, 0);
+        vak = { im, gloed: null, kleur: null, sl };
+      }
+      const ding: Ding = { box, r, zeg: d.zeg ?? null, soort, id: d.id, plekken, stukken, geldStukken, vak };
       this.dingen.set(d.id, ding);
       return ding;
     }
@@ -548,25 +595,6 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.leeg();
       const ind = indeling(p);
       const nieuw: Box[] = [];
-      if (p.paneel && ind.kaarten.length && !p.verbind) {
-        /* Het zachte, half doorzichtige vlak onder de keuzes: zonder rand, één keer getekend. */
-        const eerste = ind.kaarten[0];
-        const laatste = ind.kaarten[ind.kaarten.length - 1];
-        const x0 = eerste.x - eerste.b / 2 - PANEEL_RAND;
-        const b = laatste.x + laatste.b / 2 + PANEEL_RAND - x0;
-        const h = eerste.h + PANEEL_RAND * 2 - 16;
-        const y0 = eerste.y - h / 2;
-        const vlak = this.add.graphics().setDepth(-1);
-        vlak.fillStyle(0xbcd8ff, 0.06);
-        vlak.fillRoundedRect(x0 - 10, y0 - 10, b + 20, h + 20, 52);
-        vlak.fillStyle(0xcfe3ff, 0.13);
-        vlak.fillRoundedRect(x0, y0, b, h, 44);
-        this.alles.push(vlak);
-        if (verschijn) {
-          vlak.setAlpha(0);
-          this.tweens.add({ targets: vlak, alpha: 1, duration: 350 });
-        }
-      }
       for (const g of ind.groot) {
         const box = this.add.container(g.r.x, g.r.y);
         this.alles.push(box);
@@ -619,6 +647,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.aantal, k.label]),
         !!p.zweven,
         !!p.paneel,
+        p.midden ?? null,
         p.verbind ? [p.verbind.links.map((k) => [k.id, k.geld, k.label]), p.verbind.rechts.map((k) => [k.id, k.geld, k.label])] : null,
       ]);
       if (sig !== this.sig) {
@@ -655,7 +684,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       };
       for (const d of this.dingen.values()) {
         const k = d.soort === "links" || d.soort === "rechts" ? lijnKleur(d) : kleur(d.id);
-        for (const st of d.stukken) this.zetGloed(st, k);
+        if (d.vak) {
+          /* Eigen vak: bij goed of fout licht het hele vak op; de munt zelf alleen bij "licht". */
+          this.zetVak(d, k === "goed" || k === "fout" ? k : null);
+          for (const st of d.stukken) this.zetGloed(st, k === "warm" ? k : null);
+        } else for (const st of d.stukken) this.zetGloed(st, k);
         if (d.soort === "kaart") d.box.setAlpha(p.uit?.includes(d.id) ? 0.35 : 1);
       }
       if (this.lijnen && v) {
@@ -929,7 +962,16 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   }, [scene]);
 
   const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel } = props;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel });
+  /* Met `paneel`: het midden van het scherm (laptop: het vlak staat 150 naar links; staand scherm: gecentreerd). */
+  const [staand, setStaand] = useState(false);
+  useEffect(() => {
+    const meet = () => setStaand(window.innerHeight > window.innerWidth);
+    meet();
+    window.addEventListener("resize", meet);
+    return () => window.removeEventListener("resize", meet);
+  }, []);
+  const midden = paneel ? (staand ? VLAK_B / 2 : 640) : undefined;
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel, midden });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -964,7 +1006,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   }, [namenSleutel]);
 
   /* Onzichtbare knoppen over alles wat je kunt tikken: toetsenbord en automatische test. */
-  const ind = indeling(props);
+  const ind = indeling({ ...props, midden });
   const knoppen: { id: string; zeg: string | null; r: Rect; doe: () => void }[] = [];
   if (kaartenActief) (kaarten ?? []).forEach((d, i) => !uit?.includes(d.id) && knoppen.push({ id: d.id, zeg: d.zeg ?? null, r: ind.kaarten[i], doe: () => meld({ soort: "kaart", id: d.id }) }));
   if (verbind?.actief) {

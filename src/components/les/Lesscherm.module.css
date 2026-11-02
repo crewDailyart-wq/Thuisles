@@ -616,17 +616,22 @@ a.knop {
 }
 
 /* ---------- opt-in `vraagBoven` (2 november 2026, proef geldmachine-1) ----------
-   De zin van Bliepo en de keuzeknoppen bovenaan in het midden van het speelvlak (stage x 0 tot 980).
+   De zin van Bliepo en de keuzeknoppen bovenaan in het midden van het SCHERM (laptop: stage-midden 640 = vlak-x 940; staand: 790).
    Alleen lessen die `vraagBoven` aanzetten; alle andere lessen blijven zoals ze waren. */
 .vraagBoven {
   position: absolute;
-  left: 320px;
+  left: 540px;
   top: 34px;
-  width: 940px;
+  width: 800px;
   z-index: 6;
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+/* Staand scherm: het speelvlak staat al in het midden van het scherm. */
+[data-staand] .vraagBoven {
+  left: 320px;
+  width: 940px;
 }
 .vraagBoven .tekst {
   position: static;

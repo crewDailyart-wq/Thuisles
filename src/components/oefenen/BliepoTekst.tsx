@@ -21,7 +21,7 @@
  */
 
 import { zeg } from "@/lib/stem";
-import { useEffect, useRef, useState, useSyncExternalStore } from "react";
+import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
 import { spreekbaar } from "@/lib/maatje/taal";
@@ -115,15 +115,25 @@ export function BliepoTekst({
       {woorden.map((w, i) => {
         const soort = leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
         return (
-          <span key={i} className={`bliepo-tekst-woord${soort}`}>
-            {w}
-            {i < woorden.length - 1 ? " " : ""}
-            {regelNaZin && i < woorden.length - 1 && typeof w === "string" && /[.!]$/.test(w) ? <br /> : null}
-          </span>
+          <Fragment key={i}>
+            <span className={`bliepo-tekst-woord${soort}`}>
+              {w}
+              {i < woorden.length - 1 ? " " : ""}
+            </span>
+            {regelNaZin && i < woorden.length - 1 && /[.!]$/.test(tekstVan(w)) ? <br /> : null}
+          </Fragment>
         );
       })}
     </p>
   );
+}
+
+/** De tekst die in een woord (of een woord met kleur) staat. */
+function tekstVan(w: unknown): string {
+  if (typeof w === "string" || typeof w === "number") return String(w);
+  if (Array.isArray(w)) return w.map(tekstVan).join("");
+  if (w && typeof w === "object" && "props" in w) return tekstVan((w as { props: { children?: unknown } }).props.children);
+  return "";
 }
 
 /** Een gewone zin in woorden. */

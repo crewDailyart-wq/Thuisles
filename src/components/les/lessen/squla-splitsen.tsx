@@ -25,7 +25,7 @@
 
 import type { Lesgids } from "../soort";
 import { foutBeeld, g, goedBeeld, kiesGetal, kiesTekst, kiesTwee, les, squlaVraag, staafBeeld, tik, toon, typGetal, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
-import { KaartDelen, KaartSplitsen, type Beeld, type Deel } from "../vlakken/squla-splitsen-vlak";
+import { KaartDelen, KaartSplitsen, SLEEP_BAKKLEUR, type Beeld, type Deel, type Sleep } from "../vlakken/squla-splitsen-vlak";
 
 /* =====================================================================
    Woorden
@@ -691,6 +691,80 @@ function delenVraag(n: number, k: number, vw: string, bron: Bron, vorm: Antwoord
   };
 }
 
+
+/* ---------- Zelf slepen: knikkers over bakjes (proef 2 november 2026, opdracht Sara) ----------
+   Het kind sleept de knikkers zelf over de bakjes (met de muis of de vinger; tikken werkt ook).
+   Eerlijk verdelen = in elk bakje evenveel: precies één goede verdeling (n : k = m). Elk bakje
+   heeft een eigen kleur; de getallen in de som hebben die kleuren (BOUWREGELS 2.1). */
+
+let sleepNr = 0;
+const bakKleuren = (k: number) => Array.from({ length: k }, (_, j) => SLEEP_BAKKLEUR[j % SLEEP_BAKKLEUR.length]);
+/** "{4:paars} + {4:oranje}": elk bakje in zijn eigen kleur. */
+const somBakjes = (tel: number[]) => tel.map((c, j) => g(c, bakKleuren(tel.length)[j])).join(" + ");
+/** "{3:paars} en {5:oranje}" of "{3:paars}, {4:oranje} en {5:groen}". */
+const telBakjes = (tel: number[]) => {
+  const d = tel.map((c, j) => g(c, bakKleuren(tel.length)[j]));
+  return d.length > 1 ? `${d.slice(0, -1).join(", ")} en ${d[d.length - 1]}` : d[0];
+};
+
+/** De knikkers rollen één voor één over de bakjes (uitleg en hulp). */
+async function rolOver(l: Lesgids, s: Sleep) {
+  await l.zeg("We verdelen de knikkers één voor één.", "Elk bakje krijgt er steeds één bij.");
+  for (let t = 1; t <= s.n; t++) {
+    zet(l, { sleep: { ...s, auto: t } });
+    await l.wacht(450);
+  }
+}
+
+function sleepVraag(n: number, k: number): Vraag {
+  const m = n / k;
+  const eerlijk = Array.from({ length: k }, () => m);
+  return (l, st) => {
+    const beeld: Beeld = { id: `sleep-${n}-${k}`, delen: [] };
+    return squlaVraag<number[]>(l, {
+      toon: () => {
+        const s: Sleep = { n, k, nr: ++sleepNr };
+        if (!toon(l, st, beeld, { sleep: s })) zet(l, { sleep: s, actief: false });
+      },
+      vraag: [`Er zijn ${aantal(n, "knikker")}.`, `Sleep ze eerlijk over de ${g(k)} bakjes.`],
+      antwoord: async () => {
+        zet(l, { actief: true });
+        /* Wachten tot alle knikkers in een bakje liggen; dan verschijnt het vinkje. Haalt het kind er weer een weg, dan verdwijnt het. */
+        type Stand = { soort: "stand"; tel: number[]; los: number };
+        const stand = () => l.wachtOpVlak<Stand>("stand");
+        let s = await stand();
+        for (;;) {
+          if (s.los > 0) {
+            s = await stand();
+            continue;
+          }
+          const r = await Promise.race([l.knoppen(["controleer"]).then(() => null), stand()]);
+          if (r === null) break;
+          s = r;
+        }
+        zet(l, { actief: false });
+        return s.tel;
+      },
+      isGoed: (x) => x.every((c) => c === m),
+      noem: (x) => telBakjes(x),
+      goed: async () => {
+        goedBeeld(l, st);
+        await l.zeg("Ja! Elk bakje krijgt evenveel knikkers.", `${somBakjes(eerlijk)} = ${g(n)}.`);
+        await l.wacht(300);
+      },
+      fout: () => foutBeeld(l, st),
+      samen: async () => {
+        const s: Sleep = { n, k, nr: ++sleepNr, auto: 0 };
+        zet(l, { sleep: s, actief: false });
+        await l.wacht(500);
+        await rolOver(l, s);
+        await l.zeg("Alles is verdeeld.", "Tel wat er in één bakje ligt.");
+      },
+      tip: ["Tel de knikkers in elk bakje.", "Liggen er in elk bakje evenveel?"],
+    });
+  };
+}
+
 /** Potloden in bekers: in welke rij zijn ze eerlijk verdeeld? */
 function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
   const m = n / k;
@@ -939,8 +1013,6 @@ const splitsen2b = les({
 
 /* ---------- Delen ---------- */
 
-const DELEN_BEGIN: Beeld = { id: "begin", delen: verdeelDelen(6, 2, "knikker", { vorm: "rijen", per: 3 }) };
-
 const delen = les({
   id: "squla-splits-delen-1",
   titel: "Eerlijk verdelen",
@@ -949,30 +1021,30 @@ const delen = les({
   level: 1,
   kaart: KaartDelen,
   voorwerpen: ["knikker", "stuiterbal", "bakje", "potlood", "pennenbeker", "beker-leeg"],
-  begin: DELEN_BEGIN,
-  welkom: ["Verdeel de knikkers eerlijk over twee bakjes.", "Hoeveel komen er in elk bakje?"],
-  /* Het voorbeeld is de eerste vraag hieronder. */
-  voorbeeld: voorbeeldVan(delenVraag(8, 2, "knikker", { vorm: "rijen", per: 4 }, { soort: "plaatje", opties: [2, 4, 3] })),
-  uitleg: async (l, st) => {
-    toon(l, st, DELEN_BEGIN);
-    await verdeel(l, 6, 2, "knikker", { vorm: "rijen", per: 3 });
-    await l.zeg(`In elk bakje liggen ${aantal(3, "knikker")}.`, `${g(3)} + ${g(3)} = ${g(6)}.`);
+  begin: null,
+  welkom: ["Kijk, knikkers en twee bakjes.", "Kun jij de knikkers eerlijk verdelen?"],
+  /* Het voorbeeld is de eerste vraag hieronder: 8 knikkers en 2 bakjes. */
+  voorbeeld: voorbeeldVan(sleepVraag(8, 2)),
+  /* Na Nee: hetzelfde voorbeeld (8 knikkers, 2 bakjes); de knikkers rollen zelf één voor één over de bakjes. */
+  uitleg: async (l) => {
+    await rolOver(l, { n: 8, k: 2, nr: sleepNr });
+    await l.zeg("Alles is verdeeld.", "In elk bakje liggen evenveel knikkers.", `${somBakjes([4, 4])} = ${g(8)}.`);
     await l.verder();
   },
-  /* Zoals Squla: eerst plaatjes (netjes in rijen, dan los), dan een getal kiezen, typen, weer plaatjes, de potloden en een getal. Totaal 6–16, 2–5 bakjes, uitkomst 2–5. */
+  /* Zoals Squla: eerst verdelen (nu zelf slepen), dan een getal kiezen, typen, weer verdelen, de potloden en een getal. Totaal 6–16, 2–5 bakjes, uitkomst 2–5. */
   vragen: [
-    delenVraag(8, 2, "knikker", { vorm: "rijen", per: 4 }, { soort: "plaatje", opties: [2, 4, 3] }),
-    delenVraag(12, 3, "knikker", { vorm: "rijen", per: 4 }, { soort: "plaatje", opties: [3, 4, 5] }),
-    delenVraag(10, 2, "stuiterbal", { vorm: "los" }, { soort: "plaatje", opties: [4, 3, 5] }),
-    delenVraag(15, 5, "stuiterbal", { vorm: "los" }, { soort: "plaatje", opties: [2, 3, 4] }),
-    delenVraag(10, 5, "stuiterbal", { vorm: "los" }, { soort: "plaatje", opties: [1, 2, 3] }),
+    sleepVraag(8, 2),
+    sleepVraag(12, 3),
+    sleepVraag(10, 2),
+    sleepVraag(15, 5),
+    sleepVraag(10, 5),
     delenVraag(16, 4, "knikker", { vorm: "hoopjes", per: 4 }, { soort: "getal", keuzes: [3, 4, 5] }),
     delenVraag(10, 2, "knikker", { vorm: "hoopjes", per: 5 }, { soort: "getal", keuzes: [4, 5, 6] }),
     delenVraag(8, 2, "stuiterbal", { vorm: "los" }, { soort: "typen" }),
     delenVraag(9, 3, "stuiterbal", { vorm: "los" }, { soort: "typen" }),
-    delenVraag(16, 4, "knikker", { vorm: "rijen", per: 5 }, { soort: "plaatje", opties: [4, 5, 3] }),
-    delenVraag(12, 3, "stuiterbal", { vorm: "los" }, { soort: "plaatje", opties: [4, 3, 6] }),
-    delenVraag(6, 3, "stuiterbal", { vorm: "los" }, { soort: "plaatje", opties: [1, 2, 3] }),
+    sleepVraag(16, 4),
+    sleepVraag(12, 3),
+    sleepVraag(6, 3),
     potlodenVraag(12, 4, [2, 3, 4]),
     potlodenVraag(10, 2, [4, 5, 6]),
     delenVraag(15, 3, "knikker", { vorm: "hoopjes", per: 5 }, { soort: "getal", keuzes: [3, 4, 5] }),
