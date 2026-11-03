@@ -47,7 +47,8 @@ export default async function Pagina({
   const { les } = await params;
   const { naam } = await searchParams;
   if (!zoekDraaiboek(les)) notFound();
-  const proef = LETTERPROEF_LESSEN.includes(les);
+  /* Sara heeft Figtree goedgekeurd (3 november 2026): alle nieuwe lessen (alle draaiboeken op deze pagina) gebruiken het. LETTERPROEF_LESSEN blijft staan als de oude proeflijst. */
+  const proef = true || LETTERPROEF_LESSEN.includes(les);
   return (
     /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
     <div className={proef ? `${letter.variable} ${proefLetter.variable}` : letter.variable} data-lettertype={proef ? "figtree" : undefined} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>

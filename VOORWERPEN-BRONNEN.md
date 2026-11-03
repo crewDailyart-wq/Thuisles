@@ -105,3 +105,6 @@ LEGAL REVIEW REQUIRED voor geldafbeeldingen: de munten en briefjes in de geldles
 - Datum: 2 november 2026.
 - Waar gebruikt: alleen in lessen uit `LETTERPROEF_LESSEN` in `src/app/voorbeeld/les/[les]/page.tsx` (nu alleen `squla-tellen-fruit-1`), via `src/app/voorbeeld/les/[les]/letterproef.css`: zinnen van Bliepo, vragen, knoppen en getallen. Wacht op akkoord van Sara voor alle lessen.
 - Synthesis gebruikt Work Sans (gewicht 700 voor zinnen, 800 voor nadruk). Wij kozen bewust een ander, vrij lettertype dat er dichtbij zit, zodat het niet precies hetzelfde is.
+
+
+_Update 3 november 2026: Sara heeft Figtree goedgekeurd; het geldt nu voor alle nieuwe lessen (alle draaiboeken op /voorbeeld/les/[les]). Concept-lessen en lessen van voor 27 oktober zijn niet aangeraakt._
