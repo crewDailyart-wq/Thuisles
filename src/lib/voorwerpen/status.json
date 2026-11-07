@@ -13,6 +13,10 @@
       "randen"
     ]
   },
+  "appel-maat": {
+    "bron": "eigen",
+    "v": 1
+  },
   "bakje": {
     "bron": "eigen",
     "v": 3,
@@ -33,6 +37,10 @@
     "verbeterd": [
       "randen"
     ]
+  },
+  "bal-maat": {
+    "bron": "eigen",
+    "v": 1
   },
   "ballon": {
     "bron": "eigen",
@@ -155,6 +163,22 @@
       "opnieuw-magnific"
     ]
   },
+  "blok-maat-blauw": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "blok-maat-groen": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "blok-maat-paars": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "blok-maat-rood": {
+    "bron": "eigen",
+    "v": 1
+  },
   "boek": {
     "bron": "eigen",
     "v": 4,
@@ -199,6 +223,10 @@
       "randen"
     ]
   },
+  "boom-maat": {
+    "bron": "eigen",
+    "v": 1
+  },
   "bootje": {
     "bron": "eigen",
     "v": 3,
@@ -220,12 +248,60 @@
       "randen"
     ]
   },
+  "boterham-banaan-heel-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-banaan-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-banaan-weinig": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-ei-heel-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-ei-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-ei-weinig": {
+    "bron": "eigen",
+    "v": 1
+  },
   "boterham-heel-veel-kaas": {
     "bron": "eigen",
     "v": 3,
     "verbeterd": [
       "randen"
     ]
+  },
+  "boterham-komkommer-heel-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-komkommer-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-komkommer-weinig": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-tomaat-heel-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-tomaat-veel": {
+    "bron": "eigen",
+    "v": 1
+  },
+  "boterham-tomaat-weinig": {
+    "bron": "eigen",
+    "v": 1
   },
   "boterham-veel-kaas": {
     "bron": "eigen",
@@ -444,6 +520,10 @@
       "randen"
     ]
   },
+  "huis-maat": {
+    "bron": "eigen",
+    "v": 1
+  },
   "ijsje": {
     "bron": "eigen",
     "v": 3,
@@ -473,6 +553,10 @@
       "opnieuw-magnific",
       "controleur-rekenmix"
     ]
+  },
+  "kaars-maat": {
+    "bron": "eigen",
+    "v": 1
   },
   "kaas": {
     "bron": "eigen",
@@ -515,6 +599,10 @@
     "verbeterd": [
       "randen"
     ]
+  },
+  "knikker-glas": {
+    "bron": "eigen",
+    "v": 1
   },
   "knoop": {
     "bron": "eigen",
@@ -822,12 +910,20 @@
       "randen"
     ]
   },
+  "potlood-maat": {
+    "bron": "eigen",
+    "v": 1
+  },
   "pruim": {
     "bron": "eigen",
     "v": 3,
     "verbeterd": [
       "randen"
     ]
+  },
+  "raket-maat": {
+    "bron": "eigen",
+    "v": 1
   },
   "raketje": {
     "bron": "eigen",
@@ -1013,6 +1109,10 @@
       "randen"
     ]
   },
+  "ster-maat": {
+    "bron": "eigen",
+    "v": 1
+  },
   "stoelenkring": {
     "bron": "eigen",
     "v": 7,
@@ -1151,6 +1251,10 @@
       "randen"
     ]
   },
+  "vlammetje": {
+    "bron": "eigen",
+    "v": 1
+  },
   "vlieger": {
     "bron": "eigen",
     "v": 3,
@@ -1247,9 +1351,5 @@
     "verbeterd": [
       "randen"
     ]
-  },
-  "knikker-glas": {
-    "bron": "eigen",
-    "v": 1
   }
 }

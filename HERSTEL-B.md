@@ -59,3 +59,17 @@ Niets gecommit, niets online. Typecheck (`npx tsc --noEmit`): geen fouten in `sr
 | Punt B: bal.png | ja | groep B tekent "bal" nu als de strandbal `speelbal` (Tellen, Vormen-opruimen/oriënteren/patronen, Getallenlijn, Meer-minder). Woord blijft "bal". bal.png zelf niet aangeraakt; vormenpuzzels niet aangeraakt | tellen-resultatief3-3-na-r2.jpg, orienteren-1-na-r2.jpg, getallenlijn-dieren-1-na-r2.jpg |
 
 Controle: speelcontrole als Testkind, 1 Chrome tegelijk. Laptop: opruimen-1, oppervlakte-1, getallenlijn-kat-2, tellen-resultatief3-3, orienteren-1, getallenlijn-dieren-1, evenveel1-2 — alle tot het eind, 0 fouten. Telefoon (390 × 844): evenveel1-2 en opruimen-1 — tot het eind, 0 fouten. `npx tsc --noEmit`: geen fouten in `src/`. `npm run vloeiend` niet gedraaid (laptop druk); alleen indeling veranderd, geen nieuwe animaties of gloed.
+
+## Ronde 7 (toetsing weggehaald materiaal, 7 november 2026)
+
+Getoetst aan BOUWREGELS 1.25 en 1.26: meten, meer-minder, getallenlijn, huisnummers, tellen, vormen (vormenpuzzels ongemoeid). Alles wat weg is staat in WEGGEHAALD.md met de 3 voorwaarden.
+
+| Les | Teruggezet? | Wat |
+|---|---|---|
+| squla-getallenlijn-kat-1/-2 (dichtstBij) | nee | losse ufo, satelliet en raketje naast de bordjes: echt losse versiering, blijft weg |
+| squla-getallenlijn-kat-1 (watIsMeer) | vervangen | de planeet is een getallenlijn met naspelend raketje |
+| squla-getallenlijn-rangschikken/-terugtellen | herschreven | "puntjes" wordt "vraagteken" (de plek heeft nu een vraagteken) |
+| squla-meten-oppervlakte-1 | vervangen | hintzin op een antwoordkaart wordt "Blauw is 8 hokjes groot." (zelfde id, zelfde tekening, nog goed antwoord) |
+| squla-meten-oppervlakte-2 | JA | de zinnen "Op de ene tafel ... kleine ..." en "Op de andere ... grote ..." staan bij elke herhaling weer (vraagzinnen) |
+| squla-meten-hoeveelheden-2 | vervangen | mand, rugtas en speelgoed zijn naspeel-bewegingen |
+| meer-minder, huisnummers, tellen, vormen | n.v.t. | alleen plek van keuzes gewisseld, knikker/bal vervangen door betere plaatjes; geen keuze weg |

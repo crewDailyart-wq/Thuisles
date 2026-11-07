@@ -700,7 +700,7 @@ const verhalen: Opgave[] = [
     goed: 4,
     kaarten: [3, 5, 4, 1],
     plaatje: "schaar",
-    stand: "weg",
+    stand: "sfeer",
     zinnen: ["Vandaag is het woensdag.", "Morgen is de kapperszaak dicht.", "De dag daarna gaat de kapperszaak open.", "Op welke dag gaat de kapperszaak open?"],
     goedZin: ["Morgen is het donderdag.", "De dag daarna is het vrijdag."],
     samen: async (l) => {
@@ -735,7 +735,7 @@ const verhalen: Opgave[] = [
     goed: 5,
     kaarten: [4, 5, 0, 1],
     plaatje: "huis",
-    stand: "weg",
+    stand: "sfeer",
     zinnen: ["Vandaag is het zondag.", "Gisteren werd het huis geschilderd.", "Op welke dag werd het huis geschilderd?"],
     goedZin: ["Gisteren was het zaterdag."],
     samen: async (l) => {
@@ -750,7 +750,7 @@ const verhalen: Opgave[] = [
     goed: 3,
     kaarten: [4, 3, 2, 6],
     plaatje: "taart",
-    stand: "weg",
+    stand: "sfeer",
     zinnen: ["Vandaag is het zaterdag.", "Gisteren was het feest.", "De dag daarvoor stond de taart in de oven.", "Op welke dag stond de taart in de oven?"],
     goedZin: ["Gisteren was het vrijdag.", "De dag daarvoor was het donderdag."],
     samen: async (l) => {
@@ -1702,8 +1702,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
-        beeld: {},
+        /* het boek wordt in de vraag genoemd: teruggezet (BOUWREGELS 1.25, 7 november 2026) */
+        beeld: { groot: "boekrood" },
         opties: ["lang", "rond", "snel"],
         goed: "lang",
         vraag: ["Het rode boek was niet kort.", "Het was juist heel erg ..."],
@@ -1719,8 +1719,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
-        beeld: {},
+        /* het boek wordt in de vraag genoemd: teruggezet (BOUWREGELS 1.25, 7 november 2026) */
+        beeld: { groot: "boekblauw" },
         opties: ["groen", "kort", "zwaar"],
         goed: "kort",
         vraag: ["Daarna lazen we het blauwe boek.", "Dat was niet lang.", "Het was juist heel erg ..."],
@@ -1736,8 +1736,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
-        beeld: {},
+        /* het boek wordt in de vraag genoemd: teruggezet (BOUWREGELS 1.25, 7 november 2026) */
+        beeld: { groot: "boekgroen" },
         opties: ["straks", "gisteren", "vroeger"],
         goed: "straks",
         vraag: ["Toen was het groene boek nog niet aan de beurt.", "Dat kwam pas over een poosje.", "Welk woord past bij: over een poosje?"],
@@ -1816,13 +1816,16 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* geen maan meer: die verklapte het antwoord "laat" (BOUWREGELS 1.22) */
+        /* de maan verklapt het antwoord "laat", dus niet tijdens de vraag; Bliepo zegt bij de uitleg "het was al nacht",
+           dus dan staat de maan er wel (BOUWREGELS 1.22 en 1.25, 7 november 2026) */
         beeld: {},
+        hulpBeeld: { groot: "dagdeel|d=nacht" },
         opties: ["laat", "kort", "straks"],
         goed: "laat",
         vraag: ["Na het kampvuur gingen we naar huis.", "Toen was het al heel ..."],
         goedZin: ["Het was al heel laat.", "Tijd om te slapen!"],
         samen: async (l) => {
+          zetP(l, { groot: "dagdeel|d=nacht" });
           await l.zeg("Het was al nacht.", "Dan is het niet vroeg meer.");
         },
         tip: ["Het omgekeerde van vroeg.", "Toen was het al heel ..."],
@@ -1854,8 +1857,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* het losse zwembadje deed niets en is weg (BOUWREGELS 1.22) */
-        beeld: {},
+        /* het zwemmen wordt in de vraag genoemd: teruggezet (BOUWREGELS 1.25, 7 november 2026) */
+        beeld: { groot: "zwemmen" },
         opties: ["vrijdag", "zondag", "maandag"],
         goed: "zondag",
         vraag: ["Morgen gaan we zwemmen!", "Vandaag is het zaterdag.", "Welke dag is het morgen?"],
@@ -2136,9 +2139,9 @@ const tijden2Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        /* Het losse brood is weg en de vraag is korter, zodat hij niet achter de knoppen bovenaan valt (Sara, 7 november 2026).
+        /* Het brood staat er weer (de vraag noemt broodjes; BOUWREGELS 1.25). De vraag is korter, zodat hij niet achter de knoppen bovenaan valt (Sara, 7 november 2026).
            De knop heette al "1 week kamperen" (cijferafspraak 3.20); nu ook in de code, zodat de test hem vindt. */
-        beeld: {},
+        beeld: { groot: "brood" },
         opties: ["1 week kamperen", "afwassen", "een boterham eten"],
         goed: "1 week kamperen",
         vraag: ["De bakkerij bakt de hele middag broodjes.", "Wat duurt langer dan een hele middag?"],

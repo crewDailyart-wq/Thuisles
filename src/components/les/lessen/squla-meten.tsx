@@ -1725,10 +1725,14 @@ function vulIn(o: { k: number; r: number; d: "h" | "b"; ka: string; kb: string; 
         juist: [String(a), String(b)],
         vast: [],
         losse: o.kaartjes.map((n) => ({ id: String(n), label: String(n), zeg: String(n), naam: `{${n}:wit}` })),
-        /* Na de eerste keer een kortere vraag (herstel 7 november): de kleuren en maten zie je al. */
-        vraag: o.eerste
-          ? [`Hier zie je 2 keer dezelfde ${waar}.`, `Op de ene ${ligt} kleine ${ka} ${ding}.`, `Op de andere ${ligt} grote ${kb} ${ding}.`, `Hoeveel ${ding} passen er op elke ${waar}?`, `Sleep het goede getal onder elke ${waar}.`]
-          : [`Weer 2 keer dezelfde ${waar}.`, `Hoeveel ${ding} passen er op elke ${waar}?`, `Sleep het goede getal onder elke ${waar}.`],
+        /* Herstel ronde 7 (7 november): de zinnen over de kleine en grote dingen staan weer bij elke keer (het zijn zinnen van de vraag; BOUWREGELS 1.25). */
+        vraag: [
+          o.eerste ? `Hier zie je 2 keer dezelfde ${waar}.` : `Weer 2 keer dezelfde ${waar}.`,
+          `Op de ene ${ligt} kleine ${ka} ${ding}.`,
+          `Op de andere ${ligt} grote ${kb} ${ding}.`,
+          `Hoeveel ${ding} passen er op elke ${waar}?`,
+          `Sleep het goede getal onder elke ${waar}.`,
+        ],
         goedZin: [`De ${waar} is {${a}:${o.ka}} ${ka} ${ding} groot.`, `En {${b}:${o.kb}} ${kb} ${ding}.`, `De ${kb} ${ding} zijn groter. Daarom passen er minder op.`],
         samen: async (l) => {
           await l.zeg(`Tel eerst de ${ka} ${ding}.`, "Ik doe de eerste rij.");

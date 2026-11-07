@@ -141,3 +141,47 @@ Algemeen voor groep C:
 
 ### Groep C — ronde 3 (vloeiendcontrole, 7 november)
 - squla-splits-splitsen2-1 (telefoon) — sleepte een kind een getaltegel onder het speelvlak uit, dan bleef de tegel op de rand staan (en een snelle korte veeg telde als tik) — gekozen: de tegel volgt de vinger nu ook buiten het speelvlak. Waarom: regel 7 (het voorwerp blijft onder de vinger). Kanttekening: buiten het speelvlak zelf is de tegel even niet te zien (het tekenvlak houdt daar op); zodra de vinger terugkomt, is hij er weer. Helemaal zichtbaar houden kan alleen door het speelvlak op de telefoon hoger te maken (zoals bij de klok); dat is een grotere wijziging en niet gedaan. Geen nieuwe zinnen.
+
+## Besluiten van Sara (7 november 2026, na het nakijken)
+1. Zakgeld: de schelpen (zakgeld-1) en knopen (zakgeld-2) zijn foute keuzes in een vraag en zijn teruggezet, met de zinnen van Bliepo die erbij hoorden (7 november, op verzoek van Sara).
+2. Hoelaat-3 vraag 9 ("Waar worden de broodjes gebakken?"): vervangen door een tijdvraag (zie blok 'Ronde 4 – hoelaat-3 vraag 9').
+3. Rekenmix-mix2-1: nieuwe, verschillende boterhammen (Magnific mag; zie blok 'Ronde 4 – rekenmix-mix2-1').
+4. Zin die midden in een som afbreekt: alleen voor Squla-lessen repareren, gedeeld bestand van de oude lessen blijft ongewijzigd (zie blok 'Ronde 4 – zin niet afbreken in som').
+
+### Ronde 4 – hoelaat-3 vraag 9
+- squla-klok-hoelaat-3, vraag 9 — "Waar worden de broodjes gebakken?" (bus of bakkerij) was geen tijdvraag — vervangen door een klokvraag in het bakkerij-verhaal, op dezelfde manier als de taartvraag in hoelaat-1: "De laatste taarten staan nog in de oven. Ze zijn om 6 uur klaar. Op welke klok is het 6 uur?" Het kind kiest uit 3 klokken: 5, 6 en 7 uur (dicht bij elkaar, past bij "nog moeilijker"). De plek van het goede antwoord wisselt, zoals bij de andere klokvragen. Hint en uitleg na een fout zijn dezelfde als bij de andere klokvragen ("Zoek de klok waar de kleine wijzer naar de 6 wijst."). Plaatje: tijdens de vraag staat alleen de oven in beeld; pas na het antwoord springt de ovendeur open en hupt er een taart uit (bestaande naspeel, verklapt niets). Bij goed zegt Bliepo, net als bij de andere vragen in deze les, een korte bevestiging ("Goed gedaan."); na 2 keer fout zegt hij "Om 6 uur zijn de taarten klaar. Dat ruikt lekker!" en gaat door.
+- Waarom taarten en geen broodjes: het naspeel-plaatje laat een taart uit de oven springen; woord en beeld moeten kloppen (3.12). Het verhaal klopt in de volgorde: om 5 uur is de bus terug, om 6 uur zijn de taarten klaar (en wordt het donker), om 7 uur gaat de oven uit.
+- Nieuwe zinnen (nog geen opgenomen stem): "De laatste taarten staan nog in de oven.", "Ze zijn om 6 uur klaar.", "Om 6 uur zijn de taarten klaar." (varianten van bestaande zinnen met 10 uur). "Op welke klok is het 6 uur?" en "Dat ruikt lekker!" bestaan al.
+- Foto's: public/overbodige-plaatjes-na/squla-klok-hoelaat-3-r4-voor.jpg (oude vraag) en -r4-na.jpg.
+
+### Ronde 4 – rekenmix-mix2-1
+- squla-rekenmix-mix2-1 — alle boterhammen waren dezelfde 3 (met kaas) — nu 4 nieuwe soorten boterhammen erbij, elk in 3 hoeveelheden (1, 3 of 6 plakjes): wit brood met banaan, bruin brood met komkommer, wit brood met tomaat, bruin brood met ei. Ze verschillen in broodkleur, belegkleur en vorm, en de plakjes zijn goed te tellen.
+- Gebruik in de les: vraag 1, 8 en 15 en het voorbeeld (Nee-route) blijven kaas, zodat het beginscherm ("meer kaas") klopt. De andere 8 boterhamvragen hebben elk een ander beleg (banaan, komkommer, tomaat, ei, en dat 2 keer). Antwoorden, volgorde, score en hints zijn hetzelfde gebleven; de plaatjes verklappen niets (bovenaan staat altijd de middelste hoeveelheid, zoals eerst).
+- Hoe gemaakt: 1 Magnific-vel (Nano Banana 2, stijl B) met 2 lege boterhammen (wit en bruin) en 4 losse plakjes. Achtergrond in code weggeknipt (gratis) en de boterhammen in code samengezet: 12 bestanden `public/voorwerpen/boterham-<banaan|komkommer|tomaat|ei>-<weinig|veel|heel-veel>.png`, geregistreerd in `src/lib/voorwerpen/lijst-rekenmix.ts` en `status.json` (alleen toegevoegd). De kaasboterhammen zijn niet veranderd.
+- Kosten: 75 tegoed (1 plaatje). Daarna nog ongeveer 26.635 tegoed over.
+- Nieuwe zinnen (nog geen opgenomen stem): dezelfde zinnen als bij kaas, maar met "banaan", "komkommer", "tomaat" of "ei" in plaats van "kaas", bijvoorbeeld "Op welke boterham zit minder banaan?", "Daar zit evenveel komkommer op als bovenaan.", "Op welke boterham zit het meeste ei?". Bij tellen zegt Bliepo "Tel de plakjes ei op elk plaatje …" (bij kaas blijft "Tel de kaas …"). Bij ei "het meeste/minste ei" (want: het ei).
+- Foto's: public/overbodige-plaatjes-na/squla-rekenmix-mix2-1-r4-voor.jpg en -r4-na.jpg.
+
+### Ronde 4 – zin niet afbreken in som
+- Alle Squla-lessen (o.a. squla-min-kaal-1/2, squla-plus-kaal-1, squla-plus-bakkerij-1) — de zin van Bliepo brak soms midden in een som af ("Hoeveel is 8 − / 3?"), vooral op de telefoon — gekozen: de delen van een som zitten nu aan elkaar vast. Het getal vóór een rekenteken (+ − × ÷ =), het teken zelf en het getal erna blijven altijd samen op 1 regel; de zin mag wel vóór de som afbreken ("Hoeveel is / 8 − 3?").
+- Hoe: alleen in het lesscherm van de nieuwe lessen (Lesscherm.tsx, houdSomBijElkaar, plus 1 regel in Lesscherm.module.css), en alleen als het een Squla-les is. Het gedeelde bestand BliepoTekst.tsx (ook van de oude lessen) is niet veranderd. Synthesis-lessen en de oude lessen merken er niets van.
+- Stem: niet veranderd. Het gaat alleen om wat er in beeld staat; de zin die naar de stem gaat is precies hetzelfde. Controle `CONTROLE=1 npm run stemlessen`: alle vaste zinnen hebben nog audio. Het meelezen (woorden die oplichten) klopt nog: het aantal woorden is gelijk gebleven.
+- Kanttekening: werkt in alle huidige browsers; op heel oude iPads (ouder dan iOS 15.4) kan de som nog afbreken zoals vroeger, verder verandert daar niets.
+- Geen nieuwe zinnen.
+- Foto's: public/overbodige-plaatjes-na/som-afbreken-voor.jpg (squla-min-kaal-1, telefoon, "8 −" en "3?" op 2 regels) en som-afbreken-na.jpg (dezelfde vraag, som op 1 regel).
+
+### Ronde 4 – rekenmix-mix3-1 plaatjes
+- squla-rekenmix-mix3-1 — de plaatjes bij "zet op volgorde" (bal, kaars, huis, potlood, toren van blokken, appel, boom, ster, raketje) vond Sara niet mooi — gekozen: alle 9 opnieuw gemaakt met Magnific (Nano Banana 2, vrolijk en kleurrijk, geen gezichtjes, geen tekst, geen mensen), achtergrond gratis in code weggeknipt, en in de les in glansstijl B getekend zoals de andere voorwerpen. Geen kaders.
+- Wat er nu staat: een voetbal, een rode kaars (zonder vlam) met een los vlammetje, een geel huisje met rood dak, een geel potlood, een toren van speelblokken recht van voren (rood, blauw, groen, paars, elk met een geel sterretje), een rode appel, een boom met een ronde groene kruin, een gouden ster en een wit-rood raketje.
+- Dik en dun: alleen de kaars wordt breder of smaller; het vlammetje is een apart plaatje en is bij elke kaars even groot (eerst werd de vlam mee uitgerekt). Het potlood wordt als geheel breder of smaller; dat ziet er nog uit als een echt dik of dun potlood.
+- Laag: de toren bestaat nu uit losse blokken die precies op elkaar staan, van onder naar boven altijd rood, blauw, groen, paars. De kleur zegt dus niets over het antwoord. De toren is even hoog als de oude, zodat het woord erboven (laag, lager, laagst) vrij blijft.
+- Alleen in deze les: de plaatjes hebben eigen namen (bal-maat, kaars-maat, vlammetje, huis-maat, potlood-maat, blok-maat-rood/blauw/groen/paars, appel-maat, boom-maat, ster-maat, raket-maat). De bal, appel, ster, kaars, potlood enz. in andere lessen zijn niet veranderd. Antwoorden, maten, volgorde, score en hints zijn hetzelfde gebleven; er zijn geen zinnen veranderd en geen nieuwe zinnen.
+- Kosten: 750 tegoed (10 plaatjes van 75; de 3 extra blokkleuren zijn in code gekleurd, gratis). Daarna nog ongeveer 25.885 tegoed over.
+- Hetzelfde probleem elders (alleen gemeld, niet aangepast): **squla-rekenmix-mix4-2** heeft 3 vragen "van dik naar dun" met het oude raketje, potlood en de oude kaars. Daar wordt het hele plaatje breder of smaller gerekt, dus ook de vlam van de kaars en het raketje (venster en vlammetje worden ovaal). Dat kan op dezelfde manier worden opgelost. In Rekenmix 1 (mix1-1 t/m mix1-4) komen geen groter/kleiner/dikker-vragen met gerekte plaatjes voor. Bij Meten (pizza's en ijsjes op volgorde) worden de plaatjes gelijkmatig groter of kleiner gemaakt, niet uitgerekt; daar zag ik dit probleem niet.
+- Opgemerkt, niet aangepast: op het beginscherm staat "Vergelijk de ballen en zet ze op volgorde van groot naar klein", terwijl de vragen "kleinst, kleiner, klein" vragen (de kleinste vooraan). De beginzinnen mocht ik niet aanraken.
+- Foto's: public/overbodige-plaatjes-na/squla-rekenmix-mix3-1-r4-voor.jpg (oude bal) en -r4-na.jpg.
+
+## Ronde 7 – rekenmix antwoordrij terug
+
+- mix1-3 en mix3-2: de antwoordkeuzes (ook de foute) en Bliepo's zinnen "X staat niet in de rij." staan weer terug. De rij bovenaan is de vraag; de keuzes staan eronder in zachte vakken. Is dit duidelijk genoeg, of wil je het anders?
+- mix1-2: "de plank" is vervangen door "het kleed" omdat de plank een dun streepje was. Wil je de plank terug (als platte plank)? Ja of nee.

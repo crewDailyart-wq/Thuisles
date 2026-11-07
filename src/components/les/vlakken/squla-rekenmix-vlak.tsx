@@ -68,8 +68,10 @@ export type RMOpgave =
    * `plek` (herstel 7 november, BOUWREGELS 1.23): op welke plek (van links) keuze i staat; de keuzes houden hun nummer
    * (en dus de beoordeling), alleen de plek wisselt. `ruimteOnder`: de tekening bovenaan laat onderaan ruimte vrij voor de
    * grote antwoordknoppen in het midden (Kiesinstel `midden`).
+   * `vakken` (ronde 7, 7 november 2026, BOUWREGELS 1.4): de keuzes onder de rij staan elk in een eigen zacht vak, netjes in het
+   * midden met ruimte ertussen: de rij bovenaan is de vraag, de vakken zijn het antwoord (zoals de munten in de geldles).
    */
-  | { id: string; soort: "kijk"; boven?: RMTekening; keuzes?: RMTekening[]; namen?: string[]; plek?: number[]; ruimteOnder?: boolean }
+  | { id: string; soort: "kijk"; boven?: RMTekening; keuzes?: RMTekening[]; namen?: string[]; plek?: number[]; ruimteOnder?: boolean; vakken?: boolean }
   | { id: string; soort: "volgorde"; kaarten: RMTekening[]; vast?: RMTekening[]; namen?: string[] }
   | { id: string; soort: "verbind"; links: RMTekening[]; rechts: RMTekening[] };
 
@@ -100,7 +102,7 @@ export type RMProps = {
 
 /** Een plek: het midden, de maat, en hoeveel de tekening verkleind is om te passen. */
 export type RMPlek = { x: number; y: number; b: number; h: number; f: number };
-export type RMIndeling = { delen: Record<string, RMPlek>; sloten: RMPlek[]; stippen: Record<string, { x: number; y: number }> };
+export type RMIndeling = { delen: Record<string, RMPlek>; sloten: RMPlek[]; stippen: Record<string, { x: number; y: number }>; vakken?: RMPlek[] };
 
 function past(t: RMTekening, x: number, y: number, maxB: number, maxH: number): RMPlek {
   const f = Math.min(1, maxB / t.b, maxH / t.h);
@@ -121,6 +123,24 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
   const delen: Record<string, RMPlek> = {};
   if (o.soort === "kijk") {
     const keuzes = o.keuzes ?? [];
+    if (o.boven && keuzes.length && o.vakken) {
+      /* Ronde 7: de rij (de vraag) bovenaan, de antwoordkeuzes elk in een eigen zacht vak eronder, in het midden. */
+      const n = keuzes.length;
+      const gat = n >= 5 ? 16 : 36;
+      const vb = Math.min(260, (900 - (n - 1) * gat) / n);
+      const vh = n >= 5 ? 200 : 250;
+      const bh = 250;
+      delen.b = past(o.boven, VLAK_B / 2, 20 + bh / 2, 900, bh);
+      const cy = VLAK_H - 22 - vh / 2;
+      const x0 = VLAK_B / 2 - ((vb + gat) * (n - 1)) / 2;
+      const vakken: RMPlek[] = [];
+      keuzes.forEach((k, i) => {
+        const x = x0 + (o.plek?.[i] ?? i) * (vb + gat);
+        delen[`k${i}`] = past(k, x, cy, vb - 28, vh - 28);
+        vakken.push({ x, y: cy, b: vb, h: vh, f: 1 });
+      });
+      return { delen, sloten: [], stippen: {}, vakken };
+    }
     if (o.boven && keuzes.length) {
       /* Groepjes (meerdere voorwerpen) staan hoger, midden in beeld, niet geperst onderaan (BOUWREGELS 14.23). */
       const groepen = keuzes.some((k) => k.stukken.length > 1);
@@ -406,7 +426,20 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
       if (!o || !ind) return;
       /* Plekjes om iets neer te zetten, en onder elke keuze een zacht lichtvlak: zo zie je wat bij elkaar hoort (geen kader). */
       for (const sl of ind.sloten) this.overig.push(this.plaats("rm-plekje", sl.x, sl.y + sl.h / 2 - 12).setDepth(-2).setScale(Math.min(1, sl.b / 230) / TX, 1 / TX));
-      if (o.soort === "kijk")
+      for (const v of ind.vakken ?? []) {
+        const sl = `rm-vak|${Math.round(v.b)}|${Math.round(v.h)}`;
+        this.canvasPlaatje(sl, v.b, v.h, (c) => {
+          c.fillStyle = "rgba(207,227,255,0.16)";
+          c.beginPath();
+          c.roundRect(2, 2, v.b - 4, v.h - 4, 34);
+          c.fill();
+          c.lineWidth = 3;
+          c.strokeStyle = "rgba(190,240,255,0.42)";
+          c.stroke();
+        });
+        this.overig.push(this.plaats(sl, v.x, v.y).setDepth(-3));
+      }
+      if (o.soort === "kijk" && !ind.vakken)
         for (const [naam, p] of Object.entries(ind.delen))
           if (naam[0] === "k") this.overig.push(this.plaats("rm-plekje", p.x, p.y + p.h / 2 + 4).setDepth(-2).setScale(Math.min(1.2, Math.max(0.6, p.b / 220)) / TX, 1 / TX).setAlpha(0.55));
       let k = 0;

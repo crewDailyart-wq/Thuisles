@@ -191,13 +191,19 @@ async function kiesGetal(l: Lesgids, keuzes: number[]) {
 }
 
 /** Herstel 7 november (OVERZICHT-C punt 5): typen gebeurt IN het vakje van de som bovenaan, niet in een tweede vakje rechts. */
-async function typInSom(l: Lesgids, st: Stand): Promise<number> {
-  const p = l.somVak(4);
+async function typInSom(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
+  /* Ronde 7: de knop "Weet ik niet" en de zinnen erbij staan weer terug (BOUWREGELS 1.25). */
+  const p = l.somVak(4, { weetniet: true });
   if (!st.typUitgelegd) {
     st.typUitgelegd = true;
     await l.wijsAan("controleer", "Typ het getal.");
   }
-  return p;
+  let x = await p;
+  while (x === null) {
+    await l.zeg("Je mag het zelf proberen.", ...tip);
+    x = await l.somVak(4, { weetniet: true });
+  }
+  return x;
 }
 
 /** Een getal typen (echt invoerveld, HARDE REGEL 5). De eerste keer wijst Bliepo het vinkje aan. */
@@ -715,7 +721,7 @@ function typSom(a: number, b: number, beeldVan: (id: string) => PlusBeeld = (id)
         if (toon(l, st, beeldVan(id))) somBoven(l, a, b);
       },
       vraag: ["Reken uit.", `Hoeveel is ${plus(a, b)}?`],
-      antwoord: () => typInSom(l, st),
+      antwoord: () => typInSom(l, st, ["Typ het getal dat je denkt.", "Als je het niet zeker weet, mag een gokje."]),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {

@@ -513,6 +513,12 @@ function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, 
     /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): het plaatje (komeet, maan) deed niets en de maan verklapte zelfs
        het antwoord "maan-darijn". Nu geen plaatje; de 2 antwoorden staan groot in het midden (`midden`). */
     const beeld = metLetters(st, `raadsel-${deco}`, []);
+    /* Ronde 7 (BOUWREGELS 1.25): Bliepo zegt in het antwoord "Net als de maan!"; de maan komt dus pas NA het antwoord in beeld
+       (tijdens de vraag zou hij "maan-darijn" verklappen). Bij de komeet-grap zegt Bliepo niets over een komeet: die blijft weg. */
+    const toonDeco = () => {
+      if (deco !== "maan") return;
+      zet(l, { beeld: { ...beeld, delen: [{ s: "ding", id: "deco", vw: deco, x: 490, y: 190, maat: 190 }, ...beeld.delen] } });
+    };
     return squlaVraag<string>(l, {
       toon: () => {
         toon(l, st, beeld);
@@ -523,6 +529,7 @@ function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, 
       noem: (x) => x.replace(/[.!?]+$/, ""),
       goed: async () => {
         goedBeeld(l, st);
+        toonDeco();
         await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
@@ -532,6 +539,7 @@ function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, 
       tip,
       reactie: (x) => ["Dat antwoord past niet bij het raadsel.", waarom, ...zonderVraag(tip)],
       toonAntwoord: async () => {
+        toonDeco();
         await l.zeg(...zonderJa(goed));
       },
       testAntwoord: opties[goedNr],

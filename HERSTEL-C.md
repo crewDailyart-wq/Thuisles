@@ -60,3 +60,28 @@ Foto's: `public/overbodige-plaatjes-na/<les-id>-r2-voor.jpg` en `-r2-na.jpg` (te
 | Les | Gedaan | Wat | Foto's |
 |---|---|---|---|
 | squla-splits-splitsen2-1 (trage telefoon: "gesleepte voorwerp staat ±89 px naast de vinger") | ja | Oorzaak: niet de herstelwijzigingen van vandaag (de melding stond al in de logs van 5 en 6 november, vóór ronde 1). Op het staande scherm liggen de getaltegels vlak boven de onderrand van het speelvlak (canvas 390 × 287). De controle sleept tot 60 px naar beneden, dus buiten het speelvlak; Phaser negeert een vinger buiten het canvas, waardoor de tegel stil bleef staan. Bij de proefsleep (+70, +40) werd het zelfs een tik, en dan legt de les de tegel in het vak (fout antwoord). Herstel in `squla-splitsen-vlak.tsx` (alleen de sleeplaag van splitsen2/piraat): komt de vinger buiten het speelvlak, dan volgt de tegel hem nu toch (via een `touchmove` op het venster, alleen als Phaser zelf niet meer volgt). Gewoon slepen binnen het vlak, tikken en loslaten werken als eerst. Uitslag `ALLEEN="splitsen2-1"`: laptop 0 px, telefoon 0 px, 60 beelden/s. Ook gecontroleerd: splitsen2-2, splitsen1-1, piraat-1 (allemaal ✓). `npx tsc --noEmit`: geen fouten in `src/`. | eigen foto's (scratchpad): binnen het vlak zit de tegel precies onder de vinger |
+
+## Ronde 7 (toetsing weggehaald materiaal, 7 november 2026)
+
+Getoetst aan BOUWREGELS 1.25 en 1.26 (piraat, splitsen, plussommen, minsommen, rekentaal; rekenmix alleen bekeken, niet aangeraakt). Alles wat weg is staat in WEGGEHAALD.md.
+
+| Les | Teruggezet? | Wat |
+|---|---|---|
+| squla-plus-bakkerij-3 (typSom) | JA | de knop "Weet ik niet" en de zinnen "Typ het getal dat je denkt." / "Als je het niet zeker weet, mag een gokje." waren weg toen het typvakje naar de som ging; nu staat de knop weer bij het vakje in de som (nieuwe optie `l.somVak(index, { weetniet: true })` in soort.ts en Lesscherm.tsx; zonder optie werkt het als vroeger) en Bliepo zegt de zinnen weer. Foto's: public/overbodige-plaatjes-na/squla-plus-bakkerij-3-r7-voor.jpg en -r7-na.jpg |
+| squla-piraat-3 (raadsel maan-darijn) | JA | Bliepo zegt "Net als de maan!"; de maan komt nu pas NA het antwoord in beeld (tijdens de vraag verklapte hij het) |
+| squla-piraat-1/2/3 kale plussommen, raadsel zwemmen, voorbeeld | nee | planeet, raketje, komeet: niet tikbaar, niet in vraag of zinnen: echt losse versiering |
+| squla-min-ruimte-1/-2 | nee | komeet, satelliet, raketje bij kale/typ-som: echt losse versiering |
+| squla-min-bus-1 | herschreven | hint klopt nu met het beeld (alle pakjes liggen nog in de bus) |
+| squla-plus-bakkerij-3 taart, squla-plus-kaal zwevende cijfers | nee | echt losse versiering (de cijfers verklapten juist hints) |
+| squla-plus-dansen | n.v.t. | luidsprekers zijn er nog, klein en zacht |
+| squla-splitsen2-2 (geld bij huisSom) | nee | geld niet in vraag/zinnen: echt losse versiering |
+| squla-splitsen2-1 | n.v.t. | munten na het antwoord weer in beeld |
+| squla-splitsen1-1 | n.v.t. | niets weg; alleen andere plek/maat |
+| squla-rekentaal | herschreven | 2 zinnen samen tot 1 |
+| Bevinding rekenmix (niet aangeraakt) | MELDING | mix1-1 en mix3-2: de tweede rij met antwoordkeuzes is weg; het kind tikt nu in de rij zelf. De FOUTE keuzes (dingen die niet in de rij staan) zijn daarmee weg, en de zinnen "X staat niet in de rij." / "Kijk naar de rij bovenaan." / "Tik dan op het goede plaatje." zijn herschreven. mix1-3: "de plank" (tekst). Volgens 1.25 horen foute keuzes niet weg zonder akkoord van Sara. |
+
+## Ronde 7
+
+- squla-rekenmix-mix1-3 (links/rechts/midden) en mix3-2 (eerste/tweede/laatste): de tweede rij met antwoordkeuzes, de foute keuzes en Bliepo's zinnen erover zijn teruggezet (de oude code van 7c71b04). Nieuw: de keuzes staan elk in een eigen zacht vak (`vakken` in squla-rekenmix-vlak.tsx), in het midden onder de rij, met ruimte ertussen; het goede antwoord wisselt van plek; niet onder de microfoonknop (laptop en 390x844 bekeken). mix1-1 zelf had dit niet (het is een telles); de verandering zat in mix1-3 en mix3-2.
+- Controles: tsc schoon, speelcontrole mix1-1, mix1-3 en mix3-2 tot het eind, vloeiendcontrole 60 beelden/s, inhoudsvergelijk: alleen "de plank" (mix1-2) nog genoemd.
+- Foto's: public/overbodige-plaatjes-na/squla-rekenmix-mix3-2-r7-na.jpg (+ -telefoon) en squla-rekenmix-mix1-3-r7-na.jpg (+ -telefoon).

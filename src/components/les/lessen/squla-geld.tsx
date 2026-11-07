@@ -983,12 +983,11 @@ const zakgeld1Opgaven: Opgave[] = [
   potEnPortemonnee({ pot: ["m2", "m2"], porte: ["b5", "m1"], opties: [11, 9, 10], begin: [], slot: [] }),
   kiesGeld({
     groot: [SKATE(20)],
-    /* Het groepje schelpen tussen het geld was raar en verwarrend (Sara, 7 november 2026): weg, en de zin erover ook. */
-    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"]],
+    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"], { tekening: "schelp", aantal: 3, zeg: "schelpen" }],
     doel: 20,
     aantal: 2,
     vraag: ["Kijk, dit skateboard wil je kopen.", `Het kost ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
-    goedZin: [`2 briefjes van {10:rood} euro is samen ${e(20)} euro.`, `4 briefjes van {5:wit} euro is ook ${e(20)} euro.`],
+    goedZin: [`2 briefjes van {10:rood} euro is samen ${e(20)} euro.`, `4 briefjes van {5:wit} euro is ook ${e(20)} euro.`, "En met schelpen kun je niet betalen!"],
     noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Schelpen"),
   }),
   getalVraag({
@@ -1019,8 +1018,8 @@ const zakgeld1Opgaven: Opgave[] = [
     tip: [`Tel de stappen van ${e(15)} naar ${e(20)}.`],
   }),
   getalVraag({
-    /* het losse bordje deed niets en is weg (BOUWREGELS 1.22) */
-    groot: [geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
+    /* het bordje staat er weer: de vraag gaat over de afwas en zegt "kijk maar naar het plaatje" (BOUWREGELS 1.25) */
+    groot: [tek("bord"), geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [16, 17, 19],
     goed: 17,
     vraag: ["Je doet de afwas.", `Daarvoor krijg je ${e(2)} euro.`, "Hoeveel geld heb je nu?", "Kijk maar naar het plaatje."],
@@ -1056,8 +1055,8 @@ const zakgeld1Opgaven: Opgave[] = [
     tip: [`Tel de stappen van ${e(18)} naar ${e(20)}.`],
   }),
   getalVraag({
-    /* geen losse jas meer, maar het geld zelf (BOUWREGELS 1.22) */
-    groot: [geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
+    /* de jas staat er weer: de vraag noemt de jassen (BOUWREGELS 1.25) */
+    groot: [tek("jas"), geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     hulpGroot: [geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [19, 20, 18],
     goed: 20,
@@ -1141,12 +1140,11 @@ const zakgeld2Opgaven: Opgave[] = [
   }),
   kiesGeld({
     groot: [speelgoed("boek", 5)],
-    /* Het groepje knopen tussen het geld was verwarrend (Sara, 7 november 2026): weg, en de zin erover ook. */
-    keuzes: [["m2", "m2", "m1"], ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
+    keuzes: [["m2", "m2", "m1"], { tekening: "knoop", aantal: 4, zeg: "knopen" }, ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
     doel: 5,
     aantal: 2,
     vraag: ["Je ziet een mooi boek.", `Het boek kost ${e(5)} euro.`, `Waar ligt ${e(5)} euro?`],
-    goedZin: [`2 munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `5 munten van ${e(1)} euro is ook ${e(5)} euro.`],
+    goedZin: [`2 munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `5 munten van ${e(1)} euro is ook ${e(5)} euro.`, "Met knopen kun je niet betalen!"],
     noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Knopen"),
   }),
   getalVraag({

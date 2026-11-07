@@ -73,7 +73,7 @@ type Bediening =
   | { soort: "kies"; opties: string[]; instel?: Kiesinstel }
   | { soort: "knoppen"; welke: ("weetniet" | "controleer" | "hulp")[] }
   | { soort: "verder" }
-  | { soort: "somvak"; index: number };
+  | { soort: "somvak"; index: number; weetniet?: boolean };
 
 type Beeld = {
   zinnen: string[];
@@ -122,7 +122,7 @@ type Wachters = {
   knoppen?: (v: "weetniet" | "controleer" | "hulp") => void;
   verder?: () => void;
   pak?: (n: number) => void;
-  somvak?: (v: number) => void;
+  somvak?: (v: number | null) => void;
   kaart?: () => void;
   vlak?: (g: Vlakgebeurtenis) => void;
   /** De zinnen waarmee Bliepo net een knop aanwees ("Tik dan op de pijl."). */
@@ -263,7 +263,7 @@ function Tegel({ n, c }: { n: number; c: number }) {
  * met de opmaak van de les (gekleurd getal, nadruk); een leesteken plakt aan
  * het woord ervoor.
  */
-function zinWoorden(ruw: string): React.ReactNode[] {
+function zinWoorden(ruw: string, somVast = false): React.ReactNode[] {
   const zin = kleurGetallen(ruw);
   const uit: React.ReactNode[] = [];
   const re = /\[\[([bgrum]):([^\]]+)\]\]([.,!?:]?)|\{(\d+)(?::([a-z]+))?\}([.,!?:]?)|\*([^*]+)\*([.,!?:]?)|(\S+)/g;
@@ -304,7 +304,42 @@ function zinWoorden(ruw: string): React.ReactNode[] {
     else if (/^[.,!?:]$/.test(m[5]) && uit.length) uit[uit.length - 1] = <span key={i++}>{uit[uit.length - 1]}{m[5]}</span>;
     else uit.push(<span key={i++}>{m[5]}</span>);
   }
-  return uit;
+  return somVast ? houdSomBijElkaar(uit) : uit;
+}
+
+/** Een rekenteken dat los als woord in de zin staat ("7 − 4"). */
+const REKENTEKEN = /^[+\-−×÷=]$/;
+/** Een getal of een vraagteken in een som, eventueel met leesteken erachter ("4?", "{4}."). */
+const SOMDEEL = /^[\d?…]/;
+
+/** De tekst die in een stukje van zinWoorden staat. */
+function stukTekst(w: unknown): string {
+  if (typeof w === "string" || typeof w === "number") return String(w);
+  if (Array.isArray(w)) return w.map(stukTekst).join("");
+  if (w && typeof w === "object" && "props" in w) return stukTekst((w as { props: { children?: unknown } }).props.children);
+  return "";
+}
+
+/*
+  Squla-lessen (7 november 2026, opdracht Sara): een som breekt niet meer
+  midden over 2 regels ("Hoeveel is 7 − / 4?"). Het woord vóór een rekenteken
+  en het rekenteken zelf krijgen data-somvast; in Lesscherm.module.css krijgt
+  het woord eromheen dan white-space: nowrap, zodat de spatie erachter geen
+  afbreekplek meer is en "7 − 4" altijd op 1 regel blijft. Het aantal woorden
+  blijft gelijk (meelezen klopt nog) en dit zit alleen in wat er in beeld
+  staat: de zin voor de stem (kaal, metUitspraak) en dus de opgenomen stem en
+  zijn sleutel veranderen niet. BliepoTekst zelf (ook van de oude lessen)
+  blijft ongewijzigd.
+*/
+function houdSomBijElkaar(uit: React.ReactNode[]): React.ReactNode[] {
+  const tekst = uit.map((w) => stukTekst(w).trim());
+  const vast = new Set<number>();
+  tekst.forEach((t, k) => {
+    if (!REKENTEKEN.test(t)) return;
+    if (k > 0 && SOMDEEL.test(tekst[k - 1])) vast.add(k - 1);
+    if (k < tekst.length - 1 && SOMDEEL.test(tekst[k + 1])) vast.add(k);
+  });
+  return uit.map((w, k) => (vast.has(k) ? <span key={`vast-${k}`} data-somvast="">{w}</span> : w));
 }
 
 function Zin({ zin: ruw }: { zin: string }) {
@@ -851,23 +886,23 @@ function Lesscherm({
         await pauzeer(300);
       },
       som: (delen) => zet((b) => ({ ...b, som: delen })),
-      somVak: (index) =>
-        new Promise((res) => {
+      somVak: ((index: number, o?: { weetniet?: boolean }) =>
+        new Promise<number | null>((res) => {
           zet((b) => ({
             ...b,
             som: b.som?.map((d, i) => (i === index && d.t === "vak" ? { t: "vak" } : d)) ?? null,
-            bediening: { soort: "somvak", index },
+            bediening: { soort: "somvak", index, ...(o?.weetniet ? { weetniet: true } : {}) },
           }));
           wacht.current.somvak = (v) => {
             wacht.current.somvak = undefined;
             pas((b) => ({
               ...b,
               bediening: null,
-              som: b.som?.map((d, i) => (i === index && d.t === "vak" ? { t: "vak", waarde: String(v) } : d)) ?? null,
+              som: b.som?.map((d, i) => (i === index && d.t === "vak" && v !== null ? { t: "vak", waarde: String(v) } : d)) ?? null,
             }));
             res(v);
           };
-        }),
+        })) as Lesgids["somVak"],
       kaart: () =>
         new Promise((res) => {
           zet((b) => ({ ...b, kaart: { afgevinkt: false }, som: null }));
@@ -1005,6 +1040,8 @@ function Lesscherm({
   const pilBoven = nieuw && staand && les.indeling !== "synthesis" ? 46 : 0;
   /* De indeling van Synthesis (28 oktober 2026): zin en knoppen in een kolom links, Bliepo rechts zonder ballon. */
   const synth = nieuw && !staand && les.indeling === "synthesis";
+  /* Squla-les: de delen van een som blijven in beeld bij elkaar (houdSomBijElkaar). */
+  const squlaLes = les.synthesis.startsWith("Squla");
   const squlaMidden = nieuw && staand && les.synthesis.startsWith("Squla");
   /* Opt-in per les (proef geldmachine-1): zin en keuzes bovenaan in het midden van het speelvlak, niet in de kolom bij Bliepo. */
   const vraagBoven = nieuw && !!les.vraagBoven;
@@ -1088,7 +1125,7 @@ function Lesscherm({
             ? beeld.zichtbaar > 0 && (
                 <BliepoTekst
                   key={`${beeld.zichtbaar}-${beeld.zinnen[beeld.zichtbaar - 1]}`}
-                  woorden={zinWoorden(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1]))}
+                  woorden={zinWoorden(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1]), squlaLes)}
                   regelNaZin={false}
                   gesproken={metUitspraak(kaal(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1])), naam, voorkeuren ?? leesVoorkeuren())}
                 />
@@ -1097,7 +1134,7 @@ function Lesscherm({
           {bewerkTekst && deel !== "knoppen" && !spreektOpdracht && beeld.zichtbaar > 0 && <button type="button" className={s.zinBewerken} onClick={() => bewerkTekst(beeld.zinnen[beeld.zichtbaar - 1])}>✎ Deze zin bewerken</button>}
           {deel !== "knoppen" && volgendeTekst}
           {deel !== "zin" && b?.soort === "getal" && <Getalvak onKlaar={(v) => wacht.current.getal?.(v)} />}
-          {deel !== "zin" && b?.soort === "somvak" && <SomBevestig />}
+          {deel !== "zin" && b?.soort === "somvak" && <SomBevestig weetniet={b.weetniet ? () => wacht.current.somvak?.(null) : undefined} />}
           {deel !== "zin" && b?.soort === "kies" && (
             <Keuzes
               opties={b.opties}
@@ -1267,7 +1304,7 @@ function Lesscherm({
           <div className={`${s.vraagBoven} ${geldEnkel ? s.geldEnkel : ""}`} data-vraag-boven="">
             <div className={s.tekst} data-opdracht="">
               <BliepoTekst
-                woorden={zinWoorden(lesTekst(les.id, beeld.opdracht))}
+                woorden={zinWoorden(lesTekst(les.id, beeld.opdracht), squlaLes)}
                 regelNaZin
                 gesproken={metUitspraak(kaal(lesTekst(les.id, beeld.opdracht)), naam, voorkeuren ?? leesVoorkeuren())}
               />
@@ -1526,12 +1563,13 @@ function Somvak({ onKlaar }: { onKlaar: (v: number) => void }) {
 }
 
 /** Het vinkje links bij een vakje in de som. */
-function SomBevestig() {
+function SomBevestig({ weetniet }: { weetniet?: () => void }) {
   return (
     <div className={s.bediening}>
       <button type="submit" form="somvak" className={s.rond} aria-label="Controleer" data-controleer data-knop="controleer">
         <Vink />
       </button>
+      {weetniet && <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" onClick={weetniet} />}
     </div>
   );
 }

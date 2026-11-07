@@ -443,7 +443,7 @@ type Vraag =
   /** Wat gebeurt eerst, en daarna? */
   | { t: "gebeuren"; verhaal: Verhaal; kaarten: number[] }
   /** Meer, minder, evenveel kaas (of fruit). Met `voorbeeld` bovenaan: meer/minder/evenveel; zonder: de meeste/minste. */
-  | { t: "hoeveel"; ding: "boterham" | "spies"; keuzes: number[]; wat: "meer" | "minder" | "evenveel" | "meest" | "minst" }
+  | { t: "hoeveel"; ding: "boterham" | "spies"; keuzes: number[]; wat: "meer" | "minder" | "evenveel" | "meest" | "minst"; beleg?: Beleg }
   /** Waar ligt de bal? */
   | { t: "waar"; plek: Plekwoord; keuzes: Plekwoord[]; kant?: 1 | -1 }
   /** Waar zie je een rode cirkel? */
@@ -565,10 +565,31 @@ const ALLER: Record<Maatwoord, string> = { klein: "allerkleinste", dik: "allerdi
 /** Loopt de maat op (dik, groot) of af (klein, dun, laag)? */
 const OPLOPEND: Record<Maatwoord, boolean> = { klein: false, dik: true, groot: true, dun: false, laag: false, dikdun: false };
 
+/** De blokken van de toren in mix3-1, van onder naar boven. */
+const BLOKKLEUR = ["blok-maat-rood", "blok-maat-blauw", "blok-maat-groen", "blok-maat-paars"];
+
 /** Een kaart met één ding in een maat: `schaal` (klein/groot), `breed` (dik/dun), of een toren van blokken (laag). */
 function maatKaart(woord: Maatwoord, naam: string, maat: number): RMTekening {
   const B = 230;
   const H = 250;
+  if (woord === "laag" && naam === "blok-maat") {
+    /* Ronde 4 (7 november 2026): een toren van losse blokken recht van voren (Magnific, stijl B), elk blok staat precies op
+       het blok eronder. Van onder naar boven altijd rood, blauw, groen, paars: de kleur zegt dus niets over het antwoord. */
+    /* Even hoog als de oude toren van 4: zo blijft het woord erboven (laag, lager, laagst) vrij. */
+    const m = 66;
+    const zicht = m * 0.865; /* hoe hoog het blok zelf is (zonder de lege rand van het plaatje) */
+    const stap = zicht - 2;
+    const Hl = H + 40;
+    const stukken = Array.from({ length: maat }, (_, k) => ding(BLOKKLEUR[k % BLOKKLEUR.length], 0, Hl / 2 - 10 - zicht / 2 - k * stap, m));
+    return { stukken, b: B, h: Hl };
+  }
+  if ((woord === "dik" || woord === "dun") && naam === "kaars-maat") {
+    /* Ronde 4: alleen de kaars wordt breder of smaller; het vlammetje is een los plaatje en blijft overal even groot. */
+    const m = 210;
+    const romp = m * 0.865; /* de hoogte van de kaars in beeld */
+    const y = 24;
+    return { stukken: [ding(naam, 0, y, m, { sx: maat }), ding("vlammetje", 0, y - romp / 2 - 14, 40)], b: B, h: H };
+  }
   if (woord === "laag") {
     /* De blokken staan echt op elkaar (BOUWREGELS 14.23): elk blok staat met zijn onderkant op de voorkant van het blok eronder. */
     const m = 88;
@@ -597,6 +618,13 @@ const HOEVEEL = {
   boterham: { namen: ["boterham-weinig-kaas", "boterham-veel-kaas", "boterham-heel-veel-kaas"], ding: "boterham", wat: "kaas", lw: "de", welk: "welke boterham", het: "de" },
   spies: { namen: ["spies-leeg", "spies-twee", "spies-vol"], ding: "spiesje", wat: "fruit", lw: "het", welk: "welk spiesje", het: "het" },
 } as const;
+
+/* Ronde 4 (Sara, 7 november 2026): niet steeds dezelfde 3 boterhammen. Andere boterhammen met 1, 3 of 6 plakjes
+   (wit brood met banaan of tomaat, bruin brood met komkommer of ei). Zelfde vraag, zelfde antwoorden. */
+type Beleg = "banaan" | "komkommer" | "tomaat" | "ei";
+const belegVan = (b: Beleg) =>
+  ({ namen: [`boterham-${b}-weinig`, `boterham-${b}-veel`, `boterham-${b}-heel-veel`], ding: "boterham", wat: b, lw: b === "ei" ? "het" : "de", welk: "welke boterham", het: "de" }) as const;
+const BELEG: Record<Beleg, ReturnType<typeof belegVan>> = { banaan: belegVan("banaan"), komkommer: belegVan("komkommer"), tomaat: belegVan("tomaat"), ei: belegVan("ei") };
 
 /* ---------- waar ligt de bal? ---------- */
 
@@ -745,18 +773,14 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     };
   }
 
+  /* Ronde 7 (7 nov, Sara 1.25): de antwoordkeuzes (ook de foute, die niet in de rij staan) en Bliepo's zinnen erover staan weer terug.
+     Bovenaan de rij (de vraag), eronder de keuzes in zachte vakken; de plek van de keuzes wisselt (metPlek, 1.23). */
   /* ---------- links, rechts, midden ---------- */
-  /*
-   * Herstel 7 november (OVERZICHT-C mix1-3): bovenaan stond de rij en onderaan dezelfde 3 dingen nog eens als knoppen; een
-   * kind tikte makkelijk het rechtse ding in de onderste rij aan. Nu tikt het kind direct in de rij zelf (1 rij, geen
-   * dubbele dingen). De plek in de rij is hier de vraag, dus die wisselt niet (`plek` ligt vast). `q.keuzes` blijft in de
-   * gegevens staan maar wordt niet meer getekend.
-   */
   if (q.t === "plaats") {
-    const o: RMOpgave = { id, soort: "kijk", keuzes: q.rij.map((n) => eenDing(n, 210)), namen: q.rij.map((n) => Hoofd(NAAM[n])), plek: q.rij.map((_, i) => i) };
+    const o: RMOpgave = { id, soort: "kijk", boven: rijDingen(q.rij, 210, 270), keuzes: q.keuzes.map((n) => eenDing(n, 190)), namen: q.keuzes.map((n) => Hoofd(NAAM[n])), vakken: true };
     const plek = q.wat === "links" ? 0 : q.wat === "rechts" ? 2 : 1;
     const goedNaam = q.rij[plek];
-    const goedI = plek;
+    const goedI = q.keuzes.indexOf(goedNaam);
     const waar = q.wat === "midden" ? "in het midden" : q.wat;
     const UITLEG = {
       links: "Links staat de eerste van de rij.",
@@ -767,17 +791,17 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       soort: "plaats",
       reactie: (x) => {
-        const naam = q.rij[x as number];
-        const pos = x as number;
-        const waarStaat = pos === 0 ? "links" : pos === 1 ? "in het midden" : "rechts";
-        return [`${Hoofd(NAAM[naam])} staat ${waarStaat}.`, `Kijk wat er ${waar} staat.`];
+        const naam = q.keuzes[x as number];
+        const pos = q.rij.indexOf(naam);
+        const waarStaat = pos === 0 ? "links" : pos === 1 ? "in het midden" : pos === 2 ? "rechts" : "";
+        return [waarStaat ? `${Hoofd(NAAM[naam])} staat ${waarStaat}.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, `Kijk wat er ${waar} staat.`];
       },
-      eerste: ["Kijk naar de rij.", "Tik in de rij op het goede plaatje."],
+      eerste: ["Kijk naar de rij bovenaan.", "Tik dan op het goede plaatje."],
       vraag: ["Kijk naar de rij.", `Wat staat er ${waar}?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
-      noem: (x) => Hoofd(NAAM[q.rij[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
+      noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
       goedZin: [`Goed gekeken! ${Hoofd(NAAM[goedNaam])} staat ${waar}.`, UITLEG[q.wat]],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -790,8 +814,8 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         /* Bliepo wijst de andere twee plekken aan; de gevraagde plek zegt hij alleen. */
         for (const [wat, p] of uitleg) {
           if (wat === q.wat && !alles) continue;
-          zet(l, { licht: { deel: `k${p}`, aan: [0], dof: false } });
-          zetLabels(l, st, [...st.labels, { deel: `k${p}`, x: 0, y: 140, tekst: wat === "midden" ? "midden" : wat, klein: true }]);
+          zet(l, { licht: { deel: "b", aan: [p] } });
+          zetLabels(l, st, [...st.labels, { deel: "b", x: -270 + p * 270, y: 150, tekst: wat === "midden" ? "midden" : wat, klein: true }]);
           await l.zeg(`${Hoofd(NAAM[q.rij[p]])} staat ${wat === "midden" ? "in het midden" : wat}.`);
         }
         zet(l, { licht: null });
@@ -803,28 +827,26 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   }
 
   /* ---------- eerste, tweede … laatste ---------- */
-  /* Herstel 7 november (OVERZICHT-C mix3-2): net als bij links/rechts tikt het kind direct in de rij (geen tweede rij met
-     dezelfde 5 dingen onderaan, die ook nog tegen de rand en onder de microfoonknop liep). */
   if (q.t === "rang") {
-    const o: RMOpgave = { id, soort: "kijk", keuzes: q.rij.map((n) => eenDing(n, 160)), namen: q.rij.map((n) => Hoofd(NAAM[n])), plek: q.rij.map((_, i) => i) };
+    const o: RMOpgave = { id, soort: "kijk", boven: rijDingen(q.rij, 150, 185), keuzes: q.keuzes.map((n) => eenDing(n, 150)), namen: q.keuzes.map((n) => Hoofd(NAAM[n])), vakken: true };
     const RANG = ["eerste", "tweede", "derde", "vierde", "laatste"];
     const goedNaam = q.rij[q.plek];
-    const goedI = q.plek;
+    const goedI = q.keuzes.indexOf(goedNaam);
     const rang = RANG[q.plek];
     return {
       o,
       soort: "rang",
       reactie: (x) => {
-        const pos = x as number;
-        const naam = q.rij[pos];
-        return [`${Hoofd(NAAM[naam])} staat als ${RANG[pos]} in de rij.`, q.plek === 4 ? "De laatste staat helemaal rechts." : "Tel vanaf links, tot je bij de goede plek bent."];
+        const naam = q.keuzes[x as number];
+        const pos = q.rij.indexOf(naam);
+        return [pos >= 0 ? `${Hoofd(NAAM[naam])} staat als ${RANG[pos]} in de rij.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, q.plek === 4 ? "De laatste staat helemaal rechts." : "Tel vanaf links, tot je bij de goede plek bent."];
       },
-      eerste: ["Kijk naar de rij.", "We tellen vanaf links.", "Tik in de rij op het goede plaatje."],
+      eerste: ["Kijk naar de rij bovenaan.", "We tellen vanaf links.", "Tik dan op het goede plaatje."],
       vraag: [`Wat staat als ${rang} in de rij?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
-      noem: (x) => Hoofd(NAAM[q.rij[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
+      noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [q.plek] } }),
       goedZin: [`Dat klopt! ${Hoofd(NAAM[goedNaam])} staat als ${rang}.`, q.plek === 4 ? "Helemaal achteraan in de rij." : q.plek === 0 ? "Helemaal vooraan in de rij." : `Tel maar: ${RANG.slice(0, q.plek + 1).join(", ")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -835,13 +857,14 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         await l.zeg("We tellen samen vanaf links.");
         const tot = alles ? 5 : q.plek === 4 ? 4 : q.plek;
         const labels = [...st.labels];
+        const aan: number[] = [];
         for (let p = 0; p < tot; p++) {
-          zet(l, { licht: { deel: `k${p}`, aan: [0], dof: false } });
-          labels.push({ deel: `k${p}`, x: 0, y: 112, tekst: String(p + 1), klein: true });
+          aan.push(p);
+          zet(l, { licht: { deel: "b", aan: [...aan] } });
+          labels.push({ deel: "b", x: -370 + p * 185, y: 104, tekst: String(p + 1), klein: true });
           zetLabels(l, st, labels);
           await l.zeg(`${Hoofd(RANG[p === 4 ? 4 : p])}.`);
         }
-        zet(l, { licht: null });
         if (!alles && (q.plek === 4 || !krijgtVervolgvraag(l))) await l.zeg(q.plek === 4 ? "De laatste staat helemaal achteraan." : `Welke komt daarna, als ${rang}?`);
       },
       tip: q.plek === 4 ? ["De laatste staat helemaal rechts."] : ["Tel vanaf links: eerste, tweede, derde."],
@@ -1007,7 +1030,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
 
   /* ---------- meer, minder, evenveel kaas ---------- */
   if (q.t === "hoeveel") {
-    const h = HOEVEEL[q.ding];
+    const h = q.beleg ? BELEG[q.beleg] : HOEVEEL[q.ding];
+    /* Bij plakjes (banaan, komkommer …) tel je de plakjes; bij kaas en fruit blijft de zin zoals hij was. */
+    const telWat = q.beleg ? `plakjes ${h.wat}` : h.wat;
     const metVoorbeeld = q.wat === "meer" || q.wat === "minder" || q.wat === "evenveel";
     const o: RMOpgave = {
       id,
@@ -1043,8 +1068,8 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       reactie: (x) => {
         const c = q.keuzes[x as number];
         if (metVoorbeeld) return [c === 1 ? `Daar zit evenveel ${h.wat} op als bovenaan.` : c === 2 ? `Daar zit meer ${h.wat} op dan bovenaan.` : `Daar zit minder ${h.wat} op dan bovenaan.`, q.wat === "evenveel" ? "Zoek het plaatje dat er net zo vol uitziet als bovenaan." : q.wat === "meer" ? "Het plaatje dat je zoekt, is voller dan het plaatje bovenaan." : "Het plaatje dat je zoekt, is leger dan het plaatje bovenaan."];
-        if (q.wat === "meest") return [c === 0 ? `Daar zit juist ${h.lw} minste ${h.wat} op.` : `Daar zit niet ${h.lw} meeste ${h.wat} op. Er is er nog 1 met meer.`, `Tel de ${h.wat} op elk plaatje en kies het plaatje met ${h.lw} meeste ${h.wat}.`];
-        return [c === 2 ? `Daar zit juist ${h.lw} meeste ${h.wat} op.` : `Daar zit niet ${h.lw} minste ${h.wat} op. Er is er nog 1 met minder.`, `Tel de ${h.wat} op elk plaatje en kies het plaatje met ${h.lw} minste ${h.wat}.`];
+        if (q.wat === "meest") return [c === 0 ? `Daar zit juist ${h.lw} minste ${h.wat} op.` : `Daar zit niet ${h.lw} meeste ${h.wat} op. Er is er nog 1 met meer.`, `Tel de ${telWat} op elk plaatje en kies het plaatje met ${h.lw} meeste ${h.wat}.`];
+        return [c === 2 ? `Daar zit juist ${h.lw} meeste ${h.wat} op.` : `Daar zit niet ${h.lw} minste ${h.wat} op. Er is er nog 1 met minder.`, `Tel de ${telWat} op elk plaatje en kies het plaatje met ${h.lw} minste ${h.wat}.`];
       },
       eerste: metVoorbeeld ? [...(krijgtVervolgvraag(l) ? [] : ["Kijk eerst naar het plaatje bovenaan."]), "Tik dan op een plaatje eronder."] : ["Kijk goed naar de 3 plaatjes.", "Tik dan op het goede plaatje."],
       vraag,
@@ -1756,18 +1781,18 @@ const mix2_1 = les({
   vragen: [
     { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "meer" },
     { t: "hoeveel", ding: "spies", keuzes: [2, 0, 1], wat: "meest" },
-    { t: "hoeveel", ding: "boterham", keuzes: [1, 0, 2], wat: "minder" },
+    { t: "hoeveel", ding: "boterham", keuzes: [1, 0, 2], wat: "minder", beleg: "banaan" },
     { t: "hoeveel", ding: "spies", keuzes: [2, 0, 1], wat: "minst" },
-    { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "evenveel" },
-    { t: "hoeveel", ding: "boterham", keuzes: [0, 2, 1], wat: "meer" },
-    { t: "hoeveel", ding: "boterham", keuzes: [1, 2, 0], wat: "meest" },
+    { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "evenveel", beleg: "komkommer" },
+    { t: "hoeveel", ding: "boterham", keuzes: [0, 2, 1], wat: "meer", beleg: "tomaat" },
+    { t: "hoeveel", ding: "boterham", keuzes: [1, 2, 0], wat: "meest", beleg: "ei" },
     { t: "hoeveel", ding: "boterham", keuzes: [2, 0, 1], wat: "minder" },
     { t: "hoeveel", ding: "spies", keuzes: [1, 2, 0], wat: "minst" },
-    { t: "hoeveel", ding: "boterham", keuzes: [0, 1, 2], wat: "evenveel" },
-    { t: "hoeveel", ding: "boterham", keuzes: [1, 0, 2], wat: "meer" },
+    { t: "hoeveel", ding: "boterham", keuzes: [0, 1, 2], wat: "evenveel", beleg: "banaan" },
+    { t: "hoeveel", ding: "boterham", keuzes: [1, 0, 2], wat: "meer", beleg: "komkommer" },
     { t: "hoeveel", ding: "spies", keuzes: [0, 1, 2], wat: "meest" },
-    { t: "hoeveel", ding: "boterham", keuzes: [0, 2, 1], wat: "minder" },
-    { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "minst" },
+    { t: "hoeveel", ding: "boterham", keuzes: [0, 2, 1], wat: "minder", beleg: "tomaat" },
+    { t: "hoeveel", ding: "boterham", keuzes: [2, 1, 0], wat: "minst", beleg: "ei" },
     { t: "hoeveel", ding: "boterham", keuzes: [1, 2, 0], wat: "evenveel" },
   ],
   eind: "Jij ziet waar meer en minder is.",
@@ -1899,23 +1924,23 @@ const mix3_1 = les({
   level: 1,
   welkom: ["3 ballen zijn niet even groot.", "Zet ze op volgorde: kleinst, kleiner, klein."],
   beginMetVoorbeeld: true,
-  voorbeeld: [{ t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.82, 0.46, 1] }],
+  voorbeeld: [{ t: "ordenMaat", woord: "klein", naam: "bal-maat", maten: [0.82, 0.46, 1] }],
   vragen: [
-    { t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.62, 1, 0.38] },
-    { t: "ordenMaat", woord: "dik", naam: "kaars", maten: [1.4, 0.55, 0.95] },
-    { t: "ordenMaat", woord: "groot", naam: "huis", maten: [1, 0.48, 0.74] },
-    { t: "ordenMaat", woord: "dun", naam: "potlood", maten: [1.15, 1.6, 0.7] },
-    { t: "ordenMaat", woord: "laag", naam: "speelblok", maten: [2, 4, 3] },
-    { t: "ordenMaat", woord: "klein", naam: "appel", maten: [0.4, 0.68, 1] },
-    { t: "ordenMaat", woord: "dik", naam: "potlood", maten: [1.05, 1.6, 0.6] },
-    { t: "ordenMaat", woord: "groot", naam: "boom", maten: [0.72, 1, 0.45] },
-    { t: "ordenMaat", woord: "dun", naam: "kaars", maten: [0.6, 1.0, 1.45] },
-    { t: "ordenMaat", woord: "laag", naam: "speelblok", maten: [1, 3, 2] },
-    { t: "ordenMaat", woord: "klein", naam: "ster", maten: [1, 0.42, 0.7] },
-    { t: "ordenMaat", woord: "dik", naam: "kaars", maten: [0.95, 0.6, 1.35] },
-    { t: "ordenMaat", woord: "groot", naam: "raketje", maten: [0.5, 1, 0.75] },
-    { t: "ordenMaat", woord: "dun", naam: "potlood", maten: [1.5, 0.75, 1.1] },
-    { t: "ordenMaat", woord: "laag", naam: "speelblok", maten: [4, 2, 3] },
+    { t: "ordenMaat", woord: "klein", naam: "bal-maat", maten: [0.62, 1, 0.38] },
+    { t: "ordenMaat", woord: "dik", naam: "kaars-maat", maten: [1.4, 0.55, 0.95] },
+    { t: "ordenMaat", woord: "groot", naam: "huis-maat", maten: [1, 0.48, 0.74] },
+    { t: "ordenMaat", woord: "dun", naam: "potlood-maat", maten: [1.15, 1.6, 0.7] },
+    { t: "ordenMaat", woord: "laag", naam: "blok-maat", maten: [2, 4, 3] },
+    { t: "ordenMaat", woord: "klein", naam: "appel-maat", maten: [0.4, 0.68, 1] },
+    { t: "ordenMaat", woord: "dik", naam: "potlood-maat", maten: [1.05, 1.6, 0.6] },
+    { t: "ordenMaat", woord: "groot", naam: "boom-maat", maten: [0.72, 1, 0.45] },
+    { t: "ordenMaat", woord: "dun", naam: "kaars-maat", maten: [0.6, 1.0, 1.45] },
+    { t: "ordenMaat", woord: "laag", naam: "blok-maat", maten: [1, 3, 2] },
+    { t: "ordenMaat", woord: "klein", naam: "ster-maat", maten: [1, 0.42, 0.7] },
+    { t: "ordenMaat", woord: "dik", naam: "kaars-maat", maten: [0.95, 0.6, 1.35] },
+    { t: "ordenMaat", woord: "groot", naam: "raket-maat", maten: [0.5, 1, 0.75] },
+    { t: "ordenMaat", woord: "dun", naam: "potlood-maat", maten: [1.5, 0.75, 1.1] },
+    { t: "ordenMaat", woord: "laag", naam: "blok-maat", maten: [4, 2, 3] },
   ],
   eind: "Jij zet alles op volgorde.",
 });

@@ -70,3 +70,10 @@ Uitleg: KEUZES-VOOR-SARA.md (blok "Groep A — ronde 3"). Getest als Testkind, l
 
 Gewijzigd: `vlakken/squla-klok-vlak.tsx` (alleen staande indeling), `vlakken/squla-tijd-plaatjes.tsx` (staand groeien; tikpunt nu met gelijke schaal, op laptop hetzelfde), `vlakken/squla-tijd-trein.tsx` (rondje, vak per paar staand), gedeeld `Lesscherm.tsx` (1 regel `maxWidth`).
 Echte tik op het canvas (telefoon, kalender-1) gecontroleerd: komt goed aan.
+
+## Ronde 7 (toets weggehaald materiaal, 7 november 2026)
+
+Lijst en reden per item: WEGGEHAALD.md. Teruggezet: zakgeld-1 bordje en jas; tijden-1 drie boeken, zwembad, maan (alleen bij de uitleg); tijden-2 brood; dagen-3 schaar, huis en taart (zachte achtergrond).
+Niet teruggezet: zakgeld-1 doos (echt losse versiering). Hoelaat-3 vraag 9 (bus/bakkerij): vervangen op verzoek van Sara, zij beslist.
+Alleen herschreven of vervangen (niet weggehaald): "1 week kamperen", kortere vraag bij tijden-2, klok-vragen met bus/zon/oven (sfeer of naspeel).
+Foto's: scratchpad a7 (voor); laptop getest als Testkind.

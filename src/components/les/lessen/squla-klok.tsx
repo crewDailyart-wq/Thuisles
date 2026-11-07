@@ -1233,22 +1233,33 @@ const hoelaat1 = klokles({
   voorbeeld: 0,
   uitleg: (l) => uitlegHeel(l, 0),
   opgaven: [
+    /* Squla "Hoe laat is het?" level 1 (SQULA-ANALYSE/klokkijken-15822): de uren 1, 12, 1, 4 en 11 met dezelfde keuzes (BOUWREGELS 1.25) */
+    leesKlok(U(1), [U(1), U(9), U(8)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(12), [U(12), U(10), U(11)], { ding: "zon", sfeer: "hoog", zin: ["De zon staat hoog. De bus rijdt weg.", "Hoe laat is het?"] }),
+    leesKlok(U(1), [U(2), U(12), U(1)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus rijdt weer terug.", "Hoe laat is het?"] }),
+    leesKlok(U(4), [U(6), U(4), U(5)], { ding: "zon", sfeer: "laag", zin: ["De zon staat al lager.", "Hoe laat is het?"] }),
+    leesKlok(U(11), [U(11), U(7), U(8)], { ding: "bakkerij", sfeer: true, zin: ["De bus haalt nieuwe broodjes bij de bakkerij.", "Hoe laat is het?"] }),
+    /* Extra vragen van dezelfde soort (BOUWREGELS 11.1), niet van Squla: zie KEUZES-VOOR-SARA.md, ronde 6 */
     leesKlok(U(7), [U(7), U(11), U(6)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"], weetje: ["Vroeg in de ochtend begint de dag."] }),
     leesKlok(U(8), [U(8), U(9), U(1)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bezorgbus vertrekt.", "Hoe laat is het?"] }),
     leesKlok(U(9), [U(9), U(3), U(10)], { ding: "zon", sfeer: true, zin: ["De zon schijnt. De bus rijdt naar de eerste halte.", "Hoe laat is het?"], weetje: ["De zon schijnt overdag."] }),
     leesKlok(U(10), [U(10), U(2), U(11)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de eerste halte.", "Hoe laat is het?"] }),
-    leesKlok(U(11), [U(11), U(9), U(12)], { ding: "bakkerij", sfeer: true, zin: ["De bus haalt nieuwe broodjes bij de bakkerij.", "Hoe laat is het?"] }),
-    leesKlok(U(12), [U(12), U(1), U(6)], { ding: "zon", sfeer: "hoog", zin: ["De zon staat hoog. De bus brengt de broodjes weg.", "Hoe laat is het?"] }),
-    leesKlok(U(1), [U(1), U(7), U(12)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bus staat weer bij de bakkerij.", "Hoe laat is het?"] }),
     leesKlok(U(2), [U(2), U(10), U(1)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bus rijdt weer weg.", "Hoe laat is het?"] }),
     leesKlok(U(3), [U(3), U(9), U(4)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de tweede halte.", "Hoe laat is het?"] }),
-    leesKlok(U(4), [U(4), U(2), U(5)], { ding: "zon", sfeer: "laag", zin: ["De zon staat al lager. De bus rijdt naar huis.", "Hoe laat is het?"] }),
     leesKlok(U(5), [U(5), U(4), U(11)], { ding: "bakkerij", sfeer: true, zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
     leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", sfeer: true, zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"], weetje: ["De maan zie je als het donker wordt."] }),
   ],
   reserve: [0, 2, 6],
   eind: "Je kunt hele uren lezen op de klok.",
 });
+
+/* Eerdere vragen van deze les met dezelfde uren als Squla maar met andere keuzes; niet gespeeld, niet weggehaald (Sara beslist, KEUZES-VOOR-SARA.md ronde 6). */
+export const hoelaat1Bewaard: Opgave[] = [
+    leesKlok(U(11), [U(11), U(9), U(12)], { ding: "bakkerij", sfeer: true, zin: ["De bus haalt nieuwe broodjes bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(12), [U(12), U(1), U(6)], { ding: "zon", sfeer: "hoog", zin: ["De zon staat hoog. De bus brengt de broodjes weg.", "Hoe laat is het?"] }),
+    leesKlok(U(1), [U(1), U(7), U(12)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bus staat weer bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(4), [U(4), U(2), U(5)], { ding: "zon", sfeer: "laag", zin: ["De zon staat al lager. De bus rijdt naar huis.", "Hoe laat is het?"] }),
+];
 
 const hoelaat2 = klokles({
   id: "squla-klok-hoelaat-2",
@@ -1283,7 +1294,7 @@ const hoelaat3 = klokles({
   titel: "Hoe laat is het? (nog moeilijker)",
   oefening: "Hoe laat is het?",
   level: 3,
-  voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij", "oven"],
+  voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij", "oven", "taart"],
   start: V("bezorgbus"),
   welkom: ["De bezorgbus rijdt de laatste ronde van de dag.", "Lees de klok: hoe laat is het nu?"],
   voorbeeld: 0,
@@ -1313,23 +1324,10 @@ const hoelaat3 = klokles({
     leesKlok(U(3), [U(3), U(9), U(12)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de laatste halte.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(4), [U(4), U(10), U(2)], ["De bus rijdt om {4:oranje} uur terug naar de bakkerij."]),
     leesKlok(U(5), [U(5), U(7), U(10)], { ding: "bakkerij", sfeer: true, zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
-    (l, terug) =>
-      kiesVraag(
-        l,
-        {
-          keuzes: [V("bezorgbus"), V("bakkerij")],
-          goed: 1,
-          vraag: ["De broodjes worden vers gebakken.", "Waar worden de broodjes gebakken?"],
-          goedZin: ["In de bakkerij worden de broodjes gebakken.", "De bus brengt ze weg."],
-          noem: (i) => ["De bus", "De bakkerij"][i],
-          reactie: () => ["De bus rijdt rond en brengt de broodjes weg.", "Denk aan de plek met de oven."],
-          samen: async (l) => {
-            await l.zeg("Een bus rijdt rond.", "In de bakkerij staat de oven.");
-          },
-          tip: ["Denk aan de plek met de oven."],
-        },
-        terug,
-      ),
+    /* Vraag 9 was "Waar worden de broodjes gebakken?", geen tijdvraag. Op verzoek van Sara (7 nov 2026, ronde 4)
+       nu een klok kiezen in het bakkerij-verhaal: de oven staat in beeld, pas na het antwoord springt de taart eruit.
+       Dichte keuzes (5, 6, 7 uur) passen bij "nog moeilijker". */
+    kiesKlok(U(6), [U(5), U(6), U(7)], { boven: [V("oven")], naspeel: "uitDeOven", zin: ["De laatste taarten staan nog in de oven.", "Ze zijn om {6:oranje} uur klaar.", "Op welke klok is het {6:oranje} uur?"], goedZin: ["Om {6:oranje} uur zijn de taarten klaar.", "Dat ruikt lekker!"] }),
     leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", sfeer: true, zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"] }),
     leesKlok(U(7), [U(7), U(1), U(6)], { ding: "oven", naspeel: "uit", zin: ["De oven in de bakkerij gaat uit.", "Hoe laat is het?"] }),
     leesKlok(U(8), [U(8), U(4), U(7)], { ding: "maan", sfeer: true, zin: ["Het is avond. De maan schijnt.", "Hoe laat is het?"] }),

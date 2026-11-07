@@ -804,3 +804,11 @@ a.knop {
   border-radius: 12px;
   font-size: 116px;
 }
+
+/* Squla-lessen (7 november 2026, opdracht Sara): een som breekt niet midden over 2 regels
+   ("Hoeveel is 7 − / 4?"). Het woord vóór een rekenteken en het rekenteken zelf (data-somvast,
+   zie houdSomBijElkaar in Lesscherm.tsx) mogen na hun spatie niet afbreken. Alleen in beeld;
+   de stem en BliepoTekst zelf veranderen niet. */
+.wortel[data-squla] :global(.bliepo-tekst-woord):has(> [data-somvast]) {
+  white-space: nowrap;
+}
