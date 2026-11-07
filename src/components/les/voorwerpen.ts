@@ -158,6 +158,20 @@ export function tekenVoorwerp(c: CanvasRenderingContext2D, naam: string, x: numb
   c.drawImage(glansBeeld(naam), x + (b - w) / 2, y + (h - hh) / 2, w, hh);
 }
 
+/** Een horizontaal stuk van het plaatje (van `van` tot `tot`, als deel van de hoogte), op breedte `b` getekend op (0, 0). Voor een deksel dat los van de kist beweegt. */
+export function tekenVoorwerpStuk(c: CanvasRenderingContext2D, naam: string, van: number, tot: number, b: number) {
+  const img = voorwerpBeeld(naam);
+  const bron = glansBeeld(naam);
+  const sy = van * img.naturalHeight;
+  const sh = (tot - van) * img.naturalHeight;
+  c.drawImage(bron, 0, sy, img.naturalWidth, sh, 0, 0, b, (sh * b) / img.naturalWidth);
+}
+
+/** Een rechthoek uit het plaatje (in pixels van het plaatje zelf) getekend op (dx, dy) met maat (dw, dh). */
+export function tekenVoorwerpRechthoek(c: CanvasRenderingContext2D, naam: string, sx: number, sy: number, sw: number, sh: number, dx: number, dy: number, dw: number, dh: number) {
+  c.drawImage(glansBeeld(naam), sx, sy, sw, sh, dx, dy, dw, dh);
+}
+
 /** Phaser: de sleutel van een textuur met dit plaatje (één keer toegevoegd per scène). */
 export function voorwerpTextuur(scene: { textures: { exists(k: string): boolean; addImage(k: string, i: HTMLImageElement): unknown; addCanvas(k: string, c: HTMLCanvasElement): unknown } }, naam: string): string {
   const sleutel = `vw-${naam}`;

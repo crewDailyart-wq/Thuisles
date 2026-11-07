@@ -151,7 +151,7 @@ const verschil = (g: T, nu: T) => ((((g.u % 12) * 60 + g.m) - ((nu.u % 12) * 60 
    het vlak besturen
    ===================================================================== */
 
-const LEEG: KlokVlakProps = { sleutel: "", modus: "kies", boven: [], keuzes: [], pijl: false, paren: undefined, rechts: undefined, vast: null, actief: false, licht: [], goed: [], fout: [], uit: [] };
+const LEEG: KlokVlakProps = { sleutel: "", modus: "kies", boven: [], keuzes: [], pijl: false, paren: undefined, rechts: undefined, vast: null, actief: false, licht: [], goed: [], fout: [], uit: [], reis: undefined };
 const zet = (l: Lesgids, p: Partial<KlokVlakProps>) => l.pasVlakAan<KlokVlakProps>(p);
 let beeldNr = 0;
 const nieuw = () => `kk${++beeldNr}`;
@@ -653,12 +653,14 @@ function verbindKlokTijd(uren: number[], rechts: number[]): Opgave {
 
 /** Rekenen met tijd: een ding met een klok bovenaan, kies de klok van straks of van net. */
 function tijdRekenen(ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string): Opgave {
+  /* De bus speelt het verhaal na (BOUWREGELS 1.22): zie `metVerhaal`. */
+  const verhaal = ding === "bus" && soort === "uur later";
   const doel: T =
     soort === "uur later" ? { u: na(nu), m: nu.m } : soort === "uur eerder" ? { u: ((nu.u + 10) % 12) + 1, m: nu.m } : nu.m === 30 ? { u: na(nu), m: 0 } : { u: nu.u, m: 30 };
   const vraag = soort === "uur later" ? "Hoe laat is het over een uur?" : soort === "half later" ? "Hoe laat is het over een half uur?" : "Hoe laat was het een uur geleden?";
-  return (l, terug) =>
-    kiesKlok(doel, tijden, {
-      boven: [V(ding), W(nu, kleurRij(1)[0])],
+  return (l, terug) => {
+    const v = kiesKlok(doel, tijden, {
+      boven: verhaal ? [] : [V(ding), W(nu, kleurRij(1)[0])],
       zin: [context, "Kijk op de klok.", vraag],
       goedZin: [`Nu is het ${spreek(nu)}.`, `${soort === "uur eerder" ? "Een uur geleden was het" : "Straks is het"} ${spreek(doel)}.`],
       reactie: (g) => {
@@ -669,6 +671,51 @@ function tijdRekenen(ding: string, nu: T, soort: "uur later" | "half later" | "u
         return [wat, hint];
       },
     })(l, terug);
+    return verhaal ? metVerhaal(l, v, ding, nu, 60, "1 uur") : v;
+  };
+}
+
+/**
+ * Het plaatje speelt het verhaal na (BOUWREGELS 1.22, oplossing 1). Tijdens de vraag staat alleen het begin in beeld: de bus
+ * bij de halte met de klok van nu, een stukje weg met "1 uur" en bij school een klokje met een vraagteken (verklapt niets).
+ * Pas NA het antwoord (goed = bevestiging, tweede fout = uitleg) rijdt de bus naar school en draaien de wijzers van de klok
+ * bij school een uur verder. Het kiezen van het antwoord wordt nooit geblokkeerd; het naspelen breekt zelf af na 6 seconden.
+ */
+function metVerhaal(l: Lesgids, v: SqulaVraag<string>, ding: string, nu: T, min: number, label: string): SqulaVraag<string> {
+  let speel = 0;
+  const basis = { naam: ding, nu: { u: nu.u, m: nu.m }, min, label };
+  const speelAf = async () => {
+    let tijd: ReturnType<typeof setTimeout> | undefined;
+    const stop = new Promise<void>((klaar) => (tijd = setTimeout(klaar, 6000)));
+    const klaar = Promise.race([l.wachtOpVlak("reis"), stop]);
+    speel++;
+    zet(l, { reis: { ...basis, speel } });
+    try {
+      await klaar;
+    } finally {
+      clearTimeout(tijd);
+    }
+  };
+  return {
+    ...v,
+    toon: () => {
+      v.toon?.();
+      zet(l, { reis: { ...basis, speel: 0 } });
+    },
+    goed: async (x) => {
+      await Promise.all([v.goed(x), speelAf()]);
+    },
+    samen: async () => {
+      zet(l, { fout: [], goed: [] });
+      const af = speelAf();
+      await l.zeg("Kijk eerst naar de klok bij de halte.");
+      await af;
+      await l.zeg("Over een uur draait de grote wijzer een heel rondje.", "Dan staat hij weer op dezelfde plek.", "De kleine wijzer schuift 1 getal verder.");
+      zet(l, { licht: [] });
+      if (!krijgtVervolgvraag(l)) await l.zeg("Zoek die klok.");
+    },
+    tip: ["Over een uur is de kleine wijzer 1 getal verder."],
+  };
 }
 
 /** Rekenen met tijd: de uitleg (vervangt de samen-uitleg van kiesKlok). */
@@ -1554,7 +1601,8 @@ const halfuur3 = klokles({
 });
 
 const r = (op: Opgave, nu: T, soort: "uur later" | "half later" | "uur eerder") => metRekenUitleg(op, nu, soort);
-const reken = (ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string) => r(tijdRekenen(ding, nu, soort, tijden, context), nu, soort);
+const reken = (ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string) =>
+  ding === "bus" && soort === "uur later" ? tijdRekenen(ding, nu, soort, tijden, context) : r(tijdRekenen(ding, nu, soort, tijden, context), nu, soort);
 
 const halfuur4 = klokles({
   id: "squla-klok-klokkijken3-4",

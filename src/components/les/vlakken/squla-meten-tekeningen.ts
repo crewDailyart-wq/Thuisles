@@ -70,7 +70,7 @@ export const METEN_VOORWERPEN = [
   "tomaat", "olijf", "zak-meel", "boterham-weinig-kaas", "boterham-veel-kaas", "boterham-heel-veel-kaas", "pizzadoos-open", "doos-rood",
   "doos-blauw", "pizzaoven", "schaal", "mand", "mand-half", "mand-vol", "spies-leeg", "spies-twee", "spies-vol", "ballon", "steen",
   "voetbal", "veer", "appel", "watermeloen", "knikker", "boek", "rugtas", "vlieger", "springtouw", "bal", "speelblok", "zon", "bloem",
-  "huis", "bootje", "boom", "planeet-ring", "picknickkleed", "bord",
+  "huis", "bootje", "boom", "planeet-ring", "picknickkleed", "bord", "broodje", "mandarijn",
 ];
 
 const PIZZA: Record<string, string> = { kaas: "pizza-kaas", salami: "pizza-salami", olijf: "pizza-olijven" };

@@ -13,7 +13,7 @@
 
 import { TX, VLAK_B, VLAK_H, type Holo } from "../holo/basis";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVoorwerp, tekenVoorwerpRechthoek, tekenVoorwerpStuk } from "../voorwerpen";
 import type { Vlakgebeurtenis } from "../soort";
 
 export type S1Zone = {
@@ -59,6 +59,12 @@ export type S1Spec = {
   route: [number, number][];
   /** Een voorwerp (de splitsmachine) dat boven de dingen staat: de dingen komen er onderuit; het schudt bij elke stap van `auto`. */
   deco?: { vw: string; x: number; y: number; maat: number };
+  /**
+   * Een schatkist waar de dingen uit springen (BOUWREGELS 1.22): de gesloten kist staat eerst op `van` (waar het verhaalbegin
+   * hem liet zien), schuift naar `x, y, maat` (midden en breedte), de deksel gaat open en de dingen springen met een boogje
+   * in het hoopje. De kist blijft open en leeg staan. De dingen verklappen niets: ze zijn de opgave zelf.
+   */
+  kist?: { x: number; y: number; maat: number; van: { x: number; y: number; maat: number } };
   /** Alleen kijken: de dingen kunnen niet gepakt worden (de ballen vallen zelf). */
   vast?: boolean;
   /** Tegels die alvast getekend worden (één per beeld, zodat het volgende spel niet hapert). */
@@ -79,7 +85,7 @@ type Dep = {
   meld: () => (g: Vlakgebeurtenis) => void;
 };
 
-type Ding = { im: import("phaser").GameObjects.Image; thuis: { x: number; y: number }; zone: number; waarde: number };
+type Ding = { im: import("phaser").GameObjects.Image; thuis: { x: number; y: number }; zone: number; waarde: number; /** Springt nog uit de kist: nog niet te pakken. */ vlucht?: boolean };
 
 export function maakS1(sc: Holo, dep: Dep) {
   type Box = import("phaser").GameObjects.Container;
@@ -94,6 +100,9 @@ export function maakS1(sc: Holo, dep: Dep) {
     dingen: Ding[];
     inhoud: number[][];
     box: Box;
+    /** De schatkist (los van `box`, zodat hij meteen zichtbaar is) en wat de vliegende dingen nog moeten afmaken. */
+    kist: Box | null;
+    land: (() => void) | null;
     laagDing: Box;
     deco: Img | null;
     laagSleep: Box;
@@ -199,8 +208,17 @@ export function maakS1(sc: Holo, dep: Dep) {
       window.__phaser = w;
     }
     if (!oud) return;
-    if (sc.rustig) oud.box.destroy();
-    else sc.tweens.add({ targets: oud.box, alpha: 0, duration: 140, onComplete: () => oud.box.destroy() });
+    oud.dingen.forEach((d) => (d.vlucht = false));
+    if (sc.rustig) {
+      oud.box.destroy();
+      oud.kist?.destroy();
+    } else {
+      sc.tweens.add({ targets: oud.box, alpha: 0, duration: 140, onComplete: () => oud.box.destroy() });
+      if (oud.kist) {
+        const k = oud.kist;
+        sc.tweens.add({ targets: k, alpha: 0, duration: 140, onComplete: () => k.destroy() });
+      }
+    }
   }
 
   const scherm = (x: number, y: number) => {
@@ -216,6 +234,155 @@ export function maakS1(sc: Holo, dep: Dep) {
     const inRij = Math.min(t.per, spec.n - rij * t.per);
     const col = i % t.per;
     return { x: t.x + (col - (inRij - 1) / 2) * stap, y: t.y + rij * stap * 0.96 + (i % 2 === 0 ? -3 : 3) };
+  }
+
+  /**
+   * De schatkist (BOUWREGELS 1.22). Het deksel en de kist zijn twee plaatjes uit hetzelfde kistje als in het verhaalbegin
+   * (één keer getekend); alles beweegt met tweens, er wordt niets elk beeld uitgerekend. Het deksel klapt open door lager
+   * te worden (we zien het van voren), daarna springen de dingen één voor één met een boogje naar hun plek in het hoopje.
+   */
+  function bouwKist(spec: S1Spec, dingen: Ding[], laagDing: Box) {
+    const k = spec.kist!;
+    const SPLIT = 0.41;
+    const B = 256;
+    sc.canvasPlaatje("sps-kist-lid", B, Math.round(B * (448 / 512) * SPLIT), (c) => tekenVoorwerpStuk(c, "kistje", 0, SPLIT, B));
+    /* De kist zonder hangslot: de plek van het slot (x 205-295, y 185-335 van het plaatje) wordt gevuld met hout ernaast. */
+    const SY = SPLIT * 448;
+    sc.canvasPlaatje("sps-kist-bak", B, Math.round(B * (448 / 512) * (1 - SPLIT)), (c) => {
+      tekenVoorwerpStuk(c, "kistje", SPLIT, 1, B);
+      const f = B / 512;
+      tekenVoorwerpRechthoek(c, "kistje", 110, 185, 90, 150, 205 * f, (185 - SY) * f, 90 * f, 150 * f);
+    });
+    sc.canvasPlaatje("sps-kist-slot", 90, 150, (c) => tekenVoorwerpRechthoek(c, "kistje", 205, 185, 90, 150, 0, 0, 90, 150));
+    const H = k.maat * (448 / 512);
+    const hLid = H * SPLIT;
+    const hBak = H - hLid;
+    const onder = k.y + H / 2;
+    const kist = sc.add.container(k.x, onder);
+    kist.setDepth(9);
+    const binnen = sc.add.graphics();
+    binnen.fillStyle(0x3b2418, 1);
+    binnen.fillEllipse(0, -hBak, k.maat * 0.8, hBak * 0.36);
+    binnen.setAlpha(0);
+    const bak = sc.plaats("sps-kist-bak", 0, 0).setOrigin(0.5, 1).setDisplaySize(k.maat, hBak);
+    const lid = sc.plaats("sps-kist-lid", 0, -hBak).setOrigin(0.5, 1).setDisplaySize(k.maat, hLid);
+    const fk = k.maat / 512;
+    const slot = sc.plaats("sps-kist-slot", (250 - 256) * fk, -hBak + (185 - SY) * fk).setOrigin(0.5, 0).setDisplaySize(90 * fk, 150 * fk);
+    kist.add([bak, binnen, slot, lid]);
+    /* De open mond van de kist: hier komen de dingen uit. */
+    const mond = { x: k.x, y: onder - hBak - hLid * 0.2 };
+    const open = () => {
+      lid.setTint(0x9a6a48).setFlipY(true);
+      lid.setDisplaySize(k.maat, hLid * 0.75);
+      binnen.setAlpha(1);
+      slot.destroy();
+    };
+
+    const eindig = (d: Ding) => {
+      d.vlucht = false;
+      if (d.im.active) d.im.setPosition(d.thuis.x, d.thuis.y).setAlpha(1);
+    };
+    if (sc.rustig) {
+      open();
+      kist.setPosition(k.x, onder);
+      return { kist, land: null };
+    }
+
+    const s0 = k.van.maat / k.maat;
+    kist.setScale(s0).setPosition(k.van.x, k.van.y + (k.van.maat * (448 / 512)) / 2);
+    const diaEind = spec.tray.dia;
+    dingen.forEach((d) => {
+      d.vlucht = true;
+      d.im.setAlpha(0).setPosition(mond.x, mond.y).setDisplaySize(diaEind * 0.4, diaEind * 0.4);
+    });
+    let klaar = false;
+    const spring = () => {
+      if (klaar) return;
+      dingen.forEach((d, i) => {
+        sc.time.delayedCall(i * 32, () => {
+          if (!d.vlucht || !d.im.active) return;
+          d.im.setAlpha(1);
+          const x0 = mond.x;
+          const y0 = mond.y;
+          const hoogte = 70 + (i % 3) * 22;
+          const teller = sc.tweens.addCounter({
+            from: 0,
+            to: 1,
+            duration: 520,
+            onUpdate: (t) => {
+              if (!d.vlucht || !d.im.active) {
+                teller.stop();
+                return;
+              }
+              const p = t.getValue() ?? 0;
+              d.im.setPosition(x0 + (d.thuis.x - x0) * p, y0 + (d.thuis.y - y0) * p - 4 * hoogte * p * (1 - p));
+              const w = diaEind * (0.4 + 0.6 * Math.min(1, p * 1.6));
+              d.im.setDisplaySize(w, w);
+            },
+            onComplete: () => {
+              if (!d.vlucht || !d.im.active) return;
+              d.vlucht = false;
+              d.im.setPosition(d.thuis.x, d.thuis.y).setDisplaySize(diaEind, diaEind);
+              /* zacht stuiteren, en bij een paar een glinsterstipje */
+              sc.tweens.add({ targets: d.im, y: d.thuis.y - 9, duration: 110, yoyo: true, ease: "Sine.easeOut" });
+              if (i % 4 === 0) {
+                const v = sc.plaats(vonkTex(), d.thuis.x + 12, d.thuis.y - 16).setAlpha(0).setScale(0.1 / TX);
+                laagDing.add(v);
+                sc.tweens.add({ targets: v, alpha: 1, scale: 0.7 / TX, angle: 70, duration: 220, yoyo: true, onComplete: () => v.destroy() });
+              }
+            },
+          });
+        });
+      });
+    };
+    /* 1 de kist schuift naar zijn plek, 2 hij wiebelt even, 3 het deksel gaat open (met een stuiter), 4 de schatten springen eruit. */
+    sc.tweens.add({
+      targets: kist,
+      x: k.x,
+      y: onder,
+      scaleX: 1,
+      scaleY: 1,
+      duration: 380,
+      delay: 120,
+      ease: "Cubic.easeInOut",
+      onComplete: () => {
+        sc.tweens.add({
+          targets: kist,
+          angle: { from: -3, to: 3 },
+          duration: 90,
+          yoyo: true,
+          repeat: 1,
+          onComplete: () => {
+            kist.setAngle(0);
+            /* Het hangslot springt eraf en valt weg. */
+            sc.tweens.add({ targets: slot, y: slot.y + 150, angle: 50, alpha: 0, duration: 420, ease: "Quad.easeIn", onComplete: () => slot.destroy() });
+            sc.tweens.add({ targets: binnen, alpha: 1, duration: 200, delay: 160 });
+            /* Het deksel klapt achterover: eerst plat (van opzij), dan omhoog met de onderkant naar ons toe, met een stuiter. */
+            sc.tweens.add({
+              targets: lid,
+              displayHeight: 2,
+              duration: 150,
+              ease: "Sine.easeIn",
+              onComplete: () => {
+                lid.setFlipY(true).setTint(0x9a6a48);
+                sc.tweens.add({ targets: lid, displayHeight: hLid * 0.75, duration: 300, ease: "Back.easeOut" });
+              },
+            });
+            sc.time.delayedCall(250, spring);
+          },
+        });
+      },
+    });
+    /* Wordt er meteen gesleept of getest, dan landen alle dingen nu. */
+    const land = () => {
+      if (klaar) return;
+      klaar = true;
+      sc.tweens.killTweensOf(kist);
+      kist.setAngle(0).setScale(1).setPosition(k.x, onder);
+      open();
+      dingen.forEach(eindig);
+    };
+    return { kist, land };
   }
 
   function bouw(spec: S1Spec, sleutel: string) {
@@ -273,7 +440,8 @@ export function maakS1(sc: Holo, dep: Dep) {
       im.setDisplaySize(spec.tray.dia, spec.tray.dia);
       laagDing.add(im);
       dingen.push({ im, thuis, zone: -1, waarde: spec.soort === "tegels" ? spec.waarden![i] : 0 });
-      if (!sc.rustig) {
+      if (spec.kist && !sc.rustig) im.setAlpha(0);
+      else if (!sc.rustig) {
         im.setAlpha(0).setScale(0.2 / TX);
         sc.tweens.add({ targets: im, alpha: 1, displayWidth: spec.tray.dia, displayHeight: spec.tray.dia, delay: 40 + i * 35, duration: 260, ease: "Back.easeOut" });
       }
@@ -282,6 +450,7 @@ export function maakS1(sc: Holo, dep: Dep) {
       box.setAlpha(0);
       sc.tweens.add({ targets: box, alpha: 1, duration: 260 });
     }
+    /* Het hoopje van de dingen die uit de kist komen: pas zichtbaar als ze eruit springen (bouwKist). */
     let deco: Img | null = null;
     if (spec.deco) {
       const sl = `sps-s1-deco-${spec.deco.vw}`;
@@ -290,7 +459,8 @@ export function maakS1(sc: Holo, dep: Dep) {
       deco.setDisplaySize(spec.deco.maat, spec.deco.maat);
       laagDeco.add(deco);
     }
-    const staat: S1Staat = { sleutel, spec, dingen, inhoud: spec.zones.map(() => []), deco, box, laagDing, laagSleep, licht, groen, leeg };
+    const kistDeel = spec.kist ? bouwKist(spec, dingen, laagDing) : null;
+    const staat: S1Staat = { sleutel, spec, dingen, inhoud: spec.zones.map(() => []), deco, kist: kistDeel?.kist ?? null, land: kistDeel?.land ?? null, box, laagDing, laagSleep, licht, groen, leeg };
     st = staat;
 
     /* Zacht wiebelen van wat in het hoopje ligt, en af en toe een glinstering (één keer per beeld bijgewerkt, geen filters). */
@@ -301,7 +471,7 @@ export function maakS1(sc: Holo, dep: Dep) {
         if (!st || st !== staat) return;
         const nu = sc.time.now;
         st.dingen.forEach((d, i) => {
-          if (d.zone === -1 && !sc.tweens.isTweening(d.im)) d.im.setAngle(Math.sin(nu / 520 + i * 1.7) * 3.2);
+          if (d.zone === -1 && !d.vlucht && !sc.tweens.isTweening(d.im)) d.im.setAngle(Math.sin(nu / 520 + i * 1.7) * 3.2);
           else if (d.zone !== -1 && d.zone !== -2) d.im.setAngle(0);
         });
         if (nu > volgende && actief) {
@@ -320,7 +490,7 @@ export function maakS1(sc: Holo, dep: Dep) {
     window.__phaser = {
       ...window.__phaser,
       /* Voor de automatische test: de volgende sleepbeweging (pixels van de pagina), of niets als het klaar is. */
-      s1Stap: (soort: string) => testStap(soort === "fout" ? "fout" : "goed"),
+      s1Stap: (soort: string) => { st?.land?.(); return testStap(soort === "fout" ? "fout" : "goed"); },
       sleepPunt: () => {
         if (!actief) return null as unknown as { x: number; y: number };
         const d = st?.dingen.find((x) => x.zone === -1) ?? st?.dingen[0];
@@ -352,6 +522,7 @@ export function maakS1(sc: Holo, dep: Dep) {
     const dur = snel || sc.rustig ? 1 : duur;
     const zet = (d: Ding, x: number, y: number, dia: number) => {
       sc.tweens.killTweensOf(d.im);
+      d.vlucht = false;
       const stuit = s.dingen[neerIdx] === d && !snel && !sc.rustig;
       sc.tweens.add({ targets: d.im, x, y, alpha: 1, displayWidth: dia, displayHeight: dia, duration: stuit ? 300 : dur, ease: stuit ? "Back.easeOut" : "Cubic.easeOut" });
     };
@@ -454,6 +625,7 @@ export function maakS1(sc: Holo, dep: Dep) {
     const w = waar(p);
     const i = raak(w.x, w.y);
     if (i < 0) return;
+    if (st.dingen[i].vlucht) return;
     const im = st.dingen[i].im;
     druk = { i, x0: w.x, y0: w.y, dx: im.x - w.x, dy: im.y - w.y, sleept: false };
   }

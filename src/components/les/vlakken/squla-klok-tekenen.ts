@@ -144,11 +144,105 @@ export function laadKlokken(): Promise<void> {
   return klokKlaar;
 }
 
+/** Het plaatje van een klok die nog niet bestaat voor de les (tussenstanden): bv. 4:05 voor het naspelen van "1 uur later". */
+const tussenKlaar = new Map<string, Promise<void>>();
+
+/**
+ * De tussenstanden van een klok (elke 5 minuten) als plaatje, met dezelfde Synthesis-klok (`Klokje`). Alleen laden als
+ * er een verhaal nagespeeld wordt (BOUWREGELS 1.22); elke stand wordt één keer gemaakt. Geeft de sleutels terug.
+ */
+export function laadKlokTussen(tijden: { u: number; m: number }[]): Promise<void> {
+  if (typeof document === "undefined") return Promise.resolve();
+  const nodig = tijden.filter((t) => !klokBeelden.has(klokSleutel(t.u, t.m)));
+  const sleutel = nodig.map((t) => klokSleutel(t.u, t.m)).join("|");
+  if (!nodig.length) return Promise.resolve();
+  const al = tussenKlaar.get(sleutel);
+  if (al) return al;
+  const p = (async () => {
+    await laadKlokken();
+    const { flushSync } = await import("react-dom");
+    const { createRoot } = await import("react-dom/client");
+    const host = document.createElement("div");
+    const root = createRoot(host);
+    const alle: Promise<void>[] = [];
+    for (const t of nodig) {
+      if (klokBeelden.has(klokSleutel(t.u, t.m))) continue;
+      flushSync(() => root.render(createElement(Klokje, { tijd: (t.u % 12) * 60 + t.m, maat: 440, kort: true })));
+      const svg = host.querySelector("svg");
+      if (!svg) continue;
+      svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+      const tekst = new XMLSerializer().serializeToString(svg).replace(/var\(--font-les\), /g, "");
+      const img = new Image();
+      img.src = `data:image/svg+xml;charset=utf-8,${encodeURIComponent(tekst)}`;
+      klokBeelden.set(klokSleutel(t.u, t.m), img);
+      alle.push(img.decode().catch(() => undefined));
+    }
+    root.unmount();
+    await Promise.all(alle);
+  })();
+  tussenKlaar.set(sleutel, p);
+  return p;
+}
+
 /** De wijzerklok in een vak van `maat` × `maat` met het midden op (cx, cy). Ook gebruikt in andere lessen (Tijd): overal dezelfde Synthesis-klok (BOUWREGELS 8.1/8.2). */
 export function klokPlaatje(c: C, u: number, m: number, cx: number, cy: number, maat: number) {
   const img = klokBeelden.get(klokSleutel(u, m));
   if (!img || !img.complete) return;
   c.drawImage(img, cx - maat / 2, cy - maat / 2, maat, maat);
+}
+
+/* ---------- het verhaal naspelen (BOUWREGELS 1.22): bus, weg en de klok bij school ---------- */
+
+/** Een klok zonder wijzers met een groot vraagteken: de klok bij school voordat het kind antwoordt. Verklapt niets. */
+export function tekenVraagKlok(c: C) {
+  c.save();
+  c.fillStyle = "#ffffff";
+  c.shadowColor = "rgba(0,0,0,0.35)";
+  c.shadowBlur = 8;
+  c.beginPath();
+  c.arc(110, 110, 104, 0, Math.PI * 2);
+  c.fill();
+  c.shadowBlur = 0;
+  c.strokeStyle = "#2b2f3a";
+  c.lineCap = "round";
+  c.lineWidth = 2.6;
+  for (let i = 0; i < 12; i++) {
+    const a = (i * Math.PI) / 6;
+    c.beginPath();
+    c.moveTo(110 + Math.sin(a) * 94, 110 - Math.cos(a) * 94);
+    c.lineTo(110 + Math.sin(a) * 83, 110 - Math.cos(a) * 83);
+    c.stroke();
+  }
+  c.font = `700 124px ${LETTER}`;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  c.fillStyle = "#7c3fd6";
+  c.fillText("?", 110, 118);
+  c.restore();
+}
+
+/** Kleine tekst op de weg ("1 uur"), 200 × 60. */
+export function tekenReisTekst(c: C, t: string) {
+  c.font = `700 36px ${LETTER}`;
+  c.textAlign = "center";
+  c.textBaseline = "middle";
+  c.lineJoin = "round";
+  c.lineWidth = 6;
+  c.strokeStyle = "rgba(10,20,60,0.9)";
+  c.strokeText(t, 100, 31);
+  c.fillStyle = "#ffffff";
+  c.fillText(t, 100, 31);
+}
+
+/** Een zacht stofwolkje (64 × 64). */
+export function tekenStof(c: C) {
+  const g = c.createRadialGradient(32, 32, 2, 32, 32, 30);
+  g.addColorStop(0, "rgba(235,228,214,0.9)");
+  g.addColorStop(1, "rgba(235,228,214,0)");
+  c.fillStyle = g;
+  c.beginPath();
+  c.arc(32, 32, 30, 0, Math.PI * 2);
+  c.fill();
 }
 
 function wijzerklok(c: C, d: Extract<Ding, { t: "wijzer" }>) {

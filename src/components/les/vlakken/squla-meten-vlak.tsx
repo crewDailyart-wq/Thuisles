@@ -35,6 +35,7 @@ import { GOED, TX, VLAK_B, VLAK_H, WARM, holoBasis } from "../holo/basis";
 import { maakRondjes } from "../holo/rondje";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
+import { tekenVoorwerp } from "../voorwerpen";
 import { BALK_HALF, schaalVoorwerpen, tafelMiddens, tekenBalk, tekenSchaal, tekenTekening, tekenVoet, tekeningMaat, tekeningPunten, zetLettertype } from "./squla-meten-tekeningen";
 import { haalKeuzesAlvast, zegKeuze } from "@/lib/stem";
 import s from "./squla-meten.module.css";
@@ -84,6 +85,12 @@ export type MetenProps = {
   schud?: { id: string; n: number } | null;
   golf?: { id: string; n: number } | null;
   handje?: number;
+  /**
+   * Naspelen (BOUWREGELS 1.22): na het antwoord vullen de `dingen` (voorwerpnamen) de grote tekening. Tijdens de vraag staat er alleen
+   * de beginsituatie; `naar` is de tekening die er na afloop staat. `n` telt op: elke nieuwe waarde speelt het 1 keer. `zone`: waar de
+   * dingen landen, als deel van de tekening (x, y = midden, b = breedte). Standaard: de opening van een mand.
+   */
+  naspeel?: { n: number; naar: string; dingen: string[]; zone?: { x: number; y: number; b: number } } | null;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -227,6 +234,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     zweef: string | null = null;
     /** De lege vakken: alleen te zien zolang er niets in staat (geen kader om een plaatje). */
     vakBeelden: Img[] = [];
+    /** Naspelen: de grote tekening, de vliegende dingetjes, en welke `n` al gespeeld is. */
+    grootImg: Img | null = null;
+    vulObjs: import("phaser").GameObjects.GameObject[] = [];
+    vulN = 0;
+    vulGedaan = false;
     stemKlok: ReturnType<typeof setTimeout> | undefined;
     terugKlok: ReturnType<typeof setTimeout> | undefined;
 
@@ -452,6 +464,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     bouw(p: MetenProps, verschijn: boolean) {
+      this.stopVul();
+      this.vulGedaan = false;
+      this.grootImg = null;
       this.leeg();
       const ind = indeling(p);
       const nieuw: (Box | Img)[] = [];
@@ -460,6 +475,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       else if (ind.groot && p.groot) {
         const g = this.plaats(this.grootPlaatje(p.groot, ind.groot.k), ind.groot.x, ind.groot.y);
         this.alles.push(g);
+        this.grootImg = g;
       }
       const kaarten = p.kaarten ?? [];
       if (kaarten.length) {
@@ -506,7 +522,81 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.pasToe(p);
     }
 
+    /** Stopt het naspelen netjes: dingetjes weg, tekening weer recht. */
+    stopVul() {
+      for (const o of this.vulObjs) {
+        this.tweens.killTweensOf(o);
+        o.destroy();
+      }
+      this.vulObjs = [];
+      const g = this.grootImg;
+      if (g?.active) {
+        this.tweens.killTweensOf(g);
+        g.setAngle(0);
+      }
+    }
+
+    /** Naspelen: de dingen springen met een boogje de tekening in en stuiteren zacht; dan schudt hij tevreden en staat de nieuwe tekening er. */
+    speelVul(p: MetenProps) {
+      const n = p.naspeel;
+      const g = this.grootImg;
+      const ind = indeling(p);
+      if (!n || !g?.active || !ind.groot || !p.groot) return;
+      this.vulN = n.n;
+      this.stopVul();
+      const k = ind.groot.k;
+      const klaar = () => {
+        this.stopVul();
+        if (!g.active) return;
+        g.setTexture(this.grootPlaatje(n.naar, k));
+        this.vulGedaan = true;
+      };
+      if (rustig) {
+        klaar();
+        return;
+      }
+      const { x: gx, y: gy, b: gb, h: gh } = ind.groot;
+      const zone = n.zone ?? { x: 0.5, y: 0.46, b: 0.34 };
+      const cx = gx - gb / 2 + zone.x * gb;
+      const cy = gy - gh / 2 + zone.y * gh;
+      const m = n.dingen.length;
+      const maat = gb * 0.2;
+      const STAP = 230;
+      const VLUCHT = 520;
+      n.dingen.forEach((naam, i) => {
+        const sl = `mv|${naam}`;
+        this.canvasPlaatje(sl, 100, 100, (c) => tekenVoorwerp(c, naam, 0, 0, 100, 100));
+        const x1 = cx + (m > 1 ? (i / (m - 1) - 0.5) * zone.b * gb : 0);
+        const x0 = gx + (i % 2 ? 0.62 : -0.62) * gb;
+        const y0 = gy - gh * 0.3;
+        const beeld = this.plaats(sl, x0, y0).setScale(maat / 100 / TX).setDepth(8).setAlpha(0);
+        this.vulObjs.push(beeld);
+        const t = { v: 0 };
+        this.tweens.add({
+          targets: t,
+          v: 1,
+          delay: i * STAP,
+          duration: VLUCHT,
+          ease: "Linear",
+          onStart: () => beeld.setAlpha(1),
+          onUpdate: () => beeld.setPosition(x0 + (x1 - x0) * t.v, y0 + (cy - y0) * t.v - Math.sin(Math.PI * t.v) * gh * 0.28),
+          onComplete: () => {
+            /* Landen met een zacht stuiterend effect. */
+            this.tweens.add({ targets: beeld, y: cy - 14, scaleY: beeld.scaleY * 0.85, duration: 110, ease: "Quad.easeOut", yoyo: true });
+          },
+        });
+      });
+      const nodig = (m - 1) * STAP + VLUCHT + 260;
+      this.tweens.add({ targets: g, angle: { from: -2.5, to: 2.5 }, delay: nodig, duration: 90, yoyo: true, repeat: 3, ease: "Sine.easeInOut", onComplete: klaar });
+    }
+
     pasToe(p: MetenProps) {
+      /* Naspelen na het antwoord; weer leeg zodra de opgave dat vraagt. */
+      if (p.naspeel && p.naspeel.n !== this.vulN) this.speelVul(p);
+      else if (!p.naspeel && this.vulGedaan) {
+        this.bouw(p, false);
+        this.vulGedaan = false;
+      }
       const ind = indeling(p);
       const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.gekozen?.includes(id) ? "geel" : null);
       /* Wat Bliepo aanwijst (`licht`) krijgt een rood rondje; goed/fout houden hun gloed. */
@@ -809,8 +899,8 @@ export function SqulaMetenVlak(props: MetenProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden } = props;
-  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, gekozen: props.gekozen, orden });
+  const { nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden, naspeel } = props;
+  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, gekozen: props.gekozen, orden, naspeel });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as MetenProps);
   }, [scene, stand]);

@@ -30,7 +30,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, GOED, TX, WARM, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { dingSleutel, gloedVan, heeftWijzerGloed, laadKlokken, maatVan, tekenDing, tekenWijzerGloed, type Ding } from "./squla-klok-tekenen";
+import { dingSleutel, gloedVan, heeftWijzerGloed, laadKlokken, laadKlokTussen, maatVan, tekenDing, tekenReisTekst, tekenStof, tekenVraagKlok, tekenWijzerGloed, type Ding } from "./squla-klok-tekenen";
 import { Klokje } from "./klok-wijzerklok";
 import s from "./squla-klok.module.css";
 
@@ -64,6 +64,13 @@ export type KlokVlakProps = {
   goed?: string[];
   fout?: string[];
   uit?: string[];
+  /**
+   * Het verhaal naspelen (BOUWREGELS 1.22), bv. "de bus rijdt een uur naar school". Tijdens de vraag staat alleen het begin
+   * in beeld: de klok bij de halte (`nu`), de weg met `label` en bij school een klok met een vraagteken. `speel` hoger
+   * zetten (pas NA het antwoord) laat de bus rijden en de klok bij school `min` minuten verder draaien; dan meldt het vlak
+   * `{ soort: "reis" }`. Zonder `reis` verandert er niets.
+   */
+  reis?: { naam: string; nu: { u: number; m: number }; min: number; label: string; speel: number };
 };
 
 /* ---------- de scène ---------- */
@@ -74,10 +81,30 @@ type Lijn = { x1: number; y1: number; x2: number; y2: number; kleur: number };
 type Vak = { x: number; y: number; b: number; h: number; rond: boolean };
 type Beeld = { sleutel: string; items: Item[]; lijnen: Lijn[]; vakken: Vak[]; pijlen: { x1: number; x2: number; y: number }[] };
 
+type ReisBeeld = { sleutel: string; naam: string; nu: { u: number; m: number }; min: number; label: string };
+
 interface KlokScene {
   zet(b: Beeld): void;
   sleepNaar(id: string, x: number, y: number): void;
+  /** Het verhaal in de beginstand zetten (of weghalen met null). */
+  reis(r: ReisBeeld | null): void;
+  /** De tussenstanden van de klok bij school vooraf in plaatjes zetten (stil, een voor een). */
+  bakReis(): void;
+  /** Het verhaal nuspelen; `klaar` komt als alles stilstaat. */
+  speelReis(klaar: () => void): void;
 }
+
+/** De stappen van de klok bij school: elke 5 minuten, van nu tot nu + min. */
+export function reisStappen(nu: { u: number; m: number }, min: number): { u: number; m: number }[] {
+  const begin = (nu.u % 12) * 60 + nu.m;
+  return Array.from({ length: Math.round(min / 5) + 1 }, (_, k) => {
+    const t = (begin + k * 5) % 720;
+    return { u: Math.floor(t / 60), m: t % 60 };
+  });
+}
+
+/* Indeling van het verhaal (punten van het vlak). */
+const REIS = { klokL: 135, klokR: 845, klokY: 205, wegY: 352, wegVan: 240, wegTot: 745, busVan: 330, busNaar: 640, busY: 312, klokS: 0.9, busS: 0.8 };
 
 function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
   const Basis = holoBasis(Phaser, rustig);
@@ -93,6 +120,8 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
     rij: (() => void)[] = [];
     drukTot = 0;
     laatste: Beeld | null = null;
+    verhaal: { r: ReisBeeld; weg: Gfx; label: Img; links: Img; rechts: Img; bus: Img; token: number } | null = null;
+    verhaalTeller = 0;
 
     constructor() {
       super("squla-klok");
@@ -267,6 +296,138 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       if (!b.sleutel.includes("-demo-")) this.rij = b.items.map((it) => () => void this.texGloed(it.d));
     }
 
+
+    /* ---------- het verhaal naspelen (BOUWREGELS 1.22) ---------- */
+
+    reisSl(t: { u: number; m: number }) {
+      return `reis-f:${t.u % 12}:${t.m}`;
+    }
+
+    /** Een tussenstand van de klok bij school als textuur (één keer). */
+    reisFrame(t: { u: number; m: number }) {
+      const sl = this.reisSl(t);
+      this.canvasPlaatje(sl, 220, 220, (c) => tekenDing(c, { t: "wijzer", u: t.u === 0 ? 12 : t.u, m: t.m, kleur: "blauw" }));
+      return sl;
+    }
+
+    reis(r: ReisBeeld | null) {
+      if (!r || this.verhaal?.r.sleutel !== r.sleutel) {
+        const v = this.verhaal;
+        if (v) {
+          this.verhaalTeller++;
+          this.tweens.killTweensOf([v.bus, v.rechts, v.links, v.label]);
+          for (const o of [v.weg, v.label, v.links, v.rechts, v.bus]) o.destroy();
+          this.verhaal = null;
+        }
+      }
+      if (!r || this.verhaal) return;
+      const weg = this.add.graphics().setDepth(0.5);
+      /* een platte weg-strook: donkergrijs wegdek met een onderbroken witte middenstreep, geen rand, geen capsule */
+      weg.fillStyle(0x3a3f4a, 1);
+      weg.fillRect(REIS.wegVan, REIS.wegY - 18, REIS.wegTot - REIS.wegVan, 36);
+      weg.fillStyle(0xffffff, 0.9);
+      for (let x = REIS.wegVan + 12; x < REIS.wegTot - 30; x += 56) weg.fillRect(x, REIS.wegY - 2, 30, 4);
+      weg.setAlpha(0);
+      this.tweens.add({ targets: weg, alpha: 1, duration: rustig ? 1 : 350 });
+      const lsl = `reis-lbl:${r.label}`;
+      this.canvasPlaatje(lsl, 200, 60, (c) => tekenReisTekst(c, r.label));
+      const label = this.plaats(lsl, (REIS.wegVan + REIS.wegTot) / 2, REIS.wegY + 40).setScale(0.8 / TX).setDepth(1);
+      this.canvasPlaatje("reis-vraag", 220, 220, (c) => tekenVraagKlok(c));
+      this.canvasPlaatje("reis-stof", 64, 64, (c) => tekenStof(c));
+      const links = this.plaats(this.tex({ t: "wijzer", u: r.nu.u, m: r.nu.m, kleur: "blauw" }), REIS.klokL, REIS.klokY).setScale(REIS.klokS / TX).setDepth(3);
+      const rechts = this.plaats("reis-vraag", REIS.klokR, REIS.klokY).setScale(REIS.klokS / TX).setDepth(3);
+      const bus = this.plaats(this.tex({ t: "vw", naam: r.naam }), REIS.busVan, REIS.busY).setScale(REIS.busS / TX).setDepth(3);
+      this.verhaal = { r, weg, label, links, rechts, bus, token: ++this.verhaalTeller };
+      this.tover(links, { vertraging: 0 });
+      this.tover(bus, { vertraging: 70 });
+      this.tover(rechts, { vertraging: 140 });
+    }
+
+    bakReis() {
+      const v = this.verhaal;
+      if (!v) return;
+      const stappen = reisStappen(v.r.nu, v.r.min);
+      const token = v.token;
+      let k = 0;
+      /* een plaatje per 100 ms: stil, geen hapering */
+      this.time.addEvent({
+        delay: 100,
+        repeat: stappen.length - 1,
+        callback: () => {
+          if (!this.verhaal || this.verhaal.token !== token) return;
+          this.reisFrame(stappen[k++]);
+        },
+      });
+    }
+
+    speelReis(klaar: () => void) {
+      const v = this.verhaal;
+      if (!v) return klaar();
+      const token = v.token;
+      const stappen = reisStappen(v.r.nu, v.r.min);
+      const leeft = () => !!this.verhaal && this.verhaal.token === token;
+      const eind = () => leeft() && klaar();
+      const frameOp = (k: number) => {
+        /* een stand die (nog) niet bestaat: de dichtstbijzijnde die er wel is */
+        for (let j = k; j >= 0; j--) if (this.textures.exists(this.reisSl(stappen[j]))) return this.reisSl(stappen[j]);
+        return this.reisFrame(stappen[k]);
+      };
+      if (rustig) {
+        v.rechts.setTexture(this.reisFrame(stappen[stappen.length - 1]));
+        v.bus.setX(REIS.busNaar);
+        this.time.delayedCall(400, eind);
+        return;
+      }
+      const duur = 2400;
+      const start = 450;
+      /* 1. het vraagteken-klokje draait om en laat de klok van nu zien */
+      this.tweens.add({
+        targets: v.rechts,
+        scaleX: 0,
+        duration: 140,
+        onComplete: () => {
+          if (!leeft()) return;
+          v.rechts.setTexture(frameOp(0));
+          this.tweens.add({ targets: v.rechts, scaleX: REIS.klokS / TX, duration: 160, ease: "Back.easeOut" });
+        },
+      });
+      /* 2. de bus rijdt, met een stuiterend busje */
+      this.tweens.add({ targets: v.bus, x: REIS.busNaar, delay: start, duration: duur, ease: "Sine.easeInOut" });
+      const hop = this.tweens.add({ targets: v.bus, y: REIS.busY - 7, angle: -1.2, delay: start, duration: 120, yoyo: true, repeat: Math.floor(duur / 240), ease: "Sine.easeInOut" });
+      /* een stofwolkje achter de bus dat vervaagt */
+      const stof = this.time.addEvent({
+        delay: 110,
+        startAt: 0,
+        repeat: Math.floor(duur / 110),
+        callback: () => {
+          if (!leeft()) return;
+          const wolk = this.plaats("reis-stof", v.bus.x - 80, REIS.wegY - 6).setScale(0.35 / TX).setAlpha(0.6).setDepth(2.5);
+          this.tweens.add({ targets: wolk, scale: 1.1 / TX, alpha: 0, y: wolk.y - 22, x: wolk.x - 14, duration: 520, ease: "Cubic.easeOut", onComplete: () => wolk.destroy() });
+        },
+      });
+      stof.paused = true;
+      this.time.delayedCall(start, () => (stof.paused = false));
+      /* 3. de wijzers bij school draaien mee: elke stap een nieuw plaatje van de klok (flipboek) */
+      const n = stappen.length - 1;
+      const stap = (duur - 200) / Math.max(1, n);
+      for (let k = 1; k <= n; k++) {
+        this.time.delayedCall(start + 100 + k * stap, () => {
+          if (leeft()) v.rechts.setTexture(frameOp(k));
+        });
+      }
+      /* 4. aangekomen: het busje komt tot rust, de klok springt even op */
+      this.time.delayedCall(start + duur, () => {
+        if (!leeft()) return;
+        hop.stop();
+        v.bus.setY(REIS.busY).setAngle(0);
+        this.tweens.add({ targets: v.bus, scaleY: (REIS.busS / TX) * 0.94, duration: 90, yoyo: true, ease: "Sine.easeOut" });
+        v.rechts.setTexture(frameOp(n));
+        this.tweens.add({ targets: v.rechts, scale: (REIS.klokS / TX) * 1.07, duration: 140, yoyo: true, ease: "Sine.easeOut" });
+        this.golf(REIS.klokR, REIS.klokY);
+      });
+      this.time.delayedCall(start + duur + 600, eind);
+    }
+
     sleepNaar(id: string, x: number, y: number) {
       const st = this.stukken.get(id);
       if (!st) return;
@@ -367,11 +528,11 @@ function rijX(n: number, gap: number) {
 
 type Plek = { id: string; d: Ding; x: number; y: number; s: number };
 
-function kiesIndeling(boven: Ding[], keuzes: Ding[], pijl: boolean) {
+function kiesIndeling(boven: Ding[], keuzes: Ding[], pijl: boolean, reis = false) {
   const plekken: Plek[] = [];
   const pijlen: Beeld["pijlen"] = [];
   const klein = keuzes.every((k) => k.t === "vink" || k.t === "kruis");
-  if (boven.length) {
+  if (boven.length || reis) {
     const bx = rijX(boven.length, boven.length === 1 ? 0 : pijl ? 420 : 380);
     const by = keuzes.length ? 215 : 340;
     boven.forEach((d, i) => plekken.push({ id: `b${i}`, d, x: bx[i], y: by, s: past(d, boven.length === 1 ? 440 : 330, keuzes.length ? 300 : 420) }));
@@ -467,7 +628,7 @@ function labelVan(d: Ding, i: number): string {
 
 function Kies(p: Deel) {
   const { scene, meld } = p;
-  const ind = useMemo(() => kiesIndeling(p.boven ?? [], p.keuzes ?? [], !!p.pijl), [p.boven, p.keuzes, p.pijl]);
+  const ind = useMemo(() => kiesIndeling(p.boven ?? [], p.keuzes ?? [], !!p.pijl, !!p.reis), [p.boven, p.keuzes, p.pijl, p.reis]);
   const sleutelLijsten = JSON.stringify([p.licht, p.goed, p.fout, p.uit]);
   useEffect(() => {
     if (!scene) return;
@@ -480,6 +641,38 @@ function Kies(p: Deel) {
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, p.sleutel, ind, sleutelLijsten]);
+  /* het verhaal (bus, weg, klokken): tijdens de vraag alleen het begin; het naspelen komt pas als `speel` omhoog gaat */
+  const reis = p.reis;
+  const reisSleutel = reis ? `${p.sleutel}:${reis.naam}:${reis.nu.u}:${reis.nu.m}:${reis.min}` : "";
+  const gespeeld = useRef(0);
+  useEffect(() => {
+    if (!scene) return;
+    if (!reis) {
+      scene.reis(null);
+      return;
+    }
+    scene.reis({ sleutel: reisSleutel, naam: reis.naam, nu: reis.nu, min: reis.min, label: reis.label });
+    let weg = false;
+    void laadKlokTussen(reisStappen(reis.nu, reis.min)).then(() => !weg && scene.bakReis());
+    return () => {
+      weg = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, reisSleutel]);
+  useEffect(() => {
+    if (!scene || !reis) return;
+    if (reis.speel === 0 || reis.speel === gespeeld.current) return;
+    gespeeld.current = reis.speel;
+    let weg = false;
+    void laadKlokTussen(reisStappen(reis.nu, reis.min)).then(() => {
+      if (!weg) scene.speelReis(() => meld({ soort: "reis" }));
+    });
+    return () => {
+      weg = true;
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, reis?.speel]);
+  useEffect(() => () => scene?.reis(null), [scene]);
   const aan = !!p.actief;
   return (
     <>

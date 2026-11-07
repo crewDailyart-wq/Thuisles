@@ -105,11 +105,19 @@ const LEEG: Omit<MetenProps, "nr"> = {
   licht: [],
   gekozen: [],
   orden: null,
+  naspeel: null,
 };
 
 const zet = (l: Lesgids, p: Partial<MetenProps>) => l.pasVlakAan<MetenProps>(p);
 let schudNr = 0;
 let golfNr = 0;
+let vulNr = 0;
+
+/** Naspelen (BOUWREGELS 1.22): wat er na het antwoord in beeld gebeurt. Zie `naspeel` in MetenProps. */
+type Naspeel = NonNullable<MetenProps["naspeel"]> extends infer N ? Omit<Extract<N, object>, "n"> : never;
+const naspeel = (l: Lesgids, o?: Naspeel) => {
+  if (o) zet(l, { naspeel: { ...o, n: ++vulNr } });
+};
 let handjeNr = 0;
 let zakNr = 0;
 
@@ -208,7 +216,7 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
 /** Een vraag met woorden of getallen als antwoord (knoppen bij Bliepo). */
 function knopVraag(
   l: Lesgids,
-  o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[]; reactie?: (x: string) => string[] },
+  o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[]; reactie?: (x: string) => string[]; naspeel?: Naspeel },
   terug: boolean,
 ): SqulaVraag<string> {
   const nr = volgend();
@@ -221,8 +229,9 @@ function knopVraag(
     isGoed: (x) => x === o.goed,
     noem: (x) => (/^\d+$/.test(x) ? `{${x}:wit}` : Hoofd(x.replace(/\.$/, ""))),
     goed: async () => {
+      naspeel(l, o.naspeel);
       await l.zeg(bevestig());
-      await l.wacht(300);
+      await l.wacht(o.naspeel ? 900 : 300);
     },
     samen: async () => {
       await o.samen(l);
@@ -232,8 +241,9 @@ function knopVraag(
     tip: o.tip,
     reactie: (x) => (o.reactie ? o.reactie(x) : /^\d+$/.test(x) ? [teVeel(Number(x), Number(o.goed)), ...hint(o.tip).slice(0, 1)] : hint(o.tip)),
     toonAntwoord: async () => {
+      naspeel(l, o.naspeel);
       await l.zeg(...antwoordZinnen(o.goedZin));
-      await l.wacht(300);
+      await l.wacht(o.naspeel ? 900 : 300);
     },
     testAntwoord: o.goed,
   };
@@ -1047,7 +1057,7 @@ function ordenRij(o: { juist: string[]; vast?: number[]; vastDingen?: MDing[]; l
 }
 
 /** Een woord kiezen (de woorden staan op knoppen bij Bliepo en worden voorgelezen). */
-function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; uitleg: string[]; tip: string[]; mis: Record<string, string> }): Opgave {
+function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; uitleg: string[]; tip: string[]; mis: Record<string, string>; naspeel?: Naspeel }): Opgave {
   return (l, t) =>
     knopVraag(
       l,
@@ -1057,6 +1067,7 @@ function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: str
         goed: o.goed,
         vraag: o.vraag,
         goedZin: o.goedZin,
+        naspeel: o.naspeel,
         samen: async (l) => {
           await l.zeg(...o.uitleg.filter((zin) => !krijgtVervolgvraag(l) || !/(\?|\.\.\.)$/.test(zin.trim())));
         },
@@ -1162,10 +1173,12 @@ const hoeveel1Opgaven: Opgave[] = [
     tip: ["Kijk tot waar het water komt in het flesje bovenaan.", "In welk flesje zit evenveel water?"],
   }),
   woordVraag({
-    beeld: { groot: MAND(2) },
+    /* Tijdens de vraag een lege mand; pas na het antwoord vult hij zich (BOUWREGELS 1.22, naspelen). */
+    beeld: { groot: MAND(0) },
+    naspeel: { naar: MAND(2), dingen: ["appel", "broodje", "mandarijn", "appel"] },
     opties: ["meer", "vol", "evenveel"],
     goed: "vol",
-    vraag: ["Alles zit nu in de mand.", "De mand is niet meer leeg.", "Welk woord zegt het omgekeerde van leeg?", "Meer, vol of evenveel?"],
+    vraag: ["Kijk, de mand is leeg.", "Welk woord zegt het omgekeerde van leeg?", "Meer, vol of evenveel?"],
     goedZin: ["Het omgekeerde van leeg is vol."],
     uitleg: ["Bij leeg hoort een ander woord, voor als er juist veel in zit.", "Een lege mand: daar zit niets in.", "Zit er zoveel in dat er niets meer bij kan?", "Welk woord hoort daarbij?"],
     tip: ["Een lege mand heeft niets erin. Hoe heet het als er juist heel veel in zit?", "Zoek het woord voor een mand waar alles in zit."],

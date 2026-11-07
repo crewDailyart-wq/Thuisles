@@ -168,7 +168,10 @@ const PZ_TEGEL = [
 ];
 
 /** Een hoopje dingen en één vak (s1): het kind sleept er `doel` naar het vak (`leeg` staat dof in het lege vak). */
-function pzDingen(vw: string, n: number, doel: number, fout: number, leeg: string, restWeg = false): S1Spec {
+/** Waar de gesloten schatkist in het verhaalbegin staat (midden en breedte); de kist bij de eerste vraag begint daar. */
+const KIST_BEGIN = { x: 490, y: 360, maat: 320 };
+
+function pzDingen(vw: string, n: number, doel: number, fout: number, leeg: string, restWeg = false, kist = false): S1Spec {
   const kl = KL[vw] ?? "geel";
   return {
     nr: ++pzNr,
@@ -183,6 +186,8 @@ function pzDingen(vw: string, n: number, doel: number, fout: number, leeg: strin
     oplossing: [doel],
     fout: [fout],
     route: pzRij(doel).map((i): [number, number] => [i, 0]),
+    /* De schatkist van het verhaalbegin (zelfde plek en grootte) schuift opzij, gaat open en de schatten springen eruit (BOUWREGELS 1.22). */
+    ...(kist ? { kist: { x: 855, y: 470, maat: 190, van: KIST_BEGIN } } : {}),
   };
 }
 
@@ -282,14 +287,17 @@ function pzSom(l: Lesgids, st: Stand, a: number, teken: "+" | "−", b: number, 
    ===================================================================== */
 
 /** Tellen: sleep N goudstukken naar het vak (Squla: "waar liggen N goudstukken?"). */
-function telVraag(doel: number): Vraag {
+function telVraag(doel: number, uitKist = false): Vraag {
   const n = doel + 6;
   return (l, st) => {
     const beeld = metLetters(st, `tel-${doel}`, []);
-    const mk = () => pzDingen("goudstuk", n, doel, doel > 12 ? doel - 2 : doel + 1, String(doel));
+    const mk = (kist = false) => pzDingen("goudstuk", n, doel, doel > 12 ? doel - 2 : doel + 1, String(doel), false, kist);
+    let kistGehad = false;
     return squlaVraag<number>(l, {
       toon: () => {
-        const sp = mk();
+        /* De kist gaat maar één keer open (bij de eerste keer tonen), niet opnieuw na een fout of de uitleg. */
+        const sp = mk(uitKist && !kistGehad);
+        kistGehad = true;
         if (!toon(l, st, beeld, { s1: sp })) zet(l, { s1: sp, actief: false });
       },
       vraag: [`Sleep ${aantal(doel, "goudstuk")} naar het vak.`],
@@ -578,17 +586,19 @@ function maak(o: {
    De lessen
    ===================================================================== */
 
+/** Het voorbeeld op het beginscherm laat de goudstukken gewoon zien; bij de echte eerste vraag springen ze uit de schatkist. */
 const EERSTE1 = telVraag(14);
+const EERSTE1_KIST = telVraag(14, true);
 
 const level1 = maak({
   level: 1,
   titel: "Schattenjacht: plussommen",
   woord: "onder de rode rots",
   voorwerpen: ["schatkaart", "goudstuk", "diamant", "parel", "kopermunt", "maansteen", "sleutel", "zak-chips", "kom-soep", "planeet", "maan", "raketje", "komeet", "rode-rots", "kistje"],
-  begin: [{ vw: "schatkaart", x: 490, maat: 320 }],
+  begin: [{ vw: "kistje", x: KIST_BEGIN.x, maat: KIST_BEGIN.maat }],
   welkom: ["Op schattenjacht tel je goudstukken en maak je plussommen.", `Sleep ${aantal(14, "goudstuk")} naar het vak.`],
   voorbeeld: EERSTE1,
-  verhaal: ["Kijk, een schatkaart!", "Waar ligt de schat?", "De letters op de kaart zeggen het."],
+  verhaal: ["Kijk, een schatkist!", "Wat zit erin?", "De letters zeggen straks waar de schat ligt."],
   uitleg: async (l, st) => {
     /* Eerst het voorbeeld van het beginscherm: 14 goudstukken tellen in rijen van 5. */
     toon(l, st, metLetters(st, "voorbeeld-tellen", [{ s: "groep", id: "g", vw: "goudstuk", n: 14, x: 490, y: 360, per: 5, cel: 54 }]));
@@ -610,7 +620,7 @@ const level1 = maak({
   },
   /* Zoals Squla level 1: eerst tellen, dan "hoeveel samen" met plaatjes, een raadsel, dan kale sommen (tot 20, en tientallen). */
   vragen: [
-    EERSTE1,
+    EERSTE1_KIST,
     telVraag(11),
     samenVraag("diamant", 4, 2, [5, 6, 7]),
     samenVraag("parel", 7, 5, [11, 12, 13]),
