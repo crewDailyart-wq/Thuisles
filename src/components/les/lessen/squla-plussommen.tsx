@@ -192,8 +192,8 @@ async function kiesGetal(l: Lesgids, keuzes: number[]) {
 
 /** Herstel 7 november (OVERZICHT-C punt 5): typen gebeurt IN het vakje van de som bovenaan, niet in een tweede vakje rechts. */
 async function typInSom(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
-  /* Ronde 7: de knop "Weet ik niet" en de zinnen erbij staan weer terug (BOUWREGELS 1.25). */
-  const p = l.somVak(4, { weetniet: true });
+  /* Geen "Weet ik niet"-knop (BOUWREGELS 1.27). */
+  const p = l.somVak(4);
   if (!st.typUitgelegd) {
     st.typUitgelegd = true;
     await l.wijsAan("controleer", "Typ het getal.");
@@ -201,7 +201,7 @@ async function typInSom(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
   let x = await p;
   while (x === null) {
     await l.zeg("Je mag het zelf proberen.", ...tip);
-    x = await l.somVak(4, { weetniet: true });
+    x = await l.somVak(4);
   }
   return x;
 }

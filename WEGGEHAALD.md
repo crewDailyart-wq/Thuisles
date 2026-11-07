@@ -48,3 +48,9 @@ Per regel: datum · les · wat · reden · teruggezet?
 7 nov 2026 · squla-klok-klokkijken-1 · "Een bus rijdt rond.", "In de bakkerij staat de oven.", "Denk aan de plek met de oven." · horen bij de oude vraag 9 van hoelaat-3 ("Waar worden de broodjes gebakken?"), die Sara zelf liet vervangen door een tijdvraag (taarten klaar om 6 uur) · vervangen op verzoek van Sara; oude versie staat in commit 7c71b04
 7 nov 2026 · squla-klok-klokkijken3-4 · "uur later", "uur eerder", "half later" · script-melding door verplaatste regels; de 11 reken-vragen zijn hetzelfde aantal en dezelfde keuzes · niet weggehaald
 7 nov 2026 · squla-klok-klokkijken-1 · de oude vraag 9 van hoelaat-3 met keuzes "De bus" en "De bakkerij" en de zinnen "De broodjes worden vers gebakken.", "In de bakkerij worden de broodjes gebakken.", "De bus brengt ze weg.", "De bus rijdt rond en brengt de broodjes weg." (21 vraag-onderdelen werd 20: deze ene vraag is vervangen door een tijdvraag met 3 klokken, 5/6/7 uur) · vervangen op verzoek van Sara (7 nov) · oude versie in commit 7c71b04
+7 nov 2026 · squla-plus-bakkerij-3 · knop "Weet ik niet" · Sara wil nergens een Weet-ik-niet-knop (BOUWREGELS 1.27) · bewust, niet terugzetten
+
+## Ronde 8 – rekenmix
+
+7 nov 2026 · squla-rekenmix-mix1-2 · het plaatje "picknickkleed" (zin "het kleed") bij de vormvraag · vervangen door een nieuwe platte houten plank van voren (plank-plat, zin weer "de plank" zoals in het begin; de zin kwam voor, dus de plank is teruggezet) · Sara-opdracht; het kleed bestaat nog in andere lessen (Meten)
+7 nov 2026 · squla-rekenmix-mix4-2 · de oude uitgerekte plaatjes raketje, potlood en kaars (3 vragen "van dik naar dun") · vervangen door raket-maat, potlood-maat en kaars-maat (zelfde als mix3-1; kaars: alleen het lijf, vlam los) · antwoorden, maten, volgorde ongewijzigd

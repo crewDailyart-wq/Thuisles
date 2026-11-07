@@ -2408,7 +2408,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 ## squla-rekenmix-mix3-1 (2)
 
 - 3 ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst. Kun je dit al?
-- Vergelijk de ballen en zet ze op volgorde van groot naar klein. Lukt het jou om de ballen van groot naar klein te zetten?
+- Vergelijk de ballen en zet ze op volgorde: kleinst, kleiner, klein. Lukt het jou om de ballen zo op volgorde te zetten?
 
 ## squla-rekenmix-mix3-2 (2)
 

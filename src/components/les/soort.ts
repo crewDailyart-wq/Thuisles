@@ -126,8 +126,7 @@ export interface Lesgids {
   /** De som bovenaan, of `null` om hem weg te halen. */
   som(delen: Somdeel[] | null): void;
   /** Het kind typt in vakje `index` van de som bovenaan. */
-  somVak(index: number, o: { weetniet: true }): Promise<number | null>;
-  somVak(index: number, o?: { weetniet?: false }): Promise<number>;
+  somVak(index: number): Promise<number>;
   /** De verzamelkaart aan het eind. Staat meteen in beeld; de belofte is klaar als het kind erop tikt. */
   kaart(): Promise<void>;
   /**

@@ -11,6 +11,8 @@ export const REKENMIX: Voorwerp[] = [
   { naam: "speelblok-plat", titel: "Speelblok van voren", groep: "speelgoed", onderwerp: "one square blue toy block seen straight from the front, with a yellow star", schets: `<rect class="r" x="30" y="30" width="140" height="140" rx="12" fill="#4b8af5"/>` },
   { naam: "doos-plat", titel: "Doos van voren", groep: "winkel", onderwerp: "a square cardboard box seen straight from the front, with a strip of tape", schets: `<rect class="r" x="30" y="30" width="140" height="140" rx="6" fill="#d79a62"/>` },
   { naam: "boek-plat", titel: "Boek van voren", groep: "huis", onderwerp: "a red book seen straight from the front, standing, rectangular cover", schets: `<rect class="r" x="54" y="20" width="96" height="160" rx="8" fill="#e8453c"/>` },
+  /* Ronde 8 (7 november 2026, Sara): de plank terug in mix1-2, als platte houten plank recht van voren (Magnific, stijl B). */
+  { naam: "plank-plat", titel: "Houten plank van voren", groep: "huis", onderwerp: "one plain light-brown wooden plank, a flat rectangular board seen straight from the front, square corners, simple wood grain, a few small nail dots", schets: `<rect class="r" x="14" y="62" width="172" height="48" rx="4" fill="#dd9a5c"/>` },
   /* Herstel 7 november 2026 (OVERZICHT-C punt 6): de rode "bal" leek op een verbodsbord; in Rekenmix en Minsommen staat
      nu deze strandbal (in code getekend, stijl B). Het woord in de zinnen blijft "bal". */
   {

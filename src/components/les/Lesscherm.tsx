@@ -73,7 +73,7 @@ type Bediening =
   | { soort: "kies"; opties: string[]; instel?: Kiesinstel }
   | { soort: "knoppen"; welke: ("weetniet" | "controleer" | "hulp")[] }
   | { soort: "verder" }
-  | { soort: "somvak"; index: number; weetniet?: boolean };
+  | { soort: "somvak"; index: number };
 
 type Beeld = {
   zinnen: string[];
@@ -886,12 +886,12 @@ function Lesscherm({
         await pauzeer(300);
       },
       som: (delen) => zet((b) => ({ ...b, som: delen })),
-      somVak: ((index: number, o?: { weetniet?: boolean }) =>
+      somVak: ((index: number) =>
         new Promise<number | null>((res) => {
           zet((b) => ({
             ...b,
             som: b.som?.map((d, i) => (i === index && d.t === "vak" ? { t: "vak" } : d)) ?? null,
-            bediening: { soort: "somvak", index, ...(o?.weetniet ? { weetniet: true } : {}) },
+            bediening: { soort: "somvak", index },
           }));
           wacht.current.somvak = (v) => {
             wacht.current.somvak = undefined;
@@ -1134,7 +1134,7 @@ function Lesscherm({
           {bewerkTekst && deel !== "knoppen" && !spreektOpdracht && beeld.zichtbaar > 0 && <button type="button" className={s.zinBewerken} onClick={() => bewerkTekst(beeld.zinnen[beeld.zichtbaar - 1])}>✎ Deze zin bewerken</button>}
           {deel !== "knoppen" && volgendeTekst}
           {deel !== "zin" && b?.soort === "getal" && <Getalvak onKlaar={(v) => wacht.current.getal?.(v)} />}
-          {deel !== "zin" && b?.soort === "somvak" && <SomBevestig weetniet={b.weetniet ? () => wacht.current.somvak?.(null) : undefined} />}
+          {deel !== "zin" && b?.soort === "somvak" && <SomBevestig />}
           {deel !== "zin" && b?.soort === "kies" && (
             <Keuzes
               opties={b.opties}
@@ -1563,13 +1563,12 @@ function Somvak({ onKlaar }: { onKlaar: (v: number) => void }) {
 }
 
 /** Het vinkje links bij een vakje in de som. */
-function SomBevestig({ weetniet }: { weetniet?: () => void }) {
+function SomBevestig() {
   return (
     <div className={s.bediening}>
       <button type="submit" form="somvak" className={s.rond} aria-label="Controleer" data-controleer data-knop="controleer">
         <Vink />
       </button>
-      {weetniet && <IkoonKnop ikoon="vraag" label="Weet ik niet" knop="weetniet" onClick={weetniet} />}
     </div>
   );
 }

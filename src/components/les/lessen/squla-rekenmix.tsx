@@ -583,7 +583,13 @@ function maatKaart(woord: Maatwoord, naam: string, maat: number): RMTekening {
     const stukken = Array.from({ length: maat }, (_, k) => ding(BLOKKLEUR[k % BLOKKLEUR.length], 0, Hl / 2 - 10 - zicht / 2 - k * stap, m));
     return { stukken, b: B, h: Hl };
   }
-  if ((woord === "dik" || woord === "dun") && naam === "kaars-maat") {
+  if (woord === "dikdun" && naam === "raket-maat") {
+    /* Ronde 8 (7 november 2026, mix4-2): het raketje wordt niet meer plat of lang uitgerekt. Het is vooral breder of smaller en
+       een klein beetje hoger of lager, zodat het raam en de vlam netjes blijven. */
+    const m = 175 * Math.pow(maat, 0.3);
+    return { stukken: [ding(naam, 0, H / 2 - 12 - (m * 0.9) / 2, m, { sx: Math.pow(maat, 0.7) })], b: B, h: H };
+  }
+  if ((woord === "dik" || woord === "dun" || woord === "dikdun") && naam === "kaars-maat") {
     /* Ronde 4: alleen de kaars wordt breder of smaller; het vlammetje is een los plaatje en blijft overal even groot. */
     const m = 210;
     const romp = m * 0.865; /* de hoogte van de kaars in beeld */
@@ -1662,8 +1668,8 @@ const mix1_1 = les({
   (het zitje van onze schommel is rond, dus geen rechthoek), schoolbord,
   telefoon, pizzadoos en blok.
 */
-/* Herstel 7 november (OVERZICHT-C mix1-2): de plank was een dun schuin streepje en pizzadoos, blok, doos en boek waren
-   schuin (3D) getekend, terwijl de keuzes platte vormen zijn. Nu een kleed van boven en platte tekeningen recht van voren of
+/* Herstel 7 november (OVERZICHT-C mix1-2): de plank was een dun schuin streepje (nu weer een platte houten plank van voren, Ronde 8) en pizzadoos, blok, doos en boek waren
+   schuin (3D) getekend, terwijl de keuzes platte vormen zijn. Nu platte tekeningen recht van voren of
    van boven (in code getekend, stijl B: pizzadoos-plat, speelblok-plat, doos-plat, boek-plat). */
 const mix1_2 = les({
   id: "squla-rekenmix-mix1-2",
@@ -1676,7 +1682,7 @@ const mix1_2 = les({
   vragen: [
     { t: "vorm", naam: "tent", zin: "de tent", vorm: "driehoek", keuzes: ["cirkel", "driehoek", "vierkant"] },
     { t: "vorm", naam: "mandarijn", zin: "de mandarijn", vorm: "cirkel", keuzes: ["driehoek", "rechthoek", "cirkel"] },
-    { t: "vorm", naam: "picknickkleed", zin: "het kleed", vorm: "rechthoek", keuzes: ["cirkel", "vierkant", "rechthoek"] },
+    { t: "vorm", naam: "plank-plat", zin: "de plank", vorm: "rechthoek", keuzes: ["cirkel", "vierkant", "rechthoek"] },
     { t: "vorm", naam: "vlaggenlijn", zin: "de vlaggetjes", lijkt: "lijken", vorm: "driehoek", keuzes: ["rechthoek", "driehoek", "vierkant"] },
     { t: "vorm", naam: "planeet", zin: "de planeet", vorm: "cirkel", keuzes: ["vierkant", "rechthoek", "cirkel"] },
     { t: "vorm", naam: "pizzadoos-plat", zin: "de pizzadoos", vorm: "vierkant", keuzes: ["vierkant", "driehoek", "cirkel"] },
@@ -2110,17 +2116,17 @@ const mix4_2 = les({
     { t: "ordenGetal", getallen: [12, 14, 11, 13], vast: 10, richting: "op" },
     { t: "ordenAantal", v: POTLOOD, aantallen: [10, 8, 9], richting: "op" },
     { t: "ordenGetal", getallen: [15, 16, 14], raketjes: true, richting: "af" },
-    { t: "ordenMaat", woord: "dikdun", naam: "raketje", maten: [1.45, 0.65, 1.05] },
+    { t: "ordenMaat", woord: "dikdun", naam: "raket-maat", maten: [1.45, 0.65, 1.05] },
     { t: "gebeuren", verhaal: "taart", kaarten: [2, 0, 1] },
     { t: "ordenGetal", getallen: [14, 12, 15, 13], vast: 11, richting: "op" },
     { t: "ordenAantal", v: KNIKKER, aantallen: [9, 11, 10], richting: "op" },
     { t: "ordenGetal", getallen: [13, 15, 14], raketjes: true, richting: "af" },
-    { t: "ordenMaat", woord: "dikdun", naam: "potlood", maten: [0.65, 1.1, 1.55] },
+    { t: "ordenMaat", woord: "dikdun", naam: "potlood-maat", maten: [0.65, 1.1, 1.55] },
     { t: "gebeuren", verhaal: "brood", kaarten: [1, 2, 0] },
     { t: "ordenGetal", getallen: [16, 13, 15, 14], vast: 12, richting: "op" },
     { t: "ordenAantal", v: STER, aantallen: [8, 11, 9], richting: "op" },
     { t: "ordenGetal", getallen: [12, 14, 13], raketjes: true, richting: "af" },
-    { t: "ordenMaat", woord: "dikdun", naam: "kaars", maten: [1.0, 1.45, 0.6] },
+    { t: "ordenMaat", woord: "dikdun", naam: "kaars-maat", maten: [1.0, 1.45, 0.6] },
     { t: "gebeuren", verhaal: "ijs", kaarten: [2, 1, 0] },
   ],
   eind: "Jij zet alles in de goede volgorde.",

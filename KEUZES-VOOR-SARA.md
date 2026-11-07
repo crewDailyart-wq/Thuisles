@@ -185,3 +185,9 @@ Algemeen voor groep C:
 
 - mix1-3 en mix3-2: de antwoordkeuzes (ook de foute) en Bliepo's zinnen "X staat niet in de rij." staan weer terug. De rij bovenaan is de vraag; de keuzes staan eronder in zachte vakken. Is dit duidelijk genoeg, of wil je het anders?
 - mix1-2: "de plank" is vervangen door "het kleed" omdat de plank een dun streepje was. Wil je de plank terug (als platte plank)? Ja of nee.
+
+## Ronde 8 – rekenmix (helper rekenmix)
+
+- squla-rekenmix-mix1-2 — de plank terug: "de plank" kwam in Bliepo's vraag voor ("Kijk naar de plank."), dus er staat weer een plank: een nieuwe, platte houten plank van voren (Magnific, stijl B, 75 credits), geen dun schuin streepje meer. Antwoord (rechthoek) en zin zijn gelijk aan het begin. Geen nieuwe zin.
+- squla-rekenmix-mix4-2 — de 3 vragen "van dik naar dun" gebruiken nu de mooie maat-plaatjes van mix3-1: raket-maat, potlood-maat en kaars-maat (kaars: alleen het lijf wordt dikker of dunner, de vlam blijft even groot; raket: vooral breder/smaller en een beetje hoger/lager, zodat raam en vlam netjes blijven). Geen nieuwe Magnific-plaatjes nodig. Antwoorden, maten, volgorde en aantal vragen zijn gelijk. Geen nieuwe zinnen.
+- squla-rekenmix-mix3-1 — NIET AANGEPAST, wacht op jou of op de hoofdagent: het beginscherm komt uit `src/lib/lessen/beginzinnen.json` (en BEGINZINNEN.md, public/beginzinnen/lijst.json), niet uit de les zelf. Daar staat: "Vergelijk de ballen en zet ze op volgorde van groot naar klein." en "Lukt het jou om de ballen van groot naar klein te zetten?". In de les staat de kleinste links (kleinst, kleiner, klein). Voorstel: "Vergelijk de ballen en zet ze op volgorde van klein naar groot." en "Lukt het jou om de ballen van klein naar groot te zetten?" (nieuwe zinnen, nog geen opgenomen stem). Dat staat in een bestand dat ik niet mocht aanraken, en de les kan het niet zelf overschrijven.

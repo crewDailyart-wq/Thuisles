@@ -769,8 +769,8 @@ Elke opening bestaat uit een concrete opdracht en een korte vraag. Ja = beginnen
 ## 128. Rekenmix 3
 
 - Les: `squla-rekenmix-mix3-1`
-- **Zin 1:** Vergelijk de ballen en zet ze op volgorde van groot naar klein.
-- **Zin 2:** Lukt het jou om de ballen van groot naar klein te zetten?
+- **Zin 1:** Vergelijk de ballen en zet ze op volgorde: kleinst, kleiner, klein.
+- **Zin 2:** Lukt het jou om de ballen zo op volgorde te zetten?
 
 ## 129. Rekenmix 3 (moeilijker)
 
