@@ -59,7 +59,9 @@ type C = CanvasRenderingContext2D;
 
 /** Teken een voorwerp in een vak van 64 × 64. */
 export function mmTeken(c: C, soort: MMSoort) {
-  tekenVoorwerp(c, soort, 2, 2, MM_MAAT - 4, MM_MAAT - 4);
+  /* De knikker is sinds 7 november de herkenbare glazen knikker (de oude leek op een blauw krulletje). */
+  /* De bal is sinds herstel ronde 2 (7 november) de strandbal "speelbal" (de oude bal.png leek op een verbodsbord). */
+  tekenVoorwerp(c, soort === "knikker" ? "knikker-glas" : soort === "bal" ? "speelbal" : soort, 2, 2, MM_MAAT - 4, MM_MAAT - 4);
 }
 
 /** Een eierdoosje voor 6 eieren (3 × 2), in een vak van `b` × `h`. */
@@ -119,7 +121,7 @@ function vlieger(c: C, n: number) {
 }
 
 /** Alle vaste plaatjes die dit vlak kan tekenen: elke les laadt ze vooraf. */
-export const MM_VOORWERPEN = ["appel", "peer", "ster", "bloem", "ballon", "bal", "kraal", "koekje", "ei", "aardbei", "knikker", "potje", "vlieger"];
+export const MM_VOORWERPEN = ["appel", "peer", "ster", "bloem", "ballon", "bal", "speelbal", "kraal", "koekje", "ei", "aardbei", "knikker", "knikker-glas", "potje", "vlieger"];
 
 export function mmTekenDing(c: C, ding: MMDing, n: number) {
   if (ding === "potje") potje(c, n);

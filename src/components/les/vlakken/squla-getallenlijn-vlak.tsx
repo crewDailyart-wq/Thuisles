@@ -106,6 +106,8 @@ export type GetallenlijnProps = {
   handje?: boolean;
   /** Het goede antwoord in beeld zetten: bij een rij op plek `op`, bij een lijn bij getal `op` (of op het vlaggetje). */
   invul?: { op: number; t: string } | null;
+  /** De raket bij het aftellen (herstel 7 november, naspelen): "tril" = trillen met een rookwolkje, "op" = opstijgen. `keer` ophogen = nog een keer. */
+  raketDoe?: { soort: "tril" | "op"; keer: number } | null;
 };
 
 /* ---------- maten (punten van het vlak, 980 × 720) ---------- */
@@ -120,10 +122,11 @@ export function rijMaten(items: RijItem[], ding: Rijding) {
   const eenheden = items.map((it) => (it.voorwerp === "bus" ? 2 : 1));
   const totaal = eenheden.reduce((a, b) => a + b, 0);
   const raket = ding === "aftel";
-  const ruimte = raket ? 740 : 860;
+  /* Herstel 7 november: de aftelrij plus de raket samen in het midden, niet tegen de linkerrand. */
+  const ruimte = raket ? 680 : 860;
   const sp = Math.min(170, ruimte / totaal);
   const breed = totaal * sp;
-  const x0 = raket ? 60 + (ruimte - breed) / 2 : VLAK_B / 2 - breed / 2;
+  const x0 = raket ? 110 + (ruimte - breed) / 2 : VLAK_B / 2 - breed / 2;
   let tel = 0;
   const xs = eenheden.map((e) => {
     const x = x0 + (tel + e / 2) * sp;
@@ -134,8 +137,9 @@ export function rijMaten(items: RijItem[], ding: Rijding) {
 }
 
 export function lijnMaten(van: number, tot: number, door = false) {
-  const links = 80;
-  const rechts = door ? 740 : 900;
+  /* Herstel 7 november: de lijn begint niet meer tegen de linkerrand (was 80 en 900). */
+  const links = 130;
+  const rechts = door ? 760 : 870;
   const eenheid = (rechts - links) / Math.max(1, tot - van);
   return { x: (n: number) => links + (n - van) * eenheid, eenheid, Y: LIJN_Y };
 }
@@ -152,7 +156,7 @@ function wezenPlek(soort: Wezen, x: number) {
 
 /* ---------- de scène ---------- */
 
-type Staat = Required<Omit<GetallenlijnProps, "golf" | "invul">> & { golf: GetallenlijnProps["golf"]; invul: GetallenlijnProps["invul"] };
+type Staat = Required<Omit<GetallenlijnProps, "golf" | "invul" | "raketDoe">> & { golf: GetallenlijnProps["golf"]; invul: GetallenlijnProps["invul"]; raketDoe?: GetallenlijnProps["raketDoe"] };
 type Ptr = import("phaser").Input.Pointer;
 type Obj = import("phaser").GameObjects.GameObject;
 type Kaart = { n: number; cont: import("phaser").GameObjects.Container; thuis: { x: number; y: number }; vak: number | null };
@@ -184,6 +188,9 @@ function maakScene(letter: () => string) {
       sleep: { kaart: Kaart; x0: number; y0: number; dx: number; dy: number; bewogen: boolean } | null = null;
       klaarGemeld = false;
       golfKeer = -1;
+      /** De raket bij het aftellen (voor trillen en opstijgen), en welke `raketDoe` al gespeeld is. */
+      raket: import("phaser").GameObjects.Image | null = null;
+      raketKeer = -1;
       handjeLoopt: Obj | null = null;
       melder: (g: Vlakgebeurtenis) => void = () => {};
       opWijzig: (inVak: number[]) => void = () => {};
@@ -238,6 +245,48 @@ function maakScene(letter: () => string) {
         return o;
       }
 
+      /** Rook onder de raket: zachte wolkjes die opzij uitwaaieren en vervagen (één keer getekend). */
+      rook(x: number, y: number, n: number) {
+        this.canvasPlaatje("gl-rook", 60, 60, (c) => {
+          const g = c.createRadialGradient(30, 30, 0, 30, 30, 28);
+          g.addColorStop(0, "rgba(240,244,255,0.9)");
+          g.addColorStop(1, "rgba(240,244,255,0)");
+          c.fillStyle = g;
+          c.beginPath();
+          c.arc(30, 30, 28, 0, Math.PI * 2);
+          c.fill();
+        });
+        for (let i = 0; i < n; i++) {
+          const kant = i % 2 ? 1 : -1;
+          const w = this.bewaar(this.plaats("gl-rook", x, y).setScale(0.6 / TX).setDepth(4).setAlpha(0.9));
+          this.tweens.add({ targets: w, x: x + kant * (26 + 14 * Math.floor(i / 2)), y: y + 18 + 6 * Math.floor(i / 2), scale: (1.2 + 0.25 * Math.floor(i / 2)) / TX, alpha: 0, delay: i * 50, duration: 700, ease: "Cubic.easeOut" });
+        }
+      }
+
+      /** De raket trilt (met rook) na een goed antwoord, of stijgt op na de laatste vraag. */
+      raketDoet(soort: "tril" | "op") {
+        const r = this.raket;
+        if (!r?.active || this.rustig) return;
+        this.tweens.killTweensOf(r);
+        const x0 = 870;
+        const y0 = RIJ_Y - 40;
+        r.setPosition(x0, y0);
+        const voet = y0 + r.displayHeight * 0.42;
+        if (soort === "tril") {
+          this.rook(x0, voet, 4);
+          this.tweens.add({ targets: r, x: x0 + 4, duration: 45, yoyo: true, repeat: 5, ease: "Sine.easeInOut", onComplete: () => r.setX(x0) });
+          return;
+        }
+        this.rook(x0, voet, 8);
+        this.tweens.chain({
+          targets: r,
+          tweens: [
+            { x: x0 + 4, duration: 45, yoyo: true, repeat: 5 },
+            { y: -260, duration: 1100, ease: "Quad.easeIn" },
+          ],
+        });
+      }
+
       ruimOp() {
         this.alles.forEach((o) => {
           this.tweens.killTweensOf(o);
@@ -254,6 +303,7 @@ function maakScene(letter: () => string) {
         this.vlagTekst = null;
         this.invulSleutel = "";
         this.wezens = [];
+        this.raket = null;
         this.vakken = [];
         this.kaarten = [];
         this.sleep = null;
@@ -280,6 +330,10 @@ function maakScene(letter: () => string) {
         if (st.golf && st.golf.keer !== this.golfKeer) {
           this.doeGolf(st.golf.op);
           this.golfKeer = st.golf.keer;
+        }
+        if (st.raketDoe && st.raketDoe.keer !== this.raketKeer) {
+          this.raketKeer = st.raketDoe.keer;
+          this.raketDoet(st.raketDoe.soort);
         }
         if (st.handje && (nieuw || !handjeWas)) this.speelHandje();
         if (!st.handje && this.handjeLoopt) {
@@ -309,9 +363,10 @@ function maakScene(letter: () => string) {
           pad.draw(g, 64);
         }
         if (b.ding === "aftel") {
-          const r = this.bewaar(this.plaats("raket-g", 880, y - 40));
+          const r = this.bewaar(this.plaats("raket-g", 870, y - 40));
           r.setScale(0.85 / TX);
           this.tover(r, { vertraging: 60 * b.items.length });
+          this.raket = r;
         }
         b.items.forEach((it, i) => {
           const c = this.bewaar(this.add.container(xs[i], y));
@@ -430,14 +485,28 @@ function maakScene(letter: () => string) {
       }
 
       bouwPlaneet(b: Extract<Beeld, { soort: "planeet" }>) {
-        const planeet = this.bewaar(this.plaats("planeet-groot-g", 480, 480));
+        /* Herstel 7 november: de planeet in het midden, en het raketje vliegt in en landt erop met een stuitertje en een stofwolkje (zoals Bliepo zegt). */
+        const PX = VLAK_B / 2;
+        const PY = 450;
+        const planeet = this.bewaar(this.plaats("planeet-groot-g", PX, PY));
         this.tover(planeet);
         if (b.getal !== undefined && b.getal !== null) {
-          const t = this.bewaar(this.tekst(480, 490, String(b.getal), 64));
+          const t = this.bewaar(this.tekst(PX, PY + 10, String(b.getal), 64));
           this.tover(t, { vertraging: 120 });
         }
-        const k = this.bewaar(this.plaats("raketje-g", 480, 300).setScale(1.25 / TX));
-        this.tover(k, { vertraging: 200 });
+        const LY = PY - 178;
+        const k = this.bewaar(this.plaats("raketje-g", PX, LY).setScale(1.25 / TX));
+        if (this.rustig) return;
+        k.setPosition(PX - 330, 40).setAngle(35).setAlpha(0);
+        this.tweens.chain({
+          targets: k,
+          tweens: [
+            { alpha: 1, duration: 120, delay: 250 },
+            { x: PX, y: LY - 20, angle: 0, duration: 900, ease: "Sine.easeOut" },
+            { y: LY, duration: 220, ease: "Quad.easeIn", onComplete: () => this.rook(PX, LY + 70, 6) },
+            { y: LY - 14, duration: 130, ease: "Quad.easeOut", yoyo: true },
+          ],
+        });
       }
 
       /* ---------- het goede antwoord in beeld ---------- */
@@ -702,7 +771,7 @@ function lettertype() {
   return el ? getComputedStyle(el).fontFamily : "system-ui, sans-serif";
 }
 
-export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, actief = false, handje = false, invul = null, meld, schaal }: GetallenlijnProps & Vlakbasis) {
+export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, actief = false, handje = false, invul = null, raketDoe = null, meld, schaal }: GetallenlijnProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<LijnScene>(schaal, maakScene(lettertype), { invoer: true });
   const meldRef = useRef(meld);
   const [inVak, setInVak] = useState<number[]>([]);
@@ -719,7 +788,7 @@ export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, a
     );
   }, [scene]);
 
-  const sleutel = JSON.stringify({ beeld, ronde, licht, golf, actief, handje, invul });
+  const sleutel = JSON.stringify({ beeld, ronde, licht, golf, actief, handje, invul, raketDoe });
   useEffect(() => {
     if (!scene) return;
     scene.teken(JSON.parse(sleutel) as Staat);

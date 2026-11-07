@@ -94,8 +94,19 @@ type Vraag = {
  * gekozen dag (+ hint) en meteen opnieuw; tweede fout = uitleg, het goede antwoord laten zien en door.
  * Geeft `true` als hij meteen goed was.
  */
+/** De dagkaarten in een willekeurige volgorde, zodat het goede antwoord niet steeds op dezelfde plek staat (BOUWREGELS 1.23). */
+function schudKaarten<T>(lijst: T[] | undefined): T[] | undefined {
+  if (!lijst || lijst.length < 2) return lijst;
+  const v = [...lijst];
+  for (let i = v.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [v[i], v[j]] = [v[j], v[i]];
+  }
+  return v;
+}
+
 async function speelVraag(l: Lesgids, v: Vraag): Promise<boolean> {
-  zet(l, { ...LEEG, ...v.beeld });
+  zet(l, { ...LEEG, ...v.beeld, ...(v.beeld.kaarten ? { kaarten: schudKaarten(v.beeld.kaarten) } : {}) });
   /* Voor de automatische test (zoals bij de verhaaltjessommen): welke wagon of kaart nu goed is. */
   const test = () => (window.__phaser = { ...window.__phaser, antwoord: DAGEN[v.goed[0]].naam });
   test();

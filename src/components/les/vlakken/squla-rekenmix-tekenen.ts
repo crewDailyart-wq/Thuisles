@@ -94,9 +94,16 @@ export function tekenTegel(c: C, n: number, m: number) {
   c.fillText(String(n), m / 2, m / 2 + m * 0.03);
 }
 
+/**
+ * Herstel 7 november (OVERZICHT-C punt 6): het plaatje "bal" (rood rondje met een witte balk) leek op het verkeersbord
+ * "verboden in te rijden". In de Rekenmix-lessen tekenen we daarom de strandbal "speelbal" (zelfde woord "bal" in de
+ * zinnen). Het oude plaatje blijft bestaan voor andere lessen.
+ */
+export const beeldNaam = (naam: string) => (naam === "bal" ? "speelbal" : naam);
+
 /** Een voorwerp (vast plaatje) passend in een vak van m × m. */
 export function tekenDing(c: C, naam: string, m: number) {
-  tekenVoorwerp(c, naam, m * 0.03, m * 0.03, m * 0.94, m * 0.94);
+  tekenVoorwerp(c, beeldNaam(naam), m * 0.03, m * 0.03, m * 0.94, m * 0.94);
 }
 
 /**
@@ -108,7 +115,7 @@ export const RING_BINNEN = 140;
 export const RING_MAAT = RING_BINNEN + 2 * ringRuimte(RING_BINNEN, RING_BINNEN);
 
 export function tekenDingMetRing(c: C, naam: string, kleur: string) {
-  tekenMetRing(c, RING_BINNEN, RING_BINNEN, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, naam, x, y, b, h), voorwerpKleurbaar(naam));
+  tekenMetRing(c, RING_BINNEN, RING_BINNEN, kleur, (cc, x, y, b, h) => tekenVoorwerp(cc, beeldNaam(naam), x, y, b, h), voorwerpKleurbaar(naam));
 }
 
 /** De kleuren van de getallen in het beeld, dezelfde als in de zin van Bliepo (Lesscherm KLEURNAAM). */

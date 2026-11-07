@@ -27,7 +27,7 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
-import { holoBasis, GOED, TX, WARM, type PhaserModule } from "../holo/basis";
+import { holoBasis, GOED, TX, VLAK_B, WARM, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { dingSleutel, gloedVan, heeftWijzerGloed, laadKlokken, laadKlokTussen, maatVan, tekenDing, tekenReisTekst, tekenStof, tekenVraagKlok, tekenWijzerGloed, type Ding } from "./squla-klok-tekenen";
@@ -71,7 +71,20 @@ export type KlokVlakProps = {
    * `{ soort: "reis" }`. Zonder `reis` verandert er niets.
    */
   reis?: { naam: string; nu: { u: number; m: number }; min: number; label: string; speel: number };
+  /**
+   * Een ding bovenaan speelt het verhaal na (BOUWREGELS 1.22, 7 november 2026). Tijdens de vraag staat het ding stil (de
+   * beginsituatie); pas als `speel` omhoog gaat (NA het antwoord) beweegt het: de bus rijdt weg, de oven gaat aan … Daarna
+   * meldt het vlak `{ soort: "naspeel" }`. Zonder `naspeel` verandert er niets.
+   */
+  naspeel?: { soort: Naspeel; speel: number };
+  /** Een ding als kleine, zachte sfeer-achtergrond (BOUWREGELS 1.22, oplossing 2): niet tikbaar, doet niet mee in de vraag. */
+  sfeer?: { naam: string; plek?: "hoog" | "laag" };
+  /** De vraagklok bovenaan krijgt een eigen vak met dit woord erboven (bv. "nu"), zodat vraag en antwoorden niet op elkaar lijken. */
+  vraagLabel?: string;
 };
+
+/** Hoe een ding het verhaal naspeelt. */
+export type Naspeel = "rijden" | "wegrijden" | "laden" | "aan" | "uit" | "uitDeOven" | "opstijgen" | "rijzen" | "op";
 
 /* ---------- de scène ---------- */
 
@@ -79,9 +92,10 @@ type Staat = "gewoon" | "licht" | "goed" | "fout" | "uit";
 type Item = { id: string; d: Ding; x: number; y: number; s: number; staat: Staat; draai?: boolean; sleept?: boolean };
 type Lijn = { x1: number; y1: number; x2: number; y2: number; kleur: number };
 type Vak = { x: number; y: number; b: number; h: number; rond: boolean };
-type Beeld = { sleutel: string; items: Item[]; lijnen: Lijn[]; vakken: Vak[]; pijlen: { x1: number; x2: number; y: number }[] };
+type Kader = { x: number; y: number; b: number; h: number; warm?: boolean; label?: string; labelS?: number };
+type Beeld = { sleutel: string; items: Item[]; lijnen: Lijn[]; vakken: Vak[]; pijlen: { x1: number; x2: number; y: number }[]; kaders?: Kader[] };
 
-type ReisBeeld = { sleutel: string; naam: string; nu: { u: number; m: number }; min: number; label: string };
+type ReisBeeld = { sleutel: string; naam: string; nu: { u: number; m: number }; min: number; label: string; maat?: ReisMaat };
 
 interface KlokScene {
   zet(b: Beeld): void;
@@ -92,6 +106,10 @@ interface KlokScene {
   bakReis(): void;
   /** Het verhaal nuspelen; `klaar` komt als alles stilstaat. */
   speelReis(klaar: () => void): void;
+  /** Het ding met dit id speelt het verhaal na; `klaar` komt als het stilstaat. */
+  naspeel(id: string, soort: Naspeel, klaar: () => void): void;
+  /** Een kleine, zachte sfeer-achtergrond (of weg met null). */
+  sfeer(s: { naam: string; plek?: "hoog" | "laag" } | null): void;
 }
 
 /** De stappen van de klok bij school: elke 5 minuten, van nu tot nu + min. */
@@ -104,7 +122,21 @@ export function reisStappen(nu: { u: number; m: number }, min: number): { u: num
 }
 
 /* Indeling van het verhaal (punten van het vlak). */
-const REIS = { klokL: 135, klokR: 845, klokY: 205, wegY: 352, wegVan: 240, wegTot: 745, busVan: 330, busNaar: 640, busY: 312, klokS: 0.9, busS: 0.8 };
+type ReisMaat = { klokL: number; klokR: number; klokY: number; wegY: number; wegVan: number; wegTot: number; busVan: number; busNaar: number; busY: number; klokS: number; busS: number; labelS: number };
+const REIS: ReisMaat = { klokL: 135, klokR: 845, klokY: 205, wegY: 352, wegVan: 240, wegTot: 745, busVan: 330, busNaar: 640, busY: 312, klokS: 0.9, busS: 0.8, labelS: 0.8 };
+
+/**
+ * Het verhaal op een staand scherm (BOUWREGELS 1.24, 7 november 2026): de klokken bij de halte en bij school veel groter,
+ * bovenaan links en rechts; de weg met de bus eronder. Alles past tussen 0 en `bodem` (punten van het vlak).
+ */
+function reisStaand(bodem: number): ReisMaat {
+  const k = Math.max(0.55, Math.min(1.2, bodem / 640));
+  const klokS = 1.7 * k;
+  const r = 110 * klokS;
+  const klokY = Math.max(r + 16, (bodem - 640 * k) / 2 + r + 16);
+  const wegY = klokY + r + 120 * k;
+  return { klokL: 20 + r, klokR: 960 - r, klokY, wegY, wegVan: 40, wegTot: 940, busVan: 20 + r, busNaar: 960 - r, busY: wegY - 40 * Math.min(1.4, k * 1.4), klokS, busS: 1.1 * k, labelS: 1.2 * k };
+}
 
 function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
   const Basis = holoBasis(Phaser, rustig);
@@ -122,6 +154,11 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
     laatste: Beeld | null = null;
     verhaal: { r: ReisBeeld; weg: Gfx; label: Img; links: Img; rechts: Img; bus: Img; token: number } | null = null;
     verhaalTeller = 0;
+    labels: Img[] = [];
+    kaderSl = "";
+    /** De indeling van het verhaal (bus, weg, klokken); op een staand scherm groter. */
+    R: ReisMaat = REIS;
+    sfeerBeeld: { sl: string; img: Img } | null = null;
 
     constructor() {
       super("squla-klok");
@@ -146,30 +183,38 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       this.drukTot = Math.max(this.drukTot, performance.now() + ms);
     }
 
-    tex(d: Ding) {
-      const sl = dingSleutel(d);
+    /**
+     * Een plaatje van een ding. `f` = 2: op dubbele maat (een heel grote klok op een staand scherm, BOUWREGELS 1.24),
+     * zodat hij scherp blijft; zie `fVan`. Alle andere dingen houden hun gewone plaatje (f = 1).
+     */
+    tex(d: Ding, f = 1) {
+      const sl = f > 1 ? `${dingSleutel(d)}@${f}` : dingSleutel(d);
       const { b, h } = maatVan(d);
-      this.canvasPlaatje(sl, b, h, (c) => tekenDing(c, d));
+      this.canvasPlaatje(sl, b * f, h * f, (c) => {
+        if (f > 1) c.scale(f, f);
+        tekenDing(c, d);
+      });
       return sl;
     }
 
-    texGloed(d: Ding) {
-      const sl = this.tex(d);
+    texGloed(d: Ding, f = 1) {
+      const sl = this.tex(d, f);
       this.bak(sl, `${sl}-g`, gloedVan(d));
       return `${sl}-g`;
     }
 
-    texVoor(d: Ding, staat: Staat) {
+    texVoor(d: Ding, staat: Staat, f = 1) {
       /* Wijst Bliepo een wijzer aan, dan lichten alleen de randen van die wijzer op (aparte laag), niet de hele klok (Sara, 6 november 2026). */
-      if (staat === "licht" && heeftWijzerGloed(d)) return this.tex(d);
-      return staat === "licht" || staat === "goed" ? this.texGloed(d) : this.tex(d);
+      if (staat === "licht" && heeftWijzerGloed(d)) return this.tex(d, f);
+      return staat === "licht" || staat === "goed" ? this.texGloed(d, f) : this.tex(d, f);
     }
 
     /** De glow langs de rand van de aangewezen wijzer: een aparte, transparante laag die zacht pulseert. */
-    texWijzerGloed(d: Ding) {
-      const sl = `kg:${dingSleutel(d)}`;
+    texWijzerGloed(d: Ding, f = 1) {
+      const sl = f > 1 ? `kg:${dingSleutel(d)}@${f}` : `kg:${dingSleutel(d)}`;
       const { b, h } = maatVan(d);
-      this.canvasPlaatje(sl, b, h, (c) => {
+      this.canvasPlaatje(sl, b * f, h * f, (c) => {
+        if (f > 1) c.scale(f, f);
         if (d.t === "wijzer") tekenWijzerGloed(c, d);
       });
       return sl;
@@ -177,7 +222,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
 
     zetWijzerGloed(st: Stuk) {
       const d = st.item.d;
-      const sl = heeftWijzerGloed(d) ? this.texWijzerGloed(d) : "";
+      const sl = heeftWijzerGloed(d) ? this.texWijzerGloed(d, fVan(st.item)) : "";
       if (st.wGloedSl === sl) {
         if (st.wGloed) st.wGloed.setPosition(st.img.x, st.img.y).setScale(st.img.scaleX, st.img.scaleY);
         return;
@@ -207,7 +252,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
     zetStaat(st: Stuk, staat: Staat) {
       const oud = st.staat;
       st.staat = staat;
-      const tex = this.texVoor(st.item.d, staat);
+      const tex = this.texVoor(st.item.d, staat, fVan(st.item));
       if (tex !== st.tex) {
         st.img.setTexture(tex);
         st.tex = tex;
@@ -222,17 +267,23 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
     zet(b: Beeld) {
       this.laatste = b;
       this.druk(600);
+      /* Bij een nieuw beeld: eerst het oude weg, dan pas het nieuwe (ook de vakken), zodat er nooit 2 klokken in
+         één vak staan (keuring herstel A, 7 november 2026). */
+      let wacht = 0;
       if (b.sleutel !== this.sleutel) {
         this.sleutel = b.sleutel;
+        this.events.emit("kk-sleutel");
+        if (this.stukken.size && !rustig) wacht = 200;
         for (const st of this.stukken.values()) {
           st.ring?.destroy();
           st.wGloed?.destroy();
+          /* ook een bus die nog naspeelt (stuiteren, rijden) moet echt weg */
+          this.tweens.killTweensOf(st.img);
           this.verdwijn(st.img);
         }
         this.stukken.clear();
-        this.vakGfx?.clear();
-        this.tekenVakken(b);
-      }
+        this.wisselVakken(b, wacht);
+      } else if (JSON.stringify(b.kaders ?? []) !== this.kaderSl) this.tekenVakken(b);
       const nu = new Set(b.items.map((i) => i.id));
       for (const [id, st] of this.stukken) {
         if (nu.has(id)) continue;
@@ -245,12 +296,12 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       for (const it of b.items) {
         const st = this.stukken.get(it.id);
         if (!st) {
-          const tex = this.texVoor(it.d, it.staat);
-          const img = this.plaats(tex, it.x, it.y).setScale(it.s / TX).setDepth(it.sleept ? 4 : 3);
+          const tex = this.texVoor(it.d, it.staat, fVan(it));
+          const img = this.plaats(tex, it.x, it.y).setScale(it.s / (TX * fVan(it))).setDepth(it.sleept ? 4 : 3);
           const nieuw: Stuk = { img, tex, staat: "gewoon", ring: null, item: it, wGloed: null, wGloedSl: "" };
           this.stukken.set(it.id, nieuw);
           this.time.delayedCall(rustig ? 0 : 300, () => nieuw.img.active && this.zetWijzerGloed(nieuw));
-          this.tover(img, { vertraging: n++ * 70 });
+          this.tover(img, { vertraging: wacht + n++ * 70 });
           if (it.staat !== "gewoon") this.time.delayedCall(rustig ? 0 : 400, () => nieuw.img.active && this.zetStaat(nieuw, it.staat));
           continue;
         }
@@ -261,14 +312,14 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
           /* Het oplicht-geluidje staat voorlopig uit (Sara, 6 november 2026: "misschien later"); `OPLICHT_GELUID = true` zet het weer aan. */
           if (OPLICHT_GELUID) speelLesgeluid("oplicht");
         }
-        const oudD = dingSleutel(st.item.d);
+        const oudD = `${dingSleutel(st.item.d)}@${fVan(st.item)}`;
         const verplaatst = st.item.x !== it.x || st.item.y !== it.y;
         st.item = it;
         st.img.setDepth(it.sleept ? 4 : 3);
-        if (oudD !== dingSleutel(it.d)) {
+        if (oudD !== `${dingSleutel(it.d)}@${fVan(it)}`) {
           /* een memorykaartje draait om */
           const wissel = () => {
-            st.tex = this.texVoor(it.d, st.staat);
+            st.tex = this.texVoor(it.d, st.staat, fVan(it));
             st.img.setTexture(st.tex);
           };
           if (it.draai && !rustig) {
@@ -278,7 +329,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
               duration: 110,
               onComplete: () => {
                 wissel();
-                this.tweens.add({ targets: st.img, scaleX: it.s / TX, duration: 130 });
+                this.tweens.add({ targets: st.img, scaleX: it.s / (TX * fVan(it)), duration: 130 });
               },
             });
           } else wissel();
@@ -287,13 +338,13 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
           if (it.sleept || rustig) st.img.setPosition(it.x, it.y);
           else this.tweens.add({ targets: st.img, x: it.x, y: it.y, duration: 220, ease: "Cubic.easeOut" });
         }
-        st.img.setScale(it.s / TX);
+        st.img.setScale(it.s / (TX * fVan(it)));
         if (st.staat !== it.staat || (verplaatst && st.ring)) this.zetStaat(st, it.staat);
         this.zetWijzerGloed(st);
       }
       this.tekenLijnen(b);
       /* de gloed van alles in beeld vooruit bakken */
-      if (!b.sleutel.includes("-demo-")) this.rij = b.items.map((it) => () => void this.texGloed(it.d));
+      if (!b.sleutel.includes("-demo-")) this.rij = b.items.map((it) => () => void this.texGloed(it.d, fVan(it)));
     }
 
 
@@ -321,22 +372,23 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         }
       }
       if (!r || this.verhaal) return;
+      this.R = r.maat ?? REIS;
       const weg = this.add.graphics().setDepth(0.5);
       /* een platte weg-strook: donkergrijs wegdek met een onderbroken witte middenstreep, geen rand, geen capsule */
       weg.fillStyle(0x3a3f4a, 1);
-      weg.fillRect(REIS.wegVan, REIS.wegY - 18, REIS.wegTot - REIS.wegVan, 36);
+      weg.fillRect(this.R.wegVan, this.R.wegY - 18, this.R.wegTot - this.R.wegVan, 36);
       weg.fillStyle(0xffffff, 0.9);
-      for (let x = REIS.wegVan + 12; x < REIS.wegTot - 30; x += 56) weg.fillRect(x, REIS.wegY - 2, 30, 4);
+      for (let x = this.R.wegVan + 12; x < this.R.wegTot - 30; x += 56) weg.fillRect(x, this.R.wegY - 2, 30, 4);
       weg.setAlpha(0);
       this.tweens.add({ targets: weg, alpha: 1, duration: rustig ? 1 : 350 });
       const lsl = `reis-lbl:${r.label}`;
       this.canvasPlaatje(lsl, 200, 60, (c) => tekenReisTekst(c, r.label));
-      const label = this.plaats(lsl, (REIS.wegVan + REIS.wegTot) / 2, REIS.wegY + 40).setScale(0.8 / TX).setDepth(1);
+      const label = this.plaats(lsl, (this.R.wegVan + this.R.wegTot) / 2, this.R.wegY + 40).setScale(this.R.labelS / TX).setDepth(1);
       this.canvasPlaatje("reis-vraag", 220, 220, (c) => tekenVraagKlok(c));
       this.canvasPlaatje("reis-stof", 64, 64, (c) => tekenStof(c));
-      const links = this.plaats(this.tex({ t: "wijzer", u: r.nu.u, m: r.nu.m, kleur: "blauw" }), REIS.klokL, REIS.klokY).setScale(REIS.klokS / TX).setDepth(3);
-      const rechts = this.plaats("reis-vraag", REIS.klokR, REIS.klokY).setScale(REIS.klokS / TX).setDepth(3);
-      const bus = this.plaats(this.tex({ t: "vw", naam: r.naam }), REIS.busVan, REIS.busY).setScale(REIS.busS / TX).setDepth(3);
+      const links = this.plaats(this.tex({ t: "wijzer", u: r.nu.u, m: r.nu.m, kleur: "blauw" }), this.R.klokL, this.R.klokY).setScale(this.R.klokS / TX).setDepth(3);
+      const rechts = this.plaats("reis-vraag", this.R.klokR, this.R.klokY).setScale(this.R.klokS / TX).setDepth(3);
+      const bus = this.plaats(this.tex({ t: "vw", naam: r.naam }), this.R.busVan, this.R.busY).setScale(this.R.busS / TX).setDepth(3);
       this.verhaal = { r, weg, label, links, rechts, bus, token: ++this.verhaalTeller };
       this.tover(links, { vertraging: 0 });
       this.tover(bus, { vertraging: 70 });
@@ -374,7 +426,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       };
       if (rustig) {
         v.rechts.setTexture(this.reisFrame(stappen[stappen.length - 1]));
-        v.bus.setX(REIS.busNaar);
+        v.bus.setX(this.R.busNaar);
         this.time.delayedCall(400, eind);
         return;
       }
@@ -388,12 +440,12 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         onComplete: () => {
           if (!leeft()) return;
           v.rechts.setTexture(frameOp(0));
-          this.tweens.add({ targets: v.rechts, scaleX: REIS.klokS / TX, duration: 160, ease: "Back.easeOut" });
+          this.tweens.add({ targets: v.rechts, scaleX: this.R.klokS / TX, duration: 160, ease: "Back.easeOut" });
         },
       });
       /* 2. de bus rijdt, met een stuiterend busje */
-      this.tweens.add({ targets: v.bus, x: REIS.busNaar, delay: start, duration: duur, ease: "Sine.easeInOut" });
-      const hop = this.tweens.add({ targets: v.bus, y: REIS.busY - 7, angle: -1.2, delay: start, duration: 120, yoyo: true, repeat: Math.floor(duur / 240), ease: "Sine.easeInOut" });
+      this.tweens.add({ targets: v.bus, x: this.R.busNaar, delay: start, duration: duur, ease: "Sine.easeInOut" });
+      const hop = this.tweens.add({ targets: v.bus, y: this.R.busY - 7, angle: -1.2, delay: start, duration: 120, yoyo: true, repeat: Math.floor(duur / 240), ease: "Sine.easeInOut" });
       /* een stofwolkje achter de bus dat vervaagt */
       const stof = this.time.addEvent({
         delay: 110,
@@ -401,7 +453,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         repeat: Math.floor(duur / 110),
         callback: () => {
           if (!leeft()) return;
-          const wolk = this.plaats("reis-stof", v.bus.x - 80, REIS.wegY - 6).setScale(0.35 / TX).setAlpha(0.6).setDepth(2.5);
+          const wolk = this.plaats("reis-stof", v.bus.x - 80, this.R.wegY - 6).setScale(0.35 / TX).setAlpha(0.6).setDepth(2.5);
           this.tweens.add({ targets: wolk, scale: 1.1 / TX, alpha: 0, y: wolk.y - 22, x: wolk.x - 14, duration: 520, ease: "Cubic.easeOut", onComplete: () => wolk.destroy() });
         },
       });
@@ -419,13 +471,204 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       this.time.delayedCall(start + duur, () => {
         if (!leeft()) return;
         hop.stop();
-        v.bus.setY(REIS.busY).setAngle(0);
-        this.tweens.add({ targets: v.bus, scaleY: (REIS.busS / TX) * 0.94, duration: 90, yoyo: true, ease: "Sine.easeOut" });
+        v.bus.setY(this.R.busY).setAngle(0);
+        this.tweens.add({ targets: v.bus, scaleY: (this.R.busS / TX) * 0.94, duration: 90, yoyo: true, ease: "Sine.easeOut" });
         v.rechts.setTexture(frameOp(n));
-        this.tweens.add({ targets: v.rechts, scale: (REIS.klokS / TX) * 1.07, duration: 140, yoyo: true, ease: "Sine.easeOut" });
-        this.golf(REIS.klokR, REIS.klokY);
+        this.tweens.add({ targets: v.rechts, scale: (this.R.klokS / TX) * 1.07, duration: 140, yoyo: true, ease: "Sine.easeOut" });
+        this.golf(this.R.klokR, this.R.klokY);
       });
       this.time.delayedCall(start + duur + 600, eind);
+    }
+
+    /* ---------- een ding speelt het verhaal na (BOUWREGELS 1.22) ---------- */
+
+    /** Staat er niets anders op deze plek (midden x, y; halve breedte b, halve hoogte h)? */
+    vrijOp(eigen: string, x: number, y: number, b: number, h: number) {
+      for (const [id, st] of this.stukken) {
+        if (id === eigen) continue;
+        const m = maatVan(st.item.d);
+        if (Math.abs(st.item.x - x) < b + (m.b * st.item.s) / 2 && Math.abs(st.item.y - y) < h + (m.h * st.item.s) / 2) return false;
+      }
+      return true;
+    }
+
+    /** Hoeveel punten er rechts van `x` vrij zijn (op de hoogte van y ± h), tot het eerstvolgende ding of de rand. */
+    ruimteRechts(eigen: string, x: number, y: number, h: number) {
+      let vrij = VLAK_B - 16 - x;
+      for (const [id, st] of this.stukken) {
+        if (id === eigen) continue;
+        const m = maatVan(st.item.d);
+        const l = st.item.x - (m.b * st.item.s) / 2;
+        const boven = st.item.y - (m.h * st.item.s) / 2;
+        const onder = st.item.y + (m.h * st.item.s) / 2;
+        if (l < x || onder < y - h || boven > y + h) continue;
+        vrij = Math.min(vrij, l - x);
+      }
+      return vrij;
+    }
+
+    naspeel(id: string, soort: Naspeel, klaar: () => void) {
+      const st = this.stukken.get(id);
+      if (!st) return klaar();
+      const img = st.img;
+      const x0 = st.item.x;
+      const y0 = st.item.y;
+      const s0 = st.item.s / (TX * fVan(st.item));
+      /* de maat van het ding als gewoon plaatje (f = 1), voor een taart die eruit springt */
+      const s1 = st.item.s / TX;
+      const sl = this.sleutel;
+      const leeft = () => this.sleutel === sl && img.active;
+      const eind = (ms: number) => this.time.delayedCall(ms, () => klaar());
+      this.tweens.killTweensOf(img);
+      img.setPosition(x0, y0).setScale(s0).setAngle(0).setAlpha(1);
+      this.canvasPlaatje("reis-stof", 64, 64, (c) => tekenStof(c));
+      const wolkjes = (n: number, elke: number, waar: () => { x: number; y: number }, opties: { dx?: number; dy?: number } = {}) => {
+        if (rustig) return;
+        this.time.addEvent({
+          delay: elke,
+          repeat: n - 1,
+          callback: () => {
+            if (!leeft()) return;
+            const p = waar();
+            const wolk = this.plaats("reis-stof", p.x, p.y).setScale(0.35 / TX).setAlpha(0.6).setDepth(2.5);
+            this.tweens.add({ targets: wolk, scale: 1.1 / TX, alpha: 0, y: wolk.y + (opties.dy ?? -22), x: wolk.x + (opties.dx ?? -14), duration: 520, ease: "Cubic.easeOut", onComplete: () => wolk.destroy() });
+          },
+        });
+      };
+      const half = (maatVan(st.item.d).h * st.item.s) / 2;
+      const breed = (maatVan(st.item.d).b * st.item.s) / 2;
+      if (rustig) {
+        if (soort === "wegrijden" || soort === "opstijgen" || soort === "op") img.setAlpha(0);
+        if (soort === "uit") img.setTint(0x6d7280).setAlpha(0.75);
+        if (soort === "aan") img.setTexture(this.texGloed(st.item.d, fVan(st.item)));
+        return eind(400);
+      }
+      switch (soort) {
+        case "rijden":
+        case "wegrijden": {
+          /* een stuiterend busje met een stofwolkje erachter; bij wegrijden rijdt hij het beeld uit */
+          const weg = soort === "wegrijden";
+          const duur = weg ? 2000 : 1000;
+          /* rijden = een stukje vooruit en netjes stoppen, nooit tegen of onder de klok ernaast (keuring herstel A) */
+          const vooruit = Math.max(0, Math.min(70, this.ruimteRechts(id, x0 + breed, y0, half) - 24));
+          /* wegrijden = de verte in (kleiner en hoger), achter de klok langs; rijden = een stukje vooruit en stoppen */
+          img.setDepth(2.8);
+          this.tweens.add({ targets: img, scaleY: s0 * 0.94, duration: 90, yoyo: true, repeat: 1 });
+          this.tweens.add({ targets: img, x: weg ? x0 + 170 : x0 + vooruit, delay: 200, duration: duur, ease: weg ? "Sine.easeIn" : "Sine.easeInOut" });
+          if (weg) this.tweens.add({ targets: img, scaleX: s0 * 0.45, scaleY: s0 * 0.45, y: y0 - 60, delay: 300, duration: duur, ease: "Sine.easeIn" });
+          const hop = this.tweens.add({ targets: img, ...(weg ? {} : { y: y0 - 7 }), angle: -1.2, delay: 200, duration: 120, yoyo: true, repeat: Math.floor(duur / 240), ease: "Sine.easeInOut" });
+          wolkjes(Math.floor(duur / 110), 110, () => ({ x: img.x - breed * 0.85, y: y0 + half * 0.55 }));
+          if (weg) this.tweens.add({ targets: img, alpha: 0, delay: 200 + duur - 400, duration: 400 });
+          this.time.delayedCall(200 + duur, () => {
+            if (!leeft()) return;
+            hop.stop();
+            img.setAngle(0);
+            if (!weg) img.setY(y0);
+            if (!weg) this.tweens.add({ targets: img, scaleY: s0 * 0.94, duration: 90, yoyo: true, ease: "Sine.easeOut" });
+          });
+          return eind(200 + duur + 250);
+        }
+        case "laden": {
+          /* de bus zakt bij elk pakje even in en veert terug */
+          this.tweens.add({ targets: img, scaleY: s0 * 0.9, y: y0 + half * 0.08, duration: 160, yoyo: true, repeat: 2, hold: 120, ease: "Sine.easeOut" });
+          this.time.delayedCall(1200, () => leeft() && this.golf(x0, y0, WARM));
+          return eind(1500);
+        }
+        case "aan": {
+          /* de oven gaat aan: hij gloeit warm op en pulseert zacht */
+          img.setTexture(this.texGloed(st.item.d, fVan(st.item)));
+          this.tweens.add({ targets: img, scale: s0 * 1.05, duration: 380, yoyo: true, repeat: 2, ease: "Sine.easeInOut" });
+          this.golf(x0, y0, WARM);
+          return eind(1500);
+        }
+        case "uit": {
+          /* het lampje (of de oven) gaat uit: het wordt grijs en donker */
+          this.tweens.add({ targets: img, scale: s0 * 0.96, duration: 120, yoyo: true });
+          this.tweens.addCounter({
+            from: 255,
+            to: 110,
+            delay: 150,
+            duration: 900,
+            onUpdate: (t) => {
+              if (!leeft()) return;
+              const v = Math.round(t.getValue() ?? 255);
+              img.setTint(Phaser.Display.Color.GetColor(v, v, Math.min(255, v + 15)));
+            },
+          });
+          return eind(1300);
+        }
+        case "uitDeOven": {
+          /* de ovendeur springt open: de oven veert, en een taart springt eruit en landt ernaast */
+          this.tweens.add({ targets: img, scaleY: s0 * 0.92, duration: 110, yoyo: true, repeat: 1 });
+          const taart = this.plaats(this.tex({ t: "vw", naam: "taart" }), x0, y0 + half * 0.2).setScale(s1 * 0.25).setDepth(3.5).setAlpha(0);
+          /* De taart landt netjes naast de oven, helemaal in beeld; is daar geen plek, dan bovenop de oven
+             (keuring herstel A, 7 november 2026: niet half over de oven, niet tegen de rand). */
+          const tb = (maatVan({ t: "vw", naam: "taart" }).b * st.item.s * 0.5) / 2;
+          const th = (maatVan({ t: "vw", naam: "taart" }).h * st.item.s * 0.5) / 2;
+          const linksX = x0 - breed - tb - 6;
+          const rechtsX = x0 + breed + tb + 6;
+          const vrijLinks = linksX - tb > 24 && this.vrijOp(id, linksX, y0 + half - th, tb, th);
+          const vrijRechts = rechtsX + tb < VLAK_B - 24 && this.vrijOp(id, rechtsX, y0 + half - th, tb, th);
+          const naast = vrijLinks || vrijRechts;
+          const doelX = vrijLinks ? linksX : vrijRechts ? rechtsX : x0;
+          const doelY = naast ? y0 + half - th * 0.9 : Math.max(th + 8, y0 - half - th * 0.55);
+          this.tweens.add({ targets: taart, alpha: 1, scale: s1 * 0.5, delay: 250, duration: 260, ease: "Back.easeOut" });
+          this.tweens.add({ targets: taart, x: doelX, delay: 250, duration: 700, ease: "Sine.easeOut" });
+          this.tweens.add({ targets: taart, y: Math.min(y0 - half * 0.7, doelY - 60), delay: 250, duration: 350, ease: "Sine.easeOut", onComplete: () => leeft() && this.tweens.add({ targets: taart, y: doelY, duration: 350, ease: "Bounce.easeOut" }) });
+          this.time.delayedCall(1000, () => {
+            if (!leeft()) return taart.destroy();
+            wolkjes(3, 60, () => ({ x: doelX + (Math.random() - 0.5) * 40, y: doelY + th * 0.7 }), { dy: -10, dx: 0 });
+          });
+          this.events.once("kk-sleutel", () => taart.destroy());
+          this.time.delayedCall(6000, () => !leeft() && taart.active && taart.destroy());
+          return eind(1500);
+        }
+        case "opstijgen": {
+          /* het raketje trilt even, en schiet dan omhoog met wolkjes eronder */
+          this.tweens.add({ targets: img, x: x0 + 4, duration: 50, yoyo: true, repeat: 5 });
+          this.tweens.add({ targets: img, y: y0 - 520, delay: 450, duration: 1100, ease: "Cubic.easeIn" });
+          this.tweens.add({ targets: img, alpha: 0, delay: 1250, duration: 300 });
+          this.time.delayedCall(350, () => wolkjes(10, 80, () => ({ x: img.x, y: img.y + half * 0.9 }), { dy: 26, dx: 0 }));
+          return eind(1700);
+        }
+        case "rijzen": {
+          /* het deeg rijst: de kom wordt stap voor stap een beetje hoger */
+          this.tweens.add({ targets: img, scaleY: s0 * 1.1, scaleX: s0 * 1.03, y: y0 - half * 0.08, duration: 900, ease: "Back.easeOut" });
+          this.time.delayedCall(900, () => leeft() && this.golf(x0, y0, WARM));
+          return eind(1300);
+        }
+        case "op": {
+          /* de taart is op: hij wordt in 3 hapjes kleiner en is dan weg */
+          for (let k = 1; k <= 3; k++) {
+            this.time.delayedCall(k * 380, () => {
+              if (!leeft()) return;
+              this.tweens.add({ targets: img, scale: s0 * (1 - k * 0.3), duration: 140, ease: "Back.easeIn" });
+              wolkjes(2, 50, () => ({ x: x0 + (Math.random() - 0.5) * breed, y: y0 }), { dy: -18, dx: 0 });
+            });
+          }
+          this.tweens.add({ targets: img, alpha: 0, delay: 1300, duration: 250 });
+          return eind(1700);
+        }
+      }
+    }
+
+    sfeer(s: { naam: string; plek?: "hoog" | "laag" } | null) {
+      const sl = s ? `${s.naam}:${s.plek ?? ""}` : "";
+      if (this.sfeerBeeld?.sl === sl) return;
+      if (this.sfeerBeeld) {
+        const oud = this.sfeerBeeld.img;
+        this.tweens.killTweensOf(oud);
+        this.tweens.add({ targets: oud, alpha: 0, duration: rustig ? 1 : 250, onComplete: () => oud.destroy() });
+        this.sfeerBeeld = null;
+      }
+      if (!s) return;
+      /* klein en zacht linksboven; "hoog" staat hoger, "laag" lager en warmer (een zon die zakt) */
+      const plek = s.plek === "hoog" ? { x: 150, y: 95 } : s.plek === "laag" ? { x: 105, y: 330 } : { x: 120, y: 130 };
+      const img = this.plaats(this.tex({ t: "vw", naam: s.naam }), plek.x, plek.y).setScale(0.62 / TX).setDepth(0.2).setAlpha(0);
+      if (s.plek === "laag") img.setTint(0xffb27a);
+      this.sfeerBeeld = { sl, img };
+      this.tweens.add({ targets: img, alpha: 0.5, duration: rustig ? 1 : 500 });
+      if (!rustig) this.tweens.add({ targets: img, y: plek.y - 5, duration: 2600, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
     }
 
     sleepNaar(id: string, x: number, y: number) {
@@ -435,9 +678,40 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       st.ring?.setPosition(x, y);
     }
 
+    /** Het nieuwe beeld: de oude vakken (en hun woord) vervagen, de nieuwe komen pas als het oude weg is. */
+    wisselVakken(b: Beeld, wacht: number) {
+      if (!wacht) return void this.tekenVakken(b);
+      const oud = this.vakGfx;
+      if (oud) this.tweens.add({ targets: oud, alpha: 0, duration: 180, onComplete: () => oud.destroy() });
+      for (const l of this.labels) this.tweens.add({ targets: l, alpha: 0, duration: 180, onComplete: () => l.destroy() });
+      this.labels = [];
+      this.vakGfx = this.add.graphics().setDepth(0).setAlpha(0);
+      this.tekenVakken(b);
+      for (const l of this.labels) l.setAlpha(0);
+      this.tweens.add({ targets: [this.vakGfx, ...this.labels], alpha: 1, delay: wacht, duration: 220 });
+    }
+
     tekenVakken(b: Beeld) {
+      this.kaderSl = JSON.stringify(b.kaders ?? []);
       const g = this.vakGfx!;
       g.clear();
+      for (const l of this.labels) l.destroy();
+      this.labels = [];
+      /* de vakken van de keuzes (zacht, half doorzichtig, ronde hoeken, zoals bij de geldles; Sara, 7 november 2026) */
+      for (const k of b.kaders ?? []) {
+        g.fillStyle(k.warm ? 0xffd36e : 0xcfe3ff, k.warm ? 0.16 : 0.13);
+        g.fillRoundedRect(k.x - k.b / 2, k.y - k.h / 2, k.b, k.h, 34);
+        if (k.warm) {
+          g.lineStyle(3, 0xffd36e, 0.55);
+          g.strokeRoundedRect(k.x - k.b / 2, k.y - k.h / 2, k.b, k.h, 34);
+        }
+        if (k.label) {
+          const sl = `reis-lbl:${k.label}`;
+          this.canvasPlaatje(sl, 200, 60, (c) => tekenReisTekst(c, k.label!));
+          const ls = k.labelS ?? 0.95;
+          this.labels.push(this.plaats(sl, k.x, k.y - k.h / 2 - 20 * (ls / 0.95)).setScale(ls / TX).setDepth(1));
+        }
+      }
       g.lineStyle(4, 0xbfe6ff, 0.75);
       for (const v of b.vakken) {
         /* een stippellijn rond de plek waar iets moet komen */
@@ -522,36 +796,166 @@ function past(d: Ding, tb: number, th: number, max = 1.6) {
   return Math.min(tb / b, th / h, max);
 }
 
+/** Een heel groot ding (alleen op een staand scherm) krijgt een plaatje op dubbele maat, zodat het scherp blijft. */
+function fVan(it: { s: number }) {
+  return it.s > 1.75 ? 2 : 1;
+}
+
 function rijX(n: number, gap: number) {
   return Array.from({ length: n }, (_, i) => MIDX + (i - (n - 1) / 2) * gap);
 }
 
 type Plek = { id: string; d: Ding; x: number; y: number; s: number };
 
-function kiesIndeling(boven: Ding[], keuzes: Ding[], pijl: boolean, reis = false) {
+function kiesIndeling(boven: Ding[], keuzes: Ding[], pijl: boolean, reis = false, vraagLabel?: string, klokRechts = false) {
   const plekken: Plek[] = [];
   const pijlen: Beeld["pijlen"] = [];
+  const kaders: Kader[] = [];
   const klein = keuzes.every((k) => k.t === "vink" || k.t === "kruis");
+  if (vraagLabel && keuzes.length) {
+    /* Rekenen met de klok (Sara, 7 november 2026): de vraagklok groot in een eigen warm vak met een woord erboven,
+       de antwoorden kleiner in hun eigen vakken in het midden. Zo zie je meteen welke klok de vraag is. */
+    const klokI = boven.findIndex((d) => d.t === "wijzer");
+    /* het vak "nu" staat altijd op dezelfde plek, midden bovenaan, ook als er een ding naast staat (keuring herstel A) */
+    const kx = MIDX;
+    boven.forEach((d, i) => {
+      if (i === klokI) plekken.push({ id: `b${i}`, d, x: kx, y: 205, s: past(d, 250, 250) });
+      else plekken.push({ id: `b${i}`, d, x: kx - 330, y: 215, s: past(d, 220, 220) });
+    });
+    if (klokI >= 0) kaders.push({ x: kx, y: 205, b: 290, h: 280, warm: true, label: vraagLabel });
+    const gap = keuzes.length === 2 ? 300 : 270;
+    const xs = rijX(keuzes.length, gap);
+    keuzes.forEach((d, i) => {
+      plekken.push({ id: `k${i}`, d, x: xs[i], y: 535, s: past(d, 200, 200) });
+      kaders.push({ x: xs[i], y: 535, b: 240, h: 240 });
+    });
+    return { plekken, pijlen, kaders };
+  }
   if (boven.length || reis) {
-    const bx = rijX(boven.length, boven.length === 1 ? 0 : pijl ? 420 : 380);
+    /* met een sfeer-achtergrond staat de klok op dezelfde plek als naast een ding, zodat het beeld niet verspringt */
+    /* een bus of oven naast de klok staat iets verder naar links, zodat hij kan rijden zonder tegen de klok te komen
+       (keuring herstel A); de klok staat dan op dezelfde plek en is even groot als bij een sfeer-achtergrond */
+    const dingKlok = boven.length === 2 && boven[0].t === "vw" && boven[1].t === "wijzer" && !keuzes.length;
+    const bx = klokRechts && boven.length === 1 && !keuzes.length ? [MIDX + 190] : dingKlok ? [MIDX - 240, MIDX + 190] : rijX(boven.length, boven.length === 1 ? 0 : pijl ? 420 : 380);
     const by = keuzes.length ? 215 : 340;
-    boven.forEach((d, i) => plekken.push({ id: `b${i}`, d, x: bx[i], y: by, s: past(d, boven.length === 1 ? 440 : 330, keuzes.length ? 300 : 420) }));
+    const zelfde = klokRechts && boven.length === 1 && !keuzes.length;
+    boven.forEach((d, i) => plekken.push({ id: `b${i}`, d, x: bx[i], y: by, s: past(d, boven.length === 1 && !zelfde ? 440 : 330, keuzes.length ? 300 : 420) }));
     if (pijl && boven.length === 2) pijlen.push({ x1: MIDX - 50, x2: MIDX + 50, y: by });
-    const gap = klein ? 260 : keuzes.length === 2 ? 380 : 310;
+    /* elke keuze in een eigen vak (Sara, 7 november 2026), behalve vinkje en kruisje; iets kleiner en hoger, zodat de vakken niet tegen de rand staan */
+    const gap = klein ? 260 : keuzes.length === 2 ? 340 : 290;
     const kx = rijX(keuzes.length, gap);
-    keuzes.forEach((d, i) => plekken.push({ id: `k${i}`, d, x: kx[i], y: 548, s: past(d, klein ? 150 : keuzes.length === 2 ? 320 : 280, klein ? 150 : 230) }));
+    const ky = klein ? 548 : 530;
+    keuzes.forEach((d, i) => plekken.push({ id: `k${i}`, d, x: kx[i], y: ky, s: past(d, klein ? 150 : keuzes.length === 2 ? 280 : 250, klein ? 150 : 215) }));
+    if (!klein) keuzes.forEach((d, i) => kaders.push({ x: kx[i], y: ky, b: Math.min(gap - 26, maatVan(d).b * plekken[plekken.length - keuzes.length + i].s + 40), h: Math.min(260, maatVan(d).h * plekken[plekken.length - keuzes.length + i].s + 30) }));
   } else {
     const gap = keuzes.length === 2 ? 430 : 310;
     const kx = rijX(keuzes.length, gap);
     keuzes.forEach((d, i) => plekken.push({ id: `k${i}`, d, x: kx[i], y: 370, s: past(d, keuzes.length === 2 ? 370 : 285, 340) }));
+    if (!klein) keuzes.forEach((d, i) => kaders.push({ x: kx[i], y: 370, b: Math.min(gap - 26, maatVan(d).b * plekken[i].s + 40), h: maatVan(d).h * plekken[i].s + 40 }));
   }
-  return { plekken, pijlen };
+  return { plekken, pijlen, kaders };
+}
+
+/**
+ * Staand scherm (telefoon rechtop; BOUWREGELS 1.24, 7 november 2026): het vlak is 980 punten breed en `hs` punten hoog
+ * (720 of meer, zie `Vlakbasis.staandHoogte`). Alles komt groter en onder elkaar: de vraag (klok, ding) bovenaan,
+ * de antwoorden in hun vakken onderaan. Op een liggend scherm wordt deze indeling nooit gebruikt.
+ */
+function kiesIndelingStaand(boven: Ding[], keuzes: Ding[], pijl: boolean, reis: boolean, vraagLabel: string | undefined, hs: number, sfeer = false) {
+  const plekken: Plek[] = [];
+  const pijlen: Beeld["pijlen"] = [];
+  const kaders: Kader[] = [];
+  const n = keuzes.length;
+  const klein = n > 0 && keuzes.every((k) => k.t === "vink" || k.t === "kruis");
+  const alleen = n > 0 && !boven.length && !reis;
+  /* 3 of 4 keuzeklokken (keuring herstel AB2): naast elkaar werden ze op een staand scherm maar ±100 px met cijfers van
+     ±7 px, terwijl er in de hoogte nog veel ruimte was. Daarom staan ze dan in 2 rijen (2 + 1 of 2 + 2), elk vak ±1,5 × zo
+     groot. Alleen als de vraag erboven dan nog groot genoeg blijft (een vraagklok met "nu" houdt voorrang); anders blijft
+     het 1 rij zoals eerst. Met een zachte sfeer-achtergrond linksboven staat de losse klok bovenaan (1 + 2), zodat de
+     sfeer niet achter een klok verdwijnt. */
+  const nodigBoven = alleen ? 0 : vraagLabel ? 460 : boven.some((d) => d.t === "wijzer" || d.t === "digi") ? 380 : 170;
+  const vak2 = Math.min(440, Math.floor(alleen ? (hs - 60) / 2 : (hs - 26 - 40 - 44 - nodigBoven) / 2));
+  const tweeRijen = !klein && (n === 3 || n === 4) && !reis && vak2 >= 340;
+  let kY: number;
+  let band: number;
+  if (tweeRijen) {
+    band = 2 * vak2 + 40;
+    const midden = alleen ? hs / 2 : hs - 26 - band / 2;
+    kY = midden;
+    const losBoven = n === 3 && sfeer;
+    keuzes.forEach((d, i) => {
+      /* rij 0 en 1; bij 1 + 2 staat keuze 0 alleen bovenaan */
+      const rij = losBoven ? (i === 0 ? 0 : 1) : i < 2 ? 0 : 1;
+      const inRij = losBoven ? (rij === 0 ? 1 : 2) : rij === 0 ? Math.min(2, n) : n - 2;
+      const kol = losBoven ? (i === 0 ? 0 : i - 1) : i % 2;
+      const x = MIDX + (kol - (inRij - 1) / 2) * (vak2 + 20);
+      const y = midden + (rij - 0.5) * (vak2 + 20);
+      const sc = past(d, vak2 - 40, vak2 - 40, 3.6);
+      plekken.push({ id: `k${i}`, d, x, y, s: sc });
+      const m = maatVan(d);
+      kaders.push({ x, y, b: Math.min(vak2, m.b * sc + 40), h: Math.min(vak2, m.h * sc + 30) });
+    });
+  } else {
+    /* de antwoorden: één rij onderaan (alleen antwoorden: in het midden), zo groot als de breedte toelaat */
+    const gap = n === 2 ? 460 : n >= 4 ? 240 : 318;
+    const vakB = klein ? 220 : gap - 26;
+    const vakH = klein ? 220 : Math.min(alleen ? Math.max(300, Math.min(vakB, hs - 120)) : 300, vakB);
+    band = n ? vakH + 20 : 0;
+    kY = alleen ? hs / 2 : hs - 26 - band / 2;
+    rijX(n, klein ? 300 : gap).forEach((x, i) => {
+      const d = keuzes[i];
+      const sc = klein ? past(d, 200, 200, 2) : past(d, vakB - 36, vakH - 36, 3.2);
+      plekken.push({ id: `k${i}`, d, x, y: kY, s: sc });
+      if (!klein) {
+        const m = maatVan(d);
+        kaders.push({ x, y: kY, b: Math.min(vakB, m.b * sc + 40), h: Math.min(vakH, m.h * sc + 30) });
+      }
+    });
+  }
+  /* de vraag: alles boven de antwoorden */
+  const bodem = n && !alleen ? kY - band / 2 - 34 : hs - 20;
+  const hoog = bodem - 10;
+  if (vraagLabel && boven.length) {
+    const klokI = boven.findIndex((d) => d.t === "wijzer");
+    const K = Math.max(260, Math.min(600, hoog - 80));
+    const cy = 10 + 70 + K / 2 + Math.max(0, (hoog - 80 - K) / 2);
+    const zij = Math.max(150, Math.min(220, MIDX - K / 2 - 20));
+    boven.forEach((d, i) => {
+      if (i === klokI) plekken.push({ id: `b${i}`, d, x: MIDX, y: cy, s: past(d, K - 40, K - 40, 3.2) });
+      else plekken.push({ id: `b${i}`, d, x: Math.max(zij / 2 + 6, (MIDX - K / 2) / 2), y: cy, s: past(d, zij, zij, 2) });
+    });
+    if (klokI >= 0) kaders.push({ x: MIDX, y: cy, b: K, h: K, warm: true, label: vraagLabel, labelS: 1.7 });
+    return { plekken, pijlen, kaders, reis: undefined as ReisMaat | undefined };
+  }
+  if (reis) return { plekken, pijlen, kaders, reis: reisStaand(bodem) };
+  const midY = 10 + hoog / 2;
+  if (boven.length === 1) {
+    const d = boven[0];
+    const max = d.t === "wijzer" ? 760 : n ? 420 : 520;
+    plekken.push({ id: "b0", d, x: MIDX, y: midY, s: past(d, Math.min(900, max), Math.min(hoog - 20, max), 3.6) });
+  } else if (boven.length === 2 && boven[0].t === "vw" && boven[1].t === "wijzer") {
+    /* een ding dat het verhaal naspeelt (bus, oven) boven de klok, links, zodat het kan rijden zonder tegen de klok te komen */
+    const dingH = Math.max(150, Math.min(260, hoog * 0.3));
+    const klokH = Math.min(720, hoog - dingH - 20);
+    plekken.push({ id: "b0", d: boven[0], x: 300, y: 10 + dingH / 2, s: past(boven[0], dingH * 1.3, dingH, 2) });
+    plekken.push({ id: "b1", d: boven[1], x: MIDX, y: 10 + dingH + 20 + klokH / 2, s: past(boven[1], klokH, klokH, 3.6) });
+  } else if (boven.length) {
+    const gapB = Math.min(490, 960 / boven.length);
+    const xs = rijX(boven.length, gapB);
+    boven.forEach((d, i) => plekken.push({ id: `b${i}`, d, x: xs[i], y: midY, s: past(d, gapB - 60, Math.min(hoog - 20, gapB - 60), 3.2) }));
+    if (pijl && boven.length === 2) pijlen.push({ x1: MIDX - 26, x2: MIDX + 26, y: midY });
+  }
+  return { plekken, pijlen, kaders, reis: undefined as ReisMaat | undefined };
 }
 
 /* ---------- het vlak ---------- */
 
 export function SqulaKlokVlak(p: KlokVlakProps & Vlakbasis) {
-  const { plek, scene: motor } = useHoloMotor<KlokScene>(p.schaal, maakKlokScene);
+  /* Op een staand scherm mag het vlak hoger worden (BOUWREGELS 1.24): het canvas is dan meteen zo hoog als kan. */
+  const [staandMax] = useState(() => (typeof window !== "undefined" && window.innerHeight > window.innerWidth ? Math.ceil(Math.min(2 * 720, window.innerHeight / (p.schaal || 1))) : 0));
+  const { plek, scene: motor } = useHoloMotor<KlokScene>(p.schaal, maakKlokScene, staandMax > 720 ? { hoogte: staandMax } : {});
+  const hs = staandMax > 720 && p.staandHoogte && p.staandHoogte > 720 ? Math.min(p.staandHoogte, staandMax) : 720;
+  const staand = staandMax > 0;
   const vlakRef = useRef<HTMLDivElement>(null);
   /* de wijzerklokken (plaatjes van de Synthesis-klok) moeten er zijn voordat er iets getekend wordt */
   const [klokken, setKlokken] = useState(false);
@@ -564,17 +968,20 @@ export function SqulaKlokVlak(p: KlokVlakProps & Vlakbasis) {
   }, []);
   const scene = klokken ? motor : null;
   return (
-    <div className={s.vlak} ref={vlakRef}>
-      <div ref={plek} style={HOLO_CANVAS} aria-hidden />
-      {p.modus === "kies" && <Kies {...p} scene={scene} />}
-      {p.modus === "sleep" && <Sleep key={p.sleutel} {...p} scene={scene} vlak={vlakRef} />}
-      {p.modus === "memory" && <Memory key={p.sleutel} {...p} scene={scene} />}
-      {p.modus === "verbind" && <Verbind key={p.sleutel} {...p} scene={scene} />}
+    <div className={s.vlak} ref={vlakRef} style={hs > 720 ? { bottom: "auto", height: hs } : undefined}>
+      <div ref={plek} style={staandMax > 720 ? { ...HOLO_CANVAS, overflow: "hidden" } : HOLO_CANVAS} aria-hidden />
+      {p.modus === "kies" && <Kies {...p} scene={scene} staand={staand} hs={hs} />}
+      {p.modus === "sleep" && <Sleep key={p.sleutel} {...p} scene={scene} vlak={vlakRef} staand={staand} hs={hs} />}
+      {p.modus === "memory" && <Memory key={p.sleutel} {...p} scene={scene} staand={staand} hs={hs} />}
+      {p.modus === "verbind" && <Verbind key={p.sleutel} {...p} scene={scene} staand={staand} hs={hs} />}
     </div>
   );
 }
 
-type Deel = KlokVlakProps & Vlakbasis & { scene: KlokScene | null };
+/* Op een staand scherm mag dit vlak hoger worden dan 720 punten (Lesscherm geeft dan `staandHoogte`; BOUWREGELS 1.24). */
+SqulaKlokVlak.staandGroei = true;
+
+type Deel = KlokVlakProps & Vlakbasis & { scene: KlokScene | null; staand: boolean; hs: number };
 
 /** De staat van een id uit de lijsten van de les. */
 function staatVan(p: KlokVlakProps, id: string, eigen?: Staat): Staat {
@@ -628,7 +1035,11 @@ function labelVan(d: Ding, i: number): string {
 
 function Kies(p: Deel) {
   const { scene, meld } = p;
-  const ind = useMemo(() => kiesIndeling(p.boven ?? [], p.keuzes ?? [], !!p.pijl, !!p.reis), [p.boven, p.keuzes, p.pijl, p.reis]);
+  const { staand, hs } = p;
+  const ind = useMemo(
+    () => (staand ? kiesIndelingStaand(p.boven ?? [], p.keuzes ?? [], !!p.pijl, !!p.reis, p.vraagLabel, hs, !!p.sfeer) : { ...kiesIndeling(p.boven ?? [], p.keuzes ?? [], !!p.pijl, !!p.reis, p.vraagLabel, !!p.sfeer), reis: undefined as ReisMaat | undefined }),
+    [p.boven, p.keuzes, p.pijl, p.reis, p.vraagLabel, p.sfeer, staand, hs],
+  );
   const sleutelLijsten = JSON.stringify([p.licht, p.goed, p.fout, p.uit]);
   useEffect(() => {
     if (!scene) return;
@@ -638,12 +1049,13 @@ function Kies(p: Deel) {
       lijnen: [],
       vakken: [],
       pijlen: ind.pijlen,
+      kaders: ind.kaders,
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, p.sleutel, ind, sleutelLijsten]);
   /* het verhaal (bus, weg, klokken): tijdens de vraag alleen het begin; het naspelen komt pas als `speel` omhoog gaat */
   const reis = p.reis;
-  const reisSleutel = reis ? `${p.sleutel}:${reis.naam}:${reis.nu.u}:${reis.nu.m}:${reis.min}` : "";
+  const reisSleutel = reis ? `${p.sleutel}:${reis.naam}:${reis.nu.u}:${reis.nu.m}:${reis.min}${ind.reis ? `:${Math.round(ind.reis.klokY)}` : ""}` : "";
   const gespeeld = useRef(0);
   useEffect(() => {
     if (!scene) return;
@@ -651,7 +1063,7 @@ function Kies(p: Deel) {
       scene.reis(null);
       return;
     }
-    scene.reis({ sleutel: reisSleutel, naam: reis.naam, nu: reis.nu, min: reis.min, label: reis.label });
+    scene.reis({ sleutel: reisSleutel, naam: reis.naam, nu: reis.nu, min: reis.min, label: reis.label, ...(ind.reis ? { maat: ind.reis } : {}) });
     let weg = false;
     void laadKlokTussen(reisStappen(reis.nu, reis.min)).then(() => !weg && scene.bakReis());
     return () => {
@@ -673,6 +1085,26 @@ function Kies(p: Deel) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [scene, reis?.speel]);
   useEffect(() => () => scene?.reis(null), [scene]);
+  /* een ding speelt het verhaal na (pas als `speel` omhoog gaat, dus na het antwoord) */
+  const naspeel = p.naspeel;
+  const naspeelGespeeld = useRef(0);
+  useEffect(() => {
+    if (!scene || !naspeel) return;
+    if (naspeel.speel === 0 || naspeel.speel === naspeelGespeeld.current) return;
+    naspeelGespeeld.current = naspeel.speel;
+    const i = (p.boven ?? []).findIndex((d) => d.t === "vw");
+    if (i < 0) return void meld({ soort: "naspeel" });
+    scene.naspeel(`b${i}`, naspeel.soort, () => meld({ soort: "naspeel" }));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, naspeel?.speel]);
+  /* de sfeer-achtergrond */
+  const sfeerSl = p.sfeer ? `${p.sfeer.naam}:${p.sfeer.plek ?? ""}` : "";
+  useEffect(() => {
+    if (!scene) return;
+    scene.sfeer(p.sfeer ?? null);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, sfeerSl]);
+  useEffect(() => () => scene?.sfeer(null), [scene]);
   const aan = !!p.actief;
   return (
     <>
@@ -857,7 +1289,11 @@ function Memory(p: Deel) {
     }
     return lijst;
   }, [p.paren, p.sleutel]);
-  const plekken = kaarten.map((_, i) => ({ x: MIDX + ((i % 3) - 1) * 240, y: 225 + Math.floor(i / 3) * 280 }));
+  /* staand scherm: 2 kolommen en 3 rijen, veel groter (BOUWREGELS 1.24) */
+  const { staand, hs } = p;
+  const rijG = Math.min(380, (hs - 40) / 3);
+  const mm = staand ? Math.min(rijG - 40, 400) : 200;
+  const plekken = kaarten.map((_, i) => (staand ? { x: MIDX + ((i % 2) * 2 - 1) * 235, y: hs / 2 + (Math.floor(i / 2) - 1) * rijG } : { x: MIDX + ((i % 3) - 1) * 240, y: 225 + Math.floor(i / 3) * 280 }));
   const [kijk, setKijk] = useState(true);
   const [open, setOpen] = useState<number[]>([]);
   const [gevonden, setGevonden] = useState<number[]>([]);
@@ -878,11 +1314,11 @@ function Memory(p: Deel) {
       const zicht = kijk || open.includes(i) || gevonden.includes(i);
       const d: Ding = zicht ? k.d : { t: "dicht" };
       const staat: Staat = net.includes(i) ? "goed" : mis.includes(i) ? "fout" : gevonden.includes(i) ? "uit" : "gewoon";
-      return { id: `m${i}`, d, x: plekken[i].x, y: plekken[i].y, s: past(d, 200, 200), staat: staatVan(p, `m${i}`, staat), draai: true };
+      return { id: `m${i}`, d, x: plekken[i].x, y: plekken[i].y, s: past(d, mm, mm, staand ? 3 : 1.6), staat: staatVan(p, `m${i}`, staat), draai: true };
     });
     scene.zet({ sleutel: p.sleutel, items, lijnen: [], vakken: [], pijlen: [] });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [scene, p.sleutel, kaarten, kijk, open, gevonden, net, mis]);
+  }, [scene, p.sleutel, kaarten, kijk, open, gevonden, net, mis, staand, hs]);
 
   /* de automatische test: welk bolletje nu verder helpt */
   useEffect(() => {
@@ -931,7 +1367,7 @@ function Memory(p: Deel) {
   return (
     <>
       {kaarten.map((k, i) => (
-        <Knop key={i} id={`m${i}`} d={{ t: "dicht" }} x={plekken[i].x} y={plekken[i].y} sch={200 / 170} aan={!!p.actief && !kijk && !gevonden.includes(i)} label={`Bolletje ${i + 1}`} klik={() => tik(i)} />
+        <Knop key={i} id={`m${i}`} d={{ t: "dicht" }} x={plekken[i].x} y={plekken[i].y} sch={mm / 170} aan={!!p.actief && !kijk && !gevonden.includes(i)} label={`Bolletje ${i + 1}`} klik={() => tik(i)} />
       ))}
     </>
   );
@@ -944,11 +1380,15 @@ function Verbind(p: Deel) {
   const paren = useMemo(() => p.paren ?? [], [p.paren]);
   const rechts = useMemo(() => p.rechts ?? paren.map((_, i) => i), [p.rechts, paren]);
   const n = paren.length;
-  const gap = n >= 4 ? 150 : 180;
-  const maat = n >= 4 ? 132 : 158;
-  const yVan = (i: number) => 370 + (i - (n - 1) / 2) * gap;
-  const LX = 300;
-  const RX = 680;
+  /* groter dan eerst (BOUWREGELS 1.24, 7 november 2026): de klokjes moeten goed te lezen zijn */
+  /* staand scherm: groter en hoger, over de hele hoogte van het vlak (BOUWREGELS 1.24) */
+  const { staand, hs } = p;
+  const gap = staand ? Math.min(330, (hs - 60) / Math.max(1, n)) : n >= 4 ? 158 : 200;
+  const maat = staand ? Math.min(gap - 40, 270) : n >= 4 ? 150 : 180;
+  const breedK = staand ? 1.45 : 1.6;
+  const yVan = (i: number) => (staand ? hs / 2 : 370) + (i - (n - 1) / 2) * gap;
+  const LX = staand ? 245 : 260;
+  const RX = staand ? 735 : 720;
   const [kies, setKies] = useState<string | null>(null);
   const [lijnen, setLijnen] = useState<[number, number][]>([]);
   const [fout, setFout] = useState<[number, number] | null>(null);
@@ -956,11 +1396,11 @@ function Verbind(p: Deel) {
 
   const items = useMemo(() => {
     const lijst: Plek[] = [];
-    paren.forEach((pr, i) => lijst.push({ id: `l${i}`, d: pr[0], x: LX, y: yVan(i), s: past(pr[0], maat * 1.6, maat) }));
-    rechts.forEach((k, j) => lijst.push({ id: `r${j}`, d: paren[k][1], x: RX, y: yVan(j), s: past(paren[k][1], maat * 1.6, maat) }));
+    paren.forEach((pr, i) => lijst.push({ id: `l${i}`, d: pr[0], x: LX, y: yVan(i), s: past(pr[0], maat * breedK, maat, staand ? 3 : 1.6) }));
+    rechts.forEach((k, j) => lijst.push({ id: `r${j}`, d: paren[k][1], x: RX, y: yVan(j), s: past(paren[k][1], maat * breedK, maat, staand ? 3 : 1.6) }));
     return lijst;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [paren, rechts, maat]);
+  }, [paren, rechts, maat, staand, hs]);
   const breed = (id: string) => {
     const it = items.find((q) => q.id === id)!;
     return (maatVan(it.d).b * it.s) / 2;

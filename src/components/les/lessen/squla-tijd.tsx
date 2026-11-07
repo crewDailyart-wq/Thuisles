@@ -61,6 +61,41 @@ function metReactie(ops: Opgave[], mis: (Mis | undefined)[]): Opgave[] {
 /** Een andere volgorde van de keuzes (bij een vraag die terugkomt). */
 const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), lijst[0]] : lijst);
 
+/*
+  Het goede antwoord staat niet steeds op dezelfde plek (BOUWREGELS 1.23, Sara 7 november 2026): elke les-start een
+  nieuw toeval-zaadje, en daarmee per vraag een willekeurige volgorde van de keuzes. Binnen één les-start houdt een vraag
+  zijn volgorde (het voorbeeld op het beginscherm en de vraag zien er hetzelfde uit). Alleen de plek verandert; de
+  antwoorden, de beoordeling, de hints en de score blijven gelijk.
+*/
+let tijdZaad = 1;
+const nieuwTijdZaad = () => {
+  tijdZaad = (Math.random() * 2 ** 31) | 0;
+};
+function toevalT(tekst: string) {
+  let h = 2166136261 ^ tijdZaad;
+  for (const ch of tekst) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 16777619);
+  }
+  return () => {
+    h += 0x6d2b79f5;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** De keuzes in een willekeurige volgorde (per les-start, per vraag; een vraag die terugkomt krijgt een andere). */
+const schud = <T,>(lijst: T[], keer: boolean, extra = ""): T[] => {
+  const r = toevalT(`${JSON.stringify(lijst)}|${keer ? "t" : ""}|${extra}`);
+  const v = [...lijst];
+  for (let i = v.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [v[i], v[j]] = [v[j], v[i]];
+  }
+  return v;
+};
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 type Opgave = (l: Lesgids, terug: boolean) => SqulaVraag<any>;
 
@@ -114,6 +149,7 @@ const LEEG_T: Omit<TreinProps, "nr"> = {
   vandaag: null,
   stappen: null,
   plaatje: null,
+  plaatjeStand: null,
   vandaagKaart: null,
   kaarten: [],
   kaartenActief: false,
@@ -127,6 +163,7 @@ const LEEG_T: Omit<TreinProps, "nr"> = {
 const zetT = (l: Lesgids, p: Partial<TreinProps>) => l.pasVlakAan<TreinProps>(p);
 let schudNr = 0;
 let golfNr = 0;
+let ritNr = 0;
 
 /** Bliepo loopt langs de trein en zegt de dagen van `van` tot en met `tot`. */
 async function zegDagen(l: Lesgids, van: number, tot: number, extra: Partial<TreinProps> = {}) {
@@ -237,7 +274,7 @@ function welkeNa(d: number, kaarten: number[]): Opgave {
     const vraag = [`Welke dag komt meteen na ${naam(d)}?`];
     return dagVraag(l, {
       beeld: { trein: [d, null] },
-      kaarten: schuif(kaarten, terug).map((k) => [k]),
+      kaarten: schud(kaarten, terug).map((k) => [k]),
       goed: [a],
       vraag,
       goedZin: [`Na ${naam(d)} komt ${naam(a)}.`],
@@ -275,7 +312,7 @@ function welkeVoor(d: number, kaarten: number[]): Opgave {
     const vraag = [`Welke dag komt vlak voor ${naam(d)}?`];
     return dagVraag(l, {
       beeld: { trein: [null, d] },
-      kaarten: schuif(kaarten, terug).map((k) => [k]),
+      kaarten: schud(kaarten, terug).map((k) => [k]),
       goed: [a],
       vraag,
       goedZin: [`Vlak voor ${naam(d)} komt ${naam(a)}.`],
@@ -311,7 +348,7 @@ function eersteDag(): Opgave {
     const vraag = ["Wat is de eerste dag van de week?"];
     return dagVraag(l, {
       beeld: { trein: LEEG_TREIN },
-      kaarten: schuif([[2], [0], [6]], terug),
+      kaarten: schud([[2], [0], [6]], terug),
       goed: [0],
       vraag,
       goedZin: ["Maandag is de eerste dag van de week.", "Dan begint de school weer."],
@@ -334,7 +371,7 @@ function laatsteDag(): Opgave {
     const vraag = ["Wat is de laatste dag van de week?"];
     return dagVraag(l, {
       beeld: { trein: LEEG_TREIN },
-      kaarten: schuif([[5], [1], [6]], terug),
+      kaarten: schud([[5], [1], [6]], terug),
       goed: [6],
       vraag,
       goedZin: ["Zondag is de laatste dag van de week.", "Na zondag begint er weer een nieuwe week."],
@@ -356,12 +393,14 @@ function weekendHoeveel(): Opgave {
   return (l, terug) => {
     const vraag = ["In het weekend ga je niet naar school.", "Hoeveel dagen heeft het weekend?"];
     return getalVraagT(l, {
-      beeld: { trein: LEEG_TREIN },
-      opties: schuif([1, 2, 5], terug),
+      /* Tijdens de vraag alleen de locomotief; pas na het antwoord rijdt de hele trein binnen met een rondje om het weekend
+         (BOUWREGELS 1.22: de lege trein deed niets). */
+      beeld: { trein: [] },
+      opties: schud([1, 2, 5], terug),
       goed: 2,
       vraag,
       goedZin: ["Het weekend heeft {2:wit} dagen."],
-      naGoed: { trein: ALLE, licht: [5, 6] },
+      naGoed: { trein: ALLE, licht: [5, 6], rit: ++ritNr },
       samen: async (l) => {
         zetT(l, { trein: ALLE, licht: [0, 1, 2, 3, 4] });
         await l.zeg("Kijk naar de trein.", "Eerst ga je {5:wit} dagen naar school.");
@@ -380,7 +419,7 @@ function weekendWelke(): Opgave {
     const vraag = ["Op welke dagen is het weekend?"];
     return dagVraag(l, {
       beeld: { trein: LEEG_TREIN },
-      kaarten: schuif([[3, 4], [5, 6], [6, 0]], terug),
+      kaarten: schud([[3, 4], [5, 6], [6, 0]], terug),
       goed: [5, 6],
       vraag,
       goedZin: ["Zaterdag en zondag zijn het weekend.", "Dan is er geen school."],
@@ -404,12 +443,14 @@ function weekendWelke(): Opgave {
 function hoeveelWeek(): Opgave {
   return (l, terug) =>
     getalVraagT(l, {
-      beeld: { plaatje: "vraag" },
-      opties: schuif([6, 7, 8], terug),
+      /* Geen los vraagteken meer: tijdens de vraag alleen de locomotief, en pas na het antwoord rijdt de trein met 7 wagons
+         binnen (BOUWREGELS 1.22; vóór het antwoord zou hij het antwoord verklappen). */
+      beeld: { trein: [] },
+      opties: schud([6, 7, 8], terug),
       goed: 7,
       vraag: ["Hoeveel dagen heeft een week?"],
       goedZin: ["Een week heeft {7:wit} dagen.", "Van maandag tot en met zondag."],
-      naGoed: { plaatje: null, trein: ALLE },
+      naGoed: { plaatje: null, trein: ALLE, rit: ++ritNr },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
         await l.zeg("Elke wagon is 1 dag.", "Tel maar mee.");
@@ -424,6 +465,7 @@ function hoeveelWeek(): Opgave {
 }
 
 async function welkomTrein(l: Lesgids, welkom: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  nieuwTijdZaad();
   zetSynthesisHulp(l);
   l.vlak<TreinProps>(SqulaTijdTrein, { ...LEEG_T, nr: volgend(), trein: ALLE, rit: 1 });
   speelLesgeluid("verschijn");
@@ -612,16 +654,18 @@ function opVolgorde(start: number, losse: number[], handje = false): Opgave {
   };
 }
 
-type Verhaal = { reactie?: (c: number) => string[]; vandaag: number; goed: number; kaarten: number[]; plaatje: string; zinnen: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulp: Partial<TreinProps>; tip: string };
+/** `stand`: wat het plaatje doet (BOUWREGELS 1.22): "sfeer" = klein en zacht op de achtergrond; "komt" = eerst klein in de verte, na het antwoord komt het dichtbij; "weg" = geen plaatje. */
+type Verhaal = { reactie?: (c: number) => string[]; vandaag: number; goed: number; kaarten: number[]; plaatje: string; stand?: "sfeer" | "komt" | "weg"; zinnen: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulp: Partial<TreinProps>; tip: string };
 
 function verhaal(v: Verhaal): Opgave {
   return (l, terug) =>
     dagVraag(l, {
-      beeld: { plaatje: v.plaatje, vandaagKaart: v.vandaag },
-      kaarten: schuif(v.kaarten, terug).map((k) => [k]),
+      beeld: { plaatje: v.stand === "weg" ? null : v.plaatje, plaatjeStand: v.stand === "sfeer" ? "sfeer" : v.stand === "komt" ? "verte" : null, vandaagKaart: v.vandaag },
+      kaarten: schud(v.kaarten, terug).map((k) => [k]),
       goed: [v.goed],
       vraag: v.zinnen,
       goedZin: v.goedZin,
+      ...(v.stand === "komt" ? { naGoed: { plaatjeStand: "komt" as const } } : {}),
       samen: async (l) => {
         zetT(l, { trein: ALLE, vandaag: v.vandaag });
         await l.zeg(`Kijk, de gele pijl staat bij ${naam(v.vandaag)}.`, "De pijl wijst de dag van nu aan.");
@@ -640,6 +684,7 @@ const verhalen: Opgave[] = [
     goed: 3,
     kaarten: [2, 3, 4, 1],
     plaatje: "zwemmen",
+    stand: "sfeer",
     zinnen: ["Vandaag is het dinsdag.", "Morgen is het zwembad dicht.", "De dag daarna gaat het zwembad open.", "Op welke dag gaat het zwembad open?"],
     goedZin: ["Morgen is het woensdag.", "De dag daarna is het donderdag."],
     samen: async (l) => {
@@ -655,6 +700,7 @@ const verhalen: Opgave[] = [
     goed: 4,
     kaarten: [3, 5, 4, 1],
     plaatje: "schaar",
+    stand: "weg",
     zinnen: ["Vandaag is het woensdag.", "Morgen is de kapperszaak dicht.", "De dag daarna gaat de kapperszaak open.", "Op welke dag gaat de kapperszaak open?"],
     goedZin: ["Morgen is het donderdag.", "De dag daarna is het vrijdag."],
     samen: async (l) => {
@@ -670,6 +716,7 @@ const verhalen: Opgave[] = [
     goed: 6,
     kaarten: [5, 6, 0, 4],
     plaatje: "tent",
+    stand: "komt",
     zinnen: ["Vandaag is het donderdag.", "Over {3:wit} nachtjes begint het kamp.", "Op welke dag begint het kamp?"],
     goedZin: ["Na {3:wit} nachtjes slapen is het zondag."],
     samen: async (l) => {
@@ -688,6 +735,7 @@ const verhalen: Opgave[] = [
     goed: 5,
     kaarten: [4, 5, 0, 1],
     plaatje: "huis",
+    stand: "weg",
     zinnen: ["Vandaag is het zondag.", "Gisteren werd het huis geschilderd.", "Op welke dag werd het huis geschilderd?"],
     goedZin: ["Gisteren was het zaterdag."],
     samen: async (l) => {
@@ -702,6 +750,7 @@ const verhalen: Opgave[] = [
     goed: 3,
     kaarten: [4, 3, 2, 6],
     plaatje: "taart",
+    stand: "weg",
     zinnen: ["Vandaag is het zaterdag.", "Gisteren was het feest.", "De dag daarvoor stond de taart in de oven.", "Op welke dag stond de taart in de oven?"],
     goedZin: ["Gisteren was het vrijdag.", "De dag daarvoor was het donderdag."],
     samen: async (l) => {
@@ -717,6 +766,7 @@ const verhalen: Opgave[] = [
     goed: 2,
     kaarten: [1, 2, 3, 4],
     plaatje: "bed",
+    stand: "sfeer",
     zinnen: ["Vandaag is het maandag.", "Het bed staat klaar.", "Over {2:wit} nachtjes is het slaapfeest.", "Op welke dag is het slaapfeest?"],
     goedZin: ["Na {2:wit} nachtjes slapen is het woensdag."],
     samen: async (l) => {
@@ -782,6 +832,7 @@ const LEEG_P: Omit<PlaatjesProps, "nr"> = {
   licht: [],
   orden: null,
   verbind: null,
+  sfeer: null,
 };
 
 const zetP = (l: Lesgids, p: Partial<PlaatjesProps>) => l.pasVlakAan<PlaatjesProps>(p);
@@ -807,7 +858,7 @@ const jeKoos = (naam: string): string => {
 /** Een vraag met plaatjes (kaartjes in het vlak). */
 function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag<string> {
   const nr = volgend();
-  const kaarten = schuif(o.kaarten, terug);
+  const kaarten = schud(o.kaarten, terug);
   const uit: string[] = [];
   let naSamen = false;
   const naamVan = (id: string) => {
@@ -859,11 +910,12 @@ function knopVraag(
 ): SqulaVraag<string> {
   const nr = volgend();
   let naSamen = false;
-  const opties = schuif(o.opties, terug);
+  const opties = schud(o.opties, terug);
   return {
     toon: () => zetP(l, { ...LEEG_P, nr, ...o.beeld, ...(naSamen ? (o.hulpBeeld ?? {}) : {}) }),
     vraag: o.vraag,
-    antwoord: async () => (await l.kies(opties, { weetniet: false, direct: true })) ?? "",
+    /* lange keuzes (zinnetjes) onder elkaar en even breed (Sara, 7 november 2026) */
+    antwoord: async () => (await l.kies(opties, { weetniet: false, direct: true, ...(opties.some((x) => x.length > 12) ? { onderElkaar: true } : {}) })) ?? "",
     isGoed: (x) => x === o.goed,
     noem: (x) => (/^\d+$/.test(x) ? `{${x}:wit}` : Hoofd(x.replace(/\.$/, ""))),
     goed: async () => {
@@ -1196,10 +1248,21 @@ const kalender1Opgaven: Opgave[] = metReactie([
     ),
 ], KAL1_MIS);
 
+/** Koppelen: links willekeurig, maar nooit recht tegenover het woord dat erbij hoort (BOUWREGELS 1.23). */
+function linksDoorElkaar(lijst: PDing[], terug: boolean): PDing[] {
+  const rechtsVolgorde = ["dagkalender", "maandkalender", "weekkalender"];
+  const juist: Record<string, string> = { lijst: "maandkalender", blad: "weekkalender", plaatjes: "dagkalender" };
+  for (let k = 0; k < 30; k++) {
+    const v = schud(lijst, terug, `koppel${k}`);
+    if (v.every((d, i) => juist[d.id] !== rechtsVolgorde[i])) return v;
+  }
+  return schuif(lijst, terug);
+}
+
 /** Lijnen trekken tussen drie kalenders en drie woorden. */
 function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]> {
   const nr = volgend();
-  const links: PDing[] = schuif(
+  const links: PDing[] = linksDoorElkaar(
     [
       { id: "lijst", tekening: "lijst|maand=mei|dagen=31", zeg: "de lijst met alle dagen van mei" },
       { id: "blad", tekening: "weekblad", zeg: "het blad met 1 week" },
@@ -1289,6 +1352,7 @@ function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]
 }
 
 async function welkomPlaatjes(l: Lesgids, groot: string, welkom: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  nieuwTijdZaad();
   zetSynthesisHulp(l);
   l.vlak<PlaatjesProps>(SqulaTijdPlaatjes, { ...LEEG_P, nr: volgend(), groot });
   speelLesgeluid("verschijn");
@@ -1599,7 +1663,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "kampvuur" },
+        /* het kampvuur klein en zacht op de achtergrond (BOUWREGELS 1.22) */
+        beeld: { sfeer: "kampvuur" },
         opties: ["donderdag", "zaterdag", "zondag"],
         goed: "zaterdag",
         vraag: ["Gisteren was er een kampvuuravond.", "Dat was op vrijdag.", "Welke dag komt na vrijdag?"],
@@ -1637,7 +1702,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "boekrood" },
+        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
+        beeld: {},
         opties: ["lang", "rond", "snel"],
         goed: "lang",
         vraag: ["Het rode boek was niet kort.", "Het was juist heel erg ..."],
@@ -1653,7 +1719,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "boekblauw" },
+        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
+        beeld: {},
         opties: ["groen", "kort", "zwaar"],
         goed: "kort",
         vraag: ["Daarna lazen we het blauwe boek.", "Dat was niet lang.", "Het was juist heel erg ..."],
@@ -1669,7 +1736,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "boekgroen" },
+        /* het losse boek deed niets en is weg (BOUWREGELS 1.22) */
+        beeld: {},
         opties: ["straks", "gisteren", "vroeger"],
         goed: "straks",
         vraag: ["Toen was het groene boek nog niet aan de beurt.", "Dat kwam pas over een poosje.", "Welk woord past bij: over een poosje?"],
@@ -1748,7 +1816,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "dagdeel|d=nacht" },
+        /* geen maan meer: die verklapte het antwoord "laat" (BOUWREGELS 1.22) */
+        beeld: {},
         opties: ["laat", "kort", "straks"],
         goed: "laat",
         vraag: ["Na het kampvuur gingen we naar huis.", "Toen was het al heel ..."],
@@ -1785,7 +1854,8 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "zwemmen" },
+        /* het losse zwembadje deed niets en is weg (BOUWREGELS 1.22) */
+        beeld: {},
         opties: ["vrijdag", "zondag", "maandag"],
         goed: "zondag",
         vraag: ["Morgen gaan we zwemmen!", "Vandaag is het zaterdag.", "Welke dag is het morgen?"],
@@ -1803,7 +1873,7 @@ const tijden1Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "kampvuur" },
+        beeld: { sfeer: "kampvuur" },
         opties: ["donderdag", "vrijdag", "zondag"],
         goed: "vrijdag",
         vraag: ["Vandaag is het zaterdag.", "Welke dag was het gisteren?"],
@@ -2002,7 +2072,8 @@ const tijden2Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "bakkerij" },
+        /* de bakkerij klein en zacht op de achtergrond (BOUWREGELS 1.22) */
+        beeld: { sfeer: "bakkerij" },
         opties: ["de rondleiding", "een broodje krijgen"],
         goed: "de rondleiding",
         vraag: ["Er is een bezoek aan de bakkerij!", "Eerst is er een rondleiding door de hele bakkerij.", "Daarna is er een broodje.", "Wat duurt het langst?"],
@@ -2065,11 +2136,13 @@ const tijden2Opgaven: Opgave[] = metReactie([
     knopVraag(
       l,
       {
-        beeld: { groot: "brood" },
-        opties: ["een week kamperen", "afwassen", "een boterham eten"],
-        goed: "een week kamperen",
-        vraag: ["In de bakkerij worden de hele middag broodjes gebakken.", "Wat duurt langer dan een hele middag?"],
-        goedZin: ["Een week kamperen duurt veel langer.", "Een week heeft wel 7 dagen."],
+        /* Het losse brood is weg en de vraag is korter, zodat hij niet achter de knoppen bovenaan valt (Sara, 7 november 2026).
+           De knop heette al "1 week kamperen" (cijferafspraak 3.20); nu ook in de code, zodat de test hem vindt. */
+        beeld: {},
+        opties: ["1 week kamperen", "afwassen", "een boterham eten"],
+        goed: "1 week kamperen",
+        vraag: ["De bakkerij bakt de hele middag broodjes.", "Wat duurt langer dan een hele middag?"],
+        goedZin: ["1 week kamperen duurt veel langer.", "Een week heeft wel 7 dagen."],
         samen: async (l) => {
           await l.zeg("Een middag is een stuk van 1 dag.", "Een week is 7 dagen.");
         },

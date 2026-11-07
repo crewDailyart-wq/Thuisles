@@ -90,7 +90,27 @@ export type MetenProps = {
    * de beginsituatie; `naar` is de tekening die er na afloop staat. `n` telt op: elke nieuwe waarde speelt het 1 keer. `zone`: waar de
    * dingen landen, als deel van de tekening (x, y = midden, b = breedte). Standaard: de opening van een mand.
    */
-  naspeel?: { n: number; naar: string; dingen: string[]; zone?: { x: number; y: number; b: number } } | null;
+  naspeel?: {
+    n: number;
+    naar: string;
+    dingen: string[];
+    zone?: { x: number; y: number; b: number };
+    /* Herstel 7 november (additief): */
+    /** De tekening die er meteen bij het begin van het naspelen staat (de beginsituatie zonder de losse dingen). */
+    start?: string;
+    /** Waar elk ding begint (deel van de tekening). Bij `uit` is dit juist waar het eindigt. */
+    van?: { x: number; y: number }[];
+    /** Omgekeerd: de dingen springen uit de zone naar hun plek in `van`. */
+    uit?: boolean;
+    /** Hoe groot elk ding is, als deel van de breedte van de tekening (standaard 0,2). */
+    maat?: number;
+    /** De dingen verdwijnen in de tekening (krimpen en vervagen bij het landen), bijvoorbeeld appels die in een tas gaan. */
+    weg?: boolean;
+    /** Wat de tekening aan het eind doet: tevreden schudden (standaard), zwaar zakken met een stofwolkje, of licht omhoog wippen. */
+    einde?: "schud" | "zak" | "hop";
+  } | null;
+  /** Het voorbeeld bovenaan in een eigen vak, even groot getekend als de keuzes eronder (herstel 7 november). */
+  grootVak?: boolean;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -112,21 +132,28 @@ export function indeling(p: MetenProps): Indeling {
   const heeftBoven = !!(p.groot || p.balans || vergelijk);
   const onder = orden ? (orden.klein ? 336 : 262) : n ? 404 : 700;
   const boven = heeftBoven ? { top: 14, onder } : null;
+  /* De keuzes staan in het midden, niet tegen de rand (herstel 7 november): iets smallere rijen. */
+  let kaarten: Rect[] = [];
+  if (n) {
+    if (heeftBoven) {
+      const [b, h] = n === 1 ? [260, 230] : n === 2 ? [270, 240] : n === 3 ? [240, 236] : [196, 210];
+      kaarten = rij(n, b, 30, 562, h);
+    } else {
+      const [b, h] = n === 2 ? [320, 320] : n === 3 ? [270, 300] : [200, 260];
+      kaarten = rij(n, b, 36, 370, h);
+    }
+  }
   let groot: Indeling["groot"] = null;
   if (p.groot && !vergelijk && !p.balans) {
     const top = 14;
     const m = tekeningMaat(p.groot);
-    const k = Math.min((onder - top) / m.h, 920 / m.b, 1.7);
-    groot = { x: VLAK_B / 2, y: top + (onder - top) / 2, b: m.b * k, h: m.h * k, k };
-  }
-  let kaarten: Rect[] = [];
-  if (n) {
-    if (heeftBoven) {
-      const [b, h] = n === 1 ? [260, 230] : n === 2 ? [270, 240] : n === 3 ? [250, 236] : [205, 210];
-      kaarten = rij(n, b, 40, 562, h);
+    if (p.grootVak && kaarten.length) {
+      /* Het voorbeeld even groot als de keuzes (zelfde schaal), in een eigen vak. */
+      const k = gedeeldeSchaal([...(p.kaarten ?? []), { id: "groot", tekening: p.groot }], kaarten[0].b, kaarten[0].h).k;
+      groot = { x: VLAK_B / 2, y: top + (onder - top) / 2, b: m.b * k, h: m.h * k, k };
     } else {
-      const [b, h] = n === 2 ? [320, 320] : n === 3 ? [280, 300] : [210, 260];
-      kaarten = rij(n, b, 44, 370, h);
+      const k = Math.min((onder - top) / m.h, 820 / m.b, 1.7);
+      groot = { x: VLAK_B / 2, y: top + (onder - top) / 2, b: m.b * k, h: m.h * k, k };
     }
   }
   let vakken: Rect[] = [];
@@ -144,7 +171,8 @@ export function indeling(p: MetenProps): Indeling {
     } else {
       const [b, h] = m <= 3 ? [210, 180] : [196, 170];
       vakken = rij(m, b, 30, heeftBoven ? 380 : 240, h);
-      losse = rij(orden.losse.length, b, 40, heeftBoven ? 592 : 520, h);
+      /* Herstel ronde 2 (7 november): bij 4 of meer losse kaartjes iets minder ruimte ertussen, zodat de rij niet krap tegen de rand staat. */
+      losse = rij(orden.losse.length, b, orden.losse.length >= 4 ? 20 : 40, heeftBoven ? 592 : 520, h);
     }
   }
   return { boven, groot, kaarten, vakken, losse };
@@ -285,7 +313,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
             const maat = d.label.length > 16 ? 21 : 26;
             c.font = `800 ${maat}px ${letter()}`;
             const lijst = regels(c, d.label, b - 26).slice(0, 3);
-            const y0 = h - 14 - (lijst.length * (maat + 4)) / 2;
+            /* Herstel 7 november: de hele tekst blijft op het kaartje (de tweede regel viel er onderaan af). */
+            const y0 = h - 16 - lijst.length * (maat + 4);
             lijst.forEach((r, i) => c.fillText(r, b / 2, y0 + i * (maat + 4) + (maat + 4) / 2 - 4));
           } else {
             let maat = klein ? 46 : d.label.length > 24 ? 26 : d.label.length > 11 ? 30 : 40;
@@ -319,6 +348,18 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const doel = `${sl}|g|${kleur}`;
       this.bak(sl, doel, RING[kleur]);
       return doel;
+    }
+
+    /** Een zacht, half doorzichtig vak achter een keuze (zoals bij de geldles; herstel 7 november). Los van het plaatje, zodat gloed en oplichten om het ding zelf blijven. */
+    keuzeVak(b: number, h: number) {
+      const sl = `mkv|${Math.round(b)}x${Math.round(h)}`;
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.fillStyle = "rgba(207,227,255,0.15)";
+        c.beginPath();
+        c.roundRect(3, 3, b - 6, h - 6, 30);
+        c.fill();
+      });
+      return sl;
     }
 
     vakPlaatje(b: number, h: number) {
@@ -374,7 +415,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const sl = this.kaartPlaatje(d, r.b, r.h, k, klein);
       const gloed = this.plaats(this.gloedPlaatje(sl, "geel"), 0, 0).setVisible(false);
       const plaat = this.plaats(sl, 0, 0);
-      box.add([gloed, plaat]);
+      if (klein) box.add([gloed, plaat]);
+      else box.add([this.plaats(this.keuzeVak(r.b, r.h), 0, 0), gloed, plaat]);
       this.alles.push(box);
       /* Een lege `zeg`: niets voorlezen (een plaatje zonder woord; de naam zou het antwoord verklappen). */
       const ding: Ding = { box, plaat, gloed, sl, r, zeg: d.zeg ?? d.label ?? "", soort, id: d.id, sch: !!d.tekening?.startsWith("onderwerp|") };
@@ -473,13 +515,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (p.vergelijk?.length) this.bouwVergelijk(p.vergelijk, ind);
       else if (p.balans) nieuw.push(...this.bouwBalans(p.balans));
       else if (ind.groot && p.groot) {
+        if (p.grootVak && ind.kaarten[0]) {
+          const r0 = ind.kaarten[0];
+          this.alles.push(this.plaats(this.keuzeVak(r0.b, r0.h), ind.groot.x, ind.groot.y));
+        }
         const g = this.plaats(this.grootPlaatje(p.groot, ind.groot.k), ind.groot.x, ind.groot.y);
         this.alles.push(g);
         this.grootImg = g;
       }
       const kaarten = p.kaarten ?? [];
       if (kaarten.length) {
-        const k = gedeeldeSchaal(kaarten, ind.kaarten[0].b, ind.kaarten[0].h);
+        const k = gedeeldeSchaal(p.grootVak && p.groot ? [...kaarten, { id: "groot", tekening: p.groot }] : kaarten, ind.kaarten[0].b, ind.kaarten[0].h);
         kaarten.forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.kaarten[i], "kaart", d.id, k).box));
       }
       if (p.orden) {
@@ -508,6 +554,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const sig = JSON.stringify([
         p.nr,
         p.groot ?? null,
+        !!p.grootVak,
         p.vergelijk ?? null,
         p.balans ? [p.balans.links, p.balans.rechts] : null,
         !!(p.groot || p.balans || p.vergelijk?.length),
@@ -533,10 +580,15 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (g?.active) {
         this.tweens.killTweensOf(g);
         g.setAngle(0);
+        const gi = this.p ? indeling(this.p).groot : null;
+        if (gi) g.setY(gi.y);
       }
     }
 
-    /** Naspelen: de dingen springen met een boogje de tekening in en stuiteren zacht; dan schudt hij tevreden en staat de nieuwe tekening er. */
+    /**
+     * Naspelen: de dingen springen met een boogje de tekening in (of met `uit` eruit) en stuiteren zacht; dan schudt de tekening tevreden,
+     * zakt hij zwaar met een stofwolkje (`einde: "zak"`) of wipt hij licht omhoog (`einde: "hop"`), en staat de nieuwe tekening er.
+     */
     speelVul(p: MetenProps) {
       const n = p.naspeel;
       const g = this.grootImg;
@@ -545,33 +597,40 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.vulN = n.n;
       this.stopVul();
       const k = ind.groot.k;
+      const y0g = g.y;
       const klaar = () => {
         this.stopVul();
         if (!g.active) return;
         g.setTexture(this.grootPlaatje(n.naar, k));
+        g.setY(y0g);
         this.vulGedaan = true;
       };
       if (rustig) {
         klaar();
         return;
       }
+      if (n.start) g.setTexture(this.grootPlaatje(n.start, k));
       const { x: gx, y: gy, b: gb, h: gh } = ind.groot;
       const zone = n.zone ?? { x: 0.5, y: 0.46, b: 0.34 };
       const cx = gx - gb / 2 + zone.x * gb;
       const cy = gy - gh / 2 + zone.y * gh;
       const m = n.dingen.length;
-      const maat = gb * 0.2;
+      const maat = gb * (n.maat ?? 0.2);
       const STAP = 230;
       const VLUCHT = 520;
       n.dingen.forEach((naam, i) => {
         const sl = `mv|${naam}`;
         this.canvasPlaatje(sl, 100, 100, (c) => tekenVoorwerp(c, naam, 0, 0, 100, 100));
-        const x1 = cx + (m > 1 ? (i / (m - 1) - 0.5) * zone.b * gb : 0);
-        const x0 = gx + (i % 2 ? 0.62 : -0.62) * gb;
-        const y0 = gy - gh * 0.3;
-        const beeld = this.plaats(sl, x0, y0).setScale(maat / 100 / TX).setDepth(8).setAlpha(0);
+        const inZone = { x: cx + (m > 1 ? (i / (m - 1) - 0.5) * zone.b * gb : 0), y: cy };
+        const plek = n.van?.[i];
+        const buiten = plek ? { x: gx - gb / 2 + plek.x * gb, y: gy - gh / 2 + plek.y * gh } : { x: gx + (i % 2 ? 0.62 : -0.62) * gb, y: gy - gh * 0.3 };
+        const [a, z] = n.uit ? [inZone, buiten] : [buiten, inZone];
+        /* Bij uitspringen eerst klein in de opening, dan groot op zijn plek; bij erin springen andersom alleen als hij uit een plek in de tekening komt. */
+        const s1 = maat / 100 / TX;
+        const beeld = this.plaats(sl, a.x, a.y).setScale(n.uit ? s1 * 0.4 : s1).setDepth(n.uit ? 7 : 8).setAlpha(plek && !n.uit ? 1 : 0);
         this.vulObjs.push(beeld);
         const t = { v: 0 };
+        const boog = Math.max(gh * 0.28, 60);
         this.tweens.add({
           targets: t,
           v: 1,
@@ -579,15 +638,45 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           duration: VLUCHT,
           ease: "Linear",
           onStart: () => beeld.setAlpha(1),
-          onUpdate: () => beeld.setPosition(x0 + (x1 - x0) * t.v, y0 + (cy - y0) * t.v - Math.sin(Math.PI * t.v) * gh * 0.28),
+          onUpdate: () => {
+            beeld.setPosition(a.x + (z.x - a.x) * t.v, a.y + (z.y - a.y) * t.v - Math.sin(Math.PI * t.v) * boog);
+            if (n.uit) beeld.setScale(s1 * (0.4 + 0.6 * Math.min(1, t.v * 1.6)));
+            else if (plek) beeld.setScale(s1 * (1 - 0.35 * Math.max(0, t.v - 0.6) / 0.4));
+          },
           onComplete: () => {
-            /* Landen met een zacht stuiterend effect. */
-            this.tweens.add({ targets: beeld, y: cy - 14, scaleY: beeld.scaleY * 0.85, duration: 110, ease: "Quad.easeOut", yoyo: true });
+            /* Landen met een zacht stuiterend effect, of (`weg`) erin verdwijnen. */
+            if (n.weg) this.tweens.add({ targets: beeld, y: z.y + 18, scale: beeld.scaleX * 0.5, alpha: 0, duration: 200, ease: "Quad.easeIn" });
+            else this.tweens.add({ targets: beeld, y: z.y - 14, scaleY: beeld.scaleY * 0.85, duration: 110, ease: "Quad.easeOut", yoyo: true });
           },
         });
       });
-      const nodig = (m - 1) * STAP + VLUCHT + 260;
-      this.tweens.add({ targets: g, angle: { from: -2.5, to: 2.5 }, delay: nodig, duration: 90, yoyo: true, repeat: 3, ease: "Sine.easeInOut", onComplete: klaar });
+      const nodig = (Math.max(1, m) - 1) * STAP + (m ? VLUCHT + 260 : 120);
+      if (n.einde === "zak") {
+        /* Zwaar: de tekening zakt een stukje, stuitert zacht na, en er komt een stofwolkje onder vandaan. */
+        this.tweens.add({ targets: g, y: y0g + gh * 0.06, delay: nodig, duration: 260, ease: "Quad.easeIn", yoyo: true, hold: 360, onStart: () => this.stofwolk(gx, gy + gh * 0.46, gb), onComplete: klaar });
+      } else if (n.einde === "hop") {
+        /* Licht: de tekening wipt makkelijk omhoog en landt zacht. */
+        this.tweens.add({ targets: g, y: y0g - gh * 0.16, delay: nodig, duration: 320, ease: "Sine.easeOut", yoyo: true, repeat: 1, onComplete: klaar });
+      } else this.tweens.add({ targets: g, angle: { from: -2.5, to: 2.5 }, delay: nodig, duration: 90, yoyo: true, repeat: 3, ease: "Sine.easeInOut", onComplete: klaar });
+    }
+
+    /** Een stofwolkje: een paar zachte rondjes die opzij uitwaaieren en vervagen (één keer getekend). */
+    stofwolk(x: number, y: number, breed: number) {
+      this.canvasPlaatje("mv-stof", 60, 60, (c) => {
+        const r = c.createRadialGradient(30, 30, 0, 30, 30, 28);
+        r.addColorStop(0, "rgba(235,240,255,0.85)");
+        r.addColorStop(1, "rgba(235,240,255,0)");
+        c.fillStyle = r;
+        c.beginPath();
+        c.arc(30, 30, 28, 0, Math.PI * 2);
+        c.fill();
+      });
+      for (let i = 0; i < 6; i++) {
+        const kant = i % 2 ? 1 : -1;
+        const w = this.plaats("mv-stof", x + kant * breed * 0.08, y).setScale(0.5 / TX).setDepth(9).setAlpha(0.9);
+        this.vulObjs.push(w);
+        this.tweens.add({ targets: w, x: x + kant * breed * (0.22 + 0.07 * Math.floor(i / 2)), y: y - 14 - 10 * Math.floor(i / 2), scale: (1.1 + 0.2 * Math.floor(i / 2)) / TX, alpha: 0, duration: 620, ease: "Cubic.easeOut" });
+      }
     }
 
     pasToe(p: MetenProps) {
@@ -899,8 +988,8 @@ export function SqulaMetenVlak(props: MetenProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden, naspeel } = props;
-  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, gekozen: props.gekozen, orden, naspeel });
+  const { nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden, naspeel, grootVak } = props;
+  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, gekozen: props.gekozen, orden, naspeel, grootVak });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as MetenProps);
   }, [scene, stand]);

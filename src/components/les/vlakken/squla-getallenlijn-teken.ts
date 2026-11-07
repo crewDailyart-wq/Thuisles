@@ -184,6 +184,7 @@ export const GETALLENLIJN_VOORWERPEN = [
   "satelliet",
   "planeet",
   "bal",
+  "speelbal",
   "pakje",
   "speelblok",
   "speelgoedauto",
@@ -224,7 +225,9 @@ export function maakPlaatjes(sc: Holo) {
     sc.canvasPlaatje(naam, b, h, teken);
     sc.bak(naam, `${naam}-g`, hexGetal(kleur));
   };
-  const ding = (sleutel: string, voorwerp: string, b: number, h: number) => sc.canvasPlaatje(sleutel, b, h, (c) => tekenVoorwerp(c, voorwerp, 0, 0, b, h));
+  /* Herstel ronde 2 (7 november): "bal" wordt de strandbal "speelbal"; de oude bal.png leek op een verbodsbord. Het woord blijft "bal". */
+  const ding = (sleutel: string, voorwerp: string, b: number, h: number) =>
+    sc.canvasPlaatje(sleutel, b, h, (c) => tekenVoorwerp(c, voorwerp === "bal" ? "speelbal" : voorwerp, 0, 0, b, h));
   ding("lampje-g", "slingerlampje-geel", MAAT.lampje.b, MAAT.lampje.h);
   ding("lampje-rood-g", "slingerlampje-rood", MAAT.lampje.b, MAAT.lampje.h);
   ding("planeet-g", "planeet-ring", MAAT.planeet.b, MAAT.planeet.h);

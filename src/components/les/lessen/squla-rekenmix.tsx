@@ -28,6 +28,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
 import { LABELKLEUR } from "../vlakken/squla-rekenmix-tekenen";
 import { voorwerpKleurbaar } from "../voorwerpen";
+import { meng, mengSleutel } from "./squla-meng";
 import { KaartRekenmix, SqulaRekenmix, type RMKleur, type RMLabel, type RMOpgave, type RMProps, type RMStuk, type RMTekening, type RMVorm } from "../vlakken/squla-rekenmix-vlak";
 
 /* =====================================================================
@@ -37,6 +38,8 @@ import { KaartRekenmix, SqulaRekenmix, type RMKleur, type RMLabel, type RMOpgave
 /** Een ding om te tellen: de naam van het vaste plaatje, het meervoud, en de kleur van het getal in de zin. */
 type Vw = { naam: string; meer: string; k: string };
 const vw = (naam: string, meer: string, k: string): Vw => ({ naam, meer, k });
+/** Herstel 7 november: de bovenkant (punten) van de rij grote antwoordknoppen in het midden (Kiesinstel `midden`). */
+const MIDDEN_RM = 572;
 
 const APPEL = vw("appel", "appels", "rood");
 const BAL = vw("bal", "ballen", "rood");
@@ -101,6 +104,9 @@ const ding = (naam: string, x: number, y: number, m: number, extra: Partial<Extr
 
 /** Rijen voorwerpen, links uitgelijnd; elke rij is een telstap (het getal komt achter de rij). */
 function rijen(naam: string, lengtes: number[], cel = 104): Groep {
+  /* Herstel ronde 2 (7 nov, keuring C mix1-1): potloden waren klein en dun in een vierkant vakje. Een potlood is lang en
+     smal: hoge rijen en dicht naast elkaar, zodat ze groot en goed telbaar zijn. */
+  if (naam === "potlood") return potloodRijen(lengtes, cel);
   const kol = Math.max(...lengtes);
   const b = kol * cel;
   const h = lengtes.length * cel;
@@ -122,6 +128,7 @@ const rijenVan5 = (n: number) => Array.from({ length: Math.ceil(n / 5) }, (_, r)
 
 /** Paren naast elkaar (twee onder elkaar): tellen in sprongen van 2. */
 function paren(naam: string, n: number, cel = 96): Groep {
+  if (naam === "potlood") return potloodParen(n, cel);
   const p = n / 2;
   const stap = cel * 1.45;
   const b = (p - 1) * stap + cel;
@@ -133,6 +140,44 @@ function paren(naam: string, n: number, cel = 96): Groep {
     stukken.push(ding(naam, x, -cel / 2, cel * 0.86), ding(naam, x, cel / 2, cel * 0.86));
   }
   return { tek: { stukken, b: b + 20, h: cel * 3 }, stappen, n };
+}
+
+/** Potloden in rijen: hoog (lang potlood) en dicht naast elkaar (herstel ronde 2, mix1-1). */
+function potloodRijen(lengtes: number[], cel: number): Groep {
+  const m = cel * 1.6;
+  const dx = cel * 0.68;
+  const dy = m * 1.06;
+  const kol = Math.max(...lengtes);
+  const b = kol * dx;
+  const h = lengtes.length * dy;
+  const stukken: RMStuk[] = [];
+  const stappen: Stap[] = [];
+  lengtes.forEach((len, r) => {
+    const idx: number[] = [];
+    for (let i = 0; i < len; i++) {
+      idx.push(stukken.length);
+      stukken.push(ding("potlood", -b / 2 + (i + 0.5) * dx, -h / 2 + (r + 0.5) * dy, m));
+    }
+    stappen.push({ idx, lx: -b / 2 + len * dx + cel * 0.6, ly: -h / 2 + (r + 0.5) * dy });
+  });
+  return { tek: { stukken, b: b + cel * 2.4, h: h + 10 }, stappen, n: stukken.length };
+}
+
+/** Potloden per 2 onder elkaar (tellen in sprongen van 2): lang, groot en dicht bij elkaar (herstel ronde 2, mix1-1). */
+function potloodParen(n: number, cel: number): Groep {
+  const p = n / 2;
+  const m = cel * 1.6;
+  const stap = cel * 0.95;
+  const b = (p - 1) * stap;
+  const dy = m * 0.53;
+  const stukken: RMStuk[] = [];
+  const stappen: Stap[] = [];
+  for (let i = 0; i < p; i++) {
+    const x = -b / 2 + i * stap;
+    stappen.push({ idx: [stukken.length, stukken.length + 1], lx: x, ly: -dy - m / 2 - 26 });
+    stukken.push(ding("potlood", x, -dy, m), ding("potlood", x, dy, m));
+  }
+  return { tek: { stukken, b: b + cel + 20, h: dy * 2 + m + 60 }, stappen, n };
 }
 
 /** Een eenvoudige rekenmachine voor vaste "willekeur": steeds dezelfde plaatjes bij dezelfde vraag. */
@@ -277,9 +322,17 @@ type Stand = { huidig: string; keer: number; ronde: number; handGezien: boolean;
 
 const zet = (l: Lesgids, p: Partial<RMProps>) => l.pasVlakAan<RMProps>(p);
 
+/** Herstel 7 november (BOUWREGELS 1.23): de plek van de keuzes (vast per vraag binnen een les-start). */
+function metPlek(o: RMOpgave): RMOpgave {
+  return o.soort === "kijk" && o.keuzes && o.keuzes.length > 1 && !o.plek ? { ...o, plek: mengSleutel(o.id, o.keuzes.map((_, i) => i)) } : o;
+}
+
 function toonOpgave(l: Lesgids, st: Stand, o: RMOpgave, test: number[] | null = null) {
   if (st.huidig === o.id) return;
   st.huidig = o.id;
+  /* Herstel 7 november (BOUWREGELS 1.23): bij tikken op een plaatje wisselt de plek van de keuzes per les-start (vast per
+     vraag), behalve waar de plek zelf de vraag is (een rij waarin je direct tikt: `plek` staat dan al vast). */
+  o = metPlek(o);
   st.labels = [];
   zet(l, { opgave: o, licht: null, labels: null, goed: null, fout: null, plekGoed: null, uitslag: null, hand: false, actief: false, test });
 }
@@ -564,7 +617,8 @@ function waarTekening(plek: Plekwoord, kant: 1 | -1 = 1): RMTekening {
   else if (plek === "op") stukken = [doos, ding("bal", 0, -88, 100)];
   else if (plek === "naast") stukken = [doos, ding("bal", kant * 210, 82, 100)];
   else if (plek === "voor") stukken = [doos, ding("bal", kant * 30, 120, 120)];
-  else stukken = [ding("bal", kant * 55, -36, 90), doos];
+  /* Herstel 7 november (OVERZICHT-C mix2-2): achter de doos zag je maar een randje; nu steekt een duidelijke halve bal erboven uit. */
+  else stukken = [ding("bal", kant * 84, -74, 112), doos];
   return { stukken, b: 640, h: 400 };
 }
 
@@ -610,11 +664,13 @@ const TELRIJ: RMTekening = { stukken: Array.from({ length: 10 }, (_, i) => ({ t:
    ===================================================================== */
 
 function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
-  const kiesGetal = (keuzes: number[]) => async () => Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true }));
+  /* Herstel 7 november (OVERZICHT-C punt 4, BOUWREGELS 1.23): de getallen groot in het midden onder de tekening, en het goede
+     getal niet steeds op dezelfde plek (alleen de plek wisselt). De tekening bovenaan maakt daarvoor ruimte (`ruimteOnder`). */
+  const kiesGetal = (keuzes: number[]) => async () => Number(await l.kies(meng(keuzes).map(String), { weetniet: false, direct: true, midden: MIDDEN_RM }));
 
   /* ---------- tellen ---------- */
   if (q.t === "tel") {
-    const o: RMOpgave = { id, soort: "kijk", boven: q.gr.tek };
+    const o: RMOpgave = { id, soort: "kijk", boven: q.gr.tek, ruimteOnder: true };
     const n = q.gr.n;
     const k = q.v.k;
     const sprongen = q.gr.stappen.every((s) => s.idx.length === 2);
@@ -690,11 +746,17 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   }
 
   /* ---------- links, rechts, midden ---------- */
+  /*
+   * Herstel 7 november (OVERZICHT-C mix1-3): bovenaan stond de rij en onderaan dezelfde 3 dingen nog eens als knoppen; een
+   * kind tikte makkelijk het rechtse ding in de onderste rij aan. Nu tikt het kind direct in de rij zelf (1 rij, geen
+   * dubbele dingen). De plek in de rij is hier de vraag, dus die wisselt niet (`plek` ligt vast). `q.keuzes` blijft in de
+   * gegevens staan maar wordt niet meer getekend.
+   */
   if (q.t === "plaats") {
-    const o: RMOpgave = { id, soort: "kijk", boven: rijDingen(q.rij, 210, 270), keuzes: q.keuzes.map((n) => eenDing(n, 190)), namen: q.keuzes.map((n) => Hoofd(NAAM[n])) };
+    const o: RMOpgave = { id, soort: "kijk", keuzes: q.rij.map((n) => eenDing(n, 210)), namen: q.rij.map((n) => Hoofd(NAAM[n])), plek: q.rij.map((_, i) => i) };
     const plek = q.wat === "links" ? 0 : q.wat === "rechts" ? 2 : 1;
     const goedNaam = q.rij[plek];
-    const goedI = q.keuzes.indexOf(goedNaam);
+    const goedI = plek;
     const waar = q.wat === "midden" ? "in het midden" : q.wat;
     const UITLEG = {
       links: "Links staat de eerste van de rij.",
@@ -705,17 +767,17 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       soort: "plaats",
       reactie: (x) => {
-        const naam = q.keuzes[x as number];
-        const pos = q.rij.indexOf(naam);
-        const waarStaat = pos === 0 ? "links" : pos === 1 ? "in het midden" : pos === 2 ? "rechts" : "";
-        return [waarStaat ? `${Hoofd(NAAM[naam])} staat ${waarStaat}.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, `Kijk wat er ${waar} staat.`];
+        const naam = q.rij[x as number];
+        const pos = x as number;
+        const waarStaat = pos === 0 ? "links" : pos === 1 ? "in het midden" : "rechts";
+        return [`${Hoofd(NAAM[naam])} staat ${waarStaat}.`, `Kijk wat er ${waar} staat.`];
       },
-      eerste: ["Kijk naar de rij bovenaan.", "Tik dan op het goede plaatje."],
+      eerste: ["Kijk naar de rij.", "Tik in de rij op het goede plaatje."],
       vraag: ["Kijk naar de rij.", `Wat staat er ${waar}?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
-      noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
+      noem: (x) => Hoofd(NAAM[q.rij[x as number]]),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
       goedZin: [`Goed gekeken! ${Hoofd(NAAM[goedNaam])} staat ${waar}.`, UITLEG[q.wat]],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -728,8 +790,8 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         /* Bliepo wijst de andere twee plekken aan; de gevraagde plek zegt hij alleen. */
         for (const [wat, p] of uitleg) {
           if (wat === q.wat && !alles) continue;
-          zet(l, { licht: { deel: "b", aan: [p] } });
-          zetLabels(l, st, [...st.labels, { deel: "b", x: -270 + p * 270, y: 150, tekst: wat === "midden" ? "midden" : wat, klein: true }]);
+          zet(l, { licht: { deel: `k${p}`, aan: [0], dof: false } });
+          zetLabels(l, st, [...st.labels, { deel: `k${p}`, x: 0, y: 140, tekst: wat === "midden" ? "midden" : wat, klein: true }]);
           await l.zeg(`${Hoofd(NAAM[q.rij[p]])} staat ${wat === "midden" ? "in het midden" : wat}.`);
         }
         zet(l, { licht: null });
@@ -741,26 +803,28 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   }
 
   /* ---------- eerste, tweede … laatste ---------- */
+  /* Herstel 7 november (OVERZICHT-C mix3-2): net als bij links/rechts tikt het kind direct in de rij (geen tweede rij met
+     dezelfde 5 dingen onderaan, die ook nog tegen de rand en onder de microfoonknop liep). */
   if (q.t === "rang") {
-    const o: RMOpgave = { id, soort: "kijk", boven: rijDingen(q.rij, 150, 185), keuzes: q.keuzes.map((n) => eenDing(n, 150)), namen: q.keuzes.map((n) => Hoofd(NAAM[n])) };
+    const o: RMOpgave = { id, soort: "kijk", keuzes: q.rij.map((n) => eenDing(n, 160)), namen: q.rij.map((n) => Hoofd(NAAM[n])), plek: q.rij.map((_, i) => i) };
     const RANG = ["eerste", "tweede", "derde", "vierde", "laatste"];
     const goedNaam = q.rij[q.plek];
-    const goedI = q.keuzes.indexOf(goedNaam);
+    const goedI = q.plek;
     const rang = RANG[q.plek];
     return {
       o,
       soort: "rang",
       reactie: (x) => {
-        const naam = q.keuzes[x as number];
-        const pos = q.rij.indexOf(naam);
-        return [pos >= 0 ? `${Hoofd(NAAM[naam])} staat als ${RANG[pos]} in de rij.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, q.plek === 4 ? "De laatste staat helemaal rechts." : "Tel vanaf links, tot je bij de goede plek bent."];
+        const pos = x as number;
+        const naam = q.rij[pos];
+        return [`${Hoofd(NAAM[naam])} staat als ${RANG[pos]} in de rij.`, q.plek === 4 ? "De laatste staat helemaal rechts." : "Tel vanaf links, tot je bij de goede plek bent."];
       },
-      eerste: ["Kijk naar de rij bovenaan.", "We tellen vanaf links.", "Tik dan op het goede plaatje."],
+      eerste: ["Kijk naar de rij.", "We tellen vanaf links.", "Tik in de rij op het goede plaatje."],
       vraag: [`Wat staat als ${rang} in de rij?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
-      noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [q.plek] } }),
+      noem: (x) => Hoofd(NAAM[q.rij[x as number]]),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
       goedZin: [`Dat klopt! ${Hoofd(NAAM[goedNaam])} staat als ${rang}.`, q.plek === 4 ? "Helemaal achteraan in de rij." : q.plek === 0 ? "Helemaal vooraan in de rij." : `Tel maar: ${RANG.slice(0, q.plek + 1).join(", ")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -771,14 +835,13 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         await l.zeg("We tellen samen vanaf links.");
         const tot = alles ? 5 : q.plek === 4 ? 4 : q.plek;
         const labels = [...st.labels];
-        const aan: number[] = [];
         for (let p = 0; p < tot; p++) {
-          aan.push(p);
-          zet(l, { licht: { deel: "b", aan: [...aan] } });
-          labels.push({ deel: "b", x: -370 + p * 185, y: 104, tekst: String(p + 1), klein: true });
+          zet(l, { licht: { deel: `k${p}`, aan: [0], dof: false } });
+          labels.push({ deel: `k${p}`, x: 0, y: 112, tekst: String(p + 1), klein: true });
           zetLabels(l, st, labels);
           await l.zeg(`${Hoofd(RANG[p === 4 ? 4 : p])}.`);
         }
+        zet(l, { licht: null });
         if (!alles && (q.plek === 4 || !krijgtVervolgvraag(l))) await l.zeg(q.plek === 4 ? "De laatste staat helemaal achteraan." : `Welke komt daarna, als ${rang}?`);
       },
       tip: q.plek === 4 ? ["De laatste staat helemaal rechts."] : ["Tel vanaf links: eerste, tweede, derde."],
@@ -788,7 +851,12 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
 
   /* ---------- groepjes op volgorde ---------- */
   if (q.t === "ordenAantal") {
-    const groepen = q.aantallen.map((n) => kaartRaster(q.v.naam, n));
+    /* Herstel 7 november (OVERZICHT-C mix1-4): het grootste groepje had kleinere dingen dan de kleine groepjes (8 kleine
+       koekjes naast 3 grote). Nu zijn alle dingen in deze vraag even groot: de maat van het grootste groepje geldt voor allemaal. */
+    const nMax = Math.max(...q.aantallen);
+    const kolMax = Math.min(nMax, Math.ceil(Math.sqrt(nMax * 1.2)));
+    const celGelijk = Math.min(88, 244 / kolMax, 284 / Math.ceil(nMax / kolMax));
+    const groepen = q.aantallen.map((n) => kaartRaster(q.v.naam, n, 244, 284, celGelijk));
     const o: RMOpgave = { id, soort: "volgorde", kaarten: groepen.map((x) => x.tek), namen: q.aantallen.map((n) => aantalNaam(n, q.v)) };
     const goed = q.aantallen.map((n, i) => ({ n, i })).sort((a, b) => (q.richting === "op" ? a.n - b.n : b.n - a.n)).map((x) => x.i);
     const k = q.v.k;
@@ -1011,7 +1079,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
 
   /* ---------- waar ligt de bal? ---------- */
   if (q.t === "waar") {
-    const o: RMOpgave = { id, soort: "kijk", boven: waarTekening(q.plek, q.kant) };
+    const o: RMOpgave = { id, soort: "kijk", boven: waarTekening(q.plek, q.kant), ruimteOnder: true };
     const opties = q.keuzes.map((p) => PLEKZIN[p]);
     const balI = q.plek === "achter" ? 0 : 1;
     return {
@@ -1023,7 +1091,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       },
       eerste: [],
       vraag: ["Waar ligt de bal?"],
-      antwoord: async () => await l.kies(opties.map(Hoofd), { weetniet: false, direct: true }),
+      antwoord: async () => await l.kies(meng(opties).map(Hoofd), { weetniet: false, direct: true, midden: MIDDEN_RM }),
       isGoed: (x) => x === Hoofd(PLEKZIN[q.plek]),
       noem: (x) => String(x),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer } }),
@@ -1179,7 +1247,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
 
   /* ---------- getal ervoor, getal erna ---------- */
   if (q.t === "buur") {
-    const o: RMOpgave = { id, soort: "kijk", boven: q.plaatje ? q.plaatje.gr.tek : buurTekening(q.n, q.richting) };
+    const o: RMOpgave = { id, soort: "kijk", boven: q.plaatje ? q.plaatje.gr.tek : buurTekening(q.n, q.richting), ruimteOnder: !q.plaatje };
     const doel = q.richting === "voor" ? q.n - 1 : q.n + 1;
     const hulp: RMOpgave = { id: `${id}-hulp`, soort: "kijk", boven: TELRIJ };
     const vraag = q.plaatje
@@ -1226,7 +1294,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   /* ---------- splitsen ---------- */
   if (q.t === "splits") {
     const gr = splitsTekening(q.v, q.houder, q.tot, q.buiten);
-    const o: RMOpgave = { id, soort: "kijk", boven: gr.tek };
+    const o: RMOpgave = { id, soort: "kijk", boven: gr.tek, ruimteOnder: true };
     const binnen = q.tot - q.buiten;
     const k = q.v.k;
     const waarin = q.houder === "doos" ? "in de doos" : "in de zak";
@@ -1263,7 +1331,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   /* ---------- welke kaart? ---------- */
   if (q.t === "welke") {
     const voorbeeld = q.vraagt === "evenveel" ? q.voorbeeld : undefined;
-    const hint = q.vraagt === "meer" || q.vraagt === "minder" ? eenDing(q.v.naam, 150) : undefined;
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C mix4-4): het losse ding bovenaan bij "meer dan / minder dan" deed
+       niets en kon worden meegeteld; weg. */
+    const hint: RMTekening | undefined = undefined;
     const o: RMOpgave = { id, soort: "kijk", boven: voorbeeld?.tek ?? hint, keuzes: q.groepen.map((x) => x.tek), namen: q.groepen.map((x) => aantalNaam(x.n, q.v)) };
     const goedI = q.groepen.findIndex((x) => (q.vraagt === "meer" ? x.n > q.n : q.vraagt === "minder" ? x.n < q.n : x.n === q.n));
     const k = q.v.k;
@@ -1465,6 +1535,8 @@ function namenIn(opgaven: RMOpgave[]): string[] {
       o.rechts.forEach(tek);
     }
   }
+  /* Herstel 7 november: "bal" wordt getekend als "speelbal" (zie beeldNaam in squla-rekenmix-tekenen.ts). */
+  if (uit.has("bal")) uit.add("speelbal");
   return [...uit].sort();
 }
 
@@ -1492,7 +1564,7 @@ function les(d: Lesdef): Lesdraaiboek {
       /* De opgaven staan op volgorde: eerst de 15 vragen, dan de voorbeelden. */
       const eerste = d.beginMetVoorbeeld ? opgaven[d.vragen.length] : opgaven[0];
       /* st.huidig blijft leeg: de eerste vraag zet zijn opgave dan nog eens, mét de test (zelfde beeld). */
-      l.vlak<RMProps>(SqulaRekenmix, { opgave: eerste, namen: namenIn(opgaven), vooraf: opgaven });
+      l.vlak<RMProps>(SqulaRekenmix, { opgave: metPlek(eerste), namen: namenIn(opgaven), vooraf: opgaven });
       const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: d.welkom,
         voordoen: true,
@@ -1565,6 +1637,9 @@ const mix1_1 = les({
   (het zitje van onze schommel is rond, dus geen rechthoek), schoolbord,
   telefoon, pizzadoos en blok.
 */
+/* Herstel 7 november (OVERZICHT-C mix1-2): de plank was een dun schuin streepje en pizzadoos, blok, doos en boek waren
+   schuin (3D) getekend, terwijl de keuzes platte vormen zijn. Nu een kleed van boven en platte tekeningen recht van voren of
+   van boven (in code getekend, stijl B: pizzadoos-plat, speelblok-plat, doos-plat, boek-plat). */
 const mix1_2 = les({
   id: "squla-rekenmix-mix1-2",
   titel: "Rekenmix 1 (moeilijker)",
@@ -1576,19 +1651,19 @@ const mix1_2 = les({
   vragen: [
     { t: "vorm", naam: "tent", zin: "de tent", vorm: "driehoek", keuzes: ["cirkel", "driehoek", "vierkant"] },
     { t: "vorm", naam: "mandarijn", zin: "de mandarijn", vorm: "cirkel", keuzes: ["driehoek", "rechthoek", "cirkel"] },
-    { t: "vorm", naam: "wandplank", zin: "de plank", vorm: "rechthoek", keuzes: ["cirkel", "vierkant", "rechthoek"] },
+    { t: "vorm", naam: "picknickkleed", zin: "het kleed", vorm: "rechthoek", keuzes: ["cirkel", "vierkant", "rechthoek"] },
     { t: "vorm", naam: "vlaggenlijn", zin: "de vlaggetjes", lijkt: "lijken", vorm: "driehoek", keuzes: ["rechthoek", "driehoek", "vierkant"] },
     { t: "vorm", naam: "planeet", zin: "de planeet", vorm: "cirkel", keuzes: ["vierkant", "rechthoek", "cirkel"] },
-    { t: "vorm", naam: "pizzadoos", zin: "de pizzadoos", vorm: "vierkant", keuzes: ["vierkant", "driehoek", "cirkel"] },
+    { t: "vorm", naam: "pizzadoos-plat", zin: "de pizzadoos", vorm: "vierkant", keuzes: ["vierkant", "driehoek", "cirkel"] },
     { t: "vorm", naam: "schoolbord", zin: "het schoolbord", vorm: "rechthoek", keuzes: ["rechthoek", "cirkel", "driehoek"] },
     { t: "vorm", naam: "pizzapunt", zin: "het stuk pizza", vorm: "driehoek", keuzes: ["cirkel", "vierkant", "driehoek"] },
     { t: "vorm", naam: "knoop", zin: "de knoop", vorm: "cirkel", keuzes: ["cirkel", "rechthoek", "driehoek"] },
-    { t: "vorm", naam: "speelblok", zin: "het blok", vorm: "vierkant", keuzes: ["driehoek", "vierkant", "cirkel"] },
+    { t: "vorm", naam: "speelblok-plat", zin: "het blok", vorm: "vierkant", keuzes: ["driehoek", "vierkant", "cirkel"] },
     { t: "vorm", naam: "telefoon", zin: "de telefoon", vorm: "rechthoek", keuzes: ["vierkant", "rechthoek", "cirkel"] },
     { t: "vorm", naam: "feesthoed", zin: "het feesthoedje", vorm: "driehoek", keuzes: ["driehoek", "cirkel", "rechthoek"] },
     { t: "vorm", naam: "koekje", zin: "het koekje", vorm: "cirkel", keuzes: ["rechthoek", "cirkel", "driehoek"] },
-    { t: "vorm", naam: "doos", zin: "de doos", vorm: "vierkant", keuzes: ["cirkel", "driehoek", "vierkant"] },
-    { t: "vorm", naam: "boek", zin: "het boek", vorm: "rechthoek", keuzes: ["driehoek", "rechthoek", "cirkel"] },
+    { t: "vorm", naam: "doos-plat", zin: "de doos", vorm: "vierkant", keuzes: ["cirkel", "driehoek", "vierkant"] },
+    { t: "vorm", naam: "boek-plat", zin: "het boek", vorm: "rechthoek", keuzes: ["driehoek", "rechthoek", "cirkel"] },
   ],
   eind: "Jij ziet de vormen overal.",
 });
@@ -1776,7 +1851,8 @@ const mix2_3 = les({
   wij ballen, sterren, knikkers en appels.
 */
 const r5 = (naam: string, lengtes: number[]) => kaartGroep(naam, lengtes, 50);
-const kl = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, 260, 180, 52);
+/* Herstel 7 november (OVERZICHT-C mix2-4): compacter, zodat elk groepje bij zijn eigen rij hoort en niet tegen de rand ligt. */
+const kl = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, 208, 156, 50);
 const mix2_4 = les({
   id: "squla-rekenmix-mix2-4",
   titel: "Rekenmix 2 (heel moeilijk)",
@@ -2034,7 +2110,9 @@ const mix4_2 = les({
 */
 const kr = (naam: string, lengtes: number[]) => kaartGroep(naam, lengtes, 57);
 /* Los door elkaar, maar compact: zo blijft er ruimte tussen de groepjes en zie je welke dingen bij elkaar horen. */
-const kv = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, 262, 330, 78);
+/* Herstel 7 november (OVERZICHT-C mix4-3, mix4-4): de groepjes lagen zo verspreid dat ze in elkaar overliepen; nu
+   compacter (kleiner gebied, iets kleinere dingen), zodat er duidelijk lucht tussen de groepjes is. */
+const kv = (naam: string, n: number, zaad: number) => kaartLos(naam, n, zaad, n > 8 ? 284 : 214, n > 6 ? 236 : 214, 70);
 const bomen = (n: number) => kaartRaster("boom", n, 290, 330, 90);
 const mix4_3 = les({
   id: "squla-rekenmix-mix4-3",

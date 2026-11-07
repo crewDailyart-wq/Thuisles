@@ -116,6 +116,11 @@ export type MinVlakProps = {
   stippen?: { n: number; grijs: number; kleur?: string } | null;
   /** Machine: wat er uit de machine komt (anders "?"). */
   uitkomst?: number | null;
+  /**
+   * Herstel 7 november (OVERZICHT-C punt 5): bij een typvraag is het "?" in de som geen vakje (dat leek een tweede
+   * invulvak); het kind typt in het echte invulveld. Het vraagteken blijft als gewoon teken staan.
+   */
+  typVraag?: boolean;
   verbind?: VerbindStand | null;
   bubbels?: BubbelStand | null;
   goed?: number;
@@ -269,6 +274,14 @@ const STUK_ZIT = 52;
 const MACH_T0 = 700;
 /** Plek van stukje i van n links op de band: rijen van 5, de onderste rij ligt op de band. */
 const stukBand = (i: number): Plek => ({ x: 70 + (i % 5) * 56, y: 394 - Math.floor(i / 5) * 52 });
+/** Herstel 7 november: hoe lang (ms) de min-machine draait als hij na het antwoord wordt nagespeeld (zie startMachine), plus de uitkomst. */
+export function machineDuur(start: number, eraf: number): number {
+  const aankomst = MACH_T0 + (start - 1) * 130 + 650;
+  const D0 = aankomst - 150;
+  const R0 = D0 + eraf * (eraf > 5 ? 300 : 340) + 350;
+  return R0 + (start - eraf) * 130 + 450 + 120 + Math.max(0, start - eraf) * 70 + 300;
+}
+
 /** Plek van uitgevallen stukje j in het bakje onder de machine. */
 const stukBak = (j: number, b: number): Plek => ({ x: 490 + ((j % 5) - (Math.min(5, b) - 1) / 2) * 50, y: 528 - Math.floor(j / 5) * 48 });
 /** Plek van stukje k van n boven het vraagteken (het goede antwoord, na het goede antwoord). */
@@ -284,7 +297,9 @@ function bakjePlekken(n: number): Plek[] {
 }
 
 /* Geld: bestaande munten en de door de gebruiker gekozen getekende briefjes. Alleen de afbeeldingen zijn vervangen. */
-const GELD_MAAT: Record<Geld, { b: number; h: number }> = { 1: { b: 62, h: 62 }, 2: { b: 68, h: 68 }, 5: { b: 140, h: 71 }, 10: { b: 146, h: 77 } };
+/* Herstel ronde 2 (7 nov, BOUWREGELS 1.24): munten van 1 en 2 euro groter (waren 62 en 68), zodat ze ook op een telefoon
+   goed uit elkaar te houden zijn; de munt van 2 blijft groter dan die van 1, net als echt. Nog steeds kleiner dan ware grootte. */
+const GELD_MAAT: Record<Geld, { b: number; h: number }> = { 1: { b: 90, h: 90 }, 2: { b: 100, h: 100 }, 5: { b: 140, h: 71 }, 10: { b: 146, h: 77 } };
 const GELD_BESTAND: Record<Geld, string> = { 1: "/geld/los/munt-1-euro.png", 2: "/geld/los/munt-2-euro.png", 5: "/geld/getekend/briefje-5-euro.svg", 10: "/geld/getekend/briefje-10-euro.svg" };
 function geldRij(lijst: Geld[], cx: number, y: number): Plek[] {
   const ruimte = 10;
@@ -297,7 +312,7 @@ function geldRij(lijst: Geld[], cx: number, y: number): Plek[] {
   });
 }
 /* Het geld ligt vóór de portemonnee (eruit gehaald), niet in de lucht erboven (BOUWREGELS 14.23). */
-const GELD = { heb: { x: 260, y: 560 }, beurs: { x: 260, y: 400 }, ding: { x: 730, y: 260 }, prijs: { x: 730, y: 440 } };
+const GELD = { heb: { x: 260, y: 548 }, beurs: { x: 260, y: 400 }, ding: { x: 730, y: 260 }, prijs: { x: 730, y: 440 } };
 
 /* ---------- de plaatjes: vaste voorwerpen ---------- */
 
@@ -385,6 +400,10 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     buiten: Img[] = [];
     pijl: Img | null = null;
     rondje: Box | null = null;
+    /** Herstel 7 november: het rondje met het getal stond al in beeld (dan niet opnieuw laten opploppen). */
+    rondjeGetoond = false;
+    /** Herstel 7 november: de min-machine heeft (na het antwoord) gedraaid. */
+    machGespeeld = false;
     /* stippen */
     stipBox: Box | null = null;
     stipItems: Img[] = [];
@@ -556,6 +575,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.buiten = [];
       this.pijl = null;
       this.rondje = null;
+      this.rondjeGetoond = false;
       this.rechtsLabel = null;
       this.rechtsBlok = null;
       this.lijnGfx = null;
@@ -651,6 +671,9 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         this.item(g, "pakje", p.x, p.y, (busMaat(t.in) * 0.9) / PAKJE, somHex(t.in, t.b ?? 0)[0]);
       }
       this.itemSchaal = 1;
+      /* Herstel 7 november (BOUWREGELS 1.22): bij Bussommen 2 staat het getal in de cirkel al tijdens de vraag
+         ("In de cirkel staat 7"), terwijl ALLE pakjes nog in de bus liggen. Pas na het antwoord gaan ze eruit. */
+      if (t.rondje && t.b !== undefined && t.b > 0) this.busBuiten(0, true);
     }
 
     /* ---------- de min-machine: alles beweegt mee met wat Bliepo zegt ---------- */
@@ -726,7 +749,8 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       }
     }
 
-    startMachine(t: Extract<Toneel, { soort: "machine" }>) {
+    /** Speelt de machine af; geeft na hoeveel ms hij stilstaat. */
+    startMachine(t: Extract<Toneel, { soort: "machine" }>): number {
       const a = t.start;
       const b = t.eraf;
       const r = a - b;
@@ -814,6 +838,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
         });
       }
       vol(eind, () => this.machineEind());
+      return eind;
     }
 
     maakMachine(g: Box, t: Extract<Toneel, { soort: "machine" }>) {
@@ -874,8 +899,10 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.rechtsBlok.add(this.rechtsLabel);
       g.add(this.rechtsBlok);
       this.machKlaar = false;
-      if (this.rustig) this.machineEind();
-      else this.startMachine(t);
+      /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C min-machine-1 v01 en v02–v05): de machine liep al tijdens de vraag
+         (je kon de blokjes tellen die eruit kwamen) en daarna lag er een los blokje in de bak. Nu staan tijdens de vraag
+         alleen de blokjes vóór de machine en is de bak leeg; de machine draait pas na het antwoord (zetUitkomst). */
+      this.machGespeeld = false;
     }
 
     maakBakjes(g: Box, t: Extract<Toneel, { soort: "bakjes" }>) {
@@ -913,25 +940,33 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     maakGeld(g: Box, t: Extract<Toneel, { soort: "geld" }>) {
       g.add(this.plaats(this.tex("portemonnee"), GELD.beurs.x, GELD.beurs.y));
-      this.item(g, t.ding, GELD.ding.x, GELD.ding.y);
+      /* Herstel 7 november (OVERZICHT-C punt 6): de rode "bal" leek op een verbodsbord; hier de strandbal (woord blijft "bal"). */
+      this.item(g, t.ding === "bal" ? "speelbal" : t.ding, GELD.ding.x, GELD.ding.y);
       const prijsPlek = geldRij(t.prijs, GELD.prijs.x, GELD.prijs.y);
-      const nodig = [...new Set([...t.heb, ...t.prijs])];
-      const zet = () => {
+      const hebPlek = geldRij(t.heb, GELD.heb.x, GELD.heb.y);
+      /*
+        Herstel ronde 2 (7 nov, keuring C machine-4): de munten verschenen soms pas ruim na de vraag, omdat er gewacht
+        werd tot ALLES geladen was (ook de grote briefjes). Nu ligt elk muntstuk of briefje er zodra zijn eigen plaatje
+        binnen is, en bij het eerste geld-toneel wordt al het geld van de les vast geladen (munten eerst).
+      */
+      const leg = (w: Geld, p: Plek) => {
         if (this.groep !== g) return;
-        const leg = (lijst: Geld[], plekken: Plek[]) =>
-          lijst.forEach((w, i) => {
-            const sl = this.geldTex(w);
-            if (sl) g.add(this.plaats(sl, plekken[i].x, plekken[i].y));
-          });
-        leg(t.heb, geldRij(t.heb, GELD.heb.x, GELD.heb.y));
-        leg(t.prijs, prijsPlek);
+        const sl = this.geldTex(w);
+        if (sl) g.add(this.plaats(sl, p.x, p.y));
       };
-      const ontbreekt = nodig.filter((w) => !this.textures.exists(`sqm-geld-${w}`));
-      if (!ontbreekt.length) return zet();
-      ontbreekt.forEach((w) => this.load.image(`sqm-geld-${w}`, GELD_BESTAND[w]));
-      this.load.once("complete", zet);
-      this.load.start();
+      const alles: [Geld, Plek][] = [...t.heb.map((w, i): [Geld, Plek] => [w, hebPlek[i]]), ...t.prijs.map((w, i): [Geld, Plek] => [w, prijsPlek[i]])];
+      for (const [w, p] of alles) {
+        if (this.textures.exists(`sqm-geld-${w}`)) leg(w, p);
+        else this.load.once(`filecomplete-image-sqm-geld-${w}`, () => leg(w, p));
+      }
+      if (!this.geldInWachtrij) {
+        this.geldInWachtrij = true;
+        const volgorde: Geld[] = [1, 2, 5, 10];
+        volgorde.filter((w) => !this.textures.exists(`sqm-geld-${w}`)).forEach((w) => this.load.image(`sqm-geld-${w}`, GELD_BESTAND[w]));
+        if (!this.load.isLoading()) this.load.start();
+      }
     }
+    geldInWachtrij = false;
 
     /** Munt of briefje, klein (nooit ware grootte), niet bewerkt: alleen verkleind getekend. */
     geldTex(w: Geld) {
@@ -1019,8 +1054,38 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.buiten[k]?.destroy();
       this.buiten[k] = pakje;
       if (!direct && !this.rustig) {
-        pakje.setAlpha(0).setY(p.y - 24);
-        this.tweens.add({ targets: pakje, alpha: 1, y: p.y, duration: 240, ease: "Back.easeOut" });
+        /* Herstel 7 november (BOUWREGELS 1.22, naspelen): het pakje springt in een boogje uit de bus naar zijn plek
+           buiten, stuitert even na en geeft een klein stofwolkje bij het neerkomen. */
+        const bron = this.items[this.items.length - 1 - k];
+        const vx = bron ? bron.x : p.x - 120;
+        const vy = bron ? bron.y : p.y - 40;
+        const top = Math.min(vy, p.y) - 70;
+        pakje.setPosition(vx, vy);
+        const boog = { t: 0 };
+        this.tweens.add({
+          targets: boog,
+          t: 1,
+          duration: 380,
+          ease: "Sine.easeInOut",
+          onUpdate: () => {
+            const u = boog.t;
+            pakje.setPosition(vx + (p.x - vx) * u, (1 - u) * (1 - u) * vy + 2 * (1 - u) * u * top + u * u * p.y);
+          },
+          onComplete: () => {
+            pakje.setPosition(p.x, p.y);
+            this.tweens.add({ targets: pakje, y: p.y - 10, duration: 110, yoyo: true, ease: "Quad.easeOut" });
+            this.stofwolkje(g, p.x, p.y + BL.buitenMaat / 2);
+          },
+        });
+      }
+    }
+
+    /** Een klein stofwolkje: 3 zachte rondjes die uitwaaieren en vervagen (eenmalig, geen filter). */
+    stofwolkje(g: Box, x: number, y: number) {
+      for (let i = 0; i < 3; i++) {
+        const c = this.add.circle(x + (i - 1) * 10, y, 7, 0xd8dfea, 0.55);
+        g.add(c);
+        this.tweens.add({ targets: c, x: x + (i - 1) * 30, y: y - 6 - (i === 1 ? 6 : 0), scale: 1.8, alpha: 0, duration: 420, ease: "Quad.easeOut", onComplete: () => c.destroy() });
       }
     }
 
@@ -1032,6 +1097,12 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       if (t.rondje) {
         this.rondje?.destroy();
         this.rondje = null;
+        /* Herstel 7 november: is het getal bekend (t.b), dan staat dat getal er vanaf het begin in; het telt niet mee op. */
+        const toon = t.b !== undefined && t.b > 0 ? t.b : n;
+        const nieuwRondje = !this.rondjeGetoond;
+        this.rondjeGetoond = true;
+        direct = direct || !nieuwRondje;
+        n = toon;
         if (n > 0) {
           const rond = this.add.graphics();
           /* Het rondje heeft de kleur van het getal (BOUWREGELS 2.1); de tekst is donker, dat leest op elke kleur. */
@@ -1162,7 +1233,17 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           this.machUit.forEach((im) => im.active && im.destroy());
           this.machUit = [];
           this.machUitN = -1;
+        } else if (n !== this.machUitN && this.machVoor && !this.machGespeeld && !this.rustig) {
+          /* Eerst de machine laten draaien (naspelen), daarna pas de uitkomst. */
+          this.machGespeeld = true;
+          const duur = this.startMachine(t);
+          const tid = t.id;
+          this.time.delayedCall(duur + 120, () => {
+            if (this.toneel?.id === tid) this.zetUitkomst(n);
+          });
+          return;
         } else if (n !== this.machUitN && this.machVoor) {
+          this.machGespeeld = true;
           this.machineEind();
           this.machUit.forEach((im) => im.active && im.destroy());
           this.machUit = [];
@@ -1313,7 +1394,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 /* ---------- het vlak ---------- */
 
 /** De som als tekst: "?" wordt een oplichtend vakje. */
-function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord" }) {
+function Som({ tekst, plek, typVraag = false }: { tekst: string; plek: "boven" | "midden" | "bord"; typVraag?: boolean }) {
   const delen = tekst.split(" ");
   /* De getallen van de som in volgorde: het eerste en wat overblijft in de ene kleur, het tweede in een duidelijk andere. */
   const getallen = delen.filter((d) => /^\d+$/.test(d)).map(Number);
@@ -1323,9 +1404,15 @@ function Som({ tekst, plek }: { tekst: string; plek: "boven" | "midden" | "bord"
     <div className={`${s.som} ${plek === "boven" ? s.somBoven : plek === "midden" ? s.somMidden : s.somBord}`} aria-hidden>
       {delen.map((d, i) =>
         d === "?" ? (
-          <span key={i} className={s.vak}>
-            ?
-          </span>
+          typVraag ? (
+            <span key={i} style={{ color: "#ffe066", WebkitTextStroke: plek === "bord" ? "5px #0b1028" : "2px #0b1028", paintOrder: "stroke fill" }}>
+              ?
+            </span>
+          ) : (
+            <span key={i} className={s.vak}>
+              ?
+            </span>
+          )
         ) : /^\d+$/.test(d) ? (
           /* Elk getal in de som heeft de kleur van zijn voorwerpen (BOUWREGELS 2.1), met een dunne donkere rand voor de leesbaarheid. */
           <span key={i} style={{ color: nr++ === 1 ? hexB : hexA, WebkitTextStroke: plek === "bord" ? "5px #0b1028" : "2px #0b1028", paintOrder: "stroke fill" }}>
@@ -1346,6 +1433,7 @@ export function SqulaMinVlak({
   licht = null,
   stippen = null,
   uitkomst = null,
+  typVraag = false,
   verbind = null,
   bubbels = null,
   goed = 0,
@@ -1392,7 +1480,7 @@ export function SqulaMinVlak({
   return (
     <div className={s.vlak} ref={letterPlek}>
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
-      {som && t?.soort !== "verbind" && t?.soort !== "bubbels" && <Som tekst={som} plek={somPlek} />}
+      {som && t?.soort !== "verbind" && t?.soort !== "bubbels" && <Som tekst={som} plek={somPlek} typVraag={typVraag} />}
       {t?.soort === "verbind" && verbind && <Verbinden key={`${t.id}-${verbind.keer}`} toneel={t} stand={verbind} scene={scene} meld={meld} />}
       {t?.soort === "bubbels" && bubbels && <Bubbels toneel={t} stand={bubbels} scene={scene} meld={meld} />}
     </div>

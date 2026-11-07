@@ -60,6 +60,61 @@ function kaartX(i: number, n: number) {
   return Math.round((B - breed) / 2) + i * (W + KAART_TUSSEN);
 }
 
+/**
+ * De maten van de trein. Liggend precies zoals hierboven. Staand scherm (telefoon rechtop; BOUWREGELS 1.24, 7 november
+ * 2026): de trein in 2 rijen (locomotief met de eerste dagen boven, de rest eronder), zodat de wagons bijna 2 keer zo
+ * breed worden en de dagnamen zonder inzoomen te lezen zijn; de dagkaarten even groot.
+ */
+type TreinIndeling = {
+  W: number;
+  H: number;
+  TUSSEN: number;
+  LOC: number;
+  KAART_Y: number;
+  KAART_TUSSEN: number;
+  x0: number;
+  locTop: number;
+  plek: (i: number) => number;
+  /** de bovenkant van de knop van wagon i (de rij waarin hij staat) */
+  rijTop: (i: number) => number;
+  /** de bovenkant van elke rij */
+  rijen: number[];
+  kaartX: (i: number, n: number) => number;
+};
+
+function treinIndeling(n: number, staand: boolean): TreinIndeling {
+  if (!staand) {
+    const { x0, plek } = treinMaten(n);
+    return { W, H, TUSSEN, LOC, KAART_Y, KAART_TUSSEN, x0, locTop: BOVEN, plek, rijTop: () => BOVEN, rijen: [BOVEN], kaartX };
+  }
+  /* een korte trein (tot 4 wagons) blijft 1 rij, ook zo groot als past */
+  const tussen = 12;
+  const een = n <= 4;
+  const w = een ? Math.min(210, Math.floor((940 - n * tussen) / (LOC / W + n))) : 210;
+  const h = Math.round(w * WAGON_VERHOUDING) + 64;
+  const loc = Math.round((LOC * w) / W);
+  const r0 = een ? n : Math.floor(n / 2);
+  const boven0 = een ? 110 : 30;
+  const boven1 = een ? boven0 : boven0 + h + 16;
+  const x0 = Math.round((B - (loc + r0 * (w + tussen))) / 2);
+  const x1 = Math.round((B - ((n - r0) * (w + tussen) - tussen)) / 2);
+  const kt = 30;
+  return {
+    W: w,
+    H: h,
+    TUSSEN: tussen,
+    LOC: loc,
+    KAART_Y: boven1 + h + (een ? 110 : 64),
+    KAART_TUSSEN: kt,
+    x0,
+    locTop: boven0,
+    plek: (i) => (i < r0 ? x0 + loc + tussen + i * (w + tussen) : x1 + (i - r0) * (w + tussen)),
+    rijTop: (i) => (i < r0 ? boven0 : boven1),
+    rijen: een ? [boven0] : [boven0, boven1],
+    kaartX: (i, k) => Math.round((B - (k * w + (k - 1) * kt)) / 2) + i * (w + kt),
+  };
+}
+
 /* ---------- tekeningen ---------- */
 
 const N = PALET.navy;
@@ -171,7 +226,8 @@ export function WagonTekening({ dag, breed = W, hoog = H }: { dag: number; breed
           boxShadow: `0 0 ${14 * schaal}px ${4 * schaal}px ${d.hex}`,
           borderRadius: 7 * schaal,
           padding: `${1 * schaal}px ${5 * schaal}px`,
-          fontSize: (dag === 3 ? 12.5 : 13.5) * schaal,
+          /* groter, zodat een kind de dag zonder inzoomen kan lezen (BOUWREGELS 1.24, 7 november 2026; was 13,5) */
+          fontSize: (dag === 3 ? 17.5 : 19) * schaal,
           fontWeight: 800,
           lineHeight: 1.2,
           color: N,
@@ -184,7 +240,7 @@ export function WagonTekening({ dag, breed = W, hoog = H }: { dag: number; breed
   );
 }
 
-function Locomotief() {
+function Locomotief({ LOC = 128, H = 140 }: { LOC?: number; H?: number }) {
   const beeldH = Math.round(LOC * LOC_VERHOUDING);
   return (
     <div aria-hidden="true" style={{ position: "relative", width: LOC, height: H }}>
@@ -284,7 +340,11 @@ export function SqulaDagenTrein({
 
   useKeuzesAlvast(DAGEN.map((d) => d.naam));
 
-  const { x0, plek } = treinMaten(wagons.length);
+  /* Staand scherm: de trein in 2 rijen (zie `treinIndeling`); eens bepaald bij het begin. */
+  const [staand] = useState(() => typeof window !== "undefined" && window.innerHeight > window.innerWidth);
+  const { x0, plek, rijTop, rijen, W, H, TUSSEN, LOC, KAART_Y, kaartX, locTop } = treinIndeling(wagons.length, staand);
+  const kk = W / 108;
+  const beeldH = Math.round(W * WAGON_VERHOUDING);
   const legeIndex = wagons.indexOf(null);
   const plekVan = (dag: number) => wagons.indexOf(dag);
 
@@ -298,7 +358,8 @@ export function SqulaDagenTrein({
     if (legeIndex < 0) return false;
     const lx = plek(legeIndex);
     const marge = 34;
-    return x > lx - marge && x < lx + W + marge && y > BOVEN - marge && y < BOVEN + H + marge;
+    const ly = rijTop(legeIndex);
+    return x > lx - marge && x < lx + W + marge && y > ly - marge && y < ly + H + marge;
   };
 
   const sleepAan = slepen && kaartenActief;
@@ -314,7 +375,7 @@ export function SqulaDagenTrein({
     const idx = licht.map(plekVan).filter((i) => i >= 0).sort((p, q) => p - q);
     let start = 0;
     for (let k = 0; k < idx.length; k++) {
-      if (k + 1 < idx.length && idx[k + 1] === idx[k] + 1) continue;
+      if (k + 1 < idx.length && idx[k + 1] === idx[k] + 1 && rijTop(idx[k + 1]) === rijTop(idx[k])) continue;
       rondjeRuns.push([idx[start], idx[k]]);
       start = k + 1;
     }
@@ -325,36 +386,45 @@ export function SqulaDagenTrein({
 
   return (
     <div ref={vlakRef} className={s.vlak}>
-      {/* De rails over de hele breedte. */}
-      <svg className={s.rails} style={{ left: 0, top: BOVEN + H - 6 }} width={B} height={20} viewBox={`0 0 ${B} 20`} aria-hidden="true">
-        <rect x="0" y="4" width={B} height="6" rx="3" fill="#8fa3c9" />
-        {Array.from({ length: 33 }, (_, i) => (
-          <rect key={i} x={i * 30 + 6} y="10" width="14" height="7" rx="2" fill="#5d6f9a" />
-        ))}
-      </svg>
-
-      <div key={rit} className={`${s.trein} ${rit ? s.rijdt : ""}`}>
-        <div className={s.loc} style={{ left: x0, top: BOVEN }}>
-          <Locomotief />
-        </div>
-        {/* Koppelingen tussen de wagons. */}
-        <svg className={s.rails} style={{ left: 0, top: BOVEN + H - 22 }} width={B} height={12} viewBox={`0 0 ${B} 12`} aria-hidden="true">
-          {wagons.map((_, i) => (
-            <rect key={i} x={plek(i) - TUSSEN - 6} y="2" width={TUSSEN + 12} height="8" rx="3" fill={N} />
+      {/* De rails over de hele breedte (staand: onder elke rij). */}
+      {rijen.map((rt) => (
+        <svg key={`rails-${rt}`} className={s.rails} style={{ left: 0, top: rt + H - 6 }} width={B} height={20} viewBox={`0 0 ${B} 20`} aria-hidden="true">
+          <rect x="0" y="4" width={B} height="6" rx="3" fill="#8fa3c9" />
+          {Array.from({ length: 33 }, (_, i) => (
+            <rect key={i} x={i * 30 + 6} y="10" width="14" height="7" rx="2" fill="#5d6f9a" />
           ))}
         </svg>
+      ))}
+
+      <div key={rit} className={`${s.trein} ${rit ? s.rijdt : ""}`}>
+        <div className={s.loc} style={{ left: x0, top: locTop }}>
+          <Locomotief LOC={LOC} H={H} />
+        </div>
+        {/* Koppelingen tussen de wagons. */}
+        {rijen.map((rt) => (
+          <svg key={`kop-${rt}`} className={s.rails} style={{ left: 0, top: rt + H - 22 * kk }} width={B} height={12 * kk} viewBox={`0 0 ${B} ${12 * kk}`} aria-hidden="true">
+            {wagons.map((_, i) =>
+              rijTop(i) !== rt || (i > 0 && rijTop(i - 1) !== rt) ? null : (
+                <rect key={i} x={plek(i) - TUSSEN - 6} y={2 * kk} width={TUSSEN + 12} height={8 * kk} rx="3" fill={N} />
+              ),
+            )}
+          </svg>
+        ))}
         {wagons.map((dag, i) =>
           dag === null ? (
             <div
               key={`leeg-${i}`}
               className={`${s.leeg} ${boven ? s.leegDoel : ""}`}
-              style={{ left: plek(i), top: BOVEN + H - 62, width: W, height: 58 }}
+              style={{ left: plek(i), top: rijTop(i) + H - 62 * kk, width: W, height: 58 * kk }}
             />
           ) : (
             <WagonKnop
               key={`w-${dag}`}
               dag={dag}
               x={plek(i)}
+              top={rijTop(i)}
+              w={W}
+              h={H}
               licht={licht.includes(dag)}
               gekozen={gekozen.includes(dag)}
               uit={wagonsUit.includes(dag)}
@@ -366,8 +436,8 @@ export function SqulaDagenTrein({
         {rondjeRuns.map(([a, b]) => {
           const bb = (b - a) * (W + TUSSEN) + W;
           const rb = bb * 1.15 + 44;
-          /* De wagon zelf is maar ongeveer 56 punten hoog en staat onderin de knop (H = 140). */
-          const wh = 56;
+          /* De wagon zelf is maar ongeveer 56 punten hoog en staat onderin de knop (H = 140); staand naar verhouding. */
+          const wh = 56 * kk;
           const rh = wh * 1.4 + 50;
           return (
             // eslint-disable-next-line @next/next/no-img-element
@@ -377,19 +447,19 @@ export function SqulaDagenTrein({
               alt=""
               aria-hidden="true"
               className={s.rondje}
-              style={{ maxWidth: "none", left: plek(a) + bb / 2 - rb / 2, top: BOVEN + H - 29 - rh / 2, width: rb, height: rh, transform: `rotate(${((a * 7 + b * 3) % 5) - 2}deg)` }}
+              style={{ maxWidth: "none", left: plek(a) + bb / 2 - rb / 2, top: rijTop(a) + H - 29 * kk - rh / 2, width: rb, height: rh, transform: `rotate(${((a * 7 + b * 3) % 5) - 2}deg)` }}
             />
           );
         })}
         {vandaag !== null && plekVan(vandaag) >= 0 && (
-          <div className={s.pijl} style={{ left: plek(plekVan(vandaag)) + W / 2 - 22, top: BOVEN + H - 118 }}>
+          <div className={s.pijl} style={{ left: plek(plekVan(vandaag)) + W / 2 - 22, top: rijTop(plekVan(vandaag)) + H - beeldH - 64 }}>
             <Pijl />
           </div>
         )}
         {weekendHaak && (
           <svg
             className={s.haak}
-            style={{ left: plek(Math.min(...zat)) - 4, top: BOVEN + H + 18 }}
+            style={{ left: plek(Math.min(...zat)) - 4, top: rijTop(Math.min(...zat)) + H + 18 }}
             width={2 * W + TUSSEN + 8}
             height={26}
             viewBox={`0 0 ${2 * W + TUSSEN + 8} 26`}
@@ -467,7 +537,7 @@ export function SqulaDagenTrein({
               meld({ soort: slepen ? "leg" : "kaart", dag });
             }}
           >
-            <WagonTekening dag={dag} />
+            <WagonTekening dag={dag} breed={W} hoog={H} />
           </button>
         );
       })}
@@ -480,7 +550,7 @@ export function SqulaDagenTrein({
               left: B / 2 - 10,
               top: KAART_Y + H + 10,
               "--dx": `${plek(legeIndex) + W / 2 - (B / 2 - 10)}px`,
-              "--dy": `${BOVEN + 60 - (KAART_Y + H + 10)}px`,
+              "--dy": `${(legeIndex >= 0 ? rijTop(legeIndex) : BOVEN) + 60 * kk - (KAART_Y + H + 10)}px`,
             } as CSSProperties
           }
         >
@@ -494,6 +564,9 @@ export function SqulaDagenTrein({
 function WagonKnop({
   dag,
   x,
+  top = BOVEN,
+  w = W,
+  h = H,
   licht,
   gekozen,
   uit,
@@ -502,6 +575,9 @@ function WagonKnop({
 }: {
   dag: number;
   x: number;
+  top?: number;
+  w?: number;
+  h?: number;
   licht: boolean;
   gekozen: boolean;
   uit: boolean;
@@ -516,29 +592,45 @@ function WagonKnop({
       aria-disabled={!actief}
       {...ks}
       className={`${s.wagon} ${actief ? s.aan : ""} ${licht ? s.licht : ""} ${gekozen ? s.gekozen : ""} ${uit ? s.uit : ""}`}
-      style={{ ...ks.style, left: x, top: BOVEN, width: W, height: H }}
+      style={{ ...ks.style, left: x, top, width: w, height: h }}
       onClick={() => {
         if (actief) onKies();
       }}
     >
-      <WagonTekening dag={dag} />
+      <WagonTekening dag={dag} breed={w} hoog={h} />
     </button>
   );
 }
 
-/** De lijntekening op de kaart aan het eind (244 × 190): de locomotief met drie wagons. */
+/**
+ * De tekening op de kaart aan het eind (244 × 190): de locomotief met drie wagons. Eerst stonden hier HTML-blokjes in de
+ * SVG; die tekent een browser niet, zodat er alleen een streepje (de rails) te zien was (Sara, 7 november 2026). Nu zijn
+ * het SVG-plaatjes: dezelfde wagons met gloed, met de dagnaam op een bordje.
+ */
 export function KaartWeektrein() {
+  const wb = 54; /* breedte van een wagon op de kaart */
+  const wh = Math.round(wb * WAGON_VERHOUDING);
+  const g = (b: number) => ({ b: b * GLOED_B, rand: b * GLOED_RAND });
+  const lb = 62;
+  const lh = Math.round(lb * LOC_VERHOUDING);
+  const onder = 120;
   return (
     <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
-      <g transform="translate(6 50) scale(0.5)">
-        <Locomotief />
-      </g>
-      {[0, 2, 6].map((dag, i) => (
-        <g key={dag} transform={`translate(${72 + i * 57} 50) scale(0.5)`}>
-          <WagonTekening dag={dag} />
-        </g>
-      ))}
-      <rect x="2" y="122" width="240" height="4" rx="2" fill="#8fa3c9" />
+      <image href="/squla/trein-glow/locomotief.png" x={4 - g(lb).rand} y={onder - lh - g(lb).rand} width={g(lb).b} height={lh + 2 * g(lb).rand} />
+      {[0, 2, 6].map((dag, i) => {
+        const x = 70 + i * (wb + 4);
+        const d = DAGEN[dag];
+        return (
+          <g key={dag}>
+            <image href={`/squla/trein-glow/${d.naam}.png`} x={x - g(wb).rand} y={onder - wh - g(wb).rand} width={g(wb).b} height={wh + 2 * g(wb).rand} />
+            <rect x={x + 3} y={onder - wh * 0.78} width={wb - 6} height={12} rx={3} fill={PALET.warmwit} stroke={d.hex} strokeWidth={1.5} />
+            <text x={x + wb / 2} y={onder - wh * 0.78 + 9} textAnchor="middle" fontSize={8.5} fontWeight={800} fill={N}>
+              {d.naam}
+            </text>
+          </g>
+        );
+      })}
+      <rect x="2" y={onder + 2} width="240" height="4" rx="2" fill="#8fa3c9" />
     </svg>
   );
 }

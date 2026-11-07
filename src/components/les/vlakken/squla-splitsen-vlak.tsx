@@ -43,8 +43,9 @@ export type Deel =
   /** Eén ding (`maat` = breedte en hoogte in punten). */
   | { s: "ding"; id: string; vw: string; x: number; y: number; maat: number; verborgen?: boolean; kl?: string }
   /** Een beker met `n` potloden erin (gekleurd, licht uitgewaaierd, onderkant in de beker, bovenkant eruit); `x, y` = het midden van de tekening. */
-  | { s: "potloden"; id: string; n: number; x: number; y: number }
-  | { s: "geld"; id: string; soort: "briefje-10" | "munt-1"; x: number; y: number; maat: number }
+  | { s: "potloden"; id: string; n: number; x: number; y: number; /** Breedte in punten (herstel 7 november; zonder: 190). */ maat?: number }
+  /** `verborgen` (herstel 7 november): pas zichtbaar met `toon` (de munten rollen dan in beeld). */
+  | { s: "geld"; id: string; soort: "briefje-10" | "munt-1"; x: number; y: number; maat: number; verborgen?: boolean }
   | { s: "tekst"; id: string; t: string; x: number; y: number; grootte?: number; kleur?: string; verborgen?: boolean }
   /** Het splitshuisje: bovenaan het totaal (onder het dak), onder twee kamers. Leeg = lege kamer. */
   | { s: "huisje"; id: string; x: number; y: number; b?: number; top: string; links: string; rechts: string; dak?: boolean; stippen?: boolean; kleuren?: GetalKleuren }
@@ -441,6 +442,21 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.input.on("pointermove", (p: Ptr) => this.s2L.beweeg(p));
       this.input.on("pointerup", (p: Ptr) => this.s2L.los(p));
       this.input.on("pointerupoutside", (p: Ptr) => this.s2L.los(p));
+      /*
+        Herstel 7 november (vloeiendcontrole splitsen2-1, trage telefoon): op een staand scherm liggen de getaltegels vlak
+        boven de onderrand van het speelvlak. Phaser volgt een vinger niet meer zodra die buiten het speelvlak komt
+        (touchmove buiten het canvas wordt overgeslagen); de tegel bleef dan op de rand staan terwijl de vinger verder ging.
+        Nu volgt de tegel de vinger ook buiten het speelvlak. Alleen als Phaser zelf niet meer volgt, dus niets dubbel.
+      */
+      const buitenVlak = (e: TouchEvent) => {
+        if (this.input.manager.isOver || !e.changedTouches.length) return;
+        const t = e.changedTouches[0];
+        this.s2L.beweeg({ event: e, identifier: t.identifier, isDown: true } as unknown as Ptr);
+      };
+      window.addEventListener("touchmove", buitenVlak, { passive: true });
+      const stopBuiten = () => window.removeEventListener("touchmove", buitenVlak);
+      this.events.once("shutdown", stopBuiten);
+      this.events.once("destroy", stopBuiten);
       this.input.on("pointerdown", (p: Ptr) => this.s1m?.neer(p));
       this.input.on("pointermove", (p: Ptr) => this.s1m?.beweeg(p));
       this.input.on("pointerup", (p: Ptr) => this.s1m?.los(p));
@@ -577,31 +593,78 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           const p = groepPlekken(d);
           p.plekken.forEach((q, i) => zet(this.vw(d.vw, d.kleuren?.[i] ?? d.kl), q.x, q.y, d.maat ?? p.cel * 0.9, d.id, `${d.id}.${i}`, d.verborgen));
         } else if (d.s === "ding") zet(this.vw(d.vw, d.kl), d.x, d.y, d.maat, d.id, d.id, d.verborgen);
-        else if (d.s === "potloden") zet(this.potlodenTex(d.n), d.x, d.y, POT.b, d.id, d.id);
+        else if (d.s === "potloden") zet(this.potlodenTex(d.n), d.x, d.y, d.maat ?? POT.b, d.id, d.id);
         else if (d.s === "geld") {
           const sl = `sps-${d.soort}`;
           const t = this.textures.get(sl).getSourceImage() as HTMLImageElement;
           const im = this.add.image(d.x - MIDDEN.x, d.y - MIDDEN.y, sl);
           im.setScale(d.maat / t.width);
           im.setData("basis", sl);
-            box.add(im);
-          this.imgs.push({ im, id: d.id, sub: d.id, verborgen: false });
+          box.add(im);
+          this.imgs.push({ im, id: d.id, sub: d.id, verborgen: !!d.verborgen });
         } else if (d.s === "tienvak") {
           for (let i = 0; i < d.n + d.doek; i++) {
             const q = tienVak(d, i);
             zet(this.vw(d.vw, i < d.n ? d.kl : d.kl2), q.x, q.y, TIEN.cel * 0.72, d.id, `${d.id}.${i}`);
           }
-          /* De doek: over de vakjes die je niet ziet (per rij één stuk, op maat getekend). */
-          for (const rij of [0, 1]) {
-            const vakken = Array.from({ length: d.doek }, (_, k) => d.n + k).filter((i) => Math.floor(i / 5) === rij);
-            if (!vakken.length) continue;
-            const a = tienVak(d, vakken[0]);
-            const z = tienVak(d, vakken[vakken.length - 1]);
-            const b = Math.round(z.x - a.x + TIEN.cel + 4);
-            const h = TIEN.cel + 4;
-            const sl = `sps-doek-${b}x${h}`;
-            this.canvasPlaatje(sl, b, h, (c) => c.drawImage(voorwerpBeeld("doek"), 0, 0, b, h));
-            zet(sl, (a.x + z.x) / 2, a.y, b, `${d.id}-doek`, `${d.id}-doek`);
+          /* De doek: herstel 7 november (OVERZICHT-C, splitsen1-1 v11–v15). Eerst losse rode blokken per rij, met randjes
+             van de lege vakjes die eronder uitstaken; dat leek kapot. Nu 1 nette doek in code over precies de verborgen
+             vakjes (beide rijen samen, zonder naad), iets ruimer dan de vakjes, met een zachte plooi. Zelfde id, dus
+             "doek optillen" (uit) werkt zoals eerst. */
+          if (d.doek > 0) {
+            const c = TIEN.cel;
+            const rijen = [0, 1]
+              .map((rij) => Array.from({ length: d.doek }, (_, k) => d.n + k).filter((i) => Math.floor(i / 5) === rij))
+              .filter((v) => v.length)
+              .map((v) => {
+                const a = tienVak(d, v[0]);
+                const z = tienVak(d, v[v.length - 1]);
+                return { x0: a.x - c / 2 + 1, x1: z.x + c / 2 - 1, y0: a.y - c / 2 + 1, y1: a.y + c / 2 - 1 };
+              });
+            const X0 = Math.min(...rijen.map((r) => r.x0));
+            const X1 = Math.max(...rijen.map((r) => r.x1));
+            const Y0 = Math.min(...rijen.map((r) => r.y0));
+            const Y1 = Math.max(...rijen.map((r) => r.y1));
+            const M = 3;
+            const b = Math.round(X1 - X0) + 2 * M;
+            const h = Math.round(Y1 - Y0) + 2 * M;
+            const sl = `sps-doek3-${d.n}-${d.doek}-${b}x${h}`;
+            this.canvasPlaatje(sl, b, h, (cx) => {
+              const pad = new Path2D();
+              for (const r of rijen) pad.roundRect(r.x0 - X0 + M, r.y0 - Y0 + M, r.x1 - r.x0, r.y1 - r.y0, 16);
+              /* Twee rijen die elkaar raken: het stuk ertussen ook dicht (geen naad). */
+              if (rijen.length === 2) {
+                const lx = Math.max(rijen[0].x0, rijen[1].x0);
+                const rx = Math.min(rijen[0].x1, rijen[1].x1);
+                if (rx > lx) pad.rect(lx - X0 + M, rijen[0].y1 - Y0 + M - 18, rx - lx, 36);
+              }
+              /* Eerst de rand (alleen de buitenkant blijft zichtbaar, want de vulling komt erover): geen naden binnenin. */
+              cx.lineWidth = 2 * M;
+              cx.strokeStyle = "#8f201c";
+              cx.lineJoin = "round";
+              cx.stroke(pad);
+              const verloop = cx.createLinearGradient(0, 0, b, h);
+              verloop.addColorStop(0, "#f0645a");
+              verloop.addColorStop(1, "#b9302a");
+              cx.fillStyle = verloop;
+              cx.fill(pad, "nonzero");
+              cx.save();
+              cx.clip(pad);
+              /* Zachte plooien: een paar lichte, schuine banen. */
+              cx.globalAlpha = 0.16;
+              cx.fillStyle = "#ffffff";
+              for (let i = -1; i < b / 70 + 1; i++) {
+                cx.beginPath();
+                cx.moveTo(i * 70, 0);
+                cx.lineTo(i * 70 + 22, 0);
+                cx.lineTo(i * 70 + 52, h);
+                cx.lineTo(i * 70 + 30, h);
+                cx.closePath();
+                cx.fill();
+              }
+              cx.restore();
+            });
+            zet(sl, (X0 + X1) / 2, (Y0 + Y1) / 2, b, `${d.id}-doek`, `${d.id}-doek`, false, h);
           }
         }
       }
@@ -626,10 +689,36 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const st = this.staat;
       const flits = performance.now() < this.flitsTot;
       const kleur = (id: string, sub = id) => (flits || st.goedIds.includes(id) || st.goedIds.includes(sub) ? GOED : !st.rondje && (st.licht.includes(id) || st.licht.includes(sub)) ? WARM : null);
+      let nieuwZichtbaar = 0;
       for (const { im, id, sub, verborgen } of this.imgs) {
         if (!im.active) continue;
-        im.setVisible(!verborgen || st.toon.includes(id));
+        const zicht = !verborgen || st.toon.includes(id);
+        /* Herstel 7 november (naspelen, BOUWREGELS 1.22): wat verborgen was en nu verschijnt, valt met een klein stuitertje
+           op zijn plek (na elkaar), in plaats van ineens te staan. */
+        if (verborgen && zicht && !im.visible && !this.rustig) {
+          const y = im.y;
+          const sx = im.scaleX;
+          const sy = im.scaleY;
+          im.setY(y - 46).setScale(sx * 0.4, sy * 0.4).setAlpha(0);
+          this.tweens.add({ targets: im, y, scaleX: sx, scaleY: sy, alpha: 1, duration: 340, delay: nieuwZichtbaar++ * 90, ease: "Back.easeOut" });
+        }
+        im.setVisible(zicht);
         const grijs = st.uit.includes(id) || st.uit.includes(sub);
+        /* Herstel 7 november (naspelen): de doek wordt niet grijs maar glijdt weg (opgetild), zodat je de ballen eronder ziet. */
+        if (id.endsWith("-doek")) {
+          const weg = grijs;
+          if (weg && !im.getData("weg")) {
+            im.setData("weg", true);
+            im.setData("y0", im.y);
+            if (this.rustig) im.setAlpha(0);
+            else this.tweens.add({ targets: im, y: im.y - 70, alpha: 0, angle: -4, duration: 520, ease: "Sine.easeIn" });
+          } else if (!weg && im.getData("weg")) {
+            im.setData("weg", false);
+            this.tweens.killTweensOf(im);
+            im.setY(im.getData("y0") as number).setAngle(0).setAlpha(1);
+          }
+          continue;
+        }
         im.setAlpha(grijs ? 0.3 : 1);
         if (grijs) im.setTint(0x9aa3b5);
         else im.clearTint();
@@ -1215,7 +1304,9 @@ export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, lic
 
   const delen = beeld?.delen ?? [];
   const zicht = (d: Deel) => !("verborgen" in d && d.verborgen) || toon.includes(d.id);
-  const teksten = delen.filter(zicht).flatMap(tekstenVan);
+  /* Herstel 7 november (OVERZICHT-C splitsen2-1/2-2 v00): op het beginscherm zweefden de getallen (14, 10) al los in beeld
+     terwijl de tekening (huisje, briefje) nog moest komen. Nu verschijnen de getallen pas als de tekening er is. */
+  const teksten = scene ? delen.filter(zicht).flatMap(tekstenVan) : [];
   const letters = delen.filter((d): d is Extract<Deel, { s: "letters" }> => d.s === "letters");
   const tikken = delen.filter((d): d is Extract<Deel, { s: "tik" }> => d.s === "tik");
   const stijlVan = (id: string) => (goedIds.includes(id) ? s.goed : licht.includes(id) && !rondje ? s.licht : uit.includes(id) ? s.uit : "");

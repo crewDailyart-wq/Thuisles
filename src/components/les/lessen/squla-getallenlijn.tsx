@@ -53,8 +53,44 @@ const licht = (l: Lesgids, ...ns: number[]) => zet(l, { licht: ns });
 const vul = (l: Lesgids, op: number, t: string, golfOp = op) => zet(l, { invul: { op, t }, golf: { op: golfOp, keer: ++golfTel }, licht: [] });
 const golf = (l: Lesgids, op: number) => zet(l, { golf: { op, keer: ++golfTel }, licht: [] });
 
+/** Een willekeurige volgorde (Fisher-Yates). */
+function meng<T>(lijst: T[]): T[] {
+  const a = [...lijst];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+/**
+ * Willekeurig, maar nooit al van klein naar groot (dan verklapt het beeld het antwoord), en bij 3 of meer ook nooit precies van groot
+ * naar klein (dan hoeft het kind alleen om te draaien; herstel ronde 2, 7 november).
+ */
+function mengNietOplopend(lijst: number[]): number[] {
+  for (let i = 0; i < 40; i++) {
+    const a = meng(lijst);
+    const oplopend = a.every((n, k) => k === 0 || a[k - 1] <= n);
+    const aflopend = a.every((n, k) => k === 0 || a[k - 1] >= n);
+    if (a.length < 2 || (!oplopend && (a.length < 3 || !aflopend))) return a;
+  }
+  const g = [...lijst].sort((x, y) => x - y);
+  if (g.length < 3) return g.reverse();
+  return [g[1], g[0], ...g.slice(2)];
+}
+
+/**
+ * Herstel 7 november (BOUWREGELS 1.23): de keuzes in een willekeurige volgorde, zodat het goede antwoord niet steeds op dezelfde plek
+ * staat. Per vraag één keer gekozen (dezelfde lijst = dezelfde volgorde), dus na een fout blijven de knoppen op hun plek.
+ */
+const gemengd = new WeakMap<number[], number[]>();
 async function kiesGetal(l: Lesgids, opties: number[]) {
-  return Number(await l.kies(opties.map(String), { weetniet: false, direct: true }));
+  let volgorde = gemengd.get(opties);
+  if (!volgorde) {
+    volgorde = meng(opties);
+    gemengd.set(opties, volgorde);
+  }
+  /* 4 keuzes: 2 × 2, niet 3 en 1 los eronder. */
+  return Number(await l.kies(volgorde.map(String), { weetniet: false, direct: true, ...(volgorde.length === 4 ? { perTwee: true } : {}) }));
 }
 
 /** Een getal typen. "Weet ik niet" (het vraagteken bij het invulvak) = een hint, en dan nog eens. */
@@ -292,7 +328,9 @@ function lijnVraag(l: Lesgids, v: LijnVraag): SqulaVraag<number> {
 
 type OrdenVraag = { vakken: (number | null)[]; kaarten: number[]; handje?: boolean; hokjes?: boolean; vraag?: string[] };
 
-function ordenVraag(l: Lesgids, v: OrdenVraag): SqulaVraag<number[]> {
+function ordenVraag(l: Lesgids, w0: OrdenVraag): SqulaVraag<number[]> {
+  /* De kaarten liggen nooit al op volgorde (herstel 7 november: dan hoeft het kind niets te doen). */
+  const v: OrdenVraag = { ...w0, kaarten: mengNietOplopend(w0.kaarten) };
   const alles = [...v.vakken.filter((n): n is number => n !== null), ...v.kaarten].sort((a, b) => a - b);
   const vast = v.vakken.findIndex((n) => n !== null);
   const stap = alles[1] - alles[0];
@@ -385,7 +423,8 @@ function tussenVraag(l: Lesgids, a: number, b: number, opties: number[]): SqulaV
       await l.zeg(`${w(goed)} is groter dan ${w(a)} en kleiner dan ${w(b)}.`);
       await l.wacht(300);
     },
-    toon: () => toon(l, { soort: "leeg" }),
+    /* Herstel 7 november: geen leeg scherm. Een getallenlijn met alleen de 2 grenzen erop; het antwoord staat er niet bij. */
+    toon: () => toon(l, { soort: "lijn", van: 0, tot: 20, labels: [0, a, b, 20] }),
     vraag: [zin],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === goed,
@@ -508,6 +547,13 @@ function naTien(l: Lesgids, opties: number[]): SqulaVraag<number> {
 function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVraag<number> {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
+  const keuzes = [b, a];
+  /* Herstel 7 november (BOUWREGELS 1.22): geen losse planeet meer. Tijdens de vraag de getallenlijn zonder raketje; na het antwoord landt het raketje bij het grootste getal. */
+  const lijn = { soort: "lijn" as const, van: 10, tot: 20, labels: [10, 15, 20] };
+  const landt = () => {
+    toon(l, { ...lijn, raketje: { n: groot } });
+    vul(l, groot, String(groot));
+  };
   return {
     synthesis: true,
     reactie: (x) => [`Als je telt, zeg je ${w(x)} eerder dan ${w(x === a ? b : a)}.`, "Het getal dat je later zegt, is meer."],
@@ -518,15 +564,15 @@ function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVr
       golf(l, groot);
       await l.wacht(300);
     },
-    toon: () => toon(l, { soort: "planeet" }),
+    toon: () => toon(l, lijn),
     vraag: [...verhaal, `Wat is meer: ${w(a)} of ${w(b)}?`],
-    antwoord: () => kiesGetal(l, [b, a]),
+    antwoord: () => kiesGetal(l, keuzes),
     isGoed: (x) => x === groot,
     noem: (x) => w(x),
     goed: async () => {
-      golf(l, 0);
+      landt();
       await l.zeg(bevestig());
-      await l.wacht(300);
+      await l.wacht(700);
     },
     samen: async () => {
       toon(l, { soort: "lijn", van: 10, tot: 20, labels: Array.from({ length: 11 }, (_, i) => 10 + i) });
@@ -587,7 +633,10 @@ function wieZitEr(
 }
 
 /** Welk getal ligt het dichtst bij …? (drie bordjes) */
-function dichtstBij(l: Lesgids, doel: number, getallen: number[], wezens: Wezen[]): SqulaVraag<number> {
+function dichtstBij(l: Lesgids, doel: number, g0: number[], wezens: Wezen[]): SqulaVraag<number> {
+  /* Herstel 7 november: de bordjes in een willekeurige volgorde, en zonder losse ufo, satelliet en raketje ernaast (alleen versiering, BOUWREGELS 1.22). */
+  void wezens;
+  const getallen = meng(g0);
   const goed = [...getallen].sort((a, b) => Math.abs(a - doel) - Math.abs(b - doel))[0];
   const verder = getallen.filter((g) => g !== goed).sort((a, b) => Math.abs(b - doel) - Math.abs(a - doel));
   return {
@@ -598,7 +647,7 @@ function dichtstBij(l: Lesgids, doel: number, getallen: number[], wezens: Wezen[
       await l.zeg(`${w(goed)} ligt het dichtst bij ${w(doel)}.`, `Het is maar ${Math.abs(goed - doel)} verder of terug.`);
       await l.wacht(300);
     },
-    toon: () => toon(l, { soort: "bordjes", getallen, wezens }),
+    toon: () => toon(l, { soort: "bordjes", getallen, wezens: [] }),
     vraag: [`Welk getal ligt het dichtst bij ${w(doel)}?`],
     antwoord: () => kiesGetal(l, getallen),
     isGoed: (x) => x === goed,
@@ -735,9 +784,12 @@ function pijlWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> 
   };
 }
 
-/** Bij welk getal staat de ufo of de satelliet? (lijn met alleen 15 en 20) */
+/**
+ * Bij welk getal staat de ufo of de satelliet? Herstel ronde 2 (7 november): de lijn begint bij 10, en daar staat nu ook 10 onder,
+ * net als bij de pijl en "wie zit er bij …" (eerst stonden alleen 15 en 20 eronder, dan wist een kind niet waar de lijn begint).
+ */
 function wezenGetal(l: Lesgids, o: { wie: Exclude<Wezen, "raketje">; n: number; raketje: number; ander: { soort: Exclude<Wezen, "raketje">; n: number }; opties: number[] }): SqulaVraag<number> {
-  const labels = [15, 20];
+  const labels = [10, 15, 20];
   let nFout = 0;
   return {
     synthesis: true,
@@ -863,7 +915,10 @@ function dingOpGetal(l: Lesgids, rij: (number | Ding)[], opties: number[]): Squl
 }
 
 /** De bus is zo lang dat hij op twee getallen staat (bij Squla een olifant). */
-function lang(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> {
+function lang(l: Lesgids, a: number, goedEerst0: boolean): SqulaVraag<string> {
+  /* Herstel 7 november: willekeurig welke keuze eerst staat. */
+  void goedEerst0;
+  const goedEerst = Math.random() < 0.5;
   const goed = `${a + 1} en ${a + 2}`;
   const fout = `${a - 2} en ${a - 1}`;
   const items: RijItem[] = [{ t: String(a) }, { voorwerp: "bus" }];
@@ -919,9 +974,10 @@ const RANGSCHIKKEN_1: Opgave[] = [
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [11, 12, "…", 14, 15], start: 11, gat: 2, opties: [13, 10, 3], vraag: ["Welk getal hoort op de puntjes?"] }),
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [16, 17, 18, "…", 20], start: 16, gat: 3, opties: [15, 19, 9], vraag: ["Welk getal hoort op de puntjes?"] }),
   /* planeetjes: één zonder getal, en een vraagteken */
-  (l) => rijVraag(l, { ding: "planeet", rij: [4, 5, 6, "-", "?"], start: 4, gat: 4, opties: [7, 9, 8], vraag: ["Welk getal hoort bij het vraagteken?"] }),
-  (l) => rijVraag(l, { ding: "planeet", rij: [12, 13, "-", "?", "-"], start: 12, gat: 3, opties: [15, 17, 11], vraag: ["Welk getal hoort bij het vraagteken?"] }),
-  (l) => rijVraag(l, { ding: "planeet", rij: [7, 8, 9, "-", "?"], start: 7, gat: 4, opties: [10, 11, 12], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  /* Herstel 7 november: alleen het vraagteken is leeg; geen planeten zonder getal meer die niet worden uitgelegd. Het antwoord blijft hetzelfde. */
+  (l) => rijVraag(l, { ding: "planeet", rij: [4, 5, 6, 7, "?"], start: 4, gat: 4, opties: [7, 9, 8], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "planeet", rij: [12, 13, 14, "?", 16], start: 12, gat: 3, opties: [15, 17, 11], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "planeet", rij: [7, 8, 9, 10, "?"], start: 7, gat: 4, opties: [10, 11, 12], vraag: ["Welk getal hoort bij het vraagteken?"] }),
   /* getallenlijn 0–20 met een vlaggetje */
   (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 5, 10, 15, 20], n: 7, opties: [7, 6, 8], vraag: ["Bij welk getal staat het vlaggetje?"] }),
   (l) => lijnVraag(l, { van: 0, tot: 20, labels: [0, 5, 10, 15, 20], n: 13, opties: [14, 13, 12], vraag: ["Bij welk getal staat het vlaggetje?"] }),
@@ -938,13 +994,14 @@ const RANGSCHIKKEN_1: Opgave[] = [
 
 const RANGSCHIKKEN_2: Opgave[] = [
   /* diamanten, getallen eronder, de puntjes in het midden */
-  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [2, "-", "…", "-", 6], start: 2, gat: 2, opties: [3, 4, 5], vraag: ["Welk getal hoort op de puntjes?"] }),
-  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [10, "-", "…", "-", 14], start: 10, gat: 2, opties: [12, 13, 11], vraag: ["Welk getal hoort op de puntjes?"] }),
-  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [15, "-", "…", "-", 19], start: 15, gat: 2, opties: [16, 18, 17], vraag: ["Welk getal hoort op de puntjes?"] }),
+  /* Herstel 7 november: onder elke diamant (en ster) staat iets: een getal, puntjes of het vraagteken. Zo zie je welke plek het is. */
+  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [2, "…", "?", "…", 6], start: 2, gat: 2, opties: [3, 4, 5], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [10, "…", "?", "…", 14], start: 10, gat: 2, opties: [12, 13, 11], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "kristal", onder: true, rij: [15, "…", "?", "…", 19], start: 15, gat: 2, opties: [16, 18, 17], vraag: ["Welk getal hoort bij het vraagteken?"] }),
   /* sterren, zelfde soort vraag */
-  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [6, "-", "…", "-", 10], start: 6, gat: 2, opties: [8, 7, 9], vraag: ["Welk getal hoort op de puntjes?"] }),
-  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [13, "-", "…", "-", 17], start: 13, gat: 2, opties: [14, 15, 16], vraag: ["Welk getal hoort op de puntjes?"] }),
-  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [16, "-", "…", "-", 20], start: 16, gat: 2, opties: [18, 19, 17], vraag: ["Welk getal hoort op de puntjes?"] }),
+  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [6, "…", "?", "…", 10], start: 6, gat: 2, opties: [8, 7, 9], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [13, "…", "?", "…", 17], start: 13, gat: 2, opties: [14, 15, 16], vraag: ["Welk getal hoort bij het vraagteken?"] }),
+  (l) => rijVraag(l, { ding: "ster", onder: true, rij: [16, "…", "?", "…", 20], start: 16, gat: 2, opties: [18, 19, 17], vraag: ["Welk getal hoort bij het vraagteken?"] }),
   /* een slinger van 7 lampjes, één is rood: kies uit 4 */
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [2, 3, "-", "-", "-", "-", "-"], start: 2, gat: 3, rood: true, opties: [4, 5, 6, 7], vraag: ["Welk getal hoort bij het rode lampje?"] }),
   (l) => rijVraag(l, { ding: "lampje", slinger: true, rij: [10, 11, "-", "-", "-", "-", "-"], start: 10, gat: 4, rood: true, opties: [12, 13, 14, 15], vraag: ["Welk getal hoort bij het rode lampje?"] }),
@@ -1000,8 +1057,8 @@ async function uitlegRij(l: Lesgids) {
 
 /** Uitleg bij de diamanten met puntjes (het voorbeeld van level 2): dezelfde soort rij, andere getallen. */
 async function uitlegDiamant(l: Lesgids) {
-  toon(l, { soort: "rij", ding: "kristal", onder: true, items: [{ t: "7" }, { t: "" }, { t: "…" }, { t: "" }, { t: "11" }] });
-  await l.zeg("Kijk, diamanten met getallen eronder.", "Op 1 diamant staan puntjes.");
+  toon(l, { soort: "rij", ding: "kristal", onder: true, items: [{ t: "7" }, { t: "…" }, { t: "?" }, { t: "…" }, { t: "11" }] });
+  await l.zeg("Kijk, diamanten met getallen eronder.", "Onder 1 diamant staat een vraagteken.");
   licht(l, 0);
   await l.zeg("Links staat {7:wit}.");
   licht(l, 4);
@@ -1011,9 +1068,9 @@ async function uitlegDiamant(l: Lesgids) {
   licht(l, 1);
   await l.zeg("{8:wit}.");
   licht(l, 2);
-  await l.zeg("Nu komt de plek met de puntjes.");
+  await l.zeg("Nu komt de plek met het vraagteken.");
   vul(l, 2, "9");
-  await l.zeg("Op de puntjes hoort {9:wit}.");
+  await l.zeg("Bij het vraagteken hoort {9:wit}.");
   await l.verder();
 }
 /** Uitleg bij de planeet (het voorbeeld van kat-2): welk getal komt ervoor? */
@@ -1448,15 +1505,31 @@ const dieren3: Lesdraaiboek = {
  * het getal na de rij, en een getal met hetzelfde eindcijfer. `plek` = waar
  * het goede getal tussen de 4 keuzes staat.
  */
-function aftel(l: Lesgids, start: number, gat: number, plek: number) {
+function aftel(l: Lesgids, start: number, gat: number, plek: number, laatste = false): SqulaVraag<number> {
   const rij: Plek[] = Array.from({ length: 7 }, (_, i) => (i === gat ? "…" : start - i));
   const goed = start - gat;
   const eind = start - 6;
   const anders = [start + 1 <= 20 ? start + 1 : eind - 2, eind - 1, goed >= 10 ? goed - 10 : goed + 10];
   const opties = [...anders];
   opties.splice(plek % 4, 0, goed);
-  return rijVraag(l, { ding: "aftel", rij, start, stap: -1, gat, opties, vraag: ["Welk getal hoort op de puntjes?"] });
+  const v = rijVraag(l, { ding: "aftel", rij, start, stap: -1, gat, opties, vraag: ["Welk getal hoort op de puntjes?"] });
+  /* Herstel 7 november (naspelen): na een goed antwoord trilt de raket en komt er rook onder vandaan; na de laatste vraag stijgt hij op. */
+  const doe = () => zet(l, { raketDoe: { soort: laatste ? "op" : "tril", keer: ++raketTel } });
+  return {
+    ...v,
+    goed: async (x: number) => {
+      doe();
+      await v.goed(x);
+      await l.wacht(laatste ? 1200 : 200);
+    },
+    toonAntwoord: async () => {
+      await v.toonAntwoord?.();
+      doe();
+      await l.wacht(laatste ? 1500 : 500);
+    },
+  };
 }
+let raketTel = 0;
 
 const TERUGTELLEN: Opgave[] = [
   (l) => aftel(l, 17, 5, 1),
@@ -1473,7 +1546,7 @@ const TERUGTELLEN: Opgave[] = [
   (l) => aftel(l, 19, 1, 2),
   (l) => aftel(l, 15, 4, 1),
   (l) => aftel(l, 18, 6, 3),
-  (l) => aftel(l, 16, 3, 0),
+  (l) => aftel(l, 16, 3, 0, true),
 ];
 
 const terugtellen1: Lesdraaiboek = {

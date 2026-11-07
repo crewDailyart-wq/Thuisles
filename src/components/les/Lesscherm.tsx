@@ -25,6 +25,7 @@ import { leesVoorkeuren, metUitspraak, type Lesvoorkeuren } from "./voorkeuren";
 import { useInBeeld } from "@/components/oefenen/toetsenbordruimte";
 import { getalkleur, hoogte, stapel, TEGELKLEUR, vorm, type Hokje } from "./tegels";
 import type { Lesdraaiboek, Lesgids, Somdeel, Vlak, Vlakgebeurtenis, Kiesinstel } from "./soort";
+import { magStaandGroeien } from "./soort";
 import s from "./Lesscherm.module.css";
 import { OpdrachtDecor } from "@/components/oefenen/OpdrachtDecor";
 import { BliepoVloer } from "@/components/oefenen/BliepoVloer";
@@ -1013,10 +1014,24 @@ function Lesscherm({
   const geldEnkel = vraagBoven && les.id === "squla-geld-geldmachine-1" &&
     geldBeeld?.groot?.length === 1 && geldBeeld.groot[0].soort === "geld" &&
     !geldBeeld.kaarten?.length && !geldBeeld.verbind;
+  /*
+    Een vlak dat op een staand scherm mag groeien (BOUWREGELS 1.24, 7 november 2026; nu de klok): het loopt dan van
+    vlak onder de naambalk tot vlak boven de ballon, zodat de lege helft van het scherm gebruikt wordt. Alle andere
+    vlakken (en elk liggend scherm) houden precies de oude maat: vlakH = H.
+  */
+  const STAAND_BOVEN = 56; /* onder de naambalk */
+  const STAAND_ONDER = 16; /* boven de ballon */
+  const groeiH =
+    squlaMidden && beeld.vlak && !beeld.kaart && magStaandGroeien(beeld.vlak.comp) && ballonHoogte && schermHoogte && schaal
+      ? Math.min(2 * H, (schermHoogte - ballonHoogte - 16 - STAAND_BOVEN - STAAND_ONDER) / schaal)
+      : 0;
+  const vlakH = groeiH > H ? Math.floor(groeiH) : H;
   const vlakBoven =
-    squlaMidden && ballonHoogte && schermHoogte
-      ? Math.max(8, (schermHoogte - ballonHoogte - 16 - H * (schaal || 1)) / 2)
-      : 8 + pilBoven * (schaal || 1);
+    vlakH > H
+      ? STAAND_BOVEN
+      : squlaMidden && ballonHoogte && schermHoogte
+        ? Math.max(8, (schermHoogte - ballonHoogte - 16 - vlakH * (schaal || 1)) / 2)
+        : 8 + pilBoven * (schaal || 1);
   /*
     Vaste plek voor de antwoordkeuzes (28 oktober 2026, besluit eigenaar):
     Ja/Nee, "Weet ik niet" en andere keuzes staan ALTIJD direct onder de zin
@@ -1024,6 +1039,8 @@ function Lesscherm({
     cijfers (1–9) staan bij de indeling van Synthesis in de kolom links.
   */
   const tegelsLinks = synth && b?.soort === "kies" && !!b.instel?.raster;
+  /* Herstel 7 november (groep C): opt-in per vraag, de antwoorden groot in het midden van het speelvlak. */
+  const keuzesMidden = synth && !tegelsLinks && b?.soort === "kies" && typeof b.instel?.midden === "number" ? b.instel.midden : null;
   /*
     Gebaren bij het praten (23 oktober 2026, opdracht eigenaar): bij elke zin
     die Bliepo zegt een passend gebaar (vraag: open handen; uitleg: wijzen of
@@ -1219,6 +1236,7 @@ function Lesscherm({
         {!pilBoven && !squlaMidden && pilBalk}
         {!nieuw && tekstblok}
         {tegelsLinks && <div className={s.synthKolom}>{maakTekstblok("knoppen")}</div>}
+        {keuzesMidden !== null && <div className={s.keuzesMidden} style={{ top: keuzesMidden }} data-keuzes-midden="">{maakTekstblok("knoppen")}</div>}
 
         {/* Bliepo: praat mee met de tekst, en juicht als de les klaar is. */}
         {!nieuw && (
@@ -1239,7 +1257,7 @@ function Lesscherm({
                 : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map((z) => kaal(lesTekst(les.id, z))), () => {}, () => {}, true)
             }
           >
-            {vraagBoven ? tutorTekstblok : tegelsLinks ? maakTekstblok("zin") : tekstblok}
+            {vraagBoven ? tutorTekstblok : tegelsLinks || keuzesMidden !== null ? maakTekstblok("zin") : tekstblok}
           </BliepoVloer>
         )}
 
@@ -1288,7 +1306,7 @@ function Lesscherm({
         {/* een eigen speelvlak, of het raster met de torens */}
         {beeld.vlak && !beeld.kaart && (
           <div inert={beeld.beheerVolgende || undefined} style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, visibility: toonStartbeeld ? "hidden" : undefined }}>
-            <beeld.vlak.comp {...beeld.vlak.props} meld={meldVlak} schaal={schaal || 1} metSom={!!beeld.som} />
+            <beeld.vlak.comp {...beeld.vlak.props} meld={meldVlak} schaal={schaal || 1} metSom={!!beeld.som} {...(vlakH > H ? { staandHoogte: vlakH } : {})} />
           </div>
         )}
         {toonStartbeeld && <div style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, pointerEvents: "none" }}>{startbeeld?.inhoud}</div>}
@@ -1413,7 +1431,7 @@ function Lesscherm({
 
       {/* Nieuw, staand scherm: de ballon met Bliepo onder het speelvlak. */}
       {nieuw && staand && (
-        <div ref={staandVak} className="les-staand" style={{ top: vlakBoven + 8 + H * (schaal || 1) }}>
+        <div ref={staandVak} className="les-staand" style={{ top: vlakBoven + 8 + vlakH * (schaal || 1) }}>
           <BliepoVloer
             naast={praatknop}
             gebaar={lesGebaar}
@@ -1546,12 +1564,14 @@ function Keuzes({ opties, instel, synth, cijfers, onKlaar }: { opties: string[];
   const weetniet = instel?.weetniet;
   /* Antwoordtegels in een raster van 3 breed (zoals Synthesis), of de gewone rij/kolom. */
   const lijst = instel?.raster ? s.raster3 : kort ? s.rij : s.bediening;
-  const lijstStijl = instel?.raster ? undefined : kort ? { flexWrap: "wrap" as const, width: 262 } : { opacity: 1, animation: "none" };
+  /* `maxWidth`: op een smalle telefoon is de ballon maar ±258 px breed; een rij van 262 stak dan 2 px links buiten de ballon
+     en die rand werd afgeknipt (keuring herstel AB2, N2). Overal waar 262 past, verandert er niets. */
+  const lijstStijl = instel?.raster ? undefined : kort ? { flexWrap: "wrap" as const, width: instel?.perTwee ? 210 : 262, maxWidth: "100%" } :{ opacity: 1, animation: "none", ...(instel?.onderElkaar ? { alignItems: "stretch" as const, width: 270 } : {}) };
   useKeuzesAlvast(opties.map(leesKeuze));
   return (
     <div className={s.bediening}>
       {/* Drie of meer woordkeuzes: twee naast elkaar (alleen bij de indeling van Synthesis, via CSS), zodat de vraag van Bliepo niet omhoog uit beeld schuift. */}
-      <div className={`${lijst} ${!instel?.raster && !kort && opties.length >= 3 ? s.twee : ""}`} style={lijstStijl}>
+      <div className={`${lijst} ${!instel?.raster && !instel?.onderElkaar && !kort && opties.length >= 3 ? s.twee : ""}`} style={lijstStijl}>
         {opties.map((o) => (
           <button
             key={o}

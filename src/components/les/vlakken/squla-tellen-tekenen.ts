@@ -109,7 +109,9 @@ export const FOTO: { plaatjes: Partial<Record<Soort, HTMLImageElement>>; gloed: 
 export function teken(c: CanvasRenderingContext2D, soort: Soort) {
   const rand = 6;
   const foto = FOTO.plaatjes[soort];
-  if (!foto) return tekenVoorwerp(c, soort, rand, rand, MAAT - rand * 2, MAAT - rand * 2);
+  /* De knikker is sinds 7 november de herkenbare glazen knikker (de oude leek op een blauw krulletje). */
+  /* De bal is sinds herstel ronde 2 (7 november) de strandbal "speelbal" (de oude bal.png leek op een verbodsbord). */
+  if (!foto) return tekenVoorwerp(c, soort === "knikker" ? "knikker-glas" : soort === "bal" ? "speelbal" : soort, rand, rand, MAAT - rand * 2, MAAT - rand * 2);
   const f = Math.min((MAAT - rand * 2) / foto.naturalWidth, (MAAT - rand * 2) / foto.naturalHeight);
   const b = foto.naturalWidth * f;
   const h = foto.naturalHeight * f;
@@ -135,11 +137,11 @@ export function tekenZak(c: CanvasRenderingContext2D) {
 /** Het tiental op het bordje van de zak (116 × 84 punten, het midden van het bordje). */
 export function tekenZakgetal(c: CanvasRenderingContext2D, getal: number) {
   c.fillStyle = "#1d2540";
-  c.font = `800 58px "Work Sans", system-ui, sans-serif`;
+  c.font = `800 52px "Work Sans", system-ui, sans-serif`;
   c.textAlign = "center";
   c.textBaseline = "middle";
-  /* iets naar links: rechts is plek voor het knikkertje ("hierin zitten knikkers") */
-  c.fillText(String(getal), 42, 45);
+  /* Herstel 7 november: het getal in het midden, bovenaan het bordje; het knikkertje staat eronder (niet meer tegen het getal aan). */
+  c.fillText(String(getal), 58, 30);
 }
 
 /** Een getal op een klein donker schijfje (samen tellen), 64 × 44 punten. */

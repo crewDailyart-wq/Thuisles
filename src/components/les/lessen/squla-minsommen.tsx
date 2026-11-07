@@ -38,9 +38,13 @@ import { bevestig, krijgtVervolgvraag, isBegeleideUitleg, uitlegKeuze, zetSynthe
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, type SqulaVraag } from "./squla-hulp";
-import { KaartMinsommen, SqulaMinVlak, type Bakje, type Ding, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
+import { KaartMinsommen, machineDuur, SqulaMinVlak, type Bakje, type Ding, type Geld, type MinVlakProps, type Speelgoed, type Toneel } from "../vlakken/squla-minsommen-vlak";
 import { DING } from "../vlakken/squla-minsommen-tekenen";
 import { basisNaam, KLEURHEX, somKleuren } from "../vlakken/squla-getalring";
+import { meng } from "./squla-meng";
+
+/** Herstel 7 november (OVERZICHT-C punt 4): de antwoorden groot in het midden onder het plaatje; bovenkant van de rij (punten). */
+const MIDDEN = 600;
 
 /* =====================================================================
    Woorden
@@ -155,7 +159,7 @@ function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
 type Stand = { huidig: string; nr: number; goed: number; fout: number; typUitgelegd: boolean; verbindKeer: number; bubbelKeer: number };
 
 const zet = (l: Lesgids, p: Partial<MinVlakProps>) => l.pasVlakAan<MinVlakProps>(p);
-const LEEG: Partial<MinVlakProps> = { som: null, grijs: 0, licht: null, stippen: null, uitkomst: null };
+const LEEG: Partial<MinVlakProps> = { som: null, grijs: 0, licht: null, stippen: null, uitkomst: null, typVraag: false };
 
 /** Een toneel in beeld zetten (nieuw: Bliepo tovert het tevoorschijn; zelfde: alleen de hulp weghalen). */
 function toon(l: Lesgids, st: Stand, t: Toneel, extra: Partial<MinVlakProps> = {}) {
@@ -170,8 +174,9 @@ const goedBeeld = (l: Lesgids, st: Stand, extra: Partial<MinVlakProps> = {}) => 
 const foutBeeld = (l: Lesgids, st: Stand) => zet(l, { fout: ++st.fout });
 
 /** Kiezen uit getallen. */
-async function kiesGetal(l: Lesgids, keuzes: number[]) {
-  return Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true }));
+async function kiesGetal(l: Lesgids, keuzes: number[], midden = MIDDEN) {
+  /* Het goede antwoord staat niet steeds op dezelfde plek (BOUWREGELS 1.23); alleen de plek wisselt. */
+  return Number(await l.kies(meng(keuzes).map(String), { weetniet: false, direct: true, midden }));
 }
 
 /** Een getal typen (echt invoerveld, HARDE REGEL 5). De eerste keer wijst Bliepo het vinkje aan. */
@@ -313,14 +318,16 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     const u = v.a - v.b;
     const ding = v.ding;
     const k = ding ? DING[ding].kleur : "wit";
-    const toneel: Toneel = ding ? ruimteToneel(st, ding, v.a, undefined, v.b) : { soort: "som", id, deco: v.t === "kaal" ? (v.deco ?? null) : null };
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C min-ruimte-1 v04): de losse komeet naast de kale som deed niets; weg. */
+    const toneel: Toneel = ding ? ruimteToneel(st, ding, v.a, undefined, v.b) : { soort: "som", id, deco: null };
     const somInBeeld = v.t === "verhaal" ? `${v.a} − ${v.b}` : v.t === "kaal" ? `${v.a} − ${v.b} = ?` : null;
     const vraag =
       v.t === "kaal"
         ? [`Hoeveel is ${somZin(v.a, v.b)}?`]
         : v.t === "verhaal"
           ? [...ruimteVerhaal(v.ding, v.a, v.b), hoeveelOver(v.ding)]
-          : [...ruimteVerhaal(v.ding, v.a, v.b), hoeveelOver(v.ding), `Is het ${v.keuzes.slice(0, -1).map((n) => g(n, k)).join(", ")} of ${g(v.keuzes[v.keuzes.length - 1], k)}?`];
+          : [...ruimteVerhaal(v.ding, v.a, v.b), hoeveelOver(v.ding), `Is het ${meng(v.keuzes).slice(0, -1).map((n) => g(n, k)).join(", ")} of ${g(meng(v.keuzes)[v.keuzes.length - 1], k)}?`];
+    /* Herstel ronde 2 (7 nov): de zin noemt de getallen in dezelfde volgorde als de knoppen (meng() onthoudt de volgorde per lijst). */
     const wat = ding ? DING[ding].veel : "stippen";
     /* Een kale som zonder dingen: er staan geen stippen in beeld, dus de hint verwijst er niet naar. */
     const watHint = ding ? wat : "";
@@ -354,7 +361,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     return squlaVraag<string>(l, {
       toon: () => toon(l, st, toneel),
       vraag: [...verhaal, hoeveelOver(v.ding), "Welke som hoort hierbij?"],
-      antwoord: async () => (await l.kies(v.keuzes.map(([a, b, t]) => somTekst(a, b, t)), { weetniet: false, direct: true })) ?? "",
+      antwoord: async () => (await l.kies(meng(v.keuzes).map(([a, b, t]) => somTekst(a, b, t)), { weetniet: false, direct: true, midden: MIDDEN })) ?? "",
       isGoed: (x) => x === goed,
       noem: (x) => x,
       goed: async () => {
@@ -386,12 +393,14 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   if (v.t === "disco" || v.t === "typen") {
     const u = v.a - v.b;
     const luister = v.t === "disco" && v.luister;
-    const toneel: Toneel = { soort: "som", id, deco: luister ? "luidspreker" : v.t === "typen" ? (v.deco ?? null) : null };
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C min-ruimte-2 v09/v17): de losse satelliet of raket bij een typvraag
+       deed niets; weg. De luidspreker bij "Luister goed" blijft (die hoort bij de vraag). */
+    const toneel: Toneel = { soort: "som", id, deco: luister ? "luidspreker" : null };
     const somInBeeld = luister ? null : `${v.a} − ${v.b} = ?`;
     /* Er staan geen stippen in beeld, alleen de som: de hint verwijst er niet naar. */
     const tip = rekenTip(v.a, v.b, "");
     return squlaVraag<number>(l, {
-      toon: () => toon(l, st, toneel, { som: somInBeeld }),
+      toon: () => toon(l, st, toneel, { som: somInBeeld, typVraag: v.t === "typen" }),
       vraag: luister ? ["Luister goed.", `Hoeveel is ${somZin(v.a, v.b)}?`] : v.t === "typen" ? [`Hoeveel is ${somZin(v.a, v.b)}?`, "Typ het getal."] : [`Hoeveel is ${somZin(v.a, v.b)}?`],
       antwoord: () => (v.t === "typen" ? typGetal(l, st, tip) : kiesGetal(l, v.keuzes)),
       isGoed: (x) => x === u,
@@ -547,8 +556,9 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   if (v.t === "bus") {
     const u = v.a - v.b;
     const toneel: Toneel = { soort: "bus", id, in: v.a, b: v.b, rondje: v.rondje };
-    const tip = rekenTip(v.a, v.b, "pakjes in de bus");
-    let verteld = false;
+    /* Herstel 7 november: tijdens de vraag liggen alle pakjes nog in de bus, dus de hint zegt niet meer "tel de pakjes
+       die nog in de bus liggen" (dat zijn er dan nog a), maar hoe je terugtelt. */
+    const tip = rekenTip(v.a, v.b, "");
     return squlaVraag<number>(l, {
       toon: () => {
         const nieuw = st.huidig !== id;
@@ -556,11 +566,9 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       },
       vraag: [`In de bus liggen ${g(v.a, "bruin")} pakjes.`, `De bus bezorgt er ${g(v.b, "bruin")}.`, "Hoeveel pakjes liggen er nu nog in de bus?", ...(v.keuzes ? [] : ["Typ het getal."])],
       antwoord: async () => {
-        /* Het beeld volgt het verhaal: eerst zitten ze er allemaal in, dan stappen ze uit. */
-        if (!verteld) {
-          verteld = true;
-          zet(l, { grijs: v.b });
-        }
+        /* Herstel 7 november (BOUWREGELS 1.22): tijdens de vraag liggen ALLE pakjes nog in de bus; anders telt het kind
+           gewoon wat er nog in ligt en weet het het antwoord. Pas na het antwoord springen de bezorgde pakjes eruit
+           (goed = bevestiging, tweede fout = uitleg in toonAntwoord). */
         return v.keuzes ? kiesGetal(l, v.keuzes) : typGetal(l, st, tip);
       },
       isGoed: (x) => x === u,
@@ -573,7 +581,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       fout: () => foutBeeld(l, st),
       samen: () => samenRekenen(l, v.a, v.b, "bus", "bruin", "pakjes in de bus"),
       tip,
-      reactie: (x) => minReactie(v.a, v.b, x, tip, "pakjes"),
+      reactie: (x) => minReactie(v.a, v.b, x, tip, ""),
       toonAntwoord: () => toonMin(l, v.a, v.b, u === 1 ? `Er ligt nog ${gu(1)} pakje in de bus.` : `Er liggen nog ${gu(u)} pakjes in de bus.`, { licht: "over" }),
       testAntwoord: u,
     });
@@ -586,13 +594,15 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     return squlaVraag<number>(l, {
       toon: () => toon(l, st, toneel),
       vraag: [`${g(10)} blokjes gaan de machine in.`, `De machine haalt er ${g(v.b)} af.`, "Hoeveel blokjes komen eruit?"],
-      antwoord: () => kiesGetal(l, v.keuzes),
+      /* Onder de bak van de machine (die staat op 562). */
+      antwoord: () => kiesGetal(l, v.keuzes, 620),
       isGoed: (x) => x === u,
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { uitkomst: u, som: `10 − ${v.b} = ${u}` });
         await l.zeg(bevestig());
-        await l.wacht(400);
+        /* Herstel 7 november: de machine draait nu pas na het antwoord (naspelen); even kijken voordat de volgende vraag komt. */
+        await l.wacht(Math.max(400, machineDuur(10, v.b) - 1200));
       },
       fout: () => foutBeeld(l, st),
       samen: () => samenRekenen(l, 10, v.b, "stippen", "wit", "stippen"),
@@ -600,6 +610,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
       reactie: (x) => minReactie(10, v.b, x, rekenTip(10, v.b, "blokjes"), "blokjes"),
       toonAntwoord: async () => {
         zet(l, { uitkomst: u, som: `10 − ${v.b} = ${u}` });
+        await l.wacht(machineDuur(10, v.b));
         await l.zeg(`De machine haalt er ${g(v.b)} af. Dan ${u === 1 ? "komt" : "komen"} er ${gu(u)} ${u === 1 ? "blokje" : "blokjes"} uit: ${somZin(10, v.b)} = ${gu(u)}.`);
         await l.wacht(400);
       },
@@ -614,7 +625,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     /* Op het bord staat alleen de som, geen stippen: de hint verwijst er niet naar. */
     const tip = rekenTip(v.a, v.b, "");
     return squlaVraag<number>(l, {
-      toon: () => toon(l, st, toneel, { som: `${v.a} − ${v.b} = ?` }),
+      toon: () => toon(l, st, toneel, { som: `${v.a} − ${v.b} = ?`, typVraag: !v.keuzes }),
       vraag: v.keuzes ? [`Hoeveel is ${somZin(v.a, v.b)}?`] : [`Hoeveel is ${somZin(v.a, v.b)}?`, "Typ het getal."],
       antwoord: () => (v.keuzes ? kiesGetal(l, v.keuzes) : typGetal(l, st, tip)),
       isGoed: (x) => x === u,
@@ -642,7 +653,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
     return squlaVraag<string>(l, {
       toon: () => toon(l, st, toneel),
       vraag: [`Kijk naar de ${wat}.`, "Welke som hoort bij het plaatje?"],
-      antwoord: async () => (await l.kies(v.keuzes.map(([a, b, t]) => somTekst(a, b, t)), { weetniet: false, direct: true })) ?? "",
+      antwoord: async () => (await l.kies(meng(v.keuzes).map(([a, b, t]) => somTekst(a, b, t)), { weetniet: false, direct: true, midden: MIDDEN })) ?? "",
       isGoed: (x) => x === goed,
       noem: (x) => x,
       goed: async () => {
@@ -674,7 +685,8 @@ async function speelVraag(l: Lesgids, v: Vraag, st: Stand): Promise<boolean> {
   return squlaVraag<number>(l, {
     toon: () => toon(l, st, toneel),
     vraag: ["Kijk naar je geld.", `Je koopt ${SPEELGOED[v.ding]}.`, "Hoeveel euro houd je over?"],
-    antwoord: () => kiesGetal(l, v.keuzes),
+    /* Onder de rij munten van de portemonnee. */
+    antwoord: () => kiesGetal(l, v.keuzes, 628),
     isGoed: (x) => x === u,
     noem: (x) => `${g(x)} euro`,
     goed: async () => {
@@ -734,7 +746,7 @@ function voorwerpenVanVraag(v: Vraag): string[] {
   if (v.t === "bus") return ["bezorgbus", "pakje"];
   if (v.t === "bord") return ["schoolbord"];
   if (v.t === "bakjes") return v.ding === "beker" ? ["beker-vol", "beker-leeg"] : ["bord", "koekje"];
-  if (v.t === "geld") return ["portemonnee", v.ding];
+  if (v.t === "geld") return ["portemonnee", v.ding === "bal" ? "speelbal" : v.ding];
   return [];
 }
 

@@ -48,7 +48,8 @@ export type Deel =
   | { s: "veld"; id: string; soort: Veldsoort; x: number; y: number; b: number; h: number }
   | { s: "huis"; id: string; groep?: string; zicht: Zicht; x: number; y: number; maat: number }
   | { s: "blokken"; id: string; groep?: string; kolommen: Kleur[][]; x: number; y: number; z: number }
-  | { s: "tik"; id: string; x: number; y: number; b: number; h: number; aria: string };
+  /** `vak`: een zacht vak achter de keuze (zoals bij de geldles; herstel 7 november), zodat je ziet dat het een keuze is. */
+  | { s: "tik"; id: string; x: number; y: number; b: number; h: number; aria: string; vak?: boolean };
 
 export type Beeld = { id: string; delen: Deel[] };
 
@@ -119,9 +120,12 @@ function teken(c: CanvasRenderingContext2D, d: Deel) {
       return tekenKraal(c, d.r, d.r, d.r, d.kleur);
     case "vorm":
       return tekenVorm(c, d.vorm, d.maat, d.kleur, d.draai ?? 0);
-    case "vw":
-      if (d.rek) return void c.drawImage(voorwerpBeeld(d.naam), 0, 0, b, h);
-      return tekenVoorwerp(c, d.naam, 0, 0, b, h);
+    case "vw": {
+      /* Herstel ronde 2 (7 november): de bal is de strandbal "speelbal" (de oude bal.png leek op een verbodsbord). Niet in de puzzels. */
+      const naam = d.naam === "bal" ? "speelbal" : d.naam;
+      if (d.rek) return void c.drawImage(voorwerpBeeld(naam), 0, 0, b, h);
+      return tekenVoorwerp(c, naam, 0, 0, b, h);
+    }
     case "pijl":
       return tekenPijl(c, b, h);
     case "veld":
@@ -290,7 +294,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.hoofd = box;
       this.rondjes = maakRondjes(this, box, this.rustig);
       for (const d of b.delen) {
-        if (d.s === "tik") continue;
+        if (d.s === "tik") {
+          if (d.vak) box.addAt(this.plaats(this.keuzeVak(d.b, d.h), d.x - mx, d.y - my), 0);
+          continue;
+        }
         if (d.s === "touw") {
           const g = this.add.graphics();
           g.lineStyle(4, 0xe9eef7, 0.9);
@@ -319,6 +326,18 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           this.texG(sl, GOED);
         }),
       );
+    }
+
+    /** Een zacht, half doorzichtig vak achter een keuze (één keer getekend per maat). */
+    keuzeVak(b: number, h: number) {
+      const sl = `vk-vak|${Math.round(b)}x${Math.round(h)}`;
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.fillStyle = "rgba(207,227,255,0.15)";
+        c.beginPath();
+        c.roundRect(3, 3, b - 6, h - 6, Math.min(30, Math.min(b, h) * 0.22));
+        c.fill();
+      });
+      return sl;
     }
 
     zetStaat(st: Staat) {

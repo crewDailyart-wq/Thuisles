@@ -22,7 +22,22 @@ export type Vlakgebeurtenis = { soort: string; [sleutel: string]: unknown };
  * speelvlak (1280 × 720); `schaal` is nodig om vingerposities om te rekenen.
  * `metSom`: de som staat bovenaan, laat dan de bovenste 118 punten vrij.
  */
-export type Vlakbasis = { meld: (g: Vlakgebeurtenis) => void; schaal: number; metSom: boolean };
+export type Vlakbasis = {
+  meld: (g: Vlakgebeurtenis) => void;
+  schaal: number;
+  metSom: boolean;
+  /**
+   * Alleen op een staand scherm (telefoon rechtop) en alleen voor een vlak dat `staandGroei` heeft (BOUWREGELS 1.24,
+   * 7 november 2026): zoveel punten hoog mag het vlak zijn (meer dan 720), zodat het de lege ruimte boven de ballon
+   * gebruikt. Andere vlakken krijgen dit niet en blijven precies zoals ze waren.
+   */
+  staandHoogte?: number;
+};
+
+/** Een vlak dat op een staand scherm hoger mag worden dan 720 punten (zie `Vlakbasis.staandHoogte`). */
+export function magStaandGroeien(comp: unknown): boolean {
+  return !!comp && (comp as { staandGroei?: boolean }).staandGroei === true;
+}
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type Vlak<P = any> = ComponentType<P & Vlakbasis>;
@@ -33,7 +48,22 @@ export type Somdeel =
   | { t: "teken"; s: string }
   | { t: "vak"; waarde?: string; kleur?: string };
 
-export type Kiesinstel = { direct?: boolean; weetniet?: string | false; raster?: boolean; bijOpdracht?: boolean };
+export type Kiesinstel = {
+  direct?: boolean;
+  weetniet?: string | false;
+  raster?: boolean;
+  bijOpdracht?: boolean;
+  /** Korte keuzes (getallen) per 2 naast elkaar, bijvoorbeeld 4 keuzes als 2 × 2 in plaats van 3 + 1 (herstel 7 november; alleen als de les het vraagt). */
+  perTwee?: boolean;
+  /** Lange woordkeuzes (hele zinnetjes) onder elkaar en even breed, niet 2 naast elkaar (herstel 7 november; alleen als de les het vraagt). */
+  onderElkaar?: boolean;
+  /**
+   * Herstel 7 november (groep C, OVERZICHT-C punt 4): de antwoorden groot in een rij in het MIDDEN van het speelvlak,
+   * niet als kleine knopjes onder de zin van Bliepo. Het getal is de bovenkant van de rij in punten van het vlak
+   * (1280 × 720). Alleen op een liggend scherm met de indeling van Synthesis; staand blijft alles zoals het was.
+   */
+  midden?: number;
+};
 
 export interface Lesgids {
   /** De actieve les, voor de bijbehorende lesopening. */

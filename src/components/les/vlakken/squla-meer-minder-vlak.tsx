@@ -97,8 +97,13 @@ function bonteKleur(i: number, per: number) {
   return BONT[(i + r * 3) % BONT.length];
 }
 
-/** Waar de voorwerpen van een groep staan, gecentreerd in `vak` (plekken ten opzichte van het midden van het vak). */
-function groepPlek(g: MMGroep, vak: Rect, maxCel: number): GroepPlek {
+/**
+ * Waar de voorwerpen van een groep staan, gecentreerd in `vak` (plekken ten opzichte van het midden van het vak).
+ * `kolom` (herstel ronde 2, 7 november; alleen op volgorde zetten op een staand scherm): de groepjes van 5 staan dan
+ * onder elkaar in plaats van naast elkaar, zodat een smalle, hoge kaart veel grotere voorwerpen kan hebben.
+ */
+function groepPlek(g: MMGroep, vak: Rect, maxCel: number, kolom = false): GroepPlek {
+  if (kolom && !g.blokken.some((b) => b.doos)) return kolomPlek(g, vak, maxCel);
   const maten = g.blokken.map((b) => (b.doos ? { k: 3, r: 2 } : { k: Math.max(...b.rijen), r: b.rijen.length }));
   const gat = g.blokken.some((b) => b.doos) ? 0.45 : 0.75;
   const kolommen = maten.reduce((t, m) => t + m.k, 0) + gat * (maten.length - 1);
@@ -127,6 +132,32 @@ function groepPlek(g: MMGroep, vak: Rect, maxCel: number): GroepPlek {
   return { cel, plekken, rijen: telrijen, dozen };
 }
 
+/** Zoals `groepPlek`, maar elk groepje van 5 is een kolom (van boven naar beneden), de kolommen naast elkaar. */
+function kolomPlek(g: MMGroep, vak: Rect, maxCel: number): GroepPlek {
+  const maten = g.blokken.map((b) => ({ k: b.rijen.length, r: Math.max(...b.rijen) }));
+  const gat = 0.75;
+  const kolommen = maten.reduce((t, m) => t + m.k, 0) + gat * (maten.length - 1);
+  const rijen = Math.max(...maten.map((m) => m.r));
+  const cel = Math.min(maxCel, vak.b / kolommen, vak.h / rijen);
+  const x0 = -(kolommen * cel) / 2;
+  const y0 = -(rijen * cel) / 2;
+  const plekken: Plek[] = [];
+  const telrijen: Telrij[] = [];
+  let kx = x0;
+  g.blokken.forEach((b, bi) => {
+    const per = Math.max(...b.rijen);
+    b.rijen.forEach((lengte, r) => {
+      for (let k = 0; k < lengte; k++) {
+        const kleur = b.kleuren === "bont" ? bonteKleur(plekken.length, per) : b.kleuren[r % b.kleuren.length];
+        plekken.push({ x: kx + (r + 0.5) * cel, y: y0 + (k + 0.5) * cel, kleur: MM_KLEUR[kleur] });
+      }
+      telrijen.push({ eind: plekken.length, x: kx + (r + 0.5) * cel, y: y0 + lengte * cel + cel * 0.62 });
+    });
+    kx += (maten[bi].k + gat) * cel;
+  });
+  return { cel, plekken, rijen: telrijen, dozen: [] };
+}
+
 const binnen = (r: Rect, f: number): Rect => ({ x: r.x, y: r.y, b: r.b * f, h: r.h * f });
 
 /** Vakken naast elkaar, gecentreerd. */
@@ -135,9 +166,14 @@ function rij(n: number, b: number, h: number, y: number, tussen: number): Rect[]
   return Array.from({ length: n }, (_, i) => ({ x: x0 + i * (b + tussen), y, b, h }));
 }
 
-export function mmIndeling(o: MMOpgave): MMIndeling {
+/**
+ * `staand`: een staand scherm (telefoon rechtop). Alleen bij op volgorde zetten anders (herstel ronde 2, 7 november, BOUWREGELS 1.24):
+ * daar waren de voorwerpen op een telefoon te klein om te tellen.
+ */
+export function mmIndeling(o: MMOpgave, staand = false): MMIndeling {
+  /* Herstel 7 november: alles in het midden van het vlak, niet tegen de linkerrand; elke kaart in een eigen vak. */
   if (o.soort === "tel") {
-    const r = { x: 40, y: 40, b: 800, h: 640 };
+    const r = { x: 110, y: 40, b: 760, h: 640 };
     const vak: Vak = { ...r, soort: "groep", groep: groepPlek(o.groep, r, 92) };
     return { vakken: [vak], sloten: [], getalkaart: null };
   }
@@ -148,29 +184,36 @@ export function mmIndeling(o: MMOpgave): MMIndeling {
     let maxCel: number;
     let getalkaart: MMIndeling["getalkaart"] = null;
     if (o.voorbeeld) {
-      const vb = { x: 250, y: 18, b: 480, h: 290 };
-      vakken.push({ ...vb, soort: "voorbeeld", groep: groepPlek(o.voorbeeld, binnen(vb, 0.86), 56) });
-      kaarten = rij(n, 350, 360, 338, 60);
+      const vb = { x: 260, y: 14, b: 460, h: 290 };
+      vakken.push({ ...vb, soort: "voorbeeld", groep: groepPlek(o.voorbeeld, binnen(vb, 0.84), 52) });
+      kaarten = rij(n, 350, 360, 334, 60);
       maxCel = 56;
     } else if (o.getal !== undefined) {
       getalkaart = { x: 400, y: 14, b: 180, h: 166, getal: o.getal };
-      kaarten = rij(n, 380, 496, 208, 40);
-      maxCel = 64;
+      kaarten = rij(n, 370, 486, 212, 60);
+      maxCel = 62;
     } else if (n === 2) {
-      kaarten = rij(n, 400, 560, 80, 60);
-      maxCel = 68;
+      kaarten = rij(n, 380, 540, 90, 60);
+      maxCel = 66;
     } else {
-      /* Drie groepen naast elkaar: zo breed als het vlak toelaat (er is geen kaart met rand meer om rekening mee te houden), zodat de voorwerpen groot genoeg zijn om te tellen. */
-      kaarten = rij(n, 300, 480, 120, 14);
-      maxCel = 64;
+      /* Drie kaarten naast elkaar, met ruimte ertussen zodat je ziet waar een groepje ophoudt. */
+      kaarten = rij(n, 262, 360, 170, 36);
+      maxCel = 60;
     }
     kaarten.forEach((k, i) => vakken.push({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, n === 3 && !o.voorbeeld && o.getal === undefined ? 0.92 : 0.86), maxCel) }));
     return { vakken, sloten: [], getalkaart };
   }
+  if (o.soort === "volgorde" && staand && o.kaarten.length <= 4) {
+    /* Staand: hoge kaarten (de groepjes van 5 onder elkaar) die bijna de hele hoogte gebruiken; de bordjes passen er nog boven. */
+    const n = o.kaarten.length;
+    const sloten = rij(n, 222, 318, 38, 10);
+    const thuis = rij(n, 214, 306, 384, 18);
+    return { vakken: thuis.map((k, i) => ({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, 0.9), 60, true) })), sloten, getalkaart: null };
+  }
   if (o.soort === "volgorde") {
     const n = o.kaarten.length;
-    const thuis = rij(n, 210, 220, 410, 24);
-    const sloten = rij(n, 226, 236, 52, 8);
+    const thuis = rij(n, 200, 214, 414, 18);
+    const sloten = rij(n, 210, 224, 56, 12);
     return { vakken: thuis.map((k, i) => ({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, 0.86), 40) })), sloten, getalkaart: null };
   }
   const n = o.getallen.length;
@@ -201,6 +244,7 @@ interface MMScene {
   wijs(w: string | null): void;
   hand(aan: boolean): void;
   zetTest(lijst: string[] | null): void;
+  zetStaand(staand: boolean): void;
   tik(i: number): void;
   lichtOp(vak: number): void;
   sleepPunt(): { x: number; y: number } | null;
@@ -217,6 +261,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
   class MM extends Basis implements MMScene {
     o: MMOpgave | null = null;
     ind: MMIndeling | null = null;
+    staand = false;
     stukken: Stuk[] = [];
     overig: (Img | Box | Gfx)[] = [];
     slotBeelden: Img[] = [];
@@ -337,6 +382,23 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       return `${sl}-g`;
     }
 
+    /** Een zacht vak achter een kaart (zoals de keuzevakken van de geldles); het voorbeeld bovenaan in een warm vak met een dun randje (herstel 7 november). */
+    vakTex(b: number, h: number, soort: Vak["soort"]) {
+      const sl = `mm-vak-${soort}-${Math.round(b)}x${Math.round(h)}`;
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.beginPath();
+        c.roundRect(4, 4, b - 8, h - 8, 30);
+        c.fillStyle = soort === "voorbeeld" ? "rgba(255,211,110,0.14)" : "rgba(207,227,255,0.15)";
+        c.fill();
+        if (soort === "voorbeeld") {
+          c.strokeStyle = "rgba(255,211,110,0.75)";
+          c.lineWidth = 3;
+          c.stroke();
+        }
+      });
+      return sl;
+    }
+
     slotTex(b: number, h: number) {
       const sl = `mm-slot-${Math.round(b)}x${Math.round(h)}`;
       this.canvasPlaatje(sl, b, h, (c) => {
@@ -384,11 +446,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       this.bezig = false;
     }
 
+    zetStaand(staand: boolean) {
+      this.staand = staand;
+    }
+
     zetOpgave(o: MMOpgave | null) {
       if (o && this.o && o.id === this.o.id) return;
       this.leeg();
       this.o = o;
-      this.ind = o ? mmIndeling(o) : null;
+      this.ind = o ? mmIndeling(o, this.staand) : null;
       const ind = this.ind;
       if (!o || !ind) return;
       ind.sloten.forEach((r) => {
@@ -409,7 +475,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
         const items: Img[] = [];
         if (vak.soort === "ding") box.add(this.plaats(this.dingTex((o as { ding: MMDing }).ding, vak.getal ?? 0), 0, 0));
         else {
-          /* Geen kaart of rand om de voorwerpen (BOUWREGELS 1.4): ze staan los; het tikvlak blijft even groot. */
+          /* Herstel 7 november (Sara): elke kaart in een eigen zacht vak, het voorbeeld in een warm vak; zo zie je wat de vraag is en wat de keuzes zijn. */
+          if (vak.soort === "kaart" || vak.soort === "voorbeeld") box.add(this.plaats(this.vakTex(vak.b, vak.h, vak.soort), 0, 0));
           const gp = vak.groep!;
           const groep = groepen[i];
           for (const d of gp.dozen) {
@@ -832,8 +899,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
         gepland.add(sl);
         f();
       };
-      for (const o of lijst) {
-        const ind = mmIndeling(o);
+      for (const o of lijst)
+        for (const ind of o.soort === "volgorde" ? [mmIndeling(o), mmIndeling(o, true)] : [mmIndeling(o)]) {
         for (const r of ind.sloten) plan(`slot-${r.b}x${r.h}`, () => this.slotTex(r.b, r.h));
         if (ind.getalkaart) {
           const g = ind.getalkaart;
@@ -843,6 +910,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
         ind.vakken.forEach((vak, i) => {
           if (vak.soort === "ding" && o.soort === "getallen") plan(`ding-${o.ding}-${vak.getal}`, () => this.dingTex(o.ding, vak.getal ?? 0));
           if (vak.soort === "kaart" || vak.soort === "voorbeeld") plan(`kaart-${vak.soort}-${vak.b}x${vak.h}`, () => this.kaartTex(vak.b, vak.h, vak.soort));
+          if (vak.soort === "kaart" || vak.soort === "voorbeeld") plan(`vak-${vak.soort}-${vak.b}x${vak.h}`, () => this.vakTex(vak.b, vak.h, vak.soort));
           const gp = vak.groep;
           if (!gp) return;
           for (const d of gp.dozen) plan(`doos-${Math.round(d.b)}x${Math.round(d.h)}`, () => this.doosTex(d.b, d.h));
@@ -878,11 +946,18 @@ export function SqulaMeerMinder({
   /* De motor maakt de scène één keer, met alle opgaven van de les (die worden vooraf gebakken). */
   const { plek, scene } = useHoloMotor<MMScene>(schaal, (Phaser, rustig) => maakScene(Phaser, rustig, vooraf ?? []), { invoer: true });
   const sleutel = opgave ? JSON.stringify(opgave) : "";
-  const ind = useMemo(() => (sleutel ? mmIndeling(JSON.parse(sleutel) as MMOpgave) : null), [sleutel]);
+  /* Een staand scherm (telefoon rechtop): op volgorde zetten krijgt dan hoge kaarten met grotere voorwerpen (herstel ronde 2, 7 november). */
+  const staand = typeof window !== "undefined" && window.innerHeight > window.innerWidth;
+  const ind = useMemo(() => (sleutel ? mmIndeling(JSON.parse(sleutel) as MMOpgave, staand) : null), [sleutel, staand]);
 
   useEffect(() => {
     scene?.verbind(meld);
   }, [scene, meld]);
+
+  /* Vóór de opgave: de scène moet weten of het scherm staat als hij de kaarten neerzet. */
+  useEffect(() => {
+    scene?.zetStaand(staand);
+  }, [scene, staand]);
 
 
   useEffect(() => {

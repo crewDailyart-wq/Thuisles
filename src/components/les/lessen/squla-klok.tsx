@@ -34,7 +34,7 @@
 import { krijgtVervolgvraag, isBegeleideUitleg, uitlegKeuze, bevestig as kortBevestig, zetSynthesisHulp, terugAankondiging, terugAfsluiting } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, type SqulaVraag } from "./squla-hulp";
-import { SqulaKlokVlak, KaartKlok, type Ding, type KlokVlakProps } from "../vlakken/squla-klok-vlak";
+import { SqulaKlokVlak, KaartKlok, type Ding, type KlokVlakProps, type Naspeel } from "../vlakken/squla-klok-vlak";
 import type { Kl } from "../vlakken/squla-klok-tekenen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 
@@ -151,7 +151,7 @@ const verschil = (g: T, nu: T) => ((((g.u % 12) * 60 + g.m) - ((nu.u % 12) * 60 
    het vlak besturen
    ===================================================================== */
 
-const LEEG: KlokVlakProps = { sleutel: "", modus: "kies", boven: [], keuzes: [], pijl: false, paren: undefined, rechts: undefined, vast: null, actief: false, licht: [], goed: [], fout: [], uit: [], reis: undefined };
+const LEEG: KlokVlakProps = { sleutel: "", modus: "kies", boven: [], keuzes: [], pijl: false, paren: undefined, rechts: undefined, vast: null, actief: false, licht: [], goed: [], fout: [], uit: [], reis: undefined, naspeel: undefined, sfeer: undefined, vraagLabel: undefined };
 const zet = (l: Lesgids, p: Partial<KlokVlakProps>) => l.pasVlakAan<KlokVlakProps>(p);
 let beeldNr = 0;
 const nieuw = () => `kk${++beeldNr}`;
@@ -163,16 +163,63 @@ async function wijs(l: Lesgids, ids: string[], ...zinnen: string[]) {
 }
 
 type Opgave = (l: Lesgids, terug: boolean) => SqulaVraag<string>;
-/** Een andere volgorde bij een vraag die terugkomt (de goede index schuift mee). */
-function draai<X>(lijst: X[], goed: number, terug: boolean): { lijst: X[]; goed: number } {
-  if (!terug || lijst.length < 2) return { lijst, goed };
-  return { lijst: [...lijst.slice(1), lijst[0]], goed: (goed - 1 + lijst.length) % lijst.length };
+
+/*
+  Het goede antwoord staat niet steeds op dezelfde plek (BOUWREGELS 1.23, Sara 7 november 2026). Bij elke les-start kiest
+  de les een nieuw toeval-zaadje; daarmee krijgt elke vraag een eigen, willekeurige volgorde. Binnen één les-start blijft
+  de volgorde van een vraag gelijk (het voorbeeld op het beginscherm en de vraag zelf zien er hetzelfde uit). Alleen de
+  plek wisselt: de antwoorden, de beoordeling, de hints en de score blijven precies zoals ze waren.
+*/
+let lesZaad = 1;
+function hash(tekst: string) {
+  let h = 2166136261 ^ lesZaad;
+  for (const ch of tekst) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 16777619);
+  }
+  return h >>> 0;
+}
+function toeval(tekst: string) {
+  let h = hash(tekst);
+  return () => {
+    h += 0x6d2b79f5;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+/** Een willekeurige volgorde (per les-start en per vraag); de goede index schuift mee. Vinkje en kruisje blijven op hun plek. */
+function draai<X>(lijst: X[], goed: number, terug: boolean, sleutel = ""): { lijst: X[]; goed: number } {
+  if (lijst.length < 2 || lijst.some((d) => (d as { t?: string }).t === "vink" || (d as { t?: string }).t === "kruis")) return { lijst, goed };
+  const r = toeval(`${sleutel}|${JSON.stringify(lijst)}|${terug ? "t" : ""}`);
+  const volg = lijst.map((_, i) => i);
+  for (let i = volg.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [volg[i], volg[j]] = [volg[j], volg[i]];
+  }
+  return { lijst: volg.map((i) => lijst[i]), goed: volg.indexOf(goed) };
+}
+/** Koppelen: de rechterkant door elkaar, en geen enkel paar recht tegenover elkaar (BOUWREGELS 1.23). */
+function rechtsDoorElkaar(n: number, sleutel: string): number[] {
+  const r = toeval(`rechts|${sleutel}`);
+  for (let poging = 0; poging < 50; poging++) {
+    const v = Array.from({ length: n }, (_, i) => i);
+    for (let i = n - 1; i > 0; i--) {
+      const j = Math.floor(r() * (i + 1));
+      [v[i], v[j]] = [v[j], v[i]];
+    }
+    if (v.every((k, j) => k !== j)) return v;
+  }
+  return Array.from({ length: n }, (_, i) => (i + 1) % n);
 }
 
 /* --- de algemene vraag: tikken op een ding in het vlak --- */
 
 type KiesO = {
   boven?: Ding[];
+  /** De vraagklok krijgt een eigen vak met dit woord erboven (bv. "nu"). */
+  vraagLabel?: string;
   pijl?: boolean;
   keuzes: Ding[];
   goed: number;
@@ -189,11 +236,11 @@ type KiesO = {
 };
 
 function kiesVraag(l: Lesgids, o: KiesO, terug: boolean): SqulaVraag<string> {
-  const { lijst: keuzes, goed } = draai(o.keuzes, o.goed, terug);
+  const { lijst: keuzes, goed } = draai(o.keuzes, o.goed, terug, o.vraag.join(" "));
   const boven = o.boven ?? [];
   const oud = (i: number) => o.keuzes.indexOf(keuzes[i]);
   return {
-    toon: () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "kies", boven, keuzes, pijl: !!o.pijl }),
+    toon: () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "kies", boven, keuzes, pijl: !!o.pijl, ...(o.vraagLabel ? { vraagLabel: o.vraagLabel } : {}) }),
     vraag: o.vraag,
     antwoord: async () => {
       zet(l, { actief: true, fout: [], licht: [] });
@@ -242,10 +289,16 @@ type KnopO = {
   antwoordZin?: string[];
 };
 
+/** Bij goed licht de klok op, niet het ding ernaast (dat speelt eventueel het verhaal na). Zonder klok: alles. */
+const klokIds = (boven: Ding[]) => {
+  const ids = boven.map((d, i) => (d.t === "vw" && boven.some((e) => e.t !== "vw") ? "" : `b${i}`)).filter(Boolean);
+  return ids;
+};
+
 function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
   /* de goede knop staat niet steeds vooraan: een vaste schuif per vraag (en een andere als hij terugkomt) */
   const n = o.opties.length;
-  const k = ([...(o.vraag.join("") + o.goed)].reduce((a, c) => a + c.charCodeAt(0), 0) + (terug ? 1 : 0)) % n;
+  const k = (hash(o.vraag.join("") + o.goed + o.opties.join("")) + (terug ? 1 : 0)) % n;
   const opties = [...o.opties.slice(k), ...o.opties.slice(0, k)];
   return {
     toon: () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "kies", boven: o.boven, keuzes: [], pijl: !!o.pijl }),
@@ -254,7 +307,7 @@ function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
     isGoed: (x) => x === o.goed,
     noem: (x) => Hoofd(metHaken(x)),
     goed: async () => {
-      zet(l, { goed: o.boven.map((_, i) => `b${i}`) });
+      zet(l, { goed: klokIds(o.boven) });
       await l.zeg(...goedZeg(l, o.goedZin));
       await l.wacht(250);
     },
@@ -265,7 +318,7 @@ function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
     tip: o.tip,
     reactie: o.reactie ? (x) => o.reactie!(x) : undefined,
     toonAntwoord: async () => {
-      zet(l, { fout: [], licht: [], goed: o.boven.map((_, i) => `b${i}`) });
+      zet(l, { fout: [], licht: [], goed: klokIds(o.boven) });
       await l.zeg(...(o.antwoordZin ?? o.goedZin));
       await l.wacht(250);
     },
@@ -341,7 +394,15 @@ async function samenLees(l: Lesgids, t: T, boven: Ding[], i: number) {
 const noemKlok = () => "Die klok";
 
 /** Op welke wijzerklok is het …? (2 of 3 klokken). `zin`: eigen vraag, `boven`: wat erboven staat. */
-function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zelfdeKleur?: boolean; goedZin?: string[]; reactie?: (gekozen: T) => string[] } = {}): Opgave {
+function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zelfdeKleur?: boolean; goedZin?: string[]; reactie?: (gekozen: T) => string[]; vraagLabel?: string; naspeel?: Naspeel; sfeer?: { naam: string; plek?: "hoog" | "laag" } } = {}): Opgave {
+  return (l, terug) => {
+    const v = kiesKlokKaal(doel, tijden, o)(l, terug);
+    if (o.naspeel) return metNaspeel(l, v, o.naspeel);
+    if (o.sfeer) return metSfeer(l, v, o.sfeer);
+    return v;
+  };
+}
+function kiesKlokKaal(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zelfdeKleur?: boolean; goedZin?: string[]; reactie?: (gekozen: T) => string[]; vraagLabel?: string } = {}): Opgave {
   return (l, terug) => {
     const kl = o.zelfdeKleur ? Array(tijden.length).fill(kleurRij(1)[0]) : kleurRij(tijden.length);
     const keuzes = tijden.map((t, i) => W(t, kl[i]));
@@ -350,6 +411,7 @@ function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zel
       l,
       {
         boven: o.boven,
+        ...(o.vraagLabel ? { vraagLabel: o.vraagLabel } : {}),
         keuzes,
         goed,
         /* Verhaal en vraag samen in beeld, anders staat er een bus of oven naast de klok zonder uitleg (Sara, 1 nov). */
@@ -366,12 +428,13 @@ function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zel
 }
 
 /** Een wijzerklok (en eventueel een ding) bovenaan: hoe laat is het? Antwoord met knoppen. */
-function leesKlok(t: T, opties: T[], o: { ding?: string; zin?: string[]; weetje?: string[] } = {}): Opgave {
+function leesKlok(t: T, opties: T[], o: { ding?: string; zin?: string[]; weetje?: string[]; naspeel?: Naspeel; sfeer?: "hoog" | "laag" | true } = {}): Opgave {
   return (l, terug) => {
     const klok = W(t, kleurRij(1)[0]);
-    const boven = o.ding ? [V(o.ding), klok] : [klok];
+    /* Een ding staat alleen naast de klok als het het verhaal naspeelt; anders is het een zachte sfeer-achtergrond (BOUWREGELS 1.22). */
+    const boven = o.ding && !o.sfeer ? [V(o.ding), klok] : [klok];
     const i = boven.length - 1;
-    return knopVraag(
+    const v = knopVraag(
       l,
       {
         boven,
@@ -386,6 +449,9 @@ function leesKlok(t: T, opties: T[], o: { ding?: string; zin?: string[]; weetje?
       },
       terug,
     );
+    if (o.ding && o.sfeer) return metSfeer(l, v, { naam: o.ding, ...(o.sfeer === true ? {} : { plek: o.sfeer }) });
+    if (o.ding && o.naspeel) return metNaspeel(l, v, o.naspeel);
+    return v;
   };
 }
 
@@ -465,7 +531,8 @@ function hoeLang(van: number, tot: number, opties: string[], zin: string[], wat:
 /** Een ding met een wijzerklok erop (telefoon, laptop, oven): hoe laat is het? */
 function leesInDing(ding: string, t: T, opties: T[], zin: string[], weetje: string[] = []): Opgave {
   return (l, terug) => {
-    const boven = [V(ding, t)];
+    /* Het klokje op het scherm is klein: ernaast staat dezelfde klok groot, alsof je inzoomt (BOUWREGELS 1.24, 7 november 2026). */
+    const boven = [V(ding, t), W(t, kleurRij(1)[0])];
     return knopVraag(
       l,
       {
@@ -477,7 +544,7 @@ function leesInDing(ding: string, t: T, opties: T[], zin: string[], weetje: stri
         antwoordZin: wijzerUitleg(t),
         reactie: (x: string) => reactieLees(x, t),
         samen: async (l) => {
-          await wijs(l, ["b0"], "Kijk naar het klokje.", "Kijk eerst naar de grote wijzer.", "Dan naar de kleine wijzer.");
+          await wijs(l, ["b1"], "Kijk naar het klokje.", "Kijk eerst naar de grote wijzer.", "Dan naar de kleine wijzer.");
           if (!krijgtVervolgvraag(l)) await l.zeg("Naar welk getal wijst de kleine wijzer?");
         },
         tip: [`Zoek op de ${ding} de kleine wijzer. Kijk naar het getal waar de punt bij staat.`],
@@ -605,9 +672,10 @@ function memory(paren: [Ding, Ding][], vraag: string[], goedZin: string[]): Opga
 }
 
 /** Verbinden: wat hoort bij elkaar? Een foute lijn verdwijnt meteen weer. */
-function verbind(paren: [Ding, Ding][], rechts: number[], vraag: string[], goedZin: string[]): Opgave {
-  return (l) => ({
-    toon: () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "verbind", paren, rechts }),
+function verbind(paren: [Ding, Ding][], _rechts: number[], vraag: string[], goedZin: string[]): Opgave {
+  /* de rechterkant komt elke les-start anders te staan, en nooit recht tegenover zijn paar (BOUWREGELS 1.23) */
+  return (l, terug) => ({
+    toon: () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "verbind", paren, rechts: rechtsDoorElkaar(paren.length, JSON.stringify(paren) + (terug ? "t" : "")) }),
     vraag,
     antwoord: async () => {
       zet(l, { actief: true });
@@ -652,15 +720,20 @@ function verbindKlokTijd(uren: number[], rechts: number[]): Opgave {
 }
 
 /** Rekenen met tijd: een ding met een klok bovenaan, kies de klok van straks of van net. */
-function tijdRekenen(ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string): Opgave {
+function tijdRekenen(ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string, beeld: { naspeel?: Naspeel; sfeer?: boolean } = {}): Opgave {
   /* De bus speelt het verhaal na (BOUWREGELS 1.22): zie `metVerhaal`. */
   const verhaal = ding === "bus" && soort === "uur later";
   const doel: T =
     soort === "uur later" ? { u: na(nu), m: nu.m } : soort === "uur eerder" ? { u: ((nu.u + 10) % 12) + 1, m: nu.m } : nu.m === 30 ? { u: na(nu), m: 0 } : { u: nu.u, m: 30 };
   const vraag = soort === "uur later" ? "Hoe laat is het over een uur?" : soort === "half later" ? "Hoe laat is het over een half uur?" : "Hoe laat was het een uur geleden?";
   return (l, terug) => {
+    /* Het ding staat alleen naast de vraagklok als het het verhaal naspeelt (raketje, lampje); anders is het een zachte
+       sfeer-achtergrond of weg (BOUWREGELS 1.22). De vraagklok heeft een eigen vak met "nu" erboven (Sara, 7 november 2026). */
     const v = kiesKlok(doel, tijden, {
-      boven: verhaal ? [] : [V(ding), W(nu, kleurRij(1)[0])],
+      boven: verhaal ? [] : beeld.naspeel ? [V(ding), W(nu, kleurRij(1)[0])] : [W(nu, kleurRij(1)[0])],
+      ...(verhaal ? {} : { vraagLabel: "nu" }),
+      ...(beeld.naspeel ? { naspeel: beeld.naspeel } : {}),
+      ...(beeld.sfeer ? { sfeer: { naam: ding } } : {}),
       zin: [context, "Kijk op de klok.", vraag],
       goedZin: [`Nu is het ${spreek(nu)}.`, `${soort === "uur eerder" ? "Een uur geleden was het" : "Straks is het"} ${spreek(doel)}.`],
       reactie: (g) => {
@@ -718,15 +791,63 @@ function metVerhaal(l: Lesgids, v: SqulaVraag<string>, ding: string, nu: T, min:
   };
 }
 
+/**
+ * Een ding bovenaan speelt het verhaal na (BOUWREGELS 1.22, 7 november 2026): tijdens de vraag staat het stil (de
+ * beginsituatie), pas NA het antwoord beweegt het (goed = bevestiging, tweede fout = bij het laten zien van het antwoord).
+ * Het kiezen wordt nooit geblokkeerd; het naspelen breekt zelf af na 4 seconden.
+ */
+let naspeelNr = 0;
+function metNaspeel(l: Lesgids, v: SqulaVraag<string>, soort: Naspeel): SqulaVraag<string> {
+  const speelAf = async () => {
+    let tijd: ReturnType<typeof setTimeout> | undefined;
+    const stop = new Promise<void>((klaar) => (tijd = setTimeout(klaar, 4000)));
+    const klaar = Promise.race([l.wachtOpVlak("naspeel"), stop]);
+    zet(l, { naspeel: { soort, speel: ++naspeelNr } });
+    try {
+      await klaar;
+    } finally {
+      clearTimeout(tijd);
+    }
+  };
+  return {
+    ...v,
+    toon: () => {
+      v.toon?.();
+      zet(l, { naspeel: { soort, speel: 0 } });
+    },
+    goed: async (x) => {
+      await Promise.all([v.goed(x), speelAf()]);
+    },
+    ...(v.toonAntwoord
+      ? {
+          toonAntwoord: async () => {
+            await Promise.all([v.toonAntwoord!(), speelAf()]);
+          },
+        }
+      : {}),
+  };
+}
+
+/** Een ding als kleine, zachte sfeer-achtergrond achter de vraag (BOUWREGELS 1.22, oplossing 2). */
+function metSfeer(l: Lesgids, v: SqulaVraag<string>, sfeer: { naam: string; plek?: "hoog" | "laag" }): SqulaVraag<string> {
+  return {
+    ...v,
+    toon: () => {
+      v.toon?.();
+      zet(l, { sfeer });
+    },
+  };
+}
+
 /** Rekenen met tijd: de uitleg (vervangt de samen-uitleg van kiesKlok). */
-function metRekenUitleg(op: Opgave, nu: T, soort: "uur later" | "half later" | "uur eerder"): Opgave {
+function metRekenUitleg(op: Opgave, nu: T, soort: "uur later" | "half later" | "uur eerder", klokId = "b1"): Opgave {
   return (l, terug) => {
     const v = op(l, terug);
     return {
       ...v,
       samen: async () => {
         zet(l, { fout: [], goed: [] });
-        await wijs(l, ["b1"], "Kijk eerst naar de klok bovenaan.");
+        await wijs(l, [klokId], "Kijk eerst naar de klok bovenaan.");
         if (soort === "uur later") await l.zeg("Over een uur draait de grote wijzer een heel rondje.", "Dan staat hij weer op dezelfde plek.", "De kleine wijzer schuift 1 getal verder.");
         else if (soort === "half later") await l.zeg("Over een half uur draait de grote wijzer een half rondje.", nu.m === 0 ? "Van de {12:paars} naar de {6:paars}." : "Van de {6:paars} naar de {12:paars}.", "De kleine wijzer schuift een klein stukje verder.");
         else await l.zeg("Een uur geleden stond de grote wijzer op dezelfde plek.", "De kleine wijzer stond 1 getal terug.");
@@ -839,6 +960,8 @@ function klokles(k: Klokles): Lesdraaiboek {
     kaarttekening: KaartKlok,
     async speel(l) {
       kleurTeller = 0;
+      /* elke les-start een nieuwe volgorde van de keuzes (BOUWREGELS 1.23) */
+      lesZaad = (Math.random() * 2 ** 31) | 0;
       zetSynthesisHulp(l);
       l.vlak<KlokVlakProps>(SqulaKlokVlak, { ...LEEG, sleutel: nieuw(), boven: [k.start] });
       speelLesgeluid("verschijn");
@@ -1025,10 +1148,10 @@ const digitaal2 = klokles({
   voorbeeld: 0,
   uitleg: (l) => uitlegHeel(l, 2),
   opgaven: [
-    kiesKlok(U(9), [U(3), U(9), U(6)], { boven: [V("bakkerij")], zin: ["Dit is de bakkerij.", "De winkel gaat om {9:oranje} uur open.", "Op welke klok is het {9:oranje} uur?"], goedZin: ["Om {9:oranje} uur gaat de winkel open.", "Op deze klok wijst de kleine wijzer naar de {9:oranje}."] }),
-    kiesKlok(U(4), [U(6), U(4), U(9)], { boven: [V("maan")], zin: ["Het is nog nacht. De maan schijnt.", "Om {4:oranje} uur gaat de oven van de bakkerij al aan.", "Op welke klok is het {4:oranje} uur?"], goedZin: ["Dat is vroeg!", "Om {4:oranje} uur is het buiten nog donker."] }),
+    kiesKlok(U(9), [U(3), U(9), U(6)], { sfeer: { naam: "bakkerij" }, zin: ["Dit is de bakkerij.", "De winkel gaat om {9:oranje} uur open.", "Op welke klok is het {9:oranje} uur?"], goedZin: ["Om {9:oranje} uur gaat de winkel open.", "Op deze klok wijst de kleine wijzer naar de {9:oranje}."] }),
+    kiesKlok(U(4), [U(6), U(4), U(9)], { sfeer: { naam: "maan" }, zin: ["Het is nog nacht. De maan schijnt.", "Om {4:oranje} uur gaat de oven van de bakkerij al aan.", "Op welke klok is het {4:oranje} uur?"], goedZin: ["Dat is vroeg!", "Om {4:oranje} uur is het buiten nog donker."] }),
     (l, terug) =>
-      knopVraag(
+      metNaspeel(l, knopVraag(
         l,
         {
           boven: [V("deegkom"), W(U(5), kleurRij(1)[0])],
@@ -1044,13 +1167,13 @@ const digitaal2 = klokles({
           tip: ["Zoek een tijd, geen aantal broodjes."],
         },
         terug,
-      ),
+      ), "rijzen"),
     hoeLang(6, 7, ["1 uur", "7 uur", "2 uur"], ["De broodjes gaan om {6:oranje} uur de oven in.", "Om {7:oranje} uur zijn ze klaar.", "Hoe lang staan de broodjes in de oven?"], "de broodjes"),
-    kiesKlok(U(8), [U(8), U(10), U(3)], { boven: [V("bezorgbus")], zin: ["De bezorgbus staat al voor de deur.", "Hij komt broodjes halen.", "Maar de winkel is nog dicht. Het is pas {8:oranje} uur.", "Op welke klok is het {8:oranje} uur?"], goedZin: ["De bus is vroeg: het is pas {8:oranje} uur.", "De winkel gaat pas om {9:oranje} uur open."] }),
-    kiesKlok(U(10), [U(1), U(10), U(2)], { boven: [V("oven")], zin: ["De taarten staan nog in de oven.", "Ze zijn om {10:oranje} uur klaar.", "Op welke klok is het {10:oranje} uur?"], goedZin: ["Om {10:oranje} uur zijn de taarten klaar.", "Dat ruikt lekker!"] }),
+    kiesKlok(U(8), [U(8), U(10), U(3)], { boven: [V("bezorgbus")], naspeel: "rijden", zin: ["De bezorgbus staat al voor de deur.", "Hij komt broodjes halen.", "Maar de winkel is nog dicht. Het is pas {8:oranje} uur.", "Op welke klok is het {8:oranje} uur?"], goedZin: ["De bus is vroeg: het is pas {8:oranje} uur.", "De winkel gaat pas om {9:oranje} uur open."] }),
+    kiesKlok(U(10), [U(1), U(10), U(2)], { boven: [V("oven")], naspeel: "uitDeOven", zin: ["De taarten staan nog in de oven.", "Ze zijn om {10:oranje} uur klaar.", "Op welke klok is het {10:oranje} uur?"], goedZin: ["Om {10:oranje} uur zijn de taarten klaar.", "Dat ruikt lekker!"] }),
     memoryKlokTijd([3, 12, 5]),
     (l, terug) =>
-      knopVraag(
+      metNaspeel(l, knopVraag(
         l,
         {
           boven: [V("taart"), W(U(11), kleurRij(1)[0])],
@@ -1063,8 +1186,8 @@ const digitaal2 = klokles({
           tip: ["Kijk naar de kleine wijzer."],
         },
         terug,
-      ),
-    kiesKlok(U(12), [U(1), U(12), U(6)], { boven: [V("bezorgbus")], zin: ["De bezorgbus komt terug.", "Nu zijn de broodjes wel klaar.", "Hij komt om {12:oranje} uur.", "Op welke klok is het {12:oranje} uur?"], goedZin: ["Om {12:oranje} uur haalt de bus de broodjes op.", "De bus rijdt weg met de broodjes."] }),
+      ), "op"),
+    kiesKlok(U(12), [U(1), U(12), U(6)], { boven: [V("bezorgbus")], naspeel: "wegrijden", zin: ["De bezorgbus komt terug.", "Nu zijn de broodjes wel klaar.", "Hij komt om {12:oranje} uur.", "Op welke klok is het {12:oranje} uur?"], goedZin: ["Om {12:oranje} uur haalt de bus de broodjes op.", "De bus rijdt weg met de broodjes."] }),
     kiesKlok(U(6), [U(12), U(6), U(5)], { zin: ["De bakkerij is dicht.", "We oefenen nog even.", "Op welke klok is het {6:oranje} uur?"] }),
     (l, terug) =>
       knopVraag(
@@ -1110,18 +1233,18 @@ const hoelaat1 = klokles({
   voorbeeld: 0,
   uitleg: (l) => uitlegHeel(l, 0),
   opgaven: [
-    leesKlok(U(7), [U(7), U(11), U(6)], { ding: "bezorgbus", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"], weetje: ["Vroeg in de ochtend begint de dag."] }),
-    leesKlok(U(8), [U(8), U(9), U(1)], { ding: "bezorgbus", zin: ["De bezorgbus vertrekt.", "Hoe laat is het?"] }),
-    leesKlok(U(9), [U(9), U(3), U(10)], { ding: "zon", zin: ["De zon schijnt. De bus rijdt naar de eerste halte.", "Hoe laat is het?"], weetje: ["De zon schijnt overdag."] }),
-    leesKlok(U(10), [U(10), U(2), U(11)], { ding: "bezorgbus", zin: ["De bus komt bij de eerste halte.", "Hoe laat is het?"] }),
-    leesKlok(U(11), [U(11), U(9), U(12)], { ding: "bakkerij", zin: ["De bus haalt nieuwe broodjes bij de bakkerij.", "Hoe laat is het?"] }),
-    leesKlok(U(12), [U(12), U(1), U(6)], { ding: "zon", zin: ["De zon staat hoog. De bus brengt de broodjes weg.", "Hoe laat is het?"] }),
-    leesKlok(U(1), [U(1), U(7), U(12)], { ding: "bezorgbus", zin: ["De bus staat weer bij de bakkerij.", "Hoe laat is het?"] }),
-    leesKlok(U(2), [U(2), U(10), U(1)], { ding: "bezorgbus", zin: ["De bus rijdt weer weg.", "Hoe laat is het?"] }),
-    leesKlok(U(3), [U(3), U(9), U(4)], { ding: "bezorgbus", zin: ["De bus komt bij de tweede halte.", "Hoe laat is het?"] }),
-    leesKlok(U(4), [U(4), U(2), U(5)], { ding: "zon", zin: ["De zon staat al lager. De bus rijdt naar huis.", "Hoe laat is het?"] }),
-    leesKlok(U(5), [U(5), U(4), U(11)], { ding: "bakkerij", zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
-    leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"], weetje: ["De maan zie je als het donker wordt."] }),
+    leesKlok(U(7), [U(7), U(11), U(6)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"], weetje: ["Vroeg in de ochtend begint de dag."] }),
+    leesKlok(U(8), [U(8), U(9), U(1)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bezorgbus vertrekt.", "Hoe laat is het?"] }),
+    leesKlok(U(9), [U(9), U(3), U(10)], { ding: "zon", sfeer: true, zin: ["De zon schijnt. De bus rijdt naar de eerste halte.", "Hoe laat is het?"], weetje: ["De zon schijnt overdag."] }),
+    leesKlok(U(10), [U(10), U(2), U(11)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de eerste halte.", "Hoe laat is het?"] }),
+    leesKlok(U(11), [U(11), U(9), U(12)], { ding: "bakkerij", sfeer: true, zin: ["De bus haalt nieuwe broodjes bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(12), [U(12), U(1), U(6)], { ding: "zon", sfeer: "hoog", zin: ["De zon staat hoog. De bus brengt de broodjes weg.", "Hoe laat is het?"] }),
+    leesKlok(U(1), [U(1), U(7), U(12)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bus staat weer bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(2), [U(2), U(10), U(1)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bus rijdt weer weg.", "Hoe laat is het?"] }),
+    leesKlok(U(3), [U(3), U(9), U(4)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de tweede halte.", "Hoe laat is het?"] }),
+    leesKlok(U(4), [U(4), U(2), U(5)], { ding: "zon", sfeer: "laag", zin: ["De zon staat al lager. De bus rijdt naar huis.", "Hoe laat is het?"] }),
+    leesKlok(U(5), [U(5), U(4), U(11)], { ding: "bakkerij", sfeer: true, zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", sfeer: true, zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"], weetje: ["De maan zie je als het donker wordt."] }),
   ],
   reserve: [0, 2, 6],
   eind: "Je kunt hele uren lezen op de klok.",
@@ -1132,23 +1255,23 @@ const hoelaat2 = klokles({
   titel: "Hoe laat is het? (moeilijker)",
   oefening: "Hoe laat is het?",
   level: 2,
-  voorwerpen: ["oven", "bezorgbus", "zon", "bakkerij"],
+  voorwerpen: ["oven", "bezorgbus", "zon", "bakkerij", "taart"],
   start: V("bakkerij"),
   welkom: ["In de bakkerij gaat de oven vroeg aan.", "Hoe laat is het op de klok?"],
   voorbeeld: 0,
   uitleg: (l) => uitlegHeel(l, 3),
   opgaven: [
-    leesKlok(U(6), [U(6), U(7), U(9)], { ding: "oven", zin: ["De oven in de bakkerij gaat aan.", "Hoe laat is het?"] }),
-    leesKlok(U(8), [U(8), U(6), U(9)], { ding: "bezorgbus", zin: ["De bezorgbus laadt de broodjes in.", "Hoe laat is het?"] }),
-    leesKlok(U(9), [U(9), U(10), U(12)], { ding: "bezorgbus", zin: ["De bus vertrekt voor de eerste ronde.", "Hoe laat is het?"] }),
+    leesKlok(U(6), [U(6), U(7), U(9)], { ding: "oven", naspeel: "aan", zin: ["De oven in de bakkerij gaat aan.", "Hoe laat is het?"] }),
+    leesKlok(U(8), [U(8), U(6), U(9)], { ding: "bezorgbus", naspeel: "laden", zin: ["De bezorgbus laadt de broodjes in.", "Hoe laat is het?"] }),
+    leesKlok(U(9), [U(9), U(10), U(12)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bus vertrekt voor de eerste ronde.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(10), [U(10), U(4), U(2)], ["De bus komt om {10:oranje} uur bij de eerste halte."]),
-    leesKlok(U(11), [U(11), U(10), U(1)], { ding: "zon", zin: ["De zon schijnt fel. De bus rijdt verder.", "Hoe laat is het?"] }),
+    leesKlok(U(11), [U(11), U(10), U(1)], { ding: "zon", sfeer: "hoog", zin: ["De zon schijnt fel. De bus rijdt verder.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(12), [U(12), U(6), U(11)], ["De bus is om {12:oranje} uur terug bij de bakkerij."]),
-    leesKlok(U(1), [U(1), U(11), U(2)], { ding: "oven", zin: ["De taarten komen uit de oven.", "Hoe laat is het?"] }),
+    leesKlok(U(1), [U(1), U(11), U(2)], { ding: "oven", naspeel: "uitDeOven", zin: ["De taarten komen uit de oven.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(2), [U(2), U(8), U(12)], ["De bus vertrekt om {2:oranje} uur voor de tweede ronde."]),
-    leesKlok(U(3), [U(3), U(9), U(4)], { ding: "bezorgbus", zin: ["De bus komt bij de laatste halte.", "Hoe laat is het?"] }),
+    leesKlok(U(3), [U(3), U(9), U(4)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de laatste halte.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(4), [U(4), U(10), U(2)], ["De bus rijdt om {4:oranje} uur naar huis."]),
-    leesKlok(U(5), [U(5), U(7), U(10)], { ding: "zon", zin: ["De zon gaat bijna onder.", "Hoe laat is het?"] }),
+    leesKlok(U(5), [U(5), U(7), U(10)], { ding: "zon", sfeer: "laag", zin: ["De zon gaat bijna onder.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(7), [U(7), U(1), U(5)], ["'s Avonds om {7:oranje} uur gaat de oven uit."]),
   ],
   reserve: [4, 1, 7],
@@ -1166,10 +1289,10 @@ const hoelaat3 = klokles({
   voorbeeld: 0,
   uitleg: (l) => uitlegHeel(l, 4),
   opgaven: [
-    leesKlok(U(10), [U(9), U(10), U(11)], { ding: "bezorgbus", zin: ["De bus vertrekt voor de laatste ronde.", "Hoe laat is het?"] }),
-    leesKlok(U(11), [U(11), U(12), U(10)], { ding: "zon", zin: ["De zon staat bijna op de hoogste plek.", "Hoe laat is het?"] }),
-    leesKlok(U(12), [U(12), U(1), U(11)], { ding: "bezorgbus", zin: ["De bus rijdt langs de eerste halte.", "Hoe laat is het?"] }),
-    leesKlok(U(2), [U(1), U(2), U(3)], { ding: "zon", zin: ["De zon schijnt. De bus rijdt verder.", "Hoe laat is het?"] }),
+    leesKlok(U(10), [U(9), U(10), U(11)], { ding: "bezorgbus", naspeel: "wegrijden", zin: ["De bus vertrekt voor de laatste ronde.", "Hoe laat is het?"] }),
+    leesKlok(U(11), [U(11), U(12), U(10)], { ding: "zon", sfeer: "hoog", zin: ["De zon staat bijna op de hoogste plek.", "Hoe laat is het?"] }),
+    leesKlok(U(12), [U(12), U(1), U(11)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus rijdt langs de eerste halte.", "Hoe laat is het?"] }),
+    leesKlok(U(2), [U(1), U(2), U(3)], { ding: "zon", sfeer: true, zin: ["De zon schijnt. De bus rijdt verder.", "Hoe laat is het?"] }),
     (l, terug) =>
       kiesVraag(
         l,
@@ -1187,9 +1310,9 @@ const hoelaat3 = klokles({
         },
         terug,
       ),
-    leesKlok(U(3), [U(3), U(9), U(12)], { ding: "bezorgbus", zin: ["De bus komt bij de laatste halte.", "Hoe laat is het?"] }),
+    leesKlok(U(3), [U(3), U(9), U(12)], { ding: "bezorgbus", naspeel: "rijden", zin: ["De bus komt bij de laatste halte.", "Hoe laat is het?"] }),
     tijdNaarKlok(U(4), [U(4), U(10), U(2)], ["De bus rijdt om {4:oranje} uur terug naar de bakkerij."]),
-    leesKlok(U(5), [U(5), U(7), U(10)], { ding: "bakkerij", zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
+    leesKlok(U(5), [U(5), U(7), U(10)], { ding: "bakkerij", sfeer: true, zin: ["De bus is terug bij de bakkerij.", "Hoe laat is het?"] }),
     (l, terug) =>
       kiesVraag(
         l,
@@ -1207,9 +1330,9 @@ const hoelaat3 = klokles({
         },
         terug,
       ),
-    leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"] }),
-    leesKlok(U(7), [U(7), U(1), U(6)], { ding: "oven", zin: ["De oven in de bakkerij gaat uit.", "Hoe laat is het?"] }),
-    leesKlok(U(8), [U(8), U(4), U(7)], { ding: "maan", zin: ["Het is avond. De maan schijnt.", "Hoe laat is het?"] }),
+    leesKlok(U(6), [U(6), U(5), U(12)], { ding: "maan", sfeer: true, zin: ["Het wordt donker. De maan komt op.", "Hoe laat is het?"] }),
+    leesKlok(U(7), [U(7), U(1), U(6)], { ding: "oven", naspeel: "uit", zin: ["De oven in de bakkerij gaat uit.", "Hoe laat is het?"] }),
+    leesKlok(U(8), [U(8), U(4), U(7)], { ding: "maan", sfeer: true, zin: ["Het is avond. De maan schijnt.", "Hoe laat is het?"] }),
   ],
   reserve: [0, 3, 5],
   eindZin: ["Het was een drukke dag voor de bus."],
@@ -1600,9 +1723,30 @@ const halfuur3 = klokles({
   eind: "Je kunt hele en halve uren op volgorde zetten.",
 });
 
-const r = (op: Opgave, nu: T, soort: "uur later" | "half later" | "uur eerder") => metRekenUitleg(op, nu, soort);
-const reken = (ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string) =>
-  ding === "bus" && soort === "uur later" ? tijdRekenen(ding, nu, soort, tijden, context) : r(tijdRekenen(ding, nu, soort, tijden, context), nu, soort);
+/*
+  Wat het ding doet (BOUWREGELS 1.22, Sara 7 november 2026): het raketje vertrekt en het lampje gaat uit pas NA het antwoord;
+  schoolbord, bedje, oven, kampvuur, voetbal en treintje staan klein en zacht op de achtergrond; taart en gieter deden
+  niets en zijn weg. De bus had al zijn eigen verhaal (metVerhaal).
+  Herstel A ronde 2 (7 november 2026): "De taart is net klaar." en "De gieter staat klaar." noemden iets wat niet meer
+  in beeld was. Taart en gieter staan nu ook klein en zacht op de achtergrond, zodat de zin weer klopt met het beeld
+  (geen nieuwe zin nodig, dus geen nieuwe stem).
+*/
+const BEELD_REKEN: Record<string, { naspeel?: Naspeel; sfeer?: boolean }> = {
+  raketje: { naspeel: "opstijgen" },
+  lampje: { naspeel: "uit" },
+  schoolbord: { sfeer: true },
+  bed: { sfeer: true },
+  oven: { sfeer: true },
+  kampvuur: { sfeer: true },
+  voetbal: { sfeer: true },
+  treintje: { sfeer: true },
+  taart: { sfeer: true },
+  gieter: { sfeer: true },
+};
+const reken = (ding: string, nu: T, soort: "uur later" | "half later" | "uur eerder", tijden: T[], context: string) => {
+  const beeld = BEELD_REKEN[ding] ?? {};
+  return ding === "bus" && soort === "uur later" ? tijdRekenen(ding, nu, soort, tijden, context) : metRekenUitleg(tijdRekenen(ding, nu, soort, tijden, context, beeld), nu, soort, beeld.naspeel ? "b1" : "b0");
+};
 
 const halfuur4 = klokles({
   id: "squla-klok-klokkijken3-4",

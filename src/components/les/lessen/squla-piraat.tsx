@@ -27,6 +27,7 @@ import type { SqulaVraag } from "./squla-hulp";
 import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
 import { foutBeeld, g, goedBeeld, kiesTekst, les, squlaVraag as hulpVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import { getalkleur } from "../tegels";
+import { meng } from "./squla-meng";
 import { kiesAnder, KLEURHEX } from "../vlakken/squla-getalring";
 import { KaartSchat, type Beeld, type Deel, type S1Spec, type S1Stand } from "../vlakken/squla-splitsen-vlak";
 import type { S2, S2Doel, S2Leg, S2Stuk } from "../vlakken/squla-splitsen2-sleep";
@@ -221,13 +222,13 @@ async function pzLegVoor(l: Lesgids, spec: S1Spec, tot: number, pauze = 330) {
 }
 
 /** Antwoordtegels (s2): het kind sleept het goede getal naar het vak op de plek van het antwoord. */
-function pzTegels(keuzes: number[], goed: number, y: number): S2 {
+function pzTegels(keuzes: number[], goed: number, y: number, tegelY = 592): S2 {
   const stukken: S2Stuk[] = keuzes.map((n, i) => ({
     id: `t${i}`,
     kleur: PZ_TEGEL[i % PZ_TEGEL.length].hex,
     segm: [{ t: String(n) }],
     x: 490 + (i - (keuzes.length - 1) / 2) * 230,
-    y: 592,
+    y: tegelY,
     grootte: 56,
     doel: n === goed ? "u" : undefined,
   }));
@@ -329,8 +330,10 @@ function telVraag(doel: number, uitKist = false): Vraag {
 }
 
 /** Twee groepjes met het getal eronder: sleep het getal dat er samen uitkomt naar het vak achter de som. */
-function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
+function samenVraag(vw: string, a: number, b: number, keuzesVast: number[]): Vraag {
   const s = a + b;
+  /* Herstel 7 november (BOUWREGELS 1.23): het goede getal staat niet steeds in het midden; alleen de plek wisselt. */
+  const keuzes = meng(keuzesVast);
   return (l, st) => {
     const cel = Math.max(a, b) <= 5 ? 92 : Math.max(a, b) <= 10 ? 78 : 66;
     const beeld = metLetters(st, `samen-${vw}-${a}-${b}`, [
@@ -338,11 +341,12 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       { s: "groep", id: "b", vw, n: b, x: 690, y: 255, per: 5, cel, label: String(b), kl: "oranje" },
     ]);
     let spec: S2 | null = null;
-    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 470) : spec);
+    /* Herstel 7 november (OVERZICHT-C): de tegels iets hoger, met meer lucht tot de letters van de schat. */
+    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 455, 562) : spec);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
-        pzSom(l, st, a, "+", b, "paars", "oranje", 470);
+        pzSom(l, st, a, "+", b, "paars", "oranje", 455);
         zet(l, { s2: tegels(true), actief: false });
       },
       vraag: [`Hoeveel ${NAAM[vw][1]} zijn dit samen?`, "Sleep het goede getal naar het vak."],
@@ -370,17 +374,24 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
   };
 }
 
-/** Een kale plussom met een plaatje als versiering: sleep het goede getal naar het vak. */
-function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
+/**
+ * Een kale plussom: sleep het goede getal naar het vak.
+ * Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): de planeet, het raketje, de maan of de komeet boven de som deed niets
+ * en trok de aandacht weg; die is weg (`deco` blijft als parameter voor de bestaande aanroepen). De som staat nu groot in
+ * het midden en de tegels hebben ruim lucht tot de letters van de schat.
+ */
+function kaalPlus(a: number, b: number, keuzesVast: number[], deco: string): Vraag {
   const s = a + b;
+  void deco;
+  const keuzes = meng(keuzesVast);
   return (l, st) => {
-    const beeld = metLetters(st, `kaal-${a}-${b}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 250, maat: 210 }]);
+    const beeld = metLetters(st, `kaal-${a}-${b}`, []);
     let spec: S2 | null = null;
-    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 470) : spec);
+    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 300, 470) : spec);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
-        pzSom(l, st, a, "+", b, "wit", "wit", 470);
+        pzSom(l, st, a, "+", b, "wit", "wit", 300);
         zet(l, { s2: tegels(true), actief: false });
       },
       vraag: [`Hoeveel is ${g(a)} + ${g(b)}?`, "Sleep het goede getal naar het vak."],
@@ -462,9 +473,11 @@ function minVraag(vw: string, a: number, b: number, zinnen?: string[], metSom = 
 function raadselPlaatje(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], namen: [string, string], waarom: string): Vraag {
   return (l, st) => {
     const delen: Deel[] = [];
+    /* Herstel 7 november (BOUWREGELS 1.23): links of rechts wisselt per les-start; de ids (en dus de beoordeling) blijven. */
+    const plek = meng([300, 680]);
     opties.forEach((vw, i) => {
-      delen.push({ s: "ding", id: `k${i}`, vw, x: i ? 680 : 300, y: 370, maat: 220 });
-      delen.push({ s: "tik", id: `k${i}`, x: i ? 680 : 300, y: 370, b: 260, h: 260, aria: namen[i] });
+      delen.push({ s: "ding", id: `k${i}`, vw, x: plek[i], y: 370, maat: 220 });
+      delen.push({ s: "tik", id: `k${i}`, x: plek[i], y: 370, b: 260, h: 260, aria: namen[i] });
     });
     const beeld = metLetters(st, `raadsel-${opties.join("-")}`, delen);
     return squlaVraag<string>(l, {
@@ -497,13 +510,15 @@ function raadselPlaatje(vraag: string[], opties: [string, string], goedNr: 0 | 1
 /** Een raadsel met twee antwoorden (Bliepo leest ze voor). */
 function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], deco: string, waarom: string): Vraag {
   return (l, st) => {
-    const beeld = metLetters(st, `raadsel-${deco}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 360, maat: 230 }]);
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): het plaatje (komeet, maan) deed niets en de maan verklapte zelfs
+       het antwoord "maan-darijn". Nu geen plaatje; de 2 antwoorden staan groot in het midden (`midden`). */
+    const beeld = metLetters(st, `raadsel-${deco}`, []);
     return squlaVraag<string>(l, {
       toon: () => {
         toon(l, st, beeld);
       },
       vraag,
-      antwoord: () => kiesTekst(l, opties),
+      antwoord: () => kiesTekst(l, meng(opties), 330),
       isGoed: (x) => x === opties[goedNr],
       noem: (x) => x.replace(/[.!?]+$/, ""),
       goed: async () => {
@@ -735,7 +750,7 @@ const level3 = maak({
     await l.zeg(`Er zijn er nog ${gv(3, "ster")}.`, `${gv(7, "ster")} − ${gb(4, "ster")} = ${gv(3, "ster")}.`);
     zet(l, { licht: [] });
     await l.verder();
-    toon(l, st, metLetters(st, "voorbeeld", [{ s: "ding", id: "deco", vw: "planeet", x: 490, y: 370, maat: 200 }]));
+    toon(l, st, metLetters(st, "voorbeeld", []));
     som(l, st, 8, "+", 5, undefined, "wit", "wit", "wit");
     await l.zeg("Kijk goed naar het teken.", "Een plus: er komt bij.", "Een min: er gaat af.");
     await plusUitleg(l, 8, 5, false);

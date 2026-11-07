@@ -106,8 +106,9 @@ function zaad(tekst: string) {
 }
 
 const RIJ5 = { cel: 122, schaal: 1, cx: 490, cy: 360 };
-const RIJ10 = { cel: 84, schaal: 0.76, cx: 455, cy: 360 };
-const VERSPREID = { x0: 90, x1: 890, y0: 125, y1: 625, schaal: 0.92 };
+/* Herstel 7 november: rijen van 10 iets kleiner en in het midden; verspreide dingen niet tegen de rand of bij de microfoonknop. */
+const RIJ10 = { cel: 78, schaal: 0.72, cx: 470, cy: 360 };
+const VERSPREID = { x0: 130, x1: 850, y0: 125, y1: 600, schaal: 0.92 };
 
 export function indeling(o: Telopgave): Indeling {
   if (o.vorm === "rijen5" || o.vorm === "rijen10") {
@@ -129,11 +130,12 @@ export function indeling(o: Telopgave): Indeling {
   }
   if (o.vorm === "zak") {
     const per = 5;
-    const cel = 104;
+    const cel = 98;
     const aantalRijen = Math.ceil(o.n / per);
     const y0 = 360 - (aantalRijen * cel) / 2 + cel / 2;
-    const plekken = Array.from({ length: o.n }, (_, i) => ({ x: 480 + (i % per) * cel, y: y0 + Math.floor(i / per) * cel, p: o.plaatjes[0] }));
-    return { id: o.id, vorm: o.vorm, schaal: 0.86, plekken, volgorde: plekken.map((_, i) => i), rijen: [], zak: { x: 250, y: 370, getal: o.zak ?? 0 }, stap: 260 };
+    /* Herstel 7 november: de zak iets meer naar het midden (niet tegen de rand). */
+    const plekken = Array.from({ length: o.n }, (_, i) => ({ x: 500 + (i % per) * cel, y: y0 + Math.floor(i / per) * cel, p: o.plaatjes[0] }));
+    return { id: o.id, vorm: o.vorm, schaal: 0.84, plekken, volgorde: plekken.map((_, i) => i), rijen: [], zak: { x: 300, y: 370, getal: o.zak ?? 0 }, stap: 260 };
   }
   /* Verspreid: willekeurig maar vast, met genoeg ruimte ertussen. */
   const V = VERSPREID;
@@ -336,8 +338,8 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         this.zakImg = zakIm;
         /* het bordje zit in de zak op (42..158, 112..196): het midden is 37 punten onder het midden van de zak */
         z.add(this.plaats(this.zakGetal(o.zak.getal), 0, 34));
-        /* Een voorbeeldje van wat erin zit, klein op het bordje naast het getal (niet op het touwtje: dan telt een kind hem mee). */
-        if (o.plekken[0]) z.add(this.plaats(this.tex(o.plekken[0].p), 42, 34).setScale(0.38 / TX));
+        /* Een voorbeeldje van wat erin zit, klein op het bordje onder het getal (niet op het touwtje: dan telt een kind hem mee; herstel 7 november: niet meer tegen het getal aan). */
+        if (o.plekken[0]) z.add(this.plaats(this.tex(o.plekken[0].p), 0, 60).setScale(0.3 / TX));
         g.add(z);
         this.zakBox = z;
       }

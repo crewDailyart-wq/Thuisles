@@ -196,7 +196,8 @@ type BusIndeling = {
   maxPakje: number;
   staand: boolean;
 };
-const BUS_LIGGEND: BusIndeling = { busvak: { x: 10, y: 80, s: 680 }, instap: { x0: 700, dx: 50, voet: 652, rij: 64, per: 5, groot: 1 }, rondje: { x: 830, y: 540 }, maxPakje: 62, staand: false };
+/* Herstel 7 november (OVERZICHT-C plus-bus1-3): de stapel nieuwe pakjes iets naar links (x0 700 → 674), weg van Bliepo's microfoonknop. */
+const BUS_LIGGEND: BusIndeling = { busvak: { x: 10, y: 80, s: 680 }, instap: { x0: 674, dx: 50, voet: 652, rij: 64, per: 5, groot: 1 }, rondje: { x: 830, y: 540 }, maxPakje: 62, staand: false };
 const BUS_STAAND: BusIndeling = { busvak: { x: -122, y: -262, s: 1250 }, instap: { x0: 90, dx: 80, voet: 706, rij: 72, per: 10, groot: 1.5 }, rondje: { x: 640, y: 644 }, maxPakje: 96, staand: true };
 const BUSVAK_BASIS = 680;
 let BUSVAK = BUS_LIGGEND.busvak;
@@ -421,10 +422,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
           this.groepImg.push(p.items.map((q) => this.plek(box, ding, q.x, q.y).setScale(p.schaal / TX)));
         });
       } else if (beeld.soort === "etalage") {
-        this.plek(box, this.vw("taart", 300, 300), 490, 420);
+        /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): de losse taart bij de typvragen deed niets; weg. Het kind typt
+           in het vakje van de som bovenaan. */
       } else if (beeld.soort === "disco") {
+        /* Herstel 7 november (BOUWREGELS 1.22, keuze 2 "zacht"): de luidsprekers waren groot decor en drukten de kaartjes
+           tegen de rand en tegen Bliepo. Nu klein en zacht achteraan, naast de discobal; de kaartjes hebben de ruimte. */
         const spk = this.vw("luidspreker", 120, 220);
-        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 470));
+        DISCO.speakers.forEach((x) => this.plek(box, spk, x, 210).setScale(0.55 / TX).setAlpha(0.35).setDepth(-4));
         this.bal = this.plek(box, this.vw("discobal", 170, 170), DISCO.bal.x, DISCO.bal.y);
         this.plek(box, this.vw("draaitafel", 190, 190), DISCO.tafel.x, DISCO.tafel.y);
         /* De lichtbundels van de spots alvast tekenen (anders hapert het eerste goede antwoord). */
@@ -468,14 +472,10 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         else this.instappers = this.maakInstappers(box, beeld.instap, beeld.inBus);
       } else if (beeld.soort === "kaal") {
         const kleur = ["#7fe9ff", "#ffd36e", "#c9b6ff"][(beeld.level - 1) % 3];
-        this.plek(box, this.tex(`plus-${beeld.level}`, 200, 200, (c) => tekenPlus(c, kleur)), 490, 410);
-        const cijfers = ["3", "7", "1", "9", "5", "2", "8", "4"];
-        const plekken = [[220, 230], [760, 220], [170, 470], [810, 470], [330, 610], [650, 610], [300, 380], [690, 360]];
-        cijfers.forEach((cf, i) => {
-          const im = this.plek(box, this.tex(`cijfer-${cf}-${beeld.level}`, 80, 88, (c) => tekenCijfer(c, cf, kleur)), plekken[i][0], plekken[i][1]);
-          im.setAlpha(0.45).setScale(0.8 / TX);
-          if (!this.rustig) this.zweven.push(this.tweens.add({ targets: im, y: im.y - 14, duration: 1400 + i * 170, yoyo: true, repeat: -1, ease: "Sine.easeInOut" }));
-        });
+        /* Herstel 7 november (BOUWREGELS 1.22, keuze 2 "zacht"): de 8 zwevende cijfers leken een hint (bij 9 + 4 zweefden
+           ook een 9 en een 4) en zijn weg. Het plusteken blijft als kleine, zachte sfeer achter de opdracht. */
+        this.plek(box, this.tex(`plus-${beeld.level}`, 200, 200, (c) => tekenPlus(c, kleur)), 490, 380).setScale(0.6 / TX).setAlpha(0.22).setDepth(-4);
+        void tekenCijfer;
       }
 
       /* De kaartjes, platen en sommen om aan te tikken (rekenmateriaal: een getal op een kaartje). */

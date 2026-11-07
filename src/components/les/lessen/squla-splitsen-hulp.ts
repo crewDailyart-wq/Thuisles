@@ -56,12 +56,13 @@ export function toon(l: Lesgids, st: Stand, beeld: Beeld, extra: Partial<SplitsP
 export const goedBeeld = (l: Lesgids, st: Stand, extra: Partial<SplitsProps> = {}) => zet(l, { goed: ++st.goed, licht: [], actief: false, ...extra });
 export const foutBeeld = (l: Lesgids, st: Stand) => zet(l, { fout: ++st.fout });
 
-export async function kiesGetal(l: Lesgids, keuzes: number[]) {
-  return Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true }));
+/** `midden` (herstel 7 november): de keuzes groot in het midden van het speelvlak, op die hoogte (punten). */
+export async function kiesGetal(l: Lesgids, keuzes: number[], midden?: number) {
+  return Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true, ...(midden !== undefined ? { midden } : {}) }));
 }
 
-export async function kiesTekst(l: Lesgids, opties: string[]) {
-  return String(await l.kies(opties, { weetniet: false, direct: true }));
+export async function kiesTekst(l: Lesgids, opties: string[], midden?: number) {
+  return String(await l.kies(opties, { weetniet: false, direct: true, ...(midden !== undefined ? { midden } : {}) }));
 }
 
 /** Wachten tot het kind iets in de tekening aantikt. */

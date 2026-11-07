@@ -58,6 +58,41 @@ const antwoordZinnen = (z: string[]) => z.filter((x) => !x.trim().endsWith("?"))
 type Mis = Record<string, string[]> | ((x: string) => string[]);
 /** Een andere volgorde van de keuzes (bij een vraag die terugkomt). */
 const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), lijst[0]] : lijst);
+
+/*
+  Het goede antwoord staat niet steeds op dezelfde plek (BOUWREGELS 1.23, Sara 7 november 2026): elke les-start een nieuw
+  toeval-zaadje en daarmee per vraag een willekeurige volgorde. Binnen één les-start houdt een vraag zijn volgorde (het
+  voorbeeld op het beginscherm en de vraag zien er hetzelfde uit). Alleen de plek verandert; antwoorden, beoordeling,
+  hints en score blijven gelijk. Waar/Niet waar en Ja/Nee blijven in hun vaste volgorde.
+*/
+let geldZaad = 1;
+const nieuwGeldZaad = () => {
+  geldZaad = (Math.random() * 2 ** 31) | 0;
+};
+function toevalG(tekst: string) {
+  let h = 2166136261 ^ geldZaad;
+  for (const ch of tekst) {
+    h ^= ch.charCodeAt(0);
+    h = Math.imul(h, 16777619);
+  }
+  return () => {
+    h += 0x6d2b79f5;
+    let t = h;
+    t = Math.imul(t ^ (t >>> 15), t | 1);
+    t ^= t + Math.imul(t ^ (t >>> 7), t | 61);
+    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+  };
+}
+const schud = <T,>(lijst: T[], keer: boolean, extra = ""): T[] => {
+  if (lijst.some((x) => x === "Waar" || x === "Ja")) return schuif(lijst, keer);
+  const r = toevalG(`${JSON.stringify(lijst)}|${keer ? "t" : ""}|${extra}`);
+  const v = [...lijst];
+  for (let i = v.length - 1; i > 0; i--) {
+    const j = Math.floor(r() * (i + 1));
+    [v[i], v[j]] = [v[j], v[i]];
+  }
+  return v;
+};
 const som = (g: GeldSoort[]) => g.reduce((a, x) => a + WAARDE[x], 0);
 /** Een bedrag in de zin: in de goudkleur van de munten. */
 const e = (n: number) => `{${n}:geel}`;
@@ -110,7 +145,11 @@ const LEEG: Omit<GeldProps, "nr"> = {
   rondje: true,
   verbind: null,
   geteld: null,
+  vakken: false,
+  sfeer: null,
+  vlieg: null,
 };
+let vliegNr = 0;
 
 const zet = (l: Lesgids, p: Partial<GeldProps>) => l.pasVlakAan<GeldProps>(p);
 
@@ -200,6 +239,10 @@ type KiesOpties = {
   noem?: (k: GKaart) => string;
   /** Eerste fout: wat Bliepo over het gekozen kaartje zegt (standaard: hoeveel geld het is). */
   reactie?: (k: GKaart) => string[];
+  /** Een voorwerp als kleine, zachte sfeer-achtergrond (BOUWREGELS 1.22). */
+  sfeer?: string;
+  /** Het verhaal naspelen: na het antwoord vliegt het goede geld in dit ding uit `groot` (bv. "g0", de spaarpot). */
+  vliegNaar?: string;
 };
 
 /** Kiezen uit kaartjes met geld (of een tekening): één goed, of twee goed. */
@@ -209,7 +252,7 @@ function kiesGeld(o: KiesOpties): Opgave {
   klopt(goedIdx.length === aantal, `${o.vraag.join(" ")}: ${goedIdx.length} goede kaartjes in plaats van ${aantal}`);
   return (l, terug) => {
     const nr = volgend();
-    const kaarten = schuif(o.keuzes.map(kaartVan), terug);
+    const kaarten = schud(o.keuzes.map(kaartVan), terug, o.vraag.join(" "));
     const goedIds = goedIdx.map((i) => `k${i}`);
     const uit: string[] = [];
     let naSamen = false;
@@ -225,7 +268,8 @@ function kiesGeld(o: KiesOpties): Opgave {
         ? [isSamen(kaarten.find((k) => k.id === goedIds[0])!.geld!), isSamen(kaarten.find((k) => k.id === goedIds[1])!.geld!, true)]
         : [isSamen(kaarten.find((k) => k.id === goedIds[0])!.geld!)]);
     return {
-      toon: () => zet(l, { ...LEEG, nr, groot: (naSamen ? (o.hulpGroot ?? o.groot) : o.groot) ?? null, kaarten, uit: [...uit] }),
+      /* elk groepje geld in een eigen vak (Sara, 7 november 2026) */
+      toon: () => zet(l, { ...LEEG, nr, groot: (naSamen ? (o.hulpGroot ?? o.groot) : o.groot) ?? null, kaarten, uit: [...uit], vakken: true, sfeer: o.sfeer ?? null }),
       vraag,
       antwoord: async () => {
         if (aantal === 1) {
@@ -251,8 +295,9 @@ function kiesGeld(o: KiesOpties): Opgave {
       goed: async () => {
         zet(l, { goed: goedIds, licht: [], fout: [] });
         for (const g of goedIds) zet(l, { golf: { id: g, n: ++golfNr } });
+        if (o.vliegNaar) setTimeout(() => zet(l, { vlieg: { id: goedIds[0], naar: o.vliegNaar!, n: ++vliegNr } }), 500);
         await l.zeg(bevestig());
-        await l.wacht(300);
+        await l.wacht(o.vliegNaar ? 900 : 300);
       },
       fout: (x: string) => {
         const ids = x.split("+");
@@ -296,6 +341,7 @@ function kiesGeld(o: KiesOpties): Opgave {
       toonAntwoord: async () => {
         zet(l, { fout: [], licht: [], goed: goedIds, uit: [] });
         for (const g of goedIds) zet(l, { golf: { id: g, n: ++golfNr } });
+        if (o.vliegNaar) setTimeout(() => zet(l, { vlieg: { id: goedIds[0], naar: o.vliegNaar!, n: ++vliegNr } }), 600);
         await l.zeg(...antwoordZinnen(goedZin));
         await l.wacht(300);
       },
@@ -317,6 +363,8 @@ type KnopOpties = {
   euro?: boolean;
   /** Eerste fout: eigen reactie op het gekozen antwoord (anders: te veel/te weinig bij getallen, of de tip). */
   reactie?: (x: string) => string[] | null;
+  /** Een voorwerp als kleine, zachte sfeer-achtergrond (BOUWREGELS 1.22). */
+  sfeer?: string;
 };
 
 /** Kiezen uit knoppen bij Bliepo: woorden (die Bliepo in de vraag noemt), getallen, ja/nee. */
@@ -325,9 +373,9 @@ function knopVraag(o: KnopOpties): Opgave {
   return (l, terug) => {
     const nr = volgend();
     let naSamen = false;
-    const opties = schuif(o.opties, terug);
+    const opties = schud(o.opties, terug, o.vraag.join(" "));
     return {
-      toon: () => zet(l, { ...LEEG, nr, groot: (naSamen ? (o.hulpGroot ?? o.groot) : o.groot) ?? null }),
+      toon: () => zet(l, { ...LEEG, nr, groot: (naSamen ? (o.hulpGroot ?? o.groot) : o.groot) ?? null, sfeer: o.sfeer ?? null }),
       vraag: o.vraag,
       antwoord: async () => (await l.kies(opties, { weetniet: false, direct: true, ...(l.lesId === "squla-geld-geldmachine-1" ? { bijOpdracht: true } : {}) })) ?? "",
       isGoed: (x: string) => x === o.goed,
@@ -442,8 +490,9 @@ function verbindVraag(o: { links: [GeldSoort[], GeldSoort[]]; rechts: [GeldSoort
   return (l, terug) => {
     const nr = volgend();
     const links: GKaart[] = o.links.map((g, i) => ({ id: `L${i}`, geld: g }));
-    /* Komt de vraag terug, dan staan de bedragen rechts andersom (zoals Squla). */
-    const bron = terug ? [o.rechts[1], o.rechts[0]] : o.rechts;
+    /* De bedragen rechts staan elke les-start willekeurig (BOUWREGELS 1.23); komt de vraag terug, dan andersom (zoals Squla). */
+    const om0 = toevalG(`verbind|${JSON.stringify(o.links)}`)() < 0.5;
+    const bron = terug !== om0 ? [o.rechts[1], o.rechts[0]] : o.rechts;
     const rechts: GKaart[] = bron.map((r, i) => (typeof r === "number" ? { id: `R${i}`, label: `€ ${r}`, zeg: `${r} euro` } : { id: `R${i}`, geld: r }));
     const rwaarde = bron.map(waarde);
     const juist: Record<string, string> = { L0: `R${rwaarde.indexOf(lw[0])}`, L1: `R${rwaarde.indexOf(lw[1])}` };
@@ -543,6 +592,7 @@ function verbindVraag(o: { links: [GeldSoort[], GeldSoort[]]; rechts: [GeldSoort
 
 /** Het welkom: het vlak verschijnt, dan "Kun je dit al?". */
 async function welkom(l: Lesgids, beeld: Partial<GeldProps>, vooraf: GeldSoort[], zinnen: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  nieuwGeldZaad();
   zetSynthesisHulp(l);
   l.vlak<GeldProps>(SqulaGeldVlak, { ...LEEG, nr: volgend(), vooraf, ...beeld });
   speelLesgeluid("verschijn");
@@ -711,6 +761,7 @@ const geldmachine1: Lesdraaiboek = {
     /* De portemonnee blijft tijdens de introductie staan; de munt hoort bij de begeleide uitleg. */
     zetSynthesisHulp(l);
     const voorbeeld = { ...LEEG, groot: eentje("m1") };
+    nieuwGeldZaad();
     l.vlak<GeldProps>(SqulaGeldVlak, { ...LEEG, introductie: true, nr: volgend(), vooraf: ["m1", "m2", "c50", "b5", "b10", "b20", "b50", "b100"], paneel: true, groot: eentje("m1") });
     speelLesgeluid("verschijn");
     await l.wacht(500);
@@ -932,15 +983,17 @@ const zakgeld1Opgaven: Opgave[] = [
   potEnPortemonnee({ pot: ["m2", "m2"], porte: ["b5", "m1"], opties: [11, 9, 10], begin: [], slot: [] }),
   kiesGeld({
     groot: [SKATE(20)],
-    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"], { tekening: "schelp", aantal: 3, zeg: "schelpen" }],
+    /* Het groepje schelpen tussen het geld was raar en verwarrend (Sara, 7 november 2026): weg, en de zin erover ook. */
+    keuzes: [["b10", "b10"], ["b10", "b5", "m2"], ["b5", "b5", "b5", "b5"]],
     doel: 20,
     aantal: 2,
     vraag: ["Kijk, dit skateboard wil je kopen.", `Het kost ${e(20)} euro.`, `Waar ligt ${e(20)} euro?`],
-    goedZin: [`2 briefjes van {10:rood} euro is samen ${e(20)} euro.`, `4 briefjes van {5:wit} euro is ook ${e(20)} euro.`, "En met schelpen kun je niet betalen!"],
+    goedZin: [`2 briefjes van {10:rood} euro is samen ${e(20)} euro.`, `4 briefjes van {5:wit} euro is ook ${e(20)} euro.`],
     noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Schelpen"),
   }),
   getalVraag({
-    groot: [tek("doos")],
+    /* geen losse doos meer, maar het geld zelf (BOUWREGELS 1.22) */
+    groot: [geldDeel("oud", ["b10"]), { soort: "plus" }, geldDeel("nieuw", ["b5"])],
     hulpGroot: [geldDeel("oud", ["b10"]), { soort: "plus" }, geldDeel("nieuw", ["b5"])],
     opties: [15, 14, 16],
     goed: 15,
@@ -966,7 +1019,8 @@ const zakgeld1Opgaven: Opgave[] = [
     tip: [`Tel de stappen van ${e(15)} naar ${e(20)}.`],
   }),
   getalVraag({
-    groot: [tek("bord"), geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
+    /* het losse bordje deed niets en is weg (BOUWREGELS 1.22) */
+    groot: [geldDeel("oud", ["b10", "b5"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [16, 17, 19],
     goed: 17,
     vraag: ["Je doet de afwas.", `Daarvoor krijg je ${e(2)} euro.`, "Hoeveel geld heb je nu?", "Kijk maar naar het plaatje."],
@@ -980,7 +1034,8 @@ const zakgeld1Opgaven: Opgave[] = [
     tip: [`Je had ${e(15)} euro. Er komt ${e(2)} bij.`],
   }),
   kiesGeld({
-    groot: [tek("schoen")],
+    /* de losse schoen deed niets: nu klein en zacht op de achtergrond (BOUWREGELS 1.22) */
+    sfeer: "schoen",
     keuzes: [["b10", "b5", "m2", "m1"], ["b10", "b5", "m1"], ["b10", "b5", "m2", "m2"]],
     doel: 18,
     vraag: ["Je zet alle schoenen netjes in de gang.", `Je krijgt ${e(1)} euro.`, `Je had ${e(17)} euro.`, "Waar ligt het geld dat je nu hebt?"],
@@ -1001,7 +1056,8 @@ const zakgeld1Opgaven: Opgave[] = [
     tip: [`Tel de stappen van ${e(18)} naar ${e(20)}.`],
   }),
   getalVraag({
-    groot: [tek("jas")],
+    /* geen losse jas meer, maar het geld zelf (BOUWREGELS 1.22) */
+    groot: [geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     hulpGroot: [geldDeel("oud", ["b10", "b5", "m2", "m1"]), { soort: "plus" }, geldDeel("nieuw", ["m2"])],
     opties: [19, 20, 18],
     goed: 20,
@@ -1050,13 +1106,16 @@ const zakgeld1: Lesdraaiboek = {
 const zakgeld2Opgaven: Opgave[] = [
   kiesGeld({
     groot: [tek("spaarpot")],
+    /* na het antwoord valt het geld in de spaarpot (BOUWREGELS 1.22) */
+    vliegNaar: "g0",
     keuzes: [["b5", "b5", "b5"], ["b10", "b5", "m2", "m2", "m1"], ["b10", "b5", "m2"]],
     doel: 20,
     vraag: [`Je hebt ${e(20)} euro gespaard.`, `Waar ligt ${e(20)} euro?`],
     goedZin: [`${Hoofd(e(10))} en ${e(5)} is ${e(15)}.`, `Met ${e(2)}, ${e(2)} en ${e(1)} erbij is het ${e(20)} euro.`],
   }),
   knopVraag({
-    groot: [tek("marktkraam")],
+    /* de marktkraam klein en zacht op de achtergrond (BOUWREGELS 1.22) */
+    sfeer: "marktkraam",
     opties: ["Waar", "Niet waar"],
     goed: "Waar",
     vraag: ["Op het plein is een rommelmarkt.", "Daar worden oude spullen verkocht.", "Je kunt die spullen kopen.", "Is dat waar of niet waar?"],
@@ -1082,11 +1141,12 @@ const zakgeld2Opgaven: Opgave[] = [
   }),
   kiesGeld({
     groot: [speelgoed("boek", 5)],
-    keuzes: [["m2", "m2", "m1"], { tekening: "knoop", aantal: 4, zeg: "knopen" }, ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
+    /* Het groepje knopen tussen het geld was verwarrend (Sara, 7 november 2026): weg, en de zin erover ook. */
+    keuzes: [["m2", "m2", "m1"], ["m1", "m1", "m1", "m1", "m1"], ["m2", "m2"]],
     doel: 5,
     aantal: 2,
     vraag: ["Je ziet een mooi boek.", `Het boek kost ${e(5)} euro.`, `Waar ligt ${e(5)} euro?`],
-    goedZin: [`2 munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `5 munten van ${e(1)} euro is ook ${e(5)} euro.`, "Met knopen kun je niet betalen!"],
+    goedZin: [`2 munten van ${e(2)} euro en een munt van ${e(1)} euro is ${e(5)} euro.`, `5 munten van ${e(1)} euro is ook ${e(5)} euro.`],
     noem: (k) => (k.geld ? `${Hoofd(e(som(k.geld)))} euro` : "Knopen"),
   }),
   getalVraag({
@@ -1116,7 +1176,8 @@ const zakgeld2Opgaven: Opgave[] = [
     tip: ["Tel alleen het geld zonder kruis."],
   }),
   kiesGeld({
-    groot: [tek("marktkraam")],
+    /* de marktkraam klein en zacht op de achtergrond (BOUWREGELS 1.22) */
+    sfeer: "marktkraam",
     keuzes: [["b5", "b5", "m1"], ["b10", "m2"], ["b10", "m1"]],
     doel: 11,
     aantal: 2,

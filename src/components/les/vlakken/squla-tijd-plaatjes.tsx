@@ -26,7 +26,7 @@
  * (`data-ding`), die precies hetzelfde meldt.
  */
 
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { TX, VLAK_B, VLAK_H } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
@@ -66,6 +66,14 @@ export type PlaatjesProps = {
   golf?: { id: string; n: number } | null;
   /** Een handje doet één keer voor hoe je sleept (verandert het getal, dan nog eens). */
   handje?: number;
+  /** Een tekening als kleine, zachte sfeer-achtergrond linksboven (BOUWREGELS 1.22): niet tikbaar, doet niet mee. */
+  sfeer?: string | null;
+  /**
+   * Alleen op een staand scherm (telefoon rechtop; BOUWREGELS 1.24, keuring herstel AB2): het vlak is `hs` punten hoog
+   * (meer dan 720). Gewone kaartjes met plaatjes worden dan groter in rijen gezet; al het andere staat zoals eerst,
+   * `dy` punten lager (in het midden). Dit zet het vlak zelf; de lessen geven het niet mee.
+   */
+  staand?: { hs: number; dy: number } | null;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -82,7 +90,69 @@ const isWeek = (d: PDing) => /^(rooster|weekblad)(\||$)/.test(d.tekening ?? "");
 
 type Indeling = { groot: (Rect & { k: number }) | null; kaarten: Rect[]; vakken: Rect[]; losse: Rect[]; links: Rect[]; rechts: Rect[] };
 
+/** Een tekening die veel breder is dan hoog (de plaatjes aan het lijntje). */
+const isBreed = (d: PDing) => {
+  if (!d.tekening) return false;
+  const m = tekeningMaat(d.tekening);
+  return m.b / m.h > 2;
+};
+
 export function indeling(p: PlaatjesProps): Indeling {
+  const st = p.staand;
+  if (!st || st.hs <= 720) return indeling720(p);
+  const staand = indelingStaand(p, st.hs);
+  if (staand) return staand;
+  /* niet de kaartjes-vraag: dezelfde indeling als op de laptop, iets lager in het hogere vlak */
+  const ind = indeling720(p);
+  const om = (r: Rect): Rect => ({ ...r, y: r.y + st.dy });
+  return {
+    groot: ind.groot && { ...ind.groot, y: ind.groot.y + st.dy },
+    kaarten: ind.kaarten.map(om),
+    vakken: ind.vakken.map(om),
+    losse: ind.losse.map(om),
+    links: ind.links.map(om),
+    rechts: ind.rechts.map(om),
+  };
+}
+
+/**
+ * Staand scherm (keuring herstel AB2, N1): 2 tot 4 kaartjes met een plaatje (bv. maandkalender, weekkalender, klok)
+ * waren naast elkaar piepklein, met de helft van het vlak leeg. Nu krijgt een brede tekening (weekkalender, plaatjes aan
+ * het lijntje) een eigen rij over de hele breedte en staan de andere kaartjes met 2 naast elkaar; de rijen verdelen de
+ * hoogte. De volgorde van de keuzes blijft zoals de les ze zet (de plek van het goede antwoord wisselt dus nog steeds).
+ */
+function indelingStaand(p: PlaatjesProps, hs: number): Indeling | null {
+  const k = p.kaarten ?? [];
+  if (p.groot || p.orden || p.verbind || k.length < 2 || k.length > 4 || !k.every((d) => d.tekening)) return null;
+  const rijen: number[][] = [];
+  let open: number[] | null = null;
+  k.forEach((d, i) => {
+    if (isBreed(d) || isWeek(d)) rijen.push([i]);
+    else if (open && open.length < 2) open.push(i);
+    else {
+      open = [i];
+      rijen.push(open);
+    }
+  });
+  const boven = 20;
+  const tussen = 34;
+  const rijH = Math.min(460, (hs - 2 * boven - (rijen.length - 1) * tussen) / rijen.length);
+  const totaal = rijen.length * rijH + (rijen.length - 1) * tussen;
+  const y0 = (hs - totaal) / 2 + rijH / 2;
+  const kaarten: Rect[] = [];
+  rijen.forEach((rij, r) => {
+    const y = y0 + r * (rijH + tussen);
+    const b = rij.length === 1 ? (isBreed(k[rij[0]]) || isWeek(k[rij[0]]) ? 900 : Math.min(460, rijH)) : 440;
+    rijX2(rij.length, b, 30).forEach((x, j) => (kaarten[rij[j]] = { x, y, b, h: rijH - 10 }));
+  });
+  return { groot: null, kaarten, vakken: [], losse: [], links: [], rechts: [] };
+}
+
+function rijX2(n: number, b: number, tussen: number): number[] {
+  return rij(n, b, tussen, 0, 0).map((r) => r.x);
+}
+
+function indeling720(p: PlaatjesProps): Indeling {
   const n = p.kaarten?.length ?? 0;
   const orden = p.orden ?? null;
   const verbind = p.verbind ?? null;
@@ -99,7 +169,7 @@ export function indeling(p: PlaatjesProps): Indeling {
     if (groot) {
       const [b, h] = n === 1 ? [260, 230] : n === 2 ? [270, 240] : n === 3 ? [250, 236] : [205, 210];
       kaarten = rij(n, b, 40, 562, h);
-    } else if (n >= 2 && p.kaarten!.some(isWeek)) {
+    } else if (n === 2 && p.kaarten!.some(isWeek)) {
       /* De weekkalender is breed en heeft kleine hoepels: hij krijgt een eigen rij over bijna de hele breedte, de andere kaartjes staan eronder (2 nov 2026, keuring r6: te klein, op de telefoon onleesbaar). */
       const wi = p.kaarten!.findIndex(isWeek);
       const rest = n - 1;
@@ -107,6 +177,20 @@ export function indeling(p: PlaatjesProps): Indeling {
       const boven: Rect = { x: VLAK_B / 2, y: 170, b: 900, h: 300 };
       let o = 0;
       kaarten = p.kaarten!.map((_, i) => (i === wi ? boven : onder[o++]));
+    } else if (n === 3 && p.kaarten!.some(isBreed)) {
+      /* Een brede tekening (de plaatjes aan het lijntje) krijgt meer ruimte, zodat alle keuzes even groot lijken (Sara, 7 november 2026).
+         Herstel A ronde 2: ook een weekkalender staat zo gewoon in de rij, even hoog als de andere keuzes (eerst stond hij
+         als groot vak bovenaan en viel het goede antwoord op). Twee brede tekeningen: samen passend in de breedte. */
+      const nBreed = p.kaarten!.filter(isBreed).length;
+      const wijd = Math.min(370, (950 - 2 * 34 - (n - nBreed) * 235) / nBreed);
+      const breedte = p.kaarten!.map((k) => (isBreed(k) ? wijd : 235));
+      const totaal = breedte.reduce((a, b) => a + b, 0) + 2 * 34;
+      let x = (VLAK_B - totaal) / 2;
+      kaarten = breedte.map((b) => {
+        const r = { x: x + b / 2, y: 370, b, h: 300 };
+        x += b + 34;
+        return r;
+      });
     } else {
       const [b, h] = n === 2 ? [320, 320] : n === 3 ? [280, 300] : [210, 260];
       kaarten = rij(n, b, 44, 370, h);
@@ -123,8 +207,9 @@ export function indeling(p: PlaatjesProps): Indeling {
   let links: Rect[] = [];
   let rechts: Rect[] = [];
   if (verbind) {
-    links = verbind.links.map((_, i) => ({ x: 215, y: 130 + i * 230, b: 380, h: 205 }));
-    rechts = verbind.rechts.map((_, i) => ({ x: 730, y: 130 + i * 230, b: 270, h: 104 }));
+    /* de kalenders groter (BOUWREGELS 1.24, 7 november 2026), de woorden iets smaller */
+    links = verbind.links.map((_, i) => ({ x: 232, y: 122 + i * 238, b: 440, h: 230 }));
+    rechts = verbind.rechts.map((_, i) => ({ x: 760, y: 122 + i * 238, b: 250, h: 104 }));
   }
   return { groot, kaarten, vakken, losse, links, rechts };
 }
@@ -273,9 +358,22 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.druk = null;
     }
 
+    /** Het eigen vak van een keuze: zacht, half doorzichtig, ronde hoeken, zoals bij de geldles (Sara, 7 november 2026). */
+    keuzeVak(b: number, h: number) {
+      const sl = `pkv|${Math.round(b)}x${Math.round(h)}`;
+      this.canvasPlaatje(sl, b, h, (c) => {
+        c.fillStyle = "rgba(207,227,255,0.13)";
+        c.beginPath();
+        c.roundRect(0, 0, b, h, 34);
+        c.fill();
+      });
+      return sl;
+    }
+
     nieuwDing(d: PDing, r: Rect, soort: Ding["soort"], sleutel: string) {
       const box = this.add.container(r.x, r.y);
       const ring = this.plaats("pg-golf", 0, 0).setVisible(false);
+      if (soort === "kaart" && d.tekening) box.add(this.plaats(this.keuzeVak(r.b + 16, r.h + 10), 0, 0));
       box.add([ring, this.plaats(this.kaartPlaatje(d, r.b, r.h), 0, 0)]);
       this.alles.push(box);
       const ding: Ding = { box, ring, r, d, kleur: null, zeg: d.zeg ?? d.label ?? d.id, soort, id: d.id };
@@ -290,6 +388,15 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (ind.groot && p.groot) {
         const g = this.plaats(this.grootPlaatje(p.groot, ind.groot.k), ind.groot.x, ind.groot.y);
         this.alles.push(g);
+      }
+      if (p.sfeer) {
+        /* klein en zacht linksboven, zacht deinend (één keer getekend) */
+        const m = tekeningMaat(p.sfeer);
+        const k = 130 / Math.max(m.b, m.h);
+        const sy = 105 + (p.staand && !indelingStaand(p, p.staand.hs) ? p.staand.dy : 0);
+        const sf = this.plaats(this.grootPlaatje(p.sfeer, k), 110, sy).setAlpha(0.5).setDepth(-1);
+        this.alles.push(sf);
+        if (!rustig) this.tweens.add({ targets: sf, y: sy - 6, duration: 2600, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
       }
       (p.kaarten ?? []).forEach((d, i) => nieuw.push(this.nieuwDing(d, ind.kaarten[i], "kaart", d.id).box));
       if (p.orden) {
@@ -323,9 +430,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const sig = JSON.stringify([
         p.nr,
         p.groot ?? null,
+        p.sfeer ?? null,
         (p.kaarten ?? []).map((k) => [k.id, k.tekening, k.label]),
         p.orden ? [p.orden.vakken.length, p.orden.vast ?? [], (p.orden.vast ?? []).map((i) => p.orden!.vakken[i]), p.orden.losse.map((k) => [k.id, k.tekening, k.label])] : null,
         p.verbind ? [p.verbind.links.map((k) => k.id), p.verbind.rechts.map((k) => k.id)] : null,
+        p.staand ?? null,
       ]);
       if (sig !== this.sig) {
         this.bouw(p, p.nr !== this.nr);
@@ -487,7 +596,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       }
       if (cx === undefined || cy === undefined) return { x: p.worldX, y: p.worldY };
       const r = this.game.canvas.getBoundingClientRect();
-      return { x: ((cx - r.left) * VLAK_B) / r.width, y: ((cy - r.top) * VLAK_H) / r.height };
+      /* de schaal is in beide richtingen gelijk; zo klopt het ook in een hoger vlak (staand scherm) */
+      return { x: ((cx - r.left) * VLAK_B) / r.width, y: ((cy - r.top) * VLAK_B) / r.width };
     }
 
     /** Het ding onder de vinger dat nu iets doet (of alleen voorgelezen kan worden). */
@@ -601,7 +711,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         if (d) {
           this.golf(d.box.x, d.box.y);
           this.schud(d.box);
-        } else this.golf(VLAK_B / 2, VLAK_H / 2);
+        } else this.golf(VLAK_B / 2, (this.p?.staand?.hs ?? VLAK_H) / 2);
         this.time.delayedCall(450, stap);
       };
       stap();
@@ -619,7 +729,12 @@ function letter() {
 
 export function SqulaTijdPlaatjes(props: PlaatjesProps & Vlakbasis) {
   const { meld, schaal } = props;
-  const { plek, scene } = useHoloMotor<PlaatjesScene>(schaal, maakScene, { invoer: true });
+  /* Op een staand scherm mag het vlak hoger worden (BOUWREGELS 1.24, zoals het klokvlak): het canvas is dan meteen zo hoog als kan. */
+  const [staandMax] = useState(() => (typeof window !== "undefined" && window.innerHeight > window.innerWidth ? Math.ceil(Math.min(2 * 720, window.innerHeight / (schaal || 1))) : 0));
+  const { plek, scene } = useHoloMotor<PlaatjesScene>(schaal, maakScene, staandMax > 720 ? { invoer: true, hoogte: staandMax } : { invoer: true });
+  const hs = staandMax > 720 && props.staandHoogte && props.staandHoogte > 720 ? Math.min(props.staandHoogte, staandMax) : 720;
+  /* het oude vlak van 720 stond midden tussen naambalk en ballon; in het hogere vlak staat het op (bijna) dezelfde plek */
+  const staand = hs > 720 ? { hs, dy: Math.max(0, Math.round((hs - 720) / 2 - 20 / (schaal || 1))) } : null;
   const meldRef = useRef(meld);
   useEffect(() => {
     meldRef.current = meld;
@@ -634,8 +749,8 @@ export function SqulaTijdPlaatjes(props: PlaatjesProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, uit, goed, fout, licht, orden, verbind } = props;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, uit, goed, fout, licht, orden, verbind });
+  const { nr, groot, kaarten, kaartenActief, uit, goed, fout, licht, orden, verbind, sfeer } = props;
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, uit, goed, fout, licht, orden, verbind, sfeer, staand });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as PlaatjesProps);
   }, [scene, stand]);
@@ -664,7 +779,7 @@ export function SqulaTijdPlaatjes(props: PlaatjesProps & Vlakbasis) {
   }, [namenSleutel]);
 
   /* Onzichtbare knoppen over alles wat je kunt tikken: toetsenbord en automatische test. */
-  const ind = indeling(props);
+  const ind = indeling({ ...props, staand });
   const knoppen: { id: string; zeg: string; r: Rect; doe: () => void }[] = [];
   if (kaartenActief) (kaarten ?? []).forEach((d, i) => !uit?.includes(d.id) && knoppen.push({ id: d.id, zeg: d.zeg ?? d.label ?? d.id, r: ind.kaarten[i], doe: () => meld({ soort: "kaart", id: d.id }) }));
   if (orden?.actief) orden.losse.forEach((d, i) => !orden.vakken.includes(d.id) && knoppen.push({ id: d.id, zeg: d.zeg ?? d.label ?? d.id, r: ind.losse[i], doe: () => meld({ soort: "leg", id: d.id, vak: null }) }));
@@ -674,8 +789,8 @@ export function SqulaTijdPlaatjes(props: PlaatjesProps & Vlakbasis) {
   }
 
   return (
-    <div className={s.vlak} data-squla-tijd="">
-      <div ref={plek} style={{ ...HOLO_CANVAS, touchAction: "none" }} aria-hidden />
+    <div className={s.vlak} data-squla-tijd="" style={hs > 720 ? { bottom: "auto", height: hs } : undefined}>
+      <div ref={plek} style={staandMax > 720 ? { ...HOLO_CANVAS, touchAction: "none", overflow: "hidden" } : { ...HOLO_CANVAS, touchAction: "none" }} aria-hidden />
       <div data-knop="keuzes" className={s.knoppen}>
         {knoppen.map((k) => (
           <button
@@ -697,6 +812,9 @@ export function SqulaTijdPlaatjes(props: PlaatjesProps & Vlakbasis) {
     </div>
   );
 }
+
+/* Op een staand scherm mag dit vlak hoger worden dan 720 punten (Lesscherm geeft dan `staandHoogte`; BOUWREGELS 1.24). */
+SqulaTijdPlaatjes.staandGroei = true;
 
 /** De tekening op de kaart aan het eind (244 × 190): een kalenderblaadje. */
 export function KaartKalender() {

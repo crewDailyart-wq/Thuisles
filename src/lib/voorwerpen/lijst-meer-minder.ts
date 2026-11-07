@@ -20,4 +20,12 @@ export const MEER_MINDER: Voorwerp[] = [
     onderwerp: "an empty clear glass jar with an orange lid and a plain white label without text, front view",
     schets: `<rect class="r" x="40" y="46" width="120" height="140" rx="26" fill="#d9f0ff"/><rect class="r" x="50" y="18" width="100" height="34" rx="10" fill="#ff8f5a"/><rect class="r" x="54" y="86" width="92" height="70" rx="14" fill="#ffffff"/>`,
   },
+  {
+    /* Herstel 7 november: een herkenbare glazen knikker (de oude "knikker" leek op een blauw krulletje). In code getekend (SVG), glansstijl B komt er vanzelf overheen. */
+    naam: "knikker-glas",
+    titel: "Glazen knikker",
+    groep: "speelgoed",
+    onderwerp: "a round clear blue glass marble with a colourful twisted ribbon inside and a shiny highlight",
+    schets: `<circle class="r" cx="100" cy="100" r="64" fill="#7cc4f7"/><path d="M100 100 q14 -26 22 -54 q-24 18 -22 54z" fill="#ff8a3c"/><ellipse cx="78" cy="70" rx="18" ry="11" fill="#ffffff"/>`,
+  },
 ];

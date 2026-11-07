@@ -401,11 +401,23 @@ export function maakS1(sc: Holo, dep: Dep) {
       const hex = hexVan(z.kl);
       const kleur = hex ? parseInt(hex.slice(1), 16) : 0xcfe3ff;
       const licht1 = hex ? (((kleur >> 16) + 255) >> 1 << 16) | ((((kleur >> 8) & 255) + 255) >> 1 << 8) | (((kleur & 255) + 255) >> 1) : kleur;
+      /* Herstel 7 november (OVERZICHT-C splitsen1-1): het oranje vak zag er beige/bruin uit (licht oranje, half doorzichtig op
+         blauw), terwijl Bliepo "het oranje vak" zegt. Nu een stevige, iets donkerdere tint van de kleur (niet doorzichtig) met
+         een lichte rand in de kleur: duidelijk oranje (of paars), en de lichte ballen erin blijven goed te zien. */
+      /* Voller van kleur (niet grijzer): het sterkste kanaal blijft bijna gelijk, de andere twee zakken. Oranje blijft zo oranje (geen bruin). */
+      const kan = [kleur >> 16, (kleur >> 8) & 255, kleur & 255];
+      const top = Math.max(...kan);
+      const [dr, dg, db] = kan.map((c) => Math.round(c === top ? c * 0.94 : c * 0.7));
+      const donker = hex ? (dr << 16) | (dg << 8) | db : kleur;
       const g = sc.add.graphics();
       g.fillStyle(kleur, 0.1);
       g.fillRoundedRect(z.x - z.b / 2 - 6, z.y - z.h / 2 - 6, z.b + 12, z.h + 12, 30);
-      g.fillStyle(licht1, 0.62);
+      g.fillStyle(hex ? donker : licht1, hex ? 0.9 : 0.62);
       g.fillRoundedRect(z.x - z.b / 2, z.y - z.h / 2, z.b, z.h, 24);
+      if (hex) {
+        g.lineStyle(4, licht1, 0.95);
+        g.strokeRoundedRect(z.x - z.b / 2 + 2, z.y - z.h / 2 + 2, z.b - 4, z.h - 4, 22);
+      }
       g.fillStyle(0xffffff, 0.07);
       g.fillRoundedRect(z.x - z.b / 2 + 6, z.y - z.h / 2 + 5, z.b - 12, z.h * 0.3, 18);
       laagVak.add(g);

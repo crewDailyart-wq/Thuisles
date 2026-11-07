@@ -25,7 +25,8 @@ type SceneMetDemo = import("phaser").Scene & { klaar: boolean; demo(ms: number):
 export function useHoloMotor<S>(
   schaal: number,
   maakKlasse: (Phaser: PhaserModule, rustig: boolean) => new () => import("phaser").Scene,
-  opties: { invoer?: boolean } = {},
+  /** `hoogte`: een hoger canvas dan 720 punten (alleen op een staand scherm; zie `Vlakbasis.staandHoogte`). Zonder: 720. */
+  opties: { invoer?: boolean; hoogte?: number } = {},
 ) {
   const plek = useRef<HTMLDivElement>(null);
   const [scene, setScene] = useState<S | null>(null);
@@ -44,7 +45,7 @@ export function useHoloMotor<S>(
         type: Phaser.WEBGL,
         parent: plek.current,
         width: Math.round(VLAK_B * k),
-        height: Math.round(VLAK_H * k),
+        height: Math.round((opties.hoogte ?? VLAK_H) * k),
         transparent: true,
         banner: false,
         scale: { mode: Phaser.Scale.NONE },
@@ -53,7 +54,7 @@ export function useHoloMotor<S>(
         callbacks: {
           postBoot: (g) => {
             g.canvas.style.width = `${VLAK_B}px`;
-            g.canvas.style.height = `${VLAK_H}px`;
+            g.canvas.style.height = `${opties.hoogte ?? VLAK_H}px`;
             if (opties.invoer) plek.current?.style.setProperty("pointer-events", "auto");
           },
         },
@@ -61,7 +62,7 @@ export function useHoloMotor<S>(
       spel.events.once("ready", () => {
         const sc = spel!.scene.getScenes(false)[0] as SceneMetDemo;
         const start = () => {
-          sc.cameras.main.setZoom(k).centerOn(VLAK_B / 2, VLAK_H / 2);
+          sc.cameras.main.setZoom(k).centerOn(VLAK_B / 2, (opties.hoogte ?? VLAK_H) / 2);
           setScene(sc as unknown as S);
           spel!.events.once("postrender", () => {
             window.__phaser = { ...window.__phaser, klaarOp: performance.now(), beweeg: (ms: number) => sc.demo(ms) };

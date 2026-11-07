@@ -153,7 +153,32 @@ function keuzeDelen(keuzes: Keuze[], y = KEUZE_Y, b = 180, h = 150): Deel[] {
   return keuzes.flatMap((k, i) => {
     const x = k.x ?? keuzeX(keuzes.length, i);
     const yy = k.y ?? y;
-    return [...k.delen, { s: "tik" as const, id: k.id, x, y: yy, b: k.b ?? b, h: k.h ?? h, aria: k.aria }];
+    /* Herstel 7 november: elke keuze in een eigen zacht vak (zoals bij de geldles). */
+    return [...k.delen, { s: "tik" as const, id: k.id, x, y: yy, b: k.b ?? b, h: k.h ?? h, aria: k.aria, vak: true }];
+  });
+}
+
+/** Een willekeurige volgorde (Fisher-Yates). */
+function meng<T>(lijst: T[]): T[] {
+  const a = [...lijst];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * Herstel 7 november (BOUWREGELS 1.23): de keuzes wisselen willekeurig van plek, zodat het goede antwoord niet steeds op
+ * dezelfde plek staat. Elke keuze schuift met al zijn delen naar een andere plek; ids, beoordeling en hints blijven gelijk.
+ */
+function mengPlekken(keuzes: Keuze[]): Keuze[] {
+  const plek = keuzes.map((k, i) => ({ x: k.x ?? keuzeX(keuzes.length, i), y: k.y ?? KEUZE_Y }));
+  const nieuw = meng(plek.map((_, i) => i));
+  return keuzes.map((k, i) => {
+    const van = plek[i];
+    const naar = plek[nieuw[i]];
+    return { ...k, x: naar.x, y: naar.y, delen: k.delen.map((d) => schuif(d, naar.x - van.x, naar.y - van.y)) };
   });
 }
 
@@ -178,7 +203,7 @@ type Keuzevraag = {
 
 function keuzevraag(q: Keuzevraag): Vraag {
   return async (l, st) => {
-    const beeld: Beeld = { id: q.id, delen: [...q.beeld, ...keuzeDelen(q.keuzes)] };
+    const beeld: Beeld = { id: q.id, delen: [...q.beeld, ...keuzeDelen(mengPlekken(q.keuzes))] };
     const vraag = [...q.vraag, ...tikZin(st)];
     const vraagNaNee = isBegeleideUitleg(l) ? q.vraagNaNee : undefined;
     let nFout = 0;
@@ -268,9 +293,12 @@ function les(t: LesOpties): Lesdraaiboek {
     browserstem: true,
     nacht: true,
     kaarttekening: t.kaart,
-    voorwerpen: t.voorwerpen,
+    /* De bal wordt in de plaatjes de strandbal "speelbal" (herstel ronde 2, 7 november); de puzzels tekenen hem niet. */
+    voorwerpen: t.voorwerpen.includes("bal") ? [...t.voorwerpen, "speelbal"] : t.voorwerpen,
     async speel(l) {
       zetSynthesisHulp(l);
+      /* Elke les-start een nieuwe volgorde van de woordknoppen (herstel 7 november). */
+      woordVolgorde = new WeakMap();
       const st: Stand = { huidig: t.begin?.id ?? "", goed: 0, fout: 0, hint: 0, tikUitgelegd: false, sleepUitgelegd: false };
       l.vlak<VormenProps>(SqulaVormenVlak, { beeld: t.begin ?? null });
       if (t.begin) speelLesgeluid("verschijn");
@@ -887,12 +915,13 @@ function bloembakVraag(id: string, rij: string[], goed: [string, string], keuzes
    Opruimen (Rommelmonster level 2)
    ===================================================================== */
 
-const SCENE_X = [175, 490, 805];
+/* Herstel 7 november: 3 plaatjes elk in een eigen vak, met ruimte ertussen (was 175, 490, 805 met breedte 290). */
+const SCENE_X = [182, 490, 798];
 /** Sommige plaatjes zijn smal of plat (een boek ligt plat): die tekenen we wat groter, zodat ze even goed te zien zijn. */
 const SCHAAL: Record<string, number> = { boek: 1.6, broek: 1.15, potlood: 1.1 };
 const m_ = (naam: string, m: number) => m * (SCHAAL[naam] ?? 1);
 const SCENE_Y = 380;
-const SCENE_B = 290;
+const SCENE_B = 272;
 const SCENE_H = 380;
 
 type Scene = { id: string; delen: Deel[]; zeg: string };
@@ -911,11 +940,14 @@ function opGrond(id: string, items: string[], maat = 112): Deel[] {
 
 /** Dingen op een plank. */
 function opPlank(id: string, items: string[], maten?: number[]): Deel[] {
-  const plankMaat = 300;
+  const plankMaat = 256;
   const plankY = 60;
   /* het nieuwe plaatje wandplank.png is 512 × 107: breed 300, dus 63 hoog; de bovenkant ligt op y = plankY − 31 (BOUWREGELS 14.17) */
-  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + 19;
-  const ms = (maten ?? items.map(() => Math.min(80, (264 - 6 * (items.length - 1)) / items.length))).map((m, i) => m_(items[i], m));
+  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + (19 * plankMaat) / 300;
+  const ms0 = (maten ?? items.map(() => Math.min(80, (226 - 6 * (items.length - 1)) / items.length))).map((m, i) => m_(items[i], m));
+  /* Herstel 7 november: alles past op de plank en in het vak van het plaatje. */
+  const pas = Math.min(1, (plankMaat - 30 - 6 * (ms0.length - 1)) / ms0.reduce((a, b) => a + b, 0));
+  const ms = ms0.map((m) => m * pas);
   const breed = ms.reduce((a, b) => a + b, 0) + (ms.length - 1) * 6;
   let x = -breed / 2;
   const dingen: Deel[] = items.map((naam, i): Deel => {
@@ -948,6 +980,9 @@ function inBak(id: string, items: string[], bak: string): Deel[] {
 /** Dingen op een rij naast elkaar, op de grond (of op de plank). */
 function opRij(id: string, naam: string, maten: number[], plank = false): Deel[] {
   if (plank) return opPlank(id, maten.map(() => naam), maten);
+  /* Herstel 7 november: een lange rij (dozen) past in het vak van het plaatje en loopt niet tegen het volgende plaatje aan. */
+  const pas = Math.min(1, (SCENE_B - 40 - (maten.length - 1) * 8) / maten.reduce((a, b) => a + b, 0));
+  maten = maten.map((m) => m * pas);
   const breed = maten.reduce((a, b) => a + b, 0) + (maten.length - 1) * 8;
   let x = -breed / 2;
   return maten.map((m, i): Deel => {
@@ -1033,10 +1068,17 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
   const PY = [240, 520];
   const delen: Deel[] = [];
   const tikken: Deel[] = [];
-  paren.forEach((p, k) => {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plaatjes op een willekeurige plek, en 2 die bij elkaar horen staan nooit recht boven elkaar. */
+  let plekken = paren;
+  for (let poging = 0; poging < 60; poging++) {
+    plekken = meng(paren);
+    if (plekken.every((p, k) => plekken.every((q, j) => j === k || q.soort !== p.soort || j % 3 !== k % 3))) break;
+  }
+  plekken.forEach((p, k) => {
     const x = PX[k % 3];
     const y = PY[Math.floor(k / 3)];
-    const maat = p.naam === "boek" ? 190 : m_(p.naam, p.n > 3 ? 70 : p.n === 3 ? 84 : p.n === 2 ? 100 : 128);
+    /* Herstel ronde 2 (7 november): een rij van 3 viel buiten het vak; nu kleiner (72) en het vak iets breder (264), zodat de rij er ruim in past. */
+    const maat = p.naam === "boek" ? 190 : m_(p.naam, p.n > 3 ? 70 : p.n === 3 ? 72 : p.n === 2 ? 100 : 128);
     /* boeken liggen plat: op een stapel in plaats van naast elkaar */
     const plat = p.naam === "boek";
     const perRij = plat ? 1 : p.n > 3 ? 3 : p.n;
@@ -1047,7 +1089,7 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
       const rijen = Math.ceil(p.n / perRij);
       delen.push({ s: "vw", id: `${p.id}-${i}`, groep: p.id, naam: p.naam, x: x + ((i % perRij) - (inRij - 1) / 2) * (maat + 6), y: y + (rij - (rijen - 1) / 2) * stap, maat });
     }
-    tikken.push({ s: "tik", id: p.id, x, y, b: 250, h: 230, aria: `${p.n} ${p.n === 1 ? ding(p.naam) : DING[p.naam][2]}` });
+    tikken.push({ s: "tik", id: p.id, x, y, b: 264, h: 230, aria: `${p.n} ${p.n === 1 ? ding(p.naam) : DING[p.naam][2]}`, vak: true });
   });
   const soortVan = (x: string) => paren.find((p) => p.id === x)!.soort;
   return async (l, st) => {
@@ -1137,8 +1179,15 @@ const PLEK: Record<string, [number, number]> = {
   "links van het midden": [VELD.x - 150, VELD.y],
 };
 
+/** Herstel 7 november (BOUWREGELS 1.23): de woorden in een willekeurige volgorde, per vraag één keer gekozen (na een fout blijven ze staan). */
+let woordVolgorde = new WeakMap<string[], string[]>();
 async function kiesWoord(l: Lesgids, opties: string[]) {
-  return String(await l.kies(opties, { weetniet: false, direct: true }));
+  let volgorde = woordVolgorde.get(opties);
+  if (!volgorde) {
+    volgorde = meng(opties);
+    woordVolgorde.set(opties, volgorde);
+  }
+  return String(await l.kies(volgorde, { weetniet: false, direct: true }));
 }
 
 /** Waar ligt iets op het grasveld of op de plattegrond? Kiezen uit woorden. */

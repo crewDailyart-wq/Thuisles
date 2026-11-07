@@ -378,7 +378,8 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
         if (++nFout === 1) zet(l, { tel: { vak: 0, geteld: begin } });
       },
       vraag: vraagZin(q),
-      antwoord: async () => Number(await l.kies(q.keuzes.map(String), { weetniet: false, direct: true })),
+      /* 4 keuzes: 2 × 2, niet 3 en 1 los eronder (herstel 7 november). */
+      antwoord: async () => Number(await l.kies(q.keuzes.map(String), { weetniet: false, direct: true, ...(q.keuzes.length === 4 ? { perTwee: true } : {}) })),
       isGoed: (x) => x === antwoord,
       noem: (x) => g(x, q.v.k),
       goed: async () => {
@@ -515,6 +516,55 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
   });
 }
 
+/* ---------- de plek van het goede antwoord (herstel 7 november, BOUWREGELS 1.23) ---------- */
+
+/** Een willekeurige volgorde (Fisher-Yates). */
+function meng<T>(lijst: T[]): T[] {
+  const a = [...lijst];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+/**
+ * Willekeurig, maar nooit al in de gevraagde volgorde (dan verklapt het beeld het antwoord), en bij 3 of meer ook nooit precies
+ * omgekeerd (dan hoeft het kind alleen om te draaien; herstel ronde 2, 7 november).
+ */
+function mengNietOpVolgorde(lijst: number[], richting: "op" | "af"): number[] {
+  const opVolgorde = (a: number[], r: "op" | "af") => a.every((n, i) => i === 0 || (r === "op" ? a[i - 1] <= n : a[i - 1] >= n));
+  const tegen = richting === "op" ? "af" : "op";
+  for (let i = 0; i < 40; i++) {
+    const a = meng(lijst);
+    if (!opVolgorde(a, richting) && (a.length < 3 || !opVolgorde(a, tegen))) return a;
+  }
+  const g = [...lijst].sort((x, y) => (richting === "op" ? x - y : y - x));
+  if (g.length < 3) return g.reverse();
+  /* Vangnet: middelste naar voren, bv. 2 1 3 4 (niet goed en niet omgekeerd). */
+  return [g[1], g[0], ...g.slice(2)];
+}
+
+/**
+ * Elke les-start een nieuwe volgorde van de kaarten en keuzes, zodat het goede antwoord niet steeds op dezelfde plek staat.
+ * Alleen de plek wisselt: de aantallen, het goede antwoord en de beoordeling blijven hetzelfde.
+ */
+function mengVraag(q: Vraag): Vraag {
+  switch (q.t) {
+    case "tel":
+      return { ...q, keuzes: meng(q.keuzes) };
+    case "voorbeeld":
+    case "twee":
+    case "drie":
+    case "getal":
+      return { ...q, kaarten: meng(q.kaarten) };
+    case "rij":
+      return { ...q, kaarten: mengNietOpVolgorde(q.kaarten, "op") };
+    case "getallen":
+      return { ...q, getallen: mengNietOpVolgorde(q.getallen, q.richting) };
+  }
+}
+
 /* =====================================================================
    De korte uitleg (bij "Kun je dit al?" → Nee)
    ===================================================================== */
@@ -626,13 +676,15 @@ function les(d: Lesdef): Lesdraaiboek {
     kaarttekening: KaartMeerMinder,
     async speel(l) {
       zetSynthesisHulp(l);
+      /* Elke keer een nieuwe plek voor het goede antwoord (herstel 7 november). */
+      const vragen = d.vragen.map(mengVraag);
       const st: Stand = { huidig: "", goed: 0, fout: 0, ronde: 0, handGezien: false, gezien: new Set() };
       st.huidig = d.start.id;
-      l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start, vooraf: d.vragen.map((q, i) => opgaveVan(`${d.id}-${i + 1}`, q)) });
+      l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start, vooraf: vragen.map((q, i) => opgaveVan(`${d.id}-${i + 1}`, q)) });
       const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: d.welkom,
         voordoen: true,
-        samen: () => speelVraag(l, `${d.id}-uitleg`, d.vragen[0], st),
+        samen: () => speelVraag(l, `${d.id}-uitleg`, vragen[0], st),
         uitleg: async () => {
           /* De uitleg zet zijn eigen beeld neer: de eerste vraag moet daarna zijn beeld weer opnieuw tekenen. */
           st.huidig = "";
@@ -642,13 +694,13 @@ function les(d: Lesdef): Lesdraaiboek {
         voorbeeld: () => {
           st.huidig = "";
           const id = `${d.id}-1`;
-          toonOpgave(l, st, id, opgaveVan(id, d.vragen[0]));
+          toonOpgave(l, st, id, opgaveVan(id, vragen[0]));
         },
       });
       let fouten = 0;
       /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
       st.huidig = "";
-      for (const [i, q] of d.vragen.entries()) if (!(voorbeeldAfgerond && i === 0) && !(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
+      for (const [i, q] of vragen.entries()) if (!(voorbeeldAfgerond && i === 0) && !(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
       zet(l, { opgave: null });
       await squlaEind(l, fouten, d.eind);
     },

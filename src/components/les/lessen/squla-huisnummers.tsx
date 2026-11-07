@@ -261,7 +261,17 @@ const huisnummers: Lesdraaiboek = {
     else await uitleg(l);
 
     let fouten = 0;
-    for (const v of VRAGEN) if (!(await speelVraag(l, v, st))) fouten++;
+    /* Herstel 7 november (BOUWREGELS 1.23): elke les-start staan de keuzes (en de losse huizen) op een andere plek; de antwoorden blijven gelijk. */
+    const meng = (lijst: number[]) => {
+      const a = [...lijst];
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    };
+    const vragen = VRAGEN.map((v) => ({ ...v, ...(v.opties ? { opties: meng(v.opties) } : {}), ...(v.losse ? { losse: meng(v.losse) } : {}) }));
+    for (const v of vragen) if (!(await speelVraag(l, v, st))) fouten++;
 
     const tik = l.kaart();
     await l.zeg(

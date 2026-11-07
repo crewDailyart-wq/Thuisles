@@ -30,6 +30,7 @@ import { foutBeeld, g, goedBeeld, les, squlaVraag as hulpVraag, staafBeeld, tik,
 import type { S1Spec, S1Stand } from "../vlakken/squla-splitsen-vlak";
 import { KaartDelen, KaartSplitsen, SLEEP_BAKKLEUR, type Beeld, type Deel, type Sleep } from "../vlakken/squla-splitsen-vlak";
 import type { S2, S2Doel, S2Leg, S2Stuk } from "../vlakken/squla-splitsen2-sleep";
+import { meng } from "./squla-meng";
 
 /* =====================================================================
    Woorden
@@ -103,9 +104,9 @@ async function staafUitleg(l: Lesgids, st: Stand, tot: number, deel: number) {
    ===================================================================== */
 
 /** Geld als steuntje: een briefje van 10 en losse euro's. */
-function geldDelen(los: number): Deel[] {
+function geldDelen(los: number, muntenVerborgen = false): Deel[] {
   const d: Deel[] = [{ s: "geld", id: "briefje", soort: "briefje-10", x: 300, y: 150, maat: 190 }];
-  for (let i = 0; i < los; i++) d.push({ s: "geld", id: "munten", soort: "munt-1", x: 470 + i * 62, y: 150, maat: 54 });
+  for (let i = 0; i < los; i++) d.push({ s: "geld", id: "munten", soort: "munt-1", x: 470 + i * 62, y: 150, maat: 54, verborgen: muntenVerborgen });
   return d;
 }
 
@@ -139,11 +140,15 @@ async function s2Wacht(l: Lesgids, nodig: number): Promise<[string, string][]> {
 
 /** Het splitshuisje met één lege kamer: sleep het getal dat mist naar die kamer. */
 function huisGetal(tot: number, links: number | null, rechts: number | null, keuzes: number[], geld: boolean): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  keuzes = meng(keuzes);
   const bekend = (links ?? rechts)!;
   const rest = tot - bekend;
   return (l, st) => {
     const huis: Deel = { s: "huisje", id: "h", x: 490, y: 390, b: 360, top: String(tot), links: links === null ? "" : String(links), rechts: rechts === null ? "" : String(rechts) };
-    const extra = geld ? geldDelen(tot - 10) : [];
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): de munten verklapten het antwoord (14 = 10 + ? met 4 munten
+       ernaast). Tijdens de vraag ligt alleen het briefje er; de munten rollen pas in beeld na het antwoord of bij de uitleg. */
+    const extra = geld ? geldDelen(tot - 10, true) : [];
     const id = `h2-${tot}-${links}-${rechts}-${geld}`;
     const beeld: Beeld = { id, delen: [...extra, huis] };
     const eerst = links ?? rest;
@@ -163,16 +168,16 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
       isGoed: (x) => x === rest,
       noem: (x) => g(x),
       goed: async () => {
-        goedBeeld(l, st, { goedIds: ["h"] });
+        goedBeeld(l, st, { goedIds: ["h"], ...(geld ? { toon: ["munten"] } : {}) });
         await l.zeg(bevestig());
-        await l.wacht(300);
+        await l.wacht(geld ? 700 : 300);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         if (geld) {
           zet(l, { licht: ["briefje"] });
           await l.zeg(`Kijk: een briefje van ${g(10)} euro.`);
-          zet(l, { licht: ["munten"] });
+          zet(l, { licht: ["munten"], toon: ["munten"] });
           await l.zeg("En munten van 1 euro.");
           zet(l, { licht: [] });
           await l.zeg(`Samen is dat ${g(tot)} euro.`);
@@ -193,7 +198,7 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
         return [`${g(bekend, KA)} en ${g(x)} is samen ${g(bekend + x)}.`, `Dat moet ${g(tot)} zijn.`];
       },
       toonAntwoord: async () => {
-        zet(l, { s2: tegels([[`s${keuzes.indexOf(rest)}`, "k"]]), goedIds: ["h"], actief: false });
+        zet(l, { s2: tegels([[`s${keuzes.indexOf(rest)}`, "k"]]), goedIds: ["h"], actief: false, ...(geld ? { toon: ["munten"] } : {}) });
         await l.zeg(`${g(tot)} kun je splitsen in ${g(eerst)} en ${g(dan)}.`);
         await l.wacht(300);
       },
@@ -203,6 +208,8 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
 
 /** Het splitshuisje met twee lege kamers: sleep twee getallen erin die samen kloppen (allebei de volgordes mogen). */
 function huisTwee(tot: number, tegels: number[]): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  tegels = meng(tegels);
   const goed = (a: number, b: number) => a + b === tot;
   return (l, st) => {
     const delen: Deel[] = [{ s: "huisje", id: "h", x: 490, y: 300, b: 320, top: String(tot), links: "", rechts: "" }];
@@ -255,12 +262,18 @@ const somTekst = (t: number, a: number, b: number) => `${t} = ${a} + ${b}`;
 
 /** Het huisje is helemaal ingevuld: sleep de som die erbij past naar het vak onder het huisje. */
 function huisSom(tot: number, a: number, b: number, opties: string[], geld: boolean): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  opties = meng(opties);
   const goed = somTekst(tot, a, b);
   return (l, st) => {
-    const extra = geld ? geldDelen(tot - 10) : [];
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): het huisje is al helemaal ingevuld en je sleept een som; het geld
+       deed niets in de opdracht (losse versiering). Daarom weg; de parameter `geld` blijft voor de bestaande aanroepen. */
+    void geld;
+    const extra: Deel[] = [];
     const beeld: Beeld = { id: `som-${tot}-${a}-${b}`, delen: [...extra, { s: "huisje", id: "h", x: 490, y: 330, b: 360, top: String(tot), links: String(a), rechts: String(b) }] };
     const gat: S2Doel = { id: "k", x: 490, y: 548, b: 340, h: 98, label: "?" };
-    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, o === goed ? "k" : undefined)), [gat], vast);
+    /* Herstel 7 november: de kaartjes iets dichter bij elkaar, niet tegen de rand of de microfoonknop. */
+    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 290), 650, o === goed ? "k" : undefined)), [gat], vast);
     return squlaVraag<string>(l, {
       toon: () => {
         toon(l, st, beeld);
@@ -301,6 +314,8 @@ function huisSom(tot: number, a: number, b: number, opties: string[], geld: bool
 
 /** Het ingevulde huisje: sleep de twee sommen die passen naar de twee vakken onder het huisje. */
 function huisTweeSommen(tot: number, a: number, b: number, opties: string[]): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  opties = meng(opties);
   const passend = (s: string) => s === somTekst(tot, a, b) || s === somTekst(tot, b, a);
   return (l, st) => {
     const delen: Deel[] = [{ s: "huisje", id: "h", x: 490, y: 300, b: 320, top: String(tot), links: String(a), rechts: String(b) }];
@@ -309,7 +324,8 @@ function huisTweeSommen(tot: number, a: number, b: number, opties: string[]): Vr
       { id: "k0", x: 345, y: 530, b: 270, h: 98, label: "?" },
       { id: "k1", x: 635, y: 530, b: 270, h: 98, label: "?" },
     ];
-    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, passend(o) ? "*" : undefined)), doelen, vast);
+    /* Herstel 7 november (OVERZICHT-C splitsen2-2 v04–v09): de rechterkaart stond tegen Bliepo en zijn microfoonknop; nu dichter bij het midden. */
+    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 286), 650, passend(o) ? "*" : undefined)), doelen, vast);
     return squlaVraag<[string, string]>(l, {
       toon: () => {
         toon(l, st, beeld);
@@ -351,15 +367,17 @@ function huisTweeSommen(tot: number, a: number, b: number, opties: string[]): Vr
 
 /** Verbinden: sleep elke som naar het vak naast het huisje waar hij bij hoort. */
 function verbindVraag(huisjes: Huis[], volgorde: number[]): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  volgorde = meng(volgorde);
   const Y = [170, 370, 570];
   return async (l, st) => {
     const basis: Deel[] = [];
     huisjes.forEach(([t, a, b], i) => {
-      basis.push({ s: "huisje", id: `h${i}`, x: 250, y: Y[i], b: 180, top: String(t), links: String(a), rechts: String(b) });
+      basis.push({ s: "huisje", id: `h${i}`, x: 220, y: Y[i], b: 180, top: String(t), links: String(a), rechts: String(b) });
     });
     const id = `verbind-${huisjes.flat().join("-")}`;
     const beeld: Beeld = { id, delen: basis };
-    const doelen: S2Doel[] = huisjes.map((_, i) => ({ id: `d${i}`, x: 545, y: Y[i] + 35, b: 280, h: 88, label: "?" }));
+    const doelen: S2Doel[] = huisjes.map((_, i) => ({ id: `d${i}`, x: 500, y: Y[i] + 35, b: 280, h: 88, label: "?" }));
     const klaar: number[] = [];
     let huidig: S2 | null = null;
     let alles = true;
@@ -374,7 +392,9 @@ function verbindVraag(huisjes: Huis[], volgorde: number[]): Vraag {
           huidig = s2Spec(
             volgorde.map((h, r) => {
               const [tt, aa, bb] = huisjes[h];
-              return { ...s2Som(somTekst(tt, aa, bb), h, 830, Y[r] + 35, `d${h}`, 36), id: `s${h}` };
+              /* Herstel 7 november (OVERZICHT-C splitsen2-2 v04–v09): de sommen stonden tegen Bliepo en zijn microfoonknop;
+                 alles schuift iets naar links (huisjes 220, vakken 500, sommen 790). */
+              return { ...s2Som(somTekst(tt, aa, bb), h, 790, Y[r] + 35, `d${h}`, 36), id: `s${h}` };
             }),
             doelen,
             klaar.map((h) => [`s${h}`, `d${h}`] as [string, string]),
@@ -452,7 +472,25 @@ function verdeelDelen(n: number, k: number, vw: string, bron: Bron): Deel[] {
   else {
     /* Hoopjes: groepjes naast elkaar (zelfde id met een nummer). */
     const hoop = Math.ceil(n / bron.per);
-    for (let h = 0; h < hoop; h++) d.push({ s: "groep", id: `bron-${h}`, vw, n: Math.min(bron.per, n - h * bron.per), x: bakX(h, hoop), y: 190, per: bron.per === 4 ? 2 : 3, cel: 58, kl: SLEEP_BAKKLEUR[h % SLEEP_BAKKLEUR.length] });
+    /* Herstel 7 november (BOUWREGELS 1.22, OVERZICHT-C): de knikkers lagen al in groepjes per kleur boven het bakje van
+       dezelfde kleur; 1 groepje tellen gaf het antwoord. Nu ligt alles in 1 gemengde hoop (kleuren door elkaar). Pas na
+       het antwoord komen ze in de bakjes. De ids blijven per "hoopje" van `per` (voor `bronIds`). */
+    void hoop;
+    const k2 = Math.max(2, Math.round(n / bron.per));
+    const mix = Array.from({ length: n }, (_, i) => SLEEP_BAKKLEUR[(i * 3 + Math.floor(i / k2)) % Math.min(SLEEP_BAKKLEUR.length, k2 + 1)]);
+    const kol = Math.min(8, Math.ceil(n / 2));
+    for (let h = 0; h * bron.per < n; h++) {
+      const aantalHier = Math.min(bron.per, n - h * bron.per);
+      for (let i = 0; i < aantalHier; i++) {
+        const idx = h * bron.per + i;
+        /* Een rommelige maar nette hoop: 2 rijen, iets verschoven, niets over elkaar. */
+        const r = Math.floor(idx / kol);
+        const c = idx % kol;
+        const x = 490 + (c - (kol - 1) / 2) * 62 + (r % 2 ? 22 : -8) + ((idx * 37) % 13) - 6;
+        const y = 160 + r * 58 + ((idx * 23) % 15) - 7;
+        d.push({ s: "ding", id: `bron-${h}.${i}`, vw, x, y, maat: 52, kl: mix[idx] });
+      }
+    }
   }
   for (let j = 0; j < k; j++) {
     d.push({ s: "ding", id: `bak${j}`, vw: "bakje", x: bakX(j, k), y: 400, maat: 140, kl: SLEEP_BAKKLEUR[j % SLEEP_BAKKLEUR.length] });
@@ -497,6 +535,8 @@ const herhaal = (m: number, k: number) => Array.from({ length: k }, () => g(m)).
 
 /** Eerlijk verdelen: sleep het getal dat in elk bakje komt naar het vak onder de bakjes (s2). */
 function delenVraag(n: number, k: number, vw: string, bron: Bron, keuzes: number[]): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  keuzes = meng(keuzes);
   const m = n / k;
   const veel = NAAM[vw][1];
   return (l, st) => {
@@ -623,21 +663,26 @@ function sleepVraag(n: number, k: number, vw = "knikker"): Vraag {
 
 /** Potloden in bekers: sleep de ster naar de rij waar ze eerlijk verdeeld zijn (s2). */
 function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  rijen = meng(rijen);
   const m = n / k;
   /* Rijen op 3 hoogtes; elke beker is 190 breed en 226 hoog (beker met uitgewaaierde, gekleurde potloden: BOUWREGELS 7.7 glans B). */
-  const Y = [124, 356, 588];
-  const sterX = Math.min(928, 490 + k * 100 + 46);
+  /* Herstel 7 november (OVERZICHT-C delen-1 v13/v14): het rek vulde het hele scherm en raakte de bovenrand; nu kleinere
+     bekers (80 %) met lucht erboven en eronder. */
+  const Y = [142, 360, 578];
+  const MAAT = 152;
+  const sterX = Math.min(928, 490 + k * 82 + 46);
   return (l, st) => {
     const delen: Deel[] = [];
     rijen.forEach((p, r) => {
       for (let j = 0; j < k; j++) {
-        const x = 490 + (j - (k - 1) / 2) * 200;
-        delen.push({ s: "potloden", id: `r${r}`, n: p, x, y: Y[r] });
+        const x = 490 + (j - (k - 1) / 2) * 164;
+        delen.push({ s: "potloden", id: `r${r}`, n: p, x, y: Y[r], maat: MAAT });
       }
     });
     const goedId = `r${rijen.indexOf(m)}`;
     const beeld: Beeld = { id: `potlood-${n}-${k}`, delen };
-    const doelen: S2Doel[] = rijen.map((_, r) => ({ id: `r${r}`, x: 490, y: Y[r], b: k * 200 + 6, h: 218, snap: { x: sterX, y: Y[r] } }));
+    const doelen: S2Doel[] = rijen.map((_, r) => ({ id: `r${r}`, x: 490, y: Y[r], b: k * 164 + 6, h: 186, snap: { x: sterX, y: Y[r] } }));
     const sterSpec = (vast?: [string, string][]) => s2Spec([{ id: "ster", kleur: "#ffc21a", vorm: "ster", x: sterX, y: 240, doel: goedId }], doelen, vast);
     return squlaVraag<string>(l, {
       toon: () => {
@@ -811,8 +856,9 @@ function s1ShirtVraag(tot: number, a: number): Vraag {
     id,
     delen: [
       { s: "paal", id: "paal", x: 490, y: 140, top: String(tot), links: klaar ? String(a) : "", rechts: klaar ? String(rest) : "", kleuren: GK },
-      { s: "tekst", id: "la", t: String(a), x: 340, y: 596, grootte: 56, kleur: KA },
-      { s: "tekst", id: "lb", t: klaar ? String(rest) : "?", x: 640, y: 596, grootte: 56, kleur: KB },
+      /* Herstel 7 november (OVERZICHT-C splitsen1-2 v05–v08): het getal staat direct onder zijn vak, met lucht tot de shirts. */
+      { s: "tekst", id: "la", t: String(a), x: 340, y: 578, grootte: 48, kleur: KA },
+      { s: "tekst", id: "lb", t: klaar ? String(rest) : "?", x: 640, y: 578, grootte: 48, kleur: KB },
     ],
   });
   return (l, st) => {
@@ -821,10 +867,10 @@ function s1ShirtVraag(tot: number, a: number): Vraag {
         soort: "dingen" as const,
         vw: "voetbalshirt",
         n: tot,
-        tray: { x: 490, y: 656, per: 9, dia: 70, stap: 78 },
+        tray: { x: 490, y: 670, per: 9, dia: 66, stap: 76 },
         zones: [
-          { id: "a", x: 340, y: 442, b: 280, h: 214, kl: KA, per: 3, dia: 76 },
-          { id: "b", x: 640, y: 442, b: 280, h: 214, kl: KB, per: 3, dia: 76 },
+          { id: "a", x: 340, y: 436, b: 280, h: 206, kl: KA, per: 3, dia: 74 },
+          { id: "b", x: 640, y: 436, b: 280, h: 206, kl: KB, per: 3, dia: 74 },
         ],
         oplossing: [a, rest],
         fout: a === rest ? [tot, 0] : [rest, a],
@@ -871,6 +917,8 @@ function s1ShirtVraag(tot: number, a: number): Vraag {
 /* ---------- getallentegels slepen: de splitspaal en de splitsmachine ---------- */
 
 function s1PaalVraag(tot: number, a: number, keuzes: number[], ballen: boolean): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  keuzes = meng(keuzes);
   const rest = tot - a;
   const id = `s1-paal-${tot}-${a}-${ballen}`;
   const beeld: Beeld = {
@@ -879,8 +927,10 @@ function s1PaalVraag(tot: number, a: number, keuzes: number[], ballen: boolean):
       { s: "paal", id: "paal", x: 490, y: 140, top: String(tot), links: String(a), rechts: "", kleuren: GK },
       ...(ballen
         ? ([
-            { s: "groep", id: "gl", vw: "basketbal", n: a, x: 170, y: 330, per: 4, cel: 66, kl: KA },
-            { s: "groep", id: "gr", vw: "basketbal", n: rest, x: 810, y: 330, per: 4, cel: 66, kl: KB },
+            /* Herstel 7 november (OVERZICHT-C splitsen1-2 v09): de ballen meer naar het midden, niet tegen de rand. De ballen
+               zijn de telhulp van deze vraag (zoals bij Squla: "Kijk naar de ballen en de splitspaal"). */
+            { s: "groep", id: "gl", vw: "basketbal", n: a, x: 225, y: 330, per: 4, cel: 66, kl: KA },
+            { s: "groep", id: "gr", vw: "basketbal", n: rest, x: 790, y: 330, per: 4, cel: 66, kl: KB },
           ] as Deel[])
         : []),
     ],
@@ -970,6 +1020,8 @@ function s1MachineOpbouw(a: number, b: number, opties: Huis[], stippen: boolean)
 }
 
 function s1MachineVraag(a: number, b: number, opties: Huis[], stippen: boolean): Vraag {
+  /* Herstel 7 november (BOUWREGELS 1.23): de plek van het goede antwoord wisselt per les-start; de waarden blijven. */
+  opties = meng(opties);
   const tot = a + b;
   const goedId = `k${opties.findIndex(([t, x, y]) => t === tot && x === a && y === b)}`;
   const o = s1MachineOpbouw(a, b, opties, stippen);
@@ -1291,6 +1343,8 @@ const splitsen1b = les({
 
 const S2A_BEGIN: Beeld = { id: "begin", delen: [...geldDelen(3), { s: "huisje", id: "h", x: 490, y: 390, b: 360, top: "13", links: "10", rechts: "3" }] };
 
+const S2A_EERSTE = huisGetal(14, 10, null, [4, 10, 14], true);
+
 const splitsen2a = les({
   id: "squla-splits-splitsen2-1",
   titel: "Splitsen tot 20",
@@ -1302,7 +1356,9 @@ const splitsen2a = les({
   begin: S2A_BEGIN,
   welkom: ["Een briefje van 10 en 4 munten.", "Welk getal mist er nog in het huisje?"],
   /* Het voorbeeld is de eerste vraag hieronder. */
-  voorbeeld: voorbeeldVan(huisGetal(14, 10, null, [4, 10, 14], true)),
+  /* Herstel ronde 2 (7 nov): voorbeeld en eerste vraag delen dezelfde vraag, zodat de tegels op het beginscherm in
+     dezelfde volgorde staan als bij de eerste vraag (de plek wisselt nog steeds per les-start). */
+  voorbeeld: voorbeeldVan(S2A_EERSTE),
   uitleg: async (l, st) => {
     toon(l, st, S2A_BEGIN);
     zet(l, { licht: ["briefje"] });
@@ -1318,7 +1374,7 @@ const splitsen2a = les({
   },
   /* Zoals Squla level 1: eerst met geld als steuntje, dan de lege plek links, dan "kies er twee", dan door elkaar. Totaal 10–19. */
   vragen: [
-    huisGetal(14, 10, null, [4, 10, 14], true),
+    S2A_EERSTE,
     huisGetal(17, 10, null, [6, 7, 17], true),
     huisGetal(11, 10, null, [1, 2, 11], true),
     huisGetal(15, 10, null, [5, 10, 4], true),

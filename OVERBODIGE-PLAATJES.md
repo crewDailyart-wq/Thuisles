@@ -53,3 +53,15 @@ beginsituatie), **2** = zachte kleine sfeer-achtergrond, **3** = weghalen.
 
 Niets overbodig gevonden: Tellen (15), Meer-minder (7), Huisnummers, Dagen,
 Rekenmix (16), Rekentaal, Splitsen (behalve 2-2), Meten (behalve hoeveelheden).
+
+---
+
+## Schermcontrole 7 november 2026 (met foto's, alle Squla-lessen)
+
+De eerste lijst hierboven kwam uit de code. Daarna zijn alle vragen van alle Squla-lessen op schermfoto's bekeken. Alle problemen staan met foto per vraag in:
+
+- **Groep A** (klok, tijd, dagen, geld; 32 lessen, 25 met problemen): `OVERZICHT-A.md`
+- **Groep B** (meten, meer-minder, getallenlijn, huisnummers, tellen, vormen; 45 lessen, 25 met problemen): `OVERZICHT-B.md`
+- **Groep C** (piraat, splitsen, plus, min, rekenmix, rekentaal; 57 lessen, 44 met opmerkingen): `OVERZICHT-C.md`
+
+Foto's: `public/overbodige-plaatjes-overzicht/`. Opdracht aan de herstel-helpers: `HERSTEL-OPDRACHT.md`; voortgang: `HERSTEL-A/B/C.md`; keuzes voor Sara: `KEUZES-VOOR-SARA.md`. Vormenpuzzels blijven voorlopig ongewijzigd (Sara beslist later).

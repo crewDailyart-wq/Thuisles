@@ -251,6 +251,12 @@ function telReactie(v: Telvraag, x: number, hint: string[]): string[] {
 /** Eén telvraag met de vaste hulp van Bliepo. */
 function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
   const k = v.voorwerp.kleur;
+  /* Herstel 7 november (BOUWREGELS 1.23): de keuzes in een willekeurige volgorde; per vraag één keer, dus na een fout blijven ze staan. */
+  const keuzes = [...v.keuzes];
+  for (let i = keuzes.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [keuzes[i], keuzes[j]] = [keuzes[j], keuzes[i]];
+  }
   const goed = antwoordVan(v);
   let nFout = 0;
   const tip =
@@ -273,7 +279,7 @@ function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
       speelLesgeluid("verschijn");
     },
     vraag: [v.vorm === "zak" ? `Hoeveel ${v.voorwerp.naam} zijn het samen?` : `Hoeveel ${v.voorwerp.naam} zie je?`],
-    antwoord: async () => Number(await l.kies(v.keuzes.map(String), { weetniet: false, direct: true })),
+    antwoord: async () => Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true })),
     isGoed: (x) => x === goed,
     noem: (x) => gk(x, k),
     goed: async () => {
@@ -435,6 +441,10 @@ function voorwerpenVan(t: Telles): string[] {
   for (const v of [...t.uitleg, ...t.vragen]) if (v !== "memory") for (const p of v.voorwerp.plaatjes) namen.add(p.soort);
   for (const p of t.memory?.paren ?? []) namen.add(p.soort);
   if ([...t.uitleg, ...t.vragen].some((v) => v !== "memory" && v.vorm === "zak")) namen.add("zak");
+  /* De knikker wordt getekend als de glazen knikker (herstel 7 november). */
+  if (namen.has("knikker")) namen.add("knikker-glas");
+  /* De bal wordt getekend als de strandbal "speelbal" (herstel ronde 2, 7 november). */
+  if (namen.has("bal")) namen.add("speelbal");
   return [...namen];
 }
 

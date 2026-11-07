@@ -56,6 +56,7 @@ import {
 } from "../vlakken/squla-plussommen-vlak";
 import { VOORWERPEN_BUS, VOORWERPEN_DISCO } from "../vlakken/squla-plussommen-tekenen";
 import { basisNaam, etenKleuren, KLEURHEX, somKleuren } from "../vlakken/squla-getalring";
+import { meng } from "./squla-meng";
 
 /* =====================================================================
    Woorden
@@ -182,8 +183,21 @@ function somBoven(l: Lesgids, a: number, b: number, uitkomst?: number) {
 const goedBeeld = (l: Lesgids, st: Stand, extra: Partial<PlusProps> = {}) => zet(l, { goed: ++st.goed, licht: [], busLicht: false, rek: null, actief: false, ...extra });
 const foutBeeld = (l: Lesgids, st: Stand) => zet(l, { fout: ++st.fout });
 
+/** Herstel 7 november (OVERZICHT-C punt 4 en BOUWREGELS 1.23): de antwoorden groot in het midden onder de toonbank, en het
+ * goede antwoord niet steeds op dezelfde plek (alleen de plek wisselt; de waarden en de beoordeling blijven). */
+const MIDDEN = 578;
 async function kiesGetal(l: Lesgids, keuzes: number[]) {
-  return Number(await l.kies(keuzes.map(String), { weetniet: false, direct: true }));
+  return Number(await l.kies(meng(keuzes).map(String), { weetniet: false, direct: true, midden: MIDDEN }));
+}
+
+/** Herstel 7 november (OVERZICHT-C punt 5): typen gebeurt IN het vakje van de som bovenaan, niet in een tweede vakje rechts. */
+async function typInSom(l: Lesgids, st: Stand): Promise<number> {
+  const p = l.somVak(4);
+  if (!st.typUitgelegd) {
+    st.typUitgelegd = true;
+    await l.wijsAan("controleer", "Typ het getal.");
+  }
+  return p;
 }
 
 /** Een getal typen (echt invoerveld, HARDE REGEL 5). De eerste keer wijst Bliepo het vinkje aan. */
@@ -424,7 +438,7 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
         toon(l, st, { soort: "bakkerij", id, groepen });
       },
       vraag: zinnen,
-      antwoord: async () => String(await l.kies(opties, { weetniet: false, direct: true })),
+      antwoord: async () => String(await l.kies(meng(opties), { weetniet: false, direct: true, midden: MIDDEN })),
       isGoed: (x) => x === goed,
       noem: (x) => x,
       goed: async () => {
@@ -466,7 +480,8 @@ function discoSom(a: number, b: number, kaarten: number[]): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
     const s = a + b;
-    const beeld: PlusBeeld = { soort: "disco", id, vorm: "kaartje", kaarten: kaarten.map((n) => ({ id: `c${n}`, tekst: [String(n)], aria: String(n) })) };
+    /* De plek van het goede kaartje wisselt (BOUWREGELS 1.23); de ids blijven `c<getal>`. */
+    const beeld: PlusBeeld = { soort: "disco", id, vorm: "kaartje", kaarten: meng(kaarten).map((n) => ({ id: `c${n}`, tekst: [String(n)], aria: String(n) })) };
     return squlaVraag<number>(l, {
       toon: () => {
         if (toon(l, st, beeld)) somBoven(l, a, b);
@@ -500,7 +515,8 @@ function verbind(sommen: [number, number][], antwoorden: number[]): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
     const links: Kaart[] = sommen.map(([x, y], i) => ({ id: `s${i}`, tekst: [`${x} + ${y}`], aria: `${x} plus ${y}` }));
-    const rechts: Kaart[] = antwoorden.map((n, i) => ({ id: `a${i}`, tekst: [String(n)], aria: String(n) }));
+    /* De antwoorden rechts in een wisselende volgorde (BOUWREGELS 1.23: niet recht tegenover hun som); ids blijven `a<i>`. */
+    const rechts: Kaart[] = meng(antwoorden.map((n, i) => ({ id: `a${i}`, tekst: [String(n)], aria: String(n) })));
     const juist = (sid: string) => {
       const [x, y] = sommen[Number(sid.slice(1))];
       return `a${antwoorden.indexOf(x + y)}`;
@@ -592,7 +608,7 @@ function verbind(sommen: [number, number][], antwoorden: number[]): Vraag {
 function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: number, wat: string): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
-    const sommen: Kaart[] = opties.map(([x, y], i) => ({ id: `s${i}`, tekst: [somTekst(x, y)], aria: somAria(x, y) }));
+    const sommen: Kaart[] = meng(opties.map(([x, y], i) => ({ id: `s${i}`, tekst: [somTekst(x, y)], aria: somAria(x, y) })));
     const metGetal = groepen.findIndex((gr) => gr.label);
     const los = metGetal === 0 ? 1 : 0;
     const [ga, gb] = opties[goed];
@@ -641,7 +657,7 @@ function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: numbe
 function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number, number], wat: string): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
-    const sommen: Kaart[] = opties.map(([x, y], i) => ({ id: `s${i}`, tekst: [somTekst(x, y)], aria: somAria(x, y) }));
+    const sommen: Kaart[] = meng(opties.map(([x, y], i) => ({ id: `s${i}`, tekst: [somTekst(x, y)], aria: somAria(x, y) })));
     const goedIds = goed.map((i) => `s${i}`);
     const [a, b] = opties[goed[0]];
     return squlaVraag<[string, string]>(l, {
@@ -689,7 +705,7 @@ function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number,
   };
 }
 
-/** (G) Zelf het antwoord typen (de som bovenaan; als versiering een taart). */
+/** (G) Zelf het antwoord typen, in het vakje van de som bovenaan (herstel 7 november: de losse taart is weg, zie het vlak). */
 function typSom(a: number, b: number, beeldVan: (id: string) => PlusBeeld = (id) => ({ soort: "etalage", id })): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
@@ -699,7 +715,7 @@ function typSom(a: number, b: number, beeldVan: (id: string) => PlusBeeld = (id)
         if (toon(l, st, beeldVan(id))) somBoven(l, a, b);
       },
       vraag: ["Reken uit.", `Hoeveel is ${plus(a, b)}?`],
-      antwoord: () => typGetal(l, st, ["Typ het getal dat je denkt.", "Als je het niet zeker weet, mag een gokje."]),
+      antwoord: () => typInSom(l, st),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
@@ -784,7 +800,7 @@ function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string, een
 function dansKaartje(paren: [number, number][]): Vraag {
   return (l, st) => {
     const id = `v${++st.nr}`;
-    const kaarten: Kaart[] = paren.map(([x, y], i) => ({ id: `k${i}`, tekst: [String(x), String(y)], aria: `${x} en ${y}` }));
+    const kaarten: Kaart[] = meng(paren.map(([x, y], i) => ({ id: `k${i}`, tekst: [String(x), String(y)], aria: `${x} en ${y}` })));
     const goedIdx = paren.findIndex(([x, y]) => x + y === 10);
     let gekozen = -1;
     return squlaVraag<number>(l, {
@@ -841,7 +857,7 @@ function dansPlaten(getallen: number[]): Vraag {
     /* De twee platen die samen 10 zijn hebben twee duidelijk verschillende kleuren (ook bij 5 + 5); de zin heeft dezelfde. */
     stelPaar(getallen[paar[0]], getallen[paar[1]]);
     const [kp0, kp1] = kleurPaar(getallen[paar[0]], getallen[paar[1]]);
-    const kaarten: Kaart[] = getallen.map((n, i) => ({ id: `p${i}`, tekst: [String(n)], aria: String(n), kleur: KLEURHEX[i === paar[0] ? kp0 : i === paar[1] ? kp1 : basisNaam(n)] }));
+    const kaarten: Kaart[] = meng(getallen.map((n, i) => ({ id: `p${i}`, tekst: [String(n)], aria: String(n), kleur: KLEURHEX[i === paar[0] ? kp0 : i === paar[1] ? kp1 : basisNaam(n)] })));
     const goedIds = paar.map((i) => `p${i}`);
     const anker = Math.min(getallen[paar[0]], getallen[paar[1]]);
     const waarden = (x: [string, string]) => x.map((i) => getallen[Number(i.slice(1))]);
@@ -926,7 +942,8 @@ function dansUitleg(kaartjes: boolean, eerste: number[] | number[][]) {
 function busZinnen(a: number, b: number): string[] {
   return [
     a === 1 ? `Er ligt ${g(1)} pakje in de bus.` : `Er liggen ${g(a)} pakjes in de bus.`,
-    b === 1 ? `Bij de halte komt er ${g(1)} pakje bij.` : `Bij de halte komen er ${g(b)} pakjes bij.`,
+    /* Herstel 7 november (BOUWREGELS 3.12): er staat geen halte in beeld, dus Bliepo noemt die ook niet meer. */
+    b === 1 ? `Er komt ${g(1)} pakje bij.` : `Er komen ${g(b)} pakjes bij.`,
     "Hoeveel pakjes liggen er nu in de bus?",
   ];
 }

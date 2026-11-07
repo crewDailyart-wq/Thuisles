@@ -64,7 +64,12 @@ export type RMStuk =
 export type RMTekening = { stukken: RMStuk[]; b: number; h: number };
 
 export type RMOpgave =
-  | { id: string; soort: "kijk"; boven?: RMTekening; keuzes?: RMTekening[]; namen?: string[] }
+  /**
+   * `plek` (herstel 7 november, BOUWREGELS 1.23): op welke plek (van links) keuze i staat; de keuzes houden hun nummer
+   * (en dus de beoordeling), alleen de plek wisselt. `ruimteOnder`: de tekening bovenaan laat onderaan ruimte vrij voor de
+   * grote antwoordknoppen in het midden (Kiesinstel `midden`).
+   */
+  | { id: string; soort: "kijk"; boven?: RMTekening; keuzes?: RMTekening[]; namen?: string[]; plek?: number[]; ruimteOnder?: boolean }
   | { id: string; soort: "volgorde"; kaarten: RMTekening[]; vast?: RMTekening[]; namen?: string[] }
   | { id: string; soort: "verbind"; links: RMTekening[]; rechts: RMTekening[] };
 
@@ -117,20 +122,24 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
   if (o.soort === "kijk") {
     const keuzes = o.keuzes ?? [];
     if (o.boven && keuzes.length) {
-      const bh = Math.min(o.boven.h, 330);
-      delen.b = past(o.boven, VLAK_B / 2, 24 + bh / 2, 900, 330);
-      const kh = Math.min(440, Math.max(...keuzes.map((k) => k.h)));
-      const xs = naastElkaar(keuzes.length, 320);
-      const kb = Math.min(...xs.map((_, i) => (i ? xs[i] - xs[i - 1] : VLAK_B / keuzes.length))) - 16;
       /* Groepjes (meerdere voorwerpen) staan hoger, midden in beeld, niet geperst onderaan (BOUWREGELS 14.23). */
       const groepen = keuzes.some((k) => k.stukken.length > 1);
-      const cy = groepen ? Math.min(VLAK_H - 28 - kh / 2, 450) : VLAK_H - 28 - kh / 2;
-      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[i], cy, kb, kh)));
-    } else if (o.boven) delen.b = past(o.boven, VLAK_B / 2, VLAK_H / 2, 920, 660);
-    else {
+      /* Herstel 7 november (OVERZICHT-C mix4-4): bij een groepje bovenaan liepen dat groepje en de keuzes eronder in elkaar
+         over. Nu is de tekening bovenaan lager begrensd en beginnen de keuzes altijd met ruimte eronder. */
+      const bh = Math.min(o.boven.h, o.boven.stukken.length > 1 && groepen ? 240 : 330);
+      delen.b = past(o.boven, VLAK_B / 2, 20 + bh / 2, 900, bh);
+      const onderB = 20 + delen.b.h / 2 + bh / 2;
+      const kh = Math.min(440, VLAK_H - 16 - (onderB + 40), Math.max(...keuzes.map((k) => k.h)));
       const xs = naastElkaar(keuzes.length, 320);
+      const kb = Math.min(...xs.map((_, i) => (i ? xs[i] - xs[i - 1] : VLAK_B / keuzes.length))) - 16;
+      const cy = Math.max(onderB + 40 + kh / 2, groepen ? Math.min(VLAK_H - 28 - kh / 2, 450) : VLAK_H - 28 - kh / 2);
+      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[o.plek?.[i] ?? i], cy, kb, kh)));
+    } else if (o.boven) delen.b = o.ruimteOnder ? past(o.boven, VLAK_B / 2, 275, 920, 500) : past(o.boven, VLAK_B / 2, VLAK_H / 2, 920, 660);
+    else {
+      /* Herstel 7 november (mix3-2): een rij van 5 liep tot tegen de linkerrand; dan iets dichter bij elkaar, in het midden. */
+      const xs = naastElkaar(keuzes.length, keuzes.length >= 5 ? 174 : 320);
       const kb = keuzes.length > 1 ? xs[1] - xs[0] - 20 : 600;
-      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[i], VLAK_H / 2, kb, 560)));
+      keuzes.forEach((k, i) => (delen[`k${i}`] = past(k, xs[o.plek?.[i] ?? i], VLAK_H / 2, kb, 560)));
     }
     return { delen, sloten: [], stippen: {} };
   }
@@ -425,7 +434,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
     flits(d: Deel, i: number, ms: number) {
       const img = d.items[i];
       const sl = d.tex[i];
-      if (!img || !sl) return;
+      /* Herstel 7 november (OVERZICHT-C mix4-2 vraag 2): een uitgestelde flits kon nog lopen als de volgende opgave de
+         plaatjes al had opgeruimd; setTexture op een opgeruimd plaatje gaf een fout en dan liep het vlak vast. */
+      if (!img || !sl || !img.scene || !img.active) return;
       if (!this.textures.exists(`${sl}-g`)) return;
       img.setTexture(`${sl}-g`);
       if (!this.rustig) {
@@ -433,7 +444,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
         const sy = img.scaleY;
         this.tweens.add({ targets: img, scaleX: sx * 1.14, scaleY: sy * 1.14, duration: 120, yoyo: true, onComplete: () => img.setScale(sx, sy) });
       }
-      this.time.delayedCall(ms, () => img.active && img.setTexture(sl));
+      this.time.delayedCall(ms, () => img.active && img.scene && img.setTexture(sl));
     }
 
     zetLicht(l: RMProps["licht"]) {

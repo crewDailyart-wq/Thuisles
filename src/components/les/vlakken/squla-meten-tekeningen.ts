@@ -14,7 +14,7 @@
  */
 
 import { PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
-import { tekenVoorwerp } from "../voorwerpen";
+import { tekenVoorwerp, tekenVoorwerpRechthoek } from "../voorwerpen";
 
 const N: string = PALET.navy;
 const GROEN = "#55c26f";
@@ -70,7 +70,7 @@ export const METEN_VOORWERPEN = [
   "tomaat", "olijf", "zak-meel", "boterham-weinig-kaas", "boterham-veel-kaas", "boterham-heel-veel-kaas", "pizzadoos-open", "doos-rood",
   "doos-blauw", "pizzaoven", "schaal", "mand", "mand-half", "mand-vol", "spies-leeg", "spies-twee", "spies-vol", "ballon", "steen",
   "voetbal", "veer", "appel", "watermeloen", "knikker", "boek", "rugtas", "vlieger", "springtouw", "bal", "speelblok", "zon", "bloem",
-  "huis", "bootje", "boom", "planeet-ring", "picknickkleed", "bord", "broodje", "mandarijn",
+  "huis", "bootje", "boom", "planeet-ring", "picknickkleed", "bord", "broodje", "mandarijn", "knikker-glas",
 ];
 
 const PIZZA: Record<string, string> = { kaas: "pizza-kaas", salami: "pizza-salami", olijf: "pizza-olijven" };
@@ -81,10 +81,12 @@ function puntenPunten(n: number): Punt[] {
 }
 
 /** Een ijsje: met `kers` het vaste plaatje (twee bolletjes); anders een hoorntje met `bol` losse bolletjes om te tellen. */
+/** Afstand tussen de bolletjes: ze liggen los op elkaar en zijn elk apart te tellen (herstel 7 november; was 46, toen overlapten ze). */
+const BOL_STAP = 64;
 function ijsMaat(o: O) {
   const m = getal(o, "m", 1);
   const n = o.kers ? 2 : getal(o, "bol", 1);
-  return o.kers ? { b: 170 * m, h: 170 * m } : { b: 130 * m, h: (112 + n * 46 + 34) * m };
+  return o.kers ? { b: 170 * m, h: 170 * m } : { b: 130 * m, h: (112 + n * BOL_STAP + 34) * m };
 }
 function ijsPunten(o: O): Punt[] {
   if (o.kers) return [];
@@ -92,15 +94,16 @@ function ijsPunten(o: O): Punt[] {
   const n = getal(o, "bol", 1);
   const { h } = ijsMaat(o);
   const topY = h - 108 * m;
-  return Array.from({ length: n }, (_, i) => ({ x: 65 * m, y: topY - 16 * m - i * 46 * m }));
+  return Array.from({ length: n }, (_, i) => ({ x: 65 * m, y: topY - 16 * m - i * BOL_STAP * m }));
 }
 function ijsje(c: C, o: O) {
   const m = getal(o, "m", 1);
   if (o.kers) return vw(c, "ijsje-twee-bollen", 85 * m, 85 * m, 170 * m);
   const { h } = ijsMaat(o);
   const pts = ijsPunten(o);
-  for (const p of pts) vw(c, "bolletje-ijs", p.x, p.y, 84 * m);
+  /* Eerst het hoorntje, dan de bolletjes erop: het onderste bolletje valt niet weg in het hoorntje. */
   vw(c, "hoorntje", 65 * m, h - 58 * m, 116 * m);
+  for (const p of pts) vw(c, "bolletje-ijs", p.x, p.y, 78 * m);
 }
 
 /** Een open pizzadoos met een pizza erin (`p` = hoe groot de pizza is, 0–1). */
@@ -162,6 +165,25 @@ function potje(c: C, o: O) {
   vorm(c, blok(22, 14, 96, 30, 8), PALET.geel);
 }
 
+/**
+ * Een broodje met kaas (herstel 7 november): steeds hetzelfde broodje, alleen de kaas verschilt. Weinig = 1 plakje (het plaatje zelf),
+ * veel = 4 plakjes die het brood bedekken, heel veel = 3 lagen van die 4 plakjes op elkaar. Het plakje komt uit hetzelfde plaatje.
+ */
+function broodje(c: C, o: O) {
+  const n = getal(o, "n", 1);
+  vw(c, "boterham-weinig-kaas", 95, 95, 190);
+  if (n <= 1) return;
+  /* het plaatje is 488 × 512 en staat passend in 190 × 190: schaal f, links 4,5 opgeschoven */
+  const f = 190 / 512;
+  const x0 = (190 - 488 * f) / 2;
+  const plak = (cx: number, cy: number, maat: number) => tekenVoorwerpRechthoek(c, "boterham-weinig-kaas", 154, 166, 181, 180, x0 + (cx - maat / 2) * f, (cy - maat / 2) * f, maat * f, maat * f);
+  const lagen = n >= 7 ? 3 : 1;
+  for (let l = 0; l < lagen; l++) {
+    const dy = -l * 20;
+    for (const [cx, cy] of [[166, 190], [322, 190], [166, 346], [322, 346]]) plak(cx, cy + dy, 158);
+  }
+}
+
 /** Een flesje met `v` gevuld. */
 function flesje(c: C, o: O) {
   const v = getal(o, "v", 0.5);
@@ -193,8 +215,10 @@ function schaal(c: C, o: O) {
 }
 
 /** Een maatbeker van 1 liter of een halve liter (even breed; de halve is half zo hoog). */
+/** Het etiket ("1 liter", "½ liter") staat boven de beker, niet over het water (herstel 7 november). */
+const ETIKET = 44;
 function maatbekerMaat(o: O) {
-  return { b: 170, h: o.l === "half" ? 150 : 270 };
+  return { b: 170, h: (o.l === "half" ? 150 : 270) + ETIKET };
 }
 function maatbeker(c: C, o: O) {
   const v = getal(o, "v", 1);
@@ -215,8 +239,8 @@ function maatbeker(c: C, o: O) {
   vorm(c, `M 20 ${top - 4} L 8 ${top - 14}`, undefined, RAND_DUN);
   /* streepjes en het etiket */
   for (let i = 1; i < 4; i++) vorm(c, `M 112 ${bodem - (binnen * i) / 4} H 128`, undefined, 2.5);
-  vorm(c, blok(30, top + 6, 74, 34, 8), PALET.warmwit, 2.5);
-  tekst(c, o.l === "half" ? "½ liter" : "1 liter", 67, top + 24, 19);
+  vorm(c, blok(22, top - 4 - ETIKET, 96, 36, 8), PALET.warmwit, 2.5);
+  tekst(c, o.l === "half" ? "½ liter" : "1 liter", 70, top - 4 - ETIKET + 18, 21);
 }
 
 /* =====================================================================
@@ -597,7 +621,10 @@ function punten(c: C, n: number) {
 /** Een groot plaatje bij een vraag (ontwerpvak 360 × 300). */
 function tafereel(c: C, o: O) {
   const s = o.s ?? "";
+  /* Herstel 7 november (naspelen): "tas-l" en "tas-a" zijn dezelfde rugtas als bij "speelgoed" en "appels", zonder de losse dingen ernaast. */
   if (s === "tas") vw(c, "rugtas", 180, 150, 280);
+  else if (s === "tas-l") vw(c, "rugtas", 90, 170, 190);
+  else if (s === "tas-a") vw(c, "rugtas", 100, 160, 210);
   else if (s === "speelgoed") {
     vw(c, "rugtas", 90, 170, 190);
     vw(c, "voetbal", 220, 230, 100);
@@ -656,11 +683,12 @@ const T: Record<string, Tek> = {
       for (let i = 0; i < n; i++) vw(c, "boek", 88 + (i % 2) * 6 - 3, h - 50 - i * 26, 176);
     },
   },
-  knikker: { maat: () => ({ b: 50, h: 50 }), teken: (c) => vw(c, "knikker", 25, 25, 50) },
+  /* Herstel 7 november: de herkenbare glazen knikker. */
+  knikker: { maat: () => ({ b: 72, h: 72 }), teken: (c) => vw(c, "knikker-glas", 36, 36, 72) },
   oven: { maat: () => ({ b: 260, h: 260 }), teken: (c) => vw(c, "pizzaoven", 130, 130, 260) },
   mand: { maat: () => ({ b: 220, h: 220 }), teken: (c, o) => vw(c, o.vul === "2" ? "mand-vol" : o.vul === "1" ? "mand-half" : "mand", 110, 110, 220) },
   stokje: { maat: () => ({ b: 220, h: 220 }), teken: (c, o) => vw(c, getal(o, "n", 0) >= 5 ? "spies-vol" : getal(o, "n", 0) > 0 ? "spies-twee" : "spies-leeg", 110, 110, 220) },
-  broodje: { maat: () => ({ b: 190, h: 190 }), teken: (c, o) => vw(c, getal(o, "n", 1) >= 7 ? "boterham-heel-veel-kaas" : getal(o, "n", 1) > 1 ? "boterham-veel-kaas" : "boterham-weinig-kaas", 95, 95, 190) },
+  broodje: { maat: () => ({ b: 190, h: 190 }), teken: broodje },
   beker: { maat: () => ({ b: 134, h: 176 }), teken: beker },
   potje: { maat: () => ({ b: 140, h: 174 }), teken: potje },
   flesje: { maat: () => ({ b: 96, h: 210 }), teken: flesje },

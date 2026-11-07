@@ -74,7 +74,11 @@ function rekenen(c: C) {
   is een blaadje met sommen.
 */
 const kring = vw("stoelenkring");
-const gym = vw("hoepel");
+/* Gym: de hoepel alleen leek een leeg rondje (Sara, 7 november 2026); nu de hoepel met een bal ervoor, dan zie je dat het gym is. */
+const gym = (c: C) => {
+  tekenVoorwerp(c, "hoepel", 0, 0, 92, 92);
+  tekenVoorwerp(c, "bal", 58, 58, 62, 62);
+};
 const buiten = vw("schommel");
 const eten = vw("boterham");
 const lezen = vw("boek");
@@ -286,7 +290,11 @@ function lijst(c: C, o: Record<string, string>) {
     const y = 58 + r * 15.5;
     tekst(c, String(n), x + 8, y, 11, N, 700, "right");
     v(c, `M ${x + 12} ${y + 5} H ${x + 50}`, undefined, 1, GRIJS);
-    if (n === bij && o.naam) tekst(c, o.naam, x + 13, y - 1, 11, ROOD, 800, "left");
+    /* het woord bij de datum groter en duidelijk, op een rood bordje (Sara, 7 november 2026: "feest" was piepklein) */
+    if (n === bij && o.naam) {
+      v(c, blok(x + 11, y - 9, 40, 18, 6), ROOD, 0);
+      tekst(c, o.naam, x + 31, y, 12.5, PALET.warmwit, 800, "center");
+    }
   }
 }
 
@@ -361,8 +369,9 @@ function dagdeel(c: C, d: string) {
   }
   if (d === "middag") tekenVoorwerp(c, "zon", 25, 8, 130, 130);
   if (d === "avond") {
-    v(c, "M 24 22 H 156 M 42 44 H 138", undefined, 9, "#e58bb5");
-    tekenVoorwerp(c, "zon", 48, 38, 84, 84);
+    /* in dezelfde stijl en grootte als de ochtend: een grote zon die achter de heuvel zakt, met 2 zachte roze strepen (Sara, 7 november 2026) */
+    v(c, "M 30 20 H 82 M 104 20 H 150 M 48 38 H 132", undefined, 6, "#e58bb5");
+    tekenVoorwerp(c, "zon", 40, 40, 100, 100);
     heuvel("#2f6a4a");
   }
   if (d === "nacht") {
@@ -402,6 +411,7 @@ export const TIJD_VOORWERPEN = [
   "hoepel",
   "schommel",
   "banaan",
+  "bal",
   "bakkerij",
   "ballon",
   "bed",

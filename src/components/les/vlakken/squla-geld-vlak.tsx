@@ -151,6 +151,15 @@ export type GeldProps = {
   paneel?: boolean;
   /** Bij `paneel`: waar het midden van het scherm in het vlak ligt (laptop 640, staand scherm 490); het vlak zelf is 980 breed. */
   midden?: number;
+  /**
+   * Opt-in (Sara, 7 november 2026): elk groepje geld in een eigen zacht vak (zoals bij `paneel`), 4 groepjes netjes 2 × 2
+   * in het midden. Zo zie je waar het ene groepje ophoudt en het volgende begint. Zonder: alles zoals het was.
+   */
+  vakken?: boolean;
+  /** Een voorwerp als kleine, zachte sfeer-achtergrond linksboven (BOUWREGELS 1.22): niet tikbaar, doet niet mee. */
+  sfeer?: string | null;
+  /** Het verhaal naspelen (BOUWREGELS 1.22): het groepje `id` vliegt in het ding `naar` (bv. het geld in de spaarpot). */
+  vlieg?: { id: string; naar: string; n: number } | null;
 };
 
 export type Rect = { x: number; y: number; b: number; h: number };
@@ -245,7 +254,15 @@ export function indeling(p: GeldProps): Indeling {
   let kaarten: Rect[] = [];
   let onder = 700;
   let boven = 14;
-  if (n && p.paneel && !p.verbind) {
+  if (n > 4 && p.paneel && !p.verbind) {
+    /* Meer dan 4 keuzes (de zwevende munten): 2 rijen van 3 vierkante vakken, zodat de munten groot genoeg zijn om
+       1 en 2 euro uit elkaar te houden (BOUWREGELS 1.24, 7 november 2026). Eerst stonden ze in 6 smalle, hoge vakken. */
+    const tussen = 18;
+    const m = p.midden ?? VLAK_B / 2;
+    const per = Math.ceil(n / 2);
+    const b = Math.min(200, (2 * Math.min(m, VLAK_B - m) - 30 - tussen * (per - 1)) / per);
+    kaarten = [...rij(per, b, tussen, 300, b, m), ...rij(n - per, b, tussen, 300 + b + tussen, b, m)];
+  } else if (n && p.paneel && !p.verbind) {
     /* Alle keuzes even groot, netjes op één rij, dicht bij elkaar, in het midden van het vlak. */
     const tussen = 16;
     const m = p.midden ?? VLAK_B / 2;
@@ -258,14 +275,16 @@ export function indeling(p: GeldProps): Indeling {
     kaarten = Array.from({ length: n }, (_, i) => ({ x: xs[i % 3] + dx[i], y: (i < 3 ? 200 : 490) + dy[i], b: 214, h: 214 }));
   } else if (n && metGroot) {
     if (n <= 3) {
-      kaarten = rij(n, 270, 40, 574, 236);
+      /* met vakken iets smaller, zodat het linkervak niet tegen de rand staat */
+      kaarten = p.vakken ? rij(n, 250, 34, 574, 236) : rij(n, 270, 40, 574, 236);
       onder = 438;
     } else {
-      kaarten = rij(n, 214, 22, 590, 220);
+      kaarten = p.vakken ? rij(n, 196, 20, 590, 210) : rij(n, 214, 22, 590, 220);
       onder = 462;
     }
   } else if (n) {
-    if (n === 4) kaarten = [0, 1, 2, 3].map((i) => ({ x: i % 2 === 0 ? 270 : 710, y: i < 2 ? 200 : 510, b: 400, h: 280 }));
+    if (n === 4 && p.vakken) kaarten = [0, 1, 2, 3].map((i) => ({ x: i % 2 === 0 ? 300 : 680, y: i < 2 ? 210 : 500, b: 360, h: 270 }));
+    else if (n === 4) kaarten = [0, 1, 2, 3].map((i) => ({ x: i % 2 === 0 ? 270 : 710, y: i < 2 ? 200 : 510, b: 400, h: 280 }));
     else if (n === 2) kaarten = rij(2, 360, 60, 370, 340);
     else kaarten = rij(n, 290, 34, 370, 340);
   }
@@ -293,8 +312,9 @@ export function indeling(p: GeldProps): Indeling {
   let links: Rect[] = [];
   let rechts: Rect[] = [];
   if (p.verbind) {
-    links = p.verbind.links.map((_, i) => ({ x: 230, y: i === 0 ? 200 : 520, b: 370, h: 270 }));
-    rechts = p.verbind.rechts.map((k, i) => (k.geld ? { x: 750, y: i === 0 ? 200 : 520, b: 370, h: 270 } : { x: 790, y: i === 0 ? 200 : 520, b: 260, h: 160 }));
+    /* het geld groter (BOUWREGELS 1.24): de vakken breder, zodat munten van 1 en 2 euro goed te zien zijn */
+    links = p.verbind.links.map((_, i) => ({ x: 222, y: i === 0 ? 200 : 520, b: 420, h: 290 }));
+    rechts = p.verbind.rechts.map((k, i) => (k.geld ? { x: 758, y: i === 0 ? 200 : 520, b: 420, h: 290 } : { x: 790, y: i === 0 ? 200 : 520, b: 260, h: 160 }));
   }
   return { groot, kaarten, links, rechts };
 }
@@ -317,6 +337,7 @@ interface GeldScene {
   schudDing(id: string): void;
   golfDing(id: string): void;
   speelHandje(): void;
+  vliegNaar(id: string, naar: string): void;
 }
 
 type Gloed = "warm" | "goed" | "fout";
@@ -597,13 +618,13 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         ({ plekken, stukken: geldStukken } = this.legEen(box, d.geld[0], u, u * 0.66));
         stukken = geldStukken;
       } else if (d.geld?.length) {
-        ({ plekken, stukken: geldStukken } = this.legInBox(box, d.geld, r.b - 40, r.h - 40, zweeft ? 1.6 : 1.45));
+        ({ plekken, stukken: geldStukken } = this.legInBox(box, d.geld, r.b - 40, r.h - 40, zweeft ? 1.6 : soort === "links" || soort === "rechts" ? 1.95 : 1.45));
         stukken = geldStukken;
       } else if (d.tekening) stukken = this.legDingen(box, d.tekening, d.aantal ?? 1, r.b - 30, r.h - 30, 1.2);
       else if (d.label) stukken = [this.stuk(box, this.tekstPlaatje(d.label), 0, 0, 220, 110)];
       this.alles.push(box);
       let vak: Vak | undefined;
-      if (this.p?.paneel && soort === "kaart") {
+      if ((this.p?.paneel || this.p?.vakken) && soort === "kaart") {
         const sl = this.vakPlaatje(r.b, r.h, null);
         const im = this.add.image(0, 0, sl).setScale(1 / TX);
         box.addAt(im, 0);
@@ -649,6 +670,12 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         } else box.add(this.plaats(this.tekenPlaatje(d.soort), 0, 0).setScale(g.k / TX));
         nieuw.push(box);
       }
+      if (p.sfeer) {
+        /* klein en zacht linksboven, zacht deinend */
+        const sf = this.add.image(110, 110, this.dingPlaatje(p.sfeer)).setScale(130 / DING.b / TX).setAlpha(0.45).setDepth(-1);
+        this.alles.push(sf);
+        if (!rustig) this.tweens.add({ targets: sf, y: 104, duration: 2600, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+      }
       (p.kaarten ?? []).forEach((d, i) => {
         const ding = this.nieuwDing(d, ind.kaarten[i], "kaart", !!p.zweven);
         nieuw.push(ding.box);
@@ -681,6 +708,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.aantal, k.label]),
         !!p.zweven,
         !!p.paneel,
+        !!p.vakken,
+        p.sfeer ?? null,
         !!p.getekendeMunten,
         p.midden ?? null,
         p.verbind ? [p.verbind.links.map((k) => [k.id, k.geld, k.label]), p.verbind.rechts.map((k) => [k.id, k.geld, k.label])] : null,
@@ -866,6 +895,30 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     golfDing(id: string) {
       const d = this.dingen.get(id);
       if (d) this.golf(d.box.x, d.box.y);
+    }
+
+    /** Het verhaal naspelen: het groepje `id` springt op en vliegt in het ding `naar` (het geld valt in de spaarpot). */
+    vliegNaar(id: string, naar: string) {
+      const d = this.dingen.get(id);
+      const doel = this.dingen.get(naar);
+      if (!d || !doel) return;
+      const box = d.box;
+      const tx = doel.box.x + (doel.stukken[0]?.im.x ?? 0);
+      const ty = doel.box.y + (doel.stukken[0]?.im.y ?? 0) - 20;
+      box.setDepth(20);
+      if (rustig) {
+        box.setVisible(false);
+        return;
+      }
+      this.tweens.add({ targets: box, y: box.y - 40, duration: 220, ease: "Sine.easeOut" });
+      this.tweens.add({ targets: box, x: tx, delay: 220, duration: 650, ease: "Sine.easeIn" });
+      this.tweens.add({ targets: box, y: ty, delay: 220, duration: 650, ease: "Back.easeIn" });
+      this.tweens.add({ targets: box, scale: 0.25, alpha: 0, delay: 600, duration: 300, ease: "Sine.easeIn" });
+      this.time.delayedCall(880, () => {
+        if (!doel.box.active) return;
+        this.tweens.add({ targets: doel.box, scaleY: 0.93, duration: 100, yoyo: true, ease: "Sine.easeOut" });
+        this.golf(tx, ty + 20);
+      });
     }
 
     speelHandje() {
@@ -1067,7 +1120,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel } = props;
+  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, vakken, sfeer } = props;
   /* Met `paneel`: het midden van het scherm (laptop: het vlak staat 150 naar links; staand scherm: gecentreerd). */
   const [staand, setStaand] = useState(false);
   useEffect(() => {
@@ -1077,7 +1130,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     return () => window.removeEventListener("resize", meet);
   }, []);
   const midden = paneel ? (staand ? VLAK_B / 2 : 640) : undefined;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten });
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten, vakken, sfeer });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -1103,6 +1156,11 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   useEffect(() => {
     if (scene && handje) scene.speelHandje();
   }, [scene, handje]);
+  const vliegNr = props.vlieg?.n;
+  useEffect(() => {
+    if (scene && props.vlieg) scene.vliegNaar(props.vlieg.id, props.vlieg.naar);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [scene, vliegNr]);
 
   /* De namen van tekeningen en woorden alvast klaarzetten om voor te lezen (geld nooit). */
   const namen = [...(kaarten ?? []), ...(verbind?.links ?? []), ...(verbind?.rechts ?? [])].map((d) => d.zeg ?? "").filter(Boolean);

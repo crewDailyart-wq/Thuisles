@@ -19,6 +19,7 @@ import { begeleideVraag, laatZienZin, naamMag, opener, samenOefenen, uitlegVoorV
 import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartRekentaal, SqulaRekentaalKeuken, type RekenDing, type RekentaalProps } from "../vlakken/squla-rekentaal-keuken";
+import { meng } from "./squla-meng";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 
 /* ---------- het tafereel ---------- */
@@ -132,7 +133,9 @@ type Vraag = {
 };
 
 async function vraagMetHulp(l: Lesgids, v: Vraag) {
-  toon(l, v.tafereel);
+  /* Herstel 7 november (BOUWREGELS 1.23): het goede voorwerp stond bijna altijd rechts. De volgorde van de dingen wisselt
+     nu per les-start (vast per vraag); de ids en dus de beoordeling blijven gelijk. */
+  toon(l, { ...v.tafereel, dingen: meng(v.tafereel.dingen) });
   await l.wacht(500);
   await v.vraag();
   /* De hulp van Synthesis (BOUWREGELS 5.1 en 5.10): eerste fout = reactie en meteen opnieuw; tweede fout = uitleg,
@@ -235,7 +238,8 @@ function vragenKeuken(l: Lesgids): Vraag[] {
     /* 1. Groter, van twee. */
     {
       tafereel: { indeling: "rij", dingen: [ding("k", "pannenkoek", "de kleine pannenkoek", { maat: 0.6 }), ding("g", "pannenkoek", "de grote pannenkoek", { maat: 0.95 })] },
-      vraag: () => l.zeg("Welke pannenkoek is groter?", "Tik erop."),
+      /* Herstel 7 november (OVERZICHT-C rekentaal v01): de hele vraag blijft in beeld, niet alleen "Tik erop.". */
+      vraag: () => l.zeg("Welke pannenkoek is groter? Tik erop."),
       antwoord: kiesEen(l, "g"),
       reden: () => l.zeg("Deze pannenkoek is groter."),
       samen: async () => {

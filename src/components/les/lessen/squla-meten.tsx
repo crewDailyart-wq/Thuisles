@@ -57,8 +57,41 @@ const telGoed = (n: number, wat: string, tip: string) => {
 const teVeel = (x: number, goed: number) => `Je koos {${x}:wit}. Dat is ${x - goed === 1 ? "1 te veel" : goed - x === 1 ? "1 te weinig" : x > goed ? "te veel" : "te weinig"}.`;
 /** Eerste fout bij een plaatje: Bliepo noemt wat het kind koos (wisselend). */
 const jouwKeuze = (naam: string) => wissel("metenkeuze", [`Daar staat ${naam}.`, `Dat plaatje laat ${naam} zien.`, `Bij jouw plaatje zie je ${naam}.`]);
-/** Een andere volgorde van de keuzes (bij een vraag die terugkomt). */
-const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), lijst[0]] : lijst);
+/** Een willekeurige volgorde (Fisher-Yates). */
+const meng = <T,>(lijst: T[]): T[] => {
+  const a = [...lijst];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+};
+/**
+ * De keuzes in een willekeurige volgorde (herstel 7 november, BOUWREGELS 1.23): het goede antwoord staat niet steeds op dezelfde plek,
+ * ook niet bij een vraag die terugkomt. Eén keer per vraag gekozen, dus na een fout blijft alles op zijn plek. Alleen de plek wisselt.
+ */
+const schuif = <T,>(lijst: T[], keer: boolean) => {
+  void keer;
+  return meng(lijst);
+};
+/**
+ * Losse kaartjes om op volgorde te leggen: willekeurig, maar nooit al in de goede volgorde (dan zou het beeld het antwoord verklappen),
+ * en bij 3 of meer ook nooit precies omgekeerd (dan hoeft het kind alleen om te draaien; herstel ronde 2, 7 november).
+ */
+const mengOrden = <T extends { id: string }>(lijst: T[], juist: string[]): T[] => {
+  const ids = juist.filter((id) => lijst.some((k) => k.id === id));
+  const goed = ids.join("|");
+  const omgekeerd = [...ids].reverse().join("|");
+  for (let i = 0; i < 40; i++) {
+    const a = meng(lijst);
+    const v = a.map((k) => k.id).join("|");
+    if (a.length < 2 || (v !== goed && (a.length < 3 || v !== omgekeerd))) return a;
+  }
+  if (lijst.length < 3) return [...lijst].reverse();
+  /* Vangnet: de goede volgorde met de eerste 2 omgewisseld (niet goed en niet omgekeerd). */
+  const g = ids.map((id) => lijst.find((k) => k.id === id)!).concat(lijst.filter((k) => !ids.includes(k.id)));
+  return [g[1], g[0], ...g.slice(2)];
+};
 /** De getallen 1 tot en met n op de eerste n dingen, of vanaf ding nummer `van` (Bliepo telt mee). */
 const telTot = (n: number, van = 0) => Array.from({ length: n }, (_, i) => ({ i: i + van, t: String(i + 1) }));
 
@@ -80,6 +113,8 @@ async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[], voor
     }
   }
   const terug = [...mis, ...reserve.filter((i) => !mis.includes(i))].slice(0, 3);
+  /* Tijdens "Nog 3 vragen ..." geen los plaatje van de vorige vraag (herstel 7 november, BOUWREGELS 1.22). */
+  zet(l, { ...LEEG, nr: volgend() });
   await l.zeg(terugAankondiging(terug.length));
   let weerFout = 0;
   for (const i of terug) {
@@ -118,6 +153,8 @@ type Naspeel = NonNullable<MetenProps["naspeel"]> extends infer N ? Omit<Extract
 const naspeel = (l: Lesgids, o?: Naspeel) => {
   if (o) zet(l, { naspeel: { ...o, n: ++vulNr } });
 };
+/** Hoe lang het naspelen ongeveer duurt na de korte bevestiging, zodat het kind het helemaal ziet voor de volgende vraag. */
+const naspeelDuur = (o?: Naspeel) => (o ? 900 + Math.max(0, o.dingen.length - 3) * 230 + (o.einde === "zak" || o.einde === "hop" ? 700 : 0) : 300);
 let handjeNr = 0;
 let zakNr = 0;
 
@@ -231,7 +268,7 @@ function knopVraag(
     goed: async () => {
       naspeel(l, o.naspeel);
       await l.zeg(bevestig());
-      await l.wacht(o.naspeel ? 900 : 300);
+      await l.wacht(naspeelDuur(o.naspeel));
     },
     samen: async () => {
       await o.samen(l);
@@ -243,7 +280,7 @@ function knopVraag(
     toonAntwoord: async () => {
       naspeel(l, o.naspeel);
       await l.zeg(...antwoordZinnen(o.goedZin));
-      await l.wacht(o.naspeel ? 900 : 300);
+      await l.wacht(naspeelDuur(o.naspeel));
     },
     testAntwoord: o.goed,
   };
@@ -308,7 +345,8 @@ function ordenVraag(
   terug: boolean,
 ): SqulaVraag<string[]> {
   const nr = volgend();
-  const losse = schuif(o.losse, terug);
+  void terug;
+  const losse = mengOrden(o.losse, o.juist);
   let vakken: (string | null)[] = o.juist.map((id, i) => (o.vast.includes(i) ? id : null));
   let eerste = !!o.handje && !terug;
   const naamVan = (id: string) => o.losse.find((k) => k.id === id)?.naam ?? id;
@@ -702,7 +740,7 @@ function eenMeer(n: number, kaarten: [number, number]): Opgave {
     plaatjesVraag(
       l,
       {
-        beeld: { groot: PUNTEN(n) },
+        beeld: { groot: PUNTEN(n), grootVak: true },
         kaarten: kaarten.map((k) => K(String(k), PUNTEN(k), `de ${k} stukken`)),
         goed: String(n + 1),
         vraag,
@@ -731,7 +769,7 @@ function eenMinder(n: number, intro: string[]): Opgave {
     plaatjesVraag(
       l,
       {
-        beeld: { groot: `ijsje|m=1|bol=${n}` },
+        beeld: { groot: `ijsje|m=1|bol=${n}`, grootVak: true },
         kaarten: [K("meer", `ijsje|m=1|bol=${n + 1}`, `het ijsje met ${n + 1} bolletjes`), K("minder", `ijsje|m=1|bol=${n - 1}`, n - 1 === 1 ? "het ijsje met 1 bolletje" : `het ijsje met ${n - 1} bolletjes`)],
         goed: "minder",
         vraag,
@@ -1161,7 +1199,8 @@ const hoeveel1Opgaven: Opgave[] = [
     tip: ["Vooraan de schaal met de minste tomaten.", "Vol, voller, volst."],
   }),
   wijsVraag({
-    beeld: { groot: "flesje|v=0.8" },
+    /* Het voorbeeld even groot als de keuzes, in een eigen vak (herstel 7 november). */
+    beeld: { groot: "flesje|v=0.8", grootVak: true },
     kaarten: [K("minder", "flesje|v=0.55", "het flesje met minder water"), K("even", "flesje|v=0.8", "het flesje met evenveel water")],
     goed: "even",
     vraag: ["Kijk naar het flesje bovenaan.", "In welk flesje zit evenveel water?"],
@@ -1185,7 +1224,7 @@ const hoeveel1Opgaven: Opgave[] = [
     mis: { meer: "Meer gebruik je als je 2 dingen vergelijkt.", evenveel: "Evenveel zeg je van 2 dingen die net zoveel hebben." },
   }),
   wijsVraag({
-    beeld: { groot: SAP(0.6) },
+    beeld: { groot: SAP(0.6), grootVak: true },
     kaarten: [K("weinig", SAP(0.3), "de beker met minder sap"), K("even", SAP(0.6), "de beker met evenveel sap"), K("veel", SAP(0.9), "de beker met meer sap")],
     goed: "even",
     vraag: ["Kijk naar de beker bovenaan.", "In welke beker hieronder zit evenveel sap?"],
@@ -1250,6 +1289,8 @@ const WIP = (kant: Kant) => `wip|kant=${kant}`;
 const hoeveel2Opgaven: Opgave[] = [
   woordVraag({
     beeld: { groot: MAND(2) },
+    /* Naspelen (herstel 7 november): na het antwoord zakt de zware mand met een stofwolkje. */
+    naspeel: { naar: MAND(2), dingen: [], einde: "zak" },
     opties: ["kort", "zwaar", "dun"],
     goed: "zwaar",
     vraag: ["De picknickmand zit vol.", "De mand weegt veel.", "De mand is ...", "Kort, zwaar of dun?"],
@@ -1260,6 +1301,8 @@ const hoeveel2Opgaven: Opgave[] = [
   }),
   woordVraag({
     beeld: { groot: "tafereel|s=tas" },
+    /* Naspelen (herstel 7 november): na het antwoord wipt de lichte rugtas makkelijk omhoog. */
+    naspeel: { naar: "tafereel|s=tas", dingen: [], einde: "hop" },
     opties: ["kort", "zwaarder", "licht"],
     goed: "licht",
     vraag: ["Er is ook een rugtas.", "De rugtas is niet zwaar.", "Het omgekeerde van zwaar is ...", "Kort, zwaarder of licht?"],
@@ -1269,7 +1312,18 @@ const hoeveel2Opgaven: Opgave[] = [
     mis: { kort: "Kort zegt hoe lang iets is, niet hoe zwaar.", zwaarder: "Zwaarder is meer, maar de rugtas weegt bijna niets." },
   }),
   woordVraag({
-    beeld: { groot: "tafereel|s=speelgoed" },
+    /* Tijdens de vraag zit het speelgoed nog in de tas; na het antwoord hupt het eruit en wipt de tas omhoog (herstel 7 november, naspelen). */
+    beeld: { groot: "tafereel|s=tas-l" },
+    naspeel: {
+      start: "tafereel|s=tas-l",
+      naar: "tafereel|s=speelgoed",
+      dingen: ["voetbal", "vlieger", "springtouw"],
+      uit: true,
+      zone: { x: 90 / 360, y: 100 / 300, b: 0.06 },
+      van: [{ x: 220 / 360, y: 230 / 300 }, { x: 300 / 360, y: 110 / 300 }, { x: 230 / 360, y: 110 / 300 }],
+      maat: 110 / 360,
+      einde: "hop",
+    },
     opties: ["groter", "zwaarder", "lichter"],
     goed: "lichter",
     vraag: ["Het speelgoed gaat uit de rugtas.", "Nu weegt de tas nog minder.", "De tas is nu nog ...", "Groter, zwaarder of lichter?"],
@@ -1341,7 +1395,7 @@ const hoeveel2Opgaven: Opgave[] = [
     plaatjesVraag(
       l,
       {
-        beeld: { groot: "maatbeker|l=1|v=0.5" },
+        beeld: { groot: "maatbeker|l=1|v=0.5", grootVak: true },
         kaarten: [K("halfhalf", "maatbeker|l=half|v=0.5", "de kleine maatbeker die half vol is"), K("halfvol", "maatbeker|l=half|v=1", "de volle kleine maatbeker"), K("litervol", "maatbeker|l=1|v=1", "de volle grote maatbeker")],
         goed: "halfvol",
         vraag: ["Er is water met fruit.", "Het zit in een maatbeker van 1 liter.", "Die is half vol.", "Waar zit evenveel water in?"],
@@ -1357,7 +1411,18 @@ const hoeveel2Opgaven: Opgave[] = [
       t,
     ),
   woordVraag({
+    /* Tijdens de vraag liggen de appels naast de tas; na het antwoord rollen ze erin en zakt de tas met een stofwolkje (herstel 7 november). */
     beeld: { groot: "tafereel|s=appels" },
+    naspeel: {
+      start: "tafereel|s=tas-a",
+      naar: "tafereel|s=tas-a",
+      dingen: ["appel", "appel", "appel", "appel", "appel"],
+      van: [{ x: 230 / 360, y: 236 / 300 }, { x: 280 / 360, y: 240 / 300 }, { x: 330 / 360, y: 232 / 300 }, { x: 255 / 360, y: 196 / 300 }, { x: 305 / 360, y: 198 / 300 }],
+      zone: { x: 100 / 360, y: 92 / 300, b: 0.1 },
+      maat: 56 / 360,
+      weg: true,
+      einde: "zak",
+    },
     opties: ["lichter", "zwaarder", "langer"],
     goed: "zwaarder",
     vraag: ["Het eten is op.", "De lege bakjes gaan terug in de mand.", "Nu is de mand lichter.", "De appels gaan in de rugtas.", "De rugtas is nu ...", "Lichter, zwaarder of langer?"],
@@ -1381,6 +1446,8 @@ const hoeveel2Opgaven: Opgave[] = [
   }),
   woordVraag({
     beeld: { groot: "tafereel|s=tas" },
+    /* Naspelen (herstel 7 november): de lege, lichte rugtas wipt na het antwoord makkelijk omhoog. */
+    naspeel: { naar: "tafereel|s=tas", dingen: [], einde: "hop" },
     opties: ["zwaar", "leeg", "kort"],
     goed: "zwaar",
     vraag: ["De lege rugtas is licht.", "Welk woord zegt het omgekeerde van licht?", "Zwaar, leeg of kort?"],
@@ -1545,7 +1612,8 @@ const opp1Opgaven: Opgave[] = [
         kaarten: [
           Z("even", "Ze zijn even groot.", "teken|t==", "ze zijn even groot"),
           Z("niet", "Ze zijn niet even groot.", "teken|t=niet", "ze zijn niet even groot"),
-          Z("tel", "Tel de hokjes. Dan weet je hoe groot de blauwe vorm is.", "teken|t=tel", "tel de hokjes"),
+          /* Herstel 7 november: een echte bewering over het plaatje in plaats van een (afgekapte) hintzin. */
+          Z("tel", "Blauw is 8 hokjes groot.", "teken|t=tel", "blauw is 8 hokjes groot"),
         ],
         goed: ["even", "tel"],
         vraag: ["Kijk naar de blauwe en de gele vorm.", "Wat klopt er? Kies er 2."],
@@ -1657,13 +1725,10 @@ function vulIn(o: { k: number; r: number; d: "h" | "b"; ka: string; kb: string; 
         juist: [String(a), String(b)],
         vast: [],
         losse: o.kaartjes.map((n) => ({ id: String(n), label: String(n), zeg: String(n), naam: `{${n}:wit}` })),
-        vraag: [
-          o.eerste ? `Hier zie je 2 keer dezelfde ${waar}.` : `Weer 2 keer dezelfde ${waar}.`,
-          `Op de ene ${ligt} kleine ${ka} ${ding}.`,
-          `Op de andere ${ligt} grote ${kb} ${ding}.`,
-          `Hoeveel ${ding} passen er op elke ${waar}?`,
-          `Sleep het goede getal onder elke ${waar}.`,
-        ],
+        /* Na de eerste keer een kortere vraag (herstel 7 november): de kleuren en maten zie je al. */
+        vraag: o.eerste
+          ? [`Hier zie je 2 keer dezelfde ${waar}.`, `Op de ene ${ligt} kleine ${ka} ${ding}.`, `Op de andere ${ligt} grote ${kb} ${ding}.`, `Hoeveel ${ding} passen er op elke ${waar}?`, `Sleep het goede getal onder elke ${waar}.`]
+          : [`Weer 2 keer dezelfde ${waar}.`, `Hoeveel ${ding} passen er op elke ${waar}?`, `Sleep het goede getal onder elke ${waar}.`],
         goedZin: [`De ${waar} is {${a}:${o.ka}} ${ka} ${ding} groot.`, `En {${b}:${o.kb}} ${kb} ${ding}.`, `De ${kb} ${ding} zijn groter. Daarom passen er minder op.`],
         samen: async (l) => {
           await l.zeg(`Tel eerst de ${ka} ${ding}.`, "Ik doe de eerste rij.");
