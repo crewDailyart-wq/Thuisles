@@ -10,8 +10,8 @@
  *   public/voorwerpen (via `tekenVoorwerp`); de les zet ze in `voorwerpen`;
  * - rekenmateriaal (splitshuisje, splitspaal, het tienvak, staafjes, lijnen)
  *   wordt strak in code getekend;
- * - geld: de uitgeknipte munt uit public/geld/los/ en het briefje met
- *   "specimen" uit public/geld/ (nooit vergroot, geen kader);
+ * - geld: de uitgeknipte munt uit public/geld/los/ en het getekende briefje
+ *   uit public/geld/getekend/; dezelfde maat en dezelfde oefening;
  * - getallen en letters zijn scherpe HTML-tekst erbovenop.
  *
  * Stijl (besluit Sara, 31 oktober 2026): donker (`nacht: true`), plaatjes
@@ -195,6 +195,8 @@ export type SplitsProps = {
   /** Splitsen 2 en Delen: tegels, sommen of een ster slepen naar vakken (squla-splitsen2-sleep.ts). */
   s2?: S2 | null;
   licht?: string[];
+  /** Wat in `licht` staat krijgt een rood, getekend rondje in plaats van een gloed. */
+  rondje?: boolean;
   goedIds?: string[];
   uit?: string[];
   toon?: string[];
@@ -358,7 +360,7 @@ const phaserSleutel = (b: Beeld | null) => (b ? `${b.id}|${JSON.stringify(b.dele
 
 /* ---------- de scène ---------- */
 
-type Staat = { licht: string[]; goedIds: string[]; uit: string[]; toon: string[] };
+type Staat = { licht: string[]; goedIds: string[]; uit: string[]; toon: string[]; rondje?: boolean };
 
 /** Vrolijke, volle kleuren voor de knikkers (afwisselend, zodat elke knikker apart te zien is). */
 const KNIKKERS = ["#ff3b5c", "#ff9a1f", "#ffd21f", "#2fd16b", "#2e9bff", "#a35cff", "#ff4fb0", "#18c8c8"];
@@ -366,6 +368,8 @@ const KNIK_BOVEN = 120;
 const BAK_BODEM = 566;
 const BAK_GRENS = 250;
 
+/** Een vierkant in punten van het vlak. */
+type Rechthoek = { x0: number; y0: number; x1: number; y1: number };
 interface SplitsScene {
   zetBeeld(b: Beeld | null): void;
   zetSleep(s: Sleep | null, actief: boolean): void;
@@ -407,6 +411,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
   class Splits extends Basis implements SplitsScene {
     hoofd: Box | null = null;
     lijnen: Gfx | null = null;
+    rondjeBox: Box | null = null;
+    rondjeSleutel = "";
+    rondjeLaadt = false;
     sleutel = "";
     beeld: Beeld | null = null;
     imgs: { im: Img; id: string; sub: string; verborgen: boolean }[] = [];
@@ -443,7 +450,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     preload() {
-      this.load.image("sps-briefje-10", "/geld/briefje-10-euro.jpg");
+      this.load.image("sps-briefje-10", "/geld/getekend/briefje-10-euro.svg");
       this.load.image("sps-munt-1", "/geld/los/munt-1-euro.png");
     }
 
@@ -538,6 +545,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         if (this.hoofd) this.verdwijn(this.hoofd);
         this.hoofd = null;
         this.lijnen = null;
+        this.rondjeBox = null;
+        this.rondjeSleutel = "";
         this.imgs = [];
         if (b) this.bouw(b);
       }
@@ -551,6 +560,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       lijnen.setPosition(-MIDDEN.x, -MIDDEN.y);
       box.add(lijnen);
       this.lijnen = lijnen;
+      /* Het rondje komt bovenop alles in dit beeld (hij beweegt mee met het beeld). */
+      const rondjes = this.add.container(-MIDDEN.x, -MIDDEN.y);
+      this.rondjeBox = rondjes;
       const zet = (sl: string, x: number, y: number, maat: number, id: string, sub: string, verborgen = false, hoog?: number) => {
         const im = this.plaats(sl, x - MIDDEN.x, y - MIDDEN.y);
         if (hoog !== undefined) im.setDisplaySize(maat, hoog);
@@ -593,6 +605,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           }
         }
       }
+      box.add(rondjes);
       if (b.delen.length) this.tover(box);
       /* De gloed-plaatjes alvast bakken, één per keer (geen hapering later). */
       const sleutels = [...new Set(this.imgs.map((x) => x.im.getData("basis") as string))];
@@ -612,7 +625,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     tekenStaat() {
       const st = this.staat;
       const flits = performance.now() < this.flitsTot;
-      const kleur = (id: string, sub = id) => (flits || st.goedIds.includes(id) || st.goedIds.includes(sub) ? GOED : st.licht.includes(id) || st.licht.includes(sub) ? WARM : null);
+      const kleur = (id: string, sub = id) => (flits || st.goedIds.includes(id) || st.goedIds.includes(sub) ? GOED : !st.rondje && (st.licht.includes(id) || st.licht.includes(sub)) ? WARM : null);
       for (const { im, id, sub, verborgen } of this.imgs) {
         if (!im.active) continue;
         im.setVisible(!verborgen || st.toon.includes(id));
@@ -627,6 +640,119 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         if (im.texture.key !== doel) im.setTexture(doel);
       }
       if (this.lijnen && this.beeld) tekenLijnen(this.lijnen, this.beeld.delen, (id) => (st.uit.includes(id) ? 0x56607a : kleur(id)));
+      this.tekenRondjes(st);
+    }
+
+    /** Het rondje (BOUWREGELS 7.8) bij het verdeelspel: de knikkers boven, alle bakjes of het eerste bakje; null als het er niet is. */
+    slOmheen(id: string): Rechthoek | null {
+      const st = this.sl;
+      if (!st) return null;
+      if (id === "sl.knikkers") {
+        const los = st.kn.filter((q) => q.bak === -1);
+        if (!los.length) return null;
+        const h = st.trayDia / 2;
+        return {
+          x0: Math.min(...los.map((q) => q.thuis.x)) - h,
+          y0: Math.min(...los.map((q) => q.thuis.y)) - h,
+          x1: Math.max(...los.map((q) => q.thuis.x)) + h,
+          y1: Math.max(...los.map((q) => q.thuis.y)) + h,
+        };
+      }
+      const bakken = id === "sl.bakje" ? st.bakX.slice(0, 1) : st.bakX;
+      return { x0: bakken[0] - st.W / 2, y0: st.top, x1: bakken[bakken.length - 1] + st.W / 2, y1: st.top + st.H };
+    }
+
+    /** Het vierkant (in punten van het vlak) om alles wat bij `id` hoort, of null. */
+    omheen(id: string): Rechthoek | null {
+      /* Een ding uit het hoopje van het sleepspel (s1): "s1.<nummer>". */
+      if (id.startsWith("s1.")) return this.s1m?.rondjeVak(Number(id.slice(3))) ?? null;
+      /* Het verdeelspel (Delen): "sl.knikkers" = de knikkers boven, "sl.bakjes" = alle bakjes, "sl.bakje" = het eerste bakje. */
+      if (id.startsWith("sl.")) return this.slOmheen(id);
+      let r: Rechthoek | null = null;
+      const erbij = (x0: number, y0: number, x1: number, y1: number) => {
+        r = r ? { x0: Math.min(r.x0, x0), y0: Math.min(r.y0, y0), x1: Math.max(r.x1, x1), y1: Math.max(r.y1, y1) } : { x0, y0, x1, y1 };
+      };
+      for (const { im, id: i, sub, verborgen } of this.imgs) {
+        if ((i !== id && sub !== id) || !im.active || !im.visible || (verborgen && !this.staat.toon.includes(i))) continue;
+        const bw = im.displayWidth / 2;
+        const bh = im.displayHeight / 2;
+        erbij(im.x + MIDDEN.x - bw, im.y + MIDDEN.y - bh, im.x + MIDDEN.x + bw, im.y + MIDDEN.y + bh);
+      }
+      for (const d of this.beeld?.delen ?? []) {
+        if (d.id !== id) continue;
+        if (d.s === "huisje") {
+          const b = d.b ?? HUIS.b;
+          const f = b / HUIS.b;
+          const kamer = HUIS.kamer * f * (d.stippen ? 1.3 : 1);
+          erbij(d.x - b / 2 - 10 * f, d.dak !== false ? d.y - HUIS.dak * f * 1.25 : d.y, d.x + b / 2 + 10 * f, d.y + kamer);
+        } else if (d.s === "paal") erbij(d.x - 140, d.y - 44, d.x + 140, d.y + 170);
+        else if (d.s === "staaf") erbij(d.x, d.y - (d.blok ?? 40) / 2, d.x + d.n * (d.blok ?? 40), d.y + (d.blok ?? 40) / 2);
+        else if (d.s === "tekst") erbij(d.x - d.t.length * (d.grootte ?? 56) * 0.3, d.y - (d.grootte ?? 56) * 0.6, d.x + d.t.length * (d.grootte ?? 56) * 0.3, d.y + (d.grootte ?? 56) * 0.6);
+      }
+      return r;
+    }
+
+    /** Het plaatje van het rondje (een met de hand getekend rood rondje, Magnific, gekozen door Sara); null zolang het nog laadt. */
+    rondjeTex(): string | null {
+      const sl = "sps-rondje-2";
+      if (this.textures.exists(sl)) return sl;
+      if (!this.rondjeLaadt) {
+        this.rondjeLaadt = true;
+        const img = new Image();
+        img.src = "/rondje/rondje-rood-2.png";
+        img
+          .decode()
+          .then(() => {
+            if (!this.sys?.isActive() || this.textures.exists(sl)) return;
+            this.textures.addImage(sl, img);
+            this.rondjeSleutel = "";
+            this.tekenRondjes(this.staat);
+          })
+          .catch(() => console.error("[rondje] rondje-rood-2.png laadt niet"));
+      }
+      return null;
+    }
+
+    /**
+     * Wat Bliepo aanwijst of noemt: een rood rondje eromheen, met de hand getekend (Sara, 6 november 2026).
+     * Het verschijnt zacht, alleen bij een nieuwe aanwijzing en niet bij elk beeld opnieuw.
+     */
+    tekenRondjes(st: Staat) {
+      const doos = this.rondjeBox;
+      if (!doos) return;
+      const ids = st.rondje ? st.licht.filter((id) => !st.uit.includes(id)) : [];
+      /* Een verborgen ding dat later verschijnt (`toon`) krijgt dan ook zijn rondje. */
+      const sleutel = ids.map((id) => `${id}${st.toon.includes(id) ? "+" : ""}`).join("|");
+      if (!ids.length) {
+        if (this.rondjeSleutel !== "") doos.removeAll(true);
+        this.rondjeSleutel = "";
+        return;
+      }
+      const sl = this.rondjeTex();
+      if (!sl || sleutel === this.rondjeSleutel) return;
+      this.rondjeSleutel = sleutel;
+      doos.removeAll(true);
+      /* Dingen uit één groep (top.3, top.4 ...) krijgen samen één rondje, niet elk een eigen. */
+      const groepen = new Map<string, Rechthoek>();
+      for (const id of ids) {
+        const r = this.omheen(id);
+        if (!r) continue;
+        const k = id.split(".")[0];
+        const g = groepen.get(k);
+        groepen.set(k, g ? { x0: Math.min(g.x0, r.x0), y0: Math.min(g.y0, r.y0), x1: Math.max(g.x1, r.x1), y1: Math.max(g.y1, r.y1) } : r);
+      }
+      for (const [id, r] of groepen) {
+        const rnd = zaad(`rondje-${id}`);
+        /* Ruim om het geheel heen, ook om een lang rechthoekig ding. */
+        const im = this.add.image((r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, sl).setDisplaySize((r.x1 - r.x0) * 1.15 + 44, (r.y1 - r.y0) * 1.4 + 50);
+        im.setAngle((rnd() - 0.5) * 5);
+        doos.add(im);
+        if (this.rustig) continue;
+        const sx = im.scaleX;
+        const sy = im.scaleY;
+        im.setAlpha(0);
+        this.tweens.add({ targets: im, alpha: 1, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
+      }
     }
 
 
@@ -792,7 +918,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
           };
         },
         sleepPunt: () => {
-          const q = this.sl?.kn.find((m) => m.bak === -1) ?? this.sl?.kn[0];
+          const vast = this.slDruk?.sleept ? this.sl?.kn[this.slDruk.i] : undefined; // de knikker in de hand, niet een op de plank
+          const q = vast ?? this.sl?.kn.find((m) => m.bak === -1) ?? this.sl?.kn[0];
           return this.slScherm(q?.im.x ?? 490, q?.im.y ?? KNIK_BOVEN);
         },
       };
@@ -815,7 +942,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const dur = snel || this.rustig ? 1 : 190;
       const zet = (q: Knik, x: number, y: number, d: number) => {
         this.tweens.killTweensOf(q.im);
-        this.tweens.add({ targets: q.im, x, y, displayWidth: d, displayHeight: d, duration: dur, ease: "Cubic.easeOut" });
+        /* alpha: 1 — killTweensOf haalt ook het inzweven weg; anders blijft een knikker onzichtbaar als hij meteen wordt neergelegd (Nee-route). */
+        this.tweens.add({ targets: q.im, x, y, alpha: 1, displayWidth: d, displayHeight: d, duration: dur, ease: "Cubic.easeOut" });
       };
       st.kn.forEach((q) => {
         if (q.bak === -1) zet(q, q.thuis.x, q.thuis.y, st.trayDia);
@@ -1042,7 +1170,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, licht = [], goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
+export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, licht = [], rondje = false, goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
   /* Het canvas neemt alleen muis en vinger aan zolang er knikkers te slepen zijn; anders gaat alles erdoorheen naar de knoppen. */
   const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
@@ -1074,7 +1202,7 @@ export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, lic
   useEffect(() => {
     scene?.zetBeeld(JSON.parse(beeldSleutel) as Beeld | null);
   }, [scene, beeldSleutel]);
-  const staatSleutel = JSON.stringify({ licht, goedIds, uit, toon });
+  const staatSleutel = JSON.stringify({ licht, goedIds, uit, toon, rondje });
   useEffect(() => {
     scene?.zetStaat(JSON.parse(staatSleutel) as Staat);
   }, [scene, staatSleutel, beeldSleutel]);
@@ -1090,7 +1218,7 @@ export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, lic
   const teksten = delen.filter(zicht).flatMap(tekstenVan);
   const letters = delen.filter((d): d is Extract<Deel, { s: "letters" }> => d.s === "letters");
   const tikken = delen.filter((d): d is Extract<Deel, { s: "tik" }> => d.s === "tik");
-  const stijlVan = (id: string) => (goedIds.includes(id) ? s.goed : licht.includes(id) ? s.licht : uit.includes(id) ? s.uit : "");
+  const stijlVan = (id: string) => (goedIds.includes(id) ? s.goed : licht.includes(id) && !rondje ? s.licht : uit.includes(id) ? s.uit : "");
 
   return (
     <div className={s.vlak}>

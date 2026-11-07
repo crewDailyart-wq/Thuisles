@@ -15,6 +15,19 @@
   -webkit-tap-highlight-color: transparent;
 }
 
+.telknop {
+  position: absolute;
+  /* De aanwijzing is het rode rondje in het hologram (6 november 2026); de knop zelf is onzichtbaar. */
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+}
+.telknop:focus-visible {
+  outline: 4px solid white;
+  outline-offset: 5px;
+}
+
 /* Het getal achter een volle rij (5, 10, 15 …). */
 .rijgetal,
 .telgetal {

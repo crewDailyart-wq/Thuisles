@@ -26,6 +26,7 @@ import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, GOED, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
+import { maakRondjes } from "../holo/rondje";
 import { DAGEN } from "./squla-dagen-trein";
 import { binnen, rij, type Rect } from "./squla-tijd-plaatjes";
 import { tekenTekening, tekeningMaat } from "./squla-tijd-tekeningen";
@@ -120,7 +121,7 @@ interface TreinScene {
   speelHandje(): void;
 }
 
-type Ding = { box: Box; ring: Img; r: Rect; id: string; soort: "kaart" | "los" };
+type Ding = { box: Box; ring: Img; r: Rect; id: string; soort: "kaart" | "los"; rondjes?: ReturnType<typeof maakRondjes> };
 
 function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
   const Basis = holoBasis(Phaser, rustig);
@@ -130,6 +131,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     sig = { trein: "", rest: "" };
     nr = -1;
     treinGroep: Box | null = null;
+    /** Het rode rondje om de wagon(s) die Bliepo aanwijst; hoort bij de treingroep (rijdt mee). */
+    treinRondjes: ReturnType<typeof maakRondjes> | null = null;
     wagons = new Map<number, Img>();
     pijl: Img | null = null;
     bogen: import("phaser").GameObjects.Graphics | null = null;
@@ -259,6 +262,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     /* ---------- de trein ---------- */
 
     bouwTrein(p: TreinProps) {
+      this.treinRondjes?.vergeet();
+      this.treinRondjes = null;
       this.treinGroep?.destroy();
       this.treinGroep = null;
       this.wagons.clear();
@@ -291,11 +296,31 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       this.pijl = this.plaats("pijl-g", 0, 0).setVisible(false);
       g.add(this.pijl);
       this.treinGroep = g;
+      this.treinRondjes = maakRondjes(this, g, rustig);
     }
 
     /** Een lege plek (gestippeld) van b × h punten. */
     vak(x: number, y: number, b: number, h: number) {
       return this.plaats("leeg", x, y).setScale(b / 160 / TX, h / 84 / TX);
+    }
+
+    /** Wat Bliepo aanwijst krijgt een rood rondje: wagons die naast elkaar staan samen, de rest apart. */
+    rondjeVakken(p: TreinProps, m: TreinMaat) {
+      const wens = new Map<string, { x: number; y: number; b: number; h: number }>();
+      if (!p.trein || !p.licht?.length) return wens;
+      const ox = VLAK_B / 2;
+      const plekken = p.licht.map((d) => p.trein!.indexOf(d)).filter((i) => i >= 0).sort((a, b) => a - b);
+      let start = 0;
+      for (let k = 0; k < plekken.length; k++) {
+        if (k + 1 < plekken.length && plekken[k + 1] === plekken[k] + 1) continue;
+        const a = plekken[start];
+        const b = plekken[k];
+        const x0 = m.x(a) - ox - m.w / 2;
+        const x1 = m.x(b) - ox + m.w / 2;
+        wens.set(`w${a}-${b}`, { x: (x0 + x1) / 2, y: 0, b: x1 - x0, h: WAGON_H(m.w) });
+        start = k + 1;
+      }
+      return wens;
     }
 
     pasTreinToe(p: TreinProps) {
@@ -304,10 +329,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const ox = VLAK_B / 2;
       for (const [d, w] of this.wagons) {
         const aan = !!p.licht?.includes(d);
-        const y = aan ? -10 : 0;
-        if (w.y !== y) this.tweens.add({ targets: w, y, duration: rustig ? 1 : 160, ease: "Cubic.easeOut" });
         w.setAlpha(p.licht?.length && !aan ? 0.5 : 1);
       }
+      this.treinRondjes?.zet(this.rondjeVakken(p, m));
       if (this.pijl) {
         const i = p.vandaag != null ? p.trein.indexOf(p.vandaag) : -1;
         this.pijl.setVisible(i >= 0);
@@ -433,17 +457,29 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
           /* Bij een fout geen rode rand (BOUWREGELS 5.3): het kaartje wordt dof en schudt. */
-          rand(p.goed?.includes(d.id) ? "groen" : p.kaartLicht?.includes(d.id) ? "geel" : null, d);
+          rand(p.goed?.includes(d.id) ? "groen" : null, d);
+          this.rondjeKaart(d, !!p.kaartLicht?.includes(d.id) && !p.goed?.includes(d.id));
           d.box.setAlpha(p.uit?.includes(d.id) || p.fout?.includes(d.id) ? 0.25 : 1);
         } else if (p.orden) {
           const vak = p.orden.vakken.findIndex((x) => x !== null && dagNaam(x) === d.id);
           const doel = vak >= 0 ? ind.vakken[vak] : d.r;
           if (this.druk?.d !== d && (d.box.x !== doel.x || d.box.y !== doel.y)) this.tweens.add({ targets: d.box, x: doel.x, y: doel.y, duration: rustig ? 1 : 220, ease: "Cubic.easeOut" });
           const u = vak >= 0 ? p.orden.uitslag?.[vak] : null;
-          rand(u === true ? "groen" : u === false ? "wit" : p.kaartLicht?.includes(d.id) ? "geel" : null, d);
+          rand(u === true ? "groen" : u === false ? "wit" : null, d);
+          this.rondjeKaart(d, u == null && !!p.kaartLicht?.includes(d.id));
           d.box.setDepth(vak >= 0 ? 1 : 2);
         }
       }
+    }
+
+    /** Het rode rondje om een kaart die Bliepo aanwijst (hoort bij de kaart, beweegt mee). */
+    rondjeKaart(d: Ding, aan: boolean) {
+      if (!aan && !d.rondjes) return;
+      d.rondjes ??= maakRondjes(this, d.box, rustig);
+      const paar = d.id.includes(" en ");
+      const b = paar ? 2 * PAAR_W + 10 : KAART_W;
+      const h = WAGON_H(paar ? PAAR_W : KAART_W);
+      d.rondjes.zet(aan ? new Map([["kaart", { x: 0, y: 0, b, h }]]) : new Map());
     }
 
     schudDing(id: string) {
@@ -600,7 +636,11 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       const stap = () => {
         if (performance.now() > eind || !lijst.length) return;
         const w = lijst[i++ % lijst.length];
-        this.tweens.add({ targets: w, y: -10, duration: 160, yoyo: true, hold: 200, ease: "Cubic.easeOut" });
+        const m = this.p?.trein ? treinMaat(this.p.trein.length, !!this.p.treinKlein) : null;
+        if (m && this.p?.trein && this.treinRondjes) {
+          const idx = this.p.trein.findIndex((dg) => dg !== null && this.wagons.get(dg) === w);
+          if (idx >= 0) this.treinRondjes.zet(this.rondjeVakken({ ...this.p, licht: [this.p.trein[idx] as number] }, m));
+        }
         if (this.treinGroep) this.golf(this.treinGroep.x + w.x, this.treinGroep.y + w.y);
         this.time.delayedCall(450, stap);
       };

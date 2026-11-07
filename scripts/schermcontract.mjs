@@ -64,6 +64,25 @@ const PLAATJESTELLEN = "src/lib/generatoren/plaatjestellen.ts";
 
 export const SCHERMCONTRACT = [
   {
+    naam: "Uitleg per les kiezen op de laptop",
+    pad: "/voorbeeld/uitleg-kindertaal",
+    bron: ["src/app/voorbeeld/uitleg-kindertaal/page.tsx"],
+    zichtbaar: ["Makkelijker uitgelegd", "Zoek een les of woord", "Onderwerp", "Alle onderwerpen", "Nog te kiezen", "Zoeken", "Ga meteen naar een les"],
+    naKlik: [
+      { tekst: "Teksten kiezen op deze laptop", bron: "src/app/voorbeeld/uitleg-kindertaal/page.tsx", na: "de lokale pagina openen zonder actieve beheerstand" },
+      { tekst: "Gebruik deze tekst in de les", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "een les openklappen" },
+      { tekst: "Tekst aanpassen", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "een les openklappen in de lokale beheerstand" },
+      { tekst: "Jouw tekst", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "op Tekst aanpassen klikken" },
+      { tekst: "Opslaan en gebruiken", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "op Tekst aanpassen klikken" },
+      { tekst: "Annuleren", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "op Tekst aanpassen klikken" },
+      { tekst: "Vink uit om de vorige tekst terug te zetten", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "een voorstel aanvinken en opslaan" },
+      { tekst: "Bekijk de les met de opgeslagen teksten", bron: "src/app/voorbeeld/uitleg-kindertaal/page.tsx", na: "een les openklappen" },
+      { tekst: "Bekijk de les ↗", bron: "src/app/voorbeeld/uitleg-kindertaal/TekstKeuze.tsx", na: "bij een tekst kijken, ook tijdens Tekst aanpassen" },
+      { tekst: "Bekijk het beginscherm", bron: "src/app/voorbeeld/uitleg-kindertaal/page.tsx", na: "Groot en klein, vol en leeg openklappen" },
+      { tekst: "Hulp als een stap nog niet lukt", bron: "src/app/voorbeeld/uitleg-kindertaal/page.tsx", na: "Groot en klein, vol en leeg openklappen" },
+    ],
+  },
+  {
     naam: "Bosspellen overzicht",
     pad: "/voorbeeld/tellen",
     bron: ["src/components/oefenen/BosOverzicht.tsx"],

@@ -60,7 +60,9 @@ export type Lesgeluid =
   | "sfeerMunten"
   | "sfeerVuurvliegjes"
   | "sfeerLantaarns"
-  | "sfeerPaddenstoelen";
+  | "sfeerPaddenstoelen"
+  /* Oplichten in plaats van een rondje (BOUWREGELS 7.9, 6 november 2026; zelf gemaakt in code, extra zacht en kort): */
+  | "oplicht"; // een zacht pingetje als Bliepo iets laat oplichten (bijvoorbeeld een wijzer van de klok)
 
 let ctx: AudioContext | null = null;
 let uit = false;
@@ -474,6 +476,11 @@ function maak(c: AudioContext, naam: Lesgeluid, stap = 0) {
       break;
     case "plop":
       toon(c, { f: 520, f2: 880, duur: 0.1, vol: 0.06 }, t);
+      break;
+    case "oplicht":
+      /* Zachter dan alle andere geluidjes (0,02 tegen 0,04–0,07), zodat het de stem niet overstemt en niet irriteert bij vaak horen. */
+      toon(c, { f: 1175, duur: 0.1, vol: 0.02, type: "triangle" }, t);
+      toon(c, { f: 1568, duur: 0.2, vol: 0.014 }, t + 0.07);
       break;
     case "klokDraai":
       ruis(c, 1.4, 0.035, 400, 2400, t);

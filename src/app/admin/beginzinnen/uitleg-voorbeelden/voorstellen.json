@@ -1,0 +1,452 @@
+[
+  {
+    "id": "squla-tellen-fruit-1",
+    "titel": "Fruit tellen",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Ze staan in rijen van 5.",
+      "5.",
+      "Dan tel ik verder.",
+      "6, 7, 8.",
+      "Het zijn er 8.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Tellen · een volle rij gebruiken",
+    "huidigBeeld": "Acht appels in rijen van vijf. De appels lichten op terwijl Bliepo ze telt; het kind antwoordt nog niet.",
+    "stappen": [
+      {
+        "zeg": "We tellen samen. In deze volle rij liggen vijf appels.",
+        "beeld": "Acht appels: een volle rij van vijf en daaronder drie. Alleen de volle rij licht op.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Begin bij vijf. Tel verder terwijl je op de appels in de volgende rij tikt.",
+        "beeld": "De tweede rij wordt actief. Elke aangetikte appel krijgt een markering.",
+        "kind": "Het kind tikt de drie appels één voor één aan en telt verder.",
+        "goed": ""
+      },
+      {
+        "zeg": "Hoeveel appels zijn het samen?",
+        "beeld": "De acht appels blijven zichtbaar. Er verschijnen antwoordknoppen.",
+        "kind": "Het kind kiest het totaal.",
+        "goed": "Ja, acht. Vijf in de volle rij en nog drie erbij."
+      },
+      {
+        "zeg": "Probeer nu een volgend groepje. Gebruik de volle rij om verder te tellen.",
+        "beeld": "Een nieuwe telopgave verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "In de volle rij liggen er vijf. Tik op de eerste appel eronder. Welk getal komt na vijf?"
+  },
+  {
+    "id": "squla-tellen-resultatief3-4",
+    "titel": "Grote groepen tellen (heel moeilijk)",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "In de zak zitten 30 knikkers.",
+      "Elke losse knikker is er één meer.",
+      "31, 32, 33.",
+      "Samen zijn het er 33.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Tellen · verder tellen vanaf een getal",
+    "huidigBeeld": "Een zak met het getal 30 en drie losse knikkers. Eerst licht de zak op; daarna telt Bliepo de losse knikkers mee.",
+    "stappen": [
+      {
+        "zeg": "We kijken eerst naar de zak. Er zitten dertig knikkers in. Die hoef je niet opnieuw te tellen.",
+        "beeld": "Een zak met 30 erop en drie losse knikkers. Het getal op de zak licht op.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Bij de eerste losse knikker tel je verder: eenendertig.",
+        "beeld": "Eén losse knikker licht op en krijgt het getal 31.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Tel jij de andere twee erbij? Tik ze één voor één aan.",
+        "beeld": "De andere twee knikkers worden actief.",
+        "kind": "Het kind tikt de twee knikkers aan en telt verder vanaf 31.",
+        "goed": ""
+      },
+      {
+        "zeg": "Hoeveel knikkers zijn het nu samen?",
+        "beeld": "De zak en de losse knikkers blijven in beeld.",
+        "kind": "Het kind kiest het totaal.",
+        "goed": "Precies, drieëndertig. Je begon bij dertig en telde er drie bij."
+      },
+      {
+        "zeg": "Bij de volgende zak begin je weer bij het getal dat erop staat.",
+        "beeld": "Een volgende opgave met een zak en losse knikkers verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Je was bij eenendertig. Welke knikker heb je nog niet geteld? Tik die aan en tel één verder."
+  },
+  {
+    "id": "squla-vormen-patronen-1",
+    "titel": "Patronen",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Kijk: blauw, geel.",
+      "En weer: blauw, geel.",
+      "Het komt steeds terug. Dat is een patroon.",
+      "Na geel komt dus weer blauw.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Patronen · ontdekken wat zich herhaalt",
+    "huidigBeeld": "Zes kralen: blauw, geel, blauw, geel, blauw, geel. Steeds licht een paar op. Bliepo vertelt zelf welke kleur volgt.",
+    "stappen": [
+      {
+        "zeg": "Laten we samen naar de kleuren kijken. Blauw, geel. En daarna weer blauw, geel.",
+        "beeld": "De eerste twee kralen lichten op, daarna de volgende twee.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Dat stukje komt steeds terug. Dat noemen we een patroon.",
+        "beeld": "De drie gelijke paren worden kort gemarkeerd.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Welke kleur komt na de laatste gele kraal? Tik op die kleur.",
+        "beeld": "Na de zesde kraal staat een lege plek. De kleurkeuzes worden actief.",
+        "kind": "Het kind kiest blauw.",
+        "goed": "Ja, blauw. Na blauw en geel begint hetzelfde stukje opnieuw."
+      },
+      {
+        "zeg": "Bekijk nu het volgende patroon. Zoek eerst welk stukje steeds terugkomt.",
+        "beeld": "Een nieuw kralenpatroon verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Kijk naar de eerste gele kraal. Welke kleur staat er meteen achter?"
+  },
+  {
+    "id": "squla-vormen-kleuren-1",
+    "titel": "Vormen en kleuren",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Eerst zie je het hele plaatje.",
+      "Dan valt het in stukjes.",
+      "Sleep elk stukje naar zijn eigen plek.",
+      "Op de goede plek klikt het vast.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Puzzelen · één stukje met hulp plaatsen",
+    "huidigBeeld": "De uitleg beschrijft het hele plaatje, de losse stukjes en het slepen. Tijdens deze uitleg plaatst het kind nog geen stukje.",
+    "stappen": [
+      {
+        "zeg": "We beginnen met één stukje. Kijk eerst goed naar het hele plaatje.",
+        "beeld": "Een eenvoudig voorbeeld met vier stukken. Het hele plaatje is eerst zichtbaar.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Het plaatje ligt nu in stukjes. Kijk naar het stukje dat oplicht. Waar hoort het?",
+        "beeld": "Eén hoekstuk licht op. Een klein voorbeeld van het hele plaatje blijft zichtbaar.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Sleep dat stukje naar zijn plek. Je kunt ook op het stukje tikken en daarna op de plek.",
+        "beeld": "Alleen dit stukje is actief; beide manieren van plaatsen zijn onderdeel van het voorstel.",
+        "kind": "Het kind plaatst het stukje.",
+        "goed": "Dat past. De kleuren lopen nu door. Op de juiste plek blijft het stukje vastzitten."
+      },
+      {
+        "zeg": "Zoek nu een volgend stukje dat erbij past.",
+        "beeld": "De overige drie stukken worden actief; het voorbeeld blijft zichtbaar.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Vergelijk het stukje met het kleine voorbeeld. Kijk naar de kleuren langs de rand."
+  },
+  {
+    "id": "squla-min-ruimte-1",
+    "titel": "Minsommen in de ruimte",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Er zweven 7 ballonnen in de lucht.",
+      "4 ballonnen vliegen weg.",
+      "Er blijven 3 ballonnen over.",
+      "Dat is de minsom 7 − 4 = 3.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Aftrekken · tellen wat overblijft",
+    "huidigBeeld": "Zeven ballonnen. Vier worden grijs; de drie overgebleven ballonnen lichten op. Bliepo noemt het antwoord en toont 7 − 4 = 3.",
+    "stappen": [
+      {
+        "zeg": "We bekijken het samen. Er zijn zeven ballonnen. Vier vliegen weg.",
+        "beeld": "Zeven ballonnen verschijnen. Vier vliegen uit de groep en vervagen.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "De ballonnen die weg zijn, tel je niet meer mee. Tik op de ballonnen die overblijven.",
+        "beeld": "Alleen de overgebleven ballonnen zijn actief.",
+        "kind": "Het kind tikt de drie overgebleven ballonnen aan; elke ballon krijgt een telmarkering.",
+        "goed": ""
+      },
+      {
+        "zeg": "Hoeveel ballonnen blijven er over?",
+        "beeld": "De overgebleven ballonnen blijven zichtbaar.",
+        "kind": "Het kind kiest drie.",
+        "goed": "Goed geteld. Er blijven drie ballonnen over. Zeven min vier is drie."
+      },
+      {
+        "zeg": "Bij een minsom gaat er iets af. Probeer nu uit te rekenen wat er bij de volgende som overblijft.",
+        "beeld": "Een volgende minsom verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Kijk alleen naar de ballonnen die nog bij elkaar staan. Tel ze één voor één."
+  },
+  {
+    "id": "squla-plus-bakkerij-1",
+    "titel": "Plussommen in de bakkerij",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Hier ligt 1 taartje.",
+      "Ik leg er 4 bij.",
+      "Erbij is plus: 1 + 4.",
+      "Draai de som om.",
+      "Begin bij het grootste getal: 4.",
+      "Hier zijn 4 oranje stippen.",
+      "Er komt 1 blauwe stip bij.",
+      "Eén meer dan 4: hoeveel is dat?",
+      "1 + 4 = 5.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Optellen · verder tellen met hetzelfde beeld",
+    "huidigBeeld": "Eén taartje en vier taartjes. Daarna volgt een stippenmodel: de som wordt omgedraaid naar vier plus één. Bliepo stelt een vraag en geeft daarna zelf het antwoord.",
+    "stappen": [
+      {
+        "zeg": "Ik help je op weg. Er ligt één taartje. De bakker legt er vier bij.",
+        "beeld": "Eén taartje staat apart. Vier nieuwe taartjes verschijnen ernaast.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Begin bij één. Tel verder terwijl je op de nieuwe taartjes tikt.",
+        "beeld": "Het eerste taartje krijgt het getal 1. De vier nieuwe taartjes worden actief.",
+        "kind": "Het kind tikt de nieuwe taartjes aan en telt verder: twee, drie, vier, vijf.",
+        "goed": ""
+      },
+      {
+        "zeg": "Hoeveel taartjes liggen er nu samen?",
+        "beeld": "Alle taartjes blijven zichtbaar.",
+        "kind": "Het kind kiest vijf.",
+        "goed": "Ja, vijf taartjes. Eén plus vier is vijf."
+      },
+      {
+        "zeg": "Er kwam iets bij. Daarom telden we op. Nu krijg je een nieuwe plussom.",
+        "beeld": "Een volgende opgave verschijnt, met dezelfde manier van tellen als steun.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Het eerste taartje heb je al geteld: één. Tik op het eerste nieuwe taartje en tel verder."
+  },
+  {
+    "id": "squla-splits-splitsen1-1",
+    "titel": "Splitsen tot 10",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Kijk: er zijn 5 pionnen.",
+      "2 pionnen staan in het paarse vak.",
+      "3 pionnen staan in het oranje vak.",
+      "5 kun je splitsen in 2 en 3.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Splitsen · het kind verdeelt de pionnen",
+    "huidigBeeld": "Vijf pionnen schuiven automatisch naar twee vakken: twee in paars en drie in oranje. Bliepo noemt beide delen.",
+    "stappen": [
+      {
+        "zeg": "We verdelen de pionnen samen. Er zijn er vijf.",
+        "beeld": "Vijf pionnen en twee lege vakken verschijnen.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Zet twee pionnen in het paarse vak.",
+        "beeld": "Het paarse vak licht op.",
+        "kind": "Het kind verplaatst twee pionnen.",
+        "goed": "Daar staan er twee. De andere pionnen moeten nog een plek krijgen."
+      },
+      {
+        "zeg": "Zet de rest in het oranje vak. Hoeveel pionnen staan daar dan?",
+        "beeld": "Het oranje vak wordt actief.",
+        "kind": "Het kind verplaatst de overige pionnen en kiest het aantal drie.",
+        "goed": "Precies, drie. Twee en drie zijn samen vijf. Je hebt vijf gesplitst in twee en drie."
+      },
+      {
+        "zeg": "Nu mag je een nieuw groepje over de twee vakken verdelen.",
+        "beeld": "Een volgende splitsopgave verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Er staan al twee pionnen in het paarse vak. Tel alleen de pionnen die nog buiten de vakken staan."
+  },
+  {
+    "id": "squla-klok-hoelaat-1",
+    "titel": "Hoe laat is het?",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Dit is een wijzerklok.",
+      "De lange wijzer is de grote wijzer.",
+      "Bij een heel uur staat hij op de 12.",
+      "De korte wijzer is de kleine wijzer.",
+      "Die wijst het uur aan.",
+      "Hier wijst hij naar de 3.",
+      "Het is dus 3 uur.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Klokkijken · een heel uur aflezen",
+    "huidigBeeld": "Een klok op drie uur. Eerst wordt de grote wijzer benadrukt, daarna de kleine. Bliepo vertelt dat het drie uur is.",
+    "stappen": [
+      {
+        "zeg": "We bekijken de wijzers één voor één. De grote wijzer staat op twaalf. Dan is het een heel uur.",
+        "beeld": "Een klok op drie uur. Alleen de grote wijzer wordt benadrukt.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "De kleine wijzer vertelt welk uur het is. Tik op het getal waar die naartoe wijst.",
+        "beeld": "De kleine wijzer licht op; de getallen op de klok worden actief.",
+        "kind": "Het kind tikt op de 3.",
+        "goed": "Ja, de kleine wijzer wijst naar de drie."
+      },
+      {
+        "zeg": "Hoe laat is het dus?",
+        "beeld": "Beide wijzers zijn weer duidelijk zichtbaar.",
+        "kind": "Het kind kiest drie uur.",
+        "goed": "Dat klopt: drie uur. De grote wijzer staat op twaalf en de kleine op drie."
+      },
+      {
+        "zeg": "Probeer de volgende klok. Kijk eerst of het een heel uur is en lees dan de kleine wijzer af.",
+        "beeld": "Een nieuwe klok met een heel uur verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Volg de kleine wijzer vanaf het midden tot aan de punt. Welk getal staat daar?"
+  },
+  {
+    "id": "squla-geld-geldmachine-1",
+    "titel": "Munten en briefjes",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Dit is een munt van 1 euro.",
+      "Een munt is rond.",
+      "Er staat een 1 op. Zo weet je hoeveel hij waard is.",
+      "Hij is zilver in het midden, met een gouden rand.",
+      "Een briefje is van papier. Dat is geen munt.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Geld · een munt herkennen en terugvinden",
+    "huidigBeeld": "Een munt van één euro licht op. Bliepo noemt de vorm, het getal, de kleuren en het verschil met een briefje.",
+    "stappen": [
+      {
+        "zeg": "Laten we deze munt eens goed bekijken. Dit is één euro. Kijk naar de één en het woord euro.",
+        "beeld": "Een grote munt van één euro. Het getal en het woord euro worden benadrukt.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Een munt is rond. Een briefje heeft de vorm van een rechthoek. Tik op de munt.",
+        "beeld": "De munt en een briefje van vijf euro staan naast elkaar.",
+        "kind": "Het kind tikt op de munt.",
+        "goed": "Ja, dat is de munt. Het andere is een briefje."
+      },
+      {
+        "zeg": "Zoek nu de munt van één euro tussen deze munten.",
+        "beeld": "Munten van één euro, twee euro en vijftig cent verschijnen.",
+        "kind": "Het kind kiest één euro.",
+        "goed": "Goed gekeken. Op deze munt staan een één en het woord euro."
+      },
+      {
+        "zeg": "Bekijk bij de volgende vraag weer het getal en wat erbij staat.",
+        "beeld": "De eerste reguliere herkenningsopgave verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Zoek eerst de één. Kijk daarna of er euro bij staat."
+  },
+  {
+    "id": "squla-tijd-dagen-1",
+    "titel": "Dagen van de week",
+    "oud": [
+      "Geen probleem.",
+      "Ik leg het kort uit.",
+      "Kijk mee.",
+      "Maandag.",
+      "Dinsdag.",
+      "Woensdag.",
+      "Donderdag.",
+      "Vrijdag.",
+      "Zaterdag.",
+      "Zondag.",
+      "De week begint met maandag.",
+      "De week eindigt met zondag.",
+      "Zaterdag en zondag zijn het weekend.",
+      "Dan is er geen school.",
+      "Nu jij!"
+    ],
+    "onderwerp": "Tijd · de eerste dag en het weekend aanwijzen",
+    "huidigBeeld": "De zeven wagons lichten één voor één op terwijl Bliepo alle dagen noemt. Daarna benadrukt hij maandag, zondag en het weekend.",
+    "stappen": [
+      {
+        "zeg": "We lopen samen langs de weektrein. Elke wagon is één dag.",
+        "beeld": "De trein met zeven wagons staat in beeld.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "Maandag, dinsdag, woensdag, donderdag, vrijdag, zaterdag, zondag.",
+        "beeld": "Bij elke genoemde dag licht de bijbehorende wagon op.",
+        "kind": "",
+        "goed": ""
+      },
+      {
+        "zeg": "De week begint op maandag. Tik op die eerste dag.",
+        "beeld": "De wagons worden actief.",
+        "kind": "Het kind tikt op maandag.",
+        "goed": "Dat is maandag, de eerste dag van de week."
+      },
+      {
+        "zeg": "Zaterdag en zondag vormen samen het weekend. Tik die twee dagen aan.",
+        "beeld": "Alle wagons blijven zichtbaar.",
+        "kind": "Het kind selecteert zaterdag en zondag.",
+        "goed": "Ja, die twee horen bij het weekend. Zondag is ook de laatste dag van de week."
+      },
+      {
+        "zeg": "Nu ga jij de gevraagde dagen op de trein zoeken.",
+        "beeld": "Een volgende vraag over de week verschijnt.",
+        "kind": "",
+        "goed": ""
+      }
+    ],
+    "tip": "Het weekend staat aan het einde van de trein. Zoek de wagons met zaterdag en zondag."
+  }
+]

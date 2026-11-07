@@ -34,6 +34,13 @@ import { useEffect, useRef, useState } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
+import { maakRondjes, type RondjeVak } from "../holo/rondje";
+/** Een groot geheel (veel dingen): het rondje sluit er strak omheen (ongeveer 30 punten ruimte) in plaats van een enorm ovaal; `maakRondjes` rekent zelf nog ruimte bij. */
+function strak(v: RondjeVak): RondjeVak {
+  if (v.b <= 240 && v.h <= 240) return v;
+  return { x: v.x, y: v.y, b: Math.max(60, (v.b + 60 - 44) / 1.15), h: Math.max(60, (v.h + 60 - 50) / 1.4) };
+}
+
 import { maakPlaatjes, opGetal, type Ding, type Wezen } from "./squla-getallenlijn-teken";
 
 export type { Wezen };
@@ -165,6 +172,8 @@ function maakScene(letter: () => string) {
       sleutel = "";
       alles: Obj[] = [];
       lichtjes: Obj[] = [];
+      /* Het rode rondje (Sara, 6 november 2026): wat Bliepo aanwijst of telt, geen pulserende gloed meer. */
+      rondjes: ReturnType<typeof maakRondjes> | null = null;
       labels = new Map<number, import("phaser").GameObjects.Text>();
       rijTekst = new Map<number, import("phaser").GameObjects.Text>();
       vlagTekst: import("phaser").GameObjects.Text | null = null;
@@ -237,6 +246,7 @@ function maakScene(letter: () => string) {
         this.alles = [];
         this.lichtjes.forEach((o) => o.destroy());
         this.lichtjes = [];
+        this.rondjes?.vergeet();
         this.handjeLoopt?.destroy();
         this.handjeLoopt = null;
         this.labels.clear();
@@ -470,32 +480,43 @@ function maakScene(letter: () => string) {
       /* ---------- oplichten en de lichtgolf ---------- */
 
       tekenLicht(st: Staat) {
-        this.lichtjes.forEach((o) => o.destroy());
-        this.lichtjes = [];
         const ingevuld = this.st?.invul?.op;
         this.labels.forEach((t, n) => t.setColor(n === ingevuld ? "#8ff0c0" : "#ffffff").setScale(1));
+        if (!this.rondjes) {
+          const houder = this.add.container(0, 0).setDepth(30);
+          this.rondjes = maakRondjes(this, houder, this.rustig);
+        }
         const b = st.beeld;
+        const vakken: [number, RondjeVak][] = [];
         for (const n of st.licht) {
           if (b.soort === "rij") {
             const { xs, schaal, y } = rijMaten(b.items, b.ding);
-            if (xs[n] !== undefined) this.lichtjes.push(this.selectieRing(xs[n], y + (b.onder ? 20 : 0), (b.onder ? 78 : 62) * schaal));
+            const d = (b.onder ? 78 : 62) * schaal * 1.3;
+            if (xs[n] !== undefined) vakken.push([n, { x: xs[n], y: y + (b.onder ? 20 : 0), b: d, h: d }]);
           } else if (b.soort === "lijn") {
-            const { x, eenheid, Y } = lijnMaten(b.van, b.tot, b.door);
+            const { x, Y } = lijnMaten(b.van, b.tot, b.door);
             const label = this.labels.get(n);
-            if (label) {
-              label.setColor("#ffe066").setScale(1.15);
-              this.lichtjes.push(this.selectieRing(x(n), Y + 46, Math.min(34, eenheid * 0.5 + 8)));
-            } else this.lichtjes.push(this.plaats("stip-g", x(n), Y));
+            if (label) vakken.push([n, { x: x(n), y: Y + 46, b: label.displayWidth, h: label.displayHeight * 0.8 }]);
+            else vakken.push([n, { x: x(n), y: Y, b: 30, h: 30 }]);
           } else if (b.soort === "orden") {
             const vak = this.vakken.find((v) => v.vast === n);
             const kaart = this.kaarten.find((k) => k.n === n);
             const p = vak ?? (kaart ? kaart.cont : null);
-            if (p) this.lichtjes.push(this.selectieRing(p.x, p.y, 70));
+            if (p) vakken.push([n, { x: p.x, y: p.y, b: 100, h: 100 }]);
           } else if (b.soort === "bordjes") {
-            const x = bordX(n, b.getallen.length);
-            this.lichtjes.push(this.selectieRing(x, BORD_Y - 34, 70));
+            vakken.push([n, { x: bordX(n, b.getallen.length), y: BORD_Y - 34, b: 100, h: 100 }]);
           }
         }
+        const wens = new Map<string, RondjeVak>();
+        if (vakken.length >= 3) {
+          /* Veel tegelijk (samen tellen): één rondje om het geheel, niet een rondje per ding. */
+          const x0 = Math.min(...vakken.map(([, v]) => v.x - v.b / 2));
+          const x1 = Math.max(...vakken.map(([, v]) => v.x + v.b / 2));
+          const y0 = Math.min(...vakken.map(([, v]) => v.y - v.h / 2));
+          const y1 = Math.max(...vakken.map(([, v]) => v.y + v.h / 2));
+          wens.set(`geheel-${vakken.map(([n, v]) => `${n}@${Math.round(v.x)}`).join(",")}`, strak({ x: (x0 + x1) / 2, y: (y0 + y1) / 2, b: x1 - x0, h: y1 - y0 }));
+        } else for (const [n, v] of vakken) wens.set(`n${n}-${Math.round(v.x)}-${Math.round(v.y)}`, v);
+        this.rondjes.zet(wens);
       }
 
       doeGolf(op: number) {

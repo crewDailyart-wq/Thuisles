@@ -19,17 +19,18 @@
  * - `actief`: het kind mag slepen of tikken. Meldt `{ soort: "gelegd", n }`.
  * - `fout`: { n, keer } — dat losse ding schudt en gaat terug.
  * - `ingevuld`: het goede getal staat op de lege plek (lichtgolf).
- * - `licht`: welke plek in de rij oplicht (samen langs de rij lopen).
+ * - `licht`: welke plek in de rij een rood rondje krijgt (samen langs de rij lopen; sinds 6 november 2026 geen gloed meer).
  * - `hand`: een lichtje doet één keer voor hoe je sleept.
  */
 
 import { useEffect } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
-import { holoBasis, VLAK_B, VLAK_H, WARM, GOED, type PhaserModule } from "../holo/basis";
+import { holoBasis, VLAK_B, VLAK_H, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { hexGetal, type Kleurnaam } from "./squla-tellen-tekenen";
 import { voorwerpTextuur } from "../voorwerpen";
+import { maakRondjes } from "../holo/rondje";
 import s from "./squla-tellen.module.css";
 
 export type Rijopgave = { id: string; soort: "na" | "voor"; rij: number[]; losse: number[] };
@@ -123,6 +124,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
     vulling: Box | null = null;
     lijn: Gfx | null = null;
     lichtG: Gfx | null = null;
+    rondjes: ReturnType<typeof maakRondjes> | null = null;
     vinger: Img | null = null;
     actief = false;
     bezig = false;
@@ -244,6 +246,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       this.gatDing?.destroy();
       this.lijn?.destroy();
       this.lichtG?.destroy();
+      this.rondjes?.vergeet();
       this.vinger?.destroy();
       this.vast = [];
       this.losse = [];
@@ -300,18 +303,15 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       this.lichtG?.destroy();
       this.lichtG = null;
       const o = this.o;
-      if (i === null || !o) return;
-      const q = plekken(o).rij[i];
-      if (!q) return;
-      const g = this.add.graphics().setDepth(-1);
-      if (dingVan(o) === "huis") {
-        g.fillStyle(WARM, 0.55);
-        g.fillEllipse(q.x, q.y + 6, HUIS_B + 40, 26);
-      } else {
-        g.lineStyle(6, WARM, 0.9);
-        g.strokeRoundedRect(q.x - KRT.b / 2 - 10, q.y - KRT.h / 2 - 10, KRT.b + 20, KRT.h + 20, 22);
+      const q = o && i !== null ? plekken(o).rij[i] : undefined;
+      if (!o || !q) {
+        this.rondjes?.zet(new Map());
+        return;
       }
-      this.lichtG = g;
+      /* Een rood rondje om het huis of kaartje dat Bliepo aanwijst (geen gloed meer). */
+      if (!this.rondjes) this.rondjes = maakRondjes(this, this.add.container(0, 0).setDepth(15), this.rustig);
+      const vak = dingVan(o) === "huis" ? { x: q.x, y: q.y - HUIS_HOOG / 2, b: HUIS_B * 0.8, h: HUIS_HOOG } : { x: q.x, y: q.y, b: KRT.b, h: KRT.h };
+      this.rondjes.zet(new Map([[`rij-${i}`, vak]]));
     }
 
     zetIngevuld(n: number | null) {

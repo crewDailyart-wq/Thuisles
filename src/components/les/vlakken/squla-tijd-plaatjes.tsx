@@ -30,6 +30,7 @@ import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { TX, VLAK_B, VLAK_H } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
+import { maakRondjes } from "../holo/rondje";
 import { bliepoBasis, PALET, RAND_DUN, blok, tekenVormen } from "./bliepo-voorwerpen";
 import { tekenTekening, tekeningMaat, zetLettertype } from "./squla-tijd-tekeningen";
 import { haalKeuzesAlvast, zegKeuze } from "@/lib/stem";
@@ -144,7 +145,7 @@ interface PlaatjesScene {
   speelHandje(): void;
 }
 
-type Ding = { box: Box; ring: Img; r: Rect; d: PDing; kleur: keyof typeof RING | null; zeg: string; soort: "kaart" | "los" | "vast" | "links" | "rechts"; id: string };
+type Ding = { box: Box; ring: Img; r: Rect; d: PDing; kleur: keyof typeof RING | null; rondjes?: ReturnType<typeof maakRondjes>; zeg: string; soort: "kaart" | "los" | "vast" | "links" | "rechts"; id: string };
 
 const RING = { geel: PALET.geel, groen: "#3fbf6a", rood: "#e8453c" } as const;
 
@@ -336,7 +337,14 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     pasToe(p: PlaatjesProps) {
       const ind = indeling(p);
-      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.licht?.includes(id) ? "geel" : null);
+      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : null);
+      /* Wat Bliepo aanwijst (`licht`) krijgt een rood rondje in plaats van een gloed; goed houdt zijn groene gloed. */
+      const rondje = (d: Ding, aan: boolean) => {
+        if (!aan && !d.rondjes) return;
+        d.rondjes ??= maakRondjes(this, d.box, rustig);
+        d.rondjes.zet(aan ? new Map([["ding", { x: 0, y: 0, b: d.r.b, h: d.r.h }]]) : new Map());
+      };
+      const wijst = (id: string) => !!p.licht?.includes(id) && !p.goed?.includes(id);
       /* Een gloed in de vorm van het plaatje; bij goed een korte gloed die weer weggaat (geen blijvend kader, BOUWREGELS 1.4). */
       const zetRing = (d: Ding, k: keyof typeof RING | null) => {
         if (d.kleur === k) return;
@@ -349,6 +357,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
           zetRing(d, kleur(d.id));
+          rondje(d, wijst(d.id));
           /* Bij een fout geen rode rand (BOUWREGELS 5.3): het kaartje wordt dof en schudt. */
           d.box.setAlpha(p.uit?.includes(d.id) || p.fout?.includes(d.id) ? 0.35 : 1);
         }
@@ -361,14 +370,17 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           const u = vak >= 0 ? p.orden.uitslag?.[vak] : null;
           /* Niet goed gelegd: geen rode rand, het kaartje wordt dof (BOUWREGELS 5.3). */
           zetRing(d, u === true ? "groen" : u === false ? null : kleur(d.id));
+          rondje(d, u !== true && wijst(d.id));
           d.box.setAlpha(u === false ? 0.35 : 1);
           d.box.setDepth(vak >= 0 ? 1 : 2);
         }
         if (d.soort === "vast") zetRing(d, null);
         if (d.soort === "links" && p.verbind) zetRing(d, p.verbind.vast.includes(d.id) ? null : p.verbind.gekozen === d.id ? "geel" : kleur(d.id));
+        if (d.soort === "links" && p.verbind) rondje(d, !p.verbind.vast.includes(d.id) && wijst(d.id));
         if (d.soort === "rechts" && p.verbind) {
           const vast = p.verbind.lijnen.some(([l, r]) => r === d.id && p.verbind!.vast.includes(l));
           zetRing(d, vast ? null : kleur(d.id));
+          rondje(d, !vast && wijst(d.id));
         }
       }
       if (this.lijnen && p.verbind) {

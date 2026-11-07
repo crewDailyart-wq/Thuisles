@@ -37,6 +37,7 @@ import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM, GOED, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
 import { DING_B, DING_H, MM_KLEUR, MM_MAAT, MM_VASTE_KLEUR, mmDoos, mmHex, mmTeken, mmTekenDing, type MMDing, type MMKleur, type MMSoort } from "./squla-meer-minder-tekenen";
 import s from "./squla-meer-minder.module.css";
 
@@ -62,8 +63,12 @@ export type MMProps = {
   goed?: { vak: number; keer: number } | null;
   fout?: { vak: number; keer: number } | null;
   plekGoed?: boolean[] | null;
+  /** Het goede antwoord laten zien: de kaarten (of potjes) komen in deze volgorde in de vakjes (na de tweede fout). */
+  zetOp?: number[] | null;
   ronde?: number;
   staven?: boolean;
+  /** Het rode rondje (BOUWREGELS 7.8) om wat Bliepo noemt bij de staven: "staaf" (1 staaf) of "staven-<nummer>" (alles onder dat potje). */
+  wijs?: string | null;
   hand?: boolean;
   test?: string[] | null;
   /** Alle opgaven van de les: de plaatjes worden vooraf gebakken, vóór het eerste beeld (alleen bij het begin gelezen). */
@@ -189,9 +194,11 @@ interface MMScene {
   fout(vak: number): void;
   wisMarken(): void;
   plekGoed(lijst: boolean[] | null): void;
+  zetOp(lijst: number[] | null): void;
   terugNaarHuis(): void;
   bordjes(lijst: (number | null)[] | null): void;
   staven(aan: boolean): void;
+  wijs(w: string | null): void;
   hand(aan: boolean): void;
   zetTest(lijst: string[] | null): void;
   tik(i: number): void;
@@ -215,6 +222,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
     slotBeelden: Img[] = [];
     staafBeelden: (Img | Gfx | import("phaser").GameObjects.Text)[] = [];
     vinger: Img | null = null;
+    /** De staven en blokjes per potje (zonder het getal), voor het rondje; en het rondje daarvoor. */
+    staafGroepen: Img[][] = [];
+    wijsRondje: ReturnType<typeof maakRondjes> | null = null;
+    /** Het rode rondje (Sara, 6 november 2026) om de rij die Bliepo telt: één per kaart (de houder is de kaart zelf). */
+    rondjes = new Map<Box, ReturnType<typeof maakRondjes>>();
+    rondjeTok = new Map<Box, number>();
     melder: Melder = () => {};
     actief = false;
     bezig = false;
@@ -358,6 +371,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       for (const x of this.overig) this.verdwijn(x as Box);
       for (const x of this.slotBeelden) x.destroy();
       this.staven(false);
+      this.wijs(null);
+      for (const rj of this.rondjes.values()) rj.vergeet();
+      this.rondjes.clear();
+      this.rondjeTok.clear();
       this.vinger?.destroy();
       this.vinger = null;
       this.stukken = [];
@@ -421,14 +438,26 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
           if (t && t.vak === i && k === t.geteld - 1 && !this.rustig) {
             const sx = img.scaleX;
             this.tweens.add({ targets: img, scaleX: sx * 1.18, scaleY: sx * 1.18, duration: 110, yoyo: true, onComplete: () => img.setScale(sx) });
-            /* Gloed op het moment dat het iets betekent: het getelde ding licht even op. */
-            const soort = img.getData("soort") as MMSoort | undefined;
-            if (soort) {
-              img.setTexture(this.voorwerpGloed(soort));
-              this.time.delayedCall(420, () => img.active && img.setTexture(this.voorwerp(soort)));
-            }
           }
         });
+        /* Het rondje komt precies waar de gloed kwam: om het ene voorwerp dat Bliepo nu telt, 420 ms (niet bij rustig, net als de gloed). */
+        const telImg = t && t.vak === i && !this.rustig && t.geteld > 0 ? st.items[t.geteld - 1] : undefined;
+        if (telImg) {
+          const vak = vakOm([telImg]);
+          let rj = this.rondjes.get(st.box);
+          if (!rj && vak) {
+            rj = maakRondjes(this, st.box, this.rustig);
+            this.rondjes.set(st.box, rj);
+          }
+          const tok = (this.rondjeTok.get(st.box) ?? 0) + 1;
+          this.rondjeTok.set(st.box, tok);
+          if (vak && rj) {
+            rj.zet(new Map<string, RondjeVak>([[`tel-${t!.geteld - 1}`, vak]]));
+            this.time.delayedCall(420, () => {
+              if (this.rondjeTok.get(st.box) === tok) rj!.zet(new Map());
+            });
+          }
+        }
       });
     }
 
@@ -495,6 +524,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       }
     }
 
+    /** Zet de kaarten in de goede volgorde in de vakjes (het goede antwoord laten zien). */
+    zetOp(lijst: number[] | null) {
+      if (!lijst || !this.ind) return;
+      lijst.forEach((i, p) => {
+        const st = this.stukken[i];
+        if (st) this.leg(st, p);
+      });
+    }
+
     plekGoed(lijst: boolean[] | null) {
       if (!lijst) return;
       for (const st of this.stukken) if (st.plek !== null && lijst[st.plek]) this.rand(st, GOED);
@@ -549,6 +587,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
     staven(aan: boolean) {
       for (const x of this.staafBeelden) x.destroy();
       this.staafBeelden = [];
+      this.staafGroepen = [];
+      this.wijs(null);
       const o = this.o;
       if (!aan || !o || o.soort !== "getallen") return;
       this.stukken.forEach((st, i) => {
@@ -560,14 +600,18 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
         const eenKol = Math.ceil(een / 5);
         const breed = tien * 20 + (een ? 10 + eenKol * 20 : 0);
         let x = m.x - breed / 2 + 9;
+        const groep: Img[] = [];
+        this.staafGroepen[i] = groep;
         for (let k = 0; k < tien; k++, x += 20) {
           const b = this.plaats("mm-staaf-g", x, y + 46);
+          groep.push(b);
           this.staafBeelden.push(b);
           this.tover(b, { vertraging: i * 300 + k * 60 });
         }
         if (een) x += 10;
         for (let k = 0; k < een; k++) {
           const b = this.plaats("mm-een-g", x + Math.floor(k / 5) * 20, y + 9 + (k % 5) * 18.5);
+          groep.push(b);
           this.staafBeelden.push(b);
           this.tover(b, { vertraging: i * 300 + tien * 60 + k * 40 });
         }
@@ -577,6 +621,24 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
           .setResolution(2);
         this.staafBeelden.push(getal);
       });
+    }
+
+    /** Het rondje om 1 staaf ("staaf") of om alle staven en blokjes onder één potje ("staven-<i>"); null = weg. Altijd maar één. */
+    wijs(w: string | null) {
+      if (!w) {
+        this.wijsRondje?.zet(new Map());
+        return;
+      }
+      let vak: RondjeVak | null = null;
+      if (w === "staaf") {
+        const eerste = this.staafGroepen.map((g) => g?.[0]).find((b) => b && Math.floor((this.o as { getallen?: number[] } | null)?.getallen?.[this.staafGroepen.findIndex((g) => g?.[0] === b)] ?? 0) >= 10);
+        vak = eerste ? vakOm([eerste]) : null;
+      } else if (w.startsWith("staven-")) {
+        vak = vakOm(this.staafGroepen[Number(w.slice(7))] ?? []);
+      }
+      if (!vak) return;
+      if (!this.wijsRondje) this.wijsRondje = maakRondjes(this, this.add.container(0, 0).setDepth(25), this.rustig);
+      this.wijsRondje.zet(new Map<string, RondjeVak>([[w, vak]]));
     }
 
     hand(aan: boolean) {
@@ -803,8 +865,10 @@ export function SqulaMeerMinder({
   goed = null,
   fout = null,
   plekGoed = null,
+  zetOp = null,
   ronde = 0,
   staven = false,
+  wijs = null,
   hand = false,
   test = null,
   vooraf,
@@ -856,6 +920,11 @@ export function SqulaMeerMinder({
     scene?.plekGoed(plekSleutel ? plekSleutel.split(",").map((x) => x === "true") : null);
   }, [scene, plekSleutel]);
 
+  const zetOpSleutel = zetOp ? zetOp.join(",") : "";
+  useEffect(() => {
+    scene?.zetOp(zetOpSleutel ? zetOpSleutel.split(",").map(Number) : null);
+  }, [scene, zetOpSleutel]);
+
   useEffect(() => {
     if (scene && ronde > 0) scene.terugNaarHuis();
   }, [scene, ronde]);
@@ -868,6 +937,10 @@ export function SqulaMeerMinder({
   useEffect(() => {
     scene?.staven(staven);
   }, [scene, staven, sleutel]);
+
+  useEffect(() => {
+    scene?.wijs(wijs);
+  }, [scene, wijs, staven, sleutel]);
 
   useEffect(() => {
     scene?.hand(hand);

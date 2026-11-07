@@ -648,6 +648,13 @@ export function maakS1(sc: Holo, dep: Dep) {
       rol();
       return true;
     },
+    /** Het rondje (BOUWREGELS 7.8): waar ligt ding `i` in het hoopje? In de coordinaten van de pagina; null als het er niet (meer) ligt. */
+    rondjeVak(i: number) {
+      const d = st?.dingen[i];
+      if (!st || !d || d.zone >= 0) return null;
+      const h = st.spec.tray.dia / 2;
+      return { x0: d.thuis.x - h, y0: d.thuis.y - h, x1: d.thuis.x + h, y1: d.thuis.y + h };
+    },
     weg,
   };
 }

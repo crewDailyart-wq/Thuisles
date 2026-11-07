@@ -11,7 +11,11 @@
  *   Resultatief tellen 3 (10969)    squla-tellen-resultatief3-1/2/3/4
  *   Telrij (10977)                  squla-tellen-telrij-1/2
  *
- * De hulp is de vaste hulp van Bliepo (squla-hulp.ts). Squla zegt bij tellen
+ * De hulp is die van Synthesis (4 november 2026, BOUWREGELS 5.1 en 5.10): goed = kort
+ * en door; eerste fout = een korte reactie op wat het kind koos (meer of minder dan het
+ * antwoord, of een bekende denkfout) met de eerste voorwerpen alvast opgelicht; tweede
+ * fout = Bliepo telt de rest voor en zegt het antwoord, het kind kijkt en luistert en
+ * gaat door. Squla zegt bij tellen
  * niets bij een fout; Bliepo's uitleg is samen tellen zoals de voorwerpen in
  * beeld staan: per rij van 5 of per rij van 10, bij losse voorwerpen met
  * streepjes in groepjes van 5 (turven, het idee uit het filmpje "Tellen tot
@@ -23,8 +27,10 @@
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
+import { bevestig, krijgtVervolgvraag, uitlegKeuze, zetSynthesisHulp } from "./squla-uitleg";
 import {
   KaartTellen,
+  indeling,
   SqulaTelVlak,
   type Kleurnaam,
   type Memorykaartjes,
@@ -153,26 +159,26 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
   if (v.vorm === "zak") {
     const z = v.zak ?? 0;
     zetTel(l, { zakLicht: true });
-    await l.zeg("We tellen samen.", `In de zak zitten ${gk(z, k)} ${v.voorwerp.naam}.`, `${hoofd(elkeLosse(v.voorwerp))} is er één meer.`);
+    await l.zeg(`Op de zak staat het aantal: ${gk(z, k)} ${v.voorwerp.naam} zitten erin.`, `${hoofd(elkeLosse(v.voorwerp))} daarbij is er 1 meer.`);
     zetTel(l, { zakLicht: false });
     if (tot > 0) {
       await telMee(l, v, 0, tot);
       await l.zeg(`${gk(z + tot, k)}.`);
     }
-    await l.zeg(`Tel jij verder vanaf ${gk(z + tot, k)}?`);
+    if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(z + tot, k)}?`);
     return;
   }
   if (v.vorm === "rijen5" || v.vorm === "rijen10") {
     const per = v.vorm === "rijen5" ? 5 : 10;
-    await l.zeg("We tellen samen.", `In elke rij staan er ${gk(per, k)}.`);
+    await l.zeg(`In elke volle rij liggen ${gk(per, k)} ${v.voorwerp.naam}. Ik tel per rij, dat gaat sneller.`);
     for (let t = per; t <= tot; t += per) {
       await telMee(l, v, t - per, t);
       await l.zeg(`${gk(t, k)}.`);
     }
-    await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
+    if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
     return;
   }
-  await l.zeg("We tellen samen.", `Bij ${elke(v.voorwerp)} zet ik een streepje.`);
+  await l.zeg(`De ${v.voorwerp.naam} liggen door elkaar.`, `Bij ${elke(v.voorwerp)} zet ik een streepje, zo raak ik er geen kwijt.`);
   if (tot < 5) {
     await telMee(l, v, 0, tot);
     await l.zeg(`${Array.from({ length: tot }, (_, i) => gk(i + 1, k)).join(", ")}.`);
@@ -181,15 +187,86 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
       await telMee(l, v, t - 5, t);
       await l.zeg(`${gk(t, k)}.`);
     }
-  await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
+  if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
+}
+
+/** Een rij of rijen: 1 rij of 2 rijen (voor in de zin). */
+function rijenTekst(v: Telvraag) {
+  const k = v.voorwerp.kleur;
+  const per = v.vorm === "rijen10" ? 10 : 5;
+  const volle = Math.floor(v.n / per);
+  const rest = v.n % per;
+  return { k, per, volle, rest, vol: volle * per };
+}
+
+/** De getallen na elkaar, bijvoorbeeld "11, 12, 13." */
+const reeksTekst = (van: number, tot: number, k: Kleurnaam) => `${Array.from({ length: tot - van }, (_, i) => gk(van + i + 1, k)).join(", ")}.`;
+
+/** Tweede fout: Bliepo telt de rest voor (verder dan het stuk dat al geteld is) en zegt het antwoord. */
+async function telRest(l: Lesgids, v: Telvraag) {
+  const k = v.voorwerp.kleur;
+  const tot = bliepoTelt(v);
+  const z = v.zak ?? 0;
+  zetTel(l, { zakLicht: false, geteld: tot });
+  await l.wacht(300);
+  if (v.vorm === "zak") {
+    await telMee(l, v, tot, v.n);
+    await l.zeg(reeksTekst(z + tot, z + v.n, k), `${gk(z, k)} in de zak en ${gk(v.n, k)} los. Dat maakt ${gk(antwoordVan(v), k)} ${v.voorwerp.naam}.`);
+    return;
+  }
+  await telMee(l, v, tot, v.n);
+  if (v.vorm === "verspreid") {
+    await l.zeg(reeksTekst(tot, v.n, k), `Ik telde ${elke(v.voorwerp)} 1 keer. Er liggen ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+    return;
+  }
+  const r = rijenTekst(v);
+  await l.zeg(reeksTekst(tot, v.n, k), r.rest === 0 ? `${gk(r.volle, k)} volle rijen van ${gk(r.per, k)} zijn ${gk(v.n, k)} ${v.voorwerp.naam}.` : `${gk(r.vol, k)} in de volle rijen, en nog ${gk(r.rest, k)} erbij: ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+}
+
+/** Eerste fout: wat Bliepo zegt over het gekozen getal (voor deze soort vraag), en dan de hint. */
+function telReactie(v: Telvraag, x: number, hint: string[]): string[] {
+  const k = v.voorwerp.kleur;
+  const naam = v.voorwerp.naam;
+  const goed = antwoordVan(v);
+  const eenZin = v.voorwerp.een;
+  const X = gk(x, k);
+  if (v.vorm === "zak") {
+    const z = v.zak ?? 0;
+    if (x === z) return [`Bij ${X} tel je alleen de ${naam} in de zak. De losse ${naam} tellen ook mee.`, ...hint];
+    if (x === v.n) return [`Je telde alleen de losse ${naam}: ${X}. In de zak zitten er ook al ${gk(z, k)}.`, ...hint];
+    if (Math.abs(x - goed) === 1) return [x < goed ? `Bij ${X} mist er 1. Misschien ligt er een losse ${eenZin} die je niet meetelde.` : `Bij ${X} heb je er 1 te veel. Misschien telde je 1 losse ${eenZin} 2 keer.`, ...hint];
+    return [x < goed ? `Met ${X} ben je er nog niet: de zak en de losse ${naam} horen bij elkaar.` : `${X} is te veel: samen zijn het er minder.`, ...hint];
+  }
+  if (v.vorm === "verspreid") {
+    if (Math.abs(x - goed) === 1) return [x < goed ? `Bij ${X} mist er 1. Misschien sloeg je 1 ${eenZin} over.` : `Bij ${X} heb je er 1 te veel. Misschien telde je 1 ${eenZin} 2 keer.`, ...hint];
+    return [x < goed ? `Er liggen meer ${naam} dan ${X}.` : `Er liggen niet zo veel ${naam} als ${X}.`, ...hint];
+  }
+  const r = rijenTekst(v);
+  if (x === r.vol) return [`Bij ${X} tel je alleen de volle rijen. Kijk ook naar de rij die niet vol is.`, ...hint];
+  if (x === goed + 1) return [`Bij ${X} heb je er 1 te veel. Misschien telde je 1 ${eenZin} dubbel.`, ...hint];
+  if (x === goed - 1) return [`Bij ${X} mist er 1. Misschien liet je 1 ${eenZin} staan.`, ...hint];
+  return [x < goed ? `Er staan meer ${naam} dan ${X}.` : `Er staan niet zo veel ${naam} als ${X}. Tel de volle rijen van ${gk(r.per, k)} en dan de rest.`, ...hint];
 }
 
 /** Eén telvraag met de vaste hulp van Bliepo. */
 function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
   const k = v.voorwerp.kleur;
   const goed = antwoordVan(v);
+  let nFout = 0;
+  const tip =
+    v.vorm === "zak"
+      ? bliepoTelt(v) === 0
+        ? [`Begin bij ${gk(v.zak ?? 0, k)}, want zo veel ${v.voorwerp.naam} zitten al in de zak.`, `Tel de losse ${v.n === 1 ? v.voorwerp.een : v.voorwerp.naam} erbij.`]
+        : [`Het eerste losse ${v.voorwerp.een} is al geteld: dat is ${gk((v.zak ?? 0) + bliepoTelt(v), k)}.`, `Tel nu de andere losse ${v.voorwerp.naam} erbij.`]
+      : v.vorm === "verspreid"
+        ? [`Ik heb ${gk(bliepoTelt(v), k)} ${v.voorwerp.naam} al voor je geteld.`, `Tik met je vinger op de rest en tel verder.`]
+        : [`De eerste rijen zijn samen ${gk(bliepoTelt(v), k)}.`, `Tel de ${v.voorwerp.naam} in de laatste rij erbij.`];
   return squlaVraag<number>(l, {
+    synthesis: true,
+    reactie: (x) => telReactie(v, x, tip),
+    toonAntwoord: () => telRest(l, v),
     toon: () => {
+      nFout = 0;
       if (st.huidig === id) return;
       st.huidig = id;
       zetTel(l, { opgave: opgaveVan(id, v), geteld: 0, zakLicht: false, memory: null });
@@ -201,18 +278,13 @@ function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
     noem: (x) => gk(x, k),
     goed: async () => {
       zetTel(l, { goed: ++st.goed });
-      if (v.vorm === "zak") await l.zeg(`Ja! ${gk(v.zak ?? 0, k)} en nog ${gk(v.n, k)} is ${gk(goed, k)}.`);
-      else await l.zeg(`Ja! Het zijn er ${gk(goed, k)}.`);
+      await l.zeg(bevestig());
       await l.wacht(400);
     },
-    fout: () => zetTel(l, { fout: ++st.fout }),
+    /* Eerste fout: de voorwerpen waar Bliepo "begin bij" over zegt lichten alvast op. */
+    fout: () => zetTel(l, { fout: ++st.fout, ...(++nFout === 1 && bliepoTelt(v) > 0 ? { geteld: bliepoTelt(v) } : {}) }),
     samen: () => samenTellen(l, v),
-    tip:
-      v.vorm === "zak"
-        ? bliepoTelt(v) === 0
-          ? [`Begin bij ${gk(v.zak ?? 0, k)}.`, `Tel de losse ${v.n === 1 ? v.voorwerp.een : v.voorwerp.naam} erbij.`]
-          : [`Begin bij ${gk((v.zak ?? 0) + bliepoTelt(v), k)}.`, `Tel de andere losse ${v.voorwerp.naam} erbij.`]
-        : [`Begin bij ${gk(bliepoTelt(v), k)}.`, "Tel de rest één voor één."],
+    tip,
     testAntwoord: goed,
   });
 }
@@ -229,14 +301,14 @@ async function uitlegTellen(l: Lesgids, v: Telvraag, st: Stand) {
   if (v.vorm === "zak") {
     const z = v.zak ?? 0;
     zetTel(l, { zakLicht: true });
-    await l.zeg(`In de zak zitten ${gk(z, k)} ${v.voorwerp.naam}.`, `${hoofd(elkeLosse(v.voorwerp))} is er één meer.`);
+    await l.zeg(`In de zak zitten ${gk(z, k)} ${v.voorwerp.naam}.`, `${hoofd(elkeLosse(v.voorwerp))} is er 1 meer.`);
     zetTel(l, { zakLicht: false });
     await telMee(l, v, 0, v.n);
     await l.zeg(reeks(z, z + v.n), `Samen zijn het er ${gk(z + v.n, k)}.`);
   } else if (v.vorm === "verspreid") {
     await l.zeg("Ze staan door elkaar.", `Bij ${elke(v.voorwerp)} zet ik een streepje.`);
     await telMee(l, v, 0, 5);
-    await l.zeg(reeks(0, 5), "Vijf streepjes zijn een groepje.");
+    await l.zeg(reeks(0, 5), "5 streepjes zijn een groepje.");
     await telMee(l, v, 5, v.n);
     await l.zeg(reeks(5, v.n), `Het zijn er ${gk(v.n, k)}.`);
   } else {
@@ -254,6 +326,62 @@ async function uitlegTellen(l: Lesgids, v: Telvraag, st: Stand) {
   await l.wacht(500);
 }
 
+/** Hetzelfde voorbeeld als het beginscherm: voordoen, aantikken, antwoord geven. */
+async function samenTellenBijBegin(l: Lesgids, v: Telvraag, st: Stand) {
+  const k = v.voorwerp.kleur;
+  const zak = v.zak ?? 0;
+  const totaal = antwoordVan(v);
+  const per = v.vorm === "rijen5" ? 5 : 10;
+  const begin = v.vorm === "zak" ? 0 : v.vorm === "verspreid" ? Math.max(1, v.n - 3) : Math.floor((v.n - 1) / per) * per;
+  st.huidig = `${l.lesId}-samen`;
+  const opgave = opgaveVan(st.huidig, v);
+  const beeld = indeling(opgave);
+  const naamBij = (n: number) => {
+    const soort = beeld.plekken[beeld.volgorde[n]].p.soort;
+    return `${HET.has(soort) ? "het" : "de"} ${ENKEL[soort][0]}`;
+  };
+  zetTel(l, { opgave, geteld: 0, telActief: false, memory: null, zakLicht: v.vorm === "zak" });
+  if (v.vorm === "zak") {
+    await l.zeg(`Op de zak staat ${gk(zak, k)}. Er zitten dus ${gk(zak, k)} ${v.voorwerp.naam} in.`, `Als je de losse ${v.voorwerp.naam} erbij telt, weet je hoeveel het er samen zijn.`);
+  } else if (v.vorm === "verspreid") {
+    await l.zeg(`De ${v.voorwerp.naam} liggen door elkaar. Eerst ga ik ze één voor één tellen, de streepjes helpen me onthouden hoeveel ik al heb.`);
+    await telMee(l, v, 0, begin);
+    await l.zeg(`Ik heb er ${gk(begin, k)} geteld.`);
+  } else {
+    await l.zeg(`De ${v.voorwerp.naam} staan in rijtjes. Een volle rij telt ${gk(per, k)}, dus ik begin met de volle rijen.`);
+    for (let n = per; n <= begin; n += per) {
+      await telMee(l, v, n - per, n);
+      await l.zeg(`${gk(n, k)}.`);
+    }
+  }
+  zetTel(l, { zakLicht: false });
+  await l.zeg(`Begin bij ${gk(zak + begin, k)}. Tik steeds op ${naamBij(begin)} met de kring en tel verder.`);
+  try {
+    for (let n = begin; n < v.n; n++) {
+      if (typeof window !== "undefined") window.__phaser = { ...window.__phaser, antwoord: `tel-${n}` };
+      const tik = l.wachtOpVlak<{ soort: string; index: number }>("uitlegTel");
+      zetTel(l, { telActief: true, telNaam: naamBij(n) });
+      const antwoord = await tik;
+      if (antwoord.index !== n) { n--; continue; }
+      zetTel(l, { telActief: false, geteld: n + 1 });
+      await l.zeg(`${gk(zak + n + 1, k)}.`);
+    }
+    await uitlegKeuze(l, {
+      vraag: `Hoeveel ${v.voorwerp.naam} zijn het samen?`,
+      keuzes: [String(totaal + 1), String(totaal), String(totaal - 1)],
+      antwoord: String(totaal),
+      hint: `Denk aan het getal dat je het laatst zei. Zoveel ${v.voorwerp.naam} heb je geteld.`,
+      reactie: (x) => [Number(x) > totaal ? `${gk(Number(x), k)} is 1 meer dan het laatste getal dat je zei.` : `${gk(Number(x), k)} is 1 minder dan het laatste getal dat je zei.`],
+      laatZien: `Het laatste getal dat je zei was ${gk(totaal, k)}. Dus zijn het er ${gk(totaal, k)} ${v.voorwerp.naam}.`,
+      goed: `Ja, ${gk(totaal, k)} ${v.voorwerp.naam}! Het getal dat je het laatst zei, vertelt hoeveel het er samen zijn.`,
+      hulp: async () => { await l.zeg(`Je begon bij ${gk(zak + begin, k)} en telde verder tot ${gk(totaal, k)}.`); },
+    });
+  } finally {
+    zetTel(l, { telActief: false });
+    st.huidig = "";
+  }
+}
+
 /* ---------- memory (tussendoortje bij Resultatief tellen 3) ---------- */
 
 async function memory(l: Lesgids, m: Memorykaartjes, st: Stand, laatste = false) {
@@ -261,7 +389,7 @@ async function memory(l: Lesgids, m: Memorykaartjes, st: Stand, laatste = false)
   zetTel(l, { opgave: null, geteld: 0, zakLicht: false, memory: m });
   speelLesgeluid("verschijn");
   await l.zeg(laatste ? "Nog een spelletje!" : "Even een spelletje tussendoor!", "Kijk goed waar de plaatjes staan.");
-  await l.zeg("Zoek steeds twee dezelfde.", "Tik op twee kaartjes.");
+  await l.zeg("Zoek steeds 2 dezelfde.", "Tik op 2 kaartjes.");
   await l.wachtOpVlak("memoryKlaar");
   zetTel(l, { memory: null });
   await l.zeg("Goed gedaan!", "Je hebt ze allemaal gevonden.", ...(laatste ? [] : ["We gaan weer tellen."]));
@@ -323,6 +451,7 @@ function telles(t: Telles): Lesdraaiboek {
     ...(t.foto?.gloed !== "nooit" ? { nacht: true as const } : {}),
     async speel(l) {
       await zetFotos(t.foto);
+      zetSynthesisHulp(l);
       const st: Stand = { huidig: "", goed: 0, fout: 0 };
       const eerste = t.uitleg[0];
       st.huidig = `uitleg-${eerste.vorm}`;
@@ -335,8 +464,9 @@ function telles(t: Telles): Lesdraaiboek {
       speelLesgeluid("verschijn");
       /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
       const v0 = t.vragen.find((v): v is Telvraag => v !== "memory")!;
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: t.welkom,
+        samen: () => samenTellenBijBegin(l, v0, st),
         uitleg: async () => {
           for (const v of t.uitleg) await uitlegTellen(l, v, st);
         },
@@ -359,6 +489,7 @@ function telles(t: Telles): Lesdraaiboek {
           continue;
         }
         nr++;
+        if (voorbeeldAfgerond && nr === 1) continue;
         if (!(await telVraag(l, `${t.id}-${nr}`, v, st))) fouten++;
       }
       await squlaEind(l, fouten, t.eind);
@@ -810,7 +941,31 @@ function rijVraag(l: Lesgids, v: Rijvraag, st: Rijstand) {
   const isNa = o.soort === "na";
   const ijk = isNa ? o.rij[o.rij.length - 1] : o.rij[0];
   const noem = isNa ? w : kc;
+  const kern = isNa
+    ? v.goed % 10 === 0 ? `Na ${w(ijk)} is het tiental vol, dus nu begint ${w(v.goed)}.` : `${w(ijk)} plus 1 is ${w(v.goed)}. Dat huis komt erna.`
+    : `Terug is het 1 minder dan ${kc(ijk)}: dat is ${kc(v.goed)}.`;
+  const omgedraaid = (n: number) => Number([...String(n)].reverse().join(""));
+  const tiental = isNa ? v.goed % 10 === 0 : false;
+  const tipRij = isNa
+    ? tiental ? [`Na ${w(ijk)} is dit tiental vol. Er begint een nieuw tiental.`] : [`Je staat bij ${w(ijk)}. Tel 1 verder.`]
+    : [`Je staat bij ${kc(ijk)}. Tel 1 terug.`];
+  const reactie = (x: number): string[] => {
+    let zin: string;
+    if (o.rij.includes(x)) zin = `${isNa ? "Het huis" : "Het kaartje"} met ${noem(x)} staat er al.`;
+    else if (x > 9 && x % 11 !== 0 && omgedraaid(x) === v.goed) zin = `Je koos ${noem(x)}. Staan de cijfers wel in de goede volgorde?`;
+    else if (x === (isNa ? v.goed + 1 : v.goed - 1)) zin = isNa ? `${w(x)} is 1 huis te ver.` : `${kc(x)} is 1 kaartje te ver terug.`;
+    else if (isNa) zin = x < ijk ? `${w(x)} is kleiner dan ${w(ijk)}, maar er hoort een groter nummer.` : `Zo ver als ${w(x)} is het volgende huis niet.`;
+    else zin = x > ijk ? `${kc(x)} is groter dan ${kc(ijk)}, maar er hoort een kleiner getal.` : `Zo ver terug als ${kc(x)} hoef je niet.`;
+    return [zin, ...tipRij];
+  };
   return squlaVraag<number>(l, {
+    synthesis: true,
+    reactie,
+    toonAntwoord: async () => {
+      zetRij(l, { ingevuld: v.goed, licht: null, fout: null });
+      await l.zeg(kern);
+      await l.wacht(500);
+    },
     toon: () => {
       if (st.huidig === o.id) return;
       st.huidig = o.id;
@@ -829,31 +984,31 @@ function rijVraag(l: Lesgids, v: Rijvraag, st: Rijstand) {
     noem,
     goed: async () => {
       zetRij(l, { ingevuld: v.goed, licht: null });
-      await l.zeg(isNa ? `Ja! Na ${w(ijk)} komt ${w(v.goed)}.` : `Ja! Voor ${kc(ijk)} komt ${kc(v.goed)}.`);
+      await l.zeg(bevestig());
       await l.wacht(500);
     },
     fout: (x) => zetRij(l, { fout: { n: x, keer: ++st.fout } }),
     samen: async () => {
       if (isNa) {
-        await l.zeg("We lopen samen langs de huizen.");
+        await l.zeg("Ik loop langs de huizen tot aan de lege plek.");
         for (let i = 0; i < o.rij.length; i++) {
           zetRij(l, { licht: i });
           await l.zeg(`${w(o.rij[i])}.`);
         }
         zetRij(l, { licht: o.rij.length });
-        await l.zeg(v.goed % 10 === 0 ? `Na ${w(ijk)} begint een nieuw tiental.` : "Elk huis is één verder.");
+        await l.zeg(v.goed % 10 === 0 ? `Na ${w(ijk)} is het tiental vol en begint een nieuw tiental.` : `Het volgende huis na ${w(ijk)} is 1 verder.`);
       } else {
-        await l.zeg("We tellen samen terug.");
+        await l.zeg("Ik tel terug, kaartje voor kaartje, tot aan de lege plek.");
         for (let i = o.rij.length - 1; i >= 0; i--) {
           zetRij(l, { licht: i + 1 });
           await l.zeg(`${kc(o.rij[i])}.`);
         }
         zetRij(l, { licht: 0 });
-        await l.zeg("Terug wordt het steeds één minder.");
+        await l.zeg(`Het kaartje voor ${kc(ijk)} is 1 minder.`);
       }
       zetRij(l, { licht: null });
     },
-    tip: isNa ? [`Tel één verder dan ${w(ijk)}.`] : [`Tel één terug vanaf ${kc(ijk)}.`],
+    tip: tipRij,
     testAntwoord: v.goed,
   });
 }
@@ -897,13 +1052,17 @@ function rijles(t: Rijles): Lesdraaiboek {
     kaarttekening: KaartTelrij,
     voorwerpen: ["huis"],
     async speel(l) {
+      zetSynthesisHulp(l);
       const st: Rijstand = { huidig: "", fout: 0, hand: false };
       /* Alle huisnummers en kaartjes van de les (die worden vooruit gemaakt). */
       const getallen = (s: "na" | "voor") => [...new Set(t.vragen.filter((v) => v.opgave.soort === s).flatMap((v) => [...v.opgave.rij, ...v.opgave.losse]))];
       l.vlak<TelrijProps>(SqulaTelrij, { opgave: { id: "welkom", soort: "na", rij: [41, 42], losse: [] }, voorraad: { huizen: getallen("na"), kaarten: getallen("voor") } });
       speelLesgeluid("verschijn");
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: t.welkom,
+        /* Bij "Nee" eerst voordoen (Bliepo loopt langs de huizen), dan het kind een stap laten doen (BOUWREGELS 4.4; Sara 6 november 2026). */
+        voordoen: true,
+        samen: () => rijVraag(l, { goed: t.vragen[0].goed, opgave: { ...t.vragen[0].opgave, id: `${t.id}-uitleg` } }, st),
         uitleg: async () => {
           /* De uitleg zet zijn eigen huizen neer: de eerste vraag moet daarna zijn beeld weer opnieuw tekenen. */
           st.huidig = "";
@@ -921,6 +1080,7 @@ function rijles(t: Rijles): Lesdraaiboek {
       let nr = 0;
       for (const v of t.vragen) {
         nr++;
+        if (voorbeeldAfgerond && nr === 1) continue;
         const vraag: Rijvraag = { goed: v.goed, opgave: { ...v.opgave, id: `${t.id}-${nr}` } };
         if (!(await rijVraag(l, vraag, st))) fouten++;
       }
@@ -935,7 +1095,7 @@ const telrij1 = rijles({
   level: 1,
   welkom: ["De huizen in de straat staan op volgorde.", `Welk huisnummer komt na ${w(34)}?`],
   uitleg: async (l) => {
-    await loopVoorbeeld(l, { id: "uitleg-1", soort: "na", rij: [41, 42], losse: [] }, 43, ["Elk huis is één verder.", `Dus na ${w(42)} komt ${w(43)}.`]);
+    await loopVoorbeeld(l, { id: "uitleg-1", soort: "na", rij: [41, 42], losse: [] }, 43, ["Elk huis is 1 verder.", `Dus na ${w(42)} komt ${w(43)}.`]);
     await loopVoorbeeld(l, { id: "uitleg-2", soort: "na", rij: [28, 29], losse: [] }, 30, [`Na ${w(29)} begint een nieuw tiental.`, `Dan komt ${w(30)}.`]);
   },
   /* Level 1: wat komt erna? 18 t/m 50, vaak over een tiental; afleiders: het getal ervoor, 2 verder, een tiental ernaast, omgedraaide cijfers. */
@@ -967,7 +1127,7 @@ const telrij2 = rijles({
   uitleg: async (l) => {
     await loopVoorbeeld(l, { id: "uitleg-1", soort: "na", rij: [78, 79], losse: [] }, 80, [`Na ${w(79)} begint een nieuw tiental.`, `Dan komt ${w(80)}.`]);
     await l.zeg("We kunnen ook terugtellen.");
-    await loopVoorbeeld(l, { id: "uitleg-2", soort: "voor", rij: [13, 14, 15], losse: [] }, 12, ["Terug wordt het steeds één minder.", `Dus voor ${kc(13)} komt ${kc(12)}.`]);
+    await loopVoorbeeld(l, { id: "uitleg-2", soort: "voor", rij: [13, 14, 15], losse: [] }, 12, ["Terug wordt het steeds 1 minder.", `Dus voor ${kc(13)} komt ${kc(12)}.`]);
   },
   /* Level 2: eerst wat komt erna (58 t/m 100, over een tiental), dan wat komt ervoor (10 t/m 17, met kaartjes). */
   vragen: [

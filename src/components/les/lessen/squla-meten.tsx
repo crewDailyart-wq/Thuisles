@@ -17,16 +17,17 @@
  * het eind herhaalt; zijn er minder dan drie fout, dan vult de les aan met
  * vaste vragen). Zo heeft elke les 15 opgaven.
  *
- * De hulp is overal die van squla-hulp.ts (zoals Synthesis): na één fout
- * "Wil je hulp, of nog een keer proberen?", dan samen uitzoeken (Bliepo laat
- * het in beeld zien: naast elkaar zetten, de weegschaal laten zakken, samen
- * tellen), en na twee keer fout even pauze. Geen "Weet ik niet".
+ * De hulp is overal die van squla-hulp.ts (zoals Synthesis, 4 november 2026):
+ * na 1 fout een korte reactie en meteen opnieuw; na 2 keer fout laat Bliepo het
+ * in beeld zien (naast elkaar zetten, de weegschaal laten zakken, samen
+ * tellen) en gaat het kind door. Geen keuzevraag, geen pauze en geen weet-ik-niet-knop.
  *
  * Groep 3 leest nog niet: Bliepo zegt elke vraag en noemt de keuzes als het
  * woorden of zinnen zijn; woordkaartjes lezen hun woord voor bij aanwijzen.
  * Getallen typt het kind in een echt invulvak (HARDE REGEL 5).
  */
 
+import { krijgtVervolgvraag, wissel, bevestig, zetSynthesisHulp, terugAankondiging, terugAfsluiting } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
 import { SqulaMetenVlak, KaartPizza, KaartHoeveelheden, KaartOppervlakte, type MDing, type MetenProps } from "../vlakken/squla-meten-vlak";
@@ -38,6 +39,24 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 let teller = 0;
 const volgend = () => ++teller;
 const Hoofd = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* Bij een goed antwoord alleen een korte bevestiging uit de gedeelde `bevestig()` (Sara, 4 nov); het waarom zit in het beeld. */
+/** Eerste fout zonder eigen reactie: de tip, zonder de herhaalde vraag aan het eind (BOUWREGELS 3.23). */
+const hint = (tip: string[]) => (tip.length > 1 && tip[tip.length - 1].trim().endsWith("?") ? tip.slice(0, -1) : tip);
+/** Het goede antwoord in woorden, zonder losse vragen erin. */
+const antwoordZinnen = (z: string[]) => z.filter((x) => !x.trim().endsWith("?"));
+const AANTAL = ["Geen", "1", "2", "3", "4", "5", "6"];
+/** Eerste fout bij op volgorde zetten: hoeveel liggen er goed. */
+const telGoed = (n: number, wat: string, tip: string) => {
+  /* wat = "dag" (de-woord) of "kaartje", "plaatje", "getal" (het-woord) */
+  const meer = wat === "dag" ? "dagen" : wat === "getal" ? "getallen" : `${wat}s`;
+  const geen = wat === "dag" ? "Geen enkele dag" : `Geen enkel ${wat}`;
+  return [n === 0 ? `${geen} ligt op de goede plek.` : n === 1 ? `1 ${wat} ligt op de goede plek.` : `${AANTAL[n]} ${meer} liggen op de goede plek.`, tip];
+};
+/** Een getal dat te hoog of te laag is. */
+const teVeel = (x: number, goed: number) => `Je koos {${x}:wit}. Dat is ${x - goed === 1 ? "1 te veel" : goed - x === 1 ? "1 te weinig" : x > goed ? "te veel" : "te weinig"}.`;
+/** Eerste fout bij een plaatje: Bliepo noemt wat het kind koos (wisselend). */
+const jouwKeuze = (naam: string) => wissel("metenkeuze", [`Daar staat ${naam}.`, `Dat plaatje laat ${naam} zien.`, `Bij jouw plaatje zie je ${naam}.`]);
 /** Een andere volgorde van de keuzes (bij een vraag die terugkomt). */
 const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), lijst[0]] : lijst);
 /** De getallen 1 tot en met n op de eerste n dingen, of vanaf ding nummer `van` (Bliepo telt mee). */
@@ -51,18 +70,25 @@ type Opgave = (l: Lesgids, terug: boolean) => SqulaVraag<any>;
  * meteen goed waren (zoals Squla), aangevuld met vaste vragen (`reserve`).
  * Geeft het aantal vragen dat niet meteen goed was.
  */
-async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Promise<number> {
+async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[], voorbeeldAfgerond = false): Promise<number> {
   let fouten = 0;
   const mis: number[] = [];
-  for (let i = 0; i < opgaven.length; i++) {
-    if (!(await squlaVraag(l, opgaven[i](l, false)))) {
+  for (let i = voorbeeldAfgerond ? 1 : 0; i < opgaven.length; i++) {
+    if (!(await squlaVraag(l, { ...opgaven[i](l, false), synthesis: true }))) {
       fouten++;
       mis.push(i);
     }
   }
   const terug = [...mis, ...reserve.filter((i) => !mis.includes(i))].slice(0, 3);
-  await l.zeg("Nu komen er nog drie vragen van net terug.");
-  for (const i of terug) if (!(await squlaVraag(l, opgaven[i](l, true)))) fouten++;
+  await l.zeg(terugAankondiging(terug.length));
+  let weerFout = 0;
+  for (const i of terug) {
+    if (!(await squlaVraag(l, { ...opgaven[i](l, true), synthesis: true }))) {
+      fouten++;
+      weerFout++;
+    }
+  }
+  if (weerFout) await l.zeg(terugAfsluiting());
   return fouten;
 }
 
@@ -77,6 +103,7 @@ const LEEG: Omit<MetenProps, "nr"> = {
   goed: [],
   fout: [],
   licht: [],
+  gekozen: [],
   orden: null,
 };
 
@@ -93,12 +120,15 @@ const K = (id: string, tekening: string, naam: string): Kaart => ({ id, tekening
 const Z = (id: string, label: string, tekening?: string, naam?: string): Kaart => ({ id, label, tekening, naam: naam ?? label, zeg: label });
 
 async function welkom(l: Lesgids, groot: string, woorden: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  zetSynthesisHulp(l);
   l.vlak<MetenProps>(SqulaMetenVlak, { ...LEEG, nr: volgend(), groot });
   speelLesgeluid("verschijn");
   await l.wacht(500);
-  await squlaBegin(l, {
+  const voorbeeldAfgerond = await squlaBegin(l, {
     welkom: woorden,
     /* Na "Nee" begint de uitleg weer met het beeld waar hij op rekent (het voorbeeld verdwijnt). */
+    voordoen: true,
+    samen: voorbeeld ? () => squlaVraag(l, voorbeeld(l, false)) : undefined,
     uitleg: voorbeeld
       ? async () => {
           zet(l, { ...LEEG, nr: volgend(), groot });
@@ -109,6 +139,7 @@ async function welkom(l: Lesgids, groot: string, woorden: string[], uitleg: () =
     ...(voorbeeld ? { voorbeeld: () => voorbeeld(l, false).toon?.() } : {}),
   });
   zet(l, { ...LEEG });
+  return voorbeeldAfgerond;
 }
 
 /* ---------- de soorten vragen ---------- */
@@ -122,6 +153,8 @@ type PlaatjesVraag = {
   samen: (l: Lesgids) => Promise<void>;
   hulpBeeld?: Partial<MetenProps>;
   tip: string[];
+  /** Eerste fout: wat Bliepo over het gekozen kaartje zegt (naam en id van het kaartje). */
+  reactie?: (naam: string, id: string) => string[];
 };
 
 /** Een vraag met plaatjes (kaartjes in het vlak): tik op het goede. */
@@ -144,7 +177,7 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
     noem: naam,
     goed: async () => {
       zet(l, { goed: [o.goed], licht: [], golf: { id: o.goed, n: ++golfNr } });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => {
@@ -158,6 +191,16 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => {
+      const k = kaarten.find((c) => c.id === x);
+      const n = k?.naam ?? x;
+      return o.reactie ? o.reactie(n, x) : [jouwKeuze(n), ...hint(o.tip).slice(0, 1)];
+    },
+    toonAntwoord: async () => {
+      zet(l, { fout: [], licht: [], goed: [o.goed], golf: { id: o.goed, n: ++golfNr } });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -165,7 +208,7 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
 /** Een vraag met woorden of getallen als antwoord (knoppen bij Bliepo). */
 function knopVraag(
   l: Lesgids,
-  o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[] },
+  o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[]; reactie?: (x: string) => string[] },
   terug: boolean,
 ): SqulaVraag<string> {
   const nr = volgend();
@@ -178,7 +221,7 @@ function knopVraag(
     isGoed: (x) => x === o.goed,
     noem: (x) => (/^\d+$/.test(x) ? `{${x}:wit}` : Hoofd(x.replace(/\.$/, ""))),
     goed: async () => {
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -187,6 +230,11 @@ function knopVraag(
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => (o.reactie ? o.reactie(x) : /^\d+$/.test(x) ? [teVeel(Number(x), Number(o.goed)), ...hint(o.tip).slice(0, 1)] : hint(o.tip)),
+    toonAntwoord: async () => {
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -194,7 +242,7 @@ function knopVraag(
 /** Een getal typen in het invulvak (HARDE REGEL 5: een echt invoerveld, alleen cijfers). */
 function getalVraag(
   l: Lesgids,
-  o: { beeld: Partial<MetenProps>; goed: number; vraag: string[]; goedZin: string[]; naGoed?: Partial<MetenProps>; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[] },
+  o: { beeld: Partial<MetenProps>; goed: number; vraag: string[]; goedZin: string[]; naGoed?: Partial<MetenProps>; samen: (l: Lesgids) => Promise<void>; hulpBeeld?: Partial<MetenProps>; tip: string[]; reactie?: (x: number) => string[] | null },
 ): SqulaVraag<number> {
   const nr = volgend();
   let naSamen = false;
@@ -212,7 +260,7 @@ function getalVraag(
     noem: (x) => `{${x}:wit}`,
     goed: async () => {
       if (o.naGoed) zet(l, o.naGoed);
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -220,6 +268,12 @@ function getalVraag(
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => o.reactie?.(x) ?? [teVeel(x, o.goed), ...hint(o.tip).slice(0, 1)],
+    toonAntwoord: async () => {
+      if (o.naGoed) zet(l, o.naGoed);
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -256,6 +310,8 @@ function ordenVraag(
     },
     vraag: eerste ? [...o.vraag, o.klein ? "Sleep een getal naar een leeg vak." : "Sleep een plaatje naar een leeg vak.", "Tikken mag ook."] : o.vraag,
     antwoord: async () => {
+      /* na een fout blijft wat goed lag liggen en gaat de rest terug */
+      vakken = vakken.map((v, i) => (v === o.juist[i] ? v : null));
       if (eerste) {
         zet(l, { handje: ++handjeNr });
         eerste = false;
@@ -277,7 +333,7 @@ function ordenVraag(
     noem: (x) => Hoofd(x.filter((_, i) => !o.vast.includes(i)).map(naamVan).join(", ")),
     goed: async () => {
       zet(l, { orden: orden(false, o.juist.map((_, i) => (o.vast.includes(i) ? null : true))) });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => zet(l, { orden: orden(false, x.map((id, i) => (o.vast.includes(i) ? null : id === o.juist[i]))) }),
@@ -288,6 +344,13 @@ function ordenVraag(
       zet(l, { licht: [], tel: [] });
     },
     tip: o.tip,
+    reactie: (x) => telGoed(x.filter((id, i) => !o.vast.includes(i) && id === o.juist[i]).length, o.klein ? "getal" : "plaatje", o.tip[0]),
+    toonAntwoord: async () => {
+      vakken = [...o.juist];
+      zet(l, { orden: orden(false, o.juist.map((_, i) => (o.vast.includes(i) ? null : true))) });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.juist.find((_, i) => !o.vast.includes(i)) ?? null,
   };
 }
@@ -301,44 +364,55 @@ function tweeVraag(
   const nr = volgend();
   const kaarten = schuif(o.kaarten, terug);
   let naSamen = false;
+  let voorgelezen = false;
   const naam = (id: string) => kaarten.find((k) => k.id === id)?.naam ?? id;
   return {
     toon: () => zet(l, { ...LEEG, nr, ...o.beeld, ...(naSamen ? (o.hulpBeeld ?? {}) : {}), kaarten }),
     vraag: o.vraag,
     antwoord: async () => {
-      zet(l, { kaartenActief: false, fout: [], goed: [] });
-      for (const k of kaarten) {
-        zet(l, { licht: [k.id] });
-        await l.zeg(k.zeg ?? k.naam);
+      zet(l, { kaartenActief: false, fout: [], goed: [], licht: [], gekozen: [] });
+      /* bij een nieuwe poging worden de zinnen niet nog eens voorgelezen */
+      if (!voorgelezen) {
+        for (const k of kaarten) {
+          zet(l, { licht: [k.id] });
+          await l.zeg(k.zeg ?? k.naam);
+        }
+        voorgelezen = true;
       }
       const gekozen: string[] = [];
       while (gekozen.length < 2) {
         zetTestAntwoord(o.goed.find((g) => !gekozen.includes(g)) ?? null);
-        zet(l, { kaartenActief: true, licht: [...gekozen] });
+        zet(l, { kaartenActief: true, licht: [], gekozen: [...gekozen] });
         const g = await l.wachtOpVlak<{ soort: string; id: string }>("kaart");
         const i = gekozen.indexOf(g.id);
         if (i >= 0) gekozen.splice(i, 1);
         else gekozen.push(g.id);
         speelLesgeluid("markeer");
       }
-      zet(l, { kaartenActief: false, licht: [...gekozen] });
+      zet(l, { kaartenActief: false, licht: [], gekozen: [...gekozen] });
       return gekozen;
     },
     isGoed: (x) => x.length === 2 && o.goed.every((g) => x.includes(g)),
     noem: (x) => Hoofd(x.map(naam).join(" en ")),
     goed: async () => {
-      zet(l, { goed: [...o.goed], licht: [], golf: { id: o.goed[0], n: ++golfNr } });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      zet(l, { goed: [...o.goed], licht: [], gekozen: [], golf: { id: o.goed[0], n: ++golfNr } });
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
-    fout: (x) => zet(l, { licht: [], goed: x.filter((g) => o.goed.includes(g)), fout: x.filter((g) => !o.goed.includes(g)) }),
+    fout: (x) => zet(l, { licht: [], gekozen: [], goed: x.filter((g) => o.goed.includes(g)), fout: x.filter((g) => !o.goed.includes(g)) }),
     samen: async () => {
-      zet(l, { fout: [], goed: [], licht: [] });
+      zet(l, { fout: [], goed: [], licht: [], gekozen: [] });
       await o.samen(l);
-      zet(l, { licht: [] });
+      zet(l, { licht: [], gekozen: [] });
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => [x.filter((g) => o.goed.includes(g)).length === 1 ? "1 van je 2 antwoorden klopt." : "Geen van de 2 klopt.", ...hint(o.tip).slice(0, 1)],
+    toonAntwoord: async () => {
+      zet(l, { fout: [], licht: [], gekozen: [], goed: [...o.goed], golf: { id: o.goed[0], n: ++golfNr } });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed[0],
   };
 }
@@ -378,9 +452,26 @@ function grootteVraag(o: { kaarten: Kaart[]; goed: string; vraag: string[]; goed
         samen: async (l) => {
           zet(l, { vergelijk: o.naast ?? o.kaarten.map((k) => k.tekening!) });
           speelLesgeluid("schuif");
-          await l.zeg(...o.uitleg);
+          /* "Die is het grootst/kleinst": één rondje om precies die pizza (of dat ding) tussen de naast elkaar gezette dingen. */
+          const wie = o.kaarten.findIndex((k) => k.id === o.goed);
+          const zinnen = o.uitleg.flatMap((u) => (/(^|\. )Die is het (grootst|kleinst)\./.test(u) ? u.split(/(?<=\.) /) : [u]));
+          const at = wie >= 0 ? zinnen.findIndex((z) => /^Die is het (grootst|kleinst)\./.test(z)) : -1;
+          if (at < 0) {
+            await l.zeg(...o.uitleg);
+            return;
+          }
+          if (at > 0) await l.zeg(...zinnen.slice(0, at));
+          zet(l, { licht: [`v${wie}`] });
+          await l.zeg(zinnen[at]);
+          zet(l, { licht: [] });
+          if (zinnen.length > at + 1) await l.zeg(...zinnen.slice(at + 1));
         },
         tip: o.tip,
+        reactie: (naam) => {
+          const klein = o.vraag.join(" ").includes("kleinst");
+          const andere = /^(het|dit) /.test(naam) ? "het andere" : "de andere";
+          return [`${Hoofd(naam)} is ${klein ? "groter" : "kleiner"} dan ${andere}.`, ...hint(o.tip).slice(0, 1)];
+        },
       },
       t,
     );
@@ -405,9 +496,9 @@ function ordenGrootte(o: { dingen: [string, string, string]; namen: [string, str
         samen: async (l) => {
           zet(l, { vergelijk: [o.dingen[2], o.dingen[0], o.dingen[1]] });
           speelLesgeluid("schuif");
-          await l.zeg("Ik zet ze naast elkaar, op één lijn.", "Kijk naar de gele streepjes bovenaan.", `${o.het ? "Welk" : "Welke"} ${o.wat} komt het minst hoog?`, "Die is het kleinst. Die komt vooraan.", `${o.het ? "Het grootste" : "De grootste"} komt achteraan.`);
+          await l.zeg("Ik zet ze naast elkaar, op één lijn.", "Kijk naar de gele streepjes bovenaan.", `${o.het ? "Kijk welk" : "Kijk welke"} ${o.wat} het minst hoog komt.`, "Die is het kleinst. Die komt vooraan.", `${o.het ? "Het grootste" : "De grootste"} komt achteraan.`);
         },
-        tip: ["Zoek eerst de kleinste. Die komt vooraan.", "Van klein naar groot."],
+        tip: ["Begin met de kleinste. Die komt vooraan.", "Daarachter komen de grotere."],
         handje: o.handje,
       },
       t,
@@ -419,9 +510,9 @@ const pizza1Opgaven: Opgave[] = [
     kaarten: [K("klein", PZ(0.55), "de kleine pizza"), K("groot", PZ(1), "de grote pizza")],
     goed: "groot",
     vraag: ["Vandaag eten we pizza.", "Welke pizza is het grootst?", "Tik op de pizza."],
-    goedZin: ["Deze pizza is het grootst.", "Smakelijk eten!"],
-    uitleg: [...NAAST_PIZZA, "Welke pizza komt het hoogst, en is het breedst?"],
-    tip: ["Kijk welke pizza het breedst is.", "Welke pizza is het grootst?"],
+    goedZin: ["De grote pizza steekt het verst uit.", "Smakelijk eten!"],
+    uitleg: [...NAAST_PIZZA, "Kijk welke pizza het verst uitsteekt. Die is het grootst."],
+    tip: ["Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is het grootst."],
   }),
   grootteVraag({
     kaarten: [K("deze", PZ(0.72), "deze pizza"), K("groter", PZ(0.95), "de grotere pizza")],
@@ -429,7 +520,7 @@ const pizza1Opgaven: Opgave[] = [
     vraag: ["Deze pizza is nog te klein.", "Welke pizza is groter?"],
     goedZin: ["Die pizza is groter."],
     uitleg: [...NAAST_PIZZA, "Welke pizza steekt boven de andere uit?"],
-    tip: ["Kijk welke pizza breder is.", "Welke pizza is groter?"],
+    tip: ["Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is groter.", "Welke pizza is groter?"],
   }),
   grootteVraag({
     kaarten: [K("klein", DOOS(0.55), "de kleine pizza"), K("groot", DOOS(1), "de grote pizza")],
@@ -438,7 +529,7 @@ const pizza1Opgaven: Opgave[] = [
     vraag: ["De pizza's zitten in een doos.", "De dozen zijn even groot.", "Welke pizza is nu het grootst?"],
     goedZin: ["Deze pizza vult bijna de hele doos.", "Die is het grootst."],
     uitleg: ["Ik haal de pizza's uit de dozen.", "Nu staan ze naast elkaar, op één lijn.", "Welke pizza komt het hoogst?"],
-    tip: ["Kijk naar de pizza's, niet naar de dozen.", "Welke pizza is het grootst?"],
+    tip: ["Kijk naar de pizza's, niet naar de dozen."],
   }),
   ordenGrootte({
     dingen: [PZ(0.5), PZ(0.75), PZ(1)],
@@ -453,15 +544,15 @@ const pizza1Opgaven: Opgave[] = [
     vraag: ["Na de pizza is er een ijsje.", "Welk ijsje is het kleinst?"],
     goedZin: ["Dit ijsje is het kleinst."],
     uitleg: [...NAAST_IJS, "Welk ijsje komt het minst hoog?"],
-    tip: ["Zoek het ijsje dat het minst hoog is.", "Welk ijsje is het kleinst?"],
+    tip: ["Zet je vinger op de bovenkant van elk ijsje. Het ijsje met de bovenkant het laagst is het kleinst.", "Welk ijsje is het kleinst?"],
   }),
   grootteVraag({
     kaarten: [K("groot", PZ(0.92, "salami"), "de grote pizza"), K("klein", PZ(0.6, "salami"), "de kleine pizza")],
     goed: "groot",
-    vraag: ["Nu twee pizza's met salami.", "Welke pizza is het grootst?"],
-    goedZin: ["Deze pizza is het grootst."],
-    uitleg: [...NAAST_PIZZA, "Welke pizza komt het hoogst, en is het breedst?"],
-    tip: ["Kijk welke pizza het breedst is.", "Welke pizza is het grootst?"],
+    vraag: ["Nu 2 pizza's met salami.", "Welke pizza is het grootst?"],
+    goedZin: ["Van de 2 salamipizza's is deze de grootste."],
+    uitleg: [...NAAST_PIZZA, "Kijk welke pizza het verst uitsteekt. Die is het grootst."],
+    tip: ["Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is het grootst."],
   }),
   grootteVraag({
     kaarten: [K("deze", IJS(0.7), "dit ijsje"), K("groter", IJS(0.95), "het grotere ijsje")],
@@ -469,16 +560,16 @@ const pizza1Opgaven: Opgave[] = [
     vraag: ["Dit ijsje is nog te klein.", "Welk ijsje is groter?"],
     goedZin: ["Dat ijsje is groter."],
     uitleg: [...NAAST_IJS, "Welk ijsje steekt boven het andere uit?"],
-    tip: ["Kijk welk ijsje hoger is.", "Welk ijsje is groter?"],
+    tip: ["Zet je vinger op de bovenkant van elk ijsje. Het ijsje met de bovenkant het hoogst is groter.", "Welk ijsje is groter?"],
   }),
   grootteVraag({
     kaarten: [K("groot", DOOS(0.88), "de grote pizza"), K("klein", DOOS(0.6), "de kleine pizza")],
     goed: "groot",
     naast: [PZ(0.58), PZ(0.4)],
-    vraag: ["Weer twee dozen.", "Welke pizza is het grootst?"],
-    goedZin: ["Deze pizza is het grootst."],
+    vraag: ["Weer 2 dozen.", "Welke pizza is het grootst?"],
+    goedZin: ["Haal je ze uit de doos, dan is deze pizza de grootste."],
     uitleg: ["Ik haal de pizza's uit de dozen.", "Nu staan ze naast elkaar, op één lijn.", "Welke pizza komt het hoogst?"],
-    tip: ["Kijk naar de pizza's, niet naar de dozen.", "Welke pizza is het grootst?"],
+    tip: ["Kijk naar de pizza's, niet naar de dozen."],
   }),
   ordenGrootte({
     dingen: [IJS(0.55), IJS(0.75), IJS(0.95)],
@@ -490,10 +581,10 @@ const pizza1Opgaven: Opgave[] = [
   grootteVraag({
     kaarten: [K("klein", PZ(0.5, "olijf"), "de kleine pizza"), K("groot", PZ(0.85, "olijf"), "de grote pizza")],
     goed: "klein",
-    vraag: ["Twee pizza's met olijven.", "Welke pizza is het kleinst?"],
+    vraag: ["2 pizza's met olijven.", "Welke pizza is het kleinst?"],
     goedZin: ["Deze pizza is het kleinst."],
     uitleg: [...NAAST_PIZZA, "Welke pizza komt het minst hoog?"],
-    tip: ["Zoek de pizza die het smalst is.", "Welke pizza is het kleinst?"],
+    tip: ["Zet je vinger op de rand van elke pizza. De pizza met de rand het dichtst bij het midden is het kleinst.", "Welke pizza is het kleinst?"],
   }),
   ordenGrootte({
     dingen: [DOOS(0.45), DOOS(0.72), DOOS(1)],
@@ -507,7 +598,7 @@ const pizza1Opgaven: Opgave[] = [
     vraag: ["Nog meer pizza!", "Welke pizza is groter?"],
     goedZin: ["Die pizza is groter."],
     uitleg: [...NAAST_PIZZA, "Welke pizza steekt boven de andere uit?"],
-    tip: ["Kijk welke pizza breder is.", "Welke pizza is groter?"],
+    tip: ["Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is groter.", "Welke pizza is groter?"],
   }),
 ];
 
@@ -521,7 +612,7 @@ const pizza1: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartPizza,
   async speel(l) {
-    await welkom(l, "verhaal|s=pizza1", ["Deze pizza's zijn niet even groot.", "Welke pizza is het grootst?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "verhaal|s=pizza1", ["Deze pizza's zijn niet even groot.", "Welke pizza is het grootst?"], async () => {
       zet(l, { groot: null, kaarten: [K("a", PZ(0.55), "de kleine pizza"), K("b", PZ(0.95), "de grote pizza")] });
       await wijsLangs(l, [
         ["b", "Deze pizza is groot."],
@@ -531,7 +622,7 @@ const pizza1: Lesdraaiboek = {
       await l.zeg("Zet je ze naast elkaar, dan zie je het goed.", "De grote pizza komt hoger en is breder.");
       zet(l, { vergelijk: null, kaarten: [] });
     }, pizza1Opgaven[0]);
-    const fouten = await speelAlles(l, pizza1Opgaven, [0, 1, 3]);
+    const fouten = await speelAlles(l, pizza1Opgaven, [0, 1, 3], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet wat groot, groter en het grootst is.");
   },
 };
@@ -551,13 +642,13 @@ function hoeveelStukken(n: number, opties: string[]): Opgave {
         vraag,
         goedZin: [`Er liggen {${n}:oranje} stukken pizza.`],
         samen: async (l) => {
-          await l.zeg("We tellen samen.", "Ik wijs, jij telt mee.");
+          await l.zeg("Ik wijs de stukken aan.", "Jij telt mee.");
           for (let i = 1; i < n; i++) {
             zet(l, { tel: telTot(i) });
             await l.zeg(`{${i}:oranje}`);
           }
           zet(l, { tel: [...telTot(n - 1), { i: n - 1, t: "?" }] });
-          await l.zeg("En dit laatste stuk?");
+          if (!krijgtVervolgvraag(l)) await l.zeg("En dit laatste stuk?");
         },
         hulpBeeld: { tel: [...telTot(n - 1), { i: n - 1, t: "?" }] },
         tip: ["Tel de stukken één voor één.", ...vraag],
@@ -585,17 +676,18 @@ function meerStukken(a: number, b: number): Opgave {
             ["a", a === 1 ? "Hier ligt {1:oranje} stuk." : `Hier liggen {${a}:oranje} stukken.`],
             ["b", b === 1 ? "Hier ligt {1:oranje} stuk." : `Hier liggen {${b}:oranje} stukken.`],
           ]);
-          await l.zeg("Welk getal is meer?");
+          if (!krijgtVervolgvraag(l)) await l.zeg("Welk getal is meer?");
         },
         tip: ["Tel de stukken op allebei de plaatjes.", ...vraag],
+        reactie: (_n, id) => [(id === "a" ? a : b) === 1 ? "Daar ligt {1:oranje} stuk." : `Daar liggen {${id === "a" ? a : b}:oranje} stukken.`, "Tel ook de stukken op het andere plaatje."],
       },
       t,
     );
 }
 
-/** Welk plaatje is één meer? */
+/** Welk plaatje is 1 meer? */
 function eenMeer(n: number, kaarten: [number, number]): Opgave {
-  const vraag = ["Kijk naar de stukken pizza bovenaan.", "Welk plaatje is één meer?"];
+  const vraag = ["Kijk naar de stukken pizza bovenaan.", "Welk plaatje is 1 meer?"];
   return (l, t) =>
     plaatjesVraag(
       l,
@@ -604,38 +696,44 @@ function eenMeer(n: number, kaarten: [number, number]): Opgave {
         kaarten: kaarten.map((k) => K(String(k), PUNTEN(k), `de ${k} stukken`)),
         goed: String(n + 1),
         vraag,
-        goedZin: [`{${n}:oranje} en één erbij is {${n + 1}:oranje}.`],
+        goedZin: [`{${n}:oranje} en 1 erbij is {${n + 1}:oranje}.`],
         samen: async (l) => {
           await l.zeg("Eerst tellen we de stukken bovenaan.");
           zet(l, { tel: telTot(n) });
-          await l.zeg(`Daar liggen {${n}:oranje} stukken.`, "Eén meer betekent: er komt er één bij.", `Tel verder vanaf {${n}:oranje}.`, "Welk plaatje heeft er één meer?");
+          await l.zeg(`Daar liggen {${n}:oranje} stukken.`, "1 meer betekent: er komt er 1 bij.", `Tel verder vanaf {${n}:oranje}.`);
         },
         hulpBeeld: { tel: telTot(n) },
-        tip: [`Tel verder vanaf {${n}:oranje}.`, "Welk plaatje is één meer?"],
+        tip: [`Begin bij de {${n}:oranje} en zet er 1 bij.`],
+        reactie: (_nm, id) => {
+          const d = Number(id) - n;
+          const w = ["", "1", "2", "3"][Math.abs(d)] ?? String(Math.abs(d));
+          return [`{${id}:oranje} is ${w} ${d > 0 ? "meer" : "minder"} dan {${n}:oranje}.`, "Het goede plaatje heeft er precies 1 meer dan het plaatje bovenaan."];
+        },
       },
       t,
     );
 }
 
-/** Welk ijsje heeft één bolletje minder? */
+/** Welk ijsje heeft 1 bolletje minder? */
 function eenMinder(n: number, intro: string[]): Opgave {
-  const vraag = [...intro, "Kijk naar het ijsje bovenaan.", "Welk ijsje heeft één bolletje minder?"];
+  const vraag = [...intro, "Kijk naar het ijsje bovenaan.", "Welk ijsje heeft 1 bolletje minder?"];
   return (l, t) =>
     plaatjesVraag(
       l,
       {
         beeld: { groot: `ijsje|m=1|bol=${n}` },
-        kaarten: [K("meer", `ijsje|m=1|bol=${n + 1}`, `het ijsje met ${n + 1} bolletjes`), K("minder", `ijsje|m=1|bol=${n - 1}`, n - 1 === 1 ? "het ijsje met één bolletje" : `het ijsje met ${n - 1} bolletjes`)],
+        kaarten: [K("meer", `ijsje|m=1|bol=${n + 1}`, `het ijsje met ${n + 1} bolletjes`), K("minder", `ijsje|m=1|bol=${n - 1}`, n - 1 === 1 ? "het ijsje met 1 bolletje" : `het ijsje met ${n - 1} bolletjes`)],
         goed: "minder",
         vraag,
-        goedZin: [`{${n}:roze} min één is {${n - 1}:roze}.`, n - 1 === 1 ? "Dit ijsje heeft één bolletje." : `Dit ijsje heeft {${n - 1}:roze} bolletjes.`],
+        goedZin: [`{${n}:roze} min 1 is {${n - 1}:roze}.`, n - 1 === 1 ? "Dit ijsje heeft 1 bolletje." : `Dit ijsje heeft {${n - 1}:roze} bolletjes.`],
         samen: async (l) => {
           await l.zeg("Eerst tellen we de bolletjes bovenaan.");
           zet(l, { tel: telTot(n) });
-          await l.zeg(`Dat ijsje heeft {${n}:roze} bolletjes.`, "Eén minder betekent: er gaat er één af.", `Tel terug vanaf {${n}:roze}.`);
+          await l.zeg(`Dat ijsje heeft {${n}:roze} bolletjes.`, "1 minder betekent: er gaat er 1 af.", `Tel terug vanaf {${n}:roze}.`);
         },
         hulpBeeld: { tel: telTot(n) },
-        tip: [`Tel terug vanaf {${n}:roze}.`, "Welk ijsje heeft één bolletje minder?"],
+        tip: [`Begin bij {${n}:roze} bolletjes en haal er 1 af.`],
+        reactie: () => [`Dit ijsje heeft {${n + 1}:roze} bolletjes. Dat is 1 meer.`, "Het goede ijsje heeft er precies 1 minder dan het ijsje bovenaan."],
       },
       t,
     );
@@ -666,21 +764,21 @@ const pizza2: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartPizza,
   async speel(l) {
-    await welkom(l, "verhaal|s=pizza2", ["De pizza is in stukken gesneden.", "Hoeveel stukken pizza zie je?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "verhaal|s=pizza2", ["De pizza is in stukken gesneden.", "Hoeveel stukken pizza zie je?"], async () => {
       zet(l, { groot: PUNTEN(3) });
       await l.zeg("Kijk, ik tel de stukken.");
       for (let i = 1; i <= 3; i++) {
         zet(l, { tel: telTot(i) });
         await l.zeg(`{${i}:oranje}`);
       }
-      await l.zeg("Komt er één stuk bij? Dan is het één meer.");
+      await l.zeg("Komt er 1 stuk bij? Dan is het 1 meer.");
       zet(l, { groot: PUNTEN(4), tel: telTot(4) });
       speelLesgeluid("verschijn");
-      await l.zeg("Nu zijn het er {4:oranje}.", "Gaat er één af? Dan is het één minder.");
+      await l.zeg("Nu zijn het er {4:oranje}.", "Gaat er 1 af? Dan is het 1 minder.");
       zet(l, { groot: PUNTEN(3), tel: telTot(3) });
       await l.zeg("Dan zijn het er weer {3:oranje}.");
     }, pizza2Opgaven[0]);
-    const fouten = await speelAlles(l, pizza2Opgaven, [0, 3, 4]);
+    const fouten = await speelAlles(l, pizza2Opgaven, [0, 3, 4], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kunt tellen en zien wat meer en minder is.");
   },
 };
@@ -707,10 +805,11 @@ function weegVraag(o: { links: string; rechts: string; kant: Kant; kaarten: Kaar
           hulp.balans = zak;
           zet(l, { balans: zak });
           await l.zeg("Kijk goed naar de weegschaal.", "Eerst hangt hij recht.");
-          await l.zeg("Nu zakt hij aan één kant naar beneden.", ...(o.extra ?? []), o.zwaar ? "Wat zwaar is, gaat omlaag." : "Wat licht is, blijft boven.");
+          await l.zeg("Nu zakt hij aan 1 kant naar beneden.", ...(o.extra ?? []), o.zwaar ? "De zwaarste kant zakt naar beneden. Zo zie je welke kant zwaarder is." : "Wat licht is, blijft boven.");
         },
         hulpBeeld: hulp,
         tip: [o.zwaar ? "Kijk welke kant van de weegschaal omlaag hangt." : "Kijk welke kant van de weegschaal omhoog gaat.", ...o.vraag.slice(-1)],
+        reactie: (naam) => [`${Hoofd(naam)} is ${o.zwaar ? "lichter" : "zwaarder"} dan de andere.`, o.zwaar ? "Kijk welke kant van de weegschaal omlaag hangt." : "Kijk welke kant van de weegschaal omhoog gaat."],
       },
       t,
     );
@@ -730,9 +829,10 @@ function schatVraag(o: { groot: string; naam: string; een: Kaart; veel: Kaart; v
         goedZin: o.goedZin,
         samen: async (l) => {
           await wijsLangs(l, [[o.een.id, ...o.uitleg]]);
-          await l.zeg(`Hoeveel heb je nodig om net zo zwaar te zijn als ${o.naam}?`);
+          if (!krijgtVervolgvraag(l)) await l.zeg(`Hoeveel heb je nodig om net zo zwaar te zijn als ${o.naam}?`);
         },
-        tip: [`${Hoofd(o.naam)} is veel zwaarder dan één ding.`, ...o.vraag.slice(-1)],
+        tip: [`${Hoofd(o.naam)} is veel zwaarder dan 1 ding.`, ...o.vraag.slice(-1)],
+        reactie: () => [`${Hoofd(o.een.naam)} is veel lichter dan ${o.naam}.`, `${Hoofd(o.naam)} is veel zwaarder dan 1 ding.`],
       },
       t,
     );
@@ -762,7 +862,7 @@ const pizza3Opgaven: Opgave[] = [
     kant: 1,
     kaarten: [K("salami", PZ(0.8, "salami"), "de pizza met salami"), K("kaas", PZ(0.8), "de pizza met kaas")],
     goed: "salami",
-    vraag: ["Nu liggen er twee pizza's op de weegschaal.", "Welke pizza is het zwaarst?"],
+    vraag: ["Nu liggen er 2 pizza's op de weegschaal.", "Welke pizza is het zwaarst?"],
     goedZin: ["De pizza met salami is het zwaarst.", "Je ziet het aan de weegschaal."],
     zwaar: true,
     extra: ["De pizza's zijn even groot.", "Daar zie je het dus niet aan."],
@@ -783,18 +883,18 @@ const pizza3Opgaven: Opgave[] = [
     kant: -1,
     kaarten: [K("tomaten", TOM3, "de tomaten"), K("meel", "meel", "de zak meel")],
     goed: "meel",
-    vraag: ["Een zak meel en drie tomaten.", "Wat is zwaarder?"],
+    vraag: ["Een zak meel en 3 tomaten.", "Wat is zwaarder?"],
     goedZin: ["De zak meel is zwaarder."],
     zwaar: true,
   }),
   schatVraag({
     groot: "oven",
     naam: "de pizzaoven",
-    een: K("een", "meel", "één zak meel"),
+    een: K("een", "meel", "1 zak meel"),
     veel: K("veel", "meelberg", "heel veel zakken meel"),
-    vraag: ["Kijk, de pizzaoven van steen.", "Wat denk je: wat is even zwaar als de oven?", "Eén zak meel, of heel veel zakken meel?"],
+    vraag: ["Kijk, de pizzaoven van steen.", "Wat denk je: wat is even zwaar als de oven?", "1 zak meel, of heel veel zakken meel?"],
     goedZin: ["Heel veel zakken meel zijn samen net zo zwaar als de oven."],
-    uitleg: ["Eén zak meel kun je nog net tillen.", "Kun je de oven ook optillen? Die is veel zwaarder!"],
+    uitleg: ["1 zak meel kun je nog net tillen.", "Kun je de oven ook optillen? Die is veel zwaarder!"],
   }),
   weegVraag({
     links: KAAS_K,
@@ -822,7 +922,7 @@ const pizza3Opgaven: Opgave[] = [
     kant: -1,
     kaarten: [K("blauw", "doos|kleur=blauw", "de blauwe doos"), K("rood", "doos|kleur=rood", "de rode doos")],
     goed: "rood",
-    vraag: ["Twee dozen. Ze zijn even groot.", "In één doos zit een pizza.", "Welke doos is het zwaarst?"],
+    vraag: ["2 dozen. Ze zijn even groot.", "In 1 doos zit een pizza.", "Welke doos is het zwaarst?"],
     goedZin: ["De rode doos is het zwaarst.", "Daar zit de pizza in."],
     zwaar: true,
     extra: ["De dozen zijn even groot.", "Daar zie je het dus niet aan."],
@@ -840,11 +940,11 @@ const pizza3Opgaven: Opgave[] = [
   schatVraag({
     groot: "meel",
     naam: "een zak meel",
-    een: K("een", "olijf", "één olijf"),
+    een: K("een", "olijf", "1 olijf"),
     veel: K("veel", "olijfschaal", "een grote schaal vol olijven"),
-    vraag: ["Wat denk je: wat is even zwaar als een zak meel?", "Eén olijf, of een grote schaal vol olijven?"],
+    vraag: ["Wat denk je: wat is even zwaar als een zak meel?", "1 olijf, of een grote schaal vol olijven?"],
     goedZin: ["Een grote schaal vol olijven is ongeveer net zo zwaar als een zak meel."],
-    uitleg: ["Eén olijf is heel klein en licht.", "Die voel je bijna niet in je hand.", "Een zak meel is veel zwaarder."],
+    uitleg: ["1 olijf is heel klein en licht.", "Die voel je bijna niet in je hand.", "Een zak meel is veel zwaarder."],
   }),
   weegVraag({
     links: "olijf",
@@ -860,10 +960,10 @@ const pizza3Opgaven: Opgave[] = [
     links: TOM3,
     rechts: TOM1,
     kant: -1,
-    kaarten: [K("een", TOM1, "één tomaat"), K("drie", TOM3, "de drie tomaten")],
+    kaarten: [K("een", TOM1, "1 tomaat"), K("drie", TOM3, "de 3 tomaten")],
     goed: "drie",
-    vraag: ["Eén tomaat en drie tomaten.", "Wat is het zwaarst?"],
-    goedZin: ["Drie tomaten zijn het zwaarst."],
+    vraag: ["1 tomaat en 3 tomaten.", "Wat is het zwaarst?"],
+    goedZin: ["3 tomaten zijn het zwaarst."],
     zwaar: true,
   }),
 ];
@@ -878,12 +978,12 @@ const pizza3: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartPizza,
   async speel(l) {
-    await welkom(l, "verhaal|s=pizza3", ["Er ligt deeg op de weegschaal.", "Welk deeg is het zwaarst?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "verhaal|s=pizza3", ["Er ligt deeg op de weegschaal.", "Welk deeg is het zwaarst?"], async () => {
       zet(l, { groot: null, balans: { links: KAAS_G, rechts: TOM1, kant: -1, zak: ++zakNr } });
       await l.zeg("Kijk naar de weegschaal.", "Eerst hangt hij recht.", "Dan zakt de zware kant naar beneden.", "De kaas is zwaar. De tomaat is licht.");
       zet(l, { balans: null });
     }, pizza3Opgaven[0]);
-    const fouten = await speelAlles(l, pizza3Opgaven, [0, 1, 4]);
+    const fouten = await speelAlles(l, pizza3Opgaven, [0, 1, 4], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet wat zwaar en licht is.");
   },
 };
@@ -909,9 +1009,15 @@ function wijsVraag(o: { beeld?: Partial<MetenProps>; kaarten: Kaart[]; goed: str
         goedZin: o.goedZin,
         samen: async (l) => {
           await wijsLangs(l, o.uitleg);
-          if (o.slot) await l.zeg(...o.slot);
+          // De slotvragen vragen hetzelfde als de antwoordvraag die hierna volgt.
+          if (o.slot) await l.zeg(...o.slot.filter((zin) => !krijgtVervolgvraag(l) || !zin.endsWith("?")));
         },
         tip: o.tip,
+        /* de reactie is de zin die bij dit gekozen plaatje hoort (uit de uitleg), plus de eerste hint */
+        reactie: (naam, id) => {
+          const eigen = o.uitleg.find((u) => u[0] === id)?.slice(1).filter((z) => !/\?|\.\.\.$/.test(z.trim())).slice(0, 2) ?? [];
+          return eigen.length ? [...eigen, ...hint(o.tip).slice(0, 1)] : [jouwKeuze(naam), ...hint(o.tip).slice(0, 1)];
+        },
       },
       t,
     );
@@ -941,7 +1047,7 @@ function ordenRij(o: { juist: string[]; vast?: number[]; vastDingen?: MDing[]; l
 }
 
 /** Een woord kiezen (de woorden staan op knoppen bij Bliepo en worden voorgelezen). */
-function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; uitleg: string[]; tip: string[] }): Opgave {
+function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: string; vraag: string[]; goedZin: string[]; uitleg: string[]; tip: string[]; mis: Record<string, string> }): Opgave {
   return (l, t) =>
     knopVraag(
       l,
@@ -952,9 +1058,10 @@ function woordVraag(o: { beeld: Partial<MetenProps>; opties: string[]; goed: str
         vraag: o.vraag,
         goedZin: o.goedZin,
         samen: async (l) => {
-          await l.zeg(...o.uitleg);
+          await l.zeg(...o.uitleg.filter((zin) => !krijgtVervolgvraag(l) || !/(\?|\.\.\.)$/.test(zin.trim())));
         },
         tip: o.tip,
+        reactie: (x) => [o.mis[x] ?? `Het woord ${x} past hier niet.`, ...hint(o.tip).slice(0, 1)],
       },
       t,
     );
@@ -973,10 +1080,10 @@ const hoeveel1Opgaven: Opgave[] = [
       ["vol", "Deze mand zit propvol."],
     ],
     slot: ["Leeg betekent: er zit niets in.", "In welke mand zit niets?"],
-    tip: ["Zoek de mand waar niets in zit.", "Welke mand is leeg?"],
+    tip: ["Kijk in elke mand. Een lege mand heeft niets erin.", "Welke mand is leeg?"],
   }),
   wijsVraag({
-    kaarten: [K("leeg", "stokje|n=0", "het lege stokje"), K("twee", "stokje|n=2", "het stokje met twee stukjes"), K("veel", "stokje|n=6", "het volle stokje")],
+    kaarten: [K("leeg", "stokje|n=0", "het lege stokje"), K("twee", "stokje|n=2", "het stokje met 2 stukjes"), K("veel", "stokje|n=6", "het volle stokje")],
     goed: "veel",
     vraag: ["Hier zijn fruitstokjes.", "Op welk stokje zit veel fruit?"],
     goedZin: ["Op dit stokje zit veel fruit.", "Lekker!"],
@@ -985,19 +1092,19 @@ const hoeveel1Opgaven: Opgave[] = [
       ["twee", "Op dit stokje zitten {2:rood} stukjes."],
     ],
     slot: ["Veel is een heleboel.", "Op welk stokje zit een heleboel fruit?"],
-    tip: ["Zoek het stokje met de meeste stukjes.", "Op welk stokje zit veel fruit?"],
+    tip: ["Tel de stukjes op elk stokje. Bij veel fruit liggen er best veel stukjes.", "Op welk stokje zit veel fruit?"],
   }),
   wijsVraag({
     kaarten: [K("veel", "broodje|n=5", "het broodje met veel kaas"), K("heelveel", "broodje|n=7", "het broodje met heel veel kaas"), K("weinig", "broodje|n=1", "het broodje met weinig kaas")],
     goed: "weinig",
     vraag: ["Hier zijn broodjes met kaas.", "Op welk broodje zit weinig kaas?"],
-    goedZin: ["Op dit broodje zit weinig kaas.", "Maar één klein plakje."],
+    goedZin: ["Op dit broodje zit weinig kaas.", "Maar 1 klein plakje."],
     uitleg: [
       ["veel", "Op dit broodje zit veel kaas."],
       ["heelveel", "En op dit broodje zit heel veel kaas."],
     ],
-    slot: ["Weinig is maar een klein beetje.", "Weinig is het tegenovergestelde van veel."],
-    tip: ["Zoek het broodje met maar een klein beetje kaas.", "Op welk broodje zit weinig kaas?"],
+    slot: ["Weinig is maar een klein beetje.", "Weinig is juist niet veel."],
+    tip: ["Kijk hoeveel kaas er op elk broodje ligt. Bij weinig is er maar een klein beetje.", "Op welk broodje zit weinig kaas?"],
   }),
   wijsVraag({
     kaarten: [K("bijna", SAP(0.15), "de bijna lege beker"), K("half", SAP(0.5), "de halfvolle beker"), K("vol", SAP(1), "de volle beker")],
@@ -1005,7 +1112,7 @@ const hoeveel1Opgaven: Opgave[] = [
     vraag: ["Er is sap voor de picknick.", "Welke beker is vol?"],
     goedZin: ["Deze beker is vol.", "Er kan niets meer bij."],
     uitleg: [
-      ["bijna", "Kijk tot waar het sap komt.", "In deze beker zit maar een klein beetje."],
+      ["bijna", "Kijk hoe hoog het sap staat.", "In deze beker zit maar een klein beetje."],
       ["half", "Deze beker is half vol."],
     ],
     slot: ["Vol betekent: er kan niets meer bij.", "Het sap komt dan tot bovenaan."],
@@ -1058,10 +1165,11 @@ const hoeveel1Opgaven: Opgave[] = [
     beeld: { groot: MAND(2) },
     opties: ["meer", "vol", "evenveel"],
     goed: "vol",
-    vraag: ["Alles zit nu in de mand.", "De mand is niet meer leeg.", "Wat is het tegenovergestelde van leeg?", "Meer, vol of evenveel?"],
-    goedZin: ["Het tegenovergestelde van leeg is vol."],
-    uitleg: ["Het tegenovergestelde is het omgekeerde.", "Een lege mand: daar zit niets in.", "Zit er zoveel in dat er niets meer bij kan?", "Welk woord hoort daarbij?"],
-    tip: ["Er kan niets meer bij. Hoe heet dat?", "Wat is het tegenovergestelde van leeg?"],
+    vraag: ["Alles zit nu in de mand.", "De mand is niet meer leeg.", "Welk woord zegt het omgekeerde van leeg?", "Meer, vol of evenveel?"],
+    goedZin: ["Het omgekeerde van leeg is vol."],
+    uitleg: ["Bij leeg hoort een ander woord, voor als er juist veel in zit.", "Een lege mand: daar zit niets in.", "Zit er zoveel in dat er niets meer bij kan?", "Welk woord hoort daarbij?"],
+    tip: ["Een lege mand heeft niets erin. Hoe heet het als er juist heel veel in zit?", "Zoek het woord voor een mand waar alles in zit."],
+    mis: { meer: "Meer gebruik je als je 2 dingen vergelijkt.", evenveel: "Evenveel zeg je van 2 dingen die net zoveel hebben." },
   }),
   wijsVraag({
     beeld: { groot: SAP(0.6) },
@@ -1074,10 +1182,10 @@ const hoeveel1Opgaven: Opgave[] = [
       ["veel", "Hier komt het sap hoger."],
     ],
     slot: ["Waar komt het sap net zo hoog als bovenaan?"],
-    tip: ["Kijk tot waar het sap komt.", "In welke beker zit evenveel sap?"],
+    tip: ["Zoek de beker waar het sap even hoog staat als bovenaan.", "In welke beker zit evenveel sap?"],
   }),
   wijsVraag({
-    kaarten: [K("twee", "schaal|n=2", "de schaal met twee tomaten"), K("veel", "schaal|n=9", "de schaal met veel tomaten"), K("leeg", "schaal|n=0", "de lege schaal")],
+    kaarten: [K("twee", "schaal|n=2", "de schaal met 2 tomaten"), K("veel", "schaal|n=9", "de schaal met veel tomaten"), K("leeg", "schaal|n=0", "de lege schaal")],
     goed: "veel",
     vraag: ["In welke schaal zitten veel tomaten?"],
     goedZin: ["In deze schaal zitten veel tomaten."],
@@ -1108,7 +1216,7 @@ const hoeveel1: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartHoeveelheden,
   async speel(l) {
-    await welkom(l, "verhaal|s=picknick1", ["We pakken een mand voor de picknick.", "Welke mand is leeg?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "verhaal|s=picknick1", ["We pakken een mand voor de picknick.", "Welke mand is leeg?"], async () => {
       zet(l, { groot: null, kaarten: [K("leeg", MAND(0), "de lege mand"), K("vol", MAND(2), "de volle mand")] });
       await wijsLangs(l, [
         ["leeg", "Deze mand is leeg.", "Er zit niets in."],
@@ -1116,7 +1224,7 @@ const hoeveel1: Lesdraaiboek = {
       ]);
       zet(l, { kaarten: [] });
     }, hoeveel1Opgaven[0]);
-    const fouten = await speelAlles(l, hoeveel1Opgaven, [0, 3, 5]);
+    const fouten = await speelAlles(l, hoeveel1Opgaven, [0, 3, 5], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet wat leeg, vol, veel en weinig is.");
   },
 };
@@ -1134,16 +1242,18 @@ const hoeveel2Opgaven: Opgave[] = [
     vraag: ["De picknickmand zit vol.", "De mand weegt veel.", "De mand is ...", "Kort, zwaar of dun?"],
     goedZin: ["De mand is zwaar."],
     uitleg: ["Weegt iets veel? Dan kun je het moeilijk tillen.", "Welk woord past daarbij?"],
-    tip: ["Iets wat veel weegt, is ...", "Kort, zwaar of dun?"],
+    tip: ["Zoek het woord voor iets wat veel weegt.", "Kort, zwaar of dun?"],
+    mis: { kort: "Kort heeft met lengte te maken, niet met gewicht.", dun: "Dun zegt hoe dik iets is, niet hoe zwaar." },
   }),
   woordVraag({
     beeld: { groot: "tafereel|s=tas" },
     opties: ["kort", "zwaarder", "licht"],
     goed: "licht",
-    vraag: ["Er is ook een rugtas.", "De rugtas is niet zwaar.", "Het tegenovergestelde van zwaar is ...", "Kort, zwaarder of licht?"],
-    goedZin: ["Het tegenovergestelde van zwaar is licht.", "De mand is zwaar. De rugtas is licht."],
+    vraag: ["Er is ook een rugtas.", "De rugtas is niet zwaar.", "Het omgekeerde van zwaar is ...", "Kort, zwaarder of licht?"],
+    goedZin: ["Het omgekeerde van zwaar is licht.", "De mand is zwaar. De rugtas is licht."],
     uitleg: ["De mand weegt veel.", "De rugtas weegt bijna niets.", "Hoe noem je iets wat bijna niets weegt?"],
-    tip: ["Iets wat bijna niets weegt, is ...", "Kort, zwaarder of licht?"],
+    tip: ["Zoek het woord voor iets wat bijna niets weegt.", "Kort, zwaarder of licht?"],
+    mis: { kort: "Kort zegt hoe lang iets is, niet hoe zwaar.", zwaarder: "Zwaarder is meer, maar de rugtas weegt bijna niets." },
   }),
   woordVraag({
     beeld: { groot: "tafereel|s=speelgoed" },
@@ -1152,7 +1262,8 @@ const hoeveel2Opgaven: Opgave[] = [
     vraag: ["Het speelgoed gaat uit de rugtas.", "Nu weegt de tas nog minder.", "De tas is nu nog ...", "Groter, zwaarder of lichter?"],
     goedZin: ["De tas is nu nog lichter."],
     uitleg: ["Er gaat iets uit de tas.", "Dan weegt de tas minder.", "Weegt iets minder? Dan is het ..."],
-    tip: ["Er ging iets uit de tas. Weegt hij nu meer of minder?", "Groter, zwaarder of lichter?"],
+    tip: ["Er ging iets uit de tas, dus hij weegt nu minder.", "Groter, zwaarder of lichter?"],
+    mis: { groter: "Groter gaat over de maat van de tas, niet over het gewicht.", zwaarder: "Zwaarder is meer, maar de tas weegt nu minder." },
   }),
   wijsVraag({
     kaarten: [K("bal", "voetbal", "de voetbal"), K("veer", "veer", "de veer"), K("steen", "steen", "de steen")],
@@ -1165,7 +1276,7 @@ const hoeveel2Opgaven: Opgave[] = [
       ["veer", "Een veer kan wegwaaien in de wind."],
     ],
     slot: ["Wat weegt het minst?"],
-    tip: ["Wat weegt het minst?", "Wat is het lichtst?"],
+    tip: ["Stel je voor dat je elk ding optilt. Welk ding voel je bijna niet?", "Wat is het lichtst?"],
   }),
   wijsVraag({
     kaarten: [K("links", WIP(-1), "de wip waar de bal omlaag gaat"), K("rechts", WIP(1), "de wip waar het blok omlaag gaat"), K("recht", WIP(0), "de rechte wip")],
@@ -1187,10 +1298,10 @@ const hoeveel2Opgaven: Opgave[] = [
     uitleg: [
       ["knikker", "Een knikker is heel klein en licht."],
       ["appel", "Een appel is zwaarder dan een knikker."],
-      ["boeken", "Eén boek is al zwaarder dan een appel.", "Hier liggen vier boeken op elkaar."],
+      ["boeken", "1 boek is al zwaarder dan een appel.", "Hier liggen 4 boeken op elkaar."],
     ],
     slot: ["Wat weegt dan het meest?"],
-    tip: ["Wat is het grootst en weegt het meest?", "Wat is het zwaarst?"],
+    tip: ["Stel je voor dat je elk ding optilt. Welk ding is het moeilijkst om te tillen?", "Wat is het zwaarst?"],
   }),
   ordenRij({
     juist: ["leeg", "half", "vol"],
@@ -1226,7 +1337,7 @@ const hoeveel2Opgaven: Opgave[] = [
           await l.zeg("De grote maatbeker is 1 liter.", "Hij is maar half vol.", "Dat is een halve liter.");
           zet(l, { vergelijk: ["maatbeker|l=1|v=0.5", "maatbeker|l=half|v=0.5", "maatbeker|l=half|v=1", "maatbeker|l=1|v=1"] });
           speelLesgeluid("schuif");
-          await l.zeg("Ik zet ze naast elkaar.", "De kleine maatbekers zijn een halve liter.", "Waar komt het water net zo hoog als bij de grote?");
+          await l.zeg("Ik zet ze naast elkaar.", "De kleine maatbekers zijn een halve liter.", ...(krijgtVervolgvraag(l) ? [] : ["Waar komt het water net zo hoog als bij de grote?"]));
         },
         tip: ["Een halve liter past precies in de kleine maatbeker.", "Waar zit evenveel water in?"],
       },
@@ -1240,6 +1351,7 @@ const hoeveel2Opgaven: Opgave[] = [
     goedZin: ["De rugtas is nu zwaarder.", "Er zitten appels in."],
     uitleg: ["Er ging iets uit de mand.", "Daarom is de mand lichter.", "Maar er ging iets in de rugtas.", "Weegt de rugtas nu meer of minder?"],
     tip: ["Er kwam iets bij in de rugtas.", "Lichter, zwaarder of langer?"],
+    mis: { lichter: "Lichter is voor een tas die minder gaat wegen, maar er kwamen appels in de rugtas.", langer: "Langer gaat over de lengte, niet over het gewicht." },
   }),
   wijsVraag({
     kaarten: [K("ballon", "ballon", "de ballon"), K("meloen", "watermeloen", "de watermeloen"), K("appel", "appel", "de appel")],
@@ -1248,20 +1360,21 @@ const hoeveel2Opgaven: Opgave[] = [
     goedZin: ["De watermeloen is het zwaarst."],
     uitleg: [
       ["ballon", "Een ballon zweeft bijna weg. Die is heel licht."],
-      ["appel", "Een appel kun je met één hand pakken."],
-      ["meloen", "Een watermeloen moet je met twee handen tillen."],
+      ["appel", "Een appel kun je met 1 hand pakken."],
+      ["meloen", "Een watermeloen moet je met 2 handen tillen."],
     ],
     slot: ["Wat weegt het meest?"],
-    tip: ["Wat weegt het meest?", "Wat is het zwaarst?"],
+    tip: ["Stel je voor dat je elk ding optilt. Welk ding moet je met 2 handen tillen?", "Wat is het zwaarst?"],
   }),
   woordVraag({
     beeld: { groot: "tafereel|s=tas" },
     opties: ["zwaar", "leeg", "kort"],
     goed: "zwaar",
-    vraag: ["De lege rugtas is licht.", "Wat is het tegenovergestelde van licht?", "Zwaar, leeg of kort?"],
-    goedZin: ["Het tegenovergestelde van licht is zwaar."],
+    vraag: ["De lege rugtas is licht.", "Welk woord zegt het omgekeerde van licht?", "Zwaar, leeg of kort?"],
+    goedZin: ["Het omgekeerde van licht is zwaar."],
     uitleg: ["Licht is: het weegt bijna niets.", "Het omgekeerde is: het weegt heel veel.", "Hoe noem je dat?"],
-    tip: ["Iets wat heel veel weegt, is ...", "Zwaar, leeg of kort?"],
+    tip: ["Zoek het woord voor iets wat heel veel weegt.", "Zwaar, leeg of kort?"],
+    mis: { leeg: "Leeg zegt wat erin zit, niet hoeveel het weegt.", kort: "Een tas kan kort zijn, maar dat zegt niets over het gewicht." },
   }),
 ];
 
@@ -1275,7 +1388,7 @@ const hoeveel2: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartHoeveelheden,
   async speel(l) {
-    await welkom(l, "verhaal|s=picknick2", ["De picknickmand zit vol.", "Is de mand kort, zwaar of dun?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "verhaal|s=picknick2", ["De picknickmand zit vol.", "Is de mand kort, zwaar of dun?"], async () => {
       zet(l, { groot: null, kaarten: [K("boeken", "boeken|n=4", "de stapel boeken"), K("ballon", "ballon", "de ballon")] });
       await wijsLangs(l, [
         ["boeken", "Een stapel boeken weegt veel.", "Die is zwaar."],
@@ -1283,7 +1396,7 @@ const hoeveel2: Lesdraaiboek = {
       ]);
       zet(l, { kaarten: [] });
     }, hoeveel2Opgaven[0]);
-    const fouten = await speelAlles(l, hoeveel2Opgaven, [1, 5, 8]);
+    const fouten = await speelAlles(l, hoeveel2Opgaven, [1, 5, 8], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet wat zwaar, zwaarder en het zwaarst is.");
   },
 };
@@ -1301,16 +1414,16 @@ function schilderijVraag(v: "1" | "2", kaarten: Kaart[], goed: [string, string],
         beeld: { groot: `muur|v=${v}` },
         kaarten,
         goed,
-        vraag: ["Kijk naar de schilderijen op de muur.", "Wat klopt er? Kies er twee."],
+        vraag: ["Kijk naar de schilderijen op de muur.", "Wat klopt er? Kies er 2."],
         goedZin,
         samen: async (l) => {
           await l.zeg("De tegels op de muur helpen je.");
           zet(l, { groot: `muur|v=${v}|zien=1` });
           speelLesgeluid("verschijn");
-          await l.zeg("Ik laat de tegels achter de schilderijen zien.", "Achter een groot schilderij zitten veel tegels.", "Achter een klein schilderij zitten weinig tegels.");
+          await l.zeg("Ik laat de tegels achter de schilderijen zien.", "Tel hoeveel tegels een schilderij bedekt. Hoe meer tegels, hoe groter het schilderij.");
         },
         hulpBeeld: { groot: `muur|v=${v}|zien=1` },
-        tip: ["Tel de tegels achter elk schilderij.", "Wat klopt er? Kies er twee."],
+        tip: ["Tel de tegels achter elk schilderij.", "Wat klopt er? Kies er 2."],
       },
       t,
     );
@@ -1338,15 +1451,16 @@ function tafelTypen(o: { k: number; r: number; kl: string; kleur: string; eerste
       goedZin: [`De tafel is {${n}:${o.kleur}} blaadjes groot.`],
       naGoed: { tel: [{ i: n - 1, t: String(n) }] },
       samen: async (l) => {
-        await l.zeg("We tellen samen.", "Ik tel de eerste rij.");
+        await l.zeg("Eerst de bovenste rij blaadjes.", "Ik tel ze hardop.");
         for (let i = 1; i <= o.k; i++) {
           zet(l, { tel: telTot(i) });
           await l.zeg(`{${i}:${o.kleur}}`);
         }
-        await l.zeg(`Er zijn {${o.r}:wit} rijen.`, "Tel jij verder?");
+        await l.zeg(`Er zijn {${o.r}:wit} rijen.`, ...(krijgtVervolgvraag(l) ? [] : ["Tel jij verder?"]));
       },
       hulpBeeld: { tel: telTot(o.k) },
-      tip: [`Tel verder vanaf {${o.k}:${o.kleur}}.`, "Hoe groot is de tafel?"],
+      tip: [`De eerste rij is {${o.k}:${o.kleur}}. Tel de andere rijen erbij.`, "Hoe groot is de tafel?"],
+      reactie: (x) => (x === o.k ? [`{${x}:${o.kleur}} is maar de eerste rij.`, `Er zijn {${o.r}:wit} rijen.`] : x === o.k + o.r ? [`Je hebt {${o.k}:${o.kleur}} en {${o.r}:wit} bij elkaar gedaan.`, "Tel alle blaadjes, rij voor rij."] : null),
     });
 }
 
@@ -1375,20 +1489,20 @@ const opp1Opgaven: Opgave[] = [
   ),
   ordenRij({
     juist: ["a", "b", "c", "d"],
-    losse: [K("d", TAFELS.d, "de tafel met plek over"), K("a", TAFELS.a, "de tafel met twee borden"), K("c", TAFELS.c, "de tafel met zes borden"), K("b", TAFELS.b, "de tafel met vier borden")],
-    vraag: ["Hier zijn vier tafels met borden.", "Zet de tafels op volgorde.", "Van klein naar groot."],
-    goedZin: ["Van klein naar groot.", "Op de grootste tafel is nog plek over."],
-    uitleg: ["Tel de borden op elke tafel.", "Let op: op één tafel is nog plek over.", "Daar passen nog meer borden op.", "Die tafel is dus het grootst."],
-    tip: ["Op welke tafel past het meest?", "Van klein naar groot."],
+    losse: [K("d", TAFELS.d, "de tafel met plek over"), K("a", TAFELS.a, "de tafel met 2 borden"), K("c", TAFELS.c, "de tafel met 6 borden"), K("b", TAFELS.b, "de tafel met 4 borden")],
+    vraag: ["Hier zijn 4 tafels met borden.", "Zet de tafels op volgorde.", "Van klein naar groot."],
+    goedZin: ["De tafels worden steeds groter.", "Op de grootste tafel is nog plek over."],
+    uitleg: ["Tel de borden op elke tafel.", "Let op: op 1 tafel is nog plek over.", "Daar passen nog meer borden op.", "Die tafel is dus het grootst."],
+    tip: ["Begin met de tafel waar de minste borden op passen."],
     handje: true,
   }),
   ordenRij({
     juist: ["2", "4", "6"],
-    losse: [K("6", "muurtje|n=6", "het muurtje van zes stenen"), K("2", "muurtje|n=2", "het muurtje van twee stenen"), K("4", "muurtje|n=4", "het muurtje van vier stenen")],
+    losse: [K("6", "muurtje|n=6", "het muurtje van 6 stenen"), K("2", "muurtje|n=2", "het muurtje van 2 stenen"), K("4", "muurtje|n=4", "het muurtje van 4 stenen")],
     vraag: ["Zet de muurtjes op volgorde.", "Van smal naar breed."],
-    goedZin: ["Van smal naar breed.", "Het breedste muurtje heeft de meeste stenen naast elkaar."],
+    goedZin: ["Eerst het smalste muurtje, daarna steeds breder.", "Het breedste muurtje heeft de meeste stenen naast elkaar."],
     uitleg: ["Tel de stenen die naast elkaar liggen.", "Liggen er meer stenen naast elkaar?", "Dan is het muurtje breder."],
-    tip: ["Vooraan het muurtje met de minste stenen naast elkaar.", "Van smal naar breed."],
+    tip: ["Vooraan het muurtje met de minste stenen naast elkaar.", "Daarachter komen de bredere muurtjes."],
   }),
   (l, t) =>
     knopVraag(
@@ -1397,8 +1511,8 @@ const opp1Opgaven: Opgave[] = [
         beeld: { groot: "vellen|draai=1" },
         opties: ["Ze zijn even groot.", "Ze zijn niet even groot."],
         goed: "Ze zijn even groot.",
-        vraag: ["Hier liggen twee kaartjes papier.", "Kaartje {2:oranje} ligt op zijn kant.", "Wat klopt?", "Zijn ze even groot, of niet even groot?"],
-        goedZin: ["Ze zijn even groot.", "Kaartje {2:oranje} is alleen gedraaid."],
+        vraag: ["Hier liggen 2 kaartjes papier.", "Kaartje {2:oranje} ligt op zijn kant.", "Wat klopt?", "Zijn ze even groot, of niet even groot?"],
+        goedZin: ["Allebei de plaatjes zijn evenveel.", "Kaartje {2:oranje} is alleen gedraaid."],
         samen: async (l) => {
           await l.zeg("Ik draai kaartje {2:oranje} terug.");
           zet(l, { groot: "vellen|draai=0" });
@@ -1421,7 +1535,7 @@ const opp1Opgaven: Opgave[] = [
           Z("tel", "Tel de hokjes. Dan weet je hoe groot de blauwe vorm is.", "teken|t=tel", "tel de hokjes"),
         ],
         goed: ["even", "tel"],
-        vraag: ["Kijk naar de blauwe en de gele vorm.", "Wat klopt er? Kies er twee."],
+        vraag: ["Kijk naar de blauwe en de gele vorm.", "Wat klopt er? Kies er 2."],
         goedZin: ["Ze zijn allebei {8:wit} hokjes groot.", "En met hokjes tellen weet je hoe groot iets is."],
         samen: async (l) => {
           await l.zeg("Ik tel de blauwe hokjes.");
@@ -1429,10 +1543,10 @@ const opp1Opgaven: Opgave[] = [
             zet(l, { tel: telTot(i) });
             await l.zeg(`{${i}:blauw}`);
           }
-          await l.zeg("Tel jij de gele hokjes?", "Zijn het er net zoveel?");
+          await l.zeg("Tel jij de gele hokjes?", ...(krijgtVervolgvraag(l) ? [] : ["Zijn het er net zoveel?"]));
         },
         hulpBeeld: { tel: telTot(8) },
-        tip: ["Tel de blauwe en de gele hokjes.", "Wat klopt er? Kies er twee."],
+        tip: ["Tel de blauwe en de gele hokjes.", "Wat klopt er? Kies er 2."],
       },
       t,
     ),
@@ -1443,11 +1557,11 @@ const opp1Opgaven: Opgave[] = [
   tafelTypen({ k: 4, r: 3, kl: "oranje", kleur: "oranje" }),
   ordenRij({
     juist: ["3", "5", "7"],
-    losse: [K("5", "muurtje|n=5", "het muurtje van vijf stenen"), K("7", "muurtje|n=7", "het muurtje van zeven stenen"), K("3", "muurtje|n=3", "het muurtje van drie stenen")],
+    losse: [K("5", "muurtje|n=5", "het muurtje van 5 stenen"), K("7", "muurtje|n=7", "het muurtje van 7 stenen"), K("3", "muurtje|n=3", "het muurtje van 3 stenen")],
     vraag: ["Nog meer muurtjes.", "Zet ze op volgorde.", "Van smal naar breed."],
-    goedZin: ["Van smal naar breed."],
+    goedZin: ["Elk muurtje is breder dan het vorige."],
     uitleg: ["Tel de stenen die naast elkaar liggen.", "Liggen er meer stenen naast elkaar?", "Dan is het muurtje breder."],
-    tip: ["Vooraan het muurtje met de minste stenen naast elkaar.", "Van smal naar breed."],
+    tip: ["Tel de stenen naast elkaar: de minste staan vooraan.", "Dan steeds meer."],
   }),
 ];
 
@@ -1461,23 +1575,24 @@ function gelijkVraag(l: Lesgids, t: boolean, matten: string, n: number, eerste: 
       kaarten,
       goed: "even",
       vraag: [
-        ...(eerste ? ["Kijk naar de twee speelmatten.", "Ze zijn gemaakt van puzzelstukken."] : ["Weer twee speelmatten."]),
+        ...(eerste ? ["Kijk naar de 2 speelmatten.", "Ze zijn gemaakt van puzzelstukken."] : ["Weer 2 speelmatten."]),
         "Wat klopt?",
         "Zijn ze even groot?",
         "Is mat {1:wit} groter?",
         "Of is mat {2:wit} groter?",
       ],
-      goedZin: ["Ze zijn even groot.", `Allebei de matten hebben {${n}:wit} stukken.`, "Ze zien er anders uit, maar ze zijn even groot."],
+      goedZin: ["De matten zijn even groot.", `Allebei de matten hebben {${n}:wit} stukken.`, "Ze zien er anders uit, maar ze zijn even groot."],
       samen: async (l) => {
         await l.zeg(`Ik tel de stukken van mat {1:wit}.`);
         for (let i = 1; i <= n; i++) {
           zet(l, { tel: telTot(i) });
           await l.zeg(`{${i}:wit}`);
         }
-        await l.zeg(`Tel jij de stukken van mat {2:wit}?`, "Zijn het er meer, minder of net zoveel?");
+        await l.zeg(`Tel jij de stukken van mat {2:wit}?`, ...(krijgtVervolgvraag(l) ? [] : ["Zijn het er meer, minder of net zoveel?"]));
       },
       hulpBeeld: { tel: telTot(n) },
       tip: ["Tel de stukken van allebei de matten.", "Wat klopt?"],
+      reactie: (_n, id) => [`Mat ${id === "een" ? "{1:wit}" : "{2:wit}"} is niet groter.`, "Tel de stukken van allebei de matten."],
     },
     t,
   );
@@ -1493,7 +1608,7 @@ const opp1: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartOppervlakte,
   async speel(l) {
-    await welkom(l, "tafel|k=3|r=2|kl=geel", ["Op de muur hangen schilderijen.", "Welk schilderij is groot en welk is klein?"], async () => {
+    const voorbeeldAfgerond = await welkom(l, "tafel|k=3|r=2|kl=geel", ["Op de muur hangen schilderijen.", "Welk schilderij is groot en welk is klein?"], async () => {
       await l.zeg("Kijk, deze tafel ligt vol blaadjes papier.", "Ik tel ze.");
       for (let i = 1; i <= 6; i++) {
         zet(l, { tel: telTot(i) });
@@ -1501,7 +1616,7 @@ const opp1: Lesdraaiboek = {
       }
       await l.zeg("De tafel is {6:geel} blaadjes groot.");
     }, opp1Opgaven[0]);
-    const fouten = await speelAlles(l, opp1Opgaven, [0, 3, 4]);
+    const fouten = await speelAlles(l, opp1Opgaven, [0, 3, 4], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet hoe je kunt zien hoe groot iets is.");
   },
 };
@@ -1530,7 +1645,7 @@ function vulIn(o: { k: number; r: number; d: "h" | "b"; ka: string; kb: string; 
         vast: [],
         losse: o.kaartjes.map((n) => ({ id: String(n), label: String(n), zeg: String(n), naam: `{${n}:wit}` })),
         vraag: [
-          o.eerste ? `Hier zie je twee keer dezelfde ${waar}.` : `Weer twee keer dezelfde ${waar}.`,
+          o.eerste ? `Hier zie je 2 keer dezelfde ${waar}.` : `Weer 2 keer dezelfde ${waar}.`,
           `Op de ene ${ligt} kleine ${ka} ${ding}.`,
           `Op de andere ${ligt} grote ${kb} ${ding}.`,
           `Hoeveel ${ding} passen er op elke ${waar}?`,
@@ -1543,7 +1658,7 @@ function vulIn(o: { k: number; r: number; d: "h" | "b"; ka: string; kb: string; 
             zet(l, { tel: telTot(i) });
             await l.zeg(`{${i}:${o.ka}}`);
           }
-          await l.zeg(`${eenGroot} is net zo groot als twee ${ka}.`, `Er passen dus minder ${kb} ${ding} op.`);
+          await l.zeg(`${eenGroot} is net zo groot als 2 ${ka}.`, `Er passen dus minder ${kb} ${ding} op.`);
           zet(l, { tel: [] });
           await l.zeg("Tel nu zelf verder.");
         },
@@ -1583,8 +1698,8 @@ const opp2: Lesdraaiboek = {
   voorwerpen: METEN_VOORWERPEN,
   kaarttekening: KaartOppervlakte,
   async speel(l) {
-    await welkom(l, "twee|k=2|r=2|d=h|ka=groen|kb=blauw", ["De tafel ligt vol blaadjes papier.", "Hoe groot is de tafel?"], async () => {
-      await l.zeg("Hier is twee keer dezelfde tafel.", "Ik tel de groene blaadjes.");
+    const voorbeeldAfgerond = await welkom(l, "twee|k=2|r=2|d=h|ka=groen|kb=blauw", ["De tafel ligt vol blaadjes papier.", "Hoe groot is de tafel?"], async () => {
+      await l.zeg("Hier is 2 keer dezelfde tafel.", "Ik tel de groene blaadjes.");
       for (let i = 1; i <= 4; i++) {
         zet(l, { tel: telTot(i) });
         await l.zeg(`{${i}:groen}`);
@@ -1596,7 +1711,7 @@ const opp2: Lesdraaiboek = {
       }
       await l.zeg("De blauwe blaadjes zijn groter.", "Daarom passen er minder op.");
     }, opp2Opgaven[0]);
-    const fouten = await speelAlles(l, opp2Opgaven, [0, 4, 5]);
+    const fouten = await speelAlles(l, opp2Opgaven, [0, 4, 5], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kunt tellen hoe groot een tafel of een muur is.");
   },
 };

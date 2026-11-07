@@ -1,0 +1,85 @@
+.ontdekplek {
+  position: absolute;
+  left: 40px;
+  top: 105px;
+  width: 900px;
+  aspect-ratio: 3 / 2;
+  isolation: isolate;
+}
+.ontdekplek::before {
+  content: "";
+  position: absolute;
+  inset: 7% 3% 5%;
+  border: 2px solid #b7dcff38;
+  border-radius: 40px;
+  background: #b6dfff12;
+  box-shadow: inset 0 1px 0 #ffffff0d;
+}
+.schaduw {
+  position: absolute;
+  left: 13%;
+  top: 81%;
+  width: 74%;
+  height: 5%;
+  border-radius: 50%;
+  background: #020e303b;
+}
+.achterkant {
+  position: absolute;
+  left: 14%;
+  top: 37%;
+  width: 48%;
+  height: 42%;
+  border: 5px solid #663a29;
+  border-radius: 30px;
+  background: #c9653a;
+  transform: rotate(-5deg);
+}
+.briefje {
+  position: absolute;
+  left: 18%;
+  top: 19%;
+  width: 39%;
+  height: auto;
+  transform: rotate(-12deg);
+}
+.portemonnee {
+  position: absolute;
+  left: 14%;
+  top: 46%;
+  width: 48%;
+  height: 34%;
+  border: 5px solid #663a29;
+  border-radius: 24px 24px 34px 34px;
+  background: #efa468;
+  transform: rotate(-5deg);
+}
+.stiksel {
+  position: absolute;
+  inset: 17px;
+  border: 3px dashed #b4673e;
+  border-radius: 12px 12px 23px 23px;
+}
+.sluiting {
+  position: absolute;
+  right: -7px;
+  top: 28%;
+  width: 100px;
+  height: 76px;
+  border: 5px solid #663a29;
+  border-radius: 40px 8px 8px 40px;
+  background: #82cbd0;
+  display: grid;
+  place-items: center;
+}
+.sluiting span {
+  width: 25px;
+  height: 25px;
+  border: 4px solid #31626a;
+  border-radius: 50%;
+  background: #e8f5ef;
+}
+.eenEuro, .tweeEuro { position: absolute; height: auto; }
+.eenEuro { left: 65%; top: 35%; width: 17%; transform: rotate(9deg); }
+.tweeEuro { left: 68%; top: 60%; width: 19%; transform: rotate(-12deg); }
+:global([data-staand]) .ontdekplek { left: 15px; top: 55px; width: 950px; }

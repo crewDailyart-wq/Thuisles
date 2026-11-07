@@ -45,8 +45,9 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
+import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { tekenVoorwerp, voorwerpKleurbaar } from "../voorwerpen";
+import { tekenVoorwerp, voorwerpBeeld, voorwerpKleurbaar } from "../voorwerpen";
 import { KLEURHEX, ringRuimte, somKleuren, tekenMetRing } from "./squla-getalring";
 
 /** De twee kleuren (hex) van de som a − b: het eerste getal en wat overblijft, en het tweede getal en wat weggaat (BOUWREGELS 2.1, 14.24). */
@@ -89,7 +90,7 @@ export type Toneel =
   | { soort: "bakjes"; id: string; ding: Bakje; vol: number; leeg: number }
   | { soort: "geld"; id: string; heb: Geld[]; prijs: Geld[]; ding: Speelgoed };
 
-export type Licht = "alle" | "over" | "eraf" | "leeg" | null;
+export type Licht = "alle" | "over" | "eraf" | "leeg" | "stippen" | null;
 
 export type VerbindStand = {
   actief: boolean;
@@ -282,9 +283,9 @@ function bakjePlekken(n: number): Plek[] {
   return Array.from({ length: n }, (_, i) => ({ x: 490 + ((i % 5) - 2) * cel, y: y0 + Math.floor(i / 5) * 150 }));
 }
 
-/* Geld: munten zonder wit vierkant (public/geld/los/), briefjes met "specimen" (public/geld/). Klein, nooit ware grootte. */
+/* Geld: bestaande munten en de door de gebruiker gekozen getekende briefjes. Alleen de afbeeldingen zijn vervangen. */
 const GELD_MAAT: Record<Geld, { b: number; h: number }> = { 1: { b: 62, h: 62 }, 2: { b: 68, h: 68 }, 5: { b: 140, h: 71 }, 10: { b: 146, h: 77 } };
-const GELD_BESTAND: Record<Geld, string> = { 1: "/geld/los/munt-1-euro.png", 2: "/geld/los/munt-2-euro.png", 5: "/geld/briefje-5-euro.jpg", 10: "/geld/briefje-10-euro.jpg" };
+const GELD_BESTAND: Record<Geld, string> = { 1: "/geld/los/munt-1-euro.png", 2: "/geld/los/munt-2-euro.png", 5: "/geld/getekend/briefje-5-euro.svg", 10: "/geld/getekend/briefje-10-euro.svg" };
 function geldRij(lijst: Geld[], cx: number, y: number): Plek[] {
   const ruimte = 10;
   const breed = lijst.reduce((t, g) => t + GELD_MAAT[g].b, 0) + ruimte * (lijst.length - 1);
@@ -368,6 +369,17 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     grijsNu = 0;
     klokken: Klok[] = [];
     ringen: Img[] = [];
+    /** Wat Bliepo aanwijst of telt krijgt een rood, getekend rondje (geen gloed of ring meer). Per tafereel nieuw, in de groep. */
+    rondjes: ReturnType<typeof maakRondjes> | null = null;
+    /** Het rondje dat Bliepo aanwijst (licht) en het korte rondje bij goed (800 ms, zoals het oude oplichten) staan naast elkaar. */
+    lichtWens = new Map<string, RondjeVak>();
+    goedVak: RondjeVak | null = null;
+    goedTok = 0;
+    zetRondjes() {
+      const wens = new Map(this.lichtWens);
+      if (this.goedVak) wens.set("goed-over", this.goedVak);
+      this.rondjes?.zet(wens);
+    }
     lichtNu: Licht = null;
     /* bus */
     buiten: Img[] = [];
@@ -411,6 +423,12 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
 
     maak() {
       this.canvasPlaatje("sqm-stip", 40, 40, (c) => tekenStip(c, 40));
+      /* De gloed-schaduwprogramma's van de grafische kaart één keer klaarzetten, vóór het eerste oplichten (anders haperde het eerste goede antwoord). */
+      this.canvasPlaatje("sqm-warm", 8, 8, (c) => {
+        c.fillStyle = "#fff";
+        c.fillRect(1, 1, 6, 6);
+      });
+      this.bak("sqm-warm", "sqm-warm-gloed", 0xffffff);
     }
 
     zetLetter(f: string) {
@@ -456,11 +474,17 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.time.delayedCall(ms, () => im.active && im.setTexture(gewoon));
     }
 
+    /** Eén doek om teksten mee te meten (niet bij elke tekst een nieuw doek maken). */
+    meetCtx: CanvasRenderingContext2D | null = null;
+    meetDoek() {
+      return (this.meetCtx ||= document.createElement("canvas").getContext("2d")!);
+    }
+
     /** Een tekst als plaatje (scherp, met de letter van de les). */
     tekstTex(tekst: string, grootte: number, kleur = "#ffffff", rand = "rgba(4,18,60,0.85)") {
       const sl = `sqm-t-${tekst}-${grootte}-${kleur}`;
       if (this.textures.exists(sl)) return sl;
-      const meet = document.createElement("canvas").getContext("2d")!;
+      const meet = this.meetDoek();
       meet.font = `800 ${grootte}px ${this.letter}`;
       const b = Math.ceil(meet.measureText(tekst).width + grootte * 0.5);
       const h = Math.ceil(grootte * 1.35);
@@ -484,7 +508,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     somRij(x: number, y: number, a: number, b: number, grootte: number, metIs: boolean) {
       const [hexA, hexB] = somHex(a, b);
       const delen: [string, string][] = [[String(a), hexA], [" − ", "#ffffff"], [String(b), hexB], ...(metIs ? ([[" =", "#ffffff"]] as [string, string][]) : [])];
-      const meet = document.createElement("canvas").getContext("2d")!;
+      const meet = this.meetDoek();
       meet.font = `800 ${grootte}px ${this.letter}`;
       const br = delen.map(([t]) => meet.measureText(t).width);
       const tot = br.reduce((u, w) => u + w, 0);
@@ -520,6 +544,11 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     zetToneel(t: Toneel | null) {
       this.stopKlokken();
       this.machStop();
+      this.rondjes?.vergeet();
+      this.rondjes = null;
+      this.lichtWens = new Map();
+      this.goedVak = null;
+      this.goedTok++;
       const oud = this.groep;
       this.groep = null;
       this.items = [];
@@ -543,6 +572,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       if (!t) return;
       const g = this.add.container(0, 0);
       this.groep = g;
+      this.rondjes = maakRondjes(this, g, this.rustig);
       if (t.soort === "ruimte") this.maakRuimte(g, t);
       else if (t.soort === "som") this.maakSom(g, t);
       else if (t.soort === "verbind") this.maakVerbind(g, t);
@@ -599,12 +629,18 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     maakBubbels(g: Box, t: Extract<Toneel, { soort: "bubbels" }>) {
+      /* Het bellenplaatje nu, de bellen zelf elk in een eigen beeld erna: het tekenen van alle getallen in 1 beeld haperde op een trage telefoon. */
+      this.tex("zeepbel");
       t.sommen.forEach(([a, b], i) => {
-        const p = BUBBEL_PLEK[i];
-        const box = this.add.container(p.x, p.y, [this.plaats(this.tex("zeepbel"), 0, 0).setScale(BUBBEL_D / 100 / TX), ...this.somRij(0, 0, a, b, 46, false)]);
-        if (!this.rustig) this.tweens.add({ targets: box, y: p.y - 9, duration: 1500 + i * 180, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
-        g.add(box);
-        this.bubbelBoxen.push(box);
+        this.time.delayedCall((i + 1) * 20, () => {
+          if (this.groep !== g) return;
+          const p = BUBBEL_PLEK[i];
+          const box = this.add.container(p.x, p.y, [this.plaats(this.tex("zeepbel"), 0, 0).setScale(BUBBEL_D / 100 / TX), ...this.somRij(0, 0, a, b, 46, false)]);
+          if (!this.rustig) this.tweens.add({ targets: box, y: p.y - 9, duration: 1500 + i * 180, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+          if (this.bubbelWeg.has(i)) box.setVisible(false);
+          g.add(box);
+          this.bubbelBoxen[i] = box;
+        });
       });
     }
 
@@ -1023,34 +1059,53 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       }
     }
 
-    /** Ringen (meetellen, aanwijzen): de enige gloed die blijft staan zolang Bliepo erover praat. */
+    /** Wat Bliepo aanwijst of meetelt: één rood, getekend rondje om het groepje (Sara, 6 november 2026), geen ring of gloed meer. */
     zetLicht(l: Licht) {
       this.lichtNu = l;
       this.ringen.forEach((r) => r.destroy());
       this.ringen = [];
       const t = this.toneel;
-      if (!t || !l) return;
-      const kleur = WARM;
-      if (t.soort === "ruimte") {
-        const totaal = this.items.length;
-        const r = 44 * this.itemSchaal + 2;
-        this.items.forEach((im, i) => {
-          const isGrijs = i >= totaal - this.grijsNu;
-          if (l === "alle" || (l === "over" && !isGrijs) || (l === "eraf" && isGrijs)) this.ringen.push(this.selectieRing(im.x, im.y, r, kleur));
-        });
-      } else if (t.soort === "bus") {
-        /* Op de gele bus valt een gele ring weg: blauw. */
-        const blauw = 0x2f6bff;
-        if (l === "over" || l === "alle") this.items.forEach((im, i) => (l === "alle" || i < this.items.length - this.grijsNu) && this.ringen.push(this.selectieRing(im.x, im.y, 25, blauw)));
-        if (l === "eraf") {
-          if (t.rondje) this.ringen.push(this.selectieRing(BL.rondje.x, BL.rondje.y, 68, kleur));
-          else this.buiten.forEach((b) => b && this.ringen.push(this.selectieRing(b.x, b.y, 28, kleur)));
+      const wens = new Map<string, RondjeVak>();
+      if (t && l) {
+        const sl = `licht-${l}-${this.grijsNu}`;
+        const n = this.items.length;
+        if (l === "stippen") {
+          /* Eén rondje om alle stippen samen (de plekken uit stipPlekken; de stippen zelf groeien nog in). */
+          if (this.stipN > 0) {
+            const pl = stipPlekken(this.stipN, stipY(t), t.soort === "geld" ? 720 : 490);
+            const x0 = Math.min(...pl.map((p) => p.x)) - 23;
+            const x1 = Math.max(...pl.map((p) => p.x)) + 23;
+            const y0 = Math.min(...pl.map((p) => p.y)) - 23;
+            const y1 = Math.max(...pl.map((p) => p.y)) + 23;
+            /* Iets lager dan de stippen zijn en wat minder hoog opgegeven: de stippen staan onderin het beeld en het rondje (dat ruimer wordt dan het vak) mag niet worden afgesneden. */
+            wens.set(sl, { x: (x0 + x1) / 2, y: (y0 + y1) / 2 - 6, b: x1 - x0, h: Math.max(40, y1 - y0 - 30) });
+          }
+        } else if (t.soort === "ruimte") {
+          const kies = this.items.filter((_, i) => {
+            const isGrijs = i >= n - this.grijsNu;
+            return l === "alle" || (l === "over" && !isGrijs) || (l === "eraf" && isGrijs);
+          });
+          const v = vakOm(kies);
+          if (v) wens.set(sl, v);
+        } else if (t.soort === "bus") {
+          if (l === "over" || l === "alle") {
+            const v = vakOm(this.items.filter((_, i) => l === "alle" || i < n - this.grijsNu));
+            if (v) wens.set(sl, v);
+          }
+          if (l === "eraf") {
+            if (t.rondje) wens.set(sl, { x: BL.rondje.x, y: BL.rondje.y, b: 110, h: 110 });
+            else {
+              const v = vakOm(this.buiten.filter(Boolean));
+              if (v) wens.set(sl, v);
+            }
+          }
+        } else if (t.soort === "bakjes") {
+          const v = vakOm(this.items.filter((_, i) => l === "alle" || (l === "leeg" && i >= t.vol)));
+          if (v) wens.set(sl, v);
         }
-      } else if (t.soort === "bakjes") {
-        this.items.forEach((im, i) => {
-          if (l === "alle" || (l === "leeg" && i >= t.vol)) this.ringen.push(this.selectieRing(im.x, im.y - 10, 62, kleur));
-        });
       }
+      this.lichtWens = wens;
+      this.zetRondjes();
     }
 
     /* ---------- stippen (de uitleg van Bliepo) ---------- */
@@ -1079,6 +1134,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           }
         });
         this.stipBox = box;
+        if (this.lichtNu === "stippen") this.zetLicht(this.lichtNu);
       }
       const van = this.stipGrijsNu;
       this.stipGrijsNu = st.grijs;
@@ -1197,9 +1253,20 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const t = this.toneel;
       const midden = t?.soort === "bus" ? { x: 330, y: 400 } : t?.soort === "machine" ? MACH.rechts : t?.soort === "geld" ? GELD.ding : { x: 490, y: 380 };
       this.golf(midden.x, midden.y);
+      /* Wat overblijft krijgt 800 ms een rood rondje, precies zoals het even oplichtte (bij elk soort tafereel met voorwerpen); daarna weer weg. */
+      const vOver = vakOm(this.items.filter((im) => im.alpha >= 0.5));
+      if (vOver) {
+        this.goedVak = vOver;
+        const tok = ++this.goedTok;
+        this.zetRondjes();
+        this.time.delayedCall(800, () => {
+          if (this.goedTok !== tok) return;
+          this.goedVak = null;
+          this.zetRondjes();
+        });
+      }
       this.items.forEach((im, i) => {
         if (im.alpha < 0.5) return;
-        this.flits(im, this.itemSleutel[i], 800);
         if (this.rustig) return;
         const basis = im.scaleX;
         this.tweens.add({ targets: im, scaleX: basis * 1.12, scaleY: basis * 1.12, delay: i * 20, duration: 130, yoyo: true, onComplete: () => im.setScale(basis) });
@@ -1214,11 +1281,15 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     demo(ms: number) {
       const eind = performance.now() + ms;
       let k = 0;
-      const tonelen: Toneel[] = [
-        { soort: "ruimte", id: "demo-ruimte", ding: "raketje", n: 16 },
-        { soort: "bus", id: "demo-bus", in: 14, rondje: false },
-        { soort: "bubbels", id: "demo-bubbels", sommen: [[7, 7], [9, 4], [12, 12], [8, 0], [15, 15], [11, 6]] },
+      /* Alleen tonelen met plaatjes die deze les echt geladen heeft (anders is het een fout in de demo, geen hapering van de les). */
+      const geladen = (namen: string[]) => namen.every((n) => { try { return !!voorwerpBeeld(n); } catch { return false; } });
+      const alle: { toneel: Toneel; nodig: string[] }[] = [
+        { toneel: { soort: "ruimte", id: "demo-ruimte", ding: "raketje", n: 16 }, nodig: ["raketje"] },
+        { toneel: { soort: "bus", id: "demo-bus", in: 14, rondje: false }, nodig: ["bezorgbus", "pakje"] },
+        { toneel: { soort: "bubbels", id: "demo-bubbels", sommen: [[7, 7], [9, 4], [12, 12], [8, 0], [15, 15], [11, 6]] }, nodig: ["zeepbel", "raketje"] },
       ];
+      const tonelen = alle.filter((a) => geladen(a.nodig)).map((a) => a.toneel);
+      if (!tonelen.length) return;
       const stap = () => {
         if (performance.now() > eind) return;
         const t = tonelen[k++ % tonelen.length];

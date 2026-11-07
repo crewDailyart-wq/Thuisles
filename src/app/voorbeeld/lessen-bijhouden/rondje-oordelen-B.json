@@ -1,0 +1,72 @@
+{
+ "squla-getallenlijn-dieren-2": {
+  "onderwerp": "Getallenlijn",
+  "oordeel": "goed",
+  "opmerking": "Kaarten ordenen. 'Ik kijk naar de 3 getallen': 1 rondje om de 3 kaarten (komt met het beeld). 'Ze volgen elkaar op': zelfde rondje blijft (zelfde ding). '12 is het kleinste getal' / 'Dat komt helemaal vooraan': rondje alleen om 12. Daarna weg voor de vraag. Het handje bij de vraag is geen rondje. Het rondje blijft staan tijdens de vraag niet."
+ },
+ "squla-getallenlijn-terugtellen-1": {
+  "onderwerp": "Getallenlijn",
+  "oordeel": "goed",
+  "opmerking": "Lichtslinger. 'Ik tel terug langs de plekken': geen rondje. Daarna 17, 16, 15, 14, 13: telkens 1 rondje dat meeloopt met het getal dat Bliepo zegt, vorige weg. Bij de vraag 'Welk getal hoort op de puntjes?' geen rondje meer."
+ },
+ "squla-huisnummers": {
+  "onderwerp": "Huisnummers",
+  "oordeel": "goed",
+  "opmerking": "GEREPAREERD en opnieuw opgenomen. Eerst stond er al een rondje om huis 21 terwijl Bliepo nog 'Ik loop langs de huizen. Elk volgend nummer is 1 meer' zei (te vroeg). Nu: geen rondje bij die zin, dan 21, 22, 23, 24 elk 1 rondje op het moment dat hij het zegt. Bij de vraag 'Welk huisnummer komt na 24?' staat het rondje om het lege huis (?) en blijft staan tijdens de vraag (vraag voor Sara)."
+ },
+ "squla-dagen-van-de-week": {
+  "onderwerp": "Dagen",
+  "oordeel": "goed",
+  "opmerking": "Weektrein. 'We bekijken de weektrein samen. Elke wagon is 1 dag': geen rondje. Daarna dinsdag, woensdag, vrijdag, zondag (maandag/donderdag tussen foto's niet vastgelegd): 1 rondje om de genoemde wagon. Bij de vraag geen rondje."
+ },
+ "squla-rekentaal": {
+  "onderwerp": "Rekentaal",
+  "oordeel": "goed",
+  "opmerking": "Pannenkoeken. 'Ik help je op weg' geen rondje. 'Kijk, deze pannenkoek is groot': 1 rondje om de grote. 'Zie jij de kleine pannenkoek? Tik die aan.': geen rondje (kind kiest zelf). Dit is de enige les van Rekentaal."
+ },
+ "squla-meten-oppervlakte-1": {
+  "onderwerp": "Meten",
+  "oordeel": "goed",
+  "opmerking": "Schilderijen. Tegels verschijnen (geen rondje). Dan 'de zon is het kleinst': rondje om de zon; 'de bloem': volgende; 'het huis is het grootst': rondje om het huis, telkens 1 tegelijk. Daarna weg voor het kiezen. Opgelet: in deze opname (zonder stem) duren de zinnen kort; de echte duur kon ik niet zien."
+ },
+ "squla-meten-pizza-1": {
+  "onderwerp": "Meten",
+  "oordeel": "open",
+  "opmerking": "Pizza's naast elkaar. Bij 'Kijk welke pizza het verst uitsteekt. Die is het grootst.' wijst Bliepo 1 pizza aan, maar er komt geen rondje (alleen gele streepjes). Het oude oplichten deed dit ook niet. Vraag voor Sara: moet hier een rondje om de grote pizza? Niet aangepast."
+ },
+ "squla-tijd-kalender-1": {
+  "onderwerp": "Tijd",
+  "oordeel": "goed",
+  "opmerking": "Rondje om de klok ('Op een klok zie je hoe laat het is'), dan om de kalender ('Op deze kalender staan alle dagen van juni'), dan om de 4 plaatjes ('Op deze plaatjes... Eerst de kring, dan rekenen' = 1 groepje, 1 rondje). Telkens 1 tegelijk. Het rondje om de klok is groot en gaat links voorbij de rand van het scherm (kleine opmerking). Het hangen van 20 seconden zag ik niet: de hele uitleg duurde ~13 seconden."
+ },
+ "squla-tijd-dagen-1": {
+  "onderwerp": "Tijd",
+  "oordeel": "goed",
+  "opmerking": "GEREPAREERD en opnieuw opgenomen. Eerst bleef het rondje om zondag staan terwijl Bliepo 'De week begint op maandag' zei. Nu staat het rondje bij die zin om maandag. Daarvoor dinsdag, donderdag, zaterdag/vrijdag/zondag: telkens 1 rondje om de genoemde wagon."
+ },
+ "squla-min-ruimte-1": {
+  "onderwerp": "Minsommen",
+  "oordeel": "goed",
+  "opmerking": "Ballonnen 7 - 4. 'Er zweven 7 ballonnen' en '4 ballonnen vliegen weg': geen rondje (de 4 worden groen en gaan weg). 'Tel de ballonnen die overblijven': 1 rondje om de 3 die blijven; dat rondje blijft staan tijdens de vraag (vraag voor Sara)."
+ },
+ "squla-min-bus1-1": {
+  "onderwerp": "Minsommen",
+  "oordeel": "goed",
+  "opmerking": "Bus met pakjes. 'De bus bezorgt er 3': geen rondje (de 3 pakjes gaan naar buiten). 'Hoeveel pakjes liggen er nog in de bus?': 1 rondje om de 5 pakjes in de bus; blijft staan tijdens de vraag (vraag voor Sara)."
+ },
+ "squla-min-machine-1": {
+  "onderwerp": "Minsommen",
+  "oordeel": "open",
+  "opmerking": "Stippenmachine -3. Bij 'Ik zet 10 stippen neer', 'Er gaan er 3 weg' en 'Tel alleen de gekleurde stippen' komt er geen rondje. In de code staat dit bewust zo (bij stippen geen oplichten), dus het oude oplichten deed dit ook niet. Vraag voor Sara: moet hier een rondje om de stippen? Niet aangepast."
+ },
+ "squla-klok-hoelaat-1": {
+  "onderwerp": "Klok",
+  "oordeel": "goed",
+  "opmerking": "Geen rondje. 'De grote wijzer staat op de 12': zachte paarse kleur achter de grote wijzer (zichtbaar). 'De kleine wijzer vertelt welk uur het is': zachte oranje kleur achter de kleine wijzer, op het moment van die zin. Bij de vraag blijft de oranje kleur achter de kleine wijzer staan."
+ },
+ "squla-klok-klokkijken2-1": {
+  "onderwerp": "Klok",
+  "oordeel": "open",
+  "opmerking": "Geen rood rondje. Bij 'Hier wijst de kleine wijzer naar de 9' en 'naar de 7' (8 tussen foto's gemist) komt 1 gouden ring met oranje kleur achter de kleine wijzer om de aangewezen klok (het oude oplichten, nog niet vervangen), telkens 1 tegelijk en op het goede moment. Vraag voor Sara: blijft die gouden ring om de klok zo, of moet hij weg (de klok krijgt volgens regel 7.8 geen rondje)?"
+ }
+}

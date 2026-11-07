@@ -23,6 +23,7 @@
  * Alles in de hologramstijl, in Phaser (HARDE REGEL 7), nacht.
  */
 
+import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
 import { LABELKLEUR } from "../vlakken/squla-rekenmix-tekenen";
@@ -427,6 +428,33 @@ type Aanpak = {
   samen: (alles: boolean) => Promise<void>;
   tip: string[];
   testAntwoord: string | number;
+  /** Eerste fout bij de hulp van Synthesis (BOUWREGELS 5.10): wat koos het kind, en wat deed het waarschijnlijk? */
+  reactie: (x: Antw) => string[];
+  /** Tweede fout: het goede antwoord in beeld. Zonder: het goede antwoord licht op (`goedBeeld`). */
+  toonAntwoord?: () => Promise<void>;
+};
+
+/** Een hint zonder vraag: het kind probeert meteen opnieuw, dus Bliepo stelt de vraag niet nog eens (BOUWREGELS 3.23). */
+const zonderVraag = (zinnen: string[]) => zinnen.filter((z) => !z.trim().endsWith("?"));
+/** Haalt het uitroepje aan het begin weg ("Goed geteld! Het zijn er 5." wordt "Het zijn er 5."). */
+const zonderJa = (zinnen: string[]) => zinnen.map((z) => z.replace(/^[^!.?]{2,28}!\s*/, "")).filter(Boolean);
+
+/** Een volgorde laten zien: de kaarten gaan terug en lichten één voor één op, op de goede volgorde. */
+async function toonVolgorde(l: Lesgids, st: Stand, goed: number[], zin: (p: number, i: number) => string) {
+  zet(l, { ronde: ++st.ronde, plekGoed: null, actief: false });
+  await l.wacht(300);
+  for (let p = 0; p < goed.length; p++) {
+    zet(l, { licht: { deel: `k${goed[p]}`, aan: [0], dof: false } });
+    await l.zeg(zin(p, goed[p]));
+  }
+  zet(l, { licht: null });
+}
+
+/** Hoeveel staan er op de goede plek? Voor de reactie bij een volgorde. */
+const opPlek = (x: Antw, goed: number[]) => (x as number[]).filter((i, p) => i === goed[p]).length;
+const plekReactie = (x: Antw, goed: number[], tip: string[]): string[] => {
+  const n = opPlek(x, goed);
+  return [n === 0 ? "Geen enkel kaartje ligt al op de goede plek." : n === 1 ? "1 kaartje ligt al op de goede plek." : `${n} kaartjes liggen al op de goede plek.`, ...zonderVraag(tip)];
 };
 
 const KLEUR_RM: Record<Kleurnaam, RMKleur> = { rood: "rood", geel: "geel", blauw: "blauw", groen: "groen", paars: "paars", oranje: "oranje" };
@@ -436,9 +464,9 @@ const eenKleurVorm = (k: Kleurnaam, v: Vormnaam) => (v === "vierkant" ? `een ${k
 
 const VORM_UITLEG: Record<Vormnaam, string[]> = {
   cirkel: ["Een cirkel is helemaal rond.", "Hij heeft geen hoeken."],
-  driehoek: ["Een driehoek heeft drie hoeken.", "En drie rechte kanten."],
-  vierkant: ["Een vierkant heeft vier hoeken.", "Alle kanten zijn even lang."],
-  rechthoek: ["Een rechthoek heeft ook vier hoeken.", "Twee kanten zijn lang, twee zijn kort."],
+  driehoek: ["Een driehoek heeft 3 hoeken.", "En 3 rechte kanten."],
+  vierkant: ["Een vierkant heeft 4 hoeken.", "Alle kanten zijn even lang."],
+  rechthoek: ["Een rechthoek heeft ook 4 hoeken.", "2 kanten zijn lang, 2 zijn kort."],
 };
 
 /** Waar de hoeken van een vorm zitten (om ze te tellen), in een vak van m. */
@@ -506,7 +534,7 @@ function maatKaart(woord: Maatwoord, naam: string, maat: number): RMTekening {
 const VERHAAL: Record<Verhaal, { namen: [string, string, string]; zinnen: [string, string, string] }> = {
   taart: { namen: ["beslagkom", "oven-taart", "taart"], zinnen: ["Eerst maak je beslag in een kom.", "Dan bakt de taart in de oven.", "En dan is de taart klaar."] },
   brood: { namen: ["deegkom", "oven-brood", "brood"], zinnen: ["Eerst maak je deeg in een kom.", "Dan bakt het brood in de oven.", "En dan is het brood klaar."] },
-  spies: { namen: ["spies-leeg", "spies-twee", "spies-vol"], zinnen: ["Eerst is het spiesje nog leeg.", "Dan prik je er twee stukjes fruit op.", "En dan zit het spiesje vol."] },
+  spies: { namen: ["spies-leeg", "spies-twee", "spies-vol"], zinnen: ["Eerst is het spiesje nog leeg.", "Dan prik je er 2 stukjes fruit op.", "En dan zit het spiesje vol."] },
   ijs: { namen: ["hoorntje", "ijsje", "ijsje-twee-bollen"], zinnen: ["Eerst heb je een leeg hoorntje.", "Dan komt er een bolletje ijs op.", "En dan nog een bolletje erbij."] },
 };
 
@@ -602,22 +630,30 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: `tel-${q.soort}`,
+      reactie: (x) => {
+        const c = x as number;
+        const hint = sprongen ? [`Begin bij ${g(begin, kBegin)}.`, "Tel er steeds 2 bij."] : [`Begin bij ${g(begin, kBegin)}.`, "Tel daarna door tot het laatste."];
+        if (q.soort === "samen" && q.delen && (c === q.delen[0] || c === q.delen[1])) return [`${g(c, kTot)} is maar 1 groepje.`, "Tel beide groepjes samen."];
+        if (c === n + 1 || c === n - 1) return [c > n ? `Je koos ${g(c, kTot)}: dat is er 1 te veel.` : `Bij ${g(c, kTot)} mist er nog 1.`, ...hint];
+        if (q.soort === "druk" && c > n) return [`Je koos ${g(c, kTot)}: dat zijn er te veel.`, `Tel alleen de ${q.v.meer}.`];
+        return [c > n ? `Je koos ${g(c, kTot)}: zoveel ${q.v.meer} zijn het niet.` : `Je koos ${g(c, kTot)}: er zijn meer ${q.v.meer}.`, ...hint];
+      },
       eerste: [],
       vraag,
       antwoord: kiesGetal(q.keuzes),
       isGoed: (x) => x === n,
       noem: (x) => g(x as number, kTot),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer }, licht: null }),
-      goedZin: q.soort === "samen" && q.delen ? [`Ja! ${g(q.delen[0], q.gr.kleuren?.[0] ?? GROEP_A)} en ${g(q.delen[1], q.gr.kleuren?.[q.gr.kleuren.length - 1] ?? GROEP_B)} is samen ${g(n, "wit")}.`] : [`Ja! Het zijn er ${g(n, k)}.`],
+      goedZin: q.soort === "samen" && q.delen ? [`Goed samengeteld! ${g(q.delen[0], q.gr.kleuren?.[0] ?? GROEP_A)} en ${g(q.delen[1], q.gr.kleuren?.[q.gr.kleuren.length - 1] ?? GROEP_B)} is samen ${g(n, "wit")}.`] : [`Goed geteld! Het zijn er ${g(n, k)}.`],
       samen: async (alles) => {
-        if (sprongen) await l.zeg("We tellen in sprongen van twee.");
+        if (sprongen) await l.zeg("We tellen in sprongen van 2.");
         else if (rijtjes) await l.zeg("We tellen samen, rij voor rij.");
         else await l.zeg(q.soort === "druk" ? `We tellen alleen de ${q.v.meer}.` : "Tel maar mee.");
         const tot = await telMee(l, st, "b", q.gr, k, alles ? q.gr.stappen.length : stop);
         if (alles) await l.zeg(`Het zijn er ${g(tot, kTot)}.`);
-        else await l.zeg(`Tel jij verder vanaf ${g(tot, kBegin)}?`);
+        else if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${g(tot, kBegin)}?`);
       },
-      tip: sprongen ? [`Begin bij ${g(begin, kBegin)}.`, "Tel er steeds twee bij."] : [`Begin bij ${g(begin, kBegin)}.`, "Tel de rest één voor één."],
+      tip: sprongen ? [`Start bij het groepje met ${g(begin, kBegin)}.`, "Tel er steeds 2 bij."] : [`Tel verder na ${g(begin, kBegin)}.`, "Tel daarna door tot het laatste."],
       testAntwoord: n,
     };
   }
@@ -630,21 +666,25 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "vorm",
+      reactie: (x) => {
+        const v = q.keuzes[x as number];
+        return [VORM_UITLEG[v][0], `Kijk of dat ook zo is bij ${q.zin}.`];
+      },
       eerste: ["Kijk goed naar het plaatje bovenaan.", "Tik dan op een vorm."],
       vraag: [`Kijk naar ${q.zin}.`, "Welke vorm lijkt erop?"],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: (x) => `Een ${q.keuzes[x as number]}`,
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
-      goedZin: [`Ja! ${Hoofd(q.zin)} ${lijkt} op een ${q.vorm}.`, VORM_UITLEG[q.vorm][0]],
+      goedZin: [`Mooi gezien! ${Hoofd(q.zin)} ${lijkt} op een ${q.vorm}.`, VORM_UITLEG[q.vorm][0]],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
         await l.zeg("We kijken samen naar de vormen.");
         await vormenUitleggen(l, st, q.keuzes, 170);
         if (alles) return;
-        await l.zeg(`Kijk nu weer naar ${q.zin}.`);
+        if (!krijgtVervolgvraag(l)) await l.zeg(`Zoek de vorm die op ${q.zin} lijkt.`);
       },
-      tip: ["Is het rond, of heeft het hoeken?", "Tel de hoeken maar."],
+      tip: ["Kijk of het rond is of hoeken heeft.", "Tel de hoeken maar."],
       testAntwoord: `keuze-${goedI}`,
     };
   }
@@ -659,18 +699,24 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     const UITLEG = {
       links: "Links staat de eerste van de rij.",
       rechts: "Rechts staat de laatste van de rij.",
-      midden: "In het midden staat hij tussen de andere twee in.",
+      midden: "In het midden staat hij tussen de andere 2 in.",
     } as const;
     return {
       o,
       soort: "plaats",
+      reactie: (x) => {
+        const naam = q.keuzes[x as number];
+        const pos = q.rij.indexOf(naam);
+        const waarStaat = pos === 0 ? "links" : pos === 1 ? "in het midden" : pos === 2 ? "rechts" : "";
+        return [waarStaat ? `${Hoofd(NAAM[naam])} staat ${waarStaat}.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, `Kijk wat er ${waar} staat.`];
+      },
       eerste: ["Kijk naar de rij bovenaan.", "Tik dan op het goede plaatje."],
       vraag: ["Kijk naar de rij.", `Wat staat er ${waar}?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
-      goedZin: [`Ja! ${Hoofd(NAAM[goedNaam])} staat ${waar}.`, UITLEG[q.wat]],
+      goedZin: [`Goed gekeken! ${Hoofd(NAAM[goedNaam])} staat ${waar}.`, UITLEG[q.wat]],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
         await l.zeg("We kijken van links naar rechts.");
@@ -704,17 +750,22 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "rang",
+      reactie: (x) => {
+        const naam = q.keuzes[x as number];
+        const pos = q.rij.indexOf(naam);
+        return [pos >= 0 ? `${Hoofd(NAAM[naam])} staat als ${RANG[pos]} in de rij.` : `${Hoofd(NAAM[naam])} staat niet in de rij.`, q.plek === 4 ? "De laatste staat helemaal rechts." : "Tel vanaf links, tot je bij de goede plek bent."];
+      },
       eerste: ["Kijk naar de rij bovenaan.", "We tellen vanaf links.", "Tik dan op het goede plaatje."],
       vraag: [`Wat staat als ${rang} in de rij?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [q.plek] } }),
-      goedZin: [`Ja! ${Hoofd(NAAM[goedNaam])} staat als ${rang}.`, q.plek === 4 ? "Helemaal achteraan in de rij." : q.plek === 0 ? "Helemaal vooraan in de rij." : `Tel maar: ${RANG.slice(0, q.plek + 1).join(", ")}.`],
+      goedZin: [`Dat klopt! ${Hoofd(NAAM[goedNaam])} staat als ${rang}.`, q.plek === 4 ? "Helemaal achteraan in de rij." : q.plek === 0 ? "Helemaal vooraan in de rij." : `Tel maar: ${RANG.slice(0, q.plek + 1).join(", ")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
         if (q.plek === 0 && !alles) {
-          await l.zeg("We tellen vanaf links.", "De eerste staat helemaal vooraan, links.");
+          await l.zeg(...(krijgtVervolgvraag(l) ? [] : ["We tellen vanaf links."]), "De eerste staat helemaal vooraan, links.");
           return;
         }
         await l.zeg("We tellen samen vanaf links.");
@@ -728,9 +779,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           zetLabels(l, st, labels);
           await l.zeg(`${Hoofd(RANG[p === 4 ? 4 : p])}.`);
         }
-        if (!alles) await l.zeg(q.plek === 4 ? "De laatste staat helemaal achteraan." : `Welke komt daarna, als ${rang}?`);
+        if (!alles && (q.plek === 4 || !krijgtVervolgvraag(l))) await l.zeg(q.plek === 4 ? "De laatste staat helemaal achteraan." : `Welke komt daarna, als ${rang}?`);
       },
-      tip: q.plek === 4 ? ["De laatste staat helemaal rechts."] : ["Tel vanaf links: eerste, tweede, derde …"],
+      tip: q.plek === 4 ? ["De laatste staat helemaal rechts."] : ["Tel vanaf links: eerste, tweede, derde."],
       testAntwoord: `keuze-${goedI}`,
     };
   }
@@ -746,20 +797,22 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       test: goed,
       soort: "orden",
+      reactie: (x) => plekReactie(x, goed, [q.richting === "af" ? "Begin met de meeste." : "Begin met de minste."]),
+      toonAntwoord: () => toonVolgorde(l, st, goed, (p, i) => (p === 0 ? `Eerst het groepje met ${g(q.aantallen[i], k)}.` : p === goed.length - 1 ? `En als laatste ${g(q.aantallen[i], k)}.` : `Dan ${g(q.aantallen[i], k)}.`)),
       eerste: ["Sleep de groepjes naar de plekjes.", "Het eerste plekje is links."],
       vraag: [`Hier liggen ${q.v.meer}.`, `Zet ze op volgorde, van ${q.richting === "af" ? "meer naar minder" : "minder naar meer"}.`],
       antwoord: () => sleepOpVolgorde(l, st),
       isGoed: (x) => (x as number[]).every((i, p) => i === goed[p]),
       noem: () => "Deze volgorde",
       goedBeeld: () => zet(l, { goed: { deel: "*", keer: ++st.keer } }),
-      goedZin: [`Ja! ${rij}.`, q.richting === "af" ? "Het worden er steeds minder." : "Het worden er steeds meer."],
+      goedZin: [`Mooi op volgorde! ${rij}.`, q.richting === "af" ? "Het worden er steeds minder." : "Het worden er steeds meer."],
       fout: (x) => zet(l, { plekGoed: (x as number[]).map((i, p) => i === goed[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
         await l.wacht(300);
         await l.zeg("We tellen elk groepje.");
         await kaartenTellen(l, st, groepen.map((_, i) => `k${i}`), groepen, k, (n) => `Hier zijn het er ${g(n, k)}.`);
-        await l.zeg(q.richting === "af" ? "De meeste komt vooraan." : "De minste komt vooraan.");
+        await l.zeg(q.richting === "af" ? "Het groepje met de meeste koekjes komt vooraan." : "De minste komt vooraan.");
       },
       tip: [q.richting === "af" ? "Begin met de meeste." : "Begin met de minste.", "Die zet je op het eerste plekje."],
       testAntwoord: `kaart-${goed[0]}`,
@@ -769,15 +822,24 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   /* ---------- klein, kleiner, kleinst ---------- */
   if (q.t === "ordenMaat") {
     const kaarten = q.maten.map((m) => maatKaart(q.woord, q.naam, m));
-    const woorden = MAATWOORDEN[q.woord];
+    /* Bij "klein" staat de kleinste links (Sara, 6 november 2026, optie B): de woorden blijven, de volgorde is omgedraaid: kleinst, kleiner, klein. */
+    const kleinVoor = q.woord === "klein";
+    const woorden: [string, string, string] = kleinVoor ? ["kleinst", "kleiner", "klein"] : MAATWOORDEN[q.woord];
     const o: RMOpgave = { id, soort: "volgorde", kaarten, namen: q.maten.map((_, i) => `Kaart ${i + 1}`) };
-    const goed = q.maten.map((m, i) => ({ m, i })).sort((a, b) => (OPLOPEND[q.woord] ? a.m - b.m : b.m - a.m)).map((x) => x.i);
+    const goed = q.maten.map((m, i) => ({ m, i })).sort((a, b) => (OPLOPEND[q.woord] || kleinVoor ? a.m - b.m : b.m - a.m)).map((x) => x.i);
+    /* Waar de aller...ste staat: bij "klein" vooraan (links), anders achteraan. */
+    const allerPlek = kleinVoor ? "vooraan" : "achteraan";
     const slotLabels = (): RMLabel[] => woorden.map((wd, p) => ({ deel: `s${p}`, x: 0, y: -150, tekst: wd, klein: true })).filter((lb) => lb.tekst);
     const dikDun = q.woord === "dikdun";
     return {
       o,
       test: goed,
       soort: "orden",
+      reactie: (x) => plekReactie(x, goed, dikDun ? ["Begin met de allerdikste."] : [`Let eerst op de ${ALLER[q.woord]}.`]),
+      toonAntwoord: async () => {
+        zetLabels(l, st, slotLabels());
+        await toonVolgorde(l, st, goed, (p) => (dikDun ? (p === 0 ? "Eerst de dikste." : p === goed.length - 1 ? "En als laatste de dunste." : "Dan de middelste.") : `${Hoofd(woorden[p])}.`));
+      },
       eerste: ["Sleep de plaatjes naar de plekjes.", "Het eerste plekje is links."],
       vraag: dikDun ? ["Zet ze op volgorde, van dik naar dun."] : [`Zet op volgorde: ${woorden.join(", ")}.`],
       antwoord: () => sleepOpVolgorde(l, st),
@@ -787,7 +849,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         zet(l, { goed: { deel: "*", keer: ++st.keer } });
         zetLabels(l, st, slotLabels());
       },
-      goedZin: dikDun ? ["Ja! Van dik naar dun.", "De dunste staat achteraan."] : [`Ja! ${Hoofd(woorden.join(", "))}.`, `De ${ALLER[q.woord].replace("aller", "")} staat achteraan.`],
+      goedZin: dikDun ? ["Goed gezet! Van dik naar dun.", "De dunste staat achteraan."] : [`Goed gezet! ${Hoofd(woorden.join(", "))}.`, `De ${ALLER[q.woord].replace("aller", "")} staat ${allerPlek}.`],
       fout: (x) => zet(l, { plekGoed: (x as number[]).map((i, p) => i === goed[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
@@ -797,10 +859,10 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           return;
         }
         await l.zeg(`Kijk: ${woorden[0]}, ${woorden[1]}, ${woorden[2]}.`);
-        await l.zeg(`${Hoofd(woorden[2])} is de ${ALLER[q.woord]}.`, "Die gaat op het laatste plekje.");
-        await l.zeg(`Op het eerste plekje komt ${woorden[0]}.`);
+        await l.zeg(`${Hoofd(woorden[kleinVoor ? 0 : 2])} is de ${ALLER[q.woord]}.`, kleinVoor ? "Die gaat op het eerste plekje." : "Die gaat op het laatste plekje.");
+        if (!krijgtVervolgvraag(l)) await l.zeg(kleinVoor ? "Kijk nu naar de 2 andere plaatjes. Welke hoort achteraan en welke in het midden?" : "Kijk nu naar de 2 andere plaatjes. Welke hoort vooraan en welke in het midden?");
       },
-      tip: dikDun ? ["Begin met de allerdikste.", "Die zet je vooraan."] : [`Zoek eerst de ${ALLER[q.woord]}.`, "Die zet je achteraan."],
+      tip: dikDun ? ["Begin met de allerdikste.", "Die zet je vooraan."] : [`Let eerst op de ${ALLER[q.woord]}.`, kleinVoor ? "Die zet je vooraan." : "Die zet je achteraan."],
       testAntwoord: `kaart-${goed[0]}`,
     };
   }
@@ -818,27 +880,31 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       test: goed,
       soort: "orden",
+      reactie: (x) => {
+        return telrij ? [...plekReactie(x, goed, []), `Na ${w(q.vast!)} komt het getal dat 1 meer is.`] : plekReactie(x, goed, ["Begin met het grootste getal."]);
+      },
+      toonAntwoord: () => toonVolgorde(l, st, goed, (p, i) => `${w(q.getallen[i])}.`),
       eerste: [telrij ? "Sleep de getallen naar de plekjes." : "Sleep de raketjes naar de plekjes.", "Het eerste plekje is links."],
       vraag: telrij ? [`We tellen verder vanaf ${w(q.vast!)}.`, "Zet de getallen op hun plek."] : ["Kijk naar de getallen.", "Zet ze op volgorde, van hoog naar laag."],
       antwoord: () => sleepOpVolgorde(l, st),
       isGoed: (x) => (x as number[]).every((i, p) => i === goed[p]),
       noem: () => "Deze volgorde",
       goedBeeld: () => zet(l, { goed: { deel: "*", keer: ++st.keer } }),
-      goedZin: telrij ? [`Ja! ${rij}.`, "Steeds één verder."] : [`Ja! ${rij}.`, "Van hoog naar laag."],
+      goedZin: telrij ? [`De telrij klopt! ${rij}.`, "Steeds 1 verder."] : [`Mooi gelegd! ${rij}.`, "Van hoog naar laag."],
       fout: (x) => zet(l, { plekGoed: (x as number[]).map((i, p) => i === goed[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
         if (telrij) {
           zet(l, { licht: { deel: "v0", aan: [0] } });
-          await l.zeg(`Op het eerste plekje staat ${w(q.vast!)}.`, `Na ${w(q.vast!)} komt het getal dat één meer is.`, "Daarna weer één meer, en zo verder.");
+          await l.zeg(`Op het eerste plekje staat ${w(q.vast!)}.`, `Na ${w(q.vast!)} komt het getal dat 1 meer is.`, "Daarna weer 1 meer, en zo verder.");
           zet(l, { licht: null });
         } else {
           await l.zeg("Hoog is het grootste getal.", "Laag is het kleinste getal.");
           const klein = Math.min(...q.getallen);
-          await l.zeg(`Tel maar mee: ${[0, 1, 2].map((d) => w(klein + d)).join(", ")}.`, "Welk getal kwam het laatst? Dat is het hoogst.");
+          await l.zeg(`Tel maar mee: ${[0, 1, 2].map((d) => w(klein + d)).join(", ")}.`, "Het getal dat je het laatst zegt, is het hoogst.");
         }
       },
-      tip: telrij ? [`Welk getal komt na ${w(q.vast!)}?`, "Dat zet je op het lege plekje ernaast."] : ["Begin met het grootste getal.", "Dat zet je op het eerste plekje."],
+      tip: telrij ? [`Het getal na ${w(q.vast!)} is 1 meer.`, "Dat zet je op het lege plekje ernaast."] : ["Begin met het grootste getal.", "Dat zet je op het eerste plekje."],
       testAntwoord: `kaart-${goed[0]}`,
     };
   }
@@ -852,19 +918,21 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       test: goed,
       soort: "orden",
+      reactie: (x) => plekReactie(x, goed, ["Het plaatje van wat je als allereerste doet, zet je vooraan."]),
+      toonAntwoord: () => toonVolgorde(l, st, goed, (p) => vh.zinnen[p]),
       eerste: ["Sleep de plaatjes naar de plekjes.", "Het eerste plekje is links."],
       vraag: ["Wat gebeurt eerst?", "En wat daarna?", "Zet de plaatjes op volgorde."],
       antwoord: () => sleepOpVolgorde(l, st),
       isGoed: (x) => (x as number[]).every((i, p) => i === goed[p]),
       noem: () => "Deze volgorde",
       goedBeeld: () => zet(l, { goed: { deel: "*", keer: ++st.keer } }),
-      goedZin: ["Ja!", ...vh.zinnen],
+      goedZin: ["Het verhaal klopt!", ...vh.zinnen],
       fout: (x) => zet(l, { plekGoed: (x as number[]).map((i, p) => i === goed[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
         await l.zeg("Ik vertel het verhaal.", ...vh.zinnen);
       },
-      tip: ["Wat doe je als allereerste?", "Dat plaatje zet je vooraan."],
+      tip: ["Denk aan wat je als allereerste doet.", "Dat plaatje zet je vooraan."],
       testAntwoord: `kaart-${goed[0]}`,
     };
   }
@@ -887,24 +955,30 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       : [`Op ${h.welk} zit ${h.lw} ${q.wat === "meest" ? "meeste" : "minste"} ${h.wat}?`];
     const goedZin =
       q.wat === "evenveel"
-        ? [`Ja! Daar zit evenveel ${h.wat} op als bovenaan.`]
+        ? [`Goed vergeleken! Daar zit evenveel ${h.wat} op als bovenaan.`]
         : metVoorbeeld
-          ? [`Ja! Daar zit ${q.wat} ${h.wat} op dan bovenaan.`]
-          : [`Ja! Daar zit ${h.lw} ${q.wat === "meest" ? "meeste" : "minste"} ${h.wat} op.`];
+          ? [`Goed vergeleken! Daar zit ${q.wat} ${h.wat} op dan bovenaan.`]
+          : [`Goed uitgekozen! Daar zit ${h.lw} ${q.wat === "meest" ? "meeste" : "minste"} ${h.wat} op.`];
     const woordUitleg =
       q.wat === "meer"
-        ? [`Meer ${h.wat}: je ziet méér ${h.wat} dan bovenaan.`]
+        ? [`Kijk hoeveel ${h.wat} er bovenaan zit.`, `Zoek een plaatje dat voller is: daar zit meer ${h.wat} op.`]
         : q.wat === "minder"
-          ? [`Minder ${h.wat}: je ziet minder ${h.wat} dan bovenaan.`]
+          ? [`Kijk hoeveel ${h.wat} er bovenaan zit.`, `Zoek een plaatje dat leger is: daar zit minder ${h.wat} op.`]
           : q.wat === "evenveel"
             ? [`Evenveel ${h.wat}: precies zoveel als bovenaan.`, "Niet meer en niet minder."]
             : q.wat === "meest"
-              ? [`${Hoofd(h.lw)} meeste ${h.wat}: daar zit het allermeeste op.`]
-              : [`${Hoofd(h.lw)} minste ${h.wat}: daar zit het allerminste op.`];
+              ? [`Kijk hoeveel ${h.wat} er op elk plaatje zit.`, `Het plaatje dat het volst is, heeft ${h.lw} meeste ${h.wat}.`]
+              : [`Kijk hoeveel ${h.wat} er op elk plaatje zit.`, `Het plaatje dat het leegst is, heeft ${h.lw} minste ${h.wat}.`];
     return {
       o,
       soort: metVoorbeeld ? "hoeveel-vb" : "hoeveel",
-      eerste: metVoorbeeld ? ["Kijk eerst naar het plaatje bovenaan.", "Tik dan op een plaatje eronder."] : ["Kijk goed naar de drie plaatjes.", "Tik dan op het goede plaatje."],
+      reactie: (x) => {
+        const c = q.keuzes[x as number];
+        if (metVoorbeeld) return [c === 1 ? `Daar zit evenveel ${h.wat} op als bovenaan.` : c === 2 ? `Daar zit meer ${h.wat} op dan bovenaan.` : `Daar zit minder ${h.wat} op dan bovenaan.`, q.wat === "evenveel" ? "Zoek het plaatje dat er net zo vol uitziet als bovenaan." : q.wat === "meer" ? "Het plaatje dat je zoekt, is voller dan het plaatje bovenaan." : "Het plaatje dat je zoekt, is leger dan het plaatje bovenaan."];
+        if (q.wat === "meest") return [c === 0 ? `Daar zit juist ${h.lw} minste ${h.wat} op.` : `Daar zit niet ${h.lw} meeste ${h.wat} op. Er is er nog 1 met meer.`, `Tel de ${h.wat} op elk plaatje en kies het plaatje met ${h.lw} meeste ${h.wat}.`];
+        return [c === 2 ? `Daar zit juist ${h.lw} meeste ${h.wat} op.` : `Daar zit niet ${h.lw} minste ${h.wat} op. Er is er nog 1 met minder.`, `Tel de ${h.wat} op elk plaatje en kies het plaatje met ${h.lw} minste ${h.wat}.`];
+      },
+      eerste: metVoorbeeld ? [...(krijgtVervolgvraag(l) ? [] : ["Kijk eerst naar het plaatje bovenaan."]), "Tik dan op een plaatje eronder."] : ["Kijk goed naar de 3 plaatjes.", "Tik dan op het goede plaatje."],
       vraag,
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
@@ -918,7 +992,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           await l.zeg(`Kijk eerst naar ${h.het} ${h.ding} bovenaan.`);
         }
         await l.zeg(...woordUitleg);
-        await l.zeg(metVoorbeeld ? "Vergelijk elk plaatje met dat bovenaan." : "Vergelijk de drie plaatjes.");
+        await l.zeg(metVoorbeeld ? "Kijk steeds terug naar het bovenste plaatje. Kijk wat er anders is." : "Vergelijk de 3 plaatjes.");
         for (let i = 0; i < q.keuzes.length; i++) {
           zet(l, { licht: { deel: `k${i}`, aan: [0], dof: false } });
           await l.wacht(900);
@@ -927,9 +1001,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       },
       tip:
         q.wat === "meer" || q.wat === "meest"
-          ? [`Zoek waar ${h.lw} meeste ${h.wat} op zit.`]
+          ? [`Kijk op elk plaatje hoeveel ${h.wat} er zit.`, "Zoek het plaatje dat het volst is."]
           : q.wat === "minder" || q.wat === "minst"
-            ? [`Zoek waar ${h.lw} minste ${h.wat} op zit.`]
+            ? [`Kijk op elk plaatje hoeveel ${h.wat} er zit.`, "Zoek het plaatje dat het leegst is."]
             : ["Zoek het plaatje dat er net zo uitziet als bovenaan."],
       testAntwoord: `keuze-${goedI}`,
     };
@@ -943,20 +1017,24 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "waar",
+      reactie: (x) => {
+        const gekozen = q.keuzes.find((pk) => Hoofd(PLEKZIN[pk]) === x);
+        return gekozen ? [`De bal ligt niet ${PLEKZIN[gekozen]}.`, Hoofd(PLEKUITLEG[gekozen].split(": ")[1]), "Kijk of de bal op het plaatje zo ligt."] : ["Kijk goed waar de bal ligt."];
+      },
       eerste: [],
       vraag: ["Waar ligt de bal?"],
       antwoord: async () => await l.kies(opties.map(Hoofd), { weetniet: false, direct: true }),
       isGoed: (x) => x === Hoofd(PLEKZIN[q.plek]),
       noem: (x) => String(x),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer } }),
-      goedZin: [`Ja! De bal ligt ${PLEKZIN[q.plek]}.`, Hoofd(PLEKUITLEG[q.plek].split(": ")[1])],
+      goedZin: [`Die plek klopt! De bal ligt ${PLEKZIN[q.plek]}.`, Hoofd(PLEKUITLEG[q.plek].split(": ")[1])],
       samen: async (alles) => {
         zet(l, { licht: { deel: "b", aan: [balI] } });
-        await l.zeg("Kijk goed naar de bal.", "Zie je de hele bal, of maar een stukje?");
+        await l.zeg("Kijk goed naar de bal.", "Kijk of je de hele bal ziet of maar een stukje.");
         zet(l, { licht: null });
         for (const p of alles ? [q.plek] : q.keuzes) await l.zeg(PLEKUITLEG[p]);
       },
-      tip: ["Kijk waar de bal is.", "Zie je de hele bal, of maar een stukje?"],
+      tip: ["Kijk waar de bal is.", "Kijk of je de hele bal ziet of maar een stukje."],
       testAntwoord: Hoofd(PLEKZIN[q.plek]),
     };
   }
@@ -968,6 +1046,13 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "kleurvorm",
+      reactie: (x) => {
+        const [kk, vv] = q.keuzes[x as number];
+        const wat = Hoofd(eenKleurVorm(kk, vv));
+        if (kk === q.kleur) return [`${wat}. De kleur klopt, maar de vorm niet.`, ...VORM_UITLEG[q.vorm].slice(0, 1)];
+        if (vv === q.vorm) return [`${wat}. De vorm klopt, maar de kleur niet.`, `Kijk naar de vorm die ${q.kleur} is.`];
+        return [`${wat}. Dat is niet de goede kleur en ook niet de goede vorm.`, `Begin met de vormen die ${q.kleur} zijn.`];
+      },
       eerste: ["Tik op de goede vorm."],
       vraag: [`Waar zie je ${eenKleurVorm(q.kleur, q.vorm)}?`],
       antwoord: () => tikKeuze(l),
@@ -975,14 +1060,14 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       noem: (x) => Hoofd(eenKleurVorm(...q.keuzes[x as number])),
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
       goedZin: [
-        `Ja! ${Hoofd(eenKleurVorm(q.kleur, q.vorm))}.`,
+        `Die vorm en kleur kloppen! ${Hoofd(eenKleurVorm(q.kleur, q.vorm))}.`,
         q.vorm === "cirkel"
           ? `Hij is ${q.kleur} en helemaal rond.`
           : q.vorm === "driehoek"
-            ? `Hij is ${q.kleur} en heeft drie hoeken.`
+            ? `Hij is ${q.kleur} en heeft 3 hoeken.`
             : q.vorm === "vierkant"
               ? `Het is ${q.kleur} en alle kanten zijn even lang.`
-              : `Hij is ${q.kleur}, met twee lange en twee korte kanten.`,
+              : `Hij is ${q.kleur}, met 2 lange en 2 korte kanten.`,
       ],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async () => {
@@ -994,7 +1079,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         zet(l, { licht: null });
         await l.zeg("Dan kijken we naar de vorm.", ...VORM_UITLEG[q.vorm]);
       },
-      tip: [`Zoek eerst de vormen die ${q.kleur} zijn.`, `Welke daarvan is ${q.vorm === "vierkant" ? "een vierkant" : `een ${q.vorm}`}?`],
+      tip: [`Kijk eerst naar de vormen die ${q.kleur} zijn.`, `Daarvan is er 1 ${q.vorm}.`],
       testAntwoord: `keuze-${goedI}`,
     };
   }
@@ -1015,13 +1100,17 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "blokjes",
+      reactie: (x) => {
+        const c = q.keuzes[x as number];
+        return [`Op die groep zie je ${g(c, "wit")} blokjes.`, c > q.n ? `Er moesten ${g(q.n, "wit")} blokjes zijn, dat zijn er te veel.` : `Er moesten ${g(q.n, "wit")} blokjes zijn, dat zijn er te weinig.`, `De bovenste rij is vol met ${g(5, GROEP_A)}. Tel onderaan verder.`];
+      },
       eerste: ["Tik op de goede groep."],
       vraag: [`Waar zie je ${g(q.n, "wit")} blokjes?`],
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: () => "Deze",
       goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer } }),
-      goedZin: [`Ja! ${g(5, GROEP_A)} en ${g(q.n - 5, GROEP_B)} is ${g(q.n, "wit")}.`],
+      goedZin: [`Zo is het! ${g(5, GROEP_A)} en ${g(q.n - 5, GROEP_B)} is ${g(q.n, "wit")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
         await l.zeg(`Bovenaan staan er altijd ${g(5, GROEP_A)}.`);
@@ -1040,7 +1129,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           await l.zeg(`${reeks.join(", ")}.`);
         }
       },
-      tip: [`Begin bij ${g(5, GROEP_A)}.`, "Tel onderaan verder."],
+      tip: [`De bovenste rij heeft ${g(5, GROEP_A)} blokjes.`, "Tel onderaan verder."],
       testAntwoord: `keuze-${goedI}`,
     };
   }
@@ -1056,13 +1145,17 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       o,
       test: goed,
       soort: "verbind",
-      eerste: ["Trek een lijn van een stip naar een stip.", "Of tik links en dan rechts."],
+      reactie: (x) => {
+        const juist = (x as number[]).filter((r, i) => r === goed[i]).length;
+        return [juist === 0 ? "Geen enkele lijn klopt nog." : juist === 1 ? "1 lijn klopt." : `${juist} lijnen kloppen.`, getallen ? "Kijk naar het getal bij elk groepje." : "Tel de groepjes en zoek de groepjes die even groot zijn."];
+      },
+      eerste: ["Verbind het groepje met het getal of plaatje dat erbij hoort. Trek een lijn tussen de stippen.", "Of tik links en dan rechts."],
       vraag: ["Wat hoort bij elkaar?", getallen ? "Verbind elk groepje met het goede getal." : "Verbind de groepjes die evenveel zijn."],
       antwoord: () => trekLijnen(l, st),
       isGoed: (x) => (x as number[]).every((r, i) => r === goed[i]),
       noem: () => "Deze lijnen",
       goedBeeld: () => zet(l, { uitslag: { goed: [true, true, true], keer: ++st.keer } }),
-      goedZin: ["Ja! Alles hoort bij elkaar.", getallen ? "Elk groepje heeft zijn getal." : "Steeds evenveel."],
+      goedZin: ["Mooi verbonden! Alles hoort bij elkaar.", getallen ? "Elk groepje heeft zijn getal." : "Steeds evenveel."],
       fout: (x) => zet(l, { uitslag: { goed: (x as number[]).map((r, i) => r === goed[i]), keer: ++st.keer } }),
       samen: async () => {
         await l.zeg("We tellen elk groepje.");
@@ -1077,7 +1170,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         for (const [i, gr] of q.links.entries()) await tel(`l${i}`, gr, q.vl.k, false);
         if (!getallen) for (const [i, r] of q.rechts.entries()) if (typeof r !== "number") await tel(`r${i}`, r, (q.vr ?? q.vl).k, true);
         zet(l, { licht: null });
-        await l.zeg(getallen ? "Zoek nu bij elk groepje hetzelfde getal." : "Zoek nu de groepjes met hetzelfde getal.");
+        if (!krijgtVervolgvraag(l)) await l.zeg(getallen ? "Zoek nu bij elk groepje hetzelfde getal." : "Zoek nu de groepjes met hetzelfde getal.");
       },
       tip: [getallen ? "Kijk naar het getal bij elk groepje." : "Verbind de groepjes die even groot zijn."],
       testAntwoord: "l-0",
@@ -1095,13 +1188,21 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: q.plaatje ? "buur-typ" : "buur",
+      reactie: (x) => {
+        const c = x as number | null;
+        if (c === null) return [q.richting === "voor" ? `Typ het getal dat net voor ${w(q.n)} komt.` : `Typ het getal dat na ${w(q.n)} komt.`];
+        if (c === q.n) return [`${w(c)} is het getal zelf.`, q.richting === "voor" ? "Kijk naar het getal er net voor." : "Kijk naar het getal er net na."];
+        if (q.richting === "voor" && c === q.n + 1) return [`${w(c)} komt juist na ${w(q.n)}.`, "Het getal ervoor is 1 minder."];
+        if (q.richting === "na" && c === q.n - 1) return [`${w(c)} komt juist voor ${w(q.n)}.`, "Het getal erna is 1 meer."];
+        return [q.richting === "voor" ? `${w(c)} is niet 1 minder dan ${w(q.n)}.` : `${w(c)} is niet 1 meer dan ${w(q.n)}.`, q.richting === "voor" ? "Tel terug: 1 minder." : "Tel verder: 1 meer."];
+      },
       eerste: [],
       vraag,
       antwoord: q.plaatje ? async () => await l.getal() : kiesGetal(q.keuzes ?? []),
       isGoed: (x) => x === doel,
       noem: (x) => (x === null ? "Niets" : w(x as number)),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer } }),
-      goedZin: q.richting === "voor" ? [`Ja! ${w(doel)} komt net voor ${w(q.n)}.`, "Eén minder."] : [`Ja! Na ${w(q.n)} komt ${w(doel)}.`, "Eén meer."],
+      goedZin: q.richting === "voor" ? [`Goed gedacht! ${w(doel)} komt net voor ${w(q.n)}.`, "1 minder."] : [`Goed gedacht! Na ${w(q.n)} komt ${w(doel)}.`, "1 meer."],
       samen: async (alles) => {
         /* De getallenrij blijft staan tot de vraag goed is (zie speelVraag). */
         st.huidig = hulp.id;
@@ -1117,7 +1218,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           await l.zeg(`Dat is ${w(doel)}.`);
         }
       },
-      tip: [q.richting === "voor" ? "Tel terug: één minder." : "Tel verder: één meer."],
+      tip: [q.richting === "voor" ? "Tel terug: 1 minder." : "Tel verder: 1 meer."],
       testAntwoord: doel,
     };
   }
@@ -1132,13 +1233,18 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     return {
       o,
       soort: "splits",
+      reactie: (x) => {
+        const c = x as number;
+        if (c === q.buiten) return [`${g(c, GROEP_A)} liggen er buiten.`, `Kijk wat er ${waarin} zit.`];
+        return [`Buiten liggen er ${g(q.buiten, GROEP_A)}. ${g(q.buiten, GROEP_A)} en ${g(c, GROEP_B)} is samen ${g(q.buiten + c, "wit")}.`, `Dat moeten er ${g(q.tot, "wit")} zijn.`];
+      },
       eerste: [],
       vraag: [`Er zijn ${g(q.tot, "wit")} ${q.v.meer}.`, `Hoeveel zitten er ${waarin}?`],
       antwoord: kiesGetal(q.keuzes),
       isGoed: (x) => x === binnen,
       noem: (x) => g(x as number, GROEP_B),
       goedBeeld: () => zet(l, { goed: { deel: "b", keer: ++st.keer } }),
-      goedZin: [`Ja! ${g(q.buiten, GROEP_A)} en ${g(binnen, GROEP_B)} is samen ${g(q.tot, "wit")}.`],
+      goedZin: [`Dat past! ${g(q.buiten, GROEP_A)} en ${g(binnen, GROEP_B)} is samen ${g(q.tot, "wit")}.`],
       samen: async (alles) => {
         await l.zeg(`Er zijn ${g(q.tot, "wit")} ${q.v.meer} in totaal.`, "Buiten zie je er een paar. Tel maar mee.");
         await telMee(l, st, "b", gr, k);
@@ -1149,7 +1255,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
           await l.zeg(`${reeks.join(", ")}.`, `Dat zijn er ${g(binnen, GROEP_B)}.`);
         }
       },
-      tip: [`Begin bij ${g(q.buiten, GROEP_A)} en tel door tot ${g(q.tot, "wit")}.`, "Hoeveel tel je erbij?"],
+      tip: [`Start bij de ${g(q.buiten, GROEP_A)} buiten en tel door tot ${g(q.tot, "wit")}.`, `Wat je erbij telt, zit ${waarin}.`],
       testAntwoord: binnen,
     };
   }
@@ -1172,13 +1278,20 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
             : [`Tel de ${q.v.meer} bovenaan.`, `Waar zie je evenveel ${q.v.meer}?`];
     const goedZin =
       q.vraagt === "is"
-        ? [`Ja! Hier zijn er ${g(m, k)}.`]
+        ? [`Goed gevonden! Hier zijn er ${g(m, k)}.`]
         : q.vraagt === "evenveel"
-          ? [`Ja! Hier zijn er ook ${g(m, k)}.`, "Dat is evenveel."]
-          : [`Ja! Hier zijn er ${g(m, k)}.`, `Dat is ${q.vraagt} dan ${g(q.n, k)}.`];
+          ? [`Goed gevonden! Hier zijn er ook ${g(m, k)}.`, "Dat is evenveel."]
+          : [`Goed gevonden! Hier zijn er ${g(m, k)}.`, `Dat is ${q.vraagt} dan ${g(q.n, k)}.`];
     return {
       o,
       soort: `welke-${q.vraagt}`,
+      reactie: (x) => {
+        const c = q.groepen[x as number].n;
+        if (q.vraagt === "is") return [`Daar zijn het er ${g(c, k)}.`, `Kijk waar ${g(q.n, k)} ${q.v.meer} zijn.`];
+        if (q.vraagt === "evenveel") return [`Daar zijn het er ${g(c, k)}, bovenaan ${g(q.n, k)}.`, c > q.n ? "Dat is meer." : "Dat is minder."];
+        if (q.vraagt === "meer") return [c === q.n ? `Daar zijn het er ${g(c, k)}. Dat is niet meer dan ${g(q.n, k)}.` : `${g(c, k)} is minder dan ${g(q.n, k)}.`, `Kijk waar meer dan ${g(q.n, k)} zijn.`];
+        return [c === q.n ? `Daar zijn het er ${g(c, k)}. Dat is niet minder dan ${g(q.n, k)}.` : `${g(c, k)} is meer dan ${g(q.n, k)}.`, `Kijk waar minder dan ${g(q.n, k)} zijn.`];
+      },
       eerste: ["Tik op de goede groep."],
       vraag,
       antwoord: () => tikKeuze(l),
@@ -1208,9 +1321,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         q.vraagt === "is"
           ? [`Zoek de groep met ${g(q.n, k)}.`]
           : q.vraagt === "meer"
-            ? [`Welk getal is groter dan ${g(q.n, k)}?`]
+            ? [`Het goede aantal is groter dan ${g(q.n, k)}.`]
             : q.vraagt === "minder"
-              ? [`Welk getal is kleiner dan ${g(q.n, k)}?`]
+              ? [`Het goede aantal is kleiner dan ${g(q.n, k)}.`]
               : ["Zoek de groep met hetzelfde getal als bovenaan."],
       testAntwoord: `keuze-${goedI}`,
     };
@@ -1231,13 +1344,14 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
   return {
     o,
     soort: "kleurrij",
+    reactie: (x) => [`De ${kr2.wat} ballon is niet ${kr2.keuzes[x as number]}.`, kr2.wat === "laatste" ? "Kijk naar de ballon helemaal rechts." : "Tel de ballonnen vanaf links."],
     eerste: ["Kijk naar de rij ballonnen.", "Tik dan op de goede kleur."],
     vraag: ["Kijk naar de rij ballonnen.", `Welke kleur heeft de ${kr2.wat} ballon?`],
     antwoord: () => tikKeuze(l),
     isGoed: (x) => x === goedI,
     noem: (x) => Hoofd(kr2.keuzes[x as number]),
     goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
-    goedZin: [`Ja! De ${kr2.wat} ballon is ${goedKleur}.`, kr2.wat === "laatste" ? "Hij staat helemaal achteraan." : "Er staan er twee voor en twee achter."],
+    goedZin: [`Dat is de goede ballon! De ${kr2.wat} ballon is ${goedKleur}.`, kr2.wat === "laatste" ? "Hij staat helemaal achteraan." : "Er staan er 2 voor en 2 achter."],
     fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
     samen: async (alles) => {
       await l.zeg("We tellen de ballonnen vanaf links.");
@@ -1251,9 +1365,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
         zetLabels(l, st, labels);
         await l.wacht(380);
       }
-      await l.zeg(kr2.wat === "laatste" ? "De laatste staat helemaal achteraan." : "De middelste staat in het midden.", kr2.wat === "laatste" ? "Na de laatste komt er niets meer." : "Er staan er twee voor en twee achter.");
+      await l.zeg(kr2.wat === "laatste" ? "De laatste staat helemaal achteraan." : "De middelste staat in het midden.", kr2.wat === "laatste" ? "Na de laatste komt er niets meer." : "Er staan er 2 voor en 2 achter.");
     },
-    tip: [kr2.wat === "laatste" ? "Kijk naar de ballon helemaal rechts." : "Tel tot drie. De derde staat in het midden."],
+    tip: [kr2.wat === "laatste" ? "Kijk naar de ballon helemaal rechts." : "Tel de ballonnen vanaf links."],
     testAntwoord: `keuze-${goedI}`,
   };
 }
@@ -1273,6 +1387,14 @@ async function speelVraag(l: Lesgids, st: Stand, id: string, q: Vraag): Promise<
     if (a.eerste.length) await l.zeg(...(eerder ? ["Nu iets nieuws.", ...a.eerste] : a.eerste));
   }
   return squlaVraag<Antw>(l, {
+    synthesis: true,
+    reactie: (x) => a.reactie(x),
+    toonAntwoord: async () => {
+      if (a.toonAntwoord) await a.toonAntwoord();
+      else a.goedBeeld();
+      await l.zeg(...zonderJa(a.goedZin));
+      await l.wacht(500);
+    },
     toon,
     vraag: a.vraag,
     antwoord: a.antwoord,
@@ -1280,7 +1402,7 @@ async function speelVraag(l: Lesgids, st: Stand, id: string, q: Vraag): Promise<
     noem: a.noem,
     goed: async () => {
       a.goedBeeld();
-      await l.zeg(...a.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(500);
     },
     fout: a.fout,
@@ -1301,7 +1423,7 @@ async function legUit(l: Lesgids, st: Stand, id: string, q: Vraag) {
   await l.wacht(700);
   await a.samen(true);
   if (st.huidig === a.o.id) a.goedBeeld();
-  await l.zeg(...a.goedZin.map((z) => z.replace(/^Ja! /, "")));
+  await l.zeg(...zonderJa(a.goedZin));
   await l.wacht(500);
 }
 
@@ -1366,12 +1488,15 @@ function les(d: Lesdef): Lesdraaiboek {
     kaarttekening: KaartRekenmix,
     async speel(l) {
       const st: Stand = { huidig: "", keer: 0, ronde: 0, handGezien: false, verbindGezien: false, gezien: new Set(), labels: [] };
+      zetSynthesisHulp(l);
       /* De opgaven staan op volgorde: eerst de 15 vragen, dan de voorbeelden. */
       const eerste = d.beginMetVoorbeeld ? opgaven[d.vragen.length] : opgaven[0];
       /* st.huidig blijft leeg: de eerste vraag zet zijn opgave dan nog eens, mét de test (zelfde beeld). */
       l.vlak<RMProps>(SqulaRekenmix, { opgave: eerste, namen: namenIn(opgaven), vooraf: opgaven });
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: d.welkom,
+        voordoen: true,
+        samen: () => speelVraag(l, st, `${d.id}-uitleg`, d.beginMetVoorbeeld ? d.voorbeeld[0] : d.vragen[0]),
         /* Het beginscherm laat de eerste vraag van de les zien, of het eerste voorbeeld (BOUWREGELS 4.1). */
         voorbeeld: () => {
           st.huidig = "";
@@ -1386,7 +1511,7 @@ function les(d: Lesdef): Lesdraaiboek {
         },
       });
       let fouten = 0;
-      for (const [i, q] of d.vragen.entries()) if (!(await speelVraag(l, st, `${d.id}-${i + 1}`, q))) fouten++;
+      for (const [i, q] of d.vragen.entries()) if (!(voorbeeldAfgerond && !d.beginMetVoorbeeld && i === 0) && !(await speelVraag(l, st, `${d.id}-${i + 1}`, q))) fouten++;
       zet(l, { opgave: null });
       await squlaEind(l, fouten, d.eind);
     },
@@ -1479,7 +1604,7 @@ const mix1_3 = les({
   titel: "Rekenmix 1 (nog moeilijker)",
   oefening: "Rekenmix 1",
   level: 3,
-  welkom: ["Drie dingen staan in een rij.", "Wat staat er rechts?"],
+  welkom: ["3 dingen staan in een rij.", "Wat staat er rechts?"],
   voorbeeld: [{ t: "plaats", rij: ["bus", "fiets", "bootje"], keuzes: ["fiets", "bootje", "bus"], wat: "links" }],
   vragen: [
     { t: "plaats", rij: ["fiets", "speelgoedauto", "bus"], keuzes: ["speelgoedauto", "bus", "fiets"], wat: "rechts" },
@@ -1686,7 +1811,7 @@ const mix2_4 = les({
 /*
   Level 1: op volgorde met klein-kleiner-kleinst, dik-dikker-dikst,
   groot-groter-grootst, dun-dunner-dunst en laag-lager-laagst. De volgorde
-  volgt de woorden: bij "klein, kleiner, kleinst" komt de kleinste achteraan.
+  volgt de woorden: bij "klein" (mix3-1) staat de kleinste links: kleinst, kleiner, klein (Sara, 6 nov).
   Squla gebruikt knaagdieren, koeien en honden; wij ballen, appels, sterren,
   kaarsen, potloden, huizen, bomen, raketjes en torens van blokken (dat zijn
   dingen waar dik, dun, groot en laag goed bij te zien is).
@@ -1696,7 +1821,7 @@ const mix3_1 = les({
   titel: "Rekenmix 3",
   oefening: "Rekenmix 3",
   level: 1,
-  welkom: ["Drie ballen zijn niet even groot.", "Zet ze op volgorde: klein, kleiner, kleinst."],
+  welkom: ["3 ballen zijn niet even groot.", "Zet ze op volgorde: kleinst, kleiner, klein."],
   beginMetVoorbeeld: true,
   voorbeeld: [{ t: "ordenMaat", woord: "klein", naam: "bal", maten: [0.82, 0.46, 1] }],
   vragen: [
@@ -1732,7 +1857,7 @@ const mix3_2 = les({
   titel: "Rekenmix 3 (moeilijker)",
   oefening: "Rekenmix 3",
   level: 2,
-  welkom: ["Vijf dingen staan in een rij.", "Wat staat als eerste in de rij?"],
+  welkom: ["5 dingen staan in een rij.", "Wat staat als eerste in de rij?"],
   beginMetVoorbeeld: true,
   /* Een rij in een andere volgorde dan in de vragen, en de eerste van de rij zoals de welkomzin vraagt. */
   voorbeeld: [{ t: "rang", rij: ["bus", "bootje", "fiets", "treintje", "speelgoedauto"], keuzes: ["fiets", "treintje", "bus", "speelgoedauto", "bootje"], plek: 0 }],
@@ -1916,7 +2041,7 @@ const mix4_3 = les({
   titel: "Rekenmix 4 (nog moeilijker)",
   oefening: "Rekenmix 4",
   level: 3,
-  welkom: ["Drie groepjes sterren in de ruimte.", `Waar zie je ${g(6, "geel")} sterren?`],
+  welkom: ["3 groepjes sterren in de ruimte.", `Waar zie je ${g(6, "geel")} sterren?`],
   voorbeeld: [{ t: "welke", v: STER, groepen: [kv("ster", 3, 81), kv("ster", 5, 83), kv("ster", 4, 85)], vraagt: "is", n: 4 }],
   vragen: [
     { t: "welke", v: STER, groepen: [kv("ster", 6, 87), kv("ster", 8, 89), kv("ster", 5, 91)], vraagt: "is", n: 6 },
@@ -1949,7 +2074,7 @@ const mix4_4 = les({
   titel: "Rekenmix 4 (heel moeilijk)",
   oefening: "Rekenmix 4",
   level: 4,
-  welkom: ["Drie groepjes raketjes in de ruimte.", `Waar zie je meer dan ${g(4, "rood")} raketjes?`],
+  welkom: ["3 groepjes raketjes in de ruimte.", `Waar zie je meer dan ${g(4, "rood")} raketjes?`],
   beginMetVoorbeeld: true,
   voorbeeld: [
     { t: "welke", v: RAKET, groepen: [kr("raketje", [4]), kr("raketje", [3]), kr("raketje", [5])], vraagt: "meer", n: 4 },

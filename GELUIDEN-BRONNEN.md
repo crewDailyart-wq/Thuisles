@@ -87,6 +87,12 @@ Synthesis heeft alleen een sfeergeluidje bij het vogelverhaal. De andere
 sfeergeluidjes (bloemen, ballonnen, lampen, munten, vuurvliegjes, lantaarns,
 paddenstoelen) zijn er zelf bij gemaakt, in dezelfde zachte stijl.
 
+## Zelf gemaakt in code (geen bestand, geen licentie nodig)
+
+| Geluid | Wat | Waar |
+|---|---|---|
+| `oplicht` (6 nov 2026) | Een zacht, kort pingetje van 2 tonen (1175 en 1568 Hz, samen ±0,3 s, volume 0,02 en 0,014: zachter dan de andere geluidjes). Zelf gemaakt met de geluidsmotor van de browser (`toon()` in `src/lib/lesgeluiden.ts`); niets gedownload, dus geen bron en geen licentie. | Klinkt één keer als een wijzer van de klok begint op te lichten (BOUWREGELS 7.9). |
+
 ## Wat er bij Synthesis klinkt (gemeten 28–29 okt 2026)
 
 Gemeten met een script in de pagina dat bijhoudt welk geluid start, hoe lang het
@@ -115,3 +121,5 @@ van hun bestanden zijn gelezen; niets is gedownload of bewaard.
 - Synthesis speelt het beurtgeluid tegelijk met de stem. Wij zetten alle
   geluidjes zachter zodra Bliepo praat (naar 20 %), en een sfeergeluidje wacht
   tot Bliepo klaar is.
+
+> **6 november 2026:** het geluidje `oplicht` staat voorlopig uit (Sara: "misschien later"). De code blijft staan; `OPLICHT_GELUID = false` in `src/components/les/vlakken/squla-klok-vlak.tsx`.

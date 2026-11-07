@@ -8,10 +8,9 @@
  * betekent: Bliepo telt mee of wijst aan (warm), goed (groen), fout (rood).
  * De gloed wordt één keer gebakken (holo/basis.ts `bak`), nooit elk beeld.
  *
- * MUNTEN EN BRIEFJES zijn altijd de officiële afbeeldingen (ECB; zie
- * public/geld/BRON.md): munten uit public/geld/los/ (alleen de ronde munt),
- * briefjes de specimen-briefjes zoals ze zijn, zonder rand of kader. Niet
- * vergroot, nooit op ware grootte (een briefje is hooguit 170 punten breed).
+ * Munten: de bestaande afbeeldingen, of de getekende munten in het concept.
+ * Briefjes: de door de gebruiker gekozen illustraties uit public/geld/getekend/.
+ * De vervanging raakt uitsluitend de afbeeldingen, niet de opgaven of waarden.
  *
  * Andere dingen (spaarpot, speelgoed, klusjes) zijn vaste voorwerpen
  * (src/lib/voorwerpen, public/voorwerpen/<naam>.png; zie WISSELEN.md). Het
@@ -36,7 +35,8 @@
  * voorgelezen (dat zou het antwoord verklappen); dingen wel, als ze een `zeg` hebben.
  */
 
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
+import { GetekendeMuntenContext, MUNTENBLAD, MUNTUITSNEDE } from "./geld-muntstijl";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { GOED, holoBasis, TX, VLAK_B, VLAK_H, WARM } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
@@ -52,11 +52,11 @@ const BESTAND: Record<GeldSoort, string> = {
   c50: "/geld/los/munt-50-cent.png",
   m1: "/geld/los/munt-1-euro.png",
   m2: "/geld/los/munt-2-euro.png",
-  b5: "/geld/briefje-5-euro.jpg",
-  b10: "/geld/briefje-10-euro.jpg",
-  b20: "/geld/briefje-20-euro.jpg",
-  b50: "/geld/briefje-50-euro.jpg",
-  b100: "/geld/briefje-100-euro.jpg",
+  b5: "/geld/getekend/briefje-5-euro.svg",
+  b10: "/geld/getekend/briefje-10-euro.svg",
+  b20: "/geld/getekend/briefje-20-euro.svg",
+  b50: "/geld/getekend/briefje-50-euro.svg",
+  b100: "/geld/getekend/briefje-100-euro.svg",
 };
 
 /** Geladen afbeeldingen: geld op zijn soort, proefplaatjes als "p:<sleutel>" (null = er is (nog) geen PNG). */
@@ -85,8 +85,11 @@ function laad(sleutel: string, pad: string): Promise<void> {
 }
 
 /** De officiële afbeeldingen laden (elk één keer). */
-export function laadGeld(soorten: GeldSoort[]): Promise<void> {
-  return Promise.all([...new Set(soorten)].map((g) => laad(g, BESTAND[g]))).then(() => undefined);
+export function laadGeld(soorten: GeldSoort[], getekendeMunten = false): Promise<void> {
+  return Promise.all([
+    ...[...new Set(soorten)].map((g) => laad(g, BESTAND[g])),
+    ...(getekendeMunten ? [laad("munten-concept", MUNTENBLAD)] : []),
+  ]).then(() => undefined);
 }
 
 /** De maat waarin een voorwerp getekend wordt (de plaatjes zijn vierkant). */
@@ -114,6 +117,10 @@ export type GVerbind = {
 };
 
 export type GeldProps = {
+  /** Houd de introductieillustratie vast totdat een voorbeeld of opgave wordt getoond. */
+  introductie?: boolean;
+  /** Uitsluitend presentatie; alleen aangezet in het muntconcept. */
+  getekendeMunten?: boolean;
   /** Een nieuw tafereel (nieuwe vraag): alles verschijnt opnieuw. */
   nr: number;
   groot?: GDeel[] | null;
@@ -125,6 +132,8 @@ export type GeldProps = {
   goed?: string[];
   fout?: string[];
   licht?: string[];
+  /** Wat in `licht` staat (en wat Bliepo telt) krijgt een rood, getekend rondje in plaats van een gloed. */
+  rondje?: boolean;
   verbind?: GVerbind | null;
   /** `vanaf`: Bliepo telt verder vanaf dit bedrag (het geld van iemand anders erbij). */
   geteld?: { id: string; tot: number; vanaf?: number } | null;
@@ -263,8 +272,8 @@ export function indeling(p: GeldProps): Indeling {
   const groot: GrootPlek[] = [];
   if (metGroot && p.groot) {
     if (p.paneel) {
-      boven = 270;
-      onder = 690;
+      boven = p.midden === VLAK_B / 2 ? 210 : 192;
+      onder = p.midden === VLAK_B / 2 ? 560 : 472;
     }
     const maten = p.groot.map(deelMaat);
     const tussen = 30;
@@ -336,6 +345,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     lijnen: import("phaser").GameObjects.Graphics | null = null;
     trek: import("phaser").GameObjects.Graphics | null = null;
     telStuk: Stuk | null = null;
+    /** De rondjes die nu staan (per ding of voor wat Bliepo telt), met het ding waar ze in zitten. */
+    rondjes = new Map<string, { im: Img; box: Box }>();
+    rondjeLaadt = false;
     telBadge: Img | null = null;
     druk: { d: Ding; x0: number; y0: number; sleept: boolean; lang: boolean } | null = null;
     zweef: string | null = null;
@@ -361,16 +373,26 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     /** Een munt of briefje, één keer klaargezet (verkleind, nooit vergroot), zonder rand of kader. */
     geldPlaatje(g: GeldSoort) {
       /* In het paneel staan munten groter (tot 160 punten): daarvoor een scherper plaatje (de bron is 530 px). */
-      const groter = !!this.p?.paneel && !isBriefje(g);
-      const sl = groter ? `geld|${g}|L` : `geld|${g}`;
+      const groter = !!this.p?.paneel;
+      const uitsnede = this.p?.getekendeMunten && !isBriefje(g)
+        ? MUNTUITSNEDE[g as "m1" | "m2" | "c50"] : undefined;
+      const sl = `${groter ? `geld|${g}|L` : `geld|${g}`}${uitsnede ? "|getekend-v2" : ""}`;
       if (this.textures.exists(sl)) return sl;
-      const img = BEELD.get(g) ?? null;
+      const img = BEELD.get(uitsnede ? "munten-concept" : g) ?? null;
       const brief = isBriefje(g);
-      const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
-      const b = brief ? 260 : groter ? 320 : 140;
+      const verh = uitsnede ? 1 : img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
+      const b = brief ? (groter ? 780 : 260) : groter ? 320 : 140;
       const h = Math.round(b / verh);
       this.canvasPlaatje(sl, b, h, (c) => {
-        if (img) c.drawImage(img, 0, 0, b, h);
+        if (img && uitsnede) {
+          c.save();
+          c.beginPath();
+          c.roundRect(0, 0, b, h, Math.min(b, h) * 0.35);
+          c.clip();
+          c.drawImage(img, uitsnede.x, uitsnede.y, uitsnede.b, uitsnede.h, 0, 0, b, h);
+          c.restore();
+        }
+        else if (img) c.drawImage(img, 0, 0, b, h);
       });
       return sl;
     }
@@ -508,6 +530,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const o of this.alles) o.destroy();
       this.alles = [];
       this.dingen.clear();
+      this.rondjes.clear();
       this.lijnen = null;
       this.trek = null;
       this.telStuk = null;
@@ -536,14 +559,14 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     /**
-     * Eén munt of briefje (opt-in `paneel`): een briefje `u` punten breed (nooit breder dan 170), een munt
+     * Eén munt of briefje (opt-in `paneel`): een briefje `u` punten breed, een munt
      * `munt` × de maat van zijn soort. Zo zijn alle keuzes even groot, ook munten naast briefjes.
      */
     legEen(box: Box, g: GeldSoort, u: number, munt: number) {
       const brief = isBriefje(g);
       const img = BEELD.get(g) ?? null;
       const verh = img ? img.naturalWidth / img.naturalHeight : brief ? 1.9 : 1;
-      const b = brief ? Math.min(u, 170) : munt * muntMaat(g);
+      const b = brief ? u : munt * muntMaat(g);
       const h = brief ? b / verh : b;
       const pl: Plek = { g, x: 0, y: 0, b, h };
       return { plekken: [pl], stukken: [this.stuk(box, this.geldPlaatje(g), 0, 0, b, h)] };
@@ -609,8 +632,19 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           }
           this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken: [], stukken: [st], geldStukken: [] });
         } else if (d.soort === "geld") {
-          /* Paneel: één munt of briefje groot in het midden (het voorbeeld, of de vraag "Wat is dit?"). */
-          const { plekken, stukken } = p.paneel && d.geld.length === 1 ? this.legEen(box, d.geld[0], 170, 150) : this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
+          /* Het goedgekeurde geldvlak onder de vraag, met ruimte voor de bestaande knoppen eronder. */
+          const staandPaneel = p.midden === VLAK_B / 2;
+          if (p.paneel && d.geld.length === 1) {
+            const paneel = this.add.graphics();
+            const breedte = staandPaneel ? 880 : 660;
+            const hoogte = staandPaneel ? 350 : 280;
+            paneel.fillStyle(0xc3dfff, 0.035);
+            paneel.fillRoundedRect(-breedte / 2, -hoogte / 2, breedte, hoogte, 24);
+            paneel.lineStyle(1, 0xc6dcff, 0.27);
+            paneel.strokeRoundedRect(-breedte / 2, -hoogte / 2, breedte, hoogte, 24);
+            box.add(paneel);
+          }
+          const { plekken, stukken } = p.paneel && d.geld.length === 1 ? this.legEen(box, d.geld[0], staandPaneel ? 620 : 390, staandPaneel ? 260 : 190) : this.legInBox(box, d.geld, g.r.b, g.r.h, g.k * GROOT_GELD, d.kruis);
           this.dingen.set(g.id, { box, r: g.r, zeg: null, soort: "groot", id: g.id, plekken, stukken, geldStukken: stukken });
         } else box.add(this.plaats(this.tekenPlaatje(d.soort), 0, 0).setScale(g.k / TX));
         nieuw.push(box);
@@ -640,23 +674,24 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     zet(p: GeldProps) {
       this.p = p;
-      if (p.vooraf?.length) void laadGeld(p.vooraf);
+      if (p.vooraf?.length) void laadGeld(p.vooraf, p.getekendeMunten);
       const sig = JSON.stringify([
         p.nr,
         p.groot ?? null,
         (p.kaarten ?? []).map((k) => [k.id, k.geld, k.tekening, k.aantal, k.label]),
         !!p.zweven,
         !!p.paneel,
+        !!p.getekendeMunten,
         p.midden ?? null,
         p.verbind ? [p.verbind.links.map((k) => [k.id, k.geld, k.label]), p.verbind.rechts.map((k) => [k.id, k.geld, k.label])] : null,
       ]);
       if (sig !== this.sig) {
         const geld = this.nodigGeld(p);
-        const klaar = geld.every((g) => BEELD.has(g));
+        const klaar = geld.every((g) => BEELD.has(g)) && (!p.getekendeMunten || BEELD.has("munten-concept"));
         if (!klaar) {
           /* Eerst de afbeeldingen; daarna pas opbouwen (als er intussen niets anders gevraagd is). */
           this.wacht = sig;
-          void laadGeld(geld).then(() => {
+          void laadGeld(geld, p.getekendeMunten).then(() => {
             if (this.wacht !== sig || !this.sys?.isActive()) return;
             this.wacht = "";
             this.bouw(this.p!, this.p!.nr !== this.nr);
@@ -683,7 +718,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         return lijn && v.goed.includes(lijn[0]) ? "goed" : lijn && v.fout.includes(lijn[0]) ? "fout" : v.gekozen === d.id ? "warm" : kleur(d.id);
       };
       for (const d of this.dingen.values()) {
-        const k = d.soort === "links" || d.soort === "rechts" ? lijnKleur(d) : kleur(d.id);
+        let k = d.soort === "links" || d.soort === "rechts" ? lijnKleur(d) : kleur(d.id);
+        /* Met een rondje licht niets op: Bliepo wijst aan met een rood rondje (goed en fout houden hun gloed). */
+        if (p.rondje && k === "warm" && d.soort !== "links" && d.soort !== "rechts") k = null;
         if (d.vak) {
           /* Eigen vak: bij goed of fout licht het hele vak op; de munt zelf alleen bij "licht". */
           this.zetVak(d, k === "goed" || k === "fout" ? k : null);
@@ -717,6 +754,74 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         }
       }
       this.zetGeteld(p);
+      this.zetRondjes(p);
+    }
+
+    /** Het plaatje van het rondje (een met de hand getekend rood rondje, Magnific, gekozen door Sara); null zolang het nog laadt. */
+    rondjeTex(): string | null {
+      const sl = "geld-rondje-2";
+      if (this.textures.exists(sl)) return sl;
+      if (!this.rondjeLaadt) {
+        this.rondjeLaadt = true;
+        const img = new Image();
+        img.src = "/rondje/rondje-rood-2.png";
+        img
+          .decode()
+          .then(() => {
+            if (!this.sys?.isActive() || this.textures.exists(sl)) return;
+            this.textures.addImage(sl, img);
+            if (this.p) this.zetRondjes(this.p);
+          })
+          .catch(() => console.error("[rondje] rondje-rood-2.png laadt niet"));
+      }
+      return null;
+    }
+
+    /** Het vierkant (in het ding zelf) om een groepje plaatjes. */
+    omheen(stukken: Stuk[]): { x: number; y: number; b: number; h: number } | null {
+      const lijst = stukken.filter((s) => s.im.active);
+      if (!lijst.length) return null;
+      const x0 = Math.min(...lijst.map((s) => s.im.x - s.im.displayWidth / 2));
+      const x1 = Math.max(...lijst.map((s) => s.im.x + s.im.displayWidth / 2));
+      const y0 = Math.min(...lijst.map((s) => s.im.y - s.im.displayHeight / 2));
+      const y1 = Math.max(...lijst.map((s) => s.im.y + s.im.displayHeight / 2));
+      return { x: (x0 + x1) / 2, y: (y0 + y1) / 2, b: x1 - x0, h: y1 - y0 };
+    }
+
+    /** Wat Bliepo aanwijst of telt: een rood rondje eromheen, dat zacht verschijnt. Alleen met `rondje`. */
+    zetRondjes(p: GeldProps) {
+      const wens = new Map<string, { box: Box; stukken: Stuk[] }>();
+      if (p.rondje) {
+        for (const id of p.licht ?? []) {
+          const d = this.dingen.get(id);
+          if (d && !p.goed?.includes(id) && !p.fout?.includes(id) && d.soort !== "links" && d.soort !== "rechts") wens.set(`ding:${id}`, { box: d.box, stukken: d.stukken });
+        }
+        const t = p.geteld;
+        const d = t ? this.dingen.get(t.id) : undefined;
+        if (t && d && t.tot > 0 && t.tot <= d.plekken.length && d.geldStukken[t.tot - 1]) wens.set(`tel:${t.id}:${t.tot}`, { box: d.box, stukken: [d.geldStukken[t.tot - 1]] });
+      }
+      for (const [sl, r] of this.rondjes) {
+        if (wens.has(sl) && r.im.active) continue;
+        r.im.destroy();
+        this.rondjes.delete(sl);
+      }
+      if (!wens.size) return;
+      const tex = this.rondjeTex();
+      if (!tex) return;
+      for (const [sl, w] of wens) {
+        if (this.rondjes.has(sl)) continue;
+        const r = this.omheen(w.stukken);
+        if (!r) continue;
+        const im = this.add.image(r.x, r.y, tex).setDisplaySize(r.b * 1.15 + 44, r.h * 1.4 + 50);
+        im.setAngle(((sl.length * 37) % 50) / 10 - 2.5);
+        w.box.add(im);
+        this.rondjes.set(sl, { im, box: w.box });
+        if (this.rustig) continue;
+        const sx = im.scaleX;
+        const sy = im.scaleY;
+        im.setAlpha(0);
+        this.tweens.add({ targets: im, alpha: 1, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
+      }
     }
 
     /** Bliepo telt: wat hij nu telt licht op, en erboven staat het bedrag tot nu toe. */
@@ -727,7 +832,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         const st = this.telStuk;
         const ding = [...this.dingen.values()].find((d) => d.stukken.includes(st));
         st.kleur = st.kleur === "warm" ? "goed" : st.kleur;
-        this.zetGloed(st, ding ? (p.goed?.includes(ding.id) ? "goed" : p.fout?.includes(ding.id) ? "fout" : p.licht?.includes(ding.id) ? "warm" : null) : null);
+        this.zetGloed(st, ding ? (p.goed?.includes(ding.id) ? "goed" : p.fout?.includes(ding.id) ? "fout" : p.licht?.includes(ding.id) && !p.rondje ? "warm" : null) : null);
         this.telStuk = null;
       }
       this.telBadge?.destroy();
@@ -741,7 +846,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       if (tot > 0 && t.tot <= d.plekken.length) {
         this.telStuk = d.geldStukken[tot - 1];
         this.telStuk.kleur = null;
-        this.zetGloed(this.telStuk, "warm");
+        if (!p.rondje) this.zetGloed(this.telStuk, "warm");
       }
       if (tot > 0) {
         const tekst = `€ ${som}`;
@@ -942,6 +1047,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 /* ---------- het vlak ---------- */
 
 export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
+  const getekendeMunten = useContext(GetekendeMuntenContext);
   const { meld, schaal } = props;
   const { plek, scene } = useHoloMotor<GeldScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
@@ -961,7 +1067,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel } = props;
+  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel } = props;
   /* Met `paneel`: het midden van het scherm (laptop: het vlak staat 150 naar links; staand scherm: gecentreerd). */
   const [staand, setStaand] = useState(false);
   useEffect(() => {
@@ -971,7 +1077,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     return () => window.removeEventListener("resize", meet);
   }, []);
   const midden = paneel ? (staand ? VLAK_B / 2 : 640) : undefined;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, verbind, geteld, vooraf, paneel, midden });
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);
@@ -979,8 +1085,8 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
   /* Het geld van de les alvast laden, ook voordat Phaser klaar is. */
   const voorafSleutel = (vooraf ?? []).join(",");
   useEffect(() => {
-    if (voorafSleutel) void laadGeld(voorafSleutel.split(",") as GeldSoort[]);
-  }, [voorafSleutel]);
+    if (voorafSleutel) void laadGeld(voorafSleutel.split(",") as GeldSoort[], getekendeMunten);
+  }, [voorafSleutel, getekendeMunten]);
 
   const schudNr = props.schud?.n;
   useEffect(() => {
@@ -1050,11 +1156,20 @@ export function KaartSpaarpot() {
 
 /** De kaart aan het eind van de les Munten en briefjes (244 × 190): een echte munt en een echt briefje (specimen). */
 export function KaartMuntBriefje() {
+  const getekend = useContext(GetekendeMuntenContext);
+  const munt = (g: "m1" | "m2", x: number, y: number, maat: number) => {
+    if (!getekend) return <image href={BESTAND[g]} x={x} y={y} width={maat} height={maat} />;
+    const r = MUNTUITSNEDE[g];
+    return <svg x={x} y={y} width={maat} height={maat} viewBox={`${r.x} ${r.y} ${r.b} ${r.h}`}>
+      <defs><clipPath id={`kaart-munt-${g}`}><rect x={r.x} y={r.y} width={r.b} height={r.h} rx={Math.min(r.b, r.h) * 0.35} /></clipPath></defs>
+      <image href={MUNTENBLAD} width={1679} height={937} clipPath={`url(#kaart-munt-${g})`} />
+    </svg>;
+  };
   return (
     <svg viewBox="0 0 244 190" width={244} height={190} aria-hidden="true">
-      <image href={BESTAND.m2} x={14} y={46} width={96} height={96} />
+      {munt("m2", 14, 46, 96)}
       <image href={BESTAND.b5} x={116} y={52} width={118} height={60} />
-      <image href={BESTAND.m1} x={150} y={116} width={70} height={70} />
+      {munt("m1", 150, 116, 70)}
     </svg>
   );
 }

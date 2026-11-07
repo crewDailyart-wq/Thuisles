@@ -30,9 +30,13 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, GOED, TX, WARM, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
-import { dingSleutel, gloedVan, laadKlokken, maatVan, tekenDing, type Ding } from "./squla-klok-tekenen";
+import { dingSleutel, gloedVan, heeftWijzerGloed, laadKlokken, maatVan, tekenDing, tekenWijzerGloed, type Ding } from "./squla-klok-tekenen";
 import { Klokje } from "./klok-wijzerklok";
 import s from "./squla-klok.module.css";
+
+/** Het zachte geluidje bij het oplichten van een wijzer staat voorlopig uit (BOUWREGELS 7.9). */
+const OPLICHT_GELUID = false;
+
 
 export type { Ding };
 
@@ -79,7 +83,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
   const Basis = holoBasis(Phaser, rustig);
   type Img = import("phaser").GameObjects.Image;
   type Gfx = import("phaser").GameObjects.Graphics;
-  type Stuk = { img: Img; tex: string; staat: Staat; ring: Img | null; item: Item };
+  type Stuk = { img: Img; tex: string; staat: Staat; ring: Img | null; item: Item; wGloed: Img | null; wGloedSl: string };
 
   class Klok extends Basis implements KlokScene {
     stukken = new Map<string, Stuk>();
@@ -127,11 +131,43 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
     }
 
     texVoor(d: Ding, staat: Staat) {
+      /* Wijst Bliepo een wijzer aan, dan lichten alleen de randen van die wijzer op (aparte laag), niet de hele klok (Sara, 6 november 2026). */
+      if (staat === "licht" && heeftWijzerGloed(d)) return this.tex(d);
       return staat === "licht" || staat === "goed" ? this.texGloed(d) : this.tex(d);
+    }
+
+    /** De glow langs de rand van de aangewezen wijzer: een aparte, transparante laag die zacht pulseert. */
+    texWijzerGloed(d: Ding) {
+      const sl = `kg:${dingSleutel(d)}`;
+      const { b, h } = maatVan(d);
+      this.canvasPlaatje(sl, b, h, (c) => {
+        if (d.t === "wijzer") tekenWijzerGloed(c, d);
+      });
+      return sl;
+    }
+
+    zetWijzerGloed(st: Stuk) {
+      const d = st.item.d;
+      const sl = heeftWijzerGloed(d) ? this.texWijzerGloed(d) : "";
+      if (st.wGloedSl === sl) {
+        if (st.wGloed) st.wGloed.setPosition(st.img.x, st.img.y).setScale(st.img.scaleX, st.img.scaleY);
+        return;
+      }
+      st.wGloed?.destroy();
+      st.wGloed = null;
+      st.wGloedSl = sl;
+      if (!sl) return;
+      const g = this.add.image(st.img.x, st.img.y, sl).setScale(st.img.scaleX, st.img.scaleY).setDepth(st.img.depth + 0.5);
+      st.wGloed = g;
+      if (rustig) return;
+      g.setAlpha(0.6);
+      this.tweens.add({ targets: g, alpha: 1, duration: 700, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
     }
 
     ringVoor(it: Item, staat: Staat) {
       if (staat !== "licht" && staat !== "goed") return null;
+      /* Bij de wijzerklok geen gouden ring (Sara, 6 november 2026): alleen de kleur achter de aangewezen wijzer. */
+      if (it.d.t === "wijzer") return null;
       const { b, h } = maatVan(it.d);
       /* een ring alleen om ronde of vierkante dingen; brede dingen lichten alleen op */
       if (Math.max(b, h) / Math.min(b, h) > 1.4) return null;
@@ -161,6 +197,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         this.sleutel = b.sleutel;
         for (const st of this.stukken.values()) {
           st.ring?.destroy();
+          st.wGloed?.destroy();
           this.verdwijn(st.img);
         }
         this.stukken.clear();
@@ -171,6 +208,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
       for (const [id, st] of this.stukken) {
         if (nu.has(id)) continue;
         st.ring?.destroy();
+        st.wGloed?.destroy();
         this.verdwijn(st.img);
         this.stukken.delete(id);
       }
@@ -180,11 +218,19 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         if (!st) {
           const tex = this.texVoor(it.d, it.staat);
           const img = this.plaats(tex, it.x, it.y).setScale(it.s / TX).setDepth(it.sleept ? 4 : 3);
-          const nieuw: Stuk = { img, tex, staat: "gewoon", ring: null, item: it };
+          const nieuw: Stuk = { img, tex, staat: "gewoon", ring: null, item: it, wGloed: null, wGloedSl: "" };
           this.stukken.set(it.id, nieuw);
+          this.time.delayedCall(rustig ? 0 : 300, () => nieuw.img.active && this.zetWijzerGloed(nieuw));
           this.tover(img, { vertraging: n++ * 70 });
           if (it.staat !== "gewoon") this.time.delayedCall(rustig ? 0 : 400, () => nieuw.img.active && this.zetStaat(nieuw, it.staat));
           continue;
+        }
+        /* Begint een wijzer nu op te lichten (nieuwe aanwijzing): één zacht geluidje en één keer kort pulseren (BOUWREGELS 7.9). */
+        const nadrukNu = it.d.t === "wijzer" ? it.d.nadruk : undefined;
+        const nadrukVoor = st.item.d.t === "wijzer" ? st.item.d.nadruk : undefined;
+        if (nadrukNu && nadrukNu !== nadrukVoor) {
+          /* Het oplicht-geluidje staat voorlopig uit (Sara, 6 november 2026: "misschien later"); `OPLICHT_GELUID = true` zet het weer aan. */
+          if (OPLICHT_GELUID) speelLesgeluid("oplicht");
         }
         const oudD = dingSleutel(st.item.d);
         const verplaatst = st.item.x !== it.x || st.item.y !== it.y;
@@ -214,6 +260,7 @@ function maakKlokScene(Phaser: PhaserModule, rustig: boolean) {
         }
         st.img.setScale(it.s / TX);
         if (st.staat !== it.staat || (verplaatst && st.ring)) this.zetStaat(st, it.staat);
+        this.zetWijzerGloed(st);
       }
       this.tekenLijnen(b);
       /* de gloed van alles in beeld vooruit bakken */

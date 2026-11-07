@@ -196,6 +196,42 @@ async function meet(c, scherm, apparaat) {
     if (openen === null) return [`het eerste Phaser-beeld kwam er niet bij de tweede keer laden`];
     await wacht(800);
 
+    /*
+      Slepen kan pas als de les gestart is (Ja gekozen) en Bliepo klaar is met praten.
+      Is er een sleepPunt, kies dan "Ja" en wacht (max. 25 s) tot een proefsleep het
+      voorwerp echt laat bewegen. Anders meet de test een stilstaand voorwerp.
+    */
+    if (await ev(`window.__phaser?.sleepPunt?.() ?? null`)) {
+      await ev(`[...document.querySelectorAll("button")].find((b) => b.textContent.trim() === "Ja")?.click()`);
+      const proef = async () => {
+        const p0 = await ev(`window.__phaser?.sleepPunt?.() ?? null`);
+        if (!p0) return false;
+        const naar = { x: p0.x + 70, y: p0.y + 40 };
+        if (apparaat.mobiel) {
+          await c.stuur("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: p0.x, y: p0.y }] }, s);
+          await c.stuur("Input.dispatchTouchEvent", { type: "touchMove", touchPoints: [naar] }, s);
+        } else {
+          await c.stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: p0.x, y: p0.y }, s);
+          await c.stuur("Input.dispatchMouseEvent", { type: "mousePressed", x: p0.x, y: p0.y, button: "left", clickCount: 1 }, s);
+          await c.stuur("Input.dispatchMouseEvent", { type: "mouseMoved", ...naar, button: "left", buttons: 1 }, s);
+        }
+        await wacht(120);
+        const p1 = await ev(`window.__phaser?.sleepPunt?.() ?? null`);
+        if (apparaat.mobiel) await c.stuur("Input.dispatchTouchEvent", { type: "touchEnd", touchPoints: [] }, s);
+        else await c.stuur("Input.dispatchMouseEvent", { type: "mouseReleased", ...naar, button: "left", clickCount: 1 }, s);
+        return !!p1 && Math.hypot(p1.x - p0.x, p1.y - p0.y) > 20;
+      };
+      for (let k = 0; k < 25 && !(await proef()); k++) await wacht(1000);
+      /* Het voorwerp glijdt na de proef terug naar zijn plek (op de trage telefoon duurt dat langer): wacht tot het stil ligt. */
+      let vorig = null;
+      for (let k = 0; k < 40; k++) {
+        await wacht(300);
+        const nu = await ev(`window.__phaser?.sleepPunt?.() ?? null`);
+        if (nu && vorig && Math.hypot(nu.x - vorig.x, nu.y - vorig.y) < 4) break;
+        vorig = nu;
+      }
+    }
+
     /* 3 seconden slepen en ondertussen beelden tellen. */
     const punt = await ev(`window.__phaser?.sleepPunt?.() ?? null`);
     /* Schermen zonder slepen laten zelf 3 seconden hun animaties zien (window.__phaser.beweeg). */
@@ -203,7 +239,11 @@ async function meet(c, scherm, apparaat) {
     const telling = c.stuur("Runtime.evaluate", { expression: TEL(3000), returnByValue: true, awaitPromise: true }, s);
     let eind = null;
     if (punt) {
-      const stap = (i) => ({ x: punt.x + Math.sin(i / 9) * 120, y: punt.y + Math.sin(i / 13) * 60 });
+      /* Het pad blijft binnen het scherm: een vinger buiten het beeld is weg en dan beweegt het voorwerp niet mee. */
+      const breed = (await ev(`innerWidth`)) ?? 400;
+      const hoog = (await ev(`innerHeight`)) ?? 700;
+      const vast = (v, lo, hi) => Math.min(hi, Math.max(lo, v));
+      const stap = (i) => ({ x: vast(punt.x + Math.sin(i / 9) * 120, 20, breed - 20), y: vast(punt.y + Math.sin(i / 13) * 60, 20, hoog - 20) });
       if (apparaat.mobiel) await c.stuur("Input.dispatchTouchEvent", { type: "touchStart", touchPoints: [{ x: punt.x, y: punt.y }] }, s);
       else {
         await c.stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: punt.x, y: punt.y }, s);

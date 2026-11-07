@@ -31,6 +31,7 @@
  * Elke les begint met een eigen zin over waar de les over gaat (BOUWREGELS 4.3).
  */
 
+import { krijgtVervolgvraag, isBegeleideUitleg, uitlegKeuze, bevestig as kortBevestig, zetSynthesisHulp, terugAankondiging, terugAfsluiting } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, type SqulaVraag } from "./squla-hulp";
 import { SqulaKlokVlak, KaartKlok, type Ding, type KlokVlakProps } from "../vlakken/squla-klok-vlak";
@@ -82,7 +83,69 @@ const metNadruk = (d: Ding, nadruk?: "uur" | "min"): Ding => (d.t === "wijzer" ?
 
 /** Getallen in een knoptekst tussen {…} (voor wat Bliepo zegt). */
 const metHaken = (s: string) => s.replace(/\d+/g, (n) => `{${n}:oranje}`);
+/** Bij een goed antwoord alleen een korte bevestiging (Sara, 4 nov); het waarom zit in het beeld. De goedgekeurde les
+    squla-klok-hoelaat-1 houdt zijn "Goed zo." en zijn eigen goed-zinnen. */
+const goedZeg = (l: Lesgids, zinnen: string[]): string[] => (l.lesId === "squla-klok-hoelaat-1" ? ["Goed zo.", ...zinnen] : [kortBevestig()]);
+/** Goed-zin bij het lezen van een klok: wisselt met de tijd, zodat niet elke les "Het is ... uur." zegt (Sara, 4 nov). */
+const goedLees = (l: Lesgids, t: T): string => {
+  if (l.lesId === "squla-klok-hoelaat-1") return `Het is ${spreek(t)}.`;
+  const n = (t.u * 7 + t.m) % 5;
+  if (t.m === 0) return [`Het is ${spreek(t)}.`, `De kleine wijzer staat bij de {${t.u}:oranje}: ${spreek(t)}.`, `Ja, ${spreek(t)}.`, `Dat is ${spreek(t)} op deze klok.`, `Zo lees je het: ${spreek(t)}.`][n];
+  return [`Dat is ${spreek(t)}.`, `Tussen de {${t.u}:oranje} en de {${na(t)}:oranje} staat de kleine wijzer: ${spreek(t)}.`, `Ja, ${spreek(t)}.`, `De klok laat ${spreek(t)} zien.`, `Zo lees je het: ${spreek(t)}.`][n];
+};
+/** Na de tweede fout: wat de wijzers laten zien en dus welke tijd het is (zonder weetje). */
+const wijzerUitleg = (t: T): string[] => {
+  if (t.m === 0) return [`De grote wijzer staat op de {12:paars} en de kleine wijzer op de {${t.u}:oranje}.`, `Dus het is ${spreek(t)}.`];
+  return [`De grote wijzer staat ${t.m === 30 ? "op" : "net vóór"} de {6:paars} en de kleine wijzer tussen de {${t.u}:oranje} en de {${na(t)}:oranje}.`, `Dus het is ${spreek(t)}.`];
+};
 const Hoofd = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/** Een tijd uit een knoptekst terug ("7 uur", "half 5", "bijna half 3"). */
+function leesWoord(x: string): T | null {
+  const b = x.match(/^bijna half (\d+)$/i);
+  if (b) return B(Number(b[1]));
+  const h = x.match(/^half (\d+)$/i);
+  if (h) return H(Number(h[1]));
+  const u = x.match(/^(\d+) uur$/i);
+  if (u) return U(Number(u[1]));
+  return null;
+}
+
+/** Waar de kleine wijzer van een heel uur staat, in gewone woorden (voor een hint zonder het getal te noemen). */
+function plekKleineWijzer(t: T): string {
+  const k = (t.u % 12) + (t.m === 0 ? 0 : 0.5);
+  if (k === 0) return "bovenaan";
+  if (k === 6) return "onderaan";
+  if (k === 3) return "rechts";
+  if (k === 9) return "links";
+  if (k < 3) return "rechtsboven";
+  if (k < 6) return "rechtsonder";
+  if (k < 9) return "linksonder";
+  return "linksboven";
+}
+
+/** Eerste fout bij het lezen van een klok: het kind koos de tijd `g` (in woorden), de klok laat `t` zien. */
+function reactieLees(x: string, t: T): string[] {
+  const g = leesWoord(x);
+  if (!g) return [`Je koos ${metHaken(x)}. Op deze klok staat de kleine wijzer ${plekKleineWijzer(t)}. Kijk naar het getal waar hij wijst.`];
+  if (g.m === 0 && t.m === 0) return [`Bij {${g.u}:oranje} uur wijst de kleine wijzer naar de {${g.u}:oranje}.`, `Op deze klok wijst de kleine wijzer ${plekKleineWijzer(t)}. Kijk naar het getal daar.`];
+  if (t.m === 0) return [`Bij ${spreek(g)} staat de grote wijzer ${g.m === 30 ? "precies op" : "net vóór"} de {6:paars}.`, "Op deze klok staat de grote wijzer bovenaan. Dat is een heel uur."];
+  if (g.m === 0) return [`Bij ${spreek(g)} staat de grote wijzer op de {12:paars}.`, "Op deze klok staat hij niet op de {12:paars}."];
+  if (g.m !== t.m) return t.m === 30 ? ["Bij bijna half staat de grote wijzer net vóór de {6:paars}.", "Hier staat hij precies op de {6:paars}."] : ["Bij half staat de grote wijzer precies op de {6:paars}.", "Hier staat hij er net vóór."];
+  return [`Bij ${spreek(g)} staat de kleine wijzer tussen de {${g.u}:oranje} en de {${na(g)}:oranje}.`, `Op deze klok staat de kleine wijzer ${plekKleineWijzer(t)}. Kijk naar de 2 getallen waar hij tussen staat.`];
+}
+
+/** Eerste fout bij het kiezen van een klok: het kind koos een klok die `g` laat zien, gezocht wordt `doel`. */
+function reactieKlokkeuze(g: T, doel: T): string[] {
+  if (g.m === 0 && doel.m === 0) return [`Bij die klok wijst de kleine wijzer naar de {${g.u}:oranje}.`, `Zoek de klok waar hij naar de {${doel.u}:oranje} wijst.`];
+  if (doel.m === 0) return [`Die klok laat ${spreek(g)} zien.`, "Bij een heel uur staat de grote wijzer op de {12:paars}."];
+  if (g.m === 0) return [`Die klok laat ${spreek(g)} zien.`, `Bij ${spreek(doel)} staat de grote wijzer ${doel.m === 30 ? "precies op" : "net vóór"} de {6:paars}.`];
+  if (g.m !== doel.m) return [`Die klok laat ${spreek(g)} zien.`, doel.m === 30 ? "Bij half staat de grote wijzer precies op de {6:paars}." : "Bij bijna half staat de grote wijzer net vóór de {6:paars}."];
+  return [`Die klok laat ${spreek(g)} zien.`, `Zoek de klok waar de kleine wijzer tussen de {${doel.u}:oranje} en de {${na(doel)}:oranje} staat.`];
+}
+
+/** Hoeveel minuten de klok `g` na de klok `nu` komt (0 tot 719). */
+const verschil = (g: T, nu: T) => ((((g.u % 12) * 60 + g.m) - ((nu.u % 12) * 60 + nu.m)) % 720 + 720) % 720;
 
 /* =====================================================================
    het vlak besturen
@@ -119,6 +182,10 @@ type KiesO = {
   noem?: (i: number) => string;
   samen: (l: Lesgids, k: { keuzes: Ding[]; boven: Ding[] }) => Promise<void>;
   tip: string[];
+  /** Eerste fout bij de Synthesis-hulp: wat Bliepo zegt over het gekozen ding (i = plek in `keuzes` zoals opgegeven). */
+  reactie?: (i: number) => string[];
+  /** Tweede fout: wat Bliepo zegt bij het goede antwoord (anders `goedZin`). */
+  antwoordZin?: string[];
 };
 
 function kiesVraag(l: Lesgids, o: KiesO, terug: boolean): SqulaVraag<string> {
@@ -138,7 +205,7 @@ function kiesVraag(l: Lesgids, o: KiesO, terug: boolean): SqulaVraag<string> {
     noem: (x) => (o.noem ? o.noem(oud(Number(x.slice(1)))) : "Die"),
     goed: async (x) => {
       zet(l, { goed: [x], licht: [] });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(...goedZeg(l, o.goedZin));
       await l.wacht(250);
     },
     fout: (x) => zet(l, { fout: [x] }),
@@ -148,6 +215,12 @@ function kiesVraag(l: Lesgids, o: KiesO, terug: boolean): SqulaVraag<string> {
       zet(l, { licht: [], keuzes, boven });
     },
     tip: o.tip,
+    reactie: o.reactie ? (x) => o.reactie!(oud(Number(x.slice(1)))) : undefined,
+    toonAntwoord: async () => {
+      zet(l, { fout: [], licht: [], goed: [`k${goed}`] });
+      await l.zeg(...(o.antwoordZin ?? o.goedZin));
+      await l.wacht(250);
+    },
     testAntwoord: `k${goed}`,
   };
 }
@@ -163,6 +236,10 @@ type KnopO = {
   goedZin: string[];
   samen: (l: Lesgids, boven: Ding[]) => Promise<void>;
   tip: string[];
+  /** Eerste fout bij de Synthesis-hulp: wat Bliepo over het gekozen antwoord zegt. */
+  reactie?: (x: string) => string[];
+  /** Tweede fout: wat Bliepo zegt bij het goede antwoord (anders `goedZin`). */
+  antwoordZin?: string[];
 };
 
 function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
@@ -178,7 +255,7 @@ function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
     noem: (x) => Hoofd(metHaken(x)),
     goed: async () => {
       zet(l, { goed: o.boven.map((_, i) => `b${i}`) });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(...goedZeg(l, o.goedZin));
       await l.wacht(250);
     },
     samen: async () => {
@@ -186,6 +263,12 @@ function knopVraag(l: Lesgids, o: KnopO, terug: boolean): SqulaVraag<string> {
       zet(l, { licht: [], boven: o.boven });
     },
     tip: o.tip,
+    reactie: o.reactie ? (x) => o.reactie!(x) : undefined,
+    toonAntwoord: async () => {
+      zet(l, { fout: [], licht: [], goed: o.boven.map((_, i) => `b${i}`) });
+      await l.zeg(...(o.antwoordZin ?? o.goedZin));
+      await l.wacht(250);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -213,8 +296,12 @@ function regel(t: T): string[] {
 async function samenKlokken(l: Lesgids, doel: T, keuzes: Ding[], boven: Ding[] = []) {
   const tijden = keuzes.map((d) => (d.t === "wijzer" ? { u: d.u, m: d.m } : null));
   const gemengd = new Set(tijden.filter(Boolean).map((t) => t!.m)).size > 1;
-  if (doel.m === 0 && !gemengd) await l.zeg("Bij een heel uur staat de grote wijzer op de {12:paars}.", "De kleine wijzer wijst het uur aan.");
-  else if (doel.m === 30 && !gemengd) await l.zeg("Bij half staat de grote wijzer op de {6:paars}.", "De kleine wijzer staat dan tussen twee getallen.");
+  if (doel.m === 0 && !gemengd) await l.zeg("Bij een heel uur staat de grote wijzer op de {12:paars}.", [
+    "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+    "De kleine wijzer wijst een getal aan. Dat getal is het uur.",
+    "Zoek het getal bij de kleine wijzer. Dat is het uur.",
+  ][doel.u % 3]!);
+  else if (doel.m === 30 && !gemengd) await l.zeg("Bij half staat de grote wijzer op de {6:paars}.", "De kleine wijzer staat dan tussen 2 getallen.");
   else if (doel.m === 25) await l.zeg("Bij bijna half staat de grote wijzer net vóór de {6:paars}.", "Kijk dan naar de kleine wijzer.");
   else await l.zeg("Kijk naar allebei de wijzers.", "Staat de grote wijzer op de {12:paars}? Dan is het een heel uur.", "Staat hij op de {6:paars}? Dan is het half.");
   for (let i = 0; i < keuzes.length; i++) {
@@ -224,22 +311,25 @@ async function samenKlokken(l: Lesgids, doel: T, keuzes: Ding[], boven: Ding[] =
     await wijs(l, [`k${i}`], waarKlein(t, gemengd));
   }
   zet(l, { keuzes, licht: [] });
-  await l.zeg(...regel(doel));
-  await l.zeg("Welke klok hoort erbij?");
+  if (!krijgtVervolgvraag(l)) {
+    await l.zeg(...regel(doel));
+    await l.zeg("Zoek nu de klok waarop de wijzers zo staan.");
+  }
 }
 
 /** Samen één wijzerklok lezen (de klok staat bovenaan als `b<i>`). */
 async function samenLees(l: Lesgids, t: T, boven: Ding[], i: number) {
   const zetN = (n?: "uur" | "min") => zet(l, { boven: boven.map((d, j) => (j === i ? metNadruk(d, n) : d)) });
   zetN("min");
+  const v = (t.u + i) % 3;
   if (t.m === 0) {
-    await wijs(l, [`b${i}`], "Kijk eerst naar de grote wijzer.", "Die staat op de {12:paars}.", "Dan is het een heel uur.");
+    await wijs(l, [`b${i}`], ["Kijk eerst naar de grote wijzer.", "Begin bij de grote wijzer.", "Eerst de grote wijzer."][v]!, "Die staat op de {12:paars}.", ["Dan is het een heel uur.", "Zo'n klok laat een heel uur zien.", "Dat betekent: een heel uur."][v]!);
     zetN("uur");
-    await l.zeg("Kijk nu naar de kleine wijzer.", "Naar welk getal wijst hij?");
+    await l.zeg(["Kijk nu naar de kleine wijzer.", "Nu is de kleine wijzer aan de beurt.", "Dan kijken we naar de kleine wijzer."][v]!, ...(krijgtVervolgvraag(l) ? [] : ["Naar welk getal wijst hij?"]));
   } else {
-    await wijs(l, [`b${i}`], "Kijk eerst naar de grote wijzer.", "Die staat op de {6:paars}.", "Dan is het half.");
+    await wijs(l, [`b${i}`], ["Kijk eerst naar de grote wijzer.", "Begin bij de grote wijzer.", "Eerst de grote wijzer."][v]!, "Die staat op de {6:paars}.", ["Dan is het half.", "Zo'n klok laat half zien.", "Dat betekent: half."][v]!);
     zetN("uur");
-    await l.zeg(`De kleine wijzer staat tussen de {${t.u}:oranje} en de {${na(t)}:oranje}.`, "Bij half noem je het getal waar hij naartoe gaat.");
+    await l.zeg(`De kleine wijzer staat tussen de {${t.u}:oranje} en de {${na(t)}:oranje}.`, "Kijk naar het volgende getal. Bij half zeg je dat getal, ook al is de kleine wijzer er nog niet.");
   }
   zetN(undefined);
 }
@@ -251,7 +341,7 @@ async function samenLees(l: Lesgids, t: T, boven: Ding[], i: number) {
 const noemKlok = () => "Die klok";
 
 /** Op welke wijzerklok is het …? (2 of 3 klokken). `zin`: eigen vraag, `boven`: wat erboven staat. */
-function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zelfdeKleur?: boolean; goedZin?: string[] } = {}): Opgave {
+function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zelfdeKleur?: boolean; goedZin?: string[]; reactie?: (gekozen: T) => string[] } = {}): Opgave {
   return (l, terug) => {
     const kl = o.zelfdeKleur ? Array(tijden.length).fill(kleurRij(1)[0]) : kleurRij(tijden.length);
     const keuzes = tijden.map((t, i) => W(t, kl[i]));
@@ -266,8 +356,9 @@ function kiesKlok(doel: T, tijden: T[], o: { zin?: string[]; boven?: Ding[]; zel
         vraag: o.zin ? [o.zin.join(" ")] : [`Op welke klok is het ${spreek(doel)}?`],
         goedZin: o.goedZin ?? [`Op deze klok is het ${spreek(doel)}.`],
         noem: noemKlok,
+        reactie: (i) => (o.reactie ? o.reactie(tijden[i]) : reactieKlokkeuze(tijden[i], doel)),
         samen: (l, k) => samenKlokken(l, doel, k.keuzes, k.boven),
-        tip: doel.m === 0 ? ["Kijk goed naar de kleine wijzer."] : ["Kijk naar het getal waar de kleine wijzer naartoe gaat."],
+        tip: doel.m === 0 ? [`Zoek de klok waar de kleine wijzer naar de {${doel.u}:oranje} wijst.`] : [`Zoek de klok waar de kleine wijzer tussen de {${doel.u}:oranje} en de {${na(doel)}:oranje} staat.`],
       },
       terug,
     );
@@ -287,9 +378,11 @@ function leesKlok(t: T, opties: T[], o: { ding?: string; zin?: string[]; weetje?
         opties: opties.map(woord),
         goed: woord(t),
         vraag: o.zin ? [o.zin.join(" ")] : ["Hoe laat is het?"],
-        goedZin: [`Het is ${spreek(t)}.`, ...(o.weetje ?? [])],
+        goedZin: [goedLees(l, t), ...(o.weetje ?? [])],
+        antwoordZin: wijzerUitleg(t),
         samen: (l, b) => samenLees(l, t, b, i),
-        tip: t.m === 0 ? ["Kijk naar de kleine wijzer. Naar welk getal wijst hij?"] : ["Noem het getal waar de kleine wijzer naartoe gaat."],
+        tip: t.m === 0 ? ["Kijk naar het getal waar de punt van de kleine wijzer bij staat."] : ["Noem het getal waar de kleine wijzer naartoe gaat."],
+        reactie: (x: string) => reactieLees(x, t),
       },
       terug,
     );
@@ -310,11 +403,16 @@ function goedFout(klok: T, gezegd: T): Opgave {
         vraag: ["Kijk naar de klok.", `Het is ${spreek(gezegd)}.`, "Goed of fout?"],
         goedZin: klopt ? [`Het is ${spreek(klok)}.`] : [`Het is geen ${spreek(gezegd)}.`, `Het is ${spreek(klok)}.`],
         noem: (i) => (i === 0 ? "Het vinkje" : "Het kruisje"),
+        reactie: (i) =>
+          i === 0
+            ? [`Met het vinkje zeg je dat de klok ${spreek(gezegd)} laat zien.`, `Kijk naar de kleine wijzer. Die wijst ${plekKleineWijzer(klok)}.`]
+            : [`Met het kruisje zeg je dat de klok een andere tijd laat zien dan ${spreek(gezegd)}.`, `Kijk naar de kleine wijzer. Die wijst ${plekKleineWijzer(klok)}.`],
+        antwoordZin: klopt ? [`De klok laat ${spreek(klok)} zien.`, "Dat is dezelfde tijd, dus het vinkje."] : [`De klok laat ${spreek(klok)} zien.`, `Dat is niet ${spreek(gezegd)}, dus het kruisje.`],
         samen: async (l, k) => {
           await samenLees(l, klok, k.boven, 0);
-          await l.zeg(`Klopt ${spreek(gezegd)}?`, "Klopt het, dan is het goed.", "Klopt het niet, dan is het fout.");
+          await l.zeg(...(krijgtVervolgvraag(l) ? [] : [`Vergelijk de klok met ${spreek(gezegd)}.`]), "Kies goed als de tijd klopt. Kies fout als de klok een andere tijd laat zien.");
         },
-        tip: ["Lees eerst zelf de klok.", `Is het dan ${spreek(gezegd)}?`],
+        tip: ["Lees eerst zelf de klok.", `Vergelijk de tijd die je ziet met ${spreek(gezegd)}.`],
       },
       false,
     );
@@ -344,11 +442,18 @@ function hoeLang(van: number, tot: number, opties: string[], zin: string[], wat:
         goed: `${tot - van} uur`,
         vraag: zin,
         goedZin: [`Van {${van}:oranje} uur tot {${tot}:oranje} uur is {${tot - van}:oranje} uur.`, `${Hoofd(wat)} zijn klaar.`],
+        reactie: (x: string) => {
+          const n = parseInt(x, 10);
+          if (n === tot) return [`Om {${tot}:oranje} uur zijn ze klaar. Dat is niet hoe lang het duurt.`, `Tel van {${van}:oranje} uur naar {${tot}:oranje} uur.`];
+          if (n === van) return [`Om {${van}:oranje} uur beginnen ze. Dat is niet hoe lang het duurt.`, `Tel van {${van}:oranje} uur naar {${tot}:oranje} uur.`];
+          if (n === van + tot) return [`Je hebt {${van}:oranje} en {${tot}:oranje} bij elkaar gedaan.`, "Tel hoeveel uren er tussen zitten."];
+          return [`Tel van {${van}:oranje} uur verder tot {${tot}:oranje} uur.`, "Elk uur is 1 stapje."];
+        },
         samen: async (l) => {
           await wijs(l, ["b0"], `Om {${van}:oranje} uur gaan ${wat} de oven in.`);
           await wijs(l, ["b1"], `Om {${tot}:oranje} uur komen ze eruit.`);
           zet(l, { licht: [] });
-          await l.zeg(`Tel van {${van}:oranje} uur verder tot {${tot}:oranje} uur.`, "Hoeveel uur is dat?");
+          await l.zeg(`Tel van {${van}:oranje} uur verder tot {${tot}:oranje} uur.`);
         },
         tip: [`Tel van {${van}:oranje} uur naar {${tot}:oranje} uur.`],
       },
@@ -368,12 +473,14 @@ function leesInDing(ding: string, t: T, opties: T[], zin: string[], weetje: stri
         opties: opties.map(woord),
         goed: woord(t),
         vraag: zin,
-        goedZin: [`Het is ${spreek(t)}.`, ...weetje],
+        goedZin: [goedLees(l, t), ...weetje],
+        antwoordZin: wijzerUitleg(t),
+        reactie: (x: string) => reactieLees(x, t),
         samen: async (l) => {
           await wijs(l, ["b0"], "Kijk naar het klokje.", "Kijk eerst naar de grote wijzer.", "Dan naar de kleine wijzer.");
-          await l.zeg("Naar welk getal wijst de kleine wijzer?");
+          if (!krijgtVervolgvraag(l)) await l.zeg("Naar welk getal wijst de kleine wijzer?");
         },
-        tip: ["Kijk naar de kleine wijzer. Naar welk getal wijst hij?"],
+        tip: [`Zoek op de ${ding} de kleine wijzer. Kijk naar het getal waar de punt bij staat.`],
       },
       terug,
     );
@@ -381,7 +488,7 @@ function leesInDing(ding: string, t: T, opties: T[], zin: string[], weetje: stri
 }
 
 /** Een vraag over de klok zelf: hoeveel wijzers of getallen? Antwoord met knoppen. */
-function telOpKlok(t: T, vraag: string[], opties: string[], goed: string, goedZin: string[], uitleg: string[], tip: string): Opgave {
+function telOpKlok(t: T, vraag: string[], opties: string[], goed: string, goedZin: string[], uitleg: string[], tip: string, reactie?: (x: string) => string[]): Opgave {
   return (l, terug) => {
     const boven = [W(t, kleurRij(1)[0])];
     return knopVraag(
@@ -396,6 +503,7 @@ function telOpKlok(t: T, vraag: string[], opties: string[], goed: string, goedZi
           await wijs(l, ["b0"], ...uitleg);
         },
         tip: [tip],
+        ...(reactie ? { reactie } : {}),
       },
       terug,
     );
@@ -417,25 +525,29 @@ function sleepVolgorde(vast: T, rest: T[], bak: number[]): Opgave {
       goedZin: [`${Hoofd(spreek(vast))}, ${rest.map(spreek).join(", ")}.`, "Steeds een half uur later."],
       samen: async (l) => {
         await wijs(l, ["v"], `De eerste klok staat er al. Het is ${spreek(vast)}.`, "Elke volgende klok is een half uur later.", "Een half uur later draait de grote wijzer een half rondje.");
-        await l.zeg("Kijk naar de klokken die nog los liggen.", "Welke komt een half uur na de eerste?");
+        await l.zeg("Kijk naar de klokken die nog los liggen.", ...(krijgtVervolgvraag(l) ? [] : ["Welke komt een half uur na de eerste?"]));
       },
       tip: ["Zoek steeds de klok die een half uur later is."],
+      reactie: (n) => [n === 0 ? "Geen enkele klok staat al goed." : "1 klok staat al goed.", "Na de eerste klok komt steeds de klok die een half uur later is."],
     });
   };
 }
 
 function sleepVraag(
   l: Lesgids,
-  o: { sleepSoort: "digi" | "klok"; vast?: Ding; tegels: Ding[]; bak: number[]; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; tip: string[] },
+  o: { sleepSoort: "digi" | "klok"; vast?: Ding; tegels: Ding[]; bak: number[]; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; tip: string[]; reactie?: (aantalGoed: number) => string[]; antwoordZin?: string[] },
 ): SqulaVraag<string> {
   /* bak[i] = welk tegeltje (in de goede volgorde) op plek i in de bak ligt */
   const keuzes = o.bak.map((j) => o.tegels[j]);
   const goedVolgorde = o.tegels.map((_, j) => o.bak.indexOf(j));
   const toon = () => zet(l, { ...LEEG, sleutel: nieuw(), modus: "sleep", sleepSoort: o.sleepSoort, keuzes, vast: o.vast ?? null, goedVolgorde });
+  let pogingen = 0;
   return {
     toon,
     vraag: o.vraag,
     antwoord: async () => {
+      /* na een fout liggen alle klokken weer klaar in de bak */
+      if (pogingen++ > 0) toon();
       zet(l, { actief: true });
       const g = await l.wachtOpVlak<{ soort: string; volgorde: number[] }>("sleep");
       zet(l, { actief: false });
@@ -445,7 +557,7 @@ function sleepVraag(
     noem: () => "Zo",
     goed: async () => {
       zet(l, { goed: [...goedVolgorde.map((i) => `t${i}`), ...(o.vast ? ["v"] : [])] });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(...goedZeg(l, o.goedZin));
       await l.wacht(250);
     },
     fout: (x) => {
@@ -458,6 +570,14 @@ function sleepVraag(
       zet(l, { licht: [] });
     },
     tip: o.tip,
+    reactie: o.reactie ? (x) => o.reactie!(x.split(",").filter((t, j) => Number(t) === goedVolgorde[j]).length) : undefined,
+    toonAntwoord: async () => {
+      /* de klokken in de goede volgorde, van links naar rechts */
+      zet(l, { ...LEEG, sleutel: nieuw(), modus: "kies", keuzes: [...(o.vast ? [o.vast] : []), ...o.tegels] });
+      zet(l, { goed: [...(o.vast ? [o.vast] : []), ...o.tegels].map((_, i) => `k${i}`) });
+      await l.zeg(...(o.antwoordZin ?? o.goedZin));
+      await l.wacht(250);
+    },
     testAntwoord: null,
   };
 }
@@ -476,7 +596,7 @@ function memory(paren: [Ding, Ding][], vraag: string[], goedZin: string[]): Opga
     isGoed: () => true,
     noem: () => "",
     goed: async () => {
-      await l.zeg("Goed zo.", ...goedZin);
+      await l.zeg(...goedZeg(l, goedZin));
     },
     samen: async () => {},
     tip: [],
@@ -498,7 +618,7 @@ function verbind(paren: [Ding, Ding][], rechts: number[], vraag: string[], goedZ
     isGoed: () => true,
     noem: () => "",
     goed: async () => {
-      await l.zeg("Goed zo.", ...goedZin);
+      await l.zeg(...goedZeg(l, goedZin));
     },
     samen: async () => {},
     tip: [],
@@ -541,6 +661,13 @@ function tijdRekenen(ding: string, nu: T, soort: "uur later" | "half later" | "u
       boven: [V(ding), W(nu, kleurRij(1)[0])],
       zin: [context, "Kijk op de klok.", vraag],
       goedZin: [`Nu is het ${spreek(nu)}.`, `${soort === "uur eerder" ? "Een uur geleden was het" : "Straks is het"} ${spreek(doel)}.`],
+      reactie: (g) => {
+        const d = verschil(g, nu);
+        const naam: Record<number, string> = { 0: "de tijd van nu", 30: "een half uur later", 60: "een uur later", 660: "een uur eerder", 690: "een half uur eerder" };
+        const wat = naam[d] ? `Die klok is ${naam[d]}.` : `Die klok laat ${spreek(g)} zien.`;
+        const hint = soort === "half later" ? "Over een half uur draait de grote wijzer een half rondje." : soort === "uur later" ? "Over een uur is de kleine wijzer 1 getal verder." : "Een uur geleden was de kleine wijzer 1 getal terug.";
+        return [wat, hint];
+      },
     })(l, terug);
 }
 
@@ -553,13 +680,13 @@ function metRekenUitleg(op: Opgave, nu: T, soort: "uur later" | "half later" | "
       samen: async () => {
         zet(l, { fout: [], goed: [] });
         await wijs(l, ["b1"], "Kijk eerst naar de klok bovenaan.");
-        if (soort === "uur later") await l.zeg("Over een uur draait de grote wijzer een heel rondje.", "Dan staat hij weer op dezelfde plek.", "De kleine wijzer schuift één getal verder.");
+        if (soort === "uur later") await l.zeg("Over een uur draait de grote wijzer een heel rondje.", "Dan staat hij weer op dezelfde plek.", "De kleine wijzer schuift 1 getal verder.");
         else if (soort === "half later") await l.zeg("Over een half uur draait de grote wijzer een half rondje.", nu.m === 0 ? "Van de {12:paars} naar de {6:paars}." : "Van de {6:paars} naar de {12:paars}.", "De kleine wijzer schuift een klein stukje verder.");
-        else await l.zeg("Een uur geleden stond de grote wijzer op dezelfde plek.", "De kleine wijzer stond één getal terug.");
+        else await l.zeg("Een uur geleden stond de grote wijzer op dezelfde plek.", "De kleine wijzer stond 1 getal terug.");
         zet(l, { licht: [] });
-        await l.zeg("Zoek die klok.");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Zoek die klok.");
       },
-      tip: soort === "half later" ? ["Over een half uur draait de grote wijzer een half rondje."] : soort === "uur later" ? ["Over een uur is de kleine wijzer één getal verder."] : ["Een uur geleden was de kleine wijzer één getal terug."],
+      tip: soort === "half later" ? ["Over een half uur draait de grote wijzer een half rondje."] : soort === "uur later" ? ["Over een uur is de kleine wijzer 1 getal verder."] : ["Een uur geleden was de kleine wijzer 1 getal terug."],
     };
   };
 }
@@ -571,7 +698,7 @@ function later(a: T, b: T): Opgave {
   const laat = minA > minB ? a : b;
   const vroeg = minA > minB ? b : a;
   return (l, terug) => {
-    const v = kiesKlok(laat, [a, b], { zin: ["Op welke klok is het later?"], goedZin: [`${Hoofd(spreek(laat))} is later dan ${spreek(vroeg)}.`] })(l, terug);
+    const v = kiesKlok(laat, [a, b], { reactie: (g) => [`${Hoofd(spreek(g))} is eerder dan ${spreek(g === a || (g.u === a.u && g.m === a.m) ? b : a)}.`, "Later betekent: verder op de dag."], zin: ["Op welke klok is het later?"], goedZin: [`${Hoofd(spreek(laat))} is later dan ${spreek(vroeg)}.`] })(l, terug);
     return {
       ...v,
       samen: async () => {
@@ -586,7 +713,7 @@ function later(a: T, b: T): Opgave {
           const t: T = { u: Math.floor(mm / 60) || 12, m: mm % 60 };
           rij.push(spreek(t));
         }
-        await l.zeg("Tel steeds een half uur verder.", `${Hoofd(rij.join(", "))}.`, "Welke van de twee komt het laatst?");
+        await l.zeg("Tel steeds een half uur verder.", `${Hoofd(rij.join(", "))}.`);
       },
       tip: ["Later betekent: verder op de dag."],
     };
@@ -602,11 +729,11 @@ function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
   return v.vraag.length > 1 ? { ...v, vraag: [v.vraag.join(" ")] } : v;
 }
 
-async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Promise<number> {
+async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[], voorbeeldAfgerond = false, synthesisHulp = false): Promise<number> {
   let fouten = 0;
   const mis: number[] = [];
-  for (let i = 0; i < opgaven.length; i++) {
-    if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, false))))) {
+  for (let i = voorbeeldAfgerond ? 1 : 0; i < opgaven.length; i++) {
+    if (!(await squlaVraag(l, { ...alsEenBlok(opgaven[i](l, false)), synthesis: synthesisHulp }))) {
       fouten++;
       mis.push(i);
     }
@@ -614,8 +741,15 @@ async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Pro
   const nodig = Math.max(0, 15 - opgaven.length);
   const terug = [...mis.slice(0, 3), ...reserve.filter((i) => !mis.includes(i))].slice(0, Math.max(nodig, Math.min(3, mis.length)));
   if (terug.length) {
-    await l.zeg(terug.length === 1 ? "Nu komt er nog één vraag van net terug." : `Nu komen er nog ${terug.length === 2 ? "twee" : "drie"} vragen van net terug.`);
-    for (const i of terug) if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, true))))) fouten++;
+    await l.zeg(terugAankondiging(terug.length));
+    let weerFout = 0;
+    for (const i of terug) {
+      if (!(await squlaVraag(l, { ...alsEenBlok(opgaven[i](l, true)), synthesis: synthesisHulp }))) {
+        fouten++;
+        weerFout++;
+      }
+    }
+    if (weerFout) await l.zeg(terugAfsluiting());
   }
   return fouten;
 }
@@ -658,12 +792,15 @@ function klokles(k: Klokles): Lesdraaiboek {
     kaarttekening: KaartKlok,
     async speel(l) {
       kleurTeller = 0;
+      zetSynthesisHulp(l);
       l.vlak<KlokVlakProps>(SqulaKlokVlak, { ...LEEG, sleutel: nieuw(), boven: [k.start] });
       speelLesgeluid("verschijn");
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: k.welkom,
         ...(k.vraag ? { vraag: k.vraag } : {}),
         uitleg: () => k.uitleg(l),
+        voordoen: true,
+        samen: () => k.id === "squla-klok-hoelaat-1" ? k.uitleg(l) : squlaVraag(l, k.opgaven[k.voorbeeld ?? 0](l, false)),
         ...(k.voorbeeld !== undefined
           ? {
               voorbeeld: () => {
@@ -675,7 +812,7 @@ function klokles(k: Klokles): Lesdraaiboek {
           : {}),
       });
       if (k.verhaal) await l.zeg(...k.verhaal);
-      const fouten = await speelAlles(l, k.opgaven, k.reserve);
+      const fouten = await speelAlles(l, k.opgaven, k.reserve, voorbeeldAfgerond && k.id !== "squla-klok-hoelaat-1" && (k.voorbeeld ?? 0) === 0, true);
       if (k.eindZin) await l.zeg(...k.eindZin);
       await squlaEind(l, fouten, k.eind);
     },
@@ -684,9 +821,51 @@ function klokles(k: Klokles): Lesdraaiboek {
 
 /* --- de korte uitleg bij "Kun je dit al? Nee" --- */
 
-async function uitlegHeel(l: Lesgids) {
+const HEEL_OPEN = [
+  "We bekijken de wijzers één voor één. De grote wijzer staat op de {12:paars}. Dan is het een heel uur.",
+  "Eerst de grote wijzer: die staat op de {12:paars}. Dat betekent een heel uur.",
+  "Kijk naar de grote wijzer. Hij staat bovenaan, op de {12:paars}. Zo laat de klok een heel uur zien.",
+  "De grote wijzer wijst naar de {12:paars}. Dus de klok laat een heel uur zien.",
+  "We beginnen bij de grote wijzer. Hij staat op de {12:paars}, dus het is een heel uur.",
+  "Bovenaan, bij de {12:paars}, staat de grote wijzer. Dan hoort er een heel uur bij.",
+  "Kijk waar de grote wijzer staat: op de {12:paars}. Dat is een heel uur.",
+  "Zie je de grote wijzer? Hij wijst naar de {12:paars}. Dan is het een heel uur.",
+];
+const HEEL_KLEIN = [
+  "De kleine wijzer vertelt welk uur het is.",
+  "Nu de kleine wijzer: die wijst het uur aan.",
+  "Daarna kijken we naar de kleine wijzer. Hij zegt welk uur het is.",
+  "De kleine wijzer laat zien welk uur het is.",
+  "Het uur lees je af bij de kleine wijzer.",
+  "Welk uur het is, vertelt de kleine wijzer.",
+  "Het uur staat bij de punt van de kleine wijzer.",
+  "Kijk nu waar de kleine wijzer heen wijst. Dat is het uur.",
+];
+
+async function uitlegHeel(l: Lesgids, v = 0) {
   const t = U(3);
   zet(l, { ...LEEG, sleutel: nieuw(), boven: [W(t, "blauw", "min")] });
+  if (isBegeleideUitleg(l)) {
+    await l.zeg(HEEL_OPEN[v]!);
+    zet(l, { boven: [W(t, "blauw", "uur")] });
+    await l.zeg(HEEL_KLEIN[v]!);
+    await uitlegKeuze(l, {
+      vraag: "Naar welk getal wijst de kleine wijzer?", keuzes: ["12", "3", "6"], antwoord: "3",
+      hint: "Volg de kleine wijzer vanaf het midden tot aan de punt.",
+      goed: "Ja, de kleine wijzer wijst naar de {3:oranje}.",
+      laatZien: "De punt van de kleine wijzer staat bij de {3:oranje}.",
+      reactie: (x) => [x === "12" ? "De grote wijzer staat op de {12:paars}. We kijken nu naar de kleine wijzer." : "Er wijst geen wijzer naar de {6:oranje}.", "Volg de kleine wijzer vanaf het midden tot aan de punt."],
+    });
+    zet(l, { boven: [W(t, "blauw")] });
+    await uitlegKeuze(l, {
+      vraag: "Hoe laat is het dus?", keuzes: ["12 uur", "6 uur", "3 uur"], antwoord: "3 uur",
+      hint: "De grote wijzer staat op de {12:paars}. De kleine wijzer wijst het uur aan.",
+      goed: "Dat klopt: {3:oranje} uur. De kleine wijzer wijst naar de {3:oranje} en de grote wijzer staat op de {12:paars}.",
+      laatZien: "Het is {3:oranje} uur. De kleine wijzer wijst naar de {3:oranje} en de grote wijzer staat op de {12:paars}.",
+      reactie: (x) => [x === "12 uur" ? "De grote wijzer staat op de {12:paars}, maar de kleine wijzer vertelt het uur." : "Er wijst geen wijzer naar de {6:oranje}.", "De kleine wijzer vertelt het uur."],
+    });
+    return;
+  }
   await wijs(l, ["b0"], "Dit is een wijzerklok.", "De lange wijzer is de grote wijzer.", "Bij een heel uur staat hij op de {12:paars}.");
   zet(l, { boven: [W(t, "blauw", "uur")] });
   await l.zeg("De korte wijzer is de kleine wijzer.", "Die wijst het uur aan.", "Hier wijst hij naar de {3:oranje}.", "Het is dus {3:oranje} uur.");
@@ -706,14 +885,11 @@ async function uitlegRekenen(l: Lesgids) {
   zet(l, { ...LEEG, sleutel: nieuw(), boven: [W(U(2), "groen")] });
   await wijs(l, ["b0"], "Nu is het {2:oranje} uur.");
   zet(l, { boven: [W(U(3), "groen", "uur")] });
-  await l.zeg("Een uur later is de kleine wijzer één getal verder.", "Dan is het {3:oranje} uur.");
+  await l.zeg("Een uur later is de kleine wijzer 1 getal verder.", "Dan is het {3:oranje} uur.");
   zet(l, { boven: [W(H(4), "groen", "min")] });
   await l.zeg("Nog een half uur later draait de grote wijzer een half rondje.", "Dan is het half {4:oranje}.");
   zet(l, { boven: [W(H(4), "groen")], licht: [] });
 }
-
-// eslint-disable-next-line @typescript-eslint/no-unused-vars -- bewaard, niet meer gebruikt in het beginscherm
-const WELKOM_VINK = ["Klopt het? Tik dan op het vinkje.", "Klopt het niet? Tik dan op het kruisje."];
 
 /* =====================================================================
    De klok (16839, eerst "De digitale klok") — nu met de wijzerklok:
@@ -727,9 +903,9 @@ const digitaal1 = klokles({
   level: 1,
   voorwerpen: ["oven", "zandloper", "telefoon", "laptop", "lampje"],
   start: W(U(12), "groen"),
-  welkom: ["Een klok heeft twee wijzers en getallen.", "Waar zie je nog meer zo'n klok?"],
+  welkom: ["Een klok heeft 2 wijzers en getallen.", "Waar zie je nog meer zo'n klok?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 1),
   opgaven: [
     (l, terug) =>
       kiesVraag(
@@ -739,23 +915,24 @@ const digitaal1 = klokles({
           keuzes: [V("zandloper"), V("telefoon", U(5)), V("lampje")],
           goed: 1,
           vraag: ["Kijk eens. Dit is een klok met wijzers.", "Waar zie je ook zo'n klok?"],
-          goedZin: ["Op de telefoon staat ook een klok.", "Je ziet een rondje met twee wijzers."],
+          goedZin: ["Op de telefoon staat ook een klok.", "Je ziet een rondje met 2 wijzers."],
           noem: (i) => ["De zandloper", "De telefoon", "Het lampje"][i],
+          reactie: (i) => [i === 0 ? "Je koos de zandloper. Die laat zien hoe lang iets duurt, maar hij heeft geen wijzers." : "Je koos het lampje. Een lampje heeft geen wijzers en geen getallen.", "Zoek het rondje met 2 wijzers."],
           samen: async (l, k) => {
-            await l.zeg("Een klok met wijzers is rond.", "Er staan getallen op, en er zijn twee wijzers.");
+            await l.zeg("Een klok met wijzers is rond.", "Er staan getallen op, en er zijn 2 wijzers.");
             for (let i = 0; i < 3; i++) {
               const d = k.keuzes[i];
               const zin = d.t === "vw" && d.naam === "telefoon" ? "Kijk naar de telefoon. Wat zie je op het scherm?" : d.t === "vw" && d.naam === "zandloper" ? "In de zandloper zit zand." : "Dit is een lampje.";
               await wijs(l, [`k${i}`], zin);
             }
             zet(l, { licht: [] });
-            await l.zeg("Waar zie je een rondje met twee wijzers?");
+            if (!krijgtVervolgvraag(l)) await l.zeg("Waar zie je een rondje met 2 wijzers?");
           },
-          tip: ["Zoek een rondje met twee wijzers."],
+          tip: ["Kijk of je een rondje met 2 wijzers ziet."],
         },
         terug,
       ),
-    telOpKlok(U(6), ["Hoeveel wijzers heeft deze klok?"], ["2", "12", "6"], "2", ["Een klok heeft twee wijzers.", "Een grote wijzer en een kleine wijzer."], ["We tellen de wijzers.", "Een lange wijzer en een korte wijzer.", "Hoeveel wijzers zijn dat samen?"], "Tel de lange en de korte wijzer."),
+    telOpKlok(U(6), ["Hoeveel wijzers heeft deze klok?"], ["2", "12", "6"], "2", ["Een klok heeft 2 wijzers.", "Een grote wijzer en een kleine wijzer."], ["We tellen de wijzers.", "Een lange wijzer en een korte wijzer."], "Tel de lange en de korte wijzer.", (x) => [`De {${x}:oranje} is een getal op de klok. Dat is geen wijzer.`, "Tel alleen de lange en de korte wijzer."]),
     (l, terug) =>
       kiesVraag(
         l,
@@ -764,10 +941,11 @@ const digitaal1 = klokles({
           keuzes: [Tk("1"), Tk("3"), Tk("9")],
           goed: 1,
           vraag: ["Kijk naar de kleine wijzer.", "Naar welk getal wijst hij?"],
-          goedZin: ["De kleine wijzer wijst naar de {3:oranje}.", "Het is {3:oranje} uur."],
+          goedZin: ["Ja, de korte wijzer staat bij de {3:oranje}.", "Zo weet je dat het {3:oranje} uur is."],
           noem: (i) => ["{1:oranje}", "{3:oranje}", "{9:oranje}"][i],
+          reactie: (i) => [`Naar de {${i === 0 ? 1 : 9}:oranje} wijst geen wijzer.`, "Zoek de korte wijzer en kijk waar die naartoe wijst."],
           samen: async (l) => {
-            await wijs(l, ["b0"], "De kleine wijzer is de korte wijzer.", "Hij wijst het uur aan.", "Naar welk getal wijst hij?");
+            await wijs(l, ["b0"], "De kleine wijzer is de korte wijzer.", "Hij wijst het uur aan.");
           },
           tip: ["Zoek de korte wijzer."],
         },
@@ -778,7 +956,7 @@ const digitaal1 = klokles({
     tijdNaarKlok(U(5), [U(6), U(5), U(12)], null),
     tijdNaarKlok(U(12), [U(11), U(10), U(12)], null),
     verbindKlokTijd([2, 10, 7], [2, 0, 1]),
-    telOpKlok(U(10), ["Hoeveel getallen staan er op de klok?"], ["12", "10", "2"], "12", ["Er staan {12} getallen op de klok.", "Van {1} tot en met {12}."], ["We tellen de getallen op de klok.", "Het eerste getal is de {1}.", "Het laatste getal is de {12}."], "Het laatste getal is de {12}."),
+    telOpKlok(U(10), ["Hoeveel getallen staan er op de klok?"], ["12", "10", "2"], "12", ["Er staan {12} getallen op de klok.", "Van {1} tot en met {12}."], ["We tellen de getallen op de klok.", "Het eerste getal is de {1}.", "Het laatste getal is de {12}."], "Het laatste getal is de {12}.", (x) => (x === "10" ? ["De kleine wijzer wijst naar de {10:oranje}, maar dat vertelt de tijd.", "Tel alle getallen rond de klok, van de {1:oranje} tot de {12:oranje}."] : ["Er zijn {2:oranje} wijzers, maar we tellen de getallen.", "Tel alle getallen rond de klok, van de {1:oranje} tot de {12:oranje}."])),
     leesKlok(U(9), [U(9), U(3), U(6)]),
     tijdNaarKlok(U(1), [U(1), U(11), U(12)], null),
     leesInDing("telefoon", U(8), [U(8), U(4), U(10)], ["Op een telefoon staat ook een klok.", "Hoe laat is het?"], ["Ook op een telefoon staat de tijd."]),
@@ -798,9 +976,9 @@ const digitaal2 = klokles({
   start: V("bakkerij"),
   welkom: ["De bakkerij gaat op een vaste tijd open.", "Op welke klok is het zover?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 2),
   opgaven: [
-    kiesKlok(U(9), [U(3), U(9), U(6)], { boven: [V("bakkerij")], zin: ["Dit is de bakkerij.", "De winkel gaat om {9:oranje} uur open.", "Op welke klok is het {9:oranje} uur?"], goedZin: ["Het is {9:oranje} uur.", "De kleine wijzer wijst naar de {9:oranje}."] }),
+    kiesKlok(U(9), [U(3), U(9), U(6)], { boven: [V("bakkerij")], zin: ["Dit is de bakkerij.", "De winkel gaat om {9:oranje} uur open.", "Op welke klok is het {9:oranje} uur?"], goedZin: ["Om {9:oranje} uur gaat de winkel open.", "Op deze klok wijst de kleine wijzer naar de {9:oranje}."] }),
     kiesKlok(U(4), [U(6), U(4), U(9)], { boven: [V("maan")], zin: ["Het is nog nacht. De maan schijnt.", "Om {4:oranje} uur gaat de oven van de bakkerij al aan.", "Op welke klok is het {4:oranje} uur?"], goedZin: ["Dat is vroeg!", "Om {4:oranje} uur is het buiten nog donker."] }),
     (l, terug) =>
       knopVraag(
@@ -809,18 +987,19 @@ const digitaal2 = klokles({
           boven: [V("deegkom"), W(U(5), kleurRij(1)[0])],
           opties: ["5 uur", "5 broodjes", "6 uur"],
           goed: "5 uur",
+          reactie: (x) => (x === "5 broodjes" ? ["Op de klok staat een tijd, geen aantal.", "Zoek de kleine wijzer."] : reactieLees(x, U(5))),
           vraag: ["Het deeg voor de broodjes is klaar.", "Kijk op de klok.", "Hoe laat is het?"],
-          goedZin: ["Het is {5:oranje} uur.", "Nu mag het deeg even rusten."],
+          goedZin: ["Om {5:oranje} uur is het deeg klaar.", "Nu mag het even rusten."],
           samen: async (l, b) => {
-            await l.zeg("De klok zegt niet hoeveel broodjes er zijn.", "De klok zegt hoe laat het is.");
+            await l.zeg("Je telt hier geen broodjes.", "Je leest af hoe laat het is.");
             await samenLees(l, U(5), b, b.length - 1);
           },
-          tip: ["De klok zegt hoe laat het is."],
+          tip: ["Zoek een tijd, geen aantal broodjes."],
         },
         terug,
       ),
     hoeLang(6, 7, ["1 uur", "7 uur", "2 uur"], ["De broodjes gaan om {6:oranje} uur de oven in.", "Om {7:oranje} uur zijn ze klaar.", "Hoe lang staan de broodjes in de oven?"], "de broodjes"),
-    kiesKlok(U(8), [U(8), U(10), U(3)], { boven: [V("bezorgbus")], zin: ["De bezorgbus staat al voor de deur.", "Hij komt broodjes halen.", "Maar de winkel is nog dicht. Het is pas {8:oranje} uur.", "Op welke klok is het {8:oranje} uur?"], goedZin: ["Het is {8:oranje} uur.", "De winkel gaat pas om {9:oranje} uur open."] }),
+    kiesKlok(U(8), [U(8), U(10), U(3)], { boven: [V("bezorgbus")], zin: ["De bezorgbus staat al voor de deur.", "Hij komt broodjes halen.", "Maar de winkel is nog dicht. Het is pas {8:oranje} uur.", "Op welke klok is het {8:oranje} uur?"], goedZin: ["De bus is vroeg: het is pas {8:oranje} uur.", "De winkel gaat pas om {9:oranje} uur open."] }),
     kiesKlok(U(10), [U(1), U(10), U(2)], { boven: [V("oven")], zin: ["De taarten staan nog in de oven.", "Ze zijn om {10:oranje} uur klaar.", "Op welke klok is het {10:oranje} uur?"], goedZin: ["Om {10:oranje} uur zijn de taarten klaar.", "Dat ruikt lekker!"] }),
     memoryKlokTijd([3, 12, 5]),
     (l, terug) =>
@@ -830,8 +1009,9 @@ const digitaal2 = klokles({
           boven: [V("taart"), W(U(11), kleurRij(1)[0])],
           opties: ["11 uur", "1 uur", "12 uur"],
           goed: "11 uur",
+          reactie: (x) => reactieLees(x, U(11)),
           vraag: ["De taarten zijn heel lekker.", "Ze zijn snel op.", "Kijk op de klok. Hoe laat zijn de taarten op?"],
-          goedZin: ["Om {11:oranje} uur zijn de taarten op.", "De kleine wijzer wijst naar de {11:oranje}."],
+          goedZin: ["Om {11:oranje} uur zijn de taarten op.", "Dan staat de kleine wijzer bij de {11:oranje}."],
           samen: async (l, b) => samenLees(l, U(11), b, b.length - 1),
           tip: ["Kijk naar de kleine wijzer."],
         },
@@ -846,10 +1026,11 @@ const digitaal2 = klokles({
           boven: [W(U(8), kleurRij(1)[0])],
           opties: ["8 uur", "8 taarten", "9 uur"],
           goed: "8 uur",
+          reactie: (x) => (x === "8 taarten" ? ["Op de klok lees je de tijd af. Taarten tel je er niet mee.", "Een taart tel je, maar de klok lees je. Zoek de kleine wijzer."] : reactieLees(x, U(8))),
           vraag: ["Kijk op de klok.", "Hoe laat is het?"],
-          goedZin: ["Het is {8:oranje} uur."],
+          goedZin: ["De kleine wijzer staat op de {8:oranje}, dus {8:oranje} uur."],
           samen: async (l, b) => samenLees(l, U(8), b, 0),
-          tip: ["De klok zegt hoe laat het is."],
+          tip: ["Zoek een tijd, geen aantal taarten."],
         },
         terug,
       ),
@@ -880,7 +1061,7 @@ const hoelaat1 = klokles({
   welkom: ["Op de klok lees je de hele uren af en kies je hoe laat het is."],
   vraag: "Kun jij dit al?",
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 0),
   opgaven: [
     leesKlok(U(7), [U(7), U(11), U(6)], { ding: "bezorgbus", zin: ["De bezorgbus staat klaar bij de bakkerij.", "Hoe laat is het?"], weetje: ["Vroeg in de ochtend begint de dag."] }),
     leesKlok(U(8), [U(8), U(9), U(1)], { ding: "bezorgbus", zin: ["De bezorgbus vertrekt.", "Hoe laat is het?"] }),
@@ -908,7 +1089,7 @@ const hoelaat2 = klokles({
   start: V("bakkerij"),
   welkom: ["In de bakkerij gaat de oven vroeg aan.", "Hoe laat is het op de klok?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 3),
   opgaven: [
     leesKlok(U(6), [U(6), U(7), U(9)], { ding: "oven", zin: ["De oven in de bakkerij gaat aan.", "Hoe laat is het?"] }),
     leesKlok(U(8), [U(8), U(6), U(9)], { ding: "bezorgbus", zin: ["De bezorgbus laadt de broodjes in.", "Hoe laat is het?"] }),
@@ -936,7 +1117,7 @@ const hoelaat3 = klokles({
   start: V("bezorgbus"),
   welkom: ["De bezorgbus rijdt de laatste ronde van de dag.", "Lees de klok: hoe laat is het nu?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 4),
   opgaven: [
     leesKlok(U(10), [U(9), U(10), U(11)], { ding: "bezorgbus", zin: ["De bus vertrekt voor de laatste ronde.", "Hoe laat is het?"] }),
     leesKlok(U(11), [U(11), U(12), U(10)], { ding: "zon", zin: ["De zon staat bijna op de hoogste plek.", "Hoe laat is het?"] }),
@@ -951,10 +1132,11 @@ const hoelaat3 = klokles({
           vraag: ["De bus rijdt overdag.", "Op welk plaatje is het dag?"],
           goedZin: ["Overdag schijnt de zon."],
           noem: (i) => ["De maan", "De zon"][i],
+          reactie: () => ["De maan zie je 's avonds en 's nachts.", "Overdag is het licht buiten."],
           samen: async (l) => {
             await l.zeg("De maan zie je meestal 's avonds en 's nachts.", "De zon zie je overdag.");
           },
-          tip: ["Wat zie je overdag aan de lucht?"],
+          tip: ["Kijk hoe de lucht er overdag uitziet."],
         },
         terug,
       ),
@@ -970,10 +1152,11 @@ const hoelaat3 = klokles({
           vraag: ["De broodjes worden vers gebakken.", "Waar worden de broodjes gebakken?"],
           goedZin: ["In de bakkerij worden de broodjes gebakken.", "De bus brengt ze weg."],
           noem: (i) => ["De bus", "De bakkerij"][i],
+          reactie: () => ["De bus rijdt rond en brengt de broodjes weg.", "Denk aan de plek met de oven."],
           samen: async (l) => {
             await l.zeg("Een bus rijdt rond.", "In de bakkerij staat de oven.");
           },
-          tip: ["Waar staat de oven?"],
+          tip: ["Denk aan de plek met de oven."],
         },
         terug,
       ),
@@ -999,7 +1182,7 @@ const klokkijken1 = klokles({
   start: W(U(12), "blauw"),
   welkom: ["Ik zeg hoe laat het is.", "Klopt dat met de klok?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 5),
   opgaven: [
     goedFout(U(4), U(4)),
     goedFout(U(7), U(10)),
@@ -1026,9 +1209,9 @@ const klokkijken2 = klokles({
   noot: "level 2 is bij Squla een uitlegfilmpje",
   voorwerpen: [],
   start: W(U(12), "oranje"),
-  welkom: ["Er staan twee klokken.", "Op welke klok is het {2:oranje} uur?"],
+  welkom: ["Er staan 2 klokken.", "Op welke klok is het {2:oranje} uur?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 6),
   opgaven: [
     kiesKlok(U(2), [U(7), U(2)]),
     kiesKlok(U(5), [U(5), U(11)]),
@@ -1056,7 +1239,7 @@ const klokkijken3 = klokles({
   start: W(U(12), "groen"),
   welkom: ["De kleine wijzer vertelt het uur.", "Hoe laat is het op deze klok?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 7),
   opgaven: [
     leesKlok(U(9), [U(9), U(8), U(3)]),
     leesKlok(U(3), [U(3), U(2), U(9)]),
@@ -1079,13 +1262,13 @@ const klokkijken3 = klokles({
    Klokkijken 1 (10999) — vergelijken, goed of fout, kiezen
    ===================================================================== */
 
-/** Memory met drie paren dezelfde klokken. */
+/** Memory met 3 paren dezelfde klokken. */
 function memoryKlokken(uren: number[]): Opgave {
   return (l, terug) => {
     const kl = kleurRij(3);
     return memory(
       uren.map((u, i) => [W(U(u), kl[i]), W(U(u), kl[i])] as [Ding, Ding]),
-      ["Op welke klokken is het even laat?", "Kijk goed, straks gaan de bolletjes dicht.", "Zoek steeds twee klokken die even laat zijn."],
+      ["Op welke klokken is het even laat?", "Kijk goed, straks gaan de bolletjes dicht.", "Zoek steeds 2 klokken die even laat zijn."],
       ["Je hebt alle paren gevonden!"],
     )(l, terug);
   };
@@ -1113,7 +1296,7 @@ const klokkijken1a = klokles({
   start: W(U(3), "paars"),
   welkom: ["Je vergelijkt klokken met elkaar.", "Op welke klok is het {11:oranje} uur?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 1),
   opgaven: [
     kiesKlok(U(11), [U(6), U(11)]),
     memoryKlokken([5, 11, 8]),
@@ -1141,7 +1324,7 @@ const klokkijken1b = klokles({
   start: W(U(6), "rood"),
   welkom: ["Soms klopt de tijd bij de klok, soms niet.", "Kijk goed naar de kleine wijzer."],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 2),
   opgaven: [
     goedFout(U(3), U(3)),
     kiesKlok(U(2), [U(2), U(1), U(12)]),
@@ -1169,7 +1352,7 @@ const klokkijken1c = klokles({
   start: W(U(9), "turkoois"),
   welkom: ["Sommige klokken lijken op elkaar.", "Op welke klok is het {11:oranje} uur?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 3),
   opgaven: [
     kiesKlok(U(11), [U(11), U(1), U(9)]),
     tijdNaarKlok(U(2), [U(2), U(3)], null),
@@ -1201,7 +1384,7 @@ const klokkijken2a = klokles({
   start: W(U(9), "blauw"),
   welkom: ["Een klok en een tijd horen bij elkaar.", "Welke klok hoort bij {9:oranje} uur?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 4),
   opgaven: [
     tijdNaarKlok(U(9), [U(9), U(8), U(7)], null),
     leesKlok(U(8), [U(8), U(6), U(2)]),
@@ -1229,7 +1412,7 @@ const klokkijken2b = klokles({
   start: W(U(3), "oranje"),
   welkom: ["Hier staat een tijd in woorden.", "Zoek de klok die erbij past."],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 5),
   opgaven: [
     tijdNaarKlok(U(8), [U(8), U(9)], ["De bus vertrekt om {8:oranje} uur."]),
     leesKlok(U(2), [U(2), U(12), U(10)]),
@@ -1257,7 +1440,7 @@ const klokkijken2c = klokles({
   start: W(U(12), "paars"),
   welkom: ["De tijden liggen dicht bij elkaar.", "Welke klok hoort bij {6:oranje} uur?"],
   voorbeeld: 0,
-  uitleg: uitlegHeel,
+  uitleg: (l) => uitlegHeel(l, 6),
   opgaven: [
     tijdNaarKlok(U(6), [U(6), U(8), U(5)], null),
     leesKlok(U(8), [U(8), U(6), U(10)]),

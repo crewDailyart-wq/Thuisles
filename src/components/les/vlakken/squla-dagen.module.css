@@ -73,13 +73,36 @@
   transform: translateY(-4px);
 }
 
-/* Bliepo wijst deze wagon aan: een witte rand eromheen. */
+/* Bliepo wijst deze wagon aan: een rood, getekend rondje eromheen (Sara, 6 november 2026), geen lichtrand meer. */
 .licht {
-  transform: translateY(-8px);
+  /* Geen eigen opmaak meer; het rondje (.rondje) staat om de wagon(s). */
 }
 
-/* De rand om de wagon zelf (het plaatje), niet om de hele knop. */
-.licht img,
+.rondje {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  animation: rondjeIn 240ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes rondjeIn {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .rondje {
+    animation: none;
+  }
+}
+
+/* De rand om de gekozen wagon zelf (het plaatje), niet om de hele knop. */
 .gekozen img {
   filter: drop-shadow(0 0 3px #fff7ea) drop-shadow(0 0 3px #fff7ea) drop-shadow(0 0 2px #fff7ea);
 }

@@ -18,7 +18,7 @@
  *     trein (of tikt erop: tikken werkt ook, ONTWERPREGELS "Bediening").
  */
 
-import { useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from "react";
 import type { Vlakbasis } from "../soort";
 import { keuzeStem, useKeuzesAlvast } from "../keuzestem";
 import { PALET } from "./bliepo-voorwerpen";
@@ -273,6 +273,11 @@ export function SqulaDagenTrein({
   handje = false,
   meld,
 }: DagenTreinProps & Vlakbasis) {
+  /* Het rondje-plaatje één keer vooraf laden, zodat het er direct is bij het eerste rondje. */
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/rondje/rondje-rood-2.png";
+  }, []);
   const vlakRef = useRef<HTMLDivElement>(null);
   const [sleep, setSleep] = useState<Sleep | null>(null);
   const netGesleept = useRef(false);
@@ -302,6 +307,18 @@ export function SqulaDagenTrein({
     const ky = KAART_Y + H / 2 + sleep.dy;
     return opLegePlek(kx, ky);
   })() : false;
+
+  /* Wagons die Bliepo aanwijst: naast elkaar = één rondje samen, anders elk apart. */
+  const rondjeRuns: [number, number][] = [];
+  {
+    const idx = licht.map(plekVan).filter((i) => i >= 0).sort((p, q) => p - q);
+    let start = 0;
+    for (let k = 0; k < idx.length; k++) {
+      if (k + 1 < idx.length && idx[k + 1] === idx[k] + 1) continue;
+      rondjeRuns.push([idx[start], idx[k]]);
+      start = k + 1;
+    }
+  }
 
   const zat = new Set([5, 6].map(plekVan));
   const weekendHaak = weekend && !zat.has(-1);
@@ -346,6 +363,24 @@ export function SqulaDagenTrein({
             />
           ),
         )}
+        {rondjeRuns.map(([a, b]) => {
+          const bb = (b - a) * (W + TUSSEN) + W;
+          const rb = bb * 1.15 + 44;
+          /* De wagon zelf is maar ongeveer 56 punten hoog en staat onderin de knop (H = 140). */
+          const wh = 56;
+          const rh = wh * 1.4 + 50;
+          return (
+            // eslint-disable-next-line @next/next/no-img-element
+            <img
+              key={`r${a}-${b}`}
+              src="/rondje/rondje-rood-2.png"
+              alt=""
+              aria-hidden="true"
+              className={s.rondje}
+              style={{ maxWidth: "none", left: plek(a) + bb / 2 - rb / 2, top: BOVEN + H - 29 - rh / 2, width: rb, height: rh, transform: `rotate(${((a * 7 + b * 3) % 5) - 2}deg)` }}
+            />
+          );
+        })}
         {vandaag !== null && plekVan(vandaag) >= 0 && (
           <div className={s.pijl} style={{ left: plek(plekVan(vandaag)) + W / 2 - 22, top: BOVEN + H - 118 }}>
             <Pijl />

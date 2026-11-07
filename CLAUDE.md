@@ -11,6 +11,47 @@ alleen wat er gebeurd is en wat dat voor de site betekent.
 
 Lees altijd eerst BOUWREGELS.md. Elke helper moet het lezen voordat hij bouwt. De controleur keurt elke les op ALLE regels uit BOUWREGELS.md. (Besluit eigenaar, 1 november 2026; een nieuwe verbetering van Sara komt daar direct bij.)
 
+**Vaste taalafspraak van Sara (3 november 2026):** schrijf hoeveelheden in alle
+zichtbare lesteksten consequent met cijfers, ook in vragen, uitleg, hints en
+feedback: "Er komt steeds 1 bij", "Tel 1 terug", "40 knikkers", "1 euro".
+Het gewone lidwoord blijft "een", zoals in "een munt". Gebruik voor dezelfde
+hoeveelheid niet afwisselend "één", "een" en "1". Bliepo spreekt de cijfers
+natuurlijk uit. Controleer de betekenis per zin; geen blinde vervanging.
+Zie [BOUWREGELS.md, regel 3.20](BOUWREGELS.md) voor de volledige afspraak.
+**Aanvulling 4 november:** deze cijferafspraak is direct goedgekeurd voor alle
+actieve Squla-lessen, inclusief bestaande teksten en te keuren voorstellen.
+Alleen de keuze voor eenvoudiger formuleringen wacht op Sara's vinkje; de
+cijferafspraak niet. Bewaar de oorspronkelijke antwoordwaarden en beoordeling.
+
+**Vaste lesopbouw van Sara (4 november 2026), ook voor volgende groepen:**
+Squla-lessen en Synthesis-lessen hebben ieder hun eigen opbouw.
+Bij Squla bestaat het beginscherm uit een uitlegdeel (wat je in deze les gaat
+doen en hoe) en een persoonlijke, afwisselend geformuleerde vraag of je dit al
+kunt. Het uitlegdeel mag uit meer dan 1 korte zin bestaan. Ja = beginnen;
+Nee = samen oefenen volgens deze 6 stappen:
+
+1. Samen beginnen en het kind geruststellen.
+2. 1 ding kort uitleggen én in het beeld laten zien.
+3. Het kind een kleine stap laten doen.
+4. Een vraag stellen en op het antwoord wachten.
+5. Een goed antwoord bevestigen én kort uitleggen waarom het klopt.
+6. Het kind met minder hulp verder laten oefenen.
+
+Lukt een stap niet, geef dan een gerichte hint en laat die stap opnieuw
+proberen. Behoud deze opbouw bij eenvoudiger taal: maak er geen reeks
+uitlegzinnen met alleen een afsluitende controlevraag van. Pas woorden,
+rekeninhoud en moeilijkheid aan de groep aan; de opbouw blijft behouden.
+**Synthesis-lessen behouden de opbouw van Synthesis** en krijgen niet deze
+Squla-opbouw. Lees de volledige afspraak in BOUWREGELS.md 4.4–4.5 en 14.29;
+die gaat bij strijdige oudere regels over de lesopbouw voor.
+
+**Geen onnodige herhaling (4 november 2026):** controleer zowel de Nee-route
+als Hulp na een fout en de route na opnieuw fout. Stel vóór dezelfde
+antwoordpoging de vraag maar 1 keer. Herhaal een volledig afgerond
+uitlegvoorbeeld niet meteen als eerste gewone opgave. Behoud andere
+vervolgstappen, hints, score, pauze en eventuele schatletters. Een controle
+van het uitleg-overzicht alleen is onvoldoende; zie BOUWREGELS 3.23.
+
 ---
 
 # ⛔ HARDE REGEL 1 — NIETS WAT AL BESTAAT MAG VERDWIJNEN

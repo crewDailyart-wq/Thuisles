@@ -359,6 +359,11 @@ type Plek = { x: number; y: number; weeg?: boolean };
 
 function Tafereel(p: RekentaalProps & Vlakbasis) {
   const { indeling, dingen, ondergrond, zwaar, actief, markeer, goed, wiebel, geplaatst, meld } = p;
+  /* Het rondje-plaatje één keer vooraf laden, zodat het er direct is bij het eerste rondje. */
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/rondje/rondje-rood-2.png";
+  }, []);
   /* De weegschaal begint recht en kantelt daarna (nieuw tafereel = nieuwe sleutel = opnieuw). */
   const [gekanteld, zetGekanteld] = useState(false);
   useEffect(() => {
@@ -452,6 +457,23 @@ function Tafereel(p: RekentaalProps & Vlakbasis) {
             <span key={schudt ? `w${wiebel?.n}` : "s"} className={schudt ? s.wiebel : s.stil}>
               <Tekening d={d} />
             </span>
+            {markeer.includes(d.id) && !goed.includes(d.id) && (
+              // eslint-disable-next-line @next/next/no-img-element
+              <img
+                src="/rondje/rondje-rood-2.png"
+                alt=""
+                aria-hidden="true"
+                className={s.rondje}
+                style={{
+                  maxWidth: "none",
+                  left: -(b * 0.15 + 44) / 2,
+                  top: -(h * 0.4 + 50) / 2,
+                  width: b * 1.15 + 44,
+                  height: h * 1.4 + 50,
+                  transform: `rotate(${(([...d.id].reduce((a, c) => a + c.charCodeAt(0), 0) * 37) % 50) / 10 - 2.5}deg)`,
+                }}
+              />
+            )}
           </button>
         );
       })}

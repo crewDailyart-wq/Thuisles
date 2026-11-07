@@ -36,6 +36,13 @@
 import { useEffect, useMemo } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { holoBasis, TX, VLAK_B, VLAK_H, WARM, GOED, type PhaserModule } from "../holo/basis";
+import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
+/** Een groot geheel (veel dingen): het rondje sluit er strak omheen (ongeveer 30 punten ruimte) in plaats van een enorm ovaal; `maakRondjes` rekent zelf nog ruimte bij. */
+function strak(v: RondjeVak): RondjeVak {
+  if (v.b <= 240 && v.h <= 240) return v;
+  return { x: v.x, y: v.y, b: Math.max(60, (v.b + 60 - 44) / 1.15), h: Math.max(60, (v.h + 60 - 50) / 1.4) };
+}
+
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { RM_MAAT, RING_MAAT, RING_BINNEN, rmHex, tekenDing, tekenDingMetRing, tekenTegel, tekenVorm, type RMKleur, type RMVorm } from "./squla-rekenmix-tekenen";
@@ -193,7 +200,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
   type Gfx = import("phaser").GameObjects.Graphics;
   type Ptr = import("phaser").Input.Pointer;
   /** Een tekening in beeld: de container, de beelden per stuk (null bij lijn/rondje), en de sleutel van elk plaatje. */
-  type Deel = { naam: string; box: Box; items: (Img | null)[]; tex: (string | null)[]; plek: RMPlek; slot: number | null };
+  type Deel = { naam: string; box: Box; items: (Img | null)[]; tex: (string | null)[]; plek: RMPlek; slot: number | null; rondjes?: ReturnType<typeof maakRondjes>; rondjeTok?: number };
 
   class RM extends Basis implements RMScene {
     o: RMOpgave | null = null;
@@ -360,7 +367,10 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
     }
 
     leeg() {
-      for (const d of this.delen) this.verdwijn(d.box);
+      for (const d of this.delen) {
+        d.rondjes?.vergeet();
+        this.verdwijn(d.box);
+      }
       for (const x of this.overig) x.destroy();
       this.delen = [];
       this.overig = [];
@@ -434,12 +444,23 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
           if (!img) return;
           const aan = !!hier && l!.aan.includes(i);
           img.setAlpha(!hier || aan || l!.dof === false ? 1 : 0.3);
-          if (aan) {
-            const sl = `${d.naam}-${i}`;
-            nieuw.add(sl);
-            if (!this.vorigLicht.has(sl)) this.flits(d, i, 450);
-          }
+          if (aan) nieuw.add(`${d.naam}-${i}`);
         });
+        /* Het rondje komt precies waar de gloed kwam (Sara, 6 november 2026): om wat nu NIEUW oplicht, 450 ms, en dan weg.
+           Wat al aan stond (zelfde aanroep nog eens) krijgt niets, net als de gloed. Meer dingen tegelijk: één rondje om het geheel. */
+        const nieuwIdx = hier ? l!.aan.filter((i) => !this.vorigLicht.has(`${d.naam}-${i}`)) : [];
+        const wijs = d.items.filter((im, i): im is Img => !!im && nieuwIdx.includes(i));
+        const vak = wijs.length ? vakOm(wijs) : null;
+        if (vak) {
+          d.rondjes ??= maakRondjes(this, d.box, this.rustig);
+          const rj = d.rondjes;
+          const tok = (d.rondjeTok ?? 0) + 1;
+          d.rondjeTok = tok;
+          rj.zet(new Map([[`licht-${nieuwIdx.join(",")}-${tok}`, strak(vak)]]));
+          this.time.delayedCall(450, () => {
+            if (d.rondjeTok === tok && this.delen.includes(d)) rj.zet(new Map());
+          });
+        }
       }
       this.vorigLicht = nieuw;
     }

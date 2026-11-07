@@ -1,0 +1,28 @@
+{
+  "squla-huisnummers": {
+    "Ja, na vierentwintig komt vijfentwintig. Het nummer wordt één groter.": "Ja, na vierentwintig komt vijfentwintig. Er komt steeds 1 bij.",
+    "We lopen samen langs de huizen. Elk volgend nummer is één meer.": "Kijk naar de nummers op de huizen. Er komt steeds {1:wit} bij."
+  },
+  "squla-dagen-van-de-week": {
+    "We bekijken de weektrein samen. Elke wagon is één dag.": "Kijk naar de trein. Daar staan de dagen van de week op de wagons.",
+    "De week begint op maandag.": "Maandag is de eerste dag van de week."
+  },
+  "squla-vormen-patronen-2": {
+    "De onderste rij is nog leeg. Hoe ziet de onderste rij eruit? Tik op je antwoord.": "De onderste rij is nog leeg. Welke kleuren horen in deze rij? Tik op het juiste plaatje."
+  },
+  "squla-vormen-opruimen-1": {
+    "Help je mee opruimen? Op welk plaatje zie je alleen broeken? Tik op je antwoord.": "Op welk plaatje zie je alleen broeken? Tik op dat plaatje.",
+    "Zoek het plaatje met alleen broeken.": "Tik op het plaatje met alleen broeken."
+  },
+  "squla-vormen-patronen-1": {
+    "Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op je antwoord.": "Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op die kraal."
+  },
+  "squla-splits-splitsen2-1": {
+    "Het briefje is al tien euro. Tel de munten erbij. Hoeveel euro komt erbij?": "Samen is het {14:wit} euro.",
+    "Samen is dat {14:wit} euro.": "Het briefje is {10:wit} euro waard. Tel de munten van {1:wit} euro erbij. Begin bij {10:wit} en tel verder.",
+    "Splits het getal {14:wit}. Welk getal mist er nog? Sleep het getal naar het huisje.": "Splits {14:wit} in {2:wit} getallen.\nEen getal staat er al.\nWelk getal mist er nog?\nSleep het naar de lege plek."
+  },
+  "squla-tijd-dagen-3": {
+    "Zet de vier dagen op de goede volgorde. Sleep een kaart naar een leeg vak. Tikken mag ook.": "Zet de {4:wit} dagen in de goede volgorde. Sleep elke wagon naar een leeg vak."
+  }
+}

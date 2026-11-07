@@ -19,7 +19,7 @@
  * - `hand`: een handje doet één keer voor hoe je sleept.
  */
 
-import { useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type PointerEvent as RPointerEvent } from "react";
 import type { Vlakbasis } from "../soort";
 import s from "./squla-huisnummers.module.css";
 
@@ -85,7 +85,6 @@ function Huis({ x, grond, n, licht }: { x: number; grond: number; n: number | "?
   const bordY = grond - hoog * 0.52;
   return (
     <g>
-      {licht && <ellipse cx={x + W / 2} cy={grond + 8} rx={W / 2 + 14} ry={12} fill={GEEL} opacity={0.55} />}
       <image
         href={`/squla/huizen-2d/${p.naam}.png`}
         x={x - GLOED * schaal}
@@ -102,12 +101,26 @@ function Huis({ x, grond, n, licht }: { x: number; grond: number; n: number | "?
         height={46}
         rx={10}
         fill={BORDJE}
-        stroke={licht ? GEEL : "#ffffff"}
-        strokeWidth={licht ? 5 : 2.5}
+        stroke="#ffffff"
+        strokeWidth={2.5}
       />
       <text x={x + W / 2} y={bordY + 12} textAnchor="middle" fontSize={34} fontWeight={800} fill="#ffffff" style={{ fontFamily: LETTER }}>
         {n}
       </text>
+      {/* Wat Bliepo aanwijst krijgt een rood, met de hand getekend rondje (Sara, 6 november 2026), geen gele gloed. */}
+      {licht && (
+        <image
+          href="/rondje/rondje-rood-2.png"
+          x={x + W / 2 - (W * 1.15 + 44) / 2}
+          y={grond - hoog / 2 - (hoog * 1.4 + 50) / 2}
+          width={W * 1.15 + 44}
+          height={hoog * 1.4 + 50}
+          preserveAspectRatio="none"
+          transform={`rotate(-1.5 ${x + W / 2} ${grond - hoog / 2})`}
+          style={{ pointerEvents: "none" }}
+          aria-hidden
+        />
+      )}
     </g>
   );
 }
@@ -189,6 +202,11 @@ type Sleep = { n: number; x: number; y: number; vanX: number; vanY: number; bewo
 export function SqulaStraat({ huizen, licht = null, goed = null, losse = [], actief = false, fout = null, hand = false, meld }: StraatProps & Vlakbasis) {
   const svg = useRef<SVGSVGElement>(null);
   const [sleep, zetSleep] = useState<Sleep | null>(null);
+  /* Het rondje-plaatje één keer vooraf laden, zodat het er direct is bij het eerste rondje. */
+  useEffect(() => {
+    const img = new Image();
+    img.src = "/rondje/rondje-rood-2.png";
+  }, []);
 
   const x = rijX(huizen.length);
   const lx = rijX(losse.length);

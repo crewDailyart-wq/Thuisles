@@ -23,7 +23,9 @@
  */
 
 import type { Lesgids } from "../soort";
-import { foutBeeld, g, goedBeeld, kiesTekst, les, squlaVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
+import type { SqulaVraag } from "./squla-hulp";
+import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
+import { foutBeeld, g, goedBeeld, kiesTekst, les, squlaVraag as hulpVraag, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import { getalkleur } from "../tegels";
 import { kiesAnder, KLEURHEX } from "../vlakken/squla-getalring";
 import { KaartSchat, type Beeld, type Deel, type S1Spec, type S1Stand } from "../vlakken/squla-splitsen-vlak";
@@ -32,6 +34,26 @@ import type { S2, S2Doel, S2Leg, S2Stuk } from "../vlakken/squla-splitsen2-sleep
 /* =====================================================================
    Woorden en beeld
    ===================================================================== */
+
+/**
+ * Hulp zoals Synthesis (BOUWREGELS 5.1 en 5.10, 4 november 2026): na één fout een korte reactie en meteen opnieuw, na
+ * de tweede fout uitleg, het goede antwoord laten zien en door. Alleen de hulp is aangepast, niet het uiterlijk.
+ */
+function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
+  zetSynthesisHulp(l);
+  return hulpVraag(l, { ...v, synthesis: true });
+}
+
+/** Een raadsel heeft zijn eigen bevestiging; bij het antwoord tonen laten we het uitroepje vooraan weg. */
+const zonderJa = (zinnen: string[]) => zinnen.map((z) => z.replace(/^[^!.?]{2,22}!\s*/, "")).filter(Boolean);
+/** Een hint zonder vraag: het kind probeert meteen opnieuw, dus Bliepo stelt de vraag niet nog eens (BOUWREGELS 3.23). */
+const zonderVraag = (zinnen: string[]) => zinnen.filter((z) => !z.trim().endsWith("?"));
+
+/** Eerste fout bij een getal: net ernaast of ver ernaast; de zinnen zijn per vraag geschreven (rekenkundig gecontroleerd). */
+function getalReactie(x: number, goed: number, extra: string[], zin: { dicht: (hoog: boolean) => string; ver: (hoog: boolean) => string }): string[] {
+  const hoog = x > goed;
+  return [Math.abs(x - goed) === 1 ? zin.dicht(hoog) : zin.ver(hoog), ...extra];
+}
 
 const NAAM: Record<string, [string, string]> = {
   goudstuk: ["goudstuk", "goudstukken"],
@@ -104,11 +126,11 @@ async function plusUitleg(l: Lesgids, a: number, b: number, kleur = true) {
   const kg = !kleur ? "wit" : a >= b ? "paars" : "oranje";
   const kk = !kleur ? "wit" : a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) {
-    await l.zeg(`${g(a, kleur ? "paars" : "wit")} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b, kleur ? "oranje" : "wit")} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, "Hoeveel tientallen zijn het samen?");
+    await l.zeg(`${g(a, kleur ? "paars" : "wit")} is ${g(a / 10)} ${a === 10 ? "tiental" : "tientallen"}.`, `${g(b, kleur ? "oranje" : "wit")} is ${g(b / 10)} ${b === 10 ? "tiental" : "tientallen"}.`, ...(krijgtVervolgvraag(l) ? [] : ["Hoeveel tientallen zijn het samen?"]));
     return;
   }
   if (groot < 10 && a + b > 10) {
-    await l.zeg(`Begin bij ${g(groot, kg)}.`, `Eerst maak je ${g(10)}: ${g(groot, kg)} + ${g(10 - groot)} = ${g(10)}.`, `Van de ${g(klein, kk)} ${klein - (10 - groot) === 1 ? "is" : "zijn"} er dan nog ${g(klein - (10 - groot))} over.`, `${g(10)} en nog ${g(klein - (10 - groot))}: hoeveel is dat?`);
+    await l.zeg(`Neem eerst ${g(groot, kg)}.`, `Eerst maak je ${g(10)}: ${g(groot, kg)} + ${g(10 - groot)} = ${g(10)}.`, `Van de ${g(klein, kk)} ${klein - (10 - groot) === 1 ? "is" : "zijn"} er dan nog ${g(klein - (10 - groot))} over.`, ...(krijgtVervolgvraag(l) ? [] : [`${g(10)} en nog ${g(klein - (10 - groot))}: hoeveel is dat?`]));
     return;
   }
   if (groot > 10 && groot < 20) {
@@ -116,7 +138,7 @@ async function plusUitleg(l: Lesgids, a: number, b: number, kleur = true) {
     await l.zeg(`${g(groot, kg)} is ${g(10)} en ${g(e)}.`, `Reken eerst ${g(e)} + ${g(klein, kk)}.`, `Dan komt de ${g(10)} er nog bij.`);
     return;
   }
-  await l.zeg(`Begin bij ${g(groot, kg)}.`, `Tel dan ${g(klein, kk)} verder.`, "Dat mag op je vingers.");
+  await l.zeg(`Het grootste getal is ${g(groot, kg)}.`, `Tel daar ${g(klein, kk)} bij, stap voor stap.`, "Dat mag op je vingers.");
 }
 
 function plusTip(a: number, b: number, kleur = true): string[] {
@@ -126,7 +148,7 @@ function plusTip(a: number, b: number, kleur = true): string[] {
   const kk = !kleur ? "wit" : a >= b ? "oranje" : "paars";
   if (a % 10 === 0 && b % 10 === 0) return ["Tel de tientallen bij elkaar."];
   if (groot < 10 && a + b > 10) return [`Eerst naar ${g(10)}.`, "Dan de rest erbij."];
-  return [`Begin bij ${g(groot, kg)}.`, `Tel ${g(klein, kk)} verder.`];
+  return [`Het grootste getal is ${g(groot, kg)}.`, `Tel daar ${g(klein, kk)} bij, stap voor stap.`];
 }
 
 /* =====================================================================
@@ -208,6 +230,25 @@ function pzTegels(keuzes: number[], goed: number, y: number): S2 {
   return { nr: ++pzNr, stukken, doelen };
 }
 
+/** Eerste fout bij een plussom met tegels: wat koos het kind? (a + b = s; bij plus is het antwoord groter dan beide getallen) */
+function pzReactie(a: number, b: number, x: number, tip: string[]): string[] {
+  const s = a + b;
+  const hint = zonderVraag(tip);
+  if (x === a || x === b) return [`Je sleepte de tegel ${g(x)}: dat getal staat al in de som.`, "Het antwoord is meer dan elk getal in de som.", ...hint];
+  return getalReactie(x, s, hint, {
+    dicht: (hoog) => hoog ? `Je sleepte de tegel ${g(x)}: dat is net 1 te veel.` : `Bij de tegel ${g(x)} mist er nog 1.`,
+    ver: (hoog) => (hoog ? `De tegel ${g(x)} is meer dan ${g(a)} en ${g(b)} samen.` : `De tegel ${g(x)} is minder dan ${g(a)} en ${g(b)} samen.`),
+  });
+}
+
+/** Na de tweede fout: de goede tegel ligt in het vak en Bliepo zegt de hele som. */
+async function tegelAntwoord(l: Lesgids, spec: S2, keuzes: number[], goed: number, zin: string) {
+  const i = keuzes.indexOf(goed);
+  zet(l, { s2: { ...spec, vast: i >= 0 ? [[`t${i}`, "u"]] : [] }, actief: false });
+  await l.wacht(500);
+  await l.zeg(zin);
+}
+
 /** Wachten tot er een tegel in het vak ligt; geeft het getal op die tegel. */
 async function pzWachtTegel(l: Lesgids, keuzes: number[]): Promise<number> {
   zet(l, { actief: true });
@@ -257,15 +298,23 @@ function telVraag(doel: number): Vraag {
       noem: (x) => aantal(x, "goudstuk"),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! Hier liggen ${aantal(doel, "goudstuk")}.`);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         await l.zeg("Ik leg de goudstukken één voor één in het vak.", "Tel maar mee.");
         await pzLegVoor(l, mk(), doel);
-        await l.zeg("Kijk: rijen van vijf.", `Samen zijn het er ${gv(doel, "goudstuk")}.`);
+        await l.zeg("Kijk: rijen van 5.", `Samen zijn het er ${gv(doel, "goudstuk")}.`);
       },
       tip: [`Rijen van ${gv(5, "goudstuk")} tel je snel: ${gv(5, "goudstuk")}, ${gv(10, "goudstuk")}, en dan verder.`],
+      reactie: (x) => {
+        const veel = x > doel;
+        return [`In het vak ${x === 1 ? "ligt" : "liggen"} ${aantal(x, "goudstuk")}.`, veel ? `Er moesten ${gv(doel, "goudstuk")} in het vak, dat zijn er te veel.` : `Er moesten ${gv(doel, "goudstuk")} in het vak, dat zijn er te weinig.`, doel > 5 ? `Tel in rijen van ${gv(5, "goudstuk")}: ${gv(5, "goudstuk")}, ${gv(10, "goudstuk")}, en dan verder.` : "Tel ze één voor één."];
+      },
+      /* De uitleg (samen) legt de goudstukken al één voor één in het vak; hier blijft het antwoord even staan. */
+      toonAntwoord: async () => {
+        await l.wacht(400);
+      },
       testAntwoord: null,
     });
   };
@@ -280,11 +329,13 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       { s: "groep", id: "a", vw, n: a, x: 290, y: 255, per: 5, cel, label: String(a), kl: "paars" },
       { s: "groep", id: "b", vw, n: b, x: 690, y: 255, per: 5, cel, label: String(b), kl: "oranje" },
     ]);
+    let spec: S2 | null = null;
+    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 470) : spec);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
         pzSom(l, st, a, "+", b, "paars", "oranje", 470);
-        zet(l, { s2: pzTegels(keuzes, s, 470), actief: false });
+        zet(l, { s2: tegels(true), actief: false });
       },
       vraag: [`Hoeveel ${NAAM[vw][1]} zijn dit samen?`, "Sleep het goede getal naar het vak."],
       antwoord: () => pzWachtTegel(l, keuzes),
@@ -292,7 +343,7 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
@@ -304,6 +355,8 @@ function samenVraag(vw: string, a: number, b: number, keuzes: number[]): Vraag {
         await plusUitleg(l, a, b);
       },
       tip: plusTip(a, b),
+      reactie: (x) => pzReactie(a, b, x, plusTip(a, b)),
+      toonAntwoord: () => tegelAntwoord(l, tegels(), keuzes, s, `${g(a, "paars")} + ${g(b, "oranje")} = ${g(s)}.`),
       testAntwoord: null,
     });
   };
@@ -314,11 +367,13 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
   const s = a + b;
   return (l, st) => {
     const beeld = metLetters(st, `kaal-${a}-${b}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 250, maat: 210 }]);
+    let spec: S2 | null = null;
+    const tegels = (nieuw = false): S2 => (spec = nieuw || !spec ? pzTegels(keuzes, s, 470) : spec);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
         pzSom(l, st, a, "+", b, "wit", "wit", 470);
-        zet(l, { s2: pzTegels(keuzes, s, 470), actief: false });
+        zet(l, { s2: tegels(true), actief: false });
       },
       vraag: [`Hoeveel is ${g(a)} + ${g(b)}?`, "Sleep het goede getal naar het vak."],
       antwoord: () => pzWachtTegel(l, keuzes),
@@ -326,11 +381,13 @@ function kaalPlus(a: number, b: number, keuzes: number[], deco: string): Vraag {
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${g(a)} + ${g(b)} = ${g(s)}.`);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: () => plusUitleg(l, a, b, false),
       tip: plusTip(a, b, false),
+      reactie: (x) => pzReactie(a, b, x, plusTip(a, b, false)),
+      toonAntwoord: () => tegelAntwoord(l, tegels(), keuzes, s, `${g(a)} + ${g(b)} = ${g(s)}.`),
       testAntwoord: null,
     });
   };
@@ -361,23 +418,40 @@ function minVraag(vw: string, a: number, b: number, zinnen?: string[], metSom = 
       goed: async () => {
         som(l, st, a, "−", b, s, kl, kiesAnder(kl), kl);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${gv(a, vw)} − ${gb(b, vw)} = ${gv(s, vw)}.`);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
-        await l.zeg(`Eerst waren er ${aantal(a, vw)}.`, `Er ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`);
+        await l.zeg(`In het begin zijn er ${aantal(a, vw)}.`);
+        /* Het rondje om wat wegvalt (de laatste in het hoopje) op het moment dat Bliepo het zegt (BOUWREGELS 7.8). */
+        zet(l, { licht: Array.from({ length: b }, (_, i) => `s1.${s + i}`) });
+        await l.zeg(`Er ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`);
+        zet(l, { licht: [] });
         await l.zeg(b === 1 ? "Die telt niet meer mee." : "Die tellen niet meer mee.", "De andere leg ik in het vak.");
         await pzLegVoor(l, mk(), s);
         await l.zeg(`Er zijn er nog ${gv(s, vw)}.`);
       },
-      tip: [`Eerst ${gv(a, vw)}, dan gaan er ${gb(b, vw)} weg.`, "Wat blijft er over?"],
+      tip: [`Eerst ${gv(a, vw)}, dan ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`, "Tel wat overblijft."],
+      reactie: (x) => {
+        if (x === a) return [`Je legde ze allemaal in het vak, ook die weggaan.`, `Er ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`];
+        if (x === b) return [`Dat zijn de ${NAAM[vw][1]} die weggaan.`, "Het vak is voor wat er overblijft."];
+        return getalReactie(x, s, [`Eerst ${gv(a, vw)}, dan ${b === 1 ? "gaat" : "gaan"} er ${gb(b, vw)} weg.`], {
+          dicht: (hoog) => hoog ? `Je legde ${aantal(x, vw)} in het vak: dat is net 1 te veel.` : `Je legde ${aantal(x, vw)} in het vak: er blijft er net 1 meer over.`,
+          ver: (hoog) => (hoog ? `Je legde ${aantal(x, vw)} in het vak, maar zoveel blijven er niet over.` : `Je legde ${aantal(x, vw)} in het vak, maar er blijven er meer over.`),
+        });
+      },
+      /* De uitleg (samen) legt de overgebleven dingen al in het vak; hier komt het antwoord in de som. */
+      toonAntwoord: async () => {
+        som(l, st, a, "−", b, s, kl, kiesAnder(kl), kl);
+        await l.wacht(500);
+      },
       testAntwoord: null,
     });
   };
 }
 
 /** Een raadsel (grapje) met twee plaatjes om op te tikken. */
-function raadselPlaatje(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], namen: [string, string]): Vraag {
+function raadselPlaatje(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], namen: [string, string], waarom: string): Vraag {
   return (l, st) => {
     const delen: Deel[] = [];
     opties.forEach((vw, i) => {
@@ -395,20 +469,25 @@ function raadselPlaatje(vraag: string[], opties: [string, string], goedNr: 0 | 1
       noem: (x) => namen[Number(x.slice(1))],
       goed: async () => {
         goedBeeld(l, st, { goedIds: [`k${goedNr}`] });
-        await l.zeg(...goed);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         await l.zeg(...samen);
       },
       tip,
+      reactie: (x) => [`Je tikte op ${namen[Number(x.slice(1))].replace(/^./, (c) => c.toLowerCase())}.`, waarom, ...zonderVraag(tip)],
+      toonAntwoord: async () => {
+        zet(l, { goedIds: [`k${goedNr}`], actief: false });
+        await l.zeg(...zonderJa(goed));
+      },
       testAntwoord: `k${goedNr}`,
     });
   };
 }
 
 /** Een raadsel met twee antwoorden (Bliepo leest ze voor). */
-function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], deco: string): Vraag {
+function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, goed: string[], samen: string[], tip: string[], deco: string, waarom: string): Vraag {
   return (l, st) => {
     const beeld = metLetters(st, `raadsel-${deco}`, [{ s: "ding", id: "deco", vw: deco, x: 490, y: 360, maat: 230 }]);
     return squlaVraag<string>(l, {
@@ -421,13 +500,17 @@ function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, 
       noem: (x) => x.replace(/[.!?]+$/, ""),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(...goed);
+        await l.zeg(bevestig());
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         await l.zeg(...samen);
       },
       tip,
+      reactie: (x) => ["Dat antwoord past niet bij het raadsel.", waarom, ...zonderVraag(tip)],
+      toonAntwoord: async () => {
+        await l.zeg(...zonderJa(goed));
+      },
       testAntwoord: opties[goedNr],
     });
   };
@@ -540,8 +623,9 @@ const level1 = maak({
       0,
       ["Ja! Chips.", "In een computer zitten ook chips.", "En in mijn hoofd zit een computer!"],
       ["Het is een grapje.", "In een computer zitten kleine stukjes.", "Die heten ook zo, net als iets wat je kunt eten."],
-      ["Welk eten heet net zo als iets in een computer?"],
+      ["Denk aan een eten dat net zo heet als iets in een computer."],
       ["Een zak chips", "Een kom soep"],
+      "Soep zit niet in een computer, chips wel.",
     ),
     kaalPlus(3, 4, [6, 7, 8], "planeet"),
     kaalPlus(8, 2, [9, 10, 11], "raketje"),
@@ -595,10 +679,11 @@ const level2 = maak({
       ["Nu een raadsel!", "Waarom gaat een robot nooit zwemmen?", "Is het omdat hij dan gaat roesten?", "Of omdat hij geen zwembroek heeft?"],
       ["Omdat hij dan gaat roesten.", "Omdat hij geen zwembroek heeft."],
       0,
-      ["Ja! Een robot is van ijzer.", "IJzer gaat roesten in het water."],
-      ["Het is een grapje.", "Een robot is van ijzer.", "Wat gebeurt er met ijzer in het water?"],
+      ["Precies! Een robot is van ijzer.", "IJzer gaat roesten in het water."],
+      ["Het is een grapje.", "Een robot is van ijzer.", "Denk aan wat er met ijzer in het water gebeurt."],
       ["IJzer in het water gaat roesten."],
       "komeet",
+      "Een zwembroek is niet het grapje, het gaat om waar een robot van gemaakt is.",
     ),
     minVraag("ster", 7, 2),
     minVraag("sleutel", 9, 5),
@@ -659,10 +744,11 @@ const level3 = maak({
       ["Nu een raadsel!", "Welke vrucht hoort in de ruimte?", "Is het de maan-darijn?", "Of de banaan?"],
       ["De maan-darijn!", "De banaan."],
       0,
-      ["Ja! De maan-darijn.", "Net als de maan!"],
+      ["Goed geluisterd! De maan-darijn.", "Net als de maan!"],
       ["Het is een grapje.", "Luister maar: maan… darijn.", "Er zit een woord uit de ruimte in."],
-      ["Welk woord lijkt op maan?"],
+      ["Luister goed naar het eerste stukje van het woord."],
       "maan",
+      "Een banaan komt niet uit de ruimte, dat hoort niet bij het raadsel.",
     ),
     minVraag("diamant", 12, 5, [`${gv(12, "diamant")} − ${gb(5, "diamant")}.`], true),
     minVraag("parel", 16, 5, [`${gv(16, "parel")} − ${gb(5, "parel")}.`], true),

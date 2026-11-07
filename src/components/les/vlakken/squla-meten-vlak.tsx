@@ -15,8 +15,8 @@
  *   getekend als op de kaartjes, met een stippellijn bij de bovenkant;
  * - `kaarten`: kaartjes om aan te tikken. Alle kaartjes van één vraag hebben
  *   dezelfde schaal, zodat een kleine pizza ook echt kleiner is;
- *   `uit` (vaag), `goed` (groen), `fout` (rood), `licht` (geel: Bliepo wijst
- *   het aan, of het kind koos het al);
+ *   `uit` (vaag), `goed` (groen), `fout` (rood), `licht` (rood rondje: Bliepo wijst
+ *   het aan), `gekozen` (geel: het kind koos het al);
  * - `orden`: lege vakken en losse kaartjes om te slepen (of aan te tikken: dan
  *   gaat het naar het eerste lege vak). `onderGroot`: de vakken staan onder
  *   de twee tafels van de grote tekening; `klein`: kleine getalkaartjes.
@@ -32,6 +32,7 @@
 import { useEffect, useRef } from "react";
 import type { Vlakbasis, Vlakgebeurtenis } from "../soort";
 import { GOED, TX, VLAK_B, VLAK_H, WARM, holoBasis } from "../holo/basis";
+import { maakRondjes } from "../holo/rondje";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { PALET, RAND_DUN, blok, cirkel, tekenVormen } from "./bliepo-voorwerpen";
 import { BALK_HALF, schaalVoorwerpen, tafelMiddens, tekenBalk, tekenSchaal, tekenTekening, tekenVoet, tekeningMaat, tekeningPunten, zetLettertype } from "./squla-meten-tekeningen";
@@ -75,7 +76,10 @@ export type MetenProps = {
   uit?: string[];
   goed?: string[];
   fout?: string[];
+  /** Bliepo wijst deze kaartjes aan: een rood rondje. */
   licht?: string[];
+  /** Het kind koos deze kaartjes al (blijft een gele gloed; geen aanwijzing van Bliepo). */
+  gekozen?: string[];
   orden?: MOrden | null;
   schud?: { id: string; n: number } | null;
   golf?: { id: string; n: number } | null;
@@ -186,7 +190,7 @@ interface MetenScene {
   speelHandje(): void;
 }
 
-type Ding = { box: Box; plaat: Img; gloed: Img; sl: string; r: Rect; zeg: string; soort: "kaart" | "los" | "vast"; id: string };
+type Ding = { box: Box; plaat: Img; gloed: Img; sl: string; r: Rect; zeg: string; soort: "kaart" | "los" | "vast"; id: string; rondjes?: ReturnType<typeof maakRondjes>; sch?: boolean; glow?: Img[] };
 
 /** Gloed alleen op het moment dat het iets betekent: aanwijzen (geel), goed (groen), fout (rood). */
 const RING = { geel: WARM, groen: GOED, rood: 0xff6b6b } as const;
@@ -210,6 +214,10 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     alles: import("phaser").GameObjects.GameObject[] = [];
     telLaag: import("phaser").GameObjects.GameObject[] = [];
     telSig = "";
+    /** Naast elkaar gezette dingen (`vergelijk`): hun vak en een rondje-houder, voor `licht` met "v0", "v1", ... */
+    vergVakken: { x: number; y: number; b: number; h: number }[] = [];
+    vergHouder: import("phaser").GameObjects.Container | null = null;
+    vergRondjes: ReturnType<typeof maakRondjes> | null = null;
     balk: Img | null = null;
     schalen: [Img, Img] | null = null;
     hoek = 0;
@@ -335,6 +343,9 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const o of this.alles) o.destroy();
       for (const o of this.telLaag) o.destroy();
       this.alles = [];
+      this.vergVakken = [];
+      this.vergHouder = null;
+      this.vergRondjes = null;
       this.vakBeelden = [];
       this.telLaag = [];
       this.telSig = "";
@@ -354,7 +365,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       box.add([gloed, plaat]);
       this.alles.push(box);
       /* Een lege `zeg`: niets voorlezen (een plaatje zonder woord; de naam zou het antwoord verklappen). */
-      const ding: Ding = { box, plaat, gloed, sl, r, zeg: d.zeg ?? d.label ?? "", soort, id: d.id };
+      const ding: Ding = { box, plaat, gloed, sl, r, zeg: d.zeg ?? d.label ?? "", soort, id: d.id, sch: !!d.tekening?.startsWith("onderwerp|") };
       this.dingen.set(sleutel, ding);
       return ding;
     }
@@ -419,6 +430,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         this.alles.push(img);
         tops.push(lijn - m.h * k);
         xs.push(x);
+        /* Iets kleiner opgegeven dan het ding zelf: het rondje wordt ruimer dan het vak en mag niet boven uit het beeld lopen of de plaatjes eronder bedekken. */
+        this.vergVakken.push({ x, y: lijn - (m.h * k) / 2, b: m.b * k * 0.85, h: m.h * k * 0.72 });
       });
       /* De vloer waar alles op staat, en een stippellijn bij elke bovenkant. */
       g.lineStyle(5, 0xbfe6ff, 0.8);
@@ -434,6 +447,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         }
       }
       this.alles.push(g);
+      this.vergHouder = this.add.container(0, 0);
+      this.alles.push(this.vergHouder);
     }
 
     bouw(p: MetenProps, verschijn: boolean) {
@@ -493,7 +508,37 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     pasToe(p: MetenProps) {
       const ind = indeling(p);
-      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.licht?.includes(id) ? "geel" : null);
+      const kleur = (id: string): keyof typeof RING | null => (p.goed?.includes(id) ? "groen" : p.fout?.includes(id) ? "rood" : p.gekozen?.includes(id) ? "geel" : null);
+      /* Wat Bliepo aanwijst (`licht`) krijgt een rood rondje; goed/fout houden hun gloed. */
+      const rondje = (d: Ding, aan: boolean) => {
+        if (!aan && !d.rondjes) return;
+        d.rondjes ??= maakRondjes(this, d.box, rustig);
+        d.rondjes.zet(aan ? new Map([["ding", { x: 0, y: 0, b: d.r.b, h: d.r.h }]]) : new Map());
+      };
+      const wijst = (id: string) => !!p.licht?.includes(id) && !p.goed?.includes(id) && !p.fout?.includes(id);
+      /* Schilderijen bij Meten (BOUWREGELS 7.9): een rondje loopt over wat het kind moet tellen. Daar licht het ding zelf op: een sterke, warme
+         glow langs de omtrek van het plaatje zelf (geen vlak of kader eromheen), een paar lagen dik en zacht pulserend. */
+      const oplicht = (d: Ding, aan: boolean) => {
+        if (!aan) {
+          for (const g of d.glow ?? []) {
+            this.tweens.killTweensOf(g);
+            g.destroy();
+          }
+          d.glow = undefined;
+          return;
+        }
+        if (d.glow?.length && d.glow[0].active) return;
+        const sl = this.gloedPlaatje(d.sl, "geel");
+        d.glow = [0, 1, 2].map(() => {
+          const g = this.plaats(sl, 0, 0);
+          d.box.addAt(g, 0);
+          if (!rustig) {
+            g.setAlpha(0.55);
+            this.tweens.add({ targets: g, alpha: 1, duration: 700, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+          }
+          return g;
+        });
+      };
       const zetRing = (d: Ding, k: keyof typeof RING | null) => {
         if (!k) return void d.gloed.setVisible(false);
         d.gloed.setTexture(this.gloedPlaatje(d.sl, k)).setVisible(true);
@@ -501,6 +546,8 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const d of this.dingen.values()) {
         if (d.soort === "kaart") {
           zetRing(d, kleur(d.id));
+          if (d.sch) oplicht(d, wijst(d.id));
+          else rondje(d, wijst(d.id));
           d.box.setAlpha(p.uit?.includes(d.id) ? 0.35 : 1);
         }
         if (d.soort === "los" && p.orden) {
@@ -511,9 +558,23 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
           }
           const u = vak >= 0 ? p.orden.uitslag?.[vak] : null;
           zetRing(d, u === true ? "groen" : u === false ? "rood" : kleur(d.id));
+          rondje(d, u == null && wijst(d.id));
           d.box.setDepth(vak >= 0 ? 1 : 2);
         }
         if (d.soort === "vast") zetRing(d, null);
+      }
+      /* Wat Bliepo bij de naast elkaar gezette dingen aanwijst ("v0", "v1", ...): één rood rondje. */
+      if (this.vergHouder?.active) {
+        const vw = new Map<string, { x: number; y: number; b: number; h: number }>();
+        for (const id of p.licht ?? []) {
+          const m = /^v(\d+)$/.exec(id);
+          const v = m ? this.vergVakken[Number(m[1])] : undefined;
+          if (v) vw.set(id, v);
+        }
+        if (vw.size || this.vergRondjes) {
+          this.vergRondjes ??= maakRondjes(this, this.vergHouder, rustig);
+          this.vergRondjes.zet(vw);
+        }
       }
       /* De weegschaal: zakken (eerst recht, dan langzaam naar de zware kant). */
       if (p.orden) this.vakBeelden.forEach((v, i) => v.setVisible(p.orden!.vakken[i] === null));
@@ -749,7 +810,7 @@ export function SqulaMetenVlak(props: MetenProps & Vlakbasis) {
   }, [scene]);
 
   const { nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden } = props;
-  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, orden });
+  const stand = JSON.stringify({ nr, groot, tel, balans, vergelijk, kaarten, kaartenActief, uit, goed, fout, licht, gekozen: props.gekozen, orden });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as MetenProps);
   }, [scene, stand]);

@@ -1,0 +1,25 @@
+.vlak {
+  position: absolute;
+  left: 40px;
+  top: 105px;
+  width: 900px;
+  aspect-ratio: 3 / 2;
+  isolation: isolate;
+}
+.vlak::before {
+  content: "";
+  position: absolute;
+  inset: 7% 3% 5%;
+  border: 2px solid #b7dcff38;
+  border-radius: 40px;
+  background: #b6dfff12;
+  box-shadow: inset 0 1px 0 #ffffff0d;
+}
+.afbeelding {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+:global([data-staand]) .vlak { left: 15px; top: 55px; width: 950px; }

@@ -1,0 +1,63 @@
+9×  [geld,piraat,rekenmix]  Begin bij #.
+7×  [dagen,tijd]  Kijk naar de hele trein.
+7×  [getallenlijn,meer-minder,meten,tellen]  We tellen samen.
+6×  [getallenlijn,tellen]  Tel # verder dan #.
+6×  [klok,tijd]  Het is # uur.
+5×  [dagen,getallenlijn,meten,rekentaal,tijd]  Weet ik niet
+5×  [geld]  Tel # en # bij elkaar.
+5×  [geld,splitsen]  Tel verder vanaf # tot #.
+5×  [meten]  Ze zijn even groot.
+4×  [dagen,tijd]  Daarna begint een nieuwe week.
+4×  [dagen,tijd]  Kijk naar de wagon achter #.
+4×  [dagen,tijd]  Gisteren is de dag ervoor.
+4×  [geld]  Tel elk groepje geld.
+4×  [geld]  Een munt van # euro is zilver in het midden.
+4×  [geld]  Er staat een # op.
+4×  [geld]  Tel er # bij.
+4×  [getallenlijn,tellen]  Tel # terug vanaf #.
+4×  [klok]  Het is #.
+4×  [klok]  De kleine wijzer wijst naar de #.
+4×  [klok]  Op welke klok is het # uur?
+4×  [meer-minder,plussommen,rekenmix,tellen]  Kun je dit al?
+4×  [meten]  Welke pizza is het grootst?
+4×  [meten]  Tel verder vanaf #.
+4×  [meten]  Van smal naar breed.
+4×  [minsommen,splitsen]  Dat getal komt vooraan in de som.
+4×  [piraat,plussommen,splitsen]  Dat is meer dan #.
+4×  [piraat,plussommen,splitsen]  Dat is minder dan #.
+4×  [splitsen]  Bovenaan staat #.
+4×  [tijd]  Gisteren was het vrijdag.
+4×  [tijd]  Het is # juni.
+3×  [dagen]  Kijk naar de laatste wagon.
+3×  [dagen,tijd]  Voor maandag was de vorige week. Kijk naar het eind.
+3×  [dagen,tijd]  Dat is vandaag.
+3×  [dagen,tijd]  Kijk naar de wagon vlak achter de locomotief.
+3×  [geld]  Het briefje van # euro is rood.
+3×  [geld]  Kijk naar het getal op het briefje.
+3×  [geld]  De bal kost # euro.
+3×  [geld]  Waar ligt dat geld?
+3×  [geld]  Begin bij # en tel # verder.
+3×  [getallenlijn]  Kijk op de getallenlijn.
+3×  [getallenlijn]  Het raketje staat verder dan #.
+3×  [getallenlijn]  Het raketje staat bij #.
+3×  [getallenlijn,huisnummers]  Tel # verder vanaf #.
+3×  [huisnummers,hulp,plussommen]  Geen probleem.
+3×  [hulp]  We doen het samen, stap voor stap.
+3×  [hulp,minsommen,plussommen]  Typ het getal.
+3×  [klok]  Kijk naar het getal waar de kleine wijzer naartoe wijst.
+3×  [klok]  Hoe laat is het?
+3×  [klok]  De klok zegt hoe laat het is.
+3×  [meer-minder,tellen]  # Het zijn er #.
+3×  [meten]  Van klein naar groot.
+3×  [meten]  Deze pizza is het grootst.
+3×  [meten]  Tel terug vanaf #.
+3×  [meten]  Kijk tot waar het sap komt.
+3×  [minsommen]  Kijk naar een som met # keer hetzelfde getal.
+3×  [piraat,plussommen]  Eerst waren er #.
+3×  [tijd]  Begin bij het rode vak.
+3×  [tijd]  Elk boogje is # nachtje.
+3×  [tijd]  Tel de boogjes tot het feesthoedje.
+3×  [tijd]  Wat duurt langer?
+3×  [vormen]  Kijk naar het patroon.
+
+61 zinnen komen vaker dan 2 keer voor.

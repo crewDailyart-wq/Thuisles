@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Proef: plaatjes in vier stijlen</title>
+<style>
+  body { margin: 0; font-family: system-ui, sans-serif; background: #0b1e5c; color: #fff; }
+  h1 { font-size: 22px; margin: 0; padding: 18px 16px 4px; }
+  .uitleg { margin: 0; padding: 0 16px 14px; opacity: .85; }
+  .rooster { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; padding: 0 16px 24px; }
+  .vak { position: relative; border-radius: 14px; overflow: hidden; min-height: 300px; display: flex; flex-direction: column; }
+  .vak h2 { position: relative; z-index: 2; margin: 0; padding: 12px 14px 0; font-size: 17px; }
+  .scene { position: relative; z-index: 1; flex: 1; display: flex; align-items: center; justify-content: center; gap: 22px; padding: 14px; }
+  .scene img { display: block; height: auto; }
+  .olifant { width: 52%; } .banaan { width: 26%; }
+
+  /* 1. 2D, zoals de huisjes: gewone blauwe ruimte, zacht licht */
+  .twee { background: url(/assets/bliepo/achtergrond-opdracht/liggend-1280.webp) center/cover; }
+  .twee img { filter: drop-shadow(0 8px 6px rgba(5, 20, 70, .35)); }
+
+  /* 2. Glow in the dark: donker, met een gloed om het plaatje */
+  .glow { background: radial-gradient(ellipse at 50% 60%, #14204a 0%, #050916 75%); }
+  .glow img { filter: drop-shadow(0 0 6px rgba(255, 240, 180, .9)) drop-shadow(0 0 22px rgba(255, 220, 120, .55)); }
+  .glow .olifant { filter: drop-shadow(0 0 6px rgba(190, 230, 255, .9)) drop-shadow(0 0 24px rgba(120, 190, 255, .55)); }
+
+  /* 3. Hologram: de lijntekening in blauw licht, met lijntjes erover en een beetje flikkering */
+  .holo { background: radial-gradient(ellipse at 50% 85%, #0c3a5c 0%, #04101f 70%); }
+  .holo .scene::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: repeating-linear-gradient(0deg, rgba(120, 230, 255, .10) 0 2px, transparent 2px 5px); }
+  .holo .voet { position: absolute; left: 50%; bottom: 10px; width: 70%; height: 18px; transform: translateX(-50%);
+    background: radial-gradient(ellipse at center, rgba(90, 220, 255, .55), rgba(90, 220, 255, 0) 70%); z-index: 1; }
+  .holo img { filter: brightness(0) invert(1) sepia(1) saturate(6) hue-rotate(150deg) brightness(1.15) drop-shadow(0 0 1px #bff4ff) drop-shadow(0 0 1px #bff4ff) drop-shadow(0 0 5px #5fe3ff) drop-shadow(0 0 16px rgba(70, 200, 255, .8));
+    opacity: .95; animation: flikker 4s infinite; }
+  .holo .olifant { width: 60%; } .holo .banaan { width: 30%; }
+  @keyframes flikker { 0%, 100% { opacity: .95 } 47% { opacity: .95 } 48% { opacity: .6 } 49% { opacity: .95 } 72% { opacity: .85 } }
+
+  /* 4. Donker, zoals de wagons: donkere ruimte, plaatje zoals het is */
+  .donker { background: linear-gradient(#0d1430, #1a2348); }
+  .donker img { filter: drop-shadow(0 10px 10px rgba(0, 0, 0, .5)); }
+
+  @media (prefers-reduced-motion: reduce) { .holo img { animation: none; } }
+</style>
+</head>
+<body>
+<h1>Proef: dezelfde olifant en banaan in vier stijlen</h1>
+<p class="uitleg">Gemaakt in Magnific (Nano Banana 2). Gloed, hologram en schaduw komen uit de code, niet uit het plaatje.</p>
+<div class="rooster">
+  <section class="vak twee"><h2>1. 2D, zoals de huisjes</h2>
+    <div class="scene"><img class="olifant" src="olifant.png" alt=""><img class="banaan" src="banaan.png" alt=""></div></section>
+  <section class="vak glow"><h2>2. Glow in the dark</h2>
+    <div class="scene"><img class="olifant" src="olifant.png" alt=""><img class="banaan" src="banaan.png" alt=""></div></section>
+  <section class="vak holo"><h2>3. Hologram</h2>
+    <div class="scene"><img class="olifant" src="olifant-lijn.png" alt=""><img class="banaan" src="banaan-lijn.png" alt=""></div><div class="voet"></div></section>
+  <section class="vak donker"><h2>4. Donker, zoals de wagons</h2>
+    <div class="scene"><img class="olifant" src="olifant.png" alt=""><img class="banaan" src="banaan.png" alt=""></div></section>
+</div>
+<h1>Dieren zonder ogen</h1>
+<p class="uitleg">Boven: plat getekend, zonder ogen. Onder: silhouet (alleen de vorm).</p>
+<div class="rooster">
+  <section class="vak glow"><h2>Plat, zonder ogen (glow)</h2>
+    <div class="scene"><img style="width:38%" src="olifant-plat.png" alt=""><img style="width:22%" src="kikker-plat.png" alt=""><img style="width:26%" src="vis-plat.png" alt=""></div></section>
+  <section class="vak twee"><h2>Plat, zonder ogen (zonder glow)</h2>
+    <div class="scene"><img style="width:38%" src="olifant-plat.png" alt=""><img style="width:22%" src="kikker-plat.png" alt=""><img style="width:26%" src="vis-plat.png" alt=""></div></section>
+  <section class="vak glow"><h2>Silhouet (glow)</h2>
+    <div class="scene"><img style="width:38%" src="olifant-silhouet.png" alt=""><img style="width:22%" src="kikker-silhouet.png" alt=""><img style="width:26%" src="vis-silhouet.png" alt=""></div></section>
+  <section class="vak twee"><h2>Silhouet (zonder glow)</h2>
+    <div class="scene"><img style="width:38%" src="olifant-silhouet.png" alt=""><img style="width:22%" src="kikker-silhouet.png" alt=""><img style="width:26%" src="vis-silhouet.png" alt=""></div></section>
+</div>
+</body>
+</html>

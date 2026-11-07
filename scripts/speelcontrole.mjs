@@ -4,6 +4,7 @@
  *
  *   npm run speel                       alle groep 3-lessen, lokaal
  *   LESSEN=tellen-120-doortellen npm run speel
+ *   ALLEFOUT=1 LESSEN=... npm run speel   elk antwoord fout (de tweede fout: uitleg en door, de les stopt niet)
  *   ALLEEN=klok-,verhaal- npm run speel
  *   BASIS=https://… WW=… npm run speel  de echte site
  *
@@ -474,7 +475,7 @@ async function speel(c, id) {
       stilSinds = null;
       stappen++;
       laatsteTik = Date.now();
-      const soort = process.env.GOED ? "goed" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 3 ? "weetniet" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 5 ? "fout" : "goed";
+      const soort = process.env.ALLEFOUT ? "fout" : process.env.GOED ? "goed" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 3 ? "weetniet" : (stappen + Number(process.env.VARIANT ?? 0)) % 7 === 5 ? "fout" : "goed";
       if (await canvasStap(z, soort)) continue;
       /* NEE=1: bij "Kun je dit al?" op Nee tikken, om de uitleg te zien (alleen dan; anders gaat het kind door met Ja). */
       if (process.env.NEE && (await klik(`(b) => (b.textContent || "").trim() === "Nee"`))) continue;

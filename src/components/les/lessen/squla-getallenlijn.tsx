@@ -14,14 +14,16 @@
  *
  * Alles in Phaser, als hologram vóór de blauwe ruimte
  * (`../vlakken/squla-getallenlijn-vlak.tsx`). De hulp is de vaste hulp van
- * Bliepo (`squla-hulp.ts`): na één fout "Wil je hulp, of nog een keer
- * proberen?", dan samen uitzoeken (op basis van wat Squla bij een fout
- * uitlegt, in eigen woorden en in beeld), en na 2× fout even pauze. Geen
- * "Weet ik niet"-knop bij de keuzes.
+ * Bliepo (`squla-hulp.ts`), sinds 4 november 2026 zoals Synthesis (BOUWREGELS 5.1 en
+ * 5.10): goed = kort en door; eerste fout = een korte reactie op wat het kind koos, met
+ * een hint die bij de vraag past (een getal licht op waar je vanaf telt); tweede fout =
+ * Bliepo telt of wijst het na en laat het goede antwoord zien, en het kind gaat door.
+ * Geen pauze. Geen "Weet ik niet"-knop bij de keuzes.
  *
  * Getallen in de getallenlijn en op de dingen zijn wit: in de zinnen {n:wit}.
  */
 
+import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, type SqulaVraag } from "./squla-hulp";
 import { SqulaGetallenlijn, type Beeld, type GetallenlijnProps, type RijItem, type Rijding, type Wezen } from "../vlakken/squla-getallenlijn-vlak";
@@ -33,7 +35,8 @@ import { speelLesgeluid } from "@/lib/lesgeluiden";
 const w = (n: number) => `{${n}:wit}`;
 const rijtje = (ns: number[]) => ns.map(w).join(", ");
 const TELWOORD = ["nul", "één", "twee", "drie", "vier", "vijf", "zes", "zeven", "acht", "negen", "tien"];
-const Telwoord = (n: number) => (n === 1 ? "Eén" : TELWOORD[n][0].toUpperCase() + TELWOORD[n].slice(1));
+/** Bliepo telt hardop met cijfers (3.20): "1, 2, 3". */
+const Telwoord = (n: number) => String(n);
 const RANG = ["eerste", "tweede", "derde", "vierde", "vijfde"];
 
 let ronde = 0;
@@ -59,12 +62,29 @@ async function typGetal(l: Lesgids, hint: string[]): Promise<number> {
   for (;;) {
     const x = await l.getal();
     if (x !== null) return x;
-    await l.zeg("Geen probleem.", ...hint);
+    await l.zeg(...hint);
   }
 }
 
 /** Een vraag met de vaste hulp; `true` = meteen goed. */
-const vraag = <T,>(l: Lesgids, v: SqulaVraag<T>) => squlaVraag(l, v);
+const vraag = <T,>(l: Lesgids, v: SqulaVraag<T>) => squlaVraag(l, { synthesis: true, ...v });
+
+/** Het getal met omgedraaide cijfers (34 en 43). */
+const omgedraaid = (n: number) => Number([...String(n)].reverse().join(""));
+const omgedraaidFout = (x: number, goed: number) => x > 9 && x % 11 !== 0 && omgedraaid(x) === goed;
+
+const WAT_VLAG = "Het vlaggetje";
+
+/** Eerste fout bij "bij welk getal staat het?" op een lijn: wat Bliepo zegt over het gekozen getal. */
+function lijnReactie(labels: number[], n: number, x: number, tip: string[], stap = 1, wat = WAT_VLAG.toLowerCase()): string[] {
+  const Wat = wat[0].toUpperCase() + wat.slice(1);
+  let zin: string;
+  if (omgedraaidFout(x, n)) zin = `Je koos ${w(x)}. Lees de cijfers nog eens: kijk welk cijfer voorop staat.`;
+  else if (labels.includes(x)) zin = `${w(x)} staat al op de lijn, bij een ander streepje. ${Wat} staat ergens anders.`;
+  else if (Math.abs(x - n) <= stap) zin = stap === 1 ? `${w(x)} is het streepje ernaast. Tel de streepjes nog eens.` : `${w(x)} ligt er vlak naast. Elk streepje is ${w(stap)} verder.`;
+  else zin = x < n ? `${Wat} staat verder naar rechts dan ${w(x)}.` : `${Wat} staat nog niet zo ver als ${w(x)}.`;
+  return [zin, ...tip];
+}
 
 /* ---------- 1. een rij met één lege plek (lampjes, planeetjes, kristallen, sterren, aftellen, tegels) ---------- */
 
@@ -99,9 +119,46 @@ function rijVraag(l: Lesgids, v: RijVraag): SqulaVraag<number> {
   const goed = waarde(v.gat);
   const voor = waarde(v.gat - 1);
   const terug = stap < 0;
-  const tip = [terug ? `Tel terug vanaf ${w(voor)}.` : `Tel verder vanaf ${w(voor)}.`];
+  /* Het laatste getal vóór de lege plek dat echt in beeld staat (bij diamanten met streepjes is dat niet altijd het buurvak). */
+  let ankerNr = v.gat - 1;
+  while (ankerNr > 0 && typeof v.rij[ankerNr] !== "number") ankerNr--;
+  const afstand = v.gat - ankerNr;
+  const anker = waarde(ankerNr);
+  const plekNaam = v.ding === "lampje" ? "lampje" : v.ding === "kristal" ? "diamant" : v.ding === "ster" ? "ster" : v.ding === "planeet" ? "planeet" : "plek";
+  const lidwoord = v.ding === "lampje" ? "het" : "de";
+  const tip =
+    afstand === 1
+      ? [`Kijk naar ${lidwoord} ${plekNaam} met ${w(anker)}.`, terug ? "Tel vanaf dat getal 1 terug." : "Tel vanaf dat getal 1 verder."]
+      : [`Begin bij ${lidwoord} ${plekNaam} met ${w(anker)} en tel ${w(afstand)} ${terug ? "terug" : "verder"}.`];
+  const gaf = v.opties ? "koos" : "typte";
+  const plekMv = v.ding === "lampje" ? "lampjes" : v.ding === "kristal" ? "diamanten" : v.ding === "ster" ? "sterren" : v.ding === "planeet" ? "planeten" : "plekken";
+  let nFout = 0;
   return {
-    toon: () => toon(l, rijBeeld(v)),
+    synthesis: true,
+    reactie: (x) => {
+      let zin: string;
+      if (v.rij.includes(x)) zin = `${w(x)} staat al in de rij. Op de lege plek hoort een ander getal.`;
+      else if (omgedraaidFout(x, goed)) zin = `Je ${gaf} ${w(x)}. Kijk of de cijfers in de goede volgorde staan.`;
+      else if (x === goed + stap) zin = `Met ${w(x)} sla je een ${plekNaam} over.`;
+      else if (terug && x > voor) zin = `${w(x)} is groter dan ${w(voor)}, maar deze rij telt terug: de getallen worden steeds kleiner.`;
+      else if (!terug && x < voor) zin = `${w(x)} is kleiner dan ${w(voor)}. In deze rij worden de getallen steeds groter.`;
+      else zin = `${w(x)} past hier niet in de rij.`;
+      return [zin, ...tip];
+    },
+    toonAntwoord: async () => {
+      vul(l, v.gat, String(goed));
+      const tot = Array.from({ length: afstand + 1 }, (_, i) => waarde(ankerNr + i));
+      await l.zeg(`${terug ? "Terugtellen" : "Verdertellen"} vanaf ${w(anker)}: ${rijtje(tot)}.`, `Dus op deze plek hoort ${w(goed)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      /* Eerste fout: het getal waar je vanaf telt licht op. */
+      if (++nFout === 1) licht(l, ankerNr);
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, rijBeeld(v));
+    },
     vraag: v.opties ? v.vraag : [...v.vraag, "Typ het getal."],
     antwoord: () => (v.opties ? kiesGetal(l, v.opties) : typGetal(l, tip)),
     isGoed: (x) => x === goed,
@@ -109,17 +166,17 @@ function rijVraag(l: Lesgids, v: RijVraag): SqulaVraag<number> {
     goed: async () => {
       vul(l, v.gat, String(goed));
       const buren = [waarde(v.gat - 1), goed, ...(v.gat + 1 < v.rij.length ? [waarde(v.gat + 1)] : [])];
-      await l.zeg("Goed zo.", `${rijtje(buren)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
-      await l.zeg(terug ? "We tellen samen terug." : "We tellen samen.");
+      await l.zeg(terug ? `Ik tel terug langs de ${plekMv}.` : `Ik tel langs de ${plekMv}, van links naar rechts.`);
       for (let i = 0; i < v.gat; i++) {
         licht(l, i);
         await l.zeg(`${w(waarde(i))}.`);
       }
       licht(l, v.gat);
-      await l.zeg(terug ? `Welk getal komt na ${w(voor)}, als je terugtelt?` : `Welk getal komt na ${w(voor)}?`);
+      if (!krijgtVervolgvraag(l)) await l.zeg(terug ? `Welk getal komt na ${w(voor)}, als je terugtelt?` : `Welk getal komt na ${w(voor)}?`);
       licht(l);
     },
     tip,
@@ -165,7 +222,7 @@ async function telStreepjes(l: Lesgids, labels: number[], n: number, wat: string
       await l.zeg(`${wat} ${ww} tussen ${w(n - 1)} en ${w(n + 1)}.`, "Precies in het midden.");
     } else {
       licht(l, ...tel, n);
-      await l.zeg(`Welk getal hoort bij het streepje van ${wat.toLowerCase()}?`);
+      if (!krijgtVervolgvraag(l)) await l.zeg(`Welk getal hoort bij het streepje van ${wat.toLowerCase()}?`);
     }
     licht(l);
     return;
@@ -173,33 +230,56 @@ async function telStreepjes(l: Lesgids, labels: number[], n: number, wat: string
   const L = ijkpunt(labels, n);
   const d = n - L;
   licht(l, L);
-  await l.zeg(`Kijk, hier staat ${w(L)}.`, d > 0 ? "We tellen de streepjes verder." : "We tellen de streepjes terug.");
+  await l.zeg(`Kijk, hier staat ${w(L)}.`, d > 0 ? "Tel bij elk streepje 1 verder." : "We tellen de streepjes terug.");
   const tel: number[] = [L];
   for (let k = 1; k <= Math.abs(d); k++) {
     tel.push(L + Math.sign(d) * k);
     licht(l, ...tel);
     await l.zeg(`${Telwoord(k)}.`);
   }
-  await l.zeg(`${wat} ${ww} ${TELWOORD[Math.abs(d)]} ${Math.abs(d) === 1 ? "streepje" : "streepjes"} ${d > 0 ? "na" : "voor"} de ${w(L)}.`);
+  await l.zeg(`${wat} ${ww} ${Math.abs(d)} ${Math.abs(d) === 1 ? "streepje" : "streepjes"} ${d > 0 ? "na" : "voor"} de ${w(L)}.`);
   licht(l);
 }
 
-function tipStreepjes(labels: number[], n: number, stap = 1) {
+function tipStreepjes(labels: number[], n: number, stap = 1, wat = WAT_VLAG.toLowerCase()) {
   const L = ijkpunt(labels, n);
-  return stap === 2 ? [`Tel in sprongen van ${w(2)} vanaf de ${w(L)}.`] : [n > L ? `Tel de streepjes verder vanaf de ${w(L)}.` : `Tel de streepjes terug vanaf de ${w(L)}.`];
+  return stap === 2 ? [`Begin bij de ${w(L)}. Elk streepje is ${w(2)} verder, dus tel in sprongen.`] : [n > L ? `Begin bij de ${w(L)} en tel streepje voor streepje verder naar ${wat}.` : `Begin bij de ${w(L)} en tel streepje voor streepje terug naar ${wat}.`];
+}
+
+/** Waarom het goede getal klopt, met wat er op de lijn staat. */
+function lijnWaarom(labels: number[], n: number, stap: number, wat: string): string {
+  const L = ijkpunt(labels, n);
+  const d = n - L;
+  if (stap === 2) return n % 2 === 0 ? `Vanaf de ${w(L)} ga je in sprongen van ${w(2)}. Zo kom je bij ${w(n)}.` : `${wat} staat tussen ${w(n - 1)} en ${w(n + 1)}, dus bij ${w(n)}.`;
+  return `Vanaf de ${w(L)} is het ${Math.abs(d)} ${Math.abs(d) === 1 ? "streepje" : "streepjes"} ${d > 0 ? "verder" : "terug"}. Zo kom je bij ${w(n)}.`;
 }
 
 function lijnVraag(l: Lesgids, v: LijnVraag): SqulaVraag<number> {
   const tip = tipStreepjes(v.labels, v.n, v.stap);
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "lijn", van: v.van, tot: v.tot, stap: v.stap, streepjes: v.streepjes, labels: v.labels, vlag: { n: v.n, t: "?" } }),
+    synthesis: true,
+    reactie: (x) => lijnReactie(v.labels, v.n, x, tip, v.stap ?? 1),
+    toonAntwoord: async () => {
+      vul(l, v.n, String(v.n));
+      await l.zeg(lijnWaarom(v.labels, v.n, v.stap ?? 1, WAT_VLAG), `Het vlaggetje staat bij ${w(v.n)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      /* Eerste fout: het getal waar je vanaf telt licht op. */
+      if (++nFout === 1) licht(l, ijkpunt(v.labels, v.n));
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "lijn", van: v.van, tot: v.tot, stap: v.stap, streepjes: v.streepjes, labels: v.labels, vlag: { n: v.n, t: "?" } });
+    },
     vraag: v.opties ? v.vraag : [...v.vraag, "Typ het getal."],
     antwoord: () => (v.opties ? kiesGetal(l, v.opties) : typGetal(l, tip)),
     isGoed: (x) => x === v.n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, v.n, String(v.n));
-      await l.zeg("Goed zo.", `Het vlaggetje staat bij ${w(v.n)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, v.labels, v.n, "Het vlaggetje", v.stap),
@@ -217,7 +297,7 @@ function ordenVraag(l: Lesgids, v: OrdenVraag): SqulaVraag<number[]> {
   const vast = v.vakken.findIndex((n) => n !== null);
   const stap = alles[1] - alles[0];
   const kleinste = Math.min(...v.kaarten);
-  const tip = vast === 0 ? [stap > 1 ? `Welk getal is ${w(stap)} meer dan ${w(v.vakken[0]!)}?` : `Welk getal komt na ${w(v.vakken[0]!)}?`] : ["Begin met het kleinste getal."];
+  const tip = vast === 0 ? [`Het eerste vak heeft al ${w(v.vakken[0]!)}. Tel ${stap > 1 ? w(stap) : "1"} verder voor het volgende getal.`] : ["Welk getal zeg je het eerst als je telt? Dat getal komt vooraan."];
   let eerste = true;
   /* Liggen de kaarten nog van de vorige poging in de vakken, dan eerst terug (nieuwe ronde). */
   let vers = false;
@@ -226,6 +306,23 @@ function ordenVraag(l: Lesgids, v: OrdenVraag): SqulaVraag<number[]> {
     vers = true;
   };
   return {
+    synthesis: true,
+    reactie: (x) => {
+      const p = x.findIndex((n, i) => n !== alles[i]);
+      const omgekeerd = x.length > 1 && x.every((n, i) => n === alles[alles.length - 1 - i]);
+      if (omgekeerd) return [`Je zette ${w(x[0])} vooraan. Dat is het grootste getal, en je begint bij het kleinste.`, ...tip];
+      if (p > 0) return [`Tot en met ${w(x[p - 1])} staat het goed.`, vast === 0 ? `Tel ${stap > 1 ? w(stap) : "1"} verder vanaf ${w(x[p - 1])}.` : "Zoek het kleinste getal van wat nog over is."];
+      if (p === 0) return [`Je zette ${w(x[0])} vooraan. Er is een kleiner getal.`, ...tip];
+      return tip;
+    },
+    toonAntwoord: async () => {
+      /* Alle getallen staan nu in de goede volgorde in de vakjes. */
+      toon(l, { soort: "orden", vakken: alles, kaarten: [], hokjes: v.hokjes });
+      await l.wacht(500);
+      golf(l, 0);
+      await l.zeg(`${rijtje(alles)}.`, `Van ${w(alles[0])} tot ${w(alles[alles.length - 1])} wordt het steeds groter.`);
+      await l.wacht(300);
+    },
     toon: leg,
     vraag: v.vraag ?? ["Zet de getallen op volgorde.", "Van klein naar groot."],
     antwoord: async () => {
@@ -244,25 +341,25 @@ function ordenVraag(l: Lesgids, v: OrdenVraag): SqulaVraag<number[]> {
     noem: (x) => rijtje(x),
     goed: async () => {
       golf(l, 0);
-      await l.zeg("Goed zo.", `${rijtje(alles)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
       leg();
       licht(l, ...alles);
-      await l.zeg("Kijk naar alle getallen.");
-      if (stap === 1) await l.zeg("Ze komen in de telrij na elkaar.");
+      await l.zeg(`Ik kijk naar de ${alles.length} getallen.`);
+      if (stap === 1) await l.zeg("Ze volgen elkaar op: elk getal is 1 meer dan het getal ervoor.");
       else await l.zeg(`Elk getal is ${w(stap)} meer dan het getal ervoor.`);
       if (vast === 0) {
         licht(l, v.vakken[0]!);
-        await l.zeg(`Vooraan staat al ${w(v.vakken[0]!)}.`, "Welk getal komt daarna?");
+        await l.zeg(`Vooraan staat al ${w(v.vakken[0]!)}.`, ...(krijgtVervolgvraag(l) ? [] : ["Welk getal komt daarna?"]));
       } else {
         if (vast > 0) {
           licht(l, v.vakken[vast]!);
           await l.zeg(`In het ${RANG[vast]} vak staat al ${w(v.vakken[vast]!)}.`);
         }
         licht(l, kleinste);
-        await l.zeg("Dit is het kleinste getal.", "Dat komt helemaal vooraan.");
+        await l.zeg(`${w(kleinste)} is het kleinste getal.`, "Dat komt helemaal vooraan.");
       }
       licht(l);
     },
@@ -277,28 +374,39 @@ function tussenVraag(l: Lesgids, a: number, b: number, opties: number[]): SqulaV
   const goed = opties.find((o) => o > a && o < b)!;
   const zin = `Welk getal is groter dan ${w(a)} en kleiner dan ${w(b)}?`;
   return {
+    synthesis: true,
+    reactie: (x) => [
+      x === a ? `${w(x)} is hetzelfde getal als ${w(a)}, dus niet groter.` : x === b ? `${w(x)} is hetzelfde getal als ${w(b)}, dus niet kleiner.` : x < a ? `${w(x)} is kleiner dan ${w(a)}, en het getal moet juist groter zijn.` : `${w(x)} is groter dan ${w(b)}, en het getal moet juist kleiner zijn.`,
+      `Tel vanaf ${w(a)} verder tot ${w(b)}. Zoek het getal dat je onderweg zegt.`,
+    ],
+    toonAntwoord: async () => {
+      toon(l, { soort: "lijn", van: 0, tot: 20, labels: Array.from({ length: 21 }, (_, i) => i) });
+      vul(l, goed, String(goed));
+      await l.zeg(`${w(goed)} is groter dan ${w(a)} en kleiner dan ${w(b)}.`);
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "leeg" }),
     vraag: [zin],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === goed,
     noem: (x) => w(x),
     goed: async () => {
-      await l.zeg("Goed zo.", `${w(goed)} is groter dan ${w(a)} en kleiner dan ${w(b)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
       toon(l, { soort: "lijn", van: 0, tot: 20, labels: Array.from({ length: 21 }, (_, i) => i) });
       licht(l, a, b);
-      await l.zeg("Kijk op de getallenlijn.", `Het getal ligt tussen ${w(a)} en ${w(b)}.`);
+      await l.zeg(`Ik zet ${w(a)} en ${w(b)} op de getallenlijn.`, `Het getal ligt ertussen.`);
       for (const o of opties) {
         if (o === goed) continue;
         licht(l, a, b, o);
         await l.zeg(o < a ? `${w(o)} is kleiner dan ${w(a)}.` : `${w(o)} is groter dan ${w(b)}.`);
       }
       licht(l, a, b);
-      await l.zeg("Welk getal ligt ertussen?");
+      if (!krijgtVervolgvraag(l)) await l.zeg("Welk getal ligt ertussen?");
     },
-    tip: [`Zoek het getal tussen ${w(a)} en ${w(b)}.`],
+    tip: [`Het getal moet meer zijn dan ${w(a)} en minder dan ${w(b)}.`],
     testAntwoord: goed,
   };
 }
@@ -314,19 +422,36 @@ const Naam = (z: Wezen) => {
 /** Bij welk getal staat het raketje? */
 function raketjeBij(l: Lesgids, o: { van: number; tot: number; n: number; opties: number[]; vraag?: string[] }): SqulaVraag<number> {
   const labels = Array.from({ length: o.tot - o.van + 1 }, (_, i) => o.van + i);
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, labels, raketje: { n: o.n } }),
+    synthesis: true,
+    reactie: (x) =>
+      x === o.n - 1
+        ? [`${w(x)} is het streepje net vóór het raketje.`, "Het raketje staat 1 streepje verder dan dat streepje."]
+        : [x === o.n + 1 ? `${w(x)} is het streepje net na het raketje.` : x < o.n ? `Het raketje staat verder dan ${w(x)}.` : `Zo ver als ${w(x)} is het raketje nog niet.`, `Kijk naar het streepje direct voor het raketje. Tel daar 1 bij.`],
+    toonAntwoord: async () => {
+      vul(l, o.n, String(o.n));
+      await l.zeg(`Na ${w(o.n - 1)} komt ${w(o.n)}.`, `Het raketje staat bij ${w(o.n)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1) licht(l, o.n - 1);
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "lijn", van: o.van, tot: o.tot, labels, raketje: { n: o.n } });
+    },
     vraag: o.vraag ?? ["Bij welk getal staat het raketje?"],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `Het raketje staat bij ${w(o.n)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
-      await l.zeg("We tellen samen langs de lijn.");
+      await l.zeg("Ik loop langs de streepjes tot vlak voor het raketje.");
       const tel: number[] = [];
       for (let k = Math.max(o.van, o.n - 4); k < o.n; k++) {
         tel.push(k);
@@ -337,7 +462,7 @@ function raketjeBij(l: Lesgids, o: { van: number; tot: number; n: number; opties
       await l.zeg(`En na ${w(o.n - 1)} staat het raketje.`);
       licht(l);
     },
-    tip: [`Welk getal komt na ${w(o.n - 1)}?`],
+    tip: [`Kijk naar het streepje direct voor het raketje. Tel daar 1 bij.`],
     testAntwoord: o.n,
   };
 }
@@ -346,6 +471,14 @@ function raketjeBij(l: Lesgids, o: { van: number; tot: number; n: number; opties
 function naTien(l: Lesgids, opties: number[]): SqulaVraag<number> {
   const labels = Array.from({ length: 11 }, (_, i) => i);
   return {
+    synthesis: true,
+    reactie: (x) => [x === 10 ? "{10:wit} is het laatste getal op de lijn. Het raketje is al voorbij de {10:wit}." : x < 10 ? `Het raketje is het streepje van ${w(x)} al voorbij.` : `Zo ver vliegt het raketje nog niet: ${w(x)} komt pas later.`, "De lijn eindigt bij {10:wit}, maar het raketje vliegt door. Tel 1 verder."],
+    toonAntwoord: async () => {
+      vul(l, 11, "11");
+      await l.zeg("Na {10:wit} komt {11:wit}.");
+      await l.wacht(300);
+    },
+    fout: () => licht(l, 10),
     toon: () => toon(l, { soort: "lijn", van: 0, tot: 10, labels, door: true, raketje: { n: 11 } }),
     vraag: ["Het raketje vliegt verder dan de {10:wit}.", "Welk getal komt na {10:wit}?"],
     antwoord: () => kiesGetal(l, opties),
@@ -353,20 +486,20 @@ function naTien(l: Lesgids, opties: number[]): SqulaVraag<number> {
     noem: (x) => w(x),
     goed: async () => {
       vul(l, 11, "11");
-      await l.zeg("Goed zo.", "Na {10:wit} komt {11:wit}.");
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
-      await l.zeg("We tellen samen.");
+      await l.zeg("Ik tel de laatste streepjes van de lijn.");
       for (const k of [8, 9, 10]) {
         licht(l, k);
         await l.zeg(`${w(k)}.`);
       }
       licht(l, 10, 11);
-      await l.zeg("Het raketje staat één streepje verder.", "Welk getal komt na {10:wit}?");
+      await l.zeg("Het raketje staat 1 streepje verder.");
       licht(l);
     },
-    tip: ["Tel één verder dan {10:wit}."],
+    tip: ["De lijn eindigt bij {10:wit}, maar het raketje vliegt door. Tel 1 verder."],
     testAntwoord: 11,
   };
 }
@@ -376,6 +509,15 @@ function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVr
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
   return {
+    synthesis: true,
+    reactie: (x) => [`Als je telt, zeg je ${w(x)} eerder dan ${w(x === a ? b : a)}.`, "Het getal dat je later zegt, is meer."],
+    toonAntwoord: async () => {
+      toon(l, { soort: "lijn", van: 10, tot: 20, labels: Array.from({ length: 11 }, (_, i) => 10 + i) });
+      licht(l, klein, groot);
+      await l.zeg(`${w(groot)} komt later dan ${w(klein)}.`, `${w(groot)} is meer dan ${w(klein)}.`);
+      golf(l, groot);
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "planeet" }),
     vraag: [...verhaal, `Wat is meer: ${w(a)} of ${w(b)}?`],
     antwoord: () => kiesGetal(l, [b, a]),
@@ -383,20 +525,20 @@ function watIsMeer(l: Lesgids, verhaal: string[], a: number, b: number): SqulaVr
     noem: (x) => w(x),
     goed: async () => {
       golf(l, 0);
-      await l.zeg("Goed zo.", `${w(groot)} is meer dan ${w(klein)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
       toon(l, { soort: "lijn", van: 10, tot: 20, labels: Array.from({ length: 11 }, (_, i) => 10 + i) });
       licht(l, klein, groot);
-      await l.zeg("Kijk op de getallenlijn.", "Hoe verder je telt, hoe meer het is.");
+      await l.zeg(`Ik zet ${w(klein)} en ${w(groot)} op de getallenlijn.`, "Hoe verder je telt, hoe meer het is.");
       licht(l, klein);
       await l.zeg(`Hier staat ${w(klein)}.`);
       licht(l, groot);
-      await l.zeg(`En hier staat ${w(groot)}.`, "Welk getal komt later?");
+      await l.zeg(`En hier staat ${w(groot)}.`, "Dit getal zeg je later als je telt.");
       licht(l);
     },
-    tip: ["Welk getal komt later als je telt?"],
+    tip: ["Het getal dat je later zegt als je telt, is meer."],
     testAntwoord: groot,
   };
 }
@@ -407,9 +549,23 @@ function wieZitEr(
   o: { labels: number[]; n: number; wie: Wezen; raketje: number; anderen: { soort: Exclude<Wezen, "raketje">; n: number }[] },
 ): SqulaVraag<string> {
   const beeld: Beeld = { soort: "lijn", van: 10, tot: 20, labels: o.labels, raketje: { n: o.raketje }, wezens: o.anderen };
-  const tip = tipStreepjes(o.labels, o.n);
+  const tip = tipStreepjes(o.labels, o.n, 1, `het streepje van ${w(o.n)}`);
+  let nFout = 0;
   return {
-    toon: () => toon(l, beeld),
+    synthesis: true,
+    reactie: (x) => [`Je tikte op ${naamVan(x as Wezen)}. Die staat bij een ander getal dan ${w(o.n)}.`, ...tip],
+    toonAntwoord: async () => {
+      vul(l, o.n, String(o.n));
+      await l.zeg(`${Naam(o.wie)} staat bij ${w(o.n)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1) licht(l, ijkpunt(o.labels, o.n));
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, beeld);
+    },
     vraag: [`Wat staat er bij ${w(o.n)}?`, "Tik erop."],
     antwoord: async () => {
       zet(l, { actief: true });
@@ -421,11 +577,11 @@ function wieZitEr(
     noem: (x) => Naam(x as Wezen),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `${Naam(o.wie)} staat bij ${w(o.n)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, o.labels, o.n, w(o.n), 1, "is"),
-    tip: [...tip, `Wat staat er bij ${w(o.n)}?`],
+    tip,
     testAntwoord: o.wie,
   };
 }
@@ -435,6 +591,13 @@ function dichtstBij(l: Lesgids, doel: number, getallen: number[], wezens: Wezen[
   const goed = [...getallen].sort((a, b) => Math.abs(a - doel) - Math.abs(b - doel))[0];
   const verder = getallen.filter((g) => g !== goed).sort((a, b) => Math.abs(b - doel) - Math.abs(a - doel));
   return {
+    synthesis: true,
+    reactie: (x) => [`${w(x)} is ${w(Math.abs(x - doel))} van de ${w(doel)} af. Een ander getal ligt dichterbij.`, `Tel hoeveel stapjes het van elk getal naar de ${w(doel)} is. Het kleinste aantal stapjes is het dichtst bij.`],
+    toonAntwoord: async () => {
+      golf(l, getallen.indexOf(goed));
+      await l.zeg(`${w(goed)} ligt het dichtst bij ${w(doel)}.`, `Het is maar ${Math.abs(goed - doel)} verder of terug.`);
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "bordjes", getallen, wezens }),
     vraag: [`Welk getal ligt het dichtst bij ${w(doel)}?`],
     antwoord: () => kiesGetal(l, getallen),
@@ -442,22 +605,22 @@ function dichtstBij(l: Lesgids, doel: number, getallen: number[], wezens: Wezen[
     noem: (x) => w(x),
     goed: async () => {
       golf(l, getallen.indexOf(goed));
-      await l.zeg("Goed zo.", `${w(goed)} ligt vlak bij ${w(doel)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
       const labels = [...new Set([0, 20, doel, ...getallen])].sort((a, b) => a - b);
       toon(l, { soort: "lijn", van: 0, tot: 20, labels });
       licht(l, doel);
-      await l.zeg("Kijk op de getallenlijn.", `Hier is ${w(doel)}.`);
+      await l.zeg(`Ik zet de getallen op de getallenlijn.`, `Hier is ${w(doel)}.`);
       licht(l, doel, verder[0]);
       await l.zeg(`${w(verder[0])} ligt ver van de ${w(doel)}.`);
       licht(l, doel, verder[1]);
       const even = Math.abs(verder[1] - doel) === Math.abs(verder[0] - doel);
-      await l.zeg(even ? `${w(verder[1])} ligt ook ver van de ${w(doel)}.` : `${w(verder[1])} ligt al dichterbij.`, "Welk getal ligt er nog dichterbij?");
+      await l.zeg(even ? `${w(verder[1])} ligt ook ver van de ${w(doel)}.` : `${w(verder[1])} ligt al dichterbij.`, ...(krijgtVervolgvraag(l) ? [] : ["Welk getal ligt er nog dichterbij?"]));
       licht(l);
     },
-    tip: [`Kijk hoe ver elk getal van de ${w(doel)} af ligt.`],
+    tip: [`Tel hoeveel stapjes het van elk getal naar de ${w(doel)} is. Het kleinste aantal stapjes is het dichtst bij.`],
     testAntwoord: goed,
   };
 }
@@ -467,15 +630,31 @@ function ongeveer(
   l: Lesgids,
   o: { van: number; tot: number; streepjes: number[]; labels: number[]; plek: number; goed: number; opties: number[]; hulp: { licht: number[]; zinnen: string[] }; tip: string[] },
 ): SqulaVraag<number> {
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "lijn", van: o.van, tot: o.tot, streepjes: o.streepjes, labels: o.labels, raketje: { n: o.plek } }),
+    synthesis: true,
+    reactie: (x) => [x < o.goed ? `Het raketje staat verder naar rechts dan ${w(x)}.` : `Het raketje staat nog links van ${w(x)}.`, ...o.tip],
+    toonAntwoord: async () => {
+      licht(l, ...o.hulp.licht);
+      await l.zeg(...o.hulp.zinnen);
+      golf(l, o.plek);
+      await l.zeg(`Het raketje staat ongeveer bij ${w(o.goed)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1) licht(l, ...o.hulp.licht);
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "lijn", van: o.van, tot: o.tot, streepjes: o.streepjes, labels: o.labels, raketje: { n: o.plek } });
+    },
     vraag: ["Bij welk getal staat het raketje ongeveer?"],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.goed,
     noem: (x) => w(x),
     goed: async () => {
       golf(l, o.plek);
-      await l.zeg("Goed zo.", `Het raketje staat ongeveer bij ${w(o.goed)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -491,6 +670,14 @@ function ongeveer(
 /** Welk getal komt voor …? (het raketje op een planeet met een getal) */
 function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): SqulaVraag<number> {
   return {
+    synthesis: true,
+    reactie: (x) => [x === n ? `${w(x)} is het getal van de planeet zelf, niet het getal ervoor.` : x > n ? `${w(x)} komt na ${w(n)}, niet ervoor.` : `Van ${w(n)} naar ${w(x)} is meer dan 1 terug.`, `Begin bij ${w(n)} op de planeet en tel 1 terug.`],
+    toonAntwoord: async () => {
+      toon(l, { soort: "lijn", van: 9, tot: 20, labels: Array.from({ length: 12 }, (_, i) => 9 + i) });
+      vul(l, n - 1, String(n - 1));
+      await l.zeg(`Voor ${w(n)} komt ${w(n - 1)}.`);
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "planeet", getal: n }),
     vraag: [aanloop, `Welk getal komt voor ${w(n)}?`],
     antwoord: () => kiesGetal(l, opties),
@@ -498,7 +685,7 @@ function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): Squ
     noem: (x) => w(x),
     goed: async () => {
       golf(l, 0);
-      await l.zeg("Goed zo.", `Voor ${w(n)} komt ${w(n - 1)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -506,10 +693,10 @@ function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): Squ
       licht(l, n);
       await l.zeg(`Hier is ${w(n)} op de getallenlijn.`, "Het getal ervoor staat er links naast.");
       licht(l, n - 1, n);
-      await l.zeg("Dat is één terug.");
+      await l.zeg("Dat is 1 terug.");
       licht(l);
     },
-    tip: [`Tel één terug vanaf ${w(n)}.`],
+    tip: [`Begin bij ${w(n)} op de planeet en tel 1 terug.`],
     testAntwoord: n - 1,
   };
 }
@@ -517,19 +704,33 @@ function komtVoor(l: Lesgids, n: number, opties: number[], aanloop: string): Squ
 /** Een pijl wijst een streepje aan: welk getal is het? */
 function pijlWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> {
   const labels = [10, 15, 20];
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "lijn", van: 8, tot: 20, labels, raketje: { n, wijs: true } }),
+    synthesis: true,
+    reactie: (x) => lijnReactie(labels, n, x, tipStreepjes(labels, n, 1, "de pijl"), 1, "de pijl"),
+    toonAntwoord: async () => {
+      vul(l, n, String(n));
+      await l.zeg(lijnWaarom(labels, n, 1, "De pijl"), `De pijl wijst ${w(n)} aan.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1) licht(l, ijkpunt(labels, n));
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "lijn", van: 8, tot: 20, labels, raketje: { n, wijs: true } });
+    },
     vraag: ["De pijl wijst een streepje aan.", "Welk getal hoort daarbij?"],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, n, String(n));
-      await l.zeg("Goed zo.", `De pijl wijst ${w(n)} aan.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, labels, n, "De pijl"),
-    tip: tipStreepjes(labels, n),
+    tip: tipStreepjes(labels, n, 1, "de pijl"),
     testAntwoord: n,
   };
 }
@@ -537,19 +738,33 @@ function pijlWijst(l: Lesgids, n: number, opties: number[]): SqulaVraag<number> 
 /** Bij welk getal staat de ufo of de satelliet? (lijn met alleen 15 en 20) */
 function wezenGetal(l: Lesgids, o: { wie: Exclude<Wezen, "raketje">; n: number; raketje: number; ander: { soort: Exclude<Wezen, "raketje">; n: number }; opties: number[] }): SqulaVraag<number> {
   const labels = [15, 20];
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "lijn", van: 10, tot: 20, labels, raketje: { n: o.raketje }, wezens: [{ soort: o.wie, n: o.n }, o.ander] }),
+    synthesis: true,
+    reactie: (x) => lijnReactie(labels, o.n, x, tipStreepjes(labels, o.n, 1, naamVan(o.wie)), 1, naamVan(o.wie)),
+    toonAntwoord: async () => {
+      vul(l, o.n, String(o.n));
+      await l.zeg(lijnWaarom(labels, o.n, 1, Naam(o.wie)), `${Naam(o.wie)} staat bij ${w(o.n)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1) licht(l, ijkpunt(labels, o.n));
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "lijn", van: 10, tot: 20, labels, raketje: { n: o.raketje }, wezens: [{ soort: o.wie, n: o.n }, o.ander] });
+    },
     vraag: [`Bij welk getal staat ${naamVan(o.wie)}?`],
     antwoord: () => kiesGetal(l, o.opties),
     isGoed: (x) => x === o.n,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, o.n, String(o.n));
-      await l.zeg("Goed zo.", `${Naam(o.wie)} staat bij ${w(o.n)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: () => telStreepjes(l, labels, o.n, Naam(o.wie), 1, "staat"),
-    tip: tipStreepjes(labels, o.n),
+    tip: tipStreepjes(labels, o.n, 1, naamVan(o.wie)),
     testAntwoord: o.n,
   };
 }
@@ -557,6 +772,13 @@ function wezenGetal(l: Lesgids, o: { wie: Exclude<Wezen, "raketje">; n: number; 
 /** Het raketje helemaal aan het eind van de lijn. */
 function aanHetEind(l: Lesgids, opties: number[]): SqulaVraag<number> {
   return {
+    synthesis: true,
+    reactie: (x) => [x < 20 ? `Het raketje vliegt nog verder dan ${w(x)}.` : `De lijn loopt niet zo ver als ${w(x)}.`, "Tel in sprongen van {5:wit} vanaf het midden."],
+    toonAntwoord: async () => {
+      vul(l, 20, "20");
+      await l.zeg("Het raketje staat op het laatste streepje.", "Dat is {20:wit}.");
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "lijn", van: 0, tot: 20, streepjes: [0, 5, 10, 15, 20], labels: [0, 20], raketje: { n: 20 } }),
     vraag: ["Het raketje vliegt helemaal naar het eind.", "Bij welk getal staat het raketje nu?"],
     antwoord: () => kiesGetal(l, opties),
@@ -564,7 +786,7 @@ function aanHetEind(l: Lesgids, opties: number[]): SqulaVraag<number> {
     noem: (x) => w(x),
     goed: async () => {
       vul(l, 20, "20");
-      await l.zeg("Goed zo.", "Deze getallenlijn eindigt bij {20:wit}.");
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -577,7 +799,7 @@ function aanHetEind(l: Lesgids, opties: number[]): SqulaVraag<number> {
       licht(l);
       await l.zeg("Het raketje staat op het laatste streepje.");
     },
-    tip: ["Tel in sprongen van {5:wit} vanaf het midden: {10:wit}, {15:wit}…"],
+    tip: ["Tel in sprongen van {5:wit} vanaf het midden."],
     testAntwoord: 20,
   };
 }
@@ -593,19 +815,36 @@ function dingOpGetal(l: Lesgids, rij: (number | Ding)[], opties: number[]): Squl
   const goed = start + plek;
   const items: RijItem[] = rij.map((p) => (typeof p === "number" ? { t: String(p) } : { voorwerp: p }));
   const tussen = plek < rij.length - 1;
+  let nFout = 0;
   return {
-    toon: () => toon(l, { soort: "rij", ding: "tegel", items }),
+    synthesis: true,
+    reactie: (x) => [
+      rij.includes(x) ? `${w(x)} staat al in de rij, op een andere plek.` : x === goed + 1 ? `${w(x)} is 1 getal te ver.` : x === goed - 1 ? `${w(x)} komt eerder in de rij.` : `${w(x)} komt niet direct na ${w(goed - 1)}.`,
+      `Kijk naar het getal links van ${DINGNAAM[ding]}. Tel daar 1 bij.`,
+    ],
+    toonAntwoord: async () => {
+      vul(l, plek, String(goed));
+      await l.zeg(tussen ? `${w(goed)} zit tussen ${w(goed - 1)} en ${w(goed + 1)}.` : `Na ${w(goed - 1)} komt ${w(goed)}.`);
+      await l.wacht(300);
+    },
+    fout: () => {
+      if (++nFout === 1 && plek > 0) licht(l, plek - 1);
+    },
+    toon: () => {
+      nFout = 0;
+      toon(l, { soort: "rij", ding: "tegel", items });
+    },
     vraag: [`Welk getal ligt onder ${DINGNAAM[ding]}?`],
     antwoord: () => kiesGetal(l, opties),
     isGoed: (x) => x === goed,
     noem: (x) => w(x),
     goed: async () => {
       vul(l, plek, String(goed));
-      await l.zeg("Goed zo.", tussen ? `${w(goed)} zit tussen ${w(goed - 1)} en ${w(goed + 1)}.` : `Na ${w(goed - 1)} komt ${w(goed)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
-      await l.zeg("We tellen samen.");
+      await l.zeg(`Ik tel de getallen tot ${DINGNAAM[ding]}.`);
       for (let i = 0; i < plek; i++) {
         licht(l, i);
         await l.zeg(`${w(start + i)}.`);
@@ -615,10 +854,10 @@ function dingOpGetal(l: Lesgids, rij: (number | Ding)[], opties: number[]): Squl
         await l.zeg(`Na ${DINGNAAM[ding]} staat ${w(goed + 1)}.`);
       }
       licht(l, plek);
-      await l.zeg(`Welk getal komt na ${w(goed - 1)}?`);
+      if (!krijgtVervolgvraag(l)) await l.zeg(`Welk getal komt na ${w(goed - 1)}?`);
       licht(l);
     },
-    tip: [`Tel één verder dan ${w(goed - 1)}.`],
+    tip: [`Kijk naar het getal links van ${DINGNAAM[ding]}. Tel daar 1 bij.`],
     testAntwoord: goed,
   };
 }
@@ -629,24 +868,31 @@ function lang(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> {
   const fout = `${a - 2} en ${a - 1}`;
   const items: RijItem[] = [{ t: String(a) }, { voorwerp: "bus" }];
   return {
+    synthesis: true,
+    reactie: (x) => [`${x.replace(/(\d+)/g, "{$1:wit}")} komen vóór ${w(a)}, niet erna.`, `De bus staat rechts van ${w(a)}. Tel vanaf ${w(a)} 2 getallen verder.`],
+    toonAntwoord: async () => {
+      vul(l, 1, `${a + 1}   ${a + 2}`);
+      await l.zeg(`Na ${w(a)} komen ${w(a + 1)} en ${w(a + 2)}.`, "De bus bedekt allebei die getallen.");
+      await l.wacht(300);
+    },
     toon: () => toon(l, { soort: "rij", ding: "tegel", items }),
-    vraag: ["De bus is lang.", "Hij staat op twee getallen tegelijk.", "Welke getallen liggen onder de bus?"],
+    vraag: ["De bus is lang.", "Hij staat op 2 getallen tegelijk.", "Welke getallen liggen onder de bus?"],
     antwoord: async () => (await l.kies(goedEerst ? [goed, fout] : [fout, goed], { weetniet: false, direct: true })) ?? "",
     isGoed: (x) => x === goed,
     noem: (x) => x.replace(/(\d+)/g, "{$1:wit}"),
     goed: async () => {
       vul(l, 1, `${a + 1}   ${a + 2}`);
-      await l.zeg("Goed zo.", `Na ${w(a)} komen ${w(a + 1)} en ${w(a + 2)}.`);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
       licht(l, 0);
       await l.zeg(`Hier staat ${w(a)}.`);
       licht(l, 1);
-      await l.zeg("De bus staat erna.", "Hij staat op twee plekken.", `Welke twee getallen komen na ${w(a)}?`);
+      await l.zeg("De bus staat erna.", "Hij staat op 2 plekken.", ...(krijgtVervolgvraag(l) ? [] : [`Welke 2 getallen komen na ${w(a)}?`]));
       licht(l);
     },
-    tip: [`Tel twee verder vanaf ${w(a)}.`],
+    tip: [`De bus staat rechts van ${w(a)}. Tel vanaf ${w(a)} 2 getallen verder.`],
     testAntwoord: goed,
   };
 }
@@ -655,9 +901,9 @@ function lang(l: Lesgids, a: number, goedEerst: boolean): SqulaVraag<string> {
 
 type Opgave = (l: Lesgids) => SqulaVraag<number> | SqulaVraag<number[]> | SqulaVraag<string>;
 
-async function speelOpgaven(l: Lesgids, opgaven: Opgave[]) {
+async function speelOpgaven(l: Lesgids, opgaven: Opgave[], voorbeeldAfgerond = false) {
   let fouten = 0;
-  for (const maak of opgaven) {
+  for (const maak of opgaven.slice(voorbeeldAfgerond ? 1 : 0)) {
     const v = maak(l) as SqulaVraag<unknown>;
     speelLesgeluid("verschijn");
     if (!(await vraag(l, v))) fouten++;
@@ -740,7 +986,7 @@ const RANGSCHIKKEN_3: Opgave[] = [
 
 async function uitlegRij(l: Lesgids) {
   toon(l, { soort: "rij", ding: "lampje", slinger: true, items: [{ t: "1" }, { t: "2" }, { t: "3" }, { t: "…" }, { t: "5" }] });
-  await l.zeg("Kijk, een lichtslinger met getallen.", "Op één lampje staan puntjes.");
+  await l.zeg("Kijk, een lichtslinger met getallen.", "Op 1 lampje staan puntjes.");
   for (const i of [0, 1, 2]) {
     licht(l, i);
     await l.zeg(`${w(i + 1)}.`);
@@ -748,24 +994,24 @@ async function uitlegRij(l: Lesgids) {
   licht(l, 3);
   await l.zeg("Na {3:wit} komt {4:wit}.");
   vul(l, 3, "4");
-  await l.zeg("Elk lampje is één verder.");
+  await l.zeg("Elk lampje is 1 verder.");
   await l.verder();
 }
 
 /** Uitleg bij de diamanten met puntjes (het voorbeeld van level 2): dezelfde soort rij, andere getallen. */
 async function uitlegDiamant(l: Lesgids) {
   toon(l, { soort: "rij", ding: "kristal", onder: true, items: [{ t: "7" }, { t: "" }, { t: "…" }, { t: "" }, { t: "11" }] });
-  await l.zeg("Kijk, diamanten met getallen eronder.", "Op één diamant staan puntjes.");
+  await l.zeg("Kijk, diamanten met getallen eronder.", "Op 1 diamant staan puntjes.");
   licht(l, 0);
   await l.zeg("Links staat {7:wit}.");
   licht(l, 4);
-  await l.zeg("Rechts staat {11:wit}.", "Elke diamant is één verder.");
+  await l.zeg("Rechts staat {11:wit}.", "Elke diamant is 1 verder.");
   licht(l, 0);
   await l.zeg("{7:wit}.");
   licht(l, 1);
   await l.zeg("{8:wit}.");
   licht(l, 2);
-  await l.zeg("Wat komt hierna?");
+  await l.zeg("Nu komt de plek met de puntjes.");
   vul(l, 2, "9");
   await l.zeg("Op de puntjes hoort {9:wit}.");
   await l.verder();
@@ -773,13 +1019,13 @@ async function uitlegDiamant(l: Lesgids) {
 /** Uitleg bij de planeet (het voorbeeld van kat-2): welk getal komt ervoor? */
 async function uitlegVoor(l: Lesgids) {
   toon(l, { soort: "planeet", getal: 8 });
-  await l.zeg("Het raketje landt op een planeet met {8:wit}.", "Welk getal komt ervoor?", "Dat is één terug.");
-  await l.zeg("Tel één terug vanaf {8:wit}.", "Dat is {7:wit}.");
+  await l.zeg("Het raketje landt op een planeet met {8:wit}.", "We zoeken het getal ervoor.", "Dat is 1 terug.");
+  await l.zeg("Tel 1 terug vanaf {8:wit}.", "Dat is {7:wit}.");
   await l.verder();
 }
 async function uitlegLijn(l: Lesgids, labels: number[], n: number) {
   toon(l, { soort: "lijn", van: 0, tot: 20, labels, vlag: { n, t: "?" } });
-  await l.zeg("Dit is een getallenlijn.", "Elk streepje is één verder.");
+  await l.zeg("Dit is een getallenlijn.", "Elk streepje is 1 verder.");
   await telStreepjes(l, labels, n, "Het vlaggetje");
   vul(l, n, String(n));
   await l.zeg(`Dus het vlaggetje staat bij ${w(n)}.`);
@@ -809,12 +1055,15 @@ const rangschikken1: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "lampje", slinger: true, items: [3, 4, 5, 6, 7].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: ["Een lichtslinger heeft lampjes met getallen.", "Welk getal hoort op de puntjes?"],
       voorbeeld: () => (RANGSCHIKKEN_1[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, RANGSCHIKKEN_1[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegRij(l),
     });
-    const fouten = await speelOpgaven(l, RANGSCHIKKEN_1);
+    const fouten = await speelOpgaven(l, RANGSCHIKKEN_1, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet welk getal waar hoort.");
   },
 };
@@ -830,12 +1079,15 @@ const rangschikken2: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 0, tot: 20, labels: [0, 10, 20] } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: ["De diamanten hebben getallen eronder.", "Welk getal hoort op de puntjes?"],
       voorbeeld: () => (RANGSCHIKKEN_2[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, RANGSCHIKKEN_2[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegDiamant(l),
     });
-    const fouten = await speelOpgaven(l, RANGSCHIKKEN_2);
+    const fouten = await speelOpgaven(l, RANGSCHIKKEN_2, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je vindt getallen ook als er weinig staan.");
   },
 };
@@ -851,15 +1103,18 @@ const rangschikken3: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "lijn", van: 10, tot: 20, stap: 2, labels: [10, 20] } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: ["Op de getallenlijn staan niet alle getallen.", "Bij welk getal staat het vlaggetje?"],
       voorbeeld: () => (RANGSCHIKKEN_3[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, RANGSCHIKKEN_3[0](l) as SqulaVraag<unknown>),
       uitleg: async () => {
         await uitlegLijn(l, [0, 10, 11, 12, 13, 14, 20], 18);
         await uitlegPerTwee(l);
       },
     });
-    const fouten = await speelOpgaven(l, RANGSCHIKKEN_3);
+    const fouten = await speelOpgaven(l, RANGSCHIKKEN_3, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kent de getallenlijn tot {20:wit} goed.");
   },
 };
@@ -898,7 +1153,7 @@ const KAT_1: Opgave[] = [
       goed: 11,
       opties: [11, 16, 19],
       hulp: { licht: [10], zinnen: ["Kijk, hier staat {10:wit}.", "Het raketje staat vlak na de {10:wit}."] },
-      tip: ["Welk getal komt vlak na {10:wit}?"],
+      tip: ["Zoek het getal dat vlak na {10:wit} komt."],
     }),
   (l) =>
     ongeveer(l, {
@@ -910,7 +1165,7 @@ const KAT_1: Opgave[] = [
       goed: 19,
       opties: [13, 19, 16],
       hulp: { licht: [20], zinnen: ["Kijk, hier staat {20:wit}.", "Het raketje staat vlak voor de {20:wit}."] },
-      tip: ["Welk getal komt vlak voor {20:wit}?"],
+      tip: ["Zoek het getal dat vlak voor {20:wit} komt."],
     }),
 ];
 
@@ -954,7 +1209,7 @@ const KAT_2: Opgave[] = [
       goed: 11,
       opties: [11, 6, 16],
       hulp: { licht: [10], zinnen: ["Precies in het midden is {10:wit}.", "Het raketje staat daar net na."] },
-      tip: ["Welk getal komt net na {10:wit}?"],
+      tip: ["Zoek het getal dat net na {10:wit} komt."],
     }),
   (l) =>
     ongeveer(l, {
@@ -966,7 +1221,7 @@ const KAT_2: Opgave[] = [
       goed: 4,
       opties: [4, 9, 14],
       hulp: { licht: [5], zinnen: ["Dit streepje is {5:wit}.", "Het zit precies tussen {0:wit} en {10:wit}.", "Het raketje staat net voor de {5:wit}."] },
-      tip: ["Welk getal komt net voor {5:wit}?"],
+      tip: ["Zoek het getal dat net voor {5:wit} komt."],
     }),
   /* helemaal aan het eind */
   (l) => aanHetEind(l, [10, 20, 19]),
@@ -974,7 +1229,7 @@ const KAT_2: Opgave[] = [
 
 async function uitlegRaketje(l: Lesgids) {
   toon(l, { soort: "lijn", van: 0, tot: 10, labels: Array.from({ length: 11 }, (_, i) => i), raketje: { n: 3 } });
-  await l.zeg("Het raketje staat op de getallenlijn.", "Het staat bij een getal.", "We tellen samen.");
+  await l.zeg("Het raketje staat op de getallenlijn.", "Het staat bij een getal.", "Ik tel mee tot het raketje.");
   for (const k of [0, 1, 2]) {
     licht(l, k);
     await l.zeg(`${w(k)}.`);
@@ -995,12 +1250,15 @@ const kat1: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: ["Het raketje vliegt over de getallenlijn.", "Bij welk getal staat het raketje?"],
       voorbeeld: () => (KAT_1[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, KAT_1[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegRaketje(l),
     });
-    const fouten = await speelOpgaven(l, KAT_1);
+    const fouten = await speelOpgaven(l, KAT_1, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet waar het raketje staat op de getallenlijn.");
   },
 };
@@ -1016,12 +1274,15 @@ const kat2: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "planeet" } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: [`Het raketje landt op een planeet met ${w(15)}.`, `Welk getal komt voor ${w(15)}?`],
       voorbeeld: () => (KAT_2[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, KAT_2[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegVoor(l),
     });
-    const fouten = await speelOpgaven(l, KAT_2);
+    const fouten = await speelOpgaven(l, KAT_2, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je vindt het raketje op elke getallenlijn.");
   },
 };
@@ -1084,7 +1345,7 @@ const DIEREN_3: Opgave[] = [
 
 async function uitlegDier(l: Lesgids) {
   toon(l, { soort: "rij", ding: "tegel", items: [{ t: "5" }, { voorwerp: "bal" }, { t: "7" }] });
-  await l.zeg("Kijk, de bal ligt op een getal.", "We tellen samen.");
+  await l.zeg("Kijk, de bal ligt op een getal.", "Ik tel de getallen tot de bal.");
   licht(l, 0);
   await l.zeg("{5:wit}.");
   licht(l, 1);
@@ -1096,7 +1357,7 @@ async function uitlegDier(l: Lesgids) {
 
 async function uitlegOrden(l: Lesgids) {
   toon(l, { soort: "orden", vakken: [null, null, null], kaarten: [3, 1, 2] });
-  await l.zeg("Kijk, drie kaarten.", "We zetten ze op volgorde, van klein naar groot.");
+  await l.zeg("Kijk, 3 kaarten.", "We zetten ze op volgorde, van klein naar groot.");
   licht(l, 1);
   await l.zeg("Het kleinste getal komt vooraan: {1:wit}.");
   licht(l, 2);
@@ -1118,12 +1379,15 @@ const dieren1: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "bal" }, { voorwerp: "pakje" }, { voorwerp: "ster" }] } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
-      welkom: ["Een ding ligt tussen twee getallen.", "Welk getal ligt onder de bal?"],
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
+      welkom: ["Een ding ligt tussen 2 getallen.", "Welk getal ligt onder de bal?"],
       voorbeeld: () => (DIEREN_1[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, DIEREN_1[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegDier(l),
     });
-    const fouten = await speelOpgaven(l, DIEREN_1);
+    const fouten = await speelOpgaven(l, DIEREN_1, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet welk getal onder elk ding ligt.");
   },
 };
@@ -1139,12 +1403,15 @@ const dieren2: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ voorwerp: "speelblok" }, { voorwerp: "speelgoedauto" }, { voorwerp: "pakje" }] } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
-      welkom: ["Er liggen drie kaarten met getallen.", "Zet de getallen op volgorde, van klein naar groot."],
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
+      welkom: ["Er liggen 3 kaarten met getallen.", "Zet de getallen op volgorde, van klein naar groot."],
       voorbeeld: () => (DIEREN_2[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, DIEREN_2[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegOrden(l),
     });
-    const fouten = await speelOpgaven(l, DIEREN_2);
+    const fouten = await speelOpgaven(l, DIEREN_2, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je zet getallen goed op volgorde.");
   },
 };
@@ -1160,12 +1427,15 @@ const dieren3: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "tegel", items: [{ t: "10" }, { voorwerp: "bus" }] } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: [`Nu ligt de bal tussen ${w(4)} en ${w(6)}.`, "Welk getal ligt onder de bal?"],
       voorbeeld: () => (DIEREN_3[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, DIEREN_3[0](l) as SqulaVraag<unknown>),
       uitleg: () => uitlegDier(l),
     });
-    const fouten = await speelOpgaven(l, DIEREN_3);
+    const fouten = await speelOpgaven(l, DIEREN_3, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kent de getallen tot {20:wit} heel goed.");
   },
 };
@@ -1217,12 +1487,15 @@ const terugtellen1: Lesdraaiboek = {
   async speel(l) {
     l.vlak<GetallenlijnProps>(SqulaGetallenlijn, { beeld: { soort: "rij", ding: "aftel", items: [7, 6, 5, 4, 3, 2, 1].map((n) => ({ t: String(n) })) } });
     speelLesgeluid("verschijn");
-    await squlaBegin(l, {
+    zetSynthesisHulp(l);
+    const voorbeeldAfgerond = await squlaBegin(l, {
       welkom: ["De raket telt af, van groot naar klein.", "Welk getal hoort op de puntjes?"],
       voorbeeld: () => (TERUGTELLEN[0](l) as SqulaVraag<unknown>).toon?.(),
+      voordoen: true,
+      samen: () => squlaVraag(l, TERUGTELLEN[0](l) as SqulaVraag<unknown>),
       uitleg: async () => {
         toon(l, { soort: "rij", ding: "aftel", items: [7, 6, 5, "…", 3, 2, 1].map((n) => ({ t: String(n) })) });
-        await l.zeg("We tellen samen terug.");
+        await l.zeg("Ik tel mee terug.");
         for (const i of [0, 1, 2]) {
           licht(l, i);
           await l.zeg(`${w(7 - i)}.`);
@@ -1230,11 +1503,11 @@ const terugtellen1: Lesdraaiboek = {
         licht(l, 3);
         await l.zeg("Na {5:wit} komt {4:wit}.");
         vul(l, 3, "4");
-        await l.zeg("Terug wordt het getal steeds één minder.");
+        await l.zeg("Terug wordt het getal steeds 1 minder.");
         await l.verder();
       },
     });
-    const fouten = await speelOpgaven(l, TERUGTELLEN);
+    const fouten = await speelOpgaven(l, TERUGTELLEN, voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kunt terugtellen vanaf {20:wit}.");
   },
 };

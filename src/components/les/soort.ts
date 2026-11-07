@@ -33,13 +33,17 @@ export type Somdeel =
   | { t: "teken"; s: string }
   | { t: "vak"; waarde?: string; kleur?: string };
 
-export type Kiesinstel = { direct?: boolean; weetniet?: string | false; raster?: boolean };
+export type Kiesinstel = { direct?: boolean; weetniet?: string | false; raster?: boolean; bijOpdracht?: boolean };
 
 export interface Lesgids {
+  /** De actieve les, voor de bijbehorende lesopening. */
+  lesId?: string;
   /** De naam van het kind, of leeg. */
   naam: string;
   /** De mascotte zegt deze zinnen; klaar als alles gezegd is. */
   zeg(...zinnen: string[]): Promise<void>;
+  /** Alleen presentatie: bewaar de opdracht boven het speelvlak, los van tutorfeedback. */
+  opdracht?(tekst: string | null): void;
   /** Een invulvak links. Geeft het getal, of `null` bij "Weet ik niet". */
   getal(): Promise<number | null>;
   /**
@@ -141,9 +145,8 @@ export type Lesdraaiboek = {
    */
   nacht?: true;
   /**
-   * Opt-in (2 november 2026, proef geldmachine-1): de zin en de keuzeknoppen van Bliepo staan
-   * BOVENAAN IN HET MIDDEN van het speelvlak in plaats van in de kolom bij Bliepo. Zonder: alles
-   * blijft zoals het was. Bliepo zelf blijft op zijn plek.
+   * Opt-in geldmachine-1: de opdracht staat boven het speelvlak. Tutoruitspraak,
+   * Ja/Nee en hulp blijven bij Bliepo. Alleen `bijOpdracht`-keuzes staan bij de opdracht.
    */
   vraagBoven?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */

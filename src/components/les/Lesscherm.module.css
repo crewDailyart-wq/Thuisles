@@ -126,6 +126,11 @@
   align-items: center;
 }
 
+/* Het vinkje (Controleer) houdt ruimte onder zich, zodat je er niet naast kunt tikken op de herhaalknop (Piraat-2, handtest 6 november 2026). */
+.bediening:has([data-controleer]) {
+  margin-bottom: 30px;
+}
+
 /* Antwoordknoppen wit met donkerblauwe tekst (30 oktober 2026, opdracht eigenaar; eerst donkergrijs). */
 .knop {
   min-width: 96px;
@@ -672,3 +677,38 @@ a.knop {
   font-weight: 700;
   text-align: center;
 }
+
+/* Geldmachine 1: alleen de presentatie; dezelfde tekst, knoppen en handlers. */
+.geldEnkel { left: 610px; width: 660px; }
+[data-staand] .geldEnkel { left: 350px; width: 880px; }
+.geldEnkel .tekst { min-height: 132px; justify-content: center; }
+.geldEnkel .tekst > .bediening {
+  position: absolute;
+  top: 462px;
+  width: 100%;
+}
+.geldEnkel .twee.twee {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  width: 100%;
+  gap: 16px;
+}
+.geldEnkel .twee.twee > .knop {
+  width: 100%;
+  min-width: 0;
+  min-height: 44px;
+  padding: 10px 26px;
+  border-radius: 8px;
+  box-shadow: none;
+  font-size: 18px;
+}
+[data-staand] .geldEnkel .tekst :global(.bliepo-tekst) { font-size: 40px; }
+[data-staand][data-zinlengte="kort"] .geldEnkel .tekst :global(.bliepo-tekst) { font-size: 56px; }
+[data-staand] .geldEnkel .tekst > .bediening { top: 556px; }
+[data-staand] .geldEnkel .knop,
+[data-staand] .geldEnkel .twee.twee > .knop { min-height: 112px; font-size: 44px; }
+.zinBewerken { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; padding: 8px 12px; border: 1px solid #b7cee9; border-radius: 8px; background: #fff; color: #164b83; font: 600 16px/1.2 Arial, sans-serif; cursor: pointer; }
+.zinBewerken:focus-visible { outline: 3px solid #ffd478; outline-offset: 3px; }
+.tekstVerder { display: flex; align-items: center; justify-content: center; gap: 14px; min-height: 48px; margin: 10px auto 0; padding: 10px 18px; border: 2px solid #c6ddff; border-radius: 10px; background: #164b83; color: #fff; font: 700 17px/1.2 Arial, sans-serif; cursor: pointer; }
+.tekstVerder span { font-size: 26px; line-height: 1; }
+.tekstVerder:focus-visible { outline: 3px solid #ffd478; outline-offset: 3px; }

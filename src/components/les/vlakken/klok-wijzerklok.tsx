@@ -64,6 +64,8 @@ const H = 720;
 const R = 215;
 const CIJFER = 0.76 * R;
 const MIN_LANG = 0.8 * R;
+/* Korte minutenwijzer (Squla-lessen, Sara 6 november 2026): de punt blijft vóór de getallen, zodat de wijzer ze nooit bedekt (ook de 12 niet). */
+export const MIN_KORT = 0.62 * R;
 const UUR_LANG = 0.48 * R;
 /* Het grijpvlak van een wijzer houdt op vóór de cijfers: een tik op een cijfer is altijd een tik op dat cijfer. */
 const GRIJP_MIN = 0.6 * R;
@@ -163,6 +165,8 @@ type Plaatprops = {
   pijl: KlokProps["pijl"];
   inkleur: boolean;
   por: number;
+  /** Korte minutenwijzer die de getallen nooit bedekt (alleen de Squla-lessen). */
+  kort?: boolean;
   zacht?: boolean;
   grijp?: { uur: boolean; minuut: boolean };
   opGrijp?: (e: ReactPointerEvent, w: Wijzer) => void;
@@ -492,7 +496,7 @@ function Plaat(p: Plaatprops) {
       {metWijzers && p.minuutwijzer !== "weg" && (
         <Handwijzer
           hoek={p.minuut}
-          lengte={MIN_LANG}
+          lengte={p.kort ? MIN_KORT : MIN_LANG}
           dik={0.046 * R}
           kleur={minKleur}
           pil={p.pil === "minuut" || p.gekozen === "minuut"}
@@ -890,7 +894,7 @@ function Digitaal({ uur, minuut, left, top }: { uur: number; minuut: number; lef
 }
 
 /** Een kleine klok zonder bediening, bijvoorbeeld om uit te kiezen. `maat` in punten. */
-export function Klokje({ tijd, maat }: { tijd: number; maat: number }) {
+export function Klokje({ tijd, maat, kort = false }: { tijd: number; maat: number; kort?: boolean }) {
   const rand = R + 12;
   return (
     <svg width={maat} height={maat} viewBox={`${-rand} ${-rand} ${2 * rand} ${2 * rand}`} aria-hidden style={{ overflow: "visible" }}>
@@ -908,6 +912,7 @@ export function Klokje({ tijd, maat }: { tijd: number; maat: number }) {
         pijl={null}
         inkleur={false}
         por={0}
+        kort={kort}
       />
     </svg>
   );

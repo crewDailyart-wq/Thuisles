@@ -5,61 +5,31 @@
  *
  *   1. Bliepo stelt de vraag; het kind antwoordt.
  *   2. Goed: geluidje, "Goed zo." + waarom het klopt.
- *   3. Eén keer fout: "<antwoord>? Niet helemaal." en dan
- *      "Wil je hulp, of nog een keer proberen?" met de keuzes
- *      [Nog een keer] [Hulp] (geen "Weet ik niet"-knop).
- *        - Nog een keer: de vraag opnieuw. Weer fout: "Laten we het samen
- *          uitzoeken." en door naar de uitleg.
- *        - Hulp: "We doen het samen, stap voor stap." en de uitleg.
- *   4. De uitleg (`samen`): Bliepo laat het stap voor stap zien, zonder het
- *      antwoord voor te zeggen; daarna de vraag nog eens.
- *   5. Nog eens fout: een tip, en het kind probeert het weer.
- *   6. Dan nog fout (2× fout na de uitleg): "Zullen we even pauze nemen?" —
- *      de les stopt en het kind doet hem straks nog eens.
+ *   3. Eerste keer fout: een reactie die past bij deze vraag en dit antwoord, met een hint
+ *      zonder het antwoord (BOUWREGELS 5.11), en meteen opnieuw proberen.
+ *   4. Tweede keer fout: uitleg, het goede antwoord laten zien en door naar de volgende
+ *      opgave (de vraag kan later nog eens terugkomen). Nooit een keuzevraag, nooit een
+ *      pauze, de les stopt niet.
  *
  * Een les gebruikt `squlaVraag` voor elke opgave, `squlaBegin` voor het
  * welkom met "Kun je dit al?" en `squlaEind` voor de kaart aan het eind.
  *
  * ---------------------------------------------------------------------------
- * HET BEGINSCHERM "Kun je dit al?" (1 november 2026, BOUWREGELS 4.1-4.3)
+ * HET BEGINSCHERM (3 november 2026)
  * ---------------------------------------------------------------------------
- * Vast (in `squlaBegin`, voor alle lessen gelijk):
- *   - de opbouw: een voorbeeld van de echte opdracht in beeld, Bliepo, en de
- *     knoppen Ja en Nee;
- *   - alleen de vraag "Kun je dit al?" aan het eind; verder GEEN vaste zin;
- *   - Ja = "Mooi. Laat maar eens zien." en meteen de opgaven;
- *     Nee = "Geen probleem. Ik leg het kort uit.", de uitleg, en "Nu jij!".
- * Per les (verplicht, door de les zelf):
- *   - `welkom`: een EIGEN zin over waar deze les over gaat (mag uit een paar
- *     korte zinnen bestaan). Nooit leeg, nooit een standaardzin, nooit zelf
- *     "Kun je dit al?". Is hij leeg of standaard, dan stopt de les tijdens
- *     ontwikkelen met een foutmelding (en dus faalt de speelcontrole).
- *   - `voorbeeld`: zet in het eigen vlak van de les een ECHTE opgave uit die
- *     les in beeld, zoals het kind hem straks krijgt, maar nog zonder dat het
- *     iets hoeft te doen (niets actief, geen keuzeknoppen). Het voorbeeld
- *     staat er vóór en tijdens de zin en blijft staan bij Ja en Nee. Daarna
- *     zet de eerste vraag (Ja) of de uitleg (Nee) het vlak zelf weer goed.
- * Met `voorbeeld` staan de eigen zin en "Kun je dit al?" samen als één tekst
- * boven Bliepo (de woorden lichten op terwijl hij praat, regel 3.7), zodat het
- * kind bij Ja en Nee nog leest waar de les over gaat. Lessen zonder
- * `voorbeeld` (nog niet omgezet) werken zoals vroeger; tijdens ontwikkelen
- * staat er dan een waarschuwing in de console.
- *
- * Voorbeeld (klokkijken):
- *
- *   l.vlak<KlokVlakProps>(SqulaKlokVlak, { ...LEEG });
- *   await squlaBegin(l, {
- *     welkom: ["Kijk eens naar de klok!", "Weet jij hoe laat het is?"],
- *     voorbeeld: () => opgaven[0](l, false).toon?.(),
- *     uitleg: () => uitlegHeel(l),
- *   });
- *
- * De zinnen komen in STEMZINNEN.md via `npm run stemzinnen` (dat script leest
- * de `welkom`-zinnen uit de broncode). Zie ook de handleiding in BOUWREGELS 4.1.
+ * De 135 actieve Squla-lessen gebruiken hun eigen twee zinnen uit beginzinnen.json.
+ * Het voorbeeld staat vóór en tijdens de vraag in beeld. Ja begint de opgaven.
+ * Nee geeft een gevarieerde aanmoediging en start `samen`: uitleg bij het beeld,
+ * een kindhandeling, wachten op het antwoord en pas daarna bevestigen.
+ * `voordoen` zet de visuele uitleg van de eerste vraag klaar vóór de kindhandeling.
+ * Die begeleide oefening telt niet mee voor de beoordeling van zelfstandig werk.
+ * Zonder canonieke beginzinnen en `samen` blijft de bestaande uitleg behouden.
  */
 
 import type { Lesgids } from "../soort";
+import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { begeleideVraag, isBegeleideUitleg, laatZienZin, naamMag, opener, samenOefenen, uitlegVoorVraag } from "./squla-uitleg";
 
 export type SqulaVraag<T> = {
   /** Zet het beeld klaar voor deze vraag (vóór de vraag). */
@@ -82,6 +52,16 @@ export type SqulaVraag<T> = {
   tip: string[];
   /** Voor de automatische test: het goede antwoord zoals het op de knop of in het veld staat. */
   testAntwoord?: string | number | null;
+  /**
+   * Hulp zoals Synthesis (BOUWREGELS 5.1 en 5.10, 4 november 2026): na één fout een korte reactie die past bij wat
+   * het kind koos (+ een hint als die bij de vraag past) en meteen opnieuw; na de tweede fout uitleg, het goede antwoord
+   * laten zien en door naar de volgende opgave. Geen keuzevraag, geen pauze, geen vaste "Niet helemaal".
+   */
+  synthesis?: boolean;
+  /** Eerste fout: wat Bliepo zegt over het gekozen antwoord (en de hint). Zonder: de tip van de vraag. */
+  reactie?: (x: T) => string[];
+  /** Tweede fout: het goede antwoord in beeld en in woorden, zonder de vraag nog eens te stellen. */
+  toonAntwoord?: () => Promise<void>;
 };
 
 /** Voor de automatische test (scripts/speelcontrole.mjs leest window.__phaser.antwoord). */
@@ -101,57 +81,44 @@ export function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
 
 async function vraagStellen<T>(v: SqulaVraag<T>, l: Lesgids) {
   zetTestAntwoord(v.testAntwoord);
+  l.opdracht?.(alsEenBlok(v).vraag.join(" "));
   await l.zeg(...alsEenBlok(v).vraag);
 }
 
 /** Eén opgave met de hulp van Bliepo. Geeft `true` als hij meteen goed was. */
 export async function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
-  v.toon?.();
-  await vraagStellen(v, l);
-  const x = await v.antwoord();
-  if (v.isGoed(x)) {
-    speelLesgeluid("goed");
-    await v.goed(x);
-    return true;
+  if (isBegeleideUitleg(l)) {
+    l.opdracht?.(alsEenBlok(v).vraag.join(" "));
+    return begeleideVraag(l, v);
   }
-  speelLesgeluid("mis");
-  v.fout?.(x);
-  await l.zeg(`${v.noem(x)}? Niet helemaal.`);
-  await l.zeg("Wil je hulp, of nog een keer proberen?");
-  const keuze = await l.kies(["Nog een keer", "Hulp"], { weetniet: false, direct: true });
-  if (keuze === "Nog een keer") {
-    v.toon?.();
-    await vraagStellen(v, l);
-    const y = await v.antwoord();
-    if (v.isGoed(y)) {
-      speelLesgeluid("goed");
-      await v.goed(y);
-      return false;
-    }
-    speelLesgeluid("mis");
-    v.fout?.(y);
-    await l.zeg(`${v.noem(y)}? Niet helemaal.`, "Laten we het samen uitzoeken.");
-  } else await l.zeg("Goed.", "We doen het samen, stap voor stap.");
+  /* Alle lessen gebruiken de hulp van Synthesis. De oude route ("Niet helemaal", keuzevraag, pauze) is weg (Sara, 6 november 2026). */
+  return synthesisVraag(l, v);
+}
 
-  await v.samen();
+/**
+ * De hulp van Synthesis (BOUWREGELS 5.1): goed = door; eerste fout = reactie (+ hint) en meteen opnieuw; tweede fout =
+ * uitleg, het goede antwoord laten zien en door naar de volgende opgave (geeft dan `false`, zodat de vraag later
+ * nog eens terug kan komen). Nooit een keuzevraag, nooit een pauze, de les stopt niet.
+ */
+async function synthesisVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
   v.toon?.();
   await vraagStellen(v, l);
   for (let poging = 1; ; poging++) {
-    const z = await v.antwoord();
-    if (v.isGoed(z)) {
+    const x = await v.antwoord();
+    if (v.isGoed(x)) {
       speelLesgeluid("goed");
-      await v.goed(z);
-      return false;
+      await v.goed(x);
+      return poging === 1;
     }
     speelLesgeluid("mis");
-    v.fout?.(z);
+    v.fout?.(x);
     if (poging === 1) {
-      await l.zeg(`${v.noem(z)}? Niet helemaal.`, ...v.tip);
+      await l.zeg(...[opener(), ...(v.reactie ? v.reactie(x) : v.tip)].filter(Boolean));
+      zetTestAntwoord(v.testAntwoord);
       continue;
     }
-    await l.zeg(`${v.noem(z)}? Dat is het nog niet.`, "Zullen we even pauze nemen?", "Dan doen we het straks nog eens.");
-    await l.verder();
-    l.stopLes();
+    await uitlegVoorVraag(l, v.samen);
+    await v.toonAntwoord?.();
     return false;
   }
 }
@@ -164,6 +131,10 @@ export type SqulaBeginOpties = {
   vraag?: string;
   /** De korte uitleg na "Nee". */
   uitleg: () => Promise<void>;
+  /** De echte opdracht in kleine stappen oefenen, zonder een score toe te kennen. */
+  samen?: () => Promise<unknown>;
+  /** Zet eerst de bijbehorende visuele rekensteun klaar. */
+  voordoen?: boolean;
   /**
    * Zet een echte opgave uit deze les in het vlak, zonder dat het kind iets
    * hoeft te doen (niets actief). Staat er vóór en tijdens de zin en bij Ja/Nee.
@@ -199,9 +170,13 @@ export function welkomFout(welkom: readonly string[] | undefined): string | null
 
 /**
  * Het beginscherm "Kun je dit al?" (zie de uitleg bovenaan dit bestand).
- * Ja = meteen oefenen; Nee = de korte uitleg (`uitleg`) en dan "Nu jij!".
+ * Ja = meteen oefenen; Nee = begeleid oefenen (`samen`), met `uitleg` als oude terugvalroute.
+ * Geeft true nadat `samen` volledig is afgerond. De les slaat alleen een identieke eerste opgave over.
  */
-export async function squlaBegin(l: Lesgids, o: SqulaBeginOpties) {
+export async function squlaBegin(l: Lesgids, o: SqulaBeginOpties): Promise<boolean> {
+  l.opdracht?.(null);
+  const opening = beginzinnen(l.lesId);
+  if (opening) o = { ...o, welkom: [opening.zin1], vraag: opening.zin2 };
   const fout = welkomFout(o.welkom);
   if (fout) {
     /* Tijdens ontwikkelen stopt de les (de speelcontrole ziet dat); online praat Bliepo gewoon door. */
@@ -221,18 +196,29 @@ export async function squlaBegin(l: Lesgids, o: SqulaBeginOpties) {
   const kan = await l.kies(["Ja", "Nee"], { weetniet: false, direct: true });
   if (kan === "Ja") {
     await l.zeg("Mooi.", "Laat maar eens zien.");
-    return;
+    return false;
   }
-  await l.zeg("Geen probleem.", "Ik leg het kort uit.");
-  await o.uitleg();
-  await l.zeg("Nu jij!");
+  if (opening && o.samen) {
+    const start = ["We doen het samen, stap voor stap.", "Ik help je op weg.", "We bekijken eerst een voorbeeld.", "Laten we het samen uitzoeken."];
+    const index = [...(l.lesId ?? "")].reduce((n, c) => n + c.charCodeAt(0), 0) % start.length;
+    await l.zeg(start[index]);
+    await samenOefenen(l, o.samen, o.voordoen);
+    await l.zeg("Nu ga je verder met oefenen.");
+    return true;
+  } else {
+    await l.zeg("Geen probleem.", "Ik leg het kort uit.");
+    await o.uitleg();
+    await l.zeg("Nu jij!");
+  }
+  return false;
 }
 
 /** De kaart aan het eind, met een compliment. */
 export async function squlaEind(l: Lesgids, fouten: number, wat: string) {
+  l.opdracht?.(null);
   const tik = l.kaart();
   speelLesgeluid("kaart");
-  const naam = l.naam;
+  const naam = l.naam && naamMag(l) ? l.naam : undefined;
   await l.zeg(fouten === 0 ? (naam ? `Alles goed, ${naam}!` : "Alles goed!") : naam ? `Goed gewerkt, ${naam}!` : "Goed gewerkt!", wat);
   await tik;
 }

@@ -1,0 +1,14 @@
+[
+  {
+    "les": "squla-klok-* (en de klokken in de Tijd-lessen)",
+    "reden": "b: een rondje past niet goed om de vorm. De wijzers zijn smal en lang; een rondje zou de getallen bedekken.",
+    "oplicht": "De wijzer die Bliepo aanwijst krijgt een sterke glow langs zijn eigen rand, in zijn eigen kleur: de kleine wijzer oranje, de grote wijzer paars. Geen vlak of vorm eromheen; de glow pulseert zacht. De wijzers zijn ook korter gemaakt, zodat ze de getallen nooit bedekken. Geen gloed om de hele klok.",
+    "geluid": "uit (voorlopig, Sara 6 november 2026)"
+  },
+  {
+    "les": "squla-meten-oppervlakte-* (de schilderijen)",
+    "reden": "a: een rondje loopt over de tegels en het raster die het kind moet tellen.",
+    "oplicht": "Het schilderij dat Bliepo aanwijst krijgt een sterke, warme gouden glow langs de omtrek van het plaatje zelf, een paar lagen dik en zacht pulserend. Geen kader of vlak eromheen.",
+    "geluid": "uit (voorlopig, Sara 6 november 2026)"
+  }
+]

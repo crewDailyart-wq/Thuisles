@@ -35,6 +35,13 @@
 import { useEffect, useMemo } from "react";
 import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WARM, GOED, type PhaserModule } from "../holo/basis";
+import { maakRondjes, type RondjeVak } from "../holo/rondje";
+/** Een groot geheel (veel dingen): het rondje sluit er strak omheen (ongeveer 30 punten ruimte) in plaats van een enorm ovaal; `maakRondjes` rekent zelf nog ruimte bij. */
+function strak(v: RondjeVak): RondjeVak {
+  if (v.b <= 240 && v.h <= 240) return v;
+  return { x: v.x, y: v.y, b: Math.max(60, (v.b + 60 - 44) / 1.15), h: Math.max(60, (v.h + 60 - 50) / 1.4) };
+}
+
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import {
@@ -293,6 +300,12 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
     rekZicht = 0;
     instappers: Box | null = null;
     rondje: Img | null = null;
+    /* Het rode rondje (Sara, 6 november 2026): wat Bliepo aanwijst of telt, geen gloed meer. */
+    rondjes: ReturnType<typeof maakRondjes> | null = null;
+    rekRondjes: ReturnType<typeof maakRondjes> | null = null;
+    /** De stippen die nu een rondje hebben (elke stip houdt zijn eigen 700 ms, zoals het oude oplichten). */
+    rekVakken = new Map<string, RondjeVak>();
+    rekTok = new Map<string, number>();
     bal: Img | null = null;
     flitsTot = 0;
     zweven: import("phaser").Tweens.Tween[] = [];
@@ -345,6 +358,17 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       return im;
     }
 
+    /** Het vak om een aantal plaatjes (ook als de oorsprong onderaan ligt), in de coördinaten van hun houder. */
+    vakVan(imgs: (Img | undefined)[]): RondjeVak | null {
+      const l = imgs.filter((im): im is Img => Boolean(im && im.active));
+      if (!l.length) return null;
+      const x0 = Math.min(...l.map((im) => im.x - im.displayWidth * im.originX));
+      const x1 = Math.max(...l.map((im) => im.x + im.displayWidth * (1 - im.originX)));
+      const y0 = Math.min(...l.map((im) => im.y - im.displayHeight * im.originY));
+      const y1 = Math.max(...l.map((im) => im.y + im.displayHeight * (1 - im.originY)));
+      return strak({ x: (x0 + x1) / 2, y: (y0 + y1) / 2, b: x1 - x0, h: y1 - y0 });
+    }
+
     /** De gloed-plaatjes van dit beeld alvast bakken, één per keer (geen hapering later). */
     bakVooruit(imgs: Img[]) {
       const sleutels = [...new Set(imgs.map((im) => im.getData("basis") as string))];
@@ -373,12 +397,15 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       this.busInNu = false;
       this.instappers = null;
       this.rondje = null;
+      this.rondjes?.vergeet();
+      this.rondjes = null;
       this.bal = null;
       this.beeld = beeld;
       this.lijnLaag?.clear();
       if (!beeld) return;
       const box = this.add.container(MIDDEN.x, MIDDEN.y);
       this.hoofd = box;
+      this.rondjes = maakRondjes(this, box, this.rustig);
 
       if (beeld.soort === "bakkerij") {
         /* Los in de ruimte: geen bord, mand of plaat eromheen. */
@@ -543,9 +570,24 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         im.setAlpha(st.uit.includes(id) ? 0.35 : 1);
         this.gloei(im, st.goedIds.includes(id) ? GOED : st.gekozen.includes(id) ? LICHT : null);
       }
-      this.groepImg.forEach((items, g) => items.forEach((im) => this.gloei(im, flits ? GOED : st.licht.includes(g) ? LICHT : null)));
-      this.busImg.forEach((im) => this.gloei(im, flits ? GOED : st.busLicht ? LICHT : null));
-      this.instapImg.forEach((im, i) => im && this.gloei(im, flits ? GOED : i < st.busTel ? LICHT : null));
+      this.groepImg.forEach((items) => items.forEach((im) => this.gloei(im, flits ? GOED : null)));
+      this.busImg.forEach((im) => this.gloei(im, flits ? GOED : null));
+      this.instapImg.forEach((im) => im && this.gloei(im, flits ? GOED : null));
+      /* Wat Bliepo aanwijst of telt krijgt een rood rondje (geen gloed): het groepje, de pakjes in de bus, of de pakjes die tot nu toe geteld zijn. */
+      const wens = new Map<string, RondjeVak>();
+      st.licht.forEach((g) => {
+        const v = this.vakVan(this.groepImg[g] ?? []);
+        if (v) wens.set(`groep${g}`, v);
+      });
+      if (st.busLicht) {
+        const v = this.vakVan(this.busImg);
+        if (v) wens.set("bus", v);
+      }
+      if (st.busTel > 0) {
+        const v = this.vakVan(this.instapImg.slice(0, st.busTel));
+        if (v) wens.set(`tel${st.busTel}`, v);
+      }
+      this.rondjes?.zet(flits ? new Map() : wens);
       if (this.hoofd) this.hoofd.setAlpha(st.dim ? 0.12 : 1);
       /* De lijnen tussen sommen en antwoorden. */
       const l = this.lijnLaag;
@@ -573,6 +615,10 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         this.rekBox = null;
         this.rekStippen = [];
         this.rekZicht = 0;
+        this.rekRondjes?.vergeet();
+        this.rekRondjes = null;
+        this.rekVakken.clear();
+        this.rekTok.clear();
         if (!rek) return;
         const maat = rekMaat(rek.rijen);
         const box = this.add.container(MIDDEN.x, MIDDEN.y).setDepth(8);
@@ -596,9 +642,8 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         const aan = k < zicht;
         if (aan && !im.visible) {
           im.setVisible(true);
-          /* Een stip die erbij komt, licht even op. */
-          this.gloei(im, LICHT);
-          this.time.delayedCall(700, () => this.gloei(im, null));
+          /* Een stip die erbij komt, krijgt even een rood rondje (geen gloed). */
+          this.rekRondje(im, k);
           if (!this.rustig) {
             const sch = 1 / TX;
             im.setScale(sch * 0.3);
@@ -607,6 +652,25 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         } else if (!aan) im.setVisible(false);
       });
       this.rekZicht = zicht;
+    }
+
+    /** Een rood rondje om een stip die erbij komt; na 700 ms weer weg (en meteen weg bij een nieuw rek). */
+    rekRondje(im: Img, k: number) {
+      const box = this.rekBox;
+      if (!box) return;
+      if (!this.rekRondjes) this.rekRondjes = maakRondjes(this, box, this.rustig);
+      const rr = this.rekRondjes;
+      const sl = this.rekSleutel;
+      const naam = `stip${k}`;
+      this.rekVakken.set(naam, { x: im.x, y: im.y, b: 40, h: 40 });
+      const tok = (this.rekTok.get(naam) ?? 0) + 1;
+      this.rekTok.set(naam, tok);
+      rr.zet(new Map(this.rekVakken));
+      /* Zoals het oude oplichten: 700 ms, en alleen het rondje van déze stip (van dit moment) gaat weg. */
+      this.time.delayedCall(700, () => {
+        if (this.rekSleutel !== sl || this.rekTok.get(naam) !== tok || !this.rekVakken.delete(naam)) return;
+        rr.zet(new Map(this.rekVakken));
+      });
     }
 
     goed() {

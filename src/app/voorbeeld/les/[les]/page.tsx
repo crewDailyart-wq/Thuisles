@@ -8,6 +8,7 @@ import { zoekDraaiboek } from "@/components/les/lessen";
 import { LesVoorbeeld } from "./LesVoorbeeld";
 import { zoekLesregel } from "@/lib/lessen/catalogus";
 import { lesAdres, zoekSeoLesOpId } from "@/lib/seo/lessen-groep3";
+import { lesbeheerActief } from "@/lib/lessen/lokaal-beheer";
 
 const letter = Work_Sans({ subsets: ["latin"], weight: ["400", "500", "700", "800"], variable: "--font-les" });
 
@@ -42,10 +43,11 @@ export default async function Pagina({
   searchParams,
 }: {
   params: Promise<{ les: string }>;
-  searchParams: Promise<{ naam?: string }>;
+  searchParams: Promise<{ naam?: string; uitleg?: string; beheer?: string }>;
 }) {
   const { les } = await params;
-  const { naam } = await searchParams;
+  const { naam, uitleg, beheer } = await searchParams;
+  const bewerken = beheer === "1" && await lesbeheerActief();
   if (!zoekDraaiboek(les)) notFound();
   /* Sara heeft Figtree goedgekeurd (3 november 2026): alle nieuwe lessen (alle draaiboeken op deze pagina) gebruiken het. LETTERPROEF_LESSEN blijft staan als de oude proeflijst. */
   const proef = true || LETTERPROEF_LESSEN.includes(les);
@@ -53,7 +55,7 @@ export default async function Pagina({
     /* De leestekst uit de stijlkiezer (/admin/stijl) geldt ook voor de les; zonder keuze blijft het Work Sans. */
     <div className={proef ? `${letter.variable} ${proefLetter.variable}` : letter.variable} data-lettertype={proef ? "figtree" : undefined} style={{ ["--font-les" as string]: `var(--stijl-lettertype, ${letter.style.fontFamily})` }}>
       <StijlVariabelen />
-      <LesVoorbeeld id={les} naam={naam ?? ""} />
+      <LesVoorbeeld id={les} naam={naam ?? ""} uitleg={process.env.NODE_ENV !== "production" && uitleg === "nee"} bewerken={bewerken} />
     </div>
   );
 }

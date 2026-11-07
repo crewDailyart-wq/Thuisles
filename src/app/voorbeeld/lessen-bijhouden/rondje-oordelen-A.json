@@ -1,0 +1,57 @@
+{
+ "squla-geld-geldmachine-1": {
+  "onderwerp": "Geld",
+  "oordeel": "goed",
+  "opmerking": "Zin 'Laten we het samen uitzoeken': geen rondje (portemonnee, briefje, munten staan er; klopt). Zin 'Dit is 1 euro. Kijk naar de 1 en het woord euro': 1 rondje om de munt van 1 euro, op het goede ding. Daarna de vraag 'Is dit een munt of een briefje?': het rondje om de munt blijft staan tijdens de vraag (de vraag gaat over precies die munt; vraag voor Sara). Verder niet gezien: de les bleef bij deze eerste vraag staan."
+ },
+ "squla-geld-zakgeld-1": {
+  "onderwerp": "Geld",
+  "oordeel": "goed",
+  "opmerking": "Zin '2.' (veegbezem): 1 rondje om de eerste munt van 2 euro met label 2 euro. Zin '4.': het rondje is verhuisd naar de munt bij de gieter, er staat maar 1 rondje. Vraag 'Waar ligt het geld dat je bij elkaar krijgt?': geen rondje (goed). Niet gezien: de zinnen 'We tellen het samen' (foto toont al het rondje op de eerste munt)."
+ },
+ "squla-splits-splitsen2-1": {
+  "onderwerp": "Splitsen",
+  "oordeel": "fout",
+  "opmerking": "Zin 'Het briefje is al 10 euro. Tel de munten erbij.': het rondje staat de hele zin om de 4 munten van 1 euro (foto begin en einde), ook als Bliepo 'het briefje' zegt. Het briefje krijgt nooit een rondje in die zin. Oorzaak: 1 zeg-aanroep met 3 zinnen onder 1 rondje (squla-splitsen.tsx, regel 221-222). Niet gerepareerd: splitsen in 2 zinnen verandert de stemzinnen. Vraag voor Sara. Daarna de vraag 'Splits 14 in 2 getallen': geen rondje (goed)."
+ },
+ "squla-splits-delen-1": {
+  "onderwerp": "Splitsen",
+  "oordeel": "open",
+  "opmerking": "Zinnen 'Elk bakje krijgt er steeds 1 bij' en 'Alles is verdeeld': geen rondje op de foto's (lege bakjes met zachte kleur). In de code krijgt elke knikker die in een bakje valt 420 ms een rondje terwijl Bliepo stil is; dat korte moment staat niet op de foto's. Niet gezien: het rondje tijdens het verdelen."
+ },
+ "squla-piraat-2": {
+  "onderwerp": "Piraat",
+  "oordeel": "open",
+  "opmerking": "Nee-route (samen) 'Er gaat er 1 weg', 'De andere leg ik in het vak', 'Er zijn er nog 5': op alle foto's geen enkel rondje, 6 sterren staan er zonder markering. De code (squla-piraat.tsx regel 424-429) zet in deze route geen rondje; het sleepvlak (s1) kent geen rondje. Mogelijk 'geen rondje terwijl Bliepo wel iets aanwijst'. Niet gerepareerd (eerst vraag voor Sara). In de uitleg van het beginscherm (regel 655-663) staan wel rondjes: niet gezien."
+ },
+ "squla-tellen-fruit-1": {
+  "onderwerp": "Tellen",
+  "oordeel": "open",
+  "opmerking": "Zinnen '5.' en '10.': de geteld rij is helder, de rest dof, er staat een getal naast de rij. Geen rondje op de foto's. Zin 'Begin bij 10. Tik steeds op de appel met de kring': 1 rood rondje om de goede appel (naast de witte kring van de opdracht); het rondje blijft staan tijdens de uitleg-opdracht (blijft staan tijdens de vraag). Niet gezien: de korte rondjes (420 ms) om elke geteld appel."
+ },
+ "squla-tellen-telrij-1": {
+  "onderwerp": "Tellen",
+  "oordeel": "open",
+  "opmerking": "Het script kwam direct bij de vraag 'Welk huisnummer komt na 34?': geen rondje, hologram licht onder de huizen 33 en 34 even, daarna weg. De uitleg van deze les is niet gezien."
+ },
+ "squla-meer-minder-evenveel1-1": {
+  "onderwerp": "Meer-minder",
+  "oordeel": "open",
+  "opmerking": "Dit les-id is een telles met appels (geen meer-minder-vergelijking). 'In een volle rij staan 5 appels': 1 rondje om de appel die geteld wordt (derde appel eerste rij), de rest dof; bij '5.' en '10.' een getal naast de rij en geen rondje. Meer-minder-vergelijking zelf (twee groepen) niet gezien."
+ },
+ "squla-vormen-patronen-1": {
+  "onderwerp": "Vormen",
+  "oordeel": "goed",
+  "opmerking": "Zin 'Daarna begint het weer opnieuw': 1 rondje om het tweede groepje rood-groen-blauw (1 rondje om het groepje, geen rondje per kraal); de rand raakt de 7e kraal een beetje. Vraag 'Welke kraal komt na de rode kraal?': geen rondje (goed). Het eerste groepje rood-groen-blauw is niet gezien."
+ },
+ "squla-plus-bakkerij-1": {
+  "onderwerp": "Plussommen",
+  "oordeel": "goed",
+  "opmerking": "Voor reparatie: bij 'Hoeveel taartjes liggen er nu?' bleef het rondje om het nieuwe taartje staan, terwijl de vraag over alle taartjes gaat. Gerepareerd in squla-plussommen.tsx (rondje weg voor de vraag). Na reparatie opnieuw opgenomen: tijdens de vraag geen rondje, 2 taartjes met hun eigen kleurglans. Niet gezien: het rondje op het moment 'Hier ligt 1 taartje' en 'Er komt eerst 1 taartje bij'."
+ },
+ "squla-rekenmix-mix1-1": {
+  "onderwerp": "Rekenmix",
+  "oordeel": "open",
+  "opmerking": "Zin 'Tel maar mee' en '1, 2, 3, 4': de geteld appels hebben rode cijfers 1 tot 4 erboven, geen rondje; de overgebleven appels zijn dof. Vraag 'Hoeveel zijn het er?': geen rondje (goed). Niet gezien: de korte rondjes (420 ms) per geteld appel."
+ }
+}

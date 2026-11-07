@@ -1,0 +1,4428 @@
+[
+  {
+    "id": "squla-huisnummers",
+    "titel": "Huisnummers: wat komt erna?",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We lopen samen langs de huizen. Elk volgend nummer is één meer.",
+        "nieuw": "Kijk naar de nummers op de huizen. Er komt steeds 1 bij."
+      },
+      {
+        "bron": "{21:wit}",
+        "nieuw": "21"
+      },
+      {
+        "bron": "{22:wit}",
+        "nieuw": "22"
+      },
+      {
+        "bron": "{23:wit}",
+        "nieuw": "23"
+      },
+      {
+        "bron": "{24:wit}",
+        "nieuw": "24"
+      },
+      {
+        "bron": "Welk huisnummer komt na {24:wit}?",
+        "nieuw": "Welk nummer komt na 24?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekentaal",
+    "titel": "Groot en klein, vol en leeg",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "Ik help je op weg. We kijken samen.",
+        "nieuw": "Ik help je op weg. We kijken samen."
+      },
+      {
+        "bron": "Kijk, deze pannenkoek is groot.",
+        "nieuw": "Kijk, deze pannenkoek is groot."
+      },
+      {
+        "bron": "Deze pannenkoek is klein. Hij is kleiner dan de andere.",
+        "nieuw": "Deze pannenkoek is klein. Hij is kleiner dan de andere."
+      },
+      {
+        "bron": "Zie jij de kleine pannenkoek? Tik die aan.",
+        "nieuw": "Zie jij de kleine pannenkoek? Tik die aan."
+      },
+      {
+        "bron": "Ja, deze is klein. De andere pannenkoek is groter.",
+        "nieuw": "Ja, deze is klein. De andere pannenkoek is groter."
+      },
+      {
+        "bron": "Nu liggen er andere pannenkoeken. Probeer het maar.",
+        "nieuw": "Nu liggen er andere pannenkoeken. Probeer het maar."
+      },
+      {
+        "bron": "Welke pannenkoek is groot? Tik die aan.",
+        "nieuw": "Welke pannenkoek is groot? Tik die aan."
+      },
+      {
+        "bron": "Goed zo. Deze pannenkoek is groter dan de andere.",
+        "nieuw": "Goed zo. Deze pannenkoek is groter dan de andere."
+      },
+      {
+        "bron": "Kijk in dit glas. Het zit vol sap.",
+        "nieuw": "Kijk in dit glas. Het zit vol sap."
+      },
+      {
+        "bron": "In dit glas zit niets. Dit glas is leeg.",
+        "nieuw": "In dit glas zit niets. Dit glas is leeg."
+      },
+      {
+        "bron": "Zie je het lege glas? Tik het aan.",
+        "nieuw": "Zie je het lege glas? Tik het aan."
+      },
+      {
+        "bron": "Dat klopt. Het glas is leeg, want er zit niets in.",
+        "nieuw": "Dat klopt. Het glas is leeg, want er zit niets in."
+      },
+      {
+        "bron": "Nu ben jij aan de beurt.",
+        "nieuw": "Nu ben jij aan de beurt."
+      },
+      {
+        "bron": "Welk glas is vol? Tik het aan.",
+        "nieuw": "Welk glas is vol? Tik het aan."
+      },
+      {
+        "bron": "Ja, dit glas is vol. Het zit vol sap.",
+        "nieuw": "Ja, dit glas is vol. Het zit vol sap."
+      },
+      {
+        "bron": "Kijk naar de weegschaal. De zware kant gaat omlaag.",
+        "nieuw": "Kijk naar de weegschaal. De zware kant gaat omlaag."
+      },
+      {
+        "bron": "De meloen hangt lager. Hij is zwaarder dan de appel.",
+        "nieuw": "De meloen hangt lager. Hij is zwaarder dan de appel."
+      },
+      {
+        "bron": "Wat is zwaarder: de meloen of de appel? Tik het aan.",
+        "nieuw": "Wat is zwaarder: de meloen of de appel? Tik het aan."
+      },
+      {
+        "bron": "Ja, de meloen is zwaarder. Daarom hangt die kant lager.",
+        "nieuw": "Ja, de meloen is zwaarder. Daarom hangt die kant lager."
+      },
+      {
+        "bron": "Kijk nu naar de andere kant.",
+        "nieuw": "Kijk nu naar de andere kant."
+      },
+      {
+        "bron": "Wat is lichter: de appel of de meloen? Tik het aan.",
+        "nieuw": "Wat is lichter: de appel of de meloen? Tik het aan."
+      },
+      {
+        "bron": "Goed zo. De appel is lichter. Daarom hangt die kant hoger.",
+        "nieuw": "Goed zo. De appel is lichter. Daarom hangt die kant hoger."
+      },
+      {
+        "bron": "De broodjes beginnen bij dezelfde streep.",
+        "nieuw": "De broodjes beginnen bij dezelfde streep."
+      },
+      {
+        "bron": "Dit broodje loopt verder door. Het is langer.",
+        "nieuw": "Dit broodje loopt verder door. Het is langer."
+      },
+      {
+        "bron": "Welk broodje is korter? Tik het aan.",
+        "nieuw": "Welk broodje is korter? Tik het aan."
+      },
+      {
+        "bron": "Ja, dit broodje is korter. Het stopt eerder dan het andere.",
+        "nieuw": "Ja, dit broodje is korter. Het stopt eerder dan het andere."
+      },
+      {
+        "bron": "Nu mag jij het proberen.",
+        "nieuw": "Nu mag jij het proberen."
+      },
+      {
+        "bron": "Welk broodje is langer? Tik het aan.",
+        "nieuw": "Welk broodje is langer? Tik het aan."
+      },
+      {
+        "bron": "Dat klopt. Dit broodje loopt verder door. Het is langer.",
+        "nieuw": "Dat klopt. Dit broodje loopt verder door. Het is langer."
+      },
+      {
+        "bron": "Nu ga je verder met nieuwe plaatjes. Probeer het maar.",
+        "nieuw": "Nu ga je verder met nieuwe plaatjes. Probeer het maar."
+      },
+      {
+        "bron": "Nog niet helemaal. We bekijken deze stap samen.",
+        "nieuw": "Nog niet helemaal. We bekijken deze stap samen.",
+        "hulp": true
+      },
+      {
+        "bron": "Kijk naar beide pannenkoeken. Zoek de kleinste.",
+        "nieuw": "Kijk naar beide pannenkoeken. Zoek de kleinste.",
+        "hulp": true
+      },
+      {
+        "bron": "Kijk hoe groot de pannenkoeken zijn. Zoek de grootste.",
+        "nieuw": "Kijk hoe groot de pannenkoeken zijn. Zoek de grootste.",
+        "hulp": true
+      },
+      {
+        "bron": "Zoek het glas waar niets in zit.",
+        "nieuw": "Zoek het glas waar niets in zit.",
+        "hulp": true
+      },
+      {
+        "bron": "Kijk in de glazen. Zoek het glas dat vol sap zit.",
+        "nieuw": "Kijk in de glazen. Zoek het glas dat vol sap zit.",
+        "hulp": true
+      },
+      {
+        "bron": "Kijk welke kant lager hangt. Daar ligt het zwaarste fruit.",
+        "nieuw": "Kijk welke kant lager hangt. Daar ligt het zwaarste fruit.",
+        "hulp": true
+      },
+      {
+        "bron": "De lichte kant hangt hoger. Kijk welk fruit daar ligt.",
+        "nieuw": "De lichte kant hangt hoger. Kijk welk fruit daar ligt.",
+        "hulp": true
+      },
+      {
+        "bron": "Kijk waar de broodjes eindigen. Het korte broodje stopt eerder.",
+        "nieuw": "Kijk waar de broodjes eindigen. Het korte broodje stopt eerder.",
+        "hulp": true
+      },
+      {
+        "bron": "Begin bij de streep. Kijk welk broodje verder doorloopt.",
+        "nieuw": "Begin bij de streep. Kijk welk broodje verder doorloopt.",
+        "hulp": true
+      },
+      {
+        "bron": "Nog niet helemaal.",
+        "nieuw": "Nog niet helemaal.",
+        "hulp": true
+      },
+      {
+        "bron": "Zullen we even pauze nemen?",
+        "nieuw": "Zullen we even pauze nemen?",
+        "hulp": true
+      },
+      {
+        "bron": "Dan proberen we het straks nog eens.",
+        "nieuw": "Dan proberen we het straks nog eens.",
+        "hulp": true
+      }
+    ],
+    "volledigeUitleg": true
+  },
+  {
+    "id": "squla-dagen-van-de-week",
+    "titel": "Dagen van de week",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "We bekijken de weektrein samen. Elke wagon is één dag.",
+        "nieuw": "Kijk naar de trein. Daar staan de dagen van de week."
+      },
+      {
+        "bron": "Maandag.",
+        "nieuw": "Maandag."
+      },
+      {
+        "bron": "Dinsdag.",
+        "nieuw": "Dinsdag."
+      },
+      {
+        "bron": "Woensdag.",
+        "nieuw": "Woensdag."
+      },
+      {
+        "bron": "Donderdag.",
+        "nieuw": "Donderdag."
+      },
+      {
+        "bron": "Vrijdag.",
+        "nieuw": "Vrijdag."
+      },
+      {
+        "bron": "Zaterdag.",
+        "nieuw": "Zaterdag."
+      },
+      {
+        "bron": "Zondag.",
+        "nieuw": "Zondag."
+      },
+      {
+        "bron": "De week begint op maandag.",
+        "nieuw": "Maandag is de eerste dag van de week."
+      },
+      {
+        "bron": "Tik op de eerste dag van de week.",
+        "nieuw": "Tik op de eerste dag van de week."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-patronen-1",
+    "titel": "Patronen",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We kijken samen naar het patroon.",
+        "nieuw": "Kijk mee naar het patroon."
+      },
+      {
+        "bron": "Kijk: rood, groen, blauw.",
+        "nieuw": "Kijk: rood, groen, blauw."
+      },
+      {
+        "bron": "Daarna begint het weer opnieuw.",
+        "nieuw": "Daarna komt hetzelfde rijtje weer."
+      },
+      {
+        "bron": "Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op je antwoord.",
+        "nieuw": "Welke kraal komt na de rode kraal? Tik op die kraal."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-patronen-2",
+    "titel": "Patronen (moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk naar de rijtjes van boven naar beneden.",
+        "nieuw": "Kijk van boven naar beneden in elk rijtje."
+      },
+      {
+        "bron": "Hier staan groen en oranje.",
+        "nieuw": "Hier staan groen en oranje."
+      },
+      {
+        "bron": "Elke kleur mag één keer in dit rijtje staan.",
+        "nieuw": "Elke kleur mag 1 keer in dit rijtje staan."
+      },
+      {
+        "bron": "Zoek de kleur die er nog niet staat.",
+        "nieuw": "Welke kleur mist er nog?"
+      },
+      {
+        "bron": "Doe dat ook bij de andere rijtjes. Zo vind je de kleuren voor de lege plekken.",
+        "nieuw": "Kijk ook naar de andere rijtjes. Welke kleur mist daar nog?"
+      },
+      {
+        "bron": "De onderste rij is nog leeg. Hoe ziet de onderste rij eruit? Tik op je antwoord.",
+        "nieuw": "De onderste rij is leeg. Welke kleuren horen daar? Tik op het goede plaatje."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-opruimen-1",
+    "titel": "Opruimen",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We kijken samen naar elk plaatje.",
+        "nieuw": "Kijk mee naar de plaatjes."
+      },
+      {
+        "bron": "Hier liggen schoenen.",
+        "nieuw": "Hier liggen schoenen."
+      },
+      {
+        "bron": "Hier liggen een broek, een shirt en een schoen door elkaar.",
+        "nieuw": "Hier liggen een broek, een shirt en een schoen."
+      },
+      {
+        "bron": "Zoek het plaatje met alleen broeken.",
+        "nieuw": "Zoek het plaatje met alleen broeken."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-orienteren-1",
+    "titel": "Links, rechts, boven, onder",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk eerst of het bovenaan, onderaan of in het midden ligt.",
+        "nieuw": "Kijk eerst: ligt het boven, onder of in het midden?"
+      },
+      {
+        "bron": "En aan welke kant: links of rechts?",
+        "nieuw": "Kijk dan: ligt het links of rechts?"
+      },
+      {
+        "bron": "Kijk naar het grasveld. Waar ligt de bal?",
+        "nieuw": "Waar ligt de bal op het grasveld?"
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-kleuren-1",
+    "titel": "Vormen en kleuren",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "We beginnen met vier puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.",
+        "nieuw": "Er zijn 4 puzzelstukjes. Kijk naar de kleur en de rand. Waar past het stukje? Sleep elk stukje naar de goede plek. Je mag ook op het stukje tikken en dan op de plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-kleuren-2",
+    "titel": "Vormen en kleuren (moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We beginnen met vier puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.",
+        "nieuw": "Er zijn 4 puzzelstukjes. Kijk naar de kleur en de rand. Waar past het stukje? Sleep elk stukje naar de goede plek. Je mag ook op het stukje tikken en dan op de plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-vormen-kleuren-3",
+    "titel": "Vormen en kleuren (nog moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "We beginnen met vier puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.",
+        "nieuw": "Er zijn 4 puzzelstukjes. Kijk naar de kleur en de rand. Waar past het stukje? Sleep elk stukje naar de goede plek. Je mag ook op het stukje tikken en dan op de plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen1-1",
+    "titel": "Splitsen tot 10",
+    "onderwerp": "Splitsen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk: er zijn {5:wit} pionnen.",
+        "nieuw": "Kijk, 5 pionnen."
+      },
+      {
+        "bron": "{2:paars} pionnen gaan naar het paarse vak.",
+        "nieuw": "2 pionnen gaan naar het paarse vak."
+      },
+      {
+        "bron": "De andere gaan naar het oranje vak.",
+        "nieuw": "De rest gaat naar het oranje vak."
+      },
+      {
+        "bron": "Tel ze maar.",
+        "nieuw": "Tel ze maar."
+      },
+      {
+        "bron": "Er zijn {5:wit} pionnen. Sleep {2:paars} pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.",
+        "nieuw": "Er zijn 5 pionnen. Sleep 2 pionnen naar het paarse vak. Sleep de rest naar het oranje vak."
+      }
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen1-2",
+    "titel": "Splitsen tot 10 (moeilijker)",
+    "onderwerp": "Splitsen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tel de ballen in dit vak.",
+        "nieuw": "Tel de ballen in dit vak."
+      },
+      {
+        "bron": "Tel nu de ballen in dat vak.",
+        "nieuw": "Tel ook de ballen in dat vak."
+      },
+      {
+        "bron": "Hoeveel zijn het samen?",
+        "nieuw": "Hoeveel zijn het samen?"
+      },
+      {
+        "bron": "De ballen gaan door de machine en vallen in het huisje. Welk huisje past erbij? Tik op het goede huisje.",
+        "nieuw": "De ballen gaan door de machine naar het huisje. Welk huisje past erbij? Tik op dat huisje."
+      }
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen2-1",
+    "titel": "Splitsen tot 20",
+    "onderwerp": "Splitsen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk: een briefje van {10:wit} euro.",
+        "nieuw": "Het briefje is 10 euro waard."
+      },
+      {
+        "bron": "En munten van één euro.",
+        "nieuw": "Elke munt is 1 euro waard."
+      },
+      {
+        "bron": "Samen is dat {14:wit} euro.",
+        "nieuw": "Samen is het 14 euro."
+      },
+      {
+        "bron": "Het briefje is al tien euro. Tel de munten erbij. Hoeveel euro komt erbij?",
+        "nieuw": "Begin bij 10. Tel de munten erbij. Hoeveel euro komt erbij?"
+      },
+      {
+        "bron": "Splits het getal {14:wit}. Welk getal mist er nog? Sleep het getal naar het huisje.",
+        "nieuw": "In het huisje staat 14. Welk getal mist er nog? Sleep het getal naar de lege plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen2-2",
+    "titel": "Splitsen tot 20 (moeilijker)",
+    "onderwerp": "Splitsen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Bovenaan staat {13:wit}.",
+        "nieuw": "Bovenaan staat 13."
+      },
+      {
+        "bron": "Dat getal komt vooraan in de som.",
+        "nieuw": "Dat getal komt vooraan in de som."
+      },
+      {
+        "bron": "Onder staan {10:wit} en {3:wit}.",
+        "nieuw": "Onderin staan 10 en 3."
+      },
+      {
+        "bron": "Die twee getallen tel je bij elkaar op. Samen zijn ze evenveel als het getal bovenaan.",
+        "nieuw": "Tel die 2 getallen bij elkaar op. Dan krijg je het getal bovenaan."
+      },
+      {
+        "bron": "Kijk naar het huisje. Welke som past erbij? Sleep de som onder het huisje.",
+        "nieuw": "Welke som past bij het huisje? Sleep die som onder het huisje."
+      }
+    ]
+  },
+  {
+    "id": "squla-splits-delen-1",
+    "titel": "Eerlijk verdelen",
+    "onderwerp": "Splitsen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "We verdelen de knikkers één voor één.",
+        "nieuw": "We leggen steeds 1 knikker in een bakje."
+      },
+      {
+        "bron": "Elk bakje krijgt er steeds één bij.",
+        "nieuw": "Elk bakje krijgt er steeds 1 bij."
+      },
+      {
+        "bron": "Alles is verdeeld.",
+        "nieuw": "Alles is verdeeld."
+      },
+      {
+        "bron": "Tel wat er in één bakje ligt.",
+        "nieuw": "Tel wat er in 1 bakje ligt."
+      },
+      {
+        "bron": "Er zijn {8:wit} knikkers. Verdeel ze over de {2:wit} bakjes. Zorg dat in elk bakje evenveel ligt.",
+        "nieuw": "Verdeel de 8 knikkers over de 2 bakjes. In elk bakje moeten evenveel knikkers liggen."
+      }
+    ]
+  },
+  {
+    "id": "squla-piraat-1",
+    "titel": "Schattenjacht: plussommen",
+    "onderwerp": "Rekenen met getallen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Ik leg de goudstukken één voor één in het vak.",
+        "nieuw": "Ik leg steeds 1 goudstuk in het vak."
+      },
+      {
+        "bron": "Tel maar mee.",
+        "nieuw": "Tel maar mee."
+      },
+      {
+        "bron": "Kijk: rijen van vijf.",
+        "nieuw": "Kijk, rijen van 5."
+      },
+      {
+        "bron": "Samen zijn het er {14:geel}.",
+        "nieuw": "Samen zijn het er 14."
+      },
+      {
+        "bron": "Sleep {14:geel} goudstukken naar het vak.",
+        "nieuw": "Sleep 14 goudstukken naar het vak."
+      }
+    ]
+  },
+  {
+    "id": "squla-piraat-2",
+    "titel": "Schattenjacht: minsommen",
+    "onderwerp": "Rekenen met getallen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Eerst waren er {6:geel} sterren.",
+        "nieuw": "Eerst waren er 6 sterren."
+      },
+      {
+        "bron": "Er gaat er {1:blauw} weg.",
+        "nieuw": "Er gaat er 1 weg."
+      },
+      {
+        "bron": "Die telt niet meer mee.",
+        "nieuw": "Die telt niet meer mee."
+      },
+      {
+        "bron": "De andere leg ik in het vak.",
+        "nieuw": "De andere leg ik in het vak."
+      },
+      {
+        "bron": "Er zijn er nog {5:geel}.",
+        "nieuw": "Er zijn er nog 5."
+      },
+      {
+        "bron": "Ik heb {6:geel} sterren in mijn tas. Er valt er {1:blauw} uit. Sleep de sterren die er nog zijn naar het vak.",
+        "nieuw": "In mijn tas zitten 6 sterren. Er valt 1 ster uit. Sleep de sterren die overblijven naar het vak."
+      }
+    ]
+  },
+  {
+    "id": "squla-piraat-3",
+    "titel": "Schattenjacht: plus en min",
+    "onderwerp": "Rekenen met getallen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Eerst waren er {7:geel} sterren.",
+        "nieuw": "Eerst waren er 7 sterren."
+      },
+      {
+        "bron": "Er gaan er {4:blauw} weg.",
+        "nieuw": "Er gaan er 4 weg."
+      },
+      {
+        "bron": "Die tellen niet meer mee.",
+        "nieuw": "Die tellen niet meer mee."
+      },
+      {
+        "bron": "De andere leg ik in het vak.",
+        "nieuw": "De andere leg ik in het vak."
+      },
+      {
+        "bron": "Er zijn er nog {3:geel}.",
+        "nieuw": "Er zijn er nog 3."
+      },
+      {
+        "bron": "{7:geel} − {4:blauw}. Sleep de sterren die er nog zijn naar het vak.",
+        "nieuw": "7 min 4. Sleep de sterren die overblijven naar het vak."
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-dagen-1",
+    "titel": "Dagen van de week",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We lopen samen langs de weektrein. Elke wagon is één dag.",
+        "nieuw": "Kijk naar de trein. Daar staan de dagen van de week."
+      },
+      {
+        "bron": "Maandag.",
+        "nieuw": "Maandag."
+      },
+      {
+        "bron": "Dinsdag.",
+        "nieuw": "Dinsdag."
+      },
+      {
+        "bron": "Woensdag.",
+        "nieuw": "Woensdag."
+      },
+      {
+        "bron": "Donderdag.",
+        "nieuw": "Donderdag."
+      },
+      {
+        "bron": "Vrijdag.",
+        "nieuw": "Vrijdag."
+      },
+      {
+        "bron": "Zaterdag.",
+        "nieuw": "Zaterdag."
+      },
+      {
+        "bron": "Zondag.",
+        "nieuw": "Zondag."
+      },
+      {
+        "bron": "De week begint op maandag.",
+        "nieuw": "Maandag is de eerste dag van de week."
+      },
+      {
+        "bron": "Kijk naar de wagon vlak achter de locomotief.",
+        "nieuw": "De eerste dag staat vooraan in de trein."
+      },
+      {
+        "bron": "Wat is de eerste dag van de week?",
+        "nieuw": "Wat is de eerste dag van de week?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-dagen-2",
+    "titel": "Dagen van de week (moeilijker)",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk naar de hele trein.",
+        "nieuw": "Kijk naar de hele trein."
+      },
+      {
+        "bron": "Luister maar.",
+        "nieuw": "Luister maar."
+      },
+      {
+        "bron": "Maandag.",
+        "nieuw": "Maandag."
+      },
+      {
+        "bron": "Dinsdag.",
+        "nieuw": "Dinsdag."
+      },
+      {
+        "bron": "Welke dag komt meteen na dinsdag?",
+        "nieuw": "Welke dag komt na dinsdag?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-dagen-3",
+    "titel": "Dagen van de week (nog moeilijker)",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk naar de trein bovenaan.",
+        "nieuw": "Kijk naar de trein bovenaan."
+      },
+      {
+        "bron": "Zoek de vier dagen in de trein. De trein laat zien in welke volgorde ze komen.",
+        "nieuw": "Zoek de 4 dagen in de trein. Kijk welke dag eerst komt en welke daarna."
+      },
+      {
+        "bron": "Kijk welke dag vooraan staat.",
+        "nieuw": "Kijk welke dag vooraan staat."
+      },
+      {
+        "bron": "Zet de vier dagen op de goede volgorde. Sleep een kaart naar een leeg vak. Tikken mag ook.",
+        "nieuw": "Zet de 4 dagen in de goede volgorde. Sleep elke kaart naar een leeg vak. Je mag ook tikken."
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-kalender-1",
+    "titel": "De kalender",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Op een klok zie je hoe laat het is.",
+        "nieuw": "Op een klok zie je hoe laat het is."
+      },
+      {
+        "bron": "Op deze kalender staan alle dagen van juni.",
+        "nieuw": "Op deze kalender staan alle dagen van juni."
+      },
+      {
+        "bron": "Op deze plaatjes staat wat er gebeurt.",
+        "nieuw": "Deze plaatjes laten zien wat er gebeurt."
+      },
+      {
+        "bron": "Eerst de kring, dan rekenen.",
+        "nieuw": "Eerst de kring, dan rekenen."
+      },
+      {
+        "bron": "Het is een nieuwe dag. Waar zie je wat er vandaag gaat gebeuren?",
+        "nieuw": "Waar zie je wat er vandaag gaat gebeuren?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-kalender-2",
+    "titel": "De kalender (moeilijker)",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Zoek het vak met de rode rand.",
+        "nieuw": "Zoek het vak met de rode rand."
+      },
+      {
+        "bron": "Zie je het rode vak op de kalender? Welk getal staat daar?",
+        "nieuw": "Welk getal staat in het vak met de rode rand?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-tijden-1",
+    "titel": "Tijden",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Hier staan de dagen van de week.",
+        "nieuw": "Hier staan de dagen van de week."
+      },
+      {
+        "bron": "Kijk, vrijdag staat in grote letters.",
+        "nieuw": "Kijk, vrijdag staat in grote letters."
+      },
+      {
+        "bron": "Gisteren was er een kampvuuravond. Dat was op vrijdag. Welke dag komt na vrijdag?",
+        "nieuw": "Gisteren was er een kampvuur. Het was vrijdag. Welke dag komt na vrijdag?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tijd-tijden-2",
+    "titel": "Tijden (moeilijker)",
+    "onderwerp": "Tijd",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Een boterham is op in een paar happen.",
+        "nieuw": "Een boterham is op in een paar happen."
+      },
+      {
+        "bron": "Slapen doe je de hele nacht.",
+        "nieuw": "Slapen doe je de hele nacht."
+      },
+      {
+        "bron": "Het is heel vroeg in de ochtend. Eerst eet je een boterham. Wat duurt langer: een boterham eten of een nacht slapen?",
+        "nieuw": "Het is vroeg in de ochtend. Je eet een boterham. Wat duurt langer: een boterham eten of een nacht slapen?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-1",
+    "titel": "Getallen op hun plek",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "{3:wit}.",
+        "nieuw": "3."
+      },
+      {
+        "bron": "{4:wit}.",
+        "nieuw": "4."
+      },
+      {
+        "bron": "{5:wit}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "Welk getal hoort op de puntjes?",
+        "nieuw": "Welk getal hoort op de puntjes?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-2",
+    "titel": "Getallen op hun plek (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "{2:wit}.",
+        "nieuw": "2."
+      },
+      {
+        "bron": "{3:wit}.",
+        "nieuw": "3."
+      },
+      {
+        "bron": "Welk getal hoort op de puntjes?",
+        "nieuw": "Welk getal hoort op de puntjes?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-3",
+    "titel": "Getallen op hun plek (nog moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk, hier staat {14:wit}.",
+        "nieuw": "Kijk, hier staat 14."
+      },
+      {
+        "bron": "Tel bij elk streepje één verder.",
+        "nieuw": "Bij elk streepje komt er 1 bij."
+      },
+      {
+        "bron": "Eén.",
+        "nieuw": "1."
+      },
+      {
+        "bron": "Het vlaggetje staat één streepje na de {14:wit}.",
+        "nieuw": "Het vlaggetje staat 1 streepje na 14."
+      },
+      {
+        "bron": "Bij welk getal staat het vlaggetje?",
+        "nieuw": "Welk getal hoort bij het vlaggetje?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-kat-1",
+    "titel": "Het raketje op de getallenlijn",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "We tellen samen langs de lijn.",
+        "nieuw": "Tel maar mee langs de lijn."
+      },
+      {
+        "bron": "{2:wit}.",
+        "nieuw": "2."
+      },
+      {
+        "bron": "{3:wit}.",
+        "nieuw": "3."
+      },
+      {
+        "bron": "{4:wit}.",
+        "nieuw": "4."
+      },
+      {
+        "bron": "{5:wit}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "En na {5:wit} staat het raketje.",
+        "nieuw": "Na 5 staat het raketje."
+      },
+      {
+        "bron": "Bij welk getal staat het raketje?",
+        "nieuw": "Bij welk getal staat het raketje?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-kat-2",
+    "titel": "Het raketje op de getallenlijn (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Hier is {15:wit} op de getallenlijn.",
+        "nieuw": "Kijk naar 15 op de lijn."
+      },
+      {
+        "bron": "Het getal ervoor staat er links naast.",
+        "nieuw": "Het getal ervoor staat links ernaast."
+      },
+      {
+        "bron": "Dat is één terug.",
+        "nieuw": "Tel 1 terug."
+      },
+      {
+        "bron": "Het raketje landt op een planeet met {15:wit}. Welk getal komt voor {15:wit}?",
+        "nieuw": "Het raketje staat bij 15. Welk getal komt voor 15?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-dieren-1",
+    "titel": "Dingen op de getallen",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "{12:wit}.",
+        "nieuw": "12."
+      },
+      {
+        "bron": "Na de bal staat {14:wit}.",
+        "nieuw": "Na de bal komt 14."
+      },
+      {
+        "bron": "Welk getal ligt onder de bal?",
+        "nieuw": "Welk getal ligt onder de bal?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-dieren-2",
+    "titel": "Dingen op de getallen (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Kijk naar alle getallen.",
+        "nieuw": "Kijk naar alle getallen."
+      },
+      {
+        "bron": "Tel rustig verder. Zo hoor je welk getal daarna komt.",
+        "nieuw": "Tel rustig verder. Welk getal komt daarna?"
+      },
+      {
+        "bron": "Dit is het kleinste getal.",
+        "nieuw": "Dit is het kleinste getal."
+      },
+      {
+        "bron": "Dat komt helemaal vooraan.",
+        "nieuw": "Dat komt helemaal vooraan."
+      },
+      {
+        "bron": "Zet de getallen op volgorde. Van klein naar groot.",
+        "nieuw": "Zet de getallen van klein naar groot."
+      },
+      {
+        "bron": "Sleep een kaart naar een vak.",
+        "nieuw": "Sleep een kaart naar een vak."
+      },
+      {
+        "bron": "Of tik op een kaart.",
+        "nieuw": "Je mag ook op een kaart tikken."
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-dieren-3",
+    "titel": "Dingen op de getallen (nog moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "{4:wit}.",
+        "nieuw": "4."
+      },
+      {
+        "bron": "Na de bal staat {6:wit}.",
+        "nieuw": "Na de bal komt 6."
+      },
+      {
+        "bron": "Welk getal ligt onder de bal?",
+        "nieuw": "Welk getal ligt onder de bal?"
+      }
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-terugtellen-1",
+    "titel": "Terugtellen tot de start",
+    "onderwerp": "Getallenlijn",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "We tellen samen terug.",
+        "nieuw": "We tellen terug. Er gaat steeds 1 af."
+      },
+      {
+        "bron": "{17:wit}.",
+        "nieuw": "17."
+      },
+      {
+        "bron": "{16:wit}.",
+        "nieuw": "16."
+      },
+      {
+        "bron": "{15:wit}.",
+        "nieuw": "15."
+      },
+      {
+        "bron": "{14:wit}.",
+        "nieuw": "14."
+      },
+      {
+        "bron": "{13:wit}.",
+        "nieuw": "13."
+      },
+      {
+        "bron": "Welk getal hoort op de puntjes?",
+        "nieuw": "Welk getal hoort op de puntjes?"
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-fruit-1",
+    "titel": "Fruit tellen",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met appels. Een volle rij telt {5:rood}. Begin met de volle rijen.",
+        "nieuw": "In een volle rij liggen 5 appels. We tellen eerst de volle rijen."
+      },
+      {
+        "bron": "{5:rood}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:rood}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "Begin bij {10:rood}. Tik steeds op de appel met de kring en tel verder.",
+        "nieuw": "Begin bij 10. Tik steeds op de appel met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-fruit-2",
+    "titel": "Fruit tellen (moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met citroenen. Een volle rij telt {5:geel}. Begin met de volle rijen.",
+        "nieuw": "In een volle rij liggen 5 citroenen. We tellen eerst de volle rijen."
+      },
+      {
+        "bron": "{5:geel}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:geel}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "Begin bij {10:geel}. Tik steeds op de citroen met de kring en tel verder.",
+        "nieuw": "Begin bij 10. Tik steeds op de citroen met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-fruit-3",
+    "titel": "Fruit tellen (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Tel de bananen één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+        "nieuw": "Tel elke banaan. Bij elke banaan komt er een streepje bij."
+      },
+      {
+        "bron": "Ik heb er {12:geel} geteld.",
+        "nieuw": "We hebben er al 12 geteld."
+      },
+      {
+        "bron": "Begin bij {12:geel}. Tik steeds op de banaan met de kring en tel verder.",
+        "nieuw": "Begin bij 12. Tik steeds op de banaan met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief1-1",
+    "titel": "Tellen in rijtjes",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met auto's en bussen. Een volle rij telt {5:wit}. Begin met de volle rijen.",
+        "nieuw": "Kijk naar de auto’s en bussen. Er staan er 5 in een volle rij. Tel de volle rijen eerst."
+      },
+      {
+        "bron": "{5:wit}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:wit}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "Begin bij {10:wit}. Tik steeds op de auto met de kring en tel verder.",
+        "nieuw": "Begin bij 10. Tik steeds op de auto met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief1-2",
+    "titel": "Tellen in rijtjes (moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met ballen en blokken. Een volle rij telt {5:wit}. Begin met de volle rijen.",
+        "nieuw": "Kijk naar de ballen en blokken. Er staan er 5 in een volle rij. Tel de volle rijen eerst."
+      },
+      {
+        "bron": "{5:wit}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:wit}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "Begin bij {10:wit}. Tik steeds op de bal met de kring en tel verder.",
+        "nieuw": "Begin bij 10. Tik steeds op de bal met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief1-3",
+    "titel": "Tellen in rijtjes (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tel de planeten één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+        "nieuw": "Tel elke planeet. Bij elke planeet komt er een streepje bij."
+      },
+      {
+        "bron": "Ik heb er {11:paars} geteld.",
+        "nieuw": "We hebben er al 11 geteld."
+      },
+      {
+        "bron": "Begin bij {11:paars}. Tik steeds op de planeet met de kring en tel verder.",
+        "nieuw": "Begin bij 11. Tik steeds op de planeet met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief2-1",
+    "titel": "Hoeveel zie je?",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met raketjes. Een volle rij telt {5:rood}. Begin met de volle rijen.",
+        "nieuw": "In een volle rij staan 5 raketjes. We tellen eerst de volle rijen."
+      },
+      {
+        "bron": "{5:rood}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:rood}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "Begin bij {10:rood}. Tik steeds op het raketje met de kring en tel verder.",
+        "nieuw": "Begin bij 10. Tik steeds op het raketje met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief2-2",
+    "titel": "Hoeveel zie je? (moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met auto's en bussen. Een volle rij telt {5:wit}. Begin met de volle rijen.",
+        "nieuw": "Kijk naar de auto’s en bussen. Er staan er 5 in een volle rij. Tel de volle rijen eerst."
+      },
+      {
+        "bron": "{5:wit}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:wit}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "{15:wit}.",
+        "nieuw": "15."
+      },
+      {
+        "bron": "Begin bij {15:wit}. Tik steeds op de bus met de kring en tel verder.",
+        "nieuw": "Begin bij 15. Tik steeds op de bus met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief2-3",
+    "titel": "Hoeveel zie je? (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Tel de ufo's één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+        "nieuw": "Tel elke ufo. Bij elke ufo komt er een streepje bij."
+      },
+      {
+        "bron": "Ik heb er {4:paars} geteld.",
+        "nieuw": "We hebben er al 4 geteld."
+      },
+      {
+        "bron": "Begin bij {4:paars}. Tik steeds op de ufo met de kring en tel verder.",
+        "nieuw": "Begin bij 4. Tik steeds op de ufo met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief3-1",
+    "titel": "Grote groepen tellen",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tel de planeten één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+        "nieuw": "Tel elke planeet. Bij elke planeet komt er een streepje bij."
+      },
+      {
+        "bron": "Ik heb er {3:paars} geteld.",
+        "nieuw": "We hebben er al 3 geteld."
+      },
+      {
+        "bron": "Begin bij {3:paars}. Tik steeds op de planeet met de kring en tel verder.",
+        "nieuw": "Begin bij 3. Tik steeds op de planeet met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief3-2",
+    "titel": "Grote groepen tellen (moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Tel de planeten één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+        "nieuw": "Tel elke planeet. Bij elke planeet komt er een streepje bij."
+      },
+      {
+        "bron": "Ik heb er {13:paars} geteld.",
+        "nieuw": "We hebben er al 13 geteld."
+      },
+      {
+        "bron": "Begin bij {13:paars}. Tik steeds op de planeet met de kring en tel verder.",
+        "nieuw": "Begin bij 13. Tik steeds op de planeet met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief3-3",
+    "titel": "Grote groepen tellen (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Kijk naar de rijtjes met raketjes en sterren. Een volle rij telt {10:wit}. Begin met de volle rijen.",
+        "nieuw": "Kijk naar de raketjes en sterren. Er staan er 10 in een volle rij. Tel de volle rijen eerst."
+      },
+      {
+        "bron": "{10:wit}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "{20:wit}.",
+        "nieuw": "20."
+      },
+      {
+        "bron": "Begin bij {20:wit}. Tik steeds op het raketje met de kring en tel verder.",
+        "nieuw": "Begin bij 20. Tik steeds op het raketje met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief3-4",
+    "titel": "Grote groepen tellen (heel moeilijk)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Op de zak staat {40:blauw}. Er zitten dus {40:blauw} knikkers in.",
+        "nieuw": "Op de zak staat 40. Er zitten 40 knikkers in."
+      },
+      {
+        "bron": "Tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn.",
+        "nieuw": "Tel de losse knikkers erbij. Zo weet je hoeveel knikkers het samen zijn."
+      },
+      {
+        "bron": "Begin bij {40:blauw}. Tik steeds op de knikker met de kring en tel verder.",
+        "nieuw": "Begin bij 40. Tik steeds op de knikker met de kring. Tel bij elke tik 1 verder."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-telrij-1",
+    "titel": "De telrij",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Tel één verder dan {34:wit}.",
+        "nieuw": "Tel 1 verder vanaf 34."
+      },
+      {
+        "bron": "Welk huisnummer komt na {34:wit}? Sleep het goede huis naar de lege plek.",
+        "nieuw": "Welk huisnummer komt na 34? Sleep dat huis naar de lege plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-tellen-telrij-2",
+    "titel": "De telrij (moeilijker)",
+    "onderwerp": "Tellen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tel één verder dan {69:wit}.",
+        "nieuw": "Tel 1 verder vanaf 69."
+      },
+      {
+        "bron": "Welk huisnummer komt na {69:wit}? Sleep het goede huis naar de lege plek.",
+        "nieuw": "Welk huisnummer komt na 69? Sleep dat huis naar de lege plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-1",
+    "titel": "Meer, minder, evenveel",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "In een volle rij staan {5:rood} appels. De rijtjes helpen je tellen.",
+        "nieuw": "In een volle rij liggen 5 appels. We tellen de rijen eerst."
+      },
+      {
+        "bron": "{5:rood}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{10:rood}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "{15:rood}.",
+        "nieuw": "15."
+      },
+      {
+        "bron": "Tel de appels. Hoeveel appels zijn het?",
+        "nieuw": "Hoeveel appels zijn het? Tel maar."
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-2",
+    "titel": "Meer, minder, evenveel (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "Kijk eerst naar de groep bovenaan.",
+        "nieuw": "Kijk eerst naar de groep bovenaan."
+      },
+      {
+        "bron": "Tik dan op een kaart.",
+        "nieuw": "Tik dan op een kaart."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "Bovenaan zijn het er {14:geel}.",
+        "nieuw": "Bovenaan zijn het er 14."
+      },
+      {
+        "bron": "Hier zijn het er {12:geel}.",
+        "nieuw": "Hier zijn het er 12."
+      },
+      {
+        "bron": "Hier zijn het er {17:geel}.",
+        "nieuw": "Hier zijn het er 17."
+      },
+      {
+        "bron": "Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.",
+        "nieuw": "Kijk naar het getal bij elk groepje. Zo zie je waar er meer of minder zijn."
+      },
+      {
+        "bron": "Waar zie je meer sterren dan bovenaan?",
+        "nieuw": "Waar zie je meer sterren dan bovenaan?"
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-3",
+    "titel": "Meer, minder, evenveel (nog moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk goed.",
+        "nieuw": "Kijk goed."
+      },
+      {
+        "bron": "Tik op de goede kaart.",
+        "nieuw": "Tik op de goede kaart."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "Hier zijn het er {13:rood}.",
+        "nieuw": "Hier zijn het er 13."
+      },
+      {
+        "bron": "Hier zijn het er {15:rood}.",
+        "nieuw": "Hier zijn het er 15."
+      },
+      {
+        "bron": "Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.",
+        "nieuw": "Kijk naar het getal bij elk groepje. Zo zie je waar er meer of minder zijn."
+      },
+      {
+        "bron": "Op welke kaart zijn er meer bloemen?",
+        "nieuw": "Op welke kaart zijn er meer bloemen?"
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel2-1",
+    "titel": "De meeste",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "In een volle rij staan {5:paars} kralen. De rijtjes helpen je tellen.",
+        "nieuw": "In een volle rij liggen 5 kralen. We tellen de rijen eerst."
+      },
+      {
+        "bron": "{5:paars}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "Tel de kralen. Hoeveel kralen zijn het?",
+        "nieuw": "Hoeveel kralen zijn het? Tel maar."
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel2-2",
+    "titel": "De meeste (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk goed.",
+        "nieuw": "Kijk goed."
+      },
+      {
+        "bron": "Tik op de goede kaart.",
+        "nieuw": "Tik op de goede kaart."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "Hier zijn het er {17:rood}.",
+        "nieuw": "Hier zijn het er 17."
+      },
+      {
+        "bron": "Hier zijn het er {15:rood}.",
+        "nieuw": "Hier zijn het er 15."
+      },
+      {
+        "bron": "Hier zijn het er {14:rood}.",
+        "nieuw": "Hier zijn het er 14."
+      },
+      {
+        "bron": "Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.",
+        "nieuw": "Kijk naar het getal bij elk groepje. Zo zie je waar er meer of minder zijn."
+      },
+      {
+        "bron": "Waar liggen de minste appels?",
+        "nieuw": "Waar liggen de minste appels?"
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel3-1",
+    "titel": "Meer dan, minder dan",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk, drie potjes.",
+        "nieuw": "Kijk, 3 potjes."
+      },
+      {
+        "bron": "Sleep de potjes naar de vakjes.",
+        "nieuw": "Sleep de potjes naar de vakjes."
+      },
+      {
+        "bron": "Kijk, onder elk getal staan staven.",
+        "nieuw": "Onder elk getal zie je staven."
+      },
+      {
+        "bron": "Elke staaf is {10:wit}.",
+        "nieuw": "Elke staaf telt voor 10."
+      },
+      {
+        "bron": "Bij {26:wit} zie je {2:wit} staven en {6:wit} losse blokjes.",
+        "nieuw": "Bij 26 zie je 2 staven en 6 losse blokjes."
+      },
+      {
+        "bron": "Bij {8:wit} zie je geen staaf, alleen {8:wit} losse blokjes.",
+        "nieuw": "Bij 8 zie je geen staaf, alleen 8 losse blokjes."
+      },
+      {
+        "bron": "Bij {24:wit} zie je {2:wit} staven en {4:wit} losse blokjes.",
+        "nieuw": "Bij 24 zie je 2 staven en 4 losse blokjes."
+      },
+      {
+        "bron": "Kijk eerst waar de meeste staven staan. Daar hoort het grootste getal bij.",
+        "nieuw": "Waar staan de meeste staven? Daar hoort het grootste getal bij."
+      },
+      {
+        "bron": "Zijn er evenveel staven? Tel dan de losse blokjes erbij.",
+        "nieuw": "Zijn er evenveel staven? Kijk dan naar de losse blokjes."
+      },
+      {
+        "bron": "Zet de potjes op volgorde. Van meer naar minder.",
+        "nieuw": "Zet de potjes op volgorde. Van meer naar minder."
+      }
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel3-2",
+    "titel": "Meer dan, minder dan (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "In een vol doosje zitten {6:wit} eieren. Tel de volle doosjes eerst.",
+        "nieuw": "In een vol doosje zitten 6 eieren. We tellen de volle doosjes eerst."
+      },
+      {
+        "bron": "{6:wit}.",
+        "nieuw": "6."
+      },
+      {
+        "bron": "{12:wit}.",
+        "nieuw": "12."
+      },
+      {
+        "bron": "{18:wit}.",
+        "nieuw": "18."
+      },
+      {
+        "bron": "Tel de eieren. Hoeveel eieren zijn het?",
+        "nieuw": "Hoeveel eieren zijn het? Tel maar."
+      }
+    ]
+  },
+  {
+    "id": "squla-min-ruimte-1",
+    "titel": "Minsommen in de ruimte",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Er zweven {7:blauw} ballonnen in de lucht.",
+        "nieuw": "Er zijn 7 ballonnen."
+      },
+      {
+        "bron": "{4:groen} ballonnen vliegen weg.",
+        "nieuw": "Er vliegen 4 ballonnen weg."
+      },
+      {
+        "bron": "Tel de ballonnen die overblijven. Hoeveel zijn het er?",
+        "nieuw": "Tel de ballonnen die overblijven. Hoeveel zijn het er?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-ruimte-2",
+    "titel": "Minsommen in de ruimte (moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Er staan {14:blauw} raketjes klaar.",
+        "nieuw": "Er staan 14 raketjes."
+      },
+      {
+        "bron": "{3:geel} raketjes vliegen weg.",
+        "nieuw": "Er vliegen 3 raketjes weg."
+      },
+      {
+        "bron": "Tel de raketjes die overblijven. Hoeveel zijn het er?",
+        "nieuw": "Tel de raketjes die overblijven. Hoeveel zijn het er?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-ruimte-3",
+    "titel": "Minsommen in de ruimte (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Er staan {13:paars} raketjes klaar.",
+        "nieuw": "Er staan 13 raketjes."
+      },
+      {
+        "bron": "{6:blauw} raketjes vliegen weg.",
+        "nieuw": "Er vliegen 6 raketjes weg."
+      },
+      {
+        "bron": "Eerst gaan er {3:geel} weg.",
+        "nieuw": "Eerst gaan er 3 weg."
+      },
+      {
+        "bron": "Dan zijn er nog {10:roze}.",
+        "nieuw": "Dan zijn er nog 10."
+      },
+      {
+        "bron": "Daarna gaan er nog {3:geel} weg.",
+        "nieuw": "Daarna gaan er nog 3 weg."
+      },
+      {
+        "bron": "Tel de raketjes die overblijven. Hoeveel zijn het er?",
+        "nieuw": "Tel de raketjes die overblijven. Hoeveel zijn het er?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus1-1",
+    "titel": "Bussommen",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "In de bus liggen {8:paars} pakjes.",
+        "nieuw": "In de bus liggen 8 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {3:geel}.",
+        "nieuw": "De bus brengt er 3 weg."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus1-2",
+    "titel": "Bussommen (moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "In de bus liggen {16:rood} pakjes.",
+        "nieuw": "In de bus liggen 16 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {4:groen}.",
+        "nieuw": "De bus brengt er 4 weg."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus1-3",
+    "titel": "Bussommen (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "In de bus liggen {15:groen} pakjes.",
+        "nieuw": "In de bus liggen 15 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {7:blauw}.",
+        "nieuw": "De bus brengt er 7 weg."
+      },
+      {
+        "bron": "Eerst gaan er {5:groen} uit.",
+        "nieuw": "Eerst gaan er 5 uit."
+      },
+      {
+        "bron": "Dan liggen er nog {10:roze} in.",
+        "nieuw": "Dan liggen er nog 10 in."
+      },
+      {
+        "bron": "Daarna gaan er nog {2:oranje} uit.",
+        "nieuw": "Daarna gaan er nog 2 uit."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus2-1",
+    "titel": "Bussommen met een rondje",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "In de bus liggen {10:roze} pakjes.",
+        "nieuw": "In de bus liggen 10 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {7:blauw}.",
+        "nieuw": "De bus brengt er 7 weg."
+      },
+      {
+        "bron": "Kijk naar het getal in het rode rondje. Zoveel pakjes zijn al bezorgd.",
+        "nieuw": "Kijk naar het rode rondje. Het getal laat zien hoeveel pakjes er weg zijn."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus2-2",
+    "titel": "Bussommen met een rondje (moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "In de bus liggen {17:oranje} pakjes.",
+        "nieuw": "In de bus liggen 17 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {5:groen}.",
+        "nieuw": "De bus brengt er 5 weg."
+      },
+      {
+        "bron": "Kijk naar het getal in het rode rondje. Zoveel pakjes zijn al bezorgd.",
+        "nieuw": "Kijk naar het rode rondje. Het getal laat zien hoeveel pakjes er weg zijn."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-bus2-3",
+    "titel": "Bussommen met een rondje (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "In de bus liggen {16:rood} pakjes.",
+        "nieuw": "In de bus liggen 16 pakjes."
+      },
+      {
+        "bron": "De bus bezorgt er {8:paars}.",
+        "nieuw": "De bus brengt er 8 weg."
+      },
+      {
+        "bron": "Eerst gaan er {6:blauw} uit.",
+        "nieuw": "Eerst gaan er 6 uit."
+      },
+      {
+        "bron": "Dan liggen er nog {10:roze} in.",
+        "nieuw": "Dan liggen er nog 10 in."
+      },
+      {
+        "bron": "Daarna gaan er nog {2:oranje} uit.",
+        "nieuw": "Daarna gaan er nog 2 uit."
+      },
+      {
+        "bron": "Kijk naar het getal in het rode rondje. Zoveel pakjes zijn al bezorgd.",
+        "nieuw": "Kijk naar het rode rondje. Het getal laat zien hoeveel pakjes er weg zijn."
+      },
+      {
+        "bron": "Hoeveel pakjes liggen er nog in de bus?",
+        "nieuw": "Hoeveel pakjes liggen er nog in de bus?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-machine-1",
+    "titel": "Minsommen: hoeveel over?",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We kijken samen."
+      },
+      {
+        "bron": "{10:roze} blokjes gaan de machine in.",
+        "nieuw": "10 blokjes gaan de machine in."
+      },
+      {
+        "bron": "De machine haalt er {3:geel} af.",
+        "nieuw": "De machine haalt er 3 weg."
+      },
+      {
+        "bron": "Ik zet {10:roze} stippen neer.",
+        "nieuw": "Ik zet 10 stippen neer."
+      },
+      {
+        "bron": "Er gaan er {3:geel} weg.",
+        "nieuw": "Er gaan er 3 weg."
+      },
+      {
+        "bron": "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?",
+        "nieuw": "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-machine-2",
+    "titel": "Minsommen: hoeveel over? (moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen, stap voor stap."
+      },
+      {
+        "bron": "Kijk, bekers met limonade.",
+        "nieuw": "Kijk naar de bekers met limonade."
+      },
+      {
+        "bron": "Een paar zijn al leeg.",
+        "nieuw": "Sommige zijn al leeg."
+      },
+      {
+        "bron": "Eerst waren er {5:groen} bekers vol.",
+        "nieuw": "Eerst waren er 5 bekers vol."
+      },
+      {
+        "bron": "Er zijn {2:oranje} bekers leeggedronken.",
+        "nieuw": "Er zijn 2 bekers leeg."
+      },
+      {
+        "bron": "Die gaan weg.",
+        "nieuw": "Die gaan weg."
+      },
+      {
+        "bron": "Hoeveel bekers zijn nog vol?",
+        "nieuw": "Hoeveel bekers zijn nog vol?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-machine-3",
+    "titel": "Minsommen: hoeveel over? (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk, {7:blauw} − {4:groen}.",
+        "nieuw": "We doen 7 min 4."
+      },
+      {
+        "bron": "Ik zet {7:blauw} stippen neer.",
+        "nieuw": "Ik zet 7 stippen neer."
+      },
+      {
+        "bron": "Er gaan er {4:groen} weg.",
+        "nieuw": "Er gaan 4 stippen weg."
+      },
+      {
+        "bron": "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?",
+        "nieuw": "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-machine-4",
+    "titel": "Minsommen: hoeveel over? (heel moeilijk)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk, je hebt {6:blauw} euro.",
+        "nieuw": "Je hebt 6 euro."
+      },
+      {
+        "bron": "Het ijsje kost {2:oranje} euro.",
+        "nieuw": "Het ijsje kost 2 euro."
+      },
+      {
+        "bron": "Voor elke euro zet ik een stip.",
+        "nieuw": "Voor elke euro zet ik 1 stip neer."
+      },
+      {
+        "bron": "Je betaalt {2:oranje} euro. Bij elke euro die je betaalt, wordt een stip grijs.",
+        "nieuw": "Je betaalt 2 euro. Voor elke euro die je betaalt, wordt 1 stip grijs."
+      },
+      {
+        "bron": "Hoeveel euro houd je over?",
+        "nieuw": "Hoeveel euro houd je over?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-kaal-1",
+    "titel": "Kale minsommen",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk, {8:paars} − {3:geel}.",
+        "nieuw": "We doen 8 min 3."
+      },
+      {
+        "bron": "Ik zet {8:paars} stippen neer.",
+        "nieuw": "Ik zet 8 stippen neer."
+      },
+      {
+        "bron": "Er gaan er {3:geel} weg.",
+        "nieuw": "Er gaan 3 stippen weg."
+      },
+      {
+        "bron": "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?",
+        "nieuw": "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-kaal-2",
+    "titel": "Kale minsommen (moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk, {20:blauw} − {4:groen}.",
+        "nieuw": "We doen 20 min 4."
+      },
+      {
+        "bron": "Ik zet {20:blauw} stippen neer.",
+        "nieuw": "Ik zet 20 stippen neer."
+      },
+      {
+        "bron": "Er gaan er {4:groen} weg.",
+        "nieuw": "Er gaan 4 stippen weg."
+      },
+      {
+        "bron": "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?",
+        "nieuw": "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+      }
+    ]
+  },
+  {
+    "id": "squla-min-kaal-3",
+    "titel": "Kale minsommen (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk, {16:rood} − {9:blauw}.",
+        "nieuw": "We doen 16 min 9."
+      },
+      {
+        "bron": "Ik zet {16:rood} stippen neer.",
+        "nieuw": "Ik zet 16 stippen neer."
+      },
+      {
+        "bron": "Er gaan er {9:blauw} weg.",
+        "nieuw": "Er gaan 9 stippen weg."
+      },
+      {
+        "bron": "Eerst gaan er {6:blauw} weg.",
+        "nieuw": "Eerst gaan er 6 stippen weg."
+      },
+      {
+        "bron": "Dan zijn er nog {10:roze}.",
+        "nieuw": "Dan zijn er nog 10 stippen."
+      },
+      {
+        "bron": "Daarna gaan er nog {3:geel} weg.",
+        "nieuw": "Daarna gaan er nog 3 stippen weg."
+      },
+      {
+        "bron": "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?",
+        "nieuw": "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bakkerij-1",
+    "titel": "Plussommen in de bakkerij",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Hier ligt {1:roze} taartje.",
+        "nieuw": "Hier ligt 1 taartje."
+      },
+      {
+        "bron": "Er komt eerst één taartje bij. Tel één verder.",
+        "nieuw": "Er komt eerst 1 taartje bij. Tel 1 verder."
+      },
+      {
+        "bron": "Hoeveel taartjes liggen er nu?",
+        "nieuw": "Hoeveel taartjes liggen er nu?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bakkerij-2",
+    "titel": "Plussommen in de bakkerij (moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Hier liggen {10:bruin} stokbroden.",
+        "nieuw": "Hier liggen 10 stokbroden."
+      },
+      {
+        "bron": "Er komt eerst één stokbrood bij. Tel één verder.",
+        "nieuw": "Er komt eerst 1 stokbrood bij. Tel 1 verder."
+      },
+      {
+        "bron": "Hoeveel stokbroden liggen er nu?",
+        "nieuw": "Hoeveel stokbroden liggen er nu?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bakkerij-3",
+    "titel": "Plussommen in de bakkerij (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Hier liggen {6:bruin} koekjes.",
+        "nieuw": "Hier liggen 6 koekjes."
+      },
+      {
+        "bron": "Er komt eerst één koekje bij. Tel één verder.",
+        "nieuw": "Er komt eerst 1 koekje bij. Tel 1 verder."
+      },
+      {
+        "bron": "Hoeveel koekjes liggen er nu?",
+        "nieuw": "Hoeveel koekjes liggen er nu?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-dansen-1",
+    "titel": "Samen 10 in de disco",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk naar {5:wit} en {2:wit}.",
+        "nieuw": "Kijk naar 5 en 2."
+      },
+      {
+        "bron": "{5:oranje} oranje stippen en {2:blauw} blauwe stippen.",
+        "nieuw": "Hier staan 5 oranje stippen en 2 blauwe stippen."
+      },
+      {
+        "bron": "Er blijven {3:geel} plekjes leeg.",
+        "nieuw": "Er blijven 3 plekjes leeg."
+      },
+      {
+        "bron": "Dat is nog geen {10:roze}.",
+        "nieuw": "Dat zijn nog geen 10 stippen."
+      },
+      {
+        "bron": "Bij {10:roze} is de rij precies vol.",
+        "nieuw": "Bij 10 stippen is de rij precies vol."
+      },
+      {
+        "bron": "Op welk kaartje zijn de twee getallen samen {10:roze}?",
+        "nieuw": "Op welk kaartje zijn de 2 getallen samen 10?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-dansen-2",
+    "titel": "Samen 10 in de disco (moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Neem de {3:geel}.",
+        "nieuw": "We beginnen met 3."
+      },
+      {
+        "bron": "Ik zet {3:oranje} stippen in de rij.",
+        "nieuw": "Ik zet 3 stippen in de rij."
+      },
+      {
+        "bron": "Hoeveel plekjes zijn er nog leeg?",
+        "nieuw": "Hoeveel plekjes zijn er nog leeg?"
+      },
+      {
+        "bron": "Tel ze maar.",
+        "nieuw": "Tel de lege plekjes maar."
+      },
+      {
+        "bron": "Tik op twee getallen die samen {10:wit} zijn.",
+        "nieuw": "Tik op 2 getallen die samen 10 zijn."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-dansen-3",
+    "titel": "Samen 10 in de disco (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Neem de {1:blauw}.",
+        "nieuw": "We beginnen met 1."
+      },
+      {
+        "bron": "Ik zet {1:oranje} stip in de rij.",
+        "nieuw": "Ik zet 1 stip in de rij."
+      },
+      {
+        "bron": "Hoeveel plekjes zijn er nog leeg?",
+        "nieuw": "Hoeveel plekjes zijn er nog leeg?"
+      },
+      {
+        "bron": "Tel ze maar.",
+        "nieuw": "Tel de lege plekjes maar."
+      },
+      {
+        "bron": "Tik op twee getallen die samen {10:wit} zijn.",
+        "nieuw": "Tik op 2 getallen die samen 10 zijn."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-dansen-4",
+    "titel": "Samen 10 in de disco (heel moeilijk)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk naar {7:wit} en {4:wit}.",
+        "nieuw": "Kijk naar 7 en 4."
+      },
+      {
+        "bron": "{7:oranje} oranje stippen en {4:blauw} blauwe stippen.",
+        "nieuw": "Hier staan 7 oranje stippen en 4 blauwe stippen."
+      },
+      {
+        "bron": "De rij is vol, en er zijn nog stippen over.",
+        "nieuw": "De rij is vol. Er zijn nog stippen over."
+      },
+      {
+        "bron": "Dat is meer dan {10:roze}.",
+        "nieuw": "Dat zijn meer dan 10 stippen."
+      },
+      {
+        "bron": "Bij {10:roze} is de rij precies vol.",
+        "nieuw": "Bij 10 stippen is de rij precies vol."
+      },
+      {
+        "bron": "Op welk kaartje zijn de twee getallen samen {10:roze}?",
+        "nieuw": "Op welk kaartje zijn de 2 getallen samen 10?"
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus1-1",
+    "titel": "Bussommen",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "In de bus liggen {2:oranje} pakjes.",
+        "nieuw": "In de bus liggen 2 pakjes."
+      },
+      {
+        "bron": "Naast de bus ligt {1:rood} pakje.",
+        "nieuw": "Naast de bus ligt 1 pakje."
+      },
+      {
+        "bron": "We tellen verder vanaf {2:oranje}.",
+        "nieuw": "Begin bij 2."
+      },
+      {
+        "bron": "Er liggen {2:oranje} pakjes in de bus. Bij de halte komt er {1:rood} pakje bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 2 pakjes. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus1-2",
+    "titel": "Bussommen (moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Onderin liggen twee rijen van {5:groen}: dat zijn {10:roze} pakjes.",
+        "nieuw": "Onderin liggen 2 rijen van 5 pakjes. Samen zijn dat 10 pakjes."
+      },
+      {
+        "bron": "Daarop liggen er nog {2:oranje}.",
+        "nieuw": "Daarboven liggen nog 2 pakjes."
+      },
+      {
+        "bron": "Samen zijn dat {12:roze} pakjes.",
+        "nieuw": "Samen zijn dat 12 pakjes."
+      },
+      {
+        "bron": "Naast de bus liggen {5:groen} pakjes.",
+        "nieuw": "Naast de bus liggen 5 pakjes."
+      },
+      {
+        "bron": "We tellen verder vanaf {12:roze}.",
+        "nieuw": "Begin bij 12."
+      },
+      {
+        "bron": "{13:paars}.",
+        "nieuw": "13."
+      },
+      {
+        "bron": "{14:blauw}.",
+        "nieuw": "14."
+      },
+      {
+        "bron": "{15:groen}.",
+        "nieuw": "15."
+      },
+      {
+        "bron": "{16:rood}.",
+        "nieuw": "16."
+      },
+      {
+        "bron": "Er liggen {12:roze} pakjes in de bus. Bij de halte komen er {5:groen} pakjes bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 12 pakjes. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus1-3",
+    "titel": "Bussommen (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "In de bus liggen {8:paars} pakjes.",
+        "nieuw": "In de bus liggen 8 pakjes."
+      },
+      {
+        "bron": "Naast de bus liggen {5:groen} pakjes.",
+        "nieuw": "Naast de bus liggen 5 pakjes."
+      },
+      {
+        "bron": "We tellen verder vanaf {8:paars}.",
+        "nieuw": "Begin bij 8."
+      },
+      {
+        "bron": "{9:roze}.",
+        "nieuw": "9."
+      },
+      {
+        "bron": "{10:roze}.",
+        "nieuw": "10."
+      },
+      {
+        "bron": "{11:oranje}.",
+        "nieuw": "11."
+      },
+      {
+        "bron": "{12:roze}.",
+        "nieuw": "12."
+      },
+      {
+        "bron": "Er liggen {8:paars} pakjes in de bus. Bij de halte komen er {5:groen} pakjes bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 8 pakjes. Bij de halte komen er 5 pakjes bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus2-1",
+    "titel": "Bussommen met een getal",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "In de bus liggen {4:groen} pakjes.",
+        "nieuw": "In de bus liggen 4 pakjes."
+      },
+      {
+        "bron": "Naast de bus liggen {3:geel} pakjes.",
+        "nieuw": "Naast de bus liggen 3 pakjes."
+      },
+      {
+        "bron": "We tellen verder vanaf {4:groen}.",
+        "nieuw": "Begin bij 4."
+      },
+      {
+        "bron": "{5:groen}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "{6:blauw}.",
+        "nieuw": "6."
+      },
+      {
+        "bron": "Er liggen {4:groen} pakjes in de bus. Bij de halte komen er {3:geel} pakjes bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 4 pakjes. Bij de halte komen er 3 pakjes bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus2-2",
+    "titel": "Bussommen met een getal (moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Onderin liggen twee rijen van {5:groen}: dat zijn {10:roze} pakjes.",
+        "nieuw": "Onderin liggen 2 rijen van 5 pakjes. Samen zijn dat 10 pakjes."
+      },
+      {
+        "bron": "Daarop liggen er nog {2:oranje}.",
+        "nieuw": "Daarboven liggen nog 2 pakjes."
+      },
+      {
+        "bron": "Samen zijn dat {12:roze} pakjes.",
+        "nieuw": "Samen zijn dat 12 pakjes."
+      },
+      {
+        "bron": "Naast de bus liggen {6:blauw} pakjes.",
+        "nieuw": "Naast de bus liggen 6 pakjes."
+      },
+      {
+        "bron": "We tellen verder vanaf {12:roze}.",
+        "nieuw": "Begin bij 12."
+      },
+      {
+        "bron": "{13:paars}.",
+        "nieuw": "13."
+      },
+      {
+        "bron": "{14:blauw}.",
+        "nieuw": "14."
+      },
+      {
+        "bron": "{15:groen}.",
+        "nieuw": "15."
+      },
+      {
+        "bron": "{16:rood}.",
+        "nieuw": "16."
+      },
+      {
+        "bron": "{17:oranje}.",
+        "nieuw": "17."
+      },
+      {
+        "bron": "Er liggen {12:roze} pakjes in de bus. Bij de halte komen er {6:blauw} pakjes bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 12 pakjes. Bij de halte komen er 6 pakjes bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-bus2-3",
+    "titel": "Bussommen met een getal (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Begin bij het grootste getal: {13:paars}. Dan hoef je minder ver te tellen.",
+        "nieuw": "Begin bij 13, het grootste getal. Dan tel je minder ver."
+      },
+      {
+        "bron": "{13:oranje} is {10:roze} en nog {3:geel}.",
+        "nieuw": "13 is 10 en nog 3."
+      },
+      {
+        "bron": "Kijk naar de {3:geel} en de {6:blauw}.",
+        "nieuw": "Kijk naar 3 en 6."
+      },
+      {
+        "bron": "{3:geel} + {6:blauw} = {9:roze}.",
+        "nieuw": "3 + 6 = 9."
+      },
+      {
+        "bron": "Dan komt de {10:roze} er nog bij.",
+        "nieuw": "Tel de 10 er nog bij."
+      },
+      {
+        "bron": "Er liggen {6:blauw} pakjes in de bus. Bij de halte komen er {13:paars} pakjes bij. Hoeveel pakjes liggen er nu in de bus?",
+        "nieuw": "In de bus liggen 6 pakjes. Bij de halte komen er 13 pakjes bij. Hoeveel pakjes liggen er nu in de bus?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-kaal-1",
+    "titel": "Plussommen uitrekenen",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk: {3:oranje} oranje stippen en {4:blauw} blauwe stippen.",
+        "nieuw": "Hier staan 3 oranje stippen en 4 blauwe stippen."
+      },
+      {
+        "bron": "{3:geel} + {3:blauw} is {6:blauw}.",
+        "nieuw": "3 + 3 is 6."
+      },
+      {
+        "bron": "{4:groen} is één meer dan {3:geel}.",
+        "nieuw": "Van 3 naar 4 komt er 1 bij."
+      },
+      {
+        "bron": "Dus {3:geel} + {4:groen} is één meer dan {6:blauw}.",
+        "nieuw": "Voor 3 + 4 tel je 1 bij de 6."
+      },
+      {
+        "bron": "Reken uit. Hoeveel is {3:geel} + {4:groen}?",
+        "nieuw": "Hoeveel is 3 + 4?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-kaal-2",
+    "titel": "Plussommen uitrekenen (moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "{10:oranje} oranje stippen: de bovenste rij is vol.",
+        "nieuw": "Hier staan 10 oranje stippen. De bovenste rij is vol."
+      },
+      {
+        "bron": "Er komen {7:blauw} blauwe stippen bij.",
+        "nieuw": "Er komen 7 blauwe stippen bij."
+      },
+      {
+        "bron": "Reken uit. Hoeveel is {10:roze} + {7:blauw}?",
+        "nieuw": "Hoeveel is 10 + 7?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-plus-kaal-3",
+    "titel": "Plussommen uitrekenen (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk: {7:oranje} oranje stippen en {7:blauw} blauwe stippen.",
+        "nieuw": "Hier staan 7 oranje stippen en 7 blauwe stippen."
+      },
+      {
+        "bron": "Twee keer hetzelfde getal: dat is een dubbelsom.",
+        "nieuw": "Je telt 2 dezelfde getallen op. Dat noemen we een dubbelsom."
+      },
+      {
+        "bron": "{5:groen} + {5:blauw} = {10:roze}.",
+        "nieuw": "5 + 5 = 10."
+      },
+      {
+        "bron": "{6:blauw} + {6:oranje} = {12:roze}.",
+        "nieuw": "6 + 6 = 12."
+      },
+      {
+        "bron": "Elke keer komen er {2:oranje} bij.",
+        "nieuw": "Elke keer komen er 2 bij."
+      },
+      {
+        "bron": "Reken uit. Hoeveel is {7:blauw} + {7:oranje}?",
+        "nieuw": "Hoeveel is 7 + 7?"
+      },
+      {
+        "bron": "Typ het getal.",
+        "nieuw": "Typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-geldmachine-1",
+    "titel": "Munten en briefjes",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Dit is één euro. Kijk naar de één en het woord euro. Een munt is rond.",
+        "nieuw": "Er staat 1 euro op. Kijk naar de 1 en het woord euro. Een munt is rond."
+      },
+      {
+        "bron": "Is dit een munt of een briefje?",
+        "nieuw": "Is dit een munt of een briefje?"
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-geldmachine-2",
+    "titel": "Munten en briefjes (moeilijker)",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Tel de euro's in elk groepje. Zo zie je hoeveel geld er ligt.",
+        "nieuw": "Tel hoeveel euro er in elk groepje ligt."
+      },
+      {
+        "bron": "Hier ligt {2:geel} euro.",
+        "nieuw": "Hier ligt 2 euro."
+      },
+      {
+        "bron": "Hier ligt {3:geel} euro.",
+        "nieuw": "Hier ligt 3 euro."
+      },
+      {
+        "bron": "Hier ligt {5:geel} euro.",
+        "nieuw": "Hier ligt 5 euro."
+      },
+      {
+        "bron": "Kijk, een springtouw. Het springtouw kost {3:geel} euro. Waar ligt {3:geel} euro?",
+        "nieuw": "Het springtouw kost 3 euro. Waar ligt 3 euro?"
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-zakgeld-1",
+    "titel": "Zakgeld sparen",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Voor de eerste klus krijg je {2:geel} euro.",
+        "nieuw": "Voor het eerste klusje krijg je 2 euro."
+      },
+      {
+        "bron": "Voor de tweede klus ook {2:geel} euro.",
+        "nieuw": "Voor het tweede klusje krijg je ook 2 euro."
+      },
+      {
+        "bron": "We tellen het samen.",
+        "nieuw": "Tel maar mee."
+      },
+      {
+        "bron": "{2:geel}.",
+        "nieuw": "2."
+      },
+      {
+        "bron": "{4:geel}.",
+        "nieuw": "4."
+      },
+      {
+        "bron": "Je veegt de stoep en je geeft de planten water. Voor elke klus krijg je {2:geel} euro. Hoeveel is dat bij elkaar? Waar ligt dat geld?",
+        "nieuw": "Je veegt de stoep en geeft de planten water. Voor elke klus krijg je 2 euro. Hoeveel euro is dat samen? Waar ligt dat geld?"
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-zakgeld-2",
+    "titel": "Zakgeld sparen (moeilijker)",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tel de euro's in elk groepje. Zo zie je hoeveel geld er ligt.",
+        "nieuw": "Tel hoeveel euro er in elk groepje ligt."
+      },
+      {
+        "bron": "Hier ligt {15:geel} euro.",
+        "nieuw": "Hier ligt 15 euro."
+      },
+      {
+        "bron": "Hier ligt {20:geel} euro.",
+        "nieuw": "Hier ligt 20 euro."
+      },
+      {
+        "bron": "Hier ligt {17:geel} euro.",
+        "nieuw": "Hier ligt 17 euro."
+      },
+      {
+        "bron": "Je hebt {20:geel} euro gespaard. Waar ligt {20:geel} euro?",
+        "nieuw": "Je hebt 20 euro gespaard. Waar ligt 20 euro?"
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-geld-1",
+    "titel": "Geld tellen",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "We tellen eerst het geld links.",
+        "nieuw": "We tellen eerst het geld links."
+      },
+      {
+        "bron": "{2:geel}.",
+        "nieuw": "2."
+      },
+      {
+        "bron": "{3:geel}.",
+        "nieuw": "3."
+      },
+      {
+        "bron": "Hier ligt {3:geel} euro.",
+        "nieuw": "Hier ligt 3 euro."
+      },
+      {
+        "bron": "{1:geel}.",
+        "nieuw": "1."
+      },
+      {
+        "bron": "Hier ligt {2:geel} euro.",
+        "nieuw": "Hier ligt 2 euro."
+      },
+      {
+        "bron": "Tel het geld. Welk bedrag hoort erbij? Trek een lijn van het geld naar het getal dat erbij hoort.",
+        "nieuw": "Tel hoeveel euro er ligt. Trek een lijn naar het goede getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-geld-geld-2",
+    "titel": "Geld tellen (moeilijker)",
+    "onderwerp": "Geld",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Tel de euro's in elk groepje. Zo zie je hoeveel geld er ligt.",
+        "nieuw": "Tel hoeveel euro er in elk groepje ligt."
+      },
+      {
+        "bron": "Hier ligt {12:geel} euro.",
+        "nieuw": "Hier ligt 12 euro."
+      },
+      {
+        "bron": "Hier ligt {11:geel} euro.",
+        "nieuw": "Hier ligt 11 euro."
+      },
+      {
+        "bron": "Hier ligt {15:geel} euro.",
+        "nieuw": "Hier ligt 15 euro."
+      },
+      {
+        "bron": "Waar ligt {12:geel} euro? Tik op twee groepjes geld.",
+        "nieuw": "Waar ligt 12 euro? Tik op 2 groepjes geld."
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-pizza-1",
+    "titel": "Pizza's vergelijken",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Ik zet de pizza's naast elkaar, op één lijn.",
+        "nieuw": "Ik zet de pizza’s naast elkaar. De onderkanten staan op dezelfde lijn."
+      },
+      {
+        "bron": "Kijk naar de gele streepjes bovenaan.",
+        "nieuw": "Kijk naar de gele streepjes bovenaan."
+      },
+      {
+        "bron": "Kijk welke pizza het verst uitsteekt. Die is het grootst.",
+        "nieuw": "De grootste pizza komt het hoogst."
+      },
+      {
+        "bron": "Vandaag eten we pizza. Welke pizza is het grootst? Tik op de pizza.",
+        "nieuw": "Welke pizza is het grootst? Tik op die pizza."
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-pizza-2",
+    "titel": "Pizza's vergelijken (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "We tellen samen."
+      },
+      {
+        "bron": "Ik wijs, jij telt mee.",
+        "nieuw": "Ik wijs, jij telt mee."
+      },
+      {
+        "bron": "{1:oranje}",
+        "nieuw": "1"
+      },
+      {
+        "bron": "{2:oranje}",
+        "nieuw": "2"
+      },
+      {
+        "bron": "Hoeveel stukken pizza zie je?",
+        "nieuw": "Hoeveel stukken pizza zie je?"
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-pizza-3",
+    "titel": "Pizza's vergelijken (nog moeilijker)",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk goed naar de weegschaal.",
+        "nieuw": "Kijk goed naar de weegschaal."
+      },
+      {
+        "bron": "Eerst hangt hij recht.",
+        "nieuw": "Eerst staat de weegschaal recht."
+      },
+      {
+        "bron": "Nu zakt hij aan één kant naar beneden.",
+        "nieuw": "Nu gaat 1 kant omlaag."
+      },
+      {
+        "bron": "De zwaarste kant zakt naar beneden. Zo zie je welke kant zwaarder is.",
+        "nieuw": "De kant die omlaag gaat, is zwaarder."
+      },
+      {
+        "bron": "Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Tik op het deeg.",
+        "nieuw": "Welk deeg is het zwaarst? Tik op dat deeg."
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-hoeveelheden-1",
+    "titel": "Vol, leeg, zwaar en licht",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "In deze mand zit een beetje fruit.",
+        "nieuw": "In deze mand zit een beetje fruit."
+      },
+      {
+        "bron": "Deze mand zit propvol.",
+        "nieuw": "Deze mand zit helemaal vol."
+      },
+      {
+        "bron": "Leeg betekent: er zit niets in.",
+        "nieuw": "Leeg: er zit niets in."
+      },
+      {
+        "bron": "We pakken een mand voor de picknick. Er zit nog niets in. Welke mand is leeg? Tik op de mand.",
+        "nieuw": "We zoeken een lege mand voor de picknick. Welke mand is leeg? Tik op die mand."
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-hoeveelheden-2",
+    "titel": "Vol, leeg, zwaar en licht (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Weegt iets veel? Dan kun je het moeilijk tillen.",
+        "nieuw": "Weegt iets veel? Dan is het moeilijk op te tillen."
+      },
+      {
+        "bron": "De picknickmand zit vol. De mand weegt veel. De mand is ... Kort, zwaar of dun?",
+        "nieuw": "De mand zit vol en weegt veel. Is de mand kort, zwaar of dun?"
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-oppervlakte-1",
+    "titel": "Hoe groot is het?",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "De tegels op de muur helpen je.",
+        "nieuw": "Kijk naar de tegels op de muur."
+      },
+      {
+        "bron": "Ik laat de tegels achter de schilderijen zien.",
+        "nieuw": "Ik laat de tegels achter de schilderijen zien."
+      },
+      {
+        "bron": "Tel hoeveel tegels een schilderij bedekt. Hoe meer tegels, hoe groter het schilderij.",
+        "nieuw": "Tel de tegels achter elk schilderij. Meer tegels betekent een groter schilderij."
+      },
+      {
+        "bron": "Kijk naar de schilderijen op de muur. Wat klopt er? Kies er twee.",
+        "nieuw": "Kijk naar de schilderijen. Welke 2 zinnen kloppen?"
+      },
+      {
+        "bron": "Het schilderij met de zon is het kleinst.",
+        "nieuw": "Het schilderij met de zon is het kleinst."
+      },
+      {
+        "bron": "Het schilderij met de bloem is het kleinst.",
+        "nieuw": "Het schilderij met de bloem is het kleinst."
+      },
+      {
+        "bron": "Het schilderij met het huis is het grootst.",
+        "nieuw": "Het schilderij met het huis is het grootst."
+      }
+    ]
+  },
+  {
+    "id": "squla-meten-oppervlakte-2",
+    "titel": "Hoe groot is het? (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "We tellen samen.",
+        "nieuw": "Tel maar mee."
+      },
+      {
+        "bron": "Ik tel de eerste rij.",
+        "nieuw": "Ik tel de eerste rij."
+      },
+      {
+        "bron": "{1:oranje}",
+        "nieuw": "1"
+      },
+      {
+        "bron": "{2:oranje}",
+        "nieuw": "2"
+      },
+      {
+        "bron": "{3:oranje}",
+        "nieuw": "3"
+      },
+      {
+        "bron": "{4:oranje}",
+        "nieuw": "4"
+      },
+      {
+        "bron": "{5:oranje}",
+        "nieuw": "5"
+      },
+      {
+        "bron": "{6:oranje}",
+        "nieuw": "6"
+      },
+      {
+        "bron": "Er zijn {3:wit} rijen.",
+        "nieuw": "Er zijn 3 rijen."
+      },
+      {
+        "bron": "Op de tafel liggen blaadjes papier. Ze bedekken de hele tafel. Hoe groot is de tafel? Tel de blaadjes en typ het getal.",
+        "nieuw": "De hele tafel ligt vol met blaadjes papier. Hoe groot is de tafel? Tel de blaadjes en typ het getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-digitaal-1",
+    "titel": "De digitale klok",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Een klok met wijzers is rond.",
+        "nieuw": "Een klok met wijzers is rond."
+      },
+      {
+        "bron": "Er staan getallen op, en er zijn twee wijzers.",
+        "nieuw": "Er staan getallen op. De klok heeft 2 wijzers."
+      },
+      {
+        "bron": "In de zandloper zit zand.",
+        "nieuw": "In de zandloper zit zand."
+      },
+      {
+        "bron": "Kijk naar de telefoon. Wat zie je op het scherm?",
+        "nieuw": "Kijk naar de telefoon. Wat zie je op het scherm?"
+      },
+      {
+        "bron": "Dit is een lampje.",
+        "nieuw": "Dit is een lampje."
+      },
+      {
+        "bron": "Kijk eens. Dit is een klok met wijzers. Waar zie je ook zo'n klok?",
+        "nieuw": "Dit is een klok met wijzers. Waar zie je nog zo’n klok?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-digitaal-2",
+    "titel": "De digitale klok (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {3:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 3."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {9:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 9."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {6:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 6."
+      },
+      {
+        "bron": "Dit is de bakkerij. De winkel gaat om {9:oranje} uur open. Op welke klok is het {9:oranje} uur?",
+        "nieuw": "De bakkerij gaat om 9 uur open. Op welke klok is het 9 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-hoelaat-1",
+    "titel": "Hoe laat is het?",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "We bekijken de wijzers één voor één. De grote wijzer staat op twaalf. Dan is het een heel uur.",
+        "nieuw": "Kijk eerst naar de grote wijzer. Die staat op 12. Het is een heel uur."
+      },
+      {
+        "bron": "De kleine wijzer vertelt welk uur het is.",
+        "nieuw": "Kijk nu naar de kleine wijzer. Die laat zien hoe laat het is."
+      },
+      {
+        "bron": "Naar welk getal wijst de kleine wijzer?",
+        "nieuw": "Naar welk getal wijst de kleine wijzer?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-hoelaat-2",
+    "titel": "Hoe laat is het? (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk eerst naar de grote wijzer.",
+        "nieuw": "Kijk eerst naar de grote wijzer."
+      },
+      {
+        "bron": "Die staat op de {12:paars}.",
+        "nieuw": "Die staat op de 12."
+      },
+      {
+        "bron": "Dan is het een heel uur.",
+        "nieuw": "Dan is het een heel uur."
+      },
+      {
+        "bron": "Kijk nu naar de kleine wijzer.",
+        "nieuw": "Kijk nu naar de kleine wijzer."
+      },
+      {
+        "bron": "De oven in de bakkerij gaat aan. Hoe laat is het?",
+        "nieuw": "De oven in de bakkerij gaat aan. Hoe laat is het?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-hoelaat-3",
+    "titel": "Hoe laat is het? (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk eerst naar de grote wijzer.",
+        "nieuw": "Kijk eerst naar de grote wijzer."
+      },
+      {
+        "bron": "Die staat op de {12:paars}.",
+        "nieuw": "Die staat op de 12."
+      },
+      {
+        "bron": "Dan is het een heel uur.",
+        "nieuw": "Dan is het een heel uur."
+      },
+      {
+        "bron": "Kijk nu naar de kleine wijzer.",
+        "nieuw": "Kijk nu naar de kleine wijzer."
+      },
+      {
+        "bron": "De bus vertrekt voor de laatste ronde. Hoe laat is het?",
+        "nieuw": "De bus vertrekt voor de laatste keer. Hoe laat is het?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken-1",
+    "titel": "Klokkijken",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk eerst naar de grote wijzer.",
+        "nieuw": "Kijk eerst naar de grote wijzer."
+      },
+      {
+        "bron": "Die staat op de {12:paars}.",
+        "nieuw": "Die staat op de 12."
+      },
+      {
+        "bron": "Dan is het een heel uur.",
+        "nieuw": "Dan is het een heel uur."
+      },
+      {
+        "bron": "Kijk nu naar de kleine wijzer.",
+        "nieuw": "Kijk nu naar de kleine wijzer."
+      },
+      {
+        "bron": "Kies goed als de tijd klopt. Kies fout als de klok een andere tijd laat zien.",
+        "nieuw": "Klopt de tijd? Kies dan goed. Klopt de tijd niet? Kies dan fout."
+      },
+      {
+        "bron": "Kijk naar de klok. Het is {4:oranje} uur. Goed of fout?",
+        "nieuw": "Kijk naar de klok. Het is 4 uur. Goed of fout?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken-2",
+    "titel": "Klokkijken (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {7:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 7."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {2:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 2."
+      },
+      {
+        "bron": "Op welke klok is het {2:oranje} uur?",
+        "nieuw": "Op welke klok is het 2 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken-3",
+    "titel": "Klokkijken (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk eerst naar de grote wijzer.",
+        "nieuw": "Kijk eerst naar de grote wijzer."
+      },
+      {
+        "bron": "Die staat op de {12:paars}.",
+        "nieuw": "Die staat op de 12."
+      },
+      {
+        "bron": "Dan is het een heel uur.",
+        "nieuw": "Dan is het een heel uur."
+      },
+      {
+        "bron": "Kijk nu naar de kleine wijzer.",
+        "nieuw": "Kijk nu naar de kleine wijzer."
+      },
+      {
+        "bron": "Hoe laat is het?",
+        "nieuw": "Hoe laat is het?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken1-1",
+    "titel": "Klokkijken 1",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {6:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 6."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {11:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 11."
+      },
+      {
+        "bron": "Op welke klok is het {11:oranje} uur?",
+        "nieuw": "Op welke klok is het 11 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken1-2",
+    "titel": "Klokkijken 1 (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk eerst naar de grote wijzer.",
+        "nieuw": "Kijk eerst naar de grote wijzer."
+      },
+      {
+        "bron": "Die staat op de {12:paars}.",
+        "nieuw": "Die staat op de 12."
+      },
+      {
+        "bron": "Dan is het een heel uur.",
+        "nieuw": "Dan is het een heel uur."
+      },
+      {
+        "bron": "Kijk nu naar de kleine wijzer.",
+        "nieuw": "Kijk nu naar de kleine wijzer."
+      },
+      {
+        "bron": "Kies goed als de tijd klopt. Kies fout als de klok een andere tijd laat zien.",
+        "nieuw": "Klopt de tijd? Kies dan goed. Klopt de tijd niet? Kies dan fout."
+      },
+      {
+        "bron": "Kijk naar de klok. Het is {3:oranje} uur. Goed of fout?",
+        "nieuw": "Kijk naar de klok. Het is 3 uur. Goed of fout?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken1-3",
+    "titel": "Klokkijken 1 (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {11:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 11."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {1:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 1."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {9:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 9."
+      },
+      {
+        "bron": "Op welke klok is het {11:oranje} uur?",
+        "nieuw": "Op welke klok is het 11 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken2-1",
+    "titel": "Klokkijken 2",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {9:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 9."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {8:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 8."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {7:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 7."
+      },
+      {
+        "bron": "Hier staat {9:oranje} uur. Welke klok hoort erbij?",
+        "nieuw": "Hier staat 9 uur. Welke klok hoort erbij?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken2-2",
+    "titel": "Klokkijken 2 (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {8:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 8."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {9:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 9."
+      },
+      {
+        "bron": "De bus vertrekt om {8:oranje} uur. Kies de goede klok.",
+        "nieuw": "De bus vertrekt om 8 uur. Kies de goede klok."
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken2-3",
+    "titel": "Klokkijken 2 (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij een heel uur staat de grote wijzer op de {12:paars}.",
+        "nieuw": "Bij een heel uur staat de grote wijzer op de 12."
+      },
+      {
+        "bron": "Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.",
+        "nieuw": "Kijk naar de kleine wijzer. Die wijst het uur aan."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {6:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 6."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {8:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 8."
+      },
+      {
+        "bron": "Hier wijst de kleine wijzer naar de {5:oranje}.",
+        "nieuw": "Hier wijst de kleine wijzer naar de 5."
+      },
+      {
+        "bron": "Hier staat {6:oranje} uur. Welke klok hoort erbij?",
+        "nieuw": "Hier staat 6 uur. Welke klok hoort erbij?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken3-1",
+    "titel": "Halve uren lezen",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij half staat de grote wijzer op de {6:paars}.",
+        "nieuw": "Is het half? Dan staat de grote wijzer op 6."
+      },
+      {
+        "bron": "De kleine wijzer staat dan tussen twee getallen.",
+        "nieuw": "De kleine wijzer staat dan tussen 2 getallen."
+      },
+      {
+        "bron": "Hier staat de kleine wijzer tussen de {2:oranje} en de {3:oranje}.",
+        "nieuw": "Hier staat de kleine wijzer tussen de 2 en de 3."
+      },
+      {
+        "bron": "Hier staat de kleine wijzer tussen de {9:oranje} en de {10:oranje}.",
+        "nieuw": "Hier staat de kleine wijzer tussen de 9 en de 10."
+      },
+      {
+        "bron": "Op welke klok is het half {3:oranje}?",
+        "nieuw": "Op welke klok is het half 3?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken3-2",
+    "titel": "Halve uren lezen (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Bij half staat de grote wijzer op de {6:paars}.",
+        "nieuw": "Is het half? Dan staat de grote wijzer op 6."
+      },
+      {
+        "bron": "De kleine wijzer staat dan tussen twee getallen.",
+        "nieuw": "De kleine wijzer staat dan tussen 2 getallen."
+      },
+      {
+        "bron": "Hier staat de kleine wijzer tussen de {8:oranje} en de {9:oranje}.",
+        "nieuw": "Hier staat de kleine wijzer tussen de 8 en de 9."
+      },
+      {
+        "bron": "Hier staat de kleine wijzer tussen de {10:oranje} en de {11:oranje}.",
+        "nieuw": "Hier staat de kleine wijzer tussen de 10 en de 11."
+      },
+      {
+        "bron": "Hier staat half {9:oranje}. Welke klok hoort erbij?",
+        "nieuw": "Hier staat half 9. Welke klok hoort erbij?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken3-3",
+    "titel": "Halve uren lezen (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk naar allebei de wijzers.",
+        "nieuw": "Kijk naar allebei de wijzers."
+      },
+      {
+        "bron": "Staat de grote wijzer op de {12:paars}? Dan is het een heel uur.",
+        "nieuw": "Staat de grote wijzer op de 12? Dan is het een heel uur."
+      },
+      {
+        "bron": "Staat hij op de {6:paars}? Dan is het half.",
+        "nieuw": "Staat hij op de 6? Dan is het half."
+      },
+      {
+        "bron": "Hier staat de grote wijzer op de {6:paars}, en de kleine wijzer tussen de {5:oranje} en de {6:oranje}.",
+        "nieuw": "Hier staat de grote wijzer op 6. De kleine staat tussen 5 en 6."
+      },
+      {
+        "bron": "Hier staat de grote wijzer op de {12:paars}, en de kleine wijst naar de {6:oranje}.",
+        "nieuw": "Hier staat de grote wijzer op 12. De kleine wijst naar 6."
+      },
+      {
+        "bron": "Hier staat de grote wijzer op de {6:paars}, en de kleine wijzer tussen de {1:oranje} en de {2:oranje}.",
+        "nieuw": "Hier staat de grote wijzer op 6. De kleine staat tussen 1 en 2."
+      },
+      {
+        "bron": "Op welke klok is het {6:oranje} uur?",
+        "nieuw": "Op welke klok is het 6 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-klok-klokkijken3-4",
+    "titel": "Halve uren: later en eerder",
+    "onderwerp": "Klokkijken",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk eerst naar de klok bovenaan.",
+        "nieuw": "Kijk eerst naar de klok bovenaan."
+      },
+      {
+        "bron": "Over een uur draait de grote wijzer een heel rondje.",
+        "nieuw": "In 1 uur maakt de grote wijzer een heel rondje."
+      },
+      {
+        "bron": "Dan staat hij weer op dezelfde plek.",
+        "nieuw": "Dan staat hij weer op dezelfde plek."
+      },
+      {
+        "bron": "De kleine wijzer schuift één getal verder.",
+        "nieuw": "De kleine wijzer gaat 1 getal verder."
+      },
+      {
+        "bron": "De school is begonnen. Kijk op de klok. Hoe laat is het over een uur?",
+        "nieuw": "De school is begonnen. Kijk naar de klok. Hoe laat is het over 1 uur?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix1-1",
+    "titel": "Rekenmix 1",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Tel maar mee.",
+        "nieuw": "Tel maar mee."
+      },
+      {
+        "bron": "{1:rood}, {2:rood}, {3:rood}, {4:rood}.",
+        "nieuw": "1, 2, 3, 4."
+      },
+      {
+        "bron": "Tel de appels. Hoeveel zijn het er?",
+        "nieuw": "Tel de appels. Hoeveel zijn het er?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix1-2",
+    "titel": "Rekenmix 1 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Kijk goed naar het plaatje bovenaan.",
+        "nieuw": "Kijk naar het plaatje bovenaan."
+      },
+      {
+        "bron": "Tik dan op een vorm.",
+        "nieuw": "Tik dan op een vorm."
+      },
+      {
+        "bron": "We kijken samen naar de vormen.",
+        "nieuw": "Kijk mee naar de vormen."
+      },
+      {
+        "bron": "Een vierkant heeft vier hoeken.",
+        "nieuw": "Een vierkant heeft 4 hoeken."
+      },
+      {
+        "bron": "Alle kanten zijn even lang.",
+        "nieuw": "Alle kanten zijn even lang."
+      },
+      {
+        "bron": "Een cirkel is helemaal rond.",
+        "nieuw": "Een cirkel is helemaal rond."
+      },
+      {
+        "bron": "Hij heeft geen hoeken.",
+        "nieuw": "Een cirkel heeft geen hoeken."
+      },
+      {
+        "bron": "Een driehoek heeft drie hoeken.",
+        "nieuw": "Een driehoek heeft 3 hoeken."
+      },
+      {
+        "bron": "En drie rechte kanten.",
+        "nieuw": "Een driehoek heeft ook 3 rechte kanten."
+      },
+      {
+        "bron": "Kijk naar de zon. Welke vorm lijkt erop?",
+        "nieuw": "Kijk naar de zon. Welke vorm lijkt erop?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix1-3",
+    "titel": "Rekenmix 1 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk naar de rij bovenaan.",
+        "nieuw": "Kijk naar de rij bovenaan."
+      },
+      {
+        "bron": "Tik dan op het goede plaatje.",
+        "nieuw": "Tik dan op het goede plaatje."
+      },
+      {
+        "bron": "We kijken van links naar rechts.",
+        "nieuw": "We kijken van links naar rechts."
+      },
+      {
+        "bron": "De fiets staat links.",
+        "nieuw": "De fiets staat links."
+      },
+      {
+        "bron": "De auto staat in het midden.",
+        "nieuw": "De auto staat in het midden."
+      },
+      {
+        "bron": "Rechts staat de laatste van de rij.",
+        "nieuw": "Aan de rechterkant stopt de rij."
+      },
+      {
+        "bron": "Kijk naar de rij. Wat staat er rechts?",
+        "nieuw": "Kijk naar de rij. Wat staat er rechts?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix1-4",
+    "titel": "Rekenmix 1 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Sleep de groepjes naar de plekjes.",
+        "nieuw": "Sleep elk groepje naar een plek."
+      },
+      {
+        "bron": "Het eerste plekje is links.",
+        "nieuw": "Begin links."
+      },
+      {
+        "bron": "We tellen elk groepje.",
+        "nieuw": "We tellen elk groepje."
+      },
+      {
+        "bron": "Hier zijn het er {2:bruin}.",
+        "nieuw": "Hier zijn het er 2."
+      },
+      {
+        "bron": "Hier zijn het er {6:bruin}.",
+        "nieuw": "Hier zijn het er 6."
+      },
+      {
+        "bron": "Hier zijn het er {4:bruin}.",
+        "nieuw": "Hier zijn het er 4."
+      },
+      {
+        "bron": "Het groepje met de meeste koekjes komt vooraan.",
+        "nieuw": "Zet het groepje met de meeste koekjes vooraan."
+      },
+      {
+        "bron": "Hier liggen koekjes. Zet ze op volgorde, van meer naar minder.",
+        "nieuw": "Zet de groepjes koekjes op volgorde. Begin met de meeste. Eindig met de minste."
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix2-1",
+    "titel": "Rekenmix 2",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tik dan op een plaatje eronder.",
+        "nieuw": "Tik dan op een plaatje eronder."
+      },
+      {
+        "bron": "Kijk eerst naar de boterham bovenaan.",
+        "nieuw": "Kijk eerst naar de boterham bovenaan."
+      },
+      {
+        "bron": "Meer kaas: je ziet méér kaas dan bovenaan.",
+        "nieuw": "Zoek meer kaas dan op de bovenste boterham."
+      },
+      {
+        "bron": "Kijk steeds terug naar het bovenste plaatje. Zoek wat er anders is.",
+        "nieuw": "Kijk naar het bovenste plaatje. Zoek wat er anders is."
+      },
+      {
+        "bron": "Kijk naar de boterham bovenaan. Op welke boterham zit meer kaas?",
+        "nieuw": "Kijk naar de boterham bovenaan. Op welke boterham zit meer kaas?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix2-2",
+    "titel": "Rekenmix 2 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Kijk goed naar de bal.",
+        "nieuw": "Kijk goed naar de bal."
+      },
+      {
+        "bron": "Zie je de hele bal, of maar een stukje?",
+        "nieuw": "Zie je de hele bal, of maar een stukje?"
+      },
+      {
+        "bron": "Naast: de bal ligt ernaast, op de grond.",
+        "nieuw": "Naast: de bal ligt naast de doos, op de grond."
+      },
+      {
+        "bron": "In: de bal zit binnen in de doos. Je ziet alleen de bovenkant.",
+        "nieuw": "In: de bal zit in de doos. Je ziet alleen de bovenkant."
+      },
+      {
+        "bron": "Voor: de bal ligt vooraan. Je ziet de hele bal.",
+        "nieuw": "Voor: de bal ligt voor de doos. Je ziet de hele bal."
+      },
+      {
+        "bron": "Waar ligt de bal?",
+        "nieuw": "Waar ligt de bal?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix2-3",
+    "titel": "Rekenmix 2 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Tik op de goede vorm.",
+        "nieuw": "Tik op de goede vorm."
+      },
+      {
+        "bron": "Eerst kijken we naar de kleur.",
+        "nieuw": "Eerst kijken we naar de kleur."
+      },
+      {
+        "bron": "Deze is paars.",
+        "nieuw": "Deze vorm is paars."
+      },
+      {
+        "bron": "Deze is oranje.",
+        "nieuw": "Deze vorm is oranje."
+      },
+      {
+        "bron": "Dan kijken we naar de vorm.",
+        "nieuw": "Dan kijken we naar de vorm."
+      },
+      {
+        "bron": "Een driehoek heeft drie hoeken.",
+        "nieuw": "Een driehoek heeft 3 hoeken."
+      },
+      {
+        "bron": "En drie rechte kanten.",
+        "nieuw": "Een driehoek heeft ook 3 rechte kanten."
+      },
+      {
+        "bron": "Waar zie je een paarse driehoek?",
+        "nieuw": "Waar zie je een paarse driehoek?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix2-4",
+    "titel": "Rekenmix 2 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Verbind het groepje met het getal of plaatje dat erbij hoort. Trek een lijn tussen de stippen.",
+        "nieuw": "Trek een lijn van elk groepje naar het goede getal of plaatje. Begin en stop bij een stip."
+      },
+      {
+        "bron": "Of tik links en dan rechts.",
+        "nieuw": "Je mag ook eerst links tikken en dan rechts."
+      },
+      {
+        "bron": "We tellen elk groepje.",
+        "nieuw": "We tellen elk groepje."
+      },
+      {
+        "bron": "{6:rood}.",
+        "nieuw": "6."
+      },
+      {
+        "bron": "{7:rood}.",
+        "nieuw": "7."
+      },
+      {
+        "bron": "{5:rood}.",
+        "nieuw": "5."
+      },
+      {
+        "bron": "Wat hoort bij elkaar? Verbind elk groepje met het goede getal.",
+        "nieuw": "Trek een lijn van elk groepje naar het goede getal."
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix3-1",
+    "titel": "Rekenmix 3",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Sleep de plaatjes naar de plekjes.",
+        "nieuw": "Sleep de plaatjes naar de plekjes."
+      },
+      {
+        "bron": "Het eerste plekje is links.",
+        "nieuw": "Begin links."
+      },
+      {
+        "bron": "Kijk: klein, kleiner, kleinst.",
+        "nieuw": "Kijk: klein, kleiner, kleinst."
+      },
+      {
+        "bron": "Kleinst is de allerkleinste.",
+        "nieuw": "Kleinst is de allerkleinste."
+      },
+      {
+        "bron": "Die gaat op het laatste plekje.",
+        "nieuw": "Die komt op de laatste plek."
+      },
+      {
+        "bron": "Zet op volgorde: klein, kleiner, kleinst.",
+        "nieuw": "Zet op volgorde: klein, kleiner, kleinst."
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix3-2",
+    "titel": "Rekenmix 3 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk naar de rij bovenaan.",
+        "nieuw": "Kijk naar de rij bovenaan."
+      },
+      {
+        "bron": "We tellen vanaf links.",
+        "nieuw": "We tellen vanaf links."
+      },
+      {
+        "bron": "Tik dan op het goede plaatje.",
+        "nieuw": "Tik dan op het goede plaatje."
+      },
+      {
+        "bron": "De eerste staat helemaal vooraan, links.",
+        "nieuw": "De eerste staat links."
+      },
+      {
+        "bron": "Wat staat als eerste in de rij?",
+        "nieuw": "Wat staat als eerste in de rij?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix3-3",
+    "titel": "Rekenmix 3 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Kijk, de getallen op een rij.",
+        "nieuw": "De getallen staan op een rij."
+      },
+      {
+        "bron": "Hier staat {5:wit}.",
+        "nieuw": "Hier staat 5."
+      },
+      {
+        "bron": "Net voor {5:wit} staat het getal links ervan.",
+        "nieuw": "Het getal voor 5 staat links van 5."
+      },
+      {
+        "bron": "Welk getal komt net voor {5:wit}?",
+        "nieuw": "Welk getal komt voor 5?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix3-4",
+    "titel": "Rekenmix 3 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Er zijn {6:wit} ballen in totaal.",
+        "nieuw": "Er zijn samen 6 ballen."
+      },
+      {
+        "bron": "Buiten zie je er een paar. Tel maar mee.",
+        "nieuw": "Tel wat er buiten ligt maar mee."
+      },
+      {
+        "bron": "{1:paars}, {2:paars}.",
+        "nieuw": "1, 2."
+      },
+      {
+        "bron": "Buiten liggen er {2:paars}.",
+        "nieuw": "Buiten liggen er 2."
+      },
+      {
+        "bron": "De rest zit in de doos.",
+        "nieuw": "De rest zit in de doos."
+      },
+      {
+        "bron": "Tel verder van {2:paars} tot {6:wit}.",
+        "nieuw": "Begin bij 2. Tel verder tot 6."
+      },
+      {
+        "bron": "Er zijn {6:wit} ballen. Hoeveel zitten er in de doos?",
+        "nieuw": "Er zijn 6 ballen. Hoeveel zitten er in de doos?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix4-1",
+    "titel": "Rekenmix 4",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Laten we het samen uitzoeken.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "We tellen alleen de raketjes.",
+        "nieuw": "We tellen alleen de raketjes."
+      },
+      {
+        "bron": "{1:rood}, {2:rood}, {3:rood}, {4:rood}, {5:rood}.",
+        "nieuw": "1, 2, 3, 4, 5."
+      },
+      {
+        "bron": "Tel alleen de raketjes. Hoeveel zijn het er?",
+        "nieuw": "Tel alleen de raketjes. Hoeveel zijn het er?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix4-2",
+    "titel": "Rekenmix 4 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We doen het samen, stap voor stap.",
+        "nieuw": "We doen het samen."
+      },
+      {
+        "bron": "Sleep de getallen naar de plekjes.",
+        "nieuw": "Sleep elk getal naar een plek."
+      },
+      {
+        "bron": "Het eerste plekje is links.",
+        "nieuw": "Begin links."
+      },
+      {
+        "bron": "Op het eerste plekje staat {10:wit}.",
+        "nieuw": "Links staat 10."
+      },
+      {
+        "bron": "Na {10:wit} komt het getal dat één meer is.",
+        "nieuw": "Na 10 komt er 1 bij."
+      },
+      {
+        "bron": "Daarna weer één meer, en zo verder.",
+        "nieuw": "Daarna komt er steeds weer 1 bij."
+      },
+      {
+        "bron": "We tellen verder vanaf {10:wit}. Zet de getallen op hun plek.",
+        "nieuw": "Begin bij 10 en tel verder. Zet de getallen op hun plek."
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix4-3",
+    "titel": "Rekenmix 4 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "Ik help je op weg.",
+        "nieuw": "Ik help je."
+      },
+      {
+        "bron": "Tik op de goede groep.",
+        "nieuw": "Tik op het goede groepje."
+      },
+      {
+        "bron": "We tellen elke groep.",
+        "nieuw": "We tellen elk groepje."
+      },
+      {
+        "bron": "Hier zijn het er {6:geel}.",
+        "nieuw": "Hier zijn het er 6."
+      },
+      {
+        "bron": "Hier zijn het er {8:geel}.",
+        "nieuw": "Hier zijn het er 8."
+      },
+      {
+        "bron": "Hier zijn het er {5:geel}.",
+        "nieuw": "Hier zijn het er 5."
+      },
+      {
+        "bron": "Waar zie je {6:geel} sterren?",
+        "nieuw": "Waar zie je 6 sterren?"
+      }
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix4-4",
+    "titel": "Rekenmix 4 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "regels": [
+      {
+        "bron": "We bekijken eerst een voorbeeld.",
+        "nieuw": "Kijk maar mee."
+      },
+      {
+        "bron": "Tik op de goede groep.",
+        "nieuw": "Tik op het goede groepje."
+      },
+      {
+        "bron": "Meer dan {4:rood} is {5:rood} of nog meer.",
+        "nieuw": "Je zoekt 5 of meer."
+      },
+      {
+        "bron": "Precies {4:rood} is niet meer dan {4:rood}.",
+        "nieuw": "Precies 4 is dus niet genoeg."
+      },
+      {
+        "bron": "We tellen elke groep.",
+        "nieuw": "We tellen elk groepje."
+      },
+      {
+        "bron": "Hier zijn het er {4:rood}.",
+        "nieuw": "Hier zijn het er 4."
+      },
+      {
+        "bron": "Hier zijn het er {3:rood}.",
+        "nieuw": "Hier zijn het er 3."
+      },
+      {
+        "bron": "Hier zijn het er {5:rood}.",
+        "nieuw": "Hier zijn het er 5."
+      },
+      {
+        "bron": "Waar zie je meer dan {4:rood} raketjes?",
+        "nieuw": "Waar zie je meer dan 4 raketjes?"
+      }
+    ]
+  }
+]

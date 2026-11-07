@@ -5,13 +5,15 @@
  * 2026): patronen, opruimen, links/rechts/boven/onder en de puzzels. In
  * Phaser (HARDE REGEL 7), in de stijl van de andere Squla-lessen: geen
  * kaders, de dingen staan los in de ruimte, gloed alleen op het moment dat
- * het iets betekent (aanwijzen = geel, goed = groen).
+ * het iets betekent (goed = groen). Aanwijzen = een rood rondje (sinds 6 november
+ * 2026, geen gele gloed meer).
  *
  * Wat het draaiboek zet:
  * - `beeld`: losse delen (kralen, vormen, voorwerpen, een veld, een huisje,
  *   blokken, een pijl) en tikbare plekken (`tik`). Een deel met `groep`
  *   licht op als de groep (de keuze) oplicht.
- * - `licht`, `goedIds`, `uit`: welke delen of groepen oplichten (geel),
+ * - `licht`, `goedIds`, `uit`: welke delen of groepen een rood rondje krijgen (één
+ *   rondje om dingen die bij elkaar staan),
  *   groen zijn, of dof.
  * - `ketting`: losse kralen om naar lege plekken te slepen (of te tikken:
  *   dan gaan ze naar de eerste lege plek). Meldt `{ soort: "ketting", ids }`
@@ -32,6 +34,7 @@ import { GOED, TX, VLAK_B, VLAK_H, WARM, holoBasis, type PhaserModule } from "..
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { tekenVoorwerp, voorwerpBeeld } from "../voorwerpen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
 import { blokkenMaat, tekenBlokken, tekenHuis, tekenKraal, tekenPijl, tekenPuzzel, tekenVeld, tekenVorm, VORMSTIJL, type Kleur, type PuzzelPlaatje, type Veldsoort, type VormNaam, type Zicht } from "./squla-vormen-tekenen";
 import s from "./squla-vormen.module.css";
 
@@ -210,6 +213,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     imgs: { im: Img; id: string; groep: string; sl: string }[] = [];
     staat: Staat = { licht: [], goedIds: [], uit: [], actief: false };
     flitsTot = 0;
+    /** Het rode rondje om wat Bliepo aanwijst (houder: het beeld zelf), en een tweede voor de puzzelhint (houder: het hele vlak). */
+    rondjes: ReturnType<typeof maakRondjes> | null = null;
+    pzRondjes: ReturnType<typeof maakRondjes> | null = null;
+    hintTeller = 0;
+    /** De puzzelhints die nu een rondje hebben (elke hint houdt zijn eigen 2,7 s, zoals het oude knipperkader). */
+    hintVakken = new Map<string, RondjeVak>();
     /* ketting */
     ketting: Ketting | null = null;
     kralen: Kraal[] = [];
@@ -267,6 +276,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.sleutel = sleutel;
       if (this.hoofd) this.verdwijn(this.hoofd);
       this.hoofd = null;
+      this.rondjes?.vergeet();
+      this.rondjes = null;
       this.imgs = [];
       if (b) this.bouw(b);
       this.tekenStaat();
@@ -277,6 +288,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const my = VLAK_H / 2;
       const box = this.add.container(mx, my);
       this.hoofd = box;
+      this.rondjes = maakRondjes(this, box, this.rustig);
       for (const d of b.delen) {
         if (d.s === "tik") continue;
         if (d.s === "touw") {
@@ -323,10 +335,47 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         const grijs = in_(st.uit, id, groep);
         im.setAlpha(grijs ? 0.3 : 1);
         const groen = in_(st.goedIds, id, groep) || (flits && in_(st.goedIds, id, groep));
-        const k = grijs ? null : groen ? GOED : in_(st.licht, id, groep) ? WARM : null;
+        /* Aanwijzen gaat met een rondje (hieronder), niet met een gele gloed. */
+        const k = grijs ? null : groen ? GOED : null;
         const doel = k === null ? sl : this.texG(sl, k);
         if (im.texture.key !== doel) im.setTexture(doel);
       }
+      this.zetRondjes();
+    }
+
+    /**
+     * Wat in `licht` staat krijgt een rood rondje: één rondje om dingen die bij elkaar staan (een rijtje, een paar),
+     * apart voor dingen die ver uit elkaar staan. Dingen die dof of groen zijn krijgen er geen.
+     */
+    zetRondjes() {
+      if (!this.rondjes) return;
+      const st = this.staat;
+      const in_ = (lijst: string[], id: string, groep: string) => lijst.includes(id) || lijst.includes(groep);
+      let vakken: { sl: string; v: RondjeVak }[] = [];
+      for (const sl of st.licht) {
+        const leden = this.imgs.filter((x) => x.im.active && (x.id === sl || x.groep === sl) && !in_(st.uit, x.id, x.groep) && !in_(st.goedIds, x.id, x.groep)).map((x) => x.im);
+        const v = vakOm(leden);
+        if (v) vakken.push({ sl, v });
+      }
+      /* Dingen die dicht bij elkaar staan: één rondje om het geheel. */
+      const naast = (a: RondjeVak, b: RondjeVak) => {
+        const x0 = Math.min(a.x - a.b / 2, b.x - b.b / 2);
+        const x1 = Math.max(a.x + a.b / 2, b.x + b.b / 2);
+        const y0 = Math.min(a.y - a.h / 2, b.y - b.h / 2);
+        const y1 = Math.max(a.y + a.h / 2, b.y + b.h / 2);
+        return { v: { x: (x0 + x1) / 2, y: (y0 + y1) / 2, b: x1 - x0, h: y1 - y0 }, bijElkaar: (x1 - x0) * (y1 - y0) <= 2.4 * (a.b * a.h + b.b * b.h) };
+      };
+      for (let wijzig = true; wijzig; ) {
+        wijzig = false;
+        for (let i = 0; i < vakken.length && !wijzig; i++)
+          for (let j = i + 1; j < vakken.length && !wijzig; j++) {
+            const u = naast(vakken[i].v, vakken[j].v);
+            if (!u.bijElkaar) continue;
+            vakken = [...vakken.filter((_, k) => k !== i && k !== j), { sl: [vakken[i].sl, vakken[j].sl].sort().join("+"), v: u.v }];
+            wijzig = true;
+          }
+      }
+      this.rondjes.zet(new Map(vakken.map(({ sl, v }) => [`licht-${sl}`, v])));
     }
 
     goed() {
@@ -428,6 +477,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.heel = null;
       this.keuzeRing?.destroy();
       this.keuzeRing = null;
+      this.pzRondjes?.vergeet();
+      this.hintVakken.clear();
       this.gekozen = null;
       this.puzzel = p;
       this.pzBezig = false;
@@ -616,10 +667,16 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (!st) return;
       this.kies(st.i);
       const w = BORD.S / this.puzzel!.n;
-      const r = this.add.graphics().setDepth(2);
-      r.lineStyle(5, WARM, 1);
-      r.strokeRoundedRect(st.thuis.x - w / 2 + 4, st.thuis.y - w / 2 + 4, w - 8, w - 8, 10);
-      this.tweens.add({ targets: r, alpha: { from: 1, to: 0.2 }, duration: 450, yoyo: true, repeat: 2, onComplete: () => r.destroy() });
+      /* Een rood rondje om de plek waar het stukje hoort (daarna weer weg). */
+      if (!this.pzRondjes) this.pzRondjes = maakRondjes(this, this.add.container(0, 0).setDepth(30), this.rustig);
+      const sl = `hint-${++this.hintTeller}`;
+      this.hintVakken.set(sl, { x: st.thuis.x, y: st.thuis.y, b: w * 0.7, h: w * 0.7 });
+      this.pzRondjes.zet(new Map(this.hintVakken));
+      /* Alleen het rondje van déze hint gaat na 2,7 s weg; een latere hint houdt zijn eigen tijd. */
+      this.time.delayedCall(2700, () => {
+        if (!this.hintVakken.delete(sl)) return;
+        this.pzRondjes?.zet(new Map(this.hintVakken));
+      });
     }
 
     /* ---------- tikken en slepen ---------- */

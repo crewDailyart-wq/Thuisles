@@ -17,6 +17,8 @@
 
 import { readFileSync, readdirSync, writeFileSync, existsSync } from "node:fs";
 import path from "node:path";
+import ts from "typescript";
+import { cijfersInTekst } from "../src/lib/lessen/cijfertaal.ts";
 
 const WORTEL = path.resolve(import.meta.dirname, "..");
 const LESSEN = path.join(WORTEL, "src/components/les/lessen");
@@ -42,6 +44,7 @@ if (process.env.ONLINE === "1") {
   const { opServer } = await import("./railway-hulp.mjs");
   const uit = opServer(`
     import fs from "node:fs"; import path from "node:path";
+import ts from "typescript";
     const map = path.join(path.dirname(process.env.THUISLES_DB ?? "/data/thuisles.db"), "stem");
     const z = [];
     for (const f of fs.readdirSync(map)) if (f.startsWith("z-") && f.endsWith(".txt")) { try { z.push(fs.readFileSync(path.join(map, f), "utf8").trim()); } catch {} }
@@ -85,6 +88,28 @@ for (const f of readdirSync(LESSEN).filter((f) => /\.(tsx?|ts)$/.test(f))) {
     perLes.set(les, lijst);
   }
 
+  /* Nieuwe begripsvragen bewaren hun spreektekst in uitlegKeuze-opties. */
+  const ast = ts.createSourceFile(f, bron, ts.ScriptTarget.Latest, true, f.endsWith("tsx") ? ts.ScriptKind.TSX : ts.ScriptKind.TS);
+  const leesUitleg = (node) => {
+    if (ts.isCallExpression(node) && node.expression.getText(ast) === "uitlegKeuze") {
+      const opties = node.arguments[1];
+      if (opties && ts.isObjectLiteralExpression(opties)) {
+        const les = `${f.replace(/\.tsx?$/, "")} (begeleide uitleg)`;
+        const lijst = perLes.get(les) ?? new Map();
+        for (const p of opties.properties) {
+          if (!ts.isPropertyAssignment(p) || !["vraag", "hint", "goed"].includes(p.name.getText(ast))) continue;
+          const waarde = p.initializer;
+          if (ts.isStringLiteral(waarde) || ts.isNoSubstitutionTemplateLiteral(waarde) || ts.isTemplateExpression(waarde)) {
+            lijst.set(kaal(waarde.getText(ast).slice(1, -1)), ts.isTemplateExpression(waarde));
+          }
+        }
+        perLes.set(les, lijst);
+      }
+    }
+    ts.forEachChild(node, leesUitleg);
+  };
+  leesUitleg(ast);
+
   /*
     Het welkom van het beginscherm (1 november 2026, BOUWREGELS 4.1-4.3): squlaBegin
     zegt de eigen zin van de les en "Kun je dit al?" als één tekst. Die zinnen staan
@@ -112,6 +137,34 @@ for (const f of readdirSync(LESSEN).filter((f) => /\.(tsx?|ts)$/.test(f))) {
       lijst.set(z, zinnen.some((a) => a.patroon));
     }
     perLes.set(les, lijst);
+  }
+}
+
+/* De actieve lesopeningen komen uit dezelfde bron als het lesscherm. */
+const beginzinnen = JSON.parse(readFileSync(path.join(WORTEL, "src/lib/lessen/beginzinnen.json"), "utf8"));
+for (const [id, { zin1, zin2 }] of Object.entries(beginzinnen)) {
+  const lijst = perLes.get(id) ?? new Map();
+  lijst.set(kaal(`${zin1} ${zin2}`), false);
+  perLes.set(id, lijst);
+}
+
+/* Goedgekeurde correcties horen bij de spreeklijst; voorstellen zonder vinkje niet. */
+const correctiesPad = path.join(WORTEL, "src/lib/lessen/tekstwijzigingen.json");
+if (existsSync(correctiesPad)) {
+  for (const [id, correcties] of Object.entries(JSON.parse(readFileSync(correctiesPad, "utf8")))) {
+    if (!Object.hasOwn(beginzinnen, id)) continue;
+    const lijst = perLes.get(id) ?? new Map();
+    for (const [bron, nieuw] of Object.entries(correcties)) {
+      lijst.delete(kaal(bron));
+      lijst.set(kaal(nieuw), false);
+    }
+    perLes.set(id, lijst);
+  }
+}
+// De actieve Squla-lessen spreken dezelfde cijfers uit die op het scherm staan.
+for (const [id, lijst] of perLes) {
+  if (Object.hasOwn(beginzinnen, id) || /^squla-.*\((?:gedeeld|begeleide uitleg)\)$/.test(id)) {
+    perLes.set(id, new Map([...lijst].map(([zin, patroon]) => [cijfersInTekst(zin), patroon])));
   }
 }
 

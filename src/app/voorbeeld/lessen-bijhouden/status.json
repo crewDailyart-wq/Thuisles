@@ -1,0 +1,16 @@
+{
+  "bijgewerkt": "6 november 2026 (nacht)",
+  "uitleg": {
+    "hulp": "Hulp na een fout zoals Synthesis is omgezet in alle Squla-lessen (code klaar, tsc zonder fouten).",
+    "zinnen": "Reacties herschreven per vraag en per gekozen antwoord (BOUWREGELS 5.11); goed = korte bevestiging, af en toe met naam.",
+    "controleur": "Twee onafhankelijke keuringen gedaan (REACTIES-EINDKEURING.md); de laatste reparaties daarna zijn niet opnieuw gekeurd.",
+    "speel": "Speelcontrole op de definitieve zinnen gehaald: alles goed (135 lessen), alles fout (alle lessen, 0 fouten, 40 met stap alleen in de tekening) en via Nee (alle lessen, 0 fouten)."
+  },
+  "standaard": {
+    "hulp": true,
+    "zinnen": true,
+    "controleur": false,
+    "speel": true
+  },
+  "per_les": {}
+}

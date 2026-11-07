@@ -1836,3 +1836,344 @@ Overkoepelend: (1) Zin 2 begint te vaak met "Heb je dit al ..." (#3, 8, 15, 17, 
 30. squla-tellen-fruit-3 — AFGEKEURD: alleen zin 2 "Lukt het je al om dit te doen?" is lang en lijkt op #7. VOORSTEL zin 2: "Kun jij fruit tellen als het door elkaar ligt?"
 
 Pagina /admin/beginzinnen: bevat per les naam met link (/voorbeeld/les/<id>?naam=Testkind, 200), schermfoto (alle 30 jpg's aanwezig, foto klopt met de les voor de 12 die ik bekeek), uitleg, zin 1, zin 2 en de huidige zin. Op laptop duidelijk en goed leesbaar, gegroepeerd per onderwerp. Punt: in een smal venster (390 px, headless) lijkt de tekst rechts afgesneden; de vaste zijbalk en de kaarten (min. 380 px) passen niet netjes. Op een echte telefoon nog even nakijken; op tablet (breed genoeg) is dit waarschijnlijk geen probleem.
+
+
+## 4 november 2026 — herhaling in uitleg en foutenhulp
+
+- De aparte Nee-tekstfilter gold niet voor gewone Hulp. Hersteld met een eigen hulpcontext, zonder gewone vragen als begeleide oefening te beoordelen. Ook de route opnieuw fout gebruikt die context.
+- Dubbele slotvragen verwijderd; inhoudelijke telstappen en gerichte deelhints behouden.
+- Na een volledig beantwoord eerste voorbeeld begint de gewone lijst met de volgende opgave. Afwijkende vervolgstappen blijven: klok-hoelaat-1, min-machine-2, vormen-kleuren-1 en de rekenmixlessen met een ander voorbeeld.
+- Onafhankelijke codecontrole uitgevoerd met een geërfde Codex-agent (Opus hier niet beschikbaar). Gevonden en hersteld: schatletter na het voorbeeld, somkeuze na alleen tellen, grotere puzzel na klein voorbeeld en resterende slotvragen. De 3 schatwoorden behouden 15, 15 en 16 letters.
+- Pauze wacht nu op de asynchrone stop; de les kan niet per ongeluk doorlopen na stopLes.
+- `node scripts/check-herhaling.cjs`: 132 volledige Ja/Nee-opgavenlijsten met invoerstubs; 1995 uitlegcallbacks geïnventariseerd; echte centrale foutafhandeling getest voor direct goed, Hulp, opnieuw goed, opnieuw fout, hint en pauze. Dit is geen volledige browsertest van elke opgave.
+- `node scripts/check-uitleg.cjs`: 135 eerste Nee-routes bereiken invoer; 36 lessen doorlopen Nee volledig met direct goed én eerst fout, inclusief de 3 eigen routes en antwoordcontroles. Overzichtregels komen nog overeen met de echte uitleg.
+- ESLint op de 15 gewijzigde lesbestanden: geslaagd. Broncode-typecontrole: geslaagd. Standaard tsc geeft uitsluitend 2 fouten in een oude gegenereerde .next/dev/types/app/page.ts die naar het niet meer bestaande src/app/page.js verwijst; die validator is in de aanvullende typecontrole uitgesloten.
+- Stemzinnenlijst lokaal vernieuwd; geen stemdienst aangeroepen.
+- Browsercontrole niet afgerond: herhaalde time-outs bij openen/herladen/bedienen van de Patronen-preview. Geen nieuwe schermfoto of volledige visuele goedkeuring geclaimd.
+
+## Hulp na fout – controle 4 november (onafhankelijk)
+
+Gekeurd door de onafhankelijke controleur (alleen gelezen, geen code gewijzigd, geen speelcontrole gedraaid). Gekeken naar de nieuwe velden `reactie`, `tip`, `laatZien`, `toonAntwoord`-zinnen en `samen` in de 16 bestanden in `src/components/les/lessen/`, getoetst aan BOUWREGELS 5.1, 5.4, 5.10, 3.17, 3.20, 3.23 en 11.2. Regelnummers zijn die van de bestanden op dit moment. Alle voorstellen zijn alleen tekst; antwoordwaarden en beoordeling blijven gelijk.
+
+**Wat goed is (alle bestanden):**
+- Geen vast "Niet helemaal", geen "pauze" en geen keuze "hulp / nog een keer" meer in de nieuwe route. (Alleen oude koptekst-commentaar noemt dat nog: tijd:16-17, meten:21-23, dagen:16-18, rekentaal:12-14. Commentaar bijwerken, geen kindzin.)
+- De naam van het kind staat niet in `reactie`/hint. Hij staat alleen in de slotzin (dagen:433, rekentaal:559, huisnummers:267), 1 keer per les: goed (3.17).
+- De rekenkunde in de reacties is bij steekproef in orde. Nagerekend: alle 6 verhaalvragen in tijd:622-715 (dag/nachtjes), KAL2_MIS (tijd:1318-1331), meer-minder (voorbeeld/twee/drie/getal), tellen (zak/rij), huisnummers (`tipZin`), klok (`reactieLees`, `reactieKlokkeuze`, uitlegHeel), plussommen/minsommen/piraat (`somReactie`, `minReactie`, `pzReactie`) en geld (te veel / te weinig). Geen enkele reactie die liegt over de gekozen fout.
+- Elke vraag met `synthesis` heeft een `toonAntwoord` (of een eigen route, zoals huisnummers).
+
+**Gevonden over alle bestanden (de drie grote punten):**
+1. **Cijferafspraak 3.20 (veruit het meeste):** "één", "twee", "drie" enz. in hulpzinnen als hoeveelheid, en in dezelfde les door elkaar met "1". Zie per bestand. Binnen tellen en getallenlijn staat in dezelfde vraag zelfs "Tel 1 verder" (reactie) naast "Tel één verder" (tip/hulphandje).
+2. **Hint klinkt als vraag (punt 8) en herhaalt de vraag (3.23):** de hint is soms letterlijk de vraag zelf. En ongeveer 20 zinnen in `samen` (uitleg na tweede fout) stellen een vraag zonder `krijgtVervolgvraag`-bewaking, terwijl het kind daarna niet mag antwoorden. Zie hieronder.
+3. **Herhaling tussen lessen (punt 6):** zie de lijst "Top-herhalingen".
+
+### Per bestand
+
+**squla-klok: AFGEKEURD (6 punten)**
+- klok:497 "Eén klok ligt op de goede plek." -> "1 klok ligt op de goede plek."
+- klok:634, 649, 651, 655, 826 "één getal verder / terug" -> "1 getal verder / terug".
+- klok:861 en 872 "Zoek een rondje met twee wijzers." -> "met 2 wijzers".
+- klok:931 en 970 (tweede zin van de reactie) "Naar welk getal wijst de kleine wijzer?" -> hint die geen vraag is: "Kijk naar het getal waar de kleine wijzer naartoe wijst."
+- klok:376 "Waar wijst de kleine wijzer naartoe?" en klok:1096/1100 "Waar staat de oven?" en klok:1076 tip "Wat zie je overdag aan de lucht?" zijn hints in vraagvorm -> "Kijk waar de kleine wijzer naartoe wijst." / "De oven staat in de bakkerij, niet in de bus." / "Overdag schijnt de zon."
+- klok:795 "Wij kijken nu naar de kleine wijzer." -> "We kijken nu naar de kleine wijzer." (stijf; "wij" ook in 6 andere bestanden).
+- klok:242 "Dit is het goede antwoord." is een vaste zin voor elke uitleg-vraag in klok -> weglaten of laten wisselen.
+- klok:447 en 494: vraag in `samen` zonder bewaking (zie lijst hieronder).
+
+**squla-tijd: AFGEKEURD (9 punten)**
+- tijd:45 en 51 `AANTAL = ["Geen","Eén","Twee","Drie","Vier"]`: "Eén dag ligt op de goede plek", "Twee kaartjes liggen op de goede plek" -> cijfers: "1 dag ligt op de goede plek", "2 dagen liggen op de goede plek". Ook tijd:1256 "Eén lijn klopt. Die blijft staan." / "Twee lijnen kloppen." -> "1 lijn klopt." / "2 lijnen kloppen."
+- tijd:364 "Vijf dagen ga je naar school. Wij tellen het weekend." -> "Op 5 dagen ga je naar school. We tellen het weekend." en "maar één dag" -> "maar 1 dag".
+- tijd:386 en 1253 "Het weekend zijn de laatste twee dagen van de week." is geen goed Nederlands (weekend zijn) -> "Het weekend is zaterdag en zondag." (of hint: "De laatste 2 dagen van de week zijn het weekend."). tijd:1253 "Een week heeft er zeven." -> "7".
+- tijd:655 "Na twee nachtjes ... Er komt nog een nachtje bij." en 667 "Na nog een nachtje ... Nu nog één nachtje." (in dezelfde uitleg door elkaar "1", "een", "één") -> "Na 2 nachtjes is het zaterdag. Er komt nog 1 nachtje bij." en "Nu nog 1 nachtje."; idem 670 "Tel drie nachtjes" -> "3", 673 "twee dagen geleden" -> "2", 702 "na één nachtje / twee nachtjes te veel" -> "1 / 2", 712 en 715 idem.
+- tijd:429 "Elke wagon is één dag." (en dagen:354) -> "Elke wagon is 1 dag." tijd:637, 652, 699 "nog één dag verder / terug" -> "nog 1 dag".
+- tijd:950, 1327, 1329-1331, 1430, 1446, 1480, 1496, 1528, 1549, 2052-2054 "één vakje / één boogje / één nachtje / één dag" -> "1 ...".
+- tijd:2054 tip "Wat duurt meer dan één dag?" en "Wat duurt langer dan een hele middag?" zijn twee hints in vraagvorm (de eerste blijft staan na `hint()`) -> "Denk aan wat langer duurt dan 1 dag."
+- tijd:255-259 en 290-293 zijn bijna gelijk aan dagen:184-187 en 215-218 (zie top-herhalingen).
+- (samen) tijd:1813 vraag zonder bewaking (zie lijst).
+
+**squla-geld: AFGEKEURD (6 punten)**
+- geld:330 "één te veel / één te weinig" -> "1 te veel / 1 te weinig".
+- geld:271 "Eén groepje klopt." -> "1 groepje klopt."
+- geld:700 "Dit is één euro. Kijk naar de één en het woord euro." -> "Dit is 1 euro. Kijk naar de 1 en het woord euro."
+- geld:930 "Tel er vijf bij." en geld:991 "Tel er twee bij." -> "Tel er 5 bij." / "Tel er 2 bij."
+- geld:792 en 817 (samen) eindigen op "Is dat meer dan 9 euro, of minder?" / "Heb je genoeg met 9 euro?" zonder bewaking; ook de tips geld:794/819 "Heb ik genoeg met 9 euro?" / "Is dat meer dan 9 euro?" zijn vragen en verklappen niet, maar klinken als nieuwe vraag -> als stelling: "Kijk of 12 meer is dan 9." (let op: de reactie zelf, geld:795/820 "Kijk of dat meer is dan 9 euro", is goed).
+- geld:266-267 reactie bij een foute groep: 3 zinnen achter elkaar ("Dit geld is samen X euro." + "Dat is meer dan we zoeken." + "Tel elk groepje geld.") is lang voor groep 3 -> hint weglaten (de eerste 2 zinnen zijn al de hint).
+- geld:792 samen: "Tel verder vanaf 4: 5, 6, en nog één." (geld:~812) -> "en nog 1".
+
+**squla-meten: AFGEKEURD (7 punten)**
+- meten:50 en 56 `AANTAL` / "Eén ... ligt op de goede plek" -> cijfers (zoals tijd:45).
+- meten:59 `teVeel`: "één te veel / één te weinig" -> "1 te veel / 1 te weinig".
+- meten:404 "Eén van je twee antwoorden klopt." -> "1 van je 2 antwoorden klopt."
+- meten:672, 685, 688, 714, 718, 756 "één meer / één minder / er komt er één bij / er gaat er één af" -> "1 meer", "1 minder", "er komt er 1 bij", "er gaat er 1 af". Let op: meten:688 tip eindigt op de vraag "Welk plaatje is één meer?" (hint = de vraag zelf) -> weglaten, laat "Tel verder vanaf 3." staan.
+- meten:~800 (`reactie` uit `o.uitleg.find(...)`): als hint wordt de eerste uitleg-zin gebruikt. Dat is niet altijd een hint (bij meten:879 "Eén zak meel kun je nog net tillen" zegt hij niets over wat het kind koos). Nakijken per vraag; voorstel: eigen hint.
+- meten:814 (samen) "Hoeveel heb je nodig om net zo zwaar te zijn als ...?" zonder bewaking.
+- meten:61 en rekentaal:193 hebben dezelfde drie openingen ("Je koos X." / "Dat is X." / "Hier zie je X."); zie top-herhalingen.
+
+**squla-dagen: GOEDGEKEURD, met 2 kleine punten**
+- dagen:354 "Elke wagon is één dag." -> "Elke wagon is 1 dag."
+- dagen:184-187 en 215-218 zijn nagenoeg gelijk aan tijd (zie top-herhalingen); inhoudelijk wel juist en bruikbaar.
+- Controle: reactie en hint kloppen (bv. "Voor maandag was de vorige week. Kijk naar het eind." is goed).
+
+**squla-rekentaal: AFGEKEURD (4 punten)**
+- rekentaal:390 en 430 "groter dan één andere mand / appel" -> "groter dan 1 andere mand / appel" (of: "Er is nog een kleinere mand" zonder getal).
+- rekentaal:316 en 471 hebben letterlijk dezelfde reactie ("De mand is groot, maar hij is leeg. / De kant van de appel gaat omhoog. / Kijk welke kant omlaag zakt.") bij twee verschillende vragen; in elke vraag is 1 van de 2 helften onbereikbaar. Voorstel: per vraag een eigen reactie.
+- rekentaal:451 en 492 "Er is nog een langer broodje." / "Er is nog een korter broodje." -> "Er is nog een langer broodje" is goed, maar zonder keuze welk: "Dit is niet het langste broodje."
+- rekentaal:193: "Je koos X / Dat is X / Hier zie je X" is dezelfde set als meten:61 (zie top-herhalingen).
+- Rekenkundig en grammaticaal verder in orde.
+
+**squla-tellen: AFGEKEURD (3 punten)**
+- tellen:162, 281 "Elke losse ... is er één meer." -> "er 1 meer."
+- tellen:969, 1066 "Elk huis is één verder." en tellen:~976 "Terug wordt het steeds één minder." -> "1 verder", "1 minder".
+- tellen:981 tip "Tel één verder dan ..." / "Tel één terug vanaf ..." staat naast reactie `tip` (tellen:~921) "Tel 1 verder dan ..." in dezelfde vraag: gelijk trekken op "Tel 1 verder dan" / "Tel 1 terug vanaf".
+
+**squla-meer-minder: AFGEKEURD (2 punten)**
+- meer-minder:459-462 `tipKaart` eindigt op de vraag zelf ("Welke kaart heeft er meer?", "Welk getal is het grootst?", "Welk getal is groter dan 13?"). Hij wordt aan de reactie vastgemaakt (r.475) en staat dus als hint vlak vóór dezelfde vraag (3.23, punt 8). Voorstel: "Kijk welke kaart meer sterren heeft dan het plaatje bovenaan." / "Zoek het grootste getal op de kaarten." (stelling, geen vraag).
+- meer-minder:341 "Tel de rest één voor één." is een vaste zin; mag blijven (idioom), maar komt ook voor in tellen:239 en rekenmix:637/658 (zie top-herhalingen).
+- Geen "één" als hoeveelheid, rekenkundig goed.
+
+**squla-getallenlijn: AFGEKEURD (7 punten)**
+- getallenlijn:222 "Tel bij elk streepje één verder." -> "1 verder"; 476 "Het raketje staat één streepje verder." -> "1 streepje"; 479 tip "Tel één verder dan 10" naast reactie "Tel 1 verder dan 10" (zelfde vraag) -> beide "1"; 673/676 "één terug"; 837 "Tel één verder dan"; 974, 985, 1005 "Elk lampje / diamant / streepje is één verder"; 999-1000 "Dat is één terug / Tel één terug".
+- getallenlijn:872 "Tel twee verder vanaf ..." -> "Tel 2 verder vanaf ...".
+- getallenlijn:38 `Telwoord(1)` geeft "Eén" -> "1" (waar dit in zichtbare tekst komt).
+- getallenlijn (reactie bij "Welk getal komt na ..."): 2e zin is een vraag: "Welk getal komt na {n-1}?" (zelfde vraag als de opgave) -> "Tel 1 verder dan {n-1}."
+- getallenlijn (reactie bij "later"): "Welk getal komt later als je telt?" -> "Het getal dat je later zegt als je telt, is meer."
+- getallenlijn (sprongen van 5): "Tel in sprongen van 5 vanaf het midden: 10, 15…" -> de puntjes worden bij het voorlezen een rare stilte; "10, 15, ..." weglaten of "Tel in sprongen van 5: 5, 10, 15."
+- getallenlijn:335, 515, 597, 869, 991 (samen) vragen zonder bewaking (zie lijst).
+
+**squla-huisnummers: GOEDGEKEURD, met 2 kleine punten**
+- huisnummers:224 "Elk volgend nummer is één meer." -> "1 meer."
+- huisnummers:77 "Kijk, op één bordje staat een vraagteken." -> "op 1 bordje".
+- Goed: tipZin gebruikt overal "Tel 1 verder dan" / "Tel 1 terug vanaf"; de hint klopt voor na/voor/tussen/sleep/terug. Opmerking buiten de opdracht: de lijst loopt tot 50, BOUWREGELS 11.2 zegt groep 3 nooit boven 20 (niet nieuw, wel melden).
+
+**squla-vormen: AFGEKEURD (4 punten)**
+- vormen (standaard `past hier niet`): `reactie` valt terug op "{Dat/De X} past hier niet." (vormen:~248) en nog 2x "past daar niet" (vormen:~872, ~1215) en "Dat plaatje komt nu niet." Zegt niets over wat het kind koos of wat het zoeken moet. Voorstel: wel een hint die past (bv. "Kijk naar de laatste vorm.") of de reactie noemen wat er mist.
+- vormen:~1190 `reactie` "Kijk eerst: boven of onder?" + "Dan: links of rechts?" zijn 2 hints in vraagvorm -> "Kijk eerst of het bovenaan of onderaan ligt. Kijk daarna of het links of rechts ligt."
+- vormen:~690 "In die rij staat niet elke kleur één keer in elk rijtje." is lastig en grammaticaal stroef -> "In deze rij mist een kleur." (of: "Elke kleur staat 1 keer in elk rijtje.").
+- vormen:650, 689, 823, 867, 1304, 477 vragen in `samen` zonder bewaking (zie lijst).
+- vormen:680 "Eén vlak heeft nog geen kleur." -> "1 vlak" (niet nieuw).
+
+**squla-plussommen: AFGEKEURD (6 punten)**
+- plussommen:259 "is één meer dan", 309 "Het antwoord is één meer.", 289 en 937 "Eén meer dan 7: hoeveel is dat?", 731-737 ("Er komt eerst één X bij. Tel één verder." en reactie "Er komt er nog één bij", "maar één meer"), 735 en 737 `laatZien` "Eén meer dan ..." -> "1 meer dan ...", "Tel 1 verder".
+- plussommen:330 (en piraat:239) "Dat is maar één van de twee getallen uit de som." -> "Dat is maar 1 van de 2 getallen."
+- plussommen:804 `tip` eindigt op de vraag "Op welk kaartje zijn de twee getallen samen 10?" (nu door `hint()` gefilterd?) en plussommen:~810 "Op de kaartjes staan twee getallen." -> "2 getallen".
+- plussommen:248 "Twee keer hetzelfde getal" -> "2 keer".
+- plussommen:897 "Kijk, een rij van tien plekjes." -> "een rij van 10 plekjes."
+- Goed: de reacties per fout (net naast / te veel / te weinig / opgeteld) en `somReactie` zijn rekenkundig juist.
+
+**squla-minsommen: AFGEKEURD (3 punten)**
+- minsommen:923 "Elke stip is één euro" -> "1 euro"; minsommen:516 "twee keer hetzelfde getal" -> "2 keer".
+- minsommen:~676 (`welkeReactie`): "Vooraan moet staan hoeveel er eerst waren: 9." en "Tel alle X, ook de lege: 12. Dat getal komt vooraan." noemen het getal dat het kind moet kiezen. Dat is verklappen na 1 fout; voorstel: "Vooraan staat het getal van alles wat er eerst was."
+- Goed: `minReactie` ("Je koos 7. Dat is 4 plus 3.") en de euro-reacties zijn juist.
+
+**squla-rekenmix: AFGEKEURD (7 punten)**
+- rekenmix:442-459 `TELWOORD` ("Eén staat er al op de goede plek", "Twee staan er al ...") -> cijfers: "1 staat er al op de goede plek", "2 staan er al ...". Zin "Er staat er nog geen op de goede plek." loopt stroef -> "Er staat nog niets op de goede plek."
+- rekenmix:1148 "Eén lijn klopt." / "Twee lijnen kloppen." -> cijfers.
+- rekenmix:882, 891, 897, 1194, 1195, 1203, 1219 "één meer / één minder / Steeds één verder" -> "1 meer / 1 minder / Steeds 1 verder". Let op: rekenmix:1195 "is niet één minder dan" -> "is niet 1 minder dan".
+- rekenmix:637, 658 "Tel er steeds twee bij." -> "Tel er steeds 2 bij." en rekenmix:1345/1368 "Tel tot drie. De derde staat in het midden." -> "Tel tot 3. De 3e ballon staat in het midden." (of: "de middelste").
+- rekenmix:1191 "Typ het getal dat jij denkt." is geen natuurlijke zin -> "Typ eerst een getal."
+- rekenmix:713, 1192-1194, 1288 "Wij zoeken ..." -> "We zoeken ...". Een tutor zegt dit 5x in 1 bestand.
+- rekenmix (volgorde-reactie): "Wat doe je als allereerste? Dat plaatje zet je vooraan." (~r.1065) heeft een vraag midden in de hint -> "Het eerste wat je doet, zet je vooraan."
+
+**squla-piraat: AFGEKEURD (3 punten)**
+- piraat:239 "maar één van de twee getallen" -> "maar 1 van de 2 getallen".
+- piraat:~481 tip eindigt op de vraag "Wat blijft er over?" (door `zonderVraag` wel weggefilterd in de reactie; blijft staan bij het hulphandje) -> "Tel wat overblijft."
+- piraat:503 "Je koos: {hele zin in kleine letters}." leest als hele zin voorgelezen; bij zinnen met eigennamen/hoofdletters klopt de kleine letter niet. Voorstel: "Dat klopt niet bij het plaatje."
+- Rekenkunde in `pzReactie` is juist.
+
+**squla-splitsen: AFGEKEURD (5 punten)**
+- splitsen:471 en 1597 "munten van één euro" -> "munten van 1 euro"; splitsen:471 "Het briefje is al tien euro." -> "10 euro."; splitsen:158 "Eén ligt onder de doek." -> "1 ligt onder de doek."
+- splitsen:471 (samen, geldversie) eindigt op de vraag "Hoeveel euro komt erbij?" gevolgd door `l.verder()`: het kind mag niet antwoorden -> weglaten of als stelling.
+- splitsen:296 en 1308 (samen): "Hoeveel zijn het samen?" direct gevolgd door nog een opdracht ("Zoek het huisje ...") = twee opdrachten achter elkaar (3.23). Voorstel: laatste zin "Samen zijn dat al die ballen." weglaten; alleen de bewaakte zin laten staan.
+- splitsen:343, 945, 1368 (samen) vragen zonder bewaking (zie lijst).
+- splitsen:531 `reactie` 3 zinnen ("... is samen 8. Dat is meer dan 10. Een van de twee getallen is 10.") is te lang en de derde zin verklapt de helft van het antwoord -> alleen de eerste twee zinnen.
+
+### Vragen in `samen` zonder bewaking (BOUWREGELS 3.23, punt 7)
+Na de tweede fout staat de vraag opnieuw in de uitleg, terwijl het kind daarna niet mag antwoorden (de bewaking `krijgtVervolgvraag` is wel actief, maar deze zinnen gebruiken hem niet). Voorstel overal: `...(krijgtVervolgvraag(l) ? [] : ["<vraag>"])` of de vraag als stelling zeggen. Gevonden (context gecontroleerd: alle in `samen` of `uitleg`):
+klok:447, 494; tijd:1813; geld:792, 817; meten:814; getallenlijn:335, 515, 597, 869, 991; vormen:477, 650, 689, 823, 867, 1304; rekenmix:1031; splitsen:296, 343, 471, 945, 1308, 1368. Dat zijn 23 plekken. (Niet in elk geval is bevestigd dat de zin ook echt wordt uitgesproken; de speelcontrole is niet gedraaid. De gebruikers-route "ALLEFOUT" moet dit bevestigen.)
+
+### Top-herhalingen (punt 6, "uniek, niet standaard")
+Aantal bestanden / voorkomens in de `reactie`/hint-zinnen:
+1. **"X is te veel." / "X is te weinig."**: 5 bestanden, 20 voorkomens (minsommen 8, piraat 4, plussommen 3, rekenmix 3, geld 1). Voorstel: per les een eigen vorm ("Dat zijn er te veel", "Zoveel zijn het er nog niet") en bij minsommen over "overblijven" praten.
+2. **"X zit er net naast."**: 5 bestanden, 7 voorkomens (getallenlijn 2, piraat 2, rekenmix, plussommen, minsommen). Voorstel: "Je bent er bijna." in 1 les, en in de andere een zin die past (bv. getallenlijn: "Het streepje ernaast.").
+3. **"Je koos X."**: 8 bestanden, 20 voorkomens (minsommen 5, plussommen 4, piraat 3, klok 2, rekenmix 2, rekentaal, meten, splitsen). Plus `wissel(...)` met dezelfde set "Je koos X / Dat is X / Hier zie je X" in meten:61 en rekentaal:193 (letterlijk dezelfde drie zinnen).
+4. **"Tel de rest één voor één."**: tellen:239, meer-minder:341, rekenmix:637/658 (4 plekken, 3 bestanden).
+5. **"Kijk naar de wagon achter/voor/vlak voor X." + "X komt (niet) meteen na/voor Y, niet erna" + "Dat is X zelf."**: dagen:184-187 en 215-218 zijn bijna woord voor woord gelijk aan tijd:255-259 en 290-293 (2 bestanden x 2 vragen). Voorstel: tijd en dagen laten verschillen of 1 gedeelde functie met wisselende zinnen.
+6. **"{X} past hier/daar niet."**: meten, getallenlijn, vormen (3), splitsen = 6 plekken in 4 bestanden.
+7. **"{n} staat/staan/ligt/liggen op de goede plek."**: klok:497, tijd:51, meten:56, rekenmix:459, getallenlijn, meer-minder = 6 bestanden, bijna dezelfde zin. Voorstel: per les eigen zin (klok: "Die klok staat al goed"; getallenlijn: "Dit getal staat al goed").
+8. **"Begin bij X." + "Tel de rest/de ... erbij."**: 8 bestanden, ongeveer 35 voorkomens (geld 12, plussommen 7, rekenmix 5, tellen 4, tijd 3, piraat 3, meer-minder 2, rekentaal 1). Voor tellen/optellen is dit een echte hint en past ze; voorstel: per les 1 andere vorm houden ("Start bij 7", "Zet je vinger op 7").
+9. **"Zoek de / het ..."** als hint: 11 bestanden, ongeveer 66 voorkomens (tijd 15, splitsen 11, rekentaal 8, meten 7, klok 5, plussommen 5, rekenmix 5, ...). Voorstel: mengen met "Kijk naar ...", "Let op ...", "Pak de ...".
+10. **"Tel verder vanaf / Tel jij verder vanaf X"**: 7 bestanden, 19 voorkomens (geld 5, meten 4, tellen 3, splitsen 3, getallenlijn, rekenmix, meer-minder). 
+11. **"Er komt (nog) iets bij"**: plussommen 4, piraat 1 (een vaste hint voor "je koos een van de getallen").
+12. **"Dat is niet X."**: klok 3, rekentaal 2, rekenmix 3, splitsen 3.
+Samen zijn de hulpzinnen dus voor een groot deel dezelfde 10 patronen; de afwisseling (`wissel`) zit alleen op de opening en op "ik laat het je zien", niet op de inhoud.
+
+### Samenvatting
+- Goedgekeurd: **squla-dagen** en **squla-huisnummers** (alleen 2 kleine cijferpunten).
+- Afgekeurd: klok, tijd, geld, meten, rekentaal, tellen, meer-minder, getallenlijn, vormen, plussommen, minsommen, rekenmix, piraat, splitsen = **14 van 16 bestanden**.
+- Totaal ruim 70 afzonderlijke zinnen/regels gemeld, waarvan: ~50 cijferafspraak (3.20), 14 hint-als-vraag of hint die de vraag herhaalt, 23 vragen in `samen` zonder bewaking, 8 stroeve of verklappende zinnen, plus 12 herhalingspatronen.
+- Geen rekenfout in een reactie gevonden; geen "Niet helemaal"/pauze/keuzevraag in de nieuwe route; geen naam van het kind in reactie of hint.
+- Niet geverifieerd: spreken en afspelen (speelcontrole niet gedraaid), alle regels van alle plekken waar `reactie` meerregelig staat (bij steekproef gelezen), en of de bewaking de 23 `samen`-vragen op het scherm echt laat horen.
+
+
+## Reacties passen bij vraag en keuze – controle 4 november (onafhankelijk)
+
+Gekeurd door de onafhankelijke controleur (alleen gelezen: geen code gewijzigd, geen speelcontrole, geen Chrome, geen helpers, geen commit, geen betaald tegoed). Getoetst aan BOUWREGELS 3.20, 3.23, 5.1, 5.10 en 5.11 en aan SYNTHESIS-ANALYSE/REACTIES.md. Alle 16 lesbestanden in `src/components/les/lessen/` plus `squla-hulp.ts`, `squla-uitleg.ts` en `squla-splitsen-hulp.ts` zijn bekeken op: `reactie`, `tip`, `hint`, `laatZien`, `toonAntwoord`, `samen`/`uitleg`, goed-bevestiging en de vaste lijstjes. De bestanden zijn nieuwer dan de vorige controle (20:26 tot 20:39): wat de vorige ronde afkeurde (vooral de cijferafspraak "één/twee/drie", `Wij zoeken`, het verklappen in `welkeReactie`, het vaste "Dit is het goede antwoord") is grotendeels opgelost. Dit zijn de rest- en nieuwe punten. Regelnummers kloppen op het moment van keuren. Voorstellen zijn alleen tekst; antwoordwaarden en beoordeling blijven gelijk.
+
+**Wat goed is (alle bestanden):** geen "Niet helemaal", geen pauze en geen keuzevraag in de actieve route; alle 16 lessen roepen `zetSynthesisHulp` aan. Geen naam van het kind in een reactie of hint (alleen in de slotzin: dagen:432, huisnummers:280, rekentaal:558 en `squlaEind` squla-hulp.ts:275, 1 keer per les: toegestaan, 3.17). `opener()` en `laatZienZin()` geven niets terug (5.1-aanvulling nageleefd). Rekenkundig juist en passend bij de gekozen waarde, nagerekend: `somReactie` (plussommen:324-347), `minReactie` (minsommen:212-223), `pzReactie` (piraat:235), `telReactie` (tellen:260-281), `lijnReactie` en rij-reactie (getallenlijn:83-147), `plekReactie` (rekenmix:455), `reactieLees`/`reactieKlokkeuze` (klok:109-131), de dagen/tijd-reacties (dagen:155-336, tijd:318-713) en `KAL1_MIS`/`KAL2_MIS` (tijd:945-957, 1319-1331: de getallen kloppen). Het merendeel van de `...krijgtVervolgvraag`-bewaking staat er nu (dagen 4, klok 8, geld 8, meten 10, getallenlijn 8, plussommen 12, tijd 16 enz.).
+
+### Uitslag per bestand
+
+| Bestand | Uitslag |
+|---|---|
+| squla-klok | AFGEKEURD (7) |
+| squla-tijd | AFGEKEURD (8) |
+| squla-dagen | GOEDGEKEURD met 3 opmerkingen |
+| squla-geld | AFGEKEURD (5) |
+| squla-meten | AFGEKEURD (8) |
+| squla-rekentaal | GOEDGEKEURD met 2 opmerkingen |
+| squla-tellen | AFGEKEURD (5) |
+| squla-meer-minder | GOEDGEKEURD met 2 opmerkingen |
+| squla-getallenlijn | AFGEKEURD (7) |
+| squla-huisnummers | AFGEKEURD (3) |
+| squla-vormen | AFGEKEURD (6) |
+| squla-plussommen | GOEDGEKEURD met 4 opmerkingen |
+| squla-minsommen | GOEDGEKEURD (1 opmerking) |
+| squla-rekenmix | GOEDGEKEURD met 3 opmerkingen |
+| squla-piraat | AFGEKEURD (3) |
+| squla-splitsen | GOEDGEKEURD met 4 opmerkingen |
+
+### Per bestand
+
+**squla-klok: AFGEKEURD**
+- klok:358 en klok:456 tip "Kijk naar de kleine wijzer. Naar welk getal wijst hij?" / "Zoek op de X de kleine wijzer. Naar welk getal wijst hij?" is een vraag in een hint (9) en herhaalt de leesvraag. Voorstel: "Kijk naar de kleine wijzer: waar wijst de punt naartoe?" is ook een vraag; beter als stelling: "Kijk naar het getal waar de punt van de kleine wijzer bij staat."
+- klok:389 tip "Is het dan {tijd}?" (vraag in hint, bij Goed/fout-vink). Voorstel: "Vergelijk de tijd die je ziet met {tijd}."
+- klok:424 (reactie, laatste zin) "Hoeveel stapjes zijn dat?" is een vraag in de reactie die dezelfde antwoordvraag opnieuw stelt (3.23). Voorstel: "Tel de stapjes van {van} uur naar {tot} uur."
+- klok:112 vaste terugvalzin "Kijk nog eens naar de grote en de kleine wijzer." als de gekozen tijd niet te lezen is; zegt niets over de keuze (5.11). Voorstel: noem de keuze: "Je koos {x}. Kijk waar de kleine wijzer staat."
+- klok:945 en 977: tweede zin herhaalt de eerste ("Op de klok lees je de tijd af. Broodjes tel je er niet mee." / "Op de klok staat een tijd, geen aantal."). Voorstel: een van de twee zinnen laten vallen.
+- Cijferafspraak (3.20): klok:117 en klok:280 "tussen twee getallen" -> "tussen 2 getallen"; klok:806-808 antwoordknoppen "Twaalf uur / Zes uur / Drie uur" en zinnen "De kleine wijzer wijst naar drie ... op twaalf" -> "12 uur / 6 uur / 3 uur", "naar de 3 ... op de 12" (de rest van de les gebruikt al `{3:oranje}`).
+- Vaste lijst (8): `BEVESTIG` klok:87, zie "Vaste lijstjes" hieronder. klok:840 `WELKOM_VINK` staat er maar wordt nergens gebruikt (dode code, niet verwijderen zonder akkoord van Sara, regel 3).
+
+**squla-tijd: AFGEKEURD**
+- tijd:681 (samen, verhaal "gisteren, zondag"): "Welke wagon hangt vlak voor zondag?" zonder `krijgtVervolgvraag`; het kind mag na de tweede fout niet antwoorden (6, 3.23). Voorstel: `...(krijgtVervolgvraag(l) ? [] : ["Welke wagon hangt vlak voor zondag?"])` of als stelling: "Kijk naar de wagon vlak voor zondag."
+- tijd:1235 (goed-bevestiging) eindigt op de vraag "Ken je ook de feestkalender?"; niemand antwoordt (5.10: goed = kort). Voorstel: weglaten of "Er is ook nog een feestkalender."
+- tijd:1549 (voorbeeld) "Zie je de boogjes?" is een retorische vraag; het kind kan niets doen. Voorstel: "Kijk, de boogjes."
+- tijd:317 tip begint met een vraag: "Welke wagon hangt direct aan de locomotief?" (de reactie zelf, tijd:318, is goed). Voorstel: "De eerste dag hangt direct aan de locomotief."
+- tijd:976, 1035, 1378, 1658, 1680, 1702, 1905, 1940, 1991, 2038, 2070: het eerste tip-element is een vraag ("Waar staat wat er gebeurt?", "Op welke kalender zie je een hoepel?", "Welke dag begint met wo?", "Wanneer slaap je?", "Wat is met een paar schudjes klaar?", "Waarbij loop je langs de hele bakkerij?", "Wat is het snelst klaar?" enz.). `hint()` (tijd:42) haalt alleen de LAATSTE vraag weg; deze blijft staan in de terugval `m[x] ?? hint(v.tip)` (tijd:60) en bij het hulphandje. Een hint in vraagvorm (9) die de antwoordvraag herhaalt (3.23). Voorstel: de eerste tip als stelling schrijven ("Kijk naar het plaatje helemaal links.", "Denk aan wat maar kort duurt.").
+- Cijferafspraak: tijd:473 "zeven wagons", tijd:539 en 738 "de vier dagen", tijd:585 "Zoek de vier dagen", tijd:1605 "drie boeken" -> "7 wagons", "de 4 dagen", "3 boeken". (tijd:413 "één voor één" is een idioom en mag blijven.)
+- tijd:255-259 en 290-293 zijn bijna woord voor woord gelijk aan dagen:184-187 en 215-218 ("Dat is X zelf.", "komt niet meteen na", "Na de laatste wagon begint de week opnieuw."): twee lessen met dezelfde reactie. Voorstel: in een van de twee lessen anders formuleren (bijvoorbeeld in tijd de verhaalvorm).
+- Vaste lijst: `BEVESTIG` tijd:39 (7 plekken), zie hieronder.
+
+**squla-dagen: GOEDGEKEURD, met 3 opmerkingen**
+- dagen:182, 213, 274 en 297 hebben als laatste tip-element de vraag ("Welke dag komt na X?", "Welke dag was het gisteren?"). De reactie (dagen:183-190, 214-220, 275-278) is wel goed en noemt wat het kind koos; de vraag-tip komt alleen bij hulphandje/terugval. Voorstel: als stelling ("Kijk naar de wagon direct achter X").
+- dagen:35 `BEVESTIG` + dagen:131: alle 8 goedZin-functies beginnen met "Goed zo." en dat wordt via `wissel` een van 6 woorden (zie Vaste lijstjes).
+- dagen:184-187/215-218 bijna gelijk aan tijd (zie tijd).
+
+**squla-geld: AFGEKEURD**
+- geld:1015 (voorbeeld in welkom) "Hoeveel is dat bij elkaar?" wordt gesteld en meteen daarna uitgelegd ("Dan tel je het geld samen."): dezelfde vraag staat ook al in de welkomtekst (geld:1013). 3.23: vraag 1 keer. Voorstel: de vraag in 1015 weglaten ("Voor het vegen krijg je 1 euro. Voor de planten krijg je ook 1 euro. Dan tel je het geld samen."). geld:873 idem controleren.
+- geld:1045 tip "Kun je de spullen op de kraam kopen?" is een vraag in een hint; de reactie (geld:1046) is wel goed. Voorstel: "Op een kraam kun je spullen kopen."
+- geld:795 en 820: "Is de som meer dan 9 euro, dan heb je te weinig." is een stroef voorwaardelijk zinnetje; het lijkt een vraag. Voorstel: "Als de som meer is dan 9 euro, dan heb je te weinig." (een "Is ...?"-vorm zou een vraag zijn). De woorden "Je zei ja." noemen is goed.
+- geld:243 `noem` "Die twee" (alleen als `noem` voor de bewaking, niet gesproken): goed.
+- geld:1222 goedZin "twee briefjes van 5 euro" -> "2 briefjes".
+- Vaste lijst: `BEVESTIG` geld:54 (4 plekken: 247, 315, 385, 484).
+
+**squla-meten: AFGEKEURD**
+- meten:1041 `woordVraag`-reactie is voor alle 6 woordvragen dezelfde vorm: "Het woord {x} hoort hier niet bij." + de eerste uitleg-zin die geen vraag is. Dat is niet altijd een hint: meten:1147 "Het tegenovergestelde is het omgekeerde." (geen hulp), meten:1319 "Er gaat iets uit de tas." (zegt niets over "zwaarder"), meten:1229 "De mand weegt veel." (bij de keuze "kort"/"dun" niets). Voorstel: per woord een eigen zin: bij "zwaarder" (meten:1319): "Zwaarder is meer, maar de tas weegt nu minder."; bij "kort" (meten:1229): "Kort gaat over lengte, niet over gewicht."
+- meten:1148, 1239, 1252, 1277, 1339 tip met een vraag als eerste element ("Er kan niets meer bij. Hoe heet dat?", "... Weegt hij nu meer of minder?", "Wat weegt het minst?", "Wat is het grootst en weegt het meest?", "Wat weegt het meest?"): `hint()` (meten:47) haalt alleen de laatste vraag weg. Voorstel: stelling ("Het lichtste weegt het minst.").
+- meten:1218, 1221, 1227, 1230, 1348: tip "Iets wat veel weegt, is ..." eindigt op "..." en klinkt voorgelezen als een zin zonder einde (de vraag verstopt). Voorstel: "Zoek het woord voor iets wat veel weegt."
+- meten:927 en 929 "Eén olijf, of een grote schaal vol olijven?" / "Eén olijf is heel klein en licht." -> "1 olijf" (3.20, hoeveelheid; "op één lijn" in 435, 462, 463, 481, 513, 553 is idioom en mag blijven).
+- meten:404 "Die twee kloppen niet." -> "Geen van de 2 klopt."
+- meten:61 `jouwKeuze` (3 openingen die in rekentaal:192 terugkomen), zie Vaste lijstjes.
+- Vaste lijst: `BEVESTIG` meten:44 (5 plekken: 174, 218, 257, 330, 393).
+
+**squla-rekentaal: GOEDGEKEURD, met 2 opmerkingen**
+- rekentaal:192 `wissel("rekentaalkeuze", ["Jij tikte op X.", "Op dat plaatje staat X.", "Je wijst naar X."])`: dezelfde soort als meten:61; goed voor deze vraag, maar wel een lijstje (3 stuks). Mag, mits Sara akkoord geeft.
+- rekentaal:32 `BEVESTIG` (5 woorden) is dezelfde lijst als in de andere lessen. De reactie bij fout (rekentaal:389-491) is per keuze geschreven en rekenkundig juist ("Dit is niet het langste broodje." / "Die mand is de kleinste.").
+
+**squla-tellen: AFGEKEURD**
+- tellen:406 reactie: "Dat is 1 meer dan je zei. Welk getal zei je als laatste?" is een vraag in de reactie die dezelfde keuzevraag nog eens stelt (9 en 3.23). Voorstel: "Je koos 8. Dat is 1 meer dan het laatste getal dat je zei." (de hint staat al in `hint:`).
+- tellen:269, 273, 278, 279: reacties eindigen op een vraag ("heb je een losse X niet meegeteld?", "heb je een X overgeslagen?", "heb je een X dubbel geteld?", "is er een X blijven staan?"). Retorische vragen waar het kind niet op kan antwoorden (9). Voorstel: als stelling: "Misschien heb je een losse X niet meegeteld."
+- tellen:273 "Er liggen er 1 meer" is geen goed Nederlands. Voorstel: "Er ligt er 1 meer" of "Je mist er 1."
+- Cijferafspraak: tellen:343 "Vijf streepjes zijn een groepje." -> "5 streepjes"; tellen:424 "Zoek steeds twee dezelfde. Tik op twee kaartjes." -> "2 dezelfde ... 2 kaartjes".
+- Vaste lijst: `OPEN_GOED` tellen:194 (2 plekken: 313, 1020).
+
+**squla-meer-minder: GOEDGEKEURD, met 2 opmerkingen**
+- meer-minder:482 `tipKaart` (twee kaarten) "Welk getal is groter/kleiner?" blijft een vraag in een hint, dezelfde vraag als de opgave (9, 3.23). Voorstel: "Kijk welk van de 2 getallen groter is."
+- Vaste lijst: `OPEN_GOED` meer-minder:170 (4 plekken: 386, 387, 433, 508). De reacties zelf (meer-minder:476-492) noemen de gekozen kaart en zijn juist.
+
+**squla-getallenlijn: AFGEKEURD**
+- Vragen in een reactie of hint (9, 3.23): getallenlijn:86 "Lees de cijfers nog eens: welk cijfer staat voorop?"; 141 "Staan de cijfers wel in de goede volgorde?" (zelfde idee ook huisnummers:174); 314 "Welk getal is het kleinste van wat nog over is?"; 315 "Je zette X vooraan. Is er een kleiner getal?"; 428 en 462 "Het streepje voor het raketje is X. Wat komt daarna?". Voorstel: 86: "Lees de cijfers nog eens: kijk welk cijfer voorop staat."; 141: "Kijk of de cijfers in de goede volgorde staan."; 314: "Zoek het kleinste getal van wat nog over is."; 315: "Je zette X vooraan. Er is een kleiner getal."; 428/462: "Het streepje voor het raketje is X. Tel 1 verder."
+- Bijna verklappend (2): getallenlijn:133 (zie ook 857) "Kijk naar de ster met 7. Tel 1 verder." geeft bij afstand 1 het antwoord vrijwel weg; getallenlijn:773/799 "Tel in sprongen van 5 vanaf het midden: 10, 15." laat bij raketje op 20 maar 1 sprong over. Advies: bij afstand 1 alleen "Kijk naar de ster met 7." en bij 773 alleen "Tel in sprongen van 5 vanaf het midden."
+- getallenlijn:37 `TELWOORD` (met "één", "twee", ...) staat er nog maar wordt niet gebruikt (`Telwoord` geeft cijfers). Dode code; niet verwijderen zonder akkoord van Sara (regel 3).
+- Vaste lijst: `OPEN_GOED` getallenlijn:73 (16 plekken met `bev()`), 36 keer "Je koos X.".
+
+**squla-huisnummers: AFGEKEURD**
+- huisnummers:121 tipZin (terug) "Je liep terug tot X. Welk nummer is 1 minder?" en huisnummers:123 (slepen) "Links van de lege plek staat X. Welk huis past daarna?" zijn vragen in een hint en stellen de opgave nog eens (9, 3.23). Voorstel: "Je liep terug tot X. Tel 1 terug." en "Links van de lege plek staat X. Tel 1 verder."
+- huisnummers:174 reactie "Staan de cijfers wel in de goede volgorde?" -> "Kijk of de cijfers in de goede volgorde staan."
+- Opmerking: tipZin voor na/voor/tussen (huisnummers:118-124) is "Het laatste huis is 23. Tel 1 verder." en dus bijna het antwoord. Past bij de leeftijd, maar het is geen echte hint meer. Sara beslist.
+- Vaste lijst: `OPEN_GOED` huisnummers:99 (1 plek: 229).
+
+**squla-vormen: AFGEKEURD**
+- vormen:189 de terugval-reactie is een vaste zin "Je koos X. Dat past hier niet." en zegt niets over waarom (5.11 punt 1). Zelfde patroon in vormen:402, 514, 542, 663, 702, 739, 773, 805, 836, 1261 ("Die komt nu niet / hoort niet bij de pijl / past niet bij de kleuren"). Dat zijn 10 zinnen met dezelfde constructie, zonder uitleg. Voorstel: per vraag zeggen wat er klopt: bv. 514: "Je koos de bloem. Na de pijl komt het ding dat steeds om en om terugkomt."; 702: "Het vlak tegenover het lege vlak is groen."
+- Vraag in de hint (9, 3.23): vormen:516 "Welk ding komt in het patroon daarna?", 544 "Welke vorm kwam eerder na die vorm?", 641 "Welke kleur mist daar?", 665 "Welke kleur ligt in de hoek tegenover de lege plek?", 704 "Welke kleur heeft dat vlak?", 807 "Welke kleur van het patroon ontbreekt daar?", 1163 "Waar ligt de stip?". Ze worden achter de reactie gezet (vormen:189 plakt de hele `tip` achter de reactie) en stellen dus de opgave een tweede keer. Voorstel: de laatste tip-zin weglaten of als stelling ("Kijk welke kleur daar mist.").
+- vormen:438-439 reactie bij de kralenketting heeft 2 vragen achter elkaar: "Welke kraal komt daarna?" en "Welke kraal volgde daarop?" en is daarmee 100 procent de opgave. Voorstel: "De eerste 2 kralen kloppen. Zoek in de ketting waar rood eerder lag en kijk wat daarna kwam."
+- vormen:409-410 hint "welke kraal volgde daarop?" / "welk stukje komt steeds terug?" in vraagvorm.
+- vormen:1261 "Je koos: {hele zin}. Die zin past niet bij het plaatje." leest een hele zin voor. Voorstel: "Die zin past niet bij het plaatje."
+- Vaste lijst: `OPEN_GOED` vormen:86 (6 plekken via `zegGoed`), 22 keer "Je koos X.".
+
+**squla-plussommen: GOEDGEKEURD, met 4 opmerkingen**
+- plussommen:346 "Je telde te ver door." staat in 3 van de 4 taferelen (bakkerij, typ, bus) en is dus een vast zinnetje; plussommen:345 "Bij een plussom wordt het meer." staat 2 keer in de lijst. Voorstel: per tafereel een eigen zin (voor bus: "Zoveel pakjes liggen er niet.").
+- plussommen:344 "Met X haal je Y pakjes uit de Z weg." en plussommen:347 "Je typte X: dat is nog te weinig pakjes." zijn niet vloeiend. Voorstel: "Met X haal je Y van de Z af." en "Je typte X: dat zijn er nog te weinig."
+- Cijferafspraak: plussommen:307 "Zet die twee bij elkaar." -> "Zet die 2 bij elkaar."; plussommen:874 "Die twee vullen de rij ..." -> "Die 2 ...". (plussommen:1155 "tot twintig" in de eindzin: naam van een bereik, mag; Sara beslist.)
+- De reacties plussommen:324-347 zijn verder per keuze geschreven en juist.
+
+**squla-minsommen: GOEDGEKEURD (1 opmerking)**
+- minsommen:670 "Slim gerekend!" staat in de goed-zin van de euro-vraag; prima, maar controleer dat de zin in geen andere les letterlijk terugkomt (script `check-zinnen-herhaling.cjs`).
+- Verder goed: `minReactie` benoemt het antwoord van het kind ("alsof er 3 bij komen", "zoveel gaan er weg"), de hint verklapt niets. `welkeReactie` (minsommen:369, 651) verklapt het getal niet meer.
+
+**squla-rekenmix: GOEDGEKEURD, met 3 opmerkingen**
+- rekenmix:784 tip "Tel vanaf links: eerste, tweede, derde ..." de puntjes worden bij het voorlezen een stilte. Voorstel: "Tel vanaf links: eerste, tweede, derde."
+- rekenmix:1603, 1820, 1856, 2040, 2073 welkomzinnen "Drie dingen / Vijf dingen / Drie ballen / Drie groepjes" -> cijfers (3.20), of laten vervallen als de beginzin uit `beginzinnen` ze toch vervangt.
+- rekenmix:1343 en 1366 geven twee keer dezelfde hint "Tel tot 3. De 3e ballon staat in het midden." (reactie én tip); is toegestaan, maar de reactie noemt al wat het kind koos; laat de hint 1 keer vallen.
+
+**squla-piraat: AFGEKEURD**
+- piraat:507 "Je koos: {hele zin in kleine letters}." (raadselTekst) leest een hele zin hardop als reactie; bij hoofdletters en namen klopt de kleine letter niet (punt van de vorige ronde, nog open). Voorstel: "Die zin past niet bij het plaatje." + `waarom`.
+- piraat:250 `tegelAntwoord` begint altijd met "Zo klopt het:" (2 plekken). Voorstel: begin meteen met de som.
+- piraat:313-316 reactie is goed (noemt het aantal en "te veel"); `pzReactie` is juist.
+
+**squla-splitsen: GOEDGEKEURD, met 4 opmerkingen**
+- splitsen:893 reactie heeft 3 zinnen waarvan de middelste ("Dat is niet in elk bakje evenveel.") weinig toevoegt. Voorstel: weglaten (max. 2 zinnen).
+- splitsen:1076 en 1143 derde zin "In het paarse vak horen X ballen." herhaalt de opdracht (die in de vraag staat). Voorstel: weglaten of het getal laten staan in de tip, niet in de reactie.
+- Cijferafspraak (welkomzinnen): splitsen:1468 "in twee stukken / in twee vakken", 1586 "tien en vier munten", 1676 "twee bakjes" -> "2", "10 en 4". (splitsen:1618 "tot twintig" in de eindzin: naam van een bereik.)
+- De overige reacties (splitsen:476-622, 699, 945, 1200, 1309, 1375) zeggen wat het kind sleepte of koos en rekenen goed.
+
+### Vaste lijstjes en standaardzinnen (punt 8, 5.10 en 5.11)
+
+| Lijst of constante | Bestand:regel | Gebruik |
+|---|---|---|
+| `BEVESTIG` ("Goed zo.", "Precies.", "Dat is 'm.", "Ja, dat klopt.", "Mooi gedaan.", "Zo is het.") | dagen:35, geld:54, meten:44, tijd:39 (identiek, 6 woorden); klok:87 (zelfde met "Mooi."); rekentaal:32 (5 woorden) | dagen via `goed()` bij alle 8 vraagsoorten (dagen:131), geld 4, meten 5, tijd 7, klok 5, rekentaal 1 = ruim 30 plekken in 6 lessen. De bijbehorende `goedZin` begint in dagen steeds met "Goed zo." (dagen:144, 167, 198, 229, 261, 289, 309, 327) |
+| `OPEN_GOED` ("Heel goed!", "Mooi gezien!", "Perfect!", "Slim gedaan!", "Ja!", "Goed zo!", "Prima!", "Dat klopt!", "Netjes!"), 40 procent leeg | huisnummers:99, meer-minder:170, vormen:86, getallenlijn:73, tellen:194 (alleen 1 woord verschilt: "Mooi gezien/gekeken/geteld") | huisnummers 1, meer-minder 4, vormen 6, getallenlijn 16, tellen 2 = 29 plekken in 5 lessen |
+| `jouwKeuze` ("Daar staat X." / "Dat plaatje laat X zien." / "Bij jouw plaatje zie je X.") | meten:61 | 2 plekken (meten:61 en de aanroep in `plaatjesVraag`/`wijsVraag`, ca. meten:191), alle plaatjesvragen van meten |
+| `rekentaalkeuze` ("Jij tikte op X." / "Op dat plaatje staat X." / "Je wijst naar X.") | rekentaal:192 | 1 plek, wel dezelfde soort als meten:61 |
+| Terugval "Je koos X. Dat past hier niet." en "Die komt nu niet / hoort niet bij" | vormen:189 en 402, 514, 542, 663, 702, 739, 773, 805, 836, 1261 | 11 plekken, dezelfde constructie |
+| "Je koos X." als opening | getallenlijn 36, tellen 25, vormen 22, meer-minder 8, minsommen 7, plussommen 6, rekenmix 5, huisnummers 3, geld 2, tijd 2, piraat 1, meten 1 (+ "Je tikte/typte/sleepte": meer-minder 10, plussommen 11, piraat 7) | 120+ plekken, in 12 lessen |
+| "X is te veel / te weinig" | splitsen 8, geld 10, piraat 6, rekenmix 5, plussommen 5, tellen 5, meten 4, meer-minder 2, minsommen 2 | 47 plekken in 9 lessen (vorige ronde: 20) |
+| `squla-hulp.ts`: "Mooi. Laat maar eens zien." (251), de 4 openingen `start` (255, per les vast gekozen), "Nu ga je verder met oefenen." (259), "Geen probleem. Ik leg het kort uit." (262), "Nu jij!" (264), "Alles goed!"/"Goed gewerkt!" (275) | squla-hulp.ts | in elke les hetzelfde: begin Ja, begin Nee en einde. Dit is de les-opbouw, geen reactie; toch een standaardzin in alle 16 lessen. Sara beslist of dit zo blijft |
+| `STANDAARDZINNEN` | squla-hulp.ts:206 | alleen een controle op het beginscherm, geen kindzin |
+| Oude route "Nog niet helemaal. We bekijken deze stap samen." / "Zullen we even pauze nemen?" | squla-uitleg.ts:116, 128, 130; squla-hulp.ts:111-144 | niet bereikbaar zolang `zetSynthesisHulp` of `synthesis: true` staat (nu in alle 16 lessen). Niet verwijderen zonder toestemming (regel 3); wel melden |
+| `klok:840 WELKOM_VINK` | klok:840 | 0 keer gebruikt |
+
+Voorstel: laat `BEVESTIG` en `OPEN_GOED` per les eigen woorden krijgen (bijv. dagen: "Dat is de goede dag.", klok: "Die tijd staat op de klok.", geld: "Dat bedrag klopt.") of laat de goed-zin zonder opening beginnen, zoals bij Synthesis (REACTIES.md: "Goed: één woord of één korte zin; het waarom zit in het beeld"). `scripts/check-zinnen-herhaling.cjs` ziet deze lijsten niet, omdat de woorden uit een array worden gekozen en niet als vaste zin in de code staan.
+
+### Aantallen afkeuringen per categorie (zinnen/plekken)
+
+| Categorie | Aantal |
+|---|---|
+| (1) reactie noemt de keuze niet of klopt niet bij de vraag | 16 (vormen 11, meten 5 [woordVraag + 1 mand], klok 1 [112]) |
+| (2) hint verklapt het antwoord bij de 1e fout (let op, geen harde afkeur) | 7 (getallenlijn 133/857/773/799, huisnummers 118-124, splitsen 1076/1143) |
+| (3) 2e fout legt het goede antwoord niet uit | 0 (steekproef; niet alle `toonAntwoord` gelezen) |
+| (4) grammatica, kindertaal, te lang | 12 (tellen 273, plussommen 344/347, geld 795/820, piraat 507, vormen 1261, rekenmix 784, splitsen 893, vormen ~690, meten 1218-1348 als "is ..." tellen onder 9) |
+| (5) cijferafspraak 3.20 | 29 (klok 6, tijd 5, geld 1, meten 2, tellen 2, plussommen 2, rekenmix 5, splitsen 3, getallenlijn 1 dode constante, welkom/eind) |
+| (6) vraag zonder `krijgtVervolgvraag` na 2e fout | 5 (tijd 681, 1235, 1549, geld 1015, 873) |
+| (7) naam in een fout-reactie | 0 |
+| (8) vaste lijst/standaardzin (lijsten) | 9 (`BEVESTIG` in 6 lessen, `OPEN_GOED` in 5, `jouwKeuze`/`rekentaalkeuze`, vormen-terugval, "Je koos X.", "te veel/te weinig", `squla-hulp.ts`-zinnen) |
+| (9) zin klinkt als vraag in een hint | 58 (tijd 12, meten 10, vormen 9, getallenlijn 6, dagen 4, klok 4, tellen 5, huisnummers 3, geld 2, meer-minder 1, rekenmix 0, plussommen 0, +2) |
+
+Niet geverifieerd: spreken en afspelen (geen speelcontrole), de volledige tekst van alle `toonAntwoord`/`goedZin`-regels (bij steekproef gelezen: dagen, klok, tellen, plus-, min-, piraat, splitsen, rekenmix, meer-minder, huisnummers, getallenlijn, vormen en de MIS-lijsten van tijd), en of `beginzinnen(...)` de `welkom`-zinnen met cijferwoorden in de praktijk vervangt (zie lijst van cijferplekken). Alleen tekstvoorstellen; er is niets in code of database aangepast.

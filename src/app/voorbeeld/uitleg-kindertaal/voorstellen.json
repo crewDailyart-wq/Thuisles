@@ -1,0 +1,575 @@
+[
+  {
+    "id": "squla-huisnummers",
+    "titel": "Huisnummers: wat komt erna?",
+    "onderwerp": "Tellen",
+    "oud": [
+      "We lopen samen langs de huizen. Elk volgend nummer is één meer.",
+      "21",
+      "22",
+      "23",
+      "24",
+      "Welk huisnummer komt na 24?"
+    ],
+    "nieuw": [
+      "Kijk naar de nummers op de huizen. Er komt steeds 1 bij.",
+      "21.",
+      "22.",
+      "23.",
+      "24.",
+      "Welk nummer komt na 24?"
+    ]
+  },
+  {
+    "id": "squla-rekentaal",
+    "titel": "Groot en klein, vol en leeg",
+    "onderwerp": "Meten en maten",
+    "oud": [
+      "We bekijken de woorden samen. Deze pannenkoek is groot. Die andere is klein.",
+      "Tik op de kleine pannenkoek."
+    ],
+    "nieuw": [
+      "Kijk naar de pannenkoeken. Deze is groot. Die andere is klein.",
+      "Tik op de kleine pannenkoek."
+    ]
+  },
+  {
+    "id": "squla-dagen-van-de-week",
+    "titel": "Dagen van de week",
+    "onderwerp": "Tijd",
+    "oud": [
+      "We bekijken de weektrein samen. Elke wagon is één dag.",
+      "Maandag.",
+      "Dinsdag.",
+      "Woensdag.",
+      "Donderdag.",
+      "Vrijdag.",
+      "Zaterdag.",
+      "Zondag.",
+      "De week begint op maandag.",
+      "Tik op de eerste dag van de week."
+    ],
+    "nieuw": [
+      "Kijk naar de trein. Daar staan de dagen van de week.",
+      "Maandag.",
+      "Dinsdag.",
+      "Woensdag.",
+      "Donderdag.",
+      "Vrijdag.",
+      "Zaterdag.",
+      "Zondag.",
+      "Maandag is de eerste dag van de week.",
+      "Tik op de eerste dag van de week."
+    ]
+  },
+  {
+    "id": "squla-vormen-patronen-1",
+    "titel": "Patronen",
+    "onderwerp": "Vormen en figuren",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "We kijken samen naar het patroon.",
+      "Kijk: rood, groen, blauw.",
+      "Daarna begint het weer opnieuw.",
+      "Wat komt er steeds na rood?",
+      "Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op je antwoord."
+    ],
+    "nieuw": [
+      "Kijk mee naar de kralen.",
+      "Rood, groen, blauw. Daarna weer rood, groen, blauw.",
+      "De kleuren komen steeds in dezelfde volgorde.",
+      "Welke kraal komt na de rode kraal? Tik op die kraal."
+    ]
+  },
+  {
+    "id": "squla-vormen-orienteren-1",
+    "titel": "Links, rechts, boven, onder",
+    "onderwerp": "Vormen en figuren",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Kijk waar de bal ligt.",
+      "Kijk eerst of het bovenaan, onderaan of in het midden ligt.",
+      "En aan welke kant: links of rechts?",
+      "Kijk naar het grasveld. Waar ligt de bal?"
+    ],
+    "nieuw": [
+      "We zoeken waar de bal ligt.",
+      "Kijk eerst: ligt de bal boven, onder of in het midden?",
+      "Kijk dan: ligt de bal links of rechts?",
+      "Waar ligt de bal op het grasveld?"
+    ]
+  },
+  {
+    "id": "squla-vormen-kleuren-1",
+    "titel": "Vormen en kleuren",
+    "onderwerp": "Vormen en figuren",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "We beginnen met vier puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek."
+    ],
+    "nieuw": [
+      "We maken de puzzel samen.",
+      "Er zijn 4 stukjes. Kijk naar de kleur en de rand. Waar past het stukje?",
+      "Sleep elk stukje naar de goede plek. Je mag ook op het stukje tikken en dan op de plek."
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen1-1",
+    "titel": "Splitsen tot 10",
+    "onderwerp": "Splitsen",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Kijk: er zijn 5 pionnen.",
+      "2 pionnen gaan naar het paarse vak.",
+      "De andere gaan naar het oranje vak.",
+      "Tel ze maar.",
+      "Er zijn 5 pionnen. Sleep 2 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak."
+    ],
+    "nieuw": [
+      "Kijk, 5 pionnen.",
+      "Er gaan 2 pionnen naar het paarse vak.",
+      "De rest gaat naar het oranje vak.",
+      "Tel de pionnen maar.",
+      "Nu jij. Sleep 2 pionnen naar het paarse vak. Sleep de rest naar het oranje vak."
+    ]
+  },
+  {
+    "id": "squla-splits-splitsen2-1",
+    "titel": "Splitsen tot 20",
+    "onderwerp": "Splitsen",
+    "oud": [
+      "Ik help je op weg.",
+      "Kijk: een briefje van 10 euro.",
+      "En munten van één euro.",
+      "Samen is dat 14 euro.",
+      "Het briefje is al tien euro. Tel de munten erbij. Hoeveel euro komt erbij?",
+      "Splits het getal 14. Welk getal mist er nog? Sleep het getal naar het huisje."
+    ],
+    "nieuw": [
+      "Kijk naar het geld.",
+      "Het briefje is 10 euro waard. Elke munt is 1 euro waard.",
+      "Samen is het 14 euro.",
+      "Begin bij 10. Tel de munten erbij.",
+      "Hoeveel euro komt erbij?",
+      "Welk getal hoort op de lege plek in het huisje? Sleep het getal naar die plek."
+    ]
+  },
+  {
+    "id": "squla-splits-delen-1",
+    "titel": "Eerlijk verdelen",
+    "onderwerp": "Splitsen",
+    "oud": [
+      "Ik help je op weg.",
+      "We verdelen de knikkers één voor één.",
+      "Elk bakje krijgt er steeds één bij.",
+      "Alles is verdeeld.",
+      "Tel wat er in één bakje ligt.",
+      "Er zijn 8 knikkers. Verdeel ze over de 2 bakjes. Zorg dat in elk bakje evenveel ligt."
+    ],
+    "nieuw": [
+      "We verdelen de knikkers samen.",
+      "In elk bakje komt 1 knikker. Daarna krijgt elk bakje er weer 1 bij.",
+      "Alle knikkers liggen nu in de bakjes.",
+      "Tel de knikkers in 1 bakje.",
+      "Nu jij. Verdeel de 8 knikkers over de 2 bakjes. In elk bakje moeten evenveel knikkers liggen."
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-3",
+    "titel": "Getallen op hun plek (nog moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "oud": [
+      "Ik help je op weg.",
+      "Kijk, hier staat 14.",
+      "Tel bij elk streepje één verder.",
+      "Eén.",
+      "Het vlaggetje staat één streepje na de 14.",
+      "Bij welk getal staat het vlaggetje?"
+    ],
+    "nieuw": [
+      "Kijk naar de lijn.",
+      "Hier staat 14. Bij elk streepje komt er 1 bij.",
+      "We gaan 1 streepje verder.",
+      "Daar staat het vlaggetje.",
+      "Welk getal hoort bij het vlaggetje?"
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-kat-2",
+    "titel": "Het raketje op de getallenlijn (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Hier is 15 op de getallenlijn.",
+      "Het getal ervoor staat er links naast.",
+      "Dat is één terug.",
+      "Het raketje landt op een planeet met 15. Welk getal komt voor 15?"
+    ],
+    "nieuw": [
+      "Kijk naar 15 op de lijn.",
+      "Het getal voor 15 staat links van 15.",
+      "Tel 1 terug.",
+      "Het raketje staat bij 15. Welk getal komt voor 15?"
+    ]
+  },
+  {
+    "id": "squla-getallenlijn-terugtellen-1",
+    "titel": "Terugtellen tot de start",
+    "onderwerp": "Getallenlijn",
+    "oud": [
+      "We bekijken eerst een voorbeeld.",
+      "We tellen samen terug.",
+      "17.",
+      "16.",
+      "15.",
+      "14.",
+      "13.",
+      "Welk getal komt na 13, als je terugtelt?",
+      "Welk getal hoort op de puntjes?"
+    ],
+    "nieuw": [
+      "We tellen terug. Er gaat steeds 1 af.",
+      "17.",
+      "16.",
+      "15.",
+      "14.",
+      "13.",
+      "Tel nog 1 terug. Welk getal hoort op de puntjes?"
+    ]
+  },
+  {
+    "id": "squla-tellen-fruit-1",
+    "titel": "Fruit tellen",
+    "onderwerp": "Tellen",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Kijk naar de rijtjes met appels. Een volle rij telt 5. Begin met de volle rijen.",
+      "5.",
+      "10.",
+      "Begin bij 10. Tik steeds op de appel met de kring en tel verder."
+    ],
+    "nieuw": [
+      "We tellen de appels samen.",
+      "In een volle rij liggen 5 appels. We tellen eerst de volle rijen.",
+      "5.",
+      "10.",
+      "Begin bij 10. Tik op de appel met de kring. Tel er 1 bij. Doe dat ook bij de volgende appel."
+    ]
+  },
+  {
+    "id": "squla-tellen-fruit-3",
+    "titel": "Fruit tellen (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "oud": [
+      "We bekijken eerst een voorbeeld.",
+      "Tel de bananen één voor één. De streepjes helpen je onthouden hoeveel je al hebt geteld.",
+      "Ik heb er 12 geteld.",
+      "Begin bij 12. Tik steeds op de banaan met de kring en tel verder."
+    ],
+    "nieuw": [
+      "We tellen de bananen samen.",
+      "Tel elke banaan. Bij elke banaan komt er een streepje bij.",
+      "We hebben al 12 bananen geteld.",
+      "Begin bij 12. Tik op de banaan met de kring. Tel er 1 bij. Doe dat ook bij de volgende banaan."
+    ]
+  },
+  {
+    "id": "squla-tellen-resultatief3-4",
+    "titel": "Grote groepen tellen (heel moeilijk)",
+    "onderwerp": "Tellen",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Op de zak staat 40. Er zitten dus 40 knikkers in.",
+      "Tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn.",
+      "Begin bij 40. Tik steeds op de knikker met de kring en tel verder."
+    ],
+    "nieuw": [
+      "Kijk naar de zak met knikkers.",
+      "Op de zak staat 40. Er zitten 40 knikkers in.",
+      "Begin bij 40. Tel de losse knikkers erbij.",
+      "Tik op de knikker met de kring. Tel er 1 bij. Doe dat ook bij de volgende knikker."
+    ]
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-2",
+    "titel": "Meer, minder, evenveel (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "Kijk eerst naar de groep bovenaan.",
+      "Tik dan op een kaart.",
+      "We tellen samen.",
+      "Bovenaan zijn het er 14.",
+      "Hier zijn het er 12.",
+      "Hier zijn het er 17.",
+      "Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.",
+      "Waar zie je meer sterren dan bovenaan?"
+    ],
+    "nieuw": [
+      "We tellen de sterren samen.",
+      "Bovenaan staan 14 sterren.",
+      "Op deze kaart staan 12 sterren.",
+      "Op deze kaart staan 17 sterren.",
+      "Kijk naar het getal bij elke groep sterren.",
+      "Op welke kaart staan meer sterren dan bovenaan?"
+    ]
+  },
+  {
+    "id": "squla-min-ruimte-1",
+    "titel": "Minsommen in de ruimte",
+    "onderwerp": "Minsommen",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Er zweven 7 ballonnen in de lucht.",
+      "4 ballonnen vliegen weg.",
+      "Tel de ballonnen die overblijven. Hoeveel zijn het er?"
+    ],
+    "nieuw": [
+      "Kijk naar de ballonnen.",
+      "Er zijn 7 ballonnen.",
+      "Er vliegen 4 ballonnen weg.",
+      "Tel de ballonnen die overblijven. Hoeveel zijn het er?"
+    ]
+  },
+  {
+    "id": "squla-min-bus1-1",
+    "titel": "Bussommen",
+    "onderwerp": "Minsommen",
+    "oud": [
+      "Ik help je op weg.",
+      "In de bus liggen 8 pakjes.",
+      "De bus bezorgt er 3.",
+      "Hoeveel pakjes liggen er nog in de bus?"
+    ],
+    "nieuw": [
+      "Kijk in de bus.",
+      "Er liggen 8 pakjes in.",
+      "De bus brengt 3 pakjes weg.",
+      "Hoeveel pakjes liggen er nog in de bus?"
+    ]
+  },
+  {
+    "id": "squla-min-kaal-1",
+    "titel": "Kale minsommen",
+    "onderwerp": "Minsommen",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "Kijk, 8 − 3.",
+      "Ik zet 8 stippen neer.",
+      "Er gaan er 3 weg.",
+      "Tel alleen de gekleurde stippen. Hoeveel zijn er nog?"
+    ],
+    "nieuw": [
+      "We doen 8 min 3 samen.",
+      "Hier staan 8 stippen.",
+      "Er gaan 3 stippen weg.",
+      "De grijze stippen tellen niet mee. Tel de andere stippen. Hoeveel zijn er nog?"
+    ]
+  },
+  {
+    "id": "squla-plus-bakkerij-1",
+    "titel": "Plussommen in de bakkerij",
+    "onderwerp": "Plussommen",
+    "oud": [
+      "Ik help je op weg.",
+      "Hier ligt 1 taartje.",
+      "Er komt eerst één taartje bij. Tel één verder.",
+      "Hoeveel taartjes liggen er nu?"
+    ],
+    "nieuw": [
+      "Kijk naar het taartje.",
+      "Er ligt 1 taartje.",
+      "Er komt 1 taartje bij. Tel 1 verder.",
+      "Hoeveel taartjes liggen er nu?"
+    ]
+  },
+  {
+    "id": "squla-plus-bus1-1",
+    "titel": "Bussommen",
+    "onderwerp": "Plussommen",
+    "oud": [
+      "Ik help je op weg.",
+      "In de bus liggen 2 pakjes.",
+      "Naast de bus ligt 1 pakje.",
+      "We tellen verder vanaf 2.",
+      "Eén meer dan 2: hoeveel is dat?",
+      "Er liggen 2 pakjes in de bus. Bij de halte komt er 1 pakje bij. Hoeveel pakjes liggen er nu in de bus?",
+      "Typ het getal."
+    ],
+    "nieuw": [
+      "We tellen de pakjes samen.",
+      "In de bus liggen 2 pakjes. Naast de bus ligt 1 pakje.",
+      "Begin bij 2. Er komt 1 pakje bij. Tel 1 verder.",
+      "Hoeveel pakjes liggen er nu in de bus? Typ het getal."
+    ]
+  },
+  {
+    "id": "squla-geld-geldmachine-1",
+    "titel": "Munten en briefjes",
+    "onderwerp": "Geld",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "Dit is één euro. Kijk naar de één en het woord euro. Een munt is rond.",
+      "Is dit een munt of een briefje?"
+    ],
+    "nieuw": [
+      "Kijk naar het geld.",
+      "Er staat 1 euro op. Een munt is rond.",
+      "Is dit een munt of een briefje?"
+    ]
+  },
+  {
+    "id": "squla-geld-geldmachine-2",
+    "titel": "Munten en briefjes (moeilijker)",
+    "onderwerp": "Geld",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Tel de euro's in elk groepje. Zo zie je hoeveel geld er ligt.",
+      "Hier ligt 2 euro.",
+      "Hier ligt 3 euro.",
+      "Hier ligt 5 euro.",
+      "Kijk, een springtouw. Het springtouw kost 3 euro. Waar ligt 3 euro?"
+    ],
+    "nieuw": [
+      "We tellen het geld samen.",
+      "Hier ligt 2 euro.",
+      "Hier ligt 3 euro.",
+      "Hier ligt 5 euro.",
+      "Het springtouw kost 3 euro. Waar ligt 3 euro?"
+    ]
+  },
+  {
+    "id": "squla-geld-zakgeld-1",
+    "titel": "Zakgeld sparen",
+    "onderwerp": "Geld",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Voor de eerste klus krijg je 2 euro.",
+      "Voor de tweede klus ook 2 euro.",
+      "We tellen het samen.",
+      "2.",
+      "4.",
+      "Waar ligt evenveel geld?",
+      "Je veegt de stoep en je geeft de planten water. Voor elke klus krijg je 2 euro. Hoeveel is dat bij elkaar? Waar ligt dat geld?"
+    ],
+    "nieuw": [
+      "Je veegt de stoep. Daar krijg je 2 euro voor.",
+      "Je geeft de planten water. Daar krijg je ook 2 euro voor.",
+      "We tellen het geld samen: 2, 4.",
+      "Hoeveel euro is dat samen? Waar ligt dat geld?"
+    ]
+  },
+  {
+    "id": "squla-meten-pizza-1",
+    "titel": "Pizza's vergelijken",
+    "onderwerp": "Meten en maten",
+    "oud": [
+      "Ik help je op weg.",
+      "Ik zet de pizza's naast elkaar, op één lijn.",
+      "Kijk naar de gele streepjes bovenaan.",
+      "Kijk welke pizza het verst uitsteekt. Die is het grootst.",
+      "Vandaag eten we pizza. Welke pizza is het grootst? Tik op de pizza."
+    ],
+    "nieuw": [
+      "Kijk naar de pizza’s.",
+      "Ik zet ze naast elkaar. De onderkanten staan op dezelfde lijn.",
+      "Kijk naar de gele streepjes boven de pizza’s.",
+      "De grootste pizza komt het hoogst.",
+      "Welke pizza is het grootst? Tik op die pizza."
+    ]
+  },
+  {
+    "id": "squla-meten-pizza-3",
+    "titel": "Pizza's vergelijken (nog moeilijker)",
+    "onderwerp": "Meten en maten",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "Kijk goed naar de weegschaal.",
+      "Eerst hangt hij recht.",
+      "Nu zakt hij aan één kant naar beneden.",
+      "De zwaarste kant zakt naar beneden. Zo zie je welke kant zwaarder is.",
+      "Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Tik op het deeg."
+    ],
+    "nieuw": [
+      "Kijk naar de weegschaal.",
+      "Eerst staat de weegschaal recht.",
+      "Nu gaat 1 kant omlaag.",
+      "Die kant is zwaarder.",
+      "Welk deeg is het zwaarst? Tik op dat deeg."
+    ]
+  },
+  {
+    "id": "squla-meten-hoeveelheden-1",
+    "titel": "Vol, leeg, zwaar en licht",
+    "onderwerp": "Meten en maten",
+    "oud": [
+      "Laten we het samen uitzoeken.",
+      "In deze mand zit een beetje fruit.",
+      "Deze mand zit propvol.",
+      "Leeg betekent: er zit niets in.",
+      "In welke mand zit niets?",
+      "We pakken een mand voor de picknick. Er zit nog niets in. Welke mand is leeg? Tik op de mand."
+    ],
+    "nieuw": [
+      "Kijk naar de manden.",
+      "In deze mand zit een beetje fruit.",
+      "Deze mand zit helemaal vol.",
+      "In een lege mand zit niets.",
+      "Welke mand is leeg? Tik op die mand."
+    ]
+  },
+  {
+    "id": "squla-tijd-kalender-2",
+    "titel": "De kalender (moeilijker)",
+    "onderwerp": "Tijd",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Zoek het vak met de rode rand.",
+      "Kijk goed welk getal erin staat.",
+      "Zie je het rode vak op de kalender? Welk getal staat daar?"
+    ],
+    "nieuw": [
+      "Kijk naar de kalender.",
+      "Zoek het vak met de rode rand.",
+      "Kijk naar het getal in dat vak.",
+      "Welk getal staat er?"
+    ]
+  },
+  {
+    "id": "squla-klok-hoelaat-1",
+    "titel": "Hoe laat is het?",
+    "onderwerp": "Klokkijken",
+    "oud": [
+      "Ik help je op weg.",
+      "We bekijken de wijzers één voor één. De grote wijzer staat op twaalf. Dan is het een heel uur.",
+      "De kleine wijzer vertelt welk uur het is.",
+      "Naar welk getal wijst de kleine wijzer?"
+    ],
+    "nieuw": [
+      "Kijk mee naar de klok.",
+      "De grote wijzer staat op 12. Het is een heel uur.",
+      "Kijk nu naar de kleine wijzer. Die laat zien hoe laat het is.",
+      "Naar welk getal wijst de kleine wijzer?"
+    ]
+  },
+  {
+    "id": "squla-rekenmix-mix4-2",
+    "titel": "Rekenmix 4 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "oud": [
+      "We doen het samen, stap voor stap.",
+      "Sleep de getallen naar de plekjes.",
+      "Het eerste plekje is links.",
+      "Op het eerste plekje staat 10.",
+      "Na 10 komt het getal dat één meer is.",
+      "Daarna weer één meer, en zo verder.",
+      "We tellen verder vanaf 10. Zet de getallen op hun plek."
+    ],
+    "nieuw": [
+      "We zetten de getallen op hun plek.",
+      "Links staat 10.",
+      "Er komt steeds 1 bij.",
+      "Begin bij 10 en tel verder. Sleep elk getal naar de goede plek."
+    ]
+  }
+]

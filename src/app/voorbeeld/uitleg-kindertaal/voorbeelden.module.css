@@ -1,0 +1,98 @@
+.pagina { min-height: 100vh; padding: 32px clamp(16px, 4vw, 56px) 48px; background: #f3f6fa; color: #162c47; font-family: Arial, sans-serif; }
+.kop, .zoeken, .inhoud, .les, .voet, .leeg { max-width: 1160px; margin-left: auto; margin-right: auto; }
+.terug { display: inline-flex; align-items: center; min-height: 44px; color: #264f80; text-decoration: underline; }
+.bovenregel { margin: 12px 0 6px; font-size: 12px; font-weight: 700; letter-spacing: .07em; color: #546980; }
+.kop h1 { margin: 8px 0 14px; font-size: clamp(30px, 4vw, 44px); line-height: 1.15; letter-spacing: -.025em; }
+.inleiding { max-width: 850px; font-size: 19px; line-height: 1.6; }
+.status { display: block; padding: 14px 18px; border-left: 4px solid #c58520; border-radius: 4px; background: #fff3db; color: #65420d; margin: 20px 0 16px; line-height: 1.5; }
+.afspraak { max-width: 950px; color: #40576e; line-height: 1.6; font-size: 16px; }
+.afspraak p + p { margin-top: 8px; }
+.zoeken { margin-top: 24px; }
+.zoeken label { display: block; font-size: 14px; font-weight: 700; margin-bottom: 8px; }
+.zoeken > div { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
+.zoeken input { min-height: 46px; width: min(100%, 430px); min-width: 0; padding: 10px 12px; border: 1px solid #9bacc0; border-radius: 8px; background: white; color: #162c47; font-size: 16px; }
+.zoeken button { min-height: 46px; padding: 10px 24px; background: #184f87; color: white; font-weight: 700; border: 0; border-radius: 8px; cursor: pointer; }
+.zoeken a { display: inline-flex; min-height: 44px; align-items: center; text-decoration: underline; }
+.zoeken > p { font-size: 13px; margin-top: 10px; color: #546980; }
+.inhoud { margin-top: 12px; border-bottom: 1px solid #cdd8e4; padding-bottom: 16px; }
+.inhoud summary { padding: 12px 0; min-height: 44px; cursor: pointer; font-weight: 700; }
+.inhoud nav { display: grid; grid-template-columns: 1fr 1fr; gap: 4px 20px; padding-top: 10px; }
+.inhoud a { padding: 10px; min-height: 44px; text-decoration: underline; font-size: 15px; line-height: 1.5; }
+.inhoud a span { color: #546980; text-decoration: none; }
+.les { margin-top: 36px; padding: 26px 28px 14px; border: 1px solid #d8e1eb; border-radius: 14px; background: #fff; scroll-margin-top: 16px; box-shadow: 0 3px 14px #17365c05; }
+.leskop { display: flex; align-items: center; justify-content: space-between; gap: 24px; margin-bottom: 22px; }
+.leskop .bovenregel { margin-top: 0; }
+.leskop h2 { font-size: 23px; line-height: 1.3; font-weight: 700; }
+.leslink { display: inline-flex; align-items: center; min-height: 44px; font-size: 14px; color: #1c5186; text-decoration: underline; white-space: nowrap; }
+.vergelijking { display: grid; grid-template-columns: 1fr 1fr; gap: 0; border: 1px solid #d6e0e9; border-radius: 10px; overflow: hidden; }
+.huidig, .nieuw { padding: 20px 24px 24px; min-width: 0; }
+.huidig { background: #f7f9fc; color: #4a5c6f; }
+.nieuw { background: #eff9f4; border-left: 1px solid #d6e0e9; color: #174a37; }
+.vergelijking h3 { font-size: 14px; font-weight: 700; margin-bottom: 18px; padding-bottom: 12px; border-bottom: 1px solid #d7e1e9; }
+.nieuw h3 { color: #146143; border-bottom-color: #c5dfd2; }
+.woorden { font-size: 19px; line-height: 1.55; overflow-wrap: break-word; }
+.woorden p + p { margin-top: 12px; }
+.naarboven { display: flex; align-items: center; justify-content: flex-end; width: fit-content; margin-left: auto; min-height: 44px; margin-top: 8px; color: #52677c; font-size: 13px; text-decoration: underline; }
+.voet { margin-top: 32px; font-size: 13px; line-height: 1.6; color: #546980; }
+.leeg { padding: 30px 0; }
+.totaal { margin: 16px 0; font-size: 15px; font-weight: 700; color: #174f75; }
+.beheer { margin: 12px 0; font-size: 15px; line-height: 1.6; }
+.activeer { margin: 16px 0; padding: 18px; background: #e7f0fc; border: 1px solid #bed0e6; border-radius: 8px; }
+.activeer p { margin-bottom: 10px; }
+.activeer button { min-height: 48px; padding: 12px 20px; border: 0; border-radius: 8px; background: #184f87; color: white; font-weight: 700; cursor: pointer; }
+.zoeken > div { align-items: flex-end; }
+.zoeken .filterlabel { margin: 0; font-size: 13px; }
+.filterlabel select { display: block; min-height: 46px; margin-top: 6px; padding: 10px; border: 1px solid #9bacc0; border-radius: 8px; background: white; color: #162c47; font-size: 15px; max-width: 100%; }
+.lesdetails > summary { position: relative; cursor: pointer; padding: 0 8px 10px; min-height: 64px; }
+.lesdetails > summary .bovenregel { display: inline; }
+.lesdetails h2 { margin-top: 10px; font-size: 22px; font-weight: 700; line-height: 1.4; }
+.aantallen { display: block; margin-top: 8px; font-size: 14px; color: #52677c; }
+.lesinhoud { padding-top: 10px; }
+.begin { padding: 18px; margin-bottom: 18px; border-left: 3px solid #9fb5cc; background: #f7f9fc; }
+.begin h3, .hulpkop { font-size: 18px; font-weight: 700; margin-bottom: 12px; }
+.begin > p { font-size: 17px; line-height: 1.6; margin-bottom: 10px; }
+.hulpkop { margin-top: 28px; }
+.kleineuitleg { color: #52677c; font-size: 14px; line-height: 1.6; margin: 10px 0 20px; }
+.tekstkeuze { margin: 18px 0; }
+.tekstkeuze .vergelijking h3 { margin-bottom: 12px; }
+.vinklabel { display: flex; align-items: center; gap: 12px; min-height: 52px; margin-top: 20px; padding: 12px; border: 1px solid #8aad9b; border-radius: 8px; background: white; color: #164a35; cursor: pointer; font-size: 16px; line-height: 1.4; font-weight: 700; }
+.vinklabel input { width: 24px; height: 24px; flex-shrink: 0; accent-color: #146143; cursor: pointer; }
+.vinklabel:has(input:disabled) { opacity: .7; cursor: default; }
+.keuzestatus { margin-top: 10px; min-height: 34px; font-size: 13px; line-height: 1.5; color: #3a6553; }
+.fout { padding: 14px; margin-top: 12px; background: #fff2df; border: 1px solid #c68d36; border-radius: 8px; color: #63420f; line-height: 1.5; }
+.ongewijzigd { padding: 12px 18px; margin: 10px 0; border-left: 3px solid #cfdae6; color: #40576e; }
+.ongewijzigd span { display: block; margin-bottom: 4px; font-size: 12px; color: #60748a; }
+.ongewijzigd p { font-size: 17px; line-height: 1.5; }
+.aanpassen { display: inline-flex; align-items: center; min-height: 44px; margin-top: 8px; padding: 8px 14px; border: 1px solid #719b89; border-radius: 7px; color: #174a37; background: #fff; font-size: 14px; font-weight: 700; cursor: pointer; }
+.tekstacties { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 18px; margin-top: 8px; }
+.tekstacties .aanpassen { margin-top: 0; }
+.eigenTekst label { display: block; margin-bottom: 8px; font-size: 15px; font-weight: 700; }
+.eigenTekst textarea { display: block; width: 100%; min-height: 140px; padding: 12px; border: 1px solid #719b89; border-radius: 8px; background: white; color: #162c47; font: inherit; font-size: 18px; line-height: 1.6; resize: vertical; }
+.eigenTekst p { margin: 10px 0; color: #3a6553; font-size: 14px; line-height: 1.5; }
+.eigenTekst > div { display: flex; flex-wrap: wrap; gap: 10px; }
+.eigenTekst button { min-height: 48px; padding: 10px 16px; border: 1px solid #146143; border-radius: 8px; background: #146143; color: white; font-size: 15px; font-weight: 700; cursor: pointer; }
+.eigenTekst .annuleren { background: white; color: #174a37; }
+.eigenTekst button:disabled, .aanpassen:disabled { opacity: .6; cursor: default; }
+.eigenTekst textarea:focus-visible { outline: 3px solid #146bbd; outline-offset: 3px; }
+.srAlleen { position: absolute; width: 1px; height: 1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.pagina a:focus-visible, .pagina button:focus-visible, .pagina input:focus-visible, .pagina summary:focus-visible { outline: 3px solid #146bbd; outline-offset: 4px; }
+@media (max-width: 700px) {
+  .pagina { padding-top: 16px; }
+  .les { padding: 18px 14px 8px; margin-top: 24px; }
+  .leskop { display: block; margin-bottom: 14px; }
+  .leskop h2 { font-size: 21px; }
+  .vergelijking, .inhoud nav { grid-template-columns: 1fr; }
+  .nieuw { border-left: 0; border-top: 1px solid #d6e0e9; }
+  .huidig, .nieuw { padding: 18px; }
+  .woorden { font-size: 18px; }
+  .zoeken input { width: 100%; }
+  .vinklabel input { width: 24px; }
+  .filterlabel { flex: 1 1 150px; }
+  .filterlabel select { width: 100%; }
+  .leslink { white-space: normal; line-height: 1.5; }
+}
+@media print {
+  .pagina { padding: 0; background: white; }
+  .zoeken, .inhoud, .terug, .naarboven, .leslink { display: none; }
+  .les { break-inside: avoid; box-shadow: none; }
+}

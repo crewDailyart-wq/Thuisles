@@ -23,8 +23,10 @@
  * zijn even lang als de staaf van het totaal).
  */
 
+import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
+import type { SqulaVraag } from "./squla-hulp";
 import type { Lesgids } from "../soort";
-import { foutBeeld, g, goedBeeld, kiesGetal, kiesTwee, les, squlaVraag, staafBeeld, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
+import { foutBeeld, g, goedBeeld, les, squlaVraag as hulpVraag, staafBeeld, tik, toon, voorbeeldVan, zet, type Stand, type Vraag } from "./squla-splitsen-hulp";
 import type { S1Spec, S1Stand } from "../vlakken/squla-splitsen-vlak";
 import { KaartDelen, KaartSplitsen, SLEEP_BAKKLEUR, type Beeld, type Deel, type Sleep } from "../vlakken/squla-splitsen-vlak";
 import type { S2, S2Doel, S2Leg, S2Stuk } from "../vlakken/squla-splitsen2-sleep";
@@ -32,6 +34,16 @@ import type { S2, S2Doel, S2Leg, S2Stuk } from "../vlakken/squla-splitsen2-sleep
 /* =====================================================================
    Woorden
    ===================================================================== */
+
+/**
+ * Hulp zoals Synthesis (BOUWREGELS 5.1 en 5.10, 4 november 2026): na één fout een korte reactie en meteen opnieuw, na
+ * de tweede fout uitleg, het goede antwoord laten zien en door. Alleen de hulp is aangepast, niet het uiterlijk.
+ * Vragen zonder `toonAntwoord` (de oude tik-versies, die niet meer in een les staan) houden de oude route.
+ */
+function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
+  zetSynthesisHulp(l);
+  return hulpVraag(l, v.toonAntwoord ? { ...v, synthesis: true } : v);
+}
 
 const NAAM: Record<string, [string, string]> = {
   pion: ["pion", "pionnen"],
@@ -46,8 +58,11 @@ const NAAM: Record<string, [string, string]> = {
 };
 /** "{3} pionnen", "{1} pion". `anders`: de naam als afleider (voetballen tussen pionnen). */
 const aantal = (n: number, vw: string, k = "wit") => `${g(n, k)} ${n === 1 ? NAAM[vw][0] : NAAM[vw][1]}`;
-const ANDERS: Record<string, [string, string]> = { voetbal: ["voetbal", "voetballen"] };
-const aantalAnders = (n: number, vw: string) => `${g(n, KB)} ${(ANDERS[vw] ?? NAAM[vw])[n === 1 ? 0 : 1]}`;
+/** Wat het kind legde, tegenover wat het moest zijn: "Het moesten er 2 zijn. Er zijn er 4 te veel." */
+const verschilZin = (gelegd: number, moet: number) => {
+  const v = Math.abs(gelegd - moet);
+  return `Het ${moet === 1 ? "moest er" : "moesten er"} ${g(moet, KA)} zijn. ${v === 1 ? `Er is er ${g(1)}` : `Er zijn er ${g(v)}`} ${gelegd > moet ? "te veel" : "te weinig"}.`;
+};
 
 const KOLOM = [200, 490, 780];
 
@@ -62,275 +77,14 @@ const GK = { links: KA, rechts: KB };
 
 type Optie = { n: number; vw: string };
 
-/** De plekken van het grote huisje met dingen erin. */
-const GROOT = { x: 490, y: 330, b: 520, kamerY: 430, links: 360, rechts: 620 };
-
-/** Hoe groot de dingen in een kamer van het grote huisje zijn: groot als het er weinig zijn, kleiner als het er veel zijn (drie naast elkaar, tot drie rijen). */
-const kamerCel = (n: number) => (n <= 3 ? 84 : n <= 6 ? 78 : 64);
-
-function huisBeeld(id: string, tot: number, deel: number, links: boolean, vw: string, zak: boolean, opties: Optie[]): Beeld {
-  const rest = tot - deel;
-  const bekend = links ? GROOT.links : GROOT.rechts;
-  const ander = links ? GROOT.rechts : GROOT.links;
-  const delen: Deel[] = [
-    { s: "huisje", id: "huis", x: GROOT.x, y: GROOT.y, b: GROOT.b, top: "", links: "", rechts: "" },
-    { s: "groep", id: "top", vw, n: tot, x: GROOT.x, y: 272, per: 5, cel: 54, kleuren: Array.from({ length: tot }, (_, i) => (i < deel ? KA : KB)) },
-    { s: "groep", id: "deel", vw, n: deel, x: bekend, y: GROOT.kamerY, per: 3, cel: kamerCel(deel), kl: KA },
-    { s: "groep", id: "in", vw, n: rest, x: ander, y: GROOT.kamerY, per: 3, cel: kamerCel(rest), verborgen: true, kl: KB },
-  ];
-  if (zak) delen.push({ s: "ding", id: "zak", vw: "zak", x: ander, y: GROOT.kamerY, maat: 150 });
-  opties.forEach((o, i) => {
-    delen.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 628, per: 3, cel: 70, kl: KB });
-    delen.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 628, b: 250, h: 120, aria: `${o.n}` });
-  });
-  return { id, delen };
-}
-
-function huisVraag(tot: number, deel: number, opties: Optie[], o: { vw?: string; zak?: boolean; links?: boolean } = {}): Vraag {
-  const vw = o.vw ?? "pion";
-  const zak = o.zak ?? false;
-  const links = o.links ?? true;
-  const rest = tot - deel;
-  return (l, st) => {
-    const id = `huis-${tot}-${deel}-${vw}-${zak}`;
-    const beeld = huisBeeld(id, tot, deel, links, vw, zak, opties);
-    const goedId = `k${opties.findIndex((x) => x.n === rest && x.vw === vw)}`;
-    const vraag = zak
-      ? [`Er zijn ${aantal(tot, vw)}.`, `Er ${deel === 1 ? "ligt" : "liggen"} ${aantal(deel, vw, KA)} naast de zak.`, "Hoeveel ballen zitten er in de zak?", "Tik op het goede plaatje."]
-      : [`Er zijn ${aantal(tot, vw)}.`, `${aantal(deel, vw, KA)} ${deel === 1 ? "staat" : "staan"} aan de ene kant.`, `Hoeveel ${NAAM[vw][1]} staan er aan de andere kant?`, "Tik op het goede plaatje."];
-    return squlaVraag<string>(l, {
-      toon: () => {
-        toon(l, st, beeld);
-      },
-      vraag,
-      antwoord: () => tik(l),
-      isGoed: (x) => x === goedId,
-      noem: (x) => {
-        const k = opties[Number(x.slice(1))];
-        return k.vw === vw ? aantal(k.n, vw) : aantalAnders(k.n, k.vw);
-      },
-      goed: async () => {
-        goedBeeld(l, st, { goedIds: [goedId], toon: ["in"], uit: zak ? ["zak"] : [] });
-        await l.zeg(zak ? `Ja! In de zak ${rest === 1 ? "zit" : "zitten"} ${aantal(rest, vw, KB)}.` : "Ja!", `${g(tot)} kun je splitsen in ${g(deel, KA)} en ${g(rest, KB)}.`);
-        await l.wacht(300);
-      },
-      fout: () => foutBeeld(l, st),
-      samen: async () => {
-        zet(l, { licht: ["top"] });
-        await l.zeg(`Kijk: samen zijn het er ${g(tot)}.`);
-        zet(l, { licht: ["deel"], uit: Array.from({ length: deel }, (_, i) => `top.${i}`) });
-        await l.zeg(zak ? `${aantal(deel, vw, KA)} ${deel === 1 ? "ligt" : "liggen"} naast de zak.` : `${aantal(deel, vw, KA)} ${deel === 1 ? "staat" : "staan"} al aan de ene kant.`, "Die maak ik grijs.");
-        zet(l, { licht: Array.from({ length: rest }, (_, i) => `top.${deel + i}`) });
-        await l.zeg(zak ? "De andere zitten in de zak." : "De andere staan aan de andere kant.", "Tel de lichtjes maar.");
-        if (opties.some((x) => x.vw !== vw)) await l.zeg(`Let op: het moeten ${NAAM[vw][1]} zijn.`);
-      },
-      tip: [`Tel de ${NAAM[vw][1]} die oplichten.`],
-      testAntwoord: goedId,
-    });
-  };
-}
-
-/** Het tienvak (een eierdoos van 2 rijen van 5) met een doek over een paar vakjes. */
-function tienvakVraag(zicht: number, keuzes: number[]): Vraag {
-  const rest = 10 - zicht;
-  return (l, st) => {
-    const beeld: Beeld = { id: `tien-${zicht}`, delen: [{ s: "tienvak", id: "doos", x: 490, y: 380, vw: "pingpongbal", n: zicht, doek: rest, kl: KA, kl2: KB }] };
-    const onder = Array.from({ length: rest }, (_, i) => `doos.${zicht + i}`);
-    return squlaVraag<number>(l, {
-      toon: () => {
-        toon(l, st, beeld);
-      },
-      vraag: [`In de doos liggen ${g(10)} pingpongballen.`, rest === 1 ? "Eén ligt onder de doek." : "Een deel ligt onder de doek.", "Hoeveel pingpongballen liggen er onder de doek?"],
-      antwoord: () => kiesGetal(l, keuzes),
-      isGoed: (x) => x === rest,
-      noem: (x) => g(x),
-      goed: async () => {
-        goedBeeld(l, st, { uit: ["doos-doek"], goedIds: onder });
-        await l.zeg("Ja!", `${g(10)} kun je splitsen in ${g(zicht, KA)} en ${g(rest, KB)}.`);
-        await l.wacht(300);
-      },
-      fout: () => foutBeeld(l, st),
-      samen: async () => {
-        zet(l, { licht: Array.from({ length: zicht }, (_, i) => `doos.${i}`) });
-        await l.zeg(`Deze ${aantal(zicht, "pingpongbal", KA)} kun je zien.`);
-        zet(l, { licht: ["doos"] });
-        await l.zeg(`In de doos passen er ${g(10)}: twee rijen van ${g(5)}.`);
-        zet(l, { licht: onder, uit: ["doos-doek"] });
-        await l.zeg("Ik til de doek even op.", rest === 1 ? "Kijk naar de oranje pingpongbal die eronder ligt." : "Tel de oranje pingpongballen die eronder liggen.");
-      },
-      tip: ["Tel de vakjes onder de doek."],
-      testAntwoord: rest,
-    });
-  };
-}
-
-/** Paren maken: een huisje met een leeg stuk, en de ballen die erbij horen. */
-function parenVraag(paren: [number, number][]): Vraag {
-  /* De plekken door elkaar, zoals op een tafel: huisje, ballen, huisje / ballen, huisje, ballen. */
-  const cellen: [string, number][] = [["h", 0], ["b", 2], ["h", 1], ["b", 0], ["h", 2], ["b", 1]];
-  const plek = (i: number) => ({ x: KOLOM[i % 3], y: i < 3 ? 250 : 520 });
-  return async (l, st) => {
-    const basis: Deel[] = [];
-    cellen.forEach(([soort, p], i) => {
-      const q = plek(i);
-      const [tot, deel] = paren[p];
-      if (soort === "h") {
-        basis.push({ s: "huisje", id: `h${p}`, x: q.x, y: q.y - 20, b: 170, top: String(tot), links: String(deel), rechts: "?", kleuren: GK });
-        basis.push({ s: "tik", id: `h${p}`, x: q.x, y: q.y, b: 230, h: 190, aria: `${tot} is ${deel} en hoeveel?` });
-      } else {
-        basis.push({ s: "groep", id: `b${p}`, vw: "tennisbal", n: tot - deel, x: q.x, y: q.y, per: 3, cel: 54, kl: KB });
-        basis.push({ s: "tik", id: `b${p}`, x: q.x, y: q.y, b: 230, h: 190, aria: `${tot - deel} ballen` });
-      }
-    });
-    const beeld: Beeld = { id: `paren-${paren.flat().join("")}`, delen: basis };
-    const klaar: number[] = [];
-    let alles = true;
-    for (let keer = 0; keer < paren.length; keer++) {
-      const open = paren.map((_, i) => i).filter((i) => !klaar.includes(i));
-      const eerste = open[0];
-      const [tot, deel] = paren[eerste];
-      const eerst = keer === 0;
-      const gedaan = () => klaar.flatMap((i) => [`h${i}`, `b${i}`]);
-      const meteen = await squlaVraag<[string, string]>(l, {
-        toon: () => {
-          toon(l, st, beeld);
-          zet(l, { uit: gedaan(), goedIds: [] });
-        },
-        vraag: eerst ? ["Welke twee horen bij elkaar?", "Tik op een huisje.", "Tik dan op de ballen die erbij horen."] : ["Welke twee horen nog bij elkaar?"],
-        antwoord: () => kiesTwee(l, `h${eerste}`, (a) => (a.startsWith("h") ? `b${a.slice(1)}` : `h${a.slice(1)}`)),
-        isGoed: ([a, b]) => a.slice(1) === b.slice(1) && a[0] !== b[0] && open.includes(Number(a.slice(1))),
-        noem: () => "Die twee",
-        goed: async ([a]) => {
-          const p = Number(a.slice(1));
-          const [t, d] = paren[p];
-          goedBeeld(l, st, { goedIds: [`h${p}`, `b${p}`] });
-          await l.zeg(`Ja! ${g(t)} is ${g(d, KA)} en ${g(t - d, KB)}.`);
-          klaar.push(p);
-          zet(l, { goedIds: [], uit: gedaan() });
-        },
-        fout: () => foutBeeld(l, st),
-        samen: async () => {
-          zet(l, { licht: [`h${eerste}`] });
-          await l.zeg("Kijk naar dit huisje.", `Bovenaan staat ${g(tot)}.`, `Aan de ene kant staat ${g(deel, KA)}.`, "Hoeveel ballen horen er aan de andere kant?", "Zoek die ballen.");
-        },
-        tip: [`${g(tot)} is ${g(deel, KA)} en nog hoeveel?`, "Zoek die ballen."],
-        testAntwoord: `h${eerste}`,
-      });
-      if (!meteen) alles = false;
-    }
-    return alles;
-  };
-}
-
 /* =====================================================================
    Splitsen 1 · level 2: de splitsmachine en de splitspaal
    ===================================================================== */
 
 type Huis = [number, number, number];
 
-/** Ballen in een bakje: groot als het er weinig zijn; ze liggen als een bergje in het bakje (niet eronder uit). */
-const bakPer = (n: number) => (n <= 3 ? Math.max(1, n) : n <= 6 ? 3 : 4);
-const bakCel = (n: number) => (n <= 3 ? 56 : n <= 6 ? 44 : 38);
-
-/** Het beeld van de splitsmachine: twee bakjes met ballen en drie huisjes om uit te kiezen. */
-function machineBeeld(a: number, b: number, opties: Huis[], stippen: boolean): Beeld {
-  const delen: Deel[] = [
-    { s: "ding", id: "machine", vw: "splitsmachine", x: 490, y: 170, maat: 170 },
-    { s: "ding", id: "bak-l", vw: "bakje", x: 290, y: 400, maat: 170 },
-    { s: "ding", id: "bak-r", vw: "bakje", x: 690, y: 400, maat: 170 },
-    { s: "groep", id: "bl", vw: "tennisbal", n: a, x: 290, y: 396, per: bakPer(a), cel: bakCel(a), kl: KA },
-    { s: "groep", id: "br", vw: "tennisbal", n: b, x: 690, y: 396, per: bakPer(b), cel: bakCel(b), kl: KB },
-  ];
-  opties.forEach(([t, x, y], i) => {
-    delen.push({ s: "huisje", id: `k${i}`, x: KOLOM[i], y: 548, b: 200, top: String(t), links: String(x), rechts: String(y), stippen, kleuren: GK });
-    delen.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 568, b: 236, h: 180, aria: `${t} is ${x} en ${y}` });
-  });
-  return { id: `machine-${a}-${b}-${stippen}`, delen };
-}
-
-function machineVraag(a: number, b: number, opties: Huis[], stippen: boolean): Vraag {
-  const tot = a + b;
-  const goedId = `k${opties.findIndex(([t, x, y]) => t === tot && x === a && y === b)}`;
-  return (l, st) => {
-    const beeld = machineBeeld(a, b, opties, stippen);
-    return squlaVraag<string>(l, {
-      toon: () => {
-        toon(l, st, beeld);
-      },
-      vraag: ["De machine verdeelt de ballen over twee bakjes.", "Welke splitsing hoort erbij?", "Tik op het goede huisje."],
-      antwoord: () => tik(l),
-      isGoed: (x) => x === goedId,
-      noem: (x) => {
-        const [t, p, q] = opties[Number(x.slice(1))];
-        return `${g(t)}, ${g(p)} en ${g(q)}`;
-      },
-      goed: async () => {
-        goedBeeld(l, st, { goedIds: [goedId] });
-        await l.zeg(`Ja! ${aantal(a, "tennisbal", KA)} en ${aantal(b, "tennisbal", KB)}.`, `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`);
-        await l.wacht(300);
-      },
-      fout: () => foutBeeld(l, st),
-      samen: async () => {
-        zet(l, { licht: ["bl"] });
-        await l.zeg("Tel de ballen in dit bakje.");
-        await l.wacht(1200);
-        zet(l, { licht: ["br"] });
-        await l.zeg("Tel nu de ballen in dat bakje.");
-        await l.wacht(1200);
-        zet(l, { licht: ["bl", "br"] });
-        await l.zeg("Hoeveel zijn het samen?", "Zoek het huisje met die drie getallen.");
-        zet(l, { licht: [] });
-      },
-      tip: ["Tel de ballen in de twee bakjes.", "Zoek het huisje met die twee getallen."],
-      testAntwoord: goedId,
-    });
-  };
-}
-
 function paalBeeld(id: string, tot: number, a: number, rechts: string, extra: Deel[]): Beeld {
   return { id, delen: [{ s: "paal", id: "paal", x: 490, y: 140, top: String(tot), links: String(a), rechts, kleuren: GK }, ...extra] };
-}
-
-/** De splitspaal met shirts; kies het plaatje met het goede aantal. */
-function shirtVraag(tot: number, a: number, opties: Optie[]): Vraag {
-  const rest = tot - a;
-  const goedId = `k${opties.findIndex((x) => x.n === rest && x.vw === "voetbalshirt")}`;
-  return (l, st) => {
-    const extra: Deel[] = [{ s: "groep", id: "sl", vw: "voetbalshirt", n: a, x: 390, y: 425, per: 4, cel: 70, kl: KA }];
-    opties.forEach((o, i) => {
-      extra.push({ s: "groep", id: `k${i}`, vw: o.vw, n: o.n, x: KOLOM[i], y: 590, per: 3, cel: 66, label: String(o.n), kl: KB });
-      extra.push({ s: "tik", id: `k${i}`, x: KOLOM[i], y: 604, b: 240, h: 150, aria: `${o.n}` });
-    });
-    const id = `shirt-${tot}-${a}`;
-    const beeld = paalBeeld(id, tot, a, "?", extra);
-    return squlaVraag<string>(l, {
-      toon: () => {
-        toon(l, st, beeld);
-      },
-      vraag: ["Kijk naar de splitspaal.", "Welk getal mist er nog?", "Tik op het goede plaatje."],
-      antwoord: () => tik(l),
-      isGoed: (x) => x === goedId,
-      noem: (x) => {
-        const k = opties[Number(x.slice(1))];
-        return k.vw === "voetbalshirt" ? aantal(k.n, k.vw) : aantalAnders(k.n, k.vw);
-      },
-      goed: async () => {
-        goedBeeld(l, st, { goedIds: [goedId], beeld: paalBeeld(id, tot, a, String(rest), extra) });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
-        await l.wacht(300);
-      },
-      fout: () => foutBeeld(l, st),
-      samen: async () => {
-        zet(l, { licht: ["sl"] });
-        await l.zeg(`Hier ${a === 1 ? "is" : "zijn"} ${aantal(a, "voetbalshirt", KA)}.`, `Bovenaan staat ${g(tot)}.`);
-        zet(l, { licht: [] });
-        await l.zeg(`Tel verder vanaf ${g(a, KA)} tot ${g(tot)}.`, "Dat mag op je vingers.", "Hoeveel heb je erbij geteld?");
-        if (opties.some((x) => x.vw !== "voetbalshirt")) await l.zeg("Let op: het moeten shirts zijn.");
-      },
-      tip: [`Tel verder vanaf ${g(a, KA)} tot ${g(tot)}.`],
-      testAntwoord: goedId,
-    });
-  };
 }
 
 /** Uitleg met staafjes (naar het filmpje): de staaf van het totaal, het bekende stuk, en wat er over is. */
@@ -340,41 +94,8 @@ async function staafUitleg(l: Lesgids, st: Stand, tot: number, deel: number) {
   zet(l, { licht: ["st-o"] });
   await l.zeg(`Eronder ${deel === 1 ? "ligt" : "liggen"} ${g(deel, KA)} paarse ${deel === 1 ? "blokje" : "blokjes"}.`);
   zet(l, { licht: ["st-b"] });
-  await l.zeg(tot - deel === 0 ? "Blijft er nog iets over?" : "Hoeveel blokjes blijven er over? Tel ze maar.");
+  await l.zeg(tot - deel === 0 ? "Kijk of er nog iets overblijft." : "Kijk hoeveel blokjes er over zijn. Tel ze maar.");
   await l.verder();
-}
-
-/** De splitspaal van 10 (met of zonder ballen); kies het getal. */
-function paalVraag(tot: number, a: number, keuzes: number[], ballen: boolean): Vraag {
-  const rest = tot - a;
-  return (l, st) => {
-    const extra: Deel[] = ballen
-      ? [
-          { s: "groep", id: "gl", vw: "basketbal", n: a, x: 170, y: 330, per: 4, cel: 66, kl: KA },
-          { s: "groep", id: "gr", vw: "basketbal", n: rest, x: 810, y: 330, per: 4, cel: 66, kl: KB },
-        ]
-      : [];
-    const id = `paal-${tot}-${a}-${ballen}`;
-    const beeld = paalBeeld(id, tot, a, "?", extra);
-    return squlaVraag<number>(l, {
-      toon: () => {
-        toon(l, st, beeld);
-      },
-      vraag: [ballen ? "Kijk naar de ballen en de splitspaal." : "Kijk naar de splitspaal.", "Welk getal mist er nog?"],
-      antwoord: () => kiesGetal(l, keuzes),
-      isGoed: (x) => x === rest,
-      noem: (x) => g(x),
-      goed: async () => {
-        goedBeeld(l, st, { goedIds: ["paal"], beeld: paalBeeld(id, tot, a, String(rest), extra) });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
-        await l.wacht(300);
-      },
-      fout: () => foutBeeld(l, st),
-      samen: () => staafUitleg(l, st, tot, a),
-      tip: [`${g(tot)} is ${g(a, KA)} en nog hoeveel?`],
-      testAntwoord: rest,
-    });
-  };
 }
 
 /* =====================================================================
@@ -428,10 +149,11 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
     const eerst = links ?? rest;
     const dan = rechts ?? rest;
     const gat: S2Doel = { id: "k", x: links === null ? 400 : 580, y: 459, b: 150, h: 112, label: "?" };
+    const tegels = (vast?: [string, string][]) => s2Spec(keuzes.map((n, i) => s2Getal(n, i, keuzes.length, 640, n === rest ? "k" : undefined)), [gat], vast);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec(keuzes.map((n, i) => s2Getal(n, i, keuzes.length, 640, n === rest ? "k" : undefined)), [gat]), actief: false });
+        zet(l, { s2: tegels(), actief: false });
       },
       vraag: [`Splits het getal ${g(tot)}.`, "Welk getal mist er nog?", "Sleep het getal naar het huisje."],
       antwoord: async () => {
@@ -442,7 +164,7 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { goedIds: ["h"] });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(eerst)} en ${g(dan)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -451,14 +173,30 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
           zet(l, { licht: ["briefje"] });
           await l.zeg(`Kijk: een briefje van ${g(10)} euro.`);
           zet(l, { licht: ["munten"] });
-          await l.zeg("En munten van één euro.", `Samen is dat ${g(tot)} euro.`, "Hoeveel munten zijn er bij de 10? Tel ze maar.");
+          await l.zeg("En munten van 1 euro.");
+          zet(l, { licht: [] });
+          await l.zeg(`Samen is dat ${g(tot)} euro.`);
+          zet(l, { licht: ["briefje"] });
+          await l.zeg(`Het briefje is al ${g(10)} euro.`);
+          zet(l, { licht: ["munten"] });
+          await l.zeg("Tel de munten erbij.");
           await l.verder();
           zet(l, { licht: [] });
           return;
         }
         await staafUitleg(l, st, tot, bekend);
       },
-      tip: [`${g(tot)} is ${g(bekend, KA)} en nog hoeveel?`],
+      tip: [`${g(tot)} is ${g(bekend, KA)} en nog een deel.`],
+      reactie: (x) => {
+        if (x === bekend) return [`${g(bekend, KA)} staat er al.`, "Er mist een ander getal."];
+        if (x === tot) return [`${g(tot)} is het hele getal.`, "Kijk naar het getal dat er nog bij moet."];
+        return [`${g(bekend, KA)} en ${g(x)} is samen ${g(bekend + x)}.`, `Dat moet ${g(tot)} zijn.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { s2: tegels([[`s${keuzes.indexOf(rest)}`, "k"]]), goedIds: ["h"], actief: false });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(eerst)} en ${g(dan)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -476,30 +214,39 @@ function huisTwee(tot: number, tegels: number[]): Vraag {
       { id: "k0", x: 410, y: 361, b: 140, h: 104, label: "?" },
       { id: "k1", x: 570, y: 361, b: 140, h: 104, label: "?" },
     ];
+    const spec = (vast?: [string, string][]) => s2Spec(tegels.map((n, i) => s2Getal(n, i, tegels.length, 560, hoort(i) ? "*" : undefined)), doelen, vast);
     return squlaVraag<[number, number]>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec(tegels.map((n, i) => s2Getal(n, i, tegels.length, 560, hoort(i) ? "*" : undefined)), doelen), actief: false });
+        zet(l, { s2: spec(), actief: false });
       },
-      vraag: [`Hoe kun je ${g(tot)} splitsen?`, "Sleep twee getallen in het huisje, zodat het klopt."],
+      vraag: [`Hoe kun je ${g(tot)} splitsen?`, "Sleep 2 getallen in het huisje, zodat het klopt."],
       antwoord: async () => {
         const leg = await s2Wacht(l, 2);
         const n = (sid: string) => tegels[Number(sid.slice(1))];
         return [n(leg[0][0]), n(leg[1][0])] as [number, number];
       },
       isGoed: ([a, b]) => goed(a, b),
-      noem: () => "Die twee",
+      noem: () => "Die 2",
       goed: async () => {
         goedBeeld(l, st, { goedIds: ["h"] });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(10)} en ${g(tien)}.`, `En ook in ${g(tien)} en ${g(10)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         await staafUitleg(l, st, tot, 10);
-        await l.zeg(`Zoek de getallen ${g(10)} en ${g(tien)}.`, "Het mag links of rechts.");
+        await l.zeg(`De getallen ${g(10)} en ${g(tien)} passen.`, "Het mag links of rechts.");
       },
-      tip: [`${g(tot)} is ${g(10)} en nog hoeveel?`, "Het mag allebei: links of rechts."],
+      tip: [`${g(tot)} is ${g(10)} en nog een deel.`, "Het mag allebei: links of rechts."],
+      reactie: ([a, b]) => [`Je sleepte ${g(a)} en ${g(b)}: samen is dat ${g(a + b)}.`, a + b > tot ? `Dat past niet in het huisje van ${g(tot)}: het is te veel.` : `Het huisje is ${g(tot)}, dus ${tot - a - b === 1 ? "mist er" : "missen er"} nog ${g(tot - a - b)}.`],
+      toonAntwoord: async () => {
+        let paar: [number, number] = [0, 1];
+        for (let i = 0; i < tegels.length; i++) for (let j = 0; j < tegels.length; j++) if (i !== j && goed(tegels[i], tegels[j])) paar = [i, j];
+        zet(l, { s2: spec([[`s${paar[0]}`, "k0"], [`s${paar[1]}`, "k1"]]), goedIds: ["h"], actief: false });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(tegels[paar[0]])} en ${g(tegels[paar[1]])}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -513,10 +260,11 @@ function huisSom(tot: number, a: number, b: number, opties: string[], geld: bool
     const extra = geld ? geldDelen(tot - 10) : [];
     const beeld: Beeld = { id: `som-${tot}-${a}-${b}`, delen: [...extra, { s: "huisje", id: "h", x: 490, y: 330, b: 360, top: String(tot), links: String(a), rechts: String(b) }] };
     const gat: S2Doel = { id: "k", x: 490, y: 548, b: 340, h: 98, label: "?" };
+    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, o === goed ? "k" : undefined)), [gat], vast);
     return squlaVraag<string>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, o === goed ? "k" : undefined)), [gat]), actief: false });
+        zet(l, { s2: somTegels(), actief: false });
       },
       vraag: ["Kijk naar het huisje.", "Welke som past erbij?", "Sleep de som onder het huisje."],
       antwoord: async () => {
@@ -527,16 +275,26 @@ function huisSom(tot: number, a: number, b: number, opties: string[], geld: bool
       noem: (x) => x,
       goed: async () => {
         goedBeeld(l, st, { goedIds: ["h"] });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(a)} en ${g(b)}.`, `${g(tot)} = ${g(a)} + ${g(b)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { licht: ["h"] });
-        await l.zeg(`Bovenaan staat ${g(tot)}.`, "Dat getal komt vooraan in de som.", `Onder staan ${g(a)} en ${g(b)}.`, "Die komen erachter, met een plus ertussen.", "Zoek de som met die drie getallen.");
+        await l.zeg(`Boven in het huisje staat ${g(tot)}.`, "Dit getal schrijf je aan het begin van de som.", `Onder staan ${g(a)} en ${g(b)}.`, "Die 2 getallen tel je bij elkaar op. Samen zijn ze evenveel als het getal bovenaan.", ...(krijgtVervolgvraag(l) ? [] : ["Zoek de som met die 3 getallen."]));
         zet(l, { licht: [] });
       },
-      tip: [`Zoek een som met ${g(tot)}, ${g(a)} en ${g(b)}.`],
+      tip: [`De goede som heeft de getallen ${g(tot)}, ${g(a)} en ${g(b)}.`],
+      reactie: (x) => {
+        const m = x.match(/^(\d+) = (\d+) \+ (\d+)$/);
+        if (m && Number(m[1]) !== tot) return [`Die som begint met ${g(Number(m[1]))}.`, `Bovenaan het huisje staat ${g(tot)}.`];
+        return ["Bovenaan klopt het.", `Maar onder het huisje staan ${g(a)} en ${g(b)}.`, "De goede som heeft precies die getallen."];
+      },
+      toonAntwoord: async () => {
+        zet(l, { s2: somTegels([[`s${opties.indexOf(goed)}`, "k"]]), goedIds: ["h"], actief: false });
+        await l.zeg(`${g(tot)} = ${g(a)} + ${g(b)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -551,30 +309,42 @@ function huisTweeSommen(tot: number, a: number, b: number, opties: string[]): Vr
       { id: "k0", x: 345, y: 530, b: 270, h: 98, label: "?" },
       { id: "k1", x: 635, y: 530, b: 270, h: 98, label: "?" },
     ];
+    const somTegels = (vast?: [string, string][]) => s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, passend(o) ? "*" : undefined)), doelen, vast);
     return squlaVraag<[string, string]>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec(opties.map((o, i) => s2Som(o, i, s2Rij(opties.length, i, 320), 650, passend(o) ? "*" : undefined)), doelen), actief: false });
+        zet(l, { s2: somTegels(), actief: false });
       },
-      vraag: ["Kijk naar het huisje.", "Welke sommen passen erbij?", "Er zijn er twee goed. Sleep ze onder het huisje."],
+      vraag: ["Kijk naar het huisje.", "Welke sommen passen erbij?", "Er zijn er 2 goed. Sleep ze onder het huisje."],
       antwoord: async () => {
         const leg = await s2Wacht(l, 2);
         return [opties[Number(leg[0][0].slice(1))], opties[Number(leg[1][0].slice(1))]] as [string, string];
       },
       isGoed: ([x, y]) => x !== y && passend(x) && passend(y),
-      noem: () => "Die twee",
+      noem: () => "Die 2",
       goed: async () => {
         goedBeeld(l, st, { goedIds: ["h"] });
-        await l.zeg("Ja!", `${g(tot)} = ${g(a)} + ${g(b)}.`, `En ${g(tot)} = ${g(b)} + ${g(a)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { licht: ["h"] });
-        await l.zeg(`Bovenaan staat ${g(tot)}.`, "Dat getal komt vooraan in de som.", `Onder staan ${g(a)} en ${g(b)}.`, "Die mogen in allebei de volgordes.");
+        await l.zeg(`Het dak van het huisje zegt ${g(tot)}.`, "Met dit getal begint elke som.", `Onder staan ${g(a)} en ${g(b)}.`, "Die mogen in allebei de volgordes.");
         zet(l, { licht: [] });
       },
-      tip: [`Zoek de sommen met ${g(tot)}, ${g(a)} en ${g(b)}.`],
+      tip: [`De goede sommen hebben de getallen ${g(tot)}, ${g(a)} en ${g(b)}.`],
+      reactie: ([x, y]) => {
+        const slecht = [x, y].find((o) => !passend(o));
+        const m = slecht?.match(/^(\d+) = (\d+) \+ (\d+)$/);
+        if (!m) return ["Dat is 2 keer dezelfde som.", "Kies 2 verschillende sommen."];
+        return [`${g(Number(m[1]))} = ${g(Number(m[2]))} + ${g(Number(m[3]))} past niet bij dit huisje.`, `De goede sommen hebben de getallen ${g(tot)}, ${g(a)} en ${g(b)}.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { s2: somTegels([[`s${opties.indexOf(somTekst(tot, a, b))}`, "k0"], [`s${opties.indexOf(somTekst(tot, b, a))}`, "k1"]]), goedIds: ["h"], actief: false });
+        await l.zeg(`${g(tot)} = ${g(a)} + ${g(b)}.`, `En ${g(tot)} = ${g(b)} + ${g(a)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -593,6 +363,7 @@ function verbindVraag(huisjes: Huis[], volgorde: number[]): Vraag {
     const klaar: number[] = [];
     let huidig: S2 | null = null;
     let alles = true;
+    let laatste: [string, string] | null = null;
     for (let keer = 0; keer < huisjes.length; keer++) {
       const open = huisjes.map((_, i) => i).filter((i) => !klaar.includes(i));
       const eerste = open[0];
@@ -617,7 +388,7 @@ function verbindVraag(huisjes: Huis[], volgorde: number[]): Vraag {
           return nieuw;
         },
         isGoed: ([x, y]) => x.slice(1) === y.slice(1),
-        noem: () => "Die twee",
+        noem: () => "Die 2",
         goed: async ([x]) => {
           const h = Number(x.slice(1));
           klaar.push(h);
@@ -627,15 +398,36 @@ function verbindVraag(huisjes: Huis[], volgorde: number[]): Vraag {
           }
           goedBeeld(l, st, { goedIds: [`h${h}`] });
           const [tt, aa, bb] = huisjes[h];
-          await l.zeg(`Ja! ${g(tt)} = ${g(aa)} + ${g(bb)}.`);
+          await l.zeg(bevestig());
           zet(l, { goedIds: [] });
         },
-        fout: () => foutBeeld(l, st),
+        fout: (x) => {
+          laatste = x;
+          foutBeeld(l, st);
+        },
         samen: async () => {
           zet(l, { licht: [`h${eerste}`] });
-          await l.zeg("Kijk naar dit huisje.", `Er staan ${g(t)}, ${g(a)} en ${g(b)} in.`, "Maak met die drie getallen een som.", "Zoek die som.");
+          await l.zeg("Kijk naar dit huisje.", `Er staan ${g(t)}, ${g(a)} en ${g(b)} in.`, "Met die 3 getallen maak je 1 som.");
         },
-        tip: [`Zoek de som met ${g(t)}, ${g(a)} en ${g(b)}.`],
+        tip: [`De goede som heeft de getallen ${g(t)}, ${g(a)} en ${g(b)}.`],
+        reactie: ([x, y]) => {
+          const [tt, aa, bb] = huisjes[Number(x.slice(1))];
+          const [t2, a2, b2] = huisjes[Number(y.slice(1))];
+          return [`In dat huisje staan ${g(t2)}, ${g(a2)} en ${g(b2)}.`, `${g(tt)} = ${g(aa)} + ${g(bb)} past daar niet bij.`];
+        },
+        toonAntwoord: async () => {
+          /* De som die het kind probeerde, gaat naar zijn eigen huisje; de volgende ronde gaat met de rest door. */
+          const h = laatste ? Number(laatste[0].slice(1)) : eerste;
+          if (!klaar.includes(h)) klaar.push(h);
+          if (huidig) {
+            huidig = { ...huidig, vast: klaar.map((q) => [`s${q}`, `d${q}`] as [string, string]) };
+            zet(l, { s2: huidig });
+          }
+          zet(l, { goedIds: [`h${h}`] });
+          const [tt, aa, bb] = huisjes[h];
+          await l.zeg(`Zo hoort het: ${g(tt)} = ${g(aa)} + ${g(bb)}.`);
+          zet(l, { goedIds: [] });
+        },
       });
       if (!meteen) alles = false;
     }
@@ -686,7 +478,7 @@ function bronIds(n: number, bron: Bron) {
 async function verdeel(l: Lesgids, n: number, k: number, vw: string, bron: Bron) {
   const m = n / k;
   const ids = bronIds(n, bron);
-  await l.zeg(`We verdelen de ${NAAM[vw][1]} één voor één.`, "Elk bakje krijgt er steeds één bij.");
+  await l.zeg(`We verdelen de ${NAAM[vw][1]} 1 voor 1.`, "Elk bakje krijgt er steeds 1 bij.");
   const uit: string[] = [];
   const toonIds: string[] = [];
   for (let r = 0; r < m; r++) {
@@ -698,7 +490,7 @@ async function verdeel(l: Lesgids, n: number, k: number, vw: string, bron: Bron)
     }
   }
   zet(l, { licht: [] });
-  await l.zeg("Alles is verdeeld.", "Tel wat er in één bakje ligt.");
+  await l.zeg("Alles is verdeeld.", "Tel wat er in 1 bakje ligt.");
 }
 
 const herhaal = (m: number, k: number) => Array.from({ length: k }, () => g(m)).join(" + ");
@@ -711,10 +503,11 @@ function delenVraag(n: number, k: number, vw: string, bron: Bron, keuzes: number
     const delen = verdeelDelen(n, k, vw, bron);
     const beeld: Beeld = { id: `delen-${n}-${k}-${vw}-s2`, delen };
     const gat: S2Doel = { id: "k", x: 490, y: 548, b: 200, h: 112, label: "?" };
+    const tegels = (vast?: [string, string][]) => s2Spec(keuzes.map((x, i) => s2Getal(x, i, keuzes.length, 655, x === m ? "k" : undefined)), [gat], vast);
     return squlaVraag<number>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec(keuzes.map((x, i) => s2Getal(x, i, keuzes.length, 655, x === m ? "k" : undefined)), [gat]), actief: false });
+        zet(l, { s2: tegels(), actief: false });
       },
       vraag: [`Er zijn ${aantal(n, vw)}.`, `Verdeel ze eerlijk over de ${g(k)} bakjes.`, `Hoeveel ${veel} komen er in elk bakje?`, "Sleep het goede getal naar het vak."],
       antwoord: async () => {
@@ -725,12 +518,18 @@ function delenVraag(n: number, k: number, vw: string, bron: Bron, keuzes: number
       noem: (x) => g(x),
       goed: async () => {
         goedBeeld(l, st, { toon: alleIn(k, m), uit: bronIds(n, bron) });
-        await l.zeg(`Ja! Elk bakje krijgt ${aantal(m, vw)}.`, `${herhaal(m, k)} = ${g(n)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
       samen: () => verdeel(l, n, k, vw, bron),
-      tip: [`Tel de ${veel} in één bakje.`],
+      tip: [`Tel de ${veel} in 1 bakje.`],
+      reactie: (x) => [`${herhaal(x, k)} = ${g(x * k)}.`, `Dat is niet ${g(n)}.`],
+      toonAntwoord: async () => {
+        zet(l, { s2: tegels([[`s${keuzes.indexOf(m)}`, "k"]]), toon: alleIn(k, m), uit: bronIds(n, bron), actief: false });
+        await l.zeg(`Elk bakje krijgt ${aantal(m, vw)}.`, `${herhaal(m, k)} = ${g(n)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -753,7 +552,12 @@ const telBakjes = (tel: number[]) => {
 
 /** De knikkers rollen één voor één over de bakjes (uitleg en hulp). */
 async function rolOver(l: Lesgids, s: Sleep) {
-  await l.zeg(`We verdelen de ${NAAM[s.vw ?? "knikker"][1]} één voor één.`, "Elk bakje krijgt er steeds één bij.");
+  /* Het rondje (BOUWREGELS 7.8): eerst om de knikkers, dan om de bakjes, weg zodra het rollen begint. */
+  zet(l, { licht: ["sl.knikkers"] });
+  await l.zeg(`We verdelen de ${NAAM[s.vw ?? "knikker"][1]} 1 voor 1.`);
+  zet(l, { licht: ["sl.bakjes"] });
+  await l.zeg("Elk bakje krijgt er steeds 1 bij.");
+  zet(l, { licht: [] });
   for (let t = 1; t <= s.n; t++) {
     zet(l, { sleep: { ...s, auto: t } });
     await l.wacht(450);
@@ -770,7 +574,7 @@ function sleepVraag(n: number, k: number, vw = "knikker"): Vraag {
         const s: Sleep = { n, k, nr: ++sleepNr, ...(vw === "knikker" ? {} : { vw }) };
         if (!toon(l, st, beeld, { sleep: s })) zet(l, { sleep: s, actief: false });
       },
-      vraag: [`Er zijn ${aantal(n, vw)}.`, `Sleep ze eerlijk over de ${g(k)} bakjes.`],
+      vraag: [`Er zijn ${aantal(n, vw)}.`, `Verdeel ze over de ${g(k)} bakjes. Zorg dat in elk bakje evenveel ligt.`],
       antwoord: async () => {
         zet(l, { actief: true });
         /* Wachten tot alle knikkers in een bakje liggen; dan verschijnt het vinkje. Haalt het kind er weer een weg, dan verdwijnt het. */
@@ -793,7 +597,7 @@ function sleepVraag(n: number, k: number, vw = "knikker"): Vraag {
       noem: (x) => telBakjes(x),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg(`Ja! Elk bakje krijgt evenveel ${NAAM[vw][1]}.`, `${somBakjes(eerlijk)} = ${g(n)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -802,9 +606,17 @@ function sleepVraag(n: number, k: number, vw = "knikker"): Vraag {
         zet(l, { sleep: s, actief: false });
         await l.wacht(500);
         await rolOver(l, s);
-        await l.zeg("Alles is verdeeld.", "Tel wat er in één bakje ligt.");
+        await l.zeg("Alles is verdeeld.");
+        zet(l, { licht: ["sl.bakje"] });
+        await l.zeg("Tel wat er in 1 bakje ligt.");
+        zet(l, { licht: [] });
       },
-      tip: [`Tel de ${NAAM[vw][1]} in elk bakje.`, "Liggen er in elk bakje evenveel?"],
+      tip: [`Tel de ${NAAM[vw][1]} in elk bakje.`, "Kijk of er in elk bakje evenveel liggen."],
+      reactie: (x) => [`In de bakjes ${x.length === 1 ? "ligt" : "liggen"} ${telBakjes(x)}.`, "Verplaats er een paar, tot elk bakje evenveel heeft."],
+      toonAntwoord: async () => {
+        await l.zeg(`Elk bakje krijgt ${aantal(m, vw)}.`, `${somBakjes(eerlijk)} = ${g(n)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -826,10 +638,11 @@ function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
     const goedId = `r${rijen.indexOf(m)}`;
     const beeld: Beeld = { id: `potlood-${n}-${k}`, delen };
     const doelen: S2Doel[] = rijen.map((_, r) => ({ id: `r${r}`, x: 490, y: Y[r], b: k * 200 + 6, h: 218, snap: { x: sterX, y: Y[r] } }));
+    const sterSpec = (vast?: [string, string][]) => s2Spec([{ id: "ster", kleur: "#ffc21a", vorm: "ster", x: sterX, y: 240, doel: goedId }], doelen, vast);
     return squlaVraag<string>(l, {
       toon: () => {
         toon(l, st, beeld);
-        zet(l, { s2: s2Spec([{ id: "ster", kleur: "#ffc21a", vorm: "ster", x: sterX, y: 240, doel: goedId }], doelen), actief: false });
+        zet(l, { s2: sterSpec(), actief: false });
       },
       vraag: [`Waar zijn ${g(n)} potloden eerlijk verdeeld?`, `Ze staan in ${g(k)} bekers.`, "Sleep de ster naar de goede rij."],
       antwoord: async () => (await s2Wacht(l, 1))[0][1],
@@ -837,7 +650,7 @@ function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
       noem: () => "Die rij",
       goed: async () => {
         goedBeeld(l, st, { goedIds: [goedId] });
-        await l.zeg(`Ja! In elke beker staan ${aantal(m, "potlood")}.`, `${herhaal(m, k)} = ${g(n)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -848,9 +661,18 @@ function potlodenVraag(n: number, k: number, rijen: number[]): Vraag {
           await l.wacht(1500);
         }
         zet(l, { licht: [] });
-        await l.zeg(`In welke rij zijn het er ${g(n)}?`);
+        await l.zeg(`Kijk in welke rij het er ${g(n)} zijn.`);
       },
-      tip: [`Tel alle potloden in een rij.`, `Zijn het er ${g(n)}?`],
+      tip: [`Tel alle potloden in een rij.`, `Kijk of het er ${g(n)} zijn.`],
+      reactie: (x) => {
+        const p = rijen[Number(x.slice(1))];
+        return [`In die rij staan ${aantal(p, "potlood")} in elke beker.`, `${herhaal(p, k)} = ${g(p * k)}.`, `Dat is niet ${g(n)}.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { s2: sterSpec([["ster", goedId]]), goedIds: [goedId], licht: [], actief: false });
+        await l.zeg(`In elke beker staan ${aantal(m, "potlood")}.`, `${herhaal(m, k)} = ${g(n)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -866,9 +688,6 @@ let s1Nr = 0;
 /** Verandert bij elk nieuw beeld: een lopende animatie (de machine) stopt dan vanzelf. */
 let s1Gen = 0;
 const s1Nieuw = <T extends object>(s: T) => ({ ...s, nr: ++s1Nr });
-
-/* De oude tik-versies van deze vragen blijven bewaard (HARDE REGEL 1: niets verdwijnt); de lessen gebruiken nu de sleep-versies (s1). */
-void [huisVraag, tienvakVraag, parenVraag, machineVraag, shirtVraag, paalVraag];
 
 /** Beeld + sleepspel neerzetten; bij "nog een keer" (zelfde beeld) alleen het spel opnieuw. */
 function s1Zet(l: Lesgids, st: Stand, beeld: Beeld, spec: S1Spec) {
@@ -949,7 +768,7 @@ function s1HuisVraag(tot: number, deel: number, vw = "pion", o: { zak?: boolean;
       noem: (x) => s1TelTwee(x.tel),
       goed: async () => {
         goedBeeld(l, st, { beeld: b.beeld(true) });
-        await l.zeg(zak ? `Ja! In de zak ${rest === 1 ? "zit" : "zitten"} ${aantal(rest, vw, KB)}.` : "Ja!", `${g(tot)} kun je splitsen in ${g(deel, KA)} en ${g(rest, KB)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -970,6 +789,15 @@ function s1HuisVraag(tot: number, deel: number, vw = "pion", o: { zak?: boolean;
         await l.zeg(zak ? `De andere ${b.w} gaan in de zak.` : "De andere gaan naar het oranje vak.", "Tel ze maar.");
       },
       tip: [`Sleep eerst ${g(deel, KA)} naar het paarse vak.`, zak ? "De andere gaan in de zak." : "De andere gaan naar het oranje vak."],
+      reactie: (x) => [
+        x.tel[0] === rest && deel !== rest ? "Je hebt de 2 vakken omgedraaid." : `In het paarse vak ${x.tel[0] === 1 ? "ligt" : "liggen"} er ${g(x.tel[0])}.`,
+        verschilZin(x.tel[0], deel),
+      ],
+      toonAntwoord: async () => {
+        zet(l, { beeld: b.beeld(true) });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(deel, KA)} en ${g(rest, KB)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -1010,7 +838,7 @@ function s1ShirtVraag(tot: number, a: number): Vraag {
       noem: (x) => s1TelTwee(x.tel),
       goed: async () => {
         goedBeeld(l, st, { beeld: beeld(true) });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -1027,6 +855,15 @@ function s1ShirtVraag(tot: number, a: number): Vraag {
         await l.zeg("De andere shirts zijn oranje.", "Tel ze maar.");
       },
       tip: [`Sleep eerst ${g(a, KA)} shirts naar het paarse vak.`, "De andere shirts gaan naar het oranje vak."],
+      reactie: (x) => [
+        x.tel[0] === rest && a !== rest ? "Je hebt de 2 vakken omgedraaid." : `In het paarse vak ${x.tel[0] === 1 ? "ligt" : "liggen"} er ${g(x.tel[0])}.`,
+        verschilZin(x.tel[0], a),
+      ],
+      toonAntwoord: async () => {
+        zet(l, { beeld: beeld(true) });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -1068,7 +905,7 @@ function s1PaalVraag(tot: number, a: number, keuzes: number[], ballen: boolean):
       noem: (x) => g(x.waarden[0][0]),
       goed: async () => {
         goedBeeld(l, st, { goedIds: ["paal"] });
-        await l.zeg("Ja!", `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -1076,7 +913,17 @@ function s1PaalVraag(tot: number, a: number, keuzes: number[], ballen: boolean):
         zet(l, { s1: null });
         await staafUitleg(l, st, tot, a);
       },
-      tip: [`${g(tot)} is ${g(a, KA)} en nog hoeveel?`],
+      tip: [`${g(tot)} is ${g(a, KA)} en nog een deel.`],
+      reactie: (x) => {
+        const c = x.waarden[0][0];
+        if (c === a) return [`${g(a, KA)} staat al in de splitspaal.`, `Er mist een ander getal: samen moet het ${g(tot)} zijn.`];
+        return [`${g(a, KA)} en ${g(c, KB)} is samen ${g(a + c)}.`, `Dat moet ${g(tot)} zijn.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { beeld: { ...beeld, delen: beeld.delen.map((d) => (d.s === "paal" ? { ...d, rechts: String(rest) } : d)) }, goedIds: ["paal"] });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(rest, KB)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -1154,7 +1001,7 @@ function s1MachineVraag(a: number, b: number, opties: Huis[], stippen: boolean):
       },
       goed: async () => {
         goedBeeld(l, st, { goedIds: [goedId] });
-        await l.zeg(`Ja! ${aantal(a, "tennisbal", KA)} en ${aantal(b, "tennisbal", KB)}.`, `${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -1172,9 +1019,20 @@ function s1MachineVraag(a: number, b: number, opties: Huis[], stippen: boolean):
           zet(l, { s1: { ...sp, auto: t } });
           await l.wacht(420);
         }
-        await l.zeg("Tel nu de ballen in dat vak.", "Hoeveel zijn het samen?", "Zoek het huisje met die drie getallen.");
+        await l.zeg("Tel nu de ballen in dat vak.", "Samen zijn dat alle ballen.");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Kijk welke getallen je hebt geteld. Zoek het huisje waar die getallen in staan.");
       },
-      tip: ["Tel de ballen in de twee vakken.", "Zoek het huisje met die twee getallen."],
+      tip: ["Tel de ballen in de 2 vakken.", "Het goede huisje heeft die 2 getallen."],
+      reactie: (x) => {
+        const [t, p, q] = opties[Number(x.slice(1))];
+        if (t !== tot) return [`Dat huisje is voor ${g(t)} ballen.`, `Hier zijn het er ${g(tot)}.`];
+        return [`${g(t)} klopt, maar ${g(p)} en ${g(q)} niet.`, "Tel de ballen in elk vak apart."];
+      },
+      toonAntwoord: async () => {
+        zet(l, { goedIds: [goedId], actief: false });
+        await l.zeg(`${g(tot)} kun je splitsen in ${g(a, KA)} en ${g(b, KB)}.`);
+        await l.wacht(300);
+      },
       testAntwoord: goedId,
     });
   };
@@ -1210,7 +1068,7 @@ function s1ParenVraag(paren: [number, number][]): Vraag {
       noem: (x) => x.tel.map((c) => g(c, KB)).join(", "),
       goed: async () => {
         goedBeeld(l, st);
-        await l.zeg("Ja!", ...paren.map(([t, d]) => `${g(t)} is ${g(d, KA)} en ${g(t - d, KB)}.`));
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -1221,16 +1079,25 @@ function s1ParenVraag(paren: [number, number][]): Vraag {
         let t = 0;
         for (let h = 0; h < paren.length; h++) {
           zet(l, { licht: [`h${h}`] });
-          await l.zeg(`Kijk naar dit huisje: ${g(paren[h][0])} is ${g(paren[h][1], KA)} en nog hoeveel?`);
+          await l.zeg(`Kijk naar dit huisje: ${g(paren[h][0])} is ${g(paren[h][1], KA)} en nog een deel.`);
           for (let k = 0; k < rests[h]; k++) {
             zet(l, { s1: { ...sp, auto: ++t } });
             await l.wacht(420);
           }
         }
         zet(l, { licht: [] });
-        await l.zeg("Tel de ballen in elk lege stuk.");
+        await l.zeg("Tel de ballen in elk leeg stuk.");
       },
-      tip: [`${g(paren[0][0])} is ${g(paren[0][1], KA)} en nog hoeveel?`, "Sleep zoveel ballen in het lege stuk."],
+      tip: [`${g(paren[0][0])} is ${g(paren[0][1], KA)} en nog een deel.`, "Sleep zoveel ballen in het lege stuk."],
+      reactie: (x) => {
+        const i = Math.max(0, x.tel.findIndex((c, j) => c !== rests[j]));
+        const [t, d] = paren[i];
+        return [`Bij het huisje met ${g(t)} ${x.tel[i] > rests[i] ? "heb je er te veel neergelegd" : "heb je er te weinig neergelegd"}.`, `Het lege stuk is wat er nog mist na ${g(d, KA)}: tel het aan tot ${g(t)}.`];
+      },
+      toonAntwoord: async () => {
+        await l.zeg(...paren.map(([t, d]) => `${g(t)} is ${g(d, KA)} en ${g(t - d, KB)}.`));
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -1269,7 +1136,7 @@ function s1TienvakVraag(zicht: number): Vraag {
       noem: (x) => (x.tel[0] === 1 ? `${g(1, KB)} bal` : `${g(x.tel[0], KB)} ballen`),
       goed: async () => {
         goedBeeld(l, st, { uit: ["doos-doek"], goedIds: onder, beeld: beeld(true) });
-        await l.zeg("Ja!", `${g(10)} kun je splitsen in ${g(zicht, KA)} en ${g(rest, KB)}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: () => foutBeeld(l, st),
@@ -1277,12 +1144,18 @@ function s1TienvakVraag(zicht: number): Vraag {
         zet(l, { licht: Array.from({ length: zicht }, (_, i) => `doos.${i}`) });
         await l.zeg(`Deze ${aantal(zicht, "pingpongbal", KA)} kun je zien.`);
         zet(l, { licht: ["doos"] });
-        await l.zeg(`In de doos passen er ${g(10)}: twee rijen van ${g(5)}.`);
+        await l.zeg(`In de doos passen er ${g(10)}: 2 rijen van ${g(5)}.`);
         zet(l, { licht: onder, uit: ["doos-doek"] });
         await l.zeg("Ik til de doek even op.", rest === 1 ? "Kijk naar de oranje pingpongbal die eronder ligt." : "Tel de oranje pingpongballen die eronder liggen.");
         zet(l, { licht: [], uit: [] });
       },
       tip: ["Tel de lege plekken in de doos.", "Zoveel ballen leg je in het vak."],
+      reactie: (x) => [`In het vak ${x.tel[0] === 1 ? "ligt" : "liggen"} er ${g(x.tel[0], KB)}.`, x.tel[0] > rest ? "Onder de doek ligt minder dan dat." : "Onder de doek ligt meer dan dat.", "Tel de lege plekken in de doos."],
+      toonAntwoord: async () => {
+        zet(l, { uit: ["doos-doek"], goedIds: onder, beeld: beeld(true) });
+        await l.zeg(`${g(10)} kun je splitsen in ${g(zicht, KA)} en ${g(rest, KB)}.`);
+        await l.wacht(300);
+      },
     });
   };
 }
@@ -1309,7 +1182,7 @@ const splitsen1a = les({
   kaart: KaartSplitsen,
   voorwerpen: ["pion", "voetbal", "zak", "pingpongbal", "doek", "tennisbal"],
   begin: S1_BEGIN,
-  welkom: ["Splitsen is een getal in twee stukken verdelen.", "Kun jij de pionnen in twee vakken slepen?"],
+  welkom: ["Splitsen is een getal in 2 stukken verdelen.", "Kun jij de pionnen in 2 vakken slepen?"],
   /* Het voorbeeld is de eerste vraag hieronder: 5 pionnen, 2 naar het paarse vak. */
   voorbeeld: voorbeeldVan(s1HuisVraag(5, 2)),
   /* Na Nee: hetzelfde voorbeeld; de pionnen gaan zelf één voor één naar hun vak. */
@@ -1427,7 +1300,7 @@ const splitsen2a = les({
   kaart: KaartSplitsen,
   voorwerpen: [],
   begin: S2A_BEGIN,
-  welkom: ["Een briefje van tien en vier munten.", "Welk getal mist er nog in het huisje?"],
+  welkom: ["Een briefje van 10 en 4 munten.", "Welk getal mist er nog in het huisje?"],
   /* Het voorbeeld is de eerste vraag hieronder. */
   voorbeeld: voorbeeldVan(huisGetal(14, 10, null, [4, 10, 14], true)),
   uitleg: async (l, st) => {
@@ -1435,7 +1308,9 @@ const splitsen2a = les({
     zet(l, { licht: ["briefje"] });
     await l.zeg(`Kijk: een briefje van ${g(10)} euro.`);
     zet(l, { licht: ["munten"] });
-    await l.zeg(`En ${g(3)} munten van één euro.`, `Samen is dat ${g(13)} euro.`);
+    await l.zeg(`En ${g(3)} munten van 1 euro.`);
+    zet(l, { licht: [] });
+    await l.zeg(`Samen is dat ${g(13)} euro.`);
     zet(l, { licht: ["h"] });
     await l.zeg(`${g(13)} kun je splitsen in ${g(10)} en ${g(3)}.`);
     zet(l, { licht: [] });
@@ -1459,7 +1334,7 @@ const splitsen2a = les({
     huisGetal(16, 10, null, [6, 7, 16], false),
     huisGetal(11, null, 10, [1, 10, 11], false),
   ],
-  eind: "Je kunt getallen tot twintig splitsen.",
+  eind: "Je kunt getallen tot 20 splitsen.",
 });
 
 /* ---------- Splitsen 2, level 2 ---------- */
@@ -1517,13 +1392,17 @@ const delen = les({
   kaart: KaartDelen,
   voorwerpen: ["knikker", "stuiterbal", "bakje", "potlood", "pennenbeker", "beker-leeg"],
   begin: null,
-  welkom: ["Kijk, knikkers en twee bakjes.", "Kun jij de knikkers eerlijk verdelen?"],
+  welkom: ["Kijk, knikkers en 2 bakjes.", "Kun jij de knikkers eerlijk verdelen?"],
   /* Het voorbeeld is de eerste vraag hieronder: 8 knikkers en 2 bakjes. */
   voorbeeld: voorbeeldVan(sleepVraag(8, 2)),
   /* Na Nee: hetzelfde voorbeeld (8 knikkers, 2 bakjes); de knikkers rollen zelf één voor één over de bakjes. */
   uitleg: async (l) => {
     await rolOver(l, { n: 8, k: 2, nr: sleepNr });
-    await l.zeg("Alles is verdeeld.", "In elk bakje liggen evenveel knikkers.", `${somBakjes([4, 4])} = ${g(8)}.`);
+    await l.zeg("Alles is verdeeld.");
+    zet(l, { licht: ["sl.bakjes"] });
+    await l.zeg("In elk bakje liggen evenveel knikkers.");
+    zet(l, { licht: [] });
+    await l.zeg(`${somBakjes([4, 4])} = ${g(8)}.`);
     await l.verder();
   },
   /* Zoals Squla: eerst verdelen (nu zelf slepen), dan een getal kiezen, typen, weer verdelen, de potloden en een getal. Totaal 6–16, 2–5 bakjes, uitkomst 2–5. */

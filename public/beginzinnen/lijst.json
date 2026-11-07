@@ -1,263 +1,23 @@
 [
   {
-    "id": "squla-tellen-fruit-1",
+    "id": "squla-huisnummers",
     "onderwerp": "Tellen",
-    "titel": "Fruit tellen",
-    "uitleg": "Telt fruit dat in rijtjes van vijf ligt en kiest uit drie getallen hoeveel het er zijn.",
+    "titel": "Huisnummers: wat komt erna?",
+    "uitleg": "Kijkt naar een straat met huizen en kiest, typt of sleept het huisnummer dat erna komt.",
+    "hulpmiddel": "de straat met huizen",
+    "zin1": "In de straat zoek je het volgende huisnummer door te kiezen, te typen of te slepen.",
+    "zin2": "Kun je verder tellen vanaf een huisnummer?",
+    "huidig": "Hoi! Kijk, een straat met huizen. Elk huis heeft een nummer. Welk nummer komt erna? Kun je dit al?"
+  },
+  {
+    "id": "squla-rekentaal",
+    "titel": "Groot en klein, vol en leeg",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
     "hulpmiddel": null,
-    "zin1": "In deze les tel je fruit dat in rijtjes ligt en kies je het goede getal.",
-    "zin2": "Ken jij dit al?",
-    "huidig": "De appels liggen netjes in rijtjes. Hoeveel appels zie je?"
-  },
-  {
-    "id": "squla-tellen-resultatief2-1",
-    "onderwerp": "Tellen",
-    "titel": "Hoeveel zie je?",
-    "uitleg": "Telt raketjes, sterren, planeten, satellieten en ufo's in rijen van vijf en kiest uit drie getallen hoeveel het er zijn.",
-    "hulpmiddel": null,
-    "zin1": "Zo meteen gaan we raketjes, sterren en planeten tellen en kiezen hoeveel het er zijn.",
-    "zin2": "Denk je dat je dit al kunt?",
-    "huidig": "De raketjes staan in rijen. Hoeveel raketjes zie je?"
-  },
-  {
-    "id": "squla-getallenlijn-rangschikken-1",
-    "onderwerp": "Getallenlijn",
-    "titel": "Getallen op hun plek",
-    "uitleg": "Kiest of typt het getal dat ontbreekt in een rij (lichtslinger, planeetjes, sterren), leest een vlaggetje af op de getallenlijn 0-20 en zet kaartjes op volgorde.",
-    "hulpmiddel": "de getallenlijn",
-    "zin1": "Nu gaan we met de getallenlijn en rijen getallen zoeken welk getal er ontbreekt.",
-    "zin2": "Heb je dit al eens gedaan?",
-    "huidig": "Een lichtslinger heeft lampjes met getallen. Welk getal hoort op de puntjes?"
-  },
-  {
-    "id": "squla-getallenlijn-dieren-2",
-    "onderwerp": "Getallenlijn",
-    "titel": "Dingen op de getallen (moeilijker)",
-    "uitleg": "Sleept drie getalkaartjes naar vakjes en zet ze op volgorde, van klein naar groot.",
-    "hulpmiddel": null,
-    "zin1": "Je mag getalkaartjes slepen en op volgorde zetten, van klein naar groot.",
-    "zin2": "Weet je al hoe dat moet?",
-    "huidig": "Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot."
-  },
-  {
-    "id": "squla-getallenlijn-terugtellen-1",
-    "onderwerp": "Getallenlijn",
-    "titel": "Terugtellen tot de start",
-    "uitleg": "Telt terug in een aftelrij van de raket en kiest het getal dat ontbreekt.",
-    "hulpmiddel": "de aftelrij van de raket",
-    "zin1": "Net als een raket die opstijgt, tel je terug en kies je welk getal ontbreekt.",
-    "zin2": "Kun je zelf al terugtellen?",
-    "huidig": "De raket telt af, van groot naar klein. Welk getal hoort op de puntjes?"
-  },
-  {
-    "id": "squla-klok-hoelaat-1",
-    "onderwerp": "Klok",
-    "titel": "Hoe laat is het?",
-    "uitleg": "Leest een wijzerklok af (hele uren) en kiest uit knoppen hoe laat het is.",
-    "hulpmiddel": "de klok",
-    "zin1": "Op de klok lees je de hele uren af en kies je hoe laat het is.",
-    "zin2": "Kun jij dit al?",
-    "huidig": "De bezorgbus rijdt de hele dag langs de winkels. Kijk steeds op de klok: hoe laat is het?"
-  },
-  {
-    "id": "squla-klok-klokkijken2-1",
-    "onderwerp": "Klok",
-    "titel": "Klokkijken 2",
-    "uitleg": "Kiest bij een tijd in woorden de goede wijzerklok, en leest een klok af en kiest de tijd.",
-    "hulpmiddel": "de klok",
-    "zin1": "Je zoekt bij elke tijd de goede klok, en bij elke klok de goede tijd.",
-    "zin2": "Lukt dit je al?",
-    "huidig": "Een klok en een tijd horen bij elkaar. Welke klok hoort bij 9 uur?"
-  },
-  {
-    "id": "squla-meer-minder-evenveel1-1",
-    "onderwerp": "Meer, minder, evenveel",
-    "titel": "Meer, minder, evenveel",
-    "uitleg": "Telt een groep appels (of sterren, bloemen, ballen) en kiest uit drie getallen het getal dat evenveel is.",
-    "hulpmiddel": null,
-    "zin1": "We tellen eerst groepen appels en andere dingen en kiezen dan het getal dat erbij past.",
-    "zin2": "Kun je al goed tellen?",
-    "huidig": "De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het?"
-  },
-  {
-    "id": "squla-meer-minder-evenveel3-1",
-    "onderwerp": "Meer, minder, evenveel",
-    "titel": "Meer dan, minder dan",
-    "uitleg": "Zet potjes met een getal op volgorde, van meer naar minder, en tikt op het kaartje met meer, minder of evenveel dan een getal.",
-    "hulpmiddel": null,
-    "zin1": "Straks zet je potjes met getallen op volgorde en zoek je wat meer of minder is.",
-    "zin2": "Vind je dit al makkelijk?",
-    "huidig": "Drie potjes met een getal. Zet de potjes op volgorde, van meer naar minder."
-  },
-  {
-    "id": "squla-meten-pizza-1",
-    "onderwerp": "Meten",
-    "titel": "Pizza's vergelijken",
-    "uitleg": "Tikt op de grootste of kleinste pizza of het grootste of kleinste ijsje en zet ze op volgorde, van klein naar groot.",
-    "hulpmiddel": null,
-    "zin1": "Je gaat pizza's en ijsjes vergelijken en op volgorde zetten, van klein naar groot.",
-    "zin2": "Ben je hier al goed in?",
-    "huidig": "Deze pizza's zijn niet even groot. Welke pizza is het grootst?"
-  },
-  {
-    "id": "squla-meten-oppervlakte-1",
-    "onderwerp": "Meten",
-    "titel": "Hoe groot is het?",
-    "uitleg": "Vergelijkt schilderijen, tafels en muurtjes, telt blaadjes en hokjes en kiest wat groot of klein is of even groot.",
-    "hulpmiddel": null,
-    "zin1": "Je kijkt welk ding groot of klein is en telt hokjes om het te meten.",
-    "zin2": "Weet jij hoe dit werkt?",
-    "huidig": "Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein?"
-  },
-  {
-    "id": "squla-geld-geldmachine-1",
-    "onderwerp": "Geld",
-    "titel": "Munten en briefjes",
-    "uitleg": "Herkent munten en briefjes en tikt op het geld dat bij de vraag past.",
-    "hulpmiddel": "munten en briefjes",
-    "zin1": "Dadelijk zie je munten en briefjes en tik je op het geld dat in de vraag staat.",
-    "zin2": "Ken je al alle munten en briefjes?",
-    "huidig": "Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen."
-  },
-  {
-    "id": "squla-geld-zakgeld-1",
-    "onderwerp": "Geld",
-    "titel": "Zakgeld sparen",
-    "uitleg": "Telt munten en briefjes bij elkaar en kiest waar het goede bedrag ligt of hoeveel er nog bij moet.",
-    "hulpmiddel": "munten en briefjes",
-    "zin1": "Met munten en briefjes tel je geld bij elkaar, zoals bij het sparen van zakgeld.",
-    "zin2": "Denk je dat dit lukt?",
-    "huidig": "Voor elk klusje krijg je 2 euro. Hoeveel is dat bij elkaar?"
-  },
-  {
-    "id": "squla-vormen-patronen-1",
-    "onderwerp": "Vormen",
-    "titel": "Patronen",
-    "uitleg": "Maakt patronen van gekleurde kralen af (welke kraal komt daarna), maakt een ketting langer en zoekt wat bij de pijl hoort.",
-    "hulpmiddel": "kralen",
-    "zin1": "Met kralen maken we een patroon af: je kiest welke kraal er daarna komt.",
-    "zin2": "Weet je al wat een patroon is?",
-    "huidig": "De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?"
-  },
-  {
-    "id": "squla-vormen-kleuren-1",
-    "onderwerp": "Vormen",
-    "titel": "Vormen en kleuren",
-    "uitleg": "Sleept de stukjes van een kleurig plaatje (16, 9 of 4 stukjes) naar hun plek en maakt zo een puzzel.",
-    "hulpmiddel": "puzzelstukjes",
-    "zin1": "Hier gaan we een kleurig plaatje puzzelen door de stukjes op hun plek te slepen.",
-    "zin2": "Heb je hier al mee geoefend?",
-    "huidig": "Een kleurrijk plaatje valt in zestien stukjes. Maak de puzzel."
-  },
-  {
-    "id": "squla-splits-splitsen1-1",
-    "onderwerp": "Splitsen",
-    "titel": "Splitsen tot 10",
-    "uitleg": "Splitst een getal tot 10 door pionnen over twee vakken te slepen.",
-    "hulpmiddel": "twee vakken",
-    "zin1": "Tijdens deze les splits je een getal door pionnen over twee vakken te slepen.",
-    "zin2": "Kun je dit al zonder hulp?",
-    "huidig": "Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen?"
-  },
-  {
-    "id": "squla-splits-delen-1",
-    "onderwerp": "Splitsen",
-    "titel": "Eerlijk verdelen",
-    "uitleg": "Sleept knikkers (en potloden) eerlijk over twee tot vijf bakjes, en kiest hoeveel er in elk bakje komen.",
-    "hulpmiddel": "bakjes",
-    "zin1": "We gaan ontdekken hoe je knikkers eerlijk verdeelt door ze naar bakjes te slepen.",
-    "zin2": "Heb je dit weleens geprobeerd?",
-    "huidig": "Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen?"
-  },
-  {
-    "id": "squla-piraat-2",
-    "onderwerp": "Rekenen met getallen",
-    "titel": "Schattenjacht: minsommen",
-    "uitleg": "Maakt minsommen met sterren, diamanten en parels: sleept wat er overblijft naar het vak, en lost een raadsel op. Elk goed antwoord geeft een letter van de schatkaart.",
-    "hulpmiddel": "de schatkaart",
-    "zin1": "Op schattenjacht maak je minsommen: je sleept wat er overblijft naar het vak.",
-    "zin2": "Ken je dit al een beetje?",
-    "huidig": "Nu reken je met min: er gaat iets af. Ik heb 6 sterren in mijn tas en er valt er 1 uit. Sleep de sterren die er nog zijn naar het vak."
-  },
-  {
-    "id": "squla-rekenmix-mix1-1",
-    "onderwerp": "Rekenmix",
-    "titel": "Rekenmix 1",
-    "uitleg": "Telt appels, ballen, potloden, auto's en bloemen (door elkaar, in rijen of in paren) en kiest uit drie getallen hoeveel het er zijn.",
-    "hulpmiddel": null,
-    "zin1": "Dit keer tel je appels, ballen en potloden en kies je het goede getal.",
-    "zin2": "Is dit voor jou al gemakkelijk?",
-    "huidig": "Er liggen appels door elkaar. Tel de appels. Hoeveel zijn het er?"
-  },
-  {
-    "id": "squla-rekenmix-mix3-2",
-    "onderwerp": "Rekenmix",
-    "titel": "Rekenmix 3 (moeilijker)",
-    "uitleg": "Kijkt naar een rij van vijf dingen en kiest welk ding op een bepaalde plek staat (eerste, tweede, derde, vierde of vijfde).",
-    "hulpmiddel": null,
-    "zin1": "Je kijkt naar een rij en kiest welk ding op de eerste, tweede of derde plek staat.",
-    "zin2": "Snap je dit al?",
-    "huidig": "Vijf dingen staan in een rij. Wat staat als eerste in de rij?"
-  },
-  {
-    "id": "squla-tijd-dagen-1",
-    "onderwerp": "Tijd",
-    "titel": "Dagen van de week",
-    "uitleg": "Tikt op de goede wagon van de weektrein (elke wagon is een dag) en kiest welke dag eerst, laatst of erna komt.",
-    "hulpmiddel": "de weektrein",
-    "zin1": "We stappen in de weektrein en kiezen de goede dag van de week.",
-    "zin2": "Zou je dit al kunnen?",
-    "huidig": "De weektrein heeft zeven wagons. Wat is de eerste dag van de week?"
-  },
-  {
-    "id": "squla-tijd-kalender-1",
-    "onderwerp": "Tijd",
-    "titel": "De kalender",
-    "uitleg": "Kijkt naar de dagkalender, weekkalender en maandkalender en kiest welke kalender past en welk getal in een vakje staat.",
-    "hulpmiddel": "de kalender",
-    "zin1": "Met de kalender zoek je welke kalender bij de vraag past en welk getal in een vakje staat.",
-    "zin2": "Lees jij al weleens op een kalender?",
-    "huidig": "Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren?"
-  },
-  {
-    "id": "squla-plus-bakkerij-1",
-    "onderwerp": "Plussommen",
-    "titel": "Plussommen in de bakkerij",
-    "uitleg": "Telt taartjes, broden en koekjes bij elkaar (tot 10), kiest de uitkomst of de som en verbindt sommen met uitkomsten.",
-    "hulpmiddel": null,
-    "zin1": "In de bakkerij tel je taartjes en broden bij elkaar en kies je de uitkomst.",
-    "zin2": "Heb je dit al geleerd?",
-    "huidig": "In de bakkerij liggen taartjes. Hoeveel taartjes zijn het samen?"
-  },
-  {
-    "id": "squla-plus-bus1-1",
-    "onderwerp": "Plussommen",
-    "titel": "Bussommen",
-    "uitleg": "Ziet pakjes in de bezorgbus en pakjes die erbij komen, en typt hoeveel pakjes er nu in de bus liggen.",
-    "hulpmiddel": "de bezorgbus",
-    "zin1": "Er komen pakjes bij in de bezorgbus en jij typt hoeveel pakjes er nu in liggen.",
-    "zin2": "Weet je hoe je dit doet?",
-    "huidig": "In de bus liggen 2 pakjes en er komt er 1 bij. Hoeveel pakjes liggen er nu in de bus?"
-  },
-  {
-    "id": "squla-min-machine-1",
-    "onderwerp": "Minsommen",
-    "titel": "Minsommen: hoeveel over?",
-    "uitleg": "Ziet blokjes in de min-machine die er een paar afhaalt (en later sommen op een bord en bij de disco) en kiest uit drie getallen hoeveel er overblijven.",
-    "hulpmiddel": "de min-machine",
-    "zin1": "Met de min-machine ga je aftrekken: jij kiest hoeveel blokjes er overblijven.",
-    "zin2": "Heb je al eens min gerekend?",
-    "huidig": "Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit?"
-  },
-  {
-    "id": "squla-min-ruimte-1",
-    "onderwerp": "Minsommen",
-    "titel": "Minsommen in de ruimte",
-    "uitleg": "Ziet ballonnen, zeepbellen of raketjes die wegvliegen en kiest hoeveel er overblijven (ook: welke som past, disco, verbinden).",
-    "hulpmiddel": null,
-    "zin1": "Kijk mee hoe ballonnen en raketjes wegvliegen; jij kiest hoeveel er overblijven.",
-    "zin2": "Is dit al een makkie voor je?",
-    "huidig": "Er zweven 7 ballonnen in de lucht en er vliegen er 4 weg. Hoeveel ballonnen blijven er over?"
+    "huidig": "",
+    "zin1": "In deze les leer je woorden zoals groot en klein. Je kijkt naar de plaatjes en tikt op wat ik vraag.",
+    "zin2": "Weet jij al wat die woorden betekenen?"
   },
   {
     "id": "squla-dagen-van-de-week",
@@ -265,29 +25,339 @@
     "titel": "Dagen van de week",
     "uitleg": "Tikt op de goede wagon van de weektrein en kiest welke dag erna, ervoor, gisteren, morgen of in het weekend komt.",
     "hulpmiddel": "de weektrein",
-    "zin1": "Aan boord van de weektrein tik je de dag aan die ervoor of erna komt.",
-    "zin2": "Ken je de dagen van de week al?",
+    "zin1": "Tik op de weektrein de dag aan die ervoor of erna komt en zoek de dagen van het weekend.",
+    "zin2": "Lukt het je om de juiste dag aan te wijzen?",
     "huidig": "Hoi! Kijk, daar komt de weektrein. Elke wagon is een dag van de week. Samen zijn dat de 7 dagen van de week. Ze staan altijd in deze volgorde. Kun je dit al?"
   },
   {
-    "id": "squla-huisnummers",
-    "onderwerp": "Tellen",
-    "titel": "Huisnummers: wat komt erna?",
-    "uitleg": "Kijkt naar een straat met huizen en kiest, typt of sleept het huisnummer dat erna komt.",
-    "hulpmiddel": "de straat met huizen",
-    "zin1": "Op een straat met huizen zoek je welk huisnummer er daarna komt.",
-    "zin2": "Weet je al hoe huisnummers werken?",
-    "huidig": "Hoi! Kijk, een straat met huizen. Elk huis heeft een nummer. Welk nummer komt erna? Kun je dit al?"
+    "id": "squla-vormen-patronen-1",
+    "onderwerp": "Vormen",
+    "titel": "Patronen",
+    "uitleg": "Maakt patronen van gekleurde kralen af (welke kraal komt daarna), maakt een ketting langer en zoekt wat bij de pijl hoort.",
+    "hulpmiddel": "kralen",
+    "zin1": "Maak het kralenpatroon af door te kiezen welke kraal erna komt.",
+    "zin2": "Weet je hoe dit patroon verdergaat?",
+    "huidig": "De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?"
   },
   {
-    "id": "squla-klok-digitaal-1",
-    "onderwerp": "Klok",
-    "titel": "De klok en de tijd",
-    "uitleg": "Telt de wijzers en getallen op een klok, zoekt waar nog meer een klok staat, leest de klok af en zoekt klok en tijd bij elkaar.",
-    "hulpmiddel": "de klok",
-    "zin1": "Nu kijk je naar de wijzers van de klok en zoek je waar nog meer een klok staat.",
-    "zin2": "Weet je al hoe een klok werkt?",
-    "huidig": "Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok?"
+    "id": "squla-vormen-patronen-2",
+    "titel": "Patronen (moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de rijen blokjes en maak het patroon af.",
+    "zin2": "Lukt het je om een patroon in blokjes te herkennen?"
+  },
+  {
+    "id": "squla-vormen-opruimen-1",
+    "titel": "Opruimen",
+    "onderwerp": "Vormen en figuren",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de kleding en schoenen en zoek het plaatje met alleen broeken.",
+    "zin2": "Weet je wat bij elkaar past?"
+  },
+  {
+    "id": "squla-vormen-orienteren-1",
+    "titel": "Links, rechts, boven, onder",
+    "onderwerp": "Vormen en figuren",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op de plaatjes zoek je wat links, rechts, boven of onder ligt.",
+    "zin2": "Kun je links en rechts al uit elkaar houden?"
+  },
+  {
+    "id": "squla-vormen-kleuren-1",
+    "onderwerp": "Vormen",
+    "titel": "Vormen en kleuren",
+    "uitleg": "Sleept de stukjes van een kleurig plaatje (16, 9 of 4 stukjes) naar hun plek en maakt zo een puzzel.",
+    "hulpmiddel": "puzzelstukjes",
+    "zin1": "Van losse puzzelstukjes maak je een plaatje door elk stukje naar zijn plek te slepen.",
+    "zin2": "Wil je deze puzzel zonder uitleg proberen?",
+    "huidig": "Een kleurrijk plaatje valt in zestien stukjes. Maak de puzzel."
+  },
+  {
+    "id": "squla-vormen-kleuren-2",
+    "titel": "Vormen en kleuren (moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Sleep de puzzelstukjes naar hun plek om een platte vorm te maken.",
+    "zin2": "Lukt het je om de vorm weer heel te maken?"
+  },
+  {
+    "id": "squla-vormen-kleuren-3",
+    "titel": "Vormen en kleuren (nog moeilijker)",
+    "onderwerp": "Vormen en figuren",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Je maakt puzzels van vormen zoals een bol door de stukjes op hun plek te slepen.",
+    "zin2": "Zie je hoe de stukjes in elkaar passen?"
+  },
+  {
+    "id": "squla-splits-splitsen1-1",
+    "onderwerp": "Splitsen",
+    "titel": "Splitsen tot 10",
+    "uitleg": "Splitst een getal tot 10 door pionnen over twee vakken te slepen.",
+    "hulpmiddel": "twee vakken",
+    "zin1": "Verdeel de pionnen over twee vakken om een getal te splitsen.",
+    "zin2": "Lukt het splitsen je al zonder hulp?",
+    "huidig": "Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen?"
+  },
+  {
+    "id": "squla-splits-splitsen1-2",
+    "titel": "Splitsen tot 10 (moeilijker)",
+    "onderwerp": "Splitsen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met de splitsmachine en de huisjes verdeel je getallen tot tien in twee delen.",
+    "zin2": "Weet je hoe een splitshuisje werkt?"
+  },
+  {
+    "id": "squla-splits-splitsen2-1",
+    "titel": "Splitsen tot 20",
+    "onderwerp": "Splitsen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met munten, briefjes en splitshuisjes verdeel je getallen tot twintig.",
+    "zin2": "Denk je dat je ook grotere getallen kunt splitsen?"
+  },
+  {
+    "id": "squla-splits-splitsen2-2",
+    "titel": "Splitsen tot 20 (moeilijker)",
+    "onderwerp": "Splitsen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de splitshuisjes zoek je de passende som en het ontbrekende getal.",
+    "zin2": "Herken je de som die bij een splitsing hoort?"
+  },
+  {
+    "id": "squla-splits-delen-1",
+    "onderwerp": "Splitsen",
+    "titel": "Eerlijk verdelen",
+    "uitleg": "Sleept knikkers (en potloden) eerlijk over twee tot vijf bakjes, en kiest hoeveel er in elk bakje komen.",
+    "hulpmiddel": "bakjes",
+    "zin1": "Sleep de knikkers naar de bakjes, zodat in elk bakje evenveel komt.",
+    "zin2": "Lukt het je om alles eerlijk te verdelen?",
+    "huidig": "Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen?"
+  },
+  {
+    "id": "squla-piraat-1",
+    "titel": "Schattenjacht: plussommen",
+    "onderwerp": "Rekenen met getallen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op schattenjacht tel je goudstukken en reken je uit hoeveel schatten er samen zijn.",
+    "zin2": "Tel je de schatten al zonder hulp bij elkaar?"
+  },
+  {
+    "id": "squla-piraat-2",
+    "onderwerp": "Rekenen met getallen",
+    "titel": "Schattenjacht: minsommen",
+    "uitleg": "Maakt minsommen met sterren, diamanten en parels: sleept wat er overblijft naar het vak, en lost een raadsel op. Elk goed antwoord geeft een letter van de schatkaart.",
+    "hulpmiddel": "de schatkaart",
+    "zin1": "Voor de schatkaart maak je minsommen door de overgebleven schatten naar het vak te slepen.",
+    "zin2": "Wil je de minsommen op deze schattenjacht zonder uitleg proberen?",
+    "huidig": "Nu reken je met min: er gaat iets af. Ik heb 6 sterren in mijn tas en er valt er 1 uit. Sleep de sterren die er nog zijn naar het vak."
+  },
+  {
+    "id": "squla-piraat-3",
+    "titel": "Schattenjacht: plus en min",
+    "onderwerp": "Rekenen met getallen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Voor de schatkaart reken je plussommen en minsommen uit.",
+    "zin2": "Weet je wanneer je optelt en wanneer je aftrekt?"
+  },
+  {
+    "id": "squla-tijd-dagen-1",
+    "onderwerp": "Tijd",
+    "titel": "Dagen van de week",
+    "uitleg": "Tikt op de goede wagon van de weektrein (elke wagon is een dag) en kiest welke dag eerst, laatst of erna komt.",
+    "hulpmiddel": "de weektrein",
+    "zin1": "Op de weektrein kies je welke dag eerst, laatst of erna komt.",
+    "zin2": "Ken je de volgorde van de dagen al?",
+    "huidig": "De weektrein heeft zeven wagons. Wat is de eerste dag van de week?"
+  },
+  {
+    "id": "squla-tijd-dagen-2",
+    "titel": "Dagen van de week (moeilijker)",
+    "onderwerp": "Tijd",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met de weektrein zoek je welke dag ervoor of erna komt.",
+    "zin2": "Weet je welke dagen naast elkaar staan?"
+  },
+  {
+    "id": "squla-tijd-dagen-3",
+    "titel": "Dagen van de week (nog moeilijker)",
+    "onderwerp": "Tijd",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Zet de losse dagen in de volgorde van de week.",
+    "zin2": "Lukt het jou om de week weer op volgorde te leggen?"
+  },
+  {
+    "id": "squla-tijd-kalender-1",
+    "onderwerp": "Tijd",
+    "titel": "De kalender",
+    "uitleg": "Kijkt naar de dagkalender, weekkalender en maandkalender en kiest welke kalender past en welk getal in een vakje staat.",
+    "hulpmiddel": "de kalender",
+    "zin1": "Je zoekt de juiste kalender en leest de getallen in de vakjes.",
+    "zin2": "Heb je al eens een kalender gebruikt?",
+    "huidig": "Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren?"
+  },
+  {
+    "id": "squla-tijd-kalender-2",
+    "titel": "De kalender (moeilijker)",
+    "onderwerp": "Tijd",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op de kalender zoek je datums en bekijk je wat er op een dag gebeurt.",
+    "zin2": "Lukt het je om een datum op te zoeken?"
+  },
+  {
+    "id": "squla-tijd-tijden-1",
+    "titel": "Tijden",
+    "onderwerp": "Tijd",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de plaatjes zoek je wat gisteren, vandaag of morgen gebeurt.",
+    "zin2": "Weet je wat gisteren en morgen betekenen?"
+  },
+  {
+    "id": "squla-tijd-tijden-2",
+    "titel": "Tijden (moeilijker)",
+    "onderwerp": "Tijd",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de plaatjes en bedenk wat langer of korter duurt.",
+    "zin2": "Heb je al een idee hoeveel tijd iets kost?"
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-1",
+    "onderwerp": "Getallenlijn",
+    "titel": "Getallen op hun plek",
+    "uitleg": "Kiest of typt het getal dat ontbreekt in een rij (lichtslinger, planeetjes, sterren), leest een vlaggetje af op de getallenlijn 0-20 en zet kaartjes op volgorde.",
+    "hulpmiddel": "de getallenlijn",
+    "zin1": "Met de getallenlijn en rijen getallen zoek je welk getal ontbreekt.",
+    "zin2": "Zie je welk getal in de rij ontbreekt?",
+    "huidig": "Een lichtslinger heeft lampjes met getallen. Welk getal hoort op de puntjes?"
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-2",
+    "titel": "Getallen op hun plek (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de diamanten zoek je de ontbrekende getallen in de rij.",
+    "zin2": "Lukt het je om een getallenrij af te maken?"
+  },
+  {
+    "id": "squla-getallenlijn-rangschikken-3",
+    "titel": "Getallen op hun plek (nog moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees op de getallenlijn af bij welk getal het vlaggetje staat.",
+    "zin2": "Weet je hoe de streepjes op de getallenlijn werken?"
+  },
+  {
+    "id": "squla-getallenlijn-kat-1",
+    "titel": "Het raketje op de getallenlijn",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Volg het raketje en lees af waar het op de getallenlijn staat.",
+    "zin2": "Weet jij hoe je afleest waar het raketje staat?"
+  },
+  {
+    "id": "squla-getallenlijn-kat-2",
+    "titel": "Het raketje op de getallenlijn (moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij het raketje zoek je welk getal ervoor of erna komt.",
+    "zin2": "Lukt het je om de buurgetallen te vinden?"
+  },
+  {
+    "id": "squla-getallenlijn-dieren-1",
+    "titel": "Dingen op de getallen",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Zoek uit welk getal onder de bal verstopt zit.",
+    "zin2": "Denk je dat je het verstopte getal kunt vinden?"
+  },
+  {
+    "id": "squla-getallenlijn-dieren-2",
+    "onderwerp": "Getallenlijn",
+    "titel": "Dingen op de getallen (moeilijker)",
+    "uitleg": "Sleept drie getalkaartjes naar vakjes en zet ze op volgorde, van klein naar groot.",
+    "hulpmiddel": null,
+    "zin1": "Sleep de getalkaartjes naar hun plek, van klein naar groot.",
+    "zin2": "Lukt het je om de kaartjes op volgorde te leggen?",
+    "huidig": "Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot."
+  },
+  {
+    "id": "squla-getallenlijn-dieren-3",
+    "titel": "Dingen op de getallen (nog moeilijker)",
+    "onderwerp": "Getallenlijn",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Kijk naar de getallen naast de bal en kies het getal dat eronder verstopt zit.",
+    "zin2": "Tel je al verder langs de rij om het verstopte getal te vinden?"
+  },
+  {
+    "id": "squla-getallenlijn-terugtellen-1",
+    "onderwerp": "Getallenlijn",
+    "titel": "Terugtellen tot de start",
+    "uitleg": "Telt terug in een aftelrij van de raket en kiest het getal dat ontbreekt.",
+    "hulpmiddel": "de aftelrij van de raket",
+    "zin1": "Bij de raket tel je terug en kies je het getal dat ontbreekt.",
+    "zin2": "Wil je het aftellen van de raket zonder uitleg proberen?",
+    "huidig": "De raket telt af, van groot naar klein. Welk getal hoort op de puntjes?"
+  },
+  {
+    "id": "squla-tellen-fruit-1",
+    "onderwerp": "Tellen",
+    "titel": "Fruit tellen",
+    "uitleg": "Telt fruit dat in rijtjes van vijf ligt en kiest uit drie getallen hoeveel het er zijn.",
+    "hulpmiddel": null,
+    "zin1": "Tel de appels in de rijtjes en kies het getal dat erbij hoort.",
+    "zin2": "Lukt het tellen je al?",
+    "huidig": "De appels liggen netjes in rijtjes. Hoeveel appels zie je?"
+  },
+  {
+    "id": "squla-tellen-fruit-2",
+    "titel": "Fruit tellen (moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de citroenen in rijen van vijf en zoek het juiste aantal.",
+    "zin2": "Weet je hoe de rijtjes je helpen bij het tellen?"
   },
   {
     "id": "squla-tellen-fruit-3",
@@ -295,8 +365,988 @@
     "titel": "Fruit tellen (nog moeilijker)",
     "uitleg": "Telt fruit (bananen, appels, peren e.d., 11 tot 20) dat door elkaar ligt en kiest uit drie getallen hoeveel het er zijn.",
     "hulpmiddel": null,
-    "zin1": "Het fruit ligt nu door elkaar: tel het en kies het goede getal.",
-    "zin2": "Kun jij fruit tellen als het door elkaar ligt?",
+    "zin1": "De bananen liggen door elkaar en jij telt hoeveel het er zijn.",
+    "zin2": "Wil je het tellen zonder uitleg proberen?",
     "huidig": "Nu liggen de bananen door elkaar. Hoeveel bananen zie je?"
+  },
+  {
+    "id": "squla-tellen-resultatief1-1",
+    "titel": "Tellen in rijtjes",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de auto's en bussen die om en om in rijen staan.",
+    "zin2": "Lukt het je om de auto's en bussen samen te tellen?"
+  },
+  {
+    "id": "squla-tellen-resultatief1-2",
+    "titel": "Tellen in rijtjes (moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de ballen en blokken in de rijtjes en kies hoeveel het er samen zijn.",
+    "zin2": "Tel je al tot twintig zonder hulp?"
+  },
+  {
+    "id": "squla-tellen-resultatief1-3",
+    "titel": "Tellen in rijtjes (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "De planeten staan door elkaar en jij telt hoeveel het er zijn.",
+    "zin2": "Lukt tellen jou ook als alles door elkaar ligt?"
+  },
+  {
+    "id": "squla-tellen-resultatief2-1",
+    "onderwerp": "Tellen",
+    "titel": "Hoeveel zie je?",
+    "uitleg": "Telt raketjes, sterren, planeten, satellieten en ufo's in rijen van vijf en kiest uit drie getallen hoeveel het er zijn.",
+    "hulpmiddel": null,
+    "zin1": "Tel de raketjes in de rijtjes en kies hoeveel het er zijn.",
+    "zin2": "Heb je al eens raketjes geteld?",
+    "huidig": "De raketjes staan in rijen. Hoeveel raketjes zie je?"
+  },
+  {
+    "id": "squla-tellen-resultatief2-2",
+    "titel": "Hoeveel zie je? (moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Dit keer tel je een grotere groep auto's en bussen.",
+    "zin2": "Lukt het je om ook grotere groepen te tellen?"
+  },
+  {
+    "id": "squla-tellen-resultatief2-3",
+    "titel": "Hoeveel zie je? (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de ufo's die door elkaar zweven.",
+    "zin2": "Weet je hoe je voorkomt dat je iets dubbel telt?"
+  },
+  {
+    "id": "squla-tellen-resultatief3-1",
+    "titel": "Grote groepen tellen",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de planeten die door elkaar in de ruimte zweven.",
+    "zin2": "Lukt het je al om planeten te tellen?"
+  },
+  {
+    "id": "squla-tellen-resultatief3-2",
+    "titel": "Grote groepen tellen (moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de planeten en tel hoeveel er zijn.",
+    "zin2": "Houd je bij het tellen al goed bij waar je bent?"
+  },
+  {
+    "id": "squla-tellen-resultatief3-3",
+    "titel": "Grote groepen tellen (nog moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Gebruik de rijen van tien om raketjes en sterren te tellen.",
+    "zin2": "Helpen de rijtjes van tien jou bij het tellen?"
+  },
+  {
+    "id": "squla-tellen-resultatief3-4",
+    "titel": "Grote groepen tellen (heel moeilijk)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Begin bij het getal op de zak en tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn.",
+    "zin2": "Weet je hoe je verder moet tellen?"
+  },
+  {
+    "id": "squla-tellen-telrij-1",
+    "titel": "De telrij",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "In de straat vul je de ontbrekende huisnummers aan.",
+    "zin2": "Zie je waar de ontbrekende huisnummers horen?"
+  },
+  {
+    "id": "squla-tellen-telrij-2",
+    "titel": "De telrij (moeilijker)",
+    "onderwerp": "Tellen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel verder tot honderd en zoek de ontbrekende nummers in de straat.",
+    "zin2": "Wil je de getallen tot honderd zonder uitleg aanvullen?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-1",
+    "onderwerp": "Meer, minder, evenveel",
+    "titel": "Meer, minder, evenveel",
+    "uitleg": "Telt een groep appels (of sterren, bloemen, ballen) en kiest uit drie getallen het getal dat evenveel is.",
+    "hulpmiddel": null,
+    "zin1": "Tel de appels in de rijtjes en kies het juiste aantal.",
+    "zin2": "Lukt het je om elk groepje te tellen?",
+    "huidig": "De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-2",
+    "titel": "Meer, minder, evenveel (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk groepjes sterren en zoek waar er meer, minder of evenveel zijn.",
+    "zin2": "Zie je waar meer of minder sterren staan?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel1-3",
+    "titel": "Meer, minder, evenveel (nog moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de groepjes bloemen op de kaarten en zoek waar er meer zijn.",
+    "zin2": "Herken je de grootste groep op de kaarten?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel2-1",
+    "titel": "De meeste",
+    "onderwerp": "Meer, minder, evenveel",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de kralen en vergelijk daarna hoeveel er in de groepjes zitten.",
+    "zin2": "Denk je dat je de groepjes kralen al kunt vergelijken?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel2-2",
+    "titel": "De meeste (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de kaarten en zoek het groepje met de minste appels.",
+    "zin2": "Weet je wat meeste en minste betekenen?"
+  },
+  {
+    "id": "squla-meer-minder-evenveel3-1",
+    "onderwerp": "Meer, minder, evenveel",
+    "titel": "Meer dan, minder dan",
+    "uitleg": "Zet potjes met een getal op volgorde, van meer naar minder, en tikt op het kaartje met meer, minder of evenveel dan een getal.",
+    "hulpmiddel": null,
+    "zin1": "Zet de potjes van meer naar minder en kies wat meer, minder of evenveel is.",
+    "zin2": "Zijn de woorden meer, minder en evenveel duidelijk voor je?",
+    "huidig": "Drie potjes met een getal. Zet de potjes op volgorde, van meer naar minder."
+  },
+  {
+    "id": "squla-meer-minder-evenveel3-2",
+    "titel": "Meer dan, minder dan (moeilijker)",
+    "onderwerp": "Meer, minder, evenveel",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de eieren in de doosjes en vergelijk de aantallen.",
+    "zin2": "Weet jij hoe een vol doosje je helpt bij het tellen?"
+  },
+  {
+    "id": "squla-min-ruimte-1",
+    "onderwerp": "Minsommen",
+    "titel": "Minsommen in de ruimte",
+    "uitleg": "Ziet ballonnen, zeepbellen of raketjes die wegvliegen en kiest hoeveel er overblijven (ook: welke som past, disco, verbinden).",
+    "hulpmiddel": null,
+    "zin1": "Er vliegen ballonnen of raketjes weg en jij rekent uit hoeveel er overblijven.",
+    "zin2": "Wil je zonder uitleg uitrekenen hoeveel er overblijven?",
+    "huidig": "Er zweven 7 ballonnen in de lucht en er vliegen er 4 weg. Hoeveel ballonnen blijven er over?"
+  },
+  {
+    "id": "squla-min-ruimte-2",
+    "titel": "Minsommen in de ruimte (moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Er vliegen raketjes weg en jij rekent uit hoeveel er nog staan.",
+    "zin2": "Lukt aftrekken jou ook met grotere aantallen?"
+  },
+  {
+    "id": "squla-min-ruimte-3",
+    "titel": "Minsommen in de ruimte (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Reken uit hoeveel raketjes overblijven als er een groep wegvliegt.",
+    "zin2": "Weet je hoe je bij het aftrekken over de tien gaat?"
+  },
+  {
+    "id": "squla-min-bus1-1",
+    "titel": "Bussommen",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "De bus bezorgt pakjes en jij rekent uit hoeveel er nog in liggen.",
+    "zin2": "Kun je uitrekenen wat er na het bezorgen over is?"
+  },
+  {
+    "id": "squla-min-bus1-2",
+    "titel": "Bussommen (moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij elke halte gaan pakjes uit de bus en bereken je hoeveel er overblijven.",
+    "zin2": "Snap je hoe je met de pakjes een minsom maakt?"
+  },
+  {
+    "id": "squla-min-bus1-3",
+    "titel": "Bussommen (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "De bus levert grotere groepen pakjes af en jij rekent uit hoeveel er nog zijn.",
+    "zin2": "Denk je dat je deze bezorgsommen zonder uitleg kunt maken?"
+  },
+  {
+    "id": "squla-min-bus2-1",
+    "titel": "Bussommen met een rondje",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Het getal in het rondje vertelt hoeveel pakjes uit de bus gaan: reken uit wat er overblijft.",
+    "zin2": "Weet je hoe het getal bij de bus helpt?"
+  },
+  {
+    "id": "squla-min-bus2-2",
+    "titel": "Bussommen met een rondje (moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees hoeveel pakjes de bus bezorgt en reken uit hoeveel er nog in liggen.",
+    "zin2": "Is het je duidelijk hoe je het getal in het rondje gebruikt?"
+  },
+  {
+    "id": "squla-min-bus2-3",
+    "titel": "Bussommen met een rondje (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Gebruik de getallen bij de bus om uit te rekenen hoeveel pakjes overblijven.",
+    "zin2": "Zie je welke minsom bij de bus hoort?"
+  },
+  {
+    "id": "squla-min-machine-1",
+    "onderwerp": "Minsommen",
+    "titel": "Minsommen: hoeveel over?",
+    "uitleg": "Ziet blokjes in de min-machine die er een paar afhaalt (en later sommen op een bord en bij de disco) en kiest uit drie getallen hoeveel er overblijven.",
+    "hulpmiddel": "de min-machine",
+    "zin1": "De min-machine haalt blokjes weg en jij rekent uit hoeveel er overblijven.",
+    "zin2": "Weet je hoe aftrekken werkt?",
+    "huidig": "Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit?"
+  },
+  {
+    "id": "squla-min-machine-2",
+    "titel": "Minsommen: hoeveel over? (moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de plaatjes zoek je de passende minsom en reken je het antwoord uit.",
+    "zin2": "Herken je de minsom die bij een plaatje past?"
+  },
+  {
+    "id": "squla-min-machine-3",
+    "titel": "Minsommen: hoeveel over? (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op het schoolbord staan minsommen waarvan je de antwoorden uitrekent.",
+    "zin2": "Lukt het je om minsommen op een bord op te lossen?"
+  },
+  {
+    "id": "squla-min-machine-4",
+    "titel": "Minsommen: hoeveel over? (heel moeilijk)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Je koopt iets en rekent uit hoeveel geld er in de portemonnee overblijft.",
+    "zin2": "Reken je al zonder hulp uit hoeveel geld je overhoudt?"
+  },
+  {
+    "id": "squla-min-kaal-1",
+    "titel": "Kale minsommen",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Reken de minsommen op het bord uit en geef het juiste antwoord.",
+    "zin2": "Wil je meteen beginnen met deze minsommen?"
+  },
+  {
+    "id": "squla-min-kaal-2",
+    "titel": "Kale minsommen (moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op het bord reken je minsommen met grotere getallen uit.",
+    "zin2": "Lukt het je al om met deze grotere getallen te rekenen?"
+  },
+  {
+    "id": "squla-min-kaal-3",
+    "titel": "Kale minsommen (nog moeilijker)",
+    "onderwerp": "Minsommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij deze minsommen reken je terug over de tien heen.",
+    "zin2": "Weet je hoe terugrekenen over tien gaat?"
+  },
+  {
+    "id": "squla-plus-bakkerij-1",
+    "onderwerp": "Plussommen",
+    "titel": "Plussommen in de bakkerij",
+    "uitleg": "Telt taartjes, broden en koekjes bij elkaar (tot 10), kiest de uitkomst of de som en verbindt sommen met uitkomsten.",
+    "hulpmiddel": null,
+    "zin1": "In de bakkerij tel je taartjes, broden en koekjes bij elkaar en zoek je de som of het antwoord.",
+    "zin2": "Weet jij hoe je de taartjes bij elkaar optelt?",
+    "huidig": "In de bakkerij liggen taartjes. Hoeveel taartjes zijn het samen?"
+  },
+  {
+    "id": "squla-plus-bakkerij-2",
+    "titel": "Plussommen in de bakkerij (moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "In de bakkerij tel je grotere aantallen broden en andere lekkernijen bij elkaar.",
+    "zin2": "Denk je dat je ook grotere aantallen kunt optellen?"
+  },
+  {
+    "id": "squla-plus-bakkerij-3",
+    "titel": "Plussommen in de bakkerij (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Er komen koekjes en andere lekkernijen bij en jij rekent uit hoeveel het samen is.",
+    "zin2": "Snap je hoe je bij het optellen over de tien gaat?"
+  },
+  {
+    "id": "squla-plus-dansen-1",
+    "titel": "Samen 10 in de disco",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "In de disco zoek je twee getallen die samen tien zijn.",
+    "zin2": "Ken je de getallenparen van tien al?"
+  },
+  {
+    "id": "squla-plus-dansen-2",
+    "titel": "Samen 10 in de disco (moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Op de draaiende platen zoek je getallen die samen tien vormen.",
+    "zin2": "Lukt het je om samen tien te maken?"
+  },
+  {
+    "id": "squla-plus-dansen-3",
+    "titel": "Samen 10 in de disco (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de getallen op de platen bij elkaar en zoek het paar dat precies tien is.",
+    "zin2": "Zie je welke twee getallen samen tien zijn?"
+  },
+  {
+    "id": "squla-plus-dansen-4",
+    "titel": "Samen 10 in de disco (heel moeilijk)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de sommen op de kaartjes en zoek welke samen tien zijn.",
+    "zin2": "Herken je de sommen met tien als antwoord?"
+  },
+  {
+    "id": "squla-plus-bus1-1",
+    "onderwerp": "Plussommen",
+    "titel": "Bussommen",
+    "uitleg": "Ziet pakjes in de bezorgbus en pakjes die erbij komen, en typt hoeveel pakjes er nu in de bus liggen.",
+    "hulpmiddel": "de bezorgbus",
+    "zin1": "Er komen pakjes bij in de bezorgbus en jij rekent uit hoeveel er dan in liggen.",
+    "zin2": "Kun je uitrekenen hoeveel pakjes het samen zijn?",
+    "huidig": "In de bus liggen 2 pakjes en er komt er 1 bij. Hoeveel pakjes liggen er nu in de bus?"
+  },
+  {
+    "id": "squla-plus-bus1-2",
+    "titel": "Bussommen (moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de nieuwe pakjes op bij de pakjes die al in de bus liggen.",
+    "zin2": "Lukt het optellen van grotere groepen pakjes jou al?"
+  },
+  {
+    "id": "squla-plus-bus1-3",
+    "titel": "Bussommen (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Er komen pakjes bij en het totaal gaat over de tien: reken uit hoeveel het er worden.",
+    "zin2": "Weet je hoe je verder rekent als er meer dan tien pakjes zijn?"
+  },
+  {
+    "id": "squla-plus-bus2-1",
+    "titel": "Bussommen met een getal",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Het getal in het rondje vertelt hoeveel pakjes erbij komen: reken het totaal uit.",
+    "zin2": "Snap je hoe het getal vertelt hoeveel pakjes erbij komen?"
+  },
+  {
+    "id": "squla-plus-bus2-2",
+    "titel": "Bussommen met een getal (moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees het getal bij de bus en tel zoveel pakjes bij de lading op.",
+    "zin2": "Wil je met het getal bij de bus zonder uitleg gaan rekenen?"
+  },
+  {
+    "id": "squla-plus-bus2-3",
+    "titel": "Bussommen met een getal (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met de getallen bij de bezorgbus reken je uit hoeveel pakjes er samen zijn.",
+    "zin2": "Herken je de plussom die bij de lading hoort?"
+  },
+  {
+    "id": "squla-plus-kaal-1",
+    "titel": "Plussommen uitrekenen",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Los de plussommen op door de getallen bij elkaar te tellen.",
+    "zin2": "Maak je al plussommen zonder plaatjes?"
+  },
+  {
+    "id": "squla-plus-kaal-2",
+    "titel": "Plussommen uitrekenen (moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij deze plussommen tel je verder vanaf een groter getal.",
+    "zin2": "Lukt verder rekenen vanaf tien jou al?"
+  },
+  {
+    "id": "squla-plus-kaal-3",
+    "titel": "Plussommen uitrekenen (nog moeilijker)",
+    "onderwerp": "Plussommen",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Reken plussommen uit waarbij het antwoord over de tien gaat.",
+    "zin2": "Weet je hoe optellen over tien werkt?"
+  },
+  {
+    "id": "squla-geld-geldmachine-1",
+    "onderwerp": "Geld",
+    "titel": "Munten en briefjes",
+    "uitleg": "Herkent munten en briefjes en tikt op het geld dat bij de vraag past.",
+    "hulpmiddel": "munten en briefjes",
+    "zin1": "In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld en kiest het juiste bedrag.",
+    "zin2": "Weet jij al hoe je dat doet?",
+    "huidig": "Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen."
+  },
+  {
+    "id": "squla-geld-geldmachine-2",
+    "titel": "Munten en briefjes (moeilijker)",
+    "onderwerp": "Geld",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "In de speelgoedwinkel tel je munten en briefjes om het juiste bedrag te vinden.",
+    "zin2": "Weet je hoe je met munten en briefjes het juiste bedrag maakt?"
+  },
+  {
+    "id": "squla-geld-zakgeld-1",
+    "onderwerp": "Geld",
+    "titel": "Zakgeld sparen",
+    "uitleg": "Telt munten en briefjes bij elkaar en kiest waar het goede bedrag ligt of hoeveel er nog bij moet.",
+    "hulpmiddel": "munten en briefjes",
+    "zin1": "Bij het sparen tel je munten en briefjes bij elkaar en zoek je hoeveel geld er nog bij moet.",
+    "zin2": "Lukt het je om geld bij elkaar te tellen?",
+    "huidig": "Voor elk klusje krijg je 2 euro. Hoeveel is dat bij elkaar?"
+  },
+  {
+    "id": "squla-geld-zakgeld-2",
+    "titel": "Zakgeld sparen (moeilijker)",
+    "onderwerp": "Geld",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk het spaargeld en zoek welke munten en briefjes bij het bedrag horen.",
+    "zin2": "Zie je met welke munten en briefjes je het spaarbedrag kunt maken?"
+  },
+  {
+    "id": "squla-geld-geld-1",
+    "titel": "Geld tellen",
+    "onderwerp": "Geld",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de munten en briefjes en verbind elk groepje geld met het juiste bedrag.",
+    "zin2": "Wil je het geld zonder uitleg bij de bedragen zoeken?"
+  },
+  {
+    "id": "squla-geld-geld-2",
+    "titel": "Geld tellen (moeilijker)",
+    "onderwerp": "Geld",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel verschillende munten en briefjes bij elkaar, tot twintig euro.",
+    "zin2": "Tel je al geldbedragen tot twintig euro?"
+  },
+  {
+    "id": "squla-meten-pizza-1",
+    "onderwerp": "Meten",
+    "titel": "Pizza's vergelijken",
+    "uitleg": "Tikt op de grootste of kleinste pizza of het grootste of kleinste ijsje en zet ze op volgorde, van klein naar groot.",
+    "hulpmiddel": null,
+    "zin1": "Je vergelijkt pizza’s en ijsjes en zet ze van klein naar groot.",
+    "zin2": "Zie je het verschil tussen groter en kleiner?",
+    "huidig": "Deze pizza's zijn niet even groot. Welke pizza is het grootst?"
+  },
+  {
+    "id": "squla-meten-pizza-2",
+    "titel": "Pizza's vergelijken (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de pizzastukken en vergelijk hoeveel stukken of bolletjes er zijn.",
+    "zin2": "Snap je hoe tellen helpt om hoeveelheden te vergelijken?"
+  },
+  {
+    "id": "squla-meten-pizza-3",
+    "titel": "Pizza's vergelijken (nog moeilijker)",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met de weegschaal vergelijk je welk deeg zwaarder of lichter is.",
+    "zin2": "Weet je hoe een weegschaal werkt?"
+  },
+  {
+    "id": "squla-meten-hoeveelheden-1",
+    "titel": "Vol, leeg, zwaar en licht",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de picknick zoek je wat vol of leeg is en vergelijk je hoeveel erin zit.",
+    "zin2": "Herken je vol en leeg al?"
+  },
+  {
+    "id": "squla-meten-hoeveelheden-2",
+    "titel": "Vol, leeg, zwaar en licht (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de spullen voor de picknick en zoek wat zwaar, licht, dik of dun is.",
+    "zin2": "Ken je zwaar en licht, dik en dun?"
+  },
+  {
+    "id": "squla-meten-oppervlakte-1",
+    "onderwerp": "Meten",
+    "titel": "Hoe groot is het?",
+    "uitleg": "Vergelijkt schilderijen, tafels en muurtjes, telt blaadjes en hokjes en kiest wat groot of klein is of even groot.",
+    "hulpmiddel": null,
+    "zin1": "Door hokjes te tellen zoek je uit hoe groot iets is.",
+    "zin2": "Heb je al eens met hokjes gemeten?",
+    "huidig": "Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein?"
+  },
+  {
+    "id": "squla-meten-oppervlakte-2",
+    "titel": "Hoe groot is het? (moeilijker)",
+    "onderwerp": "Meten en maten",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Meet met blaadjes en hokjes hoe groot een tafel of een vlak is.",
+    "zin2": "Weet jij hoe je iets meet door vakjes te tellen?"
+  },
+  {
+    "id": "squla-klok-digitaal-1",
+    "onderwerp": "Klok",
+    "titel": "De klok en de tijd",
+    "uitleg": "Telt de wijzers en getallen op een klok, zoekt waar nog meer een klok staat, leest de klok af en zoekt klok en tijd bij elkaar.",
+    "hulpmiddel": "de klok",
+    "zin1": "Je bekijkt de wijzers en getallen van de klok en zoekt welke tijd erbij hoort.",
+    "zin2": "Ken je de wijzers van de klok al?",
+    "huidig": "Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok?"
+  },
+  {
+    "id": "squla-klok-digitaal-2",
+    "titel": "De digitale klok (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bij de bakkerij zoek je de klok die de gevraagde tijd aangeeft.",
+    "zin2": "Herken je de klok die bij de genoemde tijd hoort?"
+  },
+  {
+    "id": "squla-klok-hoelaat-1",
+    "onderwerp": "Klok",
+    "titel": "Hoe laat is het?",
+    "uitleg": "Leest een wijzerklok af (hele uren) en kiest uit knoppen hoe laat het is.",
+    "hulpmiddel": "de klok",
+    "zin1": "Kijk naar de wijzers van de klok en lees af welk heel uur het is.",
+    "zin2": "Kun je de hele uren al aflezen?",
+    "huidig": "De bezorgbus rijdt de hele dag langs de winkels. Kijk steeds op de klok: hoe laat is het?"
+  },
+  {
+    "id": "squla-klok-hoelaat-2",
+    "titel": "Hoe laat is het? (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees op de klokken af hoe laat het in de bakkerij is.",
+    "zin2": "Lukt het je al om de klok af te lezen?"
+  },
+  {
+    "id": "squla-klok-hoelaat-3",
+    "titel": "Hoe laat is het? (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tijdens de bezorgronde lees je de tijden op de klok af.",
+    "zin2": "Weet jij hoe de wijzers vertellen hoe laat het is?"
+  },
+  {
+    "id": "squla-klok-klokkijken-1",
+    "titel": "Klokkijken",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Luister naar de tijd en controleer of die bij de klok past.",
+    "zin2": "Weet je wanneer de klok de juiste tijd aangeeft?"
+  },
+  {
+    "id": "squla-klok-klokkijken-2",
+    "titel": "Klokkijken (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk twee klokken en zoek de klok met de gevraagde tijd.",
+    "zin2": "Lukt het je om twee klokken te vergelijken?"
+  },
+  {
+    "id": "squla-klok-klokkijken-3",
+    "titel": "Klokkijken (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Kijk naar de kleine wijzer en lees af welk uur de klok aangeeft.",
+    "zin2": "Lees je het uur al af aan de kleine wijzer?"
+  },
+  {
+    "id": "squla-klok-klokkijken1-1",
+    "titel": "Klokkijken 1",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de klokken en zoek de juiste stand van de wijzers.",
+    "zin2": "Herken je de juiste stand van de wijzers al?"
+  },
+  {
+    "id": "squla-klok-klokkijken1-2",
+    "titel": "Klokkijken 1 (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Controleer of de genoemde tijd klopt met de wijzers op de klok.",
+    "zin2": "Wil je zonder uitleg controleren of de tijd klopt?"
+  },
+  {
+    "id": "squla-klok-klokkijken1-3",
+    "titel": "Klokkijken 1 (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk klokken die op elkaar lijken en vind de gevraagde tijd.",
+    "zin2": "Zie je de verschillen tussen de klokken al?"
+  },
+  {
+    "id": "squla-klok-klokkijken2-1",
+    "onderwerp": "Klok",
+    "titel": "Klokkijken 2",
+    "uitleg": "Kiest bij een tijd in woorden de goede wijzerklok, en leest een klok af en kiest de tijd.",
+    "hulpmiddel": "de klok",
+    "zin1": "Je zoekt de klok die bij de tijd past en de tijd die bij de klok past.",
+    "zin2": "Weet je welke klok bij de tijd hoort?",
+    "huidig": "Een klok en een tijd horen bij elkaar. Welke klok hoort bij 9 uur?"
+  },
+  {
+    "id": "squla-klok-klokkijken2-2",
+    "titel": "Klokkijken 2 (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees de tijd in woorden en zoek de klok die erbij hoort.",
+    "zin2": "Lukt het je om de klok bij de geschreven tijd te vinden?"
+  },
+  {
+    "id": "squla-klok-klokkijken2-3",
+    "titel": "Klokkijken 2 (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Zoek bij de genoemde tijd de juiste klok en let goed op beide wijzers.",
+    "zin2": "Denk je dat je de juiste klok kunt vinden door op beide wijzers te letten?"
+  },
+  {
+    "id": "squla-klok-klokkijken3-1",
+    "titel": "Halve uren lezen",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees de halve uren af en zoek de klok die bij de tijd past.",
+    "zin2": "Ken je de halve uren al?"
+  },
+  {
+    "id": "squla-klok-klokkijken3-2",
+    "titel": "Halve uren lezen (moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de wijzers en bepaal of het half is of bijna half.",
+    "zin2": "Zie je het verschil tussen half en bijna half?"
+  },
+  {
+    "id": "squla-klok-klokkijken3-3",
+    "titel": "Halve uren lezen (nog moeilijker)",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Lees de klokken af met hele en halve uren door elkaar.",
+    "zin2": "Wil je hele en halve uren zonder uitleg door elkaar oefenen?"
+  },
+  {
+    "id": "squla-klok-klokkijken3-4",
+    "titel": "Halve uren: later en eerder",
+    "onderwerp": "Klokkijken",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Met de klok zoek je uit hoe laat het eerder of later is.",
+    "zin2": "Kun je met de klok vooruit en terug rekenen?"
+  },
+  {
+    "id": "squla-rekenmix-mix1-1",
+    "onderwerp": "Rekenmix",
+    "titel": "Rekenmix 1",
+    "uitleg": "Telt appels, ballen, potloden, auto's en bloemen (door elkaar, in rijen of in paren) en kiest uit drie getallen hoeveel het er zijn.",
+    "hulpmiddel": null,
+    "zin1": "De appels liggen door elkaar. Tel ze en kies het juiste aantal.",
+    "zin2": "Weet jij welk getal bij elk groepje hoort?",
+    "huidig": "Er liggen appels door elkaar. Tel de appels. Hoeveel zijn het er?"
+  },
+  {
+    "id": "squla-rekenmix-mix1-2",
+    "titel": "Rekenmix 1 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk de zon en kies welke vorm erop lijkt.",
+    "zin2": "Herken je de vorm van de zon?"
+  },
+  {
+    "id": "squla-rekenmix-mix1-3",
+    "titel": "Rekenmix 1 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "In de rij zoek je wat links, rechts of in het midden staat.",
+    "zin2": "Weet je waar links, rechts en het midden zijn?"
+  },
+  {
+    "id": "squla-rekenmix-mix1-4",
+    "titel": "Rekenmix 1 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de groepjes en zet ze op volgorde van meer naar minder.",
+    "zin2": "Snap je hoe je de groepjes van meer naar minder zet?"
+  },
+  {
+    "id": "squla-rekenmix-mix2-1",
+    "titel": "Rekenmix 2",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de boterhammen en andere plaatjes en zoek waar meer of minder op ligt.",
+    "zin2": "Zie je hoe je de plaatjes met het voorbeeld vergelijkt?"
+  },
+  {
+    "id": "squla-rekenmix-mix2-2",
+    "titel": "Rekenmix 2 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Bekijk waar de bal bij de doos ligt en kies het juiste woord voor die plek.",
+    "zin2": "Ken je woorden als naast, in en onder?"
+  },
+  {
+    "id": "squla-rekenmix-mix2-3",
+    "titel": "Rekenmix 2 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Zoek op de plaatjes de gevraagde kleur en vorm.",
+    "zin2": "Kun je tegelijk op kleur en vorm letten?"
+  },
+  {
+    "id": "squla-rekenmix-mix2-4",
+    "titel": "Rekenmix 2 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de ballen in elk groepje en verbind het groepje met het juiste getal.",
+    "zin2": "Weet jij welk getal je met elk groepje moet verbinden?"
+  },
+  {
+    "id": "squla-rekenmix-mix3-1",
+    "titel": "Rekenmix 3",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de ballen en zet ze op volgorde van groot naar klein.",
+    "zin2": "Lukt het jou om de ballen van groot naar klein te zetten?"
+  },
+  {
+    "id": "squla-rekenmix-mix3-2",
+    "onderwerp": "Rekenmix",
+    "titel": "Rekenmix 3 (moeilijker)",
+    "uitleg": "Kijkt naar een rij van vijf dingen en kiest welk ding op een bepaalde plek staat (eerste, tweede, derde, vierde of vijfde).",
+    "hulpmiddel": null,
+    "zin1": "Kijk naar de rij en kies wat op de gevraagde plek staat, bijvoorbeeld als eerste of als vijfde.",
+    "zin2": "Weet je wat eerste, tweede en derde betekenen?",
+    "huidig": "Vijf dingen staan in een rij. Wat staat als eerste in de rij?"
+  },
+  {
+    "id": "squla-rekenmix-mix3-3",
+    "titel": "Rekenmix 3 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Zoek welk getal meteen voor of na een ander getal komt.",
+    "zin2": "Herken je de getallen die direct voor en na een getal komen?"
+  },
+  {
+    "id": "squla-rekenmix-mix3-4",
+    "titel": "Rekenmix 3 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Er zijn ballen verstopt in een doos en jij rekent uit hoeveel dat er zijn.",
+    "zin2": "Denk je dat je kunt uitrekenen hoeveel ballen verstopt zijn?"
+  },
+  {
+    "id": "squla-rekenmix-mix4-1",
+    "titel": "Rekenmix 4",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel alleen de raketjes tussen de sterren en planeten.",
+    "zin2": "Kun je één soort uit een groep tellen?"
+  },
+  {
+    "id": "squla-rekenmix-mix4-2",
+    "titel": "Rekenmix 4 (moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel verder vanaf tien en zet de getallen op hun plek.",
+    "zin2": "Tel je al verder vanaf tien om de getallen op hun plek te zetten?"
+  },
+  {
+    "id": "squla-rekenmix-mix4-3",
+    "titel": "Rekenmix 4 (nog moeilijker)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Tel de groepjes sterren en zoek het groepje met het gevraagde aantal.",
+    "zin2": "Zie je welk groepje sterren bij het aantal hoort?"
+  },
+  {
+    "id": "squla-rekenmix-mix4-4",
+    "titel": "Rekenmix 4 (heel moeilijk)",
+    "onderwerp": "Rekenmix",
+    "uitleg": "",
+    "hulpmiddel": null,
+    "huidig": "",
+    "zin1": "Vergelijk de groepjes raketjes en zoek waar er meer of minder zijn dan het genoemde getal.",
+    "zin2": "Snap je hoe je een groepje met een getal vergelijkt?"
   }
 ]

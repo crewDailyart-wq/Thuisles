@@ -96,3 +96,9 @@ next-env.d.ts
 
 # Overzicht Squla-lessen (schermfoto's), alleen op de laptop (1 november 2026).
 /public/squla-overzicht/
+
+# Beginzinnen-overzicht: schermfoto's alleen op de laptop (1 november 2026). lijst.json blijft in Git.
+/public/beginzinnen/*.jpg
+
+# Schermfoto's van de rondjescontrole (alleen voor de statuspagina op de laptop)
+/public/rondje-controle/

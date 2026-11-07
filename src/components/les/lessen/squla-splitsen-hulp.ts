@@ -130,6 +130,8 @@ export type LesOpties = {
   kaart: ComponentType;
   voorwerpen: string[];
   begin: Beeld | null;
+  /** Wat Bliepo aanwijst of noemt krijgt een rood, getekend rondje in plaats van een gloed (Sara, 6 november 2026). Standaard aan; `false` = de oude gloed. */
+  rondje?: boolean;
   welkom: string[];
   /**
    * Het beginscherm (BOUWREGELS 4.1, squla-hulp.ts): zet een echte opgave uit
@@ -161,13 +163,15 @@ export function les(t: LesOpties): Lesdraaiboek {
     voorwerpen: t.voorwerpen,
     async speel(l) {
       const st: Stand = { huidig: t.begin?.id ?? "", goed: 0, fout: 0, typUitgelegd: false, tikUitgelegd: false, letters: 0 };
-      l.vlak<SplitsProps>(SqulaSplitsVlak, { beeld: t.begin });
+      l.vlak<SplitsProps>(SqulaSplitsVlak, { beeld: t.begin, rondje: t.rondje ?? true });
       if (t.begin) speelLesgeluid("verschijn");
       t.start?.(l, st);
       const vb = t.voorbeeld;
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: t.welkom,
         uitleg: () => t.uitleg(l, st),
+        voordoen: true,
+        samen: () => t.vragen[0](l, st),
         ...(vb ? { voorbeeld: () => vb(l, st) } : {}),
       });
       /* Na het voorbeeld zet de eerste vraag zijn beeld weer schoon neer (niets van de uitleg blijft staan). */
@@ -176,8 +180,10 @@ export function les(t: LesOpties): Lesdraaiboek {
         l.som(null);
       }
       await t.naBegin?.(l, st);
+      // Het voorbeeld is al beantwoord. Behoud wel de bijbehorende verhaalstap/letter.
+      if (voorbeeldAfgerond) await t.naVraag?.(l, st);
       let fouten = 0;
-      for (const v of t.vragen) {
+      for (const v of t.vragen.slice(voorbeeldAfgerond ? 1 : 0)) {
         if (!(await v(l, st))) fouten++;
         l.som(null);
         await t.naVraag?.(l, st);

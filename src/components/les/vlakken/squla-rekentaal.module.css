@@ -56,9 +56,23 @@
   outline: 4px dashed #ffffff;
 }
 
-/* Bliepo wijst dit voorwerp aan: een vlakke gele ring. */
-.ding[data-markeer="ja"] {
-  outline-color: #ffc845;
+/* Bliepo wijst dit voorwerp aan: een rood, getekend rondje eromheen (Sara, 6 november 2026), geen gele ring meer. */
+.rondje {
+  position: absolute;
+  pointer-events: none;
+  z-index: 6;
+  animation: rondjeIn 240ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+@keyframes rondjeIn {
+  from {
+    opacity: 0;
+    scale: 0.9;
+  }
+  to {
+    opacity: 1;
+    scale: 1;
+  }
 }
 
 /* Goed gekozen: een groene ring en een klein sprongetje. */
@@ -124,6 +138,7 @@
 @media (prefers-reduced-motion: reduce) {
   .ding,
   .ding[data-goed="ja"],
+  .rondje,
   .wiebel {
     animation: none;
   }

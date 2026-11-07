@@ -1,0 +1,52 @@
+.pagina {
+  min-height: 100svh;
+  position: relative;
+  color: #fff;
+  background: linear-gradient(rgba(5, 13, 48, .72), rgba(5, 13, 48, .72)), url('/assets/bliepo/achtergrond-opdracht/liggend-1280.webp') center / cover;
+  padding: 18px 28px 36px;
+}
+.balk { display: flex; align-items: center; justify-content: space-between; gap: 20px; max-width: 1400px; margin: 0 auto; font-size: 14px; }
+.terug { display: inline-flex; align-items: center; min-height: 44px; color: #e1ebff; text-decoration: none; }
+.terug:hover { text-decoration: underline; }
+.concept { color: #bacbe9; }
+.wissel { display: flex; padding: 4px; border: 1px solid #ffffff30; border-radius: 30px; background: #06133280; }
+.wissel button { min-height: 44px; padding: 0 20px; border: 0; border-radius: 24px; background: transparent; color: #d7e3fa; cursor: pointer; font-weight: 600; }
+.wissel button[aria-pressed="true"] { background: #e5efff; color: #112850; }
+.oefening { width: min(660px, 100%); margin: clamp(30px, 6vh, 70px) auto 0; text-align: center; }
+.oefening h1 { margin: 0 0 26px; font-size: clamp(28px, 3.6vw, 42px); line-height: 1.2; font-weight: 800; letter-spacing: -.025em; }
+.geldvlak { min-height: 280px; display: grid; place-items: center; padding: 28px; background: #c3dfff09; border: 1px solid #c6dcff45; border-radius: 24px; box-shadow: inset 0 1px 0 #ffffff0c, 0 16px 36px #020a2520; }
+.briefje { width: min(390px, 95%); height: auto; filter: drop-shadow(0 14px 18px #0005); }
+.munt { width: 180px; height: 180px; object-fit: contain; filter: drop-shadow(0 12px 14px #0005); }
+.antwoorden { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-top: 24px; }
+.antwoorden button { min-height: 76px; border: 2px solid transparent; border-radius: 14px; background: #fff; color: #11213c; font: inherit; font-size: clamp(20px, 2.4vw, 27px); font-weight: 800; box-shadow: 0 5px 0 #a8c4ed; cursor: pointer; }
+.antwoorden button:hover:not(:disabled) { background: #eaf3ff; border-color: #9dc5ff; }
+.antwoorden button:active:not(:disabled) { transform: translateY(3px); box-shadow: 0 2px 0 #a8c4ed; }
+.antwoorden button.goed { background: #d4f8e7; color: #114d39; border-color: #8fe6bc; box-shadow: 0 5px 0 #4a9c7b; }
+.antwoorden button.opnieuw { border-color: #ffcf66; background: #fff4d8; }
+.antwoorden button:disabled { cursor: default; }
+.feedback { min-height: 100px; margin-top: 22px; }
+.feedback p { margin: 0; font-size: 19px; line-height: 1.5; color: #e5edff; }
+.verder { margin-top: 16px; min-height: 44px; padding: 8px 18px; border: 1px solid #c3dfff70; border-radius: 22px; color: #fff; background: #c3dfff12; font: inherit; font-weight: 700; cursor: pointer; }
+.bliepo { position: absolute; width: clamp(90px, 13vw, 160px); height: auto; right: 24px; bottom: 22px; pointer-events: none; }
+.pagina button:focus-visible, .pagina a:focus-visible { outline: 3px solid #ffe27e; outline-offset: 5px; }
+@media (max-width: 1000px) {
+  .bliepo { width: 90px; bottom: 12px; right: 12px; }
+  .pagina { padding-bottom: 120px; }
+}
+@media (max-width: 600px) {
+  .pagina { padding: 12px 20px 110px; background-image: linear-gradient(rgba(5,13,48,.72), rgba(5,13,48,.72)), url('/assets/bliepo/achtergrond-opdracht/staand-720.webp'); }
+  .balk { flex-wrap: wrap; gap: 4px 12px; font-size: 12px; }
+  .concept { order: 3; flex-basis: 100%; padding: 12px 0 0; text-align: center; }
+  .wissel button { padding: 0 14px; }
+  .oefening { margin-top: 32px; }
+  .oefening h1 { margin-bottom: 22px; }
+  .geldvlak { min-height: 220px; padding: 22px 14px; border-radius: 20px; }
+  .munt { width: 150px; height: 150px; }
+  .antwoorden { gap: 10px; margin-top: 20px; }
+  .antwoorden button { min-height: 64px; font-size: 19px; border-radius: 12px; }
+  .feedback p { font-size: 17px; }
+  .bliepo { width: 76px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .antwoorden button:active:not(:disabled) { transform: none; }
+}

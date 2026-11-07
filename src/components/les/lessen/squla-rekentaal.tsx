@@ -9,12 +9,14 @@
  *
  * Het kind tikt op de tekening zelf. Hulp zoals de nagebouwde Synthesis-lessen
  * (verhaaltjessommen.tsx, `meteenS` en `eindAntwoordS`):
- * - 1× fout: "Niet helemaal." en de keuze "Nog een keer" of "Hulp";
- * - "Nog een keer" = dezelfde vraag; nog eens fout of "Hulp" = samen uitzoeken;
- * - na het samen uitzoeken: 1× fout = een tip, 2× fout = even pauze en de les stopt.
- * Geen "Weet ik niet"-knop (opdracht eigenaar).
+ * Sinds 4 november 2026 de hulp van Synthesis (BOUWREGELS 5.1):
+ * - 1× fout: korte reactie op wat het kind aantikte en meteen opnieuw;
+ * - 2× fout: Bliepo legt het uit, laat het goede antwoord zien en het kind gaat door.
+ * Geen keuzevraag, geen pauze. Geen weet-ik-niet-knop (opdracht eigenaar).
  */
 
+import { begeleideVraag, laatZienZin, naamMag, opener, samenOefenen, uitlegVoorVraag, bevestig, zetSynthesisHulp } from "./squla-uitleg";
+import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartRekentaal, SqulaRekentaalKeuken, type RekenDing, type RekentaalProps } from "../vlakken/squla-rekentaal-keuken";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
@@ -26,7 +28,17 @@ type Tafereel = Pick<RekentaalProps, "indeling" | "dingen"> & Partial<Pick<Reken
 let tafereelNr = 0;
 let wiebelNr = 0;
 
+/* Bij een goed antwoord alleen een korte bevestiging uit de gedeelde `bevestig()` (Sara, 4 nov); het waarom zit in het beeld. */
+/** Wat het kind het laatst aantikte, welke voorwerpen goed zijn, en bij welke stap van het op volgorde zetten het misging. */
+let huidigeDingen: RekenDing[] = [];
+let laatsteTik = "";
+let huidigGoed: string[] = [];
+let laatsteStap = 0;
+const naamVan = (id: string) => huidigeDingen.find((d) => d.id === id)?.naam ?? "dit";
+const zonderJa = (z: string) => z.replace(/^(Ja|Dat klopt|Goed zo|Precies)[,.]?\s*/i, "").replace(/^./, (c) => c.toUpperCase());
+
 function toon(l: Lesgids, t: Tafereel) {
+  huidigeDingen = t.dingen;
   l.vlak<RekentaalProps>(SqulaRekentaalKeuken, {
     ondergrond: "tafel",
     actief: false,
@@ -39,7 +51,7 @@ function toon(l: Lesgids, t: Tafereel) {
   });
 }
 
-/** Bliepo wijst deze voorwerpen aan (een gele ring); zonder ids: niets. */
+/** Bliepo wijst deze voorwerpen aan (een rood rondje); zonder ids: niets. */
 function wijs(l: Lesgids, ...ids: string[]) {
   l.pasVlakAan<RekentaalProps>({ markeer: ids });
   if (ids.length) speelLesgeluid("markeer");
@@ -63,7 +75,9 @@ function kiesEen(l: Lesgids, goed: string) {
   return async () => {
     /* Voor de automatische test: welk voorwerp nu goed is. */
     window.__phaser = { ...window.__phaser, antwoord: goed };
+    huidigGoed = [goed];
     const x = await tikDing(l);
+    laatsteTik = x;
     if (x === goed) {
       l.pasVlakAan<RekentaalProps>({ goed: [x], markeer: [] });
       speelLesgeluid("goed");
@@ -79,9 +93,12 @@ function opVolgorde(l: Lesgids, volgorde: string[]) {
   return async () => {
     l.pasVlakAan<RekentaalProps>({ geplaatst: [], goed: [], markeer: [] });
     const rij: string[] = [];
+    huidigGoed = volgorde;
     for (const doel of volgorde) {
       window.__phaser = { ...window.__phaser, antwoord: doel };
       const x = await tikDing(l);
+      laatsteTik = x;
+      laatsteStap = rij.length;
       if (x !== doel) {
         schud(l, x);
         await l.wacht(650);
@@ -110,59 +127,34 @@ type Vraag = {
   reden: () => Promise<void>;
   /** Samen uitzoeken: Bliepo wijst aan en legt uit. */
   samen: () => Promise<void>;
-  /** Na het samen uitzoeken nog eens fout: een tip. */
-  tip: () => Promise<void>;
+  /** Eerste fout: wat Bliepo zegt over wat het kind aantikte (+ een hint). */
+  reactie: (gekozen: string, stap: number) => string[];
 };
 
 async function vraagMetHulp(l: Lesgids, v: Vraag) {
   toon(l, v.tafereel);
   await l.wacht(500);
   await v.vraag();
-  if (await v.antwoord()) {
-    await l.zeg("Precies.");
-    await v.reden();
-    await l.wacht(400);
-    return;
-  }
-
-  /* Zoals Synthesis: na één fout de keuze "Nog een keer" of "Hulp". */
-  await l.zeg("Niet helemaal.");
-  await l.zeg("Wil je hulp, of nog een keer proberen?");
-  const keuze = await l.kies(["Nog een keer", "Hulp"], { weetniet: false, direct: true });
-  if (keuze === "Nog een keer") {
-    l.pasVlakAan<RekentaalProps>({ wiebel: null });
-    await v.vraag();
-    if (await v.antwoord()) {
-      await l.zeg("Precies.");
-      await v.reden();
-      await l.wacht(400);
-      return;
-    }
-    await l.zeg("Niet helemaal.", "Laten we het samen uitzoeken.");
-  } else await l.zeg("Goed.", "We doen het samen, stap voor stap.");
-
-  /* Samen uitzoeken. */
-  l.pasVlakAan<RekentaalProps>({ wiebel: null, markeer: [], goed: [], geplaatst: [] });
-  await v.samen();
-  wijs(l);
-  await v.vraag();
-
-  /* Het eindantwoord: 1× fout = een tip, 2× fout = even pauze (zoals Synthesis). */
+  /* De hulp van Synthesis (BOUWREGELS 5.1 en 5.10): eerste fout = reactie en meteen opnieuw; tweede fout = uitleg,
+     het goede antwoord laten zien en door. Geen keuzevraag, geen pauze. */
   for (let poging = 1; ; poging++) {
     if (await v.antwoord()) {
-      await l.zeg("Goed zo.");
-      await v.reden();
+      await l.zeg(bevestig());
       await l.wacht(400);
       return;
     }
     if (poging === 1) {
-      await l.zeg("Niet helemaal.");
-      await v.tip();
+      l.pasVlakAan<RekentaalProps>({ wiebel: null, geplaatst: [] });
+      await l.zeg(...[opener(), ...v.reactie(laatsteTik, laatsteStap)].filter(Boolean));
       continue;
     }
-    await l.zeg("Niet helemaal.", "Zullen we even pauze nemen?", "Dan doen we het straks nog eens.");
-    await l.verder();
-    return l.stopLes();
+    l.pasVlakAan<RekentaalProps>({ wiebel: null, markeer: [], goed: [], geplaatst: [] });
+    await uitlegVoorVraag(l, v.samen);
+    wijs(l);
+    l.pasVlakAan<RekentaalProps>({ goed: [...huidigGoed], geplaatst: huidigGoed.length > 1 ? [...huidigGoed] : [] });
+    await v.reden();
+    await l.wacht(400);
+    return;
   }
 }
 
@@ -177,81 +169,65 @@ async function kennismaken(l: Lesgids) {
     indeling: "rij",
     dingen: [ding("groot", "pannenkoek", "de grote pannenkoek", { maat: 1 }), ding("klein", "pannenkoek", "de kleine pannenkoek", { maat: 0.5 })],
   });
-  await l.zeg("We gaan bakken in de keuken.", "Kijk naar de pannenkoeken.");
-  wijs(l, "groot");
-  await l.zeg("Deze pannenkoek is groot.");
-  wijs(l, "klein");
-  await l.zeg("Deze pannenkoek is klein.");
-  wijs(l);
-  await l.zeg("We leren woorden als groot en klein.", "En vol en leeg, zwaar en licht.", "En lang en kort.");
-  await l.zeg("Kun je dit al?");
+  const opening = beginzinnen("squla-rekentaal")!;
+  await l.zeg(`${opening.zin1} ${opening.zin2}`);
+  zetSynthesisHulp(l);
   const kan = await l.kies(["Ja", "Nee"], { weetniet: false, direct: true });
   if (kan === "Ja") {
     await l.zeg("Fijn. Dan gaan we meteen oefenen.");
     return;
   }
-  await l.zeg("Geen probleem. Ik laat het je zien.");
+  await samenOefenen(l, async () => {
+    // Squla-opbouw: samen beginnen, voordoen, kindhandeling en antwoord,
+    // bevestigen met een reden, daarna dezelfde aanpak met minder hulp.
+    await l.zeg("Ik help je op weg. We kijken samen.");
+    const stap = async (doel: string, vraag: string, tip: string, goed: string, wenk: string) => {
+      await begeleideVraag(l, {
+        toon: () => wijs(l),
+        vraag: [vraag], antwoord: () => tikDing(l), isGoed: (x) => x === doel,
+        noem: (x) => x, goed: async () => { wijs(l, doel); await l.zeg(goed); },
+        samen: async () => { wijs(l, doel); await l.zeg(tip); },
+        reactie: (x) => [`Je tikte op ${naamVan(x)}.`, wenk],
+        toonAntwoord: async () => { wijs(l, doel); await l.zeg(zonderJa(goed)); },
+        tip: [tip], testAntwoord: doel,
+      }, false);
+      wijs(l);
+    };
+    wijs(l, "groot");
+    await l.zeg("Kijk, deze pannenkoek is groot.");
+    wijs(l, "klein");
+    await l.zeg("Deze pannenkoek is klein. Hij is kleiner dan de andere.");
+    await stap("klein", "Zie jij de kleine pannenkoek? Tik die aan.", "Kijk naar beide pannenkoeken. Zoek de kleinste.", "Ja, deze is klein. De andere pannenkoek is groter.", "Kijk welke pannenkoek het minst breed is.");
+    toon(l, { indeling: "rij", dingen: [ding("klein", "pannenkoek", "de kleine pannenkoek", { maat: 0.6 }), ding("groot", "pannenkoek", "de grote pannenkoek", { maat: 0.95 })] });
+    await l.zeg("Nu liggen er andere pannenkoeken. Probeer het maar.");
+    await stap("groot", "Welke pannenkoek is groot? Tik die aan.", "Kijk hoe groot de pannenkoeken zijn. Zoek de grootste.", "Goed zo. Deze pannenkoek is groter dan de andere.", "Kijk welke pannenkoek het breedst is.");
 
-  /* Groot, groter, grootst. */
-  toon(l, {
-    indeling: "rij",
-    dingen: [ding("k", "mand", "de kleine mand", { maat: 0.6 }), ding("m", "mand", "de grotere mand", { maat: 0.85 }), ding("g", "mand", "de grootste mand", { maat: 1.12 })],
-  });
-  await l.zeg("Kijk naar de manden.");
-  wijs(l, "k");
-  await l.zeg("Deze mand is klein.");
-  wijs(l, "m");
-  await l.zeg("Deze mand is groter.");
-  wijs(l, "g");
-  await l.zeg("En deze mand is het grootst.");
-  wijs(l, "k");
-  await l.zeg("De kleine mand is het kleinst.");
-  await l.verder();
-  wijs(l);
+    toon(l, { indeling: "rij", dingen: [ding("vol", "glas", "het volle glas", { vul: 1 }), ding("leeg", "glas", "het lege glas", { vul: 0 })] });
+    wijs(l, "vol");
+    await l.zeg("Kijk in dit glas. Het zit vol sap.");
+    wijs(l, "leeg");
+    await l.zeg("In dit glas zit niets. Dit glas is leeg.");
+    await stap("leeg", "Zie je het lege glas? Tik het aan.", "Zoek het glas waar niets in zit.", "Dat klopt. Het glas is leeg, want er zit niets in.", "Kijk in welk glas geen sap zit.");
+    await l.zeg("Nu ben jij aan de beurt.");
+    await stap("vol", "Welk glas is vol? Tik het aan.", "Kijk in de glazen. Zoek het glas dat vol sap zit.", "Ja, dit glas is vol. Het zit vol sap.", "Kijk in welk glas het sap tot bovenaan komt.");
 
-  /* Vol, half vol, leeg. */
-  toon(l, {
-    indeling: "rij",
-    dingen: [ding("vol", "glas", "het volle glas", { vul: 1 }), ding("half", "glas", "het halfvolle glas", { vul: 0.5 }), ding("leeg", "glas", "het lege glas", { vul: 0 })],
-  });
-  await l.zeg("Kijk naar de glazen sap.");
-  wijs(l, "vol");
-  await l.zeg("Dit glas is vol.");
-  wijs(l, "half");
-  await l.zeg("Dit glas is half vol.");
-  wijs(l, "leeg");
-  await l.zeg("Dit glas is leeg.", "Er zit niets in.");
-  await l.verder();
-  wijs(l);
+    toon(l, { indeling: "weegschaal", zwaar: "meloen", dingen: [ding("meloen", "meloen", "de meloen", { maat: 0.8 }), ding("appel", "appel", "de appel")] });
+    await l.zeg("Kijk naar de weegschaal. De zware kant gaat omlaag.");
+    wijs(l, "meloen");
+    await l.zeg("De meloen hangt lager. Hij is zwaarder dan de appel.");
+    await stap("meloen", "Wat is zwaarder: de meloen of de appel? Tik het aan.", "Kijk welke kant lager hangt. Daar ligt het zwaarste fruit.", "Ja, de meloen is zwaarder. Daarom hangt die kant lager.", "Kijk welke kant van de weegschaal lager hangt.");
+    await l.zeg("Kijk nu naar de andere kant.");
+    await stap("appel", "Wat is lichter: de appel of de meloen? Tik het aan.", "De lichte kant hangt hoger. Kijk welk fruit daar ligt.", "Goed zo. De appel is lichter. Daarom hangt die kant hoger.", "Kijk welke kant van de weegschaal hoger hangt.");
 
-  /* Zwaar en licht. */
-  toon(l, {
-    indeling: "weegschaal",
-    zwaar: "meloen",
-    dingen: [ding("meloen", "meloen", "de meloen", { maat: 0.8 }), ding("appel", "appel", "de appel")],
+    toon(l, { indeling: "onder", dingen: [ding("lang", "broodje", "het lange broodje", { lengte: 620 }), ding("kort", "broodje", "het korte broodje", { lengte: 300 })] });
+    await l.zeg("De broodjes beginnen bij dezelfde streep.");
+    wijs(l, "lang");
+    await l.zeg("Dit broodje loopt verder door. Het is langer.");
+    await stap("kort", "Welk broodje is korter? Tik het aan.", "Kijk waar de broodjes eindigen. Het korte broodje stopt eerder.", "Ja, dit broodje is korter. Het stopt eerder dan het andere.", "Kijk welk broodje als eerste ophoudt.");
+    await l.zeg("Nu mag jij het proberen.");
+    await stap("lang", "Welk broodje is langer? Tik het aan.", "Begin bij de streep. Kijk welk broodje verder doorloopt.", "Dat klopt. Dit broodje loopt verder door. Het is langer.", "Kijk welk broodje het verst doorloopt.");
+    await l.zeg("Nu ga je verder met nieuwe plaatjes. Probeer het maar.");
   });
-  await l.zeg("Dit is een weegschaal.");
-  await l.wacht(900);
-  wijs(l, "meloen");
-  await l.zeg("De meloen is zwaar.", "Die kant zakt naar beneden.");
-  wijs(l, "appel");
-  await l.zeg("De appel is licht.", "Die kant gaat omhoog.");
-  await l.verder();
-  wijs(l);
-
-  /* Lang en kort. */
-  toon(l, {
-    indeling: "onder",
-    dingen: [ding("lang", "broodje", "het lange broodje", { lengte: 620 }), ding("kort", "broodje", "het korte broodje", { lengte: 300 })],
-  });
-  await l.zeg("Kijk naar de broodjes.");
-  wijs(l, "lang");
-  await l.zeg("Dit broodje is lang.");
-  wijs(l, "kort");
-  await l.zeg("Dit broodje is kort.");
-  await l.verder();
-  wijs(l);
-  await l.zeg("Nu ga jij het doen.");
 }
 
 function vragenKeuken(l: Lesgids): Vraag[] {
@@ -269,7 +245,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         await l.zeg("Deze pannenkoek is groot.", "Dus deze pannenkoek is groter.");
         wijs(l);
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welke pannenkoek is groter?"),
+      reactie: () => ["Die pannenkoek is kleiner dan de andere.", "Vergelijk de randen: de brede pannenkoek reikt aan beide kanten verder."],
     },
     /* 2. Kleiner, van twee. */
     {
@@ -285,7 +261,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("De kleine beker is kleiner.");
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welke beker is kleiner?"),
+      reactie: () => ["Die beker is groter dan de andere.", "Vergelijk de bekers naast elkaar: de kleine beker is niet zo hoog en niet zo breed."],
     },
     /* 3. Vol. */
     {
@@ -301,7 +277,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("Vol betekent: er past niets meer bij.");
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welk glas is vol?"),
+      reactie: () => ["In dat glas zit niets.", "Let op het glas met sap tot bovenaan."],
     },
     /* 4. Leeg. */
     {
@@ -317,7 +293,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("Een glas zonder sap is leeg.");
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welk glas is leeg?"),
+      reactie: () => ["In dat glas zit sap.", "Kijk naar het glas zonder sap."],
     },
     /* 5. Zwaarder: de kant die zakt. */
     {
@@ -334,7 +310,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("Wat naar beneden zakt, is zwaarder.");
       },
-      tip: () => l.zeg("Kijk welke kant naar beneden zakt.", "Wat is zwaarder?"),
+      reactie: () => ["De appel ligt aan de kant die omhoog gaat.", "Wat zwaarder is, zakt naar beneden."],
     },
     /* 6. Lichter: de kant die omhoog gaat. */
     {
@@ -350,7 +326,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("Wat omhooggaat, is lichter.");
       },
-      tip: () => l.zeg("Kijk welke kant omhooggaat.", "Wat is lichter?"),
+      reactie: () => ["De kant van de zak meel zakt naar beneden.", "Kijk welke kant omhoog gaat."],
     },
     /* 7. Langer. */
     {
@@ -366,7 +342,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         await l.zeg("Deze sliert gaat verder door.");
         await l.zeg("Die is dus langer.");
       },
-      tip: () => l.zeg("Kijk waar de slierten ophouden.", "Welke sliert is langer?"),
+      reactie: () => ["Die sliert houdt snel op.", "Volg met je vinger elke sliert naar rechts. De lange sliert gaat het verst door."],
     },
     /* 8. Korter. */
     {
@@ -383,7 +359,7 @@ function vragenKeuken(l: Lesgids): Vraag[] {
         wijs(l);
         await l.zeg("De korte sliert is korter.");
       },
-      tip: () => l.zeg("Kijk waar de slierten ophouden.", "Welke sliert is korter?"),
+      reactie: () => ["Die sliert loopt verder door.", "Volg met je vinger elke sliert naar rechts tot waar hij stopt. De korte sliert stopt het eerst."],
     },
   ];
 }
@@ -408,7 +384,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "g");
         await l.zeg("En deze mand is het grootst.");
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welke mand is het grootst?"),
+      reactie: (x) => [x === "k" ? "Die mand is de kleinste." : "Die mand is groter dan 1 andere mand, maar niet de grootste.", "Zoek de mand die het hoogst en het breedst is."],
     },
     /* 10. Half vol, van drie. */
     {
@@ -428,7 +404,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "half");
         await l.zeg("Het sap in dit glas komt tot de helft.");
       },
-      tip: () => l.zeg("Kijk hoe hoog het sap komt.", "Welk glas is half vol?"),
+      reactie: (x) => [x === "vol" ? "Dat glas is helemaal vol." : "Dat glas is leeg.", "Kijk naar het glas waar het sap tot de helft komt."],
     },
     /* 11. Het kleinst, van drie. */
     {
@@ -448,7 +424,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "k");
         await l.zeg("En deze appel is het kleinst.");
       },
-      tip: () => l.zeg("Kijk nog eens goed.", "Welke appel is het kleinst?"),
+      reactie: (x) => [x === "g" ? "Die appel is de grootste." : "Die appel is groter dan 1 andere appel.", "Zoek de appel met de kleinste rondte."],
     },
     /* 12. Het langst, van drie. */
     {
@@ -469,7 +445,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "l");
         await l.zeg("Dit broodje gaat het verst door.", "Het is het langst.");
       },
-      tip: () => l.zeg("Kijk waar de broodjes ophouden.", "Welk broodje is het langst?"),
+      reactie: (x) => [x === "k" ? "Dit broodje houdt als eerste op." : "Dit is niet het langste broodje.", "Kijk welk broodje het verst doorloopt."],
     },
     /* 13. Groot is niet altijd zwaar. */
     {
@@ -489,7 +465,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         await l.zeg("De kant met de meloen zakt naar beneden.");
         await l.zeg("Dus de meloen is zwaarder.");
       },
-      tip: () => l.zeg("Kijk welke kant naar beneden zakt.", "Wat is zwaarder?"),
+      reactie: () => ["De mand is groot, maar hij is leeg. Zijn kant gaat omhoog.", "Kijk welke kant omlaag zakt."],
     },
     /* 14. Het kortst, van drie. */
     {
@@ -510,7 +486,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "k");
         await l.zeg("Dit broodje is het kortst.");
       },
-      tip: () => l.zeg("Kijk waar de broodjes ophouden.", "Welk broodje is het kortst?"),
+      reactie: (x) => [x === "l" ? "Dit broodje is het langste." : "Dit is niet het kortste broodje.", "Kijk welk broodje als eerste ophoudt."],
     },
     /* 15. Op volgorde: appels. */
     {
@@ -531,7 +507,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "g");
         await l.zeg("Deze appel is het grootst.", "Die komt als laatste.");
       },
-      tip: () => l.zeg("Begin met de kleinste appel."),
+      reactie: (_x, stap) => (stap === 0 ? ["Dat is niet de kleinste appel.", "Begin met de kleinste."] : stap === 1 ? ["Dat is niet de middelste appel.", "Na de kleinste komt de middelste."] : ["Die komt niet als laatste.", "De grootste appel komt als laatste."]),
     },
     /* 16. Op volgorde: bekers. */
     {
@@ -552,7 +528,7 @@ function vragenPicknick(l: Lesgids): Vraag[] {
         wijs(l, "g");
         await l.zeg("Deze beker is het grootst.", "Die komt als laatste.");
       },
-      tip: () => l.zeg("Begin met de kleinste beker."),
+      reactie: (_x, stap) => (stap === 0 ? ["Dat is niet de kleinste beker.", "Begin met de kleinste."] : stap === 1 ? ["Dat is niet de middelste beker.", "Na de kleinste komt de middelste."] : ["Die komt niet als laatste.", "De grootste beker komt als laatste."]),
     },
   ];
 }
@@ -577,7 +553,7 @@ const rekentaal: Lesdraaiboek = {
     for (const v of vragenPicknick(l)) await vraagMetHulp(l, v);
 
     const tik = l.kaart();
-    await l.zeg(l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je kent nu veel rekenwoorden.", "Tik op de kaart om hem af te vinken.");
+    await l.zeg(l.naam && naamMag(l) ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.", "Je kent nu veel rekenwoorden.", "Tik op de kaart om hem af te vinken.");
     await tik;
   },
 };

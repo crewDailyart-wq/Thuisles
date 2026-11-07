@@ -36,7 +36,7 @@ export const SCHERM: Record<string, { x: number; y: number; b: number }> = {
 };
 
 export type Ding =
-  /** Een wijzerklok; `u` 1–12, `m` 0–59. `nadruk`: die wijzer even oranje (samen kijken). */
+  /** Een wijzerklok; `u` 1–12, `m` 0–59. `nadruk`: die wijzer even met zachte kleur (samen kijken). */
   | { t: "wijzer"; u: number; m: number; kleur: Kl; nadruk?: "uur" | "min" }
   /** Een digitale klok met deze tijd ("07:00"). */
   | { t: "digi"; tekst: string; kleur: Kl }
@@ -103,6 +103,8 @@ const LETTER = `"Fredoka", "Work Sans", system-ui, sans-serif`;
 
 const KLOK_RAND = 227; /* Klokje: straal 215 + 12 rand */
 const KLOK_R = 215;
+/* De minutenwijzer is hier korter dan in de Synthesis-klok, zodat hij de getallen nooit bedekt (Sara, 6 november 2026). */
+const MIN_LANG_KORT = 0.62;
 const klokBeelden = new Map<string, HTMLImageElement>();
 const klokSleutel = (u: number, m: number) => `${u % 12}:${m}`;
 
@@ -124,7 +126,7 @@ export function laadKlokken(): Promise<void> {
     const alle: Promise<void>[] = [];
     for (let u = 0; u < 12; u++) {
       for (const m of KLOK_MINUTEN) {
-        flushSync(() => root.render(createElement(Klokje, { tijd: u * 60 + m, maat: 440 })));
+        flushSync(() => root.render(createElement(Klokje, { tijd: u * 60 + m, maat: 440, kort: true })));
         const svg = host.querySelector("svg");
         if (!svg) continue;
         svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
@@ -151,20 +153,59 @@ export function klokPlaatje(c: C, u: number, m: number, cx: number, cy: number, 
 
 function wijzerklok(c: C, d: Extract<Ding, { t: "wijzer" }>) {
   klokPlaatje(c, d.u, d.m, 110, 110, 220);
-  if (!d.nadruk) return;
-  /* de zachte pil van Synthesis om de wijzer waar het nu om gaat */
+  /* Het oplichten van de aangewezen wijzer is geen vlak op de klok meer (Sara, 6 november 2026): het is een aparte laag
+     met alleen de glow langs de rand van de wijzer zelf (`tekenWijzerGloed`), die het vlak zacht laat pulseren. */
+}
+
+/** De maten van de aangewezen wijzer in de punten van het ding (220 × 220). */
+function wijzerMaat(d: Extract<Ding, { t: "wijzer" }>) {
   const k = 110 / KLOK_RAND;
   const uur = d.nadruk === "uur";
   const hoek = uur ? ((d.u % 12) + d.m / 60) * 30 : d.m * 6;
-  const lengte = (uur ? 0.48 : 0.8) * KLOK_R * k;
-  const breed = (uur ? 0.076 : 0.046) * KLOK_R * k * 2.6;
+  return { uur, hoek: (hoek * Math.PI) / 180, lengte: (uur ? 0.48 : MIN_LANG_KORT) * KLOK_R * k, dik: (uur ? 0.076 : 0.046) * KLOK_R * k };
+}
+
+/** De punt van de wijzer met `nadruk`, in de punten van het ding (220 × 220), of null. */
+export function wijzerPunt(d: Ding): { x: number; y: number } | null {
+  if (d.t !== "wijzer" || !d.nadruk) return null;
+  const { hoek, lengte } = wijzerMaat(d);
+  return { x: 110 + Math.sin(hoek) * lengte, y: 110 - Math.cos(hoek) * lengte };
+}
+
+/** Het ding heeft een aangewezen wijzer: dan krijgt alleen die wijzer een glow (geen gloed om de hele klok). */
+export const heeftWijzerGloed = (d: Ding) => d.t === "wijzer" && !!d.nadruk;
+
+/**
+ * Oplichten (BOUWREGELS 7.9): een sterke glow langs de rand van de wijzer zelf, in zijn eigen kleur (kleine wijzer
+ * oranje, grote wijzer paars), zonder vlak of vorm eromheen. Aparte laag (transparant), zodat hij kan pulseren.
+ */
+export function tekenWijzerGloed(c: C, d: Extract<Ding, { t: "wijzer" }>) {
+  if (!d.nadruk) return;
+  const { uur, hoek, lengte, dik } = wijzerMaat(d);
+  const kleur = uur ? "#ff8a1f" : "#a05cff";
+  /* shadowBlur schaalt niet mee met de tekening (TX): dat doen we zelf */
+  const sc = c.getTransform().a || 1;
+  const begin = lengte * 0.22;
   c.save();
   c.translate(110, 110);
-  c.rotate((hoek * Math.PI) / 180);
-  c.fillStyle = uur ? "rgba(222, 150, 95, 0.42)" : "rgba(160, 120, 230, 0.32)";
-  c.beginPath();
-  c.roundRect(-breed / 2, -(lengte + 0.05 * KLOK_R * k), breed, lengte + 0.15 * KLOK_R * k, breed / 2);
-  c.fill();
+  c.rotate(hoek);
+  c.lineCap = "round";
+  c.strokeStyle = kleur;
+  c.shadowColor = kleur;
+  for (const [blur, alfa] of [[46, 0.55], [30, 0.85], [18, 1], [9, 1], [4, 1]] as const) {
+    c.shadowBlur = blur * sc;
+    c.globalAlpha = alfa;
+    c.lineWidth = dik * 0.35;
+    c.beginPath();
+    c.moveTo(0, 0);
+    c.lineTo(0, -begin);
+    c.stroke();
+    c.lineWidth = dik;
+    c.beginPath();
+    c.moveTo(0, -begin);
+    c.lineTo(0, -lengte);
+    c.stroke();
+  }
   c.restore();
 }
 

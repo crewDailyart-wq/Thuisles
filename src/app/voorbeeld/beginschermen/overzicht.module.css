@@ -1,0 +1,39 @@
+.pagina { min-height: 100dvh; background: #f3f5f8; color: #202c3c; padding: 36px max(20px, calc((100vw - 1120px) / 2)); font-family: Arial, sans-serif; line-height: 1.5; }
+.kop { max-width: 900px; margin-bottom: 28px; }
+.kop h1 { font-size: clamp(26px, 4vw, 36px); line-height: 1.15; font-weight: 700; margin: 8px 0 18px; }
+.kop p { margin-bottom: 12px; }
+.stappen { list-style: decimal; padding-left: 22px; margin: 18px 0; }
+.stappen li { margin: 8px 0; }
+.previewkop { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; margin-top: 22px; }
+.previewkop h3 { font-size: 18px; font-weight: 700; }
+.knop[aria-current="true"] { background: #092d51; outline: 3px solid #95bee5; outline-offset: 3px; }
+.bovenregel { color: #53657c; font-size: 12px; font-weight: 700; letter-spacing: .05em; }
+.filters { display: flex; flex-wrap: wrap; align-items: end; gap: 16px; margin-bottom: 22px; }
+.filters label { display: grid; gap: 6px; font-weight: 700; font-size: 14px; flex: 1 1 250px; }
+.filters input, .filters select { min-height: 46px; width: 100%; border: 1px solid #8995a6; border-radius: 6px; padding: 10px; background: white; font: inherit; font-weight: 400; color: #202c3c; }
+.filters p { padding-bottom: 10px; }
+.lijst { display: grid; gap: 24px; }
+.les { background: white; border: 1px solid #d5dce5; border-radius: 12px; padding: 24px; scroll-margin-top: 20px; }
+.leskop { display: flex; justify-content: space-between; align-items: start; gap: 18px; }
+.les h2 { font-size: 23px; font-weight: 700; margin: 4px 0; }
+.id { color: #637085; font-size: 12px; overflow-wrap: anywhere; }
+.zinnen { display: grid; grid-template-columns: 1.4fr 1fr; gap: 24px; margin: 22px 0; padding: 20px; background: #f0f5fc; border-radius: 8px; }
+.zinnen h3 { font-size: 12px; font-weight: 700; color: #53657c; margin-bottom: 8px; }
+.zinnen p { font-size: 20px; line-height: 1.5; }
+.bewerker summary { cursor: pointer; font-size: 20px; }
+.bewerker summary small { display: block; font-size: 12px; color: #164b83; margin-top: 10px; text-decoration: underline; }
+.bewerker form, .wens form { display: grid; gap: 10px; margin-top: 16px; }
+.bewerker label, .wens label { font-size: 14px; font-weight: 700; }
+.bewerker textarea, .wens textarea { width: 100%; min-height: 110px; resize: vertical; border: 1px solid #8995a6; border-radius: 6px; padding: 12px; background: white; color: #202c3c; font: inherit; font-size: 18px; }
+.bewerker .knop, .wens .knop { justify-self: start; }
+.wens { border: 1px solid #cbd5e1; padding: 16px; border-radius: 8px; margin: 0 0 22px; }
+.wens summary { cursor: pointer; font-weight: 700; min-height: 28px; }
+.wens p { margin-top: 12px; }
+.melding { background: #e9f4ec; border-left: 4px solid #307c44; padding: 14px; margin-top: 16px; }
+.acties { display: flex; gap: 18px; flex-wrap: wrap; align-items: center; }
+.knop { display: inline-flex; align-items: center; text-decoration: none; min-height: 46px; border: 0; border-radius: 6px; padding: 10px 18px; background: #164b83; color: white; cursor: pointer; font-size: 15px; font-weight: 700; }
+.link { display: inline-flex; align-items: center; min-height: 44px; color: #164b83; text-decoration: underline; cursor: pointer; background: none; border: 0; font-size: 14px; }
+.pagina :is(button, a, input, select, textarea, summary):focus-visible { outline: 3px solid #cb7200; outline-offset: 4px; }
+.scherm { display: block; width: 100%; aspect-ratio: 16 / 10; margin-top: 20px; border: 0; border-radius: 8px; background: #081b47; }
+.bijschrift { margin-top: 10px; color: #53657c; font-size: 13px; }
+@media (max-width: 650px) { .pagina { padding: 24px 14px; } .les { padding: 16px; } .leskop { flex-direction: column; gap: 4px; } .zinnen { grid-template-columns: 1fr; gap: 18px; padding: 16px; } .scherm { aspect-ratio: 390 / 844; } }

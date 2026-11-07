@@ -1,0 +1,27 @@
+{
+ "squla-splits-delen-1": {
+  "onderwerp": "Splitsen",
+  "oordeel": "open",
+  "opmerking": "Nee-route en na een fout antwoord opgenomen (alle zinnen in de lijst). Op alle foto's staat GEEN rondje: bij 'Elk bakje krijgt er steeds 1 bij', 'Tel wat er in 1 bakje ligt' en 'In de bakjes liggen 8 en 0' (na een fout) wijst Bliepo bakjes aan, maar de bakjes krijgen geen rondje en geen oplichten (de code zet bij Delen nergens rondje of licht). Alleen een korte rondje bij elke knikker die in een bakje valt (420 ms) staat in de code; die is op de foto's niet te zien. Niet gerepareerd: een rondje om 'het bakje' vraagt een nieuw onderdeel in het sleepvlak (bestand van H2). Vraag voor Sara: moet 'Tel wat er in 1 bakje ligt' een rondje om 1 bakje krijgen? Foto's tonen soms al de volgende zin (script is traag), dus 'te laat' is niet te beoordelen."
+ },
+ "squla-tellen-fruit-1": {
+  "onderwerp": "Tellen",
+  "oordeel": "open",
+  "opmerking": "Nee-route: bij '5.' staat op de foto 1 rondje om de vijfde appel (goed, 1 tegelijk), met het rondje licht over de appel eronder heen. 'Begin bij 10. Tik steeds op de appel met de kring': 1 rood rondje om de goede appel, naast de witte kring (blijft staan tijdens de opdracht, hij wijst aan waar de opdracht over gaat). '11.' en '12.': geen rondje op de foto, wel het getal boven de appel. GEVONDEN in de code: bij het samen tellen is de stap tussen twee appels (90-260 ms) korter dan het rondje (420 ms), dus 2 of 3 rondjes tegelijk. GEREPAREERD in squla-tellen-holo.tsx (rondjeKort: het vorige rondje gaat weg als het volgende komt). Niet op een foto bevestigd: een schermfoto kost ongeveer 0,4 s, te traag voor rondjes van 0,42 s. Na een fout antwoord: foto's staan erbij; geen rondje gezien bij 'Hoeveel peren zie je'."
+ },
+ "squla-tellen-telrij-1": {
+  "onderwerp": "Tellen",
+  "oordeel": "open",
+  "opmerking": "Nee-route: na 'We doen het samen' komt direct de vraag 'Welk huisnummer komt na 34? Sleep het goede huis naar de lege plek.' zonder uitleg of voorbeeld (geen 6 stappen van BOUWREGELS 4.4; vraag voor Sara of dat zo moet). Op de foto's geen rondje (ook niet om 34 of de lege plek; bij een vraag is dat goed: het verklapt anders iets). Na een fout antwoord komt de vraag 'Zie je waar de ontbrekende huisnummers horen? Ja/Nee' (hulp), ook zonder rondje. Rondje-timing dus niet te beoordelen: er wordt in de opgenomen stappen niets aangewezen."
+ },
+ "squla-meer-minder-evenveel3-1": {
+  "onderwerp": "Meer-minder",
+  "oordeel": "open",
+  "opmerking": "Nee-route: 'Elke staaf is 10', 'Bij 24 zie je 2 staven en 4 losse blokjes', 'Bij 8 zie je geen staaf, alleen 8 losse blokjes', 'Zijn er evenveel staven, dan tel je de losse blokjes erbij'. Op de foto's staat GEEN rondje; wel een blauw lichtvlak onder het potje 24 bij de zin 'Bij 8 zie je geen staaf' (mogelijk is de foto een zin te laat, niet zeker). Bliepo noemt staven, losse blokjes en potjes (24, 8) maar niets krijgt een rondje. Vraag 'Zet de potjes op volgorde': geen rondje (goed). Niet gerepareerd: eerst vraag aan Sara/controleur of het lichtvlak zo bedoeld is. Na een fout antwoord: potje blijft op zijn plek, geen rondje gezien."
+ },
+ "squla-rekenmix-mix1-1": {
+  "onderwerp": "Rekenmix",
+  "oordeel": "open",
+  "opmerking": "Nee-route: 'Tel maar mee' en '1, 2, 3, 4': de geteld appels krijgen een rood getal (1 tot 4) erboven; op de foto's geen rondje (de code zet 450 ms rondjes, te kort voor de foto's; zie Tellen: stap korter dan het rondje geeft meer rondjes tegelijk, niet gecontroleerd voor Rekenmix, bestand van H2). Vraag 'Tel de appels. Hoeveel zijn het er?': geen rondje (goed). Na een fout antwoord: 'Tel daarna door tot het laatste' en 'Het zijn er 7': geen rondje gezien."
+ }
+}

@@ -11,7 +11,11 @@
  *
  * (meer-minder-8046 is een filmpje: geen les.)
  *
- * De hulp is de vaste hulp van Bliepo (squla-hulp.ts). Squla zegt bij deze
+ * De hulp is die van Synthesis (4 november 2026, BOUWREGELS 5.1 en 5.10): goed = kort en
+ * door; eerste fout = een korte reactie op wat het kind koos, met een hint die bij de
+ * vraag past; tweede fout = Bliepo laat het goede antwoord zien (tellen, het goede
+ * kaartje oplichten, de kaarten in de goede volgorde) en het kind gaat door.
+ * Squla zegt bij deze
  * oefeningen niets bij een fout (alleen rood en groen). Bliepo's uitleg is
  * daarom de vaste hulp uit de Synthesis-lessen: samen tellen in beeld (rij
  * voor rij, met het getal achter elke rij) of de groepjes naast elkaar
@@ -22,6 +26,7 @@
  * Alles in de hologramstijl (holo/basis.ts), in Phaser (HARDE REGEL 7).
  */
 
+import { bevestig, krijgtVervolgvraag, zetSynthesisHulp } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
@@ -177,7 +182,7 @@ function opgaveVan(id: string, q: Vraag): MMOpgave {
 function toonOpgave(l: Lesgids, st: Stand, id: string, o: MMOpgave, test: string[] | null = null) {
   if (st.huidig === id) return;
   st.huidig = id;
-  zet(l, { opgave: o, tel: null, bordjes: null, plekGoed: null, staven: false, hand: false, actief: false, test });
+  zet(l, { opgave: o, tel: null, bordjes: null, plekGoed: null, zetOp: null, staven: false, hand: false, actief: false, test });
 }
 
 /* ---------- samen tellen ---------- */
@@ -194,9 +199,9 @@ async function telSamen(l: Lesgids, v: Vw, groep: MMGroep, vak: number): Promise
   const isDoos = groep.blokken.some((b) => b.doos);
   const rijen = groep.blokken.flatMap((b) => b.rijen);
   const per = rijen[0];
-  if (isDoos) await l.zeg("We tellen samen.", `In elk doosje zitten er ${g(6, v.k)}.`);
-  else if (rijen.slice(0, -1).every((r) => r === per) && (per === 5 || per === 10)) await l.zeg("We tellen samen.", `In elke rij staan er ${g(per, v.k)}.`);
-  else await l.zeg("We tellen samen, rij voor rij.");
+  if (isDoos) await l.zeg(`In een vol doosje zitten ${g(6, v.k)} ${v.naam}.`, "Ik tel eerst de volle doosjes.");
+  else if (rijen.slice(0, -1).every((r) => r === per) && (per === 5 || per === 10)) await l.zeg(`In een volle rij staan ${g(per, v.k)} ${v.naam}.`, "Zo kan ik per rij springen.");
+  else await l.zeg(`De rijen met ${v.naam} zijn niet even lang.`, "Daarom tel ik elke rij apart.");
   let geteld = 0;
   const stop = Math.max(1, e.length - 1);
   for (let r = 0; r < stop; r++) {
@@ -206,7 +211,7 @@ async function telSamen(l: Lesgids, v: Vw, groep: MMGroep, vak: number): Promise
     }
     await l.zeg(`${g(e[r], v.k)}.`);
   }
-  await l.zeg(`Tel jij verder vanaf ${g(e[stop - 1], v.k)}?`);
+  if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${g(e[stop - 1], v.k)}?`);
 }
 
 /**
@@ -214,9 +219,9 @@ async function telSamen(l: Lesgids, v: Vw, groep: MMGroep, vak: number): Promise
  * op) en zet het getal op de hoek. `vakken` = de kaarten in de volgorde van
  * het vlak (de voorbeeldgroep eerst).
  */
-async function kaartenTellen(l: Lesgids, v: Vw, aantallen: number[], metVoorbeeld: boolean) {
+async function kaartenTellen(l: Lesgids, v: Vw, aantallen: number[], metVoorbeeld: boolean, slot = "Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.") {
   const bordjes: (number | null)[] = aantallen.map(() => null);
-  await l.zeg("We tellen samen.");
+  await l.zeg(`Ik tel de ${v.naam} op elke kaart.`);
   for (let j = 0; j < aantallen.length; j++) {
     const e = einden(kaartGroep(v, aantallen[j]));
     for (const eind of e) {
@@ -228,24 +233,29 @@ async function kaartenTellen(l: Lesgids, v: Vw, aantallen: number[], metVoorbeel
     speelLesgeluid("tik");
     await l.zeg(metVoorbeeld && j === 0 ? `Bovenaan zijn het er ${g(aantallen[j], v.k)}.` : `Hier zijn het er ${g(aantallen[j], v.k)}.`);
   }
-  await l.zeg("Nu zie je hoeveel het er zijn.");
+  await l.zeg(slot);
 }
 
 /** De tientallen als staven onder de getallen. */
 async function stavenLaten(l: Lesgids, getallen: number[]) {
   zet(l, { staven: true });
-  await l.zeg("Kijk, onder elk getal staan staven.", `Elke staaf is ${w(10)}.`);
-  for (const n of getallen) {
+  await l.zeg("Kijk, onder elk getal staan staven.");
+  /* Het rondje (BOUWREGELS 7.8): 1 staaf bij "Elke staaf is 10", daarna de staven en blokjes onder het getal dat Bliepo noemt; steeds maar 1, en weg als hij verdergaat. */
+  zet(l, { wijs: "staaf" });
+  await l.zeg(`Elke staaf is ${w(10)}.`);
+  for (const [i, n] of getallen.entries()) {
     const tien = Math.floor(n / 10);
     const een = n % 10;
     const staven = tien === 1 ? "staaf" : "staven";
-    if (tien === 0) await l.zeg(`Bij ${w(n)} zie je geen staaf, alleen ${w(een)} losse.`);
+    zet(l, { wijs: `staven-${i}` });
+    if (tien === 0) await l.zeg(`Bij ${w(n)} zie je geen staaf, alleen ${w(een)} ${een === 1 ? "los blokje" : "losse blokjes"}.`);
     else if (een === 0) await l.zeg(`Bij ${w(n)} zie je ${w(tien)} ${staven}.`);
-    else await l.zeg(`Bij ${w(n)} zie je ${w(tien)} ${staven} en ${w(een)} losse.`);
+    else await l.zeg(`Bij ${w(n)} zie je ${w(tien)} ${staven} en ${w(een)} ${een === 1 ? "los blokje" : "losse blokjes"}.`);
   }
-  await l.zeg("Meer staven is meer.");
+  zet(l, { wijs: null });
+  await l.zeg("Kijk eerst waar de meeste staven staan. Daar hoort het grootste getal bij.");
   const tientallen = getallen.map((n) => Math.floor(n / 10));
-  if (new Set(tientallen).size < tientallen.length) await l.zeg("Evenveel staven? Kijk dan naar de losse.");
+  if (new Set(tientallen).size < tientallen.length) await l.zeg("Zijn er evenveel staven, dan tel je de losse blokjes erbij.");
 }
 
 /* ---------- één vraag ---------- */
@@ -258,7 +268,7 @@ async function tikKaart(l: Lesgids, st: Stand): Promise<number> {
 }
 
 async function zetOpVolgorde(l: Lesgids, st: Stand): Promise<number[]> {
-  zet(l, { ronde: ++st.ronde, plekGoed: null, actief: true, hand: !st.handGezien });
+  zet(l, { ronde: ++st.ronde, plekGoed: null, zetOp: null, actief: true, hand: !st.handGezien });
   const x = await l.wachtOpVlak<{ soort: string; rij: number[] }>("volgorde");
   st.handGezien = true;
   zet(l, { actief: false, hand: false });
@@ -276,13 +286,13 @@ async function eersteKeer(l: Lesgids, st: Stand, q: Vraag) {
   const eerder = st.gezien.size > 0;
   st.gezien.add(soort);
   if (q.t === "tel") {
-    if (q.vraagt !== "evenveel" && eerder) await l.zeg("Let op, nu vraag ik iets anders.");
+    if (q.vraagt !== "evenveel" && eerder) await l.zeg(`Let op, nu gaat het niet om evenveel, maar om ${q.vraagt}.`);
     return;
   }
   if (q.t === "voorbeeld") await l.zeg("Kijk eerst naar de groep bovenaan.", "Tik dan op een kaart.");
-  else if (q.t === "rij") await l.zeg(eerder ? "Nu iets nieuws." : "Kijk, vier kaarten.", "Sleep ze naar de vakjes.");
-  else if (q.t === "getallen") await l.zeg(eerder ? "Nu iets nieuws." : `Kijk, drie ${DINGNAAM[q.ding]}.`, `Sleep de ${DINGNAAM[q.ding]} naar de vakjes.`);
-  else await l.zeg(eerder ? "Nu iets nieuws." : "Kijk goed.", "Tik op de goede kaart.");
+  else if (q.t === "rij") await l.zeg(eerder ? "Nu zie je 4 kaarten." : "Kijk, 4 kaarten.", "Sleep ze naar de vakjes.");
+  else if (q.t === "getallen") await l.zeg(eerder ? `Nu zie je 3 ${DINGNAAM[q.ding]}.` : `Kijk, 3 ${DINGNAAM[q.ding]}.`, `Sleep de ${DINGNAAM[q.ding]} naar de vakjes.`);
+  else await l.zeg(eerder ? "Nu zoek je de goede kaart." : "Kijk goed naar de kaarten.", "Tik op de goede kaart.");
 }
 
 function vraagZin(q: Vraag): string[] {
@@ -326,23 +336,58 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
     toonOpgave(l, st, id, o);
     await eersteKeer(l, st, q);
     const begin = telBegin(q.groep);
+    let nFout = 0;
+    const naam = q.v.naam;
+    const tip =
+      q.vraagt === "evenveel"
+        ? [`Ik heb al tot ${g(begin, q.v.k)} geteld.`, `Tel de volgende rij erbij en ga zo door tot de laatste ${naam}.`]
+        : [`Ik heb al tot ${g(begin, q.v.k)} geteld. Tel de rest van de ${naam} erbij.`, `Zoek daarna een getal dat ${q.vraagt === "meer" ? "groter" : "kleiner"} is dan het aantal ${naam}.`];
     return squlaVraag<number>(l, {
-      toon: () => toonOpgave(l, st, id, o),
+      synthesis: true,
+      reactie: (x) => {
+        const X = g(x, q.v.k);
+        let zin: string;
+        if (q.vraagt === "evenveel") {
+          if (x === goed - 1) zin = `Bij ${X} mist er 1. Misschien sloeg je er 1 over.`;
+          else if (x === goed + 1) zin = `Bij ${X} heb je er 1 te veel. Misschien telde je er 1 dubbel.`;
+          else if (x < goed && einden(q.groep).includes(x)) zin = `${X} is waar een rij ophoudt. Je telde de laatste rij met ${naam} niet mee.`;
+          else zin = x < goed ? `Er staan meer ${naam} dan ${X}.` : `Er staan niet zo veel ${naam} als ${X}.`;
+        } else if (x === goed) zin = `${X} is precies evenveel als het aantal ${naam}, maar je zoekt een getal dat ${q.vraagt} is.`;
+        else if (q.vraagt === "meer") zin = `${X} is minder dan het aantal ${naam}. Je zoekt een getal dat meer is.`;
+        else zin = `${X} is meer dan het aantal ${naam}. Je zoekt een getal dat minder is.`;
+        return [zin, ...tip];
+      },
+      toonAntwoord: async () => {
+        /* Bliepo telt de rest voor, rij voor rij, vanaf waar het samen tellen stopte. */
+        const e = einden(q.groep);
+        zet(l, { tel: { vak: 0, geteld: begin } });
+        for (const eind of e.filter((x) => x > begin)) {
+          zet(l, { tel: { vak: 0, geteld: eind } });
+          await l.wacht(300);
+          await l.zeg(`${g(eind, q.v.k)}.`);
+        }
+        await l.zeg(`Zo veel ${naam} staan er: ${g(goed, q.v.k)}.`, ...(q.vraagt === "evenveel" ? [] : [`${g(antwoord, q.v.k)} is ${q.vraagt} dan ${g(goed, q.v.k)}.`]));
+        await l.wacht(300);
+      },
+      toon: () => {
+        nFout = 0;
+        toonOpgave(l, st, id, o);
+      },
+      fout: () => {
+        /* Eerste fout: de eerste rijen lichten alvast op, tot waar "begin bij" over gaat. */
+        if (++nFout === 1) zet(l, { tel: { vak: 0, geteld: begin } });
+      },
       vraag: vraagZin(q),
       antwoord: async () => Number(await l.kies(q.keuzes.map(String), { weetniet: false, direct: true })),
       isGoed: (x) => x === antwoord,
       noem: (x) => g(x, q.v.k),
       goed: async () => {
         zet(l, { tel: null });
-        if (q.vraagt === "evenveel") await l.zeg(`Ja! Het zijn er ${g(goed, q.v.k)}.`);
-        else await l.zeg(`Ja! Het zijn er ${g(goed, q.v.k)}.`, `${g(antwoord, q.v.k)} is ${q.vraagt}.`);
+        await l.zeg(bevestig());
         await l.wacht(400);
       },
       samen: () => telSamen(l, q.v, q.groep, 0),
-      tip:
-        q.vraagt === "evenveel"
-          ? [`Begin bij ${g(begin, q.v.k)}.`, "Tel de rest één voor één."]
-          : [`Begin bij ${g(begin, q.v.k)} en tel verder.`, q.vraagt === "meer" ? "Kies dan een getal dat groter is." : "Kies dan een getal dat kleiner is."],
+      tip,
       testAntwoord: antwoord,
     });
   }
@@ -355,7 +400,28 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
     toonOpgave(l, st, id, o, test);
     await eersteKeer(l, st, q);
     const k = q.t === "rij" ? q.v.k : "wit";
+    const rijTekst = goedeRij.map((i) => g(aantallen[i], k)).join(", ");
+    const op = richting === "op";
+    const tipRij = [`Zoek eerst het ${op ? "kleinste" : "grootste"} getal van de ${aantallen.length} en zet dat in het eerste vakje.`];
     return squlaVraag<number[]>(l, {
+      synthesis: true,
+      reactie: (x) => {
+        const p = x.findIndex((i, pos) => i !== goedeRij[pos]);
+        const omgekeerd = x.every((i, pos) => i === goedeRij[goedeRij.length - 1 - pos]);
+        if (omgekeerd) return [`Je legde ${g(aantallen[x[0]], k)} vooraan, dat is het ${op ? "grootste" : "kleinste"} getal.`, ...tipRij];
+        if (p === 0) return [`Je legde ${g(aantallen[x[0]], k)} vooraan. Kijk of er nog een ${op ? "kleiner" : "groter"} getal is.`, ...tipRij];
+        return [`Tot en met ${g(aantallen[x[p - 1]], k)} ligt het goed.`, `Zoek nu het ${op ? "kleinste" : "grootste"} getal van wat nog over is.`];
+      },
+      toonAntwoord: async () => {
+        /* De kaarten gaan terug naar beneden en komen daarna in de goede volgorde in de vakjes. */
+        zet(l, { ronde: ++st.ronde, plekGoed: null, zetOp: null });
+        await l.wacht(500);
+        zet(l, { zetOp: goedeRij });
+        await l.wacht(600);
+        if (q.t === "getallen") zet(l, { staven: true });
+        await l.zeg(`${rijTekst}.`, richting === "op" ? "Elk getal is groter dan het getal ervoor." : "Elk getal is kleiner dan het getal ervoor.");
+        await l.wacht(300);
+      },
       toon: () => toonOpgave(l, st, id, o, test),
       vraag: vraagZin(q),
       antwoord: () => zetOpVolgorde(l, st),
@@ -363,18 +429,17 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
       noem: () => "Deze volgorde",
       goed: async () => {
         zet(l, { goed: { vak: -1, keer: ++st.goed }, plekGoed: null, staven: false, ...(q.t === "rij" ? { bordjes: aantallen } : {}) });
-        const rij = goedeRij.map((i) => g(aantallen[i], k)).join(", ");
-        await l.zeg(`Ja! ${rij}.`, richting === "op" ? "Van minder naar meer." : "Van meer naar minder.");
+        await l.zeg(bevestig());
         await l.wacht(500);
       },
       fout: (x) => zet(l, { plekGoed: x.map((i, p) => i === goedeRij[p]) }),
       samen: async () => {
         zet(l, { ronde: ++st.ronde, plekGoed: null });
         await l.wacht(300);
-        if (q.t === "rij") await kaartenTellen(l, q.v, q.kaarten, false);
+        if (q.t === "rij") await kaartenTellen(l, q.v, q.kaarten, false, "Zet de kaart met het kleinste getal eerst.");
         else await stavenLaten(l, q.getallen);
       },
-      tip: [richting === "op" ? "Begin met de minste." : "Begin met de meeste.", "Die zet je in het eerste vakje."],
+      tip: tipRij,
       testAntwoord: test[0],
     });
   }
@@ -388,7 +453,42 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
   await eersteKeer(l, st, q);
   const n = q.kaarten[goedIdx];
   const k = q.v.k;
+  const naam = q.v.naam;
+  const ander = q.kaarten.filter((_, i) => i !== goedIdx);
+  const meeste = q.wat === "meer" ? "meeste" : "minste";
+  /** Wat er klopt: wat er op de kaart staat en waarom dat het goede antwoord is. */
+  const kern = (): string[] => {
+    if (q.t === "voorbeeld") return [`Op deze kaart zijn er ${g(n, k)}, bovenaan ${g(q.voorbeeld, k)}.`, `${g(n, k)} is ${q.wat} dan ${g(q.voorbeeld, k)}.`];
+    if (q.t === "twee") return [`Op deze kaart zijn er ${g(n, k)}, op de andere ${g(ander[0], k)}.`, `${g(n, k)} is ${q.wat} dan ${g(ander[0], k)}.`];
+    if (q.t === "drie") return [`Op deze kaart liggen er ${g(n, k)}.`, `Op de andere kaarten liggen er ${g(ander[0], k)} en ${g(ander[1], k)}, dus dit zijn de ${meeste}.`];
+    if (q.wat === "evenveel") return [`Op deze kaart zijn er ${g(n, k)}.`, `${g(n, k)} is evenveel als ${w(q.getal)}.`];
+    return [`Op deze kaart zijn er ${g(n, k)}.`, `${g(n, k)} is ${q.wat} dan ${w(q.getal)}.`];
+  };
+  const tipKaart =
+    q.t === "voorbeeld"
+      ? [`Bovenaan zijn het er ${g(q.voorbeeld, k)}.`, `Welk getal zeg je ${q.wat === "meer" ? "later" : "eerder"} dan ${g(q.voorbeeld, k)} als je telt? Dat is ${q.wat}.`]
+      : q.t === "getal"
+        ? [`Kijk naar de getallen op de kaarten.`, q.wat === "evenveel" ? `Zoek de kaart met het getal ${w(q.getal)}.` : `Welk getal zeg je ${q.wat === "meer" ? "later" : "eerder"} dan ${w(q.getal)} als je telt? Dat is ${q.wat}.`]
+        : q.t === "twee"
+          ? [`Kijk bij elke kaart naar het getal.`, `Het getal dat je ${q.wat === "meer" ? "later" : "eerder"} zegt als je telt, is ${q.wat}.`]
+          : [`Kijk naar het getal op alle 3 de kaarten.`, `Het getal dat je ${q.wat === "meer" ? "het laatst" : "het eerst"} zegt als je telt, is ${q.wat === "meer" ? "het grootst" : "het kleinst"}.`];
   return squlaVraag<number>(l, {
+    synthesis: true,
+    reactie: (x) => {
+      const gekozen = q.kaarten[x];
+      let zin: string;
+      if (q.t === "voorbeeld") zin = gekozen === q.voorbeeld ? `Je tikte op ${g(gekozen, k)}. Dat is evenveel als bovenaan.` : `Je tikte op ${g(gekozen, k)}. Dat is ${gekozen > q.voorbeeld ? "meer" : "minder"} dan de ${g(q.voorbeeld, k)} bovenaan.`;
+      else if (q.t === "twee") zin = gekozen === n ? `Je tikte op ${g(gekozen, k)}. De andere kaart heeft hetzelfde.` : `Je tikte op de kaart met ${g(gekozen, k)} ${naam}. Daar zijn er ${q.wat === "meer" ? "minder" : "meer"} dan op de andere kaart.`;
+      else if (q.t === "drie") zin = `Je tikte op de kaart met ${g(gekozen, k)} ${naam}. Kijk of een andere kaart ${q.wat === "meer" ? "meer" : "minder"} heeft.`;
+      else if (q.wat === "evenveel") zin = `Je tikte op ${g(gekozen, k)}. Dat is ${gekozen > q.getal ? "meer" : "minder"} dan ${w(q.getal)}, en jij zoekt evenveel.`;
+      else zin = gekozen === q.getal ? `Je tikte op ${g(gekozen, k)}. Dat is precies evenveel als ${w(q.getal)}, maar jij zoekt ${q.wat}.` : `Je tikte op ${g(gekozen, k)}. Dat is ${gekozen > q.getal ? "meer" : "minder"} dan ${w(q.getal)}.`;
+      return [zin, ...tipKaart];
+    },
+    toonAntwoord: async () => {
+      zet(l, { goed: { vak: goedIdx, keer: ++st.goed }, bordjes: alleAantallen, tel: null, fout: null });
+      await l.zeg(...kern());
+      await l.wacht(400);
+    },
     toon: () => toonOpgave(l, st, id, o),
     vraag: vraagZin(q),
     antwoord: () => tikKaart(l, st),
@@ -396,26 +496,21 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
     noem: () => "Deze kaart",
     goed: async () => {
       zet(l, { goed: { vak: goedIdx, keer: ++st.goed }, bordjes: alleAantallen, tel: null });
-      if (q.t === "voorbeeld") await l.zeg(`Ja! Hier zijn er ${g(n, k)}.`, `Dat is ${q.wat} dan ${g(q.voorbeeld, k)}.`);
-      else if (q.t === "twee") {
-        const ander = q.kaarten[1 - goedIdx];
-        await l.zeg(`Ja! Hier zijn er ${g(n, k)}.`, `Dat is ${q.wat} dan ${g(ander, k)}.`);
-      } else if (q.t === "drie") await l.zeg(`Ja! Hier liggen er ${g(n, k)}.`, q.wat === "meer" ? "Dat zijn de meeste." : "Dat zijn de minste.");
-      else if (q.wat === "evenveel") await l.zeg(`Ja! Hier zijn er ook ${g(n, k)}.`, "Dat is evenveel.");
-      else await l.zeg(`Ja! Hier zijn er ${g(n, k)}.`, `Dat is ${q.wat} dan ${w(q.getal)}.`);
+      await l.zeg(bevestig());
       await l.wacht(500);
     },
     fout: (x) => zet(l, { fout: { vak: x, keer: ++st.fout } }),
     samen: async () => {
       zet(l, { ronde: ++st.ronde });
-      await kaartenTellen(l, q.v, alleAantallen, q.t === "voorbeeld");
+      await kaartenTellen(
+        l,
+        q.v,
+        alleAantallen,
+        q.t === "voorbeeld",
+        q.t === "voorbeeld" ? `Bovenaan zijn het er ${g(q.voorbeeld, k)}. Zoek de kaart waar het er ${q.wat} zijn.` : q.t === "twee" ? "Vergelijk de 2 getallen met elkaar." : q.t === "drie" ? `Zoek het ${q.wat === "meer" ? "grootste" : "kleinste"} van de 3 getallen.` : `Vergelijk elk getal met ${w(q.getal)}.`,
+      );
     },
-    tip:
-      q.t === "voorbeeld"
-        ? [`Bovenaan zijn het er ${g(q.voorbeeld, k)}.`, q.wat === "meer" ? "Welke kaart heeft er meer?" : "Welke kaart heeft er minder?"]
-        : q.t === "getal"
-          ? [`Kijk naar de getallen op de kaarten.`, q.wat === "evenveel" ? `Welk getal is ${w(q.getal)}?` : q.wat === "meer" ? `Welk getal is groter dan ${w(q.getal)}?` : `Welk getal is kleiner dan ${w(q.getal)}?`]
-          : ["Kijk naar de getallen op de kaarten.", q.wat === "meer" ? "Welk getal is het grootst?" : "Welk getal is het kleinst?"],
+    tip: tipKaart,
     testAntwoord: `kaart-${goedIdx}`,
   });
 }
@@ -452,7 +547,7 @@ async function uitlegTel(l: Lesgids, st: Stand, v: Vw, groep: MMGroep, extra?: W
     }
     await l.zeg(`${g(e[r], v.k)}.`);
   }
-  await l.zeg(`Het zijn er ${g(n, v.k)}.`);
+  await l.zeg(`Samen zijn het ${g(n, v.k)} ${v.naam}.`);
   if (extra === "meer") await l.zeg(`${g(n + 1, v.k)} is meer dan ${g(n, v.k)}.`, `${g(n - 1, v.k)} is minder.`);
   else await l.zeg(`Dus ${g(n, v.k)} is evenveel.`);
   zet(l, { tel: null });
@@ -464,7 +559,7 @@ async function uitlegDozen(l: Lesgids, st: Stand) {
   const groep = dozen(3);
   toonOpgave(l, st, "uitleg-tel-dozen-18", { id: "uitleg-tel-dozen-18", soort: "tel", groep });
   await l.wacht(700);
-  await l.zeg("Eieren liggen in doosjes.", `In elk doosje zitten er ${g(6, EIEREN.k)}.`);
+  await l.zeg("Eieren liggen in doosjes.", `In een vol doosje zitten er ${g(6, EIEREN.k)}.`);
   for (let r = 1; r <= 3; r++) {
     for (let k = (r - 1) * 6; k < r * 6; k++) {
       zet(l, { tel: { vak: 0, geteld: k + 1 } });
@@ -530,11 +625,14 @@ function les(d: Lesdef): Lesdraaiboek {
     voorwerpen: MM_VOORWERPEN,
     kaarttekening: KaartMeerMinder,
     async speel(l) {
+      zetSynthesisHulp(l);
       const st: Stand = { huidig: "", goed: 0, fout: 0, ronde: 0, handGezien: false, gezien: new Set() };
       st.huidig = d.start.id;
       l.vlak<MMProps>(SqulaMeerMinder, { opgave: d.start, vooraf: d.vragen.map((q, i) => opgaveVan(`${d.id}-${i + 1}`, q)) });
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: d.welkom,
+        voordoen: true,
+        samen: () => speelVraag(l, `${d.id}-uitleg`, d.vragen[0], st),
         uitleg: async () => {
           /* De uitleg zet zijn eigen beeld neer: de eerste vraag moet daarna zijn beeld weer opnieuw tekenen. */
           st.huidig = "";
@@ -550,7 +648,7 @@ function les(d: Lesdef): Lesdraaiboek {
       let fouten = 0;
       /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
       st.huidig = "";
-      for (const [i, q] of d.vragen.entries()) if (!(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
+      for (const [i, q] of d.vragen.entries()) if (!(voorbeeldAfgerond && i === 0) && !(await speelVraag(l, `${d.id}-${i + 1}`, q, st))) fouten++;
       zet(l, { opgave: null });
       await squlaEind(l, fouten, d.eind);
     },
@@ -645,7 +743,7 @@ const evenveel1_3 = les({
   titel: "Meer, minder, evenveel (nog moeilijker)",
   oefening: "Meer, minder, evenveel 1",
   level: 3,
-  welkom: ["Hier staan twee kaarten met bloemen.", "Op welke kaart zijn er meer bloemen?"],
+  welkom: ["Hier staan 2 kaarten met bloemen.", "Op welke kaart zijn er meer bloemen?"],
   start: { id: "start-evenveel1-3", soort: "kaarten", kaarten: [r5(BLOEMEN, 7), r5(BLOEMEN, 9)] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -722,7 +820,7 @@ const evenveel2_2 = les({
   titel: "De meeste (moeilijker)",
   oefening: "Meer, minder, evenveel 2",
   level: 2,
-  welkom: ["Drie kaarten met appels.", "Waar liggen de minste appels?"],
+  welkom: ["3 kaarten met appels.", "Waar liggen de minste appels?"],
   start: { id: "start-evenveel2-2", soort: "kaarten", kaarten: [r5(APPELS, 12), r5(APPELS, 10), r5(APPELS, 11)] },
   uitleg: async (l, st) => {
     st.huidig = "";
@@ -763,7 +861,7 @@ const evenveel3_1 = les({
   titel: "Meer dan, minder dan",
   oefening: "Meer, minder, evenveel 3",
   level: 1,
-  welkom: ["Drie potjes met een getal.", "Zet de potjes op volgorde, van meer naar minder."],
+  welkom: ["3 potjes met een getal.", "Zet de potjes op volgorde, van meer naar minder."],
   start: { id: "start-evenveel3-1", soort: "getallen", ding: "potje", getallen: [32, 18] },
   uitleg: async (l, st) => {
     st.huidig = "";

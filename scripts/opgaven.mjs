@@ -1151,15 +1151,20 @@ for (const [sleutel, maakZinnen] of Object.entries(GROEPJESMAKER_ZINNEN)) {
   const { readFileSync, readdirSync } = await import("node:fs");
   const map = new URL("../src/components/les/lessen/", import.meta.url);
   const inDraaiboeken = new Set();
+  const sjabloonIds = []; // id's die in de code worden samengesteld, bv. `squla-piraat-${level}`
   for (const f of readdirSync(map)) {
     if (!/\.tsx?$/.test(f) || f === "index.ts") continue;
     const t = readFileSync(new URL(f, map), "utf8");
     for (const m of t.matchAll(/\bid:\s*["`]([a-z0-9-]+)["`],\s*\n\s*titel:/g)) inDraaiboeken.add(m[1]);
+    for (const m of t.matchAll(/\bid:\s*`([a-z0-9-]*\$\{[^`]*)`,\s*\n\s*titel[:,]/g)) {
+      const delen = m[1].split(/\$\{[^}]*\}/).map((d) => d.replace(/[.*+?^$()|[\]\\]/g, "\\$&"));
+      sjabloonIds.push(new RegExp("^" + delen.join("[a-z0-9]+") + "$"));
+    }
   }
   const { LESCATALOGUS } = await import("../src/lib/lessen/catalogus.ts");
   const inCatalogus = new Set(LESCATALOGUS.map((l) => l.id));
   for (const id of inDraaiboeken) if (!inCatalogus.has(id)) fouten.push(`Les "${id}" staat niet in src/lib/lessen/catalogus.ts.`);
-  for (const id of inCatalogus) if (!inDraaiboeken.has(id)) fouten.push(`Les "${id}" uit de catalogus heeft geen draaiboek.`);
+  for (const id of inCatalogus) if (!inDraaiboeken.has(id) && !sjabloonIds.some((r) => r.test(id))) fouten.push(`Les "${id}" uit de catalogus heeft geen draaiboek.`);
   console.log(`Lessen: ${inCatalogus.size} in de catalogus, ${inDraaiboeken.size} draaiboeken.`);
 }
 

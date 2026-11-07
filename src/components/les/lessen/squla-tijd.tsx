@@ -12,14 +12,15 @@
  * de fout gemaakte vragen aan het eind herhaalt; zijn er minder dan drie fout,
  * dan vult de les aan met vaste vragen). Zo heeft elke les 15 opgaven.
  *
- * De hulp is overal die van squla-hulp.ts (zoals Synthesis): na één fout
- * "Wil je hulp, of nog een keer proberen?", dan samen uitzoeken, en na twee
- * keer fout even pauze. Geen "Weet ik niet".
+ * De hulp is overal die van squla-hulp.ts (zoals Synthesis, 4 november 2026):
+ * na 1 fout een korte reactie en meteen opnieuw; na 2 keer fout uitleg, het
+ * goede antwoord in beeld en door. Geen keuzevraag, geen pauze en geen weet-ik-niet-knop.
  *
  * Groep 3 leest nog niet: Bliepo zegt elke vraag en noemt de keuzes als het
  * woorden zijn; kaartjes en knoppen lezen hun naam voor bij aanwijzen.
  */
 
+import { krijgtVervolgvraag, bevestig, zetSynthesisHulp, terugAankondiging, terugAfsluiting } from "./squla-uitleg";
 import { laadKlokken } from "../vlakken/squla-klok-tekenen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { squlaBegin, squlaEind, squlaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
@@ -33,6 +34,30 @@ import { TIJD_VOORWERPEN } from "../vlakken/squla-tijd-tekeningen";
 let teller = 0;
 const volgend = () => ++teller;
 const Hoofd = (s: string) => s.charAt(0).toUpperCase() + s.slice(1);
+
+/* Bij een goed antwoord alleen een korte bevestiging uit de gedeelde `bevestig()` (Sara, 4 nov); het waarom zit in het beeld. */
+/** Eerste fout zonder eigen reactie: de tip, zonder de herhaalde vraag aan het eind (BOUWREGELS 3.23). */
+const hint = (tip: string[]) => (tip.length > 1 && tip[tip.length - 1].trim().endsWith("?") ? tip.slice(0, -1) : tip);
+/** Het goede antwoord in woorden, zonder losse vragen erin. */
+const antwoordZinnen = (z: string[]) => z.filter((x) => !x.trim().endsWith("?"));
+const AANTAL = ["Geen", "1", "2", "3", "4"];
+/** Eerste fout bij op volgorde zetten: hoeveel liggen er goed. */
+const telGoed = (n: number, wat: string, tip: string) => {
+  /* wat = "dag" (de-woord) of "kaartje", "plaatje", "getal" (het-woord) */
+  const meer = wat === "dag" ? "dagen" : wat === "getal" ? "getallen" : `${wat}s`;
+  const geen = wat === "dag" ? "Geen enkele dag" : `Geen enkel ${wat}`;
+  return [n === 0 ? `${geen} ligt op de goede plek.` : n === 1 ? `1 ${wat} ligt op de goede plek.` : `${AANTAL[n]} ${meer} liggen op de goede plek.`, tip];
+};
+
+type Mis = Record<string, string[]> | ((x: string) => string[]);
+/** Zet per vraag een eigen reactie op de eerste fout (sleutel = het gekozen antwoord). */
+function metReactie(ops: Opgave[], mis: (Mis | undefined)[]): Opgave[] {
+  return ops.map((op, i) => (l, t) => {
+    const v = op(l, t);
+    const m = mis[i];
+    return m ? { ...v, reactie: typeof m === "function" ? m : (x: string) => m[x] ?? hint(v.tip) } : v;
+  });
+}
 /** Een andere volgorde van de keuzes (bij een vraag die terugkomt). */
 const schuif = <T,>(lijst: T[], keer: boolean) => (keer ? [...lijst.slice(1), lijst[0]] : lijst);
 
@@ -49,18 +74,25 @@ function alsEenBlok<V extends { vraag: string[] }>(v: V): V {
  * meteen goed waren (zoals Squla), aangevuld met vaste vragen (`reserve`).
  * Geeft het aantal vragen dat niet meteen goed was.
  */
-async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[]): Promise<number> {
+async function speelAlles(l: Lesgids, opgaven: Opgave[], reserve: number[], voorbeeldAfgerond = false): Promise<number> {
   let fouten = 0;
   const mis: number[] = [];
-  for (let i = 0; i < opgaven.length; i++) {
-    if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, false))))) {
+  for (let i = voorbeeldAfgerond ? 1 : 0; i < opgaven.length; i++) {
+    if (!(await squlaVraag(l, { ...alsEenBlok(opgaven[i](l, false)), synthesis: true }))) {
       fouten++;
       mis.push(i);
     }
   }
   const terug = [...mis, ...reserve.filter((i) => !mis.includes(i))].slice(0, 3);
-  await l.zeg("Nu komen er nog drie vragen van net terug.");
-  for (const i of terug) if (!(await squlaVraag(l, alsEenBlok(opgaven[i](l, true))))) fouten++;
+  await l.zeg(terugAankondiging(terug.length));
+  let weerFout = 0;
+  for (const i of terug) {
+    if (!(await squlaVraag(l, { ...alsEenBlok(opgaven[i](l, true)), synthesis: true }))) {
+      fouten++;
+      weerFout++;
+    }
+  }
+  if (weerFout) await l.zeg(terugAfsluiting());
   return fouten;
 }
 
@@ -116,6 +148,8 @@ type DagVraag = {
   /** Wat er na het samen uitzoeken in beeld blijft. */
   hulpBeeld: Partial<TreinProps>;
   tip: string[];
+  /** Eerste fout: wat Bliepo zegt over de gekozen dag(en). */
+  reactie?: (gekozen: number[]) => string[];
 };
 
 /** Een vraag met dagkaarten om aan te tikken. */
@@ -138,7 +172,7 @@ function dagVraag(l: Lesgids, o: DagVraag): SqulaVraag<string> {
     noem: (x) => Hoofd(x),
     goed: async () => {
       zetT(l, { goed: [goedId], kaartLicht: [], golf: { id: goedId, n: ++golfNr }, ...(o.naGoed ?? {}) });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => {
@@ -151,12 +185,21 @@ function dagVraag(l: Lesgids, o: DagVraag): SqulaVraag<string> {
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => {
+      const d = o.kaarten.find((k) => kaartId(k) === x);
+      return d && o.reactie ? o.reactie(d) : hint(o.tip);
+    },
+    toonAntwoord: async () => {
+      zetT(l, { fout: [], kaartLicht: [], goed: [goedId], golf: { id: goedId, n: ++golfNr }, ...(o.naGoed ?? {}) });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: goedId,
   };
 }
 
 /** Een vraag met getallen als antwoord (knoppen bij Bliepo). */
-function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number[]; goed: number; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld: Partial<TreinProps>; tip: string[]; naGoed?: Partial<TreinProps> }): SqulaVraag<string> {
+function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number[]; goed: number; vraag: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulpBeeld: Partial<TreinProps>; tip: string[]; naGoed?: Partial<TreinProps>; reactie?: (x: string) => string[] }): SqulaVraag<string> {
   const nr = volgend();
   let naSamen = false;
   return {
@@ -167,7 +210,7 @@ function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number
     noem: (x) => `{${x}:wit}`,
     goed: async () => {
       if (o.naGoed) zetT(l, o.naGoed);
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -176,6 +219,12 @@ function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => (o.reactie ? o.reactie(x) : hint(o.tip)),
+    toonAntwoord: async () => {
+      if (o.naGoed) zetT(l, o.naGoed);
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: String(o.goed),
   };
 }
@@ -195,19 +244,27 @@ function welkeNa(d: number, kaarten: number[]): Opgave {
       naGoed: { trein: [d, a] },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
-        await l.zeg("Kijk naar de hele trein.", "Luister maar.");
+        await l.zeg("Hier komt de hele week voorbij.", "Luister maar.");
         await zegDagen(l, 0, d);
         if (d === 6) {
-          await l.zeg("Zondag is de laatste wagon.", "Daarna begint een nieuwe week.");
-          zetT(l, { licht: [6, 0] });
-          await l.zeg("Welke dag staat vooraan in de trein?");
+          /* Eén rondje tegelijk (BOUWREGELS 7.8): eerst zondag, dan maandag; bij de vraag is het rondje weg (anders wijst het het antwoord aan). */
+          zetT(l, { licht: [6] });
+          await l.zeg("Zondag is de laatste wagon.");
+          zetT(l, { licht: [0] });
+          await l.zeg("Daarna begint de week weer bij maandag.");
+          zetT(l, { licht: [] });
+          if (!krijgtVervolgvraag(l)) await l.zeg("Welke dag staat vooraan in de trein?");
         } else {
           zetT(l, { licht: [d] });
-          await l.zeg(`Welke wagon staat achter ${naam(d)}?`);
+          if (!krijgtVervolgvraag(l)) await l.zeg(`Welke wagon staat achter ${naam(d)}?`);
         }
       },
-      hulpBeeld: { trein: ALLE, licht: d === 6 ? [6, 0] : [d] },
-      tip: d === 6 ? ["Na de laatste dag begint de week opnieuw.", ...vraag] : [`Kijk naar de wagon achter ${naam(d)}.`, ...vraag],
+      hulpBeeld: { trein: ALLE, licht: d === 6 ? [6] : [d] },
+      tip: d === 6 ? ["Na de laatste dag begint de week opnieuw.", ...vraag] : [`Zoek ${naam(d)} en ga 1 wagon verder.`, ...vraag],
+      reactie: ([c]) => [
+        c === d ? `${Naam(d)} is de wagon waar je mee begint.` : c === voor(d) ? `${Naam(c)} hangt vóór ${naam(d)}, niet erachter.` : `Achter ${naam(d)} hangt niet ${naam(c)}.`,
+        d === 6 ? "Na zondag begint de week weer bij de eerste wagon." : `Kijk welke wagon vlak achter ${naam(d)} hangt.`,
+      ],
     });
   };
 }
@@ -225,20 +282,24 @@ function welkeVoor(d: number, kaarten: number[]): Opgave {
       naGoed: { trein: [a, d] },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
-        await l.zeg("Let op! Nu zoeken we de dag ervoor.", "Kijk naar de hele trein.");
+        await l.zeg("Let op! Nu zoeken we de dag ervoor.", "We lopen de hele week langs.");
         if (d === 0) {
           zetT(l, { licht: [0] });
           await l.zeg("Maandag is de eerste wagon.", "Daarvoor was de vorige week.");
-          zetT(l, { licht: [6, 0] });
+          zetT(l, { licht: [6] });
           await l.zeg("Die week eindigde met de laatste wagon.");
         } else {
           await l.zeg("Luister maar.");
           await zegDagen(l, 0, d);
-          await l.zeg(`Welke wagon staat vlak voor ${naam(d)}?`);
+          if (!krijgtVervolgvraag(l)) await l.zeg(`Welke wagon staat vlak voor ${naam(d)}?`);
         }
       },
-      hulpBeeld: { trein: ALLE, licht: d === 0 ? [6, 0] : [d] },
-      tip: d === 0 ? ["Voor maandag was de vorige week. Kijk naar het eind.", ...vraag] : [`Kijk naar de wagon vlak voor ${naam(d)}.`, ...vraag],
+      hulpBeeld: { trein: ALLE, licht: d === 0 ? [0] : [d] },
+      tip: d === 0 ? ["Voor maandag staat geen wagon. Dan hoort de vorige week erbij.", ...vraag] : [`Zoek ${naam(d)} en ga 1 wagon terug.`, ...vraag],
+      reactie: ([c]) => [
+        c === d ? `${Naam(d)} is de wagon waar je mee begint.` : c === na(d) ? `${Naam(c)} hangt ná ${naam(d)}, niet ervoor.` : `Vlak voor ${naam(d)} hangt niet ${naam(c)}.`,
+        d === 0 ? "Voor maandag hangt de laatste wagon van de vorige week." : `Kijk welke wagon vlak voor ${naam(d)} hangt.`,
+      ],
     });
   };
 }
@@ -257,12 +318,13 @@ function eersteDag(): Opgave {
       naGoed: { trein: [0, null, null, null, null, null, null] },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
-        await l.zeg("Kijk naar de hele trein.");
+        await l.zeg("Bekijk de trein van voren naar achteren.");
         zetT(l, { licht: [0] });
         await l.zeg("De eerste dag staat vooraan, vlak achter de locomotief.", "Op die dag begint de school weer.");
       },
       hulpBeeld: { trein: ALLE, licht: [0] },
-      tip: ["Kijk naar de wagon vlak achter de locomotief.", ...vraag],
+      tip: ["Kijk naar de wagon die direct aan de locomotief hangt.", ...vraag],
+      reactie: ([c]) => [c === 6 ? "Zondag is de laatste dag van de week, niet de eerste." : `${Naam(c)} is niet de eerste dag.`, "De eerste dag hangt direct aan de locomotief."],
     });
   };
 }
@@ -275,16 +337,17 @@ function laatsteDag(): Opgave {
       kaarten: schuif([[5], [1], [6]], terug),
       goed: [6],
       vraag,
-      goedZin: ["Zondag is de laatste dag van de week.", "Daarna begint een nieuwe week."],
+      goedZin: ["Zondag is de laatste dag van de week.", "Na zondag begint er weer een nieuwe week."],
       naGoed: { trein: [null, null, null, null, null, null, 6] },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
-        await l.zeg("Kijk naar de hele trein.");
+        await l.zeg("Loop de trein af tot de allerlaatste wagon.");
         zetT(l, { licht: [6] });
-        await l.zeg("De laatste dag staat helemaal achteraan.", "Daarna begint een nieuwe week.");
+        await l.zeg("De laatste dag staat helemaal achteraan.", "Daarachter staat geen wagon meer. Dan begint de week opnieuw.");
       },
       hulpBeeld: { trein: ALLE, licht: [6] },
       tip: ["Kijk naar de wagon helemaal achteraan.", ...vraag],
+      reactie: ([c]) => [c === 5 ? "Zaterdag is de dag vóór de laatste dag." : `${Naam(c)} is niet de laatste dag.`, "Kijk naar de wagon helemaal achteraan."],
     });
   };
 }
@@ -307,6 +370,7 @@ function weekendHoeveel(): Opgave {
       },
       hulpBeeld: { trein: ALLE, licht: [5, 6] },
       tip: ["Tel de wagons achter vrijdag.", "Hoeveel dagen heeft het weekend?"],
+      reactie: (x) => [x === "5" ? "Op 5 dagen ga je naar school. Het weekend telt apart." : "Zaterdag is maar 1 dag. Er komt nog een dag achter.", "Tel de wagons achter vrijdag."],
     });
   };
 }
@@ -328,7 +392,11 @@ function weekendWelke(): Opgave {
         await l.zeg("Daarna komen {2:wit} dagen zonder school.", "Dat is het weekend.");
       },
       hulpBeeld: { trein: ALLE, licht: [5, 6] },
-      tip: ["Het weekend zijn de laatste twee dagen van de week.", ...vraag],
+      tip: ["De laatste 2 dagen van de week zijn het weekend.", ...vraag],
+      reactie: (c) => {
+        const school = c.filter((x) => x < 5);
+        return [school.length === 2 ? `${Naam(school[0])} en ${naam(school[1])} zijn schooldagen.` : `${Naam(school[0])} is een schooldag.`, "Het weekend is zaterdag en zondag."];
+      },
     });
   };
 }
@@ -344,23 +412,39 @@ function hoeveelWeek(): Opgave {
       naGoed: { plaatje: null, trein: ALLE },
       samen: async (l) => {
         zetT(l, { trein: ALLE });
-        await l.zeg("Elke wagon is een dag.", "Tel maar mee.");
+        await l.zeg("Elke wagon is 1 dag.", "Tel maar mee.");
         await zegDagen(l, 0, 6);
         zetT(l, { licht: [] });
-        await l.zeg("Hoeveel wagons waren dat?");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Hoeveel wagons waren dat?");
       },
       hulpBeeld: { trein: ALLE },
       tip: ["Tel de wagons van maandag tot en met zondag.", "Hoeveel dagen heeft een week?"],
+      reactie: (x) => [Number(x) < 7 ? "Er zijn meer wagons dan dat." : "Er zijn minder wagons dan dat.", "Tel de wagons van maandag tot en met zondag, één voor één."],
     });
 }
 
 async function welkomTrein(l: Lesgids, welkom: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  zetSynthesisHulp(l);
   l.vlak<TreinProps>(SqulaTijdTrein, { ...LEEG_T, nr: volgend(), trein: ALLE, rit: 1 });
   speelLesgeluid("verschijn");
   await l.wacht(900);
-  await squlaBegin(l, {
+  const voorbeeldAfgerond = await squlaBegin(l, {
     welkom,
     /* Na "Nee" begint de uitleg weer met de hele trein (het voorbeeld verdwijnt). */
+    voordoen: l.lesId !== "squla-tijd-dagen-1",
+    samen: voorbeeld ? async () => {
+      if (l.lesId === "squla-tijd-dagen-1") {
+        zetT(l, { ...LEEG_T, nr: volgend(), trein: ALLE });
+        await l.zeg("We lopen samen langs de weektrein. Elke wagon is 1 dag.");
+        await zegDagen(l, 0, 6);
+        /* Het rondje volgt Bliepo: bij "maandag" staat het rondje om maandag (niet meer om zondag). */
+        zetT(l, { licht: [0] });
+        await l.zeg("De week begint op maandag.");
+        await squlaVraag(l, eersteDag()(l, false));
+        await l.zeg("Zaterdag en zondag vormen samen het weekend.");
+        await squlaVraag(l, weekendWelke()(l, false));
+      } else await squlaVraag(l, voorbeeld(l, false));
+    } : undefined,
     uitleg: voorbeeld
       ? async () => {
           zetT(l, { ...LEEG_T, nr: volgend(), trein: ALLE });
@@ -370,6 +454,7 @@ async function welkomTrein(l: Lesgids, welkom: string[], uitleg: () => Promise<v
     /* Het beginscherm laat de eerste opgave van de les zien (BOUWREGELS 4.1). */
     ...(voorbeeld ? { voorbeeld: () => voorbeeld(l, false).toon?.() } : {}),
   });
+  return voorbeeldAfgerond;
 }
 
 const dagen1: Lesdraaiboek = {
@@ -396,7 +481,7 @@ const dagen1: Lesdraaiboek = {
       welkeNa(1, [2, 0, 4]),
       welkeNa(4, [3, 5, 6]),
     ];
-await welkomTrein(l, ["De weektrein heeft zeven wagons.", "Wat is de eerste dag van de week?"], async () => {
+const voorbeeldAfgerond = await welkomTrein(l, ["De weektrein heeft 7 wagons.", "Wat is de eerste dag van de week?"], async () => {
       await l.zeg("Kijk mee.");
       await zegDagen(l, 0, 6);
       zetT(l, { licht: [0] });
@@ -407,7 +492,7 @@ await welkomTrein(l, ["De weektrein heeft zeven wagons.", "Wat is de eerste dag 
       await l.zeg("Zaterdag en zondag zijn het weekend.", "Dan is er geen school.");
       zetT(l, { licht: [] });
     }, opgaven[0]);
-    const fouten = await speelAlles(l, opgaven, [0, 2, 8]);
+    const fouten = await speelAlles(l, opgaven, [0, 2, 8], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet hoe de week is opgebouwd.");
   },
 };
@@ -431,20 +516,22 @@ const dagen2: Lesdraaiboek = {
       const v = voor6[0](l, terug);
       return { ...v, vraag: terug ? v.vraag : ["Let op! Nu zoeken we de dag ervoor.", ...v.vraag] };
     };
-await welkomTrein(l, ["Elke wagon in de trein is een dag.", "Welke dag komt meteen na dinsdag?"], async () => {
+const voorbeeldAfgerond = await welkomTrein(l, ["Elke wagon in de trein is een dag.", "Welke dag komt meteen na dinsdag?"], async () => {
       zetT(l, { licht: [2] });
       await l.zeg("Kijk naar woensdag.");
-      zetT(l, { licht: [2, 3] });
-      await l.zeg("De dag erna staat erachter: donderdag.");
+      /* Eén rondje tegelijk, op wat Bliepo noemt (BOUWREGELS 7.8). */
       zetT(l, { licht: [3] });
+      await l.zeg("De dag erna staat erachter: donderdag.");
       await l.zeg("Kijk naar donderdag.");
-      zetT(l, { licht: [2, 3] });
+      zetT(l, { licht: [2] });
       await l.zeg("De dag ervoor staat ervoor: woensdag.");
-      zetT(l, { licht: [6, 0] });
-      await l.zeg("Na zondag begint de week weer met maandag.");
+      zetT(l, { licht: [6] });
+      await l.zeg("Dit is zondag, de laatste dag.");
+      zetT(l, { licht: [0] });
+      await l.zeg("Daarna begint de week weer met maandag.");
       zetT(l, { licht: [] });
     }, na6[0]);
-    const fouten = await speelAlles(l, [...na6, eersteVoor, ...voor6.slice(1)], [3, 6, 9]);
+    const fouten = await speelAlles(l, [...na6, eersteVoor, ...voor6.slice(1)], [3, 6, 9], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet welke dag erna komt, en welke ervoor.");
   },
 };
@@ -462,7 +549,7 @@ function opVolgorde(start: number, losse: number[], handje = false): Opgave {
     let vakken: (number | null)[] = [null, null, null, null];
     let naSamen = false;
     let eerste = handje && !terug;
-    const vraag = ["Zet de vier dagen op de goede volgorde."];
+    const vraag = ["Zet de 4 dagen op de goede volgorde."];
     const orden = (actief: boolean, uitslag?: (boolean | null)[]) => ({ vakken: [...vakken], losse: kaarten, uitslag, actief });
     return {
       toon: () => {
@@ -472,6 +559,8 @@ function opVolgorde(start: number, losse: number[], handje = false): Opgave {
       },
       vraag: eerste ? [...vraag, "Sleep een kaart naar een leeg vak.", "Tikken mag ook."] : vraag,
       antwoord: async () => {
+        /* na een fout blijft wat goed lag liggen en gaat de rest terug */
+        vakken = vakken.map((v, i) => (v === juist[i] ? v : null));
         if (eerste) {
           zetT(l, { handje: ++handjeNr });
           eerste = false;
@@ -495,7 +584,7 @@ function opVolgorde(start: number, losse: number[], handje = false): Opgave {
       noem: (x) => Hoofd((x as number[]).map(naam).join(", ")),
       goed: async () => {
         zetT(l, { orden: orden(false, [true, true, true, true]) });
-        await l.zeg("Goed zo.", `${Hoofd(juist.map(naam).join(", "))}.`);
+        await l.zeg(bevestig());
         await l.wacht(300);
       },
       fout: (x) => {
@@ -506,17 +595,24 @@ function opVolgorde(start: number, losse: number[], handje = false): Opgave {
         zetT(l, { trein: ALLE, treinKlein: true, orden: orden(false) });
         await l.zeg("Kijk naar de trein bovenaan.");
         zetT(l, { licht: juist });
-        await l.zeg("Deze vier dagen staan ook in de trein.", "Kijk welke dag vooraan staat.");
+        await l.zeg("Zoek de 4 dagen in de trein. De trein laat zien in welke volgorde ze komen.", "Kijk welke dag vooraan staat.");
         if (juist.includes(6) && juist.includes(0)) await l.zeg("Let op: na zondag begint de trein weer bij maandag.");
         naSamen = true;
       },
-      tip: ["Zoek de dag die het eerst komt.", ...vraag],
+      tip: ["Kijk welke dag het eerst komt.", ...vraag],
+      reactie: (x: (number | null)[]) => telGoed(x.filter((d, i) => d === juist[i]).length, "dag", "Kijk in de trein welke dag het eerst komt."),
+      toonAntwoord: async () => {
+        vakken = [...juist];
+        zetT(l, { trein: ALLE, treinKlein: true, licht: juist, orden: orden(false, [true, true, true, true]) });
+        await l.zeg(`${Hoofd(juist.map(naam).join(", "))}.`);
+        await l.wacht(300);
+      },
       testAntwoord: naam(juist[0]),
     } as SqulaVraag<(number | null)[]>;
   };
 }
 
-type Verhaal = { vandaag: number; goed: number; kaarten: number[]; plaatje: string; zinnen: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulp: Partial<TreinProps>; tip: string };
+type Verhaal = { reactie?: (c: number) => string[]; vandaag: number; goed: number; kaarten: number[]; plaatje: string; zinnen: string[]; goedZin: string[]; samen: (l: Lesgids) => Promise<void>; hulp: Partial<TreinProps>; tip: string };
 
 function verhaal(v: Verhaal): Opgave {
   return (l, terug) =>
@@ -528,16 +624,18 @@ function verhaal(v: Verhaal): Opgave {
       goedZin: v.goedZin,
       samen: async (l) => {
         zetT(l, { trein: ALLE, vandaag: v.vandaag });
-        await l.zeg(`Kijk, de gele pijl staat bij ${naam(v.vandaag)}.`, "Dat is vandaag.");
+        await l.zeg(`Kijk, de gele pijl staat bij ${naam(v.vandaag)}.`, "De pijl wijst de dag van nu aan.");
         await v.samen(l);
       },
       hulpBeeld: { trein: ALLE, vandaag: v.vandaag, ...v.hulp },
       tip: [v.tip, v.zinnen[v.zinnen.length - 1]],
+      reactie: ([c]) => (v.reactie ? [...v.reactie(c), v.tip] : [v.tip]),
     });
 }
 
 const verhalen: Opgave[] = [
   verhaal({
+    reactie: (c) => [c === 2 ? "Woensdag is morgen. Dan is het zwembad nog dicht." : c === 1 ? "Dinsdag is vandaag." : "Vrijdag is een dag te laat."],
     vandaag: 1,
     goed: 3,
     kaarten: [2, 3, 4, 1],
@@ -546,12 +644,13 @@ const verhalen: Opgave[] = [
     goedZin: ["Morgen is het woensdag.", "De dag daarna is het donderdag."],
     samen: async (l) => {
       zetT(l, { stappen: [1, 2], licht: [2] });
-      await l.zeg("Morgen is het woensdag.", "Dan is het zwembad nog dicht.", "Welke dag komt na woensdag?");
+      await l.zeg("Morgen is het woensdag.", "Dan is het zwembad nog dicht.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag komt na woensdag?"]));
     },
     hulp: { stappen: [1, 2] },
-    tip: "Eerst morgen, en dan nog één dag verder.",
+    tip: "Eerst morgen, en dan nog 1 dag verder.",
   }),
   verhaal({
+    reactie: (c) => [c === 3 ? "Donderdag is morgen. Dan is de kapperszaak nog dicht." : c === 5 ? "Zaterdag is een dag te laat." : "Dinsdag was gisteren."],
     vandaag: 2,
     goed: 4,
     kaarten: [3, 5, 4, 1],
@@ -560,12 +659,13 @@ const verhalen: Opgave[] = [
     goedZin: ["Morgen is het donderdag.", "De dag daarna is het vrijdag."],
     samen: async (l) => {
       zetT(l, { stappen: [2, 3], licht: [3] });
-      await l.zeg("Morgen is het donderdag.", "Dan is de kapperszaak nog dicht.", "Welke dag komt daarna?");
+      await l.zeg("Morgen is het donderdag.", "Dan is de kapperszaak nog dicht.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag komt daarna?"]));
     },
     hulp: { stappen: [2, 3] },
-    tip: "Eerst morgen, en dan nog één dag verder.",
+    tip: "Eerst morgen, en dan nog 1 dag verder.",
   }),
   verhaal({
+    reactie: (c) => [c === 5 ? "Na 2 nachtjes is het zaterdag. Er komt nog 1 nachtje bij." : c === 0 ? "Maandag is 1 nachtje te ver." : "Vrijdag is na 1 nachtje."],
     vandaag: 3,
     goed: 6,
     kaarten: [5, 6, 0, 4],
@@ -576,13 +676,14 @@ const verhalen: Opgave[] = [
       zetT(l, { stappen: [3, 4], licht: [4] });
       await l.zeg("Na {1:wit} nachtje slapen is het vrijdag.");
       zetT(l, { stappen: [3, 4, 5], licht: [5] });
-      await l.zeg("Na nog een nachtje is het zaterdag.");
-      await l.zeg("Nu nog één nachtje.", "Welke dag is het dan?");
+      await l.zeg("Na nog 1 nachtje is het zaterdag.");
+      await l.zeg("Nu nog 1 nachtje.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag is het dan?"]));
     },
     hulp: { stappen: [3, 4, 5] },
-    tip: "Tel drie nachtjes vanaf donderdag.",
+    tip: "Tel 3 nachtjes vanaf donderdag.",
   }),
   verhaal({
+    reactie: (c) => [c === 4 ? "Vrijdag was 2 dagen geleden." : `${Naam(c)} komt ná zondag. Gisteren komt vóór vandaag.`],
     vandaag: 6,
     goed: 5,
     kaarten: [4, 5, 0, 1],
@@ -590,12 +691,13 @@ const verhalen: Opgave[] = [
     zinnen: ["Vandaag is het zondag.", "Gisteren werd het huis geschilderd.", "Op welke dag werd het huis geschilderd?"],
     goedZin: ["Gisteren was het zaterdag."],
     samen: async (l) => {
-      await l.zeg("Gisteren is de dag ervoor.", "Kijk naar de wagon vlak voor zondag.");
+      await l.zeg("Gisteren is de dag ervoor.", ...(krijgtVervolgvraag(l) ? ["Kijk naar de wagon vlak voor zondag."] : ["Welke wagon hangt vlak voor zondag?"]));
     },
     hulp: {},
     tip: "Gisteren is de dag vlak voor vandaag.",
   }),
   verhaal({
+    reactie: (c) => [c === 4 ? "Vrijdag was gisteren. Toen was het feest." : c === 2 ? "Woensdag is een dag te vroeg." : "Zondag komt ná zaterdag."],
     vandaag: 5,
     goed: 3,
     kaarten: [4, 3, 2, 6],
@@ -604,12 +706,13 @@ const verhalen: Opgave[] = [
     goedZin: ["Gisteren was het vrijdag.", "De dag daarvoor was het donderdag."],
     samen: async (l) => {
       zetT(l, { stappen: [5, 4], licht: [4] });
-      await l.zeg("Gisteren was het vrijdag.", "Toen was het feest.", "Welke dag komt vlak voor vrijdag?");
+      await l.zeg("Vrijdag hangt vlak voor zaterdag.", "Toen was het feest.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag komt vlak voor vrijdag?"]));
     },
     hulp: { stappen: [5, 4] },
-    tip: "Eerst gisteren, en dan nog één dag terug.",
+    tip: "Eerst gisteren, en dan nog 1 dag terug.",
   }),
   verhaal({
+    reactie: (c) => [c === 1 ? "Dinsdag is na 1 nachtje." : c === 3 ? "Donderdag is 1 nachtje te ver." : "Vrijdag is 2 nachtjes te ver."],
     vandaag: 0,
     goed: 2,
     kaarten: [1, 2, 3, 4],
@@ -619,10 +722,10 @@ const verhalen: Opgave[] = [
     samen: async (l) => {
       zetT(l, { stappen: [0, 1], licht: [1] });
       await l.zeg("Na {1:wit} nachtje slapen is het dinsdag.");
-      await l.zeg("Nu nog één nachtje.", "Welke dag is het dan?");
+      await l.zeg("Nu nog 1 nachtje.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag is het dan?"]));
     },
     hulp: { stappen: [0, 1] },
-    tip: "Tel twee nachtjes vanaf maandag.",
+    tip: "Tel 2 nachtjes vanaf maandag.",
   }),
 ];
 
@@ -645,10 +748,12 @@ const dagen3: Lesdraaiboek = {
       opVolgorde(1, [3, 1, 4, 2]),
       ...verhalen,
     ];
-await welkomTrein(l, ["Vier dagen liggen door elkaar.", "Zet de vier dagen op de goede volgorde."], async () => {
+const voorbeeldAfgerond = await welkomTrein(l, ["4 dagen liggen door elkaar.", "Zet de 4 dagen op de goede volgorde."], async () => {
       await l.zeg("De dagen staan altijd in dezelfde volgorde.");
-      zetT(l, { licht: [6, 0] });
-      await l.zeg("Na zondag begint de week weer bij maandag.");
+      zetT(l, { licht: [6] });
+      await l.zeg("Dit is zondag, de laatste dag.");
+      zetT(l, { licht: [0] });
+      await l.zeg("Daarna begint de week weer bij maandag.");
       zetT(l, { licht: [], vandaag: 2 });
       await l.zeg("Stel, vandaag is het woensdag.", "Kijk, de gele pijl.");
       zetT(l, { licht: [1] });
@@ -658,7 +763,7 @@ await welkomTrein(l, ["Vier dagen liggen door elkaar.", "Zet de vier dagen op de
       zetT(l, { licht: [], vandaag: null });
       await l.zeg("Elke nacht slapen ben je een dag verder.");
     }, opgaven[0]);
-    const fouten = await speelAlles(l, opgaven, [0, 6, 8]);
+    const fouten = await speelAlles(l, opgaven, [0, 6, 8], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kunt rekenen met de dagen van de week.");
   },
 };
@@ -692,6 +797,13 @@ type PlaatjesVraag = {
   tip: string[];
 };
 
+/** "Je koos …": het gekozen antwoord noemen in de eerste reactie (dagen en maanden houden hun hoofdletter). */
+const jeKoos = (naam: string): string => {
+  const kaal = naam.replace(/\.$/, "");
+  const eigen = /^(maandag|dinsdag|woensdag|donderdag|vrijdag|zaterdag|zondag|januari|februari|maart|april|mei|juni|juli|augustus|september|oktober|november|december)/i.test(kaal);
+  return `Je koos ${eigen || /^[{\d]/.test(kaal) ? kaal : kaal.charAt(0).toLowerCase() + kaal.slice(1)}.`;
+};
+
 /** Een vraag met plaatjes (kaartjes in het vlak). */
 function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag<string> {
   const nr = volgend();
@@ -715,7 +827,7 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
     noem: naamVan,
     goed: async () => {
       zetP(l, { goed: [o.goed], licht: [], golf: { id: o.goed, n: ++golfNr } });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => {
@@ -729,6 +841,12 @@ function plaatjesVraag(l: Lesgids, o: PlaatjesVraag, terug: boolean): SqulaVraag
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => [jeKoos(naamVan(x)), ...hint(o.tip)],
+    toonAntwoord: async () => {
+      zetP(l, { fout: [], licht: [], goed: [o.goed], golf: { id: o.goed, n: ++golfNr } });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -749,7 +867,7 @@ function knopVraag(
     isGoed: (x) => x === o.goed,
     noem: (x) => (/^\d+$/.test(x) ? `{${x}:wit}` : Hoofd(x.replace(/\.$/, ""))),
     goed: async () => {
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     samen: async () => {
@@ -758,6 +876,11 @@ function knopVraag(
       naSamen = true;
     },
     tip: o.tip,
+    reactie: (x) => [jeKoos(/^\d+$/.test(x) ? `{${x}:wit}` : x), ...hint(o.tip)],
+    toonAntwoord: async () => {
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.goed,
   };
 }
@@ -784,6 +907,8 @@ function ordenVraag(
     },
     vraag: eerste ? [...o.vraag, "Sleep een kaartje naar een leeg vak.", "Tikken mag ook."] : o.vraag,
     antwoord: async () => {
+      /* na een fout blijft wat goed lag liggen en gaat de rest terug */
+      vakken = vakken.map((v, i) => (v === o.juist[i] ? v : null));
       if (eerste) {
         zetP(l, { handje: ++handjeNr });
         eerste = false;
@@ -805,7 +930,7 @@ function ordenVraag(
     noem: (x) => Hoofd(x.filter((_, i) => !o.vast.includes(i)).map(naamVan).join(", ")),
     goed: async () => {
       zetP(l, { orden: orden(false, o.juist.map((_, i) => (o.vast.includes(i) ? null : true))) });
-      await l.zeg("Goed zo.", ...o.goedZin);
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => zetP(l, { orden: orden(false, x.map((id, i) => (o.vast.includes(i) ? null : id === o.juist[i]))) }),
@@ -816,6 +941,13 @@ function ordenVraag(
       zetP(l, { licht: [] });
     },
     tip: o.tip,
+    reactie: (x) => telGoed(x.filter((id, i) => !o.vast.includes(i) && id === o.juist[i]).length, "kaartje", o.tip[0]),
+    toonAntwoord: async () => {
+      vakken = [...o.juist];
+      zetP(l, { orden: orden(false, o.juist.map((_, i) => (o.vast.includes(i) ? null : true))) });
+      await l.zeg(...antwoordZinnen(o.goedZin));
+      await l.wacht(300);
+    },
     testAntwoord: o.juist.find((_, i) => !o.vast.includes(i)) ?? null,
   };
 }
@@ -831,7 +963,21 @@ const P = {
 
 const MAAND_L1 = "maand|rood=8|hoed=13";
 
-const kalender1Opgaven: Opgave[] = [
+const KAL1_MIS: (Mis | undefined)[] = [
+  { klok: ["Op een klok zie je hoe laat het is, niet wat er gebeurt."], maandkalender: ["Op de kalender van juni staan alle dagen, maar niet wat er vandaag gebeurt."] },
+  { gym: ["Gym is niet het eerste plaatje.", "Kijk naar het plaatje helemaal links."] },
+  { "buiten spelen": ["Buiten spelen is het derde plaatje.", "Kijk naar het plaatje direct naast de kring."] },
+  { klok: ["Op de klok staan geen dagen.", "Let op de kalender met een hoepel."], maandkalender: ["Op de kalender van juni staan alle dagen van de maand.", "Let op de kalender met een hoepel."] },
+  { "niet waar": ["Kijk nog eens naar de kalender.", "Bovenaan staan de dagen en onder elke dag staan getallen."] },
+  { "1 uur": ["Een uur zie je op een klok.", "Een vakje op de kalender is veel langer."], "1 week": ["Een week heeft 7 vakjes.", "1 vakje is minder."] },
+  { "20": ["Het rode vak staat niet bij de {20:wit}."], "13": ["Bij de {13:wit} staat het feesthoedje, niet het rode vak."] },
+  { "8": ["De {8:rood} heeft de rode rand, niet het feesthoedje."], "20": ["Bij de {20:wit} staat geen feesthoedje."] },
+  undefined,
+  { boek: ["In een boek staan verhalen, geen feestdagen."], feesthoedje: ["Een feesthoedje hoort bij een feest, maar het is geen kalender."] },
+  { week: ["Op dit blad staat maar 1 week."], maand: ["Dit is de lijst met 1 maand.", "Een jaar heeft meer maanden: zoek 12 blokjes."] },
+  { ziek: ["Een thermometer meet of je koorts hebt."], tandarts: ["Een tand hoort bij de tandarts."] },
+];
+const kalender1Opgaven: Opgave[] = metReactie([
   (l, t) =>
     plaatjesVraag(
       l,
@@ -849,7 +995,7 @@ const kalender1Opgaven: Opgave[] = [
           zetP(l, { licht: ["plaatjes"] });
           await l.zeg("Op deze plaatjes staat wat er gebeurt.", "Eerst de kring, dan rekenen.");
         },
-        tip: ["Waar staat wat er gebeurt?", "Waar zie je wat er vandaag gaat gebeuren?"],
+        tip: ["Zoek de plaatjes van wat je vandaag gaat doen.", "Waar zie je wat er vandaag gaat gebeuren?"],
       },
       t,
     ),
@@ -908,7 +1054,7 @@ const kalender1Opgaven: Opgave[] = [
           zetP(l, { licht: ["weekkalender"] });
           await l.zeg("Op deze kalender staan de dagen van de week.", "Zoek de dagen met de hoepel.");
         },
-        tip: ["Op welke kalender zie je een hoepel?", "Op welke kalender zie je dat?"],
+        tip: ["Zoek de kalender met een hoepel erop.", "Op welke kalender zie je dat?"],
       },
       t,
     ),
@@ -941,7 +1087,7 @@ const kalender1Opgaven: Opgave[] = [
         vraag: ["Op deze kalender staan {30:wit} vakjes met een getal.", "Wat betekent {1:wit} vakje?"],
         goedZin: ["{1:wit} vakje is {1:wit} dag.", "Er zijn {30:wit} vakjes, dus juni heeft {30:wit} dagen."],
         samen: async (l) => {
-          await l.zeg("Elk vakje heeft een eigen getal.", "Vandaag is één vakje.", "Morgen is het vakje erna.");
+          await l.zeg("Elk vakje heeft een eigen getal.", "Vandaag is 1 vakje.", "Morgen is het vakje erna.");
         },
         tip: ["Denk aan vandaag en morgen.", "Wat betekent {1:wit} vakje?"],
       },
@@ -958,8 +1104,8 @@ const kalender1Opgaven: Opgave[] = [
           { id: "13", label: "13" },
         ],
         goed: "8",
-        vraag: ["Op de kalender is één vak rood.", "Welk getal staat in het rode vak?"],
-        goedZin: ["In het rode vak staat {8:rood}.", "Het is {8:rood} juni."],
+        vraag: ["Op de kalender is 1 vak rood.", "Welk getal staat in het rode vak?"],
+        goedZin: ["In het rode vak staat {8:rood}.", "Dat is de datum: {8:rood} juni."],
         samen: async (l) => {
           await l.zeg("Zoek op de kalender het vak met de rode rand.", "Kijk goed welk getal erin staat.");
         },
@@ -1004,7 +1150,7 @@ const kalender1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Op een feestkalender staan de feestdagen.", "Bij elk feest staat een datum.");
         },
-        tip: ["Zoek de kalender met een woord bij een getal.", "Waar zie je een feestkalender?"],
+        tip: ["Denk aan de kalender met een woord bij een getal.", "Waar zie je een feestkalender?"],
       },
       t,
     ),
@@ -1014,9 +1160,9 @@ const kalender1Opgaven: Opgave[] = [
       {
         beeld: {},
         kaarten: [
-          { id: "week", tekening: "weekblad", zeg: "het blad met één week" },
-          { id: "jaar", tekening: "jaar", zeg: "het blad met twaalf maanden" },
-          { id: "maand", tekening: "lijst|maand=mei|dagen=31", zeg: "de lijst met één maand" },
+          { id: "week", tekening: "weekblad", zeg: "het blad met 1 week" },
+          { id: "jaar", tekening: "jaar", zeg: "het blad met 12 maanden" },
+          { id: "maand", tekening: "lijst|maand=mei|dagen=31", zeg: "de lijst met 1 maand" },
         ],
         goed: "jaar",
         vraag: ["Een jaarkalender is een kalender van een heel jaar.", "Daar staan alle maanden op.", "Waar zie je een jaarkalender?"],
@@ -1024,7 +1170,7 @@ const kalender1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Een jaar heeft {12:wit} maanden.", "Zoek de kalender met de meeste blokjes.", "Elk blokje is een maand.");
         },
-        tip: ["Zoek de kalender met twaalf blokjes.", "Waar zie je een jaarkalender?"],
+        tip: ["Denk aan de kalender met 12 blokjes.", "Waar zie je een jaarkalender?"],
       },
       t,
     ),
@@ -1042,13 +1188,13 @@ const kalender1Opgaven: Opgave[] = [
         vraag: ["Kijk naar het vakje met het feesthoedje.", "Wat is er op {13:wit} juni?"],
         goedZin: ["Op {13:wit} juni is het feest.", "Maar hoe lang duurt het nog?", "Dat zie je in de volgende les."],
         samen: async (l) => {
-          await l.zeg("Een feesthoedje hoort bij een feest.", "Welk feest heb jij één keer per jaar?");
+          await l.zeg("Een feesthoedje hoort bij een feest.", ...(krijgtVervolgvraag(l) ? [] : ["Welk feest heb jij 1 keer per jaar?"]));
         },
         tip: ["Een feesthoedje draag je op een feestje.", "Wat is er op {13:wit} juni?"],
       },
       t,
     ),
-];
+], KAL1_MIS);
 
 /** Lijnen trekken tussen drie kalenders en drie woorden. */
 function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]> {
@@ -1056,8 +1202,8 @@ function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]
   const links: PDing[] = schuif(
     [
       { id: "lijst", tekening: "lijst|maand=mei|dagen=31", zeg: "de lijst met alle dagen van mei" },
-      { id: "blad", tekening: "weekblad", zeg: "het blad met één week" },
-      { id: "plaatjes", tekening: "dagritme|a=kring,rekenen,buiten,gym", zeg: "de plaatjes van één dag" },
+      { id: "blad", tekening: "weekblad", zeg: "het blad met 1 week" },
+      { id: "plaatjes", tekening: "dagritme|a=kring,rekenen,buiten,gym", zeg: "de plaatjes van 1 dag" },
     ],
     terug,
   );
@@ -1108,7 +1254,7 @@ function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]
     goed: async () => {
       vast = links.map((d) => d.id);
       zet(false);
-      await l.zeg("Goed zo.", "Een dagkalender, een weekkalender en een maandkalender.", "Ken je ook de feestkalender?");
+      await l.zeg(bevestig());
       await l.wacht(300);
     },
     fout: (x) => {
@@ -1119,25 +1265,39 @@ function verbindVraag(l: Lesgids, terug: boolean): SqulaVraag<[string, string][]
     },
     samen: async () => {
       zetP(l, { licht: ["blad"] });
-      await l.zeg("Op dit blad staat één week: van maandag tot en met zondag.");
+      await l.zeg("Op dit blad staat 1 week: van maandag tot en met zondag.");
       zetP(l, { licht: ["lijst"] });
       await l.zeg("Op deze lijst staan alle dagen van een maand.");
       zetP(l, { licht: ["plaatjes"] });
-      await l.zeg("En op deze plaatjes zie je wat je op één dag doet.");
+      await l.zeg("En op deze plaatjes zie je wat je op 1 dag doet.");
       zetP(l, { licht: [] });
     },
-    tip: ["Een maand heeft veel dagen. Een week heeft er zeven.", "Trek de lijnen."],
+    tip: ["Een maand heeft veel dagen. Een week heeft er 7.", "Trek de lijnen."],
+    reactie: (x) => {
+      const n = x.filter(([a, r]) => juist[a] === r).length;
+      return [n === 0 ? "Geen enkele lijn klopt." : n === 1 ? "1 lijn klopt. Die blijft staan." : "2 lijnen kloppen. Die blijven staan.", "Een maand heeft veel dagen. Een week heeft er 7."];
+    },
+    toonAntwoord: async () => {
+      vast = links.map((d) => d.id);
+      lijnen = links.map((d) => [d.id, juist[d.id]] as [string, string]);
+      zet(false);
+      await l.zeg("Een dagkalender, een weekkalender en een maandkalender.");
+      await l.wacht(300);
+    },
     testAntwoord: links[0].id,
   };
 }
 
 async function welkomPlaatjes(l: Lesgids, groot: string, welkom: string[], uitleg: () => Promise<void>, voorbeeld?: Opgave) {
+  zetSynthesisHulp(l);
   l.vlak<PlaatjesProps>(SqulaTijdPlaatjes, { ...LEEG_P, nr: volgend(), groot });
   speelLesgeluid("verschijn");
   await l.wacht(500);
-  await squlaBegin(l, {
+  const voorbeeldAfgerond = await squlaBegin(l, {
     welkom,
     /* Na "Nee" begint de uitleg weer met het beeld waar hij op rekent (het voorbeeld verdwijnt). */
+    voordoen: l.lesId !== "squla-tijd-dagen-1",
+    samen: voorbeeld ? () => squlaVraag(l, voorbeeld(l, false)) : undefined,
     uitleg: voorbeeld
       ? async () => {
           zetP(l, { ...LEEG_P, nr: volgend(), groot });
@@ -1147,6 +1307,7 @@ async function welkomPlaatjes(l: Lesgids, groot: string, welkom: string[], uitle
     /* Het beginscherm laat de eerste opgave van de les zien (BOUWREGELS 4.1). */
     ...(voorbeeld ? { voorbeeld: () => voorbeeld(l, false).toon?.() } : {}),
   });
+  return voorbeeldAfgerond;
 }
 
 const kalender1: Lesdraaiboek = {
@@ -1160,24 +1321,38 @@ const kalender1: Lesdraaiboek = {
   kaarttekening: KaartKalender,
   async speel(l) {
     await laadKlokken(); /* de Synthesis-klok op het plaatje "klok" */
-    await welkomPlaatjes(l, "maand|hoed=13", ["Een klok, een kalender en plaatjes.", "Waar zie je wat er vandaag gaat gebeuren?"], async () => {
+    const voorbeeldAfgerond = await welkomPlaatjes(l, "maand|hoed=13", ["Een klok, een kalender en plaatjes.", "Waar zie je wat er vandaag gaat gebeuren?"], async () => {
       zetP(l, { ...LEEG_P, groot: null, kaarten: [P.ritme, P.rooster, P.maand] });
       zetP(l, { licht: ["plaatjes"] });
-      await l.zeg("Op een dagkalender zie je wat je op één dag doet.");
+      await l.zeg("Op een dagkalender zie je wat je op 1 dag doet.");
       zetP(l, { licht: ["weekkalender"] });
-      await l.zeg("Op een weekkalender zie je de dagen van één week.");
+      await l.zeg("Op een weekkalender zie je de dagen van 1 week.");
       zetP(l, { licht: ["maandkalender"] });
       await l.zeg("Op een maandkalender zie je alle dagen van een maand.");
       zetP(l, { licht: [] });
     }, kalender1Opgaven[0]);
-    const fouten = await speelAlles(l, kalender1Opgaven, [0, 4, 5]);
+    const fouten = await speelAlles(l, kalender1Opgaven, [0, 4, 5], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kent de dagkalender, de weekkalender, de maandkalender en meer.");
   },
 };
 
 /* --- De kalender, level 2: rekenen met de kalender --- */
 
-const kalender2Opgaven: Opgave[] = [
+const KAL2_MIS: (Mis | undefined)[] = [
+  { "8": ["De {8:wit} is het vak links van het rode vak.", "Kijk welk getal in het rode vak zelf staat."], "16": ["De {16:wit} staat in de rij eronder.", "Kijk welk getal in het rode vak zelf staat."] },
+  { "Het is 9 graden.": ["Graden meet je met een thermometer.", "Op een kalender staan dagen."], "Het is 9 uur.": ["Uren zie je op een klok.", "Op een kalender staan dagen."] },
+  { donderdag: ["Donderdag staat een vakje verder.", "Volg de rode pijl omhoog tot de dag bovenaan."], zondag: ["Zondag is een andere dag.", "Volg de rode pijl omhoog tot de dag bovenaan."] },
+  undefined,
+  (x) => [`Bij de {${x}:wit} staat het woord feest niet.`, "Zoek het getal bij het rode woord feest."],
+  { Nee: ["Op de kalender kun je wel tellen.", "Elk vakje is een dag."] },
+  { "3": ["Met 3 boogjes kom je op {12:wit} juni. Het hoedje hangt bij {13:wit} juni.", "Tel alle boogjes tussen het rode vak en het hoedje."], "5": ["Met 5 boogjes kom je op {14:wit} juni, voorbij het hoedje.", "Stop met tellen bij het feesthoedje."] },
+  { "16 juni": ["{16:wit} juni is een week later dan {9:wit} juni.", "Morgen is maar 1 dag verder."], "8 juni": ["{8:wit} juni was gisteren.", "Morgen is de dag erna."] },
+  { "13": ["{13:wit} is de datum van het feest, niet het aantal nachtjes.", "Tel de stapjes van het rode vak naar het feest."], "12": ["{12:wit} is de datum van vandaag.", "Tel de stapjes van het rode vak naar het feest."] },
+  { "2": ["Je koos 2. Het feesthoedje hangt nog 1 boogje verder.", "Wijs de boogjes 1 voor 1 aan, tot het hoedje."], "0": ["Met 0 boogjes zou het feest nu zijn.", "Tussen het rode vak en het hoedje liggen boogjes."] },
+  { "9 juni": ["{9:wit} juni was gisteren.", "Morgen is de dag erna."], "17 juni": ["{17:wit} juni is een week later dan {10:wit} juni.", "Morgen is maar 1 dag verder."] },
+  { "1": ["Je koos 1. Dan zou het feest morgen zijn.", "Tel de boogjes tot het feesthoedje."], "3": ["Met 3 boogjes zou het feest op {14:wit} juni zijn.", "Het hoedje hangt al bij {13:wit} juni."] },
+];
+const kalender2Opgaven: Opgave[] = metReactie([
   (l, t) =>
     knopVraag(
       l,
@@ -1188,7 +1363,7 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Zie je het rode vak op de kalender?", "Welk getal staat daar?"],
         goedZin: ["In het rode vak staat {9:rood}.", "Weet jij wat dat betekent?"],
         samen: async (l) => {
-          await l.zeg("Zoek het vak met de rode rand.", "Kijk goed welk getal erin staat.");
+          await l.zeg("Zoek het vak met de rode rand.", ...(krijgtVervolgvraag(l) ? [] : ["Kijk goed welk getal erin staat."]));
         },
         tip: ["Kijk naar het vak met de rode rand.", "Welk getal staat daar?"],
       },
@@ -1202,7 +1377,7 @@ const kalender2Opgaven: Opgave[] = [
         opties: ["Het is 9 graden.", "Het is 9 uur.", "Het is 9 juni."],
         goed: "Het is 9 juni.",
         vraag: ["Wat betekent de {9:rood} op de kalender?"],
-        goedZin: ["Het is {9:rood} juni.", "Dat zie je op de kalender."],
+        goedZin: ["Het rode vak betekent {9:rood} juni.", "Dat zie je op de kalender."],
         samen: async (l) => {
           await l.zeg("Een kalender gaat over dagen.", "Elk getal is een dag van de maand.", "En de maand is juni.");
         },
@@ -1222,7 +1397,7 @@ const kalender2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Bovenaan staan de dagen, kort geschreven.", "ma is maandag, di is dinsdag.", "De pijl wijst naar wo.");
         },
-        tip: ["Welke dag begint met wo?", "Welke dag is het vandaag?"],
+        tip: ["Zoek de dag die begint met wo.", "Welke dag is het vandaag?"],
       },
       t,
     ),
@@ -1241,7 +1416,7 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Dit is de dagkalender van vandaag.", "Je ziet wat er vandaag allemaal gebeurt.", "Zet de kaartjes in dezelfde volgorde."],
         goedZin: ["Eerst rekenen, dan fruit eten, dan gym.", "Dat gebeurt er vandaag."],
         samen: async (l) => {
-          await l.zeg("Kijk naar de plaatjes bovenaan.", "Begin links.", "Welk plaatje hangt daar?");
+          await l.zeg("Kijk naar de plaatjes bovenaan.", "Begin links.", ...(krijgtVervolgvraag(l) ? [] : ["Welk plaatje hangt daar?"]));
         },
         tip: ["Leg de kaartjes net zo als de plaatjes bovenaan.", "Begin links."],
         handje: true,
@@ -1260,7 +1435,7 @@ const kalender2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Op een feestkalender staan feestdagen.", "Het woord feest staat in het rood.");
         },
-        tip: ["Zoek het rode woord.", "Bij welk getal staat het woord feest?"],
+        tip: ["Zoek in de lijst het rode woord feest. Welk getal staat ernaast?", "Bij welk getal staat het woord feest?"],
       },
       t,
     ),
@@ -1274,7 +1449,7 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Vandaag is het {9:rood} juni.", "Kun je op de kalender tellen hoeveel nachtjes het nog duurt tot het feest?", "Ja of nee?"],
         goedZin: ["Ja, dat kan.", "We gaan het tellen."],
         samen: async (l) => {
-          await l.zeg("Elk vakje is een dag.", "Van het ene vakje naar het volgende is één nachtje slapen.");
+          await l.zeg("Elk vakje is een dag.", "Van het ene vakje naar het volgende is 1 nachtje slapen.");
         },
         tip: ["Elk vakje is een dag.", "Ja of nee?"],
       },
@@ -1290,7 +1465,7 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Tel de boogjes.", "Dan weet je over hoeveel nachtjes het feest is.", "Hoeveel boogjes zijn het?"],
         goedZin: ["Over {4:wit} nachtjes is het feest.", "Joepie!"],
         samen: async (l) => {
-          await l.zeg("Begin bij het rode vak.", "Elk boogje is één nachtje.", "Tel de boogjes tot het feesthoedje.");
+          await l.zeg("We starten bij het rode vak.", "Elk boogje is 1 nachtje slapen.", "Tel elk boogje tot je bij het feesthoedje bent.");
         },
         tip: ["Wijs elk boogje aan en tel.", "Hoeveel boogjes zijn het?"],
       },
@@ -1322,9 +1497,9 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Stel je voor dat het al {12:rood} juni is.", "Over hoeveel nachtjes is het feest dan?"],
         goedZin: ["Dan nog maar {1:wit} nachtje!", "Dat was maar even verzonnen."],
         samen: async (l) => {
-          await l.zeg("Stel je voor: het rode vak is {12:rood} juni.", "Het feesthoedje staat in het vakje ernaast.", "Hoeveel nachtjes slapen is dat?");
+          await l.zeg("Stel je voor: het rode vak is {12:rood} juni.", "Het feesthoedje staat in het vakje ernaast.");
         },
-        tip: ["Van het rode vak naar het feesthoedje is één stapje.", "Over hoeveel nachtjes is het feest dan?"],
+        tip: ["Van het rode vak naar het feesthoedje is 1 stapje.", "Over hoeveel nachtjes is het feest dan?"],
       },
       t,
     ),
@@ -1338,9 +1513,9 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Nu is het echt morgen: {10:rood} juni.", "Het feest komt steeds dichterbij!", "Hoeveel nachtjes nog?"],
         goedZin: ["Nog {3:wit} nachtjes slapen.", "Morgen nog {2:wit}, de dag daarna nog {1:wit}.", "En dan is het feest!"],
         samen: async (l) => {
-          await l.zeg("Begin bij het rode vak.", "Tel de boogjes tot het feesthoedje.");
+          await l.zeg("Het rode vak is vandaag.", "Tel bij elk boogje 1 nachtje erbij, tot het feesthoedje.");
         },
-        tip: ["Elk boogje is één nachtje.", "Hoeveel nachtjes nog?"],
+        tip: ["Tel de boogjes tussen het rode vak en het feesthoedje.", "Hoeveel nachtjes nog?"],
       },
       t,
     ),
@@ -1370,13 +1545,13 @@ const kalender2Opgaven: Opgave[] = [
         vraag: ["Nu is het {11:rood} juni.", "Hoeveel nachtjes nog tot het feest?"],
         goedZin: ["Nog maar {2:wit} nachtjes!"],
         samen: async (l) => {
-          await l.zeg("Begin bij het rode vak.", "Tel de boogjes tot het feesthoedje.");
+          await l.zeg("Het rode vak is vandaag.", "Loop boogje voor boogje naar het feesthoedje.");
         },
-        tip: ["Elk boogje is één nachtje.", "Hoeveel nachtjes nog tot het feest?"],
+        tip: ["Elk boogje brengt je 1 nachtje dichter bij het feest.", "Hoeveel nachtjes nog tot het feest?"],
       },
       t,
     ),
-];
+], KAL2_MIS);
 
 const kalender2: Lesdraaiboek = {
   id: "squla-tijd-kalender-2",
@@ -1388,15 +1563,15 @@ const kalender2: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartKalender,
   async speel(l) {
-    await welkomPlaatjes(l, "maand|hoed=13", ["Op de kalender van juni staat een rood vak.", "Welk getal staat daar?"], async () => {
+    const voorbeeldAfgerond = await welkomPlaatjes(l, "maand|hoed=13", ["Op de kalender van juni staat een rood vak.", "Welk getal staat daar?"], async () => {
       /* Eerst over het rode vak en het getal erin (dat is het voorbeeld), met een getal dat in de les niet voorkomt. */
       zetP(l, { groot: "maand|rood=5|hoed=13" });
       await l.zeg("Kijk, het rode vak.", "Daar staat een getal: {5:rood}.", "Dat is {5:rood} juni.");
       zetP(l, { groot: "maand|boog=1-3" });
-      await l.zeg("Elk vakje is een dag.", "Van vakje naar vakje is één nachtje slapen.", "Zie je de boogjes?", "Van {1:wit} juni naar {3:wit} juni is {2:wit} nachtjes slapen.");
+      await l.zeg("Elk vakje is een dag.", "Van vakje naar vakje is 1 nachtje slapen.", "Kijk, de boogjes.", "Van {1:wit} juni naar {3:wit} juni is {2:wit} nachtjes slapen.");
       zetP(l, { groot: "maand|hoed=13" });
     }, kalender2Opgaven[0]);
-    const fouten = await speelAlles(l, kalender2Opgaven, [0, 3, 6]);
+    const fouten = await speelAlles(l, kalender2Opgaven, [0, 3, 6], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kunt rekenen met de kalender.");
   },
 };
@@ -1405,7 +1580,21 @@ const kalender2: Lesdraaiboek = {
 
 const DAGDEEL = (d: string): PDing => ({ id: d, tekening: `dagdeel|d=${d}`, label: d });
 
-const tijden1Opgaven: Opgave[] = [
+const TIJ1_MIS: (Mis | undefined)[] = [
+  { donderdag: ["Donderdag komt vóór vrijdag.", "Denk aan de dag direct na vrijdag."], zondag: ["Zondag komt 2 dagen na vrijdag.", "Denk aan de dag direct na vrijdag."] },
+  { blauw: ["Het blauwe boek was niet het eerste.", "Luister nog eens goed naar het verhaal."], groen: ["Het groene boek kwam het laatst.", "Luister nog eens goed naar het verhaal."] },
+  { rond: ["Rond is een vorm, geen lengte.", "Denk aan het omgekeerde van kort."], snel: ["Een boek is niet snel of langzaam.", "Denk aan het omgekeerde van kort."] },
+  { groen: ["Groen is een kleur.", "Denk aan het omgekeerde van lang."], zwaar: ["Zwaar zegt hoeveel iets weegt.", "Denk aan het omgekeerde van lang."] },
+  (x) => [`${Hoofd(x)} is al voorbij.`, "Denk aan een woord voor iets wat nog moet komen."],
+  { ochtend: ["De ochtend is aan het begin van de dag."], middag: ["De middag komt vóór de avond."] },
+  { nacht: ["De nacht komt ná de avond."], ochtend: ["De ochtend komt eerst, vóór de middag."] },
+  undefined,
+  { kort: ["Kort gaat over hoe lang iets duurt, niet over hoe laat het is.", "Denk aan het omgekeerde van vroeg."], straks: ["Straks is iets wat nog komt.", "Het was al nacht."] },
+  undefined,
+  { vrijdag: ["Vrijdag is een dag vóór zaterdag.", "Morgen is de dag erna."], maandag: ["Maandag is 2 dagen na zaterdag.", "Morgen is de dag direct na zaterdag."] },
+  { donderdag: ["Donderdag was eergisteren.", "Gisteren is de dag direct vóór zaterdag."], zondag: ["Zondag komt ná zaterdag.", "Gisteren is de dag vóór vandaag."] },
+];
+const tijden1Opgaven: Opgave[] = metReactie([
   (l, t) =>
     knopVraag(
       l,
@@ -1414,10 +1603,10 @@ const tijden1Opgaven: Opgave[] = [
         opties: ["donderdag", "zaterdag", "zondag"],
         goed: "zaterdag",
         vraag: ["Gisteren was er een kampvuuravond.", "Dat was op vrijdag.", "Welke dag komt na vrijdag?"],
-        goedZin: ["Gisteren was het vrijdag.", "Vandaag is het zaterdag."],
+        goedZin: ["Na vrijdag komt zaterdag.", "Vandaag is het zaterdag."],
         samen: async (l) => {
           zetP(l, { groot: "week|licht=4" });
-          await l.zeg("Hier staan de dagen van de week.", "Vrijdag is groter.", "Welke dag staat erna?");
+          await l.zeg("Hier staan de dagen van de week.", "Kijk, vrijdag staat in grote letters.", ...(krijgtVervolgvraag(l) ? [] : ["Welke dag staat erna?"]));
         },
         hulpBeeld: { groot: "week|licht=4" },
         tip: ["Kijk naar de dag rechts van vrijdag.", "Welke dag komt na vrijdag?"],
@@ -1435,7 +1624,7 @@ const tijden1Opgaven: Opgave[] = [
           { id: "groen", tekening: "boekgroen", zeg: "het groene boek" },
         ],
         goed: "rood",
-        vraag: ["Bij het kampvuur lazen we drie boeken voor.", "Als eerste lazen we het rode boek.", "Welk boek lazen we als eerste?"],
+        vraag: ["Bij het kampvuur lazen we 3 boeken voor.", "Als eerste lazen we het rode boek.", "Welk boek lazen we als eerste?"],
         goedZin: ["Het rode boek was eerst.", "Dat lazen we als eerste."],
         samen: async (l) => {
           await l.zeg("Als eerste betekent: vóór alle anderen.", "Luister nog eens goed naar het verhaal.");
@@ -1456,7 +1645,7 @@ const tijden1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Een kort verhaal is snel voorbij.", "Dit boek was niet snel uit.", "Het duurde en duurde maar.");
         },
-        tip: ["Het tegenovergestelde van kort.", "Het verhaal was juist heel erg ..."],
+        tip: ["Het omgekeerde van kort.", "Het verhaal was juist heel erg ..."],
       },
       t,
     ),
@@ -1472,7 +1661,7 @@ const tijden1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Lang en kort horen bij elkaar.", "Het blauwe boek was snel uit.");
         },
-        tip: ["Het tegenovergestelde van lang.", "Het was juist heel erg ..."],
+        tip: ["Het omgekeerde van lang.", "Het was juist heel erg ..."],
       },
       t,
     ),
@@ -1488,7 +1677,7 @@ const tijden1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Over een poosje is nog niet nu.", "Het komt nog.", "Gisteren en vroeger zijn al voorbij.");
         },
-        tip: ["Welk woord gaat over iets wat nog komt?", "Welk woord past bij: over een poosje?"],
+        tip: ["Zoek het woord voor iets wat nog moet komen.", "Welk woord past bij: over een poosje?"],
       },
       t,
     ),
@@ -1508,9 +1697,9 @@ const tijden1Opgaven: Opgave[] = [
           zetP(l, { licht: ["middag"] });
           await l.zeg("Dan is het middag.");
           zetP(l, { licht: ["avond"] });
-          await l.zeg("Dan is het avond.", "En wat komt daarna?");
+          await l.zeg("Dan is het avond.");
         },
-        tip: ["Wanneer slaap je?", "Wat komt er na de avond?"],
+        tip: ["Denk aan het moment waarop je gaat slapen.", "Wat komt er na de avond?"],
       },
       t,
     ),
@@ -1532,7 +1721,7 @@ const tijden1Opgaven: Opgave[] = [
           zetP(l, { licht: ["nacht"] });
           await l.zeg("Daarna is het nacht.");
         },
-        tip: ["Wat komt er na de ochtend?", "Wat komt er vlak voor de avond?"],
+        tip: ["Denk aan wat er na de ochtend komt.", "Wat komt er vlak voor de avond?"],
       },
       t,
     ),
@@ -1567,7 +1756,7 @@ const tijden1Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Het was al nacht.", "Dan is het niet vroeg meer.");
         },
-        tip: ["Het tegenovergestelde van vroeg.", "Toen was het al heel ..."],
+        tip: ["Het omgekeerde van vroeg.", "Toen was het al heel ..."],
       },
       t,
     ),
@@ -1618,7 +1807,7 @@ const tijden1Opgaven: Opgave[] = [
         opties: ["donderdag", "vrijdag", "zondag"],
         goed: "vrijdag",
         vraag: ["Vandaag is het zaterdag.", "Welke dag was het gisteren?"],
-        goedZin: ["Gisteren was het vrijdag.", "Toen was de kampvuuravond."],
+        goedZin: ["Vrijdag was gisteren.", "Toen was de kampvuuravond."],
         samen: async (l) => {
           zetP(l, { groot: "week|licht=5" });
           await l.zeg("Zaterdag is groter. Dat is vandaag.", "Gisteren is de dag ervoor.");
@@ -1628,7 +1817,7 @@ const tijden1Opgaven: Opgave[] = [
       },
       t,
     ),
-];
+], TIJ1_MIS);
 
 const tijden1: Lesdraaiboek = {
   id: "squla-tijd-tijden-1",
@@ -1640,10 +1829,10 @@ const tijden1: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
-    await welkomPlaatjes(l, "kampvuur", ["Gisteren was er een kampvuuravond op vrijdag.", "Welke dag komt na vrijdag?"], async () => {
+    const voorbeeldAfgerond = await welkomPlaatjes(l, "kampvuur", ["Gisteren was er een kampvuuravond op vrijdag.", "Welke dag komt na vrijdag?"], async () => {
       /* Eerst over "na een dag" (het voorbeeld), met een dag die in de vragen niet het antwoord is. */
       zetP(l, { groot: "week|licht=2" });
-      await l.zeg("Stel, gisteren was het woensdag.", "Welke dag komt na woensdag?");
+      await l.zeg("Stel, gisteren was het woensdag.");
       zetP(l, { groot: "week|licht=3" });
       await l.zeg("Na woensdag komt donderdag.", "Dus vandaag is het donderdag.");
       zetP(l, { groot: null, kaarten: [DAGDEEL("ochtend"), DAGDEEL("middag"), DAGDEEL("avond"), DAGDEEL("nacht")] });
@@ -1658,7 +1847,7 @@ const tijden1: Lesdraaiboek = {
       zetP(l, { kaarten: [], licht: [], groot: "kampvuur" });
       await l.zeg("Gisteren is al voorbij.", "Vandaag is nu.", "Morgen komt nog.");
     }, tijden1Opgaven[0]);
-    const fouten = await speelAlles(l, tijden1Opgaven, [0, 5, 9]);
+    const fouten = await speelAlles(l, tijden1Opgaven, [0, 5, 9], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je kent woorden over tijd.");
   },
 };
@@ -1667,7 +1856,21 @@ const tijden1: Lesdraaiboek = {
 
 const twee = (a: PDing, b: PDing): PDing[] => [a, b];
 
-const tijden2Opgaven: Opgave[] = [
+const TIJ2_MIS: (Mis | undefined)[] = [
+  { boterham: ["Een boterham is zo op."] },
+  { lopen: ["De bakkerij is vlakbij. Daar ben je zo."] },
+  { deeg: ["Voor deeg moet je lang kneden."] },
+  { versieren: ["Bij versieren doe je veel: room, fruit en nog meer."] },
+  { koekje: ["Een koekje is in een paar happen op."] },
+  { "ei koken": ["Een ei is al na een paar minuten klaar."] },
+  { vegen: ["Bij vegen moet je overal langs."] },
+  { "een broodje krijgen": ["Een broodje krijgen is zo gebeurd."] },
+  undefined,
+  { broodjes: ["100 broodjes bakken duurt de hele middag."], lunchen: ["Lunchen duurt langer dan een minuut."] },
+  { afwassen: ["Afwassen kost een tijdje, maar het duurt niet langer dan een middag."], "een boterham eten": ["Een boterham eten is zo gebeurd."] },
+  { keuken: ["Bij vegen moet je overal langs."] },
+];
+const tijden2Opgaven: Opgave[] = metReactie([
   (l, t) =>
     plaatjesVraag(
       l,
@@ -1683,7 +1886,7 @@ const tijden2Opgaven: Opgave[] = [
           zetP(l, { licht: ["slapen"] });
           await l.zeg("Slapen doe je de hele nacht.");
         },
-        tip: ["Wat doe je de hele nacht?", "Wat duurt langer?"],
+        tip: ["Denk eens aan hoe lang een nacht slapen duurt."],
       },
       t,
     ),
@@ -1702,7 +1905,7 @@ const tijden2Opgaven: Opgave[] = [
           zetP(l, { licht: ["werken"] });
           await l.zeg("Een hele dag duurt van de ochtend tot de avond.");
         },
-        tip: ["Wat duurt van de ochtend tot de avond?", "Wat duurt langer?"],
+        tip: ["Denk aan hoe lang je onderweg bent en hoe lang je werkt."],
       },
       t,
     ),
@@ -1721,7 +1924,7 @@ const tijden2Opgaven: Opgave[] = [
           zetP(l, { licht: ["suiker"] });
           await l.zeg("Strooien doe je met een paar schudjes.");
         },
-        tip: ["Wat is met een paar schudjes klaar?", "Wat duurt kort?"],
+        tip: ["Zoek wat met een paar schudjes klaar is.", "Wat duurt kort?"],
       },
       t,
     ),
@@ -1733,14 +1936,14 @@ const tijden2Opgaven: Opgave[] = [
         kaarten: twee({ id: "versieren", tekening: "taart", zeg: "een taart versieren" }, { id: "kers", tekening: "kers", zeg: "een kers op de taart leggen" }),
         goed: "kers",
         vraag: ["Wat duurt korter: een taart versieren, of een kers op de taart leggen?"],
-        goedZin: ["Een kers op de taart leggen duurt korter.", "Dat is in één tel gebeurd."],
+        goedZin: ["Een kers op de taart leggen duurt korter.", "Dat is in 1 tel gebeurd."],
         samen: async (l) => {
           zetP(l, { licht: ["versieren"] });
           await l.zeg("Bij versieren doe je veel: room, fruit, en nog meer.");
           zetP(l, { licht: ["kers"] });
-          await l.zeg("Een kers leg je er in één keer op.");
+          await l.zeg("Een kers leg je er in 1 keer op.");
         },
-        tip: ["Wat doe je in één keer?", "Wat duurt korter?"],
+        tip: ["Denk aan wat je in 1 keer doet.", "Wat duurt korter?"],
       },
       t,
     ),
@@ -1756,7 +1959,7 @@ const tijden2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Een uur is best lang.", "Een koekje is in een paar happen op.");
         },
-        tip: ["Wat duurt lang: bakken of eten?", "Wat duurt ongeveer een uur?"],
+        tip: ["Denk aan hoe lang bakken duurt en hoe lang eten duurt.", "Wat duurt ongeveer een uur?"],
       },
       t,
     ),
@@ -1772,7 +1975,7 @@ const tijden2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Een ei is snel gaar.", "Een taart moet lang in de oven.");
         },
-        tip: ["Wat moet lang in de oven?", "Wat duurt langer?"],
+        tip: ["Denk aan hoe lang een ei in het water moet, en hoe lang een taart in de oven."],
       },
       t,
     ),
@@ -1787,11 +1990,11 @@ const tijden2Opgaven: Opgave[] = [
         goedZin: ["De deur van het slot doen duurt kort.", "De hele winkel vegen duurt langer."],
         samen: async (l) => {
           zetP(l, { licht: ["slot"] });
-          await l.zeg("Een sleutel draai je in één keer om.");
+          await l.zeg("Een sleutel draai je in 1 keer om.");
           zetP(l, { licht: ["vegen"] });
           await l.zeg("Bij vegen moet je overal langs.");
         },
-        tip: ["Wat doe je in één keer?", "Wat duurt korter?"],
+        tip: ["Denk aan wat je in 1 keer doet.", "Wat duurt korter?"],
       },
       t,
     ),
@@ -1807,7 +2010,7 @@ const tijden2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Bij een rondleiding loop je overal langs.", "Een broodje krijgen is zo gebeurd.");
         },
-        tip: ["Waarbij loop je langs de hele bakkerij?", "Wat duurt het langst?"],
+        tip: ["Zoek waarbij je langs de hele bakkerij loopt.", "Wat duurt het langst?"],
       },
       t,
     ),
@@ -1831,7 +2034,7 @@ const tijden2Opgaven: Opgave[] = [
           zetP(l, { licht: ["oven"] });
           await l.zeg("Hier staat de taart in de oven.");
           zetP(l, { licht: ["versierd"] });
-          await l.zeg("Hier is de taart klaar, met een kaarsje.", "Wat komt eerst?");
+          await l.zeg("Hier is de taart klaar, met een kaarsje.", ...(krijgtVervolgvraag(l) ? [] : ["Wat komt eerst?"]));
         },
         tip: ["Je kunt pas versieren als de taart gebakken is.", "Zet de klusjes op volgorde."],
         handje: true,
@@ -1845,16 +2048,16 @@ const tijden2Opgaven: Opgave[] = [
         beeld: {},
         kaarten: [
           { id: "water", tekening: "glas", zeg: "een glas water drinken" },
-          { id: "broodjes", tekening: "brood", zeg: "honderd broodjes bakken" },
+          { id: "broodjes", tekening: "brood", zeg: "100 broodjes bakken" },
           { id: "lunchen", tekening: "boterham", zeg: "lunchen" },
         ],
         goed: "water",
-        vraag: ["Het is bijna lunchtijd.", "Eerst een glas water.", "Vanmiddag worden er honderd broodjes gebakken.", "Wat duurt ongeveer een minuut?"],
-        goedZin: ["Een glas water drinken duurt ongeveer een minuut.", "Honderd broodjes bakken duurt de hele middag."],
+        vraag: ["Het is bijna lunchtijd.", "Eerst een glas water.", "Vanmiddag worden er 100 broodjes gebakken.", "Wat duurt ongeveer een minuut?"],
+        goedZin: ["Een glas water drinken duurt ongeveer een minuut.", "100 broodjes bakken duurt de hele middag."],
         samen: async (l) => {
-          await l.zeg("Een minuut is heel kort.", "Wat is in zo'n korte tijd klaar?");
+          await l.zeg("Een minuut is heel kort.", ...(krijgtVervolgvraag(l) ? [] : ["Wat is in zo'n korte tijd klaar?"]));
         },
-        tip: ["Wat is het snelst klaar?", "Wat duurt ongeveer een minuut?"],
+        tip: ["Zoek wat het snelst klaar is.", "Wat duurt ongeveer een minuut?"],
       },
       t,
     ),
@@ -1866,11 +2069,11 @@ const tijden2Opgaven: Opgave[] = [
         opties: ["een week kamperen", "afwassen", "een boterham eten"],
         goed: "een week kamperen",
         vraag: ["In de bakkerij worden de hele middag broodjes gebakken.", "Wat duurt langer dan een hele middag?"],
-        goedZin: ["Een week kamperen duurt veel langer.", "Een week heeft wel zeven dagen."],
+        goedZin: ["Een week kamperen duurt veel langer.", "Een week heeft wel 7 dagen."],
         samen: async (l) => {
-          await l.zeg("Een middag is een stuk van één dag.", "Een week is zeven dagen.");
+          await l.zeg("Een middag is een stuk van 1 dag.", "Een week is 7 dagen.");
         },
-        tip: ["Wat duurt meer dan één dag?", "Wat duurt langer dan een hele middag?"],
+        tip: ["Denk aan wat langer duurt dan 1 dag."],
       },
       t,
     ),
@@ -1886,11 +2089,11 @@ const tijden2Opgaven: Opgave[] = [
         samen: async (l) => {
           await l.zeg("Een minuut is heel kort.", "Bij vegen moet je overal langs.");
         },
-        tip: ["Wat is het snelst klaar?", "Wat duurt ongeveer een minuut?"],
+        tip: ["Zoek wat het snelst klaar is.", "Wat duurt ongeveer een minuut?"],
       },
       t,
     ),
-];
+], TIJ2_MIS);
 
 const tijden2: Lesdraaiboek = {
   id: "squla-tijd-tijden-2",
@@ -1902,7 +2105,7 @@ const tijden2: Lesdraaiboek = {
   voorwerpen: TIJD_VOORWERPEN,
   kaarttekening: KaartTijden,
   async speel(l) {
-    await welkomPlaatjes(l, "bakkerij", ["Wat duurt langer?", "Een boterham eten of een nacht slapen?"], async () => {
+    const voorbeeldAfgerond = await welkomPlaatjes(l, "bakkerij", ["Wat duurt langer?", "Een boterham eten of een nacht slapen?"], async () => {
       zetP(l, { groot: null, kaarten: twee({ id: "koekje", tekening: "koekje", zeg: "een koekje eten" }, { id: "slapen", tekening: "bed", zeg: "een nacht slapen" }) });
       zetP(l, { licht: ["koekje"] });
       await l.zeg("Een koekje eten duurt heel kort.");
@@ -1911,7 +2114,7 @@ const tijden2: Lesdraaiboek = {
       zetP(l, { kaarten: [], licht: [], groot: "bakkerij" });
       await l.zeg("Een minuut is kort.", "Een uur is langer.", "En een hele middag is nog langer.");
     }, tijden2Opgaven[0]);
-    const fouten = await speelAlles(l, tijden2Opgaven, [0, 6, 9]);
+    const fouten = await speelAlles(l, tijden2Opgaven, [0, 6, 9], voorbeeldAfgerond);
     await squlaEind(l, fouten, "Je weet wat lang duurt en wat kort duurt.");
   },
 };

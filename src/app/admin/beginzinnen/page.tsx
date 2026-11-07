@@ -11,6 +11,8 @@
 import { existsSync, readFileSync } from "node:fs";
 import path from "node:path";
 import { notFound } from "next/navigation";
+import Link from "next/link";
+import { beginzinnen } from "@/lib/lessen/beginzinnen";
 
 type Les = {
   id: string;
@@ -29,7 +31,7 @@ function leesLijst(): { lijst: Les[]; fout: string | null } {
   try {
     const data = JSON.parse(readFileSync(p, "utf8"));
     if (!Array.isArray(data)) throw new Error("geen lijst");
-    return { lijst: data.filter((l) => l && typeof l.id === "string"), fout: null };
+    return { lijst: data.filter((l) => l && typeof l.id === "string").map((l: Les) => ({ ...l, ...beginzinnen(l.id) })), fout: null };
   } catch {
     return { lijst: [], fout: "De lijst wordt nog geschreven en is nu niet leesbaar. Vernieuw de pagina over even." };
   }
@@ -44,8 +46,17 @@ export default function Beginzinnen() {
   return (
     <div style={{ maxWidth: 1100 }}>
       <h1 className="text-xl font-semibold">Beginzinnen van de lessen</h1>
+      <Link href="/voorbeeld/beginschermen" className="mt-3 flex min-h-11 w-fit items-center rounded-lg bg-blue-900 px-4 py-2 font-semibold text-white">
+        Controleer alle huidige beginzinnen met het echte beginscherm →
+      </Link>
+      <Link href="/admin/beginzinnen/uitleg-voorbeelden" className="mt-3 flex min-h-11 w-fit items-center rounded-lg border border-teal-200 bg-teal-50 px-4 py-2 font-semibold text-teal-900 underline">
+        Uitleg na ‘Nee’: bekijk tien voorbeelden naast de huidige uitleg →
+      </Link>
+      <Link href="/admin/beginzinnen/voorbeeld-2" className="mt-3 inline-flex min-h-11 items-center rounded-lg bg-teal-50 px-4 font-semibold text-teal-900 underline">
+        Bekijk de oorspronkelijke vergelijking →
+      </Link>
       <p className="mt-1 text-sm opacity-80">
-        {lijst.length} lessen. Per les: de eerste vraag, wat het kind doet, en Bliepo&apos;s twee nieuwe beginzinnen. Alleen op de laptop.
+        {lijst.length} lessen. Squla-lessen met de gekozen stijl van versie 2. Dit zegt Bliepo bij het openen van de les: wat je gaat doen en een vraag over zelf proberen. Ja = zelf beginnen, Nee = eerst uitleg. Alleen op de laptop.
       </p>
       {fout && <p className="mt-4 rounded border border-black/10 bg-white p-3">{fout}</p>}
       {onderwerpen.map((o) => (
@@ -82,7 +93,7 @@ export default function Beginzinnen() {
                     <div className="mt-2 text-xs font-semibold uppercase opacity-60">Zin 2</div>
                     <div className="text-lg font-semibold leading-snug">{l.zin2 || "—"}</div>
                   </div>
-                  <div className="mt-2 text-xs opacity-70">Huidige beginzin: {l.huidig || "—"}</div>
+                  <div className="mt-2 text-xs opacity-70">Eerdere beginzin: {l.huidig || "—"}</div>
                 </div>
               </article>
             ))}

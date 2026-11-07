@@ -1,274 +1,815 @@
-# Beginzinnen van de lessen (voorstel, BOUWREGELS 4.4)
+# Beginzinnen van de Squla-lessen — versie 2
 
-Bliepo zegt aan het begin van elke les twee zinnen, daarna komen Ja en Nee. Zin 1 zegt wat het kind gaat doen. Zin 2 vraagt of het kind dit al kan. Dit zijn 30 voorstellen; nog niets staat in de lessen.
+135 Squla-lessen. De gekozen stijl van versie 2 is toegepast. Synthesis-lessen, proeflessen en oude conceptopgaven vallen buiten deze lijst.
 
-## 1. Fruit tellen
+Elke opening bestaat uit een concrete opdracht en een korte vraag. Ja = beginnen met oefenen; Nee = eerst uitleg. De actieve bron is `src/lib/lessen/beginzinnen.json`.
 
-- Les: `squla-tellen-fruit-1` (onderwerp: Tellen)
-- Link: /voorbeeld/les/squla-tellen-fruit-1?naam=Testkind
-- Wat het kind doet: Telt fruit dat in rijtjes van vijf ligt en kiest uit drie getallen hoeveel het er zijn.
-- **Zin 1:** In deze les tel je fruit dat in rijtjes ligt en kies je het goede getal.
-- **Zin 2:** Ken jij dit al?
-- Nu in de les: De appels liggen netjes in rijtjes. Hoeveel appels zie je?
+## 1. Huisnummers: wat komt erna?
 
-## 2. Hoeveel zie je?
+- Les: `squla-huisnummers`
+- **Zin 1:** In de straat zoek je het volgende huisnummer door te kiezen, te typen of te slepen.
+- **Zin 2:** Kun je verder tellen vanaf een huisnummer?
 
-- Les: `squla-tellen-resultatief2-1` (onderwerp: Tellen)
-- Link: /voorbeeld/les/squla-tellen-resultatief2-1?naam=Testkind
-- Wat het kind doet: Telt raketjes, sterren, planeten, satellieten en ufo's in rijen van vijf en kiest uit drie getallen hoeveel het er zijn.
-- **Zin 1:** Zo meteen gaan we raketjes, sterren en planeten tellen en kiezen hoeveel het er zijn.
-- **Zin 2:** Denk je dat je dit al kunt?
-- Nu in de les: De raketjes staan in rijen. Hoeveel raketjes zie je?
+## 2. Groot en klein, vol en leeg
 
-## 3. Getallen op hun plek
+- Les: `squla-rekentaal`
+- **Zin 1:** In deze les leer je woorden zoals groot en klein. Je kijkt naar de plaatjes en tikt op wat ik vraag.
+- **Zin 2:** Weet jij al wat die woorden betekenen?
 
-- Les: `squla-getallenlijn-rangschikken-1` (onderwerp: Getallenlijn)
-- Link: /voorbeeld/les/squla-getallenlijn-rangschikken-1?naam=Testkind
-- Wat het kind doet: Kiest of typt het getal dat ontbreekt in een rij (lichtslinger, planeetjes, sterren), leest een vlaggetje af op de getallenlijn 0-20 en zet kaartjes op volgorde. Hulpmiddel: de getallenlijn.
-- **Zin 1:** Nu gaan we met de getallenlijn en rijen getallen zoeken welk getal er ontbreekt.
-- **Zin 2:** Heb je dit al eens gedaan?
-- Nu in de les: Een lichtslinger heeft lampjes met getallen. Welk getal hoort op de puntjes?
+## 3. Dagen van de week
 
-## 4. Dingen op de getallen (moeilijker)
+- Les: `squla-dagen-van-de-week`
+- **Zin 1:** Tik op de weektrein de dag aan die ervoor of erna komt en zoek de dagen van het weekend.
+- **Zin 2:** Lukt het je om de juiste dag aan te wijzen?
 
-- Les: `squla-getallenlijn-dieren-2` (onderwerp: Getallenlijn)
-- Link: /voorbeeld/les/squla-getallenlijn-dieren-2?naam=Testkind
-- Wat het kind doet: Sleept drie getalkaartjes naar vakjes en zet ze op volgorde, van klein naar groot.
-- **Zin 1:** Je mag getalkaartjes slepen en op volgorde zetten, van klein naar groot.
-- **Zin 2:** Weet je al hoe dat moet?
-- Nu in de les: Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot.
+## 4. Patronen
 
-## 5. Terugtellen tot de start
+- Les: `squla-vormen-patronen-1`
+- **Zin 1:** Maak het kralenpatroon af door te kiezen welke kraal erna komt.
+- **Zin 2:** Weet je hoe dit patroon verdergaat?
 
-- Les: `squla-getallenlijn-terugtellen-1` (onderwerp: Getallenlijn)
-- Link: /voorbeeld/les/squla-getallenlijn-terugtellen-1?naam=Testkind
-- Wat het kind doet: Telt terug in een aftelrij van de raket en kiest het getal dat ontbreekt. Hulpmiddel: de aftelrij van de raket.
-- **Zin 1:** Net als een raket die opstijgt, tel je terug en kies je welk getal ontbreekt.
-- **Zin 2:** Kun je zelf al terugtellen?
-- Nu in de les: De raket telt af, van groot naar klein. Welk getal hoort op de puntjes?
+## 5. Patronen (moeilijker)
 
-## 6. Hoe laat is het?
+- Les: `squla-vormen-patronen-2`
+- **Zin 1:** Bekijk de rijen blokjes en maak het patroon af.
+- **Zin 2:** Lukt het je om een patroon in blokjes te herkennen?
 
-- Les: `squla-klok-hoelaat-1` (onderwerp: Klok)
-- Link: /voorbeeld/les/squla-klok-hoelaat-1?naam=Testkind
-- Wat het kind doet: Leest een wijzerklok af (hele uren) en kiest uit knoppen hoe laat het is. Hulpmiddel: de klok.
-- **Zin 1:** Op de klok lees je de hele uren af en kies je hoe laat het is.
-- **Zin 2:** Kun jij dit al?
-- Nu in de les: De bezorgbus rijdt de hele dag langs de winkels. Kijk steeds op de klok: hoe laat is het?
+## 6. Opruimen
 
-## 7. Klokkijken 2
+- Les: `squla-vormen-opruimen-1`
+- **Zin 1:** Bekijk de kleding en schoenen en zoek het plaatje met alleen broeken.
+- **Zin 2:** Weet je wat bij elkaar past?
 
-- Les: `squla-klok-klokkijken2-1` (onderwerp: Klok)
-- Link: /voorbeeld/les/squla-klok-klokkijken2-1?naam=Testkind
-- Wat het kind doet: Kiest bij een tijd in woorden de goede wijzerklok, en leest een klok af en kiest de tijd. Hulpmiddel: de klok.
-- **Zin 1:** Je zoekt bij elke tijd de goede klok, en bij elke klok de goede tijd.
-- **Zin 2:** Lukt dit je al?
-- Nu in de les: Een klok en een tijd horen bij elkaar. Welke klok hoort bij 9 uur?
+## 7. Links, rechts, boven, onder
 
-## 8. Meer, minder, evenveel
+- Les: `squla-vormen-orienteren-1`
+- **Zin 1:** Op de plaatjes zoek je wat links, rechts, boven of onder ligt.
+- **Zin 2:** Kun je links en rechts al uit elkaar houden?
 
-- Les: `squla-meer-minder-evenveel1-1` (onderwerp: Meer, minder, evenveel)
-- Link: /voorbeeld/les/squla-meer-minder-evenveel1-1?naam=Testkind
-- Wat het kind doet: Telt een groep appels (of sterren, bloemen, ballen) en kiest uit drie getallen het getal dat evenveel is.
-- **Zin 1:** We tellen eerst groepen appels en andere dingen en kiezen dan het getal dat erbij past.
-- **Zin 2:** Kun je al goed tellen?
-- Nu in de les: De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het?
+## 8. Vormen en kleuren
 
-## 9. Meer dan, minder dan
+- Les: `squla-vormen-kleuren-1`
+- **Zin 1:** Van losse puzzelstukjes maak je een plaatje door elk stukje naar zijn plek te slepen.
+- **Zin 2:** Wil je deze puzzel zonder uitleg proberen?
 
-- Les: `squla-meer-minder-evenveel3-1` (onderwerp: Meer, minder, evenveel)
-- Link: /voorbeeld/les/squla-meer-minder-evenveel3-1?naam=Testkind
-- Wat het kind doet: Zet potjes met een getal op volgorde, van meer naar minder, en tikt op het kaartje met meer, minder of evenveel dan een getal.
-- **Zin 1:** Straks zet je potjes met getallen op volgorde en zoek je wat meer of minder is.
-- **Zin 2:** Vind je dit al makkelijk?
-- Nu in de les: Drie potjes met een getal. Zet de potjes op volgorde, van meer naar minder.
+## 9. Vormen en kleuren (moeilijker)
 
-## 10. Pizza's vergelijken
+- Les: `squla-vormen-kleuren-2`
+- **Zin 1:** Sleep de puzzelstukjes naar hun plek om een platte vorm te maken.
+- **Zin 2:** Lukt het je om de vorm weer heel te maken?
 
-- Les: `squla-meten-pizza-1` (onderwerp: Meten)
-- Link: /voorbeeld/les/squla-meten-pizza-1?naam=Testkind
-- Wat het kind doet: Tikt op de grootste of kleinste pizza of het grootste of kleinste ijsje en zet ze op volgorde, van klein naar groot.
-- **Zin 1:** Je gaat pizza's en ijsjes vergelijken en op volgorde zetten, van klein naar groot.
-- **Zin 2:** Ben je hier al goed in?
-- Nu in de les: Deze pizza's zijn niet even groot. Welke pizza is het grootst?
+## 10. Vormen en kleuren (nog moeilijker)
 
-## 11. Hoe groot is het?
+- Les: `squla-vormen-kleuren-3`
+- **Zin 1:** Je maakt puzzels van vormen zoals een bol door de stukjes op hun plek te slepen.
+- **Zin 2:** Zie je hoe de stukjes in elkaar passen?
 
-- Les: `squla-meten-oppervlakte-1` (onderwerp: Meten)
-- Link: /voorbeeld/les/squla-meten-oppervlakte-1?naam=Testkind
-- Wat het kind doet: Vergelijkt schilderijen, tafels en muurtjes, telt blaadjes en hokjes en kiest wat groot of klein is of even groot.
-- **Zin 1:** Je kijkt welk ding groot of klein is en telt hokjes om het te meten.
-- **Zin 2:** Weet jij hoe dit werkt?
-- Nu in de les: Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein?
+## 11. Splitsen tot 10
 
-## 12. Munten en briefjes
+- Les: `squla-splits-splitsen1-1`
+- **Zin 1:** Verdeel de pionnen over twee vakken om een getal te splitsen.
+- **Zin 2:** Lukt het splitsen je al zonder hulp?
 
-- Les: `squla-geld-geldmachine-1` (onderwerp: Geld)
-- Link: /voorbeeld/les/squla-geld-geldmachine-1?naam=Testkind
-- Wat het kind doet: Herkent munten en briefjes en tikt op het geld dat bij de vraag past. Hulpmiddel: munten en briefjes.
-- **Zin 1:** Dadelijk zie je munten en briefjes en tik je op het geld dat in de vraag staat.
-- **Zin 2:** Ken je al alle munten en briefjes?
-- Nu in de les: Kijk, een munt van 1 euro. Vandaag leer je munten en briefjes herkennen.
+## 12. Splitsen tot 10 (moeilijker)
 
-## 13. Zakgeld sparen
+- Les: `squla-splits-splitsen1-2`
+- **Zin 1:** Met de splitsmachine en de huisjes verdeel je getallen tot tien in twee delen.
+- **Zin 2:** Weet je hoe een splitshuisje werkt?
 
-- Les: `squla-geld-zakgeld-1` (onderwerp: Geld)
-- Link: /voorbeeld/les/squla-geld-zakgeld-1?naam=Testkind
-- Wat het kind doet: Telt munten en briefjes bij elkaar en kiest waar het goede bedrag ligt of hoeveel er nog bij moet. Hulpmiddel: munten en briefjes.
-- **Zin 1:** Met munten en briefjes tel je geld bij elkaar, zoals bij het sparen van zakgeld.
-- **Zin 2:** Denk je dat dit lukt?
-- Nu in de les: Voor elk klusje krijg je 2 euro. Hoeveel is dat bij elkaar?
+## 13. Splitsen tot 20
 
-## 14. Patronen
+- Les: `squla-splits-splitsen2-1`
+- **Zin 1:** Met munten, briefjes en splitshuisjes verdeel je getallen tot twintig.
+- **Zin 2:** Denk je dat je ook grotere getallen kunt splitsen?
 
-- Les: `squla-vormen-patronen-1` (onderwerp: Vormen)
-- Link: /voorbeeld/les/squla-vormen-patronen-1?naam=Testkind
-- Wat het kind doet: Maakt patronen van gekleurde kralen af (welke kraal komt daarna), maakt een ketting langer en zoekt wat bij de pijl hoort. Hulpmiddel: kralen.
-- **Zin 1:** Met kralen maken we een patroon af: je kiest welke kraal er daarna komt.
-- **Zin 2:** Weet je al wat een patroon is?
-- Nu in de les: De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?
+## 14. Splitsen tot 20 (moeilijker)
 
-## 15. Vormen en kleuren
+- Les: `squla-splits-splitsen2-2`
+- **Zin 1:** Bij de splitshuisjes zoek je de passende som en het ontbrekende getal.
+- **Zin 2:** Herken je de som die bij een splitsing hoort?
 
-- Les: `squla-vormen-kleuren-1` (onderwerp: Vormen)
-- Link: /voorbeeld/les/squla-vormen-kleuren-1?naam=Testkind
-- Wat het kind doet: Sleept de stukjes van een kleurig plaatje (16, 9 of 4 stukjes) naar hun plek en maakt zo een puzzel. Hulpmiddel: puzzelstukjes.
-- **Zin 1:** Hier gaan we een kleurig plaatje puzzelen door de stukjes op hun plek te slepen.
-- **Zin 2:** Heb je hier al mee geoefend?
-- Nu in de les: Een kleurrijk plaatje valt in zestien stukjes. Maak de puzzel.
+## 15. Eerlijk verdelen
 
-## 16. Splitsen tot 10
+- Les: `squla-splits-delen-1`
+- **Zin 1:** Sleep de knikkers naar de bakjes, zodat in elk bakje evenveel komt.
+- **Zin 2:** Lukt het je om alles eerlijk te verdelen?
 
-- Les: `squla-splits-splitsen1-1` (onderwerp: Splitsen)
-- Link: /voorbeeld/les/squla-splits-splitsen1-1?naam=Testkind
-- Wat het kind doet: Splitst een getal tot 10 door pionnen over twee vakken te slepen. Hulpmiddel: twee vakken.
-- **Zin 1:** Tijdens deze les splits je een getal door pionnen over twee vakken te slepen.
-- **Zin 2:** Kun je dit al zonder hulp?
-- Nu in de les: Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen?
+## 16. Schattenjacht: plussommen
 
-## 17. Eerlijk verdelen
+- Les: `squla-piraat-1`
+- **Zin 1:** Op schattenjacht tel je goudstukken en reken je uit hoeveel schatten er samen zijn.
+- **Zin 2:** Tel je de schatten al zonder hulp bij elkaar?
 
-- Les: `squla-splits-delen-1` (onderwerp: Splitsen)
-- Link: /voorbeeld/les/squla-splits-delen-1?naam=Testkind
-- Wat het kind doet: Sleept knikkers (en potloden) eerlijk over twee tot vijf bakjes, en kiest hoeveel er in elk bakje komen. Hulpmiddel: bakjes.
-- **Zin 1:** We gaan ontdekken hoe je knikkers eerlijk verdeelt door ze naar bakjes te slepen.
-- **Zin 2:** Heb je dit weleens geprobeerd?
-- Nu in de les: Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen?
+## 17. Schattenjacht: minsommen
 
-## 18. Schattenjacht: minsommen
+- Les: `squla-piraat-2`
+- **Zin 1:** Voor de schatkaart maak je minsommen door de overgebleven schatten naar het vak te slepen.
+- **Zin 2:** Wil je de minsommen op deze schattenjacht zonder uitleg proberen?
 
-- Les: `squla-piraat-2` (onderwerp: Rekenen met getallen)
-- Link: /voorbeeld/les/squla-piraat-2?naam=Testkind
-- Wat het kind doet: Maakt minsommen met sterren, diamanten en parels: sleept wat er overblijft naar het vak, en lost een raadsel op. Elk goed antwoord geeft een letter van de schatkaart. Hulpmiddel: de schatkaart.
-- **Zin 1:** Op schattenjacht maak je minsommen: je sleept wat er overblijft naar het vak.
-- **Zin 2:** Ken je dit al een beetje?
-- Nu in de les: Nu reken je met min: er gaat iets af. Ik heb 6 sterren in mijn tas en er valt er 1 uit. Sleep de sterren die er nog zijn naar het vak.
+## 18. Schattenjacht: plus en min
 
-## 19. Rekenmix 1
+- Les: `squla-piraat-3`
+- **Zin 1:** Voor de schatkaart reken je plussommen en minsommen uit.
+- **Zin 2:** Weet je wanneer je optelt en wanneer je aftrekt?
 
-- Les: `squla-rekenmix-mix1-1` (onderwerp: Rekenmix)
-- Link: /voorbeeld/les/squla-rekenmix-mix1-1?naam=Testkind
-- Wat het kind doet: Telt appels, ballen, potloden, auto's en bloemen (door elkaar, in rijen of in paren) en kiest uit drie getallen hoeveel het er zijn.
-- **Zin 1:** Dit keer tel je appels, ballen en potloden en kies je het goede getal.
-- **Zin 2:** Is dit voor jou al gemakkelijk?
-- Nu in de les: Er liggen appels door elkaar. Tel de appels. Hoeveel zijn het er?
+## 19. Dagen van de week
 
-## 20. Rekenmix 3 (moeilijker)
+- Les: `squla-tijd-dagen-1`
+- **Zin 1:** Op de weektrein kies je welke dag eerst, laatst of erna komt.
+- **Zin 2:** Ken je de volgorde van de dagen al?
 
-- Les: `squla-rekenmix-mix3-2` (onderwerp: Rekenmix)
-- Link: /voorbeeld/les/squla-rekenmix-mix3-2?naam=Testkind
-- Wat het kind doet: Kijkt naar een rij van vijf dingen en kiest welk ding op een bepaalde plek staat (eerste, tweede, derde, vierde of vijfde).
-- **Zin 1:** Je kijkt naar een rij en kiest welk ding op de eerste, tweede of derde plek staat.
-- **Zin 2:** Snap je dit al?
-- Nu in de les: Vijf dingen staan in een rij. Wat staat als eerste in de rij?
+## 20. Dagen van de week (moeilijker)
 
-## 21. Dagen van de week
+- Les: `squla-tijd-dagen-2`
+- **Zin 1:** Met de weektrein zoek je welke dag ervoor of erna komt.
+- **Zin 2:** Weet je welke dagen naast elkaar staan?
 
-- Les: `squla-tijd-dagen-1` (onderwerp: Tijd)
-- Link: /voorbeeld/les/squla-tijd-dagen-1?naam=Testkind
-- Wat het kind doet: Tikt op de goede wagon van de weektrein (elke wagon is een dag) en kiest welke dag eerst, laatst of erna komt. Hulpmiddel: de weektrein.
-- **Zin 1:** We stappen in de weektrein en kiezen de goede dag van de week.
-- **Zin 2:** Zou je dit al kunnen?
-- Nu in de les: De weektrein heeft zeven wagons. Wat is de eerste dag van de week?
+## 21. Dagen van de week (nog moeilijker)
+
+- Les: `squla-tijd-dagen-3`
+- **Zin 1:** Zet de losse dagen in de volgorde van de week.
+- **Zin 2:** Lukt het jou om de week weer op volgorde te leggen?
 
 ## 22. De kalender
 
-- Les: `squla-tijd-kalender-1` (onderwerp: Tijd)
-- Link: /voorbeeld/les/squla-tijd-kalender-1?naam=Testkind
-- Wat het kind doet: Kijkt naar de dagkalender, weekkalender en maandkalender en kiest welke kalender past en welk getal in een vakje staat. Hulpmiddel: de kalender.
-- **Zin 1:** Met de kalender zoek je welke kalender bij de vraag past en welk getal in een vakje staat.
-- **Zin 2:** Lees jij al weleens op een kalender?
-- Nu in de les: Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren?
+- Les: `squla-tijd-kalender-1`
+- **Zin 1:** Je zoekt de juiste kalender en leest de getallen in de vakjes.
+- **Zin 2:** Heb je al eens een kalender gebruikt?
 
-## 23. Plussommen in de bakkerij
+## 23. De kalender (moeilijker)
 
-- Les: `squla-plus-bakkerij-1` (onderwerp: Plussommen)
-- Link: /voorbeeld/les/squla-plus-bakkerij-1?naam=Testkind
-- Wat het kind doet: Telt taartjes, broden en koekjes bij elkaar (tot 10), kiest de uitkomst of de som en verbindt sommen met uitkomsten.
-- **Zin 1:** In de bakkerij tel je taartjes en broden bij elkaar en kies je de uitkomst.
-- **Zin 2:** Heb je dit al geleerd?
-- Nu in de les: In de bakkerij liggen taartjes. Hoeveel taartjes zijn het samen?
+- Les: `squla-tijd-kalender-2`
+- **Zin 1:** Op de kalender zoek je datums en bekijk je wat er op een dag gebeurt.
+- **Zin 2:** Lukt het je om een datum op te zoeken?
 
-## 24. Bussommen
+## 24. Tijden
 
-- Les: `squla-plus-bus1-1` (onderwerp: Plussommen)
-- Link: /voorbeeld/les/squla-plus-bus1-1?naam=Testkind
-- Wat het kind doet: Ziet pakjes in de bezorgbus en pakjes die erbij komen, en typt hoeveel pakjes er nu in de bus liggen. Hulpmiddel: de bezorgbus.
-- **Zin 1:** Er komen pakjes bij in de bezorgbus en jij typt hoeveel pakjes er nu in liggen.
-- **Zin 2:** Weet je hoe je dit doet?
-- Nu in de les: In de bus liggen 2 pakjes en er komt er 1 bij. Hoeveel pakjes liggen er nu in de bus?
+- Les: `squla-tijd-tijden-1`
+- **Zin 1:** Bij de plaatjes zoek je wat gisteren, vandaag of morgen gebeurt.
+- **Zin 2:** Weet je wat gisteren en morgen betekenen?
 
-## 25. Minsommen: hoeveel over?
+## 25. Tijden (moeilijker)
 
-- Les: `squla-min-machine-1` (onderwerp: Minsommen)
-- Link: /voorbeeld/les/squla-min-machine-1?naam=Testkind
-- Wat het kind doet: Ziet blokjes in de min-machine die er een paar afhaalt (en later sommen op een bord en bij de disco) en kiest uit drie getallen hoeveel er overblijven. Hulpmiddel: de min-machine.
-- **Zin 1:** Met de min-machine ga je aftrekken: jij kiest hoeveel blokjes er overblijven.
-- **Zin 2:** Heb je al eens min gerekend?
-- Nu in de les: Er gaan 10 blokjes in de min-machine en de machine haalt er 3 af. Hoeveel blokjes komen eruit?
+- Les: `squla-tijd-tijden-2`
+- **Zin 1:** Vergelijk de plaatjes en bedenk wat langer of korter duurt.
+- **Zin 2:** Heb je al een idee hoeveel tijd iets kost?
 
-## 26. Minsommen in de ruimte
+## 26. Getallen op hun plek
 
-- Les: `squla-min-ruimte-1` (onderwerp: Minsommen)
-- Link: /voorbeeld/les/squla-min-ruimte-1?naam=Testkind
-- Wat het kind doet: Ziet ballonnen, zeepbellen of raketjes die wegvliegen en kiest hoeveel er overblijven (ook: welke som past, disco, verbinden).
-- **Zin 1:** Kijk mee hoe ballonnen en raketjes wegvliegen; jij kiest hoeveel er overblijven.
-- **Zin 2:** Is dit al een makkie voor je?
-- Nu in de les: Er zweven 7 ballonnen in de lucht en er vliegen er 4 weg. Hoeveel ballonnen blijven er over?
+- Les: `squla-getallenlijn-rangschikken-1`
+- **Zin 1:** Met de getallenlijn en rijen getallen zoek je welk getal ontbreekt.
+- **Zin 2:** Zie je welk getal in de rij ontbreekt?
 
-## 27. Dagen van de week
+## 27. Getallen op hun plek (moeilijker)
 
-- Les: `squla-dagen-van-de-week` (onderwerp: Tijd)
-- Link: /voorbeeld/les/squla-dagen-van-de-week?naam=Testkind
-- Wat het kind doet: Tikt op de goede wagon van de weektrein en kiest welke dag erna, ervoor, gisteren, morgen of in het weekend komt. Hulpmiddel: de weektrein.
-- **Zin 1:** Aan boord van de weektrein tik je de dag aan die ervoor of erna komt.
-- **Zin 2:** Ken je de dagen van de week al?
-- Nu in de les: Hoi! Kijk, daar komt de weektrein. Elke wagon is een dag van de week. Samen zijn dat de 7 dagen van de week. Ze staan altijd in deze volgorde. Kun je dit al?
+- Les: `squla-getallenlijn-rangschikken-2`
+- **Zin 1:** Bij de diamanten zoek je de ontbrekende getallen in de rij.
+- **Zin 2:** Lukt het je om een getallenrij af te maken?
 
-## 28. Huisnummers: wat komt erna?
+## 28. Getallen op hun plek (nog moeilijker)
 
-- Les: `squla-huisnummers` (onderwerp: Tellen)
-- Link: /voorbeeld/les/squla-huisnummers?naam=Testkind
-- Wat het kind doet: Kijkt naar een straat met huizen en kiest, typt of sleept het huisnummer dat erna komt. Hulpmiddel: de straat met huizen.
-- **Zin 1:** Op een straat met huizen zoek je welk huisnummer er daarna komt.
-- **Zin 2:** Weet je al hoe huisnummers werken?
-- Nu in de les: Hoi! Kijk, een straat met huizen. Elk huis heeft een nummer. Welk nummer komt erna? Kun je dit al?
+- Les: `squla-getallenlijn-rangschikken-3`
+- **Zin 1:** Lees op de getallenlijn af bij welk getal het vlaggetje staat.
+- **Zin 2:** Weet je hoe de streepjes op de getallenlijn werken?
 
-## 29. De klok en de tijd
+## 29. Het raketje op de getallenlijn
 
-- Les: `squla-klok-digitaal-1` (onderwerp: Klok)
-- Link: /voorbeeld/les/squla-klok-digitaal-1?naam=Testkind
-- Wat het kind doet: Telt de wijzers en getallen op een klok, zoekt waar nog meer een klok staat, leest de klok af en zoekt klok en tijd bij elkaar. Hulpmiddel: de klok.
-- **Zin 1:** Nu kijk je naar de wijzers van de klok en zoek je waar nog meer een klok staat.
-- **Zin 2:** Weet je al hoe een klok werkt?
-- Nu in de les: Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok?
+- Les: `squla-getallenlijn-kat-1`
+- **Zin 1:** Volg het raketje en lees af waar het op de getallenlijn staat.
+- **Zin 2:** Weet jij hoe je afleest waar het raketje staat?
 
-## 30. Fruit tellen (nog moeilijker)
+## 30. Het raketje op de getallenlijn (moeilijker)
 
-- Les: `squla-tellen-fruit-3` (onderwerp: Tellen)
-- Link: /voorbeeld/les/squla-tellen-fruit-3?naam=Testkind
-- Wat het kind doet: Telt fruit (bananen, appels, peren e.d., 11 tot 20) dat door elkaar ligt en kiest uit drie getallen hoeveel het er zijn.
-- **Zin 1:** Het fruit ligt nu door elkaar: tel het en kies het goede getal.
-- **Zin 2:** Kun jij fruit tellen als het door elkaar ligt?
-- Nu in de les: Nu liggen de bananen door elkaar. Hoeveel bananen zie je?
+- Les: `squla-getallenlijn-kat-2`
+- **Zin 1:** Bij het raketje zoek je welk getal ervoor of erna komt.
+- **Zin 2:** Lukt het je om de buurgetallen te vinden?
 
+## 31. Dingen op de getallen
+
+- Les: `squla-getallenlijn-dieren-1`
+- **Zin 1:** Zoek uit welk getal onder de bal verstopt zit.
+- **Zin 2:** Denk je dat je het verstopte getal kunt vinden?
+
+## 32. Dingen op de getallen (moeilijker)
+
+- Les: `squla-getallenlijn-dieren-2`
+- **Zin 1:** Sleep de getalkaartjes naar hun plek, van klein naar groot.
+- **Zin 2:** Lukt het je om de kaartjes op volgorde te leggen?
+
+## 33. Dingen op de getallen (nog moeilijker)
+
+- Les: `squla-getallenlijn-dieren-3`
+- **Zin 1:** Kijk naar de getallen naast de bal en kies het getal dat eronder verstopt zit.
+- **Zin 2:** Tel je al verder langs de rij om het verstopte getal te vinden?
+
+## 34. Terugtellen tot de start
+
+- Les: `squla-getallenlijn-terugtellen-1`
+- **Zin 1:** Bij de raket tel je terug en kies je het getal dat ontbreekt.
+- **Zin 2:** Wil je het aftellen van de raket zonder uitleg proberen?
+
+## 35. Fruit tellen
+
+- Les: `squla-tellen-fruit-1`
+- **Zin 1:** Tel de appels in de rijtjes en kies het getal dat erbij hoort.
+- **Zin 2:** Lukt het tellen je al?
+
+## 36. Fruit tellen (moeilijker)
+
+- Les: `squla-tellen-fruit-2`
+- **Zin 1:** Tel de citroenen in rijen van vijf en zoek het juiste aantal.
+- **Zin 2:** Weet je hoe de rijtjes je helpen bij het tellen?
+
+## 37. Fruit tellen (nog moeilijker)
+
+- Les: `squla-tellen-fruit-3`
+- **Zin 1:** De bananen liggen door elkaar en jij telt hoeveel het er zijn.
+- **Zin 2:** Wil je het tellen zonder uitleg proberen?
+
+## 38. Tellen in rijtjes
+
+- Les: `squla-tellen-resultatief1-1`
+- **Zin 1:** Tel de auto's en bussen die om en om in rijen staan.
+- **Zin 2:** Lukt het je om de auto's en bussen samen te tellen?
+
+## 39. Tellen in rijtjes (moeilijker)
+
+- Les: `squla-tellen-resultatief1-2`
+- **Zin 1:** Tel de ballen en blokken in de rijtjes en kies hoeveel het er samen zijn.
+- **Zin 2:** Tel je al tot twintig zonder hulp?
+
+## 40. Tellen in rijtjes (nog moeilijker)
+
+- Les: `squla-tellen-resultatief1-3`
+- **Zin 1:** De planeten staan door elkaar en jij telt hoeveel het er zijn.
+- **Zin 2:** Lukt tellen jou ook als alles door elkaar ligt?
+
+## 41. Hoeveel zie je?
+
+- Les: `squla-tellen-resultatief2-1`
+- **Zin 1:** Tel de raketjes in de rijtjes en kies hoeveel het er zijn.
+- **Zin 2:** Heb je al eens raketjes geteld?
+
+## 42. Hoeveel zie je? (moeilijker)
+
+- Les: `squla-tellen-resultatief2-2`
+- **Zin 1:** Dit keer tel je een grotere groep auto's en bussen.
+- **Zin 2:** Lukt het je om ook grotere groepen te tellen?
+
+## 43. Hoeveel zie je? (nog moeilijker)
+
+- Les: `squla-tellen-resultatief2-3`
+- **Zin 1:** Tel de ufo's die door elkaar zweven.
+- **Zin 2:** Weet je hoe je voorkomt dat je iets dubbel telt?
+
+## 44. Grote groepen tellen
+
+- Les: `squla-tellen-resultatief3-1`
+- **Zin 1:** Tel de planeten die door elkaar in de ruimte zweven.
+- **Zin 2:** Lukt het je al om planeten te tellen?
+
+## 45. Grote groepen tellen (moeilijker)
+
+- Les: `squla-tellen-resultatief3-2`
+- **Zin 1:** Bekijk de planeten en tel hoeveel er zijn.
+- **Zin 2:** Houd je bij het tellen al goed bij waar je bent?
+
+## 46. Grote groepen tellen (nog moeilijker)
+
+- Les: `squla-tellen-resultatief3-3`
+- **Zin 1:** Gebruik de rijen van tien om raketjes en sterren te tellen.
+- **Zin 2:** Helpen de rijtjes van tien jou bij het tellen?
+
+## 47. Grote groepen tellen (heel moeilijk)
+
+- Les: `squla-tellen-resultatief3-4`
+- **Zin 1:** Begin bij het getal op de zak en tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn.
+- **Zin 2:** Weet je hoe je verder moet tellen?
+
+## 48. De telrij
+
+- Les: `squla-tellen-telrij-1`
+- **Zin 1:** In de straat vul je de ontbrekende huisnummers aan.
+- **Zin 2:** Zie je waar de ontbrekende huisnummers horen?
+
+## 49. De telrij (moeilijker)
+
+- Les: `squla-tellen-telrij-2`
+- **Zin 1:** Tel verder tot honderd en zoek de ontbrekende nummers in de straat.
+- **Zin 2:** Wil je de getallen tot honderd zonder uitleg aanvullen?
+
+## 50. Meer, minder, evenveel
+
+- Les: `squla-meer-minder-evenveel1-1`
+- **Zin 1:** Tel de appels in de rijtjes en kies het juiste aantal.
+- **Zin 2:** Lukt het je om elk groepje te tellen?
+
+## 51. Meer, minder, evenveel (moeilijker)
+
+- Les: `squla-meer-minder-evenveel1-2`
+- **Zin 1:** Vergelijk groepjes sterren en zoek waar er meer, minder of evenveel zijn.
+- **Zin 2:** Zie je waar meer of minder sterren staan?
+
+## 52. Meer, minder, evenveel (nog moeilijker)
+
+- Les: `squla-meer-minder-evenveel1-3`
+- **Zin 1:** Vergelijk de groepjes bloemen op de kaarten en zoek waar er meer zijn.
+- **Zin 2:** Herken je de grootste groep op de kaarten?
+
+## 53. De meeste
+
+- Les: `squla-meer-minder-evenveel2-1`
+- **Zin 1:** Tel de kralen en vergelijk daarna hoeveel er in de groepjes zitten.
+- **Zin 2:** Denk je dat je de groepjes kralen al kunt vergelijken?
+
+## 54. De meeste (moeilijker)
+
+- Les: `squla-meer-minder-evenveel2-2`
+- **Zin 1:** Bekijk de kaarten en zoek het groepje met de minste appels.
+- **Zin 2:** Weet je wat meeste en minste betekenen?
+
+## 55. Meer dan, minder dan
+
+- Les: `squla-meer-minder-evenveel3-1`
+- **Zin 1:** Zet de potjes van meer naar minder en kies wat meer, minder of evenveel is.
+- **Zin 2:** Zijn de woorden meer, minder en evenveel duidelijk voor je?
+
+## 56. Meer dan, minder dan (moeilijker)
+
+- Les: `squla-meer-minder-evenveel3-2`
+- **Zin 1:** Tel de eieren in de doosjes en vergelijk de aantallen.
+- **Zin 2:** Weet jij hoe een vol doosje je helpt bij het tellen?
+
+## 57. Minsommen in de ruimte
+
+- Les: `squla-min-ruimte-1`
+- **Zin 1:** Er vliegen ballonnen of raketjes weg en jij rekent uit hoeveel er overblijven.
+- **Zin 2:** Wil je zonder uitleg uitrekenen hoeveel er overblijven?
+
+## 58. Minsommen in de ruimte (moeilijker)
+
+- Les: `squla-min-ruimte-2`
+- **Zin 1:** Er vliegen raketjes weg en jij rekent uit hoeveel er nog staan.
+- **Zin 2:** Lukt aftrekken jou ook met grotere aantallen?
+
+## 59. Minsommen in de ruimte (nog moeilijker)
+
+- Les: `squla-min-ruimte-3`
+- **Zin 1:** Reken uit hoeveel raketjes overblijven als er een groep wegvliegt.
+- **Zin 2:** Weet je hoe je bij het aftrekken over de tien gaat?
+
+## 60. Bussommen
+
+- Les: `squla-min-bus1-1`
+- **Zin 1:** De bus bezorgt pakjes en jij rekent uit hoeveel er nog in liggen.
+- **Zin 2:** Kun je uitrekenen wat er na het bezorgen over is?
+
+## 61. Bussommen (moeilijker)
+
+- Les: `squla-min-bus1-2`
+- **Zin 1:** Bij elke halte gaan pakjes uit de bus en bereken je hoeveel er overblijven.
+- **Zin 2:** Snap je hoe je met de pakjes een minsom maakt?
+
+## 62. Bussommen (nog moeilijker)
+
+- Les: `squla-min-bus1-3`
+- **Zin 1:** De bus levert grotere groepen pakjes af en jij rekent uit hoeveel er nog zijn.
+- **Zin 2:** Denk je dat je deze bezorgsommen zonder uitleg kunt maken?
+
+## 63. Bussommen met een rondje
+
+- Les: `squla-min-bus2-1`
+- **Zin 1:** Het getal in het rondje vertelt hoeveel pakjes uit de bus gaan: reken uit wat er overblijft.
+- **Zin 2:** Weet je hoe het getal bij de bus helpt?
+
+## 64. Bussommen met een rondje (moeilijker)
+
+- Les: `squla-min-bus2-2`
+- **Zin 1:** Lees hoeveel pakjes de bus bezorgt en reken uit hoeveel er nog in liggen.
+- **Zin 2:** Is het je duidelijk hoe je het getal in het rondje gebruikt?
+
+## 65. Bussommen met een rondje (nog moeilijker)
+
+- Les: `squla-min-bus2-3`
+- **Zin 1:** Gebruik de getallen bij de bus om uit te rekenen hoeveel pakjes overblijven.
+- **Zin 2:** Zie je welke minsom bij de bus hoort?
+
+## 66. Minsommen: hoeveel over?
+
+- Les: `squla-min-machine-1`
+- **Zin 1:** De min-machine haalt blokjes weg en jij rekent uit hoeveel er overblijven.
+- **Zin 2:** Weet je hoe aftrekken werkt?
+
+## 67. Minsommen: hoeveel over? (moeilijker)
+
+- Les: `squla-min-machine-2`
+- **Zin 1:** Bij de plaatjes zoek je de passende minsom en reken je het antwoord uit.
+- **Zin 2:** Herken je de minsom die bij een plaatje past?
+
+## 68. Minsommen: hoeveel over? (nog moeilijker)
+
+- Les: `squla-min-machine-3`
+- **Zin 1:** Op het schoolbord staan minsommen waarvan je de antwoorden uitrekent.
+- **Zin 2:** Lukt het je om minsommen op een bord op te lossen?
+
+## 69. Minsommen: hoeveel over? (heel moeilijk)
+
+- Les: `squla-min-machine-4`
+- **Zin 1:** Je koopt iets en rekent uit hoeveel geld er in de portemonnee overblijft.
+- **Zin 2:** Reken je al zonder hulp uit hoeveel geld je overhoudt?
+
+## 70. Kale minsommen
+
+- Les: `squla-min-kaal-1`
+- **Zin 1:** Reken de minsommen op het bord uit en geef het juiste antwoord.
+- **Zin 2:** Wil je meteen beginnen met deze minsommen?
+
+## 71. Kale minsommen (moeilijker)
+
+- Les: `squla-min-kaal-2`
+- **Zin 1:** Op het bord reken je minsommen met grotere getallen uit.
+- **Zin 2:** Lukt het je al om met deze grotere getallen te rekenen?
+
+## 72. Kale minsommen (nog moeilijker)
+
+- Les: `squla-min-kaal-3`
+- **Zin 1:** Bij deze minsommen reken je terug over de tien heen.
+- **Zin 2:** Weet je hoe terugrekenen over tien gaat?
+
+## 73. Plussommen in de bakkerij
+
+- Les: `squla-plus-bakkerij-1`
+- **Zin 1:** In de bakkerij tel je taartjes, broden en koekjes bij elkaar en zoek je de som of het antwoord.
+- **Zin 2:** Weet jij hoe je de taartjes bij elkaar optelt?
+
+## 74. Plussommen in de bakkerij (moeilijker)
+
+- Les: `squla-plus-bakkerij-2`
+- **Zin 1:** In de bakkerij tel je grotere aantallen broden en andere lekkernijen bij elkaar.
+- **Zin 2:** Denk je dat je ook grotere aantallen kunt optellen?
+
+## 75. Plussommen in de bakkerij (nog moeilijker)
+
+- Les: `squla-plus-bakkerij-3`
+- **Zin 1:** Er komen koekjes en andere lekkernijen bij en jij rekent uit hoeveel het samen is.
+- **Zin 2:** Snap je hoe je bij het optellen over de tien gaat?
+
+## 76. Samen 10 in de disco
+
+- Les: `squla-plus-dansen-1`
+- **Zin 1:** In de disco zoek je twee getallen die samen tien zijn.
+- **Zin 2:** Ken je de getallenparen van tien al?
+
+## 77. Samen 10 in de disco (moeilijker)
+
+- Les: `squla-plus-dansen-2`
+- **Zin 1:** Op de draaiende platen zoek je getallen die samen tien vormen.
+- **Zin 2:** Lukt het je om samen tien te maken?
+
+## 78. Samen 10 in de disco (nog moeilijker)
+
+- Les: `squla-plus-dansen-3`
+- **Zin 1:** Tel de getallen op de platen bij elkaar en zoek het paar dat precies tien is.
+- **Zin 2:** Zie je welke twee getallen samen tien zijn?
+
+## 79. Samen 10 in de disco (heel moeilijk)
+
+- Les: `squla-plus-dansen-4`
+- **Zin 1:** Vergelijk de sommen op de kaartjes en zoek welke samen tien zijn.
+- **Zin 2:** Herken je de sommen met tien als antwoord?
+
+## 80. Bussommen
+
+- Les: `squla-plus-bus1-1`
+- **Zin 1:** Er komen pakjes bij in de bezorgbus en jij rekent uit hoeveel er dan in liggen.
+- **Zin 2:** Kun je uitrekenen hoeveel pakjes het samen zijn?
+
+## 81. Bussommen (moeilijker)
+
+- Les: `squla-plus-bus1-2`
+- **Zin 1:** Tel de nieuwe pakjes op bij de pakjes die al in de bus liggen.
+- **Zin 2:** Lukt het optellen van grotere groepen pakjes jou al?
+
+## 82. Bussommen (nog moeilijker)
+
+- Les: `squla-plus-bus1-3`
+- **Zin 1:** Er komen pakjes bij en het totaal gaat over de tien: reken uit hoeveel het er worden.
+- **Zin 2:** Weet je hoe je verder rekent als er meer dan tien pakjes zijn?
+
+## 83. Bussommen met een getal
+
+- Les: `squla-plus-bus2-1`
+- **Zin 1:** Het getal in het rondje vertelt hoeveel pakjes erbij komen: reken het totaal uit.
+- **Zin 2:** Snap je hoe het getal vertelt hoeveel pakjes erbij komen?
+
+## 84. Bussommen met een getal (moeilijker)
+
+- Les: `squla-plus-bus2-2`
+- **Zin 1:** Lees het getal bij de bus en tel zoveel pakjes bij de lading op.
+- **Zin 2:** Wil je met het getal bij de bus zonder uitleg gaan rekenen?
+
+## 85. Bussommen met een getal (nog moeilijker)
+
+- Les: `squla-plus-bus2-3`
+- **Zin 1:** Met de getallen bij de bezorgbus reken je uit hoeveel pakjes er samen zijn.
+- **Zin 2:** Herken je de plussom die bij de lading hoort?
+
+## 86. Plussommen uitrekenen
+
+- Les: `squla-plus-kaal-1`
+- **Zin 1:** Los de plussommen op door de getallen bij elkaar te tellen.
+- **Zin 2:** Maak je al plussommen zonder plaatjes?
+
+## 87. Plussommen uitrekenen (moeilijker)
+
+- Les: `squla-plus-kaal-2`
+- **Zin 1:** Bij deze plussommen tel je verder vanaf een groter getal.
+- **Zin 2:** Lukt verder rekenen vanaf tien jou al?
+
+## 88. Plussommen uitrekenen (nog moeilijker)
+
+- Les: `squla-plus-kaal-3`
+- **Zin 1:** Reken plussommen uit waarbij het antwoord over de tien gaat.
+- **Zin 2:** Weet je hoe optellen over tien werkt?
+
+## 89. Munten en briefjes
+
+- Les: `squla-geld-geldmachine-1`
+- **Zin 1:** In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld en kiest het juiste bedrag.
+- **Zin 2:** Weet jij al hoe je dat doet?
+
+## 90. Munten en briefjes (moeilijker)
+
+- Les: `squla-geld-geldmachine-2`
+- **Zin 1:** In de speelgoedwinkel tel je munten en briefjes om het juiste bedrag te vinden.
+- **Zin 2:** Weet je hoe je met munten en briefjes het juiste bedrag maakt?
+
+## 91. Zakgeld sparen
+
+- Les: `squla-geld-zakgeld-1`
+- **Zin 1:** Bij het sparen tel je munten en briefjes bij elkaar en zoek je hoeveel geld er nog bij moet.
+- **Zin 2:** Lukt het je om geld bij elkaar te tellen?
+
+## 92. Zakgeld sparen (moeilijker)
+
+- Les: `squla-geld-zakgeld-2`
+- **Zin 1:** Bekijk het spaargeld en zoek welke munten en briefjes bij het bedrag horen.
+- **Zin 2:** Zie je met welke munten en briefjes je het spaarbedrag kunt maken?
+
+## 93. Geld tellen
+
+- Les: `squla-geld-geld-1`
+- **Zin 1:** Tel de munten en briefjes en verbind elk groepje geld met het juiste bedrag.
+- **Zin 2:** Wil je het geld zonder uitleg bij de bedragen zoeken?
+
+## 94. Geld tellen (moeilijker)
+
+- Les: `squla-geld-geld-2`
+- **Zin 1:** Tel verschillende munten en briefjes bij elkaar, tot twintig euro.
+- **Zin 2:** Tel je al geldbedragen tot twintig euro?
+
+## 95. Pizza's vergelijken
+
+- Les: `squla-meten-pizza-1`
+- **Zin 1:** Je vergelijkt pizza’s en ijsjes en zet ze van klein naar groot.
+- **Zin 2:** Zie je het verschil tussen groter en kleiner?
+
+## 96. Pizza's vergelijken (moeilijker)
+
+- Les: `squla-meten-pizza-2`
+- **Zin 1:** Tel de pizzastukken en vergelijk hoeveel stukken of bolletjes er zijn.
+- **Zin 2:** Snap je hoe tellen helpt om hoeveelheden te vergelijken?
+
+## 97. Pizza's vergelijken (nog moeilijker)
+
+- Les: `squla-meten-pizza-3`
+- **Zin 1:** Met de weegschaal vergelijk je welk deeg zwaarder of lichter is.
+- **Zin 2:** Weet je hoe een weegschaal werkt?
+
+## 98. Vol, leeg, zwaar en licht
+
+- Les: `squla-meten-hoeveelheden-1`
+- **Zin 1:** Bij de picknick zoek je wat vol of leeg is en vergelijk je hoeveel erin zit.
+- **Zin 2:** Herken je vol en leeg al?
+
+## 99. Vol, leeg, zwaar en licht (moeilijker)
+
+- Les: `squla-meten-hoeveelheden-2`
+- **Zin 1:** Vergelijk de spullen voor de picknick en zoek wat zwaar, licht, dik of dun is.
+- **Zin 2:** Ken je zwaar en licht, dik en dun?
+
+## 100. Hoe groot is het?
+
+- Les: `squla-meten-oppervlakte-1`
+- **Zin 1:** Door hokjes te tellen zoek je uit hoe groot iets is.
+- **Zin 2:** Heb je al eens met hokjes gemeten?
+
+## 101. Hoe groot is het? (moeilijker)
+
+- Les: `squla-meten-oppervlakte-2`
+- **Zin 1:** Meet met blaadjes en hokjes hoe groot een tafel of een vlak is.
+- **Zin 2:** Weet jij hoe je iets meet door vakjes te tellen?
+
+## 102. De klok en de tijd
+
+- Les: `squla-klok-digitaal-1`
+- **Zin 1:** Je bekijkt de wijzers en getallen van de klok en zoekt welke tijd erbij hoort.
+- **Zin 2:** Ken je de wijzers van de klok al?
+
+## 103. De digitale klok (moeilijker)
+
+- Les: `squla-klok-digitaal-2`
+- **Zin 1:** Bij de bakkerij zoek je de klok die de gevraagde tijd aangeeft.
+- **Zin 2:** Herken je de klok die bij de genoemde tijd hoort?
+
+## 104. Hoe laat is het?
+
+- Les: `squla-klok-hoelaat-1`
+- **Zin 1:** Kijk naar de wijzers van de klok en lees af welk heel uur het is.
+- **Zin 2:** Kun je de hele uren al aflezen?
+
+## 105. Hoe laat is het? (moeilijker)
+
+- Les: `squla-klok-hoelaat-2`
+- **Zin 1:** Lees op de klokken af hoe laat het in de bakkerij is.
+- **Zin 2:** Lukt het je al om de klok af te lezen?
+
+## 106. Hoe laat is het? (nog moeilijker)
+
+- Les: `squla-klok-hoelaat-3`
+- **Zin 1:** Tijdens de bezorgronde lees je de tijden op de klok af.
+- **Zin 2:** Weet jij hoe de wijzers vertellen hoe laat het is?
+
+## 107. Klokkijken
+
+- Les: `squla-klok-klokkijken-1`
+- **Zin 1:** Luister naar de tijd en controleer of die bij de klok past.
+- **Zin 2:** Weet je wanneer de klok de juiste tijd aangeeft?
+
+## 108. Klokkijken (moeilijker)
+
+- Les: `squla-klok-klokkijken-2`
+- **Zin 1:** Vergelijk twee klokken en zoek de klok met de gevraagde tijd.
+- **Zin 2:** Lukt het je om twee klokken te vergelijken?
+
+## 109. Klokkijken (nog moeilijker)
+
+- Les: `squla-klok-klokkijken-3`
+- **Zin 1:** Kijk naar de kleine wijzer en lees af welk uur de klok aangeeft.
+- **Zin 2:** Lees je het uur al af aan de kleine wijzer?
+
+## 110. Klokkijken 1
+
+- Les: `squla-klok-klokkijken1-1`
+- **Zin 1:** Bekijk de klokken en zoek de juiste stand van de wijzers.
+- **Zin 2:** Herken je de juiste stand van de wijzers al?
+
+## 111. Klokkijken 1 (moeilijker)
+
+- Les: `squla-klok-klokkijken1-2`
+- **Zin 1:** Controleer of de genoemde tijd klopt met de wijzers op de klok.
+- **Zin 2:** Wil je zonder uitleg controleren of de tijd klopt?
+
+## 112. Klokkijken 1 (nog moeilijker)
+
+- Les: `squla-klok-klokkijken1-3`
+- **Zin 1:** Vergelijk klokken die op elkaar lijken en vind de gevraagde tijd.
+- **Zin 2:** Zie je de verschillen tussen de klokken al?
+
+## 113. Klokkijken 2
+
+- Les: `squla-klok-klokkijken2-1`
+- **Zin 1:** Je zoekt de klok die bij de tijd past en de tijd die bij de klok past.
+- **Zin 2:** Weet je welke klok bij de tijd hoort?
+
+## 114. Klokkijken 2 (moeilijker)
+
+- Les: `squla-klok-klokkijken2-2`
+- **Zin 1:** Lees de tijd in woorden en zoek de klok die erbij hoort.
+- **Zin 2:** Lukt het je om de klok bij de geschreven tijd te vinden?
+
+## 115. Klokkijken 2 (nog moeilijker)
+
+- Les: `squla-klok-klokkijken2-3`
+- **Zin 1:** Zoek bij de genoemde tijd de juiste klok en let goed op beide wijzers.
+- **Zin 2:** Denk je dat je de juiste klok kunt vinden door op beide wijzers te letten?
+
+## 116. Halve uren lezen
+
+- Les: `squla-klok-klokkijken3-1`
+- **Zin 1:** Lees de halve uren af en zoek de klok die bij de tijd past.
+- **Zin 2:** Ken je de halve uren al?
+
+## 117. Halve uren lezen (moeilijker)
+
+- Les: `squla-klok-klokkijken3-2`
+- **Zin 1:** Bekijk de wijzers en bepaal of het half is of bijna half.
+- **Zin 2:** Zie je het verschil tussen half en bijna half?
+
+## 118. Halve uren lezen (nog moeilijker)
+
+- Les: `squla-klok-klokkijken3-3`
+- **Zin 1:** Lees de klokken af met hele en halve uren door elkaar.
+- **Zin 2:** Wil je hele en halve uren zonder uitleg door elkaar oefenen?
+
+## 119. Halve uren: later en eerder
+
+- Les: `squla-klok-klokkijken3-4`
+- **Zin 1:** Met de klok zoek je uit hoe laat het eerder of later is.
+- **Zin 2:** Kun je met de klok vooruit en terug rekenen?
+
+## 120. Rekenmix 1
+
+- Les: `squla-rekenmix-mix1-1`
+- **Zin 1:** De appels liggen door elkaar. Tel ze en kies het juiste aantal.
+- **Zin 2:** Weet jij welk getal bij elk groepje hoort?
+
+## 121. Rekenmix 1 (moeilijker)
+
+- Les: `squla-rekenmix-mix1-2`
+- **Zin 1:** Bekijk de zon en kies welke vorm erop lijkt.
+- **Zin 2:** Herken je de vorm van de zon?
+
+## 122. Rekenmix 1 (nog moeilijker)
+
+- Les: `squla-rekenmix-mix1-3`
+- **Zin 1:** In de rij zoek je wat links, rechts of in het midden staat.
+- **Zin 2:** Weet je waar links, rechts en het midden zijn?
+
+## 123. Rekenmix 1 (heel moeilijk)
+
+- Les: `squla-rekenmix-mix1-4`
+- **Zin 1:** Tel de groepjes en zet ze op volgorde van meer naar minder.
+- **Zin 2:** Snap je hoe je de groepjes van meer naar minder zet?
+
+## 124. Rekenmix 2
+
+- Les: `squla-rekenmix-mix2-1`
+- **Zin 1:** Vergelijk de boterhammen en andere plaatjes en zoek waar meer of minder op ligt.
+- **Zin 2:** Zie je hoe je de plaatjes met het voorbeeld vergelijkt?
+
+## 125. Rekenmix 2 (moeilijker)
+
+- Les: `squla-rekenmix-mix2-2`
+- **Zin 1:** Bekijk waar de bal bij de doos ligt en kies het juiste woord voor die plek.
+- **Zin 2:** Ken je woorden als naast, in en onder?
+
+## 126. Rekenmix 2 (nog moeilijker)
+
+- Les: `squla-rekenmix-mix2-3`
+- **Zin 1:** Zoek op de plaatjes de gevraagde kleur en vorm.
+- **Zin 2:** Kun je tegelijk op kleur en vorm letten?
+
+## 127. Rekenmix 2 (heel moeilijk)
+
+- Les: `squla-rekenmix-mix2-4`
+- **Zin 1:** Tel de ballen in elk groepje en verbind het groepje met het juiste getal.
+- **Zin 2:** Weet jij welk getal je met elk groepje moet verbinden?
+
+## 128. Rekenmix 3
+
+- Les: `squla-rekenmix-mix3-1`
+- **Zin 1:** Vergelijk de ballen en zet ze op volgorde van groot naar klein.
+- **Zin 2:** Lukt het jou om de ballen van groot naar klein te zetten?
+
+## 129. Rekenmix 3 (moeilijker)
+
+- Les: `squla-rekenmix-mix3-2`
+- **Zin 1:** Kijk naar de rij en kies wat op de gevraagde plek staat, bijvoorbeeld als eerste of als vijfde.
+- **Zin 2:** Weet je wat eerste, tweede en derde betekenen?
+
+## 130. Rekenmix 3 (nog moeilijker)
+
+- Les: `squla-rekenmix-mix3-3`
+- **Zin 1:** Zoek welk getal meteen voor of na een ander getal komt.
+- **Zin 2:** Herken je de getallen die direct voor en na een getal komen?
+
+## 131. Rekenmix 3 (heel moeilijk)
+
+- Les: `squla-rekenmix-mix3-4`
+- **Zin 1:** Er zijn ballen verstopt in een doos en jij rekent uit hoeveel dat er zijn.
+- **Zin 2:** Denk je dat je kunt uitrekenen hoeveel ballen verstopt zijn?
+
+## 132. Rekenmix 4
+
+- Les: `squla-rekenmix-mix4-1`
+- **Zin 1:** Tel alleen de raketjes tussen de sterren en planeten.
+- **Zin 2:** Kun je één soort uit een groep tellen?
+
+## 133. Rekenmix 4 (moeilijker)
+
+- Les: `squla-rekenmix-mix4-2`
+- **Zin 1:** Tel verder vanaf tien en zet de getallen op hun plek.
+- **Zin 2:** Tel je al verder vanaf tien om de getallen op hun plek te zetten?
+
+## 134. Rekenmix 4 (nog moeilijker)
+
+- Les: `squla-rekenmix-mix4-3`
+- **Zin 1:** Tel de groepjes sterren en zoek het groepje met het gevraagde aantal.
+- **Zin 2:** Zie je welk groepje sterren bij het aantal hoort?
+
+## 135. Rekenmix 4 (heel moeilijk)
+
+- Les: `squla-rekenmix-mix4-4`
+- **Zin 1:** Vergelijk de groepjes raketjes en zoek waar er meer of minder zijn dan het genoemde getal.
+- **Zin 2:** Snap je hoe je een groepje met een getal vergelijkt?

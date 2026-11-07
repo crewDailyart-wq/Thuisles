@@ -1,0 +1,17 @@
+.collectie {
+  position: absolute;
+  left: 65px;
+  top: 135px;
+  width: 850px;
+  padding: 26px 32px 32px;
+  border: 2px solid #b7dcff38;
+  border-radius: 40px;
+  background: #b6dfff12;
+  color: white;
+}
+.titel { font-size: 20px; font-weight: 700; text-align: center; margin-bottom: 24px; color: #cbe6ff; }
+.munten { display: grid; grid-template-columns: repeat(4, 1fr); gap: 25px 20px; }
+.munten figure { margin: 0; text-align: center; }
+.munten svg { display: block; width: 100%; height: 160px; overflow: hidden; }
+.munten figcaption { margin-top: 10px; font-size: 20px; font-weight: 700; }
+:global([data-staand]) .collectie { left: 45px; top: 75px; width: 890px; }

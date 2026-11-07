@@ -37,6 +37,7 @@
  */
 
 import type { ComponentType } from "react";
+import { bevestig, krijgtVervolgvraag, isBegeleideUitleg, uitlegKeuze, zetSynthesisHulp } from "./squla-uitleg";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { squlaBegin, squlaEind, squlaVraag as echteSqulaVraag, zetTestAntwoord, type SqulaVraag } from "./squla-hulp";
@@ -147,7 +148,8 @@ function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
     v.toon?.();
     return Promise.resolve(true);
   }
-  return echteSqulaVraag(l, v);
+  /* Hulp zoals Synthesis (BOUWREGELS 5.1): elke vraag in deze lessen heeft `reactie` en `toonAntwoord`. */
+  return echteSqulaVraag(l, { ...v, synthesis: true });
 }
 
 const zet = (l: Lesgids, p: Partial<PlusProps>) => l.pasVlakAan<PlusProps>(p);
@@ -193,7 +195,7 @@ async function typGetal(l: Lesgids, st: Stand, tip: string[]): Promise<number> {
   }
   let x = await p;
   while (x === null) {
-    await l.zeg("Geen probleem.", ...tip);
+    await l.zeg("Je mag het zelf proberen.", ...tip);
     x = await l.getal();
   }
   return x;
@@ -240,10 +242,10 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
   const rek = (x: number, y: number, extra: Partial<Rek> = {}) => zet(l, { rek: { rijen, a: x, b: y, ...extra } });
   if (a === b) {
     rek(a, b);
-    await l.zeg(`Kijk: ${stippen(a, b)}`, "Twee keer hetzelfde getal: dat is een dubbelsom.");
+    await l.zeg(`Kijk: ${stippen(a, b)}`, "Hier staat 2 keer hetzelfde getal: dat is een dubbelsom.");
     if (a >= 4) {
       const rij = [a - 2, a - 1];
-      await l.zeg(...rij.map((n) => `${plus(n, n)} = ${g(2 * n)}.`), `Elke keer komen er ${g(2)} bij.`, `Hoeveel is dan ${plus(a, b)}?`);
+      await l.zeg(...rij.map((n) => `${plus(n, n)} = ${g(2 * n)}.`), `Elke keer komen er ${g(2)} bij.`, ...(krijgtVervolgvraag(l) ? [] : [`Hoeveel is dan ${plus(a, b)}?`]));
     } else await l.zeg("Tel alle stippen maar.");
     return;
   }
@@ -251,14 +253,14 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
   const klein = Math.min(a, b);
   if (groot - klein === 1 && klein >= 2 && groot < 10) {
     rek(a, b);
-    await l.zeg(`Kijk: ${stippen(a, b)}`, `${plus(klein, klein)} is ${g(2 * klein)}.`, `${g(groot)} is één meer dan ${g(klein)}.`, `Dus ${plus(a, b)} is één meer dan ${g(2 * klein)}.`);
+    await l.zeg(`Kijk: ${stippen(a, b)}`, `${plus(klein, klein)} is ${g(2 * klein)}.`, `${g(groot)} is 1 meer dan ${g(klein)}.`, `Dus ${plus(a, b)} is 1 meer dan ${g(2 * klein)}.`);
     return;
   }
-  if (a < b) await l.zeg("Draai de som om.", `Begin bij het grootste getal: ${g(groot)}.`);
+  if (a < b) await l.zeg(`Het grootste getal is ${g(groot)}. Tel vanaf die ${g(groot)} verder, dan hoef je minder ver te tellen.`);
   if (groot >= 10) {
     const e = groot - 10;
     rek(groot, klein);
-    if (e === 0) await l.zeg(`${o(10)} oranje stippen: de bovenste rij is vol.`, `Er komen ${bl(klein)} blauwe stippen bij.`, `${g(10)} en nog ${g(klein)}: hoeveel is dat?`);
+    if (e === 0) await l.zeg(`${o(10)} oranje stippen: de bovenste rij is vol.`, `Er komen ${bl(klein)} blauwe stippen bij.`, ...(krijgtVervolgvraag(l) ? [] : [`${g(10)} en nog ${g(klein)}: hoeveel is dat?`]));
     else await l.zeg(`${o(groot)} is ${g(10)} en nog ${g(e)}.`, `Kijk naar de ${g(e)} en de ${g(klein)}.`, `${plus(e, klein)} = ${g(e + klein)}.`, `Dan komt de ${g(10)} er nog bij.`);
     return;
   }
@@ -273,7 +275,7 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
     rek(groot, klein);
     await l.wacht(rest * 120 + 300);
     await l.zeg(rest === 1 ? `Van de ${bl(klein)} blauwe stippen is er nog ${bl(1)} over.` : `Van de ${bl(klein)} blauwe stippen zijn er nog ${bl(rest)} over.`);
-    await l.zeg(`${g(10)} en nog ${g(rest)}: hoeveel is dat?`);
+    if (!krijgtVervolgvraag(l)) await l.zeg(`${g(10)} en nog ${g(rest)}: hoeveel is dat?`);
     return;
   }
   /* Tot 10: verder tellen vanaf het grootste getal. */
@@ -281,7 +283,7 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
   await l.zeg(`Hier zijn ${o(groot)} oranje stippen.`, klein === 1 ? `Er komt ${bl(1)} blauwe stip bij.` : `Er komen ${bl(klein)} blauwe stippen bij.`);
   if (klein === 1) {
     rek(groot, klein);
-    await l.zeg(`Eén meer dan ${g(groot)}: hoeveel is dat?`);
+    if (!krijgtVervolgvraag(l)) await l.zeg(`1 meer dan ${g(groot)}: hoeveel is dat?`);
     return;
   }
   await l.zeg(`We tellen verder vanaf ${g(groot)}.`);
@@ -292,7 +294,7 @@ async function rekenUitleg(l: Lesgids, a: number, b: number) {
     await l.zeg(`${g(groot + i)}.`);
   }
   rek(groot, klein, { bZicht: klein, labels: [...labels] });
-  await l.zeg("Tel jij de laatste?");
+  if (!krijgtVervolgvraag(l)) await l.zeg("Tel jij het laatste stukje verder?");
 }
 
 /** De tip na een fout ná de uitleg (zonder het antwoord). */
@@ -300,14 +302,57 @@ function rekenTip(a: number, b: number): string[] {
   const groot = Math.max(a, b);
   const klein = Math.min(a, b);
   const s = a + b;
-  if (a === b) return ["Het is een dubbelsom.", `Hoeveel is ${plus(a, b)}?`];
-  if (groot - klein === 1 && klein >= 2 && groot < 10) return [`Denk aan ${plus(klein, klein)} = ${g(2 * klein)}.`, "Het antwoord is één meer."];
-  if (groot >= 10) return groot === 10 ? [`${g(10)} en nog ${g(klein)}.`, "Hoeveel is dat?"] : [`Denk aan ${plus(groot - 10, klein)}.`, `Dan komt de ${g(10)} er nog bij.`];
+  if (a === b) return ["Het is een dubbelsom.", `Tel ${g(a)} en nog eens ${g(b)}.`];
+  if (groot - klein === 1 && klein >= 2 && groot < 10) return [`Begin bij ${plus(klein, klein)}.`, `Het ene getal is ${g(1)} groter dan het andere, dus er komt ${g(1)} bij.`];
+  if (groot >= 10) return groot === 10 ? [`${g(10)} en nog ${g(klein)}.`, `Tel ${g(10)} en ${g(klein)} bij elkaar.`] : [`Denk aan ${plus(groot - 10, klein)}.`, `Dan komt de ${g(10)} er nog bij.`];
   if (s > 10) {
     const rest = klein - (10 - groot);
     return [`Eerst naar ${g(10)}.`, rest === 1 ? `Dan komt er nog ${g(1)} bij.` : `Dan komen er nog ${g(rest)} bij.`];
   }
-  return [`Begin bij ${g(groot)}.`, `Tel ${g(klein)} verder.`];
+  return [`Start bij ${g(groot)}.`, `Tel ${g(klein)} verder.`];
+}
+
+/** Een hint zonder vraag: na de eerste fout probeert het kind meteen opnieuw, dus Bliepo stelt de vraag niet nog eens (BOUWREGELS 3.23). */
+const zonderVraag = (zinnen: string[]) => zinnen.filter((z) => !z.trim().endsWith("?"));
+
+/**
+ * Eerste fout bij een som (BOUWREGELS 5.10): Bliepo zegt wat het kind koos en waarom dat waarschijnlijk niet klopt,
+ * met een hint die bij deze som past. Rekenkundig gecontroleerd: er komt altijd iets bij, dus het antwoord is groter
+ * dan het grootste getal en niet kleiner dan een van de twee getallen.
+ */
+type Tafereel = "bakkerij" | "kaartje" | "typ" | "bus";
+function somReactie(a: number, b: number, x: number, tip: string[] = rekenTip(a, b), tafereel: Tafereel = "typ"): string[] {
+  const s = a + b;
+  const groot = Math.max(a, b);
+  const klein = Math.min(a, b);
+  const hint = zonderVraag(tip);
+  const zin = (bakkerij: string, kaartje: string, typ: string, bus: string) => ({ bakkerij, kaartje, typ, bus })[tafereel];
+  if (x === a || x === b) {
+    const begin = x === a;
+    return [
+      begin
+        ? zin(`Je koos ${g(x)}: zoveel lagen er al.`, `Kaartje ${g(x)} is een getal uit de som zelf.`, `Je typte ${g(x)}: dat getal staat al in de som.`, `Je typte ${g(x)}: zoveel pakjes lagen er al in de bus.`)
+        : zin(`Je koos ${g(x)}: zoveel komen er bij.`, `Kaartje ${g(x)} is een getal uit de som zelf.`, `Je typte ${g(x)}: dat getal staat al in de som.`, `Je typte ${g(x)}: zoveel pakjes komen er bij.`),
+      zin("Er komt nog iets bij, dus het wordt meer.", "Het antwoord is groter dan elk getal in de som.", "Er komt nog iets bij, dus het antwoord is groter.", "Het gaat om alle pakjes samen."),
+      ...hint,
+    ];
+  }
+  if (x === s + 1 || x === s - 1) {
+    const hoe = x > s ? "te veel" : "te weinig";
+    return [zin(`Je koos ${g(x)}: dat is 1 ${hoe}.`, `Kaartje ${g(x)} zit er vlak naast: 1 ${hoe}.`, `${g(x)} is 1 ${hoe}.`, `Je typte ${g(x)}: dat is 1 pakje ${hoe}.`), zin("Tel de laatste stap nog eens na.", "Tel de som nog eens rustig uit.", "Tel nog eens stap voor stap.", "Tel de laatste pakjes nog eens na."), ...hint];
+  }
+  if (x === Math.abs(a - b)) return [zin(`Met ${g(x)} haal je ${g(klein)} van ${g(groot)} af.`, `Kaartje ${g(x)} hoort bij ${g(groot)} min ${g(klein)}.`, `${g(x)} krijg je als je ${g(klein)} van ${g(groot)} aftrekt.`, `Met ${g(x)} haal je ${g(klein)} van de ${g(groot)} pakjes af.`), zin("Hier komt er iets bij, dus je telt op.", "Bij deze som komt er juist iets bij.", "Maar dit is een plussom: er komt iets bij.", "Maar de pakjes komen erbij."), ...hint];
+  if (x < groot) return [zin(`Je koos ${g(x)}, maar ${g(groot)} is al meer.`, `Kaartje ${g(x)} is te klein: ${g(groot)} is al meer.`, `${g(x)} is minder dan ${g(groot)}.`, `Je typte ${g(x)}: dat is minder dan ${g(groot)} pakjes.`), zin("Bij een plussom wordt het meer.", "Er komt iets bij, dus het antwoord is groter.", "Bij plus wordt het meer, niet minder.", "Er komen pakjes bij, dus het worden er meer."), ...hint];
+  if (x > s) return [zin(`Je koos ${g(x)}: dat is meer dan ${plus(a, b)}.`, `Kaartje ${g(x)} is te groot voor deze som.`, `Je typte ${g(x)}: dat is te groot voor deze som.`, `Je typte ${g(x)}: zoveel pakjes zijn het niet.`), zin("Je telde te ver door.", "Tel nog eens na tot waar de som stopt.", "Dat is te ver geteld.", "Zoveel pakjes liggen er niet."), ...hint];
+  return [zin(`Je koos ${g(x)}: dat is nog te weinig.`, `Kaartje ${g(x)} is nog te klein.`, `Je typte ${g(x)}: dat is nog te weinig.`, `Je typte ${g(x)}: dat zijn er nog te weinig.`), zin("Tel nog een stukje verder.", "Tel verder bij het grootste getal.", "Tel nog een stukje verder.", "Er komen er nog meer bij."), ...hint];
+}
+
+/** Na de tweede fout: de som met het goede antwoord in beeld en in woorden. */
+async function toonSom(l: Lesgids, a: number, b: number, extra: Partial<PlusProps> = {}) {
+  zet(l, { licht: [], gekozen: [], actief: false, ...extra });
+  somBoven(l, a, b, a + b);
+  await l.zeg(`Zo zit het: ${plus(a, b)} = ${g(a + b)}.`);
+  await l.wacht(400);
 }
 
 /** De korte uitleg bij "Kun je dit al?" → Nee: een voorbeeld met het antwoord. */
@@ -346,7 +391,7 @@ function verhaal(groepen: Groep[], a: number, b: number, keuzes: number[], zinne
       goed: async () => {
         somBoven(l, a, b, s);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`);
+        await l.zeg(bevestig());
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
@@ -361,6 +406,8 @@ function verhaal(groepen: Groep[], a: number, b: number, keuzes: number[], zinne
         await rekenUitleg(l, a, b);
       },
       tip: rekenTip(a, b),
+      reactie: (x) => somReactie(a, b, x, rekenTip(a, b), "bakkerij"),
+      toonAntwoord: () => toonSom(l, a, b),
       testAntwoord: s,
     });
   };
@@ -383,19 +430,32 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
       goed: async () => {
         somBoven(l, a, b, a + b);
         goedBeeld(l, st);
-        await l.zeg("Ja! Er komt iets bij, dus het is een plussom.", `${plus(a, b)} = ${g(a + b)}.`);
+        await l.zeg(bevestig());
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
         zet(l, { licht: [0] });
-        await l.zeg(`Eerst waren er ${g(a)}.`);
+        await l.zeg(`In het eerste groepje liggen ${g(a)}.`);
         zet(l, { licht: [1] });
         await l.zeg(erbij(b), "Er komt iets bij: dan is het een plussom.");
         zet(l, { licht: [] });
-        await l.zeg(`Zoek de plussom met ${g(a)} en ${g(b)}.`);
+        if (!krijgtVervolgvraag(l)) await l.zeg(`Zoek de plussom met ${g(a)} en ${g(b)}.`);
       },
-      tip: [`Zoek een plussom met ${g(a)} en ${g(b)}.`],
+      tip: [`Let op de getallen ${g(a)} en ${g(b)} op het plaatje.`],
+      reactie: (x) => {
+        const m = x.match(/^(\d+) \+ (\d+)/);
+        const gekozen = m ? `${plus(Number(m[1]), Number(m[2]))} hoort bij andere getallen.` : "";
+        return [gekozen, `Op het plaatje zie je ${g(a)} en ${g(b)}.`, "Kijk welke plussom precies die 2 getallen heeft."].filter(Boolean);
+      },
+      toonAntwoord: async () => {
+        zet(l, { licht: [0] });
+        await l.zeg(`Links zie je ${g(a)}.`);
+        zet(l, { licht: [1] });
+        await l.zeg(erbij(b));
+        zet(l, { licht: [] });
+        await toonSom(l, a, b);
+      },
       testAntwoord: goed,
     });
   };
@@ -418,7 +478,7 @@ function discoSom(a: number, b: number, kaarten: number[]): Vraag {
       goed: async () => {
         somBoven(l, a, b, s);
         goedBeeld(l, st, { goedIds: [`c${s}`] });
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`);
+        await l.zeg(bevestig());
         await l.wacht(600);
       },
       fout: () => foutBeeld(l, st),
@@ -428,6 +488,8 @@ function discoSom(a: number, b: number, kaarten: number[]): Vraag {
         zet(l, { rek: null });
       },
       tip: rekenTip(a, b),
+      reactie: (x) => somReactie(a, b, x, rekenTip(a, b), "kaartje"),
+      toonAntwoord: () => toonSom(l, a, b, { goedIds: [`c${s}`] }),
       testAntwoord: `c${s}`,
     });
   };
@@ -489,7 +551,7 @@ function verbind(sommen: [number, number][], antwoorden: number[]): Vraag {
       },
       goed: async (p) => {
         goedBeeld(l, st, { lijnen: lijnenVan(p, () => "goed") });
-        await l.zeg("Ja! Elke som hoort bij het goede antwoord.");
+        await l.zeg(bevestig());
         await l.wacht(600);
       },
       fout: (p) => {
@@ -506,9 +568,21 @@ function verbind(sommen: [number, number][], antwoorden: number[]): Vraag {
         await rekenUitleg(l, x, y);
         await l.verder();
         zet(l, { rek: null });
-        await l.zeg("Verbind de sommen die nog over zijn.");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Verbind de sommen die nog over zijn.");
       },
       tip: ["Reken de som eerst uit.", "Zoek dan het antwoord."],
+      reactie: (p) => {
+        const f = eersteFout(p);
+        if (!f) return ["Reken elke som eerst uit."];
+        const [x, y] = sommen[Number(f[0].slice(1))];
+        return [`${plus(x, y)} hoort bij een ander antwoord.`, "De goede lijnen blijven staan.", "Reken deze som nog eens uit."];
+      },
+      toonAntwoord: async () => {
+        const alles = new Map(sommen.map((_, i) => [`s${i}`, juist(`s${i}`)] as [string, string]));
+        zet(l, { gekozen: [], lijnen: lijnenVan(alles, () => "goed") });
+        await l.zeg("Zo horen ze bij elkaar.", ...sommen.map(([x, y]) => `${plus(x, y)} = ${g(x + y)}.`));
+        await l.wacht(400);
+      },
       testAntwoord: "s0",
     });
   };
@@ -532,7 +606,7 @@ function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: numbe
       noem: (i) => `${plus(opties[i][0], opties[i][1])} = ${g(opties[i][0] + opties[i][1])}`,
       goed: async () => {
         goedBeeld(l, st, { goedIds: [`s${goed}`] });
-        await l.zeg(`Ja! ${plus(ga, gb)} = ${g(ga + gb)}.`);
+        await l.zeg(bevestig());
         await l.wacht(500);
       },
       fout: () => foutBeeld(l, st),
@@ -544,7 +618,20 @@ function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: numbe
         zet(l, { licht: [] });
         await l.zeg("Kijk welke som bij allebei de groepjes past.");
       },
-      tip: [`Tel de losse ${wat} nog eens.`, "Welke som past erbij?"],
+      tip: [`Tel de losse ${wat} nog eens.`, "Let ook op het getal eronder."],
+      reactie: (i) => {
+        const [p, q] = opties[i];
+        const meer = p + q > ga + gb ? "Dat zijn meer dan op het plaatje." : p + q < ga + gb ? "Dat zijn minder dan op het plaatje." : "De getallen horen niet bij dit plaatje.";
+        return [`${plus(p, q)} geeft ${g(p + q)}.`, meer, `Tel de losse ${wat} nog eens en let op het getal eronder.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { licht: [metGetal], goedIds: [`s${goed}`], actief: false });
+        await l.zeg(`Hier staan er ${g(groepen[metGetal].n)}.`);
+        zet(l, { licht: [los], goedIds: [`s${goed}`] });
+        await l.zeg("Hier liggen er nog een paar los.", `Samen: ${plus(ga, gb)} = ${g(ga + gb)}.`);
+        zet(l, { licht: [] });
+        await l.wacht(400);
+      },
       testAntwoord: `s${goed}`,
     });
   };
@@ -561,7 +648,7 @@ function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number,
       toon: () => {
         toon(l, st, { soort: "bakkerij", id, groepen }, { sommen });
       },
-      vraag: [`Tel de ${wat} bij elkaar op.`, "Welke twee sommen passen erbij?", "Tik op twee sommen."],
+      vraag: [`Tel de ${wat} bij elkaar op.`, "Welke 2 sommen passen erbij?", "Tik op 2 sommen."],
       antwoord: () => kiesTwee(l, goedIds),
       isGoed: (x) => x.every((i) => goedIds.includes(i)),
       noem: (x) => {
@@ -571,7 +658,7 @@ function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number,
       },
       goed: async () => {
         goedBeeld(l, st, { gekozen: [], goedIds });
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(a + b)}.`, `En ${plus(b, a)} = ${g(a + b)}.`);
+        await l.zeg(bevestig());
         await l.wacht(500);
       },
       fout: () => {
@@ -584,9 +671,19 @@ function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number,
         zet(l, { licht: [1] });
         await l.zeg(hier(groepen[1].n));
         zet(l, { licht: [] });
-        await l.zeg("Een plussom kun je omdraaien.", "Het antwoord blijft dan hetzelfde.", `Zoek twee sommen met ${g(a)} en ${g(b)}.`);
+        await l.zeg("Een plussom kun je omdraaien.", "Het antwoord blijft dan hetzelfde.", ...(krijgtVervolgvraag(l) ? [] : [`Zoek 2 sommen met ${g(a)} en ${g(b)}.`]));
       },
-      tip: [`Zoek de sommen met ${g(a)} en ${g(b)}.`],
+      tip: [`Kijk naar de getallen ${g(a)} en ${g(b)} in de sommen.`],
+      reactie: (x) => {
+        const fout = x.find((i) => !goedIds.includes(i)) ?? x[0];
+        const [p, q] = opties[Number(fout.slice(1))];
+        return [`${plus(p, q)} past niet bij dit plaatje.`, `Beide goede sommen hebben de getallen ${g(a)} en ${g(b)}.`];
+      },
+      toonAntwoord: async () => {
+        zet(l, { licht: [], gekozen: [], goedIds });
+        await l.zeg(`${plus(a, b)} en ${plus(b, a)} passen allebei.`, `Een plussom kun je omdraaien: het antwoord blijft ${g(a + b)}.`);
+        await l.wacht(400);
+      },
       testAntwoord: goedIds[0],
     });
   };
@@ -602,18 +699,20 @@ function typSom(a: number, b: number, beeldVan: (id: string) => PlusBeeld = (id)
         if (toon(l, st, beeldVan(id))) somBoven(l, a, b);
       },
       vraag: ["Reken uit.", `Hoeveel is ${plus(a, b)}?`],
-      antwoord: () => typGetal(l, st, ["Typ het getal dat jij denkt."]),
+      antwoord: () => typGetal(l, st, ["Typ het getal dat je denkt.", "Als je het niet zeker weet, mag een gokje."]),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
         somBoven(l, a, b, s);
         goedBeeld(l, st);
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`);
+        await l.zeg(bevestig());
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
       samen: () => rekenUitleg(l, a, b),
       tip: rekenTip(a, b),
+      reactie: (x) => somReactie(a, b, x, rekenTip(a, b), "typ"),
+      toonAntwoord: () => toonSom(l, a, b),
       testAntwoord: s,
     });
   };
@@ -636,6 +735,37 @@ const BAKKERIJ_WELKOM = [
 function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string, een: string) {
   return async (l: Lesgids, st: Stand) => {
     toon(l, st, { soort: "bakkerij", id: "uitleg", groepen });
+    if (isBegeleideUitleg(l)) {
+      l.som(null);
+      zet(l, { licht: [0] });
+      await l.zeg(a === 1 ? `Hier ligt ${g(a)} ${een}.` : `Hier liggen ${g(a)} ${wat}.`);
+      zet(l, { beeld: { soort: "bakkerij", id: "uitleg-een-erbij", groepen: [groepen[0], { ...groepen[1], n: 1 }] }, licht: [1] });
+      await l.zeg(`Er komt eerst 1 ${een} bij. Tel 1 verder.`);
+      /* De vraag gaat over alle ${wat}, niet over 1: het rondje om het nieuwe ding is weg (BOUWREGELS 7.8). */
+      zet(l, { licht: [] });
+      await uitlegKeuze(l, {
+        vraag: `Hoeveel ${wat} liggen er nu?`, keuzes: [String(a), String(a + 2), String(a + 1)], antwoord: String(a + 1),
+        hint: `Start bij ${g(a)} en tel 1 verder.`,
+        goed: bevestig(),
+        reactie: (x) => [Number(x) === a ? `${g(a)} lagen er al. Er komt er nog 1 bij.` : `Er komt maar 1 ${een} bij, dus het wordt maar 1 meer.`],
+        laatZien: `1 meer dan ${g(a)} is ${g(a + 1)}.`,
+      });
+      if (b > 1) {
+        zet(l, { beeld: { soort: "bakkerij", id: "uitleg-alles-erbij", groepen }, licht: [1] });
+        await l.zeg(`In totaal komen er ${g(b)} ${wat} bij. Start bij ${g(a)} en tel verder.`);
+        zet(l, { licht: [] });
+        await uitlegKeuze(l, {
+          vraag: `Hoeveel ${wat} zijn het samen?`, keuzes: [String(a + b + 1), String(a + b), String(a + b - 1)], antwoord: String(a + b),
+          hint: `Start bij ${g(a)} en tel de ${g(b)} ${wat} erbij.`,
+          goed: bevestig(),
+          reactie: (x) => (Number(x) > a + b ? ["Je telde 1 te ver door."] : ["Je hield 1 te vroeg op met tellen."]),
+          laatZien: `${plus(a, b)} is ${g(a + b)}.`,
+        });
+      }
+      zet(l, { licht: [] });
+      somBoven(l, a, b, a + b);
+      return;
+    }
     somBoven(l, a, b);
     zet(l, { licht: [0] });
     await l.zeg(a === 1 ? `Hier ligt ${g(1)} ${een}.` : `Hier liggen ${g(a)} ${wat}.`);
@@ -661,13 +791,13 @@ function dansKaartje(paren: [number, number][]): Vraag {
       toon: () => {
         toon(l, st, { soort: "disco", id, vorm: "kaartje", kaarten });
       },
-      vraag: [`Welk kaartje is samen ${g(10)}?`],
+      vraag: [`Op welk kaartje zijn de 2 getallen samen ${g(10)}?`],
       antwoord: async () => Number((await tik(l)).slice(1)),
       isGoed: (i) => i === goedIdx,
       noem: (i) => `${wk(paren[i][0])} en ${wk(paren[i][1])}`,
       goed: async () => {
         goedBeeld(l, st, { goedIds: [`k${goedIdx}`] });
-        await l.zeg(`Ja! ${wk(paren[goedIdx][0])} en ${wk(paren[goedIdx][1])} is samen ${g(10)}.`);
+        await l.zeg(bevestig());
         await l.wacht(900);
       },
       fout: (i) => {
@@ -680,13 +810,23 @@ function dansKaartje(paren: [number, number][]): Vraag {
         zet(l, { rek: { rijen: s > 10 ? 2 : 1, a: x, b: y } });
         await l.zeg(`Kijk naar ${wk(x)} en ${wk(y)}.`, stippen(x, y));
         if (s < 10) await l.zeg(10 - s === 1 ? `Er blijft ${g(1)} plekje leeg.` : `Er blijven ${g(10 - s)} plekjes leeg.`, `Dat is nog geen ${g(10)}.`);
-        else await l.zeg("De rij is vol, en er zijn nog stippen over.", `Dat is meer dan ${g(10)}.`);
+        else await l.zeg(`Dat zijn ${g(s)} stippen.`, s - 10 === 1 ? `De rij van ${g(10)} is vol, dus er is ${g(1)} stip te veel.` : `De rij van ${g(10)} is vol, dus er zijn ${g(s - 10)} stippen te veel.`);
         await l.zeg(`Bij ${g(10)} is de rij precies vol.`);
         await l.verder();
         zet(l, { rek: null });
-        await l.zeg("Zoek het kaartje waarbij de rij precies vol is.");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Zoek het kaartje waarbij de rij precies vol is.");
       },
-      tip: ["Tel de twee getallen op elk kaartje samen.", `Welk kaartje is samen ${g(10)}?`],
+      tip: ["Tel de 2 getallen op een kaartje bij elkaar op.", `Samen moeten ze ${g(10)} zijn.`],
+      reactie: (i) => {
+        const [x, y] = paren[i];
+        return [`Op dat kaartje staan ${wk(x)} en ${wk(y)}. Samen is dat ${g(x + y)}.`, x + y > 10 ? (x + y - 10 === 1 ? `De rij van ${g(10)} is vol, dus er is ${g(1)} stip te veel.` : `De rij van ${g(10)} is vol, dus er zijn ${g(x + y - 10)} stippen te veel.`) : (10 - x - y === 1 ? `De rij van ${g(10)} is nog niet vol: er mist ${g(1)} stip.` : `De rij van ${g(10)} is nog niet vol: er missen ${g(10 - x - y)} stippen.`)];
+      },
+      toonAntwoord: async () => {
+        const [x, y] = paren[goedIdx];
+        zet(l, { rek: null, actief: false, goedIds: [`k${goedIdx}`] });
+        await l.zeg(`Op dit kaartje staan ${wk(x)} en ${wk(y)}.`, `Samen is dat precies ${g(10)}.`);
+        await l.wacht(400);
+      },
       testAntwoord: `k${goedIdx}`,
     });
   };
@@ -709,13 +849,13 @@ function dansPlaten(getallen: number[]): Vraag {
       toon: () => {
         toon(l, st, { soort: "disco", id, vorm: "plaat", kaarten });
       },
-      vraag: [`Tik op twee getallen die samen ${g(10)} zijn.`],
+      vraag: [`Tik op 2 getallen die samen ${g(10)} zijn.`],
       antwoord: () => kiesTwee(l, goedIds),
       isGoed: (x) => waarden(x)[0] + waarden(x)[1] === 10,
       noem: (x) => `${gp(waarden(x)[0])} en ${gp(waarden(x)[1])}`,
       goed: async () => {
         goedBeeld(l, st, { gekozen: [], goedIds });
-        await l.zeg(`Ja! ${g(getallen[paar[0]], kp0)} en ${g(getallen[paar[1]], kp1)} is samen ${g(10)}.`);
+        await l.zeg(bevestig());
         await l.wacht(900);
       },
       fout: () => {
@@ -726,22 +866,31 @@ function dansPlaten(getallen: number[]): Vraag {
         zet(l, { rek: { rijen: 1, a: anker, b: 0 } });
         if (anker === 0) await l.zeg(`Neem de ${gp(0)}.`, "Bij nul zijn er nog geen stippen.", "De hele rij is nog leeg.");
         else await l.zeg(`Neem de ${gp(anker)}.`, anker === 1 ? `Ik zet ${o(1)} stip in de rij.` : `Ik zet ${o(anker)} stippen in de rij.`);
-        await l.zeg("Hoeveel plekjes zijn er nog leeg?", "Tel ze maar.");
+        await l.zeg("Kijk hoeveel plekjes er nog leeg zijn.", "Tel ze maar.");
         await l.verder();
         zet(l, { rek: null });
-        await l.zeg("Zoek het getal dat de rij vol maakt.");
+        if (!krijgtVervolgvraag(l)) await l.zeg("Tel de lege plekjes. Zo vind je het getal dat er nog bij moet.");
       },
-      tip: [`Welk getal maakt samen met ${gp(anker)} precies ${g(10)}?`],
+      tip: [`Kijk hoeveel plekjes leeg blijven bij ${gp(anker)}.`],
+      reactie: (x) => {
+        const [p, q] = waarden(x);
+        return [`Je tikte ${gp(p)} en ${gp(q)}: samen is dat ${g(p + q)}.`, p + q > 10 ? "Die 2 vullen de rij meer dan vol." : "Die 2 vullen de rij nog niet helemaal."];
+      },
+      toonAntwoord: async () => {
+        zet(l, { rek: null, gekozen: [], actief: false, goedIds });
+        await l.zeg(`${g(getallen[paar[0]], kp0)} en ${g(getallen[paar[1]], kp1)} zijn samen precies ${g(10)}.`);
+        await l.wacht(400);
+      },
       testAntwoord: goedIds[0],
     });
   };
 }
 
 const DANS_WELKOM = [
-  ["Op de kaartjes staan twee getallen.", `Welk kaartje is samen ${g(10)}?`],
-  ["De platen draaien rond op de draaitafel.", `Welke twee getallen zijn samen ${g(10)}?`],
-  [`Sommige platen zijn bijna ${g(10)}.`, `Welke twee zijn precies ${g(10)}?`],
-  [`Sommige kaartjes zitten dicht bij ${g(10)}.`, `Welk kaartje is samen ${g(10)}?`],
+  ["Op de kaartjes staan 2 getallen.", `Op welk kaartje zijn de 2 getallen samen ${g(10)}?`],
+  ["De platen draaien rond op de draaitafel.", `Welke 2 getallen zijn samen ${g(10)}?`],
+  [`Sommige platen zijn bijna ${g(10)}.`, `Welke 2 zijn precies ${g(10)}?`],
+  [`Sommige kaartjes zitten dicht bij ${g(10)}.`, `Op welk kaartje zijn de 2 getallen samen ${g(10)}?`],
 ];
 
 /** Het paar dat samen 10 is in de eerste vraag van de les: het voorbeeld van het beginscherm en de uitleg (BOUWREGELS 14.21). */
@@ -760,13 +909,13 @@ function dansUitleg(kaartjes: boolean, eerste: number[] | number[][]) {
   const [a, b] = dansPaar(eerste);
   return async (l: Lesgids) => {
     zet(l, { rek: { rijen: 1, a, b, bZicht: 0 } });
-    await l.zeg("Kijk, een rij van tien plekjes.", `Er ${a === 1 ? "staat" : "staan"} ${o(a)} ${a === 1 ? "oranje stip" : "oranje stippen"} in.`, b === 1 ? `Er is nog ${bl(1)} plekje leeg.` : `Er zijn nog ${bl(b)} plekjes leeg.`);
+    await l.zeg(`Kijk, een rij van ${g(10)} plekjes.`, `Er ${a === 1 ? "staat" : "staan"} ${o(a)} ${a === 1 ? "oranje stip" : "oranje stippen"} in.`, b === 1 ? `Er is nog ${bl(1)} plekje leeg.` : `Er zijn nog ${bl(b)} plekjes leeg.`);
     zet(l, { rek: { rijen: 1, a, b } });
     await l.wacht(700);
     await l.zeg(`${o(a)} en ${bl(b)} is samen ${g(10)}.`, "Nu is de rij precies vol.");
     await l.verder();
     zet(l, { rek: null });
-    await l.zeg(kaartjes ? `Zoek steeds het kaartje dat samen ${g(10)} is.` : `Zoek steeds twee getallen die samen ${g(10)} zijn.`);
+    await l.zeg(kaartjes ? `Zoek steeds het kaartje dat samen ${g(10)} is.` : `Zoek steeds 2 getallen die samen ${g(10)} zijn.`);
   };
 }
 
@@ -790,8 +939,8 @@ async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
     return;
   }
   zet(l, { busLicht: true });
-  if (a === 10) await l.zeg(`Onderin liggen twee rijen van ${g(5)}.`, `Dat zijn ${g(10)} pakjes.`);
-  else if (a > 10) await l.zeg(`Onderin liggen twee rijen van ${g(5)}: dat zijn ${g(10)} pakjes.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
+  if (a === 10) await l.zeg(`Onderin liggen 2 rijen van ${g(5)}.`, `Dat zijn ${g(10)} pakjes.`);
+  else if (a > 10) await l.zeg(`Onderin liggen 2 rijen van ${g(5)}: dat zijn ${g(10)} pakjes.`, a === 11 ? `Daarop ligt er nog ${g(1)}.` : `Daarop liggen er nog ${g(a - 10)}.`, `Samen zijn dat ${g(a)} pakjes.`);
   else await l.zeg(a === 1 ? `In de bus ligt ${g(1)} pakje.` : `In de bus liggen ${g(a)} pakjes.`);
   zet(l, { busLos: true });
   await l.zeg(b === 1 ? `Naast de bus ligt ${g(1)} pakje.` : `Naast de bus liggen ${g(b)} pakjes.`, `We tellen verder vanaf ${g(a)}.`);
@@ -800,7 +949,7 @@ async function busSamen(l: Lesgids, a: number, b: number, helemaal = false) {
     zet(l, { busTel: i });
     await l.zeg(`${g(a + i)}.`);
   }
-  if (!helemaal) await l.zeg(b === 1 ? `Eén meer dan ${g(a)}: hoeveel is dat?` : "Tel jij de laatste?");
+  if (!helemaal && !krijgtVervolgvraag(l)) await l.zeg(b === 1 ? `1 meer dan ${g(a)}: hoeveel is dat?` : "Tel jij het laatste stukje verder?");
 }
 
 function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
@@ -812,7 +961,7 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
         toon(l, st, { soort: "bus", id, inBus: a, instap: b, alsGetal });
       },
       vraag: busZinnen(a, b),
-      antwoord: () => typGetal(l, st, ["Typ hoeveel pakjes er nu in de bus liggen."]),
+      antwoord: () => typGetal(l, st, ["Typ het aantal pakjes dat nu in de bus ligt."]),
       isGoed: (x) => x === s,
       noem: (x) => g(x),
       goed: async () => {
@@ -821,12 +970,20 @@ function busVraag(a: number, b: number, alsGetal: boolean): Vraag {
         /* De nieuwe pakjes gaan echt de bus in, vóór Bliepo zegt dat ze erin liggen. */
         zet(l, { busIn: true });
         await l.wacht(1300);
-        await l.zeg(`Ja! ${plus(a, b)} = ${g(s)}.`, `Er liggen nu ${g(s)} pakjes in de bus.`);
+        await l.zeg(bevestig());
         await l.wacht(400);
       },
       fout: () => foutBeeld(l, st),
       samen: () => busSamen(l, a, b),
-      tip: b >= 10 ? rekenTip(a, b) : [`Begin bij ${g(a)}.`, b === 1 ? "Tel het nieuwe pakje erbij." : "Tel de nieuwe pakjes erbij."],
+      tip: b >= 10 ? rekenTip(a, b) : [`Start bij ${g(a)}.`, b === 1 ? "Tel het nieuwe pakje erbij." : "Tel de nieuwe pakjes erbij."],
+      reactie: (x) => somReactie(a, b, x, b >= 10 ? rekenTip(a, b) : [`Start bij ${g(a)}, het aantal dat al in de bus ligt.`, b === 1 ? "Tel het nieuwe pakje erbij." : "Tel de nieuwe pakjes erbij."], "bus"),
+      toonAntwoord: async () => {
+        somBoven(l, a, b, s);
+        zet(l, { busIn: true, busLicht: false, busLos: false, actief: false });
+        await l.wacht(1300);
+        await l.zeg(`Nu liggen er ${g(s)} pakjes in de bus.`, `${plus(a, b)} = ${g(s)}.`);
+        await l.wacht(400);
+      },
       testAntwoord: s,
     });
   };
@@ -836,9 +993,9 @@ const BUS_WELKOM: Record<string, string[]> = {
   "1-1": [`In de bus liggen ${g(2)} pakjes en er komt er ${g(1)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
   "1-2": [`In de bus liggen ${g(12)} pakjes en er komen er ${g(5)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
   "1-3": [`In de bus liggen ${g(8)} pakjes en er komen er ${g(5)} bij.`, "Hoeveel pakjes liggen er nu in de bus?"],
-  "2-1": [`De bus heeft ${g(4)} pakjes. In het rondje staat ${g(3)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
-  "2-2": [`De bus heeft ${g(12)} pakjes. In het rondje staat ${g(6)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
-  "2-3": [`De bus heeft ${g(6)} pakjes. In het rondje staat ${g(13)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-1": [`De bus heeft ${g(4)} pakjes. In de cirkel staat ${g(3)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-2": [`De bus heeft ${g(12)} pakjes. In de cirkel staat ${g(6)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
+  "2-3": [`De bus heeft ${g(6)} pakjes. In de cirkel staat ${g(13)}.`, "Hoeveel pakjes liggen er nu in de bus?"],
 };
 
 function busUitleg(a: number, b: number, alsGetal: boolean) {
@@ -904,11 +1061,14 @@ function les(t: Les): Lesdraaiboek {
     voorwerpen: t.voorwerpen,
     async speel(l) {
       const st: Stand = { huidig: t.begin?.id ?? "", nr: 0, goed: 0, fout: 0, typUitgelegd: false };
+      zetSynthesisHulp(l);
       l.vlak<PlusProps>(SqulaPlusVlak, { beeld: t.begin });
       if (t.begin) speelLesgeluid("verschijn");
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: t.begin?.soort === "bakkerij" ? kleurZin(t.begin.groepen, t.welkom) : t.welkom,
         uitleg: () => t.uitleg(l, st),
+        voordoen: true,
+        samen: () => t.begin?.soort === "bakkerij" ? t.uitleg(l, st) : t.vragen[0](l, st),
         /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
         voorbeeld: () => {
           voorbeeldAan = true;
@@ -924,7 +1084,7 @@ function les(t: Les): Lesdraaiboek {
       /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
       st.huidig = "";
       let fouten = 0;
-      for (const v of t.vragen) if (!(await v(l, st))) fouten++;
+      for (const v of t.vragen.slice(voorbeeldAfgerond ? 1 : 0)) if (!(await v(l, st))) fouten++;
       l.som(null);
       await squlaEind(l, fouten, t.eind);
     },
@@ -963,7 +1123,7 @@ const bakkerij1 = les({
     verhaal([hoop(7, "koekje"), hoop(2, "koekje")], 7, 2, [8, 9, 10, 5], [`Ik heb ${g(7)} koekjes.`, `Er komen er ${g(2)} bij.`, "Hoeveel koekjes zijn het samen?"]),
     verhaal([hoop(5, "krentenbol"), hoop(5, "krentenbol")], 5, 5, [5, 10, 9, 0], [`Hier liggen ${g(5)} krentenbollen.`, `Daar liggen er ook ${g(5)}.`, "Hoeveel krentenbollen zijn het samen?"]),
   ],
-  eind: "Je kunt plussommen maken tot tien.",
+  eind: "Je kunt plussommen maken tot 10.",
 });
 
 const bakkerij2 = les({
@@ -995,7 +1155,7 @@ const bakkerij2 = les({
     verbind([[10, 5], [12, 4], [2, 17]], [19, 15, 16]),
     verhaal([hoop(3, "broodje"), hoop(15, "broodje")], 3, 15, [12, 17, 18, 19], [`Ik heb ${g(3)} broodjes.`, `Er komen er ${g(15)} bij.`, "Hoeveel broodjes zijn het samen?"]),
   ],
-  eind: "Je kunt plussommen maken tot twintig.",
+  eind: "Je kunt plussommen maken tot 20.",
 });
 
 const bakkerij3 = les({

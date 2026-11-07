@@ -14,7 +14,7 @@
  */
 
 import { MERKNAAM } from "@/lib/merk";
-import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { stopPraten, zegNaElkaar, zetLesStem } from "@/lib/stem";
 import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { GeluidjesKnop } from "./GeluidjesKnop";
@@ -33,6 +33,10 @@ import { BliepoTekst } from "@/components/oefenen/BliepoTekst";
 import { IkoonKnop, IkoonTeken } from "./ikonen";
 import { keuzeStem, useKeuzesAlvast } from "./keuzestem";
 import { laadVoorwerpen } from "./voorwerpen";
+import { geldStartbeeld } from "./GeldStartbeeld";
+import { lesTekst } from "@/lib/lessen/tekstwijzigingen";
+import { cijfersInTekst } from "@/lib/lessen/cijfertaal";
+import beginzinnenData from "@/lib/lessen/beginzinnen.json";
 import "@/components/oefenen/opdracht-nieuw.css";
 
 /*
@@ -72,8 +76,11 @@ type Bediening =
 
 type Beeld = {
   zinnen: string[];
+  opdracht: string | null;
   zichtbaar: number;
   praat: boolean;
+  /** De lokale beheerder bepaalt wanneer de volgende tekst verschijnt. */
+  beheerVolgende: boolean;
   bediening: Bediening;
   /** De knop die Bliepo nu aanwijst (`data-knop`), of null. */
   aanwijs: string | null;
@@ -90,8 +97,10 @@ type Beeld = {
 
 const BEGIN: Beeld = {
   zinnen: [],
+  opdracht: null,
   zichtbaar: 0,
   praat: false,
+  beheerVolgende: false,
   bediening: null,
   aanwijs: null,
   bak: { tegels: [], om: false, slot: [] },
@@ -106,6 +115,7 @@ const BEGIN: Beeld = {
 };
 
 type Wachters = {
+  beheertekst?: () => void;
   getal?: (v: number | null) => void;
   kies?: (v: string | null) => void;
   knoppen?: (v: "weetniet" | "controleer" | "hulp") => void;
@@ -388,6 +398,8 @@ export function Lesspeler({
   onKlaar,
   terugHref,
   tutor = null,
+  startbeeld,
+  bewerkTekst,
 }: {
   les: Lesdraaiboek;
   naam?: string;
@@ -395,6 +407,10 @@ export function Lesspeler({
   terugHref?: string;
   /** Praten met Bliepo (22 oktober 2026): alleen als de ouder het aanzette. */
   tutor?: { groep: number } | null;
+  /** Vervangt uitsluitend het voorbeeld tijdens de opgegeven openingszin. */
+  startbeeld?: { tekst: string; inhoud: ReactNode };
+  /** Alleen in de lokale voorbeeldles: tekstcorrecties door de eigenaar. */
+  bewerkTekst?: (bron: string) => void;
 }) {
   const [ronde, setRonde] = useState(0);
   return (
@@ -406,6 +422,8 @@ export function Lesspeler({
       onKlaar={onKlaar}
       terugHref={terugHref}
       tutor={tutor}
+      startbeeld={startbeeld ?? geldStartbeeld(les.id)}
+      bewerkTekst={bewerkTekst}
     />
   );
 }
@@ -417,6 +435,8 @@ function Lesscherm({
   onKlaar,
   terugHref,
   tutor,
+  startbeeld,
+  bewerkTekst,
 }: {
   les: Lesdraaiboek;
   naam: string;
@@ -424,12 +444,15 @@ function Lesscherm({
   onKlaar?: () => void;
   terugHref?: string;
   tutor: { groep: number } | null;
+  startbeeld?: { tekst: string; inhoud: ReactNode };
+  bewerkTekst?: (bron: string) => void;
 }) {
   const klaarMelding = useRef(onKlaar);
   useEffect(() => {
     klaarMelding.current = onKlaar;
   }, [onKlaar]);
   const [beeld, setBeeld] = useState<Beeld>(BEGIN);
+  const handmatigeTekst = Boolean(bewerkTekst);
   const wacht = useRef<Wachters>({});
   const [schaal, setSchaal] = useState(0);
   /*
@@ -531,7 +554,7 @@ function Lesscherm({
 
     /* Stopt de stem halverwege (tik op de kaart), dan moet de les toch verder: anders blijft hij hangen en telt hij niet als af (28 okt 2026). */
     let spreekAf: (() => void) | null = null;
-    const spreek = (zinnen: string[], houdBediening = false) =>
+    const spreekAutomatisch = (zinnen: string[], houdBediening = false) =>
       new Promise<void>((res0) => {
         let gedaan = false;
         const res = () => {
@@ -557,7 +580,7 @@ function Lesscherm({
         void wachtOpBliepo().then(() => {
           if (!levend || staat.zinnen !== zinnen) return res();
           stopStem = zegNaElkaar(
-            zinnen.map((z) => metUitspraak(kaal(z), naam, vk())),
+            zinnen.map((z) => metUitspraak(kaal(lesTekst(les.id, z)), naam, vk())),
             (i) => pas((b) => (b.zinnen === zinnen ? { ...b, zichtbaar: Math.max(b.zichtbaar, i + 1) } : b)),
             () => {
               if (!levend) return;
@@ -568,6 +591,51 @@ function Lesscherm({
           );
         });
       });
+
+    // Alleen de lokale beheerweergave: elke tekst blijft staan, ook zonder stem.
+    // Meerdere zinnen in één zeg-aanroep krijgen ieder hun eigen pijlklik.
+    let breekBeheerstapAf: (() => void) | undefined;
+    let beheerRij = Promise.resolve();
+    const spreekBeheer = async (zinnen: string[], houdBediening: boolean) => {
+      if (!zinnen.length) return spreekAutomatisch(zinnen, houdBediening);
+      for (let index = 0; index < zinnen.length; index++) {
+        await new Promise<void>((resolve, reject) => {
+          if (!levend) return reject(STOP);
+          stopStem?.();
+          stopPraten();
+          const verder = () => {
+            if (!levend || wacht.current.beheertekst !== verder) return;
+            wacht.current.beheertekst = undefined;
+            breekBeheerstapAf = undefined;
+            stopStem?.();
+            stopPraten();
+            pas((b) => ({ ...b, beheerVolgende: false, praat: false }));
+            resolve();
+          };
+          breekBeheerstapAf = () => reject(STOP);
+          wacht.current.beheertekst = verder;
+          setVoorkeuren(vk());
+          const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
+          zet((b) => ({ ...b, zinnen, zichtbaar: index + 1, praat: true, beheerVolgende: true, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
+          void wachtOpBliepo().then(() => {
+            if (!levend || wacht.current.beheertekst !== verder) return;
+            stopStem = zegNaElkaar(
+              [metUitspraak(kaal(lesTekst(les.id, zinnen[index])), naam, vk())],
+              () => {},
+              () => {
+                if (levend && wacht.current.beheertekst === verder) pas((b) => ({ ...b, praat: false }));
+              },
+              true,
+            );
+          });
+        });
+      }
+    };
+    const spreek = (zinnen: string[], houdBediening = false): Promise<void> => {
+      if (!handmatigeTekst) return spreekAutomatisch(zinnen, houdBediening);
+      beheerRij = beheerRij.then(() => spreekBeheer(zinnen, houdBediening));
+      return beheerRij;
+    };
 
     /* Na een tik is een aanwijszin ("Tik dan op de pijl.") voorbij: die gaat weg, zodat het scherm geen oude stap laat zien. */
     const wegMetAanwijszin = (b: { zinnen: string[] }) => {
@@ -618,7 +686,9 @@ function Lesscherm({
     const benoemStil = (stappen: { knop: string; zin: string }[]) => void benoem(stappen).catch(() => {});
 
     const gids: Lesgids = {
+      lesId: les.id,
       naam,
+      ...(les.vraagBoven ? { opdracht: (tekst: string | null) => zet((b) => ({ ...b, opdracht: tekst })) } : {}),
       /* Nergens meer "Tik op het vinkje." (30 oktober 2026, opdracht eigenaar: in alle lessen). */
       zeg: (...zinnen) => {
         const z = zinnen.filter((zin) => zin && !/vinkje/i.test(zin));
@@ -861,11 +931,12 @@ function Lesscherm({
 
     return () => {
       levend = false;
+      breekBeheerstapAf?.();
       stopStem?.();
       stopPraten();
       wacht.current = {};
     };
-  }, [les, naam]);
+  }, [les, naam, handmatigeTekst]);
 
   /* ---------- tegels slepen en tikken ---------- */
 
@@ -874,7 +945,9 @@ function Lesscherm({
     return !!r && x >= r.left && x <= r.right && y >= r.top && y <= r.bottom;
   }, []);
 
-  const meldVlak = useCallback((g: Vlakgebeurtenis) => wacht.current.vlak?.(g), []);
+  const meldVlak = useCallback((g: Vlakgebeurtenis) => {
+    if (!wacht.current.beheertekst) wacht.current.vlak?.(g);
+  }, []);
 
   const zetNeer = useCallback((n: number) => {
     setGekozen(null);
@@ -920,7 +993,11 @@ function Lesscherm({
       } as CSSProperties)
     : undefined;
 
-  const b = beeld.bediening;
+  const b = beeld.beheerVolgende ? null : beeld.bediening;
+  const geldIntroductie = les.id === "squla-geld-geldmachine-1" &&
+    (beeld.vlak?.props as { introductie?: boolean } | undefined)?.introductie;
+  const toonStartbeeld = !!startbeeld && !beeld.opdracht && !beeld.kaart && !beeld.klaar &&
+    (geldIntroductie || beeld.zinnen.length === 0 || beeld.zinnen.includes(startbeeld.tekst));
 
   const nieuw = ONTWERP === "nieuw";
   /* Staand scherm, andere lessen (29 okt 2026, overlapcontrole): de naam- en pauzebalk boven het speelvlak, niet over de cijfertegels. */
@@ -930,6 +1007,12 @@ function Lesscherm({
   const squlaMidden = nieuw && staand && les.synthesis.startsWith("Squla");
   /* Opt-in per les (proef geldmachine-1): zin en keuzes bovenaan in het midden van het speelvlak, niet in de kolom bij Bliepo. */
   const vraagBoven = nieuw && !!les.vraagBoven;
+  const opdrachtKnoppen = vraagBoven && !!beeld.opdracht && b?.soort === "kies" && !!b.instel?.bijOpdracht;
+  const spreektOpdracht = vraagBoven && !!beeld.opdracht && beeld.zinnen[beeld.zichtbaar - 1] === beeld.opdracht;
+  const geldBeeld = beeld.vlak?.props as { groot?: { soort: string }[] | null; kaarten?: unknown[]; verbind?: unknown } | undefined;
+  const geldEnkel = vraagBoven && les.id === "squla-geld-geldmachine-1" &&
+    geldBeeld?.groot?.length === 1 && geldBeeld.groot[0].soort === "geld" &&
+    !geldBeeld.kaarten?.length && !geldBeeld.verbind;
   const vlakBoven =
     squlaMidden && ballonHoogte && schermHoogte
       ? Math.max(8, (schermHoogte - ballonHoogte - 16 - H * (schaal || 1)) / 2)
@@ -968,8 +1051,9 @@ function Lesscherm({
     />
   );
   /* Squla-lessen: een lange zin in de rechterkolom (laptop) krijgt een kleinere letter en een kleinere Bliepo, zodat niets over de knoppen bovenin of over Bliepo valt (keuring r6, regel 1.15). */
-  const huidigeZin = beeld.zichtbaar > 0 ? kaal(beeld.zinnen[beeld.zichtbaar - 1] ?? "") : "";
+  const huidigeZin = beeld.zichtbaar > 0 ? kaal(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1] ?? "")) : "";
   const zinLengte = huidigeZin.length > 150 ? "zeerlang" : huidigeZin.length > 100 ? "lang" : "kort";
+  const volgendeTekst = beeld.beheerVolgende && <button type="button" className={s.tekstVerder} onClick={() => wacht.current.beheertekst?.()}>Volgende tekst <span aria-hidden="true">→</span></button>;
   /* De zin en de knoppen; bij de indeling van Synthesis apart: de zin boven Bliepo, de knoppen in de kolom links (28 oktober 2026). */
   const maakTekstblok = (deel: "alles" | "zin" | "knoppen") => (
         <div
@@ -983,21 +1067,24 @@ function Lesscherm({
             Bliepo nu zegt, vrij boven hem, met oplichtende woorden (BliepoTekst).
             Oud: alle zinnen onder elkaar.
           */}
-          {deel !== "knoppen" && (nieuw
+          {deel !== "knoppen" && !spreektOpdracht && (nieuw
             ? beeld.zichtbaar > 0 && (
                 <BliepoTekst
                   key={`${beeld.zichtbaar}-${beeld.zinnen[beeld.zichtbaar - 1]}`}
-                  woorden={zinWoorden(beeld.zinnen[beeld.zichtbaar - 1])}
-                  regelNaZin={vraagBoven}
-                  gesproken={metUitspraak(kaal(beeld.zinnen[beeld.zichtbaar - 1]), naam, voorkeuren ?? leesVoorkeuren())}
+                  woorden={zinWoorden(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1]))}
+                  regelNaZin={false}
+                  gesproken={metUitspraak(kaal(lesTekst(les.id, beeld.zinnen[beeld.zichtbaar - 1])), naam, voorkeuren ?? leesVoorkeuren())}
                 />
               )
-            : beeld.zinnen.slice(0, beeld.zichtbaar).map((z, i) => <Zin key={`${i}-${z}`} zin={z} />))}
+            : beeld.zinnen.slice(0, beeld.zichtbaar).map((z, i) => <Zin key={`${i}-${z}`} zin={lesTekst(les.id, z)} />))}
+          {bewerkTekst && deel !== "knoppen" && !spreektOpdracht && beeld.zichtbaar > 0 && <button type="button" className={s.zinBewerken} onClick={() => bewerkTekst(beeld.zinnen[beeld.zichtbaar - 1])}>✎ Deze zin bewerken</button>}
+          {deel !== "knoppen" && volgendeTekst}
           {deel !== "zin" && b?.soort === "getal" && <Getalvak onKlaar={(v) => wacht.current.getal?.(v)} />}
           {deel !== "zin" && b?.soort === "somvak" && <SomBevestig />}
           {deel !== "zin" && b?.soort === "kies" && (
             <Keuzes
               opties={b.opties}
+              cijfers={les.id.startsWith("squla-") && Object.hasOwn(beginzinnenData, les.id)}
               /* Tegels links (Synthesis): "Weet ik niet" staat dan bij Bliepo, op de vaste plek (besluit eigenaar 28 okt). */
               instel={deel === "knoppen" ? { ...b.instel, weetniet: false } : b.instel}
               synth={tegelsLinks}
@@ -1059,6 +1146,7 @@ function Lesscherm({
         </div>
   );
   const tekstblok = maakTekstblok("alles");
+  const tutorTekstblok = opdrachtKnoppen ? maakTekstblok("zin") : tekstblok;
 
   /* De knop die Bliepo aanwijst pulseert (ook knoppen in een eigen speelvlak). */
   useEffect(() => {
@@ -1148,16 +1236,28 @@ function Lesscherm({
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0
                 ? undefined
-                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
+                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map((z) => kaal(lesTekst(les.id, z))), () => {}, () => {}, true)
             }
           >
-            {vraagBoven ? null : tegelsLinks ? maakTekstblok("zin") : tekstblok}
+            {vraagBoven ? tutorTekstblok : tegelsLinks ? maakTekstblok("zin") : tekstblok}
           </BliepoVloer>
         )}
 
         {/* Nieuw: het speelvlak schuift 300 naar links (de rechterkolom is voor Bliepo). */}
         <div className={nieuw ? "les-inhoud" : undefined} style={nieuw ? undefined : { display: "contents" }}>
-        {vraagBoven && <div className={s.vraagBoven} data-vraag-boven="">{tekstblok}</div>}
+        {vraagBoven && beeld.opdracht && (
+          <div className={`${s.vraagBoven} ${geldEnkel ? s.geldEnkel : ""}`} data-vraag-boven="">
+            <div className={s.tekst} data-opdracht="">
+              <BliepoTekst
+                woorden={zinWoorden(lesTekst(les.id, beeld.opdracht))}
+                regelNaZin
+                gesproken={metUitspraak(kaal(lesTekst(les.id, beeld.opdracht)), naam, voorkeuren ?? leesVoorkeuren())}
+              />
+              {bewerkTekst && <button type="button" className={s.zinBewerken} onClick={() => bewerkTekst(beeld.opdracht!)}>✎ Deze vraag bewerken</button>}
+            </div>
+            {opdrachtKnoppen && maakTekstblok("knoppen")}
+          </div>
+        )}
         {/* de som bovenaan */}
         {beeld.som && !beeld.kaart && (
           <div className={s.sombalk}>
@@ -1187,10 +1287,11 @@ function Lesscherm({
 
         {/* een eigen speelvlak, of het raster met de torens */}
         {beeld.vlak && !beeld.kaart && (
-          <div style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720 }}>
+          <div inert={beeld.beheerVolgende || undefined} style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, visibility: toonStartbeeld ? "hidden" : undefined }}>
             <beeld.vlak.comp {...beeld.vlak.props} meld={meldVlak} schaal={schaal || 1} metSom={!!beeld.som} />
           </div>
         )}
+        {toonStartbeeld && <div style={{ position: "absolute", left: 300, top: 0, width: 980, height: 720, pointerEvents: "none" }}>{startbeeld?.inhoud}</div>}
         {!beeld.kaart && !beeld.vlak && (
           <div
             ref={raster}
@@ -1319,10 +1420,10 @@ function Lesscherm({
             onNogEens={
               beeld.praat || beeld.zichtbaar === 0
                 ? undefined
-                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map(kaal), () => {}, () => {}, true)
+                : () => zegNaElkaar(beeld.zinnen.slice(0, beeld.zichtbaar).map((z) => kaal(lesTekst(les.id, z))), () => {}, () => {}, true)
             }
           >
-            {vraagBoven ? null : tekstblok}
+            {vraagBoven ? tutorTekstblok : tekstblok}
           </BliepoVloer>
         </div>
       )}
@@ -1436,7 +1537,7 @@ export function leesKeuze(o: string): string {
   return kaal(o).replace(/\s*=\s*/g, " is ").replace(/\s*\+\s*/g, " plus ").replace(/\?/g, "hoeveel").replace(/\s+/g, " ").trim();
 }
 
-function Keuzes({ opties, instel, synth, onKlaar }: { opties: string[]; instel?: Kiesinstel; synth?: boolean; stil?: boolean; onKlaar: (v: string | null) => void }) {
+function Keuzes({ opties, instel, synth, cijfers, onKlaar }: { opties: string[]; instel?: Kiesinstel; synth?: boolean; cijfers?: boolean; stil?: boolean; onKlaar: (v: string | null) => void }) {
   const [keuze, setKeuze] = useState<string | null>(null);
   /* Bij de indeling van Synthesis staan alleen getallen naast elkaar; woorden (Ja, Nee) onder elkaar over de hele breedte. */
   const kort = opties.every((o) => o.length <= 3) && (!synth || opties.every((o) => /^\d/.test(o)));
@@ -1470,7 +1571,7 @@ function Keuzes({ opties, instel, synth, onKlaar }: { opties: string[]; instel?:
               if (direct) onKlaar(o);
             }}
           >
-            {o}
+            {cijfers ? cijfersInTekst(o) : o}
           </button>
         ))}
       </div>

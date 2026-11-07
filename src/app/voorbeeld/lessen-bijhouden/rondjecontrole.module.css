@@ -1,0 +1,21 @@
+.sectie { max-width: 1100px; margin: 0 0 32px; padding: 20px; background: white; border: 1px solid #d5dce5; border-radius: 12px; color: #202c3c; }
+.sectie h2 { font-size: 22px; font-weight: 700; margin-bottom: 8px; }
+.sectie p { line-height: 1.5; margin-bottom: 12px; }
+.lessen { list-style: none; padding: 0; display: grid; gap: 10px; }
+.les { border: 1px solid #d5dce5; border-radius: 10px; padding: 10px 14px; background: #fafbfc; }
+.goed { border-color: #2f8a4f; background: #f3faf5; }
+.fout { border-color: #c0392b; background: #fdf3f1; }
+.les summary { cursor: pointer; min-height: 32px; display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px; font-weight: 700; }
+.titel { overflow-wrap: anywhere; }
+.badge { font-size: 13px; padding: 3px 10px; border-radius: 999px; background: #e8edf3; }
+.goed .badge { background: #cdeed8; }
+.fout .badge { background: #f6d2cd; }
+.opmerking { margin-top: 10px; }
+.link { font-size: 14px; color: #53657c; }
+.zinnen { list-style: none; padding: 0; display: grid; gap: 18px; margin-top: 12px; }
+.zin { font-size: 15px; margin-bottom: 6px; }
+.fotos { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 12px; }
+.fotos figure { margin: 0; }
+.fotos img { width: 100%; height: auto; border: 1px solid #c9d2de; border-radius: 8px; display: block; }
+.fotos figcaption { font-size: 12px; color: #53657c; margin-top: 4px; }
+.opnameFout { color: #c0392b; }

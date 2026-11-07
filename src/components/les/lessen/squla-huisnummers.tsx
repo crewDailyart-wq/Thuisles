@@ -6,16 +6,18 @@
  * Leerdoel: de telrij tot 50. Welk getal komt erna, ervoor, ertussen, en
  * terugtellen. 17 vragen, eerst tot 20, dan tot 31, dan tot 50.
  *
- * Hulp zoals Synthesis (zie `meteenS` in verhaaltjessommen.tsx): na één fout
- * "Niet helemaal." en de keuze "Nog een keer" of "Hulp". Nog een keer = dezelfde
- * vraag. Hulp, of nog een fout: samen langs de straat lopen. Daarna 1× fout =
- * een tip, 2× fout = "Zullen we even pauze nemen?" en de les stopt.
+ * Hulp zoals Synthesis (BOUWREGELS 5.1 en 5.10, 4 november 2026): goed = kort en door.
+ * Eerste fout = een korte reactie op wat het kind koos (met een hint die bij de vraag
+ * past) en meteen opnieuw. Tweede fout = Bliepo loopt langs de huizen, zet het goede
+ * nummer op zijn plek en de les gaat door. Geen keuzevraag, geen pauze.
  *
  * Huisnummers staan allemaal wit op een donker bordje: in de zinnen {n:wit}.
  * Geen "Weet ik niet"-knop bij de keuzes (besluit eigenaar).
  */
 
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bevestig, naamMag, opener, uitlegKeuze, zetSynthesisHulp } from "./squla-uitleg";
+import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartHuisnummers, SqulaStraat, type Huisplek, type StraatProps } from "../vlakken/squla-huisnummers-straat";
 
@@ -72,7 +74,7 @@ function ijk(v: Vraag): number {
 
 /** Wat Bliepo de eerste keer zegt, vóór de vraag. */
 function aanloop(v: Vraag): string[] {
-  if (v.soort === "tussen") return ["Kijk, op één bordje staat een vraagteken."];
+  if (v.soort === "tussen") return ["Kijk, op 1 bordje staat een vraagteken."];
   if (v.soort === "sleep") return ["Er mist een huis in de straat."];
   if (v.soort === "terug") return ["Nu lopen we terug."];
   return [];
@@ -93,15 +95,19 @@ function vraagNaLopen(v: Vraag): string[] {
   return v.soort === "terug" ? vraagZin(v).slice(1) : vraagZin(v);
 }
 
-function goedZin(v: Vraag): string {
-  if (v.soort === "na") return `Ja! Na ${w(ijk(v))} komt ${w(v.goed)}.`;
-  if (v.soort === "voor" || v.soort === "terug") return `Ja! Voor ${w(ijk(v))} komt ${w(v.goed)}.`;
-  return `Ja! ${w(v.goed)} hoort tussen ${w(v.goed - 1)} en ${w(v.goed + 1)}.`;
+/** Wat er klopt, met uitleg waarom (na de tweede fout). */
+function kern(v: Vraag): string {
+  if (v.soort === "na") return `Na ${w(ijk(v))} komt ${w(v.goed)}, want elk huis is 1 verder.`;
+  if (v.soort === "voor" || v.soort === "terug") return `Voor ${w(ijk(v))} komt ${w(v.goed)}, want terug is het 1 minder.`;
+  return `${w(v.goed)} hoort tussen ${w(v.goed - 1)} en ${w(v.goed + 1)}: het is 1 meer dan ${w(v.goed - 1)}.`;
 }
 
 function tipZin(v: Vraag): string {
-  if (v.soort === "voor" || v.soort === "terug") return `Tel één terug vanaf ${w(ijk(v))}.`;
-  return `Tel één verder dan ${w(ijk(v))}.`;
+  if (v.soort === "na") return `Tel vanaf het huis ervoor 1 verder.`;
+  if (v.soort === "voor") return `Kijk naar het huis rechts van de lege plek. Tel vanaf dat nummer 1 terug.`;
+  if (v.soort === "terug") return `Tel vanaf het laatste huis nog 1 terug.`;
+  if (v.soort === "tussen") return `Kijk naar het huis links van het vraagteken. Tel vanaf dat nummer 1 verder.`;
+  return `Kijk naar het huis links van de lege plek. Tel vanaf dat nummer 1 verder.`;
 }
 
 /** Eén keer laten antwoorden: kiezen, typen of slepen. `null` = "Weet ik niet" bij het typen. */
@@ -141,31 +147,33 @@ async function loopLangs(l: Lesgids, v: Vraag) {
   straat(l, { licht: null });
 }
 
-/** De hulproute: samen uitzoeken, dan de vraag nog eens. 2× fout = pauze. */
-async function samen(l: Lesgids, v: Vraag, st: { keer: number; handGezien: boolean }): Promise<void> {
-  if (v.soort === "voor" || v.soort === "terug") await l.zeg("We lopen samen terug.");
-  else await l.zeg("We lopen samen langs de huizen.");
+/** Het getal met omgedraaide cijfers (34 en 43). */
+const omgedraaid = (n: number) => Number([...String(n)].reverse().join(""));
+
+/** Eerste fout: wat Bliepo zegt over het gekozen nummer, en dan een hint die bij de vraag past. */
+function reactie(v: Vraag, x: number | null): string[] {
+  if (x === null) return [tipZin(v)];
+  const bekend = nummers(v);
+  const naarVoren = v.soort === "voor" || v.soort === "terug";
+  const nr = v.losse ? `Het huis met ${w(x)}` : w(x);
+  const koos = v.losse ? `Je sleepte het huis met ${w(x)}.` : `Je koos ${w(x)}.`;
+  let zin: string;
+  if (bekend.includes(x)) zin = `${nr} staat al in de straat.`;
+  else if (x !== v.goed && omgedraaid(x) === v.goed && x > 9) zin = `${koos} Kijk of de cijfers in de goede volgorde staan.`;
+  else if (v.soort === "tussen") zin = `${nr} past niet tussen ${w(v.goed - 1)} en ${w(v.goed + 1)}.`;
+  else if (x === (naarVoren ? v.goed - 1 : v.goed + 1)) zin = `${nr} slaat een huis over.`;
+  else if (naarVoren) zin = x > ijk(v) ? `${nr} is groter dan ${w(ijk(v))}, maar er hoort een kleiner nummer.` : `${nr} ligt te ver van ${w(ijk(v))} af.`;
+  else zin = x < ijk(v) ? `${nr} is kleiner dan ${w(ijk(v))}, maar er hoort een groter nummer.` : `${nr} ligt te ver van ${w(ijk(v))} af.`;
+  return [zin, tipZin(v)];
+}
+
+/** Tweede fout: samen langs de huizen lopen en zeggen hoe het zit (zonder de vraag nog eens te stellen). */
+async function samen(l: Lesgids, v: Vraag): Promise<void> {
+  if (v.soort === "voor" || v.soort === "terug") await l.zeg("Ik loop terug langs de huizen, van rechts naar links.");
+  else await l.zeg("Ik loop langs de huizen tot aan de lege plek.");
   await loopLangs(l, v);
-  if (v.soort === "voor" || v.soort === "terug") await l.zeg("Terug wordt het nummer steeds één minder.");
-  else await l.zeg("Elk huis is één verder.");
-  await l.zeg(...vraagNaLopen(v));
-  for (let poging = 1; ; poging++) {
-    const x = await antwoord(l, v, st);
-    if (x === v.goed) return;
-    if (poging === 1) {
-      if (x === null) await l.zeg("Geen probleem.", tipZin(v));
-      else {
-        fout(l, v, x, st);
-        await l.zeg(`${w(x)}? Niet helemaal.`, tipZin(v));
-      }
-      await l.zeg(...vraagZin(v).filter((z) => z !== "Typ het nummer."));
-      continue;
-    }
-    if (x !== null) fout(l, v, x, st);
-    await l.zeg(x === null ? "Dat is niet erg." : `${w(x)}? Dat is nog niet het goede nummer.`, "Zullen we even pauze nemen?", "Dan doen we het straks nog eens.");
-    await l.verder();
-    return l.stopLes();
-  }
+  if (v.soort === "voor" || v.soort === "terug") await l.zeg(`Van ${w(ijk(v))} naar het huis ervoor is het 1 minder.`);
+  else await l.zeg(`Het huis na ${w(v.goed - 1)} is 1 verder.`);
 }
 
 /**
@@ -181,64 +189,55 @@ async function speelVraag(l: Lesgids, v: Vraag, st: { keer: number; handGezien: 
   }
   await l.zeg(...vraagNaLopen(v));
 
+  let goedAntwoord = false;
   let meteen = true;
-  const x = await antwoord(l, v, st);
-  if (x !== v.goed) {
-    meteen = false;
-    if (x === null) {
-      await l.zeg("Geen probleem.", "We doen het samen, stap voor stap.");
-      await samen(l, v, st);
-    } else {
-      fout(l, v, x, st);
-      await l.zeg(`${w(x)}? Niet helemaal.`);
-      await l.zeg("Wil je hulp, of nog een keer proberen?");
-      const keuze = await l.kies(["Nog een keer", "Hulp"], { weetniet: false, direct: true });
-      if (keuze === "Nog een keer") {
-        await l.zeg(...vraagZin(v).filter((z) => z !== "Typ het nummer."));
-        const y = await antwoord(l, v, st);
-        if (y !== v.goed) {
-          if (y !== null) fout(l, v, y, st);
-          await l.zeg(y === null ? "Geen probleem." : `${w(y)}? Niet helemaal.`, "Laten we het samen uitzoeken.");
-          await samen(l, v, st);
-        }
-      } else {
-        await l.zeg("Goed.", "We doen het samen, stap voor stap.");
-        await samen(l, v, st);
-      }
+  for (let poging = 1; ; poging++) {
+    const x = await antwoord(l, v, st);
+    if (x === v.goed) {
+      goedAntwoord = true;
+      meteen = poging === 1;
+      break;
     }
+    meteen = false;
+    if (x !== null) fout(l, v, x, st);
+    else speelLesgeluid("mis");
+    if (poging === 1) {
+      await l.zeg(...[opener(), ...reactie(v, x)].filter(Boolean));
+      continue;
+    }
+    await samen(l, v);
+    break;
   }
 
-  /* Goed: het nummer komt op zijn plek en het huis springt even op. */
+  /* Het nummer komt op zijn plek en het huis springt even op. */
   const g = gat(v);
   const huizen = v.huizen.map((h, i) => (i === g ? v.goed : h));
-  speelLesgeluid("goed");
+  if (goedAntwoord) speelLesgeluid("goed");
   straat(l, { huizen, losse: [], goed: g, licht: null, fout: null, actief: false, hand: false });
-  await l.zeg(goedZin(v));
+  await l.zeg(goedAntwoord ? bevestig() : kern(v));
   await l.wacht(500);
   return meteen;
 }
 
 /** De korte uitleg voor wie het nog niet kan: samen langs de straat lopen. */
 async function uitleg(l: Lesgids) {
-  const rij: Huisplek[] = [1, 2, 3, 4, 5, "?"];
-  straat(l, { huizen: rij, licht: null, goed: null });
-  await l.zeg("We lopen samen langs de huizen.");
-  for (let i = 0; i < 5; i++) {
+  straat(l, { huizen: [21, 22, 23, 24, "?"], licht: null, goed: null });
+  await l.zeg("Ik loop langs de huizen. Elk volgend nummer is 1 meer.");
+  for (let i = 0; i < 4; i++) {
     straat(l, { licht: i });
-    await l.zeg(w(i + 1));
+    await l.zeg(w(21 + i));
   }
-  straat(l, { licht: null });
-  await l.zeg("Elk huis is één verder.", `Dus na ${w(5)} komt ${w(6)}.`);
-  speelLesgeluid("goed");
-  straat(l, { huizen: [1, 2, 3, 4, 5, 6], goed: 5 });
-  await l.wacht(500);
-  await l.zeg("We kunnen ook teruglopen.");
-  for (const i of [5, 4, 3]) {
-    straat(l, { licht: i, goed: null });
-    await l.zeg(w(i + 1));
-  }
-  straat(l, { licht: null });
-  await l.zeg("Terug wordt het nummer steeds één minder.", "Nu jij!");
+  straat(l, { licht: 4 });
+  await uitlegKeuze(l, {
+    vraag: "Welk huisnummer komt na {24:wit}?",
+    keuzes: ["23", "25", "26"], antwoord: "25",
+    hint: "Tel hardop tot {24:wit}. Welk nummer zeg je daarna?",
+    goed: "Ja, na {24:wit} komt {25:wit}. Het nummer wordt 1 groter.",
+    reactie: (x) => [x === "23" ? "{23:wit} staat al in de straat." : `{${x}:wit} slaat een huis over.`, "Tel hardop tot {24:wit}. Welk nummer zeg je daarna?"],
+    laatZien: "Na {24:wit} komt {25:wit}.",
+  });
+  straat(l, { huizen: [21, 22, 23, 24, 25], goed: 4, licht: null });
+  await l.zeg("Nu ga jij ontbrekende huisnummers zoeken.");
 }
 
 const huisnummers: Lesdraaiboek = {
@@ -252,9 +251,11 @@ const huisnummers: Lesdraaiboek = {
 
   async speel(l) {
     const st = { keer: 0, handGezien: false };
+    zetSynthesisHulp(l);
     l.vlak<StraatProps>(SqulaStraat, { huizen: [21, 22, 23, 24, 25] });
     speelLesgeluid("verschijn");
-    await l.zeg("Hoi!", "Kijk, een straat met huizen.", "Elk huis heeft een nummer.", "Welk nummer komt erna?", "Kun je dit al?");
+    const opening = beginzinnen("squla-huisnummers")!;
+    await l.zeg(`${opening.zin1} ${opening.zin2}`);
     const kan = await l.kies(["Ja", "Nee"], { weetniet: false, direct: true });
     if (kan === "Ja") await l.zeg("Mooi.", "Laat maar eens zien.");
     else await uitleg(l);
@@ -264,7 +265,7 @@ const huisnummers: Lesdraaiboek = {
 
     const tik = l.kaart();
     await l.zeg(
-      fouten === 0 ? (l.naam ? `Super, ${l.naam}!` : "Super!") : l.naam ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.",
+      fouten === 0 ? (l.naam && naamMag(l) ? `Super, ${l.naam}!` : "Super!") : l.naam && naamMag(l) ? `Knap gedaan, ${l.naam}.` : "Knap gedaan.",
       "Je weet welk huisnummer erna komt.",
       "Tik op de kaart om hem af te vinken.",
     );

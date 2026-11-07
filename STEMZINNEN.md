@@ -1,13 +1,13 @@
 # Stemzinnen: nog te maken met de gekozen stem
 
-Automatisch gemaakt met `npm run stemzinnen` (2026-11-02). Niet met de hand bewerken.
+Automatisch gemaakt met `npm run stemzinnen` (2026-11-05). Niet met de hand bewerken.
 
 Voor nu leest de browser deze zinnen voor (geen tegoed; `STEM_NIEUWE_ZINNEN=browser`).
 Wisselen naar de stem van de eigenaar: in Railway `STEM_NIEUWE_ZINNEN=dienst` zetten;
 dan maakt de site elke zin hieronder de eerste keer met de gekozen stem (STEM_DIENST) en bewaart hem.
 Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
-**Totaal: 11708 zinnen, 371928 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
+**Totaal: 17028 zinnen, 597870 tekens.** (Al met Ruth bewaard en dus niet in deze lijst: 3905 zinnen.)
 
 ## 13 (2)
 
@@ -173,9 +173,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Plus 2 losse blokken.
 - Tot de volgende keer.
 
-## b (25)
+## b (23)
 
-- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s, pzTegelKleur(keuzes, s)).
 - Hier $a === 1 ? "is" : "zijn" $g(a, "paars") $a === 1 ? NAAM[vw][0] : NAAM[vw][1].
 - Daar $b === 1 ? "is" : "zijn" $g(b, "oranje") $b === 1 ? NAAM[vw][0] : NAAM[vw][1].
 - Hier liggen $g(3, "paars") diamanten.
@@ -188,28 +187,28 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zit een nieuwe schatkaart in!
 - Die zoeken we de volgende keer.
 - Nu reken je met min: er gaat iets af. Ik heb $aantal(6, "ster") in mijn tas en er valt er $gv(1, "ster") uit. Sleep de sterren die er nog zijn naar het vak. Kun je dit al?
-- Ja! In de zak $rest === 1 ? "zit" : "zitten" $aantal(rest, vw, KB).
-- $g(tot) kun je splitsen in $g(deel, KA) en $g(rest, KB).
 - Kijk: er zijn $aantal(tot, vw).
 - $aantal(deel, vw, KA) $deel === 1 ? "gaat" : "gaan" naar het paarse vak.
 - De andere $b.w gaan in de zak.
 - De andere gaan naar het oranje vak.
 - Tel ze maar.
-- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
+- $g(tot) kun je splitsen in $g(deel, KA) en $g(rest, KB).
 - Bovenaan de splitspaal staat $g(tot).
 - Dat zijn $aantal(tot, "voetbalshirt").
 - $aantal(a, "voetbalshirt", KA) $a === 1 ? "is" : "zijn" paars.
 - De andere shirts zijn oranje.
+- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
 
-## bak (8)
+## bak (9)
 
 - Kijk: om en om staat er een $ding(rij[0]).
 - Daartussen staat steeds iets anders: $namen(rij.filter((x) => x !== rij[0]).map(ding)).
-- Welke bloem komt er daarna?
-- We kijken samen naar elk plaatje.
-- Dat zijn allebei $soortNaam[soortVan(a)].
-- Zoek twee plaatjes met hetzelfde soort ding.
-- En deze twee zijn allebei $soortNaam[soortVan(laatste[0])].
+- Zo gaat het door in de hele bak.
+- Ik kijk met je mee naar elk plaatje.
+- Deze 2 horen bij elkaar. Dat zijn allebei $soortNaam[eerste.soort].
+- Ik kijk met je mee naar de plaatjes die nog over zijn.
+- Zoek 2 plaatjes met hetzelfde soort ding.
+- En deze 2 zijn allebei $soortNaam[soortVan(laatste[0])].
 - Alles ligt weer soort bij soort.
 
 ## begin (3)
@@ -229,7 +228,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Stel je voor: je staat op een stoel en kijkt naar beneden.
 - Dan zie je alleen de bovenkant van elk torentje.
-- Welke kleur heeft het bovenste blok van elk torentje?
+- Kijk naar de kleur van het bovenste blok van elk torentje.
 
 ## boom (4)
 
@@ -238,27 +237,23 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Sleep elk stukje naar zijn eigen plek.
 - Op de goede plek klikt het vast.
 
-## br (6)
+## br (4)
 
-- Ja! $aantal(a, "tennisbal", KA) en $aantal(b, "tennisbal", KB).
-- $g(tot) kun je splitsen in $g(a, KA) en $g(b, KB).
 - Tel de ballen in dit bakje.
 - Tel nu de ballen in dat bakje.
-- Hoeveel zijn het samen?
-- Zoek het huisje met die drie getallen.
+- Samen zijn dat alle ballen.
+- Kijk welke getallen je hebt geteld. Zoek het huisje waar die getallen in staan.
 
 ## bron (4)
 
-- We verdelen de $NAAM[vw][1] één voor één.
-- Elk bakje krijgt er steeds één bij.
+- We verdelen de $NAAM[vw][1] 1 voor 1.
+- Elk bakje krijgt er steeds 1 bij.
 - Alles is verdeeld.
-- Tel wat er in één bakje ligt.
+- Tel wat er in 1 bakje ligt.
 
-## deco (17)
+## deco (15)
 
-- Ja! $g(a, "paars") + $g(b, "oranje") = $g(s, pzTegelKleur(keuzes, s)).
-- Ja! $gv(a, vw) − $gb(b, vw) = $gv(s, vw).
-- Eerst waren er $aantal(a, vw).
+- In het begin zijn er $aantal(a, vw).
 - Er $b === 1 ? "gaat" : "gaan" er $gb(b, vw) weg.
 - Die telt niet meer mee.
 - Die tellen niet meer mee.
@@ -266,7 +261,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zijn er nog $gv(s, vw).
 - Een plus: er komt bij.
 - Een min: er gaat af.
-- $g(8, "paars") + $g(5, "oranje") = $g(13, "wit").
+- $g(8) + $g(5) = $g(13).
 - De letters zeggen: naast de oude raket!
 - Daar staat een kist.
 - De sleutel past!
@@ -279,23 +274,20 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De stip ligt $goed.
 - $Hoofd(wie) ligt $goed.
 - Kijk waar $wie ligt.
-- Ligt dat bovenaan, onderaan of in het midden?
-- En aan welke kant: links of rechts?
+- Kijk eerst of het bovenaan, onderaan of in het midden ligt.
+- Kijk daarna aan welke kant het ligt: links of rechts.
 
-## doos (12)
+## doos (9)
 
-- $g(10) kun je splitsen in $g(zicht, KA) en $g(rest, KB).
 - Deze $aantal(zicht, "pingpongbal", KA) kun je zien.
-- In de doos passen er $g(10): twee rijen van $g(5).
+- In de doos passen er $g(10): 2 rijen van $g(5).
 - Ik til de doek even op.
 - Kijk naar de oranje pingpongbal die eronder ligt.
 - Tel de oranje pingpongballen die eronder liggen.
-- Ja! $g(t) is $g(d, KA) en $g(t - d, KB).
 - Kijk naar dit huisje.
 - Bovenaan staat $g(tot).
 - Aan de ene kant staat $g(deel, KA).
-- Hoeveel ballen horen er aan de andere kant?
-- Zoek die ballen.
+- Aan de andere kant staat het deel dat nog mist.
 
 ## feesthoedje (2)
 
@@ -373,11 +365,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Morgen is de dag erna.
 - Gisteren is de dag ervoor.
 
-## gr (1)
-
-- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
-
-## groen (22)
+## groen (21)
 
 - Als eerste betekent: vóór alle anderen.
 - Luister nog eens goed naar het verhaal.
@@ -392,7 +380,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst is het ochtend.
 - Dan is het middag.
 - Dan is het avond.
-- En wat komt daarna?
 - Dan komt er iets.
 - En dan is het avond.
 - Daarna is het nacht.
@@ -412,7 +399,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk naar de vlakken die tegenover elkaar liggen.
 - Hier $kw(rond[i]!), en daar ook $kw(rond[(i + 3) % 6]!).
 - Tegenover elkaar staat dezelfde kleur.
-- Welke kleur ligt er tegenover het lege vlak?
+- Kijk nu naar het vlak tegenover het lege vlak.
 
 ## intro-instellingen (42)
 
@@ -487,51 +474,47 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu weet je hoe alles werkt.
 - Je hebt het helemaal goed gedaan.
 
-## k (20)
+## k (18)
 
-- $g(tot) kun je splitsen in $g(eerst) en $g(dan).
 - Kijk: een briefje van $g(10) euro.
-- En munten van één euro.
+- En munten van 1 euro.
 - Samen is dat $g(tot) euro.
-- Hoeveel munten zijn er bij de 10? Tel ze maar.
-- $g(tot) kun je splitsen in $g(a) en $g(b).
-- $g(tot) = $g(a) + $g(b).
-- Bovenaan staat $g(tot).
-- Dat getal komt vooraan in de som.
+- Het briefje is al $g(10) euro. Tel de munten erbij.
+- $g(tot) kun je splitsen in $g(eerst) en $g(dan).
+- Boven in het huisje staat $g(tot).
+- Dit getal schrijf je aan het begin van de som.
 - Onder staan $g(a) en $g(b).
-- Die komen erachter, met een plus ertussen.
-- Zoek de som met die drie getallen.
-- Ja! Elk bakje krijgt $aantal(m, vw).
-- $herhaal(m, k) = $g(n).
-- We verdelen de $NAAM[s.vw ?? "knikker"][1] één voor één.
-- Elk bakje krijgt er steeds één bij.
-- Ja! Elk bakje krijgt evenveel $NAAM[vw][1].
-- $somBakjes(eerlijk) = $g(n).
-- Alles is verdeeld.
-- Tel wat er in één bakje ligt.
-
-## k1 (15)
-
-- $g(tot) kun je splitsen in $g(10) en $g(tien).
-- En ook in $g(tien) en $g(10).
-- Zoek de getallen $g(10) en $g(tien).
-- Het mag links of rechts.
+- Die 2 getallen tel je bij elkaar op. Samen zijn ze evenveel als het getal bovenaan.
+- Zoek de som met die 3 getallen.
 - $g(tot) = $g(a) + $g(b).
-- En $g(tot) = $g(b) + $g(a).
-- Bovenaan staat $g(tot).
-- Dat getal komt vooraan in de som.
+- Elk bakje krijgt $aantal(m, vw).
+- $herhaal(m, k) = $g(n).
+- We verdelen de $NAAM[s.vw ?? "knikker"][1] 1 voor 1.
+- Elk bakje krijgt er steeds 1 bij.
+- Alles is verdeeld.
+- Tel wat er in 1 bakje ligt.
+- $somBakjes(eerlijk) = $g(n).
+
+## k1 (13)
+
+- De getallen $g(10) en $g(tien) passen.
+- Het mag links of rechts.
+- $g(tot) kun je splitsen in $g(tegels[paar[0]]) en $g(tegels[paar[1]]).
+- Het dak van het huisje zegt $g(tot).
+- Met dit getal begint elke som.
 - Onder staan $g(a) en $g(b).
 - Die mogen in allebei de volgordes.
-- Ja! $g(tt) = $g(aa) + $g(bb).
+- $g(tot) = $g(a) + $g(b).
+- En $g(tot) = $g(b) + $g(a).
 - Kijk naar dit huisje.
 - Er staan $g(t), $g(a) en $g(b) in.
-- Maak met die drie getallen een som.
-- Zoek die som.
+- Met die 3 getallen maak je 1 som.
+- Zo hoort het: $g(tt) = $g(aa) + $g(bb).
 
 ## kers (2)
 
 - Bij versieren doe je veel: room, fruit, en nog meer.
-- Een kers leg je er in één keer op.
+- Een kers leg je er in 1 keer op.
 
 ## keuken (2)
 
@@ -777,9 +760,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 ## leeg (4)
 
 - Kijk: de vorm draait steeds een stukje verder.
-- Deze twee zijn hetzelfde.
-- Na vier keer draaien begint het opnieuw.
-- Welke kwam er na de eerste?
+- Deze 2 zijn hetzelfde.
+- Na 4 keer draaien begint het opnieuw.
+- Kijk nu naar wat er na de eerste komt.
 
 ## letters (3)
 
@@ -791,8 +774,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Een minuut is heel kort.
 - Wat is in zo'n korte tijd klaar?
-- Een middag is een stuk van één dag.
-- Een week is zeven dagen.
+- Een middag is een stuk van 1 dag.
+- Een week is 7 dagen.
 
 ## m (14)
 
@@ -860,12 +843,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Goed bezig.
 - Nu de volgende.
 - Je kunt plussommen over de 10 maken.
-- $g(10) kun je splitsen in $g(zicht, KA) en $g(rest, KB).
 - Deze $aantal(zicht, "pingpongbal", KA) kun je zien.
-- In de doos passen er $g(10): twee rijen van $g(5).
+- In de doos passen er $g(10): 2 rijen van $g(5).
 - Ik til de doek even op.
 - Kijk naar de oranje pingpongbal die eronder ligt.
 - Tel de oranje pingpongballen die eronder liggen.
+- $g(10) kun je splitsen in $g(zicht, KA) en $g(rest, KB).
 
 ## optellen-100-aanvullen-tot-tiental (1)
 
@@ -1106,38 +1089,34 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je zette $a en $b achter elkaar.
 - Denk aan dubbel $k.
 
-## pijl (30)
+## pijl (26)
 
 - Kijk wat er vóór de pijl staat.
-- Wat komt daarna in het patroon?
 - Kijk naar de laatste vorm.
-- Wat komt er daarna?
 - Kijk, ik laat zien waar dit stukje hoort.
-- De puzzel is af.
 - Kijk naar de rijtjes van boven naar beneden.
 - Hier staan $kw(boven[0][0]) en $kw(boven[1][0]).
-- Elke kleur komt in elk rijtje één keer voor.
-- Welke kleur mist hier nog?
-- Kijk zo ook naar de andere rijtjes.
+- Elke kleur mag 1 keer in dit rijtje staan.
+- Zoek de kleur die er nog niet staat.
+- Doe dat ook bij de andere rijtjes. Zo vind je de kleuren voor de lege plekken.
 - Kijk naar de hoeken.
 - Hier $kw(rooster[0][0]!), en daar ook $kw(rooster[2][2]!).
 - Tegenover elkaar staat dezelfde kleur.
-- Welke kleur staat er tegenover de lege plek?
+- Kijk nu naar de hoek tegenover de lege plek.
 - Kijk naar de bovenste rij: $namen(eenheid.map(ding)).
 - In de volgende rij komt hetzelfde terug.
 - Maar de rij begint ergens anders.
 - Kijk naar de plek bij de pijl.
 - Ga in het patroon verder vanaf het laatste ding dat er al ligt.
-- Wat komt er in het patroon na het laatste ding?
+- Zoek het ding dat in het patroon na het laatste ding komt.
 - Kijk naar de bovenste rij: $namen(eenheid.map(kw)).
 - In elke rij komen de kleuren in dezelfde volgorde.
-- Alleen schuift alles één plekje op.
+- Alleen schuift alles 1 plekje op.
 - In de onderste rij staat $namen(rooster[laatste].slice(0, gevuld).map((k) => kw(k!))).
 - Kijk naar het eerste rijtje, van boven naar beneden.
 - $Hoofd(namen(rooster.map((r) => kw(r[0]!)))).
 - De kleuren komen steeds in dezelfde volgorde.
 - Onder de pijl staat $namen(rooster.slice(1).map((r) => kw(r[pijlKol]!))).
-- Welke kleur komt er in de volgorde vóór $kw(rooster[1][pijlKol]!)?
 
 ## proef-fruit-glow (1)
 
@@ -1151,17 +1130,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - Kijk eens naar al dat fruit! Hoeveel stuks zie je? Kun je dit al?
 
-## r (9)
+## r (8)
 
-- Ja! $aantal(a, "tennisbal", KA) en $aantal(b, "tennisbal", KB).
-- $g(tot) kun je splitsen in $g(a, KA) en $g(b, KB).
 - Tel de ballen in dit vak.
 - Tel nu de ballen in dat vak.
-- Hoeveel zijn het samen?
-- Zoek het huisje met die drie getallen.
+- Samen zijn dat alle ballen.
+- Kijk welke getallen je hebt geteld. Zoek het huisje waar die getallen in staan.
+- $g(tot) kun je splitsen in $g(a, KA) en $g(b, KB).
+- Kijk naar dit huisje: $g(paren[h][0]) is $g(paren[h][1], KA) en nog een deel.
+- Tel de ballen in elk leeg stuk.
 - $g(t) is $g(d, KA) en $g(t - d, KB).
-- Kijk naar dit huisje: $g(paren[h][0]) is $g(paren[h][1], KA) en nog hoeveel?
-- Tel de ballen in elk lege stuk.
 
 ## rechts (60)
 
@@ -1226,7 +1204,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Weer allemaal goed!
 - En je was sneller dan eerst.
 
-## rekenen (22)
+## rekenen (24)
 
 - De kring is het eerste plaatje, helemaal links.
 - Het plaatje daarnaast komt erna.
@@ -1240,30 +1218,31 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op een feestkalender staan feestdagen.
 - Het woord feest staat in het rood.
 - Elk vakje is een dag.
-- Van het ene vakje naar het volgende is één nachtje slapen.
-- Begin bij het rode vak.
-- Elk boogje is één nachtje.
-- Tel de boogjes tot het feesthoedje.
+- Van het ene vakje naar het volgende is 1 nachtje slapen.
+- We starten bij het rode vak.
+- Elk boogje is 1 nachtje slapen.
+- Tel elk boogje tot je bij het feesthoedje bent.
 - Vandaag is het rode vak: 9 juni.
 - Morgen is het vakje erna, rechts ernaast.
 - Stel je voor: het rode vak is 12 juni.
 - Het feesthoedje staat in het vakje ernaast.
-- Hoeveel nachtjes slapen is dat?
+- Het rode vak is vandaag.
+- Tel bij elk boogje 1 nachtje erbij, tot het feesthoedje.
 - Vandaag is het rode vak: 10 juni.
+- Loop boogje voor boogje naar het feesthoedje.
 
-## sl (11)
+## sl (10)
 
-- $g(tot) kun je splitsen in $g(a, KA) en $g(rest, KB).
 - Hier $a === 1 ? "is" : "zijn" $aantal(a, "voetbalshirt", KA).
-- Bovenaan staat $g(tot).
+- In de paal staat $g(tot) bovenaan.
 - Tel verder vanaf $g(a, KA) tot $g(tot).
 - Dat mag op je vingers.
-- Hoeveel heb je erbij geteld?
+- Zo weet je hoeveel erbij komt.
 - Let op: het moeten shirts zijn.
 - Kijk: een staaf van $g(tot) blokjes.
 - Eronder $deel === 1 ? "ligt" : "liggen" $g(deel, KA) paarse $deel === 1 ? "blokje" : "blokjes".
-- Blijft er nog iets over?
-- Hoeveel blokjes blijven er over? Tel ze maar.
+- Kijk of er nog iets overblijft.
+- Kijk hoeveel blokjes er over zijn. Tel ze maar.
 
 ## slapen (7)
 
@@ -1277,50 +1256,46 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## slot (4)
 
-- Een sleutel draai je in één keer om.
+- Een sleutel draai je in 1 keer om.
 - Bij vegen moet je overal langs.
 - Bij een rondleiding loop je overal langs.
 - Een broodje krijgen is zo gebeurd.
 
-## som-i (5)
+## som-i (4)
 
-- Ja! Hier liggen $aantal(doel, "goudstuk").
 - Ik leg de goudstukken één voor één in het vak.
 - Tel maar mee.
-- Kijk: rijen van vijf.
+- Kijk: rijen van 5.
 - Samen zijn het er $gv(doel, "goudstuk").
 
-## som-u (12)
+## som-u (13)
 
-- $g(a, "paars") is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
-- $g(b, "oranje") is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
+- $g(a, kleur ? "paars" : "wit") is $g(a / 10) $a === 10 ? "tiental" : "tientallen".
+- $g(b, kleur ? "oranje" : "wit") is $g(b / 10) $b === 10 ? "tiental" : "tientallen".
 - Hoeveel tientallen zijn het samen?
-- Begin bij $g(groot, kg).
+- Neem eerst $g(groot, kg).
 - Eerst maak je $g(10): $g(groot, kg) + $g(10 - groot) = $g(10).
 - Van de $g(klein, kk) $klein - (10 - groot) === 1 ? "is" : "zijn" er dan nog $g(klein - (10 - groot)) over.
 - $g(10) en nog $g(klein - (10 - groot)): hoeveel is dat?
 - $g(groot, kg) is $g(10) en $g(e).
 - Reken eerst $g(e) + $g(klein, kk).
 - Dan komt de $g(10) er nog bij.
-- Tel dan $g(klein, kk) verder.
+- Het grootste getal is $g(groot, kg).
+- Tel daar $g(klein, kk) bij, stap voor stap.
 - Dat mag op je vingers.
 
-## squla-dagen (gedeeld) (52)
+## squla-dagen (gedeeld) (44)
 
-- $Naam(x)? Niet helemaal.
-- $Naam(y)? Niet helemaal.
-- We doen het samen, stap voor stap.
-- $Naam(z)? Niet helemaal.
-- $Naam(z)? Dat is het nog niet.
 - We lopen samen langs de wagons.
 - $Naam(i).
 - $Naam(d) is de $DAGEN[d].bijvoeglijk wagon.
-- Kijk naar de hele trein.
-- Zondag is de laatste wagon.
-- Daarna begint een nieuwe week.
+- Zoek $naam(d) in de weektrein.
+- Zondag is de laatste wagon van de trein.
+- Dan begint de week weer van voren af aan.
 - Die begint weer bij de eerste wagon.
 - Hier is $naam(d).
 - Na $naam(d) komt de wagon erachter.
+- Kijk waar $naam(d) in de trein staat.
 - Maandag is de eerste wagon.
 - Daarvoor was de vorige week.
 - Die eindigde met de laatste wagon.
@@ -1336,92 +1311,103 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Erachter staat $naam(na(d)).
 - Welke dag zit daartussen?
 - De gele pijl staat bij $naam(vandaag).
-- Dat is vandaag.
-- Gisteren is de dag ervoor.
+- Daar is het nu.
+- Gisteren staat 1 wagon terug van de pijl.
 - Morgen is de dag erna.
+- Zoek maandag in de trein.
 - Vandaag is maandag.
+- Gisteren is de dag voor vandaag.
 - Dat is de laatste dag van de vorige week.
 - Kijk naar het eind van de trein.
-- Het weekend zijn de laatste twee dagen.
+- De laatste 2 dagen van de week zijn het weekend.
 - Het zijn de paarse en de roze wagon.
 - $Naam(eerste) hoort al bij het weekend.
-- Het weekend heeft twee dagen.
+- Het weekend heeft 2 dagen.
 - Ze staan naast elkaar, aan het eind van de trein.
-- Kijk, daar komt de weektrein.
-- Elke wagon is een dag van de week.
-- Samen zijn dat de 7 dagen van de week.
-- Ze staan altijd in deze volgorde.
-- Kun je dit al?
-- Ik leg het kort uit.
-- De week begint met maandag.
-- De week eindigt met zondag.
-- Daarna begint de week weer opnieuw.
-- Zaterdag en zondag zijn het weekend.
-- Dan is er geen school.
-- Nu jij!
+- $opening.zin1 $opening.zin2
+- We bekijken de weektrein samen. Elke wagon is 1 dag.
+- $Naam(d).
+- De week begint op maandag.
+- Zaterdag en zondag vormen samen het weekend.
+- Nu mag je de gevraagde dagen op de trein zoeken.
 
-## squla-dagen-van-de-week (1)
+## squla-dagen-van-de-week (4)
 
 - Je kent de dagen van de week.
+- Tik op de weektrein de dag aan die ervoor of erna komt en zoek de dagen van het weekend. Lukt het je om de juiste dag aan te wijzen?
+- Kijk naar de trein. Daar staan de dagen van de week op de wagons.
+- Maandag is de eerste dag van de week.
+
+## squla-geld (begeleide uitleg) (3)
+
+- Is dit een munt of een briefje?
+- Een munt is rond. Een briefje heeft de vorm van een rechthoek.
+- Ja, dit is een munt. Hij is rond en gemaakt van metaal.
 
 ## squla-geld (gedeeld) (10)
 
-- Nu komen er nog drie vragen van net terug.
+- Nu komen er nog 3 vragen van net terug.
 - $e(tot).
 - Hier ligt $e(tot) euro.
 - Dit zijn $k.zeg ?? "geen munten".
 - Daar kun je niet mee betalen.
-- We tellen elk groepje geld.
+- Tel de euro's in elk groepje. Zo zie je hoeveel geld er ligt.
 - Kijk, dit is er een.
 - We tellen eerst het geld links.
 - Nu het geld rechts.
 - Wat hoort bij elkaar?
 
-## squla-geld-geld-1 (1)
+## squla-geld-geld-1 (2)
 
-- Twee groepjes geld en twee bedragen. Welk bedrag hoort bij welk geld? Kun je dit al?
+- 2 groepjes geld en 2 bedragen. Welk bedrag hoort bij welk geld? Kun je dit al?
+- Tel de munten en briefjes en verbind elk groepje geld met het juiste bedrag. Wil je het geld zonder uitleg bij de bedragen zoeken?
 
-## squla-geld-geld-2 (1)
+## squla-geld-geld-2 (2)
 
 - Nu tellen we geld tot $e(20) euro. Waar ligt $e(12) euro? Kun je dit al?
+- Tel verschillende munten en briefjes bij elkaar, tot 20 euro. Tel je al geldbedragen tot 20 euro?
 
-## squla-geld-geldmachine-1 (16)
+## squla-geld-geldmachine-1 (20)
 
+- Dit is 1 euro. Kijk naar de 1 en het woord euro. Een munt is rond.
 - Dit is een munt van $e(1) euro.
 - Een munt is rond.
 - Er staat een $e(1) op. Zo weet je hoeveel hij waard is.
 - Hij is zilver in het midden, met een gouden rand.
 - Een briefje is van papier. Dat is geen munt.
-- De vlieger kost $e(7) euro.
-- De bal kost $e(5) euro.
+- Eerst de vlieger: $e(7) euro.
+- Dan de bal: $e(5) euro.
 - Tel verder vanaf $e(7): $e(8), $e(9), $e(10), $e(11), $e(12).
 - Is dat meer dan $e(9) euro, of minder?
 - Het autootje kost $e(4) euro.
 - Het springtouw kost $e(3) euro.
-- Tel verder vanaf $e(4): $e(5), $e(6), en nog één.
+- Tel $e(3) verder vanaf $e(4): $e(5), $e(6), en nog 1.
 - Nu tellen we elk groepje geld.
-- Tel verder vanaf $e(5): $e(6), $e(7), $e(8), $e(9).
+- Eerst de bal: $e(5) euro.
+- Dan het autootje: $e(4) euro.
+- Tel $e(4) verder vanaf $e(5): $e(6), $e(7), $e(8), $e(9).
 - Heb je genoeg met $e(9) euro?
 - Kijk, een munt van $e(1) euro. Vandaag leer je munten en briefjes herkennen. Kun je dit al?
+- In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld en kiest het juiste bedrag. Weet jij al hoe je dat doet?
 
-## squla-geld-geldmachine-2 (1)
+## squla-geld-geldmachine-2 (2)
 
 - In de speelgoedwinkel kost het springtouw $e(3) euro. Waar ligt $e(3) euro? Kun je dit al?
+- In de speelgoedwinkel tel je munten en briefjes om het juiste bedrag te vinden. Weet je hoe je met munten en briefjes het juiste bedrag maakt?
 
 ## squla-geld-zakgeld-1 (22)
 
 - Voor het vegen krijg je $e(1) euro.
 - Voor de planten krijg je ook $e(1) euro.
-- Hoeveel is dat bij elkaar?
 - Dan tel je het geld samen.
 - Bij elkaar is dat $e(2) euro.
 - Kijk naar de kraam.
 - Hier worden spullen verkocht.
 - Die spullen zijn te koop.
 - Je betaalt met munten en briefjes.
-- De bal kost $e(4) euro.
-- Het boek kost $e(5) euro.
-- Begin bij $e(5) en tel vier verder.
+- Voor de bal betaal je $e(4) euro.
+- Het boek is $e(5) euro.
+- Vanaf $e(5) tel je 4 verder.
 - Dit geld is weg. Dat tellen we niet.
 - Dit geld heb je nog.
 - Tel het maar.
@@ -1432,15 +1418,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel stapjes waren dat?
 - Tel nu verder met de andere munt.
 - Voor elk klusje krijg je $e(2) euro. Hoeveel is dat bij elkaar? Kun je dit al?
+- Bij het sparen tel je munten en briefjes bij elkaar en zoek je hoeveel geld er nog bij moet. Lukt het je om geld bij elkaar te tellen?
 
-## squla-geld-zakgeld-2 (1)
+## squla-geld-zakgeld-2 (2)
 
 - Je hebt $e(20) euro gespaard. Waar ligt $e(20) euro? Kun je dit al?
+- Bekijk het spaargeld en zoek welke munten en briefjes bij het bedrag horen. Zie je met welke munten en briefjes je het spaarbedrag kunt maken?
 
-## squla-getallenlijn (gedeeld) (98)
+## squla-getallenlijn (gedeeld) (109)
 
-- $rijtje(buren).
-- We tellen samen terug.
+- $terug ? "Terugtellen" : "Verdertellen" vanaf $w(anker): $rijtje(tot).
+- Dus op deze plek hoort $w(goed).
+- Ik tel terug langs de $plekMv.
+- Ik tel langs de $plekMv, van links naar rechts.
 - $w(waarde(i)).
 - Welk getal komt na $w(voor), als je terugtelt?
 - Welk getal komt na $w(voor)?
@@ -1452,41 +1442,47 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Precies in het midden.
 - Welk getal hoort bij het streepje van $wat.toLowerCase()?
 - Kijk, hier staat $w(L).
-- We tellen de streepjes verder.
+- Tel bij elk streepje 1 verder.
 - We tellen de streepjes terug.
 - $Telwoord(k).
-- $wat $ww $TELWOORD[Math.abs(d)] $Math.abs(d) === 1 ? "streepje" : "streepjes" $d > 0 ? "na" : "voor" de $w(L).
+- $wat $ww $Math.abs(d) $Math.abs(d) === 1 ? "streepje" : "streepjes" $d > 0 ? "na" : "voor" de $w(L).
 - Het vlaggetje staat bij $w(v.n).
+- $rijtje(alles).
+- Van $w(alles[0]) tot $w(alles[alles.length - 1]) wordt het steeds groter.
 - Sleep een kaart naar een vak.
 - Of tik op een kaart.
-- $rijtje(alles).
-- Kijk naar alle getallen.
-- Ze komen in de telrij na elkaar.
+- Ik kijk naar de $alles.length getallen.
+- Ze volgen elkaar op: elk getal is 1 meer dan het getal ervoor.
 - Elk getal is $w(stap) meer dan het getal ervoor.
 - Vooraan staat al $w(v.vakken[0]!).
 - Welk getal komt daarna?
 - In het $RANG[vast] vak staat al $w(v.vakken[vast]!).
-- Dit is het kleinste getal.
+- $w(kleinste) is het kleinste getal.
 - Dat komt helemaal vooraan.
 - $w(goed) is groter dan $w(a) en kleiner dan $w(b).
-- Kijk op de getallenlijn.
-- Het getal ligt tussen $w(a) en $w(b).
+- Ik zet $w(a) en $w(b) op de getallenlijn.
+- Het getal ligt ertussen.
 - $w(o) is kleiner dan $w(a).
 - $w(o) is groter dan $w(b).
 - Welk getal ligt ertussen?
+- Na $w(o.n - 1) komt $w(o.n).
 - Het raketje staat bij $w(o.n).
-- We tellen samen langs de lijn.
+- Ik loop langs de streepjes tot vlak voor het raketje.
 - En na $w(o.n - 1) staat het raketje.
 - Na 10 komt 11.
-- Het raketje staat één streepje verder.
-- Welk getal komt na 10?
+- Ik tel de laatste streepjes van de lijn.
+- Het raketje staat 1 streepje verder.
+- $w(groot) komt later dan $w(klein).
 - $w(groot) is meer dan $w(klein).
+- Ik zet $w(klein) en $w(groot) op de getallenlijn.
 - Hoe verder je telt, hoe meer het is.
 - Hier staat $w(klein).
 - En hier staat $w(groot).
-- Welk getal komt later?
+- Dit getal zeg je later als je telt.
 - $Naam(o.wie) staat bij $w(o.n).
-- $w(goed) ligt vlak bij $w(doel).
+- $w(goed) ligt het dichtst bij $w(doel).
+- Het is maar $Math.abs(goed - doel) verder of terug.
+- Ik zet de getallen op de getallenlijn.
 - Hier is $w(doel).
 - $w(verder[0]) ligt ver van de $w(doel).
 - $w(verder[1]) ligt ook ver van de $w(doel).
@@ -1496,126 +1492,140 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Voor $w(n) komt $w(n - 1).
 - Hier is $w(n) op de getallenlijn.
 - Het getal ervoor staat er links naast.
-- Dat is één terug.
+- Dat is 1 terug.
+- De pijl
 - De pijl wijst $w(n) aan.
-- Deze getallenlijn eindigt bij 20.
+- Het raketje staat op het laatste streepje.
+- Dat is 20.
 - De lijn begint bij 0.
 - Precies in het midden is 10.
 - Elk streepje is 5 verder.
-- Het raketje staat op het laatste streepje.
 - $w(goed) zit tussen $w(goed - 1) en $w(goed + 1).
 - Na $w(goed - 1) komt $w(goed).
+- Ik tel de getallen tot $DINGNAAM[ding].
 - $w(start + i).
 - Na $DINGNAAM[ding] staat $w(goed + 1).
 - Welk getal komt na $w(goed - 1)?
 - Na $w(a) komen $w(a + 1) en $w(a + 2).
+- De bus bedekt allebei die getallen.
 - Hier staat $w(a).
 - De bus staat erna.
-- Hij staat op twee plekken.
-- Welke twee getallen komen na $w(a)?
+- Hij staat op 2 plekken.
+- Welke 2 getallen komen na $w(a)?
 - Kijk, een lichtslinger met getallen.
-- Op één lampje staan puntjes.
+- Op 1 lampje staan puntjes.
 - $w(i + 1).
 - Na 3 komt 4.
-- Elk lampje is één verder.
+- Elk lampje is 1 verder.
 - Kijk, diamanten met getallen eronder.
-- Op één diamant staan puntjes.
+- Op 1 diamant staan puntjes.
 - Links staat 7.
 - Rechts staat 11.
-- Elke diamant is één verder.
+- Elke diamant is 1 verder.
 - 7.
 - 8.
-- Wat komt hierna?
+- Nu komt de plek met de puntjes.
 - Op de puntjes hoort 9.
 - Het raketje landt op een planeet met 8.
-- Welk getal komt ervoor?
-- Tel één terug vanaf 8.
+- We zoeken het getal ervoor.
+- Tel 1 terug vanaf 8.
 - Dat is 7.
-- Elk streepje is één verder.
+- Elk streepje is 1 verder.
 - Dus het vlaggetje staat bij $w(n).
 - Op deze getallenlijn staan niet alle streepjes.
 - Elk streepje is 2 verder.
 - 10, 12, 14.
 - Het vlaggetje staat bij 16.
 
-## squla-getallenlijn-dieren-1 (1)
+## squla-getallenlijn-dieren-1 (2)
 
-- Een ding ligt tussen twee getallen. Welk getal ligt onder de bal? Kun je dit al?
+- Een ding ligt tussen 2 getallen. Welk getal ligt onder de bal? Kun je dit al?
+- Zoek uit welk getal onder de bal verstopt zit. Denk je dat je het verstopte getal kunt vinden?
 
-## squla-getallenlijn-dieren-2 (1)
+## squla-getallenlijn-dieren-2 (2)
 
-- Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot. Kun je dit al?
+- Er liggen 3 kaarten met getallen. Zet de getallen op volgorde, van klein naar groot. Kun je dit al?
+- Sleep de getalkaartjes naar hun plek, van klein naar groot. Lukt het je om de kaartjes op volgorde te leggen?
 
-## squla-getallenlijn-dieren-3 (1)
+## squla-getallenlijn-dieren-3 (2)
 
 - Nu ligt de bal tussen $w(4) en $w(6). Welk getal ligt onder de bal? Kun je dit al?
+- Kijk naar de getallen naast de bal en kies het getal dat eronder verstopt zit. Tel je al verder langs de rij om het verstopte getal te vinden?
 
-## squla-getallenlijn-kat-1 (1)
+## squla-getallenlijn-kat-1 (2)
 
 - Het raketje vliegt over de getallenlijn. Bij welk getal staat het raketje? Kun je dit al?
+- Volg het raketje en lees af waar het op de getallenlijn staat. Weet jij hoe je afleest waar het raketje staat?
 
-## squla-getallenlijn-kat-2 (10)
+## squla-getallenlijn-kat-2 (12)
 
 - Kijk, de bal ligt op een getal.
+- Ik tel de getallen tot de bal.
 - 5.
 - Na 5 komt 6.
 - Onder de bal ligt 6.
-- Kijk, drie kaarten.
+- Kijk, 3 kaarten.
 - We zetten ze op volgorde, van klein naar groot.
 - Het kleinste getal komt vooraan: 1.
 - Dan 2.
 - En dan 3.
 - Het raketje landt op een planeet met $w(15). Welk getal komt voor $w(15)? Kun je dit al?
+- Bij het raketje zoek je welk getal ervoor of erna komt. Lukt het je om de buurgetallen te vinden?
 
-## squla-getallenlijn-rangschikken-1 (1)
+## squla-getallenlijn-rangschikken-1 (2)
 
 - Een lichtslinger heeft lampjes met getallen. Welk getal hoort op de puntjes? Kun je dit al?
+- Met de getallenlijn en rijen getallen zoek je welk getal ontbreekt. Zie je welk getal in de rij ontbreekt?
 
-## squla-getallenlijn-rangschikken-2 (1)
+## squla-getallenlijn-rangschikken-2 (2)
 
 - De diamanten hebben getallen eronder. Welk getal hoort op de puntjes? Kun je dit al?
+- Bij de diamanten zoek je de ontbrekende getallen in de rij. Lukt het je om een getallenrij af te maken?
 
-## squla-getallenlijn-rangschikken-3 (6)
+## squla-getallenlijn-rangschikken-3 (8)
 
 - Het raketje staat op de getallenlijn.
 - Het staat bij een getal.
+- Ik tel mee tot het raketje.
 - $w(k).
 - Na 2 komt 3.
 - Het raketje staat bij 3.
 - Op de getallenlijn staan niet alle getallen. Bij welk getal staat het vlaggetje? Kun je dit al?
+- Lees op de getallenlijn af bij welk getal het vlaggetje staat. Weet je hoe de streepjes op de getallenlijn werken?
 
-## squla-getallenlijn-terugtellen-1 (5)
+## squla-getallenlijn-terugtellen-1 (6)
 
-- We tellen samen terug.
+- Ik tel mee terug.
 - $w(7 - i).
 - Na 5 komt 4.
-- Terug wordt het getal steeds één minder.
+- Terug wordt het getal steeds 1 minder.
 - De raket telt af, van groot naar klein. Welk getal hoort op de puntjes? Kun je dit al?
+- Bij de raket tel je terug en kies je het getal dat ontbreekt. Wil je het aftellen van de raket zonder uitleg proberen?
 
-## squla-huisnummers (gedeeld) (12)
+## squla-huisnummers (begeleide uitleg) (3)
 
-- We lopen samen terug.
-- We lopen samen langs de huizen.
-- Terug wordt het nummer steeds één minder.
-- Elk huis is één verder.
-- $w(x)? Niet helemaal.
-- Typ het nummer.
-- $w(x)? Dat is nog niet het goede nummer.
-- We doen het samen, stap voor stap.
-- $w(y)? Niet helemaal.
-- Dus na $w(5) komt $w(6).
-- We kunnen ook teruglopen.
-- Nu jij!
+- Welk huisnummer komt na 24?
+- Tel hardop tot 24. Welk nummer zeg je daarna?
+- Ja, na 24 komt 25. Het nummer wordt 1 groter.
+
+## squla-huisnummers (gedeeld) (6)
+
+- Ik loop terug langs de huizen, van rechts naar links.
+- Ik loop langs de huizen tot aan de lege plek.
+- Van $w(ijk(v)) naar het huis ervoor is het 1 minder.
+- Het huis na $w(v.goed - 1) is 1 verder.
+- Ik loop langs de huizen. Elk volgend nummer is 1 meer.
+- Nu ga jij ontbrekende huisnummers zoeken.
 
 ## squla-huisnummers (7)
 
-- Kijk, een straat met huizen.
-- Elk huis heeft een nummer.
-- Welk nummer komt erna?
-- Kun je dit al?
+- $opening.zin1 $opening.zin2
 - Super, $l.naam!
 - Super!
 - Je weet welk huisnummer erna komt.
+- In de straat zoek je het volgende huisnummer door te kiezen, te typen of te slepen. Kun je verder tellen vanaf een huisnummer?
+- Ja, na 24 komt 25. Er komt steeds 1 bij.
+- Kijk naar de nummers op de huizen. Er komt steeds 1 bij.
 
 ## squla-hulp (gedeeld) (10)
 
@@ -1624,50 +1634,58 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - We doen het samen, stap voor stap.
 - $v.noem(z)? Niet helemaal.
 - $v.noem(z)? Dat is het nog niet.
+- Nu ga je verder met oefenen.
 - Ik leg het kort uit.
 - Nu jij!
 - Alles goed, $naam!
 - Goed gewerkt, $naam!
-- Kijk eens naar de klok! Weet jij hoe laat het is? Kun je dit al?
 
-## squla-klok (gedeeld) (47)
+## squla-klok (begeleide uitleg) (6)
+
+- Naar welk getal wijst de kleine wijzer?
+- Volg de kleine wijzer vanaf het midden tot aan de punt.
+- Ja, de kleine wijzer wijst naar de 3.
+- Hoe laat is het dus?
+- De grote wijzer staat op de 12. De kleine wijzer wijst het uur aan.
+- Dat klopt: 3 uur. De kleine wijzer wijst naar de 3 en de grote wijzer staat op de 12.
+
+## squla-klok (gedeeld) (46)
 
 - Bij een heel uur staat de grote wijzer op de 12.
-- De kleine wijzer wijst het uur aan.
+- Kijk waar de kleine wijzer naartoe wijst. Dat getal vertelt welk uur het is.
 - Bij half staat de grote wijzer op de 6.
-- De kleine wijzer staat dan tussen twee getallen.
+- De kleine wijzer staat dan tussen 2 getallen.
 - Bij bijna half staat de grote wijzer net vóór de 6.
 - Kijk dan naar de kleine wijzer.
 - Kijk naar allebei de wijzers.
 - Staat de grote wijzer op de 12? Dan is het een heel uur.
 - Staat hij op de 6? Dan is het half.
-- Welke klok hoort erbij?
+- Zoek nu de klok waarop de wijzers zo staan.
 - Kijk nu naar de kleine wijzer.
 - De kleine wijzer staat tussen de $t.u:oranje en de $na(t):oranje.
-- Bij half noem je het getal waar hij naartoe gaat.
-- Klopt $spreek(gezegd)?
-- Klopt het, dan is het goed.
-- Klopt het niet, dan is het fout.
+- Kijk naar het volgende getal. Bij half zeg je dat getal, ook al is de kleine wijzer er nog niet.
+- Vergelijk de klok met $spreek(gezegd).
+- Kies goed als de tijd klopt. Kies fout als de klok een andere tijd laat zien.
 - Tel van $van:oranje uur verder tot $tot:oranje uur.
-- Hoeveel uur is dat?
 - Naar welk getal wijst de kleine wijzer?
 - Kijk naar de klokken die nog los liggen.
 - Welke komt een half uur na de eerste?
-- Over een uur draait de grote wijzer een heel rondje.
+- Over 1 uur draait de grote wijzer een heel rondje.
 - Dan staat hij weer op dezelfde plek.
-- De kleine wijzer schuift één getal verder.
+- De kleine wijzer schuift 1 getal verder.
 - Over een half uur draait de grote wijzer een half rondje.
 - Van de 12 naar de 6.
 - Van de 6 naar de 12.
 - De kleine wijzer schuift een klein stukje verder.
-- Een uur geleden stond de grote wijzer op dezelfde plek.
-- De kleine wijzer stond één getal terug.
+- 1 uur geleden stond de grote wijzer op dezelfde plek.
+- De kleine wijzer stond 1 getal terug.
 - Zoek die klok.
 - Tel steeds een half uur verder.
 - $Hoofd(rij.join(", ")).
-- Welke van de twee komt het laatst?
-- Nu komt er nog één vraag van net terug.
-- Nu komen er nog $terug.length === 2 ? "twee" : "drie" vragen van net terug.
+- Nu komt er nog 1 vraag van net terug.
+- Nu komen er nog $terug.length vragen van net terug.
+- We bekijken de wijzers 1 voor 1. De grote wijzer staat op de 12. Dan is het een heel uur.
+- De kleine wijzer vertelt welk uur het is.
 - De korte wijzer is de kleine wijzer.
 - Die wijst het uur aan.
 - Hier wijst hij naar de 3.
@@ -1675,180 +1693,203 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De kleine wijzer staat tussen de 4 en de 5.
 - Hij is al halverwege naar de 5.
 - Daarom heet het half 5.
-- Een uur later is de kleine wijzer één getal verder.
+- 1 uur later is de kleine wijzer 1 getal verder.
 - Dan is het 3 uur.
 - Nog een half uur later draait de grote wijzer een half rondje.
 - Dan is het half 4.
 
-## squla-klok-digitaal-1 (4)
+## squla-klok-digitaal-1 (5)
 
 - Een klok met wijzers is rond.
-- Er staan getallen op, en er zijn twee wijzers.
-- Waar zie je een rondje met twee wijzers?
-- Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok? Kun je dit al?
+- Er staan getallen op, en er zijn 2 wijzers.
+- Waar zie je een rondje met 2 wijzers?
+- Een klok heeft 2 wijzers en getallen. Waar zie je nog meer zo'n klok? Kun je dit al?
+- Je bekijkt de wijzers en getallen van de klok en zoekt welke tijd erbij hoort. Ken je de wijzers van de klok al?
 
-## squla-klok-digitaal-2 (3)
+## squla-klok-digitaal-2 (4)
 
-- De klok zegt niet hoeveel broodjes er zijn.
-- De klok zegt hoe laat het is.
+- Je telt hier geen broodjes.
+- Je leest af hoe laat het is.
 - De bakkerij gaat op een vaste tijd open. Op welke klok is het zover? Kun je dit al?
+- Bij de bakkerij zoek je de klok die de gevraagde tijd aangeeft. Herken je de klok die bij de genoemde tijd hoort?
 
-## squla-klok-hoelaat-1 (1)
+## squla-klok-hoelaat-1 (2)
 
-- De bezorgbus rijdt de hele dag langs de winkels. Kijk steeds op de klok: hoe laat is het? Kun je dit al?
+- Op de klok lees je de hele uren af en kies je hoe laat het is. Kun je dit al?
+- Kijk naar de wijzers van de klok en lees af welk heel uur het is. Kun je de hele uren al aflezen?
 
-## squla-klok-hoelaat-2 (1)
+## squla-klok-hoelaat-2 (2)
 
 - In de bakkerij gaat de oven vroeg aan. Hoe laat is het op de klok? Kun je dit al?
+- Lees op de klokken af hoe laat het in de bakkerij is. Lukt het je al om de klok af te lezen?
 
-## squla-klok-hoelaat-3 (5)
+## squla-klok-hoelaat-3 (6)
 
 - De maan zie je meestal 's avonds en 's nachts.
 - De zon zie je overdag.
 - Een bus rijdt rond.
 - In de bakkerij staat de oven.
 - De bezorgbus rijdt de laatste ronde van de dag. Lees de klok: hoe laat is het nu? Kun je dit al?
+- Tijdens de bezorgronde lees je de tijden op de klok af. Weet jij hoe de wijzers vertellen hoe laat het is?
 
-## squla-klok-klokkijken-1 (1)
+## squla-klok-klokkijken-1 (2)
 
 - Ik zeg hoe laat het is. Klopt dat met de klok? Kun je dit al?
+- Luister naar de tijd en controleer of die bij de klok past. Weet je wanneer de klok de juiste tijd aangeeft?
 
-## squla-klok-klokkijken-2 (1)
+## squla-klok-klokkijken-2 (2)
 
-- Er staan twee klokken. Op welke klok is het 2 uur? Kun je dit al?
+- Er staan 2 klokken. Op welke klok is het 2 uur? Kun je dit al?
+- Vergelijk 2 klokken en zoek de klok met de gevraagde tijd. Lukt het je om 2 klokken te vergelijken?
 
-## squla-klok-klokkijken-3 (1)
+## squla-klok-klokkijken-3 (2)
 
 - De kleine wijzer vertelt het uur. Hoe laat is het op deze klok? Kun je dit al?
+- Kijk naar de kleine wijzer en lees af welk uur de klok aangeeft. Lees je het uur al af aan de kleine wijzer?
 
-## squla-klok-klokkijken1-1 (1)
+## squla-klok-klokkijken1-1 (2)
 
 - Je vergelijkt klokken met elkaar. Op welke klok is het 11 uur? Kun je dit al?
+- Bekijk de klokken en zoek de juiste stand van de wijzers. Herken je de juiste stand van de wijzers al?
 
-## squla-klok-klokkijken1-2 (1)
+## squla-klok-klokkijken1-2 (2)
 
 - Soms klopt de tijd bij de klok, soms niet. Kijk goed naar de kleine wijzer. Kun je dit al?
+- Controleer of de genoemde tijd klopt met de wijzers op de klok. Wil je zonder uitleg controleren of de tijd klopt?
 
-## squla-klok-klokkijken1-3 (1)
+## squla-klok-klokkijken1-3 (2)
 
 - Sommige klokken lijken op elkaar. Op welke klok is het 11 uur? Kun je dit al?
+- Vergelijk klokken die op elkaar lijken en vind de gevraagde tijd. Zie je de verschillen tussen de klokken al?
 
-## squla-klok-klokkijken2-1 (1)
+## squla-klok-klokkijken2-1 (2)
 
 - Een klok en een tijd horen bij elkaar. Welke klok hoort bij 9 uur? Kun je dit al?
+- Je zoekt de klok die bij de tijd past en de tijd die bij de klok past. Weet je welke klok bij de tijd hoort?
 
-## squla-klok-klokkijken2-2 (1)
+## squla-klok-klokkijken2-2 (2)
 
 - Hier staat een tijd in woorden. Zoek de klok die erbij past. Kun je dit al?
+- Lees de tijd in woorden en zoek de klok die erbij hoort. Lukt het je om de klok bij de geschreven tijd te vinden?
 
-## squla-klok-klokkijken2-3 (1)
+## squla-klok-klokkijken2-3 (2)
 
 - De tijden liggen dicht bij elkaar. Welke klok hoort bij 6 uur? Kun je dit al?
+- Zoek bij de genoemde tijd de juiste klok en let goed op beide wijzers. Denk je dat je de juiste klok kunt vinden door op beide wijzers te letten?
 
-## squla-klok-klokkijken3-1 (1)
+## squla-klok-klokkijken3-1 (2)
 
 - Bij half staat de grote wijzer op de 6. Op welke klok is het half 3? Kun je dit al?
+- Lees de halve uren af en zoek de klok die bij de tijd past. Ken je de halve uren al?
 
-## squla-klok-klokkijken3-2 (1)
+## squla-klok-klokkijken3-2 (2)
 
 - We oefenen halve uren en bijna half. Welke klok hoort bij half 9? Kun je dit al?
+- Bekijk de wijzers en bepaal of het half is of bijna half. Zie je het verschil tussen half en bijna half?
 
-## squla-klok-klokkijken3-3 (1)
+## squla-klok-klokkijken3-3 (2)
 
 - Hele en halve uren staan door elkaar. Op welke klok is het 6 uur? Kun je dit al?
+- Lees de klokken af met hele en halve uren door elkaar. Wil je hele en halve uren zonder uitleg door elkaar oefenen?
 
-## squla-klok-klokkijken3-4 (1)
+## squla-klok-klokkijken3-4 (2)
 
-- De klok bij het schoolbord staat op 9 uur. Hoe laat is het over een uur? Kun je dit al?
+- De klok bij het schoolbord staat op 9 uur. Hoe laat is het over 1 uur? Kun je dit al?
+- Met de klok zoek je uit hoe laat het eerder of later is. Kun je met de klok vooruit en terug rekenen?
 
-## squla-meer-minder (gedeeld) (47)
+## squla-meer-minder (gedeeld) (45)
 
-- In elk doosje zitten er $g(6, v.k).
-- In elke rij staan er $g(per, v.k).
-- We tellen samen, rij voor rij.
+- In een vol doosje zitten $g(6, v.k) $v.naam.
+- Ik tel eerst de volle doosjes.
+- In een volle rij staan $g(per, v.k) $v.naam.
+- Zo kan ik per rij springen.
+- De rijen met $v.naam zijn niet even lang.
+- Daarom tel ik elke rij apart.
 - $g(e[r], v.k).
 - Tel jij verder vanaf $g(e[stop - 1], v.k)?
+- Ik tel de $v.naam op elke kaart.
 - Bovenaan zijn het er $g(aantallen[j], v.k).
 - Hier zijn het er $g(aantallen[j], v.k).
-- Nu zie je hoeveel het er zijn.
 - Kijk, onder elk getal staan staven.
 - Elke staaf is $w(10).
-- Bij $w(n) zie je geen staaf, alleen $w(een) losse.
-- Bij $w(n) zie je $w(tien) $staven.
-- Bij $w(n) zie je $w(tien) $staven en $w(een) losse.
-- Meer staven is meer.
-- Evenveel staven? Kijk dan naar de losse.
-- Let op, nu vraag ik iets anders.
+- Bij $w(n) zie je geen staaf, alleen $w(een) $een === 1 ? "los blokje" : "losse blokjes".
+- Bij $w(n) zie je $w(10) $staven.
+- Bij $w(n) zie je $w(10) $staven en $w(een) $een === 1 ? "los blokje" : "losse blokjes".
+- Kijk eerst waar de meeste staven staan. Daar hoort het grootste getal bij.
+- Zijn er evenveel staven, dan tel je de losse blokjes erbij.
+- Let op, nu gaat het niet om evenveel, maar om $q.vraagt.
 - Kijk eerst naar de groep bovenaan.
 - Tik dan op een kaart.
-- Nu iets nieuws.
-- Kijk, vier kaarten.
+- Nu zie je 4 kaarten.
+- Kijk, 4 kaarten.
 - Sleep ze naar de vakjes.
-- Kijk, drie $DINGNAAM[q.ding].
+- Nu zie je 3 $DINGNAAM[q.ding].
+- Kijk, 3 $DINGNAAM[q.ding].
 - Sleep de $DINGNAAM[q.ding] naar de vakjes.
+- Nu zoek je de goede kaart.
+- Kijk goed naar de kaarten.
 - Tik op de goede kaart.
-- Ja! Het zijn er $g(goed, q.v.k).
-- $g(antwoord, q.v.k) is $q.vraagt.
-- Ja! $rij.
+- $g(eind, q.v.k).
+- Zo veel $naam staan er: $g(goed, q.v.k).
+- evenveel
+- $g(antwoord, q.v.k) is $q.vraagt dan $g(goed, q.v.k).
+- $rijTekst.
 - op
-- Van minder naar meer.
-- Van meer naar minder.
-- Ja! Hier zijn er $g(n, k).
-- Dat is $q.wat dan $g(q.voorbeeld, k).
-- Dat is $q.wat dan $g(ander, k).
-- Ja! Hier liggen er $g(n, k).
-- meer
-- Dat zijn de meeste.
-- Dat zijn de minste.
-- Ja! Hier zijn er ook $g(n, k).
-- Dat is evenveel.
-- Dat is $q.wat dan $w(q.getal).
+- Elk getal is groter dan het getal ervoor.
+- Elk getal is kleiner dan het getal ervoor.
 - Ze staan in rijen van $g(per, v.k).
 - Dan tel ik verder.
 - $reeks.join(", ").
-- Het zijn er $g(n, v.k).
+- Samen zijn het $g(n, v.k) $v.naam.
 - $g(n + 1, v.k) is meer dan $g(n, v.k).
 - $g(n - 1, v.k) is minder.
 - Dus $g(n, v.k) is evenveel.
 
-## squla-meer-minder-evenveel1-1 (1)
+## squla-meer-minder-evenveel1-1 (2)
 
 - De appels liggen in rijtjes van 5. Tel de appels. Hoeveel appels zijn het? Kun je dit al?
+- Tel de appels in de rijtjes en kies het juiste aantal. Lukt het je om elk groepje te tellen?
 
-## squla-meer-minder-evenveel1-2 (1)
+## squla-meer-minder-evenveel1-2 (2)
 
 - Bovenaan staat een groep sterren. Waar zie je meer sterren dan bovenaan? Kun je dit al?
+- Vergelijk groepjes sterren en zoek waar er meer, minder of evenveel zijn. Zie je waar meer of minder sterren staan?
 
-## squla-meer-minder-evenveel1-3 (1)
+## squla-meer-minder-evenveel1-3 (2)
 
-- Hier staan twee kaarten met bloemen. Op welke kaart zijn er meer bloemen? Kun je dit al?
+- Hier staan 2 kaarten met bloemen. Op welke kaart zijn er meer bloemen? Kun je dit al?
+- Vergelijk de groepjes bloemen op de kaarten en zoek waar er meer zijn. Herken je de grootste groep op de kaarten?
 
-## squla-meer-minder-evenveel2-1 (1)
+## squla-meer-minder-evenveel2-1 (2)
 
 - We tellen eerst kralen. Tel de kralen. Hoeveel kralen zijn het? Kun je dit al?
+- Tel de kralen en vergelijk daarna hoeveel er in de groepjes zitten. Denk je dat je de groepjes kralen al kunt vergelijken?
 
-## squla-meer-minder-evenveel2-2 (1)
+## squla-meer-minder-evenveel2-2 (2)
 
-- Drie kaarten met appels. Waar liggen de minste appels? Kun je dit al?
+- 3 kaarten met appels. Waar liggen de minste appels? Kun je dit al?
+- Bekijk de kaarten en zoek het groepje met de minste appels. Weet je wat meeste en minste betekenen?
 
-## squla-meer-minder-evenveel3-1 (1)
+## squla-meer-minder-evenveel3-1 (2)
 
-- Drie potjes met een getal. Zet de potjes op volgorde, van meer naar minder. Kun je dit al?
+- 3 potjes met een getal. Zet de potjes op volgorde, van meer naar minder. Kun je dit al?
+- Zet de potjes van meer naar minder en kies wat meer, minder of evenveel is. Zijn de woorden meer, minder en evenveel duidelijk voor je?
 
-## squla-meer-minder-evenveel3-2 (1)
+## squla-meer-minder-evenveel3-2 (2)
 
 - Eieren liggen in doosjes van 6. Tel de eieren. Hoeveel eieren zijn het? Kun je dit al?
+- Tel de eieren in de doosjes en vergelijk de aantallen. Weet jij hoe een vol doosje je helpt bij het tellen?
 
 ## squla-meten (gedeeld) (6)
 
-- Nu komen er nog drie vragen van net terug.
-- Ik zet ze naast elkaar, op één lijn.
+- Nu komen er nog 3 vragen van net terug.
+- Ik zet ze naast elkaar, op 1 lijn.
 - Kijk naar de gele streepjes bovenaan.
-- $o.het ? "Welk" : "Welke" $o.wat komt het minst hoog?
+- $o.het ? "Kijk welk" : "Kijk welke" $o.wat het minst hoog komt.
 - Die is het kleinst. Die komt vooraan.
 - $o.het ? "Het grootste" : "De grootste" komt achteraan.
 
-## squla-meten-hoeveelheden-1 (7)
+## squla-meten-hoeveelheden-1 (8)
 
 - De grote maatbeker is 1 liter.
 - Hij is maar half vol.
@@ -1857,14 +1898,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De kleine maatbekers zijn een halve liter.
 - Waar komt het water net zo hoog als bij de grote?
 - We pakken een mand voor de picknick. Welke mand is leeg? Kun je dit al?
+- Bij de picknick zoek je wat vol of leeg is en vergelijk je hoeveel erin zit. Herken je vol en leeg al?
 
-## squla-meten-hoeveelheden-2 (20)
+## squla-meten-hoeveelheden-2 (21)
 
 - De tegels op de muur helpen je.
 - Ik laat de tegels achter de schilderijen zien.
-- Achter een groot schilderij zitten veel tegels.
-- Achter een klein schilderij zitten weinig tegels.
-- Ik tel de eerste rij.
+- Tel hoeveel tegels een schilderij bedekt. Hoe meer tegels, hoe groter het schilderij.
+- Eerst de bovenste rij blaadjes.
+- Ik tel ze hardop.
 - $i:$o.kleur
 - Er zijn $o.r:wit rijen.
 - Tel jij verder?
@@ -1880,8 +1922,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel jij de stukken van mat 2?
 - Zijn het er meer, minder of net zoveel?
 - De picknickmand zit vol. Is de mand kort, zwaar of dun? Kun je dit al?
+- Vergelijk de spullen voor de picknick en zoek wat zwaar, licht, dik of dun is. Ken je zwaar en licht, dik en dun?
 
-## squla-meten-oppervlakte-1 (11)
+## squla-meten-oppervlakte-1 (12)
 
 - Kijk, deze tafel ligt vol blaadjes papier.
 - Ik tel ze.
@@ -1890,14 +1933,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel eerst de $ka $ding.
 - Ik doe de eerste rij.
 - $i:$o.ka
-- $eenGroot is net zo groot als twee $ka.
+- $eenGroot is net zo groot als 2 $ka.
 - Er passen dus minder $kb $ding op.
 - Tel nu zelf verder.
 - Op de muur hangen schilderijen. Welk schilderij is groot en welk is klein? Kun je dit al?
+- Door hokjes te tellen zoek je uit hoe groot iets is. Heb je al eens met hokjes gemeten?
 
-## squla-meten-oppervlakte-2 (8)
+## squla-meten-oppervlakte-2 (9)
 
-- Hier is twee keer dezelfde tafel.
+- Hier is 2 keer dezelfde tafel.
 - Ik tel de groene blaadjes.
 - $i:groen
 - Nu de blauwe blaadjes.
@@ -1905,86 +1949,143 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De blauwe blaadjes zijn groter.
 - Daarom passen er minder op.
 - De tafel ligt vol blaadjes papier. Hoe groot is de tafel? Kun je dit al?
+- Meet met blaadjes en hokjes hoe groot een tafel of een vlak is. Weet jij hoe je iets meet door vakjes te tellen?
 
-## squla-meten-pizza-1 (17)
+## squla-meten-pizza-1 (18)
 
 - Zet je ze naast elkaar, dan zie je het goed.
 - De grote pizza komt hoger en is breder.
-- Ik wijs, jij telt mee.
+- Ik wijs de stukken aan.
+- Jij telt mee.
 - $i:oranje
 - En dit laatste stuk?
 - We tellen ze allebei.
 - Welk getal is meer?
 - Eerst tellen we de stukken bovenaan.
 - Daar liggen $n:oranje stukken.
-- Eén meer betekent: er komt er één bij.
+- 1 meer betekent: er komt er 1 bij.
 - Tel verder vanaf $n:oranje.
-- Welk plaatje heeft er één meer?
 - Eerst tellen we de bolletjes bovenaan.
 - Dat ijsje heeft $n:roze bolletjes.
-- Eén minder betekent: er gaat er één af.
+- 1 minder betekent: er gaat er 1 af.
 - Tel terug vanaf $n:roze.
 - Deze pizza's zijn niet even groot. Welke pizza is het grootst? Kun je dit al?
+- Je vergelijkt pizza’s en ijsjes en zet ze van klein naar groot. Zie je het verschil tussen groter en kleiner?
 
-## squla-meten-pizza-2 (13)
+## squla-meten-pizza-2 (14)
 
 - Kijk, ik tel de stukken.
 - $i:oranje
-- Komt er één stuk bij? Dan is het één meer.
+- Komt er 1 stuk bij? Dan is het 1 meer.
 - Nu zijn het er 4.
-- Gaat er één af? Dan is het één minder.
+- Gaat er 1 af? Dan is het 1 minder.
 - Dan zijn het er weer 3.
 - Kijk goed naar de weegschaal.
 - Eerst hangt hij recht.
-- Nu zakt hij aan één kant naar beneden.
-- Wat zwaar is, gaat omlaag.
+- Nu zakt hij aan 1 kant naar beneden.
+- De zwaarste kant zakt naar beneden. Zo zie je welke kant zwaarder is.
 - Wat licht is, blijft boven.
 - Hoeveel heb je nodig om net zo zwaar te zijn als $o.naam?
 - De pizza is in stukken gesneden. Hoeveel stukken pizza zie je? Kun je dit al?
+- Tel de pizzastukken en vergelijk hoeveel stukken of bolletjes er zijn. Snap je hoe tellen helpt om hoeveelheden te vergelijken?
 
-## squla-meten-pizza-3 (5)
+## squla-meten-pizza-3 (6)
 
 - Kijk naar de weegschaal.
 - Eerst hangt hij recht.
 - Dan zakt de zware kant naar beneden.
 - De kaas is zwaar. De tomaat is licht.
 - Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Kun je dit al?
+- Met de weegschaal vergelijk je welk deeg zwaarder of lichter is. Weet je hoe een weegschaal werkt?
 
-## squla-min-bus1-3 (3)
+## squla-min-bus1-1 (1)
+
+- De bus bezorgt pakjes en jij rekent uit hoeveel er nog in liggen. Kun je uitrekenen wat er na het bezorgen over is?
+
+## squla-min-bus1-2 (1)
+
+- Bij elke halte gaan pakjes uit de bus en bereken je hoeveel er overblijven. Snap je hoe je met de pakjes een minsom maakt?
+
+## squla-min-bus1-3 (4)
 
 - De bus heeft $g(10) pakjes. In het rondje staat $g(7). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - De bus heeft $g(17) pakjes. In het rondje staat $g(5). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - De bus heeft $g(16) pakjes. In het rondje staat $g(8). Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- De bus levert grotere groepen pakjes af en jij rekent uit hoeveel er nog zijn. Denk je dat je deze bezorgsommen zonder uitleg kunt maken?
 
-## squla-min-bus2-3 (1)
+## squla-min-bus2-1 (1)
+
+- Het getal in het rondje vertelt hoeveel pakjes uit de bus gaan: reken uit wat er overblijft. Weet je hoe het getal bij de bus helpt?
+
+## squla-min-bus2-2 (1)
+
+- Lees hoeveel pakjes de bus bezorgt en reken uit hoeveel er nog in liggen. Is het je duidelijk hoe je het getal in het rondje gebruikt?
+
+## squla-min-bus2-3 (2)
 
 - Er gaan $g(10) blokjes in de min-machine en de machine haalt er $g(3) af. Hoeveel blokjes komen eruit? Kun je dit al?
+- Gebruik de getallen bij de bus om uit te rekenen hoeveel pakjes overblijven. Zie je welke minsom bij de bus hoort?
 
-## squla-min-machine-2 (1)
+## squla-min-kaal-1 (1)
+
+- Reken de minsommen op het bord uit en geef het juiste antwoord. Wil je meteen beginnen met deze minsommen?
+
+## squla-min-kaal-2 (1)
+
+- Op het bord reken je minsommen met grotere getallen uit. Lukt het je al om met deze grotere getallen te rekenen?
+
+## squla-min-kaal-3 (1)
+
+- Bij deze minsommen reken je terug over de 10 heen. Weet je hoe terugrekenen over 10 gaat?
+
+## squla-min-machine-1 (1)
+
+- De min-machine haalt blokjes weg en jij rekent uit hoeveel er overblijven. Weet je hoe aftrekken werkt?
+
+## squla-min-machine-2 (2)
 
 - Hier staan bekers en een paar zijn leeg. Welke som hoort bij het plaatje? Kun je dit al?
+- Bij de plaatjes zoek je de passende minsom en reken je het antwoord uit. Herken je de minsom die bij een plaatje past?
 
-## squla-min-machine-3 (1)
+## squla-min-machine-3 (2)
 
 - Het schoolbord is vol minsommen. Hoeveel is $somZin(7, 4)? Kun je dit al?
+- Op het schoolbord staan minsommen waarvan je de antwoorden uitrekent. Lukt het je om minsommen op een bord op te lossen?
 
-## squla-min-machine-4 (4)
+## squla-min-machine-4 (5)
 
 - Je haalt geld uit je portemonnee en koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
 - Hier staat een minsom op het bord. Hoeveel is $somZin(8, 3)? Kun je dit al?
 - De minsommen op het bord worden groter. Hoeveel is $somZin(20, 4)? Kun je dit al?
 - Nu gaan we over de $g(10) heen. Hoeveel is $somZin(16, 9)? Kun je dit al?
+- Je koopt iets en rekent uit hoeveel geld er in de portemonnee overblijft. Reken je al zonder hulp uit hoeveel geld je overhoudt?
 
-## squla-min-ruimte-3 (3)
+## squla-min-ruimte-1 (1)
+
+- Er vliegen ballonnen of raketjes weg en jij rekent uit hoeveel er overblijven. Wil je zonder uitleg uitrekenen hoeveel er overblijven?
+
+## squla-min-ruimte-2 (1)
+
+- Er vliegen raketjes weg en jij rekent uit hoeveel er nog staan. Lukt aftrekken jou ook met grotere aantallen?
+
+## squla-min-ruimte-3 (4)
 
 - In de bus liggen $g(8) pakjes en er worden er $g(3) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - In de bus liggen $g(16) pakjes en er worden er $g(4) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
 - In de bus liggen $g(15) pakjes en er worden er $g(7) bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Reken uit hoeveel raketjes overblijven als er een groep wegvliegt. Weet je hoe je bij het aftrekken over de 10 gaat?
 
-## squla-minsommen (gedeeld) (65)
+## squla-minsommen (begeleide uitleg) (3)
 
+- Tel de $naam die er nog zijn. Wat weg is, hoef je niet mee te tellen.
+- Hoeveel euro houd je over?
+- Tel de gekleurde stippen. Elke stip is 1 euro die je nog hebt.
+
+## squla-minsommen (gedeeld) (64)
+
+- Je mag het zelf proberen.
 - Eerst lagen er $g(a, k) pakjes in de bus.
-- Eerst waren er $g(a, k) $wat.
+- We beginnen met $g(a, k) $wat.
 - Ik zet $g(a, k) stippen neer.
 - bus
 - Er gaat niets uit.
@@ -1996,10 +2097,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daarna $gaan(r2) er nog $g(r2, k) $af.
 - Ze gaan er alle $g(b, k) weg.
 - Wat blijft er dan over?
-- Ja! Er blijven $gu(u) $DING[ding].veel over.
-- Ja! $somZin(v.a, v.b, k) = $gu(u).
-- Eerst waren er $g(v.a, k) $DING[v.ding].veel.
-- Dat getal komt vooraan in de som.
+- In het begin zijn er $g(v.a, k) $DING[v.ding].veel.
+- Dit getal zet je vooraan in de som.
 - Er gaan er een paar weg.
 - Dus het is een minsom.
 - Dus na de min komt $g(0, k).
@@ -2007,61 +2106,144 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er gaan er $g(v.b, k) weg.
 - Dat getal komt na de min.
 - Wat overblijft, komt achter het is-teken.
-- Ja! $somZin(v.a, v.b) = $gu(u).
-- Ja! Alle sommen kloppen.
 - Kijk naar $somZin(a, b).
 - Daar staan $g(a, "rood") raketjes.
 - Er gaan er $g(b, "rood") weg.
 - Tel de raketjes die over zijn.
 - Zoek dat getal rechts.
-- Ja! $somZin(v.sommen[i][0], v.sommen[i][1]) = $g(0).
+- Zo horen ze bij elkaar.
+- $somZin(a, b) = $g(a - b).
 - Bij een som met uitkomst 0 gaat alles weg.
 - Dan blijft er niets over.
 - Je haalt er net zoveel af als er waren.
-- Dan staat er twee keer hetzelfde getal.
+- Dan staat er 2 keer hetzelfde getal.
+- Kijk: $somZin(v.sommen[i][0], v.sommen[i][1]) = $g(0).
+- Er blijft niets over.
 - Je hebt ze allemaal gevonden!
-- Ja! Er ligt nog $gu(1) pakje in de bus.
-- Ja! Er liggen nog $gu(u) pakjes in de bus.
-- Ja! $somZin(10, v.b) = $gu(u).
-- Ja! $somZin(n, v.leeg) = $gu(v.vol).
-- Tel eerst alle $wat.
+- De machine haalt er $g(v.b) af. Dan $u === 1 ? "komt" : "komen" er $gu(u) $u === 1 ? "blokje" : "blokjes" uit: $somZin(10, v.b) = $gu(u).
+- Tel eerst alle $wat samen.
+- Dat aantal staat vooraan in de som.
 - $v.ding === "beker" ? "De lege beker gaat" : "Het lege bordje gaat" weg.
 - De lege $wat gaan weg.
 - Tel ze.
-- Ja! $somZin(heb, prijs) = $gu(u).
-- Je houdt $gu(u) euro over.
 - We tellen eerst je geld.
 - Een briefje van $g(briefje) is $g(briefje) euro.
 - Samen heb je $g(heb) euro.
-- Voor elke euro zet ik een stip.
+- Voor elke euro zet ik 1 stip.
 - $hoofd(SPEELGOED[v.ding]) kost $g(prijs) euro.
 - Die gaat weg.
 - Die gaan weg.
 - Tel de stippen die over zijn.
+- Je begon met $g(a). Er $b === 1 ? "ging" : "gingen" er $g(b) af. Tel de $naam die er nog zijn.
 - Eerst gaan er $g(r1, k) weg.
 - Daarna gaan er nog $g(b - r1, k) weg.
+- Er blijft $gu(u) over.
 - Er blijven $gu(u) $veel over.
 - Dat is de minsom $somZin(a, b, k) = $gu(u).
 - In de bus liggen $g(a, k) pakjes.
 - De bus bezorgt er $g(b, k).
 - Eerst gaan er $g(r1, k) uit.
 - Daarna gaan er nog $g(b - r1, k) uit.
-- Het rode rondje zegt hoeveel pakjes er bezorgd zijn.
+- Kijk naar het getal in het rode rondje. Zoveel pakjes zijn al bezorgd.
+- Nu ligt er nog $gu(u) pakje in de bus.
 - Nu liggen er nog $gu(u) pakjes in de bus.
 
-## squla-plussommen (gedeeld) (52)
+## squla-piraat-1 (1)
 
+- Op schattenjacht tel je goudstukken en reken je uit hoeveel schatten er samen zijn. Tel je de schatten al zonder hulp bij elkaar?
+
+## squla-piraat-2 (1)
+
+- Voor de schatkaart maak je minsommen door de overgebleven schatten naar het vak te slepen. Wil je de minsommen op deze schattenjacht zonder uitleg proberen?
+
+## squla-piraat-3 (1)
+
+- Voor de schatkaart reken je plussommen en minsommen uit. Weet je wanneer je optelt en wanneer je aftrekt?
+
+## squla-plus-bakkerij-1 (1)
+
+- In de bakkerij tel je taartjes, broden en koekjes bij elkaar en zoek je de som of het antwoord. Weet jij hoe je de taartjes bij elkaar optelt?
+
+## squla-plus-bakkerij-2 (1)
+
+- In de bakkerij tel je grotere aantallen broden en andere lekkernijen bij elkaar. Denk je dat je ook grotere aantallen kunt optellen?
+
+## squla-plus-bakkerij-3 (1)
+
+- Er komen koekjes en andere lekkernijen bij en jij rekent uit hoeveel het samen is. Snap je hoe je bij het optellen over de 10 gaat?
+
+## squla-plus-bus1-1 (1)
+
+- Er komen pakjes bij in de bezorgbus en jij rekent uit hoeveel er dan in liggen. Kun je uitrekenen hoeveel pakjes het samen zijn?
+
+## squla-plus-bus1-2 (1)
+
+- Tel de nieuwe pakjes op bij de pakjes die al in de bus liggen. Lukt het optellen van grotere groepen pakjes jou al?
+
+## squla-plus-bus1-3 (1)
+
+- Er komen pakjes bij en het totaal gaat over de 10: reken uit hoeveel het er worden. Weet je hoe je verder rekent als er meer dan 10 pakjes zijn?
+
+## squla-plus-bus2-1 (1)
+
+- Het getal in het rondje vertelt hoeveel pakjes erbij komen: reken het totaal uit. Snap je hoe het getal vertelt hoeveel pakjes erbij komen?
+
+## squla-plus-bus2-2 (1)
+
+- Lees het getal bij de bus en tel zoveel pakjes bij de lading op. Wil je met het getal bij de bus zonder uitleg gaan rekenen?
+
+## squla-plus-bus2-3 (1)
+
+- Met de getallen bij de bezorgbus reken je uit hoeveel pakjes er samen zijn. Herken je de plussom die bij de lading hoort?
+
+## squla-plus-dansen-1 (1)
+
+- In de disco zoek je 2 getallen die samen 10 zijn. Ken je de getallenparen van 10 al?
+
+## squla-plus-dansen-2 (1)
+
+- Op de draaiende platen zoek je getallen die samen 10 vormen. Lukt het je om samen 10 te maken?
+
+## squla-plus-dansen-3 (1)
+
+- Tel de getallen op de platen bij elkaar en zoek het paar dat precies 10 is. Zie je welke 2 getallen samen 10 zijn?
+
+## squla-plus-dansen-4 (1)
+
+- Vergelijk de sommen op de kaartjes en zoek welke samen 10 zijn. Herken je de sommen met 10 als antwoord?
+
+## squla-plus-kaal-1 (1)
+
+- Los de plussommen op door de getallen bij elkaar te tellen. Maak je al plussommen zonder plaatjes?
+
+## squla-plus-kaal-2 (1)
+
+- Bij deze plussommen tel je verder vanaf een groter getal. Lukt verder rekenen vanaf 10 jou al?
+
+## squla-plus-kaal-3 (1)
+
+- Reken plussommen uit waarbij het antwoord over de 10 gaat. Weet je hoe optellen over 10 werkt?
+
+## squla-plussommen (begeleide uitleg) (4)
+
+- Hoeveel $wat liggen er nu?
+- Start bij $g(a) en tel 1 verder.
+- Hoeveel $wat zijn het samen?
+- Start bij $g(a) en tel de $g(b) $wat erbij.
+
+## squla-plussommen (gedeeld) (54)
+
+- Je mag het zelf proberen.
 - Kijk: $stippen(a, b)
-- Twee keer hetzelfde getal: dat is een dubbelsom.
+- Hier staat 2 keer hetzelfde getal: dat is een dubbelsom.
 - $plus(n, n) = $g(2 n).
 - Elke keer komen er $g(2) bij.
 - Hoeveel is dan $plus(a, b)?
 - Tel alle stippen maar.
 - $plus(klein, klein) is $g(2 klein).
-- $g(groot) is één meer dan $g(klein).
-- Dus $plus(a, b) is één meer dan $g(2 klein).
-- Draai de som om.
-- Begin bij het grootste getal: $g(groot).
+- $g(groot) is 1 meer dan $g(klein).
+- Dus $plus(a, b) is 1 meer dan $g(2 klein).
+- Het grootste getal is $g(groot). Tel vanaf die $g(groot) verder, dan hoef je minder ver te tellen.
 - $o(10) oranje stippen: de bovenste rij is vol.
 - Er komen $bl(klein) blauwe stippen bij.
 - $g(10) en nog $g(klein): hoeveel is dat?
@@ -2076,30 +2258,32 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Van de $bl(klein) blauwe stippen zijn er nog $bl(rest) over.
 - $g(10) en nog $g(rest): hoeveel is dat?
 - Er komt $bl(1) blauwe stip bij.
-- Eén meer dan $g(groot): hoeveel is dat?
+- 1 meer dan $g(groot): hoeveel is dat?
 - We tellen verder vanaf $g(groot).
 - $g(groot + i).
-- Tel jij de laatste?
+- Tel jij het laatste stukje verder?
+- Zo zit het: $plus(a, b) = $g(a + b).
 - $plus(a, b) = $g(a + b).
-- Ja! $plus(a, b) = $g(s).
-- Ja! Er komt iets bij, dus het is een plussom.
-- Eerst waren er $g(a).
+- In het eerste groepje liggen $g(a).
 - Er komt iets bij: dan is het een plussom.
 - Zoek de plussom met $g(a) en $g(b).
-- Ja! Elke som hoort bij het goede antwoord.
+- Links zie je $g(a).
 - Kijk naar $plus(x, y).
 - Verbind de sommen die nog over zijn.
-- Ja! $plus(ga, gb) = $g(ga + gb).
+- Zo horen ze bij elkaar.
+- $plus(x, y) = $g(x + y).
 - Hier staan er $g(groepen[metGetal].n).
 - Dat getal staat eronder.
 - Hier staan er nog een paar los.
 - Tel ze maar.
 - Kijk welke som bij allebei de groepjes past.
-- Ja! $plus(a, b) = $g(a + b).
-- En $plus(b, a) = $g(a + b).
+- Hier liggen er nog een paar los.
+- Samen: $plus(ga, gb) = $g(ga + gb).
 - Een plussom kun je omdraaien.
 - Het antwoord blijft dan hetzelfde.
-- Zoek twee sommen met $g(a) en $g(b).
+- Zoek 2 sommen met $g(a) en $g(b).
+- $plus(a, b) en $plus(b, a) passen allebei.
+- Een plussom kun je omdraaien: het antwoord blijft $g(a + b).
 - In de bakkerij liggen taartjes. Hoeveel taartjes zijn het samen? Kun je dit al?
 - Er liggen $g(10) stokbroden en er komen er $g(3) bij. Hoeveel stokbroden zijn het samen? Kun je dit al?
 - Er liggen $g(6) koekjes en ik bak er nog $g(6) bij. Hoeveel koekjes zijn het samen? Kun je dit al?
@@ -2108,7 +2292,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 - $g(n, kn).
 - $reeks.join(", ").
-- We tellen in sprongen van twee.
+- We tellen in sprongen van 2.
 - We tellen samen, rij voor rij.
 - druk
 - We tellen alleen de $q.v.meer.
@@ -2116,7 +2300,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het zijn er $g(tot, kTot).
 - Tel jij verder vanaf $g(tot, kBegin)?
 - We kijken samen naar de vormen.
-- Kijk nu weer naar $q.zin.
+- Zoek de vorm die op $q.zin lijkt.
 - We kijken van links naar rechts.
 - $Hoofd(NAAM[q.rij[p]]) staat $wat === "midden" ? "in het midden" : wat.
 - We tellen vanaf links.
@@ -2127,7 +2311,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welke komt daarna, als $rang?
 - We tellen elk groepje.
 - af
-- De meeste komt vooraan.
+- Het groepje met de meeste koekjes komt vooraan.
 - De minste komt vooraan.
 - Dik is breed. Dun is smal.
 - De dikste komt vooraan.
@@ -2135,20 +2319,20 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk: $woorden[0], $woorden[1], $woorden[2].
 - $Hoofd(woorden[2]) is de $ALLER[q.woord].
 - Die gaat op het laatste plekje.
-- Op het eerste plekje komt $woorden[0].
+- Kijk nu naar de 2 andere plaatjes. Welke hoort vooraan en welke in het midden?
 - Op het eerste plekje staat $w(q.vast!).
-- Na $w(q.vast!) komt het getal dat één meer is.
-- Daarna weer één meer, en zo verder.
+- Na $w(q.vast!) komt het getal dat 1 meer is.
+- Daarna weer 1 meer, en zo verder.
 - Hoog is het grootste getal.
 - Laag is het kleinste getal.
 - Tel maar mee: $[0, 1, 2].map((d) => w(klein + d)).join(", ").
-- Welk getal kwam het laatst? Dat is het hoogst.
+- Het getal dat je het laatst zegt, is het hoogst.
 - Ik vertel het verhaal.
 - Kijk eerst naar $h.het $h.ding bovenaan.
-- Vergelijk elk plaatje met dat bovenaan.
-- Vergelijk de drie plaatjes.
+- Kijk steeds terug naar het bovenste plaatje. Kijk wat er anders is.
+- Vergelijk de 3 plaatjes.
 - Kijk goed naar de bal.
-- Zie je de hele bal, of maar een stukje?
+- Kijk of je de hele bal ziet of maar een stukje.
 - Eerst kijken we naar de kleur.
 - Deze is $k.
 - Dan kijken we naar de vorm.
@@ -2178,107 +2362,111 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - laatste
 - De middelste staat in het midden.
 - Na de laatste komt er niets meer.
-- Er staan er twee voor en twee achter.
+- Er staan er 2 voor en 2 achter.
 - Nu iets nieuws.
 
-## squla-rekenmix-mix1-1 (1)
+## squla-rekenmix-mix1-1 (2)
 
 - Er liggen appels door elkaar. Tel de appels. Hoeveel zijn het er? Kun je dit al?
+- De appels liggen door elkaar. Tel ze en kies het juiste aantal. Weet jij welk getal bij elk groepje hoort?
 
-## squla-rekenmix-mix1-2 (1)
+## squla-rekenmix-mix1-2 (2)
 
 - Kijk naar de zon. Welke vorm lijkt erop? Kun je dit al?
+- Bekijk de zon en kies welke vorm erop lijkt. Herken je de vorm van de zon?
 
-## squla-rekenmix-mix1-3 (1)
+## squla-rekenmix-mix1-3 (2)
 
-- Drie dingen staan in een rij. Wat staat er rechts? Kun je dit al?
+- 3 dingen staan in een rij. Wat staat er rechts? Kun je dit al?
+- In de rij zoek je wat links, rechts of in het midden staat. Weet je waar links, rechts en het midden zijn?
 
-## squla-rekenmix-mix1-4 (1)
+## squla-rekenmix-mix1-4 (2)
 
 - Hier liggen koekjes. Zet ze op volgorde, van meer naar minder. Kun je dit al?
+- Tel de groepjes en zet ze op volgorde van meer naar minder. Snap je hoe je de groepjes van meer naar minder zet?
 
-## squla-rekenmix-mix2-1 (1)
+## squla-rekenmix-mix2-1 (2)
 
 - Kijk naar de boterham bovenaan. Op welke boterham zit meer kaas? Kun je dit al?
+- Vergelijk de boterhammen en andere plaatjes en zoek waar meer of minder op ligt. Zie je hoe je de plaatjes met het voorbeeld vergelijkt?
 
-## squla-rekenmix-mix2-2 (1)
+## squla-rekenmix-mix2-2 (2)
 
 - Hier zie je een bal en een doos. Waar ligt de bal? Kun je dit al?
+- Bekijk waar de bal bij de doos ligt en kies het juiste woord voor die plek. Ken je woorden als naast, in en onder?
 
-## squla-rekenmix-mix2-3 (1)
+## squla-rekenmix-mix2-3 (2)
 
 - Hier zie je kleuren en vormen. Waar zie je een paarse driehoek? Kun je dit al?
+- Zoek op de plaatjes de gevraagde kleur en vorm. Kun je tegelijk op kleur en vorm letten?
 
-## squla-rekenmix-mix2-4 (1)
+## squla-rekenmix-mix2-4 (2)
 
 - Links staan groepjes ballen. Verbind elk groepje met het goede getal. Kun je dit al?
+- Tel de ballen in elk groepje en verbind het groepje met het juiste getal. Weet jij welk getal je met elk groepje moet verbinden?
 
-## squla-rekenmix-mix3-1 (1)
+## squla-rekenmix-mix3-1 (2)
 
-- Drie ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst. Kun je dit al?
+- 3 ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst. Kun je dit al?
+- Vergelijk de ballen en zet ze op volgorde van groot naar klein. Lukt het jou om de ballen van groot naar klein te zetten?
 
-## squla-rekenmix-mix3-2 (1)
+## squla-rekenmix-mix3-2 (2)
 
-- Vijf dingen staan in een rij. Wat staat als eerste in de rij? Kun je dit al?
+- 5 dingen staan in een rij. Wat staat als eerste in de rij? Kun je dit al?
+- Kijk naar de rij en kies wat op de gevraagde plek staat, bijvoorbeeld als eerste of als vijfde. Weet je wat eerste, tweede en derde betekenen?
 
-## squla-rekenmix-mix3-3 (1)
+## squla-rekenmix-mix3-3 (2)
 
 - We zoeken getallen die naast elkaar staan. Welk getal komt net voor $w(5)? Kun je dit al?
+- Zoek welk getal meteen voor of na een ander getal komt. Herken je de getallen die direct voor en na een getal komen?
 
-## squla-rekenmix-mix3-4 (1)
+## squla-rekenmix-mix3-4 (2)
 
 - Er zijn $g(6, "rood") ballen. Hoeveel zitten er in de doos? Kun je dit al?
+- Er zijn ballen verstopt in een doos en jij rekent uit hoeveel dat er zijn. Denk je dat je kunt uitrekenen hoeveel ballen verstopt zijn?
 
-## squla-rekenmix-mix4-1 (1)
+## squla-rekenmix-mix4-1 (2)
 
 - De ruimte staat vol raketjes, sterren en planeten. Tel alleen de raketjes. Kun je dit al?
+- Tel alleen de raketjes tussen de sterren en planeten. Kun je 1 soort uit een groep tellen?
 
-## squla-rekenmix-mix4-2 (1)
+## squla-rekenmix-mix4-2 (2)
 
 - We tellen verder vanaf $w(10). Zet de getallen op hun plek. Kun je dit al?
+- Tel verder vanaf 10 en zet de getallen op hun plek. Tel je al verder vanaf 10 om de getallen op hun plek te zetten?
 
-## squla-rekenmix-mix4-3 (1)
+## squla-rekenmix-mix4-3 (2)
 
-- Drie groepjes sterren in de ruimte. Waar zie je $g(6, "geel") sterren? Kun je dit al?
+- 3 groepjes sterren in de ruimte. Waar zie je $g(6, "geel") sterren? Kun je dit al?
+- Tel de groepjes sterren en zoek het groepje met het gevraagde aantal. Zie je welk groepje sterren bij het aantal hoort?
 
-## squla-rekenmix-mix4-4 (1)
+## squla-rekenmix-mix4-4 (2)
 
-- Drie groepjes raketjes in de ruimte. Waar zie je meer dan $g(4, "rood") raketjes? Kun je dit al?
+- 3 groepjes raketjes in de ruimte. Waar zie je meer dan $g(4, "rood") raketjes? Kun je dit al?
+- Vergelijk de groepjes raketjes en zoek waar er meer of minder zijn dan het genoemde getal. Snap je hoe je een groepje met een getal vergelijkt?
 
-## squla-rekentaal (gedeeld) (111)
+## squla-rekentaal (gedeeld) (103)
 
-- We doen het samen, stap voor stap.
-- We gaan bakken in de keuken.
-- Kijk naar de pannenkoeken.
-- Deze pannenkoek is groot.
-- Deze pannenkoek is klein.
-- We leren woorden als groot en klein.
-- En vol en leeg, zwaar en licht.
-- En lang en kort.
-- Kun je dit al?
+- $opening.zin1 $opening.zin2
 - Fijn. Dan gaan we meteen oefenen.
-- Geen probleem. Ik laat het je zien.
-- Kijk naar de manden.
-- Deze mand is klein.
-- Deze mand is groter.
-- En deze mand is het grootst.
-- De kleine mand is het kleinst.
-- Kijk naar de glazen sap.
-- Dit glas is vol.
-- Dit glas is half vol.
-- Dit glas is leeg.
-- Er zit niets in.
-- Dit is een weegschaal.
-- De meloen is zwaar.
-- Die kant zakt naar beneden.
-- De appel is licht.
-- Die kant gaat omhoog.
-- Kijk naar de broodjes.
-- Dit broodje is lang.
-- Dit broodje is kort.
-- Nu ga jij het doen.
+- Ik help je op weg. We kijken samen.
+- Kijk, deze pannenkoek is groot.
+- Deze pannenkoek is klein. Hij is kleiner dan de andere.
+- Nu liggen er andere pannenkoeken. Probeer het maar.
+- Kijk in dit glas. Het zit vol sap.
+- In dit glas zit niets. Dit glas is leeg.
+- Nu ben jij aan de beurt.
+- Kijk naar de weegschaal. De zware kant gaat omlaag.
+- De meloen hangt lager. Hij is zwaarder dan de appel.
+- Kijk nu naar de andere kant.
+- De broodjes beginnen bij dezelfde streep.
+- Dit broodje loopt verder door. Het is langer.
+- Nu mag jij het proberen.
+- Nu ga je verder met nieuwe plaatjes. Probeer het maar.
 - Welke pannenkoek is groter?
 - Deze pannenkoek is groter.
+- Deze pannenkoek is klein.
+- Deze pannenkoek is groot.
 - Dus deze pannenkoek is groter.
 - Welke beker is kleiner?
 - Deze beker is kleiner.
@@ -2286,27 +2474,30 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Deze beker is klein.
 - De kleine beker is kleiner.
 - Welk glas is vol?
+- Dit glas is vol.
 - In dit glas zit niets.
 - Dit glas zit tot de rand vol sap.
 - Vol betekent: er past niets meer bij.
 - Welk glas is leeg?
+- Dit glas is leeg.
+- Er zit niets in.
 - In dit glas zit sap.
 - Een glas zonder sap is leeg.
 - Kijk naar de weegschaal.
 - Wat is zwaarder?
 - De meloen is zwaarder.
+- Die kant zakt naar beneden.
 - Deze kant zakt naar beneden.
 - Deze kant gaat omhoog.
 - Wat naar beneden zakt, is zwaarder.
-- Kijk welke kant naar beneden zakt.
 - Wat is lichter?
 - De aardbei is lichter.
+- Die kant gaat omhoog.
 - De zak meel zakt naar beneden.
 - Die is zwaar.
 - De aardbei gaat omhoog.
 - Die is licht.
 - Wat omhooggaat, is lichter.
-- Kijk welke kant omhooggaat.
 - Kijk naar de slierten spaghetti.
 - Welke sliert is langer?
 - Deze sliert is langer.
@@ -2314,7 +2505,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Deze sliert houdt snel op.
 - Deze sliert gaat verder door.
 - Die is dus langer.
-- Kijk waar de slierten ophouden.
 - Welke sliert is korter?
 - Deze sliert is korter.
 - Deze sliert is lang.
@@ -2322,10 +2512,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De korte sliert is korter.
 - Welke mand is het grootst?
 - Deze mand is het grootst.
+- Deze mand is klein.
+- Deze mand is groter.
+- En deze mand is het grootst.
 - Welk glas is half vol?
+- Dit glas is half vol.
 - Het sap komt tot de helft.
 - Het sap in dit glas komt tot de helft.
-- Kijk hoe hoog het sap komt.
 - Welke appel is het kleinst?
 - Deze appel is het kleinst.
 - Deze appel is groot.
@@ -2334,15 +2527,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk broodje is het langst?
 - Dit broodje is het langst.
 - De broodjes beginnen op dezelfde plek.
+- Dit broodje is kort.
 - Dit broodje is langer.
 - Dit broodje gaat het verst door.
 - Het is het langst.
-- Kijk waar de broodjes ophouden.
 - De mand is groot, maar hij is leeg.
 - De kant met de meloen zakt naar beneden.
 - Dus de meloen is zwaarder.
 - Welk broodje is het kortst?
 - Dit broodje is het kortst.
+- Dit broodje is lang.
 - Dit broodje is korter.
 - Zet de appels op volgorde.
 - Van klein naar groot.
@@ -2352,35 +2546,36 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan komt deze appel.
 - Deze appel is het grootst.
 - Die komt als laatste.
-- Begin met de kleinste appel.
 - Zet de bekers op volgorde.
 - Deze beker is het kleinst.
 - Dan komt deze beker.
 - Deze beker is het grootst.
-- Begin met de kleinste beker.
 
-## squla-rekentaal (3)
+## squla-rekentaal (4)
 
 - Goed gewerkt in de keuken.
 - Nu gaan we picknicken in het park.
 - Je kent nu veel rekenwoorden.
+- In deze les leer je woorden zoals groot en klein. Je kijkt naar de plaatjes en tikt op wat ik vraag. Weet jij al wat die woorden betekenen?
 
-## squla-splits-delen-1 (4)
+## squla-splits-delen-1 (5)
 
 - Alles is verdeeld.
 - In elk bakje liggen evenveel knikkers.
 - $somBakjes([4, 4]) = $g(8).
-- Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen? Kun je dit al?
+- Kijk, knikkers en 2 bakjes. Kun jij de knikkers eerlijk verdelen? Kun je dit al?
+- Sleep de knikkers naar de bakjes, zodat in elk bakje evenveel komt. Lukt het je om alles eerlijk te verdelen?
 
-## squla-splits-splitsen1-1 (5)
+## squla-splits-splitsen1-1 (6)
 
 - Kijk: er zijn $aantal(5, "pion").
 - $aantal(2, "pion", KA) staan in het paarse vak.
 - $aantal(3, "pion", KB) staan in het oranje vak.
 - $g(5) kun je splitsen in $g(2, KA) en $g(3, KB).
-- Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen? Kun je dit al?
+- Splitsen is een getal in 2 stukken verdelen. Kun jij de pionnen in 2 vakken slepen? Kun je dit al?
+- Verdeel de pionnen over 2 vakken om een getal te splitsen. Lukt het splitsen je al zonder hulp?
 
-## squla-splits-splitsen1-2 (10)
+## squla-splits-splitsen1-2 (11)
 
 - In dit vak liggen $aantal(2, "tennisbal", KA).
 - In dat vak liggen $aantal(4, "tennisbal", KB).
@@ -2391,130 +2586,183 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bovenaan staat $g(7).
 - Onder staan $g(4, KA) en $g(3, KB).
 - $g(7) kun je splitsen in $g(4, KA) en $g(3, KB).
-- Kijk, de ballen vallen in het huisje. Welk huisje past erbij? Kun je dit al?
+- De ballen gaan door de splitsmachine. Welk huisje past erbij? Kun je dit al?
+- Met de splitsmachine en de huisjes verdeel je getallen tot 10 in 2 delen. Weet je hoe een splitshuisje werkt?
 
-## squla-splits-splitsen2-1 (5)
+## squla-splits-splitsen2-1 (9)
 
 - Kijk: een briefje van $g(10) euro.
-- En $g(3) munten van één euro.
+- En $g(3) munten van 1 euro.
 - Samen is dat $g(13) euro.
 - $g(13) kun je splitsen in $g(10) en $g(3).
-- Een briefje van tien en vier munten. Welk getal mist er nog in het huisje? Kun je dit al?
+- Een briefje van 10 en 4 munten. Welk getal mist er nog in het huisje? Kun je dit al?
+- Met munten, briefjes en splitshuisjes verdeel je getallen tot 20. Denk je dat je ook grotere getallen kunt splitsen?
+- Samen is het 14 euro.
+- Het briefje is 10 euro waard. Tel de munten van 1 euro erbij. Begin bij 10 en tel verder.
+- Splits 14 in 2 getallen. Een getal staat er al. Welk getal mist er nog. Sleep het naar de lege plek.
 
-## squla-splits-splitsen2-2 (4)
+## squla-splits-splitsen2-2 (5)
 
 - Kijk: bovenaan staat $g(12).
 - Onder staan $g(10) en $g(2).
 - De som is: $g(12) = $g(10) + $g(2).
 - Bij elk huisje hoort een som. Welke som past bij dit huisje? Kun je dit al?
+- Bij de splitshuisjes zoek je de passende som en het ontbrekende getal. Herken je de som die bij een splitsing hoort?
 
-## squla-tellen (gedeeld) (27)
+## squla-tellen (begeleide uitleg) (3)
 
-- In de zak zitten $gk(z, k) $v.voorwerp.naam.
-- $hoofd(elkeLosse(v.voorwerp)) is er één meer.
+- Hoeveel $v.voorwerp.naam zijn het samen?
+- Denk aan het getal dat je het laatst zei. Zoveel $v.voorwerp.naam heb je geteld.
+- Ja, $gk(totaal, k) $v.voorwerp.naam! Het getal dat je het laatst zei, vertelt hoeveel het er samen zijn.
+
+## squla-tellen (gedeeld) (42)
+
+- Op de zak staat het aantal: $gk(z, k) $v.voorwerp.naam zitten erin.
+- $hoofd(elkeLosse(v.voorwerp)) daarbij is er 1 meer.
 - $gk(z + tot, k).
 - Tel jij verder vanaf $gk(z + tot, k)?
-- In elke rij staan er $gk(per, k).
+- In elke volle rij liggen $gk(per, k) $v.voorwerp.naam. Ik tel per rij, dat gaat sneller.
 - $gk(t, k).
 - Tel jij verder vanaf $gk(tot, k)?
-- Bij $elke(v.voorwerp) zet ik een streepje.
+- De $v.voorwerp.naam liggen door elkaar.
+- Bij $elke(v.voorwerp) zet ik een streepje, zo raak ik er niet een kwijt.
 - $Array.from( length: tot , (_, i) => gk(i + 1, k)).join(", ").
-- Ja! $gk(v.zak ?? 0, k) en nog $gk(v.n, k) is $gk(goed, k).
-- Ja! Het zijn er $gk(goed, k).
+- $gk(z, k) in de zak en $gk(v.n, k) los. Dat maakt $gk(antwoordVan(v), k) $v.voorwerp.naam.
+- Ik telde $elke(v.voorwerp) 1 keer. Er liggen $gk(v.n, k) $v.voorwerp.naam.
+- $gk(r.volle, k) volle rijen van $gk(r.per, k) zijn $gk(v.n, k) $v.voorwerp.naam.
+- $gk(r.vol, k) in de volle rijen, en nog $gk(r.rest, k) erbij: $gk(v.n, k) $v.voorwerp.naam.
+- In de zak zitten $gk(z, k) $v.voorwerp.naam.
+- $hoofd(elkeLosse(v.voorwerp)) is er 1 meer.
 - Samen zijn het er $gk(z + v.n, k).
 - Ze staan door elkaar.
-- Vijf streepjes zijn een groepje.
+- Bij $elke(v.voorwerp) zet ik een streepje.
+- 5 streepjes zijn een groepje.
 - Het zijn er $gk(v.n, k).
 - Ze staan in rijen van $gk(per, k).
 - $gk(t + per, k).
 - Dan tel ik verder.
+- Op de zak staat $gk(zak, k). Er zitten dus $gk(zak, k) $v.voorwerp.naam in.
+- Als je de losse $v.voorwerp.naam erbij telt, weet je hoeveel het er samen zijn.
+- De $v.voorwerp.naam liggen door elkaar. Eerst ga ik ze 1 voor 1 tellen, de streepjes helpen me onthouden hoeveel ik al heb.
+- Ik heb er $gk(begin, k) geteld.
+- De $v.voorwerp.naam staan in rijtjes. Een volle rij telt $gk(per, k), dus ik begin met de volle rijen.
+- $gk(n, k).
+- Begin bij $gk(zak + begin, k). Tik steeds op $naamBij(begin) met de kring en tel verder.
+- $gk(zak + n + 1, k).
+- Je begon bij $gk(zak + begin, k) en telde verder tot $gk(totaal, k).
 - Nog een spelletje!
 - Even een spelletje tussendoor!
 - Kijk goed waar de plaatjes staan.
-- Zoek steeds twee dezelfde.
-- Tik op twee kaartjes.
+- Zoek steeds 2 dezelfde.
+- Tik op 2 kaartjes.
 - Je hebt ze allemaal gevonden.
 - We gaan weer tellen.
 - De appels liggen netjes in rijtjes. Hoeveel appels zie je? Kun je dit al?
 - De citroenen liggen weer in rijen van 5. Hoeveel citroenen zie je? Kun je dit al?
 
-## squla-tellen-fruit-3 (2)
+## squla-tellen-fruit-1 (1)
+
+- Tel de appels in de rijtjes en kies het getal dat erbij hoort. Lukt het tellen je al?
+
+## squla-tellen-fruit-2 (1)
+
+- Tel de citroenen in rijen van 5 en zoek het juiste aantal. Weet je hoe de rijtjes je helpen bij het tellen?
+
+## squla-tellen-fruit-3 (3)
 
 - Nu liggen de bananen door elkaar. Hoeveel bananen zie je? Kun je dit al?
 - Auto's en bussen staan om en om in rijen. Hoeveel auto's en bussen zie je? Kun je dit al?
+- De bananen liggen door elkaar en jij telt hoeveel het er zijn. Wil je het tellen zonder uitleg proberen?
 
-## squla-tellen-resultatief1-2 (1)
+## squla-tellen-resultatief1-1 (1)
+
+- Tel de auto's en bussen die om en om in rijen staan. Lukt het je om de auto's en bussen samen te tellen?
+
+## squla-tellen-resultatief1-2 (2)
 
 - We tellen verder, tot 20. Hoeveel ballen en blokken zie je? Kun je dit al?
+- Tel de ballen en blokken in de rijtjes en kies hoeveel het er samen zijn. Tel je al tot 20 zonder hulp?
 
-## squla-tellen-resultatief1-3 (1)
+## squla-tellen-resultatief1-3 (2)
 
 - De planeten staan door elkaar. Hoeveel planeten zie je? Kun je dit al?
+- De planeten staan door elkaar en jij telt hoeveel het er zijn. Lukt tellen jou ook als alles door elkaar ligt?
 
-## squla-tellen-resultatief2-1 (1)
+## squla-tellen-resultatief2-1 (2)
 
 - De raketjes staan in rijen. Hoeveel raketjes zie je? Kun je dit al?
+- Tel de raketjes in de rijtjes en kies hoeveel het er zijn. Heb je al eens raketjes geteld?
 
-## squla-tellen-resultatief2-2 (1)
+## squla-tellen-resultatief2-2 (2)
 
 - Nu zijn het meer auto's en bussen. Hoeveel auto's en bussen zie je? Kun je dit al?
+- Dit keer tel je een grotere groep auto's en bussen. Lukt het je om ook grotere groepen te tellen?
 
-## squla-tellen-resultatief2-3 (1)
+## squla-tellen-resultatief2-3 (2)
 
 - De ufo's zweven door elkaar. Hoeveel ufo's zie je? Kun je dit al?
+- Tel de ufo's die door elkaar zweven. Weet je hoe je voorkomt dat je iets dubbel telt?
 
-## squla-tellen-resultatief3-1 (1)
+## squla-tellen-resultatief3-1 (2)
 
 - De planeten zweven door de ruimte. Hoeveel planeten zie je? Kun je dit al?
+- Tel de planeten die door elkaar in de ruimte zweven. Lukt het je al om planeten te tellen?
 
-## squla-tellen-resultatief3-2 (1)
+## squla-tellen-resultatief3-2 (2)
 
 - Weer planeten en ufo's, door elkaar. Hoeveel planeten zie je? Kun je dit al?
+- Bekijk de planeten en tel hoeveel er zijn. Houd je bij het tellen al goed bij waar je bent?
 
-## squla-tellen-resultatief3-3 (1)
+## squla-tellen-resultatief3-3 (2)
 
 - Raketjes en sterren staan in rijen van 10. Hoeveel raketjes en sterren zie je? Kun je dit al?
+- Gebruik de rijen van 10 om raketjes en sterren te tellen. Helpen de rijtjes van 10 jou bij het tellen?
 
-## squla-tellen-resultatief3-4 (11)
+## squla-tellen-resultatief3-4 (10)
 
-- Ja! Na $w(ijk) komt $w(v.goed).
-- Ja! Voor $kc(ijk) komt $kc(v.goed).
-- We lopen samen langs de huizen.
+- Ik loop langs de huizen tot aan de lege plek.
 - $w(o.rij[i]).
-- Na $w(ijk) begint een nieuw tiental.
-- Elk huis is één verder.
-- We tellen samen terug.
+- Na $w(ijk) is het tiental vol en begint een nieuw tiental.
+- Het volgende huis na $w(ijk) is 1 verder.
+- Ik tel terug, kaartje voor kaartje, tot aan de lege plek.
 - $kc(o.rij[i]).
-- Terug wordt het steeds één minder.
+- Het kaartje voor $kc(ijk) is 1 minder.
 - $isNa ? w(o.rij[i]) : kc(o.rij[i]).
 - Op de zak staat 40: zoveel knikkers zitten erin. Hoeveel knikkers zijn het samen? Kun je dit al?
+- Begin bij het getal op de zak en tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn. Weet je hoe je verder moet tellen?
 
-## squla-tellen-telrij-1 (1)
+## squla-tellen-telrij-1 (2)
 
 - De huizen in de straat staan op volgorde. Welk huisnummer komt na $w(34)? Kun je dit al?
+- In de straat vul je de ontbrekende huisnummers aan. Zie je waar de ontbrekende huisnummers horen?
 
-## squla-tellen-telrij-2 (1)
+## squla-tellen-telrij-2 (2)
 
 - Nu tellen we verder, tot 100. Welk huisnummer komt na $w(69)? Kun je dit al?
+- Tel verder tot 100 en zoek de ontbrekende nummers in de straat. Wil je de getallen tot 100 zonder uitleg aanvullen?
 
-## squla-tijd (gedeeld) (26)
+## squla-tijd (gedeeld) (33)
 
-- Nu komen er nog drie vragen van net terug.
+- Nu komen er nog 3 vragen van net terug.
 - $Naam(i).
-- Kijk naar de hele trein.
+- Hier komt de hele week voorbij.
 - Luister maar.
 - Zondag is de laatste wagon.
-- Daarna begint een nieuwe week.
+- Daarna begint de week weer bij maandag.
 - Welke dag staat vooraan in de trein?
 - Welke wagon staat achter $naam(d)?
 - Let op! Nu zoeken we de dag ervoor.
+- We lopen de hele week langs.
 - Maandag is de eerste wagon.
 - Daarvoor was de vorige week.
 - Die week eindigde met de laatste wagon.
 - Welke wagon staat vlak voor $naam(d)?
+- Bekijk de trein van voren naar achteren.
 - De eerste dag staat vooraan, vlak achter de locomotief.
 - Op die dag begint de school weer.
+- Loop de trein af tot de allerlaatste wagon.
 - De laatste dag staat helemaal achteraan.
+- Daarachter staat geen wagon meer. Dan begint de week opnieuw.
 - Kijk naar de trein.
 - Eerst ga je 5 dagen naar school.
 - Daarna komt het weekend.
@@ -2522,32 +2770,36 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op deze 5 dagen ga je naar school.
 - Daarna komen 2 dagen zonder school.
 - Dat is het weekend.
-- Elke wagon is een dag.
+- Elke wagon is 1 dag.
 - Tel maar mee.
 - Hoeveel wagons waren dat?
+- We lopen samen langs de weektrein. Elke wagon is 1 dag.
+- De week begint op maandag.
+- Zaterdag en zondag vormen samen het weekend.
 
-## squla-tijd-dagen-1 (5)
+## squla-tijd-dagen-1 (6)
 
 - Kijk mee.
 - De week begint met maandag.
 - De week eindigt met zondag.
 - Zaterdag en zondag zijn het weekend.
 - Dan is er geen school.
+- Op de weektrein kies je welke dag eerst, laatst of erna komt. Ken je de volgorde van de dagen al?
 
-## squla-tijd-dagen-2 (28)
+## squla-tijd-dagen-2 (30)
 
 - Kijk naar woensdag.
 - De dag erna staat erachter: donderdag.
 - Kijk naar donderdag.
 - De dag ervoor staat ervoor: woensdag.
 - Na zondag begint de week weer met maandag.
-- $Hoofd(juist.map(naam).join(", ")).
 - Kijk naar de trein bovenaan.
-- Deze vier dagen staan ook in de trein.
+- Zoek de 4 dagen in de trein. De trein laat zien in welke volgorde ze komen.
 - Kijk welke dag vooraan staat.
 - Let op: na zondag begint de trein weer bij maandag.
+- $Hoofd(juist.map(naam).join(", ")).
 - Kijk, de gele pijl staat bij $naam(v.vandaag).
-- Dat is vandaag.
+- De pijl wijst de dag van nu aan.
 - Morgen is het woensdag.
 - Dan is het zwembad nog dicht.
 - Welke dag komt na woensdag?
@@ -2555,17 +2807,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan is de kapperszaak nog dicht.
 - Welke dag komt daarna?
 - Na 1 nachtje slapen is het vrijdag.
-- Na nog een nachtje is het zaterdag.
-- Nu nog één nachtje.
+- Na nog 1 nachtje is het zaterdag.
+- Nu nog 1 nachtje.
 - Welke dag is het dan?
 - Gisteren is de dag ervoor.
 - Kijk naar de wagon vlak voor zondag.
-- Gisteren was het vrijdag.
+- Welke wagon hangt vlak voor zondag?
+- Vrijdag hangt vlak voor zaterdag.
 - Toen was het feest.
 - Welke dag komt vlak voor vrijdag?
 - Na 1 nachtje slapen is het dinsdag.
+- Met de weektrein zoek je welke dag ervoor of erna komt. Weet je welke dagen naast elkaar staan?
 
-## squla-tijd-dagen-3 (7)
+## squla-tijd-dagen-3 (9)
 
 - De dagen staan altijd in dezelfde volgorde.
 - Na zondag begint de week weer bij maandag.
@@ -2573,39 +2827,42 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, de gele pijl.
 - Gisteren was het dinsdag.
 - Morgen is het donderdag.
-- Elke nacht slapen ben je een dag verder.
+- Elke nacht slapen ben je 1 dag verder.
+- Zet de losse dagen in de volgorde van de week. Lukt het jou om de week weer op volgorde te leggen?
+- Zet de 4 dagen in de goede volgorde. Sleep elke wagon naar een leeg vak.
 
-## squla-tijd-kalender-1 (11)
+## squla-tijd-kalender-1 (12)
 
-- Op een dagkalender zie je wat je op één dag doet.
-- Op een weekkalender zie je de dagen van één week.
+- Op een dagkalender zie je wat je op 1 dag doet.
+- Op een weekkalender zie je de dagen van 1 week.
 - Op een maandkalender zie je alle dagen van een maand.
 - Zoek het vak met de rode rand.
 - Kijk goed welk getal erin staat.
 - Een kalender gaat over dagen.
-- Elk getal is een dag van de maand.
+- Elk getal is 1 dag van de maand.
 - En de maand is juni.
 - Bovenaan staan de dagen, kort geschreven.
 - ma is maandag, di is dinsdag.
 - De pijl wijst naar wo.
+- Je zoekt de juiste kalender en leest de getallen in de vakjes. Heb je al eens een kalender gebruikt?
 
-## squla-tijd-kalender-2 (10)
+## squla-tijd-kalender-2 (11)
 
 - Kijk, het rode vak.
 - Daar staat een getal: 5.
 - Dat is 5 juni.
-- Elk vakje is een dag.
-- Van vakje naar vakje is één nachtje slapen.
-- Zie je de boogjes?
+- Elk vakje is 1 dag.
+- Van vakje naar vakje is 1 nachtje slapen.
+- Kijk, de boogjes.
 - Van 1 juni naar 3 juni is 2 nachtjes slapen.
 - Hier staan de dagen van de week.
-- Vrijdag is groter.
+- Kijk, vrijdag staat in grote letters.
 - Welke dag staat erna?
+- Op de kalender zoek je datums en bekijk je wat er op een dag gebeurt. Lukt het je om een datum op te zoeken?
 
 ## squla-tijd-tijden-1 (11)
 
 - Stel, gisteren was het woensdag.
-- Welke dag komt na woensdag?
 - Na woensdag komt donderdag.
 - Dus vandaag is het donderdag.
 - Eerst is het ochtend.
@@ -2615,29 +2872,66 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Gisteren is al voorbij.
 - Vandaag is nu.
 - Morgen komt nog.
+- Bij de plaatjes zoek je wat gisteren, vandaag of morgen gebeurt. Weet je wat gisteren en morgen betekenen?
 
-## squla-vormen-opruimen-1 (4)
+## squla-tijd-tijden-2 (1)
+
+- Vergelijk de plaatjes en bedenk wat langer of korter duurt. Heb je al een idee hoeveel tijd iets kost?
+
+## squla-uitleg (gedeeld) (3)
+
+- Nog niet helemaal. We bekijken deze stap samen.
+- Nog niet helemaal.
+- Dan proberen we het straks nog eens.
+
+## squla-vormen-kleuren-1 (1)
+
+- Van losse puzzelstukjes maak je een plaatje door elk stukje naar zijn plek te slepen. Wil je deze puzzel zonder uitleg proberen?
+
+## squla-vormen-kleuren-2 (1)
+
+- Sleep de puzzelstukjes naar hun plek om een platte vorm te maken. Lukt het je om de vorm weer heel te maken?
+
+## squla-vormen-kleuren-3 (1)
+
+- Je maakt puzzels van vormen zoals een bol door de stukjes op hun plek te slepen. Zie je hoe de stukjes in elkaar passen?
+
+## squla-vormen-opruimen-1 (7)
 
 - Hier ligt alles door elkaar: een broek, een bal en een boek.
 - Hier staan alleen boeken, netjes op de plank.
 - Dat is soort bij soort.
 - Er ligt veel door elkaar. Op welk plaatje zie je alleen broeken? Kun je dit al?
+- Bekijk de kleding en schoenen en zoek het plaatje met alleen broeken. Weet je wat bij elkaar past?
+- Op welk plaatje zie je alleen broeken? Tik op dat plaatje.
+- Tik op het plaatje met alleen broeken.
 
-## squla-vormen-orienteren-1 (5)
+## squla-vormen-orienteren-1 (6)
 
 - Kijk naar de bal.
 - Hij ligt bovenaan het grasveld.
 - En hij ligt aan de linkerkant.
 - Hij ligt dus linksboven.
 - Een bal ligt op een grasveld. Waar ligt de bal? Kun je dit al?
+- Op de plaatjes zoek je wat links, rechts, boven of onder ligt. Kun je links en rechts al uit elkaar houden?
+
+## squla-vormen-patronen-1 (2)
+
+- Maak het kralenpatroon af door te kiezen welke kraal erna komt. Weet je hoe dit patroon verdergaat?
+- Kijk naar de ketting. Welke kraal komt na de rode kraal? Tik op die kraal.
+
+## squla-vormen-patronen-2 (2)
+
+- Bekijk de rijen blokjes en maak het patroon af. Lukt het je om een patroon in blokjes te herkennen?
+- De onderste rij is nog leeg. Welke kleuren horen in deze rij? Tik op het juiste plaatje.
 
 ## ster (5)
 
-- Ja! In elke beker staan $aantal(m, "potlood").
-- $herhaal(m, k) = $g(n).
 - We zoeken $g(n) potloden.
 - Tel in elke rij alle potloden.
-- In welke rij zijn het er $g(n)?
+- Kijk in welke rij het er $g(n) zijn.
+- In elke beker staan $aantal(m, "potlood").
+- $herhaal(m, k) = $g(n).
 
 ## suiker (2)
 
@@ -2647,7 +2941,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 ## tandarts (2)
 
 - Een feesthoedje hoort bij een feest.
-- Welk feest heb jij één keer per jaar?
+- Welk feest heb jij 1 keer per jaar?
 
 ## tellen-120-doortellen (2)
 
@@ -3195,18 +3489,18 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 
 ## touw (6)
 
-- We kijken samen naar het patroon.
+- Ik laat het patroon zien.
 - Kijk: $namen(eenheid).
 - Daarna begint het weer opnieuw.
 - Het patroon gaat verder: $namen(doel.map(kw)).
 - De ketting stopt bij $kw(rij[getoond - 1]).
 - Wat komt er na $kw(rij[getoond - 1])?
 
-## u0 (33)
+## u0 (35)
 
 - Op het kaartje staat wat iets kost: $e(8) euro.
 - Je telt het geld bij elkaar.
-- Begin bij het briefje.
+- Pak eerst het briefje.
 - Samen is dit $e(8) euro.
 - Dat is precies genoeg.
 - Voor de eerste klus krijg je $e(n) euro.
@@ -3218,8 +3512,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel nu verder met het geld uit je portemonnee.
 - Kijk: $e(10) euro.
 - En er komt $e(5) euro bij.
-- Begin bij $e(10) en tel vijf verder.
-- $Hoofd(e(11)), $e(12), $e(13), $e(14), en nog één.
+- Je start bij $e(10). Dan tel je 5 verder.
+- $Hoofd(e(11)), $e(12), $e(13), $e(14), en nog 1.
 - Je hebt $e(15) euro.
 - We tellen verder tot $e(20).
 - $Hoofd(e(16)), $e(17), $e(18), $e(19), $e(20).
@@ -3231,56 +3525,84 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - $Hoofd(e(19)), $e(20).
 - Kijk: je had $e(18) euro.
 - Er komt $e(2) euro bij.
-- Begin bij $e(18) en tel twee verder.
+- Van $e(18) tel je 2 verder.
 - Op de rommelmarkt betaal je met munten en briefjes.
+- Je begint met het briefje.
 - Dit is samen $e(8) euro.
 - Zo tel je geld.
+- Het grootste stuk geld pak je eerst.
 - Tel dan de munten erbij.
 - Samen is het $e(8) euro.
 
 ## u1 (4)
 
-- Kijk, twee groepjes briefjes.
+- Kijk, 2 groepjes briefjes.
 - Begin altijd bij het grootste briefje.
 - Allebei de groepjes zijn $e(15) euro.
 - Het geld ziet er anders uit, maar het is evenveel.
 
-## uitleg (65)
+## uitleg (16)
 
+- Hier ligt $g(a) $een.
+- Hier liggen $g(a) $wat.
+- Nu liggen er $g(a + b) pakjes in de bus.
+- $plus(a, b) = $g(a + b).
+- Hier staat een plussom. Hoeveel is $plus(3, 4)? Kun je dit al?
+- De plussommen worden groter. Hoeveel is $plus(10, 7)? Kun je dit al?
+- Nu gaan we over de $g(10) heen. Hoeveel is $plus(7, 7)? Kun je dit al?
+- Kijk: blauw, geel.
+- En weer: blauw, geel.
+- Het komt steeds terug. Dat is een patroon.
+- Na geel komt dus weer blauw.
+- Kijk naar de bovenste rij: rood, geel, blauw.
+- In de rij eronder schuift alles 1 plekje op.
+- Van boven naar beneden staat elke kleur 1 keer.
+- De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal? Kun je dit al?
+- Nu staan de blokjes in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
+
+## uitleg-1 (1)
+
+- We kunnen ook terugtellen.
+
+## uitleg-alles-erbij (54)
+
+- In totaal komen er $g(b) $wat bij. Start bij $g(a) en tel verder.
 - Hier ligt $g(1) $een.
 - Hier liggen $g(a) $wat.
 - Ik leg er $g(b) bij.
 - Erbij is plus: $plus(a, b).
-- Ja! $wk(paren[goedIdx][0]) en $wk(paren[goedIdx][1]) is samen $g(10).
 - Kijk naar $wk(x) en $wk(y).
 - Er blijft $g(1) plekje leeg.
 - Er blijven $g(10 - s) plekjes leeg.
 - Dat is nog geen $g(10).
-- De rij is vol, en er zijn nog stippen over.
-- Dat is meer dan $g(10).
+- Dat zijn $g(s) stippen.
+- De rij van $g(10) is vol, dus er is $g(1) stip te veel.
+- De rij van $g(10) is vol, dus er zijn $g(s - 10) stippen te veel.
 - Bij $g(10) is de rij precies vol.
 - Zoek het kaartje waarbij de rij precies vol is.
-- Ja! $g(getallen[paar[0]], kp0) en $g(getallen[paar[1]], kp1) is samen $g(10).
+- Op dit kaartje staan $wk(x) en $wk(y).
+- Samen is dat precies $g(10).
 - Neem de $gp(0).
 - Bij nul zijn er nog geen stippen.
 - De hele rij is nog leeg.
 - Neem de $gp(anker).
 - Ik zet $o(1) stip in de rij.
 - Ik zet $o(anker) stippen in de rij.
-- Hoeveel plekjes zijn er nog leeg?
+- Kijk hoeveel plekjes er nog leeg zijn.
 - Tel ze maar.
-- Zoek het getal dat de rij vol maakt.
-- Kijk, een rij van tien plekjes.
+- Tel de lege plekjes. Zo vind je het getal dat er nog bij moet.
+- $g(getallen[paar[0]], kp0) en $g(getallen[paar[1]], kp1) zijn samen precies $g(10).
+- Kijk, een rij van $g(10) plekjes.
 - Er $a === 1 ? "staat" : "staan" $o(a) $a === 1 ? "oranje stip" : "oranje stippen" in.
 - Er is nog $bl(1) plekje leeg.
 - Er zijn nog $bl(b) plekjes leeg.
 - $o(a) en $bl(b) is samen $g(10).
 - Nu is de rij precies vol.
 - Zoek steeds het kaartje dat samen $g(10) is.
-- Zoek steeds twee getallen die samen $g(10) zijn.
-- Onderin liggen twee rijen van $g(5).
+- Zoek steeds 2 getallen die samen $g(10) zijn.
+- Onderin liggen 2 rijen van $g(5).
 - Dat zijn $g(10) pakjes.
-- Onderin liggen twee rijen van $g(5): dat zijn $g(10) pakjes.
+- Onderin liggen 2 rijen van $g(5): dat zijn $g(10) pakjes.
 - Daarop ligt er nog $g(1).
 - Daarop liggen er nog $g(a - 10).
 - Samen zijn dat $g(a) pakjes.
@@ -3290,32 +3612,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Naast de bus liggen $g(b) pakjes.
 - We tellen verder vanaf $g(a).
 - $g(a + i).
-- Eén meer dan $g(a): hoeveel is dat?
-- Tel jij de laatste?
-- Ja! $plus(a, b) = $g(s).
-- Er liggen nu $g(s) pakjes in de bus.
-- Nu liggen er $g(a + b) pakjes in de bus.
-- $plus(a, b) = $g(a + b).
-- Op de kaartjes staan twee getallen. Welk kaartje is samen $g(10)? Kun je dit al?
-- De platen draaien rond op de draaitafel. Welke twee getallen zijn samen $g(10)? Kun je dit al?
-- Sommige platen zijn bijna $g(10). Welke twee zijn precies $g(10)? Kun je dit al?
-- Sommige kaartjes zitten dicht bij $g(10). Welk kaartje is samen $g(10)? Kun je dit al?
-- Hier staat een plussom. Hoeveel is $plus(3, 4)? Kun je dit al?
-- De plussommen worden groter. Hoeveel is $plus(10, 7)? Kun je dit al?
-- Nu gaan we over de $g(10) heen. Hoeveel is $plus(7, 7)? Kun je dit al?
-- Kijk: blauw, geel.
-- En weer: blauw, geel.
-- Het komt steeds terug. Dat is een patroon.
-- Na geel komt dus weer blauw.
-- Kijk naar de bovenste rij: rood, geel, blauw.
-- In de rij eronder schuift alles één plekje op.
-- Van boven naar beneden staat elke kleur één keer.
-- De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal? Kun je dit al?
-- Nu staan de blokjes in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
-
-## uitleg-1 (1)
-
-- We kunnen ook terugtellen.
+- 1 meer dan $g(a): hoeveel is dat?
+- Tel jij het laatste stukje verder?
+- Nu liggen er $g(s) pakjes in de bus.
+- $plus(a, b) = $g(s).
+- Op de kaartjes staan 2 getallen. Op welk kaartje zijn de 2 getallen samen $g(10)? Kun je dit al?
+- De platen draaien rond op de draaitafel. Welke 2 getallen zijn samen $g(10)? Kun je dit al?
+- Sommige platen zijn bijna $g(10). Welke 2 zijn precies $g(10)? Kun je dit al?
+- Sommige kaartjes zitten dicht bij $g(10). Op welk kaartje zijn de 2 getallen samen $g(10)? Kun je dit al?
 
 ## uitleg-bakjes (10)
 
@@ -3323,18 +3627,23 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, bekers met limonade.
 - Kijk, bordjes met koekjes.
 - Een paar zijn al leeg.
-- Eerst waren er $g(n) bekers vol.
-- Eerst waren er $g(n) bordjes met koekjes.
-- Er zijn $g(leeg) bekers leeg gedronken.
+- We beginnen met $g(n) volle bekers.
+- We beginnen met $g(n) bordjes met koekjes.
+- Er zijn $g(leeg) bekers leeggedronken.
 - Er zijn $g(leeg) bordjes leeg.
 - Die gaan weg.
 - De som is $somZin(n, leeg) = $gu(vol).
 
-## uitleg-geld (11)
+## uitleg-een-erbij (1)
+
+- Er komt eerst 1 $een bij. Tel 1 verder.
+
+## uitleg-geld (12)
 
 - Kijk, je hebt $g(h) euro.
 - $hoofd(SPEELGOED[ding]) kost $g(p) euro.
 - Voor elke euro zet ik een stip.
+- Je betaalt $g(p) euro. Bij elke euro die je betaalt, wordt een stip grijs.
 - Je betaalt $g(p) euro.
 - Die gaat weg.
 - Die gaan weg.
@@ -3344,7 +3653,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er staan $g(14) raketjes klaar en er vliegen er $g(3) weg. Hoeveel raketjes blijven er over? Kun je dit al?
 - Nu staan er $g(13) raketjes klaar en er vliegen er $g(6) weg. Hoeveel raketjes blijven er over? Kun je dit al?
 
-## uitleg-som (10)
+## uitleg-som (11)
 
 - $g(a) blokjes gaan de machine in.
 - De machine haalt er $g(b) af.
@@ -3354,27 +3663,27 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst gaan er $g(r1) weg.
 - Dan zijn er nog $g(10).
 - Daarna gaan er nog $g(b - r1) weg.
+- Er blijft $gu(u) stip over.
 - Er blijven $gu(u) stippen over.
 - Dus $somZin(a, b) = $gu(u).
 
 ## uitleg-tel-dozen-18 (5)
 
 - Eieren liggen in doosjes.
-- In elk doosje zitten er $g(6, EIEREN.k).
+- In een vol doosje zitten er $g(6, EIEREN.k).
 - $g(r 6, EIEREN.k).
 - Het zijn er $g(18, EIEREN.k).
 - Dus $g(18, EIEREN.k) is evenveel.
 
-## veld (9)
+## veld (8)
 
 - In het midden ligt $deDing(dingen["in het midden"]).
 - Ga nu naar $hor.
 - En dan naar $ver === "onder" ? "beneden" : ver.
-- Wat ligt daar?
 - Kijk: dit is de ballon helemaal $kant === "rechts" ? "links" : "rechts".
 - Hij is $kw(ander).
 - Helemaal $kant is de andere kant.
-- Kijk goed naar de drie huisjes.
+- Kijk goed naar de 3 huisjes.
 - Welk huisje past erbij?
 
 ## vergelijken (gedeeld) (65)
@@ -3980,20 +4289,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Onder elke dag staan getallen.
 - Zo zie je bij elk getal welke dag het is.
 - Elk vakje heeft een eigen getal.
-- Vandaag is één vakje.
+- Vandaag is 1 vakje.
 - Morgen is het vakje erna.
 
-## weekkalender (9)
+## weekkalender (8)
 
 - Op een klok zie je hoe laat het is.
 - Op deze kalender staan alle dagen van juni.
 - Op deze plaatjes staat wat er gebeurt.
 - Eerst de kring, dan rekenen.
-- Een dagkalender, een weekkalender en een maandkalender.
-- Ken je ook de feestkalender?
-- Op dit blad staat één week: van maandag tot en met zondag.
+- Op dit blad staat 1 week: van maandag tot en met zondag.
 - Op deze lijst staan alle dagen van een maand.
-- En op deze plaatjes zie je wat je op één dag doet.
+- En op deze plaatjes zie je wat je op 1 dag doet.
+- Een dagkalender, een weekkalender en een maandkalender.
 
 ## werken (3)
 
@@ -4001,10 +4309,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Daar ben je zo.
 - Een hele dag duurt van de ochtend tot de avond.
 
-## zak (10)
+## zak (8)
 
-- Ja! In de zak $rest === 1 ? "zit" : "zitten" $aantal(rest, vw, KB).
-- $g(tot) kun je splitsen in $g(deel, KA) en $g(rest, KB).
 - Kijk: samen zijn het er $g(tot).
 - $aantal(deel, vw, KA) $deel === 1 ? "ligt" : "liggen" naast de zak.
 - $aantal(deel, vw, KA) $deel === 1 ? "staat" : "staan" al aan de ene kant.
@@ -4033,7 +4339,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op het blauwe vinkje.
 - Met het vinkje laat je weten dat je klaar bent.
 
-## Door de site genoteerd, buiten de lessen (8410)
+## Door de site genoteerd, buiten de lessen (13562)
 
 - Er staan stippen op.
 - Hoeveel stippen zijn het?
@@ -4902,6 +5208,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op ja of nee.
 - We gaan tellen, tot wel 50.
 - We lezen de klok bij een half rondje.
+- Kun je dit al?
 - We lezen de klok bij een kwart rondje.
 - Deze dan?
 - Hier is er weer een.
@@ -6053,7 +6360,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 4 min 4 = 5?
 - 8 min 5 = 8?
 - Van 0 tot 8
+- Welk nummer komt erna?
+- Elk huis heeft een nummer.
+- Kijk, een straat met huizen.
 - Welk huisnummer komt na 7?
+- We lopen samen langs de huizen.
+- Elk huis is één verder.
 - Tel één verder dan 7.
 - 9? Dat is nog niet het goede nummer.
 - maandag
@@ -6063,6 +6375,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - vrijdag
 - zaterdag
 - zondag
+- Kijk naar de pannenkoeken.
+- We gaan bakken in de keuken.
+- Kijk, daar komt de weektrein.
+- En vol en leeg, zwaar en licht.
+- En lang en kort.
+- We leren woorden als groot en klein.
+- Elke wagon is een dag van de week.
 - Maandag is de rode wagon.
 - Dinsdag is de oranje wagon.
 - Woensdag is de gele wagon.
@@ -6070,6 +6389,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Vrijdag is de blauwe wagon.
 - Zaterdag is de paarse wagon.
 - Zondag is de roze wagon.
+- Ze staan altijd in deze volgorde.
+- Samen zijn dat de 7 dagen van de week.
 - Tik op de wagon van donderdag.
 - Maandag? Niet helemaal.
 - De grote pannenkoek is groter.
@@ -6087,6 +6408,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tik op de wagon van zaterdag.
 - Ja! 16 hoort tussen 15 en 17.
 - Dit is de wagon van zaterdag.
+- Typ het nummer.
 - Welk huisnummer komt na 19?
 - Ja! Na 19 komt 20.
 - Er mist een huis in de straat.
@@ -6105,7 +6427,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er mist een dag in de trein.
 - Tussen dinsdag en donderdag zit woensdag.
 - Tussen vrijdag en zondag zit zaterdag.
-- Maandag is de eerste dag van de week.
 - Welke dag was het gisteren?
 - Vandaag is het woensdag.
 - Welke dag is het morgen?
@@ -6242,8 +6563,19 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 7 + ? = 12?
 - 25? Niet helemaal.
 - 29, 28, 27…
+- We lopen samen terug.
+- Terug wordt het nummer steeds één minder.
 - de kleine pannenkoek
 - de grote pannenkoek
+- Geen probleem. Ik laat het je zien.
+- Kijk naar de manden.
+- De kleine mand is het kleinst.
+- Kijk naar de glazen sap.
+- Dit is een weegschaal.
+- De meloen is zwaar.
+- De appel is licht.
+- Kijk naar de broodjes.
+- Nu ga jij het doen.
 - de kleine beker
 - het lege glas
 - de meloen
@@ -6251,6 +6583,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - de lange sliert
 - de korte sliert
 - het halfvolle glas
+- Daarna begint de week weer opnieuw.
 - Donderdag? Niet helemaal.
 - Vandaag zetten we getallen op de goede plek.
 - Alle getallen tot en met 20.
@@ -6317,6 +6650,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Floep zit bij 9.
 - Welk getal hoort daarbij?
 - Floep wijst een streepje aan.
+- Welk getal komt na 10?
 - Floep springt verder dan de 10.
 - Floep wijst 13 aan.
 - Vandaag ving hij er 14.
@@ -6426,9 +6760,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je kunt fruit tellen tot 20.
 - Wat is de laatste dag van de week?
 - Zondag is de laatste dag van de week.
+- Daarna begint een nieuwe week.
 - Hoeveel dagen heeft het weekend?
 - In het weekend ga je niet naar school.
-- Het weekend heeft 2 dagen.
 - Op welke dagen is het weekend?
 - Welke dag komt meteen na maandag?
 - Na maandag komt dinsdag.
@@ -6447,6 +6781,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welke getallen zitten onder de olifant?
 - Welke dag komt meteen na vrijdag?
 - De olifant is groot.
+- Nu komen er nog drie vragen van net terug.
 - 11, 12, 13, 14.
 - Na 14 komen 15 en 16.
 - Welk getal komt voor 19?
@@ -6478,6 +6813,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Floep zit ongeveer bij 4.
 - Floep springt helemaal naar het eind.
 - 9 zit tussen 8 en 10.
+- Deze getallenlijn eindigt bij 20.
 - Ja! Na 42 komt 43.
 - Ja! Na 87 komt 88.
 - Welk huisnummer komt na 27?
@@ -6511,7 +6847,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk huisnummer komt na 23?
 - Welk getal komt voor 12?
 - Zaterdag? Niet helemaal.
+- We tellen samen terug.
 - Dinsdag? Niet helemaal.
+- Kijk naar de hele trein.
+- Terug wordt het steeds één minder.
 - Ja! Na 23 komt 24.
 - Welk huisnummer komt na 48?
 - Welk getal komt voor 17?
@@ -6533,6 +6872,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 10, 8, 9? Niet helemaal.
 - 8, 10, 9? Niet helemaal.
 - Welk getal komt na 20?
+- Kijk naar alle getallen.
+- Ze komen in de telrij na elkaar.
+- Dit is het kleinste getal.
 - Begin met het kleinste getal.
 - 10, 12, 11? Niet helemaal.
 - Welk getal komt na 16?
@@ -6607,6 +6949,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk getal komt na 4?
 - 13, 10, 11, 12? Niet helemaal.
 - 10, 11, 13, 12? Niet helemaal.
+- We tellen de streepjes verder.
 - Kijk, hier staat 10.
 - Welk getal komt na 17?
 - Één.
@@ -6669,6 +7012,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! Het zijn er 5.
 - 14, 16, 15? Niet helemaal.
 - Ja! Het zijn er 45.
+- Tik op twee kaartjes.
+- Zoek steeds twee dezelfde.
 - Ja! Het zijn er 33.
 - Je kunt tellen tot 50.
 - Je kunt grote groepen tellen.
@@ -6693,6 +7038,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! 40 en nog 8 is 48.
 - Ja! 90 en nog 6 is 96.
 - Je kunt verder tellen vanaf een tiental.
+- Op één lampje staan puntjes.
+- Elk lampje is één verder.
+- Elk streepje is één verder.
 - Dus het vlaggetje staat bij 12.
 - Floep zit op de getallenlijn.
 - Hij zit op een getal.
@@ -6716,6 +7064,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Onder de uil zit 6.
 - Hoeveel raketten zie je?
 - Bij elke kwal zet ik een streepje.
+- Kijk, drie kaarten.
 - Bij elke monster zet ik een streepje.
 - Hoeveel ballen zie je?
 - Hoeveel sterren zie je?
@@ -6724,6 +7073,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij elke knikker zet ik een streepje.
 - Je kunt tellen tot 20.
 - Ken je ook de verjaardagskalender?
+- Terug wordt het getal steeds één minder.
 - Hoeveel blokken zie je?
 - Bij de klok, bij de kalender, of bij de plaatjes?
 - de plaatjes aan het lijntje
@@ -6808,8 +7158,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op welke dag bakte Ali een taart?
 - Vandaag is het zaterdag.
 - De dag daarvoor was het donderdag.
+- Gisteren was het vrijdag.
 - Welk getal staat daar?
 - Zie je het rode vak op de kalender?
+- We tellen samen langs de lijn.
 - Over 2 nachtjes komt opa logeren.
 - Op welke dag komt opa logeren?
 - In het rode vak staat 9.
@@ -6881,6 +7233,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - lang
 - snel
 - 1, 2, 3, 4, 5.
+- Vijf streepjes zijn een groepje.
 - Jammer, het was maar een droom.
 - Het verhaal van de uil was heel lang.
 - Dan nog maar 1 nachtje!
@@ -7036,6 +7389,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een week kamperen duurt veel langer.
 - Een week heeft wel zeven dagen.
 - Hier is 15 op de getallenlijn.
+- Dat is één terug.
 - Hij trekt zijn jas aan.
 - Thuis veegt hij nog de hele keuken.
 - Tim gaat naar huis.
@@ -7054,7 +7408,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De klok? Niet helemaal.
 - Woensdag, vrijdag, zaterdag, donderdag? Niet helemaal.
 - Maandag, zondag, dinsdag, zaterdag? Niet helemaal.
+- Deze vier dagen staan ook in de trein.
 - Dinsdag, donderdag, vrijdag, woensdag? Niet helemaal.
+- Dat is vandaag.
 - Maar Sam gaat de dag daarna.
 - Het blad met één week? Niet helemaal.
 - De lijst met één maand? Niet helemaal.
@@ -7067,10 +7423,12 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Maandag, dinsdag, donderdag, woensdag? Niet helemaal.
 - Zondag, maandag, woensdag, dinsdag? Niet helemaal.
 - Noa is 9 jaar? Niet helemaal.
+- Elk getal is een dag van de maand.
 - Groen? Niet helemaal.
 - Nee? Niet helemaal.
 - Nacht? Niet helemaal.
 - Ochtend? Niet helemaal.
+- Hoeveel nachtjes slapen is dat?
 - In de droom is het rode vak 12 juni.
 - Het is 9 uur? Niet helemaal.
 - 80? Niet helemaal.
@@ -7099,6 +7457,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Sleep de potjes naar de vakjes.
 - Kijk, drie potjes.
 - Zet de potjes op volgorde.
+- Van meer naar minder.
 - Waar zie je meer sterren dan bovenaan?
 - Dat is meer dan 14.
 - Ja! Hier zijn er 17.
@@ -7118,6 +7477,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! Hier zijn er 19.
 - Dat is meer dan 22.
 - Ja! Hier zijn er 24.
+- Van minder naar meer.
 - Zet de kaarten op volgorde.
 - Ja! 42, 31, 22.
 - Welke kaart heeft minder dan 19?
@@ -7131,6 +7491,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! 11, 13, 16, 19.
 - Ja! 47, 36, 15.
 - Welke kaart heeft evenveel als 14?
+- Dat is evenveel.
 - Ja! Hier zijn er ook 14.
 - Ja! 5, 10, 12, 14.
 - Waar zie je minder vissen dan bovenaan?
@@ -7157,8 +7518,10 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bovenaan zijn het er 13.
 - Hier zijn het er 14.
 - Hier zijn het er 10.
+- Nu zie je hoeveel het er zijn.
 - Ja! Hier zijn er 11.
 - Je ziet waar meer is en waar minder.
+- Vrijdag is groter.
 - We gaan naar de zee.
 - Er zwemmen dieren weg.
 - Bovenaan zijn het er 8.
@@ -7182,6 +7545,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Elke staaf is 10.
 - Bij 32 zie je 3 staven en 2 losse.
 - Bij 18 zie je 1 staaf en 8 losse.
+- Meer staven is meer.
 - Dus 32 is meer dan 18.
 - Hier zijn het er 8.
 - 8 is minder dan 10.
@@ -7189,6 +7553,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Bij 26 zie je 2 staven en 6 losse.
 - Bij 8 zie je 8 losse.
 - Bij 24 zie je 2 staven en 4 losse.
+- Evenveel staven? Kijk dan naar de losse.
 - Begin met de meeste.
 - Kijk naar de getallen op de kaarten.
 - Welk getal is groter dan 15?
@@ -7224,6 +7589,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! 7 min 5 = 2.
 - Tik op een som en dan op het antwoord.
 - Verbind elke som met het goede antwoord.
+- Ja! Alle sommen kloppen.
 - 1 zeepaardje zwemt weg.
 - Hoeveel zeepaardjes blijven er over?
 - Er zwemmen 6 zeepaardjes in de zee.
@@ -7251,6 +7617,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 3 zeepaardjes zwemmen weg.
 - Er zwemmen 16 zeepaardjes in de zee.
 - 13 min 3 = 10? Niet helemaal.
+- Dat getal komt vooraan in de som.
 - Eerst waren er 16 zeepaardjes.
 - Er gaan er 3 weg.
 - We gaan weer naar de zee.
@@ -7328,6 +7695,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! Het zijn er 30.
 - Ja! 23, 29, 44.
 - Ja! 26, 31, 34.
+- Let op, nu vraag ik iets anders.
 - 38 is meer.
 - Ja! Het zijn er 37.
 - Ja! 14, 22, 40.
@@ -7366,6 +7734,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zijn er nog 2.
 - Tik op een som waar 0 uitkomt.
 - 9 min 8? Niet helemaal.
+- Dan staat er twee keer hetzelfde getal.
 - Bij een som met uitkomst 0 gaat alles eraf.
 - Ja! 6 min 6 = 0.
 - Er is er nog één.
@@ -7433,6 +7802,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat is minder dan 17.
 - Ja! Hier zijn er 12.
 - Waar liggen de meeste koekjes?
+- Dat zijn de meeste.
 - Ja! Hier liggen er 13.
 - Ja! Hier liggen er 16.
 - Dat is meer dan 7.
@@ -7461,6 +7831,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! 10 min 3 = 7.
 - De machine haalt er 5 af.
 - Waar liggen de minste appels?
+- Dat zijn de minste.
 - Ja! Hier liggen er 18.
 - Ik zet 10 stippen neer.
 - Er gaan er 5 af.
@@ -7547,7 +7918,6 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel geld houd je over?
 - En luister goed naar de sommen.
 - Je koopt het ijsje.
-- Hoeveel euro houd je over?
 - Kijk naar je geld.
 - Ja! 6 min 2 = 4.
 - Je houdt 4 euro over.
@@ -7651,6 +8021,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Welk kaartje hoort bij 6 + 4?
 - Ja! 6 + 4 = 10.
 - Welk antwoord hoort bij welke som?
+- Ja! Elke som hoort bij het goede antwoord.
 - Hoeveel donuts zijn het bij elkaar?
 - Ja! 4 + 4 = 8.
 - Daarna bak ik er nog 5.
@@ -8012,6 +8383,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Boven zitten er 10.
 - We tellen verder vanaf 12.
 - Bij de deur staan 3 kinderen.
+- Tel jij de laatste?
 - Kijk, een munt van 2 euro!
 - Waar zie je een munt van 2 euro?
 - Ik schud nog een keer.
@@ -8088,6 +8460,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Waar ligt 3 euro?
 - Kijk, een springtouw.
 - Het springtouw kost 3 euro.
+- Hoeveel is dat bij elkaar?
 - Sam en Noor laten de hond van de buren uit.
 - Waar ligt dat geld?
 - Drie munten van 1 euro is samen 3 euro.
@@ -8150,11 +8523,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ik zet 3 stippen in de rij.
 - Kijk naar de 3.
 - Waar ligt 8 euro?
+- Hoeveel plekjes zijn er nog leeg?
 - Vier munten van 2 euro is ook 8 euro.
 - Een briefje van 5 euro, een munt van 2 euro en een munt van 1 euro is samen 8 euro.
 - 15 euro en 2 euro is samen 17 euro.
 - Ze krijgen 1 euro.
 - Ze hadden 17 euro.
+- Zoek het getal dat de rij vol maakt.
 - Waar ligt het geld dat ze nu hebben?
 - Sam en Noor wassen de fiets van de buurvrouw.
 - Ik heb 9 euro in mijn portemonnee.
@@ -8547,6 +8922,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! Er blijven 14 raketjes over.
 - Daar staan er ook 8.
 - Hier staan 8 taartjes.
+- Het rode rondje zegt hoeveel pakjes er bezorgd zijn.
 - Kijk, een bus vol pakjes.
 - Hoeveel liggen er dan nog in de bus?
 - Daar staan alleen cijfers op.
@@ -8688,8 +9064,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het laatste briefje gaat terug.
 - Mama heeft water met fruit.
 - Er zijn 5 pionnen.
+- meer
 - vol
-- evenveel
 - Het tegenovergestelde van leeg is vol.
 - Een halve liter is evenveel.
 - 5 kun je splitsen in 2 en 3.
@@ -8912,6 +9288,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De blauwe blaadjes zijn groter. Daarom passen er minder op.
 - De tafel is 12 blaadjes groot.
 - Zet ze op volgorde.
+- Begin bij het briefje.
 - Ja! 16 + 2 = 18.
 - Samen is dit 8 euro.
 - Ja! 12 + 8 = 20.
@@ -9043,6 +9420,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hier is er 1.
 - Daar komen er 4 bij.
 - Begin bij het grootste getal: 4.
+- Draai de som om.
 - 19 kun je splitsen in 10 en 9.
 - 19 = 10 + 9.
 - Er komt 1 blauwe stip bij.
@@ -9171,6 +9549,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoe laat gaat het volgende plantje de grond in?
 - Dit plantje gaat ook de grond in.
 - Je kunt de digitale klok lezen in een verhaal.
+- Ja! Er komt iets bij, dus het is een plussom.
 - Alle plantjes staan buiten.
 - Hoe laat krijgen ze water?
 - Op welk plaatje heeft het plantje al een bloem?
@@ -9185,6 +9564,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op welk plaatje is het dag?
 - Overdag schijnt de zon.
 - Hier zijn er 4.
+- Twee keer hetzelfde getal: dat is een dubbelsom.
 - Kijk: 4 oranje stippen en 4 blauwe stippen.
 - 3 + 3 = 6.
 - Elke keer komen er 2 bij.
@@ -9525,6 +9905,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 18 min 8: hoeveel sterren zie je nog?
 - Op deze klok is het 11 uur.
 - Hoeveel is 5 + 8?
+- Welke klok hoort erbij?
 - Hier staat 2 uur.
 - Het is geen 12 uur.
 - Je kunt plus en min door elkaar.
@@ -9845,6 +10226,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoi! We gaan puzzelen.
 - Hier staat nul 4 vóór de dubbele punt.
 - Bij 4 uur staat er nul 4 vóór de dubbele punt.
+- De puzzel is af.
 - Na de dubbele punt staat geen nul nul.
 - Hier staat nul nul vóór de dubbele punt.
 - Bij 10 uur staat er 10 vóór de dubbele punt.
@@ -9913,6 +10295,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Deze pizza? Niet helemaal.
 - Het grote ijsje? Niet helemaal.
 - De roze kraal? Niet helemaal.
+- We kijken samen naar het patroon.
 - Kijk: roze, geel, groen.
 - Wat komt er steeds na roze?
 - Het kleine ijsje, het grote ijsje, het middelste ijsje? Niet helemaal.
@@ -9959,10 +10342,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Waar zie je minder ballonnen dan bovenaan?
 - Het kleine deeg? Niet helemaal.
 - Paars, oranje, paars? Niet helemaal.
+- Elke kleur komt in elk rijtje één keer voor.
+- Welke kleur mist hier nog?
 - Hier staan groen en oranje.
+- Kijk zo ook naar de andere rijtjes.
 - Paars? Niet helemaal.
 - Hier blauw, en daar ook blauw.
 - Hier oranje, en daar ook oranje.
+- Welke kleur ligt er tegenover het lege vlak?
 - De blauwe doos? Niet helemaal.
 - Groen, paars, oranje, groen.
 - Welke kleur komt er in de volgorde vóór groen?
@@ -9977,12 +10364,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er moeten nog twee bloemen in de bak.
 - De rode bloem en de zonnebloem? Niet helemaal.
 - Kijk: om en om staat er een zonnebloem.
+- Welke bloem komt er daarna?
 - Daartussen staat steeds iets anders: tulp, rode bloem, tulp.
 - Meer? Niet helemaal.
 - Waar liggen de meeste peren?
 - Waar liggen de minste peren?
 - Je kunt patronen in rijen afmaken.
 - Dat plaatje? Niet helemaal.
+- We kijken samen naar elk plaatje.
 - Hier ligt het speelgoed op de grond.
 - Hier ligt het speelgoed naast het boek, maar op de grond.
 - Kort? Niet helemaal.
@@ -10006,6 +10395,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het blok? Niet helemaal.
 - In het midden ligt het boek.
 - En dan naar boven.
+- Wat ligt daar?
 - Ga nu naar rechts.
 - Op een bankje in het park? Niet helemaal.
 - Je kijkt er dus van hoog naar beneden.
@@ -10020,6 +10410,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dat huisje? Niet helemaal.
 - Ja! 13 = 10 + 3.
 - Ja! 16 = 9 + 7.
+- Kijk goed naar de drie huisjes.
 - Ja! 10 = 4 + 6.
 - Van onderaf zie je vooral de muur, en bijna geen dak.
 - Je kunt bij een splitsing een som maken.
@@ -10027,6 +10418,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je weet waar dingen zijn, en van welke kant je kijkt.
 - 4 pionnen? Niet helemaal.
 - Kijk: samen zijn het er 9.
+- Ik tel de eerste rij.
 - Let op: het moeten pionnen zijn.
 - Er zijn 2 rijen.
 - 4 ballen? Niet helemaal.
@@ -10060,6 +10452,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Je kunt getallen tot 10 splitsen.
 - In de bus liggen 16 pakjes.
 - Ligt het bovenaan, onderaan of in het midden?
+- En aan welke kant: links of rechts?
 - Kijk waar de bal ligt.
 - Ja! Er liggen nog 12 pakjes in de bus.
 - In de bus liggen 18 pakjes.
@@ -10073,7 +10466,9 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - In de bus liggen 19 pakjes.
 - Ja! Er liggen nog 16 pakjes in de bus.
 - In de bus liggen 14 pakjes.
+- Elk bakje krijgt er steeds één bij.
 - We verdelen de knikkers één voor één.
+- Tel wat er in één bakje ligt.
 - In de bus liggen 17 pakjes.
 - In de bus liggen 15 pakjes.
 - 1 stuiterbal? Niet helemaal.
@@ -10120,12 +10515,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Van de 5 is er dan nog 1 over.
 - 10 en nog 1: hoeveel is dat?
 - Begin bij 6.
+- We tellen in sprongen van twee.
 - Er zweven 8 ballonnen in de lucht.
 - Ja! Er blijven 2 ballonnen over.
 - Tel jij verder vanaf 4?
 - Reken eerst 5 + 4.
 - Dan komt de 10 er nog bij.
 - 15 is 10 en 5.
+- Welk getal komt ervoor?
 - En welk getal komt erna?
 - Tik dan op een plaatje eronder.
 - Kijk eerst naar het plaatje bovenaan.
@@ -10146,6 +10543,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Deze? Niet helemaal.
 - Welk getal komt na 5?
 - Het meeste fruit: daar zit het allermeeste op.
+- Vergelijk de drie plaatjes.
 - Hier staat 5.
 - Ja! Daar zit het meeste fruit op.
 - Na 5 komt het getal rechts ervan.
@@ -10160,6 +10558,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op welke boterham zit evenveel kaas?
 - Hier zijn 8 ballen.
 - Onder staan 10 en 4.
+- Die komen erachter, met een plus ertussen.
+- Zoek de som met die drie getallen.
 - Ja! 7 komt net voor 8.
 - Bovenaan staat 14.
 - Kijk naar de plank.
@@ -10269,6 +10669,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hij staat helemaal achteraan.
 - Ja! De laatste ballon is blauw.
 - Welke kleur heeft de middelste ballon?
+- Er staan er twee voor en twee achter.
 - Ja! De middelste ballon is paars.
 - Waar zie je meer dan 3 ballen?
 - Dat is meer dan 3.
@@ -10348,6 +10749,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Ja! Laag, Lager, Laagst.
 - Kijk: een briefje van 10 euro.
 - Samen is dat 17 euro.
+- Hoeveel munten zijn er bij de 10? Tel ze maar.
+- En munten van één euro.
 - Tel één terug vanaf 15.
 - Onder staan 10 en 3.
 - Zoek een som met 13, 10 en 3.
@@ -10367,6 +10770,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 8 euro? Niet helemaal.
 - Begin bij 5 en tel vier verder.
 - 10 euro? Niet helemaal.
+- We tellen elk groepje geld.
 - Hier ligt 8 euro.
 - Welk geld krijg je terug?
 - Kijk naar de dag rechts van vrijdag.
@@ -10717,6 +11121,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, allemaal dingen uit de ruimte!
 - De ruimte wordt voller.
 - Soms staat alles door elkaar, soms staat het in rijen.
+- Een klok heeft twee wijzers en getallen. Waar zie je nog meer zo'n klok? Kun je dit al?
 - Nu zijn het er veel meer, tel goed!
 - De planeten en ufo's zijn terug.
 - Nu staan ze in rijen van 10.
@@ -10738,6 +11143,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, een raketje vliegt over de getallenlijn!
 - Wat weegt dan het meest?
 - Wat staat er bij 17?
+- Een uur later is de kleine wijzer één getal verder.
 - Wat staat er bij 14?
 - De ufo staat bij 14.
 - Het raketje staat ongeveer bij 19.
@@ -10782,6 +11188,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hij is goud in het midden, met een zilveren rand.
 - Een munt van 2 euro is ook rond.
 - Kijk eens naar de kralen!
+- Een briefje van tien en vier munten. Welk getal mist er nog in het huisje? Kun je dit al?
 - Een munt van 2 euro? Niet helemaal.
 - Waar zie je meer en waar zie je minder?
 - Een briefje van 100 euro? Niet helemaal.
@@ -10988,6 +11395,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Een lange wijzer en een korte wijzer.
 - Hoeveel wijzers zijn dat samen?
 - We tellen de wijzers.
+- De kleine wijzer wijst het uur aan.
 - Hier wijst de kleine wijzer naar de 6.
 - Hier wijst de kleine wijzer naar de 5.
 - Hier wijst de kleine wijzer naar de 12.
@@ -11030,6 +11438,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op welke dag begint het kamp?
 - Gisteren werd het huis geschilderd.
 - Op welke dag werd het huis geschilderd?
+- Ken je ook de feestkalender?
 - Gisteren was het feest.
 - De dag daarvoor stond de taart in de oven.
 - Op welke dag stond de taart in de oven?
@@ -11062,6 +11471,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Dan weet je over hoeveel nachtjes het feest is.
 - Over 4 nachtjes is het feest.
 - De nacht gaat voorbij. Dan is het snel morgen.
+- Drie potjes met een getal. Zet de potjes op volgorde, van meer naar minder. Kun je dit al?
 - Over hoeveel nachtjes is het feest dan?
 - Stel je voor dat het al 12 juni is.
 - Dat was maar even verzonnen.
@@ -11099,10 +11509,13 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Het muurtje van twee stenen, het muurtje van zes stenen, het muurtje van vier stenen? Niet helemaal.
 - 5 shirts? Niet helemaal.
 - Hier zijn 3 shirts.
+- Hoeveel heb je erbij geteld?
 - Tel verder vanaf 3 tot 9.
 - Kijk: een staaf van 10 blokjes.
 - Eronder liggen 5 oranje blokjes.
+- Hoeveel blokjes blijven er over? Tel ze maar.
 - Eronder liggen 10 oranje blokjes.
+- Blijft er nog iets over?
 - De tafel met zes borden, de tafel met vier borden, de tafel met twee borden, de tafel met plek over? Niet helemaal.
 - Het muurtje van vier stenen, het muurtje van twee stenen, het muurtje van zes stenen? Niet helemaal.
 - Er valt geld uit de spaarpot. Waar zie je een munt van 1 euro? Kun je dit al?
@@ -11126,13 +11539,16 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst waren er 6 diamanten.
 - Eerst waren er 5 kopermunten.
 - Je hebt 20 euro gespaard. Waar ligt 20 euro? Kun je dit al?
+- Twee groepjes geld en twee bedragen. Welk bedrag hoort bij welk geld? Kun je dit al?
 - Nu tellen we verder, tot 100. Welk huisnummer komt na 69? Kun je dit al?
+- De bezorgbus rijdt de hele dag langs de winkels. Kijk steeds op de klok: hoe laat is het? Kun je dit al?
 - Een lichtslinger heeft lampjes met getallen. Welk getal hoort op het lege lampje? Kun je dit al?
 - Nu ligt de bal tussen 4 en 6. Welk getal ligt onder de bal? Kun je dit al?
 - Welk getal komt na 20, als je terugtelt?
 - Welk getal komt na 16, als je terugtelt?
 - Een deel ligt onder de doek.
 - Eén ligt onder de doek.
+- Er liggen drie kaarten met getallen. Zet de getallen op volgorde, van klein naar groot. Kun je dit al?
 - We tellen eerst kralen. Tel de kralen. Welk getal is evenveel? Kun je dit al?
 - Op schattenjacht tel je goudstukken en maak je plussommen. Waar liggen 14 goudstukken? Kun je dit al?
 - Bij elke ufo zet ik een streepje.
@@ -11179,6 +11595,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Nu zijn er veel meer planeten. Hoeveel planeten zie je? Kun je dit al?
 - De bus rijdt weg met de broodjes.
 - De zon staat hoog. De bus brengt de broodjes weg.
+- Een ding ligt tussen twee getallen. Welk getal ligt onder de bal? Kun je dit al?
 - Na het pakje staat 17.
 - De kristallen hebben getallen eronder. Welk getal hoort op de puntjes? Kun je dit al?
 - De bus rijdt om 4 uur terug naar de bakkerij.
@@ -11186,12 +11603,15 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Op de getallenlijn staan niet alle getallen. Welk getal hoort bij het vlaggetje? Kun je dit al?
 - Er zweven 7 ballonnen in de lucht en er vliegen er 4 weg. Hoeveel ballonnen blijven er over? Kun je dit al?
 - De bus heeft 10 pakjes. In het rondje staat 7. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Er staan twee klokken. Op welke klok is het 2 uur? Kun je dit al?
 - De lege bordjes gaan weg.
 - Er gaan er 8 weg.
 - Er gaan er 7 weg.
 - Het lege bordje gaat weg.
 - Er zit geld in je portemonnee en je koopt een ijsje. Hoeveel euro houd je over? Kun je dit al?
 - De appels liggen in rijtjes van 5. Tel de appels. Welk getal is evenveel? Kun je dit al?
+- Hier staan twee kaarten met bloemen. Op welke kaart zijn er meer bloemen? Kun je dit al?
+- Drie kaarten met appels. Waar liggen de minste appels? Kun je dit al?
 - De bus heeft 12 pakjes. In het rondje staat 6. Hoeveel pakjes liggen er nu in de bus? Kun je dit al?
 - Ik leg er 2 bij.
 - Erbij is plus: 3 + 2.
@@ -11225,6 +11645,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zijn 6 ballen. Hoeveel zitten er in de doos? Kun je dit al?
 - We tellen verder vanaf 10. Zet de getallen op hun plek. Kun je dit al?
 - Je kent half en bijna half.
+- De klok bij het schoolbord staat op 9 uur. Hoe laat is het over een uur? Kun je dit al?
 - De voetbal ligt al een uur in het gras.
 - De gieter staat klaar.
 - Een klok, een kalender en plaatjes. Waar zie je wat er vandaag gaat gebeuren? Kun je dit al?
@@ -11232,10 +11653,14 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk, de gele pijl staat bij dinsdag.
 - Nu staan de kralen in rijen onder elkaar. Hoe ziet de onderste rij eruit? Kun je dit al?
 - In de bus liggen 8 pakjes en er worden er 3 bezorgd. Hoeveel pakjes liggen er nu nog in de bus? Kun je dit al?
+- Op een dagkalender zie je wat je op één dag doet.
+- Op een weekkalender zie je de dagen van één week.
 - Sommige platen zijn bijna 10. Welke twee zijn precies 10? Kun je dit al?
 - Kijk naar de tent. Welke vorm lijkt erop? Kun je dit al?
+- Drie dingen staan in een rij. Wat staat er rechts? Kun je dit al?
 - Hier zie je kleuren en vormen. Waar zie je een rode cirkel? Kun je dit al?
 - Drie ballen zijn niet even groot. Zet ze op volgorde, van klein naar groot. Kun je dit al?
+- Vijf dingen staan in een rij. Wat staat als eerste in de rij? Kun je dit al?
 - We zoeken getallen die naast elkaar staan. Welk getal komt net voor 7? Kun je dit al?
 - Hier zijn 9 appels.
 - Drie groepjes sterren in de ruimte. Waar zie je 6 sterren? Kun je dit al?
@@ -11257,6 +11682,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De plussommen worden groter. Hoeveel is 10 + 7? Kun je dit al?
 - Nu gaan we over de 10 heen. Hoeveel is 7 + 7? Kun je dit al?
 - 7 uur? Niet helemaal.
+- Drie ballen zijn niet even groot. Zet ze op volgorde: klein, kleiner, kleinst. Kun je dit al?
 - Ja! Klein, kleiner, kleinst.
 - Ja! Dik, dikker, dikst.
 - Ja! Groot, groter, grootst.
@@ -11278,6 +11704,8 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hier zijn het er 3.
 - Dat is meer dan 4.
 - De middelste ballon is geel.
+- Van vakje naar vakje is één nachtje slapen.
+- Zie je de boogjes?
 - Nu gaan we over de 10 heen. Hoeveel is 16 min 9? Kun je dit al?
 - Er gaat 10 in de min-machine en de machine haalt er 3 af. Hoeveel komt eruit? Kun je dit al?
 - Het schoolbord is vol minsommen. Hoeveel is 7 min 4? Kun je dit al?
@@ -11296,6 +11724,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - In de doos? Niet helemaal.
 - Voor de doos? Niet helemaal.
 - Op de doos? Niet helemaal.
+- Zie je de hele bal, of maar een stukje?
 - Op: de bal ligt bovenop de doos.
 - Voor: de bal ligt vooraan. Je ziet de hele bal.
 - Achter: de doos staat ervoor. Je ziet maar een stukje bal.
@@ -11457,6 +11886,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hoeveel ballonnen zijn het?
 - Er staan 7 oranje stippen in.
 - Er zijn nog 3 plekjes leeg.
+- Kijk, een rij van tien plekjes.
 - 7 en 3 is samen 10.
 - Zoek steeds twee getallen die samen 10 zijn.
 - Het is een nieuwe dag. Waar zie je wat er vandaag gaat gebeuren?
@@ -11937,6 +12367,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - De fiets staat links.
 - Meer kaas: je ziet méér kaas dan bovenaan.
 - De auto staat in het midden.
+- Vergelijk elk plaatje met dat bovenaan.
 - De bus staat rechts.
 - Tel verder van 2 tot 6.
 - Buiten liggen er 2.
@@ -11963,6 +12394,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Er zijn 6 knikkers. Hoeveel zitten er in de zak?
 - Er zijn 5 knikkers. Hoeveel zitten er in de zak?
 - Na 10 komt het getal dat één meer is.
+- Daarna weer één meer, en zo verder.
 - Op het eerste plekje staat 10.
 - 10, 11, 12, 13, 14.
 - We tellen verder vanaf 10. Zet de getallen op hun plek.
@@ -12102,6 +12534,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Tel de bloemen. Hoeveel zijn het er?
 - Tel de knikkers. Hoeveel zijn het er?
 - Tel de sterren. Hoeveel zijn het er?
+- De meeste komt vooraan.
 - 6, 4, 2.
 - Hier liggen koekjes. Zet ze op volgorde, van meer naar minder.
 - In: de bal zit binnen in de doos. Je ziet alleen de bovenkant.
@@ -12286,6 +12719,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Hier liggen nog drie briefjes. Waar zie je een briefje van 5 euro?
 - Er staat een 1 op. Zo weet je hoeveel hij waard is.
 - Dit is een munt van 1 euro.
+- Kijk, knikkers en twee bakjes. Kun jij de knikkers eerlijk verdelen? Kun je dit al?
 - Er zijn 8 knikkers. Sleep ze eerlijk over de 2 bakjes.
 - Ja! Elk bakje krijgt evenveel knikkers.
 - Er zijn 12 knikkers. Sleep ze eerlijk over de 3 bakjes.
@@ -12298,6 +12732,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Kijk naar het huisje. Welke sommen passen erbij? Er zijn er twee goed. Tik op allebei.
 - Welk huisje hoort bij welke som? Tik op een huisje. Tik dan op de som die erbij hoort.
 - 100 euro? Niet helemaal.
+- Hier is twee keer dezelfde tafel.
 - Is het rond? Nee, het is een rechthoek.
 - Dus het is een briefje.
 - Kijk naar het getal: een 1 en een 0.
@@ -12310,6 +12745,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Splits het getal 17. Welk getal mist er nog? Sleep het getal naar het huisje.
 - Splits het getal 11. Welk getal mist er nog? Sleep het getal naar het huisje.
 - Splits het getal 15. Welk getal mist er nog? Sleep het getal naar het huisje.
+- Splitsen is een getal in twee stukken verdelen. Kun jij de pionnen in twee vakken slepen? Kun je dit al?
 - Splits het getal 16. Welk getal mist er nog? Sleep het getal naar het huisje.
 - Splits het getal 12. Welk getal mist er nog? Sleep het getal naar het huisje.
 - Er zijn 5 pionnen. Sleep 2 pionnen naar het paarse vak. De andere pionnen sleep je naar het oranje vak.
@@ -12431,6 +12867,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - 5 sleutels? Niet helemaal.
 - 7 maanstenen? Niet helemaal.
 - Er zijn er nog 5.
+- Kijk, de ballen vallen in het huisje. Welk huisje past erbij? Kun je dit al?
 - De ballen vallen in het huisje. Welk huisje past erbij? Tik op het goede huisje.
 - In dit vak liggen 2 ballen.
 - In dat vak liggen 4 ballen.
@@ -12445,3 +12882,5024 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 - Eerst maak je 10: 8 + 2 = 10.
 - Van de 5 zijn er dan nog 3 over.
 - Begin bij 8.
+- 5 min 3 = 2? Niet helemaal.
+- De lege bekers gaan weg.
+- De ballen gaan door de machine en vallen in het huisje. Welk huisje past erbij? Tik op het goede huisje.
+- Welk getal hoort op de puntjes? Typ het getal.
+- Op de klok lees je de hele uren af en kies je hoe laat het is. Kun jij dit al?
+- Tel het fruit in de rijtjes en kies het getal dat erbij hoort. Wil je zelf proberen hoeveel fruit er ligt?
+- Bekijk de munten en briefjes en tik op het geld dat wordt gevraagd. Wil je eerst zelf het juiste geld zoeken?
+- Maak het kralenpatroon af door te kiezen welke kraal erna komt. Kun jij zelf ontdekken hoe het patroon verdergaat?
+- Tel het fruit in de rijtjes en kies het getal dat erbij hoort. Wil je zelf proberen te tellen hoeveel fruit er ligt?
+- Tik op de weektrein de dag aan die ervoor of erna komt en zoek de dagen van het weekend. Weet jij al genoeg over de dagen om zelf te beginnen?
+- Bij het sparen tel je munten en briefjes bij elkaar en zoek je hoeveel geld er nog bij moet. Lukt het je om zelf met het geld te rekenen?
+- Tel het fruit in de rijtjes en kies het getal dat erbij hoort. Lukt het tellen al?
+- Bekijk de munten en briefjes en tik op het geld dat wordt gevraagd. Herken je de munten en briefjes al?
+- Bij het sparen tel je munten en briefjes bij elkaar en zoek je hoeveel geld er nog bij moet. Lukt het om geld bij elkaar te tellen?
+- Lees hoeveel pakjes de bus bezorgt en reken uit hoeveel er nog in liggen. Lukt rekenen met het getal in het rondje al?
+- Sleep de knikkers naar de bakjes, zodat in elk bakje evenveel komt. Lukt het om alles eerlijk te verdelen?
+- Deze mand is vol.
+- Lees hoeveel pakjes de bus bezorgt en reken uit hoeveel er nog in liggen. Kun je al rekenen met het getal in het rondje?
+- Tel het fruit in de rijtjes en kies het getal dat erbij hoort. Lukt het tellen je al?
+- In een volle rij staan er 5.
+- Begin bij 10. Tik steeds op het voorwerp met de kring en tel verder.
+- Je begon bij 10 en telde verder tot 12.
+- Ja, 12. Het laatste getal vertelt hoeveel het er samen zijn.
+- Tel de ballonnen die overblijven. Hoeveel zijn het er?
+- Dat klopt. 7 min 4 is 3. Er gingen er 4 af.
+- Reken plussommen uit waarbij het antwoord over de tien gaat. Weet je hoe optellen over tien werkt?
+- Tel verder vanaf het getal op de zak om te bepalen hoeveel knikkers er samen zijn. Snap je hoe je vanaf het getal op de zak verder telt?
+- In de zak zitten 40 knikkers. Die hoef je niet opnieuw te tellen.
+- Begin bij 40. Tik steeds op het voorwerp met de kring en tel verder.
+- Ja, 47. Het laatste getal vertelt hoeveel het er samen zijn.
+- Begin bij 10. Tik steeds op de appel met de kring en tel verder.
+- Dit is één euro. Kijk naar de één en het woord euro. Een munt is rond.
+- Een munt
+- Een briefje
+- Zoek de munt met een 1 erop.
+- Tel de losse knikkers erbij. Zo ontdek je hoeveel knikkers er samen zijn.
+- Op de zak staat 40. Er zitten dus 40 knikkers in.
+- Begin bij 40. Tik steeds op de knikker met de kring en tel verder.
+- Hoeveel euro is dit?
+- Je bekijkt munten en briefjes. Soms kies je het juiste geld, soms het bedrag dat erbij hoort. Weet jij al hoeveel ze waard zijn?
+- Vergelijk de pannenkoeken en zoek welke groot is en welke klein is. Ken je deze woorden al?
+- We bekijken de woorden samen. Deze pannenkoek is groot. Die andere is klein.
+- Tik op de kleine pannenkoek.
+- Vergelijk de twee pannenkoeken. Welke neemt minder ruimte in?
+- Ja, die pannenkoek is kleiner dan de andere.
+- In het volle glas zit sap. Het andere glas is leeg.
+- Tik op het lege glas.
+- het volle glas
+- In deze mand zit een beetje fruit.
+- Deze mand zit propvol.
+- In welke mand zit niets?
+- Leeg betekent: er zit niets in.
+- Vergelijk de pannenkoeken en zoek welke groot is en welke klein is. Ken jij deze woorden al?
+- We lopen samen langs de huizen. Elk volgend nummer is één meer.
+- Tel één verder vanaf vierentwintig.
+- Ja, na vierentwintig komt vijfentwintig. Het nummer wordt één groter.
+- Ja, na vierentwintig komt vijfentwintig. Er komt steeds 1 bij.
+- Met munten, briefjes en splitshuisjes verdeel je getallen tot twintig. Denk je dat je ook grotere getallen kunt splitsen?
+- Ik help je op weg.
+- Samen is dat 14 euro.
+- We lopen samen langs de huizen. Elk volgend nummer is 1 meer.
+- Twaalf uur
+- Zes uur
+- Drie uur
+- Dat klopt: 3 uur. De kleine wijzer wijst naar 3 en de grote wijzer staat op 12.
+- Zie jij de kleine pannenkoek? Tik die aan.
+- Kijk naar beide pannenkoeken. Zoek de kleinste.
+- Ja, deze is klein. De andere pannenkoek is groter.
+- Goed zo. Deze pannenkoek is groter dan de andere.
+- Zie je het lege glas? Tik het aan.
+- Dat klopt. Het glas is leeg, want er zit niets in.
+- Welk glas is vol? Tik het aan.
+- Ja, dit glas is vol. Het zit vol sap.
+- Wat is zwaarder: de meloen of de appel? Tik het aan.
+- Ja, de meloen is zwaarder. Daarom hangt die kant lager.
+- Wat is lichter: de appel of de meloen? Tik het aan.
+- Goed zo. De appel is lichter. Daarom hangt die kant hoger.
+- Welk broodje is korter? Tik het aan.
+- Ja, dit broodje is korter. Het stopt eerder dan het andere.
+- Welk broodje is langer? Tik het aan.
+- Dat klopt. Dit broodje loopt verder door. Het is langer.
+- Hier liggen schoenen.
+- Hier liggen een broek, een shirt en een schoen door elkaar.
+- Kijk: rood, groen, blauw.
+- Wat komt er steeds na rood?
+- Kijk naar de ketting. Welke kraal komt na de rode kraal?
+- Kijk naar het patroon. Het komt steeds terug.
+- Het komt steeds terug.
+- Kijk naar het patroon.
+- De rode kraal? Niet helemaal.
+- De groene kraal? Niet helemaal.
+- Welke kraal komt na de rode kraal? Tik op die kraal.
+- Elk huis is 1 verder.
+- Tel 1 verder dan 7.
+- 6? Dat is nog niet het goede nummer.
+- Er staat een grote 1 op.
+- Een munt van 1 euro is rond.
+- Een briefje van 5 euro? Niet helemaal.
+- Het briefje is 10 euro waard. Tel de munten van 1 euro erbij. Begin bij 10 en tel verder. Hoeveel euro is het samen?
+- Splits 14 in 2 getallen.
+- Een getal staat er al.
+- Welk getal mist er nog.
+- Sleep het naar de lege plekt
+- We bekijken eerst een voorbeeld.
+- Zet de 4 dagen op de goede volgorde. Sleep een kaart naar een leeg vak. Tikken mag ook.
+- Bij 9 uur wijst de kleine wijzer naar een ander getal.
+- Kijk nog eens naar de kleine wijzer. Naar welk getal wijst hij?
+- Bij 3 uur wijst de kleine wijzer naar een ander getal.
+- Oei.
+- Bij 7 uur wijst de kleine wijzer naar een ander getal.
+- Even denken.
+- Bij 1 uur wijst de kleine wijzer naar een ander getal.
+- Dat is het nog niet.
+- Bij 12 uur wijst de kleine wijzer naar een ander getal.
+- Bij 11 uur wijst de kleine wijzer naar een ander getal.
+- Dit is het goede antwoord.
+- Bij 6 uur wijst de kleine wijzer naar een ander getal.
+- Bij 2 uur wijst de kleine wijzer naar een ander getal.
+- Bij 4 uur wijst de kleine wijzer naar een ander getal.
+- Bij 11 uur wijst de kleine wijzer naar de 11.
+- Kijk waar hij op deze klok naartoe wijst.
+- Bij 9 uur wijst de kleine wijzer naar de 9.
+- Ah, ik snap wat je dacht.
+- Bij 3 uur wijst de kleine wijzer naar de 3.
+- Bij 6 uur wijst de kleine wijzer naar de 6.
+- Bij 7 uur wijst de kleine wijzer naar de 7.
+- Bij 1 uur wijst de kleine wijzer naar de 1.
+- Bij 2 uur wijst de kleine wijzer naar de 2.
+- Bij 4 uur wijst de kleine wijzer naar de 4.
+- Bij 12 uur wijst de kleine wijzer naar de 12.
+- We bekijken de wijzers 1 voor 1. De grote wijzer staat op 12. Dan is het een heel uur.
+- De grote wijzer staat op de 12. Wij kijken nu naar de kleine wijzer.
+- De grote wijzer staat op de 12, maar de kleine wijzer vertelt het uur.
+- Het is 3 uur. De kleine wijzer wijst naar de 3 en de grote wijzer staat op de 12.
+- Er wijst geen wijzer naar de 6.
+- Klopt. Na 7 komt 8.
+- Dat is 'm. Voor 12 komt 11.
+- Kijk, op 1 bordje staat een vraagteken.
+- Goed zo. 16 hoort tussen 15 en 17.
+- Op welk kaartje zijn de 2 getallen samen 10?
+- Klopt! 7 en 3 is samen 10.
+- Op dat kaartje staan 4 en 4. Samen is dat 8.
+- Kijk eens goed.
+- Kijk, zo zit het.
+- 4 oranje stippen en 4 blauwe stippen.
+- Kijk naar 4 en 4.
+- Dat is nog geen 10.
+- Er blijven 2 plekjes leeg.
+- Bij 10 is de rij precies vol.
+- Samen is dat precies 10.
+- Op dit kaartje staan 9 en 1.
+- Er komt nog iets bij.
+- Begin bij 4.
+- Tel 1 verder.
+- Je koos 4. Dat is maar 1 van de 2 getallen uit de som.
+- Op dat kaartje staan 6 en 2. Samen is dat 8.
+- Dan kijken we er samen naar.
+- 6 oranje stippen en 2 blauwe stippen.
+- Kijk naar 6 en 2.
+- Op dit kaartje staan 4 en 6.
+- Goed gerekend! 5 en 5 is samen 10.
+- Op dat kaartje staan 1 en 6. Samen is dat 7.
+- Ik leg het even uit.
+- 1 oranje stip en 6 blauwe stippen.
+- Kijk naar 1 en 6.
+- Er blijven 3 plekjes leeg.
+- Op dit kaartje staan 2 en 8.
+- Op dat kaartje staan 5 en 3. Samen is dat 8.
+- 5 oranje stippen en 3 blauwe stippen.
+- Kijk naar 5 en 3.
+- Op dit kaartje staan 6 en 4.
+- Op dat kaartje staan 2 en 2. Samen is dat 4.
+- Zie je? Dit is het.
+- 2 oranje stippen en 2 blauwe stippen.
+- Kijk naar 2 en 2.
+- Er blijven 6 plekjes leeg.
+- Op dit kaartje staan 1 en 9.
+- Klopt! 8 en 2 is samen 10.
+- Op dat kaartje staan 4 en 3. Samen is dat 7.
+- Laten we eens kijken.
+- 4 oranje stippen en 3 blauwe stippen.
+- Kijk naar 4 en 3.
+- Op dit kaartje staan 7 en 3.
+- Precies! 9 en 1 is samen 10.
+- Op dat kaartje staan 3 en 5. Samen is dat 8.
+- Tel nog eens rustig, stap voor stap.
+- Het is een dubbelsom.
+- 11 zit er net naast.
+- 2 keer hetzelfde getal: dat is een dubbelsom.
+- Zo zit het: 6 + 6 = 12.
+- 12 zit er net naast.
+- Denk aan 6 + 6 = 12.
+- Het antwoord is 1 meer.
+- 7 is 1 meer dan 6.
+- Dus 7 + 6 is 1 meer dan 12.
+- Zo zit het: 7 + 6 = 13.
+- Tik op 2 getallen die samen 10 zijn.
+- Ja, zo is het. Na 7 komt 8.
+- Ja, zo is het. 16 hoort tussen 15 en 17.
+- Klopt. Na 19 komt 20.
+- Precies. 10 hoort tussen 9 en 11.
+- Goed zo. Na 25 komt 26.
+- Dat is 'm. Voor 27 komt 26.
+- Ja, zo is het. Voor 21 komt 20.
+- Goed zo. 28 hoort tussen 27 en 29.
+- Precies. 24 hoort tussen 23 en 25.
+- Dat is 'm. Voor 30 komt 29.
+- Precies. Na 39 komt 40.
+- Klopt. Voor 41 komt 40.
+- Ja, zo is het. 47 hoort tussen 46 en 48.
+- Goed zo. 34 hoort tussen 33 en 35.
+- Klopt. Na 49 komt 50.
+- Goed zo. Voor 35 komt 34.
+- Met 9 sla je een huis over.
+- Wacht eens even.
+- Na 7 komt 8.
+- Tel 1 terug vanaf 12.
+- 13 staat er al in de straat.
+- Terug wordt het nummer steeds 1 minder.
+- Voor 12 komt 11.
+- 19 hoort niet tussen 15 en 17.
+- Tel 1 verder dan 15.
+- 16 hoort tussen 15 en 17.
+- Tel 1 verder dan 19.
+- Na 19 komt een groter nummer.
+- Tel 1 verder vanaf 24.
+- 23 staat al in de straat.
+- Na 24 komt 25.
+- In de zandloper zit zand. Er staan geen wijzers op.
+- Zoek een rondje met 2 wijzers.
+- Zoek de klok waar hij naar de 9 wijst.
+- Bij die klok wijst de kleine wijzer naar de 3.
+- Hier wijst de kleine wijzer naar de 3.
+- In de zandloper zit zand.
+- Kijk naar de telefoon. Wat zie je op het scherm?
+- Dit is een lampje.
+- Je ziet een rondje met 2 wijzers.
+- Tel alleen de lange en de korte wijzer.
+- De 6 is een getal op de klok. Dat is geen wijzer.
+- Bij die klok wijst de kleine wijzer naar de 6.
+- Zoek de klok waar hij naar de 4 wijst.
+- Een klok heeft 2 wijzers.
+- De maan zie je 's avonds en 's nachts.
+- Naar de 1 wijst geen wijzer.
+- Zoek de korte wijzer en kijk waar die naartoe wijst.
+- Bij 10 uur wijst de kleine wijzer naar de 10.
+- De kleine wijzer is de korte wijzer.
+- De klok zegt hoe laat het is.
+- De klok zegt niet hoeveel broodjes er zijn.
+- Om 7 uur zijn ze klaar. Dat is niet hoe lang het duurt.
+- Tel van 6 uur naar 7 uur.
+- Om 6 uur gaan de broodjes de oven in.
+- Bij 5 uur wijst de kleine wijzer naar de 5.
+- Om 7 uur komen ze eruit.
+- Tel van 6 uur verder tot 7 uur.
+- Waar staat de oven?
+- De bus rijdt rond en brengt de broodjes weg.
+- Zoek de klok waar hij naar de 5 wijst.
+- Bij die klok wijst de kleine wijzer naar de 1.
+- Zoek de klok waar hij naar de 10 wijst.
+- Bij die klok wijst de kleine wijzer naar de 11.
+- Zoek de klok waar hij naar de 12 wijst.
+- Hier wijst de kleine wijzer naar de 11.
+- Bij die klok wijst de kleine wijzer naar de 7.
+- Zoek de klok waar hij naar de 2 wijst.
+- Kijk waar de kleine wijzer staat.
+- Hier wijst de kleine wijzer naar de 7.
+- Dat is niet 10 uur, dus het kruisje.
+- De klok laat 7 uur zien.
+- Bij die klok wijst de kleine wijzer naar de 8.
+- Bij 8 uur wijst de kleine wijzer naar de 8.
+- Dat is niet 5 uur, dus het kruisje.
+- De klok laat 11 uur zien.
+- Hier wijst de kleine wijzer naar de 8.
+- Zoek de klok waar hij naar de 3 wijst.
+- Bij die klok wijst de kleine wijzer naar de 9.
+- Dat is niet 4 uur, dus het kruisje.
+- De klok laat 3 uur zien.
+- Zoek de klok waar hij naar de 11 wijst.
+- Op welke klokken is het even laat? Kijk goed, straks gaan de bolletjes dicht. Zoek steeds 2 klokken die even laat zijn.
+- Dat is niet 6 uur, dus het kruisje.
+- De klok laat 12 uur zien.
+- Dat is niet 2 uur, dus het kruisje.
+- De klok laat 10 uur zien.
+- Zoek de klok waar hij naar de 8 wijst.
+- Dat is niet 7 uur, dus het kruisje.
+- De klok laat 2 uur zien.
+- Zoek de klok waar hij naar de 7 wijst.
+- Dat is niet 12 uur, dus het kruisje.
+- Bij die klok wijst de kleine wijzer naar de 12.
+- Zoek de klok waar hij naar de 1 wijst.
+- Bij die klok wijst de kleine wijzer naar de 5.
+- Zoek de klok waar hij naar de 6 wijst.
+- De klok laat 9 uur zien.
+- Bij die klok wijst de kleine wijzer naar de 4.
+- Bij die klok wijst de kleine wijzer naar de 10.
+- De klok laat 1 uur zien.
+- Bij die klok wijst de kleine wijzer naar de 2.
+- Zoek de klok waar de kleine wijzer tussen de 4 en de 5 staat.
+- Die klok laat half 11 zien.
+- Hier staat de kleine wijzer tussen de 10 en de 11.
+- Hier staat de kleine wijzer tussen de 4 en de 5.
+- Die klok laat half 7 zien.
+- Zoek de klok waar de kleine wijzer tussen de 12 en de 1 staat.
+- Hier staat de kleine wijzer tussen de 6 en de 7.
+- Hier staat de kleine wijzer tussen de 12 en de 1.
+- Die klok laat half 4 zien.
+- Zoek de klok waar de kleine wijzer tussen de 6 en de 7 staat.
+- Hier staat de kleine wijzer tussen de 3 en de 4.
+- Die klok laat half 2 zien.
+- Zoek de klok waar de kleine wijzer tussen de 2 en de 3 staat.
+- Die klok laat half 6 zien.
+- Die staat op de 6.
+- Dan is het half.
+- De kleine wijzer staat tussen de 10 en de 11.
+- Hier staat de grote wijzer op de 6, en de kleine wijzer tussen de 5 en de 6.
+- Dat is niet half 6, dus het kruisje.
+- Hier staat de grote wijzer op de 12, en de kleine wijst naar de 6.
+- De klok laat half 11 zien.
+- Hier staat de kleine wijzer tussen de 1 en de 2.
+- Hier staat de kleine wijzer tussen de 2 en de 3.
+- Die klok laat 9 uur zien.
+- Bij half 5 staat de grote wijzer precies op de 6.
+- De kleine wijzer staat tussen de 8 en de 9.
+- Dat is niet half 12, dus het kruisje.
+- De klok laat half 9 zien.
+- De kleine wijzer staat tussen de 11 en de 12.
+- Kijk tussen welke 2 getallen hij hier staat.
+- Bij half 7 staat de kleine wijzer tussen de 6 en de 7.
+- Dat is niet half 1, dus het kruisje.
+- De klok laat half 12 zien.
+- Hier staat de grote wijzer op de 12, en de kleine wijst naar de 8.
+- Hier staat de grote wijzer op de 6, en de kleine wijzer tussen de 3 en de 4.
+- Hier staat de grote wijzer op de 12, en de kleine wijst naar de 10.
+- Bij half 5 staat de kleine wijzer tussen de 4 en de 5.
+- De kleine wijzer staat tussen de 3 en de 4.
+- Bij half 11 staat de kleine wijzer tussen de 10 en de 11.
+- Bij half 6 staat de kleine wijzer tussen de 5 en de 6.
+- De school is begonnen. Kijk op de klok. Hoe laat is het over 1 uur?
+- De kleine wijzer staat tussen de 6 en de 7.
+- Bij half 12 staat de kleine wijzer tussen de 11 en de 12.
+- De oven is aan. Kijk op de klok. Hoe laat is het over 1 uur?
+- De kleine wijzer staat tussen de 12 en de 1.
+- Tel de rest 1 voor 1.
+- Begin bij 10.
+- Er zijn meer dan 10 appels.
+- Er zijn minder dan 16 bananen.
+- De bus staat bij de halte. Kijk op de klok. Hoe laat is het over 1 uur?
+- Bij elke banaan zet ik 1 streepje.
+- Die klok laat bijna half 9 zien.
+- Zoek de klok waar de kleine wijzer tussen de 5 en de 6 staat.
+- Kijk naar de rijtjes met appels. Een volle rij telt 5. Begin met de volle rijen.
+- 11, 12, 13, 14, 15.
+- Kijk naar de wagon achter dinsdag.
+- Donderdag komt niet meteen na dinsdag.
+- Kijk naar de wagon vlak achter de locomotief.
+- Woensdag is niet de eerste dag.
+- De taart is net klaar. Kijk op de klok. Hoe laat was het 1 uur geleden?
+- Het zijn er 12.
+- 11, 12.
+- Hier staat de kleine wijzer tussen de 8 en de 9.
+- Hier staat de kleine wijzer tussen de 5 en de 6.
+- Er zijn minder dan 12 peren.
+- Die klok is een half uur eerder.
+- 1 uur geleden was de kleine wijzer 1 getal terug.
+- Bij elke appel zet ik 1 streepje.
+- Kijk naar de rijtjes met peren. Een volle rij telt 5. Begin met de volle rijen.
+- Vrijdag komt vóór zaterdag, niet erna.
+- Kijk naar de wagon achter zaterdag.
+- Zaterdag is de dag vóór de laatste dag.
+- Kijk naar de wagon helemaal achteraan.
+- Die klok laat bijna half 12 zien.
+- Zoek de klok waar de kleine wijzer tussen de 1 en de 2 staat.
+- Kijk eerst naar de klok bovenaan.
+- Het zijn er 11.
+- Er zijn meer dan 12 peren.
+- 1 uur geleden was het 6 uur.
+- Vrijdag.
+- Bij elke peer zet ik 1 streepje.
+- Zaterdag.
+- Er zijn meer dan 12 pruimen.
+- Het kampvuur brandt. Kijk op de klok. Hoe laat was het 1 uur geleden?
+- Hier staat de kleine wijzer tussen de 11 en de 12.
+- Woensdag komt vóór donderdag, niet erna.
+- Kijk naar de wagon achter donderdag.
+- Alleen zaterdag is maar 1 dag. Er komt nog een dag achter.
+- Tel de wagons achter vrijdag.
+- Het zijn er 13.
+- Hier staat de kleine wijzer tussen de 9 en de 10.
+- 1 uur geleden was het half 8.
+- Kijk naar de rijtjes met pruimen. Een volle rij telt 5. Begin met de volle rijen.
+- De voetbal ligt al 1 uur in het gras. Kijk op de klok. Hoe laat was het 1 uur geleden?
+- Er zijn meer dan 16 bananen.
+- Begin bij 15.
+- Zoek de klok waar de kleine wijzer tussen de 9 en de 10 staat.
+- 1 uur geleden was het half 5.
+- Het weekend zijn de laatste 2 dagen van de week.
+- Donderdag en vrijdag zijn schooldagen.
+- Het lampje gaat uit. Kijk op de klok. Hoe laat was het 1 uur geleden?
+- Na de laatste wagon begint de week opnieuw.
+- Zaterdag komt vóór zondag, niet erna.
+- 1 uur geleden was het 11 uur.
+- Er zijn minder dan 15 appels.
+- Kijk naar de wagon achter maandag.
+- Woensdag komt niet meteen na maandag.
+- Zondag.
+- Het treintje rijdt rondjes. Kijk op de klok. Hoe laat was het 1 uur geleden?
+- 16, 17.
+- 1 uur geleden was het half 10.
+- Er zijn minder dan 12 aardbeien.
+- Bij elke aardbei zet ik 1 streepje.
+- Het zijn er 14.
+- Kijk naar de wagon achter vrijdag.
+- Zondag komt niet meteen na vrijdag.
+- Later betekent: verder op de dag.
+- Half 4 is eerder dan 4 uur.
+- Er zijn meer dan 11 peren.
+- Zoek in de trein de dag die het eerst komt.
+- Kijk naar de wagon achter woensdag.
+- Dinsdag komt vóór woensdag, niet erna.
+- Er zijn meer dan 17 pruimen.
+- Geen enkel dag ligt op de goede plek.
+- Lees eerst allebei de klokken.
+- Half 3, 3 uur, half 4, 4 uur, half 5, 5 uur.
+- Bij elke pruim zet ik 1 streepje.
+- Donderdag komt ná woensdag, niet ervoor.
+- Kijk naar de wagon vlak voor woensdag.
+- Zet de 4 dagen op de goede volgorde.
+- Het zijn er 19.
+- 6 uur is eerder dan half 8.
+- Er zijn meer dan 13 citroenen.
+- Er zijn meer dan 13 pruimen.
+- Bij elke citroen zet ik 1 streepje.
+- 5 uur, half 6, 6 uur, half 7, 7 uur, half 8, 8 uur, half 9.
+- Zondag komt ná zaterdag, niet ervoor.
+- Kijk naar de wagon vlak voor zaterdag.
+- Er zijn meer dan 18 bananen.
+- Zaterdag komt ná vrijdag, niet ervoor.
+- Kijk naar de wagon vlak voor vrijdag.
+- Er zijn meer wagons dan dat.
+- Tel de wagons van maandag tot en met zondag, 1 voor 1.
+- Dinsdag komt ná maandag, niet ervoor.
+- Voor maandag was de vorige week. Kijk naar het eind.
+- Op een klok zie je hoe laat het is, niet wat er gebeurt.
+- Maandag komt vóór dinsdag, niet erna.
+- Er zijn minder dan 14 auto's en bussen.
+- Begin bij 5.
+- Er zijn meer dan 6 ufo's.
+- Kijk naar het plaatje helemaal links.
+- Gym is niet het eerste plaatje.
+- Bij elke ufo zet ik 1 streepje.
+- Kijk naar de rijtjes met auto's en bussen. Een volle rij telt 5. Begin met de volle rijen.
+- Kijk welk getal in het rode vak zelf staat.
+- De 8 is het vak links van het rode vak.
+- Zoek de dag direct na vrijdag.
+- Donderdag komt vóór vrijdag.
+- 6, 7.
+- Er zijn meer dan 16 auto's en bussen.
+- Er zijn minder dan 14 huizen en bomen.
+- Bij het kampvuur lazen we 3 boeken voor. Als eerste lazen we het rode boek. Welk boek lazen we als eerste?
+- Buiten spelen is het derde plaatje.
+- Kijk naar het plaatje direct naast de kring.
+- Graden meet je met een thermometer.
+- Op een kalender staan dagen.
+- Kijk naar de rijtjes met huizen en bomen. Een volle rij telt 5. Begin met de volle rijen.
+- Het blauwe boek was niet het eerste.
+- Donderdag staat een vakje verder.
+- Volg de rode pijl omhoog tot de dag bovenaan.
+- Er zijn minder dan 16 raketjes en sterren.
+- Rond is een vorm, geen lengte.
+- Zoek het tegenovergestelde van kort.
+- Er zijn meer dan 7 ufo's.
+- Zoek de kalender met een hoepel.
+- Kijk naar de rijtjes met raketjes en sterren. Een volle rij telt 5. Begin met de volle rijen.
+- Leg de kaartjes net zo als de plaatjes bovenaan.
+- Geen enkel kaartje ligt op de goede plek.
+- 6, 7, 8, 9.
+- Zoek het tegenovergestelde van lang.
+- Groen is een kleur.
+- Er zijn minder dan 17 ballen en blokken.
+- Er zijn meer dan 10 bussen en auto's.
+- Kijk naar de rijtjes met ballen en blokken. Een volle rij telt 5. Begin met de volle rijen.
+- Zoek een woord voor iets wat nog moet komen.
+- Bij de 9 staat het woord feest niet.
+- Zoek het rode woord.
+- Kijk naar de rijtjes met bussen en auto's. Een volle rij telt 5. Begin met de volle rijen.
+- Kijk nog eens naar de kalender.
+- Bovenaan staan de dagen en onder elke dag staan getallen.
+- Het zijn er 16.
+- De ochtend is aan het begin van de dag.
+- Op de kalender kun je wel tellen.
+- Er zijn minder dan 17 huizen en bomen.
+- Er zijn meer dan 10 ufo's.
+- De nacht komt ná de avond.
+- Wijs elk boogje aan en tel.
+- Dat is 1 boogje te weinig.
+- Elk boogje is 1 nachtje.
+- Tel de boogjes tot het feesthoedje.
+- Begin bij het rode vak.
+- Woensdag is morgen. Dan is het zwembad nog dicht.
+- Eerst morgen, en dan nog 1 dag verder.
+- Een vakje op de kalender is veel langer.
+- 1 uur zie je op een klok.
+- 16 juni is een week later dan 9 juni.
+- Morgen is maar 1 dag verder.
+- Leg ze zoals Bliepo ze zegt.
+- Er zijn meer dan 17 huizen en bomen.
+- Er zijn minder dan 15 raketjes en sterren.
+- 13 is de datum van het feest, niet het aantal nachtjes.
+- Tel de stapjes van het rode vak naar het feest.
+- Zoek het tegenovergestelde van vroeg.
+- Kort gaat over hoe lang iets duurt, niet over hoe laat het is.
+- Op de kalender is 1 vak rood. Welk getal staat in het rode vak?
+- Het rode vak staat niet bij de 20.
+- Er zijn nog boogjes te tellen.
+- 9 juni was gisteren.
+- Er zijn minder dan 9 ufo's.
+- De bakkerij is vlakbij. Daar ben je zo.
+- De 8 heeft de rode rand, niet het feesthoedje.
+- Vrijdag is een dag vóór zaterdag.
+- Er zijn minder dan 15 huizen en bomen.
+- Donderdag was eergisteren.
+- Gisteren is de dag direct vóór zaterdag.
+- De 16 staat in de rij eronder.
+- Er zijn minder dan 19 bootjes en treintjes.
+- Bij versieren doe je veel: room, fruit en nog meer.
+- Er zijn meer dan 10 raketjes en sterren.
+- Zondag komt 2 dagen na vrijdag.
+- Uren zie je op een klok.
+- Dat is in 1 tel gebeurd.
+- Kijk naar de rijtjes met bootjes en treintjes. Een volle rij telt 5. Begin met de volle rijen.
+- Nu gaat het brood de oven in. Daarna is er een koekje om te eten. Wat duurt ongeveer 1 uur?
+- 1 uur is best lang.
+- Brood bakken duurt ongeveer 1 uur.
+- Een ei is al na een paar minuten klaar.
+- Er zijn meer dan 14 bussen en auto's.
+- Het zijn er 18.
+- Er zijn meer dan 5 ufo's.
+- Dit is een munt van 2 euro.
+- Zoek de munt met een 2 erop.
+- Kijk, een springtouw. Het springtouw kost 3 euro. Waar ligt 3 euro?
+- Dat is minder dan we zoeken.
+- Dit geld is samen 2 euro.
+- Tel elk groepje geld.
+- Tel 2 en 2 bij elkaar.
+- Voor de tweede klus ook 2 euro.
+- Voor de eerste klus krijg je 2 euro.
+- Zoek het briefje met 5 erop.
+- Dit is een briefje van 50 euro.
+- Je kunt pas versieren als de taart gebakken is.
+- Er zijn meer dan 23 raketjes en sterren.
+- Er zijn meer dan 4 planeten.
+- Hier ligt 3 euro.
+- 3 munten van 1 euro is samen 3 euro.
+- Dit geld is samen 7 euro.
+- Dat is meer dan we zoeken.
+- Tel 3 en 3 bij elkaar.
+- Bij elke planeet zet ik 1 streepje.
+- Kijk naar de rijtjes met raketjes en sterren. Een volle rij telt 10. Begin met de volle rijen.
+- Kijk, een bal. De bal kost 5 euro. Waar ligt 5 euro?
+- Dit is niet een briefje van 100 euro.
+- Kijk goed naar het getal en de kleur van het briefje.
+- Voor de tweede klus ook 3 euro.
+- Voor de eerste klus krijg je 3 euro.
+- Dit geld is samen 4 euro.
+- Het zijn er 24.
+- 21, 22, 23, 24.
+- Er zijn meer dan 12 ufo's.
+- Het is bijna lunchtijd. Eerst een glas water. Vanmiddag worden er 100 broodjes gebakken. Wat duurt ongeveer 1 minuut?
+- Er zijn meer dan 28 planeten en kometen.
+- 100 broodjes bakken duurt de hele middag.
+- 11 euro is 1 te veel.
+- Tel het geld uit je portemonnee erbij.
+- Kijk naar de rijtjes met planeten en kometen. Een volle rij telt 10. Begin met de volle rijen.
+- Dit is een briefje van 10 euro.
+- Zoek het briefje met 20 erop.
+- Het autootje kost 4 euro. Je kunt op 2 manieren betalen. Waar ligt 4 euro? Tik op 2 groepjes geld.
+- 1 minuut is heel kort.
+- Een glas water drinken duurt ongeveer 1 minuut.
+- Er zijn minder dan 10 planeten.
+- Dat is 4 euro.
+- Het zijn er 29.
+- 21, 22, 23, 24, 25, 26, 27, 28, 29.
+- Op een briefje van 20 euro staat 20.
+- Het is blauw.
+- Begin bij 30.
+- Er zijn meer dan 35 huizen en bomen.
+- Kijk, dit skateboard wil je kopen. Het kost 20 euro. Waar ligt 20 euro? Tik op 2 groepjes geld.
+- 1 week kamperen duurt veel langer.
+- Een week heeft wel 7 dagen.
+- De dag zit erop. Eerst gaat de jas aan. Thuis wordt de hele keuken geveegd. Wat duurt ongeveer 1 minuut?
+- Een knoop heeft gaatjes.
+- Dit is geld.
+- Kijk naar de rijtjes met huizen en bomen. Een volle rij telt 10. Begin met de volle rijen.
+- Er zijn minder dan 19 ufo's.
+- Het is een munt.
+- Een munt van 2 euro is goud in het midden.
+- Hoe ziet het midden van deze munt eruit?
+- Een knoop heeft gaatjes. Dit is geen knoop.
+- Het zijn er 36.
+- 31, 32, 33, 34, 35, 36.
+- Je jas aantrekken duurt ongeveer 1 minuut.
+- Dit is niet een briefje van 50 euro.
+- Begin bij 40.
+- Er zijn meer dan 46 ufo's en satellieten.
+- Kijk welk getal erop staat.
+- Het is een briefje, dus het is geen munt.
+- Staat er een 5, of een 5 en een 0?
+- Is het rond? Nee.
+- Er zijn minder dan 15 planeten.
+- Oei, het geld zweeft door de ruimte! Er zweven 3 munten van 1 euro. Tik op alle munten van 1 euro.
+- Kijk naar de rijtjes met ufo's en satellieten. Een volle rij telt 10. Begin met de volle rijen.
+- Zoek de munten met een 1 erop.
+- En er staat een 1 op.
+- Kijk naar het midden van elke munt.
+- Je vond ze alle 3.
+- Dit geld is samen 15 euro.
+- Er zijn minder dan 11 ufo's.
+- Hier liggen weer 3 briefjes. Waar zie je een briefje van 10 euro?
+- Zoek het briefje met 10 erop.
+- Dit is een briefje van 20 euro.
+- Tel het geld. Welk bedrag hoort erbij? Trek een lijn van het geld naar het getal dat erbij hoort.
+- 41, 42, 43, 44, 45, 46, 47.
+- Het zijn er 47.
+- Hier ligt 20 euro.
+- Er zijn meer dan 49 ballen en blokken.
+- Op een rommelmarkt worden spullen verkocht.
+- 6, 7, 8, 9, 10.
+- Kijk nog eens naar de kraam.
+- Dit is niet een briefje van 10 euro.
+- Er zijn minder dan 20 planeten.
+- Kijk naar de rijtjes met ballen en blokken. Een volle rij telt 10. Begin met de volle rijen.
+- Het briefje van 50 euro is oranje.
+- Welke kleur heeft dit briefje? En welk getal staat erop?
+- Kijk naar de kleur.
+- Dit geld is samen 3 euro.
+- Kijk goed naar het getal en naar het midden van de munt.
+- Dit is niet een munt van 1 euro.
+- Waar ligt 12 euro? Tik op 2 groepjes geld.
+- Kijk ook naar het getal.
+- Kijk naar het midden van de munt.
+- Hier ligt 4 euro.
+- 2 munten van 2 euro is samen 4 euro.
+- Hier liggen nog 3 briefjes. Waar zie je een briefje van 5 euro?
+- Dit geld is samen 6 euro.
+- Het zijn er 50.
+- 41, 42, 43, 44, 45, 46, 47, 48, 49, 50.
+- Dit is een briefje van 5 euro.
+- 2 munten van 2 euro kan ook.
+- 4 munten van 1 euro is ook 4 euro.
+- Je ziet een mooi boek. Het boek kost 5 euro. Waar ligt 5 euro? Tik op 2 groepjes geld.
+- Er zijn meer dan 31 auto's en bussen.
+- Er zijn minder dan 16 ufo's.
+- Kijk welke pizza het breedst is.
+- De kleine pizza is kleiner dan de andere.
+- Kijk welke pizza het verst uitsteekt. Die is het grootst.
+- Ik zet de pizza's naast elkaar, op 1 lijn.
+- Kijk naar de rijtjes met auto's en bussen. Een volle rij telt 10. Begin met de volle rijen.
+- Deze pizza is kleiner dan de andere.
+- Kijk welke pizza breder is.
+- Dit is een munt van 50 cent.
+- Welke pizza steekt boven de andere uit?
+- Kijk naar de pizza's, niet naar de dozen.
+- Nu staan ze naast elkaar, op 1 lijn.
+- Welke pizza komt het hoogst?
+- Ik haal de pizza's uit de dozen.
+- Het zijn er 32.
+- 31, 32.
+- Tel de stukken 1 voor 1.
+- 2 is 1 te weinig.
+- Ik wijs, jij telt mee.
+- Er zijn minder dan 13 planeten.
+- Er zijn minder dan 36 bootjes en treintjes.
+- Geen enkel plaatje ligt op de goede plek.
+- Zoek eerst de kleinste. Die komt vooraan.
+- Er ligt deeg op de weegschaal. Welk deeg is het zwaarst? Tik op het deeg.
+- Kijk welke kant van de weegschaal omlaag hangt.
+- Het kleine deeg is lichter dan de andere.
+- Welke pizza komt het minst hoog?
+- De grootste komt achteraan.
+- Daar ligt 1 stuk.
+- Tel ook de stukken op het andere plaatje.
+- Kijk naar de rijtjes met bootjes en treintjes. Een volle rij telt 10. Begin met de volle rijen.
+- Hier liggen 4 stukken.
+- Zoek de mand waar niets in zit.
+- Dat is de mand met een beetje fruit.
+- Hier ligt 1 stuk.
+- Zoek het ijsje dat het minst hoog is.
+- Het grote ijsje is groter dan het andere.
+- Nu liggen er 2 pizza's op de weegschaal. Welke pizza is het zwaarst?
+- Het zijn er 35.
+- 31, 32, 33, 34, 35.
+- De pizza met kaas is lichter dan de andere.
+- Er zijn meer dan 19 ufo's.
+- Welk ijsje komt het minst hoog?
+- Ik zet de ijsjes naast elkaar, op 1 lijn.
+- 1 is 1 te weinig.
+- Nu 2 pizza's met salami. Welke pizza is het grootst?
+- De pizza's zijn even groot.
+- Daar zie je het dus niet aan.
+- Kijk weer naar het deeg. Welk deeg is het lichtst?
+- Hier zie je het lege stokje.
+- Zoek het stokje met de meeste stukjes.
+- Kijk naar de stukken pizza bovenaan. Welk plaatje is 1 meer?
+- Kijk welke kant van de weegschaal omhoog gaat.
+- Het grote deeg is zwaarder dan de andere.
+- 4 is 2 meer dan 2.
+- Tel verder vanaf 2.
+- Dit ijsje is kleiner dan het andere.
+- Kijk welk ijsje hoger is.
+- Een zak meel en 3 tomaten. Wat is zwaarder?
+- Welk huisnummer komt na 34? Sleep het goede huis naar de lege plek.
+- Welk ijsje steekt boven het andere uit?
+- De tomaten is lichter dan de andere.
+- Tel de andere losse knikkers erbij.
+- Samen zijn het er minder dan 48.
+- Na 34 komt een groter nummer.
+- Tel 1 verder dan 34.
+- Weer 2 dozen. Welke pizza is het grootst?
+- Daar liggen 2 stukken.
+- In de zak zitten 40 knikkers.
+- Kijk, de pizzaoven van steen. Wat denk je: wat is even zwaar als de oven? 1 zak meel, of heel veel zakken meel?
+- Elke losse knikker is er 1 meer.
+- 1 zak meel is veel lichter dan de pizzaoven.
+- De pizzaoven is veel zwaarder dan 1 ding.
+- Hier zie je het broodje met veel kaas.
+- Zoek het broodje met maar een klein beetje kaas.
+- 2 en 1 erbij is 3.
+- Na 34 komt 35.
+- Kun je de oven ook optillen? Die is veel zwaarder!
+- 1 zak meel kun je nog net tillen.
+- Samen zijn het er 47.
+- 42, 43, 44, 45, 46, 47.
+- Welk huisnummer komt na 42? Sleep het goede huis naar de lege plek.
+- Tijd voor een toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft 1 bolletje minder?
+- Hoeveel heb je nodig om net zo zwaar te zijn als de pizzaoven?
+- Tel 1 verder dan 42.
+- Met 44 sla je een huis over.
+- Samen zijn het er minder dan 53.
+- Tel de losse knikkers erbij.
+- Begin bij 50.
+- Nu ligt er kaas op de weegschaal. Welke kaas is het zwaarst?
+- Op dit broodje zit veel kaas.
+- Tel terug vanaf 4.
+- Dit ijsje heeft 5 bolletjes. Dat is 1 meer.
+- En op dit broodje zit heel veel kaas.
+- De kleine kaas is lichter dan de andere.
+- Weinig is het tegenovergestelde van veel.
+- Weinig is maar een klein beetje.
+- Het grootste komt achteraan.
+- Maar 1 klein plakje.
+- Samen zijn het er 52.
+- 51, 52.
+- Kijk weer naar de kaas. Welke kaas is het lichtst?
+- Dat ijsje heeft 4 bolletjes.
+- Na 42 komt 43.
+- 2 pizza's met olijven. Welke pizza is het kleinst?
+- Welk huisnummer komt na 27? Sleep het goede huis naar de lege plek.
+- De grote kaas is zwaarder dan de andere.
+- Zoek de pizza die het smalst is.
+- Begin bij 51.
+- Klopt. Na 27 komt 28.
+- De grote pizza is groter dan de andere.
+- Samen zijn het er meer dan 57.
+- Welk huisnummer komt na 37? Sleep het goede huis naar de lege plek.
+- 4 min 1 is 3.
+- Hier zie je de bijna lege beker.
+- Zoek de beker waar het sap tot bovenaan komt.
+- Dat is 'm. Na 37 komt 38.
+- Welk huisnummer komt na 29? Sleep het goede huis naar de lege plek.
+- Goed zo. Na 29 komt 30.
+- 2 dozen. Ze zijn even groot. In 1 doos zit een pizza. Welke doos is het zwaarst?
+- Welk huisnummer komt na 19? Sleep het goede huis naar de lege plek.
+- De blauwe doos is lichter dan de andere.
+- 5 is 1 te veel.
+- Met 21 sla je een huis over.
+- Samen zijn het er 58.
+- 52, 53, 54, 55, 56, 57, 58.
+- In deze beker zit maar een klein beetje.
+- Kijk tot waar het sap komt.
+- Deze beker is half vol.
+- Samen zijn het er meer dan 63.
+- Begin bij 61.
+- Het sap komt dan tot bovenaan.
+- Vol betekent: er kan niets meer bij.
+- Een tomaat en een pizza. Wat is zwaarder?
+- In de zak zitten 60 knikkers.
+- De tomaat is lichter dan de andere.
+- Welk huisnummer komt na 39? Sleep het goede huis naar de lege plek.
+- Met 41 sla je een huis over.
+- Tel 1 verder dan 39.
+- Hier zie je het halfvolle potje.
+- Kijk in welk potje de jam het hoogst komt.
+- Samen zijn het er 64.
+- 62, 63, 64.
+- Begin bij 70.
+- Tel de losse knikker erbij.
+- Samen zijn het er minder dan 72.
+- Daar liggen 3 stukken.
+- In de zak zitten 70 knikkers.
+- Wat denk je: wat is even zwaar als een zak meel? 1 olijf, of een grote schaal vol olijven?
+- Dit potje is half vol.
+- Kijk tot waar de jam komt.
+- Na 39 begint een nieuw tiental.
+- Een zak meel is veel zwaarder dan 1 ding.
+- Na 39 komt 40.
+- 1 olijf is veel lichter dan een zak meel.
+- Welk huisnummer komt na 44? Sleep het goede huis naar de lege plek.
+- In dit potje zit bijna niets meer.
+- Samen zijn het er 71.
+- Ja, dat is het. Na 44 komt 45.
+- Die voel je bijna niet in je hand.
+- Een zak meel is veel zwaarder.
+- 1 olijf is heel klein en licht.
+- Welk huisnummer komt na 40? Sleep het goede huis naar de lege plek.
+- Hier liggen 3 stukken.
+- Hoeveel heb je nodig om net zo zwaar te zijn als een zak meel?
+- Hier liggen 5 stukken.
+- Tel 1 verder dan 40.
+- Kijk goed naar de volgorde van de cijfers in 14.
+- Samen zijn het er minder dan 76.
+- Begin bij 71.
+- Tel de andere losse appels erbij.
+- Minder water komt vooraan.
+- Een olijf en een bolletje deeg. Wat is het lichtst?
+- Het deeg is zwaarder dan de andere.
+- Elke losse appel is er 1 meer.
+- 3 is 1 minder dan 4.
+- Tel verder vanaf 4.
+- Kijk naar de middelste beker.
+- Een beker met minder water komt vooraan.
+- Een beker met meer water komt achteraan.
+- Na 40 komt 41.
+- 1 tomaat en 3 tomaten. Wat is het zwaarst?
+- Welk huisnummer komt na 23? Sleep het goede huis naar de lege plek.
+- 1 tomaat is lichter dan de andere.
+- Tel 1 verder dan 23.
+- Met 25 sla je een huis over.
+- Samen zijn het er 75.
+- 72, 73, 74, 75.
+- 3 tomaten zijn het zwaarst.
+- Daar liggen 4 stukken.
+- Begin bij 80.
+- Tel de losse appels erbij.
+- Samen zijn het er meer dan 81.
+- In de zak zitten 80 appels.
+- 4 en 1 erbij is 5.
+- Vooraan de schaal met de minste tomaten.
+- Na 23 komt 24.
+- Welk huisnummer komt na 48? Sleep het goede huis naar de lege plek.
+- Nog een toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft 1 bolletje minder?
+- De picknickmand zit vol. De mand weegt veel. De mand is ... Kort, zwaar of dun?
+- Dat is 'm. Na 48 komt 49.
+- Kort past hier niet.
+- Weegt iets veel? Dan kun je het moeilijk tillen.
+- Samen zijn het er 82.
+- Welk huisnummer komt na 30? Sleep het goede huis naar de lege plek.
+- 81, 82.
+- Tel terug vanaf 3.
+- Dit ijsje heeft 4 bolletjes. Dat is 1 meer.
+- Tel 1 verder dan 30.
+- Kijk goed naar de volgorde van de cijfers in 13.
+- Samen zijn het er minder dan 88.
+- Begin bij 81.
+- In een vollere schaal zitten nog meer tomaten.
+- In de volste schaal zitten de meeste.
+- Vol, voller, volst.
+- Er is ook een rugtas. De rugtas is niet zwaar. Het tegenovergestelde van zwaar is ... Kort, zwaarder of licht?
+- Dat ijsje heeft 3 bolletjes.
+- Na 30 komt 31.
+- Welk huisnummer komt na 20? Sleep het goede huis naar de lege plek.
+- Het speelgoed gaat uit de rugtas. Nu weegt de tas nog minder. De tas is nu nog ... Groter, zwaarder of lichter?
+- 3 min 1 is 2.
+- Kijk goed naar de volgorde van de cijfers in 12.
+- Tel 1 verder dan 20.
+- Samen zijn het er 87.
+- Er gaat iets uit de tas.
+- Dat is het flesje met minder water.
+- 82, 83, 84, 85, 86, 87.
+- Kijk tot waar het water komt in het flesje bovenaan.
+- Groter past hier niet.
+- Dan weegt de tas minder.
+- Samen zijn het er meer dan 92.
+- Weegt iets minder? Dan is het ...
+- Begin bij 91.
+- 3 is te weinig.
+- Wat is het lichtst? De voetbal, de veer of de steen?
+- Na 20 komt 21.
+- Je koos de voetbal.
+- Wat weegt het minst?
+- Welk huisnummer komt na 46? Sleep het goede huis naar de lege plek.
+- Kijk tot waar het water komt.
+- Evenveel betekent: net zoveel.
+- Klopt. Na 46 komt 47.
+- Een steen is zwaar.
+- Welk huisnummer komt na 49? Sleep het goede huis naar de lege plek.
+- Een voetbal is niet zo zwaar.
+- Een veer kan wegwaaien in de wind.
+- Komt het water ergens net zo hoog als bovenaan?
+- Na 49 komt een groter nummer.
+- Tel 1 verder dan 49.
+- In het park staat een wip. Er liggen een bal en een blok op. Ze zijn even zwaar. Op welk plaatje zie je dat?
+- Bij even zwaar blijft de wip recht.
+- Hier zie je de wip waar de bal omlaag gaat.
+- Samen zijn het er 93.
+- 92, 93.
+- Hier gaat de bal omlaag. Dan is de bal zwaarder.
+- Hier gaat het blok omlaag. Dan is het blok zwaarder.
+- Meer past hier niet.
+- Het tegenovergestelde is het omgekeerde.
+- Samen zijn het er minder dan 99.
+- Na 49 begint een nieuw tiental.
+- Na 49 komt 50.
+- Wat is het zwaarst? De appel, de knikker of de stapel boeken?
+- Je koos de appel.
+- Wat is het grootst en weegt het meest?
+- Kijk naar de schilderijen op de muur. Wat klopt er? Kies er 2.
+- Hier liggen 4 boeken op elkaar.
+- 1 boek is al zwaarder dan een appel.
+- 2 is te weinig.
+- Tel verder vanaf 6.
+- Zet de manden op volgorde: zwaar, zwaarder, zwaarst. Sleep een plaatje naar een leeg vak. Tikken mag ook.
+- Vooraan de mand met het minste erin.
+- Samen zijn het er 98.
+- 92, 93, 94, 95, 96, 97, 98.
+- Vooraan komt de mand met het minste erin.
+- Achteraan de mand met het meeste.
+- Hoe meer er in een mand zit, hoe zwaarder hij is.
+- Welk huisnummer komt na 69? Sleep het goede huis naar de lege plek.
+- Tel 1 verder dan 69.
+- Met 71 sla je een huis over.
+- Er staat groente klaar. Een beker groente en een schaal tomaatjes. Ze zijn even zwaar. Op welk plaatje zie je dat?
+- Er zijn 3 rijen.
+- Samen zijn het er meer dan 55.
+- Tel de andere losse sterren erbij.
+- Je koos de weegschaal waar de beker omlaag gaat.
+- Bij even zwaar hangt de weegschaal recht.
+- 4 is te weinig.
+- Tel verder vanaf 3.
+- Dat is de wagon van maandag.
+- Na 69 begint een nieuw tiental.
+- Na 69 komt 70.
+- Welk huisnummer komt na 87? Sleep het goede huis naar de lege plek.
+- Er is water met fruit. Het zit in een maatbeker van 1 liter. Die is half vol. Waar zit evenveel water in?
+- 98 ligt te ver weg.
+- Tel 1 verder dan 87.
+- Een halve liter past precies in de kleine maatbeker.
+- Je koos de kleine maatbeker die half vol is.
+- 6 is te weinig.
+- Het eten is op. De lege bakjes gaan terug in de mand. Nu is de mand lichter. De appels gaan in de rugtas. De rugtas is nu ... Lichter, zwaarder of langer?
+- Lichter past hier niet.
+- Er ging iets uit de mand.
+- Na 87 komt 88.
+- Welk huisnummer komt na 89? Sleep het goede huis naar de lege plek.
+- Na 89 komt een groter nummer.
+- Tel 1 verder dan 89.
+- Daarom is de mand lichter.
+- Maar er ging iets in de rugtas.
+- Er zijn 4 rijen.
+- Zoek de pannenkoek die breder is.
+- Die pannenkoek is kleiner dan de andere.
+- Wat is het zwaarst? De ballon, de watermeloen of de appel?
+- 8 is te weinig.
+- Tel verder vanaf 7.
+- Wat weegt het meest?
+- Hier zie je de ballon.
+- Na 89 begint een nieuw tiental.
+- Na 89 komt 90.
+- Welk huisnummer komt na 70? Sleep het goede huis naar de lege plek.
+- Een ballon zweeft bijna weg. Die is heel licht.
+- Goed zo. Na 70 komt 71.
+- Die beker is groter dan de andere.
+- Een appel kun je met 1 hand pakken.
+- Kijk welke beker het smalst is.
+- Welk huisnummer komt na 99? Sleep het goede huis naar de lege plek.
+- Een watermeloen moet je met 2 handen tillen.
+- De lege rugtas is licht. Wat is het tegenovergestelde van licht? Zwaar, leeg of kort?
+- 99 staat er al.
+- Tel 1 verder dan 99.
+- Leeg past hier niet.
+- Licht is: het weegt bijna niets.
+- In dat glas zit niets.
+- Zoek het glas met sap tot bovenaan.
+- Hier zie je 2 keer dezelfde tafel. Op de ene liggen kleine gele blaadjes. Op de andere liggen grote rode blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel. Sleep een getal naar een leeg vak. Tikken mag ook.
+- Het omgekeerde is: het weegt heel veel.
+- Tel alle gele blaadjes, en dan alle rode.
+- Geen enkel getal ligt op de goede plek.
+- Na 99 begint een nieuw tiental.
+- Na 99 komt 100.
+- Welk huisnummer komt na 79? Sleep het goede huis naar de lege plek.
+- Dun past hier niet.
+- Na 79 komt een groter nummer.
+- Tel 1 verder dan 79.
+- In dat glas zit sap.
+- Zoek het glas zonder sap.
+- Zwaarder past hier niet.
+- Zoek de paarse wagon.
+- Na 79 komt 80.
+- Welk huisnummer komt na 60? Sleep het goede huis naar de lege plek.
+- Een rood blaadje is net zo groot als 2 gele.
+- Klopt. Na 60 komt 61.
+- De kant van de appel gaat omhoog.
+- Kijk welke kant omlaag zakt.
+- Welk huisnummer komt na 97? Sleep het goede huis naar de lege plek.
+- Weer 2 keer dezelfde muur. Op de ene zitten kleine groene tegels. Op de andere zitten grote blauwe tegels. Hoeveel tegels passen er op elke muur? Sleep het goede getal onder elke muur.
+- Kijk goed naar de volgorde van de cijfers in 89.
+- Tel 1 verder dan 97.
+- Tel alle groene tegels, en dan alle blauwe.
+- Tel eerst de groene tegels.
+- De kant van de zak meel zakt naar beneden.
+- Kijk welke kant omhoog gaat.
+- Na 97 komt 98.
+- Welk getal komt voor 15? Sleep het goede kaartje naar de lege plek.
+- Tel 1 terug vanaf 15.
+- 12 ligt te ver weg.
+- Die sliert houdt snel op.
+- Kijk welke sliert verder doorloopt.
+- Terug wordt het steeds 1 minder.
+- Er passen dus minder blauwe tegels op.
+- Een blauwe tegel is net zo groot als 2 groene.
+- Welk getal komt voor 12? Sleep het goede kaartje naar de lege plek.
+- 12 staat er al.
+- Die sliert loopt verder door.
+- Kijk welke sliert eerder ophoudt.
+- Weer 2 keer dezelfde tafel. Op de ene liggen kleine blauwe blaadjes. Op de andere liggen grote gele blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel.
+- Tel alle blauwe blaadjes, en dan alle gele.
+- Tel eerst de blauwe blaadjes.
+- Welk getal komt voor 17? Sleep het goede kaartje naar de lege plek.
+- Tel 1 terug vanaf 17.
+- Met 15 sla je een kaartje over.
+- Vergelijk de manden met elkaar.
+- Die mand is groter dan 1 andere mand, maar niet de grootste.
+- Er passen dus minder gele blaadjes op.
+- Een geel blaadje is net zo groot als 2 blauwe.
+- Weer 2 keer dezelfde tafel. Op de ene liggen kleine oranje blaadjes. Op de andere liggen grote groene blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel.
+- Dat glas is helemaal vol.
+- Zoek het glas waar het sap tot de helft komt.
+- Tel alle oranje blaadjes, en dan alle groene.
+- Voor 17 komt 16.
+- Welk getal komt voor 11? Sleep het goede kaartje naar de lege plek.
+- Goed zo. Voor 11 komt 10.
+- Welk getal komt voor 16? Sleep het goede kaartje naar de lege plek.
+- Die appel is de grootste.
+- Vergelijk de appels met elkaar.
+- Tel eerst de oranje blaadjes.
+- 17 staat er al.
+- Tel 1 terug vanaf 16.
+- Dit broodje houdt als eerste op.
+- Kijk welk broodje het verst doorloopt.
+- Voor 16 komt 15.
+- Welk getal komt voor 14? Sleep het goede kaartje naar de lege plek.
+- Tel 1 terug vanaf 14.
+- 15 staat er al.
+- Er passen dus minder groene blaadjes op.
+- Een groen blaadje is net zo groot als 2 oranje.
+- Weer 2 keer dezelfde tafel. Op de ene liggen kleine gele blaadjes. Op de andere liggen grote rode blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel.
+- Voor 14 komt 13.
+- Welk getal komt voor 18? Sleep het goede kaartje naar de lege plek.
+- 18 staat er al.
+- Tel 1 terug vanaf 18.
+- Zoek de oranje wagon.
+- Er is nog een korter broodje.
+- Kijk welk broodje als eerste ophoudt.
+- Voor 18 komt 17.
+- Dat is niet de kleinste appel.
+- Begin met de kleinste.
+- Vrijdag komt niet meteen na dinsdag.
+- Weer 2 keer dezelfde muur. Op de ene zitten kleine groene tegels. Op de andere zitten grote gele tegels. Hoeveel tegels passen er op elke muur? Sleep het goede getal onder elke muur.
+- Tel alle groene tegels, en dan alle gele.
+- Dat is niet de kleinste beker.
+- Er passen dus minder gele tegels op.
+- Een gele tegel is net zo groot als 2 groene.
+- Donderdag komt na woensdag, niet ervoor.
+- Kijk naar de wagon voor woensdag.
+- 7 is te weinig.
+- Hier is woensdag.
+- Voor woensdag komt de wagon ervoor.
+- Weer 2 keer dezelfde tafel. Op de ene liggen kleine rode blaadjes. Op de andere liggen grote blauwe blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel.
+- Maandag is niet de dag vlak voor woensdag.
+- Er zijn meer dan 15 appels.
+- Op deze kaart zijn er minder sterren dan bovenaan.
+- Maandag is niet de dag vlak na vrijdag.
+- In een volle rij staan 5 appels. De rijtjes helpen je tellen.
+- De gele pijl staat bij vrijdag.
+- 2 dagen samen heten het weekend.
+- Maandag is een schooldag.
+- Kijk naar de laatste 2 wagons.
+- Kijk naar de getallen bij de groepjes. Die helpen je vergelijken.
+- Hier zijn er 17.
+- Ja, dat is het. Hier zijn er 20.
+- Op deze kaart zijn er meer appels dan bovenaan.
+- Bovenaan zijn het er 11.
+- Welke kaart heeft er minder?
+- Er zijn minder dan 11 sterren.
+- Hier zijn het er 13.
+- Hier zijn het er 9.
+- Hier zijn er 9.
+- In een volle rij staan 5 sterren. De rijtjes helpen je tellen.
+- Klopt. Hier zijn er 7.
+- Bovenaan zijn het er 16.
+- Op deze kaart zijn er minder ballen dan bovenaan.
+- Hier zijn het er 19.
+- Er zijn minder dan 14 bloemen.
+- Hier zijn er 19.
+- Zet de kaarten op volgorde. Van minder naar meer.
+- Er zijn minder dan 10 kralen.
+- In een volle rij staan 5 kralen. De rijtjes helpen je tellen.
+- Welk getal is het grootst?
+- Op deze kaart zijn er minder bloemen dan op de andere.
+- Hier zijn er 15.
+- Er zijn meer dan 5 kralen.
+- Er zijn meer dan 11 kralen.
+- Dat is 'm. Hier zijn er 18.
+- Er zijn meer dan 15 kralen.
+- Er zijn minder dan 14 kralen.
+- Welk getal is het kleinst?
+- Op deze kaart zijn er meer appels dan op de andere.
+- Hier zijn er 13.
+- Er zijn meer dan 17 kralen.
+- Er zijn meer dan 8 kralen.
+- Klopt. Hier zijn er 12.
+- Er zijn meer dan 7 kralen.
+- Er zijn meer dan 10 kralen.
+- Op deze kaart zijn er minder sterren dan op de andere.
+- Er zijn meer dan 12 kralen.
+- Op deze kaart zijn er minder appels dan op de andere.
+- Hier zijn het er 11.
+- Op deze kaart liggen niet de meeste koekjes.
+- Hier zijn er 14.
+- Hier liggen er 13.
+- Op deze kaart zijn er meer sterren dan op de andere.
+- Op deze kaart liggen niet de minste appels.
+- Het weekend zijn de laatste 2 dagen.
+- Hier liggen er 14.
+- Woensdag komt ná dinsdag, niet ervoor.
+- Kijk naar de wagon vlak voor dinsdag.
+- Kijk naar de wagon naast zaterdag.
+- In een volle rij staan 5 bloemen. De rijtjes helpen je tellen.
+- Er zijn minder dan 15 ballen.
+- Dat is 'm! 5 en 5 is samen 10.
+- Er zijn meer dan 17 ballonnen.
+- In een volle rij staan 5 ballonnen. De rijtjes helpen je tellen.
+- Goed gerekend! 8 en 2 is samen 10.
+- Er zijn meer dan 12 appels.
+- Goed zo. Hier zijn er 12.
+- Dat is 'm! 9 en 1 is samen 10.
+- 3 oranje stippen en 5 blauwe stippen.
+- Kijk naar 3 en 5.
+- Op dat kaartje staan 2 en 7. Samen is dat 9.
+- Er zijn minder dan 13 sterren.
+- 2 oranje stippen en 7 blauwe stippen.
+- Kijk naar 2 en 7.
+- Er blijft 1 plekje leeg.
+- Op dit kaartje staan 5 en 5.
+- Op dat kaartje staan 1 en 5. Samen is dat 6.
+- Er zijn minder dan 16 ballonnen.
+- 1 oranje stip en 5 blauwe stippen.
+- Kijk naar 1 en 5.
+- Er blijven 4 plekjes leeg.
+- Er zijn meer dan 16 ballen.
+- In een volle rij staan 5 ballen. De rijtjes helpen je tellen.
+- Hier zijn het er 20.
+- Hier liggen er 18.
+- Ja, dat is het. Hier liggen er 13.
+- Klopt. Hier liggen er 12.
+- Hier liggen er 10.
+- Op deze kaart liggen niet de meeste appels.
+- Eerst naar 10.
+- Dan komen er nog 2 bij.
+- Hier liggen er 15.
+- Hier zijn er 8.
+- Van de 4 blauwe stippen zijn er nog 2 over.
+- Zo zit het: 8 + 4 = 12.
+- 7 zit er net naast.
+- Hier zijn er 3.
+- Op deze kaart liggen niet de meeste peren.
+- Daar komen er 5 bij.
+- Begin bij het grootste getal: 5. Dan hoef je minder ver te tellen.
+- Zo zit het: 3 + 5 = 8.
+- Hier liggen er 20.
+- 14 is nog te weinig.
+- Op deze kaart liggen niet de minste peren.
+- Daar komen er 8 bij.
+- Zo zit het: 8 + 8 = 16.
+- Tel de broodjes bij elkaar op. Welke 2 sommen passen erbij? Tik op 2 sommen.
+- Hier liggen er 17.
+- Precies! 8 en 2 is samen 10.
+- Hier liggen er 12.
+- Dat is 'm. Hier liggen er 16.
+- Klopt. Hier liggen er 19.
+- Tel de eieren. Hoeveel eieren zijn het?
+- Kijk, 3 potjes.
+- Er zijn minder dan 26 eieren.
+- In een vol doosje zitten 6 eieren. Tel de volle doosjes eerst.
+- Zet de vliegers op volgorde. Van minder naar meer.
+- Op dat kaartje staan 6 en 3. Samen is dat 9.
+- 6 oranje stippen en 3 blauwe stippen.
+- Kijk naar 6 en 3.
+- Op dat kaartje staan 4 en 5. Samen is dat 9.
+- 4 oranje stippen en 5 blauwe stippen.
+- Kijk naar 4 en 5.
+- Op dit kaartje staan 3 en 7.
+- 2 zit er net naast.
+- Tel nog eens rustig na.
+- Op dat kaartje staan 6 en 6. Samen is dat 12.
+- Eerst waren er 7 ballonnen.
+- 6 oranje stippen en 6 blauwe stippen.
+- Er blijven 3 ballonnen over: 7 min 4 = 3.
+- Kijk naar 6 en 6.
+- De rij is vol, en er zijn nog stippen over.
+- Wij zoeken wat er overblijft.
+- 5 is hoeveel er weggaat.
+- Precies! 5 en 5 is samen 10.
+- Op dat kaartje staan 8 en 1. Samen is dat 9.
+- Er blijven 4 bellen over: 9 min 5 = 4.
+- 6 zit er net naast.
+- 8 oranje stippen en 1 blauwe stip.
+- Kijk naar 8 en 1.
+- Dat is 'm! 1 en 9 is samen 10.
+- 3 past niet bij de getallen ernaast.
+- Op dat kaartje staan 3 en 8. Samen is dat 11.
+- 3 zit er net naast.
+- 3 oranje stippen en 8 blauwe stippen.
+- Kijk naar 3 en 8.
+- Hier hoort 4.
+- Je koos 5 min 3.
+- Vooraan moet staan hoeveel er eerst waren: 8.
+- Met 13 sla je een diamant over.
+- Tel verder vanaf 11.
+- Eerst waren er 8 sterren.
+- Op dit kaartje staan 8 en 2.
+- Er waren 8 sterren en er gaan er 3 weg. Dat is 8 min 3 = 5.
+- Hier hoort 12.
+- Na de min staat hoeveel er weggaat: 2.
+- Je koos 9 min 3.
+- Tel verder vanaf 16.
+- Op dat kaartje staan 2 en 9. Samen is dat 11.
+- 16 past niet bij de getallen ernaast.
+- 8 past niet bij de getallen ernaast.
+- Tel verder vanaf 5.
+- 2 oranje stippen en 9 blauwe stippen.
+- Kijk naar 2 en 9.
+- Er waren 9 satellieten en er gaan er 2 weg. Dat is 9 min 2 = 7.
+- Hier hoort 17.
+- 7 past niet bij de getallen ernaast.
+- Hier hoort 6.
+- 7 min 5 = 2.
+- In deze rij worden de getallen steeds groter.
+- Tel verder vanaf 12.
+- Hier hoort 8.
+- 14 past niet bij de getallen ernaast.
+- Tel verder vanaf 14.
+- Op dat kaartje staan 3 en 6. Samen is dat 9.
+- Hier hoort 13.
+- 3 oranje stippen en 6 blauwe stippen.
+- Kijk naar 3 en 6.
+- Tel verder vanaf 18.
+- Hier hoort 15.
+- Tel verder vanaf 17.
+- Met 19 sla je een ster over.
+- Hier hoort 19.
+- Hier hoort 18.
+- 4 past niet bij de getallen ernaast.
+- Hier hoort 5.
+- Eerst waren er 14 raketjes.
+- Tel verder vanaf 13.
+- Er blijven 11 raketjes over: 14 min 3 = 11.
+- Je koos 19. Dat is 13 plus 6.
+- Hier gaat er iets af, dus het wordt minder.
+- Eerst terug naar 10.
+- 17 past niet bij de getallen ernaast.
+- Dan gaan er nog 3 weg.
+- Je koos 13 min 3.
+- Vooraan moet staan hoeveel er eerst waren: 16.
+- Eerst waren er 13 raketjes.
+- Hier hoort 14.
+- Er blijven 7 raketjes over: 13 min 6 = 7.
+- Er waren 16 ufo's en er gaan er 3 weg. Dat is 16 min 3 = 13.
+- 10 past niet bij de getallen ernaast.
+- Tel verder vanaf 10.
+- Dan gaan er nog 2 weg.
+- 9 zit er net naast.
+- 14 zit er net naast.
+- Eerst waren er 19 bellen.
+- Er blijven 13 bellen over: 19 min 6 = 13.
+- Er blijven 8 ballonnen over: 15 min 7 = 8.
+- Je koos 16. Dat is 15 plus 1.
+- 8 zit er net naast.
+- Hier hoort 11.
+- Je zit er net naast. Tel de streepjes nog eens.
+- Tel de streepjes verder vanaf de 5.
+- Eerst waren er 12 bellen.
+- Eerst gaan er 2 weg.
+- Er blijven 14 ballonnen over: 15 min 1 = 14.
+- Kijk, hier staat 5.
+- Tel de streepjes verder vanaf de 14.
+- Tel de sterren die over zijn.
+- Er blijven 7 bellen over: 12 min 5 = 7.
+- Kijk, hier staat 14.
+- Eerst waren er 17 sterren.
+- 10 zit er net naast.
+- Dan gaat er nog 1 weg.
+- Het vlaggetje staat 1 streepje na de 14.
+- Er blijven 12 sterren over: 17 min 5 = 12.
+- Eerst waren er 17 raketjes.
+- Eerst gaan er 7 weg.
+- Tel de streepjes terug vanaf de 15.
+- Na de min staat hoeveel er weggaat: 5.
+- Je koos 18 min 6.
+- Er blijven 9 raketjes over: 17 min 8 = 9.
+- Eerst waren er 18 sterren.
+- Het vlaggetje staat 1 streepje voor de 15.
+- Er waren 18 sterren en er gaan er 5 weg. Dat is 18 min 5 = 13.
+- Eerst waren er 14 ufo's.
+- Je zit er net naast. Tel nog eens langs de lijn.
+- Tel in sprongen van 2 vanaf de 10.
+- Het staat verder dan 4.
+- Je koos 14 min 1.
+- Tel de ufo's die over zijn.
+- Eerst waren er 14 satellieten.
+- Er blijven 8 ufo's over: 14 min 6 = 8.
+- Na de min staat hoeveel er weggaat: 16.
+- Je koos 16 min 0.
+- Er waren 14 satellieten en er gaan er 2 weg. Dat is 14 min 2 = 12.
+- En na 5 staat het raketje.
+- Welk getal komt na 1?
+- 2 van de 4 getallen staan op de goede plek.
+- Er waren 16 sterren en er gaan er 16 weg. Dat is 16 min 16 = 0.
+- Ik zet 17 stippen neer.
+- Na de min staat hoeveel er weggaat: 0.
+- Je koos 18 min 18.
+- En na 1 staat het raketje.
+- 17 min 4 = 13.
+- Na 1 komt 2.
+- Eerst waren er 18 satellieten.
+- 0 is te weinig.
+- Dus na de min komt 0.
+- Tel rustig verder. Zo hoor je welk getal daarna komt.
+- Er waren 18 satellieten en er gaan er 0 weg. Dat is 18 min 0 = 18.
+- 5 zit er net naast.
+- Dan gaan er nog 6 weg.
+- 19 min 7 = 12.
+- En na 8 staat het raketje.
+- Ik zet 12 stippen neer.
+- Klopt! 17 min 17 = 0.
+- Daarna gaan er nog 6 weg.
+- Het raketje is al voorbij 1.
+- Tel 1 verder dan 10.
+- Zoek een som met 2 keer hetzelfde getal.
+- 9 min 8 geeft 1, niet 0.
+- 12 min 8 = 4.
+- 9 is hoeveel er weggaat.
+- Kijk: 6 min 6 = 0.
+- Er is er nog 1. Tik op een som waar 0 uitkomt.
+- 1 van de 4 getallen staat op de goede plek.
+- Als je telt, kom je 13 eerder tegen dan het andere getal.
+- Welk getal komt later als je telt?
+- Kijk: 13 min 13 = 0.
+- Dan gaan er nog 5 weg.
+- Kijk op de getallenlijn.
+- Hier staat 13.
+- Tel de satellieten die over zijn.
+- En hier staat 14.
+- Welk getal komt later?
+- 14 komt later dan 13.
+- Het staat verder dan 7.
+- Tel in sprongen van 2 vanaf de 20.
+- Eerst waren er 15 satellieten.
+- 14 min 9 = 5.
+- Er blijven 13 satellieten over: 15 min 2 = 13.
+- Je koos 14. Dat is 11 plus 3.
+- Je koos een plussom: 13 + 2.
+- Hier gaat er iets weg, dus het is een minsom.
+- Het vlaggetje staat tussen 16 en 18.
+- Eerst waren er 13 kometen.
+- Eerst waren er 11 satellieten.
+- Vooraan staat al 5.
+- Eerst gaat er 1 weg.
+- Er waren 13 kometen en er gaan er 2 weg. Dat is 13 min 2 = 11.
+- Er blijven 8 satellieten over: 11 min 3 = 8.
+- 15 zit er net naast.
+- Na de min staat hoeveel er weggaat: 4.
+- Bij welk getal staat het vlaggetje? Typ het getal.
+- Eerst waren er 18 raketjes.
+- Eerst waren er 13 sterren.
+- Tel de streepjes verder vanaf de 0.
+- 0 staat al op de lijn, bij een ander streepje.
+- Er blijven 14 raketjes over: 18 min 4 = 14.
+- Kijk, hier staat 0.
+- Er waren 13 sterren en er gaan er 4 weg. Dat is 13 min 4 = 9.
+- Welk getal komt na 13?
+- Dan gaan er nog 4 weg.
+- Daarna gaan er nog 4 weg.
+- 6 is hoeveel er weggaat.
+- En na 13 staat het raketje.
+- Na 13 komt 14.
+- 15 min 9 = 6.
+- 1 is te weinig.
+- 17 min 6 = 11.
+- Het raketje landt op een planeet met 15. Welk getal komt voor 15?
+- 16 komt na 15, niet ervoor.
+- De pijl wijst een streepje aan. Welk getal hoort daarbij?
+- Eerst waren er 16 kometen.
+- 15 past hier niet.
+- Tel 1 verder dan 12.
+- 3 is hoeveel er weggaat.
+- Er blijven 8 kometen over: 16 min 8 = 8.
+- De pijl staat 2 streepjes voor de 15.
+- Eerst lagen er 8 pakjes in de bus.
+- Tel de streepjes verder vanaf de 15.
+- Na de bal staat 14.
+- Er liggen nog 5 pakjes in de bus.
+- 4 is te veel.
+- De pijl staat 2 streepjes na de 15.
+- 16 past hier niet.
+- Er liggen nog 2 pakjes in de bus.
+- Tel 1 verder dan 18.
+- Klopt! Er liggen nog 6 pakjes in de bus.
+- Er liggen nog 12 pakjes in de bus.
+- De ufo staat 3 streepjes voor de 15.
+- 7 is meer dan 5.
+- Bij min wordt het minder.
+- Tel de streepjes terug vanaf de 20.
+- Eerst lagen er 5 pakjes in de bus.
+- 9 past hier niet.
+- Er liggen nog 4 pakjes in de bus.
+- Kijk, hier staat 20.
+- De satelliet staat 2 streepjes voor de 20.
+- Er liggen nog 13 pakjes in de bus.
+- Na de auto staat 12.
+- Welk getal komt na 11?
+- 2 past hier niet.
+- Tel 1 verder dan 3.
+- Precies! Er liggen nog 2 pakjes in de bus.
+- Na de ster staat 5.
+- Er liggen nog 16 pakjes in de bus.
+- Het raketje vliegt naar een planeet met 19. Welk getal komt voor 19?
+- Tel 1 verder dan 14.
+- 13 past hier niet.
+- Er gaan er 2 uit.
+- 20 komt na 19, niet ervoor.
+- Tel 1 terug vanaf 19.
+- Eerst lagen er 14 pakjes in de bus.
+- Er liggen nog 7 pakjes in de bus.
+- 5 is meer dan 4.
+- Na de bal staat 16.
+- Hier is 19 op de getallenlijn.
+- 1 is hoeveel er weggaat.
+- Eerst lagen er 4 pakjes in de bus.
+- 10 past hier niet.
+- 7 is te veel.
+- Er liggen nog 11 pakjes in de bus.
+- Vooraan staat al 15.
+- 17 past hier niet.
+- 5 is te weinig.
+- Nu staat het raketje op een planeet met 11. Welk getal komt voor 11?
+- 12 komt na 11, niet ervoor.
+- Tel 1 terug vanaf 11.
+- Hier is 11 op de getallenlijn.
+- Na de ster staat 20.
+- Er liggen nog 10 pakjes in de bus.
+- 12 past hier niet.
+- Tel 1 verder dan 13.
+- 10 ligt verder van de 16 dan een ander getal.
+- Kijk hoe ver elk getal van de 16 af ligt.
+- Hier is 16.
+- Na het blok staat 15.
+- 6 ligt ver van de 16.
+- 4 is meer dan 3.
+- 10 ligt al dichterbij.
+- 17 ligt het dichtst bij 16.
+- 14 past hier niet.
+- Tel 1 verder dan 16.
+- Eerst lagen er 3 pakjes in de bus.
+- 2 ligt verder van de 7 dan een ander getal.
+- Kijk hoe ver elk getal van de 7 af ligt.
+- Er ligt nog 1 pakje in de bus.
+- Hier is 7.
+- 2 ligt ver van de 7.
+- 6 is te veel.
+- Tel 1 verder dan 9.
+- 8 past hier niet.
+- Na het pakje staat 11.
+- 19 past hier niet.
+- 8 is meer dan 6.
+- 1 zit er net naast.
+- Dat is 'm! Er liggen nog 2 pakjes in de bus.
+- Tel 1 verder dan 4.
+- 7 past hier niet.
+- Na de bal staat 6.
+- 1 van de 3 getallen staat op de goede plek.
+- Er liggen nog 8 pakjes in de bus.
+- Tel 1 verder dan 11.
+- Ja, dat is het.
+- 7 is hoeveel er weggaat.
+- Na het pakje staat 13.
+- Goed zo, dat is het. Er liggen nog 7 pakjes in de bus.
+- Er liggen nog 3 pakjes in de bus.
+- 8 is te veel.
+- 4 is hoeveel er weggaat.
+- Eerst gaan er 2 uit.
+- De bus is lang. Hij staat op 2 getallen tegelijk. Welke getallen liggen onder de bus?
+- Er liggen nog 6 pakjes in de bus.
+- Die getallen komen vóór 14, niet erna.
+- Tel 2 verder vanaf 14.
+- Hier staat 14.
+- Welke 2 getallen komen na 14?
+- Eerst gaan er 7 uit.
+- Tel 1 verder dan 17.
+- Daarna gaat er nog 1 uit.
+- Er liggen nog 9 pakjes in de bus.
+- Na de auto staat 19.
+- Eerst gaan er 4 uit.
+- Je hebt de grootste vooraan gezet.
+- Goed zo, dat is het. Er liggen nog 6 pakjes in de bus.
+- 3 is te veel.
+- Na de ster staat 15.
+- 7 is meer dan 4.
+- Die getallen komen vóór 6, niet erna.
+- Tel 2 verder vanaf 6.
+- Welke 2 getallen komen na 6?
+- 18 past hier niet.
+- Daarna gaan er nog 5 uit.
+- Tel terug vanaf 13.
+- Deze rij telt terug: de getallen worden steeds kleiner.
+- Na het blok staat 17.
+- Er gaat nog iets af, dus er blijven er minder over.
+- 6 waren er eerst.
+- 12 past niet bij de getallen ernaast.
+- Tel terug vanaf 20.
+- Tel terug vanaf 10.
+- Hier hoort 9.
+- Tel terug vanaf 16.
+- Daarna gaan er nog 3 uit.
+- Tel terug vanaf 11.
+- Hier hoort 10.
+- Er liggen nog 15 pakjes in de bus.
+- Tel terug vanaf 15.
+- Er liggen nog 14 pakjes in de bus.
+- Eerst lagen er 11 pakjes in de bus.
+- Eerst gaat er 1 uit.
+- 8 is hoeveel er weggaat.
+- Donderdag komt vóór vrijdag, niet erna.
+- Dan gaan er nog 7 weg.
+- Zondag is de laatste dag van de week, niet de eerste.
+- Daarna gaan er nog 7 uit.
+- Dinsdag is niet de laatste dag.
+- 5 dagen ga je naar school. Wij tellen het weekend.
+- Er liggen nog 17 pakjes in de bus.
+- Kijk naar elk rijtje van boven naar beneden.
+- Welke kleur mist er?
+- In die rij staat niet elke kleur 1 keer in elk rijtje.
+- In elk rijtje staat elke kleur nu 1 keer.
+- De roze kraal staat er al aan het eind.
+- Kijk naar de kralenplank. Welke kraal hoort op de lege plek?
+- Na oranje komt niet geel.
+- Kijk naar de hoek tegenover de lege plek.
+- Tegenover de lege plek staat geen paars.
+- Hier paars, en daar ook paars.
+- Welke kleur staat er tegenover de lege plek?
+- Kijk: paars, oranje, groen, geel.
+- De machine haalt er 3 af. Dan komen er 7 blokjes uit: 10 min 3 = 7.
+- 4 zit er net naast.
+- 1 vlak heeft nog geen kleur. Welke kleur hoort in het lege vlak?
+- Een blauwe kraal komt nu niet.
+- Kijk naar het vlak tegenover het lege vlak.
+- Tegenover het lege vlak staat geen paars.
+- De machine haalt er 5 af. Dan komen er 5 blokjes uit: 10 min 5 = 5.
+- De machine haalt er 1 af. Dan komen er 9 blokjes uit: 10 min 1 = 9.
+- Kijk naar de rijen. Wat hoort op de lege plek?
+- Een blauwe kraal past niet op de lege plek.
+- De zon past daar niet.
+- Kijk naar de volgorde in de bovenste rij.
+- Die komt steeds terug.
+- Kijk naar de bovenste rij: zon, maan, ster, planeet.
+- De machine haalt er 4 af. Dan komen er 6 blokjes uit: 10 min 4 = 6.
+- Wat komt er in het patroon na het laatste ding?
+- Kijk: rood, geel, blauw.
+- De pijl wijst naar een lege plek. Welke kraal hoort bij de pijl?
+- Kijk naar de kraal vóór de lege plek, en naar de kraal erna.
+- Daar hoort geen gele kraal.
+- Kijk naar de bovenste rij: rood, geel, groen, blauw.
+- De machine haalt er 2 af. Dan komen er 8 blokjes uit: 10 min 2 = 8.
+- In de onderste rij staat groen, blauw.
+- De pijl wijst naar een leeg hokje. Welke kleur hoort bij de pijl?
+- Het hokje wordt geen groen.
+- Kijk naar het rijtje onder de pijl.
+- Je koos 4 min 2.
+- Tel alle bekers, ook de lege: 5. Dat getal komt vooraan.
+- Het hokje wordt geen rood.
+- Rood, blauw, geel, rood.
+- Er zijn 5 bekers. De 2 lege gaan weg: 5 min 2 = 3.
+- Onder de pijl staat rood, blauw, geel.
+- Tel alle bordjes, ook de lege: 8. Dat getal komt vooraan.
+- Je koos 7 min 5.
+- Kijk hoe de vorm draait. Welk plaatje komt nu?
+- Dat plaatje komt nu niet.
+- De rij komt steeds in dezelfde volgorde terug.
+- Er zijn 8 bordjes. De 5 lege gaan weg: 8 min 5 = 3.
+- Je koos 6 min 3.
+- De lege bekers gaan weg: 4. Dat getal komt na de min.
+- Welke kwam er na de eerste?
+- Er zijn 6 bekers. De 4 lege gaan weg: 6 min 4 = 2.
+- De lege bordjes gaan weg: 2. Dat getal komt na de min.
+- Je koos 10 min 1.
+- Er zijn 10 bordjes. De 2 lege gaan weg: 10 min 2 = 8.
+- 6 min 4 = 2.
+- Tel alle bekers, ook de lege: 7. Dat getal komt vooraan.
+- Er zijn 7 bekers. De 3 lege gaan weg: 7 min 3 = 4.
+- 9 min 6 = 3.
+- De bal ligt niet linksboven.
+- De machine haalt er 8 af. Dan komen er 2 blokjes uit: 10 min 8 = 2.
+- 8 min 4 = 4.
+- Hier liggen de potloden op de plank. Dat klopt niet.
+- De bal ligt niet rechtsboven.
+- Hier liggen de potloden in de kast. Dat is gek.
+- De machine haalt er 6 af. Dan komen er 4 blokjes uit: 10 min 6 = 4.
+- Wat hoort bij elkaar? Tik op 2 plaatjes die bij elkaar horen.
+- 6 min 5 = 1.
+- De stip ligt niet rechtsboven.
+- Ze gaan er alle 10 weg.
+- De machine haalt er 10 af. Dan komen er 0 blokjes uit: 10 min 10 = 0.
+- Op het grasveld liggen 5 dingen. Wat ligt er linksonder? Tik op je antwoord.
+- 0 zit er net naast.
+- De vlieger ligt niet linksonder.
+- Kijk eerst naar links of rechts.
+- Dan naar boven of onder.
+- In het midden ligt de bal.
+- De machine haalt er 9 af. Dan komen er 1 blokjes uit: 10 min 9 = 1.
+- En dan naar beneden.
+- Ga nu naar links.
+- Op het grasveld liggen 5 dingen. Wat ligt er rechtsboven?
+- Het blok ligt niet rechtsboven.
+- De machine haalt er 7 af. Dan komen er 3 blokjes uit: 10 min 7 = 3.
+- De ballon helemaal rechts is niet rood.
+- Kijk naar de ballon helemaal aan de rechterkant.
+- Tel alle bordjes, ook de lege: 9. Dat getal komt vooraan.
+- Je koos 8 min 3.
+- Hij is groen.
+- Helemaal rechts is de andere kant.
+- Kijk: dit is de ballon helemaal links.
+- Dat is 'm! 7 min 4 = 3.
+- 3 euro is te weinig.
+- Precies! 10 min 6 = 4.
+- Samen heb je 6 euro.
+- Je had 6 euro en betaalt 2 euro. Je houdt 4 euro over.
+- 7 is meer dan 6.
+- 1 euro is te weinig.
+- Dat is 'm! 5 min 4 = 1.
+- Samen heb je 5 euro.
+- De bal kost 3 euro.
+- Je had 5 euro en betaalt 3 euro. Je houdt 2 euro over.
+- 4 euro is te weinig.
+- Een briefje van 10 is 10 euro.
+- Samen heb je 10 euro.
+- Je had 10 euro en betaalt 5 euro. Je houdt 5 euro over.
+- 7 min 6 = 1.
+- 6 min 3 = 3.
+- Geen enkele dag ligt op de goede plek.
+- 2 euro is te weinig.
+- Je had 7 euro en betaalt 4 euro. Je houdt 3 euro over.
+- Samen heb je 4 euro.
+- Je had 4 euro en betaalt 1 euro. Je houdt 3 euro over.
+- Samen heb je 8 euro.
+- Het boek kost 6 euro.
+- Je had 8 euro en betaalt 6 euro. Je houdt 2 euro over.
+- 8 min 2 = 6.
+- Precies! 10 min 7 = 3.
+- 7 euro is te weinig.
+- Je had 10 euro en betaalt 1 euro. Je houdt 9 euro over.
+- Je had 4 euro en betaalt 2 euro. Je houdt 2 euro over.
+- 5 is te veel.
+- Je had 9 euro en betaalt 5 euro. Je houdt 4 euro over.
+- Donderdag is morgen. Dan is de kapperszaak nog dicht.
+- Kijk, de gele pijl staat bij woensdag.
+- Ik zet 4 stippen neer.
+- Tel 3 nachtjes vanaf donderdag.
+- Na 2 nachtjes is het zaterdag. Er komt nog 1 nachtje bij.
+- Kijk, de gele pijl staat bij donderdag.
+- Gisteren is de dag vlak voor vandaag.
+- Vrijdag was 2 dagen geleden.
+- Kijk, de gele pijl staat bij zondag.
+- 20 min 4 = 16.
+- 6 is meer dan 3.
+- Vrijdag was gisteren. Toen was het feest.
+- Eerst gisteren, en dan nog 1 dag terug.
+- Ik zet 3 stippen neer.
+- 19 min 5 = 14.
+- Dinsdag is na 1 nachtje.
+- Tel 2 nachtjes vanaf maandag.
+- 3 min 2 = 1.
+- Klopt! 9 min 1 = 8.
+- Kijk, de gele pijl staat bij maandag.
+- Ik zet 5 stippen neer.
+- 18 min 3 = 15.
+- 16 min 2 = 14.
+- Goed zo, dat is het. 7 min 3 = 4.
+- 14 min 7 = 7.
+- 20 min 6 = 14.
+- 16 min 6 = 10.
+- 15 min 3 = 12.
+- 16 min 9 = 7.
+- 18 min 8 = 10.
+- 19 min 2 = 17.
+- Precies! 12 min 7 = 5.
+- Klopt! 14 min 8 = 6.
+- 20 min 8 = 12.
+- Ik zet 11 stippen neer.
+- 11 min 6 = 5.
+- Ik zet 13 stippen neer.
+- 13 min 8 = 5.
+- Goed zo. Het zijn er 13.
+- Precies. Het zijn er 12.
+- Goed zo. Het zijn er 15.
+- In het paarse vak horen 2 pionnen.
+- Je hebt de 2 vakken omgedraaid.
+- Dat is 'm. Het zijn er 11.
+- Precies! 12 min 6 = 6.
+- Klopt. Het zijn er 17.
+- Precies. Het zijn er 16.
+- 2 pionnen gaan naar het paarse vak.
+- Goed zo. Het zijn er 14.
+- Ja, dat is het. Het zijn er 11.
+- Klopt. Het zijn er 19.
+- Dat is 'm. Het zijn er 17.
+- Precies. Het zijn er 13.
+- Klopt. Het zijn er 16.
+- Klopt. Het zijn er 20.
+- Ja, dat is het. Het zijn er 15.
+- Precies. Het zijn er 14.
+- Ja, dat is het. Het zijn er 18.
+- Goed zo. Het zijn er 12.
+- Klopt. Het zijn er 13.
+- Dat is 'm. Het zijn er 16.
+- Dat zijn er te weinig.
+- In het paarse vak horen 6 pionnen.
+- Precies. Het zijn er 17.
+- Dat huisje is voor 5 ballen.
+- Goed zo. Het zijn er 11.
+- Hoeveel zijn het samen?
+- Dat is 'm. Het zijn er 18.
+- Kijk: er zijn 9 pionnen.
+- 6 pionnen gaan naar het paarse vak.
+- 7 klopt, maar 6 en 1 niet.
+- Tel de ballen in elk vak apart.
+- Dat is 'm. Het zijn er 14.
+- In het paarse vak horen 3 pionnen.
+- 8 klopt, maar 4 en 4 niet.
+- Klopt. Het zijn er 12.
+- Klopt. Het zijn er 11.
+- Precies. Het zijn er 15.
+- Kijk: er zijn 7 pionnen.
+- 3 pionnen gaan naar het paarse vak.
+- Ja, dat is het. Het zijn er 13.
+- Ja, dat is het. Het zijn er 14.
+- Precies. Het zijn er 19.
+- Goed zo. Het zijn er 20.
+- In het paarse vak horen 2 shirts.
+- Goed zo. Het zijn er 16.
+- In het paarse vak horen 4 pionnen.
+- Dat is 'm. Het zijn er 13.
+- Ja, dat is het. Het zijn er 17.
+- Goed zo. Het zijn er 18.
+- Dat is 'm. Het zijn er 15.
+- Dat zijn 6 shirts.
+- Bovenaan de splitspaal staat 6.
+- Kijk: er zijn 6 pionnen.
+- 2 shirts zijn paars.
+- 4 pionnen gaan naar het paarse vak.
+- Goed zo. Het zijn er 19.
+- Dat is 'm. Het zijn er 12.
+- In het paarse vak horen 5 shirts.
+- Goed zo. Het zijn er 17.
+- Dat zijn 8 shirts.
+- Bovenaan de splitspaal staat 8.
+- In het paarse vak horen 8 pionnen.
+- 5 shirts zijn paars.
+- Klopt. Het zijn er 18.
+- Dat is 'm. Het zijn er 19.
+- Dat is 'm. Het zijn er 20.
+- Precies. Het zijn er 11.
+- In het paarse vak horen 3 shirts.
+- Kijk: er zijn 10 pionnen.
+- 8 pionnen gaan naar het paarse vak.
+- Dat zijn 9 shirts.
+- Bovenaan de splitspaal staat 9.
+- 3 shirts zijn paars.
+- In het paarse vak horen 4 ballen.
+- In het paarse vak horen 4 shirts.
+- Precies. Het zijn er 7.
+- Dat is 'm. Het zijn er 6.
+- Kijk: er zijn 7 ballen.
+- 4 ballen gaan naar het paarse vak.
+- De andere ballen gaan in de zak.
+- Dat zijn 5 shirts.
+- Bovenaan de splitspaal staat 5.
+- Ja, dat is het. Het zijn er 9.
+- Klopt. Het zijn er 9.
+- 4 shirts zijn paars.
+- Ja, dat is het. Het zijn er 16.
+- Ja, dat is het. Het zijn er 10.
+- Klopt. Het zijn er 8.
+- Dat moet 10 zijn.
+- 6 en 5 is samen 11.
+- Precies. Het zijn er 6.
+- Eronder liggen 6 paarse blokjes.
+- 2 en 7 is samen 9.
+- Klopt. Het zijn er 7.
+- Eronder liggen 2 paarse blokjes.
+- Ja, dat is het. Het zijn er 5.
+- Splits 14 in 2 getallen.
+- Een getal staat er al.
+- Welk getal mist er nog.
+- Sleep het naar de lege plek.
+- Dat is 'm!
+- Klopt. Het zijn er 5.
+- Klopt!
+- 8 en 3 is samen 11.
+- Ja, dat is het. Het zijn er 8.
+- Hoe kun je 15 splitsen? Sleep 2 getallen in het huisje, zodat het klopt.
+- Ja, dat is het. Het zijn er 24.
+- Precies. Het zijn er 10.
+- Hoe kun je 13 splitsen? Sleep 2 getallen in het huisje, zodat het klopt.
+- Dat is 'm. Het zijn er 9.
+- Precies. Het zijn er 29.
+- Ja, dat is het. Het zijn er 36.
+- Klopt. Het zijn er 15.
+- Hoe kun je 19 splitsen? Sleep 2 getallen in het huisje, zodat het klopt.
+- Precies. Het zijn er 47.
+- Ja, dat is het. Het zijn er 50.
+- Precies. Het zijn er 32.
+- Kijk naar het huisje. Welke sommen passen erbij? Er zijn er 2 goed. Sleep ze onder het huisje.
+- Goed zo. Het zijn er 35.
+- Dat is 'm. Het zijn er 26.
+- Precies. Het zijn er 43.
+- Ja, dat is het. Het zijn er 48.
+- Dat is 'm. Het zijn er 39.
+- Klopt. Het zijn er 41.
+- Je kunt getallen tot 20 splitsen.
+- Precies. Het zijn er 28.
+- Klopt. Het zijn er 45.
+- Goed zo. Het zijn er 7.
+- Precies. Het zijn er 33.
+- Ja, dat is het. Het zijn er 19.
+- Er zijn 8 knikkers. Verdeel ze over de 2 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Goed gezien! 17 = 10 + 7.
+- Dat is 'm. 40 en nog 7 is 47.
+- Goed zo. 50 en nog 2 is 52.
+- Precies! 11 = 8 + 3.
+- Dat is 'm! Elk bakje krijgt evenveel knikkers.
+- Ja, dat is het. 50 en nog 8 is 58.
+- Dat is 'm! 8 = 6 + 2.
+- Er zijn 12 knikkers. Verdeel ze over de 3 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Goed zo. 60 en nog 4 is 64.
+- Klopt! 20 = 10 + 10.
+- Ja, dat is het. Na 34 komt 35.
+- Precies. 70 en nog 1 is 71.
+- Goed zo. Na 42 komt 43.
+- Dat is 'm! 16 = 9 + 7.
+- Dat is 'm. 70 en nog 5 is 75.
+- Ja, dat is het. 80 en nog 2 is 82.
+- Klopt! Elk bakje krijgt evenveel knikkers.
+- Klopt! 10 = 4 + 6.
+- Goed zo. Na 37 komt 38.
+- Precies. 80 en nog 7 is 87.
+- Er zijn 10 knikkers. Verdeel ze over de 2 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Goed gezien! 13 = 10 + 3.
+- Precies. Na 29 komt 30.
+- Klopt. 90 en nog 3 is 93.
+- Ja, dat is het. Na 19 komt 20.
+- Precies. 90 en nog 8 is 98.
+- Precies! Elk bakje krijgt evenveel knikkers.
+- Klopt. Na 39 komt 40.
+- Goed zo. 50 en nog 6 is 56.
+- Er zijn 15 knikkers. Verdeel ze over de 5 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Dat is 'm. Na 44 komt 45.
+- Precies. 60 en nog 9 is 69.
+- Klopt. Na 40 komt 41.
+- Goed zo. 70 en nog 3 is 73.
+- Goed zo. Na 23 komt 24.
+- Precies. 40 en nog 8 is 48.
+- Goed gezien! Elk bakje krijgt evenveel knikkers.
+- Klopt. 90 en nog 6 is 96.
+- Er zijn 10 knikkers. Verdeel ze over de 5 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Klopt. Na 30 komt 31.
+- Ja, dat is het. Na 20 komt 21.
+- Ja, dat is het. Na 69 komt 70.
+- Dat is 'm. Na 49 komt 50.
+- Klopt. Na 87 komt 88.
+- Dat is 'm! Elk bakje krijgt 4 knikkers.
+- Ja, dat is het. Na 89 komt 90.
+- Klopt! Elk bakje krijgt 5 knikkers.
+- Tel er steeds 2 bij.
+- Er zijn 8 stuiterballen. Verdeel ze over de 2 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Ja, dat is het. Na 99 komt 100.
+- Precies. Na 79 komt 80.
+- Dat is 'm! Elk bakje krijgt evenveel stuiterballen.
+- Er zijn 9 stuiterballen. Verdeel ze over de 3 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Ja, dat is het. Na 60 komt 61.
+- Precies. Na 97 komt 98.
+- Dat is 'm. Voor 15 komt 14.
+- Klopt! Elk bakje krijgt evenveel stuiterballen.
+- Goed zo. Voor 12 komt 11.
+- Er zijn 16 knikkers. Verdeel ze over de 4 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Precies. Voor 17 komt 16.
+- Klopt. Voor 11 komt 10.
+- Precies. Voor 16 komt 15.
+- Dat is 'm. Voor 14 komt 13.
+- Klopt. Voor 18 komt 17.
+- Begin bij 3.
+- Precies. Hier zijn er 17.
+- Klopt. Hier zijn er 9.
+- Goed zo. Hier zijn er 7.
+- Precies. Hier zijn er 19.
+- Goed zo. 7, 10, 14, 18.
+- Precies. 6, 12, 15, 20.
+- Goed zo. 8, 9, 13, 17.
+- Precies. 11, 13, 16, 19.
+- Ja, dat is het. 5, 10, 12, 14.
+- Precies. Hier zijn er 10.
+- Klopt. Het zijn er 14.
+- Goed zo. Hier zijn er 8.
+- Dat is 'm. Hier zijn er 20.
+- Goed zo. Hier zijn er 11.
+- Precies. Hier zijn er 15.
+- Precies. Het zijn er 9.
+- Precies. Hier zijn er 18.
+- Klopt. Hier zijn er 13.
+- Dat is 'm. Het zijn er 10.
+- Precies. Het zijn er 8.
+- Klopt. Hier zijn er 17.
+- Klopt. Hier liggen er 13.
+- Precies. Hier liggen er 16.
+- Dat is 'm. Hier liggen er 12.
+- Klopt. Hier zijn er 14.
+- Ja, dat is het. Hier liggen er 17.
+- Dat is 'm. Hier liggen er 15.
+- Precies. Hier zijn er 16.
+- Klopt. Hier liggen er 14.
+- Precies. Hier zijn er 12.
+- Goed zo. Hier liggen er 18.
+- Klopt. 26, 24, 8.
+- Ja, dat is het. Hier liggen er 12.
+- Klopt. Hier liggen er 10.
+- Goed zo. Hier zijn er 18.
+- Goed zo. Hier liggen er 15.
+- Ja, dat is het. 48, 38, 18.
+- Dat is 'm. Hier liggen er 13.
+- Goed zo. Hier zijn er 24.
+- Precies. Hier liggen er 20.
+- Precies. 42, 31, 22.
+- Zaterdag hoort al bij het weekend.
+- Zaterdag komt voor zondag, niet erna.
+- Dinsdag komt na maandag, niet ervoor.
+- Kijk naar de laatste wagon.
+- Maandag komt ná zondag, niet ervoor.
+- Hier zie je de mand met een beetje fruit.
+- Je koos het lege stokje.
+- Je koos de bijna lege beker.
+- Hier liggen 2 stukken.
+- Je koos het flesje met minder water.
+- Een lege mand: daar zit niets in.
+- Hier zie je de beker met minder sap.
+- Hier komt het sap lager.
+- Hier komt het sap hoger.
+- Je koos de schaal met 2 tomaten.
+- Zoek de schaal met een heleboel tomaten.
+- Deze schaal is leeg.
+- In deze schaal zitten maar 2 tomaten.
+- Vooraan de beker met het minste sap.
+- De beker met het minste sap komt vooraan.
+- De beker met het meeste sap komt achteraan.
+- Dat is de volle mand.
+- Dat is 'm. Hier liggen er 14.
+- Klopt. Hier liggen er 18.
+- Precies. Hier liggen er 12.
+- Dat is 'm. Hier liggen er 10.
+- Precies. Hier liggen er 13.
+- Ja, dat is het. Hier liggen er 20.
+- Dat is 'm. Hier liggen er 17.
+- Klopt. Hier liggen er 16.
+- Goed zo. Hier liggen er 19.
+- Ja, dat is het. Hier liggen er 16.
+- Precies. 26, 24, 8.
+- Ja, dat is het. Hier zijn er 18.
+- Klopt. 48, 38, 18.
+- Precies. Hier zijn er 24.
+- Dat is 'm. 42, 31, 22.
+- Klopt. 45, 15, 9.
+- Goed zo. Hier zijn er 19.
+- Klopt. 47, 36, 15.
+- Dat is 'm. Hier zijn er ook 14.
+- Goed zo. 29, 19, 9.
+- Klopt. Hier zijn er 21.
+- Goed zo. 44, 33, 27.
+- Klopt. Hier zijn er ook 18.
+- Dat is 'm. 41, 25, 12.
+- Dat is 'm. Het zijn er 24.
+- Goed zo. 16, 26, 36.
+- Tel de koekjes. Hoeveel koekjes zijn het?
+- Dat is 'm. Het zijn er 27.
+- Ja, dat is het. Het zijn er 30.
+- Klopt. 23, 29, 44.
+- Dat is 'm. Het zijn er 43.
+- Ja, dat is het. 26, 31, 34.
+- Klopt. Het zijn er 32.
+- Tel de ballonnen. Welk getal is meer dan het aantal ballonnen?
+- Ja, dat is het. Het zijn er 37.
+- Dat is 'm. 14, 22, 40.
+- Ja, dat is het. Het zijn er 28.
+- Precies. 11, 13, 15.
+- Tel de ballen. Welk getal is minder dan het aantal ballen?
+- Klopt. Het zijn er 44.
+- Tel de appels. Welk getal is minder dan het aantal appels?
+- Ja, dat is het. Het zijn er 26.
+- Tel de knikkers. Hoeveel knikkers zijn het?
+- Welk getal hoort bij het vraagteken? Typ het getal.
+- Het raketje vliegt helemaal naar het eind. Bij welk getal staat het raketje nu?
+- Er moeten nog 2 bloemen in de bak. Welke 2 horen erbij?
+- Kijk naar de rijen. Wat hoort bij de pijl?
+- We zijn bijna klaar. Nog even lekker puzzelen. Maak de puzzel. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.
+- Zoek nog 2 plaatjes die bij elkaar horen.
+- En deze 2 zijn allebei boeken.
+- De broeken horen in de kast. Op welk plaatje is dat goed?
+- En deze 2 zijn allebei kleren.
+- Nu zetten we alles netjes neer. Op welk plaatje staan de blokken van klein naar groot?
+- Help je mee opruimen? Op welk plaatje zie je alleen ballen?
+- De ballen horen in de mand. Op welk plaatje is dat goed?
+- En deze 2 zijn allebei blokken.
+- Nu zetten we alles netjes neer. Op welk plaatje staan de ballen van klein naar groot?
+- Help je mee opruimen? Op welk plaatje zie je alleen boeken?
+- Nu zetten we alles netjes neer. Op welk plaatje staan de dozen van klein naar groot?
+- Denk aan het getal dat je het laatst zei. Zoveel appels heb je geteld.
+- Ja, 12 appels! Het getal dat je het laatst zei, vertelt hoeveel het er samen zijn.
+- Denk aan het getal dat je het laatst zei. Zoveel knikkers heb je geteld.
+- Ja, 47 knikkers! Het getal dat je het laatst zei, vertelt hoeveel het er samen zijn.
+- Dat is 'm. Na 27 komt 28.
+- Precies. Na 37 komt 38.
+- Klopt. Na 29 komt 30.
+- Goed zo. Na 44 komt 45.
+- Precies. Na 48 komt 49.
+- We tellen eerst de rode visjes.
+- Het zijn 4 rode visjes.
+- Je deed er 34,3 seconden over.
+- Oké, deze keer tellen we de oranje visjes.
+- Hoeveel oranje visjes zie je?
+- 0 oranje visjes?
+- Tel de oranje visjes en tik op het getal.
+- Het zijn 7 oranje visjes.
+- 9 rode visjes?
+- Er zijn 7 rode visjes, niet 9.
+- 5 gele visjes?
+- Er zijn 7 gele visjes, niet 5.
+- Je deed er 17,0 seconden over.
+- Het briefje is al 10 euro. Tel de munten erbij.
+- Je deed er 18,2 seconden over.
+- Je deed er 21,0 seconden over.
+- Je deed er 17,1 seconden over.
+- 104
+- 115
+- Je deed er 18,4 seconden over.
+- Je deed er 15,3 seconden over.
+- 7 min 3 = 0?
+- 6 min 6 = 6?
+- 8 min 5 = 6?
+- 7 min 4 = 6?
+- 9 min 3 = 0?
+- 8 min 3 = 2?
+- 10 min 8 = 3?
+- 6 min 1 = 6?
+- 7 min 2 = 0?
+- 9 min 7 = 6?
+- 7 min 1 = 8?
+- 8 min 6 = 3?
+- 10 min 7 = 8?
+- 5 min 1 = 2?
+- Half 6. Goed zo.
+- Half 9. Mooi.
+- Half 2. Klopt.
+- Half 4. Precies goed.
+- Half 1. Helemaal goed.
+- We willen half 11.
+- 4:35
+- 4:40
+- Welke woorden zeggen dat er vogeltjes weggaan?
+- 12:60
+- We willen kwart over 6.
+- Tik op de 6, of draai de urenwijzer verder rond.
+- Dat is 1 uur.
+- 3:38
+- 3:58
+- 4:08
+- 3:68
+- 6 paarse visjes?
+- Er zijn 4 paarse visjes, niet 6.
+- Het zijn 5 rode visjes.
+- Je bent op 26.
+- Je bent op 47.
+- Weet je nog, 13?
+- Weet je nog, 25?
+- Weet je nog, 82?
+- Je deed er 47,6 seconden over.
+- Je deed er 49,7 seconden over.
+- Je deed er 49,6 seconden over.
+- 3 min 5 = 3?
+- 8 min 5 = 1?
+- 9 min 3 = 4?
+- Je deed er 46,8 seconden over.
+- 10 min 8 = 7?
+- 6 min 1 = 1?
+- 7 min 2 = 4?
+- Je deed er 49,2 seconden over.
+- 3 min 8?
+- 7 min 1 = 0?
+- Kijk waar de punt van de urenwijzer nu is.
+- Op de 4 staat hij niet.
+- Elke keer dat de minutenwijzer rond gaat, gaat de urenwijzer één getal verder.
+- Hij ging van de 4 naar de 5.
+- Van 4 uur tot 5 uur: hoe lang is dat?
+- Het gekleurde stuk is groter dan het witte stuk.
+- Hij staat halverwege de 5 en de 6.
+- Hij is de 5 al voorbij.
+- Om 5 uur staat de urenwijzer precies op de 5.
+- Het is dus half 6.
+- Je vond de 10.
+- Sam liet hem op de 5 staan.
+- Je vond de 1.
+- Net een stukje voorbij de 11.
+- Dan is het dus 4:10.
+- De urenwijzer staat net voorbij de 10.
+- 1 vogeltje? Dat is nog niet het getal dat ik tel.
+- Er waren eerst 17 ballonnen.
+- Er vliegen 9 ballonnen weg.
+- Kleiner
+- 17 ballonnen?
+- 9 bloemen? Niet helemaal.
+- Kijk, het is 5.
+- 5 bloemen? Niet helemaal.
+- Kijk, het is 9.
+- Branden er dan meer of minder lampen?
+- Ik doe er lampen uit.
+- Zoveel lampen brandden er eerst.
+- Kijk, het is 20.
+- 20 lampen? Niet helemaal.
+- Kijk, het is 13.
+- Je deed er 53,2 seconden over.
+- is gelijk aan
+- Tik op dit getal tot het gelijk is aan 7.
+- Tik op het getal om het te veranderen.
+- 7 is gelijk aan 7.
+- Tik erop om het te veranderen.
+- Maak van de 8 een getal onder de 5.
+- Maar 8 is niet kleiner dan 5.
+- Nu zegt het teken: 1 is kleiner dan 5.
+- Maak van de 1 een getal boven de 4.
+- Maar 1 is niet groter dan 4.
+- Nu zegt het teken: 5 is groter dan 4.
+- Zelf
+- Nog eens
+- 2 briefjes van 5 euro en een munt van 2 euro is ook 12 euro.
+- Tel het geld. Let op 2 groepjes met evenveel geld. Trek de lijnen.
+- Waar ligt 14 euro? Tik op 2 groepjes geld.
+- 2 briefjes van 5 euro en 2 munten van 2 euro is ook 14 euro.
+- Een briefje van 10 euro en 2 munten van 2 euro is samen 14 euro.
+- Waar ligt 17 euro? Tik op 2 groepjes geld.
+- 7 munten van 1 euro is 7 euro.
+- 3 briefjes van 5 euro en een munt van 2 euro is ook 17 euro.
+- Een briefje van 20 euro is net zoveel als een briefje van 10 en 2 briefjes van 5 euro.
+- Waar ligt 19 euro? Tik op 2 groepjes geld.
+- Een briefje van 10 euro, een briefje van 5 euro en 2 munten van 2 euro is samen 19 euro.
+- 3 briefjes van 5 euro en 2 munten van 2 euro is ook 19 euro.
+- Je kunt ook met 7 munten van 1 euro betalen.
+- 2 briefjes van 10 euro is samen 20 euro.
+- 4 briefjes van 5 euro is ook 20 euro.
+- Kijk, een speelgoedraket. De raket kost 9 euro. Waar ligt 9 euro?
+- Het bootje kost 6 euro. Waar ligt 6 euro? Tik op 2 groepjes geld.
+- 3 munten van 2 euro is ook 6 euro.
+- Ik betaal met precies genoeg geld. Waar ligt 8 euro? Tik op 2 groepjes geld.
+- 4 munten van 2 euro is ook 8 euro.
+- Ik heb 9 euro in mijn portemonnee. Waar ligt 9 euro?
+- Ik heb 9 euro. Kan ik de vlieger en de bal allebei kopen?
+- Ik koop het autootje en het springtouw. Hoeveel kost dat samen? Waar ligt dat geld?
+- Stel, je hebt 9 euro. Kun je de bal en het autootje allebei kopen?
+- Je telt je geld nog 1 keer. Dit geld zit in je spaarpot. En dit geld zit in je portemonnee. Hoeveel euro heb je bij elkaar?
+- Kijk, een voetbal. De voetbal kost 10 euro. Waar ligt 10 euro?
+- 2 briefjes van 5 euro is samen 10 euro.
+- 2 munten van 2 euro en een munt van 1 euro is 5 euro.
+- 5 munten van 1 euro is ook 5 euro.
+- Kijk naar het plaatje. Je betaalde met een briefje van 5 euro en 2 munten van 2 euro. Daar staat een kruis door. Hoeveel euro heb je nog over?
+- Je hebt nog 11 euro. Waar ligt 11 euro? Tik op 2 groepjes geld.
+- Volgende vraag. Waar ligt 3 euro? Tik op 2 groepjes geld.
+- 3 munten van 1 euro is ook 3 euro.
+- Goed zo. Na 7 komt 8.
+- Precies. Voor 12 komt 11.
+- Klopt. 16 hoort tussen 15 en 17.
+- Precies. Na 19 komt 20.
+- Ja, zo is het. 10 hoort tussen 9 en 11.
+- Precies. Na 25 komt 26.
+- Klopt. Voor 27 komt 26.
+- Goed zo. Voor 21 komt 20.
+- Ja, zo is het. Voor 12 komt 11.
+- Precies. 28 hoort tussen 27 en 29.
+- Dat is 'm. 24 hoort tussen 23 en 25.
+- Ja, zo is het. Voor 30 komt 29.
+- Ja, zo is het. Na 19 komt 20.
+- Dat is 'm. 10 hoort tussen 9 en 11.
+- Goed zo. Voor 41 komt 40.
+- Dat is 'm. 47 hoort tussen 46 en 48.
+- Ja, zo is het. Voor 27 komt 26.
+- Ja, zo is het. Na 49 komt 50.
+- Ja, zo is het. 28 hoort tussen 27 en 29.
+- Dat is 'm. Voor 41 komt 40.
+- Klopt. 47 hoort tussen 46 en 48.
+- Precies. 34 hoort tussen 33 en 35.
+- Goed zo! 11 zit tussen 10 en 12.
+- Dat klopt! 4 zit tussen 3 en 5.
+- Slim gedaan! 19 zit tussen 18 en 20.
+- Netjes! 17 zit tussen 16 en 18.
+- Goed zo! Na 8 komt 9.
+- Netjes! 12 zit tussen 11 en 13.
+- Dat klopt! Na 19 komt 20.
+- Perfect! 8, 9, 10.
+- Heel goed! 16, 17, 18.
+- Mooi gezien! 11, 12, 13.
+- Slim gedaan! 13, 14, 15.
+- Netjes! 9, 10, 11.
+- Prima! 15, 16, 17.
+- Perfect! 10, 11, 12.
+- Ja! 16, 17, 18.
+- Dat klopt! 14, 15, 16.
+- Perfect! 7, 8, 9.
+- Heel goed! 14, 15, 16.
+- Netjes! 14, 15, 16.
+- Mooi gezien! 12 zit tussen 11 en 13.
+- Ja! Na 14 komen 15 en 16.
+- Dat klopt! 14 zit tussen 13 en 15.
+- Ja! 17, 18, 19.
+- Dat klopt! 16 zit tussen 15 en 17.
+- Goed zo! 9 zit tussen 8 en 10.
+- Heel goed! De bus staat op 18 en 19.
+- Mooi gezien! Het raketje staat bij 2.
+- Na 8 komt 9: daar staat het raketje.
+- Heel goed! Het raketje is 1 streepje voorbij 10: dat is 11.
+- Goed zo! 14 is meer dan 13.
+- Heel goed! Het raketje staat bij 14.
+- Ja! Het raketje staat bij 18.
+- Bij 17 staat het raketje.
+- Dat klopt! De ufo staat bij 14.
+- 18 is maar 2 van de 20 af.
+- Heel goed! 11 is maar 1 van de 10 af.
+- Goed geschat: ongeveer 11.
+- Dat klopt! Goed geschat: ongeveer 19.
+- 15 min 1 is 14.
+- 13 hoort bij het streepje waar de pijl naartoe wijst.
+- Mooi gezien! 17 hoort bij het streepje waar de pijl naartoe wijst.
+- Dat klopt! De ufo staat bij 12.
+- Perfect! 11, 12, 13, 14.
+- Slim gedaan! 19 min 1 is 18.
+- Prima! 15, 16, 17, 18.
+- 11 min 1 is 10.
+- Perfect! 17 is maar 1 van de 16 af.
+- 8 is maar 1 van de 7 af.
+- Netjes.
+- Waar ligt 16 euro? Tik op 2 groepjes geld.
+- Waar ligt 13 euro? Tik op 2 groepjes geld.
+- Je kunt geld tellen tot 20 euro.
+- Wat een mooie vlieger. De vlieger kost 7 euro. Waar ligt 7 euro?
+- Je veegt de stoep en je geeft de planten water. Voor elke klus krijg je 2 euro. Waar ligt het geld dat je bij elkaar krijgt?
+- Je wast de fiets en je maakt je bed op. Voor elke klus krijg je 3 euro. Waar ligt het geld dat je bij elkaar krijgt?
+- Hier zijn 4 tafels met borden. Zet de tafels op volgorde. Van klein naar groot. Sleep een plaatje naar een leeg vak. Tikken mag ook.
+- Hier liggen 2 kaartjes papier. Kaartje 2 ligt op zijn kant. Wat klopt? Zijn ze even groot, of niet even groot?
+- Kijk naar de blauwe en de gele vorm. Wat klopt er? Kies er 2.
+- Kijk naar de 2 speelmatten. Ze zijn gemaakt van puzzelstukken. Wat klopt? Zijn ze even groot? Is mat 1 groter? Of is mat 2 groter?
+- Weer 2 speelmatten. Wat klopt? Zijn ze even groot? Is mat 1 groter? Of is mat 2 groter?
+- Hier zie je 2 keer dezelfde tafel. Op de ene liggen kleine gele blaadjes. Op de andere liggen grote rode blaadjes. Hoeveel blaadjes passen er op elke tafel? Sleep het goede getal onder elke tafel.
+- Het laatste toetje. Kijk naar het ijsje bovenaan. Welk ijsje heeft 1 bolletje minder?
+- Tel de krentenbollen bij elkaar op. Welke 2 sommen passen erbij? Tik op 2 sommen.
+- Tel de donuts bij elkaar op. Welke 2 sommen passen erbij? Tik op 2 sommen.
+- Kijk goed naar de 3 plaatjes.
+- Verbind het groepje met het getal of plaatje dat erbij hoort. Trek een lijn tussen de stippen.
+- Er zijn 6 knikkers. Verdeel ze over de 3 bakjes. Zorg dat in elk bakje evenveel ligt.
+- Splits 14 in 2 getallen.
+- Een getal staat er al.
+- Welk getal mist er nog.
+- Sleep het naar de lege plek.
+- het blad met 1 week
+- de plaatjes van 1 dag
+- het blad met 12 maanden
+- de lijst met 1 maand
+- 100 broodjes bakken
+- Let op de groene wagon.
+- Let op de paarse wagon.
+- Let op de oranje wagon.
+- Direct achter dinsdag staat de volgende dag.
+- Vrijdag staat niet direct achter dinsdag.
+- Direct vóór woensdag staat de vorige dag.
+- Donderdag is de wagon ná woensdag.
+- Kijk waar woensdag in de trein staat.
+- Gisteren is de wagon die 1 plek vóór woensdag hangt.
+- Morgen is de wagon die 1 plek achter vrijdag hangt.
+- Zaterdag is de wagon vóór zondag.
+- Maandag staat vooraan. Zoek helemaal achteraan.
+- Op een briefje van 100 euro staat 100. Vergelijk dat met het getal hier.
+- Dit is geen briefje van 100 euro.
+- Rood met een 10: dat is 10 euro.
+- De 20 staat er groot op.
+- Dit blauwe briefje is 20 euro.
+- De munt van 2 euro is goud in het midden.
+- De munt van 1 euro heeft een zilveren midden.
+- Zilver in het midden: dat is de munt van 1 euro.
+- Op een briefje van 50 euro staat 50. Vergelijk dat met het getal hier.
+- Dit is geen briefje van 50 euro.
+- Je zag de 5 goed staan.
+- Een grijs briefje is 5 euro.
+- In het midden is de munt van 1 euro zilver.
+- Daar staat de 10 op.
+- Het rode briefje is 10 euro.
+- Op een briefje van 10 euro staat 10. Vergelijk dat met het getal hier.
+- Dit is geen briefje van 10 euro.
+- Dat zag je goed aan de kleur.
+- Blauw met 20 erop: een briefje van 20 euro.
+- Op een munt van 1 euro staat een 1. Vergelijk dat met het getal hier.
+- Dit is geen munt van 1 euro.
+- Is het midden zilver, dan is het de munt van 1 euro.
+- De 5 staat er duidelijk op.
+- Dit grijze briefje is 5 euro.
+- Dit groepje is 1 euro minder dan je zoekt.
+- Dit groepje is samen 2 euro, en je zoekt 3 euro.
+- Dit groepje is samen 4 euro, en je zoekt 5 euro.
+- Dit groepje is 2 euro minder dan je zoekt.
+- Dit groepje is samen 2 euro, en je zoekt 4 euro.
+- Dit groepje is 1 euro meer dan je zoekt.
+- Dit groepje is samen 7 euro, en je zoekt 6 euro.
+- Je spaarpot is 4 euro. Tel daar het geld uit je portemonnee bij.
+- Dit groepje is 5 euro minder dan je zoekt.
+- Dit groepje is samen 15 euro, en je zoekt 20 euro.
+- Daar staat een kraam voor: om spullen te verkopen.
+- Je koos niet waar. Op de kraam liggen spullen met een prijs.
+- Dit groepje is samen 3 euro, en je zoekt 4 euro.
+- Dit groepje is 2 euro meer dan je zoekt.
+- Dit groepje is samen 6 euro, en je zoekt 4 euro.
+- Kijk naar het getal links van de bal: 12.
+- Je koos 15. Dat komt niet na 12.
+- Kijk naar het getal links van het pakje: 15.
+- Je koos 15, maar dat getal staat al in de rij.
+- Ik tel de getallen tot het pakje.
+- Kijk naar het getal links van het blok: 18.
+- Je koos 16. Dat komt niet na 18.
+- Ik tel de getallen tot het blok.
+- Kijk naar het getal links van de auto: 10.
+- Je koos 9. Dat komt niet na 10.
+- Ik tel de getallen tot de auto.
+- Kijk naar het getal links van de ster: 3.
+- Je koos 2. Dat komt niet na 3.
+- Ik tel de getallen tot de ster.
+- Kijk naar het getal links van de bal: 14.
+- Je koos 13. Dat komt niet na 14.
+- Kijk naar het getal links van het pakje: 12.
+- Je koos 10. Dat komt niet na 12.
+- Kijk naar het getal links van de ster: 18.
+- Je koos 17. Dat komt niet na 18.
+- Kijk naar het getal links van het blok: 13.
+- Je koos 12. Dat komt niet na 13.
+- Kijk naar het getal links van de auto: 16.
+- Je koos 14. Dat komt niet na 16.
+- Kijk naar het getal links van het pakje: 9.
+- Je koos 8. Dat komt niet na 9.
+- Kijk naar het getal links van de bal: 16.
+- Je koos 19. Dat komt niet na 16.
+- Na de bal staat 18.
+- Kijk naar het getal links van de ster: 8.
+- Je koos 6. Dat komt niet na 8.
+- Kijk naar het getal links van het blok: 11.
+- Je koos 10. Dat komt niet na 11.
+- Na het blok staat 13.
+- Kijk naar het getal links van de auto: 19.
+- Je koos 17. Dat komt niet na 19.
+- Zoek eerst het kleinste getal en zet dat vooraan.
+- Je zette 13 vooraan. Er is een kleiner getal.
+- Ik kijk naar de 3 getallen.
+- 12 is het kleinste getal.
+- Van 12 tot 14 wordt het steeds groter.
+- Je zette 10 vooraan. Er is een kleiner getal.
+- 8 is het kleinste getal.
+- Van 8 tot 10 wordt het steeds groter.
+- Tot en met 16 staat het goed.
+- Zoek het kleinste getal van wat nog over is.
+- 16 is het kleinste getal.
+- Van 16 tot 18 wordt het steeds groter.
+- Je zette 19 vooraan. Er is een kleiner getal.
+- 18 is het kleinste getal.
+- Van 18 tot 20 wordt het steeds groter.
+- Je zette 15 vooraan. Er is een kleiner getal.
+- 13 is het kleinste getal.
+- Van 13 tot 15 wordt het steeds groter.
+- Tot en met 9 staat het goed.
+- 9 is het kleinste getal.
+- Van 9 tot 11 wordt het steeds groter.
+- Je zette 17 vooraan. Dat is het grootste getal.
+- 15 is het kleinste getal.
+- Van 15 tot 17 wordt het steeds groter.
+- Je zette 12 vooraan. Er is een kleiner getal.
+- 10 is het kleinste getal.
+- Van 10 tot 12 wordt het steeds groter.
+- Je zette 18 vooraan. Dat is het grootste getal.
+- Je zette 8 vooraan. Er is een kleiner getal.
+- 7 is het kleinste getal.
+- Van 7 tot 9 wordt het steeds groter.
+- 11 is het kleinste getal.
+- Van 11 tot 13 wordt het steeds groter.
+- Je zette 20 vooraan. Dat is het grootste getal.
+- Je zette 16 vooraan. Er is een kleiner getal.
+- 14 is het kleinste getal.
+- Van 14 tot 16 wordt het steeds groter.
+- Kijk naar het getal links van de bal: 4.
+- Je koos 7. Dat komt niet na 4.
+- Kijk naar het getal links van het pakje: 11.
+- Je koos 14. Dat komt niet na 11.
+- Tot en met 10 staat het goed.
+- De bus staat rechts van 14. Tel vanaf 14 2 getallen verder.
+- Je koos 12 en 13. Die getallen komen vóór 14, niet erna.
+- Kijk naar het getal links van de auto: 17.
+- Je koos 16. Dat komt niet na 17.
+- Kijk naar het getal links van de ster: 13.
+- 17 is het kleinste getal.
+- Van 17 tot 19 wordt het steeds groter.
+- De bus staat rechts van 6. Tel vanaf 6 2 getallen verder.
+- Je koos 4 en 5. Die getallen komen vóór 6, niet erna.
+- Kijk naar het getal links van het blok: 15.
+- Je koos 18. Dat komt niet na 15.
+- Kijk naar het getal links van de bal: 8.
+- Je koos 7. Dat komt niet na 8.
+- Na de bal staat 10.
+- Je zette 17 vooraan. Er is een kleiner getal.
+- De bus staat rechts van 17. Tel vanaf 17 2 getallen verder.
+- Je koos 15 en 16. Die getallen komen vóór 17, niet erna.
+- Hier staat 17.
+- Het streepje voor het raketje is 5. Tel 1 verder.
+- Je koos 7. Dat is het streepje ernaast.
+- Het streepje voor het raketje is 1. Tel 1 verder.
+- Je koos 1. Dat is het streepje ernaast.
+- Het streepje voor het raketje is 8. Tel 1 verder.
+- Je koos 8. Dat is het streepje ernaast.
+- De lijn eindigt bij 10, maar het raketje vliegt door. Tel 1 verder.
+- Je koos 1. Het raketje is het streepje van 1 al voorbij.
+- Het getal dat je later zegt als je telt, is meer.
+- Je koos 13. Als je telt, zeg je 13 eerder dan 14.
+- Ik zet 13 en 14 op de getallenlijn.
+- Tel 1 verder vanaf 5.
+- Tot en met 5 staat het goed.
+- Ik kijk naar de 4 getallen.
+- Van 5 tot 8 wordt het steeds groter.
+- Tel 1 verder vanaf 12.
+- Tot en met 12 staat het goed.
+- Van 12 tot 15 wordt het steeds groter.
+- Het streepje voor het raketje is 13. Tel 1 verder.
+- Je koos 15. Dat is het streepje ernaast.
+- Je koos 17. Dat is het streepje ernaast.
+- Het streepje voor het raketje is 17. Tel 1 verder.
+- En na 17 staat het raketje.
+- Na 17 komt 18.
+- Begin bij de 15 en tel streepje voor streepje verder naar het streepje van 17.
+- Je tikte op de ufo. Die staat bij een ander getal dan 17.
+- 17 is 2 streepjes na de 15.
+- Kijk hoe ver elk getal van de 20 af ligt.
+- Je koos 8. Dat is 12 van de 20 af, en een ander getal ligt dichterbij.
+- Hier is 20.
+- 8 ligt ver van de 20.
+- 14 ligt al dichterbij.
+- Het is maar 2 verder of terug.
+- 18 ligt het dichtst bij 20.
+- Kijk hoe ver elk getal van de 10 af ligt.
+- Je koos 17. Dat is 7 van de 10 af, en een ander getal ligt dichterbij.
+- Hier is 10.
+- 17 ligt ver van de 10.
+- 4 ligt al dichterbij.
+- Het is maar 1 verder of terug.
+- 11 ligt het dichtst bij 10.
+- Zoek het getal dat vlak na 10 komt.
+- Je koos 16. Het raketje staat nog links van 16.
+- Het raketje staat vlak na de 10.
+- Zoek het getal dat vlak voor 20 komt.
+- Je koos 13. Het raketje staat verder naar rechts dan 13.
+- Het raketje staat vlak voor de 20.
+- Begin bij 15 op de planeet en tel 1 terug.
+- Je koos 16. Dat komt na 15, niet ervoor.
+- Begin bij de 15 en tel streepje voor streepje terug naar de pijl.
+- Je koos 12. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Vanaf de 15 is het 2 streepjes terug. Zo kom je bij 13.
+- Begin bij de 15 en tel streepje voor streepje verder naar de pijl.
+- Je koos 16. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Vanaf de 15 is het 2 streepjes verder. Zo kom je bij 17.
+- Begin bij de 15 en tel streepje voor streepje terug naar de ufo.
+- Je koos 13. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Vanaf de 15 is het 3 streepjes terug. Zo kom je bij 12.
+- Begin bij de 20 en tel streepje voor streepje terug naar de satelliet.
+- Je koos 17. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Vanaf de 20 is het 2 streepjes terug. Zo kom je bij 18.
+- Tel 1 verder vanaf 11.
+- Tot en met 11 staat het goed.
+- Van 11 tot 14 wordt het steeds groter.
+- Begin bij 19 op de planeet en tel 1 terug.
+- Je koos 20. Dat komt na 19, niet ervoor.
+- Tel 1 verder vanaf 15.
+- Tot en met 15 staat het goed.
+- Van 15 tot 18 wordt het steeds groter.
+- Begin bij 11 op de planeet en tel 1 terug.
+- Je koos 12. Dat komt na 11, niet ervoor.
+- Je koos 10. Dat is 6 van de 16 af, en een ander getal ligt dichterbij.
+- Je koos 2. Dat is 5 van de 7 af, en een ander getal ligt dichterbij.
+- 12 ligt ook ver van de 7.
+- 8 ligt het dichtst bij 7.
+- Tel vanaf de 15 een klein stukje verder.
+- Je koos 12. Het raketje staat verder naar rechts dan 12.
+- Het staat dichter bij de 15.
+- Het raketje staat tussen 15 en 20.
+- Je koos 6. Het raketje staat verder naar rechts dan 6.
+- Zoek het getal dat net na 10 komt.
+- Het raketje staat daar net na.
+- Zoek het getal dat net voor 5 komt.
+- Je koos 9. Het raketje staat nog links van 9.
+- Het zit precies tussen 0 en 10.
+- Het raketje staat net voor de 5.
+- Dit streepje is 5.
+- Tel in sprongen van 5 vanaf het midden.
+- Je koos 10. Het raketje vliegt nog verder dan 10.
+- Kijk naar het lampje met 5.
+- Je koos 8. Dat past niet bij 5 ervoor.
+- Ik tel langs de lampjes, van links naar rechts.
+- Verdertellen vanaf 5: 5, 6.
+- Dus op deze plek hoort 6.
+- Kijk naar het lampje met 12.
+- Je koos 10. In deze rij worden de getallen steeds groter.
+- Dus op deze plek hoort 13.
+- Verdertellen vanaf 12: 12, 13.
+- Kijk naar het lampje met 18.
+- Je koos 15. In deze rij worden de getallen steeds groter.
+- Dus op deze plek hoort 19.
+- Verdertellen vanaf 18: 18, 19.
+- Kijk naar de planeet met 6.
+- Tel 2 verder.
+- Je koos 7. Dat past niet bij 7 ervoor.
+- Ik tel langs de planeten, van links naar rechts.
+- Dus op deze plek hoort 8.
+- Verdertellen vanaf 6: 6, 7, 8.
+- Kijk naar de planeet met 13.
+- Je koos 17. Dat past niet bij 14 ervoor.
+- Dus op deze plek hoort 15.
+- Verdertellen vanaf 13: 13, 14, 15.
+- Kijk naar de planeet met 9.
+- Je koos 10. Dat past niet bij 10 ervoor.
+- Verdertellen vanaf 9: 9, 10, 11.
+- Dus op deze plek hoort 11.
+- Begin bij de 5 en tel streepje voor streepje verder naar het vlaggetje.
+- Je koos 6. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Het vlaggetje staat 2 streepjes na de 5.
+- Vanaf de 5 is het 2 streepjes verder. Zo kom je bij 7.
+- Begin bij de 15 en tel streepje voor streepje terug naar het vlaggetje.
+- Je koos 14. Dat is het streepje ernaast, tel de streepjes nog eens.
+- Het vlaggetje staat 2 streepjes voor de 15.
+- Begin bij de 15 en tel streepje voor streepje verder naar het vlaggetje.
+- Het vlaggetje staat 1 streepje na de 15.
+- Vanaf de 15 is het 1 streepje verder. Zo kom je bij 16.
+- Kijk naar de ster met 4.
+- Je koos 2, maar dat getal staat al in de rij.
+- Ik tel langs de sterren, van links naar rechts.
+- Dus op deze plek hoort 5.
+- Verdertellen vanaf 4: 4, 5.
+- Kijk naar de ster met 11.
+- Je koos 4. In deze rij worden de getallen steeds groter.
+- Verdertellen vanaf 11: 11, 12.
+- Dus op deze plek hoort 12.
+- Kijk naar de ster met 17.
+- Je koos 6. In deze rij worden de getallen steeds groter.
+- Dus op deze plek hoort 18.
+- Verdertellen vanaf 17: 17, 18.
+- Tel 2 verder vanaf 2.
+- Tot en met 2 staat het goed.
+- Ik kijk naar de 5 getallen.
+- Vooraan staat al 2.
+- Van 2 tot 10 wordt het steeds groter.
+- Tel 2 verder vanaf 11.
+- Van 11 tot 19 wordt het steeds groter.
+- Tel 2 verder vanaf 12.
+- Van 12 tot 20 wordt het steeds groter.
+- Kijk naar de diamant met 2.
+- Je koos 3. Dat past niet bij 3 ervoor.
+- Ik tel langs de diamanten, van links naar rechts.
+- Verdertellen vanaf 2: 2, 3, 4.
+- Dus op deze plek hoort 4.
+- Kijk naar de diamant met 10.
+- Je koos 13. Dan sla je een diamant over.
+- Verdertellen vanaf 10: 10, 11, 12.
+- Kijk naar de diamant met 15.
+- Je koos 16. Dat past niet bij 16 ervoor.
+- Verdertellen vanaf 15: 15, 16, 17.
+- Dus op deze plek hoort 17.
+- Kijk naar de ster met 6.
+- Kijk naar de ster met 13.
+- Je koos 14. Dat past niet bij 14 ervoor.
+- Kijk naar de ster met 16.
+- Je koos 19. Dan sla je een ster over.
+- Verdertellen vanaf 16: 16, 17, 18.
+- Kijk naar het lampje met 3.
+- Je koos 4. Dat past niet bij 4 ervoor.
+- Verdertellen vanaf 3: 3, 4, 5.
+- Kijk naar het lampje met 11.
+- Je koos 12. In deze rij worden de getallen steeds groter.
+- Dus op deze plek hoort 14.
+- Verdertellen vanaf 11: 11, 12, 13, 14.
+- Kijk naar het lampje met 14.
+- Je koos 17. In deze rij worden de getallen steeds groter.
+- Verdertellen vanaf 14: 14, 15, 16, 17, 18, 19.
+- Begin bij de 20 en tel streepje voor streepje terug naar het vlaggetje.
+- Je koos 8. Het vlaggetje staat verder naar rechts.
+- Het vlaggetje staat 2 streepjes voor de 20.
+- Begin bij de 10 en tel streepje voor streepje verder naar het vlaggetje.
+- Je koos 2. Het vlaggetje staat verder naar rechts.
+- Het vlaggetje staat 2 streepjes na de 10.
+- Vanaf de 10 is het 2 streepjes verder. Zo kom je bij 12.
+- Begin bij de 0 en tel streepje voor streepje verder naar het vlaggetje.
+- Je koos 13. Het vlaggetje staat nog niet zo ver.
+- Het vlaggetje staat 3 streepjes na de 0.
+- Vanaf de 0 is het 3 streepjes verder. Zo kom je bij 3.
+- Je koos 4. Het vlaggetje staat verder naar rechts.
+- Het vlaggetje staat 4 streepjes na de 10.
+- Vanaf de 10 is het 4 streepjes verder. Zo kom je bij 14.
+- Je zette 20 vooraan. Er is een kleiner getal.
+- In het derde vak staat al 10.
+- 0 is het kleinste getal.
+- Van 0 tot 20 wordt het steeds groter.
+- Begin bij de 14 en tel streepje voor streepje verder naar het vlaggetje.
+- Vanaf de 14 is het 1 streepje verder. Zo kom je bij 15.
+- Vanaf de 15 is het 1 streepje terug. Zo kom je bij 14.
+- Begin bij de 10. Elk streepje is 2 verder, dus tel in sprongen.
+- Vanaf de 10 ga je in sprongen van 2. Zo kom je bij 14.
+- Je zette 7 vooraan. Er is een kleiner getal.
+- 4 is het kleinste getal.
+- Van 4 tot 7 wordt het steeds groter.
+- Van 16 tot 19 wordt het steeds groter.
+- Van 10 tot 13 wordt het steeds groter.
+- Begin bij de 20. Elk streepje is 2 verder, dus tel in sprongen.
+- Je koos 7. Het vlaggetje staat verder naar rechts.
+- Het vlaggetje staat tussen 16 en 18, dus bij 17.
+- Je koos 13. Dat ligt er vlak naast. Elk streepje is 2 verder.
+- Vanaf de 10 ga je in sprongen van 2. Zo kom je bij 12.
+- Je koos 0. Dat getal staat al op de lijn, bij een ander streepje.
+- Begin bij de 13 en tel streepje voor streepje verder naar het vlaggetje.
+- Kijk, hier staat 13.
+- Het vlaggetje staat 3 streepjes na de 13.
+- Vanaf de 13 is het 3 streepjes verder. Zo kom je bij 16.
+- Het getal moet meer zijn dan 3 en minder dan 7.
+- Je koos 2. Dat is kleiner dan 3.
+- Ik zet 3 en 7 op de getallenlijn.
+- 2 is kleiner dan 3.
+- 8 is groter dan 7.
+- Het getal moet meer zijn dan 10 en minder dan 14.
+- Je koos 15. Dat is groter dan 14.
+- Ik zet 10 en 14 op de getallenlijn.
+- 15 is groter dan 14.
+- 9 is kleiner dan 10.
+- Het getal moet meer zijn dan 13 en minder dan 17.
+- Je koos 18. Dat is groter dan 17.
+- Ik zet 13 en 17 op de getallenlijn.
+- 18 is groter dan 17.
+- 12 is kleiner dan 13.
+- Kijk naar de ster met 3.
+- Je koos 1. In deze rij worden de getallen steeds groter.
+- Verdertellen vanaf 3: 3, 4, 5, 6.
+- Kijk naar de ster met 12.
+- Je koos 3. In deze rij worden de getallen steeds groter.
+- Verdertellen vanaf 12: 12, 13, 14, 15.
+- Kijk naar de plek met 13.
+- Je koos 18. Deze rij telt terug: de getallen worden steeds kleiner.
+- Ik tel terug langs de plekken.
+- Terugtellen vanaf 13: 13, 12.
+- Kijk naar de plek met 20.
+- Je koos 12. Dat past niet bij 20 ervoor.
+- Terugtellen vanaf 20: 20, 19.
+- Kijk naar de plek met 10.
+- Je koos 16. Deze rij telt terug: de getallen worden steeds kleiner.
+- Terugtellen vanaf 10: 10, 9.
+- Dus op deze plek hoort 9.
+- Kijk naar de plek met 16.
+- Je koos 19. Deze rij telt terug: de getallen worden steeds kleiner.
+- Terugtellen vanaf 16: 16, 15.
+- Kijk naar de plek met 11.
+- Je koos 14. Deze rij telt terug: de getallen worden steeds kleiner.
+- Terugtellen vanaf 11: 11, 10.
+- Dus op deze plek hoort 10.
+- Je koos 20. Deze rij telt terug: de getallen worden steeds kleiner.
+- Je koos 17. Deze rij telt terug: de getallen worden steeds kleiner.
+- Kijk naar de plek met 15.
+- Je koos 12. Dat past niet bij 15 ervoor.
+- Terugtellen vanaf 15: 15, 14.
+- Je koos 15. Deze rij telt terug: de getallen worden steeds kleiner.
+- Kijk naar de plek met 19.
+- Terugtellen vanaf 19: 19, 18.
+- Kijk naar de plek met 12.
+- Terugtellen vanaf 12: 12, 11.
+- Kijk naar de plek met 14.
+- Terugtellen vanaf 14: 14, 13.
+- Het laatste huis is 7. Tel 1 verder.
+- Je koos 9. Dan sla je een huis over.
+- Het huis na 7 is 1 verder.
+- Na 7 komt 8, want elk huis is 1 verder.
+- Rechts van de lege plek staat 12. Tel 1 terug.
+- Je koos 13. Dat huis staat er al in de straat.
+- Van 12 naar het huis ervoor is het 1 minder.
+- Voor 12 komt 11, want terug is het 1 minder.
+- Links van het vraagteken staat 15. Tel 1 verder.
+- Je koos 19. Dat past niet tussen 15 en 17.
+- Het huis na 15 is 1 verder.
+- 16 hoort tussen 15 en 17: het is 1 meer dan 15.
+- Het laatste huis is 19. Tel 1 verder.
+- Je koos 8. Na 19 komt een groter nummer.
+- Het huis na 19 is 1 verder.
+- Na 19 komt 20, want elk huis is 1 verder.
+- Kijk of je een rondje met 2 wijzers ziet.
+- Zo weet je dat het 3 uur is.
+- Ja, de korte wijzer staat bij de 3.
+- Dat is 4 uur op deze klok.
+- Op deze klok wijst de kleine wijzer naar de 9.
+- Om 9 uur gaat de winkel open.
+- Nu mag het even rusten.
+- Om 5 uur is het deeg klaar.
+- De kleine wijzer staat bij de 8: 8 uur.
+- Dat is 9 uur op deze klok.
+- Ja, 11 uur.
+- Ja, 1 uur.
+- De kleine wijzer staat bij de 3: 3 uur.
+- Zo lees je het: 12 uur.
+- Zo lees je het: 2 uur.
+- Overdag is het licht buiten.
+- Denk aan de plek met de oven.
+- Zo lees je het: 7 uur.
+- Tik op de eerste dag van de week.
+- Ja, maandag is de eerste dag van de week.
+- Tik eerst op zaterdag.
+- Het weekend zit helemaal aan het einde van de trein.
+- Maandag is het niet.
+- Dat is zaterdag, de eerste dag van het weekend.
+- Tik nu op de andere dag van het weekend.
+- Die wagon staat naast zaterdag, helemaal achteraan.
+- Precies, zondag. Zaterdag en zondag horen bij het weekend.
+- Hier ligt 2 euro.
+- Hier ligt 12 euro.
+- Hier ligt 11 euro.
+- Hier ligt 15 euro.
+- Dat is half 11.
+- Tussen de 3 en de 4 staat de kleine wijzer: half 4.
+- Ja, half 12.
+- Ja, half 7.
+- Zo lees je het: half 1.
+- Kijk naar de vorm van dit geld.
+- Dit is een munt. Hij is rond en gemaakt van metaal.
+- Zoek de klok waar de kleine wijzer tussen de 7 en de 8 staat.
+- Die klok laat bijna half 1 zien.
+- Hier staat de kleine wijzer tussen de 7 en de 8.
+- Dit geld is een rechthoek.
+- Je telde al tot 15.
+- Tel de rest van de appels rij voor rij.
+- Je koos 15. Je telde er 1 minder. Misschien sloeg je er een over.
+- In een volle rij staan 5 appels.
+- Zo veel appels staan er: 16.
+- Je telde al tot 5.
+- Tel de rest van de sterren rij voor rij.
+- Je koos 11. Je telde er 1 meer. Misschien telde je er een dubbel.
+- In een volle rij staan 5 sterren.
+- Zo veel sterren staan er: 10.
+- Je telde al tot 10.
+- Tel de rest van de bloemen rij voor rij.
+- Je koos 14. Je telde er 1 meer. Misschien telde je er een dubbel.
+- In een volle rij staan 5 bloemen.
+- Zo veel bloemen staan er: 13.
+- Je telde al tot 6.
+- Tel de rest van de ballen rij voor rij.
+- Je koos 15. Zo veel ballen staan er niet.
+- De rijen met ballen zijn niet even lang.
+- Zo veel ballen staan er: 11.
+- Tel de rest van de ballonnen rij voor rij.
+- Je koos 17. Er staan meer ballonnen dan dat.
+- In een volle rij staan 5 ballonnen.
+- Zo veel ballonnen staan er: 19.
+- Je koos 12. Er staan meer appels dan dat.
+- Hier ligt 17 euro.
+- Zo veel appels staan er: 18.
+- Je telde al tot 8.
+- Je koos 13. Je telde er 1 meer. Misschien telde je er een dubbel.
+- De rijen met sterren zijn niet even lang.
+- Zo veel sterren staan er: 12.
+- Je koos 16. Zo veel ballonnen staan er niet.
+- Zo veel ballonnen staan er: 14.
+- Je koos 16. Je telde er 1 minder. Misschien sloeg je er een over.
+- In een volle rij staan 5 ballen.
+- Zo veel ballen staan er: 17.
+- Je koos 13. Er staan meer appels dan dat.
+- Zo veel appels staan er: 15.
+- Je koos 16. Zo veel bloemen staan er niet.
+- Je koos 16. Er staan meer sterren dan dat.
+- Zo veel sterren staan er: 18.
+- Je koos 13. Zo veel bloemen staan er niet.
+- Zo veel bloemen staan er: 11.
+- Je telde al tot 9.
+- Je koos 17. Je telde er 1 meer. Misschien telde je er een dubbel.
+- Zo veel ballen staan er: 16.
+- Je koos 13. Je telde er 1 minder. Misschien sloeg je er een over.
+- Zoek de kaart met een groter getal dan 14.
+- Je tikte op 12. Dat is minder dan de 14 bovenaan.
+- Ik tel de sterren op elke kaart.
+- Bovenaan zijn het er 14. Zoek de kaart waar het er meer zijn.
+- 17 is meer dan 14.
+- Op deze kaart zijn er 17, bovenaan 14.
+- Zoek de kaart met een kleiner getal dan 11.
+- Je tikte op 13. Dat is meer dan de 11 bovenaan.
+- Ik tel de appels op elke kaart.
+- Bovenaan zijn het er 11. Zoek de kaart waar het er minder zijn.
+- 9 is minder dan 11.
+- Op deze kaart zijn er 9, bovenaan 11.
+- Zoek de kaart met een groter getal dan 16.
+- Je tikte op 15. Dat is minder dan de 16 bovenaan.
+- Ik tel de ballen op elke kaart.
+- Bovenaan zijn het er 16. Zoek de kaart waar het er meer zijn.
+- 19 is meer dan 16.
+- Op deze kaart zijn er 19, bovenaan 16.
+- Kijk bij elke kaart naar het getal.
+- Kijk welke van de 2 getallen groter is.
+- Je tikte op de kaart met 13 bloemen. Daar zijn er minder dan op de andere kaart.
+- Ik tel de bloemen op elke kaart.
+- Vergelijk de 2 getallen met elkaar.
+- 15 is meer dan 13.
+- Op deze kaart zijn er 15, op de andere 13.
+- Tel de rest van de kralen rij voor rij.
+- Je koos 5. Je telde er 1 minder. Misschien sloeg je er een over.
+- In een volle rij staan 5 kralen.
+- Zo veel kralen staan er: 6.
+- Je koos 15. Zo ver kom je als je een rij met kralen niet meetelt.
+- Zo veel kralen staan er: 17.
+- Kijk welke van de 2 getallen kleiner is.
+- Je tikte op de kaart met 16 appels. Daar zijn er meer dan op de andere kaart.
+- 13 is minder dan 16.
+- Op deze kaart zijn er 13, op de andere 16.
+- Je koos 17. Je telde er 1 minder. Misschien sloeg je er een over.
+- Zo veel kralen staan er: 18.
+- Je koos 7. Je telde er 1 minder. Misschien sloeg je er een over.
+- Zo veel kralen staan er: 8.
+- Je tikte op de kaart met 7 sterren. Daar zijn er minder dan op de andere kaart.
+- 17 is meer dan 7.
+- Op deze kaart zijn er 17, op de andere 7.
+- Je koos 12. Er staan meer kralen dan dat.
+- Zo veel kralen staan er: 14.
+- Je tikte op de kaart met 11 appels. Daar zijn er minder dan op de andere kaart.
+- 14 is meer dan 11.
+- Op deze kaart zijn er 14, op de andere 11.
+- Je koos 10. Je telde er 1 minder. Misschien sloeg je er een over.
+- Zo veel kralen staan er: 11.
+- Je tikte op de kaart met 20 sterren. Daar zijn er meer dan op de andere kaart.
+- 16 is minder dan 20.
+- Op deze kaart zijn er 16, op de andere 20.
+- Je koos 14. Er staan meer kralen dan dat.
+- Zo veel kralen staan er: 16.
+- Je tikte op de kaart met 9 bloemen. Daar zijn er minder dan op de andere kaart.
+- 12 is meer dan 9.
+- Op deze kaart zijn er 12, op de andere 9.
+- Je koos 10. Je telde er 1 meer. Misschien telde je er een dubbel.
+- Zo veel kralen staan er: 9.
+- Je koos 11. Je telde er 1 minder. Misschien sloeg je er een over.
+- Zo veel kralen staan er: 12.
+- Zo veel kralen staan er: 13.
+- Je koos 8. Er staan meer kralen dan dat.
+- Zo veel kralen staan er: 10.
+- Kijk naar het getal op alle 3 de kaarten.
+- Zoek het grootste getal.
+- Je tikte op de kaart met 11 koekjes. Kijk of een andere kaart meer heeft.
+- Ik tel de koekjes op elke kaart.
+- Zoek het grootste van de 3 getallen.
+- Op de andere kaarten liggen er 11 en 12, dus dit zijn de meeste.
+- Op deze kaart liggen er 13.
+- Je tikte op de kaart met 14 koekjes. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 14 en 15, dus dit zijn de meeste.
+- Op deze kaart liggen er 16.
+- Je tikte op de kaart met 13 koekjes. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 13 en 14, dus dit zijn de meeste.
+- Op deze kaart liggen er 17.
+- Je tikte op de kaart met 16 koekjes. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 16 en 15, dus dit zijn de meeste.
+- Je tikte op de kaart met 12 koekjes. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 12 en 13, dus dit zijn de meeste.
+- Op deze kaart liggen er 14.
+- Zoek het kleinste getal.
+- Je tikte op de kaart met 17 appels. Kijk of een andere kaart minder heeft.
+- Zoek het kleinste van de 3 getallen.
+- Op de andere kaarten liggen er 17 en 15, dus dit zijn de minste.
+- Je tikte op de kaart met 20 appels. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 20 en 19, dus dit zijn de minste.
+- Op deze kaart liggen er 18.
+- Je tikte op de kaart met 11 appels. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 11 en 12, dus dit zijn de minste.
+- Op deze kaart liggen er 10.
+- Je tikte op de kaart met 13 appels. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 13 en 11, dus dit zijn de meeste.
+- Op deze kaart liggen er 15.
+- Je tikte op de kaart met 15 appels. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 15 en 18, dus dit zijn de minste.
+- Je tikte op de kaart met 17 peren. Kijk of een andere kaart meer heeft.
+- Ik tel de peren op elke kaart.
+- Op de andere kaarten liggen er 17 en 19, dus dit zijn de meeste.
+- Op deze kaart liggen er 20.
+- Je tikte op de kaart met 19 peren. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 19 en 18, dus dit zijn de minste.
+- Je tikte op de kaart met 16 peren. Kijk of een andere kaart meer heeft.
+- Op de andere kaarten liggen er 16 en 17, dus dit zijn de meeste.
+- Je tikte op de kaart met 14 peren. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 14 en 13, dus dit zijn de minste.
+- Op deze kaart liggen er 12.
+- Je tikte op de kaart met 11 peren. Kijk of een andere kaart meer heeft.
+- Je tikte op de kaart met 20 peren. Kijk of een andere kaart minder heeft.
+- Op de andere kaarten liggen er 20 en 18, dus dit zijn de minste.
+- Je telde al tot 18.
+- Tel de rest van de eieren rij voor rij.
+- Je koos 26. Zo veel eieren staan er niet.
+- In een vol doosje zitten 6 eieren.
+- Zo veel eieren staan er: 24.
+- Kijk hoe hoog het sap staat.
+- Zoek het woord voor als er niets meer bij kan.
+- Meer gebruik je als je 2 dingen vergelijkt.
+- Zoek de beker waar het sap even hoog staat als bovenaan.
+- Zoek het woord voor iets wat veel weegt.
+- Kort heeft met lengte te maken, niet met gewicht.
+- Zoek het woord voor iets wat bijna niets weegt.
+- Kort zegt hoe lang iets is, niet hoe zwaar.
+- Er ging iets uit de tas, dus hij weegt nu minder.
+- Groter gaat over de maat van de tas, niet over het gewicht.
+- Zoek het ding dat het minst weegt.
+- Zoek het grootste ding dat het meest weegt.
+- Daar staat de kleine maatbeker die half vol is.
+- Er kwam iets bij in de rugtas.
+- Lichter is voor een tas die minder gaat wegen, maar er kwamen appels in de rugtas.
+- Zoek het ding dat het meest weegt.
+- Zoek het woord voor iets wat heel veel weegt.
+- Leeg zegt wat erin zit, niet hoeveel het weegt.
+- Dun zegt hoe dik iets is, niet hoe zwaar.
+- Zwaarder is meer, maar de rugtas weegt bijna niets.
+- Zwaarder is meer, maar de tas weegt nu minder.
+- De eerste rij is 6. Tel de andere rijen erbij.
+- Je koos 2. Dat is te weinig.
+- De eerste rij is 3. Tel de andere rijen erbij.
+- Je koos 4. Dat is te weinig.
+- De eerste rij is 4. Tel de andere rijen erbij.
+- Je koos 6. Dat is te weinig.
+- De eerste rij is 7. Tel de andere rijen erbij.
+- Je koos 8. Dat is te weinig.
+- Je koos 7. Dat is te weinig.
+- Tel alle rode blaadjes, en dan alle blauwe.
+- Tel eerst de rode blaadjes.
+- Er passen dus minder blauwe blaadjes op.
+- Een blauw blaadje is net zo groot als 2 rode.
+- De grote pizza steekt het verst uit.
+- Begin met de kleinste. Die komt vooraan.
+- Kijk welke pizza het minst hoog komt.
+- Kijk welk ijsje het minst hoog is.
+- Van de 2 salamipizza's is deze de grootste.
+- Haal je ze uit de doos, dan is deze pizza de grootste.
+- Kijk welk ijsje het minst hoog komt.
+- Kijk welke pizza het smalst is.
+- Je koos 2. Dat is 1 te weinig.
+- Je koos 1. Dat is 1 te weinig.
+- Het goede plaatje heeft er precies 1 meer dan het plaatje bovenaan.
+- Het goede ijsje heeft er precies 1 minder dan het ijsje bovenaan.
+- Je koos 5. Dat is 1 te veel.
+- Je koos 3. Dat is te weinig.
+- Het laatste huis is 24. Tel 1 verder.
+- Je koos 23. Dat huis staat al in de straat.
+- Dit ijsje heeft 6 bolletjes. Dat is 1 meer.
+- Tel terug vanaf 5.
+- Dat ijsje heeft 5 bolletjes.
+- 5 min 1 is 4.
+- Je koos 1. Na 19 komt een groter nummer.
+- De vraag gaat over wat er blijft.
+- Je koos 3: zoveel pakjes gaan er weg.
+- Je koos 4, maar er blijven minder pakjes over.
+- Als er iets weggaat, blijven er minder over.
+- Je koos 7, maar er waren er maar 5.
+- Je koos 0, maar er blijven meer pakjes over.
+- Je koos 3, maar er blijven meer pakjes over.
+- Je koos 5, maar er waren er maar 4.
+- Je koos 7, maar er blijven minder pakjes over.
+- Je koos 2, maar er blijven meer pakjes over.
+- Je koos 4, maar er waren er maar 3.
+- Je koos 6, maar er blijven minder pakjes over.
+- Je koos 8, maar er waren er maar 6.
+- Tel de pakjes die blijven nog eens na.
+- Er blijven er 1 meer dan 1.
+- Je koos 4, maar er blijven meer pakjes over.
+- Je koos 6, maar er blijven meer pakjes over.
+- Je koos 8, maar er blijven meer pakjes over.
+- Je koos 1: zoveel pakjes gaat er weg.
+- Je koos 5, maar er blijven meer pakjes over.
+- Je koos 7, maar er blijven meer pakjes over.
+- Je koos 1, maar er blijven meer pakjes over.
+- De grote wijzer staat op de 12. We kijken nu naar de kleine wijzer.
+- De punt van de kleine wijzer staat bij de 3.
+- Er blijven er 1 meer dan 6.
+- Je koos 8, maar er blijven minder pakjes over.
+- Je koos 7: zoveel pakjes gaan er weg.
+- Je koos 4: zoveel pakjes gaan er weg.
+- Je koos 3, maar er blijven minder pakjes over.
+- Je koos 5: zoveel pakjes gaan er weg.
+- Je koos 7, maar er waren er maar 4.
+- Er gaan er nog 4 weg, dus er blijven er minder over.
+- Je koos 6: zoveel pakjes waren er eerst.
+- Je koos 6: zoveel pakjes gaan er weg.
+- Je koos 8: zoveel pakjes gaan er weg.
+- Je koos 2, maar er blijven meer stippen over.
+- Je koos 5, maar er blijven minder stippen over.
+- Tel de stippen die blijven nog eens na.
+- 7 is 1 te veel: er blijven er niet zoveel.
+- Je koos 0, maar er blijven meer stippen over.
+- 2 is 1 te veel: er blijven er niet zoveel.
+- Je koos 4, maar er blijven meer stippen over.
+- Je koos 6, maar er waren er maar 3.
+- Je koos 5: zoveel stippen gaan er weg.
+- Er blijven er 1 meer dan 7.
+- Je koos 6: zoveel stippen gaan er weg.
+- Je koos 8, maar er blijven meer stippen over.
+- Je koos 1, maar er blijven meer stippen over.
+- Je koos 3, maar er blijven meer stippen over.
+- Je koos 5, maar er blijven meer stippen over.
+- Je koos 7, maar er blijven meer stippen over.
+- Je koos 6, maar er blijven meer stippen over.
+- 15 min 4 = 11.
+- Er blijven er 1 meer dan 4.
+- Je koos 7, maar er blijven minder stippen over.
+- Er gaan er 10 weg.
+- 16 min 10 = 6.
+- Daarna gaan er nog 7 weg.
+- 11 min 8 = 3.
+- Je koos 7: zoveel stippen gaan er weg.
+- 11 min 7 = 4.
+- Tel de blokjes die blijven nog eens na.
+- Er blijven er 1 meer dan 8.
+- Er blijven er 1 meer dan 5.
+- Er blijven er 1 meer dan 2.
+- Je koos 3: zoveel stippen gaan er weg.
+- 5 is 1 te veel: er blijven er niet zoveel.
+- Er blijven er 1 meer dan 3.
+- 3 is 1 te veel: er blijven er niet zoveel.
+- Vooraan staat het getal van alle bekers, ook de lege.
+- 4 min 2 begint met een ander getal.
+- Tel eerst alle bekers samen.
+- Vooraan staat het getal van alle bordjes, ook de lege.
+- 7 min 5 begint met een ander getal.
+- Tel eerst alle bordjes samen.
+- Na de min staat het getal van de lege bekers.
+- 6 min 3 haalt een ander getal weg.
+- Na de min staat het getal van de lege bordjes.
+- 10 min 1 haalt een ander getal weg.
+- 6 min 3 begint met een ander getal.
+- 1 is 1 te veel: er blijven er niet zoveel.
+- Er blijven er 1 meer dan 0.
+- 8 min 3 begint met een ander getal.
+- Er zijn 9 bordjes. De 3 lege gaan weg: 9 min 3 = 6.
+- 3 min 3 begint met een ander getal.
+- Er zijn 4 bekers. De 3 lege gaan weg: 4 min 3 = 1.
+- 9 min 5 begint met een ander getal.
+- Er zijn 10 bekers. De 5 lege gaan weg: 10 min 5 = 5.
+- 7 min 2 haalt een ander getal weg.
+- Er zijn 7 bordjes. De 1 lege gaat weg: 7 min 1 = 6.
+- 8 min 7 begint met een ander getal.
+- Er zijn 9 bekers. De 7 lege gaan weg: 9 min 7 = 2.
+- Je koos 7, maar er waren er maar 6.
+- Je koos 4, maar er blijven minder stippen over.
+- Er gaan er nog 3 weg, dus er blijven er minder over.
+- Je koos 6: zoveel stippen waren er eerst.
+- Je koos 8, maar er blijven minder stippen over.
+- Je houdt meer over dan 3 euro.
+- Je houdt meer over dan 1 euro.
+- Je houdt meer over dan 4 euro.
+- Je houdt meer over dan 2 euro.
+- Je houdt meer over dan 7 euro.
+- Tel de ballonnen die blijven nog eens na.
+- We beginnen met 7 ballonnen.
+- Je koos 5: zoveel bellen gaan er weg.
+- We beginnen met 9 bellen.
+- Tel de kometen die blijven nog eens na.
+- 6 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 8 kometen.
+- Vooraan staat het getal van alles wat er eerst was.
+- 5 min 3 begint met een ander getal.
+- In het begin zijn er 8 sterren.
+- Na de min staat het getal van wat weggaat.
+- 9 min 3 haalt een ander getal weg.
+- In het begin zijn er 9 satellieten.
+- Tel de raketjes die blijven nog eens na.
+- 12 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 14 raketjes.
+- 13 min 3 begint met een ander getal.
+- In het begin zijn er 16 ufo's.
+- Tel de bellen die blijven nog eens na.
+- 14 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 19 bellen.
+- Maar er gaat er 1 weg.
+- Je koos 16: alsof er 1 bij komen.
+- We beginnen met 15 ballonnen.
+- Tel de sterren die blijven nog eens na.
+- Er blijven er 1 meer dan 11.
+- We beginnen met 17 sterren.
+- 18 min 6 haalt een ander getal weg.
+- In het begin zijn er 18 sterren.
+- 14 min 1 haalt een ander getal weg.
+- In het begin zijn er 14 satellieten.
+- Zoek een som waar je evenveel haalt als er waren.
+- Tel de satellieten die blijven nog eens na.
+- Er blijven er 1 meer dan 12.
+- We beginnen met 15 satellieten.
+- 13 + 2 is een plussom.
+- In het begin zijn er 13 kometen.
+- 15 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 18 raketjes.
+- Er blijven er 1 meer dan 10.
+- Maar er gaan er 6 weg.
+- Je koos 19: alsof er 6 bij komen.
+- We beginnen met 13 raketjes.
+- 9 is 1 te veel: er blijven er niet zoveel.
+- 8 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 12 bellen.
+- 10 is 1 te veel: er blijven er niet zoveel.
+- We beginnen met 17 raketjes.
+- Tel de ufo's die blijven nog eens na.
+- We beginnen met 14 ufo's.
+- 16 min 0 haalt een ander getal weg.
+- In het begin zijn er 16 sterren.
+- 18 min 18 haalt een ander getal weg.
+- In het begin zijn er 18 satellieten.
+- Je koos 9: zoveel stippen gaan er weg.
+- Maar er gaan er 3 weg.
+- Je koos 14: alsof er 3 bij komen.
+- We beginnen met 11 satellieten.
+- 13 min 3 haalt een ander getal weg.
+- In het begin zijn er 13 sterren.
+- We beginnen met 16 kometen.
+- Er komt nog iets bij, dus het wordt meer.
+- Start bij 4.
+- Je koos 4: zoveel komen er bij.
+- Het grootste getal is 4. Tel vanaf die 4 verder, dan hoef je minder ver te tellen.
+- Zo zit het: 1 + 4 = 5.
+- Tel de laatste stap nog eens na.
+- Start bij 5.
+- Je koos 6: dat is 1 te weinig.
+- Daar komen er 2 bij.
+- Er komen 2 blauwe stippen bij.
+- Zo zit het: 5 + 2 = 7.
+- Denk aan 4 + 4 = 8.
+- Het antwoord is 1 meer dan dat.
+- Je koos 8: dat is 1 te weinig.
+- 4 + 4 is 8.
+- 5 is 1 meer dan 4.
+- Dus 4 + 5 is 1 meer dan 8.
+- Kijk: 4 oranje stippen en 5 blauwe stippen.
+- Zo zit het: 4 + 5 = 9.
+- Start bij 6.
+- Je koos 7: dat is 1 te weinig.
+- Hier zijn er 2.
+- Het grootste getal is 6. Tel vanaf die 6 verder, dan hoef je minder ver te tellen.
+- Hier zijn 6 oranje stippen.
+- Zo zit het: 2 + 6 = 8.
+- Kijk welke plussom precies die 2 getallen heeft.
+- Op het plaatje zie je 3 en 7.
+- In het eerste groepje liggen 3.
+- Links zie je 3.
+- Zo zit het: 3 + 7 = 10.
+- Tel de som nog eens rustig uit.
+- Kaartje 9 zit er vlak naast: 1 te veel.
+- Zo zit het: 5 + 3 = 8.
+- Hier komt er iets bij, dus je telt op.
+- Zet die 2 bij elkaar.
+- Met 7 haal je 3 van 10 af.
+- Hier zijn er 10.
+- Daar komen er 3 bij.
+- Zo zit het: 10 + 3 = 13.
+- Denk aan 3 + 4.
+- Je koos 16: dat is 1 te weinig.
+- Kijk naar de 3 en de 4.
+- Zo zit het: 13 + 4 = 17.
+- Denk aan 4 + 1.
+- Met 13 haal je 1 van 14 af.
+- Daar komt er 1 bij.
+- Kijk naar de 4 en de 1.
+- 14 is 10 en nog 4.
+- Zo zit het: 14 + 1 = 15.
+- Denk aan 2 + 6.
+- Je koos 6: zoveel lagen er al.
+- Daar komen er 12 bij.
+- Het grootste getal is 12. Tel vanaf die 12 verder, dan hoef je minder ver te tellen.
+- Kijk naar de 2 en de 6.
+- 2 + 6 = 8.
+- Zo zit het: 6 + 12 = 18.
+- Denk aan 4 + 5.
+- Met 9 haal je 5 van 14 af.
+- Daar komen er 14 bij.
+- Het grootste getal is 14. Tel vanaf die 14 verder, dan hoef je minder ver te tellen.
+- Kijk naar de 4 en de 5.
+- Zo zit het: 5 + 14 = 19.
+- Dat zijn meer dan op het plaatje.
+- Tel de losse croissants nog eens en let op het getal eronder.
+- 3 + 12 geeft 15.
+- Hier staan er 11.
+- Samen: 3 + 11 = 14.
+- Denk aan 5 + 3.
+- Kaartje 17 zit er vlak naast: 1 te weinig.
+- Kijk naar de 5 en de 3.
+- 15 is 10 en nog 5.
+- Zo zit het: 15 + 3 = 18.
+- Denk aan 1 + 6.
+- Kaartje 16 zit er vlak naast: 1 te weinig.
+- 1 + 6 = 7.
+- Kijk naar de 1 en de 6.
+- 11 is 10 en nog 1.
+- Zo zit het: 11 + 6 = 17.
+- Tel 6 en nog eens 6.
+- Je koos 11: dat is 1 te weinig.
+- Je koos 12: dat is 1 te weinig.
+- Het grootste getal is 5. Tel vanaf die 5 verder, dan hoef je minder ver te tellen.
+- Tel nog een stukje verder.
+- Tel 8 en nog eens 8.
+- Je koos 14: dat is nog te weinig.
+- Dan blijft er in de rij van 10 nog plek over.
+- Bij 26 zie je 2 staven en 6 losse blokjes.
+- Bij 8 zie je geen staaf, alleen 8 losse blokjes.
+- Bij 24 zie je 2 staven en 4 losse blokjes.
+- Dat past niet in de rij van 10: er blijven stippen over.
+- Zoveel passen er niet in de rij van 10.
+- Je hebt al 5 geteld.
+- Tel daarna door tot het laatste.
+- Je koos 8: dat is er 1 te veel.
+- Je hebt al 8 geteld.
+- Je koos 11: dat is er 1 te veel.
+- Je hebt al 4 geteld.
+- Bij 5 mist er nog 1.
+- Je hebt al 6 geteld.
+- Bij 8 mist er nog 1.
+- Bij jouw plaatje zie je de kleine maatbeker die half vol is.
+- Je hebt al 10 geteld.
+- Bij 11 mist er nog 1.
+- Je hebt al 3 geteld.
+- Bij 4 mist er nog 1.
+- Je koos 12: dat is er 1 te veel.
+- Bij 7 mist er nog 1.
+- Je koos 9: dat is er 1 te veel.
+- Je hebt al 9 geteld.
+- Bij 10 mist er nog 1.
+- Je hebt al 7 geteld.
+- Bij 9 mist er nog 1.
+- Kijk of dat ook zo is bij de tent.
+- Een driehoek heeft 3 hoeken.
+- En 3 rechte kanten.
+- Een vierkant heeft 4 hoeken.
+- De tent lijkt op een driehoek.
+- Kijk of dat ook zo is bij de mandarijn.
+- Een rechthoek heeft ook 4 hoeken.
+- 2 kanten zijn lang, 2 zijn kort.
+- De mandarijn lijkt op een cirkel.
+- Kijk of dat ook zo is bij de plank.
+- De plank lijkt op een rechthoek.
+- Kijk of dat ook zo is bij de vlaggetjes.
+- De vlaggetjes lijken op een driehoek.
+- Kijk of dat ook zo is bij de planeet.
+- De planeet lijkt op een cirkel.
+- Kijk of dat ook zo is bij het stuk pizza.
+- Het stuk pizza lijkt op een driehoek.
+- Kijk of dat ook zo is bij het blok.
+- Het blok lijkt op een vierkant.
+- Kijk of dat ook zo is bij de telefoon.
+- De telefoon lijkt op een rechthoek.
+- Kijk of dat ook zo is bij het koekje.
+- Het koekje lijkt op een cirkel.
+- Kijk of dat ook zo is bij de doos.
+- De doos lijkt op een vierkant.
+- Kijk of dat ook zo is bij het boek.
+- Het boek lijkt op een rechthoek.
+- Kijk wat er rechts staat.
+- Kijk wat er in het midden staat.
+- De bus staat links.
+- De trein staat rechts.
+- In het midden staat hij tussen de andere 2 in.
+- Het skateboard staat in het midden.
+- De fiets staat niet in de rij.
+- De boot staat links.
+- De bus staat in het midden.
+- De auto staat rechts.
+- Kijk wat er links staat.
+- De fiets staat in het midden.
+- De boot staat rechts.
+- Het skateboard staat links.
+- De satelliet staat rechts.
+- Het raketje staat links.
+- De ufo staat in het midden.
+- Het raketje staat rechts.
+- De planeet staat in het midden.
+- De satelliet staat links.
+- De ufo staat links.
+- De planeet staat rechts.
+- De satelliet staat in het midden.
+- De ballon staat rechts.
+- De vlieger staat in het midden.
+- De bal staat links.
+- De pion staat rechts.
+- De vlieger staat links.
+- De ballon staat in het midden.
+- De bal staat in het midden.
+- De pion staat links.
+- De vlieger staat rechts.
+- De pion staat in het midden.
+- De bal staat rechts.
+- De ballon staat links.
+- Kijk waar minder kaas zit.
+- Daar zit evenveel kaas op als bovenaan.
+- Minder kaas: je ziet minder kaas dan bovenaan.
+- Daar zit minder kaas op dan bovenaan.
+- Daar zit juist het meeste fruit op.
+- Het minste fruit: daar zit het allerminste op.
+- Daar zit het minste fruit op.
+- Kijk waar evenveel kaas zit.
+- Niet meer en niet minder.
+- Evenveel kaas: precies zoveel als bovenaan.
+- Kijk waar meer kaas zit.
+- 1 plaatje ligt op de goede plek.
+- Daar zit niet de meeste kaas op. Er is er nog 1 met meer.
+- De meeste kaas: daar zit het allermeeste op.
+- Daar zit de meeste kaas op.
+- Daar zit niet het minste fruit op. Er is er nog 1 met minder.
+- Daar zit juist het minste fruit op.
+- Daar zit het meeste fruit op.
+- Daar zit juist de meeste kaas op.
+- De minste kaas: daar zit het allerminste op.
+- Daar zit de minste kaas op.
+- Kijk of de bal op het plaatje zo ligt.
+- De bal ligt niet naast de doos.
+- Naast: de bal ligt ernaast, op de grond.
+- De bal ligt niet achter de doos.
+- De bal ligt op de doos.
+- De bal ligt voor de doos.
+- De bal ligt niet in de doos.
+- De bal ligt naast de doos.
+- De bal ligt niet voor de doos.
+- De bal ligt achter de doos.
+- De bal ligt niet op de doos.
+- Hoeveel pakjes liggen er nog in de bus?
+- Tel de pakjes die er nog zijn.
+- Er blijven er minder over dan 6.
+- Er blijven 5 over: 8 min 3 = 5.
+- Een rode driehoek. De kleur klopt, maar de vorm niet.
+- Deze is rood.
+- Een rode cirkel.
+- Er moesten 7 blokjes zijn, dat zijn er te veel.
+- Op die groep zie je 8 blokjes.
+- De bovenste rij is vol met 5. Tel onderaan verder.
+- 5 en 2 is 7.
+- Een geel vierkant. De kleur klopt, maar de vorm niet.
+- Deze is geel.
+- Hij is geel en heeft 3 hoeken.
+- Een gele driehoek.
+- Er moesten 6 blokjes zijn, dat zijn er te veel.
+- Op die groep zie je 7 blokjes.
+- 5 en 1 is 6.
+- Een rood vierkant. De kleur klopt, maar de vorm niet.
+- Hij is rood en heeft 3 hoeken.
+- Een rode driehoek.
+- Er moesten 10 blokjes zijn, dat zijn er te weinig.
+- Op die groep zie je 9 blokjes.
+- 5 en 5 is 10.
+- Een blauwe driehoek. De kleur klopt, maar de vorm niet.
+- Een blauw vierkant.
+- Kijk naar de vorm die groen is.
+- Een gele rechthoek. De vorm klopt, maar de kleur niet.
+- Hij is groen, met 2 lange en 2 korte kanten.
+- Een groene rechthoek.
+- Er moesten 7 blokjes zijn, dat zijn er te weinig.
+- Op die groep zie je 6 blokjes.
+- Er blijven er minder over dan 13.
+- Er blijven 12 over: 16 min 4 = 12.
+- Er blijven er minder over dan 9.
+- Er blijven 8 over: 15 min 7 = 8.
+- Tel vanaf links, tot je bij de goede plek bent.
+- De boot staat als laatste in de rij.
+- De fiets staat als eerste.
+- De auto staat als tweede in de rij.
+- De bus staat als derde.
+- De bus staat als derde in de rij.
+- De auto staat als tweede.
+- De laatste staat helemaal rechts.
+- De fiets staat als eerste in de rij.
+- De boot staat als laatste.
+- De planeet staat als vierde in de rij.
+- De ufo staat als tweede.
+- De satelliet staat als derde in de rij.
+- De komeet staat als laatste.
+- De ufo staat als tweede in de rij.
+- Het raketje staat als eerste.
+- Het raketje staat als eerste in de rij.
+- De planeet staat als vierde.
+- De komeet staat als laatste in de rij.
+- De satelliet staat als derde.
+- De vlieger staat als tweede in de rij.
+- De pion staat als vierde.
+- De ballon staat als derde in de rij.
+- De bal staat als eerste.
+- De pion staat als vierde in de rij.
+- Het skateboard staat als laatste.
+- Het skateboard staat als laatste in de rij.
+- De ballon staat als derde.
+- De bal staat als eerste in de rij.
+- De vlieger staat als tweede.
+- Het getal ervoor is 1 minder.
+- 8 komt juist na 7.
+- Hier staat 7.
+- Net voor 7 staat het getal links ervan.
+- 1 minder.
+- 6 komt net voor 7.
+- Het getal erna is 1 meer.
+- 8 komt juist voor 9.
+- Hier staat 9.
+- Na 9 komt het getal rechts ervan.
+- 1 meer.
+- Na 9 komt 10.
+- 7 komt juist na 6.
+- Net voor 6 staat het getal links ervan.
+- 5 komt net voor 6.
+- Tel verder: 1 meer.
+- 8 is niet 1 meer dan 5.
+- Tel terug: 1 minder.
+- 1 is niet 1 minder dan 8.
+- Er blijven er minder over dan 4.
+- Er blijven 3 over: 10 min 7 = 3.
+- 7 komt net voor 8.
+- 10 komt juist na 9.
+- Net voor 9 staat het getal links ervan.
+- 8 komt net voor 9.
+- 5 komt juist voor 6.
+- Na 6 komt 7.
+- 8 is niet 1 minder dan 10.
+- 9 komt net voor 10.
+- 0 is niet 1 meer dan 7.
+- Na 7 komt het getal rechts ervan.
+- 2 is niet 1 minder dan 6.
+- 9 komt juist na 8.
+- 7 komt juist voor 8.
+- Na 8 komt het getal rechts ervan.
+- 6 komt juist voor 7.
+- 1 is niet 1 meer dan 9.
+- 3 is niet 1 minder dan 10.
+- Dat moeten er 6 zijn.
+- Buiten liggen er 2. 2 en 5 is samen 7.
+- Dat moeten er 5 zijn.
+- Buiten liggen er 3. 3 en 1 is samen 4.
+- Er zijn 5 ballen in totaal.
+- Tel verder van 3 tot 5.
+- Buiten liggen er 3.
+- 3 en 2 is samen 5.
+- Dat moeten er 8 zijn.
+- Buiten liggen er 5. 5 en 4 is samen 9.
+- 5 en 3 is samen 8.
+- Dat moeten er 10 zijn.
+- Buiten liggen er 7. 7 en 4 is samen 11.
+- Er zijn 10 knikkers in totaal.
+- De rest zit in de zak.
+- Tel verder van 7 tot 10.
+- Buiten liggen er 7.
+- Dat moeten er 9 zijn.
+- Buiten liggen er 4. 4 en 6 is samen 10.
+- Er zijn 9 knikkers in totaal.
+- Tel verder van 4 tot 9.
+- Buiten liggen er 4.
+- 4 en 5 is samen 9.
+- Er blijven 12 over: 17 min 5 = 12.
+- Dat moeten er 7 zijn.
+- Buiten liggen er 4. 4 en 2 is samen 6.
+- Er zijn 7 ballen in totaal.
+- Tel verder van 4 tot 7.
+- Buiten liggen er 2. 2 en 6 is samen 8.
+- Er zijn 9 ballen in totaal.
+- Tel verder van 2 tot 9.
+- Buiten liggen er 4. 4 en 5 is samen 9.
+- Er zijn 10 ballen in totaal.
+- Tel verder van 4 tot 10.
+- Buiten liggen er 2. 2 en 4 is samen 6.
+- Er zijn 7 knikkers in totaal.
+- Tel verder van 2 tot 7.
+- Buiten liggen er 7. 7 en 2 is samen 9.
+- Er zijn 8 knikkers in totaal.
+- Tel verder van 7 tot 8.
+- 7 en 1 is samen 8.
+- Buiten liggen er 5. 5 en 2 is samen 7.
+- Er zijn 6 knikkers in totaal.
+- Tel verder van 5 tot 6.
+- 5 en 1 is samen 6.
+- Buiten liggen er 2. 2 en 9 is samen 11.
+- Tel verder van 2 tot 10.
+- Buiten liggen er 1. 1 en 3 is samen 4.
+- Er zijn 5 knikkers in totaal.
+- Tel verder van 1 tot 5.
+- Buiten liggen er 1.
+- 1 en 4 is samen 5.
+- Buiten liggen er 5. 5 en 3 is samen 8.
+- Tel verder van 5 tot 9.
+- Tel verder van 4 tot 8.
+- Je koos 10: dat zijn er te veel.
+- Tel beide groepjes samen.
+- 3 is maar 1 groepje.
+- Er blijven 8 over: 16 min 8 = 8.
+- 3 en 1 is samen 4.
+- Je koos 7: dat is er 1 te veel.
+- Je koos 6: dat is er 1 te veel.
+- Je hebt al 2 geteld.
+- Je koos 5: dat is er 1 te veel.
+- Bij 6 mist er nog 1.
+- We tellen alleen de satellieten.
+- Bij 3 mist er nog 1.
+- Je koos 10: dat is er 1 te veel.
+- Tel alleen de gekleurde stippen. Hoeveel zijn er nog?
+- Tel de gekleurde stippen die er nog zijn.
+- Kijk waar 4 ballen zijn.
+- Daar zijn het er 5.
+- Kijk waar 9 planeten zijn.
+- Daar zijn het er 10.
+- Kijk waar 5 appels zijn.
+- Daar zijn het er 4.
+- Kijk waar 6 sterren zijn.
+- Daar zijn het er 8.
+- Kijk waar 10 ballen zijn.
+- Daar zijn het er 9.
+- Kijk waar 4 bomen zijn.
+- Kijk waar 9 knikkers zijn.
+- Kijk waar meer dan 5 zijn.
+- Daar zijn het er 5. Dat is niet meer dan 5.
+- Precies 5 is niet meer dan 5.
+- Meer dan 5 is 6 of nog meer.
+- Kijk waar minder dan 6 zijn.
+- Daar zijn het er 6. Dat is niet minder dan 6.
+- Er blijven er minder over dan 17.
+- Er blijven 16 over: 20 min 4 = 16.
+- Dat is minder.
+- Daar zijn het er 6, bovenaan 7.
+- Hier zijn er ook 7.
+- Kijk naar de ballon helemaal rechts.
+- De laatste ballon is niet geel.
+- De laatste ballon is blauw.
+- Tel de ballonnen vanaf links.
+- De middelste ballon is niet rood.
+- De middelste ballon is paars.
+- Kijk waar meer dan 3 zijn.
+- Daar zijn het er 3. Dat is niet meer dan 3.
+- Kijk waar minder dan 4 zijn.
+- Daar zijn het er 4. Dat is niet minder dan 4.
+- Precies 4 is niet minder dan 4.
+- Minder dan 4 is 3 of nog minder.
+- De middelste ballon is niet blauw.
+- De middelste ballon is groen.
+- Kijk waar meer dan 6 zijn.
+- Daar zijn het er 6. Dat is niet meer dan 6.
+- Precies 6 is niet meer dan 6.
+- Meer dan 6 is 7 of nog meer.
+- Kijk waar minder dan 7 zijn.
+- 8 is meer dan 7.
+- Precies 7 is niet minder dan 7.
+- Minder dan 7 is 6 of nog minder.
+- Daar zijn het er 7, bovenaan 8.
+- Hier zijn er ook 8.
+- De laatste ballon is niet rood.
+- De laatste ballon is geel.
+- De middelste ballon is niet oranje.
+- De middelste ballon is rood.
+- Let op welke pannenkoek breder is.
+- Er blijven er minder over dan 8.
+- Er blijven 7 over: 16 min 9 = 7.
+- Let op het glas met sap tot bovenaan.
+- Kijk naar het glas zonder sap.
+- Wat zwaarder is, zakt naar beneden.
+- De appel ligt aan de kant die omhoog gaat.
+- Kijk naar het glas waar het sap tot de helft komt.
+- De mand is groot, maar hij is leeg. Zijn kant gaat omhoog.
+- Dit is niet het kortste broodje.
+- Er blijven 7 over: 10 min 3 = 7.
+- We beginnen met 5 volle bekers.
+- Er zijn 2 bekers leeggedronken.
+- Hoeveel bekers zijn nog vol?
+- Tel de volle bekers die er nog zijn.
+- Er blijven 3 over: 5 min 2 = 3.
+- Zoveel past niet in het paarse vak van dit huisje: het zijn er te veel.
+- Zoveel past niet in het paarse vak van dit huisje: het zijn er te weinig.
+- Er blijven 3 over: 7 min 4 = 3.
+- Kijk: er zijn 6 ballen.
+- 5 ballen gaan naar het paarse vak.
+- Kijk: er zijn 9 ballen.
+- 6 ballen gaan naar het paarse vak.
+- Kijk: er zijn 8 ballen.
+- 3 ballen gaan naar het paarse vak.
+- Het lege stuk is wat er nog mist na 1: tel het aan tot 5.
+- Bij het huisje met 5 heb je er te weinig neergelegd.
+- Kijk naar dit huisje: 5 is 1 en nog een deel.
+- Kijk naar dit huisje: 6 is 4 en nog een deel.
+- Kijk naar dit huisje: 8 is 5 en nog een deel.
+- Je betaalt 2 euro. Bij elke euro die je betaalt, wordt 1 stip grijs.
+- Onder de doek ligt minder dan dat.
+- Tel de lege plekken in de doos.
+- In het vak liggen er 4.
+- Tel alleen de stippen die niet grijs zijn.
+- Je houdt minder over dan 5 euro.
+- Zoveel shirts passen niet in het paarse vak: het zijn er te veel.
+- Zoveel shirts passen niet in het paarse vak: het zijn er te weinig.
+- Eronder liggen 8 paarse blokjes.
+- Eronder liggen 3 paarse blokjes.
+- 10 en 1 is samen 11.
+- 1 en 8 is samen 9.
+- Eronder ligt 1 paarse blokje.
+- Tel de raketjes die overblijven. Hoeveel zijn het er?
+- Tel de raketjes die er nog zijn.
+- Er blijven er minder over dan 12.
+- Er blijven 11 over: 14 min 3 = 11.
+- Er blijven 7 over: 13 min 6 = 7.
+- De eerste rijen zijn samen 10.
+- Tel de appels in de laatste rij erbij.
+- Je koos 10. Dat zijn precies de volle rijen. Kijk ook naar de rij die niet vol is.
+- Ik help je met de appels. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 2 erbij: 12 appels.
+- Tel de peren in de laatste rij erbij.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een peer dubbel.
+- Ik help je met de peren. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 1 erbij: 11 peren.
+- Tel de pruimen in de laatste rij erbij.
+- Je koos 12. Je telde er 1 minder. Misschien liet je een pruim staan.
+- Ik help je met de pruimen. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 3 erbij: 13 pruimen.
+- Je koos 15. Je telde er 1 meer. Misschien telde je een appel dubbel.
+- 10 in de volle rijen, en nog 4 erbij: 14 appels.
+- Je koos 11. Je telde er 1 minder. Misschien liet je een peer staan.
+- 10 in de volle rijen, en nog 2 erbij: 12 peren.
+- Je koos 13. Er staan meer pruimen dan dat.
+- 3 volle rijen van 5 zijn 15 pruimen.
+- De eerste rijen zijn samen 15.
+- Je koos 15. Dat zijn precies de volle rijen. Kijk ook naar de rij die niet vol is.
+- 15 in de volle rijen, en nog 1 erbij: 16 appels.
+- Je koos 14. Je telde er 1 meer. Misschien telde je een peer dubbel.
+- 10 in de volle rijen, en nog 3 erbij: 13 peren.
+- Er komt eerst 1 taartje bij. Tel 1 verder.
+- Hoeveel taartjes liggen er nu?
+- 1 lagen er al. Er komt er nog 1 bij.
+- 15 in de volle rijen, en nog 2 erbij: 17 pruimen.
+- Je koos 13. Je telde er 1 minder. Misschien liet je een peer staan.
+- 1 meer dan 1 is 2.
+- In totaal komen er 4 taartjes bij. Start bij 1 en tel verder.
+- Je telde 1 te ver door.
+- 1 + 4 is 5.
+- 10 in de volle rijen, en nog 4 erbij: 14 peren.
+- Je koos 12. Je telde er 1 minder. Misschien liet je een appel staan.
+- 10 in de volle rijen, en nog 3 erbij: 13 appels.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een pruim dubbel.
+- 15 in de volle rijen, en nog 1 erbij: 16 pruimen.
+- Je koos 14. Je telde er 1 minder. Misschien liet je een peer staan.
+- 3 volle rijen van 5 zijn 15 peren.
+- Je koos 16. Je telde er 1 minder. Misschien liet je een appel staan.
+- 15 in de volle rijen, en nog 2 erbij: 17 appels.
+- Je koos 9. Er staan meer pruimen dan dat.
+- 10 in de volle rijen, en nog 1 erbij: 11 pruimen.
+- Tel de citroenen in de laatste rij erbij.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een citroen dubbel.
+- Ik help je met de citroenen. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 1 erbij: 11 citroenen.
+- Tel de aardbeien in de laatste rij erbij.
+- Je koos 12. Er staan meer aardbeien dan dat.
+- Ik help je met de aardbeien. Een volle rij telt 5, dus we springen per rij.
+- Er komt eerst 1 stokbrood bij. Tel 1 verder.
+- Hoeveel stokbroden liggen er nu?
+- 10 lagen er al. Er komt er nog 1 bij.
+- 1 meer dan 10 is 11.
+- In totaal komen er 3 stokbroden bij. Start bij 10 en tel verder.
+- 10 in de volle rijen, en nog 4 erbij: 14 aardbeien.
+- Je koos 13. Je telde er 1 meer. Misschien telde je een citroen dubbel.
+- 10 in de volle rijen, en nog 2 erbij: 12 citroenen.
+- Je koos 14. Je telde er 1 minder. Misschien liet je een aardbei staan.
+- 3 volle rijen van 5 zijn 15 aardbeien.
+- Je koos 11. Er staan meer citroenen dan dat.
+- 10 in de volle rijen, en nog 3 erbij: 13 citroenen.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een aardbei dubbel.
+- 15 in de volle rijen, en nog 1 erbij: 16 aardbeien.
+- Je koos 13. Je telde er 1 minder. Misschien liet je een citroen staan.
+- 10 in de volle rijen, en nog 4 erbij: 14 citroenen.
+- 15 in de volle rijen, en nog 2 erbij: 17 aardbeien.
+- Je koos 16. Je telde er 1 meer. Misschien telde je een citroen dubbel.
+- 3 volle rijen van 5 zijn 15 citroenen.
+- Je koos 17. Je telde er 1 minder. Misschien liet je een aardbei staan.
+- 15 in de volle rijen, en nog 3 erbij: 18 aardbeien.
+- Je koos 14. Er staan meer citroenen dan dat.
+- 15 in de volle rijen, en nog 1 erbij: 16 citroenen.
+- Er komt eerst 1 koekje bij. Tel 1 verder.
+- Hoeveel koekjes liggen er nu?
+- Je koos 18. Je telde er 1 minder. Misschien liet je een aardbei staan.
+- 6 lagen er al. Er komt er nog 1 bij.
+- 1 meer dan 6 is 7.
+- In totaal komen er 6 koekjes bij. Start bij 6 en tel verder.
+- 15 in de volle rijen, en nog 4 erbij: 19 aardbeien.
+- Je koos 16. Je telde er 1 minder. Misschien liet je een citroen staan.
+- 15 in de volle rijen, en nog 2 erbij: 17 citroenen.
+- Je koos 18. Er staan meer aardbeien dan dat.
+- 4 volle rijen van 5 zijn 20 aardbeien.
+- 16, 17, 18, 19, 20.
+- Je koos 17. Je telde er 1 minder. Misschien liet je een citroen staan.
+- 15 in de volle rijen, en nog 3 erbij: 18 citroenen.
+- Tik met je vinger op de rest en tel verder.
+- Ik heb 10 bananen al voor je geteld.
+- Je koos 16. Je telde er 1 meer. Misschien telde je een banaan 2 keer.
+- Bij elke banaan zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De bananen liggen door elkaar.
+- Ik telde elke banaan 1 keer. Er liggen 15 bananen.
+- Ik heb 10 appels al voor je geteld.
+- Je koos 10. Er liggen meer appels dan dat.
+- Bij elke appel zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De appels liggen door elkaar.
+- Ik telde elke appel 1 keer. Er liggen 12 appels.
+- Ik heb 10 peren al voor je geteld.
+- Je koos 12. Er ligt er 1 meer. Misschien sloeg je een peer over.
+- Bij elke peer zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De peren liggen door elkaar.
+- Ik telde elke peer 1 keer. Er liggen 13 peren.
+- Ik heb 15 bananen al voor je geteld.
+- Je koos 16. Er ligt er 1 meer. Misschien sloeg je een banaan over.
+- 5 oranje stippen en 2 blauwe stippen.
+- Kijk naar 5 en 2.
+- Ik telde elke banaan 1 keer. Er liggen 17 bananen.
+- Ik heb 10 aardbeien al voor je geteld.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een aardbei 2 keer.
+- Bij elke aardbei zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De aardbeien liggen door elkaar.
+- Ik telde elke aardbei 1 keer. Er liggen 11 aardbeien.
+- Ik heb 15 pruimen al voor je geteld.
+- Je koos 17. Er liggen meer pruimen dan dat.
+- Bij elke pruim zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De pruimen liggen door elkaar.
+- Ik telde elke pruim 1 keer. Er liggen 19 pruimen.
+- Ik heb 10 citroenen al voor je geteld.
+- Je koos 13. Er ligt er 1 meer. Misschien sloeg je een citroen over.
+- Bij elke citroen zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De citroenen liggen door elkaar.
+- Ik telde elke citroen 1 keer. Er liggen 14 citroenen.
+- Je koos 18. Er liggen meer bananen dan dat.
+- Ik telde elke banaan 1 keer. Er liggen 20 bananen.
+- Ik heb 15 appels al voor je geteld.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een appel 2 keer.
+- Ik telde elke appel 1 keer. Er liggen 16 appels.
+- Neem de 3.
+- Ik heb 15 peren al voor je geteld.
+- Je koos 17. Er ligt er 1 meer. Misschien sloeg je een peer over.
+- Ik telde elke peer 1 keer. Er liggen 18 peren.
+- Je koos 14. Je telde er 1 meer. Misschien telde je een aardbei 2 keer.
+- Ik telde elke aardbei 1 keer. Er liggen 13 aardbeien.
+- Je koos 15. Er liggen meer pruimen dan dat.
+- Ik telde elke pruim 1 keer. Er liggen 17 pruimen.
+- Ik heb 15 citroenen al voor je geteld.
+- Je koos 18. Er ligt er 1 meer. Misschien sloeg je een citroen over.
+- Ik telde elke citroen 1 keer. Er liggen 19 citroenen.
+- Je koos 11. Er ligt er 1 meer. Misschien sloeg je een banaan over.
+- Ik zet 1 stip in de rij.
+- Neem de 1.
+- Ik telde elke banaan 1 keer. Er liggen 12 bananen.
+- Je koos 16. Er liggen meer appels dan dat.
+- Ik telde elke appel 1 keer. Er liggen 18 appels.
+- Tel de auto's en bussen in de laatste rij erbij.
+- Je koos 14. Je telde er 1 meer. Misschien telde je een auto dubbel.
+- Ik help je met de auto's en bussen. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 3 erbij: 13 auto's en bussen.
+- Tel de huizen en bomen in de laatste rij erbij.
+- Je koos 14. Zo veel huizen en bomen staan er niet. Tel de volle rijen van 5 en dan de rest.
+- Ik help je met de huizen en bomen. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 2 erbij: 12 huizen en bomen.
+- Tel de raketjes en sterren in de laatste rij erbij.
+- Je koos 16. Je telde er 1 meer. Misschien telde je een raketje dubbel.
+- Ik help je met de raketjes en sterren. Een volle rij telt 5, dus we springen per rij.
+- 3 volle rijen van 5 zijn 15 raketjes en sterren.
+- Tel de bussen en auto's in de laatste rij erbij.
+- 7 oranje stippen en 4 blauwe stippen.
+- Kijk naar 7 en 4.
+- Ik help je met de bussen en auto's. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 1 erbij: 11 bussen en auto's.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een huis dubbel.
+- 15 in de volle rijen, en nog 1 erbij: 16 huizen en bomen.
+- Je koos 15. Je telde er 1 meer. Misschien telde je een raketje dubbel.
+- 10 in de volle rijen, en nog 4 erbij: 14 raketjes en sterren.
+- Je koos 16. Je telde er 1 minder. Misschien liet je een auto staan.
+- 15 in de volle rijen, en nog 2 erbij: 17 auto's en bussen.
+- Je koos 15. Zo veel huizen en bomen staan er niet. Tel de volle rijen van 5 en dan de rest.
+- 10 in de volle rijen, en nog 3 erbij: 13 huizen en bomen.
+- Je koos 10. Er staan meer raketjes en sterren dan dat.
+- 15 in de volle rijen, en nog 1 erbij: 16 raketjes en sterren.
+- Je koos 14. Je telde er 1 minder. Misschien liet je een bus staan.
+- 3 volle rijen van 5 zijn 15 bussen en auto's.
+- Je koos 12. Er staan meer huizen en bomen dan dat.
+- 10 in de volle rijen, en nog 4 erbij: 14 huizen en bomen.
+- Je koos 13. Je telde er 1 meer. Misschien telde je een raketje dubbel.
+- 10 in de volle rijen, en nog 2 erbij: 12 raketjes en sterren.
+- 15 in de volle rijen, en nog 1 erbij: 16 auto's en bussen.
+- 15 in de volle rijen, en nog 2 erbij: 17 huizen en bomen.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een raketje dubbel.
+- 10 in de volle rijen, en nog 1 erbij: 11 raketjes en sterren.
+- Tel de ballen en blokken in de laatste rij erbij.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een bal dubbel.
+- Ik help je met de ballen en blokken. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 1 erbij: 11 ballen en blokken.
+- Tel de bootjes en treintjes in de laatste rij erbij.
+- Je koos 15. Je telde er 1 meer. Misschien telde je een bootje dubbel.
+- Ik help je met de bootjes en treintjes. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 4 erbij: 14 bootjes en treintjes.
+- Je koos 11. Je telde er 1 minder. Misschien liet je een bal staan.
+- 10 in de volle rijen, en nog 2 erbij: 12 ballen en blokken.
+- Je koos 13. Er staan meer bootjes en treintjes dan dat.
+- 3 volle rijen van 5 zijn 15 bootjes en treintjes.
+- Je koos 14. Je telde er 1 meer. Misschien telde je een bal dubbel.
+- 10 in de volle rijen, en nog 3 erbij: 13 ballen en blokken.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een bootje dubbel.
+- 15 in de volle rijen, en nog 1 erbij: 16 bootjes en treintjes.
+- Je koos 12. Er staan meer ballen en blokken dan dat.
+- Kijk naar de zon. Welke vorm lijkt erop?
+- Kijk of dat ook zo is bij de zon.
+- 10 in de volle rijen, en nog 4 erbij: 14 ballen en blokken.
+- 15 in de volle rijen, en nog 2 erbij: 17 bootjes en treintjes.
+- Je koos 14. Je telde er 1 minder. Misschien liet je een bal staan.
+- 3 volle rijen van 5 zijn 15 ballen en blokken.
+- Je koos 19. Je telde er 1 meer. Misschien telde je een bootje dubbel.
+- 15 in de volle rijen, en nog 3 erbij: 18 bootjes en treintjes.
+- 15 in de volle rijen, en nog 1 erbij: 16 ballen en blokken.
+- Je koos 17. Er staan meer bootjes en treintjes dan dat.
+- 15 in de volle rijen, en nog 4 erbij: 19 bootjes en treintjes.
+- Je koos 18. Je telde er 1 meer. Misschien telde je een bal dubbel.
+- 15 in de volle rijen, en nog 2 erbij: 17 ballen en blokken.
+- Je koos 18. Er staan meer bootjes en treintjes dan dat.
+- 4 volle rijen van 5 zijn 20 bootjes en treintjes.
+- Je koos 16. Er staan meer ballen en blokken dan dat.
+- 15 in de volle rijen, en nog 3 erbij: 18 ballen en blokken.
+- Ik heb 10 planeten al voor je geteld.
+- Je koos 15. Je telde er 1 meer. Misschien telde je een planeet 2 keer.
+- Bij elke planeet zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De planeten liggen door elkaar.
+- Ik telde elke planeet 1 keer. Er liggen 14 planeten.
+- Ik heb 10 auto's al voor je geteld.
+- Je koos 11. Er liggen meer auto's dan dat.
+- Bij elke auto zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De auto's liggen door elkaar.
+- Ik telde elke auto 1 keer. Er liggen 13 auto's.
+- Ik heb 10 huizen al voor je geteld.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een huis 2 keer.
+- Bij elk huis zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De huizen liggen door elkaar.
+- Ik telde elk huis 1 keer. Er liggen 11 huizen.
+- Ik heb 10 raketjes al voor je geteld.
+- Je koos 14. Er ligt er 1 meer. Misschien sloeg je een raketje over.
+- Bij elk raketje zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De raketjes liggen door elkaar.
+- Ik telde elk raketje 1 keer. Er liggen 15 raketjes.
+- Ik heb 10 satellieten al voor je geteld.
+- Je koos 10. Er liggen meer satellieten dan dat.
+- Bij elke satelliet zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De satellieten liggen door elkaar.
+- Ik telde elke satelliet 1 keer. Er liggen 12 satellieten.
+- Ik heb 15 bomen al voor je geteld.
+- Je koos 17. Er ligt er 1 meer. Misschien sloeg je een boom over.
+- Bij elke boom zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De bomen liggen door elkaar.
+- Ik telde elke boom 1 keer. Er liggen 18 bomen.
+- Ik heb 15 kometen al voor je geteld.
+- Je koos 17. Er liggen meer kometen dan dat.
+- Bij elke komeet zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De kometen liggen door elkaar.
+- Ik telde elke komeet 1 keer. Er liggen 19 kometen.
+- Ik heb 15 ballonnen al voor je geteld.
+- Je koos 18. Er liggen meer ballonnen dan dat.
+- Bij elke ballon zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De ballonnen liggen door elkaar.
+- Ik telde elke ballon 1 keer. Er liggen 20 ballonnen.
+- Ik heb 15 bootjes al voor je geteld.
+- Je koos 18. Je telde er 1 meer. Misschien telde je een bootje 2 keer.
+- Bij elk bootje zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De bootjes liggen door elkaar.
+- Ik telde elk bootje 1 keer. Er liggen 17 bootjes.
+- Ik heb 15 ufo's al voor je geteld.
+- Je koos 15. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Bij elke ufo zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De ufo's liggen door elkaar.
+- Ik telde elke ufo 1 keer. Er liggen 16 ufo's.
+- Ik heb 10 ballen al voor je geteld.
+- Je koos 12. Er ligt er 1 meer. Misschien sloeg je een bal over.
+- Bij elke bal zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De ballen liggen door elkaar.
+- Ik telde elke bal 1 keer. Er liggen 13 ballen.
+- Ik heb 15 bussen al voor je geteld.
+- Je koos 16. Er liggen meer bussen dan dat.
+- Bij elke bus zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De bussen liggen door elkaar.
+- Ik telde elke bus 1 keer. Er liggen 18 bussen.
+- Ik heb 10 sterren al voor je geteld.
+- Je koos 16. Je telde er 1 meer. Misschien telde je een ster 2 keer.
+- Bij elke ster zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De sterren liggen door elkaar.
+- Ik telde elke ster 1 keer. Er liggen 15 sterren.
+- Ik heb 15 knikkers al voor je geteld.
+- Je koos 18. Er ligt er 1 meer. Misschien sloeg je een knikker over.
+- Bij elke knikker zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De knikkers liggen door elkaar.
+- Ik telde elke knikker 1 keer. Er liggen 19 knikkers.
+- Ik heb 10 blokken al voor je geteld.
+- Je koos 11. Er ligt er 1 meer. Misschien sloeg je een blok over.
+- Bij elk blok zet ik 1 streepje, zo raak ik er niet een kwijt.
+- De blokken liggen door elkaar.
+- Ik telde elk blok 1 keer. Er liggen 12 blokken.
+- Tel de raketjes in de laatste rij erbij.
+- Je koos 12. Je telde er 1 minder. Misschien liet je een raketje staan.
+- Ik help je met de raketjes. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 3 erbij: 13 raketjes.
+- Tel de sterren in de laatste rij erbij.
+- Je koos 13. Je telde er 1 meer. Misschien telde je een ster dubbel.
+- Ik help je met de sterren. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 2 erbij: 12 sterren.
+- Tel de planeten in de laatste rij erbij.
+- Je koos 13. Je telde er 1 minder. Misschien liet je een planeet staan.
+- Ik help je met de planeten. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 4 erbij: 14 planeten.
+- Tel de satellieten in de laatste rij erbij.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een satelliet dubbel.
+- Ik help je met de satellieten. Een volle rij telt 5, dus we springen per rij.
+- 10 in de volle rijen, en nog 1 erbij: 11 satellieten.
+- Tel de ufo's in de laatste rij erbij.
+- Je koos 13. Er staan meer ufo's dan dat.
+- Ik help je met de ufo's. Een volle rij telt 5, dus we springen per rij.
+- 3 volle rijen van 5 zijn 15 ufo's.
+- Je koos 11. Je telde er 1 minder. Misschien liet je een raketje staan.
+- 10 in de volle rijen, en nog 2 erbij: 12 raketjes.
+- Je koos 12. Er staan meer sterren dan dat.
+- 10 in de volle rijen, en nog 4 erbij: 14 sterren.
+- Je koos 14. Je telde er 1 meer. Misschien telde je een planeet dubbel.
+- 10 in de volle rijen, en nog 3 erbij: 13 planeten.
+- Je koos 14. Je telde er 1 minder. Misschien liet je een satelliet staan.
+- 3 volle rijen van 5 zijn 15 satellieten.
+- 10 in de volle rijen, en nog 1 erbij: 11 ufo's.
+- 10 in de volle rijen, en nog 4 erbij: 14 raketjes.
+- Je koos 13. Er staan meer sterren dan dat.
+- 3 volle rijen van 5 zijn 15 sterren.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een planeet dubbel.
+- 10 in de volle rijen, en nog 1 erbij: 11 planeten.
+- Waar zie je een paarse driehoek?
+- Je koos 11. Er staan meer satellieten dan dat.
+- 10 in de volle rijen, en nog 3 erbij: 13 satellieten.
+- Je koos 13. Je telde er 1 meer. Misschien telde je een ufo dubbel.
+- 10 in de volle rijen, en nog 2 erbij: 12 ufo's.
+- Je koos 17. Je telde er 1 minder. Misschien liet je een raketje staan.
+- 15 in de volle rijen, en nog 3 erbij: 18 raketjes.
+- Je koos 18. Je telde er 1 minder. Misschien liet je een bus staan.
+- 15 in de volle rijen, en nog 4 erbij: 19 bussen en auto's.
+- Je koos 14. Er staan meer bootjes en treintjes dan dat.
+- Je koos 18. Er staan meer huizen en bomen dan dat.
+- 4 volle rijen van 5 zijn 20 huizen en bomen.
+- Je koos 17. Er staan meer raketjes dan dat.
+- 15 in de volle rijen, en nog 4 erbij: 19 raketjes.
+- Je koos 16. Er staan meer auto's en bussen dan dat.
+- 15 in de volle rijen, en nog 3 erbij: 18 auto's en bussen.
+- Je koos 18. Er staan meer ballen en blokken dan dat.
+- 4 volle rijen van 5 zijn 20 ballen en blokken.
+- Je koos 18. Je telde er 1 meer. Misschien telde je een bootje dubbel.
+- Je koos 19. Je telde er 1 meer. Misschien telde je een huis dubbel.
+- 15 in de volle rijen, en nog 3 erbij: 18 huizen en bomen.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een bus dubbel.
+- 15 in de volle rijen, en nog 1 erbij: 16 bussen en auto's.
+- De fiets staat als derde in de rij.
+- Je koos 18. Er staan meer raketjes dan dat.
+- 4 volle rijen van 5 zijn 20 raketjes.
+- Ik heb 5 ufo's al voor je geteld.
+- Je koos 6. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 7 ufo's.
+- Je koos 7. Er liggen meer ufo's dan dat.
+- Ik telde elke ufo 1 keer. Er liggen 9 ufo's.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een bal dubbel.
+- Ik heb 10 ufo's al voor je geteld.
+- Je koos 10. Er liggen meer ufo's dan dat.
+- Welk getal komt net voor 5?
+- 6 komt juist na 5.
+- Ik telde elke ufo 1 keer. Er liggen 12 ufo's.
+- Je koos 17. Er staan meer huizen en bomen dan dat.
+- 15 in de volle rijen, en nog 4 erbij: 19 huizen en bomen.
+- Je koos 9. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- 1 is niet 1 meer dan 5.
+- Ik telde elke ufo 1 keer. Er liggen 8 ufo's.
+- 3 is niet 1 minder dan 8.
+- Je koos 5. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 6 ufo's.
+- 2 is niet 1 meer dan 7.
+- Je koos 18. Er staan meer bussen en auto's dan dat.
+- 4 is niet 1 minder dan 6.
+- 4 volle rijen van 5 zijn 20 bussen en auto's.
+- Je koos 10. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 11 ufo's.
+- 3 is niet 1 meer dan 9.
+- 5 is niet 1 minder dan 10.
+- Je koos 18. Je telde er 1 meer. Misschien telde je een raketje dubbel.
+- 15 in de volle rijen, en nog 2 erbij: 17 raketjes.
+- Je koos 11. Er liggen meer ufo's dan dat.
+- Ik telde elke ufo 1 keer. Er liggen 13 ufo's.
+- Je koos 16. Er staan meer huizen en bomen dan dat.
+- Ik heb 2 ufo's al voor je geteld.
+- Je koos 6. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Ik telde elke ufo 1 keer. Er liggen 5 ufo's.
+- Ik heb 5 planeten al voor je geteld.
+- Je koos 4. Er liggen meer planeten dan dat.
+- Ik telde elke planeet 1 keer. Er liggen 6 planeten.
+- Je koos 12. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Je koos 10. Je telde er 1 meer. Misschien telde je een planeet 2 keer.
+- Ik telde elke planeet 1 keer. Er liggen 9 planeten.
+- Je koos 19. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Ik telde elke ufo 1 keer. Er liggen 18 ufo's.
+- Je koos 11. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Ik telde elke ufo 1 keer. Er liggen 10 ufo's.
+- Ik heb 15 planeten al voor je geteld.
+- Je koos 20. Je telde er 1 meer. Misschien telde je een planeet 2 keer.
+- Ik telde elke planeet 1 keer. Er liggen 19 planeten.
+- Je koos 16. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Ik telde elke ufo 1 keer. Er liggen 15 ufo's.
+- Je koos 13. Zo veel planeten liggen er niet.
+- Ik telde elke planeet 1 keer. Er liggen 11 planeten.
+- Je koos 19. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 20 ufo's.
+- Je koos 8. Je telde er 1 meer. Misschien telde je een planeet 2 keer.
+- Ik telde elke planeet 1 keer. Er liggen 7 planeten.
+- Je koos 17. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Je koos 13. Je telde er 1 meer. Misschien telde je een planeet 2 keer.
+- Ik telde elke planeet 1 keer. Er liggen 12 planeten.
+- Je koos 16. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 17 ufo's.
+- Ik heb 2 planeten al voor je geteld.
+- Je koos 7. Zo veel planeten liggen er niet.
+- Ik telde elke planeet 1 keer. Er liggen 5 planeten.
+- Na 10 komt het getal dat 1 meer is.
+- Je koos 14. Er liggen meer planeten dan dat.
+- Ik telde elke planeet 1 keer. Er liggen 16 planeten.
+- Je koos 7. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Je koos 11. Er ligt er 1 meer. Misschien sloeg je een planeet over.
+- Waar zie je meer dan 4 raketjes?
+- Kijk waar meer dan 4 zijn.
+- Daar zijn het er 4. Dat is niet meer dan 4.
+- Je koos 9. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke planeet 1 keer. Er liggen 17 planeten.
+- Je koos 12. Je telde er 1 meer. Misschien telde je een ufo 2 keer.
+- Je koos 13. Er ligt er 1 meer. Misschien sloeg je een planeet over.
+- Je koos 18. Er ligt er 1 meer. Misschien sloeg je een ufo over.
+- Ik telde elke ufo 1 keer. Er liggen 19 ufo's.
+- Kijk welke pannenkoek het minst breed is.
+- Je tikte op de grote pannenkoek.
+- Deze is klein. De andere pannenkoek is groter.
+- Welke pannenkoek is groot? Tik die aan.
+- Kijk welke pannenkoek het breedst is.
+- Je tikte op de kleine pannenkoek.
+- Deze pannenkoek is groter dan de andere.
+- Kijk in welk glas geen sap zit.
+- Je tikte op het volle glas.
+- Het glas is leeg, want er zit niets in.
+- Kijk welke kant van de weegschaal hoger hangt.
+- Je tikte op de meloen.
+- De appel is lichter. Daarom hangt die kant hoger.
+- Je tikte op het lange broodje.
+- Dit broodje is korter. Het stopt eerder dan het andere.
+- De eerste rijen zijn samen 20.
+- Je koos 23. Je telde er 1 minder. Misschien liet je een raketje staan.
+- Ik help je met de raketjes en sterren. Een volle rij telt 10, dus we springen per rij.
+- 20 in de volle rijen, en nog 4 erbij: 24 raketjes en sterren.
+- Tel de planeten en kometen in de laatste rij erbij.
+- Je koos 28. Je telde er 1 minder. Misschien liet je een planeet staan.
+- Ik help je met de planeten en kometen. Een volle rij telt 10, dus we springen per rij.
+- We verdelen de knikkers 1 voor 1.
+- 20 in de volle rijen, en nog 9 erbij: 29 planeten en kometen.
+- De eerste rijen zijn samen 30.
+- Je koos 35. Je telde er 1 minder. Misschien liet je een huis staan.
+- Ik help je met de huizen en bomen. Een volle rij telt 10, dus we springen per rij.
+- 30 in de volle rijen, en nog 6 erbij: 36 huizen en bomen.
+- Tel de ufo's en satellieten in de laatste rij erbij.
+- De eerste rijen zijn samen 40.
+- Je koos 46. Je telde er 1 minder. Misschien liet je een ufo staan.
+- Ik help je met de ufo's en satellieten. Een volle rij telt 10, dus we springen per rij.
+- 40 in de volle rijen, en nog 7 erbij: 47 ufo's en satellieten.
+- Je koos 49. Je telde er 1 minder. Misschien liet je een bal staan.
+- Ik help je met de ballen en blokken. Een volle rij telt 10, dus we springen per rij.
+- 5 volle rijen van 10 zijn 50 ballen en blokken.
+- Je koos 31. Je telde er 1 minder. Misschien liet je een auto staan.
+- Ik help je met de auto's en bussen. Een volle rij telt 10, dus we springen per rij.
+- 30 in de volle rijen, en nog 2 erbij: 32 auto's en bussen.
+- Je koos 36. Je telde er 1 meer. Misschien telde je een bootje dubbel.
+- Ik help je met de bootjes en treintjes. Een volle rij telt 10, dus we springen per rij.
+- 30 in de volle rijen, en nog 5 erbij: 35 bootjes en treintjes.
+- Tel de knikkers en ballonnen in de laatste rij erbij.
+- Je koos 27. Je telde er 1 meer. Misschien telde je een knikker dubbel.
+- Ik help je met de knikkers en ballonnen. Een volle rij telt 10, dus we springen per rij.
+- 20 in de volle rijen, en nog 6 erbij: 26 knikkers en ballonnen.
+- 21, 22, 23, 24, 25, 26.
+- Tel de sterren en planeten in de laatste rij erbij.
+- Je koos 42. Je telde er 1 minder. Misschien liet je een ster staan.
+- Ik help je met de sterren en planeten. Een volle rij telt 10, dus we springen per rij.
+- 40 in de volle rijen, en nog 3 erbij: 43 sterren en planeten.
+- 41, 42, 43.
+- Tel de satellieten en raketjes in de laatste rij erbij.
+- Je koos 49. Je telde er 1 meer. Misschien telde je een satelliet dubbel.
+- Ik help je met de satellieten en raketjes. Een volle rij telt 10, dus we springen per rij.
+- 41, 42, 43, 44, 45, 46, 47, 48.
+- 40 in de volle rijen, en nog 8 erbij: 48 satellieten en raketjes.
+- Je koos 40. Je telde er 1 meer. Misschien telde je een bus dubbel.
+- Ik help je met de bussen en auto's. Een volle rij telt 10, dus we springen per rij.
+- 30 in de volle rijen, en nog 9 erbij: 39 bussen en auto's.
+- 31, 32, 33, 34, 35, 36, 37, 38, 39.
+- Tel de kometen en ufo's in de laatste rij erbij.
+- Je koos 40. Dat zijn precies de volle rijen. Kijk ook naar de rij die niet vol is.
+- Ik help je met de kometen en ufo's. Een volle rij telt 10, dus we springen per rij.
+- 40 in de volle rijen, en nog 1 erbij: 41 kometen en ufo's.
+- Tel de blokken en ballen in de laatste rij erbij.
+- Je koos 29. Je telde er 1 meer. Misschien telde je een blok dubbel.
+- Ik help je met de blokken en ballen. Een volle rij telt 10, dus we springen per rij.
+- 20 in de volle rijen, en nog 8 erbij: 28 blokken en ballen.
+- 21, 22, 23, 24, 25, 26, 27, 28.
+- Tel de ballonnen en knikkers in de laatste rij erbij.
+- Je koos 46. Je telde er 1 meer. Misschien telde je een ballon dubbel.
+- Ik help je met de ballonnen en knikkers. Een volle rij telt 10, dus we springen per rij.
+- 40 in de volle rijen, en nog 5 erbij: 45 ballonnen en knikkers.
+- 41, 42, 43, 44, 45.
+- Tel de bomen en huizen in de laatste rij erbij.
+- Je koos 32. Je telde er 1 minder. Misschien liet je een boom staan.
+- Ik help je met de bomen en huizen. Een volle rij telt 10, dus we springen per rij.
+- 30 in de volle rijen, en nog 3 erbij: 33 bomen en huizen.
+- Het eerste losse knikker is al geteld: dat is 41.
+- Tel nu de andere losse knikkers erbij.
+- Je koos 48. Je telde er 1 meer. Misschien telde je een losse knikker 2 keer.
+- Elke losse knikker daarbij is er 1 meer.
+- Op de zak staat het aantal: 40 knikkers zitten erin.
+- 40 in de zak en 7 los. Dat maakt 47 knikkers.
+- Begin bij 50, want zo veel knikkers zitten al in de zak.
+- Je koos 53. Je telde er 1 meer. Misschien telde je een losse knikker 2 keer.
+- Op de zak staat het aantal: 50 knikkers zitten erin.
+- 50 in de zak en 2 los. Dat maakt 52 knikkers.
+- Het eerste losse knikker is al geteld: dat is 51.
+- Je koos 57. Je telde er 1 minder. Misschien ligt er een losse knikker die je niet meetelde.
+- 50 in de zak en 8 los. Dat maakt 58 knikkers.
+- Het eerste losse knikker is al geteld: dat is 61.
+- Je koos 63. Je telde er 1 minder. Misschien ligt er een losse knikker die je niet meetelde.
+- Op de zak staat het aantal: 60 knikkers zitten erin.
+- 60 in de zak en 4 los. Dat maakt 64 knikkers.
+- Begin bij 70, want zo veel knikkers zitten al in de zak.
+- Je koos 72. Je telde er 1 meer. Misschien telde je een losse knikker 2 keer.
+- Op de zak staat het aantal: 70 knikkers zitten erin.
+- 70 in de zak en 1 los. Dat maakt 71 knikkers.
+- Het eerste losse appel is al geteld: dat is 71.
+- Tel nu de andere losse appels erbij.
+- Je koos 76. Je telde er 1 meer. Misschien telde je een losse appel 2 keer.
+- Elke losse appel daarbij is er 1 meer.
+- Op de zak staat het aantal: 70 appels zitten erin.
+- 70 in de zak en 5 los. Dat maakt 75 appels.
+- Begin bij 80, want zo veel appels zitten al in de zak.
+- Je koos 81. Je telde er 1 minder. Misschien ligt er een losse appel die je niet meetelde.
+- Op de zak staat het aantal: 80 appels zitten erin.
+- 80 in de zak en 2 los. Dat maakt 82 appels.
+- Je koos 88. Je telde er 1 meer. Misschien telde je een losse appel 2 keer.
+- Het eerste losse appel is al geteld: dat is 81.
+- 80 in de zak en 7 los. Dat maakt 87 appels.
+- Het eerste losse appel is al geteld: dat is 91.
+- Je koos 92. Je telde er 1 minder. Misschien ligt er een losse appel die je niet meetelde.
+- Op de zak staat het aantal: 90 appels zitten erin.
+- 90 in de zak en 3 los. Dat maakt 93 appels.
+- Je koos 99. Je telde er 1 meer. Misschien telde je een losse appel 2 keer.
+- 90 in de zak en 8 los. Dat maakt 98 appels.
+- Het eerste losse ster is al geteld: dat is 51.
+- Tel nu de andere losse sterren erbij.
+- Je koos 55. Je telde er 1 minder. Misschien ligt er een losse ster die je niet meetelde.
+- Elke losse ster daarbij is er 1 meer.
+- Op de zak staat het aantal: 50 sterren zitten erin.
+- 52, 53, 54, 55, 56.
+- 50 in de zak en 6 los. Dat maakt 56 sterren.
+- Het eerste losse ster is al geteld: dat is 61.
+- Je koos 70. Je telde er 1 meer. Misschien telde je een losse ster 2 keer.
+- Op de zak staat het aantal: 60 sterren zitten erin.
+- 62, 63, 64, 65, 66, 67, 68, 69.
+- 60 in de zak en 9 los. Dat maakt 69 sterren.
+- Het eerste losse ster is al geteld: dat is 71.
+- Je koos 74. Je telde er 1 meer. Misschien telde je een losse ster 2 keer.
+- Op de zak staat het aantal: 70 sterren zitten erin.
+- 72, 73.
+- 70 in de zak en 3 los. Dat maakt 73 sterren.
+- Het eerste losse ster is al geteld: dat is 41.
+- Je koos 47. Je telde er 1 minder. Misschien ligt er een losse ster die je niet meetelde.
+- Op de zak staat het aantal: 40 sterren zitten erin.
+- 42, 43, 44, 45, 46, 47, 48.
+- 40 in de zak en 8 los. Dat maakt 48 sterren.
+- Het eerste losse ster is al geteld: dat is 91.
+- Je koos 95. Je telde er 1 minder. Misschien ligt er een losse ster die je niet meetelde.
+- Op de zak staat het aantal: 90 sterren zitten erin.
+- 90 in de zak en 6 los. Dat maakt 96 sterren.
+- 92, 93, 94, 95, 96.
+- Je staat bij 34. Tel 1 verder.
+- Je koos 32. Na 34 komt een groter nummer.
+- Het volgende huis na 34 is 1 verder.
+- 34 plus 1 is 35. Dat huis komt erna.
+- Je staat bij 42. Tel 1 verder.
+- Je koos 44. Dat huis staat 1 te ver.
+- Het volgende huis na 42 is 1 verder.
+- 42 plus 1 is 43. Dat huis komt erna.
+- Na 19 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 21. Dat huis staat 1 te ver.
+- Na 19 is het tiental vol en begint een nieuw tiental.
+- Na 19 is het tiental vol, dus nu begint 20.
+- Na 39 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 41. Dat huis staat 1 te ver.
+- Na 39 is het tiental vol en begint een nieuw tiental.
+- Na 39 is het tiental vol, dus nu begint 40.
+- Je staat bij 40. Tel 1 verder.
+- Je koos 14. Staan de cijfers wel in de goede volgorde?
+- Het volgende huis na 40 is 1 verder.
+- 40 plus 1 is 41. Dat huis komt erna.
+- Je staat bij 23. Tel 1 verder.
+- Je koos 25. Dat huis staat 1 te ver.
+- Het volgende huis na 23 is 1 verder.
+- 23 plus 1 is 24. Dat huis komt erna.
+- Je staat bij 30. Tel 1 verder.
+- Je koos 13. Staan de cijfers wel in de goede volgorde?
+- Het volgende huis na 30 is 1 verder.
+- 30 plus 1 is 31. Dat huis komt erna.
+- Je staat bij 20. Tel 1 verder.
+- Je koos 12. Staan de cijfers wel in de goede volgorde?
+- Het volgende huis na 20 is 1 verder.
+- 20 plus 1 is 21. Dat huis komt erna.
+- Na 49 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 40. Na 49 komt een groter nummer.
+- Na 49 is het tiental vol en begint een nieuw tiental.
+- Na 49 is het tiental vol, dus nu begint 50.
+- Na 69 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 71. Dat huis staat 1 te ver.
+- Na 69 is het tiental vol en begint een nieuw tiental.
+- Na 69 is het tiental vol, dus nu begint 70.
+- Je staat bij 87. Tel 1 verder.
+- Je koos 98. Zo ver is het volgende huis niet.
+- Het volgende huis na 87 is 1 verder.
+- 87 plus 1 is 88. Dat huis komt erna.
+- Na 89 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 80. Na 89 komt een groter nummer.
+- Na 89 is het tiental vol en begint een nieuw tiental.
+- Na 89 is het tiental vol, dus nu begint 90.
+- Na 99 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 99, maar dat huis staat er al.
+- Na 99 is het tiental vol en begint een nieuw tiental.
+- Na 99 is het tiental vol, dus nu begint 100.
+- Na 79 is dit tiental vol. Welk nummer begint het volgende?
+- Je koos 70. Na 79 komt een groter nummer.
+- Na 79 is het tiental vol en begint een nieuw tiental.
+- Na 79 is het tiental vol, dus nu begint 80.
+- Je staat bij 97. Tel 1 verder.
+- Je koos 89. Staan de cijfers wel in de goede volgorde?
+- Het volgende huis na 97 is 1 verder.
+- 97 plus 1 is 98. Dat huis komt erna.
+- Je staat bij 15. Tel 1 terug.
+- Je koos 12. Zo ver terug hoef je niet.
+- Het kaartje voor 15 is 1 minder.
+- Terug is het 1 minder dan 15: dat is 14.
+- Je staat bij 12. Tel 1 terug.
+- Je koos 12, maar dat kaartje staat er al.
+- Het kaartje voor 12 is 1 minder.
+- Terug is het 1 minder dan 12: dat is 11.
+- Je staat bij 17. Tel 1 terug.
+- Je koos 15. Dat kaartje is 1 te ver terug.
+- Het kaartje voor 17 is 1 minder.
+- Terug is het 1 minder dan 17: dat is 16.
+- Boven in het huisje staat 13.
+- Je staat bij 16. Tel 1 terug.
+- Je koos 17, maar dat kaartje staat er al.
+- Het kaartje voor 16 is 1 minder.
+- Terug is het 1 minder dan 16: dat is 15.
+- Je staat bij 14. Tel 1 terug.
+- Je koos 15, maar dat kaartje staat er al.
+- Het kaartje voor 14 is 1 minder.
+- Terug is het 1 minder dan 14: dat is 13.
+- Je staat bij 18. Tel 1 terug.
+- Je koos 18, maar dat kaartje staat er al.
+- Het kaartje voor 18 is 1 minder.
+- Terug is het 1 minder dan 18: dat is 17.
+- De eerste dag hangt direct aan de locomotief.
+- Na zondag begint er weer een nieuwe week.
+- Zaterdag is maar 1 dag. Er komt nog een dag achter.
+- Het weekend is zaterdag en zondag.
+- Kijk welke wagon vlak achter maandag hangt.
+- Achter maandag hangt niet woensdag.
+- Kijk welke wagon vlak achter donderdag hangt.
+- Woensdag hangt vóór donderdag, niet erachter.
+- De appels staan in rijtjes. Een volle rij telt 5, dus ik begin met de volle rijen.
+- Kijk welke wagon vlak achter woensdag hangt.
+- Dinsdag hangt vóór woensdag, niet erachter.
+- Kijk welke wagon vlak achter zaterdag hangt.
+- Vrijdag hangt vóór zaterdag, niet erachter.
+- Na zondag begint de week weer bij de eerste wagon.
+- Zaterdag hangt vóór zondag, niet erachter.
+- Je koos 13. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 12. Dus zijn het er 12 appels.
+- Kijk welke wagon vlak achter dinsdag hangt.
+- Maandag hangt vóór dinsdag, niet erachter.
+- Kijk welke wagon vlak achter vrijdag hangt.
+- Donderdag hangt vóór vrijdag, niet erachter.
+- Op 5 dagen ga je naar school. Het weekend telt apart.
+- Achter dinsdag hangt niet donderdag.
+- Achter vrijdag hangt niet zondag.
+- Kijk welke wagon vlak voor woensdag hangt.
+- Donderdag hangt ná woensdag, niet ervoor.
+- Kijk welke wagon vlak voor zaterdag hangt.
+- Zondag hangt ná zaterdag, niet ervoor.
+- Kijk welke wagon vlak voor vrijdag hangt.
+- Zaterdag hangt ná vrijdag, niet ervoor.
+- Voor maandag hangt de laatste wagon van de vorige week.
+- Dinsdag hangt ná maandag, niet ervoor.
+- Kijk welke wagon vlak voor dinsdag hangt.
+- Woensdag hangt ná dinsdag, niet ervoor.
+- Kijk welke wagon vlak voor zondag hangt.
+- Maandag hangt ná zondag, niet ervoor.
+- Achter donderdag hangt niet zaterdag.
+- Kijk in de trein welke dag het eerst komt.
+- De citroenen staan in rijtjes. Een volle rij telt 5, dus ik begin met de volle rijen.
+- Begin bij 10. Tik steeds op de citroen met de kring en tel verder.
+- Hoeveel citroenen zijn het samen?
+- Je koos 12. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 11. Dus zijn het er 11 citroenen.
+- Let op de kalender met een hoepel.
+- Dat is de datum: 8 juni.
+- De bananen liggen door elkaar. Eerst ga ik ze 1 voor 1 tellen, de streepjes helpen me onthouden hoeveel ik al heb.
+- Ik heb er 12 geteld.
+- Begin bij 12. Tik steeds op de banaan met de kring en tel verder.
+- Hoeveel bananen zijn het samen?
+- Je koos 16. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 15. Dus zijn het er 15 bananen.
+- Het rode vak betekent 9 juni.
+- Let op het rode woord.
+- Tel alle boogjes tussen het rode vak en het hoedje.
+- Met 3 boogjes kom je op 12 juni. Het hoedje hangt bij 13 juni.
+- Tussen het rode vak en het hoedje liggen boogjes.
+- Met 0 boogjes zou het feest nu zijn.
+- Je koos 1. Dan zou het feest morgen zijn.
+- Denk aan de dag direct na vrijdag.
+- Denk aan het tegenovergestelde van kort.
+- Denk aan het tegenovergestelde van lang.
+- Denk aan een woord voor iets wat nog moet komen.
+- Denk aan het tegenovergestelde van vroeg.
+- Vrijdag was gisteren.
+- De auto's en bussen staan in rijtjes. Een volle rij telt 5, dus ik begin met de volle rijen.
+- Begin bij 10. Tik steeds op de auto met de kring en tel verder.
+- Hoeveel auto's en bussen zijn het samen?
+- Je koos 14. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 13. Dus zijn het er 13 auto's en bussen.
+- De ballen en blokken staan in rijtjes. Een volle rij telt 5, dus ik begin met de volle rijen.
+- Begin bij 10. Tik steeds op de bal met de kring en tel verder.
+- Hoeveel ballen en blokken zijn het samen?
+- Het laatste getal dat je zei was 11. Dus zijn het er 11 ballen en blokken.
+- Kijk eerst of het boven of onder ligt.
+- Kijk daarna of het links of rechts ligt.
+- Je koos linksboven. De bal ligt niet linksboven.
+- Je koos rechtsboven. De bal ligt niet rechtsboven.
+- Boven klopt. Kijk nu of het links of rechts ligt.
+- Je koos rechtsboven. De stip ligt niet rechtsboven.
+- Zoek eerst aan de linkerkant van het veld.
+- Kijk daarna of het onder ligt.
+- Je tikte op de vlieger. Die ligt niet linksonder.
+- Kijk daarna of het boven ligt.
+- Zoek eerst aan de rechterkant van het veld.
+- Je tikte op het blok. Die ligt niet rechtsboven.
+- Je koos rood. Die ballon staat niet helemaal rechts.
+- Kijk naar de ballon helemaal aan de linkerkant.
+- Je koos blauw. Dat is de ballon helemaal rechts.
+- Je koos linksonder. De stip ligt niet linksonder.
+- Denk aan een plek waar je hoog bent.
+- Die zin past niet bij het plaatje.
+- Zo hoog kun je zijn in een flat, bij het raam.
+- Zet de camera zo, dat de boom recht voor je staat.
+- Dan zie je de boom van boven.
+- Houd je de camera laag bij de grond, dan zie je de boom van onder.
+- Voor je gezicht zie je hem recht van voren.
+- Stel je voor: je staat hoog in een flat.
+- Bedenk of je van boven, van voren of van onder kijkt.
+- Dit huisje zie je recht van voren.
+- Dit huisje zie je van bovenaf.
+- Dit huisje zie je van onderaf.
+- Kijk naar het bovenste blok van elk torentje.
+- Je koos rood, blauw, geel. Dat is niet wat je van boven ziet.
+- De laatste kraal is roze.
+- Zoek roze eerder in de ketting en kijk welke kraal daarna kwam.
+- Je koos de roze kraal, maar die ligt al aan het eind.
+- De planeten liggen door elkaar. Eerst ga ik ze 1 voor 1 tellen, de streepjes helpen me onthouden hoeveel ik al heb.
+- De laatste kraal is oranje.
+- Zoek oranje eerder in de ketting en kijk welke kraal daarna kwam.
+- Je koos de gele kraal. Die komt niet na oranje.
+- Ik heb er 11 geteld.
+- Begin bij 11. Tik steeds op de planeet met de kring en tel verder.
+- De laatste kraal is rood.
+- Kijk naar het begin van de ketting en zoek het stukje dat steeds terugkomt.
+- Je koos een blauwe kraal. Met die kraal gaat het patroon anders verder dan eerder in de ketting.
+- Hoeveel planeten zijn het samen?
+- Je koos 15. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 14. Dus zijn het er 14 planeten.
+- Links van de lege plek ligt rood, rechts blauw.
+- Zoek het stuk van het patroon dat ertussen past.
+- Je koos een blauwe kraal. Met die kraal klopt het patroon naast de lege plek niet meer.
+- Elke kleur staat 1 keer in elk rijtje.
+- Het eerste rijtje heeft groen en oranje. Kijk welke kleur daar mist.
+- Je koos paars, oranje, paars. In het derde rijtje staat paars dan 2 keer.
+- Tegenover elkaar ligt dezelfde kleur.
+- Kijk welke kleur in de hoek tegenover de lege plek ligt.
+- Je koos een paarse kraal. Tegenover de lege plek ligt een andere kleur.
+- Zoek het vlak dat precies tegenover het lege vlak ligt.
+- Kijk welke kleur dat vlak heeft.
+- Je koos paars. Het vlak tegenover het lege vlak heeft een andere kleur.
+- De bovenste rij begint met de zon.
+- Zoek het stukje dat steeds terugkomt.
+- Je koos de zon. Op die plek komt in het patroon een ander ding.
+- De bovenste rij begint met rood.
+- Elke rij schuift 1 plekje op.
+- Je koos een gele kraal. In die rij staat op die plek een andere kleur.
+- Onder de pijl staan de andere kleuren van dit rijtje.
+- Kijk welke kleur van het patroon daar ontbreekt.
+- Je koos groen. Dat is niet de kleur die in dit rijtje ontbreekt.
+- Je koos rood. Dat is niet de kleur die in dit rijtje ontbreekt.
+- De laatste vorm is open aan de rechterkant.
+- Kijk hoe de vorm steeds een stukje verder draait.
+- Je koos het plaatje dat open is aan de bovenkant. Zo draait de vorm hier niet verder.
+- De laatste vorm is open aan de linkerkant.
+- Je koos het plaatje dat open is aan de linkerkant. Zo draait de vorm hier niet verder.
+- Kijk wat er steeds tussen die bloemen staat.
+- Om en om staat er een zonnebloem.
+- Je koos de rode bloem en de zonnebloem. Daarmee gaat het patroon niet verder.
+- De bovenste rij begint met de bal.
+- Je koos het boek. Op die plek komt in het patroon een ander ding.
+- Kijk naar de bovenste rij: bal, blok, potlood, boek.
+- De raketjes staan in rijtjes. Een volle rij telt 5, dus ik begin met de volle rijen.
+- Begin bij 10. Tik steeds op het raketje met de kring en tel verder.
+- Hoeveel raketjes zijn het samen?
+- Het laatste getal dat je zei was 13. Dus zijn het er 13 raketjes.
+- Begin bij 15. Tik steeds op de bus met de kring en tel verder.
+- Je koos 18. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 17. Dus zijn het er 17 auto's en bussen.
+- De ufo's liggen door elkaar. Eerst ga ik ze 1 voor 1 tellen, de streepjes helpen me onthouden hoeveel ik al heb.
+- Ik heb er 4 geteld.
+- Begin bij 4. Tik steeds op de ufo met de kring en tel verder.
+- Hoeveel ufo's zijn het samen?
+- Je koos 8. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 7. Dus zijn het er 7 ufo's.
+- Ik heb er 3 geteld.
+- Begin bij 3. Tik steeds op de planeet met de kring en tel verder.
+- Je koos 7. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 6. Dus zijn het er 6 planeten.
+- Ik heb er 13 geteld.
+- Begin bij 13. Tik steeds op de planeet met de kring en tel verder.
+- Je koos 17. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 16. Dus zijn het er 16 planeten.
+- De raketjes en sterren staan in rijtjes. Een volle rij telt 10, dus ik begin met de volle rijen.
+- Begin bij 20. Tik steeds op het raketje met de kring en tel verder.
+- Hoeveel raketjes en sterren zijn het samen?
+- Je koos 25. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 24. Dus zijn het er 24 raketjes en sterren.
+- Als je de losse knikkers erbij telt, weet je hoeveel het er samen zijn.
+- Je koos 48. Dat is 1 meer dan het laatste getal dat je zei.
+- Het laatste getal dat je zei was 47. Dus zijn het er 47 knikkers.
+- Kijk naar de wagon die direct aan de locomotief hangt.
+- Achter zondag hangt niet dinsdag.
+- Zwaar zegt hoeveel iets weegt.
+- We beginnen met 4 puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past. Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek.
+- Kijk in de trein naar de wagon van dinsdag. De goede dag hangt er direct achter.
+- Kijk in de trein naar de wagon van woensdag. De goede dag hangt er direct voor.
+- Dit groepje is samen 2 euro. Je zoekt 3 euro, dus je hebt nog 1 euro nodig. Zoek een groepje met meer geld.
+- Dit groepje is samen 4 euro. Je zoekt 5 euro, dus je hebt nog 1 euro nodig. Zoek een groepje met meer geld.
+- Dit groepje is samen 2 euro. Je zoekt 4 euro, dus je hebt nog 2 euro nodig. Zoek een groepje met meer geld.
+- Dit groepje is samen 7 euro. Dat is 1 euro te veel. Zoek een groepje met minder geld.
+- Dit groepje is samen 15 euro. Je zoekt 20 euro, dus je hebt nog 5 euro nodig. Zoek een groepje met meer geld.
+- Dit groepje is samen 3 euro. Je zoekt 4 euro, dus je hebt nog 1 euro nodig. Zoek een groepje met meer geld.
+- Dit groepje is samen 6 euro. Dat is 2 euro te veel. Zoek een groepje met minder geld.
+- Kijk naar het getal links van de bal: 12. Welk getal komt daarna?
+- 15 komt niet direct na 12.
+- Kijk naar het getal links van het pakje: 15. Welk getal komt daarna?
+- 15 staat al in de rij, op een andere plek.
+- Kijk naar het getal links van het blok: 18. Welk getal komt daarna?
+- 16 komt niet direct na 18.
+- Kijk naar het getal links van de auto: 10. Welk getal komt daarna?
+- 9 komt niet direct na 10.
+- Kijk naar het getal links van de ster: 3. Welk getal komt daarna?
+- 2 komt niet direct na 3.
+- Kijk naar het getal links van de bal: 14. Welk getal komt daarna?
+- 13 komt niet direct na 14.
+- Kijk naar het getal links van het pakje: 12. Welk getal komt daarna?
+- 10 komt niet direct na 12.
+- Kijk naar het getal links van de ster: 18. Welk getal komt daarna?
+- 17 komt niet direct na 18.
+- Kijk naar het getal links van het blok: 13. Welk getal komt daarna?
+- 12 komt niet direct na 13.
+- Kijk naar het getal links van de auto: 16. Welk getal komt daarna?
+- 14 komt niet direct na 16.
+- Kijk naar het getal links van het pakje: 9. Welk getal komt daarna?
+- 8 komt niet direct na 9.
+- Kijk naar het getal links van de bal: 16. Welk getal komt daarna?
+- 19 komt niet direct na 16.
+- Kijk naar het getal links van de ster: 8. Welk getal komt daarna?
+- 6 komt niet direct na 8.
+- Kijk naar het getal links van het blok: 11. Welk getal komt daarna?
+- 10 komt niet direct na 11.
+- Kijk naar het getal links van de auto: 19. Welk getal komt daarna?
+- 17 komt niet direct na 19.
+- Welk getal zeg je het eerst als je telt? Dat getal komt vooraan.
+- Je zette 17 vooraan. Dat is het grootste getal, en je begint bij het kleinste.
+- Je zette 18 vooraan. Dat is het grootste getal, en je begint bij het kleinste.
+- Je zette 20 vooraan. Dat is het grootste getal, en je begint bij het kleinste.
+- Kijk naar het getal links van de bal: 4. Welk getal komt daarna?
+- 7 komt niet direct na 4.
+- Kijk naar het getal links van het pakje: 11. Welk getal komt daarna?
+- 14 komt niet direct na 11.
+- 12 en 13 komen vóór 14, niet erna.
+- Kijk naar het getal links van de auto: 17. Welk getal komt daarna?
+- 16 komt niet direct na 17.
+- Kijk naar het getal links van de ster: 13. Welk getal komt daarna?
+- 4 en 5 komen vóór 6, niet erna.
+- Kijk naar het getal links van het blok: 15. Welk getal komt daarna?
+- 18 komt niet direct na 15.
+- Kijk naar het getal links van de bal: 8. Welk getal komt daarna?
+- 7 komt niet direct na 8.
+- 15 en 16 komen vóór 17, niet erna.
+- Kijk naar het streepje direct voor het raketje: 5. Welk getal komt daarna?
+- 7 is het streepje net na het raketje.
+- Het raketje staat 1 streepje verder. Welk getal is dat?
+- 1 is het streepje net vóór het raketje.
+- 8 is het streepje net vóór het raketje.
+- Het raketje is het streepje van 1 al voorbij.
+- Welk getal zeg je later? Dat is meer.
+- Als je telt, zeg je 13 eerder dan 14.
+- Kijk naar het streepje direct voor het raketje: 13. Welk getal komt daarna?
+- 15 is het streepje net na het raketje.
+- 17 is het streepje net vóór het raketje.
+- Tel hoeveel stapjes het van elk getal naar de 20 is. Het kleinste aantal stapjes is het dichtst bij.
+- 8 is 12 van de 20 af. Een ander getal ligt dichterbij.
+- Tel hoeveel stapjes het van elk getal naar de 10 is. Het kleinste aantal stapjes is het dichtst bij.
+- 17 is 7 van de 10 af. Een ander getal ligt dichterbij.
+- Het raketje staat nog links van 16.
+- Het raketje staat verder naar rechts dan 13.
+- 12 is het streepje ernaast. Tel de streepjes nog eens.
+- 16 is het streepje ernaast. Tel de streepjes nog eens.
+- 13 is het streepje ernaast. Tel de streepjes nog eens.
+- 17 is het streepje ernaast. Tel de streepjes nog eens.
+- Tel hoeveel stapjes het van elk getal naar de 16 is. Het kleinste aantal stapjes is het dichtst bij.
+- 10 is 6 van de 16 af. Een ander getal ligt dichterbij.
+- Tel hoeveel stapjes het van elk getal naar de 7 is. Het kleinste aantal stapjes is het dichtst bij.
+- 2 is 5 van de 7 af. Een ander getal ligt dichterbij.
+- Het raketje staat verder naar rechts dan 12.
+- Het raketje staat verder naar rechts dan 6.
+- Het raketje staat nog links van 9.
+- Het raketje vliegt nog verder dan 10.
+- Welk getal zeg je daarna als je verdertelt?
+- Vlak voor deze plek hoort 5. 8 volgt daar niet op.
+- 10 is kleiner dan 12. In deze rij worden de getallen steeds groter.
+- 15 is kleiner dan 18. In deze rij worden de getallen steeds groter.
+- Begin bij de planeet met 6 en tel 2 verder.
+- Vlak voor deze plek hoort 7. 7 volgt daar niet op.
+- Begin bij de planeet met 13 en tel 2 verder.
+- Vlak voor deze plek hoort 14. 17 volgt daar niet op.
+- Begin bij de planeet met 9 en tel 2 verder.
+- Vlak voor deze plek hoort 10. 10 volgt daar niet op.
+- 6 is het streepje ernaast. Tel de streepjes nog eens.
+- 14 is het streepje ernaast. Tel de streepjes nog eens.
+- 2 staat al in de rij. Op de lege plek hoort een ander getal.
+- 4 is kleiner dan 11. In deze rij worden de getallen steeds groter.
+- 6 is kleiner dan 17. In deze rij worden de getallen steeds groter.
+- Begin bij de diamant met 2 en tel 2 verder.
+- Vlak voor deze plek hoort 3. 3 volgt daar niet op.
+- Begin bij de diamant met 10 en tel 2 verder.
+- Begin bij de diamant met 15 en tel 2 verder.
+- Vlak voor deze plek hoort 16. 16 volgt daar niet op.
+- Begin bij de ster met 6 en tel 2 verder.
+- Begin bij de ster met 13 en tel 2 verder.
+- Vlak voor deze plek hoort 14. 14 volgt daar niet op.
+- Begin bij de ster met 16 en tel 2 verder.
+- Begin bij het lampje met 3 en tel 2 verder.
+- Vlak voor deze plek hoort 4. 4 volgt daar niet op.
+- Begin bij het lampje met 11 en tel 3 verder.
+- 12 is kleiner dan 13. In deze rij worden de getallen steeds groter.
+- Begin bij het lampje met 14 en tel 5 verder.
+- 17 is kleiner dan 18. In deze rij worden de getallen steeds groter.
+- Het vlaggetje staat verder naar rechts dan 8.
+- Het vlaggetje staat verder naar rechts dan 2.
+- Het vlaggetje staat nog niet zo ver als 13.
+- Het vlaggetje staat verder naar rechts dan 4.
+- Het vlaggetje staat verder naar rechts dan 7.
+- 13 ligt er vlak naast. Elk streepje is 2 verder.
+- 0 staat al op de lijn, bij een ander streepje. Het vlaggetje staat ergens anders.
+- 2 is kleiner dan 3, en het getal moet juist groter zijn.
+- Tel vanaf 3 verder tot 7. Zoek het getal dat je onderweg zegt.
+- Tel vanaf 10 verder tot 14. Zoek het getal dat je onderweg zegt.
+- 15 is groter dan 14, en het getal moet juist kleiner zijn.
+- Tel vanaf 13 verder tot 17. Zoek het getal dat je onderweg zegt.
+- 18 is groter dan 17, en het getal moet juist kleiner zijn.
+- Begin bij de ster met 3 en tel 3 verder.
+- 1 is kleiner dan 5. In deze rij worden de getallen steeds groter.
+- Begin bij de ster met 12 en tel 3 verder.
+- 3 is kleiner dan 14. In deze rij worden de getallen steeds groter.
+- Welk getal zeg je daarna als je terugtelt?
+- 18 is groter dan 13, maar deze rij telt terug: de getallen worden steeds kleiner.
+- Vlak voor deze plek hoort 20. 12 volgt daar niet op.
+- 16 is groter dan 10, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 19 is groter dan 16, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 14 is groter dan 11, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 20 is groter dan 16, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 17 is groter dan 16, maar deze rij telt terug: de getallen worden steeds kleiner.
+- Vlak voor deze plek hoort 15. 12 volgt daar niet op.
+- 15 is groter dan 13, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 18 is groter dan 15, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 15 is groter dan 11, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 20 is groter dan 19, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 16 is groter dan 12, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 19 is groter dan 13, maar deze rij telt terug: de getallen worden steeds kleiner.
+- 17 is groter dan 14, maar deze rij telt terug: de getallen worden steeds kleiner.
+- Tel hardop tot 7. Welk nummer zeg je daarna?
+- 9 slaat een huis over.
+- Rechts van de lege plek staat 12. Tel terug: welk nummer zeg je vlak voor 12?
+- 13 staat al in de straat.
+- Links van het vraagteken staat 15. Welk nummer zeg je daarna als je telt?
+- 19 past niet tussen 15 en 17.
+- Tel hardop tot 19. Welk nummer zeg je daarna?
+- 8 is kleiner dan 19, maar er hoort een groter nummer.
+- 1 is kleiner dan 19, maar er hoort een groter nummer.
+- Zoek het rondje met 2 wijzers.
+- Je koos de zandloper. Die laat zien hoe lang iets duurt, maar hij heeft geen wijzers.
+- Op deze klok wijst de kleine wijzer rechtsonder. Welk getal staat daar?
+- De grote wijzer staat op de 12 en de kleine wijzer op de 4.
+- Op deze klok wijst de kleine wijzer onderaan. Welk getal staat daar?
+- De grote wijzer staat op de 12 en de kleine wijzer op de 6.
+- Op deze klok wijst de kleine wijzer linksonder. Welk getal staat daar?
+- Dus het is 7 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 7.
+- Dus het is 8 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 8.
+- Op deze klok wijst de kleine wijzer links. Welk getal staat daar?
+- De grote wijzer staat op de 12 en de kleine wijzer op de 9.
+- Op deze klok wijst de kleine wijzer linksboven. Welk getal staat daar?
+- De grote wijzer staat op de 12 en de kleine wijzer op de 10.
+- Dus het is 11 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 11.
+- Op deze klok wijst de kleine wijzer bovenaan. Welk getal staat daar?
+- Dus het is 12 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 12.
+- Op deze klok wijst de kleine wijzer rechtsboven. Welk getal staat daar?
+- Dus het is 1 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 1.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 2.
+- Op deze klok wijst de kleine wijzer rechts. Welk getal staat daar?
+- De grote wijzer staat op de 12 en de kleine wijzer op de 3.
+- Dus het is 5 uur.
+- De grote wijzer staat op de 12 en de kleine wijzer op de 5.
+- Kijk naar de kleine wijzer. Die wijst linksonder.
+- Kijk naar de kleine wijzer. Die wijst linksboven.
+- Kijk naar de kleine wijzer. Die wijst rechts.
+- Kijk naar de kleine wijzer. Die wijst bovenaan.
+- Kijk naar de kleine wijzer. Die wijst rechtsboven.
+- Kijk naar de kleine wijzer. Die wijst links.
+- Nu zie je 3 vliegers.
+- Let op, nu gaat het niet om evenveel, maar om meer.
+- Let op, nu gaat het niet om evenveel, maar om minder.
+- Op deze klok staat de kleine wijzer linksboven. Tussen welke 2 getallen staat hij?
+- De grote wijzer staat op de 6 en de kleine wijzer tussen de 10 en de 11.
+- Op deze klok staat de kleine wijzer rechtsonder. Tussen welke 2 getallen staat hij?
+- De grote wijzer staat op de 6 en de kleine wijzer tussen de 3 en de 4.
+- De grote wijzer staat op de 6 en de kleine wijzer tussen de 11 en de 12.
+- Op deze klok staat de kleine wijzer linksonder. Tussen welke 2 getallen staat hij?
+- Dus het is half 7.
+- De grote wijzer staat op de 6 en de kleine wijzer tussen de 6 en de 7.
+- Op deze klok staat de kleine wijzer rechtsboven. Tussen welke 2 getallen staat hij?
+- De grote wijzer staat op de 6 en de kleine wijzer tussen de 12 en de 1.
+- Tel de volgende rij erbij en ga zo door tot de laatste appels.
+- Bij 15 mist er 1. Misschien sloeg je er een over.
+- Tel de volgende rij erbij en ga zo door tot de laatste sterren.
+- Bij 11 heb je er 1 te veel. Misschien telde je er een dubbel.
+- Tel de volgende rij erbij en ga zo door tot de laatste bloemen.
+- Bij 14 heb je er 1 te veel. Misschien telde je er een dubbel.
+- Tel de volgende rij erbij en ga zo door tot de laatste ballen.
+- Zo veel als 15 ballen staan er niet.
+- Tel de volgende rij erbij en ga zo door tot de laatste ballonnen.
+- Er staan meer ballonnen dan 17.
+- Er staan meer appels dan 12.
+- Bij 13 heb je er 1 te veel. Misschien telde je er een dubbel.
+- Zo veel als 16 ballonnen staan er niet.
+- Bij 16 mist er 1. Misschien sloeg je er een over.
+- Er staan meer appels dan 13.
+- Zo veel als 16 bloemen staan er niet.
+- Er staan meer sterren dan 16.
+- Zo veel als 13 bloemen staan er niet.
+- Bij 17 heb je er 1 te veel. Misschien telde je er een dubbel.
+- Bij 13 mist er 1. Misschien sloeg je er een over.
+- Welk getal zeg je later dan 14 als je telt? Dat is meer.
+- Welk getal zeg je eerder dan 11 als je telt? Dat is minder.
+- Welk getal zeg je later dan 16 als je telt? Dat is meer.
+- Tel de volgende rij erbij en ga zo door tot de laatste kralen.
+- Bij 5 mist er 1. Misschien sloeg je er een over.
+- 15 is waar een rij ophoudt. Je telde de laatste rij met kralen niet mee.
+- Het getal dat je eerder zegt als je telt, is minder.
+- Bij 17 mist er 1. Misschien sloeg je er een over.
+- Bij 7 mist er 1. Misschien sloeg je er een over.
+- Er staan meer kralen dan 12.
+- Bij 10 mist er 1. Misschien sloeg je er een over.
+- Er staan meer kralen dan 14.
+- Bij 10 heb je er 1 te veel. Misschien telde je er een dubbel.
+- Bij 11 mist er 1. Misschien sloeg je er een over.
+- Er staan meer kralen dan 8.
+- Het getal dat je het laatst zegt als je telt, is het grootst.
+- Het getal dat je het eerst zegt als je telt, is het kleinst.
+- Tel de volgende rij erbij en ga zo door tot de laatste eieren.
+- Zo veel als 26 eieren staan er niet.
+- Kijk in elke mand. Een lege mand heeft niets erin.
+- Tel de stukjes op elk stokje. Bij veel fruit liggen er best veel stukjes.
+- Kijk hoeveel kaas er op elk broodje ligt. Bij weinig is er maar een klein beetje.
+- Een lege mand heeft niets erin. Hoe heet het als er juist heel veel in zit?
+- Stel je voor dat je elk ding optilt. Welk ding voel je bijna niet?
+- Stel je voor dat je elk ding optilt. Welk ding is het moeilijkst om te tillen?
+- Stel je voor dat je elk ding optilt. Welk ding moet je met 2 handen tillen?
+- Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is het grootst.
+- Zet je vinger op de rand van elke pizza. De pizza met de rand het verst weg is groter.
+- Zet je vinger op de bovenkant van elk ijsje. Het ijsje met de bovenkant het laagst is het kleinst.
+- Zet je vinger op de bovenkant van elk ijsje. Het ijsje met de bovenkant het hoogst is groter.
+- Zet je vinger op de rand van elke pizza. De pizza met de rand het dichtst bij het midden is het kleinst.
+- Tel de blokjes die over zijn.
+- De machine haalt er 9 af. Dan komt er 1 blokje uit: 10 min 9 = 1.
+- Begin bij 10 en tel 6 terug.
+- Je koos 3, maar het antwoord is groter.
+- Begin bij 4 + 4.
+- Het ene getal is 1 groter dan het andere, dus er komt 1 bij.
+- Begin bij 6 + 6.
+- De rij van 10 is nog niet vol: er missen 2 stippen.
+- De rij van 10 is nog niet vol: er missen 3 stippen.
+- De rij van 10 is nog niet vol: er missen 6 stippen.
+- De rij van 10 is nog niet vol: er mist 1 stip.
+- De rij van 10 is nog niet vol: er missen 4 stippen.
+- De rij van 10 is vol, dus er is 1 stip te veel.
+- Dat zijn 11 stippen.
+- De rij van 10 is vol, dus er zijn 2 stippen te veel.
+- Dat zijn 12 stippen.
+- Zoek een plaatje dat voller is: daar zit meer kaas op.
+- Kijk hoeveel kaas er bovenaan zit.
+- Het plaatje dat je zoekt, is leger dan het plaatje bovenaan.
+- Zoek een plaatje dat leger is: daar zit minder kaas op.
+- Het plaatje waar bijna niets op zit, heeft het minste fruit.
+- Kijk hoeveel fruit er op elk plaatje zit.
+- Zoek het plaatje dat er net zo vol uitziet als bovenaan.
+- Het plaatje dat je zoekt, is voller dan het plaatje bovenaan.
+- Het plaatje dat het volst is, heeft de meeste kaas.
+- Kijk hoeveel kaas er op elk plaatje zit.
+- Het plaatje dat het volst is, heeft het meeste fruit.
+- Het plaatje waar bijna niets op zit, heeft de minste kaas.
+- Het moesten er 2 zijn. Er is er 1 te veel.
+- Het moesten er 6 zijn. Er zijn er 3 te weinig.
+- Het moesten er 3 zijn. Er is er 1 te veel.
+- Het moesten er 4 zijn. Er zijn er 2 te weinig.
+- Het moesten er 8 zijn. Er zijn er 6 te weinig.
+- Het moesten er 4 zijn. Er is er 1 te weinig.
+- Het moesten er 5 zijn. Er zijn er 4 te weinig.
+- Het moesten er 3 zijn. Er zijn er 2 te veel.
+- Het moesten er 2 zijn. Er zijn er 2 te veel.
+- Het moesten er 5 zijn. Er zijn er 2 te weinig.
+- Het moesten er 3 zijn. Er zijn er 3 te veel.
+- Het moesten er 4 zijn. Er zijn er 3 te weinig.
+- Bij 10 tel je alleen de volle rijen. Kijk ook naar de rij die niet vol is.
+- In elke volle rij liggen 5 appels. Ik tel per rij, dat gaat sneller.
+- Bij 12 heb je er 1 te veel. Misschien telde je een peer dubbel.
+- In elke volle rij liggen 5 peren. Ik tel per rij, dat gaat sneller.
+- Bij 12 mist er 1. Misschien liet je een pruim staan.
+- In elke volle rij liggen 5 pruimen. Ik tel per rij, dat gaat sneller.
+- Bij 15 heb je er 1 te veel. Misschien telde je een appel dubbel.
+- Bij 11 mist er 1. Misschien liet je een peer staan.
+- 13 is 1 meer dan het laatste getal dat je zei.
+- Er staan meer pruimen dan 13.
+- Bij 15 tel je alleen de volle rijen. Kijk ook naar de rij die niet vol is.
+- Bij 14 heb je er 1 te veel. Misschien telde je een peer dubbel.
+- Bij 13 mist er 1. Misschien liet je een peer staan.
+- Bij 12 mist er 1. Misschien liet je een appel staan.
+- Bij 17 heb je er 1 te veel. Misschien telde je een pruim dubbel.
+- Bij 14 mist er 1. Misschien liet je een peer staan.
+- Bij 16 mist er 1. Misschien liet je een appel staan.
+- Er staan meer pruimen dan 9.
+- Bij 12 heb je er 1 te veel. Misschien telde je een citroen dubbel.
+- In elke volle rij liggen 5 citroenen. Ik tel per rij, dat gaat sneller.
+- Er staan meer aardbeien dan 12.
+- In elke volle rij liggen 5 aardbeien. Ik tel per rij, dat gaat sneller.
+- Bij 13 heb je er 1 te veel. Misschien telde je een citroen dubbel.
+- Bij 14 mist er 1. Misschien liet je een aardbei staan.
+- Er staan meer citroenen dan 11.
+- 12 is 1 meer dan het laatste getal dat je zei.
+- Bij 17 heb je er 1 te veel. Misschien telde je een aardbei dubbel.
+- Bij 13 mist er 1. Misschien liet je een citroen staan.
+- Bij 16 heb je er 1 te veel. Misschien telde je een citroen dubbel.
+- Bij 17 mist er 1. Misschien liet je een aardbei staan.
+- Er staan meer citroenen dan 14.
+- Bij 18 mist er 1. Misschien liet je een aardbei staan.
+- Bij 16 mist er 1. Misschien liet je een citroen staan.
+- Er staan meer aardbeien dan 18.
+- Bij 17 mist er 1. Misschien liet je een citroen staan.
+- Bij 16 heb je er 1 te veel. Misschien telde je een banaan 2 keer.
+- Er liggen meer appels dan 10.
+- Bij 12 mist er 1. Misschien sloeg je een peer over.
+- Bij 16 mist er 1. Misschien sloeg je een banaan over.
+- 16 is 1 meer dan het laatste getal dat je zei.
+- Bij 12 heb je er 1 te veel. Misschien telde je een aardbei 2 keer.
+- Er liggen meer pruimen dan 17.
+- Bij 13 mist er 1. Misschien sloeg je een citroen over.
+- Er liggen meer bananen dan 18.
+- Bij 17 heb je er 1 te veel. Misschien telde je een appel 2 keer.
+- Bij 17 mist er 1. Misschien sloeg je een peer over.
+- Bij 14 heb je er 1 te veel. Misschien telde je een aardbei 2 keer.
+- Er liggen meer pruimen dan 15.
+- Bij 18 mist er 1. Misschien sloeg je een citroen over.
+- Bij 11 mist er 1. Misschien sloeg je een banaan over.
+- Er liggen meer appels dan 16.
+- Bij 14 heb je er 1 te veel. Misschien telde je een auto dubbel.
+- In elke volle rij liggen 5 auto's en bussen. Ik tel per rij, dat gaat sneller.
+- Zo veel als 14 huizen en bomen staan er niet. Tel de volle rijen van 5 en dan de rest.
+- In elke volle rij liggen 5 huizen en bomen. Ik tel per rij, dat gaat sneller.
+- Bij 16 heb je er 1 te veel. Misschien telde je een raketje dubbel.
+- In elke volle rij liggen 5 raketjes en sterren. Ik tel per rij, dat gaat sneller.
+- In elke volle rij liggen 5 bussen en auto's. Ik tel per rij, dat gaat sneller.
+- Bij 17 heb je er 1 te veel. Misschien telde je een huis dubbel.
+- 14 is 1 meer dan het laatste getal dat je zei.
+- Bij 15 heb je er 1 te veel. Misschien telde je een raketje dubbel.
+- Bij 16 mist er 1. Misschien liet je een auto staan.
+- Zo veel als 15 huizen en bomen staan er niet. Tel de volle rijen van 5 en dan de rest.
+- Er staan meer raketjes en sterren dan 10.
+- Bij 14 mist er 1. Misschien liet je een bus staan.
+- Er staan meer huizen en bomen dan 12.
+- Bij 13 heb je er 1 te veel. Misschien telde je een raketje dubbel.
+- Bij 12 heb je er 1 te veel. Misschien telde je een raketje dubbel.
+- Bij 12 heb je er 1 te veel. Misschien telde je een bal dubbel.
+- In elke volle rij liggen 5 ballen en blokken. Ik tel per rij, dat gaat sneller.
+- Bij 15 heb je er 1 te veel. Misschien telde je een bootje dubbel.
+- In elke volle rij liggen 5 bootjes en treintjes. Ik tel per rij, dat gaat sneller.
+- Bij 11 mist er 1. Misschien liet je een bal staan.
+- Er staan meer bootjes en treintjes dan 13.
+- Bij 14 heb je er 1 te veel. Misschien telde je een bal dubbel.
+- Bij 17 heb je er 1 te veel. Misschien telde je een bootje dubbel.
+- Er staan meer ballen en blokken dan 12.
+- Bij 14 mist er 1. Misschien liet je een bal staan.
+- Bij 19 heb je er 1 te veel. Misschien telde je een bootje dubbel.
+- Er staan meer bootjes en treintjes dan 17.
+- Bij 18 heb je er 1 te veel. Misschien telde je een bal dubbel.
+- Er staan meer bootjes en treintjes dan 18.
+- Er staan meer ballen en blokken dan 16.
+- Bij 15 heb je er 1 te veel. Misschien telde je een planeet 2 keer.
+- Er liggen meer auto's dan 11.
+- Bij 12 heb je er 1 te veel. Misschien telde je een huis 2 keer.
+- Bij 14 mist er 1. Misschien sloeg je een raketje over.
+- Er liggen meer satellieten dan 10.
+- 15 is 1 meer dan het laatste getal dat je zei.
+- Bij 17 mist er 1. Misschien sloeg je een boom over.
+- Er liggen meer kometen dan 17.
+- Er liggen meer ballonnen dan 18.
+- Bij 18 heb je er 1 te veel. Misschien telde je een bootje 2 keer.
+- Bij 15 mist er 1. Misschien sloeg je een ufo over.
+- Bij 12 mist er 1. Misschien sloeg je een bal over.
+- Er liggen meer bussen dan 16.
+- Bij 16 heb je er 1 te veel. Misschien telde je een ster 2 keer.
+- Bij 18 mist er 1. Misschien sloeg je een knikker over.
+- Bij 11 mist er 1. Misschien sloeg je een blok over.
+- Bij 12 mist er 1. Misschien liet je een raketje staan.
+- In elke volle rij liggen 5 raketjes. Ik tel per rij, dat gaat sneller.
+- Bij 13 heb je er 1 te veel. Misschien telde je een ster dubbel.
+- In elke volle rij liggen 5 sterren. Ik tel per rij, dat gaat sneller.
+- Bij 13 mist er 1. Misschien liet je een planeet staan.
+- In elke volle rij liggen 5 planeten. Ik tel per rij, dat gaat sneller.
+- Bij 12 heb je er 1 te veel. Misschien telde je een satelliet dubbel.
+- In elke volle rij liggen 5 satellieten. Ik tel per rij, dat gaat sneller.
+- Er staan meer ufo's dan 13.
+- In elke volle rij liggen 5 ufo's. Ik tel per rij, dat gaat sneller.
+- Bij 11 mist er 1. Misschien liet je een raketje staan.
+- Er staan meer sterren dan 12.
+- Bij 14 heb je er 1 te veel. Misschien telde je een planeet dubbel.
+- Bij 14 mist er 1. Misschien liet je een satelliet staan.
+- Er staan meer sterren dan 13.
+- Bij 12 heb je er 1 te veel. Misschien telde je een planeet dubbel.
+- Er staan meer satellieten dan 11.
+- Bij 13 heb je er 1 te veel. Misschien telde je een ufo dubbel.
+- Bij 17 mist er 1. Misschien liet je een raketje staan.
+- Bij 18 mist er 1. Misschien liet je een bus staan.
+- 18 is 1 meer dan het laatste getal dat je zei.
+- Er staan meer bootjes en treintjes dan 14.
+- Er staan meer huizen en bomen dan 18.
+- Er staan meer raketjes dan 17.
+- Er staan meer auto's en bussen dan 16.
+- Er staan meer ballen en blokken dan 18.
+- Bij 18 heb je er 1 te veel. Misschien telde je een bootje dubbel.
+- Bij 19 heb je er 1 te veel. Misschien telde je een huis dubbel.
+- Bij 17 heb je er 1 te veel. Misschien telde je een bus dubbel.
+- Er staan meer raketjes dan 18.
+- Bij 6 mist er 1. Misschien sloeg je een ufo over.
+- Er liggen meer ufo's dan 7.
+- Bij 17 heb je er 1 te veel. Misschien telde je een bal dubbel.
+- Er liggen meer ufo's dan 10.
+- 8 is 1 meer dan het laatste getal dat je zei.
+- Er staan meer huizen en bomen dan 17.
+- Bij 9 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Bij 5 mist er 1. Misschien sloeg je een ufo over.
+- Er staan meer bussen en auto's dan 18.
+- Bij 10 mist er 1. Misschien sloeg je een ufo over.
+- Bij 18 heb je er 1 te veel. Misschien telde je een raketje dubbel.
+- Er liggen meer ufo's dan 11.
+- Er staan meer huizen en bomen dan 16.
+- Bij 6 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Er liggen meer planeten dan 4.
+- Bij 12 mist er 1. Misschien sloeg je een ufo over.
+- Bij 10 heb je er 1 te veel. Misschien telde je een planeet 2 keer.
+- Bij 19 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- 7 is 1 meer dan het laatste getal dat je zei.
+- Bij 11 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Bij 20 heb je er 1 te veel. Misschien telde je een planeet 2 keer.
+- Bij 16 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Zo veel als 13 planeten liggen er niet.
+- Bij 19 mist er 1. Misschien sloeg je een ufo over.
+- Bij 8 heb je er 1 te veel. Misschien telde je een planeet 2 keer.
+- Bij 17 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Bij 13 heb je er 1 te veel. Misschien telde je een planeet 2 keer.
+- Bij 16 mist er 1. Misschien sloeg je een ufo over.
+- Zo veel als 7 planeten liggen er niet.
+- Er liggen meer planeten dan 14.
+- Bij 7 mist er 1. Misschien sloeg je een ufo over.
+- Bij 11 mist er 1. Misschien sloeg je een planeet over.
+- Bij 9 mist er 1. Misschien sloeg je een ufo over.
+- 17 is 1 meer dan het laatste getal dat je zei.
+- Bij 12 heb je er 1 te veel. Misschien telde je een ufo 2 keer.
+- Bij 13 mist er 1. Misschien sloeg je een planeet over.
+- Bij 18 mist er 1. Misschien sloeg je een ufo over.
+- Bij 23 mist er 1. Misschien liet je een raketje staan.
+- In elke volle rij liggen 10 raketjes en sterren. Ik tel per rij, dat gaat sneller.
+- Bij 28 mist er 1. Misschien liet je een planeet staan.
+- In elke volle rij liggen 10 planeten en kometen. Ik tel per rij, dat gaat sneller.
+- Bij 35 mist er 1. Misschien liet je een huis staan.
+- In elke volle rij liggen 10 huizen en bomen. Ik tel per rij, dat gaat sneller.
+- Bij 46 mist er 1. Misschien liet je een ufo staan.
+- In elke volle rij liggen 10 ufo's en satellieten. Ik tel per rij, dat gaat sneller.
+- Bij 49 mist er 1. Misschien liet je een bal staan.
+- In elke volle rij liggen 10 ballen en blokken. Ik tel per rij, dat gaat sneller.
+- 25 is 1 meer dan het laatste getal dat je zei.
+- Bij 31 mist er 1. Misschien liet je een auto staan.
+- In elke volle rij liggen 10 auto's en bussen. Ik tel per rij, dat gaat sneller.
+- Bij 36 heb je er 1 te veel. Misschien telde je een bootje dubbel.
+- In elke volle rij liggen 10 bootjes en treintjes. Ik tel per rij, dat gaat sneller.
+- Bij 27 heb je er 1 te veel. Misschien telde je een knikker dubbel.
+- In elke volle rij liggen 10 knikkers en ballonnen. Ik tel per rij, dat gaat sneller.
+- Bij 42 mist er 1. Misschien liet je een ster staan.
+- In elke volle rij liggen 10 sterren en planeten. Ik tel per rij, dat gaat sneller.
+- Bij 49 heb je er 1 te veel. Misschien telde je een satelliet dubbel.
+- In elke volle rij liggen 10 satellieten en raketjes. Ik tel per rij, dat gaat sneller.
+- Bij 40 heb je er 1 te veel. Misschien telde je een bus dubbel.
+- In elke volle rij liggen 10 bussen en auto's. Ik tel per rij, dat gaat sneller.
+- Bij 40 tel je alleen de volle rijen. Kijk ook naar de rij die niet vol is.
+- In elke volle rij liggen 10 kometen en ufo's. Ik tel per rij, dat gaat sneller.
+- Bij 29 heb je er 1 te veel. Misschien telde je een blok dubbel.
+- In elke volle rij liggen 10 blokken en ballen. Ik tel per rij, dat gaat sneller.
+- Bij 46 heb je er 1 te veel. Misschien telde je een ballon dubbel.
+- In elke volle rij liggen 10 ballonnen en knikkers. Ik tel per rij, dat gaat sneller.
+- Bij 32 mist er 1. Misschien liet je een boom staan.
+- In elke volle rij liggen 10 bomen en huizen. Ik tel per rij, dat gaat sneller.
+- Bij 48 heb je er 1 te veel. Misschien telde je een losse knikker 2 keer.
+- Bij 53 heb je er 1 te veel. Misschien telde je een losse knikker 2 keer.
+- Bij 57 mist er 1. Misschien ligt er een losse knikker die je niet meetelde.
+- Bij 63 mist er 1. Misschien ligt er een losse knikker die je niet meetelde.
+- Bij 72 heb je er 1 te veel. Misschien telde je een losse knikker 2 keer.
+- Bij 76 heb je er 1 te veel. Misschien telde je een losse appel 2 keer.
+- Bij 81 mist er 1. Misschien ligt er een losse appel die je niet meetelde.
+- Bij 88 heb je er 1 te veel. Misschien telde je een losse appel 2 keer.
+- Bij 92 mist er 1. Misschien ligt er een losse appel die je niet meetelde.
+- 48 is 1 meer dan het laatste getal dat je zei.
+- Bij 99 heb je er 1 te veel. Misschien telde je een losse appel 2 keer.
+- Bij 55 mist er 1. Misschien ligt er een losse ster die je niet meetelde.
+- Bij 70 heb je er 1 te veel. Misschien telde je een losse ster 2 keer.
+- Bij 74 heb je er 1 te veel. Misschien telde je een losse ster 2 keer.
+- Bij 47 mist er 1. Misschien ligt er een losse ster die je niet meetelde.
+- Bij 95 mist er 1. Misschien ligt er een losse ster die je niet meetelde.
+- Je staat bij 34. Welk nummer zeg je daarna?
+- 32 is kleiner dan 34, maar er hoort een groter nummer.
+- Je staat bij 42. Welk nummer zeg je daarna?
+- 44 is 1 huis te ver.
+- 21 is 1 huis te ver.
+- 41 is 1 huis te ver.
+- Je staat bij 40. Welk nummer zeg je daarna?
+- Je staat bij 23. Welk nummer zeg je daarna?
+- 25 is 1 huis te ver.
+- Je staat bij 30. Welk nummer zeg je daarna?
+- Je staat bij 20. Welk nummer zeg je daarna?
+- 40 is kleiner dan 49, maar er hoort een groter nummer.
+- 71 is 1 huis te ver.
+- Je staat bij 87. Welk nummer zeg je daarna?
+- Zo ver als 98 is het volgende huis niet.
+- 80 is kleiner dan 89, maar er hoort een groter nummer.
+- Het huis met 99 staat er al.
+- 70 is kleiner dan 79, maar er hoort een groter nummer.
+- Je staat bij 97. Welk nummer zeg je daarna?
+- Je staat bij 15. Welk getal zeg je vlak ervoor, als je terugtelt?
+- Zo ver terug als 12 hoef je niet.
+- Je staat bij 12. Welk getal zeg je vlak ervoor, als je terugtelt?
+- Het kaartje met 12 staat er al.
+- Je staat bij 17. Welk getal zeg je vlak ervoor, als je terugtelt?
+- 15 is 1 kaartje te ver terug.
+- Je staat bij 16. Welk getal zeg je vlak ervoor, als je terugtelt?
+- Het kaartje met 17 staat er al.
+- Je staat bij 14. Welk getal zeg je vlak ervoor, als je terugtelt?
+- Het kaartje met 15 staat er al.
+- Je staat bij 18. Welk getal zeg je vlak ervoor, als je terugtelt?
+- Het kaartje met 18 staat er al.
+- Zoek het getal bij het rode woord feest.
+- De stip ligt niet linksonder.
+- Van boven zie je niet rood, blauw, geel.
+- De roze kraal ligt al aan het eind. Zoek de kraal die daarna komt.
+- Een gele kraal komt niet na oranje.
+- Met een blauwe kraal gaat het patroon anders verder dan eerder in de ketting.
+- Een blauwe kraal past niet naast de lege plek: dan klopt het patroon niet meer.
+- Met paars, oranje, paars staat in het derde rijtje paars 2 keer.
+- Tegenover de lege plek ligt geen paarse kraal.
+- Het vlak tegenover het lege vlak is niet paars.
+- Op die plek komt in het patroon niet de zon.
+- In die rij staat op die plek geen gele kraal.
+- Groen ontbreekt niet in dit rijtje.
+- Rood ontbreekt niet in dit rijtje.
+- Met de rode bloem en de zonnebloem gaat het patroon niet verder.
+- Op die plek komt in het patroon niet het boek.

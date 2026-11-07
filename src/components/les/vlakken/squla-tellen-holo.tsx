@@ -29,10 +29,11 @@
 
 import { useEffect, useMemo, useRef, useState } from "react";
 import type { Vlakbasis } from "../soort";
-import { holoBasis, TX, WARM, WERELDKLEUR, type PhaserModule } from "../holo/basis";
+import { holoBasis, TX, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { voorwerpBeeld } from "../voorwerpen";
+import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
 import { FOTO, hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
 import s from "./squla-tellen.module.css";
 
@@ -58,6 +59,10 @@ export type TelVlakProps = {
   opgave: Telopgave | null;
   /** Hoeveel er samen geteld zijn (in de telvolgorde). */
   geteld?: number;
+  /** Bij de begeleide uitleg tikt het kind het volgende voorwerp aan. */
+  telActief?: boolean;
+  /** De naam van het aangestipte plaatje, inclusief lidwoord: "de appel". */
+  telNaam?: string;
   /** De zak licht op (samen tellen bij de zak). */
   zakLicht?: boolean;
   goed?: number;
@@ -181,6 +186,7 @@ interface TelScene {
   zetIndeling(o: Indeling | null): void;
   zetGeteld(n: number): void;
   zakLicht(aan: boolean): void;
+  wijs(index: number | null): void;
   goed(): void;
   fout(): void;
   kaarten(st: Kaartstand | null): void;
@@ -198,6 +204,12 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     items: Img[] = [];
     zakBox: Box | null = null;
     zakRing: Img | null = null;
+    /** Het rode rondje (Sara, 6 november 2026): wat Bliepo aanwijst of telt, in plaats van op te lichten. */
+    rondjes: ReturnType<typeof maakRondjes> | null = null;
+    rondjeTel = new Map<string, RondjeVak>();
+    rondjeWijs = new Map<string, RondjeVak>();
+    rondjeZak: RondjeVak | null = null;
+    zakImg: Img | null = null;
     ind: Indeling | null = null;
     geteld = 0;
     klokken: Klok[] = [];
@@ -304,6 +316,12 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.zakBox = null;
       this.zakRing?.destroy();
       this.zakRing = null;
+      this.rondjes?.vergeet();
+      this.rondjes = null;
+      this.rondjeTel = new Map();
+      this.rondjeWijs = new Map();
+      this.rondjeZak = null;
+      this.zakImg = null;
       this.geteld = 0;
       this.ind = o;
       if (oud) this.verdwijn(oud);
@@ -313,7 +331,9 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       const g = this.add.container(cx, cy);
       if (o.zak) {
         const z = this.add.container(o.zak.x - cx, o.zak.y - cy);
-        z.add(this.plaats(this.zakTex(), 0, 0));
+        const zakIm = this.plaats(this.zakTex(), 0, 0);
+        z.add(zakIm);
+        this.zakImg = zakIm;
         /* het bordje zit in de zak op (42..158, 112..196): het midden is 37 punten onder het midden van de zak */
         z.add(this.plaats(this.zakGetal(o.zak.getal), 0, 34));
         /* Een voorbeeldje van wat erin zit, klein op het bordje naast het getal (niet op het touwtje: dan telt een kind hem mee). */
@@ -329,6 +349,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         this.items.push(im);
       }
       this.groep = g;
+      this.rondjes = maakRondjes(this, g, this.rustig);
       this.druk(900);
       this.tover(g);
     }
@@ -362,9 +383,9 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         const im = this.items[o.volgorde[k]];
         if (!im) continue;
         const basis = (im.getData("sc") as number | undefined) ?? o.schaal / TX;
-        const p = o.plekken[o.volgorde[k]]?.p;
         const doe = () => {
-          this.flits(im, p, 420);
+          /* Het rondje komt precies waar het oplichten kwam: om het voorwerp dat Bliepo nu telt, 420 ms (ook bij rustig). */
+          if (o.plekken[o.volgorde[k]]?.p && FOTO.gloed === "moment") this.rondjeKort(o, k, 420);
           if (this.rustig) {
             im.setAlpha(0.4);
             return;
@@ -377,16 +398,55 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       }
     }
 
+    /** Een rondje om getelde voorwerp k voor `ms` milliseconden; elk voorwerp houdt zijn eigen tijd. */
+    rondjeKort(o: Indeling, k: number, ms: number) {
+      const vak = vakOm([this.items[o.volgorde[k]]].filter(Boolean));
+      if (!vak) return;
+      const sl = `tel-${k}`;
+      /* Altijd maar 1 rondje tegelijk (BOUWREGELS 7.8): het rondje van het vorige voorwerp gaat weg als het volgende komt (de stap is korter dan 420 ms). */
+      this.rondjeTel.clear();
+      this.rondjeTel.set(sl, vak);
+      this.ververs();
+      this.time.delayedCall(ms, () => {
+        if (this.ind !== o || this.rondjeTel.get(sl) !== vak) return;
+        this.rondjeTel.delete(sl);
+        this.ververs();
+      });
+    }
+
     zakLicht(aan: boolean) {
       this.zakRing?.destroy();
       this.zakRing = null;
       const o = this.ind;
-      if (aan && o?.zak) this.zakRing = this.selectieRing(o.zak.x, o.zak.y, 128, WARM);
+      const z = this.zakBox;
+      const im = this.zakImg;
+      /* De zak wordt aangewezen met een rondje (geen gloed meer). */
+      this.rondjeZak = aan && o?.zak && z && im ? { x: z.x, y: z.y, b: im.displayWidth, h: im.displayHeight } : null;
+      this.ververs();
+    }
+
+    /** De begeleide uitleg: het voorwerp dat het kind nu moet aantikken krijgt een rondje. */
+    wijs(index: number | null) {
+      const o = this.ind;
+      const im = o && index !== null ? this.items[o.volgorde[index]] : undefined;
+      const vak = im ? vakOm([im]) : null;
+      this.rondjeWijs = new Map(vak ? [[`wijs-${index}`, vak]] : []);
+      this.ververs();
+    }
+
+    /** Alle rondjes die nu moeten staan (getelde, aangewezen en de zak); wat al staat blijft staan. */
+    ververs() {
+      /* Wijst Bliepo het volgende voorwerp aan (het kind moet het aantikken), dan staat alleen dat rondje er. */
+      const wens = new Map<string, RondjeVak>(this.rondjeWijs.size ? this.rondjeWijs : this.rondjeTel);
+      if (this.rondjeZak) wens.set("zak", this.rondjeZak);
+      this.rondjes?.zet(wens);
     }
 
     goed() {
       const g = this.groep;
       if (!g) return;
+      this.rondjeTel = new Map();
+      this.ververs();
       this.druk(800);
       this.golf(490, 380);
       if (this.rustig) return;
@@ -523,7 +583,7 @@ function Turven({ aantal, van, stap }: { aantal: number; van: number; stap: numb
   );
 }
 
-export function SqulaTelVlak({ opgave, geteld = 0, zakLicht = false, goed = 0, fout = 0, memory = null, voorraad, meld, schaal }: TelVlakProps & Vlakbasis) {
+export function SqulaTelVlak({ opgave, geteld = 0, telActief = false, telNaam, zakLicht = false, goed = 0, fout = 0, memory = null, voorraad, meld, schaal }: TelVlakProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<TelScene>(schaal, maakTelScene);
   const voorraadSleutel = voorraad ? JSON.stringify(voorraad) : "";
   useEffect(() => {
@@ -555,6 +615,11 @@ export function SqulaTelVlak({ opgave, geteld = 0, zakLicht = false, goed = 0, f
   useEffect(() => {
     scene?.zakLicht(zakLicht);
   }, [scene, ind, zakLicht]);
+
+  const wijsIndex = telActief && ind && geteld < ind.volgorde.length ? geteld : null;
+  useEffect(() => {
+    scene?.wijs(wijsIndex);
+  }, [scene, ind, wijsIndex]);
 
   useEffect(() => {
     if (scene && goed > 0) scene.goed();
@@ -594,6 +659,20 @@ export function SqulaTelVlak({ opgave, geteld = 0, zakLicht = false, goed = 0, f
         </div>
       ))}
       {memory && <Memory key={memory.id} memory={memory} scene={scene} meld={meld} />}
+      {telActief && ind && geteld < ind.volgorde.length && (() => {
+        const p = ind.plekken[ind.volgorde[geteld]];
+        const maat = Math.max(96 * ind.schaal, 44 / schaal);
+        return <button
+          key={`${ind.id}-${geteld}`}
+          type="button"
+          ref={(knop) => { if (knop) knop.focus({ preventScroll: true }); }}
+          className={s.telknop}
+          style={{ left: p.x - maat / 2, top: p.y - maat / 2, width: maat, height: maat }}
+          aria-label={telNaam ? `Tel ${telNaam} met de kring` : "Tel verder"}
+          data-ding={`tel-${geteld}`}
+          onClick={() => meld({ soort: "uitlegTel", index: geteld })}
+        />;
+      })()}
     </div>
   );
 }

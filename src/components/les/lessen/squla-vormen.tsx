@@ -31,8 +31,14 @@
  *  - de vormen met een gezichtje zijn effen vormen.
  * Geen kaders en geen kaartjes: alles staat los in de ruimte. Goed of fout
  * laat Bliepo zien met de vaste hulp (squla-hulp.ts) en gloed op het moment.
+ *
+ * Hulp zoals Synthesis (4 november 2026, BOUWREGELS 5.1 en 5.10): goed = kort en door;
+ * eerste fout = een korte reactie op wat het kind koos, met waar het kan een hint in beeld
+ * (het patroon, de buren van de lege plek of het rijtje licht op); tweede fout = Bliepo laat
+ * het goede antwoord zien en zegt het, en het kind gaat door. Geen pauze.
  */
 
+import { krijgtVervolgvraag, isBegeleideUitleg, bevestig, zetSynthesisHulp } from "./squla-uitleg";
 import type { ComponentType } from "react";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
@@ -75,6 +81,9 @@ function tikZin(st: Stand): string[] {
   st.tikUitgelegd = true;
   return ["Tik op je antwoord."];
 }
+
+/** Bij goed alleen een korte bevestiging (Sara, 4 november): het waarom zit in het beeld. */
+const zegGoed = (l: Lesgids, ..._zinnen: string[]) => l.zeg(bevestig());
 
 const kw = (k: Kleur) => KLEURWOORD[k][0];
 const kwb = (k: Kleur) => KLEURWOORD[k][1];
@@ -154,35 +163,57 @@ type Keuzevraag = {
   keuzes: Keuze[];
   goed: string;
   vraag: string[];
+  /** Tijdens samen oefenen is deze aanwijzing meteen de antwoordvraag. */
+  vraagNaNee?: string[];
   goedZin: string[];
   samen: (l: Lesgids) => Promise<void>;
   tip: string[];
+  /** Eerste fout: wat Bliepo zegt over de gekozen keuze (de tip volgt vanzelf). Zonder: "<keuze> past hier niet." */
+  reactie?: (gekozen: string) => string[];
+  /** Eerste fout: dit licht in de tekening op (de hint in beeld). */
+  hint?: string[];
+  /** De tip herhaalt de vraag met andere woorden: zeg hem na een fout niet (BOUWREGELS 3.23); `reactie` is dan genoeg. */
+  zonderTip?: boolean;
 };
 
 function keuzevraag(q: Keuzevraag): Vraag {
   return async (l, st) => {
     const beeld: Beeld = { id: q.id, delen: [...q.beeld, ...keuzeDelen(q.keuzes)] };
     const vraag = [...q.vraag, ...tikZin(st)];
+    const vraagNaNee = isBegeleideUitleg(l) ? q.vraagNaNee : undefined;
+    let nFout = 0;
     return squlaVraag<string>(l, {
-      toon: () => toon(l, st, q.id, { beeld }),
-      vraag,
+      reactie: (x) => [...(q.reactie ? q.reactie(x) : [`${Hoofd((q.keuzes.find((k) => k.id === x)?.noem ?? "dat").toLowerCase())} past hier niet.`]), ...(vraagNaNee || q.zonderTip ? [] : q.tip)],
+      toonAntwoord: async () => {
+        goedBeeld(l, st, [q.goed]);
+        await l.zeg(...q.goedZin);
+        await l.wacht(300);
+      },
+      toon: () => {
+        nFout = 0;
+        toon(l, st, q.id, { beeld });
+      },
+      vraag: vraagNaNee ?? vraag,
       antwoord: () => tik(l),
       isGoed: (x) => x === q.goed,
       noem: (x) => q.keuzes.find((k) => k.id === x)?.noem ?? "Dat",
       goed: async () => {
         goedBeeld(l, st, [q.goed]);
-        await l.zeg("Goed zo!", ...q.goedZin);
+        await zegGoed(l, ...q.goedZin);
       },
       fout: (x) => {
         foutBeeld(l, st);
         zet(l, { licht: [x] });
-        setTimeout(() => zet(l, { licht: [] }), 700);
+        /* Na de eerste fout blijft de hint in beeld staan. */
+        const hint = ++nFout === 1 && q.hint ? q.hint : [];
+        setTimeout(() => zet(l, { licht: hint }), 700);
       },
       samen: async () => {
         await q.samen(l);
         zet(l, { licht: [] });
       },
-      tip: q.tip,
+      // De aanwijzing wordt al bij elke antwoordpoging gesteld.
+      tip: vraagNaNee ? [] : q.tip,
       testAntwoord: q.goed,
     });
   };
@@ -210,7 +241,7 @@ function squlaVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean> {
     v.toon?.();
     return Promise.resolve(true);
   }
-  return echteSqulaVraag(l, v);
+  return echteSqulaVraag(l, { synthesis: true, ...v });
 }
 
 type LesOpties = {
@@ -239,12 +270,15 @@ function les(t: LesOpties): Lesdraaiboek {
     kaarttekening: t.kaart,
     voorwerpen: t.voorwerpen,
     async speel(l) {
+      zetSynthesisHulp(l);
       const st: Stand = { huidig: t.begin?.id ?? "", goed: 0, fout: 0, hint: 0, tikUitgelegd: false, sleepUitgelegd: false };
       l.vlak<VormenProps>(SqulaVormenVlak, { beeld: t.begin ?? null });
       if (t.begin) speelLesgeluid("verschijn");
-      await squlaBegin(l, {
+      const voorbeeldAfgerond = await squlaBegin(l, {
         welkom: t.welkom,
         uitleg: () => t.uitleg(l, st),
+        voordoen: true,
+        samen: () => t.vragen[0](l, st),
         /* Het beginscherm laat de eerste vraag van de les zien (BOUWREGELS 4.1). */
         voorbeeld: () => {
           /* De uitleg-vlaggen horen bij de echte eerste vraag, niet bij het voorbeeld. */
@@ -261,7 +295,9 @@ function les(t: LesOpties): Lesdraaiboek {
       /* Na het voorbeeld tekent de eerste vraag zijn beeld zelf weer opnieuw. */
       st.huidig = "";
       let fouten = 0;
-      for (const v of t.vragen) if (!(await v(l, st))) fouten++;
+      // Kleuren 1 begint met 16 stukjes; het Nee-voorbeeld heeft slechts 4 stukjes.
+      const eersteAlBeantwoord = voorbeeldAfgerond && t.id !== "squla-vormen-kleuren-1";
+      for (const v of t.vragen.slice(eersteAlBeantwoord ? 1 : 0)) if (!(await v(l, st))) fouten++;
       zet(l, { ...LEEG, beeld: null, ketting: null, puzzel: null });
       await squlaEind(l, fouten, t.eind);
     },
@@ -306,7 +342,7 @@ const namen = (lijst: string[]) => lijst.join(", ");
 /** Bliepo laat het patroon zien: eerst één keer, dan begint het opnieuw. */
 async function toonPatroon(l: Lesgids, eenheid: string[], ids: (i: number) => string, aantal: number) {
   const n = eenheid.length;
-  await l.zeg("We kijken samen naar het patroon.");
+  await l.zeg("Ik laat het patroon zien.");
   zet(l, { licht: Array.from({ length: n }, (_, i) => ids(i)) });
   await l.zeg(`Kijk: ${namen(eenheid)}.`);
   const tweede = Array.from({ length: Math.min(n, aantal - n) }, (_, i) => ids(n + i));
@@ -349,10 +385,26 @@ function kraalVraag(id: string, eenheid: Kleur[], lengte: number, soort: "na" | 
         await l.zeg(slot);
       } else {
         zet(l, { licht: [`r-${lengte - 1}`] });
-        await l.zeg(slot);
+        // De antwoordvraag volgt hierna; stel die niet alvast zonder antwoordknoppen.
+        if (!krijgtVervolgvraag(l)) await l.zeg(slot);
       }
     },
-    tip: ["Kijk naar het patroon.", "Het komt steeds terug."],
+    reactie: (x) => [
+      soort === "na"
+        ? x === rij[lengte - 1]
+          ? `De ${kwb(x as Kleur)} kraal ligt al aan het eind. Zoek de kraal die daarna komt.`
+          : `Een ${kwb(x as Kleur)} kraal komt niet na ${kw(rij[lengte - 1]!)}.`
+        : soort === "gat"
+          ? `Een ${kwb(x as Kleur)} kraal past niet naast de lege plek: dan klopt het patroon niet meer.`
+          : `Met een ${kwb(x as Kleur)} kraal gaat het patroon anders verder dan eerder in de ketting.`,
+    ],
+    hint: soort === "gat" ? [`r-${gat - 1}`, `r-${gat + 1}`] : [`r-${lengte - 1}`],
+    tip:
+      soort === "gat"
+        ? [`Links van de lege plek ligt ${kw(rij[gat - 1]!)}${rij[gat + 1] ? `, rechts ${kw(rij[gat + 1]!)}` : ""}.`, "Zoek het stuk van het patroon dat ertussen past."]
+        : soort === "na"
+          ? [`De laatste kraal is ${kw(rij[lengte - 1]!)}.`, `Zoek de ${kwb(rij[lengte - 1]!)} kraal eerder in de ketting en kijk welke kraal daarna kwam.`]
+          : [`De laatste kraal is ${kw(rij[lengte - 1]!)}.`, "Kijk naar het begin van de ketting en zoek het stukje dat steeds terugkomt."],
   });
 }
 
@@ -373,14 +425,39 @@ function kettingVraag(id: string, eenheid: Kleur[], getoond: number, losse: Kleu
     });
     const eerste = !st.sleepUitgelegd;
     st.sleepUitgelegd = true;
+    let beantwoord = false;
+    let nFout = 0;
     return squlaVraag<string[]>(l, {
+      reactie: (x) => {
+        const i = x.findIndex((k, p) => k !== doel[p]);
+        const eerstGoed = i < 0 ? doel.length : i;
+        return [
+          eerstGoed === 0 ? `Je legde als eerste een ${kwb(x[0] as Kleur)} kraal. Na ${kw(rij[getoond - 1])} komt iets anders.` : eerstGoed === 1 ? `De ${kwb(x[0] as Kleur)} kraal klopt. Nu komt de volgende kraal.` : `De eerste ${eerstGoed} kralen kloppen. Nu komt de volgende kraal.`,
+          `Zoek in de ketting waar ${kw(rij[getoond - 1])} eerder lag en kijk welke kraal daarna kwam.`,
+        ];
+      },
+      toonAntwoord: async () => {
+        /* De hele ketting, met de drie kralen op hun plek. */
+        toon(l, st, `${id}-antwoord`, { beeld: { id: `${id}-antwoord`, delen: kralenRij(herhaal(eenheid, getoond + 3)) } });
+        zet(l, { licht: doel.map((_, i) => `r-${getoond + i}`) });
+        await l.zeg(`Het patroon gaat verder: ${namen(doel.map(kw))}.`);
+        zet(l, { licht: [] });
+        await l.wacht(300);
+      },
       toon: () => {
+        nFout = 0;
         ronde++;
         toon(l, st, id, { beeld });
         zet(l, { ketting: ketting() });
       },
       vraag: ["Maak de ketting langer.", "Kijk goed naar het patroon.", ...(eerste ? ["Sleep de kralen naar de lege plekken."] : [])],
       antwoord: async () => {
+        /* Een nieuwe poging: de kralen gaan eerst terug naar beneden. */
+        if (beantwoord) {
+          ronde++;
+          zet(l, { ketting: ketting() });
+        }
+        beantwoord = true;
         zet(l, { actief: true });
         const g = await l.wachtOpVlak<{ soort: string; ids: string[] }>("ketting");
         zet(l, { actief: false });
@@ -390,16 +467,20 @@ function kettingVraag(id: string, eenheid: Kleur[], getoond: number, losse: Kleu
       noem: (x) => Hoofd(namen(x.map((k) => kw(k as Kleur)))),
       goed: async () => {
         goedBeeld(l, st, []);
-        await l.zeg("Goed zo!", `Het patroon gaat verder: ${namen(doel.map(kw))}.`);
+        await zegGoed(l, `Het patroon gaat verder: ${namen(doel.map(kw))}.`);
       },
-      fout: () => foutBeeld(l, st),
+      fout: () => {
+        foutBeeld(l, st);
+        /* Eerste fout: de laatste kraal van de ketting licht op. */
+        if (++nFout === 1) zet(l, { licht: [`r-${getoond - 1}`] });
+      },
       samen: async () => {
         await toonPatroon(l, eenheid.map(kw), (i) => `r-${i}`, getoond);
         zet(l, { licht: [`r-${getoond - 1}`] });
-        await l.zeg(`De ketting stopt bij ${kw(rij[getoond - 1])}.`, `Wat komt er na ${kw(rij[getoond - 1])}?`);
+        await l.zeg(`De ketting stopt bij ${kw(rij[getoond - 1])}.`, ...(krijgtVervolgvraag(l) ? [] : [`Wat komt er na ${kw(rij[getoond - 1])}?`]));
         zet(l, { licht: [] });
       },
-      tip: ["Kijk naar de laatste kraal.", "Wat komt er daarna in het patroon?"],
+      tip: [`De laatste kraal is ${kw(rij[getoond - 1])}.`, "Zoek wat er daarna in het patroon komt."],
       testAntwoord: `k-${doel[0]}`,
     });
   };
@@ -425,9 +506,11 @@ function pijlVraag(id: string, eenheid: string[], lengte: number, gat: number, k
     samen: async (l) => {
       await toonPatroon(l, eenheid.map(ding), (i) => `r-${i}`, lengte);
       zet(l, { licht: ["pijl"] });
-      await l.zeg("Kijk wat er vóór de pijl staat.", "Wat komt daarna in het patroon?");
+      await l.zeg("Kijk wat er vóór de pijl staat.");
     },
-    tip: ["Kijk naar het patroon.", "Wat komt er steeds na elkaar?"],
+    reactie: (x) => [`${Hoofd(deDing(x))} hoort in het patroon niet op die plek.`],
+    hint: eenheid.map((_, i) => `r-${i}`),
+    tip: gat > 0 ? [`Voor de pijl ligt ${deDing(rij[gat - 1])}.`, "Kijk welk ding in het patroon daarna komt."] : ["Kijk naar de dingen na de pijl.", "Kijk welk ding in het patroon ervoor komt."],
   });
 }
 
@@ -451,9 +534,11 @@ function vormRijVraag(id: string, rij: VK[], goed: VK, keuzes: VK[], eenheid: VK
     samen: async (l) => {
       await toonPatroon(l, eenheid.map(([v]) => VORM[v][1]), (i) => `r-${i}`, rij.length);
       zet(l, { licht: [`r-${rij.length - 1}`] });
-      await l.zeg("Kijk naar de laatste vorm.", "Wat komt er daarna?");
+      await l.zeg("Kijk naar de laatste vorm.");
     },
-    tip: ["Kijk naar het patroon.", "Het begint steeds opnieuw."],
+    reactie: (x) => [`Je koos ${VORM[x as VormNaam][0]} ${VORM[x as VormNaam][1]}. Na de laatste vorm volgt in het patroon een andere vorm.`],
+    hint: eenheid.map((_, i) => `r-${i}`),
+    tip: [`De laatste vorm is ${deVorm(rij[rij.length - 1][0], rij[rij.length - 1][1])}.`, "Kijk welke vorm eerder na die vorm kwam."],
   });
 }
 
@@ -461,12 +546,13 @@ function vormRijVraag(id: string, rij: VK[], goed: VK, keuzes: VK[], eenheid: VK
 
 function puzzelVraag(id: string, plaatje: PuzzelPlaatje, n: number, opties: { vraag?: string[]; goedZin?: string[] } = {}): Vraag {
   return async (l, st) => {
-    const puzzel: Puzzel = { id, plaatje, n };
+    const inUitleg = isBegeleideUitleg(l);
+    const puzzel: Puzzel = { id, plaatje, n: inUitleg ? 2 : n };
     const eerste = !st.sleepUitgelegd;
     st.sleepUitgelegd = true;
     return squlaVraag<boolean>(l, {
       toon: () => toon(l, st, id, { puzzel }),
-      vraag: [...(opties.vraag ?? ["Kijk goed naar het plaatje.", "Maak de puzzel."]), ...(eerste ? ["Sleep elk stukje naar zijn plek.", "Of tik op een stukje en dan op zijn plek."] : [])],
+      vraag: [...(inUitleg ? ["We beginnen met 4 puzzelstukjes. Kijk naar de kleur en de rand van een stukje. Zo vind je waar het past."] : opties.vraag ?? ["Kijk goed naar het plaatje.", "Maak de puzzel."]), ...(eerste ? ["Sleep elk stukje naar zijn plek.", "Of tik op een stukje en dan op zijn plek."] : [])],
       antwoord: async () => {
         let mis = 0;
         let wacht = l.wachtOpVlak<{ soort: string }>(["puzzelKlaar", "puzzelMis"]);
@@ -485,9 +571,11 @@ function puzzelVraag(id: string, plaatje: PuzzelPlaatje, n: number, opties: { vr
       isGoed: () => true,
       noem: () => "Dat",
       goed: async () => {
-        await l.zeg("Goed zo!", ...(opties.goedZin ?? ["De puzzel is af."]));
+        await zegGoed(l, ...(opties.goedZin ?? ["De puzzel is af."]));
       },
       samen: async () => undefined,
+      /* De puzzel kan niet fout gaan: een stukje op de verkeerde plek springt terug en na drie keer wijst Bliepo de plek aan. */
+      toonAntwoord: async () => undefined,
       tip: ["Kijk goed naar de randjes."],
       testAntwoord: "stuk-0",
     });
@@ -533,15 +621,21 @@ function onderRijVraag(id: string, boven: Kleur[][], goed: Kleur[], keuzes: Kleu
     keuzes: ks,
     goed: goedId,
     vraag: ["De onderste rij is nog leeg.", "Hoe ziet de onderste rij eruit?"],
-    goedZin: ["In elk rijtje staat elke kleur nu één keer."],
+    goedZin: ["In elk rijtje staat elke kleur nu 1 keer."],
     samen: async (l) => {
       await l.zeg("Kijk naar de rijtjes van boven naar beneden.");
       zet(l, { licht: ["b-0-0", "b-1-0"] });
-      await l.zeg(`Hier staan ${kw(boven[0][0])} en ${kw(boven[1][0])}.`, "Elke kleur komt in elk rijtje één keer voor.", "Welke kleur mist hier nog?");
+      await l.zeg(`Hier staan ${kw(boven[0][0])} en ${kw(boven[1][0])}.`, "Elke kleur mag 1 keer in dit rijtje staan.", "Zoek de kleur die er nog niet staat.");
       zet(l, { licht: [] });
-      await l.zeg("Kijk zo ook naar de andere rijtjes.");
+      await l.zeg("Doe dat ook bij de andere rijtjes. Zo vind je de kleuren voor de lege plekken.");
     },
-    tip: ["Kijk naar elk rijtje van boven naar beneden.", "Welke kleur mist er?"],
+    reactie: (x) => {
+      const gekozen = keuzes[Number(x.slice(3))];
+      const dubbel = gekozen.findIndex((k, i) => k === boven[0][i] || k === boven[1][i]);
+      const rijtje = ["eerste", "tweede", "derde"][dubbel] ?? "rijtje";
+      return [dubbel >= 0 ? `Met ${namen(gekozen.map(kw))} staat in het ${rijtje} rijtje ${kw(gekozen[dubbel])} 2 keer.` : `Met ${namen(gekozen.map(kw))} klopt het niet met de rijtjes erboven.`];
+    },
+    tip: ["Elke kleur staat 1 keer in elk rijtje.", `Het eerste rijtje heeft ${kw(boven[0][0])} en ${kw(boven[1][0])}. Kijk welke kleur daar mist.`],
   });
 }
 
@@ -561,9 +655,11 @@ function spiegelVraag(id: string, rooster: (Kleur | null)[][], keuzes: Kleur[]):
       zet(l, { licht: ["b-0-0", "b-2-2"] });
       await l.zeg(`Hier ${kw(rooster[0][0]!)}, en daar ook ${kw(rooster[2][2]!)}.`, "Tegenover elkaar staat dezelfde kleur.");
       zet(l, { licht: ["b-2-0", "b-0-2"] });
-      await l.zeg("Welke kleur staat er tegenover de lege plek?");
+      await l.zeg("Kijk nu naar de hoek tegenover de lege plek.");
     },
-    tip: ["Kijk naar de hoek tegenover de lege plek."],
+    reactie: (x) => [`Tegenover de lege plek ligt geen ${kwb(x as Kleur)} kraal.`],
+    hint: ["b-0-2"],
+    tip: ["Tegenover elkaar ligt dezelfde kleur.", "Kijk welke kleur in de hoek tegenover de lege plek ligt."],
   });
 }
 
@@ -589,7 +685,7 @@ function honingVraag(id: string, midden: Kleur, rond: (Kleur | null)[], keuzes: 
     beeld: delen,
     keuzes: ks,
     goed,
-    vraag: ["Eén vlak heeft nog geen kleur.", "Welke kleur hoort in het lege vlak?"],
+    vraag: ["1 vlak heeft nog geen kleur.", "Welke kleur hoort in het lege vlak?"],
     goedZin: [`Tegenover het lege vlak staat ${kw(goed)}.`],
     samen: async (l) => {
       await l.zeg("Kijk naar de vlakken die tegenover elkaar liggen.");
@@ -598,9 +694,11 @@ function honingVraag(id: string, midden: Kleur, rond: (Kleur | null)[], keuzes: 
         await l.zeg(`Hier ${kw(rond[i]!)}, en daar ook ${kw(rond[(i + 3) % 6]!)}.`);
       }
       zet(l, { licht: paar(leeg) });
-      await l.zeg("Tegenover elkaar staat dezelfde kleur.", "Welke kleur ligt er tegenover het lege vlak?");
+      await l.zeg("Tegenover elkaar staat dezelfde kleur.", "Kijk nu naar het vlak tegenover het lege vlak.");
     },
-    tip: ["Kijk naar het vlak tegenover het lege vlak."],
+    reactie: (x) => [`Het vlak tegenover het lege vlak is niet ${kw(x as Kleur)}.`],
+    hint: [`h-${(leeg + 3) % 6}`],
+    tip: ["Zoek het vlak dat precies tegenover het lege vlak ligt.", "Kijk welke kleur dat vlak heeft."],
   });
 }
 
@@ -633,9 +731,11 @@ function dingRoosterVraag(id: string, rijen: (string | null)[][], pijl: [number,
       zet(l, { licht: ids(1) });
       await l.zeg("In de volgende rij komt hetzelfde terug.", "Maar de rij begint ergens anders.");
       zet(l, { licht: [] });
-      await l.zeg(...(pijl ? ["Kijk naar de plek bij de pijl.", "Ga in het patroon verder vanaf het laatste ding dat er al ligt."] : ["Wat komt er in het patroon na het laatste ding?"]));
+      await l.zeg(...(pijl ? ["Kijk naar de plek bij de pijl.", "Ga in het patroon verder vanaf het laatste ding dat er al ligt."] : ["Zoek het ding dat in het patroon na het laatste ding komt."]));
     },
-    tip: ["Kijk naar de volgorde in de bovenste rij.", "Die komt steeds terug."],
+    reactie: (x) => [`Op die plek komt in het patroon niet ${deDing(x)}.`],
+    hint: ids(0),
+    tip: [`De bovenste rij begint met ${deDing(eenheid[0])}.`, "Zoek het stukje dat steeds terugkomt."],
   });
 }
 
@@ -663,11 +763,13 @@ function schuifPlankVraag(id: string, eenheid: Kleur[], rijen: number, gevuld: n
       zet(l, { licht: rijIds(0) });
       await l.zeg(`Kijk naar de bovenste rij: ${namen(eenheid.map(kw))}.`);
       zet(l, { licht: rijIds(1) });
-      await l.zeg("In elke rij komen de kleuren in dezelfde volgorde.", "Alleen schuift alles één plekje op.");
+      await l.zeg("In elke rij komen de kleuren in dezelfde volgorde.", "Alleen schuift alles 1 plekje op.");
       zet(l, { licht: Array.from({ length: gevuld }, (_, i) => `b-${laatste}-${i}`) });
-      await l.zeg(`In de onderste rij staat ${namen(rooster[laatste].slice(0, gevuld).map((k) => kw(k!)))}.`, "Wat komt er daarna?");
+      await l.zeg(`In de onderste rij staat ${namen(rooster[laatste].slice(0, gevuld).map((k) => kw(k!)))}.`);
     },
-    tip: ["Kijk naar de volgorde in de bovenste rij."],
+    reactie: (x) => [`In die rij staat op die plek geen ${kwb(x as Kleur)} kraal.`],
+    hint: rijIds(0),
+    tip: [`De bovenste rij begint met ${kw(eenheid[0])}.`, "Elke rij schuift 1 plekje op."],
   });
 }
 
@@ -695,9 +797,11 @@ function kolomVraag(id: string, cyclus: Kleur[], start: Kleur[], leeg: number[],
       zet(l, { licht: kolIds(0) });
       await l.zeg("Kijk naar het eerste rijtje, van boven naar beneden.", `${Hoofd(namen(rooster.map((r) => kw(r[0]!))))}.`, "De kleuren komen steeds in dezelfde volgorde.");
       zet(l, { licht: kolIds(pijlKol, 1) });
-      await l.zeg(`Onder de pijl staat ${namen(rooster.slice(1).map((r) => kw(r[pijlKol]!)))}.`, `Welke kleur komt er in de volgorde vóór ${kw(rooster[1][pijlKol]!)}?`);
+      await l.zeg(`Onder de pijl staat ${namen(rooster.slice(1).map((r) => kw(r[pijlKol]!)))}.`);
     },
-    tip: ["Kijk naar het rijtje onder de pijl."],
+    reactie: (x) => [`${Hoofd(kw(x as Kleur))} ontbreekt niet in dit rijtje.`],
+    hint: kolIds(pijlKol, 1),
+    tip: ["Onder de pijl staan de andere kleuren van dit rijtje.", "Kijk welke kleur van het patroon daar ontbreekt."],
   });
 }
 
@@ -722,11 +826,12 @@ function draaiVraag(id: string, kleur: Kleur, begin: number, keuzes: number[]): 
       zet(l, { licht: ["r-0", "r-1", "r-2", "r-3"] });
       await l.zeg("Kijk: de vorm draait steeds een stukje verder.");
       zet(l, { licht: ["r-0", "r-4"] });
-      await l.zeg("Deze twee zijn hetzelfde.", "Na vier keer draaien begint het opnieuw.");
+      await l.zeg("Deze 2 zijn hetzelfde.", "Na 4 keer draaien begint het opnieuw.");
       zet(l, { licht: ["r-1"] });
-      await l.zeg("Welke kwam er na de eerste?");
+      await l.zeg("Kijk nu naar wat er na de eerste komt.");
     },
-    tip: ["De rij komt steeds in dezelfde volgorde terug."],
+    reactie: (x) => [`Je koos het plaatje dat open is aan de ${OPEN[Number(x.slice(1))]}. Zo draait de vorm hier niet verder.`],
+    tip: [`De laatste vorm is open aan de ${OPEN[draai[draai.length - 1]]}.`, "Kijk hoe de vorm steeds een stukje verder draait."],
   });
 }
 
@@ -761,15 +866,20 @@ function bloembakVraag(id: string, rij: string[], goed: [string, string], keuzes
     beeld: delen,
     keuzes: ks,
     goed: goedId,
-    vraag: ["Er moeten nog twee bloemen in de bak.", "Welke twee horen erbij?"],
+    vraag: ["Er moeten nog 2 bloemen in de bak.", "Welke 2 horen erbij?"],
     goedZin: [`Eerst ${deDing(goed[0])}, dan ${deDing(goed[1])}.`],
     samen: async (l) => {
       zet(l, { licht: om });
       await l.zeg(`Kijk: om en om staat er een ${ding(rij[0])}.`);
       zet(l, { licht: tussenIds });
-      await l.zeg(`Daartussen staat steeds iets anders: ${namen(rij.filter((x) => x !== rij[0]).map(ding))}.`, "Welke bloem komt er daarna?");
+      await l.zeg(`Daartussen staat steeds iets anders: ${namen(rij.filter((x) => x !== rij[0]).map(ding))}.`, "Zo gaat het door in de hele bak.");
     },
-    tip: [`Om en om staat er een ${ding(rij[0])}.`],
+    reactie: (x) => {
+      const [a, b] = keuzes[Number(x.slice(1))];
+      return [`Met ${deDing(a)} en ${deDing(b)} gaat het patroon niet verder.`];
+    },
+    hint: om,
+    tip: [`Om en om staat er een ${ding(rij[0])}.`, "Kijk wat er steeds tussen die bloemen staat."],
   });
 }
 
@@ -847,7 +957,7 @@ function opRij(id: string, naam: string, maten: number[], plank = false): Deel[]
   });
 }
 
-function sceneVraag(id: string, scenes: Scene[], goed: string, vraag: string[], goedZin: string[], uitleg: string): Vraag {
+function sceneVraag(id: string, scenes: Scene[], goed: string, vraag: string[], goedZin: string[], uitleg: string, opdrachtNaNee?: string, hint?: string): Vraag {
   const keuzes: Keuze[] = scenes.map((sc, i) => ({
     id: sc.id,
     x: SCENE_X[i],
@@ -864,14 +974,18 @@ function sceneVraag(id: string, scenes: Scene[], goed: string, vraag: string[], 
     keuzes,
     goed,
     vraag,
+    vraagNaNee: opdrachtNaNee ? [opdrachtNaNee] : undefined,
+    reactie: (x) => [scenes.find((sc) => sc.id === x)?.zeg || "Dat plaatje klopt nog niet.", ...(hint ? [hint] : [])],
+    zonderTip: true,
     goedZin,
     samen: async (l) => {
-      await l.zeg("We kijken samen naar elk plaatje.");
+      await l.zeg("Ik kijk met je mee naar elk plaatje.");
       await wijs(
         l,
         scenes.filter((sc) => sc.id !== goed).map((sc) => [[sc.id], sc.zeg]),
       );
-      await l.zeg(uitleg);
+      // Bij de eerste opruimstap volgt deze tekst meteen als tikopdracht.
+      if (!opdrachtNaNee || !krijgtVervolgvraag(l)) await l.zeg(uitleg);
     },
     tip: [uitleg],
   });
@@ -880,7 +994,8 @@ function sceneVraag(id: string, scenes: Scene[], goed: string, vraag: string[], 
 /** "Op welk plaatje zie je alleen …?" */
 function alleenVraag(id: string, wat: string, scenes: [string[], string][], goed: number): Vraag {
   const sc: Scene[] = scenes.map(([items, zeg], i) => ({ id: `s${i}`, delen: opGrond(`s${i}`, items), zeg }));
-  return sceneVraag(id, sc, `s${goed}`, ["Help je mee opruimen?", `Op welk plaatje zie je alleen ${DING[wat][2]}?`], [`Daar liggen alleen ${DING[wat][2]}.`], `Zoek het plaatje met alleen ${DING[wat][2]}.`);
+  const uitleg = `Zoek het plaatje met alleen ${DING[wat][2]}.`;
+  return sceneVraag(id, sc, `s${goed}`, ["Help je mee opruimen?", `Op welk plaatje zie je alleen ${DING[wat][2]}?`], [`Daar liggen alleen ${DING[wat][2]}.`], uitleg, id === "o-1" ? uitleg : undefined, "Op het goede plaatje ligt niets anders erbij.");
 }
 
 /** "… hoort/horen op een plek. Op welk plaatje is dat goed?" */
@@ -949,7 +1064,7 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
           toon(l, st, id, { beeld });
           zet(l, { uit: [...gevonden] });
         },
-        vraag: ronde === 0 ? ["Wat hoort bij elkaar?", "Tik op twee plaatjes die bij elkaar horen."] : ["Zoek nog twee plaatjes die bij elkaar horen."],
+        vraag: ronde === 0 ? ["Wat hoort bij elkaar?", "Tik op 2 plaatjes die bij elkaar horen."] : ["Zoek nog 2 plaatjes die bij elkaar horen."],
         antwoord: async () => {
           for (;;) {
             zetTestAntwoord(eerste.id);
@@ -966,10 +1081,19 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
         },
         isGoed: ([a, b]) => soortVan(a) === soortVan(b),
         noem: () => "Die twee",
+        reactie: ([a, b]) => [`Je koos ${soortNaam[soortVan(a)]} en ${soortNaam[soortVan(b)]}. Dat zijn 2 verschillende soorten.`, "Zoek 2 plaatjes waar allebei hetzelfde soort ding op staat."],
+        toonAntwoord: async () => {
+          /* Bliepo wijst twee plaatjes aan die wel bij elkaar horen. */
+          gevonden.push(eerste.id, partner.id);
+          zet(l, { licht: [eerste.id, partner.id] });
+          await l.zeg(`Deze 2 horen bij elkaar. Dat zijn allebei ${soortNaam[eerste.soort]}.`);
+          zet(l, { licht: [], uit: [...gevonden], goedIds: [] });
+          await l.wacht(300);
+        },
         goed: async ([a, b]) => {
           gevonden.push(a, b);
           goedBeeld(l, st, [a, b]);
-          await l.zeg("Goed zo!", `Dat zijn allebei ${soortNaam[soortVan(a)]}.`);
+          await zegGoed(l, `Dat zijn allebei ${soortNaam[soortVan(a)]}.`);
           zet(l, { uit: [...gevonden], goedIds: [] });
         },
         fout: () => {
@@ -977,15 +1101,15 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
           zet(l, { licht: [] });
         },
         samen: async () => {
-          await l.zeg("We kijken samen naar elk plaatje.");
+          await l.zeg("Ik kijk met je mee naar de plaatjes die nog over zijn.");
           const nog = paren.filter((p) => !gevonden.includes(p.id));
           await wijs(
             l,
-            nog.map((p) => [[p.id], `Hier zie je ${p.n === 1 ? `één ${ding(p.naam)}` : `${DING[p.naam][2]}`}.`]),
+            nog.map((p) => [[p.id], `Hier zie je ${p.n === 1 ? `1 ${ding(p.naam)}` : `${DING[p.naam][2]}`}.`]),
           );
-          await l.zeg("Zoek twee plaatjes met hetzelfde soort ding.");
+          await l.zeg("Zoek 2 plaatjes met hetzelfde soort ding.");
         },
-        tip: ["Zoek twee plaatjes met hetzelfde soort ding."],
+        tip: ["Zoek 2 plaatjes met hetzelfde soort ding."],
         testAntwoord: eerste.id,
       });
       if (!meteen) allesMeteen = false;
@@ -993,7 +1117,7 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
     /* De laatste twee horen vanzelf bij elkaar. */
     const laatste = paren.filter((p) => !gevonden.includes(p.id)).map((p) => p.id);
     zet(l, { licht: laatste });
-    await l.zeg(`En deze twee zijn allebei ${soortNaam[soortVan(laatste[0])]}.`, "Alles ligt weer soort bij soort.");
+    await l.zeg(`En deze 2 zijn allebei ${soortNaam[soortVan(laatste[0])]}.`, "Alles ligt weer soort bij soort.");
     zet(l, { licht: [], goedIds: laatste });
     return allesMeteen;
   };
@@ -1035,23 +1159,41 @@ function plekWoordVraag(o: { id: string; veld: "gras" | "stad"; ding: string; di
         ? [`${Hoofd(deDing(o.ding))} moet naar de rode stip.`, "Maak de zin af.", "De stip ligt …"]
         : [`${Hoofd(deDing(o.ding))} moet naar de rode stip.`, "Waar ligt de stip?"]
       : [`Kijk naar het grasveld.`, `Waar ligt ${deDing(o.ding)}?`];
+    let nFout = 0;
     return squlaVraag<string>(l, {
-      toon: () => toon(l, st, o.id, { beeld }),
+      reactie: (x) => {
+        const ver = (t: string) => (t.includes("boven") ? "boven" : t.includes("onder") ? "onder" : "midden");
+        const hor = (t: string) => (t.includes("rechts") ? "rechts" : t.includes("links") ? "links" : "midden");
+        const hint = ver(x) === ver(goed) ? [`${Hoofd(ver(goed) === "midden" ? "in het midden" : ver(goed))} klopt. Kijk nu of het links of rechts ligt.`] : hor(x) === hor(goed) ? [`${Hoofd(hor(goed) === "midden" ? "in het midden" : hor(goed))} klopt. Kijk nu of het boven of onder ligt.`] : ["Kijk eerst of het boven of onder ligt.", "Kijk daarna of het links of rechts ligt."];
+        return [`${Hoofd(wie)} ligt niet ${x}.`, ...hint];
+      },
+      toonAntwoord: async () => {
+        goedBeeld(l, st, [o.stipPlek ? "stip" : "ding"]);
+        await l.zeg(o.invullen ? `De stip ligt ${goed}.` : `${Hoofd(wie)} ligt ${goed}.`);
+        await l.wacht(300);
+      },
+      toon: () => {
+        nFout = 0;
+        toon(l, st, o.id, { beeld });
+      },
       vraag,
       antwoord: () => kiesWoord(l, o.opties),
       isGoed: (x) => x === goed,
       noem: (x) => Hoofd(x),
       goed: async () => {
         goedBeeld(l, st, [o.stipPlek ? "stip" : "ding"]);
-        await l.zeg("Goed zo!", o.invullen ? `De stip ligt ${goed}.` : `${Hoofd(wie)} ligt ${goed}.`);
+        await zegGoed(l, o.invullen ? `De stip ligt ${goed}.` : `${Hoofd(wie)} ligt ${goed}.`);
       },
-      fout: () => foutBeeld(l, st),
+      fout: () => {
+        foutBeeld(l, st);
+        if (++nFout === 1) zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
+      },
       samen: async () => {
         zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
-        await l.zeg(`Kijk waar ${wie} ligt.`, "Ligt dat bovenaan, onderaan of in het midden?", "En aan welke kant: links of rechts?");
+        await l.zeg(...(krijgtVervolgvraag(l) ? [] : [`Kijk waar ${wie} ligt.`]), "Kijk eerst of het bovenaan, onderaan of in het midden ligt.", "Kijk daarna aan welke kant het ligt: links of rechts.");
         zet(l, { licht: [] });
       },
-      tip: ["Kijk eerst: boven of onder?", "Dan: links of rechts?"],
+      tip: ["Kijk eerst of het boven of onder ligt.", "Kijk daarna of het links of rechts ligt."],
       testAntwoord: goed,
     });
   };
@@ -1070,16 +1212,17 @@ function welkDingVraag(id: string, dingen: Record<string, string>, vraagPlek: st
     beeld: delen,
     keuzes,
     goed,
-    vraag: ["Op het grasveld liggen vijf dingen.", `Wat ligt er ${vraagPlek}?`],
+    vraag: ["Op het grasveld liggen 5 dingen.", `Wat ligt er ${vraagPlek}?`],
     goedZin: [`${Hoofd(deDing(goed))} ligt ${vraagPlek}.`],
     samen: async (l) => {
       zet(l, { licht: [dingen["in het midden"]] });
       await l.zeg(`In het midden ligt ${deDing(dingen["in het midden"])}.`);
       const [hor, ver] = vraagPlek.includes("links") ? ["links", vraagPlek.includes("boven") ? "boven" : "onder"] : ["rechts", vraagPlek.includes("boven") ? "boven" : "onder"];
       zet(l, { licht: [] });
-      await l.zeg(`Ga nu naar ${hor}.`, `En dan naar ${ver === "onder" ? "beneden" : ver}.`, "Wat ligt daar?");
+      await l.zeg(`Ga nu naar ${hor}.`, `En dan naar ${ver === "onder" ? "beneden" : ver}.`);
     },
-    tip: ["Kijk eerst naar links of rechts.", "Dan naar boven of onder."],
+    reactie: (x) => [`Je tikte op ${deDing(x)}. Die ligt niet ${vraagPlek}.`],
+    tip: vraagPlek.includes("links") || vraagPlek.includes("rechts") ? [`Zoek eerst aan de ${vraagPlek.includes("links") ? "linker" : "rechter"}kant van het veld.`, `Kijk daarna of het ${vraagPlek.includes("boven") ? "boven" : "onder"} ligt.`] : ["Zoek het ding in het midden van het veld."],
   });
 }
 
@@ -1099,8 +1242,10 @@ function ballonVraag(id: string, kleuren: Kleur[], kant: "rechts" | "links", keu
     goedZin: [`De ballon helemaal ${kant} is ${kw(goed)}.`],
     samen: async (l) => {
       zet(l, { licht: [kant === "rechts" ? "bl-0" : `bl-${kleuren.length - 1}`] });
-      await l.zeg(`Kijk: dit is de ballon helemaal ${kant === "rechts" ? "links" : "rechts"}.`, `Hij is ${kw(ander)}.`, `Helemaal ${kant} is de andere kant.`);
+      await l.zeg(`Kijk: dit is de ballon helemaal ${kant === "rechts" ? "links" : "rechts"}.`, `Hij is ${kw(ander)}.`, `Aan de andere kant staat de ballon helemaal ${kant}: die is ${kw(goed)}.`);
     },
+    reactie: (x) => [x === ander ? `Je koos ${kw(x as Kleur)}. Dat is de ballon helemaal ${kant === "rechts" ? "links" : "rechts"}.` : `Je koos ${kw(x as Kleur)}. Die ballon staat niet helemaal ${kant}.`],
+    hint: [kant === "rechts" ? `bl-${kleuren.length - 1}` : "bl-0"],
     tip: [`Kijk naar de ballon helemaal aan de ${kant === "rechts" ? "rechter" : "linker"}kant.`],
   });
 }
@@ -1110,6 +1255,12 @@ function zinVraag(id: string, delen: Deel[], vraag: string[], opties: string[], 
   return async (l, st) => {
     const beeld: Beeld = { id, delen };
     return squlaVraag<string>(l, {
+      reactie: (x) => [`Die zin past niet bij het plaatje.`, ...tip],
+      toonAntwoord: async () => {
+        goedBeeld(l, st, []);
+        await l.zeg(goedZin);
+        await l.wacht(300);
+      },
       toon: () => toon(l, st, id, { beeld }),
       vraag,
       antwoord: () => kiesWoord(l, opties),
@@ -1117,7 +1268,7 @@ function zinVraag(id: string, delen: Deel[], vraag: string[], opties: string[], 
       noem: (x) => x,
       goed: async () => {
         goedBeeld(l, st, []);
-        await l.zeg("Goed zo!", goedZin);
+        await zegGoed(l, goedZin);
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {
@@ -1140,15 +1291,16 @@ function huisVraag(id: string, volgorde: Zicht[], goed: Zicht, vraag: string[], 
     vraag,
     goedZin: [goedZin],
     samen: async (l) => {
-      await l.zeg("Kijk goed naar de drie huisjes.");
+      await l.zeg("Kijk goed naar de 3 huisjes.");
       await wijs(l, [
         [["boven"], "Van bovenaf zie je vooral het dak."],
         [["voren"], "Recht van voren zie je de muur en het dak."],
         [["onder"], "Van onderaf zie je vooral de muur, en bijna geen dak."],
       ]);
-      await l.zeg("Welk huisje past erbij?");
+      if (!krijgtVervolgvraag(l)) await l.zeg("Welk huisje past erbij?");
     },
-    tip: ["Denk na: kijk je van boven, van voren of van onder?"],
+    reactie: (x) => [`Dit huisje zie je ${x === "boven" ? "van bovenaf" : x === "voren" ? "recht van voren" : "van onderaf"}.`],
+    tip: ["Bedenk of je van boven, van voren of van onder kijkt."],
   });
 }
 
@@ -1166,8 +1318,9 @@ function bovenaanzichtVraag(id: string, kolommen: Kleur[][], keuzes: Kleur[][]):
     goedZin: [`Van boven zie je alleen de bovenste blokken: ${namen(goed.map(kw))}.`],
     samen: async (l) => {
       zet(l, { licht: ["blokken"] });
-      await l.zeg("Stel je voor: je staat op een stoel en kijkt naar beneden.", "Dan zie je alleen de bovenkant van elk torentje.", "Welke kleur heeft het bovenste blok van elk torentje?");
+      await l.zeg("Stel je voor: je staat op een stoel en kijkt naar beneden.", "Dan zie je alleen de bovenkant van elk torentje.", "Kijk naar de kleur van het bovenste blok van elk torentje.");
     },
+    reactie: (x) => [`Van boven zie je niet ${namen(keuzes[Number(x.slice(3))].map(kw))}.`],
     tip: ["Kijk naar het bovenste blok van elk torentje."],
   });
 }
@@ -1261,9 +1414,9 @@ const patronen2 = les({
     zet(l, { licht: ["b-0-0", "b-0-1", "b-0-2"] });
     await l.zeg("Kijk naar de bovenste rij: rood, geel, blauw.");
     zet(l, { licht: ["b-1-0", "b-1-1", "b-1-2"] });
-    await l.zeg("In de rij eronder schuift alles één plekje op.");
+    await l.zeg("In de rij eronder schuift alles 1 plekje op.");
     zet(l, { licht: ["b-0-0", "b-1-0", "b-2-0"] });
-    await l.zeg("Van boven naar beneden staat elke kleur één keer.");
+    await l.zeg("Van boven naar beneden staat elke kleur 1 keer.");
     zet(l, { licht: [] });
     await l.verder();
   },
@@ -1487,8 +1640,8 @@ const orienteren = les({
       ["Op een bankje in het park", "Hoog in een flat, bij het raam", "Liggend in het gras"],
       "Hoog in een flat, bij het raam",
       "Je kijkt van hoog naar beneden.",
-      ["Kijk: je ziet de hinkelbaan van bovenaf.", "Je kijkt er dus van hoog naar beneden.", "Waar kun je hoog zijn?"],
-      ["Van waar kun je naar beneden kijken?"],
+      ["Kijk: je ziet de hinkelbaan van bovenaf.", "Je kijkt er dus van hoog naar beneden.", "Zo hoog kun je zijn in een flat, bij het raam."],
+      ["Denk aan een plek waar je hoog bent."],
     ),
     zinVraag(
       "or-10",
@@ -1500,8 +1653,8 @@ const orienteren = les({
       ["Laag bij de grond", "Hoog in een flat", "Voor je gezicht"],
       "Voor je gezicht",
       "Dan zie je de boom recht van voren.",
-      ["Stel je voor: je staat hoog in een flat.", "Dan zie je de boom van boven.", "Houd je de camera laag bij de grond?", "Dan zie je de boom van onder.", "Hier zie je hem recht van voren."],
-      ["Waar zie je de boom recht van voren?"],
+      ["Stel je voor: je staat hoog in een flat.", "Dan zie je de boom van boven.", "Houd je de camera laag bij de grond, dan zie je de boom van onder.", "Voor je gezicht zie je hem recht van voren."],
+      ["Zet de camera zo, dat de boom recht voor je staat."],
     ),
     huisVraag("or-11", ["voren", "boven", "onder"], "boven", ["Bliepo vliegt hoog boven het huis.", "Hoe ziet hij het huis?"], "Van bovenaf zie je vooral het dak."),
     huisVraag("or-12", ["boven", "onder", "voren"], "onder", ["Je ligt in het gras voor het huis.", "Je kijkt omhoog.", "Hoe zie je het huis?"], "Van onderaf zie je vooral de muur."),
