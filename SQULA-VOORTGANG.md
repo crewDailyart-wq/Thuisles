@@ -283,3 +283,40 @@ Plaatjes per onderwerp: allemaal gemaakt in Magnific behalve spies-leeg (Meten).
 Komt na het afspelen van Synthesis en het lesrecept. Basis: FOUTEN-VOORBEELDEN.md, WOORDEN-GROEP3.md, BOUWREGELS 14.30–14.34.
 1. **Script** dat bij elke vraag checkt: (a) precies één goed antwoord, (b) de hint past op precies één keuze, (c) geen woorden die volgens WOORDEN-GROEP3.md niet mogen.
 2. **Kind-test:** een aparte helper speelt elke vraag alsof hij een kind van 6 is. Hij ziet alleen het scherm en hoort alleen wat Bliepo zegt. Hij keurt af als hij twijfelt of twee goede antwoorden vindt.
+
+---
+
+## SYNTHESIS AFSPELEN — voortgang
+
+Opdracht: 8 november 2026 (gouden lessen, BOUWREGELS hoofdstuk 15).
+- Koppeling: `SYNTHESIS-ANALYSE/KOPPELING.md`
+- Draaiboeken: `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md`
+- Verschillen met de 35 besluiten: `SYNTHESIS-VERSCHILLEN.md`
+
+| Onderwerp | Gekoppeld | Gespeeld | Draaiboek klaar | Open punten |
+|---|---|---|---|---|
+| Klokkijken | ja (Hour Hand Hunt; + Set the Hour, Halfway Around, Five Minutes Later/Back in Time) | ja: 28 okt + 8 nov (wachten, snel, 3e fout) | ja, met open punten (randgevallen) | DRAAIBOEKEN §1.11 |
+| Tellen | ja (Color Count) | alleen R2/R3 (okt) | verloop ja, reacties deels | 2e/3e fout, wachten, snel, tijden |
+| Huisnummers | ja (Counting On) | alleen R2/R3 | verloop ja, reacties deels | idem + ervoor/terugtellen |
+| Getallenlijn | ja (Count the Jumps) | alleen R2/R3 | verloop ja, reacties deels | idem + rangschikken |
+| Meer en minder | ja (More or Less) | R2/R3 + 8 nov (wachten 14,7 s hint, 2e en 3e fout) | grotendeels | snel; stoppen na 3e fout uitzoeken |
+| Plussommen | ja (Adding below 10) | alleen R2/R3 | verloop ja, reacties deels | 2e/3e fout, wachten, snel, tijden |
+| Minsommen | ja (Dot Destruction) | alleen R1/R2/R3 | verloop ja, reacties deels | idem + gemiste zinnen |
+| Splitsen | ja (Part Part Whole) | alleen R2/R3 | verloop ja, reacties deels | idem + tot 20, eerlijk verdelen |
+| Geld | VERVANGEND (Add Three Numbers) | R2 | deels | alles over geld; besluit Sara |
+| Tijd en Dagen | VERVANGEND (Twice a Day) | R2 | deels | dagen, kalender; besluit Sara |
+| Meten en Rekentaal | VERVANGEND (Arcade Less or More, spel) | 8 nov (fout, 3 fouten, wachten) | nee | geen tutorles; besluit Sara |
+| Vormen | geen les gevonden | — | nee | besluit Sara |
+| Rekenmix | geen les (alleen toetsen mengen) | — | nee | besluit Sara |
+| Schattenjacht (piraat) | ja (Small Problems) | 28 okt gemeten | bijna | wachten, snel, 3e fout |
+
+**Stand 8 nov (einde sessie):**
+- KOPPELING.md, DRAAIBOEKEN.md (14 onderwerpen) en SYNTHESIS-VERSCHILLEN.md zijn geschreven.
+- **Volgende sessie:**
+  1. Per onderwerp met "alleen R2/R3" de les opnieuw spelen met het meetscript, voor 2e/3e fout, wachten (30+ s) en snel (0,3 s). Het meetscript staat in localStorage `__mijnlog` op tutor.synthesis.com.
+  2. De vragen in SYNTHESIS-VERSCHILLEN.md aan Sara voorleggen.
+
+**Tips voor het meetscript:**
+- Tikken op de klok gaat met nagebootste pointer-events op `circle.cursor-pointer`.
+- Keuzes klikken via de knoptekst.
+- Een JS-aanroep mag niet langer dan 45 s duren.
