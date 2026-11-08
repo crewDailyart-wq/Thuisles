@@ -54,7 +54,7 @@ export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar
 export const EINDE_VEEL_FOUTEN = "Je hebt goed doorgezet. Volgende keer gaat het nog beter.";
 
 /** §10 Eerste zin als de denkfout niet duidelijk is (binnen 1 vraag nooit 2 keer dezelfde). */
-export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Er is nog een betere keuze.", "Probeer het nog 1 keer, met een tip.", "Ik heb het nagekeken. Er past een andere beter.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik heb nagekeken en ik weet een hulpje."], [11, 12, 13, 14]);
+export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog 1 keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik heb nagekeken en ik weet een hulpje."], [10, 11, 12]);
 
 /** §11 Aanmoedigen bij een opdracht waar het kind na het hulphandje nog steeds niets doet (± 15 s; 1 keer per opdracht). */
 export const AANMOEDIG = rij(["Neem rustig de tijd.", "Je mag goed kijken.", "Denk maar even na.", "Je bent goed bezig.", "Geen haast, hoor.", "Rustig kijken mag.", "Ik wacht wel even.", "Jij kunt dit.", "Ik sta klaar om na te kijken.", "Als je kiest, kijk ik het meteen na."], [8, 9]);
@@ -98,7 +98,7 @@ export const ZIN = {
   zetOpdracht: (n: number) => `Zet de kleine wijzer op de {${n}:oranje}.`,
   zetKop: (n: number) => `Kleine wijzer op de ${n}`,
   zetHand: (n: number) => `Tik op de {${n}:oranje}, of sleep de kleine wijzer erheen.`,
-  zetSamen: (n: number) => [`Hier is de {${n}:oranje}, in de ring.`, `Tik maar op de {${n}:oranje}.`],
+  zetSamen: (n: number) => [`Hier is de {${n}:oranje}, in het oranje rondje.`, `Tik maar op de {${n}:oranje}.`],
 };
 
 /* ---------- denkfouten ---------- */
@@ -113,11 +113,11 @@ export type Scherm = "licht-uur" | "licht-minuut" | "driehoek-12" | "driehoek-6"
 export const SCHERM_TEKST: Record<Scherm, string> = {
   "licht-uur": "de kleine wijzer licht op, de grote wordt vaag",
   "licht-minuut": "de grote wijzer licht op, de kleine wordt vaag",
-  "driehoek-12": "blauw driehoekje boven de 12",
-  "driehoek-6": "blauw driehoekje onder de 6",
+  "driehoek-12": "blauw pijltje boven de 12",
+  "driehoek-6": "blauw pijltje onder de 6",
   "pijl-6-7": "blauwe pijl van de 6 naar de 7 (met de klok mee)",
   "pijl-12-1": "blauwe pijl van de 12 naar de 1 (met de klok mee)",
-  "ring-hand": "oranje ring om het doel blijft, het hulphandje wijst naar het doel",
+  "ring-hand": "oranje rondje om het doel blijft, het hulphandje wijst naar het doel",
   lijn: "de getallenlijn blijft recht in beeld",
   "rondje-getallen": "de klok blijft in beeld, getallen in een rondje",
   geen: "niets extra",
@@ -139,89 +139,91 @@ export type Fout = {
 
 /** Uitleg na de 2e fout per soort denkfout (zonder het antwoord), en een andere uitleg als dezelfde denkfout nog eens komt. */
 export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
+  /* Kort voor een kind van 6 (kind-test 8 nov): de uitleg is 1 korte zin met 1 opdracht; bij dezelfde denkfout nog eens
+     zegt Bliepo "weer" en geeft hij 1 andere opdracht. */
   "lange-wijzer": {
-    uitleg: ["De lange wijzer staat bij een heel uur altijd op de {12:paars}.", "Het uur zie je aan de korte wijzer."],
-    weer: ["Je keek weer naar de lange wijzer. Dat gebeurt heel vaak!", "Zoek nu de korte, dikke wijzer en volg hem tot zijn punt."],
+    uitleg: ["Het uur lees je bij de kleine wijzer."],
+    weer: ["Je keek weer naar de grote wijzer.", "Zoek de kleine, dikke wijzer en volg hem tot zijn punt."],
   },
   "andere-kant": {
-    uitleg: ["Een wijzer begint in het midden.", "Het uur staat bij zijn punt, niet aan de andere kant."],
-    weer: ["Weer de andere kant. Geen probleem!", "Leg je vinger in het midden en schuif langs de korte wijzer naar buiten."],
+    uitleg: ["Het uur staat bij de punt van de kleine wijzer."],
+    weer: ["Weer de andere kant.", "Zet je vinger in het midden en schuif naar de punt."],
   },
   ernaast: {
-    uitleg: ["Bij een heel uur wijst de kleine wijzer recht naar 1 getal.", "Kijk welk getal precies voor zijn punt staat."],
-    weer: ["Weer het getal ernaast. Je bent er bijna!", "Kijk heel goed: welk getal raakt de punt bijna?"],
+    uitleg: ["Kijk welk getal precies bij de punt van de kleine wijzer staat."],
+    weer: ["Weer net ernaast. Je bent er bijna!", "Welk getal raakt de punt bijna?"],
   },
   onduidelijk: {
-    uitleg: ["Kijk eerst naar de grote wijzer: die staat bovenaan. Dan is het een heel uur.", "Volg dan de kleine wijzer vanaf het midden naar buiten, tot aan de punt."],
-    weer: ["Begin in het midden van de klok.", "Ga langs de oranje wijzer naar buiten. Welk getal staat bij de punt?"],
+    uitleg: ["Volg de kleine wijzer tot aan zijn punt."],
+    weer: ["Zet je vinger op de punt van de kleine wijzer. Welk getal staat daar?"],
   },
   "uur-minuten": {
-    uitleg: ["Bij een heel uur zeg je het getal van de kleine wijzer.", "Daarna zeg je het woord uur, niet minuten."],
-    weer: ["Weer de minuten. Het is een heel uur, want de grote wijzer staat bovenaan.", "Dan noem je het getal van de kleine wijzer, met het woord uur erachter."],
+    uitleg: ["Bij een heel uur zeg je het getal en dan het woord uur."],
+    weer: ["Weer minuten.", "De grote wijzer staat bovenaan, dus het is een heel uur."],
   },
   "korte-wijzer": {
-    uitleg: ["Nu gaat het om de lange paarse wijzer.", "Kijk waar die steeds stopte: bovenaan of onderaan?"],
-    weer: ["Je keek weer naar de korte wijzer.", "Kijk alleen naar de paarse wijzer die licht geeft. Wijst hij omhoog of omlaag?"],
+    uitleg: ["Kijk nu alleen naar de grote paarse wijzer."],
+    weer: ["Je keek weer naar de kleine wijzer.", "Kijk alleen naar de paarse wijzer die licht geeft."],
   },
   "geen-heel-uur": {
-    uitleg: ["Bij een heel uur wijst de grote wijzer recht omhoog.", "Kijk waar de grote wijzer nu staat."],
-    weer: ["De kleine wijzer staat vlak bij de {7:oranje}, dat klopt.", "Maar de grote wijzer wijst naar beneden. Dan is het nog geen heel uur."],
+    uitleg: ["Kijk ook naar de grote wijzer. Waar staat die nu?"],
+    weer: ["De kleine wijzer staat vlak bij de {7:oranje}, dat klopt.", "Maar bij een heel uur staat de grote wijzer bovenaan."],
   },
   "klok-van-net": {
-    uitleg: ["Een klok is rond.", "Kijk of deze getallen in een rondje staan of op een rechte lijn."],
-    weer: ["Je denkt weer aan de klok van net. Dat snap ik, de getallen zijn hetzelfde.", "Maar dit is recht, net als een liniaal. Hoe heet zo'n rij getallen?"],
+    uitleg: ["Een klok is rond. Deze getallen staan op een rechte lijn."],
+    weer: ["Je denkt weer aan de klok van net.", "Hoe heet een rechte rij getallen?"],
   },
   "lijn-van-net": {
-    uitleg: ["De getallen zijn in een rondje gaan staan.", "Zo'n rondje met de getallen 1 tot en met 12 hangt vaak aan de muur."],
-    weer: ["Je denkt nog aan de lijn van net.", "Maar de lijn is rond geworden. Waarop kijk je hoe laat het is?"],
+    uitleg: ["De getallen staan nu in een rondje, net als aan de muur."],
+    weer: ["Je denkt nog aan de lijn van net.", "Waarop kijk je hoe laat het is?"],
   },
   "boven-onder": {
-    uitleg: ["Boven is de kant van het plafond, onder de kant van de vloer.", "Kijk waar het blauwe driehoekje staat."],
-    weer: ["Weer de andere kant op.", "Zoek eerst het blauwe driehoekje. Het getal ernaast is het antwoord."],
+    uitleg: ["Kijk waar het blauwe pijltje staat."],
+    weer: ["Weer de andere kant op.", "Het getal bij het blauwe pijltje is het goede."],
   },
   "net-niet-hoogst": {
-    uitleg: ["Je zocht hoog, goed zo.", "Volg de rand van de klok omhoog, tot je niet hoger kunt. Daar staat het driehoekje."],
-    weer: ["Weer net naast de top.", "Het hoogste getal staat recht boven het midden van de klok."],
+    uitleg: ["Ga langs de rand omhoog, tot je niet hoger kunt."],
+    weer: ["Weer net naast de top.", "Kijk recht boven het midden van de klok."],
   },
   laagste: {
-    uitleg: ["Ga langs de rand naar beneden, tot je niet lager kunt.", "Daar staat het blauwe driehoekje."],
-    weer: ["Zoek eerst het blauwe driehoekje onder de klok.", "Het getal vlak erboven staat het laagst."],
+    uitleg: ["Ga langs de rand naar beneden, tot je niet lager kunt."],
+    weer: ["Kijk recht onder het midden van de klok."],
   },
   "voor-na": {
-    uitleg: ["Ervoor en erna lijken op elkaar.", "Erna betekent: de kant op van de blauwe pijl."],
-    weer: ["Weer de kant van ervoor.", "Zet je vinger op het begin van de pijl en volg hem 1 stap."],
+    uitleg: ["Erna is de kant op van de blauwe pijl."],
+    weer: ["Weer de andere kant.", "Volg de blauwe pijl 1 stap."],
   },
   "te-ver": {
-    uitleg: ["Je telde een stap te veel.", "Erna is maar 1 stap, de kant op van de pijl."],
-    weer: ["Weer een stap te ver.", "Tel maar mee: begin bij het getal en zet precies 1 stap."],
+    uitleg: ["Zet maar 1 stap, de kant op van de pijl."],
+    weer: ["Weer een stap te ver.", "Tel maar mee: precies 1 stap."],
   },
   "door-na-12": {
-    uitleg: ["Op een getallenlijn tel je steeds verder.", "Op een klok begin je na het hoogste getal weer opnieuw. Volg de pijl."],
-    weer: ["Je telde weer verder, zoals op een getallenlijn.", "Zoek op de klok waar de pijl eindigt. Daar staat het getal."],
+    uitleg: ["Op de klok begin je na de 12 weer opnieuw."],
+    weer: ["Je telde weer verder.", "Kijk waar de blauwe pijl stopt."],
   },
   "lang-is-uur": {
-    uitleg: ["Een uur is lang, dus dat lijkt logisch.", "Maar de lange wijzer gaat snel rond. Hij telt iets dat kort duurt."],
-    weer: ["Ik snap dat het raar is.", "De lange wijzer draait een heel rondje in 1 uur. Hij telt dus de kleine stukjes tijd."],
+    uitleg: ["De lange wijzer draait snel rond. Hij telt iets dat kort duurt."],
+    weer: ["Ik snap dat het raar is.", "De lange wijzer gaat in 1 uur een heel rondje."],
   },
   namen: {
-    uitleg: ["Er is een grote en een kleine wijzer.", "Een lange wijzer is groot, een korte wijzer is klein."],
-    weer: ["Je koos weer de andere naam.", "Vergelijk de 2 wijzers. Is deze de langste of de kortste?"],
+    uitleg: ["Een lange wijzer is groot, een korte wijzer is klein."],
+    weer: ["Je koos weer de andere naam.", "Is deze wijzer de langste of de kortste?"],
   },
   "zet-12": {
-    uitleg: ["De kleine wijzer moet naar het getal in de oranje ring.", "Kijk waar de ring staat en draai de punt daarheen."],
-    weer: ["Weer bij de {12:paars}. Daar woont de grote wijzer.", "Pak de korte wijzer en zet zijn punt in de oranje ring."],
+    uitleg: ["Draai de punt naar het getal in het oranje rondje."],
+    weer: ["Weer bij de {12:paars}. Daar staat de grote wijzer.", "Zet de kleine wijzer in het oranje rondje."],
   },
   "zet-andere-kant": {
-    uitleg: ["De punt van de wijzer moet bij het getal.", "Draai de wijzer rond tot zijn punt in de oranje ring staat."],
-    weer: ["Weer de andere kant. Geen probleem!", "Kijk waar de ring is, en draai de punt die kant op."],
+    uitleg: ["Draai de punt naar het oranje rondje."],
+    weer: ["Weer de andere kant.", "Kijk waar het oranje rondje is."],
   },
   "zet-ernaast": {
-    uitleg: ["Je was er heel dichtbij.", "Kijk goed: de punt moet precies in de oranje ring staan."],
-    weer: ["Weer net ernaast. Je bent er bijna!", "Tik gewoon op het getal in de ring."],
+    uitleg: ["De punt moet precies in het oranje rondje staan."],
+    weer: ["Weer net ernaast. Je bent er bijna!", "Tik op het getal in het oranje rondje."],
   },
   "zet-ring": {
-    uitleg: ["De oranje ring wijst het getal aan.", "Zet de punt van de kleine wijzer precies in de ring."],
-    weer: ["Weer een ander getal.", "Kijk naar het handje. Tik op het getal waar het naar wijst."],
+    uitleg: ["Zet de punt van de kleine wijzer in het oranje rondje."],
+    weer: ["Weer een ander getal.", "Kijk waar het handje wijst en tik daar."],
   },
 };
 
@@ -252,7 +254,7 @@ const F = (code: Denkfoutnaam, soort: string, denkfout: string, eerste: string, 
 
 /** Een klok lezen (hele uren): de foute keuze → de denkfout. `metUur`: de keuzes zijn "3 uur" (anders "3"). */
 export function klokFout(gekozen: number, uur: number, metUur: boolean): Fout {
-  if (gekozen === 12 && uur !== 12) return F("verkeerde-wijzer", "lange-wijzer", "keek naar de grote (lange) wijzer in plaats van de kleine", "Je keek naar de lange wijzer.", "Bij een heel uur kijken we naar de korte wijzer.", "licht-uur");
+  if (gekozen === 12 && uur !== 12) return F("verkeerde-wijzer", "lange-wijzer", "keek naar de grote (lange) wijzer in plaats van de kleine", "Je keek naar de grote wijzer.", "Bij een heel uur kijken we naar de kleine wijzer.", "licht-uur");
   if (gekozen === ((uur + 5) % 12) + 1) return F("andere-kant", "andere-kant", "nam het getal aan de andere kant van de klok", "Je keek naar de andere kant van de klok.", "Kijk waar de punt van de kleine wijzer is.", "licht-uur");
   if (Math.abs(gekozen - uur) === 1 || Math.abs(gekozen - uur) === 11) return F("getal-ernaast", "ernaast", "nam het getal vlak naast het goede", "Je zat er vlak naast.", "Volg de kleine wijzer tot het getal waar hij precies naar wijst.", "licht-uur");
   return F("onduidelijk", "onduidelijk", "niet duidelijk (geen reden verzonnen)", "", metUur ? "Kijk naar de kleine wijzer. Waar wijst zijn punt naar?" : "Volg de kleine wijzer vanaf het midden tot aan de punt.", "licht-uur");
@@ -262,8 +264,8 @@ export function klokFout(gekozen: number, uur: number, metUur: boolean): Fout {
 export function zetFout(gekozen: number, doel: number): Fout {
   if (gekozen === 12 && doel !== 12) return F("verkeerde-wijzer", "zet-12", "zette de kleine wijzer waar de grote hoort (bij de 12)", "Bij de {12:paars} hoort de grote wijzer.", `Zet de kleine wijzer bij de ${o(doel)}.`, "ring-hand");
   if (gekozen === ((doel + 5) % 12) + 1) return F("andere-kant", "zet-andere-kant", "zette de punt aan de andere kant van de klok", "De punt staat nu aan de andere kant.", `Draai de punt naar de ${o(doel)}.`, "ring-hand");
-  if (Math.abs(gekozen - doel) === 1 || Math.abs(gekozen - doel) === 11) return F("getal-ernaast", "zet-ernaast", "zette de wijzer vlak naast het doel", `Je zette hem vlak naast de ${o(doel)}.`, "Draai een klein stukje verder of terug, naar de ring.", "ring-hand");
-  return F("onduidelijk", "zet-ring", "niet duidelijk (geen reden verzonnen)", "", "Kijk naar de ring: daar moet de punt heen.", "ring-hand");
+  if (Math.abs(gekozen - doel) === 1 || Math.abs(gekozen - doel) === 11) return F("getal-ernaast", "zet-ernaast", "zette de wijzer vlak naast het doel", `Je zette hem vlak naast de ${o(doel)}.`, "Draai een klein stukje verder of terug, naar het oranje rondje.", "ring-hand");
+  return F("onduidelijk", "zet-ring", "niet duidelijk (geen reden verzonnen)", "", "Kijk naar het oranje rondje: daar moet de punt heen.", "ring-hand");
 }
 
 const heleKlok = (uur: number, opties: number[], metUur: boolean): Record<string, Fout> =>
@@ -277,29 +279,29 @@ export const UITLEGVRAGEN: Vraag[] = [
     fouten: { "een klok": F("beeld-van-net", "klok-van-net", "noemde wat er net nog op het scherm stond (de klok)", "Net was het nog een klok, ja.", "Nu staan de getallen op een rij.", "lijn") },
   },
   {
-    id: "stap6-hoe-heet-nu", waar: "uitleg, stap 6 (de lijn is weer rond)", kijk: true, vraag: ["Zo houd je een getallenlijn wel heel raar vast!", "Hoe heet dit nu?"], opties: ["een klok", "een getallenlijn"], goed: "een klok",
+    id: "stap6-hoe-heet-nu", waar: "uitleg, stap 6 (de lijn is weer rond)", kijk: true, vraag: ["Kijk, de getallenlijn is weer rond.", "Hoe heet dit nu?"], opties: ["een klok", "een getallenlijn"], goed: "een klok",
     opnieuw: ["Hoe heet dit nu?"], samen: ["De getallen staan in een rondje. Dat is een klok."],
     fouten: { "een getallenlijn": F("beeld-van-net", "lijn-van-net", "noemde wat er net nog op het scherm stond (de getallenlijn)", "Net was het een getallenlijn, ja.", "Kijk: nu staan de getallen in een rondje.", "rondje-getallen") },
   },
   {
     id: "stap7-hoogste", waar: "uitleg, stap 7 (het hoogste punt)", kijk: true, vraag: ["Kijk naar het hoogste punt van de klok.", "Welk getal staat daar?"], opties: ["1", "6", "12"], goed: "12",
-    opnieuw: ["Welk getal staat helemaal bovenaan?"], naGoed: ["De 12 staat helemaal bovenaan."], samen: ["Kijk, in de ring: de 12 staat helemaal bovenaan."],
+    opnieuw: ["Welk getal staat helemaal bovenaan?"], naGoed: ["De 12 staat helemaal bovenaan."], samen: ["Kijk, in het oranje rondje: de 12 staat helemaal bovenaan."],
     fouten: {
-      "1": F("getal-ernaast", "net-niet-hoogst", "nam een getal dat hoog staat, maar net naast de top", "De 1 staat hoog, vlak naast de top.", "Kijk bij het blauwe driehoekje.", "driehoek-12"),
-      "6": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 6 staat juist helemaal onderaan.", "Kijk naar het hoogste punt, bij het driehoekje.", "driehoek-12"),
+      "1": F("getal-ernaast", "net-niet-hoogst", "nam een getal dat hoog staat, maar net naast de top", "De 1 staat hoog, vlak naast de top.", "Kijk bij het blauwe pijltje.", "driehoek-12"),
+      "6": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 6 staat juist helemaal onderaan.", "Kijk naar het hoogste punt, bij het blauwe pijltje.", "driehoek-12"),
     },
   },
   {
     id: "stap8-laagste", waar: "uitleg, stap 8 (het laagste punt)", kijk: true, vraag: ["Volg de klok helemaal rond.", "Welk getal staat onderaan?"], opties: ["3", "6", "12"], goed: "6",
-    opnieuw: ["Welk getal staat helemaal onderaan?"], naGoed: ["De 6 staat helemaal onderaan."], samen: ["Kijk, in de ring: de 6 staat helemaal onderaan."],
+    opnieuw: ["Welk getal staat helemaal onderaan?"], naGoed: ["De 6 staat helemaal onderaan."], samen: ["Kijk, in het oranje rondje: de 6 staat helemaal onderaan."],
     fouten: {
-      "3": F("onduidelijk", "laagste", "niet duidelijk (geen reden verzonnen)", "", "Ga helemaal naar beneden, naar het driehoekje.", "driehoek-6"),
-      "12": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 12 staat juist bovenaan.", "Ga helemaal naar beneden, naar het driehoekje.", "driehoek-6"),
+      "3": F("onduidelijk", "laagste", "niet duidelijk (geen reden verzonnen)", "", "Ga helemaal naar beneden, naar het blauwe pijltje.", "driehoek-6"),
+      "12": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 12 staat juist bovenaan.", "Ga helemaal naar beneden, naar het blauwe pijltje.", "driehoek-6"),
     },
   },
   {
     id: "stap9-na-6", waar: "uitleg, stap 9 (wat komt na de 6?)", vraag: ["Kijk naar de 6.", "Welk getal komt erna?"], opties: ["5", "7", "8"], goed: "7",
-    opnieuw: ["Welk getal komt na de 6?"], naGoed: ["Van de 6 ga je deze kant op, naar de 7."], samen: ["Van de 6 ga je 1 getal verder, naar de 7 in de ring."],
+    opnieuw: ["Welk getal komt na de 6?"], naGoed: ["Van de 6 ga je deze kant op, naar de 7."], samen: ["Van de 6 ga je 1 getal verder, naar de 7 in het oranje rondje."],
     fouten: {
       "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 5 komt vóór de 6.", "Erna betekent: deze kant op. Volg de blauwe pijl.", "pijl-6-7"),
       "8": F("een-te-veel", "te-ver", "telde 1 te veel (2 getallen verder)", "Je ging 2 getallen verder.", "Na de 6 ga je maar 1 getal verder. Volg de blauwe pijl.", "pijl-6-7"),
@@ -307,7 +309,7 @@ export const UITLEGVRAGEN: Vraag[] = [
   },
   {
     id: "stap10-na-12", waar: "uitleg, stap 10 (wat komt na de 12?)", lastig: true, vraag: ["Nu een lastige.", "Welk getal komt na de 12?"], opties: ["1", "11", "13"], goed: "1",
-    opnieuw: ["Welk getal komt na de 12?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 begint de klok weer opnieuw, bij de 1 in de ring."],
+    opnieuw: ["Welk getal komt na de 12?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 begint de klok weer opnieuw, bij de 1 in het oranje rondje."],
     fouten: {
       "13": F("doortellen-na-12", "door-na-12", "telde door zoals op een getallenlijn (13 na 12)", "Op een getallenlijn komt de 13 na de 12, dat snap ik.", "Op deze klok staat geen 13. Volg de pijl.", "pijl-12-1"),
       "11": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 11 komt vóór de 12.", "We zoeken het getal erna. Volg de pijl.", "pijl-12-1"),
@@ -315,17 +317,17 @@ export const UITLEGVRAGEN: Vraag[] = [
   },
   {
     id: "stap11-lange-telt", waar: "uitleg, stap 11 (wat telt de lange wijzer?)", vraag: ["De ene wijzer telt de minuten. De andere wijst het uur aan.", "Wat telt de lange wijzer?"], opties: ["de minuten", "de uren"], goed: "de minuten",
-    opnieuw: ["Wat telt de lange wijzer?"], naGoed: ["De lange wijzer telt de minuten."], samen: ["De lange wijzer gaat snel rond. Hij telt de minuten."],
+    opnieuw: ["Wat telt de grote wijzer?"], naGoed: ["De grote wijzer telt de minuten."], samen: ["De grote wijzer gaat snel rond. Hij telt de minuten."],
     fouten: { "de uren": F("wijzers-verwisseld", "lang-is-uur", "dacht: een uur duurt lang, dus de lange wijzer telt de uren", "Dat klinkt logisch: een uur duurt lang.", "Maar op de klok is het andersom. Kijk hoe snel de lange wijzer straks draait.", "licht-minuut") },
   },
   {
     id: "stap12-lange-naam", waar: "uitleg, stap 12 (hoe heet de lange wijzer?)", vraag: ["Deze lange paarse wijzer telt de minuten.", "Hoe heet hij?"], opties: ["de grote wijzer", "de kleine wijzer"], goed: "de grote wijzer",
-    opnieuw: ["Hoe heet de lange wijzer?"], samen: ["De lange wijzer heet de grote wijzer."],
+    opnieuw: ["Hoe heet de grote wijzer?"], samen: ["De grote wijzer heet de grote wijzer."],
     fouten: { "de kleine wijzer": F("wijzers-verwisseld", "namen", "haalde de namen van de wijzers door elkaar", "De kleine wijzer is de korte.", "Deze wijzer is lang.", "licht-minuut") },
   },
   {
     id: "stap12-korte-naam", waar: "uitleg, stap 12 (hoe heet de korte wijzer?)", vraag: ["En deze korte oranje wijzer?", "Hoe heet die?"], opties: ["de kleine wijzer", "de grote wijzer"], goed: "de kleine wijzer",
-    opnieuw: ["Hoe heet de korte wijzer?"], samen: ["De korte wijzer heet de kleine wijzer."],
+    opnieuw: ["Hoe heet de kleine wijzer?"], samen: ["De kleine wijzer heet de kleine wijzer."],
     fouten: { "de grote wijzer": F("wijzers-verwisseld", "namen", "haalde de namen van de wijzers door elkaar", "De grote wijzer is de lange.", "Deze wijzer is kort.", "licht-uur") },
   },
   ...[3, 7, 11].map((uur, i): Vraag => ({
@@ -336,7 +338,7 @@ export const UITLEGVRAGEN: Vraag[] = [
   })),
   {
     id: "stap15-grote-steeds", waar: "uitleg, stap 15 (waar stond de grote wijzer steeds?)", kijk: true, vraag: ["Waar stond de grote wijzer elke keer?"], opties: ["6", "12"], goed: "12",
-    opnieuw: ["Waar stopte de grote wijzer?"], naGoed: ["Elke keer recht omhoog, naar de {12:paars}."], samen: ["De grote wijzer wijst recht omhoog, naar de {12:paars} in de ring."],
+    opnieuw: ["Waar stopte de grote wijzer?"], naGoed: ["Elke keer recht omhoog, naar de {12:paars}."], samen: ["De grote wijzer wijst recht omhoog, naar de {12:paars} in het oranje rondje."],
     fouten: { "6": F("verkeerde-wijzer", "korte-wijzer", "keek naar de kleine wijzer, die nu bij de 6 staat", "Bij de 6 staat nu de kleine wijzer.", "Let goed op de grote wijzer.", "licht-minuut") },
   },
   /* Stap 16: de 2 uitlegvragen van de oude les squla-klok-hoelaat-1 (uitlegHeel), met dezelfde keuzes. */
@@ -377,8 +379,8 @@ export const KLOKKEN = [
 
 export const KLOKVRAGEN: Vraag[] = KLOKKEN.map((k, i) => {
   const fouten = heleKlok(k.uur, [...k.opties], true);
-  /* Klok 2 (12 uur): beide wijzers staan op de 12; "verkeerde wijzer" kan daar niet. Algemene hint die naar 1 keuze wijst (14.31). */
-  if (k.uur === 12) for (const f of Object.values(fouten)) if (f.code === "onduidelijk") f.hint = "Beide wijzers wijzen naar hetzelfde getal.";
+  /* Klok 2 (12 uur): beide wijzers staan op de 12; "verkeerde wijzer" kan daar niet. De hint zegt wat het kind moet doen (kind-test 8 nov). */
+  if (k.uur === 12) for (const f of Object.values(fouten)) f.hint = "Hier staat de kleine wijzer op hetzelfde getal als de grote. Welk getal is dat?";
   return {
     id: `klok${i + 1}-${k.uur}uur`,
     waar: `oefenblok, klok ${i + 1} (${k.uur} uur)`,
@@ -393,9 +395,9 @@ export const KLOKVRAGEN: Vraag[] = KLOKKEN.map((k, i) => {
 
 /** Samen voordoen na de 3e fout (nu pas het antwoord). */
 export const VOORDOEN = {
-  klok: (uur: number) => [`Kijk, de kleine wijzer wijst naar de ${o(uur)}, in de ring.`, `De grote wijzer staat op de {12:paars}. Dus het is ${o(uur)} uur.`],
+  klok: (uur: number) => [`Kijk, de kleine wijzer wijst naar de ${o(uur)}, in het oranje rondje.`, `De grote wijzer staat op de {12:paars}. Dus het is ${o(uur)} uur.`],
   klokTik: (uur: number) => `Tik nu zelf op ${o(uur)} uur.`,
-  getal: (uur: number) => `De punt van de kleine wijzer staat bij de ${o(uur)}, in de ring.`,
+  getal: (uur: number) => `De punt van de kleine wijzer staat bij de ${o(uur)}, in het oranje rondje.`,
   getalTik: (n: number, kleur: "oranje" | "paars" | null = "oranje") => (kleur ? `Tik nu zelf op de {${n}:${kleur}}.` : `Tik nu zelf op de ${n}.`),
   woordTik: (w: string) => `Tik nu zelf op: ${w}.`,
 };

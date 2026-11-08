@@ -53,16 +53,24 @@ const u = (uur: number, minuut = 0) => (uur % 12) * 60 + minuut;
 
 const zet = (l: Lesgids, p: Partial<GoudenKlokProps>) => l.pasVlakAan<GoudenKlokProps>(p);
 
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; log: unknown[] };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; namen: number; snelGehad: Set<number>; log: unknown[] };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, log: [] }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, namen: 0, snelGehad: new Set(), log: [] }));
   return s;
 };
 
 /** Zeg zinnen van Bliepo, met {naam} ingevuld (alleen op het scherm en met de browserstem; geen opname). */
-const zeg = (l: Lesgids, ...zinnen: string[]) => l.zeg(...zinnen.map((z) => metNaam(z, l.naam)));
+const zeg = (l: Lesgids, ...zinnen: string[]) =>
+  l.zeg(
+    ...zinnen.map((z) => {
+      if (!z.includes("{naam}")) return z;
+      const s = st(l);
+      s.namen++;
+      return metNaam(z, s.namen <= 2 ? l.naam : "");
+    }),
+  );
 
 /** Een klein logboek voor de eigen test (window.__gouden). Verandert niets aan de les. */
 function log(l: Lesgids, wat: string, extra: Record<string, unknown> = {}) {
@@ -136,7 +144,7 @@ function lofZinnen(l: Lesgids, o: { kijk?: boolean; lastig?: boolean; eerste?: b
   };
   const speciaal = moment("laatste", s.laatste) ?? moment("eerste", !!o.eerste) ?? moment("moeilijk", !!o.lastig) ?? moment("drieOpRij", s.opRij >= 3);
   if (speciaal) return [speciaal];
-  if (s.naamKeer < 2 && s.vraag - s.naamVraag >= 4 && s.opRij >= 2 && l.naam) {
+  if (s.naamKeer < 2 && s.namen < 2 && s.vraag - s.naamVraag >= 4 && s.opRij >= 2 && l.naam) {
     s.naamKeer++;
     s.naamVraag = s.vraag;
     return [kies(l, NAAM_LOF)];
@@ -149,7 +157,15 @@ const bevestig = (l: Lesgids) => {
   st(l).opRij = 0;
   return kies(l, BEVESTIG);
 };
-const snelZin = (l: Lesgids) => kies(l, SNEL);
+/** Elke snel-zin hooguit 1 keer per les (kind-test 8 nov); daarna niets meer over snel. */
+const snelZin = (l: Lesgids): string | null => {
+  const s = st(l);
+  const vrij = SNEL.zinnen.map((_, i) => i).filter((i) => !s.snelGehad.has(i));
+  if (!vrij.length) return null;
+  const i = vrij[Math.floor(Math.random() * vrij.length)];
+  s.snelGehad.add(i);
+  return SNEL.zinnen[i];
+};
 
 /** Heel snel (6.10c): het draaiboek klok heeft een opmerking maar geen grens: binnen 2 s na het einde van de vraag; hooguit 1 keer per 3 klokken; alleen in het oefenblok. */
 const SNEL_MS = 2000;
@@ -217,17 +233,9 @@ function toonScherm(l: Lesgids, scherm: Scherm) {
 function foutZinnen(l: Lesgids, f: Fout, poging: 1 | 2, eerder: Fout | null, weerGebruikt: { v: boolean }): string[] {
   const uit = UITLEG[f.soort];
   const eerste = f.eerste || kies(l, ONDUIDELIJK);
-  /* Al eerder in de les: om de keer zegt Bliepo "weer ..." (anders klinkt het steeds hetzelfde). */
-  const keer = st(l).denkfouten.get(f.soort) ?? 0;
-  const alEerderInLes = keer % 2 === 1;
   const duidelijk = f.code !== "onduidelijk";
-  if (poging === 1) {
-    if (alEerderInLes && uit && duidelijk) {
-      weerGebruikt.v = true;
-      return [uit.weer[0], f.hint];
-    }
-    return [eerste, f.hint];
-  }
+  /* 1e fout: altijd de eerste zin en de hint van déze vraag (geen "weer" bij een nieuwe vraag; kind-test 8 nov). */
+  if (poging === 1) return [eerste, f.hint];
   if (!uit) return [eerste, f.hint];
   const zelfde = eerder !== null && eerder.soort === f.soort;
   if (zelfde && duidelijk && !weerGebruikt.v) {
@@ -235,7 +243,8 @@ function foutZinnen(l: Lesgids, f: Fout, poging: 1 | 2, eerder: Fout | null, wee
     return uit.weer;
   }
   if (zelfde) return weerGebruikt.v ? uit.uitleg : uit.weer;
-  return [eerste, ...uit.uitleg];
+  /* Een nieuwe denkfout bij de 2e fout: de eerste zin en 1 korte uitleg (hooguit 2 zinnen). */
+  return [eerste, uit.uitleg[0]];
 }
 
 type Uitkomst = "goed" | "naFout" | "voorgedaan" | "gestopt";
@@ -278,11 +287,16 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
       zet(l, { goed: ++st(l).goed });
       o.bijGoed?.();
       const s = st(l);
-      const zinnen = [...(poging === 1 ? lofZinnen(l, { kijk: v.kijk, lastig: v.lastig, eerste: o.eersteKlok, uur: o.uur }) : [bevestig(l)]), ...(v.naGoed ?? [])];
-      if (poging === 1 && o.snel && snel && s.vraag - s.snelVraag >= 3) {
-        s.snelVraag = s.vraag;
-        zinnen.push(snelZin(l));
+      const zinnen = [...(poging === 1 ? lofZinnen(l, { kijk: v.kijk, lastig: v.lastig, eerste: o.eersteKlok, uur: v.naGoed?.length ? undefined : o.uur }) : [bevestig(l)]), ...(v.naGoed ?? [])];
+      /* Hooguit 2 zinnen na goed (kind-test 8 nov): de lof, en dan óf het weetje óf de reactie bij de klok óf "snel". */
+      if (poging === 1 && o.snel && snel && s.vraag - s.snelVraag >= 4 && zinnen.length < 2) {
+        const z = snelZin(l);
+        if (z) {
+          s.snelVraag = s.vraag;
+          zinnen.push(z);
+        }
       }
+      zinnen.splice(2);
       log(l, "reactie", { soort: poging === 1 ? "goed" : "goed-na-fout", vraag: v.id, zin: zinnen.join(" ") });
       await zeg(l, ...zinnen);
       await l.wacht(DOOR_MS);
@@ -388,7 +402,7 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
       bliepoScherm("goed");
       zet(l, { goed: ++st(l).goed, ring: null, getalKleur: { n: doel, wijzer: "uur" }, rondje: ++st(l).rondje, doel: null, alleenGetal: null });
       log(l, "reactie", { soort: poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "goed-na-fout" });
-      if (poging > 1 && !kleineStap) await zeg(l, bevestig(l));
+      if (!kleineStap) await zeg(l, poging > 1 ? bevestig(l) : lofZinnen(l, {})[0]);
       await l.wacht(1100);
       return poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "naFout";
     }
@@ -460,11 +474,14 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
 
     /* Stap 1. "Weet je dit al?" (4e ronde, T21): Ja = proef van 2 opgaven, 2 fouten = alsnog de uitleg; Nee = de uitleg. */
+    /* Eerst de groet: Bliepo staat dan in beeld en praat. Pas daarna de startvraag met Ja en Nee, zodat er nooit knoppen
+       zonder vraag en zonder Bliepo staan (kind-test 8 nov: Ja/Nee stonden 1,5 s alleen in beeld terwijl Bliepo laadde). */
+    await zeg(l, NAAM_GROET);
     log(l, "vraag", { zin: "startvraag" });
     zetTestAntwoord("Nee");
     haak(l, { soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" }, true);
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
-    void zeg(l, NAAM_GROET, ZIN.start).catch(() => {});
+    void zeg(l, ZIN.start).catch(() => {});
     st(l).naamKeer = 1;
     const start = await pStart;
     haak(l, null);
