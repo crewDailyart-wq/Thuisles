@@ -307,3 +307,65 @@ Jouw besluiten over OVERIGE-BOTSINGEN.md punt 1 t/m 14 staan in `BOUWREGELS.md` 
 - Nieuw: we maken geen compleet nieuwe lessen. Elke gouden les is de bestaande Squla-les, opnieuw gebouwd naast de oude les (BOUWREGELS 15.8).
 - Nog open: alleen de oudere punten 15 t/m 30 in `OVERIGE-BOTSINGEN.md` (T2, T6 t/m T9, T12 t/m T14 en de andere oudere punten).
 - Bij de bouw van de eerste gouden les moeten het herhalingsscript en de lijst `bevestig()` in de code mee naar het rijtje in `BLIEPO-KARAKTER.md` (punt 14; bouwwerk, nog niet gedaan).
+
+## Ronde 14 — de gouden klokles (squla-klok-hoelaat-1-gouden, 8 november 2026)
+
+Nieuwe versie naast de oude les squla-klok-hoelaat-1 (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-klok-hoelaat-1-gouden?naam=Testkind
+
+**Graag een besluit (ja of nee):**
+1. **Uitleg na Nee volgt het draaiboek (stap 2 t/m 18).** Daarin zitten uitlegvragen die niet in de Squla-les staan (getallenlijn, hoogste en laagste getal, wat komt erna, de namen van de wijzers, de wijzer zelf verzetten, "is het 7 uur?"). De 2 uitlegvragen van de oude les staan er precies in (klok op 3 uur: 12 / 3 / 6 en 12 uur / 6 uur / 3 uur). De 13 oefenklokken zijn precies die van de oude les. Mag de draaiboek-uitleg zo blijven?
+2. **Vragen tussendoor in het oefenblok (draaiboek stap 19) en de bonusvraag "hoe laat is het over 1 uur?" (stap 20)** staan klaar maar UIT, omdat ze vragen toevoegen (regel 15.8). Mogen ze aan?
+3. **Kijkvragen (stap 4, 11 en 18):** het draaiboek geeft daar na een fout geen 2e kans. Jij vroeg (8 november): na een fout komt de vraag terug. Ik volgde jouw opdracht; dus ook daar 3 pogingen. Goed zo?
+
+**Afwijkingen van het draaiboek, met de reden:**
+- Na de 2e fout geen antwoord maar uitleg en een 3e poging; pas na de 3e fout samen voordoen (jouw besluit T22). Het draaiboek laat na de 2e fout het antwoord zien.
+- "Weet ik niet" is er niet (regel 1.27).
+- De oranje ring komt alleen bij het doel (wijzer zetten) en bij het samen voordoen na 2 keer fout; niet als hint bij de 1e fout, want dan staat het antwoord al in beeld.
+- Bij de wijzer zetten (stap 14) krijgt een fout getal wel een reactie (het draaiboek zegt daar niets).
+- Bliepo noemt de wijzers steeds "de kleine wijzer" en "de grote wijzer" (zoals de oude les); "lang" en "kort" alleen waar het over de lengte gaat.
+- De laatste klok krijgt geen "en dan is de les klaar"-zin en er is geen bonus (zie punt 2).
+
+**Wat ik veilig koos bij NIET GEZIEN (draaiboek §1.11):**
+- Ja bij de start: proef met de eerste 2 klokken; bij 2 fouten in de proef de uitleg, daarna alle 13 klokken.
+- "Heel snel": het draaiboek heeft een opmerking maar geen grens, dus binnen 2 seconden na het einde van de vraag; hooguit 1 keer per 3 klokken; alleen in het oefenblok.
+- Tikken tijdens de zin van Bliepo mag; de knoppen staan er vanaf het begin van de vraag.
+
+**De denkfout van het kind bewaren (opdracht 8 november):** dat kan nog niet in de echte voortgang: daar is geen plek voor zonder nieuwe kolom in de database. Daarom is er nu een functie `legDenkfoutVast` die elke fout met de denkfout alleen op het apparaat zelf bewaart (in het geheugen, en op de voorbeeldpagina in de browser onder "thuisles-denkfouten-test"). Voor echte opslag is nodig: een nieuwe tabel of kolom (per kind: les, vraag, gekozen antwoord, denkfout, poging, tijd), een opslagstap op de server, en jouw akkoord. Niets gebouwd in de database.
+
+**Zinnen:** alle zinnen van Bliepo staan in `src/components/les/lessen/squla-klok-gouden-zinnen.ts`, met de fouttabel. Leesbare versie: FOUTTABEL-KLOK-GOUDEN.md. Alle nieuwe zinnen hebben nog geen stem van Ruth (nu de browserstem). Geen tegoed gebruikt. De naam van het kind staat op 2 plekken ({naam}: de begroeting en de slotzin), alleen op het scherm en met de browserstem.
+
+**Open:** het herhalingsscript (`check-zinnen-herhaling.cjs`) slaat het vaste rijtje uit BLIEPO-KARAKTER.md nog niet over (punt 14 van de 4e ronde); niet aangepast. De kaart aan het eind gebruikt de bestaande kaartklok van de oude les (daar loopt de grote wijzer over de 12).
+
+## Ronde 15 — vijfde ronde: belangrijkste regel van Bliepo (8 november 2026)
+
+(Ronde 14 is bewaard voor de gouden klokles.) Jouw opdracht staat in `BOUWREGELS.md` (kader bovenaan, "vijfde ronde", 5.1, 5.10, 5.11, 14.36, 14.37, 15.9), `LESRECEPT.md` (kader, stap 2.7, testen), `REGELS-OVERZICHT.md` ("Vijfde ronde", R173 t/m R176) en `BLIEPO-KARAKTER.md`. Nieuw: `FOUTTABEL-squla-klok-gouden.md`. De oude versies staan in `regels-backup-20261108/` (achtervoegsel `-voor-vijfde-ronde`). Er is **niets aan lessen, code of database veranderd**, en er is **geen audio gemaakt**.
+
+### A. Naam hardop — PRIVACY REVIEW REQUIRED
+
+**PRIVACY REVIEW REQUIRED.** Plan (niet gebouwd): per kind wordt de voornaam 1 keer met de stem van Ruth gemaakt en bewaard; de zin wordt eromheen gezet (BLIEPO-KARAKTER.md §13).
+- Eerst alleen voor **testnamen**.
+- Voor **echte kinderen** is **toestemming van de ouder** nodig. Zonder toestemming staat de naam alleen op het scherm en zegt Bliepo de zin zonder naam.
+- Het moet in de **privacyverklaring** staan (de naam gaat naar een stemdienst buiten Nederland, ElevenLabs).
+- Audio maken kan pas **na 28 november** en **na jouw akkoord**.
+
+### B. Kosten voor Ruth (ElevenLabs), berekend, niet gemaakt
+
+Uitgerekend zoals de site rekent (`src/lib/stem-server.ts`): elk stukje krijgt de toonaanwijzing "[warm and cheerful]" erbij (20 tekens), getallen tellen voluit, en het model `eleven_v4_turbo` telt de helft.
+- **Alle 203 zinnen uit BLIEPO-KARAKTER.md** (257 stukjes, want zinnen met `{naam}` of een getal worden in stukjes gemaakt): ± 10.100 tekens, dat is **± 5.100 tegoed**.
+- **10 namen** (bijvoorbeeld Testkind en 9 testnamen): ± 250 tekens, dat is **± 125 tegoed**.
+- **Samen: ± 5.200 tegoed.** Mislukt een zin bij het terugluisteren, dan wordt hij opnieuw gemaakt (hooguit 4 keer): in het ergste geval ± 21.000 tegoed. Meestal lukt het de eerste keer.
+- Getallen in de zinnen (zoals {n} of {uur}) komen uit de vaste getal-stukjes die al bestaan (3.2); als die nog niet allemaal met Ruth bestaan, komt daar iets bij.
+- Dit is **meer dan 5.000**, dus volgens harde regel 9 eerst jouw akkoord. **Audio maken kan pas na 28 november en na jouw akkoord.** Hoeveel tegoed er nu nog over is, heb ik niet opgevraagd (geen ElevenLabs gebruikt).
+
+### C. Vragen die ik niet zelf heb beslist (veiligste keuze staat nu in de regels)
+
+1. **Naam: hoe vaak?** Je zei "niet vaker dan 1 keer per paar vragen". BOUWREGELS 3.17 zegt "hooguit 1 à 2 keer per les". Nu geldt: hooguit 2 keer per les, met minstens 3 vragen ertussen. Mag het vaker?
+2. **Beginzinnen:** je vroeg zinnen voor het begin van de les. BOUWREGELS 4.3 zegt: de beginzin is per les eigen. Nu: de 5 beginzinnen zijn alleen een korte groet vóór de eigen beginzin van de les. Klopt dat?
+3. **Aanmoedigen tijdens het nadenken:** bij een keuzevraag komt geen aanwijzing (6.10b), en bij een opdracht komt na 5 à 6 s het hulphandje met zijn eigen zin. Nu: de aanmoedigingen alleen bij een opdracht, pas als het kind daarna nog steeds niets doet (voorstel ± 15 s), hooguit 1 keer. Goed zo?
+4. **"Veel fouten"** voor de eindzin "Volgende keer gaat het nog beter": nu voorgesteld 4 of meer vragen met een fout. Ander getal?
+5. **Robotzinnen:** van alle 203 zinnen zijn er 45 robotzinnen (± 1 op de 4,5). Zonder de reacties per onderwerp is het 33 van de 143 (± 1 op de 4). Genoeg zo?
+6. **Meer dan 150 zinnen:** de aantallen per categorie die je noemde, zijn samen ± 200. Wil je er zinnen uit halen?
+7. **Gouden klokles, 1e fout:** de les wacht nu na de reactie op de blauwe pijl (zoals het draaiboek) en dan komt de vraag terug. Mag dat zo blijven, of moet de vraag vanzelf terugkomen?
+8. **Spiegelbeeld bij de klok:** bij 10 uur kiest een kind soms 2 uur, bij 2 uur soms 10 uur. Dat kan spiegelbeeld-lezen zijn, maar het is niet zeker. Nu staat het als "niet duidelijk". Wil je "spiegelbeeld" als eigen denkfout?
+9. **Code later (na akkoord):** de gouden klokles moet nog worden gelijkgetrokken met de fouttabel (andere uitleg bij dezelfde denkfout 2 keer, zinnen uit §10 bij "niet duidelijk", de denkfout bewaren in de voortgang). Het herhalingsscript moet het rijtje uit §10 overslaan. Het ouderdashboard bouwen we niet.
+10. **Bestaande lessen:** die zijn niet veranderd. Wil je later dat ik ook daar fouttabellen maak (eerst 1 les als voorbeeld)?

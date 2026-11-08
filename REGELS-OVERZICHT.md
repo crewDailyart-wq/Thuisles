@@ -6,7 +6,7 @@ Gemaakt op 8 november 2026 en bijgewerkt na de tweede ronde besluiten van Sara (
 
 ## Samenvatting
 
-- **Aantal regels:** 172 (R1 t/m R172), per onderwerp hieronder.
+- **Aantal regels:** 176 (R1 t/m R176), per onderwerp hieronder. R173 t/m R176 zijn erbij gekomen in de vijfde ronde (belangrijkste regel van Bliepo).
 - **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). In de derde ronde (8 november) besliste Sara over een deel van B36 t/m B45 (zie "Derde ronde" hieronder); in de vierde ronde besliste Sara over de rest (zie "Vierde ronde"). Oudere open punten (15 t/m 30) staan in `OVERIGE-BOTSINGEN.md`. Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
 - Daarnaast een lijst met **dubbele of verouderde regels** (D1 t/m D12). Die spreken elkaar niet echt tegen, maar staan nog op een oude plek.
 - De belangrijkste botsing is **B1**: het rode rondje komt ook als het kind tikt, niet alleen als Bliepo iets noemt.
@@ -67,6 +67,28 @@ Sara heeft over een deel van de twijfels besloten. De oude versie staat in `rege
 | T25 / B45 Heel snel | "'Heel snel' = de grens uit het draaiboek; staat die er niet, dan binnen 2 seconden na het einde van de vraag." | 6.10 | deels (aanwijzing na 5-6 s nog open) |
 
 Bijgewerkt naar deze regels: `FOUTEN-VOORBEELDEN.md` (F1, F2, F5), `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1.10, `SQULA-VOORTGANG.md` (logica-controle), `ONTWERPREGELS.md`, `CLAUDE.md` en het geheugen. Nieuw: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`.
+
+---
+
+## Vijfde ronde (8 november 2026): ⭐ de belangrijkste regel van Bliepo
+
+> **BELANGRIJKSTE REGEL VAN BLIEPO: Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
+> Geldt voor lessen die we vanaf nu bouwen (eerst de gouden klokles squla-klok-gouden). Bestaande lessen later, na akkoord van Sara.
+
+De oude versie staat in `regels-backup-20261108/REGELS-OVERZICHT-voor-vijfde-ronde.md`.
+
+| Onderdeel | Besluit Sara (5e ronde) | Regel in BOUWREGELS | Stand |
+|---|---|---|---|
+| Fouttabel per vraag | Vooraf, per fout antwoord: denkfout, eerste zin (zonder "fout"), hint voor die denkfout, wat er op het scherm gebeurt. Niet duidelijk = algemene hint, geen verzonnen reden. | 15.9 (1), 5.10, 5.11 | besloten |
+| Verloop bij fout | 1e: 1,5 s rood, vraag en knoppen weg, eerste zin + hint, vraag terug. 2e: uitleg bij de nieuwe denkfout, zonder antwoord. 3e: samen voordoen, door. Zelfde denkfout 2×: vriendelijk zeggen en anders uitleggen. Nooit dezelfde zin 2× achter elkaar. | 15.9 (2), 5.1 | besloten |
+| Controle | Les pas klaar met een fouttabel bij elke vraag; logica-controle en kind-test per fout antwoord. | 14.36, 14.37, 15.9 (3) | besloten |
+| Bewaren voor ouders | Denkfout in de voortgang; ouderdashboard nu NIET bouwen. | 15.9 (4) | besloten (nog niet gebouwd) |
+| Zinnen | BLIEPO-KARAKTER.md uitgebreid: 203 eigen zinnen in 10 categorieën, ± 1 op de 4 een robotzin (groen scherm, nakijken, geheugen). Rijtje "eerste zin als de denkfout niet duidelijk is" mag als vast rijtje. | 5.11, 3.11 | besloten |
+| Naam hardop | Alleen plan, niet bouwen; PRIVACY REVIEW REQUIRED. | 3.17, BLIEPO-KARAKTER.md §13 | plan |
+
+Nieuw bestand: `FOUTTABEL-squla-klok-gouden.md` (fouttabel van de gouden klokles; de code is niet veranderd). Bijgewerkt: `BOUWREGELS.md`, `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `KEUZES-VOOR-SARA.md` (Ronde 15).
+
+Nieuwe regels in het overzicht: **R173** (fouttabel per vraag), **R174** (verloop bij fout volgens de denkfout), **R175** (controle per fout antwoord), **R176** (denkfout bewaren). Zie "2. Reacties van Bliepo" en "12. Testen en controle" hieronder.
 
 ---
 
@@ -523,6 +545,8 @@ Bijgewerkt: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`, `KEUZE
 - **R35.** Een afgerond uitlegvoorbeeld niet meteen herhalen als eerste gewone opgave. Bron: CL r. 50-52; BR 3.23 aanvulling.
 - **R36.** Verzin geen nieuwe hulpstappen buiten dit patroon; kijk per vraagsoort eerst in INSPIRATIE.md. Bron: BR 5.1; MEM:hulp-na-fout-hoofdlijnen punt 7. Zie B27.
 - **R37.** De naam van het kind hooguit 1 à 2 keer per les, nooit bij een fout; zonder naamfragment de zin zonder naam. Bron: BR 3.17; PLAN §1d; MEM:hulp-na-fout-hoofdlijnen punt 3.
+- **R173. ⭐ (5e ronde)** Belangrijkste regel van Bliepo: hij probeert altijd de denkfout van het kind te begrijpen en reageert daarop. Elke vraag heeft vooraf een fouttabel (fout antwoord, denkfout, eerste zin zonder "fout", hint, wat er op het scherm gebeurt); niet duidelijk = algemene hint, geen verzonnen reden. Voor lessen vanaf nu. Bron: BR 15.9, 5.10, 5.11.
+- **R174. (5e ronde)** Verloop bij fout volgens de denkfout: 1e fout rood 1,5 s, vraag en knoppen even weg, eerste zin + hint, vraag terug; 2e fout uitleg bij de nieuwe denkfout zonder antwoord; 3e fout samen voordoen en door; zelfde denkfout 2× = vriendelijk zeggen en anders uitleggen; nooit dezelfde zin 2× achter elkaar. Bron: BR 15.9, 5.1.
 - **R38.** Eerst 1 voorbeeld per vraagsoort laten zien, pas na akkoord van Sara uitrollen. Bron: BR 5.10; MEM:hulp-na-fout-hoofdlijnen punt 7.
 
 ### 3. Beginscherm en lesopbouw
@@ -678,6 +702,8 @@ Bijgewerkt: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`, `KEUZE
 - **R160.** Claude speelt elke les helemaal (goed, 1× fout, 2× fout), op laptop én telefoon, met schermfoto's. Bron: BR 12.2.
 - **R161.** Een aparte controleur die niet meebouwt keurt elke klare les op ALLE regels; verslag in CONTROLE-SQULA.md; afgekeurd = repareren en opnieuw keuren. Bron: BR 12.3; MEM:onafhankelijke-controleur. Zie B29.
 - **R162.** Na elke aanpassing aan een Squla-les `npm run inhoudsvergelijk`; wat bewust weg is, met reden in WEGGEHAALD.md. Bron: BR 1.26.
+- **R175. (5e ronde)** Een les is pas klaar als elke vraag een fouttabel heeft. De logica-controle checkt per fout: passende reactie, hint past bij het scherm, geen hint verklapt het antwoord. De kind-test-helper kiest bewust elk fout antwoord en schrijft per fout op of Bliepo's reactie klopt met de denkfout. Bron: BR 14.36, 14.37.
+- **R176. (5e ronde)** De denkfout wordt in de voortgang van het kind bewaard, voor een later ouderdashboard; het dashboard nu niet bouwen. Bron: BR 15.9 (4).
 - **R163.** `npm run bewaak` (schermcontract en waardebewaking) draait vóór elke commit; nieuw veld meteen in het contract. Bron: CL HARDE REGEL 1. Zie B31.
 
 ### 13. Werkwijze

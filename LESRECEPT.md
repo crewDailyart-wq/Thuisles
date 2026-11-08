@@ -1,5 +1,11 @@
 # LESRECEPT — zo bouw je een gouden les
 
+> ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
+> **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
+>
+> (Sara, 8 november 2026, vijfde ronde; BOUWREGELS 15.9.) Maak vóór het bouwen per vraag een **fouttabel** (stap 2.7): fout antwoord, waarschijnlijke denkfout, Bliepo's eerste zin, hint voor precies die denkfout, wat er op het scherm gebeurt. Denkfout niet duidelijk = algemene hint, geen verzonnen reden. De denkfout wordt bewaard in de voortgang. **Een les is pas klaar als elke vraag een fouttabel heeft.**
+> **Geldt voor lessen die we vanaf nu bouwen** (eerst squla-klok-gouden). Bestaande lessen later, na akkoord van Sara.
+
 > **EERST DIT (Sara, 8 november 2026, vierde ronde; BOUWREGELS 15.8).**
 > **We maken geen compleet nieuwe lessen.** Elke gouden les en elke latere les is onze bestaande Squla-les, opnieuw gebouwd in de stijl van LESRECEPT.md en het draaiboek van zijn onderwerp. Inhoud, getallen, vragen en antwoordkeuzes blijven hetzelfde als in de Squla-les; niets toevoegen of weglaten zonder akkoord van Sara. Bouw steeds een nieuwe versie naast de bestaande les; de oude les blijft ongewijzigd staan (harde regel 8 en 9). Pas na akkoord van Sara vervangt de nieuwe versie de oude voor kinderen.
 
@@ -35,6 +41,18 @@ Lees in deze volgorde:
 4. **Tel de vragen.** Alle vragen van de Squla-les komen erin, geen enkele valt weg en er komt er geen bij (zie 4). Minimaal 15 (11.1).
 5. **Noteer wat anders moet voor Nederland** (draaiboek, deel "Nederland, Bliepo en Squla"): "half 5" = 4:30, euro's, geen a.m./p.m., geen mensen.
 6. **Raak de oude les niet aan.** De gouden les is een nieuw bestand. De bestaande Squla-les blijft precies zoals hij is.
+7. **Maak de fouttabel (vijfde ronde, BOUWREGELS 15.9, 14.36).** Maak een bestand `FOUTTABEL-<les>.md` (voorbeeld: FOUTTABEL-squla-klok-gouden.md). Per vraag een tabel, met per fout antwoord (bij sleep- en invulvragen de meest voorkomende foute antwoorden) een rij:
+
+   | Fout antwoord | Waarschijnlijke denkfout | Eerste zin van Bliepo | Hint | Op het scherm |
+   |---|---|---|---|---|
+
+   - **Denkfout:** kies een naam uit de vaste lijst (verkeerde wijzer, getal ernaast, 1 te veel, 1 te weinig, plus en min verwisseld, groter en kleiner verwisseld, andere kant van de klok, …) of **"niet duidelijk"**. Verzin geen reden.
+   - **Eerste zin:** laat merken dat Bliepo snapt wat het kind dacht, met inhoud ("Je keek naar de lange wijzer."), zonder "fout", zonder naam, zonder vaste opening. Bij "niet duidelijk": een zin uit het rijtje in BLIEPO-KARAKTER.md §10.
+   - **Hint:** pakt precies die denkfout aan, wijst naar 1 keuze (14.31), verklapt het antwoord niet.
+   - **Op het scherm:** oranje ring (klok, alleen bij hint/doel/2× fout), hulphandje, blokken op een rij, samen tellen, een wijzer die oplicht.
+   - Per vraag ook: de **uitleg na de 2e fout** per denkfout (zonder antwoord), een **andere uitleg** voor als dezelfde denkfout 2 keer komt, en het **samen voordoen** na de 3e fout.
+   - Zet bij elke rij welke denkfout in de voortgang wordt bewaard (15.9, punt 4).
+   Bouw de reacties in de code pas als de tabel af is. Geen vraag zonder tabel.
 
 ---
 
@@ -80,6 +98,7 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 
 ### 3.7 Fout (1e, 2e, 3e)
 Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooit het woord "fout", geen rood op de keuze (5.3).
+**Vijfde ronde (BOUWREGELS 15.9):** alles hieronder komt uit de **fouttabel** van de vraag (stap 2.7). 1e fout: vraag en knoppen even weg, eerste zin plus hint voor de denkfout, het beeld uit de tabel, dan komt de vraag terug. 2e fout: uitleg die past bij de denkfout van de nieuwe keuze, zonder het antwoord. 3e fout: samen voordoen en door. **Twee keer dezelfde denkfout:** Bliepo zegt dat vriendelijk en legt het op een andere manier uit. Nooit dezelfde zin 2 keer achter elkaar. De denkfout gaat naar de voortgang.
 - **1e fout:** een korte reactie op wat het kind koos. Een hint in beeld alleen als die bij de vraag past. Het kind probeert meteen opnieuw (5.1). Bij een keuzevraag verdwijnt de vraag tijdens de hint, maar de hint zegt waar het over gaat; bij een opdracht blijft de opdrachtregel staan (14.32). De hint wijst naar precies 1 keuze (14.31).
 - **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, **zonder het goede antwoord te laten zien**. Daarna een **3e poging** (5.1).
 - **3e fout:** Bliepo doet het **samen met het kind voor**, laat nu pas het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
@@ -138,6 +157,12 @@ Test als **Testkind** (groep 3), nooit als een echt kind (12.1). Speel elke situ
 | Startvraag (alleen klok) | Ja = proef van 2 opgaven; 2 fouten in de proef = alsnog de uitleg |
 | Groep tikken | Alleen een vinkje, geen rand of gloed; nog een tik haalt het vinkje weg |
 | Heel snel (0,3 s) | Alleen een korte opmerking als het draaiboek er een heeft; bij Tellen, Min en Getallenlijn niets |
+| **Elk fout antwoord apart** (vijfde ronde) | Kies per vraag elk fout antwoord uit de fouttabel minstens 1 keer. Klopt de eerste zin met de denkfout? Past de hint bij wat je ziet? Verklapt niets het antwoord? Is de denkfout bewaard? |
+| **2 keer dezelfde denkfout** | Bliepo zegt vriendelijk dat het weer hetzelfde was en legt het op een andere manier uit; geen zin 2 keer achter elkaar |
+| **2e fout met een andere denkfout** | De uitleg past bij de nieuwe denkfout, zonder het antwoord |
+| **Denkfout niet duidelijk** | Een zin uit het rijtje (BLIEPO-KARAKTER.md §10) en een algemene hint; geen verzonnen reden |
+
+**Test per foute keuze (14.37):** leg per vraag in een tabel vast: gekozen antwoord, denkfout volgens de fouttabel, wat Bliepo zei, wat er op het scherm gebeurde, klopt het (ja/nee + reden).
 
 Leg per situatie in een tabel vast: reactietijd na de klik, spreektijd, tijd tot de volgende stap. Wijkt een tijd duidelijk af van het draaiboek, pas het aan of schrijf de reden op.
 
@@ -154,6 +179,7 @@ Loop elke vraag na (SQULA-VOORTGANG.md, plan logica-controle):
 - Eenvoudige woorden (14.33, WOORDEN-GROEP3.md); het werkwoord past bij wat het kind doet (14.35).
 - Alle sommen, tijden en bedragen kloppen (11.9).
 - Geen van de fouten F1 t/m F6 uit FOUTEN-VOORBEELDEN.md.
+- **Fouttabel (vijfde ronde, 14.36):** elke vraag heeft er een; elke fout heeft een passende reactie; de hint past bij wat het kind ziet; geen hint verklapt het antwoord; "niet duidelijk" heeft geen verzonnen reden; er is een andere uitleg voor dezelfde denkfout 2 keer.
 - Draai `npm run inhoudsvergelijk`: geen vraag of keuze verdwenen (1.26).
 
 ---
@@ -162,6 +188,7 @@ Loop elke vraag na (SQULA-VOORTGANG.md, plan logica-controle):
 
 - Een **aparte helper** (Sonnet, bouwt niet mee) speelt de les alsof hij een kind van 6 is. Hij ziet alleen het scherm en hoort alleen wat Bliepo zegt.
 - Hij keurt af als hij twijfelt, als hij 2 goede antwoorden ziet, of als een zin niet klopt met het beeld.
+- **Hij kiest bewust verschillende foute antwoorden** (vijfde ronde, 14.37): elk fout antwoord uit de fouttabel minstens 1 keer, en 1 keer dezelfde denkfout 2 keer achter elkaar. Per fout schrijft hij op of Bliepo's reactie klopt met de denkfout.
 - Daarna keurt de onafhankelijke controleur de les op alle regels van BOUWREGELS.md (12.3). Verslag in CONTROLE-SQULA.md.
 - Afgekeurd = verbeteren en opnieuw laten keuren.
 - Geef elke helper de harde regels mee, zeker 8 en 9 (harde regel 10). Hooguit 3 helpers tegelijk.
