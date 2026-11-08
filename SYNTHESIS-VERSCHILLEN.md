@@ -55,3 +55,19 @@ Deze gaan over werkwijze, beeld of techniek; Synthesis zegt er niets over:
 - 32 (vloeiend)
 - 34 (geen nieuwe leerdoelen)
 - 35 (testprofiel)
+
+## Aanvulling 8 november, tweede ronde
+
+Opnieuw gespeeld met meetscript: Color Count, Counting On, Count the Jumps, Adding below 10, Dot Destruction en Part Part Whole. Details staan in `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §2–§8.
+
+| Besluit | Wat Synthesis doet (nieuw gezien) | Advies |
+|---|---|---|
+| **9. Na de 2e fout: uitleg, kleine stap, door; de les stopt nooit** | **HB: de les stopt soms wél.**<br>- Counting On: na veel fouten zei de tutor "zullen we pauze nemen en later terugkomen?" en ging naar het hoofdmenu.<br>- More or Less: hetzelfde.<br>**Onbeperkte pogingen** bij springen op de getallenlijn en bij splitsen, steeds met dezelfde zin.<br>**Kleine stap soms al na de 1e fout:**<br>- min: het kind zapt zelf;<br>- plus: het kind doet er zelf stippen bij;<br>- getallenlijn: samen het verschil uitwerken.<br>**Na de 2e fout soms geen kleine stap:** het antwoord en door (tellen-keuze, minsom, delen tellen). | Sara laten kiezen. Advies: ons besluit houden (niet stoppen, niet eindeloos). De kleine stap overnemen waar Synthesis die heeft, ook al bij de 1e fout als het kind iets kan doen. |
+| **12. Ja = meteen oefenen** | Bij Part Part Whole geeft Ja een **korte proef**. 2 fouten in die proef zetten het kind terug naar de **hele les vanaf het begin** (W). Bij Count the Jumps zijn er 2 vragen: opfrisser ja/nee en "laat zien wat je weet". | Sara laten kiezen. Overweeg: Ja = oefenen, maar na 2 fouten alsnog de uitleg (zoals Synthesis). |
+| **6. Meerkeuze meteen, invullen met Controleer** | Splitsen wordt **automatisch nagekeken** zodra het totaal klopt, zonder vinkje. Een **fout getypt getal** (plus, de som in vakjes) krijgt **geen reactie**: de les wacht op het goede getal (W). | Houden (Controleer). Geen "stille" foute invoer overnemen. |
+| **3.15 Geen knop-uitleg** | **HB in 4 lessen:** "tik op het blauwe vinkje", "tik op inleveren als je het hebt", "gebruik deze knoppen", "tik op de +". | Houden (besluit van Sara). Ter info. |
+| **14.32 De vraag blijft in beeld tijdens een hint** | **Deels wel:** bij opdrachten met een kopregel blijft de opdracht staan tijdens de hint. Dat geldt voor splitsen, zelf maken bij tellen, de som op de getallenlijn en "we doen 5 − 2" bij min. Bij keuzevragen komt de vraag pas daarna terug, vaak met andere knoppen. | Klopt met Synthesis bij opdrachten. Houden. |
+| **4. Fel/zacht-rondjes** | **HB:** wat bij elkaar hoort blijft tegelijk zichtbaar, maar zonder rondjes en zonder fel/zacht:<br>- splitsen: deel 1, deel 2 en het totaal elk in een eigen kleur, tegelijk;<br>- getallenlijn: begin, eind en boogjes;<br>- tellen: nummers in de getelde vakjes;<br>- Counting On: het startvakje met kader en het getikte vakje fel. | Sara laten kiezen (zie de eerste tabel). |
+| **7, 8, 13. Geen vaste woordjes** | Bij goed na een fout gaf de tutor 1× **helemaal geen lof** en ging meteen door (tellen). Een andere keer "Precies + aantal". In spelblokken (getallenlijn) is er **geen lof**, alleen een kristal en "nog een". | Ter info: Synthesis houdt lof soms bewust weg. |
+| **Snel geantwoord** (geen besluit) | Counting On: een opmerking over snel bij een antwoord binnen 2,1 s, niet bij 2,5 s of later. Tellen, min en getallenlijn: **nooit** een opmerking over snel, ook niet bij 0,3 s. | Ter info. |
+| **De verder-knop** (vraag van Sara, geen besluit) | De ronde blauwe pijl staat er **vanaf het begin van de zin** en kan meteen getikt worden. **Tikken breekt de zin af** (HB). Niet tikken: **geen herinnering**, tot 37 s getest. Per les verschillend: soms gaat bijna alles vanzelf door (0,5–0,8 s), soms wacht bijna alles op de pijl. | Voor Sara om te kiezen: zin afbreken toestaan of niet. Het patroon per les staat in DRAAIBOEKEN §2.3, §3.3, §4.3, §6.3, §7.3, §8.3. |

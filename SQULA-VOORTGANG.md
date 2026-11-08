@@ -296,13 +296,13 @@ Opdracht: 8 november 2026 (gouden lessen, BOUWREGELS hoofdstuk 15).
 | Onderwerp | Gekoppeld | Gespeeld | Draaiboek klaar | Open punten |
 |---|---|---|---|---|
 | Klokkijken | ja (Hour Hand Hunt; + Set the Hour, Halfway Around, Five Minutes Later/Back in Time) | ja: 28 okt + 8 nov (wachten, snel, 3e fout) | ja, met open punten (randgevallen) | DRAAIBOEKEN §1.11 |
-| Tellen | ja (Color Count) | alleen R2/R3 (okt) | verloop ja, reacties deels | 2e/3e fout, wachten, snel, tijden |
-| Huisnummers | ja (Counting On) | alleen R2/R3 | verloop ja, reacties deels | idem + ervoor/terugtellen |
-| Getallenlijn | ja (Count the Jumps) | alleen R2/R3 | verloop ja, reacties deels | idem + rangschikken |
+| Tellen | ja (Color Count) | ja, 8 nov volledig (alle situaties, pijl en vinkje gemeten) | ja (tot 10) | handje; grote groepen (The Next 10) |
+| Huisnummers | ja (Counting On) | ja, 8 nov 2× (fouten + alles goed tot einde) | ja (zoeken, verder tellen) | ervoor/ertussen/terugtellen; vinkje tijdens praten |
+| Getallenlijn | ja (Count the Jumps) | ja, 8 nov volledig (alle vraagsoorten, 1e-3e fout, wachten, snel) | ja (tikken, springen) | rangschikken, terugtellen, opfrisser-route |
 | Meer en minder | ja (More or Less) | R2/R3 + 8 nov (wachten 14,7 s hint, 2e en 3e fout) | grotendeels | snel; stoppen na 3e fout uitzoeken |
-| Plussommen | ja (Adding below 10) | alleen R2/R3 | verloop ja, reacties deels | 2e/3e fout, wachten, snel, tijden |
-| Minsommen | ja (Dot Destruction) | alleen R1/R2/R3 | verloop ja, reacties deels | idem + gemiste zinnen |
-| Splitsen | ja (Part Part Whole) | alleen R2/R3 | verloop ja, reacties deels | idem + tot 20, eerlijk verdelen |
+| Plussommen | ja (Adding below 10) | ja, 8 nov volledig | ja (tot 10) | antwoord < 1 s; plus boven 10 |
+| Minsommen | ja (Dot Destruction) | ja, 8 nov volledig | ja (tot 10) | goed na fout bij oefensom; krabbelcirkel |
+| Splitsen | ja (Part Part Whole) | ja, 8 nov volledig (route Ja + hele les) | ja (tot 10) | route Nee alleen R2; snel; tot 20; verdelen |
 | Geld | VERVANGEND (Add Three Numbers) | R2 | deels | alles over geld; besluit Sara |
 | Tijd en Dagen | VERVANGEND (Twice a Day) | R2 | deels | dagen, kalender; besluit Sara |
 | Meten en Rekentaal | VERVANGEND (Arcade Less or More, spel) | 8 nov (fout, 3 fouten, wachten) | nee | geen tutorles; besluit Sara |
@@ -320,3 +320,21 @@ Opdracht: 8 november 2026 (gouden lessen, BOUWREGELS hoofdstuk 15).
 - Tikken op de klok gaat met nagebootste pointer-events op `circle.cursor-pointer`.
 - Keuzes klikken via de knoptekst.
 - Een JS-aanroep mag niet langer dan 45 s duren.
+
+**Verder-knop en vinkje (8 nov, Color Count):**
+- De pijl staat er vanaf het begin van de zin en is meteen tikbaar.
+- Tikken tijdens de zin breekt de zin af (W).
+- Niet tikken: de les wacht. Bij 23–32 s wachten kwam geen herinnering (HB).
+- Het vinkje verdwijnt niet vanzelf (tot 48 s gewacht).
+- Lof, nieuwe uitleg en "ik help je" wachten op de pijl. De hint na de 1e fout en het einde van "samen maken" gaan vanzelf door.
+- Counting On (8 nov): bijna alle zinnen gaan vanzelf door (0,5–0,8 s), ook met de pijl in beeld. Na veel fouten pauze en terug naar het menu (W).
+- Count the Jumps (8 nov): zinnen gaan vanzelf door; springen fout = onbeperkt dezelfde zin; invullen 3 pogingen (kans, hulpvraag, antwoord).
+- Adding below 10 (8 nov): aanwijzing bij niets doen na 5-9 s (opdrachten); fout getypt getal = geen reactie; na 2e fout bij aanvullen een makkelijker tussenstuk.
+- Dot Destruction (8 nov): bijna alle zinnen wachten op de pijl (anders dan Counting On/Count the Jumps); 1e fout = samen doen in de machine, 2e fout = antwoord en door.
+- Part Part Whole (8 nov): 2 fouten in de korte proef = hele les vanaf begin; splitsen fout = onbeperkt dezelfde voorrekenzin.
+- **Algemeen (8 nov, 6 lessen):**
+  - De pijl staat er altijd vanaf het begin van de zin. Tikken tijdens de zin breekt de zin af (W, HB).
+  - Niet tikken: geen herinnering (tot 37 s getest).
+  - Of zinnen vanzelf doorgaan verschilt per les: Counting On, Count the Jumps en Adding below 10 meestal vanzelf; Color Count, Dot Destruction en Part Part Whole vaak op de pijl.
+  - Het vinkje verdwijnt nooit vanzelf.
+  - Het pauzemenu verscheen soms vanzelf (oorzaak onbekend).
