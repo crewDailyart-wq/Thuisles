@@ -58,3 +58,4 @@ Per regel: datum · les · wat · reden · teruggezet?
 ## Ronde 9 – vormen-opruimen-1
 
 8 nov 2026 · squla-vormen-opruimen-1 · niets weggehaald: alle plaatjes, keuzes en zinnen staan er nog; alleen grootte, plek en ligging (potloden plat, in de tekendoos) veranderd · n.v.t.
+8 nov 2026 · squla-klok-hoelaat-1-gouden (nieuwe versie, nog niet voor kinderen) · alle zinnen, keuzes en vragen uit het lesbestand squla-klok-gouden.tsx · niet weg: ze zijn verhuisd naar squla-klok-gouden-zinnen.ts (fouttabel, BOUWREGELS 15.9). Wat echt uit de half-af versie (back-up 96d6c65) ging: de vragen tussendoor in het oefenblok en de bonusvraag (voegden vragen toe, 15.8; wachten op akkoord, KEUZES-VOOR-SARA ronde 14). De oude les squla-klok-hoelaat-1 is niet veranderd · terug te halen uit commit 96d6c65

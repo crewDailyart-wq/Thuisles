@@ -68,6 +68,11 @@ export type GoudenKlokProps = {
   doel?: string | null;
   /** Het verhaal: een plaatje links van de klok (`naast`) of een zachte sfeer-achtergrond. */
   verhaal?: { naam: string; plek: "naast" | "hoog" | "laag" | "sfeer"; naspeel?: GoudenNaspeel; speel: number } | null;
+  /**
+   * Het hulphandje (BOUWREGELS 5.10, 6.10b): een getekend handje dat naar dit getal wijst (op de klok of op de
+   * getallenlijn). Het tikt niet zelf: het kind doet de laatste tik.
+   */
+  hand?: number | null;
 };
 
 /* ---------- maten (punten van het vlak, 980 × 720) ---------- */
@@ -100,7 +105,7 @@ const kortst = (van: number, naar: number) => ((((naar - van) % 360) + 540) % 36
 const lijnplek = (n: number) => ({ x: -310 + ((n - 1) * 620) / 11, y: LIJN_Y });
 const draaiduur = (minuten: number) => Math.min(2600, 500 + Math.abs(minuten) * 2.2);
 
-type Beeld = Required<Pick<GoudenKlokProps, "wijzers" | "uurwijzer" | "minuutwijzer" | "licht" | "ring" | "ringWijzer" | "ringPuls" | "getalKleur" | "driehoek" | "pijl">>;
+type Beeld = Required<Pick<GoudenKlokProps, "wijzers" | "uurwijzer" | "minuutwijzer" | "licht" | "ring" | "ringWijzer" | "ringPuls" | "getalKleur" | "driehoek" | "pijl" | "hand">>;
 type Regels = { actief: boolean; tikGetal: boolean; beweegbaar: boolean; alleenGetal: number | null };
 
 interface Scene {
@@ -155,6 +160,9 @@ function maakScene(lettertype: () => string, begintijd: number) {
       verhaalSpeel = 0;
       lichtTween: import("phaser").Tweens.Tween | null = null;
       lichtNu: GoudenWijzer | null = null;
+      hand!: Img;
+      handN: number | null = null;
+      handVorm: "klok" | "lijn" = "klok";
 
       constructor() {
         super("goudenklok");
@@ -305,6 +313,40 @@ function maakScene(lettertype: () => string, begintijd: number) {
           c.fill();
           c.stroke();
         });
+        /* Het hulphandje: een simpele witte hand met de wijsvinger omhoog, dun donker randje, zachte schaduw (stijl B). */
+        this.canvasPlaatje("gk-hand", 90, 120, (c) => {
+          const vorm = () => {
+            c.beginPath();
+            c.roundRect(34, 6, 20, 62, 10);
+            c.roundRect(16, 52, 60, 56, 18);
+            c.roundRect(52, 50, 17, 30, 8);
+            c.roundRect(64, 58, 15, 28, 7);
+            c.roundRect(8, 66, 18, 30, 9);
+          };
+          c.save();
+          c.shadowColor = "rgba(0,0,20,0.45)";
+          c.shadowBlur = 10;
+          c.shadowOffsetY = 4;
+          c.fillStyle = "#ffffff";
+          vorm();
+          c.fill();
+          c.restore();
+          c.strokeStyle = "#2b3a66";
+          c.lineWidth = 3;
+          vorm();
+          c.stroke();
+          c.fillStyle = "#ffffff";
+          vorm();
+          c.fill();
+          c.strokeStyle = "rgba(43,58,102,0.55)";
+          c.lineWidth = 2;
+          c.beginPath();
+          c.moveTo(54, 66);
+          c.lineTo(54, 78);
+          c.moveTo(66, 70);
+          c.lineTo(66, 84);
+          c.stroke();
+        });
         const font = lettertype();
         const getal = (sl: string, n: number, kleur: string, dik: number) =>
           this.canvasPlaatje(sl, 80, 64, (c) => {
@@ -338,7 +380,8 @@ function maakScene(lettertype: () => string, begintijd: number) {
         this.lichtUur = p("gk-licht-uur").setAlpha(0);
         this.uur = p("gk-uur");
         this.midden = p("gk-midden");
-        this.box.add([this.pijl, this.driehoek, this.lichtMin, this.min, this.lichtUur, this.uur, this.midden]);
+        this.hand = p("gk-hand").setOrigin(0.48, 0.03).setVisible(false);
+        this.box.add([this.pijl, this.driehoek, this.lichtMin, this.min, this.lichtUur, this.uur, this.midden, this.hand]);
         this.hoeken(begintijd * 0.5, begintijd * 6);
         this.tover(this.box);
 
@@ -423,7 +466,7 @@ function maakScene(lettertype: () => string, begintijd: number) {
         vervaag(this.plaat, klok ? 1 : 0);
         vervaag(this.streepjes, klok ? 1 : 0);
         vervaag(this.lijn, klok ? 0 : 1);
-        if (this.beeld) this.zetBeeld(this.beeld);
+        if (this.beeld) this.zetBeeld({ ...this.beeld });
       }
 
       zetBeeld(b: Beeld) {
@@ -439,6 +482,31 @@ function maakScene(lettertype: () => string, begintijd: number) {
         this.zetGetalKleur(klok ? b.getalKleur : null);
         this.zetDriehoek(klok ? b.driehoek : null);
         this.zetPijl(klok ? b.pijl : null);
+        this.zetHand(b.hand);
+      }
+
+      /**
+       * Het handje wijst met de vingertop naar het getal: op de klok van buiten de rand naar binnen (dan bedekt het de
+       * wijzers niet), op de getallenlijn van onderen. Het beweegt zacht heen en weer naar het getal toe.
+       */
+      zetHand(n: number | null) {
+        if (n === this.handN && this.handVorm === this.vorm) return;
+        this.handN = n;
+        this.handVorm = this.vorm;
+        this.tweens.killTweensOf(this.hand);
+        if (n == null) {
+          this.hand.setVisible(false);
+          return;
+        }
+        const lijn = this.vorm === "lijn";
+        const tip = lijn ? { x: lijnplek(n).x, y: LIJN_Y + 62 + 26 } : op(n * 30, 0.93 * R);
+        const hoek = lijn ? 0 : n * 30 + 180;
+        const stap = lijn ? { x: 0, y: -9 } : op(n * 30, -9);
+        this.hand.setScale(0.85).setPosition(tip.x, tip.y).setRotation(graad(hoek)).setVisible(true);
+        if (rustig) return;
+        this.hand.setAlpha(0);
+        this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });
+        this.tweens.add({ targets: this.hand, x: tip.x + stap.x, y: tip.y + stap.y, duration: 520, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
       }
 
       zetLicht(w: GoudenWijzer | null) {
@@ -806,6 +874,7 @@ export function GoudenKlok(props: GoudenKlokProps & Vlakbasis) {
     rondje = 0,
     doel = null,
     verhaal = null,
+    hand = null,
     meld,
     schaal,
   } = props;
@@ -837,8 +906,8 @@ export function GoudenKlok(props: GoudenKlokProps & Vlakbasis) {
   }, [scene, vorm]);
 
   useEffect(() => {
-    scene?.zetBeeld({ wijzers, uurwijzer, minuutwijzer, licht, ring, ringWijzer, ringPuls, getalKleur, driehoek, pijl });
-  }, [scene, wijzers, uurwijzer, minuutwijzer, licht, ring, ringWijzer, ringPuls, getalKleur, driehoek, pijl]);
+    scene?.zetBeeld({ wijzers, uurwijzer, minuutwijzer, licht, ring, ringWijzer, ringPuls, getalKleur, driehoek, pijl, hand });
+  }, [scene, wijzers, uurwijzer, minuutwijzer, licht, ring, ringWijzer, ringPuls, getalKleur, driehoek, pijl, hand]);
 
   useEffect(() => {
     scene?.zetVerhaal(verhaal);
