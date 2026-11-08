@@ -202,6 +202,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-klok-digitaal-1", titel: "De digitale klok", synthesis: "Squla groep 3 · Klokkijken · De digitale klok · level 1 (alleen leerdoel)" },
   { id: "squla-klok-digitaal-2", titel: "De digitale klok (moeilijker)", synthesis: "Squla groep 3 · Klokkijken · De digitale klok · level 2 (alleen leerdoel)" },
   { id: "squla-klok-hoelaat-1", titel: "Hoe laat is het?", synthesis: "Squla groep 3 · Klokkijken · Hoe laat is het? · level 1 (alleen leerdoel)" },
+  { id: "squla-klok-hoelaat-1-gouden", titel: "Hoe laat is het? (gouden les)", synthesis: "Gouden les · inhoud Squla groep 3 · Klokkijken · Hoe laat is het? · level 1 (squla-klok-hoelaat-1) · verloop draaiboek klokkijken (Hour Hand Hunt)" },
   { id: "squla-klok-hoelaat-2", titel: "Hoe laat is het? (moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Hoe laat is het? · level 2 (alleen leerdoel)" },
   { id: "squla-klok-hoelaat-3", titel: "Hoe laat is het? (nog moeilijker)", synthesis: "Squla groep 3 · Klokkijken · Hoe laat is het? · level 3 (alleen leerdoel)" },
   { id: "squla-klok-klokkijken-1", titel: "Klokkijken", synthesis: "Squla groep 3 · Klokkijken · Klokkijken · level 1 (alleen leerdoel)" },

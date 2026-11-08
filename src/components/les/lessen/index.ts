@@ -32,6 +32,8 @@ import { LESSEN_SQULA_PLUSSOMMEN } from "./squla-plussommen";
 import { LESSEN_SQULA_GELD } from "./squla-geld";
 import { LESSEN_SQULA_METEN } from "./squla-meten";
 import { LESSEN_SQULA_KLOK } from "./squla-klok";
+/* De gouden klokles (8 november 2026, BOUWREGELS hoofdstuk 15): een nieuwe les naast squla-klok-hoelaat-1. */
+import { LESSEN_SQULA_KLOK_GOUDEN } from "./squla-klok-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -65,6 +67,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_GELD,
   ...LESSEN_SQULA_METEN,
   ...LESSEN_SQULA_KLOK,
+  ...LESSEN_SQULA_KLOK_GOUDEN,
   ...LESSEN_SQULA_VORMEN,
   ...LESSEN_SQULA_REKENMIX,
 ];
