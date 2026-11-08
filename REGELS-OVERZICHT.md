@@ -7,7 +7,7 @@ Gemaakt op 8 november 2026 en bijgewerkt na de tweede ronde besluiten van Sara (
 ## Samenvatting
 
 - **Aantal regels:** 172 (R1 t/m R172), per onderwerp hieronder.
-- **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
+- **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). In de derde ronde (8 november) besliste Sara over een deel van B36 t/m B45 (zie "Derde ronde" hieronder); wat open is staat in `OVERIGE-BOTSINGEN.md`. Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
 - Daarnaast een lijst met **dubbele of verouderde regels** (D1 t/m D12). Die spreken elkaar niet echt tegen, maar staan nog op een oude plek.
 - De belangrijkste botsing is **B1**: het rode rondje komt ook als het kind tikt, niet alleen als Bliepo iets noemt.
 - Bron voor bijna alles: `BOUWREGELS.md` (afgekort **BR**). Andere afkortingen: **CL** = `CLAUDE.md`, **ONTW** = `ONTWERPREGELS.md`, **PLAN** = `LESSENPLAN.md`, **B-PH** = `src/components/les/BOUWEN-PHASER.md`, **B-OUD** = `src/components/les/BOUWEN.md`, **BESL** = `SYNTHESIS-ANALYSE/BESLUITEN.md`, **INSP** = `INSPIRATIE.md`, **MEM:naam** = geheugenbestand `naam.md`.
@@ -51,6 +51,22 @@ Na de vergelijking met Synthesis (zie `SYNTHESIS-VERSCHILLEN.md`) heeft Sara bes
 - **B43.** Besluit 9 (3e poging) tegenover de oude 5.1/5.4 en Synthesis; wat staat na de 2e fout op het scherm? = T22.
 - **B44.** 14.30 (splitsen vanzelf nakijken, meer goede antwoorden) tegenover 6.5, 14.26 (vinkje), F2/F5 en de scriptcontrole. = T23.
 - **B45.** Verder-pijl, tempo, vakjes, eerste-keer-uitleg, FOUTEN F1 en de onderwerpen die blijven liggen. = T24 t/m T29.
+
+## Derde ronde (8 november 2026): besluiten over de twijfels T15 t/m T30
+
+Sara heeft over een deel van de twijfels besloten. De oude versie staat in `regels-backup-20261108/REGELS-OVERZICHT-voor-derde-ronde.md`. Wat nog open is: `OVERIGE-BOTSINGEN.md`.
+
+| Twijfel / botsing | Besluit Sara (3e ronde, letterlijk) | Regel in BOUWREGELS | Stand |
+|---|---|---|---|
+| T15, T28 / B36 Meten | "Meten laten liggen (geen verandering aan Meten)." | 7.6, 7.8e, 7.9 | deels (lichtflits bij goed nog open; andere onderwerpen nog open) |
+| T17 / B38, B24 Kleur van getallen | "Getallen zijn niet standaard wit: de kleur van een getal past bij het voorwerp waar het naar verwijst." Kleurkoppeling in sommen blijft. | 2.1, 2.2, 14.20, 14.24 | besloten |
+| T18 / B39 Ring bij de klok | "Bij de klok wordt de ring om het getal oranje, niet rood." | 7.8e, 7.9 | deels (wanneer de ring komt, nog open) |
+| T19 / B40 Lofzinnen | "Lofzinnen komen in BLIEPO-KARAKTER.md." | 3.11, 3.13, 5.11 | besloten |
+| T20 / B41 Hulphandje | "Het hulphandje komt vanzelf; er komt geen knop." | 5.1, 5.10 | besloten |
+| T23, T27 / B44 Splitsen | Kwaliteitsregel 9 wordt "één juist antwoord, óf alle juiste antwoorden worden goed gerekend". | 11.2, 14.30, 15.5 | besloten |
+| T25 / B45 Heel snel | "'Heel snel' = de grens uit het draaiboek; staat die er niet, dan binnen 2 seconden na het einde van de vraag." | 6.10 | deels (aanwijzing na 5-6 s nog open) |
+
+Bijgewerkt naar deze regels: `FOUTEN-VOORBEELDEN.md` (F1, F2, F5), `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1.10, `SQULA-VOORTGANG.md` (logica-controle), `ONTWERPREGELS.md`, `CLAUDE.md` en het geheugen. Nieuw: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`.
 
 ---
 
@@ -328,6 +344,8 @@ Na de vergelijking met Synthesis (zie `SYNTHESIS-VERSCHILLEN.md`) heeft Sara bes
 
 **Gevolg:** te volgen als je goed leest (wit alleen zonder voorwerpen), maar het oude bestand zegt "boven 10 wit", wat 14.24 juist verbiedt.
 
+**Besluit Sara 8 nov, 3e ronde:** "Getallen zijn niet standaard wit: de kleur van een getal past bij het voorwerp waar het naar verwijst." Kleurkoppeling in sommen blijft; alleen een getal dat nergens naar verwijst is wit (BR 2.1, 2.2, 14.27). Vervangt besluit 24.
+
 ### B25. Overal dezelfde woorden, of juist overal anders?
 
 - CL r. 455 en BR 3.11, 14.3: "**Dezelfde soort vraag formuleer je overal op dezelfde manier.**"
@@ -532,7 +550,7 @@ Na de vergelijking met Synthesis (zie `SYNTHESIS-VERSCHILLEN.md`) heeft Sara bes
 
 - **R80.** Elk getal in de som heeft een eigen kleur; de voorwerpen bij dat getal hebben dezelfde kleur. Bij speelgoed het hele voorwerp, bij fruit de echte kleur. Bron: BR 2.1. Zie B24.
 - **R81.** Het getal in een zin heeft de kleur van het voorwerp waar Bliepo het over heeft, ook zichtbaar in de tekst. Bron: BR 2.2, 14.10; MEM:lessen-ontwerp-voorkeuren.
-- **R82.** Elk getal in een zin krijgt bewust een kleur; {n:wit} als het nergens bij hoort. Bron: BR 14.20. Zie B24.
+- **R82.** Elk getal in een zin krijgt bewust een kleur: de kleur van het voorwerp waar het naar verwijst (3e ronde: niet standaard wit); {n:wit} alleen als het nergens naar verwijst. Bron: BR 2.2, 14.20. Zie B24.
 - **R83.** Geen wit of grijs als getalkleur voor voorwerpen; grijs betekent alleen "weg" of "fout". Bron: BR 14.24. Zie B24.
 - **R84.** Kleur alleen als een getal naar zichtbare voorwerpen wijst; kale sommen wit; sleepvakken neutraal. Bron: BR 14.27. Zie B24.
 - **R85.** Kleur mag het antwoord niet verklappen. Bron: BR 14.22.

@@ -44,6 +44,11 @@ blijven ook in de nieuwe stijl gelden.
   7.9). **In de lessen (Squla en Synthesis-stijl) staan getallen in een som
   zonder vakje; alleen het lege invulvakje heeft een vakje, doorzichtig met een
   lichte rand** (BOUWREGELS 1.4 en 2.4, besluit 15).
+- **Kleur van getallen in de lessen:** getallen zijn niet standaard wit. De
+  kleur van een getal past bij het voorwerp waar het naar verwijst (besluit
+  Sara 8 nov, 3e ronde; vervangt "getallen wit behalve kleurkoppeling"). De
+  kleurkoppeling in sommen blijft. Een getal dat naar geen voorwerp verwijst
+  (kale som) is wit (BOUWREGELS 2.1, 2.2, 14.27).
 - Alles staat horizontaal gecentreerd in de witte kaart. De hele opdracht, van
   vraagzin tot en met Controleer, past zonder scrollen op een laptop.
 - Sommen staan op één regel, bijvoorbeeld 6 + 7 = ▢.
@@ -254,7 +259,9 @@ REGEL 7). Wat daarbij altijd geldt:
   Eén soort voorwerp per opdracht; los van elkaar, groot genoeg en niet
   overlappend, zodat ze goed te tellen zijn.
 - **Aanwijzen** doet Bliepo met het rondje (BOUWREGELS 7.8), of met sterker
-  oplichten waar een rondje onhandig is (7.9); niet met meer gloed.
+  oplichten waar een rondje onhandig is (7.9); niet met meer gloed. Bij de
+  klok: gloed om de wijzer en een **oranje** ring om het getal, niet rood
+  (besluit Sara 8 nov, 3e ronde). Meten blijft zoals het is.
 - **Gloed: subtiel.** Een zacht, smal randje licht rond een voorwerp, geen
   grote lichtwolk; het voorwerp zelf blijft duidelijk en scherp (niet
   wit-uitgebeten). Na een tik op een keuze verdwijnen de knoppen meteen, zonder
@@ -297,7 +304,8 @@ lezen, moet de les helemaal kunnen doen. Controleer dat bij elke les.
 ## Inhoud van vragen
 
 - 15 vragen per opdracht, geen dubbele, elke vraag één juist antwoord, óf
-  alle juiste antwoorden worden goed gerekend (splitsen, BOUWREGELS 14.30), alle
+  alle juiste antwoorden worden goed gerekend (kwaliteitsregel 9; splitsen,
+  BOUWREGELS 14.30), alle
   getallen en uitkomsten binnen het bereik.
 - Geen vragen met een onduidelijk antwoord, zoals een rond tiental bij "tussen
   welke tientallen", of twee paren die allebei kloppen.

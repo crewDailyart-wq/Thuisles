@@ -62,7 +62,7 @@ Squla-opbouw. Lees de volledige afspraak in BOUWREGELS.md 4.4–4.5 en 14.29;
 die gaat bij strijdige oudere regels over de lesopbouw voor.
 
 **Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig, bijgewerkt
-in de tweede ronde: besluit Sara 8 nov, 2e ronde; zie BOUWREGELS.md bovenaan):**
+in de tweede en derde ronde: besluit Sara 8 nov, 2e en 3e ronde; zie BOUWREGELS.md bovenaan):**
 - Beginscherm: standaard geen startvraag. Waar wel een startvraag is: zin 1
   (uitleg) en zin 2 (persoonlijke vraag), steeds anders. Ja = eerst een korte
   proef, Nee = eerst uitleg (de 6 stappen hierboven blijven bij lessen met een
@@ -72,16 +72,26 @@ in de tweede ronde: besluit Sara 8 nov, 2e ronde; zie BOUWREGELS.md bovenaan):**
   de les verder. Nooit de les stoppen of naar het hoofdmenu sturen, niet
   eindeloos opnieuw laten proberen. Geen "tik op de pijl en ik doe het voor",
   nergens een "Weet ik niet"-knop. Wel een hulphandje dat laat zien wat het
-  kind moet doen.
+  kind moet doen; het komt vanzelf, er komt geen knop (3e ronde).
 - Geen vaste openingen of beginzinnen bij fouten en uitleg: alles past bij de
   vraag en wisselt af. Alleen een klein vast rijtje korte lofzinnen en
-  eindzinnen is toegestaan. Schooltermen blijven overal hetzelfde; de zinnen
+  eindzinnen is toegestaan; dat rijtje staat in BLIEPO-KARAKTER.md (3e ronde). Schooltermen blijven overal hetzelfde; de zinnen
   eromheen wisselen.
 - Rondje alleen als Bliepo iets noemt. Na een tik verdwijnen de knoppen meteen:
   geen gloed om de keuze, geen rood op de keuze van het kind, geen
   fout-geluidje. Alleen Bliepo's scherm kleurt: rood 1,5 seconde bij fout,
   groen 1 seconde bij goed. Geen zachte rondjes meer. Klok: gloed om de wijzer
-  en een ring om het getal. Volledig in BOUWREGELS.md 5.3, 7.8 en 7.9.
+  en een oranje (niet rode) ring om het getal. Meten blijft zoals het is.
+  Volledig in BOUWREGELS.md 5.3, 7.8 en 7.9.
+- Getallen zijn niet standaard wit: de kleur van een getal past bij het
+  voorwerp waar het naar verwijst. De kleurkoppeling in sommen blijft; een
+  getal dat nergens naar verwijst is wit (BOUWREGELS.md 2.1, 2.2, 14.27).
+- Heel snel antwoorden = de grens uit het draaiboek; staat die er niet, dan
+  binnen 2 seconden na het einde van de vraag (BOUWREGELS.md 6.10).
+- Kwaliteitsregel: één juist antwoord, óf alle juiste antwoorden worden goed
+  gerekend (BOUWREGELS.md 14.30).
+- **Gouden lessen bouwen:** volg LESRECEPT.md. Wie Bliepo is en wat hij zegt:
+  BLIEPO-KARAKTER.md. Nog open botsingen: OVERIGE-BOTSINGEN.md.
 - Knoppen leg je alleen de eerste keer uit (BOUWREGELS.md 3.15).
 - Niet tussendoor vragen: keuzes komen in KEUZES-VOOR-SARA.md, behalve waar om
   akkoord gevraagd wordt. De harde regels hieronder gelden altijd.

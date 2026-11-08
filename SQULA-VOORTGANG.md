@@ -280,8 +280,8 @@ Plaatjes per onderwerp: allemaal gemaakt in Magnific behalve spies-leeg (Meten).
 
 ## PLAN: logica-controle van alle lessen (8 november 2026, nog NIET bouwen)
 
-Komt na het afspelen van Synthesis en het lesrecept. Basis: FOUTEN-VOORBEELDEN.md, WOORDEN-GROEP3.md, BOUWREGELS 14.30–14.34.
-1. **Script** dat bij elke vraag checkt: (a) precies één goed antwoord, (b) de hint past op precies één keuze, (c) geen woorden die volgens WOORDEN-GROEP3.md niet mogen.
+Komt na het afspelen van Synthesis en het lesrecept (LESRECEPT.md). Basis: FOUTEN-VOORBEELDEN.md (F1 t/m F6), WOORDEN-GROEP3.md, BOUWREGELS 14.30–14.35. (Bijgewerkt 8 nov, derde ronde.)
+1. **Script** dat bij elke vraag checkt: (a) kwaliteitsregel 9: één juist antwoord, óf alle juiste antwoorden worden goed gerekend (BOUWREGELS 14.30). Het script rekent zelf alle juiste antwoorden uit. Is dat er 1, dan moet de les precies die ene goed rekenen. Zijn het er meer (splitsen en andere open opdrachten), dan moet de les elk ervan goed rekenen; mist er één, dan is de vraag fout. (b) de hint past op precies één keuze (14.31), (c) bij een keuzevraag zegt de hint waar het over gaat (de vraag mag tijdens de hint weg); bij een opdracht blijft de opdrachtregel staan (14.32), (d) geen woorden die volgens WOORDEN-GROEP3.md niet mogen.
 2. **Kind-test:** een aparte helper speelt elke vraag alsof hij een kind van 6 is. Hij ziet alleen het scherm en hoort alleen wat Bliepo zegt. Hij keurt af als hij twijfelt of twee goede antwoorden vindt.
 
 ---
