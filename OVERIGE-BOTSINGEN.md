@@ -1,40 +1,54 @@
-# Overige botsingen (nog open na de derde ronde, 8 november 2026)
+# Overige botsingen (punt 1 t/m 14 besloten in de vierde ronde, 8 november 2026)
 
-Per punt: wat botst, en mijn advies. Sara beslist. Tot dan geldt de tekst die nu in BOUWREGELS.md staat. Wat al besloten is, staat in BOUWREGELS.md bovenaan ("derde ronde").
+**Vierde ronde (8 november 2026): Sara besliste over punt 1 t/m 14. Akkoord met het advies bij 1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13 en 14; eigen keuze bij 2 en 8.** Per punt staat hieronder BESLOTEN met de uitkomst. De regels staan in BOUWREGELS.md (bovenaan "vierde ronde"). Punt 15 t/m 30 zijn ongemoeid gelaten. Oorspronkelijk: wat botst, en mijn advies. Wat al besloten is, staat in BOUWREGELS.md bovenaan ("derde ronde").
 
 ## Uit de tweede ronde (T15 t/m T30)
 
 1. **T15 Lichtflits bij goed.** "Na een tik geen gloed" botst met de korte lichtflits of golf bij een goed antwoord (7.6).
    Advies: de flits houden, want het is geen gloed om de keuze maar een korte, rustige bevestiging.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. De lichtflits of golf bij goed blijft.**
 2. **T16 Gekozen groep vóór het vinkje.** De keuze moet zichtbaar blijven tot het kind het vinkje tikt, maar gloed om de keuze mag niet.
    Advies: een dunne gele rand om de gekozen groep (zoals Synthesis), zonder gloed; nog een tik haalt de rand weg.
+   **BESLOTEN (4e ronde, 8 november 2026): Sara: alleen het vinkje, geen gele rand. Nog een tik haalt het vinkje weg.**
 3. **T18 Wanneer komt de oranje ring bij de klok?** Bij elke zin over een getal, of alleen bij een hint, een doel of na 2× fout.
    Advies: zoals Synthesis, alleen bij een hint, een doel (klok zetten) of na 2× fout, en 1 ring tegelijk.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. De oranje ring komt alleen bij een hint, een doel (klok zetten) of na 2× fout, 1 ring tegelijk.**
 4. **T21 Startvraag.** "Standaard geen startvraag" botst met de vaste lesopbouw van 4 november (beginscherm met Ja/Nee en 6 stappen na Nee).
    Advies: alleen een startvraag waar het draaiboek er een heeft (klok); Ja = proef van 2 opgaven, 2 fouten in de proef = alsnog de uitleg.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Alleen een startvraag waar het draaiboek er een heeft (klok). Ja = proef van 2 opgaven. 2 fouten in de proef = alsnog de uitleg.**
 5. **T22 Wat staat er na de 2e fout?** Wij geven een 3e poging, maar Synthesis laat bij keuzevragen na de 2e fout al het antwoord zien.
    Advies: na de 2e fout uitleg zonder het antwoord, pas na de 3e fout het antwoord samen laten zien.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Na de 2e fout uitleg zonder het antwoord; pas na de 3e fout het antwoord samen laten zien.**
 6. **T24 Verder-pijl.** Mag een tik de zin van Bliepo afbreken, en botst wachten zonder herinnering met 5.7 ("binnen 5 seconden een knop")?
    Advies: ja, een tik breekt de zin af (zoals Synthesis); de pijl zelf is de knop, dus 5.7 klopt.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Een tik breekt de zin af. De pijl is de knop, dus 5.7 klopt.**
 7. **T25 Aanwijzing na 5 à 6 seconden.** Niet vastgelegd of dat een rondje, het hulphandje of een zin is.
    Advies: het hulphandje (komt vanzelf) bij tik- en sleepopdrachten, met 1 korte zin; een rondje alleen als Bliepo iets noemt.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Het hulphandje komt vanzelf, bij tik- en sleepopdrachten, met 1 korte zin. Een rondje alleen als Bliepo iets noemt.**
 8. **T25 Heel snel bij tellen, min en getallenlijn.** Het draaiboek zegt daar "Synthesis geeft nooit een opmerking", maar geeft geen grens; dan zou de 2-secondenregel gelden.
    Advies: de 2-secondenregel volgen (zoals Sara besloot), maar de opmerking kort en niet bij elke vraag.
+   **BESLOTEN (4e ronde, 8 november 2026): Sara: volg Synthesis. Alleen bij onderwerpen waar Synthesis bij een snel antwoord iets zegt, zegt Bliepo ook iets kort. Bij Tellen, Min en Getallenlijn niets (vervangt daar de 2-secondenregel). Elders blijft "binnen 2 seconden na het einde van de vraag" alleen als het draaiboek daar een opmerking heeft.**
 9. **T26 Vakjes om getallen "waar het helpt".** Er is geen criterium.
    Advies: een vakje alleen als de plek anders niet als invulplek of keuze te herkennen is.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Een vakje alleen als de plek anders niet als invulplek of keuze te herkennen is.**
 10. **T28 Vormen, Rekenmix, Geld en Tijd/Dagen.** Meten is besloten (laten liggen), deze vier nog niet; ook niet of de code van besluit 1 t/m 4 daar wel moet.
     Advies: de vier laten liggen tot er per onderwerp een besluit is, maar besluit 1 t/m 4 (rondje alleen bij noemen, geen rood op de keuze, geen fout-geluidje) wel overal doen.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. De vier onderwerpen blijven liggen tot er per onderwerp een besluit is. Besluit 1 t/m 4 gelden wel overal.**
 11. **T29 Knoppen "de eerste keer" uitleggen.** Per kind, per les of per soort knop, en er is nog geen opslag voor.
     Advies: per kind en per soort knop 1 keer; tot er opslag is, de eerste keer per les.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Per kind en per soort knop 1 keer. Tot er opslag is: de eerste keer per les.**
 12. **T30 Goed na een fout.** Niet vastgelegd of dit ook na de 3e poging geldt.
     Advies: na elke eerdere fout bij dezelfde vraag alleen een korte bevestiging (staat zo in BLIEPO-KARAKTER.md).
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Na elke eerdere fout bij dezelfde vraag, ook na de 3e poging, alleen een korte bevestiging.**
 
 ## Nieuw door de derde ronde
 
 13. **Getal zonder voorwerp.** "Getallen zijn niet standaard wit" kan botsen met 14.27 ("kale som = wit").
     Advies: wit houden als een getal naar geen enkel voorwerp verwijst (zo staat het nu in 2.1).
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Een getal zonder voorwerp blijft wit.**
 14. **Code volgt nog de oude regels.** Het herhalingsscript slaat het nieuwe rijtje uit BLIEPO-KARAKTER.md nog niet over, en de code heeft nog 16 vaste woordjes (`bevestig()`).
     Advies: bij de bouw van de eerste gouden les het rijtje uit BLIEPO-KARAKTER.md gebruiken en het script laten aanpassen.
+   **BESLOTEN (4e ronde, 8 november 2026): Akkoord met het advies. Bij de bouw van de eerste gouden les het rijtje uit BLIEPO-KARAKTER.md gebruiken en het script laten aanpassen (bouwwerk, nog niet gedaan).**
 
 ## Oudere twijfels (BOUWREGELS T2 t/m T14)
 

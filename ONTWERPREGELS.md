@@ -261,12 +261,14 @@ REGEL 7). Wat daarbij altijd geldt:
 - **Aanwijzen** doet Bliepo met het rondje (BOUWREGELS 7.8), of met sterker
   oplichten waar een rondje onhandig is (7.9); niet met meer gloed. Bij de
   klok: gloed om de wijzer en een **oranje** ring om het getal, niet rood
-  (besluit Sara 8 nov, 3e ronde). Meten blijft zoals het is.
+  (besluit Sara 8 nov, 3e ronde); de ring komt alleen bij een hint, een doel of
+  na 2 keer fout, 1 tegelijk (4e ronde). Een gekozen groep krijgt alleen een
+  vinkje, geen rand en geen gloed. Meten blijft zoals het is.
 - **Gloed: subtiel.** Een zacht, smal randje licht rond een voorwerp, geen
   grote lichtwolk; het voorwerp zelf blijft duidelijk en scherp (niet
   wit-uitgebeten). Na een tik op een keuze verdwijnen de knoppen meteen, zonder
   lichtring (BOUWREGELS 7.6, besluit Sara 8 nov, 2e ronde); de lichtflits/-golf
-  bij een goed antwoord blijft, maar rustig (T15). De sterkte is één centrale
+  bij een goed antwoord blijft, maar rustig (T15 besloten, 4e ronde). De sterkte is één centrale
   instelling: `gloed` in de stijl (lib/stijl.ts, standaard 0,5; later in de
   stijlkiezer), via `lib/phaser/gloed.ts`. Geen enkele les zet zelf een
   gloedsterkte; gebruik altijd `bak()` en de effecten uit
@@ -295,7 +297,7 @@ lezen, moet de les helemaal kunnen doen. Controleer dat bij elke les.
 4. **Tikt het kind op tekst of op Bliepo's zin**, dan leest Bliepo die (nog
    eens) voor (BliepoTekst).
 5. **Knoppen leg je alleen de eerste keer uit** (BOUWREGELS 3.15, besluit Sara
-   8 nov, 2e ronde): daarna zegt Bliepo nooit "Tik op de pijl" of "Tik op het
+   8 nov, 2e ronde; per kind en per soort knop 1 keer, tot er opslag is de eerste keer per les, 4e ronde): daarna zegt Bliepo nooit "Tik op de pijl" of "Tik op het
    vinkje", en er is geen aanbod "tik op de pijl en ik doe het voor". (De
    oude regel met `l.wijsAan("weetniet", ...)` is vervallen.)
 6. **Zo weinig mogelijk tekst op het scherm.** Het meelezen boven Bliepo

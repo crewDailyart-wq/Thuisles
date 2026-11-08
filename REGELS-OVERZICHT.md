@@ -7,7 +7,7 @@ Gemaakt op 8 november 2026 en bijgewerkt na de tweede ronde besluiten van Sara (
 ## Samenvatting
 
 - **Aantal regels:** 172 (R1 t/m R172), per onderwerp hieronder.
-- **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). In de derde ronde (8 november) besliste Sara over een deel van B36 t/m B45 (zie "Derde ronde" hieronder); wat open is staat in `OVERIGE-BOTSINGEN.md`. Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
+- **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). In de derde ronde (8 november) besliste Sara over een deel van B36 t/m B45 (zie "Derde ronde" hieronder); in de vierde ronde besliste Sara over de rest (zie "Vierde ronde"). Oudere open punten (15 t/m 30) staan in `OVERIGE-BOTSINGEN.md`. Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
 - Daarnaast een lijst met **dubbele of verouderde regels** (D1 t/m D12). Die spreken elkaar niet echt tegen, maar staan nog op een oude plek.
 - De belangrijkste botsing is **B1**: het rode rondje komt ook als het kind tikt, niet alleen als Bliepo iets noemt.
 - Bron voor bijna alles: `BOUWREGELS.md` (afgekort **BR**). Andere afkortingen: **CL** = `CLAUDE.md`, **ONTW** = `ONTWERPREGELS.md`, **PLAN** = `LESSENPLAN.md`, **B-PH** = `src/components/les/BOUWEN-PHASER.md`, **B-OUD** = `src/components/les/BOUWEN.md`, **BESL** = `SYNTHESIS-ANALYSE/BESLUITEN.md`, **INSP** = `INSPIRATIE.md`, **MEM:naam** = geheugenbestand `naam.md`.
@@ -67,6 +67,32 @@ Sara heeft over een deel van de twijfels besloten. De oude versie staat in `rege
 | T25 / B45 Heel snel | "'Heel snel' = de grens uit het draaiboek; staat die er niet, dan binnen 2 seconden na het einde van de vraag." | 6.10 | deels (aanwijzing na 5-6 s nog open) |
 
 Bijgewerkt naar deze regels: `FOUTEN-VOORBEELDEN.md` (F1, F2, F5), `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1.10, `SQULA-VOORTGANG.md` (logica-controle), `ONTWERPREGELS.md`, `CLAUDE.md` en het geheugen. Nieuw: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`.
+
+---
+
+## Vierde ronde (8 november 2026): besluiten over OVERIGE-BOTSINGEN.md punt 1 t/m 14
+
+Sara besliste over alle 14 punten. Akkoord met het advies bij 1, 3, 4, 5, 6, 7, 9, 10, 11, 12, 13 en 14; eigen keuze bij 2 en 8. Daarmee zijn T15 t/m T30 besloten. De oude versie staat in `regels-backup-20261108/REGELS-OVERZICHT-voor-vierde-ronde.md`. De botsingen B36 t/m B45 hieronder zijn hiermee **afgehandeld**.
+
+| Punt / twijfel | Besluit Sara (4e ronde) | Regel in BOUWREGELS | Stand |
+|---|---|---|---|
+| 1 / T15 / B36 Lichtflits bij goed | De flits blijft. | 7.6 | besloten |
+| 2 / T16 / B37 Gekozen groep | Alleen het vinkje, geen gele rand; nog een tik haalt het vinkje weg. | 6.5, 7.8a | besloten |
+| 3 / T18 / B39 Oranje ring klok | Alleen bij een hint, een doel (klok zetten) of na 2× fout; 1 ring tegelijk. | 7.8e, 7.9 | besloten |
+| 4 / T21 / B42 Startvraag | Alleen waar het draaiboek er een heeft (klok). Ja = proef van 2 opgaven; 2 fouten = alsnog de uitleg. | hoofdstuk 4 | besloten |
+| 5 / T22 / B43 Na de 2e fout | Uitleg zonder het antwoord; antwoord pas na de 3e fout. | 5.1, 5.4 | besloten |
+| 6 / T24 Verder-pijl | Een tik breekt de zin af; de pijl is de knop (5.7 klopt). | 6.9 | besloten |
+| 7 / T25 Aanwijzing na 5 à 6 s | Hulphandje vanzelf met 1 korte zin bij tik- en sleepopdrachten; rondje alleen als Bliepo iets noemt. | 6.10, 5.10 | besloten |
+| 8 / T25 Heel snel | Volg Synthesis: alleen een korte opmerking waar Synthesis die ook geeft; niets bij Tellen, Min en Getallenlijn (vervangt daar de 2-secondenregel). Elders 2 seconden alleen als het draaiboek een opmerking heeft. | 6.10 | besloten |
+| 9 / T26 / B15 Vakjes | Alleen als de plek anders niet als invulplek of keuze te herkennen is. | 1.4, 2.4 | besloten |
+| 10 / T28 Vormen, Rekenmix, Geld, Tijd/Dagen | Laten liggen; besluit 1 t/m 4 gelden wel overal. | 7.8e | besloten |
+| 11 / T29 Knoppen uitleggen | Per kind, per soort knop 1 keer; tot er opslag is: eerste keer per les. | 3.15 | besloten |
+| 12 / T30 Goed na een fout | Na elke eerdere fout (ook in de 3e poging) alleen een korte bevestiging. | 5.1, 5.11 | besloten |
+| 13 Getal zonder voorwerp | Wit blijft voor een getal zonder voorwerp. | 2.1, 14.27 | besloten |
+| 14 Code | Bij de eerste gouden les het rijtje uit BLIEPO-KARAKTER.md gebruiken en het script aanpassen. | bouwwerk | besloten (nog niet gebouwd) |
+| Nieuw: 15.8 | **We maken geen compleet nieuwe lessen.** Elke gouden les en elke latere les is onze bestaande Squla-les, opnieuw gebouwd in de stijl van LESRECEPT.md en het draaiboek van zijn onderwerp. Inhoud, getallen, vragen en antwoordkeuzes blijven hetzelfde; niets toevoegen of weglaten zonder akkoord van Sara. Een nieuwe versie naast de bestaande les; de oude blijft ongewijzigd staan (harde regel 8 en 9). Pas na akkoord van Sara vervangt de nieuwe versie de oude voor kinderen. | 15.8, LESRECEPT.md | besloten |
+
+Bijgewerkt: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`, `KEUZES-VOOR-SARA.md`, `CLAUDE.md`, `ONTWERPREGELS.md`.
 
 ---
 

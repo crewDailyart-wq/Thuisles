@@ -1,6 +1,9 @@
 # LESRECEPT — zo bouw je een gouden les
 
-Gemaakt op 8 november 2026 (derde ronde). Gebaseerd op BOUWREGELS.md hoofdstuk 15 en op SYNTHESIS-ANALYSE/DRAAIBOEKEN.md. Voorlopig: dit recept wordt eerst getoetst met de eerste gouden klokles (15.6). Botst iets met BOUWREGELS.md, dan gaat BOUWREGELS.md voor.
+> **EERST DIT (Sara, 8 november 2026, vierde ronde; BOUWREGELS 15.8).**
+> **We maken geen compleet nieuwe lessen.** Elke gouden les en elke latere les is onze bestaande Squla-les, opnieuw gebouwd in de stijl van LESRECEPT.md en het draaiboek van zijn onderwerp. Inhoud, getallen, vragen en antwoordkeuzes blijven hetzelfde als in de Squla-les; niets toevoegen of weglaten zonder akkoord van Sara. Bouw steeds een nieuwe versie naast de bestaande les; de oude les blijft ongewijzigd staan (harde regel 8 en 9). Pas na akkoord van Sara vervangt de nieuwe versie de oude voor kinderen.
+
+Gemaakt op 8 november 2026 (derde ronde); bijgewerkt in de vierde ronde (alle open punten uit OVERIGE-BOTSINGEN.md zijn besloten). Gebaseerd op BOUWREGELS.md hoofdstuk 15 en op SYNTHESIS-ANALYSE/DRAAIBOEKEN.md. Voorlopig: dit recept wordt eerst getoetst met de eerste gouden klokles (15.6). Botst iets met BOUWREGELS.md, dan gaat BOUWREGELS.md voor.
 
 **Wat is een gouden les?** Eén les per onderwerp die de inhoud van onze Squla-les (leerdoel, getallen, vragen) combineert met het echt waargenomen verloop van de passende Synthesis-les. Die les is daarna het voorbeeld voor alle andere lessen van dat onderwerp (15.1).
 
@@ -20,7 +23,7 @@ Lees in deze volgorde:
 6. **De Squla-les zelf** (`src/components/les/lessen/squla-*.tsx`) en de notities in **SQULA-VOORTGANG.md** — de vragen, getallen en antwoorden die je gebruikt.
 7. **FOUTEN-VOORBEELDEN.md** (F1 t/m F6) en **WOORDEN-GROEP3.md** — fouten die je niet maakt en woorden die je wel en niet gebruikt.
 8. **ONTWERPREGELS.md** — uiterlijk en bediening (BOUWREGELS gaat voor).
-9. **OVERIGE-BOTSINGEN.md** — wat nog niet besloten is. Daar kies je de veiligste weg en schrijf je het op (zie stap 9).
+9. **OVERIGE-BOTSINGEN.md** — wat in de vierde ronde is besloten (punt 1 t/m 14). Punt 15 t/m 30 zijn oudere twijfels; kies daar de veiligste weg en schrijf het op (zie stap 9).
 
 ---
 
@@ -41,14 +44,14 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 
 ### 3.1 Beginscherm
 - Standaard **geen startvraag** (hoofdstuk 4, besluit 12). Bliepo vertelt in een eigen zin wat het kind in deze les gaat doen (4.3, 4.4), en dan komt de eerste stap.
-- Heeft het draaiboek wél een startvraag (zoals de klok), dan: Ja = eerst een korte proef, Nee = de uitleg. Hoe lang de proef is en wat er bij fouten in de proef gebeurt: OVERIGE-BOTSINGEN.md punt 4.
+- Heeft het draaiboek wél een startvraag (nu alleen de klok), dan: **Ja = een proef van 2 opgaven; maakt het kind in de proef 2 fouten, dan krijgt het alsnog de uitleg (de Nee-route van BOUWREGELS 4.5). Nee = de uitleg.** Heeft het draaiboek geen startvraag, dan komt er ook geen (4e ronde).
 - Nooit een "Weet ik niet"-knop (1.27).
 
 ### 3.2 Uitleg
 - Volg de uitlegstappen van het draaiboek in dezelfde volgorde en met dezelfde betekenis, in eigen woorden.
 - Eén ding tegelijk, en woorden en beeld horen bij hetzelfde moment (3.19).
-- Wat Bliepo noemt, wijst hij aan met het rode rondje (7.8). Bij de klok: gloed om de wijzer en een **oranje** ring om het getal (7.8e, 7.9).
-- Knoppen leg je alleen de eerste keer uit (3.15).
+- Wat Bliepo noemt, wijst hij aan met het rode rondje (7.8). Bij de klok: gloed om de wijzer waar Bliepo over praat. De **oranje** ring om het getal komt **alleen bij een hint, een doel (klok zetten) of na 2 keer fout**, en er staat 1 ring tegelijk (7.8e, 7.9).
+- Knoppen leg je per kind en per soort knop 1 keer uit. Er is nog geen opslag voor "dit kind kent de knop"; tot die er is, leg je een knop de eerste keer **per les** uit (3.15).
 
 ### 3.3 Kleine stap
 - Waar het draaiboek het kind iets laat doen (tikken, slepen, zetten), doet het kind dat bij ons ook.
@@ -58,11 +61,12 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 - De vraag komt met de keuzes tegelijk in beeld (zoals Synthesis).
 - Zelfde soort vraag = zelfde schooltermen (3.11). Gebruik woorden uit WOORDEN-GROEP3.md.
 - Het goede antwoord staat niet steeds op dezelfde plek (1.23).
-- Kleur van een getal = kleur van het voorwerp waar het naar verwijst; een getal zonder voorwerp is wit (2.1, 2.2).
+- Kleur van een getal = kleur van het voorwerp waar het naar verwijst; **wit alleen voor een getal zonder voorwerp** (2.1, 2.2, 14.27).
+- Een vakje om een getal alleen als de plek anders niet als invulplek of keuze te herkennen is (1.4, 2.4).
 
 ### 3.5 Nakijken
 - **Keuzevraag:** de tik is het antwoord, de knoppen verdwijnen meteen; geen gloed en geen rood om de keuze (6.5, 7.6, 7.8a).
-- **Tikken op een groep in beeld:** eerst kiezen, dan het vinkje (6.5).
+- **Tikken op een groep in beeld:** de gekozen groep krijgt **alleen een vinkje**, geen gele rand en geen gloed. Nog een tik haalt het vinkje weg (6.5, 7.8a).
 - **Invullen, slepen, zetten:** de knop Controleer (vinkje).
 - **Splitsen:** vanzelf nagekeken zodra het totaal klopt. Elk juist antwoord telt als goed (14.30).
 - De reactie van Bliepo begint 0,2 tot 0,4 seconde na de klik (6.10).
@@ -70,34 +74,35 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 ### 3.6 Goed
 - Bliepo's scherm kleurt 1 seconde groen (5.3).
 - Een korte lofzin uit het rijtje in BLIEPO-KARAKTER.md, eventueel met een korte reactie op wat het kind koos.
-- **Goed na een fout:** alleen een korte bevestiging, geen grote lof.
+- **Goed na een fout** (na 1 fout, 2 fouten of in de 3e poging): alleen een korte bevestiging, geen grote lof.
+- Een lichtflits of golf bij goed mag (7.6), zonder gloed om de keuze.
 - Daarna verder zoals het draaiboek zegt: vanzelf (na de gemeten tijd) of op de blauwe pijl (6.9).
 
 ### 3.7 Fout (1e, 2e, 3e)
 Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooit het woord "fout", geen rood op de keuze (5.3).
 - **1e fout:** een korte reactie op wat het kind koos. Een hint in beeld alleen als die bij de vraag past. Het kind probeert meteen opnieuw (5.1). Bij een keuzevraag verdwijnt de vraag tijdens de hint, maar de hint zegt waar het over gaat; bij een opdracht blijft de opdrachtregel staan (14.32). De hint wijst naar precies 1 keuze (14.31).
-- **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten. Daarna een **3e poging** (5.1).
-- **3e fout:** Bliepo doet het **samen met het kind voor**, laat het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
+- **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, **zonder het goede antwoord te laten zien**. Daarna een **3e poging** (5.1).
+- **3e fout:** Bliepo doet het **samen met het kind voor**, laat nu pas het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
 - Elke fout-reactie is voor deze vraag en dit antwoord geschreven; geen vaste openingen (5.10, 5.11).
 
 ### 3.8 Hulp die vanzelf komt
-- Het **hulphandje komt vanzelf**; er is geen knop (5.10). Het wijst aan wat het kind moet doen; het kind doet de laatste tik zelf.
-- Bij een **opdracht** (tikken, slepen, zetten) komt na 5 à 6 seconden zonder handeling vanzelf een aanwijzing. Bij een **keuzevraag** niet (6.10). Wat de aanwijzing is: OVERIGE-BOTSINGEN.md punt 7.
+- Het **hulphandje komt vanzelf**, met 1 korte zin van Bliepo; er is geen knop (5.10). Het wijst aan wat het kind moet doen; het kind doet de laatste tik zelf.
+- Bij een **opdracht** (tikken, slepen, zetten) komt na 5 à 6 seconden zonder handeling vanzelf het hulphandje, met 1 korte zin van Bliepo. Bij een **keuzevraag** komt niets (6.10). Een rondje alleen als Bliepo iets noemt.
 
 ### 3.9 Verder-pijl
 - De ronde blauwe pijl staat er vanaf het begin van de zin (6.9).
 - Wacht op de pijl waar het draaiboek wacht; ga vanzelf door waar het draaiboek vanzelf doorgaat, na dezelfde tijd.
-- Geen herinnering als het kind niet tikt. Of een tik de zin afbreekt: OVERIGE-BOTSINGEN.md punt 6.
+- Geen herinnering als het kind niet tikt. **Een tik op de pijl breekt de zin van Bliepo af** (zoals Synthesis). De pijl is zelf de knop, dus de les loopt niet vast (5.7).
 
 ### 3.10 Tempo
 - Reactie 0,2 tot 0,4 seconde na de klik.
 - Vanzelf door: gebruik de gemeten tijd uit het draaiboek (bijvoorbeeld 0,5 tot 0,7 seconde bij de klok).
-- **Heel snel geantwoord:** de grens uit het draaiboek; staat die er niet, dan binnen 2 seconden na het einde van de vraag. Bliepo zegt dan kort iets uit BLIEPO-KARAKTER.md (6.10).
+- **Heel snel geantwoord (volg het draaiboek):** alleen als het draaiboek van jouw onderwerp bij een snel antwoord een opmerking heeft, zegt Bliepo ook kort iets uit BLIEPO-KARAKTER.md. De grens is die uit het draaiboek; heeft het draaiboek wel een opmerking maar geen grens, dan binnen 2 seconden na het einde van de vraag. **Bij Tellen, Min en Getallenlijn zegt Bliepo niets.** Heeft het draaiboek geen opmerking, dan ook niets (6.10).
 
 ### 3.11 Rondje, oplichten, klok
 - Rondje: rood dubbel rondje, alleen als Bliepo iets noemt, 1 tegelijk, blijft zolang hij erover praat, weg als het iets zou verklappen (7.8).
 - Geen zachte rondjes: wat al genoemd is blijft zichtbaar als gekleurd getal, boog of nummer (7.8d).
-- Klok: gloed langs de rand van de wijzer waar Bliepo over praat, de andere wijzer vervaagt, en een **oranje** ring om het getal (7.8e, 7.9).
+- Klok: gloed langs de rand van de wijzer waar Bliepo over praat en de andere wijzer vervaagt. De **oranje** ring om het getal komt alleen bij een hint, een doel (klok zetten) of na 2 keer fout, 1 ring tegelijk (7.8e, 7.9).
 
 ### 3.12 Einde
 - Een eindzin uit het rijtje in BLIEPO-KARAKTER.md (3.13).
@@ -125,12 +130,14 @@ Test als **Testkind** (groep 3), nooit als een echt kind (12.1). Speel elke situ
 | Situatie | Wat je controleert |
 |---|---|
 | Goed in 1 keer | Korte lof uit het rijtje, groen scherm 1 s, verder zoals het draaiboek (vanzelf of pijl) |
-| Goed na een fout | Alleen een korte bevestiging, geen grote lof |
+| Goed na een fout (ook in de 3e poging) | Alleen een korte bevestiging, geen grote lof |
 | 1e fout | Rood scherm 1,5 s, reactie op de keuze, hint alleen als die past, meteen opnieuw |
-| 2e fout | Uitleg, dan een 3e poging |
-| 3e fout | Samen voordoen, antwoord in beeld, 1 kleine stap, les gaat door |
-| Lang wachten (30 s of meer) | Opdracht: aanwijzing na 5 à 6 s. Keuzevraag: geen aanwijzing. Les loopt nooit vast (5.7) |
-| Heel snel (0,3 s) | Korte opmerking als het binnen de grens valt |
+| 2e fout | Uitleg zonder het goede antwoord, dan een 3e poging |
+| 3e fout | Samen voordoen, nu pas het antwoord in beeld, 1 kleine stap, les gaat door |
+| Lang wachten (30 s of meer) | Opdracht: hulphandje vanzelf met 1 korte zin na 5 à 6 s. Keuzevraag: geen aanwijzing. Les loopt nooit vast (5.7) |
+| Startvraag (alleen klok) | Ja = proef van 2 opgaven; 2 fouten in de proef = alsnog de uitleg |
+| Groep tikken | Alleen een vinkje, geen rand of gloed; nog een tik haalt het vinkje weg |
+| Heel snel (0,3 s) | Alleen een korte opmerking als het draaiboek er een heeft; bij Tellen, Min en Getallenlijn niets |
 
 Leg per situatie in een tabel vast: reactietijd na de klik, spreektijd, tijd tot de volgende stap. Wijkt een tijd duidelijk af van het draaiboek, pas het aan of schrijf de reden op.
 
@@ -175,7 +182,7 @@ Loop elke vraag na (SQULA-VOORTGANG.md, plan logica-controle):
 Vraag niet tussendoor (12.10). Zet in KEUZES-VOOR-SARA.md, onder een nieuw kopje met de naam van de les:
 - elke afwijking van het draaiboek, met de reden (15.5);
 - elk punt uit NIET GEZIEN dat je les raakt, en wat je toen veilig koos;
-- elk open punt uit OVERIGE-BOTSINGEN.md dat je moest kiezen;
+- elk nog open punt uit OVERIGE-BOTSINGEN.md (punt 15 t/m 30) dat je moest kiezen;
 - nieuwe zinnen zonder opgenomen stem (die komen ook in STEMZINNEN.md);
 - de tijden die afwijken van het draaiboek;
 - de kosten van Magnific, als je plaatjes maakte.

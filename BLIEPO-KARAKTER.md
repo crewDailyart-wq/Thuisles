@@ -1,6 +1,6 @@
 # BLIEPO-KARAKTER — wie Bliepo is en wat hij zegt
 
-Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEPO-KARAKTER.md"). Hoort bij BOUWREGELS.md 3.11, 3.13, 5.1, 5.10, 5.11 en 6.10. Botst iets met BOUWREGELS.md, dan gaat BOUWREGELS.md voor.
+Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEPO-KARAKTER.md"); bijgewerkt in de vierde ronde naar de besluiten over OVERIGE-BOTSINGEN.md punt 1 t/m 14. Hoort bij BOUWREGELS.md 3.11, 3.13, 5.1, 5.10, 5.11 en 6.10. Botst iets met BOUWREGELS.md, dan gaat BOUWREGELS.md voor.
 
 **Sara mag alle zinnen in dit bestand aanpassen, weghalen of aanvullen.** De zinnen hieronder zijn een voorstel, in eigen woorden geschreven. Ze komen niet van Synthesis en niet van Squla.
 
@@ -53,7 +53,7 @@ Heeft het kind bij deze vraag eerst een fout gemaakt (1×, 2× of in de 3e pogin
 
 ### Heel snel geantwoord
 
-Valt het antwoord binnen de grens uit het draaiboek (anders: binnen 2 seconden na het einde van de vraag, 6.10), dan mag Bliepo er kort iets bij zeggen. Niet bij elke vraag.
+Bliepo zegt dit **alleen bij onderwerpen waar Synthesis bij een snel antwoord ook iets zegt** (het draaiboek van het onderwerp heeft dan een opmerking; 4e ronde). Valt het antwoord binnen de grens uit het draaiboek (heeft het draaiboek wel een opmerking maar geen grens: binnen 2 seconden na het einde van de vraag, 6.10), dan mag Bliepo er kort iets bij zeggen. Niet bij elke vraag. **Bij Tellen, Min en Getallenlijn zegt Bliepo hier niets.**
 
 - Dat ging snel!
 - Wat was jij snel!
@@ -83,7 +83,7 @@ Aan het eind van de les kiest Bliepo 1 eindzin (3.13). Na een les met fouten pas
 5. Je bent klaar. Ik vond het leuk met jou!
 6. Je hebt goed doorgezet. Volgende keer gaat het nog beter.
 
-De zin aan het **begin** van een les is geen vast rijtje: die is per les eigen (4.3).
+De zin aan het **begin** van een les is geen vast rijtje: die is per les eigen (4.3). Een startvraag ("Kun je dit al?") stelt Bliepo alleen als het draaiboek van het onderwerp er een heeft (nu de klok): Ja = een proef van 2 opgaven, 2 fouten in de proef = alsnog de uitleg (hoofdstuk 4).
 
 ## 6. Reacties op een fout
 
@@ -91,23 +91,25 @@ Voor fouten is er **geen vast rijtje** (5.10, 5.11). Elke reactie is voor deze v
 
 - **1e fout:** Bliepo zegt kort iets over wat het kind koos en geeft een hint als die bij de vraag past. Het kind probeert meteen opnieuw.
   Voorbeeld van de soort zin (niet overnemen): "Je koos 9 uur. Kijk naar de kleine wijzer."
-- **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, met wat er op het scherm staat. Daarna een 3e poging.
-- **3e fout:** Bliepo doet het samen met het kind voor, laat het goede antwoord zien, het kind doet 1 kleine stap, en de les gaat verder. Het voelt als samen werken, niet als straf.
+- **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, met wat er op het scherm staat, **zonder het goede antwoord te laten zien**. Daarna een 3e poging.
+- **3e fout:** Bliepo doet het samen met het kind voor, laat nu pas het goede antwoord zien, het kind doet 1 kleine stap, en de les gaat verder. Het voelt als samen werken, niet als straf.
 - De hint wijst naar precies 1 keuze (14.31) en klopt met het beeld en de som.
 - Nooit dezelfde zin 2 keer achter elkaar. Geen vaste opening.
 
 ## 7. Hulp
 
-- Het **hulphandje komt vanzelf**; er is geen knop (5.10). Het wijst aan waar het kind moet tikken of waarheen het moet slepen. Het kind doet de laatste tik zelf.
-- Bij een opdracht (tikken, slepen, zetten) komt na 5 à 6 seconden zonder handeling vanzelf een aanwijzing; bij een keuzevraag niet (6.10).
-- Wat Bliepo noemt, wijst hij aan met het rode rondje. Bij de klok: gloed om de wijzer en een oranje ring om het getal (7.8, 7.9).
+- Het **hulphandje komt vanzelf**, met **1 korte zin** van Bliepo; er is geen knop (5.10). Het wijst aan waar het kind moet tikken of waarheen het moet slepen. Het kind doet de laatste tik zelf.
+- Bij een tik- of sleepopdracht komt na 5 à 6 seconden zonder handeling vanzelf het hulphandje met 1 korte zin; bij een keuzevraag komt niets (6.10).
+- Wat Bliepo noemt, wijst hij aan met het rode rondje; een rondje alleen als Bliepo iets noemt. Bij de klok: gloed om de wijzer, en een oranje ring om het getal alleen bij een hint, een doel (klok zetten) of na 2 keer fout, 1 ring tegelijk (7.8, 7.9).
+- Een gekozen groep krijgt alleen een vinkje, zonder gele rand en zonder gloed; nog een tik haalt het vinkje weg (6.5).
 
 ## 8. Verder-pijl en wachten
 
 - De blauwe verder-pijl staat er vanaf het begin van Bliepo's zin (6.9).
 - Bliepo wacht op de pijl waar Synthesis dat ook doet; anders gaat hij vanzelf verder.
+- Tikt het kind op de pijl terwijl Bliepo nog praat, dan breekt de zin af en gaat de les verder (6.9).
 - Wacht het kind lang, dan zeurt Bliepo niet: geen herinnering bij de pijl.
-- Bliepo legt de pijl alleen de eerste keer uit (3.15). Daarna nooit meer "Tik op de pijl".
+- Bliepo legt een knop (zoals de pijl) per kind en per soort knop 1 keer uit. Tot er opslag is voor "dit kind kent de knop", doet hij dat de eerste keer per les (3.15). Daarna nooit meer "Tik op de pijl".
 
 ## 9. Wat Bliepo nooit zegt
 
