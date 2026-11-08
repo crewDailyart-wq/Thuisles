@@ -1,0 +1,528 @@
+# ⛔ VASTE REGEL — ANTWOORD ALTIJD IN HET NEDERLANDS
+
+**Claude antwoordt altijd in het Nederlands, in korte en simpele zinnen.** De
+eigenaar heeft weinig computerkennis: geen vakjargon, geen lange uitleg. Wat
+technisch nodig is, staat in de code en de commits; aan de eigenaar vertel je
+alleen wat er gebeurd is en wat dat voor de site betekent.
+
+
+# ⛔ VASTE AFSPRAAK — WAT SARA OVER ÉÉN LES ZEGT, GELDT VOOR ALLE LESSEN
+
+Wijst Sara een fout aan in één les, dan maak je er een algemene regel van in
+BOUWREGELS.md en FOUTEN-VOORBEELDEN.md, controleer en verbeter je ALLE andere
+lessen op dezelfde soort fout, en zeg je haar daarna in hoeveel lessen je
+dezelfde fout vond. Altijd, ook als ze het er niet bij zegt. (Sara, 8 november
+2026.) De fouten die al in FOUTEN-VOORBEELDEN.md staan (F1 t/m F5) controleer
+je in alle lessen tijdens de logica-controle, na het afspelen van Synthesis en
+het lesrecept.
+
+---
+---
+
+# ⛔ LEES ALTIJD EERST BOUWREGELS.md
+
+Lees altijd eerst BOUWREGELS.md. Elke helper moet het lezen voordat hij bouwt. De controleur keurt elke les op ALLE regels uit BOUWREGELS.md. (Besluit eigenaar, 1 november 2026; een nieuwe verbetering van Sara komt daar direct bij.)
+
+**Vaste taalafspraak van Sara (3 november 2026):** schrijf hoeveelheden in alle
+zichtbare lesteksten consequent met cijfers, ook in vragen, uitleg, hints en
+feedback: "Er komt steeds 1 bij", "Tel 1 terug", "40 knikkers", "1 euro".
+Het gewone lidwoord blijft "een", zoals in "een munt". Gebruik voor dezelfde
+hoeveelheid niet afwisselend "één", "een" en "1". Bliepo spreekt de cijfers
+natuurlijk uit. Controleer de betekenis per zin; geen blinde vervanging.
+Zie [BOUWREGELS.md, regel 3.20](BOUWREGELS.md) voor de volledige afspraak.
+**Aanvulling 4 november:** deze cijferafspraak is direct goedgekeurd voor alle
+actieve Squla-lessen, inclusief bestaande teksten en te keuren voorstellen.
+Alleen de keuze voor eenvoudiger formuleringen wacht op Sara's vinkje; de
+cijferafspraak niet. Bewaar de oorspronkelijke antwoordwaarden en beoordeling.
+
+**Vaste lesopbouw van Sara (4 november 2026), ook voor volgende groepen:**
+Squla-lessen en Synthesis-lessen hebben ieder hun eigen opbouw.
+Bij Squla bestaat het beginscherm uit een uitlegdeel (wat je in deze les gaat
+doen en hoe) en een persoonlijke, afwisselend geformuleerde vraag of je dit al
+kunt. Het uitlegdeel mag uit meer dan 1 korte zin bestaan. Ja = beginnen;
+Nee = samen oefenen volgens deze 6 stappen:
+
+1. Samen beginnen en het kind geruststellen.
+2. 1 ding kort uitleggen én in het beeld laten zien.
+3. Het kind een kleine stap laten doen.
+4. Een vraag stellen en op het antwoord wachten.
+5. Een goed antwoord bevestigen én kort uitleggen waarom het klopt.
+6. Het kind met minder hulp verder laten oefenen.
+
+Lukt een stap niet, geef dan een gerichte hint en laat die stap opnieuw
+proberen. Behoud deze opbouw bij eenvoudiger taal: maak er geen reeks
+uitlegzinnen met alleen een afsluitende controlevraag van. Pas woorden,
+rekeninhoud en moeilijkheid aan de groep aan; de opbouw blijft behouden.
+**Synthesis-lessen behouden de opbouw van Synthesis** en krijgen niet deze
+Squla-opbouw. Lees de volledige afspraak in BOUWREGELS.md 4.4–4.5 en 14.29;
+die gaat bij strijdige oudere regels over de lesopbouw voor.
+
+**Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig tot de
+Synthesis-vergelijking, zie BOUWREGELS.md bovenaan):**
+- Beginscherm: zin 1 (uitleg) en zin 2 (persoonlijke vraag), steeds anders.
+  Ja = meteen oefenen, Nee = eerst uitleg.
+- Hulp na een fout: na de 2e fout legt Bliepo het uit, het kind doet een kleine
+  stap en gaat dan door. Geen pauze, geen "tik op de pijl en ik doe het voor",
+  nergens een "Weet ik niet"-knop.
+- Geen vaste woordjes, openingen of begin- en eindzinnen: alles past bij de
+  vraag en wisselt af. Schooltermen blijven overal hetzelfde; de zinnen eromheen
+  wisselen.
+- Rondje alleen als Bliepo iets noemt; bij een tik een zachte gloed om de
+  keuze; geen rood op de keuze van het kind; geen fout-geluidje; alleen
+  Bliepo's scherm kleurt rood bij fout en groen bij goed. Volledig in
+  BOUWREGELS.md 5.3, 7.8 en 7.9.
+- Niet tussendoor vragen: keuzes komen in KEUZES-VOOR-SARA.md, behalve waar om
+  akkoord gevraagd wordt. De harde regels hieronder gelden altijd.
+
+**Geen onnodige herhaling (4 november 2026):** controleer zowel de Nee-route
+als Hulp na een fout en de route na opnieuw fout. Stel vóór dezelfde
+antwoordpoging de vraag maar 1 keer. Herhaal een volledig afgerond
+uitlegvoorbeeld niet meteen als eerste gewone opgave. Behoud andere
+vervolgstappen, hints, score en eventuele schatletters. Een controle
+van het uitleg-overzicht alleen is onvoldoende; zie BOUWREGELS 3.23. (De
+pauzezin bij de tweede fout is vervallen, zie BOUWREGELS 5.1.)
+
+---
+
+# ⛔ HARDE REGEL 1 — NIETS WAT AL BESTAAT MAG VERDWIJNEN
+
+Geldt voor de HELE website: kinderkant, ouderomgeving, beheeromgeving, alles.
+
+**Bij elke wijziging aan een bestaand scherm, formulier of functie blijft alles
+wat er al stond gewoon werken en zichtbaar.**
+
+Je verwijdert nooit een veld, knop, instelling of functie zonder dat de eigenaar
+daar expliciet om vraagt. Twijfel je of iets nog nodig is: vraag het, verwijder
+het niet.
+
+Dit gaat niet alleen over wat je ziet. Een instelling kan ook verdwijnen doordat
+een opgeslagen waarde stilletjes wordt overschreven — zie de oorzaak hieronder.
+Zowel het veld als de waarde erachter moet blijven.
+
+## De bewaking
+
+```
+npm run bewaak
+```
+
+Twee controles, die allebei stoppen met een foutmelding:
+
+- **`npm run schermen`** loopt langs elk scherm uit `scripts/schermcontract.mjs`
+  en faalt zodra een veld of knop er niet meer staat. Draait de dev-server
+  ernaast, dan wordt het echte scherm opgehaald; zo niet, dan wordt er in de
+  bronbestanden gekeken.
+- **`npm run bewaking`** speelt na of een opgeslagen instelling overleeft wat
+  er daarna gebeurt: een titel aanpassen, een groep aanpassen, een sjabloon
+  erbij. Dat gebeurt op een **wegwerpkopie** van de database in een tijdelijke
+  map — de echte database wordt alleen gelezen.
+
+**Dit draait automatisch vóór elke commit** (`.githooks/pre-commit`, aangezet
+door `npm install`). Een commit komt er niet door als er iets ontbreekt.
+(Uitzondering: de back-upbranch, zie HARDE REGEL 4.)
+
+Bouw je een veld of knop bij, zet die dan meteen in het contract. Haal er nooit
+een regel uit om een foutmelding weg te krijgen, en gebruik `--no-verify` niet
+om er langs te komen: herstel het scherm, of vraag het eerst. Meld elk verschil
+expliciet — ook als het klein lijkt, ook als het logisch voortvloeit uit de
+opdracht.
+
+**Het handmatige lijstje van hiervoor is met opzet vervallen.** Dat werkte niet,
+om drie redenen: er faalde niets, het keek alleen naar het scherm dat je toch al
+aan het bewerken was, en het voorgeschreven `querySelectorAll('label')` vindt
+niets wat achter een knop als "Bewerken" zit — dat gaf zowel vals alarm als
+valse rust.
+
+Verplaats je iets bewust naar een ander scherm, controleer dan ook of de
+serveractie van het ÓUDE scherm het veld niet meer meestuurt. Een formulier dat
+een veld kwijt is maar de waarde nog wel leeg meestuurt, wist de instelling bij
+elke volgende opslag. Let daarbij op het verschil tussen "leeg = zet terug op de
+standaard" en "leeg = niet aanraken"; zie `bewaarSjabloon` in
+`src/lib/data/sjablonen.ts`.
+
+## Waarom deze regel er is
+
+"Vragen per oefensessie" moest drie keer worden nagelopen. Het veld verhuisde op
+verzoek van het leerdoelscherm naar het sjabloonscherm, maar `bewerkLeerdoel`
+bleef `vragenPerSessie` meesturen. Dat veld stond niet meer in dat formulier,
+dus kwam het als lege waarde binnen en werd het als `null` over het opgeslagen
+getal geschreven. Wie daarna de titel van een leerdoel aanpaste, raakte de
+instelling kwijt zonder dat er iets misging op het scherm.
+
+De derde keer was het veld er nog wél, maar alleen achter de knop "Bewerken"
+en helemaal niet op het scherm Nieuw sjabloon. Een instelling die je pas ziet na
+een klik, is voor wie hem zoekt hetzelfde als een instelling die weg is. Daarom
+staat hij nu ook in het leesblok en bij het aanmaken, en bewaakt het
+schermcontract alle drie de plekken.
+
+Het gevolg: je kunt er niet meer op vertrouwen dat wat je hebt ingesteld,
+ingesteld blijft. Daarom geldt de regel voor het hele platform en hoort de
+controle hierboven bij elke wijziging.
+
+---
+
+# ⛔ HARDE REGEL 2 — CLAUDE MAAKT NOOIT ZELF CONTENT AAN
+
+**Claude maakt nooit zelf content aan in de database.**
+
+Dat betekent: geen vragen, geen leerdoelen, geen domeinen, geen subdomeinen,
+geen sjablonen. Ook niet tijdelijk. Ook niet "even om iets te testen". Ook niet
+als het meteen daarna weer wordt opgeruimd.
+
+De eigenaar van dit project is de enige die content toevoegt, via het
+admin-formulier of via een upload die die zelf start.
+
+Dit geldt voor elke manier waarop content in de database kan komen:
+
+- geen `insert` vanaf de commandoregel of via een script;
+- geen seed-, demo- of voorbeelddata in code;
+- geen testfixtures;
+- geen migratie of opstarthook die content aanmaakt, aanvult of terugzet;
+- geen "een paar voorbeelden zodat ik het kan laten zien".
+
+## Heb je testdata nodig?
+
+Vraag het eerst en **wacht op antwoord**. De eigenaar bepaalt of het mag en wat
+er precies in komt. Niet alvast aanmaken in afwachting van toestemming.
+
+Kan iets zonder testdata niet gecontroleerd worden, zeg dat dan gewoon: meld
+wat je niet hebt kunnen verifiëren, in plaats van er zelf data voor te maken.
+
+## Waarom deze regel er is
+
+Er zijn drie keer dingen in de database verschenen die niemand had ingevoerd:
+7 onverwachte onderwerpen, omschrijvingen die na een herstart terugkwamen, en
+meerkeuzevragen bij REK-GET-TEL-01. De eerste twee kwamen uit een
+seed-mechanisme (`vulStructuur()` en `vulNieuweKolommenAan()` in
+`src/lib/db/sqlite.ts`); die zijn verwijderd. De derde was testdata die Claude
+zelf had aangemaakt om een schermontwerp te kunnen controleren.
+
+Het gevolg was elke keer hetzelfde: je kunt niet meer vertrouwen op wat er in
+je eigen database staat, en je weet bij het opruimen nooit zeker of iets echt
+weg blijft.
+
+De code is hierop vastgezet: een lege database blijft leeg en er is geen enkel
+automatisch mechanisme meer dat content aanmaakt of aanvult. Houd dat zo — voeg
+er ook geen nieuwe aan toe.
+
+---
+
+# ⛔ HARDE REGEL 3 — DE EIGENAAR BESLIST WAT ER WEGGAAT
+
+**Claude verwijdert, wijzigt of laat nooit iets weg zonder uitdrukkelijke
+toestemming van de eigenaar.**
+
+Dat geldt voor alles: knoppen, velden, instellingen, functies, teksten,
+kleuren en opgeslagen gegevens. Ook als iets overbodig lijkt (enige uitzondering, besluit 8 november 2026:
+echte losse versiering in een les volgens BOUWREGELS.md 1.25 mag weg; dat komt
+met de reden in WEGGEHAALD.md, en antwoordkeuzes nooit). Ook als het in
+de weg zit. Ook als het aantoonbaar de oorzaak van een probleem is.
+
+Kom je zoiets tegen, dan doe je dit:
+
+1. je stopt met wijzigen;
+2. je legt uit wát je wilt weghalen of veranderen, en waarom;
+3. je wacht op antwoord.
+
+De eigenaar beslist dat, Claude niet.
+
+## Dit gaat verder dan HARDE REGEL 1
+
+Regel 1 gaat over wat er per ongeluk verdwijnt bij een wijziging. Deze regel
+gaat over wat Claude bewust zou willen weghalen omdat het een goed idee lijkt.
+Dat oordeel is niet aan Claude.
+
+"Ik heb het weggehaald want het was toch kapot" is geen geldige reden. "Ik heb
+het vervangen door iets beters" ook niet. Een oorzaak melden mag altijd; hem
+zelf opruimen niet.
+
+## Hoe een voorstel eruitziet
+
+Kort en concreet, zodat er met ja of nee op te antwoorden valt:
+
+> Ik wil X weghalen/veranderen omdat Y. Gevolg: Z. Mag dat?
+
+Twijfel je of iets onder deze regel valt, dan valt het eronder. Vraag het.
+
+## Waarom deze regel er is
+
+Bij het oplossen van het hervatten werd het leerdoel uit de opslagsleutel
+gehaald. Dat leek een verbetering en loste het gemelde probleem op, maar het
+was niet gevraagd — en het gevolg was dat alle leerdoelen onder één onderwerp
+elkaars vragen kregen. Wie op "Bus tellen" klikte, kreeg de vos op de stenen.
+
+Het patroon is elke keer hetzelfde: iets wat in de weg leek te staan, was er
+met een reden. Alleen de eigenaar weet welke.
+
+---
+
+# ⛔ HARDE REGEL 4 — WAT GECOMMIT WORDT, GAAT METEEN NAAR GITHUB
+
+**Elke commit wordt in dezelfde stap gepusht naar `origin main`.**
+
+De repo op GitHub staat op privé en is tegelijk de back-up van de code. De
+database niet: die gaat via het back-upscript, zie hieronder. De
+eigenaar hoeft daar niet aan te denken; dat is de afspraak. Committen blijft
+iets wat de eigenaar vraagt — maar zodra er gecommit is, hoort de push erbij,
+zonder dat daar apart om gevraagd hoeft te worden.
+
+**Uitzondering: de back-upbranch `backup-squla` (besluit eigenaar, 8 november
+2026).** Op die branch mag zonder de controle worden gecommit (zet "controle
+overgeslagen" in de commitregel). Die commits staan dan niet online. Alles wat
+naar `main` of online gaat, gaat altijd met de volle controle (`npm run
+bewaak`, speelcontrole, vloeiendcontrole).
+
+Lukt de push niet — geen verbinding, of GitHub vraagt om in te loggen — dan
+meld je dat meteen, in gewone taal, met wat de eigenaar precies moet doen. Een
+commit die alleen op de laptop staat, is geen back-up.
+
+## Wat er wél in gaat
+
+Alles wat bij het project hoort: de code, de vragen en de afbeeldingen uit het
+beheer.
+
+## Wat er NOOIT in gaat
+
+- **De database: `data/*.db`.** Daar staan gegevens van een kind in — het
+  profiel en de voortgang. Die horen niet in een coderepo, ook niet in een
+  privérepo: iedereen die later toegang tot de code krijgt, heeft ze dan in
+  handen, en uit een repo krijg je gegevens nooit meer echt weg. `data/*.db`
+  staat in `.gitignore` en dat blijft zo. Sinds 2 oktober 2026 staat de
+  database niet meer in Git (oudere versies staan nog wel in de geschiedenis).
+- **Bestanden met wachtwoorden of sleutels**: alles wat op `.env` lijkt. Die
+  staan in `.gitignore` en dat blijft zo. `.env.example` zonder ingevulde
+  waarden mag ook gewoon buiten de repo blijven.
+- **De map `backups/`**: kopieën van de database die vóór een wijziging worden
+  gemaakt.
+
+Controleer dit vóór elke push.
+
+## Hoe de database wél bewaard wordt
+
+Via het back-upscript, niet via GitHub:
+
+```
+npm run backup
+```
+
+`scripts/backup-db.mjs` maakt met de backupfunctie van SQLite een veilige kopie
+van `data/thuisles.db` naar
+`~/Library/Mobile Documents/com~apple~CloudDocs/Thuisles-backups/` (iCloud
+Drive), met datum en tijd in de naam, en bewaart de laatste 14. Elke dag om
+22:00 draait het vanzelf via de LaunchAgent `nl.thuisles.backup`
+(`~/Library/LaunchAgents/nl.thuisles.backup.plist`; een kopie staat in
+`scripts/`).
+
+Ga je als Claude iets in de database veranderen, maak dan eerst een kopie in
+`backups/` (die niet wordt gecommit), en draai daarna eventueel
+`npm run backup`.
+
+---
+
+# ⛔ HARDE REGEL 5 — GEEN CIJFERTOETSENBORD OP HET SCHERM
+
+Bij oefeningen komt er nooit een nagebouwd cijfertoetsenbord in beeld. Het kind
+typt met het toetsenbord van de laptop, of met het systeemtoetsenbord van de
+tablet of telefoon. Elk nieuw type dat een getal vraagt, krijgt een echt
+invoerveld — desnoods onzichtbaar over de tekening heen, zoals op de deur bij
+Vos' straat. Dat veld toont alleen cijfers, en zodra het toetsenbord opengaat
+schuift de oefening mee omhoog zodat het veld én de knop Controleer zichtbaar
+blijven.
+
+## Hoe je dat in de code doet
+
+Drie dingen, en ze horen bij elkaar:
+
+1. **Een echt `<input>`.** Getekende tekst in een SVG is geen invoerveld: daar
+   komt op een tablet geen toetsenbord bij op en een kind kan dan niets
+   invullen. Moet er op iets getypt worden dat getekend is — een steen, een
+   deur — leg er dan een invoerveld overheen zonder eigen rand of achtergrond,
+   in procenten van de tekening. Zie `Huizenrij` en `Stapstenen`.
+2. **Alleen cijfers**: `inputMode="numeric"` én `pattern="[0-9]*"`. Alleen
+   `inputMode` is niet genoeg; oudere iPads kijken naar het patroon. Filter wat
+   er toch aan letters binnenkomt er bij het typen uit.
+3. **Meeschuiven**: gebruik `useInBeeld` uit
+   `src/components/oefenen/toetsenbordruimte.ts`, met `onFocus` en `onBlur`.
+   Die zet zolang het veld de aandacht heeft lucht onder de pagina en schuift
+   precies genoeg, zodat het veld en de knop eronder vrij blijven.
+
+## Waarom deze regel er is
+
+Een nagebouwd toetsenbord leek veiliger: het schuift niets weg en de toetsen
+zijn groot. Maar het is een tweede toetsenbord naast het echte, en daardoor
+gaat er van alles mis wat je bij een gewoon invoerveld gratis krijgt — geen
+cursor die knippert waar je typt, geen Tab tussen de vakken, geen backspace,
+niets wat een voorleesprogramma herkent. Bij de stapstenen was het zelfs de
+enige manier om iets in te vullen: het getal op de steen was getekende tekst,
+dus zonder dat toetsenbord kon een kind op een tablet niets.
+
+`Cijferinvoer.tsx` blijft in de map staan op verzoek van de eigenaar, voor het
+geval het ooit nog nodig is. Gebruik het niet.
+
+**Uitzondering (besluit eigenaar, 8 november 2026):** cijferknoppen 1 tot 9
+waar het kind uit kiest (zoals de antwoordtegels van Synthesis) mogen. Een
+getekend of nagebouwd toetsenbord om een getal te typen blijft verboden.
+
+---
+
+# ⛔ HARDE REGEL 6 — NOOIT DE HELE DATABASE VAN DE LAPTOP ONLINE ZETTEN
+
+**Zet de hele database van de laptop nooit meer online** (besluit eigenaar,
+26 oktober 2026). Online staan de profielen en de voortgang van echte
+kinderen; een volledige laptop-database erover overschrijft die.
+
+- `npm run online` zet daarom alleen nog afbeeldingen en Godot-spelletjes
+  online (met eerst een reservekopie van online) en stopt vóór de database.
+  De oude stap staat er nog, maar alleen achter
+  `THUISLES_HELE_DATABASE_OVERSCHRIJVEN=ja`; die zet alleen de eigenaar zelf
+  aan, nooit Claude.
+- Moet er iets in de online database veranderen (een instelling, een status),
+  gebruik dan een gericht script met een precieze `where`:
+  `node scripts/online-wijzig.mjs <bestand.sql>`. Dat maakt eerst een
+  reservekopie van online in `backups/` en voert de wijziging uit in één
+  transactie.
+- De status van de opdrachten verandert alleen als de eigenaar het vraagt.
+  Op 27 oktober 2026 zette de eigenaar alle opdrachten van groep 3 en 4 online
+  op concept (9680; de lijst met ids staat in
+  `backups/online-gepubliceerd-voor-concept-20261027.json`, voor als het terug
+  moet). Domeinen, subdomeinen en leerdoelen bleven staan.
+
+## Waarom deze regel er is
+
+Tot 26 oktober 2026 was de laptop-database de baas en ging hij na elke klus in
+zijn geheel online. Het script meldde daarbij steeds dat er online iets was
+veranderd (zoals voortgang) dat werd overschreven. Zodra echte kinderen online
+oefenen, zou hun voortgang zo verdwijnen.
+
+---
+
+# ⛔ HARDE REGEL 7 — ALLES IN PHASER, EN ALTIJD VLOEIEND
+
+**Alle lessen, opdrachten en games van Bliepo worden gebouwd in Phaser (2D)
+en lopen ALTIJD vloeiend** (besluit eigenaar, 27 oktober 2026). Geen Godot
+meer voor nieuw werk: dat is te zwaar op telefoons (39,5 MB, seconden
+stilstand). Wat er al in Godot staat, blijft staan (regel 1).
+
+Bij elke nieuwe of aangepaste les, opdracht of game test je dit zelf,
+vóórdat hij online gaat, op laptop én op een nagebootste trage telefoon:
+
+- minstens **55–60 beeldjes per seconde** tijdens slepen, animaties en gloed;
+- **geen hapering langer dan 50 ms**, gemeten als de computer rustig is (geen
+  helpers, tests of zware programma's ernaast; besluit eigenaar, 8 november
+  2026);
+- de opdracht **opent in minder dan 1 seconde**.
+
+Haalt hij dat niet, dan los je het eerst op zonder dat hij er duidelijk
+anders uitziet (bijvoorbeeld een dure gloed één keer "bakken" in een
+plaatje in plaats van elk beeld uitrekenen, minder deeltjes, een lichtere
+gloed op telefoon, kleinere plaatjes), en pas dan zet je hem online.
+
+## De controle
+
+```
+npm run vloeiend                        (lokaal, zit ook in npm run bewaak)
+BASIS=https://… WW=… npm run vloeiend   (de echte site, na het online zetten)
+```
+
+`scripts/vloeiendcontrole.mjs` start Chrome zonder venster maar mét de
+grafische kaart, en meet per Phaser-scherm op laptop en trage telefoon
+(4× tragere processor, trage 4G) de opentijd, de beeldjes per seconde en de
+langste hapering tijdens 3 seconden slepen. Elk Phaser-scherm staat in de
+lijst `SCHERMEN` en zet bij zijn eerste beeld
+`window.__phaser = { klaarOp, sleepPunt }`. Een nieuw Phaser-scherm zet je
+er meteen bij. De opentijd telt als harde eis op de echte site; lokaal
+(ontwikkelversie, veel trager) geeft hij alleen een waarschuwing.
+
+## Waarom deze regel er is
+
+Het eerste Phaser-proefje haalde op de laptop van de eigenaar maar 13
+beeldjes per seconde: de gloed werd bij elk beeld opnieuw uitgerekend, en
+het slepen liep achter de muis aan. Een gewone test zonder grafische kaart
+zag dat niet.
+
+---
+
+# ⛔ HARDE REGEL 8 — OUDE LESSEN EN OPDRACHTEN OP CONCEPT NOOIT AANRAKEN
+
+**"Nieuwe lessen" zijn alle lessen die sinds 27 oktober 2026 door Claude Code
+zijn gemaakt** (besluit eigenaar, 30 oktober 2026): de 59 groep 3-lessen
+(Getallen, Splitsen, Optellen, Aftrekken, Tijd en Verhaaltjessommen),
+inclusief de 10 in Synthesis-stijl. Praat Sara over "de lessen" of "de
+opdrachten", dan bedoelt ze deze nieuwe lessen.
+
+**De lessen en opdrachten van vóór 27 oktober 2026 die op concept staan
+(ongeveer 9.680), worden NOOIT aangeraakt.** Niet bouwen, niet aanpassen,
+niet controleren, niet testen, geen stem of audio voor genereren, niet
+publiceren en niet verwijderen — tenzij Sara ze uitdrukkelijk met naam noemt.
+
+---
+
+# ⛔ HARDE REGEL 9 — EERST VRAGEN VÓÓR MEER DAN 5.000 BETAALD TEGOED
+
+**Voordat je betaald tegoed gebruikt (ElevenLabs of een andere dienst) voor
+meer dan 5.000 tegoed in één keer, vraag je eerst toestemming aan Sara**
+(besluit eigenaar, 30 oktober 2026). Geef daarbij een schatting van de
+kosten en van het tegoed dat er na afloop nog over is. Genereer nooit
+ongevraagd voor meer dan dat.
+
+**Uitzondering Magnific (besluit eigenaar, 8 november 2026):** daar geldt geen
+limiet, maar meld na elk gebruik wat het kostte.
+
+## Waarom deze regel er is
+
+Op 30 oktober 2026 ging er in één nacht ruim 39.000 tegoed van ElevenLabs op
+aan zinnen voor oudere lessen, zonder dat Sara daar apart toestemming voor
+had gegeven.
+
+---
+
+# ⛔ HARDE REGEL 10 — HELPERS KRIJGEN DEZE REGELS MEE
+
+**Zet je een helper in (een subagent of een andere sessie), geef dan de harde
+regels hierboven mee in zijn opdracht**, in elk geval regel 8 en 9
+(besluit eigenaar, 30 oktober 2026). Een helper die ze niet kent, houdt zich
+er ook niet aan.
+
+Helpers draaien standaard op Sonnet, met hooguit 3 tegelijk, tenzij Sara iets
+anders zegt (besluit eigenaar, 8 november 2026). Een helper zet zelf geen
+helpers in.
+
+---
+
+**Online zetten (besluit eigenaar, 8 november 2026):** pas online als alle
+controles groen zijn én Sara "zet online" zegt. Wil Sara iets zien, dan gebeurt
+dat op de laptop of op de back-upbranch.
+
+---
+
+**Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
+gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
+grootte.** De bestanden staan in `public/geld/`, met de bron in
+`public/geld/BRON.md`. Niet vergroten. Nooit een kader of witte achtergrond
+om geld (besluit eigenaar, 31 oktober 2026): voor munten gebruik je de
+uitgeknipte versies in `public/geld/los/` (alleen de ronde munt, verder niets
+aan veranderd). De originelen blijven staan. Het woord "specimen" op de
+briefjes blijft staan: volgens besluit ECB/2013/10 (artikel 2, zoals
+vervangen door besluit (EU) 2020/2090) is een briefje op een website of in
+een app alleen rechtmatig met "SPECIMEN" schuin erover en hooguit 72 dpi
+(uitgezocht 31 oktober 2026). Weghalen mag alleen met een vrijstelling van
+De Nederlandsche Bank.
+
+---
+
+**Elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor
+kinderen.** Bij twijfel kies je de eenvoudigste zin. Dezelfde soort vraag
+formuleer je overal met dezelfde schooltermen; de zinnen eromheen wisselen af.
+
+---
+
+**Testen als kind mag alleen met het profiel "Testkind"** (groep 3). Nooit met
+het profiel van een echt kind: elk antwoord dat je daar geeft, komt in de
+voortgang van dat kind terecht.
+
+---
+
+**Lees en volg `ONTWERPREGELS.md` voordat je een oefentype, opdracht of vraag bouwt of aanpast.** Botst iets met `BOUWREGELS.md`, dan gaat `BOUWREGELS.md` voor.
+
+---
+
+@AGENTS.md

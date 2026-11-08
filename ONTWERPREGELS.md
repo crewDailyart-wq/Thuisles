@@ -257,8 +257,9 @@ REGEL 7). Wat daarbij altijd geldt:
   oplichten waar een rondje onhandig is (7.9); niet met meer gloed.
 - **Gloed: subtiel.** Een zacht, smal randje licht rond een voorwerp, geen
   grote lichtwolk; het voorwerp zelf blijft duidelijk en scherp (niet
-  wit-uitgebeten). De lichtring bij selecteren en de lichtflits/-golf bij een
-  goed antwoord zijn er ook, maar rustig. De sterkte is één centrale
+  wit-uitgebeten). Na een tik op een keuze verdwijnen de knoppen meteen, zonder
+  lichtring (BOUWREGELS 7.6, besluit Sara 8 nov, 2e ronde); de lichtflits/-golf
+  bij een goed antwoord blijft, maar rustig (T15). De sterkte is één centrale
   instelling: `gloed` in de stijl (lib/stijl.ts, standaard 0,5; later in de
   stijlkiezer), via `lib/phaser/gloed.ts`. Geen enkele les zet zelf een
   gloedsterkte; gebruik altijd `bak()` en de effecten uit
@@ -286,17 +287,18 @@ lezen, moet de les helemaal kunnen doen. Controleer dat bij elke les.
    voor.
 4. **Tikt het kind op tekst of op Bliepo's zin**, dan leest Bliepo die (nog
    eens) voor (BliepoTekst).
-5. **Geen uitleg over knoppen** (BOUWREGELS 3.15): Bliepo zegt niet "Tik op de
-   pijl" of "Tik op het vinkje" en doet geen aanbod "tik op de pijl en ik doe
-   het voor". (De oude regel dat Bliepo de knoppen de eerste keer aanwijst, met
-   `l.wijsAan("weetniet", ...)`, is vervallen.)
+5. **Knoppen leg je alleen de eerste keer uit** (BOUWREGELS 3.15, besluit Sara
+   8 nov, 2e ronde): daarna zegt Bliepo nooit "Tik op de pijl" of "Tik op het
+   vinkje", en er is geen aanbod "tik op de pijl en ik doe het voor". (De
+   oude regel met `l.wijsAan("weetniet", ...)` is vervallen.)
 6. **Zo weinig mogelijk tekst op het scherm.** Het meelezen boven Bliepo
    blijft, want dat helpt bij leren lezen.
 
 ## Inhoud van vragen
 
-- 15 vragen per opdracht, geen dubbele, elke vraag precies één goed antwoord,
-  alle getallen en uitkomsten binnen het bereik.
+- 15 vragen per opdracht, geen dubbele, elke vraag één juist antwoord, óf
+  alle juiste antwoorden worden goed gerekend (splitsen, BOUWREGELS 14.30), alle
+  getallen en uitkomsten binnen het bereik.
 - Geen vragen met een onduidelijk antwoord, zoals een rond tiental bij "tussen
   welke tientallen", of twee paren die allebei kloppen.
 - Getallen liggen vooral in het bovenste deel van het bereik; pas als die op

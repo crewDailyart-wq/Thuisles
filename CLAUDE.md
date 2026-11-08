@@ -37,9 +37,13 @@ cijferafspraak niet. Bewaar de oorspronkelijke antwoordwaarden en beoordeling.
 
 **Vaste lesopbouw van Sara (4 november 2026), ook voor volgende groepen:**
 Squla-lessen en Synthesis-lessen hebben ieder hun eigen opbouw.
+(Tweede ronde, 8 november 2026: standaard heeft een les geen startvraag; de
+opbouw hieronder geldt voor lessen die wél een startvraag hebben, zie de
+Aanvulling verderop en BOUWREGELS.md hoofdstuk 4.)
 Bij Squla bestaat het beginscherm uit een uitlegdeel (wat je in deze les gaat
 doen en hoe) en een persoonlijke, afwisselend geformuleerde vraag of je dit al
-kunt. Het uitlegdeel mag uit meer dan 1 korte zin bestaan. Ja = beginnen;
+kunt. Het uitlegdeel mag uit meer dan 1 korte zin bestaan. Ja = beginnen
+(eerst een korte proef);
 Nee = samen oefenen volgens deze 6 stappen:
 
 1. Samen beginnen en het kind geruststellen.
@@ -57,20 +61,28 @@ rekeninhoud en moeilijkheid aan de groep aan; de opbouw blijft behouden.
 Squla-opbouw. Lees de volledige afspraak in BOUWREGELS.md 4.4–4.5 en 14.29;
 die gaat bij strijdige oudere regels over de lesopbouw voor.
 
-**Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig tot de
-Synthesis-vergelijking, zie BOUWREGELS.md bovenaan):**
-- Beginscherm: zin 1 (uitleg) en zin 2 (persoonlijke vraag), steeds anders.
-  Ja = meteen oefenen, Nee = eerst uitleg.
-- Hulp na een fout: na de 2e fout legt Bliepo het uit, het kind doet een kleine
-  stap en gaat dan door. Geen pauze, geen "tik op de pijl en ik doe het voor",
-  nergens een "Weet ik niet"-knop.
-- Geen vaste woordjes, openingen of begin- en eindzinnen: alles past bij de
-  vraag en wisselt af. Schooltermen blijven overal hetzelfde; de zinnen eromheen
-  wisselen.
-- Rondje alleen als Bliepo iets noemt; bij een tik een zachte gloed om de
-  keuze; geen rood op de keuze van het kind; geen fout-geluidje; alleen
-  Bliepo's scherm kleurt rood bij fout en groen bij goed. Volledig in
-  BOUWREGELS.md 5.3, 7.8 en 7.9.
+**Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig, bijgewerkt
+in de tweede ronde: besluit Sara 8 nov, 2e ronde; zie BOUWREGELS.md bovenaan):**
+- Beginscherm: standaard geen startvraag. Waar wel een startvraag is: zin 1
+  (uitleg) en zin 2 (persoonlijke vraag), steeds anders. Ja = eerst een korte
+  proef, Nee = eerst uitleg (de 6 stappen hierboven blijven bij lessen met een
+  startvraag).
+- Hulp na een fout: na de 2e fout legt Bliepo het uit en mag het kind een 3e
+  keer proberen. Na de 3e fout doet Bliepo het samen met het kind voor en gaat
+  de les verder. Nooit de les stoppen of naar het hoofdmenu sturen, niet
+  eindeloos opnieuw laten proberen. Geen "tik op de pijl en ik doe het voor",
+  nergens een "Weet ik niet"-knop. Wel een hulphandje dat laat zien wat het
+  kind moet doen.
+- Geen vaste openingen of beginzinnen bij fouten en uitleg: alles past bij de
+  vraag en wisselt af. Alleen een klein vast rijtje korte lofzinnen en
+  eindzinnen is toegestaan. Schooltermen blijven overal hetzelfde; de zinnen
+  eromheen wisselen.
+- Rondje alleen als Bliepo iets noemt. Na een tik verdwijnen de knoppen meteen:
+  geen gloed om de keuze, geen rood op de keuze van het kind, geen
+  fout-geluidje. Alleen Bliepo's scherm kleurt: rood 1,5 seconde bij fout,
+  groen 1 seconde bij goed. Geen zachte rondjes meer. Klok: gloed om de wijzer
+  en een ring om het getal. Volledig in BOUWREGELS.md 5.3, 7.8 en 7.9.
+- Knoppen leg je alleen de eerste keer uit (BOUWREGELS.md 3.15).
 - Niet tussendoor vragen: keuzes komen in KEUZES-VOOR-SARA.md, behalve waar om
   akkoord gevraagd wordt. De harde regels hieronder gelden altijd.
 
