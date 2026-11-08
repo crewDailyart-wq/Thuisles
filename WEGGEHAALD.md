@@ -54,3 +54,7 @@ Per regel: datum · les · wat · reden · teruggezet?
 
 7 nov 2026 · squla-rekenmix-mix1-2 · het plaatje "picknickkleed" (zin "het kleed") bij de vormvraag · vervangen door een nieuwe platte houten plank van voren (plank-plat, zin weer "de plank" zoals in het begin; de zin kwam voor, dus de plank is teruggezet) · Sara-opdracht; het kleed bestaat nog in andere lessen (Meten)
 7 nov 2026 · squla-rekenmix-mix4-2 · de oude uitgerekte plaatjes raketje, potlood en kaars (3 vragen "van dik naar dun") · vervangen door raket-maat, potlood-maat en kaars-maat (zelfde als mix3-1; kaars: alleen het lijf, vlam los) · antwoorden, maten, volgorde ongewijzigd
+
+## Ronde 9 – vormen-opruimen-1
+
+8 nov 2026 · squla-vormen-opruimen-1 · niets weggehaald: alle plaatjes, keuzes en zinnen staan er nog; alleen grootte, plek en ligging (potloden plat, in de tekendoos) veranderd · n.v.t.

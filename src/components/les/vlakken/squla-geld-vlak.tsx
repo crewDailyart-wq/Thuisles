@@ -203,14 +203,21 @@ export function legGeld(items: GeldSoort[], maxB: number, maxH: number, maxS = 1
   noten.forEach((n, j) => {
     const kol = j % b.pn;
     if (j > 0 && kol === 0) y += (NOOT_H + TUSSEN) * b.sc;
-    plekken[n.i] = { g: n.g, x: x0 + (kol * (NOOT_B + TUSSEN) + NOOT_B / 2) * b.sc, y: y + (NOOT_H / 2) * b.sc, b: NOOT_B * b.sc, h: NOOT_H * b.sc };
+    /* Ronde 9 (7 november): een rij die niet vol is (bv. het derde briefje), staat in het midden in plaats van links. */
+    const inRij = Math.min(b.pn, noten.length - (j - kol));
+    const rijB = Math.min(b.pn, noten.length) * (NOOT_B + TUSSEN) - TUSSEN;
+    const opschuif = ((b.W - rijB) * b.sc) / 2 + ((Math.min(b.pn, noten.length) - inRij) * (NOOT_B + TUSSEN) * b.sc) / 2;
+    plekken[n.i] = { g: n.g, x: x0 + opschuif + (kol * (NOOT_B + TUSSEN) + NOOT_B / 2) * b.sc, y: y + (NOOT_H / 2) * b.sc, b: NOOT_B * b.sc, h: NOOT_H * b.sc };
   });
   if (noten.length) y += (NOOT_H + TUSSEN) * b.sc;
   munten.forEach((m, j) => {
     const kol = j % b.pm;
     if (j > 0 && kol === 0) y += (MUNT_D + TUSSEN) * b.sc;
     const d = MUNT_D * b.sc * muntMaat(m.g);
-    plekken[m.i] = { g: m.g, x: x0 + (kol * (MUNT_D + TUSSEN) + MUNT_D / 2) * b.sc, y: y + (MUNT_D / 2) * b.sc, b: d, h: d };
+    const inRij = Math.min(b.pm, munten.length - (j - kol));
+    const rijB = Math.min(b.pm, munten.length) * (MUNT_D + TUSSEN) - TUSSEN;
+    const opschuif = ((b.W - rijB) * b.sc) / 2 + ((Math.min(b.pm, munten.length) - inRij) * (MUNT_D + TUSSEN) * b.sc) / 2;
+    plekken[m.i] = { g: m.g, x: x0 + opschuif + (kol * (MUNT_D + TUSSEN) + MUNT_D / 2) * b.sc, y: y + (MUNT_D / 2) * b.sc, b: d, h: d };
   });
   return { plekken, b: b.W * b.sc, h: b.H * b.sc };
 }
@@ -279,7 +286,8 @@ export function indeling(p: GeldProps): Indeling {
       kaarten = p.vakken ? rij(n, 250, 34, 574, 236) : rij(n, 270, 40, 574, 236);
       onder = 438;
     } else {
-      kaarten = p.vakken ? rij(n, 196, 20, 590, 210) : rij(n, 214, 22, 590, 220);
+      /* Ronde 9: met vakken iets groter (4 groepjes geld zaten krap tegen de rand van hun vak). */
+      kaarten = p.vakken ? rij(n, 214, 16, 588, 226) : rij(n, 214, 22, 590, 220);
       onder = 462;
     }
   } else if (n) {

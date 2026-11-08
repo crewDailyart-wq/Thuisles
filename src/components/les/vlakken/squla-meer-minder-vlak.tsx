@@ -158,7 +158,13 @@ function kolomPlek(g: MMGroep, vak: Rect, maxCel: number): GroepPlek {
   return { cel, plekken, rijen: telrijen, dozen: [] };
 }
 
-const binnen = (r: Rect, f: number): Rect => ({ x: r.x, y: r.y, b: r.b * f, h: r.h * f });
+/** Hoe hoog de voorwerpen van een groep samen zijn (met de doos eromheen), voor een kaart die niet hoger is dan nodig. */
+function groepHoogte(g: GroepPlek): number {
+  const ys = g.plekken.flatMap((p) => [p.y - g.cel / 2, p.y + g.cel / 2]).concat(g.dozen.flatMap((d) => [d.y, d.y + d.h]));
+  return ys.length ? Math.max(...ys) - Math.min(...ys) : 0;
+}
+
+const binnen = (r: Rect, f: number): Rect =>({ x: r.x, y: r.y, b: r.b * f, h: r.h * f });
 
 /** Vakken naast elkaar, gecentreerd. */
 function rij(n: number, b: number, h: number, y: number, tussen: number): Rect[] {
@@ -193,14 +199,32 @@ export function mmIndeling(o: MMOpgave, staand = false): MMIndeling {
       kaarten = rij(n, 370, 486, 212, 60);
       maxCel = 62;
     } else if (n === 2) {
-      kaarten = rij(n, 380, 540, 90, 60);
-      maxCel = 66;
+      /* Ronde 9 (7 november, Sara): de 2 kaarten waren hoog en smal (380 × 540) met kleine voorwerpen en veel leegte;
+         nu breder, de voorwerpen groter, en de hoogte past zich hieronder aan wat er op de kaart staat. */
+      kaarten = rij(n, 440, 540, 90, 60);
+      maxCel = 80;
     } else {
       /* Drie kaarten naast elkaar, met ruimte ertussen zodat je ziet waar een groepje ophoudt. */
-      kaarten = rij(n, 262, 360, 170, 36);
-      maxCel = 60;
+      kaarten = rij(n, 290, 360, 170, 34);
+      maxCel = 64;
     }
-    kaarten.forEach((k, i) => vakken.push({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, n === 3 && !o.voorbeeld && o.getal === undefined ? 0.92 : 0.86), maxCel) }));
+    const groepen = kaarten.map((k, i) => groepPlek(o.kaarten[i], binnen(k, 0.86), maxCel));
+    /* Ronde 9: de kaarten zijn niet hoger dan nodig (alle kaarten even hoog), met een nette rand boven en onder de voorwerpen. */
+    const hoog = Math.max(...groepen.map(groepHoogte));
+    const cel = Math.max(...groepen.map((g) => g.cel));
+    const pasH = Math.min(kaarten[0].h, Math.max(hoog + 2 * Math.max(34, cel * 0.7), 220));
+    kaarten = kaarten.map((k) => ({ ...k, h: pasH, y: o.voorbeeld || o.getal !== undefined ? k.y : k.y + (k.h - pasH) / 2 }));
+    kaarten.forEach((k, i) => vakken.push({ ...k, soort: "kaart", groep: groepen[i] }));
+    /* Met een voorbeeld of getal erboven: het geheel netjes in het midden van de hoogte. */
+    if (o.voorbeeld || getalkaart) {
+      const boven = Math.min(...vakken.map((v) => v.y), getalkaart ? getalkaart.y : Infinity);
+      const onder = Math.max(...vakken.map((v) => v.y + v.h));
+      const schuif = Math.max(0, (VLAK_H - (onder - boven)) / 2 - boven);
+      if (schuif > 0) {
+        vakken.forEach((v) => (v.y += schuif));
+        if (getalkaart) getalkaart = { ...getalkaart, y: getalkaart.y + schuif };
+      }
+    }
     return { vakken, sloten: [], getalkaart };
   }
   if (o.soort === "volgorde" && staand && o.kaarten.length <= 4) {
@@ -212,9 +236,10 @@ export function mmIndeling(o: MMOpgave, staand = false): MMIndeling {
   }
   if (o.soort === "volgorde") {
     const n = o.kaarten.length;
-    const thuis = rij(n, 200, 214, 414, 18);
-    const sloten = rij(n, 210, 224, 56, 12);
-    return { vakken: thuis.map((k, i) => ({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, 0.86), 40) })), sloten, getalkaart: null };
+    /* Ronde 9 (7 november): de kaarten iets breder en de voorwerpen groter (ze waren klein met veel rand eromheen). */
+    const thuis = rij(n, 226, 222, 410, 12);
+    const sloten = rij(n, 234, 232, 52, 8);
+    return { vakken: thuis.map((k, i) => ({ ...k, soort: "kaart", groep: groepPlek(o.kaarten[i], binnen(k, 0.9), 46) })), sloten, getalkaart: null };
   }
   const n = o.getallen.length;
   const thuis = rij(n, DING_B, DING_H, 380, 110);

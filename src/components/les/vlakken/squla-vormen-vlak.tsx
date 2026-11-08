@@ -42,7 +42,8 @@ export type Deel =
   | { s: "kraal"; id: string; groep?: string; x: number; y: number; r: number; kleur: Kleur | null }
   | { s: "vorm"; id: string; groep?: string; x: number; y: number; maat: number; vorm: VormNaam; kleur: Kleur | null; draai?: number }
   /** `rek`: het plaatje vult het vak helemaal (uitgerekt), voor een lange bak. */
-  | { s: "vw"; id: string; groep?: string; naam: string; x: number; y: number; maat: number; hoog?: number; rek?: boolean }
+  /** `draai`: het plaatje ligt gedraaid (in graden, met de klok mee), passend in het vak (bv. een potlood dat plat ligt). */
+  | { s: "vw"; id: string; groep?: string; naam: string; x: number; y: number; maat: number; hoog?: number; rek?: boolean; draai?: number }
   | { s: "touw"; id: string; punten: number[] }
   | { s: "pijl"; id: string; x: number; y: number; lang?: number; omhoog?: boolean }
   | { s: "veld"; id: string; soort: Veldsoort; x: number; y: number; b: number; h: number }
@@ -124,6 +125,22 @@ function teken(c: CanvasRenderingContext2D, d: Deel) {
       /* Herstel ronde 2 (7 november): de bal is de strandbal "speelbal" (de oude bal.png leek op een verbodsbord). Niet in de puzzels. */
       const naam = d.naam === "bal" ? "speelbal" : d.naam;
       if (d.rek) return void c.drawImage(voorwerpBeeld(naam), 0, 0, b, h);
+      if (d.draai) {
+        /* Ronde 9 (7 november, Sara): een gedraaid plaatje, zo groot als het gedraaid in het vak past (één keer gebakken). */
+        const img = voorwerpBeeld(naam);
+        const hoek = (d.draai * Math.PI) / 180;
+        const co = Math.abs(Math.cos(hoek));
+        const si = Math.abs(Math.sin(hoek));
+        const iw = img.naturalWidth || 1;
+        const ih = img.naturalHeight || 1;
+        const f = Math.min(b / (iw * co + ih * si), h / (iw * si + ih * co));
+        c.save();
+        c.translate(b / 2, h / 2);
+        c.rotate(hoek);
+        tekenVoorwerp(c, naam, (-iw * f) / 2, (-ih * f) / 2, iw * f, ih * f);
+        c.restore();
+        return;
+      }
       return tekenVoorwerp(c, naam, 0, 0, b, h);
     }
     case "pijl":

@@ -195,6 +195,7 @@ function indeling720(p: PlaatjesProps): Indeling {
       const [b, h] = n === 2 ? [320, 320] : n === 3 ? [280, 300] : [210, 260];
       kaarten = rij(n, b, 44, 370, h);
     }
+    if (!groot && !(n === 2 && p.kaarten!.some(isWeek))) kaarten = pasHoogte(kaarten, p.kaarten!);
   }
   let vakken: Rect[] = [];
   let losse: Rect[] = [];
@@ -212,6 +213,24 @@ function indeling720(p: PlaatjesProps): Indeling {
     rechts = verbind.rechts.map((_, i) => ({ x: 760, y: 122 + i * 238, b: 250, h: 104 }));
   }
   return { groot, kaarten, vakken, losse, links, rechts };
+}
+
+/**
+ * Ronde 9 (7 november, Sara): de vakken waren veel hoger dan de tekening erin (een platte kalender of de plaatjes aan
+ * het lijntje in een vak van 300 hoog, met veel lege ruimte erboven en eronder). Nu zijn de vakken samen niet hoger dan
+ * de hoogste tekening nodig heeft; de tekeningen zelf blijven even groot (ze worden door de breedte begrensd).
+ */
+function pasHoogte(kaarten: Rect[], dingen: PDing[]): Rect[] {
+  if (!dingen.every((d) => d.tekening)) return kaarten;
+  const nodig = kaarten.map((r, i) => {
+    const d = dingen[i];
+    const m = tekeningMaat(d.tekening!);
+    const woordH = d.label ? 46 : 0;
+    const k = Math.min((r.b - 34) / m.b, (r.h - 30 - woordH) / m.h);
+    return m.h * k + 30 + woordH;
+  });
+  const h = Math.min(Math.max(...kaarten.map((r) => r.h)), Math.max(190, Math.ceil(Math.max(...nodig) + 24)));
+  return kaarten.map((r) => ({ ...r, h: Math.min(r.h, h) }));
 }
 
 export const binnen = (r: Rect, x: number, y: number, marge = 0) => Math.abs(x - r.x) <= r.b / 2 + marge && Math.abs(y - r.y) <= r.h / 2 + marge;

@@ -73,3 +73,15 @@ Getoetst aan BOUWREGELS 1.25 en 1.26: meten, meer-minder, getallenlijn, huisnumm
 | squla-meten-oppervlakte-2 | JA | de zinnen "Op de ene tafel ... kleine ..." en "Op de andere ... grote ..." staan bij elke herhaling weer (vraagzinnen) |
 | squla-meten-hoeveelheden-2 | vervangen | mand, rugtas en speelgoed zijn naspeel-bewegingen |
 | meer-minder, huisnummers, tellen, vormen | n.v.t. | alleen plek van keuzes gewisseld, knikker/bal vervangen door betere plaatjes; geen keuze weg |
+
+## Ronde 9
+
+- squla-vormen-opruimen-1: gedaan. Vakken passend en tekening groot in het midden (gedeelde vergroting per vraag), niets buiten een vak, alles staat óp de plank (niet zwevend), potloden plat (plank, kast, grond, paren) en ín de tekendoos, dingen op de planken ín de kast, ballen passend in de mand. Antwoorden/keuzes/vragen gelijk (inhoudsvergelijk: niets verdwenen). Foto's: public/overbodige-plaatjes-na/squla-vormen-opruimen-1-r9-voor-<nr>.jpg en -r9-na-<nr>.jpg (nr 1..15 = o-1..o-15), telefoon -r9-na-2-telefoon.jpg, -r9-na-3-telefoon.jpg.
+- patronen-1/-2, orienteren-1: nagekeken, geen probleem gevonden; kleuren-1/2/3 (puzzels) niet aangeraakt.
+
+## Ronde 9 – vakken andere lessen (8 november 2026)
+
+- meer-minder: kaarten passend (breder, voorwerpen groter, niet hoger dan nodig; volgorde-kaarten iets breder). Bestand: squla-meer-minder-vlak.tsx.
+- meten-pizza-2: stukken pizza in 2 rijen; meten-hoeveelheden-1: fruitstokje plat; alle meten-vakken zonder plaatje erboven niet hoger dan nodig. Bestanden: squla-meten-tekeningen.ts, squla-meten-vlak.tsx.
+- getallenlijn, huisnummers, tellen, vormen orienteren/patronen: nagekeken, niets veranderd.
+- Foto's: public/overbodige-plaatjes-na/squla-meer-minder-evenveel1-2/1-3/2-2/3-1-r9-*, squla-meten-pizza-2-r9-*, squla-meten-hoeveelheden-1-r9-*.

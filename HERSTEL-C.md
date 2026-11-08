@@ -85,3 +85,13 @@ Getoetst aan BOUWREGELS 1.25 en 1.26 (piraat, splitsen, plussommen, minsommen, r
 - squla-rekenmix-mix1-3 (links/rechts/midden) en mix3-2 (eerste/tweede/laatste): de tweede rij met antwoordkeuzes, de foute keuzes en Bliepo's zinnen erover zijn teruggezet (de oude code van 7c71b04). Nieuw: de keuzes staan elk in een eigen zacht vak (`vakken` in squla-rekenmix-vlak.tsx), in het midden onder de rij, met ruimte ertussen; het goede antwoord wisselt van plek; niet onder de microfoonknop (laptop en 390x844 bekeken). mix1-1 zelf had dit niet (het is een telles); de verandering zat in mix1-3 en mix3-2.
 - Controles: tsc schoon, speelcontrole mix1-1, mix1-3 en mix3-2 tot het eind, vloeiendcontrole 60 beelden/s, inhoudsvergelijk: alleen "de plank" (mix1-2) nog genoemd.
 - Foto's: public/overbodige-plaatjes-na/squla-rekenmix-mix3-2-r7-na.jpg (+ -telefoon) en squla-rekenmix-mix1-3-r7-na.jpg (+ -telefoon).
+
+## Ronde 9
+
+- squla-rekenmix-mix1-3, squla-rekenmix-mix3-2: vakken passend (bij 5 keuzes vierkant i.p.v. hoog en smal; voorwerpen groter en in het midden; niets buiten het vak; hele vak tikbaar). Alleen `squla-rekenmix-vlak.tsx` (rmIndeling, vakken-tak, en de tikknop). Foto's: public/overbodige-plaatjes-na/squla-rekenmix-mix1-3-r9-voor/na.jpg, squla-rekenmix-mix3-2-r9-voor/na.jpg (+ -r9-na-telefoon.jpg).
+- squla-rekenmix-mix1-2: niet veranderd; de klacht (plank met speelgoed, potloden, tekendoos, vakken) hoort bij squla-vormen-opruimen-1, niet bij mix1-2. Foto's huidige staat: squla-rekenmix-mix1-2-r9-voor-1/2/3.jpg en -r9-voor-3-telefoon.jpg.
+- inhoudsvergelijk (REV=HEAD): niets verdwenen. Niets weggehaald (WEGGEHAALD.md ongewijzigd).
+
+## Ronde 9 – vakken andere lessen (8 november 2026)
+
+- splitsen, plussommen, minsommen, piraat: nagekeken (laptop), geen vakken-probleem; niets veranderd.

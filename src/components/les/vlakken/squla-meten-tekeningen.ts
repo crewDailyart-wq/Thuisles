@@ -75,9 +75,17 @@ export const METEN_VOORWERPEN = [
 
 const PIZZA: Record<string, string> = { kaas: "pizza-kaas", salami: "pizza-salami", olijf: "pizza-olijven" };
 
-const puntenMaat = (n: number) => ({ b: Math.max(1, n) * 110 + 30, h: 140 });
-function puntenPunten(n: number): Punt[] {
-  return Array.from({ length: n }, (_, i) => ({ x: 15 + i * 110 + 55, y: 70 }));
+/* Ronde 9 (7 november, Sara): 3 of meer stukken pizza liggen in 2 rijen in plaats van 1 lange rij; in een keuzevak werden ze
+   anders piepklein met veel lege ruimte erboven en eronder. `kol` = hoeveel naast elkaar (standaard: 1 rij bij 1 of 2 stukken). */
+const puntenKol = (n: number) => (n <= 2 ? Math.max(1, n) : n <= 4 ? 2 : 3);
+const puntenMaat = (n: number, kol = puntenKol(n)) => ({ b: kol * 110 + 30, h: Math.ceil(Math.max(1, n) / kol) * 124 + 16 });
+function puntenPunten(n: number, kol = puntenKol(n)): Punt[] {
+  const rijen = Math.ceil(n / kol);
+  return Array.from({ length: n }, (_, i) => {
+    const rij = Math.floor(i / kol);
+    const inRij = rij === rijen - 1 ? n - rij * kol : kol;
+    return { x: 15 + ((kol - inRij) * 110) / 2 + (i % kol) * 110 + 55, y: 70 + rij * 124 };
+  });
 }
 
 /** Een ijsje: met `kers` het vaste plaatje (twee bolletjes); anders een hoorntje met `bol` losse bolletjes om te tellen. */
@@ -594,8 +602,8 @@ function verhaal(c: C, o: O) {
     vw(c, "bord", 470, 250, 220);
   } else if (s === "pizza2") {
     c.save();
-    c.translate(320 - puntenMaat(4).b / 2, 120);
-    punten(c, 4);
+    c.translate(320 - puntenMaat(4, 4).b / 2, 120);
+    punten(c, 4, 4);
     c.restore();
   } else if (s === "pizza3") {
     vw(c, "bolletje-deeg", 170, 250, 220);
@@ -614,8 +622,8 @@ function verhaal(c: C, o: O) {
   }
 }
 
-function punten(c: C, n: number) {
-  for (const p of puntenPunten(n)) vw(c, "pizzapunt", p.x, p.y, 130);
+function punten(c: C, n: number, kol = puntenKol(n)) {
+  for (const p of puntenPunten(n, kol)) vw(c, "pizzapunt", p.x, p.y, 130);
 }
 
 /** Een groot plaatje bij een vraag (ontwerpvak 360 × 300). */
@@ -687,7 +695,18 @@ const T: Record<string, Tek> = {
   knikker: { maat: () => ({ b: 72, h: 72 }), teken: (c) => vw(c, "knikker-glas", 36, 36, 72) },
   oven: { maat: () => ({ b: 260, h: 260 }), teken: (c) => vw(c, "pizzaoven", 130, 130, 260) },
   mand: { maat: () => ({ b: 220, h: 220 }), teken: (c, o) => vw(c, o.vul === "2" ? "mand-vol" : o.vul === "1" ? "mand-half" : "mand", 110, 110, 220) },
-  stokje: { maat: () => ({ b: 220, h: 220 }), teken: (c, o) => vw(c, getal(o, "n", 0) >= 5 ? "spies-vol" : getal(o, "n", 0) > 0 ? "spies-twee" : "spies-leeg", 110, 110, 220) },
+  /* Ronde 9 (7 november, Sara): het fruitstokje stond rechtop op zijn punt, smal en klein in een breed vak; nu ligt het plat, zodat het fruit groter in beeld komt. */
+  stokje: {
+    maat: () => ({ b: 250, h: 92 }),
+    teken: (c, o) => {
+      const naam = getal(o, "n", 0) >= 5 ? "spies-vol" : getal(o, "n", 0) > 0 ? "spies-twee" : "spies-leeg";
+      c.save();
+      c.translate(125, 46);
+      c.rotate(-Math.PI / 2);
+      tekenVoorwerp(c, naam, -125, -125, 250, 250);
+      c.restore();
+    },
+  },
   broodje: { maat: () => ({ b: 190, h: 190 }), teken: broodje },
   beker: { maat: () => ({ b: 134, h: 176 }), teken: beker },
   potje: { maat: () => ({ b: 140, h: 174 }), teken: potje },

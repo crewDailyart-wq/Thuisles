@@ -529,8 +529,11 @@ function raadselTekst(vraag: string[], opties: [string, string], goedNr: 0 | 1, 
       noem: (x) => x.replace(/[.!?]+$/, ""),
       goed: async () => {
         goedBeeld(l, st);
+        /* Sara, 7 november 2026: de maan blijft ongeveer 3 seconden in beeld, of tot Bliepo klaar is met zijn zin (het langste van de twee). */
+        const begin = Date.now();
         toonDeco();
         await l.zeg(bevestig());
+        if (deco === "maan") await l.wacht(Math.max(0, 3000 - (Date.now() - begin)));
       },
       fout: () => foutBeeld(l, st),
       samen: async () => {

@@ -922,7 +922,68 @@ const SCHAAL: Record<string, number> = { boek: 1.6, broek: 1.15, potlood: 1.1 };
 const m_ = (naam: string, m: number) => m * (SCHAAL[naam] ?? 1);
 const SCENE_Y = 380;
 const SCENE_B = 272;
-const SCENE_H = 380;
+/* Ronde 9 (7 november, Sara): "de vakken zijn te hoog en smal, de voorwerpen staan klein onderin". Het vak is nu zo hoog als
+   de tekening nodig heeft (tussen SCENE_H_MIN en SCENE_H_MAX), en de tekening staat groot in het midden van het vak. */
+const SCENE_H_MIN = 190;
+const SCENE_H_MAX = 330;
+const SCENE_RAND = 22;
+
+/** Ronde 9: de maat van de plaatjes in pixels (breed, hoog). Elk plaatje heeft rondom 20 pixels lege rand. */
+const PIX: Record<string, [number, number]> = {
+  wandplank: [512, 107],
+  tekendoos: [512, 383],
+  potlood: [137, 512],
+  boek: [512, 256],
+  speelgoedauto: [512, 320],
+  bal: [512, 512],
+  kledingkast: [512, 367],
+  mand: [500, 512],
+  broek: [273, 512],
+  schoen: [512, 261],
+  "t-shirt": [512, 459],
+  jas: [512, 458],
+  speelblok: [512, 460],
+  doos: [504, 512],
+};
+const PIX_RAND = 20;
+
+/** Ronde 9: een voorwerp waarvan het zichtbare deel `hoogte` hoog is en met de onderkant op `onder` staat (dus niet zweeft). */
+function staand(id: string, groep: string, naam: string, x: number, onder: number, hoogte: number): Deel {
+  const [W, H] = PIX[naam] ?? [512, 512];
+  const f = hoogte / (H - 2 * PIX_RAND);
+  return { s: "vw", id, groep, naam, x, y: onder - hoogte / 2, maat: Math.max(W, H) * f };
+}
+
+/** Ronde 9: hoe breed en hoog het zichtbare deel wordt bij deze maat (zonder de lege rand). */
+function zichtMaat(naam: string, maat: number): { w: number; h: number } {
+  const [W, H] = PIX[naam] ?? [512, 512];
+  const f = maat / Math.max(W, H);
+  return { w: (W - 2 * PIX_RAND) * f, h: (H - 2 * PIX_RAND) * f };
+}
+
+/** Ronde 9: een potlood dat plat ligt (zichtbaar `lang` lang), met de onderkant op `onder`. */
+function platPotlood(id: string, groep: string, x: number, onder: number, lang: number): Deel {
+  const f = lang / (512 - 2 * PIX_RAND);
+  return { s: "vw", id, groep, naam: "potlood", x, y: onder - ((137 - 2 * PIX_RAND) * f) / 2, maat: 512 * f, hoog: 137 * f, draai: 90 };
+}
+const potloodDik = (lang: number) => (lang * (137 - 2 * PIX_RAND)) / (512 - 2 * PIX_RAND);
+
+/** Ronde 9: de rechthoek die je van een deel echt ziet (zonder de lege rand van het plaatje). */
+function zichtbaar(d: Deel): [number, number, number, number] | null {
+  if (d.s !== "vw") return null;
+  const [W, H] = PIX[d.naam] ?? [512, 512];
+  const b = d.maat;
+  const h = d.hoog ?? d.maat;
+  const hoek = ((d.draai ?? 0) * Math.PI) / 180;
+  const co = Math.abs(Math.cos(hoek));
+  const si = Math.abs(Math.sin(hoek));
+  const f = Math.min(b / (W * co + H * si), h / (W * si + H * co));
+  const w = (W - 2 * PIX_RAND) * f;
+  const hh = (H - 2 * PIX_RAND) * f;
+  const rw = w * co + hh * si;
+  const rh = w * si + hh * co;
+  return [d.x - rw / 2, d.y - rh / 2, d.x + rw / 2, d.y + rh / 2];
+}
 
 type Scene = { id: string; delen: Deel[]; zeg: string };
 
@@ -934,7 +995,9 @@ function opGrond(id: string, items: string[], maat = 112): Deel[] {
     [70, 58],
     [0, 4],
   ];
-  const delen = items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: plek[i][0], y: plek[i][1], maat: m_(naam, maat) }));
+  /* Ronde 9 (7 november, Sara): een potlood staat niet rechtop op zijn punt, maar ligt (een beetje schuin) op de grond. */
+  const schuin = [80, 100, 88];
+  const delen = items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: plek[i][0], y: plek[i][1], maat: m_(naam, maat), ...(naam === "potlood" ? { draai: schuin[i] } : {}) }));
   return [delen[2], delen[0], delen[1]].filter(Boolean);
 }
 
@@ -942,39 +1005,97 @@ function opGrond(id: string, items: string[], maat = 112): Deel[] {
 function opPlank(id: string, items: string[], maten?: number[]): Deel[] {
   const plankMaat = 256;
   const plankY = 60;
-  /* het nieuwe plaatje wandplank.png is 512 × 107: breed 300, dus 63 hoog; de bovenkant ligt op y = plankY − 31 (BOUWREGELS 14.17) */
-  const plankTop = plankY - (plankMaat * 107) / 512 / 2 + (19 * plankMaat) / 300;
+  /* het plaatje wandplank.png is 512 × 107; het bovenvlak van de plank ligt op 32 pixels van boven (BOUWREGELS 14.17) */
+  const f = plankMaat / 512;
+  const plankTop = plankY + (32 - 107 / 2) * f;
+  const plank: Deel = { s: "vw", id: `${id}-plank`, groep: id, naam: "wandplank", x: 0, y: plankY, maat: plankMaat };
+  /* Ronde 9 (7 november, Sara): potloden stonden rechtop op hun punt. Nu liggen ze plat op de plank, op een stapeltje. */
+  if (!maten && items.length && items.every((n) => n === "potlood")) {
+    const lang = 150;
+    const dik = potloodDik(lang);
+    const dx = [-8, 7, -1];
+    return [plank, ...items.map((_, i) => platPotlood(`${id}-${i}`, id, dx[i % 3], plankTop + 3 - i * dik * 0.86, lang))];
+  }
+  /* Ronde 9: alles staat met de onderkant precies óp de plank (het zweefde: een boek of auto is minder hoog dan zijn vak),
+     even groot ten opzichte van elkaar als eerst, en de rij past op het bovenvlak van de plank. */
   const ms0 = (maten ?? items.map(() => Math.min(80, (226 - 6 * (items.length - 1)) / items.length))).map((m, i) => m_(items[i], m));
-  /* Herstel 7 november: alles past op de plank en in het vak van het plaatje. */
-  const pas = Math.min(1, (plankMaat - 30 - 6 * (ms0.length - 1)) / ms0.reduce((a, b) => a + b, 0));
+  const vrij = plankMaat * 0.84;
+  const gat = 5;
+  const breedte0 = ms0.reduce((a, m, i) => a + zichtMaat(items[i], m).w, 0);
+  const pas = Math.min(1.25, (vrij - gat * (ms0.length - 1)) / breedte0);
   const ms = ms0.map((m) => m * pas);
-  const breed = ms.reduce((a, b) => a + b, 0) + (ms.length - 1) * 6;
+  const zm = ms.map((m, i) => zichtMaat(items[i], m));
+  const breed = zm.reduce((a, z) => a + z.w, 0) + (ms.length - 1) * gat;
   let x = -breed / 2;
   const dingen: Deel[] = items.map((naam, i): Deel => {
-    const m = ms[i];
-    const d: Deel = { s: "vw", id: `${id}-${i}`, groep: id, naam, x: x + m / 2, y: plankTop - m * 0.45, maat: m };
-    x += m + 6;
+    const d = staand(`${id}-${i}`, id, naam, x + zm[i].w / 2, plankTop + 3, zm[i].h);
+    x += zm[i].w + gat;
     return d;
   });
-  return [...dingen, { s: "vw", id: `${id}-plank`, groep: id, naam: "wandplank", x: 0, y: plankY, maat: plankMaat }];
+  return [plank, ...dingen];
 }
 
 /** Dingen in de kast. */
 function inKast(id: string, items: string[]): Deel[] {
-  const plek = [
-    [-30, -62],
-    [30, -62],
-    [0, 40],
-  ];
-  return [{ s: "vw", id: `${id}-kast`, groep: id, naam: "kledingkast", x: 0, y: 0, maat: 300 }, ...items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: plek[i][0], y: plek[i][1], maat: m_(naam, 76) }))];
+  /* Ronde 9 (7 november, Sara): de kast stak buiten zijn vak en de dingen staken boven de kast uit of zweefden.
+     Nu staat alles op een plank ín de kast: 2 dingen boven, 1 onder. Potloden liggen plat. */
+  const kast = 256;
+  const f = kast / 512;
+  const py = (p: number) => (p - 367 / 2) * f;
+  const plankBoven = py(182);
+  const bodem = py(310);
+  const hoogBoven = plankBoven - py(66);
+  const binnen = (352 - 160) * f;
+  const kastDeel: Deel = { s: "vw", id: `${id}-kast`, groep: id, naam: "kledingkast", x: 0, y: 0, maat: kast };
+  if (items.every((n) => n === "potlood")) {
+    const lang = binnen * 0.86;
+    const dik = potloodDik(lang);
+    return [
+      kastDeel,
+      platPotlood(`${id}-0`, id, -3, plankBoven + 2, lang),
+      platPotlood(`${id}-1`, id, 4, plankBoven + 2 - dik * 0.86, lang),
+      platPotlood(`${id}-2`, id, 0, bodem, lang),
+    ];
+  }
+  const delen: Deel[] = items.map((naam, i) => {
+    const boven = i < 2;
+    const maxB = boven ? binnen / 2 - 6 : binnen * 0.6;
+    const maxH = (boven ? hoogBoven : bodem - plankBoven) - 8;
+    const z = zichtMaat(naam, 100);
+    const k = Math.min(maxB / z.w, maxH / z.h);
+    const x = boven ? (i === 0 ? -1 : 1) * (binnen / 4 + 1) : 0;
+    return staand(`${id}-${i}`, id, naam, x, boven ? plankBoven + 2 : bodem, z.h * k);
+  });
+  return [kastDeel, ...delen];
 }
 
-/** Dingen in een doos of mand (ze steken er bovenuit). */
+/** Dingen in een doos of mand. */
 function inBak(id: string, items: string[], bak: string): Deel[] {
-  const potlood = items[0] === "potlood";
-  const plek = potlood ? [[-42, 4], [0, -8], [42, 4]] : [[-44, 30], [40, 30], [0, 6]];
-  const maat = potlood ? 140 : 88;
-  return [...items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: plek[i][0], y: plek[i][1], maat })), { s: "vw", id: `${id}-bak`, groep: id, naam: bak, x: 0, y: 50, maat: 240 }];
+  if (bak === "tekendoos" && items.every((n) => n === "potlood")) {
+    /* Ronde 9 (7 november, Sara): de potloden staken rechtop achter de doos uit. Nu liggen ze ín de tekendoos,
+       schuin, net zoals de andere potloden in de doos. */
+    const doos = 250;
+    const f = doos / 512;
+    const px = (p: number) => (p - 256) * f;
+    const py = (p: number) => (p - 383 / 2) * f;
+    const lang = 168 * f;
+    const ff = lang / (512 - 2 * PIX_RAND);
+    const hoek = (34 * Math.PI) / 180;
+    const bw = 137 * ff * Math.cos(hoek) + 512 * ff * Math.sin(hoek);
+    const bh = 137 * ff * Math.sin(hoek) + 512 * ff * Math.cos(hoek);
+    const plek = [
+      [148, 180],
+      [232, 200],
+      [316, 222],
+    ];
+    return [
+      { s: "vw", id: `${id}-bak`, groep: id, naam: bak, x: 0, y: 0, maat: doos },
+      ...items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: px(plek[i][0]), y: py(plek[i][1]), maat: bw, hoog: bh, draai: 214 })),
+    ];
+  }
+  /* de ballen liggen in de mand en steken er een beetje bovenuit. Ronde 9: iets kleiner, zodat ze niet naast de mand uitsteken. */
+  const plek = [[-40, 34], [40, 34], [0, 18]];
+  return [...items.map((naam, i): Deel => ({ s: "vw", id: `${id}-${i}`, groep: id, naam, x: plek[i][0], y: plek[i][1], maat: 76 })), { s: "vw", id: `${id}-bak`, groep: id, naam: bak, x: 0, y: 50, maat: 240 }];
 }
 
 /** Dingen op een rij naast elkaar, op de grond (of op de plank). */
@@ -985,23 +1106,52 @@ function opRij(id: string, naam: string, maten: number[], plank = false): Deel[]
   maten = maten.map((m) => m * pas);
   const breed = maten.reduce((a, b) => a + b, 0) + (maten.length - 1) * 8;
   let x = -breed / 2;
+  /* Ronde 9: alles staat met de onderkant op dezelfde lijn (de grond). */
   return maten.map((m, i): Deel => {
-    const d: Deel = { s: "vw", id: `${id}-${i}`, groep: id, naam, x: x + m / 2, y: 70 - m / 2, maat: m };
+    const d = staand(`${id}-${i}`, id, naam, x + m / 2, 70, zichtMaat(naam, m).h);
     x += m + 8;
     return d;
   });
 }
 
+/**
+ * Ronde 9 (7 november, Sara): elke tekening staat groot in het midden van haar vak, en niets steekt buiten het vak.
+ * Alle plaatjes van één vraag krijgen dezelfde vergroting, zodat de dingen overal even groot zijn.
+ */
+function pasInVak(scenes: Scene[]): { delen: Deel[][]; h: number } {
+  const vakken = scenes.map((sc) => {
+    const r = sc.delen.map(zichtbaar).filter((x): x is [number, number, number, number] => !!x);
+    const x0 = Math.min(...r.map((v) => v[0]));
+    const y0 = Math.min(...r.map((v) => v[1]));
+    const x1 = Math.max(...r.map((v) => v[2]));
+    const y1 = Math.max(...r.map((v) => v[3]));
+    return { cx: (x0 + x1) / 2, cy: (y0 + y1) / 2, w: x1 - x0, h: y1 - y0 };
+  });
+  const binnenB = SCENE_B - 2 * SCENE_RAND;
+  const binnenH = SCENE_H_MAX - 2 * SCENE_RAND;
+  const s = Math.min(1.3, ...vakken.map((v) => Math.min(binnenB / v.w, binnenH / v.h)));
+  const h = Math.max(SCENE_H_MIN, Math.min(SCENE_H_MAX, Math.ceil(Math.max(...vakken.map((v) => v.h)) * s + 2 * SCENE_RAND)));
+  const delen = scenes.map((sc, i) =>
+    sc.delen.map((d): Deel => {
+      if (d.s !== "vw") return d;
+      const v = vakken[i];
+      return { ...d, x: (d.x - v.cx) * s, y: (d.y - v.cy) * s, maat: d.maat * s, ...(d.hoog ? { hoog: d.hoog * s } : {}) };
+    }),
+  );
+  return { delen, h };
+}
+
 function sceneVraag(id: string, scenes: Scene[], goed: string, vraag: string[], goedZin: string[], uitleg: string, opdrachtNaNee?: string, hint?: string): Vraag {
+  const pas = pasInVak(scenes);
   const keuzes: Keuze[] = scenes.map((sc, i) => ({
     id: sc.id,
     x: SCENE_X[i],
     y: SCENE_Y,
-    delen: sc.delen.map((d) => schuif(d, SCENE_X[i], SCENE_Y)),
+    delen: pas.delen[i].map((d) => schuif(d, SCENE_X[i], SCENE_Y)),
     aria: `plaatje ${i + 1}`,
     noem: "Dat plaatje",
     b: SCENE_B,
-    h: SCENE_H,
+    h: pas.h,
   }));
   return keuzevraag({
     id,
@@ -1078,16 +1228,18 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
     const x = PX[k % 3];
     const y = PY[Math.floor(k / 3)];
     /* Herstel ronde 2 (7 november): een rij van 3 viel buiten het vak; nu kleiner (72) en het vak iets breder (264), zodat de rij er ruim in past. */
-    const maat = p.naam === "boek" ? 190 : m_(p.naam, p.n > 3 ? 70 : p.n === 3 ? 72 : p.n === 2 ? 100 : 128);
+    /* Ronde 9 (7 november, Sara): potloden stonden rechtop op hun punt en zweefden; nu liggen ze plat onder elkaar. */
+    const potlood = p.naam === "potlood";
+    const maat = p.naam === "boek" ? 190 : potlood ? 190 : m_(p.naam, p.n > 3 ? 70 : p.n === 3 ? 72 : p.n === 2 ? 100 : 128);
     /* boeken liggen plat: op een stapel in plaats van naast elkaar */
-    const plat = p.naam === "boek";
+    const plat = p.naam === "boek" || potlood;
     const perRij = plat ? 1 : p.n > 3 ? 3 : p.n;
-    const stap = plat ? maat * 0.32 : maat + 4;
+    const stap = potlood ? potloodDik((maat * (512 - 2 * PIX_RAND)) / 512) + 8 : plat ? maat * 0.32 : maat + 4;
     for (let i = 0; i < p.n; i++) {
       const rij = Math.floor(i / perRij);
       const inRij = Math.min(perRij, p.n - rij * perRij);
       const rijen = Math.ceil(p.n / perRij);
-      delen.push({ s: "vw", id: `${p.id}-${i}`, groep: p.id, naam: p.naam, x: x + ((i % perRij) - (inRij - 1) / 2) * (maat + 6), y: y + (rij - (rijen - 1) / 2) * stap, maat });
+      delen.push({ s: "vw", id: `${p.id}-${i}`, groep: p.id, naam: p.naam, x: x + ((i % perRij) - (inRij - 1) / 2) * (maat + 6), y: y + (rij - (rijen - 1) / 2) * stap, maat, ...(potlood ? { hoog: (maat * 137) / 512, draai: 90 } : {}) });
     }
     tikken.push({ s: "tik", id: p.id, x, y, b: 264, h: 230, aria: `${p.n} ${p.n === 1 ? ding(p.naam) : DING[p.naam][2]}`, vak: true });
   });

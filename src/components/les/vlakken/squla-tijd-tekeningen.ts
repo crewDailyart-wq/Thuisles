@@ -489,9 +489,10 @@ const ENKEL: Record<string, Tekening> = {
   vraag: { b: 120, h: 120, teken: vraagteken },
   zwemmen: { b: 120, h: 112, teken: vw("zwembad", 120, 112) },
   huis: { b: 120, h: 112, teken: vw("huis", 120, 112) },
-  boekrood: { b: 120, h: 120, teken: vw("boek-rood") },
-  boekblauw: { b: 120, h: 120, teken: vw("boek") },
-  boekgroen: { b: 120, h: 120, teken: vw("boek-groen") },
+  /* Ronde 9 (7 november, Sara): een plat boek in een vierkant ontwerpvak gaf een hoog keuzevak met veel lege ruimte; nu past het vak om het boek. */
+  boekrood: { b: 120, h: 62, teken: vw("boek-rood", 120, 62) },
+  boekblauw: { b: 120, h: 62, teken: vw("boek", 120, 62) },
+  boekgroen: { b: 120, h: 62, teken: vw("boek-groen", 120, 62) },
 };
 
 const MET_OPTIES: Record<string, Tekening> = {

@@ -126,17 +126,23 @@ export function rmIndeling(o: RMOpgave): RMIndeling {
     if (o.boven && keuzes.length && o.vakken) {
       /* Ronde 7: de rij (de vraag) bovenaan, de antwoordkeuzes elk in een eigen zacht vak eronder, in het midden. */
       const n = keuzes.length;
-      const gat = n >= 5 ? 16 : 36;
+      const gat = n >= 5 ? 12 : 36;
       const vb = Math.min(260, (900 - (n - 1) * gat) / n);
-      const vh = n >= 5 ? 200 : 250;
+      /* Ronde 9 (7 nov, Sara: vakken te hoog en smal, voorwerpen klein met veel lege ruimte): het vak is niet hoger dan
+         breed, en het voorwerp vult het vak (groot, precies in het midden). Het voorwerp mag iets groter worden dan zijn
+         tekening, maar blijft altijd binnen het vak (marge rondom), zodat er niets uitsteekt of wordt afgesneden. */
+      const vh = n >= 5 ? Math.round(vb) : 250;
+      const marge = n >= 5 ? 10 : 16;
       const bh = 250;
       delen.b = past(o.boven, VLAK_B / 2, 20 + bh / 2, 900, bh);
-      const cy = VLAK_H - 22 - vh / 2;
+      /* Het midden van de vakken blijft op dezelfde hoogte als eerst (niet dichter bij de rand of de microfoon). */
+      const cy = VLAK_H - 22 - (n >= 5 ? 200 : 250) / 2;
       const x0 = VLAK_B / 2 - ((vb + gat) * (n - 1)) / 2;
       const vakken: RMPlek[] = [];
       keuzes.forEach((k, i) => {
         const x = x0 + (o.plek?.[i] ?? i) * (vb + gat);
-        delen[`k${i}`] = past(k, x, cy, vb - 28, vh - 28);
+        const f = Math.min(1.2, (vb - 2 * marge) / k.b, (vh - 2 * marge) / k.h);
+        delen[`k${i}`] = { x, y: cy, b: k.b * f, h: k.h * f, f };
         vakken.push({ x, y: cy, b: vb, h: vh, f: 1 });
       });
       return { delen, sloten: [], stippen: {}, vakken };
@@ -998,7 +1004,8 @@ export function SqulaRekenmix({
               key={`${sleutel}-${naam}`}
               type="button"
               className={s.keuze}
-              style={{ left: p.x - Math.max(p.b, 120) / 2, top: p.y - Math.max(p.h, 120) / 2, width: Math.max(p.b, 120), height: Math.max(p.h, 120) }}
+              /* Ronde 9: bij vakken is het hele vak de tikplek (vak i hoort bij keuze i). */
+              style={ind?.vakken?.[i] ? { left: ind.vakken[i].x - ind.vakken[i].b / 2, top: ind.vakken[i].y - ind.vakken[i].h / 2, width: ind.vakken[i].b, height: ind.vakken[i].h } : { left: p.x - Math.max(p.b, 120) / 2, top: p.y - Math.max(p.h, 120) / 2, width: Math.max(p.b, 120), height: Math.max(p.h, 120) }}
               data-ding={`keuze-${i}`}
               disabled={!actief}
               aria-label={namenVan?.[i] ?? `Keuze ${i + 1}`}

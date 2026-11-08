@@ -77,3 +77,10 @@ Lijst en reden per item: WEGGEHAALD.md. Teruggezet: zakgeld-1 bordje en jas; tij
 Niet teruggezet: zakgeld-1 doos (echt losse versiering). Hoelaat-3 vraag 9 (bus/bakkerij): vervangen op verzoek van Sara, zij beslist.
 Alleen herschreven of vervangen (niet weggehaald): "1 week kamperen", kortere vraag bij tijden-2, klok-vragen met bus/zon/oven (sfeer of naspeel).
 Foto's: scratchpad a7 (voor); laptop getest als Testkind.
+
+## Ronde 9 – vakken (8 november 2026)
+
+- geld (alle lessen): rijen in een vak staan in het midden; bij 4 groepjes onder een voorwerp (zakgeld, geldmachine-2) iets grotere vakken. Geld niet vergroot. Bestand: squla-geld-vlak.tsx.
+- tijd-kalender-1/-2, tijden-1/-2: vakken niet hoger dan de tekening nodig heeft; boeken plat ontwerpvak. Bestanden: squla-tijd-plaatjes.tsx, squla-tijd-tekeningen.ts.
+- klok, dagen: nagekeken, vakken passen, niets veranderd.
+- Foto's: public/overbodige-plaatjes-na/squla-geld-geld-2-r9-*, squla-geld-zakgeld-1-r9-*, squla-tijd-kalender-1-r9-*, squla-tijd-tijden-1-r9-*.

@@ -140,7 +140,12 @@ export function indeling(p: MetenProps): Indeling {
       kaarten = rij(n, b, 30, 562, h);
     } else {
       const [b, h] = n === 2 ? [320, 320] : n === 3 ? [270, 300] : [200, 260];
-      kaarten = rij(n, b, 36, 370, h);
+      /* Ronde 9 (7 november, Sara): een vak is niet hoger dan nodig (platte tekeningen zoals een fruitstokje stonden
+         klein in een hoog vak met veel lege ruimte); de tekeningen blijven even groot. */
+      const dingen = p.kaarten ?? [];
+      const { H } = gedeeldeSchaal(dingen, b, h);
+      const woord = Math.max(0, ...dingen.map(WOORD_H));
+      kaarten = rij(n, b, 36, 370, dingen.every((d) => d.tekening) ? Math.min(h, Math.max(150, Math.ceil(H + 30 + woord + 40))) : h);
     }
   }
   let groot: Indeling["groot"] = null;

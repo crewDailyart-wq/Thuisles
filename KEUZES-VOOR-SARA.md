@@ -191,3 +191,67 @@ Algemeen voor groep C:
 - squla-rekenmix-mix1-2 — de plank terug: "de plank" kwam in Bliepo's vraag voor ("Kijk naar de plank."), dus er staat weer een plank: een nieuwe, platte houten plank van voren (Magnific, stijl B, 75 credits), geen dun schuin streepje meer. Antwoord (rechthoek) en zin zijn gelijk aan het begin. Geen nieuwe zin.
 - squla-rekenmix-mix4-2 — de 3 vragen "van dik naar dun" gebruiken nu de mooie maat-plaatjes van mix3-1: raket-maat, potlood-maat en kaars-maat (kaars: alleen het lijf wordt dikker of dunner, de vlam blijft even groot; raket: vooral breder/smaller en een beetje hoger/lager, zodat raam en vlam netjes blijven). Geen nieuwe Magnific-plaatjes nodig. Antwoorden, maten, volgorde en aantal vragen zijn gelijk. Geen nieuwe zinnen.
 - squla-rekenmix-mix3-1 — NIET AANGEPAST, wacht op jou of op de hoofdagent: het beginscherm komt uit `src/lib/lessen/beginzinnen.json` (en BEGINZINNEN.md, public/beginzinnen/lijst.json), niet uit de les zelf. Daar staat: "Vergelijk de ballen en zet ze op volgorde van groot naar klein." en "Lukt het jou om de ballen van groot naar klein te zetten?". In de les staat de kleinste links (kleinst, kleiner, klein). Voorstel: "Vergelijk de ballen en zet ze op volgorde van klein naar groot." en "Lukt het jou om de ballen van klein naar groot te zetten?" (nieuwe zinnen, nog geen opgenomen stem). Dat staat in een bestand dat ik niet mocht aanraken, en de les kan het niet zelf overschrijven.
+
+## Rondje bij fout (onderzoek)
+
+Onderzoek 7 november, alleen gekeken en gefotografeerd (als Testkind). Er is niets veranderd.
+
+**Wat er gebeurt in squla-rekenmix-mix1-2 (de plank):**
+- Bij de **eerste** foute klik komt er géén rood rondje. De gekozen vorm schudt even en Bliepo zegt iets over die vorm ("Een cirkel is helemaal rond. Kijk of dat ook zo is bij de plank.").
+- Bij de **tweede** foute klik begint Bliepo meteen de uitleg: hij loopt de 3 vormen langs ("Een cirkel is helemaal rond. Hij heeft geen hoeken." enz.). Bij elke vorm komt er een rood rondje, maar dat staat er maar **450 milliseconden** (bijna een halve seconde) en is dan weg, terwijl Bliepo nog over die vorm praat.
+- De eerste vorm in de uitleg is vaak de vorm die het kind net fout koos. Dan voelt het als: "klik, fout, rood rondje eromheen". Dat is de flits die je zag.
+- Oorzaak in de code: `zetLicht` in `src/components/les/vlakken/squla-rekenmix-vlak.tsx` (rond regel 493-506). Daar staat het rondje vast op 450 ms ("om wat nu NIEUW oplicht, 450 ms, en dan weg"), los van hoe lang Bliepo praat. De uitleg zelf komt uit `vormenUitleggen` in `src/components/les/lessen/squla-rekenmix.tsx`. Het is niet de foutknop zelf en niet het lesscherm: daar zit geen rode rand of rode gloed bij een fout.
+
+**Andere lessen (getest met een foute klik):**
+- squla-rekenmix-mix1-3 (links/rechts): zelfde flits, bij de tweede fout. Het rondje springt snel van fiets naar auto naar bus (elk ongeveer een halve seconde). Zelfde code (rekenmix, 450 ms).
+- squla-meer-minder-evenveel1-1 (appels tellen): al bij de **eerste** fout een kort rondje (ongeveer 0,4 s) om 1 appel, terwijl Bliepo zegt "Bij 17 heb je er 1 te veel". Code: `squla-meer-minder-vlak.tsx` rond regel 534 (420 ms).
+- squla-tellen-fruit-1: al bij de **eerste** fout loopt een rondje snel over de appels (elk ongeveer 0,4 s), terwijl Bliepo iets anders zegt ("Bij 10 tel je alleen de volle rijen."). Code: `squla-tellen.tsx` regel 291 (Bliepo telt mee) en `squla-tellen-holo.tsx` rond regel 389-404 (420 ms per appel).
+- squla-meten-pizza-1: géén rondje bij de fout zelf. De gekozen foute pizza krijgt wel een zachte **rode gloed**, die blijft staan tot het kind opnieuw kiest. In de uitleg na de tweede fout komt een rondje om de grote pizza; dat blijft staan zolang Bliepo de zin zegt (dat is goed). Code rode gloed: `squla-meten.tsx` regel 230 (`fout: [x]`) en `squla-meten-vlak.tsx` regel 690.
+- squla-klok-hoelaat-1: geen rood. De foute keuze schudt en wordt even half doorzichtig.
+- squla-geld-geld-1 (lijnen trekken) en squla-rekenmix-mix3-1 (slepen): niet goed te testen met een klik; geen rood gezien. Geld heeft in de code wel een rode gloed bij een fout (`squla-geld.tsx` regel 302 en 457).
+
+**Wat er nu gebeurt tegenover jouw regel:**
+- Jouw regel: een rondje komt alleen als Bliepo over dat ding praat, en blijft zolang hij erover praat. Het mag niet voelen als "fout!".
+- Nu, in rekenmix, meer-minder en tellen: het rondje staat er maar ongeveer een halve seconde. Bliepo praat langer, dus het rondje is weg terwijl hij nog praat. Daardoor voelt het als een flits. Bij meer-minder en tellen past het rondje ook niet bij de zin die Bliepo op dat moment zegt.
+- Bij Meten en geld zit er een rode gloed op de foute keuze van het kind. Volgens BOUWREGELS 7.8 mag dat ("de rode gloed bij fout blijft"), maar het kan ook voelen als "fout!". Wil je die ook weg?
+
+**Voorstel (nog niet uitgevoerd, wacht op jouw ja of nee):**
+1. In rekenmix: het rondje blijft staan zolang Bliepo over die vorm praat (dus tot hij naar de volgende vorm gaat of klaar is), in plaats van na een halve seconde weg te gaan. Zoals het nu al bij Meten werkt. Gevolg: geen flits meer; het rondje volgt Bliepo's zinnen.
+2. In meer-minder en tellen: bij een fout geen rondje meer als Bliepo die appels niet hardop noemt. Tellen met een rondje alleen als Bliepo ook echt hardop meetelt.
+3. Optioneel: de rode gloed op de foute keuze bij Meten en geld weghalen (alleen schudden, zoals bij de klok). Dat verandert regel 7.8, dus alleen als jij dat wilt.
+
+**Foto's** (squla-rekenmix-mix1-2, de plank, tweede foute klik op de cirkel):
+- public/overbodige-plaatjes-na/rondje-fout-1.jpg: vlak voor de tweede foute klik, geen rondje.
+- public/overbodige-plaatjes-na/rondje-fout-2.jpg: ongeveer 0,85 s na de klik, rood rondje om de cirkel (de foute keuze). Bliepo zegt "Een cirkel is helemaal rond."
+- public/overbodige-plaatjes-na/rondje-fout-3.jpg: ongeveer 1,1 s na de klik, het rondje is al weg, terwijl Bliepo nog over de cirkel praat ("Hij heeft geen hoeken.").
+
+## Ronde 9 – vakken rekenmix (7 november 2026)
+
+- squla-rekenmix-mix1-2 — klacht "vakken te hoog, voorwerpen klein onderin, doos met potloden en schuine plank afgesneden, speelgoed op de plank, potloden rechtop op hun punt" — **niet veranderd in mix1-2.** De vormvraag "Kijk naar de plank" heeft geen vakken, geen speelgoed en geen potloden: alleen een platte plank met 3 vormen (foto's r9-voor-1/2/3 en r9-voor-3-telefoon). De klacht past wél precies bij **squla-vormen-opruimen-1** (vraag "Het speelgoed hoort op de plank" en "De potloden horen in de tekendoos": keuzevakken met een wandplank, speelgoed en potloden rechtop op de plank, en een tekendoos). Die les valt buiten deze helper (alleen rekenmix); doorgegeven aan de hoofdagent.
+- squla-rekenmix-mix1-3 en squla-rekenmix-mix3-2 (de enige rekenmix-lessen met vakken) — vakken passend gemaakt: bij 5 keuzes is het vak niet meer hoog en smal maar vierkant (minder lege ruimte); bij 3 keuzes vult het voorwerp het vak (groter, in het midden). Het voorwerp blijft altijd binnen het vak (marge rondom), niets steekt uit. Het hele vak is nu de tikplek. Antwoorden, aantal vragen, keuzes en de wisselende plek van het goede antwoord: ongewijzigd. Geen nieuwe zinnen.
+
+## Ronde 9 – vormen-opruimen-1 (7/8 november 2026)
+
+- squla-vormen-opruimen-1 — klacht "vakken te hoog en smal, voorwerpen klein onderin, doos met potloden en schuine plank afgesneden, potloden rechtop op hun punt".
+  - **Vakken:** het vak is nu zo hoog als de tekening nodig heeft (was overal 380 hoog). De tekening staat groot in het midden. Alle 3 plaatjes van één vraag krijgen dezelfde vergroting, zodat dingen overal even groot blijven. Niets steekt meer buiten een vak (de kast en de tekendoos staken eruit).
+  - **Plank:** alles staat nu echt óp de plank (een boek of autootje zweefde een beetje), even groot ten opzichte van elkaar als eerst. De plank wordt eerst getekend, de dingen erop.
+  - **Potloden:** gekozen voor **plat leggen** (geen bekertje). Op de plank: plat op een stapeltje van 3. In de kast: plat op de planken (2 boven, 1 onder). Op de grond (vraag "alleen boeken"): liggend, een beetje schuin. Bij "Wat hoort bij elkaar?": plat onder elkaar. In de tekendoos liggen de 3 groene potloden nu ín de doos, schuin zoals de andere potloden, in plaats van rechtop achter de doos uit te steken. Waarom geen bekertje: met een bekertje op de plank lijkt "op de plank" ook een goede plek, en dan klopt de vraag "De potloden horen in de tekendoos" minder goed.
+  - **Kast:** broeken en ballen staan nu op de plank ín de kast (ze staken boven de kast uit).
+  - **Mand:** de ballen zijn iets kleiner, zodat ze niet naast de mand uitsteken.
+  - Antwoorden, aantal vragen, keuzes en zinnen: ongewijzigd. Geen nieuwe zinnen. Het goede antwoord wisselt nog steeds van plek.
+  - Foto's: public/overbodige-plaatjes-na/squla-vormen-opruimen-1-r9-voor-1..15.jpg en -r9-na-1..15.jpg (nummer = vraag o-1 t/m o-15), telefoon: -r9-na-2-telefoon.jpg en -r9-na-3-telefoon.jpg.
+- Andere vormen-lessen (patronen-1/-2, orienteren-1; puzzels kleuren-1/2/3 niet aangeraakt): nagekeken, daar zijn de vakken al passend (vak net iets groter dan het ding) en steekt niets uit. Niet veranderd.
+
+## Ronde 9 – vakken andere lessen (8 november 2026)
+
+Nagekeken: alle Squla-lessen met keuzes in vakken, behalve rekenmix en vormen-opruimen-1 (daar werken andere helpers). Per les minstens 1 vraag van elk soort vak gespeeld als Testkind (laptop; meer-minder ook op telefoon). Antwoorden, aantal vragen, keuzes (ook foute) en zinnen zijn niet veranderd. Het goede antwoord wisselt nog steeds van plek. Geen nieuwe zinnen.
+
+- squla-meer-minder (evenveel1-2, 1-3, 2-2, 3-1 en de andere lessen met kaarten) — 2 kaarten waren hoog en smal (380 × 540) met kleine voorwerpen en veel leegte; 3 kaarten ook te hoog. Gekozen: kaarten breder, voorwerpen groter, en de kaart is niet hoger dan nodig (alle kaarten even hoog). Met een getal of voorbeeld erboven staat het geheel in het midden. Bij "op volgorde zetten" zijn de 4 kaarten iets breder en de voorwerpen groter (telefoon-indeling niet veranderd). Waarom: zelfde klacht als bij mix1-2.
+- squla-meten-pizza-2 — 3, 4 of 5 stukken pizza lagen in 1 lange rij en werden in het vak piepklein. Gekozen: vanaf 3 stukken in 2 rijen (2 + 2, 2 + 1, 3 + 2). Alle vakken van een vraag houden dezelfde vergroting, dus eerlijk vergelijken blijft kunnen.
+- squla-meten-hoeveelheden-1 — het fruitstokje stond rechtop op zijn punt, smal in een groot vak. Gekozen: het stokje ligt plat (zoals de potloden), en het vak is niet hoger dan nodig. Alle meten-vragen zonder plaatje erboven krijgen zo een passend vak; tekeningen blijven even groot.
+- squla-tijd-kalender-1/-2, tijden-1/-2 — vakken waren veel hoger dan de tekening (platte kalender, plaatjes aan het lijntje, platte boeken). Gekozen: vak niet hoger dan de hoogste tekening nodig heeft; de 3 boeken hebben nu een plat ontwerpvak, zodat hun vak laag en breed is.
+- squla-geld (alle lessen) — in een vak lag een rij die niet vol was (3e briefje, 1 munt onder 2 briefjes, schelpen) links in plaats van in het midden. Gekozen: elke rij in het midden. Bij 4 groepjes met een voorwerp erboven (zakgeld, geldmachine-2) zijn de vakken iets groter, zodat het geld niet tegen de rand zit. Geld is niet groter gemaakt dan het was (regel: geld niet vergroten).
+- Nagekeken, niets mis gevonden: klok (alle lessen: klokken in vakken passen), getallenlijn, huisnummers, tellen (fruit, resultatief, memory, telrij), splitsen, plus- en minsommen (keuzes zijn knoppen, geen plaatjes in vakken), dagen, vormen orienteren/patronen, piraat (het vak is een lege sleepplek).
+- Opgemerkt maar niet veranderd (geen vakken-probleem, of andere helper): splitsen2-1 heeft een los briefje van 10 euro linksboven; bij memory (resultatief3) is de satelliet smal; in meten "tafels" staan de tafels onderaan in hun vak (bewust op 1 lijn om hoogtes te vergelijken).
+
+Foto's voor/na: public/overbodige-plaatjes-na/<les-id>-r9-voor.jpg en -r9-na.jpg (meer-minder-evenveel1-2, 1-3, 2-2, 3-1; meten-pizza-2, meten-hoeveelheden-1; tijd-kalender-1, tijd-tijden-1; geld-geld-2, geld-zakgeld-1).
