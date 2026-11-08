@@ -28,6 +28,8 @@ export type Huisplek = number | "?" | null;
 export type StraatProps = {
   huizen: Huisplek[];
   licht?: number | null;
+  /** Huizen die Bliepo al noemde en die bij dezelfde telling horen: zacht rondje (`licht` is fel; Sara 8 november 2026, besluit 4). */
+  lichtZacht?: number[];
   goed?: number | null;
   losse?: number[];
   actief?: boolean;
@@ -78,7 +80,7 @@ const GLOED = 80; /* extra ruimte rondom in het plaatje, voor de gloed */
 const plaatjeVan = (n: number | "?") => HUISPLAATJES[n === "?" ? 0 : ((n % 4) + 4) % 4];
 
 /** Eén huis, met de linkeronderhoek op (x, y onder). */
-function Huis({ x, grond, n, licht }: { x: number; grond: number; n: number | "?"; licht?: boolean; kleur?: [string, string] }) {
+function Huis({ x, grond, n, licht, zacht }: { x: number; grond: number; n: number | "?"; licht?: boolean; zacht?: boolean; kleur?: [string, string] }) {
   const p = plaatjeVan(n);
   const schaal = W / p.b;
   const hoog = p.h * schaal;
@@ -117,7 +119,7 @@ function Huis({ x, grond, n, licht }: { x: number; grond: number; n: number | "?
           height={hoog * 1.4 + 50}
           preserveAspectRatio="none"
           transform={`rotate(-1.5 ${x + W / 2} ${grond - hoog / 2})`}
-          style={{ pointerEvents: "none" }}
+          style={{ pointerEvents: "none", opacity: zacht ? 0.45 : 1, transition: "opacity 180ms" }}
           aria-hidden
         />
       )}
@@ -199,7 +201,7 @@ function Handje() {
 
 type Sleep = { n: number; x: number; y: number; vanX: number; vanY: number; bewogen: boolean; id: number };
 
-export function SqulaStraat({ huizen, licht = null, goed = null, losse = [], actief = false, fout = null, hand = false, meld }: StraatProps & Vlakbasis) {
+export function SqulaStraat({ huizen, licht = null, lichtZacht = [], goed = null, losse = [], actief = false, fout = null, hand = false, meld }: StraatProps & Vlakbasis) {
   const svg = useRef<SVGSVGElement>(null);
   const [sleep, zetSleep] = useState<Sleep | null>(null);
   /* Het rondje-plaatje één keer vooraf laden, zodat het er direct is bij het eerste rondje. */
@@ -298,7 +300,7 @@ export function SqulaStraat({ huizen, licht = null, goed = null, losse = [], act
           <LegePlek key={`leeg-${i}`} x={x(i)} grond={GROND} aan={boven(sleep)} />
         ) : (
           <g key={`${i}-${h}`} className={`${s.huis} ${goed === i ? s.pop : ""}`}>
-            <Huis x={x(i)} grond={GROND} n={h} licht={licht === i} kleur={h === "?" ? ["#b8bfd6", "#7a829e"] : kleurVan(h)} />
+            <Huis x={x(i)} grond={GROND} n={h} licht={licht === i || (licht !== null && lichtZacht.includes(i))} zacht={licht !== i} kleur={h === "?" ? ["#b8bfd6", "#7a829e"] : kleurVan(h)} />
           </g>
         ),
       )}

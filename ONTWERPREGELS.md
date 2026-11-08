@@ -3,6 +3,12 @@
 Afspraken over hoe de oefeningen eruitzien en aanvoelen. Ze gelden voor het
 hele platform; wat hier staat, geldt bij elk nieuw oefentype opnieuw.
 
+**Bijgewerkt op 8 november 2026** volgens Sara's besluiten over de botsingen
+(zie `BOUWREGELS.md`, bovenaan). Botst iets in dit bestand met `BOUWREGELS.md`,
+dan gaat `BOUWREGELS.md` voor. Voor de nieuwe lessen (Squla en Synthesis-stijl,
+Phaser) geldt vooral `BOUWREGELS.md`; veel regels hieronder gaan over de oude
+oefeningen. De oude versie staat in `regels-backup-20261108/ONTWERPREGELS.md`.
+
 ## Nieuwe stijl voor de hele website: de avontuurstijl (oktober 2026)
 
 Keuze van de eigenaar: de avontuurstijl vervangt de oude Thuisles-stijl voor
@@ -32,8 +38,12 @@ blijven ook in de nieuwe stijl gelden.
 
 ## Uiterlijk
 
-- Gegeven getallen staan in een geel vakje met donkere cijfers. Lege vakjes
-  zijn wit met een lichte rand. Oranje is alleen voor knoppen.
+- **Oude oefeningen:** gegeven getallen staan in een geel vakje met donkere
+  cijfers. Lege vakjes zijn wit met een lichte rand. Oranje is voor knoppen
+  (en voor het woord dat Bliepo nu zegt, en de uurwijzer, zie BOUWREGELS 3.7 en
+  7.9). **In de lessen (Squla en Synthesis-stijl) staan getallen in een som
+  zonder vakje; alleen het lege invulvakje heeft een vakje, doorzichtig met een
+  lichte rand** (BOUWREGELS 1.4 en 2.4, besluit 15).
 - Alles staat horizontaal gecentreerd in de witte kaart. De hele opdracht, van
   vraagzin tot en met Controleer, past zonder scrollen op een laptop.
 - Sommen staan op één regel, bijvoorbeeld 6 + 7 = ▢.
@@ -151,8 +161,11 @@ vierkant als de vakjes waar ze in moeten.
 
 - Het eerste lege vakje is meteen actief en de cursor springt vanzelf door naar
   het volgende lege vakje.
-- Goed of fout pas na Controleer. Bij keuzes tikt of sleept het kind, kan het
-  nog wijzigen, en drukt dan op Controleer; geen meerkeuze die meteen nakijkt.
+- Goed of fout pas na Controleer bij invullen (getal typen, slepen, rij
+  invullen). **Meerkeuze wordt meteen nagekeken** (BOUWREGELS 6.5, besluit 6).
+  Alleen het scherm van Bliepo kleurt rood bij een fout en groen bij goed; wat
+  het kind koos krijgt nooit rood (BOUWREGELS 5.3, besluit 2). Geen
+  fout-geluidje.
 - Geen cijfertoetsenbord op het scherm (regel 5): echte invoervelden.
 - Slepen werkt zoals bij Verdelen in twee groepen: het kaartje hangt onder de
   vinger, het hele doelvak telt, het doelvak licht op, loslaten naast een vak
@@ -182,7 +195,9 @@ vierkant als de vakjes waar ze in moeten.
   vogeltje, bijtje, vlinder, lieveheersbeestje, visje, peer, eikel). Per vraag
   één soort.
 - Hoogstens 5 op een rij; de volgende rij staat eronder, links uitgelijnd. Geen
-  gekleurde vlakken achter groepjes; groepjes gescheiden door ruimte.
+  gekleurde vlakken achter groepjes als versiering; groepjes gescheiden door
+  ruimte. Vakken om keuzes waar het kind op tikt mogen wel (BOUWREGELS 1.4,
+  besluit 14).
 
 ## Speelse versies
 
@@ -195,6 +210,9 @@ vierkant als de vakjes waar ze in moeten.
 ## Godot-bouwstenen (oktober 2026)
 
 Keuze van de eigenaar, na het vergelijken van twee stijlen bij de groepjesmaker:
+
+(Dit geldt alleen voor de Godot-bouwstenen. De lessen in Phaser hebben als achtergrond
+de blauwe kamer, geen donkere nachtachtergrond: BOUWREGELS 1.12, besluit 18.)
 
 - De Godot-bouwstenen hebben de stijl zoals Synthesis aanvoelt: een effen
   donkerblauwe achtergrond met een heel zacht raster, vakjes met een
@@ -228,11 +246,15 @@ REGEL 7). Wat daarbij altijd geldt:
   (de blauwe ruimte met de ruitjesmuur, de vloer met de ronde cirkel, Bliepo
   rechts). Geen eigen achtergrond per wereld; het Phaser-canvas is
   doorzichtig.
-- **Hologrammen:** de voorwerpen zijn gloeiende hologrammen die Bliepo
-  tevoorschijn tovert (lichtstraal uit de vloer + zachte flits). De wereld
-  (Oceaan, Aarde, Universum) zie je alleen aan de voorwerpen en hun kleur.
+- **Hologrammen alleen waar het past** (BOUWREGELS 7.1 en 7.5), geen
+  hologramwerelden en weinig dieren: simpel zoals Synthesis (besluit 19). Waar
+  het wel past, tovert Bliepo het voorwerp tevoorschijn (lichtstraal uit de
+  vloer + zachte flits). De wereld (Oceaan, Aarde, Universum) zie je alleen aan
+  de voorwerpen en hun kleur.
   Eén soort voorwerp per opdracht; los van elkaar, groot genoeg en niet
   overlappend, zodat ze goed te tellen zijn.
+- **Aanwijzen** doet Bliepo met het rondje (BOUWREGELS 7.8), of met sterker
+  oplichten waar een rondje onhandig is (7.9); niet met meer gloed.
 - **Gloed: subtiel.** Een zacht, smal randje licht rond een voorwerp, geen
   grote lichtwolk; het voorwerp zelf blijft duidelijk en scherp (niet
   wit-uitgebeten). De lichtring bij selecteren en de lichtflits/-golf bij een
@@ -253,18 +275,21 @@ lezen, moet de les helemaal kunnen doen. Controleer dat bij elke les.
    vraag, de uitleg, hints en feedback. Het kind hoeft nooit iets te lezen om
    de les te kunnen doen.
 2. **Knoppen hebben een duidelijk icoon** in plaats van alleen een woord
-   (`src/components/les/ikonen.tsx`): vinkje = Controleer, vraagteken = Weet
-   ik niet, pijl = Verder, luidspreker = Nog eens horen, rondje-pijl =
-   Opnieuw. Een klein woord eronder mag; het icoon moet genoeg zijn.
+   (`src/components/les/ikonen.tsx`): vinkje = Controleer, pijl = Verder,
+   rondje-pijl = Opnieuw. Er is nergens een "Weet ik niet"-knop (vraagteken) en
+   geen luidsprekerknop onder meerkeuze (BOUWREGELS 1.27, 6.4). Een klein woord
+   eronder mag; het icoon moet genoeg zijn.
 3. **Antwoordkeuzes zijn cijfers, stippen of plaatjes, nooit woorden.**
-   Cijfers worden niet voorgelezen, maar staan groot en duidelijk. Moet een
-   keuze toch een woord zijn, dan leest Bliepo die voor als het kind erop
-   tikt.
+   Keuzes worden niet vooraf voorgelezen, maar wel als de muis er even op
+   staat, bij lang indrukken of toetsenbordfocus (BOUWREGELS 3.5). Ze staan
+   groot en duidelijk. Moet een keuze toch een woord zijn, dan leest Bliepo die
+   voor.
 4. **Tikt het kind op tekst of op Bliepo's zin**, dan leest Bliepo die (nog
    eens) voor (BliepoTekst).
-5. **De eerste keer in een les wijst Bliepo de knoppen aan** en zegt wat ze
-   doen (`l.wijsAan("weetniet", "Weet je het niet? Tik dan op het
-   vraagteken.")`); de knop pulseert zolang hij praat.
+5. **Geen uitleg over knoppen** (BOUWREGELS 3.15): Bliepo zegt niet "Tik op de
+   pijl" of "Tik op het vinkje" en doet geen aanbod "tik op de pijl en ik doe
+   het voor". (De oude regel dat Bliepo de knoppen de eerste keer aanwijst, met
+   `l.wijsAan("weetniet", ...)`, is vervallen.)
 6. **Zo weinig mogelijk tekst op het scherm.** Het meelezen boven Bliepo
    blijft, want dat helpt bij leren lezen.
 

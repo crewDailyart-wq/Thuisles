@@ -1,5 +1,8 @@
 # Uitleglessen bouwen (groep 3, naar Synthesis)
 
+> **Bijgewerkt 8 november 2026:** waar dit bestand botst met `BOUWREGELS.md`, gaat `BOUWREGELS.md` voor. Vervallen: de "Weet ik niet"-knop (vraagteken), het aanwijzen van knoppen, "2× fout = Bliepo doet het voor / we stoppen hier even" (nu: uitleg, kleine stap, door), en niet-stoppen-om-te-vragen (keuzes in KEUZES-VOOR-SARA.md). Oude versie: `regels-backup-20261108/`.
+
+
 Antwoord en schrijf alles in het Nederlands.
 
 ## Wat er al staat (lees dit eerst, helemaal)
@@ -14,11 +17,11 @@ Antwoord en schrijf alles in het Nederlands.
 - Engelse dingen omzetten naar Nederlands: geld in euro, klok zoals in Nederland ("half 4", "kwart over 3"), woorden in verhaaltjessommen Nederlands.
 
 ## Harde regels
-- HARDE REGEL 5: NOOIT een cijfertoetsenbord op het scherm. Getallen typt het kind via `l.getal()` of `l.somVak()` (echte invoervelden), of via een echt `<input inputMode="numeric" pattern="[0-9]*">` in je vlak. Waar Synthesis een 1–9-raster heeft: `l.getal()`.
-- Keuzevragen: `l.kies([...])` (kind kiest, bevestigt met vinkje; "Weet ik niet" geeft null).
+- HARDE REGEL 5: NOOIT een cijfertoetsenbord op het scherm. Getallen typt het kind via `l.getal()` of `l.somVak()` (echte invoervelden), of via een echt `<input inputMode="numeric" pattern="[0-9]*">` in je vlak. Waar Synthesis een 1–9-raster heeft: cijferknoppen 1 tot 9 om uit te kiezen mogen, of `l.getal()` voor een echt invoerveld; nooit een getekend toetsenbord.
+- Keuzevragen: `l.kies([...])` (meerkeuze wordt meteen nagekeken, invullen met Controleer; er is geen "Weet ik niet"-knop, BOUWREGELS 1.27 en 6.5).
 - Niets in de database aanmaken of wijzigen. Geen git commit. Niet de browser gebruiken (de hoofdagent test later in de browser).
 - Pas ALLEEN je eigen lesbestanden aan (in je opdracht genoemd) plus nieuwe bestanden in `src/components/les/vlakken/` met een voorvoegsel van jouw onderdeel. Niet `Lesscherm.tsx`, `soort.ts`, `tegels.ts`, `lessen/index.ts` of bestanden van andere onderdelen. Mis je iets in de gids, los het op in je eigen vlak; lukt dat niet, schrijf het op als vraag.
-- Vragen of twijfels (iets onduidelijks in de aantekeningen, een keuze voor de eigenaar): schrijf ze in `vragen-voor-later/lessen-groep-3/<jouw-onderdeel>.md` (kort: les, vraag, wat je nu gekozen hebt). Niet stoppen om te vragen: maak een redelijke keuze en ga door.
+- Vragen of twijfels (iets onduidelijks in de aantekeningen, een keuze voor de eigenaar): schrijf ze in `vragen-voor-later/lessen-groep-3/<jouw-onderdeel>.md` (kort: les, vraag, wat je nu gekozen hebt). Niet tussendoor vragen: maak een redelijke keuze, ga door en zet de keuze in KEUZES-VOOR-SARA.md (BOUWREGELS 12.10); de harde regels gelden altijd.
 - Elke les-id is uniek, kleine letters met streepjes, met een voorvoegsel van je onderdeel. Titel kort en serieus, in het Nederlands.
 - Assessment en Mastery Check zijn toetsen: dezelfde soort vragen, zonder lange uitleg bij fout (zoals de aantekeningen beschrijven). Gebruik voor de titel "Instaptoets: …" en "Eindtoets: …".
 - Controleer aan het eind: `npx tsc --noEmit -p .` (geen fouten in jouw bestanden) en `npx eslint <jouw bestanden>`. Loop elk draaiboek in gedachten door voor elke tak (goed, fout, weet ik niet) zodat de les nooit vastloopt.

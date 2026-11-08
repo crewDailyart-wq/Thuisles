@@ -32,6 +32,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, TX, WERELDKLEUR, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { voorwerpBeeld } from "../voorwerpen";
 import { maakRondjes, vakOm, type RondjeVak } from "../holo/rondje";
 import { FOTO, hexGetal, KLEUR, MAAT, teken, tekenZak, tekenZakgetal, type Kleurnaam, type Soort } from "./squla-tellen-tekenen";
@@ -65,6 +66,11 @@ export type TelVlakProps = {
   telNaam?: string;
   /** De zak licht op (samen tellen bij de zak). */
   zakLicht?: boolean;
+  /**
+   * De rondjes bij het samen tellen (Sara, 8 november 2026, besluit 4): "op" = het voorwerp dat Bliepo nu telt is fel en wat hij al telde
+   * blijft zacht; "samen" = bij het totaal zijn ze allemaal weer fel; "weg" = alle rondjes weg.
+   */
+  telRondjes?: "op" | "samen" | "weg";
   goed?: number;
   fout?: number;
   memory?: Memorykaartjes | null;
@@ -188,6 +194,7 @@ interface TelScene {
   zetIndeling(o: Indeling | null): void;
   zetGeteld(n: number): void;
   zakLicht(aan: boolean): void;
+  telStand(s: "op" | "samen" | "weg"): void;
   wijs(index: number | null): void;
   goed(): void;
   fout(): void;
@@ -209,6 +216,11 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     /** Het rode rondje (Sara, 6 november 2026): wat Bliepo aanwijst of telt, in plaats van op te lichten. */
     rondjes: ReturnType<typeof maakRondjes> | null = null;
     rondjeTel = new Map<string, RondjeVak>();
+    telStandNu: "op" | "samen" | "weg" = "op";
+    /** Het rondje om het totaal dat Bliepo al noemde (zacht als hij verder telt) en hoeveel er geteld zijn. */
+    telGroepVak: RondjeVak | null = null;
+    telGeteldNu = 0;
+    telGroepN = 0;
     rondjeWijs = new Map<string, RondjeVak>();
     rondjeZak: RondjeVak | null = null;
     zakImg: Img | null = null;
@@ -321,6 +333,8 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.rondjes?.vergeet();
       this.rondjes = null;
       this.rondjeTel = new Map();
+      this.telGroepVak = null;
+      this.telGeteldNu = 0;
       this.rondjeWijs = new Map();
       this.rondjeZak = null;
       this.zakImg = null;
@@ -377,6 +391,12 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       this.geteld = n;
       if (n <= van) {
         this.stopKlokken();
+        if (n === 0 && this.rondjeTel.size) {
+          this.telGroepVak = null;
+          this.telGeteldNu = 0;
+          this.rondjeTel = new Map();
+          this.ververs();
+        }
         o.volgorde.forEach((idx, k) => this.items[idx]?.setAlpha(k < n ? 0.4 : 1));
         return;
       }
@@ -387,7 +407,7 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
         const basis = (im.getData("sc") as number | undefined) ?? o.schaal / TX;
         const doe = () => {
           /* Het rondje komt precies waar het oplichten kwam: om het voorwerp dat Bliepo nu telt, 420 ms (ook bij rustig). */
-          if (o.plekken[o.volgorde[k]]?.p && FOTO.gloed === "moment") this.rondjeKort(o, k, 420);
+          if (o.plekken[o.volgorde[k]]?.p && FOTO.gloed === "moment") this.rondjeKort(o, k);
           if (this.rustig) {
             im.setAlpha(0.4);
             return;
@@ -400,20 +420,39 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
       }
     }
 
-    /** Een rondje om getelde voorwerp k voor `ms` milliseconden; elk voorwerp houdt zijn eigen tijd. */
-    rondjeKort(o: Indeling, k: number, ms: number) {
+    /**
+     * Een rondje om getelde voorwerp k: dat is fel, het totaal van wat Bliepo eerder noemde blijft zacht staan (tellen hoort bij elkaar).
+     * Het blijft staan zolang Bliepo erover praat; de les zet `telRondjes` op "weg" als hij klaar is.
+     */
+    rondjeKort(o: Indeling, k: number) {
       const vak = vakOm([this.items[o.volgorde[k]]].filter(Boolean));
       if (!vak) return;
-      const sl = `tel-${k}`;
-      /* Altijd maar 1 rondje tegelijk (BOUWREGELS 7.8): het rondje van het vorige voorwerp gaat weg als het volgende komt (de stap is korter dan 420 ms). */
-      this.rondjeTel.clear();
-      this.rondjeTel.set(sl, vak);
+      const nieuw = new Map<string, RondjeVak>();
+      if (this.telGroepVak) nieuw.set(`tel-groep-${this.telGroepN}`, { ...this.telGroepVak, zacht: true });
+      nieuw.set(`tel-${k}`, vak);
+      this.rondjeTel = nieuw;
+      this.telGeteldNu = k + 1;
       this.ververs();
-      this.time.delayedCall(ms, () => {
-        if (this.ind !== o || this.rondjeTel.get(sl) !== vak) return;
-        this.rondjeTel.delete(sl);
-        this.ververs();
-      });
+    }
+
+    telStand(s: "op" | "samen" | "weg") {
+      if (this.telStandNu === s) return;
+      this.telStandNu = s;
+      const o = this.ind;
+      if (s === "weg") {
+        this.rondjeTel = new Map();
+        this.telGroepVak = null;
+      } else if (s === "samen" && o) {
+        /* "Samen" (het totaal): 1 fel rondje om alles wat Bliepo telde (besluit 4). */
+        const vak = vakOm(o.volgorde.slice(0, this.telGeteldNu).map((i) => this.items[i]).filter(Boolean));
+        if (vak) {
+          /* Elke grootte een eigen sleutel: een rondje dat al staat wordt niet opnieuw getekend of aangepast. */
+          this.telGroepVak = vak;
+          this.telGroepN = this.telGeteldNu;
+          this.rondjeTel = new Map([[`tel-groep-${this.telGroepN}`, vak]]);
+        }
+      }
+      this.ververs();
     }
 
     zakLicht(aan: boolean) {
@@ -439,7 +478,8 @@ function maakTelScene(Phaser: PhaserModule, rustig: boolean) {
     /** Alle rondjes die nu moeten staan (getelde, aangewezen en de zak); wat al staat blijft staan. */
     ververs() {
       /* Wijst Bliepo het volgende voorwerp aan (het kind moet het aantikken), dan staat alleen dat rondje er. */
-      const wens = new Map<string, RondjeVak>(this.rondjeWijs.size ? this.rondjeWijs : this.rondjeTel);
+      const tel = this.telStandNu === "weg" ? new Map<string, RondjeVak>() : this.rondjeTel;
+      const wens = new Map<string, RondjeVak>(this.rondjeWijs.size ? this.rondjeWijs : tel);
       if (this.rondjeZak) wens.set("zak", this.rondjeZak);
       this.rondjes?.zet(wens);
     }
@@ -585,7 +625,7 @@ function Turven({ aantal, van, stap }: { aantal: number; van: number; stap: numb
   );
 }
 
-export function SqulaTelVlak({ opgave, geteld = 0, telActief = false, telNaam, zakLicht = false, goed = 0, fout = 0, memory = null, voorraad, meld, schaal }: TelVlakProps & Vlakbasis) {
+export function SqulaTelVlak({ opgave, geteld = 0, telActief = false, telNaam, zakLicht = false, telRondjes = "op", goed = 0, fout = 0, memory = null, voorraad, meld, schaal }: TelVlakProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<TelScene>(schaal, maakTelScene);
   const voorraadSleutel = voorraad ? JSON.stringify(voorraad) : "";
   useEffect(() => {
@@ -617,6 +657,10 @@ export function SqulaTelVlak({ opgave, geteld = 0, telActief = false, telNaam, z
   useEffect(() => {
     scene?.zakLicht(zakLicht);
   }, [scene, ind, zakLicht]);
+
+  useEffect(() => {
+    scene?.telStand(telRondjes);
+  }, [scene, ind, telRondjes]);
 
   const wijsIndex = telActief && ind && geteld < ind.volgorde.length ? geteld : null;
   useEffect(() => {
@@ -731,7 +775,7 @@ function Memory({ memory, scene, meld }: { memory: Memorykaartjes; scene: TelSce
       const alle = [...gevonden, ...nu];
       setGevonden(alle);
       setOpen([]);
-      setTimeout(() => speelLesgeluid("goed"), 260);
+      setTimeout(() => { speelLesgeluid("goed"); bliepoScherm("goed"); }, 260);
       if (alle.length === plaatjes.length) {
         klaar.current = true;
         setTimeout(() => meld({ soort: "memoryKlaar" }), 900);
@@ -741,7 +785,7 @@ function Memory({ memory, scene, meld }: { memory: Memorykaartjes; scene: TelSce
     setOpen(nu);
     bezig.current = true;
     setTimeout(() => {
-      speelLesgeluid("mis");
+      bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
       setSchud((x) => ({ i: nu, keer: x.keer + 1 }));
     }, 300);
     setTimeout(() => {

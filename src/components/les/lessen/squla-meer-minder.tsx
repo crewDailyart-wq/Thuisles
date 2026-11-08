@@ -209,8 +209,11 @@ async function telSamen(l: Lesgids, v: Vw, groep: MMGroep, vak: number): Promise
       zet(l, { tel: { vak, geteld: geteld + 1 } });
       await l.wacht(e[r] - (r ? e[r - 1] : 0) > 6 ? 55 : 110);
     }
+    /* Bliepo noemt het totaal tot nu toe: alles wat geteld is krijgt 1 fel rondje (besluit 4). */
+    zet(l, { tel: { vak, geteld, samen: true } });
     await l.zeg(`${g(e[r], v.k)}.`);
   }
+  zet(l, { tel: { vak, geteld, stil: true } });
   if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${g(e[stop - 1], v.k)}?`);
 }
 
@@ -229,9 +232,10 @@ async function kaartenTellen(l: Lesgids, v: Vw, aantallen: number[], metVoorbeel
       await l.wacht(260);
     }
     bordjes[j] = aantallen[j];
-    zet(l, { bordjes: [...bordjes], tel: null });
+    zet(l, { bordjes: [...bordjes], tel: { vak: j, geteld: aantallen[j], samen: true } });
     speelLesgeluid("tik");
     await l.zeg(metVoorbeeld && j === 0 ? `Bovenaan zijn het er ${g(aantallen[j], v.k)}.` : `Hier zijn het er ${g(aantallen[j], v.k)}.`);
+    zet(l, { tel: null });
   }
   await l.zeg(slot);
 }
@@ -364,8 +368,10 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
         for (const eind of e.filter((x) => x > begin)) {
           zet(l, { tel: { vak: 0, geteld: eind } });
           await l.wacht(300);
+          zet(l, { tel: { vak: 0, geteld: eind, samen: true } });
           await l.zeg(`${g(eind, q.v.k)}.`);
         }
+        zet(l, { tel: { vak: 0, geteld: goed, samen: true } });
         await l.zeg(`Zo veel ${naam} staan er: ${g(goed, q.v.k)}.`, ...(q.vraagt === "evenveel" ? [] : [`${g(antwoord, q.v.k)} is ${q.vraagt} dan ${g(goed, q.v.k)}.`]));
         await l.wacht(300);
       },
@@ -374,8 +380,14 @@ async function speelVraag(l: Lesgids, id: string, q: Vraag, st: Stand): Promise<
         toonOpgave(l, st, id, o);
       },
       fout: () => {
-        /* Eerste fout: de eerste rijen lichten alvast op, tot waar "begin bij" over gaat. */
-        if (++nFout === 1) zet(l, { tel: { vak: 0, geteld: begin } });
+        nFout++;
+      },
+      /* Bliepo zegt "begin bij": de eerste rijen krijgen 1 rondje zolang hij praat (besluit 4). */
+      wijs: () => {
+        if (nFout === 1) zet(l, { tel: { vak: 0, geteld: begin, samen: true } });
+      },
+      wijsWeg: () => {
+        if (nFout === 1) zet(l, { tel: { vak: 0, geteld: begin, stil: true } });
       },
       vraag: vraagZin(q),
       /* 4 keuzes: 2 × 2, niet 3 en 1 los eronder (herstel 7 november). */
@@ -595,8 +607,10 @@ async function uitlegTel(l: Lesgids, st: Stand, v: Vw, groep: MMGroep, extra?: W
       zet(l, { tel: { vak: 0, geteld: geteld + 1 } });
       await l.wacht(per > 6 ? 55 : 110);
     }
+    zet(l, { tel: { vak: 0, geteld, samen: true } });
     await l.zeg(`${g(e[r], v.k)}.`);
   }
+  zet(l, { tel: { vak: 0, geteld: n, samen: true } });
   await l.zeg(`Samen zijn het ${g(n, v.k)} ${v.naam}.`);
   if (extra === "meer") await l.zeg(`${g(n + 1, v.k)} is meer dan ${g(n, v.k)}.`, `${g(n - 1, v.k)} is minder.`);
   else await l.zeg(`Dus ${g(n, v.k)} is evenveel.`);
@@ -615,6 +629,7 @@ async function uitlegDozen(l: Lesgids, st: Stand) {
       zet(l, { tel: { vak: 0, geteld: k + 1 } });
       await l.wacht(110);
     }
+    zet(l, { tel: { vak: 0, geteld: r * 6, samen: true } });
     await l.zeg(`${g(r * 6, EIEREN.k)}.`);
   }
   await l.zeg(`Het zijn er ${g(18, EIEREN.k)}.`, `Dus ${g(18, EIEREN.k)} is evenveel.`);

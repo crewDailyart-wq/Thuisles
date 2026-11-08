@@ -1735,7 +1735,7 @@ Zinnen met `…` hebben een stukje dat per keer anders is (een getal of naam).
 ## squla-klok-klokkijken-1 (2)
 
 - Ik zeg hoe laat het is. Klopt dat met de klok? Kun je dit al?
-- Luister naar de tijd en controleer of die bij de klok past. Weet je wanneer de klok de juiste tijd aangeeft?
+- Kijk naar de tijd en controleer of die bij de klok past. Weet je wanneer de klok de juiste tijd aangeeft?
 
 ## squla-klok-klokkijken-2 (2)
 

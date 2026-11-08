@@ -255,3 +255,18 @@ Nagekeken: alle Squla-lessen met keuzes in vakken, behalve rekenmix en vormen-op
 - Opgemerkt maar niet veranderd (geen vakken-probleem, of andere helper): splitsen2-1 heeft een los briefje van 10 euro linksboven; bij memory (resultatief3) is de satelliet smal; in meten "tafels" staan de tafels onderaan in hun vak (bewust op 1 lijn om hoogtes te vergelijken).
 
 Foto's voor/na: public/overbodige-plaatjes-na/<les-id>-r9-voor.jpg en -r9-na.jpg (meer-minder-evenveel1-2, 1-3, 2-2, 3-1; meten-pizza-2, meten-hoeveelheden-1; tijd-kalender-1, tijd-tijden-1; geld-geld-2, geld-zakgeld-1).
+
+## Ronde 10 — regels opruimen (8 november 2026)
+
+BOUWREGELS.md, CLAUDE.md, ONTWERPREGELS.md, het geheugen en een paar oude bouwbestanden zijn bijgewerkt volgens jouw 35 besluiten. De oude versies staan in `regels-backup-20261108/`. Alle besluiten staan als "voorlopig" tot de Synthesis-vergelijking. Dit heb ik niet zelf beslist en laat ik hier staan:
+
+1. **Groen bij goed.** Besluit 2 zegt: alleen het scherm van Bliepo kleurt groen bij goed. Ik heb dat strikt gelezen: ook geen groene gloed meer om het goede antwoord van het kind. De korte lichtflits/golf bij goed (7.3, 7.6) en het groen in splitsen (14.26) blijven wel staan, maar zonder rood of groen om de keuze. Klopt dat?
+2. **Getallen in een zin.** Besluit 24 zegt: getallen wit, behalve bij de kleurkoppeling in sommen. Ik heb dit zo uitgewerkt: een getal in Bliepo's zin heeft alleen een kleur als het bij de som met kleurkoppeling hoort; verder is het wit (BOUWREGELS 2.1, 2.2, 14.20, 14.24). Eerder stond: ook "6 groene visjes" geeft een groene 6. Is dat nu wit?
+3. **Fel/zacht rondje bij sommen** (besluit 4) is nog niet uitgewerkt per soort les. Bij de getallenlijn (sprongen) en tijd (begin- en eindtijd) wacht ik op wat Synthesis doet.
+4. **Magnific-stijlzin (besluit 17).** De zin staat in `MAGNIFIC-PROMPTS.md` en wordt gemaakt door `npm run voorwerpen` (scripts/voorwerpen/stijl.mjs). Daar staat nog "no gradients, no shadow". Dat is code/script, dus niet door mij aangepast. In BOUWREGELS 12.8 staat de nieuwe zin in woorden. Nog te doen door een bouwer.
+5. **Plaatjes: wie geeft akkoord.** Besluit 21: de controleur keurt plaatjes. WISSELEN.md zei "pas als jij akkoord geeft"; ik heb dat veranderd naar "de controleur". Zeg het als jij toch zelf akkoord wilt geven.
+6. **Magnific zonder limiet vs. harde regel 9.** Besluit 22 geeft Magnific geen limiet. Ik heb in CLAUDE.md bij regel 9 alleen voor Magnific een uitzondering gezet (wel kosten melden). Andere diensten, zoals ElevenLabs voor Ruth, blijven boven 5.000 eerst vragen.
+7. **"Meerkeuze meteen nakijken" (besluit 6)** botst met de oude tekst "goed of fout pas na Controleer" in ONTWERPREGELS.md (oude oefeningen). Ik heb BOUWREGELS 6.5 aangepast en ONTWERPREGELS meegenomen. De 14 Squla-lessen met `direct: true` volgen nu de regel; de andere lessen met een vinkje bij meerkeuze moeten later in de code mee.
+8. **Code die nog de oude regels volgt** (alleen gemeld, niet aangepast): de gedeelde lijst met 16 bevestigingswoordjes (`bevestig()`), vaste begin- en eindzinnen in `squla-hulp.ts`, het fout-geluidje `speelLesgeluid("mis")`, de korte rondjes van 420-800 ms, rode gloed bij fout in Meten en Geld, de "tik op de pijl"-hulp bij som-, splits- en sleepvragen, en "Kun je dit al?" als vaste vraag. Besluit 1 t/m 4 worden nu door de bouwers gedaan; de rest later.
+9. **CONTROLE-SQULA.md en de andere verslagbestanden** (CONTROLE-*, RONDJE-*, HERSTEL-*, enz.) zijn niet aangepast: dat zijn verslagen van wat toen gold, geen regels.
+10. **MAGNIFIC-PROMPTS.md en STEMZINNEN.md** niet met de hand aangepast (worden gemaakt door een script).

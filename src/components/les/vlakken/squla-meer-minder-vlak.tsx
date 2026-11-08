@@ -58,7 +58,8 @@ export type MMOpgave =
 export type MMProps = {
   opgave: MMOpgave | null;
   actief?: boolean;
-  tel?: { vak: number; geteld: number } | null;
+  /** `samen`: Bliepo noemt het totaal tot nu toe; alle getelde voorwerpen krijgen dan 1 fel rondje. Anders: het voorwerp dat hij nu telt is fel en het vorige totaal blijft zacht. */
+  tel?: { vak: number; geteld: number; samen?: boolean; stil?: boolean } | null;
   bordjes?: (number | null)[] | null;
   goed?: { vak: number; keer: number } | null;
   fout?: { vak: number; keer: number } | null;
@@ -256,7 +257,7 @@ type Melder = (g: Vlakgebeurtenis) => void;
 interface MMScene {
   verbind(m: Melder): void;
   zetOpgave(o: MMOpgave | null): void;
-  zetTel(t: { vak: number; geteld: number } | null): void;
+  zetTel(t: { vak: number; geteld: number; samen?: boolean; stil?: boolean } | null): void;
   zetActief(aan: boolean): void;
   goed(vak: number): void;
   fout(vak: number): void;
@@ -298,6 +299,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
     /** Het rode rondje (Sara, 6 november 2026) om de rij die Bliepo telt: één per kaart (de houder is de kaart zelf). */
     rondjes = new Map<Box, ReturnType<typeof maakRondjes>>();
     rondjeTok = new Map<Box, number>();
+    /** Het laatste "samen"-rondje per vak: blijft zacht staan als Bliepo verder telt. */
+    telGroep = new Map<Box, RondjeVak>();
+    telGroepN = new Map<Box, number>();
     melder: Melder = () => {};
     actief = false;
     bezig = false;
@@ -462,6 +466,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       for (const rj of this.rondjes.values()) rj.vergeet();
       this.rondjes.clear();
       this.rondjeTok.clear();
+      this.telGroep.clear();
+      this.telGroepN.clear();
       this.vinger?.destroy();
       this.vinger = null;
       this.stukken = [];
@@ -522,7 +528,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
       speelLesgeluid("verschijn");
     }
 
-    zetTel(t: { vak: number; geteld: number } | null) {
+    zetTel(t: { vak: number; geteld: number; samen?: boolean; stil?: boolean } | null) {
       this.stukken.forEach((st, i) => {
         st.items.forEach((img, k) => {
           const aan = !t || t.vak !== i || k < t.geteld;
@@ -532,23 +538,33 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
             this.tweens.add({ targets: img, scaleX: sx * 1.18, scaleY: sx * 1.18, duration: 110, yoyo: true, onComplete: () => img.setScale(sx) });
           }
         });
-        /* Het rondje komt precies waar de gloed kwam: om het ene voorwerp dat Bliepo nu telt, 420 ms (niet bij rustig, net als de gloed). */
-        const telImg = t && t.vak === i && !this.rustig && t.geteld > 0 ? st.items[t.geteld - 1] : undefined;
-        if (telImg) {
-          const vak = vakOm([telImg]);
-          let rj = this.rondjes.get(st.box);
-          if (!rj && vak) {
+        /* Rondjes bij het tellen (besluit 4): het voorwerp dat Bliepo nu telt is fel en blijft staan zolang hij praat; het vorige totaal
+           blijft zacht; bij "samen" krijgt alles wat geteld is 1 fel rondje. Ze gaan weg als `tel` weer null is. */
+        const actiefVak = !!t && t.vak === i && !this.rustig && !t.stil && t.geteld > 0;
+        let rj = this.rondjes.get(st.box);
+        if (!actiefVak) {
+          this.telGroep.delete(st.box);
+          rj?.zet(new Map());
+        } else {
+          if (!rj) {
             rj = maakRondjes(this, st.box, this.rustig);
             this.rondjes.set(st.box, rj);
           }
-          const tok = (this.rondjeTok.get(st.box) ?? 0) + 1;
-          this.rondjeTok.set(st.box, tok);
-          if (vak && rj) {
-            rj.zet(new Map<string, RondjeVak>([[`tel-${t!.geteld - 1}`, vak]]));
-            this.time.delayedCall(420, () => {
-              if (this.rondjeTok.get(st.box) === tok) rj!.zet(new Map());
-            });
+          const wens = new Map<string, RondjeVak>();
+          if (t!.samen) {
+            const groep = vakOm(st.items.slice(0, t!.geteld));
+            if (groep) {
+              this.telGroep.set(st.box, groep);
+              this.telGroepN.set(st.box, t!.geteld);
+              wens.set(`tel-groep-${t!.geteld}`, groep);
+            }
+          } else {
+            const oud = this.telGroep.get(st.box);
+            if (oud) wens.set(`tel-groep-${this.telGroepN.get(st.box) ?? 0}`, { ...oud, zacht: true });
+            const vak = vakOm([st.items[t!.geteld - 1]].filter(Boolean));
+            if (vak) wens.set(`tel-${t!.geteld - 1}`, vak);
           }
+          rj.zet(wens);
         }
       });
     }
@@ -604,7 +620,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, vooraf: MMOpgave[]) {
     fout(vak: number) {
       const st = this.kaartStuk(vak);
       if (!st) return;
-      this.rand(st, 0xff7b8b);
+      this.rand(st, WARM); /* geen rood op de keuze (Sara, 8 november 2026, besluit 2): zachte warme gloed zoals bij tikken */
       this.schud(st.box);
     }
 
@@ -991,9 +1007,11 @@ export function SqulaMeerMinder({
 
   const telVak = tel?.vak ?? -1;
   const telGeteld = tel?.geteld ?? 0;
+  const telSamen = !!tel?.samen;
+  const telStil = !!tel?.stil;
   useEffect(() => {
-    scene?.zetTel(telVak < 0 ? null : { vak: telVak, geteld: telGeteld });
-  }, [scene, telVak, telGeteld, sleutel]);
+    scene?.zetTel(telVak < 0 ? null : { vak: telVak, geteld: telGeteld, samen: telSamen, stil: telStil });
+  }, [scene, telVak, telGeteld, telSamen, telStil, sleutel]);
 
   useEffect(() => {
     scene?.zetActief(actief);

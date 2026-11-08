@@ -388,6 +388,8 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
     rondjes: ReturnType<typeof maakRondjes> | null = null;
     /** Het rondje dat Bliepo aanwijst (licht) en het korte rondje bij goed (800 ms, zoals het oude oplichten) staan naast elkaar. */
     lichtWens = new Map<string, RondjeVak>();
+    /** De rondjes die in deze som al genoemd zijn (zacht, of fel bij "over"). */
+    lichtGesch = new Map<string, RondjeVak>();
     goedVak: RondjeVak | null = null;
     goedTok = 0;
     zetRondjes() {
@@ -568,6 +570,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       this.lichtWens = new Map();
       this.goedVak = null;
       this.goedTok++;
+      this.lichtGesch = new Map();
       const oud = this.groep;
       this.groep = null;
       this.items = [];
@@ -1175,6 +1178,14 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
           if (v) wens.set(sl, v);
         }
       }
+      /* Begin, eraf en over horen bij dezelfde som (besluit 4): wat al genoemd is blijft zacht staan; bij "over" zijn alle rondjes
+         van de som weer fel. Een nieuwe som (licht alle/stippen) of geen licht begint opnieuw. */
+      if (l === "alle" || l === "stippen") this.lichtGesch = new Map();
+      if (t && l) {
+        const gewenst = new Map(wens);
+        for (const [k, v] of this.lichtGesch) if (!gewenst.has(k)) wens.set(k, { ...v, zacht: l !== "over" });
+        for (const [k, v] of gewenst) this.lichtGesch.set(k, v);
+      }
       this.lichtWens = wens;
       this.zetRondjes();
     }
@@ -1334,18 +1345,7 @@ function maakMinScene(Phaser: PhaserModule, rustig: boolean) {
       const t = this.toneel;
       const midden = t?.soort === "bus" ? { x: 330, y: 400 } : t?.soort === "machine" ? MACH.rechts : t?.soort === "geld" ? GELD.ding : { x: 490, y: 380 };
       this.golf(midden.x, midden.y);
-      /* Wat overblijft krijgt 800 ms een rood rondje, precies zoals het even oplichtte (bij elk soort tafereel met voorwerpen); daarna weer weg. */
-      const vOver = vakOm(this.items.filter((im) => im.alpha >= 0.5));
-      if (vOver) {
-        this.goedVak = vOver;
-        const tok = ++this.goedTok;
-        this.zetRondjes();
-        this.time.delayedCall(800, () => {
-          if (this.goedTok !== tok) return;
-          this.goedVak = null;
-          this.zetRondjes();
-        });
-      }
+      /* Het kind tikte: geen rondje (besluit 1); de lichtgolf en het hopje hieronder zijn het goed-gevoel. */
       this.items.forEach((im, i) => {
         if (im.alpha < 0.5) return;
         if (this.rustig) return;

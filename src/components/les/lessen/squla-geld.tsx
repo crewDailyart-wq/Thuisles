@@ -141,6 +141,7 @@ const LEEG: Omit<GeldProps, "nr"> = {
   goed: [],
   fout: [],
   licht: [],
+  gekozen: [],
   /** Wat Bliepo aanwijst of telt krijgt een rood, getekend rondje in plaats van een gloed (Sara, 6 november 2026). */
   rondje: true,
   verbind: null,
@@ -273,21 +274,22 @@ function kiesGeld(o: KiesOpties): Opgave {
       vraag,
       antwoord: async () => {
         if (aantal === 1) {
-          zet(l, { kaartenActief: true, fout: [], licht: [], uit: [...uit] });
+          zet(l, { kaartenActief: true, fout: [], licht: [], gekozen: [], uit: [...uit] });
           const g = await l.wachtOpVlak<{ soort: string; id: string }>("kaart");
-          zet(l, { kaartenActief: false });
+          /* Bij het tikken geen rondje maar een zachte gloed om de keuze (besluit 1). */
+          zet(l, { kaartenActief: false, gekozen: [g.id] });
           return g.id;
         }
         let gekozen: string[] = [];
         for (;;) {
           zetTestAntwoord(goedIds.find((g) => !gekozen.includes(g)) ?? goedIds[0]);
-          zet(l, { kaartenActief: true, licht: [...gekozen], fout: [], goed: [], uit: [...uit] });
+          zet(l, { kaartenActief: true, licht: [], gekozen: [...gekozen], fout: [], goed: [], uit: [...uit] });
           const g = await l.wachtOpVlak<{ soort: string; id: string }>("kaart");
           speelLesgeluid("keuze");
           gekozen = gekozen.includes(g.id) ? gekozen.filter((x) => x !== g.id) : [...gekozen, g.id];
           if (gekozen.length === 2) break;
         }
-        zet(l, { kaartenActief: false, licht: [...gekozen] });
+        zet(l, { kaartenActief: false, licht: [], gekozen: [...gekozen] });
         return [...gekozen].sort().join("+");
       },
       isGoed: (x: string) => (aantal === 1 ? x === goedIds[0] : x === [...goedIds].sort().join("+")),

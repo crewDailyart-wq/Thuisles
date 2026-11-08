@@ -1,0 +1,33 @@
+# Uitleglessen bouwen (groep 3, naar Synthesis)
+
+Antwoord en schrijf alles in het Nederlands.
+
+## Wat er al staat (lees dit eerst, helemaal)
+- `src/components/les/soort.ts`: het type `Lesdraaiboek` en de gids `Lesgids` (l.zeg, l.getal, l.kies, l.verder, l.bak, l.pak, l.leg, l.haalWeg, l.leeg, l.draai, l.tel, l.som, l.somVak, l.kaart, l.wacht, l.vlak, l.pasVlakAan, l.wachtOpVlak).
+- `src/components/les/Lesscherm.tsx`: het scherm (links de tekst van de mascotte + bediening, midden een raster met getaltegels, rechts de bak, bovenaan de som, linksonder de mascotteplek). Niet aanpassen.
+- `src/components/les/tegels.ts`: tegelvormen en -kleuren (zoals Synthesis).
+- `src/components/les/lessen/optellen-onder-10.ts`: een VOLLEDIG UITGEWERKT VOORBEELD (Synthesis "Add within 10 · Adding below 10"). Volg die stijl precies: korte zinnen, getallen tussen {accolades} (krijgen tegelkleur, boven 10 wit), bij een fout eerst een richting en daarna het antwoord met reden, "Weet ik niet" → "Geen zorgen" + samen doen, foute keuze verdwijnt zonder het woord fout, kaart aan het eind (`const tik = l.kaart(); await l.zeg(...); await tik;`).
+- Een eigen speelvlak (getallenlijn, stippen, klok, honderdveld, flitskaart…) maak je als React-component in `src/components/les/vlakken/<naam>.tsx` en zet je in beeld met `l.vlak(Component, props)`. Het vlak krijgt `meld`, `schaal`, `metSom` (zie `Vlakbasis`) en tekent in punten binnen een vak van 980 × 720 (de linkerkant van dat vak = x 300 van het hele scherm; het tegelraster loopt daarin van x 22 tot 814 en y 63 tot 657, de bak zit rond x 900). Laat bij `metSom` de bovenste 118 punten vrij (daar staat de som). Interactie meldt het vlak met `meld({ soort: "...", ... })`; het draaiboek wacht met `await l.wachtOpVlak("soort")`. Meldingen terwijl niemand wacht vallen weg: geef het vlak een prop als `actief` en zet die aan (`l.pasVlakAan({actief:true})`) vlak voor je wacht. Vingerposities: het vlak is geschaald, reken clientX/Y om met `getBoundingClientRect()` en `schaal`.
+- Stijl: donkere sterrenhemel (achtergrond is er al), stippellijnen rgba(160,180,220,0.3), kleuren uit `TEGELKLEUR`/`getalkleur`, witte vette letters (font var(--font-les)), knoppen #2b2f3b met tekst #d6d8e1, blauw accent #4b8af5. CSS: een eigen `.module.css` naast je vlak of inline styles; niet in Lesscherm.module.css. Animaties kort, en respecteer `prefers-reduced-motion`.
+- Screenshots van Synthesis: `/Users/sararifi/Desktop/synthesis-screenshots/*.png` (bv. `add-within-10-doubles-1.png`) en `ronde-2/*.jpg`. Lees ze met de Read-tool: zo zie je de layout, kleuren en waar de som staat. Bouw dat zo exact mogelijk na, met eigen tekeningen (geen plaatjes van Synthesis kopiëren).
+- De aantekeningen per les staan in `/Users/sararifi/Desktop/thuisles/INSPIRATIE.md` (groot bestand: zoek met grep). Zoek op `### R2 · <Unit> · <Les>` (ronde 2: zin voor zin wat de begeleider zegt, wat er beweegt, wat er bij fout gebeurt), op `### <Unit> · <Les>` (ronde 1, met "Hoe het eruitziet") en op de blokken (### A., B., …) die naar die les verwijzen. Volg het verloop zo uitgebreid mogelijk: elke stap, elke fout-tak, elke "weet ik niet"-tak. Formuleer in eigen kindvriendelijk Nederlands (niet letterlijk vertalen). Groep 3 kan niet lezen: alles wordt voorgelezen, dus zinnen kort (max ~10 woorden), grammaticaal goed, natuurlijk. Zeg precies wat er in beeld staat ("hokjes", "stippen"). Dezelfde soort vraag overal op dezelfde manier formuleren.
+- Engelse dingen omzetten naar Nederlands: geld in euro, klok zoals in Nederland ("half 4", "kwart over 3"), woorden in verhaaltjessommen Nederlands.
+
+## Harde regels
+- HARDE REGEL 5: NOOIT een cijfertoetsenbord op het scherm. Getallen typt het kind via `l.getal()` of `l.somVak()` (echte invoervelden), of via een echt `<input inputMode="numeric" pattern="[0-9]*">` in je vlak. Waar Synthesis een 1–9-raster heeft: `l.getal()`.
+- Keuzevragen: `l.kies([...])` (kind kiest, bevestigt met vinkje; "Weet ik niet" geeft null).
+- Niets in de database aanmaken of wijzigen. Geen git commit. Niet de browser gebruiken (de hoofdagent test later in de browser).
+- Pas ALLEEN je eigen lesbestanden aan (in je opdracht genoemd) plus nieuwe bestanden in `src/components/les/vlakken/` met een voorvoegsel van jouw onderdeel. Niet `Lesscherm.tsx`, `soort.ts`, `tegels.ts`, `lessen/index.ts` of bestanden van andere onderdelen. Mis je iets in de gids, los het op in je eigen vlak; lukt dat niet, schrijf het op als vraag.
+- Vragen of twijfels (iets onduidelijks in de aantekeningen, een keuze voor de eigenaar): schrijf ze in `vragen-voor-later/lessen-groep-3/<jouw-onderdeel>.md` (kort: les, vraag, wat je nu gekozen hebt). Niet stoppen om te vragen: maak een redelijke keuze en ga door.
+- Elke les-id is uniek, kleine letters met streepjes, met een voorvoegsel van je onderdeel. Titel kort en serieus, in het Nederlands.
+- Assessment en Mastery Check zijn toetsen: dezelfde soort vragen, zonder lange uitleg bij fout (zoals de aantekeningen beschrijven). Gebruik voor de titel "Instaptoets: …" en "Eindtoets: …".
+- Controleer aan het eind: `npx tsc --noEmit -p .` (geen fouten in jouw bestanden) en `npx eslint <jouw bestanden>`. Loop elk draaiboek in gedachten door voor elke tak (goed, fout, weet ik niet) zodat de les nooit vastloopt.
+
+Lever op het eind een kort verslag: welke lessen (id + titel), welke vlakken, wat je bewust anders deed dan Synthesis en waarom, en welke vragen je hebt opgeschreven.
+
+## Tweede bouwronde (10 oktober 2026): alles van groep 3, en nalopen
+De eigenaar vond dat er niet goed geluisterd was. Twee taken per onderdeel:
+1. **Nalopen.** Lees voor elke bestaande les in je bestand de aantekeningen (`### R2 · …` én `### …` ronde 1 én de blokken A–P) regel voor regel en vergelijk met het draaiboek. Ontbreekt er een stap, een vraag, een fout-tak, een "weet ik niet"-tak, een animatie of een speelvlak zoals beschreven: bouw het erbij. Klopt de layout niet met de screenshots: verbeter het in je eigen vlak. Haal geen werkende stappen weg (HARDE REGEL 3); je mag ze wel aanvullen.
+2. **Nieuwe lessen.** Bouw de lessen uit je opdracht erbij. Bij een Synthesis-les met label "groep 4" waarin opdrachten het label "groep 3" of "3 en 4" hebben, bouw je een les met alléén die groep 3-opdrachten, in dezelfde volgorde en met dezelfde uitleg als Synthesis. Zet in `synthesis:` de bron met "(groep 3-deel)" erachter.
+- Nieuwe lessen voeg je toe aan de bestaande `LESSEN_…`-lijst onderaan je eigen bestand (dan komen ze vanzelf in de lijst). Niet `lessen/index.ts` of `src/lib/lessen/catalogus.ts` aanpassen; dat doet de hoofdagent.
+- Noem in je verslag per nieuwe les: id, titel, synthesis-bron.

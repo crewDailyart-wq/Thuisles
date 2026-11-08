@@ -54,7 +54,7 @@ type Stand = { huidig: string; goed: number; fout: number; hint: number; tikUitg
 type Vraag = (l: Lesgids, st: Stand) => Promise<boolean>;
 
 const zet = (l: Lesgids, p: Partial<VormenProps>) => l.pasVlakAan<VormenProps>(p);
-const LEEG: Partial<VormenProps> = { licht: [], goedIds: [], uit: [], actief: false };
+const LEEG: Partial<VormenProps> = { licht: [], gekozen: [], goedIds: [], uit: [], actief: false };
 
 /** Een nieuw beeld (Bliepo tovert het tevoorschijn). Hetzelfde beeld (nog een keer, na de uitleg): alles blijft staan. */
 function toon(l: Lesgids, st: Stand, id: string, extra: Partial<VormenProps>) {
@@ -65,14 +65,15 @@ function toon(l: Lesgids, st: Stand, id: string, extra: Partial<VormenProps>) {
 }
 
 /** Wachten tot het kind iets in de tekening aantikt. */
-async function tik(l: Lesgids): Promise<string> {
-  zet(l, { actief: true });
+async function tik(l: Lesgids, houd: string[] = []): Promise<string> {
+  zet(l, { actief: true, gekozen: houd });
   const t = await l.wachtOpVlak<{ soort: string; id: string }>("tik");
-  zet(l, { actief: false });
+  /* Bij het tikken: een zachte gloed om wat het kind koos, geen rondje (Sara, 8 november 2026, besluit 1). */
+  zet(l, { actief: false, gekozen: [...houd, t.id] });
   return t.id;
 }
 
-const goedBeeld = (l: Lesgids, st: Stand, ids: string[]) => zet(l, { goed: ++st.goed, goedIds: ids, licht: [], actief: false });
+const goedBeeld = (l: Lesgids, st: Stand, ids: string[]) => zet(l, { goed: ++st.goed, goedIds: ids, licht: [], gekozen: [], actief: false });
 const foutBeeld = (l: Lesgids, st: Stand) => zet(l, { fout: ++st.fout });
 
 /** De eerste keer dat er in de tekening getikt moet worden, zegt Bliepo hoe. */
@@ -226,13 +227,15 @@ function keuzevraag(q: Keuzevraag): Vraag {
         goedBeeld(l, st, [q.goed]);
         await zegGoed(l, ...q.goedZin);
       },
-      fout: (x) => {
+      fout: () => {
         foutBeeld(l, st);
-        zet(l, { licht: [x] });
-        /* Na de eerste fout blijft de hint in beeld staan. */
-        const hint = ++nFout === 1 && q.hint ? q.hint : [];
-        setTimeout(() => zet(l, { licht: hint }), 700);
+        nFout++;
       },
+      /* De hint krijgt een rondje zolang Bliepo erover praat (besluit 4). */
+      wijs: () => {
+        if (nFout === 1 && q.hint) zet(l, { licht: q.hint });
+      },
+      wijsWeg: () => zet(l, { licht: [] }),
       samen: async () => {
         await q.samen(l);
         zet(l, { licht: [] });
@@ -499,9 +502,13 @@ function kettingVraag(id: string, eenheid: Kleur[], getoond: number, losse: Kleu
       },
       fout: () => {
         foutBeeld(l, st);
-        /* Eerste fout: de laatste kraal van de ketting licht op. */
-        if (++nFout === 1) zet(l, { licht: [`r-${getoond - 1}`] });
+        nFout++;
       },
+      /* Eerste fout: de laatste kraal krijgt een rondje zolang Bliepo erover praat. */
+      wijs: () => {
+        if (nFout === 1) zet(l, { licht: [`r-${getoond - 1}`] });
+      },
+      wijsWeg: () => zet(l, { licht: [] }),
       samen: async () => {
         await toonPatroon(l, eenheid.map(kw), (i) => `r-${i}`, getoond);
         zet(l, { licht: [`r-${getoond - 1}`] });
@@ -593,6 +600,7 @@ function puzzelVraag(id: string, plaatje: PuzzelPlaatje, n: number, opties: { vr
           if (mis % 3 === 0) {
             zet(l, { hint: ++st.hint });
             await l.zeg("Kijk, ik laat zien waar dit stukje hoort.");
+            zet(l, { hintWeg: st.hint });
           }
         }
       },
@@ -1264,11 +1272,9 @@ function parenVraag(id: string, paren: Paar[], soortNaam: Record<string, string>
             zetTestAntwoord(eerste.id);
             zet(l, { licht: [], uit: [...gevonden] });
             const a = await tik(l);
-            zet(l, { licht: [a] });
             zetTestAntwoord(over.find((p) => p.id !== a && p.soort === soortVan(a))?.id ?? partner.id);
-            const b = await tik(l);
+            const b = await tik(l, [a]);
             if (b === a) continue;
-            zet(l, { licht: [a, b] });
             await l.wacht(400);
             return [a, b];
           }
@@ -1387,8 +1393,12 @@ function plekWoordVraag(o: { id: string; veld: "gras" | "stad"; ding: string; di
       },
       fout: () => {
         foutBeeld(l, st);
-        if (++nFout === 1) zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
+        nFout++;
       },
+      wijs: () => {
+        if (nFout === 1) zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
+      },
+      wijsWeg: () => zet(l, { licht: [] }),
       samen: async () => {
         zet(l, { licht: [o.stipPlek ? "stip" : "ding"] });
         await l.zeg(...(krijgtVervolgvraag(l) ? [] : [`Kijk waar ${wie} ligt.`]), "Kijk eerst of het bovenaan, onderaan of in het midden ligt.", "Kijk daarna aan welke kant het ligt: links of rechts.");

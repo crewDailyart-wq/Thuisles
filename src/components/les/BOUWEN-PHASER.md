@@ -1,5 +1,8 @@
 # Groep 3-lessen bouwen in Phaser (vanaf 27 oktober 2026)
 
+> **Bijgewerkt 8 november 2026:** waar dit bestand botst met `BOUWREGELS.md`, gaat `BOUWREGELS.md` voor. Vervallen: de "Weet ik niet"-knop (vraagteken), het aanwijzen van knoppen, "2× fout = Bliepo doet het voor / we stoppen hier even" (nu: uitleg, kleine stap, door), en niet-stoppen-om-te-vragen (keuzes in KEUZES-VOOR-SARA.md). Oude versie: `regels-backup-20261108/`.
+
+
 Antwoord en schrijf alles in het Nederlands. Lees dit bestand helemaal, en daarna:
 `CLAUDE.md` (HARDE REGELS 1–7), `ONTWERPREGELS.md` (vooral "Lessen in Phaser:
 hologrammen en gloed" en "Groep 3: kinderen die nog niet lezen"),
@@ -79,17 +82,16 @@ het oude lesscherm (de gids `l.…`); dat werkt nog steeds.
    kind moet weten (opdracht, vraag, uitleg, hints, feedback); knoppen met
    een icoon (`IkoonKnop`); antwoordkeuzes zijn cijfers, stippen of plaatjes,
    nooit woorden (moet het toch een woord zijn: `KeuzeKnoppen` leest het voor
-   bij tikken); de eerste keer in de les wijst Bliepo de knoppen aan
-   (`l.wijsAan("weetniet", "Weet je het niet? Tik dan op het vraagteken.")`,
-   bij een eigen knop in je vlak met jouw `data-knop`); zo weinig mogelijk
+   bij tikken); Bliepo legt de knoppen niet uit en er is geen "Weet ik niet"-knop
+   (BOUWREGELS 1.27, 3.15); zo weinig mogelijk
    tekst in beeld.
 8. **Minstens 15 opgaven** per les (instap- en eindtoetsen: de toetsvragen
    zoals Synthesis; daarna mag het gewone oefenen van de les tellen).
 9. **Hulp**: zoals de aantekeningen per les, en waar die niets zeggen de
    ALGEMENE HULPREGELS (R3): 1× fout = vriendelijke reactie + één hint bij de
    handeling (hulp in beeld: rand, pijl, samen tellen, minder keuzes);
-   2× fout = Bliepo doet het voor of zegt het antwoord en de vraag komt later
-   terug; "weet ik niet" = antwoord + "daar komen we later op terug"; toetsen:
+   2× fout = Bliepo legt het uit, het kind doet een kleine stap en gaat door
+   (geen pauze; BOUWREGELS 5.1); toetsen:
    geen uitleg, volgende vraag. De les mag nooit vastlopen in een tak.
 10. **Gebaren** gaan vanzelf uit de woorden (lib/bliepo-gebaren.ts): "kijk",
     "tik op", "sleep" = wijzen; "hoeveel" = open handen; "goed zo" = duim.

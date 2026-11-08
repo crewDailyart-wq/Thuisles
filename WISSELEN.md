@@ -21,7 +21,7 @@ verandert niets aan de code.
 2. Claude maakt een **controle-overzicht** (`plaatjes-inbox/overzicht.html`).
    Daarin zie je per bestand wat Claude ziet, aan welk plaatje het gekoppeld
    wordt, en hoe het eruitziet als het is uitgeknipt.
-   **Er wordt pas iets vervangen als jij akkoord geeft.**
+   **Er wordt pas iets vervangen als de controleur akkoord geeft** (besluit 8 november 2026: de controleur keurt plaatjes, BOUWREGELS 1.20; Sara keurt ze zelf niet).
 3. Na jouw akkoord, per plaatje:
    - de witte achtergrond eruit knippen (op de laptop zelf, gratis);
    - verkleinen en lichter maken, zodat de les snel opent en vloeiend blijft;

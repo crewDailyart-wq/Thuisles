@@ -1,0 +1,32 @@
+- [Niets bestaands verwijderen](niets-bestaands-verwijderen.md) — bij wijzigingen aan bestaande schermen mag geen veld, knop, instelling of opgeslagen waarde verdwijnen; controleer voor en na en meld elk verschil.
+- [Nooit zelf content aanmaken](nooit-zelf-content-aanmaken.md) — harde afspraak: alleen de gebruiker voegt vragen, leerdoelen, domeinen, subdomeinen en sjablonen toe; testdata pas na expliciete toestemming.
+- [Commit direct op main](commit-direct-op-main.md) — geen aparte branch per wijziging; committen blijft wel iets wat de gebruiker vraagt.
+- [Vragen per sessie 15](vragen-per-sessie-15.md) — regel van de eigenaar: alle oefeningen van groep 4 op 15 vragen per oefensessie, ook nieuwe.
+- [Synthesis: waar gebleven](synthesis-doorspelen-stand.md) — stand 7 okt 2026; later verder met nummer 3 (4-cijferige units, breuken, overige Arcade); besluit 1 open; schietspellen wil de eigenaar wél.
+- [Altijd Nederlands](altijd-nederlands.md) — eigenaar wil dat alle antwoorden in het Nederlands zijn.
+- [Synthesis ronde 2: stand](synthesis-ronde-2-stand.md) — ronde 2 is af (10 okt 2026): alle lessen opnieuw gespeeld en zin voor zin genoteerd in INSPIRATIE.md.
+- [Lessen groep 3: stand](lessen-groep3-stand.md) — 87 lessen gebouwd (10 okt); 11 okt: 29 naar groep 4, 58 in groep 3 (alles tot 20); vragen in vragen-voor-later/lessen-groep-3/.
+- [Werk per groep](werk-per-groep.md) — nu alleen groep 3; nooit groep 4 meenemen, ook niet als een opdracht 'groep 3 en 4' noemt — eerst vragen.
+- [Online op Railway](railway-online.md) — op Railway met slot en volume; NOOIT meer hele laptop-database online (regel 6), alleen gericht via scripts/online-wijzig.mjs.
+- [Stem van Bliepo](bliepo-stem-fish-audio.md) — sinds 22 okt Ruth (ElevenLabs eleven_v4, STEM_DIENST), Fish Audio Sanne als reserve; controle, de-esser, toon per groep.
+- [Praten met Bliepo](praten-met-bliepo.md) — AI-tutor knop (22 okt): OpenAI + Ruth, ouder zet aan, limieten, /admin/bliepo; OpenAI-tegoed nog $0.
+- [Stijlkiezer](stijlkiezer.md) — stijl geldt voor hele kinderkant; staat in database (lokaal/online los, npm run online overschrijft); npm run bliepo; concept-actie 26 okt teruggedraaid.
+- [Phaser vloeiend](phaser-vloeiend.md) — elke Phaser-opdracht ±60 beelden/s; meten in echte Chrome met GPU (poort 9338), dure filters één keer bakken.
+- [Woorden passen bij beeld](woorden-passen-bij-beeld.md) — Bliepo's woorden moeten kloppen met wat in beeld staat (geen 'bel' voor een rondje), grammaticaal goed; taalcontroleur laten meelopen.
+- [Ontwerpwensen lessen](lessen-ontwerp-voorkeuren.md) — geen knop-uitleg/vraagteken, witte knoppen zwarte tekst, getal in voorwerpkleur, zelfde voorwerp overal gelijk.
+- [Lessen uit fouten](werkwijze-lessen-uit-fouten.md) — 30 okt: browserstem, tegoed, omvang, meteen online zetten, testen met schermfoto's, nooit als echt kind tikken.
+- [Geen kaders om plaatjes](geen-kaders-om-plaatjes.md) — geen witte kaders/ronde kaartjes om poppetjes en voorwerpen; stijf en AI-achtig; Sara ontevreden over Squla-afbeeldingen (31 okt).
+- [Geen poppetjes, geen ogen](geen-poppetjes-geen-ogen.md) — geen mensen/poppetjes en geen dingen met gezichtjes; Bliepo is robot met lijntjes (31 okt).
+- [Plaatjes via Magnific](plaatjes-via-magnific.md) — 31 okt: Sara nam Magnific (ex-Freepik); zij maakt plaatjes, Claude doet gloed/hologram in code.
+- [AI mag, niet AI-achtig](ai-plaatjes-mogen-niet-ai-achtig.md) — 31 okt: AI-plaatjes toegestaan, maar ze mogen er niet AI-achtig uitzien; regel 'geen AI-afbeeldingen' vervalt.
+- [Beeldstijl zoals Synthesis](beeldstijl-zoals-synthesis.md) — 31 okt: lessen 'gewoon net als Synthesis': weinig plaatjes, rekendingen in code, simpele tekeningen in één stijl.
+- [Plaatjes-wisselsysteem](plaatjes-wisselsysteem.md) — 31 okt: placeholders in public/voorwerpen/, MAGNIFIC-PROMPTS.md, "verwerk de inbox" met akkoord; Claude maakt ze zelf in vellen van 9 via Magnific (credits); stem later.
+- [Onafhankelijke controleur](onafhankelijke-controleur.md) — aparte helper keurt elke klare les (rekenen, plaatje, taal); CONTROLE-SQULA.md; afgekeurd = fixen en herkeuren.
+- [Maximaal 3 helpers](helpers-maximaal-3.md) — 2 bouwers op Sonnet + 1 controleur op Opus (keurt per afgerond onderwerp).
+- [BOUWREGELS.md](bouwregels-bestand.md) — alle verbeteringen van Sara; eerst lezen; controleur keurt erop; proef glans wacht op oordeel (1 nov).
+- [Kijk als een kind](kijk-als-een-kind.md) — elke les visueel keuren: in/op klopt, telbaar, groot, vrolijk, glans (BOUWREGELS 14.23).
+- [Menselijke controleronde](menselijke-controleronde.md) — Sara keurt lessen 1 voor 1; eerst alleen beginscherm aanpassen, na akkoord hele les; stand 2 nov
+- [Project-omvang](project-omvang.md) — eindplatform: alle vakken, groep 1-8, methode-specifiek + vrij oefenen; nu alleen groep 3 rekenen
+- [Hulp na fout: hoofdlijnen](hulp-na-fout-hoofdlijnen.md) — Synthesis-hulp: 1× reactie op keuze+hint, 2× uitleg en door, geen pauze/standaardzin; voorbeeld klok-hoelaat-1
+- [Grens 20 vervallen](grens-20-vervallen.md) — 4 nov: 'nooit boven 20' geldt niet meer; boven 20 = moeilijkere graad, later
+- [Rondje en oplichten](rondje-en-oplichten.md) — 6 nov: rood dubbel rondje i.p.v. gloed (BOUWREGELS 7.8), oplichten alleen klok-wijzers en Meten-schilderijen (7.9), geluidje uit

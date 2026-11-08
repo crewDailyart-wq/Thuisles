@@ -113,7 +113,10 @@ export function BliepoFilm({
   praat = false,
   className = "",
   onKlaar,
+  schermKleur = null,
 }: {
+  /** Het scherm kleurt even rood (fout) of groen (goed), alleen in Squla-lessen. */
+  schermKleur?: "goed" | "fout" | null;
   houding?: Filmhouding;
   /** Verander dit om dezelfde beweging nog eens te spelen. */
   beurt?: number | string;
@@ -279,7 +282,7 @@ export function BliepoFilm({
   return (
     <div ref={vak} className={`relative ${className}`} aria-hidden="true">
       {beeld}
-      <BliepoLijn rustig={rustig} praat={praat || nu === "praten"} hoeken={hoeken} />
+      <BliepoLijn rustig={rustig} praat={praat || nu === "praten"} hoeken={hoeken} kleur={schermKleur} />
     </div>
   );
 }

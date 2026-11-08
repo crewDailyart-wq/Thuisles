@@ -173,6 +173,13 @@ async function zegDagen(l: Lesgids, van: number, tot: number, extra: Partial<Tre
   }
 }
 
+/** De verandering na een goed antwoord zonder rondje: bij tikken komt geen rondje (Sara, 8 november 2026, besluit 1). */
+const zonderLicht = (p?: Partial<TreinProps>): Partial<TreinProps> => {
+  const { licht, ...rest } = p ?? {};
+  void licht;
+  return rest;
+};
+
 type DagVraag = {
   beeld: Partial<TreinProps>;
   kaarten: number[][];
@@ -208,7 +215,8 @@ function dagVraag(l: Lesgids, o: DagVraag): SqulaVraag<string> {
     isGoed: (x) => x === goedId,
     noem: (x) => Hoofd(x),
     goed: async () => {
-      zetT(l, { goed: [goedId], kaartLicht: [], golf: { id: goedId, n: ++golfNr }, ...(o.naGoed ?? {}) });
+      /* Het kind tikte: het beeld verandert, maar zonder rondje (besluit 1); Bliepo noemt het niet. */
+      zetT(l, { goed: [goedId], kaartLicht: [], golf: { id: goedId, n: ++golfNr }, ...zonderLicht(o.naGoed) });
       await l.zeg(bevestig());
       await l.wacht(300);
     },
@@ -229,6 +237,8 @@ function dagVraag(l: Lesgids, o: DagVraag): SqulaVraag<string> {
     toonAntwoord: async () => {
       zetT(l, { fout: [], kaartLicht: [], goed: [goedId], golf: { id: goedId, n: ++golfNr }, ...(o.naGoed ?? {}) });
       await l.zeg(...antwoordZinnen(o.goedZin));
+      /* Het rondje blijft zolang Bliepo erover praat (besluit 4). */
+      if (o.naGoed?.licht) zetT(l, { licht: [] });
       await l.wacht(300);
     },
     testAntwoord: goedId,
@@ -246,7 +256,7 @@ function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number
     isGoed: (x) => x === String(o.goed),
     noem: (x) => `{${x}:wit}`,
     goed: async () => {
-      if (o.naGoed) zetT(l, o.naGoed);
+      if (o.naGoed) zetT(l, zonderLicht(o.naGoed));
       await l.zeg(bevestig());
       await l.wacht(300);
     },
@@ -260,6 +270,7 @@ function getalVraagT(l: Lesgids, o: { beeld: Partial<TreinProps>; opties: number
     toonAntwoord: async () => {
       if (o.naGoed) zetT(l, o.naGoed);
       await l.zeg(...antwoordZinnen(o.goedZin));
+      if (o.naGoed?.licht) zetT(l, { licht: [] });
       await l.wacht(300);
     },
     testAntwoord: String(o.goed),

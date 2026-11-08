@@ -419,7 +419,7 @@ function verhaal(groepen: Groep[], a: number, b: number, keuzes: number[], zinne
         if (groepen.length === 2) {
           zet(l, { licht: [0] });
           await l.zeg(hier(a));
-          zet(l, { licht: [1] });
+          zet(l, { licht: [0, 1], lichtZacht: [0] });
           await l.zeg(erbij(b));
           zet(l, { licht: [] });
         }
@@ -457,7 +457,7 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
       samen: async () => {
         zet(l, { licht: [0] });
         await l.zeg(`In het eerste groepje liggen ${g(a)}.`);
-        zet(l, { licht: [1] });
+        zet(l, { licht: [0, 1], lichtZacht: [0] });
         await l.zeg(erbij(b), "Er komt iets bij: dan is het een plussom.");
         zet(l, { licht: [] });
         if (!krijgtVervolgvraag(l)) await l.zeg(`Zoek de plussom met ${g(a)} en ${g(b)}.`);
@@ -471,7 +471,7 @@ function welkeSom(groepen: Groep[], a: number, b: number, opties: string[], zinn
       toonAntwoord: async () => {
         zet(l, { licht: [0] });
         await l.zeg(`Links zie je ${g(a)}.`);
-        zet(l, { licht: [1] });
+        zet(l, { licht: [0, 1], lichtZacht: [0] });
         await l.zeg(erbij(b));
         zet(l, { licht: [] });
         await toonSom(l, a, b);
@@ -635,7 +635,7 @@ function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: numbe
       samen: async () => {
         zet(l, { licht: [metGetal] });
         await l.zeg(`Hier staan er ${g(groepen[metGetal].n)}.`, "Dat getal staat eronder.");
-        zet(l, { licht: [los] });
+        zet(l, { licht: [metGetal, los], lichtZacht: [metGetal] });
         await l.zeg("Hier staan er nog een paar los.", "Tel ze maar.");
         zet(l, { licht: [] });
         await l.zeg("Kijk welke som bij allebei de groepjes past.");
@@ -649,7 +649,7 @@ function somBijPlaatje(groepen: Groep[], opties: [number, number][], goed: numbe
       toonAntwoord: async () => {
         zet(l, { licht: [metGetal], goedIds: [`s${goed}`], actief: false });
         await l.zeg(`Hier staan er ${g(groepen[metGetal].n)}.`);
-        zet(l, { licht: [los], goedIds: [`s${goed}`] });
+        zet(l, { licht: [metGetal, los], lichtZacht: [metGetal], goedIds: [`s${goed}`] });
         await l.zeg("Hier liggen er nog een paar los.", `Samen: ${plus(ga, gb)} = ${g(ga + gb)}.`);
         zet(l, { licht: [] });
         await l.wacht(400);
@@ -690,7 +690,7 @@ function tweeSommen(groepen: Groep[], opties: [number, number][], goed: [number,
       samen: async () => {
         zet(l, { licht: [0] });
         await l.zeg(hier(groepen[0].n));
-        zet(l, { licht: [1] });
+        zet(l, { licht: [0, 1], lichtZacht: [0] });
         await l.zeg(hier(groepen[1].n));
         zet(l, { licht: [] });
         await l.zeg("Een plussom kun je omdraaien.", "Het antwoord blijft dan hetzelfde.", ...(krijgtVervolgvraag(l) ? [] : [`Zoek 2 sommen met ${g(a)} en ${g(b)}.`]));
@@ -791,7 +791,7 @@ function bakkerijUitleg(groepen: Groep[], a: number, b: number, wat: string, een
     somBoven(l, a, b);
     zet(l, { licht: [0] });
     await l.zeg(a === 1 ? `Hier ligt ${g(1)} ${een}.` : `Hier liggen ${g(a)} ${wat}.`);
-    zet(l, { licht: [1] });
+    zet(l, { licht: [0, 1], lichtZacht: [0] });
     await l.zeg(`Ik leg er ${g(b)} bij.`, `Erbij is plus: ${plus(a, b)}.`);
     zet(l, { licht: [] });
     await voorbeeldSom(l, a, b);

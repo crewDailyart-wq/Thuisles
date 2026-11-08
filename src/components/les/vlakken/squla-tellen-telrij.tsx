@@ -39,6 +39,8 @@ export type TelrijProps = {
   opgave: Rijopgave | null;
   actief?: boolean;
   licht?: number | null;
+  /** Plekken die Bliepo al noemde en die bij dezelfde telling horen: zacht rondje (`licht` is fel; Sara 8 november 2026, besluit 4). */
+  lichtZacht?: number[];
   ingevuld?: number | null;
   fout?: { n: number; keer: number } | null;
   hand?: boolean;
@@ -97,7 +99,7 @@ function vorm(d: Soortding) {
 interface RijScene {
   zetOpgave(o: Rijopgave | null): void;
   zetActief(aan: boolean): void;
-  zetLicht(i: number | null): void;
+  zetLicht(i: number | null, zacht?: number[]): void;
   zetIngevuld(n: number | null): void;
   fout(n: number): void;
   hand(aan: boolean): void;
@@ -299,7 +301,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       if (aan) this.bezig = false;
     }
 
-    zetLicht(i: number | null) {
+    zetLicht(i: number | null, zacht: number[] = []) {
       this.lichtG?.destroy();
       this.lichtG = null;
       const o = this.o;
@@ -311,7 +313,13 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
       /* Een rood rondje om het huis of kaartje dat Bliepo aanwijst (geen gloed meer). */
       if (!this.rondjes) this.rondjes = maakRondjes(this, this.add.container(0, 0).setDepth(15), this.rustig);
       const vak = dingVan(o) === "huis" ? { x: q.x, y: q.y - HUIS_HOOG / 2, b: HUIS_B * 0.8, h: HUIS_HOOG } : { x: q.x, y: q.y, b: KRT.b, h: KRT.h };
-      this.rondjes.zet(new Map([[`rij-${i}`, vak]]));
+      const wens = new Map<string, import("../holo/rondje").RondjeVak>();
+      for (const z of zacht) {
+        const qz = plekken(o).rij[z];
+        if (qz && z !== i) wens.set(`rij-${z}`, { ...(dingVan(o) === "huis" ? { x: qz.x, y: qz.y - HUIS_HOOG / 2, b: HUIS_B * 0.8, h: HUIS_HOOG } : { x: qz.x, y: qz.y, b: KRT.b, h: KRT.h }), zacht: true });
+      }
+      wens.set(`rij-${i}`, vak);
+      this.rondjes.zet(wens);
     }
 
     zetIngevuld(n: number | null) {
@@ -519,7 +527,7 @@ function maakRijScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaTelrij({ opgave, actief = false, licht = null, ingevuld = null, fout = null, hand = false, voorraad, meld, schaal }: TelrijProps & Vlakbasis) {
+export function SqulaTelrij({ opgave, actief = false, licht = null, lichtZacht = [], ingevuld = null, fout = null, hand = false, voorraad, meld, schaal }: TelrijProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<RijScene>(schaal, maakRijScene, { invoer: true });
   const voorraadSleutel = voorraad ? JSON.stringify(voorraad) : "";
   useEffect(() => {
@@ -545,9 +553,10 @@ export function SqulaTelrij({ opgave, actief = false, licht = null, ingevuld = n
     else if (window.__phaser) delete window.__phaser.sleepPunt;
   }, [scene, actief, sleutel]);
 
+  const lichtZachtSleutel = lichtZacht.join(",");
   useEffect(() => {
-    scene?.zetLicht(licht);
-  }, [scene, licht, sleutel]);
+    scene?.zetLicht(licht, lichtZacht);
+  }, [scene, licht, sleutel, lichtZachtSleutel]);
 
   useEffect(() => {
     scene?.zetIngevuld(ingevuld);

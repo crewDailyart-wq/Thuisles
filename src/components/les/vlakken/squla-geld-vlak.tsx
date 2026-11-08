@@ -132,6 +132,8 @@ export type GeldProps = {
   goed?: string[];
   fout?: string[];
   licht?: string[];
+  /** Wat het kind net aantikte: een zachte gloed (geen rondje; Sara 8 november 2026, besluit 1). */
+  gekozen?: string[];
   /** Wat in `licht` staat (en wat Bliepo telt) krijgt een rood, getekend rondje in plaats van een gloed. */
   rondje?: boolean;
   verbind?: GVerbind | null;
@@ -349,8 +351,9 @@ interface GeldScene {
 }
 
 type Gloed = "warm" | "goed" | "fout";
-const GLOEDKLEUR: Record<Gloed, number> = { warm: WARM, goed: GOED, fout: 0xff7b7b };
-const LIJNKLEUR: Record<Gloed | "leeg", number> = { warm: 0xffd36e, goed: 0x8ff0c0, fout: 0xff7b7b, leeg: 0xbfe6ff };
+/* Fout = geen rood op de keuze van het kind (Sara, 8 november 2026, besluit 2): dezelfde zachte warme gloed als "gekozen". Alleen Bliepo's scherm kleurt rood. */
+const GLOEDKLEUR: Record<Gloed, number> = { warm: WARM, goed: GOED, fout: WARM };
+const LIJNKLEUR: Record<Gloed | "leeg", number> = { warm: 0xffd36e, goed: 0x8ff0c0, fout: 0xffd36e, leeg: 0xbfe6ff };
 
 /** Eén plaatje in een ding (een munt, een briefje, een speelgoedje), met zijn gloed (alleen als hij aan is). */
 type Stuk = { im: Img; tex: string; gloed: Img | null; kleur: Gloed | null };
@@ -504,7 +507,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     /** Een afgerond vak (één keer getekend): zacht en half doorzichtig; met kleur als goed of fout. */
     vakPlaatje(b: number, h: number, kleur: Gloed | null) {
       const sl = `vak|${Math.round(b)}|${Math.round(h)}|${kleur ?? "leeg"}`;
-      const vul = kleur === "goed" ? "rgba(143,240,192,0.34)" : kleur === "fout" ? "rgba(255,123,123,0.34)" : kleur === "warm" ? "rgba(255,211,110,0.30)" : "rgba(207,227,255,0.15)";
+      const vul = kleur === "goed" ? "rgba(143,240,192,0.34)" : kleur === "fout" ? "rgba(255,211,110,0.30)" : kleur === "warm" ? "rgba(255,211,110,0.30)" : "rgba(207,227,255,0.15)";
       this.canvasPlaatje(sl, b, h, (c) => {
         c.fillStyle = vul;
         c.beginPath();
@@ -747,7 +750,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
     }
 
     pasToe(p: GeldProps) {
-      const kleur = (id: string): Gloed | null => (p.goed?.includes(id) ? "goed" : p.fout?.includes(id) ? "fout" : p.licht?.includes(id) ? "warm" : null);
+      const kleur = (id: string): Gloed | null => (p.goed?.includes(id) ? "goed" : p.fout?.includes(id) ? "fout" : p.licht?.includes(id) || p.gekozen?.includes(id) ? "warm" : null);
       const v = p.verbind;
       const lijnKleur = (d: Ding): Gloed | null => {
         if (!v) return null;
@@ -757,7 +760,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
       for (const d of this.dingen.values()) {
         let k = d.soort === "links" || d.soort === "rechts" ? lijnKleur(d) : kleur(d.id);
         /* Met een rondje licht niets op: Bliepo wijst aan met een rood rondje (goed en fout houden hun gloed). */
-        if (p.rondje && k === "warm" && d.soort !== "links" && d.soort !== "rechts") k = null;
+        if (p.rondje && k === "warm" && !p.gekozen?.includes(d.id) && d.soort !== "links" && d.soort !== "rechts") k = null;
         if (d.vak) {
           /* Eigen vak: bij goed of fout licht het hele vak op; de munt zelf alleen bij "licht". */
           this.zetVak(d, k === "goed" || k === "fout" ? k : null);
@@ -827,7 +830,7 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
 
     /** Wat Bliepo aanwijst of telt: een rood rondje eromheen, dat zacht verschijnt. Alleen met `rondje`. */
     zetRondjes(p: GeldProps) {
-      const wens = new Map<string, { box: Box; stukken: Stuk[] }>();
+      const wens = new Map<string, { box: Box; stukken: Stuk[]; zacht?: boolean }>();
       if (p.rondje) {
         for (const id of p.licht ?? []) {
           const d = this.dingen.get(id);
@@ -835,10 +838,20 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         }
         const t = p.geteld;
         const d = t ? this.dingen.get(t.id) : undefined;
-        if (t && d && t.tot > 0 && t.tot <= d.plekken.length && d.geldStukken[t.tot - 1]) wens.set(`tel:${t.id}:${t.tot}`, { box: d.box, stukken: [d.geldStukken[t.tot - 1]] });
+        /* Tellen hoort bij elkaar (besluit 4): het stuk dat Bliepo nu telt is fel, wat hij al telde blijft zacht staan;
+           bij "hier ligt X euro" (tot voorbij het laatste stuk) zijn ze allemaal weer fel. */
+        if (t && d && t.tot > 0) {
+          const alles = t.tot > d.plekken.length;
+          const tot = Math.min(t.tot, d.plekken.length);
+          for (let k = 1; k <= tot; k++) if (d.geldStukken[k - 1]) wens.set(`tel:${t.id}:${k}`, { box: d.box, stukken: [d.geldStukken[k - 1]], zacht: !alles && k < tot });
+        }
       }
       for (const [sl, r] of this.rondjes) {
-        if (wens.has(sl) && r.im.active) continue;
+        if (wens.has(sl) && r.im.active) {
+          const doel = wens.get(sl)!.zacht ? 0.45 : 1;
+          if (r.im.alpha !== doel) this.tweens.add({ targets: r.im, alpha: doel, duration: this.rustig ? 0 : 180 });
+          continue;
+        }
         r.im.destroy();
         this.rondjes.delete(sl);
       }
@@ -853,11 +866,15 @@ function maakScene(Phaser: typeof import("phaser"), rustig: boolean) {
         im.setAngle(((sl.length * 37) % 50) / 10 - 2.5);
         w.box.add(im);
         this.rondjes.set(sl, { im, box: w.box });
-        if (this.rustig) continue;
+        const doel = w.zacht ? 0.45 : 1;
+        if (this.rustig) {
+          im.setAlpha(doel);
+          continue;
+        }
         const sx = im.scaleX;
         const sy = im.scaleY;
         im.setAlpha(0);
-        this.tweens.add({ targets: im, alpha: 1, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
+        this.tweens.add({ targets: im, alpha: doel, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
       }
     }
 
@@ -1128,7 +1145,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
 
-  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, vakken, sfeer } = props;
+  const { nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, gekozen, rondje, verbind, geteld, vooraf, paneel, vakken, sfeer } = props;
   /* Met `paneel`: het midden van het scherm (laptop: het vlak staat 150 naar links; staand scherm: gecentreerd). */
   const [staand, setStaand] = useState(false);
   useEffect(() => {
@@ -1138,7 +1155,7 @@ export function SqulaGeldVlak(props: GeldProps & Vlakbasis) {
     return () => window.removeEventListener("resize", meet);
   }, []);
   const midden = paneel ? (staand ? VLAK_B / 2 : 640) : undefined;
-  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten, vakken, sfeer });
+  const stand = JSON.stringify({ nr, groot, kaarten, kaartenActief, zweven, uit, goed, fout, licht, gekozen, rondje, verbind, geteld, vooraf, paneel, midden, getekendeMunten, vakken, sfeer });
   useEffect(() => {
     if (scene) scene.zet(JSON.parse(stand) as GeldProps);
   }, [scene, stand]);

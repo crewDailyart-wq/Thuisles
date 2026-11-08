@@ -1,6 +1,7 @@
 import type { Lesgids } from "../soort";
 import type { SqulaVraag } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 
 /** Alleen de begeleide oefening na Nee; antwoorden tellen niet mee als toetsvraag. */
 const begeleid = new WeakSet<Lesgids>();
@@ -134,24 +135,24 @@ export async function begeleideVraag<T>(l: Lesgids, v: SqulaVraag<T>, steunVoora
   await stel();
   let antwoord = await v.antwoord();
   if (v.isGoed(antwoord)) {
-    speelLesgeluid("goed");
+    speelLesgeluid("goed"); bliepoScherm("goed");
     await v.goed(antwoord);
     return false;
   }
   v.fout?.(antwoord);
   /* Alleen de hulp van Synthesis; de oude route met "Nog niet helemaal" en pauze is weg (Sara, 6 november 2026). */
   // Eerste fout: reactie (+ hint) en meteen opnieuw, zonder de vraag nog eens te stellen.
-  speelLesgeluid("mis");
+  bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
   await l.zeg(...[opener(), ...(v.reactie ? v.reactie(antwoord) : steun.length ? steun : v.tip)].filter(Boolean));
   if (typeof window !== "undefined") window.__phaser = { ...window.__phaser, antwoord: v.testAntwoord ?? null };
   antwoord = await v.antwoord();
   if (v.isGoed(antwoord)) {
-    speelLesgeluid("goed");
+    speelLesgeluid("goed"); bliepoScherm("goed");
     await v.goed(antwoord);
     return false;
   }
   // Tweede fout: uitleg, het goede antwoord laten zien en door naar de volgende stap.
-  speelLesgeluid("mis");
+  bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
   v.fout?.(antwoord);
   await v.toonAntwoord?.();
   return false;

@@ -361,7 +361,8 @@ function samenVraag(vw: string, a: number, b: number, keuzesVast: number[]): Vra
       samen: async () => {
         zet(l, { licht: ["a"] });
         await l.zeg(`Hier ${a === 1 ? "is" : "zijn"} ${g(a, "paars")} ${a === 1 ? NAAM[vw][0] : NAAM[vw][1]}.`);
-        zet(l, { licht: ["b"] });
+        /* Hoort bij dezelfde som (besluit 4): het eerste groepje blijft zacht staan. */
+        zet(l, { licht: ["a", "b"], lichtZacht: ["a"] });
         await l.zeg(`Daar ${b === 1 ? "is" : "zijn"} ${g(b, "oranje")} ${b === 1 ? NAAM[vw][0] : NAAM[vw][1]}.`);
         zet(l, { licht: [] });
         await plusUitleg(l, a, b);
@@ -637,9 +638,9 @@ const level1 = maak({
     ]));
     zet(l, { licht: ["a"] });
     await l.zeg(`Hier liggen ${g(3, "paars")} diamanten.`);
-    zet(l, { licht: ["b"] });
+    zet(l, { licht: ["a", "b"], lichtZacht: ["a"] });
     await l.zeg(`Daar liggen er ${g(2, "oranje")}.`);
-    zet(l, { licht: ["a", "b"] });
+    zet(l, { licht: ["a", "b"], lichtZacht: [] });
     await l.zeg(`Samen zijn het er ${g(5)}.`, `${g(3, "paars")} + ${g(2, "oranje")} = ${g(5)}.`);
     zet(l, { licht: [] });
     await l.verder();

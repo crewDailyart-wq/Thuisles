@@ -389,14 +389,18 @@ async function telMee(l: Lesgids, st: Stand, deel: string, gr: Groep, k: string,
     aan.push(...stap.idx);
     n += stap.idx.length;
     labels.push({ deel, x: stap.lx, y: stap.ly, tekst: String(n), klein: stap.idx.length === 1, kleur: LABELKLEUR[kn] });
-    zet(l, { licht: { deel, aan: [...aan] } });
+    /* Bij het laatste getal (het totaal, "samen") zijn alle rondjes weer fel (besluit 4). */
+    zet(l, { licht: { deel, aan: [...aan], samen: s === tot - 1 && !losse } });
     zetLabels(l, st, labels);
     if (losse) {
       reeks.push(g(n, kn));
       await l.wacht(320);
     } else await l.zeg(`${g(n, kn)}.`);
   }
-  if (losse && reeks.length) await l.zeg(`${reeks.join(", ")}.`);
+  if (losse && reeks.length) {
+    zet(l, { licht: { deel, aan: [...aan], samen: true } });
+    await l.zeg(`${reeks.join(", ")}.`);
+  }
   return n;
 }
 
@@ -807,7 +811,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek], stil: tikNu } }),
       goedZin: [`Goed gekeken! ${Hoofd(NAAM[goedNaam])} staat ${waar}.`, UITLEG[q.wat]],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -852,7 +856,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
       antwoord: () => tikKeuze(l),
       isGoed: (x) => x === goedI,
       noem: (x) => Hoofd(NAAM[q.keuzes[x as number]]),
-      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [q.plek] } }),
+      goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [q.plek], stil: tikNu } }),
       goedZin: [`Dat klopt! ${Hoofd(NAAM[goedNaam])} staat als ${rang}.`, q.plek === 4 ? "Helemaal achteraan in de rij." : q.plek === 0 ? "Helemaal vooraan in de rij." : `Tel maar: ${RANG.slice(0, q.plek + 1).join(", ")}.`],
       fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
       samen: async (alles) => {
@@ -1451,7 +1455,7 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     antwoord: () => tikKeuze(l),
     isGoed: (x) => x === goedI,
     noem: (x) => Hoofd(kr2.keuzes[x as number]),
-    goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek] } }),
+    goedBeeld: () => zet(l, { goed: { deel: `k${goedI}`, keer: ++st.keer }, licht: { deel: "b", aan: [plek], stil: tikNu } }),
     goedZin: [`Dat is de goede ballon! De ${kr2.wat} ballon is ${goedKleur}.`, kr2.wat === "laatste" ? "Hij staat helemaal achteraan." : "Er staan er 2 voor en 2 achter."],
     fout: (x) => zet(l, { fout: { deel: `k${x as number}`, keer: ++st.keer } }),
     samen: async (alles) => {
@@ -1472,6 +1476,9 @@ function aanpak(l: Lesgids, st: Stand, id: string, q: Vraag): Aanpak {
     testAntwoord: `keuze-${goedI}`,
   };
 }
+
+/** Waar `goedBeeld` wordt aangeroepen omdat het kind tikte (dan geen rondje) of omdat Bliepo het antwoord noemt (wel rondje). */
+let tikNu = false;
 
 /** Eén vraag met de vaste hulp van Bliepo. Geeft `true` als hij meteen goed was. */
 async function speelVraag(l: Lesgids, st: Stand, id: string, q: Vraag): Promise<boolean> {
@@ -1494,6 +1501,8 @@ async function speelVraag(l: Lesgids, st: Stand, id: string, q: Vraag): Promise<
       if (a.toonAntwoord) await a.toonAntwoord();
       else a.goedBeeld();
       await l.zeg(...zonderJa(a.goedZin));
+      /* Het rondje blijft zolang Bliepo het antwoord noemt (besluit 4), daarna weg. */
+      zet(l, { licht: null });
       await l.wacht(500);
     },
     toon,
@@ -1502,7 +1511,10 @@ async function speelVraag(l: Lesgids, st: Stand, id: string, q: Vraag): Promise<
     isGoed: a.isGoed,
     noem: a.noem,
     goed: async () => {
+      /* Het kind tikte: geen rondje, de beloning is de groene gloed (besluit 1). */
+      tikNu = true;
       a.goedBeeld();
+      tikNu = false;
       await l.zeg(bevestig());
       await l.wacht(500);
     },

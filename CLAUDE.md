@@ -5,6 +5,18 @@ eigenaar heeft weinig computerkennis: geen vakjargon, geen lange uitleg. Wat
 technisch nodig is, staat in de code en de commits; aan de eigenaar vertel je
 alleen wat er gebeurd is en wat dat voor de site betekent.
 
+
+# ⛔ VASTE AFSPRAAK — WAT SARA OVER ÉÉN LES ZEGT, GELDT VOOR ALLE LESSEN
+
+Wijst Sara een fout aan in één les, dan maak je er een algemene regel van in
+BOUWREGELS.md en FOUTEN-VOORBEELDEN.md, controleer en verbeter je ALLE andere
+lessen op dezelfde soort fout, en zeg je haar daarna in hoeveel lessen je
+dezelfde fout vond. Altijd, ook als ze het er niet bij zegt. (Sara, 8 november
+2026.) De fouten die al in FOUTEN-VOORBEELDEN.md staan (F1 t/m F5) controleer
+je in alle lessen tijdens de logica-controle, na het afspelen van Synthesis en
+het lesrecept.
+
+---
 ---
 
 # ⛔ LEES ALTIJD EERST BOUWREGELS.md
@@ -45,12 +57,30 @@ rekeninhoud en moeilijkheid aan de groep aan; de opbouw blijft behouden.
 Squla-opbouw. Lees de volledige afspraak in BOUWREGELS.md 4.4–4.5 en 14.29;
 die gaat bij strijdige oudere regels over de lesopbouw voor.
 
+**Aanvulling 8 november 2026 (besluiten over de botsingen; voorlopig tot de
+Synthesis-vergelijking, zie BOUWREGELS.md bovenaan):**
+- Beginscherm: zin 1 (uitleg) en zin 2 (persoonlijke vraag), steeds anders.
+  Ja = meteen oefenen, Nee = eerst uitleg.
+- Hulp na een fout: na de 2e fout legt Bliepo het uit, het kind doet een kleine
+  stap en gaat dan door. Geen pauze, geen "tik op de pijl en ik doe het voor",
+  nergens een "Weet ik niet"-knop.
+- Geen vaste woordjes, openingen of begin- en eindzinnen: alles past bij de
+  vraag en wisselt af. Schooltermen blijven overal hetzelfde; de zinnen eromheen
+  wisselen.
+- Rondje alleen als Bliepo iets noemt; bij een tik een zachte gloed om de
+  keuze; geen rood op de keuze van het kind; geen fout-geluidje; alleen
+  Bliepo's scherm kleurt rood bij fout en groen bij goed. Volledig in
+  BOUWREGELS.md 5.3, 7.8 en 7.9.
+- Niet tussendoor vragen: keuzes komen in KEUZES-VOOR-SARA.md, behalve waar om
+  akkoord gevraagd wordt. De harde regels hieronder gelden altijd.
+
 **Geen onnodige herhaling (4 november 2026):** controleer zowel de Nee-route
 als Hulp na een fout en de route na opnieuw fout. Stel vóór dezelfde
 antwoordpoging de vraag maar 1 keer. Herhaal een volledig afgerond
 uitlegvoorbeeld niet meteen als eerste gewone opgave. Behoud andere
-vervolgstappen, hints, score, pauze en eventuele schatletters. Een controle
-van het uitleg-overzicht alleen is onvoldoende; zie BOUWREGELS 3.23.
+vervolgstappen, hints, score en eventuele schatletters. Een controle
+van het uitleg-overzicht alleen is onvoldoende; zie BOUWREGELS 3.23. (De
+pauzezin bij de tweede fout is vervallen, zie BOUWREGELS 5.1.)
 
 ---
 
@@ -88,6 +118,7 @@ Twee controles, die allebei stoppen met een foutmelding:
 
 **Dit draait automatisch vóór elke commit** (`.githooks/pre-commit`, aangezet
 door `npm install`). Een commit komt er niet door als er iets ontbreekt.
+(Uitzondering: de back-upbranch, zie HARDE REGEL 4.)
 
 Bouw je een veld of knop bij, zet die dan meteen in het contract. Haal er nooit
 een regel uit om een foutmelding weg te krijgen, en gebruik `--no-verify` niet
@@ -181,7 +212,9 @@ er ook geen nieuwe aan toe.
 toestemming van de eigenaar.**
 
 Dat geldt voor alles: knoppen, velden, instellingen, functies, teksten,
-kleuren en opgeslagen gegevens. Ook als iets overbodig lijkt. Ook als het in
+kleuren en opgeslagen gegevens. Ook als iets overbodig lijkt (enige uitzondering, besluit 8 november 2026:
+echte losse versiering in een les volgens BOUWREGELS.md 1.25 mag weg; dat komt
+met de reden in WEGGEHAALD.md, en antwoordkeuzes nooit). Ook als het in
 de weg zit. Ook als het aantoonbaar de oorzaak van een probleem is.
 
 Kom je zoiets tegen, dan doe je dit:
@@ -231,6 +264,12 @@ database niet: die gaat via het back-upscript, zie hieronder. De
 eigenaar hoeft daar niet aan te denken; dat is de afspraak. Committen blijft
 iets wat de eigenaar vraagt — maar zodra er gecommit is, hoort de push erbij,
 zonder dat daar apart om gevraagd hoeft te worden.
+
+**Uitzondering: de back-upbranch `backup-squla` (besluit eigenaar, 8 november
+2026).** Op die branch mag zonder de controle worden gecommit (zet "controle
+overgeslagen" in de commitregel). Die commits staan dan niet online. Alles wat
+naar `main` of online gaat, gaat altijd met de volle controle (`npm run
+bewaak`, speelcontrole, vloeiendcontrole).
 
 Lukt de push niet — geen verbinding, of GitHub vraagt om in te loggen — dan
 meld je dat meteen, in gewone taal, met wat de eigenaar precies moet doen. Een
@@ -319,6 +358,10 @@ dus zonder dat toetsenbord kon een kind op een tablet niets.
 `Cijferinvoer.tsx` blijft in de map staan op verzoek van de eigenaar, voor het
 geval het ooit nog nodig is. Gebruik het niet.
 
+**Uitzondering (besluit eigenaar, 8 november 2026):** cijferknoppen 1 tot 9
+waar het kind uit kiest (zoals de antwoordtegels van Synthesis) mogen. Een
+getekend of nagebouwd toetsenbord om een getal te typen blijft verboden.
+
 ---
 
 # ⛔ HARDE REGEL 6 — NOOIT DE HELE DATABASE VAN DE LAPTOP ONLINE ZETTEN
@@ -363,7 +406,9 @@ Bij elke nieuwe of aangepaste les, opdracht of game test je dit zelf,
 vóórdat hij online gaat, op laptop én op een nagebootste trage telefoon:
 
 - minstens **55–60 beeldjes per seconde** tijdens slepen, animaties en gloed;
-- **geen hapering langer dan 50 ms**;
+- **geen hapering langer dan 50 ms**, gemeten als de computer rustig is (geen
+  helpers, tests of zware programma's ernaast; besluit eigenaar, 8 november
+  2026);
 - de opdracht **opent in minder dan 1 seconde**.
 
 Haalt hij dat niet, dan los je het eerst op zonder dat hij er duidelijk
@@ -419,6 +464,9 @@ meer dan 5.000 tegoed in één keer, vraag je eerst toestemming aan Sara**
 kosten en van het tegoed dat er na afloop nog over is. Genereer nooit
 ongevraagd voor meer dan dat.
 
+**Uitzondering Magnific (besluit eigenaar, 8 november 2026):** daar geldt geen
+limiet, maar meld na elk gebruik wat het kostte.
+
 ## Waarom deze regel er is
 
 Op 30 oktober 2026 ging er in één nacht ruim 39.000 tegoed van ElevenLabs op
@@ -433,6 +481,16 @@ had gegeven.
 regels hierboven mee in zijn opdracht**, in elk geval regel 8 en 9
 (besluit eigenaar, 30 oktober 2026). Een helper die ze niet kent, houdt zich
 er ook niet aan.
+
+Helpers draaien standaard op Sonnet, met hooguit 3 tegelijk, tenzij Sara iets
+anders zegt (besluit eigenaar, 8 november 2026). Een helper zet zelf geen
+helpers in.
+
+---
+
+**Online zetten (besluit eigenaar, 8 november 2026):** pas online als alle
+controles groen zijn én Sara "zet online" zegt. Wil Sara iets zien, dan gebeurt
+dat op de laptop of op de back-upbranch.
 
 ---
 
@@ -453,17 +511,17 @@ De Nederlandsche Bank.
 
 **Elke nieuwe vraagzin moet grammaticaal kloppen en natuurlijk klinken voor
 kinderen.** Bij twijfel kies je de eenvoudigste zin. Dezelfde soort vraag
-formuleer je overal op dezelfde manier.
+formuleer je overal met dezelfde schooltermen; de zinnen eromheen wisselen af.
 
 ---
 
-**Testen als kind mag alleen met het profiel "Testkind"** (groep 4). Nooit met
+**Testen als kind mag alleen met het profiel "Testkind"** (groep 3). Nooit met
 het profiel van een echt kind: elk antwoord dat je daar geeft, komt in de
 voortgang van dat kind terecht.
 
 ---
 
-**Lees en volg `ONTWERPREGELS.md` voordat je een oefentype, opdracht of vraag bouwt of aanpast.**
+**Lees en volg `ONTWERPREGELS.md` voordat je een oefentype, opdracht of vraag bouwt of aanpast.** Botst iets met `BOUWREGELS.md`, dan gaat `BOUWREGELS.md` voor.
 
 ---
 

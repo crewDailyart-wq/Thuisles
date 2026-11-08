@@ -291,6 +291,8 @@ export type DagenTreinProps = {
   rit?: number;
   /** Dagen met een witte rand (Bliepo wijst ze aan). */
   licht?: number[];
+  /** Welke van `licht` al genoemd zijn en bij dezelfde vraag horen: zacht rondje (de rest is fel; Sara 8 november 2026, besluit 4). */
+  lichtZacht?: number[];
   /** Dagen die het kind al goed gekozen heeft (witte rand, niet meer te tikken). */
   gekozen?: number[];
   /** Wagons die vaag worden (een fout gekozen wagon). */
@@ -317,6 +319,7 @@ export function SqulaDagenTrein({
   wagons,
   rit = 0,
   licht = [],
+  lichtZacht = [],
   gekozen = [],
   wagonsUit = [],
   vandaag = null,
@@ -370,14 +373,19 @@ export function SqulaDagenTrein({
   })() : false;
 
   /* Wagons die Bliepo aanwijst: naast elkaar = één rondje samen, anders elk apart. */
-  const rondjeRuns: [number, number][] = [];
+  const rondjeRuns: [number, number, boolean][] = [];
   {
-    const idx = licht.map(plekVan).filter((i) => i >= 0).sort((p, q) => p - q);
-    let start = 0;
-    for (let k = 0; k < idx.length; k++) {
-      if (k + 1 < idx.length && idx[k + 1] === idx[k] + 1 && rijTop(idx[k + 1]) === rijTop(idx[k])) continue;
-      rondjeRuns.push([idx[start], idx[k]]);
-      start = k + 1;
+    /* Fel en zacht apart: een zacht rondje (al genoemd) krijgt nooit hetzelfde rondje als een felle ernaast. */
+    const zachtAan = lichtZacht.length < licht.length;
+    const groepen: [number[], boolean][] = zachtAan ? [[licht.filter((d) => !lichtZacht.includes(d)), false], [licht.filter((d) => lichtZacht.includes(d)), true]] : [[licht, false]];
+    for (const [dagen, zacht] of groepen) {
+      const idx = dagen.map(plekVan).filter((i) => i >= 0).sort((p, q) => p - q);
+      let start = 0;
+      for (let k = 0; k < idx.length; k++) {
+        if (k + 1 < idx.length && idx[k + 1] === idx[k] + 1 && rijTop(idx[k + 1]) === rijTop(idx[k])) continue;
+        rondjeRuns.push([idx[start], idx[k], zacht]);
+        start = k + 1;
+      }
     }
   }
 
@@ -433,7 +441,7 @@ export function SqulaDagenTrein({
             />
           ),
         )}
-        {rondjeRuns.map(([a, b]) => {
+        {rondjeRuns.map(([a, b, zacht]) => {
           const bb = (b - a) * (W + TUSSEN) + W;
           const rb = bb * 1.15 + 44;
           /* De wagon zelf is maar ongeveer 56 punten hoog en staat onderin de knop (H = 140); staand naar verhouding. */
@@ -447,7 +455,7 @@ export function SqulaDagenTrein({
               alt=""
               aria-hidden="true"
               className={s.rondje}
-              style={{ maxWidth: "none", left: plek(a) + bb / 2 - rb / 2, top: rijTop(a) + H - 29 * kk - rh / 2, width: rb, height: rh, transform: `rotate(${((a * 7 + b * 3) % 5) - 2}deg)` }}
+              style={{ maxWidth: "none", opacity: zacht ? 0.45 : undefined, left: plek(a) + bb / 2 - rb / 2, top: rijTop(a) + H - 29 * kk - rh / 2, width: rb, height: rh, transform: `rotate(${((a * 7 + b * 3) % 5) - 2}deg)` }}
             />
           );
         })}

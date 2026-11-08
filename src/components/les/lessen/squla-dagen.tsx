@@ -24,6 +24,7 @@ import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { DAGEN, KaartWeektrein, SqulaDagenTrein, type DagenTreinProps } from "../vlakken/squla-dagen-trein";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 
 /* ---------- de dagen ---------- */
 
@@ -38,6 +39,7 @@ const voor = (d: number) => (d + 6) % 7;
 
 const LEEG: Partial<DagenTreinProps> = {
   licht: [],
+  lichtZacht: [],
   gekozen: [],
   wagonsUit: [],
   vandaag: null,
@@ -117,7 +119,7 @@ async function speelVraag(l: Lesgids, v: Vraag): Promise<boolean> {
       await goed(l, v, x);
       return poging === 1;
     }
-    speelLesgeluid("mis");
+    bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
     if (poging === 1) {
       /* De gekozen dag wordt vaag; het woord "fout" valt niet. */
       zet(l, v.invoer === "wagon" ? { wagonsUit: [x] } : { kaartenUit: [x] });
@@ -135,7 +137,7 @@ async function speelVraag(l: Lesgids, v: Vraag): Promise<boolean> {
 }
 
 async function goed(l: Lesgids, v: Vraag, dag: number) {
-  speelLesgeluid("goed");
+  speelLesgeluid("goed"); bliepoScherm("goed");
   zet(l, { ...LEEG, ...v.naGoed(dag) });
   await l.zeg(bevestig());
   await l.wacht(400);
@@ -180,11 +182,11 @@ function welkeNa(d: number, kaarten: number[]): Vraag {
       await l.zeg(`Zoek ${naam(d)} in de weektrein.`);
       if (d === 6) {
         await l.zeg("Zondag is de laatste wagon van de trein.", "Dan begint de week weer van voren af aan.");
-        zet(l, { licht: [6, 0] });
+        zet(l, { licht: [6, 0], lichtZacht: [6] });
         await l.zeg("Die begint weer bij de eerste wagon.");
       } else {
         await l.zeg(`Hier is ${naam(d)}.`);
-        zet(l, { licht: [d, a] });
+        zet(l, { licht: [d, a], lichtZacht: [d] });
         await l.zeg(`Na ${naam(d)} komt de wagon erachter.`);
       }
     },
@@ -211,11 +213,11 @@ function welkeVoor(d: number, kaarten: number[]): Vraag {
       await l.zeg(`Kijk waar ${naam(d)} in de trein staat.`);
       if (d === 0) {
         await l.zeg("Maandag is de eerste wagon.", "Daarvoor was de vorige week.");
-        zet(l, { licht: [0, 6] });
+        zet(l, { licht: [0, 6], lichtZacht: [0] });
         await l.zeg("Die eindigde met de laatste wagon.");
       } else {
         await l.zeg(`Hier is ${naam(d)}.`);
-        zet(l, { licht: [a, d] });
+        zet(l, { licht: [a, d], lichtZacht: [d] });
         await l.zeg(`Voor ${naam(d)} komt de wagon ervoor.`);
       }
     },
@@ -273,10 +275,10 @@ function gisterenMorgen(vandaag: number, wat: "gisteren" | "morgen"): Vraag {
       zet(l, { licht: [vandaag] });
       await l.zeg(`De gele pijl staat bij ${naam(vandaag)}.`, "Daar is het nu.");
       if (wat === "gisteren") {
-        zet(l, { licht: [a, vandaag] });
+        zet(l, { licht: [a, vandaag], lichtZacht: [vandaag] });
         await l.zeg("Gisteren staat 1 wagon terug van de pijl.");
       } else {
-        zet(l, { licht: [vandaag, a] });
+        zet(l, { licht: [vandaag, a], lichtZacht: [vandaag] });
         await l.zeg("Morgen is de dag erna.");
       }
     },
@@ -300,7 +302,7 @@ function gisterenVanMaandag(kaarten: number[]): Vraag {
     samen: async (l) => {
       zet(l, { wagons: ALLE, vandaag: 0, licht: [0] });
       await l.zeg("Zoek maandag in de trein.", "Vandaag is maandag.", "Gisteren is de dag voor vandaag.");
-      zet(l, { licht: [0, 6] });
+      zet(l, { licht: [0, 6], lichtZacht: [0] });
       await l.zeg("Dat is de laatste dag van de vorige week.");
     },
     tip: ["Maandag is de eerste wagon. Kijk waar de dag ervoor staat.", "Zoek de dag van gisteren."],
@@ -338,7 +340,7 @@ function weekendTweede(eerste: number): Vraag {
     samen: async (l) => {
       zet(l, { licht: [eerste] });
       await l.zeg(`${Naam(eerste)} hoort al bij het weekend.`, "Het weekend heeft 2 dagen.");
-      zet(l, { licht: [5, 6], gekozen: [eerste] });
+      zet(l, { licht: [5, 6], lichtZacht: [eerste], gekozen: [eerste] });
       await l.zeg("Ze staan naast elkaar, aan het eind van de trein.");
     },
     tip: [`Kijk naar de wagon naast ${naam(eerste)}.`, "Tik op de andere dag van het weekend."],

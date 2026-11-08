@@ -18,7 +18,17 @@ type SceneLos = import("phaser").Scene;
 type Plaatje = import("phaser").GameObjects.Image;
 type Houder = import("phaser").GameObjects.Container;
 
-export type RondjeVak = { x: number; y: number; b: number; h: number };
+/**
+ * `zacht` (Sara, 8 november 2026, besluit 4): fel = Bliepo noemt dit NU; zacht = het is al
+ * genoemd en hoort bij dezelfde som (optellen, splitsen, tellen, sprongen, begin- en eindtijd)
+ * en blijft staan tot "samen", "over" of het antwoord: dan worden alle rondjes weer fel
+ * (zet dezelfde sleutels opnieuw zonder `zacht`) en daarna gaan ze allemaal weg.
+ * Dingen die NIET bij elkaar horen ("dit is maandag", "dit is dinsdag"): neem het vorige
+ * rondje gewoon niet meer mee in de lijst. Zelfde plaatje, alleen lagere alpha.
+ */
+export type RondjeVak = { x: number; y: number; b: number; h: number; zacht?: boolean };
+/** Hoe doorzichtig een zacht rondje is. */
+export const ZACHT_ALPHA = 0.45;
 
 const SLEUTEL = "holo-rondje-2";
 const URL = "/rondje/rondje-rood-2.png";
@@ -69,7 +79,16 @@ export function maakRondjes(scene: SceneLos, houder: Houder, rustig: boolean) {
   function zet(wens: Map<string, RondjeVak>) {
     laatste = wens;
     for (const [sl, im] of staan) {
-      if (wens.has(sl) && im.active) continue;
+      if (wens.has(sl) && im.active) {
+        /* Zelfde rondje, andere sterkte (fel <-> zacht): alleen de doorzichtigheid verandert. */
+        const doel = wens.get(sl)!.zacht ? ZACHT_ALPHA : 1;
+        if (im.getData("doel") !== doel) {
+          im.setData("doel", doel);
+          if (rustig) im.setAlpha(doel);
+          else scene.tweens.add({ targets: im, alpha: doel, duration: 180 });
+        }
+        continue;
+      }
       im.destroy();
       staan.delete(sl);
     }
@@ -84,11 +103,16 @@ export function maakRondjes(scene: SceneLos, houder: Houder, rustig: boolean) {
       im.setAngle((([...sl].reduce((a, c) => a + c.charCodeAt(0), 0) * 37) % 50) / 10 - 2.5);
       houder.add(im);
       staan.set(sl, im);
-      if (rustig) continue;
+      const doel = v.zacht ? ZACHT_ALPHA : 1;
+      im.setData("doel", doel);
+      if (rustig) {
+        im.setAlpha(doel);
+        continue;
+      }
       const sx = im.scaleX;
       const sy = im.scaleY;
       im.setAlpha(0);
-      scene.tweens.add({ targets: im, alpha: 1, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
+      scene.tweens.add({ targets: im, alpha: doel, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
     }
   }
 

@@ -94,7 +94,8 @@ async function staafUitleg(l: Lesgids, st: Stand, tot: number, deel: number) {
   await l.zeg(`Kijk: een staaf van ${g(tot)} blokjes.`);
   zet(l, { licht: ["st-o"] });
   await l.zeg(`Eronder ${deel === 1 ? "ligt" : "liggen"} ${g(deel, KA)} paarse ${deel === 1 ? "blokje" : "blokjes"}.`);
-  zet(l, { licht: ["st-b"] });
+  /* Het hele en het bekende stuk horen bij dezelfde som: het bekende stuk blijft zacht staan (besluit 4). */
+  zet(l, { licht: ["st-o", "st-b"], lichtZacht: ["st-o"] });
   await l.zeg(tot - deel === 0 ? "Kijk of er nog iets overblijft." : "Kijk hoeveel blokjes er over zijn. Tel ze maar.");
   await l.verder();
 }
@@ -177,13 +178,14 @@ function huisGetal(tot: number, links: number | null, rechts: number | null, keu
         if (geld) {
           zet(l, { licht: ["briefje"] });
           await l.zeg(`Kijk: een briefje van ${g(10)} euro.`);
-          zet(l, { licht: ["munten"], toon: ["munten"] });
+          zet(l, { licht: ["briefje", "munten"], lichtZacht: ["briefje"], toon: ["munten"] });
           await l.zeg("En munten van 1 euro.");
-          zet(l, { licht: [] });
+          /* "Samen": alle rondjes weer fel (besluit 4). */
+          zet(l, { licht: ["briefje", "munten"], lichtZacht: [] });
           await l.zeg(`Samen is dat ${g(tot)} euro.`);
           zet(l, { licht: ["briefje"] });
           await l.zeg(`Het briefje is al ${g(10)} euro.`);
-          zet(l, { licht: ["munten"] });
+          zet(l, { licht: ["briefje", "munten"], lichtZacht: ["briefje"] });
           await l.zeg("Tel de munten erbij.");
           await l.verder();
           zet(l, { licht: [] });

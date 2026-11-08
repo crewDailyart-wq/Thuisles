@@ -643,7 +643,7 @@ Elke opening bestaat uit een concrete opdracht en een korte vraag. Ja = beginnen
 ## 107. Klokkijken
 
 - Les: `squla-klok-klokkijken-1`
-- **Zin 1:** Luister naar de tijd en controleer of die bij de klok past.
+- **Zin 1:** Kijk naar de tijd en controleer of die bij de klok past.
 - **Zin 2:** Weet je wanneer de klok de juiste tijd aangeeft?
 
 ## 108. Klokkijken (moeilijker)

@@ -31,6 +31,14 @@ import { abonneerKomendeZin, abonneerVoorlees, huidigeVoorlees } from "@/lib/voo
 import { gebarenBijZin, soortVanGebaar } from "@/lib/bliepo-gebaren";
 import { bekendGebarenPlan } from "@/lib/gebaren-plan";
 import { wachtOpScrollrust } from "@/lib/scrollrust";
+import { abonneerBliepoScherm, huidigeBliepoScherm, type BliepoSchermMelding } from "@/lib/bliepo-scherm";
+
+/** Het scherm van Bliepo kleurt mee met goed/fout van een Squla-les (besluit 2, 8 november 2026). Alleen nieuwe meldingen tellen, geen oude van een vorige les. */
+function useBliepoSchermMelding(): BliepoSchermMelding | null {
+  const begin = useRef(huidigeBliepoScherm()?.n ?? 0);
+  const m = useSyncExternalStore(abonneerBliepoScherm, huidigeBliepoScherm, () => null);
+  return m && m.n !== begin.current ? m : null;
+}
 
 const TIKTEKST = "Hoi! Ik ben Bliepo. Tesla heeft mij uitgevonden.";
 
@@ -171,6 +179,15 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, gebaar = nu
     explain: "latenzien",
   };
   const [filmGebaar, zetFilmGebaar] = useState<{ houding: Filmhouding; n: string } | null>(null);
+  /* Het scherm van Bliepo kleurt even rood (fout) of groen (goed); daarna weer donker. */
+  const schermMelding = useBliepoSchermMelding();
+  const [schermKleur, zetSchermKleur] = useState<"goed" | "fout" | null>(null);
+  useEffect(() => {
+    if (!schermMelding) return;
+    zetSchermKleur(schermMelding.soort);
+    const t = window.setTimeout(() => zetSchermKleur(null), schermMelding.soort === "goed" ? 3000 : 4500);
+    return () => window.clearTimeout(t);
+  }, [schermMelding]);
   const gebaarRef = useRef(gebaar);
   const wachtOpStem = useRef(0);
   const laatsteZwaaiFilm = useRef(-1e9);
@@ -274,7 +291,7 @@ function BliepoAlsFilmpje({ rustig, onKlaar, className = "", ballon, gebaar = nu
   }, [geenTiktekst]);
   return (
     <div ref={plek} className={`bt-prototype ${className}`} aria-hidden="true">
-      <BliepoFilm houding={houding} beurt={beurt} daarna={daarna} rustig={rustig} praat={stemKlinkt} className="bt-prototype-doek" onKlaar={onKlaar} />
+      <BliepoFilm houding={houding} beurt={beurt} daarna={daarna} rustig={rustig} praat={stemKlinkt} className="bt-prototype-doek" onKlaar={onKlaar} schermKleur={schermKleur} />
       {(ballon || praat) && (
         <div className={`bt-ballon${ballon ? " bt-ballon-groet" : ""}`} role="status">
           <span>{ballon || TIKTEKST}</span>
@@ -315,6 +332,12 @@ function Bliepo3DEcht({
   const ballonRef = useRef(ballon);
   const geenTikRef = useRef(geenTiktekst);
   const zwaaiRef = useRef<((actie: string, opStem?: boolean) => void) | null>(null);
+  /* Het scherm van Bliepo: rood bij fout, groen bij goed (feedback van het model zelf, zacht verlopend). */
+  const schermRef = useRef<((soort: "goed" | "fout") => void) | null>(null);
+  const schermMelding = useBliepoSchermMelding();
+  useEffect(() => {
+    if (schermMelding) schermRef.current?.(schermMelding.soort);
+  }, [schermMelding]);
 
   useEffect(() => {
     rustigRef.current = rustig;
@@ -738,6 +761,7 @@ function Bliepo3DEcht({
           }
         }
       };
+      schermRef.current = (soort) => besturing.setFeedback(soort === "goed" ? "correct" : "incorrect", soort === "goed" ? 3 : 4.5);
       frame = requestAnimationFrame(tel);
       const wakker = () => {
         if (!document.hidden && zichtbaar && !frame) {
@@ -749,6 +773,7 @@ function Bliepo3DEcht({
 
       opruimen = () => {
         zwaaiRef.current = null;
+        schermRef.current = null;
         cancelAnimationFrame(frame);
         document.removeEventListener("visibilitychange", wakker);
         window.removeEventListener("pointermove", beweeg);

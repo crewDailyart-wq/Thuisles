@@ -29,6 +29,7 @@
 import type { Lesgids } from "../soort";
 import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { begeleideVraag, isBegeleideUitleg, laatZienZin, naamMag, opener, samenOefenen, uitlegVoorVraag } from "./squla-uitleg";
 
 export type SqulaVraag<T> = {
@@ -60,6 +61,12 @@ export type SqulaVraag<T> = {
   synthesis?: boolean;
   /** Eerste fout: wat Bliepo zegt over het gekozen antwoord (en de hint). Zonder: de tip van de vraag. */
   reactie?: (x: T) => string[];
+  /**
+   * Eerste fout (Sara, 8 november 2026, besluit 4): Bliepo wijst iets aan terwijl hij reageert. `wijs` gaat aan vlak
+   * voor zijn reactie en `wijsWeg` zodra die klaar is: het rondje blijft precies zolang hij erover praat.
+   */
+  wijs?: (x: T) => void;
+  wijsWeg?: () => void;
   /** Tweede fout: het goede antwoord in beeld en in woorden, zonder de vraag nog eens te stellen. */
   toonAntwoord?: () => Promise<void>;
 };
@@ -106,14 +113,16 @@ async function synthesisVraag<T>(l: Lesgids, v: SqulaVraag<T>): Promise<boolean>
   for (let poging = 1; ; poging++) {
     const x = await v.antwoord();
     if (v.isGoed(x)) {
-      speelLesgeluid("goed");
+      speelLesgeluid("goed"); bliepoScherm("goed");
       await v.goed(x);
       return poging === 1;
     }
-    speelLesgeluid("mis");
+    bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
     v.fout?.(x);
     if (poging === 1) {
+      v.wijs?.(x);
       await l.zeg(...[opener(), ...(v.reactie ? v.reactie(x) : v.tip)].filter(Boolean));
+      v.wijsWeg?.();
       zetTestAntwoord(v.testAntwoord);
       continue;
     }

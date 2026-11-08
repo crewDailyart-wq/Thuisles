@@ -21,6 +21,7 @@ import type { Lesdraaiboek, Lesgids } from "../soort";
 import { KaartRekentaal, SqulaRekentaalKeuken, type RekenDing, type RekentaalProps } from "../vlakken/squla-rekentaal-keuken";
 import { meng } from "./squla-meng";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 
 /* ---------- het tafereel ---------- */
 
@@ -68,7 +69,7 @@ async function tikDing(l: Lesgids): Promise<string> {
 
 function schud(l: Lesgids, id: string) {
   l.pasVlakAan<RekentaalProps>({ wiebel: { id, n: ++wiebelNr } });
-  speelLesgeluid("mis");
+  bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
 }
 
 /** Eén voorwerp aanwijzen: goed of niet. */
@@ -81,7 +82,7 @@ function kiesEen(l: Lesgids, goed: string) {
     laatsteTik = x;
     if (x === goed) {
       l.pasVlakAan<RekentaalProps>({ goed: [x], markeer: [] });
-      speelLesgeluid("goed");
+      speelLesgeluid("goed"); bliepoScherm("goed");
       return true;
     }
     schud(l, x);
@@ -111,7 +112,7 @@ function opVolgorde(l: Lesgids, volgorde: string[]) {
       speelLesgeluid("schuif");
     }
     l.pasVlakAan<RekentaalProps>({ goed: [...volgorde] });
-    speelLesgeluid("goed");
+    speelLesgeluid("goed"); bliepoScherm("goed");
     return true;
   };
 }

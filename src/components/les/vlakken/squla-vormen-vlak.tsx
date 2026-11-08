@@ -69,6 +69,8 @@ export type Ketting = {
 export type VormenProps = {
   beeld: Beeld | null;
   licht?: string[];
+  /** Wat het kind net aantikte: een zachte, neutrale gloed (geen rondje, niet rood/groen; Sara 8 november, besluit 1). */
+  gekozen?: string[];
   goedIds?: string[];
   uit?: string[];
   actief?: boolean;
@@ -78,9 +80,11 @@ export type VormenProps = {
   puzzel?: Puzzel | null;
   /** Ophogen = Bliepo laat zien waar een stukje hoort. */
   hint?: number;
+  /** Gelijk aan `hint` zodra Bliepo klaar is met zijn zin over de hint: dan gaat het rondje weg. */
+  hintWeg?: number;
 };
 
-type Staat = { licht: string[]; goedIds: string[]; uit: string[]; actief: boolean };
+type Staat = { licht: string[]; gekozen: string[]; goedIds: string[]; uit: string[]; actief: boolean };
 
 /* ---------- maten ---------- */
 
@@ -218,6 +222,7 @@ interface VormenScene {
   tikStuk(i: number): void;
   tikPlek(i: number): void;
   hint(): void;
+  hintWeg(): void;
 }
 
 type Stuk = { img: Img; i: number; vast: boolean; thuis: { x: number; y: number }; sl: string; /** Een afdruk van wat er op het stukje staat: stukjes met dezelfde afdruk zien er hetzelfde uit. */ gelijk: string };
@@ -232,7 +237,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     sleutel = "";
     beeld: Beeld | null = null;
     imgs: { im: Img; id: string; groep: string; sl: string }[] = [];
-    staat: Staat = { licht: [], goedIds: [], uit: [], actief: false };
+    staat: Staat = { licht: [], gekozen: [], goedIds: [], uit: [], actief: false };
     flitsTot = 0;
     /** Het rode rondje om wat Bliepo aanwijst (houder: het beeld zelf), en een tweede voor de puzzelhint (houder: het hele vlak). */
     rondjes: ReturnType<typeof maakRondjes> | null = null;
@@ -372,7 +377,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         im.setAlpha(grijs ? 0.3 : 1);
         const groen = in_(st.goedIds, id, groep) || (flits && in_(st.goedIds, id, groep));
         /* Aanwijzen gaat met een rondje (hieronder), niet met een gele gloed. */
-        const k = grijs ? null : groen ? GOED : null;
+        const gekozen = !grijs && !groen && in_(st.gekozen ?? [], id, groep);
+        const k = grijs ? null : groen ? GOED : gekozen ? WARM : null;
         const doel = k === null ? sl : this.texG(sl, k);
         if (im.texture.key !== doel) im.setTexture(doel);
       }
@@ -697,6 +703,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.melder({ soort: "puzzelMis" });
     }
 
+    /** Bliepo is uitgesproken over de hint: het rondje gaat weg. */
+    hintWeg() {
+      this.hintVakken.clear();
+      this.pzRondjes?.zet(new Map());
+    }
+
     hint() {
       if (!this.pzBezig) return;
       const st = (this.gekozen !== null ? this.stukken[this.gekozen] : null) ?? this.stukken.find((x) => !x.vast);
@@ -708,8 +720,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const sl = `hint-${++this.hintTeller}`;
       this.hintVakken.set(sl, { x: st.thuis.x, y: st.thuis.y, b: w * 0.7, h: w * 0.7 });
       this.pzRondjes.zet(new Map(this.hintVakken));
-      /* Alleen het rondje van déze hint gaat na 2,7 s weg; een latere hint houdt zijn eigen tijd. */
-      this.time.delayedCall(2700, () => {
+      /* Het rondje blijft zolang Bliepo erover praat: de les roept `hintWeg` aan als hij klaar is (besluit 4).
+         Veiligheid: na 20 s gaat het rondje van déze hint in elk geval weg. */
+      this.time.delayedCall(20000, () => {
         if (!this.hintVakken.delete(sl)) return;
         this.pzRondjes?.zet(new Map(this.hintVakken));
       });
@@ -847,7 +860,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaVormenVlak({ beeld, licht = [], goedIds = [], uit = [], actief = false, goed = 0, fout = 0, ketting = null, puzzel = null, hint = 0, meld, schaal }: VormenProps & Vlakbasis) {
+export function SqulaVormenVlak({ beeld, licht = [], gekozen = [], goedIds = [], uit = [], actief = false, goed = 0, fout = 0, ketting = null, puzzel = null, hint = 0, hintWeg = 0, meld, schaal }: VormenProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<VormenScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
   useEffect(() => {
@@ -861,7 +874,7 @@ export function SqulaVormenVlak({ beeld, licht = [], goedIds = [], uit = [], act
   useEffect(() => {
     scene?.zetBeeld(JSON.parse(beeldSleutel) as Beeld | null);
   }, [scene, beeldSleutel]);
-  const staatSleutel = JSON.stringify({ licht, goedIds, uit, actief });
+  const staatSleutel = JSON.stringify({ licht, gekozen, goedIds, uit, actief });
   useEffect(() => {
     scene?.zetStaat(JSON.parse(staatSleutel) as Staat);
   }, [scene, staatSleutel, beeldSleutel]);
@@ -882,6 +895,9 @@ export function SqulaVormenVlak({ beeld, licht = [], goedIds = [], uit = [], act
   useEffect(() => {
     if (scene && hint > 0) scene.hint();
   }, [scene, hint]);
+  useEffect(() => {
+    if (scene && hintWeg > 0) scene.hintWeg();
+  }, [scene, hintWeg]);
 
   const tikken = actief ? (beeld?.delen ?? []).filter((d): d is Extract<Deel, { s: "tik" }> => d.s === "tik" && !uit.includes(d.id)) : [];
   const n = puzzel?.n ?? 0;

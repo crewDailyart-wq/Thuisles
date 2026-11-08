@@ -16,6 +16,7 @@
  */
 
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bevestig, naamMag, opener, uitlegKeuze, zetSynthesisHulp } from "./squla-uitleg";
 import { beginzinnen } from "@/lib/lessen/beginzinnen";
 import type { Lesdraaiboek, Lesgids } from "../soort";
@@ -129,7 +130,7 @@ async function antwoord(l: Lesgids, v: Vraag, st: { keer: number; handGezien: bo
 }
 
 function fout(l: Lesgids, v: Vraag, x: number, st: { keer: number }) {
-  speelLesgeluid("mis");
+  bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
   if (v.losse) straat(l, { fout: { n: x, keer: ++st.keer } });
 }
 
@@ -140,11 +141,14 @@ async function loopLangs(l: Lesgids, v: Vraag) {
     v.soort === "voor" || v.soort === "terug"
       ? v.huizen.map((_, i) => i).filter((i) => i !== g).reverse()
       : v.huizen.map((_, i) => i).filter((i) => i < g);
+  const eerder: number[] = [];
   for (const i of plekken) {
-    straat(l, { licht: i });
+    /* Tellen hoort bij elkaar (besluit 4): wat Bliepo al noemde blijft zacht staan. */
+    straat(l, { licht: i, lichtZacht: [...eerder] });
+    eerder.push(i);
     await l.zeg(w(v.huizen[i] as number));
   }
-  straat(l, { licht: null });
+  straat(l, { licht: null, lichtZacht: [] });
 }
 
 /** Het getal met omgedraaide cijfers (34 en 43). */
@@ -200,7 +204,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: { keer: number; handGezien: 
     }
     meteen = false;
     if (x !== null) fout(l, v, x, st);
-    else speelLesgeluid("mis");
+    bliepoScherm("fout"); /* Geen fout-geluidje (besluit 3). */
     if (poging === 1) {
       await l.zeg(...[opener(), ...reactie(v, x)].filter(Boolean));
       continue;
@@ -212,7 +216,7 @@ async function speelVraag(l: Lesgids, v: Vraag, st: { keer: number; handGezien: 
   /* Het nummer komt op zijn plek en het huis springt even op. */
   const g = gat(v);
   const huizen = v.huizen.map((h, i) => (i === g ? v.goed : h));
-  if (goedAntwoord) speelLesgeluid("goed");
+  if (goedAntwoord) { speelLesgeluid("goed"); bliepoScherm("goed"); }
   straat(l, { huizen, losse: [], goed: g, licht: null, fout: null, actief: false, hand: false });
   await l.zeg(goedAntwoord ? bevestig() : kern(v));
   await l.wacht(500);
@@ -224,10 +228,10 @@ async function uitleg(l: Lesgids) {
   straat(l, { huizen: [21, 22, 23, 24, "?"], licht: null, goed: null });
   await l.zeg("Ik loop langs de huizen. Elk volgend nummer is 1 meer.");
   for (let i = 0; i < 4; i++) {
-    straat(l, { licht: i });
+    straat(l, { licht: i, lichtZacht: Array.from({ length: i }, (_, k) => k) });
     await l.zeg(w(21 + i));
   }
-  straat(l, { licht: 4 });
+  straat(l, { licht: 4, lichtZacht: [0, 1, 2, 3] });
   await uitlegKeuze(l, {
     vraag: "Welk huisnummer komt na {24:wit}?",
     keuzes: ["23", "25", "26"], antwoord: "25",

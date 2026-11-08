@@ -98,6 +98,8 @@ export type GetallenlijnProps = {
   ronde?: number;
   /** Wat oplicht: bij een rij de plekken (0, 1, …), bij een lijn of de kaarten de getallen, bij bordjes de plekken. */
   licht?: number[];
+  /** Welke van `licht` al genoemd zijn en bij dezelfde som horen: die staan als zacht rondje (de rest is fel). Leeg = alles fel. */
+  zacht?: number[];
   /** Een lichtgolf (goed): bij een rij een plek, bij een lijn een getal; `keer` ophogen voor een nieuwe golf. */
   golf?: { op: number; keer: number } | null;
   /** Tikken en slepen mag. */
@@ -156,7 +158,7 @@ function wezenPlek(soort: Wezen, x: number) {
 
 /* ---------- de scène ---------- */
 
-type Staat = Required<Omit<GetallenlijnProps, "golf" | "invul" | "raketDoe">> & { golf: GetallenlijnProps["golf"]; invul: GetallenlijnProps["invul"]; raketDoe?: GetallenlijnProps["raketDoe"] };
+type Staat = Required<Omit<GetallenlijnProps, "golf" | "invul" | "raketDoe" | "zacht">> & { zacht?: number[]; golf: GetallenlijnProps["golf"]; invul: GetallenlijnProps["invul"]; raketDoe?: GetallenlijnProps["raketDoe"] };
 type Ptr = import("phaser").Input.Pointer;
 type Obj = import("phaser").GameObjects.GameObject;
 type Kaart = { n: number; cont: import("phaser").GameObjects.Container; thuis: { x: number; y: number }; vak: number | null };
@@ -577,7 +579,9 @@ function maakScene(letter: () => string) {
           }
         }
         const wens = new Map<string, RondjeVak>();
-        if (vakken.length >= 3) {
+        const zacht = new Set(st.zacht ?? []);
+        for (const [n, v] of vakken) if (zacht.has(n)) v.zacht = true;
+        if (vakken.length >= 3 && !zacht.size) {
           /* Veel tegelijk (samen tellen): één rondje om het geheel, niet een rondje per ding. */
           const x0 = Math.min(...vakken.map(([, v]) => v.x - v.b / 2));
           const x1 = Math.max(...vakken.map(([, v]) => v.x + v.b / 2));
@@ -771,7 +775,7 @@ function lettertype() {
   return el ? getComputedStyle(el).fontFamily : "system-ui, sans-serif";
 }
 
-export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, actief = false, handje = false, invul = null, raketDoe = null, meld, schaal }: GetallenlijnProps & Vlakbasis) {
+export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], zacht = [], golf = null, actief = false, handje = false, invul = null, raketDoe = null, meld, schaal }: GetallenlijnProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<LijnScene>(schaal, maakScene(lettertype), { invoer: true });
   const meldRef = useRef(meld);
   const [inVak, setInVak] = useState<number[]>([]);
@@ -788,7 +792,7 @@ export function SqulaGetallenlijn({ beeld, ronde = 0, licht = [], golf = null, a
     );
   }, [scene]);
 
-  const sleutel = JSON.stringify({ beeld, ronde, licht, golf, actief, handje, invul, raketDoe });
+  const sleutel = JSON.stringify({ beeld, ronde, licht, zacht, golf, actief, handje, invul, raketDoe });
   useEffect(() => {
     if (!scene) return;
     scene.teken(JSON.parse(sleutel) as Staat);

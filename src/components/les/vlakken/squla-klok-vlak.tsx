@@ -30,6 +30,7 @@ import type { Vlakbasis } from "../soort";
 import { holoBasis, GOED, TX, VLAK_B, WARM, type PhaserModule } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { dingSleutel, gloedVan, heeftWijzerGloed, laadKlokken, laadKlokTussen, maatVan, tekenDing, tekenReisTekst, tekenStof, tekenVraagKlok, tekenWijzerGloed, type Ding } from "./squla-klok-tekenen";
 import { Klokje } from "./klok-wijzerklok";
 import s from "./squla-klok.module.css";
@@ -1337,7 +1338,7 @@ function Memory(p: Deel) {
     bezig.current = true;
     if (kaarten[nu[0]].paar === kaarten[nu[1]].paar) {
       setTimeout(() => {
-        speelLesgeluid("goed");
+        speelLesgeluid("goed"); bliepoScherm("goed");
         setNet(nu);
       }, 300);
       setTimeout(() => {
@@ -1354,7 +1355,7 @@ function Memory(p: Deel) {
       return;
     }
     setTimeout(() => {
-      speelLesgeluid("mis");
+      bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
       setMis(nu);
     }, 350);
     setTimeout(() => {
@@ -1413,7 +1414,7 @@ function Verbind(p: Deel) {
     scene.zet({
       sleutel: p.sleutel,
       items: items.map((q) => ({ ...q, staat: staatVan(p, q.id, kies === q.id ? "licht" : verbonden.has(q.id) ? "goed" : "gewoon") })),
-      lijnen: [...lijnen.map((l) => lijn(l, GOED)), ...(fout ? [lijn(fout, 0xff6b75)] : [])],
+      lijnen: [...lijnen.map((l) => lijn(l, GOED)), ...(fout ? [lijn(fout, 0xffd36e)] : [])],
       vakken: [],
       pijlen: [],
     });
@@ -1440,7 +1441,7 @@ function Verbind(p: Deel) {
     if (rechts[r] === l) {
       const nu: [number, number][] = [...lijnen, [l, r]];
       setLijnen(nu);
-      setTimeout(() => speelLesgeluid("goed"), 150);
+      setTimeout(() => { speelLesgeluid("goed"); bliepoScherm("goed"); }, 150);
       if (nu.length === paren.length) {
         klaar.current = true;
         setTimeout(() => meld({ soort: "verbind" }), 800);
@@ -1448,7 +1449,7 @@ function Verbind(p: Deel) {
       return;
     }
     setFout([l, r]);
-    setTimeout(() => speelLesgeluid("mis"), 150);
+    bliepoScherm("fout"); /* Alleen Bliepo's scherm kleurt rood; geen fout-geluidje (Sara, 8 november 2026, besluit 2 en 3). */
     setTimeout(() => setFout(null), 900);
   }
 

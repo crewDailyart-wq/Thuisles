@@ -94,6 +94,8 @@ export type PlusProps = {
   goedIds?: string[];
   lijnen?: Lijn[];
   licht?: number[];
+  /** Welke van `licht` al genoemd zijn en bij dezelfde som horen: zacht rondje (de rest is fel; Sara 8 november 2026, besluit 4). */
+  lichtZacht?: number[];
   rek?: Rek | null;
   busLicht?: boolean;
   busTel?: number;
@@ -259,6 +261,7 @@ type Staat = {
   goedIds: string[];
   lijnen: Lijn[];
   licht: number[];
+  lichtZacht?: number[];
   busLicht: boolean;
   busTel: number;
   dim: boolean;
@@ -577,7 +580,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       const wens = new Map<string, RondjeVak>();
       st.licht.forEach((g) => {
         const v = this.vakVan(this.groepImg[g] ?? []);
-        if (v) wens.set(`groep${g}`, v);
+        if (v) wens.set(`groep${g}`, (st.lichtZacht ?? []).length < st.licht.length && st.lichtZacht?.includes(g) ? { ...v, zacht: true } : v);
       });
       if (st.busLicht) {
         const v = this.vakVan(this.busImg);
@@ -598,7 +601,7 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
         const a = this.vakken.find((v) => v.id === ln.van);
         const z = this.vakken.find((v) => v.id === ln.naar);
         if (!a || !z) continue;
-        const kleur = ln.stand === "goed" ? GOED : ln.stand === "fout" ? 0xff7b7b : 0xffffff;
+        const kleur = ln.stand === "goed" ? GOED : ln.stand === "fout" ? 0xffffff /* geen rood op de keuze (Sara, 8 november 2026, besluit 2) */ : 0xffffff;
         l.lineStyle(8, kleur, 1);
         l.lineBetween(a.x + a.b / 2, a.y, z.x - z.b / 2, z.y);
         l.fillStyle(kleur, 1);
@@ -638,12 +641,13 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
       }
       if (!rek || !this.rekBox) return;
       const zicht = rek.a + Math.min(rek.b, rek.bZicht ?? rek.b);
+      const nieuweStippen: [Img, number][] = [];
       this.rekStippen.forEach((im, k) => {
         const aan = k < zicht;
         if (aan && !im.visible) {
           im.setVisible(true);
-          /* Een stip die erbij komt, krijgt even een rood rondje (geen gloed). */
-          this.rekRondje(im, k);
+          /* Een stip die erbij komt, krijgt een rondje (fel; wat er al stond wordt zacht). */
+          nieuweStippen.push([im, k]);
           if (!this.rustig) {
             const sch = 1 / TX;
             im.setScale(sch * 0.3);
@@ -651,26 +655,27 @@ function maakPlusScene(Phaser: PhaserModule, rustig: boolean) {
           }
         } else if (!aan) im.setVisible(false);
       });
+      if (nieuweStippen.length) this.rekRondje(nieuweStippen, zicht >= rek.a + rek.b);
       this.rekZicht = zicht;
     }
 
-    /** Een rood rondje om een stip die erbij komt; na 700 ms weer weg (en meteen weg bij een nieuw rek). */
-    rekRondje(im: Img, k: number) {
+    /**
+     * Rondjes om de stippen die erbij komen (Sara, 8 november 2026, besluit 4): de nieuwe stippen zijn fel en wat er al een rondje had blijft
+     * zacht; als alle stippen er staan (het totaal, "samen") zijn alle rondjes weer fel. Ze blijven staan zolang Bliepo erover praat
+     * en gaan weg bij een nieuw rek of als het rek weggaat.
+     */
+    rekRondje(nieuw: [Img, number][], totaal: boolean) {
       const box = this.rekBox;
       if (!box) return;
       if (!this.rekRondjes) this.rekRondjes = maakRondjes(this, box, this.rustig);
-      const rr = this.rekRondjes;
-      const sl = this.rekSleutel;
-      const naam = `stip${k}`;
-      this.rekVakken.set(naam, { x: im.x, y: im.y, b: 40, h: 40 });
-      const tok = (this.rekTok.get(naam) ?? 0) + 1;
-      this.rekTok.set(naam, tok);
-      rr.zet(new Map(this.rekVakken));
-      /* Zoals het oude oplichten: 700 ms, en alleen het rondje van déze stip (van dit moment) gaat weg. */
-      this.time.delayedCall(700, () => {
-        if (this.rekSleutel !== sl || this.rekTok.get(naam) !== tok || !this.rekVakken.delete(naam)) return;
-        rr.zet(new Map(this.rekVakken));
-      });
+      for (const [sl, v] of this.rekVakken) this.rekVakken.set(sl, { ...v, zacht: !totaal });
+      /* Een stip is 40 punten; de stippen groeien nog in, dus de maat staat vast. */
+      const x0 = Math.min(...nieuw.map(([im]) => im.x)) - 20;
+      const x1 = Math.max(...nieuw.map(([im]) => im.x)) + 20;
+      const y0 = Math.min(...nieuw.map(([im]) => im.y)) - 20;
+      const y1 = Math.max(...nieuw.map(([im]) => im.y)) + 20;
+      this.rekVakken.set(`stippen${nieuw[0][1]}`, { x: (x0 + x1) / 2, y: (y0 + y1) / 2, b: x1 - x0, h: y1 - y0, zacht: false });
+      this.rekRondjes.zet(new Map(this.rekVakken));
     }
 
     goed() {
@@ -726,6 +731,7 @@ export function SqulaPlusVlak({
   goedIds = [],
   lijnen = [],
   licht = [],
+  lichtZacht = [],
   rek = null,
   busLicht = false,
   busTel = 0,
@@ -750,7 +756,7 @@ export function SqulaPlusVlak({
   }, [scene, beeldSleutel, sommenSleutel, staand]);
 
   const dim = Boolean(rek);
-  const staatSleutel = JSON.stringify({ gekozen, uit, goedIds, lijnen, licht, busLicht, busTel, dim });
+  const staatSleutel = JSON.stringify({ gekozen, uit, goedIds, lijnen, licht, lichtZacht, busLicht, busTel, dim });
   useEffect(() => {
     scene?.zetStaat(JSON.parse(staatSleutel) as Staat);
   }, [scene, staatSleutel, beeldSleutel]);

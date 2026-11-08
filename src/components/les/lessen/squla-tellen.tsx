@@ -26,6 +26,7 @@
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
+import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { squlaBegin, squlaEind, squlaVraag } from "./squla-hulp";
 import { bevestig, krijgtVervolgvraag, uitlegKeuze, zetSynthesisHulp } from "./squla-uitleg";
 import {
@@ -137,9 +138,16 @@ const zetTel = (l: Lesgids, p: Partial<TelVlakProps>) => l.pasVlakAan<TelVlakPro
 
 /** Bliepo telt mee tot `tot` (de voorwerpen lichten één voor één op) en wacht tot het vlak klaar is. */
 async function telMee(l: Lesgids, v: Telvraag, van: number, tot: number) {
-  zetTel(l, { geteld: tot });
+  zetTel(l, { geteld: tot, telRondjes: "op" });
   await l.wacht(Math.max(0, tot - van - 1) * STAP[v.vorm] + 350);
 }
+
+/** Bliepo noemt het totaal van wat hij telde: alle rondjes weer fel ("samen", besluit 4), en daarna weg. */
+async function zegTotaal(l: Lesgids, ...zinnen: string[]) {
+  zetTel(l, { telRondjes: "samen" });
+  await l.zeg(...zinnen);
+}
+const telKlaar = (l: Lesgids) => zetTel(l, { telRondjes: "weg" });
 
 /** Tot waar Bliepo samen telt; het laatste stukje telt het kind zelf. */
 function bliepoTelt(v: Telvraag): number {
@@ -163,7 +171,8 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
     zetTel(l, { zakLicht: false });
     if (tot > 0) {
       await telMee(l, v, 0, tot);
-      await l.zeg(`${gk(z + tot, k)}.`);
+      await zegTotaal(l, `${gk(z + tot, k)}.`);
+      telKlaar(l);
     }
     if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(z + tot, k)}?`);
     return;
@@ -173,20 +182,22 @@ async function samenTellen(l: Lesgids, v: Telvraag) {
     await l.zeg(`In elke volle rij liggen ${gk(per, k)} ${v.voorwerp.naam}. Ik tel per rij, dat gaat sneller.`);
     for (let t = per; t <= tot; t += per) {
       await telMee(l, v, t - per, t);
-      await l.zeg(`${gk(t, k)}.`);
+      await zegTotaal(l, `${gk(t, k)}.`);
     }
+    telKlaar(l);
     if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
     return;
   }
   await l.zeg(`De ${v.voorwerp.naam} liggen door elkaar.`, `Bij ${elke(v.voorwerp)} zet ik een streepje, zo raak ik er geen kwijt.`);
   if (tot < 5) {
     await telMee(l, v, 0, tot);
-    await l.zeg(`${Array.from({ length: tot }, (_, i) => gk(i + 1, k)).join(", ")}.`);
+    await zegTotaal(l, `${Array.from({ length: tot }, (_, i) => gk(i + 1, k)).join(", ")}.`);
   } else
     for (let t = 5; t <= tot; t += 5) {
       await telMee(l, v, t - 5, t);
-      await l.zeg(`${gk(t, k)}.`);
+      await zegTotaal(l, `${gk(t, k)}.`);
     }
+  telKlaar(l);
   if (!krijgtVervolgvraag(l)) await l.zeg(`Tel jij verder vanaf ${gk(tot, k)}?`);
 }
 
@@ -211,16 +222,19 @@ async function telRest(l: Lesgids, v: Telvraag) {
   await l.wacht(300);
   if (v.vorm === "zak") {
     await telMee(l, v, tot, v.n);
-    await l.zeg(reeksTekst(z + tot, z + v.n, k), `${gk(z, k)} in de zak en ${gk(v.n, k)} los. Dat maakt ${gk(antwoordVan(v), k)} ${v.voorwerp.naam}.`);
+    await zegTotaal(l, reeksTekst(z + tot, z + v.n, k), `${gk(z, k)} in de zak en ${gk(v.n, k)} los. Dat maakt ${gk(antwoordVan(v), k)} ${v.voorwerp.naam}.`);
+    telKlaar(l);
     return;
   }
   await telMee(l, v, tot, v.n);
   if (v.vorm === "verspreid") {
-    await l.zeg(reeksTekst(tot, v.n, k), `Ik telde ${elke(v.voorwerp)} 1 keer. Er liggen ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+    await zegTotaal(l, reeksTekst(tot, v.n, k), `Ik telde ${elke(v.voorwerp)} 1 keer. Er liggen ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+    telKlaar(l);
     return;
   }
   const r = rijenTekst(v);
-  await l.zeg(reeksTekst(tot, v.n, k), r.rest === 0 ? `${gk(r.volle, k)} volle rijen van ${gk(r.per, k)} zijn ${gk(v.n, k)} ${v.voorwerp.naam}.` : `${gk(r.vol, k)} in de volle rijen, en nog ${gk(r.rest, k)} erbij: ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+  await zegTotaal(l, reeksTekst(tot, v.n, k), r.rest === 0 ? `${gk(r.volle, k)} volle rijen van ${gk(r.per, k)} zijn ${gk(v.n, k)} ${v.voorwerp.naam}.` : `${gk(r.vol, k)} in de volle rijen, en nog ${gk(r.rest, k)} erbij: ${gk(v.n, k)} ${v.voorwerp.naam}.`);
+  telKlaar(l);
 }
 
 /** Eerste fout: wat Bliepo zegt over het gekozen getal (voor deze soort vraag), en dan de hint. */
@@ -287,8 +301,15 @@ function telVraag(l: Lesgids, id: string, v: Telvraag, st: Stand) {
       await l.zeg(bevestig());
       await l.wacht(400);
     },
-    /* Eerste fout: de voorwerpen waar Bliepo "begin bij" over zegt lichten alvast op. */
-    fout: () => zetTel(l, { fout: ++st.fout, ...(++nFout === 1 && bliepoTelt(v) > 0 ? { geteld: bliepoTelt(v) } : {}) }),
+    fout: () => {
+      zetTel(l, { fout: ++st.fout });
+      nFout++;
+    },
+    /* Eerste fout: Bliepo telt het stuk waar hij "begin bij" over zegt (rondjes zolang hij praat; besluit 4). */
+    wijs: () => {
+      if (nFout === 1 && bliepoTelt(v) > 0) zetTel(l, { geteld: bliepoTelt(v), telRondjes: "op" });
+    },
+    wijsWeg: () => telKlaar(l),
     samen: () => samenTellen(l, v),
     tip,
     testAntwoord: goed,
@@ -310,24 +331,27 @@ async function uitlegTellen(l: Lesgids, v: Telvraag, st: Stand) {
     await l.zeg(`In de zak zitten ${gk(z, k)} ${v.voorwerp.naam}.`, `${hoofd(elkeLosse(v.voorwerp))} is er 1 meer.`);
     zetTel(l, { zakLicht: false });
     await telMee(l, v, 0, v.n);
-    await l.zeg(reeks(z, z + v.n), `Samen zijn het er ${gk(z + v.n, k)}.`);
+    await zegTotaal(l, reeks(z, z + v.n), `Samen zijn het er ${gk(z + v.n, k)}.`);
+    telKlaar(l);
   } else if (v.vorm === "verspreid") {
     await l.zeg("Ze staan door elkaar.", `Bij ${elke(v.voorwerp)} zet ik een streepje.`);
     await telMee(l, v, 0, 5);
-    await l.zeg(reeks(0, 5), "5 streepjes zijn een groepje.");
+    await zegTotaal(l, reeks(0, 5), "5 streepjes zijn een groepje.");
     await telMee(l, v, 5, v.n);
-    await l.zeg(reeks(5, v.n), `Het zijn er ${gk(v.n, k)}.`);
+    await zegTotaal(l, reeks(5, v.n), `Het zijn er ${gk(v.n, k)}.`);
+    telKlaar(l);
   } else {
     const per = v.vorm === "rijen5" ? 5 : 10;
     await l.zeg(`Ze staan in rijen van ${gk(per, k)}.`);
     let t = 0;
     for (; t + per <= v.n; t += per) {
       await telMee(l, v, t, t + per);
-      await l.zeg(`${gk(t + per, k)}.`);
+      await zegTotaal(l, `${gk(t + per, k)}.`);
     }
     await l.zeg("Dan tel ik verder.");
     await telMee(l, v, t, v.n);
-    await l.zeg(reeks(t, v.n), `Het zijn er ${gk(v.n, k)}.`);
+    await zegTotaal(l, reeks(t, v.n), `Het zijn er ${gk(v.n, k)}.`);
+    telKlaar(l);
   }
   await l.wacht(500);
 }
@@ -352,16 +376,17 @@ async function samenTellenBijBegin(l: Lesgids, v: Telvraag, st: Stand) {
   } else if (v.vorm === "verspreid") {
     await l.zeg(`De ${v.voorwerp.naam} liggen door elkaar. Eerst ga ik ze één voor één tellen, de streepjes helpen me onthouden hoeveel ik al heb.`);
     await telMee(l, v, 0, begin);
-    await l.zeg(`Ik heb er ${gk(begin, k)} geteld.`);
+    await zegTotaal(l, `Ik heb er ${gk(begin, k)} geteld.`);
   } else {
     await l.zeg(`De ${v.voorwerp.naam} staan in rijtjes. Een volle rij telt ${gk(per, k)}, dus ik begin met de volle rijen.`);
     for (let n = per; n <= begin; n += per) {
       await telMee(l, v, n - per, n);
-      await l.zeg(`${gk(n, k)}.`);
+      await zegTotaal(l, `${gk(n, k)}.`);
     }
   }
   zetTel(l, { zakLicht: false });
   await l.zeg(`Begin bij ${gk(zak + begin, k)}. Tik steeds op ${naamBij(begin)} met de kring en tel verder.`);
+  telKlaar(l);
   try {
     for (let n = begin; n < v.n; n++) {
       if (typeof window !== "undefined") window.__phaser = { ...window.__phaser, antwoord: `tel-${n}` };
@@ -369,8 +394,10 @@ async function samenTellenBijBegin(l: Lesgids, v: Telvraag, st: Stand) {
       zetTel(l, { telActief: true, telNaam: naamBij(n) });
       const antwoord = await tik;
       if (antwoord.index !== n) { n--; continue; }
-      zetTel(l, { telActief: false, geteld: n + 1 });
+      /* Het kind tikte: Bliepo noemt het getal en dan krijgt het voorwerp zijn rondje (zolang hij praat). */
+      zetTel(l, { telActief: false, geteld: n + 1, telRondjes: "op" });
       await l.zeg(`${gk(zak + n + 1, k)}.`);
+      telKlaar(l);
     }
     await uitlegKeuze(l, {
       vraag: `Hoeveel ${v.voorwerp.naam} zijn het samen?`,
@@ -1002,21 +1029,22 @@ function rijVraag(l: Lesgids, v: Rijvraag, st: Rijstand) {
       if (isNa) {
         await l.zeg("Ik loop langs de huizen tot aan de lege plek.");
         for (let i = 0; i < o.rij.length; i++) {
-          zetRij(l, { licht: i });
+          /* Wat Bliepo al noemde blijft zacht staan: het hoort bij dezelfde telling (besluit 4). */
+          zetRij(l, { licht: i, lichtZacht: Array.from({ length: i }, (_, k) => k) });
           await l.zeg(`${w(o.rij[i])}.`);
         }
-        zetRij(l, { licht: o.rij.length });
+        zetRij(l, { licht: o.rij.length, lichtZacht: [] });
         await l.zeg(v.goed % 10 === 0 ? `Na ${w(ijk)} is het tiental vol en begint een nieuw tiental.` : `Het volgende huis na ${w(ijk)} is 1 verder.`);
       } else {
         await l.zeg("Ik tel terug, kaartje voor kaartje, tot aan de lege plek.");
         for (let i = o.rij.length - 1; i >= 0; i--) {
-          zetRij(l, { licht: i + 1 });
+          zetRij(l, { licht: i + 1, lichtZacht: Array.from({ length: o.rij.length - 1 - i }, (_, k) => o.rij.length - k) });
           await l.zeg(`${kc(o.rij[i])}.`);
         }
-        zetRij(l, { licht: 0 });
+        zetRij(l, { licht: 0, lichtZacht: [] });
         await l.zeg(`Het kaartje voor ${kc(ijk)} is 1 minder.`);
       }
-      zetRij(l, { licht: null });
+      zetRij(l, { licht: null, lichtZacht: [] });
     },
     tip: tipRij,
     testAntwoord: v.goed,
@@ -1039,13 +1067,15 @@ async function loopVoorbeeld(l: Lesgids, o: Rijopgave, goed: number, zinnen: str
   await l.wacht(500);
   const isNa = o.soort === "na";
   const volgorde = isNa ? o.rij.map((_, i) => i) : o.rij.map((_, i) => o.rij.length - 1 - i);
+  const eerder: number[] = [];
   for (const i of volgorde) {
-    zetRij(l, { licht: isNa ? i : i + 1 });
+    zetRij(l, { licht: isNa ? i : i + 1, lichtZacht: [...eerder] });
+    eerder.push(isNa ? i : i + 1);
     await l.zeg(`${isNa ? w(o.rij[i]) : kc(o.rij[i])}.`);
   }
-  zetRij(l, { licht: null });
+  zetRij(l, { licht: null, lichtZacht: [] });
   await l.zeg(zinnen[0]);
-  speelLesgeluid("goed");
+  speelLesgeluid("goed"); bliepoScherm("goed");
   zetRij(l, { ingevuld: goed });
   await l.zeg(...zinnen.slice(1));
   await l.wacht(400);

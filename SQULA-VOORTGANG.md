@@ -275,3 +275,11 @@ Plaatjes per onderwerp: allemaal gemaakt in Magnific behalve spies-leeg (Meten).
 - Lettertype: Figtree goedgekeurd door Sara en aan voor alle nieuwe lessen (page.tsx `proef = true`; letterproef.css). Concept-/oude lessen niet aangeraakt. De stijlkiezer-lettertype geldt in deze lessen niet meer.
 - Beginzinnen: 30 paren gekeurd en verbeterd (BEGINZINNEN.md, /admin/beginzinnen). Een andere assistent werkt nu aan de zinnen: niet aanraken.
 - Sara doet een menselijke controleronde op afbeeldingen/design: haar opmerkingen worden per les opgepakt (eerst beginscherm, dan hele les).
+
+---
+
+## PLAN: logica-controle van alle lessen (8 november 2026, nog NIET bouwen)
+
+Komt na het afspelen van Synthesis en het lesrecept. Basis: FOUTEN-VOORBEELDEN.md, WOORDEN-GROEP3.md, BOUWREGELS 14.30–14.34.
+1. **Script** dat bij elke vraag checkt: (a) precies één goed antwoord, (b) de hint past op precies één keuze, (c) geen woorden die volgens WOORDEN-GROEP3.md niet mogen.
+2. **Kind-test:** een aparte helper speelt elke vraag alsof hij een kind van 6 is. Hij ziet alleen het scherm en hoort alleen wat Bliepo zegt. Hij keurt af als hij twijfelt of twee goede antwoorden vindt.

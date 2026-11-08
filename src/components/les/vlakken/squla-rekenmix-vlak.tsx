@@ -81,7 +81,15 @@ export type RMProps = {
   opgave: RMOpgave | null;
   actief?: boolean;
   /** In tekening `deel` lichten de stukken `aan` op; de rest is dof (als `dof` niet false is). */
-  licht?: { deel: string; aan: number[]; dof?: boolean } | null;
+  licht?: {
+    deel: string;
+    aan: number[];
+    dof?: boolean;
+    /** Alleen dof maken, geen rondje: het kind tikte net (Sara 8 november 2026, besluit 1: bij tikken geen rondje). */
+    stil?: boolean;
+    /** Bliepo noemt "samen"/het antwoord: alle rondjes in deze tekening weer fel, in 1 rondje om het geheel (besluit 4). */
+    samen?: boolean;
+  } | null;
   labels?: RMLabel[] | null;
   goed?: { deel: string; keer: number } | null;
   fout?: { deel: string; keer: number } | null;
@@ -235,7 +243,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
   type Gfx = import("phaser").GameObjects.Graphics;
   type Ptr = import("phaser").Input.Pointer;
   /** Een tekening in beeld: de container, de beelden per stuk (null bij lijn/rondje), en de sleutel van elk plaatje. */
-  type Deel = { naam: string; box: Box; items: (Img | null)[]; tex: (string | null)[]; plek: RMPlek; slot: number | null; rondjes?: ReturnType<typeof maakRondjes>; rondjeTok?: number };
+  type Deel = { naam: string; box: Box; items: (Img | null)[]; tex: (string | null)[]; plek: RMPlek; slot: number | null; rondjes?: ReturnType<typeof maakRondjes>; rondjeTok?: number; stappen?: Map<string, RondjeVak>; vorigAan?: number[] };
 
   class RM extends Basis implements RMScene {
     o: RMOpgave | null = null;
@@ -496,21 +504,41 @@ function maakScene(Phaser: PhaserModule, rustig: boolean, namen: readonly string
           img.setAlpha(!hier || aan || l!.dof === false ? 1 : 0.3);
           if (aan) nieuw.add(`${d.naam}-${i}`);
         });
-        /* Het rondje komt precies waar de gloed kwam (Sara, 6 november 2026): om wat nu NIEUW oplicht, 450 ms, en dan weg.
-           Wat al aan stond (zelfde aanroep nog eens) krijgt niets, net als de gloed. Meer dingen tegelijk: één rondje om het geheel. */
-        const nieuwIdx = hier ? l!.aan.filter((i) => !this.vorigLicht.has(`${d.naam}-${i}`)) : [];
-        const wijs = d.items.filter((im, i): im is Img => !!im && nieuwIdx.includes(i));
-        const vak = wijs.length ? vakOm(wijs) : null;
-        if (vak) {
-          d.rondjes ??= maakRondjes(this, d.box, this.rustig);
-          const rj = d.rondjes;
-          const tok = (d.rondjeTok ?? 0) + 1;
-          d.rondjeTok = tok;
-          rj.zet(new Map([[`licht-${nieuwIdx.join(",")}-${tok}`, strak(vak)]]));
-          this.time.delayedCall(450, () => {
-            if (d.rondjeTok === tok && this.delen.includes(d)) rj.zet(new Map());
-          });
+        /* Rondjes (besluit 4): wat Bliepo nu noemt is fel en blijft staan zolang hij erover praat; wat hij al noemde en bij dezelfde
+           telling hoort blijft zacht; bij `samen` is alles weer fel (1 rondje om het geheel). Ze gaan weg als `licht` null wordt of
+           naar een andere tekening gaat. Bij `stil` (het kind tikte) komt geen rondje. */
+        if (!hier || l!.stil) {
+          d.stappen = undefined;
+          d.vorigAan = undefined;
+          d.rondjes?.zet(new Map());
+          continue;
         }
+        const wens = new Map<string, RondjeVak>();
+        if (l!.samen) {
+          const alle = d.items.filter((im, i): im is Img => !!im && l!.aan.includes(i));
+          const vak = alle.length ? vakOm(alle) : null;
+          if (vak) wens.set(`samen-${l!.aan.join(",")}`, strak(vak));
+        } else {
+          const nieuwIdx = l!.aan.filter((i) => !this.vorigLicht.has(`${d.naam}-${i}`));
+          const wijs = d.items.filter((im, i): im is Img => !!im && nieuwIdx.includes(i));
+          const vak = wijs.length ? vakOm(wijs) : null;
+          const stappen = new Map<string, RondjeVak>();
+          /* Alleen als dit een vervolg is (alles van de vorige stap hoort er nog bij: tellen) blijven ze zacht staan.
+             Dingen die niet bij elkaar horen ("links", dan "midden") vervangen elkaar. */
+          const bleef = !!d.vorigAan?.length && d.vorigAan.every((i) => l!.aan.includes(i));
+          if (bleef) {
+            if (vak) for (const [sl, v] of d.stappen ?? []) stappen.set(sl, { ...v, zacht: true });
+            else for (const [sl, v] of d.stappen ?? []) stappen.set(sl, v);
+          }
+          if (vak) stappen.set(`licht-${nieuwIdx.join(",")}`, strak(vak));
+          d.stappen = stappen;
+          d.vorigAan = [...l!.aan];
+          for (const [sl, v] of stappen) wens.set(sl, v);
+        }
+        if (wens.size) {
+          d.rondjes ??= maakRondjes(this, d.box, this.rustig);
+          d.rondjes.zet(wens);
+        } else d.rondjes?.zet(new Map());
       }
       this.vorigLicht = nieuw;
     }
@@ -939,12 +967,12 @@ export function SqulaRekenmix({
     scene?.zetOpgave(o);
   }, [scene, o]);
 
-  const lichtSleutel = licht ? `${licht.deel}|${licht.aan.join(",")}|${licht.dof === false ? 0 : 1}` : "";
+  const lichtSleutel = licht ? `${licht.deel}|${licht.aan.join(",")}|${licht.dof === false ? 0 : 1}|${licht.stil ? 1 : 0}|${licht.samen ? 1 : 0}` : "";
   useEffect(() => {
     if (!scene) return;
     if (!lichtSleutel) return scene.zetLicht(null);
-    const [deel, aan, dof] = lichtSleutel.split("|");
-    scene.zetLicht({ deel, aan: aan ? aan.split(",").map(Number) : [], dof: dof === "1" });
+    const [deel, aan, dof, stil, samen] = lichtSleutel.split("|");
+    scene.zetLicht({ deel, aan: aan ? aan.split(",").map(Number) : [], dof: dof === "1", stil: stil === "1", samen: samen === "1" });
   }, [scene, lichtSleutel, o]);
 
   useEffect(() => {

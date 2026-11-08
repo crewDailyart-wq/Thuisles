@@ -196,6 +196,8 @@ export type SplitsProps = {
   /** Splitsen 2 en Delen: tegels, sommen of een ster slepen naar vakken (squla-splitsen2-sleep.ts). */
   s2?: S2 | null;
   licht?: string[];
+  /** Welke van `licht` al genoemd zijn en bij dezelfde som horen: zacht rondje (de rest is fel; Sara 8 november 2026, besluit 4). */
+  lichtZacht?: string[];
   /** Wat in `licht` staat krijgt een rood, getekend rondje in plaats van een gloed. */
   rondje?: boolean;
   goedIds?: string[];
@@ -361,7 +363,7 @@ const phaserSleutel = (b: Beeld | null) => (b ? `${b.id}|${JSON.stringify(b.dele
 
 /* ---------- de scène ---------- */
 
-type Staat = { licht: string[]; goedIds: string[]; uit: string[]; toon: string[]; rondje?: boolean };
+type Staat = { licht: string[]; lichtZacht?: string[]; goedIds: string[]; uit: string[]; toon: string[]; rondje?: boolean };
 
 /** Vrolijke, volle kleuren voor de knikkers (afwisselend, zodat elke knikker apart te zien is). */
 const KNIKKERS = ["#ff3b5c", "#ff9a1f", "#ffd21f", "#2fd16b", "#2e9bff", "#a35cff", "#ff4fb0", "#18c8c8"];
@@ -811,7 +813,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (!doos) return;
       const ids = st.rondje ? st.licht.filter((id) => !st.uit.includes(id)) : [];
       /* Een verborgen ding dat later verschijnt (`toon`) krijgt dan ook zijn rondje. */
-      const sleutel = ids.map((id) => `${id}${st.toon.includes(id) ? "+" : ""}`).join("|");
+      const zachtVan = (id: string) => (st.lichtZacht ?? []).length < ids.length && !!st.lichtZacht?.includes(id);
+      const sleutel = ids.map((id) => `${id}${st.toon.includes(id) ? "+" : ""}${zachtVan(id) ? "~" : ""}`).join("|");
       if (!ids.length) {
         if (this.rondjeSleutel !== "") doos.removeAll(true);
         this.rondjeSleutel = "";
@@ -823,10 +826,12 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       doos.removeAll(true);
       /* Dingen uit één groep (top.3, top.4 ...) krijgen samen één rondje, niet elk een eigen. */
       const groepen = new Map<string, Rechthoek>();
+      const zachtGroep = new Map<string, boolean>();
       for (const id of ids) {
         const r = this.omheen(id);
         if (!r) continue;
         const k = id.split(".")[0];
+        zachtGroep.set(k, (zachtGroep.get(k) ?? true) && zachtVan(id));
         const g = groepen.get(k);
         groepen.set(k, g ? { x0: Math.min(g.x0, r.x0), y0: Math.min(g.y0, r.y0), x1: Math.max(g.x1, r.x1), y1: Math.max(g.y1, r.y1) } : r);
       }
@@ -836,11 +841,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         const im = this.add.image((r.x0 + r.x1) / 2, (r.y0 + r.y1) / 2, sl).setDisplaySize((r.x1 - r.x0) * 1.15 + 44, (r.y1 - r.y0) * 1.4 + 50);
         im.setAngle((rnd() - 0.5) * 5);
         doos.add(im);
-        if (this.rustig) continue;
+        const doel = zachtGroep.get(id) ? 0.45 : 1;
+        if (this.rustig) {
+          im.setAlpha(doel);
+          continue;
+        }
         const sx = im.scaleX;
         const sy = im.scaleY;
         im.setAlpha(0);
-        this.tweens.add({ targets: im, alpha: 1, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
+        this.tweens.add({ targets: im, alpha: doel, scaleX: { from: sx * 0.9, to: sx }, scaleY: { from: sy * 0.9, to: sy }, duration: 240, ease: "Back.easeOut" });
       }
     }
 
@@ -1259,7 +1268,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, licht = [], rondje = false, goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
+export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, licht = [], lichtZacht = [], rondje = false, goedIds = [], uit = [], toon = [], actief = false, goed = 0, fout = 0, meld, schaal }: SplitsProps & Vlakbasis) {
   /* Het canvas neemt alleen muis en vinger aan zolang er knikkers te slepen zijn; anders gaat alles erdoorheen naar de knoppen. */
   const { plek, scene } = useHoloMotor<SplitsScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
@@ -1291,7 +1300,7 @@ export function SqulaSplitsVlak({ beeld, sleep = null, s1 = null, s2 = null, lic
   useEffect(() => {
     scene?.zetBeeld(JSON.parse(beeldSleutel) as Beeld | null);
   }, [scene, beeldSleutel]);
-  const staatSleutel = JSON.stringify({ licht, goedIds, uit, toon, rondje });
+  const staatSleutel = JSON.stringify({ licht, lichtZacht, goedIds, uit, toon, rondje });
   useEffect(() => {
     scene?.zetStaat(JSON.parse(staatSleutel) as Staat);
   }, [scene, staatSleutel, beeldSleutel]);

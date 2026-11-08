@@ -56,13 +56,13 @@ function hartslag(x: number, midden: number, b: number) {
   ligt het canvas over het hele vak en loopt het lijntje mee met het scherm.
   Zonder `hoeken` blijft alles zoals het was.
 */
-export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: boolean; hoeken?: () => Schermhoeken | null }) {
+export function BliepoLijn({ rustig, praat, hoeken, kleur = null }: { rustig: boolean; praat: boolean; hoeken?: () => Schermhoeken | null; kleur?: "goed" | "fout" | null }) {
   const doek = useRef<HTMLCanvasElement>(null);
-  const instelling = useRef({ rustig, praat, hoeken });
+  const instelling = useRef({ rustig, praat, hoeken, kleur });
 
   useEffect(() => {
-    instelling.current = { rustig, praat, hoeken };
-  }, [rustig, praat, hoeken]);
+    instelling.current = { rustig, praat, hoeken, kleur };
+  }, [rustig, praat, hoeken, kleur]);
 
   useEffect(() => {
     const c = doek.current;
@@ -96,7 +96,7 @@ export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: 
     };
 
     const teken = (nu: number) => {
-      const { rustig: stil, praat: browserPraat, hoeken: haalHoeken } = instelling.current;
+      const { rustig: stil, praat: browserPraat, hoeken: haalHoeken, kleur: schermKleur } = instelling.current;
       const nuHoeken = haalHoeken?.();
       if (haalHoeken && !nuHoeken) {
         ctx.clearRect(0, 0, c.width, c.height);
@@ -145,6 +145,18 @@ export function BliepoLijn({ rustig, praat, hoeken }: { rustig: boolean; praat: 
       }
 
       ctx.clearRect(0, 0, c.width, c.height);
+      /* Een zacht gekleurd scherm: rood bij fout, groen bij goed (Squla-lessen, besluit 2). */
+      if (schermKleur) {
+        ctx.beginPath();
+        for (const [u, v] of [[0, 0], [1, 0], [1, 1], [0, 1]] as const) {
+          const [x, y] = plek(u, v);
+          if (u === 0 && v === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = schermKleur === "fout" ? "rgba(243,44,76,0.62)" : "rgba(37,222,112,0.55)";
+        ctx.fill();
+      }
       ctx.beginPath();
       for (let i = 0; i < PUNTEN; i++) {
         const u = BEGIN + (EIND - BEGIN) * (i / (PUNTEN - 1));

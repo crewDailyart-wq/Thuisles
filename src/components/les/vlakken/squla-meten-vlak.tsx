@@ -233,7 +233,8 @@ interface MetenScene {
 type Ding = { box: Box; plaat: Img; gloed: Img; sl: string; r: Rect; zeg: string; soort: "kaart" | "los" | "vast"; id: string; rondjes?: ReturnType<typeof maakRondjes>; sch?: boolean; glow?: Img[] };
 
 /** Gloed alleen op het moment dat het iets betekent: aanwijzen (geel), goed (groen), fout (rood). */
-const RING = { geel: WARM, groen: GOED, rood: 0xff6b6b } as const;
+/* "rood" (fout) is niet meer rood op de keuze van het kind (Sara, 8 november 2026, besluit 2): dezelfde zachte warme gloed als "gekozen". Alleen Bliepo's scherm kleurt rood. */
+const RING = { geel: WARM, groen: GOED, rood: WARM } as const;
 /** De weegschaal: hoe groot, en waar het draaipunt zit. */
 const BS = 1.45;
 const DRAAI = { x: VLAK_B / 2, y: 70 };
