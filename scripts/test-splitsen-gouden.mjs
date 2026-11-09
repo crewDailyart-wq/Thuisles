@@ -284,7 +284,7 @@ const SITUATIES = {
       await P.goedSleep();
       const t1 = await P.ev("performance.now()");
       const r = await reactie(P);
-      zie(`   reactie ${Math.round(r.t - t1)} ms na de laatste neerleg (incl. 200 ms nakijkpauze); sleep ${Math.round(t1 - t0)} ms`);
+      zie(`   reactie ${Math.round(r.t - t1)} ms na de laatste neerleg (incl. 400 ms rust); sleep ${Math.round(t1 - t0)} ms`);
       if (nr === 1) {
         await new Promise((r2) => setTimeout(r2, 250));
         zie(`   getalkleur na goed: ${await P.getalKleuren()}`);
@@ -297,7 +297,16 @@ const SITUATIES = {
     await reactie(P);
     for (let nr = 11; nr <= 15; nr++) {
       await opdracht(P);
-      if (nr === 11) await P.foto("07-tienvak");
+      if (nr === 11) {
+        await P.foto("07-tienvak");
+        /* 1 bal in het vak: het vinkje komt en wordt 1 keer uitgelegd (door het lesscherm; keuring punt 2). */
+        await P.leg(1, 490, 412);
+        await new Promise((r) => setTimeout(r, 1500));
+        const t = await P.tekst();
+        zie(`doos, 1 bal: Bliepo "${t}"`);
+        if (/deze knop/.test(t)) fout("vinkje 2 keer uitgelegd");
+        await P.foto("07b-vinkje");
+      }
       await P.goedSleep();
       await P.klikKnop("controleer");
       await reactie(P);
@@ -491,6 +500,26 @@ const SITUATIES = {
     zie(v ? "na 20 s stil in een verkeerde stand doet Bliepo het voor" : "FOUT: geen vangnet na 20 s");
     if (!v) fout("geen vangnet na 20 s");
     await P.wachtOp("door", 20000);
+  },
+
+  /** Proef na Ja, 1e fout, 9 s stil: het handje leest de echte stand (keuring punt 1). */
+  async "proef-hand"(P) {
+    await P.wachtOp("vraag");
+    await P.klikTekst("Ja");
+    await opdracht(P);
+    await P.leg(4, 330, 424);
+    await P.leg(1, 650, 424);
+    await reactie(P);
+    await P.pijl();
+    await opdracht(P);
+    await new Promise((r) => setTimeout(r, 9000));
+    const l = await P.log();
+    const a = l.filter((x) => x.wat === "aanwijzing").pop();
+    const t = await P.tekst();
+    zie(`proef, 4 en 1, 9 s stil: handje ${(await P.hand()) ? "ja" : "NEE"} (${a ? a.hand : "geen"}); Bliepo: "${t}"`);
+    if (!/Schuif een pion uit het paarse vak/.test(t) || /goed bezig|Jij kunt|Geen haast/.test(t)) fout("proef: handje-zin past niet bij de stand");
+    if (a?.hand !== "sleep") fout("proef: handje wijst niet van vak naar vak");
+    await P.foto("21-proef-hand");
   },
 
   /** Proef met een langzame, kinderlijke verbetering: 2 pionnen schuiven met 1 s ertussen (kind-test punt 3). */

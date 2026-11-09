@@ -123,7 +123,7 @@ export function opdracht(v: Sleepvraag, keer = 0): string[] {
 }
 /** Na de 1e fout (draaiboek §3 F.2: na de pijl worden de vakken leeg en zegt de tutor de opdracht kort opnieuw). */
 export function opnieuw(v: Sleepvraag, keer: number): string {
-  const begin = ["Probeer het nog eens.", "Nog 1 keer.", "Kom, nog een keer."][keer % 3];
+  const begin = ["Probeer het nog eens.", "Nog 1 keer.", "Kom, nog 1 keer."][keer % 3];
   if (v.soort === "huis") return `${begin} Sleep ${aantal(v.deel, v.vw, KA)} naar het paarse vak. De andere gaan ${v.zak ? "in de zak" : "naar het oranje vak"}.`;
   if (v.soort === "paren") return `${begin} Sleep in elk leeg vakje de ballen die nog missen.`;
   return `${begin} Sleep de ballen die onder de doek liggen naar het vak.`;
@@ -148,19 +148,20 @@ export const ZIN = {
   pijlUitleg: "Klaar met kijken? Tik dan op de blauwe pijl.",
   /** De eerste pijl komt na een fout: dan past "klaar met kijken" niet (kind-test punt 14). */
   pijlUitlegNaFout: "Tik op de blauwe pijl als je het nog eens wilt proberen.",
-  /** Het vinkje 1 keer uitleggen (3.15; kind-test punt 8). Zonder het woord "vinkje": dat haalt het lesscherm uit elke zin
-      (besluit 30 oktober); de knop licht op terwijl Bliepo dit zegt. */
-  vinkjeUitleg: "Ben je klaar met slepen? Tik dan op deze knop. Dan kijk ik het na.",
 
   /* Uitleg na Nee (draaiboek stap 7 t/m 10) met de 5 pionnen van het beginscherm (BOUWREGELS 14.21), maar als 1 en 4:
      vraag 1 is 2 en 3, en een afgerond uitlegvoorbeeld komt niet meteen terug als eerste opgave (3.23; kind-test punt 6). */
-  uitlegHuis: `Dit is een splitshuisje. Onder zijn 2 vakken. Daar komen de 2 delen in.`,
+  uitlegHuis: `Dit is een splitshuisje. Onderin zijn 2 vakken. Daar komen de 2 delen in.`,
   uitlegEen: "Sleep 1 pion naar het paarse vak.",
   uitlegEenKlaar: `Mooi, er ligt er ${g(1, KA)}.`,
   uitlegRest: "Sleep nu de andere pionnen naar het oranje vak.",
   /* Als iets op de verkeerde plek ligt (kind-test punt 2): zeggen wat er mis ligt; tikken op een pion in een vak legt hem terug. */
   uitlegAlInOranje: (n: number) => (n === 1 ? "Er ligt al een pion in het oranje vak. Tik erop, dan gaat hij terug naar boven." : "Er liggen al pionnen in het oranje vak. Tik erop, dan gaan ze terug naar boven."),
   uitlegTeVeelPaars: `In het paarse vak hoort er maar ${g(1, KA)}. Tik op een pion in het paarse vak, dan gaat hij terug.`,
+  /* Korte zin bij het handje als er iets verkeerd ligt (niet nog eens dezelfde lange zin; keuring punt 5). */
+  handTerugOranje: "Tik op de pion in het oranje vak.",
+  handTerugPaars: "Tik op een pion in het paarse vak.",
+  handNaarPaars: "Sleep 1 pion naar het paarse vak.",
   uitlegPaarsLeeg: `Het paarse vak is leeg. Daar hoort ${g(1, KA)} pion in.`,
   uitlegVoordoen: "Kijk, ik doe het even voor.",
   uitlegRestKlaar: `Je splitste ${g(5)} in ${g(1, KA)} en ${g(4, KB)}.`,
@@ -170,7 +171,7 @@ export const ZIN = {
   totaalSamen: `Kijk: ${g(1, KA)} en ${g(4, KB)}. Samen zijn dat ${g(5)} pionnen.`,
   totaalUitleg: `De 2 delen zijn ${g(1, KA)} en ${g(4, KB)}. Samen maken ze ${g(5)}. Alles samen heet het totaal. Dat staat boven in het dak.`,
   /** Stap 10: kun je 5 ook anders splitsen? (zelf 2 delen zoeken) */
-  andersVraag: `Maar ${g(1, KA)} en ${g(4, KB)} is maar 1 manier. Splits ${g(5)} nu zelf op een andere manier.`,
+  andersVraag: `${g(1, KA)} en ${g(4, KB)} is 1 manier om ${g(5)} te splitsen. Splits ${g(5)} nu zelf op een andere manier.`,
   andersAlGevonden: `Klopt, maar zo had je hem al: ${g(1, KA)} en ${g(4, KB)}. Probeer een andere manier.`,
   andersLeegVak: "Sleep in allebei de vakken pionnen. Dan heb je 2 delen.",
   andersHelp: `Ik help je. Ik leg ${g(3, KA)} pionnen in het paarse vak. Sleep de andere naar het oranje vak.`,
@@ -183,6 +184,9 @@ export const ZIN = {
   /* Hulphandje (15.19): 1 korte zin, de eerste keer per opdracht, met een aanmoediging ervoor. */
   hand: (vw: string) => `Pak een ${enkel(vw)} en sleep hem naar een vak.`,
   handTien: "Pak een bal en sleep hem naar het vak.",
+  /** Proef na een fout: de dingen liggen nog in de vakken; het handje wijst van het vak met te veel naar het andere vak. */
+  schuifNaarAnder: (v: HuisVraag) => `Schuif een ${enkel(v.vw)} uit het paarse vak naar ${tweedeVak(v)}.`,
+  schuifNaarPaars: (v: HuisVraag) => `Schuif een ${enkel(v.vw)} naar het paarse vak.`,
   handRest: (v: HuisVraag) => `Sleep de andere ${meervoud(v.vw)} naar ${tweedeVak(v)}.`,
 
   /* Samen voordoen na de 2e fout (15.11; draaiboek §3 F.6: de tutor zet 1 deel klaar, het kind zoekt het andere). */

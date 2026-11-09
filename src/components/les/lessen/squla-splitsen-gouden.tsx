@@ -92,7 +92,7 @@ const AANWIJZING_MS = 6000;
  * in de proef blijven de dingen liggen en schuift het kind er een paar: dan langer wachten (kind-test punt 3: elke schuif
  * werd meteen nagekeken). Elke nieuwe sleep zet de tijd weer op 0.
  */
-const NAKIJK_MS = 700;
+const NAKIJK_MS = 400;
 const NAKIJK_SCHUIF_MS = 1600;
 /** Uitleg na Nee: als een stap zo lang niet lukt, of na zoveel keer een verkeerde stand, doet Bliepo hem voor (vangnet). */
 const VANGNET_MS = 20000;
@@ -232,7 +232,8 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
     s.naamVraag = s.vraag;
     lof = kies(l, NAAM_LOF);
   }
-  lof ??= kies(l, LOF, [LOF_KIJK_INDEX]);
+  /* "Goed gekozen!" past niet bij slepen (14.35; keuring punt 4); "Dat heb je goed gezien" alleen bij kijkvragen. */
+  lof ??= kies(l, LOF, [LOF_KIJK_INDEX, ...LOF.zinnen.map((z, i) => (/gekozen/i.test(z) ? i : -1)).filter((i) => i >= 0)]);
   /* Lof en reactie beginnen niet allebei met hetzelfde woord, nooit 2 keer "Ja" (BLIEPO-KARAKTER.md §2). */
   const zonder = reactie.zinnen.map((_, i) => i).filter((i) => woord(reactie.zinnen[i]) === woord(lof));
   /* Ook "ja" midden in de lofzin telt ("Even nakijken… ja, goed!"; kind-test punt 13). */
@@ -287,6 +288,30 @@ async function zegEnDoor(l: Lesgids, zinnen: string[]) {
 type S1St = S1Stand;
 let s1Nr = 0;
 const nieuw = <T extends object>(x: T) => ({ ...x, nr: ++s1Nr });
+
+/**
+ * Waar het handje begint: bij een ding dat ECHT nog in het hoopje ligt (keuring punt 9). Het splitsvlak geeft die plek
+ * in punten van de pagina (window.__phaser.s1Punt); die rekenen we terug naar punten van het vlak (980 × 720). Lukt dat
+ * niet, dan de vaste plek `i` in het hoopje.
+ */
+function hoopVan(spec: S1Spec, i: number): Punt {
+  if (typeof window !== "undefined") {
+    try {
+      const p = (window as unknown as { __phaser?: { s1Punt?: () => Punt } }).__phaser?.s1Punt?.();
+      const c = [...document.querySelectorAll("canvas")].find((x) => {
+        const r = x.getBoundingClientRect();
+        return r.width > 300 && Math.abs(r.width / r.height - 980 / 720) < 0.05;
+      });
+      if (p && c) {
+        const r = c.getBoundingClientRect();
+        return { x: ((p.x - r.left) * 980) / r.width, y: ((p.y - r.top) * 720) / r.height };
+      }
+    } catch {
+      /* dan de vaste plek */
+    }
+  }
+  return hoopPlek(spec, i);
+}
 
 /** Waar ding `i` in het hoopje ligt (zelfde rekensom als het splitsvlak, squla-splitsen-s1.ts). */
 function hoopPlek(spec: S1Spec, i: number): Punt {
@@ -416,14 +441,24 @@ type Wacht = {
   rust?: number;
   /** Vangnet: als deze belofte klaar is, stopt het wachten (de uitleg doet het dan voor). */
   stop?: Promise<unknown>;
+  /**
+   * De stand bij het begin, als er al iets in de vakken ligt (proef na een fout, samen voordoen). Alleen voor het handje:
+   * het moet de echte stand lezen (keuring punt 1). Nakijken gebeurt pas na een sleep van het kind.
+   */
+  begin?: S1St;
+  /** Geen aanmoediging bij het handje (als er iets verkeerd ligt; keuring punt 5). */
+  zonderAanmoediging?: () => boolean;
 };
 
 /** Van het hoopje naar het eerste lege vak, of alleen "pak er een" als er geen leeg vak meer is. */
+/** Een stand die het vlak nog niet gemeld heeft (na een `auto` van Bliepo, of de stand van de vorige poging). */
+const stand = (tel: number[], los: number): S1St => ({ soort: "s1stand", tel, waarden: [], los });
+
 function handNaarLeeg(spec: S1Spec, s: S1St | null, sleutel: string): Hand | null {
   const tel = s?.tel ?? spec.zones.map(() => 0);
   const los = s ? s.los : spec.n;
   if (los <= 0) return null;
-  const van = hoopPlek(spec, 0);
+  const van = hoopVan(spec, 0);
   const leeg = spec.zones.findIndex((_, j) => (tel[j] ?? 0) === 0);
   return { van, naar: leeg >= 0 ? { x: spec.zones[leeg].x, y: spec.zones[leeg].y } : null, sleutel: `${sleutel}-${leeg}-${los}` };
 }
@@ -445,7 +480,7 @@ async function wachtSleep(l: Lesgids, o: Wacht): Promise<S1St> {
     if (!klaarMetZin || weg) return;
     klok = setTimeout(() => {
       if (weg) return;
-      const h = o.hand(laatste);
+      const h = o.hand(laatste ?? o.begin ?? null);
       if (h) {
         log(l, "aanwijzing", { hand: h.naar ? "sleep" : "pak" });
         handAan = true;
@@ -454,7 +489,8 @@ async function wachtSleep(l: Lesgids, o: Wacht): Promise<S1St> {
           handGezegd = true;
           /* Ronde 15: bij een opdracht komt de aanmoediging samen met het hulphandje; het kind moet slepen, niet nadenken (14.35). */
           const hz = typeof o.handZin === "function" ? o.handZin() : o.handZin;
-          void zeg(l, `${AANMOEDIG_SLEPEN[Math.floor(Math.random() * AANMOEDIG_SLEPEN.length)]} ${hz}`).catch(() => {});
+          const aan = o.zonderAanmoediging?.() ? "" : `${AANMOEDIG_SLEPEN[Math.floor(Math.random() * AANMOEDIG_SLEPEN.length)]} `;
+          void zeg(l, `${aan}${hz}`).catch(() => {});
         }
       }
       /* Ligt er bij de doos al iets in het vak, dan komt er niets: het vinkje oplichten lokte een tik uit terwijl het kind
@@ -480,11 +516,9 @@ async function wachtSleep(l: Lesgids, o: Wacht): Promise<S1St> {
     for (;;) {
       if (laatste && o.klaar(laatste)) {
         const wacht = o.vinkje ? l.knoppen(["controleer"]).then(() => null) : l.wacht(o.rust ?? NAKIJK_MS).then(() => null);
-        if (o.vinkje && !s.vinkjeUitgelegd) {
-          /* Het vinkje 1 keer per les uitleggen (3.15; kind-test punt 8): de knop licht op terwijl Bliepo het zegt. */
-          s.vinkjeUitgelegd = true;
-          void l.wijsAan("controleer", ZIN.vinkjeUitleg).catch(() => {});
-        }
+        /* Het vinkje legt het lesscherm zelf 1 keer uit ("Klaar? Tik dan op het vinkje."; 3.15). Geen 2e uitleg van de les
+           (keuring punt 2). */
+        if (o.vinkje) s.vinkjeUitgelegd = true;
         const r = await Promise.race([wacht, p, gestopt]);
         if (r === null || r.soort === "stop") break;
         laatste = r;
@@ -578,14 +612,39 @@ async function huisVraag(l: Lesgids, v: HuisVraag, eersteVraag: boolean, proef: 
   let eerder: Fout | null = null;
   let eersteP = -1;
   let zinnen = opdracht(v, keerVan(l, v));
+  let vorige: S1St | undefined;
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     const z = opdrachtZin(l, zinnen);
     /* In de proef blijven de dingen na een fout liggen: dan langer rust voor het nakijken, zodat het kind er een paar kan
        schuiven (kind-test punt 3). */
-    const rust = proef && poging === 2 ? NAKIJK_SCHUIF_MS : NAKIJK_MS;
-    const x = await wachtSleep(l, { spec, klaar: (q) => q.los === 0, rust, hand: (q) => handNaarLeeg(spec, q, v.id), handZin: ZIN.hand(v.vw), zin: z });
+    const schuif = !!proef && poging === 2;
+    const rust = schuif ? NAKIJK_SCHUIF_MS : NAKIJK_MS;
+    /* Het handje leest de echte stand (keuring punt 1): ligt alles al in de vakken (proef na een fout), dan wijst het van
+       het vak met te veel naar het andere vak, met een zin die daarbij past. Anders van het hoopje naar een leeg vak. */
+    const schuifHand = (q: S1St | null): { hand: Hand; zin: string } | null => {
+      if (!q || q.los > 0 || q.tel[0] === v.deel) return null;
+      const meer = q.tel[0] > v.deel;
+      return {
+        hand: { van: { x: b.zones[meer ? 0 : 1].x, y: b.zones[meer ? 0 : 1].y }, naar: { x: b.zones[meer ? 1 : 0].x, y: b.zones[meer ? 1 : 0].y }, sleutel: `schuif-${v.id}-${q.tel.join("")}` },
+        zin: meer ? ZIN.schuifNaarAnder(v) : ZIN.schuifNaarPaars(v),
+      };
+    };
+    let huidig: S1St | null = vorige ?? null;
+    const x = await wachtSleep(l, {
+      spec,
+      begin: schuif ? vorige : undefined,
+      klaar: (q) => q.los === 0,
+      rust,
+      hand: (q) => {
+        huidig = q;
+        return schuifHand(q)?.hand ?? handNaarLeeg(spec, q, v.id);
+      },
+      handZin: () => schuifHand(huidig)?.zin ?? ZIN.hand(v.vw),
+      zonderAanmoediging: () => !!schuifHand(huidig),
+      zin: z,
+    });
+    vorige = x;
     void l.zeg().catch(() => {});
-    await l.wacht(DENK_MS);
     const p = x.tel[0];
     if (p === v.deel) {
       goedMoment(l, { beeld: b.klaar() });
@@ -651,7 +710,7 @@ async function samenHuis(l: Lesgids, v: HuisVraag, b: ReturnType<typeof huisOpbo
   const x = await wachtSleep(l, {
     spec: { ...spec, auto: v.deel },
     klaar: (q) => q.los === 0,
-    hand: (q) => (q && q.los === 0 ? null : { van: hoopPlek(spec, v.tot - 1), naar: { x: b.zones[1].x, y: b.zones[1].y }, sleutel: `samen-${v.id}-${q?.los ?? ""}` }),
+    hand: (q) => (q && q.los === 0 ? null : { van: hoopVan(spec, v.tot - 1), naar: { x: b.zones[1].x, y: b.zones[1].y }, sleutel: `samen-${v.id}-${q?.los ?? ""}` }),
     handZin: ZIN.handRest(v),
     zin: z,
   });
@@ -676,7 +735,6 @@ async function parenVraag(l: Lesgids, v: ParenVraag): Promise<Uitkomst> {
     const z = opdrachtZin(l, zinnen);
     const x = await wachtSleep(l, { spec, klaar: (q) => q.los === 0, hand: (q) => handNaarLeeg(spec, q, v.id), handZin: ZIN.hand("tennisbal"), zin: z });
     void l.zeg().catch(() => {});
-    await l.wacht(DENK_MS);
     if (x.tel.every((c, i) => c === b.rests[i])) {
       goedMoment(l);
       if (poging === 1) {
@@ -735,7 +793,7 @@ async function samenParen(l: Lesgids, v: ParenVraag, b: ReturnType<typeof parenO
   const x = await wachtSleep(l, {
     spec: { ...spec, auto: b.n - 1 },
     klaar: (q) => q.los === 0,
-    hand: (q) => (q && q.los === 0 ? null : { van: hoopPlek(spec, b.n - 1), naar: { x: laatste.x, y: laatste.y }, sleutel: `samen-${v.id}` }),
+    hand: (q) => (q && q.los === 0 ? null : { van: hoopVan(spec, b.n - 1), naar: { x: laatste.x, y: laatste.y }, sleutel: `samen-${v.id}` }),
     handZin: ZIN.samenParenRest,
     zin: z,
   });
@@ -764,12 +822,11 @@ async function tienVraag(l: Lesgids, v: TienVraag): Promise<Uitkomst> {
       spec,
       klaar: (q) => q.tel[0] >= 1,
       vinkje: true,
-      hand: (q) => ((q?.tel[0] ?? 0) === 0 ? { van: hoopPlek(spec, 0), naar: { x: b.zones[0].x, y: b.zones[0].y }, sleutel: `${v.id}-leeg` } : null),
+      hand: (q) => ((q?.tel[0] ?? 0) === 0 ? { van: hoopVan(spec, 0), naar: { x: b.zones[0].x, y: b.zones[0].y }, sleutel: `${v.id}-leeg` } : null),
       handZin: ZIN.handTien,
       zin: z,
     });
     void l.zeg().catch(() => {});
-    await l.wacht(DENK_MS);
     const n = x.tel[0];
     if (n === b.rest) {
       goedMoment(l, { beeld: b.beeld(true), uit: ["doos-doek"], goedIds: b.onder });
@@ -823,7 +880,7 @@ async function samenTien(l: Lesgids, v: TienVraag, b: ReturnType<typeof tienOpbo
   const x = await wachtSleep(l, {
     spec: { ...spec, auto: b.rest - 1 },
     klaar: (q) => q.tel[0] >= b.rest,
-    hand: (q) => ((q?.tel[0] ?? b.rest - 1) >= b.rest ? null : { van: hoopPlek(spec, b.rest - 1), naar: { x: b.zones[0].x, y: b.zones[0].y }, sleutel: `samen-${v.id}` }),
+    hand: (q) => ((q?.tel[0] ?? b.rest - 1) >= b.rest ? null : { van: hoopVan(spec, b.rest - 1), naar: { x: b.zones[0].x, y: b.zones[0].y }, sleutel: `samen-${v.id}` }),
     handZin: b.rest === 1 ? "Sleep de bal naar het vak." : ZIN.samenTienRest,
     zin: z,
   });
@@ -858,7 +915,7 @@ async function uitlegRoute(l: Lesgids) {
    *     door. Het kind kan zo nooit vastlopen (15.18).
    */
   const midden = (j: number): Punt => ({ x: b.zones[j].x, y: b.zones[j].y });
-  const stap = async (zin: string, doel: [number, number], handZin: string, mis: (q: S1St) => { zin: string; hand: Hand } | null) => {
+  const stap = async (zin: string, doel: [number, number], handZin: string, mis: (q: S1St) => { zin: string; kort: string; hand: Hand } | null) => {
     const z = opdrachtZin(l, [zin]);
     let verkeerd = 0;
     let gezegd = "";
@@ -868,20 +925,21 @@ async function uitlegRoute(l: Lesgids) {
     let klok = setTimeout(() => vangnet(), VANGNET_MS);
     let wasMis = false;
     let foutHand: Hand | null = null;
-    let foutZin: string | null = null;
+    let foutKort: string | null = null;
     const x = await wachtSleep(l, {
       spec,
       klaar: (q) => q.tel[0] === doel[0] && q.tel[1] === doel[1],
       rust: NAKIJK_MS,
-      hand: (q) => foutHand ?? ((q?.los ?? spec.n) > 0 ? { van: hoopPlek(spec, spec.n - 1), naar: midden(doel[0] > (q?.tel[0] ?? 0) ? 0 : 1), sleutel: `uitleg-${zin}-${q?.los}` } : null),
+      hand: (q) => foutHand ?? ((q?.los ?? spec.n) > 0 ? { van: hoopVan(spec, spec.n - 1), naar: midden(doel[0] > (q?.tel[0] ?? 0) ? 0 : 1), sleutel: `uitleg-${zin}-${q?.los}` } : null),
       /* Ligt er iets verkeerd, dan hoort bij het handje de zin over wat er mis ligt (kind-test punt 2). */
-      handZin: () => foutZin ?? handZin,
+      handZin: () => foutKort ?? handZin,
+      zonderAanmoediging: () => !!foutKort,
       zin: z,
       stop,
       bijStand: (q) => {
         const m = mis(q);
         foutHand = m?.hand ?? null;
-        foutZin = m?.zin ?? null;
+        foutKort = m?.kort ?? null;
         if (!m) {
           wasMis = false;
           clearTimeout(klok);
@@ -907,15 +965,15 @@ async function uitlegRoute(l: Lesgids) {
       await legZelf(l, spec, 0, doel[0] + doel[1]);
     }
   };
-  const oranjeTerug = (q: S1St) => ({ zin: ZIN.uitlegAlInOranje(q.tel[1]), hand: { van: midden(1), naar: null, sleutel: `terug-oranje-${q.tel.join("")}` } });
-  const paarsTerug = (q: S1St) => ({ zin: ZIN.uitlegTeVeelPaars, hand: { van: midden(0), naar: null, sleutel: `terug-paars-${q.tel.join("")}` } });
+  const oranjeTerug = (q: S1St) => ({ zin: ZIN.uitlegAlInOranje(q.tel[1]), kort: ZIN.handTerugOranje, hand: { van: midden(1), naar: null, sleutel: `terug-oranje-${q.tel.join("")}` } });
+  const paarsTerug = (q: S1St) => ({ zin: ZIN.uitlegTeVeelPaars, kort: ZIN.handTerugPaars, hand: { van: midden(0), naar: null, sleutel: `terug-paars-${q.tel.join("")}` } });
   /* Stap a: 1 pion naar het paarse vak. */
   await stap(ZIN.uitlegEen, [1, 0], ZIN.uitlegEen, (q) => (q.tel[1] > 0 ? oranjeTerug(q) : q.tel[0] > 1 ? paarsTerug(q) : null));
   zet(l, { beeld: uitlegBeeld({ la: "1" }) });
   await zeg(l, ZIN.uitlegEenKlaar);
   /* Stap b: de andere pionnen naar het oranje vak. Het paarse vak blijft 1 (ook 2 en 3, of 0 en 5, worden opgevangen). */
   await stap(ZIN.uitlegRest, [1, 4], ZIN.uitlegRest, (q) =>
-    q.tel[0] > 1 ? paarsTerug(q) : q.tel[0] === 0 ? { zin: ZIN.uitlegPaarsLeeg, hand: { van: q.los > 0 ? hoopPlek(spec, 0) : midden(1), naar: midden(0), sleutel: `paars-leeg-${q.tel.join("")}` } } : null,
+    q.tel[0] > 1 ? paarsTerug(q) : q.tel[0] === 0 ? { zin: ZIN.uitlegPaarsLeeg, kort: ZIN.handNaarPaars, hand: { van: q.los > 0 ? hoopVan(spec, 0) : midden(1), naar: midden(0), sleutel: `paars-leeg-${q.tel.join("")}` } } : null,
   );
   goedMoment(l, { beeld: uitlegBeeld({ la: "1", lb: "4" }) });
   await zegEnDoor(l, [ZIN.uitlegRestKlaar]);
@@ -932,7 +990,7 @@ async function uitlegRoute(l: Lesgids) {
 
 async function totaalVraag(l: Lesgids) {
   const vraag = "uitleg-totaal-5";
-  const opties = schud(TOTAAL_KEUZES).map(String);
+  let opties = schud(TOTAAL_KEUZES).map(String);
   let eerder: Fout | null = null;
   let eersteX = "";
   let zinnen = [ZIN.totaalVraag];
@@ -957,9 +1015,12 @@ async function totaalVraag(l: Lesgids) {
     if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = `Je koos weer {${x}:${x === "1" ? KA : KB}}.`;
     log(l, "reactie", { soort: `fout${poging}`, vraag, x, denkfout: f.code, zin: fz.join(" ") });
     if (poging === 1) {
-      /* Draaiboek §3 B.2: de vraag en de knoppen gaan weg; de eerste zin, dan komen de knoppen terug met de hint. */
-      await zeg(l, fz[0]);
+      /* Draaiboek §3 B.2: de vraag en de knoppen gaan weg; de eerste zin, dan WACHT de les op de pijl; daarna de vraag
+         anders verwoord (de hint) en de knoppen in een andere volgorde (keuring punt 3). */
+      await zegEnPijl(l, [fz[0]], true);
       zinnen = fz.slice(1);
+      const oud = opties.join();
+      for (let k = 0; k < 6 && opties.join() === oud; k++) opties = schud(TOTAAL_KEUZES).map(String);
       eerder = f;
       eersteX = x;
       continue;
@@ -1001,8 +1062,7 @@ async function andersSplitsen(l: Lesgids) {
     if (hulp) zin = ZIN.andersHelp;
     /* Eindigde de vorige zin al met de opdracht ("Probeer een andere manier."), dan niet nog eens (kind-test punt 10). */
     const z = zin ? opdrachtZin(l, [zin]) : Promise.resolve();
-    const x = await wachtSleep(l, { spec: hulp ? { ...spec, auto: 3 } : spec, klaar: (q) => q.los === 0, hand: (q) => handNaarLeeg(spec, q, `anders-${ronde}`), handZin: ZIN.hand("pion"), zin: z });
-    await l.wacht(DENK_MS);
+    const x = await wachtSleep(l, { spec: hulp ? { ...spec, auto: 3 } : spec, begin: hulp ? stand([3, 0], 2) : undefined, klaar: (q) => q.los === 0, hand: (q) => handNaarLeeg(spec, q, `anders-${ronde}`), handZin: ZIN.hand("pion"), zin: z });
     const [a, c] = x.tel;
     log(l, "anders", { tel: x.tel });
     if (a === 0 || c === 0) {

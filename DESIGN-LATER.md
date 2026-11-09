@@ -24,6 +24,8 @@ Gemeten bij de gouden les Splitsen (squla-splits-splitsen1-1-gouden), 9 november
 
 Opnieuw gemeten na het herstel van de kind-test (gouden les Splitsen, 9 november 2026, 2 keer): laptop 58–60 beelden/s, langste beeld 28–41 ms (in orde); trage telefoon 58–59 beelden/s, hapering 56–59 ms (grens 50 ms). Echt slepen: eerste sleep laptop 46 beelden/s, 67 ms (gedeeld splitsvlak, ook in de oude les); daarna 60 beelden/s, 17 ms.
 
+Na de keuring (gouden les Splitsen, 9 november 2026, 2 keer, niets ernaast): laptop 60 beelden/s, langste beeld 27–32 ms (in orde); trage telefoon 58–59 beelden/s, hapering 62–71 ms (grens 50 ms).
+
 ## Bouwen met het oog op later
 - Geen vaste pixelmaten (gebruik procenten of schaal).
 - Geen onnodig zware animaties.

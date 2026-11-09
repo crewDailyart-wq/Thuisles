@@ -544,19 +544,19 @@ Nieuwe versie naast de oude les squla-splits-splitsen1-1 "Splitsen tot 10" (die 
 
 **Wat er extra is bijgekomen** (uit het draaiboek Splitsen, binnen dezelfde stof en getallen; 15.22 punt 4):
 - De startvraag "Kun jij een getal al in 2 delen splitsen? Bijvoorbeeld deze 5 pionnen." (draaiboek stap 1). Ja = een proef met vraag 1 en 2 van Squla (geen extra vragen); 2 fouten in de proef = de uitleg en dan alle 15 vragen. Nee = de uitleg.
-- De uitleg na Nee (draaiboek stap 7–10), met het voorbeeld van het beginscherm (5 pionnen = 2 en 3): stap voor stap slepen (1 pion, er 2 van maken, de rest naar het oranje vak), de keuzevraag **"Hoeveel pionnen zijn er samen?"** (2 / 3 / 5), "het totaal staat boven in het dak", en **"Splits 5 nu zelf op een andere manier."**
+- De uitleg na Nee (draaiboek stap 7–10), met de 5 pionnen van het beginscherm, verdeeld als 1 en 4 (bijgewerkt in Ronde 21b): stap voor stap slepen (1 pion, dan de rest naar het oranje vak), de keuzevraag **"Hoeveel pionnen zijn er samen?"** (1 / 4 / 5), "het totaal staat boven in het dak", en **"Splits 5 nu zelf op een andere manier."**
 - Na goed staat het andere deel onder het vak en het totaal in het dak (draaiboek stap 8: het totaal staat boven).
 
-**Eigen invulling, niet van Synthesis** (ook in splitsen.md onder "Gouden les squla-splits-splitsen1-1-gouden: eigen invulling"): de doos met de doek (vraag 11–15: hints, fouttabel, denkfout "net zoveel gelegd als je ziet"); de hints die naar het getal onder het paarse vak wijzen; de zin als het kind in de uitleg te ver sleept ("Er horen er 2 in het paarse vak.").
+**Eigen invulling, niet van Synthesis** (ook in splitsen.md onder "Gouden les squla-splits-splitsen1-1-gouden: eigen invulling"): de doos met de doek (vraag 11–15: hints, fouttabel, denkfout "net zoveel gelegd als je ziet"); de hints die naar het getal onder het paarse vak wijzen; de zinnen als het kind in de uitleg iets op een verkeerde plek legt ("Er ligt al een pion in het oranje vak. Tik erop, dan gaat hij terug naar boven.") en het vangnet.
 
 **Afwijkingen van het draaiboek, met de reden:**
 - **Niet gebouwd:** de woorden "samenstellen" en "ontleden" (Engels, draaiboek §10), de piano, de tegel van 5 ("in hoeveel delen?"), de somvraag "welke som heb je gemaakt?" met de tussenvraag, "weet je nog hoe dat heet?", "nog een manier voor 7", de keuze 8 of 12 en het lijstje met gevonden splitsingen. Squla level 1 heeft die vragen niet en we voegen niets toe (15.22).
 - **Proef goed:** bij Synthesis is de les dan klaar. Bij ons gaat de les door met vraag 3 t/m 15 (alle Squla-vragen blijven erin, zoals bij de gouden klokles).
-- **Slepen in plaats van − en +** (14.26). Slepen kan niet "stoppen bij het doel"; sleept het kind in de uitleg te ver, dan zegt Bliepo 1 keer hoe het moet.
-- **Nakijken:** bij de huisjes vanzelf zodra alles in een vak ligt (14.26, 14.30), na 0,2 s rust zodat het kind nog kan schuiven. Synthesis gebruikt in de vrije opdrachten het vinkje. Bij de doos: wél het vinkje (zie vraag 1).
-- **Hulp:** bij Synthesis is het handje een knop en komt er 1 gesproken hint na 6–16 s. Bij ons komt het hulphandje vanzelf na ± 6 s (15.19). De herinnering "vergeet het vinkje niet" komt niet: Synthesis zegt die alleen als het antwoord al goed is, dus dat verklapt het (15.17). Wel licht het vinkje na 6 s even op.
+- **Slepen in plaats van − en +** (14.26). Slepen kan niet "stoppen bij het doel"; ligt er in de uitleg iets verkeerd, dan zegt Bliepo wat er mis ligt, en na 3 keer of 20 s doet hij het voor (Ronde 21b).
+- **Nakijken:** bij de huisjes vanzelf zodra alles in een vak ligt (14.26, 14.30), na 0,4 s rust (in de proef na een fout 1,6 s) zodat het kind nog kan schuiven. Synthesis gebruikt in de vrije opdrachten het vinkje. Bij de doos: wél het vinkje (zie vraag 1).
+- **Hulp:** bij Synthesis is het handje een knop en komt er 1 gesproken hint na 6–16 s. Bij ons komt het hulphandje vanzelf na ± 6 s (15.19). De herinnering "vergeet het vinkje niet" komt niet: Synthesis zegt die alleen als het antwoord al goed is, dus dat verklapt het (15.17). Het vinkje licht niet vanzelf op; het lesscherm legt het de eerste keer zelf uit.
 - **2 pogingen** (15.11): Synthesis herhaalt bij een splitsopdracht onbeperkt dezelfde zin. Bij ons: 1e fout = eerste zin + hint en de pijl; 2e fout = uitleg en samen voordoen (Bliepo legt het ene deel, het kind sleept de rest), de les gaat door.
-- **"Kun je 5 ook anders splitsen?" Ja/Nee** is weggelaten: Bliepo vraagt het meteen ("Splits 5 nu zelf op een andere manier."). Lukt het 2 keer niet (dezelfde manier of 1 vak leeg), dan legt Bliepo 1 pion in het paarse vak (zoals de hulp na Nee, draaiboek §3 E).
+- **"Kun je 5 ook anders splitsen?" Ja/Nee** is weggelaten: Bliepo vraagt het meteen ("Splits 5 nu zelf op een andere manier."). Lukt het 2 keer niet (dezelfde manier of 1 vak leeg), dan legt Bliepo 3 pionnen in het paarse vak (zoals de hulp na Nee, draaiboek §3 E); lukt het dan nog niet, dan maakt hij het af.
 - **Na goed vanzelf door, na een fout de pijl:** zoals het draaiboek (§0). Heel snel: Bliepo zegt niets (draaiboek §3 B.7, F.8).
 - **Naam:** bij de groet en hooguit 1 keer bij een lof (draaiboek: bij een lof en aan het eind).
 
@@ -564,7 +564,7 @@ Nieuwe versie naast de oude les squla-splits-splitsen1-1 "Splitsen tot 10" (die 
 1. **De doos met de doek (vraag 11–15): nakijken met het vinkje.** Vanzelf nakijken zodra het aantal klopt zou betekenen dat het kind gewoon sleept tot Bliepo "goed" zegt. Daarom het vinkje, zoals de oude les. Goed zo?
 2. **Omgedraaid bij het huisje** (bijvoorbeeld 4 in het paarse vak bij "sleep 3 naar het paarse vak", 7 pionnen): Bliepo zegt alleen "In het paarse vak liggen er 4." en wijst naar het getal onder het paarse vak. "Je hebt ze omgedraaid" zou het andere getal verklappen. Goed zo?
 3. **0 als deel** (in de uitleg "splits 5 op een andere manier": alle 5 in 1 vak): Bliepo zegt "Leg in allebei de vakken pionnen." en het kind probeert opnieuw; het telt niet als fout. Synthesis doet het wisselend. Goed zo, of moet 5 en 0 goed zijn?
-4. **3 en 2 na 2 en 3** (omgedraaid, in de uitleg): telt als goed, met "je draaide de delen om", zoals Synthesis bij 5. Goed zo?
+4. **4 en 1 na 1 en 4** (omgedraaid, in de uitleg): telt als goed, met "je draaide de delen om", zoals Synthesis bij 5. Goed zo?
 5. **Het totaal in het dak** komt pas na goed (Synthesis laat het totaal altijd boven zien). Tijdens de opdracht staan de pionnen in het dak. Zo laten?
 6. **Voorrekenen bij de 3 huisjes** ("Bij het huisje met 6: 4 en 3 is samen 7. We zoeken 6."), zoals Synthesis. Het kind ziet dan wel dat het er 1 te veel is. Mag dat?
 7. **De somvraag van Synthesis** ("welke som heb je gemaakt?", 2 + 3 = 5) is niet gebouwd, want Squla "Splitsen tot 10" heeft geen sommen. Wil je hem later wel in de uitleg?
@@ -592,7 +592,7 @@ Alleen in de gouden les Splitsen. De oude les is niet veranderd. Per punt van de
 | 5 | "Splits 5 anders": eindeloos dezelfde hulp | **Opgelost.** Na 2 keer zonder nieuwe manier legt Bliepo 3 pionnen in het paarse vak; lukt het dan nog niet, dan maakt Bliepo het af ("3 en 2. Dat is ook 5.") en gaat de les door. |
 | 6 | Uitlegvoorbeeld 5 = 2 en 3 komt meteen terug als vraag 1 (3.23) | **Opgelost.** De uitleg gebruikt dezelfde 5 pionnen van het beginscherm, maar als **1 en 4** (de keuzevraag wordt 1 / 4 / 5). Na een mislukte proef komt vraag 1 nog wel 2 keer (proef en les), zoals bij de klokles. Graag je akkoord: het uitlegvoorbeeld is niet meer precies het beginscherm-getal 2. |
 | 7 | De 5 in het dak over een pion | **Opgelost.** Het totaal komt pas in het dak als alle pionnen in een vak liggen. |
-| 8 | Vinkje bij de doos niet uitgelegd, en het lichtte op terwijl het kind bezig was | **Opgelost.** De eerste keer licht de knop op en zegt Bliepo "Ben je klaar met slepen? Tik dan op deze knop. Dan kijk ik het na." Niet meer vanzelf oplichten na 6 s. Let op: het woord "vinkje" kan Bliepo niet zeggen, het lesscherm haalt elke zin met "vinkje" weg (besluit 30 oktober). Mag dat blijven, nu 3.15 1 keer uitleggen toestaat? |
+| 8 | Vinkje bij de doos niet uitgelegd, en het lichtte op terwijl het kind bezig was | **Opgelost** (bijgewerkt in Ronde 21c). Het vinkje licht niet meer vanzelf op na 6 s. De uitleg doet het lesscherm zelf de eerste keer: "Klaar? Tik dan op het vinkje." De eigen zin van de les is weer weg (anders werd het 2 keer uitgelegd). (Eerder stond hier dat Bliepo het woord "vinkje" niet kan zeggen: dat klopt maar half. Het lesscherm haalt "vinkje" weg uit de zinnen van de les, maar zegt zelf wel 1 keer "Tik dan op het vinkje.") |
 | 9 | Advies bij de 2e fout dat het kind niet meer kan doen, en "leg" | **Opgelost.** De zinnen zijn nu uitleg ("Er horen er precies 8 in. Dat is het getal eronder."); "leg" → "sleep"/"legde". |
 | 10 | "Probeer een andere manier." 2 keer achter elkaar | **Opgelost.** |
 | 11 | Grammatica ("Er horen er 1", "liggen er 4") | **Opgelost**: "In het paarse vak ligt 1 pion." / "liggen 4 pionnen."; "In het paarse vak hoort er maar 1." |
@@ -612,5 +612,26 @@ Alleen in de gouden les Splitsen. De oude les is niet veranderd. Per punt van de
 - **Punt 16 (de doek):** Opnieuw bekeken: 2,5 s na "Ik til de doek op" is de doek helemaal weg en zie je de ballen eronder. De kind-test fotografeerde midden in het wegschuiven. Niets veranderd.
 
 **Opnieuw getest na het herstel** (als Testkind, Chrome zonder venster, zonder koekje; 0 regels bij een echt kind): Nee-route alles goed; Ja met fouten; proef met 2 fouten; uitleg vastlopen (eerst in het oranje vak, 2 en 3, 0 en 5: steeds een passende zin, het handje naar de verkeerde plek, en het vangnet doet het voor); proef met een langzame sleep (2 pionnen schuiven met 1 s ertussen: pas daarna nagekeken, goed na een fout). Speelcontrole tot het eind, ook als alles fout is. Verklapcontrole, opgaven en inhoudsvergelijking in orde (de vervangen zinnen staan in WEGGEHAALD.md).
-**Tempo:** Bliepo reageert nu ± 0,8 s na de laatste pion (was 0,3 s), omdat hij eerst even wacht of het kind nog schuift.
+**Tempo:** (Ronde 21b) Bliepo reageerde ± 0,8 s na de laatste pion. In Ronde 21c teruggebracht tot ± 0,4 s; zie daar.
 **Vloeiend:** laptop 58–60 beelden per seconde, langste beeld 28–41 ms. Trage telefoon 58–59 beelden per seconde, hapering 56–59 ms (grens 50 ms; latere fase, DESIGN-LATER.md).
+
+### Ronde 21c — herstel na de keuring (KEURING-SPLITSEN-GOUDEN.md, 9 november 2026)
+
+| Punt | Wat | Gedaan |
+|---|---|---|
+| 1 (ernstig) | Proef na Ja: na een fout wees het handje van het lege dak naar het paarse vak, met "Pak een pion …" | **Opgelost.** Het handje leest nu de echte stand. Liggen alle pionnen al in de vakken, dan wijst het van het vak met te veel naar het andere vak, met de zin "Schuif een pion uit het paarse vak naar het oranje vak." (of "… naar het paarse vak"), zonder aanmoediging ervoor. Getest: proef, 4 en 1, 9 s stil, schermfoto. |
+| 2 (middel) | Vinkje 2 keer uitgelegd | **Opgelost.** Alleen het lesscherm legt het uit ("Klaar? Tik dan op het vinkje."). Ronde 21b punt 8 is verbeterd. |
+| 3 | "Hoeveel samen?": na de 1e fout geen pijl, zelfde volgorde | **Opgelost** zoals het draaiboek (§3 B.2): na de eerste zin wacht Bliepo op de pijl, dan de hint en de knoppen in een andere volgorde. |
+| 4 | "Goed gekozen!" bij slepen | **Opgelost**: die lofzin komt niet meer in deze les. |
+| 5 | Zelfde zin 2 keer bij een verkeerde stand, met "Je bent goed bezig." | **Opgelost**: bij het handje nu een korte andere zin ("Tik op de pion in het oranje vak."), zonder aanmoediging. |
+| 6 | "Nog 1 keer." / "Kom, nog een keer." | **Opgelost**: "Kom, nog 1 keer." |
+| 7 | Reactie 0,8 s (6.10: 0,2–0,4 s) | **Aangepast**: na de laatste pion wacht Bliepo 0,4 s rust en reageert dan meteen (geen extra denkpauze meer), dus ± 0,4 s. In de proef na een fout, als het kind zelf schuift, blijft het 1,6 s. **Twijfel voor jou:** 6.10 gaat over "na de klik". Bij slepen is er geen klik; ik lees het als "na de laatste pion". Mag de proef-uitzondering (1,6 s) blijven? |
+| 8 | Stroeve zinnen | **Opgelost**: "1 en 4 is 1 manier om 5 te splitsen." en "Onderin zijn 2 vakken." |
+| 9 | Handje begint op een vaste plek in het hoopje | **Opgelost**: het begint bij een pion die echt nog in het hoopje ligt. |
+| 10 | Oude tekst in KEUZES en het draaiboek | **Bijgewerkt** (Ronde 21 hierboven en splitsen.md). |
+| 11 | Na "splits 5 anders" kan vraag 1 meteen 2 en 3 zijn | Niet veranderd: dat kiest het kind zelf. Maakt Bliepo het af, dan is het 3 en 2 (niet 2 en 3). Alleen gemeld. |
+| 12 | De 7 op de eindkaart raakt de punt van het dak bijna | **Opgelost** (iets lager en kleiner). |
+| 13 | Vloeiend | Opnieuw gemeten met een rustige computer; zie hieronder. |
+
+**Opnieuw getest na Ronde 21c** (als Testkind, Chrome zonder venster, zonder koekje; 0 regels bij een echt kind): eigen testscript alle 7 situaties groen (ook: proef, 4 en 1, 9 s stil → handje van het paarse naar het oranje vak met "Schuif een pion uit het paarse vak naar het oranje vak."; doos met 1 bal → alleen "Klaar? Tik dan op het vinkje."); reactie ± 0,4 s na de laatste pion; speelcontrole alles goed en alles fout tot het eind; verklapcontrole (121 antwoorden), opgaven en inhoudsvergelijking in orde (de 4 vervangen zinnen staan in WEGGEHAALD.md).
+**Vloeiend** (2 keer, niets anders ernaast; de computer had nog wat achtergrondbelasting van andere programma's): laptop 60 beelden per seconde, langste beeld 27–32 ms (in orde). Trage telefoon 58–59 beelden per seconde, hapering 62–71 ms (grens 50 ms; latere fase, DESIGN-LATER.md).
