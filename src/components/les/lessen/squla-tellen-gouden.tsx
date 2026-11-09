@@ -294,10 +294,13 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
   const opties = schud(v.keuzes).map(String);
   const fouten = foutenVan(v);
   const goed = String(v.n);
+  /* De zin van de vorige vraag weg zodra het nieuwe fruit komt (keuring 9 nov). */
+  if (!eersteVraag) void l.zeg().catch(() => {});
   zet(l, { opgave: opgaveVan(v), nummers: [], kleur: v.fruit.kleur, tikbaar: false, hand: null });
   if (!eersteVraag) speelLesgeluid("verschijn");
   await l.wacht(eersteVraag ? 200 : 700);
   let eerder: Fout | null = null;
+  let eersteX = "";
   let zinnen = eersteVraag ? [ZIN.vraag(v.fruit), ZIN.vraagEerste] : [ZIN.vraag(v.fruit)];
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     zetTestAntwoord(goed);
@@ -330,12 +333,15 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
     const f = fouten[x] ?? { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk", eerste: "", hint: "", uitleg: "", weer: [], scherm: "" } satisfies Fout;
     legDenkfoutVast(l, { vraag: v.id, antwoord: x, denkfout: f.code, poging });
     const fz = foutZinnen(l, f, poging, eerder).filter(Boolean);
+    /* Hetzelfde foute getal 2 keer: niet 2 keer dezelfde eerste zin (keuring 9 nov). */
+    if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = ZIN.weerGekozen(Number(x), v.fruit);
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: fz.join(" ") });
     if (poging === 1) {
       /* 1e fout (draaiboek §3 A.2): de vraag verdwijnt; de eerste zin, dan komen de knoppen meteen terug met de hint. */
       await zeg(l, fz[0]);
       zinnen = fz.slice(1);
       eerder = f;
+      eersteX = x;
     } else {
       /* 2e fout (draaiboek §3 A.3, 15.11): uitleg, samen tellen, door. */
       await zeg(l, ...fz);
@@ -353,7 +359,8 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
 const gouden: Lesdraaiboek = {
   id: "squla-tellen-fruit-1-gouden",
   titel: "Fruit tellen",
-  synthesis: "Gouden les · inhoud Squla groep 3 · Tellen · Tellen met fruit · level 1 (squla-tellen-fruit-1) · verloop draaiboek Tellen (Color Count)",
+  /* Begint met "Squla": dan kleurt het lesscherm de getallen in Bliepo's tekst (data-squla; keuring 9 nov: anders wit). */
+  synthesis: "Squla groep 3 · Tellen · Tellen met fruit · level 1 · gouden les (nieuwe versie van squla-tellen-fruit-1) · verloop draaiboek Tellen (Color Count)",
   indeling: "synthesis",
   browserstem: true,
   nacht: true,

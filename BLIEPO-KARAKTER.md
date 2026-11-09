@@ -34,7 +34,11 @@ Gemaakt op 8 november 2026 (derde ronde, besluit Sara: "Lofzinnen komen in BLIEP
 - **Nooit het woord "fout"**, en **nooit een naam bij een fout** (3.17, 5.3).
 - **Het werkwoord past bij wat het kind doet:** "kijk" als het kind kijkt, "luister" alleen als het echt iets hoort (14.35).
 - **Woorden passen bij het beeld:** hij noemt wat het kind echt ziet (3.12).
-- **Nooit dezelfde zin 2 keer achter elkaar** (5.10). Kies uit een rijtje steeds een andere zin dan de vorige keer.
+- **Nooit dezelfde zin 2 keer achter elkaar** (5.10). Kies uit een rijtje steeds een andere zin dan de vorige keer. **Ook niet bij hetzelfde foute antwoord 2 keer:** dan wordt de eerste zin "Je koos weer {x}." (kind-test en keuring Tellen, 9 november 2026).
+- **Nooit 2 keer "Ja" achter elkaar** (bijvoorbeeld "Ja, die klopt! Ja, er zijn er 16."): begint de lofzin met "Ja", dan komt de reactie zonder "Ja" (§4, bij Tellen 10a en 10b). Een robotreactie als "Ik heb ze nagekeken …" hooguit 1 keer per les (keuring Tellen, 9 nov).
+- **"Weer" alleen als Bliepo het de 1e keer echt zei.** "Je telde er weer te veel." mag alleen als hij bij de 1e fout al "te veel" zei; anders komt "weer" uit het niets (kind-test Tellen, 9 nov).
+- **Het werkwoord past bij de opdracht:** bij een tikopdracht geen "Denk maar even na." maar "Je bent goed bezig." of "Jij kunt dit." (14.35; kind-test Tellen).
+- **Geen omgekeerde zinnen en geen moeilijke woorden in uitleg:** niet "Krijgt elk stuk fruit 1 nummer, dan …", "dubbel", "te hoog uitkomen"; wel korte zinnen: "Geef elke appel 1 nummer. Dan tel je niets 2 keer." (kind-test Tellen).
 - **Robotzinnen** *(robot)*: ongeveer 1 op de 4 zinnen in de lijsten. Een robotzin gaat **alleen** over zijn **groene scherm**, over **nakijken** of over zijn **geheugen**. Nooit over zijn rode scherm, nooit over lampjes, nooit een geluid. **Niet bij elke vraag een robotzin:** na een robotzin komen eerst minstens 2 gewone zinnen voordat er weer een robotzin mag.
 - **De naam van het kind** (§3.3): af en toe, niet vaker dan 1 keer per paar vragen, nooit bij een fout. Zolang BOUWREGELS 3.17 geldt: hooguit 2 keer per les (vraag aan Sara in KEUZES-VOOR-SARA.md, Ronde 15).
 
@@ -188,6 +192,8 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 8. Ja, na de {n} komt de {volgende}.
 9. Ja, je telde elk plaatje 1 keer.
 10. Ik heb ze nagekeken: het zijn er {n}. *(robot)*
+10a. Het zijn er {n}. *(9 nov, gouden les Tellen: zonder "Ja", voor na een lofzin die al met "Ja" begint)*
+10b. Je telde er {n}. *(idem)*
 
 **Optellen**
 11. Ja, {a} en {b} zijn samen {c}.
@@ -259,7 +265,7 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 59. Ja, er komt steeds 1 bij.
 60. Nagekeken: deur {n} is de goede. *(robot)*
 
-Telling: 60 zinnen (12 onderwerpen × 5), waarvan 12 robotzinnen. Zin 1, 6, 11, 16, 31 en 46 zijn de 6 zinnen van de vierde ronde. Vormen, Geld, Meten en Tijd/Dagen liggen nog stil (T28): die zinnen zijn er alvast, maar worden pas gebruikt als Sara over die onderwerpen beslist.
+Telling: 62 zinnen (12 onderwerpen × 5, plus 10a en 10b bij Tellen), waarvan 12 robotzinnen. Zin 1, 6, 11, 16, 31 en 46 zijn de 6 zinnen van de vierde ronde. Vormen, Geld, Meten en Tijd/Dagen liggen nog stil (T28): die zinnen zijn er alvast, maar worden pas gebruikt als Sara over die onderwerpen beslist.
 
 ---
 
@@ -426,12 +432,12 @@ Besluit Sara (vijfde ronde): dit is alleen een **plan**. Er wordt nu niets gebou
 | Met de naam | 3.3 | 10 | 2 |
 | Goed na een fout | 3.4 | 10 | 2 |
 | Heel snel geantwoord | 3.5 | 3 | 0 |
-| Reactie op wat het kind koos (12 onderwerpen) | 4 | 60 | 12 |
+| Reactie op wat het kind koos (12 onderwerpen) | 4 | 62 | 12 |
 | Begin en einde | 5 | 15 | 3 |
 | Eerste zin als de denkfout niet duidelijk is | 10 | 15 | 4 |
 | Aanmoedigen tijdens het nadenken | 11 | 10 | 2 |
 | Overgangszinnen | 12 | 20 | 5 |
-| **Totaal** | | **203** | **45 (± 1 op de 4,5)** |
+| **Totaal** | | **205** | **45 (± 1 op de 4,5)** |
 
 Zonder de reacties per onderwerp (§4, die gaan over de inhoud): 143 zinnen, waarvan 33 robotzinnen (± 1 op de 4).
 

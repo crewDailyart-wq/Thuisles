@@ -287,11 +287,11 @@ export function KaartTellenGouden() {
   return (
     <>
       {[0, 1, 2].map((r) =>
-        [0, 1, 2, 3, 4].map((k) => <circle key={`${r}-${k}`} cx={52 + k * 34} cy={50 + r * 40} r={13} fill={kleuren[r]} stroke="#ffffff" strokeWidth={2.5} />),
+        [0, 1, 2, 3, 4].map((k) => <circle key={`${r}-${k}`} cx={44 + k * 34} cy={50 + r * 40} r={13} fill={kleuren[r]} stroke="#ffffff" strokeWidth={2.5} />),
       )}
-      <text x={212} y={58} fontSize={22} fontWeight={800} fill={KLEUR.rood}>5</text>
-      <text x={204} y={98} fontSize={22} fontWeight={800} fill={KLEUR.groen}>10</text>
-      <text x={204} y={138} fontSize={22} fontWeight={800} fill={KLEUR.paars}>15</text>
+      <text x={214} y={58} fontSize={22} fontWeight={800} fill={KLEUR.rood}>5</text>
+      <text x={210} y={98} fontSize={22} fontWeight={800} fill={KLEUR.groen}>10</text>
+      <text x={210} y={138} fontSize={22} fontWeight={800} fill={KLEUR.paars}>15</text>
     </>
   );
 }

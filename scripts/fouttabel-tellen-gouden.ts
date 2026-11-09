@@ -5,7 +5,7 @@
  * Schrijft alleen dat ene bestand. Raakt de database en de lessen niet aan.
  */
 import { writeFileSync } from "node:fs";
-import { VRAGEN, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
+import { RICHTINGWOORDEN, VRAGEN, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 
@@ -29,6 +29,28 @@ const telling = VRAGEN.reduce((n, v) => n + Object.keys(foutenVan(v)).length, 0)
 /* Controle: elk fout antwoord van elke vraag staat erin. */
 for (const v of VRAGEN) for (const k of v.keuzes) if (k !== v.n && !foutenVan(v)[String(k)]) throw new Error(`geen rij voor ${v.id} ${k}`);
 void telFout;
+/*
+ * Verklapcontrole (15.17; keuring 9 nov): noemt Bliepo de richting niet (alleen "… is dichtbij."), dan mag de hint ook
+ * geen richting geven. En: blijft er na eerste zin + hint logisch maar 1 keuze over? Dan is het een verklapper.
+ */
+const verklappers: string[] = [];
+for (const v of VRAGEN)
+  for (const [a, f] of Object.entries(foutenVan(v))) {
+    const x = Number(a);
+    const tekst = `${f.eerste} ${f.hint}`;
+    const rest = v.keuzes.filter((k) => k !== x);
+    /* Wat de zinnen zeggen: "te weinig" (meer nodig), "te veel" (minder nodig) of niets. */
+    const meer = /nog niet allemaal|volle rijen|laatste rij|sla er geen|niet geteld/i.test(tekst);
+    const minder = /te veel|1 keer|maar 1/i.test(tekst);
+    const over = rest.filter((k) => (meer ? k > x : true) && (minder ? k < x : true));
+    if (f.noot && RICHTINGWOORDEN.test(f.hint)) verklappers.push(`${v.id} ${a}: hint geeft toch een richting: "${f.hint}"`);
+    if (over.length <= 1 && f.code !== "alleen-volle-rijen") verklappers.push(`${v.id} ${a}: na "${tekst}" blijft alleen ${over.join("")} over`);
+  }
+if (verklappers.length) {
+  console.error("VERKLAPPERS:\n" + verklappers.join("\n"));
+  process.exit(1);
+}
+console.log("Verklapcontrole: geen hint laat maar 1 keuze over (behalve de bekende open vraag bij alleen-volle-rijen, KEUZES Ronde 20 vraag 2).");
 
 const tekst = `# FOUTTABEL — gouden les Tellen (squla-tellen-fruit-1-gouden, "Fruit tellen")
 
@@ -76,10 +98,12 @@ ${uitleg}
 
 ## 4. Goed
 
-- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (§4 Tellen: "Ja, er zijn er 12." / "Ja, je telde ze allemaal: 12." / "Ik heb ze nagekeken: het zijn er 12."). De nummers 1 t/m 12 staan tegelijk bij het fruit. Wacht op de pijl.
+- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (§4 Tellen: "Ja, er zijn er 12." / "Ja, je telde ze allemaal: 12." / "Het zijn er 12." / "Je telde er 12." / "Ik heb ze nagekeken: het zijn er 12."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. De nummers 1 t/m 12 staan tegelijk bij het fruit. Wacht op de pijl.
 - **Eerste vraag in één keer goed:** lofzin, "Laten we ze samen natellen." (pijl), Bliepo telt hardop 1 t/m 12, "Zie je? Het zijn er 12. Je had het precies goed." (pijl).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; pijl.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).
+- **Hetzelfde foute getal 2 keer:** de eerste zin wordt "Je koos weer 11." (niet 2 keer dezelfde zin).
+- **Verklapcontrole:** het script stopt met een foutmelding als een hint zonder richting toch een richting geeft, of als er na eerste zin + hint maar 1 keuze logisch overblijft (open: vraag 15, keuze 10, KEUZES Ronde 20 vraag 2).
 `;
 
 writeFileSync(new URL("../FOUTTABEL-squla-tellen-fruit-1-gouden.md", import.meta.url), tekst);

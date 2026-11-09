@@ -11,6 +11,11 @@ Gemeten bij de gouden klokles (squla-klok-hoelaat-1-gouden), computer rustig:
 - Openen op de trage telefoon in de ontwikkelversie: ± 3 s (lokaal alleen een waarschuwing; op de echte site moet het onder 1 s).
 - De vorige versie van dezelfde les haperde ook al (62 ms). De oude les squla-klok-hoelaat-1 haalt 60 beelden/s en 21 ms.
 
+Gemeten bij de gouden les Tellen (squla-tellen-fruit-1-gouden), 9 november 2026, `ALLEEN=squla-tellen-fruit-1-gouden npm run vloeiend`:
+- Laptop: 60 beelden/s, langste beeld 36–42 ms.
+- Trage telefoon: 57–59 beelden/s, hapering **54 tot 80 ms** (grens 50 ms). De oude les squla-tellen-fruit-1 haalt daar 35 ms.
+- Openen in de ontwikkelversie: 1,3–2,3 s (laptop), 2,8–3,5 s (telefoon); op de echte site moet het onder 1 s.
+
 ## Bouwen met het oog op later
 - Geen vaste pixelmaten (gebruik procenten of schaal).
 - Geen onnodig zware animaties.

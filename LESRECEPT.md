@@ -19,6 +19,18 @@
 > - Een spiegelbeeld-fout (bijvoorbeeld 10 kiezen bij 2) is een eigen denkfout in de fouttabel (`spiegelbeeld`).
 > - **Per onderwerp één gouden les.** Zoek eerst grondig bij Synthesis; pas als het draaiboek klaar is bouwen we. Is er geen passende Synthesis-les, dan bouwen we niets, maken we geen eigen invulling en melden we het aan Sara. De overige lessen van een onderwerp bouwen we pas om als de gouden les is goedgekeurd.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES TELLEN (kind-test en keuring, 9 november 2026; BOUWREGELS 15.25) — geldt voor elke gouden les
+> - **Alles wat Bliepo vóór een blauwe pijl zegt, is 1 uiting** (de zinnen samengevoegd). Anders breekt een tik op de pijl alleen de lopende zin af en begint de volgende nog even.
+> - **Lof en reactie niet allebei met "Ja"**; een robotreactie hooguit 1 keer per les; hetzelfde foute antwoord 2 keer = niet 2 keer dezelfde zin ("Je koos weer 11."); "weer" alleen als Bliepo de 1e keer echt zei wat er mis was (BLIEPO-KARAKTER.md §2).
+> - **Verklapcontrole per script:** noemt Bliepo bij een fout geen richting (omdat er dan maar 1 keuze over zou blijven), dan mag de hint ook geen richting geven ("sla er geen over", "1 keer", "maar 1", "te veel"). Laat het fouttabel-script per vraag en per fout antwoord nagaan hoeveel keuzes er na eerste zin + hint logisch overblijven; 1 = verklapper, het script stopt (voorbeeld: `scripts/fouttabel-tellen-gouden.ts`).
+> - **Getalkleur in de echte Chrome meten.** De lesbeschrijving (`synthesis`) moet met "Squla" beginnen, anders zet het lesscherm geen `data-squla` en zijn alle getallen in Bliepo's tekst wit (Lesscherm.tsx). Meet de kleur van `.getal` in Chrome (zonder venster, als Testkind) en zet de uitkomst in KEUZES-VOOR-SARA.md.
+> - **Tempo uit het draaiboek met een vaste tijd per stap**, niet "wacht tot de zin klaar is" (natellen: 1,15 s per nummer, niet 2,4 s).
+> - **De zin van de vorige vraag weg** zodra het nieuwe beeld komt.
+> - **Varieer de hint** (2 à 3 versies per denkfout), anders hoort het kind 10 keer hetzelfde.
+> - **Hulphandje niet over een ander voorwerp** leggen: schuin, in de lege ruimte ernaast.
+> - **Vloeiend meten:** `ALLEEN=<les-id> npm run vloeiend` (het filter kijkt naar het pad met het les-id, niet naar de bestandsnaam). Telefoon-hapering melden in DESIGN-LATER.md.
+> - **Testen en keuren nooit in de echte Chrome met het koekje van een echt kind.** Eerst nakijken welk kind er gekozen is; liefst een script met Chrome zonder venster en `?naam=Testkind` (zonder koekje, of met KIND_ID van Testkind). Anders komen testantwoorden in de voortgang van een echt kind.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

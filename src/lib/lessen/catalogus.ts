@@ -133,7 +133,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-getallenlijn-dieren-3", titel: "Dingen op de getallen (nog moeilijker)", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 3 (alleen leerdoel)" },
   { id: "squla-getallenlijn-terugtellen-1", titel: "Terugtellen tot de start", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn (terugtellen) · level 1 (alleen leerdoel)" },
   { id: "squla-tellen-fruit-1", titel: "Fruit tellen", synthesis: "Squla groep 3 · Tellen · Tellen met fruit · level 1 (alleen leerdoel)" },
-  { id: "squla-tellen-fruit-1-gouden", titel: "Fruit tellen", synthesis: "Gouden les · inhoud Squla groep 3 · Tellen · Tellen met fruit · level 1 (squla-tellen-fruit-1) · verloop draaiboek Tellen (Color Count)" },
+  { id: "squla-tellen-fruit-1-gouden", titel: "Fruit tellen", synthesis: "Squla groep 3 · Tellen · Tellen met fruit · level 1 · gouden les (nieuwe versie van squla-tellen-fruit-1) · verloop draaiboek Tellen (Color Count)" },
   { id: "squla-tellen-fruit-2", titel: "Fruit tellen (moeilijker)", synthesis: "Squla groep 3 · Tellen · Tellen met fruit · level 2 (alleen leerdoel)" },
   { id: "squla-tellen-fruit-3", titel: "Fruit tellen (nog moeilijker)", synthesis: "Squla groep 3 · Tellen · Tellen met fruit · level 3 (alleen leerdoel)" },
   { id: "squla-tellen-resultatief1-1", titel: "Tellen in rijtjes", synthesis: "Squla groep 3 · Tellen · Resultatief tellen 1 · level 1 (alleen leerdoel)" },

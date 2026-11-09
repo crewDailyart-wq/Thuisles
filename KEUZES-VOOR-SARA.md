@@ -496,3 +496,32 @@ Alleen in de gouden les Tellen. De oude les is niet veranderd. Zinsaanpassingen 
 - Het fruit is 15% kleiner getekend (de plekken blijven gelijk), zodat het nummer van rij 2 niet meer tegen het fruit van rij 1 aan staat. In punten van het vlak, geen vaste schermpixels; niet naar DESIGN-LATER.md.
 
 **Open vraag (ernstig, NIET door mij veranderd):** volgens de kind-test breekt de browserstem zichzelf af. In `src/lib/stem.ts` roept `uiting.onstart` via `meld()` → `stopKeuzeStem()` → `speechSynthesis.cancel()` aan. Gemeten in de echte Chrome bij "Hoeveel appels zie je?": de zin start, 1 ms later komt `cancel()`, 26 ms later begint de volgende zin, die ook meteen stopt. In de nagebootste runs 47–50 keer per les. Een kind hoort dan de vraag, de hint en de foutzinnen niet; alleen zinnen met een opname van Ruth klinken. Dit is gedeelde code (ook oude lessen), dus jij beslist. Voorstel van de kind-test: in `meld(true)` alleen de keuzestem stoppen, niet de hele `speechSynthesis`. Graag eerst even met geluid aan luisteren.
+
+### Ronde 20c — herstel na de keuring (KEURING-TELLEN-GOUDEN.md, 9 november 2026)
+
+Alleen in de gouden les Tellen. Zinsaanpassingen (15.26):
+
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Bij "11 is dichtbij." (geen richting) de hint "Tel nog eens, rij voor rij. Sla er geen appel over." | verklapte toch "te weinig", dan blijft alleen 12 over (15.17) | Als Bliepo geen richting noemt, alleen hints zonder richting: "Begin linksboven en tel opnieuw. Wijs elke appel aan." / "Tel nog eens, rij voor rij. Wijs elke appel aan." / "Tel nog eens rustig. Wijs elke appel aan en zeg het getal." (7 foute antwoorden) |
+| Bij "15 is dichtbij." de hint "Tel opnieuw. Elke appel tel je maar 1 keer." | verklapte toch "te veel" | idem |
+| "Tel nog eens. Wijs elke appel 1 keer aan en tel rustig mee." (bij te weinig) | "1 keer" wijst eerder naar te veel | "Tel nog eens. Wijs elke appel aan en tel rustig mee." |
+| "Geef elke appel 1 nummer. Dan tel je er geen 2 keer." | geen goed Nederlands | "Geef elke appel 1 nummer. Dan tel je niets 2 keer." |
+| 2 keer hetzelfde foute getal: 2 keer "11 is dichtbij." | dezelfde zin 2 keer | 2e keer: "Je koos weer 11." + de uitleg |
+
+**Verder hersteld:**
+- **Getallen in Bliepo's tekst waren wit.** Oorzaak: het lesscherm kleurt de getallen alleen als de lesbeschrijving met "Squla" begint. De beschrijving van de gouden les is nu "Squla groep 3 · Tellen · Tellen met fruit · level 1 · gouden les (nieuwe versie van squla-tellen-fruit-1) · …" (ook in de catalogus). Lesscherm.tsx is niet veranderd. Gemeten in Chrome (zonder venster, Testkind): "5" in de beginzin = rgb(255, 123, 123) (rood, appel), "13" bij een fout met peren = rgb(126, 224, 160) (groen, peer). Was rgb(255, 255, 255).
+- De zin van de vorige vraag verdwijnt nu zodra het nieuwe fruit komt.
+- Eindkaart: de bolletjes iets naar links, de getallen 5, 10 en 15 raken ze niet meer.
+- Het fouttabel-script controleert nu elke hint op verklappen en stopt bij een verklapper.
+- BLIEPO-KARAKTER.md §4: de 2 nieuwe telzinnen ("Het zijn er {n}.", "Je telde er {n}.") staan er nu als 10a en 10b. §2 en LESRECEPT.md (kader bovenaan) hebben de algemene regels uit de kind-test en de keuring (15.25). DESIGN-LATER.md: de hapering van Tellen op de trage telefoon.
+
+**Niet veranderd (aan jou voorgelegd door de coördinator):** het opslaan op de voorbeeldpagina bij een echt kind en de 15 regels id 93 t/m 107 in `les_uitkomsten`; de browserstem (src/lib/stem.ts).
+
+**Welke eerder gebouwde les hierdoor ook moet veranderen (alleen genoteerd, niet gebouwd): de gouden klokles (squla-klok-hoelaat-1-gouden).**
+- **Getalkleur:** de beschrijving begint met "Gouden les · …", dus ook daar zijn de gekleurde getallen in Bliepo's tekst ({3:oranje}, {12:paars}) waarschijnlijk wit (zelfde regel in Lesscherm.tsx; niet zelf gemeten in die les). Oplossing: beschrijving laten beginnen met "Squla".
+- **Hetzelfde foute antwoord 2 keer:** nakijken of dan 2 keer dezelfde eerste zin komt.
+- **Alles vóór een pijl als 1 uiting:** de klokles zegt lof + reactie en zinnen vóór de pijl nog als losse zinnen (zelfde halve-zin-probleem bij een snelle tik op de pijl).
+- **"Ja" + "Ja":** de klokles voorkomt dat al met een filter, maar heeft geen vangnet als het rijtje opraakt.
+- **Verklapcontrole per script:** de klokles-hints (15.17, Ronde 19 punt 1) zijn nog niet met zo'n script nagelopen.
+- **Testen met een echt kind-koekje:** de klokles-keuring en kind-test nakijken op regels in `les_uitkomsten` bij een echt kind.
