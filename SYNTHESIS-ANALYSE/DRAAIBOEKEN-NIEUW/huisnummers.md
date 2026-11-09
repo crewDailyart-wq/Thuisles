@@ -1,5 +1,7 @@
 # Draaiboek HUISNUMMERS (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Counting On is in run R2 van begin tot eindkaart gespeeld (R1 en R3 stopten met pauze). Counting On Again is maar kort bekeken, dat is niet de hoofdles (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Huisnummers (Squla: de telrij tot 50; welk huisnummer komt erna, ervoor, ertussen; terugtellen).
 **Bronles (hoofdles):** Synthesis · unit Color Count · les *Counting On* (adres `exploration/counting_on`).
 **Kort bekeken:** *Counting On Again* (adres `exploration/counting_on_again`), alleen de eerste 2 opdrachten (zie §8).

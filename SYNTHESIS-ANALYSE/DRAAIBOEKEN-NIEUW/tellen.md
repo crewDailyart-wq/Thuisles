@@ -1,5 +1,7 @@
 # Draaiboek TELLEN (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — de hoofdles Color Count is in run R2 van begin tot eindkaart gespeeld. The Next 10 (11–20) is niet helemaal gespeeld; dat is geen gat, want boven 10 krijgen de vragen hetzelfde skelet (BOUWREGELS 15.22 punt 5) (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Tellen (Squla: fruit, rijtjes, hoeveel zie je, grote groepen, telrij).
 **Bronles (hoofdles):** Synthesis · unit Color Count · les *Color Count* (adres `exploration/color_count`).
 **Aanvulling voor 11–20:** *The Next 10* (adres `exploration/the_next_ten`), alleen kort gespeeld (zie §8).

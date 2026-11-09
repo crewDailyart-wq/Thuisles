@@ -1,5 +1,7 @@
 # Draaiboek PLUSSOMMEN (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Adding below 10 is in run R2 van begin tot eindkaart gespeeld (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Plussommen (Squla: bakkerij, samen 10 in de disco, bussommen, kale plussommen).
 **Bronles:** Synthesis · unit Add within 10 · les *Adding below 10* (adres `exploration/adding_below_ten`).
 **Voorbeeld voor opbouw:** het klokdraaiboek in `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1, `DRAAIBOEKEN-NIEUW/tellen.md` en `splitsen.md` (niet veranderd).

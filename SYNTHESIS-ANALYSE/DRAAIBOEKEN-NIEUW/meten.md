@@ -1,5 +1,7 @@
 # Draaiboek METEN — "Hoe groot is het?" (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Cover It Up is van begin tot eindkaart gespeeld (zie Einde in de tabel). Tile Sizes is maar kort bekeken, dat is niet de hoofdles (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Meten, alleen het deel **"Hoe groot is het?"** (Squla: oppervlakte, welke is groter, hokjes/tegels/blaadjes tellen). Pizza's vergelijken en vol/leeg/zwaar/licht hebben **geen** Synthesis-les en staan hier niet in.
 **Bronles:** Synthesis · unit **Area** · les ***Cover It Up*** (adres `exploration/cover_it_up`). Kort bekeken: les ***Tile Sizes*** (`exploration/tile_sizes`), alleen het eerste deel (zie §12).
 **Let op niveau:** bij Synthesis is dit **stof van het 3e leerjaar (groep 5)**. De les staat op slot ("maak eerst de vorige unit af") en opent alleen via het directe adres. Voor groep 3 is er bij Synthesis géén oppervlakte-les (meten voor jonge kinderen staat op "komt nog"). Wat dat voor de koppeling betekent: §8 en §10.

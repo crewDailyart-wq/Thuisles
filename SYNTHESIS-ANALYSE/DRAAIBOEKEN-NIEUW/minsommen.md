@@ -1,5 +1,7 @@
 # Draaiboek MINSOMMEN (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Dot Destruction is van begin tot eindkaart gespeeld in R2 en R3 (R1 herhaling ja). Alleen de precieze stopregel van de oefenreeks is nog onbekend (O) (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Minsommen (Squla: in de ruimte/onder water, bussommen, hoeveel over, kale minsommen).
 **Bronles:** Synthesis · unit Subtract Within 10 · les *Dot Destruction* (adres `exploration/dot_destruction`). Fill the Difference is bewust **niet** gespeeld (past niet: aanvullen, groep 4; zie KOPPELING.md).
 **Voorbeeld voor opbouw:** het klokdraaiboek in `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1, `DRAAIBOEKEN-NIEUW/tellen.md`, `splitsen.md` en `plussommen.md` (niet veranderd).

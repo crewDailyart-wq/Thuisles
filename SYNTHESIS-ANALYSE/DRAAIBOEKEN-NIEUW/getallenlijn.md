@@ -1,5 +1,7 @@
 # Draaiboek GETALLENLIJN (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Count the Jumps is in run R1 van begin tot eindkaart gespeeld (R2 koos aan het eind pauze). De les past maar deels bij ons onderwerp (zie Let op), dat is een andere vraag dan gespeeld (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Getallenlijn (Squla: getallen op hun plek / rangschikken, het raketje op de getallenlijn, dingen op de getallen, terugtellen tot de start).
 **Bronles:** Synthesis · unit Subtract on the Number Line · les *Difference Dash: Count the Jumps* (adres `exploration/difference_dash_count_the_jumps`).
 **Let op, past maar deels:** deze les gaat over **het verschil tussen 2 getallen, gevonden door sprongen te tellen op een getallenlijn 0–10**. Dat is aftrekken op de lijn. Rangschikken, terugtellen, "welk getal komt ervoor/erna/ertussen" en "bij welk getal staat het" komen in deze les **niet** voor (zie §8 en §11). Er is geen betere Synthesis-les gevonden (KOPPELING.md §3).

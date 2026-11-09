@@ -1,5 +1,7 @@
 # Draaiboek MEER-MINDER (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — More or Less is in run R2 van begin tot eindkaart gespeeld (R1 en R3 stopten door fouten) (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Meer en minder (Squla: meer, minder, evenveel; de meeste/de minste; meer dan/minder dan met getallen; op volgorde van meer naar minder).
 **Bronles:** Synthesis · unit Compare the Pair · les *More or Less* (adres `exploration/more_or_less`).
 **Past:** goed voor "welke groep is groter", "hoeveel meer" en "maak de groepen evenveel" **tot 10**. Niet voor "de minste/minder", "evenveel kiezen uit getallen", getallen boven 10 en getallen op volgorde (zie §8 en §11).

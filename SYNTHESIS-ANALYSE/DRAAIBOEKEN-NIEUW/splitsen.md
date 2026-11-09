@@ -1,5 +1,7 @@
 # Draaiboek SPLITSEN (nieuw, 9 november 2026)
 
+**Helemaal gespeeld: JA** — Part Part Whole is van begin tot eindkaart gespeeld in R1 (Nee-route) en R3 (Ja-route). Missing Numbers is niet gespeeld, dat is niet de hoofdles (vastgelegd 9 nov 2026, regel 15.24).
+
 **Onderwerp:** Splitsen (Squla: Splitsen 1 tot 10, Splitsen 2 tot 20 met 10 als vast deel, Delen/eerlijk verdelen).
 **Bronles:** Synthesis · unit Add up to 100 · les *Part Part Whole* (adres `exploration/part_part_whole`).
 **Tweede keuze:** *Missing Numbers* (Add within 10) is **niet** bekeken (zie §11).
