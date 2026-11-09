@@ -375,3 +375,6 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 
 ### Meer-minder draaiboek nieuw (9 nov)
 - Meer-minder draaiboek nieuw: KLAAR voor "welke groep is groter / heeft de meeste" en "maak evenveel" tot 10, GEDEELTELIJK voor "hoeveel meer", NIET voor "de minste/minder", evenveel kiezen uit getallen, meer/minder dan een getal, op volgorde en boven 10 (zitten niet in More or Less). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/meer-minder.md`. Gespeeld: More or Less 4x (3 fouten = stoppen / handje + veel fouten tot de eindkaart / 4e fout bij gelijk maken = stoppen / alles goed + weet ik niet). Open: zie §11 in dat bestand (o.a. 4e fout bij kleurvraag, hoeveel meer goed in één keer, heel snel binnen 2 s, eerste keer-route).
+
+### Huisnummers draaiboek nieuw (9 nov)
+- Huisnummers draaiboek nieuw: KLAAR voor getal zoeken en benoemen tot 50, verder tellen (ook over het tiental) en "hoeveel nog tot het tiental"; NIET voor ervoor, ertussen, terugtellen en slepen (zitten niet in Counting On). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/huisnummers.md`. Gespeeld: Counting On 3x (veel fouten = pauze-stop / bijna alles goed tot de eindkaart / wachten, Nog niet, tiental-hulp = pauze-stop) + Counting On Again kort (2 opdrachten). Open: zie §11 in dat bestand (o.a. stopregel, grens "dat ging snel", 3e fout bij "tot 50", eerste keer-route).
