@@ -433,3 +433,38 @@ Vastgelegd in BOUWREGELS.md 15.17 t/m 15.24 en LESRECEPT.md (hoofdstuk 4, "Wat N
 
 ### Ronde 19 — aanvulling (9 november 2026): alles achter elkaar
 Besluit in BOUWREGELS.md 15.25 en 15.26: na Tellen alle gouden lessen achter elkaar (Splitsen, Plussommen, Minsommen, Meer-minder, Huisnummers, Getallenlijn, Meten; daarna Geld, Vormen, Dagen, Tijd, Rekentaal; Rekenmix laatst). Verbeteren van rare of moeilijke zinnen mag; elke aanpassing komt per les in dit bestand (oorspronkelijke tekst, wat mis was, nieuwe tekst).
+
+---
+
+## Ronde 20 — gouden les Tellen (squla-tellen-fruit-1-gouden, 9 november 2026)
+
+Nieuwe versie naast de oude les squla-tellen-fruit-1 (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden?naam=Testkind
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde getallen (11 t/m 17) en dezelfde 3 keuzes (ook de foute, zoals 9, 10 en 18). De vraag blijft "Hoeveel appels/peren/pruimen zie je?".
+
+**Herstellingen (15.22 punt 2):** geen. Elke vraag nagelopen: precies 1 goed antwoord, het fruit klopt met de vraag, geen moeilijke woorden. Niets aangepast.
+
+**Wat er extra is bijgekomen:** geen extra vragen. Het draaiboek Tellen heeft geen uitlegvragen, geen vragen tussendoor en geen bonus. Wel uit het skelet van het draaiboek (geen nieuwe vraag): bij de eerste vraag (als die in 1 keer goed is) telt Bliepo de appels hardop na; na de 2e fout tikt het kind elk stuk fruit aan en telt Bliepo mee.
+
+**Eigen invulling, niet van Synthesis** (alle vragen zijn boven 10, het draaiboek gaat tot 10): de hints, de fouttabel (FOUTTABEL-squla-tellen-fruit-1-gouden.md), de uitleg bij de 2e fout en de denkfout "alleen de volle rijen geteld" (10 of 15 kiezen). Staat ook in tellen.md onder "Gouden les fruit-1: eigen invulling boven 10".
+
+**Afwijkingen van het draaiboek, met de reden:**
+- Stap 2 (zelf een kleur kiezen) en stap 5 t/m 9 (welke kleur heeft er 8, 2 kleuren samen, zelf vakjes maken, het lijstje) zitten er niet in: de Squla-les heeft die vragen niet en we voegen niets toe (15.22).
+- Na een 2e fout komt er geen extra ronde (Synthesis voegt dan een vraag toe; wij niet).
+- Geen driehoekje bij het gekozen getal: onze knoppen verdwijnen na een tik (jouw besluit 1). De nummers staan boven het fruit, in de kleur van het fruit (bij Synthesis in het vakje).
+- Bij het natellen zegt Bliepo niet "we beginnen bij 0": er staat geen getallenrij 0 t/m 9 in beeld.
+- Synthesis geeft nooit vanzelf hulp; bij ons komt bij het samen tellen na ± 6 s vanzelf het hulphandje (15.19).
+- Bliepo geeft na goed altijd een lofzin (het rijtje); bij Synthesis soms niets (waarom: NIET GEZIEN).
+
+**Weggevallen ten opzichte van de oude les (de oude les zelf blijft zoals hij is):** de startvraag "Kun je dit al?" met de uitleg met 8 appels (het draaiboek Tellen heeft geen startvraag, 4e ronde) en de oude slotzin "Je kunt fruit tellen." (nu: "Je telde fruit tot wel 17." en een eindzin uit het rijtje).
+
+**Graag een besluit (ja of nee):**
+1. **Richting noemen.** Synthesis zegt bij een fout "je telde er te veel" of "je hebt ze nog niet allemaal geteld". Bij 3 keuzes op een rij verklapt dat soms het antwoord (bij 12 appels en keuzes 10/11/12: wie 11 kiest en "te weinig" hoort, weet dat het 12 is). Daarom zegt Bliepo dan alleen "11 is dichtbij." met een tip over het tellen. Goed zo?
+2. **Vraag 15 (11 pruimen, keuzes 9/10/11):** wie 10 kiest, hoort "Bij 10 telde je de volle rijen. Kijk ook naar de laatste rij." Dan blijft eigenlijk alleen 11 over. De tip wijst wel naar de plek (de laatste rij), niet naar het getal. Mag dat?
+3. **Stap 5 t/m 9 van Synthesis** (welk fruit heeft er 13, 2 soorten samen tellen, zelf fruit maken): niet gebouwd, want Squla heeft ze niet. Wil je ze later als extra opdrachtjes?
+4. **Na elk goed antwoord wacht Bliepo op de blauwe pijl** (zoals het draaiboek). Bij 15 vragen zijn dat 15 tikken. Goed zo, of liever vanzelf door?
+5. **Samen tellen na 2 fouten:** het kind tikt 11 t/m 17 stuks fruit aan. Dat is lang voor een kind van 6. Zo laten (zoals het draaiboek), of mag Bliepo de volle rijen zelf tellen en het kind de laatste rij?
+
+**Vloeiend (HARDE REGEL 7):** laptop 60 beelden per seconde, langste beeld 36 ms. Trage telefoon: 57 beelden per seconde, een hapering van 80 ms (mag hooguit 50 ms); de oude les haalt daar 35 ms. Volgens jouw besluit is telefoon een latere fase (DESIGN-LATER.md): gemeten, niet opgelost. Openen in de ontwikkelversie 2,3 s (laptop) en 3,5 s (telefoon); dat is lokaal alleen een waarschuwing.
+
+**Stem:** alle nieuwe zinnen gebruiken de browserstem; geen tegoed gebruikt, geen Magnific, geen nieuwe plaatjes.

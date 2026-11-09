@@ -1,0 +1,65 @@
+/*
+  Gouden les Tellen (9 november 2026). Geen eigen achtergrond of kader: de ruimte van het lesscherm blijft zichtbaar en
+  het Phaser-canvas is doorzichtig. De nummers zijn scherpe HTML-tekst in de kleur van het fruit, met een donkere rand.
+  Maten in punten van het vlak (980 × 720).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  user-select: none;
+  -webkit-user-select: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* Het nummer boven 1 stuk fruit (samen tellen, of alle nummers tegelijk na goed). */
+.nummer {
+  position: absolute;
+  width: 76px;
+  height: 40px;
+  margin: -20px 0 0 -38px;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 0 3px rgba(4, 18, 60, 1),
+    0 2px 8px rgba(4, 18, 60, 0.95),
+    0 0 1px rgba(4, 18, 60, 1);
+  animation: plop 0.28s ease-out both;
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* Een stuk fruit om op te tikken bij het samen tellen: de knop zelf is onzichtbaar. */
+.tik {
+  position: absolute;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  padding: 0;
+}
+.tik:focus-visible {
+  outline: 4px solid white;
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .nummer {
+    animation-duration: 1ms;
+  }
+}

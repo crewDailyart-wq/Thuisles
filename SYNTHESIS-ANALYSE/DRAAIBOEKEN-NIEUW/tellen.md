@@ -456,3 +456,23 @@ Per denkfout: wat het kind doet, waar het gezien is, en wat Synthesis deed. **Al
 - **Ja, voor tellen tot 10** met Color Count (stap 1–10): alle vraagsoorten zijn gespeeld, met goed, 1e fout, 2e fout, 3e fout (of: bestaat niet), lang wachten en heel snel, behalve de open punten 4–6 hierboven.
 - **Nog niet voor 11–20 en grote groepen:** The Next 10 is maar half gespeeld.
 - Strikt volgens BOUWREGELS 15.4 is het draaiboek dus **nog niet helemaal bouwklaar** (open punten 1–12).
+
+---
+
+## Gouden les fruit-1: eigen invulling boven 10
+
+**Les:** `squla-tellen-fruit-1-gouden` ("Fruit tellen", 9 november 2026), naast de oude les `squla-tellen-fruit-1`. Inhoud van Squla: 15 vragen, 11 t/m 17 appels, peren en pruimen in rijen van 5, telkens 3 keuzes (BOUWREGELS 15.22).
+
+**Zelfde skelet als Color Count (stap 1, 3/4 en 10; §3 A):** openen en wachten op de pijl; vraag + getal tikken; goed = lof met het aantal, alle nummers tegelijk bij het fruit (leesvolgorde), wachten op de pijl; bij de eerste vraag goed = samen natellen (Bliepo telt hardop, ± 1 nummer per seconde); 1e fout = gekozen getal noemen, opnieuw tellen, knoppen meteen terug (geen pijl); 2e fout = "we tellen samen" (pijl), het kind tikt elk stuk fruit, Bliepo telt mee, een geteld stuk telt niet nog een keer, het laatste getal is het aantal (pijl); heel snel = niets; lang wachten bij de vraag = niets.
+
+**Eigen invulling, niet van Synthesis** (alle vragen zijn boven 10; 15.22 punt 5):
+- De hints en de hele fouttabel (`FOUTTABEL-squla-tellen-fruit-1-gouden.md`).
+- De denkfout `alleen-volle-rijen` (10 of 15 kiezen = alleen de volle rijen van 5 geteld); lijkt op `alleen-tiental` uit §7, maar is bij Synthesis niet zo gezien.
+- De richting (te weinig / te veel) wordt NIET genoemd als er bij de 3 keuzes dan maar 1 keuze overblijft (BOUWREGELS 15.17: de hint verklapt het antwoord niet). Dan alleen "dichtbij" en een hint over hoe je telt.
+- De uitleg bij de 2e fout (1 zin bij de denkfout, of een "weer"-zin als dezelfde denkfout 2 keer komt).
+
+**Bliepo (karakter, laag 1), niet van Synthesis:** rood en groen scherm, lof uit het rijtje, korte bevestiging na een fout, 2 pogingen, nooit stoppen, hulphandje vanzelf na ± 6 s bij het samen tellen (Synthesis geeft nooit vanzelf hulp, §4).
+
+**Niet overgenomen (de Squla-les heeft deze vragen niet):** stap 2 (zelf een kleur kiezen), stap 5 t/m 9 (welke kleur, 2 kleuren samen, zelf maken, lijstje), de extra ronde na een 2e fout (§2 stap 4). Vraag aan Sara: KEUZES-VOOR-SARA.md, Ronde 20.
+
+**NIET GEZIEN blijft NIET GEZIEN:** waarom Synthesis soms "geen lof, meteen door" geeft (§11 punt 2); een les die nog nooit gedaan is (punt 1). Bliepo geeft altijd lof (rijtje BLIEPO-KARAKTER.md).

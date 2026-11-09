@@ -34,6 +34,8 @@ import { LESSEN_SQULA_METEN } from "./squla-meten";
 import { LESSEN_SQULA_KLOK } from "./squla-klok";
 /* De gouden klokles (8 november 2026, BOUWREGELS hoofdstuk 15): een nieuwe les naast squla-klok-hoelaat-1. */
 import { LESSEN_SQULA_KLOK_GOUDEN } from "./squla-klok-gouden";
+/* De gouden les Tellen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-tellen-fruit-1. */
+import { LESSEN_SQULA_TELLEN_GOUDEN } from "./squla-tellen-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -60,6 +62,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_DAGEN,
   ...LESSEN_SQULA_GETALLENLIJN,
   ...LESSEN_SQULA_TELLEN,
+  ...LESSEN_SQULA_TELLEN_GOUDEN,
   ...LESSEN_SQULA_TIJD,
   ...LESSEN_SQULA_MEER_MINDER,
   ...LESSEN_SQULA_MINSOMMEN,
