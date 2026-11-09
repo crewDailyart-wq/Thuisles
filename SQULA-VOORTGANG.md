@@ -360,3 +360,6 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 ### Tellen draaiboek nieuw (9 nov)
 - Backup draaiboeken: `SYNTHESIS-ANALYSE/backup-draaiboeken-20261109/DRAAIBOEKEN-voor-opnieuw.md` (klaar).
 - Tellen draaiboek nieuw: KLAAR voor tellen tot 10, GEDEELTELIJK voor 11-20. Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/tellen.md`. Gespeeld: Color Count 3x (met fouten / alles goed / 3 fouten bij lijstje) + The Next 10 tot "wat komt na 12". Open: zie §11 in dat bestand (o.a. The Next 10 verder, lijstje lang wachten/snel, 3e fout bij maken, eerste keer-route).
+
+### Splitsen draaiboek nieuw (9 nov)
+- Splitsen draaiboek nieuw: KLAAR voor splitsen tot 10, GEDEELTELIJK voor tot 20 (alleen 12 via "groter getal"), NIET voor eerlijk verdelen (geen passende les). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/splitsen.md`. Gespeeld: Part Part Whole 3x (route Nee met veel fouten / route Ja proef goed / route Ja 2 fouten en daarna alles goed en snel). Open: zie §11 in dat bestand (o.a. 0 als deel wisselend, Missing Numbers niet bekeken, eerste keer-route, 2 gesproken zinnen niet opgevangen).
