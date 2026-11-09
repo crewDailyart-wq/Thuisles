@@ -363,3 +363,6 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 
 ### Splitsen draaiboek nieuw (9 nov)
 - Splitsen draaiboek nieuw: KLAAR voor splitsen tot 10, GEDEELTELIJK voor tot 20 (alleen 12 via "groter getal"), NIET voor eerlijk verdelen (geen passende les). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/splitsen.md`. Gespeeld: Part Part Whole 3x (route Nee met veel fouten / route Ja proef goed / route Ja 2 fouten en daarna alles goed en snel). Open: zie §11 in dat bestand (o.a. 0 als deel wisselend, Missing Numbers niet bekeken, eerste keer-route, 2 gesproken zinnen niet opgevangen).
+
+### Plussommen draaiboek nieuw (9 nov)
+- Plussommen draaiboek nieuw: KLAAR voor plussommen tot 10 en samen 10, NIET voor sommen boven 10 / over het tiental en het busverhaal (geen passende opgaven in deze les). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/plussommen.md`. Gespeeld: Adding below 10 3x (veel fouten / alles goed en heel snel / handje + som in één keer goed). Open: zie §11 in dat bestand (o.a. weet-ik-niet, 2e fout bij "nog een manier om 10" en "maak 7", min als 1e fout bij een totaal, eerste keer-route).
