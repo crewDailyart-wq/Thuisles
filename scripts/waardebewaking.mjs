@@ -241,6 +241,15 @@ try {
       sessieSleutel("kind-1", "/oefenen/rekenen/getallen/optellen/oefening?leerdoel=doel-a"),
     "Twee onderwerpen delen dezelfde sleutel en lopen door elkaar heen.",
   );
+
+  /* De tabel met de uitkomsten per vraag (denkfouten) bestaat in de kopie, met precies de afgesproken kolommen en niets over het kind erbij. */
+  const { verbinding: dbVerbinding } = await import("@/lib/db/sqlite");
+  const kolommen = (dbVerbinding().prepare("pragma table_info(les_uitkomsten)").all()).map((k) => k.name).sort().join(",");
+  zouMoeten(
+    "De tabel les_uitkomsten bestaat met alleen de afgesproken kolommen",
+    kolommen === "denkfout,gemaakt_op,id,kind_id,les_id,pogingen,uitkomst,vraag_id",
+    `Kolommen nu: ${kolommen || "(tabel ontbreekt)"}. Afgesproken: kind, les, vraag, uitkomst, denkfout, pogingen, tijdstip; geen naam, e-mail, school, IP-adres of apparaatgegevens.`,
+  );
 } finally {
   /* De kopie en alles wat erin is gezet, gaat weg. */
   rmSync(werkmap, { recursive: true, force: true });

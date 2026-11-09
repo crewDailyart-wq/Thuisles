@@ -41,7 +41,7 @@ Sara mag elke zin aanpassen. In de les krijgt het uur de kleur van de kleine wij
 - **1e fout:** Bliepo's scherm 1,5 seconde rood, vraag en knoppen even weg, Bliepo zegt de eerste zin en de hint uit de tabel, met het beeld uit de tabel, wacht op de blauwe pijl (zoals het draaiboek), dan komt de vraag terug. Het kind mag nog 1 keer.
 - **2e fout:** Bliepo legt het uit (§4, bij de denkfout van deze keuze) **en doet het samen met het kind voor**: nu pas de oranje ring om het goede antwoord en het antwoord in woorden; alleen de goede knop blijft, het kind tikt hem zelf; de les gaat verder. (Oude regel met een 3e poging: vervangen.)
 - **Twee keer dezelfde denkfout** (bij dezelfde vraag, of al eerder in de les): Bliepo zegt dat vriendelijk ("weer") en legt het op een andere manier uit (§4, laatste kolom).
-- **Niet duidelijk (\`onduidelijk\`):** eerste zin uit BLIEPO-KARAKTER.md §10 (wisselt, nooit 2 keer dezelfde achter elkaar) en een algemene hint. Geen reden verzonnen.
+- **Niet duidelijk (\`onduidelijk\`):** eerste zin uit BLIEPO-KARAKTER.md §10 (wisselt, nooit 2 keer dezelfde achter elkaar); "Probeer het nog 1 keer, met een tip." alleen na de 1e fout (na de 2e is er geen poging meer) en "Ik bedoelde een andere." alleen bij een keuzevraag, niet bij tikken of zetten en een algemene hint. Geen reden verzonnen.
 - Elke fout wordt met de naam van de denkfout bewaard, elke vraag met zijn uitkomst (voorlopig alleen op het apparaat; zie §5).
 
 ---

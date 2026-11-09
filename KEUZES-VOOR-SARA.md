@@ -392,3 +392,23 @@ Jouw besluiten staan in `BOUWREGELS.md` 15.10 t/m 15.16, `LESRECEPT.md` (bovenaa
 1. Hoe lang bewaren we dit?
 2. Toestemming van de ouder.
 3. Wat moet er in de privacyverklaring staan?
+
+## Ronde 18 — keuring gouden klokles: wat is hersteld en wat wacht op jou (9 november 2026)
+
+**Hersteld in de gouden klokles (alleen squla-klok-hoelaat-1-gouden):**
+- "Probeer het nog 1 keer, met een tip." komt niet meer na de 2e fout (er is dan geen nieuwe poging). "Ik bedoelde een andere." en "Als je kiest, kijk ik het meteen na." komen alleen nog bij keuzevragen, niet bij tikken of zetten.
+- Stap 12 (samen voordoen) zegt nu: "Deze lange wijzer is de grote wijzer. Hij telt de minuten." en "Deze korte wijzer is de kleine wijzer. Hij laat het uur zien." Vragen aan het kind in de uitleg na de 2e fout zijn zinnen geworden (het kind hoeft dan niets meer te raden).
+- De naam is overal "grote wijzer" (niet meer "lange wijzer"). Het uur in "Is het nu 7 uur?" en in de bonusvraag staat oranje (kleur van de kleine wijzer).
+- Klok 9: lof en reactie beginnen niet meer allebei met "Ja,". "Er komen nog 2 klokken van net terug." zegt Bliepo alleen als het kind echt een klok miste; anders "Nog 2 klokken om te oefenen."
+
+**Wacht op jouw besluit (keuringspunt 1: hints die het antwoord verklappen).** Bij de 1e fout laat de les in beeld zien wat het kind moet kiezen. Dat komt uit het draaiboek (Synthesis doet het ook), maar BOUWREGELS 14.36 en 15.9 zeggen dat een hint het antwoord niet verklapt, ook niet via een pijl of ring. Ik heb hier niets aan veranderd. De voorbeelden:
+- Stap 7 en 8: het blauwe pijltje staat precies boven de 12 en onder de 6. Dat is het antwoord.
+- Stap 9: de blauwe pijl loopt van de 6 naar de 7 (het antwoord). Stap 10 en de bonus: de pijl loopt van de 12 naar de 1 (het antwoord).
+- Stap 11: de hint zegt "Maar op de klok is het andersom." en dat is het antwoord.
+- Bonus: "Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl." (verklapt 1 uur).
+
+Vraag: laten we het zoals Synthesis (met een uitzondering in de regel), of laten we de hint minder verklappen (bijvoorbeeld de pijl pas na de 2e fout, of alleen vanaf het getal laten wijzen zonder de punt)?
+
+**Telefoon:** de hapering en de indeling op telefoon blijven bewust liggen (zie `DESIGN-LATER.md`).
+
+**Denkfouten in de database:** de tabel `les_uitkomsten` is er nu (zie Ronde 17 voor de privacypunten, die nog open staan). De gouden klokles schrijft erheen; zonder gekozen kind of bij een fout merkt het kind niets. Er is nog GEEN ouderdashboard.

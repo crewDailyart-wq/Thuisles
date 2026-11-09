@@ -167,6 +167,8 @@ async function speel(c, id) {
         if (m.method === "Runtime.consoleAPICalled" && m.params.type === "error") console.log("  console.error:", m.params.args.map((x) => x.value ?? x.description ?? "").join(" ").slice(0, 300));
       });
     }
+    /* KIND_ID=<id van Testkind>: speel als dat kind (koekje van het apparaat), zodat de les de uitkomsten per vraag in de database bewaart. Zonder KIND_ID wordt er niets bewaard. */
+    if (process.env.KIND_ID) await c.stuur("Network.setCookie", { name: "thuisles_kind", value: process.env.KIND_ID, url: BASIS }, s);
     if (process.env.WW) await c.stuur("Network.setExtraHTTPHeaders", { headers: kop }, s);
     await c.stuur("Emulation.setDeviceMetricsOverride", { width: APPARAAT.b, height: APPARAAT.h, deviceScaleFactor: 1, mobile: APPARAAT.mobiel }, s);
     /*

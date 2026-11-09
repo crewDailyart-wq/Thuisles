@@ -289,6 +289,34 @@ function maakTabellen(d: DatabaseSync) {
     create index if not exists signalen_op_kind on kind_signalen (kind_id, gemaakt_op);
 
     /*
+      Hoe een vraag in een les ging, met de denkfout erbij (besluit Sara, 9 november 2026; later voor het
+      ouderdashboard). Eén regel per vraag per keer dat het kind hem kreeg.
+
+      uitkomst   'goed in één keer' | 'goed na een fout' | 'samen gedaan'. Alleen 'goed in één keer' telt mee voor
+                 beheersing.
+      denkfout   de naam uit de fouttabel van de les (bijvoorbeeld 'spiegelbeeld'), of 'onbekend' als de reden niet
+                 duidelijk was. Leeg bij 'goed in één keer'. Bij meerdere verschillende denkfouten in één vraag:
+                 lijstje met komma's.
+      pogingen   hoeveel keer het kind zelf een antwoord gaf (1, 2; bij 'samen gedaan' 2: de laatste tik hoort erbij maar
+                 telt niet als poging).
+
+      Bewust NIETS anders: geen naam, e-mail, school, IP-adres of apparaatgegevens. Het kind hangt aan kind_id en
+      verdwijnt mee als het profiel wordt verwijderd.
+    */
+    create table if not exists les_uitkomsten (
+      id         integer primary key autoincrement,
+      kind_id    text not null references kinderen (id) on delete cascade,
+      les_id     text not null,
+      vraag_id   text not null,
+      uitkomst   text not null check (uitkomst in ('goed in één keer','goed na een fout','samen gedaan')),
+      denkfout   text,
+      pogingen   integer not null,
+      gemaakt_op text not null
+    );
+
+    create index if not exists les_uitkomsten_op_kind on les_uitkomsten (kind_id, gemaakt_op);
+
+    /*
       Oefeningen die de ouder heeft klaargezet. Die komen bij het kind terug in
       "Voor jou" — met de reden erbij, zodat het kind snapt waarom het er staat.
     */
