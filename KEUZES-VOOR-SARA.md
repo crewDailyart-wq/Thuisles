@@ -383,3 +383,12 @@ Jouw besluiten staan in `BOUWREGELS.md` 15.10 t/m 15.16, `LESRECEPT.md` (bovenaa
 3. **Bonusvraag:** de keuzes zijn 1 uur, 11 uur en 12 uur (draaiboek: 1 / 11 / 13; 13 uur is voor Nederland geen goede valkuil). De bonus komt alleen als alles in 1 keer goed ging, zoals het draaiboek.
 4. **Voortgang bewaren** (goed in één keer / goed na een fout / samen gedaan, en de denkfouten) kan nog steeds alleen op het apparaat; voor echte opslag is een nieuwe tabel nodig en jouw akkoord.
 5. **Vloeiendheid (HARDE REGEL 7), nog niet opgelost:** de gouden klokles haalt op de laptop 60 beelden per seconde (openen 0,4 tot 0,7 s, langste beeld 22 ms). Op de nagebootste trage telefoon is er een hapering van 52 tot 65 ms (mag hooguit 50 ms), bij 58 tot 59 beelden per seconde. Dat was **ook zo vóór deze ronde** (zelfde les uit de vorige commit: 62 ms); de oude les squla-klok-hoelaat-1 haalt 60 beelden per seconde en 21 ms. Het openen op de trage telefoon duurt in de ontwikkelversie ± 3 s (lokaal alleen een waarschuwing; op de echte site moet het onder 1 s). Eerst oplossen vóór online zetten.
+
+## Ronde 17 — telefoon/tablet en opslag denkfouten (9 november 2026)
+
+**OPEN PUNT, bewust uitgesteld (besluit Sara):** het haperen op de trage telefoon (52–65 ms, grens 50 ms) en alles voor telefoon en tablet (ontwerp, indeling, aanraken, snelheid) komt later in een eigen fase. Staat met de metingen in `DESIGN-LATER.md`. Dit houdt online zetten niet tegen. Lessen worden intussen gebouwd zonder vaste pixelmaten en zonder onnodig zware animaties.
+
+**PRIVACY REVIEW REQUIRED — denkfouten in de database.** De denkfouten per vraag worden bewaard in een eigen tabel (alleen kind-nummer, les, vraag, hoe het ging, denkfout, aantal pogingen, tijdstip; geen naam, e-mail, school, IP of apparaatgegevens). Voor echte kinderen pas na deze review:
+1. Hoe lang bewaren we dit?
+2. Toestemming van de ouder.
+3. Wat moet er in de privacyverklaring staan?
