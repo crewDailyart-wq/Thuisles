@@ -1,0 +1,89 @@
+/*
+  Gouden les Splitsen (9 november 2026): alleen het hulphandje. Het splitsvlak zelf heeft zijn eigen opmaak
+  (squla-splitsen.module.css). Maten in punten van het vlak (980 × 720), zoals de rest van het vlak.
+*/
+
+/* De vingertop staat op (left, top); de hand ligt schuin rechtsonder, in de lege ruimte naast het ding. */
+.hand {
+  position: absolute;
+  width: 54px;
+  height: 72px;
+  margin: -2px 0 0 -26px;
+  pointer-events: none;
+  z-index: 6;
+  transform-origin: 48% 3%;
+  will-change: transform, opacity;
+}
+
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-37deg);
+  transform-origin: 48% 3%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening g rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+.handTekening g rect + rect {
+  stroke-width: 3;
+}
+.lijn {
+  fill: none;
+  stroke: rgba(43, 58, 102, 0.55);
+  stroke-width: 2;
+}
+
+/* Sleepgebaar: van het hoopje naar het vak, even blijven, weg, opnieuw. */
+.sleep {
+  animation: sleepGebaar 2.2s ease-in-out infinite;
+}
+@keyframes sleepGebaar {
+  0% {
+    opacity: 0;
+    transform: translate(0, 0);
+  }
+  12% {
+    opacity: 1;
+    transform: translate(0, 0) scale(0.92);
+  }
+  20% {
+    transform: translate(0, 0) scale(0.92);
+  }
+  70% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) scale(0.92);
+  }
+  80% {
+    opacity: 1;
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(var(--dx), var(--dy)) scale(1);
+  }
+}
+
+/* "Pak er een": zacht op en neer bij het hoopje. */
+.pak {
+  animation: pakGebaar 1.1s ease-in-out infinite alternate;
+}
+@keyframes pakGebaar {
+  from {
+    transform: translate(6px, 10px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .sleep,
+  .pak {
+    animation: none;
+    opacity: 1;
+  }
+}

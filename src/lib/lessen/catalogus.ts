@@ -109,6 +109,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-vormen-kleuren-2", titel: "Vormen en kleuren (moeilijker)", synthesis: "Squla groep 3 · Vormen en figuren · Vormen en kleuren · level 2 (platte vormen) (alleen leerdoel)" },
   { id: "squla-vormen-kleuren-3", titel: "Vormen en kleuren (nog moeilijker)", synthesis: "Squla groep 3 · Vormen en figuren · Vormen en kleuren · level 3 (ruimtelijke vormen) (alleen leerdoel)" },
   { id: "squla-splits-splitsen1-1", titel: "Splitsen tot 10", synthesis: "Squla groep 3 · Splitsen · Splitsen 1 · level 1 (alleen leerdoel)" },
+  { id: "squla-splits-splitsen1-1-gouden", titel: "Splitsen tot 10", synthesis: "Squla groep 3 · Splitsen · Splitsen 1 · level 1 · gouden les (nieuwe versie van squla-splits-splitsen1-1) · verloop draaiboek Splitsen (Part Part Whole)" },
   { id: "squla-splits-splitsen1-2", titel: "Splitsen tot 10 (moeilijker)", synthesis: "Squla groep 3 · Splitsen · Splitsen 1 · level 2 (alleen leerdoel)" },
   { id: "squla-splits-splitsen2-1", titel: "Splitsen tot 20", synthesis: "Squla groep 3 · Splitsen · Splitsen 2 · level 1 (alleen leerdoel)" },
   { id: "squla-splits-splitsen2-2", titel: "Splitsen tot 20 (moeilijker)", synthesis: "Squla groep 3 · Splitsen · Splitsen 2 · level 2 (alleen leerdoel)" },

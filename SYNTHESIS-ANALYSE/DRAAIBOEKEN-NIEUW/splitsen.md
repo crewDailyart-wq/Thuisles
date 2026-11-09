@@ -575,3 +575,18 @@ Er zijn **twee routes** na de startvraag.
 - **Deels voor splitsen tot 20**: alleen 12 via "Larger" (zonder 10 als vast deel).
 - **Niet voor eerlijk verdelen**: geen passende les.
 - Strikt volgens BOUWREGELS 15.4 is het draaiboek dus **nog niet helemaal bouwklaar** (open punten 1–14).
+
+---
+
+## Gouden les squla-splits-splitsen1-1-gouden: eigen invulling (9 november 2026)
+
+**Eigen invulling, niet van Synthesis** (BOUWREGELS 15.22 punt 5). De gouden les "Splitsen tot 10" volgt het skelet hierboven (startvraag, proef van 2, uitleg stap 7–10, opdrachten, einde). Waar Synthesis voor de Squla-vraag geen voorbeeld heeft, is dit eigen invulling:
+
+- **De doos van 10 met een doek** (Squla vraag 11–15; "hoeveel liggen er onder de doek?"). Part Part Whole heeft geen doos of doek. Zelfde skelet (opdracht, 2 pogingen, samen voordoen), maar de hints en de fouttabel zijn eigen: "Tel de plekken onder de doek", denkfouten `zichtbaar-gelegd` (net zoveel gelegd als je al ziet) en `totaal-als-deel` (alle 10). Bij 1 ernaast zegt Bliepo alleen "… is dichtbij." (zoals de gouden les Tellen: "1 te veel" zou het antwoord verklappen). Nakijken met het vinkje (zoals de vrije opdrachten van §3 F en de oude les), omdat vanzelf nakijken bij het juiste aantal de opdracht "sleep tot het stopt" zou maken.
+- **Het huisje met 1 deel gegeven** (Squla vraag 1–9: "sleep 2 naar het paarse vak, de andere naar het oranje vak"). Synthesis heeft dit alleen als het handje (§3 F.6). De hints wijzen naar het getal onder het paarse vak (dat staat in de opdracht), nooit naar het andere deel. `omgedraaid` is hier een fout (het paarse deel is gegeven); Bliepo zegt dan alleen wat er ligt, niet dat het omgedraaid is (zou het andere deel verklappen).
+- **3 huisjes met een leeg vakje** (Squla vraag 10): de reactie is die van §3 F.2 (`som-klopt-niet`, voorrekenen: "4 en 3 is samen 7. We zoeken 6."). De hints zijn eigen.
+- **Slepen in plaats van − en +** (BOUWREGELS 14.26): in de uitleg kan slepen niet "stoppen bij het doel" zoals de + van Synthesis. Sleept het kind te ver, dan zegt Bliepo 1 keer "Er horen er 2 in het paarse vak." en wacht.
+- **Samen voordoen na de 2e fout** (BOUWREGELS 15.11; Synthesis herhaalt onbeperkt dezelfde zin): Bliepo legt het eerste deel zelf in het paarse vak (bij de doos: de doek gaat open en Bliepo legt de ballen op 1 na; bij de 3 huisjes alles op 1 bal na) en het kind sleept de rest, zoals het handje van §3 F.6.
+- **Hulphandje** vanzelf na ± 6 s stilte (15.19), van het hoopje naar een leeg vak; nooit naar een vak dat al iets heeft (dat zou zeggen of het genoeg is). Bij de doos licht na 6 s alleen het vinkje op als er al iets in het vak ligt. De herinnering "vergeet het vinkje niet" (§3 F) komt niet: die komt bij Synthesis alleen als het antwoord goed is, en verklapt dat dus.
+
+Fouttabel: `FOUTTABEL-squla-splits-splitsen1-1-gouden.md` (gemaakt met `npx tsx scripts/fouttabel-splitsen-gouden.ts`, met verklapcontrole). Keuzes en vragen: KEUZES-VOOR-SARA.md, Ronde 21.
