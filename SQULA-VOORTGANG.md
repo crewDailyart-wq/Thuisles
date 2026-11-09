@@ -338,3 +338,21 @@ Opdracht: 8 november 2026 (gouden lessen, BOUWREGELS hoofdstuk 15).
   - Of zinnen vanzelf doorgaan verschilt per les: Counting On, Count the Jumps en Adding below 10 meestal vanzelf; Color Count, Dot Destruction en Part Part Whole vaak op de pijl.
   - Het vinkje verdwijnt nooit vanzelf.
   - Het pauzemenu verscheen soms vanzelf (oorzaak onbekend).
+
+### Synthesis-koppeling deel 3 (9 nov) — grondig zoeken, alle onderwerpen behalve Klok
+Alles staat in `SYNTHESIS-ANALYSE/KOPPELING.md` (oude versie: `KOPPELING-voor-9-nov.md`). Per onderwerp klaar:
+- [x] Tellen: Color Count (echt); The Next 10 voor tot 20.
+- [x] Huisnummers: Counting On (deels); nieuw gevonden Counting On Again = zelfde soort; ervoor/ertussen nergens gezien.
+- [x] Getallenlijn: Count the Jumps (deels); Number Lines is 100+.
+- [x] Meer en minder: More or Less (echt).
+- [x] Plussommen: Adding below 10 (echt).
+- [x] Minsommen: Dot Destruction (echt); nieuw Fill the Difference past niet (aanvullen, groep 4).
+- [x] Splitsen: Part Part Whole (echt); verdelen alleen vervangend (groep 4).
+- [x] Meten: "Hoe groot is het?" → nieuw Area · Cover It Up (echt, groep 5, alleen begin gezien); pizza's en vol/leeg/zwaar/licht: GEEN passende les.
+- [x] Rekentaal: GEEN passende les (alleen Arcade-spel Less or More).
+- [x] Geld: GEEN passende les (doel op "Coming soon").
+- [x] Dagen: GEEN passende les.
+- [x] Tijd: GEEN passende les.
+- [x] Vormen: GEEN passende les (alle vormdoelen groep 3 op "Coming soon").
+- [x] Rekenmix: geen mixles bij Synthesis; alleen toetsen per unit, Flashcards-race en Mixed Problems (niet afgespeeld).
+Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md.
