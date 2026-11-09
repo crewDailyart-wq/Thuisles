@@ -68,6 +68,7 @@ in de tweede en derde ronde: besluit Sara 8 nov, 2e en 3e ronde; zie BOUWREGELS.
   anders. Ja = een proef van 2 opgaven (2 fouten = alsnog de uitleg), Nee =
   eerst uitleg (de 6 stappen hierboven blijven bij lessen met een
   startvraag).
+- **[VERVANGEN 9 november 2026 (zesde ronde, BOUWREGELS 15.11): er zijn 2 pogingen. 1e fout = hint uit de fouttabel en nog 1 keer proberen; 2e fout = Bliepo legt het uit en doet het samen voor, daarna gaat de les verder. De tekst hieronder over een 3e keer proberen geldt niet meer.]**
 - Hulp na een fout: na de 2e fout legt Bliepo het uit (zonder het antwoord te laten zien) en mag
   het kind een 3e keer proberen. Na de 3e fout doet Bliepo het samen met het kind voor, laat het antwoord zien en gaat
   de les verder. Nooit de les stoppen of naar het hoofdmenu sturen, niet

@@ -28,6 +28,7 @@ import { holoBasis } from "../holo/basis";
 import { HOLO_CANVAS, useHoloMotor } from "../holo/motor";
 import { voorwerpTextuur } from "../voorwerpen";
 import s from "./klok-bliepo-klok.module.css";
+import { Klokje } from "./klok-wijzerklok";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 
 export type GoudenWijzer = "uur" | "minuut";
@@ -954,3 +955,18 @@ export function GoudenKlok(props: GoudenKlokProps & Vlakbasis) {
   );
 }
 
+
+
+/* ---------- de kaart aan het eind ---------- */
+
+/**
+ * Op de verzamelkaart: de wijzerklok met 3 uur. De grote wijzer is hier de KORTE (MIN_KORT), zodat hij nooit over de 12
+ * loopt (opdracht Sara, 9 november 2026). De oude les squla-klok-hoelaat-1 houdt zijn eigen kaartklok.
+ */
+export function KaartKlokGouden() {
+  return (
+    <g transform="translate(37, 5)">
+      <Klokje tijd={180} maat={170} kort />
+    </g>
+  );
+}

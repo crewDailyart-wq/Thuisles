@@ -369,3 +369,17 @@ Uitgerekend zoals de site rekent (`src/lib/stem-server.ts`): elk stukje krijgt d
 8. **Spiegelbeeld bij de klok:** bij 10 uur kiest een kind soms 2 uur, bij 2 uur soms 10 uur. Dat kan spiegelbeeld-lezen zijn, maar het is niet zeker. Nu staat het als "niet duidelijk". Wil je "spiegelbeeld" als eigen denkfout?
 9. **Code later (na akkoord):** de gouden klokles moet nog worden gelijkgetrokken met de fouttabel (andere uitleg bij dezelfde denkfout 2 keer, zinnen uit §10 bij "niet duidelijk", de denkfout bewaren in de voortgang). Het herhalingsscript moet het rijtje uit §10 overslaan. Het ouderdashboard bouwen we niet.
 10. **Bestaande lessen:** die zijn niet veranderd. Wil je later dat ik ook daar fouttabellen maak (eerst 1 les als voorbeeld)?
+
+
+## Ronde 16 — zesde ronde: gouden klokles bijgewerkt (9 november 2026)
+
+Jouw besluiten staan in `BOUWREGELS.md` 15.10 t/m 15.16, `LESRECEPT.md` (bovenaan) en `REGELS-OVERZICHT.md` ("Zesde ronde"). De vorige versies staan in `regels-backup-20261108/` (achtervoegsel `-voor-ronde-6`). De gouden klokles heet nu gewoon "Hoe laat is het?" (id: squla-klok-hoelaat-1-gouden). Bekijken: http://localhost:3000/voorbeeld/les/squla-klok-hoelaat-1-gouden?naam=Testkind
+
+**Wat er veranderd is:** 2 pogingen (1e fout = hint, 2e fout = uitleg en samen voordoen); de vragen tussendoor en de bonus staan aan (alleen hele uren); naam hooguit 2 keer; aanmoediging samen met het hulphandje bij opdrachten; "Volgende keer gaat het nog beter" alleen bij de helft of meer niet in één keer goed; spiegelbeeld is een eigen denkfout; de grote wijzer op de eindkaart loopt niet meer over de 12.
+
+**Voor later (na de test met een echt kind):**
+1. **Aanmoediging bij keuzevragen.** Nu zegt Bliepo niets als het kind bij een keuzevraag nadenkt (zoals Synthesis). Na de test met een echt kind kijken we of 1 aanmoediging per les nodig is.
+2. **Bij 3 en 9 uur** valt "spiegelbeeld" samen met "de andere kant van de klok" (9 bij 3). Daar blijft het "andere kant van de klok". Goed zo?
+3. **Bonusvraag:** de keuzes zijn 1 uur, 11 uur en 12 uur (draaiboek: 1 / 11 / 13; 13 uur is voor Nederland geen goede valkuil). De bonus komt alleen als alles in 1 keer goed ging, zoals het draaiboek.
+4. **Voortgang bewaren** (goed in één keer / goed na een fout / samen gedaan, en de denkfouten) kan nog steeds alleen op het apparaat; voor echte opslag is een nieuwe tabel nodig en jouw akkoord.
+5. **Vloeiendheid (HARDE REGEL 7), nog niet opgelost:** de gouden klokles haalt op de laptop 60 beelden per seconde (openen 0,4 tot 0,7 s, langste beeld 22 ms). Op de nagebootste trage telefoon is er een hapering van 52 tot 65 ms (mag hooguit 50 ms), bij 58 tot 59 beelden per seconde. Dat was **ook zo vóór deze ronde** (zelfde les uit de vorige commit: 62 ms); de oude les squla-klok-hoelaat-1 haalt 60 beelden per seconde en 21 ms. Het openen op de trage telefoon duurt in de ontwikkelversie ± 3 s (lokaal alleen een waarschuwing; op de echte site moet het onder 1 s). Eerst oplossen vóór online zetten.

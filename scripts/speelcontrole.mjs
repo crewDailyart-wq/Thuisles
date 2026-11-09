@@ -497,6 +497,8 @@ async function speel(c, id) {
       const nuGoed = (await ev(`window.__phaser?.antwoord ?? null`)) ?? z.antwoord;
       const goed = nuGoed != null ? String(nuGoed) : null;
       if (soort === "goed" && goed && (await klik(`(b) => (b.textContent || "").trim() === ${JSON.stringify(goed)} || b.getAttribute("data-ding") === ${JSON.stringify(goed)}`))) continue;
+      /* FOUTANTWOORD="10 uur": bij een fout dit antwoord kiezen als het er staat (om één denkfout, zoals spiegelbeeld, te testen). */
+      if (soort === "fout" && process.env.FOUTANTWOORD && process.env.FOUTANTWOORD !== goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() === ${JSON.stringify(process.env.FOUTANTWOORD)}`))) continue;
       if (soort === "fout" && goed && (await klik(`(b) => b.closest('[data-knop="keuzes"], [class*="bediening"]') && (b.textContent || "").trim() !== ${JSON.stringify(goed)} && b.getAttribute("data-knop") !== "weetniet"`))) continue;
       /* Anders: de eerste keuze, of een tikbaar ding in het vlak. */
       if (await klik(`(b) => b.tagName === "BUTTON" && b.hasAttribute("data-plek")`)) continue;
@@ -505,6 +507,11 @@ async function speel(c, id) {
       if (await ev(`(() => { const lijst = [...document.querySelectorAll("[data-zin], [data-getal], [data-signaal]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled; }); if (!lijst.length) return false; lijst[${stappen} % lijst.length].click(); return true; })()`)) continue;
       if (await klik(`(b) => b.getAttribute("data-knop") === "weetniet"`)) continue;
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
+    }
+    /* DUMP=1: wat de gouden klokles over de les heeft vastgelegd (denkfouten, uitkomsten, zinnen van Bliepo). */
+    if (process.env.DUMP) {
+      const d = await ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [], g: (window.__gouden ?? []).filter((x) => x.wat === "reactie" || x.wat === "aanwijzing" || x.wat === "aanmoedigen") })`);
+      writeFileSync(process.env.DUMP, d ?? "{}");
     }
     if (process.env.DEBUG) console.log("  eindstand:", JSON.stringify(await ev(STAAT)).slice(0, 900));
     if (process.env.DEBUG) console.log("  phaser:", JSON.stringify(await ev(`JSON.stringify(window.__phaser ?? null)`)).slice(0, 600));

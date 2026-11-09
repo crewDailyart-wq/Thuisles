@@ -6,7 +6,7 @@ Gemaakt op 8 november 2026 en bijgewerkt na de tweede ronde besluiten van Sara (
 
 ## Samenvatting
 
-- **Aantal regels:** 176 (R1 t/m R176), per onderwerp hieronder. R173 t/m R176 zijn erbij gekomen in de vijfde ronde (belangrijkste regel van Bliepo).
+- **Aantal regels:** 185 (R1 t/m R185), per onderwerp hieronder. R173 t/m R176 zijn erbij gekomen in de vijfde ronde (belangrijkste regel van Bliepo); R177 t/m R185 in de zesde ronde (9 november 2026, zie "Zesde ronde").
 - **Aantal botsingen:** 35 (B1 t/m B35) plus 10 nieuwe uit de tweede ronde (B36 t/m B45). In de derde ronde (8 november) besliste Sara over een deel van B36 t/m B45 (zie "Derde ronde" hieronder); in de vierde ronde besliste Sara over de rest (zie "Vierde ronde"). Oudere open punten (15 t/m 30) staan in `OVERIGE-BOTSINGEN.md`. Dat zijn regels die elkaar tegenspreken of verwarrend zijn. Sara heeft op 8 november 2026 over B1 t/m B35 besloten (eerste ronde) en over de verschillen met Synthesis (tweede ronde, zie hieronder).
 - Daarnaast een lijst met **dubbele of verouderde regels** (D1 t/m D12). Die spreken elkaar niet echt tegen, maar staan nog op een oude plek.
 - De belangrijkste botsing is **B1**: het rode rondje komt ook als het kind tikt, niet alleen als Bliepo iets noemt.
@@ -67,6 +67,24 @@ Sara heeft over een deel van de twijfels besloten. De oude versie staat in `rege
 | T25 / B45 Heel snel | "'Heel snel' = de grens uit het draaiboek; staat die er niet, dan binnen 2 seconden na het einde van de vraag." | 6.10 | deels (aanwijzing na 5-6 s nog open) |
 
 Bijgewerkt naar deze regels: `FOUTEN-VOORBEELDEN.md` (F1, F2, F5), `SYNTHESIS-ANALYSE/DRAAIBOEKEN.md` §1.10, `SQULA-VOORTGANG.md` (logica-controle), `ONTWERPREGELS.md`, `CLAUDE.md` en het geheugen. Nieuw: `LESRECEPT.md`, `BLIEPO-KARAKTER.md`, `OVERIGE-BOTSINGEN.md`.
+
+---
+
+## Zesde ronde (9 november 2026): skelet van Synthesis, karakter van Bliepo, 2 pogingen
+
+De oude versie staat in `regels-backup-20261108/REGELS-OVERZICHT-voor-ronde-6.md`. Niets is verwijderd; oude regels zijn gemarkeerd als vervangen.
+
+| Regel | Besluit Sara (6e ronde) | Regel in BOUWREGELS | Stand |
+|---|---|---|---|
+| R177 | Skelet van elke les van Synthesis (verloop, tempo, hulphandje, oplichten, bonusvraag); karakter en foutaanpak van Bliepo (rood/groen scherm, fouttabel, nooit stoppen, naam, robotzinnen) | 15.10 | nieuw |
+| R178 | Twee lagen: laag 1 voor alle onderwerpen gelijk (LESRECEPT.md, BLIEPO-KARAKTER.md); laag 2 per onderwerp uit het eigen draaiboek; verloop nooit overnemen voor een ander onderwerp | 15.10 | nieuw |
+| R179 | **2 pogingen** bij alle vragen en opdrachten: 1e fout = hint uit de fouttabel, 2e fout = uitleg en samen voordoen, dan door. **Vervangt de 3-pogingen-regel (vierde ronde; T22, 5.1, 5.4, 15.9 punt 2: gemarkeerd als vervangen)** | 15.11 | nieuw, vervangt |
+| R180 | Voortgang per vraag: goed in één keer / goed na een fout / samen gedaan; alleen "goed in één keer" telt mee voor beheersing | 15.11 | nieuw (voorlopig alleen op het apparaat) |
+| R181 | Ronde 14: uitlegvragen na Nee mogen (zelfde leerdoel, hele uren), vragen tussendoor en bonus aan (hele uren), na een fout altijd een nieuwe kans ook bij kijkvragen | 15.12 | nieuw |
+| R182 | Ronde 15: naam hooguit 2 keer per les; aanmoediging samen met het hulphandje bij opdrachten, niets bij keuzevragen; "Volgende keer gaat het nog beter" alleen bij de helft of meer niet in één keer goed (vervangt "4 of meer vragen met een fout"); spiegelbeeld is een eigen denkfout | 15.13 | nieuw, vervangt |
+| R183 | Per onderwerp één gouden les; die is het voorbeeld voor de rest van het onderwerp; overige lessen pas omzetten na goedkeuring | 15.14 | nieuw |
+| R184 | Eerst grondig zoeken naar een passende Synthesis-les; pas bouwen als het draaiboek klaar is | 15.15 | nieuw |
+| R185 | Geen passende Synthesis-les: niets bouwen, geen eigen invulling, bestaande lessen blijven, melden aan Sara | 15.16 | nieuw |
 
 ---
 

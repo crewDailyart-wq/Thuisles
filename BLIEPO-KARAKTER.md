@@ -144,7 +144,7 @@ Telling: 10 zinnen, waarvan 2 robotzinnen.
 
 ### 3.4 Goed na een fout: alleen een korte bevestiging
 
-**Gebruiksnoot:** heeft het kind bij deze vraag eerst een fout gemaakt (1×, 2× of in de 3e poging), dan **geen grote lof**, alleen een korte bevestiging uit dit rijtje (5.11). Geen naam. Ook niet als het kind na het samen voordoen zelf tikt: dan zegt Bliepo meteen de volgende stap.
+**Gebruiksnoot:** heeft het kind bij deze vraag eerst een fout gemaakt (1× of 2×; de 3e poging bestaat niet meer, 15.11), dan **geen grote lof**, alleen een korte bevestiging uit dit rijtje (5.11). Geen naam. Ook niet als het kind na het samen voordoen zelf tikt: dan zegt Bliepo meteen de volgende stap.
 
 1. Ja, nu is het goed.
 2. Nu heb je hem.
@@ -267,7 +267,7 @@ Telling: 60 zinnen (12 onderwerpen × 5), waarvan 12 robotzinnen. Zin 1, 6, 11, 
 
 **Gebruiksnoot begin:** een korte groet, vóór de **eigen** beginzin van de les. De beginzin zelf blijft per les eigen (BOUWREGELS 4.3, 4.4): de groet vervangt die niet (vraag aan Sara in KEUZES-VOOR-SARA.md, Ronde 15). Bliepo zwaait bij de groet (3.16).
 
-**Gebruiksnoot einde:** 1 eindzin aan het eind van de les (3.13). Zin 6 ("Volgende keer gaat het nog beter") **alleen als het kind veel fouten had** (voorstel: bij 4 of meer vragen met een fout). Zin 9 en 10 passen bij elke les.
+**Gebruiksnoot einde:** 1 eindzin aan het eind van de les (3.13). Zin 6 ("Volgende keer gaat het nog beter") **alleen als het kind de helft of meer van de vragen niet in één keer goed had** (besluit Sara 9 november 2026, ronde 15; vervangt het voorstel "4 of meer vragen met een fout"). Zin 9 en 10 passen bij elke les.
 
 **Einde**
 1. Goed gedaan! Tot de volgende keer.
@@ -299,8 +299,9 @@ Een startvraag ("Kun je dit al?") stelt Bliepo alleen als het draaiboek van het 
 Voor fouten is er **geen vast rijtje**: de reactie komt uit de **fouttabel** van de vraag (BOUWREGELS 15.9, 5.10, 5.11). Alleen als de denkfout niet duidelijk is, komt de eerste zin uit het rijtje in §10. Zo werkt het:
 
 - **1e fout:** scherm 1,5 seconde rood, vraag en knoppen even weg. Bliepo zegt de eerste zin uit de fouttabel: hij laat merken dat hij snapt wat het kind dacht, met inhoud ("Je keek naar de lange wijzer."). Dan de hint voor precies die denkfout, met het beeld uit de tabel. Daarna komt de vraag terug.
-- **2e fout:** een uitleg die past bij de denkfout van deze keuze, met wat er op het scherm staat, **zonder het goede antwoord te zeggen of te laten zien**. Daarna een 3e poging.
-- **3e fout:** Bliepo doet het samen met het kind voor, laat nu pas het goede antwoord zien, het kind doet 1 kleine stap, en de les gaat verder. Het voelt als samen werken, niet als straf.
+- **[VERVANGEN 9 november 2026, zesde ronde, BOUWREGELS 15.11: 2 pogingen. Bij de 2e fout legt Bliepo het uit én doet het samen voor; er is geen 3e poging.]**
+- **2e fout (nu):** een uitleg die past bij de denkfout van deze keuze, met wat er op het scherm staat, en meteen samen voordoen (nu pas het goede antwoord in beeld, het kind doet 1 kleine stap, de les gaat verder). *Oude regel: uitleg zonder antwoord en dan een 3e poging.*
+- **3e fout (vervangen, bestaat niet meer):** Bliepo doet het samen met het kind voor, laat nu pas het goede antwoord zien, het kind doet 1 kleine stap, en de les gaat verder. Het voelt als samen werken, niet als straf.
 - **Twee keer dezelfde denkfout:** Bliepo zegt dat vriendelijk ("Je keek weer naar de lange wijzer.") en legt het op een andere manier uit dan de eerste keer.
 - De hint wijst naar precies 1 keuze (14.31), klopt met het beeld en de som, en verklapt het antwoord niet.
 - Nooit dezelfde zin 2 keer achter elkaar. Geen vaste opening. Geen naam. Nooit het woord "fout".
@@ -363,7 +364,7 @@ Telling: 15 zinnen, waarvan 4 robotzinnen.
 
 ## 11. Aanmoedigen tijdens het nadenken
 
-**Gebruiksnoot:** alleen bij een **opdracht** (tikken, slepen, zetten) waar het kind lang niets doet. **Niet bij een keuzevraag** (6.10b: daar komt geen aanwijzing). De eerste keer na 5 à 6 seconden is het hulphandje met zijn eigen korte zin (5.10); een zin uit dit rijtje komt pas als het kind daarna nog steeds niets doet (voorstel ± 15 seconden; vraag aan Sara in KEUZES-VOOR-SARA.md, Ronde 15). Hooguit 1 keer per opdracht. Nooit zeuren.
+**Gebruiksnoot (besluit Sara 9 november 2026, ronde 15):** alleen bij een **opdracht** (tikken, slepen, zetten). De aanmoediging komt **samen met het hulphandje**, na 5 à 6 seconden stilte (5.10): eerst een zin uit dit rijtje, dan de korte hulpzin. **Bij een keuzevraag zegt Bliepo niets als het kind nadenkt**, zoals bij Synthesis (6.10b). Of 1 aanmoediging per les nodig is, kijken we na de test met een echt kind (KEUZES-VOOR-SARA.md). Hooguit 1 keer per opdracht. Nooit zeuren. *(Vervangen: de oude regel dat de aanmoediging pas na ± 15 seconden kwam.)*
 
 1. Neem rustig de tijd.
 2. Je mag goed kijken.

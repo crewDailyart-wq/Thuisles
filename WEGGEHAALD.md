@@ -59,3 +59,9 @@ Per regel: datum · les · wat · reden · teruggezet?
 
 8 nov 2026 · squla-vormen-opruimen-1 · niets weggehaald: alle plaatjes, keuzes en zinnen staan er nog; alleen grootte, plek en ligging (potloden plat, in de tekendoos) veranderd · n.v.t.
 8 nov 2026 · squla-klok-hoelaat-1-gouden (nieuwe versie, nog niet voor kinderen) · alle zinnen, keuzes en vragen uit het lesbestand squla-klok-gouden.tsx · niet weg: ze zijn verhuisd naar squla-klok-gouden-zinnen.ts (fouttabel, BOUWREGELS 15.9). Wat echt uit de half-af versie (back-up 96d6c65) ging: de vragen tussendoor in het oefenblok en de bonusvraag (voegden vragen toe, 15.8; wachten op akkoord, KEUZES-VOOR-SARA ronde 14). De oude les squla-klok-hoelaat-1 is niet veranderd · terug te halen uit commit 96d6c65
+
+## Ronde 16 – gouden klokles, 9 november 2026
+
+9 nov 2026 · squla-klok-hoelaat-1-gouden · de vragen tussendoor (stap 19: "Welke wijzer liet het uur zien?" en "Waar wijst de grote wijzer?") en de bonusvraag (stap 20: "Hoe laat is het over 1 uur?") · NIET MEER WEG: ze staan weer aan op besluit van Sara (ronde 14 punt 2), alleen met hele uren en getallen uit het Squla-bereik; ze waren sinds 8 nov uitgezet (zie de regel van 8 nov hierboven) · teruggezet
+9 nov 2026 · squla-klok-hoelaat-1-gouden · "(gouden les)" in de titel · weg op verzoek van Sara; de les heet "Hoe laat is het?" (id ongewijzigd) · bewust
+9 nov 2026 · squla-klok-hoelaat-1-gouden · de 3e poging en het aparte samen voordoen na de 3e fout · vervangen door 2 pogingen met samen voordoen na de 2e fout (besluit Sara, BOUWREGELS 15.11); alle vragen, keuzes en zinnen bestaan nog · bewust

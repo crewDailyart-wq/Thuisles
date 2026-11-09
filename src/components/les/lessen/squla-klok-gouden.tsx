@@ -15,24 +15,23 @@
  * antwoord de denkfout, Bliepo's eerste zin, de hint en wat er op het scherm gebeurt. Bliepo probeert altijd de denkfout
  * van het kind te begrijpen en reageert daarop (opdracht Sara, 8 november 2026).
  *
- * Hulp bij een keuzevraag (BOUWREGELS 5.1, 5.3, 5.4, 6.9; 4e ronde; opdracht Sara 8 nov):
+ * Hulp bij een keuzevraag: 2 POGINGEN (besluit Sara 9 november 2026, ronde 6; BOUWREGELS 5.1, 15.11):
  *   - goed in 1 keer: goed-geluidje, Bliepo's scherm 1 s groen, een lofzin uit het rijtje, vanzelf door (0,6 s);
  *   - 1e fout: geen fout-geluidje, Bliepo's scherm 1,5 s rood, vraag en knoppen weg, de eerste zin + hint uit de
  *     fouttabel met de hint in beeld; Bliepo wacht op de blauwe pijl (tik breekt de zin af); dan komt de vraag terug;
- *   - 2e fout: uitleg bij de NIEUWE denkfout, zonder het antwoord; dezelfde denkfout nog eens = vriendelijk zeggen dat
- *     het weer gebeurt en het op een andere manier uitleggen; vanzelf door naar de 3e poging;
- *   - 3e fout: samen voordoen (nu pas de oranje ring om het antwoord), alleen de goede knop blijft staan en het kind
- *     tikt hem zelf (de kleine stap); daarna gaat de les gewoon verder;
+ *   - 2e fout: Bliepo legt het uit (bij de NIEUWE denkfout; dezelfde denkfout nog eens = vriendelijk zeggen dat het weer
+ *     gebeurt en het op een andere manier uitleggen) en doet het samen voor (nu pas de oranje ring om het antwoord);
+ *     alleen de goede knop blijft staan en het kind tikt hem zelf; daarna gaat de les gewoon verder;
  *   - goed na een fout: alleen een korte bevestiging uit het rijtje.
- * Elke fout wordt met zijn denkfout vastgelegd (legDenkfoutVast).
+ * Elke fout wordt met zijn denkfout vastgelegd (legDenkfoutVast) en elke vraag met zijn uitkomst: goed in 1 keer,
+ * goed na een fout of samen gedaan (legUitkomstVast); alleen "goed in 1 keer" telt mee voor beheersing.
  *
- * Twee draaiboekstappen staan klaar maar UIT, omdat ze vragen toevoegen aan het oefenblok (15.8): de vragen tussendoor
- * (stap 19) en de bonus (stap 20). Zie `DRAAIBOEK_EXTRA` en KEUZES-VOOR-SARA.md, "Ronde 14 — de gouden klokles".
+ * De vragen tussendoor (stap 19) en de bonus (stap 20) staan AAN (besluit Sara 9 november 2026, ronde 14 punt 2):
+ * alleen hele uren, geen getallen buiten het bereik van de Squla-les. Zie `DRAAIBOEK_EXTRA` en WEGGEHAALD.md.
  */
 
 import type { Lesdraaiboek, Lesgids } from "../soort";
-import { GoudenKlok, type GoudenKlokProps, type GoudenNaspeel, type GoudenWijzer } from "../vlakken/squla-klok-gouden-vlak";
-import { KaartKlok } from "../vlakken/squla-klok-vlak";
+import { GoudenKlok, KaartKlokGouden, type GoudenKlokProps, type GoudenNaspeel, type GoudenWijzer } from "../vlakken/squla-klok-gouden-vlak";
 import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
@@ -40,10 +39,10 @@ import { AANMOEDIG, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, KLOKKEN, KLOKREACTIE, LO
 
 /**
  * Draaiboekstappen die vragen toevoegen aan het oefenblok (stap 19: "welke wijzer liet het uur zien?" en "waar wijst
- * de grote wijzer?"; stap 20: de bonus "hoe laat is het over 1 uur?"). Uit tot Sara akkoord geeft (BOUWREGELS 15.8).
- * De code ervan stond in de eerste opzet; die is bewaard in de back-upbranch (commit 96d6c65).
+ * de grote wijzer?"; stap 20: de bonus "hoe laat is het over 1 uur?"). AAN sinds 9 november 2026 (besluit Sara,
+ * ronde 14 punt 2); alleen hele uren. De vragen staan in EXTRAVRAGEN (squla-klok-gouden-zinnen.ts).
  */
-export const DRAAIBOEK_EXTRA = false;
+export const DRAAIBOEK_EXTRA = true;
 
 /* ---------- tijd ---------- */
 
@@ -53,11 +52,11 @@ const u = (uur: number, minuut = 0) => (uur % 12) * 60 + minuut;
 
 const zet = (l: Lesgids, p: Partial<GoudenKlokProps>) => l.pasVlakAan<GoudenKlokProps>(p);
 
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; namen: number; snelGehad: Set<number>; log: unknown[] };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[] };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, namen: 0, snelGehad: new Set(), log: [] }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [] }));
   return s;
 };
 
@@ -108,6 +107,36 @@ export function legDenkfoutVast(l: Lesgids, d: Omit<Denkfout, "les" | "tijd">) {
       /* geen opslag beschikbaar: dan alleen in het geheugen */
     }
   }
+}
+
+/**
+ * De uitkomst van elke vraag vastleggen (besluit Sara 9 november 2026): goed in 1 keer, goed na een fout of samen gedaan.
+ * Alleen "goed in 1 keer" telt mee voor beheersing. Net als de denkfouten voorlopig alleen lokaal
+ * (`window.__uitkomsten`, op /voorbeeld ook in "thuisles-uitkomsten-test"); niets naar de server of de database.
+ */
+export type UitkomstRegel = { les: string; vraag: string; uitkomst: "goed-in-een-keer" | "goed-na-fout" | "samen-gedaan" | "niet-afgemaakt"; teltVoorBeheersing: boolean; tijd: string };
+const UITKOMST_NAAM: Record<Uitkomst, UitkomstRegel["uitkomst"]> = { goed: "goed-in-een-keer", naFout: "goed-na-fout", voorgedaan: "samen-gedaan", gestopt: "niet-afgemaakt" };
+function noteer(l: Lesgids, vraag: string, uit: Uitkomst): Uitkomst {
+  const s = st(l);
+  if (!s.eerste.has(vraag)) s.eerste.set(vraag, uit);
+  if (typeof window === "undefined") return uit;
+  const regel: UitkomstRegel = { les: l.lesId ?? "squla-klok-hoelaat-1-gouden", vraag, uitkomst: UITKOMST_NAAM[uit], teltVoorBeheersing: uit === "goed", tijd: new Date().toISOString() };
+  const w = window as unknown as { __uitkomsten?: UitkomstRegel[] };
+  (w.__uitkomsten ??= []).push(regel);
+  if (window.location.pathname.startsWith("/voorbeeld")) {
+    try {
+      const oud = JSON.parse(window.localStorage.getItem("thuisles-uitkomsten-test") ?? "[]") as UitkomstRegel[];
+      window.localStorage.setItem("thuisles-uitkomsten-test", JSON.stringify([...oud, regel].slice(-300)));
+    } catch {
+      /* geen opslag beschikbaar: dan alleen in het geheugen */
+    }
+  }
+  return uit;
+}
+/** "Volgende keer gaat het nog beter" alleen als het kind de helft of meer van de vragen niet in 1 keer goed had (ronde 15). */
+function veelFouten(l: Lesgids): boolean {
+  const alle = [...st(l).eerste.values()];
+  return alle.length > 0 && alle.filter((x) => x !== "goed").length * 2 >= alle.length;
 }
 
 /* ---------- het vaste rijtje ---------- */
@@ -175,8 +204,8 @@ const DENK_MS = 200;
 const DOOR_MS = 300;
 /** Bij een opdracht (tikken, zetten): na zoveel stilte komt vanzelf het hulphandje met 1 korte zin (6.10b, 5.10). */
 const AANWIJZING_MS = 5500;
-/** Doet het kind na het handje nog steeds niets: 1 keer een aanmoediging (BLIEPO-KARAKTER.md §11, ± 15 s). */
-const AANMOEDIG_MS = 15000;
+/** Bij een opdracht komt de aanmoediging SAMEN met het hulphandje (ronde 15); bij een keuzevraag zegt Bliepo niets. */
+const handZinnen = (l: Lesgids, hint: string) => [kies(l, AANMOEDIG), hint];
 
 function schud<T>(lijst: T[]): T[] {
   const a = [...lijst];
@@ -269,13 +298,14 @@ type Keuzevraag = {
   stopNaFout?: () => boolean;
 };
 
-/** Een keuzevraag met de hulp hierboven. */
+/** Een keuzevraag met de hulp hierboven: 2 pogingen. */
 async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
   const v = vraagMet(o.id);
   const opties = o.vast ? v.opties : schud(v.opties);
   let eerder: Fout | null = null;
   const weerGebruikt = { v: false };
-  for (let poging = 1; poging <= 3; poging++) {
+  let uitlegZinnen: string[] = [];
+  for (let poging = 1; poging <= 2; poging++) {
     zetTestAntwoord(v.goed);
     haak(l, { soort: "kies", opties, goed: v.goed, poging, vraag: v.id }, poging === 1);
     const { x, snel } = await vraagMetKnoppen(l, opties, poging === 1 ? v.vraag : (v.opnieuw ?? v.vraag));
@@ -301,7 +331,7 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
       await zeg(l, ...zinnen);
       await l.wacht(DOOR_MS);
       log(l, "door");
-      return poging === 1 ? "goed" : "naFout";
+      return noteer(l, v.id, poging === 1 ? "goed" : "naFout");
     }
     /* Geen fout-geluidje en geen rood op de keuze; alleen Bliepo's scherm kleurt rood (BOUWREGELS 5.3). */
     bliepoScherm("fout");
@@ -312,31 +342,34 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
     if (o.stopNaFout?.()) {
       st(l).denkfouten.set(f.soort, (st(l).denkfouten.get(f.soort) ?? 0) + 1);
       log(l, "reactie", { soort: "proef-stop", vraag: v.id, x, denkfout: f.code });
-      return "gestopt";
+      return noteer(l, v.id, "gestopt");
     }
-    if (poging <= 2) {
-      toonScherm(l, f.scherm);
-      const zinnen = foutZinnen(l, f, poging as 1 | 2, eerder, weerGebruikt).filter(Boolean);
-      st(l).denkfouten.set(f.soort, (st(l).denkfouten.get(f.soort) ?? 0) + 1);
-      log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: zinnen.join(" ") });
-      if (poging === 1) {
-        await zegEnPijl(l, zinnen);
-        if (o.naFout1) await o.naFout1();
-      } else {
-        await zeg(l, ...zinnen);
-        await l.wacht(DOOR_MS);
-      }
+    toonScherm(l, f.scherm);
+    const zinnen = foutZinnen(l, f, poging as 1 | 2, eerder, weerGebruikt).filter(Boolean);
+    st(l).denkfouten.set(f.soort, (st(l).denkfouten.get(f.soort) ?? 0) + 1);
+    log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: zinnen.join(" ") });
+    if (poging === 1) {
+      /* 1e fout: Bliepo reageert op de denkfout met een hint; het kind mag nog 1 keer. */
+      await zegEnPijl(l, zinnen);
+      if (o.naFout1) await o.naFout1();
       o.opruimen?.();
       eerder = f;
+    } else {
+      /* 2e fout: Bliepo legt het uit en doet het samen voor (hieronder). */
+      uitlegZinnen = zinnen;
     }
   }
-  /* Na de 3e fout: samen voordoen, de kleine stap, en door (BOUWREGELS 5.1, 5.4). */
+  /* Na de 2e fout: uitleg, samen voordoen, de kleine stap, en door (BOUWREGELS 5.1, 5.4, 15.11). */
+  if (uitlegZinnen.length) {
+    await zeg(l, ...uitlegZinnen);
+    await l.wacht(DOOR_MS);
+  }
   const eigen = o.voordoen();
   const samen = eigen.length ? eigen : (v.samen ?? []);
-  log(l, "reactie", { soort: "fout3", vraag: v.id, zin: samen.join(" ") });
+  log(l, "reactie", { soort: "fout2-samen", vraag: v.id, zin: samen.join(" ") });
   await zeg(l, ...samen);
   zetTestAntwoord(v.goed);
-  haak(l, { soort: "kies", opties: [v.goed], goed: v.goed, poging: 4, vraag: v.id });
+  haak(l, { soort: "kies", opties: [v.goed], goed: v.goed, poging: 3, vraag: v.id });
   const p = l.kies([v.goed], { direct: true, weetniet: false });
   log(l, "kleine-stap");
   const z = zeg(l, o.kleineStap);
@@ -352,20 +385,22 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
   o.opruimen?.();
   await l.wacht(700);
   log(l, "voorgedaan-klaar");
-  return "voorgedaan";
+  return noteer(l, v.id, "voorgedaan");
 }
 
 /**
  * Een opdracht op de klok: zet de kleine wijzer op een getal (draaiboek stap 14). De opdracht blijft bovenaan staan
  * (14.32); de oranje ring om het doel mag (7.8e). Na 5,5 s stilte vanzelf het hulphandje met 1 korte zin (6.10b).
- * Fout getal: reactie op de denkfout uit de fouttabel + het handje; 2e fout: uitleg; 3e fout: samen, alleen het doel werkt.
+ * Fout getal: reactie op de denkfout uit de fouttabel + het handje; 2e fout: uitleg en samen doen, alleen het doel werkt.
  */
 async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
+  const vraagId = `stap14-zet-${doel}`;
   zet(l, { doel: ZIN.zetKop(doel), ring: doel, ringWijzer: "uur", ringPuls: false, licht: "uur", minuutwijzer: "fel", uurwijzer: "fel", hand: null });
   let eerder: Fout | null = null;
   const weerGebruikt = { v: false };
-  for (let poging = 1; poging <= 4; poging++) {
-    const kleineStap = poging === 4;
+  /* 3 rondes: 1e poging, 2e poging, en (na de 2e fout) samen doen: alleen het doel werkt. */
+  for (let poging = 1; poging <= 3; poging++) {
+    const kleineStap = poging === 3;
     haak(l, { soort: "uur", doel, poging, ...(kleineStap ? { alleen: true } : {}) }, poging === 1);
     zet(l, { actief: true, beweegbaar: true, alleenGetal: kleineStap ? doel : null });
     const melding = l.wachtOpVlak<{ soort: string; tijd: number }>("gezet");
@@ -377,16 +412,12 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
       z.catch(() => {});
       await Promise.race([z, melding]);
       log(l, "vraag-klaar");
+      /* Het hulphandje komt vanzelf, samen met de aanmoediging (ronde 15). */
       aanwijzing = setTimeout(() => {
         if (gedaan) return;
         log(l, "aanwijzing");
         zet(l, { hand: doel });
-        void zeg(l, ZIN.zetHand(doel)).catch(() => {});
-        aanwijzing = setTimeout(() => {
-          if (gedaan) return;
-          log(l, "aanmoedigen");
-          void zeg(l, kies(l, AANMOEDIG)).catch(() => {});
-        }, AANMOEDIG_MS - AANWIJZING_MS);
+        void zeg(l, ...handZinnen(l, ZIN.zetHand(doel))).catch(() => {});
       }, AANWIJZING_MS);
     }
     const g = await melding;
@@ -404,23 +435,22 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
       log(l, "reactie", { soort: poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "goed-na-fout" });
       if (!kleineStap) await zeg(l, poging > 1 ? bevestig(l) : lofZinnen(l, {})[0]);
       await l.wacht(1100);
-      return poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "naFout";
+      return noteer(l, vraagId, poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "naFout");
     }
     bliepoScherm("fout");
     const f = zetFout(getal, doel);
-    st(l).foutVragen.add(`stap14-zet-${doel}`);
+    st(l).foutVragen.add(vraagId);
     st(l).opRij = 0;
-    legDenkfoutVast(l, { vraag: `stap14-zet-${doel}`, antwoord: String(getal), denkfout: f.code, poging });
-    zet(l, { hand: doel, ...(poging >= 3 ? { ringPuls: true } : {}) });
-    let zinnen: string[];
-    if (poging <= 2) zinnen = foutZinnen(l, f, poging as 1 | 2, eerder, weerGebruikt);
-    else zinnen = ZIN.zetSamen(doel);
+    legDenkfoutVast(l, { vraag: vraagId, antwoord: String(getal), denkfout: f.code, poging });
+    zet(l, { hand: doel, ...(poging >= 2 ? { ringPuls: true } : {}) });
+    /* 1e fout: hint; 2e fout: uitleg en samen doen; daarna doet het kind de laatste tik zelf. */
+    const zinnen = poging === 1 ? foutZinnen(l, f, 1, eerder, weerGebruikt) : [...foutZinnen(l, f, 2, eerder, weerGebruikt), ...ZIN.zetSamen(doel)];
     st(l).denkfouten.set(f.soort, (st(l).denkfouten.get(f.soort) ?? 0) + 1);
-    log(l, "reactie", { soort: `fout${poging}`, vraag: `stap14-zet-${doel}`, x: getal, denkfout: f.code, zin: zinnen.join(" ") });
+    log(l, "reactie", { soort: `fout${poging}`, vraag: vraagId, x: getal, denkfout: f.code, zin: zinnen.join(" ") });
     await zeg(l, ...zinnen);
     eerder = f;
   }
-  return "voorgedaan";
+  return noteer(l, vraagId, "voorgedaan");
 }
 
 /* ---------- het oefenblok ---------- */
@@ -459,12 +489,12 @@ async function oefenKlok(l: Lesgids, i: number, stopNaFout?: () => boolean): Pro
 
 const gouden: Lesdraaiboek = {
   id: "squla-klok-hoelaat-1-gouden",
-  titel: "Hoe laat is het? (gouden les)",
+  titel: "Hoe laat is het?",
   synthesis: "Gouden les · inhoud Squla groep 3 · Klokkijken · Hoe laat is het? · level 1 (squla-klok-hoelaat-1) · verloop draaiboek klokkijken (Hour Hand Hunt)",
   indeling: "synthesis",
   browserstem: true,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij"],
-  kaarttekening: KaartKlok,
+  kaarttekening: KaartKlokGouden,
   async speel(l) {
     STAAT.delete(l);
     log(l, "start");
@@ -525,7 +555,7 @@ const gouden: Lesdraaiboek = {
     log(l, "kaart", { fouten });
     const tik = l.kaart();
     speelLesgeluid("kaart");
-    await zeg(l, st(l).foutVragen.size >= 4 ? EINDE_VEEL_FOUTEN : kies(l, EINDE));
+    await zeg(l, veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE));
     await tik;
   },
 };
@@ -562,7 +592,7 @@ async function uitlegRoute(l: Lesgids) {
     if (klaar) return;
     log(l, "aanwijzing");
     zet(l, { hand: 5 });
-    void zeg(l, ZIN.tikGetalHand).catch(() => {});
+    void zeg(l, ...handZinnen(l, ZIN.tikGetalHand)).catch(() => {});
   }, AANWIJZING_MS);
   await getikt;
   klaar = true;
@@ -785,12 +815,45 @@ async function oefenblok(l: Lesgids, vanaf: number, mis: number[]): Promise<numb
   await zeg(l, vanaf ? ZIN.oefenVerder : ZIN.oefenBegin);
   await l.wacht(DOOR_MS);
   let fouten = mis.length;
+  let tussen = 0;
   for (let i = vanaf; i < KLOKKEN.length; i++) {
     /* Af en toe een overgangszin (BLIEPO-KARAKTER.md §12); meestal niet, want het draaiboek gaat vanzelf door. */
     if (i === 7) await zeg(l, kies(l, OVERGANG));
     if ((await oefenKlok(l, i)) !== "goed") {
       fouten++;
       mis.push(i);
+    }
+    /* Vragen tussendoor (draaiboek stap 19): na de eerste klok van het blok "welke wijzer liet het uur zien?", daarna bij
+       de eerstvolgende klok die niet op 12 staat "waar wijst de grote wijzer?". Alleen hele uren. */
+    if (DRAAIBOEK_EXTRA && tussen < 2) {
+      const uur = KLOKKEN[i].uur;
+      if (tussen === 0) {
+        tussen = 1;
+        zet(l, { verhaal: null, ring: null, getalKleur: null, licht: null });
+        const w = await keuze(l, {
+          id: "tussendoor-welke-wijzer",
+          voordoen: () => {
+            zet(l, { licht: "uur", minuutwijzer: "flets", uurwijzer: "fel" });
+            return [];
+          },
+          kleineStap: VOORDOEN.woordTik("de kleine wijzer"),
+          opruimen: () => zet(l, { licht: null, minuutwijzer: "fel", uurwijzer: "fel" }),
+        });
+        if (w !== "goed") fouten++;
+      } else if (uur !== 12) {
+        tussen = 2;
+        zet(l, { verhaal: null, ring: null, getalKleur: null, licht: null });
+        const w = await keuze(l, {
+          id: `tussendoor-grote-${uur}uur`,
+          voordoen: () => {
+            zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel", ring: 12, ringWijzer: "minuut", getalKleur: { n: 12, wijzer: "minuut" } });
+            return [];
+          },
+          kleineStap: VOORDOEN.getalTik(12, "paars"),
+          opruimen: () => zet(l, { licht: null, uurwijzer: "fel", minuutwijzer: "fel", ring: null, getalKleur: null }),
+        });
+        if (w !== "goed") fouten++;
+      }
     }
   }
   const nodig = Math.max(0, MINIMAAL - KLOKKEN.length);
@@ -807,6 +870,24 @@ async function oefenblok(l: Lesgids, vanaf: number, mis: number[]): Promise<numb
       }
     }
     if (weerFout) await zeg(l, ZIN.terugLastig);
+  }
+  /* Stap 20. De bonus "hoe laat is het over 1 uur?": alleen als alles in 1 keer goed ging (draaiboek). */
+  if (DRAAIBOEK_EXTRA && fouten === 0) {
+    zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null });
+    speelLesgeluid("klokDraai");
+    zet(l, { stand: { tijd: u(12), draai: true } });
+    await l.wacht(1500);
+    await keuze(l, {
+      id: "bonus-over-1-uur",
+      bijGoed: () => zet(l, { pijl: { van: 12, naar: 1 } }),
+      voordoen: () => {
+        zet(l, { licht: "uur", pijl: { van: 12, naar: 1 }, ring: 1, ringWijzer: "uur", getalKleur: { n: 1, wijzer: "uur" } });
+        return [];
+      },
+      kleineStap: VOORDOEN.klokTik(1),
+      opruimen: () => zet(l, { licht: null, ring: null }),
+    });
+    zet(l, { licht: null, pijl: null, ring: null, getalKleur: null });
   }
   return fouten;
 }

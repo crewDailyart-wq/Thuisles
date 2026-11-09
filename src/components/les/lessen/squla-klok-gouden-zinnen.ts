@@ -104,7 +104,7 @@ export const ZIN = {
 /* ---------- denkfouten ---------- */
 
 /** De vaste namen voor de voortgang (FOUTTABEL-squla-klok-gouden.md §1; elke les gebruikt dezelfde lijst). */
-export const DENKFOUTEN = ["verkeerde-wijzer", "andere-kant", "getal-ernaast", "een-te-veel", "een-te-weinig", "plus-min-verwisseld", "groter-kleiner-verwisseld", "verkeerde-richting", "doortellen-na-12", "boven-onder-verwisseld", "wijzers-verwisseld", "uur-minuten-verwisseld", "geen-heel-uur", "beeld-van-net", "onduidelijk"] as const;
+export const DENKFOUTEN = ["verkeerde-wijzer", "andere-kant", "spiegelbeeld", "getal-ernaast", "een-te-veel", "een-te-weinig", "plus-min-verwisseld", "groter-kleiner-verwisseld", "verkeerde-richting", "doortellen-na-12", "boven-onder-verwisseld", "wijzers-verwisseld", "uur-minuten-verwisseld", "geen-heel-uur", "beeld-van-net", "onduidelijk"] as const;
 export type Denkfoutnaam = (typeof DENKFOUTEN)[number];
 
 /** Wat er op het scherm gebeurt bij een hint (de les zet dit om in beeld). */
@@ -152,6 +152,26 @@ export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
   ernaast: {
     uitleg: ["Kijk welk getal precies bij de punt van de kleine wijzer staat."],
     weer: ["Weer net ernaast. Je bent er bijna!", "Welk getal raakt de punt bijna?"],
+  },
+  spiegel: {
+    uitleg: ["Kijk of de punt van de kleine wijzer links of rechts staat."],
+    weer: ["Weer het getal aan de andere kant, links en rechts zijn omgedraaid.", "Zet je vinger op de punt van de kleine wijzer en kijk naar het getal erbij."],
+  },
+  "zet-spiegel": {
+    uitleg: ["Kijk of het oranje rondje links of rechts staat, en draai de punt daarheen."],
+    weer: ["Weer links en rechts omgedraaid.", "Kijk naar het oranje rondje en draai de punt daarheen."],
+  },
+  "tussendoor-uur": {
+    uitleg: ["De kleine wijzer vertelt het uur."],
+    weer: ["Je koos weer de grote wijzer.", "Het uur lees je bij de kleine wijzer."],
+  },
+  "bonus-min": {
+    uitleg: ["Over 1 uur is het later: de kleine wijzer gaat 1 getal verder, met de klok mee."],
+    weer: ["Je ging weer terug.", "Volg de blauwe pijl: die gaat met de klok mee."],
+  },
+  "bonus-nul": {
+    uitleg: ["Over 1 uur is het 1 uur later dan nu."],
+    weer: ["Weer de tijd van nu.", "Schuif de kleine wijzer 1 getal verder."],
   },
   onduidelijk: {
     uitleg: ["Volg de kleine wijzer tot aan zijn punt."],
@@ -237,11 +257,11 @@ export type Vraag = {
   opties: string[];
   goed: string;
   fouten: Record<string, Fout>;
-  /** De vraag bij de 2e en 3e poging (anders dezelfde). */
+  /** De vraag bij de 2e poging (anders dezelfde). */
   opnieuw?: string[];
   /** Na de lof of bevestiging. */
   naGoed?: string[];
-  /** Samen voordoen na de 3e fout (nu pas het antwoord). */
+    /** Samen voordoen na de 2e fout (nu pas het antwoord). */
   samen?: string[];
   /** Kijkvraag: het kind moest iets zien of vinden ("Dat heb je goed gezien" mag). */
   kijk?: boolean;
@@ -252,10 +272,14 @@ export type Vraag = {
 const o = (n: number) => `{${n}:oranje}`;
 const F = (code: Denkfoutnaam, soort: string, denkfout: string, eerste: string, hint: string, scherm: Scherm): Fout => ({ code, soort, denkfout, eerste, hint, scherm });
 
+/** Het spiegelbeeld van een uur op de klok (links en rechts omgedraaid): 2 en 10, 1 en 11, 4 en 8, 5 en 7. 12 en 6 blijven staan. */
+export const spiegel = (n: number) => (24 - n) % 12 || 12;
+
 /** Een klok lezen (hele uren): de foute keuze → de denkfout. `metUur`: de keuzes zijn "3 uur" (anders "3"). */
 export function klokFout(gekozen: number, uur: number, metUur: boolean): Fout {
   if (gekozen === 12 && uur !== 12) return F("verkeerde-wijzer", "lange-wijzer", "keek naar de grote (lange) wijzer in plaats van de kleine", "Je keek naar de grote wijzer.", "Bij een heel uur kijken we naar de kleine wijzer.", "licht-uur");
   if (gekozen === ((uur + 5) % 12) + 1) return F("andere-kant", "andere-kant", "nam het getal aan de andere kant van de klok", "Je keek naar de andere kant van de klok.", "Kijk waar de punt van de kleine wijzer is.", "licht-uur");
+  if (gekozen === spiegel(uur)) return F("spiegelbeeld", "spiegel", "koos het spiegelbeeld: het getal links in plaats van rechts van de klok, of andersom", `Je koos het getal ${uur < 6 ? "links" : "rechts"}, maar de wijzer wijst naar ${uur < 6 ? "rechts" : "links"}.`, "Kijk of de punt van de kleine wijzer links of rechts staat, en neem het getal precies daar.", "licht-uur");
   if (Math.abs(gekozen - uur) === 1 || Math.abs(gekozen - uur) === 11) return F("getal-ernaast", "ernaast", "nam het getal vlak naast het goede", "Je zat er vlak naast.", "Volg de kleine wijzer tot het getal waar hij precies naar wijst.", "licht-uur");
   return F("onduidelijk", "onduidelijk", "niet duidelijk (geen reden verzonnen)", "", metUur ? "Kijk naar de kleine wijzer. Waar wijst zijn punt naar?" : "Volg de kleine wijzer vanaf het midden tot aan de punt.", "licht-uur");
 }
@@ -263,6 +287,7 @@ export function klokFout(gekozen: number, uur: number, metUur: boolean): Fout {
 /** Een fout getal bij "zet de kleine wijzer op de …" (de meest voorkomende fouten). */
 export function zetFout(gekozen: number, doel: number): Fout {
   if (gekozen === 12 && doel !== 12) return F("verkeerde-wijzer", "zet-12", "zette de kleine wijzer waar de grote hoort (bij de 12)", "Bij de {12:paars} hoort de grote wijzer.", `Zet de kleine wijzer bij de ${o(doel)}.`, "ring-hand");
+  if (gekozen === spiegel(doel) && gekozen !== ((doel + 5) % 12) + 1) return F("spiegelbeeld", "zet-spiegel", "zette de punt op het spiegelbeeld: links in plaats van rechts van de klok, of andersom", `Je zette de punt ${doel < 6 ? "links" : "rechts"}, maar de ${o(doel)} staat ${doel < 6 ? "rechts" : "links"}.`, `Draai de punt naar de ${o(doel)}, in het oranje rondje.`, "ring-hand");
   if (gekozen === ((doel + 5) % 12) + 1) return F("andere-kant", "zet-andere-kant", "zette de punt aan de andere kant van de klok", "De punt staat nu aan de andere kant.", `Draai de punt naar de ${o(doel)}.`, "ring-hand");
   if (Math.abs(gekozen - doel) === 1 || Math.abs(gekozen - doel) === 11) return F("getal-ernaast", "zet-ernaast", "zette de wijzer vlak naast het doel", `Je zette hem vlak naast de ${o(doel)}.`, "Draai een klein stukje verder of terug, naar het oranje rondje.", "ring-hand");
   return F("onduidelijk", "zet-ring", "niet duidelijk (geen reden verzonnen)", "", "Kijk naar het oranje rondje: daar moet de punt heen.", "ring-hand");
@@ -393,7 +418,32 @@ export const KLOKVRAGEN: Vraag[] = KLOKKEN.map((k, i) => {
   };
 });
 
-/** Samen voordoen na de 3e fout (nu pas het antwoord). */
+/**
+ * Draaiboek stap 19 (vragen tussendoor) en stap 20 (bonus), aangezet op 9 november 2026 (besluit Sara, ronde 14 punt 2).
+ * Alleen hele uren; geen getallen buiten het bereik van de Squla-les (1 t/m 12).
+ */
+export const EXTRAVRAGEN: Vraag[] = [
+  {
+    id: "tussendoor-welke-wijzer", waar: "oefenblok, tussendoor (stap 19): na de eerste klok", kijk: true, vraag: ["Welke wijzer liet het uur zien?"], opties: ["de kleine wijzer", "de grote wijzer"], goed: "de kleine wijzer",
+    samen: ["De kleine wijzer laat het uur zien."],
+    fouten: { "de grote wijzer": F("wijzers-verwisseld", "tussendoor-uur", "dacht dat de grote wijzer het uur laat zien", "De grote wijzer staat bij de {12:paars}.", "Het uur lees je bij de andere wijzer, die nu oplicht.", "licht-uur") },
+  },
+  ...[1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11].map((uur): Vraag => ({
+    id: `tussendoor-grote-${uur}uur`, waar: `oefenblok, tussendoor (stap 19): waar wijst de grote wijzer? (klok van ${uur} uur)`, kijk: true, vraag: ["Waar wijst de grote wijzer?"], opties: [String(uur), "12"], goed: "12",
+    samen: ["De grote wijzer wijst recht omhoog, naar de {12:paars} in het oranje rondje."],
+    fouten: { [String(uur)]: F("verkeerde-wijzer", "korte-wijzer", "keek naar de kleine wijzer, die bij het uur staat", `Bij de ${o(uur)} staat de kleine wijzer.`, "Kijk naar de grote wijzer die oplicht.", "licht-minuut") },
+  })),
+  {
+    id: "bonus-over-1-uur", waar: "oefenblok, bonus (stap 20): alleen als alles in 1 keer goed ging", lastig: true, vraag: ["Je had ze allemaal in 1 keer goed! Nog 1 als toetje.", "Het is nu 12 uur. Hoe laat is het over 1 uur?"], opties: ["1 uur", "11 uur", "12 uur"], goed: "1 uur",
+    opnieuw: ["Hoe laat is het over 1 uur?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 komt de 1. Over 1 uur is het {1:oranje} uur."],
+    fouten: {
+      "11 uur": F("plus-min-verwisseld", "bonus-min", "ging 1 uur terug in plaats van 1 uur vooruit", "Je ging 1 uur terug.", "Over 1 uur is het later. Volg de blauwe pijl, met de klok mee.", "pijl-12-1"),
+      "12 uur": F("een-te-weinig", "bonus-nul", "bleef bij de tijd van nu, 1 uur te weinig verder", "Dat is de tijd van nu.", "Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl.", "pijl-12-1"),
+    },
+  },
+];
+
+/** Samen voordoen na de 2e fout (nu pas het antwoord). */
 export const VOORDOEN = {
   klok: (uur: number) => [`Kijk, de kleine wijzer wijst naar de ${o(uur)}, in het oranje rondje.`, `De grote wijzer staat op de {12:paars}. Dus het is ${o(uur)} uur.`],
   klokTik: (uur: number) => `Tik nu zelf op ${o(uur)} uur.`,
@@ -403,7 +453,7 @@ export const VOORDOEN = {
 };
 
 export function vraagMet(id: string): Vraag {
-  const v = [...UITLEGVRAGEN, ...KLOKVRAGEN].find((x) => x.id === id);
+  const v = [...UITLEGVRAGEN, ...KLOKVRAGEN, ...EXTRAVRAGEN].find((x) => x.id === id);
   if (!v) throw new Error(`Geen vraag met id ${id}`);
   return v;
 }

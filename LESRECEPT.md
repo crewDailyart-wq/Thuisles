@@ -1,5 +1,24 @@
 # LESRECEPT — zo bouw je een gouden les
 
+> ## ⭐ UITGANGSPUNT (Sara, 9 november 2026, zesde ronde; BOUWREGELS 15.10)
+> **Het skelet van elke les komt van Synthesis; het karakter en de foutaanpak zijn van Bliepo.**
+> - **Van Synthesis (skelet):** het verloop, het tempo, het hulphandje, het oplichten, de bonusvraag, alles in eigen woorden.
+> - **Van Bliepo (karakter en foutaanpak):** het rode en groene scherm, reageren op de denkfout met de fouttabel, nooit stoppen en nooit naar het menu, de naam van het kind (hooguit 2 keer per les), robotzinnen over zijn scherm.
+>
+> **Elke les heeft twee lagen.**
+> - **Laag 1** is voor alle onderwerpen gelijk. Die staat in dit bestand en in BLIEPO-KARAKTER.md.
+> - **Laag 2** is per onderwerp anders. Die komt uit het eigen Synthesis-draaiboek van dat onderwerp: het verloop, de hulp in beeld, het tempo en de denkfouten. **Neem het verloop van het ene onderwerp nooit over voor een ander.**
+>
+> ## ⭐ TWEE POGINGEN (Sara, 9 november 2026; BOUWREGELS 15.11) — vervangt de 3 pogingen van de vierde ronde
+> Bij alle vragen en opdrachten zijn er **2 pogingen**. **1e fout:** Bliepo reageert op de denkfout met een hint uit de fouttabel en het kind mag nog 1 keer. **2e fout:** Bliepo legt het uit en doet het samen met het kind voor; daarna gaat de les verder. Overal hieronder waar "3e poging" of "3e fout" staat, is dat **vervangen** door deze regel (de oude tekst blijft ter herinnering staan). In de voortgang staat per vraag: **goed in één keer**, **goed na een fout** of **samen gedaan**; alleen "goed in één keer" telt mee voor beheersing.
+>
+> ## ⭐ Wat nog meer besloten is (9 november 2026, ronde 14 en 15; BOUWREGELS 15.12 t/m 15.16)
+> - Uitlegvragen na Nee, vragen tussendoor en de bonusvraag mogen, mits binnen hetzelfde leerdoel en dezelfde Squla-getallen. Na een fout altijd een nieuwe kans, ook bij kijkvragen.
+> - Naam hooguit 2 keer per les. Bij opdrachten komt de aanmoediging samen met het hulphandje; bij keuzevragen zegt Bliepo niets als het kind nadenkt (zoals Synthesis).
+> - "Volgende keer gaat het nog beter" alleen als het kind de helft of meer van de vragen niet in één keer goed had.
+> - Een spiegelbeeld-fout (bijvoorbeeld 10 kiezen bij 2) is een eigen denkfout in de fouttabel (`spiegelbeeld`).
+> - **Per onderwerp één gouden les.** Zoek eerst grondig bij Synthesis; pas als het draaiboek klaar is bouwen we. Is er geen passende Synthesis-les, dan bouwen we niets, maken we geen eigen invulling en melden we het aan Sara. De overige lessen van een onderwerp bouwen we pas om als de gouden les is goedgekeurd.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >
@@ -50,7 +69,7 @@ Lees in deze volgorde:
    - **Eerste zin:** laat merken dat Bliepo snapt wat het kind dacht, met inhoud ("Je keek naar de lange wijzer."), zonder "fout", zonder naam, zonder vaste opening. Bij "niet duidelijk": een zin uit het rijtje in BLIEPO-KARAKTER.md §10.
    - **Hint:** pakt precies die denkfout aan, wijst naar 1 keuze (14.31), verklapt het antwoord niet.
    - **Op het scherm:** oranje ring (klok, alleen bij hint/doel/2× fout), hulphandje, blokken op een rij, samen tellen, een wijzer die oplicht.
-   - Per vraag ook: de **uitleg na de 2e fout** per denkfout (zonder antwoord), een **andere uitleg** voor als dezelfde denkfout 2 keer komt, en het **samen voordoen** na de 3e fout.
+   - Per vraag ook: de **uitleg na de 2e fout** per denkfout, een **andere uitleg** voor als dezelfde denkfout 2 keer komt, en het **samen voordoen** (sinds 9 november 2026 allebei bij de 2e fout; vroeger: uitleg zonder antwoord na de 2e fout en samen voordoen na de 3e, nu **vervangen**, 15.11).
    - Zet bij elke rij welke denkfout in de voortgang wordt bewaard (15.9, punt 4).
    Bouw de reacties in de code pas als de tabel af is. Geen vraag zonder tabel.
 
@@ -96,15 +115,18 @@ Volg per stap het draaiboek. Hieronder staat wat bij elke stap altijd geldt.
 - Een lichtflits of golf bij goed mag (7.6), zonder gloed om de keuze.
 - Daarna verder zoals het draaiboek zegt: vanzelf (na de gemeten tijd) of op de blauwe pijl (6.9).
 
-### 3.7 Fout (1e, 2e, 3e)
+### 3.7 Fout (1e, 2e) — 9 november 2026: 2 pogingen, de 3e is vervangen (15.11)
+**Nieuw (15.11):** 1e fout = hint uit de fouttabel en nog 1 keer proberen. 2e fout = Bliepo legt het uit **en doet het samen voor** (het goede antwoord nu in beeld, het kind doet 1 kleine stap); daarna gaat de les verder. Goed na een fout = alleen een korte bevestiging. Wat hieronder over de 3e poging staat, is vervangen.
+
 Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooit het woord "fout", geen rood op de keuze (5.3).
 **Vijfde ronde (BOUWREGELS 15.9):** alles hieronder komt uit de **fouttabel** van de vraag (stap 2.7). 1e fout: vraag en knoppen even weg, eerste zin plus hint voor de denkfout, het beeld uit de tabel, dan komt de vraag terug. 2e fout: uitleg die past bij de denkfout van de nieuwe keuze, zonder het antwoord. 3e fout: samen voordoen en door. **Twee keer dezelfde denkfout:** Bliepo zegt dat vriendelijk en legt het op een andere manier uit. Nooit dezelfde zin 2 keer achter elkaar. De denkfout gaat naar de voortgang.
 - **1e fout:** een korte reactie op wat het kind koos. Een hint in beeld alleen als die bij de vraag past. Het kind probeert meteen opnieuw (5.1). Bij een keuzevraag verdwijnt de vraag tijdens de hint, maar de hint zegt waar het over gaat; bij een opdracht blijft de opdrachtregel staan (14.32). De hint wijst naar precies 1 keuze (14.31).
-- **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, **zonder het goede antwoord te laten zien**. Daarna een **3e poging** (5.1).
-- **3e fout:** Bliepo doet het **samen met het kind voor**, laat nu pas het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
+- **[VERVANGEN 9 nov, 15.11]** **2e fout:** Bliepo legt uit waarom en waar het kind op moet letten, **zonder het goede antwoord te laten zien**. Daarna een **3e poging** (5.1). *Nu: bij de 2e fout uitleg en meteen samen voordoen.*
+- **[VERVANGEN 9 nov, 15.11: nu bij de 2e fout]** **3e fout:** Bliepo doet het **samen met het kind voor**, laat nu pas het goede antwoord zien, het kind doet **1 kleine stap**, en de les gaat **gewoon verder** (5.1, 5.4). Nooit stoppen, nooit het hoofdmenu, geen pauze.
 - Elke fout-reactie is voor deze vraag en dit antwoord geschreven; geen vaste openingen (5.10, 5.11).
 
 ### 3.8 Hulp die vanzelf komt
+- **Ronde 15:** bij een opdracht komt de **aanmoediging samen met het hulphandje**; bij een keuzevraag zegt Bliepo niets als het kind nadenkt (zoals Synthesis).
 - Het **hulphandje komt vanzelf**, met 1 korte zin van Bliepo; er is geen knop (5.10). Het wijst aan wat het kind moet doen; het kind doet de laatste tik zelf.
 - Bij een **opdracht** (tikken, slepen, zetten) komt na 5 à 6 seconden zonder handeling vanzelf het hulphandje, met 1 korte zin van Bliepo. Bij een **keuzevraag** komt niets (6.10). Een rondje alleen als Bliepo iets noemt.
 
@@ -151,8 +173,10 @@ Test als **Testkind** (groep 3), nooit als een echt kind (12.1). Speel elke situ
 | Goed in 1 keer | Korte lof uit het rijtje, groen scherm 1 s, verder zoals het draaiboek (vanzelf of pijl) |
 | Goed na een fout (ook in de 3e poging) | Alleen een korte bevestiging, geen grote lof |
 | 1e fout | Rood scherm 1,5 s, reactie op de keuze, hint alleen als die past, meteen opnieuw |
-| 2e fout | Uitleg zonder het goede antwoord, dan een 3e poging |
-| 3e fout | Samen voordoen, nu pas het antwoord in beeld, 1 kleine stap, les gaat door |
+| 2e fout | **(9 nov: 2 pogingen)** Uitleg en samen voordoen, nu pas het antwoord in beeld, 1 kleine stap, les gaat door *(oude regel: uitleg en een 3e poging; vervangen)* |
+| 3e fout | *Bestaat niet meer (15.11).* |
+| Voortgang | Per vraag: goed in één keer, goed na een fout of samen gedaan; alleen "goed in één keer" telt mee voor beheersing |
+| Spiegelbeeld | Bijvoorbeeld 10 kiezen bij 2: eigen denkfout `spiegelbeeld`, eerste zin zegt links/rechts |
 | Lang wachten (30 s of meer) | Opdracht: hulphandje vanzelf met 1 korte zin na 5 à 6 s. Keuzevraag: geen aanwijzing. Les loopt nooit vast (5.7) |
 | Startvraag (alleen klok) | Ja = proef van 2 opgaven; 2 fouten in de proef = alsnog de uitleg |
 | Groep tikken | Alleen een vinkje, geen rand of gloed; nog een tik haalt het vinkje weg |
