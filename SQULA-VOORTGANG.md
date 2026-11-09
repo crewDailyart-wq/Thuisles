@@ -369,3 +369,6 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 
 ### Minsommen draaiboek nieuw (9 nov)
 - Minsommen draaiboek nieuw: KLAAR voor minsommen tot 10, NIET voor boven 10 / over het tiental, het busverhaal en geld (geen passende opgaven in Dot Destruction). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/minsommen.md`. Gespeeld: Dot Destruction 3x (veel fouten / alles goed en heel snel / andere fouten en weet-ik-niet). Open: zie §11 in dat bestand (o.a. 'afronden' kiezen, precieze stopregel oefenreeks, goed antwoord bij 'hoe schrijf je 9 min 3', eerste keer-route).
+
+### Getallenlijn draaiboek nieuw (9 nov)
+- Getallenlijn draaiboek nieuw: KLAAR voor verschil/sprongen tellen tot 10 (Synthesis-stijl les), GEDEELTELIJK voor het raketje dat springt, NIET voor rangschikken, dingen op de getallen en terugtellen (zitten niet in Count the Jumps). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/getallenlijn.md`. Gespeeld: Count the Jumps 2x (opfrisser + samen leren met veel fouten, uitleg 4x en spel tot de eindkaart / proef met 2 fouten, uitleg, spel en "pauze"). Open: zie §11 in dat bestand (o.a. proef goed, demo ja, doorspelen bij handje, zin na pauze, wanneer de pauzevraag komt, eerste keer-route).
