@@ -82,3 +82,45 @@ fruit groot, telbaar, zonder gezichtjes of kaders; nummers bij het fruit in de k
 
 Punt 1 en 2 herstellen; punt 3 aan Sara voorleggen (regels verwijderen + voorbeeldpagina laten stoppen met bewaren
 bij echte kinderen). Daarna opnieuw keuren.
+
+---
+
+# TWEEDE KEURING (9 november 2026, na commit 8ef14f4)
+
+Zelf opnieuw gecontroleerd, alleen met scripts en Chrome zonder venster met een eigen leeg profiel (geen koekje,
+`?naam=Testkind`). Na alle runs nagekeken: er is geen enkele nieuwe regel in `les_uitkomsten` bijgekomen. Niets aan de
+les of de database veranderd.
+
+## UITSLAG: GOEDGEKEURD
+
+De les zelf is in orde. Eén punt blijft open bij Sara (punt 3 van de eerste keuring); dat zit in gedeelde code en in
+de database, niet in deze les.
+
+## Punten
+
+1. **Hints verklappen niets meer (15.17): GOED.** Alle 30 foute antwoorden in beide volgordes (60 routes) door de echte
+   code gehaald. Waar Bliepo alleen "… is dichtbij." zegt (vraag 1, 2, 4, 6, 8, 9, 12), is de hint nu neutraal
+   ("Begin linksboven en tel opnieuw. Wijs elke appel aan." / "Tel nog eens, rij voor rij. Wijs elke … aan." /
+   "Tel nog eens rustig. Wijs elke … aan en zeg het getal."). Waar Bliepo wél de richting noemt, blijven er steeds
+   2 keuzes over. `npx tsx scripts/fouttabel-tellen-gouden.ts` geeft dezelfde uitkomst en maakt een gelijke FOUTTABEL.
+   Blijft open bij Sara (al gevraagd, KEUZES Ronde 20 vraag 2): vraag 15, kind kiest 10 → "Kijk ook naar de laatste rij".
+2. **Getalkleur op het scherm: GOED.** De beschrijving begint nu met "Squla groep 3 …", dus het scherm zet `data-squla`.
+   Foto (goed-route): "Het zijn er 15." met een paarse 15 bij pruimen. Andere gevolgen nagekeken: alleen de opmaak van
+   sommen en de indeling op een staand scherm (telefoon, latere fase) kijken ook naar dit begin; dat geeft hier geen
+   probleem. Let op: de gouden klokles begint nog met "Gouden les · …", daar zijn de getallen in de tekst dus nog wit.
+3. **Kleine punten: GOED.**
+   - Hetzelfde foute getal 2 keer: nu "Je koos weer 11." in plaats van 2 keer dezelfde zin (code nagelopen).
+   - Eindkaart: nu ruimte tussen het laatste bolletje en 5, 10 en 15 (schermfoto, Chrome zonder venster). "Tik op de kaart." staat erbij.
+   - "Dan tel je niets 2 keer." (goed Nederlands).
+   - De zin van de vorige vraag verdwijnt nu als het nieuwe fruit komt; in 25 + 41 foto's geen oude zin bij nieuw fruit gezien.
+   - LESRECEPT.md, BLIEPO-KARAKTER.md (§2 en §4 10a/10b), FOUTTABEL §4, DESIGN-LATER.md en KEUZES Ronde 20c zijn bijgewerkt.
+4. **Eerdere punten kloppen nog: GOED.**
+   - Inhoud: 15 vragen, getallen en keuzes gelijk aan squla-tellen-fruit-1. Oude les niet veranderd (`squla-tellen.tsx` geen verschil sinds 35e54fb).
+   - `npm run opgaven` groen; `inhoudsvergelijk` tegen 35e54fb en 616068e: 0 verdwenen (3 bewust, staan in WEGGEHAALD.md).
+   - Speelcontrole: alles goed en alles fout, allebei tot het eind, 0 fouten.
+   - 2 pogingen, nooit stoppen, geen opmerking bij snel, naam 2 keer, hulphandje alleen bij samen tellen.
+   - Vloeiend (`ALLEEN=squla-tellen-fruit-1-gouden`): laptop 60 beelden/s, langste beeld 33 ms; trage telefoon dit keer 60 beelden/s, 32 ms. De computer was niet rustig (belasting ± 5); openen 2,6–2,7 s in de ontwikkelversie (alleen waarschuwing).
+5. **Nog open bij Sara (niet in deze les):** de 15 testregels uit de eerste keuring staan nog in de voortgang van een
+   echt kind (`les_uitkomsten` id 93 t/m 107), en de voorbeeldpagina bewaart nog steeds bij het kind van het koekje
+   (`src/app/lesuitkomstacties.ts`). Sara beslist over weghalen en over een aanpassing van de voorbeeldpagina.
+6. **Stemprobleem (`src/lib/stem.ts`)** blijft een open vraag voor Sara (gedeelde code), zoals in de eerste keuring.
