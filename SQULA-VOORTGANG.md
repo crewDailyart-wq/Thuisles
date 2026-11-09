@@ -387,3 +387,4 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 - Inhoud Squla (15 vragen), skelet draaiboek Splitsen (startvraag, proef van 2, uitleg stap 7–10, opdrachten, einde). Keuzes en vragen: KEUZES-VOOR-SARA.md Ronde 21. Eigen invulling: splitsen.md, onderaan.
 - Getest: speelcontrole (goed en alles fout), eigen situaties (Nee-route alles goed, Ja-proef met fouten, proef mislukt, lang wachten, heel snel), verklapcontrole, vloeiend (laptop in orde; telefoon wisselend, DESIGN-LATER.md).
 - Nog te doen door de coördinator: kind-test en keuring (aparte helpers).
+- Herstel na de kind-test (KINDTEST-SPLITSEN-GOUDEN.md): 18 van de 22 punten opgelost of nagekeken; niet aangeraakt: stem (punt 1), testregels bij een echt kind (punt 4), tekening van de zak en de eerste sleep (gedeeld splitsvlak). Zie KEUZES-VOOR-SARA.md Ronde 21b. Algemene lessen in LESRECEPT.md ("Geleerd bij de gouden les Splitsen") en BLIEPO-KARAKTER.md §2.

@@ -57,6 +57,8 @@ export const meervoud = (vw: string) => NAAM[vw][1];
 export const enkel = (vw: string) => NAAM[vw][0];
 /** "ligt er {1}" / "liggen er {3}". */
 const ligt = (n: number, k: string) => `${n === 1 ? "ligt" : "liggen"} er ${g(n, k)}`;
+/** "ligt 1 pion" / "liggen 4 pionnen" (kind-test punt 11: "liggen er 4" klonk stroef). */
+export const ligtDing = (n: number, vw: string, k: string) => `${n === 1 ? "ligt" : "liggen"} ${aantal(n, vw, k)}`;
 
 /* ---------- de 15 vragen van squla-splits-splitsen1-1 (zelfde volgorde, getallen en voorwerpen) ---------- */
 
@@ -100,14 +102,24 @@ export const VRAGEN: Sleepvraag[] = [
 export const tweedeVak = (v: HuisVraag) => (v.zak ? "de zak" : "het oranje vak");
 export const eersteVak = (v: HuisVraag) => (v.zak ? "het paarse vak naast de zak" : "het paarse vak");
 
-/** De opdracht (inhoud van Squla; 15.26: alleen "stuk" → "vakje" en "leg" → "sleep", zie KEUZES-VOOR-SARA.md Ronde 21). */
-export function opdracht(v: Sleepvraag): string[] {
-  if (v.soort === "huis")
-    return v.zak
-      ? [`Er zijn ${aantal(v.tot, v.vw)}.`, `Sleep ${aantal(v.deel, v.vw, KA)} naar het paarse vak naast de zak.`, `De andere ${meervoud(v.vw)} sleep je in de zak.`]
-      : [`Er zijn ${aantal(v.tot, v.vw)}.`, `Sleep ${aantal(v.deel, v.vw, KA)} naar het paarse vak.`, `De andere ${meervoud(v.vw)} sleep je naar het oranje vak.`];
+/**
+ * De opdracht (inhoud van Squla; 15.26: "stuk" → "vakje", "leg" → "sleep", "de zak, in het oranje vak"; zie
+ * KEUZES-VOOR-SARA.md Ronde 21). `keer` = hoeveelste opdracht van deze soort (0 = de eerste). De eerste keer(en) de hele
+ * opdracht; daarna korter en afwisselend (kind-test Splitsen punt 17: 9 keer dezelfde lange zin). Getallen en wat het
+ * kind moet doen blijven gelijk.
+ */
+export function opdracht(v: Sleepvraag, keer = 0): string[] {
+  if (v.soort === "huis") {
+    const T = aantal(v.tot, v.vw);
+    const D = aantal(v.deel, v.vw, KA);
+    const rest = v.zak ? "de rest in de zak" : "de rest naar het oranje vak";
+    if (v.zak && keer === 0) return [`Er zijn ${T}.`, `Sleep ${D} naar het paarse vak naast de zak.`, `De andere ${meervoud(v.vw)} sleep je in de zak, in het oranje vak.`];
+    if (keer < 2 && !v.zak) return [`Er zijn ${T}.`, `Sleep ${D} naar het paarse vak.`, `De andere ${meervoud(v.vw)} sleep je naar het oranje vak.`];
+    return [[`Nu ${T}. Sleep er ${g(v.deel, KA)} naar het paarse vak, ${rest}.`, `Hier zijn ${T}. ${g(v.deel, KA)} gaan naar het paarse vak, ${rest}.`, `${T} deze keer. Sleep ${D} naar het paarse vak en ${rest}.`][keer % 3]];
+  }
   if (v.soort === "paren") return ["Elk huisje heeft nog een leeg vakje.", "Sleep in elk leeg vakje de ballen die nog missen."];
-  return [`In de doos liggen ${g(10)} pingpongballen.`, `Je ziet er ${g(v.zicht, KA)}.`, "De andere liggen onder de doek.", "Sleep die ballen naar het vak."];
+  if (keer === 0) return [`In de doos liggen ${g(10)} pingpongballen.`, `Je ziet er ${g(v.zicht, KA)}.`, "De andere liggen onder de doek.", "Sleep die ballen naar het vak."];
+  return [[`Nu zie je er ${g(v.zicht, KA)}. Sleep de ballen onder de doek naar het vak.`, `Je ziet er ${g(v.zicht, KA)}. Hoeveel liggen er onder de doek? Sleep ze naar het vak.`][keer % 2]];
 }
 /** Na de 1e fout (draaiboek §3 F.2: na de pijl worden de vakken leeg en zegt de tutor de opdracht kort opnieuw). */
 export function opnieuw(v: Sleepvraag, keer: number): string {
@@ -120,7 +132,8 @@ export function opnieuw(v: Sleepvraag, keer: number): string {
 /* ---------- vaste zinnen van het verloop (draaiboek Splitsen §2; eigen woorden) ---------- */
 
 export const ZIN = {
-  /** Stap 1: de startvraag (Ja / Nee). */
+  /** Stap 1: eerst wat je in deze les doet (BOUWREGELS 4.3; kind-test punt 12), dan de startvraag (Ja / Nee). */
+  begin: "In deze les verdeel je pionnen en ballen over 2 vakken.",
   start: `Kun jij een getal al in 2 delen splitsen? Bijvoorbeeld deze ${aantal(5, "pion")}.`,
   /** Stap 2a: Ja → de proef. Knop-uitleg: hoe je sleept (1 keer per les, 3.15). */
   proefBegin: "Fijn! Laat maar zien wat je kunt.",
@@ -133,26 +146,36 @@ export const ZIN = {
   /** Stap 2b: Nee. */
   nee: "Geen probleem. We kijken eerst samen hoe splitsen werkt.",
   pijlUitleg: "Klaar met kijken? Tik dan op de blauwe pijl.",
+  /** De eerste pijl komt na een fout: dan past "klaar met kijken" niet (kind-test punt 14). */
+  pijlUitlegNaFout: "Tik op de blauwe pijl als je het nog eens wilt proberen.",
+  /** Het vinkje 1 keer uitleggen (3.15; kind-test punt 8). Zonder het woord "vinkje": dat haalt het lesscherm uit elke zin
+      (besluit 30 oktober); de knop licht op terwijl Bliepo dit zegt. */
+  vinkjeUitleg: "Ben je klaar met slepen? Tik dan op deze knop. Dan kijk ik het na.",
 
-  /* Uitleg na Nee (draaiboek stap 7 t/m 10, met het voorbeeld van het beginscherm: 5 = 2 en 3; BOUWREGELS 14.21). */
+  /* Uitleg na Nee (draaiboek stap 7 t/m 10) met de 5 pionnen van het beginscherm (BOUWREGELS 14.21), maar als 1 en 4:
+     vraag 1 is 2 en 3, en een afgerond uitlegvoorbeeld komt niet meteen terug als eerste opgave (3.23; kind-test punt 6). */
   uitlegHuis: `Dit is een splitshuisje. Onder zijn 2 vakken. Daar komen de 2 delen in.`,
   uitlegEen: "Sleep 1 pion naar het paarse vak.",
   uitlegEenKlaar: `Mooi, er ligt er ${g(1, KA)}.`,
-  uitlegTwee: `Kun je er ${g(2, KA)} van maken?`,
-  uitlegTweeKlaar: `Goed zo. Nu liggen er ${g(2, KA)} in het paarse vak.`,
   uitlegRest: "Sleep nu de andere pionnen naar het oranje vak.",
-  uitlegTeVeelPaars: (n: number) => `Er horen er ${g(n, KA)} in het paarse vak.`,
-  uitlegNogNiet: "Het oranje vak komt zo. Eerst het paarse vak.",
-  uitlegRestKlaar: `Je splitste ${g(5)} in ${g(2, KA)} en ${g(3, KB)}.`,
+  /* Als iets op de verkeerde plek ligt (kind-test punt 2): zeggen wat er mis ligt; tikken op een pion in een vak legt hem terug. */
+  uitlegAlInOranje: (n: number) => (n === 1 ? "Er ligt al een pion in het oranje vak. Tik erop, dan gaat hij terug naar boven." : "Er liggen al pionnen in het oranje vak. Tik erop, dan gaan ze terug naar boven."),
+  uitlegTeVeelPaars: `In het paarse vak hoort er maar ${g(1, KA)}. Tik op een pion in het paarse vak, dan gaat hij terug.`,
+  uitlegPaarsLeeg: `Het paarse vak is leeg. Daar hoort ${g(1, KA)} pion in.`,
+  uitlegVoordoen: "Kijk, ik doe het even voor.",
+  uitlegRestKlaar: `Je splitste ${g(5)} in ${g(1, KA)} en ${g(4, KB)}.`,
   /** Stap 7 (de vraag naar het totaal) en stap 8 (het totaal staat boven). */
   totaalVraag: "Hoeveel pionnen zijn er samen?",
   totaalGoed: "Natuurlijk.",
-  totaalUitleg: `De 2 delen zijn ${g(2, KA)} en ${g(3, KB)}. Samen maken ze ${g(5)}. Alles samen heet het totaal. Dat staat boven in het dak.`,
+  totaalSamen: `Kijk: ${g(1, KA)} en ${g(4, KB)}. Samen zijn dat ${g(5)} pionnen.`,
+  totaalUitleg: `De 2 delen zijn ${g(1, KA)} en ${g(4, KB)}. Samen maken ze ${g(5)}. Alles samen heet het totaal. Dat staat boven in het dak.`,
   /** Stap 10: kun je 5 ook anders splitsen? (zelf 2 delen zoeken) */
-  andersVraag: `Maar ${g(2, KA)} en ${g(3, KB)} is maar 1 manier. Splits ${g(5)} nu zelf op een andere manier.`,
-  andersAlGevonden: `Klopt, maar zo had je hem al: ${g(2, KA)} en ${g(3, KB)}. Probeer een andere manier.`,
-  andersLeegVak: "Leg in allebei de vakken pionnen. Dan heb je 2 delen.",
-  andersHelp: `Ik help je. Ik leg ${g(1, KA)} pion in het paarse vak. Sleep de andere naar het oranje vak.`,
+  andersVraag: `Maar ${g(1, KA)} en ${g(4, KB)} is maar 1 manier. Splits ${g(5)} nu zelf op een andere manier.`,
+  andersAlGevonden: `Klopt, maar zo had je hem al: ${g(1, KA)} en ${g(4, KB)}. Probeer een andere manier.`,
+  andersLeegVak: "Sleep in allebei de vakken pionnen. Dan heb je 2 delen.",
+  andersHelp: `Ik help je. Ik leg ${g(3, KA)} pionnen in het paarse vak. Sleep de andere naar het oranje vak.`,
+  /** Na de hulp lukt het nog niet: Bliepo maakt het af en de les gaat door (geen eindeloze lus; kind-test punt 5). */
+  andersAfmaken: `Kijk, ik maak het af: ${g(3, KA)} en ${g(2, KB)}. Dat is ook ${g(5)}.`,
   andersOmgedraaid: (a: number, b: number) => `Ja, je draaide de delen om: ${g(a, KA)} en ${g(b, KB)}. Dat is ook ${g(5)}.`,
   andersGoed: (a: number, b: number) => `Ja, ${g(5)} kun je ook splitsen in ${g(a, KA)} en ${g(b, KB)}.`,
   andersKlaar: "Zo kun je een getal splitsen. Nu ga je zelf oefenen.",
@@ -240,7 +263,7 @@ export function huisFout(v: HuisVraag, p: number): Fout {
       eerste: `Alle ${aantal(tot, vw)} liggen in het paarse vak.`,
       hint: `Er komen 2 delen. Kijk naar het getal onder het paarse vak. De andere ${meervoud(vw)} gaan naar ${tweedeVak(v)}.`,
       uitleg: `Splitsen is in 2 delen verdelen. In allebei de vakken komen ${meervoud(vw)}.`,
-      weer: [`Weer liggen ze allemaal in het paarse vak.`, `Leg er eerst ${g(deel, KA)} in het paarse vak en tel mee.`],
+      weer: [`Weer liggen ze allemaal in het paarse vak.`, `In het paarse vak horen er maar ${g(deel, KA)}. De rest hoort in ${tweedeVak(v)}.`],
       scherm: SCHERM_HUIS,
     };
   if (p === 0)
@@ -251,14 +274,14 @@ export function huisFout(v: HuisVraag, p: number): Fout {
       eerste: v.zak ? `Alle ${meervoud(vw)} liggen in de zak. Het paarse vak is leeg.` : `Alle ${meervoud(vw)} liggen in het oranje vak. Het paarse vak is leeg.`,
       hint: "Begin bij het paarse vak. Kijk naar het getal eronder.",
       uitleg: `Splitsen is in 2 delen verdelen. In allebei de vakken komen ${meervoud(vw)}.`,
-      weer: [`Weer is het paarse vak leeg.`, `Leg er eerst ${g(deel, KA)} in het paarse vak en tel mee.`],
+      weer: [`Weer is het paarse vak leeg.`, `Het getal onder het paarse vak zegt dat er ${g(deel, KA)} in horen.`],
       scherm: SCHERM_HUIS,
     };
   if (p === rest && rest !== deel)
     return {
       code: "omgedraaid",
       denkfout: "de 2 delen omgedraaid (het getal van het paarse vak in het andere vak)",
-      eerste: `In het paarse vak ${ligt(p, KA)}.`,
+      eerste: `In het paarse vak ${ligtDing(p, vw, KA)}.`,
       hint,
       uitleg: `Het getal onder het paarse vak hoort bij het paarse vak. Daar horen ${aantal(deel, vw, KA)} in.`,
       weer: [],
@@ -270,10 +293,10 @@ export function huisFout(v: HuisVraag, p: number): Fout {
   return {
     code: een ? (meer ? "een-te-veel" : "een-te-weinig") : meer ? "te-veel" : "te-weinig",
     denkfout: een ? `1 ${enkel(vw)} ${meer ? "te veel" : "te weinig"} in het paarse vak (verkeerd geteld)` : `${meer ? "te veel" : "te weinig"} ${meervoud(vw)} in het paarse vak`,
-    eerste: `In het paarse vak ${ligt(p, KA)}. ${een ? `Dat is er ${g(1)} te ${meer ? "veel" : "weinig"}.` : `Dat zijn er te ${meer ? "veel" : "weinig"}.`}`,
+    eerste: `In het paarse vak ${ligtDing(p, vw, KA)}. ${een ? `Dat is er ${g(1)} te ${meer ? "veel" : "weinig"}.` : p === 1 ? "Dat is te weinig." : `Dat zijn er te ${meer ? "veel" : "weinig"}.`}`,
     hint,
     uitleg: `Het getal onder het paarse vak zegt hoeveel ${meervoud(vw)} erin horen: ${g(deel, KA)}.`,
-    weer: [`Weer ${meer ? "te veel" : "te weinig"} in het paarse vak.`, `Leg ze er 1 voor 1 in en tel mee tot ${g(deel, KA)}.`],
+    weer: [`Weer ${meer ? "te veel" : "te weinig"} in het paarse vak.`, `Er horen er precies ${g(deel, KA)} in. Dat is het getal eronder.`],
     scherm: SCHERM_HUIS,
   };
 }
@@ -290,16 +313,16 @@ export function tienFout(v: TienVraag, n: number): Fout {
   const N = g(n, KB);
   const SCHERM = "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de ballen schudden even; na de pijl gaat het vak leeg en zegt Bliepo de opdracht kort opnieuw";
   /* De doek is 1 lap: de plekken eronder zie je niet apart. Daarom: aanvullen tot 10 (zonder het antwoord). */
-  const tel = [`In de doos passen er ${g(10)}. Tel door vanaf ${g(z, KA)} tot ${g(10)}.`, `Tel de ballen die je ziet. Tel dan door tot ${g(10)}.`, `Een volle doos heeft 2 rijen van ${g(5)}. Hoeveel ballen zie je niet?`][r === 5 ? v.nr % 2 : v.nr % 3];
+  const tel = [`In de doos passen er ${g(10)}. Tel door vanaf ${g(z, KA)} tot ${g(10)}.`, `Tel de ballen die je ziet. Tel dan door tot ${g(10)}.`, `Een volle doos heeft 2 rijen van ${g(5)}. Hoeveel ballen zie je niet?`][r === 5 ? v.nr % 2 : r <= 2 ? 1 : v.nr % 3];
   const basis = { scherm: SCHERM, eigen: true as const };
   if (n === 10)
-    return { ...basis, code: "totaal-als-deel", denkfout: "legde alle 10 ballen (het totaal) in plaats van alleen de ballen onder de doek", eerste: `Je legde er ${N}. Zoveel passen er in de hele doos.`, hint: "Een paar ballen zie je al. Sleep alleen de ballen die onder de doek liggen.", uitleg: `In de doos passen er ${g(10)}. ${g(z, KA)} zie je al. Alleen de ballen onder de doek gaan naar het vak.`, weer: ["Weer de hele doos.", `${g(z, KA)} ballen zie je al. Sleep alleen de ballen die nog missen tot ${g(10)}.`] };
+    return { ...basis, code: "totaal-als-deel", denkfout: "legde alle 10 ballen (het totaal) in plaats van alleen de ballen onder de doek", eerste: `Je legde er ${N}. Zoveel passen er in de hele doos.`, hint: "Een paar ballen zie je al. Sleep alleen de ballen die onder de doek liggen.", uitleg: `In de doos passen er ${g(10)}. ${g(z, KA)} zie je al. Alleen de ballen onder de doek gaan naar het vak.`, weer: ["Weer de hele doos.", `${g(z, KA)} ballen zie je al. In het vak horen alleen de ballen die nog missen tot ${g(10)}.`] };
   if (n === z)
-    return { ...basis, code: "zichtbaar-gelegd", denkfout: "legde net zoveel als hij al zag (de ballen boven de doek)", eerste: `Je legde er ${N}. Zoveel ballen zie je al in de doos.`, hint: "Sleep de ballen die je niet ziet. Die liggen onder de doek.", uitleg: "De ballen die je ziet, liggen al in de doos. Het vak is voor de ballen onder de doek.", weer: ["Weer net zoveel als je ziet.", `Begin bij ${g(z, KA)} en tel door tot ${g(10)}. Zoveel liggen er onder de doek.`] };
+    return { ...basis, code: "zichtbaar-gelegd", denkfout: "legde net zoveel als hij al zag (de ballen boven de doek)", eerste: `Je legde er ${N}. Zoveel ballen zie je al in de doos.`, hint: "Sleep de ballen die je niet ziet. Die liggen onder de doek.", uitleg: "De ballen die je ziet, liggen al in de doos. Het vak is voor de ballen onder de doek.", weer: ["Weer net zoveel als je ziet.", `Onder de doek liggen de ballen die nog missen tot ${g(10)}.`] };
   if (Math.abs(n - r) === 1)
     return { ...basis, code: n > r ? "een-te-veel" : "een-te-weinig", denkfout: `1 bal ${n > r ? "te veel" : "te weinig"} (de plekken onder de doek verkeerd geteld)`, eerste: `${N} is dichtbij.`, hint: tel, uitleg: `In de doos passen er ${g(10)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`, weer: [], noot: "richting niet genoemd: \"1 te veel\" of \"1 te weinig\" verklapt het antwoord" };
   const meer = n > r;
-  return { ...basis, code: meer ? "te-veel" : "te-weinig", denkfout: `${meer ? "te veel" : "te weinig"} ballen in het vak`, eerste: `Je legde er ${N}. Dat zijn er te ${meer ? "veel" : "weinig"}.`, hint: tel, uitleg: `In de doos passen er ${g(10)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`, weer: [`Weer te ${meer ? "veel" : "weinig"}.`, `Begin bij ${g(z, KA)} en tel door tot ${g(10)}. Steek bij elk getal een vinger op.`] };
+  return { ...basis, code: meer ? "te-veel" : "te-weinig", denkfout: `${meer ? "te veel" : "te weinig"} ballen in het vak`, eerste: `Je legde er ${N}. Dat zijn er te ${meer ? "veel" : "weinig"}.`, hint: tel, uitleg: `In de doos passen er ${g(10)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`, weer: [`Weer te ${meer ? "veel" : "weinig"}.`, `Je ziet er ${g(z, KA)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`] };
 }
 
 /**
@@ -319,23 +342,23 @@ export function parenFout(v: ParenVraag, tel: number[]): Fout {
     eerste: c === 0 ? `Bij het huisje met ${g(t)} is het lege vakje nog leeg.` : `Bij het huisje met ${g(t)}: ${g(d, KA)} en ${g(c, KB)} is samen ${g(d + c)}. We zoeken ${g(t)}.`,
     hint,
     uitleg: "In elk huisje zijn het getal ernaast en de ballen samen het getal in het dak.",
-    weer: [`Bij het huisje met ${g(t)} klopt het weer niet.`, `Tel vanaf ${g(d, KA)} door tot ${g(t)}. Zoveel ballen horen in het vakje.`],
+    weer: [`Bij het huisje met ${g(t)} klopt het weer niet.`, `Het getal ernaast en de ballen samen moeten ${g(t)} zijn.`],
     scherm: "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de ballen schudden even; na de pijl gaan de vakjes leeg en zegt Bliepo de opdracht kort opnieuw",
   };
 }
 
-/** De uitlegvraag "Hoeveel pionnen zijn er samen?" (draaiboek stap 7, keuzes 2 / 3 / 5). */
-export const TOTAAL_KEUZES = [2, 3, 5];
+/** De uitlegvraag "Hoeveel pionnen zijn er samen?" (draaiboek stap 7; de 2 delen en het totaal: 1 / 4 / 5). */
+export const TOTAAL_KEUZES = [1, 4, 5];
 export function totaalFout(x: number): Fout {
-  const k = x === 2 ? KA : KB;
-  const vak = x === 2 ? "paarse" : "oranje";
+  const k = x === 1 ? KA : KB;
+  const vak = x === 1 ? "paarse" : "oranje";
   return {
     code: "deel-voor-totaal",
     denkfout: "koos 1 van de delen in plaats van alles samen",
     eerste: `${g(x, k)} is het deel in het ${vak} vak.`,
     hint: "Ik bedoel alle pionnen samen. Tel de pionnen in allebei de vakken.",
     uitleg: "Het totaal is alles samen: de pionnen in allebei de vakken.",
-    weer: ["Weer 1 van de delen.", "Tel eerst het paarse vak en tel dan door in het oranje vak."],
+    weer: ["Weer 1 van de delen.", "Het totaal zijn de pionnen in allebei de vakken samen."],
     scherm: "Bliepo's scherm 1,5 s rood; de knoppen gaan even weg en komen terug met de hint (draaiboek §3 B.2)",
   };
 }

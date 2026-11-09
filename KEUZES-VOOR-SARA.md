@@ -578,3 +578,39 @@ Nieuwe versie naast de oude les squla-splits-splitsen1-1 "Splitsen tot 10" (die 
 **Vloeiend (HARDE REGEL 7):** laptop 56–60 beelden per seconde, langste beeld 34–42 ms (in orde). Trage telefoon: 48–60 beelden per seconde, hapering 42–134 ms (1 van de 3 keer in orde; de oude les: 63 ms). De eerste sleep in de les hapert even (ook in de oude les: het zit in het gedeelde splitsvlak). Volgens jouw besluit is telefoon een latere fase: gemeten en in DESIGN-LATER.md gezet, niet opgelost.
 
 **Stem en kosten:** alle nieuwe zinnen gebruiken de browserstem; geen tegoed gebruikt, geen Magnific, geen nieuwe plaatjes.
+
+### Ronde 21b — herstel na de kind-test (KINDTEST-SPLITSEN-GOUDEN.md, 9 november 2026)
+
+Alleen in de gouden les Splitsen. De oude les is niet veranderd. Per punt van de kind-test:
+
+| Punt | Wat | Gedaan |
+|---|---|---|
+| 1 | De stem breekt elke zin af (stem.ts) | **Niet aangeraakt**: dat beslis jij (stem.ts is gedeelde code). Geldt voor alle gouden lessen. |
+| 2 | Uitleg na Nee: kind kan vastlopen | **Opgelost.** Ligt er iets verkeerd, dan zegt Bliepo wat er mis ligt ("Er ligt al een pion in het oranje vak. Tik erop, dan gaat hij terug naar boven.") en wijst het handje naar die plek. Vangnet: na 3 keer in een verkeerde stand of 20 s zonder goede beweging doet Bliepo de stap voor en gaat de uitleg door. Getest: eerst in het oranje vak, 2 en 3, en 0 en 5 in de laatste stap. |
+| 3 | Proef: elke schuif meteen nagekeken | **Opgelost.** Vanzelf nakijken pas na rust: 0,7 s na de laatste sleep, en in de proef na een fout (de pionnen blijven liggen) 1,6 s. Getest met een langzame sleep (1 s slepen, 1 s stil). |
+| 4 | Testregels bij een echt kind (Tellen, 15 regels) | **Niet aangeraakt**: dat beslis jij. |
+| 5 | "Splits 5 anders": eindeloos dezelfde hulp | **Opgelost.** Na 2 keer zonder nieuwe manier legt Bliepo 3 pionnen in het paarse vak; lukt het dan nog niet, dan maakt Bliepo het af ("3 en 2. Dat is ook 5.") en gaat de les door. |
+| 6 | Uitlegvoorbeeld 5 = 2 en 3 komt meteen terug als vraag 1 (3.23) | **Opgelost.** De uitleg gebruikt dezelfde 5 pionnen van het beginscherm, maar als **1 en 4** (de keuzevraag wordt 1 / 4 / 5). Na een mislukte proef komt vraag 1 nog wel 2 keer (proef en les), zoals bij de klokles. Graag je akkoord: het uitlegvoorbeeld is niet meer precies het beginscherm-getal 2. |
+| 7 | De 5 in het dak over een pion | **Opgelost.** Het totaal komt pas in het dak als alle pionnen in een vak liggen. |
+| 8 | Vinkje bij de doos niet uitgelegd, en het lichtte op terwijl het kind bezig was | **Opgelost.** De eerste keer licht de knop op en zegt Bliepo "Ben je klaar met slepen? Tik dan op deze knop. Dan kijk ik het na." Niet meer vanzelf oplichten na 6 s. Let op: het woord "vinkje" kan Bliepo niet zeggen, het lesscherm haalt elke zin met "vinkje" weg (besluit 30 oktober). Mag dat blijven, nu 3.15 1 keer uitleggen toestaat? |
+| 9 | Advies bij de 2e fout dat het kind niet meer kan doen, en "leg" | **Opgelost.** De zinnen zijn nu uitleg ("Er horen er precies 8 in. Dat is het getal eronder."); "leg" → "sleep"/"legde". |
+| 10 | "Probeer een andere manier." 2 keer achter elkaar | **Opgelost.** |
+| 11 | Grammatica ("Er horen er 1", "liggen er 4") | **Opgelost**: "In het paarse vak ligt 1 pion." / "liggen 4 pionnen."; "In het paarse vak hoort er maar 1." |
+| 12 | Beginscherm zonder uitlegdeel | **Opgelost**: "In deze les verdeel je pionnen en ballen over 2 vakken." vóór de startvraag. |
+| 13 | 2 keer "ja" in 1 lof | **Opgelost** ("ja" telt nu ook midden in de lofzin). |
+| 14 | "Klaar met kijken?" na een hint | **Opgelost**: komt de pijl voor het eerst na een fout, dan "Tik op de blauwe pijl als je het nog eens wilt proberen." |
+| 15 | De zak is slecht te zien | **Deels.** De zin zegt nu "in de zak, in het oranje vak". De tekening van de zak zit in het gedeelde splitsvlak (niet veranderd). |
+| 16 | De doek gaat niet helemaal weg | Zie de testuitslag hieronder. |
+| 17 | 9 keer dezelfde lange opdrachtzin | **Opgelost.** De eerste 2 huisjes, het eerste huisje met de zak en de eerste doos krijgen de hele opdracht; daarna korter en afwisselend ("Nu 7 pionnen. Sleep er 3 naar het paarse vak, de rest naar het oranje vak."). Zelfde getallen en handeling (15.26). |
+| 18 | Hint bij de doos met 9 ballen bijna het antwoord | **Opgelost**: bij 1 of 2 onder de doek de hint "Tel de ballen die je ziet. Tel dan door tot 10." |
+| 19 | Vaak "nakijken" | **Opgelost**: hooguit 2 keer per les. |
+| 20 | Totaal op de eindkaart geel | **Opgelost**: eigen eindkaart met het totaal wit (de oude kaart blijft voor de oude les). |
+| 21 | Eerste sleep hapert | **Niet opgelost**: zit in het gedeelde splitsvlak (ook in de oude les). Opnieuw gemeten, zie hieronder. |
+| 22 | Voorrekenen bij de 3 huisjes | Staat al als vraag 6 hierboven. |
+
+**Aanpassingen aan zinnen (15.26), oud → nieuw:** "De andere ballen sleep je in de zak." → "De andere ballen sleep je in de zak, in het oranje vak." (de zak is slecht te zien); vanaf de 3e keer de korte opdracht (zie punt 17); de uitleg 5 = 2 en 3 → 5 = 1 en 4 (punt 6).
+- **Punt 16 (de doek):** Opnieuw bekeken: 2,5 s na "Ik til de doek op" is de doek helemaal weg en zie je de ballen eronder. De kind-test fotografeerde midden in het wegschuiven. Niets veranderd.
+
+**Opnieuw getest na het herstel** (als Testkind, Chrome zonder venster, zonder koekje; 0 regels bij een echt kind): Nee-route alles goed; Ja met fouten; proef met 2 fouten; uitleg vastlopen (eerst in het oranje vak, 2 en 3, 0 en 5: steeds een passende zin, het handje naar de verkeerde plek, en het vangnet doet het voor); proef met een langzame sleep (2 pionnen schuiven met 1 s ertussen: pas daarna nagekeken, goed na een fout). Speelcontrole tot het eind, ook als alles fout is. Verklapcontrole, opgaven en inhoudsvergelijking in orde (de vervangen zinnen staan in WEGGEHAALD.md).
+**Tempo:** Bliepo reageert nu ± 0,8 s na de laatste pion (was 0,3 s), omdat hij eerst even wacht of het kind nog schuift.
+**Vloeiend:** laptop 58–60 beelden per seconde, langste beeld 28–41 ms. Trage telefoon 58–59 beelden per seconde, hapering 56–59 ms (grens 50 ms; latere fase, DESIGN-LATER.md).

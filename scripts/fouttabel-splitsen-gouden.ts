@@ -82,7 +82,7 @@ for (const v of VRAGEN) {
 for (const x of TOTAAL_KEUZES.filter((k) => k !== 5)) {
   const f = totaalFout(x);
   controleer(`uitleg-totaal ${x}`, f, ["{5:", " 5 ", " 5."], null);
-  rijen.push({ vraag: "Uitleg (na Nee): hoeveel pionnen zijn er samen? (2 / 3 / 5; goed: 5)", antwoord: String(x), f });
+  rijen.push({ vraag: "Uitleg (na Nee): hoeveel pionnen zijn er samen? (1 / 4 / 5; goed: 5)", antwoord: String(x), f });
 }
 
 if (fouten.length) {
@@ -105,7 +105,7 @@ Gemaakt op 9 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-split
 In de les staan de getallen in de kleur van het vak: paars = het eerste deel, oranje = het andere deel; het totaal is wit (de pionnen hebben allemaal een andere kleur). Hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **Nakijken:** bij de huisjes vanzelf zodra alles in een vak ligt (± 0,45 s rust, zodat het kind nog kan schuiven; 14.26, 14.30). Bij de doos met het vinkje (zie KEUZES-VOOR-SARA.md, Ronde 21).
+- **Nakijken:** bij de huisjes vanzelf zodra alles in een vak ligt en het kind 0,7 s niets sleept (in de proef na een fout 1,6 s), zodat het kind nog kan schuiven (14.26, 14.30). Bij de doos met het vinkje (zie KEUZES-VOOR-SARA.md, Ronde 21).
 - **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de dingen schudden even en blijven liggen. Bliepo zegt de eerste zin en de hint (1 uiting) en wacht op de blauwe pijl (draaiboek §0: na een fout wacht de les altijd op de pijl). Noemt de hint het getal onder het paarse vak, dan krijgt dat getal een rondje; bij de 3 huisjes het huisje, bij de doos de doos. Na de pijl gaan de vakken leeg en zegt Bliepo de opdracht kort opnieuw (§3 F.2). **In de proef** (na Ja) blijven de dingen liggen (§3 A.2).
 - **2e fout:** de uitleg bij de denkfout (laatste tabel), dan "Kom, we doen het samen." Bliepo legt het ene deel zelf in het paarse vak (bij de doos: de doek gaat open en Bliepo legt de ballen op 1 na; bij de huisjes alles op 1 bal na) en het kind sleept de rest (de kleine stap; het handje van Synthesis, §3 F.6). Daarna het andere deel onder het vak, "Samen splitsten we …", de pijl, en de les gaat door.
 - **2e fout in de proef:** geen samen voordoen: "Dat is nog lastig. We kijken eerst samen hoe splitsen werkt." en dan de uitleg (draaiboek §3 A.4).
@@ -153,7 +153,9 @@ ${uitleg}
 - **Goed in één keer:** scherm 1 s groen, de dingen wippen op met een lichtgolf; een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en wat er gesplitst is (§4 Splitsen: "Ja, 7 kun je splitsen in 4 en 3." / "Ja, alle 7 zijn verdeeld." / "7 kun je splitsen in 4 en 3." / "4 en 3 maken samen 7." / "Nagekeken: 4 en 3 maken samen 7."), als 1 uiting. Het andere deel komt onder het vak en het totaal in het dak. Begint de lofzin met "Ja", dan komt een reactie zonder "Ja"; de robotreactie hooguit 1 keer per les. **Daarna vanzelf door** (0,6 s na de zin; draaiboek §0).
 - **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (draaiboek §3 B.7 en F.8). Slepen tijdens Bliepo's zin telt gewoon mee.
-- **Lang niets doen:** na ± 6 s stilte bij een opdracht komt vanzelf het hulphandje: van het hoopje naar een leeg vak (nooit naar een vak dat al iets heeft: dat zou zeggen of het genoeg is). De eerste keer per opdracht met een aanmoediging en 1 korte zin ("Pak een pion en sleep hem naar een vak."). Ligt er bij de doos al iets in het vak, dan licht alleen het vinkje even op. Bij een keuzevraag: niets.
+- **Lang niets doen:** na ± 6 s stilte bij een opdracht komt vanzelf het hulphandje: van het hoopje naar een leeg vak (nooit naar een vak dat al iets heeft: dat zou zeggen of het genoeg is). De eerste keer per opdracht met een aanmoediging en 1 korte zin ("Pak een pion en sleep hem naar een vak."). Ligt er bij de doos al iets in het vak, dan komt er niets (het kind is bezig). Bij een keuzevraag: niets.
+- **Vinkje (doos):** de eerste keer dat het verschijnt, licht het op en zegt Bliepo "Ben je klaar met slepen? Tik dan op deze knop. Dan kijk ik het na."
+- **Rust voor het nakijken:** 0,7 s zonder slepen; in de proef na een fout (de dingen blijven liggen) 1,6 s, zodat het kind er een paar kan schuiven.
 `;
 
 writeFileSync(new URL("../FOUTTABEL-squla-splits-splitsen1-1-gouden.md", import.meta.url), tekst);

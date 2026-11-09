@@ -91,15 +91,25 @@ async function pagina() {
     return r && !r.exceptionDetails ? r.result?.value : null;
   };
   const muis = (type, p) => stuur("Input.dispatchMouseEvent", { type, x: p.x, y: p.y, button: "left", clickCount: 1, buttons: type === "mouseReleased" ? 0 : 1 }, s);
-  const sleep = async (van, naar) => {
+  /** `traag`: zoals een kind van 6: ± 1 s slepen en daarna 1 s stil (de proef mag dan niet tussendoor nakijken). */
+  const sleep = async (van, naar, traag = false) => {
     await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x, y: van.y }, s);
     await muis("mousePressed", van);
-    for (let i = 1; i <= 10; i++) {
-      await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x + ((naar.x - van.x) * i) / 10, y: van.y + ((naar.y - van.y) * i) / 10, button: "left", buttons: 1 }, s);
-      await wacht(15);
+    const n = traag ? 30 : 10;
+    for (let i = 1; i <= n; i++) {
+      await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x + ((naar.x - van.x) * i) / n, y: van.y + ((naar.y - van.y) * i) / n, button: "left", buttons: 1 }, s);
+      await wacht(traag ? 30 : 15);
     }
     await muis("mouseReleased", naar);
-    await wacht(120);
+    await wacht(traag ? 1000 : 120);
+  };
+  /** Tik op een punt van het vlak (een pion in een vak gaat dan terug naar boven). */
+  const tikVlak = async (x, y) => {
+    const q = await punt(x, y);
+    await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: q.x, y: q.y }, s);
+    await muis("mousePressed", q);
+    await muis("mouseReleased", q);
+    await wacht(300);
   };
   /* Een punt van het vlak (980 × 720) op de pagina. */
   const punt = (x, y) => ev(`(() => { const c = [...document.querySelectorAll("canvas")].filter((c) => { const r = c.getBoundingClientRect(); return r.width > 300 && Math.abs(r.width / r.height - 980 / 720) < 0.05; })[0]; if (!c) return null; const r = c.getBoundingClientRect(); return { x: r.left + ${x} * r.width / 980, y: r.top + ${y} * r.height / 720 }; })()`);
@@ -144,13 +154,15 @@ async function pagina() {
   };
   const pijl = () => klikKnop("verder");
   /** `aantal` dingen uit het hoopje naar het vak op (x, y) van het vlak. */
-  const leg = async (aantal, x, y) => {
+  const leg = async (aantal, x, y, traag = false) => {
     for (let i = 0; i < aantal; i++) {
       const van = await ev(`window.__phaser?.s1Punt?.() ?? null`);
       const naar = await punt(x, y);
-      await sleep(van, naar);
+      await sleep(van, naar, traag);
     }
   };
+  /** Van punt naar punt (beide in punten van het vlak), bijvoorbeeld van het paarse naar het oranje vak. */
+  const verschuif = async (x0, y0, x1, y1, traag = false) => sleep(await punt(x0, y0), await punt(x1, y1), traag);
   const goedSleep = async () => {
     /* Eerst wachten tot het kind mag slepen (bij samen voordoen legt Bliepo eerst zelf). */
     for (let k = 0; k < 80 && !(await ev(`window.__phaser?.s1Stap?.("goed") ?? null`)); k++) await wacht(150);
@@ -184,7 +196,7 @@ async function pagina() {
     if (traag) await stuur("Emulation.setCPUThrottlingRate", { rate: 1 }, s);
     return r;
   };
-  return { meetSlepen, ev, wachtOp, klikTekst, klikKnop, pijl, leg, goedSleep, punt, log, foto, getalKleuren, hand, tekst, sluit };
+  return { tikVlak, verschuif, meetSlepen, ev, wachtOp, klikTekst, klikKnop, pijl, leg, goedSleep, punt, log, foto, getalKleuren, hand, tekst, sluit };
 }
 
 /* Plekken van de vakken (punten van het vlak), zoals in squla-splitsen-gouden.tsx. */
@@ -250,9 +262,7 @@ const SITUATIES = {
     await P.foto("02-uitleg");
     await P.leg(1, 330, 424);
     await opdracht(P);
-    await P.leg(1, 330, 424);
-    await opdracht(P);
-    await P.leg(3, 650, 424);
+    await P.leg(4, 650, 424);
     await P.wachtOp("door");
     await P.wachtOp("vraag");
     /* Lang wachten bij de keuzevraag: geen hulphandje en geen aanwijzing (draaiboek §4, 15.19). */
@@ -265,8 +275,8 @@ const SITUATIES = {
     await reactie(P).catch(() => {});
     await opdracht(P);
     await P.foto("04-anders");
-    await P.leg(1, 330, 424);
-    await P.leg(4, 650, 424);
+    await P.leg(2, 330, 424);
+    await P.leg(3, 650, 424);
     await reactie(P);
     for (let nr = 1; nr <= 9; nr++) {
       await opdracht(P);
@@ -406,6 +416,7 @@ const SITUATIES = {
     await P.klikKnop("controleer");
     await reactie(P);
     await P.wachtOp("samen");
+    await new Promise((r) => setTimeout(r, 2500));
     await P.foto("15-tien-samen");
     await P.goedSleep();
     await P.wachtOp("pijl");
@@ -431,6 +442,73 @@ const SITUATIES = {
     zie(`einde: "${await P.tekst()}"`);
     const d = await P.ev(`JSON.stringify(window.__uitkomsten ?? [])`);
     for (const u of JSON.parse(d)) zie(`   uitkomst ${u.vraag}: ${u.uitkomst} ${u.denkfouten.join(",")}`);
+  },
+
+  /** Uitleg na Nee: vastlopen kan niet (kind-test punt 2). Stap a: eerst in het oranje vak, 3 keer verkeerd = voordoen. Stap b: 2 en 3, herstellen door te tikken. */
+  async "uitleg-vast"(P) {
+    await P.wachtOp("vraag");
+    await P.klikTekst("Nee");
+    await opdracht(P);
+    await P.leg(1, 650, 424);
+    const m1 = await P.wachtOp("uitleg-mis");
+    zie(`stap a, pion in het oranje vak: "${m1.zin}"`);
+    await new Promise((r) => setTimeout(r, 7000));
+    zie(`   7 s stil: handje ${(await P.hand()) ? "ja" : "NEE"} (wijst naar het oranje vak); Bliepo: "${await P.tekst()}"`);
+    await P.foto("20-uitleg-mis");
+    await P.tikVlak(650, 424);
+    await P.leg(2, 330, 424);
+    await P.tikVlak(293, 424);
+    await P.leg(1, 650, 424);
+    const v = await P.wachtOp("uitleg-voordoen", 20000).catch(() => null);
+    zie(v ? `stap a: na 3 keer verkeerd doet Bliepo het voor (${JSON.stringify(v.tel)} → 1 en 0)` : "FOUT: geen vangnet in stap a");
+    if (!v) fout("geen vangnet in stap a");
+    await opdracht(P);
+    /* Stap b: 2 in paars, 3 in oranje (alles ligt, maar het klopt niet). */
+    await P.leg(1, 330, 424);
+    await P.leg(3, 650, 424);
+    const m2 = await P.wachtOp("uitleg-mis");
+    zie(`stap b, 2 en 3: "${m2.zin}"`);
+    await new Promise((r) => setTimeout(r, 7000));
+    zie(`   7 s stil: handje ${(await P.hand()) ? "ja" : "NEE"}`);
+    await P.tikVlak(293, 424);
+    await P.leg(1, 650, 424);
+    await P.wachtOp("door", 20000);
+    zie("stap b hersteld door te tikken: uitleg gaat door");
+  },
+
+  /** Uitleg stap b: 0 en 5 en dan niets meer doen → na 30 s doet Bliepo het voor. */
+  async "uitleg-vast-2"(P) {
+    await P.wachtOp("vraag");
+    await P.klikTekst("Nee");
+    await opdracht(P);
+    await P.leg(1, 330, 424);
+    await opdracht(P);
+    await P.tikVlak(330, 424);
+    await P.leg(5, 650, 424);
+    const m = await P.wachtOp("uitleg-mis");
+    zie(`stap b, 0 en 5: "${m.zin}"`);
+    const v = await P.wachtOp("uitleg-voordoen", 40000).catch(() => null);
+    zie(v ? "na 20 s stil in een verkeerde stand doet Bliepo het voor" : "FOUT: geen vangnet na 20 s");
+    if (!v) fout("geen vangnet na 20 s");
+    await P.wachtOp("door", 20000);
+  },
+
+  /** Proef met een langzame, kinderlijke verbetering: 2 pionnen schuiven met 1 s ertussen (kind-test punt 3). */
+  async "proef-traag"(P) {
+    await P.wachtOp("vraag");
+    await P.klikTekst("Ja");
+    await opdracht(P);
+    await P.leg(4, 330, 424, true);
+    await P.leg(1, 650, 424, true);
+    await reactie(P);
+    await P.pijl();
+    await opdracht(P);
+    /* 4 pionnen op 1 rij in het paarse vak: x = 330 + (k − 1,5) × 73,4. Schuif de rechtse 2 naar het oranje vak. */
+    await P.verschuif(440, 424, 650, 424, true);
+    await P.verschuif(367, 424, 650, 424, true);
+    const r = await reactie(P);
+    if (r.soort !== "goed-na-fout") fout(`langzaam verbeteren in de proef gaf ${r.soort}`);
+    else zie("langzaam 2 pionnen geschoven: pas daarna nagekeken, goed na een fout");
   },
 
   /** Ja → 2 fouten in de proef → alsnog de uitleg (draaiboek §3 A.4). */

@@ -31,6 +31,20 @@
 > - **Vloeiend meten:** `ALLEEN=<les-id> npm run vloeiend` (het filter kijkt naar het pad met het les-id, niet naar de bestandsnaam). Telefoon-hapering melden in DESIGN-LATER.md.
 > - **Testen en keuren nooit in de echte Chrome met het koekje van een echt kind.** Eerst nakijken welk kind er gekozen is; liefst een script met Chrome zonder venster en `?naam=Testkind` (zonder koekje, of met KIND_ID van Testkind). Anders komen testantwoorden in de voortgang van een echt kind.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES SPLITSEN (kind-test, 9 november 2026; KINDTEST-SPLITSEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Elke uitlegstap is uit elke tussenstand te herstellen.** Ligt er iets op een verkeerde plek, dan zegt Bliepo wat er mis ligt en wijst het handje van díe plek weg (nooit naar een plek waar het probleem niet zit). **Vangnet:** na 3 keer in een verkeerde stand, of 20 s zonder goede beweging, doet Bliepo de stap voor en gaat de les door. Test elke stap ook met "eerst in het verkeerde vak" en met de stand die op het doel lijkt (bij 5 = 1 en 4: ook 2 en 3, en 0 en 5).
+> - **Vanzelf nakijken pas na rust.** Na de laatste sleep ± 0,7 s wachten; als de dingen na een fout blijven liggen (het kind schuift ze zelf goed) ± 1,6 s. Elke nieuwe sleep zet de tijd terug. Test met een langzame, kinderlijke sleep (± 1 s slepen, 1 s stil), niet alleen met het snelle testscript.
+> - **Geen eindeloze lus,** ook niet bij "telt niet als fout" (al gevonden, 1 vak leeg): hooguit 2 keer opnieuw, dan hulp, en lukt het dan nog niet, dan maakt Bliepo het af en gaat de les door.
+> - **De zin bij de 2e fout is uitleg, geen opdracht** ("Er horen er 3 in." en niet "Leg er eerst 3 in"): meteen daarna doet Bliepo het samen voor. Het werkwoord past bij wat het kind doet ("sleep", niet "leg"; "Je legde er weer 4", niet "Je koos weer 4" bij slepen).
+> - **Het uitlegvoorbeeld is niet de eerste vraag** (3.23): gebruik hetzelfde beeld van het beginscherm, maar een andere verdeling of opgave.
+> - **Geen getal over een ding dat het kind moet pakken** (het totaal in het dak pas als het hoopje leeg is).
+> - **Een knop die voor het eerst verschijnt, 1 keer uitleggen** (3.15), en hem daarna niet vanzelf laten oplichten terwijl het kind nog bezig is. Let op: het lesscherm haalt elke zin met het woord "vinkje" weg (besluit 30 oktober); zeg dus "deze knop" terwijl de knop oplicht.
+> - **Dezelfde lange opdrachtzin niet steeds herhalen:** de eerste keer(en) helemaal, daarna korter en afwisselend, met dezelfde getallen en dezelfde handeling.
+> - **"Ja" ook midden in de lofzin tellen** ("Even nakijken… ja, goed!" + "Ja, …" mag niet); **"nakijken" hooguit 2 keer per les** in lof, momenten en reacties samen.
+> - **Komt de blauwe pijl voor het eerst na een hint,** dan niet "Klaar met kijken?" maar "Tik op de blauwe pijl als je het nog eens wilt proberen."
+> - **Het beginscherm heeft altijd een uitlegdeel** (wat je in deze les doet), ook vóór een startvraag (4.3).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): Tellen en de klokles kijken alleen naar "ja" vooraan in de lofzin en zeggen "Klaar met kijken?" ook als de eerste pijl na een fout komt; de klokles herhaalt het uitlegvoorbeeld (3 uur) als eerste vraag.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

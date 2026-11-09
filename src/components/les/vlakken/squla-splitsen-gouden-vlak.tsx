@@ -51,3 +51,20 @@ export function GoudenSplitsVlak({ hand = null, ...rest }: GoudenSplitsProps & V
     </>
   );
 }
+
+/**
+ * De eindkaart (244 × 190): het huisje zoals in de les, met het totaal WIT in het dak en de delen paars en oranje
+ * (kind-test punt 20: op de oude kaart was het totaal geel, in de les wit). De oude kaart (KaartSplitsen) blijft staan.
+ */
+export function KaartSplitsenGouden() {
+  return (
+    <>
+      <path d="M62 70 L122 26 L182 70 Z" fill="none" stroke="#ffffff" strokeWidth={5} strokeLinejoin="round" />
+      <rect x={62} y={70} width={120} height={70} fill="none" stroke="#ffffff" strokeWidth={5} />
+      <line x1={122} y1={70} x2={122} y2={140} stroke="#ffffff" strokeWidth={5} />
+      <text x={122} y={64} textAnchor="middle" fontSize={26} fontWeight={800} fill="#ffffff">7</text>
+      <text x={92} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#c9a2ff">4</text>
+      <text x={152} y={116} textAnchor="middle" fontSize={30} fontWeight={800} fill="#ffad5c">3</text>
+    </>
+  );
+}

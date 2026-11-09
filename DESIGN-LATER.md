@@ -22,6 +22,8 @@ Gemeten bij de gouden les Splitsen (squla-splits-splitsen1-1-gouden), 9 november
 - Echt slepen (eigen meting, `SCENARIO=sleepmeting node scripts/test-splitsen-gouden.mjs`): de **eerste** sleep in de les hapert (laptop 43–55 beelden/s, 50–100 ms); daarna 52–60 beelden/s en 17–50 ms. De oude les doet precies hetzelfde (eerste sleep 50–55 beelden/s, 50–67 ms): het zit in het gedeelde splitsvlak (squla-splitsen-s1.ts), niet in de gouden les.
 - Openen in de ontwikkelversie: 1,5–2,5 s (laptop), 3,7–4,6 s (telefoon); op de echte site moet het onder 1 s.
 
+Opnieuw gemeten na het herstel van de kind-test (gouden les Splitsen, 9 november 2026, 2 keer): laptop 58–60 beelden/s, langste beeld 28–41 ms (in orde); trage telefoon 58–59 beelden/s, hapering 56–59 ms (grens 50 ms). Echt slepen: eerste sleep laptop 46 beelden/s, 67 ms (gedeeld splitsvlak, ook in de oude les); daarna 60 beelden/s, 17 ms.
+
 ## Bouwen met het oog op later
 - Geen vaste pixelmaten (gebruik procenten of schaal).
 - Geen onnodig zware animaties.
