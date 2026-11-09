@@ -412,3 +412,21 @@ Vraag: laten we het zoals Synthesis (met een uitzondering in de regel), of laten
 **Telefoon:** de hapering en de indeling op telefoon blijven bewust liggen (zie `DESIGN-LATER.md`).
 
 **Denkfouten in de database:** de tabel `les_uitkomsten` is er nu (zie Ronde 17 voor de privacypunten, die nog open staan). De gouden klokles schrijft erheen; zonder gekozen kind of bij een fout merkt het kind niets. Er is nog GEEN ouderdashboard.
+
+---
+
+## Ronde 19 — zevende ronde: jouw besluiten over de 8 punten (9 november 2026)
+
+Vastgelegd in BOUWREGELS.md 15.17 t/m 15.24 en LESRECEPT.md (hoofdstuk 4, "Wat NOOIT mag").
+
+1. **Hints verklappen nooit het antwoord.** De klokles-hints (blauwe pijltje, "Maar op de klok is het andersom.", bonuszin) worden herschreven. *Stand: nog te doen.*
+2. **Een les stopt nooit en stuurt nooit naar het menu.** Niet overgenomen van Synthesis.
+3. **Hulphandje:** vanzelf na ongeveer 6 seconden, alleen bij opdrachten, nooit een knop.
+4. **Minsommen:** de teller toont het antwoord niet zolang de vraag open is.
+5. **Meten:** niets toevoegen, niets weglaten ten opzichte van Squla. Laatste onderwerp.
+6. **Vaste regel inhoud/skelet** (15.22). Herstellingen en extra opdrachtjes komen per les in een lijst hieronder zodra een les wordt gebouwd.
+   - **Open punt:** Vormen, Geld, Dagen, Tijd en Rekentaal hebben geen Synthesis-les. Wachten of een andere les lenen? Jij beslist later.
+   - **Nog te controleren:** de gouden klokles moet naast deze regel gelegd worden (zijn alle vragen en getallen van Squla? staan de extra's, zoals uitlegvragen na Nee, vragen tussendoor en bonus, in een lijstje?).
+7. **Telefoon en tablet** blijven een eigen latere fase (DESIGN-LATER.md).
+8. **Privacy (ronde 17)** blijft open tot vóór echte kinderen.
+9. **Vaste regel Synthesis-onderzoek** (15.24): een les altijd helemaal spelen. Een draaiboek is pas bouwklaar als de les helemaal gespeeld is.

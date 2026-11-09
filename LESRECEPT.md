@@ -157,6 +157,13 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 - **Letterlijk overnemen van Squla:** geen teksten, plaatjes of geluiden (11.5).
 - **Eigen vragen toevoegen** die niet in de Squla-les staan, of nieuwe leerdoelen bedenken (11.11).
 - **Vragen of keuzes weglaten**, ook foute keuzes niet (1.25, harde regel 3). Wat toch weg moet, eerst vragen.
+- **Een hint die het antwoord verklapt** (15.17): geen pijl of ring die op het antwoord eindigt, geen zin die het antwoord is. Wijs naar de plek, niet naar het antwoord.
+- **Een les stoppen of het kind naar het menu sturen** (15.18), ook niet na veel fouten en ook als Synthesis dat wel doet.
+- **Het hulphandje als knop** of bij keuzevragen (15.19). Het komt vanzelf, na ongeveer 6 seconden, alleen bij opdrachten.
+- **Inhoud van Squla veranderen** (15.22): vragen, getallen en antwoordkeuzes blijven die van Squla. Alleen duidelijke fouten mogen klein hersteld worden (fout antwoord dat als goed telt; 2 goede antwoorden; onbeantwoordbare vraag; plaatje of zin die niet klopt; woord dat een kind van 6 niet snapt), elk met een regel in KEUZES-VOOR-SARA.md. Een vraag vervangen of weglaten: eerst Sara vragen.
+- **Opdrachtjes toevoegen die Synthesis in dat onderwerp niet heeft** (15.22). Toegestane extra's komen per les in een lijstje in KEUZES-VOOR-SARA.md. Een soort vraag waarvoor Synthesis niets heeft: zelfde skelet, hints en fouttabel gemarkeerd "eigen invulling, niet van Synthesis".
+- **Een draaiboek bouwklaar noemen terwijl de Synthesis-les niet helemaal gespeeld is** (15.24). Les altijd van begin tot einde spelen; bij pauze het tabblad voorop; lukt het niet, "niet compleet" melden. Elk draaiboek zegt "helemaal gespeeld: ja/nee".
+- **Minsommen: de teller laat het antwoord zien** terwijl de vraag nog open is (15.20).
 - **De oude les wijzigen.** De bestaande Squla-les blijft zoals hij is.
 - **Een gat in het draaiboek opvullen met een gok** (15.4). Zet het in KEUZES-VOOR-SARA.md.
 - **Content in de database zetten** (harde regel 2), oude lessen van vóór 27 oktober aanraken (harde regel 8), of tegoed boven 5.000 gebruiken zonder toestemming (harde regel 9).
