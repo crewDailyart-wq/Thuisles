@@ -84,18 +84,26 @@ export const ZIN = {
   vraagEerste: "Tel ze en tik op het goede getal.",
   /** Draaiboek §3 A.1 (b): bij de eerste telvraag samen natellen. */
   natellen: "Laten we ze samen natellen.",
-  natellenKlaar: (n: number, f: Fruit) => [`Zie je? Het zijn er ${gk(n, f)}.`, "Je had het precies goed."],
+  natellenKlaar: (n: number, f: Fruit) => `Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`,
   /** Draaiboek §3 A.3: na de 2e fout samen tellen. */
   samenHelp: "Kom, we tellen ze samen.",
   samenTik: (f: Fruit) => `Tik op elke ${f.een}. Ik tel mee.`,
   samenHand: (f: Fruit) => `Tik op een ${f.een} zonder nummer.`,
-  samenKlaar: (n: number, f: Fruit) => [`${gk(n, f)}.`, `Samen telden we ${gk(n, f)} ${f.naam}.`],
+  samenKlaar: (n: number, f: Fruit) => `${gk(n, f)}. Samen telden we ${gk(n, f)} ${f.naam}.`,
   /** Stap 10: einde. */
   slot: "Je telde fruit tot wel 17.",
+  /** Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. */
+  kaartTik: "Tik op de kaart.",
 };
 
 /** BLIEPO-KARAKTER.md §4 Tellen: zin 6, 7 en 10 (met het aantal, zoals de lof in het draaiboek). */
-export const TELREACTIE = (n: number, f: Fruit) => rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je telde ze allemaal: ${gk(n, f)}.`, `Ik heb ze nagekeken: het zijn er ${gk(n, f)}.`], [2]);
+/* Zin 3 en 4 zonder "Ja" (kind-test 9 nov: geen 2 keer "Ja" achter elkaar); eigen aanvulling op het rijtje. De robotzin
+   (laatste) hooguit 1 keer per les. */
+export const TELREACTIE = (n: number, f: Fruit) => rij([`Ja, er zijn er ${gk(n, f)}.`, `Ja, je telde ze allemaal: ${gk(n, f)}.`, `Het zijn er ${gk(n, f)}.`, `Je telde er ${gk(n, f)}.`, `Ik heb ze nagekeken: het zijn er ${gk(n, f)}.`], [4]);
+export const TELREACTIE_JA = [0, 1];
+export const TELREACTIE_ROBOT = 4;
+/** Aanmoediging bij het hulphandje tijdens het samen tellen (het kind moet tikken, niet nadenken; 14.35). */
+export const AANMOEDIG_TIKKEN = ["Je bent goed bezig.", "Jij kunt dit."];
 
 /* ---------- denkfouten (draaiboek Tellen §7; namen voor de voortgang) ---------- */
 
@@ -104,39 +112,27 @@ export type Denkfoutnaam = (typeof DENKFOUTEN)[number];
 
 export type Fout = {
   code: Denkfoutnaam;
-  /** Welke uitleg bij de 2e fout hoort (sleutel in UITLEG). */
+  /** Welke uitleg bij de 2e fout hoort (dezelfde soort 2 keer = "weer"). */
   soort: string;
   denkfout: string;
   /** Bliepo's eerste zin (leeg bij "onduidelijk": dan een zin uit BLIEPO-KARAKTER.md §10). */
   eerste: string;
   hint: string;
+  /** Uitleg na de 2e fout (zonder het antwoord; na deze uitleg volgt meteen het samen tellen). */
+  uitleg: string;
+  /** Als het kind dezelfde denkfout 2 keer maakt en Bliepo de 1e keer de richting noemde: zeggen dat het weer gebeurt, en anders uitleggen. */
+  weer: string[];
   /** Wat er op het scherm gebeurt. */
   scherm: string;
   /** Waarom de richting niet genoemd wordt (zou het antwoord verklappen, BOUWREGELS 15.17). */
   noot?: string;
 };
 
-/** Uitleg na de 2e fout per soort denkfout (zonder het antwoord), en een andere uitleg als dezelfde denkfout nog eens komt. */
-export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
-  "te-weinig": {
-    uitleg: ["Sla je er 1 over, dan kom je te laag uit."],
-    weer: ["Je telde er weer te weinig.", "Krijgt elk stuk fruit een nummer, dan sla je er geen over."],
-  },
-  "te-veel": {
-    uitleg: ["Tel je er 1 dubbel, dan kom je te hoog uit."],
-    weer: ["Je telde er weer te veel.", "Krijgt elk stuk fruit 1 nummer, dan tel je er geen 2 keer."],
-  },
-  "alleen-volle-rijen": {
-    uitleg: ["Alle rijen tellen mee, ook de rij die niet vol is."],
-    weer: ["Je telde weer alleen de volle rijen.", "Ook het fruit in de laatste rij hoort erbij."],
-  },
-  onduidelijk: {
-    uitleg: ["We tellen ze 1 voor 1."],
-    weer: ["We tellen ze 1 voor 1."],
-  },
-};
-
 const SCHERM = "vraag en knoppen even weg; het fruit blijft staan, zonder nummers; Bliepo's scherm 1,5 s rood; met de hint komen de 3 knoppen meteen terug (geen pijl)";
+
+/** 3 hints per soort, in eigen woorden; welke hangt af van het vraagnummer, zodat niet steeds dezelfde komt (kind-test 9 nov). */
+const HINT_WEINIG = [(f: Fruit) => `Tel nog eens. Wijs elke ${f.een} 1 keer aan en tel rustig mee.`, (f: Fruit) => `Tel nog eens, rij voor rij. Sla er geen ${f.een} over.`, (f: Fruit) => `Begin linksboven en tel opnieuw. Wijs elke ${f.een} aan.`];
+const HINT_VEEL = [(f: Fruit) => `Tel nog eens, rij voor rij. Wijs elke ${f.een} 1 keer aan.`, (f: Fruit) => `Tel opnieuw. Elke ${f.een} tel je maar 1 keer.`, (f: Fruit) => `Begin linksboven en tel rustig. Wijs elke ${f.een} 1 keer aan.`];
 
 /**
  * De fouttabel van 1 fout antwoord. EIGEN INVULLING, NIET VAN SYNTHESIS (boven 10).
@@ -151,25 +147,31 @@ export function telFout(x: number, v: Telvraag): Fout {
   const vol = Math.floor(goed / 5) * 5;
   const kant = v.keuzes.filter((k) => k !== x && (x < goed ? k > x : k < x));
   const verklapt = kant.length === 1;
-  const aanwijzen = `Wijs elke ${f.een} 1 keer aan en tel rustig mee.`;
+  const verschil = Math.abs(goed - x);
   if (x < goed && x === vol)
     return {
       code: "alleen-volle-rijen",
       soort: "alleen-volle-rijen",
       denkfout: "telde alleen de volle rijen van 5, niet de rij die niet vol is",
-      eerste: `Bij ${X} telde je de volle rijen.`,
+      eerste: `Je telde alleen de volle rijen. Dat zijn er ${X}.`,
       hint: "Kijk ook naar de laatste rij en tel opnieuw.",
+      uitleg: "De rij die niet vol is, telt ook mee.",
+      weer: ["Je telde weer alleen de volle rijen.", `Tel ook de ${f.naam} in de laatste rij.`],
       scherm: SCHERM,
     };
-  if (x < goed)
-    return verklapt
-      ? { code: "te-weinig", soort: "te-weinig", denkfout: "telde er te weinig (sloeg er een over)", eerste: `${X} is dichtbij.`, hint: `Tel nog eens. ${aanwijzen}`, scherm: SCHERM, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
-      : { code: "te-weinig", soort: "te-weinig", denkfout: "telde er te weinig (sloeg er een over)", eerste: `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, hint: `Tel nog eens. ${aanwijzen}`, scherm: SCHERM };
-  if (x > goed)
-    return verklapt
-      ? { code: "te-veel", soort: "te-veel", denkfout: "telde er te veel (telde er een 2 keer)", eerste: `${X} is dichtbij.`, hint: `Tel nog eens, rij voor rij. ${aanwijzen}`, scherm: SCHERM, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
-      : { code: "te-veel", soort: "te-veel", denkfout: "telde er te veel (telde er een 2 keer)", eerste: `${X} is dichtbij, maar dat zijn er te veel.`, hint: `Tel nog eens, rij voor rij. ${aanwijzen}`, scherm: SCHERM };
-  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: `Tel nog eens. ${aanwijzen}`, scherm: SCHERM };
+  if (x < goed) {
+    const basis = { code: "te-weinig" as const, soort: "te-weinig", denkfout: "telde er te weinig (sloeg er een over)", hint: HINT_WEINIG[v.nr % 3](f), scherm: SCHERM };
+    const uitleg = verschil === 1 ? `Je hebt 1 ${f.een} niet geteld.` : `Je hebt een paar ${f.naam} niet geteld.`;
+    const weer = ["Je telde er weer te weinig.", `Geef elke ${f.een} 1 nummer. Dan sla je er geen over.`];
+    return verklapt ? { ...basis, eerste: `${X} is dichtbij.`, uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, uitleg, weer };
+  }
+  if (x > goed) {
+    const basis = { code: "te-veel" as const, soort: "te-veel", denkfout: "telde er te veel (telde er een 2 keer)", hint: HINT_VEEL[v.nr % 3](f), scherm: SCHERM };
+    const uitleg = verschil === 1 ? `Je telde 1 ${f.een} te veel.` : `Je telde een paar ${f.naam} te veel.`;
+    const weer = ["Je telde er weer te veel.", `Geef elke ${f.een} 1 nummer. Dan tel je er geen 2 keer.`];
+    return verklapt ? { ...basis, eerste: `${X} is dichtbij.`, uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: `${X} is dichtbij, maar dat zijn er te veel.`, uitleg, weer };
+  }
+  return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: HINT_WEINIG[0](f), uitleg: "We tellen ze 1 voor 1.", weer: ["We tellen ze 1 voor 1."], scherm: SCHERM };
 }
 
 /** De fouttabel van een vraag: elk fout antwoord. */

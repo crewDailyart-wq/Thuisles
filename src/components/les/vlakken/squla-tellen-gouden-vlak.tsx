@@ -41,6 +41,11 @@ export type GoudenTelProps = {
 
 type Ind = ReturnType<typeof indeling>;
 
+/** Hoe groot het fruit is ten opzichte van de oude les (het vak blijft gelijk). */
+const FRUIT_SCHAAL = 0.85;
+/** Hoe hoog het nummer boven het midden van het fruit staat (punten van het vlak). */
+const NUMMER_BOVEN = 52;
+
 interface Scene {
   zetIndeling(o: Ind | null): void;
   pop(i: number): void;
@@ -126,7 +131,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const cy = 380;
       const g = this.add.container(cx, cy);
       for (const pl of o.plekken) {
-        const sc = o.schaal / TX;
+        /* Het fruit iets kleiner dan in de oude les (0,85), zodat het nummer boven het fruit niet tegen de rij erboven
+           komt (kind-test 9 nov). In punten van het vlak, net als de rest. */
+        const sc = (o.schaal * FRUIT_SCHAAL) / TX;
         const im = this.plaats(this.tex(pl.p), pl.x - cx, pl.y - cy).setScale(sc).setData("sc", sc);
         g.add(im);
         this.items.push(im);
@@ -155,12 +162,16 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         this.hand.setVisible(false);
         return;
       }
-      const tip = { x: pl.x + 6, y: pl.y + 30 };
-      this.hand.setScale(0.7 / TX).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
+      /* De vingertop raakt het fruit rechtsonder; de hand ligt schuin in de ruimte rechtsonder, niet over het fruit eronder
+         (kind-test 9 nov). Hij beweegt zacht heen en weer in de richting van de vinger. */
+      const tip = { x: pl.x + 24, y: pl.y + 26 };
+      const hoek = -0.65;
+      const stap = { x: -Math.sin(hoek) * 8, y: Math.cos(hoek) * 8 };
+      this.hand.setScale(0.55 / TX).setRotation(hoek).setPosition(tip.x, tip.y).setAlpha(1).setVisible(true);
       if (this.rustig) return;
       this.hand.setAlpha(0);
       this.tweens.add({ targets: this.hand, alpha: 1, duration: 300 });
-      this.tweens.add({ targets: this.hand, y: tip.y + 10, duration: 520, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
+      this.tweens.add({ targets: this.hand, x: tip.x + stap.x, y: tip.y + stap.y, duration: 520, yoyo: true, repeat: -1, ease: "Sine.easeInOut" });
     }
 
     goed() {
@@ -245,7 +256,7 @@ export function GoudenTelVlak({ opgave, nummers = [], kleur = "wit", tikbaar = f
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
       {ind?.plekken.map((p, i) =>
         nummers[i] > 0 ? (
-          <div key={`${ind.id}-n${i}`} className={s.nummer} style={{ left: p.x, top: p.y - 58 * ind.schaal, color: kleurHex }} aria-hidden>
+          <div key={`${ind.id}-n${i}`} className={s.nummer} style={{ left: p.x, top: p.y - NUMMER_BOVEN * ind.schaal, color: kleurHex }} aria-hidden>
             {nummers[i]}
           </div>
         ) : null,

@@ -5,7 +5,7 @@
  * Schrijft alleen dat ene bestand. Raakt de database en de lessen niet aan.
  */
 import { writeFileSync } from "node:fs";
-import { UITLEG, VRAGEN, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
+import { VRAGEN, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 
@@ -16,7 +16,15 @@ const rijen = VRAGEN.flatMap((v) =>
   ),
 ).join("\n");
 
-const uitleg = Object.entries(UITLEG).map(([k, u]) => `| \`${k}\` | ${u.uitleg.join(" ")} | ${u.weer.join(" ")} |`).join("\n");
+const uitleg = VRAGEN.flatMap((v) => {
+  const fouten = Object.entries(foutenVan(v));
+  return fouten.map(([a, f]) => {
+    /* De 1e fout was dan het andere foute antwoord (er zijn er maar 2). */
+    const ander = fouten.find(([b]) => b !== a)?.[1];
+    const weer = !ander || ander.soort !== f.soort ? "— (1e fout was een andere denkfout: dan de uitleg links)" : ander.noot ? "— (1e keer zei Bliepo alleen \"… is dichtbij\": dan de uitleg links, geen \"weer\")" : f.weer.map(kaal).join(" ");
+    return `| ${v.nr}. ${v.n} ${v.fruit.naam} | ${a} (\`${f.code}\`) | ${kaal(f.eerste)} ${kaal(f.uitleg)} | ${weer} |`;
+  });
+}).join("\n");
 const telling = VRAGEN.reduce((n, v) => n + Object.keys(foutenVan(v)).length, 0);
 /* Controle: elk fout antwoord van elke vraag staat erin. */
 for (const v of VRAGEN) for (const k of v.keuzes) if (k !== v.n && !foutenVan(v)[String(k)]) throw new Error(`geen rij voor ${v.id} ${k}`);
@@ -34,7 +42,8 @@ In de les staan de getallen in de kleur van het fruit (appel rood, peer groen, p
 - **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de vraag en de knoppen even weg, het fruit blijft staan zonder nummers. Bliepo zegt de eerste zin; daarna komen de 3 knoppen meteen terug met de hint (geen pijl, zoals het draaiboek).
 - **Richting en verklappen (15.17):** zou "te weinig" of "te veel" bij deze 3 keuzes maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "dichtbij") en wijst hij naar de manier van tellen. Zo verklapt de hint het antwoord niet.
 - **2e fout:** een korte uitleg bij de denkfout (§3, zonder het antwoord), "Kom, we tellen ze samen." (pijl). Dan tikt het kind elk stuk fruit aan; er komt een nummer bij en Bliepo zegt het getal. Het laatste getal is het aantal ("Samen telden we 12 appels."). Pijl, de les gaat door. Na ± 6 s stilte komt vanzelf het hulphandje.
-- **Twee keer dezelfde denkfout** bij dezelfde vraag: Bliepo zegt "weer" en legt het anders uit (§3, laatste kolom).
+- **Twee keer dezelfde denkfout** bij dezelfde vraag: Bliepo zegt "weer" en legt het anders uit (§3, laatste kolom). Alleen als hij de 1e keer al zei wat er mis was; na alleen "… is dichtbij." komt de gewone uitleg.
+- **Hints wisselen:** per soort denkfout zijn er 3 hints; welke komt, hangt af van het vraagnummer.
 - **Niet duidelijk (\`onduidelijk\`):** komt in deze les niet voor (elk fout antwoord is kleiner of groter dan het goede); als vangnet een zin uit BLIEPO-KARAKTER.md §10 en een algemene hint.
 - Elke fout wordt met de naam van de denkfout bewaard (tabel \`les_uitkomsten\`, kolom denkfout; \`onduidelijk\` wordt \`onbekend\`), elke vraag met zijn uitkomst: goed in één keer, goed na een fout of samen gedaan.
 
@@ -61,8 +70,8 @@ ${rijen}
 
 Na deze uitleg volgt altijd: "Kom, we tellen ze samen." en het samen tellen (nu pas het aantal in beeld).
 
-| Denkfout | Uitleg bij de 2e fout (andere denkfout dan de 1e keer: eerst de eerste zin uit §2) | Dezelfde denkfout nog eens |
-|---|---|---|
+| Vraag | 2e fout (denkfout) | Uitleg bij de 2e fout (eerste zin + uitleg) | Als de 1e fout (het andere foute antwoord) dezelfde denkfout was |
+|---|---|---|---|
 ${uitleg}
 
 ## 4. Goed

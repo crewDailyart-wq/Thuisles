@@ -476,3 +476,5 @@ Per denkfout: wat het kind doet, waar het gezien is, en wat Synthesis deed. **Al
 **Niet overgenomen (de Squla-les heeft deze vragen niet):** stap 2 (zelf een kleur kiezen), stap 5 t/m 9 (welke kleur, 2 kleuren samen, zelf maken, lijstje), de extra ronde na een 2e fout (§2 stap 4). Vraag aan Sara: KEUZES-VOOR-SARA.md, Ronde 20.
 
 **NIET GEZIEN blijft NIET GEZIEN:** waarom Synthesis soms "geen lof, meteen door" geeft (§11 punt 2); een les die nog nooit gedaan is (punt 1). Bliepo geeft altijd lof (rijtje BLIEPO-KARAKTER.md).
+
+**Herstel na de kind-test (9 november 2026):** natellen nu 1,15 s per nummer (draaiboek §3 A.1 b); na de eindzin "Tik op de kaart." (draaiboek stap 10); lof en aantal als 1 zin (zoals Synthesis: "Precies, 8 gele vakjes"); 3 afwisselende hints per denkfout en eenvoudiger uitleg bij de 2e fout (eigen invulling, zie KEUZES-VOOR-SARA.md Ronde 20b).

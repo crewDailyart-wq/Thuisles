@@ -468,3 +468,31 @@ Nieuwe versie naast de oude les squla-tellen-fruit-1 (die is niet veranderd). Be
 **Vloeiend (HARDE REGEL 7):** laptop 60 beelden per seconde, langste beeld 36 ms. Trage telefoon: 57 beelden per seconde, een hapering van 80 ms (mag hooguit 50 ms); de oude les haalt daar 35 ms. Volgens jouw besluit is telefoon een latere fase (DESIGN-LATER.md): gemeten, niet opgelost. Openen in de ontwikkelversie 2,3 s (laptop) en 3,5 s (telefoon); dat is lokaal alleen een waarschuwing.
 
 **Stem:** alle nieuwe zinnen gebruiken de browserstem; geen tegoed gebruikt, geen Magnific, geen nieuwe plaatjes.
+
+### Ronde 20b — herstel na de kind-test (KINDTEST-TELLEN-GOUDEN.md, 9 november 2026)
+
+Alleen in de gouden les Tellen. De oude les is niet veranderd. Zinsaanpassingen volgens BOUWREGELS 15.26 (oud → wat mis was → nieuw); het voorbeeld is steeds met appels, in de les staat het fruit van de vraag:
+
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Sla je er 1 over, dan kom je te laag uit." | "te laag uitkomen" is moeilijk; klopte niet als het kind er 2 te weinig had (9 bij 11) | "Je hebt 1 appel niet geteld." (1 te weinig) / "Je hebt een paar appels niet geteld." (2 te weinig) |
+| "Tel je er 1 dubbel, dan kom je te hoog uit." | "dubbel" en "te hoog uitkomen" zijn moeilijk | "Je telde 1 appel te veel." / "Je telde een paar appels te veel." |
+| "Krijgt elk stuk fruit een nummer, dan sla je er geen over." | omgekeerde zin, lastig voor een kind van 6 | "Geef elke appel 1 nummer. Dan sla je er geen over." |
+| "Krijgt elk stuk fruit 1 nummer, dan tel je er geen 2 keer." | idem | "Geef elke appel 1 nummer. Dan tel je er geen 2 keer." |
+| "Alle rijen tellen mee, ook de rij die niet vol is." | lang | "De rij die niet vol is, telt ook mee." |
+| "Ook het fruit in de laatste rij hoort erbij." | vaag ("het fruit") | "Tel ook de appels in de laatste rij." |
+| "Bij 10 telde je de volle rijen." | klinkt raar | "Je telde alleen de volle rijen. Dat zijn er 10." |
+| Steeds dezelfde hint "Tel nog eens(, rij voor rij). Wijs elke appel 1 keer aan en tel rustig mee." (10 keer in 1 les) | verveelt | 3 hints per denkfout die afwisselen: te weinig: "Tel nog eens. Wijs elke appel 1 keer aan en tel rustig mee." / "Tel nog eens, rij voor rij. Sla er geen appel over." / "Begin linksboven en tel opnieuw. Wijs elke appel aan."; te veel: "Tel nog eens, rij voor rij. Wijs elke appel 1 keer aan." / "Tel opnieuw. Elke appel tel je maar 1 keer." / "Begin linksboven en tel rustig. Wijs elke appel 1 keer aan." |
+| Na goed soms "Ja, die klopt! Ja, er zijn er 16." | 2 keer "Ja" achter elkaar | Begint de lof met "Ja", dan komt het aantal zonder "Ja": nieuw in het rijtje bij Tellen: "Het zijn er 16." en "Je telde er 16." (eigen aanvulling op BLIEPO-KARAKTER.md §4) |
+| "Ik heb ze nagekeken: het zijn er 11." 3 keer per les | robotzin valt op | hooguit 1 keer per les |
+| "Denk maar even na." bij het hulphandje tijdens samen tellen | het kind moet tikken, niet nadenken (14.35) | alleen "Je bent goed bezig." of "Jij kunt dit.", dan "Tik op een appel zonder nummer." |
+| "Je telde er weer te veel." terwijl Bliepo de 1e keer alleen "12 is dichtbij." zei | "weer" kwam uit het niets | "weer" alleen als Bliepo de 1e keer al "te veel" / "te weinig" / "volle rijen" zei; anders de gewone uitleg |
+| Eindkaart zonder zin | het kind wist niet wat te doen (draaiboek: "tik op de kaart") | na de eindzin: "Tik op de kaart." |
+
+**Verder hersteld:**
+- Samen natellen bij vraag 1: nu 1,15 s per nummer (draaiboek 1,1–1,2 s; was 2,4 s). Gemeten: 12 nummers in 14,1 s.
+- Tik op de pijl tijdens de lof: lof en aantal zijn nu 1 zin, dus er begint geen halve 2e zin meer. Zelfde voor "Zie je? Het zijn er 12. Je had het precies goed." en "11. Samen telden we 11 peren."
+- Het hulphandje ligt nu schuin rechtsonder het fruit (in de ruimte tussen de rijen), niet meer over het fruit eronder.
+- Het fruit is 15% kleiner getekend (de plekken blijven gelijk), zodat het nummer van rij 2 niet meer tegen het fruit van rij 1 aan staat. In punten van het vlak, geen vaste schermpixels; niet naar DESIGN-LATER.md.
+
+**Open vraag (ernstig, NIET door mij veranderd):** volgens de kind-test breekt de browserstem zichzelf af. In `src/lib/stem.ts` roept `uiting.onstart` via `meld()` → `stopKeuzeStem()` → `speechSynthesis.cancel()` aan. Gemeten in de echte Chrome bij "Hoeveel appels zie je?": de zin start, 1 ms later komt `cancel()`, 26 ms later begint de volgende zin, die ook meteen stopt. In de nagebootste runs 47–50 keer per les. Een kind hoort dan de vraag, de hint en de foutzinnen niet; alleen zinnen met een opname van Ruth klinken. Dit is gedeelde code (ook oude lessen), dus jij beslist. Voorstel van de kind-test: in `meld(true)` alleen de keuzestem stoppen, niet de hele `speechSynthesis`. Graag eerst even met geluid aan luisteren.
