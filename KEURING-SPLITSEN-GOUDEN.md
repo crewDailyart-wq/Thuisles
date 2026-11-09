@@ -142,3 +142,79 @@ helemaal weg; getallen in de goede kleur; naam 2 keer; nooit menu, nooit stop; n
 
 Punt 1 en 2 herstellen (en punt 3 t/m 10 waar mogelijk). Daarna opnieuw keuren, met: proef, 1e fout, 9 s stil; de doos
 met 1 bal; en een vloeiend-meting als de computer rustig is.
+
+---
+
+# TWEEDE KEURING (9 november 2026, na commit a3b35ef)
+
+Opnieuw gekeurd, alleen als Testkind, met scripts in Chrome zonder venster, een lege profielmap en zonder koekje.
+Ik heb een langzame kinder-sleep gebruikt (± 1 s slepen, 1 s stil) en een nagebootste stem (0,075 s per letter).
+`les_uitkomsten`: hoogste id vóór en na alle runs **107**. Er is niets bijgekomen. Ik heb niets aan de les of de database
+veranderd.
+
+## UITSLAG: GOEDGEKEURD
+
+De les zelf is in orde. Alle 13 punten van de eerste keuring zijn opgelost, of met reden voorgelegd aan Sara. Door het
+herstel zijn er geen nieuwe fouten bijgekomen. De open punten bij Sara zitten in gedeelde code of in de database, niet in
+deze les.
+
+## Per punt van de eerste keuring
+
+1. **Handje in de proef (was ernstig): opgelost.** Proef, 4 en 1, 9 s stil: het handje schuift nu van het paarse naar het
+   oranje vak. Bliepo zegt "Schuif een pion uit het paarse vak naar het oranje vak.", zonder aanmoediging ervoor
+   (schermfoto). Daarna 2 pionnen langzaam geschoven: pas toen nagekeken, "goed na een fout".
+   De zin verklapt niets: het getal voor het paarse vak staat al in de opdracht.
+2. **Vinkje 2 keer uitgelegd (was middel): opgelost.** Bij de eerste doos met 1 bal hoort het kind alleen
+   "Klaar? Tik dan op het vinkje." (van het lesscherm). De eigen zin is weg. Gecontroleerd in de lijst met alles wat
+   Bliepo zegt. KEUZES Ronde 21b punt 8 is verbeterd.
+3. **"Hoeveel samen?": opgelost.** Na de 1e fout zegt Bliepo alleen de eerste zin en wacht op de pijl. Daarna komt de
+   hint, met de knoppen in een andere volgorde (gezien: 4, 1, 5). Dit volgt het draaiboek §3 B.2.
+4. **"Goed gekozen!": opgelost.** In 6 volledige runs niet meer gehoord; de code slaat die lofzin over.
+5. **Zelfde zin 2 keer: opgelost.** Bij het handje zegt Bliepo nu kort "Tik op de pion in het oranje vak.", zonder
+   "Je bent goed bezig.".
+6. **"Kom, nog 1 keer.": opgelost.**
+7. **Tempo: aangepast.** Bliepo reageert nu ± 0,4 s na de laatste pion. In de proef na een fout blijft dat 1,6 s; dat
+   ligt als vraag bij Sara (KEUZES Ronde 21c punt 7).
+8. **Stroeve zinnen: opgelost** ("1 en 4 is 1 manier om 5 te splitsen.", "Onderin zijn 2 vakken.").
+9. **Begin van het handje: opgelost.** Het handje begint bij een pion die echt nog in het hoopje ligt
+   (`window.__phaser.s1Punt`). Lukt dat niet, dan bij de vaste plek.
+10. **Oude tekst in KEUZES en het draaiboek: bijgewerkt.**
+11. **Vraag 1 na "anders splitsen": alleen gemeld,** zoals gevraagd. Geen bezwaar.
+12. **Eindkaart: opgelost** (7 iets lager en kleiner).
+13. **Vloeiend, gemeten:** de computer was niet helemaal rustig (belasting 7 tot 16, met andere programma's ernaast).
+    - Laptop: 60 beelden/s, langste beeld 27 ms. In orde.
+    - Trage telefoon: 58 beelden/s, maar een hapering van 69 ms (grens 50 ms). Telefoon is een latere fase (15.23) en
+      staat al in DESIGN-LATER.md.
+    - Openen in de ontwikkelversie 2,1–3,6 s. Dat is alleen een waarschuwing; op de echte site opnieuw meten.
+
+## Opnieuw gedraaid
+
+- Verklapcontrole: 121 foute antwoorden, geen verklapper. De FOUTTABEL bleef gelijk.
+- `npm run opgaven`: groen.
+- `inhoudsvergelijk`: 0 verdwenen, ook tegen b3cfebd. De 4 vervangen zinnen staan in WEGGEHAALD.md.
+- De oude les, het splitsvlak, Lesscherm.tsx en stem.ts zijn niet veranderd.
+- `scripts/test-splitsen-gouden.mjs`: alle 7 situaties groen.
+- Speelcontrole: alles goed en alles fout, allebei tot het eind, 0 fouten.
+- Zelf gespeeld met de nagebootste stem en de langzame sleep:
+  - Nee-route tot de kaart.
+  - Ja-route met mislukte proef, uitleg met fouten en vangnet, "hoeveel samen?" 2 keer fout, anders splitsen met hulp.
+  - Dezelfde fout 2 keer bij vraag 1, 10 en 11, daarna alles tot de kaart.
+  - De doos: bal erin, bal terug, het vinkje verdwijnt en een tik doet niets.
+  - Alles klopte: elke eerste zin past bij de denkfout, "weer" komt alleen bij dezelfde denkfout, "nakijken" hooguit
+    2 keer, de naam 2 keer, de getallen in kleur, de uitkomsten en denkfouten goed bewaard.
+
+## Nieuwe fouten door het herstel
+
+Geen gevonden. Ik heb gekeken naar:
+- het handje bij samen voordoen en bij anders splitsen (begint nu bij een echte pion);
+- de proef met minder dan het goede aantal (handje van oranje naar paars);
+- het eerdere nakijken (0,4 s): bij de langzame sleep werd geen enkele halve beweging nagekeken.
+
+## Nog open bij Sara (niet in deze les)
+
+- De stem breekt nog elke zin af (`src/lib/stem.ts`). Met de nagebootste stem werden opnieuw alle zinnen afgebroken
+  (46 van 46, 81 van 81). Dit geldt voor alle gouden lessen.
+- De voorbeeldpagina bewaart bij het kind van het koekje, en de 15 testregels bij Fenna (id 93–107) staan er nog.
+- KEUZES Ronde 21 vraag 1 t/m 9 en Ronde 21c punt 7 (1,6 s in de proef) zijn nog niet beantwoord. Daarbij hoort ook het
+  voorrekenen bij de 3 huisjes (15.17).
+- De eerste sleep hapert en de telefoon hapert (gedeeld splitsvlak, latere fase).
