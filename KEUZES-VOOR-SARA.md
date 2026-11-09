@@ -430,3 +430,6 @@ Vastgelegd in BOUWREGELS.md 15.17 t/m 15.24 en LESRECEPT.md (hoofdstuk 4, "Wat N
 7. **Telefoon en tablet** blijven een eigen latere fase (DESIGN-LATER.md).
 8. **Privacy (ronde 17)** blijft open tot vóór echte kinderen.
 9. **Vaste regel Synthesis-onderzoek** (15.24): een les altijd helemaal spelen. Een draaiboek is pas bouwklaar als de les helemaal gespeeld is.
+
+### Ronde 19 — aanvulling (9 november 2026): alles achter elkaar
+Besluit in BOUWREGELS.md 15.25 en 15.26: na Tellen alle gouden lessen achter elkaar (Splitsen, Plussommen, Minsommen, Meer-minder, Huisnummers, Getallenlijn, Meten; daarna Geld, Vormen, Dagen, Tijd, Rekentaal; Rekenmix laatst). Verbeteren van rare of moeilijke zinnen mag; elke aanpassing komt per les in dit bestand (oorspronkelijke tekst, wat mis was, nieuwe tekst).
