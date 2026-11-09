@@ -366,3 +366,6 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 
 ### Plussommen draaiboek nieuw (9 nov)
 - Plussommen draaiboek nieuw: KLAAR voor plussommen tot 10 en samen 10, NIET voor sommen boven 10 / over het tiental en het busverhaal (geen passende opgaven in deze les). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/plussommen.md`. Gespeeld: Adding below 10 3x (veel fouten / alles goed en heel snel / handje + som in één keer goed). Open: zie §11 in dat bestand (o.a. weet-ik-niet, 2e fout bij "nog een manier om 10" en "maak 7", min als 1e fout bij een totaal, eerste keer-route).
+
+### Minsommen draaiboek nieuw (9 nov)
+- Minsommen draaiboek nieuw: KLAAR voor minsommen tot 10, NIET voor boven 10 / over het tiental, het busverhaal en geld (geen passende opgaven in Dot Destruction). Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/minsommen.md`. Gespeeld: Dot Destruction 3x (veel fouten / alles goed en heel snel / andere fouten en weet-ik-niet). Open: zie §11 in dat bestand (o.a. 'afronden' kiezen, precieze stopregel oefenreeks, goed antwoord bij 'hoe schrijf je 9 min 3', eerste keer-route).
