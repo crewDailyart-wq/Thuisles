@@ -153,3 +153,63 @@ De route zit goed in elkaar: rood en groen scherm, de pijl, de ring en het handj
 3. Zinnen van stap 12 samen voordoen herschrijven (Probleem 3).
 4. Telefoon: hapering onder de 50 ms krijgen (Probleem 4).
 5. Daarna opnieuw `npm run vloeiend` (laptop rustig) en een nieuwe speelronde van alleen de aangepaste vragen. De kleine punten (5, 6, 7) kunnen mee in dezelfde ronde.
+
+---
+
+# TWEEDE KEURING — 9 november 2026 (onafhankelijke controleur, branch backup-squla)
+
+Ik heb niets in code of database veranderd. Gespeeld met de eigen speelcontrole (`scripts/speelcontrole.mjs`, Chrome met grafische kaart, geen KIND_ID, dus niets naar de database geschreven; alleen Testkind-gedrag, geen echt kind). Geen betaald tegoed, niets online, regel 8 niet aangeraakt.
+
+## UITSLAG: GOEDGEKEURD
+
+Bewust niet meegeteld (Sara beslist): de hints die het antwoord verklappen (Ronde 18 in KEUZES-VOOR-SARA.md) en de hapering op de trage telefoon / telefoonindeling (DESIGN-LATER.md).
+
+## 1. Zijn de fouten uit de eerste keuring weg?
+
+| Punt | Oordeel | Bewijs |
+|---|---|---|
+| "Probeer het nog 1 keer, met een tip." na de 2e fout | WEG | Fout-route (alles fout, 148 stappen, tot het eind): geen enkele 2e-fout-reactie bevat die zin. Onduidelijke 2e fouten geven "Zet je vinger op de punt van de kleine wijzer. Kijk welk getal daar staat." |
+| "Ik bedoelde een andere." / "Als je kiest…" bij tik- en zetopdrachten | WEG | De zinnen komen nog alleen bij keuzevragen (gezien bij stap 16 "Hoe laat is het dus?"). In de code staan ze op de uitsluitlijst voor opdrachten (zetUur) en hulphandje. |
+| Stap 12 samen voordoen | WEG | "Deze lange wijzer is de grote wijzer. Hij telt de minuten." en "Deze korte wijzer is de kleine wijzer. Hij laat het uur zien." |
+| Lange/grote wijzer | WEG | Overal "grote wijzer" (stap 11, herhaling, samen voordoen). Stap 11 2e fout begint nu met "Je koos weer de uren." |
+| Uur oranje in "Is het nu 7 uur?" en bonusvraag | WEG | Code: `{7:oranje}` en `{12:oranje}` in vraag en herhaling. (De bonus-route is niet apart gespeeld; wel de code nagelezen.) |
+| Dubbele "Ja," (lof + klokreactie) | WEG | Code filtert reacties met hetzelfde eerste woord. Gezien: "Lekker bezig! Ja, de kleine wijzer staat op de 1." (geen dubbele "Ja"). |
+| "Er komen nog N klokken van net terug" alleen als iets gemist | WEG | Code: `mis.length ? terug… : "Nog N klokken om te oefenen."`. In de speelroute met missers kwamen de klokken terug. De "geen-misser"-variant is alleen in de code nagelezen. |
+
+## 2. Nieuwe fouten door de wijziging?
+
+Geen afkeurende fouten gevonden. Nagelopen op alle 62 en 148 stappen van twee routes (afwisselend goed/fout en alles fout):
+- Zinnen die als vraag aan het kind klinken zonder poging: de "weer"-zinnen na de 2e fout zijn nu opdrachten ("Kijk goed welk getal de punt precies raakt.", "Kijk goed of deze wijzer de langste of de kortste is.", "Zet je vinger op de punt… Kijk welk getal daar staat."). In de 2e fout staat geen vraag meer. Eén restant: UITLEG `geen-heel-uur` (uitleg) heeft nog "Kijk ook naar de grote wijzer. Waar staat die nu?" Dat is bij stap 18 niet te bereiken (er is maar 1 foute keuze, dus de 2e fout geeft altijd de "weer"-zin). Klein; bij een nieuw gebruik van deze uitleg aanpassen.
+- Dubbele zinnen: niet gezien. Naam: goed-route 1x in lof (+ groet), foute route nul keer; nooit bij een fout.
+- Opmerking (niet afkeurend): stap 11 gebruikt nu "grote wijzer" voordat stap 12 de naam uitlegt. Het is wel overal dezelfde term, dus kinderen horen geen twee namen meer. Als Sara het wil: stap 11 eerst "de paarse wijzer" laten zeggen.
+
+## 3. Ronde 18 (KEUZES-VOOR-SARA.md)
+
+Compleet en begrijpelijk: het zegt wat hersteld is, geeft de 5 verklappende plekken met voorbeeld, stelt 1 duidelijke vraag met twee keuzes en zegt dat er niets aan veranderd is. Alleen "pijl pas na de 2e fout" mag Sara nog helpen met een korte uitleg wat ze daarmee zou zien. De telefoon-regel staat er ook in.
+
+## 4. Nieuwe tabel `les_uitkomsten`
+
+| Controle | Oordeel | Bewijs |
+|---|---|---|
+| Bestaande tabellen/kolommen ongewijzigd | GOED | `git diff 0cb0d1a~1 0cb0d1a -- src/lib/db/sqlite.ts`: alleen toegevoegde regels (geen enkele verwijderde of aangepaste regel); `create table if not exists` + index. |
+| Geen persoonsgegevens | GOED | Kolommen: id, kind_id, les_id, vraag_id, uitkomst, denkfout, pogingen, gemaakt_op. Geen naam, e-mail, school, IP, apparaat. Controle op deze kolommen zit ook in `scripts/waardebewaking.mjs` (niet opnieuw gedraaid). Vraag/les/denkfout worden met een patroon gefilterd. `on delete cascade` op kind. |
+| Kind-id komt van de server | GOED | `bewaarUitkomst` gebruikt `huidigKind()` (koekje); de browser stuurt geen kind-id mee. |
+| Les gaat door als wegschrijven mislukt | GOED | Serveractie vangt alles af (`{ok:false}`); in de les `try/catch` en `.catch(() => {})`; zonder kind niets. Beide speelroutes liepen tot het eind. |
+| Geen seed/content | GOED | Alleen `insert` bij een echte uitkomst van een kind; geen seed of opstarthook. Limiet 500 per kind per dag. |
+| Niets uit data/ of backups/ in Git | GOED | `git ls-files data backups`: leeg; status toont alleen `.codex/` en `output/` (niet van mij, niet gecommit). |
+| Alleen Testkind | GOED | Ik speelde zonder KIND_ID, dus er is door mij niets in de database geschreven. |
+| Nog niet gecontroleerd | — | `npm run bewaking` heb ik niet gedraaid (zwaar). Echt wegschrijven met een kind is niet gespeeld. |
+
+## 5. Herspeeld
+
+- Route 1 (afwisselend goed/fout, 62 stappen): tot het eind, 0 fouten.
+- Route 2 (alles fout, 148 stappen): tot het eind, 0 fouten; elke vraag 1e fout hint, 2e fout uitleg, samen voordoen, door. Geen derde poging, nooit stoppen.
+- Inhoud gelijk aan de oude les: dezelfde 13 klokken (klok1-1uur t/m klok13-6uur, in dezelfde volgorde, dezelfde tijden) kwamen voorbij; de commit raakt de klokken, keuzes en verhaalzinnen niet (alleen zinnen/hints in de fouttabel). De eindkaart is niet gewijzigd in de code; ik heb de eindkaart niet opnieuw als foto bekeken.
+- Niet opnieuw gespeeld: Ja-route (proef), bonus, telefoon.
+
+## Wat nog open staat (niet afkeurend)
+
+1. Sara kiest over de verklappende hints (Ronde 18).
+2. Telefoon: hapering en indeling (DESIGN-LATER.md).
+3. Privacypunten voor denkfouten (Ronde 17) vóór er een ouderdashboard komt.
+4. Optioneel: stap 11 vóór de uitleg van stap 12 "paarse wijzer" noemen; de ongebruikte vraagzin in `geen-heel-uur`.
