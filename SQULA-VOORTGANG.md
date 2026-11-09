@@ -356,3 +356,7 @@ Alles staat in `SYNTHESIS-ANALYSE/KOPPELING.md` (oude versie: `KOPPELING-voor-9-
 - [x] Vormen: GEEN passende les (alle vormdoelen groep 3 op "Coming soon").
 - [x] Rekenmix: geen mixles bij Synthesis; alleen toetsen per unit, Flashcards-race en Mixed Problems (niet afgespeeld).
 Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md.
+
+### Tellen draaiboek nieuw (9 nov)
+- Backup draaiboeken: `SYNTHESIS-ANALYSE/backup-draaiboeken-20261109/DRAAIBOEKEN-voor-opnieuw.md` (klaar).
+- Tellen draaiboek nieuw: KLAAR voor tellen tot 10, GEDEELTELIJK voor 11-20. Bestand: `SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/tellen.md`. Gespeeld: Color Count 3x (met fouten / alles goed / 3 fouten bij lijstje) + The Next 10 tot "wat komt na 12". Open: zie §11 in dat bestand (o.a. The Next 10 verder, lijstje lang wachten/snel, 3e fout bij maken, eerste keer-route).
