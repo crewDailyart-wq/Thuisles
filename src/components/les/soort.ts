@@ -186,11 +186,20 @@ export type Lesdraaiboek = {
    */
   vraagBoven?: true;
   /**
-   * Opt-in (10 november 2026, voorlopig, alleen de gouden klokles; SYNTHESIS-ANALYSE/PIJL-KLOK.md): tekst en pijl zoals
-   * Synthesis. (1) De zinnen van 1 `zeg`-aanroep blijven onder elkaar staan in plaats van elkaar te vervangen; (2) een tik
-   * op de blauwe pijl breekt de stem meteen af. Zonder deze optie verandert er niets.
+   * Opt-in (10 november 2026, DEFINITIEF met Sara's akkoord; BOUWREGELS 15.27, SYNTHESIS-ANALYSE/PIJL-KLOK.md): tekst en
+   * pijl zoals Synthesis, nu alleen in de gouden klokles. (1) De zinnen van 1 `zeg`-aanroep blijven onder
+   * elkaar staan in plaats van elkaar te vervangen; (2) een tik op de blauwe pijl breekt de stem meteen af; (3) de pijl
+   * staat RECHTS onder de tekst (data-pijl="rechts"; Sara's keuze, Synthesis heeft hem links). Zonder deze optie
+   * verandert er niets.
    */
   pijlZoalsSynthesis?: true;
+  /**
+   * Opt-in (10 november 2026, besluit Sara; nu alleen de gouden klokles, hoort bij het skelet van elke nieuwe of omgezette
+   * gouden les, LESRECEPT.md): Bliepo praat zijn zinnen helemaal uit. Een zin telt pas als klaar als hij echt is
+   * uitgesproken (of, als de stem niets uitspreekt, na de leestijd); zonder eerdere tik wacht de eerste zin op de eerste
+   * tik van het kind. Zie zetLesStem / heelUitpraten in lib/stem.ts. Zonder deze optie verandert er niets.
+   */
+  stemHeelUitpraten?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

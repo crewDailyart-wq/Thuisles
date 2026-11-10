@@ -191,6 +191,38 @@ let praatNu = false;
 /** Volgnummer van de laatste `zeg`-aanroep; zie de uitleg daar. */
 let beurt = 0;
 
+/*
+  OPTIE PER LES "heel uitpraten" (10 november 2026, besluit Sara; nu alleen AAN in de gouden klokles, via zetLesStem).
+  Standaard UIT: dan doet alles hieronder precies wat het altijd deed.
+  Met de optie AAN:
+    1. Bliepo's eigen zin wordt niet meer afgebroken als hij begint te praten (meld(true) -> stopKeuzeStem() deed
+       speechSynthesis.cancel() en brak zo zijn eigen zin 1–3 ms na de start af). Alleen een keuze die de browser op dat
+       moment echt voorleest, mag nog worden afgebroken.
+    2. Een zin telt pas als klaar als hij echt is uitgesproken. Spreekt de browserstem niets uit (fout, "not-allowed",
+       geen stem), dan telt de zin als klaar na de leestijd (900 ms + 55 ms per teken, dezelfde schatting als zonder stem).
+       Voor een geluidsbestand van Ruth geldt hetzelfde: klaar = het einde van het bestand (speelVanServer -> eindigt);
+       lukt afspelen niet, dan valt de zin terug op de browserstem of op de leestijd, zoals hierboven.
+    3. Heeft het kind nog nergens getikt (Chrome laat dan geen geluid toe), dan wacht de zin tot de eerste tik of toets
+       van het kind en wordt hij dán uitgesproken (geen startknop; de tekst staat er al). Lukt het daarna nog steeds niet,
+       dan de leestijd.
+*/
+let heelUitpraten = false;
+/** Leest de browser nu een keuze voor (alleen bijgehouden voor de optie hierboven)? */
+let keuzeBrowserBezig = false;
+const leestijd = (zin: string) => 900 + zin.length * 55;
+/** Heeft het kind op deze pagina nog nergens getikt? Dan laat Chrome geen geluid toe. */
+const geenGebaar = () => typeof navigator !== "undefined" && !!navigator.userActivation && !navigator.userActivation.hasBeenActive;
+/** Eén keer iets doen bij de eerste tik of toets van het kind (alleen met de optie heel uitpraten). */
+function naEersteGebaar(f: () => void): void {
+  const soorten = ["pointerdown", "keydown", "touchend"] as const;
+  const op = () => {
+    for (const t of soorten) window.removeEventListener(t, op, true);
+    /* Even later: was de tik een antwoord (bijvoorbeeld Ja of Nee), dan is de les intussen verder en zegt Bliepo het oude stuk niet meer. */
+    setTimeout(f, 150);
+  };
+  for (const t of soorten) window.addEventListener(t, op, true);
+}
+
 function meld(bezig: boolean) {
   praatNu = bezig;
   if (bezig) stopKeuzeStem();
@@ -322,19 +354,41 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
   void stemmenGereed().then(() => {
     if (!magNog()) return;
     if (!gekozen) return zonderStem();
-    const uiting = new SpeechSynthesisUtterance(zin);
-    uiting.lang = gekozen.lang ?? "nl-NL";
-    uiting.rate = TEMPO;
-    uiting.pitch = TOONHOOGTE;
-    uiting.voice = gekozen;
-    uiting.onstart = () => {
-      meldVoorlezen(zin, browserGrenzen(zin));
-      meld(true);
+    const stem = gekozen;
+    let begin = 0;
+    let opnieuw = false;
+    /* Heel uitpraten: een fout is niet "klaar". Nog geen tik gehad: bij de eerste tik opnieuw; anders de leestijd. */
+    const naFout = () => {
+      if (door) return;
+      clearTimeout(vangnet);
+      if (!magNog()) return verder();
+      if (!opnieuw && geenGebaar()) {
+        opnieuw = true;
+        naEersteGebaar(() => {
+          if (!door && magNog()) spreek();
+          else verder();
+        });
+        return;
+      }
+      vangnet = setTimeout(verder, Math.max(0, leestijd(zin) - (performance.now() - begin)));
     };
-    uiting.onend = verder;
-    uiting.onerror = verder;
-    vangnet = setTimeout(verder, 2500 + zin.length * 120);
-    window.speechSynthesis.speak(uiting);
+    const spreek = () => {
+      begin = performance.now();
+      const uiting = new SpeechSynthesisUtterance(zin);
+      uiting.lang = stem.lang ?? "nl-NL";
+      uiting.rate = TEMPO;
+      uiting.pitch = TOONHOOGTE;
+      uiting.voice = stem;
+      uiting.onstart = () => {
+        meldVoorlezen(zin, browserGrenzen(zin));
+        meld(true);
+      };
+      uiting.onend = verder;
+      uiting.onerror = heelUitpraten ? naFout : verder;
+      vangnet = setTimeout(verder, 2500 + zin.length * 120);
+      window.speechSynthesis.speak(uiting);
+    };
+    spreek();
   });
 }
 
@@ -406,6 +460,11 @@ export function zegNaElkaar(
             spreekMetBrowser(zinnen[i], () => mijnBeurt === beurt && !gestopt, () => volgende(i + 1));
             return;
           }
+          /* Heel uitpraten: nog geen tik gehad (geen geluid toegestaan), dan deze zin bij de eerste tik opnieuw. */
+          if (heelUitpraten && !kapot && geenGebaar()) {
+            naEersteGebaar(() => volgende(i));
+            return;
+          }
           /* Is de server kapot bij de eerste zin, dan alles met de browserstem; anders gewoon door op de klok. */
           if (!gestart && kapot) browserReeks();
           else klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
@@ -443,6 +502,7 @@ export function zegNaElkaar(
       opDeKlok(0);
       return;
     }
+    const opnieuwGehad = new Set<number>();
     const volgende = (i: number) => {
       if (gestopt || mijnBeurt !== beurt) return;
       if (i >= zinnen.length) {
@@ -450,6 +510,7 @@ export function zegNaElkaar(
         klaar();
         return;
       }
+      const begin = performance.now();
       const uiting = new SpeechSynthesisUtterance(zinnen[i]);
       uiting.lang = gekozen?.lang ?? "nl-NL";
       uiting.rate = TEMPO;
@@ -471,7 +532,20 @@ export function zegNaElkaar(
         stopVoorlezen();
         verder();
       };
-      uiting.onerror = verder;
+      /* Heel uitpraten: een fout is niet "klaar". Nog geen tik gehad: bij de eerste tik opnieuw; anders de leestijd. */
+      uiting.onerror = heelUitpraten
+        ? () => {
+            if (door || gestopt || mijnBeurt !== beurt) return;
+            clearTimeout(klok);
+            if (!opnieuwGehad.has(i) && geenGebaar()) {
+              opnieuwGehad.add(i);
+              door = true;
+              naEersteGebaar(() => volgende(i));
+              return;
+            }
+            klok = setTimeout(verder, Math.max(0, leestijd(zinnen[i]) - (performance.now() - begin)));
+          }
+        : verder;
       /* Vangnet: komt er nooit een einde (dat gebeurt op sommige tablets), dan toch door. */
       klok = setTimeout(verder, 2500 + zinnen[i].length * 120);
       window.speechSynthesis.speak(uiting);
@@ -535,9 +609,10 @@ function serverBruikbaar(): boolean {
 export const NOOIT_BROWSERSTEM = false;
 let alleenServerStem = NOOIT_BROWSERSTEM;
 let stemNaam = "";
-export function zetLesStem(o: { alleenServer: boolean; naam?: string }): void {
+export function zetLesStem(o: { alleenServer: boolean; naam?: string; heelUitpraten?: boolean }): void {
   alleenServerStem = NOOIT_BROWSERSTEM || o.alleenServer;
   stemNaam = (o.naam ?? "").trim();
+  heelUitpraten = o.heelUitpraten === true;
 }
 
 const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}${stemNaam ? `&naam=${encodeURIComponent(stemNaam)}` : ""}`;
@@ -771,7 +846,9 @@ function haalKeuze(tekst: string): Promise<Blob | null> {
 
 export function stopKeuzeStem(): void {
   keuzeReeks += 1;
-  if (!alleenServerStem && typeof window !== "undefined") window.speechSynthesis?.cancel();
+  /* Met de optie heel uitpraten alleen afbreken als de browser echt een keuze voorleest (niet Bliepo's eigen zin). */
+  if (!alleenServerStem && typeof window !== "undefined" && (!heelUitpraten || keuzeBrowserBezig)) window.speechSynthesis?.cancel();
+  keuzeBrowserBezig = false;
   keuzeGeluid?.pause();
   keuzeGeluid = null;
 }
@@ -796,7 +873,11 @@ function speelKeuze(tekst: string, reeks: number): Promise<void> {
             u.voice = gekozen;
             u.rate = TEMPO;
             u.pitch = TOONHOOGTE;
-            u.onend = u.onerror = () => klaar();
+            u.onend = u.onerror = () => {
+              keuzeBrowserBezig = false;
+              klaar();
+            };
+            if (heelUitpraten) keuzeBrowserBezig = true;
             window.speechSynthesis.speak(u);
           });
           return;

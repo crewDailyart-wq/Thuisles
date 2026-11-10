@@ -516,13 +516,14 @@ function Lesscherm({
   /* Het vaste speelvlak zo groot als het scherm toelaat. */
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
   useEffect(() => {
-    zetLesStem({ alleenServer: les.indeling === "synthesis" && !les.browserstem, naam });
+    /* stemHeelUitpraten (10 nov 2026, alleen de gouden klokles): Bliepo's zinnen worden niet meer afgebroken (lib/stem.ts). Andere lessen: false, zoals altijd. */
+    zetLesStem({ alleenServer: les.indeling === "synthesis" && !les.browserstem, naam, heelUitpraten: les.stemHeelUitpraten === true });
     zetLesgeluiden(les.indeling === "synthesis");
     return () => {
       zetLesStem({ alleenServer: false });
       zetLesgeluiden(false);
     };
-  }, [les.indeling, naam]);
+  }, [les.indeling, les.browserstem, les.stemHeelUitpraten, naam]);
 
   useEffect(() => {
     const meet = () => {
@@ -609,7 +610,8 @@ function Lesscherm({
           kind vast (28 oktober 2026, "Tik op ja of nee" zonder Ja/Nee).
         */
         const wachtOpAntwoord = Boolean(wacht.current.kies || wacht.current.knoppen || wacht.current.getal || wacht.current.somvak || wacht.current.verder);
-        zet((b) => ({ ...b, zinnen, zichtbaar: 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
+        /* Met pijlZoalsSynthesis (10 nov 2026, klokles): de eerste zin van het nieuwe stuk staat meteen (gedimd) op de plek van het oude, zonder tussenmoment met een leeg vak. */
+        zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
         if (zinnen.length === 0) return res();
         stopStem?.();
         /* Eerst Bliepo in beeld, dan pas zijn stem (26 oktober 2026, lib/bliepo-in-beeld.ts). */
@@ -1133,12 +1135,24 @@ function Lesscherm({
             Bliepo nu zegt, vrij boven hem, met oplichtende woorden (BliepoTekst).
             Oud: alle zinnen onder elkaar.
           */}
-          {/* Alleen met pijlZoalsSynthesis (gouden klokles, 10 nov 2026): de eerdere zinnen van dit blok blijven erboven staan. */}
+          {/*
+            Alleen met pijlZoalsSynthesis (gouden klokles, 10 nov 2026, zoals Synthesis): het hele stuk staat er in 1 keer,
+            alle zinnen onder elkaar op een vaste plek; wat Bliepo nog niet zei is gedimd. Vaste sleutels per zin, dus niets
+            verspringt of verschijnt opnieuw als Bliepo bij de volgende zin is.
+          */}
           {deel !== "knoppen" && !spreektOpdracht && nieuw && les.pijlZoalsSynthesis &&
-            beeld.zinnen.slice(0, Math.max(0, beeld.zichtbaar - 1)).map((z, i) => (
-              <BliepoTekst key={`eerder-${i}-${z}`} woorden={zinWoorden(lesTekst(les.id, z), squlaLes)} regelNaZin={false} gesproken={null} />
+            beeld.zichtbaar > 0 &&
+            beeld.zinnen.map((z, i) => (
+              /* Een zin waar Bliepo nog niet aan begon: gedimd (bliepo-tekst-later), zonder eigen klok, zodat hij niet eerst wit wordt en dan weer grijs. */
+              <BliepoTekst
+                key={`stuk-${i}-${z}`}
+                woorden={zinWoorden(lesTekst(les.id, z), squlaLes)}
+                regelNaZin={false}
+                className={i >= beeld.zichtbaar ? "bliepo-tekst-later" : ""}
+                gesproken={i >= beeld.zichtbaar ? null : metUitspraak(kaal(lesTekst(les.id, z)), naam, voorkeuren ?? leesVoorkeuren())}
+              />
             ))}
-          {deel !== "knoppen" && !spreektOpdracht && (nieuw
+          {deel !== "knoppen" && !spreektOpdracht && !(nieuw && les.pijlZoalsSynthesis) && (nieuw
             ? beeld.zichtbaar > 0 && (
                 <BliepoTekst
                   key={`${beeld.zichtbaar}-${beeld.zinnen[beeld.zichtbaar - 1]}`}
@@ -1188,7 +1202,8 @@ function Lesscherm({
               </div>
             </div>
           )}
-          {deel !== "zin" && b?.soort === "verder" && (
+          {/* Met pijlZoalsSynthesis (10 nov 2026, PIJL-KLOK.md punt 3): de pijl komt tegelijk met de tekst, niet al ervoor terwijl Bliepo nog laadt. */}
+          {deel !== "zin" && b?.soort === "verder" && !(les.pijlZoalsSynthesis && beeld.praat && beeld.zichtbaar === 0) && (
             <div className={s.bediening}>
               <button type="button" className={s.rond} aria-label="Verder" data-knop="verder" autoFocus onClick={() => wacht.current.verder?.()}>
                 <Pijl />
@@ -1268,7 +1283,7 @@ function Lesscherm({
   );
 
   return (
-    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-zinlengte={les.synthesis.startsWith("Squla") ? zinLengte : undefined} data-staand={staand ? "ja" : undefined}>
+    <div className={s.wortel} data-les-ontwerp={ONTWERP} data-indeling={nieuw && les.indeling === "synthesis" ? "synthesis" : undefined} data-squla={les.synthesis.startsWith("Squla") ? "" : undefined} data-zinlengte={les.synthesis.startsWith("Squla") ? zinLengte : undefined} data-staand={staand ? "ja" : undefined} data-pijl={les.pijlZoalsSynthesis ? "rechts" : undefined}>
       {nieuw && <OpdrachtDecor />}
       {nieuw && les.nacht && <div className="opdracht-nacht" aria-hidden="true" />}
       {pilBoven || squlaMidden ? pilBalk : null}

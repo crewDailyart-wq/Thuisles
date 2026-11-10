@@ -15,14 +15,20 @@
  * antwoord de denkfout, Bliepo's eerste zin, de hint en wat er op het scherm gebeurt. Bliepo probeert altijd de denkfout
  * van het kind te begrijpen en reageert daarop (opdracht Sara, 8 november 2026).
  *
+ * De verder-pijl (10 november 2026, DEFINITIEF, nieuwe regel van Sara; BOUWREGELS 15.27, SYNTHESIS-ANALYSE/PIJL-KLOK.md):
+ * Bliepo praat door; na elk stuk tekst gaat de les ±0,7 s na de stem vanzelf verder (ook na lof, uitleg en hint). De pijl
+ * staat er als snelkoppeling, RECHTS onder de tekst (Sara's keuze; Synthesis heeft hem links): een tik stopt de stem en
+ * gaat meteen door. Bij vragen, opdrachten, het hulphandje en de eindkaart geen pijl. Zie "DE VERDER-PIJL" hieronder.
+ *
  * Hulp bij een keuzevraag: 2 POGINGEN (besluit Sara 9 november 2026, ronde 6; BOUWREGELS 5.1, 15.11):
  *   - goed in 1 keer: goed-geluidje, Bliepo's scherm 1 s groen, een lofzin uit het rijtje, vanzelf door (±0,7 s na de stem; de
- *     pijl staat er alleen tijdens het praten, zie "DE VERDER-PIJL ZOALS SYNTHESIS" hieronder);
+ *     pijl staat erbij als snelkoppeling);
  *   - 1e fout: geen fout-geluidje, Bliepo's scherm 1,5 s rood, vraag en knoppen weg, de eerste zin + hint uit de
- *     fouttabel met de hint in beeld; Bliepo wacht op de blauwe pijl (tik breekt de zin af); dan komt de vraag terug;
+ *     fouttabel met de hint in beeld; ±0,7 s na de stem komt de vraag vanzelf terug (tik op de pijl = meteen);
  *   - 2e fout: Bliepo legt het uit (bij de NIEUWE denkfout; dezelfde denkfout nog eens = vriendelijk zeggen dat het weer
- *     gebeurt en het op een andere manier uitleggen) en doet het samen voor (nu pas de oranje ring om het antwoord);
- *     alleen de goede knop blijft staan en het kind tikt hem zelf; daarna gaat de les gewoon verder;
+ *     gebeurt en het op een andere manier uitleggen) en doet het samen voor (nu pas de oranje ring om het antwoord); de
+ *     uitleg en het samen voordoen gaan vanzelf door; alleen de goede knop blijft staan en het kind tikt hem zelf; daarna
+ *     gaat de les gewoon verder;
  *   - goed na een fout: alleen een korte bevestiging uit het rijtje.
  * Elke fout wordt met zijn denkfout vastgelegd (legDenkfoutVast) en elke vraag met zijn uitkomst: goed in 1 keer,
  * goed na een fout of samen gedaan (legUitkomstVast); alleen "goed in 1 keer" telt mee voor beheersing.
@@ -242,36 +248,20 @@ function schud<T>(lijst: T[]): T[] {
 }
 
 /*
- * DE VERDER-PIJL ZOALS SYNTHESIS (10 november 2026, voorlopig, wacht op Sara's akkoord; SYNTHESIS-ANALYSE/PIJL-KLOK.md).
- * Gezien in de klokles van Synthesis:
- *   - bij elk stuk tekst dat GEEN vraag is, staat de pijl er tijdens het praten (tik = de stem stopt meteen, door);
- *   - de meeste stukken gaan daarna VANZELF door: de pijl verdwijnt ±0,5 s na het einde van de stem en ±0,7 s na het
- *     einde komt het volgende stuk (`zegDoor`): lof, uitleg na de 2e fout, overgangszinnen, de meeste uitlegzinnen;
- *   - een paar stukken WACHTEN tot het kind tikt (`zegEnPijl`): de hint na de 1e fout (daarna komt dezelfde vraag terug)
- *     en uitleg die een nieuw begrip afsluit (met de klok mee, kijk wat de grote wijzer doet, een heel uur);
- *   - bij een vraag met keuzes nooit een pijl; bij een opdracht alleen tijdens de opdrachtzin; op de eindkaart geen pijl.
- * De zinnen van 1 stuk blijven onder elkaar staan (Lesdraaiboek.pijlZoalsSynthesis).
+ * DE VERDER-PIJL (10 november 2026, DEFINITIEF, nieuwe regel van Sara; BOUWREGELS 15.27; vervangt de regel "sommige
+ * stukken wachten op een tik"): Bliepo praat door. Na ELK stuk tekst gaat de les vanzelf verder, ±0,7 s nadat de zin klaar
+ * is, ook na lof, uitleg en de hint na de 1e fout (`zegDoor`). Het kind hoeft nooit op de pijl te tikken. De pijl staat er
+ * als snelkoppeling, rechts onder de tekst (Sara's keuze; Synthesis: links): een tik stopt de stem en de les gaat meteen
+ * door. Bij vragen en opdrachten wacht de les op het antwoord en staat er GEEN pijl (ook niet tijdens de opdrachtzin).
+ * De zinnen van 1 stuk blijven onder elkaar staan (Lesdraaiboek.pijlZoalsSynthesis). Ontwerp (Sara, 10 nov): de pijl staat
+ * op 1 vaste plek en blijft staan zolang er tekst is (ook tussen stukken); weg alleen bij een vraag, opdracht of de
+ * eindkaart. De tekst staat in een vast vak (opdracht-nieuw.css, data-pijl="rechts").
+ * Vervangen (niet meer gebruikt): `zegEnPijl` (wachten op een tik) en de pijl tijdens de opdrachtzin.
  */
-/** Na het einde van de stem (zeg() wacht zelf al 0,3 s): de pijl blijft nog zo lang, dan is hij weg (±0,5 s). */
-const PIJL_NA_MS = 200;
-/** En zo lang na het weghalen van de pijl komt het volgende stuk (samen ±0,7 s na het einde van de stem). */
-const DOOR_NA_PIJL_MS = 200;
+/** Zo lang na het einde van de stem komt het volgende stuk (zeg() wacht zelf al 0,3 s; samen ±0,7 s). */
+const DOOR_NA_MS = 400;
 
-/** Bliepo zegt iets en wacht op de blauwe pijl (6.9). De pijl staat er vanaf het begin; een tik breekt de zin af. */
-async function zegEnPijl(l: Lesgids, zinnen: string[]) {
-  const s = st(l);
-  log(l, "pijl", { zin: zinnen.join(" ") });
-  const p = l.verder();
-  const uitleg = s.pijlUitgelegd ? [] : [ZIN.pijlUitleg];
-  s.pijlUitgelegd = true;
-  const z = zeg(l, ...zinnen, ...uitleg);
-  z.catch(() => {});
-  await Promise.race([z, p]);
-  await p;
-  log(l, "pijl-getikt");
-}
-
-/** Bliepo zegt een stuk tekst dat vanzelf doorgaat; de pijl staat er alleen tijdens het praten (tik = sneller door). */
+/** Bliepo zegt een stuk tekst; de les gaat ±0,7 s na de stem vanzelf door. De pijl staat erbij; een tik = meteen door. */
 async function zegDoor(l: Lesgids, ...zinnen: string[]) {
   if (!zinnen.some(Boolean)) return;
   log(l, "pijl-door", { zin: zinnen.join(" ") });
@@ -281,28 +271,22 @@ async function zegDoor(l: Lesgids, ...zinnen: string[]) {
   const wie = await Promise.race([z.then(() => "gezegd" as const), p.then(() => "getikt" as const)]);
   if (wie === "getikt") {
     log(l, "pijl-getikt");
-    await l.wacht(100);
     return;
   }
-  await l.wacht(PIJL_NA_MS);
-  l.verderWeg?.();
-  log(l, "pijl-weg");
-  await l.wacht(DOOR_NA_PIJL_MS);
+  log(l, "zin-klaar");
+  const tik = await Promise.race([l.wacht(DOOR_NA_MS).then(() => false), p.then(() => true)]);
+  if (tik) log(l, "pijl-getikt");
+  /* De pijl blijft staan tot er een vraag, opdracht of de eindkaart komt (ontwerp Sara 10 nov: niet aan/uit tussen stukken). */
 }
 
-/**
- * De zin bij een opdracht (tikken, zetten): de pijl staat er tijdens het praten (een tik breekt de zin af), daarna is
- * hij weg en wacht de les op de opdracht. Doet het kind de opdracht al tijdens de zin, dan is de pijl meteen weg.
- */
-async function zegOpdracht(l: Lesgids, zin: string, melding: Promise<unknown>) {
-  log(l, "pijl-opdracht", { zin });
-  const p = l.verder();
-  const z = zeg(l, zin);
-  z.catch(() => {});
-  const wie = await Promise.race([z.then(() => "gezegd" as const), p.then(() => "getikt" as const), melding.then(() => "gedaan" as const)]);
-  if (wie === "gezegd") await l.wacht(PIJL_NA_MS);
+/** De zin bij een opdracht (tikken, zetten): geen pijl; de les wacht daarna op de opdracht. Doet het kind hem al tijdens de zin, dan gaat de les meteen door. */
+async function zegOpdracht(l: Lesgids, zin: string | string[], melding: Promise<unknown>) {
+  const zinnen = Array.isArray(zin) ? zin : [zin];
+  log(l, "opdrachtzin", { zin: zinnen.join(" ") });
   l.verderWeg?.();
-  log(l, "pijl-weg");
+  const z = zeg(l, ...zinnen);
+  z.catch(() => {});
+  await Promise.race([z, melding]);
 }
 
 async function vraagMetKnoppen(l: Lesgids, opties: string[], zinnen: string[]): Promise<{ x: string; snel: boolean }> {
@@ -373,8 +357,8 @@ type Keuzevraag = {
   uur?: number;
   stopNaFout?: () => boolean;
   /**
-   * Bij goed: deze uitleg komt in HETZELFDE stuk onder de lof en dan wacht Bliepo op de pijl (Synthesis stap 9: "van 6
-   * naar 7" en daaronder "met de klok mee"). Na samen voordoen zegt de les deze uitleg zelf (de uitkomst is dan "voorgedaan").
+   * Bij goed: deze uitleg komt in HETZELFDE stuk onder de lof (Synthesis stap 9: "van 6 naar 7" en daaronder "met de
+   * klok mee"); sinds 10 nov (15.27) gaat ook dit stuk vanzelf door. Na samen voordoen zegt de les deze uitleg zelf (de uitkomst is dan "voorgedaan").
    */
   wachtNaGoed?: string[];
 };
@@ -409,8 +393,8 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
       }
       zinnen.splice(2);
       log(l, "reactie", { soort: poging === 1 ? "goed" : "goed-na-fout", vraag: v.id, zin: zinnen.join(" ") });
-      /* Lof gaat vanzelf door (pijl alleen tijdens het praten); met wachtNaGoed wacht dit stuk op de pijl (PIJL-KLOK.md). */
-      if (o.wachtNaGoed?.length) await zegEnPijl(l, [...zinnen, ...o.wachtNaGoed]);
+      /* Lof gaat vanzelf door (15.27); met wachtNaGoed komt de uitleg in hetzelfde stuk eronder ("met de klok mee"). */
+      if (o.wachtNaGoed?.length) await zegDoor(l, ...zinnen, ...o.wachtNaGoed);
       else await zegDoor(l, ...zinnen);
       log(l, "door");
       return noteer(l, v.id, poging === 1 ? "goed" : "naFout");
@@ -432,7 +416,7 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: zinnen.join(" ") });
     if (poging === 1) {
       /* 1e fout: Bliepo reageert op de denkfout met een hint; het kind mag nog 1 keer. */
-      await zegEnPijl(l, zinnen);
+      await zegDoor(l, ...zinnen);
       if (o.naFout1) await o.naFout1();
       o.opruimen?.();
       eerder = f;
@@ -515,7 +499,7 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
       /* Lof gaat vanzelf door (pijl alleen tijdens het praten); samen even lang als vroeger (zeg + 1,1 s). */
       if (!kleineStap) {
         await zegDoor(l, poging > 1 ? bevestig(l) : lofZinnen(l, {})[0]);
-        await l.wacht(1100 - PIJL_NA_MS - DOOR_NA_PIJL_MS);
+        await l.wacht(1100 - DOOR_NA_MS);
       } else await l.wacht(1100);
       return noteer(l, vraagId, poging === 1 ? "goed" : kleineStap ? "voorgedaan" : "naFout");
     }
@@ -529,7 +513,9 @@ async function zetUur(l: Lesgids, doel: number): Promise<Uitkomst> {
     const zinnen = poging === 1 ? foutZinnen(l, f, 1, eerder, weerGebruikt, true) : [...foutZinnen(l, f, 2, eerder, weerGebruikt, true), ...ZIN.zetSamen(doel)];
     st(l).denkfouten.set(f.soort, (st(l).denkfouten.get(f.soort) ?? 0) + 1);
     log(l, "reactie", { soort: `fout${poging}`, vraag: vraagId, x: getal, denkfout: f.code, zin: zinnen.join(" ") });
-    await zeg(l, ...zinnen);
+    /* Bij een opdracht is de hint zelf de opdracht voor de volgende poging ("Draai de punt naar de 2"): de pijl staat er
+       alleen tijdens de zin, daarna wacht de les op de opdracht (15.27; bij Synthesis niet gezien, KEUZES Ronde 23). */
+    await zegOpdracht(l, zinnen, new Promise(() => {}));
     eerder = f;
   }
   return noteer(l, vraagId, "voorgedaan");
@@ -575,8 +561,10 @@ const gouden: Lesdraaiboek = {
   synthesis: "Gouden les · inhoud Squla groep 3 · Klokkijken · Hoe laat is het? · level 1 (squla-klok-hoelaat-1) · verloop draaiboek klokkijken (Hour Hand Hunt)",
   indeling: "synthesis",
   browserstem: true,
-  /* Tekst en pijl zoals Synthesis (10 nov 2026, voorlopig; PIJL-KLOK.md). */
+  /* Tekst en pijl zoals Synthesis (10 nov 2026, DEFINITIEF; BOUWREGELS 15.27, PIJL-KLOK.md). */
   pijlZoalsSynthesis: true,
+  /* Bliepo praat zijn zinnen helemaal uit (10 nov 2026, besluit Sara; lib/stem.ts heelUitpraten). */
+  stemHeelUitpraten: true,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij"],
   kaarttekening: KaartKlokGouden,
   async speel(l) {
@@ -588,14 +576,15 @@ const gouden: Lesdraaiboek = {
     await l.wacht(600);
 
     /* Stap 1. "Weet je dit al?" (4e ronde, T21): Ja = proef van 2 opgaven, 2 fouten = alsnog de uitleg; Nee = de uitleg. */
-    /* Eerst de groet: Bliepo staat dan in beeld en praat. Pas daarna de startvraag met Ja en Nee, zodat er nooit knoppen
-       zonder vraag en zonder Bliepo staan (kind-test 8 nov: Ja/Nee stonden 1,5 s alleen in beeld terwijl Bliepo laadde). */
-    await zegDoor(l, NAAM_GROET);
+    /* Groet en startvraag zijn 1 stuk (Sara, 10 november 2026, zoals Synthesis: 1 scherm, 2 alinea's): de korte groet met
+       de naam en daaronder meteen de startvraag met Ja en Nee; geen eigen pijl of wachttijd voor de groet, en het geheel
+       wordt 1 keer uitgesproken. De tekst staat er meteen (pijlZoalsSynthesis), ook als Bliepo nog laadt (kind-test 8 nov).
+       Zonder eerdere tik (geen geluid) zegt Bliepo het hele stuk bij de eerste tik van het kind (lib/stem.ts heelUitpraten). */
     log(l, "vraag", { zin: "startvraag" });
     zetTestAntwoord("Nee");
     haak(l, { soort: "kies", opties: ["Ja", "Nee"], goed: "Nee", poging: 1, vraag: "start" }, true);
     const pStart = l.kies(["Ja", "Nee"], { direct: true, weetniet: false });
-    void zeg(l, ZIN.start).catch(() => {});
+    void zeg(l, NAAM_GROET, ZIN.start).catch(() => {});
     st(l).naamKeer = 1;
     const start = await pStart;
     haak(l, null);
@@ -636,6 +625,7 @@ const gouden: Lesdraaiboek = {
     zet(l, { verhaal: null, ring: null, licht: null, getalKleur: null, hand: null, uurwijzer: "fel", minuutwijzer: "fel" });
     await zegDoor(l, ZIN.slot);
     log(l, "kaart", { fouten });
+    l.verderWeg?.();
     const tik = l.kaart();
     speelLesgeluid("kaart");
     await zeg(l, veelFouten(l) ? EINDE_VEEL_FOUTEN : kies(l, EINDE));
@@ -734,7 +724,7 @@ async function uitlegRoute(l: Lesgids) {
     wachtNaGoed: [ZIN.metDeKlokMee],
   });
   zet(l, { pijl: { van: 6, naar: 7 }, ring: null });
-  if (stap9 === "voorgedaan") await zegEnPijl(l, [ZIN.metDeKlokMee]);
+  if (stap9 === "voorgedaan") await zegDoor(l, ZIN.metDeKlokMee);
   zet(l, { pijl: null, getalKleur: null });
 
   /* Stap 10. Een lastige: na de 12 komt de 1. */
@@ -802,7 +792,7 @@ async function uitlegRoute(l: Lesgids) {
 
   /* Stap 14. Zelf de kleine wijzer verzetten (3 keer). De grote wijzer is weer fel; eerst wacht Bliepo op de pijl. */
   zet(l, { licht: "minuut", minuutwijzer: "fel", uurwijzer: "fel", getalKleur: null, ring: null });
-  await zegEnPijl(l, [ZIN.groteWijzerKijk]);
+  await zegDoor(l, ZIN.groteWijzerKijk);
   zet(l, { licht: null });
   await zetUur(l, 2);
   await zegDoor(l, ZIN.na2);
@@ -831,7 +821,7 @@ async function uitlegRoute(l: Lesgids) {
     opruimen: () => zet(l, { uurwijzer: "flets", minuutwijzer: "fel", licht: "minuut" }),
   });
   zet(l, { licht: "minuut", ring: null, getalKleur: { n: 12, wijzer: "minuut" } });
-  await zegEnPijl(l, ZIN.heelUur);
+  await zegDoor(l, ...ZIN.heelUur);
   zet(l, { licht: null, uurwijzer: "fel", getalKleur: null });
 
   /* Stap 16. De klok op 3 uur, met de 2 uitlegvragen van de oude les (12 / 3 / 6 en 12 uur / 6 uur / 3 uur). */

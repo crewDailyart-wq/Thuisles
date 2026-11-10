@@ -33,6 +33,21 @@ import { join } from "node:path";
 import { kiesLessen } from "./lessenkeuze.mjs";
 import { onthoudGoed, zonderAlGoed } from "./controlegeheugen.mjs";
 
+/* F7-meter (10 nov 2026): de tekst van Bliepo en de pijl elke 100 ms, en elke tik. */
+const F7_METER = `
+  window.__f7 = []; window.__f7tik = []; window.__f8 = []; let vorige = "";
+  /* F8 (Sara, 10 nov 2026): elke gestarte uiting van de browserstem, om dubbel uitspreken te vinden. */
+  if (window.speechSynthesis) { const sp = window.speechSynthesis.speak.bind(window.speechSynthesis); window.speechSynthesis.speak = (u) => { window.__f8.push({ t: Math.round(performance.now()), z: u.text }); return sp(u); }; }
+  document.addEventListener("click", () => window.__f7tik.push(Math.round(performance.now())), true);
+  document.addEventListener("pointerdown", () => window.__f7tik.push(Math.round(performance.now())), true);
+  setInterval(() => {
+    const b = document.querySelector('[data-knop="verder"]');
+    const pijl = !!b && b.getBoundingClientRect().width > 3;
+    const tekst = [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean);
+    const k = JSON.stringify([pijl, tekst]);
+    if (k !== vorige) { vorige = k; window.__f7.push({ t: Math.round(performance.now()), pijl, tekst }); }
+  }, 100);
+`;
 const BASIS = (process.env.BASIS ?? "http://localhost:3000").replace(/\/$/, "");
 const kop = process.env.WW ? { Authorization: "Basic " + Buffer.from("thuisles:" + process.env.WW).toString("base64") } : {};
 const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -189,6 +204,11 @@ async function speel(c, id) {
         }
       });
     } else await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: SNEL }, s);
+    /*
+      F7=1 (Sara, 10 november 2026; FOUTEN-VOORBEELDEN.md F7): meet elke 100 ms de tekst van Bliepo en of de pijl er staat,
+      en noteer elke tik. Komt dezelfde tekst terug nadat hij weg was, zonder dat er ertussen getikt is, dan is dat fout F7.
+    */
+    if (process.env.F7) await c.stuur("Page.addScriptToEvaluateOnNewDocument", { source: F7_METER }, s);
     await c.stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${id}?naam=Testkind` }, s);
     const begin = Date.now();
     let stilSinds = null;
@@ -509,6 +529,35 @@ async function speel(c, id) {
       if (await ev(`(() => { const lijst = [...document.querySelectorAll("[data-zin], [data-getal], [data-signaal]")].filter((b) => { const r = b.getBoundingClientRect(); return r.width > 3 && r.height > 3 && !b.disabled; }); if (!lijst.length) return false; lijst[${stappen} % lijst.length].click(); return true; })()`)) continue;
       if (await klik(`(b) => b.getAttribute("data-knop") === "weetniet"`)) continue;
       await klik(`(b) => !["opnieuw","terug"].includes(b.getAttribute("data-knop") || "") && b.tagName === "BUTTON"`);
+    }
+    if (process.env.F7) {
+      const r = JSON.parse((await ev(`JSON.stringify({ m: window.__f7 ?? [], t: window.__f7tik ?? [], s: window.__f8 ?? [] })`)) ?? "{}");
+      let dubbel = 0;
+      for (let i = 0; i < (r.s ?? []).length; i++)
+        for (let j = i - 1; j >= 0 && r.s[i].t - r.s[j].t < 20000; j--)
+          if (r.s[j].z === r.s[i].z) {
+            if (!r.t.some((t) => t > r.s[j].t && t <= r.s[i].t)) {
+              dubbel++;
+              if (dubbel <= 3) fouten.add(`F8: dezelfde uiting 2 keer gestart zonder tik: "${r.s[i].z.slice(0, 70)}"`);
+            }
+            break;
+          }
+      console.log(`  F8 ${id}: ${dubbel} keer dezelfde uiting 2 keer gestart (${(r.s ?? []).length} uitingen)`);
+      const k = (x) => x.tekst.join(" | ");
+      let n = 0;
+      for (let i = 1; i < (r.m ?? []).length; i++) {
+        const z = k(r.m[i]);
+        if (!z || z === k(r.m[i - 1])) continue;
+        for (let j = i - 2; j >= 0 && r.m[i].t - r.m[j].t < 15000; j--) {
+          if (k(r.m[j]) !== z) continue;
+          if (!r.t.some((t) => t > r.m[j].t && t <= r.m[i].t)) {
+            n++;
+            if (n <= 3) fouten.add(`F7: dezelfde tekst kwam terug zonder tik (pijl ${r.m[j].pijl ? "ja" : "nee"} → ${r.m[i].pijl ? "ja" : "nee"}): "${z.slice(0, 80)}"`);
+          }
+          break;
+        }
+      }
+      console.log(`  F7 ${id}: ${n} keer dezelfde tekst terug zonder tik (${(r.m ?? []).length} metingen)`);
     }
     /* DUMP=1: wat de gouden klokles over de les heeft vastgelegd (denkfouten, uitkomsten, zinnen van Bliepo). */
     if (process.env.DUMP) {

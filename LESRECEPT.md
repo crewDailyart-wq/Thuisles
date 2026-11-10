@@ -20,7 +20,7 @@
 > - **Per onderwerp één gouden les.** Zoek eerst grondig bij Synthesis; pas als het draaiboek klaar is bouwen we. Is er geen passende Synthesis-les, dan bouwen we niets, maken we geen eigen invulling en melden we het aan Sara. De overige lessen van een onderwerp bouwen we pas om als de gouden les is goedgekeurd.
 
 > ## ⭐ GELEERD BIJ DE GOUDEN LES TELLEN (kind-test en keuring, 9 november 2026; BOUWREGELS 15.25) — geldt voor elke gouden les
-> - **Alles wat Bliepo vóór een blauwe pijl zegt, is 1 uiting** (de zinnen samengevoegd). Anders breekt een tik op de pijl alleen de lopende zin af en begint de volgende nog even.
+> - **Alles wat Bliepo vóór een blauwe pijl zegt, is 1 uiting** (de zinnen samengevoegd). Anders breekt een tik op de pijl alleen de lopende zin af en begint de volgende nog even. *(Sinds 10 november 2026 stopt een tik de hele stem meteen in lessen met `pijlZoalsSynthesis`; samenvoegen hoeft dan niet meer, maar mag.)*
 > - **Lof en reactie niet allebei met "Ja"**; een robotreactie hooguit 1 keer per les; hetzelfde foute antwoord 2 keer = niet 2 keer dezelfde zin ("Je koos weer 11."); "weer" alleen als Bliepo de 1e keer echt zei wat er mis was (BLIEPO-KARAKTER.md §2).
 > - **Verklapcontrole per script:** noemt Bliepo bij een fout geen richting (omdat er dan maar 1 keuze over zou blijven), dan mag de hint ook geen richting geven ("sla er geen over", "1 keer", "maar 1", "te veel"). Laat het fouttabel-script per vraag en per fout antwoord nagaan hoeveel keuzes er na eerste zin + hint logisch overblijven; 1 = verklapper, het script stopt (voorbeeld: `scripts/fouttabel-tellen-gouden.ts`).
 > - **Getalkleur in de echte Chrome meten.** De lesbeschrijving (`synthesis`) moet met "Squla" beginnen, anders zet het lesscherm geen `data-squla` en zijn alle getallen in Bliepo's tekst wit (Lesscherm.tsx). Meet de kleur van `.getal` in Chrome (zonder venster, als Testkind) en zet de uitkomst in KEUZES-VOOR-SARA.md.
@@ -156,10 +156,15 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 - Het **hulphandje komt vanzelf**, met 1 korte zin van Bliepo; er is geen knop (5.10). Het wijst aan wat het kind moet doen; het kind doet de laatste tik zelf.
 - Bij een **opdracht** (tikken, slepen, zetten) komt na 5 à 6 seconden zonder handeling vanzelf het hulphandje, met 1 korte zin van Bliepo. Bij een **keuzevraag** komt niets (6.10). Een rondje alleen als Bliepo iets noemt.
 
-### 3.9 Verder-pijl
-- De ronde blauwe pijl staat er vanaf het begin van de zin (6.9).
-- Wacht op de pijl waar het draaiboek wacht; ga vanzelf door waar het draaiboek vanzelf doorgaat, na dezelfde tijd.
-- Geen herinnering als het kind niet tikt. **Een tik op de pijl breekt de zin van Bliepo af** (zoals Synthesis). De pijl is zelf de knop, dus de les loopt niet vast (5.7).
+### 3.9 Verder-pijl (DEFINITIEF, 10 november 2026, nieuwe regel van Sara, BOUWREGELS 15.27)
+- Bliepo praat door: na elk stuk tekst ±0,7 s na het einde van de zin vanzelf verder, ook na lof, uitleg en hint.
+- De pijl staat rechts onder de tekst als snelkoppeling (tik = stem stopt, meteen door). Geen pijl bij vragen, opdrachten (ook niet tijdens de opdrachtzin), hulphandje en eindkaart.
+- Zet in elke nieuwe of omgezette gouden les `pijlZoalsSynthesis: true` en `stemHeelUitpraten: true` aan (skelet).
+- *[Vervangen: de eerdere 3.9 met "wacht op een tik bij de hint na de 1e fout en uitleg die iets nieuws afsluit".]*
+
+### 3.9b Vaste zones (Sara, 10 november 2026, BOUWREGELS 15.30)
+- Bliepo, het tekstvak (pijl rechtsonder, vaste plek), het speelvlak en de knoppen hebben elk een vaste zone; niets verspringt, Bliepo valt nooit over de tekst. Een nieuw stuk tekst staat er in 1 keer op dezelfde plek (gedimd tot Bliepo het zegt).
+- Meet met het overlap-script op 1440×900, 1280×720, 1536×864 en 1024×768; maak een schermfoto van het langste stuk.
 
 ### 3.10 Tempo
 - Reactie 0,2 tot 0,4 seconde na de klik.
@@ -179,7 +184,8 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 
 ## 4. Wat NOOIT mag
 
-> **VOORLOPIG, wacht op Sara's akkoord na het spelen van de klokles (10 november 2026, BOUWREGELS 15.27; volgt wat bij Synthesis is gezien, zie SYNTHESIS-ANALYSE/PIJL-KLOK.md):** bij elk stuk tekst dat geen vraag is, staat de blauwe pijl er tijdens het praten. De meeste stukken gaan daarna vanzelf door (pijl weg ±0,5 s na de stem, volgende stuk ±0,7 s na de stem): lof, uitleg na de 2e fout, overgangszinnen, de meeste uitleg. Wachten op de pijl: de hint na de 1e fout en uitleg die een nieuw begrip afsluit. Zinnen binnen 1 stuk blijven onder elkaar staan; een nieuw stuk vervangt het oude. Bij een keuzevraag nooit een pijl, bij een opdracht alleen tijdens de opdrachtzin, op de eindkaart geen pijl. Tik tijdens praten = stem stopt meteen, les gaat verder. Nu alleen in de gouden klokles toegepast; andere gouden lessen blijven ongewijzigd tot akkoord. *Wat Sara eerder dacht (klopt niet met Synthesis): elk blok eindigt met de pijl, nooit vanzelf door, bij opdrachten nooit een pijl.*
+> **⭐ DEFINITIEF (Sara, 10 november 2026, nieuwe regel; BOUWREGELS 15.27): Bliepo praat door.** Na elk stuk tekst gaat de les vanzelf verder, ±0,7 s nadat de zin klaar is, ook na lof, uitleg en de hint na een fout. Het kind hoeft nooit op de pijl te wachten. De pijl staat rechts onder de tekst als snelkoppeling (Sara's keuze; Synthesis: links): een tik stopt de stem en gaat meteen door. Alleen bij vragen en opdrachten wacht de les op het antwoord; daar staat geen pijl (ook niet tijdens de opdrachtzin). Geen pijl bij het hulphandje en de eindkaart. **Skelet van elke nieuwe of omgezette gouden les:** `pijlZoalsSynthesis: true` en `stemHeelUitpraten: true` in het draaiboek (zie zegDoor en zegOpdracht in squla-klok-gouden.tsx; lib/stem.ts heelUitpraten). Nu alleen in de gouden klokles.
+> *[VERVANGEN op 10 november 2026, was een foutje; ter herinnering.] Eerdere regel: "de hint na de 1e fout en uitleg die iets nieuws afsluit wachten op een tik; bij een opdracht een pijl tijdens de opdrachtzin". Daarvóór: "elk blok eindigt met de pijl, nooit vanzelf door".*
 
 - **Letterlijk overnemen** van Synthesis: geen tekst, audio, beelden of code, ook niet vertaald (15.2). Wel dezelfde betekenis op hetzelfde moment.
 - **Letterlijk overnemen van Squla:** geen teksten, plaatjes of geluiden (11.5).

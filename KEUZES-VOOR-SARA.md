@@ -707,7 +707,7 @@ Nieuwe versie naast de oude les squla-plus-bakkerij-1 "Plussommen in de bakkerij
 
 **Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
 
-## Ronde 23 – verder-pijl in de klokles (10 november 2026, voorlopig, wacht op jouw akkoord)
+## Ronde 23 – verder-pijl in de klokles (10 november 2026; **jouw akkoord: DEFINITIEF**, zie Ronde 23b)
 
 Ik heb de klokles van Synthesis (Hour Hand Hunt) 1 keer helemaal gespeeld en alleen naar de pijl en de tekst gekeken. Alles staat in SYNTHESIS-ANALYSE/PIJL-KLOK.md.
 
@@ -743,3 +743,36 @@ Ik heb de klokles van Synthesis (Hour Hand Hunt) 1 keer helemaal gespeeld en all
 - Bij Synthesis staat de pijl links onder de tekst. Bij ons staat de tekst in het midden boven Bliepo, dus de pijl staat ook in het midden onder de tekst. Dat heb ik zo gelaten.
 
 **Getest** (als Testkind, Chrome zonder venster, zonder koekje; 0 nieuwe regels in les_uitkomsten): eigen testscript `scripts/test-klok-gouden-pijl.mjs`, 5 routes groen (Nee alles goed, Nee met fouten, Ja goed, Ja met fouten, tik tijdens de opdrachtzin). Wacht-pijl bleef 9 s staan; 2e fout ging vanzelf door; tik tijdens praten = nieuwe tekst binnen 0,1 s; hulphandje na ±6 s bij de opdracht. Speelcontrole alles goed, alles fout en gemengd tot het eind; Tellen en Splitsen ook tot het eind. Opgaven en inhoudsvergelijking in orde. Vloeiend laptop 60 beelden/s, langste beeld 30–31 ms; trage telefoon 59 beelden/s maar haperingen van 54–84 ms (telefoon is een latere fase; de computer was niet helemaal rustig).
+
+## Ronde 23b – klokles: nieuwe pijlregel en Bliepo praat uit (10 november 2026)
+
+Alleen de gouden klokles. Tellen, Splitsen, Plussommen en de oude lessen zijn niet veranderd.
+
+**Jouw nieuwe regel (DEFINITIEF, BOUWREGELS 15.27):** Bliepo praat door. Na elk stuk tekst gaat de les vanzelf verder, ±0,7 s na het einde van de zin, ook na lof, uitleg en hint. De pijl staat rechts onder de tekst als snelkoppeling. Bij vragen en opdrachten geen pijl. De oude regel ("sommige stukken wachten op een tik") staat er nog, gemarkeerd als vervangen.
+
+**Wat er mis was (F7):** de stem brak Bliepo's eigen zin 1–3 ms na de start af (lib/stem.ts). Gemeten in een zichtbare Chrome met de echte stem: 0 van 109 zinnen helemaal uitgesproken. Daarom ging alles door zonder klikken, en bleef de tekst gedimd tot hij na 2,5 s wit werd: "dezelfde tekst komt terug met een pijl".
+
+**Wat ik heb gedaan (alleen de klokles):**
+- Een stemoptie per les (`stemHeelUitpraten`, standaard uit, nu alleen aan in de klokles): Bliepo's zin wordt niet meer afgebroken; een zin is klaar als hij echt is uitgesproken, anders na de leestijd. Andere lessen gedragen zich precies hetzelfde.
+- Geen startknop. Via het lesoverzicht in de app (/voorbeeld/les) opent de les zonder te herladen, dus met geluid. Rechtstreekse link: de groet staat in beeld en Bliepo zegt hem bij de eerste tik van het kind.
+- Alle wacht-op-tik weg; geen pijl meer tijdens de opdrachtzin.
+- Niet meer gezegd: "Klaar met kijken? Tik dan op de blauwe pijl." (klopt niet meer, het kind hoeft niet te tikken).
+
+**Let op:** public/alle-lessen.html is een losse pagina; een les die je daar aanklikt, laadt de pagina opnieuw. Dan zegt Bliepo de groet pas bij de eerste tik. Via /voorbeeld/les gebeurt dat niet.
+
+**Begin van de les (jouw ja, 10 november 2026):** geen aparte begroeting meer. Groet en startvraag zijn 1 stuk, zoals Synthesis (1 scherm, 2 alinea's), met Ja en Nee eronder; geen eigen pijl of wachttijd voor de groet; het geheel wordt 1 keer uitgesproken.
+| Was | Nu |
+|---|---|
+| Stuk 1: "Hoi {naam}! Fijn dat je er bent." (met pijl, ging vanzelf door). Stuk 2: "In deze les lees je op de klok hoe laat het is. Je kijkt naar de wijzers en kiest het hele uur. Weet jij al hoe dat moet?" met Ja / Nee | 1 stuk: "Hoi {naam}! Fijn dat je er bent." en daaronder "In deze les lees je op de klok hoe laat het is. Je kijkt naar de wijzers en kiest het hele uur. Weet jij al hoe dat moet?" met Ja / Nee |
+Zonder geluid (rechtstreekse link of herladen): het hele startstuk staat in beeld en Bliepo zegt het bij de eerste tik van het kind (naast de knoppen; een tik op Ja of Nee gaat meteen door).
+
+**Ontwerp (jouw opmerking "afschuwelijk"):** de pijl staat op 1 vaste plek rechtsonder in een vast tekstvak en blijft staan zolang er tekst is; weg alleen bij een vraag, opdracht of de eindkaart. Het tekstvak heeft een vaste plek en hoogte; nieuwe zinnen komen eronder; een nieuw stuk komt meteen op dezelfde plek (geen leeg moment). Bliepo staat vast eronder.
+
+
+**Zelfde fouten in de andere gouden lessen (alleen gemeten, niet veranderd; zichtbare Chrome, echte stem, 60 s spelen, plus speelcontrole):**
+| Les | Stem breekt zin af (binnen 20 ms) | Dubbel uitgesproken (F8) | Tekst komt terug (F7) | Bliepo over tekst (F9) | Tekst/vak verspringt | Pijl weg en terug |
+|---|---|---|---|---|---|---|
+| Tellen | ja, 10 van 11 zinnen | 0 | 0 | 0 | 22 keer | 1 |
+| Splitsen | ja, 2 van 4 (en 1 na 44 ms) | 0 | 0 | 0 | 10 keer (Bliepo 4) | 0 |
+| Plussommen | ja, 12 van 13 | 0 | 0 | 0 | 0 | 4 |
+Dus: de afbreekfout van de stem speelt in alle 3; verspringen in 2; pijl aan/uit in 2; dubbel uitspreken, terugkomende tekst en overlap heb ik daar niet gezien.

@@ -733,6 +733,53 @@
   align-items: center;
   margin-top: 12px;
 }
+/*
+  De verder-pijl RECHTS onder de tekst (Sara, 10 november 2026, DEFINITIEF; BOUWREGELS 15.27). Eigen keuze van Sara:
+  Synthesis zet hem links. Alleen in lessen met pijlZoalsSynthesis (data-pijl="rechts"); andere lessen houden de pijl
+  in het midden.
+*/
+/*
+  Ontwerp (Sara, 10 november 2026, alleen lessen met pijlZoalsSynthesis = nu de gouden klokles): een VAST tekstvak.
+  Het vak heeft een vaste plek en een vaste hoogte; de tekst begint bovenin en nieuwe zinnen komen eronder, zonder dat
+  iets verspringt. Bliepo en de microfoon staan er vast onder. De pijl staat op 1 vaste plek rechtsonder in het vak.
+*/
+[data-pijl="rechts"][data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] {
+  justify-content: flex-start;
+  /* Vaste zones (Sara, 10 nov, BOUWREGELS 15.30): het tekstvak iets breder (tot vlak naast de klok), Bliepo iets kleiner
+     en vast eronder, zodat het langste stuk past en Bliepo nooit over de tekst valt. */
+  left: 880px;
+  width: 392px;
+  --tekstvak-hoogte: 356px;
+}
+[data-pijl="rechts"][data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-robot {
+  width: 168px;
+  height: 210px;
+  margin-top: 16px;
+}
+[data-pijl="rechts"][data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-ballon {
+  position: relative;
+  flex: 0 0 var(--tekstvak-hoogte, 300px);
+  height: var(--tekstvak-hoogte, 300px);
+  justify-content: flex-start;
+}
+/* Ruimte onder de tekst voor de pijl (alleen als hij er staat), zodat de laatste regel er nooit onder valt. */
+[data-pijl="rechts"][data-indeling="synthesis"] .bliepo-vloer[data-plek="kolom"] .bliepo-vloer-tekst:has([data-knop="verder"]) {
+  padding-bottom: 56px;
+}
+/* Een zin van het stuk waar Bliepo nog niet aan begon: gedimd, net als "nog niet gezegd". */
+[data-pijl="rechts"] .bliepo-tekst-later .bliepo-tekst-woord {
+  color: var(--stijl-gedimd, rgba(214, 224, 242, 0.42));
+  text-shadow: none;
+}
+[data-pijl="rechts"] .bliepo-tekst-later [style*="color"] {
+  opacity: 0.5;
+}
+[data-pijl="rechts"] .bliepo-vloer .les-tekst [class*="bediening"]:has(> [data-knop="verder"]) {
+  position: absolute;
+  right: 14px;
+  bottom: 4px;
+  margin: 0;
+}
 
 /* ------------------------------------------------- de gloeiende bovenbalk */
 /*

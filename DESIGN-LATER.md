@@ -29,3 +29,14 @@ Na de keuring (gouden les Splitsen, 9 november 2026, 2 keer, niets ernaast): lap
 ## Bouwen met het oog op later
 - Geen vaste pixelmaten (gebruik procenten of schaal).
 - Geen onnodig zware animaties.
+
+## Overstap naar de stem van Ruth: wat dan controleren (10 november 2026)
+De gouden klokles zet `stemHeelUitpraten` aan (lib/stem.ts, optie per les). Bij de overstap naar Ruth (geluidsbestanden) nakijken:
+- Een zin telt als klaar aan het **einde van het geluidsbestand** (speelVanServer → eindigt), niet eerder; daarna ±0,7 s tot het volgende stuk.
+- Lukt afspelen niet (bestand ontbreekt, geen tik gehad, geen verbinding): valt de zin netjes terug op de browserstem of de leestijd (900 ms + 55 ms per teken), en wacht de eerste zin op de eerste tik van het kind?
+- Een tik op de pijl stopt ook een geluidsbestand meteen (stopPraten) en de les gaat door.
+- Een voorgelezen keuze breekt Bliepo niet af, en Bliepo breekt een keuze wel af.
+- De woorden lichten mee op met Ruth (de tekst wordt wit terwijl ze praat), ook bij {naam}.
+- De groet met de naam van het kind (naamfragment) klinkt aan het begin, ook als de les via een rechtstreekse link wordt geopend (dan bij de eerste tik).
+- Alle andere lessen (zonder de optie) gedragen zich nog precies zoals nu; zet de optie per les aan als die les is omgezet.
+- Meet opnieuw met de F7-meter (tekst en gedimd/wit) en het stem-logboek (scripts/test-klok-gouden-pijl.mjs, ZICHTBAAR=1 ECHTESTEM=1).
