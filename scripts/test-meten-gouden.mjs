@@ -673,6 +673,19 @@ const ROUTES = {
     await reacties(P);
     return ok;
   },
+  /** Keuring 10 nov: bij typen eerst 1 eronder, dan 1 erboven. Bliepo mag dan niet 2 keer dezelfde eerste zin zeggen ("Dat is dichtbij."). */
+  async dichtbij(P) {
+    const ok = await speel(P, { naam: "dichtbij", keuze: (t) => (t.soort === "typ" ? String(Number(t.goed) + (t.poging === 1 ? -1 : 1)) : t.goed), maxMs: 20 * 60_000 });
+    const l = await reacties(P);
+    for (const v of [...new Set(l.filter((x) => x.wat === "reactie" && x.soort === "fout1").map((x) => x.vraag))]) {
+      const z1 = l.find((x) => x.wat === "reactie" && x.soort === "fout1" && x.vraag === v)?.zin ?? "";
+      const z2 = l.find((x) => x.wat === "reactie" && x.soort === "fout2" && x.vraag === v)?.zin ?? "";
+      const eerste = (z) => z.split(/(?<=\.)\s/)[0];
+      zie(`dichtbij ${v}: 1e "${eerste(z1)}", 2e "${eerste(z2)}"`);
+      if (z2 && eerste(z1) === eerste(z2)) fout(`dichtbij: dezelfde eerste zin 2 keer bij ${v}`);
+    }
+    return ok;
+  },
   /** Vangnet: 2 keer fout, en bij de kleine stap niets doen; na 20 s doet Bliepo het zelf (zonder "Ja"). */
   async vangnet(P) {
     let k = 0;

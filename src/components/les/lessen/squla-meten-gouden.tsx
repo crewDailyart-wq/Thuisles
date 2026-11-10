@@ -885,6 +885,8 @@ async function speelVraag(l: Lesgids, v: Vraag, o: { eerste: boolean; terug: boo
     legDenkfoutVast(l, { vraag: id, antwoord: x, denkfout: f.code, poging });
     const fz = foutZinnen(l, f, poging, eerder).filter(Boolean);
     if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = ZIN.weerGekozen(x, v);
+    /* Een ander getal, maar weer vlak naast het antwoord: niet 2 keer dezelfde eerste zin (keuring Meten; 5.10, BLIEPO-KARAKTER §2). */
+    else if (poging === 2 && eerder && eerder.code === "een-ernaast" && f.code === "een-ernaast" && fz[0] === eerder.eerste) fz[0] = ZIN.weerDichtbij;
     log(l, "reactie", { soort: `fout${poging}`, vraag: id, x, denkfout: f.code, zin: fz.join(" ") });
     /* De vinkjes gaan weg; gelegde plaatjes blijven even liggen bij de hint en glijden daarna terug (geen schudden, geen rood). */
     if (v.soort === "twee") zet(l, { kies2: null });

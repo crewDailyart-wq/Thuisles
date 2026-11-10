@@ -113,6 +113,11 @@
 > - **Bewerk geen bestand terwijl een test loopt** (geleerd bij Minsommen, opnieuw gezien): de les begint dan opnieuw en de test geeft valse fouten.
 > - **Het oude vlak hergebruiken kan** (zoals Meer-minder): gloed en eigen knoppen van het oude vlak uit (`kaartenActief: false`, geen `goed`/`fout`/`gekozen`), eigen HTML-knoppen met vinkje erover, en het hele vlak iets kleiner vanaf links.
 
+> ## ⭐ GELEERD BIJ DE KEURING METEN (onafhankelijke keurder, 10 november 2026; KEURING-METEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Een eerste zin zonder het gekozen getal komt bij 2 verschillende foute antwoorden 2 keer** ("Dat is dichtbij." bij 9 en daarna bij 11, voor dezelfde vraag). Kies de variant niet alleen per vraag (`v.nr % 3`): kijk bij de 2e fout of de eerste zin dezelfde is als bij de 1e fout, en zeg dan iets anders ("Je zit er weer vlak naast."). Test het met 2 verschillende foute antwoorden van dezelfde soort (route `dichtbij` in scripts/test-meten-gouden.mjs).
+> - **Enkelvoud of meervoud volgt het beeld van déze vraag:** "de rijen eronder" klopt niet bij een tafel met 2 rijen (er ligt maar 1 rij onder). Laat de zin afhangen van het aantal (`r === 2 ? "De rij eronder …" : "De rijen eronder …"`).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (alleen geteld, niets veranderd): dezelfde eerste zin bij 2 verschillende foute antwoorden: **0 van de 8** (Tellen, Splitsen, Meer-minder en Getallenlijn noemen het gekozen getal in de zin; de klok gebruikt dan een "weer"-zin). "Rijen eronder" bij 1 rij: **0 van de 8** (alleen Meten praat over rijen eronder).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

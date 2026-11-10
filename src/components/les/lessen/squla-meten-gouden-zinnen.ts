@@ -293,6 +293,8 @@ export const ZIN = {
     return `Kijk, nu liggen ze van ${klein(v)} naar ${groot(v)}.`;
   },
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
+  /** 2 keer een getal vlak naast het antwoord (bijvoorbeeld 9 en dan 11): niet 2 keer "Dat is dichtbij." (keuring Meten, 10 nov; 5.10). */
+  weerDichtbij: "Je zit er weer vlak naast.",
   weerGekozen: (x: string, v: Vraag) => (v.soort === "orden" ? "Je legde ze weer zo neer." : v.soort === "twee" ? "Je koos weer dezelfde 2 kaartjes." : v.soort === "typ" ? `Je typte weer ${g(Number(x), "wit")}.` : "Je koos weer dezelfde zin."),
   /** Na goed bij typen: het getal naast de tafel, in de kleur van de blaadjes (draaiboek §3 C.4: "14 tegels"). */
   label: (n: number) => `${n} blaadjes`,
@@ -636,9 +638,10 @@ export function typFout(x: number, v: Vraag): Fout {
       soort: "een-rij",
       denkfout: `telde alleen de bovenste rij (${x} van de ${n})`,
       eerste: `${g(k, kl)} is de bovenste rij.`,
-      hint: kies3(["Er liggen nog meer rijen onder. Tel ze allemaal mee.", "Onder de bovenste rij liggen nog meer blaadjes. Tel ze ook."], v),
-      uitleg: kies3(["De rijen eronder tellen ook mee.", "Alle rijen horen erbij, niet alleen de bovenste."], v),
-      weer: ["Je telde weer alleen de bovenste rij.", "De rijen eronder horen er ook bij."],
+      /* Bij 2 rijen ligt er maar 1 rij onder: dan geen meervoud (keuring Meten, 10 nov: wat Bliepo zegt is waar voor déze tafel). */
+      hint: kies3([r === 2 ? "Er ligt nog een rij onder. Tel die ook mee." : "Er liggen nog meer rijen onder. Tel ze allemaal mee.", "Onder de bovenste rij liggen nog meer blaadjes. Tel ze ook."], v),
+      uitleg: kies3([r === 2 ? "De rij eronder telt ook mee." : "De rijen eronder tellen ook mee.", "Alle rijen horen erbij, niet alleen de bovenste."], v),
+      weer: ["Je telde weer alleen de bovenste rij.", r === 2 ? "De rij eronder hoort er ook bij." : "De rijen eronder horen er ook bij."],
       licht: { soort: "rij", rij: 0 },
       bron: "draaiboek §3 C.3 en §7 `een-rij-geteld` (\"dat is de bovenste rij; er liggen meer rijen onder\")",
     };

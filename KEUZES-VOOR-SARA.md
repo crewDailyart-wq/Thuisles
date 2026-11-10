@@ -1164,3 +1164,25 @@ Nieuwe versie naast de oude les squla-meten-oppervlakte-1 "Hoe groot is het?" (d
 6. **Kies er 2: "1 van je 2 kaartjes klopt."** zonder te zeggen welke (anders blijft er maar 1 paar over). Goed zo?
 7. **Bij een getal vlak naast het antwoord** zegt Bliepo "Dat is dichtbij." en niet "1 te veel" (dat zou het antwoord verklappen; Synthesis zegt het wel). Goed zo?
 8. **Het gedraaide kaartje heeft 2 keuzes**: na 1 fout blijft er 1 over; Bliepo zegt de regel van de oude les ("draaien maakt iets niet groter of kleiner"). Goed zo?
+
+## Ronde 28b — keuring gouden les Meten (onafhankelijke keurder, 10 november 2026)
+
+Gekeurd: zie KEURING-METEN-GOUDEN.md en KINDTEST-METEN-GOUDEN.md. Uitslag: **goedgekeurd** na 2 kleine herstellingen
+(alleen in deze les).
+
+**Aanpassingen (15.26), alleen in deze les:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Typen 9 en dan 11 (of 11 en dan 9): 2 keer "Dat is dichtbij." | dezelfde zin 2 keer achter elkaar bij 1 vraag (5.10) | de 2e keer: "Je zit er weer vlak naast." |
+| Tafel van 2 rijen: "De rijen eronder horen er ook bij." | er ligt maar 1 rij onder | "De rij eronder hoort er ook bij." (bij 3 rijen blijft het "De rijen eronder …") |
+
+**Mijn oordeel over de vragen van Ronde 28** (jij beslist; ik heb daar niets aan veranderd): de nieuwe zin "het muurtje
+van 6 stenen breed" is terecht (het muurtje heeft 18 stenen). Het vinkje in plaats van de gele gloed is verdedigbaar: de
+oude les houdt de gloed, de gouden les volgt de regels van alle gouden lessen. Advies bij punt 1 t/m 8: ja.
+
+**1 nieuwe vraag (ja of nee):**
+9. **Een zin wordt soms even wit en dan weer grijs** (de melding van de bouwer). Oorzaak gevonden: bij elke zin vraagt
+   Bliepo eerst aan de site of Ruth die zin al heeft ingesproken. Als de computer druk is, duurt dat antwoord soms 4
+   seconden; na 2,5 seconden wordt de wachtende zin wit, en als Bliepo hem daarna toch uitspreekt, wordt hij weer grijs.
+   Dat zit in de gedeelde code van alle lessen, niet in Meten. Mag ik dat later in de gedeelde code oplossen (bijvoorbeeld:
+   een zin die al wit is, blijft wit)? Advies: **ja**, als aparte klus, met een test in alle gouden lessen.
