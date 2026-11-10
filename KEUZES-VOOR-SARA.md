@@ -1069,3 +1069,28 @@ Nieuwe versie naast de oude les squla-getallenlijn-kat-1 "Het raketje op de geta
 5. **"Wat is meer: 13 of 14"** heeft maar 2 keuzes: na 1 fout blijft er altijd 1 over. Bliepo noemt alleen de regel ("Het getal dat je later zegt als je telt, is meer."). Goed zo?
 6. **Vraag 9 (17 / 18 / 8), keuze 17:** Bliepo zegt alleen "Het raketje staat niet bij de 17." (zonder richting), omdat "17 staat vóór het raketje" ook de 8 uitsluit en dan het antwoord verklapt. Goed zo?
 7. **De getallen 13 en 14 in het verhaaltje** ("Gisteren vond het er 13") zijn wit: de sterren staan niet in beeld. Goed zo, of geel (de kleur van sterren)?
+
+## Ronde 27b — keuring gouden les Getallenlijn (onafhankelijke keurder, 10 november 2026)
+
+Gekeurd: zie KEURING-GETALLENLIJN-GOUDEN.md en KINDTEST-GETALLENLIJN-GOUDEN.md. Uitslag: **goedgekeurd** na 4 herstellingen (alleen in deze les): 1 ernstig (onzichtbare kaarten), 1 middel, 2 klein.
+
+**Aanpassingen (15.26), alleen in deze les:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Hint bij vraag 2 en 8: "Kijk naar de 1. Het raketje staat 1 streepje verder." | zegt waar het raketje staat, zoals de klokzin die jij al afkeurde (15.17) | "Kijk naar de 1. Tel vanaf daar de streepjes tot het raketje." |
+| Bij de 2e fout, vlak voor het samen voordoen: "Tel de streepjes vanaf een getal dat je ziet.", "Tel elk streepje mee.", "Begin met het kleinste getal.", "Tel de streepjes vanaf de 15.", "Tel alleen de bogen.", "Wijs elke boog aan." | een opdracht die het kind niet meer kan doen: Bliepo doet het meteen samen voor (regel van Splitsen) | uitleg: "Recht onder het raketje hoort het getal dat we zoeken.", "Elk streepje telt mee.", "Het kleinste getal komt vooraan.", "De 15 helpt je tellen.", "Alleen de bogen tellen mee.", "Bij elke sprong hoort 1 boog." |
+| "Het dichtst bij": "12 stapjes", "Hoe minder stapjes …", terwijl Bliepo bij het samen voordoen "sprongen" zegt | 2 woorden voor hetzelfde (3.12) | overal "sprongen" ("Van 8 naar de 20 zijn het 12 sprongen.") |
+| "Tel vanaf de 10 1 streepje verder." | "de 10 1 streepje" leest als 101 | "Tel vanaf de 10 nog 1 streepje verder." |
+| De kaarten bij "Zet de getallen op volgorde" (vraag 6 en 7) | ze waren **onzichtbaar** (het verschijnen werd meteen afgebroken); het kind zag alleen lege vakken | de kaarten zijn weer te zien (alleen het gouden vlak aangepast; inhoud gelijk) |
+
+**Mijn advies bij de 7 vragen van Ronde 27** (jij beslist; ik heb daar niets aan veranderd):
+1. Deze les als gouden les Getallenlijn: het draaiboek past maar deels (0 van de 7 soorten vragen zit in Count the Jumps). Wel van Synthesis: de startvraag met proef, springen per 1 met bogen, samen springen. Regel 15.3 en 15.22 punt 5 laten dit toe, met de markering "eigen invulling"; regel 15.16 zou zeggen: niets bouwen. Advies: **houden**, en later vervangen als er een betere Synthesis-les komt.
+2. Startvraag met proef: werkt (Ja + goed = verder vanaf vraag 3; 2 fouten = uitleg en daarna alle 15). Advies: ja.
+3. Uitleg met springen tot de 3 en "Hoeveel sprongen?": duidelijk, bogen blijven staan, een sprong overslaan wordt rustig verbeterd. Advies: ja.
+4. Vinkje bij "wat staat er bij" en op volgorde: werkt. Let op: Bliepo zegt nergens wat het vinkje doet (zoals in Meer-minder). Advies: ja, en later 1 keer uitleggen zoals in Huisnummers ("Klaar? Tik dan op het vinkje.").
+5. "Wat is meer: 13 of 14": advies: zo laten.
+6. Vraag 9, keuze 17 zonder richting: advies: zo laten.
+7. 13 en 14 wit in het verhaaltje: advies: wit laten (er staan geen sterren in beeld).
+
+**1 nieuwe vraag (ja of nee):**
+8. Bij een fout zegt Bliepo soms dat het gekozen getal **vlak naast** het raketje staat ("15 is het streepje na het raketje.", "8 staat vlak vóór het raketje."). Dan weet een kind met 1 stapje het antwoord. Huisnummers doet hetzelfde ("9 ligt 1 huis te ver."), en die is goedgekeurd. Mag dat (het kind moet nog zelf 1 stap tellen), of telt dat ook als verklappen? Advies: **mag**, want het noemt het antwoord niet en het kind moet nog zelf tellen.

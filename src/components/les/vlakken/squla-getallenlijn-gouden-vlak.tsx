@@ -282,6 +282,8 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       if (this.raketN === n) return;
       const r = this.raket;
       this.tweens.killTweensOf(r);
+      /* Zelfde als bij de kaarten: een afgebroken verschijn-animatie mag het raketje niet onzichtbaar laten. */
+      r.setAlpha(1).setScale(0.9 / TX);
       this.raketN = n;
       if (this.rustig) {
         r.setPosition(p.x, p.y);
@@ -400,6 +402,9 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       const c = this.kaarten.get(n);
       if (!c) return;
       this.tweens.killTweensOf(c);
+      /* Keurder 10 nov: killTweensOf stopt ook het verschijnen (tover zet alpha 0 en een platte schaal); zonder dit bleven
+         de kaarten onzichtbaar als de les ze meteen na het nieuwe beeld terugzette. */
+      c.setAlpha(1).setScale(1);
       if (snel || this.rustig) {
         c.setPosition(plek.x, plek.y).setDepth(snel ? 20 : 5);
         return;

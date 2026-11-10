@@ -169,6 +169,13 @@ async function pagina() {
     /* Na het scrollen opnieuw de plek bepalen en nagaan dat precies deze link onder de muis ligt. */
     const q = await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)), wat: e ? e.tagName + "." + e.className : null, b: innerWidth + "x" + innerHeight }; })()`, returnByValue: true }, s);
     p = q.result.value;
+    /* Keurder 10 nov: in een zichtbaar venster lag de link soms nog onder de rand (de pagina schuift na het laden nog
+       door). Dan nog eens in beeld schuiven en opnieuw meten, hooguit 10 keer. */
+    for (let i = 0; i < 10 && !p.raak; i++) {
+      await stuur("Runtime.evaluate", { expression: `document.querySelector('a[href^="/voorbeeld/les/${LES}?"]').scrollIntoView({ block: "center", behavior: "instant" })` }, s);
+      await wacht(600);
+      p = (await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)), wat: e ? e.tagName + "." + e.className : null, b: innerWidth + "x" + innerHeight }; })()`, returnByValue: true }, s)).result.value;
+    }
     if (!p.raak) throw new Error(`de link naar de les ligt niet onder de muis (${JSON.stringify(p)})`);
     for (const type of ["mouseMoved", "mousePressed", "mouseReleased"]) await stuur("Input.dispatchMouseEvent", { type, x: p.x, y: p.y, button: "left", clickCount: 1, buttons: type === "mousePressed" ? 1 : 0 }, s);
   } else

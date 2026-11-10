@@ -412,12 +412,12 @@ const kies3 = <T,>(lijst: T[], v: Vraag) => lijst[v.nr % lijst.length];
 export function hintVan(v: Vraag): string {
   const A = w(anker(v));
   const n = v.n ?? Number(v.goed);
-  if (v.soort === "bij") return kies3([`Begin bij de ${A} en tel 1 streepje verder.`, `Zoek de ${A} op de lijn. Welk getal komt daarna?`, `Kijk naar de ${A}. Het raketje staat 1 streepje verder.`], v);
-  if (v.soort === "natien") return `Het raketje is al voorbij de ${A}. Tel vanaf de ${A} 1 streepje verder.`;
+  if (v.soort === "bij") return kies3([`Begin bij de ${A} en tel 1 streepje verder.`, `Zoek de ${A} op de lijn. Welk getal komt daarna?`, `Kijk naar de ${A}. Tel vanaf daar de streepjes tot het raketje.`], v);
+  if (v.soort === "natien") return `Het raketje is al voorbij de ${A}. Tel vanaf de ${A} nog 1 streepje verder.`;
   if (v.soort === "meer") return kies3(["Het getal dat je later zegt als je telt, is meer.", "Op de getallenlijn staat het getal dat meer is, verder naar rechts."], v);
   if (v.soort === "orden") return kies3(["Zoek steeds het kleinste getal dat nog over is.", "Er komt steeds 1 bij. Sla geen getal over."], v);
   if (v.soort === "wie") return kies3([`Begin bij de ${A} en tel streepje voor streepje ${n > anker(v) ? "verder" : "terug"} tot de ${w(n)}.`, `Zoek eerst de ${A}. Tel dan de streepjes ${n > anker(v) ? "verder" : "terug"} tot de ${w(n)}.`], v);
-  if (v.soort === "dichtst") return kies3([`Tel bij elk getal hoeveel stapjes het naar de ${w(n)} is. Hoe minder stapjes, hoe dichterbij.`, `Hoe minder stapjes naar de ${w(n)}, hoe dichterbij.`], v);
+  if (v.soort === "dichtst") return kies3([`Tel bij elk getal hoeveel sprongen het naar de ${w(n)} is. Hoe minder sprongen, hoe dichterbij.`, `Hoe minder sprongen naar de ${w(n)}, hoe dichterbij.`], v);
   return kies3([`Kijk welk getal op de lijn het dichtst bij het raketje staat.`, `Zoek het getal op de lijn dat vlak bij het raketje staat.`], v);
 }
 
@@ -516,7 +516,7 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
         denkfout: `keek te ver naar rechts (${X} voor ${g})`,
         eerste: `${w(X)} ligt verder dan het raketje.`,
         hint,
-        uitleg: "Tel de streepjes vanaf een getal dat je ziet.",
+        uitleg: "Recht onder het raketje hoort het getal dat we zoeken.",
         weer: ["Je koos weer een getal dat te ver ligt.", "Kijk recht onder het raketje."],
         licht,
         scherm: SCHERM_KIES,
@@ -530,7 +530,7 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
       denkfout: `keek niet ver genoeg (${X} voor ${g})`,
       eerste: `Het raketje staat verder dan de ${w(X)}.`,
       hint,
-      uitleg: "Tel de streepjes vanaf een getal dat je ziet.",
+      uitleg: "Recht onder het raketje hoort het getal dat we zoeken.",
       weer: ["Je koos weer een getal vóór het raketje.", "Kijk recht onder het raketje."],
       licht,
       scherm: SCHERM_KIES,
@@ -550,7 +550,7 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
         eerste: `Met ${w(X)} sla je een streepje over.`,
         hint,
         uitleg: `Na de ${w(10)} komt eerst het getal dat 1 groter is.`,
-        weer: ["Je sloeg weer een streepje over.", "Tel elk streepje mee."],
+        weer: ["Je sloeg weer een streepje over.", "Elk streepje telt mee."],
         licht,
         scherm: SCHERM_KIES,
         over: andere.filter((k) => Number(k) < X),
@@ -609,7 +609,7 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
         eerste: `Na ${w(xs[0])} zette je ${w(xs[1])}, het grootste getal.`,
         hint,
         uitleg: "Van klein naar groot: het kleinste vooraan, dan steeds 1 groter.",
-        weer: ["Je zette ze weer van groot naar klein.", "Begin met het kleinste getal."],
+        weer: ["Je zette ze weer van groot naar klein.", "Het kleinste getal komt vooraan."],
         licht: { soort: "vak", i: 1 },
         scherm: SCHERM_ORDEN,
         over: [],
@@ -656,11 +656,11 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
     return {
       code: voor ? "ding-ervoor" : "ding-erna",
       soort: voor ? "ervoor" : "erna",
-      denkfout: `tikte op ${NAAM[x as Wezen]}, die bij ${p} staat (${voor ? "vóór" : "na"} de ${n})`,
+      denkfout: `tikte op ${NAAM[x as Wezen]}, ${x === "raketje" ? "dat" : "die"} bij ${p} staat (${voor ? "vóór" : "na"} de ${n})`,
       eerste: `${Naam(x as Wezen)} staat ${voor ? "vóór" : "na"} de ${w(n)}.`,
       hint,
       uitleg: `${Naam(x as Wezen)} staat bij de ${w(p)}. Dat is ${Math.abs(n - p)} ${Math.abs(n - p) === 1 ? "streepje" : "streepjes"} ${voor ? "vóór" : "na"} de ${w(n)}.`,
-      weer: [`Je tikte weer op iets ${voor ? "vóór" : "na"} de ${w(n)}.`, `Tel de streepjes vanaf de ${w(anker(v))}.`],
+      weer: [`Je tikte weer op iets ${voor ? "vóór" : "na"} de ${w(n)}.`, `De ${w(anker(v))} helpt je tellen.`],
       licht,
       scherm: SCHERM_WIE,
       over: andere.filter((k) => (voor ? plekVan(v, k)! > p : plekVan(v, k)! < p)),
@@ -675,10 +675,10 @@ function lijnFoutRuw(x: string, v: Vraag): Fout {
     return {
       code: "verder-weg",
       soort: `verder-${X}`,
-      denkfout: `koos een getal dat verder weg ligt (${X}: ${d} stapjes van ${v.n})`,
-      eerste: kies3([`Van ${w(X)} naar de ${w(v.n!)} zijn het ${d} stapjes.`, `${w(X)} ligt ${d} stapjes van de ${w(v.n!)} af.`], v),
+      denkfout: `koos een getal dat verder weg ligt (${X}: ${d} sprongen van ${v.n})`,
+      eerste: kies3([`Van ${w(X)} naar de ${w(v.n!)} zijn het ${d} sprongen.`, `${w(X)} ligt ${d} sprongen van de ${w(v.n!)} af.`], v),
       hint,
-      uitleg: `We tellen de stapjes op de getallenlijn.`,
+      uitleg: `We tellen de sprongen op de getallenlijn.`,
       weer: [],
       licht: { soort: "bordje", n: X },
       scherm: "Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg; een rood rondje om het bordje met het getal dat Bliepo noemt; dan de vraag in andere woorden en dezelfde keuzes terug",
@@ -759,7 +759,7 @@ export function uitlegFout(x: string): Fout {
       eerste: "Je telde de getallen {0:wit}, {1:wit}, {2:wit} en {3:wit}. Dat zijn er {4:wit}.",
       hint: "Maar we tellen de sprongen. Elke boog is 1 sprong.",
       uitleg: "De {0:wit} is het begin. Daar sprong het raketje nog niet.",
-      weer: ["Je telde weer de getallen.", "Tel alleen de bogen."],
+      weer: ["Je telde weer de getallen.", "Alleen de bogen tellen mee."],
       licht: { soort: "getal", n: 0 },
       scherm: "Bliepo's scherm 1,5 s rood; de knoppen weg; een rood rondje om de 0 (het begin); de bogen blijven staan; dan de vraag in andere woorden",
       over: ["2", "3"],
@@ -773,7 +773,7 @@ export function uitlegFout(x: string): Fout {
     eerste: "Er zijn meer bogen dan {2:wit}.",
     hint: "Tel elke boog, van de {0:wit} tot het raketje.",
     uitleg: "Elke boog is 1 sprong.",
-    weer: ["Je telde weer te weinig bogen.", "Wijs elke boog aan."],
+    weer: ["Je telde weer te weinig bogen.", "Bij elke sprong hoort 1 boog."],
     licht: { soort: "getal", n: 0 },
     scherm: "Bliepo's scherm 1,5 s rood; de knoppen weg; een rood rondje om de 0 (het begin); de bogen blijven staan; dan de vraag in andere woorden",
     over: ["3", "4"],

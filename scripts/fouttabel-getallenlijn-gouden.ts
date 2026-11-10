@@ -196,10 +196,11 @@ for (const v of VRAGEN) {
         check(p === +m[2] && Math.abs(+m[5] - p) === +m[3] && (m[4] === "vóór" ? p < +m[5] : p > +m[5]), m[0]);
       }
       for (const m of r(/Tel de streepjes vanaf de (\d+)/, tekst)) check(v.labels!.includes(+m[1]), m[0]);
+      for (const m of r(/De (\d+) helpt je tellen/, tekst)) check(v.labels!.includes(+m[1]) && m[1] === String(anker(v)), m[0]);
     }
     if (v.soort === "dichtst") {
-      for (const m of r(/Van (\d+) naar de (\d+) zijn het (\d+) stapjes/, tekst)) check(Math.abs(+m[1] - +m[2]) === +m[3] && +m[2] === v.n, m[0]);
-      for (const m of r(/(\d+) ligt (\d+) stapjes van de (\d+) af/, tekst)) check(Math.abs(+m[1] - +m[3]) === +m[2] && +m[3] === v.n, m[0]);
+      for (const m of r(/Van (\d+) naar de (\d+) zijn het (\d+) sprongen/, tekst)) check(Math.abs(+m[1] - +m[2]) === +m[3] && +m[2] === v.n, m[0]);
+      for (const m of r(/(\d+) ligt (\d+) sprongen van de (\d+) af/, tekst)) check(Math.abs(+m[1] - +m[3]) === +m[2] && +m[3] === v.n, m[0]);
     }
     if (v.soort === "ongeveer") {
       for (const m of r(/(\d+) ligt vlak na de (\d+)/, tekst)) check(+m[1] === +m[2] + 1 && v.labels!.includes(+m[2]), m[0]);
@@ -211,6 +212,9 @@ for (const v of VRAGEN) {
     for (const m of r(/Begin bij de (\d+)/, kaal(f.hint))) check(!!v.labels && v.labels.includes(+m[1]), `de hint begint bij ${m[1]}, maar dat staat niet op de lijn`);
     for (const m of r(/Zoek (?:eerst )?de (\d+)/, kaal(f.hint))) check(!!v.labels && v.labels.includes(+m[1]), `de hint zoekt ${m[1]}, maar dat staat niet op de lijn`);
     for (const m of r(/Kijk naar de (\d+)\. Het raketje staat 1 streepje verder/, kaal(f.hint))) check(raket === +m[1] + 1, m[0]);
+    /* Keurder 10 nov: de hint zegt niet meer waar het raketje staat, maar hoe je telt (15.17). */
+    for (const m of r(/Kijk naar de (\d+)\. Tel vanaf daar de streepjes tot het raketje/, kaal(f.hint))) check(!!v.labels && v.labels.includes(+m[1]) && +m[1] !== raket, m[0]);
+    if (/Recht onder het raketje hoort het getal dat we zoeken/.test(tekst)) check(v.soort === "bij" && Number(v.goed) === raket, "recht onder het raketje");
     for (const m of r(/tel streepje voor streepje (verder|terug) tot de (\d+)/, kaal(f.hint))) check((m[1] === "verder") === (+m[2] > anker(v)), m[0]);
     for (const m of r(/Tel dan de streepjes (verder|terug) tot de (\d+)/, kaal(f.hint))) check((m[1] === "verder") === (+m[2] > anker(v)), m[0]);
     /* Elke eerste zin moet na te lopen zijn (anders kan het script niet zeggen of hij waar is). */
