@@ -105,6 +105,12 @@ export interface Lesgids {
   knoppen(welke: ("weetniet" | "controleer" | "hulp")[]): Promise<"weetniet" | "controleer" | "hulp">;
   /** De blauwe pijl: het kind tikt als het klaar is met kijken. */
   verder(): Promise<void>;
+  /**
+   * De blauwe pijl weer weghalen zonder tik (10 november 2026, alleen gebruikt door de gouden klokles, zoals Synthesis:
+   * bij een stuk tekst dat vanzelf doorgaat staat de pijl er tijdens het praten en verdwijnt hij daarna). De belofte van
+   * `verder()` blijft dan open; wacht er dus niet los op. Doet niets als de les niet op de pijl wacht.
+   */
+  verderWeg?(): void;
   /** Wat er in de bak rechts ligt. `om`: alle tegels omgedraaid, zodat ze in de inham passen. */
   bak(tegels: number[], opties?: { om?: boolean }): void;
   /** Eén tegel uit de bak halen. */
@@ -179,6 +185,12 @@ export type Lesdraaiboek = {
    * Ja/Nee en hulp blijven bij Bliepo. Alleen `bijOpdracht`-keuzes staan bij de opdracht.
    */
   vraagBoven?: true;
+  /**
+   * Opt-in (10 november 2026, voorlopig, alleen de gouden klokles; SYNTHESIS-ANALYSE/PIJL-KLOK.md): tekst en pijl zoals
+   * Synthesis. (1) De zinnen van 1 `zeg`-aanroep blijven onder elkaar staan in plaats van elkaar te vervangen; (2) een tik
+   * op de blauwe pijl breekt de stem meteen af. Zonder deze optie verandert er niets.
+   */
+  pijlZoalsSynthesis?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

@@ -635,3 +635,40 @@ Alleen in de gouden les Splitsen. De oude les is niet veranderd. Per punt van de
 
 **Opnieuw getest na Ronde 21c** (als Testkind, Chrome zonder venster, zonder koekje; 0 regels bij een echt kind): eigen testscript alle 7 situaties groen (ook: proef, 4 en 1, 9 s stil → handje van het paarse naar het oranje vak met "Schuif een pion uit het paarse vak naar het oranje vak."; doos met 1 bal → alleen "Klaar? Tik dan op het vinkje."); reactie ± 0,4 s na de laatste pion; speelcontrole alles goed en alles fout tot het eind; verklapcontrole (121 antwoorden), opgaven en inhoudsvergelijking in orde (de 4 vervangen zinnen staan in WEGGEHAALD.md).
 **Vloeiend** (2 keer, niets anders ernaast; de computer had nog wat achtergrondbelasting van andere programma's): laptop 60 beelden per seconde, langste beeld 27–32 ms (in orde). Trage telefoon 58–59 beelden per seconde, hapering 62–71 ms (grens 50 ms; latere fase, DESIGN-LATER.md).
+
+## Ronde 23 – verder-pijl in de klokles (10 november 2026, voorlopig, wacht op jouw akkoord)
+
+Ik heb de klokles van Synthesis (Hour Hand Hunt) 1 keer helemaal gespeeld en alleen naar de pijl en de tekst gekeken. Alles staat in SYNTHESIS-ANALYSE/PIJL-KLOK.md.
+
+**Wat Synthesis deed**
+- Bij elk stuk tekst dat geen vraag is, staat de pijl er al tijdens het praten.
+- De meeste stukken gaan vanzelf door: de pijl gaat ±0,5 s na de stem weg, het volgende stuk komt ±0,7 s na de stem. Zo bij lof, uitleg na de 2e fout, overgangszinnen en de meeste uitleg.
+- Wachten op een tik: de hint na de 1e fout (daarna komt dezelfde vraag terug) en 3 uitlegzinnen die iets nieuws afsluiten ("met de klok mee", "kijk wat de minutenwijzer doet", "dat heet uur"). 20 s gewacht: er gebeurde niets.
+- Een nieuw stuk vervangt het oude. 2 zinnen in 1 stuk blijven onder elkaar staan.
+- Geen pijl bij een vraag met keuzes. Bij een opdracht alleen tijdens de opdrachtzin. Geen pijl op de eindkaart.
+- Tik op de pijl tijdens het praten: de stem stopt meteen (0,1 s), het volgende stuk komt na 0,3 s.
+
+**Wat de klokles eerst deed**
+- Pijl alleen bij de hint na de 1e fout en bij 4 uitlegzinnen (met de klok mee, 2 wijzers, kijk wat de grote wijzer doet, heel uur). Daar wachtte hij.
+- Al het andere ging vanzelf door, zonder pijl.
+- Er stond steeds maar 1 zin in beeld; de volgende zin verving de vorige.
+- Een tik op de pijl stopte de stem niet meteen (pas bij de volgende zin).
+
+**Wat ik heb aangepast (alleen de gouden klokles)**
+- Pijl tijdens het praten bij lof, uitleg na de 2e fout, samen voordoen, de groet, overgangszinnen en uitleg; daarna gaat de les vanzelf door, net als Synthesis.
+- "Er staan nu 2 wijzers op de klok" gaat nu vanzelf door (Synthesis wachtte daar niet).
+- "Van de 6 naar de 7" en "met de klok mee" staan nu samen onder elkaar en wachten op de pijl.
+- Bij de opdrachten (tik op een getal, zet de kleine wijzer) staat de pijl er alleen tijdens de opdrachtzin.
+- Zinnen van 1 stuk blijven onder elkaar staan.
+- Tik op de pijl = Bliepo stopt meteen met praten.
+- Het lesscherm heeft hiervoor een optie gekregen die alleen de klokles aanzet. Tellen, Splitsen en de andere lessen veranderen niet.
+- De vragen en de inhoud zijn niet veranderd.
+
+**Twijfelpunten**
+- Synthesis begon met een scherm dat op de pijl wachtte ("je had deze les al gedaan"). Zo'n scherm hebben wij niet. Onze groet gaat nu vanzelf door. Wil je dat de groet wacht?
+- Een hint bij een opdracht (verkeerd getal getikt) heb ik bij Synthesis niet gezien. Die blijft zoals hij was: zonder pijl, daarna mag het kind het opnieuw doen.
+- De pijl staat nu heel vaak even in beeld en verdwijnt dan weer. Bij Synthesis is dat ook zo. Vind je dat te druk voor een kind van 6?
+- De uitleg "Klaar met kijken? Tik dan op de blauwe pijl." komt nog steeds bij de eerste pijl waarop Bliepo wacht. Het kind heeft de pijl dan al vaak zien komen en gaan.
+- Bij Synthesis staat de pijl links onder de tekst. Bij ons staat de tekst in het midden boven Bliepo, dus de pijl staat ook in het midden onder de tekst. Dat heb ik zo gelaten.
+
+**Getest** (als Testkind, Chrome zonder venster, zonder koekje; 0 nieuwe regels in les_uitkomsten): eigen testscript `scripts/test-klok-gouden-pijl.mjs`, 5 routes groen (Nee alles goed, Nee met fouten, Ja goed, Ja met fouten, tik tijdens de opdrachtzin). Wacht-pijl bleef 9 s staan; 2e fout ging vanzelf door; tik tijdens praten = nieuwe tekst binnen 0,1 s; hulphandje na ±6 s bij de opdracht. Speelcontrole alles goed, alles fout en gemengd tot het eind; Tellen en Splitsen ook tot het eind. Opgaven en inhoudsvergelijking in orde. Vloeiend laptop 60 beelden/s, langste beeld 30–31 ms; trage telefoon 59 beelden/s maar haperingen van 54–84 ms (telefoon is een latere fase; de computer was niet helemaal rustig).

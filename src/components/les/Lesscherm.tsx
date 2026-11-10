@@ -822,10 +822,22 @@ function Lesscherm({
           wacht.current.verder = () => {
             wacht.current.verder = undefined;
             speelLesgeluid("beurt");
+            /* Alleen met pijlZoalsSynthesis (gouden klokles, 10 nov 2026): een tik breekt de stem meteen af, zoals Synthesis. */
+            if (les.pijlZoalsSynthesis) {
+              stopStem?.();
+              stopPraten();
+              pas((b) => ({ ...b, praat: false, zichtbaar: b.zinnen.length }));
+              spreekAf?.();
+            }
             pas((b) => ({ ...b, bediening: null, ...wegMetAanwijszin(b) }));
             res();
           };
         }),
+      verderWeg: () => {
+        if (!wacht.current.verder) return;
+        wacht.current.verder = undefined;
+        pas((b) => (b.bediening?.soort === "verder" ? { ...b, bediening: null } : b));
+      },
       bak: (tegels, opties = {}) => zet((b) => ({ ...b, bak: { tegels, om: !!opties.om, slot: [] } })),
       uitBak: (n) => zet((b) => ({ ...b, bak: { ...b.bak, tegels: b.bak.tegels.filter((t) => t !== n) } })),
       slot: (n) => zet((b) => ({ ...b, bak: { ...b.bak, slot: [...b.bak.slot, n] } })),
@@ -1121,6 +1133,11 @@ function Lesscherm({
             Bliepo nu zegt, vrij boven hem, met oplichtende woorden (BliepoTekst).
             Oud: alle zinnen onder elkaar.
           */}
+          {/* Alleen met pijlZoalsSynthesis (gouden klokles, 10 nov 2026): de eerdere zinnen van dit blok blijven erboven staan. */}
+          {deel !== "knoppen" && !spreektOpdracht && nieuw && les.pijlZoalsSynthesis &&
+            beeld.zinnen.slice(0, Math.max(0, beeld.zichtbaar - 1)).map((z, i) => (
+              <BliepoTekst key={`eerder-${i}-${z}`} woorden={zinWoorden(lesTekst(les.id, z), squlaLes)} regelNaZin={false} gesproken={null} />
+            ))}
           {deel !== "knoppen" && !spreektOpdracht && (nieuw
             ? beeld.zichtbaar > 0 && (
                 <BliepoTekst

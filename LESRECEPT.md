@@ -179,6 +179,8 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 
 ## 4. Wat NOOIT mag
 
+> **VOORLOPIG, wacht op Sara's akkoord na het spelen van de klokles (10 november 2026, BOUWREGELS 15.27; volgt wat bij Synthesis is gezien, zie SYNTHESIS-ANALYSE/PIJL-KLOK.md):** bij elk stuk tekst dat geen vraag is, staat de blauwe pijl er tijdens het praten. De meeste stukken gaan daarna vanzelf door (pijl weg ±0,5 s na de stem, volgende stuk ±0,7 s na de stem): lof, uitleg na de 2e fout, overgangszinnen, de meeste uitleg. Wachten op de pijl: de hint na de 1e fout en uitleg die een nieuw begrip afsluit. Zinnen binnen 1 stuk blijven onder elkaar staan; een nieuw stuk vervangt het oude. Bij een keuzevraag nooit een pijl, bij een opdracht alleen tijdens de opdrachtzin, op de eindkaart geen pijl. Tik tijdens praten = stem stopt meteen, les gaat verder. Nu alleen in de gouden klokles toegepast; andere gouden lessen blijven ongewijzigd tot akkoord. *Wat Sara eerder dacht (klopt niet met Synthesis): elk blok eindigt met de pijl, nooit vanzelf door, bij opdrachten nooit een pijl.*
+
 - **Letterlijk overnemen** van Synthesis: geen tekst, audio, beelden of code, ook niet vertaald (15.2). Wel dezelfde betekenis op hetzelfde moment.
 - **Letterlijk overnemen van Squla:** geen teksten, plaatjes of geluiden (11.5).
 - **Eigen vragen toevoegen** die niet in de Squla-les staan, of nieuwe leerdoelen bedenken (11.11).
