@@ -1,0 +1,135 @@
+/*
+  Gouden les Huisnummers (10 november 2026): wat er boven het Phaser-canvas ligt. Maten in punten van het vlak
+  (980 × 720). Geen gloed en geen rood om een keuze (BOUWREGELS 5.3, 7.8a).
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+}
+
+/* Het echte invulvak op het bordje van het gat (HARDE REGEL 5): zonder eigen rand of achtergrond, het bordje is getekend. */
+.invul {
+  position: absolute;
+  width: 76px;
+  height: 46px;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: #ffffff;
+  font: inherit;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 46px;
+  text-align: center;
+  caret-color: #ffd36b;
+  z-index: 4;
+  outline: none;
+}
+.invul::placeholder {
+  color: #ffffff;
+  opacity: 1;
+}
+.invul:focus::placeholder {
+  opacity: 0.45;
+}
+
+/* Een los huis om te slepen of aan te tikken: een onzichtbare knop over het plaatje in Phaser. */
+.los,
+.tik {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  cursor: grab;
+  touch-action: none;
+  z-index: 3;
+  -webkit-tap-highlight-color: transparent;
+}
+.tik {
+  cursor: pointer;
+}
+.los:focus-visible,
+.tik:focus-visible {
+  outline: 4px solid #ffd36e;
+  outline-offset: 4px;
+}
+
+.gatplek {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* Het hulphandje (zelfde tekening als in de gouden lessen Minsommen en Meer-minder). */
+.hand {
+  position: absolute;
+  width: 54px;
+  height: 72px;
+  margin: -2px 0 0 -26px;
+  pointer-events: none;
+  z-index: 7;
+  transform-origin: 48% 3%;
+  will-change: transform;
+}
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-37deg);
+  transform-origin: 48% 3%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening g rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+.lijn {
+  fill: none;
+  stroke: rgba(43, 58, 102, 0.55);
+  stroke-width: 2;
+}
+.tikGebaar {
+  animation: tikGebaar 1.1s ease-in-out infinite alternate;
+}
+@keyframes tikGebaar {
+  from {
+    transform: translate(8px, 12px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+/* Slepen voordoen: van het huis naar de lege plek, en dan opnieuw. */
+.sleepGebaar {
+  animation: sleepGebaar 2.2s ease-in-out infinite;
+}
+@keyframes sleepGebaar {
+  0%,
+  12% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  70%,
+  82% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tikGebaar,
+  .sleepGebaar {
+    animation: none;
+  }
+}

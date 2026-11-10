@@ -75,6 +75,13 @@
 > - **"Weer" bij dezelfde kaart:** zeg wat het kind deed ("Je koos weer dezelfde kaart."), geen stroeve omschrijving ("een kaart met bijna de meeste").
 > - **Geldt ook voor eerder gebouwde gouden lessen** (alleen gemeten, niets veranderd; eerst Sara, KEUZES Ronde 25b): het speelvlak loopt het tekstvak in bij **Minsommen** (± 25 px) en **Plussommen** (± 90 px); "… is dichtbij." steeds hetzelfde in **Tellen** en **Splitsen**. "Ja" na het vangnet: in geen andere les.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES HUISNUMMERS (10 november 2026) — geldt voor elke gouden les
+> - **Noem bij een fout nooit beide buren** van het gat ("19 past niet tussen 15 en 17" verklapt 16). Zeg alleen iets over het gekozen getal ("19 komt na 18, aan het eind van de straat."). Laat het fouttabel-script controleren dat er geen "tussen … en …" in eerste zin of hint staat.
+> - **Een eerste zin die een hele kant uitsluit** ("aan het eind van de straat") kan ook de andere foute keuze uitsluiten: dan blijft er maar 1 over. Het script rekent het na; zeg dan alleen "Huis 37 past niet op deze plek." (zoals "Dat is dichtbij." bij Meer-minder).
+> - **"Weer" alleen bij dezelfde kant:** eerst 19 (eind) en dan 13 (begin) is niet "weer een nummer van het begin". Geef een denkfout met een richting een eigen soort per richting.
+> - **Typen in een gouden les:** een echt invulvak op de plek van het vraagteken (HARDE REGEL 5), het vinkje van het lesscherm pas als er iets staat (`l.knoppen(["controleer"])` + een melding "vol/leeg" van het vlak), Enter werkt ook; nooit `l.getal()` (die heeft de knop "Weet ik niet").
+> - **Een oud vlak dat geen Phaser is** (de straat was een SVG-tekening): maak een nieuw Phaser-vlak met dezelfde plaatjes (`preload()` in de scène), anders kan `npm run vloeiend` het niet meten.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

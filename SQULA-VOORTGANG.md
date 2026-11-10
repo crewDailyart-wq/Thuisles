@@ -399,3 +399,9 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 - Inhoud Squla (15 vragen: 8 kralen tellen, 7 keer 3 kaarten met koekjes), skelet draaiboek Meer-minder, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes: KEUZES-VOOR-SARA.md Ronde 25.
 - Gedeeld lesscherm: eindkaart links van het tekstvak, alleen in lessen met `stemHeelUitpraten` (klok, Minsommen, Meer-minder). Gedeelde verbetering in BliepoTekst: het woord van nu hoort bij 1 uitspraak (geen witte flits van een nieuwe zin, F7).
 - Nog te doen door de coördinator: kind-test en onafhankelijke keuring (aparte helpers); vloeiend meten als de computer rustig is.
+
+### Gouden les Huisnummers gebouwd (10 nov)
+- Les `squla-huisnummers-gouden` ("Huisnummers: wat komt erna?"), nieuwe versie naast squla-huisnummers (oude les niet veranderd). Er is maar 1 Squla-les Huisnummers (geen levels), dus die is gekozen. Bestanden: `src/components/les/lessen/squla-huisnummers-gouden.tsx`, `squla-huisnummers-gouden-zinnen.ts`, `src/components/les/vlakken/squla-huisnummers-gouden-vlak.tsx` (+ `.module.css`, nu in Phaser), `scripts/fouttabel-huisnummers-gouden.ts`, `FOUTTABEL-squla-huisnummers-gouden.md`, `scripts/test-huisnummers-gouden.mjs`, `scripts/vloeiend-schermen/squla-huisnummers-gouden.json`.
+- Inhoud Squla (17 vragen: erna, ervoor, ertussen, slepen, terug; tot 20, tot 31, tot 50), skelet draaiboek Huisnummers (Counting On), pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Ervoor, ertussen, slepen en terugtellen: zelfde skelet, hints en fouttabel "eigen invulling, niet van Synthesis" (15.22 punt 5). Keuzes: KEUZES-VOOR-SARA.md Ronde 26.
+- Typen: een echt invulvak op het bordje van het huis met het vraagteken (HARDE REGEL 5), zonder "Weet ik niet".
+- Nog te doen door de coördinator: kind-test en onafhankelijke keuring (aparte helpers).

@@ -99,6 +99,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "flitsen-eindtoets-20", titel: "Eindtoets: flitskaarten tot 20", synthesis: "Flashcards 2 · Mastery Check" },
   /* Naar Squla groep 3 Rekenen (30 oktober 2026): alleen het leerdoel, eigen inhoud. */
   { id: "squla-huisnummers", titel: "Huisnummers: wat komt erna?", synthesis: "Squla groep 3 · Tellen · Telrij (alleen leerdoel)" },
+  { id: "squla-huisnummers-gouden", titel: "Huisnummers: wat komt erna?", synthesis: "Squla groep 3 · Tellen · Telrij · gouden les (nieuwe versie van squla-huisnummers) · verloop draaiboek Huisnummers (Counting On)" },
   { id: "squla-rekentaal", titel: "Groot en klein, vol en leeg", synthesis: "Squla groep 3 · Meten en maten · Rekentaal (alleen leerdoel)" },
   { id: "squla-dagen-van-de-week", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week (alleen leerdoel)" },
   { id: "squla-vormen-patronen-1", titel: "Patronen", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 1 (alleen leerdoel)" },

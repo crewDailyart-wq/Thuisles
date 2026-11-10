@@ -933,3 +933,57 @@ Gekeurd: zie KEURING-MEER-MINDER-GOUDEN.md en KINDTEST-MEER-MINDER-GOUDEN.md. Ui
 **Graag een besluit (ja of nee):**
 1. **Het speelvlak loopt ook in 2 andere gouden lessen het tekstvak in** (alleen gemeten, niets veranderd): Minsommen (het vak met het vraagteken, ± 25 px) en Plussommen (de plank, ± 90 px). Nu valt er geen tekst over, maar een hint van 4 of meer regels wel. Mag de bouwer daar het vlak ook iets kleiner maken, zoals bij Meer-minder?
 2. **De koekjes in rijen van 10** zijn nu nog iets kleiner (88 %). Hoort bij vraag 1 van Ronde 25: goed zo, of liever een hulp waarbij de koekjes groot blijven?
+
+## Ronde 26 — gouden les Huisnummers (squla-huisnummers-gouden, 10 november 2026)
+
+Nieuwe versie naast de oude les squla-huisnummers "Huisnummers: wat komt erna?" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-huisnummers-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Waarom deze les:** bij Huisnummers is er maar 1 Squla-les (geen level 1, 2, 3). Die past bij het draaiboek (Counting On) voor "welk nummer komt erna" en over het tiental (39 → 40).
+
+**Inhoud (15.22):** dezelfde 17 vragen, in dezelfde volgorde, met dezelfde straten, getallen en keuzes: 5 keer erna (2 keer typen), 3 keer ervoor (1 keer typen), 3 keer ertussen, 3 keer slepen, 3 keer terugtellen. De vraagzinnen zijn die van de oude les.
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Er mist een huis in de straat." | hoeveelheid met een cijfer (3.20) | "Er mist 1 huis in de straat." |
+| "19 past niet tussen 15 en 17." (en net zo bij 44, 50, 13) | noemt beide buren: dan is het antwoord (16) verklapt (15.17) | "19 komt na 18, aan het eind van de straat." |
+| "Kijk of de cijfers in de goede volgorde staan." | gaf geen houvast | "Je sleepte huis 42. De nummers hier beginnen met een 2." |
+| "Kijk naar het huis links van de lege plek. Tel vanaf dat nummer 1 verder." (steeds dezelfde) | dezelfde tip bij elke vraag (5.10) | 3 versies, met het nummer erin: "Begin bij 7 en tel 1 verder." / "Begin bij 7. Welk nummer zeg je daarna?" / "Zeg de nummers hardop tot 7. Welk nummer zeg je dan?" (bij terug: "tel 1 terug") |
+| Typen in het vak links met de knop "Weet ik niet" | geen "Weet ik niet" (1.27) | een echt invulvak op het bordje van het huis met het vraagteken; het vinkje bij Bliepo komt als er een nummer staat; Enter werkt ook (HARDE REGEL 5) |
+
+**Wat er extra is bijgekomen:** geen extra vragen. Uit het skelet: 2 korte zinnen als de nummers groter worden ("Nu komen er grotere huisnummers." en "En nu de huisnummers tot 50.", draaiboek stap 2 en 4) en het samen voordoen na de 2e fout.
+
+**Eigen invulling, niet van Synthesis (15.22 punt 5):** Counting On heeft alleen "erna" (verder tellen) en over het tiental. **Ervoor, ertussen, slepen en terugtellen** zitten er niet in. Die vragen hebben hetzelfde skelet, maar hun eerste zinnen, hints en fouttabel zijn eigen invulling (gemarkeerd per rij in FOUTTABEL-squla-huisnummers-gouden.md). Ook eigen: het rode rondje om het buurhuis bij de hint (Synthesis maakt bij de 2e fout de goede rij fel; bij ons noemt Bliepo het buurhuis, dus krijgt dat het rondje, 7.8).
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Niet gebouwd:** getal zoeken in het rooster, "welk getal heb ik aangewezen?", 3 tot 9 verder tellen, "hoeveel nog tot 50?" en "wil je een moeilijkere?". De Squla-les heeft die vragen niet en we voegen niets toe (15.22).
+- **Geen startvraag** (draaiboek §0: Synthesis heeft er geen). De oude les had "Kun je verder tellen vanaf een huisnummer?" met uitleg na Nee; die is in deze versie weg (WEGGEHAALD.md). Groet en beginzin zijn 1 stuk.
+- **2 pogingen** (15.11). Synthesis: 3 fouten bij zoeken, en na veel hulp "zullen we pauze nemen?" en terug naar het menu. Bij ons: 1e fout zin + hint en de vraag in andere woorden, 2e fout samen voordoen en door. Nooit stoppen.
+- **Samen voordoen:** Bliepo telt langs de huizen, 1 huis per stuk, elk huis krijgt even het rondje (draaiboek §3 C.5 en D.3: hij telt zelf, 1 stap per keer). Bij het gat komt het nummer op het bordje. De kleine stap van het kind: het huis met het nieuwe nummer aantikken, of bij slepen het goede huis naar de lege plek slepen (het handje doet het dan voor). Vangnet: na 20 s niets of 3 keer een ander huis doet Bliepo het zelf ("Kijk, …", geen "Ja").
+- **Hulphandje:** alleen bij slepen (een opdracht), na ± 6 s stilte, en het wijst alleen de lege plek aan (nooit het goede huis, 15.17). Bij kiezen en typen komt er niets (Synthesis gaf bij verder tellen ook nooit vanzelf hulp, §4).
+- **Heel snel:** Bliepo zegt niets (draaiboek §3 C.8: bij verder tellen zei Synthesis niets over snel; alleen bij zoeken, en dat zit er niet in).
+- **"Nu lopen we terug."** komt bij elke terugtelvraag (3 keer per les), dan loopt Bliepo terug langs de huizen (de reeks van de oude les). De andere zinnen vóór de vraag ("Kijk, op 1 bordje staat een vraagteken.", "Er mist 1 huis in de straat.") alleen de eerste keer.
+- **De pijl:** 15.27 (Bliepo praat door). Synthesis wacht alleen na de 3e fout bij zoeken op de pijl; dat deel zit er niet in.
+- **Naam:** bij de groet en hooguit 1 keer bij een lof (Synthesis: ook op de eindkaart).
+- **Het speelvlak is nu Phaser** (HARDE REGEL 7; de oude straat was een gewone tekening). Zelfde huisplaatjes, zelfde avondstraat. De straat staat nu links van het tekstvak; de maan en de rechter lantaarn zijn een stukje naar links geschoven.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Eigen testscript `scripts/test-huisnummers-gouden.mjs`: alles goed (ook bij slepen eerst naast de plek loslaten: telt niet), typen met het vinkje en met Enter, fouten, alles fout, lang wachten, vangnet, tik op de pijl, kleur: in orde. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten.
+- Einde zin → volgend stuk: gemiddeld 719–774 ms, kleinste 700, grootste 926 ms (doel ± 700). Tik op de pijl: binnen 63–130 ms iets nieuws.
+- Lang wachten: bij kiezen en typen zegt Bliepo niets en komt er geen handje (9 s). Bij slepen en bij de kleine stap komt het handje ± 6 s nadat de opdrachtzin klaar is (7,6–8,3 s na het begin van de opdracht).
+- Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768 (route "alles fout", met de langste zinnen): 0 overlap, 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit; het speelvlak blijft links van het tekstvak (22 px ruimte). Eindkaart: 0 woorden van Bliepo eronder. Eerst liep de tekst 6 px uit het vak bij de 2e fout (3 zinnen in 1 stuk); nu staat "Kom, we tellen samen." in het volgende stuk.
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0. Gedimd en weer gedimd: 0 in alle losse metingen; toen ik 2 tests tegelijk draaide (computer heel druk) kwam het 1 tot 4 keer voor met de nepstem. Ik denk dat het aan de drukte lag, niet aan de les; de keurder kan het nog eens bekijken.
+- Speelcontrole (`npm run speel`, GOED en ALLEFOUT, F7-meter): tot het eind, 0 fouten. Opgaven en inhoudsvergelijking: in orde. Fouttabel-script: 47 foute antwoorden, reken- en verklapcontrole in orde.
+- Getalkleur gemeten in Chrome: de huisnummers in Bliepo's zinnen zijn wit (255,255,255), zoals op het bordje.
+- **Echte stem in een zichtbare Chrome** (± 7 minuten): 70 zinnen gestart, 47 helemaal uitgesproken, 23 afgebroken omdat de test al tijdens de vraag antwoordde (mag een kind ook). Geen zin dubbel. Woorden: het eerste woord licht gemiddeld 52 ms na de start van de stem op; het laatste woord gemiddeld 241 ms naast het geschatte moment (grootste 605 ms). De Google-stem geeft geen woordmeldingen, dus ± 150 ms kan ik niet bewijzen (zoals bij Minsommen en Meer-minder).
+- **Vloeiend** (computer rustig bij de start, belasting ± 4): laptop 60 beelden/s, langste beeld 37 ms; trage telefoon 60 beelden/s, langste beeld 34 ms. Openen in de ontwikkelversie 1,9 s / 3,9 s (op de echte site moet het onder 1 s).
+
+**Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
+
+**Graag een besluit (ja of nee):**
+1. **Typen op het bordje** van het huis met het vraagteken, en het vinkje bij Bliepo pas als er een nummer staat. Goed zo?
+2. **De kleine stap bij het samen voordoen:** het huis met het nieuwe nummer aantikken (bij slepen: het huis slepen). Goed zo?
+3. **Het rode rondje om het buurhuis** bij de hint na de 1e fout (eigen invulling). Goed zo?
+4. **"Nu lopen we terug."** bij alle 3 de terugtelvragen. Goed zo, of alleen de eerste keer?
