@@ -181,7 +181,7 @@ export const REACTIE_ROBOT = 5;
 
 /* ---------- denkfouten (draaiboek Huisnummers §7; namen voor de voortgang) ---------- */
 
-export const DENKFOUTEN = ["staat-al", "een-te-veel", "verkeerde-richting", "buiten-de-rij", "cijfers-omgedraaid", "tien-ernaast", "verkeerde-rij", "alleen-tientalcijfer", "onduidelijk"] as const;
+export const DENKFOUTEN = ["staat-al", "een-te-veel", "verkeerde-richting", "buiten-de-rij", "cijfers-omgedraaid", "tien-ernaast", "verkeerde-rij", "alleen-tientalcijfer", "te-ver", "onduidelijk"] as const;
 export type Denkfoutnaam = (typeof DENKFOUTEN)[number];
 
 export type Fout = {
@@ -268,21 +268,23 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
       eerste: kies3([`${X} staat al in de straat.`, `Huis ${X} is er al.`, `Kijk, ${X} staat er al.`], v),
       hint,
       uitleg: "Elk nummer staat maar 1 keer in de straat.",
-      weer: ["Je koos weer een nummer dat er al staat.", "Het nummer dat we zoeken, staat er nog niet."],
+      weer: [`Je ${typ ? "typte" : sleep ? "sleepte" : "koos"} weer een nummer dat er al staat.`, "Het nummer dat we zoeken, staat er nog niet."],
       scherm,
       over: over((k) => !bekend.includes(k)),
       eigen,
       bron: eigen ? "eigen invulling (draaiboek §8: niet in Counting On)" : "draaiboek §3 C.2 (een andere zin per soort fout)",
     };
+  /* Keuring 10 nov: "De nummers hier beginnen met een 2" alleen als ALLE nummers in de straat zo beginnen (bij 30, 31 → 29 niet). */
+  const alleTiental = bekend.every((n) => Math.floor(n / 10) === tiental);
   if (x > 9 && Number([...String(x)].reverse().join("")) === v.goed)
     return {
       code: "cijfers-omgedraaid",
       soort: "cijfers",
       denkfout: `de cijfers andersom (${x} voor ${v.goed})`,
-      eerste: `${koos} De nummers hier beginnen met een ${w(tiental)}.`,
+      eerste: alleTiental ? `${koos} De nummers hier beginnen met een ${w(tiental)}.` : `${koos} Kijk goed welk cijfer vooraan hoort.`,
       hint,
       uitleg: "De 2 cijfers staan andersom.",
-      weer: ["Je draaide de cijfers weer om.", `Het eerste cijfer is hier steeds een ${w(tiental)}.`],
+      weer: ["Je draaide de cijfers weer om.", alleTiental ? `Het eerste cijfer is hier steeds een ${w(tiental)}.` : "Kijk welk cijfer vooraan hoort."],
       scherm,
       over: over((k) => Math.floor(k / 10) === tiental),
       eigen: true,
@@ -306,13 +308,14 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
     return {
       code: "verkeerde-rij",
       soort: "rij",
-      denkfout: x < v.goed ? `ging na ${buur(v)} terug naar het oude tiental (${x} voor ${v.goed})` : `pakte het verkeerde tiental (${x} voor ${v.goed})`,
-      eerste: x < v.goed ? `Na ${w(max)} komt een groter nummer dan ${X}.` : `Voor ${w(min)} komt een kleiner nummer dan ${X}.`,
+      denkfout: x < v.goed ? `koos het tiental eronder (${x} voor ${v.goed})` : `koos het tiental erboven (${x} voor ${v.goed})`,
+      /* Keuring 10 nov: altijd over het buurhuis van de vraag ("Na 39", "Voor 30"), zodat de zin bij elke soort vraag klopt. */
+      eerste: `${vooruit(v) ? "Na" : "Voor"} ${w(buur(v))} komt een ${x < v.goed ? "groter" : "kleiner"} nummer dan ${X}.`,
       hint,
-      uitleg: x < v.goed ? `Na ${w(max)} komt een nummer met een ${w(tiental)} vooraan.` : `Voor ${w(min)} komt een nummer met een ${w(tiental)} vooraan.`,
-      weer: [x < v.goed ? "Je koos weer een te klein nummer." : "Je koos weer een te groot nummer.", "Kijk goed naar het eerste cijfer."],
+      uitleg: `Het nummer dat we zoeken, begint met een ${w(tiental)}.`,
+      weer: [x < v.goed ? `Je ${typ ? "typte" : "koos"} weer een te klein nummer.` : `Je ${typ ? "typte" : "koos"} weer een te groot nummer.`, "Kijk goed naar het eerste cijfer."],
       scherm,
-      over: over((k) => (x < v.goed ? k > max : k < min)),
+      over: over((k) => (x < v.goed ? k > x : k < x)),
       eigen: v.soort !== "na",
       bron: "draaiboek §3 C.2 `verkeerde-rij` (Synthesis: alleen \"dat klopt niet helemaal\", geen woord over het tiental) en §3 C.5 (tiental-hulp)",
     };
@@ -324,7 +327,7 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
       eerste: `${X} begint met een ${w(Math.floor(x / 10))}. De huizen ernaast beginnen met een ${w(tiental)}.`,
       hint,
       uitleg: "Je zit er 10 naast.",
-      weer: ["Je koos weer een nummer met een ander cijfer vooraan.", `Kijk naar het eerste cijfer van de buren.`],
+      weer: [`Je ${sleep ? "sleepte" : "koos"} weer een nummer met een ander cijfer vooraan.`, `Kijk naar het eerste cijfer van de buren.`],
       scherm,
       over: over((k) => Math.floor(k / 10) === tiental),
       eigen: true,
@@ -358,6 +361,39 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
       eigen: true,
       bron: "eigen invulling (terugtellen en ervoor zitten niet in Counting On, draaiboek §8)",
     };
+  /*
+    Keuring 10 nov: staat het gat aan het begin of eind van de straat (erna, ervoor, terug), dan is "aan het begin/eind van
+    de straat" en "het vraagteken staat midden in de straat" niet waar. Alleen bij typen kan het kind zo'n nummer kiezen.
+  */
+  const midden = gat(v) > 0 && gat(v) < v.huizen.length - 1;
+  if (!midden && vooruit(v) && x < min)
+    return {
+      code: "verkeerde-richting",
+      soort: "richting-terug",
+      denkfout: `telde terug in plaats van verder (${x} komt voor ${min})`,
+      eerste: `${X} komt voor ${w(min)}. We zoeken het nummer erna.`,
+      hint,
+      uitleg: "Verder tellen gaat naar de grotere nummers.",
+      weer: [`Je ${typ ? "typte" : "koos"} weer een nummer van vóór de straat.`, "Bij verder tellen wordt het nummer steeds groter."],
+      scherm,
+      over: over((k) => k > x),
+      eigen: true,
+      bron: "eigen invulling (alleen bij typen; draaiboek §3 C.2: een zin per soort fout)",
+    };
+  if (!midden && (vooruit(v) ? x > v.goed : x < v.goed))
+    return {
+      code: "te-ver",
+      soort: "te-ver",
+      denkfout: vooruit(v) ? `telde te ver door (${x} in plaats van ${v.goed})` : `telde te ver terug (${x} in plaats van ${v.goed})`,
+      eerste: `${X} ligt te ver van ${w(buur(v))} af.`,
+      hint,
+      uitleg: vooruit(v) ? `Na ${w(buur(v))} komt het nummer dat 1 groter is.` : `Voor ${w(buur(v))} komt het nummer dat 1 kleiner is.`,
+      weer: [`Je ${typ ? "typte" : "koos"} weer een nummer dat te ver weg ligt.`, vooruit(v) ? "Tel maar 1 stap verder." : "Tel maar 1 stap terug."],
+      scherm,
+      over: over((k) => (vooruit(v) ? k < x : k > x)),
+      eigen: v.soort !== "na",
+      bron: "draaiboek §3 C.2 (\"je ging een beetje te ver\")",
+    };
   if (x < min || x > max)
     return {
       code: "buiten-de-rij",
@@ -366,7 +402,7 @@ function huisFoutRuw(x: number, v: Vraag): Fout {
       eerste: `${sleep ? "Huis " : ""}${X} komt ${x < min ? `voor ${w(min)}, aan het begin` : `na ${w(max)}, aan het eind`} van de straat.`,
       hint,
       uitleg: `${plekWoord(v) === "de lege plek" ? "De lege plek" : "Het vraagteken"} staat midden in de straat.`,
-      weer: [x < min ? "Je koos weer een nummer van het begin." : "Je koos weer een nummer van het eind.", "Kijk alleen naar de huizen naast het gat."],
+      weer: [`Je ${sleep ? "sleepte" : "koos"} weer een nummer van het ${x < min ? "begin" : "eind"}.`, "Kijk alleen naar de huizen naast het gat."],
       scherm,
       over: over((k) => (x < min ? k > min : k < max)),
       eigen: true,

@@ -82,6 +82,13 @@
 > - **Typen in een gouden les:** een echt invulvak op de plek van het vraagteken (HARDE REGEL 5), het vinkje van het lesscherm pas als er iets staat (`l.knoppen(["controleer"])` + een melding "vol/leeg" van het vlak), Enter werkt ook; nooit `l.getal()` (die heeft de knop "Weet ik niet").
 > - **Een oud vlak dat geen Phaser is** (de straat was een SVG-tekening): maak een nieuw Phaser-vlak met dezelfde plaatjes (`preload()` in de scène), anders kan `npm run vloeiend` het niet meten.
 
+> ## ⭐ GELEERD BIJ DE KEURING HUISNUMMERS (onafhankelijke keurder, 10 november 2026; KEURING-HUISNUMMERS-GOUDEN.md) — geldt voor elke gouden les
+> - **Wat Bliepo bij een fout zegt, moet WAAR zijn voor elk antwoord dat het kind kan geven**, niet alleen voor de rijen in de fouttabel. Bij typen kan een kind elk getal typen; dan valt het terug op een algemene regel, en die moet bij elke straat of som kloppen. Fout gevonden: "Het vraagteken staat midden in de straat." terwijl het aan het eind stond, "aan het begin van de straat" voor het gat dat zelf aan het begin stond, en "De nummers hier beginnen met een 2" bij de straat 30, 31.
+> - **Laat het fouttabel-script een waarheidscontrole doen**: bij typen voor elk getal van 0 tot 99 de zinnen maken en nagaan dat elke bewering klopt met het beeld (voorbeeld: `scripts/fouttabel-huisnummers-gouden.ts`, deel 3). Een beschrijving van het beeld ("de nummers hier", "midden in", "aan het eind") alleen als hij voor déze vraag waar is.
+> - **Zinnen over een buur gaan over het buurhuis van de vraag** ("Na 39 …" bij "Welk nummer komt na 39?"), niet over het kleinste of grootste nummer in de rij.
+> - **"Je koos weer …" past bij wat het kind deed:** "typte" bij typen, "sleepte" bij slepen.
+> - **Geldt ook voor eerder gebouwde gouden lessen:** alleen Huisnummers heeft typen; in de andere 6 gouden lessen kan het kind alleen kiezen, tikken of slepen uit vaste dingen, en daar gaat het fouttabel-script al alle foute antwoorden langs. Daar is deze fout dus niet mogelijk (geteld: 0 van 6).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

@@ -987,3 +987,23 @@ Nieuwe versie naast de oude les squla-huisnummers "Huisnummers: wat komt erna?" 
 2. **De kleine stap bij het samen voordoen:** het huis met het nieuwe nummer aantikken (bij slepen: het huis slepen). Goed zo?
 3. **Het rode rondje om het buurhuis** bij de hint na de 1e fout (eigen invulling). Goed zo?
 4. **"Nu lopen we terug."** bij alle 3 de terugtelvragen. Goed zo, of alleen de eerste keer?
+
+## Ronde 26b — keuring gouden les Huisnummers (onafhankelijke keurder, 10 november 2026)
+
+Gekeurd: zie KEURING-HUISNUMMERS-GOUDEN.md en KINDTEST-HUISNUMMERS-GOUDEN.md. Uitslag: **goedgekeurd** na 2 herstellingen (alleen in deze les).
+
+**Aanpassingen (15.26), alleen in deze les:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Je typte 92. De nummers hier beginnen met een 2." (straat ?, 30, 31) | niet waar: de nummers zijn 30 en 31 | "Je typte 92. Kijk goed welk cijfer vooraan hoort." (de zin met "beginnen met een …" alleen als hij klopt) |
+| Typen bij een gat aan het begin of eind van de straat, een getal buiten de tabel: "15 komt voor 17, aan het begin van de straat." en bij de 2e fout "Het vraagteken staat midden in de straat." | niet waar: het vraagteken staat aan het eind (of begin) | te ver: "25 ligt te ver van 30 af." / andere kant op: "13 komt voor 17. We zoeken het nummer erna." (nieuwe denkfout `te-ver` voor de voortgang) |
+| "Voor 17 komt een kleiner nummer dan 30." (typen 30 bij "na 19") en bij de 2e fout "Na 39 komt een groter nummer dan 30. Na 39 komt een nummer met een 4 vooraan." | ging over het verkeerde huis, en "Na 39 komt" stond 2 keer achter elkaar | altijd het buurhuis van de vraag ("Na 19 komt een groter nummer dan 10."); bij de 2e fout "Het nummer dat we zoeken, begint met een 4." |
+| "Je koos weer een nummer dat er al staat." ook bij typen of slepen | het werkwoord paste niet | "Je typte weer …" / "Je sleepte weer …" |
+
+**Mijn advies bij de 4 vragen van Ronde 26** (jij beslist; ik heb niets veranderd):
+1. Typen op het bordje: werkt goed (echt invulvak, alleen cijfers, Enter werkt, vinkje pas met een nummer). Advies: ja.
+2. Kleine stap (huis aantikken / slepen): duidelijk, met vangnet. Advies: ja.
+3. Rood rondje om het buurhuis: helpt, verklapt niets. Advies: ja.
+4. "Nu lopen we terug." bij alle 3 de terugtelvragen: kort en het kind weet dat de richting omdraait. Advies: zo laten.
+
+**Geen nieuwe vragen.** In andere gouden lessen kan deze fout niet voorkomen (0 van 6: geen typen).

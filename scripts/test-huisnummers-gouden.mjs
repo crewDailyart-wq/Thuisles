@@ -165,9 +165,9 @@ async function pagina() {
     }
     await wacht(800);
     /* Na het scrollen opnieuw de plek bepalen en nagaan dat precies deze link onder de muis ligt. */
-    const q = await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)) }; })()`, returnByValue: true }, s);
+    const q = await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)), wat: e ? e.tagName + "." + e.className : null, b: innerWidth + "x" + innerHeight }; })()`, returnByValue: true }, s);
     p = q.result.value;
-    if (!p.raak) throw new Error("de link naar de les ligt niet onder de muis");
+    if (!p.raak) throw new Error(`de link naar de les ligt niet onder de muis (${JSON.stringify(p)})`);
     for (const type of ["mouseMoved", "mousePressed", "mouseReleased"]) await stuur("Input.dispatchMouseEvent", { type, x: p.x, y: p.y, button: "left", clickCount: 1, buttons: type === "mousePressed" ? 1 : 0 }, s);
   } else
   await stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${LES}?naam=Testkind` }, s);
@@ -631,6 +631,17 @@ const ROUTES = {
     await controleer(P, "allefout");
     const l = await P.log();
     for (const r of l.filter((x) => x.wat === "reactie" && x.soort !== "goed")) zie(`   ${r.soort} ${r.vraag} ${r.x ?? ""} ${r.denkfout ?? ""}: ${r.zin}`);
+    return ok;
+  },
+  /** Keuring 10 nov: bij typen een nummer dat NIET in de fouttabel staat (te ver, of de andere kant op); de rest goed. */
+  async typvrij(P) {
+    const ok = await speel(P, {
+      naam: "typvrij",
+      keuze: (t) => (t.soort !== "typ" ? t.goed : t.poging === 1 ? String(Number(t.goed) + (t.vraag.includes("-voor-") ? -4 : 4)) : String(Number(t.goed) + (t.vraag.includes("-voor-") ? 7 : -7))),
+      maxMs: 20 * 60_000,
+    });
+    const l = await P.log();
+    for (const r of l.filter((x) => x.wat === "reactie" && /^fout/.test(x.soort))) zie(`   ${r.soort} ${r.vraag} ${r.x ?? ""} ${r.denkfout ?? ""}: ${r.zin}`);
     return ok;
   },
   /** Vangnet: 2 keer fout, en bij de kleine stap niets doen; na 20 s doet Bliepo het zelf (zonder "Ja"). */

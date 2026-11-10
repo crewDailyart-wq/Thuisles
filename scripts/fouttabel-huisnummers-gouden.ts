@@ -10,7 +10,7 @@
  * Geen zin mag het woord "fout" hebben, en geen eerste zin of hint mag 2 buren tegelijk noemen ("tussen 15 en 17").
  */
 import { writeFileSync } from "node:fs";
-import { VRAGEN, ZIN, buur, foutenVan, gat, hintVan, huisReactie, isTyp, nummers, vooruit, type Fout, type Vraag } from "../src/components/les/lessen/squla-huisnummers-gouden-zinnen";
+import { VRAGEN, ZIN, buur, foutenVan, gat, hintVan, huisFout as huisFoutVoor, huisReactie, isTyp, nummers, vooruit, type Fout, type Vraag } from "../src/components/les/lessen/squla-huisnummers-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 const getallenIn = (z: string) => (kaal(z).match(/\d+/g) ?? []).map(Number);
@@ -65,11 +65,44 @@ for (const v of VRAGEN) {
   const mag = [v.goed, v.goed - 1, v.goed + 1, 1];
   if (!huisReactie(v).zinnen.every((z) => getallenIn(z).every((n) => mag.includes(n)))) fouten.push(`${v.id}: een reactie bij goed noemt een getal dat er niet bij hoort`);
 }
+/*
+  3. Waarheidscontrole (keuring 10 nov): bij typen kan het kind elk nummer typen. Voor elk nummer van 0 tot 99 moet wat
+  Bliepo zegt WAAR zijn bij deze straat (eerder: "De nummers hier beginnen met een 2" bij 30, 31; "het vraagteken staat
+  midden in de straat" terwijl het aan het eind stond).
+*/
+let waarheid = 0;
+for (const v of VRAGEN) {
+  const g = gat(v);
+  const midden = g > 0 && g < v.huizen.length - 1;
+  const bekend = nummers(v);
+  const xs = isTyp(v) ? Array.from({ length: 100 }, (_, i) => i) : keuzesVan(v);
+  for (const x of xs) {
+    if (x === v.goed) continue;
+    const f = foutenVan(v)[String(x)] ?? huisFoutVoor(x, v);
+    const tekst = kaal([f.eerste, f.uitleg, ...f.weer].join(" "));
+    const mis = (r: string) => fouten.push(`${v.id} ${x}: niet waar: ${r} ("${tekst}")`);
+    waarheid++;
+    if (!midden && /midden in de straat|aan het (begin|eind) van de straat/.test(tekst)) mis("het gat staat niet midden in de straat");
+    for (const m of tekst.matchAll(/(?:beginnen met een|steeds een) (\d)\b/g)) {
+      const t = Number(m[1]);
+      const ernaast = /huizen ernaast/.test(tekst) ? [v.huizen[g - 1], v.huizen[g + 1]].filter((h): h is number => typeof h === "number") : bekend;
+      if (!ernaast.every((n) => Math.floor(n / 10) === t)) mis(`niet alle nummers beginnen met een ${t}`);
+    }
+    for (const m of tekst.matchAll(/(Na|Voor) (\d+) komt een (groter|kleiner) nummer dan (\d+)/g)) {
+      const goedBuur = (m[1] === "Na" ? v.goed - 1 : v.goed + 1) === Number(m[2]);
+      const goedKant = m[3] === "groter" ? v.goed > Number(m[4]) : v.goed < Number(m[4]);
+      if (!goedBuur || !goedKant) mis(m[0]);
+    }
+    for (const m of tekst.matchAll(/(\d+) komt (voor|na) (\d+)/g)) if (m[2] === "voor" ? +m[1] >= +m[3] : +m[1] <= +m[3]) mis(m[0]);
+    if (/begint met een (\d)\./.test(tekst) && /zoeken, begint met een (\d)/.test(tekst) && Number(tekst.match(/zoeken, begint met een (\d)/)![1]) !== Math.floor(v.goed / 10)) mis("tiental van het antwoord");
+  }
+}
+
 if (fouten.length) {
   console.error("FOUTEN:\n" + fouten.join("\n"));
   process.exit(1);
 }
-console.log(`Rekencontrole en verklapcontrole: in orde (${VRAGEN.length} vragen, ${telling} foute antwoorden).`);
+console.log(`Rekencontrole, verklapcontrole en waarheidscontrole: in orde (${VRAGEN.length} vragen, ${telling} foute antwoorden in de tabel, ${waarheid} nummers op waarheid gecontroleerd).`);
 
 /* 3. De tabel. */
 const straat = (v: Vraag) => v.huizen.map((h) => (h === null ? "_" : h)).join(" ");
