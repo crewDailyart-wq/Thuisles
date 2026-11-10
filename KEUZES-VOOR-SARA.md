@@ -850,3 +850,70 @@ Gekeurd: zie KEURING-MINSOMMEN-GOUDEN.md en KINDTEST-MINSOMMEN-GOUDEN.md. Uitsla
 2. **Samen voordoen bij Minsommen:** Bliepo telt de stippen die weg gaan ("1, 2, 3"), en de grote teller toont wat er overblijft ("9, 8, 7"). Zo doet Synthesis het ook. Goed zo, of liever dat Bliepo telt wat er overblijft?
 3. **Tijdens het wegtikken** vervangt Bliepo's tellen ("1.") de opdracht "Haal er 3 weg. Tik op 3 stippen." in het tekstvak. De som (10 − 3 = ?) blijft bovenaan staan. Goed zo?
 4. **Het Synthesis-tabblad "Dot Destruction"** in je Chrome kon ik niet sluiten (Chrome reageerde niet). Het staat er nog; je kunt het zelf sluiten.
+
+## Ronde 25 — gouden les Meer-minder (squla-meer-minder-evenveel2-1-gouden, 10 november 2026)
+
+Nieuwe versie naast de oude les squla-meer-minder-evenveel2-1 "De meeste" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-meer-minder-evenveel2-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Waarom deze les:** er zijn 3 lessen "level 1" bij Meer-minder. "De meeste" (evenveel2-1) past het best bij het draaiboek (More or Less): de helft van de les is "waar liggen de meeste?", net als bij Synthesis "tik op de grootste groep". De kralen tellen past bij de hulp van het draaiboek (samen tellen, een getal boven de groep). evenveel1-1 is alleen tellen en een getal kiezen (zit niet in More or Less); evenveel3-1 is getallen op volgorde tot 49 (zit er ook niet in).
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde getallen en keuzes: 8 keer kralen tellen (3 getallen), 7 keer 3 kaarten met koekjes ("Waar liggen de meeste koekjes?"). De vraagzinnen zijn die van de oude les.
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Elke kralenvraag "Tel de kralen. Hoeveel kralen zijn het?" | dezelfde zin 8 keer (LESRECEPT, geleerd bij Splitsen) | vraag 1 en 2 helemaal; daarna om en om "Hoeveel kralen zijn het?" en "Hoeveel kralen liggen er?" (dezelfde korte zin direct na elkaar gaf een witte flits, F7) |
+| Een tik op een kaart was meteen het antwoord, en de kaart lichtte op | tik op een groep = vinkje, geen gloed (6.5, 7.8a); zo doet het draaiboek het ook (tik + vinkje) | de gekozen kaart krijgt een vinkje; daarna het vinkje van het lesscherm |
+| Getallen op gele bordjes en geel achter de rijen | getal in de kleur van het voorwerp (2.2) | een getal boven de groep, paars bij de kralen, bruin bij de koekjes |
+| Na een fout: "Kijk of een andere kaart meer heeft." | wijst bij een kaart in het midden precies 1 kaart aan (verklapt, 15.17) | reacties uit de fouttabel; er blijven altijd 2 kaarten over |
+
+| "Waar liggen de meeste koekjes?" 7 keer | dezelfde zin direct na elkaar (F7, zie hierboven) | om en om met "Op welke kaart liggen de meeste koekjes?"; de eerste keer met "Tik op die kaart." |
+
+**Wat er extra is bijgekomen:** geen extra vragen. Uit het skelet: een overgangszin bij de eerste koekjesvraag ("Nu iets anders: 3 kaarten met koekjes.", draaiboek stap 5) en het samen tellen na de 2e fout.
+
+**Eigen invulling, niet van Synthesis:**
+- De kralenvragen zelf (tellen en een getal kiezen): More or Less heeft geen telvraag. De hint na de 1e fout (tel rij voor rij, de korte rij telt ook mee) is dus eigen. Het samen tellen na de 2e fout komt wel uit het draaiboek.
+- 3 kaarten in plaats van 2 groepen (Squla heeft er 3). De denkfout "kaart in het midden gekozen" (`niet-de-meeste`) bestaat bij Synthesis niet.
+- Hulp na de 1e fout bij de koekjes: de koekjes gaan in rijen van 10 liggen. Synthesis laat de blokken op een rij zakken (zodat je de hoogte vergelijkt); rijen van 10 is onze versie daarvan. De koekjes worden daarbij kleiner (rij van 10 op een kaart).
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Niet gebouwd:** "hoeveel meer?" (bonusvraag), "meeste van 1 kleur" en "maak de groepen gelijk" (met de woordvraag "gelijk"). Squla level 1 heeft die vragen niet en we voegen niets toe (15.22).
+- **Geen startvraag** (draaiboek stap 1). De oude les had "Kun je dit al?" met uitleg; die is in deze versie weg (WEGGEHAALD.md). Groet en beginzin zijn 1 stuk.
+- **2 pogingen** (15.11). Synthesis: 1e fout blokken zakken, 2e fout samen tellen, 3e fout stoppen en naar het menu. Bij ons: 1e fout hint + rijen van 10, 2e fout samen tellen en door. Nooit stoppen.
+- **De denkfout:** Synthesis noemt hem niet; Bliepo zegt alleen wat zeker is ("Je tikte op de kaart met de minste koekjes.").
+- **Het vinkje van het lesscherm** komt pas als er een kaart gekozen is (Synthesis: vinkje en handje staan er meteen). Het lesscherm legt het vinkje de eerste keer 1 keer uit ("Klaar? Tik dan op het vinkje.", 3.15); Synthesis zegt het na elke hulpstap opnieuw.
+- **Hulphandje:** Synthesis heeft een handje-knop en zegt na ± 14 s "tik op de groep die groter lijkt". Bij ons is kiezen een keuze: Bliepo zegt niets en er komt geen handje (15.19). Het handje komt alleen bij het samen tellen (na ± 6 s, met 1 zin).
+- **Samen tellen bij de kralen:** Bliepo telt de volle rijen (5, 10, 15), het kind tikt de kralen van de laatste rij 1 voor 1, van links naar rechts; een tik op een andere kraal doet niets (zoals Synthesis bij foute tikken).
+- **Samen tellen bij de koekjes:** Bliepo telt elke kaart (het getal komt erboven); het kind tikt de kaart met het grootste getal. Dat gaat zonder vinkje (1 kleine stap).
+- **Heel snel:** Bliepo zegt niets (draaiboek §3 A.2). Lang wachten bij kiezen: niets.
+- **De pijl:** 15.27 (Bliepo praat door). Synthesis wacht bij gelijk maken op de pijl; dat deel zit er niet in.
+- **Naam:** bij de groet en hooguit 1 keer bij een lof (Synthesis: 3 tot 4 keer).
+
+**Vangnet bij het samen tellen** (LESRECEPT, geleerd bij Splitsen): na 20 s zonder tik, of na 3 keer een andere kaart, doet Bliepo de stap zelf en gaat de les door.
+
+**Gedeelde verbetering (geldt meteen voor alle lessen):** in BliepoTekst bleef het laatste woord van de vorige zin heel even "het woord van nu" als de volgende zin begon; dan stond de nieuwe zin even wit en werd hij daarna gedimd (F7). Nu hoort het woord van nu bij 1 uitspraak. Verder verandert er niets aan andere lessen.
+
+**Bliepo beweegt bij "meeste":** het woord "meeste" laat Bliepo een klein gebaar maken (bestaande regel 3.16, lib/bliepo-gebaren.ts). Het sprongen-script zag dat 1 keer als "Bliepo verspringt" (6 tot 8 keer per route, 5 tot 15 punten); in de laatste metingen kwam het niet meer voor. Het is een gebaar, geen overlap: Bliepo raakte de tekst nooit.
+
+**Eindkaart (open punt uit Ronde 24b, punt 1):** opgelost in het gedeelde lesscherm, maar **alleen voor lessen met de nieuwe stemoptie** (`stemHeelUitpraten`: de klokles, Minsommen en Meer-minder). Daar staat de kaart nu links van het tekstvak. Tellen, Splitsen, Plussommen en alle oude lessen houden de oude plek (daar valt de kaart nog over 2 tot 4 woorden). Gemeten: Meer-minder 0 woorden onder de kaart, Minsommen 0 (was 1 tot 4). De klokles heeft dezelfde optie en dus dezelfde plek, maar is niet apart gespeeld.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Eigen testscript `scripts/test-meer-minder-gouden.mjs`: alles goed (ook eerst een andere kaart en dan van gedachten veranderen: het vinkje gaat mee), fouten, alles fout, lang wachten, tik op de pijl, kleur: in orde. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten.
+- Einde zin → volgend stuk: gemiddeld 726–822 ms, kleinste 700, grootste 895 ms (doel ± 700). Tik op de pijl: binnen 42–154 ms iets nieuws.
+- Getal boven de groep tijdens een vraag: 0 keer (258 metingen in beeld, allemaal bij het samen tellen). Lang wachten bij een keuze: Bliepo zegt niets, geen handje (9 s); bij het samen tellen het handje na ± 6 s.
+- Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768: 0 overlap, 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit. Eindkaart: 0 woorden van Bliepo eronder (op alle 4 de maten).
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0. Gedimd en weer gedimd: 0 (na 2 herstellingen, zie boven).
+- Speelcontrole (`npm run speel`, GOED en ALLEFOUT, F7-meter): tot het eind, 0 fouten. Opgaven en inhoudsvergelijking: in orde. Fouttabel-script: 30 foute antwoorden, reken- en verklapcontrole in orde.
+- Getalkleur gemeten in Chrome: in de zin paars bij de kralen (201,162,255), boven de kralen paars (180,123,255), boven de koekjes bruin (201,138,75).
+- **Echte stem in een zichtbare Chrome** (2 keer 5 à 7 minuten): 58 zinnen gestart, 38 helemaal uitgesproken, 20 afgebroken omdat de test al tijdens de vraag antwoordde (mag een kind ook). Geen zin dubbel. Woorden: het eerste woord licht gemiddeld 46 ms na de start van de stem op; het laatste woord gemiddeld 167 ms naast het geschatte moment (grootste 397 ms). De Google-stem geeft geen woordmeldingen, dus ook hier kan ik ± 150 ms niet bewijzen (zoals bij Minsommen). Het meetscript kon maar 6 van de 34 zinnen aan de tekst koppelen (zinnen die niet vooraan in een stuk staan, telt het niet).
+- **Vloeiend** (belasting ± 5 bij de start, daarna 12 door ander werk): laptop 60 beelden/s, langste beeld 35 ms; trage telefoon 59 beelden/s, langste beeld 35 ms. Openen in de ontwikkelversie 2,0 s / 4,2 s (op de echte site moet het onder 1 s).
+
+**Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
+
+**Graag een besluit (ja of nee):**
+1. **Rijen van 10 na de 1e fout bij de koekjes** (eigen versie van "blokken zakken"). De koekjes worden dan kleiner. Goed zo?
+2. **Het vinkje pas na een keuze** (Synthesis: meteen in beeld). Goed zo?
+3. **Samen tellen bij de kralen:** alleen de volgende kraal reageert op een tik (van links naar rechts). Goed zo, of mag het kind elke kraal tikken?
+4. **De eindkaart links van het tekstvak** voor alle lessen met de nieuwe stemoptie. Mag dat ook voor Tellen, Splitsen en Plussommen (die hebben de optie nog niet)?

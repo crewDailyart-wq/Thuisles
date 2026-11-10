@@ -42,6 +42,8 @@ import { LESSEN_SQULA_SPLITSEN_GOUDEN } from "./squla-splitsen-gouden";
 import { LESSEN_SQULA_PLUSSOMMEN_GOUDEN } from "./squla-plussommen-gouden";
 /* De gouden les Minsommen (10 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-min-machine-1. */
 import { LESSEN_SQULA_MINSOMMEN_GOUDEN } from "./squla-minsommen-gouden";
+/* De gouden les Meer-minder (10 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-meer-minder-evenveel2-1. */
+import { LESSEN_SQULA_MEER_MINDER_GOUDEN } from "./squla-meer-minder-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -72,6 +74,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_TELLEN_GOUDEN,
   ...LESSEN_SQULA_TIJD,
   ...LESSEN_SQULA_MEER_MINDER,
+  ...LESSEN_SQULA_MEER_MINDER_GOUDEN,
   ...LESSEN_SQULA_MINSOMMEN,
   ...LESSEN_SQULA_MINSOMMEN_GOUDEN,
   ...LESSEN_SQULA_PLUSSOMMEN,

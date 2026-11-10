@@ -37,7 +37,12 @@ export function useOplichten(): boolean {
 export function useWoordNu(gesproken: string | null | undefined): number {
   const v = useSyncExternalStore(abonneerVoorlees, huidigeVoorlees, () => null);
   const past = Boolean(v && gesproken && vergelijkbaar(v.zin) === vergelijkbaar(gesproken));
-  const [nu, zetNu] = useState(-1);
+  /*
+    Het woord van nu hoort bij 1 uitspraak (v). Zonder dat bleef het laatste woord van de vorige zin nog 1 beeldje staan
+    als de volgende zin begon: dan stond de nieuwe zin heel even wit en werd hij daarna weer gedimd (F7, gemeten bij de
+    gouden les Meer-minder, 10 november 2026).
+  */
+  const [nu, zetNu] = useState<{ v: unknown; i: number }>({ v: null, i: -1 });
   useEffect(() => {
     if (!past || !v) return;
     let frame = 0;
@@ -45,13 +50,13 @@ export function useWoordNu(gesproken: string | null | undefined): number {
       const t = (performance.now() - v.start) / 1000;
       let i = -1;
       for (let k = 0; k < v.tijden.length; k++) if (v.tijden[k].begin <= t) i = k;
-      zetNu(i);
+      zetNu((oud) => (oud.v === v && oud.i === i ? oud : { v, i }));
       frame = requestAnimationFrame(loop);
     };
     frame = requestAnimationFrame(loop);
     return () => cancelAnimationFrame(frame);
   }, [past, v]);
-  return past ? nu : -1;
+  return past && nu.v === v ? nu.i : -1;
 }
 
 export function BliepoTekst({

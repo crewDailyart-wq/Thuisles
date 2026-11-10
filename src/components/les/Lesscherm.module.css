@@ -434,6 +434,11 @@
     opacity: 0;
   }
 }
+/* Lessen met de nieuwe stemoptie (stemHeelUitpraten, 10 nov 2026): de kaart links van het vaste tekstvak (dat begint op
+   x = 880), zodat hij niet over Bliepo's laatste zin valt (keuring Minsommen: 1 tot 4 woorden eronder). */
+.kaartNaastTekst {
+  left: 430px;
+}
 /* Onder de tekening en niet eroverheen, ook als de titel twee regels is. */
 .kaarttitel {
   display: block;

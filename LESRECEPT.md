@@ -60,6 +60,14 @@
 > - **Meet de eindkaart:** loopt Bliepo's laatste zin over de kaart? In alle 4 gemeten gouden lessen wel (Tellen 4 woorden, Splitsen 3, Plussommen 2, Minsommen 1 tot 4; klok niet gemeten). Kaart en tekstvak komen uit het gedeelde Lesscherm.tsx: niet per les oplossen, eerst Sara (KEUZES-VOOR-SARA.md Ronde 24b punt 1).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeten): de eindkaart in Tellen, Splitsen en Plussommen (zie hierboven). Het rondje om een getal in een som zit alleen in Minsommen.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES MEER-MINDER (10 november 2026) — geldt voor elke gouden les
+> - **Eindkaart:** in lessen met `stemHeelUitpraten` staat de kaart nu links van het vaste tekstvak (gedeeld Lesscherm.tsx, alleen met die optie). Gemeten: Meer-minder en Minsommen 0 woorden onder de kaart. Tellen, Splitsen en Plussommen hebben de optie nog niet en houden de oude plek (eerst Sara, KEUZES-VOOR-SARA.md Ronde 25 punt 4).
+> - **Een vraag van 2 zinnen is 1 uiting** (`zeg(l, zinnen.join(" "))`): tikt het kind al tijdens de 1e zin, dan begint Bliepo niet alsnog aan de 2e.
+> - **Een vlak bovenop een oud vlak:** zet de eigen tikknoppen van het oude vlak uit en geef je eigen knoppen een eigen kenmerk (`data-plek`); het oude vlak heeft dezelfde `data-ding`-namen (uitgeschakeld) eerder in de pagina. Test met `querySelectorAll(...).find(!disabled)`.
+> - **Samen tellen heeft een vangnet:** na 20 s zonder tik of 3 keer de verkeerde kaart doet Bliepo de stap zelf (anders blijft de speelcontrole met ALLEFOUT hangen).
+> - **Woorden als "meeste" laten Bliepo een gebaar maken** (lib/bliepo-gebaren.ts, BOUWREGELS 3.16); het sprongen-script telt dat als "Bliepo verspringt". Kijk bij een Bliepo-sprong eerst of het een gebaar is.
+> - **Gedeelde verbetering BliepoTekst:** het woord van nu hoort bij 1 uitspraak; zonder dat stond een nieuwe zin heel even wit en werd hij daarna weer gedimd (F7).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

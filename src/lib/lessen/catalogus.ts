@@ -153,6 +153,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-meer-minder-evenveel1-2", titel: "Meer, minder, evenveel (moeilijker)", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 1 · level 2 (alleen leerdoel)" },
   { id: "squla-meer-minder-evenveel1-3", titel: "Meer, minder, evenveel (nog moeilijker)", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 1 · level 3 (alleen leerdoel)" },
   { id: "squla-meer-minder-evenveel2-1", titel: "De meeste", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 2 · level 1 (alleen leerdoel)" },
+  { id: "squla-meer-minder-evenveel2-1-gouden", titel: "De meeste", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 2 · level 1 · gouden les (nieuwe versie van squla-meer-minder-evenveel2-1) · verloop draaiboek Meer-minder (More or Less)" },
   { id: "squla-meer-minder-evenveel2-2", titel: "De meeste (moeilijker)", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 2 · level 2 (alleen leerdoel)" },
   { id: "squla-meer-minder-evenveel3-1", titel: "Meer dan, minder dan", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 3 · level 1 (alleen leerdoel)" },
   { id: "squla-meer-minder-evenveel3-2", titel: "Meer dan, minder dan (moeilijker)", synthesis: "Squla groep 3 · Meer, minder, evenveel · Meer, minder, evenveel 3 · level 2 (alleen leerdoel)" },

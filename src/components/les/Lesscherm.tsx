@@ -1456,7 +1456,10 @@ function Lesscherm({
 
         {/* de kaart aan het eind */}
         {beeld.kaart && (
-          <button type="button" className={s.kaart} onClick={() => wacht.current.kaart?.()} aria-label={`${les.titel}: tik om af te vinken`}>
+          /* Alleen in lessen met de nieuwe stemoptie (stemHeelUitpraten: de gouden klokles, Minsommen en Meer-minder; 10 nov
+             2026, keuring Minsommen): de kaart staat links van het vaste tekstvak, zodat hij niet over Bliepo's laatste zin
+             valt. Alle andere lessen houden de kaart op de oude plek. */
+          <button type="button" className={les.stemHeelUitpraten ? `${s.kaart} ${s.kaartNaastTekst}` : s.kaart} onClick={() => wacht.current.kaart?.()} aria-label={`${les.titel}: tik om af te vinken`}>
             <svg width="244" height="190" viewBox="0 0 244 190" aria-hidden>
               {les.kaarttekening ? (
                 <les.kaarttekening />
