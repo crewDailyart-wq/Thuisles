@@ -562,3 +562,15 @@ Hier verschilt de reactie **per plek in de les**. Dat is nieuw t.o.v. P-8nov.
 - **Niet voor sommen boven 10 en over het tiental** (bakkerij 2–3, kale sommen 2–3, bussommen level 2–3): geen passende opgaven in deze les.
 - **Niet voor het verhaal** van de bussommen.
 - Strikt volgens BOUWREGELS 15.4 is het draaiboek dus **nog niet helemaal bouwklaar** (open punten 1–14).
+
+---
+
+## Gouden les squla-plus-bakkerij-1-gouden: eigen invulling (9–10 november 2026)
+
+De gouden les Plussommen is squla-plus-bakkerij-1 "Plussommen in de bakkerij" (16 vragen: 10 verhaaltjes "hoeveel samen?", 2 keer "welke som hoort erbij?", 3 keer het discospel, 2 keer verbinden). Skelet uit dit draaiboek: §3 D (totaal), §3 E (welke som), de hulproute §3 C.5 (het kind doet elke stap zelf) en §7 (denkfouten). De pijl volgt BOUWREGELS 15.27 (zie KEUZES-VOOR-SARA.md Ronde 22).
+
+**Eigen invulling, niet van Synthesis** (15.22 punt 5):
+- **Verbinden** (vraag 8 en 14): Synthesis heeft geen verbinden. Zelfde skelet; de fouttabel (richting "… is meer/minder dan …", als dat niets verklapt) en de hints zijn eigen invulling. Na een 1e fout gaan alle lijnen weg en verbindt het kind opnieuw.
+- **Samen voordoen na de 2e fout:** Synthesis noemt bij een totaal na de 2e fout alleen het antwoord (§3 D.4). Bliepo laat het kind (zoals de hulproute §3 C.5) zelf verder tellen: elk stuk lekkers van het 2e groepje aantikken, of bij de disco en het verbinden de blauwe stippen in de rij van 10 (rekenmateriaal van de oude Squla-les).
+- **Welke som, na de 2e fout:** Synthesis laat het kind de som typen (stap 10). Bij ons wijst Bliepo de 2 groepjes aan en tikt het kind de goede som (alleen die staat er nog, zoals in de hulproute alleen de goede tegel licht is). Squla level 1 heeft geen typvraag.
+- **De denkfout `min-in-plaats-van-plus` bij "welke som"** benoemt Bliepo wel ("Bij 7 − 3 gaan er koekjes weg."); Synthesis zei alleen "laten we beter kijken" (§10: keuze voor Sara, zie KEUZES Ronde 22).

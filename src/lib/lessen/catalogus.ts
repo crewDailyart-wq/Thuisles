@@ -173,6 +173,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-min-kaal-2", titel: "Kale minsommen (moeilijker)", synthesis: "Squla groep 3 · Minsommen · Kale sommen · level 2 (alleen leerdoel)" },
   { id: "squla-min-kaal-3", titel: "Kale minsommen (nog moeilijker)", synthesis: "Squla groep 3 · Minsommen · Kale sommen · level 3 (alleen leerdoel)" },
   { id: "squla-plus-bakkerij-1", titel: "Plussommen in de bakkerij", synthesis: "Squla groep 3 · Plussommen · Plussommen · level 1 (alleen leerdoel)" },
+  { id: "squla-plus-bakkerij-1-gouden", titel: "Plussommen in de bakkerij", synthesis: "Squla groep 3 · Plussommen · Plussommen · level 1 · gouden les (nieuwe versie van squla-plus-bakkerij-1) · verloop draaiboek Plussommen (Adding below 10)" },
   { id: "squla-plus-bakkerij-2", titel: "Plussommen in de bakkerij (moeilijker)", synthesis: "Squla groep 3 · Plussommen · Plussommen · level 2 (alleen leerdoel)" },
   { id: "squla-plus-bakkerij-3", titel: "Plussommen in de bakkerij (nog moeilijker)", synthesis: "Squla groep 3 · Plussommen · Plussommen · level 3 (alleen leerdoel)" },
   { id: "squla-plus-dansen-1", titel: "Samen 10 in de disco", synthesis: "Squla groep 3 · Plussommen · Dansende sommen · level 1 (alleen leerdoel)" },

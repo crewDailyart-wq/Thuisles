@@ -38,6 +38,8 @@ import { LESSEN_SQULA_KLOK_GOUDEN } from "./squla-klok-gouden";
 import { LESSEN_SQULA_TELLEN_GOUDEN } from "./squla-tellen-gouden";
 /* De gouden les Splitsen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-splits-splitsen1-1. */
 import { LESSEN_SQULA_SPLITSEN_GOUDEN } from "./squla-splitsen-gouden";
+/* De gouden les Plussommen (9 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-plus-bakkerij-1. */
+import { LESSEN_SQULA_PLUSSOMMEN_GOUDEN } from "./squla-plussommen-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -70,6 +72,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_MEER_MINDER,
   ...LESSEN_SQULA_MINSOMMEN,
   ...LESSEN_SQULA_PLUSSOMMEN,
+  ...LESSEN_SQULA_PLUSSOMMEN_GOUDEN,
   ...LESSEN_SQULA_GELD,
   ...LESSEN_SQULA_METEN,
   ...LESSEN_SQULA_KLOK,

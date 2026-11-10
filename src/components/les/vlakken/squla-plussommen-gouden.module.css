@@ -1,0 +1,129 @@
+/*
+  Gouden les Plussommen (9 november 2026): de tel-knopjes, de getallen bij het samen tellen, het vinkje bij het
+  verbinden en het hulphandje. Het plusvlak zelf heeft zijn eigen opmaak (squla-plussommen.module.css). Maten in punten
+  van het vlak (980 × 720), zoals de rest van het vlak.
+*/
+
+/* Een onzichtbare knop op een stuk lekkers of een stip (minstens 48 punten, BOUWREGELS 6.6). */
+.telknop {
+  position: absolute;
+  z-index: 5;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  background: transparent;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.telknop:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 2px;
+}
+
+/* Het getal op wat al geteld is: groot, in de kleur van wat er geteld wordt, met een donkere rand (2.1, 2.7). */
+.nummer {
+  position: absolute;
+  z-index: 5;
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-size: 34px;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 0 3px #0b1030,
+    0 0 3px #0b1030,
+    0 2px 6px rgba(4, 18, 60, 0.95);
+  animation: plop 0.3s ease-out both;
+}
+
+/* Het vinkje bij de gekozen som (alleen een vinkje, geen rand of gloed; T16). */
+.vinkje {
+  position: absolute;
+  z-index: 6;
+  width: 40px;
+  height: 40px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+}
+.vinkje svg {
+  width: 100%;
+  height: 100%;
+}
+.vinkje circle {
+  fill: #2fb36b;
+  stroke: #ffffff;
+  stroke-width: 3;
+}
+.vinkje path {
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 4.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Het hulphandje: de vingertop staat op (left, top); de hand ligt schuin rechtsonder (zoals de gouden les Splitsen). */
+.hand {
+  position: absolute;
+  width: 54px;
+  height: 72px;
+  margin: -2px 0 0 -26px;
+  pointer-events: none;
+  z-index: 7;
+  transform-origin: 48% 3%;
+  will-change: transform;
+}
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-37deg);
+  transform-origin: 48% 3%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening g rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+.lijn {
+  fill: none;
+  stroke: rgba(43, 58, 102, 0.55);
+  stroke-width: 2;
+}
+
+/* "Tik hier": zacht op en neer bij de plek. */
+.pak {
+  animation: tikGebaar 1.1s ease-in-out infinite alternate;
+}
+@keyframes tikGebaar {
+  from {
+    transform: translate(8px, 12px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.4);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pak,
+  .nummer {
+    animation: none;
+  }
+}

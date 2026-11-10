@@ -636,6 +636,77 @@ Alleen in de gouden les Splitsen. De oude les is niet veranderd. Per punt van de
 **Opnieuw getest na Ronde 21c** (als Testkind, Chrome zonder venster, zonder koekje; 0 regels bij een echt kind): eigen testscript alle 7 situaties groen (ook: proef, 4 en 1, 9 s stil → handje van het paarse naar het oranje vak met "Schuif een pion uit het paarse vak naar het oranje vak."; doos met 1 bal → alleen "Klaar? Tik dan op het vinkje."); reactie ± 0,4 s na de laatste pion; speelcontrole alles goed en alles fout tot het eind; verklapcontrole (121 antwoorden), opgaven en inhoudsvergelijking in orde (de 4 vervangen zinnen staan in WEGGEHAALD.md).
 **Vloeiend** (2 keer, niets anders ernaast; de computer had nog wat achtergrondbelasting van andere programma's): laptop 60 beelden per seconde, langste beeld 27–32 ms (in orde). Trage telefoon 58–59 beelden per seconde, hapering 62–71 ms (grens 50 ms; latere fase, DESIGN-LATER.md).
 
+## Ronde 22 — gouden les Plussommen (squla-plus-bakkerij-1-gouden, 9–10 november 2026)
+
+Nieuwe versie naast de oude les squla-plus-bakkerij-1 "Plussommen in de bakkerij" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-plus-bakkerij-1-gouden?naam=Testkind
+
+**Waarom deze les:** het draaiboek Plussommen (Adding below 10) is bouwklaar voor sommen tot 10. Van de 16 Squla-plussomlessen past "Plussommen in de bakkerij" level 1 er het best bij: het gaat over 2 groepjes samen (§3 D "totaal van 2 tegels") en heeft de vraag "welke som hoort erbij?" (§3 E), allemaal tot 10. Level 2 en 3, Kale sommen 2–3 en Bussommen 2–3 gaan boven 10 (niet in deze Synthesis-les); de disco (samen 10) is "kies een paar", terwijl Synthesis aanvult; Kale sommen 1 is alleen typen.
+
+**Inhoud (15.22):** dezelfde 16 vragen, in dezelfde volgorde, met dezelfde getallen, keuzes (ook 0 en 1) en hetzelfde lekkers: 10 verhaaltjes "Hoeveel … zijn het samen?", 2 keer "Welke som hoort erbij?", 3 keer het discospel en 2 keer verbinden. De verhaaltjes zijn de zinnen van de oude les.
+
+**Aanpassingen (15.26):** geen aan de zinnen van de vragen. Wel volgens de regels:
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Disco: de getallen van de som (bv. 5 + 3) in een tegelkleur | een kale som verwijst naar geen voorwerp (2.1, 14.27) | wit; bij het samen tellen met de stippen oranje en blauw |
+| Verbinden: gloed om de gekozen som | geen gloed om een keuze (7.6, T16) | alleen een vinkje |
+| Verbinden: meteen nakijken bij de 3e lijn | het kind kon niets meer veranderen (geleerd bij Splitsen) | nakijken na 0,7 s rust; een tik in die tijd telt nog mee |
+
+**Wat er extra is bijgekomen:** geen extra vragen. Uit het skelet (geen nieuwe vraag): na de 2e fout telt het kind zelf verder (lekkers aantikken of blauwe stippen), en bij "welke som" tikt het de goede som.
+
+**Eigen invulling, niet van Synthesis** (ook in plussommen.md onder "Gouden les squla-plus-bakkerij-1-gouden"): het verbinden (hints en fouttabel), het samen verder tellen na de 2e fout (Synthesis noemt dan alleen het antwoord), de afronding van "welke som" na de 2e fout (Synthesis laat de som typen).
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Niet gebouwd:** tegels herkennen, aanvullen tot 5, 7 en 10, de som typen, omwisselen ("wat is het totaal als ik ze omdraai?") en "nog een manier om 10". Squla level 1 heeft die vragen niet en we voegen niets toe (15.22).
+- **Geen startvraag** (draaiboek §0). De oude les had "Kun je dit al?" met uitleg; die is in deze versie weg (WEGGEHAALD.md).
+- **2 pogingen** (15.11). Synthesis noemt bij een totaal na de 2e fout het antwoord en gaat door; bij ons telt het kind samen met Bliepo verder.
+- **De pijl volgt 15.27** (tabel hieronder). Daardoor wacht de hint na de 1e fout op de pijl; het draaiboek Plussommen (§3 D.2) liet de knoppen meteen terugkomen. 15.27 gaat voor.
+- **Disco: na een tik worden de kaartjes dof** (niet weg): het zijn plaatjes in de tekening, geen knoppen bij Bliepo. Er komt niets om de keuze.
+- **Heel snel:** Bliepo zegt niets (draaiboek §3 D.6). Lang wachten bij een keuzevraag: niets. Bij samen tellen en verbinden (opdrachten): hulphandje na ± 6 s met 1 korte zin.
+- **Naam:** bij de groet en hooguit 1 keer bij een lof (draaiboek: bij "moeilijker" en aan het eind).
+
+**De pijl per stuk tekst (BOUWREGELS 15.27, optie `pijlZoalsSynthesis` staat aan):**
+
+| Stuk tekst | Pijl |
+|---|---|
+| Groet + "In deze les tel je lekkers uit de bakkerij bij elkaar op. Dat heet een plussom." | vanzelf door (pijl tijdens het praten) |
+| Verhaaltje: zin over het 1e groepje, zin over het 2e groepje (met het rode rondje) | geen pijl (hoort bij de keuzevraag) |
+| De vraag met keuzes (hoeveel samen?, welke som?, welk kaartje?) | geen pijl |
+| Lof bij goed in 1 keer ("Knap gedaan! 5 + 2 = 7.") | vanzelf door |
+| Goed na een fout ("Nu heb je hem. 6 + 4 = 10.") | vanzelf door |
+| 1e fout: eerste zin + hint ("1 en 4 samen is minder dan 6. Begin bij 1 en …") | wacht op tik; daarna dezelfde vraag terug |
+| 2e fout: uitleg + "Kom, we tellen samen." (of "Kom, we kijken samen.") | vanzelf door |
+| Samen: "Hier liggen 5 witte broden." / "Kijk: 5 oranje stippen en 3 blauwe stippen." | vanzelf door |
+| Samen: opdracht "We tellen verder vanaf 5. Tik op elk bruin brood daar." | pijl alleen tijdens de zin |
+| De getallen tijdens het tellen ("6.", "7.") en de zin bij het hulphandje | geen pijl |
+| Samen klaar: "7. Samen zijn het 7 broden: 5 + 2 = 7." | wacht op tik (sluit het samen voordoen af) |
+| Welke som, samen: "Eerst liggen er 3 koekjes." / "Er komen 7 koekjes bij. Erbij is plus." | vanzelf door |
+| Welke som, samen: "Tik op de som die erbij hoort." | geen pijl (keuze) |
+| Welke som, samen klaar: "Zo is het: 3 + 7 = 10." | wacht op tik |
+| Disco, samen: "8. Dus 5 + 3 = 8." | vanzelf door |
+| Disco, samen klaar: "Op dit kaartje staat 8." | wacht op tik |
+| Verbinden: "Welk antwoord hoort bij welke som? Tik op een som en dan op het antwoord." (en de korte versie) | pijl alleen tijdens de zin |
+| Verbinden, 1e fout: "Je verbond 3 + 4 met 9. 3 + 4 is minder dan 9. Reken elke som uit en verbind ze opnieuw." | wacht op tik; daarna verbindt het kind opnieuw |
+| Verbinden, samen klaar: "Zo horen ze bij elkaar: 3 + 4 = 7, 5 + 3 = 8, 2 + 7 = 9." | wacht op tik |
+| Overgangszin (1 keer, voor vraag 9) | vanzelf door |
+| Slotzin "Je maakte plussommen tot 10." | vanzelf door |
+| Eindzin + "Tik op de kaart." | geen pijl |
+
+**Wat ontbreekt in de optie (niet zelf veranderd, Lesscherm.tsx is gedeeld):** bij een verhaaltje zegt Bliepo de 2 zinnen elk apart, zodat het rode rondje van het ene groepje naar het andere kan (7.8). Daardoor vervangt de 2e zin de 1e, in plaats van eronder te blijven staan (15.27 punt 4). Om beide te kunnen, zou het lesscherm een seintje per zin moeten geven ("nu begint zin 2"). Graag: mag dat in de gedeelde optie erbij, of liever het rondje weg bij het verhaaltje?
+
+**Graag een besluit (ja of nee):**
+1. **Richting noemen** (zoals Synthesis: "1 en 4 samen is meer dan 4"). Zou dat maar 1 keuze overlaten, dan zegt Bliepo alleen "Je koos 7." met een tip over het tellen (7 foute antwoorden in de les; het script controleert het). Goed zo?
+2. **Min-som benoemen:** bij "welke som?" zegt Bliepo "Bij 7 − 3 gaan er koekjes weg." Synthesis benoemt dat niet (draaiboek §10). Mag Bliepo het zeggen?
+3. **Omwisselen** (Synthesis stap 11: "ik draai ze om, wat is het totaal nu?") zou mooi passen na "welke som". Squla level 1 heeft het niet, dus niet gebouwd. Wil je het later als extra?
+4. **Samen tellen na de 2e fout:** het kind tikt elk stuk lekkers van het 2e groepje (2 tot 6 tikken). Goed zo?
+5. **Verbinden na de 1e fout:** alle lijnen gaan weg en het kind begint opnieuw (de oude les liet de goede lijnen staan, maar dan blijft er bij 3 sommen maar 1 manier over: dat verklapt het). Goed zo?
+6. **Vraag 11 (3 + 6, keuze 3):** 3 is het eerste groepje én 6 − 3. Bliepo zegt "Dat zijn alleen de broodjes hier." Goed zo?
+7. **Het bordje met het getal onder de krentenbollen** (vraag 4) is geel met een oranje getal: slecht te lezen. Dat zit in het gedeelde plusvlak (ook in de oude les). Mag ik dat later herstellen?
+
+**Getest** (als Testkind, Chrome zonder venster, leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 109): eigen testscript `scripts/test-plussommen-gouden.mjs`, 5 routes groen: alles goed (16 × vanzelf door, reactie 0,25 s na de tik, getalkleur gemeten: 1 = roze (255,159,210) en 4 = geel (255,224,102) zoals de taartjes, 5 = wit); fouten bij elke soort vraag (hint wacht op de pijl, 2e fout = uitleg vanzelf door + samen tellen, "Je koos weer te veel", goed na een fout = korte bevestiging, richting niet genoemd waar dat zou verklappen); lang wachten (keuzevraag 9 s: geen handje, geen zin, geen pijl; samen tellen en verbinden: hulphandje na ± 6 s met 1 zin, bij een plek die echt nog geteld moet worden); heel snel (niets over snel); verbinden (lijn veranderen vlak na de laatste: pas daarna nagekeken). Fouttabel-script (rekencontrole + verklapcontrole, 51 foute antwoorden), opgaven en inhoudsvergelijking in orde. De algemene speelcontrole heb ik niet gedraaid.
+**Vloeiend:** NIET gemeten: de computer was niet rustig (belasting 50 tot 550 door ander werk ernaast). Graag meten als het rustig is: `ALLEEN=squla-plus-bakkerij-1-gouden npm run vloeiend`. Het vlak is het bestaande plusvlak met een paar HTML-knopjes erbovenop (geen nieuw Phaser-werk).
+
+**Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
+
 ## Ronde 23 – verder-pijl in de klokles (10 november 2026, voorlopig, wacht op jouw akkoord)
 
 Ik heb de klokles van Synthesis (Hour Hand Hunt) 1 keer helemaal gespeeld en alleen naar de pijl en de tekst gekeken. Alles staat in SYNTHESIS-ANALYSE/PIJL-KLOK.md.
