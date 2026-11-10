@@ -67,8 +67,15 @@ export function mmPlekken(o: MMOpgave | null) {
 export function GoudenMMVlak({ kaarten = null, tellers = null, tellerKleur = "#ffffff", kraal = null, hulphand = null, ...rest }: GoudenMMProps & Vlakbasis) {
   const sleutel = rest.opgave ? JSON.stringify(rest.opgave) : "";
   const plek = useMemo(() => mmPlekken(sleutel ? (JSON.parse(sleutel) as MMOpgave) : null), [sleutel]);
+  /*
+    Keuring 10 november 2026 (BOUWREGELS 15.30, 1.15): de 3 kaarten van het oude vlak lopen tot x = 959 van de 980, maar
+    het vaste tekstvak begint bij x = 880. Een lange hint (4 of 5 regels) viel dan over de rechterkaart (gemeten 63 tot
+    95 px op 4 schermmaten). Bij de kaarten is het hele vlak (kaarten, vinkjes, getallen en handje samen) daarom iets
+    kleiner, vanaf de linkerkant; het oude vlak zelf blijft ongewijzigd. De kralen blijven even groot (die staan vrij).
+  */
+  const kleiner = rest.opgave?.soort === "kaarten";
   return (
-    <div className={s.wortel}>
+    <div className={s.wortel} style={kleiner ? { transform: "scale(0.88)", transformOrigin: "0 50%" } : undefined} data-kleiner={kleiner ? "" : undefined}>
       {/* De gele getallen achter de rijen van het oude vlak niet: hier staat het getal boven de groep, in de kleur van de voorwerpen. */}
       <style>{`.${s.wortel} .${oud.rijgetal}{display:none}`}</style>
       <SqulaMeerMinder {...rest} actief={false} bordjes={null} />

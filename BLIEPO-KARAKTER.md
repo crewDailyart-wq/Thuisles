@@ -323,6 +323,7 @@ Voorbeeld (gouden klokles, staat in FOUTTABEL-squla-klok-gouden.md): klok op 3 u
 
 - Het **hulphandje komt vanzelf**, met **1 korte zin** van Bliepo; er is geen knop (5.10). Het wijst aan waar het kind moet tikken of waarheen het moet slepen. Het kind doet de laatste tik zelf.
 - Bij een tik- of sleepopdracht komt na 5 à 6 seconden zonder handeling vanzelf het hulphandje met 1 korte zin; bij een keuzevraag komt niets (6.10).
+- Doet Bliepo een stap zelf omdat het niet lukte (het vangnet: lang niets of steeds mis), dan zegt hij geen "Ja" alsof het kind het deed: "Kijk, hier liggen de meeste." (keuring Meer-minder, 10 nov 2026).
 - Wat Bliepo noemt, wijst hij aan met het rode rondje; een rondje alleen als Bliepo iets noemt. Bij de klok: gloed om de wijzer, en een oranje ring om het getal alleen bij een hint, een doel (klok zetten) of na 2 keer fout, 1 ring tegelijk (7.8, 7.9).
 - Een gekozen groep krijgt alleen een vinkje, zonder gele rand en zonder gloed; nog een tik haalt het vinkje weg (6.5).
 

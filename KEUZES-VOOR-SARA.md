@@ -917,3 +917,19 @@ Nieuwe versie naast de oude les squla-meer-minder-evenveel2-1 "De meeste" (die i
 2. **Het vinkje pas na een keuze** (Synthesis: meteen in beeld). Goed zo?
 3. **Samen tellen bij de kralen:** alleen de volgende kraal reageert op een tik (van links naar rechts). Goed zo, of mag het kind elke kraal tikken?
 4. **De eindkaart links van het tekstvak** voor alle lessen met de nieuwe stemoptie. Mag dat ook voor Tellen, Splitsen en Plussommen (die hebben de optie nog niet)?
+
+## Ronde 25b — keuring gouden les Meer-minder (onafhankelijke keurder, 10 november 2026)
+
+Gekeurd: zie KEURING-MEER-MINDER-GOUDEN.md en KINDTEST-MEER-MINDER-GOUDEN.md. Uitslag: **goedgekeurd** na 4 herstellingen (alleen in deze les).
+
+**Aanpassingen (15.26), alleen in deze les:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| De 3 kaarten met koekjes even breed als het oude vlak | een lange hint (4 à 5 regels) viel over de rechterkaart (1.15, 15.30); de kaart liep 63 tot 95 px onder het tekstvak | bij de kaarten is het hele vlak iets kleiner (88 %); nu 29 tot 43 px ruimte |
+| "Je koos weer een kaart met bijna de meeste." | stroef; er is maar 1 zo'n kaart | "Je koos weer dezelfde kaart." |
+| "Ja, daar liggen de meeste koekjes: 14." ook als Bliepo de kaart zelf aanwees (vangnet) | "Ja" alsof het kind het goed deed | na het vangnet: "Kijk, hier liggen de meeste koekjes: 14." |
+| "Je koos 10. Dat is dichtbij." (5 keer per les) | steeds dezelfde zin (5.10) | om en om "Dat is dichtbij." / "Je zit er dichtbij." / "Dat scheelt niet veel." |
+
+**Graag een besluit (ja of nee):**
+1. **Het speelvlak loopt ook in 2 andere gouden lessen het tekstvak in** (alleen gemeten, niets veranderd): Minsommen (het vak met het vraagteken, ± 25 px) en Plussommen (de plank, ± 90 px). Nu valt er geen tekst over, maar een hint van 4 of meer regels wel. Mag de bouwer daar het vlak ook iets kleiner maken, zoals bij Meer-minder?
+2. **De koekjes in rijen van 10** zijn nu nog iets kleiner (88 %). Hoort bij vraag 1 van Ronde 25: goed zo, of liever een hulp waarbij de koekjes groot blijven?

@@ -68,6 +68,13 @@
 > - **Woorden als "meeste" laten Bliepo een gebaar maken** (lib/bliepo-gebaren.ts, BOUWREGELS 3.16); het sprongen-script telt dat als "Bliepo verspringt". Kijk bij een Bliepo-sprong eerst of het een gebaar is.
 > - **Gedeelde verbetering BliepoTekst:** het woord van nu hoort bij 1 uitspraak; zonder dat stond een nieuwe zin heel even wit en werd hij daarna weer gedimd (F7).
 
+> ## ⭐ GELEERD BIJ DE KEURING MEER-MINDER (onafhankelijke keurder, 10 november 2026; KEURING-MEER-MINDER-GOUDEN.md) — geldt voor elke gouden les
+> - **Het speelvlak blijft uit het vaste tekstvak** (15.30, 1.15). Het overlap-script keek alleen naar Bliepo; bij Meer-minder liepen de 3 kaarten van het oude vlak 63 tot 95 px onder het tekstvak, en een hint van 4 of 5 regels viel over de rechterkaart. Meet de rechterrand van het speelvlak tegen de linkerrand van `.bliepo-vloer-ballon` op alle 4 de schermmaten, en maak een schermfoto van de **langste hint** bij elke soort beeld. Oplossing zonder het oude vlak te veranderen: het gouden vlak bij dat beeld iets kleiner (`scale`, vanaf links).
+> - **Na het vangnet geen "Ja"**: deed Bliepo de stap zelf (20 s niets of 3 keer mis), dan zegt hij niet "Ja, daar …" alsof het kind het deed, maar "Kijk, hier …".
+> - **Ook een korte eerste zin zonder richting afwisselen** ("Dat is dichtbij." stond 5 keer per les; 5.10): 2 à 3 versies.
+> - **"Weer" bij dezelfde kaart:** zeg wat het kind deed ("Je koos weer dezelfde kaart."), geen stroeve omschrijving ("een kaart met bijna de meeste").
+> - **Geldt ook voor eerder gebouwde gouden lessen** (alleen gemeten, niets veranderd; eerst Sara, KEUZES Ronde 25b): het speelvlak loopt het tekstvak in bij **Minsommen** (± 25 px) en **Plussommen** (± 90 px); "… is dichtbij." steeds hetzelfde in **Tellen** en **Splitsen**. "Ja" na het vangnet: in geen andere les.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

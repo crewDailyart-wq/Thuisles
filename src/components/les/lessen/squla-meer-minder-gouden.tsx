@@ -450,6 +450,7 @@ async function samenKaarten(l: Lesgids, v: Driekaart, kaarten: number[], o: MMOp
   const gedaan = new Promise<void>((r) => (eersteTik = r));
   void zegOpdracht(l, [ZIN.samenMeeste(max)], gedaan).catch(() => {});
   hand.opnieuw();
+  let zelf = false;
   try {
     let mis = 0;
     for (;;) {
@@ -458,6 +459,7 @@ async function samenKaarten(l: Lesgids, v: Driekaart, kaarten: number[], o: MMOp
       /* Vangnet: 20 s geen tik of 3 keer een andere kaart; Bliepo wijst de kaart zelf aan en de les gaat door. */
       if (t === null || (t.vak !== goedIdx && ++mis >= 3)) {
         log(l, "vangnet", { mis });
+        zelf = true;
         break;
       }
       log(l, "tik", { kaart: t.vak });
@@ -475,7 +477,7 @@ async function samenKaarten(l: Lesgids, v: Driekaart, kaarten: number[], o: MMOp
   await l.wacht(DENK_MS);
   speelLesgeluid("goed");
   bliepoScherm("goed");
-  await zegDoor(l, ZIN.samenKaartKlaar(max));
+  await zegDoor(l, zelf ? ZIN.samenKaartZelf(max) : ZIN.samenKaartKlaar(max));
   zet(l, { tellers: null, kaarten: null });
 }
 

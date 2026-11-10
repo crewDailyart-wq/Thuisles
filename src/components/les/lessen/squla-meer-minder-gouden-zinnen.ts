@@ -112,6 +112,8 @@ export const ZIN = {
   samenMeeste: (max: number) => `${ko(max)} is het meest. Tik op die kaart.`,
   samenKaartHand: "Tik op de kaart met het grootste getal.",
   samenKaartKlaar: (max: number) => `Ja, daar liggen de meeste koekjes: ${ko(max)}.`,
+  /** Na het vangnet (Bliepo wees de kaart zelf aan): geen "Ja", want het kind tikte die kaart niet (keuring 10 nov). */
+  samenKaartZelf: (max: number) => `Kijk, hier liggen de meeste koekjes: ${ko(max)}.`,
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
   weerGekozen: (x: number) => `Je koos weer ${kr(x)}.`,
   /** Stap 8: einde. */
@@ -178,6 +180,11 @@ const HINT_VEEL = ["Tel nog een keer. Raak elke kraal maar 1 keer aan.", "Tel ri
  * (15.17). Het fouttabel-script controleert dit.
  */
 const HINT_NEUTRAAL = ["Tel nog een keer, rij voor rij.", "In een volle rij liggen 5 kralen. Tel zo verder.", "Begin bij de bovenste rij en tel rustig opnieuw."];
+/**
+ * Zonder richting: het gekozen getal ligt vlak naast het goede (het middelste van de 3). Keuring 10 nov: eerst stond hier
+ * 5 keer per les precies "Dat is dichtbij." (BOUWREGELS 5.10: afwisselen); nu 3 versies, geen ervan geeft een richting.
+ */
+const DICHTBIJ = ["Dat is dichtbij.", "Je zit er dichtbij.", "Dat scheelt niet veel."];
 /** Woorden die een richting geven (te weinig of te veel); verboden in een hint als Bliepo de richting niet noemt. */
 export const RICHTINGWOORDEN = /\bmeer\b|minder|erbij|sla er geen|1 keer|maar 1|te veel|te weinig|niet allemaal|laatste rij/i;
 
@@ -207,7 +214,7 @@ export function telFout(x: number, v: Telvraag): Fout {
     const uitleg = verschil === 1 ? "Er is 1 kraal niet geteld." : "Er zijn een paar kralen niet geteld.";
     const weer = ["Je telde er weer te weinig.", "Wijs elke kraal aan en zeg er 1 getal bij."];
     return verklapt
-      ? { ...basis, eerste: `Je koos ${X}. Dat is dichtbij.`, hint: HINT_NEUTRAAL[v.nr % 3], uitleg, weer: [], over: andere, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
+      ? { ...basis, eerste: `Je koos ${X}. ${DICHTBIJ[v.nr % 3]}`, hint: HINT_NEUTRAAL[v.nr % 3], uitleg, weer: [], over: andere, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
       : { ...basis, eerste: `Je koos ${X}, maar er liggen meer kralen.`, hint: HINT_WEINIG[v.nr % 3], uitleg, weer, over: kant };
   }
   if (x > n) {
@@ -215,7 +222,7 @@ export function telFout(x: number, v: Telvraag): Fout {
     const uitleg = verschil === 1 ? "Er is 1 kraal 2 keer geteld." : "Er zijn een paar kralen 2 keer geteld.";
     const weer = ["Je telde er weer te veel.", "Zeg bij elke kraal 1 getal. Dan tel je er geen 2 keer."];
     return verklapt
-      ? { ...basis, eerste: `Je koos ${X}. Dat is dichtbij.`, hint: HINT_NEUTRAAL[(v.nr + 1) % 3], uitleg, weer: [], over: andere, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
+      ? { ...basis, eerste: `Je koos ${X}. ${DICHTBIJ[v.nr % 3]}`, hint: HINT_NEUTRAAL[(v.nr + 1) % 3], uitleg, weer: [], over: andere, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" }
       : { ...basis, eerste: `Je koos ${X}, maar zoveel kralen liggen er niet.`, hint: HINT_VEEL[v.nr % 3], uitleg, weer, over: kant };
   }
   return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: HINT_NEUTRAAL[0], uitleg: "We tellen ze 1 voor 1.", weer: [], scherm: SCHERM_TEL, over: andere };
@@ -256,7 +263,8 @@ export function drieFout(x: number, v: Driekaart): Fout {
     eerste: "Daar liggen veel koekjes, maar niet de meeste.",
     hint,
     uitleg: "Er is een kaart met nog meer koekjes.",
-    weer: ["Je koos weer een kaart met bijna de meeste.", "Als we tellen, zie je het verschil."],
+    /* Keuring 10 nov: was "Je koos weer een kaart met bijna de meeste." (stroef; er is maar 1 zo'n kaart). */
+    weer: ["Je koos weer dezelfde kaart.", "Als we tellen, zie je het verschil."],
     scherm: SCHERM_DRIE,
     over: andere,
   };

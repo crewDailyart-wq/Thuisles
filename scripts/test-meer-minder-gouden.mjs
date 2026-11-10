@@ -298,6 +298,9 @@ async function speel(P, o = {}) {
         await wacht(o.vraagWacht ?? 1200);
         if ((await P.nu()).pijl) fout(`pijl bij de vraag met kaarten (${taak.vraag})`);
         await zonderTellerEnHand();
+        /* Keuring 10 nov (15.30): de kaarten blijven links van het vaste tekstvak (eerst liep de rechterkaart 63–95 px eronder). */
+        const zone = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); if (!v) return null; const k = [...document.querySelectorAll('[data-ding^="kaart-"]')].filter((b) => !b.disabled).map((b) => b.getBoundingClientRect().right); return k.length ? Math.round(Math.max(...k) - v.getBoundingClientRect().left) : null; })()`);
+        if (zone !== null && zone > 0) fout(`de rechterkaart loopt ${zone} px onder het tekstvak (${taak.vraag})`);
         laatsteTaak = sleutel;
         const x = keuze(taak);
         /* Zoals een kind: soms eerst een andere kaart, dan van gedachten veranderen (het vinkje gaat mee). */
