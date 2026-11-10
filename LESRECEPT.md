@@ -89,6 +89,14 @@
 > - **"Je koos weer …" past bij wat het kind deed:** "typte" bij typen, "sleepte" bij slepen.
 > - **Geldt ook voor eerder gebouwde gouden lessen:** alleen Huisnummers heeft typen; in de andere 6 gouden lessen kan het kind alleen kiezen, tikken of slepen uit vaste dingen, en daar gaat het fouttabel-script al alle foute antwoorden langs. Daar is deze fout dus niet mogelijk (geteld: 0 van 6).
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES GETALLENLIJN (10 november 2026) — geldt voor elke gouden les
+> - **Een richting kan ook de andere foute keuze uitsluiten** (bij 17 / 18 / 8: "17 staat vóór het raketje, tel verder" sluit ook de 8 uit). Dan zegt Bliepo alleen "Het raketje staat niet bij de 17." en de hint geeft **ook geen richting** ("Kijk recht onder het raketje. Tel de streepjes vanaf een getal dat je ziet."). Het fouttabel-script controleert beide (voorbeeld: `scripts/fouttabel-getallenlijn-gouden.ts`).
+> - **Een rondje dat bijna het antwoord aanwijst, mag niet** (bij "ongeveer" een rondje om de 10 als het raketje bij 11 staat). Dan noemt de hint geen getal en komt er geen rondje (15.17, 7.8: rondje alleen om wat Bliepo noemt).
+> - **Bij vaste keuzes heeft elke rij een denkfout**: het script laat "onduidelijk" niet toe, en elke eerste zin moet door de waarheidscontrole na te lopen zijn (een zin die het script niet kent, telt als fout).
+> - **Een opdracht in stapjes (springen 0 → 1 → 2 → 3):** na elke stap het testkenmerk (`haak`) bijwerken, anders denkt de test dat er niets gebeurde; een tik op een stap die al gedaan is telt niet als fout; een correctie midden in de opdracht ("Het raketje springt steeds 1 streepje.") is een opdrachtzin **zonder pijl** en een tik tijdens die zin telt.
+> - **Kaarten op volgorde:** een kaart die al in een vak ligt heeft geen `data-plek`, anders tikt de speelcontrole steeds dezelfde kaart heen en terug. Nakijken met het vinkje als alle vakken vol zijn (6.5).
+> - **Heeft het draaiboek een startvraag** ("laten zien wat je weet?"), dan komt die er ook (zoals Splitsen en de klok): Ja = proef van vraag 1 en 2, 2 fouten = de uitleg en daarna alle vragen.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

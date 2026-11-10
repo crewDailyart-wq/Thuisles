@@ -129,6 +129,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-getallenlijn-rangschikken-2", titel: "Getallen op hun plek (moeilijker)", synthesis: "Squla groep 3 · Getallenlijn · Getallen rangschikken t/m 20 · level 2 (alleen leerdoel)" },
   { id: "squla-getallenlijn-rangschikken-3", titel: "Getallen op hun plek (nog moeilijker)", synthesis: "Squla groep 3 · Getallenlijn · Getallen rangschikken t/m 20 · level 3 (alleen leerdoel)" },
   { id: "squla-getallenlijn-kat-1", titel: "Het raketje op de getallenlijn", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met een figuur · level 1 (alleen leerdoel)" },
+  { id: "squla-getallenlijn-kat-1-gouden", titel: "Het raketje op de getallenlijn", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met een figuur · level 1 · gouden les (nieuwe versie van squla-getallenlijn-kat-1) · verloop draaiboek Getallenlijn (Count the Jumps)" },
   { id: "squla-getallenlijn-kat-2", titel: "Het raketje op de getallenlijn (moeilijker)", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met een figuur · level 2 (alleen leerdoel)" },
   { id: "squla-getallenlijn-dieren-1", titel: "Dingen op de getallen", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 1 (alleen leerdoel)" },
   { id: "squla-getallenlijn-dieren-2", titel: "Dingen op de getallen (moeilijker)", synthesis: "Squla groep 3 · Getallenlijn · Getallenlijn met dieren · level 2 (alleen leerdoel)" },

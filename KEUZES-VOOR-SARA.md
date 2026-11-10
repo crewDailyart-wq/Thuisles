@@ -1007,3 +1007,65 @@ Gekeurd: zie KEURING-HUISNUMMERS-GOUDEN.md en KINDTEST-HUISNUMMERS-GOUDEN.md. Ui
 4. "Nu lopen we terug." bij alle 3 de terugtelvragen: kort en het kind weet dat de richting omdraait. Advies: zo laten.
 
 **Geen nieuwe vragen.** In andere gouden lessen kan deze fout niet voorkomen (0 van 6: geen typen).
+
+## Ronde 27 — gouden les Getallenlijn (squla-getallenlijn-kat-1-gouden, 10 november 2026)
+
+Nieuwe versie naast de oude les squla-getallenlijn-kat-1 "Het raketje op de getallenlijn" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-getallenlijn-kat-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Waarom deze les:** er zijn 4 Squla-lessen Getallenlijn (getallen op hun plek, het raketje, dingen op de getallen, terugtellen). Het draaiboek (Count the Jumps) gaat over een figuurtje dat per 1 over een getallenlijn springt, met bogen. Alleen "het raketje" past daar deels bij (draaiboek §8); de andere 3 helemaal niet. Van het raketje is level 1 gekozen: dat begint met een lijn 0–10, net als Count the Jumps, en vraagt vooral "bij welk getal staat het raketje?". Level 2 begint met "welk getal komt voor 15?" en een pijl die een streepje aanwijst.
+
+**Let op:** het draaiboek past maar deels (Count the Jumps gaat over het verschil tussen 2 getallen). Strikt volgens 15.16 ("geen passende Synthesis-les = niets bouwen") had ik kunnen stoppen; de opdracht was bouwen met de best passende les. Alle 7 soorten vragen zijn daarom **eigen invulling** (zie onder).
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde lijnen, getallen en keuzes: 5 keer "bij welk getal staat het raketje" (lijn 0–10 en 9–20), "welk getal komt na 10", "wat is meer: 13 of 14", 2 keer op volgorde, 2 keer "wat staat er bij 17 / 14", 2 keer "het dichtst bij", 2 keer "ongeveer". De vraagzinnen zijn die van de oude les.
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Bij welk getal staat het raketje?" bij vraag 1, 2 en 3 | dezelfde zin direct na elkaar (F7, geleerd bij Meer-minder) | bij vraag 2 "Bij welk getal staat het raketje nu?" |
+| "Wat staat er bij 17? Tik erop." was meteen het antwoord | tikken op een ding in beeld = vinkje (6.5) | het ding krijgt een vinkje, het vinkje bij Bliepo kijkt na |
+| Op volgorde: nakijken zodra de vakken vol zijn; een handje schoof de goede kaart naar het eerste vak | slepen = vinkje (6.5); het handje wees het antwoord aan (15.17) | het vinkje komt als alle vakken vol zijn; het hulphandje wijst na ± 6 s alleen een leeg vak aan |
+| "Zoek het getal dat vlak na 10 komt." (hint bij "ongeveer") | liet maar 1 keuze over (15.17) | "Kijk welk getal op de lijn het dichtst bij het raketje staat." zonder rondje |
+| "Tot en met 6 staat het goed." (op volgorde) | met 3 kaarten blijft er dan maar 1 volgorde over (15.17) | "Na 6 zette je 8." en "Zoek steeds het kleinste getal dat nog over is." |
+| Het goede getal kwam groen op de lijn | een getal op de witte lijn is wit (2.1, 2.2) | wit, met een lichtgolf |
+
+**Wat er extra is bijgekomen** (uit het draaiboek, binnen dezelfde stof en getallen; 15.22 punt 4):
+- De startvraag "laten zien wat je weet?" (draaiboek stap 3), samen met de groet in 1 stuk: "In deze les zoek je bij welk getal het raketje staat. Weet jij al hoe dat gaat?" Ja = een proef met vraag 1 en 2 (geen extra vragen); 2 fouten in de proef = de uitleg en dan alle 15 vragen. Nee = de uitleg.
+- De uitleg na Nee (draaiboek stap 4, met de 6 stappen van 4.5): een lijn 0–10, het raketje bij de 0, het kind laat het raketje springen tot de 3 (tikken op 1, 2, 3; alleen die getallen zijn wit; elke sprong krijgt een boog die blijft staan), dan de uitlegvraag **"Hoeveel sprongen maakte het raketje?"** (2 / 3 / 4) en "Het raketje sprong 3 keer vanaf de 0. Daarom staat het bij de 3." Dan "Nu jij."
+
+**Eigen invulling, niet van Synthesis (15.22 punt 5):** alle 7 soorten vragen van de Squla-les (bij welk getal, na 10, wat is meer, op volgorde, wat staat er bij, het dichtst bij, ongeveer) zitten niet in Count the Jumps. Ze hebben hetzelfde skelet, maar hun eerste zinnen, hints en fouttabel zijn eigen invulling (per rij gemarkeerd in FOUTTABEL-squla-getallenlijn-kat-1-gouden.md). Van Synthesis: de startvraag met proef, het springen per 1 met blijvende bogen, "steeds 1 streepje" bij overslaan, de uitlegvraag "hoeveel sprongen?" met de denkfout "de getallen geteld in plaats van de sprongen", en samen springen bij een fout.
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Niet gebouwd:** de opfrisser/rondleiding (7 − 3), de demo-vraag in de proef, de som 3 − 2 en 4 − 2 met typen, "zoek een paar met verschil 2" en het spel met 5 kristallen. Die gaan over het verschil (aftrekken); de Squla-les heeft ze niet en we voegen niets toe (15.22).
+- **Proef:** Synthesis geeft na 1 fout een makkelijkere som. Bij ons: de gewone hint en nog een kans (zoals de klok en Splitsen); 2 fouten in de proef = de uitleg. Proef goed: de les gaat door met vraag 3 t/m 15.
+- **2 pogingen** (15.11). Synthesis: in het spel na de 2e fout de hele uitleg opnieuw of "pauze?". Bij ons: 1e fout hint, 2e fout samen springen en door. Nooit stoppen, geen pauze (15.18).
+- **Samen voordoen:** Bliepo springt zelf per 1 over de lijn vanaf een getal dat je ziet (hooguit 3 sprongen), zegt het getal bij elke landing, en bij het doel komt het getal op de lijn. Bij "het dichtst bij" zet hij de getallen op een lijn 0–20 en telt hij de sprongen naar het doel (1, 2). Bij op volgorde legt hij 2 kaarten en sleept het kind de laatste. De kleine stap: het getal of het ding aantikken. Vangnet: na 20 s niets (of 3 keer anders gelegd) doet Bliepo het zelf ("Kijk, …", geen "Ja").
+- **Hulphandje:** Synthesis heeft een handje-knop. Bij ons komt het vanzelf, alleen bij opdrachten (springen, op volgorde, de kleine stap), ± 6 s na de opdrachtzin; bij kiezen niets (§4: Synthesis geeft bij stilte nooit een hint).
+- **Kiezen in plaats van typen:** Synthesis typt het antwoord; de Squla-les heeft keuzes, die blijven.
+- **Het raketje** in plaats van het astronautje (geen poppetjes). De getikte getallen zijn bij Synthesis rood; bij ons wit (2.2), met het rode rondje alleen om wat Bliepo noemt.
+- **Heel snel:** Bliepo zegt niets (6.10). **Naam:** bij de groet en hooguit 1 keer bij een lof.
+- **De pijl:** 15.27 (Bliepo praat door). De zin bij een sprong overslaan hoort bij de opdracht: zonder pijl.
+- **Het speelvlak** is een nieuw Phaser-vlak (zelfde plaatjes als de oude les), helemaal links van het tekstvak.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Eigen testscript `scripts/test-getallenlijn-gouden.mjs`: Nee-route alles goed (ook eerst een ander ding kiezen en van gedachten veranderen, de eerste kaart echt slepen), Ja met de proef goed (geen uitleg, verder vanaf vraag 3), Ja met 2 fouten in de proef (de uitleg, daarna alle 15), fouten, alles fout, elk ander fout antwoord, een sprong overslaan in de uitleg, vangnet, lang wachten, tik op de pijl, kleur: in orde. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten.
+- Einde zin → volgend stuk: gemiddeld 724–793 ms, kleinste 700, grootste 879 ms (doel ± 700). Tik op de pijl: binnen 39–83 ms iets nieuws.
+- Lang wachten: bij kiezen zegt Bliepo niets en komt er geen handje (9 s). Bij springen, op volgorde en de kleine stap komt het handje ± 6 s na de opdrachtzin (7,2–9,3 s na het begin van de opdracht).
+- Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768 (route "alles fout", met de langste zinnen): 0 overlap, tekstvak, eerste regel en pijl 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit, het speelvlak blijft links van het tekstvak (34 px ruimte). Eindkaart: 0 woorden van Bliepo eronder. **Bliepo "verspringt" 4 keer**: dat is het gebaar bij het woord "meer" (vraag 5, "Wat is meer: 13 of 14?"; lib/bliepo-gebaren.ts, regel 3.16), zoals bij Meer-minder; hij raakt de tekst nooit. De beginzin was eerst 5 px te lang voor het vak; nu korter ("… bij welk getal het raketje staat.").
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0. Gedimd en weer gedimd: 0.
+- Speelcontrole (`npm run speel`, GOED en ALLEFOUT, F7-meter): tot het eind, 0 fouten (49 en 170 stappen). Opgaven en inhoudsvergelijking: in orde. Fouttabel-script: 37 foute antwoorden, reken-, verklap- en waarheidscontrole in orde (82 beweringen).
+- Getalkleur gemeten in Chrome: de getallen in Bliepo's zinnen zijn wit (255,255,255), zoals op de lijn.
+- **Echte stem in een zichtbare Chrome** (± 7 minuten): 64 zinnen gestart, 43 helemaal uitgesproken, 21 afgebroken omdat de test al tijdens de vraag antwoordde (mag een kind ook). Geen zin dubbel. Woorden: het eerste woord licht gemiddeld 79 ms na de start van de stem op; het laatste woord gemiddeld 270 ms naast het geschatte moment (grootste 588 ms). De Google-stem geeft geen woordmeldingen, dus ± 150 ms kan ik niet bewijzen (zoals bij de vorige lessen). Via het lesoverzicht openen lukte de test niet (de link lag buiten beeld); daarom met de rechtstreekse link.
+- **Vloeiend** (belasting ± 5 bij de start; er draaide nog een andere sessie): laptop 60 beelden/s, langste beeld 35 ms; trage telefoon 60 beelden/s, langste beeld 41 ms. Openen in de ontwikkelversie 2,3 s / 6,2 s (op de echte site moet het onder 1 s).
+
+**Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (dezelfde plaatjes als de oude les).
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
+
+**Graag een besluit (ja of nee):**
+1. **Deze les als gouden les Getallenlijn** (kat-1, het raketje), terwijl het draaiboek maar deels past. Goed zo, of liever wachten op een betere Synthesis-les (15.16)?
+2. **De startvraag met proef** (het draaiboek heeft "laten zien wat je weet?"). Goed zo?
+3. **De uitleg met springen tot de 3 en "Hoeveel sprongen maakte het raketje?"** (een extra uitlegvraag uit het draaiboek, binnen de getallen 0–10). Goed zo?
+4. **Het vinkje** bij "wat staat er bij" en bij op volgorde (de oude les keek meteen na). Goed zo?
+5. **"Wat is meer: 13 of 14"** heeft maar 2 keuzes: na 1 fout blijft er altijd 1 over. Bliepo noemt alleen de regel ("Het getal dat je later zegt als je telt, is meer."). Goed zo?
+6. **Vraag 9 (17 / 18 / 8), keuze 17:** Bliepo zegt alleen "Het raketje staat niet bij de 17." (zonder richting), omdat "17 staat vóór het raketje" ook de 8 uitsluit en dan het antwoord verklapt. Goed zo?
+7. **De getallen 13 en 14 in het verhaaltje** ("Gisteren vond het er 13") zijn wit: de sterren staan niet in beeld. Goed zo, of geel (de kleur van sterren)?
