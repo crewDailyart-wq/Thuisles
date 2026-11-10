@@ -54,6 +54,12 @@
 > - **Testen:** met een rechtstreekse link wacht de eerste zin op de eerste tik (stemHeelUitpraten): het testscript tikt eerst 1 keer naast het speelvlak. Bewerk geen bronbestand terwijl een test loopt (de les herstart dan en de F8-teller geeft vals alarm). Laat een testscript Chrome ook afsluiten als het wordt gestopt (SIGTERM): 65 achtergebleven Chrome-processen gaven een belasting van 290.
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): klok, Tellen, Splitsen en Plussommen hebben `woordenMeeMetStem` nog niet (1 regel per les).
 
+> ## ⭐ GELEERD BIJ DE KEURING MINSOMMEN (onafhankelijke keurder, 10 november 2026; KEURING-MINSOMMEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Ook de uitleg na de 2e fout gebruikt het woord van de vraag** (3.11, 3.12): vraagt de les "Hoeveel komen eruit?", zeg dan niet "Er blijven … over". En geef die uitleg 2 versies, zodat een kind dat veel fouten maakt niet 15 keer dezelfde zin hoort (5.10).
+> - **Een rondje om 1 getal in een som raakt de tekens ernaast niet** (1.15). Maak een schermfoto van elke soort som met rondje.
+> - **Meet de eindkaart:** loopt Bliepo's laatste zin over de kaart? In alle 4 gemeten gouden lessen wel (Tellen 4 woorden, Splitsen 3, Plussommen 2, Minsommen 1 tot 4; klok niet gemeten). Kaart en tekstvak komen uit het gedeelde Lesscherm.tsx: niet per les oplossen, eerst Sara (KEUZES-VOOR-SARA.md Ronde 24b punt 1).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeten): de eindkaart in Tellen, Splitsen en Plussommen (zie hierboven). Het rondje om een getal in een som zit alleen in Minsommen.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

@@ -62,8 +62,9 @@
 .rondjeOm::after {
   content: "";
   position: absolute;
-  left: -0.42em;
-  right: -0.42em;
+  /* Keuring 10 nov: smaller, zodat het rondje het min- en is-teken ernaast niet raakt (1.15). */
+  left: -0.3em;
+  right: -0.3em;
   top: -0.34em;
   bottom: -0.34em;
   background: url("/rondje/rondje-rood-2.png") center / 100% 100% no-repeat;

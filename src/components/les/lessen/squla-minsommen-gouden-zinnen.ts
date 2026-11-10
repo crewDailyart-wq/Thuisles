@@ -254,7 +254,8 @@ export function minFout(v: Minvraag, x: number): Fout {
       x === u + 1 ? "1 te veel (misschien het begingetal meegeteld bij het terugtellen)" : "te veel over (te weinig teruggeteld)",
       `${A} ${MIN} ${B} is minder dan ${X}.`,
       { minderDan: x },
-      `Er blijven minder over dan ${X}.`,
+      /* Keuring 10 nov: bij de machine het woord van de vraag ("komen eruit", 3.11); 2 versies, zodat het kind niet 15 keer hetzelfde hoort (5.10). */
+      machine ? [`Er komen minder blokjes uit dan ${X}.`, `Er komen er minder dan ${X} uit.`][nr % 2] : [`Er blijven minder over dan ${X}.`, `Er blijft minder dan ${X} over.`][nr % 2],
       ["Je koos weer te veel.", `Tel precies ${B} terug.`],
       `Je koos ${X}.`,
     );
@@ -265,7 +266,7 @@ export function minFout(v: Minvraag, x: number): Fout {
       x === u - 1 ? "1 te weinig (1 te ver teruggeteld)" : "te weinig over (te ver teruggeteld)",
       `${A} ${MIN} ${B} is meer dan ${X}.`,
       { meerDan: x },
-      `Er blijven meer over dan ${X}.`,
+      machine ? [`Er komen meer blokjes uit dan ${X}.`, `Er komen er meer dan ${X} uit.`][nr % 2] : [`Er blijven meer over dan ${X}.`, `Er blijft meer dan ${X} over.`][nr % 2],
       ["Je koos weer te weinig.", `Tel precies ${B} terug, niet verder.`],
       `Je koos ${X}.`,
     );

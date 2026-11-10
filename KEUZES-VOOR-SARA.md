@@ -833,3 +833,20 @@ Nieuwe versie naast de oude les squla-min-machine-1 "Minsommen: hoeveel over?" (
 4. **Samen voordoen na de 2e fout:** het kind tikt zelf de stippen weg en de teller telt mee (ook bij de kale sommen; Synthesis noemt daar alleen het antwoord). Goed zo?
 5. **De les begint niet met uitleg over de machine** (Synthesis wel; Squla level 1 niet). Wil je toch een korte uitleg, dan moet dat er als extra bij.
 6. **Woorden oplichten in de andere gouden lessen** (klok, Tellen, Splitsen, Plussommen): mag ik daar de ene regel `woordenMeeMetStem: true` bijzetten?
+
+## Ronde 24b — keuring gouden les Minsommen (onafhankelijke keurder, 10 november 2026)
+
+Gekeurd: zie KEURING-MINSOMMEN-GOUDEN.md en KINDTEST-MINSOMMEN-GOUDEN.md. Uitslag: **goedgekeurd** na 2 kleine herstellingen (alleen in deze les).
+
+**Aanpassingen (15.26), alleen de uitleg na de 2e fout en het rondje:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Machine, 2e fout: "Er blijven meer over dan 6." / "Er blijven minder over dan 9." | de vraag zegt "komen eruit", niet "blijven over" (3.11, 3.12); en altijd dezelfde zin (5.10) | "Er komen meer blokjes uit dan 6." of "Er komen er meer dan 6 uit." (en zo ook met "minder") |
+| Bord en midden, 2e fout: steeds "Er blijven meer/minder over dan …" | altijd dezelfde zin (5.10) | afwisselend "Er blijven meer over dan 2." en "Er blijft meer dan 2 over." (en zo ook met "minder") |
+| Rood rondje om het getal dat eraf gaat (som in het midden) | raakte het min- en is-teken (1.15) | iets smaller |
+
+**Graag een besluit (ja of nee):**
+1. **De eindkaart staat over het begin van Bliepo's laatste zin** (1 tot 4 woorden). Dat komt uit het gedeelde lesscherm, niet uit 1 les. Gemeten: Tellen 4 woorden, Splitsen 3, Plussommen 2, Minsommen 1 tot 4 (klok niet gemeten). Mag de bouwer de kaart iets naar links of het tekstvak iets naar rechts zetten, voor alle lessen?
+2. **Samen voordoen bij Minsommen:** Bliepo telt de stippen die weg gaan ("1, 2, 3"), en de grote teller toont wat er overblijft ("9, 8, 7"). Zo doet Synthesis het ook. Goed zo, of liever dat Bliepo telt wat er overblijft?
+3. **Tijdens het wegtikken** vervangt Bliepo's tellen ("1.") de opdracht "Haal er 3 weg. Tik op 3 stippen." in het tekstvak. De som (10 − 3 = ?) blijft bovenaan staan. Goed zo?
+4. **Het Synthesis-tabblad "Dot Destruction"** in je Chrome kon ik niet sluiten (Chrome reageerde niet). Het staat er nog; je kunt het zelf sluiten.

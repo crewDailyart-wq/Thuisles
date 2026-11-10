@@ -2177,3 +2177,10 @@ Voorstel: laat `BEVESTIG` en `OPEN_GOED` per les eigen woorden krijgen (bijv. da
 | (9) zin klinkt als vraag in een hint | 58 (tijd 12, meten 10, vormen 9, getallenlijn 6, dagen 4, klok 4, tellen 5, huisnummers 3, geld 2, meer-minder 1, rekenmix 0, plussommen 0, +2) |
 
 Niet geverifieerd: spreken en afspelen (geen speelcontrole), de volledige tekst van alle `toonAntwoord`/`goedZin`-regels (bij steekproef gelezen: dagen, klok, tellen, plus-, min-, piraat, splitsen, rekenmix, meer-minder, huisnummers, getallenlijn, vormen en de MIS-lijsten van tijd), en of `beginzinnen(...)` de `welkom`-zinnen met cijferwoorden in de praktijk vervangt (zie lijst van cijferplekken). Alleen tekstvoorstellen; er is niets in code of database aangepast.
+
+## Gouden les Minsommen (squla-min-machine-1-gouden) — onafhankelijke keuring 10 november 2026
+
+GOEDGEKEURD na 2 kleine herstellingen in de les (uitleg na de 2e fout: woord van de vraag en 2 versies; rondje smaller).
+Open bij Sara (gedeeld lesscherm): de eindkaart staat over 1–4 woorden van de laatste zin, ook in Tellen, Splitsen en
+Plussommen. Volledig verslag: KEURING-MINSOMMEN-GOUDEN.md en KINDTEST-MINSOMMEN-GOUDEN.md; vragen in KEUZES-VOOR-SARA.md
+Ronde 24b. les_uitkomsten: hoogste id 143 voor en na.
