@@ -105,6 +105,14 @@
 > - **Een gebaar bij "meer" of "groot" is geen fout** (3.16): het sprongen-script telt het als "Bliepo verspringt". Kijk of de overlap 0 blijft; dan is het goed.
 > - **Geldt ook voor eerder gebouwde gouden lessen** (alleen geteld, niets veranderd; eerst Sara, KEUZES Ronde 27b): een opdracht in de "weer"-zin bij de 2e fout staat in **Huisnummers** ("Tel elk huis mee …", "Tel maar 1 stap verder."), de **klok** ("Zoek de kleine, dikke wijzer …", "Tel maar mee: precies 1 stap.") en **Tellen** ("Tel ook de … in de laatste rij."): 3 van de 7. Een hint die zegt waar het antwoord staat: **1 van de 7**, de **klok** (squla-klok-gouden-zinnen.ts: "Na de 6 ga je maar 1 getal verder. Volg de blauwe pijl." en "Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl.", precies de zinnen die 15.17 al noemt; ze staan er nog). Twee woorden voor dezelfde stap: niet gevonden (alleen in Getallenlijn gezocht op stapjes/sprongen). Onzichtbaar na `killTweensOf` op iets van `tover()`: **0 van de 7** gezien; alleen in **Huisnummers** kan het in theorie (`losTerug` op de losse huizen), maar daar komt `losTerug` pas na een fout, lang na het verschijnen.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES METEN (10 november 2026) — geldt voor elke gouden les
+> - **Een lang stuk tekst maakt Bliepo kleiner** (het lesscherm schaalt hem als de tekst te lang is): het sprongen-script ziet dat als "Bliepo verspringt" (15.30). Zet een beschrijving van het beeld als eigen stuk vóór de vraag (`intro`), zodat elk stuk kort blijft. Een gebaar bij "groot" of "klein" (3.16) blijft wel een sprong in het script; kijk of de overlap 0 is.
+> - **Voorlezen bij aanwijzen op eigen knoppen** (3.5, `zegKeuze`) niet terwijl Bliepo die kaartjes zelf voorleest: anders klinkt dezelfde zin 2 keer (F8).
+> - **Het les-id letterlijk in het draaiboek** (`id: "…"`, geen variabele): `npm run opgaven` zoekt het zo op.
+> - **Geen "kaart" in de naam (aria-label) van een eigen knop**: de testscripts zoeken de eindkaart op dat woord.
+> - **Bewerk geen bestand terwijl een test loopt** (geleerd bij Minsommen, opnieuw gezien): de les begint dan opnieuw en de test geeft valse fouten.
+> - **Het oude vlak hergebruiken kan** (zoals Meer-minder): gloed en eigen knoppen van het oude vlak uit (`kaartenActief: false`, geen `goed`/`fout`/`gekozen`), eigen HTML-knoppen met vinkje erover, en het hele vlak iets kleiner vanaf links.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

@@ -1094,3 +1094,73 @@ Gekeurd: zie KEURING-GETALLENLIJN-GOUDEN.md en KINDTEST-GETALLENLIJN-GOUDEN.md. 
 
 **1 nieuwe vraag (ja of nee):**
 8. Bij een fout zegt Bliepo soms dat het gekozen getal **vlak naast** het raketje staat ("15 is het streepje na het raketje.", "8 staat vlak vóór het raketje."). Dan weet een kind met 1 stapje het antwoord. Huisnummers doet hetzelfde ("9 ligt 1 huis te ver."), en die is goedgekeurd. Mag dat (het kind moet nog zelf 1 stap tellen), of telt dat ook als verklappen? Advies: **mag**, want het noemt het antwoord niet en het kind moet nog zelf tellen.
+
+## Ronde 28 — gouden les Meten (squla-meten-oppervlakte-1-gouden, 10 november 2026)
+
+Nieuwe versie naast de oude les squla-meten-oppervlakte-1 "Hoe groot is het?" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-meten-oppervlakte-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Waarom deze les:** er zijn 7 Squla-lessen Meten (pizza's 1–3, hoeveelheden 1–2, "Hoe groot is het?" 1–2). Het draaiboek Meten (Area: Cover It Up) gaat over "welk kleed is groter? Bedek het met gelijke tegels en tel ze". Alleen "Hoe groot is het?" past daarbij (KOPPELING.md §11); pizza's en vol/leeg/zwaar/licht hebben geen Synthesis-les. Van "Hoe groot is het?" is **level 1** gekozen: dat is groep 3 (getallen tot 12) en heeft "even groot of groter?" (Cover It Up stap 5) en "hoeveel blaadjes?" met gelijke blaadjes (stap 3). Level 2 gaat over grote en kleine blaadjes; dat zit alleen in Tile Sizes, en die les is maar kort bekeken.
+
+**Let op:** Cover It Up is bij Synthesis stof van groep 5, en de vragen van Squla zitten er maar deels in (draaiboek §8). Net als bij Getallenlijn: gebouwd met de best passende les; de soorten vragen die niet in Cover It Up zitten, zijn **eigen invulling** (zie onder).
+
+**Inhoud (15.21, 15.22):** dezelfde 12 vragen, in dezelfde volgorde, met dezelfde tekeningen, getallen en keuzes: 2 keer schilderijen op de muur (kies er 2), de tafels met borden op volgorde, 2 keer muurtjes op volgorde, het gedraaide kaartje, blauw en geel op ruitjespapier (kies er 2), 2 keer speelmatten, 3 keer een tafel vol blaadjes (typen). Daarna komen er 3 vragen terug (eerst wat niet meteen goed was, aangevuld met dezelfde reserve als de oude les): samen 15. Niets toegevoegd: geen gok, geen tegels leggen, geen Max, geen eenheden, geen trapkleed (15.21).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Vraag 2: "Kijk naar de schilderijen op de muur. Wat klopt er? Kies er 2." (precies als vraag 1) | dezelfde zinnen direct na elkaar (F7, geleerd bij Meer-minder) | "Weer een muur met schilderijen. Welke 2 zinnen kloppen?" |
+| Vraag 8: "Weer 2 speelmatten. Wat klopt? Zijn ze even groot? Is mat 1 groter? Of is mat 2 groter?" | 4 zinnen die net ook al kwamen (lange zin niet steeds herhalen, geleerd bij Splitsen) | "Weer 2 speelmatten. Zijn ze even groot, of is mat 1 of mat 2 groter?" |
+| Vraag 9: "… Tel de blaadjes en typ het getal." | het kind mag de blaadjes aantikken om te tellen (draaiboek §0); dat zegt Bliepo 1 keer (3.15) | "… Tik de blaadjes aan als je telt. Typ dan het getal." |
+| Vraag 11: "Weer een tafel vol blaadjes. Hoe groot is de tafel? Tel de blaadjes en typ het getal." (precies als vraag 10) | dezelfde zinnen direct na elkaar (F7) | "Nog een tafel vol blaadjes. Hoe groot is deze tafel?" |
+| "het muurtje van 6 stenen" | klopte niet: het muurtje heeft 18 stenen, 6 naast elkaar | "het muurtje van 6 stenen breed" |
+| De 3 zinnen bij de speelmatten stonden als kaartjes in het beeld | dezelfde soort vraag als het gedraaide kaartje, dat knoppen bij Bliepo heeft (zoals de woordknoppen van Synthesis, §0) | dezelfde 3 zinnen als knoppen bij Bliepo; een tik is het antwoord |
+| Kies er 2 en op volgorde werden vanzelf nagekeken | tikken op dingen in beeld en slepen gaat met het vinkje (6.5) | het gekozen kaartje krijgt een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| Na een fout bij op volgorde bleven de goede plaatjes liggen | bij 3 plaatjes verklapt dat het antwoord (15.17) | alle plaatjes glijden terug |
+| Vraag 3, 5, 7 en 9: beschrijving en vraag in 1 lange zin ("Hier zijn 4 tafels met borden. Zet de tafels op volgorde. …") | te lang voor het vaste tekstvak: Bliepo werd dan kleiner (15.30) | eerst de beschrijving als 1 stuk ("Hier zijn 4 tafels met borden."), dan de vraag; dezelfde zinnen |
+
+**Wat er extra is bijgekomen** (15.22 punt 4): geen opdracht en geen vraag. Wel uit het draaiboek, als bediening: bij de tafel vol blaadjes mag het kind de blaadjes aantikken om te tellen (elk blaadje krijgt het volgende nummer, nog een tik haalt het weg; draaiboek §0 en §3 C.3). En de 1e keer zegt Bliepo hoe het werkt: "Tik de blaadjes aan als je telt.", "Tik op 2 kaartjes.", "Sleep een plaatje naar een leeg vak. Tikken mag ook." (3.15).
+
+**Eigen invulling, niet van Synthesis (15.22 punt 5):** de schilderijen en de ruitjes (kies er 2), op volgorde (tafels, muurtjes), het gedraaide kaartje en de speelmatten zitten niet zo in Cover It Up. Ze hebben hetzelfde skelet, maar hun eerste zinnen, hints en de fouttabel zijn eigen invulling (per rij gemarkeerd in FOUTTABEL-squla-meten-oppervlakte-1-gouden.md). Wel van Synthesis: de tafel vol blaadjes ("hoeveel tegels?", §3 C: een eigen zin per fout getal: de bovenste rij, een rij gemist, dichtbij), tegels aantikken om te tellen, samen tellen bij de 2e fout (§3 G), de denkfouten `lang-lijkt-groter`, `groot-vierkant-lijkt-groter` en `vorm-verandert-grootte` (§7), en het getal in de kleur van de tegels naast het ding na goed ("10 blaadjes", §3 C.4).
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Begin:** Synthesis begint meteen met de vraag. Bij ons eerst de groet en 1 zin wat je in de les doet, in 1 stuk (laag 1, zoals de andere gouden lessen). Geen startvraag (het draaiboek heeft er geen).
+- **Typen in plaats van knoppen** bij "hoeveel blaadjes?": Synthesis heeft 4 getalknoppen met "weet ik niet"; de Squla-les laat typen, dat blijft (inhoud van Squla). Geen "Weet ik niet" (1.27).
+- **2 pogingen** (15.11). Synthesis: bij tellen 3 tot 4 pogingen, en samen tellen na 2 keer hetzelfde foute getal of "weet ik niet". Bij ons: 1e fout = zin + hint, 2e fout = uitleg en samen tellen, en dan door. Na het samen tellen geen vraag meer met 2 knoppen (Synthesis §3 C.8): het tellen zelf is de kleine stap van het kind.
+- **Bij een getal ernaast** zegt Bliepo geen "1 te veel" (Synthesis wel): dan weet het kind het antwoord (15.17). Bliepo zegt "Dat is dichtbij." en "Tik elk blaadje 1 keer aan als je telt."
+- **Aanwijzen:** Synthesis maakt getelde tegels goud met een nummer. Bij ons krijgt een getelde tegel een donker bolletje met het nummer in de kleur van de blaadjes (2.2). Wat Bliepo noemt, krijgt het rode rondje (de bovenste rij, mat 1 of 2, kaartje 2, een vak; 7.8).
+- **Samen voordoen bij de andere vragen** (eigen invulling, want Cover It Up heeft ze niet): matten en ruitjes: Bliepo telt de eerste, het kind tikt de stukken of hokjes van de tweede (zoals samen tellen, §3 G); schilderijen: de tegels achter de schilderijen worden zichtbaar, Bliepo noemt per schilderij hoeveel tegels het bedekt (het getal blijft staan) en het kind tikt de 2 goede kaartjes aan; het gedraaide kaartje: het kind tikt kaartje 2 en het draait terug; op volgorde: Bliepo legt ze, het kind sleept het laatste plaatje. Vangnet: na 20 s niets doet Bliepo het zelf ("Kijk, …", geen "Ja").
+- **Stilte:** Synthesis zegt bij leggen en tellen na 15 tot 17 s een zin. Bij ons komt bij opdrachten (op volgorde, samen tellen, de kleine stap) na ± 6 s het hulphandje met 1 korte zin (15.19); bij kiezen, kies er 2 en typen niets (§4: bij keuzevragen zegt Synthesis niets).
+- **Heel snel:** Bliepo zegt niets (§3 A.2 en C.2: Synthesis ook niet).
+- **Naam:** Synthesis noemt de naam nooit; bij ons bij de groet en hooguit 1 keer bij een lof (BLIEPO-KARAKTER §3.3).
+- **De 3 vragen die terugkomen** (de oude les) heeft Synthesis niet; ze blijven (inhoud van Squla), met dezelfde regels.
+- **De pijl:** 15.27 (Bliepo praat door).
+- **Het speelvlak** is het oude Phaser-vlak, iets kleiner gezet vanaf links (86 %), met de nieuwe dingen in HTML erbovenop; het oude vlak is niet veranderd.
+
+**Afwijkingen van "Meten laten liggen" (besluit 8 nov), graag jouw keuze:** in de gouden les volgen de regels van hoofdstuk 15, dus:
+- geen **gele gloed** om een gekozen kaartje en geen gloed of ring bij goed of fout op de keuze, maar een **vinkje** (de oude les houdt de gloed);
+- het **oplichten** van een schilderij-kaartje (sterke gloed langs de rand, 7.9) blijft alleen op het moment dat Bliepo de zin van dat kaartje voorleest; de andere kaartjes (ruitjes) krijgen dan het rode rondje.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Eigen testscript `scripts/test-meten-gouden.mjs`: alles goed (ook eerst een ander kaartje kiezen en weer weghalen, het eerste plaatje echt slepen, blaadjes aantikken), fouten, alles fout, elk ander fout antwoord, vangnet, lang wachten, tik op de pijl, kleur: tot de eindkaart, nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten. De 3 vragen die terugkomen komen terug.
+- Einde zin → volgend stuk: gemiddeld 727–787 ms (doel ± 700). Een paar keer ± 950 ms: na het laatste getal bij samen tellen. Tik op de pijl: binnen 50–190 ms iets nieuws.
+- Lang wachten: bij kiezen, kies er 2 en typen zegt Bliepo niets en komt er geen handje. Bij op volgorde en de kleine stap komt het handje 7,7–9,3 s na het begin van de opdracht (± 6 s na de opdrachtzin).
+- Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768 (route "alles fout", langste zinnen): 0 overlap, tekstvak, eerste regel en pijl 0 sprongen, tekst past in het vak, het speelvlak blijft links van het tekstvak (± 93 px ruimte). Eindkaart: 0 woorden van Bliepo eronder. **Bliepo "verspringt" 2 keer**: het gebaar bij "klein … groot" (3.16), zoals bij Getallenlijn; hij raakt de tekst nooit. Eerst werd Bliepo ook kleiner bij 4 lange vraagzinnen; die zijn nu in 2 stukken gezet (zie de tabel).
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0. **Gedimd en weer gedimd: 0 tot 1 keer per run** (in 2 van de laatste 8 runs 1 keer: een zin stond heel even wit en werd gedimd zodra de stem begon). Het gebeurde alleen als de computer erg druk was (belasting 15–45); ik kon niet vinden dat het in deze les zit. Graag laten nakijken bij de keuring.
+- Speelcontrole (`npm run speel`, GOED en ALLEFOUT, F7-meter): tot het eind, 0 fouten (59 en 246 stappen). Opgaven en inhoudsvergelijking: in orde. Fouttabel-script: 57 foute antwoorden, reken-, verklap- en waarheidscontrole in orde (341 antwoorden: bij typen elk getal van 0 tot 99, bij op volgorde elke volgorde).
+- Getalkleur gemeten in Chrome: geel (tegels, gele hokjes) 255,224,102; blauw 143,196,255; groen 126,224,160; oranje 255,173,92; wit 255,255,255 (puzzelstukken, borden).
+- **Echte stem in een zichtbare Chrome** (± 7 minuten): 68 zinnen gestart, 48 helemaal uitgesproken, 20 afgebroken omdat de test al tijdens de vraag antwoordde (mag een kind ook). Geen zin dubbel. Woorden: het eerste woord licht gemiddeld 45 ms na de start van de stem op, het laatste gemiddeld 76 ms naast het geschatte moment (grootste 231 ms); 7 van de 8 meetbare zinnen binnen ± 150 ms. De Google-stem geeft geen woordmeldingen, dus ± 150 ms kan ik niet bewijzen (zoals bij de vorige lessen).
+- **Vloeiend** (belasting ± 20: de computer was niet rustig): laptop 60 beelden/s, langste beeld 31 ms; trage telefoon 60 beelden/s, langste beeld 28 ms. Openen in de ontwikkelversie 2,0 s / 5,9 s (op de echte site moet het onder 1 s). Graag opnieuw meten als het rustig is: `ALLEEN=squla-meten-oppervlakte-1-gouden npm run vloeiend`.
+
+**Stem en kosten:** alle zinnen gebruiken de browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (dezelfde tekeningen als de oude les).
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
+
+**Graag een besluit (ja of nee):**
+1. **Deze les als gouden les Meten** (oppervlakte level 1), terwijl Cover It Up stof van groep 5 is en maar 1 van de 6 soorten vragen (hoeveel blaadjes?) echt bevat. Goed zo, of liever wachten (15.16)?
+2. **Geen gele gloed om de keuze in de gouden les**, maar een vinkje (de oude les houdt de gloed, "Meten laten liggen"). Goed zo?
+3. **Het oplichten van het schilderij-kaartje** terwijl Bliepo het voorleest (7.9), en een rood rondje bij de andere kaartjes. Goed zo?
+4. **Blaadjes aantikken om te tellen** (draaiboek §0) en de zin "Tik de blaadjes aan als je telt." bij vraag 9. Goed zo?
+5. **De zinnen bij de speelmatten als knoppen bij Bliepo** in plaats van kaartjes in het beeld. Goed zo?
+6. **Kies er 2: "1 van je 2 kaartjes klopt."** zonder te zeggen welke (anders blijft er maar 1 paar over). Goed zo?
+7. **Bij een getal vlak naast het antwoord** zegt Bliepo "Dat is dichtbij." en niet "1 te veel" (dat zou het antwoord verklappen; Synthesis zegt het wel). Goed zo?
+8. **Het gedraaide kaartje heeft 2 keuzes**: na 1 fout blijft er 1 over; Bliepo zegt de regel van de oude les ("draaien maakt iets niet groter of kleiner"). Goed zo?

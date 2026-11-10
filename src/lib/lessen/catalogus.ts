@@ -205,6 +205,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-meten-hoeveelheden-1", titel: "Vol, leeg, zwaar en licht", synthesis: "Squla groep 3 · Meten en maten · Hoeveelheden · level 1 (alleen leerdoel)" },
   { id: "squla-meten-hoeveelheden-2", titel: "Vol, leeg, zwaar en licht (moeilijker)", synthesis: "Squla groep 3 · Meten en maten · Hoeveelheden · level 2 (alleen leerdoel)" },
   { id: "squla-meten-oppervlakte-1", titel: "Hoe groot is het?", synthesis: "Squla groep 3 · Meten en maten · Oppervlakte · level 1 (alleen leerdoel)" },
+  { id: "squla-meten-oppervlakte-1-gouden", titel: "Hoe groot is het?", synthesis: "Squla groep 3 · Meten en maten · Oppervlakte · level 1 · gouden les (nieuwe versie van squla-meten-oppervlakte-1) · verloop draaiboek Meten (Area: Cover It Up)" },
   { id: "squla-meten-oppervlakte-2", titel: "Hoe groot is het? (moeilijker)", synthesis: "Squla groep 3 · Meten en maten · Oppervlakte · level 2 (alleen leerdoel)" },
   { id: "squla-klok-digitaal-1", titel: "De digitale klok", synthesis: "Squla groep 3 · Klokkijken · De digitale klok · level 1 (alleen leerdoel)" },
   { id: "squla-klok-digitaal-2", titel: "De digitale klok (moeilijker)", synthesis: "Squla groep 3 · Klokkijken · De digitale klok · level 2 (alleen leerdoel)" },

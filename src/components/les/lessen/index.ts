@@ -47,6 +47,8 @@ import { LESSEN_SQULA_MEER_MINDER_GOUDEN } from "./squla-meer-minder-gouden";
 /* De gouden les Huisnummers (10 november 2026, BOUWREGELS 15.22): een nieuwe les naast squla-huisnummers. */
 import { LESSEN_SQULA_HUISNUMMERS_GOUDEN } from "./squla-huisnummers-gouden";
 import { LESSEN_SQULA_GETALLENLIJN_GOUDEN } from "./squla-getallenlijn-gouden";
+/* De gouden les Meten (10 november 2026, BOUWREGELS 15.21, 15.22): een nieuwe les naast squla-meten-oppervlakte-1. */
+import { LESSEN_SQULA_METEN_GOUDEN } from "./squla-meten-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -69,6 +71,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_HUISNUMMERS,
   ...LESSEN_SQULA_HUISNUMMERS_GOUDEN,
   ...LESSEN_SQULA_GETALLENLIJN_GOUDEN,
+  ...LESSEN_SQULA_METEN_GOUDEN,
   ...LESSEN_SQULA_SPLITSEN,
   ...LESSEN_SQULA_SPLITSEN_GOUDEN,
   ...LESSEN_SQULA_PIRAAT,
