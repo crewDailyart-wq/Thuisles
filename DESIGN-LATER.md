@@ -40,3 +40,6 @@ De gouden klokles zet `stemHeelUitpraten` aan (lib/stem.ts, optie per les). Bij 
 - De groet met de naam van het kind (naamfragment) klinkt aan het begin, ook als de les via een rechtstreekse link wordt geopend (dan bij de eerste tik).
 - Alle andere lessen (zonder de optie) gedragen zich nog precies zoals nu; zet de optie per les aan als die les is omgezet.
 - Meet opnieuw met de F7-meter (tekst en gedimd/wit) en het stem-logboek (scripts/test-klok-gouden-pijl.mjs, ZICHTBAAR=1 ECHTESTEM=1).
+
+## Woorden oplichten met Ruth (10 november 2026)
+De gouden les Minsommen zet `woordenMeeMetStem` aan: elk woord licht op als Bliepo het zegt. Met de browserstem worden de woordtijden geschat (de Google-stem in Chrome geeft geen woordmeldingen) of gehaald uit de woordmeldingen van de browser. **Ruth levert straks echte woordtijden** (ElevenLabs geeft per woord een begin en eind): die gaan al via `meldVoorlezen(zin, grenzen, tijden)` in lib/voorlezen.ts. Bij de overstap nakijken: komen de tijden per woord mee met elk geluidsbestand (ook bij {naam}), en klopt het aantal woorden met de zin op het scherm (anders valt het terug op de schatting).

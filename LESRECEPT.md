@@ -45,6 +45,15 @@
 > - **Het beginscherm heeft altijd een uitlegdeel** (wat je in deze les doet), ook vóór een startvraag (4.3).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): Tellen en de klokles kijken alleen naar "ja" vooraan in de lofzin en zeggen "Klaar met kijken?" ook als de eerste pijl na een fout komt; de klokles herhaalt het uitlegvoorbeeld (3 uur) als eerste vraag.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES MINSOMMEN (10 november 2026) — geldt voor elke gouden les
+> - **Woorden lichten op met de stem** (`woordenMeeMetStem: true`, 3.9a, BOUWREGELS 3.7).
+> - **Een 2e zin in een stuk mag niet eerst wit en dan weer gedimd worden** (F7). Wachtte een zin langer dan 2,5 s op zijn beurt, dan werd hij wit en daarna weer grijs. Opgelost in het gedeelde BliepoTekst (de 2,5 s tellen nu per zin vanaf zijn beurt); geldt dus meteen voor alle lessen.
+> - **De teller (of een ander getal dat meetelt) pas na het antwoord of bij het samen voordoen** (15.20); test het: een meting "teller in beeld tijdens een keuzevraag" moet 0 zijn.
+> - **Na goed met een naspeel-animatie** (de machine): de les wacht tot de animatie klaar is, maar een tik op de pijl slaat ook die over.
+> - **Kale som = witte getallen, ook als het oude vlak ze kleurt**: teken de som dan zelf in het gouden vlak (2.1, 14.27), het oude vlak blijft ongewijzigd.
+> - **Testen:** met een rechtstreekse link wacht de eerste zin op de eerste tik (stemHeelUitpraten): het testscript tikt eerst 1 keer naast het speelvlak. Bewerk geen bronbestand terwijl een test loopt (de les herstart dan en de F8-teller geeft vals alarm). Laat een testscript Chrome ook afsluiten als het wordt gestopt (SIGTERM): 65 achtergebleven Chrome-processen gaven een belasting van 290.
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): klok, Tellen, Splitsen en Plussommen hebben `woordenMeeMetStem` nog niet (1 regel per les).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >
@@ -159,8 +168,13 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 ### 3.9 Verder-pijl (DEFINITIEF, 10 november 2026, nieuwe regel van Sara, BOUWREGELS 15.27)
 - Bliepo praat door: na elk stuk tekst ±0,7 s na het einde van de zin vanzelf verder, ook na lof, uitleg en hint.
 - De pijl staat rechts onder de tekst als snelkoppeling (tik = stem stopt, meteen door). Geen pijl bij vragen, opdrachten (ook niet tijdens de opdrachtzin), hulphandje en eindkaart.
-- Zet in elke nieuwe of omgezette gouden les `pijlZoalsSynthesis: true` en `stemHeelUitpraten: true` aan (skelet).
+- Zet in elke nieuwe of omgezette gouden les `pijlZoalsSynthesis: true`, `stemHeelUitpraten: true` en `woordenMeeMetStem: true` aan (skelet).
 - *[Vervangen: de eerdere 3.9 met "wacht op een tik bij de hint na de 1e fout en uitleg die iets nieuws afsluit".]*
+
+### 3.9a Woorden lichten op met de stem (Sara, 10 november 2026, BOUWREGELS 3.7)
+- Elk woord licht op op het moment dat Bliepo het zegt (± 150 ms), zoals Synthesis (per woord, gedimd → wit; bij ons het woord van nu oranje). Niets verspringt.
+- Zet in elke nieuwe of omgezette gouden les `woordenMeeMetStem: true` aan (skelet, naast `pijlZoalsSynthesis` en `stemHeelUitpraten`). Voorbeeld: squla-minsommen-gouden.tsx.
+- Meet met het woorden-meetscript in een zichtbare Chrome met de echte stem (route `woorden` in scripts/test-minsommen-gouden.mjs; voor een andere les `LES=<les-id>`).
 
 ### 3.9b Vaste zones (Sara, 10 november 2026, BOUWREGELS 15.30)
 - Bliepo, het tekstvak (pijl rechtsonder, vaste plek), het speelvlak en de knoppen hebben elk een vaste zone; niets verspringt, Bliepo valt nooit over de tekst. Een nieuw stuk tekst staat er in 1 keer op dezelfde plek (gedimd tot Bliepo het zegt).

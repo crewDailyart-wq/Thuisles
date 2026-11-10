@@ -541,3 +541,9 @@ Niet benoemd (alleen samen doen of het antwoord):
 - **Niet voor minsommen boven 10 en over het tiental** (ruimte 2–3, bussommen 2–3, kale sommen 2–3): geen passende opgaven in deze les.
 - **Niet voor het busverhaal en geld** (machine 4): niet in deze les.
 - Strikt volgens BOUWREGELS 15.4 is het draaiboek dus **nog niet helemaal bouwklaar** (open punten 1–13).
+
+---
+
+## Gouden les squla-min-machine-1-gouden (10 november 2026)
+
+Gebouwd op dit draaiboek, met de inhoud van Squla "Minsommen: hoeveel over?" level 1 (15 vragen). Gebruikt: §0 (geen startvraag), §2 stap 17 (oefenreeks: lof + de som in woorden), §3 E en G (reacties bij een som), §3 F (hardop meetellen bij het weghalen), §4 (bij keuzevragen geen aanwijzing), §6–§7 (denkfouten). **Eigen invulling, niet van Synthesis:** de hint na de 1e fout ("Begin bij … en tel … terug", "Steek … vingers op …") met het rode rondje om het getal dat eraf gaat, en het samen voordoen waarbij het kind de stippen zelf wegtikt (ook in de "oefenreeks"; Synthesis doet daar zelf voor). Niet gebouwd: stap 1–16 (machine leren kennen tot "alles weg") en stap 18 (herhalen): niet in de Squla-les. Zie KEUZES-VOOR-SARA.md Ronde 24 en FOUTTABEL-squla-min-machine-1-gouden.md.

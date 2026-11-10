@@ -45,6 +45,35 @@ export function meldVoorlezen(zin: string, spraak: { begin: number; eind: number
   for (const f of luisteraars) f();
 }
 
+/**
+ * De stem meldt dat hij nu bij een woord is (browser: onboundary, `charIndex` = waar dat woord in de zin begint;
+ * 10 november 2026, alleen in lessen met de optie woordenMeeMetStem, zie lib/stem.ts). Het oplichten springt dan naar
+ * precies dat woord, en de woorden erna worden opnieuw geschat in het tempo dat de stem tot nu toe echt had.
+ */
+export function meldWoordgrens(zin: string, charIndex: number): void {
+  if (!huidig || huidig.zin !== zin || !huidig.tijden.length) return;
+  const t = (performance.now() - huidig.start) / 1000;
+  /* Welk geschreven woord begint op (of net na) deze plek? */
+  const woorden = zin.trim().split(/\s+/).filter(Boolean);
+  let plek = zin.length - zin.trimStart().length;
+  let k = 0;
+  for (let i = 0; i < woorden.length; i++) {
+    const begin = zin.indexOf(woorden[i], plek);
+    if (begin + woorden[i].length > charIndex) {
+      k = i;
+      break;
+    }
+    plek = begin + woorden[i].length;
+    k = i + 1;
+  }
+  if (k >= huidig.tijden.length) return;
+  const oud = huidig.tijden;
+  const factor = k > 0 && oud[k].begin > 0.05 ? Math.min(2.5, Math.max(0.4, t / oud[k].begin)) : 1;
+  const tijden = oud.map((w, j) => (j < k ? w : { begin: t + (w.begin - oud[k].begin) * factor, eind: t + (w.eind - oud[k].begin) * factor }));
+  huidig = { ...huidig, tijden };
+  for (const f of luisteraars) f();
+}
+
 /** Klaar met deze zin (of gestopt). */
 export function stopVoorlezen(): void {
   if (!huidig) return;

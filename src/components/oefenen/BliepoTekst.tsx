@@ -75,10 +75,16 @@ export function BliepoTekst({
     staat al gedimd klaar tot de stem begint (geen witte flits ervoor); begint
     er binnen 2,5 tel geen stem (stem uit), dan gewoon helemaal wit.
   */
-  const [wacht, zetWacht] = useState(true);
+  /*
+    De 2,5 tel gelden per zin: de klok begint opnieuw zodra deze zin aan de beurt is (`gesproken` verandert). Eerst liep
+    hij vanaf het begin van het stuk; wachtte de 2e zin langer dan 2,5 tel op de 1e, dan werd hij wit en daarna, als
+    Bliepo hem ging zeggen, weer gedimd (F7, gemeten bij de gouden les Minsommen, 10 november 2026).
+  */
+  const [verlopen, zetVerlopen] = useState<string | null | undefined>(undefined);
+  const wacht = verlopen !== gesproken;
   const [gelezen, zetGelezen] = useState<string | null>(null);
   useEffect(() => {
-    const klok = window.setTimeout(() => zetWacht(false), 2500);
+    const klok = window.setTimeout(() => zetVerlopen(gesproken), 2500);
     return () => window.clearTimeout(klok);
   }, [gesproken]);
   const leest = nu >= 0;

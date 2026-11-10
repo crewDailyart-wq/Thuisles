@@ -211,6 +211,8 @@ Telling: 3 zinnen (ongewijzigd uit de vierde ronde), geen robotzinnen.
 18. Ja, er gingen er {b} weg. Er blijven er {c} over.
 19. Ja, van de {a} blijven er {c} over.
 20. Ik heb het nagekeken: {a} min {b} is {c}. *(robot)*
+20a. {a} − {b} = {c}. *(10 nov, gouden les Minsommen: zonder "Ja", voor na een lofzin die al met "Ja" begint)*
+20b. Er komen {c} blokjes uit. / Van de {a} blijven er {c} over. *(idem; bij de machine "komen eruit")*
 
 **Splitsen**
 21. Ja, {totaal} kun je splitsen in {a} en {b}.

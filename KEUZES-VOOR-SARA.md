@@ -776,3 +776,60 @@ Zonder geluid (rechtstreekse link of herladen): het hele startstuk staat in beel
 | Splitsen | ja, 2 van 4 (en 1 na 44 ms) | 0 | 0 | 0 | 10 keer (Bliepo 4) | 0 |
 | Plussommen | ja, 12 van 13 | 0 | 0 | 0 | 0 | 4 |
 Dus: de afbreekfout van de stem speelt in alle 3; verspringen in 2; pijl aan/uit in 2; dubbel uitspreken, terugkomende tekst en overlap heb ik daar niet gezien.
+
+## Ronde 24 — gouden les Minsommen (squla-min-machine-1-gouden, 10 november 2026)
+
+Nieuwe versie naast de oude les squla-min-machine-1 "Minsommen: hoeveel over?" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-min-machine-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Waarom deze les:** het draaiboek Minsommen (Dot Destruction) is bouwklaar voor minsommen tot 10. Van de 16 Squla-minlessen past "Minsommen: hoeveel over?" level 1 er het best bij: een machine waar 10 in gaat en waar iets af gaat (zoals Synthesis bij 10 − 4), daarna kale minsommen tot 10 (de oefenreeks). De ruimte-lessen hebben verbinden (niet bij Synthesis), de bussommen typen en een verhaal (niet bij Synthesis), de andere levels gaan boven 10.
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde getallen en dezelfde 3 keuzes: 5 keer de min-machine (10 min 3, 5, 1, 4, 2), 6 keer het schoolbord en 4 keer een kale som in het midden. De vraagzinnen zijn die van de oude les.
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Elke machinevraag de hele zin: "10 blokjes gaan de machine in. De machine haalt er 3 af. Hoeveel blokjes komen eruit?" | dezelfde lange zin 5 keer (LESRECEPT, geleerd bij Splitsen) | vraag 1 helemaal; vraag 2 t/m 5: "Nu haalt de machine er 5 af. Hoeveel blokjes komen eruit?" |
+| Kale sommen op het bord en in het midden in 2 kleuren | een kale som verwijst naar geen voorwerp (2.1, 14.27) | wit; bij het samen voordoen in de kleur van de stippen |
+| Na een fout: "Je koos 8, maar het antwoord is kleiner." | verklapte soms het antwoord (15.17) | reacties uit de fouttabel; richting alleen als er dan nog 2 keuzes over zijn |
+
+**Wat er extra is bijgekomen:** geen extra vragen. Uit het skelet: een korte overgangszin bij het eerste schoolbord ("Nu staan de minsommen op het schoolbord.") en het samen voordoen na de 2e fout (het kind tikt zelf de stippen weg).
+
+**Eigen invulling, niet van Synthesis:** het rode rondje om het getal dat eraf gaat bij de hint (Synthesis gebruikt bij sommen geen rondje); de hints "Begin bij 10 en tel 3 terug." / "Steek 7 vingers op en doe er 3 weg." (Synthesis geeft bij een som geen hint maar doet het meteen voor); bij de 2e fout tikt het kind de stippen weg (Synthesis: bij 5 − 2 en 10 − 4 zapt het kind zelf, in de oefenreeks doet de tutor het voor en noemt bij de 2e fout alleen het antwoord).
+
+**Afwijkingen van het draaiboek, met de reden:**
+- **Niet gebouwd:** de machine leren kennen, plussommen als opwarmer, "hoe trek je af?", de zapper, het minteken, "alles weg" (n − n = 0), "nog een paar of afronden?" en "herhalen?". Squla level 1 heeft die vragen niet en we voegen niets toe (15.22).
+- **Geen startvraag** (draaiboek §0). De oude les had "Kun je dit al?" met uitleg; die is in deze versie weg (WEGGEHAALD.md). Groet en beginzin zijn 1 stuk.
+- **2 pogingen** (15.11). Synthesis geeft bij een som na de 1e fout geen nieuwe poging maar doet het samen; bij ons eerst een hint en nog 1 keer, bij de 2e fout samen voordoen.
+- **De teller** (15.20) staat alleen in beeld bij het samen voordoen (na de 2e fout). Synthesis heeft hem altijd in beeld en verklapt zo het antwoord.
+- **Heel snel:** Bliepo zegt niets (draaiboek §3 G.7, 6.10). Lang wachten bij een keuzevraag: niets. Bij "haal er … weg" (opdracht): hulphandje na ± 6 s met 1 korte zin.
+- **De pijl:** 15.27 (Bliepo praat door, ± 0,7 s na de zin verder, pijl rechts als snelkoppeling, geen pijl bij vragen en opdrachten). Synthesis wacht in deze les bijna overal op de pijl (draaiboek §0); 15.27 gaat voor.
+- **Naam:** bij de groet en hooguit 1 keer bij een lof.
+- **Bij goed bij de machine** draait de machine nu pas (zoals de oude les) en wacht de les tot de blokjes eruit zijn (± 5 s). Dat is langer dan de ± 0,7 s van 15.27, maar anders verdwijnt de machine halverwege.
+
+**Woorden lichten op (jouw eis van 10 november):** zie SYNTHESIS-ANALYSE/WOORD-OPLICHTEN.md en BOUWREGELS 3.7 (aanvulling). Nieuwe lesoptie `woordenMeeMetStem` (nu alleen deze les). **De klokles, Tellen, Splitsen en Plussommen krijgen dit later met 1 regel per les** (`woordenMeeMetStem: true` in het lesbestand); verder hoeft er niets te veranderen. Niet zelf gedaan (eerst jouw akkoord, en de klokles mocht ik niet aanraken).
+
+**De pijl per stuk tekst (15.27):** groet + beginzin (1 stuk), lof, goed na een fout, hint na de 1e fout, uitleg na de 2e fout, "Kijk: … stippen", de uitkomst na het samen voordoen, de overgangszinnen en de slotzin gaan allemaal vanzelf door (pijl rechts als snelkoppeling). Geen pijl bij de vragen met keuzes, bij "Haal er … weg. Tik op … stippen.", bij het hulphandje en op de eindkaart.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Eigen testscript `scripts/test-minsommen-gouden.mjs`: alles goed, fouten (1e en 2e fout, hetzelfde antwoord 2 keer), alles fout, lang wachten, tik op de pijl: in orde. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten.
+- Einde zin → volgend stuk: bij fouten en samen voordoen 700–880 ms (64 keer gemeten, gemiddeld 750 ms). **Afwijking:** na goed bij de machine 2,5–4,7 s, omdat de les wacht tot de machine de blokjes heeft uitgespuugd (zoals de oude les). Een tik op de pijl slaat dat over (63–155 ms).
+- De teller: 258 metingen in beeld, 0 tijdens een vraag (15.20).
+- Lang wachten: bij keuzevragen zegt Bliepo niets (9 s gewacht); bij "haal weg" komt het hulphandje na ± 6 s met 1 zin.
+- Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768: 0 overlap, 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit.
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0. Gedimd en weer gedimd: 0 (na een herstel, zie hieronder).
+- Speelcontrole (`npm run speel`, GOED en ALLEFOUT, F7-meter): tot het eind, 0 fouten. Opgaven en inhoudsvergelijking: in orde. Fouttabel-script: 30 foute antwoorden, reken- en verklapcontrole in orde.
+- Getalkleur gemeten in Chrome: machine 10 = roze en 3 = geel (zoals de blokjes); bord en midden = wit.
+- **Echte stem in een zichtbare Chrome** (6 minuten): 61 zinnen gestart, 41 helemaal uitgesproken, 20 afgebroken doordat de test al tijdens de vraag een antwoord tikte (dat mag een kind ook). Geen zin dubbel.
+- **Woorden oplichten:** het eerste woord licht gemiddeld 42 ms na de start van de stem op (binnen 150 ms). De Google-stem in Chrome geeft **geen** woordmeldingen (0), dus de woorden worden geschat. Het laatste woord licht 30–430 ms vóór het einde van de stem op; vergeleken met een eenvoudige schatting op letters zit het gemiddeld 295 ms ernaast (grootste 522 ms). **Ik kan dus niet bewijzen dat elk woord binnen ± 150 ms oplicht**: zonder woordmeldingen weet de computer niet precies wanneer een woord klinkt. Met Ruth komen de echte woordtijden mee (DESIGN-LATER.md).
+- **Vloeiend** (computer rustig, belasting ± 5): laptop 60 beelden/s, langste beeld 29 ms; trage telefoon 60 beelden/s, langste beeld 46 ms. In orde. Openen in de ontwikkelversie 2,3 s / 3,2 s (op de echte site moet het onder 1 s).
+- **Niet gedaan:** de kind-test door een aparte helper en de onafhankelijke keuring. Ik mocht zelf geen helpers inzetten (harde regel 10); dat moet de coördinator nog laten doen.
+
+**Gedeelde verbetering (geldt meteen voor alle lessen):** in BliepoTekst werd een 2e zin wit en daarna weer grijs als hij langer dan 2,5 s op zijn beurt wachtte (F7). Nu tellen de 2,5 s per zin vanaf zijn beurt. Dit verandert ook de klokles, Tellen, Splitsen en Plussommen een beetje (alleen dit knipperen verdwijnt).
+
+**Graag een besluit (ja of nee):**
+1. **Wachten op de machine na goed** (2,5–4,7 s in plaats van ± 0,7 s): goed zo, of liever meteen door (dan zie je de blokjes niet meer uitkomen)?
+2. **De hint na de 1e fout** ("Begin bij 10 en tel 3 terug.", "Steek 7 vingers op en doe er 3 weg."): Synthesis geeft bij een som geen hint maar doet het meteen voor. Goed zo?
+3. **Het rode rondje** om het getal dat eraf gaat tijdens de hint (eigen invulling). Goed zo?
+4. **Samen voordoen na de 2e fout:** het kind tikt zelf de stippen weg en de teller telt mee (ook bij de kale sommen; Synthesis noemt daar alleen het antwoord). Goed zo?
+5. **De les begint niet met uitleg over de machine** (Synthesis wel; Squla level 1 niet). Wil je toch een korte uitleg, dan moet dat er als extra bij.
+6. **Woorden oplichten in de andere gouden lessen** (klok, Tellen, Splitsen, Plussommen): mag ik daar de ene regel `woordenMeeMetStem: true` bijzetten?

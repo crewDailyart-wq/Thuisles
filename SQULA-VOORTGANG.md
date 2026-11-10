@@ -388,3 +388,8 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 - Getest: speelcontrole (goed en alles fout), eigen situaties (Nee-route alles goed, Ja-proef met fouten, proef mislukt, lang wachten, heel snel), verklapcontrole, vloeiend (laptop in orde; telefoon wisselend, DESIGN-LATER.md).
 - Nog te doen door de coördinator: kind-test en keuring (aparte helpers).
 - Herstel na de kind-test (KINDTEST-SPLITSEN-GOUDEN.md): 18 van de 22 punten opgelost of nagekeken; niet aangeraakt: stem (punt 1), testregels bij een echt kind (punt 4), tekening van de zak en de eerste sleep (gedeeld splitsvlak). Zie KEUZES-VOOR-SARA.md Ronde 21b. Algemene lessen in LESRECEPT.md ("Geleerd bij de gouden les Splitsen") en BLIEPO-KARAKTER.md §2.
+
+### Gouden les Minsommen gebouwd (10 nov)
+- Les `squla-min-machine-1-gouden` ("Minsommen: hoeveel over?"), nieuwe versie naast squla-min-machine-1 (oude les niet veranderd). Bestanden: `src/components/les/lessen/squla-minsommen-gouden.tsx`, `squla-minsommen-gouden-zinnen.ts`, `src/components/les/vlakken/squla-minsommen-gouden-vlak.tsx` (+ `.module.css`), `scripts/fouttabel-minsommen-gouden.ts`, `scripts/test-minsommen-gouden.mjs`, `FOUTTABEL-squla-min-machine-1-gouden.md`, `scripts/vloeiend-schermen/squla-minsommen-gouden.json`.
+- Inhoud Squla (15 vragen), skelet draaiboek Minsommen (Dot Destruction), pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem (nieuwe optie `woordenMeeMetStem`, BOUWREGELS 3.7). Keuzes: KEUZES-VOOR-SARA.md Ronde 24.
+- Gedeelde verbetering: BliepoTekst (F7: een 2e zin werd wit en daarna weer gedimd als hij langer dan 2,5 s op zijn beurt wachtte).

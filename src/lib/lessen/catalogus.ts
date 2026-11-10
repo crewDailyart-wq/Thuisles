@@ -166,6 +166,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-min-bus2-2", titel: "Bussommen met een rondje (moeilijker)", synthesis: "Squla groep 3 · Minsommen · Bussommen 2 · level 2 (alleen leerdoel)" },
   { id: "squla-min-bus2-3", titel: "Bussommen met een rondje (nog moeilijker)", synthesis: "Squla groep 3 · Minsommen · Bussommen 2 · level 3 (alleen leerdoel)" },
   { id: "squla-min-machine-1", titel: "Minsommen: hoeveel over?", synthesis: "Squla groep 3 · Minsommen · Minsommen · level 1 (alleen leerdoel)" },
+  { id: "squla-min-machine-1-gouden", titel: "Minsommen: hoeveel over?", synthesis: "Squla groep 3 · Minsommen · Minsommen · level 1 · gouden les (nieuwe versie van squla-min-machine-1) · verloop draaiboek Minsommen (Dot Destruction)" },
   { id: "squla-min-machine-2", titel: "Minsommen: hoeveel over? (moeilijker)", synthesis: "Squla groep 3 · Minsommen · Minsommen · level 2 (alleen leerdoel)" },
   { id: "squla-min-machine-3", titel: "Minsommen: hoeveel over? (nog moeilijker)", synthesis: "Squla groep 3 · Minsommen · Minsommen · level 3 (alleen leerdoel)" },
   { id: "squla-min-machine-4", titel: "Minsommen: hoeveel over? (heel moeilijk)", synthesis: "Squla groep 3 · Minsommen · Minsommen · level 4 (alleen leerdoel)" },

@@ -517,13 +517,13 @@ function Lesscherm({
   /* De nagebouwde lessen: alleen de bewaarde stem van Ruth, nooit de browserstem; de naam gaat mee voor het naamfragment (28 okt 2026). */
   useEffect(() => {
     /* stemHeelUitpraten (10 nov 2026, alleen de gouden klokles): Bliepo's zinnen worden niet meer afgebroken (lib/stem.ts). Andere lessen: false, zoals altijd. */
-    zetLesStem({ alleenServer: les.indeling === "synthesis" && !les.browserstem, naam, heelUitpraten: les.stemHeelUitpraten === true });
+    zetLesStem({ alleenServer: les.indeling === "synthesis" && !les.browserstem, naam, heelUitpraten: les.stemHeelUitpraten === true, woordenMee: les.woordenMeeMetStem === true });
     zetLesgeluiden(les.indeling === "synthesis");
     return () => {
       zetLesStem({ alleenServer: false });
       zetLesgeluiden(false);
     };
-  }, [les.indeling, les.browserstem, les.stemHeelUitpraten, naam]);
+  }, [les.indeling, les.browserstem, les.stemHeelUitpraten, les.woordenMeeMetStem, naam]);
 
   useEffect(() => {
     const meet = () => {

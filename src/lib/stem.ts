@@ -19,7 +19,7 @@
 
 import { haalGebarenPlan } from "@/lib/gebaren-plan";
 import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
-import { meldKomendeZin, meldVoorlezen, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
+import { meldKomendeZin, meldVoorlezen, meldWoordgrens, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
 
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
@@ -301,6 +301,7 @@ function zegMetBrowser(zin: string, mijnBeurt: number): void {
     uiting.rate = TEMPO;
     uiting.pitch = TOONHOOGTE;
     if (gekozen) uiting.voice = gekozen;
+    koppelWoorden(uiting, zin);
 
     uiting.onstart = () => {
       meldVoorlezen(zin, browserGrenzen(zin));
@@ -323,9 +324,53 @@ function zegMetBrowser(zin: string, mijnBeurt: number): void {
   Hoe lang de browserstem ongeveer over een zin doet, voor het meelezen en de
   gebaren (de woorden lichten op in dit tempo). Geschat op het aantal letters
   en het tempo; de browser vertelt het niet vooraf.
+  Met de optie woordenMee (per les, 10 november 2026, BOUWREGELS 3.7) wordt het tempo geleerd: na elke helemaal
+  uitgesproken zin weet de les hoeveel ms per letter deze stem echt nodig had (een lopend gemiddelde), en de volgende
+  zin wordt daarmee geschat. Zonder de optie verandert er niets.
 */
 function browserGrenzen(zin: string): { begin: number; eind: number } {
+  if (woordenMee && geleerdMsPerTeken) return { begin: 0.02, eind: Math.max(0.5, (zin.length * geleerdMsPerTeken) / 1000) };
   return { begin: 0.05, eind: Math.max(0.6, (zin.length * 0.066) / TEMPO) };
+}
+
+/*
+  WOORDEN MEE MET DE STEM (opt-in per les: Lesdraaiboek.woordenMeeMetStem; 10 november 2026, eis Sara: elk woord licht
+  op op het moment dat Bliepo het zegt, BOUWREGELS 3.7). Twee dingen, allebei alleen met de optie:
+    1. De browser meldt bij sommige stemmen elk woord (onboundary, name "word"). Komt die melding, dan schuift het
+       oplichten precies naar dat woord (lib/voorlezen.ts meldWoordgrens) en worden de woorden erna in hetzelfde tempo
+       opnieuw geschat.
+    2. Komt er geen melding (de Google-stem in Chrome meldt niets), dan wordt het tempo geleerd uit de vorige zinnen
+       (browserGrenzen hierboven): de duur van een zin geschat uit het aantal letters.
+  Een geluidsbestand van Ruth levert later echte woordtijden (ElevenLabs); die gaan al via meldVoorlezen(…, tijden).
+*/
+let woordenMee = false;
+/** Geleerd tempo van de browserstem in ms per letter (null = nog niets geleerd). */
+let geleerdMsPerTeken: number | null = null;
+/** Hoeveel woordmeldingen (onboundary) de browser deze les gaf (voor de test: window.__woordgrenzen). */
+let woordMeldingen = 0;
+function koppelWoorden(uiting: SpeechSynthesisUtterance, zin: string): void {
+  if (!woordenMee) return;
+  let start = 0;
+  let afgebroken = false;
+  uiting.addEventListener("start", () => {
+    start = performance.now();
+  });
+  uiting.addEventListener("boundary", (e) => {
+    if (e.name !== "word") return;
+    woordMeldingen++;
+    if (typeof window !== "undefined") (window as unknown as { __woordgrenzen?: number }).__woordgrenzen = woordMeldingen;
+    meldWoordgrens(zin, e.charIndex);
+  });
+  uiting.addEventListener("error", () => {
+    afgebroken = true;
+  });
+  uiting.addEventListener("end", () => {
+    if (afgebroken || !start || zin.length < 12) return;
+    const ms = (performance.now() - start) / zin.length;
+    /* Alleen redelijke metingen (een afgebroken of haperende zin telt niet mee). */
+    if (ms < 30 || ms > 160) return;
+    geleerdMsPerTeken = geleerdMsPerTeken ? geleerdMsPerTeken * 0.6 + ms * 0.4 : ms;
+  });
 }
 
 /**
@@ -379,6 +424,7 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
       uiting.rate = TEMPO;
       uiting.pitch = TOONHOOGTE;
       uiting.voice = stem;
+      koppelWoorden(uiting, zin);
       uiting.onstart = () => {
         meldVoorlezen(zin, browserGrenzen(zin));
         meld(true);
@@ -516,6 +562,7 @@ export function zegNaElkaar(
       uiting.rate = TEMPO;
       uiting.pitch = TOONHOOGTE;
       if (gekozen) uiting.voice = gekozen;
+      koppelWoorden(uiting, zinnen[i]);
       let door = false;
       const verder = () => {
         if (door) return;
@@ -609,10 +656,11 @@ function serverBruikbaar(): boolean {
 export const NOOIT_BROWSERSTEM = false;
 let alleenServerStem = NOOIT_BROWSERSTEM;
 let stemNaam = "";
-export function zetLesStem(o: { alleenServer: boolean; naam?: string; heelUitpraten?: boolean }): void {
+export function zetLesStem(o: { alleenServer: boolean; naam?: string; heelUitpraten?: boolean; woordenMee?: boolean }): void {
   alleenServerStem = NOOIT_BROWSERSTEM || o.alleenServer;
   stemNaam = (o.naam ?? "").trim();
   heelUitpraten = o.heelUitpraten === true;
+  woordenMee = o.woordenMee === true;
 }
 
 const adres = (zin: string) => `${SERVER_PAD}?zin=${encodeURIComponent(zin)}${stemNaam ? `&naam=${encodeURIComponent(stemNaam)}` : ""}`;

@@ -200,6 +200,13 @@ export type Lesdraaiboek = {
    * tik van het kind. Zie zetLesStem / heelUitpraten in lib/stem.ts. Zonder deze optie verandert er niets.
    */
   stemHeelUitpraten?: true;
+  /**
+   * Opt-in (10 november 2026, eis Sara; BOUWREGELS 3.7; nu alleen de gouden les Minsommen): elk woord licht op op het
+   * moment dat Bliepo het zegt, ook met de browserstem. Gebruikt de woordmeldingen van de browser (onboundary) als die er
+   * zijn, anders het geleerde tempo van de stem (lib/stem.ts woordenMee). Andere lessen: zet deze ene regel erbij.
+   * Zonder deze optie verandert er niets.
+   */
+  woordenMeeMetStem?: true;
   /** Welke tegels er als lijntekening op de kaart staan. */
   kaarttegels?: number[];
   /** Of een eigen lijntekening voor op de kaart (SVG van 244 × 190). */

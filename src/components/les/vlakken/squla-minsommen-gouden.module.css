@@ -1,0 +1,188 @@
+/*
+  Gouden les Minsommen (10 november 2026): de kale som (wit), het rode rondje, de stippen en de teller bij het samen
+  voordoen, en het hulphandje. Het minvlak zelf heeft zijn eigen opmaak (squla-minsommen.module.css). Maten in punten
+  van het vlak (980 × 720), zoals de rest van het vlak.
+*/
+
+/* De som: zelfde plekken en maten als de som van het minvlak, maar de getallen wit (kale som, BOUWREGELS 14.27). */
+.som {
+  position: absolute;
+  left: 0;
+  right: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.3em;
+  pointer-events: none;
+  color: #ffffff;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-weight: 800;
+  line-height: 1;
+  text-shadow:
+    0 2px 10px rgba(4, 18, 60, 0.9),
+    0 0 2px rgba(4, 18, 60, 0.95);
+  animation: plop 0.3s ease-out both;
+}
+.som span {
+  -webkit-text-stroke: 2px #0b1028;
+  paint-order: stroke fill;
+}
+.boven {
+  top: 34px;
+  font-size: 76px;
+}
+.midden {
+  top: 150px;
+  font-size: 120px;
+}
+/* Op het schoolbord: krijt. */
+.bord {
+  top: 236px;
+  font-size: 104px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.35);
+}
+
+/* Het vraagteken-vakje (zoals in het minvlak). */
+.vak {
+  display: inline-grid;
+  place-items: center;
+  min-width: 1em;
+  height: 1.08em;
+  padding: 0 0.12em;
+  border: 4px solid #ffd36e;
+  border-radius: 0.18em;
+  color: #ffd36e;
+  box-shadow: 0 0 14px rgba(255, 211, 110, 0.55);
+}
+
+/* Het rode, met de hand getekende dubbele rondje (BOUWREGELS 7.8; public/rondje/rondje-rood-2.png). */
+.rondjeOm {
+  position: relative;
+}
+.rondjeOm::after {
+  content: "";
+  position: absolute;
+  left: -0.42em;
+  right: -0.42em;
+  top: -0.34em;
+  bottom: -0.34em;
+  background: url("/rondje/rondje-rood-2.png") center / 100% 100% no-repeat;
+  pointer-events: none;
+}
+.rondje {
+  position: absolute;
+  width: 190px;
+  height: 120px;
+  transform: translate(-50%, -50%);
+  background: url("/rondje/rondje-rood-2.png") center / 100% 100% no-repeat;
+  pointer-events: none;
+  z-index: 4;
+}
+
+/* De teller bij het samen voordoen: hoeveel stippen er nog zijn (alleen tijdens het samen voordoen, 15.20). */
+.teller {
+  position: absolute;
+  left: 490px;
+  top: 196px;
+  transform: translate(-50%, -50%);
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  font-size: 84px;
+  font-weight: 800;
+  line-height: 1;
+  -webkit-text-stroke: 3px #0b1028;
+  paint-order: stroke fill;
+  text-shadow: 0 2px 10px rgba(4, 18, 60, 0.9);
+  pointer-events: none;
+}
+
+/* Een stip: rond, vol in de kleur van het eerste getal (glans zoals stijl B, 7.7). */
+.stip {
+  position: absolute;
+  z-index: 5;
+  width: 74px;
+  height: 74px;
+  margin: 0;
+  padding: 0;
+  border: 3px solid color-mix(in srgb, var(--stip) 55%, #0b1028);
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  background: radial-gradient(circle at 35% 30%, #ffffff 0 9%, transparent 10%), radial-gradient(circle at 40% 35%, color-mix(in srgb, var(--stip) 70%, #ffffff), var(--stip) 60%, color-mix(in srgb, var(--stip) 70%, #0b1028));
+  box-shadow: 0 4px 8px rgba(0, 0, 20, 0.45);
+  transition:
+    background 0.25s,
+    opacity 0.25s;
+  -webkit-tap-highlight-color: transparent;
+}
+button.stip {
+  cursor: pointer;
+}
+button.stip:focus-visible {
+  outline: 3px solid #ffffff;
+  outline-offset: 3px;
+}
+/* Weggehaald: een leeg rondje in de kleur van wat eraf gaat (14.22). */
+.stipWeg {
+  background: transparent;
+  border: 4px dashed var(--stip);
+  box-shadow: none;
+  opacity: 0.8;
+}
+
+/* Het hulphandje: de vingertop staat op (left, top); de hand ligt schuin rechtsonder (zoals de andere gouden lessen). */
+.hand {
+  position: absolute;
+  width: 54px;
+  height: 72px;
+  margin: -2px 0 0 -26px;
+  pointer-events: none;
+  z-index: 7;
+  transform-origin: 48% 3%;
+  will-change: transform;
+}
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-37deg);
+  transform-origin: 48% 3%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening g rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+.lijn {
+  fill: none;
+  stroke: rgba(43, 58, 102, 0.55);
+  stroke-width: 2;
+}
+.pak {
+  animation: tikGebaar 1.1s ease-in-out infinite alternate;
+}
+@keyframes tikGebaar {
+  from {
+    transform: translate(8px, 12px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .pak,
+  .som {
+    animation: none;
+  }
+}
