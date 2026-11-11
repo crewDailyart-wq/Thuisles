@@ -6,7 +6,7 @@
  * antwoord verklapt.
  */
 import { writeFileSync } from "node:fs";
-import { KB, OMDRAAIWOORDEN, TOTAAL_KEUZES, VRAGEN, huisFout, parenFout, tienFout, totaalFout, type Fout, type ParenVraag } from "../src/components/les/lessen/squla-splitsen-gouden-zinnen";
+import { KB, OMDRAAIWOORDEN, TOTAAL_KEUZES, VRAGEN, dichtbijAnders, huisFout, parenFout, tienFout, totaalFout, type Fout, type ParenVraag } from "../src/components/les/lessen/squla-splitsen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 const fouten: string[] = [];
@@ -85,6 +85,59 @@ for (const x of TOTAAL_KEUZES.filter((k) => k !== 5)) {
   rijen.push({ vraag: "Uitleg (na Nee): hoeveel pionnen zijn er samen? (1 / 4 / 5; goed: 5)", antwoord: String(x), f });
 }
 
+/*
+ * Waarheidscontrole (keuring Huisnummers, 10 nov 2026) en geen opdracht bij de 2e fout (keuring Getallenlijn): voor elk
+ * mogelijk fout antwoord (huisje: elke verdeling, doos: 1 t/m 10 ballen) moet elke bewering kloppen, en de zinnen bij de 2e
+ * fout (uitleg en "weer") zijn uitleg: meteen daarna doet Bliepo het samen voor.
+ */
+const OPDRACHT = /(^|[.!?] )(Tel|Wijs|Begin|Kijk|Geef|Leg|Sleep|Schuif|Pak|Zoek|Tik)\b/;
+let beweringen = 0;
+const dichtVersies = new Set<string>();
+for (const r of rijen) {
+  const f = r.f;
+  for (const z of [f.uitleg, ...f.weer]) if (OPDRACHT.test(kaal(z))) fouten.push(`${r.vraag} ${r.antwoord}: opdracht in de zin bij de 2e fout: "${kaal(z)}"`);
+}
+for (const v of VRAGEN) {
+  if (v.soort === "tienvak") {
+    const goed = 10 - v.zicht;
+    for (let n = 1; n <= 10; n++) {
+      if (n === goed) continue;
+      const f = tienFout(v, n);
+      const alles = kaal([f.eerste, f.hint, f.uitleg, ...f.weer].join(" "));
+      const klopt = (re: RegExp, ok: boolean, wat: string) => {
+        if (!re.test(alles)) return;
+        beweringen++;
+        if (!ok) fouten.push(`${v.id} ${n}: niet waar: ${wat} ("${alles}")`);
+      };
+      klopt(/dichtbij|scheelt niet veel/, Math.abs(n - goed) === 1, "dichtbij");
+      klopt(/te veel/, n > goed, "te veel");
+      klopt(/te weinig/, n < goed, "te weinig");
+      klopt(/hele doos/, n === 10, "hele doos");
+      klopt(/zoveel ballen zie je al/i, n === v.zicht, "zoveel zie je al");
+      klopt(new RegExp(`Je legde er ${n}\\b`), true, "");
+      if (f.noot) {
+        dichtVersies.add(kaal(f.eerste).replace(/\d+/g, "#"));
+        if (dichtbijAnders(n, v) === f.eerste) fouten.push(`${v.id} ${n}: dichtbijAnders is dezelfde zin`);
+      }
+    }
+  } else if (v.soort === "huis") {
+    for (let p = 0; p <= v.tot; p++) {
+      if (p === v.deel) continue;
+      const f = huisFout(v, p);
+      const e = kaal(f.eerste);
+      const m = /In het paarse vak (?:ligt|liggen) (\d+)/.exec(e);
+      if (m) {
+        beweringen++;
+        if (Number(m[1]) !== p) fouten.push(`${v.id} ${p}: niet waar: "${e}"`);
+      }
+      if (/te veel/.test(e)) { beweringen++; if (!(p > v.deel)) fouten.push(`${v.id} ${p}: niet waar (te veel): "${e}"`); }
+      if (/te weinig/.test(e)) { beweringen++; if (!(p < v.deel)) fouten.push(`${v.id} ${p}: niet waar (te weinig): "${e}"`); }
+    }
+  }
+}
+if (dichtVersies.size < 3) fouten.push(`eerste zin "dichtbij" bij de doos heeft maar ${dichtVersies.size} versie(s)`);
+console.log(`Waarheidscontrole: ${beweringen} beweringen nagelopen; ${dichtVersies.size} versies van "dichtbij"; geen opdracht in de zinnen bij de 2e fout.`);
+
 if (fouten.length) {
   console.error("VERKLAPPERS / FOUTEN:\n" + fouten.join("\n"));
   process.exit(1);
@@ -98,7 +151,7 @@ const uitleg = rijen.map((r) => `| ${r.vraag.split(":")[0]} | ${r.antwoord} (\`$
 
 const tekst = `# FOUTTABEL — gouden les Splitsen (squla-splits-splitsen1-1-gouden, "Splitsen tot 10")
 
-Gemaakt op 9 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-splitsen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-splitsen-gouden-zinnen.ts\` en draai het script opnieuw (het doet ook de verklapcontrole en stopt bij een verklapper). De inhoud (15 vragen, getallen, voorwerpen) is die van squla-splits-splitsen1-1 en blijft gelijk (BOUWREGELS 15.22).
+Gemaakt op 9 november 2026, bijgewerkt op 10 november 2026 (omgezet naar de nieuwste gouden stijl, KEUZES-VOOR-SARA.md Ronde 29), **uit de code** met \`npx tsx scripts/fouttabel-splitsen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-splitsen-gouden-zinnen.ts\` en draai het script opnieuw (het doet ook de verklapcontrole en stopt bij een verklapper). De inhoud (15 vragen, getallen, voorwerpen) is die van squla-splits-splitsen1-1 en blijft gelijk (BOUWREGELS 15.22).
 
 **Bron van de reacties:** draaiboek Splitsen (Part Part Whole), §3 en §7: Bliepo zegt wat er nu ligt (de getallen van het kind), en bij de huisjes met een leeg vakje rekent hij voor ("4 en 3 is samen 7. We zoeken 6.", \`som-klopt-niet\`). **Eigen invulling, niet van Synthesis:** de doos van 10 met de doek (vraag 11–15; Part Part Whole heeft geen doos met een doek) en de hints die naar het getal onder het paarse vak wijzen (Synthesis heeft geen opdracht met 1 deel gegeven, alleen het handje). Gemarkeerd in de tabel.
 
@@ -106,10 +159,10 @@ In de les staan de getallen in de kleur van het vak: paars = het eerste deel, or
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
 - **Nakijken:** bij de huisjes vanzelf zodra alles in een vak ligt en het kind 0,4 s niets sleept (in de proef na een fout 1,6 s), zodat het kind nog kan schuiven (14.26, 14.30). Bij de doos met het vinkje (zie KEUZES-VOOR-SARA.md, Ronde 21).
-- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de dingen schudden even en blijven liggen. Bliepo zegt de eerste zin en de hint (1 uiting) en wacht op de blauwe pijl (draaiboek §0: na een fout wacht de les altijd op de pijl). Noemt de hint het getal onder het paarse vak, dan krijgt dat getal een rondje; bij de 3 huisjes het huisje, bij de doos de doos. Na de pijl gaan de vakken leeg en zegt Bliepo de opdracht kort opnieuw (§3 F.2). **In de proef** (na Ja) blijven de dingen liggen (§3 A.2).
-- **2e fout:** de uitleg bij de denkfout (laatste tabel), dan "Kom, we doen het samen." Bliepo legt het ene deel zelf in het paarse vak (bij de doos: de doek gaat open en Bliepo legt de ballen op 1 na; bij de huisjes alles op 1 bal na) en het kind sleept de rest (de kleine stap; het handje van Synthesis, §3 F.6). Daarna het andere deel onder het vak, "Samen splitsten we …", de pijl, en de les gaat door.
+- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de dingen schudden even en blijven liggen. Bliepo zegt de eerste zin en de hint (1 uiting); de pijl staat erbij als snelkoppeling en ± 0,7 s na de zin gaat het vanzelf verder (BOUWREGELS 15.27, sinds 10 november 2026; het draaiboek wacht hier op de pijl, 15.27 gaat voor). Noemt de hint het getal onder het paarse vak, dan krijgt dat getal een rondje; bij de 3 huisjes het huisje, bij de doos de doos. Na de pijl gaan de vakken leeg en zegt Bliepo de opdracht kort opnieuw (§3 F.2). **In de proef** (na Ja) blijven de dingen liggen (§3 A.2).
+- **2e fout:** de uitleg bij de denkfout (laatste tabel), dan "Kom, we doen het samen." Bliepo legt het ene deel zelf in het paarse vak (bij de doos: de doek gaat open en Bliepo legt de ballen op 1 na; bij de huisjes alles op 1 bal na) en het kind sleept de rest (de kleine stap; het handje van Synthesis, §3 F.6). Daarna het andere deel onder het vak, "Samen splitsten we …", en de les gaat vanzelf door. Sleept het kind 20 s niets, dan legt Bliepo de rest zelf ("Kijk, ik leg de rest erbij. …").
 - **2e fout in de proef:** geen samen voordoen: "Dat is nog lastig. We kijken eerst samen hoe splitsen werkt." en dan de uitleg (draaiboek §3 A.4).
-- **Verklappen (15.17):** de hint wijst naar het getal onder het paarse vak (dat staat al in de opdracht) of naar de doek, nooit naar het andere deel. Bij \`omgedraaid\` zegt Bliepo niet dat de delen omgedraaid zijn; bij de doos zegt hij bij 1 ernaast alleen "… is dichtbij." (zoals de gouden les Tellen).
+- **Verklappen (15.17):** de hint wijst naar het getal onder het paarse vak (dat staat al in de opdracht) of naar de doek, nooit naar het andere deel. Bij \`omgedraaid\` zegt Bliepo niet dat de delen omgedraaid zijn; bij de doos zegt hij bij 1 ernaast alleen "… is dichtbij." (in 3 versies die per vraag wisselen; zoals de gouden les Tellen).
 - **Twee keer dezelfde denkfout:** "weer" en een andere uitleg (laatste kolom), alleen als Bliepo de 1e keer al zei wat er mis was. Hetzelfde foute antwoord 2 keer: de eerste zin wordt "Weer liggen er … in het paarse vak." / "Je koos weer …".
 - **Niet duidelijk (\`onduidelijk\`):** komt hier niet voor (elke foute verdeling heeft een denkfout); als vangnet een zin uit BLIEPO-KARAKTER.md §10.
 - **Bewaard:** elke fout met de naam van de denkfout (tabel \`les_uitkomsten\`, alleen als er een kind gekozen is), elke vraag met zijn uitkomst: goed in één keer, goed na een fout of samen gedaan.

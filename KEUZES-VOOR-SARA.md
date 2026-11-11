@@ -1186,3 +1186,66 @@ oude les houdt de gloed, de gouden les volgt de regels van alle gouden lessen. A
    seconden; na 2,5 seconden wordt de wachtende zin wit, en als Bliepo hem daarna toch uitspreekt, wordt hij weer grijs.
    Dat zit in de gedeelde code van alle lessen, niet in Meten. Mag ik dat later in de gedeelde code oplossen (bijvoorbeeld:
    een zin die al wit is, blijft wit)? Advies: **ja**, als aparte klus, met een test in alle gouden lessen.
+
+## Ronde 29 — Tellen en Splitsen omgezet naar de nieuwste gouden stijl (10 november 2026)
+
+Jouw opdracht van 10 november ("maak alles goed en ga door"): de gouden lessen Tellen (squla-tellen-fruit-1-gouden) en Splitsen (squla-splits-splitsen1-1-gouden) werken nu net als Minsommen, Meer-minder, Huisnummers, Getallenlijn en Meten. De oude lessen squla-tellen-fruit-1 en squla-splits-splitsen1-1 zijn niet veranderd. Vragen, getallen, antwoordkeuzes en goede antwoorden zijn gelijk gebleven.
+
+Bekijken: http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden?naam=Testkind en http://localhost:3000/voorbeeld/les/squla-splits-splitsen1-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Wat er in beide lessen veranderd is**
+- **Bliepo praat door (15.27).** Na elk stuk tekst gaat de les ± 0,7 s na de zin vanzelf verder, ook na lof, de hint na de 1e fout, de uitleg na de 2e fout en het samen voordoen. De pijl staat rechts onder de tekst als snelkoppeling. Geen pijl bij vragen, opdrachten (samen tellen, slepen), het hulphandje en de eindkaart. Het kind hoeft nooit meer op de pijl te tikken.
+- **Stem en woorden:** `stemHeelUitpraten` en `woordenMeeMetStem` staan aan (zoals de nieuwere lessen). Daardoor staat de eindkaart nu ook links van het tekstvak (Ronde 25 punt 4: dat is hiermee voor Tellen en Splitsen gedaan).
+- **Begin in 1 stuk:** Tellen: groet en "In deze les tel je fruit. …" samen (geen startvraag, het draaiboek heeft er geen). Splitsen: groet, uitleg en de startvraag samen, met Ja en Nee eronder.
+- **Niet meer gezegd:** "Klaar met kijken? Tik dan op de blauwe pijl." en "Tik op de blauwe pijl als je het nog eens wilt proberen." (WEGGEHAALD.md).
+- **De vraag komt ± 0,7 s na de vorige zin** (was ± 1,4 s: het beeld wachtte nog 0,7 s extra).
+
+**Zinnen aangepast (15.26), oud → wat mis was → nieuw**
+
+| Les | Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|---|
+| Tellen | "… is dichtbij." bij elk fout getal zonder richting | steeds dezelfde zin (keuring Meer-minder) | 3 versies die per vraag wisselen: "11 is dichtbij." / "Je koos 11. Je zit er dichtbij." / "Je koos 11. Dat scheelt niet veel."; 2 verschillende foute getallen bij 1 vraag krijgen 2 verschillende versies |
+| Tellen | "… is dichtbij, maar je hebt ze nog niet allemaal geteld." / "… is dichtbij, maar dat zijn er te veel." | idem | ook 3 versies ("Je koos 13. Je hebt ze nog niet allemaal geteld.", "12 is te weinig. Je hebt ze nog niet allemaal geteld."; "Je koos 15. Dat zijn er te veel.", "15 is te veel.") |
+| Tellen | bij de 2e fout "Tel ook de appels in de laatste rij." | een opdracht die het kind niet meer kan doen: meteen daarna tellen we samen (keuring Getallenlijn) | "Ook de appels in de laatste rij horen erbij." |
+| Tellen | bij de 2e fout "Geef elke appel 1 nummer. Dan sla je er geen over." (en "… niets 2 keer") | idem | "Elke appel krijgt 1 nummer. Dan sla je er geen over." |
+| Tellen | "Kom, we tellen ze samen." bij elke 2e fout | steeds dezelfde zin (5.10) | 3 versies: "Kom, we tellen ze samen." / "We tellen ze samen." / "Kom, samen tellen we ze." |
+| Splitsen | "… is dichtbij." (doos, 1 ernaast) | steeds dezelfde zin | 3 versies: "2 is dichtbij." / "Je legde er 2. Je zit er dichtbij." / "Je legde er 2. Dat scheelt niet veel." |
+| Splitsen | uitleg bij de 2e fout bij de doos, 5 keer dezelfde: "In de doos passen er 10. Onder de doek liggen de ballen die nog missen tot 10." | dezelfde zin bij 2 vragen achter elkaar (de F8-teller zag hem 2 keer) | 2 versies, de 2e: "Een volle doos heeft 10 ballen. Onder de doek liggen de ballen die je niet ziet." |
+| Splitsen | "Kom, we doen het samen." bij elke 2e fout | idem | "Kom, we doen het samen." / "We doen het samen." / "Kom, samen lukt het." |
+| Splitsen | startvraag "Kun jij een getal al in 2 delen splitsen? Bijvoorbeeld deze 5 pionnen." | groet + uitleg + vraag in 1 stuk was 22 px te lang voor het vaste tekstvak, en op 1536 × 864 werd Bliepo kleiner (15.30) | "Kun jij deze 5 pionnen al splitsen?" (de zin ervoor zegt al "over 2 vakken") |
+| Splitsen | "De 2 delen zijn 1 en 4. Samen maken ze 5. Alles samen heet het totaal. Dat staat boven in het dak." (1 stuk) | te lang voor 1 stuk | dezelfde zinnen in 2 stukken |
+| Splitsen | bij elke fout de eerste zin en de hint (of de uitleg) in 1 stuk | te lang voor het vaste tekstvak: Bliepo werd 22 keer per les even kleiner (15.30) | dezelfde zinnen in 2 stukken: eerst wat het kind deed, dan de hint of uitleg |
+| Splitsen | "Sleep 4 ballen naar het paarse vak naast de zak. De andere ballen sleep je in de zak, in het oranje vak." | te lang (Bliepo werd kleiner) | "Sleep 4 ballen naar het paarse vak. De andere ballen gaan in de zak, in het oranje vak." |
+| Splitsen | een opdracht van 3 of 4 zinnen in 1 stuk ("Er zijn 7 ballen. Sleep 4 ballen …", "In de doos liggen 10 pingpongballen. Je ziet er 7. …") | te lang voor het vaste tekstvak | eerst de beschrijving ("Er zijn 7 ballen.") als eigen stuk, dan de opdracht; dezelfde zinnen |
+
+**Nieuwe zinnen (vangnet, geen "Ja"):**
+- Tellen, samen tellen, 20 s geen tik: Bliepo zet de rest van de nummers erbij en zegt "Kijk, ik tel de rest. Het zijn er 12." (vangnet uit LESRECEPT, geleerd bij Meer-minder; had Tellen nog niet).
+- Splitsen, samen voordoen, 20 s niets gesleept: "Kijk, ik leg de rest erbij. 5 is 2 en 3." / "Kijk, ik leg de laatste erbij. 10 is 7 en 3." / "Kijk, ik leg de laatste bal erbij. Nu is elk huisje vol." (Splitsen had dit vangnet alleen in de uitleg, niet bij het samen voordoen.)
+
+**Andere keuzes die ik zelf heb gemaakt (graag ja of nee):**
+1. **Tellen, samen natellen bij vraag 1:** Bliepo telt in het vaste tempo van het draaiboek (± 1,15 s per nummer). De pijl staat erbij als snelkoppeling: een tik zet alle nummers er meteen bij en de les gaat door. Goed zo?
+2. **Tellen, 1e fout:** de eerste zin gaat vanzelf door (pijl als snelkoppeling), daarna komen de 3 knoppen terug met de hint (een vraag: geen pijl). Zoals het was, alleen zonder wachten. Goed zo?
+3. **Splitsen, 1e fout:** het draaiboek Splitsen wacht na een fout op de pijl; 15.27 gaat voor, dus nu vanzelf door. Ook bij de keuzevraag "Hoeveel pionnen zijn er samen?". Goed zo?
+4. **Splitsen, het hele splitsvlak 12 % kleiner (vanaf links).** De 3 huisjes van vraag 10 liepen anders onder het tekstvak (tot x = 940 van 980). Altijd dezelfde maat, niet alleen bij vraag 10: zo verspringt er niets en klopt het slepen (Phaser meet de plek van het vlak bij het begin). Het oude splitsvlak is niet veranderd. Goed zo, of liever alleen bij vraag 10 (dan moet het slepen apart worden aangepast)?
+5. **Splitsen, Bliepo legt bij het samen voordoen eerst zelf** (± 0,4 s per pion). Tussen "Kom, we doen het samen." en de volgende zin zit daardoor 1,5 tot 4 s (Bliepo legt). Dat is langer dan de ± 0,7 s van 15.27, net als de machine bij Minsommen. Goed zo?
+6. **Tellen, vraag 15, keuze 10:** "Kijk ook naar de laatste rij." blijft (open vraag 2 van Ronde 20, niet veranderd).
+7. **Herhaling in 1 zin bij de 2e fout** (bestond al): "15 is te veel. Je telde een paar peren te veel." Het woord "te veel" komt 2 keer. Niet veranderd; graag zeggen als dat korter moet.
+
+**Opgeruimd:** `src/components/les/lessen/gouden-pijl.ts` en `scripts/test-tellen-gouden-pijl.mjs` (een half af stuk werk van eerder vandaag, voor de oude pijlregel; nooit gecommit) zijn weg, met de reden in WEGGEHAALD.md. Tellen heeft nu een eigen testscript `scripts/test-tellen-gouden.mjs`; `scripts/test-splitsen-gouden.mjs` is herschreven naar de nieuwe regels.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten voor en na: 143, er kwam niets bij):
+- Fouttabel-scripts: Tellen 30 foute antwoorden, verklapcontrole in orde, waarheidscontrole 90 beweringen, 3 versies "dichtbij", geen opdracht bij de 2e fout. Splitsen 121 foute antwoorden, verklap- en waarheidscontrole (176 beweringen) in orde.
+- Eigen testscripts (nepstem): Tellen goed, fouten, alles fout, vangnet, lang wachten, kleur, tik op de pijl; Splitsen Nee-route goed, Ja-proef met fouten, proef mislukt, uitleg vastlopen (2 situaties), proef-handje, langzaam schuiven, alles fout, vangnet, tik op de pijl. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten.
+- Einde zin → volgend stuk: Tellen gemiddeld 765–842 ms (alles fout 740 ms); Splitsen 790–819 ms. Langer alleen waar Bliepo zelf iets doet: het natellen begint ± 1,0 s na "Laten we ze samen natellen.", en bij Splitsen legt Bliepo eerst zelf pionnen (1,5–4 s, zie punt 5). Tik op de pijl: binnen 35–427 ms iets nieuws (Tellen), 48–227 ms (Splitsen).
+- Overlap en sprongen (route alles fout, langste zinnen) op 1440×900, 1280×720, 1536×864 en 1024×768: overlap 0, tekstvak/eerste regel/pijl 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit, Bliepo 0 sprongen (Splitsen eerst 22 per les: Bliepo werd kleiner bij lange foutzinnen; opgelost door de 2 stukken, zie de tabel). Eindkaart: 0 woorden van Bliepo eronder. Het fruit blijft 22 px links van het tekstvak, het splitsvlak 59 px.
+- F7 (tekst komt terug): 0. F8 (2 keer uitgesproken): 0 (na het herstel van de 2 versies). **Gedimd en weer gedimd: 2 keer in ± 14 runs met de nepstem** (Splitsen, 1 zin, na 2,8 s wachten): dezelfde gedeelde oorzaak als in Ronde 28b vraag 9 (Bliepo vraagt eerst de site of Ruth de zin heeft; als de computer druk is duurt dat > 2,5 s). Niet in deze lessen op te lossen; met de echte stem 0.
+- Speelcontrole (`node scripts/speelcontrole.mjs`, GOED en ALLEFOUT, F7=1): beide lessen tot het eind, 0 fouten, F7 0, F8 0. `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen (15 bewust weggehaald, in WEGGEHAALD.md).
+- **Echte stem in een zichtbare Chrome, via het lesoverzicht** (± 8 minuten per les): Tellen 45 zinnen gestart, 25 helemaal uitgesproken, 20 afgebroken doordat de test al tijdens de vraag tikte (mag een kind ook); Splitsen 68 gestart, 44 helemaal uitgesproken, 24 afgebroken (tijdens vragen en opdrachten). 0 dubbel, 0 F7, 0 gedimd-en-weer-gedimd. Woorden: het eerste woord licht gemiddeld 58 ms (Tellen) en 63 ms (Splitsen) na de start van de stem op; het laatste woord gemiddeld 281 ms en 239 ms naast het geschatte moment (grootste 685 en 515 ms). De Google-stem geeft geen woordmeldingen, dus ± 150 ms kan ik niet bewijzen (zoals bij de andere lessen).
+- Getalkleur gemeten: in Tellen rood bij appels (255,123,123); in Splitsen paars 201,162,255, oranje 255,173,92, totaal wit.
+- **Vloeiend** (`ALLEEN=<les-id> npm run vloeiend`; de computer was niet helemaal rustig, belasting 9 tot 33 door de dev-server en Chrome): Tellen laptop 60 beelden/s, langste beeld 29 ms; trage telefoon 59 beelden/s, 44 ms. Splitsen laptop 60 beelden/s, 35 ms; trage telefoon 59–60 beelden/s, 45 ms en 57 ms (1 van 2 keer boven de 50 ms; was al zo, DESIGN-LATER.md). Echt slepen: laptop 50–57 beelden/s, 33 ms; telefoon 54–60 beelden/s, 17–50 ms. Openen in de ontwikkelversie 2,4 s / 3,1–4,4 s (op de echte site moet het onder 1 s).
+- **Lang wachten:** bij keuzevragen zegt Bliepo niets en komt er geen handje; bij samen tellen en slepen komt het hulphandje ± 6 s na de opdrachtzin (Tellen 7,2 s na het begin van de opdracht), met 1 korte zin.
+- **Vangnet:** Tellen 20 s niets bij samen tellen → "Kijk, ik tel de rest. Het zijn er 12."; Splitsen 20 s niets bij het samen voordoen → "Kijk, ik leg de rest erbij. 5 is 2 en 3." Geen "Ja".
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.

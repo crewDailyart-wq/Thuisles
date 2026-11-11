@@ -252,11 +252,11 @@ export function GoudenTelVlak({ opgave, nummers = [], kleur = "wit", tikbaar = f
 
   const kleurHex = KLEUR[kleur];
   return (
-    <div className={s.vlak}>
+    <div className={s.vlak} data-tellen-gouden="">
       <div ref={plek} style={HOLO_CANVAS} aria-hidden />
       {ind?.plekken.map((p, i) =>
         nummers[i] > 0 ? (
-          <div key={`${ind.id}-n${i}`} className={s.nummer} style={{ left: p.x, top: p.y - NUMMER_BOVEN * ind.schaal, color: kleurHex }} aria-hidden>
+          <div key={`${ind.id}-n${i}`} className={s.nummer} style={{ left: p.x, top: p.y - NUMMER_BOVEN * ind.schaal, color: kleurHex }} aria-hidden data-nummer="">
             {nummers[i]}
           </div>
         ) : null,

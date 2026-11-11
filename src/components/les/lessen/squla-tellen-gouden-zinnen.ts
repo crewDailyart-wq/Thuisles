@@ -78,7 +78,8 @@ export const VRAGEN: Telvraag[] = [
 export const ZIN = {
   /** Stap 1: openen (eigen beginzin van de les, BOUWREGELS 4.3). */
   begin: ["In deze les tel je fruit.", `Kijk, de appels liggen in rijen van ${gk(5, APPEL)}.`],
-  pijlUitleg: "Klaar met kijken? Tik dan op de blauwe pijl.",
+  /* "Klaar met kijken? Tik dan op de blauwe pijl." (pijlUitleg) is weg sinds 10 nov 2026: Bliepo praat door en het kind
+     hoeft nooit op de pijl te tikken (BOUWREGELS 15.27; WEGGEHAALD.md). */
   /** De vraag (Squla: "Hoeveel … zie je?"); de eerste keer met wat het kind moet doen (de knoppen 1 keer uitleggen, 3.15). */
   vraag: (f: Fruit) => `Hoeveel ${f.naam} zie je?`,
   vraagEerste: "Tel ze en tik op het goede getal.",
@@ -86,10 +87,13 @@ export const ZIN = {
   natellen: "Laten we ze samen natellen.",
   natellenKlaar: (n: number, f: Fruit) => `Zie je? Het zijn er ${gk(n, f)}. Je had het precies goed.`,
   /** Draaiboek §3 A.3: na de 2e fout samen tellen. */
-  samenHelp: "Kom, we tellen ze samen.",
+  /** 3 versies die wisselen (5.10; keuring Minsommen: niet bij elke 2e fout dezelfde zin). */
+  samenHelp: ["Kom, we tellen ze samen.", "We tellen ze samen.", "Kom, samen tellen we ze."],
   samenTik: (f: Fruit) => `Tik op elke ${f.een}. Ik tel mee.`,
   samenHand: (f: Fruit) => `Tik op een ${f.een} zonder nummer.`,
   samenKlaar: (n: number, f: Fruit) => `${gk(n, f)}. Samen telden we ${gk(n, f)} ${f.naam}.`,
+  /** Vangnet (LESRECEPT, geleerd bij Meer-minder): 20 s geen tik, dan telt Bliepo de rest zelf (geen "Ja", geen "samen"). */
+  samenZelf: (n: number, f: Fruit) => `Kijk, ik tel de rest. Het zijn er ${gk(n, f)}.`,
   /** Stap 10: einde. */
   slot: "Je telde fruit tot wel 17.",
   /** Draaiboek stap 10: Bliepo zegt kort wat het kind met de kaart doet. */
@@ -141,6 +145,14 @@ const HINT_VEEL = [(f: Fruit) => `Tel nog eens, rij voor rij. Wijs elke ${f.een}
  * (15.17; keuring 9 nov). `npx tsx scripts/fouttabel-tellen-gouden.ts` controleert dit.
  */
 const HINT_NEUTRAAL = [(f: Fruit) => `Begin linksboven en tel opnieuw. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel nog eens, rij voor rij. Wijs elke ${f.een} aan.`, (f: Fruit) => `Tel nog eens rustig. Wijs elke ${f.een} aan en zeg het getal.`];
+/**
+ * De eerste zin bij een fout, in 3 versies die per vraag wisselen (keuring Meer-minder, 10 nov 2026: niet steeds "… is
+ * dichtbij."). Elke versie is waar voor elk fout antwoord van deze les: alle foute keuzes liggen 1 of 2 naast het goede.
+ * Zonder richting (DICHTBIJ) als de richting maar 1 keuze zou overlaten (15.17).
+ */
+const DICHTBIJ = [(X: string) => `${X} is dichtbij.`, (X: string) => `Je koos ${X}. Je zit er dichtbij.`, (X: string) => `Je koos ${X}. Dat scheelt niet veel.`];
+const WEINIG = [(X: string) => `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, (X: string) => `Je koos ${X}. Je hebt ze nog niet allemaal geteld.`, (X: string) => `${X} is te weinig. Je hebt ze nog niet allemaal geteld.`];
+const VEEL = [(X: string) => `${X} is dichtbij, maar dat zijn er te veel.`, (X: string) => `Je koos ${X}. Dat zijn er te veel.`, (X: string) => `${X} is te veel.`];
 /** Woorden die een richting geven (te weinig of te veel); verboden in een hint als Bliepo de richting niet noemt. */
 export const RICHTINGWOORDEN = /\bover\b|niet geteld|\bmeer\b|1 keer|maar 1|te veel|te weinig|dubbel|laatste rij/i;
 
@@ -166,23 +178,30 @@ export function telFout(x: number, v: Telvraag): Fout {
       eerste: `Je telde alleen de volle rijen. Dat zijn er ${X}.`,
       hint: "Kijk ook naar de laatste rij en tel opnieuw.",
       uitleg: "De rij die niet vol is, telt ook mee.",
-      weer: ["Je telde weer alleen de volle rijen.", `Tel ook de ${f.naam} in de laatste rij.`],
+      /* Uitleg, geen opdracht: meteen daarna tellen we samen (LESRECEPT, keuring Getallenlijn). */
+      weer: ["Je telde weer alleen de volle rijen.", `Ook de ${f.naam} in de laatste rij horen erbij.`],
       scherm: SCHERM,
     };
   if (x < goed) {
     const basis = { code: "te-weinig" as const, soort: "te-weinig", denkfout: "telde er te weinig (sloeg er een over)", hint: HINT_WEINIG[v.nr % 3](f), scherm: SCHERM };
     const uitleg = verschil === 1 ? `Je hebt 1 ${f.een} niet geteld.` : `Je hebt een paar ${f.naam} niet geteld.`;
-    const weer = ["Je telde er weer te weinig.", `Geef elke ${f.een} 1 nummer. Dan sla je er geen over.`];
-    return verklapt ? { ...basis, eerste: `${X} is dichtbij.`, hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: `${X} is dichtbij, maar je hebt ze nog niet allemaal geteld.`, uitleg, weer };
+    const weer = ["Je telde er weer te weinig.", `Elke ${f.een} krijgt 1 nummer. Dan sla je er geen over.`];
+    return verklapt ? { ...basis, eerste: DICHTBIJ[v.nr % 3](X), hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: WEINIG[v.nr % 3](X), uitleg, weer };
   }
   if (x > goed) {
     const basis = { code: "te-veel" as const, soort: "te-veel", denkfout: "telde er te veel (telde er een 2 keer)", hint: HINT_VEEL[v.nr % 3](f), scherm: SCHERM };
     const uitleg = verschil === 1 ? `Je telde 1 ${f.een} te veel.` : `Je telde een paar ${f.naam} te veel.`;
-    const weer = ["Je telde er weer te veel.", `Geef elke ${f.een} 1 nummer. Dan tel je niets 2 keer.`];
-    return verklapt ? { ...basis, eerste: `${X} is dichtbij.`, hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: `${X} is dichtbij, maar dat zijn er te veel.`, uitleg, weer };
+    const weer = ["Je telde er weer te veel.", `Elke ${f.een} krijgt 1 nummer. Dan tel je niets 2 keer.`];
+    return verklapt ? { ...basis, eerste: DICHTBIJ[v.nr % 3](X), hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: VEEL[v.nr % 3](X), uitleg, weer };
   }
   return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: HINT_NEUTRAAL[0](f), uitleg: "We tellen ze 1 voor 1.", weer: ["We tellen ze 1 voor 1."], scherm: SCHERM };
 }
+
+/**
+ * Twee verschillende foute getallen bij dezelfde vraag, allebei zonder richting: de 2e keer een andere versie van de
+ * eerste zin (keuring Meten, 10 nov 2026: niet 2 keer "… is dichtbij." bij 1 vraag).
+ */
+export const dichtbijAnders = (x: number, v: Telvraag) => DICHTBIJ[(v.nr + 1) % 3](gk(x, v.fruit));
 
 /** De fouttabel van een vraag: elk fout antwoord. */
 export const foutenVan = (v: Telvraag): Record<string, Fout> => Object.fromEntries(v.keuzes.filter((k) => k !== v.n).map((k) => [String(k), telFout(k, v)]));

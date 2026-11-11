@@ -5,7 +5,7 @@
  * Schrijft alleen dat ene bestand. Raakt de database en de lessen niet aan.
  */
 import { writeFileSync } from "node:fs";
-import { RICHTINGWOORDEN, VRAGEN, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
+import { RICHTINGWOORDEN, VRAGEN, dichtbijAnders, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 
@@ -46,6 +46,35 @@ for (const v of VRAGEN)
     if (f.noot && RICHTINGWOORDEN.test(f.hint)) verklappers.push(`${v.id} ${a}: hint geeft toch een richting: "${f.hint}"`);
     if (over.length <= 1 && f.code !== "alleen-volle-rijen") verklappers.push(`${v.id} ${a}: na "${tekst}" blijft alleen ${over.join("")} over`);
   }
+/*
+ * Waarheidscontrole (keuring Huisnummers, 10 nov 2026): elke bewering in de eerste zin, de hint, de uitleg en de
+ * "weer"-zin moet kloppen voor DIT antwoord bij DEZE vraag. En (keuring Getallenlijn): de zinnen bij de 2e fout zijn
+ * uitleg, geen opdracht (meteen daarna tellen we samen; het kind kan "Tel ook …" niet meer doen).
+ */
+const OPDRACHT = /(^|[.!?] )(Tel|Wijs|Begin|Kijk|Geef|Sla|Leg|Sleep|Schuif|Pak|Zoek|Tik)\b/;
+let beweringen = 0;
+for (const v of VRAGEN)
+  for (const [a, f] of Object.entries(foutenVan(v))) {
+    const x = Number(a);
+    const waar = `${v.id} ${a}`;
+    const alles = [f.eerste, f.hint, f.uitleg, ...f.weer, dichtbijAnders(x, v)].map(kaal).join(" ");
+    const klopt = (zin: RegExp, ok: boolean, wat: string) => {
+      if (!zin.test(alles)) return;
+      beweringen++;
+      if (!ok) verklappers.push(`${waar}: niet waar: ${wat} ("${alles}")`);
+    };
+    klopt(/dichtbij|scheelt niet veel/, Math.abs(x - v.n) <= 2, "dichtbij, maar het scheelt meer dan 2");
+    klopt(/te veel/, x > v.n, "te veel, maar het kind koos minder");
+    klopt(/nog niet allemaal|te weinig|niet geteld/, x < v.n, "te weinig, maar het kind koos meer");
+    klopt(/alleen de volle rijen/, x === Math.floor(v.n / 5) * 5, "alleen de volle rijen, maar dat aantal is het niet");
+    klopt(new RegExp(`\\b${x}\\b`), true, "");
+    for (const z of [f.uitleg, ...f.weer]) if (OPDRACHT.test(kaal(z))) verklappers.push(`${waar}: opdracht in de zin bij de 2e fout: "${kaal(z)}"`);
+    if (f.noot && dichtbijAnders(x, v) === f.eerste) verklappers.push(`${waar}: dichtbijAnders is dezelfde zin als de eerste zin`);
+  }
+/* "… is dichtbij." niet steeds dezelfde zin (keuring Meer-minder): bij de foute antwoorden zonder richting minstens 3 versies. */
+const zonderRichting = new Set(VRAGEN.flatMap((v) => Object.values(foutenVan(v)).filter((f) => f.noot).map((f) => kaal(f.eerste).replace(/\d+/g, "#"))));
+if (zonderRichting.size < 3) verklappers.push(`eerste zin zonder richting heeft maar ${zonderRichting.size} versie(s): ${[...zonderRichting].join(" | ")}`);
+console.log(`Waarheidscontrole: ${beweringen} beweringen nagelopen; ${zonderRichting.size} versies van de eerste zin zonder richting; geen opdracht in de zinnen bij de 2e fout.`);
 if (verklappers.length) {
   console.error("VERKLAPPERS:\n" + verklappers.join("\n"));
   process.exit(1);
@@ -54,16 +83,16 @@ console.log("Verklapcontrole: geen hint laat maar 1 keuze over (behalve de beken
 
 const tekst = `# FOUTTABEL — gouden les Tellen (squla-tellen-fruit-1-gouden, "Fruit tellen")
 
-Gemaakt op 9 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-tellen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-tellen-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (15 vragen, getallen, 3 keuzes per vraag) is die van squla-tellen-fruit-1 en blijft gelijk (BOUWREGELS 15.22).
+Gemaakt op 9 november 2026, bijgewerkt op 10 november 2026 (omgezet naar de nieuwste gouden stijl, KEUZES-VOOR-SARA.md Ronde 29), **uit de code** met \`npx tsx scripts/fouttabel-tellen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-tellen-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (15 vragen, getallen, 3 keuzes per vraag) is die van squla-tellen-fruit-1 en blijft gelijk (BOUWREGELS 15.22).
 
 **EIGEN INVULLING, NIET VAN SYNTHESIS.** Alle vragen gaan over 11 t/m 17; het draaiboek Tellen (Color Count) gaat tot 10. De vragen krijgen hetzelfde skelet als Color Count; de hints en deze fouttabel zijn eigen invulling (15.22 punt 5). Wel volgt de soort reactie het draaiboek (§3 A, §7): Bliepo noemt het gekozen getal en de richting (te weinig / te veel) en vraagt opnieuw te tellen.
 
 In de les staan de getallen in de kleur van het fruit (appel rood, peer groen, pruim paars); hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de vraag en de knoppen even weg, het fruit blijft staan zonder nummers. Bliepo zegt de eerste zin; daarna komen de 3 knoppen meteen terug met de hint (geen pijl, zoals het draaiboek).
-- **Richting en verklappen (15.17):** zou "te weinig" of "te veel" bij deze 3 keuzes maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "dichtbij") en wijst hij naar de manier van tellen. Zo verklapt de hint het antwoord niet.
-- **2e fout:** een korte uitleg bij de denkfout (§3, zonder het antwoord), "Kom, we tellen ze samen." (pijl). Dan tikt het kind elk stuk fruit aan; er komt een nummer bij en Bliepo zegt het getal. Het laatste getal is het aantal ("Samen telden we 12 appels."). Pijl, de les gaat door. Na ± 6 s stilte komt vanzelf het hulphandje.
+- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de vraag en de knoppen even weg, het fruit blijft staan zonder nummers. Bliepo zegt de eerste zin (de pijl staat erbij als snelkoppeling; ± 0,7 s na de zin gaat het vanzelf verder, 15.27); daarna komen de 3 knoppen terug met de hint (een vraag: geen pijl).
+- **Richting en verklappen (15.17):** zou "te weinig" of "te veel" bij deze 3 keuzes maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "dichtbij", in 3 versies die per vraag wisselen) en wijst hij naar de manier van tellen. Zo verklapt de hint het antwoord niet. Komt bij dezelfde vraag een 2e fout getal zonder richting, dan een andere versie.
+- **2e fout:** een korte uitleg bij de denkfout (§3, zonder het antwoord, uitleg en geen opdracht), "Kom, we tellen ze samen." (vanzelf door). Dan tikt het kind elk stuk fruit aan (een opdracht: geen pijl); er komt een nummer bij en Bliepo zegt het getal. Het laatste getal is het aantal ("Samen telden we 12 appels."), de les gaat vanzelf door. Na ± 6 s stilte komt vanzelf het hulphandje; na 20 s zonder tik telt Bliepo de rest zelf ("Kijk, ik tel de rest. Het zijn er 12.").
 - **Twee keer dezelfde denkfout** bij dezelfde vraag: Bliepo zegt "weer" en legt het anders uit (§3, laatste kolom). Alleen als hij de 1e keer al zei wat er mis was; na alleen "… is dichtbij." komt de gewone uitleg.
 - **Hints wisselen:** per soort denkfout zijn er 3 hints; welke komt, hangt af van het vraagnummer.
 - **Niet duidelijk (\`onduidelijk\`):** komt in deze les niet voor (elk fout antwoord is kleiner of groter dan het goede); als vangnet een zin uit BLIEPO-KARAKTER.md §10 en een algemene hint.
@@ -98,9 +127,9 @@ ${uitleg}
 
 ## 4. Goed
 
-- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (§4 Tellen: "Ja, er zijn er 12." / "Ja, je telde ze allemaal: 12." / "Het zijn er 12." / "Je telde er 12." / "Ik heb ze nagekeken: het zijn er 12."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. De nummers 1 t/m 12 staan tegelijk bij het fruit. Wacht op de pijl.
-- **Eerste vraag in één keer goed:** lofzin, "Laten we ze samen natellen." (pijl), Bliepo telt hardop 1 t/m 12, "Zie je? Het zijn er 12. Je had het precies goed." (pijl).
-- **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; pijl.
+- **Goed in één keer:** scherm 1 s groen, een lofzin uit het rijtje (BLIEPO-KARAKTER.md §3) en het aantal (§4 Tellen: "Ja, er zijn er 12." / "Ja, je telde ze allemaal: 12." / "Het zijn er 12." / "Je telde er 12." / "Ik heb ze nagekeken: het zijn er 12."), samen als 1 uiting. Begint de lofzin met "Ja", dan komt een telzin zonder "Ja". De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. De nummers 1 t/m 12 staan tegelijk bij het fruit. Vanzelf door (± 0,7 s na de zin; 15.27).
+- **Eerste vraag in één keer goed:** lofzin, "Laten we ze samen natellen.", Bliepo telt hardop 1 t/m 12 (± 1,15 s per nummer; een tik op de pijl zet alle nummers er meteen bij), "Zie je? Het zijn er 12. Je had het precies goed." Alles vanzelf door.
+- **Goed na een fout:** alleen een korte bevestiging (BLIEPO-KARAKTER.md §3.4); de nummers staan erbij; vanzelf door.
 - **Heel snel:** Bliepo zegt niets over snel (BOUWREGELS 6.10).
 - **Hetzelfde foute getal 2 keer:** de eerste zin wordt "Je koos weer 11." (niet 2 keer dezelfde zin).
 - **Verklapcontrole:** het script stopt met een foutmelding als een hint zonder richting toch een richting geeft, of als er na eerste zin + hint maar 1 keuze logisch overblijft (open: vraag 15, keuze 10, KEUZES Ronde 20 vraag 2).

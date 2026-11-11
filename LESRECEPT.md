@@ -52,7 +52,7 @@
 > - **Na goed met een naspeel-animatie** (de machine): de les wacht tot de animatie klaar is, maar een tik op de pijl slaat ook die over.
 > - **Kale som = witte getallen, ook als het oude vlak ze kleurt**: teken de som dan zelf in het gouden vlak (2.1, 14.27), het oude vlak blijft ongewijzigd.
 > - **Testen:** met een rechtstreekse link wacht de eerste zin op de eerste tik (stemHeelUitpraten): het testscript tikt eerst 1 keer naast het speelvlak. Bewerk geen bronbestand terwijl een test loopt (de les herstart dan en de F8-teller geeft vals alarm). Laat een testscript Chrome ook afsluiten als het wordt gestopt (SIGTERM): 65 achtergebleven Chrome-processen gaven een belasting van 290.
-> - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): klok, Tellen, Splitsen en Plussommen hebben `woordenMeeMetStem` nog niet (1 regel per les).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet door mij veranderd, eerst Sara): klok, Tellen, Splitsen en Plussommen hebben `woordenMeeMetStem` nog niet (1 regel per les). *(10 nov: Tellen en Splitsen zijn omgezet, Ronde 29.)*
 
 > ## ⭐ GELEERD BIJ DE KEURING MINSOMMEN (onafhankelijke keurder, 10 november 2026; KEURING-MINSOMMEN-GOUDEN.md) — geldt voor elke gouden les
 > - **Ook de uitleg na de 2e fout gebruikt het woord van de vraag** (3.11, 3.12): vraagt de les "Hoeveel komen eruit?", zeg dan niet "Er blijven … over". En geef die uitleg 2 versies, zodat een kind dat veel fouten maakt niet 15 keer dezelfde zin hoort (5.10).
@@ -117,6 +117,17 @@
 > - **Een eerste zin zonder het gekozen getal komt bij 2 verschillende foute antwoorden 2 keer** ("Dat is dichtbij." bij 9 en daarna bij 11, voor dezelfde vraag). Kies de variant niet alleen per vraag (`v.nr % 3`): kijk bij de 2e fout of de eerste zin dezelfde is als bij de 1e fout, en zeg dan iets anders ("Je zit er weer vlak naast."). Test het met 2 verschillende foute antwoorden van dezelfde soort (route `dichtbij` in scripts/test-meten-gouden.mjs).
 > - **Enkelvoud of meervoud volgt het beeld van déze vraag:** "de rijen eronder" klopt niet bij een tafel met 2 rijen (er ligt maar 1 rij onder). Laat de zin afhangen van het aantal (`r === 2 ? "De rij eronder …" : "De rijen eronder …"`).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (alleen geteld, niets veranderd): dezelfde eerste zin bij 2 verschillende foute antwoorden: **0 van de 8** (Tellen, Splitsen, Meer-minder en Getallenlijn noemen het gekozen getal in de zin; de klok gebruikt dan een "weer"-zin). "Rijen eronder" bij 1 rij: **0 van de 8** (alleen Meten praat over rijen eronder).
+
+> ## ⭐ GELEERD BIJ DE OMZETTING TELLEN EN SPLITSEN (10 november 2026; KEUZES-VOOR-SARA.md Ronde 29) — geldt voor elke gouden les
+> - **Omzetten = dezelfde zegDoor/zegOpdracht als de nieuwste lessen, in de les zelf** (geen apart gedeeld pijlbestand): `pijlZoalsSynthesis`, `stemHeelUitpraten` en `woordenMeeMetStem` aan; elk stuk ± 0,7 s na de zin vanzelf door; bij een opdracht `l.verderWeg()`; op de eindkaart geen pijl; de eindzin als 1 uiting.
+> - **Na een nieuw beeld ± 150 ms tot de vraag of opdracht,** niet 700 ms: anders is het "einde zin → volgend stuk" 1,4 s in plaats van ± 0,7 s.
+> - **Een opdracht van 3 of 4 zinnen eerst splitsen:** de beschrijving als eigen stuk, dan de opdracht (anders past het niet in het vaste tekstvak).
+> - **Een lange reactie bij een fout in 2 stukken** (eerst wat het kind deed, dan de hint of uitleg): in 1 stuk werd Bliepo bij Splitsen 22 keer per les kleiner (het sprongen-script ziet dat als "Bliepo verspringt"; geen gebaar). Ook de startvraag kort houden (op 1536 × 864 te lang).
+> - **Een Phaser-hulphandje is geen `[data-hulphand]`:** laat de test naar de logregel "aanwijzing" kijken.
+> - **Bliepo zelf laten tellen (natellen) heeft een vast tempo** (draaiboek), maar de pijl staat erbij als snelkoppeling: een tik zet alles meteen klaar.
+> - **Ook "Kom, we … samen." en de uitleg bij de 2e fout in 2 à 3 versies** (anders zegt Bliepo bij 2 vragen achter elkaar precies hetzelfde; de F8-teller ziet dat als dubbel als slepen niet als actie telt).
+> - **Een testspeler die sleept, telt slepen als actie** (`gesleept`), en moet uit een stand kunnen komen waar de foute verdeling al ligt (proef na een fout).
+> - **Een vlak dat kleiner moet (vaste zone), altijd even klein** als er in Phaser gesleept wordt: Phaser meet de plek van het vlak bij het begin.
 
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**

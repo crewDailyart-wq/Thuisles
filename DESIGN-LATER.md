@@ -26,6 +26,8 @@ Opnieuw gemeten na het herstel van de kind-test (gouden les Splitsen, 9 november
 
 Na de keuring (gouden les Splitsen, 9 november 2026, 2 keer, niets ernaast): laptop 60 beelden/s, langste beeld 27–32 ms (in orde); trage telefoon 58–59 beelden/s, hapering 62–71 ms (grens 50 ms).
 
+Na de omzetting naar de nieuwste gouden stijl (10–11 november 2026, computer niet helemaal rustig): Tellen laptop 60 beelden/s, 29 ms; trage telefoon 59 beelden/s, 44 ms (in orde). Splitsen laptop 60 beelden/s, 35 ms; trage telefoon 59–60 beelden/s, 45 en 57 ms (1 van 2 keer boven de grens). Het splitsvlak staat nu 88 % groot (vaste zone); bij telefoon later nakijken of de pionnen groot genoeg blijven om te pakken.
+
 ## Bouwen met het oog op later
 - Geen vaste pixelmaten (gebruik procenten of schaal).
 - Geen onnodig zware animaties.

@@ -3,6 +3,12 @@
   (squla-splitsen.module.css). Maten in punten van het vlak (980 × 720), zoals de rest van het vlak.
 */
 
+/* Het hele vlak (iets kleiner vanaf links, zie KLEINER in squla-splitsen-gouden-vlak.tsx). */
+.wortel {
+  position: absolute;
+  inset: 0;
+}
+
 /* De vingertop staat op (left, top); de hand ligt schuin rechtsonder, in de lege ruimte naast het ding. */
 .hand {
   position: absolute;

@@ -24,9 +24,17 @@ export type Hand = { van: Punt; naar?: Punt | null; sleutel: string };
 
 export type GoudenSplitsProps = SplitsProps & { hand?: Hand | null };
 
+/**
+ * Het hele vlak staat iets kleiner, vanaf de linkerkant (vaste zones, BOUWREGELS 15.30; zoals de gouden lessen Meer-minder
+ * en Meten; omgezet 10 november 2026): de 3 huisjes van vraag 10 lopen tot x = 940 van de 980 en vielen anders onder het
+ * vaste tekstvak. Altijd dezelfde maat (niet per vraag): zo verspringt het vlak niet en klopt het slepen (Phaser meet de
+ * plek van het vlak bij het begin). Het splitsvlak zelf en de oude les blijven ongewijzigd.
+ */
+export const KLEINER = 0.88;
+
 export function GoudenSplitsVlak({ hand = null, ...rest }: GoudenSplitsProps & Vlakbasis) {
   return (
-    <>
+    <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-splitsen-gouden="">
       <SqulaSplitsVlak {...rest} />
       {hand && (
         <div
@@ -48,7 +56,7 @@ export function GoudenSplitsVlak({ hand = null, ...rest }: GoudenSplitsProps & V
           </svg>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
