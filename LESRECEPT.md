@@ -212,6 +212,15 @@
 > - **Tel ook hoe vaak een hint en het samen voordoen hetzelfde zeggen** over de hele les ("Ze beginnen bij dezelfde streep." 6 keer bij een kind dat veel fouten maakt).
 > - **Geldt ook voor eerder gebouwde gouden lessen:** "vergelijk" in een zin van Bliepo: 0 van 13; "ligt" bij iets wat staat: 0 van 13.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES REKENMIX (11 november 2026; KEUZES-VOOR-SARA.md Ronde 44) — geldt voor elke gouden les
+> - **Elk Rekenmix-level heeft maar 1 soort vraag** (mix1-1 alleen tellen, mix1-2 alleen vormen, …). "Elke vraag volgt de gouden les van zijn eigen onderwerp" (15.25) betekent dan: de hele les volgt die ene gouden les (verloop, tempo, zinnen, fouttabel-logica). **Importeer de zinnen van die gouden les** (ZIN, TELREACTIE, rijtjes) in plaats van ze te kopiëren; alleen wat niet klopt met het beeld van de nieuwe les wordt eigen (hier: de hints).
+> - **Een hint over de plek klopt alleen bij dat beeld:** "rij voor rij" en "linksboven" alleen als de dingen in rijen liggen; bij 2 aan 2 "van links naar rechts", door elkaar "van boven naar beneden". Laat het script het per vraag nalopen.
+> - **"Dichtbij" alleen bij hooguit 2 verschil.** Squla heeft soms een keuze 3 verder; dan zegt Bliepo "Je koos 7. Je hebt ze nog niet allemaal geteld." (waarheidscontrole in het script).
+> - **Het-woorden:** "elke bal", maar "elk potlood" (ook "Elk potlood krijgt …"). Een zin van een andere gouden les met "elke" werkt alleen bij de-woorden; geef het ding een veld `elk` en laat het script "elke potlood" zoeken.
+> - **Ook "1 keer", "1 nummer" en "2 keer" krijgen een kleur** ({1:wit}: een getal zonder ding, 14.20).
+> - **Een rijtje dat per aantal opnieuw wordt gemaakt** (`TELREACTIE(n, fruit)` geeft elke keer een nieuw rijtje): dan werkt "niet 2 keer dezelfde zin" van `kies()` niet, want die onthoudt de vorige zin per rijtje. Bewaar het rijtje (1 per aantal en kleur).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeld; eerst Sara, KEUZES Ronde 44): de gouden les Tellen heeft kale cijfers in "Elke appel krijgt 1 nummer.", "Wijs elke … 1 keer aan." en "tel je maar 1 keer", en maakt TELREACTIE bij elke vraag opnieuw. "Elke" bij een het-woord: 0 (Tellen heeft alleen appel, peer, pruim).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

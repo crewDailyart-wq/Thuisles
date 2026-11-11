@@ -1919,3 +1919,80 @@ voorwerpen, maten, keuzes, antwoorden) niet veranderd; de oude les squla-rekenta
 - **D.** Vloeiend nog 1 keer meten met de stekker erin en de energiebesparing uit, vóór online (zie KEURING).
 
 Ronde 42 punt 8 (donkere ruimte) en 9 (geen voorlezen bij aanwijzen): de keurder vindt beide goed. Advies: **ja**.
+
+## Ronde 44 — gouden les Rekenmix (squla-rekenmix-mix1-1-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-rekenmix-mix1-1 "Rekenmix 1". De oude les en het oude vlak
+(squla-rekenmix.tsx, squla-rekenmix-vlak.tsx) zijn niet veranderd. Bekijken:
+http://localhost:3000/voorbeeld/les/squla-rekenmix-mix1-1-gouden?naam=Testkind (liefst via het lesoverzicht
+/voorbeeld/les, dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** de eerste Rekenmix-les zonder gouden les: **Rekenmix 1, level 1**
+(squla-rekenmix-mix1-1). Let op: bij Squla heeft elk Rekenmix-level maar **1 soort vraag**. In deze les zijn alle 15
+vragen **telvragen**. Daarom volgt de hele les de **gouden les Tellen** (15.25: "elke vraag volgt de gouden les van
+zijn eigen onderwerp"). De andere 15 Rekenmix-lessen heb ik niet aangeraakt.
+
+**Per vraag welke gouden les:** vraag 1 t/m 15 (appels, ballen, potloden, auto's, bloemen, knikkers, sterren tellen,
+5 t/m 12) → gouden les Tellen (squla-tellen-fruit-1-gouden; draaiboek Tellen, Color Count). Zelfde verloop, tempo,
+zinnen (die worden uit de les Tellen geladen, niet gekopieerd), lof met het aantal, samen natellen bij vraag 1, samen
+tellen bij de 2e fout, hulphandje, vangnet na 20 s, eindkaart.
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde dingen, aantallen, manier van liggen (door
+elkaar, in rijen, 2 aan 2) en dezelfde 3 keuzes. Niets toegevoegd, niets weggelaten. Het script vergelijkt dit met de
+oude les. Niet overgenomen: de startvraag "Kun je dit al?" en het voorbeeld met 6 appels (zoals bij Tellen: het
+draaiboek Tellen heeft geen startvraag).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Tel de appels. Hoeveel zijn het er?" | dezelfde soort vraag heet in de gouden les Tellen anders (3.11) | "Hoeveel appels zie je?" (de 1e keer + "Tel ze en tik op het goede getal.") |
+| Hulp bij 2 aan 2: Bliepo telt in sprongen van 2 ("2, 4, 6") | de gouden les Tellen telt 1 voor 1 | samen tellen 1 voor 1 (het kind tikt elk ding); na goed staan de nummers per paar, zodat onderaan 2, 4, 6 … staat |
+| Het oude vlak met getallen achter de rij | de gouden les Tellen zet een nummer bij elk ding | een nieuw Phaser-vlak met dezelfde plaatjes, links van het tekstvak |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht.
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De hints passen bij het beeld:** bij rijen "rij voor rij" en "linksboven", bij 2 aan 2 "van links naar rechts",
+   door elkaar "van boven naar beneden". Goed zo?
+2. **Keuzes die 3 verder liggen** (Squla: 7 bij 10 ballen, 5 bij 8 potloden): Bliepo zegt dan niet "dichtbij" maar
+   "Je koos 7. Je hebt ze nog niet allemaal geteld." Goed zo?
+3. **Uitleg bij de 2e fout** is anders geschreven dan bij Tellen, zodat er geen woord 2 keer in staat: "Er mist nog 1
+   bal." / "Er missen nog een paar ballen." / "Er is 1 bal 2 keer geteld." Goed zo?
+4. **De beginzin** "In deze les tel je allerlei dingen." en de slotzin "Je telde allerlei dingen, tot wel 12." Goed zo?
+5. **De eindkaart** is dezelfde als bij de oude Rekenmix-lessen. Goed zo?
+6. **Heel snel antwoorden:** Bliepo zegt niets (zoals Tellen). Goed zo?
+
+**Graag een besluit (ja of nee):**
+7. **Mogen de andere 15 Rekenmix-lessen ook zo**, elk volgens de gouden les van hun soort vraag? Let op: een paar
+   soorten hebben nog geen eigen gouden les (links/rechts/midden, eerste/tweede/laatste, ervoor/erna, verbinden,
+   kleur en vorm, welke kaart heeft dit aantal). Daar moet je eerst kiezen welke gouden les ze volgen.
+8. **De gouden les Tellen** (niet door mij veranderd, eerst jij): (a) kale cijfers in "Elke appel krijgt 1 nummer.",
+   "Wijs elke appel 1 keer aan." en "tel je maar 1 keer" (14.20: dan wit); (b) de zin met het aantal ("Het zijn er
+   12.") kan daar 2 keer achter elkaar hetzelfde zijn, omdat het rijtje bij elke vraag opnieuw wordt gemaakt. In de
+   Rekenmix-les is beide opgelost. Ook in Tellen herstellen? Advies: **ja**.
+
+**Afwijkingen van het skelet:** geen.
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (de vaste plaatjes van de oude les).
+
+**Niet gedaan door mij:** de onafhankelijke kind-test en keuring. Mijn eigen speeltest: KINDTEST-REKENMIX-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147):
+- Fouttabel-script `scripts/fouttabel-rekenmix-gouden.ts`: inhoud gelijk aan de oude les (15 vragen), 30 foute
+  antwoorden, verklap-, waarheids- (263 beweringen) en herhaalcontrole (151 reacties) in orde, geen woord van de
+  niet-lijst, geen "fout", geen kaal cijfer in 386 zinnen, geen "elke potlood".
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen in mijn bestanden (de 1 melding gaat over de
+  klokzin die de keurder van de klokles herstelde, niet van mij).
+- Speelcontrole F7=1: GOED 50 stappen en ALLEFOUT 229 stappen, tot het eind, F7 0, F8 0.
+- `scripts/test-rekenmix-gouden.mjs`, alle routes: tot de eindkaart, nooit op de pijl hoeven tikken; hulphandje alleen
+  bij samen tellen; vangnet werkt. Einde zin → volgend stuk gemiddeld 739–849 ms. Overlap en sprongen op 1440×900,
+  1024×768, 1280×720 en 1536×864: 0; eindkaart 0 woorden eronder.
+- Wit blijft wit (site 3,5 s traag, 120 s): 12 keer een zin wit vóór Bliepo, 0 keer daarna weer grijs.
+- Woord voor woord (echte Google-stem): 7/7 en 12/12 woorden apart opgelicht; per woord gemiddeld 108 ms naast het
+  gesproken moment, 13 van 17 binnen ± 150 ms.
+- Vloeiend: langste beeld 40 ms (laptop) en 44 ms (trage telefoon), maar 30 beelden/s. De Mac stond op de batterij
+  (19 %) in de energiebesparende stand: de goedgekeurde les Tellen meet op dat moment ook precies 30. **Graag opnieuw
+  meten met de stekker erin en de energiebesparing uit, vóór online.** Openen in de ontwikkelversie 1,3–1,8 s / 2,7–3,4 s
+  (op de echte site moet het onder 1 s).
+- Let op: andere helpers draaiden tussendoor ook tests; ik heb gewacht tot ze klaar waren, maar bij de eerste route
+  ("goed") liep er mogelijk nog een tweede test.
