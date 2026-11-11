@@ -65,9 +65,17 @@ const MACHINE_GETAL: Punt = { x: 490, y: 293 };
 
 /* ---------- het vlak ---------- */
 
+/**
+ * Het hele vlak staat iets kleiner, vanaf de linkerkant (vaste zones, BOUWREGELS 15.30; zoals de gouden lessen Meer-minder,
+ * Meten en Splitsen; 11 november 2026, KEUZES-VOOR-SARA.md Ronde 30). De keuring van Meer-minder mat dat het vak met het
+ * vraagteken ± 25 px onder het vaste tekstvak liep. Altijd dezelfde maat (niet per vraag), zodat er niets verspringt.
+ * Het minvlak zelf en de oude les blijven ongewijzigd.
+ */
+export const KLEINER = 0.9;
+
 export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = null, teller = null, hand = null, ...rest }: GoudenMinProps & Vlakbasis) {
   return (
-    <>
+    <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-minsommen-gouden="">
       <SqulaMinVlak {...rest} som={null} />
       {kaleSom && (
         <div className={`${s.som} ${s[kaleSom.plek]}`} aria-hidden data-kalesom={`${kaleSom.a}-${kaleSom.b}`}>
@@ -111,6 +119,6 @@ export function GoudenMinVlak({ kaleSom = null, machineRondje = false, weg = nul
           </svg>
         </div>
       )}
-    </>
+    </div>
   );
 }

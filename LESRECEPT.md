@@ -129,6 +129,15 @@
 > - **Een testspeler die sleept, telt slepen als actie** (`gesleept`), en moet uit een stand kunnen komen waar de foute verdeling al ligt (proef na een fout).
 > - **Een vlak dat kleiner moet (vaste zone), altijd even klein** als er in Phaser gesleept wordt: Phaser meet de plek van het vlak bij het begin.
 
+> ## ⭐ GELEERD BIJ DE OMZETTING PLUSSOMMEN EN KLOK (11 november 2026; KEUZES-VOOR-SARA.md Ronde 30) — geldt voor elke gouden les
+> - **Een zin die al wit is, blijft wit** (F7, Ronde 28b punt 9). Deed de site er langer dan 2,5 s over (de vraag of Ruth de zin heeft), dan werd de zin wit en daarna weer grijs als Bliepo hem toch zei. Opgelost in het gedeelde BliepoTekst, alleen voor lessen met `stemHeelUitpraten` (lib/stem.ts `praatHeelUit`). Test: `scripts/test-wit-blijft-wit.mjs` (maakt de site expres 3,5 s traag), of `TRAGESERVER=3500` bij de testscripts van Plussommen en de klok.
+> - **Na een fout niet 2 keer de vraag vóór dezelfde poging:** eerst wat het kind koos (vanzelf door), dan komen de keuzes terug **mét de hint** (zoals Tellen). Bij een opdracht (verbinden) is de hint de nieuwe opdrachtzin, niet nog een opdracht erachter.
+> - **Bij verbinden in een testspeler: een fout antwoord is een verwisseling** (som 0 ↔ som 1). Een antwoord dat al aan een andere som hangt, haalt die lijn weg; dan raken de lijnen nooit vol en blijft de test hangen.
+> - **Bij zetten mag de zin bij de 2e fout wél een opdracht zijn** als het kind daarna zelf de laatste stap doet (de klok: "Zet de kleine wijzer in het oranje rondje."); bij een keuzevraag nooit.
+> - **Een eerste zin zonder richting in 3 versies over de hele les tellen**, niet per `nr % 3` blind kiezen: bij Plussommen vielen de 3 vragen met zo'n zin allemaal op 2 versies. Laat het fouttabel-script het aantal versies tellen.
+> - **Een speelvlak in Phaser met alleen HTML-tikplekken** kan altijd even klein (88 %, vanaf links): de tikplekken schalen mee (Plussommen, Minsommen 90 %).
+> - **Geldt ook voor eerder gebouwde gouden lessen:** de wit-blijft-wit-oplossing geldt meteen voor alle 9 gouden lessen (allemaal `stemHeelUitpraten`); oude lessen zonder de optie veranderen niet.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

@@ -1,11 +1,11 @@
 # FOUTTABEL — gouden klokles (squla-klok-hoelaat-1-gouden, "Hoe laat is het?")
 
-Opnieuw gemaakt op 9 november 2026 (zesde ronde) **uit de code** met `npx tsx scripts/fouttabel-klok-gouden.ts`; pas zinnen dus aan in `src/components/les/lessen/squla-klok-gouden-zinnen.ts` en draai het script opnieuw. De inhoud (vragen, keuzes, tijden) is die van de les squla-klok-hoelaat-1 en blijft gelijk (15.8). Sinds 9 november staan ook de vragen tussendoor en de bonus erin (alleen hele uren; besluit Sara, ronde 14).
+Opnieuw gemaakt op 9 november 2026 (zesde ronde), bijgewerkt op 11 november 2026 (Ronde 30: 2 hints volgens 15.17, uitleg bij de 2e fout zonder opdracht), **uit de code** met `npx tsx scripts/fouttabel-klok-gouden.ts`; pas zinnen dus aan in `src/components/les/lessen/squla-klok-gouden-zinnen.ts` en draai het script opnieuw. De inhoud (vragen, keuzes, tijden) is die van de les squla-klok-hoelaat-1 en blijft gelijk (15.8). Sinds 9 november staan ook de vragen tussendoor en de bonus erin (alleen hele uren; besluit Sara, ronde 14).
 
 Sara mag elke zin aanpassen. In de les krijgt het uur de kleur van de kleine wijzer (oranje) en de 12 bij de grote wijzer de kleur van de grote wijzer (paars) (14.16); hier staan de getallen zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11; de 3e poging is vervangen):**
-- **1e fout:** Bliepo's scherm 1,5 seconde rood, vraag en knoppen even weg, Bliepo zegt de eerste zin en de hint uit de tabel, met het beeld uit de tabel, wacht op de blauwe pijl (zoals het draaiboek), dan komt de vraag terug. Het kind mag nog 1 keer.
+- **1e fout:** Bliepo's scherm 1,5 seconde rood, vraag en knoppen even weg, Bliepo zegt de eerste zin en de hint uit de tabel, met het beeld uit de tabel; dat gaat vanzelf door (BOUWREGELS 15.27, pijl rechts als snelkoppeling), dan komt de vraag terug. Het kind mag nog 1 keer.
 - **2e fout:** Bliepo legt het uit (§4, bij de denkfout van deze keuze) **en doet het samen met het kind voor**: nu pas de oranje ring om het goede antwoord en het antwoord in woorden; alleen de goede knop blijft, het kind tikt hem zelf; de les gaat verder. (Oude regel met een 3e poging: vervangen.)
 - **Twee keer dezelfde denkfout** (bij dezelfde vraag, of al eerder in de les): Bliepo zegt dat vriendelijk ("weer") en legt het op een andere manier uit (§4, laatste kolom).
 - **Niet duidelijk (`onduidelijk`):** eerste zin uit BLIEPO-KARAKTER.md §10 (wisselt, nooit 2 keer dezelfde achter elkaar); "Probeer het nog 1 keer, met een tip." alleen na de 1e fout (na de 2e is er geen poging meer) en "Ik bedoelde een andere." alleen bij een keuzevraag, niet bij tikken of zetten en een algemene hint. Geen reden verzonnen.
@@ -90,7 +90,7 @@ Bij klok 2 (12 uur) staan beide wijzers op de 12; daar is de hint: "Hier staat d
 | oefenblok, tussendoor (stap 19): waar wijst de grote wijzer? (klok van 10 uur): "Waar wijst de grote wijzer?" (12) | 10 | `verkeerde-wijzer` — keek naar de kleine wijzer, die bij het uur staat | Bij de {10:oranje} staat de kleine wijzer. | Kijk naar de grote wijzer die oplicht. | de grote wijzer licht op, de kleine wordt vaag |
 | oefenblok, tussendoor (stap 19): waar wijst de grote wijzer? (klok van 11 uur): "Waar wijst de grote wijzer?" (12) | 11 | `verkeerde-wijzer` — keek naar de kleine wijzer, die bij het uur staat | Bij de {11:oranje} staat de kleine wijzer. | Kijk naar de grote wijzer die oplicht. | de grote wijzer licht op, de kleine wordt vaag |
 | oefenblok, bonus (stap 20): alleen als alles in 1 keer goed ging: "Je had ze allemaal in 1 keer goed! Nog 1 als toetje. Het is nu {12:oranje} uur. Hoe laat is het over 1 uur?" (1 uur) | 11 uur | `plus-min-verwisseld` — ging 1 uur terug in plaats van 1 uur vooruit | Je ging 1 uur terug. | Over 1 uur is het later. Volg de blauwe pijl, met de klok mee. | blauwe pijl van de 12 naar de 1 (met de klok mee) |
-| oefenblok, bonus (stap 20): alleen als alles in 1 keer goed ging: "Je had ze allemaal in 1 keer goed! Nog 1 als toetje. Het is nu {12:oranje} uur. Hoe laat is het over 1 uur?" (1 uur) | 12 uur | `een-te-weinig` — bleef bij de tijd van nu, 1 uur te weinig verder | Dat is de tijd van nu. | Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl. | blauwe pijl van de 12 naar de 1 (met de klok mee) |
+| oefenblok, bonus (stap 20): alleen als alles in 1 keer goed ging: "Je had ze allemaal in 1 keer goed! Nog 1 als toetje. Het is nu {12:oranje} uur. Hoe laat is het over 1 uur?" (1 uur) | 12 uur | `een-te-weinig` — bleef bij de tijd van nu, 1 uur te weinig verder | Dat is de tijd van nu. | Over 1 uur is het later dan nu. Begin bij de 12 en ga met de klok mee. | niets extra |
 
 ## 3. De uitleg (route na "Nee" of na een mislukte proef)
 
@@ -103,7 +103,7 @@ Bij klok 2 (12 uur) staan beide wijzers op de 12; daar is de hint: "Hier staat d
 | uitleg, stap 8 (het laagste punt): "Volg de klok helemaal rond. Welk getal staat onderaan?" (6) | 3 | `onduidelijk` — niet duidelijk (geen reden verzonnen) | (zin uit BLIEPO-KARAKTER.md §10, bijvoorbeeld "Ik geef je een tip.") | Ga helemaal naar beneden, naar het blauwe pijltje. | blauw pijltje onder de 6 |
 | uitleg, stap 8 (het laagste punt): "Volg de klok helemaal rond. Welk getal staat onderaan?" (6) | 12 | `boven-onder-verwisseld` — haalde bovenaan en onderaan door elkaar | De 12 staat juist bovenaan. | Ga helemaal naar beneden, naar het blauwe pijltje. | blauw pijltje onder de 6 |
 | uitleg, stap 9 (wat komt na de 6?): "Kijk naar de 6. Welk getal komt erna?" (7) | 5 | `verkeerde-richting` — nam het getal ervoor in plaats van erna | De 5 komt vóór de 6. | Erna betekent: deze kant op. Volg de blauwe pijl. | blauwe pijl van de 6 naar de 7 (met de klok mee) |
-| uitleg, stap 9 (wat komt na de 6?): "Kijk naar de 6. Welk getal komt erna?" (7) | 8 | `een-te-veel` — telde 1 te veel (2 getallen verder) | Je ging 2 getallen verder. | Na de 6 ga je maar 1 getal verder. Volg de blauwe pijl. | blauwe pijl van de 6 naar de 7 (met de klok mee) |
+| uitleg, stap 9 (wat komt na de 6?): "Kijk naar de 6. Welk getal komt erna?" (7) | 8 | `een-te-veel` — telde 1 te veel (2 getallen verder) | Je ging 2 getallen verder. | Zet je vinger op de 6. Schuif met de klok mee naar het eerstvolgende getal. | niets extra |
 | uitleg, stap 10 (wat komt na de 12?): "Nu een lastige. Welk getal komt na de 12?" (1) | 11 | `verkeerde-richting` — nam het getal ervoor in plaats van erna | De 11 komt vóór de 12. | We zoeken het getal erna. Volg de pijl. | blauwe pijl van de 12 naar de 1 (met de klok mee) |
 | uitleg, stap 10 (wat komt na de 12?): "Nu een lastige. Welk getal komt na de 12?" (1) | 13 | `doortellen-na-12` — telde door zoals op een getallenlijn (13 na 12) | Op een getallenlijn komt de 13 na de 12, dat snap ik. | Op deze klok staat geen 13. Volg de pijl. | blauwe pijl van de 12 naar de 1 (met de klok mee) |
 | uitleg, stap 11 (wat telt de grote wijzer?): "De ene wijzer telt de minuten. De andere wijst het uur aan. Wat telt de grote wijzer?" (de minuten) | de uren | `wijzers-verwisseld` — dacht: een uur duurt lang, dus de grote wijzer telt de uren | Dat klinkt logisch: een uur duurt lang. | Maar op de klok is het andersom. Kijk hoe snel de grote wijzer straks draait. | de grote wijzer licht op, de kleine wordt vaag |
@@ -149,28 +149,28 @@ Bij klok 2 (12 uur) staan beide wijzers op de 12; daar is de hint: "Hier staat d
 
 | Soort denkfout | Uitleg bij de 2e fout | Andere uitleg als dezelfde denkfout nog eens komt |
 |---|---|---|
-| lange-wijzer | Het uur lees je bij de kleine wijzer. | Je keek weer naar de grote wijzer. Zoek de kleine, dikke wijzer en volg hem tot zijn punt. |
-| andere-kant | Het uur staat bij de punt van de kleine wijzer. | Weer de andere kant. Zet je vinger in het midden en schuif naar de punt. |
-| ernaast | Kijk welk getal precies bij de punt van de kleine wijzer staat. | Weer net ernaast. Je bent er bijna! Kijk goed welk getal de punt precies raakt. |
-| spiegel | Kijk of de punt van de kleine wijzer links of rechts staat. | Weer het getal aan de andere kant, links en rechts zijn omgedraaid. Zet je vinger op de punt van de kleine wijzer en kijk naar het getal erbij. |
+| lange-wijzer | Het uur lees je bij de kleine wijzer. | Je keek weer naar de grote wijzer. Het uur staat bij de punt van de kleine, dikke wijzer. |
+| andere-kant | Het uur staat bij de punt van de kleine wijzer. | Weer de andere kant. Vanuit het midden wijst de punt naar het uur. |
+| ernaast | Het uur is het getal precies bij de punt van de kleine wijzer. | Weer net ernaast. Je bent er bijna! Het goede getal raakt de punt precies. |
+| spiegel | Op de klok maakt het uit of de punt links of rechts staat. | Weer het getal aan de andere kant, links en rechts zijn omgedraaid. Het getal bij de punt van de kleine wijzer is het uur. |
 | zet-spiegel | Kijk of het oranje rondje links of rechts staat, en draai de punt daarheen. | Weer links en rechts omgedraaid. Kijk naar het oranje rondje en draai de punt daarheen. |
 | tussendoor-uur | De kleine wijzer vertelt het uur. | Je koos weer de grote wijzer. Het uur lees je bij de kleine wijzer. |
-| bonus-min | Over 1 uur is het later: de kleine wijzer gaat 1 getal verder, met de klok mee. | Je ging weer terug. Volg de blauwe pijl: die gaat met de klok mee. |
-| bonus-nul | Over 1 uur is het 1 uur later dan nu. | Weer de tijd van nu. Schuif de kleine wijzer 1 getal verder. |
-| onduidelijk | Volg de kleine wijzer tot aan zijn punt. | Zet je vinger op de punt van de kleine wijzer. Kijk welk getal daar staat. |
+| bonus-min | Over 1 uur is het later: de kleine wijzer gaat 1 getal verder, met de klok mee. | Je ging weer terug. Later is met de klok mee. |
+| bonus-nul | Over 1 uur is het 1 uur later dan nu. | Weer de tijd van nu. Over 1 uur staat de kleine wijzer 1 getal verder. |
+| onduidelijk | Het uur staat bij de punt van de kleine wijzer. | Bij de punt van de kleine wijzer staat het uur. |
 | uur-minuten | Bij een heel uur zeg je het getal en dan het woord uur. | Weer minuten. De grote wijzer staat bovenaan, dus het is een heel uur. |
-| korte-wijzer | Kijk nu alleen naar de grote paarse wijzer. | Je keek weer naar de kleine wijzer. Kijk alleen naar de paarse wijzer die licht geeft. |
-| geen-heel-uur | Kijk ook naar de grote wijzer. Waar staat die nu? | De kleine wijzer staat vlak bij de {7:oranje}, dat klopt. Maar bij een heel uur staat de grote wijzer bovenaan. |
+| korte-wijzer | Het gaat nu alleen om de grote paarse wijzer. | Je keek weer naar de kleine wijzer. Nu telt alleen de paarse wijzer die licht geeft. |
+| geen-heel-uur | De grote wijzer telt ook mee. | De kleine wijzer staat vlak bij de {7:oranje}, dat klopt. Maar bij een heel uur staat de grote wijzer bovenaan. |
 | klok-van-net | Een klok is rond. Deze getallen staan op een rechte lijn. | Je denkt weer aan de klok van net. Deze getallen staan niet in een rondje. |
 | lijn-van-net | De getallen staan nu in een rondje, net als aan de muur. | Je denkt nog aan de lijn van net. Een rondje met getallen hangt aan de muur. |
-| boven-onder | Kijk waar het blauwe pijltje staat. | Weer de andere kant op. Het getal bij het blauwe pijltje is het goede. |
-| net-niet-hoogst | Ga langs de rand omhoog, tot je niet hoger kunt. | Weer net naast de top. Kijk recht boven het midden van de klok. |
-| laagste | Ga langs de rand naar beneden, tot je niet lager kunt. | Kijk recht onder het midden van de klok. |
-| voor-na | Erna is de kant op van de blauwe pijl. | Weer de andere kant. Volg de blauwe pijl 1 stap. |
-| te-ver | Zet maar 1 stap, de kant op van de pijl. | Weer een stap te ver. Tel maar mee: precies 1 stap. |
-| door-na-12 | Op de klok begin je na de 12 weer opnieuw. | Je telde weer verder. Kijk waar de blauwe pijl stopt. |
+| boven-onder | Het blauwe pijltje wijst de plek aan. | Weer de andere kant op. Het getal bij het blauwe pijltje is het goede. |
+| net-niet-hoogst | Het hoogste getal staat waar de rand niet hoger gaat. | Weer net naast de top. Het hoogste getal staat recht boven het midden van de klok. |
+| laagste | Het laagste getal staat waar de rand niet lager gaat. | Het laagste getal staat recht onder het midden van de klok. |
+| voor-na | Erna is de kant op van de blauwe pijl. | Weer de andere kant. Erna is 1 stap de kant op van de blauwe pijl. |
+| te-ver | Erna is maar 1 stap verder, de kant op van de pijl. | Weer een stap te ver. Erna is precies 1 stap. |
+| door-na-12 | Op de klok begin je na de 12 weer opnieuw. | Je telde weer verder. De blauwe pijl laat zien waar het verder gaat. |
 | lang-is-uur | De grote wijzer draait snel rond. Hij telt iets dat kort duurt. | Je koos weer de uren. De grote wijzer gaat in 1 uur een heel rondje. |
-| namen | De grote wijzer is lang, de kleine wijzer is kort. | Je koos weer de andere naam. Kijk goed of deze wijzer de langste of de kortste is. |
+| namen | De grote wijzer is lang, de kleine wijzer is kort. | Je koos weer de andere naam. De naam hoort bij hoe lang de wijzer is. |
 | zet-12 | Draai de punt naar het getal in het oranje rondje. | Weer bij de {12:paars}. Daar staat de grote wijzer. Zet de kleine wijzer in het oranje rondje. |
 | zet-andere-kant | Draai de punt naar het oranje rondje. | Weer de andere kant. Kijk waar het oranje rondje is. |
 | zet-ernaast | De punt moet precies in het oranje rondje staan. | Weer net ernaast. Je bent er bijna! Tik op het getal in het oranje rondje. |

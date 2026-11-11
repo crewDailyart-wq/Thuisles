@@ -4,6 +4,12 @@
   van het vlak (980 × 720), zoals de rest van het vlak.
 */
 
+/* Het hele vlak (iets kleiner vanaf links, zie KLEINER in squla-plussommen-gouden-vlak.tsx). */
+.wortel {
+  position: absolute;
+  inset: 0;
+}
+
 /* Een onzichtbare knop op een stuk lekkers of een stip (minstens 48 punten, BOUWREGELS 6.6). */
 .telknop {
   position: absolute;

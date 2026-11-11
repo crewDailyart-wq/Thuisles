@@ -148,23 +148,25 @@ export type Fout = {
 
 /** Uitleg na de 2e fout per soort denkfout (zonder het antwoord), en een andere uitleg als dezelfde denkfout nog eens komt. */
 export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
-  /* Kort voor een kind van 6 (kind-test 8 nov): de uitleg is 1 korte zin met 1 opdracht; bij dezelfde denkfout nog eens
-     zegt Bliepo "weer" en geeft hij 1 andere opdracht. */
+  /* Kort voor een kind van 6 (kind-test 8 nov): de uitleg is 1 korte zin; bij dezelfde denkfout nog eens zegt Bliepo
+     "weer" en legt hij het anders uit. Sinds 11 november 2026 (keuring Getallenlijn, KEUZES-VOOR-SARA.md Ronde 30): bij een
+     KEUZEVRAAG is dit uitleg en geen opdracht, want meteen daarna doet Bliepo het samen voor en kan het kind "Zoek …" of
+     "Zet je vinger …" niet meer doen. Bij ZETTEN (zet-…) zet het kind daarna zelf de wijzer: daar mag de opdracht blijven. */
   "lange-wijzer": {
     uitleg: ["Het uur lees je bij de kleine wijzer."],
-    weer: ["Je keek weer naar de grote wijzer.", "Zoek de kleine, dikke wijzer en volg hem tot zijn punt."],
+    weer: ["Je keek weer naar de grote wijzer.", "Het uur staat bij de punt van de kleine, dikke wijzer."],
   },
   "andere-kant": {
     uitleg: ["Het uur staat bij de punt van de kleine wijzer."],
-    weer: ["Weer de andere kant.", "Zet je vinger in het midden en schuif naar de punt."],
+    weer: ["Weer de andere kant.", "Vanuit het midden wijst de punt naar het uur."],
   },
   ernaast: {
-    uitleg: ["Kijk welk getal precies bij de punt van de kleine wijzer staat."],
-    weer: ["Weer net ernaast. Je bent er bijna!", "Kijk goed welk getal de punt precies raakt."],
+    uitleg: ["Het uur is het getal precies bij de punt van de kleine wijzer."],
+    weer: ["Weer net ernaast. Je bent er bijna!", "Het goede getal raakt de punt precies."],
   },
   spiegel: {
-    uitleg: ["Kijk of de punt van de kleine wijzer links of rechts staat."],
-    weer: ["Weer het getal aan de andere kant, links en rechts zijn omgedraaid.", "Zet je vinger op de punt van de kleine wijzer en kijk naar het getal erbij."],
+    uitleg: ["Op de klok maakt het uit of de punt links of rechts staat."],
+    weer: ["Weer het getal aan de andere kant, links en rechts zijn omgedraaid.", "Het getal bij de punt van de kleine wijzer is het uur."],
   },
   "zet-spiegel": {
     uitleg: ["Kijk of het oranje rondje links of rechts staat, en draai de punt daarheen."],
@@ -176,26 +178,26 @@ export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
   },
   "bonus-min": {
     uitleg: ["Over 1 uur is het later: de kleine wijzer gaat 1 getal verder, met de klok mee."],
-    weer: ["Je ging weer terug.", "Volg de blauwe pijl: die gaat met de klok mee."],
+    weer: ["Je ging weer terug.", "Later is met de klok mee."],
   },
   "bonus-nul": {
     uitleg: ["Over 1 uur is het 1 uur later dan nu."],
-    weer: ["Weer de tijd van nu.", "Schuif de kleine wijzer 1 getal verder."],
+    weer: ["Weer de tijd van nu.", "Over 1 uur staat de kleine wijzer 1 getal verder."],
   },
   onduidelijk: {
-    uitleg: ["Volg de kleine wijzer tot aan zijn punt."],
-    weer: ["Zet je vinger op de punt van de kleine wijzer. Kijk welk getal daar staat."],
+    uitleg: ["Het uur staat bij de punt van de kleine wijzer."],
+    weer: ["Bij de punt van de kleine wijzer staat het uur."],
   },
   "uur-minuten": {
     uitleg: ["Bij een heel uur zeg je het getal en dan het woord uur."],
     weer: ["Weer minuten.", "De grote wijzer staat bovenaan, dus het is een heel uur."],
   },
   "korte-wijzer": {
-    uitleg: ["Kijk nu alleen naar de grote paarse wijzer."],
-    weer: ["Je keek weer naar de kleine wijzer.", "Kijk alleen naar de paarse wijzer die licht geeft."],
+    uitleg: ["Het gaat nu alleen om de grote paarse wijzer."],
+    weer: ["Je keek weer naar de kleine wijzer.", "Nu telt alleen de paarse wijzer die licht geeft."],
   },
   "geen-heel-uur": {
-    uitleg: ["Kijk ook naar de grote wijzer. Waar staat die nu?"],
+    uitleg: ["De grote wijzer telt ook mee."],
     weer: ["De kleine wijzer staat vlak bij de {7:oranje}, dat klopt.", "Maar bij een heel uur staat de grote wijzer bovenaan."],
   },
   "klok-van-net": {
@@ -207,28 +209,28 @@ export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
     weer: ["Je denkt nog aan de lijn van net.", "Een rondje met getallen hangt aan de muur."],
   },
   "boven-onder": {
-    uitleg: ["Kijk waar het blauwe pijltje staat."],
+    uitleg: ["Het blauwe pijltje wijst de plek aan."],
     weer: ["Weer de andere kant op.", "Het getal bij het blauwe pijltje is het goede."],
   },
   "net-niet-hoogst": {
-    uitleg: ["Ga langs de rand omhoog, tot je niet hoger kunt."],
-    weer: ["Weer net naast de top.", "Kijk recht boven het midden van de klok."],
+    uitleg: ["Het hoogste getal staat waar de rand niet hoger gaat."],
+    weer: ["Weer net naast de top.", "Het hoogste getal staat recht boven het midden van de klok."],
   },
   laagste: {
-    uitleg: ["Ga langs de rand naar beneden, tot je niet lager kunt."],
-    weer: ["Kijk recht onder het midden van de klok."],
+    uitleg: ["Het laagste getal staat waar de rand niet lager gaat."],
+    weer: ["Het laagste getal staat recht onder het midden van de klok."],
   },
   "voor-na": {
     uitleg: ["Erna is de kant op van de blauwe pijl."],
-    weer: ["Weer de andere kant.", "Volg de blauwe pijl 1 stap."],
+    weer: ["Weer de andere kant.", "Erna is 1 stap de kant op van de blauwe pijl."],
   },
   "te-ver": {
-    uitleg: ["Zet maar 1 stap, de kant op van de pijl."],
-    weer: ["Weer een stap te ver.", "Tel maar mee: precies 1 stap."],
+    uitleg: ["Erna is maar 1 stap verder, de kant op van de pijl."],
+    weer: ["Weer een stap te ver.", "Erna is precies 1 stap."],
   },
   "door-na-12": {
     uitleg: ["Op de klok begin je na de 12 weer opnieuw."],
-    weer: ["Je telde weer verder.", "Kijk waar de blauwe pijl stopt."],
+    weer: ["Je telde weer verder.", "De blauwe pijl laat zien waar het verder gaat."],
   },
   "lang-is-uur": {
     uitleg: ["De grote wijzer draait snel rond. Hij telt iets dat kort duurt."],
@@ -236,7 +238,7 @@ export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
   },
   namen: {
     uitleg: ["De grote wijzer is lang, de kleine wijzer is kort."],
-    weer: ["Je koos weer de andere naam.", "Kijk goed of deze wijzer de langste of de kortste is."],
+    weer: ["Je koos weer de andere naam.", "De naam hoort bij hoe lang de wijzer is."],
   },
   "zet-12": {
     uitleg: ["Draai de punt naar het getal in het oranje rondje."],
@@ -338,7 +340,7 @@ export const UITLEGVRAGEN: Vraag[] = [
     opnieuw: ["Welk getal komt na de 6?"], naGoed: ["Van de 6 ga je deze kant op, naar de 7."], samen: ["Van de 6 ga je 1 getal verder, naar de 7 in het oranje rondje."],
     fouten: {
       "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 5 komt vóór de 6.", "Erna betekent: deze kant op. Volg de blauwe pijl.", "pijl-6-7"),
-      "8": F("een-te-veel", "te-ver", "telde 1 te veel (2 getallen verder)", "Je ging 2 getallen verder.", "Na de 6 ga je maar 1 getal verder. Volg de blauwe pijl.", "pijl-6-7"),
+      "8": F("een-te-veel", "te-ver", "telde 1 te veel (2 getallen verder)", "Je ging 2 getallen verder.", "Zet je vinger op de 6. Schuif met de klok mee naar het eerstvolgende getal.", "geen"),
     },
   },
   {
@@ -447,7 +449,7 @@ export const EXTRAVRAGEN: Vraag[] = [
     opnieuw: ["Hoe laat is het over 1 uur?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 komt de 1. Over 1 uur is het {1:oranje} uur."],
     fouten: {
       "11 uur": F("plus-min-verwisseld", "bonus-min", "ging 1 uur terug in plaats van 1 uur vooruit", "Je ging 1 uur terug.", "Over 1 uur is het later. Volg de blauwe pijl, met de klok mee.", "pijl-12-1"),
-      "12 uur": F("een-te-weinig", "bonus-nul", "bleef bij de tijd van nu, 1 uur te weinig verder", "Dat is de tijd van nu.", "Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl.", "pijl-12-1"),
+      "12 uur": F("een-te-weinig", "bonus-nul", "bleef bij de tijd van nu, 1 uur te weinig verder", "Dat is de tijd van nu.", "Over 1 uur is het later dan nu. Begin bij de 12 en ga met de klok mee.", "geen"),
     },
   },
 ];

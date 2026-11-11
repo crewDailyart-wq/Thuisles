@@ -262,6 +262,14 @@ async function speel(P, o = {}) {
         /* 15.20: tijdens de vraag nooit de teller. */
         if (await P.ev(`!!document.querySelector("[data-teller]")`)) fout(`teller in beeld tijdens de vraag (${taak.vraag})`);
         if (o.vraagWacht && (await P.ev(`!!document.querySelector("[data-hulphand]")`))) fout(`hulphandje bij een keuzevraag (${taak.vraag})`);
+        /* Vaste zone (15.30; keuring Meer-minder: het vak met het vraagteken liep ± 25 px onder het tekstvak; 11 nov 2026 het
+           vlak 90 % vanaf links). De som (getallen en vraagteken), de knoppen in het vlak en de machine (rechts tot x = 900
+           van de 980, in Phaser getekend, dus uitgerekend) blijven links van het tekstvak. */
+        {
+          const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-minsommen-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const L = v.getBoundingClientRect().left; const dingen = [...w.querySelectorAll("[data-kalesom] span, button, [data-teller]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); return { ding: dingen.length ? Math.round(Math.max(...dingen) - L) : null, machine: Math.round(k.left + 900 * k.width / 980 - L) }; })()`);
+          if (r && (r.ding ?? -1) > 0) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak.vraag})`);
+          if (r) globalThis.__zone = { ding: Math.max(globalThis.__zone?.ding ?? -999, r.ding ?? -999), machine: Math.max(globalThis.__zone?.machine ?? -999, r.machine) };
+        }
         laatsteTaak = sleutel;
         const x = keuze(taak);
         if (await P.klikTekst(x)) await wacht(200);
@@ -463,6 +471,7 @@ const ROUTES = {
   async goed(P) {
     const ok = await speel(P, { naam: "goed" });
     await controleer(P, "goed");
+    zie(`goed: zone speelvlak/tekstvak (grootste meting, px voorbij de linkerrand van het tekstvak; negatief = ruimte): ${JSON.stringify(globalThis.__zone)}`);
     return ok;
   },
   /** Afwisselend: 1e fout dan goed; elke 3e vraag 2 keer fout (samen voordoen); 1 keer hetzelfde antwoord 2 keer. */

@@ -1249,3 +1249,61 @@ Bekijken: http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden?naam=T
 **Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10).
 
 **Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
+
+## Ronde 30 — Plussommen en de klokles omgezet naar de nieuwste gouden stijl, Minsommen kleiner, "wit blijft wit" (11 november 2026)
+
+Jouw opdracht van 10 november ("maak alles goed en ga door"). De oude lessen squla-plus-bakkerij-1, squla-klok-hoelaat-1 en squla-min-machine-1 zijn niet veranderd. Vragen, getallen, antwoordkeuzes en goede antwoorden zijn gelijk gebleven.
+
+Bekijken: http://localhost:3000/voorbeeld/les/squla-plus-bakkerij-1-gouden?naam=Testkind en http://localhost:3000/voorbeeld/les/squla-klok-hoelaat-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Plussommen (squla-plus-bakkerij-1-gouden)**
+- **Bliepo praat door (15.27):** elk stuk tekst gaat ± 0,7 s na de zin vanzelf verder, ook na de hint en na het samen voordoen. Pijl rechts als snelkoppeling; geen pijl bij vragen, de disco-kaartjes, het verbinden, samen tellen, het hulphandje en de eindkaart.
+- **Stem en woorden:** `stemHeelUitpraten` en `woordenMeeMetStem` aan; daardoor staat de eindkaart links van het tekstvak.
+- **Begin in 1 stuk:** groet + "In deze les tel je lekkers uit de bakkerij bij elkaar op. Dat heet een plussom." (geen startvraag: het draaiboek heeft er geen).
+- **Vaste zone:** het hele vlak 88 % vanaf links (zoals Splitsen). De toonbank liep ± 90 px onder het tekstvak; nu 40 px ruimte (1440 × 900). Alle tikplekken zijn knoppen in het vlak en schalen mee.
+- **Na de 1e fout:** eerst wat het kind koos (vanzelf door), dan komen dezelfde keuzes terug **met de hint** (draaiboek §3 D.2). Eerder kwam na de hint nog eens de hele vraag. Bij het verbinden is de hint ("Reken elke som uit en verbind ze opnieuw.") nu de opdrachtzin; "Verbind weer elke som met zijn antwoord." kwam er eerst nog achteraan.
+- **Vangnet bij samen tellen:** 20 s geen tik → Bliepo zet de rest erbij en zegt "Kijk, ik tel de rest. Samen zijn het 5 taartjes: 1 + 4 = 5." (bij de stippen: "Kijk, ik tel de rest. 5 + 3 = 8."). Geen "Ja".
+- **Vragen komen ± 0,15 s na het nieuwe beeld** (was 0,6 s).
+
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Klaar met kijken? Tik dan op de blauwe pijl." / "Tik op de blauwe pijl als je het nog eens wilt proberen." | het kind hoeft nooit op de pijl te tikken (15.27) | niet meer gezegd (WEGGEHAALD.md) |
+| "Kom, we tellen samen." bij elke 2e fout | steeds dezelfde zin | 3 versies: "Kom, we tellen samen." / "We tellen het samen." / "Kom, samen tellen we het." ("Kom, we kijken samen." ook 2 versies) |
+| "Je koos 7." als enige zin zonder richting | steeds dezelfde zin | 3 versies: "Je koos 7." / "9 is het niet." / "Je koos 9. Dat is het nog niet." |
+| bij de 2e fout "Tel ook de andere taartjes mee.", "Tel elk bruin brood maar 1 keer.", "Sla er geen over.", "Tel er niet meer bij dan in de som staat." | een opdracht die het kind niet meer kan doen (keuring Getallenlijn) | "De andere taartjes horen er ook bij.", "Elk bruin brood telt maar 1 keer.", "Elke krentenbol telt mee.", "Er komen er 3 bij, niet meer." / "…, niet minder." |
+| "Bij samen haal je er niets af. Je telt ze erbij." bij elke min-fout | steeds dezelfde uitleg | 2 versies (2e: "Bij samen gaat er niets weg. Er komt juist iets bij.") |
+
+**Klokles (squla-klok-hoelaat-1-gouden)**
+- `woordenMeeMetStem` aan. De eindkaart staat links van het tekstvak: **0 woorden** onder de kaart op alle 4 schermmaten (de hele les gespeeld tot de kaart).
+- 2 hints volgens 15.17: "Na de 6 ga je maar 1 getal verder. Volg de blauwe pijl." → "Zet je vinger op de 6. Schuif met de klok mee naar het eerstvolgende getal." en "Over 1 uur schuift de kleine wijzer 1 getal verder. Volg de blauwe pijl." → "Over 1 uur is het later dan nu. Begin bij de 12 en ga met de klok mee." Bij deze 2 antwoorden komt de blauwe pijl (6→7, 12→1) niet meer: die eindigt op het antwoord.
+- Bij de 2e fout van een keuzevraag geen opdracht meer (23 zinnen, lijst in WEGGEHAALD.md), bijvoorbeeld "Zoek de kleine, dikke wijzer en volg hem tot zijn punt." → "Het uur staat bij de punt van de kleine, dikke wijzer." Bij zetten bleven de opdrachten: daar zet het kind daarna zelf de wijzer.
+- Een lange reactie bij een fout komt in 2 stukken (eerst wat het kind koos, dan de hint of uitleg), en het samen voordoen van 3 zinnen ook. Gevonden: "Je koos het getal links, …" + "Kijk of de punt …" liep 32 px uit het tekstvak, en het samen voordoen bij "Is het 7 uur?" 42 px.
+
+**Minsommen (squla-min-machine-1-gouden):** het hele vlak 90 % vanaf links. Het vak met het vraagteken liep ± 25 px onder het tekstvak; nu 147–221 px ruimte. Verder niets veranderd.
+
+**"Wit blijft wit" (Ronde 28b punt 9, jouw ja):** een zin die al wit is (de site deed er langer dan 2,5 s over), blijft wit als Bliepo hem daarna toch zegt. Alleen in lessen met `stemHeelUitpraten` (alle 9 gouden lessen); oude lessen niet veranderd. Nieuwe test `scripts/test-wit-blijft-wit.mjs` (de site expres 3,5 s traag): Plussommen en Minsommen elk 16 keer een zin wit vóór Bliepo begon, 0 keer daarna weer grijs. Met de oude code: wel weer grijs (gecontroleerd). Klokles met `TRAGESERVER=3500`: 0.
+
+**Graag ja of nee:**
+1. **De blauwe pijl 6→7 en 12→1 bij de andere antwoorden** (5, 11, 13, 11 uur: "Volg de blauwe pijl.") en de pijltjes boven de 12 en onder de 6 eindigen nog op het antwoord. 15.17 zegt dat die herschreven moeten worden (Ronde 19 punt 1, "nog te doen"). Ik heb alleen de 2 zinnen gedaan die mij gevraagd waren. Zal ik de rest ook doen (bijvoorbeeld een oranje ring om de 6 of 12 waar je begint, in plaats van een pijl naar het antwoord)?
+2. **Plussommen, vangnet:** na 20 s niets bij samen tellen telt Bliepo zelf verder. Bij het verbinden en bij "tik op de som" (na de 2e fout) is geen vangnet: daar is het kind zelf aan de beurt. Goed zo?
+3. **Plussommen, de 2 zinnen van het verhaaltje** zijn nu elk een eigen stuk dat vanzelf doorgaat (pijl als snelkoppeling), zodat het rode rondje van het ene naar het andere groepje kan. De 2e zin vervangt de 1e (open vraag Ronde 22). Goed zo?
+4. **Plussommen, disco na de 2e fout:** tussen "8. Dus 5 + 3 = 8." en "Op dit kaartje staat 8." zit ± 1,0 s (de stippen gaan eerst weg). Goed zo?
+5. **Klokles, tempo:** het volgende stuk komt gemiddeld ± 1,2 s na de zin (doel ± 0,7 s): na lof wacht de klokles nog even en de klok draait eerst. Dat zat er al in; niet veranderd. Wil je het korter?
+6. **Plussommen, speelcontrole met alles fout:** de automatische speler komt bij het verbinden niet verder ("kan niet automatisch"; hij tikt steeds dezelfde verkeerde lijnen). Mijn eigen test met alles fout komt wel tot het eind. Een kind zit daar niet vast.
+7. **Open vragen van Ronde 22** (o.a. het gele bordje met het oranje getal onder de krentenbollen) heb ik laten zoals ze waren.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje):
+- Fouttabel-scripts: Plussommen 51 foute antwoorden, verklap- en waarheidscontrole (125 beweringen), 3 versies zonder richting, geen opdracht bij de 2e fout. Klok: geen hint die zegt waar het antwoord staat, geen opdracht bij de 2e fout van een keuzevraag.
+- Plussommen (eigen test, nepstem): goed, fouten, anderefout, allefout, vangnet, wachten, tik-door, verbindrust, kleur, snel: in orde. Nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten. Einde zin → volgend stuk gemiddeld 749–768 ms (alleen na de stippen ± 1,0 s). Hulphandje ± 7,2 s na het begin van de opdracht (± 6 s stilte), alleen bij opdrachten; bij keuzevragen 9 s niets. Tik op de pijl: 50–291 ms iets nieuws.
+- Overlap en sprongen (alles fout) op 1440×900, 1280×720, 1536×864, 1024×768: Plussommen en klok 0 overlap, 0 sprongen, tekst past, pijl gaat niet aan en uit, eindkaart 0 woorden eronder. Minsommen idem.
+- F7 0, F8 0, gedimd-en-weer-gedimd 0 in alle routes.
+- Speelcontrole (GOED en ALLEFOUT, F7=1): klok en Minsommen tot het eind; Plussommen GOED tot het eind, ALLEFOUT zie punt 6. F7 0, F8 0.
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen (30 bewust weggehaald, in WEGGEHAALD.md).
+- **Echte stem in een zichtbare Chrome via het lesoverzicht:** Plussommen 76 zinnen gestart, 57 helemaal uitgesproken (19 afgebroken doordat de test tijdens de vraag tikte); klok 127 gestart, 92 helemaal uitgesproken (35 afgebroken door tikken). Eerste woord licht op ± 50 ms na de start van de stem; laatste woord gemiddeld 341 ms (Plussommen) en 119 ms (klok) naast het geschatte moment. 0 dubbel, 0 F7, 0 weer gedimd.
+- **Vloeiend** (de computer was niet rustig: belasting 6 tot 29): Plussommen laptop 60 beelden/s, langste beeld 35 ms; trage telefoon 60, 32 ms. Minsommen 60 / 29 ms en 60 / 38 ms. Klok 60 / 28 ms en 60 / 42 ms. Openen in de ontwikkelversie 1,6–4,3 s (op de echte site moet het onder 1 s).
+
+**Let op (niet door mij):** in les_uitkomsten staan sinds 11 november 01:25 nieuwe regels 144 t/m 147, bij het kind **Fenna**, voor de les squla-huisnummers-gouden. Die kwamen niet van mijn tests (ik heb Huisnummers niet geopend en test zonder koekje). Waarschijnlijk is Huisnummers in de gewone Chrome met Fenna gekozen getest. Ik heb ze niet weggehaald (regel 3): jij beslist.
+
+**Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten).
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.

@@ -20,7 +20,7 @@
  * dat met de zin die nu klinkt, dan lichten de woorden op.
  */
 
-import { zeg } from "@/lib/stem";
+import { praatHeelUit, zeg } from "@/lib/stem";
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
@@ -88,11 +88,26 @@ export function BliepoTekst({
   const [verlopen, zetVerlopen] = useState<string | null | undefined>(undefined);
   const wacht = verlopen !== gesproken;
   const [gelezen, zetGelezen] = useState<string | null>(null);
+  const leest = nu >= 0;
+  /*
+    Alleen in lessen met de optie "heel uitpraten" (lib/stem.ts praatHeelUit; gouden lessen, 11 november 2026, F7 en
+    KEUZES-VOOR-SARA.md Ronde 28b punt 9): werd de zin wit omdat de stem na 2,5 tel nog niet begonnen was (bijvoorbeeld
+    omdat de site lang deed over de vraag of Ruth de zin heeft), dan BLIJFT hij wit als Bliepo hem daarna toch zegt. Alleen
+    het woord van nu krijgt dan nog de accentkleur; niets wordt meer gedimd. Zonder de optie verandert er niets.
+  */
+  const [witGebleven, zetWitGebleven] = useState<string | null | undefined>(undefined);
+  const bezig = useRef({ leest: false, gelezen: null as string | null });
   useEffect(() => {
-    const klok = window.setTimeout(() => zetVerlopen(gesproken), 2500);
+    bezig.current = { leest, gelezen };
+  }, [leest, gelezen]);
+  useEffect(() => {
+    const klok = window.setTimeout(() => {
+      zetVerlopen(gesproken);
+      if (praatHeelUit() && !bezig.current.leest && bezig.current.gelezen !== gesproken) zetWitGebleven(gesproken);
+    }, 2500);
     return () => window.clearTimeout(klok);
   }, [gesproken]);
-  const leest = nu >= 0;
+  const blijftWit = Boolean(gesproken) && witGebleven === gesproken;
   useEffect(() => {
     if (leest && gesproken) {
       const klok = window.setTimeout(() => zetGelezen(gesproken), 0);
@@ -124,7 +139,7 @@ export function BliepoTekst({
       title={gesproken ? "Tik om het nog eens te horen" : undefined}
     >
       {woorden.map((w, i) => {
-        const soort = leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
+        const soort = blijftWit ? (leest && i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : "") : leest ? (i < nu ? " bliepo-tekst-gezegd" : i === nu ? " bliepo-tekst-gezegd bliepo-tekst-nu" : " bliepo-tekst-nog") : voorStem ? " bliepo-tekst-nog" : "";
         return (
           <Fragment key={i}>
             <span className={`bliepo-tekst-woord${soort}`}>

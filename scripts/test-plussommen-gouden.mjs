@@ -1,20 +1,23 @@
 /**
- * Test van de gouden les Plussommen (squla-plus-bakkerij-1-gouden), 9 november 2026. Zelfde opzet als
- * scripts/test-splitsen-gouden.mjs.
+ * Test van de gouden les Plussommen (squla-plus-bakkerij-1-gouden), omgezet naar de nieuwste gouden stijl op 11 november
+ * 2026 (KEUZES-VOOR-SARA.md Ronde 30). Herschreven naar scripts/test-tellen-gouden.mjs (de oude versie voor de pijlregel
+ * van 9 november wachtte op de pijl; die regel is vervangen door BOUWREGELS 15.27): pijl (Bliepo praat door, vanzelf
+ * verder ±0,7 s, pijl rechts als snelkoppeling, geen pijl bij vragen en opdrachten), F7, F8, overlap, sprongen, woorden,
+ * eindkaart, plus: kiezen (verhaal en "welke som"), de disco (kaartjes in de tekening), verbinden (som en antwoord tikken;
+ * nakijken pas na rust), samen tellen na de 2e fout (lekkers of stippen aantikken; het hulphandje alleen daar en bij het
+ * verbinden; vangnet na 20 s), en de vaste zone: het speelvlak blijft links van het tekstvak.
  *
- *   node scripts/test-plussommen-gouden.mjs            alle situaties
- *   SCENARIO=fouten node scripts/test-plussommen-gouden.mjs
- *   FOTO=<map> node scripts/test-plussommen-gouden.mjs   ook schermfoto's
+ *   node scripts/test-plussommen-gouden.mjs                 alle routes
+ *   ROUTE=goed,fouten node scripts/test-plussommen-gouden.mjs
+ *   ONTWERP=1 VENSTER=1280x720 ROUTE=allefout node scripts/test-plussommen-gouden.mjs   overlap en sprongen (faalt erop)
+ *   ZICHTBAAR=1 ECHTESTEM=1 VIAOVERZICHT=1 ROUTE=woorden node scripts/test-plussommen-gouden.mjs   echte stem
+ *   TRAGESERVER=3500 ROUTE=goed …   de vraag aan de site of Ruth een zin heeft, duurt 3,5 s (F7 wit → grijs, Ronde 28b punt 9)
+ *   LES=<andere les> …   (alleen de routes goed/allefout werken dan niet; voor TRAGESERVER zie scripts/test-wit-blijft-wit.mjs)
+ *   FOTO=<map> …   schermfoto's
  *
- * Speelt de les in Chrome ZONDER VENSTER, met een LEEG profiel en `?naam=Testkind`, ZONDER koekje van een kind: de les
- * kan dan niets in de voortgang van een kind zetten (bewaarUitkomst doet niets zonder gekozen kind). Na afloop kijkt het
- * script of er in de tabel les_uitkomsten nieuwe regels voor deze les bij kwamen die NIET van Testkind zijn; dan stopt het
- * met een foutmelding (de database wordt alleen gelezen).
- *
- * Situaties: alles goed in één keer, goed na een fout, 1e en 2e fout (samen voordoen) bij elke soort vraag, dezelfde
- * denkfout en hetzelfde foute antwoord 2 keer, lang wachten (hulphandje bij een opdracht; niets bij een keuzevraag),
- * heel snel, en bij het verbinden een lijn veranderen vlak na de laatste (nakijken pas na rust).
- * Raakt de lessen en de database niet aan.
+ * Speelt de les in Chrome met een LEEG profiel en `?naam=Testkind`, ZONDER koekje van een kind: de les kan dan niets in
+ * de voortgang van een kind zetten. Na afloop kijkt het script of er in les_uitkomsten nieuwe regels bijkwamen (de
+ * database wordt alleen gelezen); dan stopt het met een foutmelding.
  */
 
 import { spawn, execFileSync } from "node:child_process";
@@ -29,24 +32,21 @@ const FOTO = process.env.FOTO ?? null;
 const wacht = (ms) => new Promise((r) => setTimeout(r, ms));
 const CHROME = ["/Applications/Google Chrome.app/Contents/MacOS/Google Chrome", "/usr/bin/google-chrome"].find((p) => existsSync(p));
 
-/* ---------- bewaking: geen regels bij echte kinderen ---------- */
 const sql = (q) => execFileSync("sqlite3", ["-readonly", DB, q], { encoding: "utf8" }).trim();
-const testkind = sql("select id from kinderen where roepnaam = 'Testkind' limit 1;");
 const startId = Number(sql("select coalesce(max(id), 0) from les_uitkomsten;"));
 
-/* ---------- Chrome ---------- */
-const map = mkdtempSync(join(tmpdir(), "test-plussommen-"));
-const poort = 9620 + (process.pid % 30);
-const chrome = spawn(CHROME, ["--headless=new", `--remote-debugging-port=${poort}`, `--user-data-dir=${map}`, "--no-first-run", "--mute-audio", "--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist", "about:blank"], { stdio: "ignore" });
-const ruim = () => {
+const map = mkdtempSync(join(tmpdir(), "test-plussommen-gouden-"));
+const poort = 9700 + (process.pid % 30);
+const chrome = spawn(CHROME, [...(process.env.ZICHTBAAR ? ["--new-window", "--window-size=1440,960", "--no-default-browser-check"] : ["--headless=new", "--mute-audio"]), `--remote-debugging-port=${poort}`, `--user-data-dir=${map}`, "--no-first-run", ...(process.env.ECHTESTEM ? ["--autoplay-policy=document-user-activation-required"] : []), "--use-angle=metal", "--enable-gpu", "--ignore-gpu-blocklist", "about:blank"], { stdio: "ignore" });
+process.on("exit", () => {
   try {
     chrome.kill("SIGKILL");
   } catch {}
   try {
     rmSync(map, { recursive: true, force: true });
   } catch {}
-};
-process.on("exit", ruim);
+});
+for (const sig of ["SIGTERM", "SIGINT"]) process.on(sig, () => process.exit(1));
 let wsUrl = null;
 for (let i = 0; i < 60 && !wsUrl; i++) {
   try {
@@ -73,443 +73,700 @@ const stuur = (method, params = {}, sessionId) =>
     ws.send(JSON.stringify({ id, method, params, sessionId }));
   });
 
-/* Bliepo praat versneld (elke zin ± 0,1 s), zodat de test niet uren duurt. */
-const SNEL = `
-  HTMLMediaElement.prototype.play = function () { const t = this; setTimeout(() => { t.dispatchEvent(new Event("playing")); t.dispatchEvent(new Event("ended")); }, 80); return Promise.resolve(); };
-  if (window.speechSynthesis) window.speechSynthesis.speak = (u) => setTimeout(() => { u.onstart && u.onstart(new Event("start")); setTimeout(() => { u.onend && u.onend(new Event("end")); }, 80); }, 20);
+/* Nepstem + meetscript in de pagina. */
+const IN_PAGINA = `
+  const duur = (t) => ${process.env.SNELSTEM ? "80" : '400 + String(t || "").length * 25'};
+  if (!${JSON.stringify(!!process.env.ECHTESTEM)}) HTMLMediaElement.prototype.play = function () { const t = this; setTimeout(() => { t.dispatchEvent(new Event("playing")); setTimeout(() => t.dispatchEvent(new Event("ended")), 1200); }, 20); return Promise.resolve(); };
+  if (window.speechSynthesis && !${JSON.stringify(!!process.env.ECHTESTEM)}) window.speechSynthesis.speak = (u) => setTimeout(() => { u.onstart && u.onstart(new Event("start")); setTimeout(() => { u.onend && u.onend(new Event("end")); }, duur(u.text)); }, 20);
+  window.__stem = [];
+  /* TRAGESERVER=ms: de vraag aan de site of Ruth de zin al heeft (/api/stem) duurt zo lang (F7 wit → grijs, Ronde 28b punt 9). */
+  if (${Number(process.env.TRAGESERVER ?? 0)} > 0) { const F0 = window.fetch; window.fetch = function (u, ...r) { const url = String(u && u.url ? u.url : u); if (url.includes("/api/stem")) return new Promise((ok) => setTimeout(ok, ${Number(process.env.TRAGESERVER ?? 0)})).then(() => F0.call(this, u, ...r)); return F0.call(this, u, ...r); }; }
+  /* Stem-logboek (altijd): elke speak/start/end/error/cancel, en elk geluid dat start (bestand van Ruth via Web Audio of <audio>). */
+  try {
+    const n0 = () => Math.round(performance.now());
+    const AB = window.AudioBufferSourceNode && AudioBufferSourceNode.prototype;
+    if (AB) { const st = AB.start; AB.start = function (...a) { window.__stem.push({ t: n0(), wat: "geluid", z: window.__laatsteStemZin || "" }); return st.apply(this, a); }; }
+    const HP = HTMLMediaElement.prototype.play;
+    HTMLMediaElement.prototype.play = function (...a) { window.__stem.push({ t: n0(), wat: "geluid", z: window.__laatsteStemZin || "" }); return HP.apply(this, a); };
+    const F = window.fetch;
+    window.fetch = function (u, ...r) { try { const url = String(u && u.url ? u.url : u); if (url.includes("/api/stem?zin=")) window.__laatsteStemZin = decodeURIComponent(new URL(url, location.href).searchParams.get("zin") || ""); } catch {} return F.call(this, u, ...r); };
+  } catch {}
+  if (window.speechSynthesis) {
+    const ss = window.speechSynthesis; const spreek = ss.speak.bind(ss); const stop = ss.cancel.bind(ss);
+    const n = () => Math.round(performance.now());
+    ss.speak = (u) => { window.__stem.push({ t: n(), wat: "speak", z: u.text }); for (const e of ["start", "end", "error"]) u.addEventListener(e, (ev) => window.__stem.push({ t: n(), wat: e, z: u.text, fout: ev.error })); spreek(u); };
+    ss.cancel = () => { window.__stem.push({ t: n(), wat: "cancel", door: (new Error().stack || "").split(String.fromCharCode(10)).slice(2, 4).join(" ").slice(0, 160) }); stop(); };
+  }
+  window.__meet = []; const t0 = performance.now(); let vorige = "";
+  setInterval(() => {
+    const b = document.querySelector('[data-knop="verder"]');
+    const pijl = !!b && b.getBoundingClientRect().width > 3;
+    const tekst = [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean);
+    const taak = (window.__phaser?.plusTaak ?? null);
+    const kaart = !!document.querySelector('button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]');
+    /* Gedimd of wit (meelezen): hoeveel woorden nog gedimd zijn, en of Bliepo meeleest. */
+    const nog = document.querySelectorAll(".bliepo-tekst-nog, .bliepo-tekst-later").length;
+    const leest = !!document.querySelector(".bliepo-tekst-leest");
+    /* Plek van het tekstvak, de eerste regel, de pijl en Bliepo (ontwerp Sara 10 nov: niets mag verspringen). */
+    const rect = (e) => { if (!e) return null; const r = e.getBoundingClientRect(); return r.width < 2 ? null : [Math.round(r.left), Math.round(r.top), Math.round(r.height)]; };
+    const vak = document.querySelector(".bliepo-vloer-ballon");
+    /* De tekst zelf: van de bovenkant van de eerste tot de onderkant van de laatste zin of knop in het vak. */
+    const delen = [...document.querySelectorAll(".bliepo-vloer .bliepo-tekst, .bliepo-vloer .les-tekst button")].map((e) => e.getBoundingClientRect()).filter((r) => r.width > 2);
+    const inhoud = delen.length ? [Math.round(Math.min(...delen.map((r) => r.left))), Math.round(Math.min(...delen.map((r) => r.top))), Math.round(Math.max(...delen.map((r) => r.bottom)) - Math.min(...delen.map((r) => r.top))), Math.round(Math.max(...delen.map((r) => r.right)) - Math.min(...delen.map((r) => r.left)))] : null;
+    const robotEl = document.querySelector(".bliepo-vloer-robot");
+    const plek = { vak: rect(vak), regel: rect(document.querySelector(".bliepo-tekst")), pijl: pijl ? rect(b) : null, robot: rect(robotEl), robotB: robotEl ? Math.round(robotEl.getBoundingClientRect().width) : 0, inhoud, over: vak ? vak.scrollHeight - vak.clientHeight : 0 };
+    const teller = false;
+    const hand = !!document.querySelector("[data-hulphand]");
+    const s = JSON.stringify({ pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, kaart, dim: nog > 0, leest, plek, teller, hand });
+    if (s !== vorige) { vorige = s; window.__meet.push({ t: Math.round(performance.now()), pijl, tekst, taak: taak ? taak.soort + ":" + (taak.opties ? taak.opties.length : "") : null, kaart, dim: nog > 0, leest, plek, teller, hand }); }
+  }, 50);
+  /* Oplichten van de woorden (eis Sara 10 nov): elke wissel van het woord van nu, en elke woordmelding van de stem. */
+  window.__woord = [];
+  let vorigWoord = "";
+  const kijkWoord = () => {
+    const el = document.querySelector(".bliepo-tekst-nu");
+    let w = "";
+    if (el) { const p = el.closest(".bliepo-tekst"); const alle = p ? [...p.querySelectorAll(".bliepo-tekst-woord")] : []; w = alle.indexOf(el) + ":" + el.textContent.trim() + "|" + (p ? p.textContent.replace(/\s+/g, " ").trim() : ""); }
+    if (w !== vorigWoord) { vorigWoord = w; window.__woord.push({ t: Math.round(performance.now()), w }); }
+    requestAnimationFrame(kijkWoord);
+  };
+  requestAnimationFrame(kijkWoord);
+  if (window.speechSynthesis) {
+    const sp = window.speechSynthesis.speak.bind(window.speechSynthesis);
+    window.speechSynthesis.speak = (u) => { u.addEventListener("boundary", (e) => window.__stem.push({ t: Math.round(performance.now()), wat: "grens", z: u.text, i: e.charIndex, naam: e.name })); sp(u); };
+  }
 `;
 
 async function pagina() {
   const { targetId } = await stuur("Target.createTarget", { url: "about:blank" });
   const { sessionId: s } = await stuur("Target.attachToTarget", { targetId, flatten: true });
   await stuur("Page.enable", {}, s);
-  await stuur("Emulation.setDeviceMetricsOverride", { width: 1440, height: 900, deviceScaleFactor: 1, mobile: false }, s);
-  await stuur("Page.addScriptToEvaluateOnNewDocument", { source: SNEL }, s);
-  /* Geen koekje: leeg profiel. Voor de zekerheid alle koekjes van localhost weg. */
+  if (!process.env.ZICHTBAAR) await stuur("Emulation.setDeviceMetricsOverride", { width: Number(process.env.VENSTER?.split("x")[0] ?? 1440), height: Number(process.env.VENSTER?.split("x")[1] ?? 900), deviceScaleFactor: 1, mobile: false }, s);
+  await stuur("Page.addScriptToEvaluateOnNewDocument", { source: IN_PAGINA }, s);
   await stuur("Network.enable", {}, s);
   await stuur("Network.clearBrowserCookies", {}, s);
   const ev = async (e) => {
     const r = await stuur("Runtime.evaluate", { expression: e, returnByValue: true, awaitPromise: true }, s).catch(() => null);
     return r && !r.exceptionDetails ? r.result?.value : null;
   };
-  const muis = (type, p) => stuur("Input.dispatchMouseEvent", { type, x: p.x, y: p.y, button: "left", clickCount: 1, buttons: type === "mouseReleased" ? 0 : 1 }, s);
-  /** `traag`: zoals een kind van 6: ± 1 s slepen en daarna 1 s stil (de proef mag dan niet tussendoor nakijken). */
-  const sleep = async (van, naar, traag = false) => {
-    await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x, y: van.y }, s);
-    await muis("mousePressed", van);
-    const n = traag ? 30 : 10;
-    for (let i = 1; i <= n; i++) {
-      await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x + ((naar.x - van.x) * i) / n, y: van.y + ((naar.y - van.y) * i) / n, button: "left", buttons: 1 }, s);
-      await wacht(traag ? 30 : 15);
-    }
-    await muis("mouseReleased", naar);
-    await wacht(traag ? 1000 : 120);
+  const tik = async (p) => {
+    await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: p.x, y: p.y }, s);
+    await stuur("Input.dispatchMouseEvent", { type: "mousePressed", x: p.x, y: p.y, button: "left", clickCount: 1, buttons: 1 }, s);
+    await stuur("Input.dispatchMouseEvent", { type: "mouseReleased", x: p.x, y: p.y, button: "left", clickCount: 1, buttons: 0 }, s);
   };
-  /** Tik op een punt van het vlak (een pion in een vak gaat dan terug naar boven). */
-  const tikVlak = async (x, y) => {
-    const q = await punt(x, y);
-    await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: q.x, y: q.y }, s);
-    await muis("mousePressed", q);
-    await muis("mouseReleased", q);
-    await wacht(300);
-  };
-  /* Een punt van het vlak (980 × 720) op de pagina. */
-  const punt = (x, y) => ev(`(() => { const c = [...document.querySelectorAll("canvas")].filter((c) => { const r = c.getBoundingClientRect(); return r.width > 300 && Math.abs(r.width / r.height - 980 / 720) < 0.05; })[0]; if (!c) return null; const r = c.getBoundingClientRect(); return { x: r.left + ${x} * r.width / 980, y: r.top + ${y} * r.height / 720 }; })()`);
-  const log = () => ev(`JSON.stringify(window.__gouden ?? [])`).then((x) => JSON.parse(x ?? "[]"));
   const foto = async (naam) => {
     if (!FOTO) return;
     mkdirSync(FOTO, { recursive: true });
     const { data } = await stuur("Page.captureScreenshot", { format: "png" }, s);
     writeFileSync(join(FOTO, `${naam}.png`), Buffer.from(data, "base64"));
   };
+  if (process.env.ZICHTBAAR) await stuur("Target.activateTarget", { targetId }).catch(() => {});
+  if (process.env.VIAOVERZICHT) {
+    /* Zoals Sara: het lesoverzicht openen en echt op de les klikken (de app wisselt van pagina zonder te herladen). */
+    await stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les` }, s);
+    let p = null;
+    for (let i = 0; i < 100 && !p; i++) {
+      await wacht(200);
+      const r = await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); if (!a) return null; a.scrollIntoView({ block: "center" }); return true; })()`, returnByValue: true }, s).catch(() => null);
+      p = r?.result?.value ?? null;
+    }
+    await wacht(800);
+    /* Na het scrollen opnieuw de plek bepalen en nagaan dat precies deze link onder de muis ligt. */
+    const q = await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)), wat: e ? e.tagName + "." + e.className : null, b: innerWidth + "x" + innerHeight }; })()`, returnByValue: true }, s);
+    p = q.result.value;
+    /* Keurder 10 nov: in een zichtbaar venster lag de link soms nog onder de rand (de pagina schuift na het laden nog
+       door). Dan nog eens in beeld schuiven en opnieuw meten, hooguit 10 keer. */
+    for (let i = 0; i < 10 && !p.raak; i++) {
+      await stuur("Runtime.evaluate", { expression: `document.querySelector('a[href^="/voorbeeld/les/${LES}?"]').scrollIntoView({ block: "center", behavior: "instant" })` }, s);
+      await wacht(600);
+      p = (await stuur("Runtime.evaluate", { expression: `(() => { const a = document.querySelector('a[href^="/voorbeeld/les/${LES}?"]'); const r = a.getBoundingClientRect(); const x = r.left + Math.min(20, r.width / 2), y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === a || a.contains(e)), wat: e ? e.tagName + "." + e.className : null, b: innerWidth + "x" + innerHeight }; })()`, returnByValue: true }, s)).result.value;
+    }
+    if (!p.raak) throw new Error(`de link naar de les ligt niet onder de muis (${JSON.stringify(p)})`);
+    for (const type of ["mouseMoved", "mousePressed", "mouseReleased"]) await stuur("Input.dispatchMouseEvent", { type, x: p.x, y: p.y, button: "left", clickCount: 1, buttons: type === "mousePressed" ? 1 : 0 }, s);
+  } else
   await stuur("Page.navigate", { url: `${BASIS}/voorbeeld/les/${LES}?naam=Testkind` }, s);
-  let gezien = 0;
-  const terug = () => {
-    gezien = Math.max(0, gezien - 1);
+  if (!process.env.VIAOVERZICHT) {
+    /* Rechtstreekse link: Chrome laat pas geluid toe na een tik. Zoals een kind: 1 tik naast de machine (daar ligt niets). */
+    for (let i = 0; i < 100 && !(await ev(`document.querySelectorAll(".bliepo-tekst").length`)); i++) await wacht(200);
+    await wacht(400);
+    const p = await ev(`(() => { const r = document.body.getBoundingClientRect(); return { x: r.width * 0.3, y: r.height * 0.1 }; })()`);
+    if (p) await tik(p);
+  }
+  const log = () => ev(`JSON.stringify(window.__gouden ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+  const nu = () => ev(`(() => { const b = document.querySelector('[data-knop="verder"]'); const taak = (window.__phaser?.plusTaak ?? null); return { pijl: !!b && b.getBoundingClientRect().width > 3, tekst: [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.textContent.replace(/\\s+/g, " ").trim()).filter(Boolean), taak, kaart: !!document.querySelector('button[aria-label$="af te vinken"], [data-kaart] button, button[aria-label*="kaart"]'), t: Math.round(performance.now()) }; })()`);
+  const klikTekst = (t) => ev(`(() => { const b = [...document.querySelectorAll("button")].find((b) => (b.textContent || "").trim() === ${JSON.stringify(t)} && b.getBoundingClientRect().width > 3); if (!b) return false; b.click(); return true; })()`);
+  /* Zoals een kind: een echte muisklik op de plek waar de pijl staat (geen b.click()). Meldt als er iets anders boven de pijl ligt. */
+  const klikPijl = async () => {
+    const p = await ev(`(() => { const b = document.querySelector('[data-knop="verder"]'); if (!b) return null; const r = b.getBoundingClientRect(); if (r.width < 3) return null; const x = r.left + r.width / 2, y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === b || b.contains(e)), wat: e ? (e.getAttribute("aria-label") || e.className || e.tagName) : null }; })()`);
+    if (!p) return false;
+    if (!p.raak) fout(`iets anders ligt boven de pijl: ${p.wat}`);
+    await tik(p);
+    return true;
   };
-  /** Wacht tot er een nieuwe logregel `wat` is (na de vorige die we gezien hebben). */
-  const wachtOp = async (wat, max = 30000, filter = () => true) => {
-    const t0 = Date.now();
-    for (;;) {
-      const l = await log();
-      const i = l.findIndex((x, k) => k >= gezien && (Array.isArray(wat) ? wat.includes(x.wat) : x.wat === wat) && filter(x));
-      if (i >= 0) {
-        gezien = i + 1;
-        return l[i];
-      }
-      if (Date.now() - t0 > max) throw new Error(`wachtte vergeefs op "${wat}" (laatste: ${JSON.stringify(l.slice(-3))})`);
-      await wacht(150);
+  const klikKaart = () => ev(`(() => { const b = [...document.querySelectorAll("button")].find((b) => /af te vinken/i.test(b.getAttribute("aria-label") || "")); if (!b) return false; b.click(); return true; })()`);
+  /* Zoals een kind: een echte muisklik midden op een ding in het vlak (kaart-1, kraal-12) of op een knop van het lesscherm. */
+  const tikDing = async (sel) => {
+    const p = await ev(`(() => { const b = [...document.querySelectorAll(${JSON.stringify(sel)})].find((b) => !b.disabled && b.getBoundingClientRect().width > 3); if (!b) return null; const r = b.getBoundingClientRect(); if (r.width < 3) return null; const x = r.left + r.width / 2, y = r.top + r.height / 2; const e = document.elementFromPoint(x, y); return { x, y, raak: !!e && (e === b || b.contains(e)) }; })()`);
+    if (!p) return false;
+    await tik(p);
+    return true;
+  };
+  /* De eindkaart: hoeveel woorden van Bliepo's tekst onder de kaart vallen (keuring Minsommen: 1 tot 4). */
+  const eindkaart = () => ev(`(() => { const k = document.querySelector('button[aria-label$="af te vinken"]'); if (!k) return null; const r = k.getBoundingClientRect(); const ws = [...document.querySelectorAll(".bliepo-tekst-woord")].map((w) => w.getBoundingClientRect()).filter((w) => w.width > 1); const onder = ws.filter((w) => w.left < r.right - 1 && r.left < w.right - 1 && w.top < r.bottom - 1 && r.top < w.bottom - 1).length; const tekst = [...document.querySelectorAll(".bliepo-tekst")].map((e) => e.getBoundingClientRect()).filter((e) => e.width > 1); const regels = tekst.filter((w) => w.left < r.right - 1 && r.left < w.right - 1 && w.top < r.bottom - 1 && r.top < w.bottom - 1).length; return { onder, woorden: ws.length, regels, kaart: [Math.round(r.left), Math.round(r.top), Math.round(r.right), Math.round(r.bottom)], tekst: tekst.map((e) => [Math.round(e.left), Math.round(e.top), Math.round(e.right), Math.round(e.bottom)]) }; })()`);
+  const meet = () => ev(`JSON.stringify(window.__meet)`).then((x) => JSON.parse(x ?? "[]"));
+  /* Typen zoals op een toetsenbord (echte toetsaanslagen naar het veld met de aandacht). */
+  const typ = async (tekst) => {
+    for (const c of tekst) {
+      await stuur("Input.dispatchKeyEvent", { type: "keyDown", key: c, text: c, unmodifiedText: c }, s);
+      await stuur("Input.dispatchKeyEvent", { type: "keyUp", key: c }, s);
+      await wacht(60);
     }
   };
-  const klikTekst = async (t) => {
-    for (let k = 0; k < 60; k++) {
-      const ok = await ev(`(() => { const b = [...document.querySelectorAll("button")].find((b) => (b.textContent || "").trim() === ${JSON.stringify(t)} && b.getBoundingClientRect().width > 3 && !b.disabled); if (!b) return false; b.click(); return true; })()`);
-      if (ok) return;
-      await wacht(150);
-    }
-    throw new Error(`knop "${t}" niet gevonden`);
+  const toets = async (k) => {
+    await stuur("Input.dispatchKeyEvent", { type: "keyDown", key: k, code: k, windowsVirtualKeyCode: k === "Enter" ? 13 : 0, text: k === "Enter" ? "\r" : undefined }, s);
+    await stuur("Input.dispatchKeyEvent", { type: "keyUp", key: k, code: k, windowsVirtualKeyCode: k === "Enter" ? 13 : 0 }, s);
   };
-  const klikKnop = async (k) => {
-    for (let i = 0; i < 80; i++) {
-      const ok = await ev(`(() => { const b = document.querySelector('[data-knop="${k}"]'); if (!b || b.disabled || b.getBoundingClientRect().width < 3) return false; b.click(); return true; })()`);
-      if (ok) return;
-      await wacht(150);
-    }
-    throw new Error(`knop ${k} niet gevonden`);
-  };
-  const pijl = () => klikKnop("verder");
-  /** `aantal` dingen uit het hoopje naar het vak op (x, y) van het vlak. */
-  const leg = async (aantal, x, y, traag = false) => {
-    for (let i = 0; i < aantal; i++) {
-      const van = await ev(`window.__phaser?.s1Punt?.() ?? null`);
-      const naar = await punt(x, y);
-      await sleep(van, naar, traag);
-    }
-  };
-  /** Van punt naar punt (beide in punten van het vlak), bijvoorbeeld van het paarse naar het oranje vak. */
-  const verschuif = async (x0, y0, x1, y1, traag = false) => sleep(await punt(x0, y0), await punt(x1, y1), traag);
-  const goedSleep = async () => {
-    /* Eerst wachten tot het kind mag slepen (bij samen voordoen legt Bliepo eerst zelf). */
-    for (let k = 0; k < 80 && !(await ev(`window.__phaser?.s1Stap?.("goed") ?? null`)); k++) await wacht(150);
-    for (let k = 0; k < 30; k++) {
-      const st = await ev(`window.__phaser?.s1Stap?.("goed") ?? null`);
-      if (!st) return;
-      await sleep(st.van, st.naar);
-    }
-  };
-  /** De kleur van de getallen in Bliepo's tekst (gemeten op het scherm). */
-  const getalKleuren = () => ev(`[...document.querySelectorAll('[class*="getal"]')].filter((e) => e.closest('[class*="tekst"], .bliepo-tekst')).map((e) => e.textContent.trim() + "=" + getComputedStyle(e).color).join(" ")`);
-  const hand = () => ev(`!!document.querySelector("[data-hulphand]")`);
-  const tekst = () => ev(`[...document.querySelectorAll(".bliepo-tekst, [class*='tekst'] p")].map((e) => e.textContent).join(" ").replace(/\\s+/g, " ").trim()`);
-  const sluit = () => stuur("Target.closeTarget", { targetId }).catch(() => {});
-  /** 3 s een pion rondslepen en de beelden tellen (HARDE REGEL 7). `traag` = 4× tragere processor (telefoon). */
-  const meetSlepen = async (traag) => {
-    if (traag) await stuur("Emulation.setCPUThrottlingRate", { rate: 4 }, s);
-    const van = await ev(`window.__phaser?.s1Punt?.() ?? null`);
-    await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x, y: van.y }, s);
-    await muis("mousePressed", van);
-    const telling = ev(`new Promise((r) => { const t = []; let t0 = performance.now(); const stap = (n) => { t.push(n); if (n - t0 < 3000) requestAnimationFrame(stap); else { const d = t.slice(1).map((x, i) => x - t[i]); r({ fps: Math.round((t.length - 1) / ((t[t.length - 1] - t[0]) / 1000)), max: Math.round(Math.max(...d)) }); } }; requestAnimationFrame(stap); })`);
-    const t0 = Date.now();
-    let i = 0;
-    while (Date.now() - t0 < 3000) {
-      i++;
-      await stuur("Input.dispatchMouseEvent", { type: "mouseMoved", x: van.x + Math.sin(i / 9) * 120, y: van.y + 80 + Math.sin(i / 13) * 60, button: "left", buttons: 1 }, s);
-      await wacht(16);
-    }
-    const r = await telling;
-    await muis("mouseReleased", { x: van.x, y: van.y });
-    if (traag) await stuur("Emulation.setCPUThrottlingRate", { rate: 1 }, s);
-    return r;
-  };
-  /** Tik op iets in het vlak met data-ding (kaartje, som, antwoord, of een tel-plek). */
-  const klikDing = async (id) => {
-    for (let k = 0; k < 80; k++) {
-      const ok = await ev(`(() => { const b = document.querySelector('[data-ding="${id}"]'); if (!b || b.disabled || b.getBoundingClientRect().width < 3) return false; b.click(); return true; })()`);
-      if (ok) return;
-      await wacht(150);
-    }
-    throw new Error(`ding ${id} niet gevonden`);
-  };
-  /** De ids van de antwoordkaartjes rechts bij het verbinden: getal -> id. */
-  const antwoordIds = () => ev(`Object.fromEntries([...document.querySelectorAll('[data-ding^="a"]')].map((b) => [b.textContent.trim(), b.getAttribute("data-ding")]))`);
-  return { terug, tikVlak, verschuif, meetSlepen, ev, wachtOp, klikTekst, klikKnop, klikDing, antwoordIds, pijl, leg, goedSleep, punt, log, foto, getalKleuren, hand, tekst, sluit };
+  return { ev, tik, foto, log, nu, klikTekst, klikPijl, klikKaart, tikDing, eindkaart, meet, typ, toets, sluit: () => stuur("Target.closeTarget", { targetId }).catch(() => {}) };
 }
 
-
-/* De 16 vragen van squla-plus-bakkerij-1 (zelfde als squla-plussommen-gouden-zinnen.ts). */
-const V = [
-  { s: "verhaal", goed: 5 }, { s: "verhaal", goed: 7 }, { s: "verhaal", goed: 9 }, { s: "verhaal", goed: 8 },
-  { s: "som", goed: "3 + 7 = 10" }, { s: "disco", goed: 8 }, { s: "disco", goed: 10 },
-  { s: "verbind", sommen: [[3, 4], [5, 3], [2, 7]] },
-  { s: "verhaal", goed: 8 }, { s: "verhaal", goed: 7 }, { s: "verhaal", goed: 9 }, { s: "som", goed: "4 + 5 = 9" },
-  { s: "disco", goed: 8 }, { s: "verbind", sommen: [[1, 6], [4, 2], [5, 4]] }, { s: "verhaal", goed: 9 }, { s: "verhaal", goed: 10 },
-];
 const uitslag = [];
-const fout = (t) => {
-  uitslag.push(`  FOUT: ${t}`);
-  console.log(`  FOUT: ${t}`);
-};
+let fouten = 0;
 const zie = (t) => {
   uitslag.push(`  ${t}`);
   console.log(`  ${t}`);
 };
-async function reactie(P, fotoNaFout = null) {
-  const r = await P.wachtOp("reactie", 40000);
-  zie(`${r.vraag} · ${r.soort}${r.x !== undefined ? ` [${r.x}]` : ""}${r.denkfout ? ` (${r.denkfout})` : ""}: "${r.zin.replace(/\{(\d+):[a-z]+\}/g, "$1")}"`);
-  /* 15.27: de hint na de 1e fout wacht op de blauwe pijl; daarna komt dezelfde vraag terug. */
-  if (r.soort === "fout1") {
-    await P.wachtOp("pijl", 40000);
-    await wacht(500);
-    if (fotoNaFout) await P.foto(fotoNaFout);
-    await P.pijl();
-  }
-  return r;
-}
-/** Kies antwoord x bij vraag nr (1-based). Bij verbinden: x = lijst [somIndex, antwoordGetal]. */
-async function kies(P, nr, x) {
-  const v = V[nr - 1];
-  await P.wachtOp("vraag", 40000);
-  if (v.s === "verhaal" || v.s === "som") await P.klikTekst(String(x));
-  else if (v.s === "disco") await P.klikDing(`c${x}`);
-  else {
-    const ids = await P.antwoordIds();
-    for (const [i, z] of x) {
-      await P.klikDing(`s${i}`);
-      await P.klikDing(ids[String(z)]);
-    }
-  }
-}
-const goedVan = (nr) => {
-  const v = V[nr - 1];
-  return v.s === "verbind" ? v.sommen.map(([a, b], i) => [i, a + b]) : v.goed;
+const fout = (t) => {
+  fouten++;
+  uitslag.push(`  FOUT: ${t}`);
+  console.log(`  FOUT: ${t}`);
 };
-/** Samen tellen: tik alle plekken (zo veel als er zijn). */
-async function samen(P, wachten = true) {
-  if (wachten) await P.wachtOp("samen-tellen", 40000);
-  for (let k = 0; k < 12; k++) {
-    const vrij = await P.ev(`[...document.querySelectorAll('[data-ding^="tel-"]')].map((b) => b.getAttribute("data-ding"))`);
-    if (!vrij || !vrij.length) break;
-    await P.klikDing(vrij[0]);
-    await wacht(250);
+
+/**
+ * Het hulphandje bij een opdracht (15.19): het komt ± 6 s nadat Bliepo de opdrachtzin heeft uitgesproken (stilte). Meet
+ * hoe lang na het begin van de opdracht het handje er staat (= de opdrachtzin + ± 6 s).
+ */
+async function handTijd(P, o, wat) {
+  const t0 = Date.now();
+  globalThis.__handVanaf = (await P.ev("performance.now()")) - 12000;
+  let h = false;
+  while (!h && Date.now() - t0 < 16000) {
+    /* Het handje van Tellen is in Phaser getekend (geen [data-hulphand]): kijk naar de melding "aanwijzing" in het logboek. */
+    h = (await P.log()).some((x) => x.wat === "aanwijzing" && x.t > (globalThis.__handVanaf ?? 0));
+    if (!h) await wacht(100);
   }
-}
-async function allesGoedVanaf(P, van) {
-  for (let nr = van; nr <= 16; nr++) {
-    await kies(P, nr, goedVan(nr));
-    const r = await reactie(P);
-    if (r.soort !== "goed") fout(`vraag ${nr}: ${r.soort}`);
-  }
+  const l = await P.log();
+  const zin = [...l].reverse().find((x) => x.wat === "opdrachtzin");
+  zie(`${o.naam}: hulphandje bij ${wat}: ${h ? `ja, ${Date.now() - t0 + (o.opdrachtWacht ?? 0)} ms na het begin van de opdracht` : "nee"}${zin ? ` (zin: "${zin.zin.slice(0, 40)}")` : ""}`);
+  if (!h) fout(`geen hulphandje bij ${wat} na lange stilte`);
 }
 
-const SITUATIES = {
-  /** Alles goed in één keer: na goed vanzelf door (geen pijl), getalkleur gemeten, einde met kaart. */
-  async allesgoed(P) {
-    let pijlen = 0;
-    for (let nr = 1; nr <= 16; nr++) {
-      if (process.env.ALLEFOTO) {
-        await P.wachtOp("vraag", 40000);
-        await wacht(900);
-        await P.foto(`vraag-${String(nr).padStart(2, "0")}`);
-        P.terug();
-      }
-      await kies(P, nr, goedVan(nr));
-      const r = await reactie(P);
-      if (r.soort !== "goed") fout(`vraag ${nr}: ${r.soort}`);
-      if (nr === 1) {
-        await wacht(300);
-        zie(`getalkleur in Bliepo's tekst: ${await P.getalKleuren()}`);
-        await P.foto("01-goed-vraag1");
-      }
-      if (nr === 6) await P.foto("06-disco-goed");
+/**
+ * Een speler (regel 15.27, 10 nov 2026): doet wat de les vraagt en tikt NOOIT op de pijl (de les moet vanzelf doorgaan).
+ * `keuze(taak)` geeft het antwoord (standaard het goede). Bij het verbinden is een antwoord een lijst som -> antwoord-id.
+ */
+async function speel(P, o = {}) {
+  const keuze = o.keuze ?? ((taak) => taak.goed);
+  const tot = Date.now() + (o.maxMs ?? 25 * 60_000);
+  let laatsteTaak = null;
+  let langste = 0;
+  let fotoNr = 0;
+  while (Date.now() < tot) {
+    const z = await P.nu();
+    if (!z) {
+      await wacht(150);
+      continue;
     }
-    const l = await P.log();
-    pijlen = l.filter((x) => x.wat === "pijl").length;
-    if (pijlen) fout(`${pijlen} keer gewacht op de pijl terwijl alles goed was (15.27: lof gaat vanzelf door)`);
-    else zie(`na elk goed antwoord vanzelf door (pijl alleen tijdens het praten: ${l.filter((x) => x.wat === "pijl-weg").length} keer gekomen en weer weg)`);
-    const tijden = l.filter((x) => x.wat === "tik").map((t) => {
-      const r = l.find((y) => y.t >= t.t && (y.wat === "door" || y.wat === "pijl"));
-      return r ? r.t - t.t : null;
-    }).filter((x) => x !== null);
-    zie(`tijd van tik tot reactie (ms, zonder stem): ${tijden.join(", ")}`);
-    await P.wachtOp("kaart", 40000);
-    zie(`einde: "${await P.tekst()}"`);
-    await P.foto("99-einde");
-  },
+    /* Deed de stap zelf iets (verbindrust), dan opnieuw kijken wat er nu in beeld staat. */
+    if (o.bijElkeStap && (await o.bijElkeStap()) === true) continue;
+    if (process.env.VOLG) {
+      const sl = JSON.stringify([z.taak?.soort, z.taak?.vraag, z.taak?.poging, z.tekst.at(-1)?.slice(0, 50)]);
+      if (sl !== globalThis.__vorigVolg) { globalThis.__vorigVolg = sl; globalThis.__volgT = Date.now(); console.log("   …", sl); }
+      else if (Date.now() - globalThis.__volgT > 12000) { globalThis.__volgT = Date.now(); console.log("   STIL:", JSON.stringify((await P.log()).slice(-6)), await P.ev(`JSON.stringify(window.__stem?.slice(-4))`)); }
+    }
+    /* Schermfoto's: het langste stuk tekst tot nu toe, en een paar gewone momenten. */
+    const lengte = z.tekst.join(" ").length;
+    if (lengte > langste + 20) {
+      langste = lengte;
+      await P.foto?.(`${o.naam}-langste-stuk`);
+    }
+    if (z.taak?.soort === "kies" && fotoNr < 2 && Math.random() < 0.05) await P.foto?.(`${o.naam}-moment-${++fotoNr}`);
+    if (z.kaart) {
+      /* De eindkaart meten terwijl Bliepo zijn laatste zin zegt, en nog eens als die helemaal in beeld staat. */
+      let ergst = null;
+      for (let i = 0; i < 24; i++) {
+        const e = await P.eindkaart();
+        if (e && (!ergst || e.onder > ergst.onder)) ergst = e;
+        await wacht(250);
+      }
+      zie(`${o.naam}: eindkaart: ${ergst?.onder ?? "?"} woorden van Bliepo onder de kaart (van ${ergst?.woorden ?? "?"}), regels die de kaart raken: ${ergst?.regels ?? "?"}; kaart ${JSON.stringify(ergst?.kaart)}, tekst ${JSON.stringify(ergst?.tekst)}`);
+      if (process.env.ONTWERP && ergst?.onder) fout(`${o.naam}: de eindkaart staat over ${ergst.onder} woorden van Bliepo`);
+      globalThis.__eindkaart = ergst;
+      if ((await P.nu()).pijl) fout("pijl op de eindkaart");
+      await P.foto?.(`${o.naam}-eindkaart`);
+      await P.klikKaart();
+      zie(`${o.naam}: tot de eindkaart gekomen zonder ooit op de pijl te tikken`);
+      return true;
+    }
+    const taak = z.taak;
+    const zonderHand = async () => {
+      /* Geen hulphandje bij een keuze (15.19). */
+      if (o.vraagWacht && (await P.ev(`!!document.querySelector("[data-hulphand]")`))) fout(`hulphandje bij een vraag (${taak.vraag})`);
+    };
+    /*
+     * Vaste zone (15.30, keuring Meer-minder): het speelvlak blijft links van het tekstvak. De toonbank van de bakkerij loopt
+     * tot x = 960 van de 980 (in Phaser getekend, dus uitgerekend), de rest zijn knoppen en getallen in het vlak (gemeten).
+     */
+    const zone = async () => {
+      const r = await P.ev(`(() => { const v = document.querySelector(".bliepo-vloer-ballon"); const w = document.querySelector("[data-plussommen-gouden]"); if (!v || !w) return null; const k = w.getBoundingClientRect(); const rechts = k.left + 960 * k.width / 980; const dingen = [...w.querySelectorAll("button, [data-telnummer], [data-hulphand]")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); const keuzes = [...document.querySelectorAll("[data-keuzes-midden] button")].map((b) => b.getBoundingClientRect()).filter((b) => b.width > 2).map((b) => b.right); const L = v.getBoundingClientRect().left; return { vlak: Math.round(rechts - L), ding: dingen.length ? Math.round(Math.max(...dingen) - L) : null, keuzes: keuzes.length ? Math.round(Math.max(...keuzes) - L) : null }; })()`);
+      if (r && (r.vlak > 0 || (r.ding ?? -1) > 0 || (r.keuzes ?? -1) > 0)) fout(`het speelvlak loopt onder het tekstvak (${JSON.stringify(r)}, ${taak?.vraag})`);
+      if (r) globalThis.__zone = { vlak: Math.max(globalThis.__zone?.vlak ?? -999, r.vlak), ding: Math.max(globalThis.__zone?.ding ?? -999, r.ding ?? -999), keuzes: Math.max(globalThis.__zone?.keuzes ?? -999, r.keuzes ?? -999) };
+    };
+    const sleutel = taak ? `${taak.soort}:${taak.vraag}:${taak.poging}` : null;
+    if (taak && (taak.soort === "kies" || taak.soort === "disco")) {
+      const sl = `${sleutel}:${taak.n}`;
+      if (sl !== laatsteTaak) {
+        await wacht(o.vraagWacht ?? 1200);
+        const z2 = await P.nu();
+        if (z2.pijl && z2.taak && (z2.taak.soort === "kies" || z2.taak.soort === "disco")) fout(`pijl bij een vraag (${taak.vraag})`);
+        await zonderHand();
+        await zone();
+        laatsteTaak = sl;
+        const x = taak.poging === 3 ? taak.goed : keuze(taak);
+        if (o.fotos) await P.foto(`${o.naam}-${taak.vraag}-${taak.poging}-vraag`);
+        const ok = taak.soort === "kies" ? await P.klikTekst(x) : await P.tikDing(`[data-ding="${x}"]`);
+        if (ok) await wacht(200);
+        else laatsteTaak = null;
+        if (o.fotos && x !== taak.goed) { await wacht(2600); await P.foto(`${o.naam}-${taak.vraag}-${taak.poging}-na-${x}`); }
+      }
+    } else if (taak && taak.soort === "verbind") {
+      /* Verbinden (een opdracht): tik een som en dan een antwoord, voor elke som. */
+      if (sleutel !== laatsteTaak) {
+        laatsteTaak = sleutel;
+        await wacht(o.opdrachtWacht ?? 600);
+        if ((await P.nu()).pijl) fout(`pijl bij de opdracht verbinden (${taak.vraag})`);
+        await zone();
+        if (o.opdrachtWacht && o.opdrachtWacht > 6500) await handTijd(P, o, "verbinden");
+        const plan = keuze(taak);
+        for (const [som, antw] of Object.entries(plan)) {
+          await P.tikDing(`[data-ding="${som}"]`);
+          await wacht(o.tikWacht ?? 250);
+          await P.tikDing(`[data-ding="${antw}"]`);
+          await wacht(o.tikWacht ?? 250);
+        }
+        if (o.fotos) await P.foto(`${o.naam}-${taak.vraag}-${taak.poging}-verbonden`);
+      }
+    } else if (taak && taak.soort === "tel") {
+      /* Samen tellen na de 2e fout (een opdracht): het kind tikt elk stuk lekkers (of elke stip) aan. */
+      const sl2 = `tel:${taak.v}:${taak.n}`;
+      if (laatsteTaak !== sl2) {
+        const eersteTik = !String(laatsteTaak ?? "").startsWith(`tel:${taak.v}:`);
+        laatsteTaak = sl2;
+        if (eersteTik) {
+          await wacht(o.opdrachtWacht ?? 300);
+          if ((await P.nu()).pijl) fout(`pijl bij de opdracht samen tellen (vraag ${taak.v})`);
+          await zone();
+          if (o.opdrachtWacht && o.opdrachtWacht > 6500) await handTijd(P, o, "samen tellen");
+          if (o.vangnet && !globalThis.__vangnetGedaan) {
+            globalThis.__vangnetGedaan = true;
+            zie(`${o.naam}: niets doen bij samen tellen (vangnet na 20 s)`);
+            await wacht(21500);
+            continue;
+          }
+          if (o.fotos && !globalThis.__samenFoto?.[taak.v]) { (globalThis.__samenFoto ??= {})[taak.v] = 1; await P.foto(`${o.naam}-${taak.v}-samen`); }
+        }
+        if (await P.tikDing(`[data-ding="${taak.goed}"]`)) {
+          await wacht(o.tikWacht ?? 350);
+          continue;
+        }
+        laatsteTaak = null;
+      }
+    }
+    await wacht(120);
+  }
+  fout(`${o.naam}: niet binnen de tijd bij de kaart`);
+  return false;
+}
 
-  /** Fouten bij elke soort vraag. */
+/** Controles op het hele meetlogboek van een route. */
+async function controleer(P, naam) {
+  const m = await P.meet();
+  const l = await P.log();
+  const tel = (w) => l.filter((x) => x.wat === w).length;
+  zie(`${naam}: ${tel("pijl-door")} stukken met pijl (allemaal vanzelf door), ${tel("opdrachtzin")} opdrachtzinnen zonder pijl, ${tel("pijl-getikt")} keer op de pijl getikt, ${l.filter((x) => x.wat === "pijl").length} stukken die op een tik wachten (moet 0)`);
+  if (l.some((x) => x.wat === "pijl")) fout(`${naam}: er wacht nog een stuk op een tik`);
+  /* Tijd van het einde van de zin tot het volgende stuk. "zin-klaar" komt 0,3 s na het einde van de stem (Lesscherm). */
+  const tijden = [];
+  for (let k = 0; k < l.length; k++) {
+    if (l[k].wat !== "zin-klaar") continue;
+    const stuk = [...l.slice(0, k)].reverse().find((x) => x.wat === "pijl-door");
+    const volgende = l.slice(k + 1).find((x) => ["pijl-door", "vraag", "opdrachtzin", "kaart", "pijl-getikt"].includes(x.wat));
+    if (!volgende || volgende.wat === "pijl-getikt") continue;
+    tijden.push({ stuk: stuk?.zin ?? "", ms: volgende.t - l[k].t + 300, naar: volgende.wat });
+  }
+  const afwijkend = tijden.filter((x) => x.ms < 550 || x.ms > 950);
+  const gem = tijden.length ? Math.round(tijden.reduce((a, x) => a + x.ms, 0) / tijden.length) : 0;
+  zie(`${naam}: einde zin → volgend stuk: ${tijden.length} keer gemeten, gemiddeld ${gem} ms (doel ±700), kleinste ${Math.min(...tijden.map((x) => x.ms))} ms, grootste ${Math.max(...tijden.map((x) => x.ms))} ms; buiten 550–950 ms: ${afwijkend.length}`);
+  for (const a of afwijkend.slice(0, 8)) zie(`   afwijkend: ${a.ms} ms na "${a.stuk.slice(0, 70)}" → ${a.naar}`);
+  /* Echte stem: elke zin helemaal uitgesproken? (stem-logboek, alleen met ECHTESTEM=1) */
+  const stemlog = await P.ev(`JSON.stringify(window.__stem ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+  if (stemlog.length) {
+    const c = (w) => stemlog.filter((x) => x.wat === w).length;
+    const fouten = {};
+    for (const x of stemlog.filter((x) => x.wat === "error")) fouten[x.fout] = (fouten[x.fout] ?? 0) + 1;
+    const kort = [];
+    for (const x of stemlog.filter((x) => x.wat === "start")) {
+      const e = stemlog.find((y) => y.t >= x.t && y.z === x.z && (y.wat === "end" || y.wat === "error"));
+      if (e && e.wat === "error") kort.push(`${e.t - x.t} ms: ${x.z.slice(0, 50)} (${e.fout})`);
+    }
+    zie(`${naam}: stem: ${c("speak")} zinnen gestart, ${c("start")} begonnen, ${c("end")} helemaal uitgesproken, fouten ${JSON.stringify(fouten)}, ${c("cancel")} keer cancel`);
+    for (const k of kort.slice(0, 5)) zie(`   afgebroken na ${k}`);
+  }
+  /* Dubbel uitgesproken (Sara 10 nov, F8): dezelfde uiting 2 keer gestart binnen 20 s zonder actie van het kind ertussen. */
+  {
+    const acties = l.filter((x) => ["tik", "pijl-getikt"].includes(x.wat)).map((x) => x.t);
+    const starts = stemlog.filter((x) => x.wat === "speak" && x.z);
+    let dubbel = 0;
+    for (let i = 0; i < starts.length; i++)
+      for (let j = i - 1; j >= 0 && starts[i].t - starts[j].t < 20000; j--)
+        if (starts[j].z === starts[i].z) {
+          if (!acties.some((t) => t > starts[j].t && t <= starts[i].t)) {
+            dubbel++;
+            if (dubbel <= 3) fout(`${naam}: F8 dezelfde uiting 2 keer gestart zonder actie (${starts[i].t - starts[j].t} ms): ${starts[i].z.slice(0, 70)}`);
+          }
+          break;
+        }
+    zie(`${naam}: F8-controle: ${dubbel} keer dezelfde uiting 2 keer gestart; ${stemlog.filter((x) => x.wat === "geluid").length} keer een geluidsbestand gestart`);
+  }
+  /* Gedimd/wit: komt een tekst die al wit was, weer gedimd terug zonder actie (F7 in gedimd/wit)? */
+  let dimTerug = 0;
+  for (let i = 1; i < m.length; i++) if (m[i].dim && !m[i - 1].dim && JSON.stringify(m[i].tekst) === JSON.stringify(m[i - 1].tekst)) { dimTerug++; zie(`   weer gedimd na ${m[i].t - m[i - 1].t} ms: ${JSON.stringify(m[i].tekst).slice(0, 120)} (taak ${m[i].taak})`); if (process.env.VOLG) for (const r of m.slice(Math.max(0, i - 4), i + 2)) zie(`      ${r.t} dim=${r.dim} leest=${r.leest} pijl=${r.pijl} ${JSON.stringify(r.tekst).slice(0, 90)}`); }
+  zie(`${naam}: ${dimTerug} keer werd dezelfde tekst weer gedimd (moet 0)`);
+  if (dimTerug) fout(`${naam}: F7 gedimd/wit: dezelfde tekst werd ${dimTerug} keer weer gedimd`);
+  /* Ontwerp (Sara 10 nov): verspringen > 2 px van tekstvak, eerste regel, pijl en Bliepo; pijl aan/uit tussen stukken. */
+  const sprong = (sleutel) => {
+    let vorig = null;
+    let n = 0;
+    const voorbeelden = [];
+    /* Pas meten vanaf de eerste tekst (daarvoor laadt de pagina nog). */
+    const begin = m.findIndex((r) => r.tekst.length > 0);
+    for (const r of m.slice(Math.max(0, begin))) {
+      const p = r.plek?.[sleutel];
+      if (!p) continue;
+      if (vorig && (Math.abs(p[0] - vorig[0]) > 2 || Math.abs(p[1] - vorig[1]) > 2 || (sleutel !== "regel" && Math.abs(p[2] - vorig[2]) > 2))) {
+        n++;
+        if (voorbeelden.length < 3) voorbeelden.push(`${JSON.stringify(vorig)}→${JSON.stringify(p)} bij "${(r.tekst[0] ?? "").slice(0, 40)}"`);
+      }
+      vorig = p;
+    }
+    return { n, voorbeelden };
+  };
+  const sprongen = {};
+  for (const k of ["vak", "regel", "pijl", "robot"]) sprongen[k] = sprong(k);
+  let knipper = 0;
+  for (let i = 1; i < m.length; i++) {
+    if (!m[i].pijl || m[i - 1].pijl) continue;
+    /* De pijl kwam (terug). Was hij er kort daarvoor ook, zonder vraag/opdracht ertussen? Dan knippert hij. */
+    let j = i - 1;
+    while (j >= 0 && !m[j].pijl && !m[j].taak && !m[j].kaart) j--;
+    if (j >= 0 && m[j].pijl) knipper++;
+  }
+  const over = Math.max(0, ...m.map((r) => r.plek?.over ?? 0));
+  if (over > 2) for (const r of m.filter((r) => (r.plek?.over ?? 0) > 2).slice(0, 4)) zie(`   te lang (${r.plek.over} px): ${JSON.stringify(r.tekst).slice(0, 200)}`);
+  /* Overlap (Sara 10 nov): Bliepo mag nooit over de tekst, de knoppen of de pijl vallen; tekst nooit buiten het vak. */
+  const doos = (r, b) => (r ? { l: r[0], t: r[1], r: r[0] + (b ?? 0), o: r[1] + r[2] } : null);
+  const raakt = (a, c) => a && c && a.l < c.r - 1 && c.l < a.r - 1 && a.t < c.o - 1 && c.t < a.o - 1;
+  let overlap = 0;
+  let buiten = 0;
+  const overVb = [];
+  for (const r of m) {
+    const p = r.plek;
+    if (!p?.robot) continue;
+    const robot = doos(p.robot, p.robotB);
+    const tekst = p.inhoud ? { l: p.inhoud[0], t: p.inhoud[1], r: p.inhoud[0] + p.inhoud[3], o: p.inhoud[1] + p.inhoud[2] } : null;
+    const pijlD = p.pijl ? doos(p.pijl, p.pijl[2]) : null;
+    if (raakt(robot, tekst) || raakt(robot, pijlD)) {
+      overlap++;
+      if (overVb.length < 3) overVb.push(`Bliepo ${JSON.stringify(robot)} raakt tekst ${JSON.stringify(tekst)} bij "${(r.tekst.at(-1) ?? "").slice(0, 40)}"`);
+    }
+    if (p.vak && tekst && tekst.o > p.vak[1] + p.vak[2] + 1) buiten++;
+  }
+  zie(`${naam}: overlap Bliepo met tekst/knoppen/pijl: ${overlap}; tekst onder het vak uit: ${buiten}`);
+  for (const v of overVb) zie(`   ${v}`);
+  if (process.env.ONTWERP && (overlap || buiten)) fout(`${naam}: Bliepo overlapt de tekst (${overlap}) of tekst loopt uit het vak (${buiten})`);
+  zie(`${naam}: sprongen > 2 px: tekstvak ${sprongen.vak.n}, eerste regel ${sprongen.regel.n}, pijl ${sprongen.pijl.n}, Bliepo ${sprongen.robot.n}; pijl weg en terug tussen stukken: ${knipper}; tekst te lang voor het vak: ${over > 2 ? over + " px" : "nee"}`);
+  for (const k of ["vak", "regel", "pijl", "robot"]) for (const v of sprongen[k].voorbeelden) zie(`   sprong ${k}: ${v}`);
+  if (process.env.ONTWERP) {
+    if (sprongen.vak.n || sprongen.regel.n || sprongen.pijl.n || sprongen.robot.n) fout(`${naam}: er verspringt iets (> 2 px)`);
+    if (knipper) fout(`${naam}: de pijl ging ${knipper} keer weg en kwam terug tussen stukken`);
+    if (over > 2) fout(`${naam}: tekst past niet in het vak (${over} px te lang)`);
+  }
+  /* Nooit pijl en keuzevraag tegelijk. */
+  /* Langer dan 1 meting (een enkele meting van 50 ms is het moment dat de knoppen net verschijnen). */
+  const pk = (r) => r && r.pijl && r.taak && (r.taak.startsWith("kies:") || r.taak.startsWith("disco:")) && !r.taak.endsWith(":1");
+  const samen = m.filter((r, i) => pk(r) && pk(m[i + 1]));
+  if (samen.length) fout(`${naam}: ${samen.length} keer pijl en keuzevraag tegelijk`);
+  /* F7 (Sara, 10 nov 2026): dezelfde tekst verdwijnt en komt terug zonder dat het kind iets deed. */
+  const actie = l.filter((x) => ["tik", "pijl-getikt"].includes(x.wat)).map((x) => x.t);
+  const sleutel = (r) => r.tekst.join(" | ");
+  let f7 = 0;
+  for (let i = 1; i < m.length; i++) {
+    const k = sleutel(m[i]);
+    /* Een vraag die na de hint opnieuw komt, is een nieuwe poging (geen F7). */
+    if (!k || k === sleutel(m[i - 1]) || (m[i].taak && (m[i].taak.startsWith("kies:") || m[i].taak.startsWith("disco:") || m[i].taak.startsWith("verbind:")))) continue;
+    for (let j = i - 2; j >= 0 && m[i].t - m[j].t < 15000; j--) {
+      if (sleutel(m[j]) !== k) continue;
+      if (!actie.some((t) => t > m[j].t && t <= m[i].t)) {
+        f7++;
+        if (f7 <= 5) fout(`${naam}: F7 dezelfde tekst kwam terug zonder actie: ${k.slice(0, 100)}`);
+      }
+      break;
+    }
+  }
+  zie(`${naam}: F7-controle: ${f7} keer dezelfde tekst terug zonder actie`);
+  if (process.env.TABEL) {
+    mkdirSync(process.env.TABEL, { recursive: true });
+    const stem = await P.ev(`JSON.stringify(window.__stem ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+    writeFileSync(join(process.env.TABEL, `${naam}.json`), JSON.stringify({ log: l, meet: m, tijden, stem }, null, 1));
+  }
+  return { m, l, tijden };
+}
+
+/** Het eerste foute antwoord bij een vraag (vast, zodat routes herhaalbaar zijn). Verbinden: de antwoorden van som 0 en 1 omgewisseld. */
+const fout1 = (t) => (t.soort === "verbind" ? { s0: t.goed.s1, s1: t.goed.s0, s2: t.goed.s2 } : t.fout[0]);
+/** Een ander fout antwoord (voor de 2e poging). Verbinden: de antwoorden van som 1 en 2 omgewisseld. */
+const fout2 = (t) => (t.soort === "verbind" ? { s0: t.goed.s0, s1: t.goed.s2, s2: t.goed.s1 } : t.fout.at(-1));
+const reacties = async (P) => {
+  const l = await P.log();
+  for (const r of l.filter((x) => x.wat === "reactie" && x.soort !== "goed")) zie(`   ${r.soort} ${r.vraag} ${r.x ?? ""} ${r.denkfout ?? ""}: ${(r.zin ?? "").replace(/\{(\d+):[a-z]+\}/g, "$1")}`);
+  return l;
+};
+
+const ROUTES = {
+  /** De kleur van de getallen in Bliepo's tekst (in de kleur van het lekkers; kale som wit; stippen oranje en blauw). */
+  async kleur(P) {
+    const uit = new Set();
+    let k = 0;
+    const ok = await speel(P, {
+      naam: "kleur",
+      keuze: (t) => {
+        if (t.poging === 1) k++;
+        return k <= 7 ? (t.poging === 1 ? fout1(t) : fout2(t)) : t.goed;
+      },
+      maxMs: 14 * 60_000,
+      bijElkeStap: async () => {
+        const kl = await P.ev(`JSON.stringify([...document.querySelectorAll(".bliepo-tekst .getal, .bliepo-tekst [data-eigen]")].map((e) => e.textContent.trim() + "=" + getComputedStyle(e).color))`);
+        for (const x of JSON.parse(kl ?? "[]")) uit.add(x);
+      },
+    });
+    zie(`kleur: ${[...uit].join(", ")}`);
+    return ok;
+  },
+  /** Alles in 1 keer goed, nooit op de pijl tikken. */
+  async goed(P) {
+    const ok = await speel(P, { naam: "goed" });
+    await controleer(P, "goed");
+    zie(`goed: zone speelvlak/tekstvak (grootste meting, px voorbij de linkerrand van het tekstvak; negatief = ruimte): ${JSON.stringify(globalThis.__zone)}`);
+    return ok;
+  },
+  /** Afwisselend: 1e fout dan goed; elke 3e vraag 2 keer fout (samen); 1 keer hetzelfde antwoord 2 keer. */
   async fouten(P) {
-    /* vraag 1: deel (4), dan 1 te veel (6): uitleg + samen tellen. */
-    await kies(P, 1, 4);
-    await reactie(P, "10-fout1-hint");
-    await kies(P, 1, 6);
-    const r12 = await reactie(P);
-    if (r12.soort !== "fout2") fout("vraag 1: geen 2e fout");
-    await P.wachtOp("samen-tellen", 40000);
-    await P.foto("11-samen-tellen");
-    await samen(P, false);
-    await P.wachtOp("pijl", 40000);
-    zie(`na samen tellen: "${await P.tekst()}"`);
-    await P.foto("12-samen-klaar");
-    await P.pijl();
-    /* vraag 2: 8, dan goed: korte bevestiging. */
-    await kies(P, 2, 8);
-    await reactie(P);
-    await kies(P, 2, 7);
-    const r2 = await reactie(P);
-    if (r2.soort !== "goed-na-fout") fout("vraag 2: geen goed-na-fout");
-    /* vraag 3: 2 keer hetzelfde foute antwoord (10): "Je koos weer 10." */
-    await kies(P, 3, 10);
-    await reactie(P);
-    await kies(P, 3, 10);
-    const r3 = await reactie(P);
-    if (!/weer/.test(r3.zin)) fout(`vraag 3: geen "weer" bij 2 keer 10: ${r3.zin}`);
-    await samen(P);
-    await P.wachtOp("pijl", 40000);
-    await P.pijl();
-    /* vraag 4: min (4), dan 7 (te weinig). */
-    await kies(P, 4, 4);
-    await reactie(P);
-    await kies(P, 4, 7);
-    await reactie(P);
-    await samen(P);
-    await P.wachtOp("pijl", 40000);
-    await P.pijl();
-    /* vraag 5 (welke som): minsom, dan 2 keer de 3: samen, het kind tikt de enige som. */
-    await kies(P, 5, "7 − 3 = 4");
-    await reactie(P, "20-som-fout1");
-    await kies(P, 5, "3 + 3 = 6");
-    await reactie(P);
-    await P.wachtOp("vraag", 40000);
-    await P.foto("21-som-samen");
-    zie(`welke som, samen: knoppen = ${await P.ev(`[...document.querySelectorAll('[data-knop="keuzes"] button, [class*="bediening"] button')].map((b) => b.textContent.trim()).join(" | ")`)}`);
-    await P.klikTekst("3 + 7 = 10");
-    await P.wachtOp("pijl", 40000);
-    await P.pijl();
-    /* vraag 6 (disco): 9, dan 7: samen met de stippen. */
-    await kies(P, 6, 9);
-    await reactie(P, "30-disco-fout1");
-    await kies(P, 6, 7);
-    await reactie(P);
-    await P.wachtOp("samen-tellen", 40000);
-    await P.foto("31-disco-stippen");
-    await samen(P, false);
-    await P.wachtOp("pijl", 40000);
-    await P.foto("32-disco-klaar");
-    await P.pijl();
-    /* vraag 7 (disco): 9 (richting niet genoemd), dan goed. */
-    await kies(P, 7, 9);
-    const r7 = await reactie(P);
-    if (/meer|minder/.test(r7.zin)) fout(`vraag 7: richting genoemd bij 9 (verklapt 10): ${r7.zin}`);
-    await kies(P, 7, 10);
-    await reactie(P);
-    /* vraag 8 (verbinden): 2 keer fout: samen. */
-    await kies(P, 8, [[0, 9], [1, 7], [2, 8]]);
-    await reactie(P, "40-verbind-fout1");
-    await kies(P, 8, [[0, 8], [1, 7], [2, 9]]);
-    await reactie(P);
-    await samen(P);
-    await P.wachtOp("pijl", 40000);
-    await P.foto("41-verbind-samen");
-    await P.pijl();
-    /* vraag 9: 7 (richting niet genoemd), dan 0 (min). */
-    await kies(P, 9, 7);
-    const r9 = await reactie(P);
-    if (/meer|minder/.test(r9.zin)) fout(`vraag 9: richting genoemd bij 7: ${r9.zin}`);
-    await kies(P, 9, 0);
-    await reactie(P);
-    await samen(P);
-    await P.wachtOp("pijl", 40000);
-    await P.pijl();
-    await allesGoedVanaf(P, 10);
-    await P.wachtOp("kaart", 40000);
-    zie(`einde: "${await P.tekst()}"`);
+    let k = 0;
+    const ok = await speel(P, {
+      naam: "fouten",
+      keuze: (t) => {
+        if (t.poging === 1) k++;
+        if (k % 3 === 0) return t.poging === 1 ? fout1(t) : k % 2 === 0 ? fout1(t) : fout2(t);
+        return t.poging === 1 && k % 3 === 1 ? fout1(t) : t.goed;
+      },
+      maxMs: 30 * 60_000,
+    });
+    await controleer(P, "fouten");
+    const l = await reacties(P);
+    zie(`fouten: ${l.filter((x) => x.wat === "reactie" && x.soort === "fout1").length} hints na een 1e fout, ${l.filter((x) => x.wat === "reactie" && x.soort === "fout2").length} keer samen, ${l.filter((x) => x.wat === "reactie" && x.soort === "goed-na-fout").length} keer goed na een fout`);
+    const weer = l.filter((x) => x.wat === "reactie" && x.soort === "fout2" && /weer/.test(x.zin ?? ""));
+    zie(`fouten: ${weer.length} keer "weer" bij de 2e fout`);
     const d = await P.ev(`JSON.stringify({ d: window.__denkfouten ?? [], u: window.__uitkomsten ?? [] })`).then((x) => JSON.parse(x));
-    zie(`bewaard (op het apparaat): ${d.d.length} denkfouten, ${d.u.length} uitkomsten: ${d.u.map((u) => u.uitkomst).join(", ")}`);
+    zie(`fouten: bewaard (op het apparaat): ${d.d.length} denkfouten, ${d.u.length} uitkomsten`);
+    return ok;
   },
-
-  /** Lang wachten: bij een keuzevraag niets; bij samen tellen en verbinden het hulphandje na ± 6 s met 1 zin. */
-  async wachten(P) {
-    await P.wachtOp("vraag", 40000);
-    const t0 = Date.now();
-    await wacht(9000);
+  /** Alles fout (2 keer per vraag): elke vraag samen; de les stopt nooit. */
+  async allefout(P) {
+    const ok = await speel(P, { naam: "allefout", fotos: !!process.env.FOTO, keuze: (t) => (t.poging === 1 ? fout1(t) : fout2(t)), maxMs: 40 * 60_000 });
+    await controleer(P, "allefout");
+    const l = await reacties(P);
+    /* Geen opdracht in de zin bij de 2e fout (keuring Getallenlijn): het kind kan het daarna niet meer doen. */
+    const opdr = l.filter((x) => x.wat === "reactie" && x.soort === "fout2" && /(^|[.!?] )(Tel|Wijs|Begin|Kijk|Geef|Sla|Reken|Verbind) /.test((x.zin ?? "").replace(/\{(\d+):[a-z]+\}/g, "$1")));
+    zie(`allefout: zinnen bij de 2e fout met een opdracht erin: ${opdr.length}`);
+    if (opdr.length) fout(`opdracht in de zin bij de 2e fout: ${opdr[0].zin}`);
+    /* Geen "Ja" als Bliepo zelf iets doet; geen zelfde zin bij 2 vragen achter elkaar. */
+    const door = l.filter((x) => x.wat === "pijl-door").map((x) => x.zin);
+    let zelfde = 0;
+    for (let i = 1; i < door.length; i++) if (door[i] === door[i - 1]) zelfde++;
+    zie(`allefout: ${zelfde} keer 2 keer achter elkaar hetzelfde stuk tekst`);
+    if (zelfde) fout("2 keer achter elkaar hetzelfde stuk tekst");
+    return ok;
+  },
+  /** Elk ander fout antwoord (fout2 bij de 1e poging), zodat elke rij van de fouttabel een keer voorkomt (samen met allefout). */
+  async anderefout(P) {
+    const ok = await speel(P, { naam: "anderefout", keuze: (t) => (t.poging === 1 ? fout2(t) : t.goed), maxMs: 25 * 60_000 });
+    await reacties(P);
+    return ok;
+  },
+  /** Vangnet: 2 keer fout, en bij samen tellen niets doen; na 20 s telt Bliepo de rest zelf (zonder "Ja"). */
+  async vangnet(P) {
+    let k = 0;
+    globalThis.__vangnetGedaan = false;
+    const ok = await speel(P, { naam: "vangnet", vangnet: true, keuze: (t) => (k++ < 2 ? fout1(t) : t.goed), maxMs: 20 * 60_000 });
     const l = await P.log();
-    if (await P.hand()) fout("hulphandje bij een keuzevraag");
-    if (l.some((x) => x.wat === "aanwijzing")) fout("aanwijzing bij een keuzevraag");
-    else zie(`keuzevraag ${Math.round((Date.now() - t0) / 1000)} s gewacht: geen handje, geen zin`);
-    if (await P.ev(`!!document.querySelector('[data-knop="verder"]')`)) fout("pijl bij een keuzevraag");
-    else zie("keuzevraag: geen pijl");
-    await P.klikTekst("4");
-    await reactie(P);
-    await kies(P, 1, 6);
-    await reactie(P);
-    await P.wachtOp("samen-tellen", 40000);
-    const a = await P.wachtOp("aanwijzing", 12000);
-    await wacht(400);
-    zie(`samen tellen: hulphandje na ${a ? "± 6 s" : "?"}: handje=${await P.hand()}, zin="${await P.tekst()}"`);
-    await P.foto("50-hand-samen");
-    /* Het handje wijst naar een plek die echt nog geteld moet worden. */
-    const plek = await P.ev(`(() => { const h = document.querySelector("[data-hulphand]"); const b = [...document.querySelectorAll('[data-ding^="tel-"]')][0]; if (!h || !b) return null; const r1 = h.getBoundingClientRect(), r2 = b.getBoundingClientRect(); return Math.round(Math.hypot(r1.left - (r2.left + r2.width / 2), r1.top - (r2.top + r2.height / 2))); })()`);
-    zie(`afstand handje tot de eerste plek zonder getal: ${plek} px`);
-    await P.klikDing("tel-2");
-    await wacht(300);
-    if (await P.hand()) fout("handje bleef na een tik");
-    await samen(P, false);
-    await P.wachtOp("pijl", 40000);
-    await P.pijl();
-    for (let nr = 2; nr <= 7; nr++) {
-      await kies(P, nr, goedVan(nr));
-      await reactie(P);
-    }
-    await P.wachtOp("vraag", 40000);
-    const b = await P.wachtOp("aanwijzing", 12000);
-    await wacht(400);
-    zie(`verbinden: hulphandje (${b.som}) handje=${await P.hand()}, zin="${await P.tekst()}"`);
-    await P.foto("51-hand-verbind");
-    await P.klikDing("s0");
-    const c = await P.wachtOp("aanwijzing", 12000);
-    await wacht(400);
-    zie(`verbinden met een gekozen som: handje bij ${c.som}, zin="${await P.tekst()}", vinkje=${await P.ev(`!!document.querySelector('[class*="vinkje"]')`)}`);
-    await P.foto("52-hand-verbind-gekozen");
+    zie(`vangnet: ${l.filter((x) => x.wat === "vangnet").length} keer telde Bliepo de rest zelf; zinnen erna: ${l.filter((x) => x.wat === "pijl-door" && /Kijk, /.test(x.zin)).map((x) => x.zin.replace(/\{(\d+):[a-z]+\}/g, "$1")).join(" | ")}`);
+    if (!l.some((x) => x.wat === "vangnet")) fout("vangnet: Bliepo telde niet zelf verder");
+    if (l.some((x, i) => x.wat === "vangnet" && /^Ja/.test(l.slice(i).find((y) => y.wat === "pijl-door")?.zin ?? ""))) fout("na het vangnet zegt Bliepo 'Ja'");
+    return ok;
   },
-
-  /** Heel snel: een tik midden in de vraag; Bliepo zegt niets over snelheid (draaiboek §3 D.6). */
+  /** Lang wachten: bij kiezen 9 s (geen handje, geen zin), bij opdrachten 7,2 s (wel het handje). */
+  async wachten(P) {
+    let k = 0;
+    const ok = await speel(P, { naam: "wachten", vraagWacht: 9000, opdrachtWacht: 7200, keuze: (t) => (k++ < 2 ? fout1(t) : t.goed), maxMs: 35 * 60_000 });
+    const l = await P.log();
+    const zinnenTijdensVraag = [];
+    for (let i = 0; i < l.length; i++) if (l[i].wat === "vraag-klaar" && l.slice(0, i).reverse().find((x) => x.wat === "vraag" || x.wat === "opdrachtzin")?.wat === "vraag") { const tik = l.slice(i + 1).find((x) => x.wat === "tik" || x.wat === "kies"); const tussen = l.slice(i + 1, l.indexOf(tik)).filter((x) => /pijl-door|aanwijzing/.test(x.wat)); if (tussen.length) zinnenTijdensVraag.push(tussen.map((x) => x.wat).join(",")); }
+    zie(`wachten: bij keuzevragen kwam er ${zinnenTijdensVraag.length} keer iets tijdens het wachten (moet 0); aanwijzingen bij opdrachten: ${l.filter((x) => x.wat === "aanwijzing").length}`);
+    if (zinnenTijdensVraag.length) fout("Bliepo zei iets tijdens het wachten bij een vraag");
+    await controleer(P, "wachten");
+    return ok;
+  },
+  /** Heel snel: een tik midden in de eerste vraag; Bliepo zegt niets over snelheid (draaiboek §3 D.6). */
   async snel(P) {
-    await P.wachtOp("vraag", 40000);
-    await P.klikTekst("5");
-    const r = await reactie(P);
-    if (/snel/i.test(r.zin)) fout(`iets over snel: ${r.zin}`);
-    else zie("heel snel: niets over snelheid");
+    for (let i = 0; i < 200 && !(await P.nu())?.taak; i++) await wacht(100);
+    const t = (await P.nu()).taak;
+    await P.klikTekst(t.goed);
+    await wacht(4000);
+    const l = await P.log();
+    const r = l.find((x) => x.wat === "reactie");
+    zie(`snel: ${r?.soort}: "${(r?.zin ?? "").replace(/\{(\d+):[a-z]+\}/g, "$1")}"`);
+    if (/snel/i.test(r?.zin ?? "")) fout(`iets over snel: ${r.zin}`);
+    return true;
   },
-
-  /** Verbinden: een lijn veranderen vlak na de laatste lijn: pas na rust nakijken. */
+  /** Verbinden: een lijn veranderen vlak na de laatste lijn: pas na rust nakijken (geleerd bij Splitsen). */
   async verbindrust(P) {
-    for (let nr = 1; nr <= 7; nr++) {
-      await kies(P, nr, goedVan(nr));
-      await reactie(P);
+    let gedaan = false;
+    const ok = await speel(P, {
+      naam: "verbindrust",
+      maxMs: 12 * 60_000,
+      keuze: (t) => t.goed,
+      bijElkeStap: async () => {
+        if (gedaan) return;
+        const t = (await P.nu())?.taak;
+        if (t?.soort !== "verbind") return;
+        gedaan = true;
+        await wacht(600);
+        const g = t.goed;
+        /* Eerst som 0 en som 2 omgewisseld, dan binnen de rust goed zetten. */
+        for (const [s, a] of [["s0", g.s2], ["s1", g.s1], ["s2", g.s0], ["s0", g.s0], ["s2", g.s2]]) {
+          await P.tikDing(`[data-ding="${s}"]`);
+          await wacht(120);
+          await P.tikDing(`[data-ding="${a}"]`);
+          await wacht(120);
+        }
+        let r = null;
+        for (let i = 0; i < 60 && !r; i++) {
+          r = (await P.log()).find((x) => x.wat === "reactie" && /verbind/.test(x.vraag));
+          await wacht(150);
+        }
+        zie(`verbindrust: ${r?.soort}`);
+        if (r?.soort !== "goed") fout(`verbinden na veranderen: ${r?.soort} (te vroeg nagekeken?)`);
+        else zie("verbindrust: lijn veranderd vlak na de laatste: pas daarna nagekeken, goed");
+        return true;
+      },
+    });
+    return ok;
+  },
+  /** Tik op de pijl tijdens het praten: de stem stopt en het volgende stuk komt meteen; met een echte muisklik. */
+  async "tik-door"(P) {
+    const metingen = [];
+    for (let n = 0; n < 5; n++) {
+      for (let i = 0; i < 400 && !((await P.nu())?.pijl && (await P.ev(`!!document.querySelector(".bliepo-tekst-nog")`))); i++) {
+        const z = await P.nu();
+        if (z?.taak?.soort === "kies") await P.klikTekst(z.taak.goed);
+        if (z?.taak?.soort === "disco" || z?.taak?.soort === "tel") await P.tikDing(`[data-ding="${z.taak.goed}"]`);
+        if (z?.taak?.soort === "verbind") for (const [a, b] of Object.entries(z.taak.goed)) { await P.tikDing(`[data-ding="${a}"]`); await P.tikDing(`[data-ding="${b}"]`); }
+        await wacht(80);
+      }
+      const voor = await P.nu();
+      const t0 = Date.now();
+      await P.klikPijl();
+      let na = voor;
+      for (let i = 0; i < 100 && JSON.stringify(na.tekst) === JSON.stringify(voor.tekst) && JSON.stringify(na.taak) === JSON.stringify(voor.taak); i++) {
+        await wacht(20);
+        na = await P.nu();
+      }
+      metingen.push(Date.now() - t0);
+      zie(`tik op de pijl tijdens "${(voor.tekst.at(-1) ?? "").slice(0, 50)}" → na ${Date.now() - t0} ms iets nieuws`);
+      await wacht(300);
     }
-    await P.wachtOp("vraag", 40000);
-    const ids = await P.antwoordIds();
-    await P.klikDing("s0");
-    await P.klikDing(ids["9"]);
-    await P.klikDing("s1");
-    await P.klikDing(ids["8"]);
-    await P.klikDing("s2");
-    await P.klikDing(ids["7"]);
-    /* Binnen de rust: som 0 opnieuw aan 7, som 2 aan 9 (= goed). */
-    await P.klikDing("s0");
-    await P.klikDing(ids["7"]);
-    await P.klikDing("s2");
-    await P.klikDing(ids["9"]);
-    const r = await reactie(P);
-    if (r.soort !== "goed") fout(`verbinden na veranderen: ${r.soort} (te vroeg nagekeken?)`);
-    else zie("verbinden: lijn veranderd vlak na de laatste: pas daarna nagekeken, goed");
+    if (metingen.filter((x) => x > 1500).length) fout("na een tik op de pijl duurde het te lang");
+    return true;
+  },
+  /** De echte stem (ZICHTBAAR=1 ECHTESTEM=1): elke zin helemaal uitgesproken, en elk woord licht op bij het gesproken moment. */
+  async woorden(P) {
+    let k = 0;
+    const ok = await speel(P, { naam: "woorden", keuze: (t) => (k++ % 4 === 1 && t.poging === 1 ? fout1(t) : t.goed), maxMs: Number(process.env.WOORDEN_MS ?? 25 * 60_000) });
+    await controleer(P, "woorden");
+    const stem = await P.ev(`JSON.stringify(window.__stem ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+    const woord = await P.ev(`JSON.stringify(window.__woord ?? [])`).then((x) => JSON.parse(x ?? "[]"));
+    const grenzen = stem.filter((x) => x.wat === "grens" && x.naam === "word");
+    zie(`woorden: ${grenzen.length} woordmeldingen van de browserstem (onboundary)`);
+    /* Per uitgesproken zin: wanneer licht het eerste woord op na de start, en wanneer het laatste woord vóór het einde. */
+    const rijen = [];
+    for (const s of stem.filter((x) => x.wat === "start")) {
+      const e = stem.find((y) => y.t >= s.t && y.z === s.z && (y.wat === "end" || y.wat === "error"));
+      if (!e || e.wat !== "end") continue;
+      const woorden = s.z.trim().split(/\s+/);
+      if (woorden.length < 3) continue;
+      const wissels = woord.filter((w) => w.t >= s.t - 50 && w.t <= e.t + 300 && w.w && w.w.split("|")[1] && w.w.split("|")[1].replace(/\s/g, "").startsWith(s.z.replace(/[{}]|:[a-z]+/g, "").replace(/\s/g, "")));
+      if (!wissels.length) { rijen.push({ z: s.z, geen: true }); continue; }
+      const eerste = wissels.find((w) => w.w.startsWith("0:"));
+      const laatste = wissels.find((w) => w.w.startsWith(`${woorden.length - 1}:`));
+      const duur = e.t - s.t;
+      /* Verwacht: het laatste woord begint ongeveer zijn eigen deel van de zin vóór het einde. */
+      const deel = (woorden.at(-1).length + 1.5) / woorden.reduce((a, w) => a + w.length + 1.5, 0);
+      const verwachtLaatste = e.t - duur * deel;
+      /* Met woordmeldingen: per woord het verschil tussen melding en oplichten. */
+      const per = [];
+      for (const gr of grenzen.filter((x) => x.z === s.z && x.t >= s.t && x.t <= e.t)) {
+        let pos = 0, idx = 0;
+        for (let i = 0; i < woorden.length; i++) { const b = s.z.indexOf(woorden[i], pos); if (b + woorden[i].length > gr.i) { idx = i; break; } pos = b + woorden[i].length; idx = i + 1; }
+        const w = wissels.find((x) => x.w.startsWith(`${idx}:`));
+        if (w) per.push(w.t - gr.t);
+      }
+      rijen.push({ z: s.z, start: eerste ? eerste.t - s.t : null, laatsteVoorEinde: laatste ? e.t - laatste.t : null, fout: laatste ? Math.round(laatste.t - verwachtLaatste) : null, per, duur });
+    }
+    const metMeting = rijen.filter((r) => !r.geen && r.start !== null && r.fout !== null);
+    const binnen = metMeting.filter((r) => Math.abs(r.start) <= 150 && Math.abs(r.fout) <= 150).length;
+    const perAlle = rijen.flatMap((r) => r.per ?? []);
+    zie(`woorden: ${rijen.length} zinnen gemeten (${rijen.filter((r) => r.geen).length} zonder oplichten); eerste woord licht op gemiddeld ${Math.round(metMeting.reduce((a, r) => a + r.start, 0) / Math.max(1, metMeting.length))} ms na de start van de stem; laatste woord: gemiddeld ${Math.round(metMeting.reduce((a, r) => a + Math.abs(r.fout), 0) / Math.max(1, metMeting.length))} ms naast het verwachte moment (grootste ${Math.max(0, ...metMeting.map((r) => Math.abs(r.fout)))} ms); binnen ±150 ms (begin én eind): ${binnen} van ${metMeting.length}`);
+    if (perAlle.length) zie(`woorden: met woordmeldingen: ${perAlle.length} woorden, gemiddeld ${Math.round(perAlle.reduce((a, x) => a + Math.abs(x), 0) / perAlle.length)} ms verschil, binnen ±150 ms: ${perAlle.filter((x) => Math.abs(x) <= 150).length}`);
+    for (const r of metMeting.filter((r) => Math.abs(r.start) > 150 || Math.abs(r.fout) > 150).slice(0, 6)) zie(`   buiten ±150 ms: start ${r.start} ms, eind ${r.fout} ms (zin ${r.duur} ms): "${r.z.slice(0, 60)}"`);
+    if (process.env.TABEL) writeFileSync(join(process.env.TABEL, "woorden.json"), JSON.stringify({ rijen, woord, stem }, null, 1));
+    return ok;
   },
 };
 
-const kiesLijst = process.env.SCENARIO ? process.env.SCENARIO.split(",") : Object.keys(SITUATIES);
-for (const naam of kiesLijst) {
-  console.log(`\n== ${naam}`);
-  uitslag.push(`== ${naam}`);
+const kies = process.env.ROUTE ? process.env.ROUTE.split(",") : Object.keys(ROUTES);
+for (const r of kies) {
+  console.log(`\n${r}`);
+  uitslag.push(`\n${r}`);
   const P = await pagina();
   try {
-    await SITUATIES[naam](P);
+    await ROUTES[r](P);
   } catch (e) {
-    fout(`${naam}: ${e.message}`);
-    await P.foto(`fout-${naam}`);
-  } finally {
-    await P.sluit();
+    fout(`${r}: ${e.message}`);
   }
+  await P.sluit();
 }
 
-/* ---------- bewaking na afloop ---------- */
-const nieuw = sql(`select count(*) from les_uitkomsten where id > ${startId} and les_id = '${LES}' and kind_id <> '${testkind}';`);
-const hoogste = sql("select coalesce(max(id), 0) from les_uitkomsten;");
-if (Number(nieuw) > 0) {
-  console.error(`\nSTOP: ${nieuw} nieuwe regels in les_uitkomsten voor deze les die NIET van Testkind zijn!`);
-  process.exit(2);
-}
-console.log(`\nBewaking: geen nieuwe regels bij een echt kind (hoogste id in les_uitkomsten voor: ${startId}, na: ${hoogste}).`);
-if (process.env.UITSLAG) writeFileSync(process.env.UITSLAG, uitslag.join("\n"));
-ws.close();
-ruim();
-process.exit(uitslag.some((x) => x.includes("FOUT:")) ? 1 : 0);
+const nieuw = sql(`select count(*) from les_uitkomsten where id > ${startId};`);
+console.log(`\nNieuwe regels in les_uitkomsten: ${nieuw} (hoogste id was ${startId})`);
+if (Number(nieuw) > 0) fout("er kwamen regels bij in les_uitkomsten");
+console.log(fouten ? `\n${fouten} FOUT(EN)` : "\nAlles in orde.");
+process.exit(fouten ? 1 : 0);

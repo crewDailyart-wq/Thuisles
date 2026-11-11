@@ -63,6 +63,9 @@ const DONUT = N("donut", "de donut", "donuts", "elke");
 const CROISSANT = N("croissant", "de croissant", "croissants", "elke");
 const BROODJE = N("broodje", "het broodje", "broodjes", "elk");
 
+/** Eerste letter een hoofdletter ("elk" → "Elk"). */
+const hoofd = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
+
 /** "1 taartje" / "4 taartjes", met het getal in de kleur van het groepje. */
 const aantal = (n: number, nm: Naam, k: string) => `${g(n, k)} ${n === 1 ? nm.een : nm.meer}`;
 
@@ -144,8 +147,12 @@ export const somTekst = (a: number, b: number) => `${a} + ${b} = ${a + b}`;
 export const ZIN = {
   /** Stap 1: openen. Eigen beginzin van de les (BOUWREGELS 4.3); geen startvraag (draaiboek §0). */
   begin: "In deze les tel je lekkers uit de bakkerij bij elkaar op. Dat heet een plussom.",
+  /*
+   * Niet meer gezegd sinds de omzetting naar 15.27 (11 november 2026; WEGGEHAALD.md): "Klaar met kijken? Tik dan op de
+   * blauwe pijl." en "Tik op de blauwe pijl als je het nog eens wilt proberen." Het kind hoeft nooit meer op de pijl te
+   * tikken. De zinnen blijven hier ter herinnering staan.
+   */
   pijlUitleg: "Klaar met kijken? Tik dan op de blauwe pijl.",
-  /** Komt de pijl voor het eerst na een hint, dan past "klaar met kijken" niet (geleerd bij Splitsen). */
   pijlUitlegNaFout: "Tik op de blauwe pijl als je het nog eens wilt proberen.",
   /** Disco (Squla): de som staat bovenaan, het kind tikt op het kaartje. De eerste keer wat het kind doet (3.15). */
   disco: (a: number, b: number) => `Welk kaartje hoort bij ${g(a)} + ${g(b)}?`,
@@ -157,8 +164,9 @@ export const ZIN = {
   verbindHand: "Tik op een som. Tik dan op het antwoord dat erbij hoort.",
   verbindHandGekozen: (x: number, y: number) => `Reken ${g(x)} + ${g(y)} uit en tik op het antwoord.`,
   /** Samen tellen (2e fout, draaiboek §3 C.5 en D.4): Bliepo zet het begin klaar, het kind telt verder. */
-  samenHelp: "Kom, we tellen samen.",
-  samenKijk: "Kom, we kijken samen.",
+  /** 3 versies (omzetting 11 nov 2026, geleerd bij Tellen en Splitsen: niet bij elke 2e fout dezelfde zin). */
+  samenHelp: ["Kom, we tellen samen.", "We tellen het samen.", "Kom, samen tellen we het."],
+  samenKijk: ["Kom, we kijken samen.", "We kijken het samen na."],
   samenHier: (n: number, nm: Naam, k: string) => (n === 1 ? `Hier ligt ${aantal(1, nm, k)}.` : `Hier liggen ${aantal(n, nm, k)}.`),
   samenVerder: (a: number, ka: string, nm: Naam) => `We tellen verder vanaf ${g(a, ka)}. Tik op ${nm.elk} ${nm.een} daar.`,
   samenHand: (nm: Naam) => `Tik op een ${nm.een} zonder getal.`,
@@ -168,6 +176,12 @@ export const ZIN = {
   stippenVerder: (a: number) => `We tellen verder vanaf ${g(a, ORANJE)}. Tik op elke blauwe stip.`,
   stippenHand: "Tik op een blauwe stip zonder getal.",
   stippenKlaar: (a: number, b: number) => `${g(a + b)}. Dus ${g(a, ORANJE)} + ${g(b, BLAUW)} = ${g(a + b)}.`,
+  /**
+   * Vangnet bij samen tellen (LESRECEPT, geleerd bij Meer-minder; omzetting 11 nov 2026): na 20 s zonder tik telt Bliepo
+   * de rest zelf. Dan zegt hij "Kijk, …" en nooit "Ja" (keuring Meer-minder), alsof het kind het deed.
+   */
+  samenZelf: (s: number, wat: string, a: number, b: number, ka: string, kb: string) => `Kijk, ik tel de rest. Samen zijn het ${g(s)} ${wat}: ${g(a, ka)} + ${g(b, kb)} = ${g(s)}.`,
+  stippenZelf: (a: number, b: number) => `Kijk, ik tel de rest. ${g(a, ORANJE)} + ${g(b, BLAUW)} = ${g(a + b)}.`,
   discoKlaar: (s: number) => `Op dit kaartje staat ${g(s)}.`,
   verbindSamen: (x: number, y: number) => `Kom, we rekenen ${g(x)} + ${g(y)} samen uit.`,
   verbindAlles: (sommen: [number, number][]) => `Zo horen ze bij elkaar: ${sommen.map(([x, y]) => `${g(x)} + ${g(y)} = ${g(x + y)}`).join(", ")}.`,
@@ -231,6 +245,9 @@ const SCHERM_VERBIND = "Bliepo's scherm 1,5 s rood; de lijnen blijven even staan
 /** Hoeveel keuzes er na de beperking over zijn (getallen). */
 export const overNa = (keuzes: number[], x: number, b: Beperking) => keuzes.filter((k) => k !== x && (b.meerDan === undefined || k > b.meerDan) && (b.minderDan === undefined || k < b.minderDan));
 
+/** De eerste zin als Bliepo de richting niet noemt (zou het antwoord verklappen): 3 versies, alleen wat het kind koos. */
+export const ZONDER_RICHTING = [(X: string) => `Je koos ${X}.`, (X: string) => `${X} is het niet.`, (X: string) => `Je koos ${X}. Dat is het nog niet.`];
+
 /**
  * De fouttabel van 1 fout antwoord bij een TOTAAL (verhaal en disco). Draaiboek §3 D en §7: deel als antwoord, het
  * verschil (min), 1 te veel of te weinig. Bliepo zegt wat de keuze is en in welke richting het goede antwoord ligt; zou
@@ -258,8 +275,10 @@ export function totaalFout(v: Verhaal | Disco, x: number): Fout {
     : [`Begin bij ${A} en tel ${B} verder.`, `Tel verder vanaf ${A}: nog ${B} erbij.`, `Begin bij ${A}. Tel er ${B} bij.`][nr % 3];
   const metRichting = (code: Denkfoutnaam, soort: string, denkfout: string, eerste: string, hint: string, beperking: Beperking, uitleg: string, weer: string[]): Fout => {
     const over = overNa(keuzes, x, beperking);
+    /* Zonder richting: 3 versies die per vraag wisselen (keuring Meer-minder: niet steeds dezelfde zin). Elke versie is
+       waar voor elk fout antwoord: er staat alleen in wat het kind koos. */
     if (over.length <= 1)
-      return { code, soort, denkfout, eerste: `Je koos ${X}.`, hint: neutraal, uitleg, weer: [], scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" };
+      return { code, soort, denkfout, eerste: ZONDER_RICHTING[(nr + (isVerhaal ? 0 : 1)) % 3](X), hint: neutraal, uitleg, weer: [], scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" };
     /* "1 en 4 samen is minder dan 6. 6 is te veel." zegt 2 keer hetzelfde: bij de 2e fout dan alleen de uitleg. */
     return { code, soort, denkfout, eerste, hint, uitleg, weer, scherm, beperking, ...(soort === "te-veel" || soort === "te-weinig" ? { kort: "" } : {}) };
   };
@@ -273,7 +292,7 @@ export function totaalFout(v: Verhaal | Disco, x: number): Fout {
         : `Je koos ${X}. Dat zijn alleen de ${nm![kant].meer} ${kant === 0 ? "hier" : "daar"}.`
       : `${X} staat al in de som. Er komt nog iets bij.`;
     const hint = isVerhaal ? [`Tel ze allemaal samen, hier en daar.`, `Tel de ${wat} hier én daar.`, `Begin bij ${A} en tel de andere erbij.`][nr % 3] : neutraal;
-    return metRichting("deel-als-antwoord", "deel", "koos het getal van 1 groepje (of 1 getal uit de som) als antwoord", eerste, hint, { meerDan: x }, isVerhaal ? `Samen betekent: de ${wat} hier én daar.` : `Bij plus komt er iets bij. Dan wordt het meer.`, [isVerhaal ? "Je koos weer maar 1 kant." : "Je koos weer een getal uit de som.", isVerhaal ? `Tel ook de andere ${wat} mee.` : "Het antwoord is meer dan elk getal in de som."]);
+    return metRichting("deel-als-antwoord", "deel", "koos het getal van 1 groepje (of 1 getal uit de som) als antwoord", eerste, hint, { meerDan: x }, isVerhaal ? `Samen betekent: de ${wat} hier én daar.` : `Bij plus komt er iets bij. Dan wordt het meer.`, [isVerhaal ? "Je koos weer maar 1 kant." : "Je koos weer een getal uit de som.", isVerhaal ? `De andere ${wat} horen er ook bij.` : "Het antwoord is meer dan elk getal in de som."]);
   }
   /* Het verschil: plus en min verwisseld. */
   if (x === groot - klein) {
@@ -286,19 +305,20 @@ export function totaalFout(v: Verhaal | Disco, x: number): Fout {
       `${X} krijg je als je ${K} van ${G} afhaalt.`,
       isVerhaal ? `Bij samen tel je ze erbij. Begin bij ${A}.` : `Bij plus tel je erbij. Begin bij ${A}.`,
       { meerDan: groot },
-      "Bij samen haal je er niets af. Je telt ze erbij.",
+      /* 2 versies (keuring Minsommen: niet bij elke 2e fout dezelfde uitleg). */
+      nr % 2 ? "Bij samen haal je er niets af. Je telt ze erbij." : "Bij samen gaat er niets weg. Er komt juist iets bij.",
       ["Je haalde er weer iets af.", "Bij plus komt er iets bij."],
     );
   }
   if (x > s) {
     const een = x === s + 1;
     const hint = isVerhaal ? [`Tel verder vanaf ${A}. Tel ${nm![1].elk} ${nm![1].een} maar 1 keer.`, `Begin bij ${A} en wijs ${nm![1].elk} ${nm![1].een} daar 1 keer aan.`, `Tel nog eens verder vanaf ${A}, rustig 1 voor 1.`][nr % 3] : [`Begin bij ${A} en tel ${B} verder, niet meer.`, `Tel verder vanaf ${A}: nog ${B} erbij, niet meer.`, `Begin bij ${A}. Tel er precies ${B} bij.`][nr % 3];
-    return metRichting(een ? "een-te-veel" : "te-veel", "te-veel", een ? "telde 1 te veel" : "telde er te veel", `${A} en ${B} samen is minder dan ${X}.`, hint, { minderDan: x }, `${X} is te veel.`, ["Je koos weer te veel.", isVerhaal ? `Tel ${nm![1].elk} ${nm![1].een} maar 1 keer.` : "Tel er niet meer bij dan in de som staat."]);
+    return metRichting(een ? "een-te-veel" : "te-veel", "te-veel", een ? "telde 1 te veel" : "telde er te veel", `${A} en ${B} samen is minder dan ${X}.`, hint, { minderDan: x }, `${X} is te veel.`, ["Je koos weer te veel.", isVerhaal ? `${hoofd(nm![1].elk)} ${nm![1].een} telt maar 1 keer.` : `Er komen er ${B} bij, niet meer.`]);
   }
   if (x < s) {
     const een = x === s - 1;
     const hint = isVerhaal ? [`Tel verder vanaf ${A}. Sla er geen over.`, `Begin bij ${A} en tel alle ${nm![1].meer} daar erbij.`, `Tel nog eens verder vanaf ${A}. Sla er geen ${nm![1].een} over.`][nr % 3] : [`Begin bij ${A} en tel ${B} verder. Sla er geen over.`, `Tel verder vanaf ${A}: nog ${B} erbij. Sla er geen over.`, `Begin bij ${A}. Tel er ${B} bij en sla er geen over.`][nr % 3];
-    return metRichting(een ? "een-te-weinig" : "te-weinig", "te-weinig", een ? "telde 1 te weinig" : "telde er te weinig", `${A} en ${B} samen is meer dan ${X}.`, hint, { meerDan: x }, `${X} is te weinig.`, ["Je koos weer te weinig.", isVerhaal ? "Sla er geen over." : "Sla er geen over."]);
+    return metRichting(een ? "een-te-weinig" : "te-weinig", "te-weinig", een ? "telde 1 te weinig" : "telde er te weinig", `${A} en ${B} samen is meer dan ${X}.`, hint, { meerDan: x }, `${X} is te weinig.`, ["Je koos weer te weinig.", isVerhaal ? `${hoofd(nm![1].elk)} ${nm![1].een} telt mee.` : `Er komen er ${B} bij, niet minder.`]);
   }
   return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint: neutraal, uitleg: "We tellen ze samen.", weer: [], scherm, beperking: {} };
 }

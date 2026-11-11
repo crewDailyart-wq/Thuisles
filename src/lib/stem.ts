@@ -207,6 +207,8 @@ let beurt = 0;
        dan de leestijd.
 */
 let heelUitpraten = false;
+/** Staat de optie "heel uitpraten" aan in de les van nu? (BliepoTekst: een zin die al wit is, blijft wit; F7, 11 nov 2026.) */
+export const praatHeelUit = (): boolean => heelUitpraten;
 /** Leest de browser nu een keuze voor (alleen bijgehouden voor de optie hierboven)? */
 let keuzeBrowserBezig = false;
 const leestijd = (zin: string) => 900 + zin.length * 55;

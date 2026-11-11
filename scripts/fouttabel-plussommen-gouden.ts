@@ -10,7 +10,7 @@
  * geen richtingwoord hebben. En: elke rekensom en elk goed antwoord wordt nagerekend (11.9).
  */
 import { writeFileSync } from "node:fs";
-import { VRAGEN, foutenVan, overNa, somTekst, sommenOver, type Fout, type Plusvraag } from "../src/components/les/lessen/squla-plussommen-gouden-zinnen";
+import { VRAGEN, ZIN, foutenVan, kleurenVan, overNa, somTekst, sommenOver, type Fout, type Plusvraag } from "../src/components/les/lessen/squla-plussommen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 /** Woorden die een richting geven; verboden in een hint als Bliepo de richting niet noemt. */
@@ -69,11 +69,82 @@ for (const v of VRAGEN) {
     if (r) fouten.push(`${v.id} ${a}: ${r}`);
   }
 }
+/*
+ * 3. Waarheidscontrole (keuring Huisnummers, 10 nov 2026; omzetting 11 nov 2026): elke bewering in de eerste zin, de
+ * hint, de uitleg en de "weer"-zinnen moet kloppen voor DIT antwoord bij DEZE vraag. Het kind kan in deze les alleen uit
+ * vaste keuzes kiezen; de tabel heeft een rij voor elk fout antwoord, dus zo is elk mogelijk antwoord nagelopen. En
+ * (keuring Getallenlijn): de zinnen bij de 2e fout zijn uitleg, geen opdracht (meteen daarna doen we het samen).
+ */
+const OPDRACHT = /(^|[.!?:] )(Tel|Wijs|Begin|Kijk|Geef|Sla|Leg|Sleep|Schuif|Pak|Zoek|Tik|Reken|Verbind)\b/;
+let beweringen = 0;
+for (const v of VRAGEN)
+  for (const [a, f] of Object.entries(foutenVan(v))) {
+    const waar = `${v.id} ${a}`;
+    const zinnen = [f.eerste, f.hint, f.uitleg, f.kort ?? "", ...f.weer].map(kaal);
+    const alles = zinnen.join(" ");
+    const klopt = (zin: RegExp, ok: boolean, wat: string) => {
+      if (!zin.test(alles)) return;
+      beweringen++;
+      if (!ok) fouten.push(`${waar}: niet waar: ${wat} ("${alles}")`);
+    };
+    for (const z of [f.uitleg, ...f.weer]) if (OPDRACHT.test(kaal(z))) fouten.push(`${waar}: opdracht in de zin bij de 2e fout: "${kaal(z)}"`);
+    if (v.soort === "verhaal" || v.soort === "disco") {
+      const x = Number(a);
+      const s = v.a + v.b;
+      const g2 = (n: number) => `\\b${n}\\b`;
+      klopt(new RegExp(`\\b${v.a} en ${v.b} samen is minder dan ${x}\\b`), s < x, "samen is minder dan het gekozen getal");
+      klopt(new RegExp(`\\b${v.a} en ${v.b} samen is meer dan ${x}\\b`), s > x, "samen is meer dan het gekozen getal");
+      klopt(new RegExp(`${g2(x)} is te veel`), x > s, "te veel");
+      klopt(new RegExp(`${g2(x)} is te weinig`), x < s, "te weinig");
+      klopt(/weer te veel/, x > s, "weer te veel");
+      klopt(/weer te weinig/, x < s, "weer te weinig");
+      klopt(new RegExp(`Je koos ${x}\\b|^${x} is het niet`), true, "");
+      klopt(new RegExp(`${g2(x)} krijg je als je (\\d+) van (\\d+) afhaalt`), (() => { const m = alles.match(/krijg je als je (\d+) van (\d+) afhaalt/); return !!m && Number(m[2]) - Number(m[1]) === x && [v.a, v.b].includes(Number(m[1])) && [v.a, v.b].includes(Number(m[2])); })(), "het verschil klopt niet");
+      klopt(/staat al in de som/, x === v.a || x === v.b, "staat al in de som");
+      klopt(/weer een getal uit de som/, x === v.a || x === v.b, "weer een getal uit de som");
+      if (v.soort === "verhaal") {
+        klopt(/alleen (het|de) [^.]* hier\./, x === v.a, "alleen ... hier: dat is niet het 1e groepje");
+        klopt(/alleen (het|de) [^.]* daar\./, x === v.b && x !== v.a, "alleen ... daar: dat is niet het 2e groepje");
+        klopt(/Er komen er|stip/, false, "zin van de disco bij een verhaaltje");
+      } else {
+        klopt(new RegExp(`Er komen er ${v.b} bij, niet meer`), x > s, "niet meer");
+        klopt(new RegExp(`Er komen er ${v.b} bij, niet minder`), x < s, "niet minder");
+        klopt(/hier|daar|taart|brood|cupcake|krentenbol|koekje|donut|croissant/, false, "lekkers bij de disco (daar is geen lekkers)");
+      }
+    } else if (v.soort === "som") {
+      const m = a.match(/^(\d+) (.) (\d+) = (\d+)$/)!;
+      const [p, t, q] = [Number(m[1]), m[2], Number(m[3])];
+      klopt(/gaan er .* weg|minsom/, t === "−", "minsom, maar het kind koos een plussom");
+      klopt(/staat 2 keer de|2 keer hetzelfde getal/, p === q, "2 keer hetzelfde getal, maar dat is niet zo");
+      const [ka, kb] = kleurenVan(v);
+      void ka;
+      void kb;
+      klopt(new RegExp(`Hier liggen er ${v.a}, daar ${v.b}`), true, "");
+    } else {
+      const [sx, z] = a.split(" → ");
+      const [x, y] = sx.split(" + ").map(Number);
+      const zz = Number(z);
+      const s = x + y;
+      klopt(new RegExp(`${x} \\+ ${y} is minder dan ${zz}\\b`), s < zz, "som is minder dan het antwoord");
+      klopt(new RegExp(`${x} \\+ ${y} is meer dan ${zz}\\b`), s > zz, "som is meer dan het antwoord");
+      klopt(new RegExp(`\\b${zz} staat al in die som`), zz === x || zz === y, "staat al in die som");
+      klopt(/hoort bij een kleiner getal/, zz > s, "kleiner getal");
+      klopt(/hoort bij een groter getal/, zz < s, "groter getal");
+      klopt(new RegExp(`Je verbond ${x} \\+ ${y} met ${zz}\\b`), true, "");
+    }
+  }
+/* De eerste zin zonder richting niet steeds dezelfde zin (keuring Meer-minder): minstens 3 versies in de les. */
+const zonderRichting = new Set(VRAGEN.filter((v) => v.soort !== "verbind").flatMap((v) => Object.values(foutenVan(v)).filter((f) => f.noot).map((f) => kaal(f.eerste).replace(/\d+/g, "#"))));
+if (zonderRichting.size < 3) fouten.push(`eerste zin zonder richting heeft maar ${zonderRichting.size} versie(s): ${[...zonderRichting].join(" | ")}`);
+/* "Kom, we tellen samen." niet bij elke 2e fout (geleerd bij Tellen en Splitsen): minstens 3 versies. */
+if (new Set(ZIN.samenHelp).size < 3) fouten.push("samenHelp heeft minder dan 3 versies");
+
 if (fouten.length) {
   console.error("FOUTEN:\n" + fouten.join("\n"));
   process.exit(1);
 }
 console.log(`Rekencontrole en verklapcontrole: in orde (${VRAGEN.length} vragen, ${telling} foute antwoorden).`);
+console.log(`Waarheidscontrole: ${beweringen} beweringen nagelopen; ${zonderRichting.size} versies van de eerste zin zonder richting; geen opdracht in de zinnen bij de 2e fout.`);
 
 /* 3. De tabel. */
 const vraagNaam = (v: Plusvraag) =>
@@ -95,16 +166,16 @@ const uitleg = VRAGEN.flatMap((v) =>
 
 const tekst = `# FOUTTABEL — gouden les Plussommen (squla-plus-bakkerij-1-gouden, "Plussommen in de bakkerij")
 
-Gemaakt op 9 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-plussommen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-plussommen-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (16 vragen, getallen, keuzes, lekkers) is die van squla-plus-bakkerij-1 en blijft gelijk (BOUWREGELS 15.22).
+Gemaakt op 9 november 2026, bijgewerkt op 11 november 2026 (omzetting naar 15.27, KEUZES-VOOR-SARA.md Ronde 30), **uit de code** met \`npx tsx scripts/fouttabel-plussommen-gouden.ts\`; pas zinnen aan in \`src/components/les/lessen/squla-plussommen-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (16 vragen, getallen, keuzes, lekkers) is die van squla-plus-bakkerij-1 en blijft gelijk (BOUWREGELS 15.22).
 
 **Bron van de reacties:** het draaiboek Plussommen (Adding below 10), §3 D (totaal), §3 E (welke som) en §7 (denkfouten). Synthesis zegt bij een fout totaal in welke richting het goede antwoord ligt ("iets meer dan 4", "iets minder dan 8") en laat het kind meteen opnieuw kiezen. Bliepo doet dat ook, in eigen woorden ("1 en 4 samen is meer dan 4."), en noemt erbij wat de keuze is (een getal van 1 groepje, het verschil). **Het verbinden (vraag 8 en 14) heeft Synthesis niet: die rijen zijn EIGEN INVULLING, NIET VAN SYNTHESIS** (15.22 punt 5), met dezelfde soort reactie als een totaal.
 
 In de les staan de getallen in de kleur van het lekkers (of van de stippen); hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de knoppen weg, de som en het lekkers blijven staan. Bliepo zegt de eerste zin; daarna komen dezelfde keuzes meteen terug met de hint (geen pijl, zoals het draaiboek §3 D.2).
+- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de knoppen weg, de som en het lekkers blijven staan. Bliepo zegt de eerste zin (vanzelf door, pijl rechts als snelkoppeling; BOUWREGELS 15.27); daarna komen dezelfde keuzes terug met de hint (een vraag: geen pijl, zoals het draaiboek §3 D.2). Bij het verbinden is de hint de nieuwe opdrachtzin.
 - **Richting en verklappen (15.17):** zou "meer dan" of "minder dan" maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "Je koos 7.") en wijst hij naar de manier van tellen. Het script hierboven rekent dat per fout antwoord na en stopt bij een verklapper.
-- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting), "Kom, we tellen samen." (pijl). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de disco en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan. Pijl, de les gaat door. Na ± 6 s stilte komt vanzelf het hulphandje. Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
+- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting; uitleg, geen opdracht), "Kom, we tellen samen." (3 versies; alles vanzelf door). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de disco en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan en gaat de les vanzelf door. Na ± 6 s stilte komt vanzelf het hulphandje; na 20 s zonder tik telt Bliepo de rest zelf ("Kijk, ik tel de rest. …", geen "Ja"). Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
 - **Twee keer dezelfde denkfout:** Bliepo zegt "weer" en legt het anders uit (laatste kolom van §3). Alleen als hij de 1e keer al zei wat er mis was.
 - **Hetzelfde foute antwoord 2 keer:** de eerste zin wordt "Je koos weer …".
 - **Niet duidelijk (\`onduidelijk\`):** komt in deze les niet voor (elk fout antwoord valt onder een denkfout); als vangnet een zin uit BLIEPO-KARAKTER.md §10 en een algemene hint.

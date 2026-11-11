@@ -34,6 +34,7 @@ Elke fout die Sara vindt komt hier, met de regel die erbij hoort (BOUWREGELS.md 
 - Oorzaak: in lib/stem.ts brak `meld(true) → stopKeuzeStem() → speechSynthesis.cancel()` Bliepo's eigen zin 1–3 ms na de start af (gemeten: 0 van 109 zinnen helemaal uitgesproken). De zin telde dan als klaar, de tekst bleef gedimd ("nog niet gezegd") en werd pas na 2,5 s wit. Zonder tik van het kind weigerde Chrome het geluid ("not-allowed").
 - Regel: een zin is pas klaar als hij echt is uitgesproken (of na de leestijd als de stem niets zegt); een tekst komt maar 1 keer in beeld. Zet in gouden lessen `stemHeelUitpraten: true` aan (BOUWREGELS 15.27 punt 5, 15.28). Test met de F7-meter (tekst + gedimd/wit + pijl, elke 50–100 ms) en het stem-logboek in een zichtbare Chrome met de echte stem.
 - Gecontroleerd in de andere gouden lessen (alleen gemeten, niet veranderd): zie KEUZES-VOOR-SARA.md Ronde 23c.
+- Nog een vorm (Ronde 28b punt 9; opgelost 11 november 2026, Ronde 30): een zin werd wit en daarna weer grijs als de site er langer dan 2,5 s over deed om te zeggen of Ruth de zin heeft. Nu blijft een witte zin wit in alle lessen met `stemHeelUitpraten` (alle 9 gouden lessen); oude lessen zijn niet veranderd. Test: `scripts/test-wit-blijft-wit.mjs`.
 
 **F8. Gouden klokles: iets wordt 2 keer uitgesproken ("Hoi, hoi").** (10 november 2026)
 - Wat mis was: Sara hoorde de groet en soms andere zinnen 2 keer.

@@ -29,16 +29,33 @@ const zetRijen = [2, 3, 6, 7]
   })
   .join("\n");
 
+/*
+ * Controles (11 november 2026, KEUZES-VOOR-SARA.md Ronde 30):
+ *   1. 15.17: een hint zegt niet waar het antwoord staat ("maar 1 getal verder", "schuift … 1 getal verder").
+ *   2. Keuring Getallenlijn: bij een KEUZEVRAAG is de zin bij de 2e fout uitleg, geen opdracht (meteen daarna doet Bliepo
+ *      het samen voor). Bij zetten (zet-…) zet het kind daarna zelf de wijzer: daar mag een opdracht.
+ */
+const problemen: string[] = [];
+const VERKLAPT = /maar 1 getal verder|1 getal verder\. Volg|schuift de kleine wijzer 1 getal verder/i;
+for (const v of [...UITLEGVRAGEN, ...KLOKVRAGEN, ...EXTRAVRAGEN]) for (const [a, f] of Object.entries(v.fouten)) if (VERKLAPT.test(f.hint)) problemen.push(`${v.id} ${a}: hint zegt waar het antwoord staat: "${f.hint}"`);
+const OPDRACHT = /(^|[.!?:] )(Tel|Wijs|Begin|Kijk|Geef|Sla|Zoek|Zet|Volg|Ga|Schuif|Tik|Draai)\b/;
+for (const [k, u] of Object.entries(UITLEG)) if (!k.startsWith("zet-")) for (const z of [...u.uitleg, ...u.weer]) if (OPDRACHT.test(z)) problemen.push(`${k}: opdracht in de zin bij de 2e fout: "${z}"`);
+if (problemen.length) {
+  console.error("FOUTEN:\n" + problemen.join("\n"));
+  process.exit(1);
+}
+console.log("Controle: geen hint die zegt waar het antwoord staat; geen opdracht in de zinnen bij de 2e fout (keuzevragen).");
+
 const uitleg = Object.entries(UITLEG).map(([k, u]) => `| ${k} | ${u.uitleg.join(" ")} | ${u.weer.join(" ")} |`).join("\n");
 
 const tekst = `# FOUTTABEL — gouden klokles (squla-klok-hoelaat-1-gouden, "Hoe laat is het?")
 
-Opnieuw gemaakt op 9 november 2026 (zesde ronde) **uit de code** met \`npx tsx scripts/fouttabel-klok-gouden.ts\`; pas zinnen dus aan in \`src/components/les/lessen/squla-klok-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (vragen, keuzes, tijden) is die van de les squla-klok-hoelaat-1 en blijft gelijk (15.8). Sinds 9 november staan ook de vragen tussendoor en de bonus erin (alleen hele uren; besluit Sara, ronde 14).
+Opnieuw gemaakt op 9 november 2026 (zesde ronde), bijgewerkt op 11 november 2026 (Ronde 30: 2 hints volgens 15.17, uitleg bij de 2e fout zonder opdracht), **uit de code** met \`npx tsx scripts/fouttabel-klok-gouden.ts\`; pas zinnen dus aan in \`src/components/les/lessen/squla-klok-gouden-zinnen.ts\` en draai het script opnieuw. De inhoud (vragen, keuzes, tijden) is die van de les squla-klok-hoelaat-1 en blijft gelijk (15.8). Sinds 9 november staan ook de vragen tussendoor en de bonus erin (alleen hele uren; besluit Sara, ronde 14).
 
 Sara mag elke zin aanpassen. In de les krijgt het uur de kleur van de kleine wijzer (oranje) en de 12 bij de grote wijzer de kleur van de grote wijzer (paars) (14.16); hier staan de getallen zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11; de 3e poging is vervangen):**
-- **1e fout:** Bliepo's scherm 1,5 seconde rood, vraag en knoppen even weg, Bliepo zegt de eerste zin en de hint uit de tabel, met het beeld uit de tabel, wacht op de blauwe pijl (zoals het draaiboek), dan komt de vraag terug. Het kind mag nog 1 keer.
+- **1e fout:** Bliepo's scherm 1,5 seconde rood, vraag en knoppen even weg, Bliepo zegt de eerste zin en de hint uit de tabel, met het beeld uit de tabel; dat gaat vanzelf door (BOUWREGELS 15.27, pijl rechts als snelkoppeling), dan komt de vraag terug. Het kind mag nog 1 keer.
 - **2e fout:** Bliepo legt het uit (§4, bij de denkfout van deze keuze) **en doet het samen met het kind voor**: nu pas de oranje ring om het goede antwoord en het antwoord in woorden; alleen de goede knop blijft, het kind tikt hem zelf; de les gaat verder. (Oude regel met een 3e poging: vervangen.)
 - **Twee keer dezelfde denkfout** (bij dezelfde vraag, of al eerder in de les): Bliepo zegt dat vriendelijk ("weer") en legt het op een andere manier uit (§4, laatste kolom).
 - **Niet duidelijk (\`onduidelijk\`):** eerste zin uit BLIEPO-KARAKTER.md §10 (wisselt, nooit 2 keer dezelfde achter elkaar); "Probeer het nog 1 keer, met een tip." alleen na de 1e fout (na de 2e is er geen poging meer) en "Ik bedoelde een andere." alleen bij een keuzevraag, niet bij tikken of zetten en een algemene hint. Geen reden verzonnen.

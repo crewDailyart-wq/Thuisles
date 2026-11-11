@@ -1,15 +1,15 @@
 # FOUTTABEL — gouden les Plussommen (squla-plus-bakkerij-1-gouden, "Plussommen in de bakkerij")
 
-Gemaakt op 9 november 2026 **uit de code** met `npx tsx scripts/fouttabel-plussommen-gouden.ts`; pas zinnen aan in `src/components/les/lessen/squla-plussommen-gouden-zinnen.ts` en draai het script opnieuw. De inhoud (16 vragen, getallen, keuzes, lekkers) is die van squla-plus-bakkerij-1 en blijft gelijk (BOUWREGELS 15.22).
+Gemaakt op 9 november 2026, bijgewerkt op 11 november 2026 (omzetting naar 15.27, KEUZES-VOOR-SARA.md Ronde 30), **uit de code** met `npx tsx scripts/fouttabel-plussommen-gouden.ts`; pas zinnen aan in `src/components/les/lessen/squla-plussommen-gouden-zinnen.ts` en draai het script opnieuw. De inhoud (16 vragen, getallen, keuzes, lekkers) is die van squla-plus-bakkerij-1 en blijft gelijk (BOUWREGELS 15.22).
 
 **Bron van de reacties:** het draaiboek Plussommen (Adding below 10), §3 D (totaal), §3 E (welke som) en §7 (denkfouten). Synthesis zegt bij een fout totaal in welke richting het goede antwoord ligt ("iets meer dan 4", "iets minder dan 8") en laat het kind meteen opnieuw kiezen. Bliepo doet dat ook, in eigen woorden ("1 en 4 samen is meer dan 4."), en noemt erbij wat de keuze is (een getal van 1 groepje, het verschil). **Het verbinden (vraag 8 en 14) heeft Synthesis niet: die rijen zijn EIGEN INVULLING, NIET VAN SYNTHESIS** (15.22 punt 5), met dezelfde soort reactie als een totaal.
 
 In de les staan de getallen in de kleur van het lekkers (of van de stippen); hier zonder kleur.
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de knoppen weg, de som en het lekkers blijven staan. Bliepo zegt de eerste zin; daarna komen dezelfde keuzes meteen terug met de hint (geen pijl, zoals het draaiboek §3 D.2).
+- **1e fout:** Bliepo's scherm 1,5 seconde rood (geen fout-geluidje), de knoppen weg, de som en het lekkers blijven staan. Bliepo zegt de eerste zin (vanzelf door, pijl rechts als snelkoppeling; BOUWREGELS 15.27); daarna komen dezelfde keuzes terug met de hint (een vraag: geen pijl, zoals het draaiboek §3 D.2). Bij het verbinden is de hint de nieuwe opdrachtzin.
 - **Richting en verklappen (15.17):** zou "meer dan" of "minder dan" maar 1 keuze overlaten, dan noemt Bliepo de richting niet (alleen "Je koos 7.") en wijst hij naar de manier van tellen. Het script hierboven rekent dat per fout antwoord na en stopt bij een verklapper.
-- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting), "Kom, we tellen samen." (pijl). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de disco en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan. Pijl, de les gaat door. Na ± 6 s stilte komt vanzelf het hulphandje. Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
+- **2e fout:** een korte uitleg bij de denkfout (§3, zonder nieuwe richting; uitleg, geen opdracht), "Kom, we tellen samen." (3 versies; alles vanzelf door). Dan telt het kind zelf verder: het tikt elk stuk lekkers van het 2e groepje aan (bij de disco en het verbinden: elke blauwe stip in de rij van 10) en Bliepo zegt het getal. Daarna staat de som met het antwoord bovenaan en gaat de les vanzelf door. Na ± 6 s stilte komt vanzelf het hulphandje; na 20 s zonder tik telt Bliepo de rest zelf ("Kijk, ik tel de rest. …", geen "Ja"). Bij "welke som?" wijst Bliepo de 2 groepjes aan ("Erbij is plus.") en tikt het kind de goede som (alleen die staat er nog, zoals de hulproute van het draaiboek §3 C.5).
 - **Twee keer dezelfde denkfout:** Bliepo zegt "weer" en legt het anders uit (laatste kolom van §3). Alleen als hij de 1e keer al zei wat er mis was.
 - **Hetzelfde foute antwoord 2 keer:** de eerste zin wordt "Je koos weer …".
 - **Niet duidelijk (`onduidelijk`):** komt in deze les niet voor (elk fout antwoord valt onder een denkfout); als vangnet een zin uit BLIEPO-KARAKTER.md §10 en een algemene hint.
@@ -52,7 +52,7 @@ Let op vraag 11 (3 + 6, keuze 3): 3 is het getal van het 1e groepje én 6 − 3.
 | 6. disco 5 + 3 (kaartjes 9 / 7 / 8) | 7 | `een-te-weinig` — telde 1 te weinig | 5 en 3 samen is meer dan 7. | Begin bij 5 en tel 3 verder. Sla er geen over. | Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken |
 | 6. disco 5 + 3 (kaartjes 9 / 7 / 8) | 9 | `een-te-veel` — telde 1 te veel | 5 en 3 samen is minder dan 9. | Begin bij 5 en tel 3 verder, niet meer. | Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken |
 | 7. disco 6 + 4 (kaartjes 10 / 8 / 9) | 8 | `te-weinig` — telde er te weinig | 6 en 4 samen is meer dan 8. | Tel verder vanaf 6: nog 4 erbij. Sla er geen over. | Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken |
-| 7. disco 6 + 4 (kaartjes 10 / 8 / 9) | 9 | `een-te-weinig` — telde 1 te weinig *(richting niet genoemd: dan bleef er maar 1 keuze over)* | Je koos 9. | Tel verder vanaf 6: nog 4 erbij. | Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken |
+| 7. disco 6 + 4 (kaartjes 10 / 8 / 9) | 9 | `een-te-weinig` — telde 1 te weinig *(richting niet genoemd: dan bleef er maar 1 keuze over)* | Je koos 9. Dat is het nog niet. | Tel verder vanaf 6: nog 4 erbij. | Bliepo's scherm 1,5 s rood; de kaartjes worden dof en zijn niet te tikken; met de hint zijn ze weer gewoon te tikken |
 | 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8 | 3 + 4 → 9 | `te-veel` — te veel | Je verbond 3 + 4 met 9. 3 + 4 is minder dan 9. | Reken elke som uit en verbind ze opnieuw. | Bliepo's scherm 1,5 s rood; de lijnen blijven even staan (wit, geen rood), daarna zijn ze weg en verbindt het kind alles opnieuw |
 | 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8 | 3 + 4 → 8 | `een-te-veel` — 1 te veel *(richting niet genoemd: dan bleef er maar 1 antwoord over)* | Je verbond 3 + 4 met 8. | Reken elke som uit en verbind ze opnieuw. | Bliepo's scherm 1,5 s rood; de lijnen blijven even staan (wit, geen rood), daarna zijn ze weg en verbindt het kind alles opnieuw |
 | 8. verbinden 3 + 4, 5 + 3, 2 + 7 ↔ 9, 7, 8 | 5 + 3 → 9 | `een-te-veel` — 1 te veel | Je verbond 5 + 3 met 9. 5 + 3 is minder dan 9. | Reken elke som uit en verbind ze opnieuw. | Bliepo's scherm 1,5 s rood; de lijnen blijven even staan (wit, geen rood), daarna zijn ze weg en verbindt het kind alles opnieuw |
@@ -84,7 +84,7 @@ Let op vraag 11 (3 + 6, keuze 3): 3 is het getal van het 1e groepje én 6 − 3.
 | 15. verhaal 7 + 2 koekjes (keuzes 8 / 9 / 10 / 5) | 10 | `een-te-veel` — telde 1 te veel | 7 en 2 samen is minder dan 10. | Tel verder vanaf 7. Tel elk koekje maar 1 keer. | Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2) |
 | 16. verhaal 5 + 5 krentenbollen (keuzes 5 / 10 / 9 / 0) | 0 | `min-in-plaats-van-plus` — trok het kleine getal van het grote af (min in plaats van plus) | 0 krijg je als je 5 van 5 afhaalt. | Bij samen tel je ze erbij. Begin bij 5. | Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2) |
 | 16. verhaal 5 + 5 krentenbollen (keuzes 5 / 10 / 9 / 0) | 5 | `deel-als-antwoord` — koos het getal van 1 groepje (of 1 getal uit de som) als antwoord | Je koos 5. Dat zijn alleen de krentenbollen hier. | Tel de krentenbollen hier én daar. | Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2) |
-| 16. verhaal 5 + 5 krentenbollen (keuzes 5 / 10 / 9 / 0) | 9 | `een-te-weinig` — telde 1 te weinig *(richting niet genoemd: dan bleef er maar 1 keuze over)* | Je koos 9. | Begin bij 5 en tel de krentenbollen daar erbij. | Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2) |
+| 16. verhaal 5 + 5 krentenbollen (keuzes 5 / 10 / 9 / 0) | 9 | `een-te-weinig` — telde 1 te weinig *(richting niet genoemd: dan bleef er maar 1 keuze over)* | 9 is het niet. | Begin bij 5 en tel de krentenbollen daar erbij. | Bliepo's scherm 1,5 s rood (geen fout-geluidje); de knoppen weg, de som en het lekkers blijven staan; met de hint komen dezelfde knoppen meteen terug (geen pijl, draaiboek §3 D.2) |
 
 ## 3. De 2e fout: uitleg en anders uitleggen
 
@@ -92,25 +92,25 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 
 | Vraag | Fout antwoord | Uitleg bij de 2e fout | Dezelfde denkfout 2 keer |
 |---|---|---|---|
-| 1 | 1 (`deel-als-antwoord`) | Je koos 1. Dat is alleen het taartje hier. Samen betekent: de taartjes hier én daar. | Je koos weer maar 1 kant. Tel ook de andere taartjes mee. |
-| 1 | 4 (`deel-als-antwoord`) | Je koos 4. Dat zijn alleen de taartjes daar. Samen betekent: de taartjes hier én daar. | Je koos weer maar 1 kant. Tel ook de andere taartjes mee. |
-| 1 | 6 (`een-te-veel`) |  6 is te veel. | Je koos weer te veel. Tel elk taartje maar 1 keer. |
-| 2 | 3 (`min-in-plaats-van-plus`) | 3 krijg je als je 2 van 5 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 2 | 6 (`een-te-weinig`) |  6 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 2 | 8 (`een-te-veel`) |  8 is te veel. | Je koos weer te veel. Tel elk bruin brood maar 1 keer. |
+| 1 | 1 (`deel-als-antwoord`) | Je koos 1. Dat is alleen het taartje hier. Samen betekent: de taartjes hier én daar. | Je koos weer maar 1 kant. De andere taartjes horen er ook bij. |
+| 1 | 4 (`deel-als-antwoord`) | Je koos 4. Dat zijn alleen de taartjes daar. Samen betekent: de taartjes hier én daar. | Je koos weer maar 1 kant. De andere taartjes horen er ook bij. |
+| 1 | 6 (`een-te-veel`) |  6 is te veel. | Je koos weer te veel. Elk taartje telt maar 1 keer. |
+| 2 | 3 (`min-in-plaats-van-plus`) | 3 krijg je als je 2 van 5 afhaalt. Bij samen gaat er niets weg. Er komt juist iets bij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
+| 2 | 6 (`een-te-weinig`) |  6 is te weinig. | Je koos weer te weinig. Elk bruin brood telt mee. |
+| 2 | 8 (`een-te-veel`) |  8 is te veel. | Je koos weer te veel. Elk bruin brood telt maar 1 keer. |
 | 3 | 1 (`min-in-plaats-van-plus`) | 1 krijg je als je 4 van 5 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 3 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 3 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Tel elke cupcake maar 1 keer. |
-| 4 | 4 (`min-in-plaats-van-plus`) | 4 krijg je als je 2 van 6 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 4 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 4 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Tel elke krentenbol maar 1 keer. |
+| 3 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Elke cupcake telt mee. |
+| 3 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Elke cupcake telt maar 1 keer. |
+| 4 | 4 (`min-in-plaats-van-plus`) | 4 krijg je als je 2 van 6 afhaalt. Bij samen gaat er niets weg. Er komt juist iets bij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
+| 4 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Elke krentenbol telt mee. |
+| 4 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Elke krentenbol telt maar 1 keer. |
 | 5 | 7 − 3 = 4 (`min-in-plaats-van-plus`) | Bij 7 − 3 gaan er koekjes weg. Er komen 7 koekjes bij. Dan is het een plussom. | Je koos weer een minsom. Bij erbij hoort het plusteken. |
 | 5 | 3 + 3 = 6 (`getal-herhalen`) | In 3 + 3 staat 2 keer de 3. In de som horen allebei de getallen: 3 en 7. | Je koos weer 2 keer hetzelfde getal. Hier liggen er 3, daar 7. |
 | 5 | 7 + 7 = 14 (`getal-herhalen`) | In 7 + 7 staat 2 keer de 7. In de som horen allebei de getallen: 3 en 7. | Je koos weer 2 keer hetzelfde getal. Hier liggen er 3, daar 7. |
-| 6 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 6 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Tel er niet meer bij dan in de som staat. |
-| 7 | 8 (`te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 7 | 9 (`een-te-weinig`) | Je koos 9. 9 is te weinig. | — (dan de uitleg links) |
+| 6 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Er komen er 3 bij, niet minder. |
+| 6 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Er komen er 3 bij, niet meer. |
+| 7 | 8 (`te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Er komen er 4 bij, niet minder. |
+| 7 | 9 (`een-te-weinig`) | Je koos 9. Dat is het nog niet. 9 is te weinig. | — (dan de uitleg links) |
 | 8 | 3 + 4 → 9 (`te-veel`) | Je verbond 3 + 4 met 9. 3 + 4 hoort bij een kleiner getal. | — (dan de uitleg links) |
 | 8 | 3 + 4 → 8 (`een-te-veel`) | Je verbond 3 + 4 met 8. 3 + 4 hoort bij een kleiner getal. | — (dan de uitleg links) |
 | 8 | 5 + 3 → 9 (`een-te-veel`) | Je verbond 5 + 3 met 9. 5 + 3 hoort bij een kleiner getal. | — (dan de uitleg links) |
@@ -118,19 +118,19 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 | 8 | 2 + 7 → 7 (`deel-als-antwoord`) | Je verbond 2 + 7 met 7. 2 + 7 is meer dan 7: er komt nog iets bij. | — (dan de uitleg links) |
 | 8 | 2 + 7 → 8 (`een-te-weinig`) | Je verbond 2 + 7 met 8. 2 + 7 hoort bij een groter getal. | — (dan de uitleg links) |
 | 9 | 0 (`min-in-plaats-van-plus`) | 0 krijg je als je 4 van 4 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 9 | 4 (`deel-als-antwoord`) | Je koos 4. Dat zijn alleen de donuts hier. Samen betekent: de donuts hier én daar. | Je koos weer maar 1 kant. Tel ook de andere donuts mee. |
+| 9 | 4 (`deel-als-antwoord`) | Je koos 4. Dat zijn alleen de donuts hier. Samen betekent: de donuts hier én daar. | Je koos weer maar 1 kant. De andere donuts horen er ook bij. |
 | 9 | 7 (`een-te-weinig`) | Je koos 7. 7 is te weinig. | — (dan de uitleg links) |
-| 10 | 2 (`deel-als-antwoord`) | Je koos 2. Dat zijn alleen de croissants hier. Samen betekent: de croissants hier én daar. | Je koos weer maar 1 kant. Tel ook de andere croissants mee. |
-| 10 | 6 (`een-te-weinig`) |  6 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 10 | 8 (`een-te-veel`) |  8 is te veel. | Je koos weer te veel. Tel elke croissant maar 1 keer. |
-| 11 | 3 (`deel-als-antwoord`) | Je koos 3. Dat zijn alleen de broodjes hier. Samen betekent: de broodjes hier én daar. | Je koos weer maar 1 kant. Tel ook de andere broodjes mee. |
-| 11 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 11 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Tel elk broodje maar 1 keer. |
+| 10 | 2 (`deel-als-antwoord`) | Je koos 2. Dat zijn alleen de croissants hier. Samen betekent: de croissants hier én daar. | Je koos weer maar 1 kant. De andere croissants horen er ook bij. |
+| 10 | 6 (`een-te-weinig`) |  6 is te weinig. | Je koos weer te weinig. Elke croissant telt mee. |
+| 10 | 8 (`een-te-veel`) |  8 is te veel. | Je koos weer te veel. Elke croissant telt maar 1 keer. |
+| 11 | 3 (`deel-als-antwoord`) | Je koos 3. Dat zijn alleen de broodjes hier. Samen betekent: de broodjes hier én daar. | Je koos weer maar 1 kant. De andere broodjes horen er ook bij. |
+| 11 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Elk broodje telt mee. |
+| 11 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Elk broodje telt maar 1 keer. |
 | 12 | 5 − 4 = 1 (`min-in-plaats-van-plus`) | Bij 5 − 4 gaan er taartjes weg. Er komen 5 taartjes bij. Dan is het een plussom. | Je koos weer een minsom. Bij erbij hoort het plusteken. |
 | 12 | 4 + 4 = 8 (`getal-herhalen`) | In 4 + 4 staat 2 keer de 4. In de som horen allebei de getallen: 4 en 5. | Je koos weer 2 keer hetzelfde getal. Hier liggen er 4, daar 5. |
 | 12 | 5 + 5 = 10 (`getal-herhalen`) | In 5 + 5 staat 2 keer de 5. In de som horen allebei de getallen: 4 en 5. | Je koos weer 2 keer hetzelfde getal. Hier liggen er 4, daar 5. |
-| 13 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 13 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Tel er niet meer bij dan in de som staat. |
+| 13 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Er komen er 6 bij, niet minder. |
+| 13 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Er komen er 6 bij, niet meer. |
 | 14 | 1 + 6 → 9 (`te-veel`) | Je verbond 1 + 6 met 9. 1 + 6 hoort bij een kleiner getal. | — (dan de uitleg links) |
 | 14 | 1 + 6 → 6 (`deel-als-antwoord`) | Je verbond 1 + 6 met 6. 1 + 6 is meer dan 6: er komt nog iets bij. | — (dan de uitleg links) |
 | 14 | 4 + 2 → 9 (`te-veel`) | Je verbond 4 + 2 met 9. 4 + 2 hoort bij een kleiner getal. | — (dan de uitleg links) |
@@ -138,8 +138,8 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 | 14 | 5 + 4 → 7 (`te-weinig`) | Je verbond 5 + 4 met 7. 5 + 4 hoort bij een groter getal. | — (dan de uitleg links) |
 | 14 | 5 + 4 → 6 (`te-weinig`) | Je verbond 5 + 4 met 6. 5 + 4 hoort bij een groter getal. | — (dan de uitleg links) |
 | 15 | 5 (`min-in-plaats-van-plus`) | 5 krijg je als je 2 van 7 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 15 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Sla er geen over. |
-| 15 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Tel elk koekje maar 1 keer. |
-| 16 | 0 (`min-in-plaats-van-plus`) | 0 krijg je als je 5 van 5 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
-| 16 | 5 (`deel-als-antwoord`) | Je koos 5. Dat zijn alleen de krentenbollen hier. Samen betekent: de krentenbollen hier én daar. | Je koos weer maar 1 kant. Tel ook de andere krentenbollen mee. |
-| 16 | 9 (`een-te-weinig`) | Je koos 9. 9 is te weinig. | — (dan de uitleg links) |
+| 15 | 8 (`een-te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Elk koekje telt mee. |
+| 15 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Elk koekje telt maar 1 keer. |
+| 16 | 0 (`min-in-plaats-van-plus`) | 0 krijg je als je 5 van 5 afhaalt. Bij samen gaat er niets weg. Er komt juist iets bij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
+| 16 | 5 (`deel-als-antwoord`) | Je koos 5. Dat zijn alleen de krentenbollen hier. Samen betekent: de krentenbollen hier én daar. | Je koos weer maar 1 kant. De andere krentenbollen horen er ook bij. |
+| 16 | 9 (`een-te-weinig`) | 9 is het niet. 9 is te weinig. | — (dan de uitleg links) |

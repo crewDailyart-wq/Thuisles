@@ -76,10 +76,19 @@ export const verbindPlek = (kant: "links" | "rechts", i: number): Punt => ({ x: 
 
 /* ---------- het vlak ---------- */
 
+/**
+ * Het hele vlak staat iets kleiner, vanaf de linkerkant (vaste zones, BOUWREGELS 15.30; zoals de gouden lessen Meer-minder,
+ * Meten en Splitsen; 11 november 2026, KEUZES-VOOR-SARA.md Ronde 30). De keuring van Meer-minder mat dat de toonbank
+ * (tot x = 960 van de 980) ± 90 px onder het vaste tekstvak liep; een hint van 4 regels viel erover. Altijd dezelfde maat
+ * (niet per vraag), zodat er niets verspringt. Alle tikplekken zijn HTML-knoppen in dit vlak en schalen mee. Het plusvlak
+ * zelf en de oude les blijven ongewijzigd.
+ */
+export const KLEINER = 0.88;
+
 export function GoudenPlusVlak({ tel = null, hand = null, vinkjes = [], ...rest }: GoudenPlusProps & Vlakbasis) {
   const maat = tel?.maat ?? 60;
   return (
-    <>
+    <div className={s.wortel} style={{ transform: `scale(${KLEINER})`, transformOrigin: "0 50%" }} data-plussommen-gouden="">
       <SqulaPlusVlak {...rest} />
       {tel &&
         tel.plekken.map((p, i) =>
@@ -122,6 +131,6 @@ export function GoudenPlusVlak({ tel = null, hand = null, vinkjes = [], ...rest 
           </svg>
         </div>
       )}
-    </>
+    </div>
   );
 }

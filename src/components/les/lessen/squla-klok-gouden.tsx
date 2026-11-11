@@ -363,6 +363,18 @@ type Keuzevraag = {
   wachtNaGoed?: string[];
 };
 
+/**
+ * Een lange reactie bij een fout in 2 stukken (LESRECEPT, geleerd bij de omzetting van Splitsen; Ronde 30): eerst wat het
+ * kind deed, dan de hint of uitleg. In 1 stuk liep bijvoorbeeld "Je koos het getal links, …" + "Kijk of de punt …" 32 px
+ * uit het vaste tekstvak (15.30). Korte reacties blijven 1 stuk.
+ */
+async function zegDoorKort(l: Lesgids, zinnen: string[]) {
+  if (zinnen.length >= 2 && zinnen.join(" ").length > 95) {
+    await zegDoor(l, zinnen[0]);
+    await zegDoor(l, ...zinnen.slice(1));
+  } else await zegDoor(l, ...zinnen);
+}
+
 /** Een keuzevraag met de hulp hierboven: 2 pogingen. */
 async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
   const v = vraagMet(o.id);
@@ -416,7 +428,7 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: zinnen.join(" ") });
     if (poging === 1) {
       /* 1e fout: Bliepo reageert op de denkfout met een hint; het kind mag nog 1 keer. */
-      await zegDoor(l, ...zinnen);
+      await zegDoorKort(l, zinnen);
       if (o.naFout1) await o.naFout1();
       o.opruimen?.();
       eerder = f;
@@ -427,11 +439,15 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
   }
   /* Na de 2e fout: uitleg, samen voordoen, de kleine stap, en door (BOUWREGELS 5.1, 5.4, 15.11). */
   /* De uitleg na de 2e fout gaat vanzelf door, zoals Synthesis (pijl alleen tijdens het praten). */
-  if (uitlegZinnen.length) await zegDoor(l, ...uitlegZinnen);
+  if (uitlegZinnen.length) await zegDoorKort(l, uitlegZinnen);
   const eigen = o.voordoen();
   const samen = eigen.length ? eigen : (v.samen ?? []);
   log(l, "reactie", { soort: "fout2-samen", vraag: v.id, zin: samen.join(" ") });
-  await zegDoor(l, ...samen);
+  /* 3 zinnen of meer passen niet in het vaste tekstvak (42 px te lang, 15.30; Ronde 30): dan de laatste zin als eigen stuk. */
+  if (samen.length >= 3) {
+    await zegDoor(l, ...samen.slice(0, -1));
+    await zegDoor(l, samen[samen.length - 1]);
+  } else await zegDoor(l, ...samen);
   zetTestAntwoord(v.goed);
   haak(l, { soort: "kies", opties: [v.goed], goed: v.goed, poging: 3, vraag: v.id });
   const p = l.kies([v.goed], { direct: true, weetniet: false });
@@ -565,6 +581,8 @@ const gouden: Lesdraaiboek = {
   pijlZoalsSynthesis: true,
   /* Bliepo praat zijn zinnen helemaal uit (10 nov 2026, besluit Sara; lib/stem.ts heelUitpraten). */
   stemHeelUitpraten: true,
+  /* Elk woord licht op als Bliepo het zegt, ook met de browserstem (BOUWREGELS 3.7; lib/stem.ts woordenMee; 11 nov 2026, Ronde 30). */
+  woordenMeeMetStem: true,
   voorwerpen: ["bezorgbus", "zon", "maan", "bakkerij"],
   kaarttekening: KaartKlokGouden,
   async speel(l) {
