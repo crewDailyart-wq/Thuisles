@@ -508,3 +508,14 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
   / ALLEFOUT 191 (F7 0, F8 0), alle routes van test-rekentaal-gouden.mjs, overlap en sprongen 0 op 4 maten, wit blijft
   wit, woord voor woord (13/13, 6/6), vloeiend (zie KEURING; energiebesparing aan). `les_uitkomsten` 147 → 147.
   Open punten: KEUZES Ronde 43. Verslag: KEURING-REKENTAAL-GOUDEN.md.
+
+### Plussommen, klokles en Minsommen gekeurd na de omzetting (11 nov, onafhankelijke keurder)
+- **Plussommen GOEDGEKEURD, Minsommen (alleen fbce536) GOEDGEKEURD, klokles AFGEKEURD op 15.17** (de blauwe pijltjes
+  bij stap 7, 8, 9, 10 en de bonus staan op het antwoord; wacht op Sara, KEUZES Ronde 33 punt 1). Verder alles goed.
+- Hersteld in de klokles (alleen tekst): "Maar op de klok is het andersom." uit de hint bij stap 11, en bij stap 9 "goed
+  na een fout" de laatste zin als eigen stuk (was 6 px te lang op 1024×768).
+- Gemeld, niet veranderd: 2 keer hetzelfde getal in 1 zin bij de 2e fout (Minsommen "Je koos 3. 3 gaat eraf.",
+  Plussommen "Je koos 7. 7 is te weinig."), KEUZES Ronde 33 punt 2.
+- Getest: fouttabellen, opgaven, inhoudsvergelijk 0 verdwenen, speelcontrole, overlap/sprongen op 4 maten, wit blijft
+  wit. Niet gemeten: woord voor woord met de echte stem en vloeiend (computer niet rustig). `les_uitkomsten` 147 → 147.
+  Verslag: KEURING-PLUS-KLOK-MIN-GOUDEN.md.

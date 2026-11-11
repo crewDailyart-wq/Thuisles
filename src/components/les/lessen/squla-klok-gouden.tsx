@@ -406,7 +406,12 @@ async function keuze(l: Lesgids, o: Keuzevraag): Promise<Uitkomst> {
       zinnen.splice(2);
       log(l, "reactie", { soort: poging === 1 ? "goed" : "goed-na-fout", vraag: v.id, zin: zinnen.join(" ") });
       /* Lof gaat vanzelf door (15.27); met wachtNaGoed komt de uitleg in hetzelfde stuk eronder ("met de klok mee"). */
-      if (o.wachtNaGoed?.length) await zegDoor(l, ...zinnen, ...o.wachtNaGoed);
+      /* Keuring 11 nov 2026 (KEURING-PLUS-KLOK-MIN-GOUDEN.md): 3 zinnen met een lange lofzin ("Nu wordt mijn scherm groen.")
+         liepen op 1024 × 768 6 px uit het vaste tekstvak (15.30). Dan de uitleg als eigen stuk, zoals bij het samen voordoen. */
+      if (o.wachtNaGoed?.length && [...zinnen, ...o.wachtNaGoed].join(" ").length > 95) {
+        await zegDoor(l, ...zinnen);
+        await zegDoor(l, ...o.wachtNaGoed);
+      } else if (o.wachtNaGoed?.length) await zegDoor(l, ...zinnen, ...o.wachtNaGoed);
       else await zegDoor(l, ...zinnen);
       log(l, "door");
       return noteer(l, v.id, poging === 1 ? "goed" : "naFout");

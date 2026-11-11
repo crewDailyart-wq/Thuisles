@@ -1370,6 +1370,30 @@ antwoorden zijn gelijk gebleven). De oude lessen squla-tellen-fruit-1 en squla-s
   een andere sessie. Dan zegt de meting niets. Graag opnieuw meten als die stand uit staat (de herstellingen raken alleen
   tekst, niet het beeld).
 
+## Ronde 33 — keuring Plussommen, klokles en Minsommen na de omzetting (onafhankelijke keurder, 11 november 2026)
+
+Verslag: KEURING-PLUS-KLOK-MIN-GOUDEN.md. Plussommen en Minsommen: goedgekeurd. Klokles: afgekeurd op 1 regel (15.17).
+
+**Hersteld (alleen tekst):** klokles, stap 11, fout "de uren": "Maar op de klok is het andersom. Kijk hoe snel de grote
+wijzer straks draait." → "Kijk hoe snel de grote wijzer straks draait." Wat mis was: "andersom" zegt het antwoord;
+15.17 noemt deze zin met name.
+
+**Graag ja of nee:**
+1. **Klokles, de blauwe pijltjes die op het antwoord staan (15.17; zelfde vraag als Ronde 30 punt 1).** Nu staan ze er
+   nog bij stap 7 (pijltje boven de 12, vanzelf na 4 s en bij de hint), stap 8 (onder de 6), stap 9 (pijl 6 → 7 bij
+   fout 5), stap 10 (pijl 12 → 1 bij fout 13 of 11) en de bonus (pijl 12 → 1 bij fout 11 uur). Mijn voorstel: vóór het
+   antwoord geen pijltje dat op het antwoord staat. Bij stap 7 en 8 komt het pijltje pas na het antwoord (bij goed of
+   bij het samen voordoen), de hint zegt "Ga langs de rand omhoog (of omlaag)". Bij stap 9, 10 en de bonus wijst de pijl
+   alleen de richting en eindigt hij op het getal waar je begint (5 → 6, of 11 → 12), met de hint "Ga vanaf de 6 (de 12)
+   verder, de kant op van de pijl." Bij het samen voordoen na de 2e fout blijft alles zoals nu. Mag dat?
+2. **Zinnen met 2 keer hetzelfde getal bij de 2e fout** (kloppen wel, maar klinken dubbel): Minsommen "Je koos 3. 3 gaat
+   eraf. De vraag is hoeveel er overblijft." (ook met 6); Plussommen "Je koos 9. Dat is het nog niet. 9 is te weinig." en
+   "Je koos 7. 7 is te weinig." Voorstel: de eerste zin weglaten ("3 gaat eraf. De vraag is hoeveel er overblijft.",
+   "9 is te weinig."). Mag dat?
+
+**Om te weten:** de computer was tijdens deze keuring heel druk (andere helpers, belasting tot 380). Een deel van de
+proeven in Chrome kon ik daardoor niet betrouwbaar doen; wat wel en niet lukte staat in de keuring.
+
 ## Ronde 34 — gouden les Geld (squla-geld-geldmachine-1-gouden, 11 november 2026)
 
 Nieuwe versie naast de oude les squla-geld-geldmachine-1 "Munten en briefjes" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-geld-geldmachine-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).

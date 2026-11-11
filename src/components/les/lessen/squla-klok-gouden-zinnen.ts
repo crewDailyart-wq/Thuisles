@@ -354,7 +354,7 @@ export const UITLEGVRAGEN: Vraag[] = [
   {
     id: "stap11-lange-telt", waar: "uitleg, stap 11 (wat telt de grote wijzer?)", vraag: ["De ene wijzer telt de minuten. De andere wijst het uur aan.", "Wat telt de grote wijzer?"], opties: ["de minuten", "de uren"], goed: "de minuten",
     opnieuw: ["Wat telt de grote wijzer?"], naGoed: ["De grote wijzer telt de minuten."], samen: ["De grote wijzer gaat snel rond. Hij telt de minuten."],
-    fouten: { "de uren": F("wijzers-verwisseld", "lang-is-uur", "dacht: een uur duurt lang, dus de grote wijzer telt de uren", "Dat klinkt logisch: een uur duurt lang.", "Maar op de klok is het andersom. Kijk hoe snel de grote wijzer straks draait.", "licht-minuut") },
+    fouten: { "de uren": F("wijzers-verwisseld", "lang-is-uur", "dacht: een uur duurt lang, dus de grote wijzer telt de uren", "Dat klinkt logisch: een uur duurt lang.", "Kijk hoe snel de grote wijzer straks draait.", "licht-minuut") },
   },
   {
     id: "stap12-lange-naam", waar: "uitleg, stap 12 (hoe heet de wijzer die de minuten telt?)", vraag: ["Deze paarse wijzer telt de minuten.", "Hoe heet hij?"], opties: ["de grote wijzer", "de kleine wijzer"], goed: "de grote wijzer",
