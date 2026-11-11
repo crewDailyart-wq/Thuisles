@@ -144,7 +144,8 @@ export const ZIN = {
   opnieuwWaar: (v: Waarvraag) => `Waar zie je ${een(v.doel, "wit")}?`,
   opnieuwWat: "Wat is het?",
   /** De zwevende munten: eerst wat er gebeurt (1 stuk), dan de opdracht. */
-  bellenIntro: (v: Bellenvraag) => `Oei, het geld zweeft! Er zweven ${g(v.bellen.filter((b) => b === v.zoek).length, "wit")} munten van ${wit(v.zoek)} euro.`,
+  /* Het aantal (3) verwijst naar de munten: in hun kleur (14.20, keuring Geld); het gezochte bedrag (1) blijft wit. */
+  bellenIntro: (v: Bellenvraag) => `Oei, het geld zweeft! Er zweven ${g(v.bellen.filter((b) => b === v.zoek).length, KLEUR[v.zoek])} munten van ${wit(v.zoek)} euro.`,
   bellenOpdracht: (v: Bellenvraag) => `Tik op alle munten van ${wit(v.zoek)} euro.`,
   bellenHand: (v: Bellenvraag) => `Tik op een munt van ${wit(v.zoek)} euro.`,
   /** 2e fout: Bliepo doet het samen voor (eigen invulling, niet van Synthesis). 3 versies, zodat het niet steeds hetzelfde is. */

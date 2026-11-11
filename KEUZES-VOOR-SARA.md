@@ -1421,3 +1421,32 @@ Nieuwe versie naast de oude les squla-geld-geldmachine-1 "Munten en briefjes" (d
 - Getalkleur gemeten in Chrome: munten geel 255,224,102; briefje van 10 rood 255,123,123; 20 blauw 143,196,255; 5 en het gezochte getal wit.
 - **Echte stem in een zichtbare Chrome via het lesoverzicht:** 57 zinnen gestart, 37 helemaal uitgesproken, 20 afgebroken doordat de test al tijdens de vraag tikte (mag een kind ook); 0 dubbel, 0 F7, 0 weer gedimd. `scripts/test-woord-oplichten.mjs` (IJK=1): elk woord licht apart op (19 van 19, 14 van 14), geen sprong, geen zin in 1 keer wit vóór Bliepo begon; per woord gemiddeld 209 ms naast het gesproken moment, 13 van 31 binnen ± 150 ms (grootste 570 ms). Dat is minder goed dan het gemiddelde van de andere gouden lessen (± 120 ms); het komt uit het gedeelde spreekmodel van de Google-stem, niet uit deze les. Precies wordt het met Ruth.
 - **Vloeiend** (`ALLEEN=squla-geld-geldmachine-1-gouden npm run vloeiend`; geen andere test, maar de Mac stond in de energiebesparende stand): laptop 60 beelden/s, langste beeld 22 ms; trage telefoon 60 beelden/s, 40 ms. Openen in de ontwikkelversie 1,6 s / 3,2 s (op de echte site moet het onder 1 s).
+
+## Ronde 35 — keuring gouden les Geld (onafhankelijke keurder, 11 november 2026)
+
+Gekeurd: zie KEURING-GELD-GOUDEN.md. Uitslag: **goedgekeurd** na 1 kleine herstelling (alleen een kleur). Vragen, geld,
+keuzes en goede antwoorden zijn gelijk gebleven. De oude les squla-geld-geldmachine-1 is niet aangeraakt.
+**Niet online zetten** voordat je over punt 1 hebt beslist.
+
+**Aanpassingen (15.26), oud → wat mis was → nieuw:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Er zweven 3 munten van 1 euro." met een witte 3 | de 3 hoort bij de munten, dus in hun kleur (2.2, 14.20) | zelfde zin, de 3 geel; de 1 (het bedrag dat je zoekt) blijft wit |
+| Oude les vraag 8: "Oei, het geld zweeft door de ruimte!" | (door de bouwer ingekort, maar niet gemeld in Ronde 34) | "Oei, het geld zweeft!" Alleen gemeld, niet door mij veranderd |
+
+**Graag een besluit:**
+1. **De briefjes (belangrijk).** In Ronde 34 punt 7 staat "getekende briefjes". Ik heb ze bekeken: het zijn **bijna
+   echte plaatjes van de echte briefjes** (handtekening, sterren, gebouw, veiligheidsstrook), **zonder "SPECIMEN"**, en
+   groot (2,5 MB per bestand). CLAUDE.md en BOUWREGELS 9.1 zeggen: alleen de officiële ECB-plaatjes met "SPECIMEN", 72
+   dpi; anders mag het juridisch niet op een website. Ook staat er op het briefje van 10 euro rechts een "8" (een
+   foutje in het plaatje), terwijl Bliepo zegt "Lees het getal erop". Dezelfde plaatjes zitten in de oude geldlessen,
+   Minsommen en Splitsen. Ik heb niets veranderd. Zal ik de officiële ECB-briefjes met "SPECIMEN" gebruiken (die staan
+   al in public/geld/)? Advies: **ja**.
+2. **Het zachte vak met een dunne rand om het geld bij "Wat is dit?"** Het komt uit het oude geldvlak (jouw proef van
+   2 november), maar het lijkt op een kader om geld. Laten zo, of weghalen? Advies: **weghalen in de gouden les** (het
+   geld blijft op dezelfde plek).
+3. **Het rode rondje bij "Wat is dit?"** blijft om het geld staan zolang het kind na de hint opnieuw kiest, niet alleen
+   zolang Bliepo praat. Het staat nooit om het antwoord. Goed zo? Advies: **ja**.
+
+**Om te weten:** vloeiend 58–60 beelden/s (de Mac stond wel in de energiebesparende stand); alle tests groen; de punten
+uit Ronde 34 (1 t/m 8) staan nog open voor jou.
