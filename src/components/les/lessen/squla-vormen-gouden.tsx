@@ -783,6 +783,8 @@ async function puzzelVraag(l: Lesgids, v: Puzzelvraag): Promise<Uitkomst> {
         if (vangnet === 1) {
           zet(l, { bliepoLegt: ++s.legt });
           await zegDoor(l, ZIN.puzzelVangnet1);
+          /* De puzzel is weer een opdracht: de pijl weg en de opdrachtregel terug (15.27 punt 3, 14.32; keuring Vormen). */
+          void zegOpdracht(l, [ZIN.puzzelOpdracht(false)], Promise.resolve()).catch(() => {});
           hand.opnieuw();
           continue;
         }

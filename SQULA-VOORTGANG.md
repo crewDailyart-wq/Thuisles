@@ -450,4 +450,14 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 - Het oude vormenvlak kreeg 2 opties die alleen de gouden les gebruikt (`gouden`, `bliepoLegt`); zonder die opties ongewijzigd (oude patronen-1 en kleuren-1 opnieuw gespeeld: in orde).
 - Inhoud Squla (15 vragen), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes: KEUZES-VOOR-SARA.md Ronde 36.
 - Getest: fouttabel-script (37 foute antwoorden), opgaven, inhoudsvergelijk (0 verdwenen), speelcontrole GOED (82) en ALLEFOUT (560) met F7 0 / F8 0, eigen testscript alle routes, overlap en sprongen 0 op 4 maten, wit blijft wit, woord voor woord, vloeiend 60 beelden/s.
-- Nog te doen door de coördinator: onafhankelijke kind-test en keuring.
+- Nog te doen door de coördinator: onafhankelijke kind-test en keuring. *(Keuring gedaan, zie hieronder.)*
+
+### Keuring Vormen (11 nov)
+- Onafhankelijke keurder: **Vormen goedgekeurd** na 1 kleine herstelling (na het vangnet van de puzzel bleef de pijl
+  staan; nu komt "Maak de puzzel." terug als opdracht zonder pijl). Inhoud gelijk aan de oude les (15 vragen), oude les
+  niet veranderd. Oude vormenvlak: alle 7 oude lessen GOED tot het eind.
+- Getest: fouttabel-script (37 foute antwoorden), `npm run opgaven`, `npm run inhoudsvergelijk` (0 verdwenen),
+  speelcontrole GOED (92) en ALLEFOUT (584) met F7 0 / F8 0, `scripts/test-vormen-gouden.mjs` alle routes, overlap en
+  sprongen 0 op 4 maten, wit blijft wit (0 terug naar grijs), woord voor woord (12/12, 13/13).
+- Vloeiend niet eerlijk te meten (energiebesparende stand, drukke Mac: alles 30 beelden/s); opnieuw meten vóór online.
+  Open punten: KEUZES Ronde 37. Verslag: KEURING-VORMEN-GOUDEN.md.

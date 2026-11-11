@@ -1533,3 +1533,26 @@ KINDTEST-VORMEN-GOUDEN.md.
   gesproken moment, 10 van 23 binnen ± 150 ms (gedeeld spreekmodel; precies wordt het met Ruth).
 - Vloeiend: laptop 60 beelden/s (langste 47 ms), trage telefoon 60 beelden/s (42 ms). De Mac stond in de
   energiebesparende stand. Openen in de ontwikkelversie 1,7 s / 3,4 s (op de echte site moet het onder 1 s).
+
+## Ronde 37 — keuring gouden les Vormen: Patronen (onafhankelijke keurder, 11 november 2026)
+
+Gekeurd: zie KEURING-VORMEN-GOUDEN.md. Uitslag: **goedgekeurd** na 1 kleine herstelling. Vragen, kralen, dingen,
+vormen, keuzes, goede antwoorden en de puzzel zijn gelijk gebleven (15 vragen: 7 kraal kiezen, 3 ketting langer, 3 pijl,
+1 vorm, 1 puzzel). De oude les squla-vormen-patronen-1 is niet aangeraakt.
+
+**Aanpassing (15.26), oud → wat mis was → nieuw:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Puzzel, 20 s niets: "Kijk, dit stukje leg ik voor je." en dan verder puzzelen, met de blauwe pijl er nog bij | bij een opdracht hoort geen pijl (15.27) en de opdrachtregel moet blijven (14.32) | na die zin komt "Maak de puzzel." terug als opdracht, zonder pijl (een zin die er al was) |
+
+**Graag een besluit:**
+1. **Het oude vormenvlak heeft 2 opties erbij** (`gouden`, `bliepoLegt`), alleen voor de gouden les. Zonder die opties
+   werkt het zoals eerst: alle 7 oude vormenlessen opnieuw gespeeld tot het eind. Laten zo? Advies: **ja**.
+2. **De losse puzzelstukjes liggen een beetje over elkaar** en links tegen de rand (zelfde plekken als de oude les). In de
+   gouden les netjes los neerleggen? Advies: **ja** (de oude les blijft zoals hij is).
+3. **Fout op de 2e kraal van de ketting:** Bliepo zegt "De eerste kraal klopt. … Na blauw komt nooit geel.", maar de
+   kralen liggen dan al terug beneden; het kind ziet de blauwe kraal niet meer. Laten zo? Advies: **ja** (komt weinig voor).
+4. **Vloeiend:** mijn meting was vals (energiebesparende stand en een drukke Mac: alles 30 beelden/s, ook de les Geld die
+   eerder 58–60 haalde). De bouwer mat 60 / 60. Graag nog 1 keer meten met de energiebesparing uit, vóór het online gaat.
+
+**Om te weten:** de punten uit Ronde 36 (1 t/m 9) staan nog open voor jou.

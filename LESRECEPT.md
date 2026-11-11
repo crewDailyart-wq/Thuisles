@@ -164,6 +164,10 @@
 > - **De F7-test telt een nieuwe opdracht met dezelfde zin** (dezelfde opdracht bij de volgende ketting) **niet als F7**: Bliepo zegt hem echt opnieuw. Laat het slepen van het kind als actie loggen.
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): de eerste 2 punten gaan alleen over lessen met slepen in een oud vlak.
 
+> ## ⭐ GELEERD BIJ DE KEURING VORMEN (onafhankelijke keurder, 11 november 2026; KEURING-VORMEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Na een vangnet-zin weer een opdrachtzin** als het kind daarna nog iets moet doen (`zegOpdracht`): `zegDoor` laat de pijl staan tot het volgende stuk. Zonder opdrachtzin stond bij de puzzel de pijl erbij terwijl het kind moest slepen (15.27 punt 3), en de opdrachtregel was weg (14.32). Te zien in de test als een lange "einde zin → volgend stuk" (4,4 s).
+> - **Geldt ook voor eerder gebouwde gouden lessen:** gezocht in de 10 andere: 0 gevonden.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >
