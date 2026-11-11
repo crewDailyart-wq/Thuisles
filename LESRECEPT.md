@@ -190,6 +190,11 @@
 > - **Helpers delen de scratchpad-map:** zet schermfoto's in een eigen submap (`FOTO=…/tijdfoto`), anders lopen ze door die van andere lessen.
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeld): de gouden les Dagen zegt "Je koos dinsdag. Dinsdag komt vóór woensdag." (2 keer de dagnaam; KEUZES Ronde 40).
 
+> ## ⭐ GELEERD BIJ DE KEURING TIJD (onafhankelijke keurder, 11 november 2026; KEURING-TIJD-GOUDEN.md) — geldt voor elke gouden les
+> - **Kijk ook naar de reactie met "Je koos weer …":** dan staat de uitleg direct achter "weer". Een uitleg met "weer" erin ("tot het weer maandag is", "begint de week weer …") geeft 2 keer "weer". Kies "opnieuw" of laat het weg.
+> - **Ook in de eerste zin zelf niet 2 keer hetzelfde getal** ("Je koos 5. Op 5 dagen …" → "Op zoveel dagen …"). Laat het herhalingsscript elk paar (eerste zin + hint, en "Nu koos je …"/"Je koos weer …" + uitleg) nalopen.
+> - **De dag van de vraag mag terugkomen** ("Die komt niet meteen na maandag. Meteen na maandag komt …"): zonder de dagnaam is de uitleg na "Je koos weer …" niet meer duidelijk. Sara beslist (KEUZES Ronde 41 punt B).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

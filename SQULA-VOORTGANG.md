@@ -482,4 +482,14 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 ### Gouden les Tijd gebouwd (11 nov)
 - Les `squla-tijd-dagen-1-gouden` ("Dagen van de week", level 1), nieuwe versie naast squla-tijd-dagen-1 (oude les en oude weektrein niet veranderd). Gekozen omdat het de eerste Tijd-les is zonder gouden les (klokkijken heeft al squla-klok-hoelaat-1-gouden; kalender-1/2, tijden-1/2 en dagen-2/3 niet aangeraakt). Geen Synthesis-les: exact het skelet van de andere gouden lessen (15.25); denkfouten, hints, uitleg en samen voordoen zijn eigen invulling (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/tijd.md). Bestanden: `src/components/les/lessen/squla-tijd-gouden.tsx`, `squla-tijd-gouden-zinnen.ts`, `src/components/les/vlakken/squla-tijd-gouden-vlak.tsx` (+ `squla-tijd-gouden.module.css`; een nieuw Phaser-vlak naar dat van Dagen, met kaarten van 1 of 2 dagen, links van het tekstvak), `scripts/fouttabel-tijd-gouden.ts`, `FOUTTABEL-squla-tijd-dagen-1-gouden.md`, `scripts/test-tijd-gouden.mjs`, `scripts/vloeiend-schermen/squla-tijd-gouden.json`, `KINDTEST-TIJD-GOUDEN.md`.
 - Inhoud Squla (12 vragen + 3 die terugkomen = 15), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes en testcijfers: KEUZES-VOOR-SARA.md Ronde 40.
-- Nog te doen door de coördinator: onafhankelijke kind-test en keuring.
+- Nog te doen door de coördinator: onafhankelijke kind-test en keuring. *(Keuring gedaan, zie hieronder.)*
+
+### Gouden les Tijd gekeurd (11 nov, onafhankelijke keurder)
+- **GOEDGEKEURD** na 3 kleine herstellingen in de zinnen ("Je koos 5. Op 5 dagen …" → "Op zoveel dagen …"; 2 keer
+  "weer" na "Je koos weer …" bij vraag 3 en 9 → "tot het maandag is", "opnieuw"). Inhoud (12 vragen + 3 terug, dagen,
+  kaarten, getallen, antwoorden) niet veranderd; oude les squla-tijd-dagen-1, oude trein en gedeelde treinplaatjes niet
+  aangeraakt (commit 0d74091 haalde 0 regels weg; oude les speelt GOED tot het eind).
+- Getest na herstel: fouttabel (48 rijen, 240 beweringen), opgaven, inhoudsvergelijk 0 verdwenen, speelcontrole GOED 53
+  / ALLEFOUT 168 (F7 0, F8 0), alle routes van test-tijd-gouden.mjs, overlap en sprongen 0 op 4 maten, wit blijft wit,
+  vloeiend 57/60 (energiebesparing aan, op batterij). `les_uitkomsten` 147 → 147.
+  Open punten: KEUZES Ronde 41. Verslag: KEURING-TIJD-GOUDEN.md.

@@ -303,8 +303,8 @@ export function tijdFout(v: Vraag, x: string): Fout {
   /* In het weekend ga je niet naar school. Hoeveel dagen heeft het weekend? (1, 2, 5) */
   if (v.soort === "weekendHoeveel") {
     const hint = kies2(["Het weekend zijn de vrije dagen. Hoeveel dagen heeft het weekend?", "Denk aan de dagen waarop je vrij bent. Hoeveel dagen heeft het weekend?"], nr);
-    if (code === "schooldagen") return maak({ soort: code, eerste: `Je koos ${g(5)}. Op ${g(5)} dagen ga je naar school.`, hint, uitleg: "Het weekend zijn de vrije dagen aan het eind van de week.", bewering: { soort: "alleen-c" } });
-    return maak({ soort: code, eerste: `Je koos ${g(c)}. Het weekend is langer dan dat.`, hint, uitleg: "Na vrijdag is er geen school meer, tot het weer maandag is.", bewering: { soort: "groter-dan", n: c } });
+    if (code === "schooldagen") return maak({ soort: code, eerste: `Je koos ${g(5)}. Op zoveel dagen ga je naar school.`, hint, uitleg: "Het weekend zijn de vrije dagen aan het eind van de week.", bewering: { soort: "alleen-c" } });
+    return maak({ soort: code, eerste: `Je koos ${g(c)}. Het weekend is langer dan dat.`, hint, uitleg: "Na vrijdag is er geen school meer, tot het maandag is.", bewering: { soort: "groter-dan", n: c } });
   }
 
   /* Op welke dagen is het weekend? (kaarten met 2 dagen) */
@@ -323,7 +323,7 @@ export function tijdFout(v: Vraag, x: string): Fout {
         ? kies2(["Na zondag begint een nieuwe week. Welke dag komt dan?", "Na de laatste dag begint de week opnieuw. Welke dag komt meteen na zondag?"], nr)
         : kies2([`Zeg de dagen op, vanaf ${naam(d)}. Welke dag zeg je daarna?`, d === 0 ? "Begin bij maandag en zeg de dagen op. Welke dag zeg je daarna?" : `Zeg de dagen van de week op, vanaf maandag. Welke dag zeg je na ${naam(d)}?`], nr);
     if (code === "voor-na-verwisseld") return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die komt vóór ${naam(d)}.`, hint, uitleg: "Meteen na is de dag erachter, niet de dag ervoor.", bewering: { soort: "alleen-c" } });
-    return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die komt niet meteen na ${naam(d)}.`, hint, uitleg: d === 6 ? "Na zondag begint de week weer vooraan in de trein." : `Meteen na ${naam(d)} komt de dag die er direct achter hangt.`, bewering: { soort: "alleen-c" } });
+    return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die komt niet meteen na ${naam(d)}.`, hint, uitleg: d === 6 ? "Na zondag begint de week opnieuw vooraan in de trein." : `Meteen na ${naam(d)} komt de dag die er direct achter hangt.`, bewering: { soort: "alleen-c" } });
   }
 
   /* Hoeveel dagen heeft een week? (6, 7, 8) */

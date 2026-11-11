@@ -1754,3 +1754,28 @@ KINDTEST-TIJD-GOUDEN.md.
   beelden/s (langste beeld 50 ms, precies op de grens), trage telefoon 59 beelden/s (40 ms). De Mac stond in de
   energiebesparende stand. Openen in de ontwikkelversie 2,2 s / 4,8 s (op de echte site moet het onder 1 s; meten vóór
   online).
+
+## Ronde 41 — keuring gouden les Tijd (onafhankelijke keurder, 11 november 2026)
+
+Oordeel: **GOEDGEKEURD** na 3 kleine herstellingen. Verslag: KEURING-TIJD-GOUDEN.md. Inhoud niet veranderd.
+
+**Hersteld (alleen zinnen, geen inhoud):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Je koos 5. Op 5 dagen ga je naar school." | 2 keer hetzelfde getal | "Je koos 5. Op zoveel dagen ga je naar school." |
+| "Je koos weer 1. Na vrijdag is er geen school meer, tot het weer maandag is." | 2 keer "weer" | "… tot het maandag is." |
+| "Je koos weer dinsdag. Na zondag begint de week weer vooraan in de trein." | 2 keer "weer" | "Na zondag begint de week opnieuw vooraan in de trein." |
+
+**Graag een besluit (ja of nee):**
+- **A.** De hint bij "Wat is de laatste dag van de week?" als die terugkomt: "Na de laatste dag begint een nieuwe week.
+  Wat is de laatste dag van de week?" klopt, maar helpt niet echt. Vervangen door "Na de laatste dag komt weer maandag.
+  Wat is de laatste dag van de week?"? Advies: **ja**.
+- **B.** "Nu koos je woensdag. Die komt niet meteen na maandag. Meteen na maandag komt de dag die er direct achter
+  hangt." (2 keer "meteen na maandag"). Laten zo? Advies: **ja** (zonder de dagnaam is het onduidelijk na "Je koos weer
+  …").
+- **C.** "Je koos zondag. Die komt vóór maandag." terwijl zondag in de weektrein achteraan hangt. Laten zo? Advies:
+  **ja** (vraag 9 leert dat na zondag weer maandag komt).
+- **D.** Vloeiend nog 1 keer meten met de stekker erin en de energiebesparing uit, vóór online (zie KEURING).
+
+**Ronde 40 punt 6** (kleine stap bij een getal: het kind tikt het enige getal): de keurder vindt het redelijk. Advies:
+**ja**.

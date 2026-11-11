@@ -67,7 +67,7 @@ const bekend = (v: Vraag, x: string, z: string): string | null => {
   if (/^Dat is niet de eerste dag\.$/.test(z)) return v.soort === "eerste" && x !== "0" ? null : "klopt niet";
   if (/^Dat is niet de laatste dag\.$/.test(z)) return v.soort === "laatste" && x !== "6" ? null : "klopt niet";
   if (/^Die hoort bij het weekend, maar is niet de laatste dag\.$/.test(z)) return v.soort === "laatste" && x === "5" ? null : "past niet";
-  if ((m = z.match(/^Op (\d+) dagen ga je naar school\.$/))) return v.soort === "weekendHoeveel" && m[1] === "5" ? null : "klopt niet";
+  if (/^Op zoveel dagen ga je naar school\.$/.test(z)) return v.soort === "weekendHoeveel" && x === "5" ? null : "klopt niet";
   if (/^Het weekend is langer dan dat\.$/.test(z)) return v.soort === "weekendHoeveel" && c < 2 ? null : "klopt niet";
   if (/^Dat zijn schooldagen\.$/.test(z)) return kaart && dagenVan(x).every((q) => q < 5) ? null : "geen schooldagen";
   if ((m = z.match(/^Op (\w+) ga je naar school\.$/))) return kaart && dagenVan(x).includes(D(m[1])) && D(m[1]) < 5 ? null : "geen schooldag of niet gekozen";
@@ -92,11 +92,11 @@ const bekend = (v: Vraag, x: string, z: string): string | null => {
   if (/^De eerste dag hangt vooraan in de weektrein, vlak achter de locomotief\.$/.test(z)) return v.soort === "eerste" ? null : "past niet";
   if (/^De laatste dag hangt helemaal achteraan in de weektrein\.$/.test(z)) return v.soort === "laatste" ? null : "past niet";
   if (/^Het weekend zijn de vrije dagen aan het eind van de week\.$/.test(z)) return v.soort === "weekendHoeveel" || v.soort === "weekendWelke" ? null : "past niet";
-  if (/^Na vrijdag is er geen school meer, tot het weer maandag is\.$/.test(z)) return v.soort === "weekendHoeveel" ? null : "past niet";
+  if (/^Na vrijdag is er geen school meer, tot het maandag is\.$/.test(z)) return v.soort === "weekendHoeveel" ? null : "past niet";
   if (/^Op allebei de dagen van het weekend ben je vrij\.$/.test(z)) return v.soort === "weekendWelke" ? null : "past niet";
   if (/^Meteen na is de dag erachter, niet de dag ervoor\.$/.test(z)) return v.soort === "na" && c === voor(d) ? null : "past niet";
   if ((m = z.match(/^Meteen na (\w+) komt de dag die er direct achter hangt\.$/))) return v.soort === "na" && D(m[1]) === d && d !== 6 ? null : "past niet";
-  if (/^Na zondag begint de week weer vooraan in de trein\.$/.test(z)) return v.soort === "na" && d === 6 ? null : "past niet";
+  if (/^Na zondag begint de week opnieuw vooraan in de trein\.$/.test(z)) return v.soort === "na" && d === 6 ? null : "past niet";
   if (/^Elke dag van maandag tot en met zondag telt mee\.$/.test(z)) return v.soort === "hoeveelWeek" && c < 7 ? null : "past niet";
   if (/^Elke dag van de week telt maar 1 keer mee\.$/.test(z)) return v.soort === "hoeveelWeek" && c > 7 ? null : "past niet";
   return `onbekende zin (niet na te lopen): "${z}"`;
