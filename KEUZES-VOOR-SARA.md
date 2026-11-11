@@ -1369,3 +1369,55 @@ antwoorden zijn gelijk gebleven). De oude lessen squla-tellen-fruit-1 en squla-s
 - **Vloeiend heb ik niet gemeten:** de Mac staat in de energiebesparende stand (Low Power Mode) en er draaide een test van
   een andere sessie. Dan zegt de meting niets. Graag opnieuw meten als die stand uit staat (de herstellingen raken alleen
   tekst, niet het beeld).
+
+## Ronde 34 — gouden les Geld (squla-geld-geldmachine-1-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-geld-geldmachine-1 "Munten en briefjes" (die is niet veranderd). Bekijken: http://localhost:3000/voorbeeld/les/squla-geld-geldmachine-1-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** van de 6 Squla-lessen Geld (geldmachine 1–2, zakgeld 1–2, geld tellen 1–2) koos ik **"Munten en briefjes" level 1** (geldmachine-1). Dat is de eerste: munten en briefjes herkennen en het getal op het geld lezen. De andere lessen bouwen daarop voort (betalen, sparen, geld tellen). Jij keurde voor deze les ook al het beginzinnetje goed (BOUWREGELS 4.4).
+
+**Geen Synthesis-les.** Synthesis heeft geen les over geld (KOPPELING.md §8). Volgens jouw besluit 15.25 heeft deze les **exact hetzelfde skelet** als de andere gouden lessen (begin, 2 pogingen, Bliepo praat door, pijl rechts, hulphandje alleen bij opdrachten, vangnet, eindkaart). Alles wat per onderwerp anders is, is **eigen invulling, niet van Synthesis**: de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen. Dat staat in SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/geld.md en per rij in FOUTTABEL-squla-geld-geldmachine-1-gouden.md.
+
+**Inhoud (15.22):** dezelfde 12 vragen, in dezelfde volgorde, met hetzelfde geld en dezelfde keuzes: 6 keer "Waar zie je …?" (3 kaartjes met elk 1 munt of briefje), 5 keer "Wat is dit?" (1 munt of briefje groot, 3 knoppen bij Bliepo) en 1 keer de zwevende munten (tik op alle munten van 1 euro). Daarna komen 3 vragen terug (eerst wat niet meteen goed was, aangevuld met dezelfde reserve als de oude les): samen 15. Niets toegevoegd, niets weggelaten. Niet overgenomen uit de oude les: de startvraag "Kun je dit al?" en de uitleg na Nee (die horen alleen bij een les waarvan het draaiboek een startvraag heeft; 4e ronde).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Vraag 6: "Kijk goed naar deze munt. Wat is het? Is het 1 euro, een knoop of 2 euro?" | het woord "munt" zei al dat het geen knoop is | "Kijk goed. Wat is dit? Is het 1 euro, een knoop of 2 euro?" |
+| Begin: "In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld en kiest het juiste bedrag." (jouw goedgekeurde zin) | samen met de groet te lang voor het vaste tekstvak: Bliepo werd kleiner (15.30) | "In deze les ontdek je hoeveel munten en briefjes waard zijn. Je kijkt naar het getal op het geld." |
+| "Waar zie je …?": tik op het geld = meteen het antwoord, met een gloed om de keuze | tikken op iets in beeld gaat met een vinkje, en geen gloed om de keuze (6.5, 7.8a) | het gekozen kaartje krijgt een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| Bij goed of fout een groene of rode gloed om het vak | geen rood of groen om de keuze (5.3, 7.6) | alleen Bliepo's scherm kleurt; bij goed een korte lichtgolf |
+| Na een fout werd het gekozen kaartje vaag en kon je het niet meer kiezen | met 3 kaartjes laat dat er maar 2 over: de gouden lessen laten alles staan | alle kaartjes blijven, het vinkje gaat weg |
+| Het gezochte bedrag stond in de vraag in de kleur van het goede geld ("Waar zie je een briefje van {20 blauw} euro?") | de kleur verklapt het antwoord (14.22) | het getal in de vraag en de hint is wit; na het antwoord heeft het de kleur van het geld |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht. Wel, als laag 1 van de gouden lessen: na de hint komt de vraag kort terug ("Waar zie je een munt van 1 euro?" / "Wat is het?"), zodat het kind weet waar het over gaat (F1).
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De denkfouten:** `munt-briefje-verwisseld` (vorm), `zelfde-cijfer` (5 en 50, 10 en 100), `ander-getal`, `geen-geld` (de knoop). Bliepo zegt alleen wat waar is over het geld dat het kind koos ("Je koos het briefje van 50 euro. Op dat briefje staan 2 cijfers."). Goed zo?
+2. **Het rode rondje bij een fout** staat om het geld dat het kind koos, zolang Bliepo het noemt (nooit om het antwoord). Bij "Wat is dit?" staat het rondje bij de hint om het geld in beeld (dat is niet het antwoord: het antwoord is een knop). Goed zo?
+3. **Samen voordoen bij de 2e fout:** rondje om het goede geld, Bliepo zegt wat het is en waarom ("Hier is de munt van 1 euro. Hij is rond, met een 1 erop."), en het kind tikt het aan (de kleine stap). Goed zo?
+4. **De zwevende munten:** elke goede tik telt meteen (vinkje op de munt, zoals de oude les), zonder het vinkje bij Bliepo. Een tik op een andere munt of de knoop is een fout; de gevonden munten blijven staan. Goed zo?
+5. **Het hulphandje bij de zwevende munten** staat in de lege ruimte links van de munten en tikt daar, met "Tik op een munt van 1 euro." Op een munt zou het het antwoord aanwijzen (15.17). Goed zo, of liever geen handje bij deze opdracht?
+6. **Heel snel antwoorden:** Bliepo zegt niets (er is geen draaiboek met een opmerking). Goed zo?
+
+**Graag een besluit (ja of nee):**
+7. **De briefjes.** Het geldvlak gebruikt de getekende briefjes die jij op 3 november koos (public/geld/getekend/, ook in de oude geldlessen, Minsommen en Splitsen). Daar staat **geen "SPECIMEN"** op. CLAUDE.md en BOUWREGELS 9.1 zeggen: ECB-specimen 72 dpi, met "SPECIMEN" erop (juridisch: een briefje op een website mag alleen zo). Ik heb het vlak niet veranderd (regel 3). Zal ik in de gouden les (en later overal) de officiële ECB-specimens gebruiken? Advies: **ja**, dat is juridisch veilig. De munten zijn al de officiële (public/geld/los/).
+8. **Deze les als gouden les Geld** (geldmachine-1), terwijl er geen Synthesis-les is. Goed zo?
+
+**Afwijkingen van het skelet:** geen. Tijden: einde zin → volgend stuk gemiddeld ± 0,7 s; hulphandje ± 6 s na de opdrachtzin; vangnet 20 s.
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (de knoop, de munten en de briefjes van de oude les). Nieuwe zinnen staan in squla-geld-gouden-zinnen.ts (nog niet door Ruth ingesproken).
+
+**Niet gedaan door mij:** de kind-test door een aparte helper en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten, harde regel 10). Mijn eigen speeltest staat in KINDTEST-GELD-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147, er kwam niets bij):
+- Fouttabel-script `scripts/fouttabel-geld-gouden.ts`: 25 foute antwoorden, reken-, verklap- en waarheidscontrole in orde (161 beweringen), geen kaal cijfer in een zin, het gezochte getal wit in vraag en hint, geen opdracht bij de 2e fout, hints in 2 tot 9 versies per denkfout.
+- Eigen testscript `scripts/test-geld-gouden.mjs` (nepstem): goed (ook van gedachten veranderen bij een kaartje), fouten, alles fout, elk ander fout antwoord, weer, vangnet, lang wachten, tik op de pijl, kleur: tot de eindkaart, nooit op de pijl hoeven tikken; 0 stukken die op een tik wachten. Alle 25 rijen van de fouttabel kwamen voor. Het rondje bij een fout stond 0 keer om het antwoord.
+- Einde zin → volgend stuk: gemiddeld 724–811 ms (doel ± 700), nooit buiten 550–950 ms. Tik op de pijl: binnen 66–97 ms iets nieuws.
+- Lang wachten: bij kiezen niets (geen zin, geen handje); bij de zwevende munten en de kleine stap het handje 7,5 s na het begin van de opdracht (± 6 s na de opdrachtzin), met 1 korte zin.
+- Overlap en sprongen (alles fout; elk ander fout antwoord op de 2 krapste maten) op 1440×900, 1280×720, 1536×864 en 1024×768: 0 overlap, tekstvak/eerste regel/pijl/Bliepo 0 sprongen, tekst past in het vak, pijl gaat niet aan en uit; het geld blijft 64–78 px links van het tekstvak (1440×900). Eindkaart: 0 woorden van Bliepo eronder. (Eerst sprong Bliepo bij het lange begin en bij 1 lange hint; beide korter gemaakt, zie de tabel.)
+- F7 0, F8 0, gedimd-en-weer-gedimd 0 in alle routes. `scripts/test-wit-blijft-wit.mjs` (site 3,5 s traag, 150 s): 3 keer een zin wit vóór Bliepo begon, 0 keer daarna weer grijs.
+- Speelcontrole (`node scripts/speelcontrole.mjs`, GOED en ALLEFOUT, F7=1): tot het eind (45 en 152 stappen), 0 fouten, F7 0, F8 0. `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen.
+- Getalkleur gemeten in Chrome: munten geel 255,224,102; briefje van 10 rood 255,123,123; 20 blauw 143,196,255; 5 en het gezochte getal wit.
+- **Echte stem in een zichtbare Chrome via het lesoverzicht:** 57 zinnen gestart, 37 helemaal uitgesproken, 20 afgebroken doordat de test al tijdens de vraag tikte (mag een kind ook); 0 dubbel, 0 F7, 0 weer gedimd. `scripts/test-woord-oplichten.mjs` (IJK=1): elk woord licht apart op (19 van 19, 14 van 14), geen sprong, geen zin in 1 keer wit vóór Bliepo begon; per woord gemiddeld 209 ms naast het gesproken moment, 13 van 31 binnen ± 150 ms (grootste 570 ms). Dat is minder goed dan het gemiddelde van de andere gouden lessen (± 120 ms); het komt uit het gedeelde spreekmodel van de Google-stem, niet uit deze les. Precies wordt het met Ruth.
+- **Vloeiend** (`ALLEEN=squla-geld-geldmachine-1-gouden npm run vloeiend`; geen andere test, maar de Mac stond in de energiebesparende stand): laptop 60 beelden/s, langste beeld 22 ms; trage telefoon 60 beelden/s, 40 ms. Openen in de ontwikkelversie 1,6 s / 3,2 s (op de echte site moet het onder 1 s).

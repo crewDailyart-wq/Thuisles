@@ -145,6 +145,16 @@
 > - **Pas geen bestand aan terwijl een test loopt** (opnieuw gezien): de ontwikkelversie bouwt dan opnieuw en de test meldt valse fouten (hier: "pijl bij de opdracht samen tellen"). Daarna opnieuw meten.
 > - **Een test die het hulphandje "na 7 s" zoekt, moet tellen vanaf het einde van de opdrachtzin,** niet vanaf het begin: het handje komt ± 6 s nadat Bliepo uitgesproken is.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES GELD (11 november 2026; KEUZES-VOOR-SARA.md Ronde 34) — geldt voor elke gouden les
+> - **Een onderwerp zonder Synthesis-les** (15.25): exact het skelet van de andere gouden lessen (laag 1); alles van laag 2 (denkfouten, eerste zinnen, hints, uitleg, samen voordoen) staat als "eigen invulling, niet van Synthesis" in een kort draaiboekbestand (DRAAIBOEKEN-NIEUW/geld.md, "helemaal gespeeld: nee, er is geen les") en per rij in de fouttabel.
+> - **Het getal dat het kind moet zoeken is wit in de vraag en de hint**, ook als het naar een voorwerp verwijst: in de kleur van het goede voorwerp ("een briefje van 20 euro" in blauw naast 1 blauw briefje) verklapt de kleur het antwoord (14.22). Ook de keuzes die Bliepo opnoemt ("Is het 10 euro, 20 euro of 50 euro?") zijn wit. Na het antwoord krijgt het getal de kleur van het voorwerp.
+> - **Laat het fouttabel-script elk kaal cijfer zoeken in álle zinnen van de les** (vraag, hint, uitleg, "weer", lof-reactie, samen voordoen, terugkomende vragen): bij Geld gevonden in "alle 3", "nog 1", "ook de 0" en "nog 3 vragen" (14.20).
+> - **Zegt de hint zelf niet waar het over gaat, zet dan de vraag kort erachter** ("… Waar zie je een munt van 1 euro?"; F1). Dat is 1 keer de vraag vóór de nieuwe poging, geen herhaling (3.23). Meet daarna de lengte: hint + vraag was op 1024 × 768 en 1536 × 864 bij 1 hint te lang (Bliepo werd kleiner); die hint is korter gemaakt.
+> - **Een hulphandje bij een opdracht waarvan de plek het antwoord is** (tik alle munten van 1 euro aan): in de lege ruimte ernaast, nooit op een goed ding (15.17).
+> - **Een fout bij een tik-opdracht met meer goede dingen** (de zwevende munten): wat al gevonden is, blijft staan (met vinkje); alleen de foute tik telt als poging.
+> - **Een oud vlak met een eigen indeling hergebruiken** (`paneel`): de overlay rekent met dezelfde `indeling()` en hetzelfde midden als het oude vlak, en het rondje komt van het oude vlak zelf (`licht` + `rondje`); geef geen `goed`, `fout`, `gekozen` of `uit` door (gloed en vaag om de keuze).
+> - **Niet nagelopen in de andere gouden lessen** (alleen gemeld, eerst Sara): kale cijfers in eigen zinnen en een gekleurd zoekgetal in de vraag.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >
