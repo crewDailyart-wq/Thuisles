@@ -1643,6 +1643,28 @@ KINDTEST-DAGEN-GOUDEN.md.
 **Om te weten:** op een telefoon rechtop staat de nieuwe trein op 1 rij en is hij klein (de oude trein had daar 2 rijen).
 Telefoon is een latere fase (DESIGN-LATER.md); ik heb het daar niet opgelost.
 
+## Ronde 39 — keuring gouden les Dagen (onafhankelijke keurder, 11 november 2026)
+
+Gekeurd: zie KEURING-DAGEN-GOUDEN.md. Uitslag: **goedgekeurd** na 3 kleine herstellingen (alleen zinnen van Bliepo).
+De 17 vragen, de dagen, de dagkaarten en de goede antwoorden zijn gelijk gebleven. De oude les squla-dagen-van-de-week,
+de oude weektrein en squla-tijd-dagen-1/2/3 zijn niet aangeraakt.
+
+**Aanpassingen (15.26), oud → wat mis was → nieuw:**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Je koos maandag. Maandag komt vóór dinsdag." (en zo 18 zinnen, ook "Je sleepte vrijdag. Vrijdag hangt al …") | 2 keer de dagnaam achter elkaar | "Je koos maandag. Die dag komt vóór dinsdag." / "Je sleepte vrijdag. Die dag hangt al …" |
+| Gisteren/morgen, 2e verre dag: "Nu koos je zondag. Die dag ligt verder van vandaag af." | dezelfde zin 2 keer bij 1 vraag | "Je koos weer een dag die verder van vandaag af ligt. Gisteren is maar 1 dag geleden." (bij morgen: "Morgen is over 1 dag.") |
+| Slepen, 45 s niets: "Kom, ik help je met deze." en meteen "Kom, we kijken samen." | 2 keer "Kom" achter elkaar | "Ik help je met deze." |
+
+**Graag een besluit:**
+1. **De 3 herstelde zinnen** hierboven. Goed zo? Advies: **ja**.
+2. **Vloeiend:** 60 / 59 beelden/s, maar gemeten met de energiebesparing aan en een drukke Mac (openen in de
+   ontwikkelversie 3,8 tot 10 s). Graag nog 1 keer meten op de echte site met de energiebesparing uit, vóór het online
+   gaat.
+
+**Om te weten:** de punten uit Ronde 38 (1 t/m 9) staan nog open voor jou. In Minsommen en Plussommen staan 3 zinnen
+met 2 keer hetzelfde getal achter elkaar ("Je koos 3. 3 gaat eraf.", "Je koos 7. 7 is te weinig."); niet veranderd.
+
 ## Ronde 40 — gouden les Tijd (squla-tijd-dagen-1-gouden, 11 november 2026)
 
 Nieuwe versie naast de oude les squla-tijd-dagen-1 "Dagen van de week" (level 1). De oude les en de oude weektrein zijn

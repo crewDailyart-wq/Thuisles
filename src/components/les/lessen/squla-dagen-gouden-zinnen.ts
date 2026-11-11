@@ -207,7 +207,7 @@ export const ZIN = {
   handKaart: "Tik op de kaart in het rondje.",
   handSleep: "Sleep de kaart in het rondje naar de lege plek.",
   /** Vangnet bij slepen: lang niets nagekeken. */
-  mistVangnet: "Kom, ik help je met deze.",
+  mistVangnet: "Ik help je met deze.",
   /** Hetzelfde foute antwoord 2 keer: niet 2 keer dezelfde eerste zin (geleerd bij Tellen). */
   weerGekozen: (v: Vraag, c: number) => (v.invoer === "sleep" ? `Je sleepte weer ${naam(c)}.` : `Je koos weer ${naam(c)}.`),
   /** Het einde. */
@@ -319,7 +319,6 @@ export function dagFout(v: Vraag, c: number): Fout {
   const code = denkfoutVan(v, c);
   const denkfout = DENKFOUT_UITLEG[code];
   const d = v.dag;
-  const C = Naam(c);
   const maak = (f: Omit<Fout, "code" | "denkfout" | "over">): Fout => ({ ...f, code, denkfout, over: overNa(v, c, f.bewering) });
 
   /* Tik op de wagon van … (de hele trein). */
@@ -336,24 +335,24 @@ export function dagFout(v: Vraag, c: number): Fout {
   if (v.soort === "na") {
     const hint = d === 6 ? kies2(["Na zondag begint een nieuwe week. Welke dag komt dan?", "Na de laatste dag begint de week opnieuw. Welke dag komt na zondag?"], v.nr) : kies2([`Na ${naam(d)} is de dag erachter. Welke dag komt na ${naam(d)}?`, `Zeg de dagen op, vanaf ${naam(d)}. Welke dag zeg je daarna?`], v.nr);
     const uitleg = d === 6 ? "Na zondag begint de week weer vooraan in de trein." : `Na ${naam(d)} komt de dag die er direct achter hangt.`;
-    if (code === "voor-na-verwisseld") return maak({ soort: code, eerste: `Je koos ${naam(c)}. ${C} komt vóór ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer de dag vóór ${naam(d)}.`, "Na is de dag erachter, niet de dag ervoor."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
-    return maak({ soort: code, eerste: `Je koos ${naam(c)}. ${C} komt niet direct na ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer een dag die niet direct na ${naam(d)} komt.`, "Na is de dag die er direct achter komt."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+    if (code === "voor-na-verwisseld") return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die dag komt vóór ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer de dag vóór ${naam(d)}.`, "Na is de dag erachter, niet de dag ervoor."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+    return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die dag komt niet direct na ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer een dag die niet direct na ${naam(d)} komt.`, "Na is de dag die er direct achter komt."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
   }
 
   /* Welke dag komt vóór …? */
   if (v.soort === "voor") {
     const hint = d === 0 ? kies2(["Vóór maandag was de vorige week. Hoe eindigt een week?", "Zeg de dagen van de week op, tot het eind. Welke dag komt vóór een nieuwe maandag?"], v.nr) : kies2([`Vóór ${naam(d)} is de dag ervoor. Welke dag komt vóór ${naam(d)}?`, `Zeg de dagen op tot ${naam(d)}. Welke dag zeg je net daarvoor?`], v.nr);
     const uitleg = d === 0 ? "Een week eindigt met zondag. Daarna begint een nieuwe week met maandag." : `Vóór ${naam(d)} komt de dag die er direct voor hangt.`;
-    if (code === "voor-na-verwisseld") return maak({ soort: code, eerste: `Je koos ${naam(c)}. ${C} komt na ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer de dag na ${naam(d)}.`, "Vóór is de dag ervoor, niet de dag erachter."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
-    return maak({ soort: code, eerste: `Je koos ${naam(c)}. ${C} komt niet direct vóór ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer een dag die niet direct vóór ${naam(d)} komt.`, "Vóór is de dag die er direct voor komt."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+    if (code === "voor-na-verwisseld") return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die dag komt na ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer de dag na ${naam(d)}.`, "Vóór is de dag ervoor, niet de dag erachter."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
+    return maak({ soort: code, eerste: `Je koos ${naam(c)}. Die dag komt niet direct vóór ${naam(d)}.`, hint, uitleg, weer: [`Je koos weer een dag die niet direct vóór ${naam(d)} komt.`, "Vóór is de dag die er direct voor komt."], scherm: SCHERM.kaart, bewering: { soort: "alleen-c" } });
   }
 
   /* Er mist een dag (slepen). Alle andere dagen hangen al in de trein. */
   if (v.soort === "mist") {
     const hint = d === 0 ? kies2(["Kijk naar de wagon achter de lege plek. Sleep de dag die daarvoor komt.", "Zeg de dagen op vanaf het begin van de week. Sleep de dag die mist."], v.nr) : kies2(["Kijk naar de wagons naast de lege plek. Sleep de dag die daartussen hoort.", "Zeg de dagen op vanaf maandag. Sleep de dag die mist."], v.nr);
     const uitleg = kies2([`Elke dag hangt ${g(1)} keer in de trein, op volgorde.`, "Op de lege plek hoort de dag die nog mist."], v.nr);
-    if (code === "dag-ernaast") return maak({ soort: code, eerste: `Je sleepte ${naam(c)}. ${C} hangt al vlak naast de lege plek.`, hint, uitleg, weer: ["Je sleepte weer een dag die er al naast hangt.", `Elke dag hangt maar ${g(1)} keer in de trein.`], scherm: SCHERM.sleep, bewering: { soort: "alleen-c" } });
-    return maak({ soort: code, eerste: `Je sleepte ${naam(c)}. ${C} hangt al ergens anders in de trein.`, hint, uitleg, weer: ["Je sleepte weer een dag die al in de trein hangt.", `Elke dag hangt maar ${g(1)} keer in de trein.`], scherm: SCHERM.sleep, bewering: { soort: "alleen-c" } });
+    if (code === "dag-ernaast") return maak({ soort: code, eerste: `Je sleepte ${naam(c)}. Die dag hangt al vlak naast de lege plek.`, hint, uitleg, weer: ["Je sleepte weer een dag die er al naast hangt.", `Elke dag hangt maar ${g(1)} keer in de trein.`], scherm: SCHERM.sleep, bewering: { soort: "alleen-c" } });
+    return maak({ soort: code, eerste: `Je sleepte ${naam(c)}. Die dag hangt al ergens anders in de trein.`, hint, uitleg, weer: ["Je sleepte weer een dag die al in de trein hangt.", `Elke dag hangt maar ${g(1)} keer in de trein.`], scherm: SCHERM.sleep, bewering: { soort: "alleen-c" } });
   }
 
   /* Gisteren en morgen (de hele trein met de pijl; of "Vandaag is het maandag" met kaarten). */
@@ -371,7 +370,7 @@ export function dagFout(v: Vraag, c: number): Fout {
     if (code === "gisteren-morgen-verwisseld")
       return maak({ soort: code, eerste: gist ? `Je koos ${naam(c)}. Dat is morgen.` : `Je koos ${naam(c)}. Dat was gisteren.`, hint, uitleg, weer: [gist ? "Je koos weer morgen." : "Je koos weer gisteren.", "Gisteren is voorbij, morgen moet nog komen."], scherm, bewering: { soort: "alleen-c" } });
     /* Een dag verder weg: geen richting (15.17), wel iets waars ("verder weg" = meer dan 1 dag van vandaag). */
-    return maak({ soort: code, eerste: v.soort === "gmMaandag" ? `Je koos ${naam(c)}. ${C} komt niet direct vóór maandag.` : `Je koos ${naam(c)}. Die dag ligt verder van vandaag af.`, hint, uitleg, weer: [], scherm, bewering: v.soort === "gmMaandag" ? { soort: "alleen-c" } : { soort: "binnen-1-van", dag: d } });
+    return maak({ soort: code, eerste: v.soort === "gmMaandag" ? `Je koos ${naam(c)}. Die dag komt niet direct vóór maandag.` : `Je koos ${naam(c)}. Die dag ligt verder van vandaag af.`, hint, uitleg, weer: v.soort === "gmMaandag" ? [] : ["Je koos weer een dag die verder van vandaag af ligt.", gist ? `Gisteren is maar ${g(1)} dag geleden.` : `Morgen is over ${g(1)} dag.`], scherm, bewering: v.soort === "gmMaandag" ? { soort: "alleen-c" } : { soort: "binnen-1-van", dag: d } });
   }
 
   /* Het weekend. */

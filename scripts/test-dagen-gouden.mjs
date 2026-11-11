@@ -398,6 +398,13 @@ async function speel(P, o = {}) {
       await zone();
       await fotoSoort(`${taak.vraag}-${taak.poging}-vraag`);
       const x = keuze(taak);
+      if (opdracht && o.mistNiets && !o.mistGedaan) {
+        /* Keuring Dagen: niets doen bij "Er mist een dag"; na 45 s doen we het samen (vangnet), de opdrachtregel komt terug zonder pijl. */
+        o.mistGedaan = true;
+        zie(`${o.naam}: niets doen bij ${taak.vraag} (vangnet na 45 s)`);
+        await wacht(47000);
+        continue;
+      }
       if (opdracht) {
         if (o.twijfel) {
           /* Eerst een andere kaart in de lege plek, dan toch de goede (de andere gaat terug). */
@@ -693,6 +700,19 @@ const ROUTES = {
     zie(`vangnet: ${l.filter((x) => x.wat === "vangnet").length} keer deed Bliepo de stap zelf; zinnen erna: ${l.filter((x) => x.wat === "pijl-door" && /Kijk, /.test(x.zin)).map((x) => x.zin).join(" | ")}`);
     if (l.some((x, i) => x.wat === "vangnet" && /^Ja/.test(l.slice(i).find((y) => y.wat === "pijl-door")?.zin ?? ""))) fout("na het vangnet zegt Bliepo 'Ja'");
     return ok;
+  },
+  /** Keuring Dagen: niets doen bij het slepen naar de lege plek (45 s): Bliepo helpt, daarna de opdracht zonder pijl. */
+  async mistvangnet(P) {
+    let k = 0;
+    const ok = await speel(P, { naam: "mistvangnet", mistNiets: true, keuze: (t) => t.goed[0], maxMs: 15 * 60_000 });
+    const l = await P.log();
+    const i = l.findIndex((x) => x.wat === "vangnet" && x.mist);
+    const na = l.slice(i + 1, i + 12).map((x) => `${x.wat}${x.zin ? `: ${x.zin}` : ""}`);
+    zie(`mistvangnet: vangnet ${i >= 0 ? "ja" : "nee"}; daarna: ${na.join(" | ")}`);
+    if (i < 0) fout("mistvangnet: geen vangnet na 45 s");
+    if (!l.slice(i + 1).some((x) => x.wat === "opdrachtzin")) fout("mistvangnet: geen opdrachtzin na het vangnet");
+    await controleer(P, "mistvangnet");
+    return ok && k === 0;
   },
   /** Lang wachten: bij kiezen 9 s (geen handje, geen zin), bij opdrachten 7,2 s (wel het handje). */
   async wachten(P) {

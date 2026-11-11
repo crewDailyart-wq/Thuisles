@@ -176,6 +176,11 @@
 > - **Een oud HTML-vlak** (de weektrein): een nieuw Phaser-vlak met dezelfde plaatjes, iets kleiner zodat alles links van het tekstvak past (x < 860); de oude trein blijft voor de oude les (zoals Huisnummers).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): "vlak naast"/"dichtbij" bij een keuze aan de rand van een rij.
 
+> ## ⭐ GELEERD BIJ DE KEURING DAGEN (onafhankelijke keurder, 11 november 2026; KEURING-DAGEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Een regel uit "Geleerd bij …" moet ook in het script staan, niet alleen als opmerking.** De paren-controle (niet 2 keer dezelfde zin bij 1 vraag) stond in het Dagen-script alleen als commentaar; daardoor kwam "Die dag ligt verder van vandaag af." 2 keer bij 1 vraag. En "niet 2 keer de dagnaam achter elkaar" was maar in 1 zin hersteld (nog 18 over). Laat het script beide nalopen (zoals nu `fouttabel-dagen-gouden.ts`).
+> - **Een vangnet-zin en de samen-zin beginnen niet met hetzelfde woord** ("Kom, ik help je …" + "Kom, we kijken samen." → "Ik help je met deze.").
+> - **Test ook het vangnet bij slepen** (niets doen tot het vangnet): de route `mistvangnet` in `test-dagen-gouden.mjs`.
+
 > ## ⭐ GELEERD BIJ DE GOUDEN LES TIJD (11 november 2026; KEUZES-VOOR-SARA.md Ronde 40) — geldt voor elke gouden les
 > - **Niet 2 keer de naam van wat het kind koos:** "Je koos zaterdag. Die hoort bij het weekend …", "Je koos woensdag. Dat is niet de eerste dag." (niet "Je koos woensdag. Woensdag is …").
 > - **Geen woord 2 keer in 1 reactie bij een fout,** ook niet verdeeld over eerste zin en hint of uitleg ("Op maandag ga je naar school. In het weekend ga je niet naar school."): kies een ander woord ("vrij", "vrije dagen"). Ook een getal niet 2 keer ("Je koos 1. Het weekend is langer dan dat.").

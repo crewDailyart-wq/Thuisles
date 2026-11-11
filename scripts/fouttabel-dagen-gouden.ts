@@ -52,6 +52,8 @@ const ALLE_VRAGEN: Vraag[] = [...VRAGEN, weekend2(6)];
 /* 2. Waarheidscontrole: wat een zin beweert, klopt voor deze vraag en dit antwoord. */
 const bekend = (v: Vraag, c: number, z: string): string | null => {
   const d = v.dag;
+  /* "Die dag komt/hangt …" (keuring Dagen: niet 2 keer de dagnaam achter elkaar) gaat over de gekozen dag. */
+  z = z.replace(/^Die dag (komt|hangt) /, (_, w: string) => `${naam(c)} ${w} `);
   const b = beeldVan(v);
   let m: RegExpMatchArray | null;
   if ((m = z.match(/^Je (?:koos|sleepte) (?:de wagon van )?(\w+)\.$/))) return D(m[1]) === c ? null : "noemt niet wat het kind koos";
@@ -72,6 +74,9 @@ const bekend = (v: Vraag, c: number, z: string): string | null => {
   if (/^Dat is morgen\.$/.test(z)) return b.vandaag !== null && c === na(b.vandaag) ? null : "is niet morgen";
   if (/^Dat was gisteren\.$/.test(z)) return b.vandaag !== null && c === voor(b.vandaag) ? null : "was niet gisteren";
   if (/^Die dag ligt verder van vandaag af\.$/.test(z)) return b.vandaag !== null && afstand(c, b.vandaag) >= 2 ? null : "is niet verder weg";
+  if (/^Je koos weer een dag die verder van vandaag af ligt\.$/.test(z)) return b.vandaag !== null && afstand(c, b.vandaag) >= 2 ? null : "is niet verder weg";
+  if (/^Gisteren is maar 1 dag geleden\.$/.test(z)) return v.soort === "gm" && v.wat === "gisteren" ? null : "past niet";
+  if (/^Morgen is over 1 dag\.$/.test(z)) return v.soort === "gm" && v.wat === "morgen" ? null : "past niet";
   if (/^Dat is een schooldag\.$/.test(z)) return c >= 0 && c <= 4 ? null : "is geen schooldag";
   if (/^Je koos weer een schooldag\.$/.test(z)) return c <= 4 ? null : "geen schooldag";
   /* Hints (hoe je zoekt, waar je kijkt). */
@@ -162,7 +167,20 @@ for (const v of ALLE_VRAGEN) {
     }
   }
   /* Niet 2 keer hetzelfde woord bij 1 vraag in de eerste zin bij 2 verschillende foute antwoorden (keuring Tellen en
-     Splitsen): bij dezelfde soort komt bij de 2e fout de "weer"-zin; anders zegt de les "Nu koos je …". */
+     Splitsen): bij dezelfde soort komt bij de 2e fout de "weer"-zin; anders zegt de les "Nu koos je …". Alle paren
+     nagelopen (keuring Dagen: "Die dag ligt verder van vandaag af." kwam 2 keer). */
+  for (const [a, fa] of Object.entries(tabel))
+    for (const [b, fb] of Object.entries(tabel)) {
+      if (a === b || (fa.soort === fb.soort && fb.weer.length > 0)) continue;
+      const tweede = zinnenVan(fb.eerste).slice(1);
+      for (const z of zinnenVan(fa.eerste).slice(1)) if (tweede.includes(z)) fouten.push(`${v.id}: "${z}" 2 keer bij 1 vraag (${naam(Number(a))}, dan ${naam(Number(b))})`);
+    }
+  /* Niet 2 keer de dagnaam achter elkaar in de eerste zin ("Je koos maandag. Maandag …"; keuring Dagen). */
+  for (const f of Object.values(tabel)) {
+    const [z1, z2] = zinnenVan(f.eerste);
+    const w = z1?.match(/(\w+)\.$/)?.[1];
+    if (w && z2 && z2.toLowerCase().startsWith(w.toLowerCase())) fouten.push(`${v.id}: 2 keer "${w}" achter elkaar: "${f.eerste}"`);
+  }
 }
 for (const [k, s] of eersteTweede) if (s.size < 2) fouten.push(`"${k}": maar ${s.size} versie van de korte zin zonder richting`);
 

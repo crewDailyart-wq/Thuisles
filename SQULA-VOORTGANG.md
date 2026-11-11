@@ -468,6 +468,17 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 - Getest: fouttabel-script (65 foute antwoorden), opgaven, inhoudsvergelijk (0 verdwenen), speelcontrole GOED (57) en ALLEFOUT (219) met F7 0 / F8 0, eigen testscript alle routes, overlap en sprongen 0 op 4 maten, wit blijft wit, woord voor woord (16/16, 6/6), vloeiend 60 beelden/s.
 - Nog te doen door de coördinator: onafhankelijke kind-test en keuring.
 
+### Gouden les Dagen gekeurd (11 nov, onafhankelijke keurder)
+- **GOEDGEKEURD** na 3 kleine herstellingen in de zinnen (2 keer de dagnaam achter elkaar in 18 zinnen → "Die dag …";
+  "Die dag ligt verder van vandaag af." 2 keer bij 1 vraag → "weer"-zin; "Kom, … Kom, …" na het vangnet → "Ik help je
+  met deze."). Inhoud (17 vragen, dagen, kaarten, antwoorden) niet veranderd; oude les, oude trein en
+  squla-tijd-dagen-1/2/3 niet aangeraakt. Fouttabel-script kreeg 2 controles erbij (alle paren foute antwoorden per
+  vraag; geen dagnaam 2 keer achter elkaar). Testscript kreeg de route `mistvangnet` (45 s niets bij slepen).
+- Getest na herstel: fouttabel (65 rijen, 425 beweringen), opgaven, inhoudsvergelijk 0 verdwenen, speelcontrole GOED 75
+  / ALLEFOUT 207 (F7 0, F8 0), alle routes, overlap en sprongen 0 op 4 maten, wit blijft wit, woord voor woord (16/16,
+  6/6), vloeiend 60/59 (energiebesparing aan, Mac druk). `les_uitkomsten` 147 → 147.
+  Open punten: KEUZES Ronde 39. Verslag: KEURING-DAGEN-GOUDEN.md.
+
 ### Gouden les Tijd gebouwd (11 nov)
 - Les `squla-tijd-dagen-1-gouden` ("Dagen van de week", level 1), nieuwe versie naast squla-tijd-dagen-1 (oude les en oude weektrein niet veranderd). Gekozen omdat het de eerste Tijd-les is zonder gouden les (klokkijken heeft al squla-klok-hoelaat-1-gouden; kalender-1/2, tijden-1/2 en dagen-2/3 niet aangeraakt). Geen Synthesis-les: exact het skelet van de andere gouden lessen (15.25); denkfouten, hints, uitleg en samen voordoen zijn eigen invulling (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/tijd.md). Bestanden: `src/components/les/lessen/squla-tijd-gouden.tsx`, `squla-tijd-gouden-zinnen.ts`, `src/components/les/vlakken/squla-tijd-gouden-vlak.tsx` (+ `squla-tijd-gouden.module.css`; een nieuw Phaser-vlak naar dat van Dagen, met kaarten van 1 of 2 dagen, links van het tekstvak), `scripts/fouttabel-tijd-gouden.ts`, `FOUTTABEL-squla-tijd-dagen-1-gouden.md`, `scripts/test-tijd-gouden.mjs`, `scripts/vloeiend-schermen/squla-tijd-gouden.json`, `KINDTEST-TIJD-GOUDEN.md`.
 - Inhoud Squla (12 vragen + 3 die terugkomen = 15), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes en testcijfers: KEUZES-VOOR-SARA.md Ronde 40.
