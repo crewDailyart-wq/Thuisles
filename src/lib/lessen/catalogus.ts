@@ -102,6 +102,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-huisnummers-gouden", titel: "Huisnummers: wat komt erna?", synthesis: "Squla groep 3 · Tellen · Telrij · gouden les (nieuwe versie van squla-huisnummers) · verloop draaiboek Huisnummers (Counting On)" },
   { id: "squla-rekentaal", titel: "Groot en klein, vol en leeg", synthesis: "Squla groep 3 · Meten en maten · Rekentaal (alleen leerdoel)" },
   { id: "squla-dagen-van-de-week", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week (alleen leerdoel)" },
+  { id: "squla-dagen-van-de-week-gouden", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week · gouden les (nieuwe versie van squla-dagen-van-de-week) · geen Synthesis-les: skelet van de gouden lessen, eigen invulling" },
   { id: "squla-vormen-patronen-1", titel: "Patronen", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 1 (alleen leerdoel)" },
   { id: "squla-vormen-patronen-1-gouden", titel: "Patronen", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 1 · gouden les (nieuwe versie van squla-vormen-patronen-1) · geen Synthesis-les: skelet van de gouden lessen, eigen invulling" },
   { id: "squla-vormen-patronen-2", titel: "Patronen (moeilijker)", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 2 (alleen leerdoel)" },

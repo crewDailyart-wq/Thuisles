@@ -461,3 +461,9 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
   sprongen 0 op 4 maten, wit blijft wit (0 terug naar grijs), woord voor woord (12/12, 13/13).
 - Vloeiend niet eerlijk te meten (energiebesparende stand, drukke Mac: alles 30 beelden/s); opnieuw meten vóór online.
   Open punten: KEUZES Ronde 37. Verslag: KEURING-VORMEN-GOUDEN.md.
+
+### Gouden les Dagen gebouwd (11 nov)
+- Les `squla-dagen-van-de-week-gouden` ("Dagen van de week"), nieuwe versie naast squla-dagen-van-de-week (oude les en oude weektrein niet veranderd). Gekozen omdat het onderwerp Dagen precies 1 les heeft (KOPPELING §9); squla-tijd-dagen-1/2/3 (onderwerp Tijd) niet aangeraakt. Geen Synthesis-les: exact het skelet van de andere gouden lessen (15.25); denkfouten, hints, uitleg en samen voordoen zijn eigen invulling (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/dagen.md). Bestanden: `src/components/les/lessen/squla-dagen-gouden.tsx`, `squla-dagen-gouden-zinnen.ts`, `src/components/les/vlakken/squla-dagen-gouden-vlak.tsx` (+ `.module.css`; een nieuw Phaser-vlak met dezelfde treinplaatjes, links van het tekstvak), `scripts/fouttabel-dagen-gouden.ts`, `FOUTTABEL-squla-dagen-van-de-week-gouden.md`, `scripts/test-dagen-gouden.mjs`, `scripts/vloeiend-schermen/squla-dagen-gouden.json`, `KINDTEST-DAGEN-GOUDEN.md`.
+- Inhoud Squla (17 vragen), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes: KEUZES-VOOR-SARA.md Ronde 38.
+- Getest: fouttabel-script (65 foute antwoorden), opgaven, inhoudsvergelijk (0 verdwenen), speelcontrole GOED (57) en ALLEFOUT (219) met F7 0 / F8 0, eigen testscript alle routes, overlap en sprongen 0 op 4 maten, wit blijft wit, woord voor woord (16/16, 6/6), vloeiend 60 beelden/s.
+- Nog te doen door de coördinator: onafhankelijke kind-test en keuring.

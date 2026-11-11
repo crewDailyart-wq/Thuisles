@@ -168,6 +168,14 @@
 > - **Na een vangnet-zin weer een opdrachtzin** als het kind daarna nog iets moet doen (`zegOpdracht`): `zegDoor` laat de pijl staan tot het volgende stuk. Zonder opdrachtzin stond bij de puzzel de pijl erbij terwijl het kind moest slepen (15.27 punt 3), en de opdrachtregel was weg (14.32). Te zien in de test als een lange "einde zin → volgend stuk" (4,4 s).
 > - **Geldt ook voor eerder gebouwde gouden lessen:** gezocht in de 10 andere: 0 gevonden.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES DAGEN (11 november 2026; KEUZES-VOOR-SARA.md Ronde 38) — geldt voor elke gouden les
+> - **"Je zit er vlak naast." alleen als het gekozen ding 2 buren heeft.** Een wagon aan het eind (zondag) heeft er maar 1: dan blijft er na die zin maar 1 keuze over (verklapper, 15.17). Het fouttabel-script rekent per fout antwoord uit welke keuzes na de eerste zin nog kunnen (`overNa`); bij een eind-wagon zegt Bliepo alleen wat het kind koos.
+> - **Een zin over "de dag die verder weg ligt" niet als "X is verder weg"**, maar "Die dag ligt verder van vandaag af.": niet 2 keer de dagnaam achter elkaar ("Je koos maandag. Maandag is …").
+> - **Elke hint eindigt met de vraag of de opdracht** ("… Welke dag komt na dinsdag?", "… Sleep de dag die mist."): dan hoeft de vraag er niet nog eens achter (F1, geleerd bij Vormen). Het script controleert dat.
+> - **Een vraag met 2 goede antwoorden** (het weekend: zaterdag én zondag, 14.30): de les en de testspeler werken met een lijst goede antwoorden (`goed: number[]`), ook bij het samen voordoen (beide tellen). Een testspeler die `t.goed` als 1 antwoord neemt, tikt dan niets aan.
+> - **Een oud HTML-vlak** (de weektrein): een nieuw Phaser-vlak met dezelfde plaatjes, iets kleiner zodat alles links van het tekstvak past (x < 860); de oude trein blijft voor de oude les (zoals Huisnummers).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): "vlak naast"/"dichtbij" bij een keuze aan de rand van een rij.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

@@ -1556,3 +1556,89 @@ vormen, keuzes, goede antwoorden en de puzzel zijn gelijk gebleven (15 vragen: 7
    eerder 58–60 haalde). De bouwer mat 60 / 60. Graag nog 1 keer meten met de energiebesparing uit, vóór het online gaat.
 
 **Om te weten:** de punten uit Ronde 36 (1 t/m 9) staan nog open voor jou.
+
+## Ronde 38 — gouden les Dagen (squla-dagen-van-de-week-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-dagen-van-de-week "Dagen van de week" (die is niet veranderd, de oude weektrein
+ook niet). Bekijken: http://localhost:3000/voorbeeld/les/squla-dagen-van-de-week-gouden?naam=Testkind (liefst via het
+lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** het onderwerp **Dagen** heeft precies 1 Squla-les: "Dagen van de week"
+(squla-dagen-van-de-week, KOPPELING.md §9). Die heb ik genomen. De 3 lessen squla-tijd-dagen-1/2/3 ("Dagen van de week",
+level 1 tot 3) horen bij het onderwerp **Tijd** (§10); die heb ik niet aangeraakt, zodat de gouden les Tijd daar vrij
+uit kan kiezen. Let op: de oude les squla-dagen-van-de-week volgt alleen het leerdoel van Squla (de vragen zijn eigen werk
+van 30 oktober). Wil je liever squla-tijd-dagen-1 (precies de vragen van Squla) als gouden les Dagen? Dan bouw ik die
+opnieuw.
+
+**Geen Synthesis-les.** Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §9). Daarom: **exact
+hetzelfde skelet** als de andere gouden lessen (15.25). Alles wat per onderwerp anders is, is **eigen invulling, niet
+van Synthesis**: de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen. Dat staat in
+SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/dagen.md en per rij in FOUTTABEL-squla-dagen-van-de-week-gouden.md.
+
+**Inhoud (15.22):** dezelfde 17 vragen, in dezelfde volgorde, met dezelfde dagen, dagkaarten en goede antwoorden: 3 keer
+"Tik op de wagon van …", 2 keer "Welke dag komt na …?", 2 keer "Welke dag komt vóór …?", 3 keer "Er mist een dag"
+(slepen), gisteren, morgen, het weekend (2 vragen; zaterdag én zondag goed), na zondag, vóór maandag en "Vandaag is het
+maandag. Welke dag was het gisteren?". Niets toegevoegd, niets weggelaten. Niet overgenomen: de startvraag "Kun je dit
+al?" en de uitleg na Nee (zoals bij Geld en Vormen: die horen alleen bij een les waarvan het draaiboek een startvraag
+heeft).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Welke dag komt voor vrijdag?" | "voor" kan een kind lezen als "komt er voor in" | "Welke dag komt vóór vrijdag?" (met accenten; zelfde vraag) |
+| "2 dagen samen heten het weekend. Tik op een dag van het weekend." | een zin die met een cijfer begint leest lastig | "Het weekend heeft 2 dagen. Tik op een dag van het weekend." |
+| Gisteren/morgen: alleen een gele pijl boven vandaag | F3: niet duidelijk genoeg | een gele pijl met een bordje "vandaag" erboven; de vraag zegt "Vandaag is het …" |
+| Een tik op een wagon of kaart was meteen het antwoord; de gekozen wagon kreeg een witte rand, een foute werd vaag | tikken op iets in beeld gaat met een vinkje; geen rand en niets vaag om de keuze (6.5, 5.3, 7.8a) | een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| Slepen: de kaart werd nagekeken zodra hij in de lege plek lag | slepen = nakijken met het vinkje (6.5) | het kind mag wisselen en tikt dan op het vinkje |
+| Vraag 8: een handje deed 1 keer het slepen voor | hulp komt bij de gouden lessen vanzelf na ± 6 s (15.19) | na ± 6 s stilte het hulphandje bij de lege plek, met 1 zin |
+| De oude trein was HTML (niet te meten met `npm run vloeiend`) en liep tot onder het tekstvak | HARDE REGEL 7; vaste zones (15.30) | dezelfde plaatjes in een nieuw Phaser-vlak, wagons iets kleiner, alles links van het tekstvak |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht.
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De denkfouten:** `dag-ernaast`, `voor-na-verwisseld`, `gisteren-morgen-verwisseld`, `vandaag-gekozen`,
+   `andere-dag` (verder weg; geen reden verzonnen) en `schooldag` (bij het weekend). Bliepo zegt alleen wat waar is
+   ("Je koos maandag. Maandag komt vóór dinsdag.", "Dat is morgen.", "Dat is een schooldag."). Goed zo?
+2. **De hints** zeggen hoe je zoekt, niet welke dag het is: "Zeg de dagen op tot donderdag.", "Kijk naar de wagons naast
+   de lege plek. Sleep de dag die daartussen hoort.", "Gisteren is de dag vóór vandaag. Welke dag was het gisteren?".
+   "Je zit er vlak naast." zegt Bliepo alleen als de gekozen wagon 2 buren heeft (anders verklapt het). Goed zo?
+3. **Samen voordoen bij de 2e fout:** bij "Tik op de wagon van …" loopt het rode rondje van maandag tot die dag en noemt
+   Bliepo elke dag; bij na/vóór en gisteren/morgen komt de hele trein, een rondje om de dag van de vraag en dan om het
+   antwoord; bij "Er mist een dag" een rondje om de buren en dan om de goede kaart. Het kind tikt of sleept hem zelf.
+   Goed zo?
+4. **Het hulphandje:** bij slepen bij de lege plek (niet op een kaart); bij de kleine stap naast de wagon of kaart met
+   het rondje. Goed zo?
+5. **Slepen:** vangnet na 45 s zonder nakijken: dan doen we het samen (zoals de ketting bij Vormen). Goed zo?
+6. **Heel snel antwoorden:** Bliepo zegt niets (er is geen draaiboek met een opmerking). Goed zo?
+
+**Graag een besluit (ja of nee):**
+7. **Voorlezen van de dagnaam bij aanwijzen** (oude trein: muis erop of lang drukken = Bliepo zegt de dag) zit niet in de
+   gouden les: bij "Tik op de wagon van donderdag" zou het het antwoord voorzeggen, en het kan dubbel klinken met Bliepo
+   (F8). De namen staan wel groot op de bordjes. Laten zo? Advies: **ja**.
+8. **De wagons zijn iets kleiner** dan in de oude les (96 in plaats van 108 punten breed), zodat de hele trein links van
+   het tekstvak past. De namen zijn nog goed te lezen (zie de schermfoto's). Goed zo?
+9. **Deze les als gouden les Dagen**, terwijl er geen Synthesis-les is. Goed zo?
+
+**Afwijkingen van het skelet:** geen.
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (dezelfde treinplaatjes als de oude
+les). Nieuwe zinnen staan in squla-dagen-gouden-zinnen.ts (nog niet door Ruth ingesproken).
+
+**Niet gedaan door mij:** de onafhankelijke kind-test en keuring (ik mocht geen helpers inzetten). Mijn eigen speeltest:
+KINDTEST-DAGEN-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147):
+- Fouttabel-script `scripts/fouttabel-dagen-gouden.ts`: 65 foute antwoorden, inhouds-, verklap- en waarheidscontrole in
+  orde (409 beweringen), geen kaal cijfer in 621 zinnen.
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen.
+- Speelcontrole GOED (57 stappen) en ALLEFOUT (219 stappen), F7=1: tot het eind, F7 0, F8 0.
+- `scripts/test-dagen-gouden.mjs`: alle routes tot de eindkaart, nooit op de pijl hoeven tikken. Rondje nooit om het
+  antwoord. Hulphandje alleen bij opdrachten. Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768: 0.
+- Wit blijft wit (site 3,5 s traag): 0 keer terug naar grijs.
+- Woord voor woord (echte Google-stem): 16/16 en 6/6 woorden apart opgelicht; per woord gemiddeld 121 ms naast het
+  gesproken moment, 15 van 20 binnen ± 150 ms.
+- Vloeiend: laptop 60 beelden/s (langste 36 ms), trage telefoon 60 beelden/s (23 ms). De Mac stond in de energiebesparende
+  stand. Openen in de ontwikkelversie 1,6 s / 3,4 s (op de echte site moet het onder 1 s).
+
+**Om te weten:** op een telefoon rechtop staat de nieuwe trein op 1 rij en is hij klein (de oude trein had daar 2 rijen).
+Telefoon is een latere fase (DESIGN-LATER.md); ik heb het daar niet opgelost.
