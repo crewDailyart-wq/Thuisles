@@ -82,6 +82,15 @@ export type VormenProps = {
   hint?: number;
   /** Gelijk aan `hint` zodra Bliepo klaar is met zijn zin over de hint: dan gaat het rondje weg. */
   hintWeg?: number;
+  /**
+   * Alleen voor de gouden les Patronen (squla-vormen-patronen-1-gouden, 11 november 2026). Zonder deze optie werkt alles
+   * precies zoals het was (de oude lessen geven hem niet mee). Met de optie: de ketting gaat niet op slot als hij vol is
+   * (het kind mag nog schuiven; nakijken gaat met het vinkje, BOUWREGELS 6.5) en meldt `kettingVol` (met de ids) en
+   * `kettingOpen`; een puzzelstukje dat vastklikt meldt `puzzelStuk`.
+   */
+  gouden?: boolean;
+  /** Alleen voor de gouden les: ophogen = Bliepo legt 1 los puzzelstukje op zijn plek (het vangnet: de les loopt nooit vast). */
+  bliepoLegt?: number;
 };
 
 type Staat = { licht: string[]; gekozen: string[]; goedIds: string[]; uit: string[]; actief: boolean };
@@ -223,6 +232,8 @@ interface VormenScene {
   tikPlek(i: number): void;
   hint(): void;
   hintWeg(): void;
+  zetGouden(aan: boolean): void;
+  bliepoLegt(): void;
 }
 
 type Stuk = { img: Img; i: number; vast: boolean; thuis: { x: number; y: number }; sl: string; /** Een afdruk van wat er op het stukje staat: stukjes met dezelfde afdruk zien er hetzelfde uit. */ gelijk: string };
@@ -262,6 +273,13 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
     /* slepen */
     druk: { soort: "stuk" | "kraal" | "tik"; nr: number; id: string; x0: number; y0: number; dx: number; dy: number; sleept: boolean } | null = null;
     diepte = 10;
+    /* alleen de gouden les (zie VormenProps.gouden) */
+    gouden = false;
+    kettingVol = false;
+
+    zetGouden(aan: boolean) {
+      this.gouden = aan;
+    }
 
     constructor() {
       super("squla-vormen");
@@ -440,6 +458,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.plekGfx = null;
       this.ketting = k;
       this.kettingKlaar = false;
+      this.kettingVol = false;
       if (!k) return;
       const g = this.add.graphics();
       this.plekGfx = g;
@@ -491,6 +510,17 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       this.tekenPlekken();
       this.zetKettingTest();
       speelLesgeluid("tik");
+      if (this.gouden) {
+        /* Gouden les: niet op slot; vol = melden (het vinkje kijkt na), weer open = ook melden, anders "een kraal
+           verschoven" (1 melding per keer: de les luistert steeds naar 1 melding tegelijk). */
+        const vol = k.plekken.every((_, i) => this.kralen.some((x) => x.plek === i));
+        if (vol !== this.kettingVol) {
+          this.kettingVol = vol;
+          const ids = vol ? k.plekken.map((_, i) => this.kralen.find((x) => x.plek === i)!.id) : [];
+          this.melder(vol ? { soort: "kettingVol", ids } : { soort: "kettingOpen" });
+        } else this.melder({ soort: "kettingKraal" });
+        return;
+      }
       if (k.plekken.every((_, i) => this.kralen.some((x) => x.plek === i)) && !this.kettingKlaar) {
         this.kettingKlaar = true;
         const ids = k.plekken.map((_, i) => this.kralen.find((x) => x.plek === i)!.id);
@@ -640,6 +670,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
         speelLesgeluid("tik");
         if (this.gekozen === st.i) this.gekozen = null;
         this.zetPuzzelTest();
+        if (this.gouden) this.melder({ soort: "puzzelStuk" });
         if (this.stukken.every((x) => x.vast)) this.puzzelAf();
         return;
       }
@@ -701,6 +732,15 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
       /* verkeerde plek: het stukje blijft gekozen en schudt even */
       this.schud(st.img);
       this.melder({ soort: "puzzelMis" });
+    }
+
+    /** Alleen de gouden les: Bliepo legt het gekozen (of het eerste losse) stukje op zijn plek. */
+    bliepoLegt() {
+      if (!this.puzzel || !this.pzBezig) return;
+      const st = (this.gekozen !== null ? this.stukken[this.gekozen] : null) ?? this.stukken.find((x) => !x.vast);
+      if (!st || st.vast) return;
+      st.img.setVisible(true).setAlpha(1);
+      this.legStuk(st, st.thuis.x, st.thuis.y, true);
     }
 
     /** Bliepo is uitgesproken over de hint: het rondje gaat weg. */
@@ -860,7 +900,7 @@ function maakScene(Phaser: PhaserModule, rustig: boolean) {
 
 /* ---------- het vlak ---------- */
 
-export function SqulaVormenVlak({ beeld, licht = [], gekozen = [], goedIds = [], uit = [], actief = false, goed = 0, fout = 0, ketting = null, puzzel = null, hint = 0, hintWeg = 0, meld, schaal }: VormenProps & Vlakbasis) {
+export function SqulaVormenVlak({ beeld, licht = [], gekozen = [], goedIds = [], uit = [], actief = false, goed = 0, fout = 0, ketting = null, puzzel = null, hint = 0, hintWeg = 0, gouden = false, bliepoLegt = 0, meld, schaal }: VormenProps & Vlakbasis) {
   const { plek, scene } = useHoloMotor<VormenScene>(schaal, maakScene, { invoer: true });
   const meldRef = useRef(meld);
   useEffect(() => {
@@ -869,6 +909,13 @@ export function SqulaVormenVlak({ beeld, licht = [], gekozen = [], goedIds = [],
   useEffect(() => {
     scene?.verbind((g) => meldRef.current(g));
   }, [scene]);
+  /* Alleen de gouden les zet dit aan; vóór de ketting en de puzzel, zodat die het al weten. */
+  useEffect(() => {
+    scene?.zetGouden(gouden);
+  }, [scene, gouden]);
+  useEffect(() => {
+    if (scene && bliepoLegt > 0) scene.bliepoLegt();
+  }, [scene, bliepoLegt]);
 
   const beeldSleutel = JSON.stringify(beeld);
   useEffect(() => {

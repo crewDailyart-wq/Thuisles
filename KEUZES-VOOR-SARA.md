@@ -1450,3 +1450,86 @@ keuzes en goede antwoorden zijn gelijk gebleven. De oude les squla-geld-geldmach
 
 **Om te weten:** vloeiend 58–60 beelden/s (de Mac stond wel in de energiebesparende stand); alle tests groen; de punten
 uit Ronde 34 (1 t/m 8) staan nog open voor jou.
+
+## Ronde 36 — gouden les Vormen: Patronen (squla-vormen-patronen-1-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-vormen-patronen-1 "Patronen" (die is niet veranderd). Bekijken:
+http://localhost:3000/voorbeeld/les/squla-vormen-patronen-1-gouden?naam=Testkind (liefst via het lesoverzicht
+/voorbeeld/les, dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** van de 7 Squla-lessen Vormen koos ik **"Patronen" level 1**. Het is de
+eerste Squla-oefening van "Vormen en figuren" en de eerste in de lessenlijst. De 3 lessen "Vormen en kleuren" zijn de
+vormenpuzzels: die heb ik niet aangeraakt. Opruimen en Links/rechts heb ik ook niet gekozen.
+
+**Geen Synthesis-les.** Synthesis heeft geen les over vormen of patronen (KOPPELING.md §13, alles op "Coming soon").
+Daarom: **exact hetzelfde skelet** als de andere gouden lessen (15.25). Alles wat per onderwerp anders is, is **eigen
+invulling, niet van Synthesis**: de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen. Dat staat in
+SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/vormen.md en per rij in FOUTTABEL-squla-vormen-patronen-1-gouden.md.
+
+**Inhoud (15.22):** dezelfde 15 vragen, in dezelfde volgorde, met dezelfde kralen, dingen, vormen en keuzes: 7 keer een
+kraal kiezen, 3 keer de ketting langer maken (3 kralen slepen), 3 keer "Wat hoort bij de pijl?", 1 keer "Welke vorm komt
+nu?" en 1 puzzel. Niets toegevoegd, niets weggelaten. Niet overgenomen: de startvraag "Kun je dit al?" en de uitleg na Nee
+(zoals bij Geld: die horen alleen bij een les waarvan het draaiboek een startvraag heeft).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Begin: "De kralen komen steeds in dezelfde volgorde terug. Welke kraal komt na de rode kraal?" (met een blauw-gele ketting in beeld) | er lag geen rode kraal in beeld; en een startvraag hoort er niet (4e ronde) | groet + "In deze les maak je patronen af. Een patroon komt steeds terug." (de blauw-gele ketting blijft in beeld) |
+| Kiezen: een tik op een keuze was meteen het antwoord, met een gloed om de keuze | tikken op iets in beeld gaat met een vinkje, en geen gloed om de keuze (6.5, 7.8a) | de keuze krijgt een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| Bij goed werd de keuze groen, bij fout schudde alles | geen groen of rood om de keuze (5.3, 7.6) | alleen Bliepo's scherm kleurt; bij goed een korte lichtgolf |
+| De ketting werd nagekeken zodra de 3 kralen lagen, en zat dan vast | slepen = nakijken met het vinkje (6.5); het kind mag nog schuiven | het kind schuift tot het klaar is en tikt dan op het vinkje |
+| De puzzel: "Sleep elk stukje naar zijn plek. Of tik op een stukje en dan op zijn plek." | samen te lang voor het vaste tekstvak (15.30) | "Maak de puzzel. Sleep elk stukje naar zijn plek." (tikken werkt nog steeds) |
+| Puzzel: na 3 keer mis wees Bliepo de plek aan | 2 pogingen (15.11) | 1e keer mis: zin + hint; 2e keer: uitleg en samen voordoen (rondje om de plek van 1 stukje) |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht. Wel, als laag 1 van de gouden lessen: na de
+hint komt de vraag kort terug (F1), behalve als de hint al zegt waar het over gaat.
+
+**Gedeeld vlak (eerlijk gemeld):** het oude vormenvlak (squla-vormen-vlak.tsx) heeft 2 nieuwe opties gekregen die
+**alleen** de gouden les gebruikt: `gouden` (de ketting gaat niet op slot, en het vlak meldt elke kraal en elk vast
+puzzelstukje) en `bliepoLegt` (Bliepo legt een puzzelstukje, voor het vangnet). Zonder die opties werkt alles precies
+zoals het was; de oude vormenlessen en de puzzels zijn opnieuw gespeeld en werken. Mag dat zo?
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De denkfouten:** `laatste-herhaald` (hetzelfde als aan het eind), `buur-herhaald` (hetzelfde als ernaast),
+   `paar-vergeten` (bij een patroon met paren), `verkeerde-volgorde` en bij de puzzel `stukje-mis`. Bliepo zegt alleen wat
+   waar is ("Je koos de blauwe kraal. Na rood komt nooit blauw."). Goed zo?
+2. **De hints** zeggen hoe je zoekt, niet wat het antwoord is: "Zoek eerder in de ketting een rode kraal. Kijk wat daarna
+   komt." of "Zoek het stukje dat steeds terugkomt." Goed zo?
+3. **Samen voordoen bij de 2e fout:** Bliepo wijst het stukje aan dat steeds terugkomt ("Kijk: rood, groen, blauw. Dat komt
+   steeds terug."), zet een rondje om de goede keuze en het kind tikt hem aan. Bij de ketting legt Bliepo 2 kralen en
+   sleept het kind de laatste. Goed zo?
+4. **Het hulphandje:** bij de ketting bij de eerste lege plek, bij de puzzel bij het bord; nooit op een kraal of keuze
+   (dat zou het antwoord aanwijzen). Goed zo?
+5. **De puzzel:** een stukje op een verkeerde plek telt als poging. Vangnet: 20 s geen stukje erbij = Bliepo legt er 1;
+   nog eens 20 s = Bliepo maakt de puzzel af. Goed zo?
+6. **De ketting:** vangnet na 45 s zonder nakijken: dan doen we hem samen. Goed zo?
+7. **Heel snel antwoorden:** Bliepo zegt niets (er is geen draaiboek met een opmerking). Goed zo?
+
+**Graag een besluit (ja of nee):**
+8. **Het gekozen puzzelstukje licht geel op** (oude puzzel, niet veranderd). Dat lijkt op een gloed om de keuze (7.8a),
+   maar zonder dat zie je bij tikken niet welk stukje je vasthebt. Laten zo? Advies: **ja, voorlopig**.
+9. **Deze les als gouden les Vormen** (Patronen level 1), terwijl er geen Synthesis-les is. Goed zo?
+
+**Afwijkingen van het skelet:** geen. Tijden: einde zin → volgend stuk gemiddeld 744–818 ms; hulphandje ± 6 s na de
+opdrachtzin (7,4–7,9 s na het begin); vangnet 20 s. Alleen bij het vangnet van de puzzel duurt het langer (Bliepo legt
+de stukjes: 1,0 en 3,0 s).
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes. Nieuwe zinnen staan in
+squla-vormen-gouden-zinnen.ts (nog niet door Ruth ingesproken).
+
+**Niet gedaan door mij:** de onafhankelijke kind-test en keuring (ik mocht geen helpers inzetten). Mijn eigen speeltest:
+KINDTEST-VORMEN-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147):
+- Fouttabel-script `scripts/fouttabel-vormen-gouden.ts`: 37 foute antwoorden, inhouds-, verklap- en waarheidscontrole in
+  orde (246 beweringen), geen kaal cijfer in 399 zinnen.
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen.
+- Speelcontrole GOED (82 stappen) en ALLEFOUT (560 stappen), F7=1: tot het eind, F7 0, F8 0.
+- `scripts/test-vormen-gouden.mjs`: routes goed, fouten, alles fout, elk ander fout antwoord, weer, vangnet, wachten, tik
+  op de pijl, kleur: tot de eindkaart, nooit op de pijl hoeven tikken. Rondje nooit om het antwoord. Hulphandje alleen bij
+  opdrachten. Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768: 0. Speelvlak 93 px links van het tekstvak.
+- Wit blijft wit (site 3,5 s traag): 0 keer terug naar grijs.
+- Woord voor woord (echte Google-stem): 12/12 en 13/13 woorden apart opgelicht; per woord gemiddeld 187 ms naast het
+  gesproken moment, 10 van 23 binnen ± 150 ms (gedeeld spreekmodel; precies wordt het met Ruth).
+- Vloeiend: laptop 60 beelden/s (langste 47 ms), trage telefoon 60 beelden/s (42 ms). De Mac stond in de
+  energiebesparende stand. Openen in de ontwikkelversie 1,7 s / 3,4 s (op de echte site moet het onder 1 s).

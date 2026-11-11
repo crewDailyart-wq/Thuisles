@@ -103,6 +103,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-rekentaal", titel: "Groot en klein, vol en leeg", synthesis: "Squla groep 3 · Meten en maten · Rekentaal (alleen leerdoel)" },
   { id: "squla-dagen-van-de-week", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week (alleen leerdoel)" },
   { id: "squla-vormen-patronen-1", titel: "Patronen", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 1 (alleen leerdoel)" },
+  { id: "squla-vormen-patronen-1-gouden", titel: "Patronen", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 1 · gouden les (nieuwe versie van squla-vormen-patronen-1) · geen Synthesis-les: skelet van de gouden lessen, eigen invulling" },
   { id: "squla-vormen-patronen-2", titel: "Patronen (moeilijker)", synthesis: "Squla groep 3 · Vormen en figuren · Patronen · level 2 (alleen leerdoel)" },
   { id: "squla-vormen-opruimen-1", titel: "Opruimen", synthesis: "Squla groep 3 · Vormen en figuren · Rommelmonster · level 2 (level 1 is bij Squla een muziekfilmpje) (alleen leerdoel)" },
   { id: "squla-vormen-orienteren-1", titel: "Links, rechts, boven, onder", synthesis: "Squla groep 3 · Vormen en figuren · Oriënteren · level 1 (alleen leerdoel)" },

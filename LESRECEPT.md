@@ -155,6 +155,15 @@
 > - **Een oud vlak met een eigen indeling hergebruiken** (`paneel`): de overlay rekent met dezelfde `indeling()` en hetzelfde midden als het oude vlak, en het rondje komt van het oude vlak zelf (`licht` + `rondje`); geef geen `goed`, `fout`, `gekozen` of `uit` door (gloed en vaag om de keuze).
 > - **Niet nagelopen in de andere gouden lessen** (alleen gemeld, eerst Sara): kale cijfers in eigen zinnen en een gekleurd zoekgetal in de vraag.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES VORMEN: PATRONEN (11 november 2026; KEUZES-VOOR-SARA.md Ronde 36) — geldt voor elke gouden les
+> - **De les luistert naar 1 melding van het vlak tegelijk** (`wachtOpVlak`): een vlak dat 2 meldingen direct na elkaar stuurt, verliest de 2e. Stuur per handeling 1 melding (bij de ketting: "kraal verschoven", of "vol", of "weer open").
+> - **Een oud vlak dat op slot gaat** (de ketting na 3 kralen): geef het een optie die alleen de gouden les meegeeft (`gouden`), zodat het kind kan schuiven en met het vinkje nakijkt (6.5). Zonder de optie verandert er niets; speel de oude lessen daarna opnieuw.
+> - **Een opdracht die het kind niet kan afmaken** (de puzzel in de speelcontrole ALLEFOUT): een vangnet dat Bliepo het laat afmaken (`bliepoLegt`), anders loopt de les vast (geleerd bij Splitsen).
+> - **Een hint "zoek eerder in de rij …" alleen als het er eerder echt ligt**, en alleen als daarna in het patroon steeds hetzelfde komt (bij een paar, zoals rood rood blauw blauw, is "kijk wat na rood komt" misleidend). Laat het fouttabel-script dat nalopen.
+> - **Zegt de hint al waar het over gaat** ("… Kijk wat daarna komt." bij "Welke kraal komt na …?"), zet de vraag er dan niet nog eens achter: dubbel en te lang (Bliepo werd kleiner).
+> - **De F7-test telt een nieuwe opdracht met dezelfde zin** (dezelfde opdracht bij de volgende ketting) **niet als F7**: Bliepo zegt hem echt opnieuw. Laat het slepen van het kind als actie loggen.
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): de eerste 2 punten gaan alleen over lessen met slepen in een oud vlak.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

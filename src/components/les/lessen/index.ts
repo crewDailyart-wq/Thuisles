@@ -51,6 +51,8 @@ import { LESSEN_SQULA_GETALLENLIJN_GOUDEN } from "./squla-getallenlijn-gouden";
 import { LESSEN_SQULA_METEN_GOUDEN } from "./squla-meten-gouden";
 /* De gouden les Geld (11 november 2026, BOUWREGELS 15.22, 15.25): een nieuwe les naast squla-geld-geldmachine-1. */
 import { LESSEN_SQULA_GELD_GOUDEN } from "./squla-geld-gouden";
+/* De gouden les Vormen: Patronen (11 november 2026, BOUWREGELS 15.22, 15.25): een nieuwe les naast squla-vormen-patronen-1. */
+import { LESSEN_SQULA_VORMEN_GOUDEN } from "./squla-vormen-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -75,6 +77,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_GETALLENLIJN_GOUDEN,
   ...LESSEN_SQULA_METEN_GOUDEN,
   ...LESSEN_SQULA_GELD_GOUDEN,
+  ...LESSEN_SQULA_VORMEN_GOUDEN,
   ...LESSEN_SQULA_SPLITSEN,
   ...LESSEN_SQULA_SPLITSEN_GOUDEN,
   ...LESSEN_SQULA_PIRAAT,
