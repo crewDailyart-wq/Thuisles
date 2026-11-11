@@ -114,7 +114,7 @@ function bekend(v: Vraag, x: string, z: string): string | null {
   }
   /* Op volgorde. */
   if (z === "Je zette ze van groot naar klein.") return !kies && xs.every((id, i) => i === 0 || maat(v, xs[i - 1]) > maat(v, id)) ? null : "niet van groot naar klein";
-  if (z === "Er ligt nog een kleinere.") return !kies && !isMin(v, xs[0]) ? null : "er is geen kleinere";
+  if (z === "Er ligt nog een kleinere." || z === "Er staat nog een kleinere.") return !kies && !isMin(v, xs[0]) && z.includes(v.ding === "beker" ? "staat" : "ligt") ? null : "er is geen kleinere (of bekers liggen / appels staan)";
   if (z === "Je zette de grootste in het midden.") return !kies && isMax(v, xs[1]) ? null : "de grootste staat niet in het midden";
   if (z === "Weer stond de kleinste niet vooraan.") return !kies && !isMin(v, xs[0]) ? null : "de kleinste stond wel vooraan";
   if (z === "Je zette ze weer in dezelfde volgorde.") return !kies ? null : "past niet";
@@ -123,11 +123,16 @@ function bekend(v: Vraag, x: string, z: string): string | null {
   if ((m = z.match(/^Zet de (\w+) van klein naar groot\.$/))) return !kies && m[1] === meervoud(v) ? null : "past niet";
   if (z === "Ze beginnen bij dezelfde streep.") return v.indeling === "onder" ? null : "geen streep";
   if (/^Kijk waar (elke sliert ophoudt|ze allemaal stoppen)\.$/.test(z) || z === "Kijk welke sliert als eerste ophoudt.") return v.indeling === "onder" && (!z.includes("sliert") || v.ding === "sliert") ? null : "past niet";
-  if (/^(Kijk van rand tot rand hoe breed ze zijn|Vergelijk hoe breed ze zijn)\.$/.test(z)) return v.ding === "pannenkoek" ? null : "past niet";
-  if (/^(Kijk hoe hoog en hoe breed ze zijn|Vergelijk ze naast elkaar|Vergelijk ze allemaal met elkaar)\.$/.test(z)) return v.indeling === "rij" && ["beker", "mand", "appel"].includes(v.ding) ? null : "past niet";
+  if (/^(Kijk van rand tot rand hoe breed ze zijn|Kijk hoe breed elke pannenkoek is)\.$/.test(z)) return v.ding === "pannenkoek" ? null : "past niet";
+  if (z === "Kijk hoe hoog en hoe breed ze zijn.") return v.indeling === "rij" && ["beker", "mand", "appel"].includes(v.ding) ? null : "past niet";
+  if ((m = z.match(/^Kijk naar (allebei de|alle) (\w+)\.$/))) return v.indeling === "rij" && m[2] === meervoud(v) && (m[1] === "alle") === (v.dingen.length === 3) ? null : "past niet";
+  /* WOORDEN-GROEP3.md: "vergelijken" als werkwoord niet (keuring 11 november 2026). */
+  if (/\bvergelijk/i.test(z)) return "vergelijk (WOORDEN-GROEP3.md)";
   if (/^(Kijk hoe hoog het sap komt|Zoek sap tot aan de rand|Kijk waar geen sap in zit|Zoek waar niets in zit|Kijk tot waar het sap komt|Zoek sap tot de helft)\.$/.test(z)) return v.ding === "glas" ? null : "geen glazen";
   if (/^(Iets zwaars trekt de weegschaal omlaag|Kijk welke kant van de weegschaal zakt|Iets lichts gaat omhoog op de weegschaal|Kijk welke kant van de weegschaal omhoog gaat|Iets groots is niet altijd zwaar)\.$/.test(z)) return v.soort === "weeg" ? null : "geen weegschaal";
-  if (/^(Kijk welke het kleinst is|Begin met de kleinste en pak dan steeds een grotere)\.$/.test(z)) return !kies ? null : "past niet";
+  if (/^(Kijk welke het kleinst is|Zoek eerst de kleinste)\.$/.test(z)) return !kies && !isMin(v, xs[0]) ? null : "past niet (het kind begon al met de kleinste)";
+  if (z === "Begin met de kleinste en pak dan steeds een grotere.") return !kies && !isMin(v, xs[0]) ? null : "past niet (het kind begon al met de kleinste)";
+  if (z === "Tik steeds op de kleinste die nog over is.") return !kies ? null : "past niet";
   /* Uitleg bij de 2e fout (daarna doet Bliepo het samen voor). */
   const uitleg: [RegExp, (v: Vraag) => boolean][] = [
     [/^Groter betekent hier: hij is breder\.$/, (q) => q.woord === "groter" && q.ding === "pannenkoek"],

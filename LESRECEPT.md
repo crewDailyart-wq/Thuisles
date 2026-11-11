@@ -205,6 +205,13 @@
 > - **Ook in de eerste zin zelf niet 2 keer hetzelfde getal** ("Je koos 5. Op 5 dagen …" → "Op zoveel dagen …"). Laat het herhalingsscript elk paar (eerste zin + hint, en "Nu koos je …"/"Je koos weer …" + uitleg) nalopen.
 > - **De dag van de vraag mag terugkomen** ("Die komt niet meteen na maandag. Meteen na maandag komt …"): zonder de dagnaam is de uitleg na "Je koos weer …" niet meer duidelijk. Sara beslist (KEUZES Ronde 41 punt B).
 
+> ## ⭐ GELEERD BIJ DE KEURING REKENTAAL (onafhankelijke keurder, 11 november 2026; KEURING-REKENTAAL-GOUDEN.md) — geldt voor elke gouden les
+> - **Toets elke hint aan WOORDEN-GROEP3.md**, ook de reserve-versie: "Vergelijk …" stond in 4 hints ("vergelijken" als werkwoord mag niet). Het fouttabel-script meldt het nu.
+> - **Een hint bij op volgorde hoort bij de denkfout:** wie al met de kleinste begon, heeft niets aan "Begin met de kleinste". Kies de hint per denkfout, niet per vraag.
+> - **Het werkwoord past bij het ding:** bekers staan, appels liggen ("Er staat nog een kleinere.").
+> - **Tel ook hoe vaak een hint en het samen voordoen hetzelfde zeggen** over de hele les ("Ze beginnen bij dezelfde streep." 6 keer bij een kind dat veel fouten maakt).
+> - **Geldt ook voor eerder gebouwde gouden lessen:** "vergelijk" in een zin van Bliepo: 0 van 13; "ligt" bij iets wat staat: 0 van 13.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

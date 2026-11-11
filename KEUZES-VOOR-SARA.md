@@ -1870,3 +1870,28 @@ KINDTEST-REKENTAAL-GOUDEN.md.
   alle plaatjes alvast, verspreid over de eerste seconden. Daarna 2 keer: laptop 60 beelden/s (langste 25–26 ms), trage
   telefoon 60–61 beelden/s (31–43 ms). De Mac stond in de energiebesparende stand. Openen in de ontwikkelversie
   1,5–1,7 s / 3,2–3,4 s (op de echte site moet het onder 1 s; meten vóór online).
+
+## Ronde 43 — keuring gouden les Rekentaal (onafhankelijke keurder, 11 november 2026)
+
+Oordeel: **GOEDGEKEURD** na 4 kleine herstellingen. Verslag: KEURING-REKENTAAL-GOUDEN.md. Inhoud (16 vragen,
+voorwerpen, maten, keuzes, antwoorden) niet veranderd; de oude les squla-rekentaal en het oude vlak niet aangeraakt.
+
+**Hersteld (alleen hints en 1 zin):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| "Vergelijk hoe breed ze zijn." / "Vergelijk ze allemaal met elkaar." (vraag 1, 9, 11) | "vergelijken" staat op de niet-lijst (WOORDEN-GROEP3.md) | "Kijk hoe breed elke pannenkoek is." / "Kijk naar alle manden." / "Kijk naar alle appels." |
+| "Je begon met deze beker. Er ligt nog een kleinere." | bekers staan, ze liggen niet | "Er staat nog een kleinere." (bij appels blijft "ligt") |
+| Op volgorde, kleinste vooraan en dan de grootste: hint "Begin met de kleinste …" of "Kijk welke het kleinst is." | het kind begon al goed; de hint past niet bij de denkfout | "Tik steeds op de kleinste die nog over is. Zet de … van klein naar groot." |
+| "Ze beginnen bij dezelfde streep." als hint bij vraag 8, 12 en 14 (en het samen voordoen zegt het ook) | een kind met veel fouten hoorde het 6 keer | vraag 8: "Kijk welke sliert als eerste ophoudt.", vraag 12: "Kijk waar ze allemaal stoppen."; vraag 14 houdt de streep |
+
+**Graag een besluit (ja of nee):**
+- **A.** Vragen met 2 voorwerpen (1–8 en 13): de 2e poging is altijd goed (er blijft 1 over). Laten zo? Advies: **ja**
+  (zelfde als Ronde 42 punt 7).
+- **B.** Bij een fout zegt Bliepo "Je koos deze mand." met een rood rondje om die mand, zolang hij het zegt (nooit om het
+  antwoord). 5.3 zegt "geen rood rondje om de keuze", 7.8 zegt "rondje om wat Bliepo noemt". Tijd, Dagen en Vormen doen
+  het ook zo. Laten zo? Advies: **ja**.
+- **C.** Vraag 2: "Hij is hoger en breder dan de andere." en dan "Kijk hoe hoog en hoe breed ze zijn." (bijna
+  hetzelfde, geen woord letterlijk 2 keer). Laten zo? Advies: **ja**.
+- **D.** Vloeiend nog 1 keer meten met de stekker erin en de energiebesparing uit, vóór online (zie KEURING).
+
+Ronde 42 punt 8 (donkere ruimte) en 9 (geen voorlezen bij aanwijzen): de keurder vindt beide goed. Advies: **ja**.

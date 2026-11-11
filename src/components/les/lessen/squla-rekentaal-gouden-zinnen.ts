@@ -307,25 +307,34 @@ const SCHERM = {
 };
 
 /** De hints per vraag (2 versies, om de beurt per vraag; ze zeggen hoe je kijkt, niet waar het antwoord staat; 15.17). */
+/* Keuring 11 november 2026: geen "vergelijk" (WOORDEN-GROEP3.md: vergelijken als werkwoord niet), en "Ze beginnen bij
+   dezelfde streep." niet bij 3 vragen (het samen voordoen zegt het daar ook al): bij vraag 8 en 12 de andere versie. */
 const HINTS: Record<number, [string, string]> = {
-  1: ["Kijk van rand tot rand hoe breed ze zijn. Welke pannenkoek is groter?", "Vergelijk hoe breed ze zijn. Welke pannenkoek is groter?"],
-  2: ["Kijk hoe hoog en hoe breed ze zijn. Welke beker is kleiner?", "Vergelijk ze naast elkaar. Welke beker is kleiner?"],
+  1: ["Kijk van rand tot rand hoe breed ze zijn. Welke pannenkoek is groter?", "Kijk hoe breed elke pannenkoek is. Welke pannenkoek is groter?"],
+  2: ["Kijk hoe hoog en hoe breed ze zijn. Welke beker is kleiner?", "Kijk naar allebei de bekers. Welke beker is kleiner?"],
   3: ["Kijk hoe hoog het sap komt. Welk glas is vol?", "Zoek sap tot aan de rand. Welk glas is vol?"],
   4: ["Kijk waar geen sap in zit. Welk glas is leeg?", "Zoek waar niets in zit. Welk glas is leeg?"],
   5: ["Iets zwaars trekt de weegschaal omlaag. Wat is zwaarder?", "Kijk welke kant van de weegschaal zakt. Wat is zwaarder?"],
   6: ["Iets lichts gaat omhoog op de weegschaal. Wat is lichter?", "Kijk welke kant van de weegschaal omhoog gaat. Wat is lichter?"],
   7: ["Ze beginnen bij dezelfde streep. Welke sliert is langer?", "Kijk waar elke sliert ophoudt. Welke sliert is langer?"],
-  8: ["Ze beginnen bij dezelfde streep. Welke sliert is korter?", "Kijk welke sliert als eerste ophoudt. Welke sliert is korter?"],
-  9: ["Kijk hoe hoog en hoe breed ze zijn. Welke mand is het grootst?", "Vergelijk ze allemaal met elkaar. Welke mand is het grootst?"],
+  8: ["Kijk welke sliert als eerste ophoudt. Welke sliert is korter?", "Ze beginnen bij dezelfde streep. Welke sliert is korter?"],
+  9: ["Kijk hoe hoog en hoe breed ze zijn. Welke mand is het grootst?", "Kijk naar alle manden. Welke mand is het grootst?"],
   10: ["Kijk tot waar het sap komt. Welk glas is half vol?", "Zoek sap tot de helft. Welk glas is half vol?"],
-  11: ["Kijk hoe hoog en hoe breed ze zijn. Welke appel is het kleinst?", "Vergelijk ze allemaal met elkaar. Welke appel is het kleinst?"],
-  12: ["Ze beginnen bij dezelfde streep. Welk broodje is het langst?", "Kijk waar ze allemaal stoppen. Welk broodje is het langst?"],
+  11: ["Kijk hoe hoog en hoe breed ze zijn. Welke appel is het kleinst?", "Kijk naar alle appels. Welke appel is het kleinst?"],
+  12: ["Kijk waar ze allemaal stoppen. Welk broodje is het langst?", "Ze beginnen bij dezelfde streep. Welk broodje is het langst?"],
   13: ["Iets groots is niet altijd zwaar. Wat is zwaarder?", "Kijk welke kant van de weegschaal zakt. Wat is zwaarder?"],
   14: ["Ze beginnen bij dezelfde streep. Welk broodje is het kortst?", "Kijk waar ze allemaal stoppen. Welk broodje is het kortst?"],
 };
-/** De hint bij op volgorde zetten: de nieuwe opdracht (eindigt met wat het kind doet). */
-const hintVolgorde = (v: Vraag, nr: number) =>
-  kies2([`Kijk welke het kleinst is. Zet de ${meervoud(v)} van klein naar groot.`, `Begin met de kleinste en pak dan steeds een grotere. Zet de ${meervoud(v)} van klein naar groot.`], nr);
+/**
+ * De hint bij op volgorde zetten: de nieuwe opdracht (eindigt met wat het kind doet), per denkfout (keuring 11 november
+ * 2026: wie al met de kleinste begon, heeft niets aan "Begin met de kleinste"; en niet "Je begon …" + "Begin …").
+ */
+const hintVolgorde = (v: Vraag, code: Denkfoutnaam) => {
+  const zet = `Zet de ${meervoud(v)} van klein naar groot.`;
+  if (code === "grootste-in-het-midden") return `Tik steeds op de kleinste die nog over is. ${zet}`;
+  if (code === "niet-bij-kleinste") return `${kies2(["Kijk welke het kleinst is.", "Zoek eerst de kleinste."], v.nr)} ${zet}`;
+  return `Begin met de kleinste en pak dan steeds een grotere. ${zet}`;
+};
 
 /** Welke denkfout bij een fout antwoord hoort (vaste regel, zodat het script elke combinatie kan nalopen). */
 export function denkfoutVan(v: Vraag, x: string): Denkfoutnaam {
@@ -364,7 +373,8 @@ function tekst(v: Vraag, x: string, code: Denkfoutnaam): { eerste2: string; uitl
   }
   /* Op volgorde. */
   if (code === "groot-naar-klein") return t("", "Van klein naar groot: de kleinste staat vooraan.");
-  if (code === "niet-bij-kleinste") return t("Er ligt nog een kleinere.", "De kleinste hoort vooraan.", ["Weer stond de kleinste niet vooraan.", "Van klein naar groot: je begint links."]);
+  /* Bekers staan, appels liggen (3.12; keuring 11 november 2026). */
+  if (code === "niet-bij-kleinste") return t(`Er ${v.ding === "beker" ? "staat" : "ligt"} nog een kleinere.`,"De kleinste hoort vooraan.", ["Weer stond de kleinste niet vooraan.", "Van klein naar groot: je begint links."]);
   return t("", "Na de kleinste komt eerst de middelste.");
 }
 
@@ -383,7 +393,7 @@ export function rekenFout(v: Vraag, x: string): Fout {
         : code === "niet-bij-kleinste"
           ? `Je begon met ${ditDing(v, xs[0])}. ${eerste2}`
           : "Je zette de grootste in het midden.";
-    return { code, soort: code, denkfout, eerste, hint: hintVolgorde(v, v.nr), uitleg, weer, scherm: SCHERM.volgorde, rondje: xs[p], bewering: { soort: "volgorde" }, over: [] };
+    return { code, soort: code, denkfout, eerste, hint: hintVolgorde(v, code), uitleg, weer, scherm: SCHERM.volgorde, rondje: xs[p], bewering: { soort: "volgorde" }, over: [] };
   }
   const eerste = `Je koos ${ditDing(v, x)}. ${eerste2}`;
   return {

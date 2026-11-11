@@ -497,4 +497,14 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
 ### Gouden les Rekentaal gebouwd (11 nov)
 - Les `squla-rekentaal-gouden` ("Groot en klein, vol en leeg"), nieuwe versie naast squla-rekentaal (oude les en oude vlak squla-rekentaal-keuken.tsx niet veranderd). Gekozen omdat het onderwerp Rekentaal precies 1 les heeft (KOPPELING §12); de pizza-lessen (Meten en maten) niet aangeraakt. Geen Synthesis-les: exact het skelet van de andere gouden lessen (15.25); denkfouten, hints, uitleg en samen voordoen zijn eigen invulling (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/rekentaal.md). Bestanden: `src/components/les/lessen/squla-rekentaal-gouden.tsx`, `squla-rekentaal-gouden-zinnen.ts`, `src/components/les/vlakken/squla-rekentaal-gouden-vlak.tsx` (+ `squla-rekentaal-gouden.module.css`; een nieuw Phaser-vlak met dezelfde tekeningen, links van het tekstvak), `scripts/fouttabel-rekentaal-gouden.ts`, `FOUTTABEL-squla-rekentaal-gouden.md`, `scripts/test-rekentaal-gouden.mjs`, `scripts/vloeiend-schermen/squla-rekentaal-gouden.json`, `KINDTEST-REKENTAAL-GOUDEN.md`.
 - Inhoud Squla (16 vragen: 8 keuken, 8 picknick, waarvan 2 keer op volgorde), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes en testcijfers: KEUZES-VOOR-SARA.md Ronde 42.
-- Nog te doen door de coördinator: onafhankelijke kind-test en keuring.
+- Nog te doen door de coördinator: onafhankelijke kind-test en keuring. *(Keuring gedaan, zie hieronder.)*
+
+### Gouden les Rekentaal gekeurd (11 nov, onafhankelijke keurder)
+- **GOEDGEKEURD** na 4 kleine herstellingen in hints en 1 zin: geen "vergelijk" meer (WOORDEN-GROEP3), "Er staat nog een
+  kleinere" bij bekers, een hint per denkfout bij op volgorde ("Tik steeds op de kleinste die nog over is." bij de
+  grootste in het midden), "Ze beginnen bij dezelfde streep." nog maar bij 1 vraag. Inhoud (16 vragen, voorwerpen,
+  maten, antwoorden) niet veranderd; oude les squla-rekentaal en squla-rekentaal-keuken.tsx niet aangeraakt.
+- Getest na herstel: fouttabel (29 rijen, 153 beweringen), opgaven, inhoudsvergelijk 0 verdwenen, speelcontrole GOED 81
+  / ALLEFOUT 191 (F7 0, F8 0), alle routes van test-rekentaal-gouden.mjs, overlap en sprongen 0 op 4 maten, wit blijft
+  wit, woord voor woord (13/13, 6/6), vloeiend (zie KEURING; energiebesparing aan). `les_uitkomsten` 147 → 147.
+  Open punten: KEUZES Ronde 43. Verslag: KEURING-REKENTAAL-GOUDEN.md.
