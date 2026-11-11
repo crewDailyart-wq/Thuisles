@@ -1307,3 +1307,34 @@ Bekijken: http://localhost:3000/voorbeeld/les/squla-plus-bakkerij-1-gouden?naam=
 **Niet gedaan door mij:** de kind-test en de onafhankelijke keuring (ik mocht zelf geen helpers inzetten).
 
 **Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes.
+
+## Ronde 31 — Woorden lichten op per woord, niet per zin (11 november 2026, F10)
+
+Jouw fout: "het licht nog niet op per woord maar per zin". Alleen de gedeelde code van het oplichten is veranderd (alleen actief in lessen met `woordenMeeMetStem`, dus alleen de 9 gouden lessen). Zinnen, fouttabellen en antwoorden zijn niet aangeraakt; oude lessen zijn niet veranderd.
+
+**Wat je zag en waarom:** de zin werd na 2,5 s in 1 keer wit als Bliepo nog niet praatte, en bleef dan wit ("wit blijft wit", Ronde 30). Daarna liep er alleen nog een oranje woord overheen. Bliepo was dan gewoon nog onderweg: de Google-stem doet er 0,4 tot 2,7 s over voor hij begint, en soms wacht de les tot 6 s tot Bliepo in beeld is. Die fout zat in alle 9 gouden lessen. Daarnaast lichtten de woorden steeds te laat op.
+
+**Nu:** de zin blijft grijs tot Bliepo begint en wordt woord voor woord wit; het woord van nu is oranje. De tijd per woord komt uit een gemeten model van de Google-stem.
+
+**Meting per les** (zichtbare Chrome, via het lesoverzicht, Testkind; `node scripts/test-woord-oplichten.mjs`). In alle gemeten zinnen lichtte elk woord apart op, zonder sprong, en werd geen zin meer in 1 keer wit vóór Bliepo begon. Afwijking per woord (zonder het 1e woord):
+
+| Les | woorden | gemiddeld naast | binnen ± 150 ms | grootste |
+|---|---|---|---|---|
+| Tellen | 13 | 143 ms | 6 | 273 ms |
+| Splitsen | 25 | 140 ms | 16 | 491 ms |
+| Plussommen | 25 | 131 ms | 15 | 446 ms |
+| Klok | 27 | 147 ms | 17 | 440 ms |
+| Minsommen | 16 | 120 ms | 12 | 373 ms |
+| Meer-minder | 20 | 96 ms | 17 | 420 ms |
+| Huisnummers | 16 | 99 ms | 11 | 242 ms |
+| Getallenlijn | 21 | 82 ms | 17 | 318 ms |
+| Meten | 16 | 96 ms | 14 | 377 ms |
+| **Samen** | **179** | **± 120 ms** | **125 (70 %)** | **491 ms** |
+
+Vóór de reparatie (zelfde meting, 166 woorden): gemiddeld 317 ms te laat, 33 % binnen ± 150 ms, grootste 1228 ms.
+
+**Wat nog niet precies kan:** met de Google-stem lukt ± 150 ms bij ongeveer 7 van de 10 woorden; vooral na een punt kan een woord tot ± 0,5 s naast zitten. De Google-stem meldt geen woorden, en Chrome op deze Mac heeft geen andere Nederlandse stem (dus geen stem om naar te wisselen). Precies wordt het met Ruth: die levert echte woordtijden (DESIGN-LATER.md). De "echte" tijden zijn gemeten door elk begin van de zin apart te laten uitspreken (het geluid stond uit, dus niet met een microfoon).
+
+**Om te weten (geen keuze nodig):**
+- `npm run vloeiend` gaf vannacht 30 beelden/s, ook zonder mijn wijziging: de Mac staat in de energiebesparende stand (Low Power Mode), die het scherm op 30 beelden/s houdt. Ik heb die instelling niet veranderd. Opnieuw meten als die stand uit staat.
+- De speelcontrole (Tellen, Minsommen, Klok, Meten), `npm run opgaven`, `npm run inhoudsvergelijk` en `scripts/test-wit-blijft-wit.mjs` zijn in orde. les_uitkomsten bleef op 147.

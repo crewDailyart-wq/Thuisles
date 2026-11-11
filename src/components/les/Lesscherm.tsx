@@ -15,7 +15,7 @@
 
 import { MERKNAAM } from "@/lib/merk";
 import { useCallback, useEffect, useMemo, useRef, useState, type CSSProperties, type ReactNode } from "react";
-import { stopPraten, zegNaElkaar, zetLesStem } from "@/lib/stem";
+import { meldStemOnderweg, stopPraten, zegNaElkaar, zetLesStem } from "@/lib/stem";
 import { speelLesgeluid, zetLesgeluiden } from "@/lib/lesgeluiden";
 import { GeluidjesKnop } from "./GeluidjesKnop";
 import { wachtOpBliepo } from "@/lib/bliepo-in-beeld";
@@ -614,6 +614,8 @@ function Lesscherm({
         zet((b) => ({ ...b, zinnen, zichtbaar: les.pijlZoalsSynthesis && zinnen.length ? 1 : 0, praat: zinnen.length > 0, bediening: houdBediening || wachtOpAntwoord ? b.bediening : null }));
         if (zinnen.length === 0) return res();
         stopStem?.();
+        /* Alleen met woordenMeeMetStem (F10, 11 nov 2026): de eerste zin is al onderweg naar de stem, dus gedimd laten (niet na 2,5 tel in 1 keer wit). Zonder de optie doet dit niets. */
+        meldStemOnderweg(metUitspraak(kaal(lesTekst(les.id, zinnen[0])), naam, vk()));
         /* Eerst Bliepo in beeld, dan pas zijn stem (26 oktober 2026, lib/bliepo-in-beeld.ts). */
         void wachtOpBliepo().then(() => {
           if (!levend || staat.zinnen !== zinnen) return res();

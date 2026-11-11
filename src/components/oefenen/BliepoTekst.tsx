@@ -20,7 +20,7 @@
  * dat met de zin die nu klinkt, dan lichten de woorden op.
  */
 
-import { praatHeelUit, zeg } from "@/lib/stem";
+import { praatHeelUit, stemOnderweg, zeg } from "@/lib/stem";
 import { Fragment, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { abonneerVoorlees, huidigeVoorlees, vergelijkbaar } from "@/lib/voorlezen";
 import { leesVoorkeuren } from "@/components/les/voorkeuren";
@@ -100,11 +100,23 @@ export function BliepoTekst({
   useEffect(() => {
     bezig.current = { leest, gelezen };
   }, [leest, gelezen]);
+  /*
+    Alleen in lessen met de optie woordenMeeMetStem (lib/stem.ts stemOnderweg; 11 november 2026, F10): is de stem na 2,5 tel
+    nog onderweg (de Google-stem doet er soms 2 tot 3 tel over, of het bestand van Ruth wordt nog opgehaald), dan blijft
+    de zin gedimd en wordt hij woord voor woord wit zodra Bliepo begint. Eerst werd hij dan in 1 keer helemaal wit (per zin
+    in plaats van per woord). Zonder de optie is stemOnderweg altijd false: dan verandert er niets.
+  */
   useEffect(() => {
-    const klok = window.setTimeout(() => {
+    let klok = 0;
+    const kijk = () => {
+      if (gesproken && !bezig.current.leest && stemOnderweg(gesproken)) {
+        klok = window.setTimeout(kijk, 150);
+        return;
+      }
       zetVerlopen(gesproken);
       if (praatHeelUit() && !bezig.current.leest && bezig.current.gelezen !== gesproken) zetWitGebleven(gesproken);
-    }, 2500);
+    };
+    klok = window.setTimeout(kijk, 2500);
     return () => window.clearTimeout(klok);
   }, [gesproken]);
   const blijftWit = Boolean(gesproken) && witGebleven === gesproken;

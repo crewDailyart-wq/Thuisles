@@ -19,7 +19,7 @@
 
 import { haalGebarenPlan } from "@/lib/gebaren-plan";
 import { bliepoGeluidKlaar, koppelBliepoGeluid, speelBliepoData } from "@/lib/bliepo-geluid";
-import { meldKomendeZin, meldVoorlezen, meldWoordgrens, spraakGrenzen, stopVoorlezen } from "@/lib/voorlezen";
+import { GOOGLE_NL, meldKomendeZin, meldVoorlezen, meldWoordgrens, modelSpraakduur, spraakGrenzen, stopVoorlezen, vergelijkbaar, woordtijdenMetModel } from "@/lib/voorlezen";
 
 // ---------------------------------------------------------------------------
 // Welke bron gebruiken we?
@@ -226,6 +226,9 @@ function naEersteGebaar(f: () => void): void {
 }
 
 function meld(bezig: boolean) {
+  /* De stem begint: de zin is niet meer onderweg (stemOnderweg hieronder). Een fout of einde wist het niet: dat kan nog
+     van de vorige zin zijn terwijl de volgende al onderweg is; de foutwegen wissen het zelf. */
+  if (bezig) onderweg = null;
   praatNu = bezig;
   if (bezig) stopKeuzeStem();
   for (const f of luisteraars) f();
@@ -306,7 +309,7 @@ function zegMetBrowser(zin: string, mijnBeurt: number): void {
     koppelWoorden(uiting, zin);
 
     uiting.onstart = () => {
-      meldVoorlezen(zin, browserGrenzen(zin));
+      meldBrowserZin(zin);
       meld(true);
     };
     uiting.onend = () => {
@@ -341,13 +344,50 @@ function browserGrenzen(zin: string): { begin: number; eind: number } {
     1. De browser meldt bij sommige stemmen elk woord (onboundary, name "word"). Komt die melding, dan schuift het
        oplichten precies naar dat woord (lib/voorlezen.ts meldWoordgrens) en worden de woorden erna in hetzelfde tempo
        opnieuw geschat.
-    2. Komt er geen melding (de Google-stem in Chrome meldt niets), dan wordt het tempo geleerd uit de vorige zinnen
-       (browserGrenzen hierboven): de duur van een zin geschat uit het aantal letters.
+    2. Komt er geen melding (de Google-stem in Chrome meldt niets), dan komen de tijden per woord uit het spreekmodel
+       (lib/voorlezen.ts GOOGLE_NL, meldBrowserZin hieronder; 11 november 2026, F10): een vast stukje per woord, een stukje
+       per klank, een pauze na een punt, vraagteken of komma, en de stilte voor en na de zin apart. Het tempo wordt geleerd
+       uit de zinnen die al klonken (modelTempo). Eerst (10 november) werd de duur van de hele zin, met de stilte aan het
+       eind erbij, over de letters verdeeld; daardoor lichtten de woorden gemiddeld ± 0,3 s te laat op (tot 1,2 s).
+    3. Zolang de stem nog onderweg is (stemOnderweg), blijft de zin gedimd; hij wordt pas wit als Bliepo de woorden zegt.
   Een geluidsbestand van Ruth levert later echte woordtijden (ElevenLabs); die gaan al via meldVoorlezen(…, tijden).
 */
 let woordenMee = false;
+/*
+  Welke zin is onderweg naar de stem: opgehaald bij de server, of in de wachtrij van de browserstem, maar hij klinkt nog
+  niet (11 november 2026, F10). De Google-stem in Chrome doet er soms 2 tot 3 seconden over voor hij begint; BliepoTekst
+  maakte de zin na 2,5 tel dan al helemaal wit ("stem uit"), en bij de optie heel uitpraten bleef hij wit. Dan zag Sara
+  de hele zin tegelijk wit worden en liep er alleen nog een oranje woord overheen: "het licht op per zin". Met de optie
+  woordenMee wacht de zin daarom gedimd zolang de stem echt onderweg is (hooguit 10 tel). Zonder de optie: altijd false.
+*/
+let onderweg: { zin: string; sinds: number } | null = null;
+function zetOnderweg(zin: string | null): void {
+  if (!woordenMee) return;
+  onderweg = zin ? { zin: vergelijkbaar(zin), sinds: performance.now() } : null;
+}
+/** De les gaat deze zin zo zeggen (Lesscherm, vóór het wachten op Bliepo in beeld). Zonder woordenMee: niets. */
+export function meldStemOnderweg(zin: string): void {
+  zetOnderweg(zin);
+}
+/** Is deze zin nog onderweg naar de stem (hij komt zo)? Alleen in lessen met de optie woordenMeeMetStem. */
+export function stemOnderweg(zin: string): boolean {
+  if (!woordenMee || !onderweg) return false;
+  if (performance.now() - onderweg.sinds > 10_000) return false;
+  return onderweg.zin === vergelijkbaar(zin);
+}
 /** Geleerd tempo van de browserstem in ms per letter (null = nog niets geleerd). */
 let geleerdMsPerTeken: number | null = null;
+/**
+ * Geleerd tempo voor het spreekmodel (lib/voorlezen.ts GOOGLE_NL; 11 november 2026, F10): 1 = zoals gemeten met de
+ * Google-stem; groter = deze stem praat trager. Bijgesteld na elke helemaal uitgesproken zin.
+ */
+let modelTempo = 1;
+/** De browserstem begint aan een zin: het oplichten start. Met woordenMee de woordtijden uit het spreekmodel. */
+function meldBrowserZin(zin: string): void {
+  if (!woordenMee) return meldVoorlezen(zin, browserGrenzen(zin));
+  const tijden = woordtijdenMetModel(zin, GOOGLE_NL, modelTempo);
+  meldVoorlezen(zin, { begin: GOOGLE_NL.voor, eind: tijden.at(-1)?.eind ?? 0.5 }, tijden);
+}
 /** Hoeveel woordmeldingen (onboundary) de browser deze les gaf (voor de test: window.__woordgrenzen). */
 let woordMeldingen = 0;
 function koppelWoorden(uiting: SpeechSynthesisUtterance, zin: string): void {
@@ -368,6 +408,10 @@ function koppelWoorden(uiting: SpeechSynthesisUtterance, zin: string): void {
   });
   uiting.addEventListener("end", () => {
     if (afgebroken || !start || zin.length < 12) return;
+    /* Het tempo voor het spreekmodel: hoe lang deze zin echt duurde tegenover het model (alleen redelijke metingen). */
+    const spraak = modelSpraakduur(zin, GOOGLE_NL);
+    const verhouding = ((performance.now() - start) / 1000 - GOOGLE_NL.voor - GOOGLE_NL.na) / spraak;
+    if (spraak > 0.3 && verhouding > 0.5 && verhouding < 2) modelTempo = modelTempo * 0.6 + verhouding * 0.4;
     const ms = (performance.now() - start) / zin.length;
     /* Alleen redelijke metingen (een afgebroken of haperende zin telt niet mee). */
     if (ms < 30 || ms > 160) return;
@@ -394,6 +438,7 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
   };
   /* Geen stem op dit apparaat: de woorden lichten toch op in het tempo van voorlezen, en de les loopt door. */
   const zonderStem = () => {
+    zetOnderweg(null);
     meldVoorlezen(zin, browserGrenzen(zin));
     vangnet = setTimeout(verder, 900 + zin.length * 55);
   };
@@ -409,6 +454,7 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
       if (door) return;
       clearTimeout(vangnet);
       if (!magNog()) return verder();
+      zetOnderweg(null);
       if (!opnieuw && geenGebaar()) {
         opnieuw = true;
         naEersteGebaar(() => {
@@ -421,6 +467,7 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
     };
     const spreek = () => {
       begin = performance.now();
+      zetOnderweg(zin);
       const uiting = new SpeechSynthesisUtterance(zin);
       uiting.lang = stem.lang ?? "nl-NL";
       uiting.rate = TEMPO;
@@ -428,7 +475,7 @@ function spreekMetBrowser(zin: string, magNog: () => boolean, klaar: () => void)
       uiting.voice = stem;
       koppelWoorden(uiting, zin);
       uiting.onstart = () => {
-        meldVoorlezen(zin, browserGrenzen(zin));
+        meldBrowserZin(zin);
         meld(true);
       };
       uiting.onend = verder;
@@ -489,6 +536,7 @@ export function zegNaElkaar(
         klaar();
         return;
       }
+      zetOnderweg(zinnen[i]);
       bijZin(i);
       speelVanServer(
         zinnen[i],
@@ -499,6 +547,7 @@ export function zegNaElkaar(
           /* Nog niet bewaard: deze ene zin met de browserstem, daarna gewoon verder (27 oktober 2026). */
           if (alleenServerStem) {
             /* Geen browserstem in deze les: deze zin stil (de tekst staat er), daarna weer met Ruth verder. */
+            zetOnderweg(null);
             gestart = true;
             klok = setTimeout(() => volgende(i + 1), 900 + zinnen[i].length * 55);
             return;
@@ -510,12 +559,16 @@ export function zegNaElkaar(
           }
           /* Heel uitpraten: nog geen tik gehad (geen geluid toegestaan), dan deze zin bij de eerste tik opnieuw. */
           if (heelUitpraten && !kapot && geenGebaar()) {
+            zetOnderweg(null);
             naEersteGebaar(() => volgende(i));
             return;
           }
           /* Is de server kapot bij de eerste zin, dan alles met de browserstem; anders gewoon door op de klok. */
           if (!gestart && kapot) browserReeks();
-          else klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
+          else {
+            zetOnderweg(null);
+            klok = setTimeout(() => opDeKlok(i + 1), 900 + zinnen[i].length * 55);
+          }
         },
         () => {
           gestart = true;
@@ -533,11 +586,13 @@ export function zegNaElkaar(
 
   function browserReeks() {
   if (alleenServerStem) {
+    zetOnderweg(null);
     klok = setTimeout(() => opDeKlok(0), 0);
     return;
   }
   const kanPraten = typeof window !== "undefined" && !!window.speechSynthesis;
   if (!metGeluid || !kanPraten) {
+    zetOnderweg(null);
     klok = setTimeout(() => opDeKlok(0), 0);
     return;
   }
@@ -547,6 +602,7 @@ export function zegNaElkaar(
     if (gestopt || mijnBeurt !== beurt) return;
     /* Geen Nederlandse stem: de zinnen lopen zonder geluid, op de klok. */
     if (!gekozen) {
+      zetOnderweg(null);
       opDeKlok(0);
       return;
     }
@@ -559,6 +615,7 @@ export function zegNaElkaar(
         return;
       }
       const begin = performance.now();
+      zetOnderweg(zinnen[i]);
       const uiting = new SpeechSynthesisUtterance(zinnen[i]);
       uiting.lang = gekozen?.lang ?? "nl-NL";
       uiting.rate = TEMPO;
@@ -573,7 +630,7 @@ export function zegNaElkaar(
         volgende(i + 1);
       };
       uiting.onstart = () => {
-        meldVoorlezen(zinnen[i], browserGrenzen(zinnen[i]));
+        meldBrowserZin(zinnen[i]);
         meld(true);
       };
       bijZin(i);
@@ -585,6 +642,7 @@ export function zegNaElkaar(
       uiting.onerror = heelUitpraten
         ? () => {
             if (door || gestopt || mijnBeurt !== beurt) return;
+            zetOnderweg(null);
             clearTimeout(klok);
             if (!opnieuwGehad.has(i) && geenGebaar()) {
               opnieuwGehad.add(i);
@@ -606,6 +664,7 @@ export function zegNaElkaar(
 
 export function stopPraten(): void {
   if (typeof window === "undefined") return;
+  onderweg = null;
   stopVoorlezen();
   beurt += 1;
   window.speechSynthesis?.cancel();

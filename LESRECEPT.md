@@ -258,7 +258,8 @@ Bij elke fout: Bliepo's scherm kleurt 1,5 seconde rood, geen fout-geluidje, nooi
 ### 3.9a Woorden lichten op met de stem (Sara, 10 november 2026, BOUWREGELS 3.7)
 - Elk woord licht op op het moment dat Bliepo het zegt (± 150 ms), zoals Synthesis (per woord, gedimd → wit; bij ons het woord van nu oranje). Niets verspringt.
 - Zet in elke nieuwe of omgezette gouden les `woordenMeeMetStem: true` aan (skelet, naast `pijlZoalsSynthesis` en `stemHeelUitpraten`). Voorbeeld: squla-minsommen-gouden.tsx.
-- Meet met het woorden-meetscript in een zichtbare Chrome met de echte stem (route `woorden` in scripts/test-minsommen-gouden.mjs; voor een andere les `LES=<les-id>`).
+- Meet met het woorden-meetscript in een zichtbare Chrome met de echte stem: `LESSEN=<les-id> IJK=1 node scripts/test-woord-oplichten.mjs` (via het lesoverzicht, als Testkind). Eis: elk woord licht apart op (geen sprong), de zin wordt nooit in 1 keer wit vóór Bliepo begint (F10), afwijking per woord zo klein als de stem toelaat (doel ± 150 ms). De oude route `woorden` in scripts/test-minsommen-gouden.mjs mag ook nog.
+- Een zin blijft gedimd zolang de stem onderweg is (lib/stem.ts `stemOnderweg`); de woordtijden van de Google-stem komen uit het spreekmodel `GOOGLE_NL` (lib/voorlezen.ts). Niets per les instellen: de optie `woordenMeeMetStem` regelt het (BOUWREGELS 3.7, aanvulling 11 november).
 
 ### 3.9b Vaste zones (Sara, 10 november 2026, BOUWREGELS 15.30)
 - Bliepo, het tekstvak (pijl rechtsonder, vaste plek), het speelvlak en de knoppen hebben elk een vaste zone; niets verspringt, Bliepo valt nooit over de tekst. Een nieuw stuk tekst staat er in 1 keer op dezelfde plek (gedimd tot Bliepo het zegt).

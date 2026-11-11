@@ -111,6 +111,61 @@ export function schatWoordtijden(zin: string, begin: number, eind: number): Woor
   return uit;
 }
 
+/*
+  SPREEKMODEL VAN DE BROWSERSTEM (11 november 2026, F10; alleen in lessen met de optie woordenMeeMetStem, lib/stem.ts).
+  De Google-stem in Chrome meldt geen woorden (geen onboundary). Eerst werd de duur van een zin over de woorden verdeeld
+  naar het aantal letters, met de stilte aan het eind erbij; daardoor liepen de laatste woorden te laat (tot ± 1 s).
+  Nu: elk woord kost een vast stukje plus een stukje per klank (getallen voluit), een punt of vraagteken geeft een pauze,
+  en de stilte voor en na de zin telt niet mee. De getallen zijn gemeten met dezelfde stem (Google Nederlands, tempo 0,88,
+  toon 1,2): elk begin van een zin apart uitgesproken ("Kijk", "Kijk eens", …), en daaruit per woord de duur
+  (scripts/test-woord-oplichten.mjs, IJK=1). Tijdens de les wordt het tempo bijgesteld uit de zinnen die al klonken.
+*/
+export type Spreekmodel = {
+  /** Stilte voor het eerste woord, na de start van de stem (s). */
+  voor: number;
+  /** Stilte (en uitloop) na het laatste woord, tot het einde van de stem (s). */
+  na: number;
+  /** Vast stukje per woord (s). */
+  woord: number;
+  /** Per klank (letter of cijfer, voluit) (s). */
+  klank: number;
+  /** Pauze na een punt of uitroepteken, na een vraagteken, na een komma (s). */
+  punt: number;
+  vraag: number;
+  komma: number;
+};
+/*
+  Gemeten op 11 november 2026 (Chrome, Mac, 24 zinnen uit de 9 gouden lessen, 263 woorden; per woord ± 126 ms naast het
+  gemeten moment, 66 % binnen ± 150 ms; de oude verdeling naar letters: ± 264 ms, steeds te laat, 36 % binnen ± 150 ms).
+  De stilte voor + na een uiting (0,52 s) is ook los gemeten (los + los − samen: 0,55 s).
+*/
+export const GOOGLE_NL: Spreekmodel = { voor: 0.05, na: 0.47, woord: 0.064, klank: 0.06, punt: 0.296, vraag: 0.143, komma: 0.108 };
+
+function modelDelen(zin: string, m: Spreekmodel): { duur: number; pauze: number }[] {
+  const woorden = zin.trim().split(/\s+/).filter(Boolean);
+  return woorden.map((w, i) => {
+    const klank = Math.max(1, voorStem(w).replace(/[^\p{L}\p{N}]/gu, "").length);
+    const laatste = i === woorden.length - 1;
+    const pauze = laatste ? 0 : /[.!…]$/.test(w) ? m.punt : /\?$/.test(w) ? m.vraag : /[,;:]$/.test(w) ? m.komma : 0;
+    return { duur: m.woord + m.klank * klank, pauze };
+  });
+}
+
+/** Hoe lang de woorden van de zin samen duren volgens het model (zonder de stilte ervoor en erna; s). */
+export function modelSpraakduur(zin: string, m: Spreekmodel): number {
+  return modelDelen(zin, m).reduce((a, d) => a + d.duur + d.pauze, 0);
+}
+
+/** De tijden per woord volgens het model, met `tempo` = geleerde verhouding (1 = zoals gemeten; 1,1 = 10 % trager). */
+export function woordtijdenMetModel(zin: string, m: Spreekmodel, tempo = 1): Woordvak[] {
+  let t = m.voor;
+  return modelDelen(zin, m).map((d) => {
+    const vak = { begin: t, eind: t + d.duur * tempo };
+    t = vak.eind + d.pauze * tempo;
+    return vak;
+  });
+}
+
 /** Waar in een stuk geluid de spraak begint en eindigt (seconden), uit de samples. */
 export function spraakGrenzen(kanaal: Float32Array, sr: number): { begin: number; eind: number } {
   const drempel = 0.02;
