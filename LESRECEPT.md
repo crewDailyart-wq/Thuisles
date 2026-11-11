@@ -190,6 +190,16 @@
 > - **Helpers delen de scratchpad-map:** zet schermfoto's in een eigen submap (`FOTO=…/tijdfoto`), anders lopen ze door die van andere lessen.
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeld): de gouden les Dagen zegt "Je koos dinsdag. Dinsdag komt vóór woensdag." (2 keer de dagnaam; KEUZES Ronde 40).
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES REKENTAAL (11 november 2026; KEUZES-VOOR-SARA.md Ronde 42) — geldt voor elke gouden les
+> - **De herhaalcontrole in het script** (geen woord of getal 2 keer in 1 reactie bij een fout): tel per reactie alle woorden van de eerste zin + de hint (1e fout) en van de eerste zin, "Nu koos je …" of "Je koos weer …" + de uitleg (2e fout). Kleine woordjes (de, het, is, die, …) en de woorden van de vraag zelf mogen terugkomen (de hint eindigt met de vraag); al het andere niet (voorbeeld: `scripts/fouttabel-rekentaal-gouden.ts`, `dubbel`). Gevonden bij het bouwen: "breed" in eerste zin en hint, "zit" in "Het zit vol." + "Kijk waar geen sap in zit.", "rand" 2 keer in "van rand tot rand".
+> - **Wijs met "deze" als het rondje erom staat:** "Je koos deze mand. Die is niet de grootste." Dan hoeft de naam van het voorwerp niet 2 keer (en het goede voorwerp wordt nooit genoemd).
+> - **Bij 3 voorwerpen geen richting bij het middelste:** "Er is nog een grotere" sluit ook het kleinste uit (dan blijft er 1 over); zeg alleen "Die is niet de grootste." Bij 2 voorwerpen blijft er na de 1e fout altijd 1 over (inhoud van Squla); het script eist dan minstens 1, bij 3 minstens 2.
+> - **Een oud SVG-vlak in Phaser:** teken dezelfde SVG-paden met `new Path2D(d)` in `canvasPlaatje` (1 keer per soort en maat, met een rand van 10 punten voor dikke lijnen). Zo blijven de tekeningen gelijk aan de oude les.
+> - **Grote plaatjes alvast tekenen:** een groot plaatje (het picknickkleed) dat pas bij een vraag getekend wordt, gaf op de trage telefoon een hapering van 76 ms. Laat het vlak alle plaatjes van de les verspreid over de eerste seconden tekenen (`bakVooruit`, 1 per 2 beeldjes); daarna 31–43 ms.
+> - **Op volgorde met tikken** (geen slepen): elke tik zet een voorwerp op de volgende lege plek, nog een tik zet het terug, het vinkje als alles vol is; het handje bij de eerste lege plek; vangnet 45 s (zoals slepen bij Dagen). Een voorwerp op de plank heeft geen `data-plek`.
+> - **Een test die het handje bij een opdracht zoekt, wacht tot 16 s** (de opdrachtzin "Zet de bekers op volgorde. Van klein naar groot. Tik eerst op de kleinste." duurt al ± 4 s).
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): de andere fouttabel-scripts hebben deze telling van herhaalde woorden in 1 reactie nog niet; eerst Sara.
+
 > ## ⭐ GELEERD BIJ DE KEURING TIJD (onafhankelijke keurder, 11 november 2026; KEURING-TIJD-GOUDEN.md) — geldt voor elke gouden les
 > - **Kijk ook naar de reactie met "Je koos weer …":** dan staat de uitleg direct achter "weer". Een uitleg met "weer" erin ("tot het weer maandag is", "begint de week weer …") geeft 2 keer "weer". Kies "opnieuw" of laat het weg.
 > - **Ook in de eerste zin zelf niet 2 keer hetzelfde getal** ("Je koos 5. Op 5 dagen …" → "Op zoveel dagen …"). Laat het herhalingsscript elk paar (eerste zin + hint, en "Nu koos je …"/"Je koos weer …" + uitleg) nalopen.

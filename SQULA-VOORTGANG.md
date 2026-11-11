@@ -493,3 +493,8 @@ Volgende stap (deel 4): draaiboeken; nog niet gezien staat onderaan KOPPELING.md
   / ALLEFOUT 168 (F7 0, F8 0), alle routes van test-tijd-gouden.mjs, overlap en sprongen 0 op 4 maten, wit blijft wit,
   vloeiend 57/60 (energiebesparing aan, op batterij). `les_uitkomsten` 147 → 147.
   Open punten: KEUZES Ronde 41. Verslag: KEURING-TIJD-GOUDEN.md.
+
+### Gouden les Rekentaal gebouwd (11 nov)
+- Les `squla-rekentaal-gouden` ("Groot en klein, vol en leeg"), nieuwe versie naast squla-rekentaal (oude les en oude vlak squla-rekentaal-keuken.tsx niet veranderd). Gekozen omdat het onderwerp Rekentaal precies 1 les heeft (KOPPELING §12); de pizza-lessen (Meten en maten) niet aangeraakt. Geen Synthesis-les: exact het skelet van de andere gouden lessen (15.25); denkfouten, hints, uitleg en samen voordoen zijn eigen invulling (SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/rekentaal.md). Bestanden: `src/components/les/lessen/squla-rekentaal-gouden.tsx`, `squla-rekentaal-gouden-zinnen.ts`, `src/components/les/vlakken/squla-rekentaal-gouden-vlak.tsx` (+ `squla-rekentaal-gouden.module.css`; een nieuw Phaser-vlak met dezelfde tekeningen, links van het tekstvak), `scripts/fouttabel-rekentaal-gouden.ts`, `FOUTTABEL-squla-rekentaal-gouden.md`, `scripts/test-rekentaal-gouden.mjs`, `scripts/vloeiend-schermen/squla-rekentaal-gouden.json`, `KINDTEST-REKENTAAL-GOUDEN.md`.
+- Inhoud Squla (16 vragen: 8 keuken, 8 picknick, waarvan 2 keer op volgorde), geen startvraag, pijlregel 15.27, stem heel uitpraten, woorden lichten op met de stem. Keuzes en testcijfers: KEUZES-VOOR-SARA.md Ronde 42.
+- Nog te doen door de coördinator: onafhankelijke kind-test en keuring.

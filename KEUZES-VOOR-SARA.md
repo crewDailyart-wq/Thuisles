@@ -1779,3 +1779,94 @@ Oordeel: **GOEDGEKEURD** na 3 kleine herstellingen. Verslag: KEURING-TIJD-GOUDEN
 
 **Ronde 40 punt 6** (kleine stap bij een getal: het kind tikt het enige getal): de keurder vindt het redelijk. Advies:
 **ja**.
+
+## Ronde 42 — gouden les Rekentaal (squla-rekentaal-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-rekentaal "Groot en klein, vol en leeg". De oude les en het oude vlak
+(squla-rekentaal-keuken.tsx) zijn niet veranderd. Bekijken:
+http://localhost:3000/voorbeeld/les/squla-rekentaal-gouden?naam=Testkind (liefst via het lesoverzicht /voorbeeld/les,
+dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** het onderwerp **Rekentaal** heeft precies 1 les: "Groot en klein, vol
+en leeg" (squla-rekentaal; KOPPELING.md §12, alle-lessen.html). Die heb ik genomen. De 3 lessen "Rekentaal met pizza"
+(squla-meten-pizza-1/2/3) horen bij het onderwerp Meten en maten; die heb ik niet aangeraakt. Let op: de oude les volgt
+alleen het leerdoel van Squla (de vragen zijn eigen werk van 30 oktober), net als bij Dagen.
+
+**Geen Synthesis-les.** Synthesis heeft geen tutorles over groot en klein, vol en leeg, zwaar en licht of lang en kort
+(alleen het spel Less or More; KOPPELING.md §12). Daarom: **exact hetzelfde skelet** als de andere gouden lessen (15.25).
+Alles wat per onderwerp anders is, is **eigen invulling, niet van Synthesis**: de denkfouten, de eerste zinnen, de hints,
+de uitleg en het samen voordoen. Dat staat in SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/rekentaal.md en per rij in
+FOUTTABEL-squla-rekentaal-gouden.md.
+
+**Inhoud (15.22):** dezelfde 16 vragen, in dezelfde volgorde, met dezelfde voorwerpen, maten, keuzes en goede
+antwoorden: in de keuken groter, kleiner, vol, leeg, zwaarder, lichter (weegschaal), langer, korter; dan "Nu gaan we
+picknicken in het park." en het grootst, half vol, het kleinst, het langst, zwaarder (de lege mand en de meloen), het
+kortst, en 2 keer op volgorde (appels, bekers). Niets toegevoegd, niets weggelaten. Niet overgenomen: de startvraag "Kun
+je dit al?" en de uitleg na Nee (zoals bij Geld, Vormen, Dagen en Tijd: die horen alleen bij een les waarvan het
+draaiboek een startvraag heeft).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Een tik op een voorwerp was meteen het antwoord | tikken op iets in beeld gaat met een vinkje (6.5) | een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| Op volgorde: een verkeerde tik was meteen fout | een opdracht kijk je na met het vinkje (6.5; zoals op volgorde bij Getallenlijn) | elke tik zet een voorwerp op de volgende plek, nog een tik zet het terug; als alle plekken vol zijn het vinkje |
+| Bij een fout schudde het voorwerp | geen rood of beweging op de keuze; alleen Bliepo's scherm (5.3) | geen schudden; een rood rondje om wat het kind koos zolang Bliepo het noemt |
+| "Goed gewerkt in de keuken." | ook na veel fouten | "De keuken is klaar." (daarna dezelfde zin over de picknick) |
+| Het oude vlak was SVG (niet te meten met `npm run vloeiend`) en liep tot x = 900 | HARDE REGEL 7; vaste zones (15.30) | dezelfde tekeningen in een nieuw Phaser-vlak, 60 punten naar links, alles links van het tekstvak |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht.
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De denkfouten:** `groot-klein-verwisseld`, `vol-leeg-verwisseld`, `zwaar-licht-verwisseld`, `lang-kort-verwisseld`,
+   `middelste-gekozen`, `helemaal-vol` en `leeg-in-plaats-van-half` (bij half vol), `grootste-gekozen` (de lege mand op
+   de weegschaal), en bij op volgorde `groot-naar-klein`, `niet-bij-kleinste`, `grootste-in-het-midden`. Bliepo zegt
+   alleen wat waar is ("Je koos deze mand. Die is niet de grootste.", "Je koos de appel. Die hangt hoger."). Goed zo?
+2. **De hints** zeggen hoe je kijkt, niet welk voorwerp het is: "Kijk hoe hoog en hoe breed ze zijn.", "Ze beginnen bij
+   dezelfde streep.", "Kijk welke kant van de weegschaal zakt.", "Kijk hoe hoog het sap komt." en eindigen met de vraag.
+   Goed zo?
+3. **Samen voordoen bij de 2e fout:** Bliepo wijst de voorwerpen 1 voor 1 aan met het rondje ("Deze mand is klein." "Die
+   is groter." "En deze is het grootst."), dan een rondje om het goede en het kind tikt het. Bij op volgorde zet Bliepo
+   de kleinste en de middelste op hun plek en tikt het kind de grootste. Goed zo?
+4. **Het hulphandje:** bij de kleine stap rechtsonder naast het voorwerp met het rondje; bij op volgorde bij de eerste
+   lege plek, met "Tik op een appel. Die komt dan hier." (nooit op het goede voorwerp). Goed zo?
+5. **Vangnet bij op volgorde:** 45 s zonder nakijken, dan "Ik help je met deze." en samen (zoals slepen bij Dagen). Goed
+   zo?
+6. **Heel snel antwoorden:** Bliepo zegt niets (er is geen draaiboek met een opmerking). Goed zo?
+
+**Graag een besluit (ja of nee):**
+7. **Vragen met 2 voorwerpen** (vraag 1 t/m 8 en 13): na de 1e fout blijft er altijd maar 1 over, dus de 2e poging is
+   altijd goed. Dat komt door de inhoud van Squla (2 keuzes); ik heb niets toegevoegd. Laten zo? Advies: **ja** (geen
+   keuzes toevoegen zonder jou).
+8. **De donkere ruimte** (`nacht`, zoals alle andere gouden lessen): de donkerblauwe randen van de tekeningen zijn daar
+   iets minder goed te zien dan in de oude les (lichtere ruimte). De voorwerpen zelf zijn duidelijk (zie de
+   schermfoto's). Laten zo? Of wil je een lichte rand om de tekeningen?
+9. **Voorlezen bij aanwijzen** (oude les: muis erop of lang drukken = Bliepo zegt de naam, bijvoorbeeld "de grote
+   pannenkoek") zit niet in de gouden les: dat zou het antwoord voorzeggen en kan dubbel klinken met Bliepo (F8). Laten
+   zo? Advies: **ja** (zoals Dagen).
+10. **Deze les als gouden les Rekentaal**, terwijl er geen Synthesis-les is. Goed zo?
+
+**Afwijkingen van het skelet:** geen.
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (dezelfde tekeningen als de oude les,
+nu in Phaser getekend). Nieuwe zinnen staan in squla-rekentaal-gouden-zinnen.ts (nog niet door Ruth ingesproken).
+
+**Niet gedaan door mij:** de onafhankelijke kind-test en keuring (ik mocht geen helpers inzetten). Mijn eigen speeltest:
+KINDTEST-REKENTAAL-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147):
+- Fouttabel-script `scripts/fouttabel-rekentaal-gouden.ts`: 16 vragen, 29 foute antwoorden, inhouds-, verklap-,
+  waarheids- en herhaalcontrole in orde (153 beweringen), geen kaal cijfer in 385 zinnen. De herhaalcontrole kijkt of in
+  1 reactie bij een fout een woord of getal 2 keer voorkomt (behalve kleine woordjes en de woorden van de vraag zelf).
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk` (sinds fc0ee2d): 0 verdwenen in mijn bestanden (de 3 meldingen
+  gaan over de herstelde zinnen van de keurder van Tijd, niet van mij).
+- Speelcontrole F7=1: GOED 55 stappen en ALLEFOUT 181 stappen, tot het eind, F7 0, F8 0.
+- `scripts/test-rekentaal-gouden.mjs`, alle routes: tot de eindkaart, nooit op de pijl hoeven tikken. Rondje nooit om het
+  antwoord. Hulphandje alleen bij opdrachten. Einde zin → volgend stuk gemiddeld 724–839 ms (1 keer 1006 ms, de Mac was
+  druk). Overlap en sprongen op 1440×900, 1280×720, 1536×864 en 1024×768: 0; eindkaart 0 woorden eronder.
+- Wit blijft wit (site 3,5 s traag, 120 s): 4 keer een zin wit vóór Bliepo, 0 keer daarna weer grijs.
+- Woord voor woord (echte Google-stem): 13/13 en 6/6 woorden apart opgelicht; per woord gemiddeld 147 ms naast het
+  gesproken moment, 10 van 17 binnen ± 150 ms (gedeeld spreekmodel, zelfde beeld als bij de andere gouden lessen).
+- Vloeiend: eerst een hapering van 76 ms op de trage telefoon (het tekenen van het grote kleed). Opgelost: de les tekent
+  alle plaatjes alvast, verspreid over de eerste seconden. Daarna 2 keer: laptop 60 beelden/s (langste 25–26 ms), trage
+  telefoon 60–61 beelden/s (31–43 ms). De Mac stond in de energiebesparende stand. Openen in de ontwikkelversie
+  1,5–1,7 s / 3,2–3,4 s (op de echte site moet het onder 1 s; meten vóór online).

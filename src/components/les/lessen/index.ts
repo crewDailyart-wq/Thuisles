@@ -22,6 +22,7 @@ import { LESSEN_SQULA_HUISNUMMERS } from "./squla-huisnummers";
 import { LESSEN_SQULA_SPLITSEN } from "./squla-splitsen";
 import { LESSEN_SQULA_PIRAAT } from "./squla-piraat";
 import { LESSEN_SQULA_REKENTAAL } from "./squla-rekentaal";
+import { LESSEN_SQULA_REKENTAAL_GOUDEN } from "./squla-rekentaal-gouden";
 import { LESSEN_SQULA_DAGEN } from "./squla-dagen";
 import { LESSEN_SQULA_GETALLENLIJN } from "./squla-getallenlijn";
 import { LESSEN_SQULA_TELLEN } from "./squla-tellen";
@@ -86,6 +87,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_SPLITSEN_GOUDEN,
   ...LESSEN_SQULA_PIRAAT,
   ...LESSEN_SQULA_REKENTAAL,
+  ...LESSEN_SQULA_REKENTAAL_GOUDEN,
   ...LESSEN_SQULA_DAGEN,
   ...LESSEN_SQULA_DAGEN_GOUDEN,
   ...LESSEN_SQULA_GETALLENLIJN,
