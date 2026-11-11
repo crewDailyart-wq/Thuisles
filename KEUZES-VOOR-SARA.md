@@ -1642,3 +1642,93 @@ KINDTEST-DAGEN-GOUDEN.md.
 
 **Om te weten:** op een telefoon rechtop staat de nieuwe trein op 1 rij en is hij klein (de oude trein had daar 2 rijen).
 Telefoon is een latere fase (DESIGN-LATER.md); ik heb het daar niet opgelost.
+
+## Ronde 40 — gouden les Tijd (squla-tijd-dagen-1-gouden, 11 november 2026)
+
+Nieuwe versie naast de oude les squla-tijd-dagen-1 "Dagen van de week" (level 1). De oude les en de oude weektrein zijn
+niet veranderd. Bekijken: http://localhost:3000/voorbeeld/les/squla-tijd-dagen-1-gouden?naam=Testkind (liefst via het
+lesoverzicht /voorbeeld/les, dan praat Bliepo meteen).
+
+**Welke les ik koos (jouw besluit, ja of nee):** het onderwerp **Tijd** heeft 7 lessen: dagen-1/2/3, kalender-1/2 en
+tijden-1/2. Klokkijken heeft al een gouden les (squla-klok-hoelaat-1-gouden). Ik nam de **eerste Tijd-les, level 1**:
+squla-tijd-dagen-1. Die volgt precies de vragen van Squla. Let op: hij lijkt veel op de gouden les Dagen (Ronde 38),
+want beide gaan over de dagen van de week, met dezelfde weektrein. Wil je liever dat de gouden les Tijd over de kalender
+of over tijden (lang en kort) gaat? Dan bouw ik squla-tijd-kalender-1 of squla-tijd-tijden-1.
+
+**Geen Synthesis-les.** Synthesis heeft geen les over dagen, de week of de kalender (KOPPELING.md §10). Daarom: **exact
+hetzelfde skelet** als de andere gouden lessen (15.25). Alles wat per onderwerp anders is, is **eigen invulling, niet
+van Synthesis**: de denkfouten, de eerste zinnen, de hints, de uitleg en het samen voordoen. Dat staat in
+SYNTHESIS-ANALYSE/DRAAIBOEKEN-NIEUW/tijd.md en per rij in FOUTTABEL-squla-tijd-dagen-1-gouden.md.
+
+**Inhoud (15.22):** dezelfde 12 vragen, in dezelfde volgorde, met dezelfde dagen, kaarten, getallen en goede antwoorden:
+de eerste dag, de laatste dag, "Hoeveel dagen heeft het weekend?" (1, 2, 5), "Op welke dagen is het weekend?" (kaarten
+met 2 dagen), 7 keer "Welke dag komt meteen na …?" en "Hoeveel dagen heeft een week?" (6, 7, 8). Daarna komen 3 vragen
+terug, zoals in de oude les: eerst wat niet meteen goed was, aangevuld met vraag 1, 3 en 9. Niets toegevoegd, niets
+weggelaten. Niet overgenomen: de startvraag "Kun je dit al?" en de uitleg na Nee (zoals bij Geld, Vormen en Dagen: die
+horen alleen bij een les waarvan het draaiboek een startvraag heeft).
+
+**Aanpassingen (15.26):**
+| Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|
+| Een tik op een kaart was meteen het antwoord | tikken op iets in beeld gaat met een vinkje (6.5) | een vinkje (nog een tik haalt het weg), het vinkje bij Bliepo kijkt na |
+| De oude trein was HTML (niet te meten met `npm run vloeiend`) | HARDE REGEL 7; vaste zones (15.30) | dezelfde plaatjes in een nieuw Phaser-vlak, links van het tekstvak |
+| Hint "Het weekend zijn de laatste 2 dagen van de week." | zegt bijna het antwoord (15.17) | "In het weekend ben je vrij. Welke kaart heeft 2 vrije dagen?" of "Het weekend komt aan het eind van de week. Op welke dagen is het weekend?" |
+| Hint "Kijk naar de wagon die direct aan de locomotief hangt." bij een lege trein | daar hangt nog niets (de trein is leeg) | "Zeg de dagen van de week op. Welke dag zeg je als eerste?" |
+
+**Wat er extra is bijgekomen (15.22 punt 4):** geen vraag en geen opdracht.
+
+**Eigen invulling, niet van Synthesis (graag ja of nee):**
+1. **De denkfouten:** `eerste-laatste-verwisseld`, `dag-ernaast` (zaterdag als laatste dag), `andere-dag`,
+   `voor-na-verwisseld`, `schooldagen`, `schooldag-erbij`, `een-te-weinig`, `een-te-veel`. Bliepo zegt alleen wat waar is
+   ("Je koos zondag. Dat is de laatste dag van de week.", "Je koos 5. Op 5 dagen ga je naar school.", "Dat zijn te veel
+   dagen."). Goed zo?
+2. **De hints** zeggen hoe je zoekt, niet wat het antwoord is: "Zeg de dagen van de week op. Welke dag zeg je als
+   eerste?", "Zeg de dagen op, vanaf donderdag. Welke dag zeg je daarna?". Een vraag die terugkomt krijgt de andere hint.
+   Goed zo?
+3. **Samen voordoen bij de 2e fout:** de hele trein komt; Bliepo wijst de dagen aan met het rondje (bij "Hoeveel dagen
+   heeft een week?" loopt het rondje van maandag tot zondag); dan een rondje om de goede kaart en het kind tikt hem. Bij
+   een getal staat alleen het goede getal en het kind tikt het. Goed zo?
+4. **Hoeveel-vragen:** tijdens de vraag staat alleen de locomotief (zoals de oude les); de trein zou het antwoord
+   verklappen. Na het antwoord rijdt de hele trein binnen. Goed zo?
+5. **Heel snel antwoorden:** Bliepo zegt niets (er is geen draaiboek met een opmerking). Goed zo?
+
+**Graag een besluit (ja of nee):**
+6. **De kleine stap bij een getal** (2e fout bij "Hoeveel dagen …?"): het kind tikt het enige getal dat er staat, zoals
+   bij de klokles. Daar komt geen hulphandje en geen vangnet bij (de knop staat bij Bliepo, niet in het speelvlak). Laten
+   zo? Advies: **ja** (het kind kan niets anders tikken).
+7. **"Welke dag komt meteen na …?"**: ik hield "meteen na" van de oude les (de gouden les Dagen zegt "na"). Goed zo?
+8. **Deze les als gouden les Tijd**, terwijl er geen Synthesis-les is. Goed zo?
+
+**Afwijkingen van het skelet:** geen.
+
+**Gemeld, niet veranderd:** de gouden les Dagen zegt "Je koos dinsdag. Dinsdag komt vóór woensdag." (2 keer de dagnaam).
+In deze les heb ik dat vermeden ("Je koos dinsdag. Die komt vóór woensdag."). Dagen niet aangeraakt (wordt nu gekeurd).
+
+**Stem en kosten:** browserstem; geen tegoed, geen Magnific, geen nieuwe plaatjes (dezelfde treinplaatjes als de oude
+les). Nieuwe zinnen staan in squla-tijd-gouden-zinnen.ts (nog niet door Ruth ingesproken).
+
+**Niet gedaan door mij:** de onafhankelijke kind-test en keuring (ik mocht geen helpers inzetten). Mijn eigen speeltest:
+KINDTEST-TIJD-GOUDEN.md.
+
+**Getest** (als Testkind, Chrome met een leeg profiel, zonder koekje; hoogste id in les_uitkomsten vóór en na: 147):
+- Fouttabel-script `scripts/fouttabel-tijd-gouden.ts`: 12 vragen + hun terugkomende versie, 48 foute antwoorden,
+  inhouds-, verklap- en waarheidscontrole in orde (240 beweringen), geen kaal cijfer in 524 zinnen.
+- `npm run opgaven` in orde; `npm run inhoudsvergelijk`: 0 verdwenen. Typecontrole: geen fouten in src.
+- Speelcontrole F7=1: GOED 46 stappen en ALLEFOUT 166 stappen, tot het eind, F7 0, F8 0.
+- `scripts/test-tijd-gouden.mjs`, alle routes (goed, alles fout, fouten, ander fout, weer, vangnet, wachten, tik op de
+  pijl, kleur): tot de eindkaart, nooit op de pijl hoeven tikken, 0 stukken die op een tik wachten. Einde zin → volgend
+  stuk gemiddeld 721–830 ms, nooit buiten 550–950 ms. Rondje bij een fout 24 / 12 / 12 keer, 0 keer om het antwoord.
+  "Weer" 15 van 15. Vangnet 2 keer ("Kijk, …", geen "Ja"). Hulphandje alleen bij de kleine stap (7,5 s na het begin, ± 6 s
+  na de zin); bij kiezen 0 keer iets. Tik op de pijl: binnen 58–188 ms het volgende stuk. Getallen in de tekst wit.
+- Overlap en sprongen (route alles fout) op 1440×900, 1280×720, 1536×864 en 1024×768: 0 overlap, 0 tekst buiten het vak,
+  0 sprongen, pijl nooit weg en terug, eindkaart 0 woorden eronder; speelvlak links van het tekstvak.
+- Wit blijft wit (site 3,5 s traag, 120 s): 3 keer een zin wit vóór Bliepo, 0 keer daarna weer grijs.
+- Woord voor woord (zichtbare Chrome, echte Google-stem, 4 minuten via het lesoverzicht): elk woord licht apart op, het
+  eerste woord gemiddeld 91 ms na de start; laatste woord gemiddeld 222 ms naast het geschatte moment (zelfde beeld als
+  bij Geld en Vormen: komt uit het gedeelde spreekmodel). 0 dubbel (F8), 0 F7. Het script `test-woord-oplichten.mjs`
+  kreeg de les 2 keer niet geopend vanuit het overzicht (de klik op de link deed niets; de Mac was erg druk); daarom
+  gemeten met de route `woorden` van mijn eigen testscript.
+- Vloeiend (`ALLEEN=squla-tijd-dagen-1-gouden npm run vloeiend`, gemeten toen er geen andere test liep): laptop 58
+  beelden/s (langste beeld 50 ms, precies op de grens), trage telefoon 59 beelden/s (40 ms). De Mac stond in de
+  energiebesparende stand. Openen in de ontwikkelversie 2,2 s / 4,8 s (op de echte site moet het onder 1 s; meten vóór
+  online).

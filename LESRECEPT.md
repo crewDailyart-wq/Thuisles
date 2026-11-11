@@ -176,6 +176,15 @@
 > - **Een oud HTML-vlak** (de weektrein): een nieuw Phaser-vlak met dezelfde plaatjes, iets kleiner zodat alles links van het tekstvak past (x < 860); de oude trein blijft voor de oude les (zoals Huisnummers).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet nagelopen, alleen gemeld): "vlak naast"/"dichtbij" bij een keuze aan de rand van een rij.
 
+> ## ⭐ GELEERD BIJ DE GOUDEN LES TIJD (11 november 2026; KEUZES-VOOR-SARA.md Ronde 40) — geldt voor elke gouden les
+> - **Niet 2 keer de naam van wat het kind koos:** "Je koos zaterdag. Die hoort bij het weekend …", "Je koos woensdag. Dat is niet de eerste dag." (niet "Je koos woensdag. Woensdag is …").
+> - **Geen woord 2 keer in 1 reactie bij een fout,** ook niet verdeeld over eerste zin en hint of uitleg ("Op maandag ga je naar school. In het weekend ga je niet naar school."): kies een ander woord ("vrij", "vrije dagen"). Ook een getal niet 2 keer ("Je koos 1. Het weekend is langer dan dat.").
+> - **Een kaart met 2 dingen** (zaterdag en zondag): de verklapcontrole mag het ding noemen dat ook op de gekozen kaart staat ("Je koos zondag en maandag."), maar nooit het ding dat alleen op de goede kaart staat.
+> - **Een vraag die aan het eind terugkomt, krijgt de andere hint-versie** (zelfde vraag, niet 2 keer dezelfde hint; het script controleert het).
+> - **Geen rondje om een hele lange rij** (alle 7 wagons): het rondje is breder dan de rij en loopt tot onder het tekstvak (15.30). Bekijk de schermfoto van elk rondje.
+> - **Helpers delen de scratchpad-map:** zet schermfoto's in een eigen submap (`FOTO=…/tijdfoto`), anders lopen ze door die van andere lessen.
+> - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeld): de gouden les Dagen zegt "Je koos dinsdag. Dinsdag komt vóór woensdag." (2 keer de dagnaam; KEUZES Ronde 40).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

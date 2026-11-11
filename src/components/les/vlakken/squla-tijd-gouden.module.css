@@ -1,0 +1,147 @@
+/*
+  Gouden les Tijd (squla-tijd-dagen-1-gouden, 11 november 2026; een kopie van die van de gouden les Dagen): wat er boven het
+  Phaser-canvas ligt. Maten in punten van het vlak (980 × 720).
+  Geen gloed en geen rand om een gekozen wagon of kaart: alleen een vinkje (BOUWREGELS 6.5, 7.8a).
+  Zelfde vinkje en hulphandje als de gouden lessen Geld en Huisnummers.
+*/
+
+.vlak {
+  position: absolute;
+  inset: 0;
+  font-family: var(--font-les), "Work Sans", system-ui, sans-serif;
+  touch-action: none;
+}
+
+/* Een wagon of kaart om op te tikken (of te slepen): een onzichtbare knop over het plaatje in Phaser. */
+.knop {
+  position: absolute;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  background: transparent;
+  cursor: pointer;
+  z-index: 3;
+  touch-action: none;
+  -webkit-tap-highlight-color: transparent;
+}
+.knop:disabled {
+  cursor: default;
+}
+.knop:focus-visible {
+  outline: 4px solid #ffd36e;
+  outline-offset: 4px;
+}
+.sleepbaar {
+  cursor: grab;
+}
+
+.punt {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  pointer-events: none;
+}
+
+/* Het vinkje op de gekozen wagon of kaart (rechtsboven op de hoek). */
+.vinkje {
+  position: absolute;
+  right: -14px;
+  top: -14px;
+  width: 46px;
+  height: 46px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: #3fb34f;
+  box-shadow: 0 4px 10px rgba(0, 0, 20, 0.45);
+  animation: plop 0.25s ease-out both;
+}
+.vinkje svg {
+  width: 30px;
+  height: 30px;
+  fill: none;
+  stroke: #ffffff;
+  stroke-width: 3.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Het hulphandje (zelfde tekening als in de andere gouden lessen). */
+.hand {
+  position: absolute;
+  width: 54px;
+  height: 72px;
+  margin: -2px 0 0 -26px;
+  pointer-events: none;
+  z-index: 7;
+  transform-origin: 48% 3%;
+  will-change: transform;
+}
+.handTekening {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+  transform: rotate(-37deg);
+  transform-origin: 48% 3%;
+  filter: drop-shadow(0 4px 6px rgba(0, 0, 20, 0.45));
+}
+.handTekening g rect {
+  fill: #ffffff;
+  stroke: #2b3a66;
+  stroke-width: 3;
+}
+.lijn {
+  fill: none;
+  stroke: rgba(43, 58, 102, 0.55);
+  stroke-width: 2;
+}
+.tikGebaar {
+  animation: tikGebaar 1.1s ease-in-out infinite alternate;
+}
+@keyframes tikGebaar {
+  from {
+    transform: translate(8px, 12px);
+  }
+  to {
+    transform: translate(0, 0);
+  }
+}
+/* Slepen voordoen: van de kaart naar de lege plek, en dan opnieuw. */
+.sleepGebaar {
+  animation: sleepGebaar 2.2s ease-in-out infinite;
+}
+@keyframes sleepGebaar {
+  0%,
+  12% {
+    transform: translate(0, 0);
+    opacity: 1;
+  }
+  70%,
+  82% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 1;
+  }
+  100% {
+    transform: translate(var(--dx), var(--dy));
+    opacity: 0;
+  }
+}
+
+@keyframes plop {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tikGebaar,
+  .sleepGebaar,
+  .vinkje {
+    animation: none;
+  }
+}

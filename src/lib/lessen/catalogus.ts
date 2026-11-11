@@ -121,6 +121,7 @@ export const LESCATALOGUS: Lesregel[] = [
   { id: "squla-piraat-2", titel: "Schattenjacht: minsommen", synthesis: "Squla groep 3 · Rekenen met getallen · De piratenschat met plus en min · level 2 (alleen leerdoel)" },
   { id: "squla-piraat-3", titel: "Schattenjacht: plus en min", synthesis: "Squla groep 3 · Rekenen met getallen · De piratenschat met plus en min · level 3 (alleen leerdoel)" },
   { id: "squla-tijd-dagen-1", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 1 (alleen leerdoel)" },
+  { id: "squla-tijd-dagen-1-gouden", titel: "Dagen van de week", synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 1 · gouden les (nieuwe versie van squla-tijd-dagen-1) · geen Synthesis-les: skelet van de gouden lessen, eigen invulling" },
   { id: "squla-tijd-dagen-2", titel: "Dagen van de week (moeilijker)", synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 2 (alleen leerdoel)" },
   { id: "squla-tijd-dagen-3", titel: "Dagen van de week (nog moeilijker)", synthesis: "Squla groep 3 · Tijd · Dagen van de week · level 3 (alleen leerdoel)" },
   { id: "squla-tijd-kalender-1", titel: "De kalender", synthesis: "Squla groep 3 · Tijd · De kalender · level 1 (alleen leerdoel)" },

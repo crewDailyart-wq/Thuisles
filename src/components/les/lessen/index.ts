@@ -55,6 +55,8 @@ import { LESSEN_SQULA_GELD_GOUDEN } from "./squla-geld-gouden";
 import { LESSEN_SQULA_VORMEN_GOUDEN } from "./squla-vormen-gouden";
 /* De gouden les Dagen (11 november 2026, BOUWREGELS 15.22, 15.25): een nieuwe les naast squla-dagen-van-de-week. */
 import { LESSEN_SQULA_DAGEN_GOUDEN } from "./squla-dagen-gouden";
+/* De gouden les Tijd (11 november 2026, BOUWREGELS 15.22, 15.25): een nieuwe les naast squla-tijd-dagen-1. */
+import { LESSEN_SQULA_TIJD_GOUDEN } from "./squla-tijd-gouden";
 import { LESSEN_SQULA_VORMEN } from "./squla-vormen";
 import { LESSEN_SQULA_REKENMIX } from "./squla-rekenmix";
 
@@ -90,6 +92,7 @@ export const LESSEN: Lesdraaiboek[] = [
   ...LESSEN_SQULA_TELLEN,
   ...LESSEN_SQULA_TELLEN_GOUDEN,
   ...LESSEN_SQULA_TIJD,
+  ...LESSEN_SQULA_TIJD_GOUDEN,
   ...LESSEN_SQULA_MEER_MINDER,
   ...LESSEN_SQULA_MEER_MINDER_GOUDEN,
   ...LESSEN_SQULA_MINSOMMEN,
