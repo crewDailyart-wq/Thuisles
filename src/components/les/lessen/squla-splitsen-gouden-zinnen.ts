@@ -126,7 +126,8 @@ export function opdracht(v: Sleepvraag, keer = 0): string[] {
 /** Na de 1e fout (draaiboek §3 F.2: daarna worden de vakken leeg en zegt de tutor de opdracht kort opnieuw; bij ons zonder te wachten op de pijl, 15.27). */
 export function opnieuw(v: Sleepvraag, keer: number): string {
   const begin = ["Probeer het nog eens.", "Nog 1 keer.", "Kom, nog 1 keer."][keer % 3];
-  if (v.soort === "huis") return `${begin} Sleep ${aantal(v.deel, v.vw, KA)} naar het paarse vak. De andere gaan ${v.zak ? "in de zak" : "naar het oranje vak"}.`;
+  /* Bij 1 over (vraag 7): "De rest gaat …" (enkelvoud, en niet "de andere" die verklapt dat het 1 is; keuring 11 nov 2026). */
+  if (v.soort === "huis") return `${begin} Sleep ${aantal(v.deel, v.vw, KA)} naar het paarse vak. ${v.tot - v.deel === 1 ? "De rest gaat" : "De andere gaan"} ${v.zak ? "in de zak" : "naar het oranje vak"}.`;
   if (v.soort === "paren") return `${begin} Sleep in elk leeg vakje de ballen die nog missen.`;
   return `${begin} Sleep de ballen die onder de doek liggen naar het vak.`;
 }
@@ -155,7 +156,7 @@ export const ZIN = {
   /* Uitleg na Nee (draaiboek stap 7 t/m 10) met de 5 pionnen van het beginscherm (BOUWREGELS 14.21), maar als 1 en 4:
      vraag 1 is 2 en 3, en een afgerond uitlegvoorbeeld komt niet meteen terug als eerste opgave (3.23; kind-test punt 6). */
   uitlegHuis: `Dit is een splitshuisje. Onderin zijn 2 vakken. Daar komen de 2 delen in.`,
-  uitlegEen: "Sleep 1 pion naar het paarse vak.",
+  uitlegEen: `Sleep ${g(1, KA)} pion naar het paarse vak.`, /* 1 in de kleur van het paarse vak (2.2; keuring 11 nov 2026) */
   uitlegEenKlaar: `Mooi, er ligt er ${g(1, KA)}.`,
   uitlegRest: "Sleep nu de andere pionnen naar het oranje vak.",
   /* Als iets op de verkeerde plek ligt (kind-test punt 2): zeggen wat er mis ligt; tikken op een pion in een vak legt hem terug. */
@@ -164,7 +165,7 @@ export const ZIN = {
   /* Korte zin bij het handje als er iets verkeerd ligt (niet nog eens dezelfde lange zin; keuring punt 5). */
   handTerugOranje: "Tik op de pion in het oranje vak.",
   handTerugPaars: "Tik op een pion in het paarse vak.",
-  handNaarPaars: "Sleep 1 pion naar het paarse vak.",
+  handNaarPaars: `Sleep ${g(1, KA)} pion naar het paarse vak.`,
   uitlegPaarsLeeg: `Het paarse vak is leeg. Daar hoort ${g(1, KA)} pion in.`,
   uitlegVoordoen: "Kijk, ik doe het even voor.",
   uitlegRestKlaar: `Je splitste ${g(5)} in ${g(1, KA)} en ${g(4, KB)}.`,
@@ -191,13 +192,14 @@ export const ZIN = {
   /** Proef na een fout: de dingen liggen nog in de vakken; het handje wijst van het vak met te veel naar het andere vak. */
   schuifNaarAnder: (v: HuisVraag) => `Schuif een ${enkel(v.vw)} uit het paarse vak naar ${tweedeVak(v)}.`,
   schuifNaarPaars: (v: HuisVraag) => `Schuif een ${enkel(v.vw)} naar het paarse vak.`,
-  handRest: (v: HuisVraag) => `Sleep de andere ${meervoud(v.vw)} naar ${tweedeVak(v)}.`,
+  /* Bij 1 over (samen voordoen, het antwoord mag dan in beeld): "de laatste bal" (enkelvoud; keuring 11 nov 2026). */
+  handRest: (v: HuisVraag) => (v.tot - v.deel === 1 ? `Sleep de laatste ${enkel(v.vw)} naar ${tweedeVak(v)}.` : `Sleep de andere ${meervoud(v.vw)} naar ${tweedeVak(v)}.`),
 
   /* Samen voordoen na de 2e fout (15.11; draaiboek §3 F.6: de tutor zet 1 deel klaar, het kind zoekt het andere). */
   /** 3 versies die wisselen (5.10; keuring Minsommen: niet bij elke 2e fout dezelfde zin). */
   samenHelp: ["Kom, we doen het samen.", "We doen het samen.", "Kom, samen lukt het."],
   samenHuisDeel: (v: HuisVraag) => `Ik leg er ${g(v.deel, KA)} in het paarse vak.`,
-  samenHuisRest: (v: HuisVraag) => `Sleep jij de andere ${meervoud(v.vw)} naar ${tweedeVak(v)}.`,
+  samenHuisRest: (v: HuisVraag) => (v.tot - v.deel === 1 ? `Sleep jij de laatste ${enkel(v.vw)} naar ${tweedeVak(v)}.` : `Sleep jij de andere ${meervoud(v.vw)} naar ${tweedeVak(v)}.`),
   samenHuisKlaar: (v: HuisVraag) => `Samen splitsten we ${g(v.tot)} in ${g(v.deel, KA)} en ${g(v.tot - v.deel, KB)}.`,
   /* Vangnet (20 s niets gesleept bij het samen voordoen; LESRECEPT, geleerd bij Meer-minder): Bliepo legt de rest zelf.
      "Kijk, …", geen "Ja" en geen "samen" (keuring Meer-minder). */
@@ -275,7 +277,8 @@ export function huisFout(v: HuisVraag, p: number): Fout {
       soort: "alles-paars",
       denkfout: "alles in 1 vak gelegd; het andere vak bleef leeg",
       eerste: `Alle ${aantal(tot, vw)} liggen in het paarse vak.`,
-      hint: `Er komen 2 delen. Kijk naar het getal onder het paarse vak. De andere ${meervoud(vw)} gaan naar ${tweedeVak(v)}.`,
+      /* Bij 1 bal over (vraag 7): "De rest gaat …", niet "De andere ballen gaan …" (meervoud klopte niet) en niet "De andere bal" (dat verklapt dat het 1 is; keuring 11 nov 2026). */
+      hint: `Er komen 2 delen. Kijk naar het getal onder het paarse vak. ${rest === 1 ? `De rest gaat naar ${tweedeVak(v)}.` : `De andere ${meervoud(vw)} gaan naar ${tweedeVak(v)}.`}`,
       uitleg: `Splitsen is in 2 delen verdelen. In allebei de vakken komen ${meervoud(vw)}.`,
       weer: [`Weer liggen ze allemaal in het paarse vak.`, `In het paarse vak horen er maar ${g(deel, KA)}. De rest hoort in ${tweedeVak(v)}.`],
       scherm: SCHERM_HUIS,
@@ -307,7 +310,7 @@ export function huisFout(v: HuisVraag, p: number): Fout {
   return {
     code: een ? (meer ? "een-te-veel" : "een-te-weinig") : meer ? "te-veel" : "te-weinig",
     denkfout: een ? `1 ${enkel(vw)} ${meer ? "te veel" : "te weinig"} in het paarse vak (verkeerd geteld)` : `${meer ? "te veel" : "te weinig"} ${meervoud(vw)} in het paarse vak`,
-    eerste: `In het paarse vak ${ligtDing(p, vw, KA)}. ${een ? `Dat is er ${g(1)} te ${meer ? "veel" : "weinig"}.` : p === 1 ? "Dat is te weinig." : `Dat zijn er te ${meer ? "veel" : "weinig"}.`}`,
+    eerste: `In het paarse vak ${ligtDing(p, vw, KA)}. ${een ? `Dat is er ${g(1, KA)} te ${meer ? "veel" : "weinig"}.` : p === 1 ? "Dat is te weinig." : `Dat zijn er te ${meer ? "veel" : "weinig"}.`}`,
     hint,
     uitleg: `Het getal onder het paarse vak zegt hoeveel ${meervoud(vw)} erin horen: ${g(deel, KA)}.`,
     weer: [`Weer ${meer ? "te veel" : "te weinig"} in het paarse vak.`, `Er horen er precies ${g(deel, KA)} in. Dat is het getal eronder.`],
@@ -325,7 +328,9 @@ const DICHTBIJ = [(N: string) => `${N} is dichtbij.`, (N: string) => `Je legde e
 /** De uitleg bij de 2e fout bij de doos, in 2 versies (keuring Minsommen: niet 5 keer dezelfde zin; 5.10). */
 const UITLEG_DOEK = [`In de doos passen er ${g(10)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`, `Een volle doos heeft ${g(10)} ballen. Onder de doek liggen de ballen die je niet ziet.`];
 /** Twee keer 1 ernaast bij dezelfde doos (bijvoorbeeld eerst 2 en dan 4): de 2e keer een andere versie (keuring Meten). */
-export const dichtbijAnders = (n: number, v: TienVraag) => DICHTBIJ[(v.nr + 1) % 3](g(n, KB));
+/* Keuring 11 nov 2026: nooit 2 keer het woord "dichtbij" bij 1 vraag. Versie 0 en 1 zeggen "dichtbij", versie 2 niet;
+   was (nr + 1) % 3, dan kwam bij vraag 15 na "6 is dichtbij." nog "Je legde er 8. Je zit er dichtbij.". */
+export const dichtbijAnders = (n: number, v: TienVraag) => DICHTBIJ[v.nr % 3 === 2 ? 0 : 2](g(n, KB));
 
 /**
  * De fouttabel van het tienvak (vraag 11 t/m 15): hoeveel ballen legde het kind in het vak (`n`)? EIGEN INVULLING, NIET
@@ -347,7 +352,7 @@ export function tienFout(v: TienVraag, n: number): Fout {
   if (Math.abs(n - r) === 1)
     return { ...basis, code: n > r ? "een-te-veel" : "een-te-weinig", denkfout: `1 bal ${n > r ? "te veel" : "te weinig"} (de plekken onder de doek verkeerd geteld)`, eerste: DICHTBIJ[v.nr % 3](N), hint: tel, uitleg: UITLEG_DOEK[v.nr % 2], weer: [], noot: "richting niet genoemd: \"1 te veel\" of \"1 te weinig\" verklapt het antwoord" };
   const meer = n > r;
-  return { ...basis, code: meer ? "te-veel" : "te-weinig", denkfout: `${meer ? "te veel" : "te weinig"} ballen in het vak`, eerste: `Je legde er ${N}. Dat zijn er te ${meer ? "veel" : "weinig"}.`, hint: tel, uitleg: UITLEG_DOEK[v.nr % 2], weer: [`Weer te ${meer ? "veel" : "weinig"}.`, `Je ziet er ${g(z, KA)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`] };
+  return { ...basis, code: meer ? "te-veel" : "te-weinig", denkfout: `${meer ? "te veel" : "te weinig"} ballen in het vak`, eerste: n === 1 ? `Je legde er ${N}. Dat is te weinig.` : `Je legde er ${N}. Dat zijn er te ${meer ? "veel" : "weinig"}.`, /* enkelvoud bij 1 bal (keuring 11 nov 2026) */ hint: tel, uitleg: UITLEG_DOEK[v.nr % 2], weer: [`Weer te ${meer ? "veel" : "weinig"}.`, `Je ziet er ${g(z, KA)}. Onder de doek liggen de ballen die nog missen tot ${g(10)}.`] };
 }
 
 /**

@@ -5,7 +5,7 @@
  * Schrijft alleen dat ene bestand. Raakt de database en de lessen niet aan.
  */
 import { writeFileSync } from "node:fs";
-import { RICHTINGWOORDEN, VRAGEN, dichtbijAnders, foutenVan, telFout } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
+import { RICHTINGWOORDEN, VRAGEN, dichtbijAnders, foutenVan, telFout, zonderDichtbij } from "../src/components/les/lessen/squla-tellen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 
@@ -70,7 +70,28 @@ for (const v of VRAGEN)
     klopt(new RegExp(`\\b${x}\\b`), true, "");
     for (const z of [f.uitleg, ...f.weer]) if (OPDRACHT.test(kaal(z))) verklappers.push(`${waar}: opdracht in de zin bij de 2e fout: "${kaal(z)}"`);
     if (f.noot && dichtbijAnders(x, v) === f.eerste) verklappers.push(`${waar}: dichtbijAnders is dezelfde zin als de eerste zin`);
+    const z2 = kaal(zonderDichtbij(x, v));
+    if (/dichtbij/.test(z2)) verklappers.push(`${waar}: zonderDichtbij zegt toch "dichtbij": "${z2}"`);
+    if ((x > v.n && !/te veel|scheelt niet veel/.test(z2)) || (x < v.n && !/niet allemaal|te weinig|volle rijen|scheelt niet veel/.test(z2))) verklappers.push(`${waar}: zonderDichtbij klopt niet: "${z2}"`);
   }
+/*
+ * Keuring 11 nov 2026: 2 verschillende foute getallen bij 1 vraag zeggen nooit allebei "dichtbij". Zelfde keuze van de
+ * eerste zin bij de 2e fout als de les (squla-tellen-gouden.tsx telVraag).
+ */
+for (const v of VRAGEN) {
+  const F = foutenVan(v);
+  for (const a of Object.keys(F))
+    for (const b of Object.keys(F)) {
+      if (a === b) continue;
+      const e = F[a];
+      const f = F[b];
+      const zelfde = e.soort === f.soort && !e.noot && f.code !== "onduidelijk";
+      let z = zelfde ? f.weer[0] : f.eerste;
+      if (!zelfde && e.noot && f.noot) z = dichtbijAnders(Number(b), v);
+      if (/dichtbij/.test(e.eerste) && /dichtbij/.test(z)) z = zonderDichtbij(Number(b), v);
+      if (/dichtbij/.test(e.eerste) && /dichtbij/.test(z)) verklappers.push(`${v.id} ${a} dan ${b}: 2 keer "dichtbij"`);
+    }
+}
 /* "… is dichtbij." niet steeds dezelfde zin (keuring Meer-minder): bij de foute antwoorden zonder richting minstens 3 versies. */
 const zonderRichting = new Set(VRAGEN.flatMap((v) => Object.values(foutenVan(v)).filter((f) => f.noot).map((f) => kaal(f.eerste).replace(/\d+/g, "#"))));
 if (zonderRichting.size < 3) verklappers.push(`eerste zin zonder richting heeft maar ${zonderRichting.size} versie(s): ${[...zonderRichting].join(" | ")}`);

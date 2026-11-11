@@ -43,7 +43,7 @@ import { zetTestAntwoord } from "./squla-hulp";
 import { speelLesgeluid } from "@/lib/lesgeluiden";
 import { bliepoScherm } from "@/lib/bliepo-scherm";
 import { bewaarUitkomst } from "@/app/lesuitkomstacties";
-import { AANMOEDIG_TIKKEN, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TELREACTIE, TELREACTIE_JA, TELREACTIE_ROBOT, VRAGEN, ZIN, dichtbijAnders, foutenVan, gk, metNaam, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
+import { AANMOEDIG_TIKKEN, BEVESTIG, EINDE, EINDE_VEEL_FOUTEN, LOF, LOF_KIJK_INDEX, MOMENT, NAAM_GROET, NAAM_LOF, ONDUIDELIJK, ONDUIDELIJK_NOG_1_KEER, OVERGANG, TELREACTIE, TELREACTIE_JA, TELREACTIE_ROBOT, VRAGEN, ZIN, dichtbijAnders, foutenVan, zonderDichtbij, gk, metNaam, type Fout, type Rijtje, type Telvraag } from "./squla-tellen-gouden-zinnen";
 
 const LES_ID = "squla-tellen-fruit-1-gouden";
 
@@ -374,6 +374,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
   await l.wacht(150);
   let eerder: Fout | null = null;
   let eersteX = "";
+  let eersteZin = "";
   let zinnen = eersteVraag ? [ZIN.vraag(v.fruit), ZIN.vraagEerste] : [ZIN.vraag(v.fruit)];
   for (let poging = 1 as 1 | 2; poging <= 2; poging++) {
     zetTestAntwoord(goed);
@@ -412,6 +413,8 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
     if (poging === 2 && x === eersteX && fz[0] === f.eerste) fz[0] = ZIN.weerGekozen(Number(x), v.fruit);
     /* Een ander fout getal, maar weer zonder richting: een andere versie van de eerste zin (keuring Meten, 10 nov). */
     else if (poging === 2 && eerder?.noot && f.noot && fz[0] === f.eerste) fz[0] = dichtbijAnders(Number(x), v);
+    /* Nooit 2 keer "dichtbij" bij 1 vraag (keuring 11 nov 2026): een versie zonder dat woord, zelfde betekenis. */
+    if (poging === 2 && /dichtbij/.test(eersteZin) && /dichtbij/.test(fz[0]) && x !== eersteX) fz[0] = zonderDichtbij(Number(x), v);
     log(l, "reactie", { soort: `fout${poging}`, vraag: v.id, x, denkfout: f.code, zin: fz.join(" ") });
     if (poging === 1) {
       /* 1e fout (draaiboek §3 A.2): de vraag verdwijnt; de eerste zin (vanzelf door, 15.27), dan komen de knoppen terug
@@ -420,6 +423,7 @@ async function telVraag(l: Lesgids, v: Telvraag, eersteVraag: boolean): Promise<
       zinnen = fz.slice(1);
       eerder = f;
       eersteX = x;
+      eersteZin = fz[0];
     } else {
       /* 2e fout (draaiboek §3 A.3, 15.11): uitleg, samen tellen, door. Alles vanzelf door (15.27). */
       await zegDoor(l, ...fz);

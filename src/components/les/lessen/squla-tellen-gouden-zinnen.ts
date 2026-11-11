@@ -184,13 +184,13 @@ export function telFout(x: number, v: Telvraag): Fout {
     };
   if (x < goed) {
     const basis = { code: "te-weinig" as const, soort: "te-weinig", denkfout: "telde er te weinig (sloeg er een over)", hint: HINT_WEINIG[v.nr % 3](f), scherm: SCHERM };
-    const uitleg = verschil === 1 ? `Je hebt 1 ${f.een} niet geteld.` : `Je hebt een paar ${f.naam} niet geteld.`;
+    const uitleg = verschil === 1 ? `Je hebt ${gk(1, f)} ${f.een} niet geteld.` : `Je hebt een paar ${f.naam} niet geteld.`;
     const weer = ["Je telde er weer te weinig.", `Elke ${f.een} krijgt 1 nummer. Dan sla je er geen over.`];
     return verklapt ? { ...basis, eerste: DICHTBIJ[v.nr % 3](X), hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: WEINIG[v.nr % 3](X), uitleg, weer };
   }
   if (x > goed) {
     const basis = { code: "te-veel" as const, soort: "te-veel", denkfout: "telde er te veel (telde er een 2 keer)", hint: HINT_VEEL[v.nr % 3](f), scherm: SCHERM };
-    const uitleg = verschil === 1 ? `Je telde 1 ${f.een} te veel.` : `Je telde een paar ${f.naam} te veel.`;
+    const uitleg = verschil === 1 ? `Je telde ${gk(1, f)} ${f.een} te veel.` : `Je telde een paar ${f.naam} te veel.`;
     const weer = ["Je telde er weer te veel.", `Elke ${f.een} krijgt 1 nummer. Dan tel je niets 2 keer.`];
     return verklapt ? { ...basis, eerste: DICHTBIJ[v.nr % 3](X), hint: HINT_NEUTRAAL[v.nr % 3](f), uitleg, weer, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : { ...basis, eerste: VEEL[v.nr % 3](X), uitleg, weer };
   }
@@ -201,7 +201,22 @@ export function telFout(x: number, v: Telvraag): Fout {
  * Twee verschillende foute getallen bij dezelfde vraag, allebei zonder richting: de 2e keer een andere versie van de
  * eerste zin (keuring Meten, 10 nov 2026: niet 2 keer "… is dichtbij." bij 1 vraag).
  */
-export const dichtbijAnders = (x: number, v: Telvraag) => DICHTBIJ[(v.nr + 1) % 3](gk(x, v.fruit));
+/* Keuring 11 nov 2026: nooit 2 keer het woord "dichtbij" bij 1 vraag. Versie 0 en 1 zeggen "dichtbij", versie 2 niet;
+   was (nr + 1) % 3, dan kwam na versie 0 versie 1. */
+export const dichtbijAnders = (x: number, v: Telvraag) => DICHTBIJ[v.nr % 3 === 2 ? 0 : 2](gk(x, v.fruit));
+
+/**
+ * Keuring 11 nov 2026: zei Bliepo bij de 1e fout al "dichtbij", dan bij de 2e fout (een ander getal) een versie van de
+ * eerste zin zonder "dichtbij" (zelfde betekenis, zelfde richting). Bijvoorbeeld bij 13 pruimen eerst 12, dan 14: niet
+ * "12 is dichtbij, …" en daarna "14 is dichtbij, …".
+ */
+export function zonderDichtbij(x: number, v: Telvraag): string {
+  const f = telFout(x, v);
+  if (!/dichtbij/.test(f.eerste)) return f.eerste;
+  const X = gk(x, v.fruit);
+  if (f.noot) return DICHTBIJ[2](X);
+  return (x < v.n ? WEINIG : VEEL)[1](X);
+}
 
 /** De fouttabel van een vraag: elk fout antwoord. */
 export const foutenVan = (v: Telvraag): Record<string, Fout> => Object.fromEntries(v.keuzes.filter((k) => k !== v.n).map((k) => [String(k), telFout(k, v)]));

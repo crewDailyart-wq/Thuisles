@@ -6,7 +6,7 @@
  * antwoord verklapt.
  */
 import { writeFileSync } from "node:fs";
-import { KB, OMDRAAIWOORDEN, TOTAAL_KEUZES, VRAGEN, dichtbijAnders, huisFout, parenFout, tienFout, totaalFout, type Fout, type ParenVraag } from "../src/components/les/lessen/squla-splitsen-gouden-zinnen";
+import { KB, OMDRAAIWOORDEN, TOTAAL_KEUZES, VRAGEN, ZIN, dichtbijAnders, opnieuw, huisFout, parenFout, tienFout, totaalFout, type Fout, type ParenVraag } from "../src/components/les/lessen/squla-splitsen-gouden-zinnen";
 
 const kaal = (z: string) => z.replace(/\{(\d+):[a-z]+\}/g, "$1");
 const fouten: string[] = [];
@@ -118,7 +118,11 @@ for (const v of VRAGEN) {
       if (f.noot) {
         dichtVersies.add(kaal(f.eerste).replace(/\d+/g, "#"));
         if (dichtbijAnders(n, v) === f.eerste) fouten.push(`${v.id} ${n}: dichtbijAnders is dezelfde zin`);
+        /* Keuring 11 nov 2026: 2 keer 1 ernaast bij 1 doos zegt nooit 2 keer "dichtbij". */
+        if (/dichtbij/.test(f.eerste) && /dichtbij/.test(dichtbijAnders(n, v))) fouten.push(`${v.id} ${n}: 2 keer "dichtbij" bij 1 vraag`);
       }
+      /* Keuring 11 nov 2026: enkelvoud en meervoud ("Je legde er 1. Dat zijn er …" was fout). */
+      if (/\b1\. Dat zijn er\b/.test(kaal(f.eerste))) fouten.push(`${v.id} ${n}: meervoud bij 1: "${kaal(f.eerste)}"`);
     }
   } else if (v.soort === "huis") {
     for (let p = 0; p <= v.tot; p++) {
@@ -132,7 +136,12 @@ for (const v of VRAGEN) {
       }
       if (/te veel/.test(e)) { beweringen++; if (!(p > v.deel)) fouten.push(`${v.id} ${p}: niet waar (te veel): "${e}"`); }
       if (/te weinig/.test(e)) { beweringen++; if (!(p < v.deel)) fouten.push(`${v.id} ${p}: niet waar (te weinig): "${e}"`); }
+      /* Keuring 11 nov 2026: "de andere ballen" terwijl er maar 1 over is (vraag 7). */
+      const rest1 = v.tot - v.deel === 1;
+      for (const z of [f.hint, f.uitleg, ...f.weer]) if (rest1 && /\bandere (pionnen|ballen|pingpongballen)\b/.test(kaal(z))) fouten.push(`${v.id} ${p}: meervoud bij 1 over: "${kaal(z)}"`);
     }
+    if (v.tot - v.deel === 1)
+      for (const z of [opnieuw(v, 0), ZIN.handRest(v), ZIN.samenHuisRest(v)]) if (/\bandere (gaan|pionnen|ballen)\b/.test(kaal(z))) fouten.push(`${v.id}: meervoud bij 1 over: "${kaal(z)}"`);
   }
 }
 if (dichtVersies.size < 3) fouten.push(`eerste zin "dichtbij" bij de doos heeft maar ${dichtVersies.size} versie(s)`);

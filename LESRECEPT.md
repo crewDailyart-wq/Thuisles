@@ -138,6 +138,13 @@
 > - **Een speelvlak in Phaser met alleen HTML-tikplekken** kan altijd even klein (88 %, vanaf links): de tikplekken schalen mee (Plussommen, Minsommen 90 %).
 > - **Geldt ook voor eerder gebouwde gouden lessen:** de wit-blijft-wit-oplossing geldt meteen voor alle 9 gouden lessen (allemaal `stemHeelUitpraten`); oude lessen zonder de optie veranderen niet.
 
+> ## ⭐ GELEERD BIJ DE KEURING TELLEN EN SPLITSEN (onafhankelijke keurder, 11 november 2026; KEURING-TELLEN-SPLITSEN-GOUDEN.md) — geldt voor elke gouden les
+> - **Niet 2 keer hetzelfde woord bij 1 vraag in de eerste zin,** ook niet in een andere zin: na "12 is dichtbij, …" bij de 1e fout niet "14 is dichtbij, …" bij de 2e. Kies bij de 2e fout een versie zonder dat woord, met dezelfde betekenis. Controleer alle paren foute antwoorden per vraag in het fouttabel-script, niet alleen elke fout apart.
+> - **Enkelvoud en meervoud ook bij "1":** "Je legde er 1. Dat is te weinig." (niet "Dat zijn er"); "de andere ballen" klopt niet als er maar 1 over is. Bij een hint dan "de rest" (zegt niet hoeveel), bij het samen voordoen mag "de laatste bal".
+> - **Ook de 1 krijgt de kleur van zijn voorwerp** ("Je telde 1 pruim te veel." → 1 paars; "Sleep 1 pion naar het paarse vak." → 1 paars). Zet elk getal in een zin via de kleurhulp (`gk`, `g`), ook een losse 1.
+> - **Pas geen bestand aan terwijl een test loopt** (opnieuw gezien): de ontwikkelversie bouwt dan opnieuw en de test meldt valse fouten (hier: "pijl bij de opdracht samen tellen"). Daarna opnieuw meten.
+> - **Een test die het hulphandje "na 7 s" zoekt, moet tellen vanaf het einde van de opdrachtzin,** niet vanaf het begin: het handje komt ± 6 s nadat Bliepo uitgesproken is.
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

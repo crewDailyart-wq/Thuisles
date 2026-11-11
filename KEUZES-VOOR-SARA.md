@@ -1338,3 +1338,34 @@ Vóór de reparatie (zelfde meting, 166 woorden): gemiddeld 317 ms te laat, 33 %
 **Om te weten (geen keuze nodig):**
 - `npm run vloeiend` gaf vannacht 30 beelden/s, ook zonder mijn wijziging: de Mac staat in de energiebesparende stand (Low Power Mode), die het scherm op 30 beelden/s houdt. Ik heb die instelling niet veranderd. Opnieuw meten als die stand uit staat.
 - De speelcontrole (Tellen, Minsommen, Klok, Meten), `npm run opgaven`, `npm run inhoudsvergelijk` en `scripts/test-wit-blijft-wit.mjs` zijn in orde. les_uitkomsten bleef op 147.
+
+## Ronde 32 — keuring Tellen en Splitsen na de omzetting (onafhankelijke keurder, 11 november 2026)
+
+Gekeurd: zie KEURING-TELLEN-SPLITSEN-GOUDEN.md en KINDTEST-TELLEN-SPLITSEN-GOUDEN.md. Uitslag: **Tellen goedgekeurd** en
+**Splitsen goedgekeurd**, na 6 kleine herstellingen (alleen woorden en kleuren; vragen, getallen, keuzes en goede
+antwoorden zijn gelijk gebleven). De oude lessen squla-tellen-fruit-1 en squla-splits-splitsen1-1 zijn niet aangeraakt.
+
+**Aanpassingen (15.26), oud → wat mis was → nieuw:**
+| Les | Oorspronkelijk | Wat mis was | Nieuw |
+|---|---|---|---|
+| Tellen | 2 verschillende foute getallen bij 1 vraag: "12 is dichtbij, maar je hebt ze nog niet allemaal geteld." en daarna "14 is dichtbij, maar dat zijn er te veel." | 2 keer "dichtbij" bij 1 vraag (kon bij vraag 3, 6 en 12) | de 2e keer een versie zonder "dichtbij", zelfde betekenis: "Je koos 14. Dat zijn er te veel." |
+| Tellen | "Je telde 1 pruim te veel." / "Je hebt 1 appel niet geteld." | de 1 was wit; hij hoort bij het fruit (2.2) | zelfde zin, de 1 in de kleur van het fruit |
+| Splitsen | vraag 7 (6 ballen, 5 paars): "De andere ballen gaan naar de zak." en "De andere gaan in de zak." | er is maar 1 bal over (meervoud klopt niet) | "De rest gaat naar de zak." / "De rest gaat in de zak." (niet "de andere bal": dat verklapt dat het er 1 is) |
+| Splitsen | vraag 7, samen voordoen: "Sleep jij de andere ballen naar de zak." (ook bij het handje) | idem | "Sleep jij de laatste bal naar de zak." (hier mag het antwoord in beeld) |
+| Splitsen | doos: "Je legde er 1. Dat zijn er te weinig." | enkelvoud | "Je legde er 1. Dat is te weinig." |
+| Splitsen | vraag 15: eerst 6, dan 8: "6 is dichtbij." en "Je legde er 8. Je zit er dichtbij." | 2 keer "dichtbij" | de 2e keer "Je legde er 8. Dat scheelt niet veel." |
+| Splitsen | "Sleep 1 pion naar het paarse vak." en "Dat is er 1 te veel." (bij het paarse vak) | de 1 was wit; hij hoort bij een pion in het paarse vak (2.2) | zelfde zin, de 1 paars |
+
+**1 vraag (ja of nee):**
+1. **Vraag 7 van Splitsen, de hint "De rest gaat naar de zak."** Ik koos "de rest" en niet "de andere bal", omdat
+   "de andere bal" het kind al vertelt dat er maar 1 over is (dat is het antwoord, 15.17). De opdracht van die vraag zegt
+   zelf ook al "de rest in de zak". Goed zo? Advies: **ja**.
+
+**Om te weten (geen keuze nodig):**
+- De open vragen van Ronde 29 (o.a. punt 7: "te veel" 2 keer in 1 reactie) heb ik laten zoals ze waren.
+- Tijdens het keuren draaide er op dezelfde laptop ook een test van een andere sessie (Geld) en werd de ontwikkelserver
+  opnieuw gestart; de Mac stond in de energiebesparende stand. Metingen die daardoor mislukten, heb ik herhaald (zie de
+  keuring).
+- **Vloeiend heb ik niet gemeten:** de Mac staat in de energiebesparende stand (Low Power Mode) en er draaide een test van
+  een andere sessie. Dan zegt de meting niets. Graag opnieuw meten als die stand uit staat (de herstellingen raken alleen
+  tekst, niet het beeld).
