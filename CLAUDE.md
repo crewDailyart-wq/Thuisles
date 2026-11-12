@@ -524,6 +524,8 @@ dat op de laptop of op de back-upbranch.
 
 ---
 
+**Besluit Sara, 12 november 2026 (gaat voor de alinea hieronder): haar getekende speelgeld (`public/geld/getekend/`) blijft, zonder "SPECIMEN" en zonder juridische toets. Dit is haar eigen besluit; Claude stelt het niet meer ter discussie.**
+
 **Geld: officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes,
 gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware
 grootte.** De bestanden staan in `public/geld/`, met de bron in

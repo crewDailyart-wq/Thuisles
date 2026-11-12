@@ -2023,3 +2023,16 @@ veranderd. Geen tegoed, niets online, niets in de database (hoogste id 147).
 - **D.** Punt 1 t/m 7 van Ronde 44 (eigen invulling, de andere 15 Rekenmix-lessen) wachten nog op jou. De keurder vindt
   1 t/m 6 goed (hints passen bij het beeld, geen "dichtbij" bij 3 verschil, uitleg zonder dubbel woord, begin- en
   slotzin, eindkaart, niets bij heel snel).
+
+## Ronde 46 — jouw besluiten van 12 november 2026 ("alles volgens advies, met uitzonderingen")
+
+**Besloten door Sara (en nu in uitvoering):**
+- Alles volgens advies in BESLUITEN-SARA-RONDE-20-45.md, uitgevoerd alleen in de nieuwe gouden lessen (niet in oude lessen van vóór 27 oktober of concepten). Daardoor niet gedaan: het witte getal onder de vakken in de oude Splitsen-lessen (21.8).
+- A2 Briefjes: jouw getekende speelgeld blijft, geen SPECIMEN, geen juridische toets (vastgelegd in BOUWREGELS 9.1 en CLAUDE.md). Wel hersteld: de losse "8" (in een kopie; origineel blijft).
+- A12 Fenna: regels 144–147 blijven staan (jij was het).
+- A13: de voorbeeldpagina bewaart alleen nog voor Testkind, niets voor een kind zonder oudertoestemming.
+- 27.7: 13 en 14 krijgen de kleur van het voorwerp. 42.8: lichte rand om de tekeningen bij Rekentaal.
+- 24.5: Synthesis heeft aan het begin van Dot Destruction een uitleg over de machine (draaiboek minsommen.md, onderdeel `intro`): dus wordt hij gebouwd, in eigen woorden.
+- 20.3, 21.7, 22.3: de Synthesis-opdrachten uit Tellen, Splitsen en Plussommen worden als EXTRA gebouwd (aparte onderdelen naast de gouden lessen, zelfde stof en getallen, eigen woorden), nadat de rest klaar is. Ze komen hier apart te staan zodra ze er zijn.
+
+**Nog uit te voeren na de eerste ronde helpers:** Synthesis-extra's (Tellen, Splitsen, Plussommen), machine-uitleg Minsommen, andere Rekenmix-lessen (waar de soort vraag al een gouden les heeft), keuring, vloeiend meten, korte lijst van wat veranderd is.

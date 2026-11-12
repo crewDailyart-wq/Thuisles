@@ -305,6 +305,7 @@ Alles hieronder geldt, tenzij er "vervangen" staat. Staat er "TWIJFEL", dan staa
 ## 9. Geld
 
 9.1 **Officiële afbeeldingen (ECB-specimen 72 dpi voor briefjes, gemeenschappelijke zijde voor munten), nooit nationale zijde, nooit ware grootte.** Nooit een kader of witte achtergrond om geld: gebruik de uitgeknipte munten in `public/geld/los/`. Het woord "specimen" op de briefjes blijft staan (juridisch). — CLAUDE, G:3 okt, G:31 okt (03:52) — 31 okt. Vervangt: "een eigen gele munt in Bliepo-stijl zonder geldteken" (BESL 4, 28 okt) en de zelfgetekende geldplaatjes.
+  **BESLUIT SARA 12 november 2026 (gaat voor 9.1):** het getekende speelgeld van Sara (`public/geld/getekend/`) blijft, zonder "SPECIMEN" en zonder juridische toets; zij neemt dat besluit zelf. Claude stelt het niet meer ter discussie. De losse "8" op het briefje van 10 euro wordt hersteld in een kopie (origineel blijft). Nog steeds: nooit een kader of witte achtergrond om geld.
 9.2 **Bedragen onder elkaar hebben altijd twee cijfers centen** ("€ 8,00" onder "€ 2,90"); tussen € en bedrag staat een vaste spatie. — ONTW — okt 2026
 9.3 **Geen mensen in de geldlessen** (Sam en Noor wordt "jij"). — SQ, G:31 okt — 31 okt
 
