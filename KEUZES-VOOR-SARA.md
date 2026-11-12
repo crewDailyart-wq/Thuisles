@@ -2050,3 +2050,19 @@ Als aparte lessen naast de gouden lessen (die zijn niet veranderd), zelfde stof 
 3. Plussommen extra: het typen van de som is weggelaten (geen toetsenbord op het scherm). Het rooster is iets kleiner (0,86) omdat de tegelbak onder het tekstvak lag.
 4. Niet gebouwd: woorden samenstellen (Engels), piano, "weet je nog hoe dat heet", tegel van 5, slot-tegels. Goed zo?
 5. De test "woord voor woord oplichten" liep voor deze lessen niet (omgeving); wordt opnieuw gedraaid aan het eind.
+
+## Ronde 48 — nieuwe lessen en vragen na de keuring (12 november 2026)
+
+**Nieuw gebouwd (alleen gouden lessen, niets online):**
+- Minsommen: uitleg "de machine leren kennen" aan het begin (Ronde 47 punt 24.5). Vraag: mag het antwoord "Delen" een keuze zijn bij "Wat heet het als je steeds stippen erbij doet?" (Optellen / Aftrekken / Delen)? Advies: ja.
+- Rekenmix 4 (tellen), Rekenmix 3 heel moeilijk (hoeveel zitten er in de doos) en Rekenmix 2 (meer, minder, evenveel): http://localhost:3000/voorbeeld/les/squla-rekenmix-mix4-1-gouden?naam=Testkind (en mix3-4, mix2-1). Eigen invulling staat in RAPPORT-REKENMIX-OVERZICHT.md. Advies: akkoord.
+- De andere 12 Rekenmix-lessen: ik bouw ze pas als jij zegt welke gouden les ze volgen (zie hetzelfde rapport).
+
+**Vragen (ja of nee):**
+1. Er staan nog ongeveer 250 kale cijfers in zichtbare zinnen (bv. "tot wel 17", "alle 3 huisjes"). Alles wit maken, of per zin de kleur van het voorwerp? Advies: per zin, ik doe dat na jouw ja.
+2. Klok, hints "Ga langs de rand omhoog/omlaag": bij 1 van de 2 overgebleven keuzes past de richting. Zo laten? Advies: ja.
+3. Minsommen: de hint "erbij of eraf" — zo laten? Advies: ja.
+4. Voorbeeldpagina: zonder herkomst van de pagina bewaart hij nog wel. Strenger maken (dan nooit bewaren zonder Testkind)? Advies: ja.
+5. Rekentaal onthoudt de aantal-zin per vraag, niet per hele les. Zo laten? Advies: ja.
+6. Klok: 2 grensgevallen ("Deze wijzer is lang.", "Bij een heel uur…"): zo laten? Advies: ja.
+7. Kralenavontuur (tellen-sprongen) geeft een 404; dat is niet nieuw. Wil je dat ik het uitzoek?
