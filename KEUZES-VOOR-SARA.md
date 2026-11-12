@@ -2036,3 +2036,17 @@ veranderd. Geen tegoed, niets online, niets in de database (hoogste id 147).
 - 20.3, 21.7, 22.3: de Synthesis-opdrachten uit Tellen, Splitsen en Plussommen worden als EXTRA gebouwd (aparte onderdelen naast de gouden lessen, zelfde stof en getallen, eigen woorden), nadat de rest klaar is. Ze komen hier apart te staan zodra ze er zijn.
 
 **Nog uit te voeren na de eerste ronde helpers:** Synthesis-extra's (Tellen, Splitsen, Plussommen), machine-uitleg Minsommen, andere Rekenmix-lessen (waar de soort vraag al een gouden les heeft), keuring, vloeiend meten, korte lijst van wat veranderd is.
+
+## Ronde 47 — Synthesis-extra's naast de gouden lessen (12 november 2026)
+
+Als aparte lessen naast de gouden lessen (die zijn niet veranderd), zelfde stof en getallen als het Synthesis-draaiboek, eigen woorden. Nog niet gekeurd door een onafhankelijke keurder.
+- Tellen extra: http://localhost:3000/voorbeeld/les/squla-tellen-fruit-1-gouden-extra?naam=Testkind (6 opdrachten: welk fruit heeft er 8 of 7, twee soorten samen, andersom, zelf 4 peren maken, het lijstje).
+- Splitsen extra: http://localhost:3000/voorbeeld/les/squla-splits-splitsen1-1-gouden-extra?naam=Testkind (8 opdrachten: de splitsmachine, welke som heb je gemaakt, 5 op een andere manier, nieuw totaal 7, kies 8 of 10).
+- Plussommen extra: http://localhost:3000/voorbeeld/les/squla-plus-bakkerij-1-gouden-extra?naam=Testkind (10 opdrachten: welk getal is de tegel, samen 7 en 10, de som kiezen, omwisselen, nog een manier).
+
+**Graag een besluit:**
+1. Tellen extra: "welk fruit heeft er 13" heb ik niet gebouwd, want het draaiboek gaat tot 10 (ik koos 8 en 7). Wil je hogere getallen?
+2. Splitsen extra: 8 of 10 in plaats van 8 of 12 (Squla gaat tot 10). Mag de plus/min-machine naast het slepen blijven (14.26)?
+3. Plussommen extra: het typen van de som is weggelaten (geen toetsenbord op het scherm). Het rooster is iets kleiner (0,86) omdat de tegelbak onder het tekstvak lag.
+4. Niet gebouwd: woorden samenstellen (Engels), piano, "weet je nog hoe dat heet", tegel van 5, slot-tegels. Goed zo?
+5. De test "woord voor woord oplichten" liep voor deze lessen niet (omgeving); wordt opnieuw gedraaid aan het eind.
