@@ -11,7 +11,7 @@ Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-contr
 | Tellen (squla-tellen-fruit-1-gouden) | 26 | 71 | 97 |
 | Splitsen (squla-splits-splitsen1-1-gouden) | 89 | 248 | 337 |
 | Plussommen (squla-plus-bakkerij-1-gouden) | 105 | 149 | 254 |
-| Minsommen (squla-min-machine-1-gouden) | 37 | 72 | 109 |
+| Minsommen (squla-min-machine-1-gouden) | 55 | 80 | 135 |
 | Meer-minder (squla-meer-minder-evenveel2-1-gouden) | 34 | 63 | 97 |
 | Huisnummers (squla-huisnummers-gouden) | 53 | 143 | 196 |
 | Getallenlijn (squla-getallenlijn-kat-1-gouden) | 102 | 114 | 216 |
@@ -24,7 +24,7 @@ Gemaakt op 12 november 2026, automatisch, met `npx tsx scripts/zinnen-voor-contr
 | Rekentaal (squla-rekentaal-gouden) | 58 | 81 | 139 |
 | Rekenmix (squla-rekenmix-mix1-1-gouden) | 11 | 77 | 88 |
 | ALGEMEEN (gedeelde rijtjes, 1 keer, voor alle lessen) | 131 | 0 | 131 |
-| **Totaal** | 1147 | 1719 | **2866** |
+| **Totaal** | 1165 | 1727 | **2892** |
 
 ## Zo is dit bestand gemaakt
 
@@ -891,7 +891,7 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 
 ---
 
-## Minsommen (squla-min-machine-1-gouden) — 109 zinnen
+## Minsommen (squla-min-machine-1-gouden) — 135 zinnen
 
 Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 1 per vraag)); MOMENT (na goed, bij een bijzonder moment); NAAM_LOF (na goed, lof met de naam van het kind (zonder naam valt hij weg)); NAAM_GROET (begin van de les, groet met de naam); BEVESTIG (na een goed antwoord dat volgt op een foute poging); EINDE (eindkaart, afsluitende zin); EINDE_VEEL_FOUTEN (eindkaart, als het kind veel hulp nodig had); ONDUIDELIJK (na een foute poging als niet duidelijk is wat het kind dacht); AANMOEDIG (als het kind even stilzit of bij het hulphandje); OVERGANG (tussen 2 vragen in, voor de volgende vraag).
 
@@ -906,106 +906,132 @@ Gebruikt ook de gedeelde zinnen: LOF (na een goed antwoord (gewone lof; hooguit 
 | MINSOMMEN-007 | Minsommen | Hoeveel blokjes komen er dan uit? | vraag, opnieuw gesteld |
 | MINSOMMEN-008 | Minsommen | Wat is [v.a] [MIN] [v.b]? | vraag, opnieuw gesteld |
 | MINSOMMEN-009 | Minsommen | Nu staan de minsommen op het schoolbord. | vaste zin van de les (bron: bordEerst in ZIN) |
-| MINSOMMEN-010 | Minsommen | Kom, we doen het samen. | bij het samen doen |
-| MINSOMMEN-011 | Minsommen | Tik op een stip om hem weg te halen. | hulphandje tijdens het samen doen |
-| MINSOMMEN-012 | Minsommen | Je weet nu hoeveel er overblijft bij een minsom. | eindkaart, wat het kind geleerd heeft |
-| MINSOMMEN-013 | Minsommen | Tik op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
-| MINSOMMEN-014 | Minsommen | Je bent goed bezig. | aanmoediging bij het hulphandje |
-| MINSOMMEN-015 | Minsommen | Jij kunt dit. | aanmoediging bij het hulphandje |
-| MINSOMMEN-016 | Minsommen | Ja, [A] min [B] is [U]. | na een goed antwoord: reactie van Bliepo (sjabloon) — komt 2 keer voor |
-| MINSOMMEN-017 | Minsommen | Ja, er […] er [B] af. Er komen er [U] uit. | na een goed antwoord: reactie van Bliepo (sjabloon) |
-| MINSOMMEN-018 | Minsommen | Er […] [U] […] uit. | na een goed antwoord: reactie van Bliepo (sjabloon) |
-| MINSOMMEN-019 | Minsommen | Ik heb het nagekeken: [A] min [B] is [U]. | na een goed antwoord: reactie van Bliepo (sjabloon) — komt 2 keer voor |
-| MINSOMMEN-020 | Minsommen | Ja, van de [A] […] er [U] over. | na een goed antwoord: reactie van Bliepo (sjabloon) |
-| MINSOMMEN-021 | Minsommen | Van de [A] […] er [U] over. | na een goed antwoord: reactie van Bliepo (sjabloon) |
-| MINSOMMEN-022 | Minsommen | Je koos [X]. | eerste reactie na een foute poging (sjabloon) |
-| MINSOMMEN-023 | Minsommen | koos het getal waarmee de som begint (alsof er niets af gaat) | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-024 | Minsommen | Je koos [X]: daar begint de som mee. Er […] er nog [B] af. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-025 | Minsommen | Bij min gaat er iets af. Dan blijft er minder over dan [A]. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-026 | Minsommen | Je koos [X]: daar begint de som mee. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-027 | Minsommen | koos het getal dat eraf gaat in plaats van wat overblijft | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-028 | Minsommen | Je koos [X]: zoveel blokjes haalt de machine eraf. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-029 | Minsommen | De machine haalt er [B] af. De vraag is hoeveel er nog uit komen. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-030 | Minsommen | [B] gaat eraf. De vraag is hoeveel er overblijft. | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-031 | Minsommen | 1 te veel (misschien het begingetal meegeteld bij het terugtellen) | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-032 | Minsommen | te veel over (te weinig teruggeteld) | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-033 | Minsommen | 1 te weinig (1 te ver teruggeteld) | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-034 | Minsommen | te weinig over (te ver teruggeteld) | vaste zin van de les (bron: minFout) |
-| MINSOMMEN-035 | Minsommen | We rekenen het samen uit. | uitleg na de 2e foute poging (sjabloon) — komt 2 keer voor |
-| MINSOMMEN-036 | Minsommen | samen gedaan | bij het samen doen |
-| MINSOMMEN-037 | Minsommen | Minsommen: hoeveel over? | titel van de les op het scherm |
-| MINSOMMEN-038 | Minsommen | 10 − 3 is meer dan 6. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 6) |
-| MINSOMMEN-039 | Minsommen | Tel 3 terug vanaf 10. | bij de hint na de 1e foute poging (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 6) — komt 2 keer voor |
-| MINSOMMEN-040 | Minsommen | 10 − 3 is minder dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 8) |
-| MINSOMMEN-041 | Minsommen | 10 − 5 is meer dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
-| MINSOMMEN-042 | Minsommen | Denk aan 10 blokjes en haal er in je hoofd 5 weg. | bij de hint na de 1e foute poging (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
-| MINSOMMEN-043 | Minsommen | 10 − 5 is minder dan 6. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 6) — komt 2 keer voor |
-| MINSOMMEN-044 | Minsommen | 10 − 1 is meer dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 8) |
-| MINSOMMEN-045 | Minsommen | Begin bij 10 en tel 1 terug. | bij de hint na de 1e foute poging (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 8) — komt 2 keer voor |
-| MINSOMMEN-046 | Minsommen | Je koos 10: zoveel blokjes gaan erin. Er gaat er nog 1 af. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 10) |
-| MINSOMMEN-047 | Minsommen | 10 − 4 is meer dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 5) |
-| MINSOMMEN-048 | Minsommen | Tel 4 terug vanaf 10. | bij de hint na de 1e foute poging (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 5) — komt 2 keer voor |
-| MINSOMMEN-049 | Minsommen | 10 − 4 is minder dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 7) |
-| MINSOMMEN-050 | Minsommen | 10 − 2 is meer dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 7) |
-| MINSOMMEN-051 | Minsommen | Denk aan 10 blokjes en haal er in je hoofd 2 weg. | bij de hint na de 1e foute poging (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 7) — komt 2 keer voor |
-| MINSOMMEN-052 | Minsommen | 10 − 2 is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 9) |
-| MINSOMMEN-053 | Minsommen | 8 − 5 is meer dan 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 2) |
-| MINSOMMEN-054 | Minsommen | Begin bij 8 en tel 5 terug. | bij de hint na de 1e foute poging (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 2) — komt 2 keer voor |
-| MINSOMMEN-055 | Minsommen | 8 − 5 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 4) |
-| MINSOMMEN-056 | Minsommen | Je koos 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 7) |
-| MINSOMMEN-057 | Minsommen | Tel 3 terug vanaf 9. | bij de hint na de 1e foute poging (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 7) — komt 2 keer voor |
-| MINSOMMEN-058 | Minsommen | 9 − 3 is minder dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 8) |
-| MINSOMMEN-059 | Minsommen | Je koos 3: dat getal gaat eraf. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 3) |
-| MINSOMMEN-060 | Minsommen | Steek 7 vingers op en doe er 3 weg. | bij de hint na de 1e foute poging (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 3) — komt 2 keer voor |
-| MINSOMMEN-061 | Minsommen | 7 − 3 is minder dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 5) |
-| MINSOMMEN-062 | Minsommen | Je koos 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 5) |
-| MINSOMMEN-063 | Minsommen | Begin bij 10 en tel 6 terug. | bij de hint na de 1e foute poging (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 5) — komt 2 keer voor |
-| MINSOMMEN-064 | Minsommen | Je koos 6: dat getal gaat eraf. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 6) |
-| MINSOMMEN-065 | Minsommen | 6 − 4 is meer dan 1. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 1) |
-| MINSOMMEN-066 | Minsommen | Tel 4 terug vanaf 6. | bij de hint na de 1e foute poging (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 1) — komt 2 keer voor |
-| MINSOMMEN-067 | Minsommen | 6 − 4 is minder dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 3) |
-| MINSOMMEN-068 | Minsommen | 9 − 6 is meer dan 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 2) |
-| MINSOMMEN-069 | Minsommen | Steek 9 vingers op en doe er 6 weg. | bij de hint na de 1e foute poging (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 2) — komt 2 keer voor |
-| MINSOMMEN-070 | Minsommen | 9 − 6 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 4) |
-| MINSOMMEN-071 | Minsommen | 8 − 4 is meer dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 3) |
-| MINSOMMEN-072 | Minsommen | Begin bij 8 en tel 4 terug. | bij de hint na de 1e foute poging (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 3) — komt 2 keer voor |
-| MINSOMMEN-073 | Minsommen | 8 − 4 is minder dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 5) |
-| MINSOMMEN-074 | Minsommen | Je koos 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 2) |
-| MINSOMMEN-075 | Minsommen | Tel 5 terug vanaf 6. | bij de hint na de 1e foute poging (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 2) — komt 2 keer voor |
-| MINSOMMEN-076 | Minsommen | 6 − 5 is minder dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 3) |
-| MINSOMMEN-077 | Minsommen | Steek 10 vingers op en doe er 5 weg. | bij de hint na de 1e foute poging (vraag: 14. schoolbord 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
-| MINSOMMEN-078 | Minsommen | Je koos 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 3) |
-| MINSOMMEN-079 | Minsommen | Begin bij 7 en tel 5 terug. | bij de hint na de 1e foute poging (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 3) — komt 2 keer voor |
-| MINSOMMEN-080 | Minsommen | 7 − 5 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 4) |
-| MINSOMMEN-081 | Minsommen | Je koos weer te weinig. Tel precies 3 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 1; gekozen: 6 (een-te-weinig)) |
-| MINSOMMEN-082 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 3 weg. Tik op 3 stippen. … Er blijven 7 stippen over. 10 − 3 = 7. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 1; gekozen: 6 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-083 | Minsommen | Je koos weer te veel. Tel precies 3 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 1; gekozen: 8 (een-te-veel)) — komt 3 keer voor |
-| MINSOMMEN-084 | Minsommen | Je koos weer te weinig. Tel precies 5 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2; gekozen: 4 (een-te-weinig)) — komt 3 keer voor |
-| MINSOMMEN-085 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 5 weg. Tik op 5 stippen. … Er blijven 5 stippen over. 10 − 5 = 5. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 2; gekozen: 4 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-086 | Minsommen | Je koos weer te veel. Tel precies 5 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2; gekozen: 6 (een-te-veel)) — komt 5 keer voor |
-| MINSOMMEN-087 | Minsommen | Je koos weer te weinig. Tel precies 1 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 3; gekozen: 8 (een-te-weinig)) |
-| MINSOMMEN-088 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 1 weg. Tik op 1 stip. … Er blijven 9 stippen over. 10 − 1 = 9. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 3; gekozen: 8 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-089 | Minsommen | Je koos 10: zoveel gaan erin. De machine haalt er 1 af, dus er komen er minder uit. | na de 2e foute poging: Bliepo legt uit (vraag: 3; gekozen: 10 (begingetal-als-antwoord)) |
-| MINSOMMEN-090 | Minsommen | Je koos weer het getal waar je mee begint. Er gaat er 1 af, dus het wordt minder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 3; gekozen: 10 (begingetal-als-antwoord)) |
-| MINSOMMEN-091 | Minsommen | Je koos weer te weinig. Tel precies 4 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4; gekozen: 5 (een-te-weinig)) — komt 3 keer voor |
-| MINSOMMEN-092 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 4 weg. Tik op 4 stippen. … Er blijven 6 stippen over. 10 − 4 = 6. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 4; gekozen: 5 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-093 | Minsommen | Je koos weer te veel. Tel precies 4 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4; gekozen: 7 (een-te-veel)) — komt 3 keer voor |
-| MINSOMMEN-094 | Minsommen | Je koos weer te weinig. Tel precies 2 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 5; gekozen: 7 (een-te-weinig)) |
-| MINSOMMEN-095 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 2 weg. Tik op 2 stippen. … Er blijven 8 stippen over. 10 − 2 = 8. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 5; gekozen: 7 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-096 | Minsommen | Je koos weer te veel. Tel precies 2 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 5; gekozen: 9 (een-te-veel)) |
-| MINSOMMEN-097 | Minsommen | Kijk: 8 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 3 stippen over. 8 − 5 = 3. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 6; gekozen: 2 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-098 | Minsommen | Kijk: 9 stippen. Haal er 3 weg. Tik op 3 stippen. … Er blijven 6 stippen over. 9 − 3 = 6. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 7; gekozen: 7 (een-te-veel)) — komt 2 keer voor |
-| MINSOMMEN-099 | Minsommen | Je koos weer het getal dat eraf gaat. We zoeken wat er overblijft. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 8; gekozen: 3 (aftrekgetal-als-antwoord)) — komt 2 keer voor |
-| MINSOMMEN-100 | Minsommen | Kijk: 7 stippen. Haal er 3 weg. Tik op 3 stippen. … Er blijven 4 stippen over. 7 − 3 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 8; gekozen: 3 (aftrekgetal-als-antwoord)) — komt 2 keer voor |
-| MINSOMMEN-101 | Minsommen | Kijk: 10 stippen. Haal er 6 weg. Tik op 6 stippen. … Er blijven 4 stippen over. 10 − 6 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 9; gekozen: 5 (een-te-veel)) — komt 2 keer voor |
-| MINSOMMEN-102 | Minsommen | Kijk: 6 stippen. Haal er 4 weg. Tik op 4 stippen. … Er blijven 2 stippen over. 6 − 4 = 2. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 10; gekozen: 1 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-103 | Minsommen | Je koos weer te weinig. Tel precies 6 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 11; gekozen: 2 (een-te-weinig)) |
-| MINSOMMEN-104 | Minsommen | Kijk: 9 stippen. Haal er 6 weg. Tik op 6 stippen. … Er blijven 3 stippen over. 9 − 6 = 3. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 11; gekozen: 2 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-105 | Minsommen | Je koos weer te veel. Tel precies 6 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 11; gekozen: 4 (een-te-veel)) |
-| MINSOMMEN-106 | Minsommen | Kijk: 8 stippen. Haal er 4 weg. Tik op 4 stippen. … Er blijven 4 stippen over. 8 − 4 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 12; gekozen: 3 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-107 | Minsommen | Kijk: 6 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijft 1 stip over. 6 − 5 = 1. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 13; gekozen: 2 (een-te-veel)) — komt 2 keer voor |
-| MINSOMMEN-108 | Minsommen | Kijk: 10 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 5 stippen over. 10 − 5 = 5. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 14; gekozen: 4 (een-te-weinig)) — komt 2 keer voor |
-| MINSOMMEN-109 | Minsommen | Kijk: 7 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 2 stippen over. 7 − 5 = 2. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 15; gekozen: 3 (een-te-veel)) — komt 2 keer voor |
+| MINSOMMEN-010 | Minsommen | Tik op een stip om hem weg te halen. | hulphandje tijdens het samen doen |
+| MINSOMMEN-011 | Minsommen | Je weet nu hoeveel er overblijft bij een minsom. | eindkaart, wat het kind geleerd heeft |
+| MINSOMMEN-012 | Minsommen | Tik op de kaart. | eindkaart, Bliepo zegt wat het kind met de kaart doet |
+| MINSOMMEN-013 | Minsommen | Eerst leer je mijn stippenmachine kennen. Hij helpt je straks bij het aftrekken. | begin van de les (Bliepo opent) |
+| MINSOMMEN-014 | Minsommen | Tik op de plusknop onder de machine. | toelichting bij een vraag |
+| MINSOMMEN-015 | Minsommen | Tik op de plusknop. | hulphandje: wat het kind moet doen |
+| MINSOMMEN-016 | Minsommen | Tik maar op de plus. | hulphandje: wat het kind moet doen |
+| MINSOMMEN-017 | Minsommen | Probeer de plusknop maar. | hulphandje: wat het kind moet doen |
+| MINSOMMEN-018 | Minsommen | Je deed er 1 stip bij. Bovenaan staat het totaal: zoveel stippen zijn er nu. | toelichting bij een vraag |
+| MINSOMMEN-019 | Minsommen | Doe er nog 2 stippen bij en kijk goed naar het totaal. | toelichting bij een vraag |
+| MINSOMMEN-020 | Minsommen | Nu gaan we juist aftrekken. Dan gaat er iets af. | toelichting bij een vraag |
+| MINSOMMEN-021 | Minsommen | Wat doet het totaal elke keer als er een stip bij komt? | bij de vraag |
+| MINSOMMEN-022 | Minsommen | Wat gebeurt er dan met het totaal? | vraag, opnieuw gesteld |
+| MINSOMMEN-023 | Minsommen | Het wordt groter. | kaartje, keuze of label bij een vraag |
+| MINSOMMEN-024 | Minsommen | Het wordt kleiner. | kaartje, keuze of label bij een vraag |
+| MINSOMMEN-025 | Minsommen | Er komt steeds 1 stip bij, dus het totaal wordt groter. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-026 | Minsommen | Elke nieuwe stip maakt het totaal groter. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-027 | Minsommen | Meer stippen geven een groter totaal. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-028 | Minsommen | Wat heet het als je steeds stippen erbij doet? | bij de vraag |
+| MINSOMMEN-029 | Minsommen | Wat heet dat, als je zo stippen erbij doet? | vraag, opnieuw gesteld |
+| MINSOMMEN-030 | Minsommen | Stippen erbij doen is optellen. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-031 | Minsommen | Met de plusknop tel je steeds op. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-032 | Minsommen | Je bent goed bezig. | aanmoediging bij het hulphandje |
+| MINSOMMEN-033 | Minsommen | Jij kunt dit. | aanmoediging bij het hulphandje |
+| MINSOMMEN-034 | Minsommen | Ja, [A] min [B] is [U]. | na een goed antwoord: reactie van Bliepo (sjabloon) — komt 2 keer voor |
+| MINSOMMEN-035 | Minsommen | Ja, er […] er [B] af. Er komen er [U] uit. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-036 | Minsommen | Er […] [U] […] uit. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-037 | Minsommen | Ik heb het nagekeken: [A] min [B] is [U]. | na een goed antwoord: reactie van Bliepo (sjabloon) — komt 2 keer voor |
+| MINSOMMEN-038 | Minsommen | Ja, van de [A] […] er [U] over. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-039 | Minsommen | Van de [A] […] er [U] over. | na een goed antwoord: reactie van Bliepo (sjabloon) |
+| MINSOMMEN-040 | Minsommen | Je koos [X]. | eerste reactie na een foute poging (sjabloon) |
+| MINSOMMEN-041 | Minsommen | koos het getal waarmee de som begint (alsof er niets af gaat) | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-042 | Minsommen | Je koos [X]: daar begint de som mee. Er […] er nog [B] af. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-043 | Minsommen | Bij min gaat er iets af. Dan blijft er minder over dan [A]. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-044 | Minsommen | Je koos [X]: daar begint de som mee. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-045 | Minsommen | koos het getal dat eraf gaat in plaats van wat overblijft | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-046 | Minsommen | Je koos [X]: zoveel blokjes haalt de machine eraf. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-047 | Minsommen | De machine haalt er [B] af. De vraag is hoeveel er nog uit komen. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-048 | Minsommen | [B] gaat eraf. De vraag is hoeveel er overblijft. | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-049 | Minsommen | 1 te veel (misschien het begingetal meegeteld bij het terugtellen) | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-050 | Minsommen | te veel over (te weinig teruggeteld) | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-051 | Minsommen | 1 te weinig (1 te ver teruggeteld) | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-052 | Minsommen | te weinig over (te ver teruggeteld) | vaste zin van de les (bron: minFout) |
+| MINSOMMEN-053 | Minsommen | We rekenen het samen uit. | uitleg na de 2e foute poging (sjabloon) — komt 2 keer voor |
+| MINSOMMEN-054 | Minsommen | samen gedaan | bij het samen doen |
+| MINSOMMEN-055 | Minsommen | Minsommen: hoeveel over? | titel van de les op het scherm |
+| MINSOMMEN-056 | Minsommen | Je koos dat het kleiner wordt. | na de 1e foute poging: Bliepo's eerste reactie (vraag: intro-totaal: Wat doet het totaal elke keer als er een stip bij komt? (keuzes Het wordt groter. / Het wordt...; gekozen: Het wordt kleiner.) |
+| MINSOMMEN-057 | Minsommen | Kijk naar het totaal bovenaan. Wat stond daar eerst, en wat staat er nu? (rondje om de teller) | bij de hint na de 1e foute poging (vraag: intro-totaal: Wat doet het totaal elke keer als er een stip bij komt? (keuzes Het wordt groter. / Het wordt...; gekozen: Het wordt kleiner.) |
+| MINSOMMEN-058 | Minsommen | Er komen alleen stippen bij. Dan kan het totaal niet kleiner worden: het wordt groter. Kom, we doen het samen. Doe er nog 1 stip bij en kijk naar het totaal. … Eerst was het 3, nu is het 4. Het totaal wordt groter. | na de 2e foute poging: Bliepo legt uit (vraag: intro-totaal: Wat doet het totaal elke keer als er een stip bij komt? (keuzes Het wordt groter. / Het wordt...; gekozen: Het wordt kleiner.) |
+| MINSOMMEN-059 | Minsommen | Je koos aftrekken. Dat doen we straks. | na de 1e foute poging: Bliepo's eerste reactie (vraag: intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen); gekozen: Aftrekken) |
+| MINSOMMEN-060 | Minsommen | Kijk wat de plusknop met de stippen doet: komen ze erbij of gaan ze eraf? (rondje om de plusknop) | bij de hint na de 1e foute poging (vraag: intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen); gekozen: Aftrekken) — komt 2 keer voor |
+| MINSOMMEN-061 | Minsommen | Bij aftrekken gaat er iets weg. De plusknop zet er juist stippen bij. Kom, we doen het samen. Doe er nog 1 stip bij. … Er komt 1 stip bij. Erbij doen heet optellen. | na de 2e foute poging: Bliepo legt uit (vraag: intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen); gekozen: Aftrekken) |
+| MINSOMMEN-062 | Minsommen | Je koos delen. | na de 1e foute poging: Bliepo's eerste reactie (vraag: intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen); gekozen: Delen) |
+| MINSOMMEN-063 | Minsommen | Delen is eerlijk verdelen. De plusknop doet iets anders: hij zet er stippen bij. Kom, we doen het samen. Doe er nog 1 stip bij. … Er komt 1 stip bij. Erbij doen heet optellen. | na de 2e foute poging: Bliepo legt uit (vraag: intro-optellen: Wat heet het als je steeds stippen erbij doet? (keuzes Optellen / Aftrekken / Delen); gekozen: Delen) |
+| MINSOMMEN-064 | Minsommen | 10 − 3 is meer dan 6. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 6) |
+| MINSOMMEN-065 | Minsommen | Tel 3 terug vanaf 10. | bij de hint na de 1e foute poging (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 6) — komt 2 keer voor |
+| MINSOMMEN-066 | Minsommen | 10 − 3 is minder dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 1. min-machine 10 − 3 (keuzes 6 / 7 / 8); gekozen: 8) |
+| MINSOMMEN-067 | Minsommen | 10 − 5 is meer dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
+| MINSOMMEN-068 | Minsommen | Denk aan 10 blokjes en haal er in je hoofd 5 weg. | bij de hint na de 1e foute poging (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
+| MINSOMMEN-069 | Minsommen | 10 − 5 is minder dan 6. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 2. min-machine 10 − 5 (keuzes 4 / 5 / 6); gekozen: 6) — komt 2 keer voor |
+| MINSOMMEN-070 | Minsommen | 10 − 1 is meer dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 8) |
+| MINSOMMEN-071 | Minsommen | Begin bij 10 en tel 1 terug. | bij de hint na de 1e foute poging (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 8) — komt 2 keer voor |
+| MINSOMMEN-072 | Minsommen | Je koos 10: zoveel blokjes gaan erin. Er gaat er nog 1 af. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 3. min-machine 10 − 1 (keuzes 8 / 9 / 10); gekozen: 10) |
+| MINSOMMEN-073 | Minsommen | 10 − 4 is meer dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 5) |
+| MINSOMMEN-074 | Minsommen | Tel 4 terug vanaf 10. | bij de hint na de 1e foute poging (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 5) — komt 2 keer voor |
+| MINSOMMEN-075 | Minsommen | 10 − 4 is minder dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 4. min-machine 10 − 4 (keuzes 5 / 6 / 7); gekozen: 7) |
+| MINSOMMEN-076 | Minsommen | 10 − 2 is meer dan 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 7) |
+| MINSOMMEN-077 | Minsommen | Denk aan 10 blokjes en haal er in je hoofd 2 weg. | bij de hint na de 1e foute poging (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 7) — komt 2 keer voor |
+| MINSOMMEN-078 | Minsommen | 10 − 2 is minder dan 9. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 5. min-machine 10 − 2 (keuzes 7 / 8 / 9); gekozen: 9) |
+| MINSOMMEN-079 | Minsommen | 8 − 5 is meer dan 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 2) |
+| MINSOMMEN-080 | Minsommen | Begin bij 8 en tel 5 terug. | bij de hint na de 1e foute poging (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 2) — komt 2 keer voor |
+| MINSOMMEN-081 | Minsommen | 8 − 5 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 6. schoolbord 8 − 5 (keuzes 2 / 3 / 4); gekozen: 4) |
+| MINSOMMEN-082 | Minsommen | Je koos 7. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 7) |
+| MINSOMMEN-083 | Minsommen | Tel 3 terug vanaf 9. | bij de hint na de 1e foute poging (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 7) — komt 2 keer voor |
+| MINSOMMEN-084 | Minsommen | 9 − 3 is minder dan 8. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 7. som in het midden 9 − 3 (keuzes 6 / 7 / 8); gekozen: 8) |
+| MINSOMMEN-085 | Minsommen | Je koos 3: dat getal gaat eraf. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 3) |
+| MINSOMMEN-086 | Minsommen | Steek 7 vingers op en doe er 3 weg. | bij de hint na de 1e foute poging (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 3) — komt 2 keer voor |
+| MINSOMMEN-087 | Minsommen | 7 − 3 is minder dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 8. schoolbord 7 − 3 (keuzes 3 / 4 / 5); gekozen: 5) |
+| MINSOMMEN-088 | Minsommen | Je koos 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 5) |
+| MINSOMMEN-089 | Minsommen | Begin bij 10 en tel 6 terug. | bij de hint na de 1e foute poging (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 5) — komt 2 keer voor |
+| MINSOMMEN-090 | Minsommen | Je koos 6: dat getal gaat eraf. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 9. schoolbord 10 − 6 (keuzes 4 / 5 / 6); gekozen: 6) |
+| MINSOMMEN-091 | Minsommen | 6 − 4 is meer dan 1. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 1) |
+| MINSOMMEN-092 | Minsommen | Tel 4 terug vanaf 6. | bij de hint na de 1e foute poging (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 1) — komt 2 keer voor |
+| MINSOMMEN-093 | Minsommen | 6 − 4 is minder dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 10. som in het midden 6 − 4 (keuzes 1 / 2 / 3); gekozen: 3) |
+| MINSOMMEN-094 | Minsommen | 9 − 6 is meer dan 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 2) |
+| MINSOMMEN-095 | Minsommen | Steek 9 vingers op en doe er 6 weg. | bij de hint na de 1e foute poging (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 2) — komt 2 keer voor |
+| MINSOMMEN-096 | Minsommen | 9 − 6 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 11. schoolbord 9 − 6 (keuzes 2 / 3 / 4); gekozen: 4) |
+| MINSOMMEN-097 | Minsommen | 8 − 4 is meer dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 3) |
+| MINSOMMEN-098 | Minsommen | Begin bij 8 en tel 4 terug. | bij de hint na de 1e foute poging (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 3) — komt 2 keer voor |
+| MINSOMMEN-099 | Minsommen | 8 − 4 is minder dan 5. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 12. som in het midden 8 − 4 (keuzes 3 / 4 / 5); gekozen: 5) |
+| MINSOMMEN-100 | Minsommen | Je koos 2. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 2) |
+| MINSOMMEN-101 | Minsommen | Tel 5 terug vanaf 6. | bij de hint na de 1e foute poging (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 2) — komt 2 keer voor |
+| MINSOMMEN-102 | Minsommen | 6 − 5 is minder dan 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 13. schoolbord 6 − 5 (keuzes 1 / 2 / 3); gekozen: 3) |
+| MINSOMMEN-103 | Minsommen | Steek 10 vingers op en doe er 5 weg. | bij de hint na de 1e foute poging (vraag: 14. schoolbord 10 − 5 (keuzes 4 / 5 / 6); gekozen: 4) — komt 2 keer voor |
+| MINSOMMEN-104 | Minsommen | Je koos 3. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 3) |
+| MINSOMMEN-105 | Minsommen | Begin bij 7 en tel 5 terug. | bij de hint na de 1e foute poging (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 3) — komt 2 keer voor |
+| MINSOMMEN-106 | Minsommen | 7 − 5 is minder dan 4. | na de 1e foute poging: Bliepo's eerste reactie (vraag: 15. som in het midden 7 − 5 (keuzes 2 / 3 / 4); gekozen: 4) |
+| MINSOMMEN-107 | Minsommen | Je koos weer te weinig. Tel precies 3 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 1; gekozen: 6 (een-te-weinig)) |
+| MINSOMMEN-108 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 3 weg. Tik op 3 stippen. … Er blijven 7 stippen over. 10 − 3 = 7. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 1; gekozen: 6 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-109 | Minsommen | Je koos weer te veel. Tel precies 3 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 1; gekozen: 8 (een-te-veel)) — komt 3 keer voor |
+| MINSOMMEN-110 | Minsommen | Je koos weer te weinig. Tel precies 5 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2; gekozen: 4 (een-te-weinig)) — komt 3 keer voor |
+| MINSOMMEN-111 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 5 weg. Tik op 5 stippen. … Er blijven 5 stippen over. 10 − 5 = 5. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 2; gekozen: 4 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-112 | Minsommen | Je koos weer te veel. Tel precies 5 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 2; gekozen: 6 (een-te-veel)) — komt 5 keer voor |
+| MINSOMMEN-113 | Minsommen | Je koos weer te weinig. Tel precies 1 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 3; gekozen: 8 (een-te-weinig)) |
+| MINSOMMEN-114 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 1 weg. Tik op 1 stip. … Er blijven 9 stippen over. 10 − 1 = 9. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 3; gekozen: 8 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-115 | Minsommen | Je koos 10: zoveel gaan erin. De machine haalt er 1 af, dus er komen er minder uit. | na de 2e foute poging: Bliepo legt uit (vraag: 3; gekozen: 10 (begingetal-als-antwoord)) |
+| MINSOMMEN-116 | Minsommen | Je koos weer het getal waar je mee begint. Er gaat er 1 af, dus het wordt minder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 3; gekozen: 10 (begingetal-als-antwoord)) |
+| MINSOMMEN-117 | Minsommen | Je koos weer te weinig. Tel precies 4 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4; gekozen: 5 (een-te-weinig)) — komt 3 keer voor |
+| MINSOMMEN-118 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 4 weg. Tik op 4 stippen. … Er blijven 6 stippen over. 10 − 4 = 6. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 4; gekozen: 5 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-119 | Minsommen | Je koos weer te veel. Tel precies 4 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 4; gekozen: 7 (een-te-veel)) — komt 3 keer voor |
+| MINSOMMEN-120 | Minsommen | Je koos weer te weinig. Tel precies 2 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 5; gekozen: 7 (een-te-weinig)) |
+| MINSOMMEN-121 | Minsommen | Kijk: 10 stippen, net zoveel als de blokjes. Haal er 2 weg. Tik op 2 stippen. … Er blijven 8 stippen over. 10 − 2 = 8. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 5; gekozen: 7 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-122 | Minsommen | Je koos weer te veel. Tel precies 2 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 5; gekozen: 9 (een-te-veel)) |
+| MINSOMMEN-123 | Minsommen | Kijk: 8 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 3 stippen over. 8 − 5 = 3. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 6; gekozen: 2 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-124 | Minsommen | Kijk: 9 stippen. Haal er 3 weg. Tik op 3 stippen. … Er blijven 6 stippen over. 9 − 3 = 6. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 7; gekozen: 7 (een-te-veel)) — komt 2 keer voor |
+| MINSOMMEN-125 | Minsommen | Je koos weer het getal dat eraf gaat. We zoeken wat er overblijft. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 8; gekozen: 3 (aftrekgetal-als-antwoord)) — komt 2 keer voor |
+| MINSOMMEN-126 | Minsommen | Kijk: 7 stippen. Haal er 3 weg. Tik op 3 stippen. … Er blijven 4 stippen over. 7 − 3 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 8; gekozen: 3 (aftrekgetal-als-antwoord)) — komt 2 keer voor |
+| MINSOMMEN-127 | Minsommen | Kijk: 10 stippen. Haal er 6 weg. Tik op 6 stippen. … Er blijven 4 stippen over. 10 − 6 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 9; gekozen: 5 (een-te-veel)) — komt 2 keer voor |
+| MINSOMMEN-128 | Minsommen | Kijk: 6 stippen. Haal er 4 weg. Tik op 4 stippen. … Er blijven 2 stippen over. 6 − 4 = 2. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 10; gekozen: 1 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-129 | Minsommen | Je koos weer te weinig. Tel precies 6 terug, niet verder. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 11; gekozen: 2 (een-te-weinig)) |
+| MINSOMMEN-130 | Minsommen | Kijk: 9 stippen. Haal er 6 weg. Tik op 6 stippen. … Er blijven 3 stippen over. 9 − 6 = 3. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 11; gekozen: 2 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-131 | Minsommen | Je koos weer te veel. Tel precies 6 terug. | 2e foute poging met dezelfde denkfout als de 1e: Bliepo zegt het anders (vraag: 11; gekozen: 4 (een-te-veel)) |
+| MINSOMMEN-132 | Minsommen | Kijk: 8 stippen. Haal er 4 weg. Tik op 4 stippen. … Er blijven 4 stippen over. 8 − 4 = 4. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 12; gekozen: 3 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-133 | Minsommen | Kijk: 6 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijft 1 stip over. 6 − 5 = 1. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 13; gekozen: 2 (een-te-veel)) — komt 2 keer voor |
+| MINSOMMEN-134 | Minsommen | Kijk: 10 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 5 stippen over. 10 − 5 = 5. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 14; gekozen: 4 (een-te-weinig)) — komt 2 keer voor |
+| MINSOMMEN-135 | Minsommen | Kijk: 7 stippen. Haal er 5 weg. Tik op 5 stippen. … Er blijven 2 stippen over. 7 − 5 = 2. | na de 2e foute poging: Bliepo doet het samen voor (vraag: 15; gekozen: 3 (een-te-veel)) — komt 2 keer voor |
 
 ---
 
