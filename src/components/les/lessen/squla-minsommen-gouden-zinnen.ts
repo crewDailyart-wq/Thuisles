@@ -219,7 +219,7 @@ export function minFout(v: Minvraag, x: number): Fout {
     : [`Begin bij ${A} en tel ${B} terug.`, `Tel ${B} terug vanaf ${A}.`, `Steek ${A} vingers op en doe er ${B} weg.`][nr % 3];
   const metRichting = (code: Denkfoutnaam, soort: string, denkfout: string, eerste: string, beperking: Beperking, uitleg: string, weer: string[], kort: string): Fout => {
     if (overNa(v.keuzes, x, beperking).length <= 1)
-      return { code, soort, denkfout, eerste: `Je koos ${X}.`, hint, uitleg, weer: [], rondje: "eraf", scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" };
+      return { code, soort, denkfout, eerste: `Je koos ${X}.`, hint, uitleg, weer: [], rondje: "eraf", scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over", ...(kort === "" ? { kort } : {}) };
     return { code, soort, denkfout, eerste, hint, uitleg, weer, rondje: "eraf", scherm, beperking, kort };
   };
 
@@ -245,7 +245,8 @@ export function minFout(v: Minvraag, x: number): Fout {
       {},
       machine ? `De machine haalt er ${B} af. De vraag is hoeveel er nog uit komen.` : `${B} gaat eraf. De vraag is hoeveel er overblijft.`,
       ["Je koos weer het getal dat eraf gaat.", "We zoeken wat er overblijft."],
-      `Je koos ${X}.`,
+      /* Ronde 33 punt 2 (Sara 12 nov): "Je koos 3. 3 gaat eraf. …" zegt 2 keer hetzelfde getal: bij de 2e fout alleen de uitleg. */
+      "",
     );
   if (x > u)
     return metRichting(
@@ -257,7 +258,7 @@ export function minFout(v: Minvraag, x: number): Fout {
       /* Keuring 10 nov: bij de machine het woord van de vraag ("komen eruit", 3.11); 2 versies, zodat het kind niet 15 keer hetzelfde hoort (5.10). */
       machine ? [`Er komen minder blokjes uit dan ${X}.`, `Er komen er minder dan ${X} uit.`][nr % 2] : [`Er blijven minder over dan ${X}.`, `Er blijft minder dan ${X} over.`][nr % 2],
       ["Je koos weer te veel.", `Tel precies ${B} terug.`],
-      `Je koos ${X}.`,
+      "",
     );
   if (x < u)
     return metRichting(
@@ -268,7 +269,7 @@ export function minFout(v: Minvraag, x: number): Fout {
       { meerDan: x },
       machine ? [`Er komen meer blokjes uit dan ${X}.`, `Er komen er meer dan ${X} uit.`][nr % 2] : [`Er blijven meer over dan ${X}.`, `Er blijft meer dan ${X} over.`][nr % 2],
       ["Je koos weer te weinig.", `Tel precies ${B} terug, niet verder.`],
-      `Je koos ${X}.`,
+      "",
     );
   return { code: "onduidelijk", soort: "onduidelijk", denkfout: "niet duidelijk (geen reden verzonnen)", eerste: "", hint, uitleg: "We rekenen het samen uit.", weer: [], rondje: "eraf", scherm, beperking: {} };
 }

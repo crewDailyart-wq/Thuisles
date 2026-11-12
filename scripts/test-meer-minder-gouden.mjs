@@ -554,6 +554,15 @@ const ROUTES = {
   async goed(P) {
     const ok = await speel(P, { naam: "goed", twijfel: true });
     await controleer(P, "goed");
+    /* Ronde 45: de zin met het aantal niet 2 keer achter elkaar dezelfde, ook niet bij een ander aantal
+       ("Het zijn er 12." en daarna "Het zijn er 14."). Het getal wordt een #, dan zie je de zin zelf. */
+    const c = { l: await P.log() };
+    const vorm = (z) => z.replace(/\{\d+:[a-z]+\}/g, "#").replace(/\d+/g, "#");
+    const lof = c.l.filter((x) => x.wat === "reactie" && x.soort === "goed").map((x) => vorm(x.zin ?? ""));
+    const aantalZin = lof.map((z) => (z.match(/[^.!?]*#[^.!?]*[.!?]$/) ?? [""])[0].trim());
+    const dubbel = aantalZin.filter((z, i) => i > 0 && z && z === aantalZin[i - 1]).length;
+    zie(`goed: zin met het aantal 2 keer achter elkaar dezelfde: ${dubbel} (moet 0) — ${aantalZin.join(" | ")}`);
+    if (dubbel) fout(`de zin met het aantal kwam ${dubbel} keer 2 keer achter elkaar`);
     return ok;
   },
   /** Afwisselend: 1e fout dan goed; elke 3e vraag 2 keer fout (samen voordoen); 1 keer hetzelfde antwoord 2 keer. */

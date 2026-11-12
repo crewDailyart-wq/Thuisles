@@ -43,7 +43,7 @@ for (const v of VRAGEN)
     const meer = /nog niet allemaal|volle rijen|laatste rij|sla er geen|niet geteld/i.test(tekst);
     const minder = /te veel|1 keer|maar 1/i.test(tekst);
     const over = rest.filter((k) => (meer ? k > x : true) && (minder ? k < x : true));
-    if (f.noot && RICHTINGWOORDEN.test(f.hint)) verklappers.push(`${v.id} ${a}: hint geeft toch een richting: "${f.hint}"`);
+    if (f.noot && RICHTINGWOORDEN.test(kaal(f.hint))) verklappers.push(`${v.id} ${a}: hint geeft toch een richting: "${f.hint}"`);
     if (over.length <= 1 && f.code !== "alleen-volle-rijen") verklappers.push(`${v.id} ${a}: na "${tekst}" blijft alleen ${over.join("")} over`);
   }
 /*

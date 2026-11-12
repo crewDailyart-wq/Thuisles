@@ -110,7 +110,7 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 | 6 | 7 (`een-te-weinig`) |  7 is te weinig. | Je koos weer te weinig. Er komen er 3 bij, niet minder. |
 | 6 | 9 (`een-te-veel`) |  9 is te veel. | Je koos weer te veel. Er komen er 3 bij, niet meer. |
 | 7 | 8 (`te-weinig`) |  8 is te weinig. | Je koos weer te weinig. Er komen er 4 bij, niet minder. |
-| 7 | 9 (`een-te-weinig`) | Je koos 9. Dat is het nog niet. 9 is te weinig. | — (dan de uitleg links) |
+| 7 | 9 (`een-te-weinig`) |  9 is te weinig. | — (dan de uitleg links) |
 | 8 | 3 + 4 → 9 (`te-veel`) | Je verbond 3 + 4 met 9. 3 + 4 hoort bij een kleiner getal. | — (dan de uitleg links) |
 | 8 | 3 + 4 → 8 (`een-te-veel`) | Je verbond 3 + 4 met 8. 3 + 4 hoort bij een kleiner getal. | — (dan de uitleg links) |
 | 8 | 5 + 3 → 9 (`een-te-veel`) | Je verbond 5 + 3 met 9. 5 + 3 hoort bij een kleiner getal. | — (dan de uitleg links) |
@@ -119,7 +119,7 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 | 8 | 2 + 7 → 8 (`een-te-weinig`) | Je verbond 2 + 7 met 8. 2 + 7 hoort bij een groter getal. | — (dan de uitleg links) |
 | 9 | 0 (`min-in-plaats-van-plus`) | 0 krijg je als je 4 van 4 afhaalt. Bij samen haal je er niets af. Je telt ze erbij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
 | 9 | 4 (`deel-als-antwoord`) | Je koos 4. Dat zijn alleen de donuts hier. Samen betekent: de donuts hier én daar. | Je koos weer maar 1 kant. De andere donuts horen er ook bij. |
-| 9 | 7 (`een-te-weinig`) | Je koos 7. 7 is te weinig. | — (dan de uitleg links) |
+| 9 | 7 (`een-te-weinig`) |  7 is te weinig. | — (dan de uitleg links) |
 | 10 | 2 (`deel-als-antwoord`) | Je koos 2. Dat zijn alleen de croissants hier. Samen betekent: de croissants hier én daar. | Je koos weer maar 1 kant. De andere croissants horen er ook bij. |
 | 10 | 6 (`een-te-weinig`) |  6 is te weinig. | Je koos weer te weinig. Elke croissant telt mee. |
 | 10 | 8 (`een-te-veel`) |  8 is te veel. | Je koos weer te veel. Elke croissant telt maar 1 keer. |
@@ -142,4 +142,4 @@ Bij de 2e fout zegt Bliepo de eerste zin van dát antwoord met de uitleg (middel
 | 15 | 10 (`een-te-veel`) |  10 is te veel. | Je koos weer te veel. Elk koekje telt maar 1 keer. |
 | 16 | 0 (`min-in-plaats-van-plus`) | 0 krijg je als je 5 van 5 afhaalt. Bij samen gaat er niets weg. Er komt juist iets bij. | Je haalde er weer iets af. Bij plus komt er iets bij. |
 | 16 | 5 (`deel-als-antwoord`) | Je koos 5. Dat zijn alleen de krentenbollen hier. Samen betekent: de krentenbollen hier én daar. | Je koos weer maar 1 kant. De andere krentenbollen horen er ook bij. |
-| 16 | 9 (`een-te-weinig`) | 9 is het niet. 9 is te weinig. | — (dan de uitleg links) |
+| 16 | 9 (`een-te-weinig`) |  9 is te weinig. | — (dan de uitleg links) |

@@ -30,7 +30,7 @@ export const LOF_KIJK_INDEX = 3;
 
 /** §3.2 Lof voor speciale momenten (per les hooguit 1 keer per soort). */
 export const MOMENT = {
-  drieOpRij: rij(["Al 3 goed achter elkaar!", "3 keer op rij goed. Wauw!", "Het gaat steeds beter: al 3 goed!", "3 keer goed! Dat zet ik in mijn geheugen."], [3]),
+  drieOpRij: rij(["Al {3:wit} goed achter elkaar!", "{3:wit} keer op rij goed. Wauw!", "Het gaat steeds beter: al {3:wit} goed!", "{3:wit} keer goed! Dat zet ik in mijn geheugen."], [3]),
   moeilijk: rij(["Dit was een moeilijke, en jij weet het!", "Wauw, ook de lastige is goed!", "Die was echt lastig. Knap van jou!", "Moeilijke vraag, groen scherm. Super!"], [3]),
   eerste: rij(["Goed begin!", "De eerste is al goed!", "Zo, wat een goede start!", "De eerste is nagekeken: goed!"], [3]),
   laatste: rij(["En de laatste is ook goed!", "Goed tot het eind!", "Ook de laatste klopt. Knap!", "De laatste vraag, en weer een groen scherm!"], [3]),
@@ -54,9 +54,9 @@ export const EINDE = rij(["Goed gedaan! Tot de volgende keer.", "De les is klaar
 export const EINDE_VEEL_FOUTEN = "Je hebt goed doorgezet. Volgende keer gaat het nog beter.";
 
 /** §10 Eerste zin als de denkfout niet duidelijk is (binnen 1 vraag nooit 2 keer dezelfde). */
-export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog 1 keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik heb nagekeken en ik weet een hulpje."], [10, 11, 12]);
+export const ONDUIDELIJK = rij(["Die is lastig, hè.", "We zoeken het samen.", "Ik help je een stukje.", "Goed dat je het probeert.", "Kom, we kijken samen.", "Ik geef je een tip.", "Ik bedoelde een andere.", "Dat geeft niks, zo leer je het.", "Rustig maar, we doen het stap voor stap.", "Probeer het nog {1:wit} keer, met een tip.", "Even in mijn geheugen kijken… ik heb een tip!", "Mijn geheugen zegt: samen lukt dit vast.", "Ik heb nagekeken en ik weet een hulpje."], [10, 11, 12]);
 
-/** Plaats in ONDUIDELIJK van twee zinnen die niet overal passen: "Ik bedoelde een andere." (alleen bij een keuzevraag) en "Probeer het nog 1 keer, met een tip." (alleen na de 1e fout: na de 2e is er geen poging meer). */
+/** Plaats in ONDUIDELIJK van twee zinnen die niet overal passen: "Ik bedoelde een andere." (alleen bij een keuzevraag) en "Probeer het nog {1:wit} keer, met een tip." (alleen na de 1e fout: na de 2e is er geen poging meer). */
 export const ONDUIDELIJK_ANDERE = 6;
 export const ONDUIDELIJK_NOG_1_KEER = 9;
 /** Plaats in AANMOEDIG van "Als je kiest, kijk ik het meteen na.": alleen bij een keuzevraag, niet bij tikken of zetten. */
@@ -122,10 +122,10 @@ export type Scherm = "licht-uur" | "licht-minuut" | "driehoek-12" | "driehoek-6"
 export const SCHERM_TEKST: Record<Scherm, string> = {
   "licht-uur": "de kleine wijzer licht op, de grote wordt vaag",
   "licht-minuut": "de grote wijzer licht op, de kleine wordt vaag",
-  "driehoek-12": "blauw pijltje boven de 12",
-  "driehoek-6": "blauw pijltje onder de 6",
-  "pijl-6-7": "blauwe pijl van de 6 naar de 7 (met de klok mee)",
-  "pijl-12-1": "blauwe pijl van de 12 naar de 1 (met de klok mee)",
+  "driehoek-12": "blauw pijltje boven de 12 (alleen na het antwoord: bij goed of bij het samen voordoen; als hint niet meer gebruikt, Ronde 33 punt 1)",
+  "driehoek-6": "blauw pijltje onder de 6 (alleen na het antwoord: bij goed of bij het samen voordoen; als hint niet meer gebruikt, Ronde 33 punt 1)",
+  "pijl-6-7": "blauwe pijl die eindigt op de 6 (van de 5 naar de 6, met de klok mee): wijst alleen de richting, eindigt op het getal waar je begint",
+  "pijl-12-1": "blauwe pijl die eindigt op de 12 (van de 11 naar de 12, met de klok mee): wijst alleen de richting, eindigt op het getal waar je begint",
   "ring-hand": "oranje rondje om het doel blijft, het hulphandje wijst naar het doel",
   lijn: "de getallenlijn blijft recht in beeld",
   "rondje-getallen": "de klok blijft in beeld, getallen in een rondje",
@@ -209,8 +209,8 @@ export const UITLEG: Record<string, { uitleg: string[]; weer: string[] }> = {
     weer: ["Je denkt nog aan de lijn van net.", "Een rondje met getallen hangt aan de muur."],
   },
   "boven-onder": {
-    uitleg: ["Het blauwe pijltje wijst de plek aan."],
-    weer: ["Weer de andere kant op.", "Het getal bij het blauwe pijltje is het goede."],
+    uitleg: ["Het hoogste getal staat bovenaan de rand, het laagste onderaan."],
+    weer: ["Weer boven en onder door elkaar.", "Het hoogste getal staat bovenaan de rand, het laagste onderaan."],
   },
   "net-niet-hoogst": {
     uitleg: ["Het hoogste getal staat waar de rand niet hoger gaat."],
@@ -323,23 +323,23 @@ export const UITLEGVRAGEN: Vraag[] = [
     id: "stap7-hoogste", waar: "uitleg, stap 7 (het hoogste punt)", kijk: true, vraag: ["Kijk naar het hoogste punt van de klok.", "Welk getal staat daar?"], opties: ["1", "6", "12"], goed: "12",
     opnieuw: ["Welk getal staat helemaal bovenaan?"], naGoed: ["De 12 staat helemaal bovenaan."], samen: ["Kijk, in het oranje rondje: de 12 staat helemaal bovenaan."],
     fouten: {
-      "1": F("getal-ernaast", "net-niet-hoogst", "nam een getal dat hoog staat, maar net naast de top", "De 1 staat hoog, vlak naast de top.", "Kijk bij het blauwe pijltje.", "driehoek-12"),
-      "6": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 6 staat juist helemaal onderaan.", "Kijk naar het hoogste punt, bij het blauwe pijltje.", "driehoek-12"),
+      "1": F("getal-ernaast", "net-niet-hoogst", "nam een getal dat hoog staat, maar net naast de top", "De 1 staat hoog, vlak naast de top.", "Ga langs de rand omhoog.", "geen"),
+      "6": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 6 staat juist helemaal onderaan.", "Ga langs de rand helemaal omhoog.", "geen"),
     },
   },
   {
     id: "stap8-laagste", waar: "uitleg, stap 8 (het laagste punt)", kijk: true, vraag: ["Volg de klok helemaal rond.", "Welk getal staat onderaan?"], opties: ["3", "6", "12"], goed: "6",
     opnieuw: ["Welk getal staat helemaal onderaan?"], naGoed: ["De 6 staat helemaal onderaan."], samen: ["Kijk, in het oranje rondje: de 6 staat helemaal onderaan."],
     fouten: {
-      "3": F("onduidelijk", "laagste", "niet duidelijk (geen reden verzonnen)", "", "Ga helemaal naar beneden, naar het blauwe pijltje.", "driehoek-6"),
-      "12": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 12 staat juist bovenaan.", "Ga helemaal naar beneden, naar het blauwe pijltje.", "driehoek-6"),
+      "3": F("onduidelijk", "laagste", "niet duidelijk (geen reden verzonnen)", "", "Ga langs de rand helemaal omlaag.", "geen"),
+      "12": F("boven-onder-verwisseld", "boven-onder", "haalde bovenaan en onderaan door elkaar", "De 12 staat juist bovenaan.", "Ga langs de rand helemaal omlaag.", "geen"),
     },
   },
   {
     id: "stap9-na-6", waar: "uitleg, stap 9 (wat komt na de 6?)", vraag: ["Kijk naar de 6.", "Welk getal komt erna?"], opties: ["5", "7", "8"], goed: "7",
     opnieuw: ["Welk getal komt na de 6?"], naGoed: ["Van de 6 ga je deze kant op, naar de 7."], samen: ["Van de 6 ga je 1 getal verder, naar de 7 in het oranje rondje."],
     fouten: {
-      "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 5 komt vóór de 6.", "Erna betekent: deze kant op. Volg de blauwe pijl.", "pijl-6-7"),
+      "5": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 5 komt vóór de 6.", "Erna betekent: deze kant op. Ga vanaf de 6 verder, de kant op van de pijl.", "pijl-6-7"),
       "8": F("een-te-veel", "te-ver", "telde 1 te veel (2 getallen verder)", "Je ging 2 getallen verder.", "Zet je vinger op de 6. Schuif met de klok mee naar het eerstvolgende getal.", "geen"),
     },
   },
@@ -347,8 +347,8 @@ export const UITLEGVRAGEN: Vraag[] = [
     id: "stap10-na-12", waar: "uitleg, stap 10 (wat komt na de 12?)", lastig: true, vraag: ["Nu een lastige.", "Welk getal komt na de 12?"], opties: ["1", "11", "13"], goed: "1",
     opnieuw: ["Welk getal komt na de 12?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 begint de klok weer opnieuw, bij de 1 in het oranje rondje."],
     fouten: {
-      "13": F("doortellen-na-12", "door-na-12", "telde door zoals op een getallenlijn (13 na 12)", "Op een getallenlijn komt de 13 na de 12, dat snap ik.", "Op deze klok staat geen 13. Volg de pijl.", "pijl-12-1"),
-      "11": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 11 komt vóór de 12.", "We zoeken het getal erna. Volg de pijl.", "pijl-12-1"),
+      "13": F("doortellen-na-12", "door-na-12", "telde door zoals op een getallenlijn (13 na 12)", "Op een getallenlijn komt de 13 na de 12, dat snap ik.", "Op deze klok staat geen 13. Ga vanaf de 12 verder, de kant op van de pijl.", "pijl-12-1"),
+      "11": F("verkeerde-richting", "voor-na", "nam het getal ervoor in plaats van erna", "De 11 komt vóór de 12.", "We zoeken het getal erna. Ga vanaf de 12 verder, de kant op van de pijl.", "pijl-12-1"),
     },
   },
   {
@@ -448,7 +448,7 @@ export const EXTRAVRAGEN: Vraag[] = [
     id: "bonus-over-1-uur", waar: "oefenblok, bonus (stap 20): alleen als alles in 1 keer goed ging", lastig: true, vraag: ["Je had ze allemaal in 1 keer goed! Nog 1 als toetje.", "Het is nu {12:oranje} uur. Hoe laat is het over 1 uur?"], opties: ["1 uur", "11 uur", "12 uur"], goed: "1 uur",
     opnieuw: ["Hoe laat is het over 1 uur?"], naGoed: ["Na de 12 begint de klok weer bij de 1."], samen: ["Na de 12 komt de 1. Over 1 uur is het {1:oranje} uur."],
     fouten: {
-      "11 uur": F("plus-min-verwisseld", "bonus-min", "ging 1 uur terug in plaats van 1 uur vooruit", "Je ging 1 uur terug.", "Over 1 uur is het later. Volg de blauwe pijl, met de klok mee.", "pijl-12-1"),
+      "11 uur": F("plus-min-verwisseld", "bonus-min", "ging 1 uur terug in plaats van 1 uur vooruit", "Je ging 1 uur terug.", "Over 1 uur is het later. Ga vanaf de 12 verder, de kant op van de pijl.", "pijl-12-1"),
       "12 uur": F("een-te-weinig", "bonus-nul", "bleef bij de tijd van nu, 1 uur te weinig verder", "Dat is de tijd van nu.", "Over 1 uur is het later dan nu. Begin bij de 12 en ga met de klok mee.", "geen"),
     },
   },

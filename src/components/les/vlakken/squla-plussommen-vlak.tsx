@@ -799,7 +799,7 @@ export function SqulaPlusVlak({
       {!dim &&
         groepen.map((g, i) =>
           g.label && beeld?.soort === "bakkerij" ? (
-            <div key={`l${i}`} className={s.label} style={{ left: g.label.x, top: g.label.y, color: KLEURHEX[etenKleuren(beeld.groepen)[i]] }} aria-hidden>
+            <div key={`l${i}`} className={s.label} style={{ left: g.label.x, top: g.label.y, color: KLEURHEX[etenKleuren(beeld.groepen)[i]] }} aria-hidden data-groeplabel="">
               {beeld.groepen[i].n}
             </div>
           ) : null,

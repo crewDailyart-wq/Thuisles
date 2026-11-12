@@ -989,6 +989,16 @@ const SITUATIES = {
     const ok = await speel(P, { naam: "goed", keuze: (t) => (t.soort === "kies" ? t.goed : "goed") });
     await controleer(P, "goed");
     zie(`goed: zone splitsvlak/tekstvak (px voorbij de linkerrand van het tekstvak; negatief = ruimte): ${JSON.stringify(globalThis.__zone)}`);
+    /* Ronde 45: de zin met het aantal/de som niet 2 keer achter elkaar dezelfde, ook niet bij een ander getal.
+       Het getal wordt een #, dan zie je de zin zelf (zelfde controle als bij de gouden Rekenmix). */
+    {
+      const loglijst = await P.log();
+      const vorm = (z) => z.replace(/\{\d+:[a-z]+\}/g, "#").replace(/\d+/g, "#");
+      const reacties = loglijst.filter((x) => x.wat === "reactie" && x.soort === "goed").map((x) => (vorm(x.zin ?? "").match(/[^.!?]*#[^.!?]*[.!?]$/) ?? [""])[0].trim());
+      const dubbel = reacties.filter((z, i) => i > 0 && z && z === reacties[i - 1]).length;
+      zie(`goed: zin met het aantal 2 keer achter elkaar dezelfde: ${dubbel} (moet 0) — ${reacties.join(" | ")}`);
+      if (dubbel) fout(`de zin met het aantal kwam ${dubbel} keer 2 keer achter elkaar`);
+    }
     if (!ok) fout("goed: niet tot de eindkaart");
   },
   /** Alles fout (2 keer per vraag): elke vraag samen voordoen; de les stopt nooit. Met de langste zinnen (overlap). */

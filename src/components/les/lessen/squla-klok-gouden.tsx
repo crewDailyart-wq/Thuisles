@@ -60,11 +60,11 @@ const u = (uur: number, minuut = 0) => (uur % 12) * 60 + minuut;
 
 const zet = (l: Lesgids, p: Partial<GoudenKlokProps>) => l.pasVlakAan<GoudenKlokProps>(p);
 
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]> };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; snelVraag: number; naamVraag: number; naamKeer: number; opRij: number; momenten: Set<string>; pijlUitgelegd: boolean; goed: number; rondje: number; speel: number; haak: number; vraag: number; denkfouten: Map<string, number>; foutVragen: Set<string>; laatste: boolean; eerste: Map<string, Uitkomst>; namen: number; snelGehad: Set<number>; log: unknown[]; vraagFouten: Map<string, string[]>; klokVorige: number };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map() }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, snelVraag: -99, naamVraag: -99, naamKeer: 0, opRij: 0, momenten: new Set(), pijlUitgelegd: false, goed: 0, rondje: 0, speel: 0, haak: 0, vraag: 0, denkfouten: new Map(), foutVragen: new Set(), laatste: false, eerste: new Map(), namen: 0, snelGehad: new Set(), log: [], vraagFouten: new Map(), klokVorige: -1 }));
   return s;
 };
 
@@ -211,7 +211,14 @@ function lofZinnen(l: Lesgids, o: { kijk?: boolean; lastig?: boolean; eerste?: b
     const eerste = (z: string) => z.split(/[\s,:!.]/)[0].toLowerCase();
     const reactie = KLOKREACTIE(o.uur);
     const zonder = reactie.zinnen.map((_, i) => i).filter((i) => eerste(reactie.zinnen[i]) === eerste(zin));
-    return [zin, kies(l, reactie, zonder)];
+    /* Niet 2 keer achter elkaar dezelfde zin bij de klok, ook niet bij een ander uur ("Ja, het is precies 4 uur." en daarna
+       "Ja, het is precies 7 uur."): elk uur heeft een eigen rijtje, dus onthoud de vorige zin over de hele les (Ronde 45,
+       zelfde herstel als de gouden Rekenmix). Alleen als er dan nog een gewone zin over is. */
+    const vrij = reactie.zinnen.map((_, i) => i).filter((i) => !zonder.includes(i) && i !== s.klokVorige);
+    s.vorige.set(reactie, vrij.length ? s.klokVorige : -1);
+    const gekozen = kies(l, reactie, zonder);
+    s.klokVorige = reactie.zinnen.indexOf(gekozen);
+    return [zin, gekozen];
   }
   return [zin];
 }
@@ -309,8 +316,9 @@ function toonScherm(l: Lesgids, scherm: Scherm) {
   else if (scherm === "licht-minuut") zet(l, { licht: "minuut", uurwijzer: "flets", minuutwijzer: "fel" });
   else if (scherm === "driehoek-12") zet(l, { driehoek: 12 });
   else if (scherm === "driehoek-6") zet(l, { driehoek: 6 });
-  else if (scherm === "pijl-6-7") zet(l, { pijl: { van: 6, naar: 7 } });
-  else if (scherm === "pijl-12-1") zet(l, { pijl: { van: 12, naar: 1 } });
+  /* Ronde 33 punt 1: de hint-pijl wijst alleen de richting en eindigt op het getal waar je begint (5 → 6, 11 → 12), nooit op het antwoord. */
+  else if (scherm === "pijl-6-7") zet(l, { pijl: { van: 5, naar: 6 } });
+  else if (scherm === "pijl-12-1") zet(l, { pijl: { van: 11, naar: 12 } });
 }
 
 /**
@@ -708,30 +716,28 @@ async function uitlegRoute(l: Lesgids) {
     kleineStap: VOORDOEN.woordTik("een klok"),
   });
 
-  /* Stap 7. Het hoogste punt; het driehoekje komt ± 4 s na de vraag. */
-  const driehoek12 = setTimeout(() => zet(l, { driehoek: 12 }), 4000);
+  /* Stap 7. Het hoogste punt; het driehoekje komt pas NA het antwoord (goed of samen voordoen; Ronde 33 punt 1, 15.17). */
   await keuze(l, {
     id: "stap7-hoogste",
+    bijGoed: () => zet(l, { driehoek: 12 }),
     voordoen: () => {
       zet(l, { driehoek: 12, ring: 12, ringWijzer: "uur", getalKleur: { n: 12, wijzer: "uur" } });
       return [];
     },
     kleineStap: VOORDOEN.getalTik(12, null),
   });
-  clearTimeout(driehoek12);
   zet(l, { driehoek: null, ring: null, getalKleur: null });
 
-  /* Stap 8. Het laagste punt; het driehoekje springt naar onder de 6. */
-  const driehoek6 = setTimeout(() => zet(l, { driehoek: 6 }), 1500);
+  /* Stap 8. Het laagste punt; het driehoekje komt pas NA het antwoord (goed of samen voordoen). */
   await keuze(l, {
     id: "stap8-laagste",
+    bijGoed: () => zet(l, { driehoek: 6 }),
     voordoen: () => {
       zet(l, { driehoek: 6, ring: 6, ringWijzer: "uur", getalKleur: { n: 6, wijzer: "uur" } });
       return [];
     },
     kleineStap: VOORDOEN.getalTik(6, null),
   });
-  clearTimeout(driehoek6);
   zet(l, { driehoek: null, ring: null, getalKleur: null });
 
   /* Stap 9. Wat komt na de 6? Met de klok mee (de blauwe pijl). */

@@ -298,6 +298,15 @@ async function speel(P, o = {}) {
 async function controleer(P, naam) {
   const m = await P.meet();
   const l = await P.log();
+  /* Ronde 45: de reactie bij de klok ("Ja, het is precies 4 uur.") niet 2 keer achter elkaar dezelfde, ook niet bij een
+     ander uur. Het getal wordt een #, dan zie je de zin zelf. */
+  {
+    const vorm = (z) => z.replace(/\{\d+:[a-z]+\}/g, "#").replace(/\d+/g, "#");
+    const reacties = l.filter((x) => x.wat === "reactie" && x.soort === "goed").map((x) => (vorm(x.zin ?? "").match(/[^.!?]*#[^.!?]*[.!?]( Klopt!)?$/) ?? [""])[0].trim()).filter(Boolean);
+    const dubbel = reacties.filter((z, i) => i > 0 && z === reacties[i - 1]).length;
+    zie(`${naam}: reactie bij de klok 2 keer achter elkaar dezelfde: ${dubbel} (moet 0) — ${reacties.join(" | ")}`);
+    if (dubbel) fout(`${naam}: de reactie bij de klok kwam ${dubbel} keer 2 keer achter elkaar`);
+  }
   const tel = (w) => l.filter((x) => x.wat === w).length;
   zie(`${naam}: ${tel("pijl-door")} stukken met pijl (allemaal vanzelf door), ${tel("opdrachtzin")} opdrachtzinnen zonder pijl, ${tel("pijl-getikt")} keer op de pijl getikt, ${l.filter((x) => x.wat === "pijl").length} stukken die op een tik wachten (moet 0)`);
   if (l.some((x) => x.wat === "pijl")) fout(`${naam}: er wacht nog een stuk op een tik`);

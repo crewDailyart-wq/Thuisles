@@ -113,7 +113,7 @@ const LEG_MS = 420;
 
 type Uitkomst = "goed" | "naFout" | "samen";
 type Staat = {
-  vorige: Map<Rijtje, number>;
+  vorige: Map<Rijtje | string, number>;
   zinNr: number;
   robotNr: number;
   namen: number;
@@ -206,17 +206,19 @@ function veelFouten(l: Lesgids): boolean {
 
 /* ---------- het vaste rijtje (zelfde regels als de gouden lessen klok en Tellen) ---------- */
 
-function kies(l: Lesgids, r: Rijtje, zonder: number[] = []): string {
+/* Ronde 45: de reactie met het aantal heeft per vraag een nieuw rijtje; met een vaste sleutel ("reactie") onthoudt de les de
+   vorige zin over alle vragen, dus nooit 2 keer achter elkaar dezelfde zin met een ander getal. */
+function kies(l: Lesgids, r: Rijtje, zonder: number[] = [], sleutel: Rijtje | string = r): string {
   const s = st(l);
   s.zinNr++;
-  const vorige = s.vorige.get(r) ?? -1;
+  const vorige = s.vorige.get(sleutel) ?? -1;
   const robotMag = s.zinNr - s.robotNr > 6;
   /* "Nakijken" hooguit 2 keer per les, in lof, momenten en reacties samen (kind-test punt 19). */
   const nakijkOp = s.nakijk >= 2;
   const mag = r.zinnen.map((_, i) => i).filter((i) => i !== vorige && !zonder.includes(i) && (robotMag || !r.robot.includes(i)) && !(nakijkOp && NAKIJK.test(r.zinnen[i])));
   const keuze = mag.length ? mag : r.zinnen.map((_, i) => i).filter((i) => i !== vorige && !zonder.includes(i));
   const i = keuze[Math.floor(Math.random() * keuze.length)] ?? 0;
-  s.vorige.set(r, i);
+  s.vorige.set(sleutel, i);
   if (r.robot.includes(i)) s.robotNr = s.zinNr;
   if (NAKIJK.test(r.zinnen[i])) s.nakijk++;
   return r.zinnen[i];
@@ -248,7 +250,7 @@ function lofZinnen(l: Lesgids, reactie: Rijtje, jaIndex: number[], robotIndex: n
   if (/\bja\b/i.test(lof)) zonder.push(...jaIndex);
   /* Een robotreactie hooguit 1 keer per les (keuring Tellen, 9 nov). */
   if (s.robotReactie && robotIndex !== null) zonder.push(robotIndex);
-  const r = kies(l, reactie, zonder);
+  const r = kies(l, reactie, zonder, "reactie");
   if (robotIndex !== null && r === reactie.zinnen[robotIndex]) s.robotReactie = true;
   return [lof, r];
 }

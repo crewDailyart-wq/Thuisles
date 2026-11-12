@@ -10,6 +10,15 @@
   inset: 0;
 }
 
+/* Het bordje met het aantal onder een groepje (Ronde 46, besluit Sara 12 nov): in het gewone plusvlak is het geel met een
+   getal in de kleur van het lekkers (bij de krentenbollen oranje op geel: slecht te lezen). Alleen in de gouden les
+   donker met een lichte rand; het getal houdt de kleur van het lekkers (2.1) en leest nu op donker. Het plusvlak zelf en
+   de oude les blijven ongewijzigd (alleen een data-attribuut erbij). */
+.wortel [data-groeplabel] {
+  background: #1b1f33;
+  border-color: #ffffff;
+}
+
 /* Een onzichtbare knop op een stuk lekkers of een stip (minstens 48 punten, BOUWREGELS 6.6). */
 .telknop {
   position: absolute;

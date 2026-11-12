@@ -278,7 +278,7 @@ export function totaalFout(v: Verhaal | Disco, x: number): Fout {
     /* Zonder richting: 3 versies die per vraag wisselen (keuring Meer-minder: niet steeds dezelfde zin). Elke versie is
        waar voor elk fout antwoord: er staat alleen in wat het kind koos. */
     if (over.length <= 1)
-      return { code, soort, denkfout, eerste: ZONDER_RICHTING[(nr + (isVerhaal ? 0 : 1)) % 3](X), hint: neutraal, uitleg, weer: [], scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over" };
+      return { code, soort, denkfout, eerste: ZONDER_RICHTING[(nr + (isVerhaal ? 0 : 1)) % 3](X), hint: neutraal, uitleg, weer: [], scherm, beperking: {}, noot: "richting niet genoemd: dan bleef er maar 1 keuze over", ...(soort === "te-veel" || soort === "te-weinig" ? { kort: "" } : {}) };
     /* "1 en 4 samen is minder dan 6. 6 is te veel." zegt 2 keer hetzelfde: bij de 2e fout dan alleen de uitleg. */
     return { code, soort, denkfout, eerste, hint, uitleg, weer, scherm, beperking, ...(soort === "te-veel" || soort === "te-weinig" ? { kort: "" } : {}) };
   };
