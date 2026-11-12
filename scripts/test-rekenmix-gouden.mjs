@@ -562,6 +562,14 @@ const ROUTES = {
     const stappen = natel.slice(1).map((t, i) => t - natel[i]);
     zie(`goed: samen natellen: ${natel.length} nummers, gemiddeld ${stappen.length ? Math.round(stappen.reduce((a, x) => a + x, 0) / stappen.length) : "?"} ms per nummer (draaiboek 1100–1200)`);
     zie(`goed: zone dingen/tekstvak (laatste meting, px voorbij de linkerrand van het tekstvak; negatief = ruimte): ${JSON.stringify(globalThis.__zone)}`);
+    /* Keuring 12 nov: de zin met het aantal niet 2 keer achter elkaar dezelfde, ook niet bij een ander aantal
+       ("Het zijn er 10." en daarna "Het zijn er 6."). Het getal wordt een #, dan zie je de zin zelf. */
+    const vorm = (z) => z.replace(/\{\d+:[a-z]+\}/g, "#").replace(/\d+/g, "#");
+    const lof = c.l.filter((x) => x.wat === "reactie" && x.soort === "goed").map((x) => vorm(x.zin ?? ""));
+    const aantalZin = lof.map((z) => (z.match(/[^.!?]*#[^.!?]*[.!?]$/) ?? [""])[0].trim());
+    const dubbel = aantalZin.filter((z, i) => i > 0 && z && z === aantalZin[i - 1]).length;
+    zie(`goed: zin met het aantal 2 keer achter elkaar dezelfde: ${dubbel} (moet 0) — ${aantalZin.join(" | ")}`);
+    if (dubbel) fout(`de zin met het aantal kwam ${dubbel} keer 2 keer achter elkaar`);
     return ok;
   },
   /** Afwisselend: 1e fout dan goed; elke 3e vraag 2 keer fout (samen tellen); 1 keer hetzelfde getal 2 keer. */

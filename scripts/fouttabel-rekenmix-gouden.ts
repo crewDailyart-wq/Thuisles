@@ -64,7 +64,8 @@ for (const v of VRAGEN) {
     const x = Number(a);
     const waar = `${v.id} ${a}`;
     if (f.code === "onduidelijk") fouten.push(`${waar}: geen vaste denkfout`);
-    const tekst = `${f.eerste} ${f.hint}`;
+    /* Zonder kleurcode ({1:wit} → 1), anders herkent de verklapcontrole "1 keer" en "maar 1" niet (keuring 12 nov). */
+    const tekst = kaal(`${f.eerste} ${f.hint}`);
     const rest = v.keuzes.filter((k) => k !== x);
     const meer = /nog niet allemaal|te weinig|sla er geen|niet geteld|\bover\b/i.test(tekst);
     const minder = /te veel|1 keer|maar 1/i.test(tekst);

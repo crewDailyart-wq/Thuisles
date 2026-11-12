@@ -221,6 +221,12 @@
 > - **Een rijtje dat per aantal opnieuw wordt gemaakt** (`TELREACTIE(n, fruit)` geeft elke keer een nieuw rijtje): dan werkt "niet 2 keer dezelfde zin" van `kies()` niet, want die onthoudt de vorige zin per rijtje. Bewaar het rijtje (1 per aantal en kleur).
 > - **Geldt ook voor eerder gebouwde gouden lessen** (niet veranderd, alleen gemeld; eerst Sara, KEUZES Ronde 44): de gouden les Tellen heeft kale cijfers in "Elke appel krijgt 1 nummer.", "Wijs elke … 1 keer aan." en "tel je maar 1 keer", en maakt TELREACTIE bij elke vraag opnieuw. "Elke" bij een het-woord: 0 (Tellen heeft alleen appel, peer, pruim).
 
+> ## ⭐ GELEERD BIJ DE KEURING REKENMIX (onafhankelijke keurder, 12 november 2026; KEURING-REKENMIX-GOUDEN.md) — geldt voor elke gouden les
+> - **"Niet 2 keer achter elkaar dezelfde zin" geldt over de hele les, ook als het rijtje per aantal anders is.** Een rijtje per aantal (of per uur) bewaren helpt niet: opeenvolgende vragen hebben een ander aantal, dus kies() kent de vorige zin niet. Onthoud de vorige zin over de hele les (`telVorige` in squla-rekenmix-gouden.tsx) en laat de test het tellen met het getal als # ("Het zijn er #." 2 keer = fout).
+> - **Laat een controlescript de tekst zonder kleurcode lezen** (`kaal`): met {1:wit} erin vindt een zoekterm als "1 keer" niets.
+> - **Ook het gedeelde vaste rijtje nalopen op kale cijfers** ("Al 3 goed achter elkaar!"): het script van een les keek alleen naar de eigen zinnen.
+> - **Geldt ook voor eerder gebouwde gouden lessen** (alleen geteld, niets veranderd; eerst Sara, KEUZES Ronde 45): de zin met het aantal kan 2 keer achter elkaar dezelfde zijn in **Tellen**, **Meer-minder** en de **klok** (3 van de 13); kale cijfers in het gedeelde rijtje: in alle gouden lessen (5 zinnen).
+
 > ## ⭐ BELANGRIJKSTE REGEL VAN BLIEPO
 > **Bliepo probeert altijd de denkfout van het kind te begrijpen en reageert daarop.**
 >

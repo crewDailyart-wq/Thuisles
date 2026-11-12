@@ -1996,3 +1996,30 @@ draaiboek Tellen heeft geen startvraag).
   (op de echte site moet het onder 1 s).
 - Let op: andere helpers draaiden tussendoor ook tests; ik heb gewacht tot ze klaar waren, maar bij de eerste route
   ("goed") liep er mogelijk nog een tweede test.
+
+## Ronde 45 — keuring gouden les Rekenmix (onafhankelijke keurder, 12 november 2026)
+
+Verslag: KEURING-REKENMIX-GOUDEN.md. **Uitslag: GOEDGEKEURD** na 2 kleine herstellingen. De inhoud (15 vragen, dingen,
+aantallen, ligging, keuzes, antwoorden, volgorde) is gelijk aan de oude les; de oude les en het oude vlak zijn niet
+veranderd. Geen tegoed, niets online, niets in de database (hoogste id 147).
+
+**Wat ik herstelde:**
+1. De zin met het aantal ("Het zijn er 10.") kon 2 keer achter elkaar dezelfde zijn, met een ander getal. Nu niet meer
+   (3 keer getest: 0 keer). Geen zin veranderd.
+2. Een controle in het fouttabel-script las "1 keer" niet goed. Hersteld; de uitslag bleef in orde.
+
+**Vloeiend:** 59–60 beelden per seconde op laptop en trage telefoon (stekker erin). Openen nog meten op de echte site.
+
+**Graag een besluit (ja of nee):**
+- **A.** In het vaste rijtje van alle gouden lessen staan cijfers zonder kleurcode: "Al 3 goed achter elkaar!",
+  "3 keer op rij goed. Wauw!", "Het gaat steeds beter: al 3 goed!", "3 keer goed! Dat zet ik in mijn geheugen." en
+  "Probeer het nog 1 keer, met een tip.". Op het scherm zijn ze wit, dus je ziet geen verschil. Mag ik er {3:wit} en
+  {1:wit} van maken (regel 14.20)? Advies: **ja**, maar het verandert niets wat een kind ziet.
+- **B.** In de gouden les Tellen staan 6 zinnen met zo'n cijfer zonder kleurcode ("1 keer", "1 nummer", "2 keer").
+  Ook wit op het scherm. Zelfde vraag als Ronde 44 punt 8a. Advies: **ja**.
+- **C.** De zin met het aantal kan 2 keer achter elkaar dezelfde zijn (met een ander getal) in **Tellen**,
+  **Meer-minder** en de **klok**. Precies dezelfde tekst komt daar nooit 2 keer achter elkaar. Zelfde herstel als in
+  Rekenmix? Advies: **ja**.
+- **D.** Punt 1 t/m 7 van Ronde 44 (eigen invulling, de andere 15 Rekenmix-lessen) wachten nog op jou. De keurder vindt
+  1 t/m 6 goed (hints passen bij het beeld, geen "dichtbij" bij 3 verschil, uitleg zonder dubbel woord, begin- en
+  slotzin, eindkaart, niets bij heel snel).

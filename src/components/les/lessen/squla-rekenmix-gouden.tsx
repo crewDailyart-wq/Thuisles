@@ -63,11 +63,11 @@ const VANGNET_MS = 20000;
 /* ---------- staat per les ---------- */
 
 type Uitkomst = "goed" | "naFout" | "samen";
-type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; log: unknown[]; robotTel: boolean };
+type Staat = { vorige: Map<Rijtje, number>; zinNr: number; robotNr: number; naamVraag: number; naamKeer: number; namen: number; opRij: number; momenten: Set<string>; haak: number; goed: number; fout: number; vraag: number; laatste: boolean; eerste: Map<string, Uitkomst>; vraagFouten: Map<string, string[]>; log: unknown[]; robotTel: boolean; telVorige: number };
 const STAAT = new WeakMap<Lesgids, Staat>();
 const st = (l: Lesgids): Staat => {
   let s = STAAT.get(l);
-  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotTel: false }));
+  if (!s) STAAT.set(l, (s = { vorige: new Map(), zinNr: 0, robotNr: -99, naamVraag: -99, naamKeer: 0, namen: 0, opRij: 0, momenten: new Set(), haak: 0, goed: 0, fout: 0, vraag: 0, laatste: false, eerste: new Map(), vraagFouten: new Map(), log: [], robotTel: false, telVorige: -1 }));
   return s;
 };
 
@@ -180,7 +180,14 @@ function lofZinnen(l: Lesgids, v: Rmvraag, eerste: boolean): string[] {
   if (woord(lof) === "ja") zonder.push(...TELREACTIE_JA);
   /* De robotzin "Ik heb ze nagekeken …" hooguit 1 keer per les. */
   if (s.robotTel) zonder.push(TELREACTIE_ROBOT);
+  /* Niet 2 keer achter elkaar dezelfde zin met het aantal, ook niet bij een ander aantal ("Het zijn er 10." en daarna
+     "Het zijn er 6."): elk aantal heeft een eigen rijtje, dus onthoud de vorige zin over de hele les (keuring 12 nov). */
+  /* kies() slaat de vorige zin van hetzelfde rijtje over; hier is dat de vorige zin over de hele les. Alleen als er dan
+     nog een gewone zin over is (anders zou kies() terugvallen op een zin met "Ja" na een lof met "Ja"). */
+  const vrij = r.zinnen.map((_, i) => i).filter((i) => !zonder.includes(i) && i !== s.telVorige && i !== TELREACTIE_ROBOT);
+  s.vorige.set(r, vrij.length ? s.telVorige : -1);
   const aantal = kies(l, r, zonder);
+  s.telVorige = r.zinnen.indexOf(aantal);
   if (aantal === r.zinnen[TELREACTIE_ROBOT]) s.robotTel = true;
   return [lof, aantal];
 }
