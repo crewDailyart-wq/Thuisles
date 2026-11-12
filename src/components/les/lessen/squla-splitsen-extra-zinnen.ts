@@ -80,7 +80,7 @@ export const ZIN = {
   zoekOpdracht: "Maak met de plus en de min 2 delen die samen {7} zijn. Tik dan op het vinkje.",
   zoekHand: "Tik op de plus of de min.",
   nogKop: { voor: "Zoek nog een manier om", n: 7, na: "te splitsen." },
-  nogOpdracht: "Zoek nog een manier om {7} te splitsen. Tik op het vinkje als je klaar bent.",
+  nogOpdracht: "Zoek nog een manier om {7} te splitsen.",
   goedSplits: (a: number, b: number, t: number) => `Je splitste {${t}} in {${a}} en {${b}}.`,
   alGevonden: (a: number, b: number, t: number) => `Zo heb je {${t}} al gesplitst, in ${paar(a, b)}. Zoek een andere manier.`,
   omgedraaid: "Je draaide de delen om. Het zijn dezelfde getallen. Zoek een andere manier.",
@@ -94,9 +94,9 @@ export const ZIN = {
   keuzeGroter: `Splits ${KEUZE_GROTER}`,
   keuzeReactie: (t: number) => `Goede keuze. Splits {${t}} in 2 delen.`,
   keuzeKop: (t: number) => ({ voor: "Splits", n: t, na: "in 2 delen." }),
-  keuzeOpdracht: (t: number) => `Splits {${t}} in 2 delen. Tik op het vinkje als je klaar bent.`,
+  keuzeOpdracht: (t: number) => `Splits {${t}} in 2 delen.`,
   keuzeNog: (a: number, b: number, t: number) => `Ja, ${som(a, b, t)}.`,
-  keuzeNogOpdracht: (t: number) => `Splits {${t}} nog op een andere manier. Tik op het vinkje als je klaar bent.`,
+  keuzeNogOpdracht: (t: number) => `Splits {${t}} nog op een andere manier.`,
   /** Stap 16: einde. */
   slot: "Je splitste getallen op veel manieren.",
   weerGekozen: (x: string) => `Je koos weer ${x}.`,
@@ -165,5 +165,5 @@ export function splitsFout(a: number, b: number, t: number, nr = 0): Fout {
   const richting = s < t ? "Dat is te weinig." : "Dat is te veel.";
   const soort = s < t ? "delen-samen-te-weinig" : "delen-samen-te-veel";
   const uitleg = [`Samen moeten de 2 delen {${t}} zijn.`, `De 2 delen moeten samen {${t}} maken.`, `Samen is het {${t}}: zoveel stippen horen er in de 2 delen.`][v];
-  return { code: soort, soort, denkfout: s < t ? "de 2 delen samen zijn te weinig" : "de 2 delen samen zijn te veel", eerste: `Je hebt {${a}} en {${b}}. Samen is dat {${s}}. ${richting}`, hint: ["Verander een deel en tik weer op het vinkje.", "Maak een deel groter of kleiner en tik dan weer op het vinkje.", "Probeer een ander deel. Tik daarna weer op het vinkje."][v], uitleg, weer: [["Het klopt weer niet.", "Dit klopt ook niet.", "Weer past het niet."][v], uitleg], scherm: "kop en stippen blijven staan; vinkje even uit; Bliepo's scherm 1,5 s rood" };
+  return { code: soort, soort, denkfout: s < t ? "de 2 delen samen zijn te weinig" : "de 2 delen samen zijn te veel", eerste: `Je hebt {${a}} en {${b}}. Samen is dat {${s}}. ${richting}`, hint: [`Verander een deel. Samen moet het {${t}} zijn.`, "Maak een deel groter of kleiner.", "Probeer een ander deel."][v], uitleg, weer: [["Het klopt weer niet.", "Dit klopt ook niet.", "Weer past het niet."][v], uitleg], scherm: "kop en stippen blijven staan; vinkje even uit; Bliepo's scherm 1,5 s rood" };
 }

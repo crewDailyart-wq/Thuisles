@@ -146,8 +146,8 @@ export const ZIN = {
 export const GOEDREACTIE = (v: Vraag2) => {
   const h = woordenVan(v);
   const A = v.wat === "evenveel" ? `Daar zit evenveel ${h.wat} op als bovenaan.` : v.wat === "meest" || v.wat === "minst" ? `Daar zit ${h.lw} ${v.wat === "meest" ? "meeste" : "minste"} ${h.wat} op.` : `Daar zit ${v.wat} ${h.wat} op dan bovenaan.`;
-  const B = v.wat === "evenveel" ? `${Hoofd(h.die)} ${h.ding} heeft net zoveel ${h.wat} als bovenaan.` : v.wat === "meest" ? `${Hoofd(h.die)} ${h.ding} is ${h.het === "de" ? "de" : "het"} volst.` : v.wat === "minst" ? `${Hoofd(h.die)} ${h.ding} is ${h.het === "de" ? "de" : "het"} leegst.` : `${Hoofd(h.die)} ${h.ding} heeft ${v.wat} ${h.wat} dan bovenaan.`;
-  const C = v.wat === "evenveel" ? `Je zag dat het evenveel is.` : v.wat === "meest" ? `Je vond ${h.het} ${h.ding} ${h.die} het volst is.` : v.wat === "minst" ? `Je vond ${h.het} ${h.ding} ${h.die} het leegst is.` : `Je koos ${h.het} ${h.ding} met ${v.wat} ${h.wat}.`;
+  const B = v.wat === "evenveel" ? `${Hoofd(h.die)} ${h.ding} heeft net zoveel ${h.wat} als bovenaan.` : v.wat === "meest" ? `${Hoofd(h.die)} ${h.ding} heeft ${h.lw} meeste ${h.wat}.` : v.wat === "minst" ? `${Hoofd(h.die)} ${h.ding} heeft ${h.lw} minste ${h.wat}.` : `${Hoofd(h.die)} ${h.ding} heeft ${v.wat} ${h.wat} dan bovenaan.`;
+  const C = v.wat === "evenveel" ? `Je zag dat het evenveel is.` : v.wat === "meest" ? `Je koos ${h.het} ${h.ding} met ${h.lw} meeste ${h.wat}.` : v.wat === "minst" ? `Je koos ${h.het} ${h.ding} met ${h.lw} minste ${h.wat}.` : `Je koos ${h.het} ${h.ding} met ${v.wat} ${h.wat}.`;
   return { zinnen: [A, B, C], robot: [] as number[] };
 };
 
@@ -200,8 +200,8 @@ export function vergelijkFout(c: number, v: Vraag2): Fout {
   const meest = v.wat === "meest";
   const tegen = meest ? c === 0 : c === 2;
   const lwMeest = `${h.lw} ${meest ? "meeste" : "minste"}`;
-  const uitleg = meest ? `Je zoekt ${h.het} ${h.ding} ${h.die} het volst is.` : `Je zoekt ${h.het} ${h.ding} ${h.die} het leegst is.`;
-  const hint = [`Kijk hoeveel ${h.wat} er op ${h.elk} ${h.ding} zit.`, `Kijk naar ${h.elk} ${h.ding} en kies dan.`, `Kijk nog eens goed naar alle ${w(3)}.`][i];
+  const uitleg = meest ? `Je zoekt ${h.het} ${h.ding} met ${h.lw} meeste ${h.wat}.` : `Je zoekt ${h.het} ${h.ding} met ${h.lw} minste ${h.wat}.`;
+  const hint = [`Kijk hoeveel ${h.wat} er op ${h.elk} ${h.ding} zit.`, `Kijk naar ${h.elk} ${h.ding} en kies dan.`, `Kijk nog eens goed naar alle ${w(3)} ${h.ding === "boterham" ? "boterhammen" : "spiesjes"}.`][i];
   if (tegen) {
     return {
       ...basis,

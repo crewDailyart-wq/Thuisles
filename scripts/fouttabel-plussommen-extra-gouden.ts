@@ -35,7 +35,7 @@ Gemaakt op 12 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-plus
 **EIGEN INVULLING, NIET VAN SYNTHESIS.** De getallen zijn die van het draaiboek (tegels 1 t/m 9, totalen tot 10, doelen 7 en 10). Het draaiboek laat het kind bij een foute tegel zelf zien wat het maakte (§3 C), en noemt bij het totaal de richting (§3 D); Bliepo doet dat ook, met de denkfout erbij (BOUWREGELS 15.9). Niet gebouwd: de som zelf typen (stap 10), de slot-tegels van stap 5 en de zijroute na 2 fouten (vervangen door 2 pogingen).
 
 **Zo werkt het bij een fout — 2 POGINGEN (BOUWREGELS 15.9 en 15.11):**
-- **Keuzevragen (welk getal, totaal, de som, omwisselen):** 1e fout = scherm 1,5 s rood (geen fout-geluidje), Bliepo noemt wat het kind koos en de denkfout; dan komen de knoppen terug met de hint. 2e fout = uitleg (zonder het antwoord) en samen voordoen: Bliepo telt de hokjes (een voor een), of laat de som zien. De les gaat door. Elk vervolg gaat vanzelf (15.27).
+- **Keuzevragen (welk getal, totaal, de som, omwisselen):** 1e fout = scherm 1,5 s rood (geen fout-geluidje), Bliepo noemt wat het kind koos en de denkfout; dan komen de knoppen terug met de hint. 2e fout = uitleg (zonder het antwoord) en samen voordoen: Bliepo telt de vakjes (een voor een), of laat de som zien. De les gaat door. Elk vervolg gaat vanzelf (15.27).
 - **De tegel zoeken (samen 7, samen 10, nog een manier):** een foute tegel verschijnt even en verdwijnt weer (zonder het woord "fout"). 1e fout = Bliepo rekent voor wat het kind maakte ("3 en 4 is samen 7. Dat is te weinig.") en het kind mag nog 1 keer een tegel zetten. 2e fout = uitleg, en een schaduw van de tegel die erbij past komt in het rooster; het kind zet hem zelf (kleine stap), Bliepo zegt wat er gemaakt is.
 - **Richting en verklappen (15.17):** zou "te weinig" of "te veel" maar 1 keuze overlaten (bij tegel 1, 2 of 9), dan noemt Bliepo alleen "dichtbij". Het script controleert dat er na de eerste zin en de hint minstens 2 keuzes overblijven.
 - **Hulphandje (15.19):** komt vanzelf na ± 6 s stilte bij een opdracht (een tegel kiezen en zetten), als het handje dat laat zien hoe je een tegel naar het rooster sleept; nooit bij een keuzevraag, nooit een knop. **Heel snel antwoorden:** Bliepo zegt niets (BOUWREGELS 6.10).
@@ -48,7 +48,7 @@ Gemaakt op 12 november 2026 **uit de code** met \`npx tsx scripts/fouttabel-plus
 
 | Naam in de voortgang | Wat het kind waarschijnlijk deed | Bron |
 |---|---|---|
-| \`te-weinig-hokjes\` / \`te-veel-hokjes\` | telde de hokjes van 1 tegel verkeerd | draaiboek §3 A (gezien, R1, P-8nov) |
+| \`te-weinig-hokjes\` / \`te-veel-hokjes\` | telde de vakjes van 1 tegel verkeerd | draaiboek §3 A (gezien, R1, P-8nov) |
 | \`samen-te-weinig\` / \`samen-te-veel\` | de tegels samen zijn te weinig of te veel (bij het totaal, en bij het aanvullen) | draaiboek §3 C en D (gezien) |
 | \`cijfers-naast-elkaar\` | zette de getallen naast elkaar (3 en 7 werd 37) | draaiboek §3 E (gezien, 3×) |
 | \`plus-min-verwisseld\` | koos een min in plaats van een plus | draaiboek §3 E (gezien) |

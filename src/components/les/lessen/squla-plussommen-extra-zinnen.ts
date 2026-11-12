@@ -35,7 +35,7 @@ export const g = (n: number) => `{${n}}`;
 
 export const ZIN = {
   /** Stap 1: openen (het draaiboek heeft geen startvraag). */
-  begin: ["In deze les werk je met tegels.", "Op elke tegel zie je hokjes. Zo weet je welk getal het is."],
+  begin: ["In deze les werk je met tegels.", "Op elke tegel zie je vakjes. Zo weet je welk getal het is."],
   kies1: "Kies een tegel en zet hem in het rooster.",
   kies1Hand: "Tik op een tegel. Tik dan in het rooster.",
   kiesAnder: ["Kies een andere tegel.", "Zet er nog een in.", "Nog een tegel, een andere."],
@@ -43,7 +43,7 @@ export const ZIN = {
   /** Stap 2: welk getal? (elke keer anders verwoord, draaiboek stap 2). */
   welkGetal: ["Welk getal is dit?", "Weet je welk getal dit is?", "Welk getal heb je hier gekozen?"],
   getalGoed: (n: number) => `Het is een ${g(n)}.`,
-  getalTel: (n: number) => `Ik tel ${g(n)} hokjes. Het is een ${g(n)}.`,
+  getalTel: (n: number) => `Ik tel ${g(n)} vakjes. Het is een ${g(n)}.`,
   /** Stap 4 en 6: twee tegels. */
   tweeTegels: ["Zet nu 2 tegels in het rooster.", "Kies zelf welke."],
   tweeTegelsNog: "Kies 2 andere tegels.",
@@ -102,10 +102,10 @@ export function getalFout(x: number, goed: number, opties: number[], nr = 0): Fo
   const verklapt = kant.length === 1;
   const X = g(x);
   /* 3 hints die per vraag wisselen (niet steeds dezelfde zin). */
-  const hint = ["Tel de hokjes van de tegel. Wijs ze een voor een aan.", "Kijk goed naar de tegel en tel de hokjes rustig.", "Tel de hokjes nog eens. Je mag ze met je vinger aanwijzen."][nr % 3];
+  const hint = ["Tel de vakjes van de tegel. Wijs ze een voor een aan.", "Kijk goed naar de tegel en tel de vakjes rustig.", "Tel de vakjes nog eens. Je mag ze met je vinger aanwijzen."][nr % 3];
   if (x < goed)
-    return { code: "te-weinig-hokjes", soort: "te-weinig-hokjes", denkfout: "telde er te weinig hokjes (sloeg er een over)", eerste: verklapt ? `${X} is dichtbij.` : `${X} is net iets te weinig.`, hint, uitleg: ["Je hebt een hokje overgeslagen. We tellen ze allemaal.", "Je telde een hokje niet mee. We tellen ze samen.", "Een hokje bleef over. We tellen ze allemaal."][nr % 3], weer: ["Je telde weer een hokje te weinig.", "We tellen ze een voor een."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
-  return { code: "te-veel-hokjes", soort: "te-veel-hokjes", denkfout: "telde er te veel hokjes (telde een hokje 2 keer)", eerste: verklapt ? `${X} is dichtbij.` : `${X} is net iets te veel.`, hint, uitleg: ["Je telde een hokje 2 keer. We tellen ze een voor een.", "Een hokje telde je dubbel. We tellen ze samen.", "Een hokje kreeg 2 keer een getal. We tellen ze een voor een."][nr % 3], weer: ["Je telde weer een hokje te veel.", "We tellen ze een voor een."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
+    return { code: "te-weinig-hokjes", soort: "te-weinig-hokjes", denkfout: "telde er te weinig vakjes (sloeg er een over)", eerste: verklapt ? `${X} is dichtbij.` : `${X} is net iets te weinig.`, hint, uitleg: ["Je hebt een vakje overgeslagen. We tellen ze allemaal.", "Je telde een vakje niet mee. We tellen ze samen.", "Een vakje bleef over. We tellen ze allemaal."][nr % 3], weer: ["Je telde weer een vakje te weinig.", "We tellen ze een voor een."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
+  return { code: "te-veel-hokjes", soort: "te-veel-hokjes", denkfout: "telde er te veel vakjes (telde een vakje 2 keer)", eerste: verklapt ? `${X} is dichtbij.` : `${X} is net iets te veel.`, hint, uitleg: ["Je telde een vakje 2 keer. We tellen ze een voor een.", "Een vakje telde je dubbel. We tellen ze samen.", "Een vakje kreeg 2 keer een getal. We tellen ze een voor een."][nr % 3], weer: ["Je telde weer een vakje te veel.", "We tellen ze een voor een."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
 }
 
 /** Stap 4 en 6: het totaal van 2 tegels. Draaiboek §3 D. */
@@ -114,10 +114,10 @@ export function totaalFout(x: number, a: number, b: number, opties: number[], nr
   const kant = opties.filter((k) => k !== x && (x < t ? k > x : k < x));
   const verklapt = kant.length === 1;
   const X = g(x);
-  const hint = [`Tel de hokjes van de ${g(a)} en de ${g(b)} samen.`, `Tel alle hokjes van de ${g(a)} en de ${g(b)} bij elkaar.`, `Kijk naar allebei de tegels en tel alle hokjes.`][nr % 3];
+  const hint = [`Tel de vakjes van de ${g(a)} en de ${g(b)} samen.`, `Tel alle vakjes van de ${g(a)} en de ${g(b)} bij elkaar.`, `Kijk naar allebei de tegels en tel alle vakjes.`][nr % 3];
   if (x < t)
-    return { code: "samen-te-weinig", soort: "samen-te-weinig", denkfout: "telde er te weinig bij elkaar", eerste: verklapt ? `${X} is dichtbij.` : `${X} is te weinig.`, hint, uitleg: "Alle hokjes van allebei de tegels tellen mee.", weer: ["Je telde weer te weinig.", "Alle hokjes van allebei de tegels tellen mee."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
-  return { code: "samen-te-veel", soort: "samen-te-veel", denkfout: "telde er te veel bij elkaar", eerste: verklapt ? `${X} is dichtbij.` : `${X} is te veel.`, hint, uitleg: "Elk hokje telt maar {1:wit} keer.", weer: ["Je telde weer te veel.", "Elk hokje telt maar {1:wit} keer."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
+    return { code: "samen-te-weinig", soort: "samen-te-weinig", denkfout: "telde er te weinig bij elkaar", eerste: verklapt ? `${X} is dichtbij.` : `${X} is te weinig.`, hint, uitleg: "Alle vakjes van allebei de tegels tellen mee.", weer: ["Je telde weer te weinig.", "Alle vakjes van allebei de tegels tellen mee."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
+  return { code: "samen-te-veel", soort: "samen-te-veel", denkfout: "telde er te veel bij elkaar", eerste: verklapt ? `${X} is dichtbij.` : `${X} is te veel.`, hint, uitleg: "Elk vakje telt maar {1:wit} keer.", weer: ["Je telde weer te veel.", "Elk vakje telt maar {1:wit} keer."], scherm: SCHERM, ...(verklapt ? { noot: "richting niet genoemd: dan bleef er maar 1 keuze over" } : {}) };
 }
 
 /**
@@ -128,7 +128,7 @@ export function aanvulFout(gekozen: number, k: number, doel: number): Fout {
   const s = gekozen + k;
   const richting = s < doel ? "Dat is te weinig." : "Dat is te veel.";
   const soort = s < doel ? "samen-te-weinig" : "samen-te-veel";
-  return { code: soort, soort, denkfout: s < doel ? "de 2 tegels samen zijn te weinig" : "de 2 tegels samen zijn te veel", eerste: `${g(gekozen)} en ${g(k)} is samen ${g(s)}. ${richting}`, hint: `Zoek een tegel, zodat het samen ${g(doel)} wordt.`, uitleg: `Je hebt al ${g(gekozen)} hokjes. Er moeten ${g(doel)} komen.`, weer: [`Weer klopt het niet: ${g(gekozen)} en ${g(k)} is ${g(s)}.`, `Er moeten ${g(doel)} hokjes komen.`], scherm: "de foute tegel verschijnt even en verdwijnt weer; Bliepo's scherm 1,5 s rood; de gekozen tegel blijft liggen; met de hint mag het kind weer een tegel zetten" };
+  return { code: soort, soort, denkfout: s < doel ? "de 2 tegels samen zijn te weinig" : "de 2 tegels samen zijn te veel", eerste: `${g(gekozen)} en ${g(k)} is samen ${g(s)}. ${richting}`, hint: `Zoek een tegel, zodat het samen ${g(doel)} wordt.`, uitleg: `Je hebt al ${g(gekozen)} vakjes. Er moeten ${g(doel)} komen.`, weer: [`Weer klopt het niet: ${g(gekozen)} en ${g(k)} is ${g(s)}.`, `Er moeten ${g(doel)} vakjes komen.`], scherm: "de foute tegel verschijnt even en verdwijnt weer; Bliepo's scherm 1,5 s rood; de gekozen tegel blijft liggen; met de hint mag het kind weer een tegel zetten" };
 }
 
 /** Stap 9: de som kiezen (3 sommen). Draaiboek §3 E: cijfers naast elkaar, min in plaats van plus. */
@@ -144,6 +144,6 @@ export function somFout(x: string, p: number, q: number): Fout {
 
 /** Stap 11: omwisselen (keuzes 10, 9 en 11). Draaiboek §3 F: het totaal blijft hetzelfde. */
 export function omwisselFout(x: number): Fout {
-  const hint = "Het zijn dezelfde tegels. Ze liggen alleen anders. Tel de hokjes nog eens.";
-  return { code: "totaal-verandert-bij-omwisselen", soort: "totaal-verandert-bij-omwisselen", denkfout: "denkt dat het totaal verandert als de tegels omgedraaid liggen", eerste: `Je koos ${g(x)}.`, hint, uitleg: "Ze liggen alleen anders. Het zijn nog steeds dezelfde hokjes.", weer: [`Je koos weer ${g(x)}.`, "Ze liggen alleen anders. Het zijn nog steeds dezelfde hokjes."], scherm: SCHERM };
+  const hint = "Kijk goed naar de tegels. Tel de vakjes nog eens, een voor een.";
+  return { code: "totaal-verandert-bij-omwisselen", soort: "totaal-verandert-bij-omwisselen", denkfout: "denkt dat het totaal verandert als de tegels omgedraaid liggen", eerste: `Je koos ${g(x)}.`, hint, uitleg: "Ze liggen alleen anders. Het zijn nog steeds dezelfde vakjes.", weer: [`Je koos weer ${g(x)}.`, "Ze liggen alleen anders. Het zijn nog steeds dezelfde vakjes."], scherm: SCHERM };
 }
